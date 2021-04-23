@@ -69,6 +69,18 @@ export default class WebpackBuilder {
     }
   }
 
+  getWebpackDevServerJs() {
+    return getWebpackDevServerJs();
+  }
+
+  getWebpackJs() {
+    return getWebpackJs();
+  }
+
+  webpackBin(serve = false) {
+    return this.cfg.webpackBin || (serve ? this.getWebpackDevServerJs() : this.getWebpackJs());
+  }
+
   async startWatchMode(bug) {
     const { project, cfg } = this;
 
@@ -82,7 +94,7 @@ export default class WebpackBuilder {
       port: bug.websitePort || 0
     });
 
-    const webpackBin = bug.websitePort ? getWebpackDevServerJs() : getWebpackJs();
+    const webpackBin = this.webpackBin(!!bug.websitePort);
     let cmd = `node ${webpackBin} --display-error-details --watch --config ./dbux.webpack.config.js ${env}`;
     return project.execBackground(cmd);
   }

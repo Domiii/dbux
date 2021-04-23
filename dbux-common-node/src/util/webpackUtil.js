@@ -1,11 +1,22 @@
 import path from 'path';
+/**
+ * @see https://github.com/xxorax/node-shell-escape
+ */
+import shellescape from 'shell-escape';
 import { globRelative } from './fileUtil';
 
+function esc(s) {
+  return shellescape([s]).replace(/\\/g, '\\\\');
+}
+
 export function serializeEnv(o) {
-  return Object.entries(o)
+  const res = Object.entries(o)
     // .map(([key, value]) => `--env ${key}='${JSON.stringify(JSON.stringify(value))}'`)
-    .map(([key, value]) => `--env ${key}=${JSON.stringify(JSON.stringify(value))}`)
+    // .map(([key, value]) => `--env ${key}=${JSON.stringify(JSON.stringify(value))}`)
+    .map(([key, value]) => `--env ${esc(key)}=${esc(JSON.stringify(value))}`)
     .join(' ');
+
+  return res;
 }
 
 export function serializeWebpackInput(o) {

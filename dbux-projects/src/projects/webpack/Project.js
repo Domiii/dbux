@@ -4,7 +4,7 @@ import { gitCloneCmd } from '@dbux/common-node/src/util/gitUtil';
 import { assertFileLinkTarget } from '@dbux/common-node/src/util/fileUtil';
 
 import Project from '../../projectLib/Project';
-// import WebpackBuilder from '../../buildTools/WebpackBuilder';
+import WebpackBuilder from '../../buildTools/WebpackBuilder';
 import { buildNodeCommand } from '../../util/nodeUtil';
 
 
@@ -17,6 +17,17 @@ export default class WebpackProject extends Project {
   // we don't want any commit hooks to get in the way
   rmFiles = ['.husky'];
 
+  makeBuilder() {
+    return new WebpackBuilder({
+      webpackBin: this.getDependencyPath('webpack/bin/webpack.js'),
+      websitePort: 3844,
+      inputPattern: 'bin/webpack.js'
+    });
+  }
+
+  // ###########################################################################
+  // install cli
+  // ###########################################################################
 
   // makeBuilder() {
   //   return new WebpackBuilder({
@@ -98,6 +109,11 @@ export default class WebpackProject extends Project {
     // await this.installWebpack4();
   }
 
+
+  // ###########################################################################
+  // loadBugs
+  // ###########################################################################
+
   loadBugs() {
     // git diff --color=never --ignore-cr-at-eol > ../../dbux-projects/assets/webpack/_patches_/error.patch
 
@@ -122,6 +138,10 @@ export default class WebpackProject extends Project {
     ];
   }
 
+  // ###########################################################################
+  // testing
+  // ###########################################################################
+
   decorateBug(bug) {
     bug.mainEntryPoint = ['lib/index.js'];
   }
@@ -134,7 +154,7 @@ export default class WebpackProject extends Project {
     return buildNodeCommand({
       ...cfg,
       dbuxArgs: '--pw=webpack,webpack-cli --verbose=1 --runtime="{\\"tracesDisabled\\":1}"',
-      program: '../../bin/webpack.js',
+      program: '../../dist/bin/webpack.js',
       // eslint-disable-next-line max-len
       programArgs: '--mode none --env none --stats-reasons --stats-used-exports --stats-provided-exports --no-stats-colors --stats-chunks  --stats-modules-space 99999 --stats-chunk-origins --output-public-path "dist/"  --entry ./example.js --output-filename output.js'
     });

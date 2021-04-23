@@ -127,6 +127,10 @@ export default class Project {
     return this.manager.config.projectsRoot;
   }
 
+  get dependencyRoot() {
+    return this.manager.config.dependencyRoot;
+  }
+
   get projectPath() {
     return path.join(this.projectsRoot, this.folderName);
   }
@@ -135,8 +139,8 @@ export default class Project {
     return this.manager.getProjectRunStatus(this);
   }
 
-  get dependencyRoot() {
-    return this.manager.config.dependencyRoot;
+  getDependencyPath(relativePath) {
+    return path.resolve(this.dependencyRoot, 'node_modules', relativePath);
   }
 
   getNodeVersion(bug) {

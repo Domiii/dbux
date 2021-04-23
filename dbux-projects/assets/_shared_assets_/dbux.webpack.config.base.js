@@ -13,6 +13,7 @@ const isObject = require('lodash/isObject');
 const CopyPlugin = require('copy-webpack-plugin');
 require('@dbux/babel-plugin');
 
+// eslint-disable-next-line import/no-dynamic-require
 const nodeExternals = require(path.join(getDependencyRoot(), 'node_modules/webpack-node-externals'));
 
 process.env.BABEL_DISABLE_CACHE = 1;

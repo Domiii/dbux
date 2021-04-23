@@ -15,7 +15,8 @@
     "nanoevents": "^2.0.0",
     "@dbux/common": "^0.3.17-dev.0",
     "glob": "^7.1.6",
-    "shelljs": "0.8.4"
+    "shelljs": "0.8.4",
+    "shell-escape": "^0.2.0"
   },
   "_moduleAliases": {}
 }

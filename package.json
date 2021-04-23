@@ -53,6 +53,7 @@
 		"find-package-json": "^1.2.0",
 		"firebase-admin": "^9.1.1",
 		"lodash": "^4.17.19",
+		"shell-escape": "^0.2.0",
 		"shelljs": "0.8.4",
 		"socket.io-client": "^2.3.0",
 		"yargs": "^15.4.1"
@@ -83,9 +84,9 @@
 		"dbux-uninstall": "yarn run build:clean && rm -rf ./node_modules && rm -f ./package-lock.json && rm -f yarn.lock && sh scripts/dbux-run-all.sh \"rm -rf ./node_modules && rm -f ./package-lock.json && rm -f yarn.lock\"",
 		"dbux-lerna-fix": "lerna exec -- node ../scripts/lerna-fix.js",
 		"clinic": "clinic flame -- node dbux-cli/bin/run-js-unbabel ../samples/__samplesOutput__/oop1.es5.js || (echo \"\\033[1;31mCould not execute clinic - checking installed version:\\033[0m\" && clinic -v)",
-    "cloc": "npx cloc --match-f='.*\\.((js)|(py))$' --fullpath --match-d='(dbux-[^/]+|analysis|samples/(__samplesInput__|case-studies))' --not-match-d='(dbux_projects|node_modules|dist|project_sandbox)$'  --by-file .",
-    "cloc-eslint": "cd dbux_projects/eslint && volta run --node lts npx cloc --match-f=\".*\\.(e?js|ts)$\" --by-file lib bin tests templates packages",
-    "cloc-express": "cd dbux_projects/express && volta run --node lts npx cloc --match-f=\".*\\.(e?js|ts)$\" --by-file lib bin test",
+		"cloc": "npx cloc --match-f='.*\\.((js)|(py))$' --fullpath --match-d='(dbux-[^/]+|analysis|samples/(__samplesInput__|case-studies))' --not-match-d='(dbux_projects|node_modules|dist|project_sandbox)$'  --by-file .",
+		"cloc-eslint": "cd dbux_projects/eslint && volta run --node lts npx cloc --match-f=\".*\\.(e?js|ts)$\" --by-file lib bin tests templates packages",
+		"cloc-express": "cd dbux_projects/express && volta run --node lts npx cloc --match-f=\".*\\.(e?js|ts)$\" --by-file lib bin test",
 		"eslint": "npx eslint dbux-**/src/**/*.js",
 		"eslint:files": "npx eslint dbux-**/src/**/*.js | grep -E \"^(\\w|/).*\\.js\"",
 		"eslint:testit": "cat test.txt | grep -E \"^(\\w|/).*\\.js\"",
@@ -110,7 +111,6 @@
 		"zz//": "# see: https://explainshell.com/explain?cmd=git+clean+-fdx",
 		"zzgit-clean-fdx": "git clean -fdx",
 		"zz-bash-warning": "echo 'WARNING: Make sure your shell is set to bash. Check https://bit.ly/3i2S8KE for how to set it up on Windows.'",
-		
 		"shapez-run": "yarn && cd gulp && yarn && yarn gulp",
 		"shapez-install": "git clone https://github.com/tobspr/shapez.io.git && cd shapez.io && git lfs pull && yarn && cd gulp && yarn && yarn gulp `# TODO: also install git-lfs + ffmpeg, see: https://github.com/tobspr/shapez.io/tree/master/.travis.yml`"
 	}

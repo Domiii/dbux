@@ -19,6 +19,8 @@ function parseEnv(env) {
       else {
         // console.warn(option.join('='));
         option[1] = JSON.parse(option[1]);
+        // // eslint-disable-next-line no-eval
+        // option[1] = eval(option[1]);
       }
       return option;
     })
