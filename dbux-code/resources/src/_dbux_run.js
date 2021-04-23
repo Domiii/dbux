@@ -49,7 +49,7 @@ function main() {
   const startTime = new Date();
   const warningIntervalId = setInterval(() => {
     let seconds = ((new Date()) - startTime) / 1000;
-    logDebug(`Task running for ${seconds.toFixed(2)} seconds.`);
+    logDebug(`(Terminal task running for ${seconds.toFixed(2)} seconds.)`);
   }, runningTimeout);
 
 

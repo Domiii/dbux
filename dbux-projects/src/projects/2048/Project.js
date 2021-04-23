@@ -19,8 +19,6 @@ export default class _2048Project extends Project {
     await this.applyPatch('baseline');
 
     await this.execInTerminal('npm init -y');
-
-    await this.installWebpack4();
     // await this.autoCommit(); // NOTE: autoCommit is called right after this method
   }
 

@@ -222,20 +222,26 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     }
     // console.warn('babelOptions', JSON.stringify(babelOptions, null, 2));
 
-    const externals = target !== 'node' ? undefined : [
-      {
-        // 'dbux-runtime': 'umd @dbux/runtime',
-        '@dbux/runtime': 'commonjs @dbux/runtime'
-      },
-      nodeExternals({
-        additionalModuleDirs: [path.join(getDependencyRoot(), 'node_modules')]
-      }),
+    const externals = target !== 'node' ?
+      [
+        {
+          fs: 'null',
+          tls: 'null'
+        }
+      ] : [
+        {
+          // 'dbux-runtime': 'umd @dbux/runtime',
+          '@dbux/runtime': 'commonjs @dbux/runtime'
+        },
+        nodeExternals({
+          additionalModuleDirs: [path.join(getDependencyRoot(), 'node_modules')]
+        }),
 
-      // (context, request, callback) => {
-      //   console.warn('external', context, request);
-      //   callback();
-      // }
-    ];
+        // (context, request, callback) => {
+        //   console.warn('external', context, request);
+        //   callback();
+        // }
+      ];
 
     // ###########################################################################
     // optimization

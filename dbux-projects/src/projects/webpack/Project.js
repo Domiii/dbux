@@ -19,7 +19,7 @@ export default class WebpackProject extends Project {
 
   makeBuilder() {
     return new WebpackBuilder({
-      webpackBin: this.getDependencyPath('webpack/bin/webpack.js'),
+      // webpackBin: this.getDependencyPath('webpack/bin/webpack.js'),
       websitePort: 3844,
       inputPattern: 'bin/webpack.js'
     });

@@ -9,6 +9,10 @@ export default class WebpackBuilder {
     this.cfg = cfg;
   }
 
+  async afterInstall() {
+    await this.project.installWebpack4();
+  }
+
   initProject(project) {
     this.project = project;
   }
@@ -70,11 +74,13 @@ export default class WebpackBuilder {
   }
 
   getWebpackDevServerJs() {
-    return getWebpackDevServerJs();
+    // return this.project.getDependencyPath(getWebpackDevServerJs());
+    return path.join('node_modules', getWebpackDevServerJs());
   }
 
   getWebpackJs() {
-    return getWebpackJs();
+    // return this.project.getDependencyPath(getWebpackJs());
+    return path.join('node_modules', getWebpackJs());
   }
 
   webpackBin(serve = false) {

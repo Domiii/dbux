@@ -20,7 +20,8 @@
     "shelljs": "0.8.4",
     "string-argv": "^0.3.1",
     "tree-kill": "^1.2.2",
-    "uuid": "^8.3.0"
+    "uuid": "^8.3.0",
+    "cross-spawn": "^7.0.3"
   },
   "keywords": [],
   "author": "Domi",

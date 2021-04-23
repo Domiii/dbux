@@ -300,7 +300,8 @@ export default class BugRunner {
 
     this._process = new Process();
     try {
-      return await this._process.start(cmd, logger, options, input);
+      await this._process.start(cmd, logger, options, input);
+      return this._process.code;
     }
     finally {
       this._process = null;

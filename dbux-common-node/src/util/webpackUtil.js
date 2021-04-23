@@ -2,11 +2,12 @@ import path from 'path';
 /**
  * @see https://github.com/xxorax/node-shell-escape
  */
-import shellescape from 'shell-escape';
+// import shellescape from 'shell-escape';
 import { globRelative } from './fileUtil';
 
 function esc(s) {
-  return shellescape([s]).replace(/\\/g, '\\\\');
+  // return shellescape([s]);
+  return s;
 }
 
 export function serializeEnv(o) {
@@ -58,9 +59,9 @@ export function serializeGlobToEntry(folder, inputFilesGlob) {
 
 export function getWebpackDevServerJs() {
   // return getDbuxPath('webpack-dev-server/bin/webpack-dev-server.js');
-  return 'node_modules/webpack-dev-server/bin/webpack-dev-server.js';
+  return 'webpack-dev-server/bin/webpack-dev-server.js';
 }
 
 export function getWebpackJs() {
-  return 'node_modules/webpack/bin/webpack.js';
+  return 'webpack/bin/webpack.js';
 }

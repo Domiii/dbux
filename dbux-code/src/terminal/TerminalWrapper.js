@@ -36,7 +36,8 @@ async function getPathToNode() {
 // ###########################################################################
 
 function fixPathForSerialization(p) {
-  return p.replace(/\\/g, '/');
+  // fix backslashes (Process, Terminal, babelInclude)
+  return p.replace(/\\/g, '\\\\');
 }
 
 export default class TerminalWrapper {
@@ -71,11 +72,11 @@ export default class TerminalWrapper {
 
   async _run(cwd, command, args, isInteractive = false) {
     // NOTE: fix paths on Windows
-    let tmpFolder = fixPathForSerialization(fs.mkdtempSync(path.join(os.tmpdir(), 'dbux-')));
+    let tmpFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'dbux-'));
     const pathToNode = fixPathForSerialization(await getPathToNode());
     const pathToDbuxRun = fixPathForSerialization(getResourcePath('../dist/_dbux_run.js'));
     
-    // command = fixPathForSerialization(command); // WARNING: this might mess things up
+    // command = fixPathForSerialization(command); // not necessary (due to base64 serialization)
 
     // serialize everything
     const runJsargs = { cwd, command, args, tmpFolder };

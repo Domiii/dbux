@@ -397,7 +397,7 @@ This may be solved by using \`Delete project folder\` button.`);
   }
 
   /**
-   * 
+   * NOTE: does not include new files. For that, consider `hasAnyChangedFiles()` below.
    * @return {bool} Whether any files in this project have changed.
    * @see https://stackoverflow.com/questions/3878624/how-do-i-programmatically-determine-if-there-are-uncommitted-changes
    */
@@ -407,12 +407,17 @@ This may be solved by using \`Delete project folder\` button.`);
     // Not sure what this line does, but seems not really useful here, since these two line does the same thing.
     // await this.exec('git update-index --refresh');
 
-    // returns status code 1, if there are any changes
+    // NOTE: returns status code 1, if there are any changes, IFF --exit-code or --quiet is provided
     // see: https://stackoverflow.com/questions/28296130/what-does-this-git-diff-index-quiet-head-mean
-    const code = await this.exec('git diff-index --quiet HEAD --', { failOnStatusCode: false });
+    const code = await this.exec('git diff-index --exit-code HEAD --', { failOnStatusCode: false });
 
     return !!code;  // code !== 0 means that there are pending changes
   }
+
+  // async hasAnyChangedFiles() {
+  //   const changes = await this.execCaptureOut(`git status -s`);
+  //   return !!changes;
+  // }
 
   // ###########################################################################
   // install helpers
@@ -443,6 +448,7 @@ This may be solved by using \`Delete project folder\` button.`);
     await this.installDependencies();
 
     // custom `afterInstall` hook
+    await this.builder?.afterInstall?.();
     await this.afterInstall();
 
     // after install completed: commit modifications, so we can easily apply patches etc (if necessary)
@@ -462,13 +468,19 @@ This may be solved by using \`Delete project folder\` button.`);
   async autoCommit(bug) {
     await this.checkCorrectGitRepository();
 
-    if (await this.hasAnyChangedFiles()) {
+    if (await this.checkFilesChanged()) {
       // only auto commit if files changed
       const files = this.getAllAssetFiles();
-      this.logger.log(`auto commit: ${files.join(', ')}`);
+      // this.logger.log(`[auto commit] ${files.join(', ')}`);
 
-      // TODO: should not need '--allow-empty', if `hasAnyChangedFiles` is correct (TODO: test with todomvc)
-      await this.exec(`git add ${files.map(name => `"${name}"`).join(' ')} && git commit -am '"[dbux auto commit]"' --allow-empty`);
+      // await this.exec(`git add ${files.map(name => `"${name}"`).join(' ')} && git commit -am '"[dbux auto commit]"' --allow-empty`);
+      
+      // NOTE: && is not supported in all shells (e.g. Powershell)
+      await this.exec(`git add ${files.map(name => `"${name}"`).join(' ')}`);
+
+      // TODO: should not need '--allow-empty', if `checkFilesChanged` is correct (but somehow still bugs out)
+      await this.exec(`git commit -am '"[dbux auto commit]"' --allow-empty`);
+
       await this.gitAddOrUpdateTag(bug);
     }
   }
@@ -710,11 +722,6 @@ This may be solved by using \`Delete project folder\` button.`);
     await this.checkCorrectGitRepository();
 
     return this.exec(`git diff --color=never > ${this.getPatchFile(patchFName)}`);
-  }
-
-  async hasAnyChangedFiles() {
-    const changes = await this.execCaptureOut(`git status -s`);
-    return !!changes;
   }
 
   async getPatchString() {
