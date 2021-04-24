@@ -374,14 +374,16 @@ const instrumentDefaultCallExpressionEnter =
     // build
     // const { ids: { dbux } } = state;
 
-    const f = path.scope.generateDeclaredUidIdentifier(getCalleeDisplayName(calleePath));
-
+    
     // super(), import(), require() all need special treatment
     const canTraceArgs = getCanTraceArgs(calleePath);
     const isSpecialCallee = calleePath.isSuper() || !canTraceArgs;
-
+    const f = isSpecialCallee && 
+      null || 
+      path.scope.generateDeclaredUidIdentifier(getCalleeDisplayName(calleePath));
+    
     // replace with our custom callee
-    if (!isSpecialCallee) {   // NOTE: `super` cannot be replaced
+    if (!isSpecialCallee) {   // NOTE: `super`, `require`, `import` cannot be easily replaced
       const templ = callTemplatesDefault[path.type];
 
       // f(...)

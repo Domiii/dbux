@@ -731,6 +731,16 @@ export default {
     return programId;
   },
 
+  getStaticTraceDisplayName(dp, staticTraceId) {
+    const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
+    return staticTrace.displayName;
+  },
+
+  getTraceProgramPath(dp, traceId) {
+    const programId = dp.util.getTraceProgramId(traceId);
+    return dp.util.getFilePathFromProgramId(programId);
+  },
+
   /** @param {DataProvider} dp */
   getTraceProgramId(dp, traceId) {
     const trace = dp.collections.traces.getById(traceId);
