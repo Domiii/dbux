@@ -108,7 +108,7 @@ export default class WebpackBuilder {
   }
 
   webpackBin() {
-    return this.cfg.webpackBin || (this.needsDevServer() ? this.getWebpackDevServerJs() : this.getWebpackJs());
+    return this.cfg.webpackBin || (this.needsDevServer ? this.getWebpackDevServerJs() : this.getWebpackJs());
   }
 
   async startWatchMode(bug) {

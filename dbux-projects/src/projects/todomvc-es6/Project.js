@@ -28,8 +28,8 @@ export default class TodomvcEs6Project extends Project {
   }
 
   async afterInstall() {
-    // update CSS to correct version
-    await this.installPackages(`todomvc-app-css@2.3.0`);
+    // update CSS to correct version (already overwritten in package.json)
+    // await this.installPackages(`todomvc-app-css@2.3.0`);
   }
 
   loadBugs() {
