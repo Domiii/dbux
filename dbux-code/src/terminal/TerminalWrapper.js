@@ -43,17 +43,17 @@ function fixPathForSerialization(p) {
 export default class TerminalWrapper {
   _disposable;
 
-  start(cwd, command, args) {
+  start(cwd, command, options) {
     // this._disposable = window.onDidCloseTerminal(terminal => {
     //   if (terminal === this._terminal) {
     //     this.dispose();
     //   }
     // });
     if (Array.isArray(command)) {
-      this._promise = this._runAll(cwd, command, args);
+      this._promise = this._runAll(cwd, command, options);
     }
     else {
-      this._promise = this._run(cwd, command, args);
+      this._promise = this._run(cwd, command, options);
     }
   }
 
@@ -61,16 +61,16 @@ export default class TerminalWrapper {
     return this._promise;
   }
 
-  async _runAll(cwd, cmds, args) {
+  async _runAll(cwd, cmds, options) {
     const res = [];
     closeDefaultTerminal();
     for (const command of cmds) {
-      res.push(await this._run(cwd, command, args, true));
+      res.push(await this._run(cwd, command, options, true));
     }
     return res;
   }
 
-  async _run(cwd, command, args, isInteractive = false) {
+  async _run(cwd, command, options, isInteractive = false) {
     // NOTE: fix paths on Windows
     let tmpFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'dbux-'));
     const pathToNode = fixPathForSerialization(await getPathToNode());
@@ -79,7 +79,7 @@ export default class TerminalWrapper {
     // command = fixPathForSerialization(command); // not necessary (due to base64 serialization)
 
     // serialize everything
-    const runJsargs = { cwd, command, args, tmpFolder };
+    const runJsargs = { cwd, command, options, tmpFolder };
     const serializedRunJsArgs = Buffer.from(JSON.stringify(runJsargs)).toString('base64');
     // const runJsCommand = `pwd && node -v && which node && echo %PATH% && node ${pathToDbuxRun} ${serializedRunJsArgs}`;
     const runJsCommand = `"${pathToNode}" "${pathToDbuxRun}" ${!!isInteractive + 0} ${serializedRunJsArgs}`;
@@ -185,13 +185,13 @@ export default class TerminalWrapper {
    * Execute `command` in `cwd` in terminal.
    * @param {string} cwd Set working directory to run `command`.
    * @param {string} command The command will be executed.
-   * @param {object} args 
+   * @param {object} options 
    */
-  static execInTerminal(cwd, command, args) {
+  static execInTerminal(cwd, command, options) {
     // TODO: register wrapper with context
 
     const wrapper = new TerminalWrapper();
-    wrapper.start(cwd, command, args);
+    wrapper.start(cwd, command, options);
     return wrapper;
   }
 }

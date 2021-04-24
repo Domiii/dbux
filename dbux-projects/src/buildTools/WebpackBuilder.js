@@ -16,6 +16,14 @@ export default class WebpackBuilder {
     return !!websitePort;
   }
 
+  /**
+   * WebpackBuilder already instruments and injects dbux.
+   * `testBugCommand` should not use @dbux/cli.
+   */
+  get needsDbuxCli() {
+    return false;
+  }
+
   async afterInstall() {
     if (this.needsDevServer) {
       await this.project.installPackages({
@@ -109,7 +117,8 @@ export default class WebpackBuilder {
 
     const {
       nodeArgs = '',
-      processOptions
+      processOptions,
+      env: moreEnv = {}
     } = cfg;
 
     // start webpack
@@ -118,6 +127,7 @@ export default class WebpackBuilder {
       entry = filesToEntry(bug.inputFiles, cfg.rootPath);
     }
     const env = serializeEnv({
+      ...moreEnv,
       entry,
       port: bug.websitePort || 0
     });

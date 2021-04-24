@@ -45,6 +45,8 @@ const defaultBabelOptions = {
   sourceMaps: true,
   retainLines: true,
   babelrc: true,
+  // see https://babeljs.io/docs/en/options#parseropts
+  parserOpts: { allowReturnOutsideFunction: true },
   presets: [
     [
       '@babel/preset-env',

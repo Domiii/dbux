@@ -14,7 +14,7 @@ const settings = {
     // allowHashbang
     {
       // see https://github.com/JavascriptIsMagic/shebang-loader/blob/master/index.js
-      loader: './hashbangLoader'
+      loader: path.join(__dirname, 'hashbangLoader')
     }
   ]
 };

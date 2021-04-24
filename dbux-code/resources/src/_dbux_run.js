@@ -8,11 +8,12 @@ const spawn = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const process = require('process');
+const { inspect } = require('util');
 
 const Verbose = true;
 const runningTimeout = 10000;
 
-let cwd, command, tmpFolder, moreEnv;
+let cwd, command, tmpFolder, options;
 
 const logDebug = (console.debug || console.log).bind(console, '[Dbux]');
 
@@ -26,9 +27,13 @@ const [
 function main() {
   // node run.js port "cwd" "command"
   const args = JSON.parse(Buffer.from(argsEncoded, 'base64').toString('ascii'));
-  ({ cwd, command, tmpFolder, args: moreEnv } = args);
+  ({ cwd, command, tmpFolder, options = {} } = args);
 
-  logDebug('run.js command received:', args);
+  const {
+    env: moreEnv
+  } = options;
+
+  logDebug('run.js command received:', inspect(args));
 
   const processOptions = {
     cwd,

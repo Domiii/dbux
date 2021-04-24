@@ -33,6 +33,7 @@
     "node-fetch": "^2.6.0",
     "object.fromentries": "^2.0.2",
     "prettier": "^2.0.5",
+    "serialize-javascript": "^5.0.1",
     "serve": "^11.3.2",
     "shelljs": "0.8.4",
     "yargs": "^15.4.1"

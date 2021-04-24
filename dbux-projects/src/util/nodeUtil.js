@@ -5,7 +5,7 @@ export function buildNodeCommand(cfg) {
     // cwd,
     nodeArgs = '',
     debugPort,
-    require: requireArr = EmptyArray,
+    require: req = EmptyArray,
     dbuxJs,
     dbuxArgs,
     program,
@@ -20,7 +20,7 @@ export function buildNodeCommand(cfg) {
   //   program = program;
   //   programArgs = programArgs;
   // }
-  
+
 
   // NOTE: depending on the mode, NYC uses either of the following:
   //  1. simple 
@@ -36,7 +36,10 @@ export function buildNodeCommand(cfg) {
   // requireArr = [
   //   ...requireArr.map(r => path.join(cwd, r))
   // ];
-  const nodeRequireArgs = requireArr.map(r => `--require "${r}"`).join(' ');
+  if (req && !Array.isArray(req)) {
+    req = [req];
+  }
+  const nodeRequireArgs = req.map(r => `--require "${r}"`).join(' ');
 
   // final command
   return `node ${nodeArgs} ${nodeDebugArgs} ${nodeRequireArgs} "${program}" ${programArgs}`;

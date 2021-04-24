@@ -79,6 +79,14 @@ export default class Project {
     return null;
   }
 
+  /**
+   * Whether @dbux/cli is needed to instrument and inject @dbux/runtime.
+   * Returns false, if build tool already took care of it.
+   */
+  get needsDbuxCli() {
+    return this.builder?.needsDbuxCli;
+  }
+
 
   // ###########################################################################
   // constructor + init

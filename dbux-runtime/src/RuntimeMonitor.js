@@ -12,6 +12,8 @@ import ProgramMonitor from './ProgramMonitor';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('RuntimeMonitor');
 
+const Verbose = 1;
+
 function _inheritsLoose(subClass, superClass) {
   if (superClass.prototype) {
     subClass.prototype = Object.create(superClass.prototype);

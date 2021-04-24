@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "i18next": "^19.8.2",
+    "serialize-javascript": "^5.0.1",
     "yargs": "^15.4.1"
   },
   "bugs": {

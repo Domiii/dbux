@@ -32,6 +32,8 @@ const savedPracticeSessionDataKeyName = 'dbux.dbux-projects.practiceSessionCreat
 /** @typedef {import('./projectLib/Project').default} Project */
 /** @typedef {import('./projectLib/Bug').default} Bug */
 /** @typedef {import('./externals/Storage').default} ExternalStorage */
+/** @typedef {import('dbux-code/src/terminal/TerminalWrapper').default.constructor} TerminalWrapperClass */
+/** @typedef {import('dbux-code/src/terminal/TerminalWrapper').default} TerminalWrapper */
 
 
 function canIgnoreDependency(name) {
@@ -75,6 +77,14 @@ export default class ProjectsManager {
     // these are used in dbux.webpack.config.base.js
     'copy-webpack-plugin@6'
   ];
+
+  /**
+   * // NOTE: does not work - https://github.com/jsdoc/jsdoc/issues/1349
+   * @type {{
+   *   TerminalWrapper: TerminalWrapperClass
+   * }}
+   */
+  externals;
 
   // ###########################################################################
   // ctor, init, load
@@ -854,9 +864,9 @@ export default class ProjectsManager {
   // Projects manager utilities
   // ###########################################################################
 
-  async execInTerminal(cwd, command, args) {
+  async execInTerminal(cwd, command, options) {
     try {
-      this._terminalWrapper = this.externals.TerminalWrapper.execInTerminal(cwd, command, args);
+      this._terminalWrapper = this.externals.TerminalWrapper.execInTerminal(cwd, command, options);
       return await this._terminalWrapper.waitForResult();
     }
     finally {

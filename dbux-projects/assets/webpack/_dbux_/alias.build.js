@@ -1,7 +1,3 @@
-/**
- * Makes `ws` Node v7 compatible.
- */
-
 const { getDependencyRoot } = require('@dbux/cli/lib/dbux-folders');
 const moduleAlias = require('module-alias');
 

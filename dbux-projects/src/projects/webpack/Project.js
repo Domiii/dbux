@@ -18,18 +18,23 @@ export default class WebpackProject extends Project {
   rmFiles = ['.husky'];
 
   makeBuilder() {
-    // "node" "-r" "./dbux_projects/webpack/_dbux_/alias.js" "--stack-trace-limit=100" "./node_modules/webpack/bin/webpack.js" "--display-error-details" "--watch" "--config" "./dbux_projects/webpack/dbux.webpack.config.js" "--env" "entry={\"bin/webpack\":\"bin//webpack.js\"}"
-
-    // node --stack-trace-limit=100 ../../node_modules/@dbux/cli/bin/dbux.js run --pw=webpack,webpack-cli --verbose=1 --runtime="{\"tracesDisabled\":1}" -d -r=./_dbux_/alias.js ../../node_modules/webpack/bin/webpack.js -- --display-error-details --watch --config ./dbux.webpack.config.js --env entry={"bin/webpack":"bin\\\\webpack.js"}
-
-    // node --stack-trace-limit=100 -r ./_dbux_/alias.js ../../node_modules/webpack/bin/webpack.js -- --display-error-details --watch --config ./dbux.webpack.config.js --env entry={"bin/webpack":"bin\\\\webpack.js"}
+    // "node" "-r" "./dbux_projects/webpack/_dbux_/alias.build.js" "--stack-trace-limit=100" "./node_modules/webpack/bin/webpack.js" "--display-error-details" "--watch" "--config" "./dbux_projects/webpack/dbux.webpack.config.js" "--env" "entry={\"bin/webpack\":\"bin//webpack.js\"}"
+    // node --stack-trace-limit=100 ../../node_modules/@dbux/cli/bin/dbux.js run --pw=webpack,webpack-cli --verbose=1 --runtime="{\"tracesDisabled\":1}" -d -r=./_dbux_/alias.build.js ../../node_modules/webpack/bin/webpack.js -- --display-error-details --watch --config ./dbux.webpack.config.js --env entry={"bin/webpack":"bin\\\\webpack.js"}
+    // node --stack-trace-limit=100 -r ./_dbux_/alias.build.js ../../node_modules/webpack/bin/webpack.js -- --display-error-details --watch --config ./dbux.webpack.config.js --env entry={"bin/webpack":"bin\\\\webpack.js"}
+    
     return new WebpackBuilder({
-      inputPattern: 'bin/webpack.js',
-      
-      nodeArgs: `-r "${path.join(this.projectPath, './_dbux_/alias.js')}"`,
+      inputPattern: [
+        'webpack/lib/index.js',
+        'webpack-cli/packages/webpack-cli/bin/cli.js',
+      ],
+
+      nodeArgs: `-r "${path.join(this.projectPath, './_dbux_/alias.build.js')}"`,
       webpackBin: this.getDependencyPath('webpack/bin/webpack.js'),
       processOptions: {
         cwd: this.getDependencyPath('.')
+      },
+      env: {
+        WEBPACK_CLI_SKIP_IMPORT_LOCAL: 1
       }
     });
   }
@@ -155,7 +160,7 @@ export default class WebpackProject extends Project {
   // ###########################################################################
 
   decorateBug(bug) {
-    bug.mainEntryPoint = ['lib/index.js'];
+    bug.mainEntryPoint = ['webpack-cli/packages/webpack-cli/bin/cli.js'];
   }
 
   async selectBug(bug) {
@@ -163,12 +168,33 @@ export default class WebpackProject extends Project {
   }
 
   async testBugCommand(bug, cfg) {
-    return buildNodeCommand({
-      ...cfg,
-      dbuxArgs: '--pw=webpack,webpack-cli --verbose=1 --runtime="{\\"tracesDisabled\\":1}"',
-      program: '../../dist/bin/webpack.js',
-      // eslint-disable-next-line max-len
-      programArgs: '--mode none --env none --stats-reasons --stats-used-exports --stats-provided-exports --no-stats-colors --stats-chunks  --stats-modules-space 99999 --stats-chunk-origins --output-public-path "dist/"  --entry ./example.js --output-filename output.js'
-    });
+    const { projectPath } = this;
+
+    /**
+     * getProjectPath
+     */
+    function p(f) {
+      return path.resolve(projectPath, f);
+    }
+
+    return [
+      buildNodeCommand({
+        ...cfg,
+        program: p('dist/webpack-cli/packages/webpack-cli/bin/cli.js'),
+        require: p('_dbux_/alias.runtime.js'),
+        // dbuxArgs: '--pw=webpack,webpack-cli --verbose=1 --runtime="{\\"tracesDisabled\\":1}"',
+
+        /**
+         * 
+         */
+        // eslint-disable-next-line max-len
+        programArgs: '--mode none --env none --stats-reasons --stats-used-exports --stats-provided-exports --no-stats-colors --stats-chunks  --stats-modules-space 99999 --stats-chunk-origins --output-public-path "dist/"  --entry ./example.js --output-filename output.js'
+      }),
+      {
+        env: {
+          WEBPACK_CLI_SKIP_IMPORT_LOCAL: 1
+        },
+      }
+    ];
   }
 }
