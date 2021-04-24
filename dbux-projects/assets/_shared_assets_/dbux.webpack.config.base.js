@@ -5,13 +5,14 @@
 const path = require('path');
 const process = require('process');
 const webpack = require('webpack');
-const mergeWith = require('lodash/mergeWith');
 const { getDependencyRoot } = require('@dbux/cli/lib/dbux-folders');
-const { deserializeWebpackInput, parseEnv } = require('@dbux/cli/lib/webpack-basics');
+const { parseEnv } = require('@dbux/cli/lib/webpack-basics');
+const mergeWith = require('lodash/mergeWith');
 const isFunction = require('lodash/isFunction');
-const isArray = require('lodash/isArray');
+// const isArray = require('lodash/isArray');
 const isObject = require('lodash/isObject');
 const CopyPlugin = require('copy-webpack-plugin');
+const { inspect } = require('util');
 require('@dbux/babel-plugin');
 
 
@@ -44,6 +45,8 @@ const defaultBabelOptions = {
   sourceMaps: true,
   retainLines: true,
   babelrc: true,
+  // see https://babeljs.io/docs/en/options#parseropts
+  parserOpts: { allowReturnOutsideFunction: true },
   presets: [
     [
       '@babel/preset-env',
@@ -111,7 +114,9 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
       plugins,
       target = 'node',
       babelOptions: babelOptionsOverrides,
-      devServer: devServerCfg
+      devServer: devServerCfg,
+      preLoaders = [],
+      postLoaders = []
     } = customConfig;
 
     // ###########################################################################
@@ -139,7 +144,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     // rules
     // ###########################################################################
 
-    let dbuxRules = [];
+    // let dbuxRules = [];
     if (dbuxRoot) {
       // // enable dbux debugging
       // const dbuxRuntimeFolder = path.join(dbuxRoot, 'dbux-runtime', 'dist');
@@ -185,6 +190,10 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
         }
       })
     );
+    
+    // see https://stackoverflow.com/questions/40755149/how-to-keep-my-shebang-in-place-using-webpack
+    // plugins.push(new webpack.BannerPlugin({ banner: "#!/usr/bin/env node", raw: true }));
+    // console.error('###\n###\n###', inspect(new webpack.BannerPlugin({ banner: "#!/usr/bin/env node", raw: true })));
 
     // console.warn('  env.entry:', JSON.stringify(entry, null, 2));
 
@@ -288,15 +297,21 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
         rules: [
           {
             test: /\.jsx?$/,
-            loader: 'babel-loader',
+            use: [
+              ...postLoaders,
+              {
+                loader: 'babel-loader',
+                options: babelOptions
+              },
+              ...preLoaders
+            ],
             include: [
               ...srcFolders.map(folder => path.join(ProjectRoot, folder))
             ],
-            options: babelOptions,
-            enforce: 'pre'
+            // enforce: 'pre'
           },
 
-          ...dbuxRules
+          // ...dbuxRules
         ],
 
         // // [webpack-2]

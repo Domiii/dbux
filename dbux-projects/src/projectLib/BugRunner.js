@@ -1,9 +1,13 @@
 import NanoEvents from 'nanoevents';
 import path from 'path';
 import sh from 'shelljs';
+import isObject from 'lodash/isObject';
+import isString from 'lodash/isString';
+import toString from 'serialize-javascript';
 import SerialTaskQueue from '@dbux/common/src/util/queue/SerialTaskQueue';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import Process from '../util/Process';
 import BugRunnerStatus from './RunStatus';
@@ -227,12 +231,19 @@ export default class BugRunner {
       cfg = {
         cwd,
         debugPort: cfg?.debugMode && this.debugPort || null,
-        dbuxJs: cfg?.dbuxEnabled ? this.manager.getDbuxCliBinPath() : null,
+        dbuxJs: (cfg?.dbuxEnabled && project.needsDbuxCli) ? this.manager.getDbuxCliBinPath() : null,
         ...cfg,
       };
 
       // build the run command
-      let command = await project.testBugCommand(bug, cfg);
+      let commandOrCommandCfg = await project.testBugCommand(bug, cfg);
+      let command, commandOptions;
+      if (isObject(commandOrCommandCfg)) {
+        ([command, commandOptions] = commandOrCommandCfg);
+      }
+      else if (commandOrCommandCfg && !isString(commandOrCommandCfg)) {
+        throw new Error(`testBugCommand must return string or object or falsy, but instead returned: ${toString(commandOrCommandCfg)}`);
+      }
       command = command?.trim().replace(/\s+/, ' ');  // get rid of unnecessary line-breaks and multiple spaces
 
       // ensure RuntimeServer is ready to receive the result
@@ -242,15 +253,7 @@ export default class BugRunner {
       await project.startWatchModeIfNotRunning(bug);
 
       if (command) {
-        // const devMode = process.env.NODE_ENV === 'development';
-        const args = {
-          // NOTE: DBUX_ROOT + NODE_ENV are provided by webpack
-
-          // DBUX_ROOT: devMode ? fs.realpathSync(path.join(__dirname, '..', '..')) : null,
-          // NODE_ENV: process.env.NODE_ENV
-        };
-        // `args` in execInTerminal not working with anything now
-        const result = await this.manager.execInTerminal(cwd, command, args);
+        const result = await this.manager.execInTerminal(cwd, command, commandOptions || EmptyObject);
         this._emitter.emit('testFinished', bug, result);
         return result;
       }

@@ -25,7 +25,8 @@
     "@babel/types": "7.10.1",
     "@dbux/common": "^0.3.17-dev.0",
     "i18next": "^19.8.2",
-    "lodash": "^4.17.19"
+    "lodash": "^4.17.19",
+    "serialize-javascript": "^5.0.1"
   },
   "devDependencies": {
     "@babel/core": "7.10.1",

@@ -74,7 +74,7 @@ There are two approaches:
 When running Dbux, most relevant parts of the code will be traced. However it will not trace *everything*.
 
 * When using the "Run button", we trace all executed code, but ignore anything in `node_modules` and `dist` folders.
-   * This logic is hard-coded in [dbux-cli/src/util/buildBabelOptions.js](dbux-cli/src/util/buildBabelOptions.js).
+   * This logic is hard-coded in [dbux-cli/src/buildBabelOptions.js](dbux-cli/src/buildBabelOptions.js).
    * Soon you will be able to override the `dbux-cli`'s default babel config.
 * You can easily control what to instrument if you add `@dbux/babel-plugin` to your build pipeline.
    * via Babel [`test`, `include`, `exclude` and `only` config options](https://babeljs.io/docs/en/options#test)

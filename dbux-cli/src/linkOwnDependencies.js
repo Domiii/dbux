@@ -1,9 +1,8 @@
-const path = require('path');
-const fs = require('fs');
-const colors = require('colors/safe');
-const moduleAlias = require('module-alias');
-const { readPackageJson } = require('../lib/package-util');
-const { getDependencyRoot, getDbuxCliRoot } = require('../lib/dbux-folders');
+import path from 'path';
+import colors from 'colors/safe';
+import { readPackageJson } from '../lib/package-util';
+import { getDependencyRoot, getDbuxCliRoot } from '../lib/dbux-folders';
+import linkDependencies from './linkDependencies';
 
 // link up all dependencies
 linkOwnDependencies();
@@ -12,14 +11,6 @@ linkOwnDependencies();
 // ###########################################################################
 // linkOwnDependencies
 // ###########################################################################
-
-function linkDependencies(deps) {
-  console.debug('[DBUX module-alias]', deps.map(([alias, target]) => `${alias} -> ${target}`));
-  for (let [alias, target] of deps) {
-    target = fs.realpathSync(target);
-    moduleAlias.addAlias(alias, target);
-  }
-}
 
 /**
  * Make `@dbux/cli`'s own dependencies (and itself) available, even if cwd does not contain them.
@@ -30,11 +21,10 @@ function linkOwnDependencies() {
   //   throw new Error('[INTERNAL ERROR] DUX_ROOT not defined');
   // }
 
-
   // NOTE: in webpack build, __dirname is actually dirname of the entry point
   const dependencyRoot = getDependencyRoot();
   if (!dependencyRoot) {
-    throw new Error(`File is not (but must be) in "@dbux/cli" directory: ${getDependencyRoot()}`);
+    throw new Error(`Could not resolve dependency root. Is this file not in "@dbux/cli" directory? (${__filename})`);
   }
   
   // read `@dbux/cli`'s own dependencies

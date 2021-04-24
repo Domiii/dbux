@@ -32,6 +32,8 @@ const savedPracticeSessionDataKeyName = 'dbux.dbux-projects.practiceSessionCreat
 /** @typedef {import('./projectLib/Project').default} Project */
 /** @typedef {import('./projectLib/Bug').default} Bug */
 /** @typedef {import('./externals/Storage').default} ExternalStorage */
+/** @typedef {import('dbux-code/src/terminal/TerminalWrapper').default.constructor} TerminalWrapperClass */
+/** @typedef {import('dbux-code/src/terminal/TerminalWrapper').default} TerminalWrapper */
 
 
 function canIgnoreDependency(name) {
@@ -66,8 +68,23 @@ export default class ProjectsManager {
 
   // NOTE: npm flattens dependency tree by default, and other important dependencies are dependencies of @dbux/cli
   _sharedDependencyNames = [
-    '@dbux/cli'
+    '@dbux/cli',
+    
+    // webpack is used by most projects
+    'webpack@^4.43.0',
+    'webpack-cli@^3.3.11',
+    
+    // these are used in dbux.webpack.config.base.js
+    'copy-webpack-plugin@6'
   ];
+
+  /**
+   * // NOTE: does not work - https://github.com/jsdoc/jsdoc/issues/1349
+   * @type {{
+   *   TerminalWrapper: TerminalWrapperClass
+   * }}
+   */
+  externals;
 
   // ###########################################################################
   // ctor, init, load
@@ -773,8 +790,11 @@ export default class ProjectsManager {
 
       // this.externals.showMessage.info(`Installing dependencies: "${deps.join(', ')}" This might (or might not) take a while...`);
 
-      const moreDeps = deps.length && ` && npm i ${deps.join(' ')}` || '';
-      const command = `npm install --only=prod${moreDeps}`;
+      const command = [
+        `npm install --only=prod`,
+        ...deps.length && [`npm i ${deps.join(' ')}`] || EmptyArray
+      ];
+
       // await this.runner._exec(command, logger, execOptions);
       await this.execInTerminal(dependencyRoot, command);
 
@@ -844,9 +864,9 @@ export default class ProjectsManager {
   // Projects manager utilities
   // ###########################################################################
 
-  async execInTerminal(cwd, command, args) {
+  async execInTerminal(cwd, command, options) {
     try {
-      this._terminalWrapper = this.externals.TerminalWrapper.execInTerminal(cwd, command, args);
+      this._terminalWrapper = this.externals.TerminalWrapper.execInTerminal(cwd, command, options);
       return await this._terminalWrapper.waitForResult();
     }
     finally {

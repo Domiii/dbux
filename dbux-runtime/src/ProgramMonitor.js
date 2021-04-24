@@ -182,7 +182,7 @@ export default class ProgramMonitor {
   }
 
   get areTracesDisabled() {
-    return !!this._runtimeMonitor.tracesDisabled;
+    return this.disabled || !!this._runtimeMonitor.tracesDisabled;
   }
 
   warnDisabled(...args) {

@@ -106,7 +106,7 @@ export default class Process {
     const [commandName, ...commandArgs] = stringArgv(command);
     this.commandName = commandName;
 
-    const processExecMsg = `${cwd}$ ${commandName} ${commandArgs.join(' ')}`;
+    const processExecMsg = `${cwd}$ "${commandName}" ${commandArgs.map(s => `"${s}"`).join(' ')}`;
     logger.debug('>', processExecMsg); //, `(pwd = ${sh.pwd().toString()})`);
 
     if (sync) {

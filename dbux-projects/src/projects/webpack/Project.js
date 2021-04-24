@@ -18,10 +18,24 @@ export default class WebpackProject extends Project {
   rmFiles = ['.husky'];
 
   makeBuilder() {
+    // "node" "-r" "./dbux_projects/webpack/_dbux_/alias.build.js" "--stack-trace-limit=100" "./node_modules/webpack/bin/webpack.js" "--display-error-details" "--watch" "--config" "./dbux_projects/webpack/dbux.webpack.config.js" "--env" "entry={\"bin/webpack\":\"bin//webpack.js\"}"
+    // node --stack-trace-limit=100 ../../node_modules/@dbux/cli/bin/dbux.js run --pw=webpack,webpack-cli --verbose=1 --runtime="{\"tracesDisabled\":1}" -d -r=./_dbux_/alias.build.js ../../node_modules/webpack/bin/webpack.js -- --display-error-details --watch --config ./dbux.webpack.config.js --env entry={"bin/webpack":"bin\\\\webpack.js"}
+    // node --stack-trace-limit=100 -r ./_dbux_/alias.build.js ../../node_modules/webpack/bin/webpack.js -- --display-error-details --watch --config ./dbux.webpack.config.js --env entry={"bin/webpack":"bin\\\\webpack.js"}
+    
     return new WebpackBuilder({
-      // webpackBin: this.getDependencyPath('webpack/bin/webpack.js'),
-      websitePort: 3844,
-      inputPattern: 'bin/webpack.js'
+      inputPattern: [
+        'webpack/lib/index.js',
+        'webpack-cli/packages/webpack-cli/bin/cli.js',
+      ],
+
+      nodeArgs: `-r "${path.join(this.projectPath, './_dbux_/alias.build.js')}"`,
+      webpackBin: this.getDependencyPath('webpack/bin/webpack.js'),
+      processOptions: {
+        cwd: this.getDependencyPath('.')
+      },
+      env: {
+        WEBPACK_CLI_SKIP_IMPORT_LOCAL: 1
+      }
     });
   }
 
@@ -79,9 +93,11 @@ export default class WebpackProject extends Project {
       { cwd: cliFolder }
     );
 
-    const linkFolder = path.resolve(projectPath, '_dbux/link');
+    // NOTE: global folder on Windows is ~/AppData/Local/Yarn/Data/link, other: /.config/yarn/link/${packageName} (see https://github.com/dominicfallows/manage-linked-packages/blob/master/src/helpers/getPath.ts)
+
+    const linkFolder = path.resolve(projectPath, '../_links_');
     sh.mkdir('-p', linkFolder);
-    await this.execCaptureOut(
+    await this.execInTerminal(
       `yarn install`,
       { cwd: cliPackageFolder }
     );
@@ -102,8 +118,9 @@ export default class WebpackProject extends Project {
     // https://github.com/webpack/webpack/blob/master/_SETUP.md
     await this.execInTerminal('yarn link && yarn link webpack');
 
+    await this.installPackages('shebang-loader');
+
     // see https://github.com/webpack/webpack-cli/releases/tag/webpack-cli%404.6.0
-    // await this.execInTerminal('yarn add webpack-cli@4.6.0');
     // NOTE: path.resolve(await this.execCaptureOut('readlink -f node_modules/webpack')) === path.resolve(this.projectPath)
     // await this.applyPatch('baseline');
     // await this.installWebpack4();
@@ -143,7 +160,7 @@ export default class WebpackProject extends Project {
   // ###########################################################################
 
   decorateBug(bug) {
-    bug.mainEntryPoint = ['lib/index.js'];
+    bug.mainEntryPoint = ['webpack-cli/packages/webpack-cli/bin/cli.js'];
   }
 
   async selectBug(bug) {
@@ -151,12 +168,33 @@ export default class WebpackProject extends Project {
   }
 
   async testBugCommand(bug, cfg) {
-    return buildNodeCommand({
-      ...cfg,
-      dbuxArgs: '--pw=webpack,webpack-cli --verbose=1 --runtime="{\\"tracesDisabled\\":1}"',
-      program: '../../dist/bin/webpack.js',
-      // eslint-disable-next-line max-len
-      programArgs: '--mode none --env none --stats-reasons --stats-used-exports --stats-provided-exports --no-stats-colors --stats-chunks  --stats-modules-space 99999 --stats-chunk-origins --output-public-path "dist/"  --entry ./example.js --output-filename output.js'
-    });
+    const { projectPath } = this;
+
+    /**
+     * getProjectPath
+     */
+    function p(f) {
+      return path.resolve(projectPath, f);
+    }
+
+    return [
+      buildNodeCommand({
+        ...cfg,
+        program: p('dist/webpack-cli/packages/webpack-cli/bin/cli.js'),
+        require: p('_dbux_/alias.runtime.js'),
+        // dbuxArgs: '--pw=webpack,webpack-cli --verbose=1 --runtime="{\\"tracesDisabled\\":1}"',
+
+        /**
+         * 
+         */
+        // eslint-disable-next-line max-len
+        programArgs: '--mode none --env none --stats-reasons --stats-used-exports --stats-provided-exports --no-stats-colors --stats-chunks  --stats-modules-space 99999 --stats-chunk-origins --output-public-path "dist/"  --entry ./example.js --output-filename output.js'
+      }),
+      {
+        env: {
+          WEBPACK_CLI_SKIP_IMPORT_LOCAL: 1
+        },
+      }
+    ];
   }
 }

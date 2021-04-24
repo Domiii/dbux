@@ -3,7 +3,7 @@
 import { wrapCommand } from '../util/commandUtil';
 import dbuxRegister from '../dbuxRegister';
 import { processEnv } from '../util/processEnv';
-import { buildCommonCommandOptions, resolveCommandTargetPath } from '../commandCommons';
+import { buildCommonCommandOptions, processRemainingOptions, resolveCommandTargetPath } from '../commandCommons';
 
 export const command = 'run <file>';
 export const aliases = ['r'];
@@ -21,6 +21,8 @@ export const handler = wrapCommand(({ file, _, ...moreOptions }) => {
 
   // dbuxRegister (injects babel + dbux)
   dbuxRegister(moreOptions);
+
+  processRemainingOptions(moreOptions);
 
   // hackfix: patch up argv! We are cheating, to make sure, argv can get processed by the program as usual
   const programArgs = _.slice(1); //.map(arg => `"${arg}"`).join(' ');

@@ -73,6 +73,7 @@ class ValueCollection extends Collection {
     }
   }
 
+  // NOTE: (for now) `valueHolder` is always trace
   registerValue(value, valueHolder) {
     const category = determineValueTypeCategory(value);
     if (category === ValueTypeCategory.Primitive) {
@@ -80,7 +81,6 @@ class ValueCollection extends Collection {
       valueHolder.value = value;
     }
     else {
-      // NOTE: (for now) `valueHolder` is always trace
       const valueRef = this._serialize(value, 1, null, category);
       Verbose && this._log(`value #${valueRef.valueId} for trace #${valueHolder.traceId}: ${ValueTypeCategory.nameFrom(category)} (${valueRef.serialized})`);
       valueHolder.valueId = valueRef.valueId;
@@ -245,7 +245,7 @@ class ValueCollection extends Collection {
   _startAccess(/* obj */) {
     // eslint-disable-next-line no-undef
     if (__dbux__._r.disabled) {
-      this.logger.error('Tried to start accessing object while already accessing another object.');
+      this.logger.error(`Tried to start accessing object while already accessing another object - ${new Error().stack}`);
       return;
     }
 

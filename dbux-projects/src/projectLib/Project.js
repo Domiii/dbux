@@ -79,6 +79,14 @@ export default class Project {
     return null;
   }
 
+  /**
+   * Whether @dbux/cli is needed to instrument and inject @dbux/runtime.
+   * Returns false, if build tool already took care of it.
+   */
+  get needsDbuxCli() {
+    return this.builder?.needsDbuxCli;
+  }
+
 
   // ###########################################################################
   // constructor + init
@@ -326,17 +334,6 @@ This may be solved by using \`Delete project folder\` button.`);
     return this.execInTerminal(`${cmd} ${s}`);
   }
 
-  async installWebpack4() {
-    return await this.installPackages({
-      // eslint-disable-next-line quote-props
-      'webpack': '^4.43.0',
-      'webpack-cli': '^3.3.11',
-      'webpack-config-utils': '2.0.0',
-      'webpack-dev-server': '^3.11.0',
-      'copy-webpack-plugin': '^6.0.3'
-    });
-  }
-
   exec = async (command, options, input) => {
     const cwd = options?.cwd || this.projectPath;
     options = defaultsDeep(options, {
@@ -350,8 +347,8 @@ This may be solved by using \`Delete project folder\` button.`);
 
   execCaptureOut = async (command, processOptions) => {
     processOptions = {
-      ...(processOptions || EmptyObject),
-      cwd: this.projectPath
+      cwd: this.projectPath,
+      ...(processOptions || EmptyObject)
     };
     return Process.execCaptureOut(command, { processOptions });
   }

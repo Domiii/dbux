@@ -361,7 +361,7 @@ function normalizeConfigNode(parentCfg, visitorName, cfgNode) {
 
   if (children) {
     if (!Array.isArray(children)) {
-      throw new Error('invalid config node. Children must be an array of arrays: ' + JSON.stringify(visitorName));
+      throw new Error('invalid config node. `children` must be an array of arrays for visitor: ' + JSON.stringify(visitorName));
     }
     cfgNode.children = children.map(([childName, ...childCfg]) => {
       return normalizeConfigNode(cfgNode, childName, childCfg);
