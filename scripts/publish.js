@@ -250,6 +250,7 @@ async function main() {
   input = new LineReader();
   // console.log(process.argv);
   // npm run publish -- n
+  // npm run publish -- n minor
   if (process.argv[2] === 'n') {
     chooseAlwaysNo = true;
     chooseVersionBump = process.argv[3] || 'patch';
