@@ -70,12 +70,12 @@ export default class ProjectsManager {
   _sharedDependencyNames = [
     '@dbux/cli',
     
-    // webpack is used by most projects
-    'webpack@^4.43.0',
-    'webpack-cli@^3.3.11',
+    // // webpack is used by most projects
+    // 'webpack@^4.43.0',
+    // 'webpack-cli@^3.3.11',
     
-    // these are used in dbux.webpack.config.base.js
-    'copy-webpack-plugin@6'
+    // // these are used in dbux.webpack.config.base.js
+    // 'copy-webpack-plugin@6'
   ];
 
   /**

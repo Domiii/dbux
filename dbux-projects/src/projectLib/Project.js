@@ -84,7 +84,7 @@ export default class Project {
    * Returns false, if build tool already took care of it.
    */
   get needsDbuxCli() {
-    return this.builder?.needsDbuxCli;
+    return !this.builder || this.builder.needsDbuxCli;
   }
 
 

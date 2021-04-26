@@ -60,15 +60,14 @@ export async function runInTerminal(cwd, command) {
   let pathToBash = (await which('bash'))[0];
 
   // WARNING: terminal is not properly initialized when running the command. cwd is not set when executing `command`.
-  const wrappedCommand = `cd "${cwd}" && ${command} ; sleep 10`;
+  const wrappedCommand = `cd "${cwd}" && ${command}; read -p "(Done. Press any key to exit.)"`;
 
   const terminalOptions = {
     name: DefaultTerminalName,
     cwd,
     shellPath: pathToBash,
     // shellArgs: [wrappedCommand],
-    shellArgs: ['-c', wrappedCommand],
-    // shellArgs: ['-c', 'pwd && sleep 1000'],
+    shellArgs: ['-c', wrappedCommand]
   };
 
   // debug(`[execCommandInTerminal] ${cwd}$ ${command}`);
