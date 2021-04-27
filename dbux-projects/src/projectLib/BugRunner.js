@@ -226,13 +226,15 @@ export default class BugRunner {
       // init bug
       await project.initBug(bug);
 
+      // after initBug, produce final cfg
       const cwd = path.resolve(project.projectPath, bug.cwd || '');
 
       cfg = {
+        ...cfg,
         cwd,
         debugPort: cfg?.debugMode && this.debugPort || null,
         dbuxJs: (cfg?.dbuxEnabled && project.needsDbuxCli) ? this.manager.getDbuxCliBinPath() : null,
-        ...cfg,
+        dbuxArgs: [cfg?.dbuxArgs, bug.dbuxArgs].filter(a => !!a).join(' ')
       };
 
       // build the run command
@@ -243,6 +245,9 @@ export default class BugRunner {
       }
       else if (commandOrCommandCfg && !isString(commandOrCommandCfg)) {
         throw new Error(`testBugCommand must return string or object or falsy, but instead returned: ${toString(commandOrCommandCfg)}`);
+      }
+      else {
+        command = commandOrCommandCfg;
       }
       command = command?.trim().replace(/\s+/, ' ');  // get rid of unnecessary line-breaks and multiple spaces
 

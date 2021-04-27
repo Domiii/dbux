@@ -81,11 +81,11 @@ function main() {
     reportStatusCode(code, signal);
     clearInterval(warningIntervalId);
 
-    logDebug(`\n(Done. You can close the Terminal now.)`);
+    // logDebug(`\n(Done. You can close the Terminal now.)`);
 
-    if (interactive) {
-      setTimeout(() => process.exit(0), 300);
-    }
+    // if (interactive) {
+    //   setTimeout(() => process.exit(0), 300);
+    // }
   });
 
   child.on('error', (err) => {
@@ -141,5 +141,9 @@ catch (err) {
   reportError(err);
 }
 finally {
-  (interactive ? setInterval : setTimeout)(() => { }, interactive ? 500 : 100000);
+  // see https://stackoverflow.com/questions/44137481/prevent-nodejs-program-from-exiting
+  // console.debug('interactive', interactive);
+  // (!interactive ? setInterval : setTimeout)(() => { }, interactive ? 500 : 100000);
+  // setInterval(() => { console.debug('keep running'); }, 100);
+  // process.stdin.resume();
 }

@@ -81,7 +81,12 @@ export default function buildBabelOptions(options) {
   //   injectDependencies();
   // }
 
-  const packageWhitelistRegExps = packageWhitelist.split(',').map(s => s.trim()).map(generateFullMatchRegExp);
+  const packageWhitelistRegExps = packageWhitelist
+    .split(',')
+    .map(s => s.trim())
+    .map(generateFullMatchRegExp);
+
+  verbose > 1 && debugLog(`[Dbux] packageWhitelist`, packageWhitelistRegExps.join(','));
 
   // setup babel-register
   const baseOptions = esnext ? baseBabelOptions : EmptyObject;
