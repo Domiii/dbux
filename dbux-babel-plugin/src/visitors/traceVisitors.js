@@ -10,7 +10,6 @@ import cloneDeep from 'lodash/cloneDeep';
 import merge from 'lodash/merge';
 import truncate from 'lodash/truncate';
 import * as t from '@babel/types';
-import Enum from '@dbux/common/src/util/Enum';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
@@ -21,6 +20,7 @@ import { functionVisitEnter } from './functionVisitor';
 import { awaitVisitEnter, awaitVisitExit } from './awaitVisitor';
 import { getNodeNames } from './nameVisitors';
 import { isPathInstrumented } from '../helpers/instrumentationHelper';
+import TraceInstrumentationType from '../constants/TraceInstrumentationType';
 
 const Verbose = 0;
 // const Verbose = 1;
@@ -28,41 +28,6 @@ const Verbose = 0;
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('traceVisitors');
-
-
-const TraceInstrumentationType = new Enum({
-  NoTrace: 0,
-  // Callee: 1,
-  CallExpression: 2,
-  /**
-   * Result of a computation
-   */
-  ExpressionResult: 3,
-  /**
-   * Only keeping track of data
-   */
-  ExpressionValue: 4,
-  // ExpressionNoValue: 3,
-  Statement: 5,
-  Block: 6,
-  Loop: 7,
-
-  // Special attention required for these
-  MemberProperty: 8,
-  MemberObject: 9,
-  Super: 10,
-  ReturnArgument: 11,
-  ReturnNoArgument: 12,
-  ThrowArgument: 13,
-
-  Function: 14,
-  Await: 15
-});
-
-const InstrumentationDirection = {
-  Enter: 1,
-  Exit: 2
-};
 
 const traceCfg = (() => {
   const {
@@ -146,7 +111,12 @@ const traceCfg = (() => {
       NoTrace,
       [['test', ExpressionResult], ['consequent', ExpressionResult], ['alternate', ExpressionResult]]
     ],
+
+    /**
+     * ++ and --
+     */
     UpdateExpression: ExpressionResult,
+
     YieldExpression: [
       NoTrace,
       [['argument', ExpressionResult]]
