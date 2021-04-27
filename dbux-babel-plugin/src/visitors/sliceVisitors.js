@@ -12,6 +12,39 @@
  * Check out `samples\__samplesInput__\slicing` for examples.
 */
 
+/**
+ * TODO:
+ * 1. build expression tree for all `traceId`s
+ * 2. produce all rules to build VariablePath for any LVal
+ * 3. Determine all reads and writes
+ * 4. writes: target object and set of 0 or more target paths
+ * 5. Instrument all missing babel-types
+ * 6. Determine whether a given function is instrumented or not
+ * 7. Capture effects of built-in functions
+ */
+
+/**
+ * Missing babel-types:
+ * 
+ * AssignmentPattern (see https://github.com/babel/babel/issues/4227)
+ * RestElement
+ * ObjectPattern
+ * ArrayPattern
+ * ObjectExpression
+ */
+
+/**
+ * Built-in functions require monkey patching and/or proxies:
+ * 
+ * * Object (e.g. assign, defineProperty, getOwnPropertyDescriptor etc.)
+ * * Array (e.g. copyWithin, map, entries, every etc.)
+ * * any other built-in global object (Map, Set etc.): https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
+ * 
+ * => Can we automize this process for any function that we know is not instrumented?
+ * => Seems possible: https://javascript.info/proxy#proxy-apply
+ */
+
+
 import TraceInstrumentationType from '../constants/TraceInstrumentationType';
 // import InstrumentationDirection from '../constants/InstrumentationDirection';
 
@@ -105,7 +138,7 @@ function getClassPropertyId(path) {
 
 export function makeSliceTraceConfig() {
   const {
-    NoTrace,
+    // NoTrace,
     // Callee,
     CallExpression,
     ExpressionResult,
@@ -128,12 +161,13 @@ export function makeSliceTraceConfig() {
 
   return {
     // ########################################
-    // assignments
+    // writes
     // ########################################
     AssignmentExpression: {
       to: 'left',
       from: 'right'
     },
+
     VariableDeclarator: {
       to: 'id',
       from: {
@@ -144,12 +178,14 @@ export function makeSliceTraceConfig() {
         // }
       }
     },
+
     ClassPrivateProperty: {
       to: {
         id: getClassPropertyId
       },
       from: 'value'
     },
+
     ClassProperty: {
       input() {
 
@@ -193,170 +229,168 @@ export function makeSliceTraceConfig() {
      */
     ConditionalExpression: {
       // [['test', ExpressionResult}, ['consequent', ExpressionResult}, ['alternate', ExpressionResult]]
-},
-
-/**
- * ++ and --
- */
-UpdateExpression: ExpressionResult,
-
-  YieldExpression: {
-  NoTrace,
-    [['argument', ExpressionResult]]
-},
-
-
-// ########################################
-// Data read expressions
-// ########################################
-
-BinaryExpression: {
-  NoTrace,
-    [['left', ExpressionValue}, ['right', ExpressionValue]]
     },
 
-LogicalExpression: {
-  NoTrace,
-    [['left', ExpressionValue}, ['right', ExpressionValue]]
+    /**
+     * ++ and --
+     */
+    UpdateExpression: ExpressionResult,
+
+    YieldExpression: {
+      // NoTrace,
+      // [['argument', ExpressionResult]]
     },
 
-// object initializer, e.g. rhs of `var o = { x: 1 }` (kind = 'init')
-ObjectExpression: {
-  NoTrace,
-    [['properties', NoTrace,
-      [['value', ExpressionValue]},
-{ array: true }
-      ]]
+
+    // ########################################
+    // Data read expressions
+    // ########################################
+
+    BinaryExpression: {
+      // NoTrace,
+      // [['left', ExpressionValue}, ['right', ExpressionValue]]
     },
 
-MemberExpression: {
-  NoTrace,
-    [['object', MemberObject}, ['property', MemberProperty]]
+    LogicalExpression: {
+      // NoTrace,
+      // [['left', ExpressionValue}, ['right', ExpressionValue]]
     },
 
-OptionalMemberExpression: {
-  NoTrace,
-    [['object', MemberObject}, ['property', MemberProperty]]
+    // object initializer, e.g. rhs (`init`) of `var o = { x: 1 }`
+    ObjectExpression: {
+      // NoTrace,
+      //     [['properties', NoTrace,
+      //       // [['value', ExpressionValue]},
+      // { array: true }
+      //       ]]
     },
 
-SequenceExpression: {
-  NoTrace,
-    [['expressions', ExpressionValue, null, { array: true }]]
-},
+    MemberExpression: {
+      // NoTrace,
+      // [['object', MemberObject}, ['property', MemberProperty]]
+    },
 
-TemplateLiteral: {
-  NoTrace,
-    [['expressions', ExpressionValue, null, { array: true }]]
-},
+    OptionalMemberExpression: {
+      // NoTrace,
+      // [['object', MemberObject}, ['property', MemberProperty]]
+    },
 
-UnaryExpression: {
-  NoTrace,
-    [['argument', ExpressionValue]]
-},
+    SequenceExpression: {
+      // NoTrace,
+      // [['expressions', ExpressionValue, null, { array: true }]]
+    },
 
-Super: {
-  Super
-},
+    TemplateLiteral: {
+      // NoTrace,
+      // [['expressions', ExpressionValue, null, { array: true }]]
+    },
+
+    UnaryExpression: {
+      // NoTrace,
+      // [['argument', ExpressionValue]]
+    },
+
+    Super: {
+      Super
+    },
 
 
-// ########################################
-// statements
-// ########################################
-BreakStatement: Statement,
-  ContinueStatement: Statement,
+    // ########################################
+    // statements
+    // ########################################
+    BreakStatement: Statement,
+    ContinueStatement: Statement,
     Decorator: {
-  // NOTE: we need to trace decorators by wrapping them in a trace decorator
-  NoTrace,
+      // NOTE: we need to trace decorators by wrapping them in a trace decorator
+      // NoTrace,
       // [['expression', ExpressionNoValue]]
     },
-// Declaration: {
-//   Statement,
-//   null, // no children
-//   {
-//     ignore: {'ImportDeclaration'] // ignore: cannot mess with imports
-//   }
-// },
+    // Declaration: {
+    //   Statement,
+    //   null, // no children
+    //   {
+    //     ignore: {'ImportDeclaration'] // ignore: cannot mess with imports
+    //   }
+    // },
 
-ReturnStatement: {
-  ReturnNoArgument,
-    [['argument', ReturnArgument]]
-},
-ThrowStatement: {
-  NoTrace,
-    [['argument', ThrowArgument]]
-},
-
-
-// ########################################
-// loops
-// ########################################
-ForStatement: {
-  Loop
-},
-ForInStatement: {
-  Loop
-},
-ForOfStatement: {
-  Loop
-},
-// TODO: babel is unhappy with any DoWhileLoop visitor
-// DoWhileLoop: {
-//   Loop
-// },
-WhileStatement: {
-  Loop
-},
-
-// ########################################
-// if, else, switch, case
-// ########################################
-IfStatement: {
-  NoTrace,
-    [['test', ExpressionResult}, ['consequent', Block}, ['alternate', Block]},
+    ReturnStatement: {
+      ReturnNoArgument,
+      // [['argument', ReturnArgument]]
     },
-      SwitchStatement: {
-        NoTrace,
-        [['discriminant', ExpressionResult]]
-    },
-      // SwitchCase: {
-      // TODO: insert trace call into `consequent` array.
-      //    NOTE: we cannot just wrap the `consequent` statement array into a new block, as that will change the semantics (specifically: local variables would not be able to spill into subsequent cases)
-      //   NoTrace,
-      //   [['consequent', Block]]
-      // },
-
-
-      // ########################################
-      // try + catch
-      // ########################################
-      TryStatement: {
-        NoTrace,
-        // [['block', Block}, ['finalizer', Block]]
-      },
-      CatchClause: {
-        NoTrace,
-        [['body', Block]]
+    ThrowStatement: {
+      // NoTrace,
+      // [['argument', ThrowArgument]]
     },
 
-      ExpressionStatement: {
-        NoTrace,
-        [['expression', ExpressionValue]]
+
+    // ########################################
+    // loops
+    // ########################################
+    ForStatement: {
+      Loop
+    },
+    ForInStatement: {
+      Loop
+    },
+    ForOfStatement: {
+      Loop
+    },
+    // TODO: babel is unhappy with any DoWhileLoop visitor
+    // DoWhileLoop: {
+    //   Loop
+    // },
+    WhileStatement: {
+      Loop
     },
 
-      // ########################################
-      // functions
-      // ########################################
-      Function: {
-        NoTrace,
-        [['body', Func]]
+    // ########################################
+    // if, else, switch, case
+    // ########################################
+    IfStatement: {
+      // NoTrace,
+      // [['test', ExpressionResult}, ['consequent', Block}, ['alternate', Block]},
+    },
+    SwitchStatement: {
+      // NoTrace,
+      // [['discriminant', ExpressionResult]]
+    },
+    // SwitchCase: {
+    // TODO: insert trace call into `consequent` array.
+    //    NOTE: we cannot just wrap the `consequent` statement array into a new block, as that will change the semantics (specifically: local variables would not be able to spill into subsequent cases)
+    // },
+
+
+    // ########################################
+    // try + catch
+    // ########################################
+    TryStatement: {
+      // NoTrace,
+      // [['block', Block}, ['finalizer', Block]]
+    },
+    CatchClause: {
+      // NoTrace,
+      // [['body', Block]]
     },
 
-      // ########################################
-      // await
-      // ########################################
-      AwaitExpression: {
-        Await
-      },
+    ExpressionStatement: {
+      // NoTrace,
+      // [['expression', ExpressionValue]]
+    },
+
+    // ########################################
+    // functions
+    // ########################################
+    Function: {
+      // NoTrace,
+      // [['body', Func]]
+    },
+
+    // ########################################
+    // await
+    // ########################################
+    AwaitExpression: {
+      Await
+    },
 
     // TODO: ParenthesizedExpression - https://github.com/babel/babel/blob/master/packages/babel-generator/src/generators/expressions.js#L27
     // TODO: BindExpression - https://github.com/babel/babel/blob/master/packages/babel-generator/src/generators/expressions.js#L224
