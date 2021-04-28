@@ -78,10 +78,10 @@ export default class ProjectNode extends BaseTreeViewNode {
             cancellable: false,
             title: this.project.name,
           });
+          await showInformationMessage('Project has been deleted successfully.');
         }
       };
       await showInformationMessage(confirmMessage, btnConfig, { modal: true });
-      await showInformationMessage('Project has been deleted successfully.');
     }
   }
 
