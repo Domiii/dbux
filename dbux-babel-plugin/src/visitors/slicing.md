@@ -36,9 +36,9 @@ TODO
 
 ```js
 traceId()
-traceExpression(programId, inProgramStaticTraceId, value); // te(value, traceId)
+traceExpression(programId, inProgramStaticTraceId, value, traceId); // te(value, traceId)
 
-traceWrite(targetPath, readTree, value, traceId)
+traceWrite(targetPathId, readTree, value, traceId)
 
 /**
  * `traceWriteResolve` does two things:
@@ -53,37 +53,90 @@ traceWriteDeferred()
 
 ## Writes
 
-* All write types
-  * All LVal types
-    * `AssignmentExpression`
-    * `CallExpression.arguments` -> `Function.params`
-      * `RestElement`
-        * `function f(...x) { ... }` (`last(Function.params)`)
-      * `RestElement.argument`
-        * `f(...x);`
-  * All Lval types, excl. `MemberExpression`
-    * `ForInStatement.left`
-    * `ForOfStatement.left`
-    * `VariableDeclarator.id`
-      * `var x = 3;`
-  * Other
-    * (`return`/`yield`).`argument` -> `CallExpression`
-    * Getters (`get f()`)
-    * Setters (`set f(val)`)
-  * Obscure/advanced (probably won't implement any time soon)
-    * everything related to `Object.defineProperty`
-      * getters, setters, value functions etc.
-    * Proxy interactions
+### All write types
+* All LVal types
+  * `AssignmentExpression`
+  * `CallExpression.arguments` -> `Function.params`
+    * `RestElement`
+      * `function f(...x) { ... }` (`last(Function.params)`)
+    * `RestElement.argument`
+      * `f(...x);`
+    * also: `Super`
+* All Lval types, excl. `MemberExpression`
+  * `ForInStatement.left`
+  * `ForOfStatement.left`
+  * `VariableDeclarator.id`
+    * `var x = 3;`
+* Other
+  * `{Class,Enum}Declaration`, `Function`
+    * sub-category: `Method`: getters + setters
+      * Getters: `kind` === 'get'
+        * e.g. `get f()`
+      * Setters: `kind` === 'set'
+        * e.g. `set f(val)`
+  * `ClassPrivateProperty`, `ClassProperty`
+    * NOTE: similar to `AssignmentExpression` with `left` <- `MemberExpression`
+  * {`ReturnExpression`,`YieldExpression`}.`argument` -> `CallExpression`
+    * also: `Super`
+  * `ThrowStatement` -> `CatchClause`
+    * NOTE: similar to return from callee to caller
+  * `ObjectExpression`
+  * `UpdateExpression`
+* Obscure/advanced (probably Future Work)
+  * `Object.defineProperty`
+    * `get`, `set`, `value`
+  * `Decorator`
+    * NOTE: similar to a `CallExpression` with trailing expression passed in as first argument?
+  * Proxy interactions
+  * String reference equality(???)
+    * NOTE: In JS, one cannot access string reference (memory location)
 
-* `LVal` types
-  * `Identifier`
-  * `ArrayPattern`, `ObjectPattern`
-    * `{ x } = o`, `[ x ] = o` (`AssignmentExpression.left`)
-    * NOTE: these are recursive
-    * can contain `AssignmentPattern`
-      * e.g. `{ x = 3 } = o;`
-  * `MemberExpression`
-    * e.g. `x.a`, `x[b]`
+### `LVal` types
+* `Identifier`
+* `ArrayPattern`, `ObjectPattern`
+  * `{ x } = o`, `[ x ] = o` (`AssignmentExpression.left`)
+  * NOTE: these are recursive
+  * NOTE: can contain `AssignmentPattern`
+    * e.g. `{ x = 3 } = o;`
+* `MemberExpression`
+  * e.g. `x.a`, `x[b]`
+  * also `OptionalMemberExpression`
+
+
+### Mutating writes
+
+Most "writes" just pass along memory addresses, without actually making any changes to the data. We want to differentiate between those, and those that write new values. The following AST nodes write new values:
+
+* CallExpression
+  * if function is not instrumented: maybe
+* NewExpression
+* UpdateExpression
+* BinaryExpression
+* LogicalExpression (||, &&, ??)
+* ObjectExpression
+  * (object initializer)
+* TemplateLiteral
+* UnaryExpression
+  * iff input and output is not equal (`===`)
+* Literal
+  * Expression, Pureish, Literal, Immutable
+  * {BigInt,Boolean,Decimal,Null,Numeric,String}Literal
+* Decorator
+* Declaration
+  * {Class,Enum}Declaration
+* TryStatement
+* CatchClause
+  * `param` is new iff we did not record `throw`
+* Function
+
+
+## reads
+
+TODO: all reads and their dependency trees
+
+* `SwitchStatement`
+  * `discriminant`
+  * `SwitchCase.test`
 
 ## Assignments
 
