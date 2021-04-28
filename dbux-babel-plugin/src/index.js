@@ -10,7 +10,17 @@ import '@dbux/common/src/util/prettyLogs';
 export default function dbuxBabelPlugin(_, cfg) {
   return {
     visitor: ({
-      Program: programVisitor()
+      // Program: programVisitor()
+      AssignmentExpression(path, state) {
+        const idName = path.node.left.name;
+        console.log(`[AE] "${path.toString()}" (${idName}):`,
+          [''].concat(
+            path.scope.bindings[idName]?.
+              referencePaths?.
+              map(p => p.toString())
+            || []).join('\n ')) || '(not found)';
+        console.log(`  (all bindings: ${Object.keys(path.scope.bindings)})`);
+      }
     }),
 
     // see: https://github.com/babel/babel/blob/9808d2566e6a2b2d9e4c7890d8efbc9af180c683/packages/babel-core/src/transformation/index.js#L115

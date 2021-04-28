@@ -9,41 +9,8 @@
  * Dynamic data slicing tracks reads and writes
  * to reconstruct the dependency graph between variables/memory addresses.
  * 
- * Check out `samples\__samplesInput__\slicing` for examples.
+ * Check out `visit.md` and `samples\__samplesInput__\slicing` for more information and samples.
 */
-
-/**
- * TODO:
- * 1. capture expression tree for all `traceId`s
- * 1b. annotate tree nodes with whether their inputs propagate
- * 2. produce all rules to build VariablePath for any LVal
- * 3. Determine all reads and writes
- * 4. writes: target object + set of 0 or more target paths
- * 5. Instrument all missing babel-types
- * 6. Determine whether a given function is instrumented or not
- * 7. Capture effects of built-in functions
- */
-
-/**
- * Missing babel-types:
- * 
- * AssignmentPattern (see https://github.com/babel/babel/issues/4227)
- * RestElement
- * ObjectPattern
- * ArrayPattern
- * ObjectExpression
- */
-
-/**
- * Built-in functions require monkey patching and/or proxies:
- * 
- * * Object (e.g. assign, defineProperty, getOwnPropertyDescriptor etc.)
- * * Array (e.g. copyWithin, map, entries, every etc.)
- * * any other built-in global object (Map, Set etc.): https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
- * 
- * => Can we automize this process for any function that we know is not instrumented?
- * => Seems possible: https://javascript.info/proxy#proxy-apply
- */
 
 
 import TraceInstrumentationType from '../constants/TraceInstrumentationType';
