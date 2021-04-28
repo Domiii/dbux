@@ -585,10 +585,11 @@ export default class ProjectsManager {
    * NOTE: dev only
    */
   async resetProgress() {
-    await this.stopPractice();
-    await this.savePracticeSession();
-    await this.bdp.reset();
-    await this.runner.deactivateBug();
+    if (await this.stopPractice()) {
+      await this.savePracticeSession();
+      await this.bdp.reset();
+      await this.runner.deactivateBug();
+    }
   }
 
   async resetLog() {
