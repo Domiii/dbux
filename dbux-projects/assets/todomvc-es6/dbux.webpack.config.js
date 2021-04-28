@@ -11,16 +11,8 @@ const customCfg = {
 };
 
 const resultCfg = buildWebpackConfig(ProjectRoot, customCfg, (env, arg) => {
-  if (!env.PORT) {
-    throw new Error(`env has not provided PORT`);
-  }
-
   return {
     context: path.join(ProjectRoot, 'src'),
-    entry: {
-      app: './bootstrap.js',
-      vendor: ['todomvc-app-css/index.css'],
-    },
 
     plugins: [
       new HtmlWebpackPlugin({
@@ -49,13 +41,7 @@ const resultCfg = buildWebpackConfig(ProjectRoot, customCfg, (env, arg) => {
           ]
         },
       ]
-    },
-    externals: [
-      {
-        // fs: 'console.error("required fs")',
-        // tls: 'console.error("required tls")'
-      }
-    ]
+    }
   };
 });
 

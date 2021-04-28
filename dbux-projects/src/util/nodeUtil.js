@@ -5,10 +5,22 @@ export function buildNodeCommand(cfg) {
     // cwd,
     nodeArgs = '',
     debugPort,
-    require: requireArr = EmptyArray,
+    require: req = EmptyArray,
+    dbuxJs,
+    dbuxArgs,
     program,
     programArgs,
   } = cfg;
+
+  if (dbuxJs) {
+    programArgs = `run ${dbuxArgs} "${program}" -- ${programArgs}`;
+    program = dbuxJs;
+  }
+  // else {
+  //   program = program;
+  //   programArgs = programArgs;
+  // }
+
 
   // NOTE: depending on the mode, NYC uses either of the following:
   //  1. simple 
@@ -21,11 +33,13 @@ export function buildNodeCommand(cfg) {
   const nodeDebugArgs = debugPort && `--inspect-brk` || '';
 
   // pre-load some modules
-  // const nodeRequireArr = [
+  // requireArr = [
   //   ...requireArr.map(r => path.join(cwd, r))
   // ];
-  const nodeRequireArr = requireArr;
-  const nodeRequireArgs = nodeRequireArr.map(r => `--require "${r}"`).join(' ');
+  if (req && !Array.isArray(req)) {
+    req = [req];
+  }
+  const nodeRequireArgs = req.map(r => `--require "${r}"`).join(' ');
 
   // final command
   return `node ${nodeArgs} ${nodeDebugArgs} ${nodeRequireArgs} "${program}" ${programArgs}`;

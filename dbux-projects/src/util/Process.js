@@ -5,7 +5,8 @@ import sh from 'shelljs';
 import stringArgv from 'string-argv';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { spawn, execSync } from 'child_process';
+import { execSync } from 'child_process';
+import spawn from 'cross-spawn';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Process');
@@ -59,6 +60,9 @@ export default class Process {
       throw new Error('tried to start process more than once');
     }
 
+    // fix backslashes (Process, Terminal, babelInclude)
+    command = command.replace(/\\/g, '\\\\');
+
     this.command = command;
 
     const {
@@ -78,9 +82,11 @@ export default class Process {
       // stdio: [0, 1, 2]
     };
 
-    if (!sync) {
-      processOptions.shell = true;
-    }
+    // if (!sync) {
+    //   // NOTE: shell = true exists only for spawn, not for exec
+    //   processOptions.shell = true;
+    // }
+    // processOptions.shell = 'bash';
 
     // some weird problem where some shells don't recognize things correctly
     // see: https://github.com/shelljs/shelljs/blob/master/src/exec.js#L51
@@ -96,19 +102,20 @@ export default class Process {
       logger.error(`WARNING: Trying to execute command in non-existing working directory="${cwd}"`);
     }
 
-    const processExecMsg = `${cwd}$ ${command}`;
+    // spawn regular process
+    const [commandName, ...commandArgs] = stringArgv(command);
+    this.commandName = commandName;
+
+    const processExecMsg = `${cwd}$ "${commandName}" ${commandArgs.map(s => `"${s}"`).join(' ')}`;
     logger.debug('>', processExecMsg); //, `(pwd = ${sh.pwd().toString()})`);
 
     if (sync) {
+      // TODO: sync might not work, since it foregoes cross-spawn
       // NOTE: this will just block until the process is done
       this._process = execSync(command, processOptions);
       return this._process;
     }
 
-    // spawn regular process
-    const [commandName, ...commandArgs] = stringArgv(command);
-    this.commandName = commandName;
-    // console.warn(commandName, commandArgs, JSON.stringify(processOptions));
     this._process = spawn(commandName, commandArgs, processOptions);
     const newProcess = this._process;
 
@@ -197,6 +204,7 @@ export default class Process {
         const isDone = checkDone(); // WARNING: only call `checkDone` once!!
         logger.debug(`  ("${commandName}" EXIT${isDone && ' (ignored)' || ''}: code=${code}, signal=${signal})`);
         if (isDone) { return; }
+        this.code = code;
 
         if (this._dieSilent) {
           resolve();
@@ -218,11 +226,12 @@ export default class Process {
         if (isDone) { return; }
 
         const code = err.code = err.code || -1;
+        this.code = code;
 
-        if (failWhenNotFound && code === 127) {
+        if (failWhenNotFound && (code === 127 || code === 'ENOENT')) {
           // command not found, but we don't care
           // see: https://stackoverflow.com/questions/1763156/127-return-code-from
-          resolve();
+          resolve(code);
         }
         else {
           // throw new Error(`"${command}" failed because executable or command not found. Either configure it's absolute path or make sure that it is installed and in your PATH.`);
@@ -250,7 +259,7 @@ export default class Process {
     kill(this._process.pid, signal);
     await this.waitToEnd().
       then((code) => {
-        debug(`process killed: command='${this.command}', code='${code}'`);
+        debug(`process killed (code=${code}): command='${this.command}'`);
       }).
       catch(err => {
         debug('ignored process error after kill:', err.message);

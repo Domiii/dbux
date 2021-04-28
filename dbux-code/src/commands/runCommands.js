@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { window, workspace } from 'vscode';
+import { window, workspace, commands } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { checkSystem } from '@dbux/projects/src/checkSystem';
 import { getOrCreateProjectManager } from '../projectViews/projectControl';
@@ -60,7 +60,7 @@ export async function runFile(extensionContext, debugMode = false) {
   if (!await projectViewsController.confirmCancelPracticeSession()) {
     return;
   }
-  
+
   const projectManager = getOrCreateProjectManager();
 
   // resolve path
@@ -70,6 +70,7 @@ export async function runFile(extensionContext, debugMode = false) {
     logError(`The open editor window is not a file.`);
     return;
   }
+
   let file;
   let cwd;
   try {
@@ -80,6 +81,13 @@ export async function runFile(extensionContext, debugMode = false) {
     logError(`Could not find file "${activePath}": ${err.message}`);
     return;
   }
+  
+  // // color query test (not relevant)
+  // // const { uri } = activeEditor.document;
+  // const colorInfos = await commands.executeCommand('vscode.executeDocumentColorProvider', 
+  //   window.activeTextEditor.document.uri);
+  // console.debug(`file colorInfos:`, colorInfos);
+
 
   // install dependencies
   await installDbuxDependencies();
@@ -94,7 +102,7 @@ export async function runFile(extensionContext, debugMode = false) {
   // go!
   const dbuxBin = projectManager.getDbuxCliBinPath();
   const command = `node ${nodeArgs} "${dbuxBin}" run ${dbuxArgs} "${file}" -- ${programArgs}`;
-  runInTerminalInteractive('dbux-run', cwd, command);
-  // execCommand(cwd, `node /Users/domi/code/dbux/scripts/time-test.js spawn-child && sleep 30`);
+  await runInTerminalInteractive(cwd, command);
+  // runInTerminal(cwd, `node /Users/domi/code/dbux/scripts/time-test.js spawn-child && sleep 30`);
   // runInTerminalInteractive('dbux-run', cwd, `node /Users/domi/code/dbux/scripts/time-test.js spawn-child`);
 }

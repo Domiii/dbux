@@ -17,19 +17,20 @@
     "__archive_prepublish": "npm run clean && npm run build"
   },
   "dependencies": {
-    "@babel/code-frame": "7.10.1",
-    "@babel/parser": "7.10.1",
-    "@babel/register": "7.10.1",
-    "@babel/template": "7.10.1",
-    "@babel/traverse": "7.10.1",
-    "@babel/types": "7.10.1",
+    "@babel/code-frame": "^7.10.1",
+    "@babel/parser": "^7.10.1",
+    "@babel/register": "^7.10.1",
+    "@babel/template": "^7.10.1",
+    "@babel/traverse": "^7.10.1",
+    "@babel/types": "^7.10.1",
     "@dbux/common": "^0.3.17-dev.0",
     "i18next": "^19.8.2",
-    "lodash": "^4.17.19"
+    "lodash": "^4.17.19",
+    "serialize-javascript": "^5.0.1"
   },
   "devDependencies": {
-    "@babel/core": "7.10.1",
-    "@babel/generator": "7.10.1",
+    "@babel/core": "^7.10.1",
+    "@babel/generator": "^7.10.1",
     "babel-loader": "^8.0.6",
     "babel-plugin-tester": "^8.0.1",
     "webpack-node-externals": "^2.5.0"

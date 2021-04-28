@@ -8,8 +8,8 @@ import { wrapCommand } from '../util/commandUtil';
 import { processEnv } from '../util/processEnv';
 
 // pre-import dependencies that are not going to be in the target script
-import buildBabelOptions from '../util/buildBabelOptions';
-import { buildCommonCommandOptions, resolveCommandTargetPath } from '../commandCommons';
+import buildBabelOptions from '../buildBabelOptions';
+import { buildCommonCommandOptions, resolveCommandTargetPath, processRemainingOptions } from '../commandCommons';
 
 export const command = 'instrument <file>';
 export const aliases = ['i'];
@@ -33,6 +33,8 @@ export const handler = wrapCommand(async ({ file, ...options }) => {
   processEnv(options.env);
 
   const babelOptions = buildBabelOptions(options);
+
+  processRemainingOptions(options);
 
   // read code
   const targetPath = resolveCommandTargetPath(file);

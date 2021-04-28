@@ -8,26 +8,32 @@ const spawn = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const process = require('process');
+const { inspect } = require('util');
 
 const Verbose = true;
 const runningTimeout = 10000;
 
-let cwd, command, tmpFolder, moreEnv;
+let cwd, command, tmpFolder, options;
 
 const logDebug = (console.debug || console.log).bind(console, '[Dbux]');
 
+const [
+  _node,
+  _runJs,
+  interactive,
+  argsEncoded
+] = process.argv;
+
 function main() {
   // node run.js port "cwd" "command"
-  const [
-    _node,
-    _runJs,
-    argsEncoded
-  ] = process.argv;
-
   const args = JSON.parse(Buffer.from(argsEncoded, 'base64').toString('ascii'));
-  ({ cwd, command, tmpFolder, args: moreEnv } = args);
+  ({ cwd, command, tmpFolder, options = {} } = args);
 
-  logDebug('run.js command received:', args);
+  const {
+    env: moreEnv
+  } = options;
+
+  logDebug('run.js command received:', inspect(args));
 
   const processOptions = {
     cwd,
@@ -48,7 +54,7 @@ function main() {
   const startTime = new Date();
   const warningIntervalId = setInterval(() => {
     let seconds = ((new Date()) - startTime) / 1000;
-    logDebug(`Task running for ${seconds.toFixed(2)} seconds.`);
+    logDebug(`(Terminal task running for ${seconds.toFixed(2)} seconds.)`);
   }, runningTimeout);
 
 
@@ -75,7 +81,11 @@ function main() {
     reportStatusCode(code, signal);
     clearInterval(warningIntervalId);
 
-    logDebug(`\n(Done. You can close the Terminal now.)`);
+    // logDebug(`\n(Done. You can close the Terminal now.)`);
+
+    // if (interactive) {
+    //   setTimeout(() => process.exit(0), 300);
+    // }
   });
 
   child.on('error', (err) => {
@@ -131,5 +141,9 @@ catch (err) {
   reportError(err);
 }
 finally {
-  setInterval(() => { }, 100000);
+  // see https://stackoverflow.com/questions/44137481/prevent-nodejs-program-from-exiting
+  // console.debug('interactive', interactive);
+  // (!interactive ? setInterval : setTimeout)(() => { }, interactive ? 500 : 100000);
+  // setInterval(() => { console.debug('keep running'); }, 100);
+  // process.stdin.resume();
 }

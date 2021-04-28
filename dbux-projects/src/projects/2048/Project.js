@@ -10,15 +10,16 @@ export default class _2048Project extends Project {
   makeBuilder() {
     return new WebpackBuilder({
       websitePort: 3843,
-      jsFilePatterns: 'js/*'
+      inputPattern: 'js/*'
     });
   }
 
   async afterInstall() {
     // NOTE: we need to expose all globals manually, since there is no easy way to workaround that problem with Webpack
     await this.applyPatch('baseline');
+
+    await this.execInTerminal('npm init -y');
     // await this.autoCommit(); // NOTE: autoCommit is called right after this method
-    // await this.installPackages(`webpack-dev-server@3.11.0`);
   }
 
   loadBugs() {
@@ -81,18 +82,18 @@ export default class _2048Project extends Project {
       //     }
       //   ]
       // }
-    ].map((bug) => {
-      bug.mainEntryPoint = ['js/application.js'];
+    ];
+  }
 
-      return bug;
-    });
+  decorateBug(bug) {
+    bug.mainEntryPoint = ['js/application.js'];
   }
 
   async selectBug(bug) {
     return this.switchToBugPatchTag(bug);
   }
 
-  async testBugCommand(bug, debugPort) {
+  async testBugCommand(bug, cfg) {
     // nothing to do
   }
 }

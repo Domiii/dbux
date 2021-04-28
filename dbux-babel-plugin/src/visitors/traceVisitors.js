@@ -361,7 +361,7 @@ function normalizeConfigNode(parentCfg, visitorName, cfgNode) {
 
   if (children) {
     if (!Array.isArray(children)) {
-      throw new Error('invalid config node. Children must be an array of arrays: ' + JSON.stringify(visitorName));
+      throw new Error('invalid config node. `children` must be an array of arrays for visitor: ' + JSON.stringify(visitorName));
     }
     cfgNode.children = children.map(([childName, ...childCfg]) => {
       return normalizeConfigNode(cfgNode, childName, childCfg);
@@ -387,8 +387,14 @@ function normalizeConfig(cfg) {
 
 function enterExpression(traceResultType, path, state) {
   if (isCallPath(path)) {
+    // call expressions get special treatment
     // some of the ExpressionResult + ExpressionValue nodes we are interested in, might also be CallExpressions
     return enterCallExpression(traceResultType, path, state);
+  }
+
+  if (t.isAwaitExpression(path)) {
+    // await expressions get special treatment
+    return awaitVisitEnter(path, state);
   }
 
   // we want to trace CallResult on exit
@@ -504,7 +510,13 @@ function wrapExpression(traceType, path, state) {
   let tracePath = getTracePath(path);
 
   if (isCallPath(path)) {
+    // call expressions get special treatment
     return wrapCallExpression(path, state);
+  }
+
+  if (t.isAwaitExpression(path)) {
+    // await expressions get special treatment
+    return awaitVisitExit(path, state);
   }
 
   if (traceType === TraceType.ExpressionResult) {

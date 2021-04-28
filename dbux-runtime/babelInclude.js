@@ -16,7 +16,7 @@ if (dbuxRoot.endsWith('node_modules')) {
 const folders = ['dbux-common', 'dbux-data', 'dbux-runtime'];
 
 let babelrcRoots = folders.map(f => path.join(dbuxRoot, f));
-// fix: backslashes on windows
+// fix backslashes (Process, Terminal, babelInclude)
 babelrcRoots = babelrcRoots.map(root => root.replace(/\\/g, '\\\\'));
 
 let folderPrefix = `^${path.join(
@@ -25,7 +25,7 @@ let folderPrefix = `^${path.join(
   '(?!.*?node_modules)'
 )}`;
 
-// fix: backslashes on windows
+// fix: backslashes
 folderPrefix = folderPrefix.replace(/\\/g, '\\\\');
 // console.warn('babelrcRoots', babelrcRoots);
 

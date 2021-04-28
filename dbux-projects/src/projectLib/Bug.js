@@ -80,7 +80,10 @@ export default class Bug {
 
   async openInEditor() {
     // open file (if any)
-    const targetFile = this.mainEntryPoint || this.testFilePaths?.[0];
+    let targetFile = this.mainEntryPoint || this.testFilePaths;
+    if (Array.isArray(targetFile)) {
+      [targetFile] = targetFile;
+    }
     if (targetFile) {
       const fpath = path.join(this.project.projectPath, targetFile);
       await this.manager.externals.editor.openFile(fpath);

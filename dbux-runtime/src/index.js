@@ -8,7 +8,7 @@ const dbux = {
 
   initProgram(staticProgramData, runtimeCfg) {
     this.runtimeCfg = runtimeCfg;
-    return this._r.addProgram(staticProgramData);
+    return this._r.addProgram(staticProgramData, runtimeCfg);
   },
 
   incDisabled() {

@@ -7,6 +7,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { getAllFilesInFolders, globRelative } from '@dbux/common-node/src/util/fileUtil';
+import isObject from 'lodash/isObject';
 import BugList from './BugList';
 import Process from '../util/Process';
 import { checkSystemWithRequirement } from '../checkSystem';
@@ -78,6 +79,14 @@ export default class Project {
     return null;
   }
 
+  /**
+   * Whether @dbux/cli is needed to instrument and inject @dbux/runtime.
+   * Returns false, if build tool already took care of it.
+   */
+  get needsDbuxCli() {
+    return !this.builder || this.builder.needsDbuxCli;
+  }
+
 
   // ###########################################################################
   // constructor + init
@@ -109,8 +118,9 @@ export default class Project {
     }
   }
 
-  initBug(bug) {
-    this.builder?.decorateBug(bug);
+  async initBug(bug) {
+    await this.decorateBug?.(bug);
+    await this.builder?.decorateBug(bug);
   }
 
   // ###########################################################################
@@ -125,6 +135,10 @@ export default class Project {
     return this.manager.config.projectsRoot;
   }
 
+  get dependencyRoot() {
+    return this.manager.config.dependencyRoot;
+  }
+
   get projectPath() {
     return path.join(this.projectsRoot, this.folderName);
   }
@@ -133,8 +147,8 @@ export default class Project {
     return this.manager.getProjectRunStatus(this);
   }
 
-  get dependencyRoot() {
-    return this.manager.config.dependencyRoot;
+  getDependencyPath(relativePath) {
+    return path.resolve(this.dependencyRoot, 'node_modules', relativePath);
   }
 
   getNodeVersion(bug) {
@@ -195,6 +209,8 @@ This may be solved by using \`Delete project folder\` button.`);
 
     // git clone
     await this.gitClone();
+
+    await this.verifyInstallation?.();
   }
 
   /**
@@ -279,10 +295,19 @@ This may be solved by using \`Delete project folder\` button.`);
   // utilities
   // ###########################################################################
 
-  async execInTerminal(command, options) {
+  execInTerminal = async (command, options) => {
     let cwd = options?.cwd || this.projectPath;
 
-    let { code } = await this.manager.externals.TerminalWrapper.execInTerminal(cwd, command, {}).waitForResult();
+    const result = await this.manager.externals.TerminalWrapper.execInTerminal(cwd, command, {}).
+      waitForResult();
+
+    let code;
+    if (Array.isArray(result)) {
+      code = result[result.length - 1].code;
+    }
+    else {
+      code = result?.code;
+    }
 
     if (options?.failOnStatusCode === false) {
       return code;
@@ -294,18 +319,22 @@ This may be solved by using \`Delete project folder\` button.`);
     return 0;
   }
 
-  async installPackages(s) {
+  async installPackages(s, force = true) {
     // TODO: yarn workspaces causes trouble for `yarn add`.
     //        Might need to use a hack, where we manually insert it into `package.json` and then run yarn install.
     // TODO: let user choose, or just prefer yarn by default?
 
-    const cmd = /* process.env.NODE_ENV === 'development' ? 
-      'yarn add --dev' :  */
-      'npm install -D';
+    if (isObject(s)) {
+      s = Object.entries(s).map(([name, version]) => `${name}@${version}`).join(' ');
+    }
+
+    const cmd = this.preferredPackageManager === 'yarn' ?
+      'yarn add --dev' :
+      `npm install -D ${force && '--force'}`;
     return this.execInTerminal(`${cmd} ${s}`);
   }
 
-  async exec(command, options, input) {
+  exec = async (command, options, input) => {
     const cwd = options?.cwd || this.projectPath;
     options = defaultsDeep(options, {
       ...(options || EmptyObject),
@@ -316,10 +345,10 @@ This may be solved by using \`Delete project folder\` button.`);
     return this.runner._exec(command, this.logger, options, input);
   }
 
-  async execCaptureOut(command, processOptions) {
+  execCaptureOut = async (command, processOptions) => {
     processOptions = {
-      ...(processOptions || EmptyObject),
-      cwd: this.projectPath
+      cwd: this.projectPath,
+      ...(processOptions || EmptyObject)
     };
     return Process.execCaptureOut(command, { processOptions });
   }
@@ -365,7 +394,7 @@ This may be solved by using \`Delete project folder\` button.`);
   }
 
   /**
-   * 
+   * NOTE: does not include new files. For that, consider `hasAnyChangedFiles()` below.
    * @return {bool} Whether any files in this project have changed.
    * @see https://stackoverflow.com/questions/3878624/how-do-i-programmatically-determine-if-there-are-uncommitted-changes
    */
@@ -375,12 +404,17 @@ This may be solved by using \`Delete project folder\` button.`);
     // Not sure what this line does, but seems not really useful here, since these two line does the same thing.
     // await this.exec('git update-index --refresh');
 
-    // returns status code 1, if there are any changes
+    // NOTE: returns status code 1, if there are any changes, IFF --exit-code or --quiet is provided
     // see: https://stackoverflow.com/questions/28296130/what-does-this-git-diff-index-quiet-head-mean
-    const code = await this.exec('git diff-index --quiet HEAD --', { failOnStatusCode: false });
+    const code = await this.exec('git diff-index --exit-code HEAD --', { failOnStatusCode: false });
 
     return !!code;  // code !== 0 means that there are pending changes
   }
+
+  // async hasAnyChangedFiles() {
+  //   const changes = await this.execCaptureOut(`git status -s`);
+  //   return !!changes;
+  // }
 
   // ###########################################################################
   // install helpers
@@ -412,6 +446,7 @@ This may be solved by using \`Delete project folder\` button.`);
 
     // custom `afterInstall` hook
     await this.afterInstall();
+    await this.builder?.afterInstall?.();
 
     // after install completed: commit modifications, so we can easily apply patches etc (if necessary)
     await this.autoCommit();
@@ -430,13 +465,19 @@ This may be solved by using \`Delete project folder\` button.`);
   async autoCommit(bug) {
     await this.checkCorrectGitRepository();
 
-    if (await this.hasAnyChangedFiles()) {
+    if (await this.checkFilesChanged()) {
       // only auto commit if files changed
       const files = this.getAllAssetFiles();
-      this.logger.log(`auto commit: ${files.join(', ')}`);
+      // this.logger.log(`[auto commit] ${files.join(', ')}`);
 
-      // TODO: should not need '--allow-empty', if `hasAnyChangedFiles` is correct (TODO: test with todomvc)
-      await this.exec(`git add ${files.map(name => `"${name}"`).join(' ')} && git commit -am '"[dbux auto commit]"' --allow-empty`);
+      // await this.exec(`git add ${files.map(name => `"${name}"`).join(' ')} && git commit -am '"[dbux auto commit]"' --allow-empty`);
+      
+      // NOTE: && is not supported in all shells (e.g. Powershell)
+      await this.exec(`git add ${files.map(name => `"${name}"`).join(' ')}`);
+
+      // TODO: should not need '--allow-empty', if `checkFilesChanged` is correct (but somehow still bugs out)
+      await this.exec(`git commit -am '"[dbux auto commit]"' --allow-empty`);
+
       await this.gitAddOrUpdateTag(bug);
     }
   }
@@ -470,7 +511,7 @@ This may be solved by using \`Delete project folder\` button.`);
       try {
         this.runner.createMainFolder();
         await this.execInTerminal(`git clone "${githubUrl}" "${projectPath}"`, {
-          cwd: this.projectsRoot
+          cwd: projectsRoot
         });
       }
       catch (err) {
@@ -519,17 +560,29 @@ This may be solved by using \`Delete project folder\` button.`);
     return this.gitCheckout(tagName);
   }
 
-  async npmInstall() {
-    // await this.exec('npm cache verify');
+  get preferredPackageManager() {
+    if (this.packageManager) {
+      return this.packageManager;
+    }
 
-    // hackfix: npm installs are broken somehow.
-    //      see: https://npm.community/t/need-to-run-npm-install-twice/3920
-    //      Sometimes running it a second time after checking out a different branch 
-    //      deletes all node_modules. This will bring everything back correctly (for now).
+    // TODO: prefer yarn if yarn is installed
     if (process.env.NODE_ENV === 'development') {
+      // yarn is just faster (as of April/2021)
+      return 'yarn';
+    }
+    return 'npm';
+  }
+
+  async npmInstall() {
+    if (this.preferredPackageManager === 'yarn') {
       await this.execInTerminal('yarn install');
     }
     else {
+      // await this.exec('npm cache verify');
+      // hackfix: npm installs are broken somehow.
+      //      see: https://npm.community/t/need-to-run-npm-install-twice/3920
+      //      Sometimes running it a second time after checking out a different branch 
+      //      deletes all node_modules. The second run brings everything back correctly (for now).
       await this.execInTerminal(`npm install && npm install`);
     }
   }
@@ -549,7 +602,7 @@ This may be solved by using \`Delete project folder\` button.`);
     // remove unwanted files
     let { projectPath, rmFiles } = this;
     if (rmFiles?.length) {
-      const absRmFiles = rmFiles.map(fName => path.join(projectPath, fName));
+      const absRmFiles = rmFiles.map(fName => path.resolve(projectPath, fName));
       const iErr = absRmFiles.findIndex(f => !f.startsWith(projectPath));
       if (iErr >= 0) {
         throw new Error('invalid entry in `rmFiles` is not in `projectPath`: ' + rmFiles[iErr]);
@@ -666,11 +719,6 @@ This may be solved by using \`Delete project folder\` button.`);
     await this.checkCorrectGitRepository();
 
     return this.exec(`git diff --color=never > ${this.getPatchFile(patchFName)}`);
-  }
-
-  async hasAnyChangedFiles() {
-    const changes = await this.execCaptureOut(`git status -s`);
-    return !!changes;
   }
 
   async getPatchString() {

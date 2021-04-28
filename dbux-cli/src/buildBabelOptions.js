@@ -9,7 +9,7 @@ import colors from 'colors/safe';
 // import injectDependencies from './injectDependencies';
 
 // import buildDefaultBabelOptions from './defaultBabelOptions';
-const baseBabelOptions = require('../../.babelrc');
+const baseBabelOptions = require('../.babelrc');
 
 function debugLog(...args) {
   console.log(colors.gray(args.join(' ')));
@@ -60,26 +60,33 @@ export default function buildBabelOptions(options) {
     dontAddPresets,
     dbuxOptions: dbuxOptionsString,
     packageWhitelist,
-    verbose = 0
+    verbose = 0,
+    runtime = null
   } = options;
 
-  // console.log(`buildBabelOptions verbose=${verbose}`);
+  // console.log(`buildBabelOptions: verbose=${verbose}, runtime=${runtime}`);
 
-  if (dontInjectDbux && !esnext) {
+  if (dontInjectDbux && !esnext && !verbose) {
     // nothing to babel
     return null;
   }
 
-  const dbuxOptions = dbuxOptionsString && JSON.parse(dbuxOptionsString) || undefined;
-  defaultsDeep(dbuxOptions || {}, {
-    verbose
+  const dbuxOptions = dbuxOptionsString && JSON.parse(dbuxOptionsString) || {};
+  defaultsDeep(dbuxOptions, {
+    verbose,
+    runtime: runtime
   });
 
   // if (process.env.NODE_ENV === 'development') {
   //   injectDependencies();
   // }
 
-  const packageWhitelistRegExps = packageWhitelist.split(',').map(s => s.trim()).map(generateFullMatchRegExp);
+  const packageWhitelistRegExps = packageWhitelist
+    .split(',')
+    .map(s => s.trim())
+    .map(generateFullMatchRegExp);
+
+  verbose > 1 && debugLog(`[Dbux] packageWhitelist`, packageWhitelistRegExps.join(','));
 
   // setup babel-register
   const baseOptions = esnext ? baseBabelOptions : EmptyObject;
@@ -87,6 +94,9 @@ export default function buildBabelOptions(options) {
     ...baseOptions,
     sourceType: 'unambiguous',
     sourceMaps: 'inline',
+    retainLines: true,
+    // see https://babeljs.io/docs/en/options#parseropts
+    parserOpts: { allowReturnOutsideFunction: true },
     ignore: [
       // '**/node_modules/**',
       function shouldIgnore(modulePath, ...otherArgs) {
@@ -106,7 +116,7 @@ export default function buildBabelOptions(options) {
 
         modulePath = modulePath.toLowerCase();
 
-        const ignore = false;
+        const ignore = dontInjectDbux;
         verbose && debugLog(`[Dbux] REGISTER`, modulePath);
         return ignore;
       }

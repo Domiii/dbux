@@ -1,5 +1,5 @@
-import { getWebpackDevServerJs } from '@dbux/common-node/src/util/webpackUtil';
 import path from 'path';
+import WebpackBuilder from '../../buildTools/WebpackBuilder';
 import Project from '../../projectLib/Project';
 
 
@@ -7,17 +7,29 @@ export default class TodomvcEs6Project extends Project {
   gitRemote = 'kentcdodds/es6-todomvc.git';
   gitCommit = 'bf2db41';
 
-  port = 3033;
-
   rmFiles = [
     'webpack.config.js',
     'package.json',
     '.babelrc'
   ];
 
+  entry = {
+    app: './bootstrap.js',
+    vendor: ['todomvc-app-css/index.css'],
+  };
+
+  watch = ['app.js'];
+
+  makeBuilder() {
+    return new WebpackBuilder({
+      websitePort: 3842,
+      rootPath: 'src'
+    });
+  }
+
   async afterInstall() {
-    // update CSS to correct version
-    await this.execInTerminal(`npm install todomvc-app-css@2.3.0 --force`);
+    // update CSS to correct version (already overwritten in package.json)
+    // await this.installPackages(`todomvc-app-css@2.3.0`);
   }
 
   loadBugs() {
@@ -203,30 +215,21 @@ export default class TodomvcEs6Project extends Project {
           }
         ]
       },
-      
-    ].map((bug) => {
-      bug.website = 'http://localhost:' + this.port;
-      bug.port = this.port;
 
-      bug.testFilePaths = ['app.js'];
-      // bug.runFilePaths = bug.testFilePaths;
-      bug.watchFilePaths = bug.testFilePaths.map(file => path.join(this.projectPath, 'dist', file));
-
-      return bug;
-    });
+    ];
   }
 
-  async startWatchMode(bug) {
-    // start webpack and webpack-dev-server
-    let cmd = `node ${getWebpackDevServerJs()} --watch --config ./dbux.webpack.config.js --env PORT=${bug.port}`;
-    return this.execBackground(cmd);
+  decorateBug(bug) {
+    bug.testFilePaths = ['app.js'];
+    // bug.runFilePaths = bug.testFilePaths;
+    bug.watchFilePaths = bug.testFilePaths.map(file => path.join(this.projectPath, 'dist', file));
   }
 
   async selectBug(bug) {
     return this.switchToBugPatchTag(bug);
   }
 
-  async testBugCommand(bug, debugPort) {
+  async testBugCommand(bug, cfg) {
     // nothing to do yet
     // TODO: run tests?
   }

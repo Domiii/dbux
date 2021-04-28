@@ -59,16 +59,21 @@ class ValueCollection extends Collection {
     this.logger.log(...args);
   }
 
-  registerValueMaybe(hasValue, value, valueHolder) {
-    if (!hasValue) {
+  registerValueMaybe(hasValue, value, valueHolder, valuesDisabled) {
+    if (valuesDisabled) {
+      valueHolder.valueId = this._addValueDisabled().valueId;
+      // valueHolder.value = undefined;
+    }
+    else if (!hasValue) {
       valueHolder.valueId = 0;
-      valueHolder.value = undefined;
+      // valueHolder.value = undefined;
     }
     else {
       this.registerValue(value, valueHolder);
     }
   }
 
+  // NOTE: (for now) `valueHolder` is always trace
   registerValue(value, valueHolder) {
     const category = determineValueTypeCategory(value);
     if (category === ValueTypeCategory.Primitive) {
@@ -76,7 +81,6 @@ class ValueCollection extends Collection {
       valueHolder.value = value;
     }
     else {
-      // NOTE: (for now) `valueHolder` is always trace
       const valueRef = this._serialize(value, 1, null, category);
       Verbose && this._log(`value #${valueRef.valueId} for trace #${valueHolder.traceId}: ${ValueTypeCategory.nameFrom(category)} (${valueRef.serialized})`);
       valueHolder.valueId = valueRef.valueId;
@@ -117,10 +121,16 @@ class ValueCollection extends Collection {
     return this._omitted;
   }
 
+  _addValueDisabled() {
+    if (!this._valueDisabled) {
+      this._valueDisabled = this._registerValue(null, null);
+      this._finishValue(this._valueDisabled, null, '(...)', ValuePruneState.ValueDisabled);
+    }
+    return this._valueDisabled;
+  }
+
   _registerValue(value, category) {
     // create new ref + track object value
-
-    // TODO: figure out a better way to store primitive values? (don't need ValueRef for those...)
     const valueRef = pools.values.allocate();
     const valueId = this._all.length;
     valueRef.valueId = valueId;
@@ -235,7 +245,7 @@ class ValueCollection extends Collection {
   _startAccess(/* obj */) {
     // eslint-disable-next-line no-undef
     if (__dbux__._r.disabled) {
-      this.logger.error('Tried to start accessing object while already accessing another object.');
+      this.logger.error(`Tried to start accessing object while already accessing another object - ${new Error().stack}`);
       return;
     }
 

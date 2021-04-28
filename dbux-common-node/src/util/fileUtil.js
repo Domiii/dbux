@@ -1,6 +1,7 @@
 import fs, { promises as fsAsync } from 'fs';
 import path from 'path';
 import glob from 'glob';
+import sh from 'shelljs';
 
 /**
  * @see https://stackoverflow.com/a/53530146
@@ -77,4 +78,36 @@ export function globRelative(folder, patternOrPatterns) {
       .sync(path.join(folder, pattern))
       .map(fpath => fpath.substring(folder.length + 1))
   );
+}
+
+export async function assertFileLinkTarget(linkPath, expectedTarget, error = true) {
+  // const actualTarget = path.resolve(
+  //   (await exec(`readlink -f ${linkPath}`)).toString().trim()
+  // );
+  let actualTarget;
+  try {
+    actualTarget = fs.realpathSync.native(linkPath);
+  }
+  catch (err) {
+    // file does not exist
+    return false;
+  }
+
+
+  try {
+    expectedTarget = fs.realpathSync.native(expectedTarget);
+    // expectedTarget = path.resolve(expectedTarget);
+  }
+  catch (err) {
+    // file does not exist
+    return false;
+  }
+
+  if (actualTarget !== expectedTarget) {
+    if (error) {
+      throw new Error(`File is not linked correctly: "${expectedTarget}" !== "${actualTarget}" (\`realpath("${linkPath}")\`)`);
+    }
+    return false;
+  }
+  return true;
 }

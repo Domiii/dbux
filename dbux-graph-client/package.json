@@ -27,7 +27,8 @@
     "bootstrap": "^4.4.1",
     "html2canvas": "^1.0.0-rc.5",
     "i18next": "^19.8.2",
-    "lodash": "^4.17.19"
+    "lodash": "^4.17.19",
+    "serialize-javascript": "^5.0.1"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^6.0.3",
