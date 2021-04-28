@@ -14,10 +14,11 @@
 
 /**
  * TODO:
- * 1. build expression tree for all `traceId`s
+ * 1. capture expression tree for all `traceId`s
+ * 1b. annotate tree nodes with whether their inputs propagate
  * 2. produce all rules to build VariablePath for any LVal
  * 3. Determine all reads and writes
- * 4. writes: target object and set of 0 or more target paths
+ * 4. writes: target object + set of 0 or more target paths
  * 5. Instrument all missing babel-types
  * 6. Determine whether a given function is instrumented or not
  * 7. Capture effects of built-in functions
@@ -85,48 +86,6 @@ function getExpressionVal(path) {
   // TODO
 }
 
-/**
- * Consider:
- *  ```js
-    function setPKey(that, st key) { ... }
-    function registerPropKeyValueAccess(that, st, value) {
-      const key = getAndDeleteKey(that, st);
-      register(st, {
-        read: [
-          that,
-          key,
-          value
-        ],
-        write: [
-          that,
-          objPath(that, key)
-        ]
-      });
-    }
-    function expr(st, val) { registerRead(st, val); return val; }
-    function pKey(that, st, parentst, key) { console.log('pKey', that, key); setPKey(that, st, key); return key; }
-    function pVal(that, st, parentst, val) { console.log('pVal', that, val); registerPropKeyValueAccess(that, st, val); return key; }
-
-    var stF = 1
-    var stFArg1 = 2
-    var stFResult = 3;
-    var stProp = 4;
-    function f(x) { return 'f' + x; };
-    class A {
-      [pKey(this, stProp, 'p1', null)] = pVal(
-        this, 
-        stProp, 
-        expr(stFResult, 
-          expr(stF, f)(expr(stFArg1, 3))
-        ),
-        stFResult
-       );
-    }
-
-    var a = new A();
-    console.log(a.p1);
-    ```
- */
 function getClassPropertyId(path) {
   const { node: { computed, static: isStatic } } = path;
   const keyValue = computed ? getExpressionVal(path.get('key')) : getConstantString(path.node.key);
@@ -164,13 +123,13 @@ export function makeSliceTraceConfig() {
     // writes
     // ########################################
     AssignmentExpression: {
-      to: 'left',
-      from: 'right'
+      write: 'left',
+      read: 'right'
     },
 
     VariableDeclarator: {
-      to: 'id',
-      from: {
+      write: 'id',
+      read: {
         id: 'init',
         optional: true
         // pre(path) {
@@ -180,20 +139,20 @@ export function makeSliceTraceConfig() {
     },
 
     ClassPrivateProperty: {
-      to: {
+      write: {
         id: getClassPropertyId
       },
-      from: 'value'
+      read: 'value'
     },
 
     ClassProperty: {
-      input() {
+      // input() {
 
-      },
-      to: {
+      // },
+      write: {
         id: getClassPropertyId
       },
-      from: [
+      read: [
         'value',
         {
           id({ node: { key, computed } }) {
@@ -212,7 +171,9 @@ export function makeSliceTraceConfig() {
     // NOTE: also sync this against `isCallPath`
     // ########################################
     CallExpression: {
-
+      // CEs are more complex
+      // arguments are written to function parameter assignments
+      // and function return/yield values are written to whoever has the CE as read input.
     },
     OptionalCallExpression: {
       CallExpression

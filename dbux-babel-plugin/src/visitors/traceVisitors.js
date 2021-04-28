@@ -64,6 +64,7 @@ const traceCfg = (() => {
     ],
     VariableDeclarator: [
       NoTrace,
+      // TODO: this is actually originalIsGrandParent: true!!
       [['init', ExpressionResult, null, { originalIsParent: true }]]
     ],
     // VariableDeclaration: [
