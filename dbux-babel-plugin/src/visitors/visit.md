@@ -2,7 +2,7 @@
 TODO
 1. capture full and dependency expression tree for all `traceId`s
    * then pass dependency tree as argument to `traceWrite`
-2. produce all rules to build `uniquePathId` for any LVal
+2. produce all rules to build `targetPathId` for any LVal
 3. Determine all reads and writes
 4. Instrument all missing babel-types
 5. Capture effects of built-in functions
@@ -32,12 +32,23 @@ TODO
 
 ## @dbux/runtime
 
-### Main functions
+### Runtime functions
 
 ```js
 traceId()
 traceExpression(programId, inProgramStaticTraceId, value); // te(value, traceId)
+
 traceWrite(targetPath, readTree, value, traceId)
+
+/**
+ * `traceWriteResolve` does two things:
+ *   (i) resolve the write that reads val1Id
+ *   (ii) add a second read, that is the computed key
+ * 
+ * TODO: make sure, this works, even when used recursively
+ */
+traceWriteResolve(te(f('p1'), this, key1Id = traceId()), key1Id, val1Id)
+traceWriteDeferred()
 ```
 
 ## Writes
@@ -57,6 +68,12 @@ traceWrite(targetPath, readTree, value, traceId)
       * `var x = 3;`
   * Other
     * (`return`/`yield`).`argument` -> `CallExpression`
+    * Getters (`get f()`)
+    * Setters (`set f(val)`)
+  * Obscure/advanced (probably won't implement any time soon)
+    * everything related to `Object.defineProperty`
+      * getters, setters, value functions etc.
+    * Proxy interactions
 
 * `LVal` types
   * `Identifier`
@@ -64,23 +81,9 @@ traceWrite(targetPath, readTree, value, traceId)
     * `{ x } = o`, `[ x ] = o` (`AssignmentExpression.left`)
     * NOTE: these are recursive
     * can contain `AssignmentPattern`
-      * `{ x = 3 } = o;`
+      * e.g. `{ x = 3 } = o;`
   * `MemberExpression`
-    * `x.a`, `x[b]`
-
-TODO:
-* multiple read sources for one write
-  * e.g. `ClassProperty` (or any property access) -> `key` (if computed) + `value`
-  * 
-* deferred writes: read happens before targetPath can be computed
-  * e.g. `ClassProperty`
-  * e.g. arg -> parameter; return value
-
-* TODO
-  * for every scenario, identify:
-    * path of all `LVal` variables
-      * (usually just one, only `ArrayPattern` + `ObjectPattern` have multiple)
-    * set of paths inside variable
+    * e.g. `x.a`, `x[b]`
 
 ## Assignments
 
@@ -89,11 +92,11 @@ TODO:
 * `VariableDeclarator` has two types of semantics:
   * `let`, `const`: creates new variables.
     * We can uniquely identify them by `traceId` of that write operation.
-    * `uniquePathId` could be constructed by `name` + `contextId`.
+    * `targetPathId` could be constructed by `name` + `contextId`.
   * `var`: only creates new variable, if not already existing in scope (or ancestor scopes), else refers to existing variable.
   * `declarations` contains multiple `VariableDeclaration`, each referring to their own variable.
 * `AssignmentExpression`
-  * `uniquePathId`:
+  * `targetPathId`:
     * Locally, by name, in scope or ancestor scopes.
       * We can get this information from [Scope.bindings[name].referencePaths[0]](https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#bindings)
     * Global
@@ -156,9 +159,8 @@ function f(x) { return 'f' + x; };
 
 class A {
   // [f('p1')] = f(3);
-  // TODO: here, `traceWriteResolve` does two things: (i) resolve the write that reads val1Id, (ii) add a second read, that is the computed key f('p1')
   [traceWriteResolve(te(f('p1'), this, key1Id = traceId()), key1Id, val1Id)] = traceWriteDeferred(
-    deferredTargetPath(this, deferedVar(computedKey)), 
+    deferredTargetPath(this, deferedVar('key1Id')), 
     [ ... ],
     te(te(f, ...)(te(3, ...), ...),
     val1Id = traceId()
