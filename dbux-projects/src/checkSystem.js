@@ -2,7 +2,7 @@ import merge from 'lodash/merge';
 import semver from 'semver';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Process from './util/Process';
-import which, { hasWhich } from './util/which';
+import which from './util/which';
 
 /** @typedef {import('./ProjectsManager').default} ProjectManager */
 
@@ -13,51 +13,22 @@ const { log, debug, warn, error: logError } = logger;
 
 const option = { failOnStatusCode: false };
 
-let previousSuccess = false;
+let checkedRequirements = new Set();
 
 /**
- * @param {ProjectManager} manager 
+ * @param {Object} requirements 
  */
-async function updateCheckedStatus(success) {
-  // return await manager.externals.storage.set(keyName, status);
-  previousSuccess = success;
+function updateCheckedRequirements(requirements) {
+  checkedRequirements.add(JSON.stringify(requirements));
 }
 
 /**
- * @param {ProjectManager} manager 
+ * @param {Object} requirements 
  */
-function isChecked(/* manager */) {
-  // return manager.externals.storage.get(keyName, false);
-  return previousSuccess;
+function isChecked(requirements) {
+  return checkedRequirements.has(JSON.stringify(requirements));
 }
 
-/**
- * Find real path to `program`.
- * @param {string} program the program(command) name
- * @return {object} contains `path` if path to `program` is found.
- */
-async function check(program) {
-  try {
-    let paths = await which(program);
-    if (!paths?.length) {
-      return {};
-    }
-    return { path: paths[0], multiple: paths.length > 1 };
-  } catch (err) {
-    return {};
-  }
-}
-
-/**
- * Parse output of `node -v` and parse major version as integer to return.
- * @return {number} major version of `node`, `0` if parse failed or not installed.
- */
-// async function getNodeVersion() {
-//   let result = await Process.execCaptureOut(`node -v`, option);
-
-//   let matchResult = result.match(/v(\d*)/);
-//   return matchResult ? parseInt(matchResult[1], 10) : 0;
-// }
 
 /**
  * Get version of `program`.
@@ -80,11 +51,13 @@ function isWindows() {
 
 /**
  * @param {ProjectManager} projectManager 
- * @param {object} requirement
+ * @param {object} requirements
  * @param {boolean} calledFromUser 
  */
-async function _checkSystem(projectManager, requirement, calledFromUser) {
-  if (!calledFromUser && isChecked(projectManager)) return;
+async function _checkSystem(projectManager, requirements, calledFromUser) {
+  if (!calledFromUser && isChecked(requirements)) {
+    return;
+  }
 
   let results = {};
 
@@ -92,58 +65,44 @@ async function _checkSystem(projectManager, requirement, calledFromUser) {
   let modalMessage = 'Dbux requires the following programs to be installed and available on your system in order to run smoothly.' +
     ' Please make sure, you have all of them installed.\n\n';
 
-  if (await hasWhich()) {
-    for (let program of Object.keys(requirement)) {
-      results[program] = await check(program);
+  for (let program of Object.keys(requirements)) {
+    const result = { path: which(program) };
+    let message = '';
+    let requirement = requirements[program];
+
+    if (result.path) {
+      if (requirement.version) {
+        result.version = await getVersion(program);
+        if (semver.satisfies(result.version, requirement.version)) {
+          message += `✓  ${program}\n    Found at "${result.path}" (v${result.version} satisfies ${requirement.version})`;
+          result.success = true;
+        }
+        else {
+          message += `x  "${program}"\n Installed but the version v${result.version} does not satisfies the requirement "${requirement.version}". ` +
+            `Please upgrade to the required version.`;
+          result.success = false;
+        }
+      }
+      else {
+        message += `✓  ${program}\n    Found at "${result.path}"`;
+        result.success = true;
+      }
+    }
+    else {
+      message += `x  ${program}\n    Not found.`;
+      result.success = false;
     }
 
-    results.node.path && (results.node.version = await getVersion(`node`));
-
-    modalMessage += `✓  which/where.exe\n`;
-  } else {
-    success = false;
-    modalMessage += `x  which/where.exe\n` +
-      `    Cannot run the system check because you are on a legacy system. ` +
-      `We need "where.exe" to be available on Windows (available from Windows 7 and Windows Server 2003 onward), ` +
-      `and "which" on any other system. ` +
-      `If you are on Windows, please refer to: https://superuser.com/questions/49104/how-do-i-find-the-location-of-an-executable-in-window.\n`;
-  }
-
-  // debug(requirement, results);
-
-  for (let program of Object.keys(requirement)) {
-    let message = '';
-
-    let req = requirement[program];
-    let res = results[program];
-
-    if (res?.path && (!req.version || semver.satisfies(res.version, req.version))) {
-      message += `✓  ${program}\n    Found at "${res.path}"` + (req.version ? ` (v${res.version} satisfies ${req.version})` : ``);
-      res.success = true;
-      if (res.multiple) {
-        message += `\n    Warning: multiple path found while checking.`;
-      }
-    } else if (res?.path) {
-      message += `¯\\_(ツ)_/¯ "${program}" installed but old. Version is ${res.version} but we recommend ${req.version}. ` +
-        `Your version might or might not work. We strongly recommend upgrading to latest (or at least a later) version instead.`;
-      // success = false;
-    } else if (res) {
-      message += `x    ${program} not found.`;
-      res.success = success = false;
-    } else {
-      message += `?    ${program} not tested.`;
+    if (!result.success) {
       success = false;
-      requirement[program] = { success: false };
     }
 
     modalMessage += `${message}\n`;
   }
 
   modalMessage += success ?
-    `\nSUCCESS! All system dependencies seem to be in order.` :
-    `\nPROBLEM: One or more system dependencies are not installed. Fix them, then try again.`;
-
-  // debug(success, modalMessage);
+    `\nSUCCESS! All system dependencies have been installed.` :
+    `\nFAILED: One or more requirement does not satisfied.`;
 
   if ((results?.git?.success === false || results?.bash?.success === false) && isWindows()) {
     modalMessage += '\n\nWindows users can install bash and git into $PATH by installing "git" ' +
@@ -152,26 +111,26 @@ async function _checkSystem(projectManager, requirement, calledFromUser) {
       '2. then run: choco install git.install --params "/GitAndUnixToolsOnPath"';
   }
 
+  if (success) {
+    updateCheckedRequirements(requirements);
+  }
+
   let ignore = false;
-  if (!success || calledFromUser) {
-    if (success) {
-      await projectManager.externals.showMessage.info(modalMessage, {}, { modal: true });
-    }
-    else {
-      const options = !calledFromUser ? {
-        [`Ignore and run anyway!`]: () => {
-          ignore = true;
-        }
-      } : {};
-      await projectManager.externals.showMessage.warning(modalMessage, options, { modal: true });
-    }
+  if (!success) {
+    const options = !calledFromUser ? {
+      [`Ignore and run anyway!`]: () => {
+        ignore = true;
+      }
+    } : {};
+    await projectManager.externals.showMessage.warning(modalMessage, options, { modal: true });
+  }
+  else if (calledFromUser) {
+    await projectManager.externals.showMessage.info(modalMessage, {}, { modal: true });
   }
 
   if (!success && !calledFromUser && !ignore) {
     throw new Error(`[Dbux] System dependency check failed :(`);
   }
-
-  await updateCheckedStatus(success);
 }
 
 export function getRequirement(fullCheck) {
