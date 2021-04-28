@@ -714,7 +714,12 @@ export default class ProjectsManager {
   }
 
   hasInstalledSharedDependencies() {
-    return this.areDependenciesInstalled([]);
+    return !this.getMissingSharedDependencies().length;
+  }
+
+  getMissingSharedDependencies(deps) {
+    deps = this._getAllDependenciesToCheck(deps);
+    return deps.filter(dep => !this.isDependencyInstalled(dep));
   }
 
   areDependenciesInstalled(deps) {
