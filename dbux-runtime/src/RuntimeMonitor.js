@@ -327,7 +327,8 @@ export default class RuntimeMonitor {
       const { resumeId: resumeStaticContextId } = staticContext;
       const resumeContextId = this.pushResume(programId, resumeStaticContextId, resumeInProgramStaticTraceId);
 
-      // debug(awaitArgument, 'is awaited at context', awaitContextId);
+      debug(awaitArgument, 'is awaited at context', awaitContextId);
+      if (awaitArgument instanceof Promise) debug('this argument thread', this._runtime.getPromiseThreadId(awaitArgument));
 
       const { parentContextId } = executionContextCollection.getById(resumeContextId);
       const preEventContext = this.beforeAwaitContext.get(parentContextId);
@@ -496,13 +497,13 @@ export default class RuntimeMonitor {
 
     // about await part
     if (!(value instanceof Promise)) {
-      debug('instance is not promise');
+      // debug('instance is not promise');
       return value;
     }
 
     const promiseRunId = this._runtime.getPromiseRunId(value);
     if (promiseRunId && promiseRunId !== this._runtime.getCurrentRunId()) {
-      debug('promise not create in this run');
+      // debug('promise not create in this run');
       return value;
     }
     const calledContextId = this._runtime.getLastPoppedContextId();

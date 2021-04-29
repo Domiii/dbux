@@ -40,3 +40,5 @@ ex2();
 [Dbux Runtime] Add edge from run 4 to 6 type FORK
 [Dbux Runtime] set run 6 thread id 3
 */
+
+// where get probmise threaid 

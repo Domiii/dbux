@@ -390,6 +390,8 @@ export default class Runtime {
     // waitingStack.resumeFrom(contextId);
     const oldStack = this._executingStack;
 
+    // console.log(oldStack, waitingStack);
+
     if (oldStack !== waitingStack) {
       if (this.isExecuting()) {
         logError('`resume` received while already executing not handled properly yet. Discarding executing stack.');
@@ -429,13 +431,13 @@ export default class Runtime {
   _runStart(stack) {
     ++this._currentRunId;
     this._executingStack = stack;
-    // console.warn('[RunStart] ' + this._currentRunId); //, this.getLingeringStackCount());
+    // console.warn('[RunStart] ' + this._currentRunId, new Error().stack); //, this.getLingeringStackCount());
     // console.time('[RunEnd] ' + this._currentRunId);
   }
 
   _runFinished() {
     this._executingStack = null;
-    // console.warn('[RootEnd]', this._currentRootId, this.getLingeringStackCount());
+    // console.warn('[RunEnd]', this._currentRootId, this.getLingeringStackCount(), new Error().stack);
     // console.timeEnd('[RunEnd] ' + this._currentRunId);
   }
 
