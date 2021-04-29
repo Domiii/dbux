@@ -80,12 +80,12 @@ class GraphRoot extends HostComponentEndpoint {
     // register event listeners
     this.addDisposable(
       allApplications.selection.onApplicationsChanged(() => {
-        this.refresh();
+        this.updateRunNodes();
       })
     );
     this.addDisposable(
       this.context.graphDocument.onAsyncGraphModeChanged(() => {
-        this.refresh();
+        this.updateRunNodes();
       })
     );
 

@@ -39,7 +39,7 @@
     "object.fromentries": "^2.0.2",
     "open": "^7.1.0",
     "open-cli": "^6.0.0",
-    "sass-loader": "^8.0.2",styles.css
+    "sass-loader": "^8.0.2",
     "source-map-loader": "^1.0.0",
     "string-replace-loader": "2.3.0",
     "style-loader": "^1.1.3",

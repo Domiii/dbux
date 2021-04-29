@@ -18,8 +18,6 @@ const Verbose = true;
 // const Verbose = false;
 const debug = (...args) => Verbose && _debug(...args);
 
-const Verbose = 1;
-
 function _inheritsLoose(subClass, superClass) {
   if (superClass.prototype) {
     subClass.prototype = Object.create(superClass.prototype);
