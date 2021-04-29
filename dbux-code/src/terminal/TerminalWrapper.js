@@ -23,8 +23,8 @@ const { log, debug, warn, error: logError } = newLogger('terminalWrapper');
  * TODO: clean this up and move it to a more suitable place
  */
 async function getPathToNode() {
-  const volta = (await which('volta'));
-  if (volta) {
+  const hasVolta = !!which('volta');
+  if (hasVolta) {
     // get the actual Node binary location that is not inside the target directory (i.e. the globally installed version)
     return Process.execCaptureOut(`volta which node`, { processOptions: { cwd: __dirname } });
   }
