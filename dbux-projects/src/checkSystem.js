@@ -107,7 +107,7 @@ async function _checkSystem(projectManager, requirements, calledFromUser) {
   // TOTRANSLATE
   modalMessage += success ?
     `\nSUCCESS! All system dependencies seem to be in order.` :
-    `\nOne or more system dependencies are not installed. Fix them, then try again.`;
+    `\nFAILED: One or more system dependencies are not installed. Fix them, then try again.`;
 
   if ((results?.git?.success === false || results?.bash?.success === false) && isWindows()) {
     // TOTRANSLATE
