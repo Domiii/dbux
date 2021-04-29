@@ -6,11 +6,7 @@
  * 
  * Specifically, we focus on dynamic data slicing (as opposed to static or control slicing).
  * 
-<<<<<<< Updated upstream
- * Dynamic data slicing tracks reads and writes
-=======
  * Dynamic data slicing tracks reads and outs
->>>>>>> Stashed changes
  * to reconstruct the dependency graph between variables/memory addresses.
  * 
  * Check out `visit.md` and `samples\__samplesInput__\slicing` for more information and samples.
@@ -91,18 +87,6 @@ export function makeSliceTraceConfig() {
 
   return {
     // ########################################
-<<<<<<< Updated upstream
-    // writes
-    // ########################################
-    AssignmentExpression: {
-      write: 'left',
-      read: 'right'
-    },
-
-    VariableDeclarator: {
-      write: 'id',
-      read: {
-=======
     // outs
     // ########################################
     AssignmentExpression: {
@@ -113,7 +97,6 @@ export function makeSliceTraceConfig() {
     VariableDeclarator: {
       out: 'id',
       in: {
->>>>>>> Stashed changes
         id: 'init',
         optional: true
         // pre(path) {
@@ -123,34 +106,20 @@ export function makeSliceTraceConfig() {
     },
 
     ClassPrivateProperty: {
-<<<<<<< Updated upstream
-      write: {
-        id: getClassPropertyId
-      },
-      read: 'value'
-=======
       out: {
         id: getClassPropertyId
       },
       in: 'value'
->>>>>>> Stashed changes
     },
 
     ClassProperty: {
       // input() {
 
       // },
-<<<<<<< Updated upstream
-      write: {
-        id: getClassPropertyId
-      },
-      read: [
-=======
       out: {
         id: getClassPropertyId
       },
       in: [
->>>>>>> Stashed changes
         'value',
         {
           id({ node: { key, computed } }) {
@@ -187,11 +156,7 @@ export function makeSliceTraceConfig() {
      * Ternary operator
      */
     ConditionalExpression: {
-<<<<<<< Updated upstream
-      // [['test', ExpressionResult}, ['consequent', ExpressionResult}, ['alternate', ExpressionResult]]
-=======
       // [['test', ExpressionResult], ['consequent', ExpressionResult], ['alternate', ExpressionResult]]
->>>>>>> Stashed changes
     },
 
     /**
@@ -199,14 +164,6 @@ export function makeSliceTraceConfig() {
      */
     UpdateExpression: ExpressionResult,
 
-<<<<<<< Updated upstream
-    YieldExpression: {
-      // NoTrace,
-      // [['argument', ExpressionResult]]
-    },
-
-=======
->>>>>>> Stashed changes
 
     // ########################################
     // Data read expressions
@@ -283,15 +240,12 @@ export function makeSliceTraceConfig() {
       ReturnNoArgument,
       // [['argument', ReturnArgument]]
     },
-<<<<<<< Updated upstream
-=======
 
     YieldExpression: {
       // NoTrace,
       // [['argument', ExpressionResult]]
     },
 
->>>>>>> Stashed changes
     ThrowStatement: {
       // NoTrace,
       // [['argument', ThrowArgument]]
