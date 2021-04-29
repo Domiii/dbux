@@ -1,7 +1,6 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
-import ContextNode from './ContextNode';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('RunNode');
@@ -15,19 +14,18 @@ class RunNode extends HostComponentEndpoint {
 
     const dp = allApplications.getById(applicationId).dataProvider;
 
-    // add GraphNode
+    // Add GraphNode to pass the `setChildMode` from graphRoot to ContextNode
     this.controllers.createComponent('GraphNode', {
+      hasChildren: true,
       buttonDisabled: true
     });
 
     // add root context
     const firstContext = dp.util.getFirstContextOfRun(runId);
     if (firstContext) {
-      this.children.createComponent(ContextNode, {
-        applicationId,
-        context: firstContext
-      });
+      this.rootContextNode = this.context.graphRoot._buildContextNode(this, applicationId, firstContext, true);
       this.state.createdAt = dp.util.getRunCreatedAt(runId);
+      this.state.firstContextId = firstContext.contextId;
     }
     else {
       logError('Creating RunNode with no context');
@@ -35,8 +33,8 @@ class RunNode extends HostComponentEndpoint {
 
     const hiddenNodeManager = this.parent.controllers.getComponent('HiddenNodeManager');
     this.state.visible = hiddenNodeManager.shouldBeVisible(this);
-    this.state.childrenAmount = this.nTreeContexts;
-    this.state.uniqueChildrenAmount = this.nTreeStaticContexts;
+    // this.state.childrenAmount = this.nTreeContexts;
+    // this.state.uniqueChildrenAmount = this.nTreeStaticContexts;
   }
 
   get dp() {

@@ -308,7 +308,7 @@ export default class ExpressProject extends Project {
           'should work with IPv6 Host'
         ],
         testFilePaths: ['test/req.host.js'],
-        mochaArgs: '--globals setImmediate,clearImmediate',
+        testArgs: '--globals setImmediate,clearImmediate',
         require: [], // has no test.env
         bugLocations: [
           {
@@ -344,7 +344,7 @@ export default class ExpressProject extends Project {
         id: 25,
         testRe: 'should ignore object callback parameter with jsonp',
         testFilePaths: ['test/res.jsonp.js'],
-        mochaArgs: '--globals setImmediate,clearImmediate',
+        testArgs: '--globals setImmediate,clearImmediate',
         require: [],
         bugLocations: [241, 242].map(line => ({
           fileName: 'lib/response.js',
@@ -395,11 +395,12 @@ export default class ExpressProject extends Project {
           runArgs: [
             '--grep',
             `"${testRe}"`,
-            ...(bug.mochaArgs ? [bug.mochaArgs] : []),
+            ...(bug.testArgs ? [bug.testArgs] : []),
             '--',
             ...bug.testFilePaths
           ],
           require: bug.require || ['./test/support/env.js'],
+          dbuxArgs: '--pw=supertest',
           ...bug,
           // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
         };
@@ -432,16 +433,14 @@ export default class ExpressProject extends Project {
   }
 
   async testBugCommand(bug, cfg) {
-    const { projectPath } = this;
     // const bugArgs = this.getMochaRunArgs(bug);
     const bugConfig = this.getMochaCfg(bug, [
       '-t 10000' // timeout
     ]);
 
     const mochaCfg = {
-      cwd: projectPath,
-      ...bugConfig,
-      ...cfg
+      ...cfg,
+      ...bugConfig
     };
 
     return buildMochaRunCommand(mochaCfg);
@@ -450,16 +449,16 @@ export default class ExpressProject extends Project {
     //      see: https://code.visualstudio.com/blogs/2018/07/12/introducing-logpoints-and-auto-attach
     /*
     "type": "node",
-      "request": "launch",
-      "program": "${workspaceFolder}/node_modules/.bin/_mocha",
-      "runtimeArgs": [
-        "--stack-trace-limit=1000",
-        "--preserve-symlinks"
-      ],
-      "cwd": "${workspaceFolder}",
-      "args": [
-        // "--reporter=json",
-      ],
-      */
+    "request": "launch",
+    "program": "${workspaceFolder}/node_modules/.bin/_mocha",
+    "runtimeArgs": [
+      "--stack-trace-limit=1000",
+      "--preserve-symlinks"
+    ],
+    "cwd": "${workspaceFolder}",
+    "args": [
+      // "--reporter=json",
+    ],
+    */
   }
 }

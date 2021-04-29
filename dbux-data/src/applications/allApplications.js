@@ -112,14 +112,14 @@ export class AllApplications {
     this._activeApplicationsByPath.set(entryPointPath, application);
     this._all[applicationId] = application;
 
-    if (previousApplication) {
-      this._emitter.emit('restarted', application, previousApplication);
-      debug('restarted', entryPointPath);
-    }
-    else {
-      this._emitter.emit('added', application);
-      debug('added', entryPointPath);
-    }
+    // if (previousApplication) {
+    //   this._emitter.emit('restarted', application, previousApplication);
+    //   debug('restarted', entryPointPath);
+    // }
+    // else {
+    //   this._emitter.emit('added', application);
+    //   debug('added', entryPointPath);
+    // }
 
     if (previousApplication && this.selection.containsApplication(previousApplication)) {
       // application restarted -> automatically deselect previous instance and add new one
@@ -180,9 +180,10 @@ export class AllApplications {
   // event listeners
   // ###########################################################################
 
-  onAdded(cb) {
-    return this._emitter.on('added', cb);
-  }
+  // [Deprecated]: Use `allApplication.selection.onApplicationsChanged` instead
+  // onAdded(cb) {
+  //   return this._emitter.on('added', cb);
+  // }
 
   onRemoved(cb) {
     return this._emitter.on('removed', cb);
@@ -192,9 +193,10 @@ export class AllApplications {
     return this._emitter.on('clear', cb);
   }
 
-  onRestarted(cb) {
-    return this._emitter.on('restarted', cb);
-  }
+  // [Deprecated]: Use `allApplication.selection.onApplicationsChanged` instead
+  // onRestarted(cb) {
+  //   return this._emitter.on('restarted', cb);
+  // }
 
   toString() {
     const apps = this.getAll().map(a => a.toString());

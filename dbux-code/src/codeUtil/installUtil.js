@@ -3,6 +3,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { getOrCreateProjectManager } from '../projectViews/projectControl';
 import { showOutputChannel } from '../projectViews/projectViewsController';
 import { runTaskWithProgressBar } from './runTaskWithProgressBar';
+import { showWarningMessage } from './codeModals';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('installUtil');
@@ -16,7 +17,9 @@ export function initInstallUtil(extensionContext) {
 
 export async function installDbuxDependencies() {
   const projectManager = getOrCreateProjectManager();
-  debug('installing dependencies - installed:', projectManager.hasInstalledSharedDependencies());
+  const missingDependencies = projectManager.getMissingSharedDependencies();
+
+  debug(`Checking library dependencies. Found ${missingDependencies.length} missing: ${missingDependencies.join(', ')}`);
 
   if (projectManager.isInstallingSharedDependencies()) {
     throw new Error('Busy installing. This happens after extension installation (or update). This might (or might not) take a few minutes.');
@@ -24,29 +27,38 @@ export async function installDbuxDependencies() {
   if (!projectManager.hasInstalledSharedDependencies()) {
     await runTaskWithProgressBar(async (progress) => {
       // showOutputChannel();
-      progress.report({ message: 'New version. Installing deps (1-3 mins)...' });
 
-      debug('install: obtaining file lock');
+      if (process.env.NODE_ENV === 'development') {
+        // eslint-disable-next-line max-len
+        await showWarningMessage(`Development Mode: Found ${missingDependencies.length} missing libraries. Cancel and run yarn i!\n\n ${missingDependencies.join('\n ')}`, {}, { modal: true });
+      }
+      progress.report({ message: `New version. Installing ${missingDependencies.length} libraries (1-3 mins)${'...'}` });
 
       let lockfilePath = _extensionContext.asAbsolutePath('install.lock');
-      await new Promise((resolve, reject) => {
-        lockfile.lock(lockfilePath, { wait: 10 ** 9 }, (err) => {
-          if (err) {
-            reject(err);
-          }
-          else {
-            resolve();
-          }
+      debug(`install: obtaining file lock. If stuck here, make sure that no other VSCode instance is running and manually remove the lock file at: "${lockfilePath}"`);
+
+      try {
+        await new Promise((resolve, reject) => {
+          lockfile.lock(lockfilePath, { wait: 10 ** 9 }, (err) => {
+            if (err) {
+              reject(err);
+            }
+            else {
+              resolve();
+            }
+          });
         });
-      });
-      if (!projectManager.hasInstalledSharedDependencies()) {
-        debug('installing...');
-        await projectManager.installDependencies();
+        if (!projectManager.hasInstalledSharedDependencies()) {
+          debug('installing...');
+          await projectManager.installDependencies();
+        }
+        else {
+          debug('install: skipped');
+        }
       }
-      else {
-        debug('install: skipped');
+      finally {
+        lockfile.unlockSync(lockfilePath);
       }
-      lockfile.unlockSync(lockfilePath);
 
       debug('install: finished');
     }, { cancellable: false });

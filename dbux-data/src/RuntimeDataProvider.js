@@ -134,10 +134,12 @@ class ExecutionContextCollection extends Collection {
 
   add(entries) {
     for (const entry of entries) {
-      if (!entry.parentContextId) {
-        // set applicationId, so we can trace any data point back to it's application
-        entry.applicationId = this.dp.application.applicationId;
-      }
+      // if (!entry.parentContextId) {
+      //   // set applicationId, so we can trace any data point back to it's application
+      //   entry.applicationId = this.dp.application.applicationId;
+      // }
+
+      entry.applicationId = this.dp.application.applicationId;
     }
     super.add(entries);
   }
@@ -230,6 +232,41 @@ class TraceCollection extends Collection {
     }
   }
 
+  logCallResolveError(traceId, staticTrace, beforeCall, beforeCalls) {
+    const stackInfo = beforeCalls.map(t => t &&
+      `#${t?.staticTraceId} ${this.dp.collections.staticTraces.getById(t.staticTraceId)?.displayName || '(no staticTrace found)'}` ||
+      '(null)');
+
+    // eslint-disable-next-line max-len
+    logError(`Could not resolve resultCallId for trace #${staticTrace.staticTraceId} "${staticTrace.displayName}" (traceId ${traceId}). resultCallId ${staticTrace.resultCallId} not matching beforeCall.staticTraceId #${beforeCall?.staticTraceId || 'NA'}. BCE Stack:\n  ${stackInfo.join('\n  ')}`);
+  }
+
+  makeStaticTraceInfo(st) {
+    return `"${st?.displayName}" (${st.callId}, ${st?.staticTraceId}, ${st?._traceId})`;
+  }
+
+  makeTraceInfo(trace) {
+    const { traceId } = trace;
+    const st = this.dp.util.getStaticTrace(traceId);
+    const traceType = this.dp.util.getTraceType(traceId);
+    const typeName = TraceType.nameFrom(traceType);
+    return `[${typeName}] ${this.makeStaticTraceInfo(st)}`;
+  }
+
+  // checkLogInconsistentTrace(trace, stOrig) {
+  //   const { traceId } = trace;
+  //   const st = this.dp.util.getStaticTrace(traceId);
+
+  //   const { /* traceId, */ staticTraceId } = trace;
+  //   stOrig = this.dp.collections.staticTraces.getById(staticTraceId);
+
+  //   if (stOrig && st !== stOrig) {
+  //     logError(`inconsistent trace has two different STs: ${this.makeStaticTraceInfo(stOrig)} vs. ${this.makeStaticTraceInfo(st)}`);
+  //     return true;
+  //   }
+  //   return false;
+  // }
+
   /**
    * TODO: This will not work with asynchronous call expressions (which have `await` arguments).
    * @param {Trace[]} traces
@@ -252,7 +289,7 @@ class TraceCollection extends Collection {
           // NOTE: upon seeing a result, we need to pop *before* handling its potential role as argument
           let beforeCall = beforeCalls.pop();
           // debug('[callIds]', ' '.repeat(beforeCalls.length), '<', beforeCall.traceId, `(${staticTrace.displayName} [${TraceType.nameFrom(this.dp.util.getTraceType(traceId))}])`);
-          if (staticTrace.resultCallId !== beforeCall.staticTraceId) {
+          if (staticTrace.resultCallId !== beforeCall?.staticTraceId) {
             // maybe something did not get popped. Let's look for it directly!
             const idx = findLastIndex(beforeCalls, bce => bce.staticTraceId === staticTrace.resultCallId);
             if (idx >= 0) {
@@ -264,13 +301,17 @@ class TraceCollection extends Collection {
             else {
               // it's just not there...
               beforeCalls.push(beforeCall);   // something is wrong -> push it back
-              const stackInfo = beforeCalls.map(t => `#${t.staticTraceId} ${this.dp.collections.staticTraces.getById(t.staticTraceId)?.displayName || '(no staticTrace found)'}`);
 
-              // eslint-disable-next-line max-len
-              logError(`Could not resolve resultCallId for trace "#${staticTrace.staticTraceId} ${staticTrace.displayName}" (traceId ${traceId}). resultCallId ${staticTrace.resultCallId} not matching beforeCall.staticTraceId #${beforeCall.staticTraceId}. BCE Stack:\n  ${stackInfo.join('\n  ')}`);
+              // log error
+              this.logCallResolveError(traceId, staticTrace, beforeCall, beforeCalls);
 
+              // unset beforeCall
               beforeCall = null;
             }
+          }
+          else if (!beforeCall) {
+            // log error
+            this.logCallResolveError(traceId, staticTrace, beforeCall, beforeCalls);
           }
 
           if (beforeCall) {
@@ -283,8 +324,13 @@ class TraceCollection extends Collection {
           // call args: reference their call by `callId`
           const beforeCall = beforeCalls[beforeCalls.length - 1];
           if (staticTrace.callId !== beforeCall?.staticTraceId) {
+            // if (!this.checkLogInconsistentTrace(trace, staticTrace)) 
+            // {
             // eslint-disable-next-line max-len
-            logError('[callId]', beforeCall?.staticTraceId, staticTrace.staticTraceId, 'staticTrace.callId !== beforeCall.staticTraceId - is trace participating in a CallExpression-tree? [', staticTrace.displayName, '][', trace, '][', beforeCall, `]. Stack staticTraceIds: ${beforeCalls.map(t => t.staticTraceId)}`);
+            logError(`[${this.dp.util.getTraceProgramPath(traceId)}] [callId missing] beforeCall.callId !== staticTrace.staticTraceId - ${this.makeTraceInfo(beforeCall)} !== ${this.makeTraceInfo(trace)}`, '- is trace participating in a CallExpression-tree? [', staticTrace.displayName, `][${JSON.stringify(staticTrace.loc)}]. Stack staticTraces: ${beforeCalls.map(t =>
+              this.makeStaticTraceInfo(t.staticTraceId)
+            )}`);
+            // }
           }
           else {
             trace.callId = beforeCall.traceId;
@@ -349,8 +395,10 @@ class TraceCollection extends Collection {
           trace.staticTraceId = resultTrace.staticTraceId + 1;
         }
         else {
-          // the error trace is (probably) the trace following the last executed trace
-          trace.staticTraceId = staticTraceId + 1;
+          // // WARNING: the "+1" heuristic easily fails. E.g. in case of `IfStatement`, where `test` is visited after the blocks.
+          // trace.staticTraceId = staticTraceId + 1;
+
+          trace.staticTraceId = staticTraceId;
         }
       }
     }

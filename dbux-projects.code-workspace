@@ -19,6 +19,21 @@
 		},
 		{
 			"path": "dbux_projects/Chart.js"
+		},
+		{
+			"path": "dbux_projects/javascript-algorithms"
+		},
+		{
+			"path": "dbux_projects/2048"
+		},
+		{
+			"path": "dbux_projects/Editor.md"
+		},
+		{
+			"path": "dbux_projects/webpack"
+		},
+		{
+			"path": "dbux_projects/Webpack/webpack-cli"
 		}
 	],
 	"settings": {

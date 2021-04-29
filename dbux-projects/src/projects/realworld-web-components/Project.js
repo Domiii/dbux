@@ -31,7 +31,7 @@ export default class RealworldWebComponentsProject extends Project {
     this.runWebpack();
   }
 
-  async testBugCommand(bug, debugPort) {
+  async testBugCommand(bug, cfg) {
     // TODO: no bugs yet
   }
 }

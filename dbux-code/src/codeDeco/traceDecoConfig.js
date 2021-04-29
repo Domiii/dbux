@@ -28,13 +28,12 @@ const StylingsByName = {
   CallbackArgument: {
     styling: {
       after: {
-        // see https://www.alt-codes.net/hourglass-symbols
         contentText: 'ƒ',
         color: 'orange',
       }
     }
   },
-
+  
   PushCallback: {
     styling: {
       after: {
@@ -51,10 +50,11 @@ const StylingsByName = {
       }
     }
   },
-
+  
   Await: {
     styling: {
       after: {
+        // see https://www.alt-codes.net/hourglass-symbols
         contentText: '⧖',
         color: 'orange',
       }
@@ -197,7 +197,8 @@ const StylingsByName = {
   ExpressionValue: false,
   CallArgument: false,
   Callee: false,
-  EndOfContext: false
+  EndOfContext: false,
+  Parameter: false
 };
 
 const decoNamesByType = {
@@ -222,6 +223,22 @@ const decoNamesByType = {
     }
 
     return false;
+  },
+  ExpressionResult(dp, staticTrace, trace) {
+    const { traceId } = trace;
+    if (dp.util.isTraceFunctionValue(traceId)) {
+      return 'CallbackArgument';
+    }
+
+    return 'ExpressionResult';
+  },
+  Parameter(dp, staticTrace, trace) {
+    const { traceId } = trace;
+    if (dp.util.isTraceFunctionValue(traceId)) {
+      return 'CallbackArgument';
+    }
+
+    return 'ExpressionResult';
   }
 };
 

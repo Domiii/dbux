@@ -1,0 +1,12 @@
+diff --git a/js/keyboard_input_manager.js b/js/keyboard_input_manager.js
+index 88d7b3c..5eb8333 100644
+--- a/js/keyboard_input_manager.js
++++ b/js/keyboard_input_manager.js
+@@ -36,7 +36,6 @@ KeyboardInputManager.prototype.listen = function () {
+ 
+   var map = {
+     38: 0, // Up
+-    39: 1, // Right
+     40: 2, // Down
+     37: 3, // Left
+     75: 0, // Vim up

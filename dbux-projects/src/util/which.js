@@ -1,7 +1,7 @@
-
+import sh from 'shelljs';
 import fs from 'fs';
 import { newLogger } from '@dbux/common/src/log/logger';
-import Process from './Process';
+// import Process from './Process';
 
 /** @typedef {import('../../dbux-projects/src/ProjectsManager').default} ProjectManager */
 
@@ -10,14 +10,14 @@ const logger = newLogger('which');
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = logger;
 
-const defaultProcessOptions = { 
-  failOnStatusCode: false,
-  // logStdout: true,
-  // logStderr: true,
-  processOptions: {
-    cwd: __dirname // don't need a cwd for these global commands
-  }
-};
+// const defaultProcessOptions = { 
+//   failOnStatusCode: false,
+//   // logStdout: true,
+//   // logStderr: true,
+//   processOptions: {
+//     cwd: __dirname // don't need a cwd for these global commands
+//   }
+// };
 
 /**
  * Get real path of `path` by `fs.realpathSync`.
@@ -43,20 +43,21 @@ function getRealPath(path) {
  * @return {Promise<[string]>} the actual path where `command` is
  */
 export default async function which(command) {
-  const whichCommand = await lookupWhich();
-  if (!which) {
-    throw new Error(`Couldn't find which or where.exe in current system.`);
-  }
+  // const whichCommand = await lookupWhich();
+  // if (!which) {
+  //   throw new Error(`Couldn't find which or where.exe in current system.`);
+  // }
 
-  const cmd = `${whichCommand} ${command}`;
-  let result = await Process.execCaptureAll(cmd, defaultProcessOptions);
-  if (result.code) {
-    warn(`Couldn't find ${command} in $PATH. Got code ${result.code} when executing "${cmd}"`);
-    return null;
-    // throw new Error(`Couldn't find ${command} in $PATH. Got code ${result.code} when executing "${cmd}"`);
-  }
+  // const cmd = `${whichCommand} ${command}`;
+  // let result = await Process.execCaptureAll(cmd, defaultProcessOptions);
+  // if (result.code) {
+  //   warn(`Couldn't find ${command} in $PATH. Got code ${result.code} when executing "${cmd}"`);
+  //   return null;
+  //   // throw new Error(`Couldn't find ${command} in $PATH. Got code ${result.code} when executing "${cmd}"`);
+  // }
 
-  let paths = result.out.split(/\r?\n/);
+  // let paths = result.out;
+  const paths = sh.which(command).toString().split(/\r?\n/);
   let realPaths = [];
 
   for (let path of paths) {
@@ -73,6 +74,7 @@ export default async function which(command) {
   }
 
   return realPaths;
+  // return ;
 }
 
 let whichWhich;
@@ -80,34 +82,35 @@ let whichWhich;
  * For more information on where.exe: https://superuser.com/questions/49104/how-do-i-find-the-location-of-an-executable-in-windows
  * @return {Promise<string>} specify `which` or `where` is used, or empty string if none of them is found.
  */
-export async function lookupWhich() {
-  if (whichWhich) {
-    return whichWhich;
-  }
+// export async function lookupWhich() {
+//   if (whichWhich) {
+//     return whichWhich;
+//   }
 
-  whichWhich = '';
+//   whichWhich = '';
 
-  let whereResult = await Process.execCaptureAll(`where.exe where.exe`, defaultProcessOptions);
-  if (!whereResult.code) {
-    let path = getRealPath(whereResult.out);
-    if (path) {
-      whichWhich = path;
-    }
-  }
+//   let whereResult = await Process.execCaptureAll(`where.exe where.exe`, defaultProcessOptions);
+//   if (!whereResult.code) {
+//     let path = getRealPath(whereResult.out);
+//     if (path) {
+//       whichWhich = path;
+//     }
+//   }
 
-  let whichResult = await Process.execCaptureAll(`which which`, defaultProcessOptions);
-  if (!whichResult.code) {
-    let path = getRealPath(whichResult.out);
-    if (path) {
-      whichWhich = path;
-    }
-  }
+//   let whichResult = await Process.execCaptureAll(`which which`, defaultProcessOptions);
+//   if (!whichResult.code) {
+//     let path = getRealPath(whichResult.out);
+//     if (path) {
+//       whichWhich = path;
+//     }
+//   }
 
-  debug('whichWhich:', whichWhich);
+//   debug('whichWhich:', whichWhich);
 
-  return whichWhich;
-}
+//   return whichWhich;
+// }
 
 export async function hasWhich() {
-  return !!await lookupWhich();
+  // return !!await lookupWhich();
+  return true;
 }

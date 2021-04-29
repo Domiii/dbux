@@ -1,0 +1,32 @@
+const path = require('path');
+const buildWebpackConfig = require('./dbux.webpack.config.base');
+
+const { copyPlugin } = buildWebpackConfig;
+const ProjectRoot = path.resolve(__dirname);
+
+const customCfg = {
+  target: 'web',
+  src: ['js'],
+  devServer: {
+    // hot: false,
+    // inline: false
+  },
+  plugins: [
+    // new HtmlWebpackPlugin({
+    //   template: './index.html',
+    //   inject: 'head',
+    // }),
+    copyPlugin(ProjectRoot, ['index.html', 'style'])
+  ]
+};
+
+/*const overrides = (env, arg) => {
+  return {
+    // context: ProjectRoot,
+
+  }; 
+}*/
+
+const resultCfg = buildWebpackConfig(ProjectRoot, customCfg/* , overrides */);
+
+module.exports = resultCfg;

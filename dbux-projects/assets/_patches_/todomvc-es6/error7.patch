@@ -1,0 +1,13 @@
+diff --git a/src/view.js b/src/view.js
+index 315ed5c..5220e72 100644
+--- a/src/view.js
++++ b/src/view.js
+@@ -185,7 +185,7 @@ function _elementComplete(id, completed) {
+     return
+   }
+ 
+-  listItem.className = completed ? 'completed' : ''
++  listItem.className = completed ? 'compelted' : ''
+ 
+   // In case it was toggled from an event and not by clicking the checkbox
+   qs('input', listItem).checked = completed

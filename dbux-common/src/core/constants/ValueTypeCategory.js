@@ -41,6 +41,14 @@ export function isObjectCategory(category) {
   return category >= ValueTypeCategory.Function;
 }
 
+/**
+ * NOTE: strings are not trackable because `WeakMap` cannot index them.
+ *    (That is because we can construct two strings that are equal according to `===` but are not referencing the same string.)
+ */
+export function isTrackableCategory(category) {
+  return isObjectCategory(category);
+}
+
 export function isPlainObjectOrArrayCategory(category) {
   return category >= ValueTypeCategory.Object;
 }
@@ -64,7 +72,8 @@ export default ValueTypeCategory;
 let ValuePruneState = {
   Normal: 0,
   Omitted: 1,
-  Shortened: 2
+  Shortened: 2,
+  ValueDisabled: 3
 };
 
 ValuePruneState = new Enum(ValuePruneState);

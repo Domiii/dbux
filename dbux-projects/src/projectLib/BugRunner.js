@@ -1,9 +1,14 @@
 import NanoEvents from 'nanoevents';
+import path from 'path';
 import sh from 'shelljs';
+import isObject from 'lodash/isObject';
+import isString from 'lodash/isString';
+import toString from 'serialize-javascript';
 import SerialTaskQueue from '@dbux/common/src/util/queue/SerialTaskQueue';
-import sleep from '@dbux/common/src/util/sleep';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import Process from '../util/Process';
 import BugRunnerStatus from './RunStatus';
 
@@ -11,7 +16,7 @@ import BugRunnerStatus from './RunStatus';
 /** @typedef {import('./Bug').default} Bug */
 /** @typedef {import('./Project').default} Project */
 
-const Verbose = true;
+const activatedBugKeyName = 'dbux.dbux-projects.activatedBug';
 
 export default class BugRunner {
   /**
@@ -38,14 +43,20 @@ export default class BugRunner {
     this.status = BugRunnerStatus.None;
     this._ownLogger = newLogger('BugRunner');
     this._emitter = new NanoEvents();
+
+    this._bug = this.getSavedActivatedBug();
   }
 
   get logger() {
-    return this._project?.logger || this._ownLogger;
+    return this.project?.logger || this._ownLogger;
   }
 
   get bug() {
     return this._bug;
+  }
+
+  get project() {
+    return this.bug?.project || null;
   }
 
   /**
@@ -86,19 +97,15 @@ export default class BugRunner {
   // ###########################################################################
 
   isBusy() {
-    return this._queue.isBusy() || this._process || this._project;
+    return this._queue.isBusy() || this._process || this.bug;
   }
 
   isProjectActive(project) {
-    return this._project === project;
+    return this.project === project;
   }
 
   isBugActive(bug) {
-    return this._bug === bug;
-  }
-
-  getActiveBug() {
-    return this._bug;
+    return this.bug === bug;
   }
 
   // ###########################################################################
@@ -106,7 +113,7 @@ export default class BugRunner {
   // ###########################################################################
 
   // async _runOnProject(cb, ...args) {
-  //   const project = this._project;
+  //   const project = this.project;
   //   project._runner = this;
   //   try {
   //     return cb.apply(project, ...args);
@@ -121,11 +128,14 @@ export default class BugRunner {
    * NOTE: synchronized.
    */
   async activateProject(project) {
-    console.warn('########', this.isProjectActive(project) && project._installed, this.isProjectActive(project), project._installed);
     if (this.isProjectActive(project) && project._installed) {
       return;
     }
 
+    // init
+    await project.initProject();
+
+    // install
     await project.installProject();
     project._installed = true;
   }
@@ -152,7 +162,6 @@ export default class BugRunner {
 
     const { project } = bug;
     this._bug = bug;
-    this._project = project;
 
     this.setStatus(BugRunnerStatus.Busy);
 
@@ -169,6 +178,7 @@ export default class BugRunner {
         //   // }
         // },
         // select bug
+
         project.selectBug.bind(project, bug),
 
         // `npm install` again (NOTE: the newly checked out tag might have different dependencies)
@@ -178,15 +188,23 @@ export default class BugRunner {
         // Auto commit again
         project.autoCommit.bind(project, bug),
 
-        // start watch mode (if necessary)
-        project.startWatchModeIfNotRunning.bind(project, bug),
-
-        () => bug.website ? this.manager.externals.openWebsite(bug.website) : null,
+        async () => await this.saveActivatedBug()
       );
+    }
+    catch (err) {
+      this._bug = null;
+      throw err;
     }
     finally {
       this._updateStatus();
     }
+  }
+
+  async deactivateBug() {
+    const { bug } = this;
+    this._bug = null;
+    await this.saveActivatedBug();
+    return bug;
   }
 
   /**
@@ -200,39 +218,71 @@ export default class BugRunner {
    * @returns {Promise<ExecuteResult>}
    */
   async testBug(bug, cfg) {
-    const { project } = bug;
+    const { project, website } = bug;
 
     try {
       this.setStatus(BugRunnerStatus.Busy);
 
+      // init bug
+      await project.initBug(bug);
+
+      // after initBug, produce final cfg
+      const cwd = path.resolve(project.projectPath, bug.cwd || '');
+
       cfg = {
-        debugPort: cfg?.debugMode && this.debugPort || null,
-        dbuxJs: cfg?.dbuxEnabled ? this.manager.getDbuxCliBinPath() : null,
         ...cfg,
+        cwd,
+        debugPort: cfg?.debugMode && this.debugPort || null,
+        dbuxJs: (cfg?.dbuxEnabled && project.needsDbuxCli) ? this.manager.getDbuxCliBinPath() : null,
+        dbuxArgs: [cfg?.dbuxArgs, bug.dbuxArgs].filter(a => !!a).join(' ')
       };
-      let command = await bug.project.testBugCommand(bug, cfg);
+
+      // build the run command
+      let commandOrCommandCfg = await project.testBugCommand(bug, cfg);
+      let command, commandOptions;
+      if (isObject(commandOrCommandCfg)) {
+        ([command, commandOptions] = commandOrCommandCfg);
+      }
+      else if (commandOrCommandCfg && !isString(commandOrCommandCfg)) {
+        throw new Error(`testBugCommand must return string or object or falsy, but instead returned: ${toString(commandOrCommandCfg)}`);
+      }
+      else {
+        command = commandOrCommandCfg;
+      }
       command = command?.trim().replace(/\s+/, ' ');  // get rid of unnecessary line-breaks and multiple spaces
 
-      if (!command) {
+      // ensure RuntimeServer is ready to receive the result
+      await this.manager.externals.initRuntimeServer();
+
+      // start watch mode (if necessary)
+      await project.startWatchModeIfNotRunning(bug);
+
+      if (command) {
+        const result = await this.manager.execInTerminal(cwd, command, commandOptions || EmptyObject);
+        this._emitter.emit('testFinished', bug, result);
+        return result;
+      }
+      else if (website) {
+        const waitForNewAppPromise = new Promise((resolve) => {
+          const unsubscribe = allApplications.selection.onApplicationsChanged((apps) => {
+            unsubscribe();
+            resolve(apps);
+          }, false);
+        });
+        const successful = await this.manager.externals.openWebsite(website);
+        if (successful) {
+          await waitForNewAppPromise;
+        }
+        else {
+          this.logger.warn(`Cannot open website ${website}`);
+        }
+        return 0;
+      }
+      else {
         // nothing to do
         project.logger.debug('testBugCommand did not return anything. Nothing left to do.');
         // throw new Error(`Invalid testBugCommand implementation in ${project} - did not return anything.`);
         return null;
-      }
-      else {
-        const cwd = project.projectPath;
-        // const devMode = process.env.NODE_ENV === 'development';
-        const args = {
-          // NOTE: DBUX_ROOT + NODE_ENV are provided by webpack
-
-          // DBUX_ROOT: devMode ? fs.realpathSync(path.join(__dirname, '..', '..')) : null,
-          // NODE_ENV: process.env.NODE_ENV
-        };
-        // `args` in execInTerminal not working with anything now
-        const result = await this.manager.execInTerminal(cwd, command, args);
-        project.logger.log(`Result: ${result}`);
-        this._emitter.emit('testFinished', bug, result);
-        return result;
       }
     }
     catch (err) {
@@ -241,7 +291,6 @@ export default class BugRunner {
       return null;
     }
     finally {
-      // need to check this._project exist, it might be kill during activating
       this._updateStatus();
     }
   }
@@ -259,7 +308,8 @@ export default class BugRunner {
 
     this._process = new Process();
     try {
-      return await this._process.start(cmd, logger, options, input);
+      await this._process.start(cmd, logger, options, input);
+      return this._process.code;
     }
     finally {
       this._process = null;
@@ -281,16 +331,15 @@ export default class BugRunner {
     this._terminalWrapper = null;
 
     // kill active process
-    await this._process?.kill();
+    await this._process?.killSilent();
 
     await queuePromise;
 
     // kill background processes
-    const backgroundProcesses = this._project?.backgroundProcesses || EmptyArray;
-    await Promise.all(backgroundProcesses.map(p => p.kill()));
+    const backgroundProcesses = this.project?.backgroundProcesses || EmptyArray;
+    await Promise.all(backgroundProcesses.map(p => p.killSilent()));
 
-    this._bug = null;
-    this._project = null;
+    await this.deactivateBug();
 
     this.setStatus(BugRunnerStatus.None);
   }
@@ -311,10 +360,10 @@ export default class BugRunner {
    * @param {Project} project 
    */
   maybeSetStatusNone(project) {
-    if (!this._project || this._project !== project) {
+    if (this.project !== project) {
       this._ownLogger.error(`Project ${project.name} claimed to finished its background processes after BugRunner deactivate it.`);
     }
-    else if (project.backgroundProcesses.length) {
+    else if (project?.backgroundProcesses.length) {
       this._ownLogger.error(`Project ${project.name} called \`maybeSetStatusNone\` before all background processes finished.`);
     }
     else {
@@ -323,7 +372,8 @@ export default class BugRunner {
   }
 
   _updateStatus() {
-    if (this._project?.backgroundProcesses.length) {
+    // need to check this.project exist, it might be kill during activating
+    if (this.project?.backgroundProcesses.length) {
       this.setStatus(BugRunnerStatus.RunningInBackground);
     }
     else {
@@ -334,5 +384,20 @@ export default class BugRunner {
   onStatusChanged(cb) {
     cb(this.status);
     return this._emitter.on('statusChanged', cb);
+  }
+
+  // ###########################################################################
+  //  Bug save util
+  // ###########################################################################
+
+  async saveActivatedBug() {
+    await this.manager.setKeyToBug(activatedBugKeyName, this.bug);
+  }
+
+  /**
+   * @return {Bug}
+   */
+  getSavedActivatedBug() {
+    return this.manager.getBugByKey(activatedBugKeyName);
   }
 }

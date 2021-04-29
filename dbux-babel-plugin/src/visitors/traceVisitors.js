@@ -361,7 +361,7 @@ function normalizeConfigNode(parentCfg, visitorName, cfgNode) {
 
   if (children) {
     if (!Array.isArray(children)) {
-      throw new Error('invalid config node. Children must be an array of arrays: ' + JSON.stringify(visitorName));
+      throw new Error('invalid config node. `children` must be an array of arrays for visitor: ' + JSON.stringify(visitorName));
     }
     cfgNode.children = children.map(([childName, ...childCfg]) => {
       return normalizeConfigNode(cfgNode, childName, childCfg);
@@ -387,8 +387,14 @@ function normalizeConfig(cfg) {
 
 function enterExpression(traceResultType, path, state) {
   if (isCallPath(path)) {
+    // call expressions get special treatment
     // some of the ExpressionResult + ExpressionValue nodes we are interested in, might also be CallExpressions
     return enterCallExpression(traceResultType, path, state);
+  }
+
+  if (t.isAwaitExpression(path)) {
+    // await expressions get special treatment
+    return awaitVisitEnter(path, state);
   }
 
   // we want to trace CallResult on exit
@@ -401,8 +407,8 @@ function enterExpression(traceResultType, path, state) {
 function enterCallExpression(traceResultType, path, state) {
   // CallExpression
 
-  // TODO: fix for parameter assignments in function declarations: `function f(x = o.g()) { }`
-  //      NOTE: in this case, utility variables are allocated inside function; but that will not fly.
+  // TODO: need to fix for parameter assignments in function declarations: `function f(x = o.g()) { }`
+  //      NOTE: in this case, utility variables are allocated inside function; but that would change semantics.
   const parent = path.parentPath;
   const grandParent = path.parentPath?.parentPath;
   if (grandParent &&
@@ -461,22 +467,6 @@ const enterInstrumentors = {
     const traceStart = buildTraceNoValue(path, state, TraceType.Statement);
     path.insertBefore(traceStart);
   },
-  Block(path, state) {
-    // NOTE: don't change order of statements here. We first MUST build all new nodes
-    //    before instrumenting the path (because instrumentation causes the path to lose information)
-    const trace = buildTraceNoValue(path, state, TraceType.BlockStart);
-    const traceEnd = buildTraceNoValue(path, state, TraceType.BlockEnd);
-
-    path.insertBefore(trace);
-    path.insertAfter(traceEnd);
-    // if (!t.isBlockStatement(path)) {
-    //   // make a new block
-
-    // }
-    // else {
-    //   // insert at the top of existing block
-    // }
-  },
   Loop(path, state) {
     // loopVisitor(path, state);
   },
@@ -520,7 +510,13 @@ function wrapExpression(traceType, path, state) {
   let tracePath = getTracePath(path);
 
   if (isCallPath(path)) {
+    // call expressions get special treatment
     return wrapCallExpression(path, state);
+  }
+
+  if (t.isAwaitExpression(path)) {
+    // await expressions get special treatment
+    return awaitVisitExit(path, state);
   }
 
   if (traceType === TraceType.ExpressionResult) {
@@ -551,6 +547,22 @@ function wrapCallExpression(path, state) {
  * potentially can be `CallExpression`.
  */
 const exitInstrumentors = {
+  Block(path, state) {
+    // NOTE: don't change order of statements here. We first MUST build all new nodes
+    //    before instrumenting the path (because instrumentation causes the path to lose information)
+    const trace = buildTraceNoValue(path, state, TraceType.BlockStart);
+    const traceEnd = buildTraceNoValue(path, state, TraceType.BlockEnd);
+
+    path.insertBefore(trace);
+    path.insertAfter(traceEnd);
+    // if (!t.isBlockStatement(path)) {
+    //   // make a new block
+
+    // }
+    // else {
+    //   // insert at the top of existing block
+    // }
+  },
   CallExpression(path, state) {
     return wrapExpression(null, path, state);
   },

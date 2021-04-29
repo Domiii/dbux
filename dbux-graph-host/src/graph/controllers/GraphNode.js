@@ -3,6 +3,11 @@ import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
 export default class GraphNode extends HostComponentEndpoint {
+  /**
+   * Owner requirement:
+   *  property `childrenBuilt`
+   *  method `buildChildNodes`
+   */
   init() {
     const parent = this.owner.parent?.controllers.getComponent(GraphNode);
 
@@ -15,7 +20,7 @@ export default class GraphNode extends HostComponentEndpoint {
       }
     }
   }
-
+  
   getChildMode() {
     const { mode } = this.state;
     switch (mode) {
@@ -33,11 +38,25 @@ export default class GraphNode extends HostComponentEndpoint {
   }
 
   setMode(mode) {
+    if (mode !== GraphNodeMode.Collapsed && this.owner.childrenBuilt === false) {
+      this.owner.context.graphRoot.buildContextNodeChildren(this.owner);
+    }
+
+    if (this.state.mode === mode) {
+      // nothing left to do
+      return;
+    }
+    
     this.setOwnMode(mode);
     // GraphNodeMode.switchCall(mode, this.modeHandlers);
 
     // propagate mode to sub graph
     const childMode = this.getChildMode();
+    for (const child of this.owner.children) {
+      if (!hasGraphNode(child)) {
+        this.logger.warn(`GraphNode owner's children contains no graphNode`);
+      }
+    }
     for (const child of this.owner.children.filter(hasGraphNode)) {
       child.controllers.getComponent(GraphNode).setMode(childMode);
     }
@@ -87,7 +106,7 @@ export default class GraphNode extends HostComponentEndpoint {
       let mode = this.getNextMode();
       const { firstTrace: trace } = this.owner;
       const { context } = this.owner.state;
-      this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphNodeCollapseChange, { mode, context, trace });
+      this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphNodeCollapseChange, { context, trace, mode });
       this.setMode(mode);
     },
     reveal: this.reveal

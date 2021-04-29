@@ -1,10 +1,10 @@
-
+import merge from 'lodash/merge';
 import semver from 'semver';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Process from './util/Process';
 import which, { hasWhich } from './util/which';
 
-/** @typedef {import('../../dbux-projects/src/ProjectsManager').default} ProjectManager */
+/** @typedef {import('./ProjectsManager').default} ProjectManager */
 
 const logger = newLogger('checkSystem');
 
@@ -62,11 +62,11 @@ async function check(program) {
 /**
  * Get version of `program`.
  * @param {string} program 
- * @return {string} semver of `program`
+ * @return {Promise<string>} semver of `program`
  */
 async function getVersion(program) {
   let result = await Process.execCaptureOut(`${program} --version`, option);
-  
+
   return semver.valid(semver.coerce(result));
 }
 
@@ -174,6 +174,23 @@ async function _checkSystem(projectManager, requirement, calledFromUser) {
   await updateCheckedStatus(success);
 }
 
+export function getRequirement(fullCheck) {
+  if (!fullCheck) {
+    return {
+      node: { version: ">=12" },
+      npm: {},
+    };
+  }
+  else {
+    return {
+      bash: {},
+      node: { version: ">=12" },
+      npm: {},
+      git: {},
+    };
+  }
+}
+
 /**
  * Entry point of checking system compatibility
  * @param {ProjectManager} projectManager
@@ -181,18 +198,8 @@ async function _checkSystem(projectManager, requirement, calledFromUser) {
  * @param {boolean} fullCheck if false, skip checking `git` and `bash`.
  */
 export async function checkSystem(projectManager, calledFromUser, fullCheck) {
-  const simpleCheckRequirement = {
-    node: { version: ">=12" },
-    npm: {},
-  };
-  const fullCheckRequirement = {
-    bash: {},
-    node: { version: ">=12" },
-    npm: {},
-    git: {},
-  };
-
-  await _checkSystem(projectManager, fullCheck ? fullCheckRequirement : simpleCheckRequirement, calledFromUser);
+  const requirement = getRequirement(fullCheck);
+  await _checkSystem(projectManager, requirement, calledFromUser);
 }
 
 /**
@@ -201,5 +208,6 @@ export async function checkSystem(projectManager, calledFromUser, fullCheck) {
  * @param {object} requirement 
  */
 export async function checkSystemWithRequirement(projectManager, requirement) {
+  requirement = merge({}, getRequirement(true), requirement);
   await _checkSystem(projectManager, requirement, false);
 }

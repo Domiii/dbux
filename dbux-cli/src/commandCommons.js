@@ -1,4 +1,5 @@
 import fs from 'fs';
+import path from 'path';
 
 export function buildCommonCommandOptions() {
   return {
@@ -31,12 +32,43 @@ export function buildCommonCommandOptions() {
       type: 'string',
     },
     packageWhitelist: {
-      alias: ['w'],
+      alias: ['pw'],
       describe: "Specify which packages will be instrumented.",
       default: '',
       // type: 'array',
+    },
+    runtime: {
+      alias: ['rt'],
+      describe: 'Runtime config (JSON.stringify)',
+      // example: "{\"tracesDisabled\":1}"
+      default: null
+    },
+    require: {
+      alias: ['r'],
+      describe: 'Require files, after babel/register, but before doing the actual work.',
+      // example: "{\"tracesDisabled\":1}"
+      default: null
     }
   };
+}
+
+/**
+ * Some options require extra work, before executing the actual command.
+ */
+export function processRemainingOptions(options) {
+  const {
+    require: req
+  } = options;
+
+  // console.warn('require', req);
+  if (req) {
+    req.split(',').forEach(f => {
+      f = path.resolve(process.cwd(), f);
+      // eslint-disable-next-line import/no-dynamic-require
+      const requireFunc = typeof __non_webpack_require__ === "function" ? __non_webpack_require__ : require;
+      requireFunc(f);
+    });
+  }
 }
 
 export function resolveCommandTargetPath(file) {

@@ -1,6 +1,7 @@
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import which from '@dbux/projects/src/util/which';
+import sleep from '@dbux/common/src/util/sleep';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('terminalUtil');
@@ -9,6 +10,11 @@ const DefaultTerminalName = 'dbux-run';
 
 export function createDefaultTerminal(cwd) {
   return createTerminal(DefaultTerminalName, cwd);
+}
+
+export function recreateTerminal(terminalOptions) {
+  closeTerminal(terminalOptions.name);
+  return window.createTerminal(terminalOptions);
 }
 
 export function createTerminal(name, cwd) {
@@ -30,8 +36,16 @@ export function sendCommandToDefaultTerminal(cwd, command) {
   return terminal;
 }
 
+export function findTerminal(name) {
+  return window.terminals.find(t => t.name === name);
+}
+
+export function closeDefaultTerminal() {
+  closeTerminal(DefaultTerminalName);
+}
+
 export function closeTerminal(name) {
-  let terminal = window.terminals.find(t => t.name === name);
+  let terminal = findTerminal(name);
   terminal?.dispose();
 }
 
@@ -39,21 +53,21 @@ export function closeTerminal(name) {
 //   return string.replace(/"/g, `\\"`).replace(/`/g, "\\`");
 // }
 
-export async function execCommand(cwd, command) {
+export async function runInTerminal(cwd, command) {
   const name = DefaultTerminalName;
   closeTerminal(name);
 
   let pathToBash = (await which('bash'))[0];
 
   // WARNING: terminal is not properly initialized when running the command. cwd is not set when executing `command`.
-  const wrappedCommand = `cd "${cwd}" && ${command} ; sleep 10`;
+  const wrappedCommand = `cd "${cwd}" && ${command}; read -p "(Done. Press any key to exit.)"`;
 
   const terminalOptions = {
     name: DefaultTerminalName,
     cwd,
     shellPath: pathToBash,
-    shellArgs: ['-c', wrappedCommand],
-    // shellArgs: ['-c', 'pwd && sleep 1000'],
+    // shellArgs: [wrappedCommand],
+    shellArgs: ['-c', wrappedCommand]
   };
 
   // debug(`[execCommandInTerminal] ${cwd}$ ${command}`);
@@ -97,12 +111,34 @@ export async function queryTerminalPid() {
   return terminal.processId; // NOTE: processId returns a promise!
 }
 
+export function getOrCreateTerminal(terminalOptions) {
+  const { name } = terminalOptions;
+  let terminal = findTerminal(name);
+  if (!terminal) {
+    terminal = window.createTerminal(terminalOptions);
+  }
+  return terminal;
+}
 
-export function runInTerminalInteractive(terminalName, cwd, command) {
+
+export async function runInTerminalInteractive(cwd, command, createNew = false) {
   if (!command) {
     throw new Error('command for runInTerminalInteractive is empty: ' + command);
   }
-  const terminal = createTerminal(terminalName, cwd);
+  const terminalName = DefaultTerminalName;
+
+  let pathToBash = (await which('bash'))[0];
+
+  const terminalOptions = {
+    name: terminalName,
+    cwd,
+    shellPath: pathToBash
+  };
+  const terminal = createNew ?
+    recreateTerminal(terminalOptions) :
+    getOrCreateTerminal(terminalOptions);
+
+  await sleep(300);
 
   terminal.sendText(command, true);
   terminal.show(false);

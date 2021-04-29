@@ -1,0 +1,63 @@
+diff --git a/js/grid.js b/js/grid.js
+index 29f0821..cb9b639 100644
+--- a/js/grid.js
++++ b/js/grid.js
+@@ -1,4 +1,4 @@
+-function Grid(size, previousState) {
++window.Grid = function Grid(size, previousState) {
+   this.size = size;
+   this.cells = previousState ? this.fromState(previousState) : this.empty();
+ }
+diff --git a/js/game_manager.js b/js/game_manager.js
+index 29f0821..cb9b639 100644
+--- a/js/game_manager.js
++++ b/js/game_manager.js
+@@ -1,4 +1,4 @@
+-function GameManager(size, InputManager, Actuator, StorageManager) {
++window.GameManager = function GameManager(size, InputManager, Actuator, StorageManager) {
+  this.size           = size; // Size of the grid
+  this.inputManager   = new InputManager;
+  this.storageManager = new StorageManager;
+diff --git a/js/html_actuator.js b/js/html_actuator.js
+index 6b31f2d..6fe866b 100644
+--- a/js/html_actuator.js
++++ b/js/html_actuator.js
+@@ -1,4 +1,4 @@
+-function HTMLActuator() {
++window.HTMLActuator = function HTMLActuator() {
+   this.tileContainer    = document.querySelector(".tile-container");
+   this.scoreContainer   = document.querySelector(".score-container");
+   this.bestContainer    = document.querySelector(".best-container");
+diff --git a/js/keyboard_input_manager.js b/js/keyboard_input_manager.js
+index ca01b3c..88d7b3c 100644
+--- a/js/keyboard_input_manager.js
++++ b/js/keyboard_input_manager.js
+@@ -1,4 +1,4 @@
+-function KeyboardInputManager() {
++window.KeyboardInputManager = function KeyboardInputManager() {
+   this.events = {};
+ 
+   if (window.navigator.msPointerEnabled) {
+diff --git a/js/local_storage_manager.js b/js/local_storage_manager.js
+index 2ca9cc3..cbc5e36 100644
+--- a/js/local_storage_manager.js
++++ b/js/local_storage_manager.js
+@@ -18,7 +18,7 @@ window.fakeStorage = {
+   }
+ };
+ 
+-function LocalStorageManager() {
++window.LocalStorageManager = function LocalStorageManager() {
+   this.bestScoreKey     = "bestScore";
+   this.gameStateKey     = "gameState";
+ 
+diff --git a/js/tile.js b/js/tile.js
+index 92a670a..ef8e57e 100644
+--- a/js/tile.js
++++ b/js/tile.js
+@@ -1,4 +1,4 @@
+-function Tile(position, value) {
++window.Tile = function Tile(position, value) {
+   this.x                = position.x;
+   this.y                = position.y;
+   this.value            = value || 2;

@@ -89,7 +89,7 @@ function wrapProgram(path, state) {
 // ###########################################################################
 
 /**
- * NOTE: Rollup will run every file twice. The first time, only containing "__ROLLUP__PREFLIGHT_CHECK_DO_NOT_TOUCH__"
+ * 
  */
 function enter(buildCfg, path, state) {
   // const cfg = state.opts;
@@ -110,6 +110,8 @@ function enter(buildCfg, path, state) {
     fileName,
     filePath,
   } = state;
+
+  // debug(`babel-plugin: ${filePath}`);
 
   // staticProgramContext
   const staticProgramContext = {
@@ -151,7 +153,7 @@ function traverse(path, state, visitors) {
     // hackfix: if we don't re-throw here, babel swallows the error for some reason
     // console.error(err);
     // throw new Error('traversal failed');
-    logError('traversal failed');
+    logError('traversal failed:', err.message);
     throw err;
   }
 }

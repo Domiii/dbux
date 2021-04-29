@@ -54,6 +54,17 @@
 		"scope": "css,scss"
 	},
 
+  "New Logger": {
+		"prefix": "newlogger",
+		"body": [
+			"import { newLogger } from '@dbux/common/src/log/logger';",
+      "",
+      "// eslint-disable-next-line no-unused-vars",
+      "const { log, debug, warn, error: logError } = newLogger('$1');",
+		],
+		"scope": "javascript,typescript"
+	},
+
   "JSDoc: @type": {
     "prefix": "@type",
     "body": [

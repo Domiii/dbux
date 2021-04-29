@@ -1,8 +1,7 @@
-import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { registerCommand } from './commandUtil';
 import { showInformationMessage } from '../codeUtil/codeModals';
-import { switchMode } from '../traceDetailsView/nodes/StaticTraceTDNodes';
+import { nextMode } from '../traceDetailsView/nodes/ExecutionsTDNodes';
 import { NavigationMethods } from '../traceDetailsView/nodes/NavigationNode';
 import { translate } from '../lang';
 
@@ -11,9 +10,9 @@ const { log, debug, warn, error: logError } = newLogger('Commands');
 
 export function initTraceDetailsViewCommands(context, traceDetailsViewController) {
   registerCommand(context,
-    'dbuxTraceDetailsView.switchGroupingMode',
+    'dbuxTraceDetailsView.nextGroupingMode',
     (/* node */) => {
-      switchMode();
+      nextMode();
       traceDetailsViewController.refresh();
     }
   );

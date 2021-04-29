@@ -2,6 +2,10 @@
  * misc + general-purpose
  * ############################################################################ */
 
+.invisible {
+  visibility: hidden;
+}
+
 .hidden {
   display: none !important;
 }

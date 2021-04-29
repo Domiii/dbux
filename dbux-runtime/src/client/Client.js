@@ -175,8 +175,10 @@ export default class Client {
       this._connect();
     }
     else if (this.isReady()) {
+      // debug(`sending: ${Object.entries(data).map(([key, arr]) => `${key}: ${arr.length}`)}`);
       this._socket.emit('data', data);
       this._refreshInactivityTimer();
+      this._waitingCb?.();
       return true;
     }
     return false;
@@ -244,5 +246,15 @@ export default class Client {
     }
     this._connected = false;
     this._ready = false;
+  }
+
+  async waitForQueue() {
+    // debug('waitForQueue waiting...');
+    return new Promise(resolve => {
+      this._waitingCb = () => {
+        // debug('  waitForQueue resolve.');
+        resolve();
+      };
+    });
   }
 }

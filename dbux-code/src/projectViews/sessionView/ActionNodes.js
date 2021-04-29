@@ -51,6 +51,10 @@ class DetailNode extends SessionNode {
   makeIconPath() {
     return 'project.svg';
   }
+
+  async handleClick() {
+    await this.bug.manager.externals.showBugIntroduction(this.bug);
+  }
 }
 
 class ShowEntryNode extends SessionNode {

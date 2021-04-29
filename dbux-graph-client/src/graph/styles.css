@@ -179,33 +179,30 @@ html, body {
   background-color: rgba(206, 206, 206, 0.815);
 }
 
-@keyframes new-run-node {
+/* @keyframes new-run-node {
   from {
     padding: 1px;
   }
   to {
     padding: 10px;
   }
-}
-
-@keyframes new-run-node-content {
+} */
+/* @keyframes new-run-node-content {
   from {
     border: 10px solid yellow;
   }
   to {
     border: 1px solid orange;
   }
-}
-
-.run-node.new {
+} */
+/* .new {
   animation: new-run-node 10s linear;
   animation-fill-mode: forwards;
-}
-
-.run-node.new>div {
+} */
+/* .new > div {
   animation: new-run-node-content 10s linear;
   animation-fill-mode: forwards;
-}
+} */
 
 /** ###########################################################################
  * Async Graph
@@ -384,6 +381,16 @@ html, body {
   }
 }
 
+.blink-me {
+  animation: blinker 1s ease-in-out infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0.3;
+  }
+}
+
 /** ###########################################################################
  * minimap
  * ############################################################################ */
@@ -511,4 +518,10 @@ body:not(.theme-mode-dark) .highlight {
   background: #292929;
   border: solid 2px #484848;
   color: white;
+}
+
+.context-stats {
+  border: 1px solid black;
+  border-radius: 4px;
+  font-size: 0.9rem;
 }

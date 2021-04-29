@@ -1,0 +1,13 @@
+diff --git a/js/html_actuator.js b/js/html_actuator.js
+index 6fe866b..a166863 100644
+--- a/js/html_actuator.js
++++ b/js/html_actuator.js
+@@ -79,7 +79,7 @@ HTMLActuator.prototype.addTile = function (tile) {
+       self.addTile(merged);
+     });
+   } else {
+-    classes.push("tile-new");
++    classe.push("tile-new");
+     this.applyClasses(wrapper, classes);
+   }
+ 

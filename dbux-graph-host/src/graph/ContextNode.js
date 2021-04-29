@@ -11,9 +11,13 @@ import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
 class ContextNode extends HostComponentEndpoint {
   init() {
+    this.childrenBuilt = false;
+    this.state.statsEnabled = true;
+
     const {
       applicationId,
-      context
+      context,
+      statsEnabled
     } = this.state;
 
     // get name (and other needed data)
@@ -28,18 +32,15 @@ class ContextNode extends HostComponentEndpoint {
     this.state.parentTraceNameLabel = this.parentTrace && makeTraceLabel(this.parentTrace) || '';
     this.state.parentTraceLocLabel = this.parentTrace && makeTraceLocLabel(this.parentTrace);
 
+    if (statsEnabled) {
+      this._addStats(this.state);
+    }
+    
     // add controllers
-    this.controllers.createComponent('GraphNode', {});
+    let hasChildren = !!this.getValidChildContexts().length;
+    this.controllers.createComponent('GraphNode', { hasChildren });
     this.controllers.createComponent('PopperController');
     this.controllers.createComponent('Highlighter');
-
-    // register with root
-    this.context.graphRoot._contextNodeCreated(this);
-
-    // build sub graph
-    this.buildChildNodes();
-
-    this.state.hasChildren = !!this.children.length;
   }
 
   get dp() {
@@ -57,11 +58,6 @@ class ContextNode extends HostComponentEndpoint {
     return this.dp.util.getFirstTraceOfContext(this.contextId);
   }
 
-  // get contextChildrenAmount() {
-  // const contextChildren = this.children.getComponents('ContextNode');
-  // let amount = contextChildren.length;
-  // contextChildren.forEach(childNode => amount += childNode.contextChildrenAmount);
-  // return amount;
   get nTreeContexts() {
     const stats = this.dp.queries.statsByContext(this.contextId);
     return stats?.nTreeContexts || 0;
@@ -72,31 +68,35 @@ class ContextNode extends HostComponentEndpoint {
     return stats?.nTreeStaticContexts || 0;
   }
 
-  buildChildNodes() {
-    const {
-      applicationId,
-      context: {
-        contextId
-      }
-    } = this.state;
+  setStatsEnabled(enabled) {
+    const upd = {
+      statsEnabled: enabled
+    };
+    if (enabled) {
+      this._addStats(upd);
+    }
+    this.setState(upd);
+  }
 
-    // get all child contexts
+  _addStats(_update) {
+    _update.nTreeContexts = this.nTreeContexts;
+    _update.nTreeStaticContexts = this.nTreeStaticContexts;
+  }
+
+  getValidChildContexts() {
+    const { applicationId, context: { contextId } } = this.state;
     const dp = allApplications.getById(applicationId).dataProvider;
     const childContexts = dp.indexes.executionContexts.children.get(contextId) || EmptyArray;
-    childContexts.forEach(childContext => {
+    return childContexts.filter(childContext => {
       if (dp.util.isFirstContextOfRun(childContext.contextId)) {
-        return;
+        return false;
       }
 
       if (ExecutionContextType.is.Await(childContext.contextType)) {
-        return;
+        return false;
       }
 
-      // create child context
-      this.children.createComponent(ContextNode, {
-        applicationId,
-        context: childContext
-      });
+      return true;
     });
   }
 
@@ -105,7 +105,7 @@ class ContextNode extends HostComponentEndpoint {
   }
 
   expand() {
-    this.controllers.getComponent('GraphNode').setOwnMode(GraphNodeMode.ExpandChildren);
+    this.controllers.getComponent('GraphNode').setMode(GraphNodeMode.ExpandChildren);
   }
 
   setSelected(isSelected) {

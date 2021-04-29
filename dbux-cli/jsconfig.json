@@ -1,18 +1,25 @@
 {
-	"compilerOptions": {
-		"module": "esnext",
-		"moduleResolution": "node",
-		"target": "esnext",
-		"checkJs": false, /* Typecheck .js files. */
-		"lib": [
-			"es6"
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "node",
+    "target": "esnext",
+    "checkJs": false, /* Typecheck .js files. */
+    "lib": [
+      "es6"
     ],
     "paths": {
-      "@dbux/common/*": ["../dbux-common/*"],
-      "@dbux/runtime/*": ["../dbux-runtime/*"]
+      "@dbux/common/*": [
+        "../dbux-common/*"
+      ],
+      "@dbux/common-node/*": [
+        "../dbux-common-node/*"
+      ],
+      "@dbux/runtime/*": [
+        "../dbux-runtime/*"
+      ]
     }
-	},
-	"exclude": [
-		"node_modules"
-	]
+  },
+  "exclude": [
+    "node_modules"
+  ]
 }

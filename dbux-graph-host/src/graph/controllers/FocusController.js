@@ -72,14 +72,11 @@ export default class FocusController extends HostComponentEndpoint {
         let contextNode;
         if (trace) {
           const { applicationId, contextId } = trace;
-          contextNode = this.owner.getContextNodeById(applicationId, contextId);
+          contextNode = await this.owner.getContextNodeById(applicationId, contextId);
           if (this.syncMode && contextNode) {
             // NOTE: since we do this right after init, need to check if contextNode have been built
             await this.focus(contextNode);
           }
-        }
-        else {
-          this.clearFocus();
         }
 
         // always decorate ContextNode

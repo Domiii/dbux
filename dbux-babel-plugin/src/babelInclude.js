@@ -10,15 +10,15 @@ let dbuxRoot = path.resolve(path.join(__dirname, '..', '..'));
 if (dbuxRoot.endsWith('node_modules')) {
   dbuxRoot = path.resolve(dbuxRoot + '/..');
 }
-const folders = ['dbux-common', 'dbux-babel-plugin'];
+const ignoredFolders = ['dbux-common', 'dbux-common-node', 'dbux-babel-plugin'];
 
-let babelrcRoots = folders.map(f => path.join(dbuxRoot, f));
+let babelrcRoots = ignoredFolders.map(f => path.join(dbuxRoot, f));
 // fix: backslashes on windows
 babelrcRoots = babelrcRoots.map(root => root.replace(/\\/g, '\\\\'));
 
 let folderPrefix = `^${path.join(
   dbuxRoot,
-  `(?:${path.join('node_modules', '/')})?(${folders.map(f => `(${f})`).join('|')})`,
+  `(?:${path.join('node_modules', '/')})?(${ignoredFolders.map(f => `(${f})`).join('|')})`,
   '(?!.*?node_modules)'
 )}`;
 

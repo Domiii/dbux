@@ -289,8 +289,8 @@
         }
       },
       {
-        "command": "dbuxTraceDetailsView.switchGroupingMode",
-        "title": "SwitchMode",
+        "command": "dbuxTraceDetailsView.nextGroupingMode",
+        "title": "Next mode",
         "icon": {
           "light": "resources/light/string.svg",
           "dark": "resources/dark/string.svg"
@@ -571,13 +571,13 @@
           "group": "inline"
         },
         {
-          "command": "dbuxTraceDetailsView.switchGroupingMode",
-          "when": "viewItem == dbuxTraceDetailsView.node.staticTraceTDNodeRoot",
+          "command": "dbuxTraceDetailsView.nextGroupingMode",
+          "when": "viewItem == dbuxTraceDetailsView.node.executionsTDNodeRoot",
           "group": "inline@2"
         },
         {
           "command": "dbuxTraceDetailsView.expandNode",
-          "when": "viewItem == dbuxTraceDetailsView.node.staticTraceTDNodeRoot",
+          "when": "viewItem == dbuxTraceDetailsView.node.executionsTDNodeRoot",
           "group": "inline@3"
         },
         {
@@ -1019,7 +1019,7 @@
           "when": "false"
         },
         {
-          "command": "dbuxTraceDetailsView.switchGroupingMode",
+          "command": "dbuxTraceDetailsView.nextGroupingMode",
           "when": "false"
         },
         {
@@ -1213,6 +1213,7 @@
     "firebase": "7.17.2",
     "i18next": "^19.8.2",
     "lockfile": "^1.0.4",
+    "serialize-javascript": "^5.0.1",
     "vsce": "^1.85.0"
   },
   "_moduleAliases": {}

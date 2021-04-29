@@ -94,7 +94,11 @@ export function awaitVisitEnter(path, state) {
   state.onCopy(path, newAwaitPath, 'context');
 }
 
+/**
+ * Assumption: `path` has already been instrumented with `wrapAwait`.
+ */
 export function awaitVisitExit(path, state) {
+  // console.warn('[awaitVisitExit]', path/* .get('argument') */.toString());
   let targetPath = path.get('argument').get('arguments')[0];
   if (!isPathInstrumented(targetPath)) {
     const replacement = traceWrapExpressionStatement(TraceType.ExpressionValue, targetPath, state, null);

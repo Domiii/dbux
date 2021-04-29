@@ -26,13 +26,14 @@ const logger = newLogger('PracticeManager');
 const { debug, log, warn, error: logError } = logger;
 
 const depsStorageKey = 'PracticeManager.deps';
-const activatedBugKeyName = 'dbux.dbux-projects.activatedBug';
 const savedPracticeSessionKeyName = 'dbux.dbux-projects.currentlyPracticingBug';
 const savedPracticeSessionDataKeyName = 'dbux.dbux-projects.practiceSessionCreatedAt';
 
 /** @typedef {import('./projectLib/Project').default} Project */
 /** @typedef {import('./projectLib/Bug').default} Bug */
 /** @typedef {import('./externals/Storage').default} ExternalStorage */
+/** @typedef {import('dbux-code/src/terminal/TerminalWrapper').default.constructor} TerminalWrapperClass */
+/** @typedef {import('dbux-code/src/terminal/TerminalWrapper').default} TerminalWrapper */
 
 
 function canIgnoreDependency(name) {
@@ -67,8 +68,23 @@ export default class ProjectsManager {
 
   // NOTE: npm flattens dependency tree by default, and other important dependencies are dependencies of @dbux/cli
   _sharedDependencyNames = [
-    '@dbux/cli'
+    '@dbux/cli',
+    
+    // // webpack is used by most projects
+    // 'webpack@^4.43.0',
+    // 'webpack-cli@^3.3.11',
+    
+    // // these are used in dbux.webpack.config.base.js
+    // 'copy-webpack-plugin@6'
   ];
+
+  /**
+   * // NOTE: does not work - https://github.com/jsdoc/jsdoc/issues/1349
+   * @type {{
+   *   TerminalWrapper: TerminalWrapperClass
+   * }}
+   */
+  externals;
 
   // ###########################################################################
   // ctor, init, load
@@ -151,7 +167,7 @@ export default class ProjectsManager {
   }
 
   addProject() {
-    
+
   }
 
   // ###########################################################################
@@ -185,24 +201,17 @@ export default class ProjectsManager {
       return;
     }
 
-    let bugProgress = this.bdp.getBugProgressByBug(bug);
-
+    const bugProgress = this.bdp.getBugProgressByBug(bug);
     if (!bugProgress) {
       const stopwatchEnabled = await this.askForStopwatch();
-      /* bugProgress = */ this.bdp.addBugProgress(bug, BugStatus.Solving, stopwatchEnabled);
-
-      this._resetPracticeSession(bug);
-
-      // install and activate bug (don't run it)
-      // await this.activateBug(bug);
-      await this.switchToBug(bug);
+      this.bdp.addBugProgress(bug, BugStatus.Solving, stopwatchEnabled);
       this.bdp.updateBugProgress(bug, { startedAt: Date.now() });
     }
-    else {
-      this._resetPracticeSession(bug);
-    }
 
+    bug.project.initProject();
     await this.switchToBug(bug);
+    this._resetPracticeSession(bug);
+    await this.maybeActivateBugForTheFirstTime(bug);
     this.practiceSession.setupStopwatch();
     await this.savePracticeSession();
     await this.bdp.save();
@@ -242,12 +251,15 @@ export default class ProjectsManager {
         throw new Error(`Cannot find bug of bugId: ${bugId} in log file`);
       }
 
-      await this.switchToBug(bug);
-      
       if (!this.bdp.getBugProgressByBug(bug)) {
         this.bdp.addBugProgress(bug, BugStatus.Solving, false);
       }
+
+      bug.project.initProject();
+      await this.switchToBug(bug);
       this._resetPracticeSession(bug, { createdAt, sessionId, state: PracticeSessionState.Stopped }, true, filePath);
+      await this.savePracticeSession();
+      await this.bdp.save();
       const lastAction = this.pdp.collections.userActions.getLast();
       emitSessionFinishedEvent(this.practiceSession.state, lastAction.createdAt);
       return true;
@@ -290,8 +302,10 @@ export default class ProjectsManager {
     }
 
     try {
+      bug.project.initProject();
       const sessionData = this.externals.storage.get(savedPracticeSessionDataKeyName) || EmptyObject;
       this._resetPracticeSession(bug, sessionData, true);
+      await this.maybeActivateBugForTheFirstTime(bug);
       this.practiceSession.setupStopwatch();
     }
     catch (err) {
@@ -306,6 +320,7 @@ export default class ProjectsManager {
       await this.externals.storage.set(savedPracticeSessionDataKeyName, {
         createdAt: this.practiceSession.createdAt,
         sessionId: this.practiceSession.sessionId,
+        logFilePath: this.practiceSession.logFilePath,
         state: this.practiceSession.state
       });
     }
@@ -357,26 +372,27 @@ export default class ProjectsManager {
    * @param {Bug} bug 
    */
   async resetBug(bug) {
-    try {
-      await bug.project.gitResetHard(true, 'This will discard all your changes on this bug.');
+    const confirmMessage = 'This will discard all your changes on this bug. Are you sure?';
+    if (!await this.externals.confirm(confirmMessage, true)) {
+      const err = new Error('Action rejected by user');
+      err.userCanceled = true;
+      throw err;
     }
-    catch (err) {
-      if (err.userCanceled) {
-        return;
-      }
-      else {
-        throw err;
-      }
+
+    // TODO: this reset the project, but the bug might not be the activated bug
+    await bug.project.gitResetHard();
+
+    if (this.bdp.getBugProgressByBug(bug)) {
+      this.bdp.updateBugProgress(bug, { patch: '' });
+      await this.bdp.save();
     }
-    this.bdp.updateBugProgress(bug, { patch: '' });
-    await this.bdp.save();
   }
 
   /**
-   * Apply the newest patch in testRuns
+   * Apply the newest patch from `BugProgress`
    * @param {Bug} bug
    */
-  async applyNewBugPatch(bug) {
+  async applyBugPatch(bug) {
     const patchString = this.bdp.getBugProgressByBug(bug)?.patch;
 
     if (patchString) {
@@ -420,47 +436,51 @@ export default class ProjectsManager {
     return result;
   }
 
+  async maybeActivateBugForTheFirstTime(bug) {
+    if (!allApplications.getAll().length) {
+      await this.activateBug(bug);
+    }
+  }
+
   async switchToBug(bug) {
-    const previousBug = this.getCurrentBug();
+    await bug.project.verifyInstallation?.();
+    
+    if (this.runner.isBugActive(bug)) {
+      // skip if bug is already activated
+      return;
+    }
 
     // if some bug are already activated, save the changes
-    if (bug !== previousBug) {
-      if (previousBug?.project.isProjectFolderExists()) {
-        await this.saveFileChanges(previousBug);
-        await previousBug.project.gitResetHard();
-      }
-
-      await this.updateActivatingBug(bug);
+    const previousBug = this.runner.bug;
+    if (previousBug?.project.doesProjectFolderExist()) {
+      await this.saveFileChanges(previousBug);
+      await previousBug.project.gitResetHard();
     }
 
     // install things
-    if (!this.runner.isBugActive(bug)) {
-      await this.runner.activateBug(bug);
-    }
+    await this.runner.activateBug(bug);
 
     // apply stored patch
-    if (bug !== previousBug) {
-      try {
-        await this.applyNewBugPatch(bug);
-      } catch (err) {
-        if (!err.applyFailedFlag) {
-          logError(err);
-          throw err;
-        }
+    try {
+      await this.applyBugPatch(bug);
+    } catch (err) {
+      if (!err.applyFailedFlag) {
+        // logError(err);
+        throw err;
+      }
 
-        const keepRunning = await this.externals.showMessage.warning(`Failed when applying previous progress of this bug.`, {
-          'Show diff in new tab and cancel': async () => {
-            await this.externals.editor.showTextInNewFile(`diff.diff`, err.patchString);
-            return false;
-          },
-          'Ignore and keep running': () => {
-            return true;
-          },
-        }, { modal: true });
+      const keepRunning = await this.externals.showMessage.warning(`Failed when applying previous progress of this bug.`, {
+        'Show diff in new tab and cancel': async () => {
+          await this.externals.editor.showTextInNewFile(`diff.diff`, err.patchString);
+          return false;
+        },
+        'Ignore and keep running': () => {
+          return true;
+        },
+      }, { modal: true });
 
-        if (!keepRunning) {
-          throw err;
-        }
+      if (!keepRunning) {
+        throw err;
       }
     }
   }
@@ -500,6 +520,7 @@ export default class ProjectsManager {
   }
 
   async saveTestRunResult(bug, result) {
+    // TODO: a better way to find the real application generated by the project
     const patch = await bug.project.getPatchString();
     const apps = allApplications.selection.getAll();
 
@@ -564,17 +585,17 @@ export default class ProjectsManager {
    * NOTE: dev only
    */
   async resetProgress() {
-    await this.stopPractice();
-    await this.savePracticeSession();
-    await this.bdp.reset();
-    await this.updateActivatingBug(undefined);
+    if (await this.stopPractice()) {
+      await this.savePracticeSession();
+      await this.bdp.reset();
+      await this.runner.deactivateBug();
+    }
   }
 
   async resetLog() {
     if (this.pdp.collections.testRuns.size) {
       debug(`resetPracticeLog: resetting log only`);
       await this.pdp.clearSteps();
-      // const bug = this.getCurrentBug();
     }
     else {
       logError(`resetPracticeLog: no previous results found.`);
@@ -652,20 +673,6 @@ export default class ProjectsManager {
   // ###########################################################################
 
   /**
-   * @param {Bug} bug 
-   */
-  async updateActivatingBug(bug) {
-    await this.setKeyToBug(activatedBugKeyName, bug);
-  }
-
-  /**
-   * @return {Bug}
-   */
-  getCurrentBug() {
-    return this.getBugByKey(activatedBugKeyName);
-  }
-
-  /**
    * @param {string} key 
    * @param {Bug} bug NOTE: set to `undefined` to clear the storage
    */
@@ -708,7 +715,12 @@ export default class ProjectsManager {
   }
 
   hasInstalledSharedDependencies() {
-    return this.areDependenciesInstalled([]);
+    return !this.getMissingSharedDependencies().length;
+  }
+
+  getMissingSharedDependencies(deps) {
+    deps = this._getAllDependenciesToCheck(deps);
+    return deps.filter(dep => !this.isDependencyInstalled(dep));
   }
 
   areDependenciesInstalled(deps) {
@@ -784,8 +796,11 @@ export default class ProjectsManager {
 
       // this.externals.showMessage.info(`Installing dependencies: "${deps.join(', ')}" This might (or might not) take a while...`);
 
-      const moreDeps = deps.length && ` && npm i ${deps.join(' ')}` || '';
-      const command = `npm install --only=prod${moreDeps}`;
+      const command = [
+        `npm install --only=prod`,
+        ...deps.length && [`npm i ${deps.join(' ')}`] || EmptyArray
+      ];
+
       // await this.runner._exec(command, logger, execOptions);
       await this.execInTerminal(dependencyRoot, command);
 
@@ -855,9 +870,9 @@ export default class ProjectsManager {
   // Projects manager utilities
   // ###########################################################################
 
-  async execInTerminal(cwd, command, args) {
+  async execInTerminal(cwd, command, options) {
     try {
-      this._terminalWrapper = this.externals.TerminalWrapper.execInTerminal(cwd, command, args);
+      this._terminalWrapper = this.externals.TerminalWrapper.execInTerminal(cwd, command, options);
       return await this._terminalWrapper.waitForResult();
     }
     finally {
@@ -891,15 +906,15 @@ export default class ProjectsManager {
       return;
     }
 
-    let answerButtons = { 
-      [translator('uploadOne', { count: logFiles.length })]() { 
-        return [ 
-          logFiles.map(filename => ({ 
-            filename, 
-            time: fs.statSync(path.join(logDirectory, filename)).mtimeMs, 
+    let answerButtons = {
+      [translator('uploadOne', { count: logFiles.length })]() {
+        return [
+          logFiles.map(filename => ({
+            filename,
+            time: fs.statSync(path.join(logDirectory, filename)).mtimeMs,
           })).reduce((result, file) => result.time > file.time ? result : file).filename,
-        ]; 
-      } 
+        ];
+      }
     };
 
     if (logFiles.length > 1) {

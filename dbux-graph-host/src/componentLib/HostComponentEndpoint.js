@@ -72,9 +72,15 @@ class HostComponentEndpoint extends ComponentEndpoint {
     this._startUpdate();
   }
 
+  forceUpdateDescendants() {
+    for (const child of this.children) {
+      child.forceUpdateTree();
+    }
+  }
+
   forceUpdateTree() {
-    // TODO: forceUpdate of self and all components in subtree
-    throw new Error('NYI');
+    this.forceUpdate();
+    this.forceUpdateDescendants();
   }
 
   async waitForInit() {
@@ -82,6 +88,10 @@ class HostComponentEndpoint extends ComponentEndpoint {
     // return this._initPromise = this._initPromise.then(noop);
     while (this._initPromise) {
       await this._initPromise;
+    }
+
+    if (!this.isInitialized) {
+      throw new Error(`${this.debugTag} - first update detected before init has started. Make sure to not call setState before initialization has started.`);
     }
   }
 
@@ -179,7 +189,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
   // update queue logic
   // ###########################################################################
 
-  async _startUpdate() {
+  async _startUpdate(updateCb = this._executeUpdate) {
     // NOTE: this is called by `setState`
     if (this._waitingForUpdate) {
       // already waiting for update -> will send out changes in a bit anyway
@@ -191,10 +201,6 @@ class HostComponentEndpoint extends ComponentEndpoint {
       await this.waitForInit();
     }
 
-    if (!this.isInitialized) {
-      throw new Error(`${this.debugTag} - first update detected before init has started. Make sure to not call setState before initialization has started.`);
-    }
-
     // NOTE: this is called by `setState`
     if (this._waitingForUpdate) {
       // already waiting for update -> will send out changes in a bit anyway
@@ -204,12 +210,12 @@ class HostComponentEndpoint extends ComponentEndpoint {
     if (this._updatePromise) {
       // if already has update pending -> add self to queue to update again afterwards
       this._updatePromise.then(() => {
-        this._updatePromise = this._executeUpdate();
+        this._updatePromise = updateCb();
       });
     }
     else {
       // send update out right away
-      this._updatePromise = this._executeUpdate();
+      this._updatePromise = updateCb();
     }
   }
 
@@ -222,7 +228,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
     }
   }
 
-  async _executeUpdate() {
+  _executeUpdate = async () => {
     // debounce mechanism
     this._waitingForUpdate = true;
     await sleep(0);
@@ -241,7 +247,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
         },
         (err) => {
           // error :(
-          this.logger.error('Error when updating client, check client for stack trace.', err);
+          this.logger.error(`Error when updating client. Check client for stack trace. (${err?.message || err})`);
         }
       ).
       finally(() => {
@@ -254,6 +260,38 @@ class HostComponentEndpoint extends ComponentEndpoint {
     return promise;
   }
 
+  // _executeContextUpdate = async () => {
+  //   // debounce mechanism
+  //   this._waitingForUpdate = true;
+  //   await sleep(0);
+
+  //   // push out new update
+  //   const promise = Promise.resolve(
+  //     this._performUpdate()                                   // 1. host: update
+  //   ).
+  //     then(() => {
+  //       return this._remoteInternal.updateContext(this.context); // 2. client: update
+  //     }).
+  //     then(
+  //       (resultFromClientInit) => {
+  //         // success                                          // 3. waitForUpdate (resolved)
+  //         return resultFromClientInit;
+  //       },
+  //       (err) => {
+  //         // error :(
+  //         this.logger.error('Error when updating context on client. Check client for stack trace.');
+  //       }
+  //     ).
+  //     finally(() => {
+  //       if (promise === this._updatePromise) {
+  //         // last in queue -> unset
+  //         this._updatePromise = null;
+  //       }
+  //     });
+
+  //   return promise;
+  // }
+
   // ###########################################################################
   // refresh
   // ###########################################################################
@@ -264,7 +302,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
   handleRefresh() {
     throw new Error(`${this.componentName}.handleRefresh not implemented`);
   }
-  
+
   async waitForRefresh() {
     return this._refreshPromise;
   }

@@ -2,6 +2,9 @@
   "watch": [
     "./dist/index.js"
   ],
+  "ignore": [
+    "node_modules/**/*"
+  ],
   "ext": "js",
   "delay": "500"
 }

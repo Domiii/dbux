@@ -1,4 +1,5 @@
 import NanoEvents from 'nanoevents';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import HighlightManager from './controllers/HighlightManager';
@@ -21,6 +22,12 @@ class GraphDocument extends HostComponentEndpoint {
     this.state.asyncGraphMode = true;
 
     this.createOwnComponents();
+    // register event listeners
+    this.addDisposable(
+      allApplications.selection.onApplicationsChanged(() => {
+        this.graphRoot.updateRunNodes();
+      })
+    );
   }
 
   createOwnComponents() {

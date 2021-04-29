@@ -6,6 +6,8 @@ import sh from 'shelljs';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import { getAllFilesInFolders, globRelative } from '@dbux/common-node/src/util/fileUtil';
+import isObject from 'lodash/isObject';
 import BugList from './BugList';
 import Process from '../util/Process';
 import { checkSystemWithRequirement } from '../checkSystem';
@@ -43,6 +45,8 @@ export default class Project {
    */
   folderName;
 
+  builder;
+
   // ###########################################################################
   // config
   // ###########################################################################
@@ -75,9 +79,17 @@ export default class Project {
     return null;
   }
 
+  /**
+   * Whether @dbux/cli is needed to instrument and inject @dbux/runtime.
+   * Returns false, if build tool already took care of it.
+   */
+  get needsDbuxCli() {
+    return !this.builder || this.builder.needsDbuxCli;
+  }
+
 
   // ###########################################################################
-  // constructor
+  // constructor + init
   // ###########################################################################
 
   constructor(manager) {
@@ -87,6 +99,28 @@ export default class Project {
     this.name = this.folderName = this.constructor.constructorName;
 
     this.logger = newLogger(this.debugTag);
+  }
+
+  initProject() {
+    if (this._initialized) {
+      return;
+    }
+    this._initialized = true;
+
+    // initialize builder
+    if (this.makeBuilder) {
+      this.builder = this.makeBuilder();
+      this.builder.initProject(this);
+
+      if (this.builder.startWatchMode) {
+        this.startWatchMode = this.builder.startWatchMode.bind(this.builder);
+      }
+    }
+  }
+
+  async initBug(bug) {
+    await this.decorateBug?.(bug);
+    await this.builder?.decorateBug(bug);
   }
 
   // ###########################################################################
@@ -101,6 +135,10 @@ export default class Project {
     return this.manager.config.projectsRoot;
   }
 
+  get dependencyRoot() {
+    return this.manager.config.dependencyRoot;
+  }
+
   get projectPath() {
     return path.join(this.projectsRoot, this.folderName);
   }
@@ -109,8 +147,8 @@ export default class Project {
     return this.manager.getProjectRunStatus(this);
   }
 
-  get dependencyRoot() {
-    return this.manager.config.dependencyRoot;
+  getDependencyPath(relativePath) {
+    return path.resolve(this.dependencyRoot, 'node_modules', relativePath);
   }
 
   getNodeVersion(bug) {
@@ -132,8 +170,8 @@ export default class Project {
 
   async checkCorrectGitRepository() {
     if (!await this.isCorrectGitRepository()) {
-      throw new Error(`Trying to execute command in wrong git repository ${await this.execCaptureOut(`git remote -v`)}
-This may be solved by pressing \`clean project folder\` button.`);
+      throw new Error(`Trying to execute command in wrong git repository:\n${await this.execCaptureOut(`git remote -v`)}
+This may be solved by using \`Delete project folder\` button.`);
     }
   }
 
@@ -151,21 +189,12 @@ This may be solved by pressing \`clean project folder\` button.`);
     }
   }
 
-  async gitResetHard(needConfirm = false, confirmMsg = '') {
+  async gitResetHard() {
     await this.checkCorrectGitRepository();
 
-    if (needConfirm && !confirmMsg) {
-      throw new Error('calling Project.gitResetHard with `needConfirm=true` but no `confirmMsg`');
+    if (await this.checkFilesChanged()) {
+      await this.exec('git reset --hard');
     }
-
-    if (!await this.checkFilesChanged()) return;
-
-    if (needConfirm && !await this.manager.externals.confirm(confirmMsg)) {
-      const err = new Error('Action rejected by user');
-      err.userCanceled = true;
-      throw err;
-    }
-    await this.exec('git reset --hard');
   }
 
   // ###########################################################################
@@ -176,13 +205,12 @@ This may be solved by pressing \`clean project folder\` button.`);
    * @virtual
    */
   async installProject() {
-    if (this.systemRequirements) {
-      // TODO:
-      await checkSystemWithRequirement(this.manager, this.systemRequirements);
-    }
+    await checkSystemWithRequirement(this.manager, this.systemRequirements);
 
     // git clone
     await this.gitClone();
+
+    await this.verifyInstallation?.();
   }
 
   /**
@@ -209,45 +237,44 @@ This may be solved by pressing \`clean project folder\` button.`);
    */
   async startWatchModeIfNotRunning(bug) {
     if (!this.backgroundProcesses?.length && this.startWatchMode) {
-      let _resolve, _reject, _firstOutputPromise = new Promise((resolve, reject) => {
-        _resolve = resolve;
-        _reject = reject;
-      });
-
-      const watchFiles = bug.watchFilePaths.map(f => path.resolve(this.projectPath, f));
-      const watcher = new MultipleFileWatcher(watchFiles);
-      watcher.on('change', (filename, curStat, prevStat) => {
-        try {
-          if (curStat.birthtime.valueOf() === 0) {
-            return;
+      const outputFileString = bug.watchFilePaths
+        .map(f => `"${f}"`)
+        .join(', ');
+      let _firstOutputPromise = new Promise((resolve, reject) => {
+        // watch out for entry (output) files to be created
+        const watchFiles = bug.watchFilePaths.map(f => path.resolve(this.projectPath, f));
+        const watcher = new MultipleFileWatcher(watchFiles);
+        watcher.on('change', (filename, curStat, prevStat) => {
+          try {
+            if (curStat.birthtime.valueOf() === 0) {
+              return;
+            }
+            watcher.close();
+            resolve();
           }
-
-          watcher.close();
-
-          _resolve();
-        }
-        catch (e) {
-          this.logger.warn('file watcher emit event callback error:', e);
-        }
+          catch (err) {
+            this.logger.warn(`file watcher failed while waiting for "${outputFileString}" - ${err?.stack || err}`);
+          }
+        });
       });
 
+      // start
       const backgroundProcess = await this.startWatchMode(bug).catch(err => {
         // this.logger.error('startWatchMode failed -', err?.stack || err);
-        throw new Error('startWatchMode failed -', err?.stack || err);
+        throw new Error(`startWatchMode failed while waiting for "${outputFileString}" - ${err?.stack || err}`);
       });
 
       // if (!this.backgroundProcesses?.length) {
       //   this.logger.error('startWatchMode did not result in any new background processes');
       // }
 
-      const outputFileString = bug.watchFilePaths
-        .map(f => `"${f}"`)
-        .join(', ');
+      // wait for output files, before moving on
       this.logger.debug(`startWatchMode waiting for output files: ${outputFileString} ...`);
       await Promise.race([
-        // wait for files to be ready
+        // wait for files to be ready, or...
         _firstOutputPromise,
 
+        // ... watch process to exit prematurely
         backgroundProcess.waitToEnd().then(() => {
           if (_firstOutputPromise) {
             // BackgroundProcess ended prematurely
@@ -268,10 +295,19 @@ This may be solved by pressing \`clean project folder\` button.`);
   // utilities
   // ###########################################################################
 
-  async execInTerminal(command, options) {
+  execInTerminal = async (command, options) => {
     let cwd = options?.cwd || this.projectPath;
 
-    let { code } = await this.manager.externals.TerminalWrapper.execInTerminal(cwd, command, {}).waitForResult();
+    const result = await this.manager.externals.TerminalWrapper.execInTerminal(cwd, command, {}).
+      waitForResult();
+
+    let code;
+    if (Array.isArray(result)) {
+      code = result[result.length - 1].code;
+    }
+    else {
+      code = result?.code;
+    }
 
     if (options?.failOnStatusCode === false) {
       return code;
@@ -283,7 +319,22 @@ This may be solved by pressing \`clean project folder\` button.`);
     return 0;
   }
 
-  async exec(command, options, input) {
+  async installPackages(s, force = true) {
+    // TODO: yarn workspaces causes trouble for `yarn add`.
+    //        Might need to use a hack, where we manually insert it into `package.json` and then run yarn install.
+    // TODO: let user choose, or just prefer yarn by default?
+
+    if (isObject(s)) {
+      s = Object.entries(s).map(([name, version]) => `${name}@${version}`).join(' ');
+    }
+
+    const cmd = this.preferredPackageManager === 'yarn' ?
+      'yarn add --dev' :
+      `npm install -D ${force && '--force'}`;
+    return this.execInTerminal(`${cmd} ${s}`);
+  }
+
+  exec = async (command, options, input) => {
     const cwd = options?.cwd || this.projectPath;
     options = defaultsDeep(options, {
       ...(options || EmptyObject),
@@ -294,10 +345,10 @@ This may be solved by pressing \`clean project folder\` button.`);
     return this.runner._exec(command, this.logger, options, input);
   }
 
-  async execCaptureOut(command, processOptions) {
+  execCaptureOut = async (command, processOptions) => {
     processOptions = {
-      ...(processOptions || EmptyObject),
-      cwd: this.projectPath
+      cwd: this.projectPath,
+      ...(processOptions || EmptyObject)
     };
     return Process.execCaptureOut(command, { processOptions });
   }
@@ -343,7 +394,7 @@ This may be solved by pressing \`clean project folder\` button.`);
   }
 
   /**
-   * 
+   * NOTE: does not include new files. For that, consider `hasAnyChangedFiles()` below.
    * @return {bool} Whether any files in this project have changed.
    * @see https://stackoverflow.com/questions/3878624/how-do-i-programmatically-determine-if-there-are-uncommitted-changes
    */
@@ -353,12 +404,17 @@ This may be solved by pressing \`clean project folder\` button.`);
     // Not sure what this line does, but seems not really useful here, since these two line does the same thing.
     // await this.exec('git update-index --refresh');
 
-    // returns status code 1, if there are any changes
+    // NOTE: returns status code 1, if there are any changes, IFF --exit-code or --quiet is provided
     // see: https://stackoverflow.com/questions/28296130/what-does-this-git-diff-index-quiet-head-mean
-    const code = await this.exec('git diff-index --quiet HEAD --', { failOnStatusCode: false });
+    const code = await this.exec('git diff-index --exit-code HEAD --', { failOnStatusCode: false });
 
     return !!code;  // code !== 0 means that there are pending changes
   }
+
+  // async hasAnyChangedFiles() {
+  //   const changes = await this.execCaptureOut(`git status -s`);
+  //   return !!changes;
+  // }
 
   // ###########################################################################
   // install helpers
@@ -368,19 +424,7 @@ This may be solved by pressing \`clean project folder\` button.`);
    * NOTE: This method is called by `gitClone`, only after a new clone has succeeded.
    */
   async install() {
-    // remove files
-    let { projectPath, rmFiles } = this;
-    if (rmFiles?.length) {
-      const absRmFiles = rmFiles.map(fName => path.join(projectPath, fName));
-      const iErr = absRmFiles.findIndex(f => !f.startsWith(projectPath));
-      if (iErr >= 0) {
-        throw new Error('invalid entry in `rmFiles` is not in `projectPath`: ' + rmFiles[iErr]);
-      }
-      this.logger.warn('Removing files:', absRmFiles);
-      sh.rm('-rf', absRmFiles);
-    }
-
-    // copy assets
+    // remove and copy assets
     await this.installAssets();
     await this.autoCommit();  // auto-commit -> to be on the safe side
 
@@ -402,6 +446,7 @@ This may be solved by pressing \`clean project folder\` button.`);
 
     // custom `afterInstall` hook
     await this.afterInstall();
+    await this.builder?.afterInstall?.();
 
     // after install completed: commit modifications, so we can easily apply patches etc (if necessary)
     await this.autoCommit();
@@ -420,23 +465,31 @@ This may be solved by pressing \`clean project folder\` button.`);
   async autoCommit(bug) {
     await this.checkCorrectGitRepository();
 
-    if (await this.hasAnyChangedFiles()) {
+    if (await this.checkFilesChanged()) {
       // only auto commit if files changed
       const files = this.getAllAssetFiles();
-      this.logger.log('auto commit');
+      // this.logger.log(`[auto commit] ${files.join(', ')}`);
 
-      // TODO: should not need '--allow-empty', if `hasAnyChangedFiles` is correct (TODO: test with todomvc)
-      await this.exec(`git add ${files.map(name => `"${name}"`).join(' ')} && git commit -am '"[dbux auto commit]"' --allow-empty`);
+      // await this.exec(`git add ${files.map(name => `"${name}"`).join(' ')} && git commit -am '"[dbux auto commit]"' --allow-empty`);
+      
+      // NOTE: && is not supported in all shells (e.g. Powershell)
+      await this.exec(`git add ${files.map(name => `"${name}"`).join(' ')}`);
+
+      // TODO: should not need '--allow-empty', if `checkFilesChanged` is correct (but somehow still bugs out)
+      await this.exec(`git commit -am '"[dbux auto commit]"' --allow-empty`);
+
       await this.gitAddOrUpdateTag(bug);
     }
   }
 
   async deleteProjectFolder() {
-    await sh.rm('-rf', this.projectPath);
+    const deactivatePromise = this.runner.deactivateBug();
+    sh.rm('-rf', this.projectPath);
     this._installed = false;
+    await deactivatePromise;
   }
 
-  isProjectFolderExists() {
+  doesProjectFolderExist() {
     return sh.test('-d', path.join(this.projectPath, '.git'));
   }
 
@@ -451,18 +504,18 @@ This may be solved by pressing \`clean project folder\` button.`);
     // TODO: read git + editor commands from config
 
     // clone (will do nothing if already cloned)
-    if (!this.isProjectFolderExists()) {
+    if (!this.doesProjectFolderExist()) {
       // const curDir = sh.pwd().toString();
       // this.log(`Cloning from "${githubUrl}"\n  in "${curDir}"...`);
       // project does not exist yet
       try {
         this.runner.createMainFolder();
         await this.execInTerminal(`git clone "${githubUrl}" "${projectPath}"`, {
-          cwd: this.projectsRoot
+          cwd: projectsRoot
         });
       }
       catch (err) {
-        const errMsg = `Failed to clone git repository. This may be solved by pressing \`clean project folder\` button. ${err.stack}`;
+        const errMsg = `Failed to clone git repository. This may be solved by using \`Delete project folder\` button. ${err.stack}`;
         throw new Error(errMsg);
       }
 
@@ -497,7 +550,7 @@ This may be solved by pressing \`clean project folder\` button.`);
         await this.applyPatch(bug.patch);
         await this.exec(`git commit -am '"[dbux auto commit] Patch ${bug.patch}"' --allow-empty`);
         await this.gitAddOrUpdateTag(bug);
-        await this.applyPatch(bug.patch, true);
+        await this.revertPatch(bug.patch);
       }
     }
   }
@@ -507,14 +560,31 @@ This may be solved by pressing \`clean project folder\` button.`);
     return this.gitCheckout(tagName);
   }
 
-  async npmInstall() {
-    // await this.exec('npm cache verify');
+  get preferredPackageManager() {
+    if (this.packageManager) {
+      return this.packageManager;
+    }
 
-    // hackfix: npm installs are broken somehow.
-    //      see: https://npm.community/t/need-to-run-npm-install-twice/3920
-    //      Sometimes running it a second time after checking out a different branch 
-    //      deletes all node_modules. This will bring everything back correctly (for now).
-    await this.execInTerminal(`npm install && npm install`);
+    // TODO: prefer yarn if yarn is installed
+    if (process.env.NODE_ENV === 'development') {
+      // yarn is just faster (as of April/2021)
+      return 'yarn';
+    }
+    return 'npm';
+  }
+
+  async npmInstall() {
+    if (this.preferredPackageManager === 'yarn') {
+      await this.execInTerminal('yarn install');
+    }
+    else {
+      // await this.exec('npm cache verify');
+      // hackfix: npm installs are broken somehow.
+      //      see: https://npm.community/t/need-to-run-npm-install-twice/3920
+      //      Sometimes running it a second time after checking out a different branch 
+      //      deletes all node_modules. The second run brings everything back correctly (for now).
+      await this.execInTerminal(`npm install && npm install`);
+    }
   }
 
   // async yarnInstall() {
@@ -529,13 +599,26 @@ This may be solved by pressing \`clean project folder\` button.`);
    * Copy all assets into project folder.
    */
   async installAssets() {
+    // remove unwanted files
+    let { projectPath, rmFiles } = this;
+    if (rmFiles?.length) {
+      const absRmFiles = rmFiles.map(fName => path.resolve(projectPath, fName));
+      const iErr = absRmFiles.findIndex(f => !f.startsWith(projectPath));
+      if (iErr >= 0) {
+        throw new Error('invalid entry in `rmFiles` is not in `projectPath`: ' + rmFiles[iErr]);
+      }
+      this.logger.warn('Removing files:', absRmFiles.join(','));
+      sh.rm('-rf', absRmFiles);
+    }
+
+    // copy assets
     const folders = this.getAllAssetFolderNames();
     folders.forEach(folderName => {
       this.copyAssetFolder(folderName);
     });
 
+    // make sure, we have node at given version and node@lts
     if (this.nodeVersion) {
-      // make sure, we have node at given version and node@lts
       await this.exec(`volta fetch node@${this.nodeVersion} node@lts npm@lts`);
       await this.exec(`volta pin node@${this.nodeVersion}`);
     }
@@ -563,24 +646,26 @@ This may be solved by pressing \`clean project folder\` button.`);
   }
 
   getAllAssetFiles() {
-    const folders = this.getAllAssetFolderNames();
-    const files = new Set();
-    folders.forEach(folderName => {
-      const assets = fs.readdirSync(this.getAssetDir(folderName));
-      assets.forEach(assetName => {
-        files.add(assetName);
-      });
-    });
-
-    return [...files];
+    return this
+      .getAllAssetFolderNames()
+      .map(folderName => this.getAssetDir(folderName))
+      .flatMap(f => globRelative(f, '**/*'));
   }
 
-  async copyAssetFolder(assetFolderName) {
+  copyAssetFolder(assetFolderName) {
     // const assetDir = path.resolve(path.join(__dirname, `../../dbux-projects/assets/${assetFolderName}`));
     const assetDir = this.getAssetDir(assetFolderName);
     // copy assets, if this project has any
     this.logger.log(`Copying assets from ${assetDir} to ${this.projectPath}`);
-    sh.cp('-R', `${assetDir}/*`, this.projectPath);
+
+    // Globs are tricky. See: https://stackoverflow.com/a/31438355/2228771
+    const copyRes = sh.cp('-rf', `${assetDir}/{.[!.],..?,}*`, this.projectPath);
+
+    const assetFiles = getAllFilesInFolders(assetDir).join(',');
+    // this.log(`Copied assets. All root files: ${await getAllFilesInFolders(this.projectPath, false).join(', ')}`);
+    this.log(`Copied assets (${assetDir}): result=${copyRes.toString()}, files=${assetFiles}`,
+      // this.execCaptureOut(`cat ${this.projectPath}/.babelrc.js`)
+    );
   }
 
   // ###########################################################################
@@ -588,7 +673,7 @@ This may be solved by pressing \`clean project folder\` button.`);
   // ###########################################################################
 
   getPatchFolder() {
-    return path.join(this.projectPath, PatchFolderName);
+    return path.join(this.getAssetDir(PatchFolderName), this.folderName);
   }
 
   getPatchFile(patchFName) {
@@ -610,7 +695,12 @@ This may be solved by pressing \`clean project folder\` button.`);
   async applyPatch(patchFName, revert = false) {
     await this.checkCorrectGitRepository();
 
-    return this.exec(`git apply ${revert ? '-R' : ''} --ignore-space-change --ignore-whitespace ${this.getPatchFile(patchFName)}`);
+    const patchPath = this.getPatchFile(patchFName);
+    return this.exec(`git apply ${revert ? '-R' : ''} --ignore-space-change --ignore-whitespace "${patchPath}"`);
+  }
+
+  async revertPatch(patchFName) {
+    return this.applyPatch(patchFName, true);
   }
 
   /**
@@ -629,11 +719,6 @@ This may be solved by pressing \`clean project folder\` button.`);
     await this.checkCorrectGitRepository();
 
     return this.exec(`git diff --color=never > ${this.getPatchFile(patchFName)}`);
-  }
-
-  async hasAnyChangedFiles() {
-    const changes = await this.execCaptureOut(`git status -s`);
-    return !!changes;
   }
 
   async getPatchString() {
@@ -699,7 +784,15 @@ This may be solved by pressing \`clean project folder\` button.`);
     return {
       require: bug.require,
       keepAlive: bug.keepAlive,
-      mochaArgs: this.getMochaRunArgs(bug, moreMochaArgs)
+      testArgs: this.getMochaRunArgs(bug, moreMochaArgs)
+    };
+  }
+
+  getJestCfg(bug, moreJestArgs) {
+    return {
+      require: bug.require,
+      // keepAlive: bug.keepAlive,
+      testArgs: this.getJestRunArgs(bug, moreJestArgs)
     };
   }
 
@@ -710,6 +803,21 @@ This may be solved by pressing \`clean project folder\` button.`);
     // bugArgs
     const argArray = [
       '-c', // colors
+      ...moreArgs,
+      ...(bug.runArgs || EmptyArray)
+    ];
+    if (argArray.includes(undefined)) {
+      throw new Error(bug.debugTag + ' - invalid `Project bug`. Arguments must not include `undefined`: ' + JSON.stringify(argArray));
+    }
+    return argArray.join(' ');      //.map(s => `"${s}"`).join(' ');
+  }
+
+  /**
+   * @see https://mochajs.org/#command-line-usage
+   */
+  getJestRunArgs(bug, moreArgs = EmptyArray) {
+    // bugArgs
+    const argArray = [
       ...moreArgs,
       ...(bug.runArgs || EmptyArray)
     ];

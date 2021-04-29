@@ -18,21 +18,23 @@ export default class BugIntroduction extends WebviewWrapper {
    * @param {Bug} bug 
    */
   constructor(bug) {
-    super('dbux-bugIntroduction', 'Introduction', defaultColumn);
+    super('dbux-bugIntroduction', `Introduction: Bug ${bug.id}`, defaultColumn);
 
     this.bug = bug;
   }
 
   async buildClientHtml() {
-    return `debugTag: ${this.bug.debugTag}<br>`
-         + `description: ${this.bug.description}<br>`
-         + `name: ${this.bug.name}<br>`
-         + `testRe: ${JSON.stringify(this.bug.testRe)}`;
+    return `Bug ${this.bug.id}<br>`
+      // + `name: ${this.bug.name}<br>`
+      + `label: ${this.bug.label}<br>`
+      + `description: ${this.bug.description}<br>`
+      + (this.bug.testRe && `testRe: ${JSON.stringify(this.bug.testRe)}<br>` || '')
+      + `debugTag: ${this.bug.debugTag}<br>`;
   }
 
-  async startHost() {}
+  async startHost() { }
 
-  async shutdownHost() {}
+  async shutdownHost() { }
 }
 
 export async function showBugIntroduction(bug) {

@@ -1,4 +1,4 @@
-import { env, Uri, window } from 'vscode';
+import { env, Uri } from 'vscode';
 import BugStatus from '@dbux/projects/src/dataLib/BugStatus';
 import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
@@ -11,7 +11,7 @@ import { showInformationMessage } from '../../codeUtil/codeModals';
 
 export default class BugNode extends BaseTreeViewNode {
   static makeLabel(bug) {
-    return bug.name;
+    return bug.label;
   }
 
   init = () => {
@@ -78,14 +78,17 @@ export default class BugNode extends BaseTreeViewNode {
 
   async tryResetBug() {
     try {
-      await this.bug.manager.resetBug(this.bug);
+      if (await this.manager.stopPractice()) {
+        await this.manager.resetBug(this.bug);
+        await showInformationMessage(`Bug ${this.bug.label} has been reset successfully.`);
+      }
     }
     catch (err) {
-      if (!err.userCanceled) {
-        throw err;
+      if (err.userCanceled) {
+        await showInformationMessage('Action canceled.');
       }
       else {
-        showInformationMessage('Action canceled.');
+        throw err;
       }
     }
   }

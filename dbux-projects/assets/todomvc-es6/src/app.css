@@ -1,0 +1,39 @@
+.toggle-graph {
+  float: left;
+  margin-left: 16px;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+}
+.toggle-graph svg {
+  height: 20px;
+  width: 20px;
+}
+.toggle-graph svg path {
+  fill: #777;
+}
+
+.toggle-graph.active svg path,
+.toggle-graph:hover svg path,
+.toggle-graph:focus svg path {
+  fill: black;
+}
+
+/** 
+ * dbux-fix: most browsers don't yet fully support hex colors
+ * @see https://github.com/tastejs/todomvc-app-css/blob/master/index.css#L196
+ */
+
+.todo-list li .toggle + label {
+	/*
+		Firefox requires `#` to be escaped - https://bugzilla.mozilla.org/show_bug.cgi?id=922433
+		IE and Edge requires *everything* to be escaped to render, so we do that instead of just the `#` - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/7157459/
+	*/
+	background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%22-10%20-18%20100%20135%22%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2250%22%20fill%3D%22none%22%20stroke%3D%22rgb(220, 220, 220)%22%20stroke-width%3D%223%22/%3E%3C/svg%3E') !important;
+	background-repeat: no-repeat;
+	background-position: center left;
+}
+
+.todo-list li .toggle:checked + label {
+	background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%22-10%20-18%20100%20135%22%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2250%22%20fill%3D%22none%22%20stroke%3D%22%23bddad5%22%20stroke-width%3D%223%22/%3E%3Cpath%20fill%3D%22rgb(93, 194, 175)%22%20d%3D%22M72%2025L42%2071%2027%2056l-4%204%2020%2020%2034-52z%22/%3E%3C/svg%3E') !important;
+}

@@ -1,8 +1,11 @@
-import isFunction from 'lodash/isFunction';
-import ValueTypeCategory, { determineValueTypeCategory, ValuePruneState, isObjectCategory } from '@dbux/common/src/core/constants/ValueTypeCategory';
+import ValueTypeCategory, { determineValueTypeCategory, ValuePruneState, isObjectCategory, isTrackableCategory } from '@dbux/common/src/core/constants/ValueTypeCategory';
 // import serialize from '@dbux/common/src/serialization/serialize';
+import { newLogger } from '@dbux/common/src/log/logger';
 import Collection from './Collection';
 import pools from './pools';
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('RuntimeMonitor');
 
 // const Verbose = true;
 const Verbose = false;
@@ -42,7 +45,11 @@ class TrackedValue {
  * Keeps track of `StaticTrace` objects that contain static code information
  */
 class ValueCollection extends Collection {
-  trackedValues = new Map();
+  // trackedValues = new Map();
+  /**
+   * WeakMap to store recorded object references and their `TrackedValue`.
+   */
+  trackedValues = new WeakMap();
 
   constructor() {
     super('values');
@@ -52,16 +59,21 @@ class ValueCollection extends Collection {
     this.logger.log(...args);
   }
 
-  registerValueMaybe(hasValue, value, valueHolder) {
-    if (!hasValue) {
+  registerValueMaybe(hasValue, value, valueHolder, valuesDisabled) {
+    if (valuesDisabled) {
+      valueHolder.valueId = this._addValueDisabled().valueId;
+      // valueHolder.value = undefined;
+    }
+    else if (!hasValue) {
       valueHolder.valueId = 0;
-      valueHolder.value = undefined;
+      // valueHolder.value = undefined;
     }
     else {
       this.registerValue(value, valueHolder);
     }
   }
 
+  // NOTE: (for now) `valueHolder` is always trace
   registerValue(value, valueHolder) {
     const category = determineValueTypeCategory(value);
     if (category === ValueTypeCategory.Primitive) {
@@ -69,7 +81,6 @@ class ValueCollection extends Collection {
       valueHolder.value = value;
     }
     else {
-      // NOTE: (for now) `valueHolder` is always trace
       const valueRef = this._serialize(value, 1, null, category);
       Verbose && this._log(`value #${valueRef.valueId} for trace #${valueHolder.traceId}: ${ValueTypeCategory.nameFrom(category)} (${valueRef.serialized})`);
       valueHolder.valueId = valueRef.valueId;
@@ -86,7 +97,16 @@ class ValueCollection extends Collection {
       // if (value === undefined) {
       //   this.logger.warn(new Error(`Tried to track value but is undefined`).stack);
       // }
-      this.trackedValues.set(value, tracked = new TrackedValue(value));
+      try {
+        this.trackedValues.set(value, tracked = new TrackedValue(value));
+      }
+      catch (err) {
+        let typeInfo = typeof value;
+        if (isObject(value)) {
+          typeInfo += `(${Object.getPrototypeOf(value)})`;
+        }
+        logError(`could not store value ("${err.message}"): ${typeInfo} ${JSON.stringify(value)}`);
+      }
     }
     tracked.addRef(valueRef);
 
@@ -101,18 +121,26 @@ class ValueCollection extends Collection {
     return this._omitted;
   }
 
-  _registerValue(value, category) {
-    // TODO: figure out a better way to store primitive values? (don't need refs for those...)
+  _addValueDisabled() {
+    if (!this._valueDisabled) {
+      this._valueDisabled = this._registerValue(null, null);
+      this._finishValue(this._valueDisabled, null, '(...)', ValuePruneState.ValueDisabled);
+    }
+    return this._valueDisabled;
+  }
 
+  _registerValue(value, category) {
     // create new ref + track object value
     const valueRef = pools.values.allocate();
     const valueId = this._all.length;
-    const tracked = this._trackValue(value, valueRef);
-
-    // store values
     valueRef.valueId = valueId;
-    valueRef.trackId = tracked.trackId;
     valueRef.category = category;
+
+    if (isTrackableCategory(category)) {
+      const tracked = this._trackValue(value, valueRef, category);
+      valueRef.trackId = tracked.trackId;
+    }
+
 
     // register by id
     this._all.push(valueRef);
@@ -195,7 +223,7 @@ class ValueCollection extends Collection {
       const keys = [];
       for (const key in obj) {
         // if (!isFunction(obj[key])) {
-          keys.push(key);
+        keys.push(key);
         // }
       }
       return keys;
@@ -217,12 +245,12 @@ class ValueCollection extends Collection {
   _startAccess(/* obj */) {
     // eslint-disable-next-line no-undef
     if (__dbux__._r.disabled) {
-      this.logger.error('Tried to start accessing object while already accessing another object.');
+      this.logger.error(`Tried to start accessing object while already accessing another object - ${new Error().stack}`);
       return;
     }
 
     // NOTE: disable tracing while reading the property
-    
+
     // eslint-disable-next-line no-undef
     __dbux__._r.incDisabled();
   }
@@ -343,7 +371,7 @@ class ValueCollection extends Collection {
               pruneState = ValuePruneState.Shortened;
               n = SerializationConfig.maxObjectSize;
             }
-            
+
             // start serializing
             serialized = [];
 

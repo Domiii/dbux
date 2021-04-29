@@ -1,22 +1,18 @@
 # Code of Conduct
 
-TODO: we are still working on this
-
-# Joining the Community
-
-While you can certainly try to get started on your own, you probably make your life a lot easier by [join the dev team on Discord](https://discord.gg/8kR2a7h) first :)
-
-
 # Development + Contributing: Getting Started
 
 ## Prerequisites
 
 * bash
    * On Windows, you can get this via cygwin or `git` (which also installs cygwin)
-* node
-   * we recommend [v12.12.0](https://nodejs.org/en/blog/release/v12.12.0/) or higher for its source map support
-* vscode
-* yarn
+* [Volta](https://docs.volta.sh/guide/getting-started)
+  * Make sure to delete `node`, `yarn` (and possibly `n` and `nvm` if you have it) first
+  * We recommend using volta to manage `node`, `npm` and `yarn`. It is a breeze to work with, and makes version management child's play.
+  * Use `volta` to install `node` and `yarn`
+    * node
+       * we recommend [v12.12.0](https://nodejs.org/en/blog/release/v12.12.0/) or higher for its source map support
+    * yarn
 
 
 ## Setup
@@ -25,10 +21,10 @@ While you can certainly try to get started on your own, you probably make your l
 git clone https://github.com/Domiii/dbux.git
 cd dbux
 code dbux.code-workspace # open project in vscode
-npm run i # install dependencies
+yarn i # install dependencies
 ```
 
-if dependencies bug out, run the (very aggressive) clean-up command: `npm run dbux-reinstall`
+If dependencies bug out, run the (very aggressive) clean-up command: `npm run dbux-reinstall`
 
 
 ## Start development
@@ -45,14 +41,19 @@ if dependencies bug out, run the (very aggressive) clean-up command: `npm run db
 
 We use Lerna with Yarn workspaces, so instead of `npm i pkg`, we can do the following:
 
-* Add `pkg` to `@dbux/something` (where `dbux-something` is the folder containing the package `@dbux/something`):
+* Adding `pkg` to `@dbux/something` (where `dbux-something` is the folder containing the package `@dbux/something`):
    `npx lerna add --scope=@dbux/something pkg`
    `npx lerna add --scope=@dbux/common pkg`
    `npx lerna add --scope=dbux-code pkg      # note: dbux-code's package name has a dash (-), not a slash (/)!`
 
 
-* Add `pkg` as devDependency to the root:
+* Adding `pkg` as devDependency to the root:
    `yarn add --dev -W pkg`
+
+
+# Joining the Community
+
+While you can certainly try to get started on your own, you probably make your life a lot easier by [join the dev team on Discord](https://discord.gg/8kR2a7h) first :)
 
 
 # VSCode extension development

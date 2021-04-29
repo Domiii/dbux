@@ -1,0 +1,24 @@
+{
+  "name": "@dbux/common-node",
+  "version": "0.3.17-dev.0",
+  "description": "",
+  "module": "src/index.js",
+  "main": "src/index.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "Domi",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@dbux/common": "^0.3.17-dev.0",
+    "colors": "^1.4.0",
+    "cross-spawn": "^7.0.3",
+    "glob": "^7.1.6",
+    "i18next": "^19.8.2",
+    "lodash": "^4.17.19",
+    "nanoevents": "^2.0.0",
+    "serialize-javascript": "^5.0.1",
+    "shell-escape": "^0.2.0",
+    "shelljs": "0.8.4"
+  },
+  "_moduleAliases": {}
+}

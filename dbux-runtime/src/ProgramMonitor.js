@@ -33,6 +33,8 @@ export default class ProgramMonitor {
     this._staticProgramContext = staticProgramContext;
     this._programContextId = this.pushImmediate(inProgramStaticContextId, ProgramStartTraceId, false);
     this._logger = newLogger(staticProgramContext.filePath);
+
+    // this._logger.debug(`Started tracing program...`);
   }
 
   /**
@@ -191,7 +193,7 @@ export default class ProgramMonitor {
   }
 
   get areTracesDisabled() {
-    return !!this._runtimeMonitor.tracesDisabled;
+    return this.disabled || !!this._runtimeMonitor.tracesDisabled;
   }
 
   warnDisabled(...args) {

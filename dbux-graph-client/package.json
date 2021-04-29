@@ -12,8 +12,10 @@
     "start:prod": "npm run build:watch:prod",
     "build:prod": "node ../node_modules/webpack/bin/webpack --mode production",
     "build:dev": "node ../node_modules/webpack/bin/webpack --mode development",
-    "build:watch": "npx nodemon --exec \"node ../node_modules/webpack/bin/webpack --mode development --watch\"",
-    "build:watch:prod": "npx nodemon --exec \"node ../node_modules/webpack/bin/webpack --mode production --watch\"",
+    "build:watch": "node ../node_modules/webpack/bin/webpack --mode development --watch",
+    "build:watch___": "npx nodemon --exec \"node ../node_modules/webpack/bin/webpack --mode development --watch\"",
+    "build:watch:prod": "node ../node_modules/webpack/bin/webpack --mode production --watch",
+    "build:watch:prod___": "npx nodemon --exec \"node ../node_modules/webpack/bin/webpack --mode production --watch\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -27,7 +29,8 @@
     "bootstrap": "^4.4.1",
     "html2canvas": "^1.0.0-rc.5",
     "i18next": "^19.8.2",
-    "lodash": "^4.17.19"
+    "lodash": "^4.17.19",
+    "serialize-javascript": "^5.0.1"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^6.0.3",
