@@ -192,8 +192,7 @@ export default class ProjectsManager {
   // ###########################################################################
 
   async startPractice(bug) {
-    if (this.practiceSession) {
-      await this.externals.alert(`You are currently practicing ${bug.id}`, true);
+    if (!await this.stopPractice()) {
       return;
     }
 
