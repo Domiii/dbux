@@ -62,6 +62,7 @@ async function _checkSystem(projectManager, requirements, calledFromUser) {
   let results = {};
 
   let success = true;
+  // TOTRANSLATE
   let modalMessage = 'Dbux requires the following programs to be installed and available on your system in order to run smoothly.' +
     ' Please make sure, you have all of them installed.\n\n';
 
@@ -74,21 +75,24 @@ async function _checkSystem(projectManager, requirements, calledFromUser) {
       if (requirement.version) {
         result.version = await getVersion(program);
         if (semver.satisfies(result.version, requirement.version)) {
+          // TOTRANSLATE
           message += `✓  ${program}\n    Found at "${result.path}" (v${result.version} satisfies ${requirement.version})`;
           result.success = true;
         }
         else {
-          message += `x  "${program}"\n Installed but the version v${result.version} does not satisfies the requirement "${requirement.version}". ` +
-            `Please upgrade to the required version.`;
+          // TOTRANSLATE
+          message += `¯\\_(ツ)_/¯ "${program}"\n    Installed but old. Version is ${result.version} but we recommend ${requirement.version}.`;
           result.success = false;
         }
       }
       else {
+        // TOTRANSLATE
         message += `✓  ${program}\n    Found at "${result.path}"`;
         result.success = true;
       }
     }
     else {
+      // TOTRANSLATE
       message += `x  ${program}\n    Not found.`;
       result.success = false;
     }
@@ -100,11 +104,13 @@ async function _checkSystem(projectManager, requirements, calledFromUser) {
     modalMessage += `${message}\n`;
   }
 
+  // TOTRANSLATE
   modalMessage += success ?
-    `\nSUCCESS! All system dependencies have been installed.` :
-    `\nFAILED: One or more requirement does not satisfied.`;
+    `\nSUCCESS! All system dependencies seem to be in order.` :
+    `\nOne or more system dependencies are not installed. Fix them, then try again.`;
 
   if ((results?.git?.success === false || results?.bash?.success === false) && isWindows()) {
+    // TOTRANSLATE
     modalMessage += '\n\nWindows users can install bash and git into $PATH by installing "git" ' +
       'and checking the "adding UNIX tools to PATH". You can achieve that by:\n' +
       '1. Installing choco\n' +
@@ -118,6 +124,7 @@ async function _checkSystem(projectManager, requirements, calledFromUser) {
   let ignore = false;
   if (!success) {
     const options = !calledFromUser ? {
+      // TOTRANSLATE
       [`Ignore and run anyway!`]: () => {
         ignore = true;
       }
