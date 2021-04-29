@@ -1,8 +1,8 @@
-const x = 1;
+let x = 1;
 const y = 2;
 // const y = x + 3;
 
-function f(x) {
+function f(/* x */) {
   let y;
   y = 'yy';
   x = 111;

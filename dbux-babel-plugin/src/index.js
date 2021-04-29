@@ -13,12 +13,15 @@ export default function dbuxBabelPlugin(_, cfg) {
       // Program: programVisitor()
       AssignmentExpression(path, state) {
         const idName = path.node.left.name;
-        console.log(`[AE] "${path.toString()}" (${idName}):`,
+        // VariableDeclarator(path, state) {
+        //   const idName = path.node.id.name;
+        const binding = path.scope.bindings[idName];
+        const refs = binding?.referencePaths || [];
+        console.log(`[AE] "${path.toString()}" (${binding?.kind || '(?)'} ${idName}, ${refs.length}):`,
           [''].concat(
-            path.scope.bindings[idName]?.
-              referencePaths?.
-              map(p => p.toString())
-            || []).join('\n ')) || '(not found)';
+            refs.
+              map(p => JSON.stringify(p.node.loc))
+            || []).join('\n  ')) || '(not found)';
         console.log(`  (all bindings: ${Object.keys(path.scope.bindings)})`);
       }
     }),

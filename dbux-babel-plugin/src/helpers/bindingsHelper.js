@@ -1,3 +1,19 @@
+/**
+ * Bindings usually refer to "creations" of variables, 
+ * such as declarations, parameters, module exports etc.
+ * 
+ * @file
+ * 
+ * class `Binding`:
+ * @see https://github.com/babel/babel/blob/main/packages/babel-traverse/src/scope/binding.ts#L5
+ * 
+ * `registerDeclaration`:
+ * @see https://github.com/babel/babel/blob/672a58660f0b15691c44582f1f3fdcdac0fa0d2f/packages/babel-traverse/src/scope/index.ts#L646
+ * 
+ * binding collision logic:
+ * @see https://github.com/babel/babel/blob/672a58660f0b15691c44582f1f3fdcdac0fa0d2f/packages/babel-traverse/src/scope/index.ts#L515
+ */
+
 // import { logInternalError } from '../log/logger';
 // import EmptyObject from '@dbux/common/src/util/EmptyObject';
 // import { isInLoc1D } from './locHelpers';
@@ -12,11 +28,12 @@
 //     for (const pathEntry of path) {
 //       yield* iterateBindings(pathEntry);
 //     }
+//     return;
 //   }
 
 //   const bindings = path.scope?.bindings;
 //   if (!bindings) {
-//     logInternalError(`[iterateRealVariableBindings] argument is not path or has no bindings: ${path?.toString()}`);
+//     logInternalError(`[iterateRealVariableBindings] argument is not path or has no bindings: ${path.toString()}`);
 //   }
 //   else {
 //     yield* Object.keys(bindings)
@@ -72,6 +89,7 @@
 //     }
 
 //     // add all accesses
+//     // WARNING: `referencePaths` only contains reads of given indentifier in given scope. It does not seem like they can ever count as constantViolations.
 //     for (const varPath of referencePaths) {
 //       if (isInLoc1D(varPath.node, containingLoc1D)) {
 //         // add var access
@@ -91,3 +109,19 @@
 //   iterateVarAccessInLoc1D(path, loc1D, (name) => names.push(name));
 //   return names;
 // }
+
+/**
+ * @return {Binding} The binding that creates/declares the given identifier (if it can be found).
+ */
+export function getBinding(idPathOrNode) {
+  // NOTE: there is also `getAllBindings`
+  return idPathOrNode.scope.getBinding((idPathOrNode.node || idPathOrNode).name);
+}
+
+/**
+ * 
+ * @returns {Path} The path that creates/declares the given identifier.
+ */
+export function getBindingPath(idPathOrNode) {
+  return getBinding(idPathOrNode)?.path;
+}

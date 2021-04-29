@@ -206,9 +206,11 @@ NOTE: all these are also "Value-creating types"
   * `declarations` contains multiple `VariableDeclaration`, each referring to their own variable.
 * `AssignmentExpression`
   * `targetPathId`:
-    * Locally, by name, in scope or ancestor scopes.
-      * We can get this information from [Scope.bindings[name].referencePaths[0]](https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#bindings)
-    * Global
+    * first: try `getBindingPath`
+      * if it exists, get `contextId` identifier (maybe via `staticContext`?)
+      * final uniquely identifying path is (`id.name`, `contextId`)
+      * TODO: consider acquiring `bindingPath`'s `traceId` instead?
+    * else: if `bindingPath` does not exist, assume it's global?
   * 
 
 ```js

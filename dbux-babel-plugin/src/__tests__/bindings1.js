@@ -82,7 +82,6 @@ test('for-of bindings', () => {
     }
   `, {
     ForOfStatement(path, /* state */) {
-      // see: https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/family.js#L215
       // const ids = path.get('left').getBindingIdentifierPaths();
 
       expectPathBindingNames(path, []);  // no variable is declared in the loop signature

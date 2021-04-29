@@ -121,7 +121,7 @@ export function functionVisitEnter(bodyPath, state) {
     // this is probably an instrumented function
     return;
   }
-  
+
   const {
     name,
     displayName
@@ -147,9 +147,11 @@ export function functionVisitEnter(bodyPath, state) {
   // TODO: also trace `this`?
   // state.varAccess.addVarAccess(path, ownerId, VarOwnerType.Context, 'this', false);
 
-  // see: https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/lib/virtual-types.js
   const params = functionPath.get('params');
   const paramIds = params.map(param =>
+    // get all variable declarations in `param`
+    // see: https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/family.js#L215
+    // see: https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/lib/virtual-types.js
     Object.values(param.getBindingIdentifierPaths())
   ).flat();
   let recordParams = paramIds.map(paramPath => {
