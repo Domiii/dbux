@@ -3,9 +3,9 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import Stack from './Stack';
 import executionContextCollection from './data/executionContextCollection';
 import traceCollection from './data/traceCollection';
-import setImmediate from './setImmediate';
 import valueCollection from './data/valueCollection.js';
 import promiseCollection from './data/promiseCollection.js';
+import scheduleNextPossibleRun from './scheduleNextPossibleRun';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -112,7 +112,7 @@ export default class Runtime {
    */
   _ensureEmptyStackBarrier() {
     if (!this._emptyStackBarrier) {
-      this._emptyStackBarrier = setImmediate(this._executeEmptyStackBarrier);
+      this._emptyStackBarrier = scheduleNextPossibleRun(this._executeEmptyStackBarrier);
     }
   }
   /**
@@ -331,8 +331,8 @@ export default class Runtime {
         this._interruptedStacksOfUnknownCircumstances.push(stack);
       }
 
-      // last on stack -> done with it! (for now...)
-      this._runFinished();
+      // TODO: our shadow stack is not accurate enough for this to work correctly
+      // this._runFinished();
     }
     return stackPos;
   }
