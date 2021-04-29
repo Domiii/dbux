@@ -37,24 +37,28 @@ export async function installDbuxDependencies() {
       let lockfilePath = _extensionContext.asAbsolutePath('install.lock');
       debug(`install: obtaining file lock. If stuck here, make sure that no other VSCode instance is running and manually remove the lock file at: "${lockfilePath}"`);
 
-      await new Promise((resolve, reject) => {
-        lockfile.lock(lockfilePath, { wait: 10 ** 9 }, (err) => {
-          if (err) {
-            reject(err);
-          }
-          else {
-            resolve();
-          }
+      try {
+        await new Promise((resolve, reject) => {
+          lockfile.lock(lockfilePath, { wait: 10 ** 9 }, (err) => {
+            if (err) {
+              reject(err);
+            }
+            else {
+              resolve();
+            }
+          });
         });
-      });
-      if (!projectManager.hasInstalledSharedDependencies()) {
-        debug('installing...');
-        await projectManager.installDependencies();
+        if (!projectManager.hasInstalledSharedDependencies()) {
+          debug('installing...');
+          await projectManager.installDependencies();
+        }
+        else {
+          debug('install: skipped');
+        }
       }
-      else {
-        debug('install: skipped');
+      finally {
+        lockfile.unlockSync(lockfilePath);
       }
-      lockfile.unlockSync(lockfilePath);
 
       debug('install: finished');
     }, { cancellable: false });
