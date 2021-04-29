@@ -281,17 +281,17 @@ export default class RuntimeMonitor {
 
     // await part
     const currentRunId = this._runtime.getCurrentRunId();
-    debug('here1', { awaitArgument }, awaitArgument instanceof Promise, this._runtime.isPromiseCreatedInRun(awaitArgument, currentRunId));
+    // debug('here1', { awaitArgument }, awaitArgument instanceof Promise, this._runtime.isPromiseCreatedInRun(awaitArgument, currentRunId));
     if (awaitArgument instanceof Promise && (!this._runtime.isPromiseRecorded(awaitArgument) || this._runtime.isPromiseCreatedInRun(awaitArgument, currentRunId))) {
       const promise = awaitArgument;
 
-      debug('here2');
+      // debug('here2');
       const isFirstAwait = this._runtime.isFirstContextInParent(resumeContextId, parentContextId);
       if (isFirstAwait) {
         this._runtime.storeFirstAwaitPromise(currentRunId, parentContextId, awaitArgument);
       } 
 
-      debug('here3');
+      // debug('here3');
       if (!isFirstAwait || this._runtime.isRootContext(parentContextId)) {
         this._runtime.setOwnPromiseThreadId(promise, this._runtime.getRunThreadId(currentRunId));
       }
@@ -327,7 +327,7 @@ export default class RuntimeMonitor {
       const { resumeId: resumeStaticContextId } = staticContext;
       const resumeContextId = this.pushResume(programId, resumeStaticContextId, resumeInProgramStaticTraceId);
 
-      debug(awaitArgument, 'is awaited at context', awaitContextId);
+      // debug(awaitArgument, 'is awaited at context', awaitContextId);
 
       const { parentContextId } = executionContextCollection.getById(resumeContextId);
       const preEventContext = this.beforeAwaitContext.get(parentContextId);
@@ -345,8 +345,8 @@ export default class RuntimeMonitor {
           const callerPromise = this._runtime.getContextReturnValue(callerContextId); // get return value
           const promiseThreadId = this._runtime.getPromiseThreadId(callerPromise);
 
-          debug('caller promise', callerPromise);
-          debug('promise thread id', promiseThreadId);
+          // debug('caller promise', callerPromise);
+          // debug('promise thread id', promiseThreadId);
 
           if (startThreadId === promiseThreadId) {
             edgeType = 'CHAIN';
@@ -640,12 +640,12 @@ export default class RuntimeMonitor {
 
   promise(promiseId, parentPromiseId = null) {
     const currentContextId = this._runtime.peekCurrentContextId();
-    debug('create new promise', promiseId, parentPromiseId, currentContextId);
+    // debug('create new promise', promiseId, parentPromiseId, currentContextId);
     promiseCollection.promise(promiseId, parentPromiseId, currentContextId);
   }
 
   updatePromiseParent(promiseId, parentPromiseId) {
-    debug('update promise with parent promise id', promiseId, parentPromiseId);
+    // debug('update promise with parent promise id', promiseId, parentPromiseId);
     promiseCollection.updatePromiseParent(promiseId, parentPromiseId);
   }
 

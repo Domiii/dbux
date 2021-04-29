@@ -110,7 +110,7 @@ export default class ProgramMonitor {
   }
 
   postAwait(awaitResult, awaitArgument, awaitContextId, resumeTraceId) {
-    this._logger.debug('await argument is', awaitArgument);
+    // this._logger.debug('await argument is', awaitArgument);
     return this._runtimeMonitor.postAwait(this.getProgramId(), awaitResult, awaitArgument, awaitContextId, resumeTraceId);
   }
 

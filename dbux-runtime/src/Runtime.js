@@ -456,6 +456,7 @@ export default class Runtime {
    * @param {number} threadId 
    */
   setRunThreadId(runId, threadId) {
+    debug('set run', runId, 'thread id', threadId);
     this.runToThreadMap.set(runId, threadId);
     this.threadLastRun.set(threadId, Math.max(runId, this.threadLastRun.get(threadId)));
   }
@@ -466,10 +467,10 @@ export default class Runtime {
    */
   getRunThreadId(runId) {
     if (runId === 1) {
-      debug("get run thread id", runId, "returns", 1);
+      // debug("get run thread id", runId, "returns", 1);
       return 1;
     }
-    debug("get run thread id", runId, "returns", this.runToThreadMap.get(runId));
+    // debug("get run thread id", runId, "returns", this.runToThreadMap.get(runId));
     return this.runToThreadMap.get(runId);
   }
 
@@ -484,6 +485,7 @@ export default class Runtime {
    * @return The new thread id
    */
   assignRunNewThreadId(runId) {
+    // debug("assign run new thread id", runId);
     this._currentThreadId += 1;
     this.setRunThreadId(runId, this._currentThreadId);
     this.threadFirstRun.set(this._currentThreadId, runId);
@@ -506,7 +508,7 @@ export default class Runtime {
       warn("Trying to add CHAIN to an run already had outgoing CHAIN edge");
     }
 
-    if (this.getRunThreadId(fromRun)) {
+    if (!this.getRunThreadId(fromRun)) {
       this.assignRunNewThreadId(fromRun);
     }
 
@@ -533,7 +535,7 @@ export default class Runtime {
    * @return {number} The last run id of the thread
    */
   getLastRunOfThread(threadId) {
-    debug("get last run of thread", threadId, "returns", this.threadLastRun.get(threadId));
+    // debug("get last run of thread", threadId, "returns", this.threadLastRun.get(threadId));
     return this.threadLastRun.get(threadId);
   }
 
@@ -555,14 +557,14 @@ export default class Runtime {
   }
 
   getPromiseThreadId(promise) {
-    debug('get promise thread id', { promise });
+    // debug('get promise thread id', { promise });
     const threadId = this.getOwnPromiseThreadId(promise);
     if (threadId) {
       return threadId;
     }
 
     const callerPromise = this.getCallerPromise(promise);
-    debug('caller promise', callerPromise);
+    // debug('caller promise', callerPromise);
     if (callerPromise) {
       return this.getPromiseThreadId(callerPromise);
     }
@@ -579,13 +581,13 @@ export default class Runtime {
    * @returns 
    */
   getCallerPromise(promise) {
-    debug('get caller promise', promise);
+    // debug('get caller promise', promise);
     const contextId = this.returnValueCallerContextMap.get(promise);
     return this.contextReturnValueMap.get(contextId);
   }
 
   storeFirstAwaitPromise(runId, contextId, awaitArgument) {
-    debug('store first await promise', runId, contextId, awaitArgument);
+    // debug('store first await promise', runId, contextId, awaitArgument);
     const pair = { runId, contextId };
     this.promiseContextMap.set(awaitArgument, pair);
     this.contextPromiseMap.set(pair, awaitArgument);
@@ -661,13 +663,13 @@ export default class Runtime {
   contextReturnValueMap = new Map();
   returnValueCallerContextMap = new Map();
   recordContextReturnValue(callerContextId, contextId, value) {
-    debug('set context return value', contextId, 'to', value);
+    // debug('set context return value', contextId, 'to', value);
     this.contextReturnValueMap.set(contextId, value);
     this.returnValueCallerContextMap.set(value, callerContextId);
   }
 
   getContextReturnValue(contextId) {
-    debug('get context return value of context', contextId);
+    // debug('get context return value of context', contextId);
     return this.contextReturnValueMap.get(contextId);
   }
 }
