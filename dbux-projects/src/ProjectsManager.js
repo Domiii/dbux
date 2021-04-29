@@ -182,10 +182,6 @@ export default class ProjectsManager {
     return this.bugDataProvider;
   }
 
-  get runStatus() {
-    return this.runner.status;
-  }
-
   async getAndInitBackend() {
     await this._backend.init();
     return this._backend;
@@ -531,6 +527,10 @@ export default class ProjectsManager {
 
   async stopRunner() {
     await this.runner.cancel();
+  }
+
+  isBusy() {
+    return this.runner.isBusy();
   }
 
   // ########################################

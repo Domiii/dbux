@@ -483,10 +483,11 @@ This may be solved by using \`Delete project folder\` button.`);
   }
 
   async deleteProjectFolder() {
-    const deactivatePromise = this.runner.deactivateBug();
+    if (this.runner.isProjectActive(this)) {
+      await this.runner.deactivateBug();
+    }
     sh.rm('-rf', this.projectPath);
     this._installed = false;
-    await deactivatePromise;
   }
 
   doesProjectFolderExist() {

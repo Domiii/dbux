@@ -10,7 +10,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import Process from '../util/Process';
-import BugRunnerStatus from './RunStatus';
+import BugRunnerStatus, { isStatusRunningType } from './RunStatus';
 
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
 /** @typedef {import('./Bug').default} Bug */
@@ -97,7 +97,12 @@ export default class BugRunner {
   // ###########################################################################
 
   isBusy() {
-    return this._queue.isBusy() || this._process || this.bug;
+    // return this._queue.isBusy() || this._process || this.bug;
+    return BugRunnerStatus.is.Busy(this.status);
+  }
+
+  isRunning() {
+    return isStatusRunningType(this.status);
   }
 
   isProjectActive(project) {
@@ -318,7 +323,7 @@ export default class BugRunner {
 
   // NOTE: May cause error if used while running
   async cancel() {
-    if (!this.isBusy()) {
+    if (!this.isRunning()) {
       // nothing to do
       return;
     }

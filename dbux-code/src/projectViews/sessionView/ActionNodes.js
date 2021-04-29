@@ -32,6 +32,15 @@ class SessionNode extends BaseTreeViewNode {
   get bug() {
     return this.entry;
   }
+
+  async handleClick() {
+    if (this.manager.isBusy()) {
+      await showInformationMessage('Currently busy, please wait');
+    }
+    else {
+      await this.handleClickCallback?.();
+    }
+  }
 }
 
 class DetailNode extends SessionNode {
@@ -52,7 +61,7 @@ class DetailNode extends SessionNode {
     return 'project.svg';
   }
 
-  async handleClick() {
+  async handleClickCallback() {
     await this.bug.manager.externals.showBugIntroduction(this.bug);
   }
 }
@@ -70,13 +79,8 @@ class ShowEntryNode extends SessionNode {
     return 'document.svg';
   }
 
-  async handleClick() {
-    if (RunStatus.is.Busy(this.manager.runStatus)) {
-      await showInformationMessage('Currently busy, please wait');
-    }
-    else {
-      await this.entry.openInEditor();
-    }
+  async handleClickCallback() {
+    await this.entry.openInEditor();
   }
 }
 
@@ -93,13 +97,8 @@ class RunNode extends SessionNode {
     return 'play.svg';
   }
 
-  async handleClick() {
-    if (RunStatus.is.Busy(this.manager.runStatus)) {
-      await showInformationMessage('Currently busy, please wait');
-    }
-    else {
-      await this.controller.activate();
-    }
+  async handleClickCallback() {
+    await this.controller.activate();
   }
 }
 
@@ -116,13 +115,8 @@ class RunWithoutDbuxNode extends SessionNode {
     return 'play_gray.svg';
   }
 
-  async handleClick() {
-    if (RunStatus.is.Busy(this.manager.runStatus)) {
-      await showInformationMessage('Currently busy, please wait');
-    }
-    else {
-      await this.controller.activate({ dbuxEnabled: false });
-    }
+  async handleClickCallback() {
+    await this.controller.activate({ dbuxEnabled: false });
   }
 }
 
@@ -139,13 +133,8 @@ class DebugWithoutDbuxNode extends SessionNode {
     return 'bug_gray.svg';
   }
 
-  async handleClick() {
-    if (RunStatus.is.Busy(this.manager.runStatus)) {
-      await showInformationMessage('Currently busy, please wait');
-    }
-    else {
-      await this.controller.activate({ debugMode: true, dbuxEnabled: false });
-    }
+  async handleClickCallback() {
+    await this.controller.activate({ debugMode: true, dbuxEnabled: false });
   }
 }
 
@@ -167,7 +156,7 @@ class TagNode extends SessionNode {
     return 'flag.svg';
   }
 
-  async handleClick() {
+  async handleClickCallback() {
     const trace = traceSelection.selected;
     if (trace) {
       emitTagTraceAction(trace);
@@ -200,11 +189,8 @@ class StopPracticeNode extends SessionNode {
     return 'quit.svg';
   }
 
-  async handleClick() {
-    if (RunStatus.is.Busy(this.manager.runStatus)) {
-      await showInformationMessage('Currently busy, please wait');
-    }
-    else if (!this.manager.practiceSession.isFinished()) {
+  async handleClickCallback() {
+    if (!this.manager.practiceSession.isFinished()) {
       await this.manager.practiceSession.confirmStop();
     }
     else {
