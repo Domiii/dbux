@@ -1,7 +1,7 @@
 
-async function g(x) {
-  await x;
-}
+// async function g(x) {
+//   await x;
+// }
 
 async function f(x) {
   await x;

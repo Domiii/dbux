@@ -1,11 +1,11 @@
 
 
 async function f() {
-  "fa";
-  await 0;
-  "fb";
-  await 0;
-  "fc";
+  console.log("fa");
+  await 1;
+  console.log("fb");
+  await 2;
+  console.log("fc");
 }
 
 

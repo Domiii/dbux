@@ -477,7 +477,7 @@ export default class Runtime {
   /**
    * @type {number} Maintain thread count
    */
-  _currentThreadId = 0;
+  _currentThreadId = 1;
 
   /**
    * Assign a new thread id to the run. Calls `setRunThreadId`
