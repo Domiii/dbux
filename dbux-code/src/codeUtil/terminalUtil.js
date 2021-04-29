@@ -53,11 +53,11 @@ export function closeTerminal(name) {
 //   return string.replace(/"/g, `\\"`).replace(/`/g, "\\`");
 // }
 
-export async function runInTerminal(cwd, command) {
+export function runInTerminal(cwd, command) {
   const name = DefaultTerminalName;
   closeTerminal(name);
 
-  let pathToBash = (await which('bash'))[0];
+  const pathToBash = which('bash');
 
   // WARNING: terminal is not properly initialized when running the command. cwd is not set when executing `command`.
   const wrappedCommand = `cd "${cwd}" && ${command}; read -p "(Done. Press any key to exit.)"`;
@@ -127,7 +127,7 @@ export async function runInTerminalInteractive(cwd, command, createNew = false) 
   }
   const terminalName = DefaultTerminalName;
 
-  let pathToBash = (await which('bash'))[0];
+  const pathToBash = which('bash');
 
   const terminalOptions = {
     name: terminalName,
