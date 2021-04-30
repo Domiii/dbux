@@ -130,19 +130,23 @@ module.exports = (env, argv) => {
         map(depName => path.join(MonoRoot, 'node_modules', depName));
 
       // look up folders of each dependency
-      const dependencyFolderNames = dependencyLinks.map(
+      const resolveFolderNames = dependencyLinks.map(
         // link => fs.realpathSync(link).replace(MonoRoot, '')
         link => path.relative(MonoRoot, fs.realpathSync(link))
       );
-      dependencyFolderNames.push(target);
+      resolveFolderNames.push(target);
 
       // resolve
-      const resolve = makeResolve(MonoRoot, dependencyFolderNames);
+      const resolve = makeResolve(MonoRoot, resolveFolderNames);
       // resolve.alias['@'] = src;
 
       // add `src` folders to babel-loader
-      const absoluteDependencies = makeAbsolutePaths(MonoRoot, dependencyFolderNames);
+      const absoluteDependencies = makeAbsolutePaths(MonoRoot, resolveFolderNames);
       const includeSrcs = absoluteDependencies.map(r => path.join(r, 'src'));
+
+      console.debug(` [babel targets]${['']
+        .concat(absoluteDependencies.map(s => s.substring(MonoRoot.length + 1)))
+        .join(', ')}`);
 
       let cfg = {
         watchOptions: {
@@ -244,7 +248,7 @@ module.exports = (env, argv) => {
 
     const otherWebpackConfigPaths = [
       `./dbux-runtime/deps/ws.webpack.config`,
-      
+
       ...[
         'cli',
         'server',
