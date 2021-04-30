@@ -6,6 +6,7 @@
  *  have the time yet to properly separate them again. That is why there is also some context instrumentation in this file
  */
 
+import nodePath from 'path';
 import cloneDeep from 'lodash/cloneDeep';
 import merge from 'lodash/merge';
 import truncate from 'lodash/truncate';
@@ -13,6 +14,7 @@ import * as t from '@babel/types';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import { requireAllByName } from '@dbux/common-node/src/util/requireUtil';
 import { traceWrapExpression, buildTraceNoValue, traceCallExpression, instrumentCallExpressionEnter, getTracePath } from '../helpers/traceHelpers';
 // import { loopVisitor } from './loopVisitors';
 import { isCallPath } from '../helpers/functionHelpers';
@@ -29,6 +31,16 @@ const Verbose = 1;
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('traceVisitors');
+
+const ParserStateClassesByName = (function _init() {
+  return requireAllByName(nodePath.join(__dirname, '../parse') + '/**/*.js');
+})();
+
+function getParserStateClassByName(path) {
+  let name = path.node.type;
+  name = name[0].toUpperCase() + name.substring(1);
+  return ParserStateClassesByName[name];
+}
 
 const traceCfg = (() => {
   const {
@@ -690,23 +702,32 @@ function visit(direction, onTrace, instrumentors, path, state, cfg) {
     }
   }
 
+  if (!shouldVisit) {
+    return;
+  }
+
+  const ParserStateClazz = getParserStateClassByName(path);
+
   if (direction === InstrumentationDirection.Enter) {
     // -> Enter
+    (ParserStateClazz && state.stack.enter(path, state, ParserStateClazz));
 
-    // 1. instrument self
-    shouldVisit && instrumentPath(direction, instrumentor, path, state, cfg);
+    // // 1. instrument self
+    // shouldVisit && instrumentPath(direction, instrumentor, path, state, cfg);
 
-    // 2. visit children
-    children && visitEnterAll(children, path, state);
+    // // 2. visit children
+    // children && visitEnterAll(children, path, state);
   }
   else {
     // <- Exit
 
-    // 1. visit children
-    children && visitExitAll(children, path, state);
+    // // 1. visit children
+    // children && visitExitAll(children, path, state);
 
-    // 2. instrument self
-    shouldVisit && instrumentPath(direction, instrumentor, path, state, cfg);
+    // // 2. instrument self
+    // shouldVisit && instrumentPath(direction, instrumentor, path, state, cfg);
+
+    (ParserStateClazz && state.stack.exit(path, state, ParserStateClazz));
   }
 }
 

@@ -144,10 +144,68 @@ NOTE: all these are also "Value-creating types"
 
 ## Complex read types
 
-* MemberExpression
-  * `object`, `property`
-  * NOTE: we want to establish full chain, i.e.: `o.a.b.c.d.e`
-  * also: `OptionalMemberExpression`
+### MemberExpression
+* `object`, `property`
+* NOTE: we want to establish full chain, i.e.: `o.a.b.c.d.e`
+* also: `OptionalMemberExpression`
+
+```js
+function f(x) { console.log('f', x); return x; }
+var o = { p: { q: { a: 3 } } };
+o[f('p')][f('q')].a
+```
+> f p
+> f q
+> 3
+
+`%tid% = '%traceId% = %traceIdFn%(...)'`
+
+* TODO: if is expression --
+  * convert: `o.a[x].b.c[y]`
+  * to: `te(o.a[te(x, %tid1%)].b.c[te(y, %tid2%)], %tid3%, %cmd%);`
+    * `%cmd% = objectRead(tid3, tid1, tid2)`
+  * advanced
+    * conditional pathing
+      * NOTE: cannot be LVal
+      * `o?.a?.[p?.[x].a]`
+
+* TODO: if is LVal --
+  * convert: `o.a[x].b.c[y] = %value%`
+  * to: `o.a[te(x, %tid1%, %cmd1%)].b.c[te(y, %tid2%, %cmd2%)] = traceWrite(te(...), %cmd0%)`
+    * `%cmd0% = objectWrite(%tid0%)`
+    * `%cmd1% = objectWrite(tid0)`
+    * `%cmd2% = objectWrite(tid0)`
+  * advanced
+    * nested MEs
+      * NOTE: should work as-is, thanks to `tid0`
+      * `o[q[a][b].c][p[x][y[z]].w]`
+
+* TODO: `object{Read,Write}` needs utilities:
+  ```js
+  /**
+   * @see https://github.com/matsadler/path-template
+   */
+  import PathTemplate from 'path-template';
+  // ...
+  function makeObjectPath(tid0, dynamicArgTraceIds) {
+    const objectWrite = getObjectWrite(tid0);
+    let {
+      staticNames,
+      dynamicNames
+      pathTemplateRaw
+    } = getObjectWriteStaticData(objectWrite);
+    const template = PathTemplate.parse(pathTemplateRaw);
+    
+    if (dynamicArgTraceIds.length < dynamicNames.length) {
+      // OptionalMemberExpression (non-lval only)
+      dynamicNames = dynamicNames.slice(0, dynamicArgTraceIds.length);
+      // TODO: need dynamic `template` to reflect conditional versions
+      // TODO: template = ...
+    }
+    const path = PathTemplate.format(template, zip(dynamicNames, dynamicArgTraceIds));
+  }
+  ```
+  * has access to `staticNodes` via `staticTraceId`
 
 ## 
 
@@ -214,38 +272,6 @@ const d = traceWrite(
     (te(b, bId = traceId()) + te(c, cId = traceId())),
   dId = traceId()
 );
-```
-
-```js
-// MemberExpression
-class MEInfo extends ParseState {
-  leftId : Identifier;
-  chain = [];
-
-  constructor() {
-  }
-
-  checkLeftId(exitPath) {
-    // inner-most ME is exited first;
-    // has left-most id
-    if (!this.leftId) {
-      this.leftId = exitPath.node.object;
-    }
-  }
-}
-function enterME(path, state) {
-  if (!path.parentPath.isMemberExpression() || path.node === path.parentPath.node.property) {
-    // new ME, or nested property ME (o[p.q])
-    state.stack.push(MEInfo));
-  }
-}
-function exitME(path, state) {
-  state.stackTop.me.checkLeftId(path);
-}
-// ...
-function traceME(value, traceId) {
-
-}
 ```
 
 ```js
