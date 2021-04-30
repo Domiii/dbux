@@ -160,7 +160,7 @@ o[f('p')][f('q')].a
 
 `%tid% = '%traceId% = %traceIdFn%(...)'`
 
-* TODO: if is expression --
+* if ME is expression --
   * convert: `o.a[x].b.c[y]`
   * to: `te(o.a[te(x, %tid1%)].b.c[te(y, %tid2%)], %tid3%, %cmd%);`
     * `%cmd% = objectRead(tid3, tid1, tid2)`
@@ -169,18 +169,18 @@ o[f('p')][f('q')].a
       * NOTE: cannot be LVal
       * `o?.a?.[p?.[x].a]`
 
-* TODO: if is LVal --
+* if ME is LVal --
   * convert: `o.a[x].b.c[y] = %value%`
   * to: `o.a[te(x, %tid1%, %cmd1%)].b.c[te(y, %tid2%, %cmd2%)] = traceWrite(te(...), %cmd0%)`
-    * `%cmd0% = objectWrite(%tid0%)`
-    * `%cmd1% = objectWrite(tid0)`
-    * `%cmd2% = objectWrite(tid0)`
+    * `%cmd0% = objectWrite(%tid0%, 0)`
+    * `%cmd1% = objectWrite(tid0, 0)`
+    * `%cmd2% = objectWrite(tid0, 1)`
   * advanced
     * nested MEs
       * NOTE: should work as-is, thanks to `tid0`
       * `o[q[a][b].c][p[x][y[z]].w]`
 
-* TODO: `object{Read,Write}` needs utilities:
+* `object{Read,Write}` needs utilities:
   ```js
   /**
    * @see https://github.com/matsadler/path-template
