@@ -174,19 +174,24 @@ NOTE: all these are also "Value-creating types"
 
 # Runtime Data Structures
 
+## Examples
+
+
+
+## List
+
 * ```js
   const TraceSliceType = new Enum({
     
   });
   class TraceSliceInfo {
     traceId,
-    inputPaths,
-    outputPaths
+    inputRefs,
+    outputPath
   }
   class SliceReference {
     path,
     traceId,
-    creating,
     type
   }
   ```
@@ -194,7 +199,67 @@ NOTE: all these are also "Value-creating types"
 
 ## Other Parser notes....
 
+# Parsing Examples
+
 ## Assignments
+
+
+```js
+// const d = a + b + c;
+
+// let dPath, dId, aId, bId, cId;
+const d = traceWrite(
+  [bId, cId, aId],
+  te(a, aId = traceId()) + 
+    (te(b, bId = traceId()) + te(c, cId = traceId())),
+  dId = traceId()
+);
+```
+
+```js
+// MemberExpression
+class MEInfo extends ParseState {
+  leftId : Identifier;
+  chain = [];
+
+  constructor() {
+  }
+
+  checkLeftId(exitPath) {
+    // inner-most ME is exited first;
+    // has left-most id
+    if (!this.leftId) {
+      this.leftId = exitPath.node.object;
+    }
+  }
+}
+function enterME(path, state) {
+  if (!path.parentPath.isMemberExpression() || path.node === path.parentPath.node.property) {
+    // new ME, or nested property ME (o[p.q])
+    state.stack.push(MEInfo));
+  }
+}
+function exitME(path, state) {
+  state.stackTop.me.checkLeftId(path);
+}
+// ...
+function traceME(value, traceId) {
+
+}
+```
+
+```js
+// const o[a] = p[b].c + q.d[e];
+
+// let dPath, dId, aId, bId, cId;
+const d = traceWrite(
+  [bId, cId, aId],
+  te(a, aId = traceId()) + 
+    (te(b, bId = traceId()) + te(c, cId = traceId())),
+  dId = traceId()
+);
+```
+
 
 ### AssignmentExpression, VariableDeclaration, VariableDeclarator
 
@@ -213,23 +278,6 @@ NOTE: all these are also "Value-creating types"
     * else: if `bindingPath` does not exist, assume it's global?
   * 
 
-```js
-const a = 1;
-const b = 2;
-const c = 3;
-
-// const d = a + b + c;
-
-// let dPath, dId, aId, bId, cId;
-const d = traceWrite(
-  dPath,
-  [[bId, cId], aId],
-  te(a, aId = traceId()) + 
-    (te(b, bId = traceId()) + te(c, cId = traceId())),
-  dId = traceId()
-);
-```
-
 ## CallExpression
 
 
@@ -240,6 +288,17 @@ TODO
 
 
 ### ClassProperty
+
+NOTE: `ClassProperty` can observe some complex recursive behavior. E.g.:
+
+```js
+const p = 'p1', q = 'q1';
+class A {
+  // NOTE: order is q.RHS -> p.RHS -> p.LHS -> qLHS
+  [p] = new class B { [q] = 3; };
+}
+console.log(new A().p1.q1);
+```
 
 ```js
 function setPKey(that, st key) { ... }
@@ -288,8 +347,8 @@ console.log(a.p1);
 ## Runtime functions
 
 ```js
-traceId()
-traceExpression(programId, inProgramStaticTraceId, value, traceId); // te(value, traceId)
+traceId(programId, inProgramStaticTraceId)
+te(value, thisTraceId = traceId(programId, inProgramStaticTraceId)) // traceExpression(programId, inProgramStaticTraceId, value, traceId);
 
 traceWrite(targetPathId, readTree, value, traceId)
 

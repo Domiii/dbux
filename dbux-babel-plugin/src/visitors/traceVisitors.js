@@ -21,9 +21,10 @@ import { awaitVisitEnter, awaitVisitExit } from './awaitVisitor';
 import { getNodeNames } from './nameVisitors';
 import { isPathInstrumented } from '../helpers/instrumentationHelper';
 import TraceInstrumentationType from '../constants/TraceInstrumentationType';
+import InstrumentationDirection from '../constants/InstrumentationDirection';
 
-const Verbose = 0;
-// const Verbose = 1;
+// const Verbose = 0;
+const Verbose = 1;
 // const Verbose = 2;
 
 // eslint-disable-next-line no-unused-vars

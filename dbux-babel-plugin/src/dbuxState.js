@@ -35,6 +35,8 @@ export default function injectDbuxState(_buildCfg, programPath, programState) {
   const { scope } = programPath;
   const { file: programFile } = programState;
 
+  // TODO: add `stack`, `stackTop`
+
   const dbuxState = {
     runtimeCfg,
 
