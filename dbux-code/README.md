@@ -411,6 +411,7 @@ These are all currently supported configuration parameters (mostly for the "Run 
 | dbux.debug.nodeArgs    | string  |                                                   | Custom node options passed to node when running the program.                                                                                                              |
 | dbux.debug.programArgs | string  |                                                   | Custom program arguments, available to the program via `process.argv`.                                                                                                    |
 | dbux.debug.env         | object  | {}                                                | Custom program environment variables available via `process.env` (probably not working yet).                                                                              |
+| dbux.packageWhitelist  | string  |                                                   | Specify which package will be traced by Dbux, seperated by space, regex supported.                                                                                        |
 
 <!-- dbux:codeConfig end -->
 
