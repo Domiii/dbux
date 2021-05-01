@@ -167,7 +167,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     // entry
     // ###########################################################################
 
-    entry = entry || env?.entry || { main: 'src/index.js' };
+    entry = entry || (env && env.entry) || { main: 'src/index.js' };
 
     entry = Object.fromEntries(
       Object.entries(entry)
