@@ -82,10 +82,10 @@ export default class Process {
       // stdio: [0, 1, 2]
     };
 
-    // if (!sync) {
-    //   // NOTE: shell = true exists only for spawn, not for exec
-    //   processOptions.shell = true;
-    // }
+    if (!sync) {
+      // NOTE: shell = true exists only for spawn, not for exec
+      processOptions.shell = true;
+    }
     // processOptions.shell = 'bash';
 
     // some weird problem where some shells don't recognize things correctly
