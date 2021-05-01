@@ -139,6 +139,10 @@ export default class WebpackBuilder {
     const webpackBin = this.webpackBin();
     // NOTE: --display-error-details is part of `--stats` in webpack@5
     let cmd = `node ${nodeArgs} --stack-trace-limit=100 ${webpackBin} ${webpackArgs}`;
+    
+    // TODO: find better solution for this
+    cmd = cmd.replace(/\\/g, '/');
+
     return project.execBackground(cmd, processOptions);
   }
 }
