@@ -33,7 +33,7 @@ const Verbose = 1;
 const { log, debug, warn, error: logError } = newLogger('traceVisitors');
 
 const ParserStateClassesByName = (function _init() {
-  return requireAllByName(nodePath.join(__dirname, '../parse') + '/**/*.js');
+  return requireAllByName(nodePath.join(__dirname, '../parseState') + '/**/*.js');
 })();
 
 function getParserStateClassByName(path) {

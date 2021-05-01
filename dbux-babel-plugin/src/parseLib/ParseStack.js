@@ -9,6 +9,11 @@ function debugTag(obj) {
  */
 export default class ParseStack {
   _stack = new Map();
+  genTasks = [];
+
+  constructor(state) {
+    this.state = state;
+  }
 
   push(ParseStateClazz, newState) {
     const { name } = ParseStateClazz;
@@ -55,10 +60,36 @@ export default class ParseStack {
     const parseState = this.pop(ParseStateClazz);
     if (parseState) {
       parseState.exit(path, state);
+
+      this.genTasks.push({
+        parseState
+      });
     }
   }
 
-  gen() {
-    // TODO: handle gen phase separately from `exit`
+  // TODO: gen of some paths can remove other paths
+  //        gen on enter should be able to fix that?
+
+  genAll() {
+    let staticId = 0;
+    const nTasks = this.genTasks.length;
+    const staticData = new Array(nTasks + 1);
+    staticData[0] = null;
+
+    for (const task of this.genTasks) {
+      const { parseState } = task;
+      parseState.staticId = ++staticId;
+    }
+
+    for (const task of this.genTasks) {
+      const { parseState } = task;
+      staticData.push(this.gen(parseState));
+    }
+  }
+
+  gen(parseState) {
+    const staticData = parseState.genStaticData(this.state);
+    parseState.instrument(staticData, this.state);
+    return staticData;
   }
 }

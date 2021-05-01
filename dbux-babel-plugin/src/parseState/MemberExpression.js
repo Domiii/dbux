@@ -8,12 +8,15 @@ export default class MemberExpression extends BaseExpression {
    * @type {Identifier}
    */
   leftId;
-  chain = [];
+  template = [];
+  dynamicIndexes = [];
+  // staticNodes = [];
+  // dynamicNodes = [];
 
   // init() {
   // }
 
-  
+
   // ###########################################################################
   // enter
   // ###########################################################################
@@ -28,9 +31,27 @@ export default class MemberExpression extends BaseExpression {
   // ###########################################################################
 
   exit(path) {
+    const {
+      dynamicIndexes,
+      template
+    } = this;
+
+    const { computed, optional, object, property } = path.node;
+
     // inner-most ME is exited first; has left-most id
     if (!this.leftId) {
-      this.leftId = path.node.object;
+      this.leftId = object;
+      template.push(object.toString());
+    }
+
+    // TODO: optional
+
+    if (computed) {
+      dynamicIndexes.push(template.length);
+      template.push(null);
+    }
+    else {
+      template.push(property.toString());
     }
   }
 
@@ -39,7 +60,15 @@ export default class MemberExpression extends BaseExpression {
   // gen
   // ###########################################################################
 
-  gen(path) {
-    // TODO
+  instrument(staticData, state) {
+    // TODO: instrument
+  }
+
+  genStaticTrace(state, staticId) {
+    const { template, dynamicIndexes } = this;
+    return {
+      template,
+      dynamicIndexes
+    };
   }
 }

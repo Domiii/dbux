@@ -7,6 +7,7 @@ import StaticTraceCollection from './data/StaticTraceCollection';
 import StaticLoopCollection from './data/StaticLoopCollection';
 import StaticVarAccessCollection from './data/StaticVarAccessCollection';
 import { isNodeInstrumented } from './helpers/instrumentationHelper';
+import ParseStack from './parseLib/ParseStack';
 
 
 // ###########################################################################
@@ -35,9 +36,11 @@ export default function injectDbuxState(_buildCfg, programPath, programState) {
   const { scope } = programPath;
   const { file: programFile } = programState;
 
-  // TODO: add `stack`, `stackTop`
+  const stack = new ParseStack(this);
 
   const dbuxState = {
+
+
     runtimeCfg,
 
     // static program data

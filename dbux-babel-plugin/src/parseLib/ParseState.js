@@ -1,7 +1,8 @@
 
 export default class ParseState {
-  constructor(path) {
+  constructor(path, state) {
     this.enterPath = path;
+    this.state = state;
   }
 
   init() { }
@@ -22,4 +23,8 @@ export default class ParseState {
   // static get prop() {
   //   return 
   // }
+
+  toString() {
+    return `${this.constructor.name}: ${this.enterPath.toString()}`;
+  }
 }
