@@ -24,6 +24,11 @@ code dbux.code-workspace # open project in vscode
 yarn i # install dependencies
 ```
 
+Finally, you might want to enable Dbux auto start by default:
+
+![dbux auto start](.\img\dbux-auto-start-workspace-setting.png)
+
+
 If dependencies bug out, run the (very aggressive) clean-up command: `npm run dbux-reinstall`
 
 
@@ -37,7 +42,8 @@ If dependencies bug out, run the (very aggressive) clean-up command: `npm run db
 1. Go to your debug tab, select the `dbux-code` configuration and press F5 (runs dbux-code (VSCode extension) in debug mode)
 1. Inside of the new window, you can then use the development version of `dbux-code`
 
-## Adding dependency
+
+## Adding dependencies
 
 We use Lerna with Yarn workspaces, so instead of `npm i pkg`, we can do the following:
 

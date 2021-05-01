@@ -8,7 +8,7 @@
   "eslint.lintTask.enable": true,
   "editor.snippetSuggestions": "top",
   "javascript.preferences.quoteStyle":"single",
-  "jest.pathToJest": "sh scripts/runJest.sh",
+  "jest.pathToJest": "bash scripts/runJest.sh",
   "python.autoComplete.extraPaths": [
     "analysis/src"
   ],
