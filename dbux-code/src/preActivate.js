@@ -66,7 +66,8 @@ export async function preActivate(context) {
     commands.executeCommand('setContext', 'dbux.context.nodeEnv', process.env.NODE_ENV);
 
     // the following should ensures `doActivate` will be called at least once
-    const autoStart = workspace.getConfiguration('dbux').get('autoStart');
+    const autoStart = (process.env.NODE_ENV === 'development') || 
+      workspace.getConfiguration('dbux').get('autoStart');
     if (autoStart) {
       await doActivate(context);
     }
