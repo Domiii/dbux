@@ -67,21 +67,25 @@ export default class ParseStack {
     }
   }
 
-  // TODO: gen of some paths can remove other paths
-  //        gen on enter should be able to fix that?
-
+  /**
+   * Iterates through `this.genTasks` to gen (transpile) the code.
+   * NOTE: the order of `genTasks` is that of the `exit` call, meaning inner-most first.
+   */
   genAll() {
     let staticId = 0;
+    const { genTasks } = this;
+
     const nTasks = this.genTasks.length;
     const staticData = new Array(nTasks + 1);
     staticData[0] = null;
 
-    for (const task of this.genTasks) {
+    for (const task of genTasks) {
       const { parseState } = task;
       parseState.staticId = ++staticId;
     }
 
-    for (const task of this.genTasks) {
+
+    for (const task of genTasks) {
       const { parseState } = task;
       staticData.push(this.gen(parseState));
     }

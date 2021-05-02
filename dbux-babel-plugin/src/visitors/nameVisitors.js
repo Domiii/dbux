@@ -23,7 +23,7 @@ function enter(path, state) {
 }
 
 /**
- * 
+ * TODO: migrate to new parser
  */
 export default function nameVisitors() {
   return {
