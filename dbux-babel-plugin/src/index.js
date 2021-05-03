@@ -1,3 +1,4 @@
+import './hackfixes.js';
 import programVisitor from './visitors/programVisitor';
 import '@dbux/common/src/util/prettyLogs';
 // import { logInternalError } from './log/logger';
