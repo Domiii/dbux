@@ -10,20 +10,26 @@ import nodePath from 'path';
 import cloneDeep from 'lodash/cloneDeep';
 import merge from 'lodash/merge';
 import truncate from 'lodash/truncate';
+import mapValues from 'lodash/mapValues';
 import * as t from '@babel/types';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { requireAllByName } from '@dbux/common-node/src/util/requireUtil';
+import * as ParseNodeClassesByName from '../parse';
 import { traceWrapExpression, buildTraceNoValue, traceCallExpression, instrumentCallExpressionEnter, getTracePath } from '../helpers/traceHelpers';
 // import { loopVisitor } from './loopVisitors';
 import { isCallPath } from '../helpers/functionHelpers';
-import { functionVisitEnter } from './functionVisitor';
 import { awaitVisitEnter, awaitVisitExit } from './awaitVisitor';
 import { getNodeNames } from './nameVisitors';
 import { isPathInstrumented } from '../helpers/instrumentationHelper';
 import TraceInstrumentationType from '../constants/TraceInstrumentationType';
 import InstrumentationDirection from '../constants/InstrumentationDirection';
+
+/**
+node --enable-source-maps --stack-trace-limit=100 --inspect-brk "C:\Users\domin\code\dbux\node_modules\@dbux\cli\bin\dbux.js" i --esnext "c:\Users\domin\code\dbux\samples\__samplesInput__\nestedFunction.js" --
+ */
+
 
 // const Verbose = 0;
 const Verbose = 1;
@@ -32,15 +38,30 @@ const Verbose = 1;
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('traceVisitors');
 
-const ParseNodeClassesByName = (function _init() {
-  return requireAllByName(nodePath.join(__dirname, '../parse') + '/**/*.js');
-})();
+// ###########################################################################
+// new parser management
+// ###########################################################################
+
+// const ParseNodeClassesByName = (function _init() {
+//   const all = requireAllByName(nodePath.join(__dirname, '../parse') + '/**/*.js');
+//   return all;
+//   // return Object.fromEntries(
+//   //   Object.entries(all)
+//   //     .map(([name, value]) => [name[0].toUpperCase() + name.substring(1), value])
+//   // );
+// })();
 
 function getParserStateClassByName(path) {
-  let name = path.node.type;
-  name = name[0].toUpperCase() + name.substring(1);
-  return ParseNodeClassesByName[name];
+  return ParseNodeClassesByName[path.node.type];
 }
+
+function getAllParserNames() {
+  return Object.keys(ParseNodeClassesByName).filter(name => !!t['is' + name]);
+}
+
+// ###########################################################################
+// old visitor code
+// ###########################################################################
 
 const traceCfg = (() => {
   const {
@@ -475,7 +496,7 @@ const enterInstrumentors = {
     return enterExpression(TraceType.ThrowArgument, path, state);
   },
 
-  Function: functionVisitEnter,
+  // Function: functionVisitEnter,
   Await: awaitVisitEnter
 };
 
@@ -657,79 +678,79 @@ function visitChildren(visitFn, childCfgs, path, state) {
 }
 
 
-function visitEnterAll(cfgNodes, path, state) {
-  return visitChildren(visitEnter, cfgNodes, path, state);
-}
+// function visitEnterAll(cfgNodes, path, state) {
+//   // return visitChildren(visitEnter, cfgNodes, path, state);
+// }
 
-function visitExitAll(cfgNodes, path, state) {
-  return visitChildren(visitExit, cfgNodes, path, state);
-}
+// function visitExitAll(cfgNodes, path, state) {
+//   // return visitChildren(visitExit, cfgNodes, path, state);
+// }
 
 // ###########################################################################
 // visitors
 // ###########################################################################
 
-function visit(direction, onTrace, instrumentors, path, state, cfg) {
-  const { instrumentationType, children, extraCfg } = cfg;
-  if (extraCfg?.ignore?.includes(path.node.type)) {
-    // ignore (array of type name)
-    return;
-  }
-  if (extraCfg?.filter && !extraCfg.filter(path, state, cfg)) {
-    // filter (custom function)
-    return;
-  }
+// function visit(direction, onTrace, instrumentors, path, state, cfg) {
+//   const { instrumentationType, children, extraCfg } = cfg;
+//   if (extraCfg?.ignore?.includes(path.node.type)) {
+//     // ignore (array of type name)
+//     return;
+//   }
+//   if (extraCfg?.filter && !extraCfg.filter(path, state, cfg)) {
+//     // filter (custom function)
+//     return;
+//   }
 
-  if (!instrumentationType && !children) {
-    return;
-  }
+//   if (!instrumentationType && !children) {
+//     return;
+//   }
 
-  // mark as visited;
-  let shouldVisit = false;
-  let instrumentor;
-  if (instrumentationType && !isPathInstrumented(path)) {
-    Verbose && logInst('v', cfg, path, direction);
-    instrumentor = getInstrumentor(instrumentors, instrumentationType);
-    shouldVisit = instrumentor && onTrace(path); // instrumentor && !hasVisited
+//   // mark as visited;
+//   let shouldVisit = false;
+//   let instrumentor;
+//   if (instrumentationType && !isPathInstrumented(path)) {
+//     Verbose && logInst('v', cfg, path, direction);
+//     instrumentor = getInstrumentor(instrumentors, instrumentationType);
+//     shouldVisit = instrumentor && onTrace(path); // instrumentor && !hasVisited
 
-    if (direction === InstrumentationDirection.Enter) {
-      // store config override on enter
-      if (extraCfg) {
-        let existedCfg = cloneDeep(path.getData('visitorCfg')) || EmptyObject;
-        merge(existedCfg, extraCfg);
-        path.setData('visitorCfg', existedCfg);
-      }
-    }
-  }
+//     if (direction === InstrumentationDirection.Enter) {
+//       // store config override on enter
+//       if (extraCfg) {
+//         let existedCfg = cloneDeep(path.getData('visitorCfg')) || EmptyObject;
+//         merge(existedCfg, extraCfg);
+//         path.setData('visitorCfg', existedCfg);
+//       }
+//     }
+//   }
 
-  if (!shouldVisit) {
-    return;
-  }
+//   if (!shouldVisit) {
+//     return;
+//   }
 
-  const ParserStateClazz = getParserStateClassByName(path);
+//   const ParserStateClazz = getParserStateClassByName(path);
 
-  if (direction === InstrumentationDirection.Enter) {
-    // -> Enter
-    (ParserStateClazz && state.stack.enter(path, state, ParserStateClazz));
+//   if (direction === InstrumentationDirection.Enter) {
+//     // -> Enter
+//     (ParserStateClazz && state.stack.enter(path, state, ParserStateClazz));
 
-    // // 1. instrument self
-    // shouldVisit && instrumentPath(direction, instrumentor, path, state, cfg);
+//     // // 1. instrument self
+//     // shouldVisit && instrumentPath(direction, instrumentor, path, state, cfg);
 
-    // // 2. visit children
-    // children && visitEnterAll(children, path, state);
-  }
-  else {
-    // <- Exit
+//     // // 2. visit children
+//     // children && visitEnterAll(children, path, state);
+//   }
+//   else {
+//     // <- Exit
 
-    // // 1. visit children
-    // children && visitExitAll(children, path, state);
+//     // // 1. visit children
+//     // children && visitExitAll(children, path, state);
 
-    // // 2. instrument self
-    // shouldVisit && instrumentPath(direction, instrumentor, path, state, cfg);
+//     // // 2. instrument self
+//     // shouldVisit && instrumentPath(direction, instrumentor, path, state, cfg);
 
-    (ParserStateClazz && state.stack.exit(path, state, ParserStateClazz));
-  }
-}
+//     (ParserStateClazz && state.stack.exit(path, state, ParserStateClazz));
+//   }
+// }
 
 function getInstrumentor(instrumentors, instrumentationType) {
   // NOTE: a TraceType might not have an instrumentor both on `Enter` as well as `Exit`
@@ -774,13 +795,6 @@ function instrumentPath(direction, instrumentor, path, state, cfg) {
   // }
 }
 
-function visitEnter(path, state, visitorCfg) {
-  return visit(InstrumentationDirection.Enter, state.onTrace.bind(state), enterInstrumentors, path, state, visitorCfg);
-}
-function visitExit(path, state, visitorCfg) {
-  return visit(InstrumentationDirection.Exit, state.onTraceExit.bind(state), exitInstrumentors, path, state, visitorCfg);
-}
-
 
 // ###########################################################################
 // utilities
@@ -805,42 +819,69 @@ function _getFullName(cfg) {
   return visitorName;
 }
 
-function logInst(tag, cfg, path, direction = null, ...other) {
+function logInst(tag, path, direction = null, ...other) {
   const nodeName = getNodeNames(path.node)?.name;
-  const cfgName = _getFullName(cfg);
   const dirIndicator = direction && direction === InstrumentationDirection.Enter ? ' ->' : ' <-';
   debug(
     `[${tag}]${dirIndicator || ''}`,
-    `${cfgName}:`,
-    nodeName && `${path.node.type} ${nodeName}` || truncate(path.toString().replace(/\n/g, ' '), { length: 100 }),
+    // `${cfgName}:`,
+    nodeName &&
+    `${path.node.type} ${nodeName}` ||
+    truncate(path.toString().replace(/\n/g, ' '), { length: 100 }),
     // TraceInstrumentationType.nameFromForce(instrumentationType),
     ...other
   );
 }
 
 // ###########################################################################
+// new visit
+// ###########################################################################
+
+function visitEnter(path, state) {
+  // return visit(InstrumentationDirection.Enter, state.onTrace.bind(state), enterInstrumentors, path, state, visitorCfg);
+  return visit(InstrumentationDirection.Enter, path, state);
+}
+function visitExit(path, state) {
+  // return visit(InstrumentationDirection.Exit, state.onTraceExit.bind(state), exitInstrumentors, path, state, visitorCfg);
+  return visit(InstrumentationDirection.Exit, path, state);
+}
+
+function visit(direction, path, state) {
+  const ParserStateClazz = getParserStateClassByName(path);
+  // if (!ParserStateClazz) {
+  //   return;
+  // }
+
+  Verbose && logInst('v', path, direction);
+
+  if (direction === InstrumentationDirection.Enter) {
+    // -> Enter
+    state.stack.enter(path, state, ParserStateClazz);
+  }
+  else {
+    // <- Exit
+    state.stack.exit(path, state, ParserStateClazz);
+  }
+}
+
+// ###########################################################################
 // buildTraceVisitors
 // ###########################################################################
 
-let _cfg;
 export function buildTraceVisitors() {
+  const names = getAllParserNames();
   const visitors = {};
-  if (!_cfg) {
-    _cfg = normalizeConfig(traceCfg);
-  }
-
-  for (const visitorName in _cfg) {
-    const visitorCfg = _cfg[visitorName];
-    visitors[visitorName] = {
+  for (const name of names) {
+    visitors[name] = {
       enter(path, state) {
         // if (path.getData()) {
         //   visit(state.onTrace.bind(state), enterInstrumentors, path, state, visitorCfg)
         // }
-        visitEnter(path, state, visitorCfg);
+        visitEnter(path, state);
       },
 
       exit(path, state) {
-        visitExit(path, state, visitorCfg);
+        visitExit(path, state);
       }
     };
   }

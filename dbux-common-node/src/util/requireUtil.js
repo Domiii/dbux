@@ -3,8 +3,9 @@ import path from 'path';
 import toString from 'serialize-javascript';
 
 export function requireAllByName(pattern, propName = 'name') {
+  const files = glob.sync(pattern);
   return Object.fromEntries(
-    glob.sync(pattern).map((file) => {
+    files.map((file) => {
       const obj = __non_webpack_require__(path.resolve(file)).default;
       const prop = obj?.[propName];
       if (!prop) {

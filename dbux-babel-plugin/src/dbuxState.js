@@ -39,7 +39,7 @@ export default function injectDbuxState(_buildCfg, programPath, programState) {
   const stack = new ParseStack(this);
 
   const dbuxState = {
-
+    stack,
 
     runtimeCfg,
 

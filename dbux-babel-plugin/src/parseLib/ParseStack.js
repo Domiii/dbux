@@ -22,7 +22,10 @@ export default class ParseStack {
     }
 
     const { _stack } = this;
-    const stateStack = _stack.get(name) || _stack.set(name, []);
+    let stateStack = _stack.get(name);
+    if (!stateStack) {
+      _stack.set(name, stateStack = []);
+    }
     stateStack.push(newState);
   }
 

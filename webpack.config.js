@@ -14,6 +14,7 @@ const webpack = require('webpack');
 // add some of our own good stuff
 require('./dbux-cli/lib/dbux-register-self');
 require('./dbux-common/src/util/prettyLogs');
+const { writeFileRegistryFile } = require('./dbux-common-node/src/util/codeGenUtil');
 
 const {
   getDependenciesPackageJson,
@@ -27,6 +28,18 @@ process.env.BABEL_DISABLE_CACHE = 1;
 
 // NOTE: we use this for bundling `debug` as "browser", which is used by `socket.io-client
 require('process').type = 'renderer';
+
+const MonoRoot = path.resolve(__dirname);
+
+// ###########################################################################
+// write "file-registry files"
+// ###########################################################################
+
+// write parser registry
+const parserDir = path.resolve(MonoRoot, 'dbux-babel-plugin/src/parse').replace(/\\/g, '/');
+writeFileRegistryFile('index.js', parserDir);
+
+console.log('Generated dbux-babel-plugin/src/parse/index.js.');
 
 // ###########################################################################
 // utilities
@@ -45,7 +58,9 @@ function mergeWithArrays(dst, src) {
 
 module.exports = (env, argv) => {
   try {
-    const MonoRoot = path.resolve(__dirname);
+    // ###########################################################################
+    // setup
+    // ###########################################################################
 
     const targets = [
       // "dbux-cli",
@@ -82,7 +97,16 @@ module.exports = (env, argv) => {
     process.env.NODE_ENV = mode; // set these, so babel configs also have it
     process.env.DBUX_ROOT = DBUX_ROOT;
 
+    // const context = path.join(root, target);
+
+    // `context` is the path from which any relative paths are resolved
+    const context = MonoRoot;
+
     console.debug(`[main] (DBUX_VERSION=${DBUX_VERSION}, mode=${mode}, DBUX_ROOT=${DBUX_ROOT}) building...`);
+
+    // ###########################################################################
+    // plugins
+    // ###########################################################################
 
     const webpackPlugins = [
       new webpack.EnvironmentPlugin({
@@ -95,19 +119,30 @@ module.exports = (env, argv) => {
 
 
     // const entry = fromEntries(targets.map(target => [target, path.resolve(path.join(target, defaultEntryPoint))]));
-
-    // `context` is the path from which any relative paths are resolved
-    const context = MonoRoot;
-
-    // const context = path.join(root, target);
     // const entry = {
     //   bundle: './src/index.js'
     // };
+
+
+    // ###########################################################################
+    // output
+    // ###########################################################################
     const output = {
       // path: path.join(context, outputFolderName),
       path: context,
-      library: '[name]'     // see https://github.com/webpack/webpack/tree/master/examples/multi-part-library
-      // library: target
+      library: '[name]',     // see https://github.com/webpack/webpack/tree/master/examples/multi-part-library
+      libraryTarget: 'umd',
+      libraryExport: 'default',
+      publicPath: 'dbux',
+      filename: '[name]/dist/index.js',
+      sourceMapFilename: '[name]/dist/index.js.map',
+
+      // see: https://gist.github.com/jarshwah/389f93f2282a165563990ed60f2b6d6c
+      devtoolModuleFilenameTemplate: 'file:///[absolute-resource-path]',  // map to source with absolute file path not webpack:// protocol
+
+      // hackfix for bug: https://medium.com/@JakeXiao/window-is-undefined-in-umd-library-output-for-webpack4-858af1b881df
+      // globalObject: '(typeof self !== "undefined" ? self : this)',
+      globalObject: '(typeof globalThis !== "undefined" ? globalThis : (typeof self !== "undefined" ? self : this))'
     };
 
     // ###########################################################################
@@ -144,9 +179,7 @@ module.exports = (env, argv) => {
       const absoluteDependencies = makeAbsolutePaths(MonoRoot, resolveFolderNames);
       const includeSrcs = absoluteDependencies.map(r => path.join(r, 'src'));
 
-      console.debug(` [babel targets]${['']
-        .concat(absoluteDependencies.map(s => s.substring(MonoRoot.length + 1)))
-        .join(', ')}`);
+      console.debug(` babel targets for ${target}: ${absoluteDependencies.map(s => s.substring(MonoRoot.length + 1)).join(', ')}`);
 
       let cfg = {
         watchOptions: {
@@ -162,22 +195,13 @@ module.exports = (env, argv) => {
         plugins: webpackPlugins,
         context,
         entry,
-        output: {
-          ...output,
-          libraryTarget: 'umd',
-          libraryExport: 'default',
-          publicPath: 'dbux',
-          filename: '[name]/dist/index.js',
-          sourceMapFilename: '[name]/dist/index.js.map',
-
-          // see: https://gist.github.com/jarshwah/389f93f2282a165563990ed60f2b6d6c
-          devtoolModuleFilenameTemplate: 'file:///[absolute-resource-path]',  // map to source with absolute file path not webpack:// protocol
-
-          // hackfix for bug: https://medium.com/@JakeXiao/window-is-undefined-in-umd-library-output-for-webpack4-858af1b881df
-          // globalObject: '(typeof self !== "undefined" ? self : this)',
-          globalObject: '(typeof globalThis !== "undefined" ? globalThis : (typeof self !== "undefined" ? self : this))'
-        },
+        output,
         resolve,
+
+        // ###########################################################################
+        // module
+        // ###########################################################################
+
         module: {
           rules: [
             {
@@ -199,6 +223,11 @@ module.exports = (env, argv) => {
               enforce: 'pre'
             }
           ],
+        },
+
+        node: {
+          __dirname: true,
+          __filename: true
         },
 
         // see: https://webpack.js.org/guides/code-splitting/
