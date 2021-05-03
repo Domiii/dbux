@@ -15,10 +15,10 @@ export default class ParseStack {
     this.state = state;
   }
 
-  push(ParseStateClazz, newState) {
-    const { name } = ParseStateClazz;
+  push(ParseNodeClazz, newState) {
+    const { name } = ParseNodeClazz;
     if (!name) {
-      throw new Error(`\`static name\` is missing on ParseState class: ${debugTag(ParseStateClazz)}`);
+      throw new Error(`\`static name\` is missing on ParseNode class: ${debugTag(ParseNodeClazz)}`);
     }
 
     const { _stack } = this;
@@ -26,15 +26,15 @@ export default class ParseStack {
     stateStack.push(newState);
   }
 
-  pop(ParseStateClazz) {
-    const { name } = ParseStateClazz;
+  pop(ParseNodeClazz) {
+    const { name } = ParseNodeClazz;
     const { _stack } = this;
     const stateStack = _stack.get(name);
     return stateStack.pop();
   }
 
-  getState(nameOrParseStateClazz) {
-    const name = isString(nameOrParseStateClazz) ? nameOrParseStateClazz : nameOrParseStateClazz.name;
+  getState(nameOrParseNodeClazz) {
+    const name = isString(nameOrParseNodeClazz) ? nameOrParseNodeClazz : nameOrParseNodeClazz.name;
     const { _stack } = this;
     const stateStack = _stack.get(name);
     if (stateStack?.length) {
@@ -47,22 +47,22 @@ export default class ParseStack {
   // enter + exit
   // ###########################################################################
 
-  enter(path, state, ParseStateClazz) {
-    const parseState = ParseStateClazz.createOnEnter(path, state, this, ParseStateClazz);
-    if (parseState) {
-      parseState.enter(path, state);
+  enter(path, state, ParseNodeClazz) {
+    const parseNode = ParseNodeClazz.createOnEnter(path, state, this, ParseNodeClazz);
+    if (parseNode) {
+      parseNode.enter(path, state);
     }
   }
 
-  exit(path, state, ParseStateClazz) {
+  exit(path, state, ParseNodeClazz) {
     // NOTE: even if we don't create a newState, we push `null`.
     //    This way, every `push` will always match a `pop`.
-    const parseState = this.pop(ParseStateClazz);
-    if (parseState) {
-      parseState.exit(path, state);
+    const parseNode = this.pop(ParseNodeClazz);
+    if (parseNode) {
+      parseNode.exit(path, state);
 
       this.genTasks.push({
-        parseState
+        parseNode
       });
     }
   }
@@ -72,28 +72,30 @@ export default class ParseStack {
    * NOTE: the order of `genTasks` is that of the `exit` call, meaning inner-most first.
    */
   genAll() {
-    let staticId = 0;
     const { genTasks } = this;
 
     const nTasks = this.genTasks.length;
     const staticData = new Array(nTasks + 1);
     staticData[0] = null;
 
-    for (const task of genTasks) {
-      const { parseState } = task;
-      parseState.staticId = ++staticId;
-    }
+    // NOTE: cannot assign id here because nodes need to be able to produce multiple and different types of static data types
+    // let staticId = 0;
+    // for (const task of genTasks) {
+    //   const { parseNode } = task;
+    //   // 
+    //   // parseNode.staticId = ++staticId;
+    // }
 
 
     for (const task of genTasks) {
-      const { parseState } = task;
-      staticData.push(this.gen(parseState));
+      const { parseNode } = task;
+      staticData.push(this.gen(parseNode));
     }
   }
 
-  gen(parseState) {
-    const staticData = parseState.genStaticData(this.state);
-    parseState.instrument(staticData, this.state);
+  gen(parseNode) {
+    const staticData = parseNode.genStaticData(this.state);
+    parseNode.instrument(staticData, this.state);
     return staticData;
   }
 }

@@ -1,6 +1,6 @@
-import ParseState from '../parseLib/ParseState';
+import ParseNode from '../parseLib/ParseNode';
 
-export default class BaseExpression extends ParseState {
+export default class BaseExpression extends ParseNode {
   inputNames;
 
   gen(path, state) {

@@ -7,7 +7,7 @@ import { injectContextEndTrace } from '../helpers/contextHelper';
 import { traceWrapExpressionStatement } from '../helpers/traceHelpers';
 import { getNodeNames } from '../visitors/nameVisitors';
 
-import ParseState from '../parseLib/ParseState';
+import ParseNode from '../parseLib/ParseNode';
 
 
 
@@ -47,11 +47,12 @@ function addResumeContext(bodyPath, state/* , staticId */) {
   return state.contexts.addResumeContext(bodyPath, locStart);
 }
 
+
 // ###########################################################################
 // Function
 // ###########################################################################
 
-export default class Function extends ParseState {
+export default class Function extends ParseNode {
   enter(bodyPath, state) {
     // const names = path.getData('_dbux_names');
     const functionPath = bodyPath.parentPath; // actual function path
@@ -105,9 +106,15 @@ export default class Function extends ParseState {
       staticResumeContextId = addResumeContext(bodyPath, state, staticContextId);
     }
 
-    // TODO
-    // store: bodyPath, state, staticContextId, pushTraceId, popTraceId, recordParams, staticResumeContextId);
+    Object.assign(this, {
+      staticContextId,
+      pushTraceId,
+      popTraceId,
+      recordParams,
+      staticResumeContextId
+    });
   }
+
 
   // ###########################################################################
   // gen
@@ -115,18 +122,24 @@ export default class Function extends ParseState {
 
   genStaticData() {
     // TODO
+    return {};
   }
 
   /**
    * Instrument all Functions to keep track of all (possibly async) execution stacks.
    */
-  instrument(bodyPath, state, staticId, pushTraceId, popTraceId, recordParams, staticResumeId = null) {
+  instrument() {
+    const {
+      staticContextId, pushTraceId, popTraceId, recordParams, staticResumeContextId = null
+    } = this;
+
+    const { path: bodyPath, state } = this;
     const { ids: { dbux }, contexts: { genContextIdName } } = state;
     const contextIdVar = genContextIdName(bodyPath);
 
-    let pushes = buildPushImmediate(contextIdVar, dbux, staticId, pushTraceId, !!staticResumeId);
+    let pushes = buildPushImmediate(contextIdVar, dbux, staticContextId, pushTraceId, !!staticResumeContextId);
     let pops = buildPopFunction(contextIdVar, dbux, popTraceId);
-    if (staticResumeId) {
+    if (staticResumeContextId) {
       // this is an interruptable function -> push + pop "resume contexts"
       // const resumeContextId = bodyPath.scope.generateUid('resumeContextId');
       pushes = [
@@ -134,7 +147,7 @@ export default class Function extends ParseState {
         pushResumeTemplate({
           dbux,
           // resumeContextId,
-          resumeStaticContextId: t.numericLiteral(staticResumeId),
+          resumeStaticContextId: t.numericLiteral(staticResumeContextId),
           traceId: t.numericLiteral(pushTraceId)
         })
       ];

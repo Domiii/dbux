@@ -32,14 +32,14 @@ const Verbose = 1;
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('traceVisitors');
 
-const ParserStateClassesByName = (function _init() {
-  return requireAllByName(nodePath.join(__dirname, '../parseState') + '/**/*.js');
+const ParseNodeClassesByName = (function _init() {
+  return requireAllByName(nodePath.join(__dirname, '../parse') + '/**/*.js');
 })();
 
 function getParserStateClassByName(path) {
   let name = path.node.type;
   name = name[0].toUpperCase() + name.substring(1);
-  return ParserStateClassesByName[name];
+  return ParseNodeClassesByName[name];
 }
 
 const traceCfg = (() => {
