@@ -33,7 +33,7 @@ function genImport(dir, name) {
 }
 
 function genExportAll(names) {
-  return `export {\n${IndentUnit}${names.join(`,\n${IndentUnit}`)}\n}`;
+  return `export {\n${IndentUnit}${names.join(`,\n${IndentUnit}`)}\n};`;
 }
 
 /**
