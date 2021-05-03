@@ -174,6 +174,9 @@ function exit(path, state) {
   //   process.exit();
   // }
 
+  // actual process of transpilation
+  state.stack.genAll();
+
   // clean up on aisle 4 (prevent memory leaks)
   clearNames();
 }

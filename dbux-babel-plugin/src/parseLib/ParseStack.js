@@ -77,9 +77,9 @@ export default class ParseStack {
   genAll() {
     const { genTasks } = this;
 
-    const nTasks = this.genTasks.length;
-    const staticData = new Array(nTasks + 1);
-    staticData[0] = null;
+    // const nTasks = this.genTasks.length;
+    // const allStaticData = new Array(nTasks + 1);
+    // allStaticData[0] = null;
 
     // NOTE: cannot assign id here because nodes need to be able to produce multiple and different types of static data types
     // let staticId = 0;
@@ -92,13 +92,17 @@ export default class ParseStack {
 
     for (const task of genTasks) {
       const { parseNode } = task;
-      staticData.push(this.gen(parseNode));
+      this.gen(parseNode);
+      // allStaticData.push();
     }
   }
 
+  /**
+   * @param {ParseNode} parseNode 
+   */
   gen(parseNode) {
-    const staticData = parseNode.genStaticData(this.state);
-    parseNode.instrument(staticData, this.state);
-    return staticData;
+    // const staticData = parseNode.genStaticData(this.state);
+    parseNode.instrument(/* staticData, */);
+    // return staticData;
   }
 }
