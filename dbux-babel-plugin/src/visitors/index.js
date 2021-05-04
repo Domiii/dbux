@@ -843,11 +843,17 @@ function logInst(tag, path, direction = null, ParserNodeClazz, ...other) {
 
 function visitEnter(ParserNodeClazz, path, state) {
   // return visit(InstrumentationDirection.Enter, state.onTrace.bind(state), enterInstrumentors, path, state, visitorCfg);
-  return visit(InstrumentationDirection.Enter, ParserNodeClazz, path, state);
+  if (!state.onTrace(path)) {
+    return;
+  }
+  visit(InstrumentationDirection.Enter, ParserNodeClazz, path, state);
 }
 function visitExit(ParserNodeClazz, path, state) {
   // return visit(InstrumentationDirection.Exit, state.onTraceExit.bind(state), exitInstrumentors, path, state, visitorCfg);
-  return visit(InstrumentationDirection.Exit, ParserNodeClazz, path, state);
+  if (!state.onTraceExit(path)) {
+    return;
+  }
+  visit(InstrumentationDirection.Exit, ParserNodeClazz, path, state);
 }
 
 /**

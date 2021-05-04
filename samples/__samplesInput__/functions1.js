@@ -8,11 +8,11 @@ const g2 = function g2() { return g2; };
 // const g3 = (null, function g3() { })
 class B {
   // NOTE: same as `A::i`; we keep (i) bindings and (ii) function name
-  g = (function g() { return this.g; }.bind(this));
+  h = (function h() { return this.h; }.bind(this));
 }
 const p = { 
   // NOTE: same as `o.j`; we keep (i) bindings and (ii) function name (unlike `{ g: () => { } }`!)
-  g: (() => (function g() { return this.g; }.bind(this)))
+  k: (() => (function k() { return this.k; }.bind(this)))
 };
 
 // ArrowFunctionExpression
@@ -30,7 +30,7 @@ const o = {
 
 [
   f(),
-  g(), new B().g(), p.g(),
+  g(), new B().h(), p.k(),
   h(),
   new A().i(),
   o.j()

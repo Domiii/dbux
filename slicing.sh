@@ -5,7 +5,7 @@
 set -e # cancel on error
 # set -x # verbose echo mode
 
-fname="function0"
+fname="functions1"
 nodeArgs=""
 
 dbuxCmd="$1"

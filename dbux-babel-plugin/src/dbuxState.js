@@ -97,10 +97,12 @@ export default function injectDbuxState(_buildCfg, programPath, programState) {
       // if (entered.has(path)) {
       //   return false;
       // }
-      if (!path.node || isNodeInstrumented(path.node)) {
-        // this node has been dynamically emitted; not part of the original source code -> not interested in it
-        return false;
-      }
+
+      // NOTE: gen happens after parsing now
+      // if (!path.node || isNodeInstrumented(path.node)) {
+      //   // this node has been dynamically emitted; not part of the original source code -> not interested in it
+      //   return false;
+      // }
 
       // remember our visit
       dbuxState.markEntered(path, purpose);
