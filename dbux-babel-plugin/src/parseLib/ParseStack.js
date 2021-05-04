@@ -1,5 +1,6 @@
 import isString from 'lodash/isString';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { getChildPaths } from './parseUtil';
 
 const Verbose = 1;
 // const Verbose = 0;
@@ -60,11 +61,33 @@ export default class ParseStack {
   }
 
   // ###########################################################################
+  // parse utilities
+  // ###########################################################################
+
+  createOnEnter(path, state, ParseNodeClazz) {
+    let newNode = null;
+    const initialData = ParseNodeClazz.prospectOnEnter(path, state);
+    if (initialData) {
+      newNode = new ParseNodeClazz(path, state, initialData);
+      newNode.init();
+
+      path.setData('_dbux_node', newNode);
+    }
+    return newNode;
+  }
+
+  getChildNodes(path, ParseNodeClazz) {
+    const childPaths = getChildPaths(path, ParseNodeClazz.nodeNames);
+    return childPaths.map(p => p.getData('_dbux_node'));
+  }
+
+  // ###########################################################################
   // enter + exit
   // ###########################################################################
 
-  enter(path, state, ParseNodeClazz) {
-    const parseNode = ParseNodeClazz.createOnEnter(path, state, ParseNodeClazz, this);
+  enter(path, ParseNodeClazz) {
+    const { state } = this;
+    const parseNode = this.createOnEnter(path, state, ParseNodeClazz, this);
     this.push(ParseNodeClazz, parseNode);
     if (parseNode) {
       const data = parseNode.enter(path, state);
@@ -75,12 +98,17 @@ export default class ParseStack {
     }
   }
 
-  exit(path, state, ParseNodeClazz) {
+  exit(path, ParseNodeClazz) {
     // NOTE: even if we don't create a newNode, we push `null`.
     //    This way, every `push` will always match a `pop`.
     const parseNode = this.pop(ParseNodeClazz);
     if (parseNode) {
-      parseNode.exit(path, state);
+      // const children = this.getChildNodes(path, ParseNodeClazz);
+      const childPaths = getChildPaths(path, ParseNodeClazz.nodeNames);
+      const children = childPaths.map(p => p.getData('_dbux_node'));
+
+      // pass child ParseNodes, followed by array of actual paths (NOTE: ParseNode might be null, even if path exists)
+      parseNode.exit(...children, childPaths);
 
       this.genTasks.push({
         parseNode

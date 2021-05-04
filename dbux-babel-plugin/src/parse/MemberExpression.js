@@ -25,23 +25,27 @@ export default class MemberExpression extends BaseExpression {
     return !path.parentPath.isMemberExpression() || path.node === path.parentPath.node.property;
   }
 
+  enter() {
+  }
+
 
   // ###########################################################################
   // exit
   // ###########################################################################
 
-  exit(path) {
+  exit(object, property, [objectPath, propertyPath]) {
     const {
       dynamicIndexes,
-      template
+      template,
+      path
     } = this;
 
-    const { computed, optional, object, property } = path.node;
+    const { computed/* , optional */ } = path.node;
 
     // inner-most ME is exited first; has left-most id
     if (!this.leftId) {
-      this.leftId = object;
-      template.push(object.toString());
+      this.leftId = objectPath.node;
+      template.push(objectPath.toString());
     }
 
     // TODO: optional
@@ -51,7 +55,7 @@ export default class MemberExpression extends BaseExpression {
       template.push(null);
     }
     else {
-      template.push(property.toString());
+      template.push(propertyPath.toString());
     }
   }
 

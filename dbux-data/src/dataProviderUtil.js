@@ -1038,6 +1038,15 @@ export default {
 
   getChildrenOfContext(dp, contextId) {
     return dp.indexes.executionContexts.children.get(contextId) || EmptyArray;
-  }
+  },
 
+  // ###########################################################################
+  // labels
+  // ###########################################################################
+
+  makeTypeNameLabel(dp, traceId) {
+    const traceType = dp.util.getTraceType(traceId);
+    const typeName = TraceType.nameFrom(traceType);
+    return `[${typeName}]`;
+  }
 };

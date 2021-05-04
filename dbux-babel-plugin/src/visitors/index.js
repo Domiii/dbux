@@ -869,11 +869,11 @@ function visit(direction, ParserNodeClazz, path, state) {
 
   if (direction === InstrumentationDirection.Enter) {
     // -> Enter
-    state.stack.enter(path, state, ParserNodeClazz);
+    state.stack.enter(path, ParserNodeClazz);
   }
   else {
     // <- Exit
-    state.stack.exit(path, state, ParserNodeClazz);
+    state.stack.exit(path, ParserNodeClazz);
   }
 }
 

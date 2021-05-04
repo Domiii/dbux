@@ -364,6 +364,8 @@ class TraceCollection extends Collection {
         // before pop must be a function exit trace, else -> error!
         trace.error = true;
 
+        debug(`ERROR trace: ${this.makeTraceInfo(trace)}`);
+
         // guess error trace
         const previousTrace = this.dp.collections.traces.getById(previousTraceId);
         const { staticTraceId, callId, resultCallId } = previousTrace;

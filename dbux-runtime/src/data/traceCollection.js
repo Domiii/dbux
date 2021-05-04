@@ -37,7 +37,7 @@ class TraceCollection extends Collection {
     // generate new traceId and store
     trace.traceId = this._all.length;
     this._all.push(trace);
-    
+
     // // eslint-disable-next-line no-console
     // console.debug(`${this._all.length} ${trace.traceId}`);
 
@@ -57,7 +57,7 @@ class TraceCollection extends Collection {
     this._send(trace);
 
     // if (trace.traceId < 30) {
-    //   _prettyPrint(`${this._all.length} ${trace.traceId}`, trace, value);
+    _prettyPrint(trace);
     // }
 
     return trace;
@@ -75,7 +75,7 @@ class TraceCollection extends Collection {
 // prettyPrint
 // ###########################################################################
 
-function _prettyPrint(prefix, trace, value) {
+function _prettyPrint(trace) {
   const {
     traceId,
     contextId,
@@ -126,7 +126,7 @@ function _prettyPrint(prefix, trace, value) {
   // const v = hasTraceValue(type);
   // const result = v ? ['(', value, ')'] : EmptyArray;
   // eslint-disable-next-line no-console
-  debug(prefix, traceId, contextId,
+  debug(`t=${traceId}, c=${contextId}, st=${staticTraceId}`,
     `  ${typeName} ${depthIndicator} ${displayName}`,
     // ...result,
     ` ${codeLocation}`

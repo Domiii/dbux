@@ -39,20 +39,12 @@ export default class ParseNode {
   // static members
   // ###########################################################################
 
+  static nodeName = [];
+
   /**
    * @returns `false`, `true` or some initial state (which will be stored in `data`)
    */
   static prospectOnEnter(/* path, state */) {
     return true;
-  }
-
-  static createOnEnter(path, state, ParseNodeClazz) {
-    let newNode = null;
-    const initialData = ParseNodeClazz.prospectOnEnter(path, state);
-    if (initialData) {
-      newNode = new ParseNodeClazz(path, state, initialData);
-      newNode.init();
-    }
-    return newNode;
   }
 }

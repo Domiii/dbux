@@ -58,7 +58,9 @@ function getLastNodeOfBody(bodyNode) {
 }
 
 export default class Function extends ParseNode {
-  enter(path, state) {
+  enter() {
+    const { path, state } = this;
+    
     const isGenerator = path.node.generator;
     const isAsync = path.node.async;
     const isInterruptable = isGenerator || isAsync;
