@@ -9,6 +9,8 @@ const fs = require('fs');
 const mergeWith = require('lodash/mergeWith');
 const isArray = require('lodash/isArray');
 const webpack = require('webpack');
+// eslint-disable-next-line import/no-extraneous-dependencies
+const t = require('@babel/types');
 // const nodeExternals = require('webpack-node-externals');
 
 // add some of our own good stuff
@@ -37,7 +39,7 @@ const MonoRoot = path.resolve(__dirname);
 
 // write parser registry
 const parserDir = path.resolve(MonoRoot, 'dbux-babel-plugin/src/parse').replace(/\\/g, '/');
-writeFileRegistryFile('index.js', parserDir);
+writeFileRegistryFile('index.js', parserDir, (name) => !!t['is' + name]);
 
 console.log('Generated dbux-babel-plugin/src/parse/index.js.');
 

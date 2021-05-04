@@ -26,9 +26,6 @@ import { isPathInstrumented } from '../helpers/instrumentationHelper';
 import TraceInstrumentationType from '../constants/TraceInstrumentationType';
 import InstrumentationDirection from '../constants/InstrumentationDirection';
 
-/**
-node --enable-source-maps --stack-trace-limit=100 --inspect-brk "C:\Users\domin\code\dbux\node_modules\@dbux\cli\bin\dbux.js" i --esnext "c:\Users\domin\code\dbux\samples\__samplesInput__\nestedFunction.js" --
- */
 
 
 // const Verbose = 0;
@@ -848,9 +845,12 @@ function visitExit(path, state) {
 
 function visit(direction, path, state) {
   const ParserStateClazz = getParserStateClassByName(path);
-  // if (!ParserStateClazz) {
-  //   return;
-  // }
+  if (isPathInstrumented(path)) {
+    return;
+  }
+  if (!ParserStateClazz) {
+    throw new Error(`visit did not find ParserState for path "${path.type}"`);
+  }
 
   Verbose && logInst('v', path, direction);
 

@@ -4,7 +4,7 @@ import { buildSource, buildWrapTryFinally } from '../helpers/builders';
 import { extractTopLevelDeclarations } from '../helpers/topLevelHelpers';
 import { replaceProgramBody } from '../helpers/program';
 import injectDbuxState from '../dbuxState';
-import { buildTraceVisitors as traceVisitors } from './traceVisitors';
+import { buildTraceVisitors as traceVisitors } from './index';
 import errorWrapVisitor from '../helpers/errorWrapVisitor';
 import { buildDbuxInit } from '../data/staticData';
 import { buildContextEndTrace } from '../helpers/contextHelper';

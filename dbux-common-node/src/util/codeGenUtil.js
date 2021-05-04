@@ -39,10 +39,11 @@ function genExportAll(names) {
 /**
  * Produce a js file that imports and exports all files in a given directory.
  */
-export function writeFileRegistryFile(outFile, dir) {
+export function writeFileRegistryFile(outFile, dir, predicate) {
   const files = glob.sync(dir + '/*')
     .filter(f => path.basename(f) !== outFile)
-    .map(f => path.parse(f).name);
+    .map(f => path.parse(f).name)
+    .filter(fName => predicate(fName));
   const entries = [
     // imports
     ...files.map(f => genImport('.', f)),
