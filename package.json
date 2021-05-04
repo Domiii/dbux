@@ -65,8 +65,11 @@
     "utf-8-validate": "^5.0.2"
   },
   "scripts": {
-    "start": "yarn run build:clean && yarn run version:dev && npx npm-run-all -p build:watch graph:build:watch",
-    "start:prod": "yarn run build:clean && yarn run version:prod && npx npm-run-all -p build:watch:prod graph:build:watch:prod",
+    "start": "yarn run build:clean && yarn run version:dev && yarn runall:dev",
+    "nra": "node node_modules/npm-run-all/bin/npm-run-all",
+    "runall:dev": "npm run nra -- -p build:watch graph:build:watch",
+    "_runall:dev": "(yarn build:watch) & (graph:build:watch)",
+    "start:prod": "yarn run build:clean && yarn run version:prod && npm run nra -- -p build:watch:prod graph:build:watch:prod",
     "version:dev": "node --unhandled-rejections=strict -e \"require('./scripts/fix-versions').revertToDevVersion().then(() => process.exit(0))\"",
     "version:prod": "node --unhandled-rejections=strict -e \"require('./scripts/fix-versions').downgradeProdVersion().then(() => process.exit(0))\"",
     "build:clean": "bash scripts/dbux-run-all.sh \"rm -rf dist\" && cd dbux-code && yarn run build:clean",
