@@ -64,7 +64,9 @@ export const buildTraceNoValue = function buildTraceNoValue(templ, path, state, 
  */
 function buildTraceExpr(expressionPath, state, methodName, traceType, cfg) {
   const tracePath = cfg?.tracePath;
-  const traceId = state.traces.addTrace(tracePath || expressionPath, traceType, null, cfg);
+  const staticTraceId = state.traces.addTrace(tracePath || expressionPath, traceType, null, cfg);
+  // TODO: rewrite this
+  // te(expr, tidX = traceId(staticTraceId))
   const { ids: { dbux } } = state;
 
   return t.callExpression(
@@ -73,8 +75,8 @@ function buildTraceExpr(expressionPath, state, methodName, traceType, cfg) {
       t.identifier(methodName)
     ),
     [
-      t.numericLiteral(traceId),
-      expressionPath.node
+      expressionPath.node,
+      t.numericLiteral(staticTraceId)
     ]
   );
 }

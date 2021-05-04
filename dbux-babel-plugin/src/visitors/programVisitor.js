@@ -22,7 +22,8 @@ function buildProgramInit(path, { ids, contexts: { genContextIdName } }) {
   const {
     dbuxInit,
     dbuxRuntime,
-    dbux
+    dbux,
+    aliases
   } = ids;
 
   const contextIdName = genContextIdName(path);
@@ -36,14 +37,13 @@ function buildProgramInit(path, { ids, contexts: { genContextIdName } }) {
   //   importLine = `import ${dbuxRuntime} from '@dbux/runtime';`;
   // }
   // else 
-  {
-    importLine = `var ${dbuxRuntime} = typeof __dbux__ === 'undefined' ? require('@dbux/runtime') : __dbux__;`;
-  }
+  importLine = `var ${dbuxRuntime} = typeof __dbux__ === 'undefined' ? require('@dbux/runtime') : __dbux__;`;
 
   return buildSource(`
   ${importLine}
   var ${dbux} = ${dbuxInit}(${dbuxRuntime});
   var ${contextIdName} = ${dbux}.getProgramContextId();
+  ${Object.entries(aliases).map(([dbuxProp, varName]) => `var ${varName} = ${dbux}.${dbuxProp}`).join('; ')}
   `);
 }
 

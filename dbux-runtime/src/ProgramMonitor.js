@@ -135,6 +135,21 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.trace(this.getProgramId(), inProgramStaticTraceId);
   }
 
+  newTraceId = (inProgramStaticTraceId) => {
+    if (this.areTracesDisabled) {
+      return -1;
+    }
+    return this._runtimeMonitor.newTraceId(this.getProgramId(), inProgramStaticTraceId);
+  }
+
+  traceExpression = (value, tid) => {
+    if (this.areTracesDisabled) {
+      return value;
+    }
+
+
+  }
+
   /**
    * 
    */

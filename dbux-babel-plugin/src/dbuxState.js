@@ -59,7 +59,12 @@ export default function injectDbuxState(_buildCfg, programPath, programState) {
 
       // NOTE: We might have multiple dbux programs in the same context (e.g. multiple <script> tags in same HTML file)
       //        So we want to add `iProgram` for unique flavor (which works if they are all instrumented by the same process).
-      dbux: scope.generateUid('dbux' + (++iProgram))
+      dbux: scope.generateUid('dbux' + (++iProgram)),
+
+      aliases: {
+        traceExpression: scope.generateUid('te' + (++iProgram)),
+        makeTraceId: scope.generateUid('tid' + (++iProgram))
+      }
     },
     // console.log('[Program]', state.filename);
 

@@ -214,50 +214,50 @@ export default class RuntimeMonitor {
   //   return wrappedCb;
   // }
 
-  /**
-   * Very similar to `pushImmediate`.
-   * We need it to establish the link with it's scheduling context.
-   */
-  pushCallback(programId, schedulerContextId, schedulerTraceId, inProgramStaticTraceId, tracesDisabled) {
-    this._runtime.beforePush(null);
+  // /**
+  //  * Very similar to `pushImmediate`.
+  //  * We need it to establish the link with it's scheduling context.
+  //  */
+  // pushCallback(programId, schedulerContextId, schedulerTraceId, inProgramStaticTraceId, tracesDisabled) {
+  //   this._runtime.beforePush(null);
 
-    const stackDepth = this._runtime.getStackDepth();
-    const runId = this._runtime.getCurrentRunId();
-    const parentContextId = this._runtime.peekCurrentContextId();
-    const parentTraceId = this._runtime.getParentTraceId();
+  //   const stackDepth = this._runtime.getStackDepth();
+  //   const runId = this._runtime.getCurrentRunId();
+  //   const parentContextId = this._runtime.peekCurrentContextId();
+  //   const parentTraceId = this._runtime.getParentTraceId();
 
-    // register context
-    // console.debug('pushCallback', { parentContextId, schedulerContextId, schedulerTraceId });
-    const context = executionContextCollection.executeCallback(
-      stackDepth, runId, parentContextId, parentTraceId, schedulerContextId, schedulerTraceId, tracesDisabled
-    );
-    const { contextId } = context;
-    this._runtime.push(contextId);
+  //   // register context
+  //   // console.debug('pushCallback', { parentContextId, schedulerContextId, schedulerTraceId });
+  //   const context = executionContextCollection.executeCallback(
+  //     stackDepth, runId, parentContextId, parentTraceId, schedulerContextId, schedulerTraceId, tracesDisabled
+  //   );
+  //   const { contextId } = context;
+  //   this._runtime.push(contextId);
 
-    // trace
-    this._trace(programId, contextId, runId, inProgramStaticTraceId, TraceType.PushCallback);
+  //   // trace
+  //   this._trace(programId, contextId, runId, inProgramStaticTraceId, TraceType.PushCallback);
 
-    return contextId;
-  }
+  //   return contextId;
+  // }
 
-  popCallback(programId, callbackContextId, inProgramTraceId, resultValue) {
-    // sanity checks
-    const context = executionContextCollection.getById(callbackContextId);
-    if (!context) {
-      logError('Tried to popCallback, but context was not registered:',
-        callbackContextId);
-      return;
-    }
+  // popCallback(programId, callbackContextId, inProgramTraceId, resultValue) {
+  //   // sanity checks
+  //   const context = executionContextCollection.getById(callbackContextId);
+  //   if (!context) {
+  //     logError('Tried to popCallback, but context was not registered:',
+  //       callbackContextId);
+  //     return;
+  //   }
 
-    const runId = this._runtime.getCurrentRunId(); // get runId before pop
+  //   const runId = this._runtime.getCurrentRunId(); // get runId before pop
 
-    // pop from stack
-    this._pop(callbackContextId);
+  //   // pop from stack
+  //   this._pop(callbackContextId);
 
-    // trace
-    const trace = traceCollection.traceWithResultValue(programId, callbackContextId, runId, inProgramTraceId, TraceType.PopCallback, resultValue, this.valuesDisabled);
-    this._onTrace(callbackContextId, trace, true);
-  }
+  //   // trace
+  //   const trace = traceCollection.traceWithResultValue(programId, callbackContextId, runId, inProgramTraceId, TraceType.PopCallback, resultValue, this.valuesDisabled);
+  //   this._onTrace(callbackContextId, trace, true);
+  // }
 
 
   // ###########################################################################
@@ -388,29 +388,29 @@ export default class RuntimeMonitor {
     this._trace(programId, contextId, runId, inProgramStaticTraceId);
   }
 
-  traceExpression(programId, inProgramStaticTraceId, value) {
+  newTraceId(programId, inProgramStaticTraceId) {
+    if (!this._ensureExecuting()) {
+      return -1;
+    }
+
+    const contextId = this._runtime.peekCurrentContextId();
+    const runId = this._runtime.getCurrentRunId();
+    const overrideType = null;
+
+    const trace = traceCollection.trace(programId, contextId, inProgramStaticTraceId, runId, overrideType);
+    this._onTrace(contextId, trace);
+
+    return trace.traceId;
+  }
+
+  traceExpression(value, tid) {
     if (!this._ensureExecuting()) {
       return value;
     }
 
-    // if (value instanceof Function && !isClass(value)) {
-    // if (value instanceof Function) {
-    //   // NOTE: this would override TraceType, but TraceType must sometimes not be overridden (e.g. `ReturnArgument`)
-    //   // scheduled callback
-    //   const cb = value;
-    //   return this._traceCallbackArgument(programId, inProgramStaticTraceId, cb);
-    // }
-    // else 
-    {
-      const contextId = this._runtime.peekCurrentContextId();
-      const runId = this._runtime.getCurrentRunId();
-      const overrideType = null;
+    // TODO: track data flow
 
-      const trace = traceCollection.traceWithResultValue(programId, contextId, runId, inProgramStaticTraceId, overrideType, value, this.valuesDisabled);
-      this._onTrace(contextId, trace);
-
-      return value;
-    }
+    return value;
   }
 
   traceArg(programId, inProgramStaticTraceId, value) {
@@ -419,22 +419,22 @@ export default class RuntimeMonitor {
   }
 
 
-  /**
-   * Push a new context for a scheduled callback for later execution.
-   */
-  _traceCallbackArgument(programId, inProgramStaticTraceId, cb) {
-    // trace
-    const contextId = this._runtime.peekCurrentContextId();
-    const runId = this._runtime.getCurrentRunId();
+  // /**
+  //  * Push a new context for a scheduled callback for later execution.
+  //  */
+  // _traceCallbackArgument(programId, inProgramStaticTraceId, cb) {
+  //   // trace
+  //   const contextId = this._runtime.peekCurrentContextId();
+  //   const runId = this._runtime.getCurrentRunId();
 
-    const schedulerTrace = traceCollection.traceWithResultValue(programId, contextId, runId, inProgramStaticTraceId, TraceType.CallbackArgument, cb, this.valuesDisabled);
-    this._onTrace(contextId, schedulerTrace);
+  //   const schedulerTrace = traceCollection.traceWithResultValue(programId, contextId, runId, inProgramStaticTraceId, TraceType.CallbackArgument, cb, this.valuesDisabled);
+  //   this._onTrace(contextId, schedulerTrace);
 
-    // const wrapper = this.makeCallbackWrapper(programId, contextId, schedulerTraceId, inProgramStaticTraceId, cb);
-    // return wrapper;
+  //   // const wrapper = this.makeCallbackWrapper(programId, contextId, schedulerTraceId, inProgramStaticTraceId, cb);
+  //   // return wrapper;
 
-    return cb;
-  }
+  //   return cb;
+  // }
 
   _trace(programId, contextId, runId, inProgramStaticTraceId, traceType = null, isPop = false) {
     const trace = traceCollection.trace(programId, contextId, runId, inProgramStaticTraceId, traceType);

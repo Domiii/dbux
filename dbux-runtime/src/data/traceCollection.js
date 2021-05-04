@@ -57,7 +57,7 @@ class TraceCollection extends Collection {
     this._send(trace);
 
     // if (trace.traceId < 30) {
-    _prettyPrint(trace);
+    // _prettyPrint(trace);
     // }
 
     return trace;

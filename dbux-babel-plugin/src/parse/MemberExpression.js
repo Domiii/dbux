@@ -33,6 +33,8 @@ export default class MemberExpression extends BaseExpression {
   // exit
   // ###########################################################################
 
+  static nodes = ['object', 'property'];
+
   exit(object, property, [objectPath, propertyPath]) {
     const {
       dynamicIndexes,
