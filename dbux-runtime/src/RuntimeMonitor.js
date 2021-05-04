@@ -10,19 +10,22 @@ import Runtime from './Runtime';
 import ProgramMonitor from './ProgramMonitor';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('RuntimeMonitor');
+const { log, debug, warn, error: logError } = newLogger('RM');
 
-const Verbose = 1;
+const Verbose = 0;
+// const Verbose = 1;
+// const Verbose = 2;
 
-function _inheritsLoose(subClass, superClass) {
-  if (superClass.prototype) {
-    subClass.prototype = Object.create(superClass.prototype);
-    subClass.prototype.constructor = subClass;
+// TODO: we can properly use Proxy to wrap callbacks
+// function _inheritsLoose(subClass, superClass) {
+//   if (superClass.prototype) {
+//     subClass.prototype = Object.create(superClass.prototype);
+//     subClass.prototype.constructor = subClass;
 
-    // eslint-disable-next-line no-proto
-    subClass.__proto__ = superClass;
-  }
-}
+//     // eslint-disable-next-line no-proto
+//     subClass.__proto__ = superClass;
+//   }
+// }
 
 /**
  * 
@@ -66,7 +69,8 @@ export default class RuntimeMonitor {
     const { contexts: staticContexts, traces: staticTraces } = programData;
     staticContextCollection.addEntries(programId, staticContexts);
 
-    // warn(`RuntimeMonitor.addProgram ${programId}: ${programData.fileName} (td=${!!runtimeCfg.tracesDisabled})`);
+
+    Verbose && debug(`addProgram ${programId}: ${programData.fileName}`); // (td=${!!runtimeCfg.tracesDisabled})
 
     // change program-local _staticContextId to globally unique staticContextId
     for (let i = 0; i < staticTraces.length; ++i) {
@@ -102,6 +106,14 @@ export default class RuntimeMonitor {
     const runId = this._runtime.getCurrentRunId();
     const parentContextId = this._runtime.peekCurrentContextId();
     const parentTraceId = this._runtime.getParentTraceId();
+
+    if (Verbose) {
+      const staticContext = staticContextCollection.getContext(programId, inProgramStaticContextId);
+      debug(
+        // ${JSON.stringify(staticContext)}
+        `pushImmediate ${programId}.${inProgramStaticContextId} ${staticContext?.displayName} (${runId}))`
+      );
+    }
 
     const context = executionContextCollection.executeImmediate(
       stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId, tracesDisabled
@@ -139,6 +151,16 @@ export default class RuntimeMonitor {
     // trace
     const runId = this._runtime.getCurrentRunId();
     const programId = executionContextCollection.getProgramId(contextId);
+
+    if (Verbose) {
+      const { staticContextId } = context;
+      const staticContext = staticContextCollection.getById(staticContextId);
+      debug(
+        // ${JSON.stringify(staticContext)}
+        `popImmediate ${programId}.${staticContext._staticId} ${staticContext?.displayName} (${runId}))`
+      );
+    }
+
     this._trace(programId, contextId, runId, inProgramStaticTraceId, null, true);
   }
 
@@ -416,6 +438,16 @@ export default class RuntimeMonitor {
 
   _trace(programId, contextId, runId, inProgramStaticTraceId, traceType = null, isPop = false) {
     const trace = traceCollection.trace(programId, contextId, runId, inProgramStaticTraceId, traceType);
+
+    // if (Verbose > 1) {
+    //   const { staticContextId } = context;
+    //   const staticContext = staticContextCollection.getById(staticContextId);
+    //   debug(
+    //     // ${JSON.stringify(staticContext)}
+    //     `  t ${trace.traceId} ${staticContext?.displayName} (${runId}))`
+    //   );
+    // }
+
     this._onTrace(contextId, trace, isPop);
     if (isPop) {
       trace.previousTrace = this._runtime.getLastTraceInContext(contextId);

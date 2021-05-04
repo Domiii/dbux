@@ -21,7 +21,7 @@ import { traceWrapExpression, buildTraceNoValue, traceCallExpression, instrument
 import { isCallPath } from '../helpers/functionHelpers';
 import { awaitVisitEnter, awaitVisitExit } from './awaitVisitor';
 import { getNodeNames } from './nameVisitors';
-import { isPathInstrumented } from '../helpers/instrumentationHelper';
+import { isPathInstrumented } from '../helpers/astUtil';
 import TraceInstrumentationType from '../constants/TraceInstrumentationType';
 import InstrumentationDirection from '../constants/InstrumentationDirection';
 import { pathToStringSimple } from '../helpers/pathHelpers';

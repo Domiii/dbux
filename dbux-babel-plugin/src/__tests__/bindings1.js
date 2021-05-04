@@ -3,7 +3,7 @@ import { getRealVariableNamesInLoc1D } from '../helpers/bindingsHelper';
 import { getPreBodyLoc1D } from '../helpers/locHelpers';
 import { getContextPath } from '../helpers/traversalHelpers';
 import { getCalleeName } from '../helpers/callHelpers';
-import { isNodeInstrumented } from '../helpers/instrumentationHelper';
+import { isNodeInstrumented } from '../helpers/astUtil';
 
 function expectPathBindingNames(path, names) {
   const ids = Object.values(path.getBindingIdentifierPaths());

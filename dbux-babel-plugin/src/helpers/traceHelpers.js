@@ -3,7 +3,7 @@ import * as t from '@babel/types';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import { getPathTraceId } from '../data/StaticTraceCollection';
 import { isAnyMemberExpression } from './functionHelpers';
-import { isPathInstrumented, isNodeInstrumented } from './instrumentationHelper';
+import { isPathInstrumented, isNodeInstrumented } from './astUtil';
 
 
 export function getTracePath(path) {
@@ -49,6 +49,7 @@ function replaceWithTemplate(templ, path, cfg) {
 export const buildTraceNoValue = function buildTraceNoValue(templ, path, state, traceType) {
   const { ids: { dbux } } = state;
   const traceId = state.traces.addTrace(path, traceType);
+  // console.warn(`traces`, state.traces);
   return templ({
     dbux,
     traceId: t.numericLiteral(traceId)

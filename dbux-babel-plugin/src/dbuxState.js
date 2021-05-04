@@ -6,7 +6,7 @@ import StaticContextCollection from './data/StaticContextCollection';
 import StaticTraceCollection from './data/StaticTraceCollection';
 import StaticLoopCollection from './data/StaticLoopCollection';
 import StaticVarAccessCollection from './data/StaticVarAccessCollection';
-import { isNodeInstrumented } from './helpers/instrumentationHelper';
+import { isNodeInstrumented } from './helpers/astUtil';
 import ParseStack from './parseLib/ParseStack';
 
 

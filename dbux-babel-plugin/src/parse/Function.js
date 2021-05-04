@@ -8,6 +8,7 @@ import { traceWrapExpressionStatement } from '../helpers/traceHelpers';
 import { getNodeNames } from '../visitors/nameVisitors';
 
 import ParseNode from '../parseLib/ParseNode';
+import { doesNodeEndScope } from '../helpers/astUtil';
 
 
 // ###########################################################################
@@ -51,6 +52,11 @@ function addResumeContext(bodyPath, state/* , staticId */) {
 // Function
 // ###########################################################################
 
+function getLastNodeOfBody(bodyNode) {
+  const nodes = Array.isArray(bodyNode) ? bodyNode : bodyNode.body;
+  return nodes[nodes.length - 1];
+}
+
 export default class Function extends ParseNode {
   enter(path, state) {
     const isGenerator = path.node.generator;
@@ -73,8 +79,8 @@ export default class Function extends ParseNode {
     const pushTraceId = state.traces.addTrace(bodyPath, TraceType.PushImmediate);
     const popTraceId = state.traces.addTrace(bodyPath, TraceType.PopImmediate);
 
-    // add varAccess
-    const ownerId = staticContextId;
+    // // add varAccess
+    // const ownerId = staticContextId;
 
     // TODO: also trace `this`?
     // state.varAccess.addVarAccess(path, ownerId, VarOwnerType.Context, 'this', false);
@@ -125,8 +131,9 @@ export default class Function extends ParseNode {
       staticContextId, pushTraceId, popTraceId, recordParams, staticResumeContextId
     } = this.data;
 
-    const { path: bodyPath, state } = this;
+    const { path, state } = this;
     const { ids: { dbux }, contexts: { genContextIdName } } = state;
+    const bodyPath = path.get('body');
     const contextIdVar = genContextIdName(bodyPath);
 
     let pushes = buildPushImmediate(contextIdVar, dbux, staticContextId, pushTraceId, !!staticResumeContextId);
@@ -165,8 +172,9 @@ export default class Function extends ParseNode {
       bodyNode.body[0].loc = origBodyNode.loc;
       bodyNode.body[0].argument.loc = origBodyNode.loc;
     }
-    else {
+    else if (!doesNodeEndScope(getLastNodeOfBody(bodyNode))) {
       // add ContextEnd trace
+      // console.debug(`injecting EndOfContext for: ${bodyPath.toString()}`);
       injectContextEndTrace(bodyPath, state);
     }
 
@@ -179,6 +187,7 @@ export default class Function extends ParseNode {
 
     // patch function body node to keep loc of original body (needed for `injectFunctionEndTrace`)
     newBody.loc = origBodyNode.loc;
+    // bodyPath.context.create(bodyNode, bodyNode, 'xx')
     bodyPath.replaceWith(newBody);
   }
 

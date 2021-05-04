@@ -17,7 +17,7 @@
 // import { logInternalError } from '../log/logger';
 // import EmptyObject from '@dbux/common/src/util/EmptyObject';
 // import { isInLoc1D } from './locHelpers';
-// import { isNodeInstrumented } from './instrumentationHelper';
+// import { isNodeInstrumented } from './astUtil';
 
 // /**
 //  * Find only bindings which have at least one non-instrumented path;

@@ -1,4 +1,4 @@
-import { isNodeInstrumented } from '../helpers/instrumentationHelper';
+import { isNodeInstrumented } from '../helpers/astUtil';
 
 export default class StaticCollection {
   _all = [];

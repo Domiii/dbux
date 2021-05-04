@@ -165,8 +165,6 @@ function traverse(path, state, visitors) {
 
 function exit(path, state) {
   if (!state.onExit(path, 'program')) return;
-
-  addDbuxInitDeclaration(path, state);
   // try {
   //   global.gc();
   // } catch (e) {
@@ -176,6 +174,8 @@ function exit(path, state) {
 
   // actual process of transpilation
   state.stack.genAll();
+
+  addDbuxInitDeclaration(path, state);
 
   // clean up on aisle 4 (prevent memory leaks)
   clearNames();

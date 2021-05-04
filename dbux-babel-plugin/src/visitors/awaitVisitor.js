@@ -3,7 +3,7 @@ import * as t from "@babel/types";
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import StaticContextType from '@dbux/common/src/core/constants/StaticContextType';
 import { getPresentableString } from '../helpers/misc';
-import { isPathInstrumented } from '../helpers/instrumentationHelper';
+import { isPathInstrumented } from '../helpers/astUtil';
 import { traceWrapExpressionStatement } from '../helpers/traceHelpers';
 
 // ###########################################################################

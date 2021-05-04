@@ -54,7 +54,7 @@ let TraceType = {
 /**
  * @type {(Enum|TraceTypeSet)}
  */
-TraceType = new Enum(Object.keys(TraceType));
+TraceType = new Enum(TraceType);
 
 const pushTypes = new Array(TraceType.getValueMaxIndex()).map(() => false);
 pushTypes[TraceType.PushImmediate] = true;

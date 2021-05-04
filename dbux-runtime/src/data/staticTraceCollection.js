@@ -70,7 +70,7 @@ class StaticTraceCollection extends Collection {
     if (!staticTrace) {
       debugger;
       // eslint-disable-next-line max-len
-      throw new Error(`Could not lookup staticTrace - programId=${programId}, inProgramStaticTraceId=${inProgramStaticTraceId} - allTraces:\n ${JSON.stringify(this._getTraces(programId))}`);
+      throw new Error(`Could not lookup staticTrace - programId=${programId}, inProgramStaticTraceId=${inProgramStaticTraceId} - allTraces:\n ${JSON.stringify(this._getTraces(programId), null, 2)}`);
     }
     return staticTrace.staticTraceId;
   }

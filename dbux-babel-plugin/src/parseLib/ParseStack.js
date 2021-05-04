@@ -67,7 +67,11 @@ export default class ParseStack {
     const parseNode = ParseNodeClazz.createOnEnter(path, state, ParseNodeClazz, this);
     this.push(ParseNodeClazz, parseNode);
     if (parseNode) {
-      parseNode.enter(path, state);
+      const data = parseNode.enter(path, state);
+      if (data) {
+        // enter produces data, usually used later during `gen`
+        Object.assign(parseNode.data, data);
+      }
     }
   }
 

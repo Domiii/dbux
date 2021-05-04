@@ -1,3 +1,4 @@
+import { newLogger } from '@dbux/common/src/log/logger';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import staticTraceCollection from './staticTraceCollection';
 import executionContextCollection from './executionContextCollection';
@@ -7,6 +8,7 @@ import pools from './pools';
 import valueCollection from './valueCollection';
 import staticProgramContextCollection from './staticProgramContextCollection';
 
+const { log, debug, warn, error: logError } = newLogger('T');
 
 class TraceCollection extends Collection {
   constructor() {
@@ -124,10 +126,10 @@ function _prettyPrint(prefix, trace, value) {
   // const v = hasTraceValue(type);
   // const result = v ? ['(', value, ')'] : EmptyArray;
   // eslint-disable-next-line no-console
-  console.debug(prefix, traceId, contextId,
-    `${depthIndicator}[${typeName}] ${displayName}`,
+  debug(prefix, traceId, contextId,
+    `  ${typeName} ${depthIndicator} ${displayName}`,
     // ...result,
-    ` ${codeLocation} [Dbux]`
+    ` ${codeLocation}`
   );
   // }
   // if (capturesValue && v) {

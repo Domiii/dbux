@@ -179,6 +179,8 @@ class TraceCollection extends Collection {
     for (const trace of traces) {
       trace.applicationId = this.dp.application.applicationId;
     }
+    
+    // debug(`traces`, JSON.stringify(traces, null, 2));
 
     super.add(traces);
   }

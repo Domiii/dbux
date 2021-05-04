@@ -23,7 +23,7 @@ export class StaticContextCollection extends Collection {
       // global id over all programs
       // NOTE: we currently alias `staticId` and `staticContextId`. We want to deprecate `staticId`.
       entry.staticContextId = entry.staticId = this._all.length;
-      delete entry._staticId;
+      // delete entry._staticId;
 
       this._all.push(entry);
     }
