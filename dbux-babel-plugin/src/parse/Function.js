@@ -7,7 +7,7 @@ import { injectContextEndTrace } from '../helpers/contextHelper';
 import { traceWrapExpressionStatement } from '../helpers/traceHelpers';
 import { getNodeNames } from '../visitors/nameVisitors';
 
-import ParseNode from '../parseLib/ParseNode';
+import BaseNode from './BaseNode';
 import { doesNodeEndScope } from '../helpers/astUtil';
 
 
@@ -57,7 +57,7 @@ function getLastNodeOfBody(bodyNode) {
   return nodes[nodes.length - 1];
 }
 
-export default class Function extends ParseNode {
+export default class Function extends BaseNode {
   enter() {
     const { path, state } = this;
     

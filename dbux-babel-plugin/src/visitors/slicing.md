@@ -131,17 +131,6 @@ Most expressions just pass along memory addresses, without actually generating n
 
 ## read tree propagation
 
-### Propagating expression types
-
-NOTE: all these are also "Value-creating types"
-
-* BinaryExpression
-  * `left`, `right`
-* LogicalExpression
-  * `left`, `right`
-* UnaryExpression
-  * `argument`
-
 ## Complex read types
 
 ### MemberExpression
@@ -233,6 +222,8 @@ o[f('p')][f('q')].a
 
       objectRefs.push(getObjectAccessId(obj, prop, val));
     }
+
+    // TODO: if commitWrite { ... }
 
     // TODO: register inputs/outputs
     //  { objectRefs }

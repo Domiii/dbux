@@ -54,6 +54,12 @@ const { log, debug, warn, error: logError } = newLogger('traceVisitors');
 //   // );
 // })();
 
+(function initParsersClasses() {
+  Object.values(ParseNodeClassesByName).forEach(P => {
+    P.logger = newLogger(`parse/${P.name}`);
+  });
+})();
+
 function getParserNodeClassByName(path) {
   return ParseNodeClassesByName[path.node.type];
 }

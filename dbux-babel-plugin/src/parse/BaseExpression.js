@@ -1,6 +1,6 @@
-import ParseNode from '../parseLib/ParseNode';
+import BaseNode from './BaseNode';
 
-export default class BaseExpression extends ParseNode {
+export default class BaseExpression extends BaseNode {
   enter() {
   }
 

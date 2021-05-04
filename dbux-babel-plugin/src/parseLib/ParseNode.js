@@ -39,7 +39,14 @@ export default class ParseNode {
   // static members
   // ###########################################################################
 
-  static nodeName = [];
+  get nodeNames() {
+    return this.constructor.nodeNames;
+  }
+  get logger() {
+    return this.constructor.logger;
+  }
+
+  static nodeNames = [];
 
   /**
    * @returns `false`, `true` or some initial state (which will be stored in `data`)
