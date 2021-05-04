@@ -9,7 +9,6 @@
 import nodePath from 'path';
 import cloneDeep from 'lodash/cloneDeep';
 import merge from 'lodash/merge';
-import truncate from 'lodash/truncate';
 import mapValues from 'lodash/mapValues';
 import * as t from '@babel/types';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
@@ -25,8 +24,15 @@ import { getNodeNames } from './nameVisitors';
 import { isPathInstrumented } from '../helpers/instrumentationHelper';
 import TraceInstrumentationType from '../constants/TraceInstrumentationType';
 import InstrumentationDirection from '../constants/InstrumentationDirection';
+import { pathToStringSimple } from '../helpers/pathHelpers';
 
-
+/**
+ * @typedef {import('../parseLib/ParseStack').default} ParseStack
+ * @typedef {import('../parseLib/ParseNode').default} ParseNode
+ * 
+ * @typedef {Object} DbuxState
+ * @property {ParseStack} stack
+ */
 
 // const Verbose = 0;
 const Verbose = 1;
@@ -48,12 +54,12 @@ const { log, debug, warn, error: logError } = newLogger('traceVisitors');
 //   // );
 // })();
 
-function getParserStateClassByName(path) {
+function getParserNodeClassByName(path) {
   return ParseNodeClassesByName[path.node.type];
 }
 
 function getAllParserNames() {
-  return Object.keys(ParseNodeClassesByName).filter(name => !!t['is' + name]);
+  return Object.keys(ParseNodeClassesByName); //.filter(name => !!t['is' + name]);
 }
 
 // ###########################################################################
@@ -724,11 +730,11 @@ function visitChildren(visitFn, childCfgs, path, state) {
 //     return;
 //   }
 
-//   const ParserStateClazz = getParserStateClassByName(path);
+//   const ParserNodeClazz = getParserNodeClassByName(path);
 
 //   if (direction === InstrumentationDirection.Enter) {
 //     // -> Enter
-//     (ParserStateClazz && state.stack.enter(path, state, ParserStateClazz));
+//     (ParserNodeClazz && state.stack.enter(path, state, ParserNodeClazz));
 
 //     // // 1. instrument self
 //     // shouldVisit && instrumentPath(direction, instrumentor, path, state, cfg);
@@ -745,7 +751,7 @@ function visitChildren(visitFn, childCfgs, path, state) {
 //     // // 2. instrument self
 //     // shouldVisit && instrumentPath(direction, instrumentor, path, state, cfg);
 
-//     (ParserStateClazz && state.stack.exit(path, state, ParserStateClazz));
+//     (ParserNodeClazz && state.stack.exit(path, state, ParserNodeClazz));
 //   }
 // }
 
@@ -816,15 +822,16 @@ function _getFullName(cfg) {
   return visitorName;
 }
 
-function logInst(tag, path, direction = null, ...other) {
+function logInst(tag, path, direction = null, ParserNodeClazz, ...other) {
   const nodeName = getNodeNames(path.node)?.name;
   const dirIndicator = direction && direction === InstrumentationDirection.Enter ? ' ->' : ' <-';
   debug(
     `[${tag}]${dirIndicator || ''}`,
     // `${cfgName}:`,
-    nodeName &&
-    `${path.node.type} ${nodeName}` ||
-    truncate(path.toString().replace(/\n/g, ' '), { length: 100 }),
+    `${ParserNodeClazz.name}:`,
+    // nodeName &&
+    //   `${path.node.type} ${nodeName}` ||
+    pathToStringSimple(path),
     // TraceInstrumentationType.nameFromForce(instrumentationType),
     ...other
   );
@@ -834,33 +841,33 @@ function logInst(tag, path, direction = null, ...other) {
 // new visit
 // ###########################################################################
 
-function visitEnter(path, state) {
+function visitEnter(ParserNodeClazz, path, state) {
   // return visit(InstrumentationDirection.Enter, state.onTrace.bind(state), enterInstrumentors, path, state, visitorCfg);
-  return visit(InstrumentationDirection.Enter, path, state);
+  return visit(InstrumentationDirection.Enter, ParserNodeClazz, path, state);
 }
-function visitExit(path, state) {
+function visitExit(ParserNodeClazz, path, state) {
   // return visit(InstrumentationDirection.Exit, state.onTraceExit.bind(state), exitInstrumentors, path, state, visitorCfg);
-  return visit(InstrumentationDirection.Exit, path, state);
+  return visit(InstrumentationDirection.Exit, ParserNodeClazz, path, state);
 }
 
-function visit(direction, path, state) {
-  const ParserStateClazz = getParserStateClassByName(path);
+/**
+ * @param {*} path 
+ * @param {DbuxState} state
+ */
+function visit(direction, ParserNodeClazz, path, state) {
   if (isPathInstrumented(path)) {
     return;
   }
-  if (!ParserStateClazz) {
-    throw new Error(`visit did not find ParserState for path "${path.type}"`);
-  }
 
-  Verbose && logInst('v', path, direction);
+  Verbose && logInst('v', path, direction, ParserNodeClazz);
 
   if (direction === InstrumentationDirection.Enter) {
     // -> Enter
-    state.stack.enter(path, state, ParserStateClazz);
+    state.stack.enter(path, state, ParserNodeClazz);
   }
   else {
     // <- Exit
-    state.stack.exit(path, state, ParserStateClazz);
+    state.stack.exit(path, state, ParserNodeClazz);
   }
 }
 
@@ -869,19 +876,19 @@ function visit(direction, path, state) {
 // ###########################################################################
 
 export function buildTraceVisitors() {
-  const names = getAllParserNames();
   const visitors = {};
-  for (const name of names) {
+  for (const name in ParseNodeClassesByName) {
+    const ParserNodeClazz = ParseNodeClassesByName[name];
     visitors[name] = {
       enter(path, state) {
         // if (path.getData()) {
         //   visit(state.onTrace.bind(state), enterInstrumentors, path, state, visitorCfg)
         // }
-        visitEnter(path, state);
+        visitEnter(ParserNodeClazz, path, state);
       },
 
       exit(path, state) {
-        visitExit(path, state);
+        visitExit(ParserNodeClazz, path, state);
       }
     };
   }

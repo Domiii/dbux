@@ -1,8 +1,10 @@
+import { pathToStringSimple } from '../helpers/pathHelpers';
 
 export default class ParseNode {
-  constructor(path, state) {
+  constructor(path, state, initialData) {
     this.enterPath = path;
     this.state = state;
+    this.data = initialData === true ? {} : initialData;
   }
 
   get path() {
@@ -15,24 +17,42 @@ export default class ParseNode {
   //   return 
   // }
 
+  get debugTag() {
+    return this.toString();
+  }
+
   toString() {
-    return `${this.constructor.name}: ${this.enterPath.toString()}`;
+    return `${this.constructor.name}: ${pathToStringSimple(this.enterPath)}`;
+  }
+
+  // ###########################################################################
+  // enter + exit
+  // ###########################################################################
+  
+  enter() {
+  }
+
+  exit() {
   }
 
   // ###########################################################################
   // static members
   // ###########################################################################
 
-  static shouldCreateOnEnter(/* path, state */) {
+  /**
+   * @returns `false`, `true` or some initial state (which will be stored in `data`)
+   */
+  static prospectOnEnter(/* path, state */) {
     return true;
   }
 
-  static createOnEnter(path, state, stack, ParseNodeClazz) {
-    let newState = null;
-    if (ParseNodeClazz.shouldCreateOnEnter(path, state)) {
-      newState = new ParseNodeClazz(path, state);
-      newState.init();
+  static createOnEnter(path, state, ParseNodeClazz) {
+    let newNode = null;
+    const initialData = ParseNodeClazz.prospectOnEnter(path, state);
+    if (initialData) {
+      newNode = new ParseNodeClazz(path, state, initialData);
+      newNode.init();
     }
-    return stack.push(ParseNodeClazz, newState);
+    return newNode;
   }
 }

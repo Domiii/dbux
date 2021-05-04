@@ -52,23 +52,16 @@ function addResumeContext(bodyPath, state/* , staticId */) {
 // ###########################################################################
 
 export default class Function extends ParseNode {
-  enter(bodyPath, state) {
-    // const names = path.getData('_dbux_names');
-    const functionPath = bodyPath.parentPath; // actual function path
-    const names = getNodeNames(functionPath.node);
-    if (!names) {
-      // this is probably an instrumented function
-      return;
-    }
+  enter(path, state) {
+    const isGenerator = path.node.generator;
+    const isAsync = path.node.async;
+    const isInterruptable = isGenerator || isAsync;
+    const bodyPath = path.get('body');
 
     const {
       name,
       displayName
-    } = names;
-
-    const isGenerator = functionPath.node.generator;
-    const isAsync = functionPath.node.async;
-    const isInterruptable = isGenerator || isAsync;
+    } = this.data.names;
 
     const staticContextData = {
       type: 2, // {StaticContextType}
@@ -76,7 +69,7 @@ export default class Function extends ParseNode {
       displayName,
       isInterruptable
     };
-    const staticContextId = state.contexts.addStaticContext(functionPath, staticContextData);
+    const staticContextId = state.contexts.addStaticContext(path, staticContextData);
     const pushTraceId = state.traces.addTrace(bodyPath, TraceType.PushImmediate);
     const popTraceId = state.traces.addTrace(bodyPath, TraceType.PopImmediate);
 
@@ -86,32 +79,32 @@ export default class Function extends ParseNode {
     // TODO: also trace `this`?
     // state.varAccess.addVarAccess(path, ownerId, VarOwnerType.Context, 'this', false);
 
-    const params = functionPath.get('params');
-    const paramIds = params.map(param =>
-      // get all variable declarations in `param`
-      // see: https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/family.js#L215
-      // see: https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/lib/virtual-types.js
-      Object.values(param.getBindingIdentifierPaths())
-    ).flat();
-    let recordParams = paramIds.map(paramPath => {
-      state.varAccess.addVarAccess(
-        paramPath.node.name, paramPath, ownerId, VarOwnerType.Trace
-      );
-      return traceWrapExpressionStatement(TraceType.Parameter, paramPath, state);
-    });
+    // const params = path.get('params');
+    // const paramIds = params.map(param =>
+    //   // get all variable declarations in `param`
+    //   // see: https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/family.js#L215
+    //   // see: https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/lib/virtual-types.js
+    //   Object.values(param.getBindingIdentifierPaths())
+    // ).flat();
+    // let recordParams = paramIds.map(paramPath => {
+    //   state.varAccess.addVarAccess(
+    //     paramPath.node.name, paramPath, ownerId, VarOwnerType.Trace
+    //   );
+    //   return traceWrapExpressionStatement(TraceType.Parameter, paramPath, state);
+    // });
 
     let staticResumeContextId;
     if (isInterruptable) {
       staticResumeContextId = addResumeContext(bodyPath, state, staticContextId);
     }
 
-    Object.assign(this, {
+    return {
       staticContextId,
       pushTraceId,
       popTraceId,
-      recordParams,
+      // recordParams,
       staticResumeContextId
-    });
+    };
   }
 
 
@@ -129,8 +122,8 @@ export default class Function extends ParseNode {
    */
   instrument() {
     const {
-      staticContextId, pushTraceId, popTraceId, recordParams, staticResumeContextId = null
-    } = this;
+      staticContextId, pushTraceId, popTraceId, recordParams, staticResumeContextId
+    } = this.data;
 
     const { path: bodyPath, state } = this;
     const { ids: { dbux }, contexts: { genContextIdName } } = state;
@@ -180,12 +173,24 @@ export default class Function extends ParseNode {
     // wrap the function in a try/finally statement
     const newBody = buildBlock([
       ...pushes,
-      ...recordParams,
+      // ...recordParams,
       buildWrapTryFinally(bodyNode, pops)
     ]);
 
     // patch function body node to keep loc of original body (needed for `injectFunctionEndTrace`)
     newBody.loc = origBodyNode.loc;
     bodyPath.replaceWith(newBody);
+  }
+
+  static prospectOnEnter(path) {
+    // const names = path.getData('_dbux_names');
+    const names = getNodeNames(path.node);
+    if (!names) {
+      // this is probably an instrumented function
+      return null;
+    }
+    return {
+      names
+    };
   }
 }
