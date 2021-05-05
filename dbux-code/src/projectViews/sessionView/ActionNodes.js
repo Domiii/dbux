@@ -38,9 +38,14 @@ class SessionNode extends BaseTreeViewNode {
       await showInformationMessage('Currently busy, please wait');
     }
     else {
-      await this.handleClickCallback?.();
+      await this.doHandleClick?.();
     }
   }
+
+  /**
+   * @virtual
+   */
+  async doHandleClick() { }
 }
 
 class DetailNode extends SessionNode {
@@ -61,7 +66,7 @@ class DetailNode extends SessionNode {
     return 'project.svg';
   }
 
-  async handleClickCallback() {
+  async doHandleClick() {
     await this.bug.manager.externals.showBugIntroduction(this.bug);
   }
 }
@@ -79,7 +84,7 @@ class ShowEntryNode extends SessionNode {
     return 'document.svg';
   }
 
-  async handleClickCallback() {
+  async doHandleClick() {
     await this.entry.openInEditor();
   }
 }
@@ -97,7 +102,7 @@ class RunNode extends SessionNode {
     return 'play.svg';
   }
 
-  async handleClickCallback() {
+  async doHandleClick() {
     await this.controller.activate();
   }
 }
@@ -115,7 +120,7 @@ class RunWithoutDbuxNode extends SessionNode {
     return 'play_gray.svg';
   }
 
-  async handleClickCallback() {
+  async doHandleClick() {
     await this.controller.activate({ dbuxEnabled: false });
   }
 }
@@ -133,7 +138,7 @@ class DebugWithoutDbuxNode extends SessionNode {
     return 'bug_gray.svg';
   }
 
-  async handleClickCallback() {
+  async doHandleClick() {
     await this.controller.activate({ debugMode: true, dbuxEnabled: false });
   }
 }
@@ -156,7 +161,7 @@ class TagNode extends SessionNode {
     return 'flag.svg';
   }
 
-  async handleClickCallback() {
+  async doHandleClick() {
     const trace = traceSelection.selected;
     if (trace) {
       emitTagTraceAction(trace);
@@ -189,7 +194,7 @@ class StopPracticeNode extends SessionNode {
     return 'quit.svg';
   }
 
-  async handleClickCallback() {
+  async doHandleClick() {
     if (!this.manager.practiceSession.isFinished()) {
       await this.manager.practiceSession.confirmStop();
     }
