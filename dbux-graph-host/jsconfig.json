@@ -5,9 +5,14 @@
 		"checkJs": false,  /* Typecheck .js files. */
 		"baseUrl": "./",
 		"paths": {
-      "@dbux/common/*": ["../dbux-common/*"],
+      "@dbux/common/*": [
+        "../dbux-common/*"
+      ],
       "@dbux/data/*": ["../dbux-data/*"],
-      "@dbux/graph-common/*": ["../dbux-graph-common/*"]
+      "@dbux/graph-common/*": ["../dbux-graph-common/*"],
+      "@dbux/projects/*": [
+        "../dbux-projects/*"
+      ],
 		}
 	},
 	"include": [
