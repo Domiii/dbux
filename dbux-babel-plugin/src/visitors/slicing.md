@@ -67,10 +67,10 @@ TODO
   * `WhileStatement`
 
 * patterns
-   * AssignmentPattern
-   * RestElement
-   * ObjectPattern
-   * ArrayPattern
+   * `AssignmentPattern`
+   * `RestElement`
+   * `ObjectPattern`
+   * `ArrayPattern`
 
 * other
   * `IfStatement`
