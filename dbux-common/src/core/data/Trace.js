@@ -1,4 +1,3 @@
-import TraceType from '../constants/TraceType';
 import HasValue from './HasValue';
 
 export default class Trace extends HasValue {

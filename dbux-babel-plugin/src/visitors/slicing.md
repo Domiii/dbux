@@ -68,7 +68,7 @@ TODO
     * NOTE: similar to return from callee to caller
   * `ObjectExpression`
     * `properties` (recursive)
-  * `UpdateExpression`
+  * Arithmetic expression
   * `TemplateLiteral`
     * `expressions`
     * (`quasis`)
@@ -87,7 +87,7 @@ TODO
 ### `LVal` types
 * `Identifier`
 * `ArrayPattern`, `ObjectPattern`
-  * `{ x } = o`, `[ x ] = o` (`AssignmentExpression.left`)
+  * e.g. `{ x } = o`, `[ x ] = o` (`AssignmentExpression.left`)
   * NOTE: these are recursive
   * NOTE: can contain `AssignmentPattern`
     * e.g. `{ x = 3 } = o;`

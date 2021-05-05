@@ -12,11 +12,11 @@ export default class BaseArithmeticExpression extends BaseExpression {
     const inputs = args.slice(0, inputN);
     const inputPaths = args[inputN];
 
-    // NOTE: AEs create new values (don't just move data)
+    // NOTE: AEs changes, i.e. create new values (don't just move data)
     // NOTE2: AEs propagate all their inputs
     const propagatedInputs = this.getInputs(inputs, inputPaths);
     return {
-      createsValue: true,
+      change: true,
       inputs: propagatedInputs,
       propagatedInputs
     };
