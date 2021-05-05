@@ -11,7 +11,6 @@ import projectRegistry from './_projectRegistry';
 import ProjectList from './projectLib/ProjectList';
 import BugRunner from './projectLib/BugRunner';
 import PracticeSession from './practiceSession/PracticeSession';
-import RunStatus from './projectLib/RunStatus';
 import BugStatus from './dataLib/BugStatus';
 import BackendController from './backend/BackendController';
 import PathwaysDataProvider from './dataLib/PathwaysDataProvider';
@@ -541,32 +540,8 @@ export default class ProjectsManager {
   }
 
   // ###########################################################################
-  // Project/Bug run status getter
+  // Project/Bug run status
   // ###########################################################################
-
-  /**
-   * @param {Project} project 
-   */
-  getProjectRunStatus(project) {
-    if (this.runner.isProjectActive(project)) {
-      return this.runner.status;
-    }
-    else {
-      return RunStatus.None;
-    }
-  }
-
-  /**
-   * @param {Bug} bug 
-   */
-  getBugRunStatus(bug) {
-    if (this.runner.isBugActive(bug)) {
-      return this.runner.status;
-    }
-    else {
-      return RunStatus.None;
-    }
-  }
 
   onRunStatusChanged(cb) {
     return this.runner.onStatusChanged(cb);
