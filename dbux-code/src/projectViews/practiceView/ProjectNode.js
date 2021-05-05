@@ -29,7 +29,7 @@ export default class ProjectNode extends BaseTreeViewNode {
   }
 
   get contextValue() {
-    return `dbuxProjectView.projectNode.${RunStatus.getName(this.status)}`;
+    return `dbuxProjectView.projectNode.${RunStatus.getName(this.project.runStatus)}`;
   }
 
   makeIconPath() {
@@ -58,31 +58,29 @@ export default class ProjectNode extends BaseTreeViewNode {
   }
 
   async deleteProject() {
-    if (isStatusRunningType(this.status)) {
-      await showInformationMessage('project is running now...');
-    }
-    else {
-      const confirmMessage = `Do you really want to delete the project: ${this.project.name}`;
-      const btnConfig = {
-        Ok: async () => {
-          await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
-            progress.report({ message: 'deleting project folder...' });
-            
-            // NOTE: we need this sleep because:
-            //     (1) file deletion is actually synchronous, (2) progress bar does not start rendering until after first await has returned
-            await sleep();
+    const confirmMessage = `Do you really want to delete the project: ${this.project.name}`;
+    const btnConfig = {
+      Ok: async () => {
+        const success = await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
+          progress.report({ message: 'deleting project folder...' });
 
-            await this.project.deleteProjectFolder();
-            this.treeNodeProvider.refresh();
-          }, {
-            cancellable: false,
-            title: this.project.name,
-          });
+          // NOTE: we need this sleep because:
+          //     (1) file deletion is actually synchronous, (2) progress bar does not start rendering until after first await has returned
+          await sleep();
+
+          return await this.project.deleteProjectFolder();
+        }, {
+          cancellable: false,
+          title: this.project.name,
+        });
+
+        if (success) {
+          this.treeNodeProvider.refresh();
           await showInformationMessage('Project has been deleted successfully.');
         }
-      };
-      await showInformationMessage(confirmMessage, btnConfig, { modal: true });
-    }
+      }
+    };
+    await showInformationMessage(confirmMessage, btnConfig, { modal: true });
   }
 
   addToWorkspace() {

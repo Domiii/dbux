@@ -1,6 +1,7 @@
-import { env, window, Uri } from 'vscode';
+import { env, Uri } from 'vscode';
 import path from 'path';
 import { newLogger } from '@dbux/common/src/log/logger';
+import sleep from '@dbux/common/src/util/sleep';
 import { initDbuxProjects } from '@dbux/projects/src';
 import Process from '@dbux/projects/src/util/Process';
 import { showWarningMessage, showInformationMessage } from '../codeUtil/codeModals';
@@ -14,6 +15,7 @@ import { showBugIntroduction } from './BugIntroduction';
 import { getStopwatch } from './practiceStopwatch';
 import { initUserEvent } from '../userEvents';
 import { initRuntimeServer } from '../net/SocketServer';
+import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
 
@@ -33,7 +35,7 @@ export function getOrCreateProjectManager() {
   return projectManager;
 }
 
-export async function initProjectManager(extensionContext) {
+export function createProjectManager(extensionContext) {
   // ########################################
   // cfg + externals
   // ########################################
@@ -135,9 +137,17 @@ export async function initProjectManager(extensionContext) {
   // ########################################
   //  init projectManager
   // ########################################
-  projectManager = await initDbuxProjects(cfg, externals);
+  projectManager = initDbuxProjects(cfg, externals);
 
   initUserEvent(projectManager);
 
   return projectManager;
+}
+
+export async function initProjectManager() {
+  await runTaskWithProgressBar(async (progress) => {
+    progress.report({ message: 'Initializing dbux-project' });
+    await sleep();
+    await projectManager.init();
+  }, { cancellable: false });
 }
