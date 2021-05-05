@@ -3,6 +3,7 @@ TODO
 1. capture full expression tree and dependency tree for all `traceId`s
    * then pass dependency tree as argument to `traceWrite`
 2. produce all rules to build `targetPathId` for any LVal
+   * PROBLEM: sometimes, we cannot build it at the time of `DataNode` creation (e.g. `ObjectExpression`)
 3. Determine all reads and writes
 4. Instrument all missing babel-types
 5. Capture effects of built-in functions
@@ -30,6 +31,70 @@ TODO
  * => Can we automize this process for any function that we know is not instrumented?
  * => Seems possible: https://javascript.info/proxy#proxy-apply
 
+
+# Relevant types
+
+* `MemberExpression`
+  * `OptionalMemberExpression`
+* `Identifier`
+
+* assignments
+  * `AssignmentExpression`
+  * `VariableDeclaration`
+  * `ClassPrivateProperty`
+  * `ClassProperty`
+
+* function + calls
+  * `Function`
+  * `ReturnStatement`
+  * `YieldExpression`
+
+  * `CallExpression`
+  * `OptionalCallExpression`
+  * `NewExpression`
+  * `Super`
+
+* Arithmetic
+  * `BinaryExpression`
+  * `UnaryExpression`
+  * `LogicalExpression`
+
+* Value-creating/-changing
+  * `UpdateExpression` [write]
+    * add both `read` and `write` nodes, similar to the corresponding `AssignmentExpression` (i++ ~ i = i+1)
+  * `ObjectExpression` [write]
+    * 1 parent `read` + many `write` children
+    * problem: we don't know the path when capturing the children writes
+  * `TemplateLiteral`
+
+* loops (all have reads + writes)
+  * `ForStatement`
+  * `ForInStatement`
+  * `ForOfStatement`
+  * `DoWhileLoop`
+  * `WhileStatement`
+
+* other
+  * `IfStatement`
+  * `SwitchStatement`
+  * `SwitchCase`
+  * `ConditionalExpression`
+  * `SequenceExpression`
+  * `Decorator`
+
+* error propagation
+  * `ThrowStatement`
+  * `CatchClause` [write]
+
+* `AwaitExpression`
+
+
+* Other Statements (currently not of great concern to data dependency tracking)
+  * `BreakStatement`
+  * `ContinueStatement`
+  * `TryStatement`
+  * `ExpressionStatement`
+  * `VariableDeclarator`
 
 
 
@@ -168,70 +233,6 @@ o[f('p')][f('q')].a
     * nested MEs
       * NOTE: should work as-is, thanks to `tid0`
       * `o[q[a][b].c][p[x][y[z]].w]`
-
-* `object{Read,Write}` needs utilities:
-  ```js
-  function getObjectReferenceId(obj) {
-    // TODO: use WeakMap to store unique object id
-  }
-  function makeObjectAccessPath(obj, prop) {
-    // TODO: obj is not necessarily reference type
-    // TODO: string needs a lot of special treatment (e.g. `s.toString().toString().toString()`)
-    return `${getObjectReferenceId(obj)}.${prop}`;
-  }
-  function getObjectAccessId(obj, prop, val) {
-    if (isReferenceType(val)) {
-      return getObjectReferenceId(val);
-    }
-    else {
-      return makeObjectAccessPath(obj, prop);
-    }
-  }
-  // ...
-  
-  // TODO: get `lvarBindingId`
-  // @param lvarBindingId `traceId` of left-most object variable binding (i.e. traceId of `let o;` for `o.
-  /**
-   * in:  o.p[q[b].c][d].y.w
-   * out: o[meProp(o, [te(q[meProp(q, [te(b, %tid1a%)])], %tid1%), te(d, %tid2%)], [tid1, tid2], %tid0%)]
-   *
-   * TODO: s.toString().toString().toString()
-   */
-  function meProp(lObj, dynamicArgVals, dynamicArgTraceIds, traceId) {
-    const meStaticTrace = getStaticTrace(traceId);
-    let { template, dynamicIndexes, isLVal } = meStaticTrace;
-    // if (dynamicArgTraceIds.length < dynamicIndexes.length) {
-    //   // TODO: OptionalMemberExpression (non-lval only)
-    //   dynamicIndexes = dynamicIndexes.slice(0, dynamicArgTraceIds.length);
-    // }
-
-    const objectRefs = [getObjectRefId(lObj)];
-    let val = lObj;
-    let dynamicI = -1;
-    for (let i = 1; i < template.length; ++i) {
-      if (!val) {
-        // TODO: error will usually be thrown here
-      }
-      let prop = template[i];
-      if (!prop) {
-        prop = dynamicArgVals[++dynamicI];
-      }
-
-      const obj = val;
-      val = val[prop];
-
-      objectRefs.push(getObjectAccessId(obj, prop, val));
-    }
-
-    // TODO: if commitWrite { ... }
-
-    // TODO: register inputs/outputs
-    //  { objectRefs }
-
-    return val;
-  }
-  ```
-  * has access to `staticNodes` via `staticTraceId`
 
 ## 
 

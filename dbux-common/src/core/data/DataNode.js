@@ -1,24 +1,25 @@
+/**
+ * @file
+ */
 
-class DataAccess {
+
+/**
+ * 
+ */
+export class DataAccess {
   /**
    * Refers to `ValueRef`, if this node represents access to a reference type (object, array, function etc.).
    * Else null.
    */
   refId;
-  varPath;
+  dataPath;
 }
 
-class InvolvedNode extends DataAccess {
+export class InvolvedNode extends DataAccess {
   staticTraceId;
 }
 
-/**
- *
- *
- * TODO: add destructuring and other many-to-many data operations
- * * `let { a, b: [x,y] } = o` has [`a`, `b`, ]
- */
-export default class DataNode extends DataAccess {
+export class DataBaseNode extends DataAccess {
   nodeId;
 
   /**
@@ -27,12 +28,12 @@ export default class DataNode extends DataAccess {
   traceId;
 
   /**
-   * Whether this is an lVal (write; receiver of data) or not (read).
-   * For example, LHS of assignments or variable declarations are lvals. Also, function parameters.
-   * LVals can only be `Identifier`, `MemberExpression`, `{Object,Array}Pattern`
+   * Is `true` if this node:
+   * * created a new value (if instanceof DataReadNode) or
+   * * modified an existing value (if instanceof DataWriteNode)
    * @type {boolean}
    */
-  lVal;
+  change;
 
   // /**
   //  * TODO: future work?
@@ -49,4 +50,21 @@ export default class DataNode extends DataAccess {
    * @type {InvolvedNode[]}
    */
   involved;
+}
+
+/**
+ *
+ *
+ * TODO: add destructuring and other many-to-many data operations
+ * * `let { a, b: [x,y] } = o` has [`a`, `b`, ]
+ */
+export class DataReadNode extends DataBaseNode {
+}
+
+export class DataWriteNode extends DataBaseNode {
+  /**
+   * This is an array of either (i) `DataReadNode` or (ii) simple `DataAccess` (in case of `Identifier`?)
+   * @type {[]}
+   */
+  inputs;
 }
