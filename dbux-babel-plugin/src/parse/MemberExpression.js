@@ -1,6 +1,15 @@
 import BaseExpression from './BaseExpression';
 
-// TODO
+/**
+ * TODO
+ * 
+ * 1. track all read access (lval or rval), for each read o[x]:
+ *    * VarRead(o): referenceId + path
+ *    * VarRead(x): referenceId (if it has any) + path [if x is not constant]
+ *    * VarRead(o[x]): referenceId (if it has any) + path
+ * 2. track write access on final write o[x] = y
+ *   * 
+ */
 
 function getObjectReferenceId(obj) {
   // TODO: use WeakMap to store unique object id
@@ -101,7 +110,7 @@ export default class MemberExpression extends BaseExpression {
   // exit
   // ###########################################################################
 
-  static nodes = ['object', 'property'];
+  static nodeNames = ['object', 'property'];
 
   exit(object, property, [objectPath, propertyPath]) {
     const {
@@ -112,8 +121,8 @@ export default class MemberExpression extends BaseExpression {
 
     const { computed/* , optional */ } = path.node;
 
-    // inner-most ME is exited first; has left-most id
     if (!this.leftId) {
+      // inner-most ME is exited first; has leftId
       this.leftId = objectPath.node;
       template.push(objectPath.toString());
     }
@@ -129,7 +138,6 @@ export default class MemberExpression extends BaseExpression {
     }
 
     // TODO: only return on final exit
-
     return {
       template,
       dynamicIndexes

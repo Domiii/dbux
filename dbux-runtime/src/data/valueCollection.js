@@ -1,8 +1,11 @@
+import isObject from 'lodash/isObject';
 import ValueTypeCategory, { determineValueTypeCategory, ValuePruneState, isObjectCategory, isTrackableCategory } from '@dbux/common/src/core/constants/ValueTypeCategory';
 // import serialize from '@dbux/common/src/serialization/serialize';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Collection from './Collection';
 import pools from './pools';
+
+/** @typedef {import('@dbux/common/src/core/data/ValueRef').default} ValueRef */
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('RuntimeMonitor');
@@ -29,6 +32,10 @@ class TrackedValue {
   static _lastId = 0;
 
   value;
+  
+  /**
+   * @type {ValueRef[]}
+   */
   refs = [];
 
   constructor(value) {
@@ -113,6 +120,9 @@ class ValueCollection extends Collection {
     return tracked;
   }
 
+  /**
+   * @return {ValueRef}
+   */
   _addOmitted() {
     if (!this._omitted) {
       this._omitted = this._registerValue(null, null);
@@ -121,6 +131,9 @@ class ValueCollection extends Collection {
     return this._omitted;
   }
 
+  /**
+   * @return {ValueRef}
+   */
   _addValueDisabled() {
     if (!this._valueDisabled) {
       this._valueDisabled = this._registerValue(null, null);
@@ -129,6 +142,12 @@ class ValueCollection extends Collection {
     return this._valueDisabled;
   }
 
+  /**
+   * 
+   * @param {*} value 
+   * @param {*} category
+   * @return {ValueRef}
+   */
   _registerValue(value, category) {
     // create new ref + track object value
     const valueRef = pools.values.allocate();
@@ -151,6 +170,11 @@ class ValueCollection extends Collection {
     return valueRef;
   }
 
+  /**
+   * 
+   * @param {ValueRef} valueRef
+   * @return {ValueRef}
+   */
   _finishValue(valueRef, typeName, serialized, pruneState = false) {
     // store all other props
     valueRef.typeName = typeName;
@@ -278,6 +302,7 @@ class ValueCollection extends Collection {
 
   /**
    * @param {Map} visited
+   * @return {ValueRef}
    */
   _serialize(value, depth = 1, visited = null, category = null) {
     if (depth > SerializationConfig.maxDepth) {
