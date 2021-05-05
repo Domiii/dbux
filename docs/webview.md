@@ -38,10 +38,9 @@ _resubscribeOnData() {
       dp.onData('staticProgramContexts',
         this._handleAddFiles.bind(this, app)
       ),
-      dp.onData('executionContexts',
-        this._handleAddExecutionContexts.bind(this, app)
-      ),
-      dp.queryImpl.statsByContext.subscribe()
+      // dp.onData('executionContexts',
+      //   this._handleAddExecutionContexts.bind(this, app)
+      // )
     ];
 
     // unsubscribe on refresh
@@ -53,5 +52,12 @@ _resubscribeOnData() {
     // also when node is disposed
     this.addDisposable(...unsubscribes);
   }
+}
+
+_handleAddFiles(app, newStaticProgramContexts) {
+  const { applicationId } = app;
+  /* const newNodes =  */newStaticProgramContexts.map(program => 
+    this.children.createComponent(FileNode, { applicationId, program })
+  );
 }
 ```
