@@ -4,7 +4,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import sleep from '@dbux/common/src/util/sleep';
 import { initDbuxProjects } from '@dbux/projects/src';
 import Process from '@dbux/projects/src/util/Process';
-import { showWarningMessage, showInformationMessage } from '../codeUtil/codeModals';
+import { showWarningMessage, showInformationMessage, confirm } from '../codeUtil/codeModals';
 import { showTextDocument, showTextInNewFile } from '../codeUtil/codeNav';
 import TerminalWrapper from '../terminal/TerminalWrapper';
 import { set as storageSet, get as storageGet } from '../memento';
@@ -86,24 +86,7 @@ export function createProjectManager(extensionContext) {
       get: storageGet,
       set: storageSet,
     },
-    async confirm(msg, modal = false) {
-      // TOTRANSLATE
-      const confirmText = 'Yes';
-      const refuseText = 'No';
-      const cancelText = 'Cancel';
-
-      const btnConfig = Object.fromEntries([confirmText, refuseText].map(t => [t, () => t]));
-      if (!modal) {
-        btnConfig[cancelText] = () => cancelText;
-      }
-      const result = await showInformationMessage(msg, btnConfig, { modal });
-      if (result === undefined || result === cancelText) {
-        return null;
-      }
-      else {
-        return result === confirmText;
-      }
-    },
+    confirm,
     async alert(msg, modal = false) {
       await showInformationMessage(msg, undefined, { modal });
     },

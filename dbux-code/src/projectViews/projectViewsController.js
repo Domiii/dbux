@@ -1,7 +1,7 @@
-import { commands, window, Uri } from 'vscode';
+import { commands, window, Uri, workspace } from 'vscode';
 import { newLogger, setOutputStreams } from '@dbux/common/src/log/logger';
 import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
-import { checkSystem } from '@dbux/projects/src/checkSystem';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import ProjectNodeProvider from './practiceView/ProjectNodeProvider';
 import SessionNodeProvider from './sessionView/SessionNodeProvider';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
@@ -15,6 +15,8 @@ import { showInformationMessage } from '../codeUtil/codeModals';
 import { initCodeEvents } from '../practice/codeEvents';
 import { translate } from '../lang';
 import { getLogsDirectory } from '../resources';
+
+/** @typedef {import('./practiceView/BugNode').default} BugNode */
 
 const showProjectViewKeyName = 'dbux.projectView.showing';
 
@@ -162,6 +164,9 @@ export class ProjectViewController {
   // practice session
   // ###########################################################################
 
+  /**
+   * @param {BugNode} bugNode 
+   */
   async startPractice(bugNode) {
     if (this.manager.practiceSession) {
       if (!await this.confirmCancelPracticeSession()) {
@@ -169,13 +174,19 @@ export class ProjectViewController {
       }
     }
 
-    const { bug } = bugNode;
+    const { bug, projectNode } = bugNode;
     const title = `Bug ${`"${bug.label}"` || ''} (${bug.id})`;
-    await this.runProjectTask(title, {
+    await this.runProjectTask(title, async (report) => {
       // TOTRANSLATE
-      message: 'Activating...',
-      callback: async () => {
-        await this.manager.startPractice(bug);
+      report({ message: 'Activating...' });
+      await this.manager.startPractice(bug);
+
+      if (projectNode.isInCorrectWorkspace()) {
+        report({ message: 'Running test...' });
+        await this.maybeActivateBugForTheFirstTime(bug);
+      }
+      else {
+        await projectNode.askForOpenWorkspace();
       }
     });
   }
@@ -195,12 +206,10 @@ export class ProjectViewController {
     if (file) {
       // TOTRANSLATE
       const title = 'Load practice log';
-      const loaded = await this.runProjectTask(title, {
+      const loaded = await this.runProjectTask(title, async (report) => {
         // TOTRANSLATE
-        message: 'Loading file....',
-        callback: async () => {
-          return await this.manager.loadPracticeSessionFromFile(file.fsPath);
-        }
+        report({ message: 'Loading file....' });
+        return await this.manager.loadPracticeSessionFromFile(file.fsPath);
       });
       if (loaded) {
         await showInformationMessage(`Log file ${file.fsPath} loaded`);
@@ -211,19 +220,17 @@ export class ProjectViewController {
   async activate(inputCfg) {
     const { bug } = this.manager.practiceSession;
     const title = `Bug ${`"${bug.label}"` || ''} (${bug.id})`;
-    await this.runProjectTask(title, {
+    await this.runProjectTask(title, async (report) => {
       // TOTRANSLATE
-      message: 'Running test...',
-      callback: async () => {
-        await this.manager.practiceSession.activate(inputCfg);
-      }
+      report({ message: 'Running test...' });
+      await this.manager.practiceSession.activate(inputCfg);
     });
   }
 
   /**
    * 
    * @param {string} title 
-   * @param {{message: string, callback: function}} task 
+   * @param {taskCallback} task 
    * @param {boolean} cancellable 
    */
   async runProjectTask(title, task, cancellable = false) {
@@ -233,9 +240,14 @@ export class ProjectViewController {
       progress.report({ message: 'Initializing runtime server...' });
       await initRuntimeServer(this.extensionContext);
 
-      progress.report({ message: task.message });
-      return await task.callback();
+      return await task(progress.report.bind(progress));
     }, { title, cancellable });
+  }
+
+  async maybeActivateBugForTheFirstTime(bug) {
+    if (!allApplications.getAll().length) {
+      await this.manager.activateBug(bug);
+    }
   }
 
   async confirmCancelPracticeSession(dontRefreshView = false) {

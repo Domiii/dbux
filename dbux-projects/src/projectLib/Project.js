@@ -492,7 +492,7 @@ This may be solved by using \`Delete project folder\` button.`);
     // ensure project is not running
     if (isStatusRunningType(this.runStatus)) {
       const confirmMessage = `Project ${this.name} is currently running, do you want to stop it?`;
-      if (await this.manager.externals.confirm(confirmMessage, true)) {
+      if (await this.manager.externals.confirm(confirmMessage)) {
         await this.runner.cancel();
       }
       else {

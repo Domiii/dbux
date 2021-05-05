@@ -205,7 +205,6 @@ export default class ProjectsManager {
     bug.project.initProject();
     await this.switchToBug(bug);
     this._resetPracticeSession(bug);
-    await this.maybeActivateBugForTheFirstTime(bug);
     this.practiceSession.setupStopwatch();
     await this.savePracticeSession();
     await this.bdp.save();
@@ -299,7 +298,6 @@ export default class ProjectsManager {
       bug.project.initProject();
       const sessionData = this.externals.storage.get(savedPracticeSessionDataKeyName) || EmptyObject;
       this._resetPracticeSession(bug, sessionData, true);
-      await this.maybeActivateBugForTheFirstTime(bug);
       this.practiceSession.setupStopwatch();
     }
     catch (err) {
@@ -339,12 +337,12 @@ export default class ProjectsManager {
     // TOTRANSLATE
     const confirmMsg = `This is your first time activate this bug, do you want to start a timer?\n`
       + `[WARN] You will not be able to time this bug once you activate it.`;
-    return await this.externals.confirm(confirmMsg, true);
+    return await this.externals.confirm(confirmMsg);
   }
 
   async askForSubmit() {
     const confirmString = 'Congratulations!! You have passed all test 🎉🎉🎉\nWould you like to submit the result?';
-    const shouldSubmit = await this.externals.confirm(confirmString);
+    const shouldSubmit = await this.externals.confirm(confirmString, false);
 
     if (shouldSubmit) {
       this.submit();
@@ -367,7 +365,7 @@ export default class ProjectsManager {
    */
   async resetBug(bug) {
     const confirmMessage = 'This will discard all your changes on this bug. Are you sure?';
-    if (!await this.externals.confirm(confirmMessage, true)) {
+    if (!await this.externals.confirm(confirmMessage)) {
       const err = new Error('Action rejected by user');
       err.userCanceled = true;
       throw err;
@@ -428,12 +426,6 @@ export default class ProjectsManager {
     await this.switchToBug(bug);
     const result = await this.runTest(bug, inputCfg);
     return result;
-  }
-
-  async maybeActivateBugForTheFirstTime(bug) {
-    if (!allApplications.getAll().length) {
-      await this.activateBug(bug);
-    }
   }
 
   async switchToBug(bug) {
