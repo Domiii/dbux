@@ -11,13 +11,13 @@ import { initCodeApplications } from './codeUtil/CodeApplication';
 import { initTraceDetailsView } from './traceDetailsView/traceDetailsController';
 import { initTraceSelection } from './codeUtil/codeSelection';
 import { initApplicationsView } from './applicationsView/applicationsViewController';
-import { initProjectManager } from './projectViews/projectControl';
+import { createProjectManager, initProjectManager } from './projectViews/projectControl';
 import { initProjectView } from './projectViews/projectViewsController';
 import { initGraphView } from './webViews/graphWebView';
 import { initPathwaysView } from './webViews/pathwaysWebView';
 import { initWebviewWrapper } from './codeUtil/WebviewWrapper';
 import { installDbuxDependencies, initInstallUtil } from './codeUtil/installUtil';
-import { maybeStartSurvey1ForTheFirstTime } from './dialogs/dialogController';
+// import { maybeStartSurvey1ForTheFirstTime } from './dialogs/dialogController';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-code');
@@ -30,7 +30,7 @@ async function activate(context) {
     log(`Starting Dbux v${process.env.DBUX_VERSION} (mode=${process.env.NODE_ENV}, (dev only) DBUX_ROOT=${process.env.DBUX_ROOT})...`);
 
     // make sure, projectManager is available
-    await initProjectManager(context);
+    createProjectManager(context);
 
     initInstallUtil(context);
 
@@ -77,6 +77,8 @@ async function activate(context) {
     // init the webviews
     await initGraphView();
     await initPathwaysView();
+
+    await initProjectManager();
 
     // Disabled for the first experiment
     // await maybeStartSurvey1ForTheFirstTime();

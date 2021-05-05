@@ -12,6 +12,7 @@ import BugList from './BugList';
 import Process from '../util/Process';
 import { checkSystemWithRequirement } from '../checkSystem';
 import { MultipleFileWatcher } from '../util/multipleFileWatcher';
+import RunStatus, { isStatusRunningType } from './RunStatus';
 
 const SharedAssetFolder = '_shared_assets_';
 const PatchFolderName = '_patches_';
@@ -144,7 +145,12 @@ export default class Project {
   }
 
   get runStatus() {
-    return this.manager.getProjectRunStatus(this);
+    if (this.runner.isProjectActive(this)) {
+      return this.runner.status;
+    }
+    else {
+      return RunStatus.None;
+    }
   }
 
   getDependencyPath(relativePath) {
@@ -471,7 +477,7 @@ This may be solved by using \`Delete project folder\` button.`);
       // this.logger.log(`[auto commit] ${files.join(', ')}`);
 
       // await this.exec(`git add ${files.map(name => `"${name}"`).join(' ')} && git commit -am '"[dbux auto commit]"' --allow-empty`);
-      
+
       // NOTE: && is not supported in all shells (e.g. Powershell)
       await this.exec(`git add ${files.map(name => `"${name}"`).join(' ')}`);
 
@@ -482,11 +488,34 @@ This may be solved by using \`Delete project folder\` button.`);
     }
   }
 
+  async tryDeactivate() {
+    // ensure project is not running
+    if (isStatusRunningType(this.runStatus)) {
+      const confirmMessage = `Project ${this.name} is currently running, do you want to stop it?`;
+      if (await this.manager.externals.confirm(confirmMessage, true)) {
+        await this.runner.cancel();
+      }
+      else {
+        return false;
+      }
+    }
+
+    // ensure project is not active
+    if (this.runner.isProjectActive(this)) {
+      await this.runner.deactivateBug();
+    }
+
+    return true;
+  }
+
   async deleteProjectFolder() {
-    const deactivatePromise = this.runner.deactivateBug();
+    if (!await this.tryDeactivate()) {
+      return false;
+    }
+
     sh.rm('-rf', this.projectPath);
     this._installed = false;
-    await deactivatePromise;
+    return true;
   }
 
   doesProjectFolderExist() {

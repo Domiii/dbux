@@ -1,5 +1,6 @@
 import isEqual from 'lodash/isEqual';
 import path from 'path';
+import RunStatus from './RunStatus';
 
 /** @typedef {import('./Project').default} Project */
 /** @typedef {import('../ProjectsManager').default} PracticeManager */
@@ -67,6 +68,10 @@ export default class Bug {
     return `${this.project} (bug #${this.id})`;
   }
 
+  get runner() {
+    return this.manager.runner;
+  }
+
   /**
    * @return {PracticeManager}
    */
@@ -75,7 +80,12 @@ export default class Bug {
   }
 
   get runStatus() {
-    return this.manager.getBugRunStatus(this);
+    if (this.runner.isBugActive(this)) {
+      return this.runner.status;
+    }
+    else {
+      return RunStatus.None;
+    }
   }
 
   async openInEditor() {

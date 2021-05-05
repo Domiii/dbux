@@ -239,18 +239,7 @@ export class ProjectViewController {
   }
 
   async confirmCancelPracticeSession(dontRefreshView = false) {
-    if (this.manager.practiceSession) {
-      const result = await showInformationMessage(translate('projectView.cancelPractice.message'), {
-        [translate('projectView.cancelPractice.giveUp')]: async () => {
-          return await this.manager.stopPractice(dontRefreshView);
-        }
-      }, { modal: true });
-
-      return result || false;
-    }
-    else {
-      return true;
-    }
+    return await this.manager.stopPractice(dontRefreshView);
   }
 }
 
