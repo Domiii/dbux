@@ -13,14 +13,6 @@ TODO
        * Check if return value of function is reference type, and reference was not recorded before
 
 
-4. missing Babel types
- * AssignmentPattern
- * RestElement
- * ObjectPattern
- * ArrayPattern
- * ObjectExpression
-
-
 5. Capture effects of built-in functions
  * NOTE: require monkey patching and/or proxies:
  * 
@@ -73,6 +65,12 @@ TODO
   * `ForOfStatement`
   * `DoWhileLoop`
   * `WhileStatement`
+
+* patterns
+   * AssignmentPattern
+   * RestElement
+   * ObjectPattern
+   * ArrayPattern
 
 * other
   * `IfStatement`
