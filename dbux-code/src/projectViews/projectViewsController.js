@@ -1,14 +1,12 @@
 import { commands, window, Uri, workspace } from 'vscode';
 import { newLogger, setOutputStreams } from '@dbux/common/src/log/logger';
 import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
-import allApplications from '@dbux/data/src/applications/allApplications';
 import ProjectNodeProvider from './practiceView/ProjectNodeProvider';
 import SessionNodeProvider from './sessionView/SessionNodeProvider';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import OutputChannel from './OutputChannel';
 import { getStopwatch } from './practiceStopwatch';
 import { getOrCreateProjectManager } from './projectControl';
-import { initRuntimeServer } from '../net/SocketServer';
 import { initProjectCommands } from '../commands/projectCommands';
 import { get as mementoGet, set as mementoSet } from '../memento';
 import { showInformationMessage } from '../codeUtil/codeModals';
@@ -45,7 +43,6 @@ export function showOutputChannel() {
 
 export class ProjectViewController {
   constructor(context) {
-    this.extensionContext = context;
     this.manager = getOrCreateProjectManager(context);
 
     // ########################################
@@ -225,10 +222,6 @@ export class ProjectViewController {
   async runProjectTask(title, task, cancellable = false) {
     showOutputChannel();
     return await runTaskWithProgressBar(async (progress) => {
-      // TOTRANSLATE
-      progress.report({ message: 'Initializing runtime server...' });
-      await initRuntimeServer(this.extensionContext);
-
       return await task(progress.report.bind(progress));
     }, { title, cancellable });
   }
