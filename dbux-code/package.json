@@ -535,6 +535,14 @@
           "light": "resources/light/i.svg",
           "dark": "resources/dark/i.svg"
         }
+      },
+      {
+        "command": "dbuxSessionView.node.showEntryFile",
+        "title": "Go to program entry point",
+        "icon": {
+          "light": "resources/light/document.svg",
+          "dark": "resources/dark/document.svg"
+        }
       }
     ],
     "menus": {
@@ -700,6 +708,11 @@
           "command": "dbuxSessionView.node.annotateTraceI",
           "when": "viewItem == dbuxSessionView.tagNode",
           "group": "inline@2"
+        },
+        {
+          "command": "dbuxSessionView.node.showEntryFile",
+          "when": "viewItem == dbuxSessionView.openWorkspaceNode",
+          "group": "inline"
         }
       ],
       "view/title": [
@@ -1084,6 +1097,10 @@
         },
         {
           "command": "dbuxSessionView.node.annotateTraceI",
+          "when": "false"
+        },
+        {
+          "command": "dbuxSessionView.node.showEntryFile",
           "when": "false"
         }
       ]

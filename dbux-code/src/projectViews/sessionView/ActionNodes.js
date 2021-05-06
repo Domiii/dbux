@@ -1,11 +1,11 @@
 import traceSelection from '@dbux/data/src/traceSelection';
-import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
 import PracticeSessionState from '@dbux/projects/src/practiceSession/PracticeSessionState';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import { showInformationMessage, showWarningMessage } from '../../codeUtil/codeModals';
 import { emitTagTraceAction } from '../../userEvents';
 import { getCursorLocation } from '../../codeUtil/codeNav';
 import { codeLineToBabelLine } from '../../helpers/codeLocHelpers';
+import { isInCorrectWorkspace, openProjectWorkspace } from '../../codeUtil/workspaceUtil';
 
 /** @typedef {import('../projectViewsController').default} ProjectViewsController */
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
@@ -86,6 +86,29 @@ class ShowEntryNode extends SessionNode {
 
   async doHandleClick() {
     await this.entry.openInEditor();
+  }
+}
+
+class OpenWorkspaceNode extends SessionNode {
+  static makeLabel() {
+    return 'Open VSCode workspace';
+  }
+
+  init() {
+    this.contextValue = 'dbuxSessionView.openWorkspaceNode';
+  }
+
+  makeIconPath() {
+    return 'workspace.svg';
+  }
+
+  async doHandleClick() {
+    const { project } = this.entry;
+    await openProjectWorkspace(project);
+  }
+
+  async showEntry() {
+    return await this.entry.openInEditor();
   }
 }
 
@@ -204,12 +227,15 @@ class StopPracticeNode extends SessionNode {
   }
 }
 
-export const ActionNodeClasses = [
-  DetailNode,
-  ShowEntryNode,
-  RunNode,
-  RunWithoutDbuxNode,
-  DebugWithoutDbuxNode,
-  TagNode,
-  StopPracticeNode
-];
+export function getActionNodeClasses(bug) {
+  const { project } = bug;
+  return [
+    DetailNode,
+    isInCorrectWorkspace(project) ? ShowEntryNode : OpenWorkspaceNode,
+    RunNode,
+    RunWithoutDbuxNode,
+    DebugWithoutDbuxNode,
+    TagNode,
+    StopPracticeNode
+  ];
+}

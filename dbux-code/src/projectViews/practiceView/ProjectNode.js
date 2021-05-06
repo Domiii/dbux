@@ -1,14 +1,10 @@
-import { commands, Uri, workspace } from 'vscode';
-import fs from 'fs';
-import path from 'path';
-import { pathGetBasename } from '@dbux/common/src/util/pathUtil';
 import sleep from '@dbux/common/src/util/sleep';
 import Project from '@dbux/projects/src/projectLib/Project';
 import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import BugNode from './BugNode';
 import { runTaskWithProgressBar } from '../../codeUtil/runTaskWithProgressBar';
-import { showInformationMessage, confirm } from '../../codeUtil/codeModals';
+import { showInformationMessage } from '../../codeUtil/codeModals';
 
 export default class ProjectNode extends BaseTreeViewNode {
   static makeLabel(project) {
@@ -83,50 +79,5 @@ export default class ProjectNode extends BaseTreeViewNode {
       }
     };
     await showInformationMessage(confirmMessage, btnConfig, { modal: true });
-  }
-
-  // ###########################################################################
-  // workspaces
-  // ###########################################################################
-
-  addToWorkspace() {
-    const uri = Uri.file(this.project.projectPath);
-    const i = workspace.workspaceFolders?.length || 0;
-    workspace.updateWorkspaceFolders(i, null, {
-      name: pathGetBasename(this.project.projectPath),
-      uri
-    });
-  }
-
-  getWorkspaceFilePath(dir = this.project.projectPath) {
-    return path.join(dir, `${this.project.name}.code-workspace`);
-  }
-
-  isInCorrectWorkspace() {
-    const uri = Uri.file(this.getWorkspaceFilePath());
-    return workspace.workspaceFile?.fsPath === uri.fsPath;
-  }
-
-  maybeCreateWorkspaceFile() {
-    const fpath = this.getWorkspaceFilePath();
-    if (!fs.existsSync(fpath)) {
-      const content = {
-        folders: [
-          {
-            path: "."
-          }
-        ]
-      };
-      fs.writeFileSync(fpath, JSON.stringify(content, null, 2));
-    }
-  }
-
-  async askForOpenWorkspace() {
-    const message = 'You are not in the correct project workspace, do you want to open it?\n' +
-      'NOTE: This will reload the VSCode window';
-    if (await confirm(message)) {
-      this.maybeCreateWorkspaceFile();
-      await commands.executeCommand('vscode.openFolder', Uri.file(this.getWorkspaceFilePath()));
-    }
   }
 }

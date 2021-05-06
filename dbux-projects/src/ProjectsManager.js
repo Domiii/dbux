@@ -68,11 +68,11 @@ export default class ProjectsManager {
   // NOTE: npm flattens dependency tree by default, and other important dependencies are dependencies of @dbux/cli
   _sharedDependencyNames = [
     '@dbux/cli',
-    
+
     // // webpack is used by most projects
     // 'webpack@^4.43.0',
     // 'webpack-cli@^3.3.11',
-    
+
     // // these are used in dbux.webpack.config.base.js
     // 'copy-webpack-plugin@6'
   ];
@@ -208,6 +208,7 @@ export default class ProjectsManager {
     this.practiceSession.setupStopwatch();
     await this.savePracticeSession();
     await this.bdp.save();
+    this.maybeAskForRunBug(bug);
   }
 
   /**
@@ -299,6 +300,7 @@ export default class ProjectsManager {
       const sessionData = this.externals.storage.get(savedPracticeSessionDataKeyName) || EmptyObject;
       this._resetPracticeSession(bug, sessionData, true);
       this.practiceSession.setupStopwatch();
+      this.maybeAskForRunBug(bug);
     }
     catch (err) {
       logError(`Unable to load PracticeSession: ${err.stack}`);
@@ -354,6 +356,25 @@ export default class ProjectsManager {
    */
   submit() {
     // TODO: maybe a new data type? or submit remotely?
+  }
+
+  async maybeAskForRunBug(bug) {
+    try {
+      if (!allApplications.getAll().length) {
+        // TOTRANSLATE
+        const confirmMessage = 'You have not run any test yet, do you want to run it?';
+        const result = await this.externals.confirm(confirmMessage, false);
+        if (result) {
+          await this.activateBug(bug);
+          return true;
+        }
+      }
+      return false;
+    }
+    catch (err) {
+      logError(err);
+      return false;
+    }
   }
 
   // ###########################################################################
@@ -430,7 +451,7 @@ export default class ProjectsManager {
 
   async switchToBug(bug) {
     await bug.project.verifyInstallation?.();
-    
+
     if (this.runner.isBugActive(bug)) {
       // skip if bug is already activated
       return;

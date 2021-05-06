@@ -6,6 +6,7 @@ import { registerCommand } from './commandUtil';
 import { showInformationMessage, showWarningMessage } from '../codeUtil/codeModals';
 import { translate } from '../lang';
 import { emitAnnotateTraceAction } from '../userEvents';
+import { addProjectFolderToWorkspace } from '../codeUtil/workspaceUtil';
 
 /** @typedef {import('../projectViews/projectViewsController').ProjectViewController} ProjectViewController */
 
@@ -27,7 +28,7 @@ export function initProjectCommands(extensionContext, projectViewController) {
   });
 
   registerCommand(extensionContext, 'dbuxProjectView.node.addProjectToWorkspace', (node) => {
-    return projectViewController.nodeAddToWorkspace(node);
+    return addProjectFolderToWorkspace(node.project);
   });
 
   registerCommand(extensionContext, 'dbuxProjectView.node.deleteProject', (node) => {
@@ -124,5 +125,9 @@ export function initProjectCommands(extensionContext, projectViewController) {
       session.lastAnnotation = annotation;
       emitAnnotateTraceAction(UserActionType.AnnotateTraceI, traceSelection.selected, annotation);
     }
+  });
+
+  registerCommand(extensionContext, 'dbuxSessionView.node.showEntryFile', async (node) => {
+    return await node.showEntry();
   });
 }

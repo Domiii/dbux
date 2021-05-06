@@ -54,14 +54,10 @@ export async function confirm(msg, modal = true) {
   // TOTRANSLATE
   const confirmText = 'Yes';
   const refuseText = 'No';
-  const cancelText = 'Cancel';
 
   const btnConfig = Object.fromEntries([confirmText, refuseText].map(t => [t, () => t]));
-  if (!modal) {
-    btnConfig[cancelText] = () => cancelText;
-  }
   const result = await showInformationMessage(msg, btnConfig, { modal });
-  if (result === undefined || result === cancelText) {
+  if (result === undefined) {
     return null;
   }
   else {

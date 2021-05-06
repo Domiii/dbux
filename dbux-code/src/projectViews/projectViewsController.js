@@ -15,6 +15,7 @@ import { showInformationMessage } from '../codeUtil/codeModals';
 import { initCodeEvents } from '../practice/codeEvents';
 import { translate } from '../lang';
 import { getLogsDirectory } from '../resources';
+import { openProjectWorkspace, isInCorrectWorkspace } from '../codeUtil/workspaceUtil';
 
 /** @typedef {import('./practiceView/BugNode').default} BugNode */
 
@@ -153,14 +154,6 @@ export class ProjectViewController {
   }
 
   // ###########################################################################
-  // project node buttons
-  // ###########################################################################
-
-  nodeAddToWorkspace(projectNode) {
-    projectNode.addToWorkspace();
-  }
-
-  // ###########################################################################
   // practice session
   // ###########################################################################
 
@@ -174,19 +167,15 @@ export class ProjectViewController {
       }
     }
 
-    const { bug, projectNode } = bugNode;
+    const { bug, projectNode: { project } } = bugNode;
     const title = `Bug ${`"${bug.label}"` || ''} (${bug.id})`;
     await this.runProjectTask(title, async (report) => {
       // TOTRANSLATE
       report({ message: 'Activating...' });
       await this.manager.startPractice(bug);
 
-      if (projectNode.isInCorrectWorkspace()) {
-        report({ message: 'Running test...' });
-        await this.maybeActivateBugForTheFirstTime(bug);
-      }
-      else {
-        await projectNode.askForOpenWorkspace();
+      if (!isInCorrectWorkspace(project)) {
+        await openProjectWorkspace(project);
       }
     });
   }
@@ -242,12 +231,6 @@ export class ProjectViewController {
 
       return await task(progress.report.bind(progress));
     }, { title, cancellable });
-  }
-
-  async maybeActivateBugForTheFirstTime(bug) {
-    if (!allApplications.getAll().length) {
-      await this.manager.activateBug(bug);
-    }
   }
 
   async confirmCancelPracticeSession(dontRefreshView = false) {
