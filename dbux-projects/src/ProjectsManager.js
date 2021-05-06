@@ -450,8 +450,6 @@ export default class ProjectsManager {
   }
 
   async switchToBug(bug) {
-    await bug.project.verifyInstallation?.();
-
     if (this.runner.isBugActive(bug)) {
       // skip if bug is already activated
       return;

@@ -215,8 +215,6 @@ This may be solved by using \`Delete project folder\` button.`);
 
     // git clone
     await this.gitClone();
-
-    await this.verifyInstallation?.();
   }
 
   /**
@@ -226,8 +224,17 @@ This may be solved by using \`Delete project folder\` button.`);
     throw new Error(this + ' abstract method not implemented');
   }
 
-  async selectBug(/* bug */) {
-    throw new Error(this + ' abstract method not implemented');
+  /**
+   * NOTE: A bug should either have a patch or overwrite the project.selectBug method
+   * @param {Bug} bug 
+   */
+  async selectBug(bug) {
+    if (bug.patch) {
+      return await this.switchToBugPatchTag(bug);
+    }
+    else {
+      throw new Error(this + ' abstract method not implemented');
+    }
   }
 
   async openInEditor() {
@@ -743,13 +750,6 @@ This may be solved by using \`Delete project folder\` button.`);
     return this.exec(`git apply --ignore-space-change --ignore-whitespace`, null, patchString);
   }
 
-  async extractPatch(patchFName) {
-    // TODO: also copy to `AssetFolder`?
-    await this.checkCorrectGitRepository();
-
-    return this.exec(`git diff --color=never > ${this.getPatchFile(patchFName)}`);
-  }
-
   async getPatchString() {
     await this.checkCorrectGitRepository();
 
@@ -778,11 +778,19 @@ This may be solved by using \`Delete project folder\` button.`);
   }
 
   /**
-   * Tag current commit
-   * @param {String} tagName 
+   * @param {Bug} bug
    */
   async gitAddOrUpdateTag(bug) {
     const tagName = this.getBugTagName(bug);
+    return this.gitSetTag(tagName);
+  }
+  
+  /**
+   * Tag current commit
+   * @param {String} tagName 
+   */
+  async gitSetTag(tagName) {
+    await this.checkCorrectGitRepository();
     return this.exec(`git tag -f "${tagName}"`);
   }
 

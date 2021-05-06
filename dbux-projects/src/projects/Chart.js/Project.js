@@ -59,10 +59,6 @@ export default class ChartJsProject extends Project {
       filter(bug => !!bug);
   }
 
-  async selectBug(bug) {
-    return this.switchToBugPatchTag(bug);
-  }
-
 
   // ###########################################################################
   // run

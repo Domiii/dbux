@@ -89,10 +89,6 @@ export default class _2048Project extends Project {
     bug.mainEntryPoint = ['js/application.js'];
   }
 
-  async selectBug(bug) {
-    return this.switchToBugPatchTag(bug);
-  }
-
   async testBugCommand(bug, cfg) {
     // nothing to do
   }

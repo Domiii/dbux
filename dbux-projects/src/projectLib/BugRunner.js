@@ -129,8 +129,8 @@ export default class BugRunner {
   // }
 
   /**
-   * Install project
-   * NOTE: synchronized.
+   * Clone the project
+   * @param {Project} project 
    */
   async activateProject(project) {
     if (this.isProjectActive(project) && project._installed) {
@@ -138,7 +138,7 @@ export default class BugRunner {
     }
 
     // init
-    await project.initProject();
+    project.initProject();
 
     // install
     await project.installProject();
@@ -161,6 +161,7 @@ export default class BugRunner {
    * @param {Bug} bug 
    */
   async activateBug(bug) {
+    // TODO: check if tag exist instead
     if (this.isBugActive(bug)) {
       return;
     }
@@ -174,24 +175,18 @@ export default class BugRunner {
       await this._enqueue(
         // install project
         this.activateProject.bind(this, project),
-        // git reset hard
+
+        // ensure there is not any pending changes before select bug 
         project.gitResetHardForBug.bind(project, bug),
-        // async () => {
-        //   // activate patch
-        //   // if (bug.patch) {
-        //   //   await project.applyPatch(bug.patch);
-        //   // }
-        // },
-        // select bug
-
+        // apply bug patch or checkout to tag
         project.selectBug.bind(project, bug),
-
         // `npm install` again (NOTE: the newly checked out tag might have different dependencies)
-        project.npmInstall.bind(project),
+        // project.npmInstall.bind(project),
         // Copy assets again in this branch
         project.installAssets.bind(project),
         // Auto commit again
         project.autoCommit.bind(project, bug),
+        // TODO: Add dbux tag?
 
         async () => await this.saveActivatedBug()
       );
