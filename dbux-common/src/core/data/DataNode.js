@@ -44,7 +44,7 @@ export class DataBaseNode extends DataAccess {
   // parentId;
 
   /**
-   * Involved variables are read during an operation, but not otherwise concerned:
+   * Involved variables are read during an operation (but not otherwise concerned):
    * @example nested `MemberExpression`: `o.a` has [`o`] and `p.c.d` has [`p`, `p.c`]
    * 
    * @type {InvolvedNode[]}

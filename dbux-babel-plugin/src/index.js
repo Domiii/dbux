@@ -1,5 +1,6 @@
 import './hackfixes.js';
 import programVisitor from './visitors/programVisitor';
+import _slicingTestVisitor from './_slicingTestVisitor';
 import '@dbux/common/src/util/prettyLogs';
 // import { logInternalError } from './log/logger';
 
@@ -9,25 +10,10 @@ import '@dbux/common/src/util/prettyLogs';
  * NOTE: The config is also available via state.opts (see `dbuxState.js`).
  */
 export default function dbuxBabelPlugin(_, cfg) {
+  // const visitor = { Program: programVisitor() };
+  const visitor = _slicingTestVisitor;
   return {
-    visitor: ({
-      Program: programVisitor()
-      //   AssignmentExpression(path, state) {
-      //     const idName = path.node.left.name;
-      //     // VariableDeclarator(path, state) {
-      //     //   const idName = path.node.id.name;
-      //     const binding = path.scope.bindings[idName];
-      //     const refs = binding?.referencePaths || [];
-      //     console.log(`[AE] "${path.toString()}" (${binding?.kind || '(?)'} ${idName}, ${refs.length}):`,
-      //       [''].concat(
-      //         refs.
-      //           map(p => JSON.stringify(p.node.loc))
-      //         || []).join('\n  ')) || '(not found)';
-      //     console.log(`  (all bindings: ${Object.keys(path.scope.bindings)})`);
-      //   }
-
-
-    }),
+    visitor,
 
     // see: https://github.com/babel/babel/blob/9808d2566e6a2b2d9e4c7890d8efbc9af180c683/packages/babel-core/src/transformation/index.js#L115
     // post(file) {

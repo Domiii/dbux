@@ -467,6 +467,7 @@ export default class RuntimeMonitor {
       this._runtime.addBCEForContext(contextId, traceId);
     }
     this._runtime.setLastContextTrace(contextId, traceId);
+    this.logbindin
   }
 
   // ###########################################################################
@@ -474,6 +475,23 @@ export default class RuntimeMonitor {
   // ###########################################################################
 
   // TODO
+
+  /**
+   *
+   */
+  logBinding() {
+    /**
+     * Examples of difficult bindings to deal with:
+     * ```js
+     * {
+     *   const i = 3;
+     * }
+     * for (let i = 0; i < 10; ++i) {
+     *   setTimeout(() => console.log(i), 100);
+     * }
+     * ```
+     */
+  }
 
   // ###########################################################################
   // varible tracking?

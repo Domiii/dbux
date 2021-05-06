@@ -91,7 +91,7 @@ function wrapProgram(path, state) {
 /**
  * 
  */
-function enter(buildCfg, path, state) {
+function enter(path, state) {
   // const cfg = state.opts;
   if (state.onEnter) return; // make sure to not visit Program node more than once
   // console.warn('P', path.toString());
@@ -103,7 +103,6 @@ function enter(buildCfg, path, state) {
 
   // before starting instrumentation, first get raw data from unmodified AST
   const nameVisitorObj = nameVisitors();
-  const traceVisitorObj = traceVisitors();
   traverse(path, state, nameVisitorObj);
 
   const {
@@ -130,8 +129,10 @@ function enter(buildCfg, path, state) {
 
   // visitInOrder(path, state, contextVisitors());
   // visitInOrder(path, state, traceVisitors());
-
+  const traceVisitorObj = traceVisitors();
   traverse(path, state, traceVisitorObj);
+
+  exit(path, state);
 }
 
 function traverse(path, state, visitors) {
@@ -188,13 +189,7 @@ function exit(path, state) {
 export default function programVisitor(buildCfg) {
   return {
     // (1) Run this plugin before all other plugins
-    enter: enter.bind(null, buildCfg),
-    exit
-
-    // (2) Run this plugin after all other plugins (possibly on es5)
-    // exit(...args) {
-    //   enter(...args);
-    //   exit(...args);
-    // }
+    enter,
+    // exit
   };
 }

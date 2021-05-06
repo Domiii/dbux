@@ -113,15 +113,25 @@
 /**
  * @return {Binding} The binding that creates/declares the given identifier (if it can be found).
  */
-export function getBinding(idPathOrNode) {
+export function getBinding(idPath) {
+  crawl(idPath);
   // NOTE: there is also `getAllBindings`
-  return idPathOrNode.scope.getBinding((idPathOrNode.node || idPathOrNode).name);
+  return idPath.scope.getBinding((idPath.node).name);
+}
+
+/**
+ * Crawl: "Manually reprocess this scope to ensure that the moved params are updated."
+ * @see https://github.com/babel/babel/blob/672a58660f0b15691c44582f1f3fdcdac0fa0d2f/packages/babel-traverse/src/scope/index.ts#L863
+ */
+function crawl(path) {
+  // NOTE: only need to crawl after bindings have changed, so probably not necessary
+  // path.scope.crawl();
 }
 
 /**
  * 
  * @returns {Path} The path that creates/declares the given identifier.
  */
-export function getBindingPath(idPathOrNode) {
-  return getBinding(idPathOrNode)?.path;
+export function getBindingPath(idPath) {
+  return getBinding(idPath)?.path;
 }

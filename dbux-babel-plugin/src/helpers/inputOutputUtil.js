@@ -1,3 +1,4 @@
+import { getBindingPath } from './bindingsHelper';
 import { pathToStringSimple } from './pathHelpers';
 
 
@@ -7,8 +8,11 @@ import { pathToStringSimple } from './pathHelpers';
 
 const inputMakers = {
   Identifier(path) {
+    const bindingPath = getBindingPath(path);
+    
+    // TODO: get traceId of `bindingPath`
+    
     // TODO: make input for identifier
-
     return {};
   }
 };

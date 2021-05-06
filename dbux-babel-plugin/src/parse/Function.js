@@ -117,7 +117,7 @@ export default class Function extends BaseNode {
 
 
   // ###########################################################################
-  // gen
+  // instrument
   // ###########################################################################
 
   genStaticData() {
@@ -191,7 +191,14 @@ export default class Function extends BaseNode {
     newBody.loc = origBodyNode.loc;
     // bodyPath.context.create(bodyNode, bodyNode, 'xx')
     bodyPath.replaceWith(newBody);
+
+    // TODO: trace the function creation itself
+    // TODO: trace all enclosed variables
   }
+
+  // ###########################################################################
+  // static
+  // ###########################################################################
 
   static prospectOnEnter(path) {
     // const names = path.getData('_dbux_names');

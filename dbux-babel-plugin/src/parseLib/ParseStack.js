@@ -12,6 +12,10 @@ function debugTag(obj) {
   return obj.debugTag || obj.name || obj.toString();
 }
 
+function getDbuxNode(p) {
+  return p.getData('_dbux_node');
+}
+
 /**
  * Track read and write dependencies as we move through the AST.
  */
@@ -22,6 +26,10 @@ export default class ParseStack {
   constructor(state) {
     this.state = state;
   }
+
+  // ###########################################################################
+  // getters
+  // ###########################################################################
 
   getNode(nameOrParseNodeClazz) {
     const name = isString(nameOrParseNodeClazz) ? nameOrParseNodeClazz : nameOrParseNodeClazz.name;
@@ -68,7 +76,7 @@ export default class ParseStack {
     let newNode = null;
     const initialData = ParseNodeClazz.prospectOnEnter(path, state);
     if (initialData) {
-      newNode = new ParseNodeClazz(path, state, initialData);
+      newNode = new ParseNodeClazz(path, state, this, initialData);
       newNode.init();
 
       path.setData('_dbux_node', newNode);
@@ -105,7 +113,7 @@ export default class ParseStack {
     if (parseNode) {
       // const children = this.getChildNodes(path, ParseNodeClazz);
       const childPaths = getChildPaths(path, ParseNodeClazz.nodeNames);
-      const children = childPaths.map(p => p.getData('_dbux_node'));
+      const children = childPaths.map(p => Array.isArray(p) ? p.map(getDbuxNode) : getDbuxNode(p));
 
       // pass child ParseNodes, followed by array of actual paths (NOTE: ParseNode might be null, even if path exists)
       parseNode.exit(...children, childPaths);

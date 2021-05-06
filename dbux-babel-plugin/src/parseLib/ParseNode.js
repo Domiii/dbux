@@ -1,9 +1,10 @@
 import { pathToStringSimple } from '../helpers/pathHelpers';
 
 export default class ParseNode {
-  constructor(path, state, initialData) {
+  constructor(path, state, stack, initialData) {
     this.enterPath = path;
     this.state = state;
+    this.stack = stack;
     this.data = initialData === true ? {} : initialData;
   }
 

@@ -1,9 +1,10 @@
 import BaseNode from './BaseNode';
 
-export default class AssignmentExpression extends BaseNode {
-  static nodeNames = ['left', 'right'];
+export default class VariableDeclarator extends BaseNode {
+  static nodeNames = ['id', 'init'];
 
-  exit(left, right, [leftPath, rightPath]) {
+  exit(id, init, [idPath, initPath]) {
+    // creates a new binding
     // TODO: very similar to `AssignmentExpression` but not an expression
   }
 }

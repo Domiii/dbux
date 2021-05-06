@@ -26,9 +26,16 @@ TODO
 
 # Relevant types
 
-* `MemberExpression`
-  * `OptionalMemberExpression`
-* `Identifier`
+* Potential lvals
+  * `MemberExpression`
+    * `OptionalMemberExpression`
+  * `Identifier`
+
+  * patterns
+     * `AssignmentPattern`
+     * `RestElement`
+     * `ObjectPattern`
+     * `ArrayPattern`
 
 * assignments
   * `AssignmentExpression`
@@ -65,12 +72,6 @@ TODO
   * `ForOfStatement`
   * `DoWhileLoop`
   * `WhileStatement`
-
-* patterns
-   * `AssignmentPattern`
-   * `RestElement`
-   * `ObjectPattern`
-   * `ArrayPattern`
 
 * other
   * `IfStatement`
