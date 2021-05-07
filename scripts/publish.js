@@ -103,17 +103,17 @@ function goToMaster() {
   }
 }
 
-async function pullDev() {
-  // const result = await menu('Pull dev?', {
+async function pullMaster() {
+  // const result = await menu('Pull master?', {
   //   1: ['Yes', () => run(`git pull origin dev`)],
   //   2: 'No'
   // });
-  const yes = !await yesno('Skip pull dev?');
+  const yes = !await yesno('Skip pull master?');
   if (yes) {
-    const pullDevResult = run(`git pull origin dev`);
+    const result = run(`git pull origin master`);
 
     const ownName = path.basename(__filename);
-    if (pullDevResult && pullDevResult.includes(ownName)) {
+    if (result && result.includes(ownName)) {
       throw new Error(`Publish script ${ownName} (probably) has changed. Please run again to make sure.`);
     }
   }
@@ -227,12 +227,12 @@ async function bumpToDevVersion() {
   }
 }
 
-async function pushToDev() {
-  const result = await yesno('Skip checking out and merging back into dev? ("yes" does nothing)');
-  if (!result) {
-    run(`git checkout dev && git pull origin master && git push`);
-  }
-}
+// async function pushToDev() {
+//   const result = await yesno('Skip checking out and merging back into dev? ("yes" does nothing)');
+//   if (!result) {
+//     run(`git checkout dev && git pull origin master && git push`);
+//   }
+// }
 
 // ###########################################################################
 // utilities
@@ -289,7 +289,7 @@ async function main() {
 
   await goToMaster();
 
-  await pullDev();
+  await pullMaster();
 
   await run('yarn run i');
 
@@ -310,10 +310,12 @@ async function main() {
 
   await bumpToDevVersion();
 
-  await pushToDev();
+  // await pushToDev();
 
   log('Done!');
-  process.exit(0); // not sure why but this process stays open for some reason
+
+  // hackfix: not sure why, but sometimes this process stays open for some reason... gotta do some monitoring
+  process.exit(0);
 }
 
 main().catch((err) => {
