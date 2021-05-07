@@ -133,6 +133,10 @@ export default class Function extends BaseNode {
       staticContextId, pushTraceId, popTraceId, recordParams, staticResumeContextId
     } = this.data;
 
+    // TODO: warn of eval
+    //      -> maybe try instrumenting it if it is a simple string?
+    //      -> consider bundling `@dbux/babel-plugin` and `@babel/register` with runtime in case of eval?
+
     const { path, state } = this;
     const { ids: { dbux }, contexts: { genContextIdName } } = state;
     const bodyPath = path.get('body');

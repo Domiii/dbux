@@ -6,11 +6,18 @@ TODO
    * PROBLEM: sometimes, we cannot build it at the time of `DataNode` creation (e.g. `ObjectExpression`)
 3. Determine all reads and writes
 4. Instrument all missing babel-types
-5. Capture effects of built-in functions
+5. Capture effects of built-ins
+   * TODO: `event` objects need some tracking
+     * at least track `event.target`
    * TODO: Determine whether a given function is instrumented or not
    * TODO: Annotate built-ins with value-creating effects?
      * Some simple generalizations:
        * Check if return value of function is reference type, and reference was not recorded before
+   * TODO: Some basic DOM wrapper?
+     * event handlers need to track `event` objects
+6. New approach to visualization
+   * Call graph filtering: allow toggle showing `node_modules`?
+     * Also: Give `node_modules` nodes a more blant color
 
 
 5. Capture effects of built-in functions
