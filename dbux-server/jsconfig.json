@@ -1,14 +1,23 @@
 {
-	"compilerOptions": {
-		"module": "esnext",
-		"moduleResolution": "node",
-		"target": "esnext",
-		"checkJs": false, /* Typecheck .js files. */
-		"lib": [
-			"es6"
-		]
-	},
-	"exclude": [
-		"node_modules"
-	]
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "node",
+    "target": "esnext",
+    "checkJs": false, /* Typecheck .js files. */
+    "lib": [
+      "es6"
+    ],
+    "paths": {
+      "@dbux/common/*": [
+        "../dbux-common/*"
+      ],
+      "@dbux/common-node/*": [
+        "../dbux-common-node/*"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

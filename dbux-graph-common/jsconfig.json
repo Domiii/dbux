@@ -1,13 +1,13 @@
 {
-	"compilerOptions": {
-		"module": "esnext",
-		"target": "esnext",
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "esnext",
     "checkJs": false,  /* Typecheck .js files. */
     "paths": {
       "@dbux/common/*": ["../dbux-common/*"]
     }
-	},
-	"include": [
-		"src", "src/**/*"
-	]
+  },
+  "include": [
+    "src", "src/**/*"
+  ]
 }
