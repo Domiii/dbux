@@ -1,5 +1,5 @@
-import Declaration from './Declaration';
+import DeclarationStatement from './DeclarationStatement';
 
 export {
-  Declaration
+  DeclarationStatement
 };

@@ -1,5 +1,9 @@
 import ParseNode from '../parseLib/ParseNode';
 import { makeInputSimple, makeOutputSimple } from '../helpers/inputOutputUtil';
+import * as HelperClassesByName from './helpers';
+
+
+ParseNode.HelperClassesByName = HelperClassesByName;
 
 
 function concatArrays(a, b) {

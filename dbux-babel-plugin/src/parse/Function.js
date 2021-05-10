@@ -4,7 +4,7 @@ import TraceType from '@dbux/common/src/core/constants/TraceType';
 import VarOwnerType from '@dbux/common/src/core/constants/VarOwnerType';
 import { buildWrapTryFinally, buildSource, buildBlock } from '../helpers/builders';
 import { injectContextEndTrace } from '../helpers/contextHelper';
-import { traceWrapExpressionStatement } from '../helpers/traceHelpers';
+import { traceWrapExpressionStatement } from '../helpers/traceHelpers.old';
 import { getNodeNames } from '../visitors/nameVisitors';
 
 import BaseNode from './BaseNode';

@@ -16,7 +16,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { requireAllByName } from '@dbux/common-node/src/util/requireUtil';
 import * as ParseNodeClassesByName from '../parse';
-import { traceWrapExpression, buildTraceNoValue, traceCallExpression, instrumentCallExpressionEnter, getTracePath } from '../helpers/traceHelpers';
+import { traceWrapExpression, buildTraceNoValue, traceCallExpression, instrumentCallExpressionEnter, getTracePath } from '../helpers/traceHelpers.old';
 // import { loopVisitor } from './loopVisitors';
 import { isCallPath } from '../helpers/functionHelpers';
 import { awaitVisitEnter, awaitVisitExit } from './awaitVisitor';
