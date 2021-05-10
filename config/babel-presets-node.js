@@ -19,7 +19,7 @@ module.exports = {
     [
       require("@babel/plugin-proposal-class-properties").default,
       {
-        loose: true
+        // loose: true
       }
     ],
     require("@babel/plugin-proposal-optional-chaining").default,

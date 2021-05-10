@@ -1,3 +1,4 @@
+// import isString from '../node_modules/lodash/isString';
 import isString from 'lodash/isString';
 
 // https://leetcode.com/submissions/detail/258300839/
