@@ -99,7 +99,7 @@ function enter(path, state) {
   // console.warn(state.file.code.substring(0, 100));
 
   // inject data + methods that we are going to use for instrumentation
-  injectDbuxState(buildCfg, path, state);
+  injectDbuxState(path, state);
 
   // before starting instrumentation, first get raw data from unmodified AST
   const nameVisitorObj = nameVisitors();

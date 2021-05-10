@@ -58,6 +58,10 @@ function getLastNodeOfBody(bodyNode) {
 }
 
 export default class Function extends BaseNode {
+  helperNames = [
+    [() => this.path.isFunctionDeclaration(), 'Declaration']
+  ];
+
   enter() {
     const { path, state } = this;
     

@@ -31,6 +31,12 @@ TODO
  * => Seems possible: https://javascript.info/proxy#proxy-apply
 
 
+# Deal with hoisting
+
+Capture all hoisted variables first, then query `Function` for all hoisted declarations
+
+* 
+
 # Relevant types
 
 * Potential lvals

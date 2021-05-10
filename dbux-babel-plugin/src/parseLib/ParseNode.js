@@ -1,6 +1,18 @@
 import { pathToStringSimple } from '../helpers/pathHelpers';
 
+/** @typedef { import("@babel/traverse").NodePath } Path */
+
 export default class ParseNode {
+  /**
+   * @type {string[]}
+   */
+  helperNames;
+
+  /**
+   * @type {[]}
+   */
+  helpers;
+
   constructor(path, state, stack, initialData) {
     this.enterPath = path;
     this.state = state;
@@ -8,11 +20,12 @@ export default class ParseNode {
     this.data = initialData === true ? {} : initialData;
   }
 
+  /**
+   * @type {Path}
+   */
   get path() {
     return this.enterPath;
   }
-
-  init() { }
 
   // static get prop() {
   //   return 
@@ -27,13 +40,42 @@ export default class ParseNode {
   }
 
   // ###########################################################################
-  // enter + exit
+  // lifecycle methods
   // ###########################################################################
-  
+
+  init() { }
+
   enter() {
   }
 
   exit() {
+  }
+
+  // ###########################################################################
+  // utilities
+  // ###########################################################################
+
+  addHelper(Clazz) {
+    const helper = new Clazz(this);
+    helper.init();
+    return helper;
+  }
+
+  createHelpers() {
+    for (const h of this.helperNames) {
+      let predicate, helperName;
+      if (Array.isArray(h)) {
+        [predicate, helperName] = h;
+      }
+      else {
+        helperName = h;
+      }
+
+      if (!predicate || predicate()) {
+        const HelperClazz = 
+        this.addHelper(HelperClazz);
+      }
+    }
   }
 
   // ###########################################################################

@@ -34,14 +34,10 @@ require('process').type = 'renderer';
 const MonoRoot = path.resolve(__dirname);
 
 // ###########################################################################
-// write "file-registry files"
+// run external scripts
 // ###########################################################################
 
-// write parser registry
-const parserDir = path.resolve(MonoRoot, 'dbux-babel-plugin/src/parse').replace(/\\/g, '/');
-writeFileRegistryFile('index.js', parserDir, (name) => !!t['is' + name]);
 
-console.log('Generated dbux-babel-plugin/src/parse/index.js.');
 
 // ###########################################################################
 // utilities

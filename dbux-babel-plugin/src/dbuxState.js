@@ -20,7 +20,7 @@ let iProgram = 0;
 /**
  * Build the state used by dbux-babel-plugin throughout the entire AST visit.
  */
-export default function injectDbuxState(_buildCfg, programPath, programState) {
+export default function injectDbuxState(programPath, programState) {
   const buildCfg = programState.opts || EmptyObject;
 
   const { 

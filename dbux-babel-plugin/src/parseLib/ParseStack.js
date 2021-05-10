@@ -5,6 +5,8 @@ import { getChildPaths } from './parseUtil';
 const Verbose = 1;
 // const Verbose = 0;
 
+const DbuxNode = '_dbux_node_';
+
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Stack');
 
@@ -13,7 +15,7 @@ function debugTag(obj) {
 }
 
 function getDbuxNode(p) {
-  return p.getData('_dbux_node');
+  return p.getData(DbuxNode);
 }
 
 /**
@@ -39,6 +41,11 @@ export default class ParseStack {
       return nodesOfType[nodesOfType.length - 1];
     }
     return null;
+  }
+
+  getChildNodes(path, ParseNodeClazz) {
+    const childPaths = getChildPaths(path, ParseNodeClazz.nodeNames);
+    return childPaths.map(p => p.getData(DbuxNode));
   }
 
   // ###########################################################################
@@ -69,7 +76,7 @@ export default class ParseStack {
   }
 
   // ###########################################################################
-  // parse utilities
+  // parse util
   // ###########################################################################
 
   createOnEnter(path, state, ParseNodeClazz) {
@@ -79,14 +86,9 @@ export default class ParseStack {
       newNode = new ParseNodeClazz(path, state, this, initialData);
       newNode.init();
 
-      path.setData('_dbux_node', newNode);
+      path.setData(DbuxNode, newNode);
     }
     return newNode;
-  }
-
-  getChildNodes(path, ParseNodeClazz) {
-    const childPaths = getChildPaths(path, ParseNodeClazz.nodeNames);
-    return childPaths.map(p => p.getData('_dbux_node'));
   }
 
   // ###########################################################################

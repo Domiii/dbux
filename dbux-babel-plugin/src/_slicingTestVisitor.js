@@ -1,6 +1,8 @@
-import injectDbuxState from './dbuxState';
-import { getBinding, getBindingPath } from './helpers/bindingsHelper';
-import nameVisitors from './visitors/nameVisitors';
+/* eslint-disable no-console */
+
+// import injectDbuxState from './dbuxState';
+// import { getBinding, getBindingPath } from './helpers/bindingsHelper';
+// import nameVisitors from './visitors/nameVisitors';
 
 function loc2s(loc) {
   return `${loc.start.line}:${loc.start.column}`;
@@ -26,7 +28,7 @@ const globals = new Set();
 
 function addBinding(path, binding) {
   if (binding) {
-    bindingsStack[bindingsStack.length-1].add(binding);
+    bindingsStack[bindingsStack.length - 1].add(binding);
   }
   else {
     globals.add(path.toString());
@@ -52,27 +54,27 @@ const contextVisitor = {
 //   path.traverse(visitor, state);
 // }
 
-function Function(path, state) {
-  // TODO: collect all "enclosed" variables
-  const name = path.node.id?.name || '(anonymous)';
-  const bodyPath = path.get('body');
-  // bodyPath.scope.crawl();
-  // const varRefs = Object.values(bodyPath.scope.references);
-  const bindings = new Set(varRefs.map(ref => ref.scope.getBinding(ref.node.name)));
-  console.log(`${name} - referenced bindings:`, [''].concat(
-    Object.entries(bindings)
-      .map(([bindingName, b]) => binding2s(b, bindingName))
-  ).join('\n  '));
-}
+// function Function(path, state) {
+//   // TODO: collect all "enclosed" variables
+//   const name = path.node.id?.name || '(anonymous)';
+//   const bodyPath = path.get('body');
+//   // bodyPath.scope.crawl();
+//   // const varRefs = Object.values(bodyPath.scope.references);
+//   const bindings = new Set(varRefs.map(ref => ref.scope.getBinding(ref.node.name)));
+//   console.log(`${name} - referenced bindings:`, [''].concat(
+//     Object.entries(bindings)
+//       .map(([bindingName, b]) => binding2s(b, bindingName))
+//   ).join('\n  '));
+// }
 
 const visitor = {
   // CallExpression
-  // Program(buildCfg, path, state) {
+  // Program(path, state) {
   //   // const cfg = state.opts;
   //   if (state.onEnter) return; // make sure to not visit Program node more than once
 
   //   // inject data + methods that we are going to use for instrumentation
-  //   injectDbuxState(buildCfg, path, state);
+  //   injectDbuxState(path, state);
 
   //   // before starting instrumentation, first get raw data from unmodified AST
   //   const nameVisitorObj = nameVisitors();
