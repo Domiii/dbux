@@ -43,7 +43,7 @@ export function writeFileRegistryFile(outFile, dir, predicate) {
   const files = glob.sync(dir + '/*')
     .filter(f => path.basename(f) !== outFile)
     .map(f => path.parse(f).name)
-    .filter(fName => predicate(fName));
+    .filter(fName => !predicate || predicate(fName));
   const entries = [
     // imports
     ...files.map(f => genImport('.', f)),

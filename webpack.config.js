@@ -16,7 +16,8 @@ const t = require('@babel/types');
 // add some of our own good stuff
 require('./dbux-cli/lib/dbux-register-self');
 require('./dbux-common/src/util/prettyLogs');
-const { writeFileRegistryFile } = require('./dbux-common-node/src/util/codeGenUtil');
+
+const Process = require('./dbux-projects/src/util/Process').default;
 
 const {
   getDependenciesPackageJson,
@@ -37,6 +38,10 @@ const MonoRoot = path.resolve(__dirname);
 // run external scripts
 // ###########################################################################
 
+const execCaptureOut = (cmd, options) => Process.execCaptureOut(cmd, options);
+const exec = (cmd, options) => Process.exec(cmd, options);
+
+exec(`node ./scripts/auto-write-files.js`);
 
 
 // ###########################################################################

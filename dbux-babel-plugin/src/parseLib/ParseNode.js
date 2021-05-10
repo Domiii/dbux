@@ -1,4 +1,5 @@
 import { pathToStringSimple } from '../helpers/pathHelpers';
+import * as HelperClassesByName from './helpers';
 
 /** @typedef { import("@babel/traverse").NodePath } Path */
 
@@ -56,7 +57,8 @@ export default class ParseNode {
   // ###########################################################################
 
   addHelper(Clazz) {
-    const helper = new Clazz(this);
+    const helper = new Clazz();
+    helper.parseNode = this;
     helper.init();
     return helper;
   }
@@ -72,10 +74,14 @@ export default class ParseNode {
       }
 
       if (!predicate || predicate()) {
-        const HelperClazz = 
+        const HelperClazz = HelperClassesByName[helperName];
+        if (!HelperClazz) {
+          throw new Error(`${this} referenced non-existing helperName = "${helperName}" (available: ${Object.keys(HelperClassesByName).join(', ')})`);
+        }
         this.addHelper(HelperClazz);
       }
     }
+    return this.helpers;
   }
 
   // ###########################################################################
