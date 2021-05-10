@@ -164,6 +164,10 @@ module.exports = (env, argv) => {
       /^fs$/,
       /^process$/,
       /^path$/,
+
+      // NOTE: these are part of experiments for https://github.com/Domiii/dbux/issues/513
+      // /(semver|@babel|module\\-alias|prettier)\//,
+
       nodeExternals({
         allowlist: [
           ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/src/.*`))
@@ -173,6 +177,7 @@ module.exports = (env, argv) => {
           // }
         ]
       })
+
       // /node_modules\//,
       // /@babel\//,
       // /@dbux\//,

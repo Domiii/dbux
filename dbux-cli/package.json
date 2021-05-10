@@ -3,6 +3,8 @@
   "version": "0.4.2-dev.0",
   "description": "",
   "scripts": {
+    "start": "npm run build:watch",
+    "build:watch": "cd .. && node --stack-trace-limit=1000 -- ./node_modules/webpack/bin/webpack.js --config=dbux-cli/webpack.config.js --mode development --watch --hide-modules",
     "test": "echo \"Error: no test specified\" && exit 1",
     "//": "   # hackfix for .bin -> see: https://github.com/yarnpkg/yarn/issues/3421#issuecomment-443972019",
     "_postinstall": "yarn --check-files --ignore-scripts"

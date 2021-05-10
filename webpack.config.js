@@ -238,7 +238,10 @@ module.exports = (env, argv) => {
           fs: 'commonjs fs',
           net: 'commonjs net',
           // tls: 'commonjs tls',
+
+          // NOTE: `ws` is externalized for `@dbux/runtime` because we don't need it for running in the browser
           ws: 'commonjs ws',
+
           util: 'commonjs util'
         }
           // see: https://www.npmjs.com/package/webpack-node-externals

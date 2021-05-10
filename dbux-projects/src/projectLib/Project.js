@@ -246,23 +246,24 @@ This may be solved by using \`Delete project folder\` button.`);
       const outputFileString = bug.watchFilePaths
         .map(f => `"${f}"`)
         .join(', ');
-      let _firstOutputPromise = new Promise((resolve, reject) => {
-        // watch out for entry (output) files to be created
-        const watchFiles = bug.watchFilePaths.map(f => path.resolve(this.projectPath, f));
-        const watcher = new MultipleFileWatcher(watchFiles);
-        watcher.on('change', (filename, curStat, prevStat) => {
-          try {
-            if (curStat.birthtime.valueOf() === 0) {
-              return;
-            }
-            watcher.close();
-            resolve();
-          }
-          catch (err) {
-            this.logger.warn(`file watcher failed while waiting for "${outputFileString}" - ${err?.stack || err}`);
-          }
-        });
-      });
+      // let _firstOutputPromise = new Promise((resolve, reject) => {
+      // watch out for entry (output) files to be created
+      const watchFiles = bug.watchFilePaths.map(f => path.resolve(this.projectPath, f));
+      const watcher = new MultipleFileWatcher();
+      let _firstBuildPromise = watcher.waitForAll(watchFiles);
+      //   watcher.on('change', (filename, curStat, prevStat) => {
+      //     try {
+      //       if (curStat.birthtime.valueOf() === 0) {
+      //         return;
+      //       }
+      //       watcher.close();
+      //       resolve();
+      //     }
+      //     catch (err) {
+      //       this.logger.warn(`file watcher failed while waiting for "${outputFileString}" - ${err?.stack || err}`);
+      //     }
+      //   });
+      // });
 
       // start
       const backgroundProcess = await this.startWatchMode(bug).catch(err => {
@@ -278,17 +279,17 @@ This may be solved by using \`Delete project folder\` button.`);
       this.logger.debug(`startWatchMode waiting for output files: ${outputFileString} ...`);
       await Promise.race([
         // wait for files to be ready, or...
-        _firstOutputPromise,
+        _firstBuildPromise,
 
         // ... watch process to exit prematurely
         backgroundProcess.waitToEnd().then(() => {
-          if (_firstOutputPromise) {
+          if (_firstBuildPromise) {
             // BackgroundProcess ended prematurely
             throw new Error('watch mode BackgroundProcess exited before files were generated');
           }
         })
       ]);
-      _firstOutputPromise = null;
+      _firstBuildPromise = null;
       this.logger.debug(`startWatchMode finished.`);
     }
   }
