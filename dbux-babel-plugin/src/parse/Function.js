@@ -58,7 +58,8 @@ function getLastNodeOfBody(bodyNode) {
 }
 
 export default class Function extends BaseNode {
-  featureNames = [
+  pluginNames = [
+    'StaticContext',
     [() => this.path.isFunctionDeclaration(), 'Declaration']
   ];
 

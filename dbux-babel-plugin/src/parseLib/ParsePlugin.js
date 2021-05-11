@@ -1,7 +1,7 @@
 
 /** @typedef { import("./BaseNode").default } BaseNode */
 
-export default class ParseNodeFeature {
+export default class ParsePlugin {
   /**
    * @type {BaseNode}
    */

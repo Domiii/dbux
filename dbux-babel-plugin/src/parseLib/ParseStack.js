@@ -1,6 +1,11 @@
 import isString from 'lodash/isString';
+import maxBy from 'lodash/maxBy';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { getChildPaths } from './parseUtil';
+import { getPresentableString } from '../helpers/pathHelpers';
+import ParseRegistry from './ParseRegistry';
+
+/** @typedef { import("./ParseNode").default } ParseNode */
 
 const Verbose = 1;
 // const Verbose = 0;
@@ -24,6 +29,12 @@ function getDbuxNode(p) {
 export default class ParseStack {
   _stack = new Map();
   genTasks = [];
+  isGen = false;
+  /**
+   * This is the depth of the stack, given the observed enters and exits.
+   * NOTE: This does not represent the actual depth of the AST, since we are not visiting all AST nodes.
+   */
+  recordedDepth = 0;
 
   constructor(state) {
     this.state = state;
@@ -33,6 +44,9 @@ export default class ParseStack {
   // getters
   // ###########################################################################
 
+  /**
+   * @return {ParseNode}
+   */
   getNode(nameOrParseNodeClazz) {
     const name = isString(nameOrParseNodeClazz) ? nameOrParseNodeClazz : nameOrParseNodeClazz.name;
     const { _stack } = this;
@@ -48,6 +62,27 @@ export default class ParseStack {
     return childPaths.map(p => p.getData(DbuxNodeId));
   }
 
+  /**
+   * @return {ParseNode}
+   */
+  getNodeOfPlugin(pluginNameOrClazz) {
+    const pluginName = isString(pluginNameOrClazz) ? pluginNameOrClazz : pluginNameOrClazz.name;
+    const nodeNames = ParseRegistry.getParseNodeNamesOfPluginName(pluginName);
+    if (!nodeNames) {
+      return null;
+    }
+
+    // Of all candidate node types, peek the stack top, and of those take the deepest
+    return maxBy(
+      nodeNames.map(name => this.getNode(name)),
+      node => node.recordedDepth
+    );
+  }
+
+  getPlugin(pluginNameOrClazz) {
+    return this.getNodeOfPlugin(pluginNameOrClazz)?.getPlugin(pluginNameOrClazz);
+  }
+
   // ###########################################################################
   // push + pop
   // ###########################################################################
@@ -57,8 +92,6 @@ export default class ParseStack {
     if (!name) {
       throw new Error(`\`static name\` is missing on ParseNode class: ${debugTag(ParseNodeClazz)}`);
     }
-
-    // TODO: fix for when not all `enter`s push
 
     const { _stack } = this;
     let nodesOfType = _stack.get(name);
@@ -86,7 +119,7 @@ export default class ParseStack {
     const initialData = ParseNodeClazz.prospectOnEnter(path, state);
     if (initialData) {
       newNode = new ParseNodeClazz(path, state, this, initialData);
-      newNode.createFeatures();
+      newNode.createPlugins();
       newNode.init();
 
       path.setData(DbuxNodeId, newNode);
@@ -95,7 +128,7 @@ export default class ParseStack {
   }
 
   // ###########################################################################
-  // enter + exit
+  // enter
   // ###########################################################################
 
   enter(path, ParseNodeClazz) {
@@ -103,9 +136,10 @@ export default class ParseStack {
       // stop parsing after `gen` started
       return;
     }
+    ++this.recordedDepth;
 
     const { state } = this;
-    const parseNode = this.createOnEnter(path, state, ParseNodeClazz, this);
+    let parseNode = this.createOnEnter(path, state, ParseNodeClazz, this);
     if (parseNode) {
       this.push(ParseNodeClazz, parseNode);
       const data = parseNode.enter(path, state);
@@ -115,32 +149,67 @@ export default class ParseStack {
       }
     }
     else {
+      parseNode = this.getNode(ParseNodeClazz);
+      if (!parseNode) {
+        throw new Error(`In ${ParseNodeClazz.name}'s first enter prospectOnEnter returned (but should not return) null - ${getPresentableString(path)}`);
+      }
+      // if (!parseNode.enterNested) {
+      //   throw new Error(`${ParseNodeClazz.name}.enterNested missing`);
+      // }
 
+      // enterNested
+      parseNode._nestedEnterCount = (parseNode._nestedEnterCount || 0) + 1;
+      parseNode.enterNested?.(path, state);
     }
   }
+
+  // ###########################################################################
+  // exit
+  // ###########################################################################
 
   exit(path, ParseNodeClazz) {
     if (this.isGen) {
       // stop parsing after `gen` started
       return;
     }
-    
+    --this.recordedDepth;
+
     // NOTE: even if we don't create a newNode, we push `null`.
     //    This way, every `push` will always match a `pop`.
-    const parseNode = this.pop(ParseNodeClazz);
-    if (parseNode) {
-      // const children = this.getChildNodes(path, ParseNodeClazz);
-      const childPaths = getChildPaths(path, ParseNodeClazz.nodeNames);
-      const children = childPaths.map(p => Array.isArray(p) ? p.map(getDbuxNode) : getDbuxNode(p));
+    const parseNode = this.getNode(ParseNodeClazz);
+    if (!parseNode) {
+      throw new Error(`Parsing failed. Exited same ${ParseNodeClazz.name} node more thance once - ${getPresentableString(path)}`);
+    }
 
-      // pass child ParseNodes, followed by array of actual paths (NOTE: ParseNode might be null, even if path exists)
-      parseNode.exit(...children, childPaths);
+    if (parseNode._nestedEnterCount) {
+      --parseNode._nestedEnterCount;
+      if (parseNode.exitNested) {
+        this._callExit(path, ParseNodeClazz, parseNode.exitNested, parseNode);
+      }
+    }
+    else {
+      this.pop(ParseNodeClazz);
+      this._callExit(path, ParseNodeClazz, parseNode.exit, parseNode);
 
       this.genTasks.push({
         parseNode
       });
     }
   }
+
+  _callExit(path, ParseNodeClazz, f, node) {
+    const childPaths = getChildPaths(path, ParseNodeClazz.nodeNames);
+    const children = childPaths.map(p => Array.isArray(p) ? p.map(getDbuxNode) : getDbuxNode(p));
+
+    // pass child ParseNodes, followed by array of actual paths
+    // NOTE: childPaths might contain null, childPaths wouldn't
+    f.call(node, ...children, childPaths);
+  }
+
+
+  // ###########################################################################
+  // gen
+  // ###########################################################################
 
   /**
    * Iterates through `this.genTasks` to gen (transpile) the code.

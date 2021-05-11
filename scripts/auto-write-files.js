@@ -17,12 +17,24 @@ const MonoRoot = path.resolve(__dirname, '..');
 // ###########################################################################
 
 // write parser registry
-function writeDirectoryIndex(dir, pred) {
+function writeDirectoryIndex(dir, pred, ...moreArgs) {
   const parserDir = path.resolve(MonoRoot, dir).replace(/\\/g, '/');
-  const indexFile = 'index.js';
-  writeFileRegistryFile(indexFile, parserDir, pred);
+  const indexFile = '_registry.js';
+  writeFileRegistryFile(indexFile, parserDir, pred, ...moreArgs);
   console.log(`Generated ${dir}/${indexFile}.`);
 }
 
-writeDirectoryIndex('dbux-babel-plugin/src/parse', (name) => !!t['is' + name]);
-writeDirectoryIndex('dbux-babel-plugin/src/parse/features');
+function isCapitalized(s) {
+  return s[0] === s[0].toUpperCase();
+}
+
+writeDirectoryIndex(
+  'dbux-babel-plugin/src/parse',
+  (name) => isCapitalized(name) && !!t['is' + name],
+  `import { newLogger } from '@dbux/common/src/log/logger';`,
+function init(Clazz) {
+  Clazz.logger = newLogger(`parse/${Clazz.name}`);
+}
+);
+
+writeDirectoryIndex('dbux-babel-plugin/src/parse/plugins', (name) => isCapitalized(name));

@@ -3,11 +3,12 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { buildSource, buildWrapTryFinally } from '../helpers/builders';
 import { extractTopLevelDeclarations } from '../helpers/topLevelHelpers';
 import { replaceProgramBody } from '../helpers/program';
-import injectDbuxState from '../dbuxState';
-import { buildTraceVisitors as traceVisitors } from './index';
 import errorWrapVisitor from '../helpers/errorWrapVisitor';
-import { buildDbuxInit } from '../data/staticData';
 import { buildContextEndTrace } from '../helpers/contextHelper';
+import injectDbuxState from '../dbuxState';
+import { buildTraceVisitors as traceVisitors } from '../parseLib/visitors';
+import Program from '../parse/Program';
+import { buildDbuxInit } from '../data/staticData';
 import nameVisitors, { clearNames } from './nameVisitors';
 
 // eslint-disable-next-line no-unused-vars
@@ -105,27 +106,11 @@ function enter(path, state) {
   const nameVisitorObj = nameVisitors();
   traverse(path, state, nameVisitorObj);
 
-  const {
-    fileName,
-    filePath,
-  } = state;
-
-  // debug(`babel-plugin: ${filePath}`);
-
-  // staticProgramContext
-  const staticProgramContext = {
-    type: 1, // {StaticContextType}
-    name: fileName,
-    displayName: fileName,
-    fileName,
-    filePath,
-  };
-  state.contexts.addStaticContext(path, staticProgramContext);
-  state.traces.addTrace(path, TraceType.PushImmediate, true);      // === 1
-  state.traces.addTrace(path, TraceType.PopImmediate, true);       // === 2
-
   // instrument Program itself
   wrapProgram(path, state);
+
+  // hackfix: manually enter `Program`
+  state.stack.enter(path, Program);
 
   // visitInOrder(path, state, contextVisitors());
   // visitInOrder(path, state, traceVisitors());

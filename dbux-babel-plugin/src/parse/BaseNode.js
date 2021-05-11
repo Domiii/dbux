@@ -1,9 +1,5 @@
 import ParseNode from '../parseLib/ParseNode';
 import { makeInputSimple, makeOutputSimple } from '../helpers/inputOutputUtil';
-import * as HelperClassesByName from './helpers';
-
-
-ParseNode.FeatureClassesByName = HelperClassesByName;
 
 
 function concatArrays(a, b) {
@@ -17,6 +13,10 @@ function concatArrays(a, b) {
  * Custom layer on top of generic ParseNode.
  */
 export default class BaseNode extends ParseNode {
+  constructor(...args) {
+    super(...args);
+  }
+
   getInput(input, inputPath) {
     return input ?
       concatArrays(input.outputs, input.propagatedInputs) :
@@ -35,5 +35,13 @@ export default class BaseNode extends ParseNode {
 
   getOutputs(outputs, outputPaths) {
     return outputs.flatMap((output, i) => this.getOutput(output, outputPaths[i]));
+  }
+
+  // ###########################################################################
+  // static
+  // ###########################################################################
+
+  get logger() {
+    return this.constructor.logger;
   }
 }

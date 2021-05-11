@@ -1,27 +1,37 @@
+import isString from 'lodash/isString';
 import { getPresentableString } from '../helpers/pathHelpers';
+import ParseRegistry from './ParseRegistry';
 
-/** @typedef { import("@babel/traverse").NodePath } Path */
+/** @typedef { import("@babel/traverse").NodePath } NodePath */
+/** @typedef { import("./ParseStack").default } ParseStack */
 
 export default class ParseNode {
   /**
-   * @type {string[]}
+   * @type {NodePath}
    */
-  featureNames;
+  enterPath;
+  state;
+
+  /**
+   * @type {ParseStack}
+   */
+  stack;
 
   /**
    * @type {{ [string]: object }}
    */
-  helpers = {};
+  plugins = {};
 
   constructor(path, state, stack, initialData) {
     this.enterPath = path;
     this.state = state;
     this.stack = stack;
     this.data = initialData === true ? {} : initialData;
+    this.recordedDepth = stack.recordedDepth;
   }
 
   /**
-   * @type {Path}
+   * @type {NodePath}
    */
   get path() {
     return this.enterPath;
@@ -33,6 +43,11 @@ export default class ParseNode {
 
   get debugTag() {
     return this.toString();
+  }
+
+  getPlugin(pluginNameOrClazz) {
+    const pluginName = isString(pluginNameOrClazz) ? pluginNameOrClazz : pluginNameOrClazz.name;
+    return this.plugins[pluginName] || null;
   }
 
   toString() {
@@ -55,17 +70,17 @@ export default class ParseNode {
   // utilities
   // ###########################################################################
 
-  addFeature(Clazz) {
-    const feature = new Clazz();
-    feature.parseNode = this;
-    feature.init?.();
-    this.helpers[Clazz.name] = feature;
-    return feature;
+  addPlugin(Clazz) {
+    const plugin = new Clazz();
+    plugin.parseNode = this;
+    plugin.init?.();
+    this.plugins[Clazz.name] = plugin;
+    return plugin;
   }
 
-  createFeatures() {
-    const { FeatureClassesByName } = ParseNode;
-    for (const h of this.featureNames) {
+  createPlugins() {
+    const { PluginClassesByName } = ParseRegistry;
+    for (const h of this.pluginNames) {
       let predicate, helperName;
       if (Array.isArray(h)) {
         [predicate, helperName] = h;
@@ -75,14 +90,14 @@ export default class ParseNode {
       }
 
       if (!predicate || predicate()) {
-        const HelperClazz = FeatureClassesByName[helperName];
+        const HelperClazz = PluginClassesByName[helperName];
         if (!HelperClazz) {
-          throw new Error(`${this} referenced non-existing helperName = "${helperName}" (available: ${Object.keys(FeatureClassesByName).join(', ')})`);
+          throw new Error(`${this} referenced non-existing helperName = "${helperName}" (available: ${Object.keys(PluginClassesByName).join(', ')})`);
         }
-        this.addFeature(HelperClazz);
+        this.addPlugin(HelperClazz);
       }
     }
-    return this.helpers;
+    return this.plugins;
   }
 
   // ###########################################################################
@@ -92,8 +107,8 @@ export default class ParseNode {
   get nodeNames() {
     return this.constructor.nodeNames;
   }
-  get featureNames() {
-    return this.constructor.featureNames;
+  get pluginNames() {
+    return this.constructor.pluginNames;
   }
   get logger() {
     return this.constructor.logger;
@@ -107,6 +122,4 @@ export default class ParseNode {
   static prospectOnEnter(/* path, state */) {
     return true;
   }
-
-  static FeatureClassesByName;
 }

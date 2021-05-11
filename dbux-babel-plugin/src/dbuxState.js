@@ -9,6 +9,16 @@ import StaticVarAccessCollection from './data/StaticVarAccessCollection';
 import { isNodeInstrumented } from './helpers/astUtil';
 import ParseStack from './parseLib/ParseStack';
 
+import * as ParseNodeClassesByName from './parse';
+import * as PluginClassesByName from './parse/plugins';
+
+import ParseRegistry from './parseLib/ParseRegistry';
+
+// ###########################################################################
+// init parser
+// ###########################################################################
+
+ParseRegistry.init(ParseNodeClassesByName, PluginClassesByName);
 
 // ###########################################################################
 // Build custom dbux state object

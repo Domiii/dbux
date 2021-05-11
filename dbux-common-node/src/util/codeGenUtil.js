@@ -4,8 +4,8 @@
 
 import fs from 'fs';
 import glob from 'glob';
+import { isString } from 'lodash';
 import path from 'path';
-import toString from 'serialize-javascript';
 
 const IndentUnit = '  ';
 
@@ -39,14 +39,26 @@ function genExportAll(names) {
 /**
  * Produce a js file that imports and exports all files in a given directory.
  */
-export function writeFileRegistryFile(outFile, dir, predicate) {
+export function writeFileRegistryFile(outFile, dir, predicate, moreImports = '', initFn = null) {
   const files = glob.sync(dir + '/*')
     .filter(f => path.basename(f) !== outFile)
     .map(f => path.parse(f).name)
     .filter(fName => !predicate || predicate(fName));
+  moreImports = isString(moreImports) ? [moreImports] : moreImports;
+  if (initFn && !initFn.name) {
+    throw new Error(`initFn must be named`);
+  }
+  const doInit = !initFn ? [] : [
+    initFn.toString(),
+    ...files.map(obj => `${initFn.name}(${obj});`)
+  ];
+
   const entries = [
     // imports
+    ...moreImports,
     ...files.map(f => genImport('.', f)),
+    '',
+    ...doInit,
     '',
     // exports
     genExportAll(files)

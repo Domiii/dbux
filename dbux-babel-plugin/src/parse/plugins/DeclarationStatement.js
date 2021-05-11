@@ -1,4 +1,4 @@
-import ParseNodeFeature from '../../parseLib/ParseNodeFeature';
+import ParsePlugin from '../../parseLib/ParsePlugin';
 
 /**
  * This is for ClassDeclaration, FunctionDeclaration.
@@ -8,7 +8,7 @@ import ParseNodeFeature from '../../parseLib/ParseNodeFeature';
  * TODO: Export*, Import*
  * future work: EnumDeclaration?
  */
-export default class DeclarationStatement extends ParseNodeFeature {
+export default class DeclarationStatement extends ParsePlugin {
   instrument() {
     // TODO: add td(name, tid) behind
   }
