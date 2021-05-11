@@ -1,3 +1,4 @@
+import { getPresentableString } from '../../helpers/pathHelpers';
 import ParsePlugin from '../../parseLib/ParsePlugin';
 
 /**
@@ -8,8 +9,8 @@ import ParsePlugin from '../../parseLib/ParsePlugin';
  * TODO: Export*, Import*
  * future work: EnumDeclaration?
  */
-export default class DeclarationStatement extends ParsePlugin {
+export default class BindingNode extends ParsePlugin {
   instrument() {
-    // TODO: add td(name, tid) behind
+    // TODO: call traceBinding
   }
 }

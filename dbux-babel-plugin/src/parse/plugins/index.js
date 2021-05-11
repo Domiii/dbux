@@ -1,5 +1,5 @@
-import DeclarationStatement from './DeclarationStatement';
+import BindingNode from './BindingNode';
 
 export {
-  DeclarationStatement
+  BindingNode as DeclarationStatement
 };

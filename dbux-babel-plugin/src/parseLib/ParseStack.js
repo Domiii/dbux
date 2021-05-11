@@ -19,7 +19,7 @@ function debugTag(obj) {
   return obj.debugTag || obj.name || obj.toString();
 }
 
-function getDbuxNode(p) {
+function getNodeOfPath(p) {
   return p.getData(DbuxNodeId);
 }
 
@@ -35,9 +35,16 @@ export default class ParseStack {
    * NOTE: This does not represent the actual depth of the AST, since we are not visiting all AST nodes.
    */
   recordedDepth = 0;
+  lastId = 0;
 
   constructor(state) {
     this.state = state;
+    this.logger = newLogger(`Stack`);
+    Verbose && this.logger.debug(`${state.fileName}`);
+  }
+
+  debug(arg0, ...args) {
+    this.logger.debug(`${' '.repeat(this.recordedDepth)}${arg0}`, ...args);
   }
 
   // ###########################################################################
@@ -59,7 +66,11 @@ export default class ParseStack {
 
   getChildNodes(path, ParseNodeClazz) {
     const childPaths = getChildPaths(path, ParseNodeClazz.nodeNames);
-    return childPaths.map(p => p.getData(DbuxNodeId));
+    return childPaths.map(getNodeOfPath);
+  }
+
+  getNodeOfPath(path) {
+    return getNodeOfPath(path);
   }
 
   /**
@@ -72,10 +83,10 @@ export default class ParseStack {
       return null;
     }
 
-    // Of all candidate node types, peek the stack top, and of those take the deepest
+    // Of all candidate node types, peek the stack top, and of those take the last one created.
     return maxBy(
       nodeNames.map(name => this.getNode(name)),
-      node => node.recordedDepth
+      node => node.nodeId
     );
   }
 
@@ -98,16 +109,20 @@ export default class ParseStack {
     if (!nodesOfType) {
       _stack.set(name, nodesOfType = []);
     }
-    (Verbose >= 2) && debug(`push ${name}`);
+    (Verbose >= 2) && this.debug(`push ${name}`);
     nodesOfType.push(newNode);
   }
 
-  pop(ParseNodeClazz) {
+  pop(path, ParseNodeClazz) {
     const { name } = ParseNodeClazz;
     const { _stack } = this;
     const nodesOfType = _stack.get(name);
     (Verbose >= 2) && debug(`pop ${name}`);
-    return nodesOfType.pop();
+    const node = nodesOfType.pop();
+    if (node.path !== path) {
+      throw new Error(`ParseStack corrupted - exit path does not match stack node (of type ${name}) - ${getPresentableString(path)}`);
+    }
+    return node;
   }
 
   // ###########################################################################
@@ -141,14 +156,18 @@ export default class ParseStack {
     const { state } = this;
     let parseNode = this.createOnEnter(path, state, ParseNodeClazz, this);
     if (parseNode) {
+      // push new node
       this.push(ParseNodeClazz, parseNode);
       const data = parseNode.enter(path, state);
+      parseNode.enterPlugins();
+
       if (data) {
         // enter produces data, usually used later during `gen`
         Object.assign(parseNode.data, data);
       }
     }
     else {
+      // not a new node -> enterNested (prospectOnEnter returned false)
       parseNode = this.getNode(ParseNodeClazz);
       if (!parseNode) {
         throw new Error(`In ${ParseNodeClazz.name}'s first enter prospectOnEnter returned (but should not return) null - ${getPresentableString(path)}`);
@@ -172,7 +191,6 @@ export default class ParseStack {
       // stop parsing after `gen` started
       return;
     }
-    --this.recordedDepth;
 
     // NOTE: even if we don't create a newNode, we push `null`.
     //    This way, every `push` will always match a `pop`.
@@ -184,26 +202,29 @@ export default class ParseStack {
     if (parseNode._nestedEnterCount) {
       --parseNode._nestedEnterCount;
       if (parseNode.exitNested) {
-        this._callExit(path, ParseNodeClazz, parseNode.exitNested, parseNode);
+        this._callExit(path, ParseNodeClazz, parseNode, parseNode.exitNested);
       }
     }
     else {
-      this.pop(ParseNodeClazz);
-      this._callExit(path, ParseNodeClazz, parseNode.exit, parseNode);
+      this._callExit(path, ParseNodeClazz, parseNode, parseNode.exitPlugins, parseNode.exit);
+      this.pop(path, ParseNodeClazz);
 
       this.genTasks.push({
         parseNode
       });
     }
+    --this.recordedDepth;
   }
 
-  _callExit(path, ParseNodeClazz, f, node) {
+  _callExit(path, ParseNodeClazz, node, ...fs) {
     const childPaths = getChildPaths(path, ParseNodeClazz.nodeNames);
-    const children = childPaths.map(p => Array.isArray(p) ? p.map(getDbuxNode) : getDbuxNode(p));
+    const children = childPaths.map(p => Array.isArray(p) ? p.map(getNodeOfPath) : getNodeOfPath(p));
 
     // pass child ParseNodes, followed by array of actual paths
     // NOTE: childPaths might contain null, childPaths wouldn't
-    f.call(node, ...children, childPaths);
+    for (const f of fs) {
+      f.call(node, ...children, childPaths);
+    }
   }
 
 

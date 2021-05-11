@@ -22,12 +22,19 @@ export default class ParseNode {
    */
   plugins = {};
 
+  /**
+   * 
+   * @param {NodePath} path 
+   * @param {ParseStack} stack 
+   */
   constructor(path, state, stack, initialData) {
     this.enterPath = path;
     this.state = state;
     this.stack = stack;
     this.data = initialData === true ? {} : initialData;
+
     this.recordedDepth = stack.recordedDepth;
+    this.nodeId = ++stack.lastId;
   }
 
   /**
@@ -61,6 +68,18 @@ export default class ParseNode {
   init() { }
 
   enter() {
+  }
+
+  enterPlugins() {
+    for (const name in this.plugins) {
+      this.plugins[name].enter?.(this);
+    }
+  }
+
+  exitPlugins() {
+    for (const name in this.plugins) {
+      this.plugins[name].exit?.(this);
+    }
   }
 
   exit() {

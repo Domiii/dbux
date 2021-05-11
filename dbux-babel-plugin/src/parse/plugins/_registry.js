@@ -1,9 +1,9 @@
-
-import DeclarationStatement from './DeclarationStatement';
+Binding
+import DeclarationStatement from './BindingNode';
 import StaticContext from './StaticContext';
 
 
 export {
-  DeclarationStatement,
+  Binding as DeclarationStatement,
   StaticContext
 };

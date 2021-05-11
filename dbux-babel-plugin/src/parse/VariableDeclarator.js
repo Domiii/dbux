@@ -1,7 +1,7 @@
 import BaseNode from './BaseNode';
 
 export default class VariableDeclarator extends BaseNode {
-  static pluginNames = ['Declaration'];
+  static pluginNames = ['BindingNode'];
 
   static nodeNames = ['id', 'init'];
 

@@ -74,7 +74,7 @@ export default function injectDbuxState(programPath, programState) {
       aliases: {
         makeTraceId: scope.generateUid('tid' + (++iProgram)),
         traceExpression: scope.generateUid('te' + (++iProgram)),
-        traceDeclaration: scope.generateUid('td' + (++iProgram)),
+        traceBinding: scope.generateUid('tb' + (++iProgram)),
       }
     },
     // console.log('[Program]', state.filename);

@@ -1,9 +1,9 @@
 
-/** @typedef { import("./BaseNode").default } BaseNode */
+/** @typedef { import("./ParseNode").default } ParseNode */
 
 export default class ParsePlugin {
   /**
-   * @type {BaseNode}
+   * @type {ParseNode}
    */
   node;
 }
