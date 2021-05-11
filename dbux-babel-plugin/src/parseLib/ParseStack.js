@@ -5,7 +5,7 @@ import { getChildPaths } from './parseUtil';
 const Verbose = 1;
 // const Verbose = 0;
 
-const DbuxNode = '_dbux_node_';
+const DbuxNodeId = '_dbux_node_';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Stack');
@@ -15,7 +15,7 @@ function debugTag(obj) {
 }
 
 function getDbuxNode(p) {
-  return p.getData(DbuxNode);
+  return p.getData(DbuxNodeId);
 }
 
 /**
@@ -45,7 +45,7 @@ export default class ParseStack {
 
   getChildNodes(path, ParseNodeClazz) {
     const childPaths = getChildPaths(path, ParseNodeClazz.nodeNames);
-    return childPaths.map(p => p.getData(DbuxNode));
+    return childPaths.map(p => p.getData(DbuxNodeId));
   }
 
   // ###########################################################################
@@ -58,12 +58,14 @@ export default class ParseStack {
       throw new Error(`\`static name\` is missing on ParseNode class: ${debugTag(ParseNodeClazz)}`);
     }
 
+    // TODO: fix for when not all `enter`s push
+
     const { _stack } = this;
     let nodesOfType = _stack.get(name);
     if (!nodesOfType) {
       _stack.set(name, nodesOfType = []);
     }
-    (Verbose > 1) && debug(`push ${name}`);
+    (Verbose >= 2) && debug(`push ${name}`);
     nodesOfType.push(newNode);
   }
 
@@ -71,7 +73,7 @@ export default class ParseStack {
     const { name } = ParseNodeClazz;
     const { _stack } = this;
     const nodesOfType = _stack.get(name);
-    (Verbose > 1) && debug(`pop ${name}`);
+    (Verbose >= 2) && debug(`pop ${name}`);
     return nodesOfType.pop();
   }
 
@@ -84,9 +86,10 @@ export default class ParseStack {
     const initialData = ParseNodeClazz.prospectOnEnter(path, state);
     if (initialData) {
       newNode = new ParseNodeClazz(path, state, this, initialData);
+      newNode.createFeatures();
       newNode.init();
 
-      path.setData(DbuxNode, newNode);
+      path.setData(DbuxNodeId, newNode);
     }
     return newNode;
   }
@@ -96,19 +99,32 @@ export default class ParseStack {
   // ###########################################################################
 
   enter(path, ParseNodeClazz) {
+    if (this.isGen) {
+      // stop parsing after `gen` started
+      return;
+    }
+
     const { state } = this;
     const parseNode = this.createOnEnter(path, state, ParseNodeClazz, this);
-    this.push(ParseNodeClazz, parseNode);
     if (parseNode) {
+      this.push(ParseNodeClazz, parseNode);
       const data = parseNode.enter(path, state);
       if (data) {
         // enter produces data, usually used later during `gen`
         Object.assign(parseNode.data, data);
       }
     }
+    else {
+
+    }
   }
 
   exit(path, ParseNodeClazz) {
+    if (this.isGen) {
+      // stop parsing after `gen` started
+      return;
+    }
+    
     // NOTE: even if we don't create a newNode, we push `null`.
     //    This way, every `push` will always match a `pop`.
     const parseNode = this.pop(ParseNodeClazz);
@@ -131,6 +147,7 @@ export default class ParseStack {
    * NOTE: the order of `genTasks` is that of the `exit` call, meaning inner-most first.
    */
   genAll() {
+    this.isGen = true;
     const { genTasks } = this;
 
     // const nTasks = this.genTasks.length;

@@ -25,4 +25,4 @@ function writeDirectoryIndex(dir, pred) {
 }
 
 writeDirectoryIndex('dbux-babel-plugin/src/parse', (name) => !!t['is' + name]);
-writeDirectoryIndex('dbux-babel-plugin/src/parse/helpers');
+writeDirectoryIndex('dbux-babel-plugin/src/parse/features');

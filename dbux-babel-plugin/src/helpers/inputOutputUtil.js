@@ -1,5 +1,5 @@
 import { getBindingPath } from './bindingsHelper';
-import { pathToStringSimple } from './pathHelpers';
+import { getPresentableString } from './pathHelpers';
 
 
 // ###########################################################################
@@ -27,7 +27,7 @@ const inputMakers = {
 export function makeInputSimple(path) {
   const maker = inputMakers[path.node.type];
   if (!maker) {
-    this.logger.warn(`Unknown input node: ${pathToStringSimple(path)}`);
+    this.logger.warn(`Unknown input node: ${getPresentableString(path)}`);
     return null;
   }
 
@@ -57,7 +57,7 @@ const outputMakers = {
 export function makeOutputSimple(path) {
   const maker = outputMakers[path.node.type];
   if (!maker) {
-    this.logger.warn(`Unknown output node: ${pathToStringSimple(path)}`);
+    this.logger.warn(`Unknown output node: ${getPresentableString(path)}`);
     return null;
   }
 

@@ -1,5 +1,4 @@
-
-/** @typedef { import("../BaseNode").default } BaseNode */
+import ParseNodeFeature from '../../parseLib/ParseNodeFeature';
 
 /**
  * This is for ClassDeclaration, FunctionDeclaration.
@@ -9,12 +8,7 @@
  * TODO: Export*, Import*
  * future work: EnumDeclaration?
  */
-export default class DeclarationStatement {
-  /**
-   * @type {BaseNode}
-   */
-  parseNode;
-
+export default class DeclarationStatement extends ParseNodeFeature {
   instrument() {
     // TODO: add td(name, tid) behind
   }

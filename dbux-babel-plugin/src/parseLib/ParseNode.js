@@ -1,4 +1,4 @@
-import { pathToStringSimple } from '../helpers/pathHelpers';
+import { getPresentableString } from '../helpers/pathHelpers';
 
 /** @typedef { import("@babel/traverse").NodePath } Path */
 
@@ -6,7 +6,7 @@ export default class ParseNode {
   /**
    * @type {string[]}
    */
-  helperNames;
+  featureNames;
 
   /**
    * @type {{ [string]: object }}
@@ -36,7 +36,7 @@ export default class ParseNode {
   }
 
   toString() {
-    return `${this.constructor.name}: ${pathToStringSimple(this.enterPath)}`;
+    return `${this.constructor.name}: ${getPresentableString(this.enterPath)}`;
   }
 
   // ###########################################################################
@@ -55,16 +55,17 @@ export default class ParseNode {
   // utilities
   // ###########################################################################
 
-  addHelper(Clazz) {
-    const helper = new Clazz();
-    helper.parseNode = this;
-    helper.init?.();
-    this.helpers[Clazz.name] = helper;
-    return helper;
+  addFeature(Clazz) {
+    const feature = new Clazz();
+    feature.parseNode = this;
+    feature.init?.();
+    this.helpers[Clazz.name] = feature;
+    return feature;
   }
 
-  createHelpers() {
-    for (const h of this.helperNames) {
+  createFeatures() {
+    const { FeatureClassesByName } = ParseNode;
+    for (const h of this.featureNames) {
       let predicate, helperName;
       if (Array.isArray(h)) {
         [predicate, helperName] = h;
@@ -74,11 +75,11 @@ export default class ParseNode {
       }
 
       if (!predicate || predicate()) {
-        const HelperClazz = ParseNode.HelperClassesByName[helperName];
+        const HelperClazz = FeatureClassesByName[helperName];
         if (!HelperClazz) {
-          throw new Error(`${this} referenced non-existing helperName = "${helperName}" (available: ${Object.keys(HelperClassesByName).join(', ')})`);
+          throw new Error(`${this} referenced non-existing helperName = "${helperName}" (available: ${Object.keys(FeatureClassesByName).join(', ')})`);
         }
-        this.addHelper(HelperClazz);
+        this.addFeature(HelperClazz);
       }
     }
     return this.helpers;
@@ -90,6 +91,9 @@ export default class ParseNode {
 
   get nodeNames() {
     return this.constructor.nodeNames;
+  }
+  get featureNames() {
+    return this.constructor.featureNames;
   }
   get logger() {
     return this.constructor.logger;
@@ -104,5 +108,5 @@ export default class ParseNode {
     return true;
   }
 
-  static HelperClassesByName;
+  static FeatureClassesByName;
 }

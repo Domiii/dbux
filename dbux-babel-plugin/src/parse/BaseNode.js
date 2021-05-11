@@ -3,7 +3,7 @@ import { makeInputSimple, makeOutputSimple } from '../helpers/inputOutputUtil';
 import * as HelperClassesByName from './helpers';
 
 
-ParseNode.HelperClassesByName = HelperClassesByName;
+ParseNode.FeatureClassesByName = HelperClassesByName;
 
 
 function concatArrays(a, b) {

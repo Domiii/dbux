@@ -24,7 +24,7 @@ import { getNodeNames } from './nameVisitors';
 import { isPathInstrumented } from '../helpers/astUtil';
 import TraceInstrumentationType from '../constants/TraceInstrumentationType';
 import InstrumentationDirection from '../constants/InstrumentationDirection';
-import { pathToStringSimple } from '../helpers/pathHelpers';
+import { getPresentableString } from '../helpers/pathHelpers';
 
 /**
  * @typedef {import('../parseLib/ParseStack').default} ParseStack
@@ -837,7 +837,7 @@ function logInst(tag, path, direction = null, ParserNodeClazz, ...other) {
     `${ParserNodeClazz.name}:`,
     // nodeName &&
     //   `${path.node.type} ${nodeName}` ||
-    pathToStringSimple(path),
+    getPresentableString(path),
     // TraceInstrumentationType.nameFromForce(instrumentationType),
     ...other
   );
