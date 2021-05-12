@@ -457,20 +457,18 @@ function createDataNodesX(value, trace, deferTid, inputs) {
 }
 
 function handleNodeX(value, trace, dataNode, inputs, deferredChildrenTids) {
-  // TODO: varAccess
+  // TODO: varAccessSimple - (i) bindingTraceId, (ii) object refId
+  // TODO: varAccessME - (i) bindingTraceId + pathString, (ii) object refId
+  // TODO: varAccessMENested - varAccessME + (iii) involved (array of varAccessME)
   if (deferredChildrenTids) {
     // TODO: children
   }
   // TODO: involved
 }
 
-function finishDataNode(tid) {
-  // TODO: this is probably not necessary.
-  // const dataNode = getDataNode(tid);
-  // const children = getDataNodeChildren(tid);
-}
-
 function twX(value, tid, deferTid, ...inputs) {
+  // NOTE: (currently,) this is mostly the same as the code for te
+  // TODO: missing bindingTid
   const trace = registerTwX(value, tid);
   createDataNodesX(value, trace, deferTid, inputs);
   if (deferTid) {
@@ -479,6 +477,12 @@ function twX(value, tid, deferTid, ...inputs) {
   else {
     finishDataNode(tid);
   }
+}
+
+function finishDataNode(tid) {
+  // TODO: this is probably not necessary.
+  // const dataNode = getDataNode(tid);
+  // const children = getDataNodeChildren(tid);
 }
 
 
