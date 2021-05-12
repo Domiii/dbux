@@ -6,7 +6,7 @@
 /**
  * 
  */
-export class DataAccess {
+export class VarAccess {
   /**
    * Refers to `ValueRef`, if this node represents access to a reference type (object, array, function etc.).
    * Else null.
@@ -15,11 +15,11 @@ export class DataAccess {
   dataPath;
 }
 
-export class InvolvedNode extends DataAccess {
+export class InvolvedNode extends VarAccess {
   staticTraceId;
 }
 
-export class DataBaseNode extends DataAccess {
+export default class DataNode {
   nodeId;
 
   /**
@@ -29,11 +29,17 @@ export class DataBaseNode extends DataAccess {
 
   /**
    * Is `true` if this node:
-   * * created a new value (if instanceof DataReadNode) or
-   * * modified an existing value (if instanceof DataWriteNode)
+   * * created a new value or
+   * * modified an existing value
    * @type {boolean}
    */
-  change;
+  newValue;
+
+  /**
+   * This is an array of either (i) `DataReadNode` or (ii) simple `VarAccess` (in case of `Identifier`?)
+   * @type {[]}
+   */
+  inputs;
 
   // /**
   //  * TODO: future work?
@@ -52,19 +58,14 @@ export class DataBaseNode extends DataAccess {
   involved;
 }
 
-/**
- *
- *
- * TODO: add destructuring and other many-to-many data operations
- * * `let { a, b: [x,y] } = o` has [`a`, `b`, ]
- */
-export class DataReadNode extends DataBaseNode {
-}
+// /**
+//  *
+//  *
+//  * TODO: add destructuring and other many-to-many data operations
+//  * * `let { a, b: [x,y] } = o` has [`a`, `b`, ]
+//  */
+// export class DataReadNode extends DataNode {
+// }
 
-export class DataWriteNode extends DataBaseNode {
-  /**
-   * This is an array of either (i) `DataReadNode` or (ii) simple `DataAccess` (in case of `Identifier`?)
-   * @type {[]}
-   */
-  inputs;
-}
+// export class DataWriteNode extends DataNode {
+// }

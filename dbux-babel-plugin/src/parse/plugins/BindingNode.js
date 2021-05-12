@@ -6,8 +6,7 @@ import ParsePlugin from '../../parseLib/ParsePlugin';
  * 
  * We separately track `VariableDeclarator`.
  * 
- * TODO: Export*, Import*
- * future work: EnumDeclaration?
+ * TODO: Import*
  */
 export default class BindingNode extends ParsePlugin {
   instrument() {

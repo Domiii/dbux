@@ -43,6 +43,10 @@ export default class ParseStack {
     Verbose && this.logger.debug(`${state.fileName}`);
   }
 
+  get Verbose() {
+    return Verbose;
+  }
+
   debug(arg0, ...args) {
     this.logger.debug(`${' '.repeat(this.recordedDepth)}${arg0}`, ...args);
   }
@@ -260,14 +264,14 @@ export default class ParseStack {
 
     for (const task of genTasks) {
       const { parseNode } = task;
-      Verbose && parseNode.hasPhase('instrument') && debug(`instrument ${parseNode}`);
+      Verbose && parseNode.hasPhase('inst') && debug(`instrument ${parseNode}`);
       this.gen(parseNode, parseNode.instrumentPlugins);
       this.gen(parseNode, parseNode.instrument);
     }
 
     for (const task of genTasks) {
       const { parseNode } = task;
-      Verbose && parseNode.hasPhase('instrument2') && debug(`instrument2 ${parseNode}`);
+      Verbose && parseNode.hasPhase('inst2') && debug(`instrument2 ${parseNode}`);
       this.gen(parseNode, parseNode.instrument2Plugins);
       this.gen(parseNode, parseNode.instrument2);
     }

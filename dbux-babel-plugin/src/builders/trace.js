@@ -1,10 +1,6 @@
 import template from '@babel/template';
 import * as t from '@babel/types';
-import TraceType from '@dbux/common/src/core/constants/TraceType';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { getPathTraceId } from '../data/StaticTraceCollection';
-import { isAnyMemberExpression } from './functionHelpers';
-import { isPathInstrumented, isNodeInstrumented } from '../helpers/astUtil';
 import { getPresentableString } from '../helpers/pathHelpers';
 import { bindTemplate } from '../helpers/templateUtil';
 
@@ -18,14 +14,9 @@ export const buildTraceId = bindTemplate(
 
   function buildTraceId(templ, path, state, traceType) {
     // TODO: add custom trace data
-    const { scope } = path;
     const { ids: { aliases: {
       makeTraceId
     } } } = state;
-    const inProgramStaticTraceId = state.traces.addTrace(path, traceType);
-    const traceId = scope.generateUidIdentifier(`t${inProgramStaticTraceId}_`);
-
-    Verbose >= 2 && debug('[traceId]', traceId.name, getPresentableString(path));
 
     return templ({
       makeTraceId,

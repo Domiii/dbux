@@ -110,58 +110,82 @@ Capture all hoisted variables first, then query `Function` for all hoisted decla
 
 
 
-# Writes
+# Edges
 
-### All write types
-* inputs = all LVal types
-  * `AssignmentExpression.left`
-  * `CallExpression.arguments` -> `Function.params`
-    * more input types:
-      * `RestElement`
-        * `function f(...x) { ... }` (`last(Function.params)`)
-      * `RestElement.argument`
-        * `f(...x);`
-    * more inputs: `callee`
-    * also: `OptionalCallExpression`, `NewExpression`
-      * can be `Super`
-* inputs = all Lval types, excl. `MemberExpression`
-  * `ForInStatement.left`
-  * `ForOfStatement.left`
-  * `VariableDeclarator.id`
-    * `var x = 3;`
-* Other
-  * `ClassDeclaration`, `Function`
-    * sub-category: `Method`: getters + setters
-      * Getters: `kind` === 'get'
-        * e.g. `get f()`
-      * Setters: `kind` === 'set'
-        * e.g. `set f(val)`
-  * `ClassPrivateProperty`, `ClassProperty`
-    * NOTE: similar to `AssignmentExpression` with `left` <- `MemberExpression`
-  * {`ReturnExpression`,`YieldExpression`}.`argument` -> `CallExpression`
-    * also: `OptionalCallExpression`, `NewExpression`
-    * if is constructor, returns `this`
-  * `ThrowStatement` -> `CatchClause`
-    * NOTE: similar to return from callee to caller
-  * `ObjectExpression`
-    * `properties` (recursive)
-  * Arithmetic expression
-  * `TemplateLiteral`
-    * `expressions`
-    * (`quasis`)
-  * `SequenceExpression`
-    * NOTE: right-most expression is returned
-  * `AwaitExpression`
-* Obscure/advanced (probably Future Work)
-  * `Object.defineProperty`
-    * `get`, `set`, `value`
-  * `Decorator`
-    * NOTE: similar to a `CallExpression` with trailing expression passed in as first argument?
-  * Proxy interactions
-  * String reference equality(???)
-    * NOTE: In JS, one cannot access string reference (memory location)
+## !Jump
 
-### `LVal` types
+### Write && !Jump
+* `AssignmentExpression`
+  * e.g.
+    * `l = r` -> `l = tw(r, %tid0%)`
+    * `l = a + b` -> `l = tw(te(a + b, %tid1%), %tid0%)`
+* `VariableDeclarator`
+  * e.g. 
+    * `var x = r;` -> `var x = tw(r, %tid0%);`
+  * (used by `ForXStatement.left`)
+    * (implies `ForInStatement`, `ForOfStatement`)
+* `FunctionDeclaration`
+* `ClassDeclaration`, e.g. `class A {}` -> `class A {}; tw(A, %tid0%);`
+
+### Write && !Jump && Nested
+* `Method`: `ClassMethod`, `ClassPrivateMethod`, `ObjectMethod`
+  * sub-category getters + setters
+    * Getters: `kind` === 'get'
+      * e.g. `get f()`
+    * Setters: `kind` === 'set'
+      * e.g. `set f(val)`
+* `ClassPrivateProperty`, `ClassProperty`
+* `ObjectExpression.properties`
+  * NOTE: recursive
+  * NOTE: need to get `refId` from parent, before being able to store the writes
+
+
+### Read && !Jump
+* Arithmetic expression
+* `ObjectExpression`
+* `TemplateLiteral`
+  * `expressions`, (`quasis`)
+* `SequenceExpression`
+  * NOTE: right-most expression is returned
+* `AwaitExpression`
+* `ClassExpression`, e.g. `f(class A {})` -> `te(class A {}, %tid0%);`
+* `Function`
+  * `ArrowFunctionExpression`
+  * `FunctionExpression`
+
+
+## Jump
+
+### Write && Jump
+* `CallExpression.arguments` -> `Function.params`
+  * more input types:
+    * `RestElement`
+      * `function f(...x) { ... }` (`last(Function.params)`)
+    * `RestElement.argument`
+      * `f(...x);`
+  * more inputs: `callee`
+    * can be `Super`
+  * also: `OptionalCallExpression`, `NewExpression`
+* `ThrowStatement` -> `CatchClause`
+  * NOTE: similar to return from callee to caller
+
+### Read && Jump
+* {`ReturnExpression`,`YieldExpression`}.`argument` -> `CallExpression`
+  * also: `OptionalCallExpression`, `NewExpression`
+  * if is constructor, returns `this`
+
+
+## Obscure/advanced (probably Future Work)
+* `Object.defineProperty`
+  * `get`, `set`, `value`
+* `Decorator`
+  * NOTE: similar to a `CallExpression` with trailing expression passed in as first argument?
+* Proxy interactions
+* String reference equality(???)
+  * NOTE: In JS, one cannot access string reference (memory location)
+
+
+# `LVal` types
 * `Identifier`
 * `ArrayPattern`, `ObjectPattern`
   * e.g. `{ x } = o`, `[ x ] = o` (`AssignmentExpression.left`)
@@ -237,7 +261,7 @@ o[f('p')][f('q')].a
 
 * if ME is LVal --
   * convert: `o.a[x].b.c[y] = %value%`
-  * to: `o.a[te(x, %tid1%, %cmd1%)].b.c[te(y, %tid2%, %cmd2%)] = traceWrite(te(...), %cmd0%)`
+  * to: `o.a[te(x, %tid1%, %cmd1%)].b.c[te(y, %tid2%, %cmd2%)] = te(..., %cmd0%)`
     * `%cmd0% = objectWrite(%tid0%, 0)`
     * `%cmd1% = objectWrite(tid0, 0)`
     * `%cmd2% = objectWrite(tid0, 1)`

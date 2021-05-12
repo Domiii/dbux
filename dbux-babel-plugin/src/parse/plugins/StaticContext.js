@@ -3,6 +3,9 @@ import ParsePlugin from '../../parseLib/ParsePlugin';
 
 /**
  * This is for `Program`, `Function`.
+ * 
+ * This is not a general "Scope container".
+ * To capture all scopes, one can use [Scopable](https://babeljs.io/docs/en/babel-types#scopable).
  */
 export default class StaticContext extends ParsePlugin {
   bindings = new Set();

@@ -54,10 +54,6 @@ export default class ParseNode {
   //   return 
   // }
 
-  get debugTag() {
-    return this.toString();
-  }
-
   getPlugin(pluginNameOrClazz) {
     const pluginName = isString(pluginNameOrClazz) ? pluginNameOrClazz : pluginNameOrClazz.name;
     return this.plugins[pluginName] || null;
@@ -65,6 +61,22 @@ export default class ParseNode {
 
   toString() {
     return `${this.constructor.name}: ${getPresentableString(this.enterPath)}`;
+  }
+
+  // ###########################################################################
+  // debugging
+  // ###########################################################################
+
+  get Verbose() {
+    return this.stack.Verbose;
+  }
+
+  debug(...args) {
+    return this.stack.debug(' >', ...args);
+  }
+
+  get debugTag() {
+    return this.toString();
   }
 
   // ###########################################################################
