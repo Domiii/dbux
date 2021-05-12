@@ -36,6 +36,11 @@ export default class DataNode {
   newValue;
 
   /**
+   * TODO: nodes can have a combination of 0 or 1 `refId` and 0 or 1 `dataPath`
+   */
+  varAccess;
+
+  /**
    * This is an array of either (i) `DataReadNode` or (ii) simple `VarAccess` (in case of `Identifier`?)
    * @type {[]}
    */

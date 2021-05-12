@@ -3,7 +3,7 @@ TODO
 1. capture full expression tree and dependency tree for all `traceId`s
    * then pass dependency tree as argument to `traceWrite`
 2. produce all rules to build `targetPathId` for any LVal
-   * PROBLEM: sometimes, we cannot build it at the time of `DataNode` creation (e.g. `ObjectExpression`)
+   * PROBLEM: sometimes, we cannot build it at the time of `DataNode` creation (e.g. `{Array,Object}Expression`)
 3. Determine all reads and writes
 4. Instrument all missing babel-types
 5. Capture effects of built-ins
@@ -30,12 +30,6 @@ TODO
  * => Can we automize this process for any function that we know is not instrumented?
  * => Seems possible: https://javascript.info/proxy#proxy-apply
 
-
-# Deal with hoisting
-
-Capture all hoisted variables first, then query `Function` for all hoisted declarations
-
-* 
 
 # Relevant types
 
@@ -74,7 +68,7 @@ Capture all hoisted variables first, then query `Function` for all hoisted decla
 * Value-creating/-changing
   * `UpdateExpression` [write]
     * add both `read` and `write` nodes, similar to the corresponding `AssignmentExpression` (i++ ~ i = i+1)
-  * `ObjectExpression` [write]
+  * `{Array,Object}Expression` [write]
     * 1 parent `read` + many `write` children
     * problem: we don't know the path when capturing the children writes
   * `TemplateLiteral`
@@ -117,8 +111,9 @@ Capture all hoisted variables first, then query `Function` for all hoisted decla
 ### Write && !Jump
 * `AssignmentExpression`
   * e.g.
-    * `l = r` -> `l = tw(r, %tid0%)`
-    * `l = a + b` -> `l = tw(te(a + b, %tid1%), %tid0%)`
+    * `l = r` -> `l = tw(r, %tid2%)`
+    * `l = a + b` -> `l = tw(te(a + b, %tid1%), %tid2%, [tid1])`
+    * `l[x] = y` -> `l[te(x, %tid1%)] = twME()`
 * `VariableDeclarator`
   * e.g. 
     * `var x = r;` -> `var x = tw(r, %tid0%);`
@@ -135,14 +130,15 @@ Capture all hoisted variables first, then query `Function` for all hoisted decla
     * Setters: `kind` === 'set'
       * e.g. `set f(val)`
 * `ClassPrivateProperty`, `ClassProperty`
-* `ObjectExpression.properties`
+* `{Array,Object}Expression.properties`
   * NOTE: recursive
   * NOTE: need to get `refId` from parent, before being able to store the writes
+  * `{ a: 1 }` -> `tOe({ a: tw(1, %tid1%) }, %tid0%, [tid1])`
 
 
 ### Read && !Jump
 * Arithmetic expression
-* `ObjectExpression`
+* `{Array,Object}Expression`
 * `TemplateLiteral`
   * `expressions`, (`quasis`)
 * `SequenceExpression`
@@ -213,7 +209,7 @@ Most expressions just pass along memory addresses, without actually generating n
 * UpdateExpression
 * BinaryExpression
 * LogicalExpression (||, &&, ??)
-* ObjectExpression
+* {Array,Object}Expression
   * (object initializer)
 * TemplateLiteral
 * UnaryExpression
@@ -439,7 +435,17 @@ console.log(a.p1);
 traceId(programId, inProgramStaticTraceId)
 te(value, thisTraceId = traceId(programId, inProgramStaticTraceId)) // traceExpression(programId, inProgramStaticTraceId, value, traceId);
 
-traceWrite(targetPathId, readTree, value, traceId)
+tw(value, tid, inputTids) // traceWrite
+ta = tw // traceAssignment
+
+// traceWriteMemberExpression
+twME(value, tid, inputTids, pathTids)
+// 
+
+// TODO: how to nest deferred writes? (e.g. `tOe -> tOe -> tAe` etc.)
+// trace{Object,Array}Expression
+{tOe,tAe}(objOrArr, tid, deferredWriteTids)
+// {tOe,tAe}({ a: tw(1, %tid1%, [], true), [b]: tw(f(), %tid2%, [], true) }, %tid0%, [tid1, tid2, ...])
 
 /**
  * `traceWriteResolve` does two things:
