@@ -16,76 +16,6 @@ const { log, debug, warn, error: logError } = newLogger('programVisitor');
 
 
 // ###########################################################################
-// Builders
-// ###########################################################################
-
-function buildProgramInit(path, { ids, contexts: { genContextIdName } }) {
-  const {
-    dbuxInit,
-    dbuxRuntime,
-    dbux,
-    aliases
-  } = ids;
-
-  const contextIdName = genContextIdName(path);
-
-  // see https://babeljs.io/docs/en/babel-types#program
-  // const { sourceType } = path.node;
-  // console.log(path.fileName, sourceType);
-
-  let importLine;
-  // if (sourceType === 'module') {
-  //   importLine = `import ${dbuxRuntime} from '@dbux/runtime';`;
-  // }
-  // else 
-  importLine = `var ${dbuxRuntime} = typeof __dbux__ === 'undefined' ? require('@dbux/runtime') : __dbux__;`;
-
-  return buildSource(`
-  ${importLine}
-  var ${dbux} = ${dbuxInit}(${dbuxRuntime});
-  var ${contextIdName} = ${dbux}.getProgramContextId();
-  ${Object.entries(aliases).map(([dbuxProp, varName]) => `var ${varName} = ${dbux}.${dbuxProp}`).join('; ')}
-  `);
-}
-
-function buildPopProgram(dbux) {
-  return buildSource(`${dbux}.popProgram();`);
-}
-
-// ###########################################################################
-// modification
-// ###########################################################################
-
-function addDbuxInitDeclaration(path, state) {
-  path.pushContainer('body', buildDbuxInit(state));
-}
-
-function wrapProgram(path, state) {
-  const { ids: { dbux } } = state;
-  const startCalls = buildProgramInit(path, state);
-  const endCalls = buildPopProgram(dbux);
-
-  const [
-    importNodes,
-    initVarDecl,
-    bodyNodes,
-    exportNodes
-  ] = extractTopLevelDeclarations(path);
-
-  // add `ContextEnd` trace
-  bodyNodes.push(buildContextEndTrace(path, state));
-
-  const programBody = [
-    ...importNodes,     // imports first
-    ...startCalls,
-    ...initVarDecl,
-    buildWrapTryFinally(bodyNodes, endCalls),
-    ...exportNodes      // exports last
-  ];
-  replaceProgramBody(path, programBody);
-}
-
-// ###########################################################################
 // visitor
 // ###########################################################################
 
@@ -105,9 +35,6 @@ function enter(path, state) {
   // before starting instrumentation, first get raw data from unmodified AST
   const nameVisitorObj = nameVisitors();
   traverse(path, state, nameVisitorObj);
-
-  // instrument Program itself
-  wrapProgram(path, state);
 
   // hackfix: manually enter `Program`
   state.stack.enter(path, Program);
@@ -150,7 +77,7 @@ function traverse(path, state, visitors) {
 // ########################################
 
 function exit(path, state) {
-  if (!state.onExit(path, 'program')) return;
+  // if (!state.onExit(path, 'program')) return;
   // try {
   //   global.gc();
   // } catch (e) {
@@ -158,10 +85,13 @@ function exit(path, state) {
   //   process.exit();
   // }
 
+  // hackfix: manually exit `Program`
+  state.stack.exit(path, Program);
+
+  path.stop();
+
   // actual process of transpilation
   state.stack.genAll();
-
-  addDbuxInitDeclaration(path, state);
 
   // clean up on aisle 4 (prevent memory leaks)
   clearNames();

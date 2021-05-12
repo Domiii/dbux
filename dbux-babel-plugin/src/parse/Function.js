@@ -65,7 +65,7 @@ export default class Function extends BaseNode {
 
   enter() {
     const { path, state } = this;
-    
+
     const isGenerator = path.node.generator;
     const isAsync = path.node.async;
     const isInterruptable = isGenerator || isAsync;
@@ -176,17 +176,21 @@ export default class Function extends BaseNode {
     const origBodyNode = bodyPath.node;
     let bodyNode = origBodyNode;
     if (!Array.isArray(origBodyNode) && !t.isStatement(origBodyNode)) {
-      // simple lambda expression -> convert to block lambda expression with return statement, so we can have our `try/finally`
+      // simple lambda expression -> convert to block lambda expression with return statement
+      // NOTE: This enables us to add `try/finally`; also the return statement indicates `ContextEnd`.
       bodyNode = t.blockStatement([t.returnStatement(origBodyNode)]);
 
       // patch return loc to keep loc of original expression (needed for `ReturnStatement` `traceVisitor`)
       bodyNode.body[0].loc = origBodyNode.loc;
       bodyNode.body[0].argument.loc = origBodyNode.loc;
     }
-    else if (!doesNodeEndScope(getLastNodeOfBody(bodyNode))) {
-      // add ContextEnd trace
-      // console.debug(`injecting EndOfContext for: ${bodyPath.toString()}`);
-      injectContextEndTrace(bodyPath, state);
+    else {
+      const lastNode = getLastNodeOfBody(bodyNode);
+      if (!lastNode || !doesNodeEndScope(lastNode)) {
+        // add ContextEnd trace
+        // console.debug(`injecting EndOfContext for: ${bodyPath.toString()}`);
+        injectContextEndTrace(bodyPath, state);
+      }
     }
 
     // wrap the function in a try/finally statement

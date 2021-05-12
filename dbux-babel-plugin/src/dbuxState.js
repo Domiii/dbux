@@ -46,11 +46,7 @@ export default function injectDbuxState(programPath, programState) {
   const { scope } = programPath;
   const { file: programFile } = programState;
 
-  const stack = new ParseStack(this);
-
   const dbuxState = {
-    stack,
-
     runtimeCfg,
 
     // static program data
@@ -193,6 +189,8 @@ export default function injectDbuxState(programPath, programState) {
   };
 
   Object.assign(programState, dbuxState);
+
+  programState.stack = new ParseStack(programState);
 
   return programState;
 }

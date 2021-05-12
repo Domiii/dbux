@@ -15,7 +15,7 @@ class Registry {
       groupBy(
         Object.entries(ParseNodeClassesByName)
           .flatMap(([nodeName, NodeClazz]) =>
-            NodeClazz.pluginNames
+            (NodeClazz.pluginNames || [])
               .map(pluginName => ([pluginName, nodeName]))
           ),
         ([pluginName]) => pluginName

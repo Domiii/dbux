@@ -1,4 +1,5 @@
 import isString from 'lodash/isString';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { getPresentableString } from '../helpers/pathHelpers';
 import ParseRegistry from './ParseRegistry';
 
@@ -70,11 +71,11 @@ export default class ParseNode {
   // lifecycle methods
   // ###########################################################################
 
-  hasPhase(phase) {
-    return this[phase] || this.pluginPhases[phase];
+  hasPhase(...phases) {
+    return phases.some(p => this[p] || this.pluginPhases[p]);
   }
 
-  // init() { }
+  init() { }
 
   // enter() {
   // }
@@ -114,7 +115,7 @@ export default class ParseNode {
     const { PluginClassesByName } = ParseRegistry;
 
     // add plugins (possibly conditionally)
-    for (const h of this.pluginNames) {
+    for (const h of (this.pluginNames || EmptyArray)) {
       let predicate, helperName;
       if (Array.isArray(h)) {
         [predicate, helperName] = h;
@@ -135,8 +136,9 @@ export default class ParseNode {
     }
 
     // add plugin phases conditionally
+    const pluginArray = Object.values(this.plugins);
     for (const phase of Phases) {
-      if (this.plugins.some(p => p[phase])) {
+      if (pluginArray.some(p => p[phase])) {
         this.makePluginPhase(phase);
       }
     }

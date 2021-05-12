@@ -55,7 +55,7 @@ function visit(direction, ParserNodeClazz, path, state) {
     // return;
     throw new Error(`Visiting already instrumented path. Should not happen.`);
   }
-  
+
   state.stack.checkGen();
   // if (state.stack.isGen) {
   //   // we are already in `gen` -> stop the whole shazam
@@ -81,39 +81,41 @@ function visit(direction, ParserNodeClazz, path, state) {
 // ###########################################################################
 
 function logInst(tag, path, direction = null, ParserNodeClazz, ...other) {
-  // const nodeName = getNodeNames(path.node)?.name;
-  const dirIndicator = direction && direction === ParseDirection.Enter ? ' ->' : ' <-';
-  debug(
-    `[${tag}]${dirIndicator || ''}`,
-    // `${cfgName}:`,
-    `${ParserNodeClazz.name}:`,
-    // nodeName &&
-    //   `${path.node.type} ${nodeName}` ||
-    getPresentableString(path),
-    // TraceInstrumentationType.nameFromForce(instrumentationType),
-    ...other
-  );
+  // // const nodeName = getNodeNames(path.node)?.name;
+  // const dirIndicator = direction && direction === ParseDirection.Enter ? ' ->' : ' <-';
+  // debug(
+  //   `[${tag}]${dirIndicator || ''}`,
+  //   // `${cfgName}:`,
+  //   `${ParserNodeClazz.name}:`,
+  //   // nodeName &&
+  //   //   `${path.node.type} ${nodeName}` ||
+  //   getPresentableString(path),
+  //   // TraceInstrumentationType.nameFromForce(instrumentationType),
+  //   ...other
+  // );
 }
 
 // ###########################################################################
 // some extra visitor logic
 // ###########################################################################
 
-function patchProgram(ParseNodeClassesByName) {
-  const origProg = ParseNodeClassesByName.Program;
-  if (!origProg || isFunction(origProg)) {
-    ParseNodeClassesByName.Program = {};
-    if (origProg) {
-      ParseNodeClassesByName.Program.enter = origProg;
-    }
-  }
+// const builtInVisitors = {
+//   Program: {
+//     enter() { },
+//     exit(path) {
+//       path.stop();
+//     }
+//   }
+// };
 
-  ParseNodeClassesByName.Program.exit = (...args) => {
-    const [path] = args;
-    origProg?.exit?.(...args);
-    path.stop();
-  };
-}
+// function patchProgram(visitors) {
+//   const origProg = visitors.Program;
+//   visitors.Program.exit = (...args) => {
+//     origProg?.exit(...args);
+//     const [path] = args;
+//     path.stop();
+//   };
+// }
 
 // ###########################################################################
 // buildVisitors
@@ -122,7 +124,6 @@ function patchProgram(ParseNodeClassesByName) {
 export function buildVisitors() {
   const visitors = {};
   const { ParseNodeClassesByName } = ParseRegistry;
-  patchProgram(ParseNodeClassesByName);
   for (const name in ParseNodeClassesByName) {
     const ParserNodeClazz = ParseNodeClassesByName[name];
     visitors[name] = {
@@ -130,11 +131,13 @@ export function buildVisitors() {
         // if (path.getData()) {
         //   visit(state.onTrace.bind(state), enterInstrumentors, path, state, visitorCfg)
         // }
+        // builtInVisitors[name]?.enter?.(path, state);
         visitEnter(ParserNodeClazz, path, state);
       },
 
       exit(path, state) {
         visitExit(ParserNodeClazz, path, state);
+        // builtInVisitors[name]?.exit?.(path, state);
       }
     };
   }

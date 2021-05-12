@@ -157,10 +157,10 @@ export default class ParseStack {
     let parseNode = this.createOnEnter(path, state, ParseNodeClazz, this);
     if (parseNode) {
       // push new node
-      Verbose && /* parseNode.hasPhase('enter') && */ this.debug(`enter ${parseNode}`);
+      Verbose && parseNode.hasPhase('enter', 'exit') && this.debug(`enter ${parseNode}`);
       this.push(ParseNodeClazz, parseNode);
-      const data = parseNode.enter(path, state);
-      parseNode.enterPlugins();
+      const data = parseNode.enter?.(path, state);
+      parseNode.enterPlugins?.();
 
       if (data) {
         // enter produces data, usually used later during `gen`
@@ -197,13 +197,11 @@ export default class ParseStack {
       // eslint-disable-next-line max-len
       throw new Error(`Parsing failed. Exited same ${ParseNodeClazz.name} node more thance once.\n  Node was not on stack anymore: ${getNodeOfPath(path)} \n  Path: ${getPresentableString(path)}`);
     }
-    Verbose && /* parseNode.hasPhase('exit') && */ this.debug(`exit ${parseNode}`);
+    Verbose && parseNode.hasPhase('enter', 'exit') && this.debug(`exit ${parseNode}`);
 
     if (parseNode._nestedEnterCount) {
       --parseNode._nestedEnterCount;
-      if (parseNode.exitNested) {
-        this._callExit(path, ParseNodeClazz, parseNode, parseNode.exitNested);
-      }
+      this._callExit(path, ParseNodeClazz, parseNode, parseNode.exitNested);
     }
     else {
       this._callExit(path, ParseNodeClazz, parseNode, parseNode.exitPlugins, parseNode.exit);
@@ -223,7 +221,7 @@ export default class ParseStack {
     // pass child ParseNodes, followed by array of actual paths
     // NOTE: childPaths might contain null, childPaths wouldn't
     for (const f of fs) {
-      f.call(node, ...children, childPaths);
+      f?.call(node, ...children, childPaths);
     }
   }
 
@@ -281,7 +279,7 @@ export default class ParseStack {
   gen(parseNode, f) {
     // const staticData = parseNode.genStaticData(this.state);
 
-    f.call(parseNode, /* staticData, */);
+    f?.call(parseNode, /* staticData, */);
     // return staticData;
   }
 }

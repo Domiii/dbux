@@ -1,7 +1,7 @@
-import './hackfixes.js';
-import programVisitor from './visitors/programVisitor';
-import _slicingTestVisitor from './_slicingTestVisitor';
+import './hackfixes';
 import '@dbux/common/src/util/prettyLogs';
+import programVisitor from './visitors/programVisitor';
+// import _slicingTestVisitor from './_slicingTestVisitor';
 // import { logInternalError } from './log/logger';
 
 /**
@@ -10,8 +10,8 @@ import '@dbux/common/src/util/prettyLogs';
  * NOTE: The config is also available via state.opts (see `dbuxState.js`).
  */
 export default function dbuxBabelPlugin(_, cfg) {
-  // const visitor = { Program: programVisitor() };
-  const visitor = _slicingTestVisitor;
+  const visitor = { Program: programVisitor() };
+  // const visitor = _slicingTestVisitor;
   return {
     visitor,
 
