@@ -6,7 +6,7 @@ import { replaceProgramBody } from '../helpers/program';
 import errorWrapVisitor from '../helpers/errorWrapVisitor';
 import { buildContextEndTrace } from '../helpers/contextHelper';
 import injectDbuxState from '../dbuxState';
-import { buildTraceVisitors as traceVisitors } from '../parseLib/visitors';
+import { buildVisitors as traceVisitors } from '../parseLib/visitors';
 import Program from '../parse/Program';
 import { buildDbuxInit } from '../data/staticData';
 import nameVisitors, { clearNames } from './nameVisitors';

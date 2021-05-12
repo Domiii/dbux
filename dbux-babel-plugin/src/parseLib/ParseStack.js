@@ -117,7 +117,7 @@ export default class ParseStack {
     const { name } = ParseNodeClazz;
     const { _stack } = this;
     const nodesOfType = _stack.get(name);
-    (Verbose >= 2) && debug(`pop ${name}`);
+    (Verbose >= 2) && this.debug(`pop ${name}`);
     const node = nodesOfType.pop();
     if (node.path !== path) {
       throw new Error(`ParseStack corrupted - exit path does not match stack node (of type ${name}) - ${getPresentableString(path)}`);
@@ -129,6 +129,9 @@ export default class ParseStack {
   // parse util
   // ###########################################################################
 
+  /**
+   * @return {ParseNode}
+   */
   createOnEnter(path, state, ParseNodeClazz) {
     let newNode = null;
     const initialData = ParseNodeClazz.prospectOnEnter(path, state);
@@ -147,16 +150,14 @@ export default class ParseStack {
   // ###########################################################################
 
   enter(path, ParseNodeClazz) {
-    if (this.isGen) {
-      // stop parsing after `gen` started
-      return;
-    }
+    this.checkGen();
     ++this.recordedDepth;
 
     const { state } = this;
     let parseNode = this.createOnEnter(path, state, ParseNodeClazz, this);
     if (parseNode) {
       // push new node
+      Verbose && /* parseNode.hasPhase('enter') && */ this.debug(`enter ${parseNode}`);
       this.push(ParseNodeClazz, parseNode);
       const data = parseNode.enter(path, state);
       parseNode.enterPlugins();
@@ -187,17 +188,16 @@ export default class ParseStack {
   // ###########################################################################
 
   exit(path, ParseNodeClazz) {
-    if (this.isGen) {
-      // stop parsing after `gen` started
-      return;
-    }
+    this.checkGen();
 
     // NOTE: even if we don't create a newNode, we push `null`.
     //    This way, every `push` will always match a `pop`.
     const parseNode = this.getNode(ParseNodeClazz);
     if (!parseNode) {
-      throw new Error(`Parsing failed. Exited same ${ParseNodeClazz.name} node more thance once - ${getPresentableString(path)}`);
+      // eslint-disable-next-line max-len
+      throw new Error(`Parsing failed. Exited same ${ParseNodeClazz.name} node more thance once.\n  Node was not on stack anymore: ${getNodeOfPath(path)} \n  Path: ${getPresentableString(path)}`);
     }
+    Verbose && /* parseNode.hasPhase('exit') && */ this.debug(`exit ${parseNode}`);
 
     if (parseNode._nestedEnterCount) {
       --parseNode._nestedEnterCount;
@@ -232,6 +232,13 @@ export default class ParseStack {
   // gen
   // ###########################################################################
 
+  checkGen() {
+    if (this.isGen) {
+      // stop parsing after `gen` started
+      throw new Error(`Stack still visited, after parsing completed.`);
+    }
+  }
+
   /**
    * Iterates through `this.genTasks` to gen (transpile) the code.
    * NOTE: the order of `genTasks` is that of the `exit` call, meaning inner-most first.
@@ -255,18 +262,26 @@ export default class ParseStack {
 
     for (const task of genTasks) {
       const { parseNode } = task;
-      this.gen(parseNode);
-      // allStaticData.push();
+      Verbose && parseNode.hasPhase('instrument') && debug(`instrument ${parseNode}`);
+      this.gen(parseNode, parseNode.instrumentPlugins);
+      this.gen(parseNode, parseNode.instrument);
+    }
+
+    for (const task of genTasks) {
+      const { parseNode } = task;
+      Verbose && parseNode.hasPhase('instrument2') && debug(`instrument2 ${parseNode}`);
+      this.gen(parseNode, parseNode.instrument2Plugins);
+      this.gen(parseNode, parseNode.instrument2);
     }
   }
 
   /**
    * @param {ParseNode} parseNode 
    */
-  gen(parseNode) {
-    Verbose && debug(`gen ${parseNode}`);
+  gen(parseNode, f) {
     // const staticData = parseNode.genStaticData(this.state);
-    parseNode.instrument(/* staticData, */);
+
+    f.call(parseNode, /* staticData, */);
     // return staticData;
   }
 }

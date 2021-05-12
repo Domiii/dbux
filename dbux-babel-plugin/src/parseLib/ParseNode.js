@@ -5,6 +5,10 @@ import ParseRegistry from './ParseRegistry';
 /** @typedef { import("@babel/traverse").NodePath } NodePath */
 /** @typedef { import("./ParseStack").default } ParseStack */
 
+const Phases = [
+  'enter', 'exit', 'instrument', 'instrument2'
+]
+
 export default class ParseNode {
   /**
    * @type {NodePath}
@@ -21,6 +25,7 @@ export default class ParseNode {
    * @type {{ [string]: object }}
    */
   plugins = {};
+  pluginPhases = {};
 
   /**
    * 
@@ -65,29 +70,37 @@ export default class ParseNode {
   // lifecycle methods
   // ###########################################################################
 
-  init() { }
-
-  enter() {
+  hasPhase(phase) {
+    return this[phase] || this.pluginPhases[phase];
   }
 
-  enterPlugins() {
-    for (const name in this.plugins) {
-      this.plugins[name].enter?.(this);
-    }
-  }
+  // init() { }
 
-  exitPlugins() {
-    for (const name in this.plugins) {
-      this.plugins[name].exit?.(this);
-    }
-  }
+  // enter() {
+  // }
 
-  exit() {
-  }
+  // exit() {
+  // }
+
+  // instrument() {
+
+  // }
+
+  // instrument2() {
+
+  // }
 
   // ###########################################################################
-  // utilities
+  // plugins
   // ###########################################################################
+
+  makePluginPhase(phase) {
+    this.pluginPhases[phase] = () => {
+      for (const name in this.plugins) {
+        this.plugins[name][phase]?.(this);
+      }
+    };
+  }
 
   addPlugin(Clazz) {
     const plugin = new Clazz();
@@ -99,6 +112,8 @@ export default class ParseNode {
 
   createPlugins() {
     const { PluginClassesByName } = ParseRegistry;
+
+    // add plugins (possibly conditionally)
     for (const h of this.pluginNames) {
       let predicate, helperName;
       if (Array.isArray(h)) {
@@ -113,7 +128,16 @@ export default class ParseNode {
         if (!HelperClazz) {
           throw new Error(`${this} referenced non-existing helperName = "${helperName}" (available: ${Object.keys(PluginClassesByName).join(', ')})`);
         }
+
+        // add plugin
         this.addPlugin(HelperClazz);
+      }
+    }
+
+    // add plugin phases conditionally
+    for (const phase of Phases) {
+      if (this.plugins.some(p => p[phase])) {
+        this.makePluginPhase(phase);
       }
     }
     return this.plugins;

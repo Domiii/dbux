@@ -2,6 +2,7 @@
  * @file
  */
 
+import isFunction from 'lodash/isFunction';
 import { newLogger } from '@dbux/common/src/log/logger';
 
 import ParseDirection from './ParseDirection';
@@ -50,8 +51,18 @@ function visitExit(ParserNodeClazz, path, state) {
  */
 function visit(direction, ParserNodeClazz, path, state) {
   if (isPathInstrumented(path)) {
-    return;
+    // path.skip();
+    // return;
+    throw new Error(`Visiting already instrumented path. Should not happen.`);
   }
+  
+  state.stack.checkGen();
+  // if (state.stack.isGen) {
+  //   // we are already in `gen` -> stop the whole shazam
+  //   path.stop();
+  //   return;
+  // }
+
 
   Verbose && logInst('v', path, direction, ParserNodeClazz);
 
@@ -84,14 +95,34 @@ function logInst(tag, path, direction = null, ParserNodeClazz, ...other) {
   );
 }
 
+// ###########################################################################
+// some extra visitor logic
+// ###########################################################################
+
+function patchProgram(ParseNodeClassesByName) {
+  const origProg = ParseNodeClassesByName.Program;
+  if (!origProg || isFunction(origProg)) {
+    ParseNodeClassesByName.Program = {};
+    if (origProg) {
+      ParseNodeClassesByName.Program.enter = origProg;
+    }
+  }
+
+  ParseNodeClassesByName.Program.exit = (...args) => {
+    const [path] = args;
+    origProg?.exit?.(...args);
+    path.stop();
+  };
+}
 
 // ###########################################################################
-// buildTraceVisitors
+// buildVisitors
 // ###########################################################################
 
-export function buildTraceVisitors() {
+export function buildVisitors() {
   const visitors = {};
   const { ParseNodeClassesByName } = ParseRegistry;
+  patchProgram(ParseNodeClassesByName);
   for (const name in ParseNodeClassesByName) {
     const ParserNodeClazz = ParseNodeClassesByName[name];
     visitors[name] = {

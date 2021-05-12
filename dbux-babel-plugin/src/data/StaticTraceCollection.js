@@ -3,7 +3,7 @@ import * as t from '@babel/types';
 import StaticCollection from './StaticCollection';
 
 import { extractSourceStringWithoutComments } from '../helpers/sourceHelpers';
-import { getPresentableString } from '../helpers/misc';
+import { getPresentableString } from '../helpers/pathHelpers';
 import { getFunctionDisplayName } from '../helpers/functionHelpers';
 import { getNodeNames } from '../visitors/nameVisitors';
 

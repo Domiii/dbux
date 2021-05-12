@@ -7,6 +7,7 @@ import Identifier from './Identifier';
 import LogicalExpression from './LogicalExpression';
 import MemberExpression from './MemberExpression';
 import ObjectExpression from './ObjectExpression';
+import Program from './Program';
 import UnaryExpression from './UnaryExpression';
 import VariableDeclarator from './VariableDeclarator';
 
@@ -21,6 +22,7 @@ init(Identifier);
 init(LogicalExpression);
 init(MemberExpression);
 init(ObjectExpression);
+init(Program);
 init(UnaryExpression);
 init(VariableDeclarator);
 
@@ -33,6 +35,7 @@ export {
   LogicalExpression,
   MemberExpression,
   ObjectExpression,
+  Program,
   UnaryExpression,
   VariableDeclarator
 };

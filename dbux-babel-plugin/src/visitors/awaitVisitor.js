@@ -2,7 +2,7 @@ import template from "@babel/template";
 import * as t from "@babel/types";
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import StaticContextType from '@dbux/common/src/core/constants/StaticContextType';
-import { getPresentableString } from '../helpers/misc';
+import { getPresentableString } from '../helpers/pathHelpers';
 import { isPathInstrumented } from '../helpers/astUtil';
 import { traceWrapExpressionStatement } from '../helpers/traceHelpers.old';
 
@@ -27,7 +27,7 @@ const wrapAwaitExpressionTemplate = template(`
 
 
 function getAwaitDisplayName(path) {
-  return `(${getPresentableString(path.toString())})`;
+  return `(${getPresentableString(path)})`;
 }
 
 // ###########################################################################

@@ -1,3 +1,4 @@
+import { getPresentableString } from '../../helpers/pathHelpers';
 import ParsePlugin from '../../parseLib/ParsePlugin';
 
 /**
@@ -26,7 +27,8 @@ export default class StaticContext extends ParsePlugin {
       node: { stack }
     } = this;
 
-    const staticContext = stack.getPlugin('StaticContext');
+    // const staticContext = stack.getPlugin('StaticContext');
+    const staticContext = this;
     const { bindings, globals } = staticContext;
 
     const bindingNodes = Array.from(bindings).map(binding => {

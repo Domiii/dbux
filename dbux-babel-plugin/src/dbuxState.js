@@ -9,8 +9,8 @@ import StaticVarAccessCollection from './data/StaticVarAccessCollection';
 import { isNodeInstrumented } from './helpers/astUtil';
 import ParseStack from './parseLib/ParseStack';
 
-import * as ParseNodeClassesByName from './parse';
-import * as PluginClassesByName from './parse/plugins';
+import * as ParseNodeClassesByName from './parse/_registry';
+import * as PluginClassesByName from './parse/plugins/_registry';
 
 import ParseRegistry from './parseLib/ParseRegistry';
 
