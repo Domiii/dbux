@@ -346,25 +346,7 @@ const d = traceWrite(
 ```
 
 
-### AssignmentExpression, VariableDeclaration, VariableDeclarator
-
-* `VariableDeclarator` has two types of semantics:
-  * `let`, `const`: creates new variables.
-    * We can uniquely identify them by `traceId` of that write operation.
-    * `targetPathId` could be constructed by `name` + `contextId`.
-  * `var`: only creates new variable, if not already existing in scope (or ancestor scopes), else refers to existing variable.
-  * `declarations` contains multiple `VariableDeclaration`, each referring to their own variable.
-* `AssignmentExpression`
-  * `targetPathId`:
-    * first: try `getBindingPath`
-      * if it exists, get `contextId` identifier (maybe via `staticContext`?)
-      * final uniquely identifying path is (`id.name`, `contextId`)
-      * TODO: consider acquiring `bindingPath`'s `traceId` instead?
-    * else: if `bindingPath` does not exist, assume it's global?
-  * 
-
 ## CallExpression
-
 
 
 ### Object/array property assignments
@@ -432,28 +414,84 @@ console.log(a.p1);
 ## Runtime functions
 
 ```js
-traceId(programId, inProgramStaticTraceId)
-te(value, thisTraceId = traceId(programId, inProgramStaticTraceId)) // traceExpression(programId, inProgramStaticTraceId, value, traceId);
+// NOTE: creates new `Trace` and returns the `traceId`
+function traceId(inProgramStaticTraceId) {
+  const trace = createTrace(inProgramStaticTraceId);
+  return trace.traceId;
+}
+function registerTwX(value, trace) {
+  // TODO: register traceWrite + X information
+}
 
-tw(value, tid, inputTids) // traceWrite
+// traceExpression(inProgramStaticTraceId, value, traceId);
+te(value, thisTraceId = traceId(inProgramStaticTraceId))
+
+tw(value, tid, deferTid, inputTids) // traceWrite
 ta = tw // traceAssignment
 
 // traceWriteMemberExpression
-twME(value, tid, inputTids, pathTids)
+twME(value, tid, deferTid, inputTids, pathTids)
 // 
 
 // TODO: how to nest deferred writes? (e.g. `tOe -> tOe -> tAe` etc.)
-// trace{Object,Array}Expression
-{tOe,tAe}(objOrArr, tid, deferredWriteTids)
-// {tOe,tAe}({ a: tw(1, %tid1%, [], true), [b]: tw(f(), %tid2%, [], true) }, %tid0%, [tid1, tid2, ...])
+// traceExpression{Object,Array}
+(tw{O,A}E)(objOrArr, tid, deferTid, inputTids)
+  twOAE(
+    { 
+      a: tw(1, %tid1%, %nid1%, %tid0%, []),
+      [b]: tw(f(), %tid2%, %nid2%, tid0, [])
+    },
+    %tid0%,
+    [tid1, tid2, ...]
+  )
 
-/**
- * `traceWriteResolve` does two things:
- *   (i) resolve the write that reads val1Id
- *   (ii) add a second read, that is the computed key
- * 
- * TODO: make sure, this works, even when used recursively
- */
-traceWriteResolve(te(f('p1'), this, key1Id = traceId()), key1Id, val1Id)
-traceWriteDeferred()
+function createDataNodesX(value, trace, deferTid, inputs) {
+  const { tid } = trace;
+  const staticTrace = getStaticTrace(trace);
+  const { dataNode: staticDataNode } = staticTrace;
+
+  const dataNode = createDataNodeX(tid, inputs);
+  const deferredChildrenTids = getDeferredTids(tid);
+
+  handleNodeX(value, trace, dataNode, inputs, deferredChildrenTids);
+}
+
+function handleNodeX(value, trace, dataNode, inputs, deferredChildrenTids) {
+  // TODO: varAccess
+  if (deferredChildrenTids) {
+    // TODO: children
+  }
+  // TODO: involved
+}
+
+function finishDataNode(tid) {
+  // TODO: this is probably not necessary.
+  // const dataNode = getDataNode(tid);
+  // const children = getDataNodeChildren(tid);
+}
+
+function twX(value, tid, deferTid, ...inputs) {
+  const trace = registerTwX(value, tid);
+  createDataNodesX(value, trace, deferTid, inputs);
+  if (deferTid) {
+    addDeferredTid(deferTid, tid);
+  }
+  else {
+    finishDataNode(tid);
+  }
+}
+
+
+const deferredTids = new Map();
+function getDeferredTids(deferTid) {
+  return deferredTids.get(deferTid);
+}
+function addDeferredTid(deferTid, tid) {
+  let tids = deferredTids.get(deferTid);
+  if (!tids) {
+    deferredTids.set(deferTid, tids = []);
+  }
+  tids.push(tid);
+  return tids;
+}
 ```

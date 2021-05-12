@@ -20,20 +20,10 @@ export class InvolvedNode extends VarAccess {
 }
 
 export default class DataNode {
-  nodeId;
-
   /**
    * The trace that recorded this `DataNode`.
    */
   traceId;
-
-  /**
-   * Is `true` if this node:
-   * * created a new value or
-   * * modified an existing value
-   * @type {boolean}
-   */
-  newValue;
 
   /**
    * TODO: nodes can have a combination of 0 or 1 `refId` and 0 or 1 `dataPath`
@@ -41,8 +31,8 @@ export default class DataNode {
   varAccess;
 
   /**
-   * This is an array of either (i) `DataReadNode` or (ii) simple `VarAccess` (in case of `Identifier`?)
-   * @type {[]}
+   * Array of `traceId`, representing incoming edges.
+   * @type {number[]}
    */
   inputs;
 
