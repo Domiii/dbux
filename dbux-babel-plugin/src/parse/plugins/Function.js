@@ -1,14 +1,12 @@
 import template from '@babel/template';
 import * as t from "@babel/types";
 import TraceType from '@dbux/common/src/core/constants/TraceType';
-import VarOwnerType from '@dbux/common/src/core/constants/VarOwnerType';
-import { buildWrapTryFinally, buildSource, buildBlock } from '../helpers/builders';
-import { injectContextEndTrace } from '../helpers/contextHelper';
-import { traceWrapExpressionStatement } from '../helpers/traceHelpers.old';
-import { getNodeNames } from '../visitors/nameVisitors';
+import { buildWrapTryFinally, buildSource, buildBlock } from '../../helpers/builders';
+import { injectContextEndTrace } from '../../helpers/contextHelper';
+import { getNodeNames } from '../../visitors/nameVisitors';
 
-import BaseNode from './BaseNode';
-import { doesNodeEndScope } from '../helpers/astUtil';
+import { doesNodeEndScope } from '../../helpers/astUtil';
+import ParsePlugin from '../../parseLib/ParsePlugin';
 
 
 // ###########################################################################
@@ -47,21 +45,16 @@ function addResumeContext(bodyPath, state/* , staticId */) {
   return state.contexts.addResumeContext(bodyPath, locStart);
 }
 
-
-// ###########################################################################
-// Function
-// ###########################################################################
-
 function getLastNodeOfBody(bodyNode) {
   const nodes = Array.isArray(bodyNode) ? bodyNode : bodyNode.body;
   return nodes[nodes.length - 1];
 }
 
-export default class Function extends BaseNode {
-  pluginNames = [
-    'StaticContext',
-    'BindingNode'
-  ];
+
+export default class Function extends ParsePlugin {
+  // ###########################################################################
+  // enter
+  // ###########################################################################
 
   enter() {
     const { path, state } = this;
@@ -71,10 +64,11 @@ export default class Function extends BaseNode {
     const isInterruptable = isGenerator || isAsync;
     const bodyPath = path.get('body');
 
+    const names = getNodeNames(path.node);
     const {
       name,
       displayName
-    } = this.data.names;
+    } = names;
 
     const staticContextData = {
       type: 2, // {StaticContextType}
@@ -124,11 +118,6 @@ export default class Function extends BaseNode {
   // ###########################################################################
   // instrument
   // ###########################################################################
-
-  genStaticData() {
-    // TODO
-    return {};
-  }
 
   /**
    * Instrument all Functions to keep track of all (possibly async) execution stacks.
@@ -207,21 +196,5 @@ export default class Function extends BaseNode {
 
     // TODO: trace the function creation itself
     // TODO: trace all enclosed variables
-  }
-
-  // ###########################################################################
-  // static
-  // ###########################################################################
-
-  static prospectOnEnter(path) {
-    // const names = path.getData('_dbux_names');
-    const names = getNodeNames(path.node);
-    if (!names) {
-      // this is probably an instrumented function
-      return null;
-    }
-    return {
-      names
-    };
   }
 }

@@ -457,7 +457,7 @@ function createDataNodesX(value, trace, deferTid, inputs) {
 }
 
 function handleNodeX(value, trace, dataNode, inputs, deferredChildrenTids) {
-  // TODO: varAccessSimple - (i) bindingTraceId, (ii) object refId
+  // TODO: varAccessId - (i) bindingTraceId, (ii) object refId
   // TODO: varAccessME - (i) bindingTraceId + pathString, (ii) object refId
   // TODO: varAccessMENested - varAccessME + (iii) involved (array of varAccessME)
   if (deferredChildrenTids) {
@@ -479,8 +479,11 @@ function twX(value, tid, deferTid, ...inputs) {
   }
 }
 
+/**
+ * Called on the last node of a deferred chain, indicating that the sub-tree is complete.
+ * NOTE: Might not need this...
+ */
 function finishDataNode(tid) {
-  // TODO: this is probably not necessary.
   // const dataNode = getDataNode(tid);
   // const children = getDataNodeChildren(tid);
 }

@@ -9,7 +9,7 @@ import ParsePlugin from '../../parseLib/ParsePlugin';
  * TODO: Import*
  */
 export default class BindingNode extends ParsePlugin {
-  instrument() {
-    // TODO: call traceBinding
-  }
+  // instrument() {
+  //   // TODO: call traceBinding
+  // }
 }
