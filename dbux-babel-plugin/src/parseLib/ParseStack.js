@@ -1,7 +1,7 @@
 import isString from 'lodash/isString';
 import maxBy from 'lodash/maxBy';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { getChildPaths } from './parseUtil';
+import { getChildPaths, setNodeOfPath } from './parseUtil';
 import { getPresentableString } from '../helpers/pathHelpers';
 import ParseRegistry from './ParseRegistry';
 
@@ -10,17 +10,11 @@ import ParseRegistry from './ParseRegistry';
 const Verbose = 1;
 // const Verbose = 0;
 
-const DbuxNodeId = '_dbux_node_';
-
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Stack');
 
 function debugTag(obj) {
   return obj.debugTag || obj.name || obj.toString();
-}
-
-function getNodeOfPath(p) {
-  return p.getData(DbuxNodeId);
 }
 
 /**
@@ -130,7 +124,7 @@ export default class ParseStack {
   }
 
   // ###########################################################################
-  // parse util
+  // createOnEnter
   // ###########################################################################
 
   /**
@@ -144,7 +138,7 @@ export default class ParseStack {
       newNode.createPlugins();
       newNode.init();
 
-      path.setData(DbuxNodeId, newNode);
+      setNodeOfPath(path, newNode);
     }
     return newNode;
   }
@@ -219,13 +213,10 @@ export default class ParseStack {
   }
 
   _callExit(path, ParseNodeClazz, node, ...fs) {
-    const childPaths = getChildPaths(path, ParseNodeClazz.nodeNames);
-    const children = childPaths.map(p => Array.isArray(p) ? p.map(getNodeOfPath) : getNodeOfPath(p));
-
     // pass child ParseNodes, followed by array of actual paths
     // NOTE: childPaths might contain null, childPaths wouldn't
     for (const f of fs) {
-      f?.call(node, ...children, childPaths);
+      f?.call(node);
     }
   }
 

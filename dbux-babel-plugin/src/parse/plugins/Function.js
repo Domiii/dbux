@@ -194,7 +194,6 @@ export default class Function extends ParsePlugin {
     // bodyPath.context.create(bodyNode, bodyNode, 'xx')
     bodyPath.replaceWith(newBody);
 
-    // TODO: trace the function creation itself
-    // TODO: trace all enclosed variables
+    // TODO: get access to `bindingTids`
   }
 }

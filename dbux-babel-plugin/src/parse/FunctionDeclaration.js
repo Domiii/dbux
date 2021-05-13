@@ -7,4 +7,8 @@ export default class FunctionDeclaration extends BaseNode {
     'StaticContext',
     'BindingNode'
   ];
+
+  instrument() {
+    
+  }
 }

@@ -18,7 +18,7 @@ export default class BaseArithmeticExpression extends BaseExpression {
     // NOTE2: AEs propagate all their inputs (their inputs should be captured by next in chain)
     const propagatedInputs = this.getInputs(inputs, inputPaths);
     return {
-      change: true,
+      isNew: true, // new value
       inputs: propagatedInputs,
       propagatedInputs
     };
@@ -27,14 +27,7 @@ export default class BaseArithmeticExpression extends BaseExpression {
   instrument() {
     const { path, state } = this;
     const { scope } = path;
-
-    // TODO: instrument inputs (if not already instrumented)
-    // TODO: track DataNodes with inputs + outputs
-    // TODO: add DataNodes to dbux-code DP + UI
-
-    const inProgramStaticTraceId = state.traces.addTrace(path, TraceType.ExpressionResult);
-    const traceId = scope.generateUidIdentifier(`t${inProgramStaticTraceId}_`);
-
-    this.Verbose >= 2 && this.debug('[traceId]', traceId.name, getPresentableString(path));
+    
+    // TODO
   }
 }

@@ -48,7 +48,9 @@ export default class MemberExpression extends BaseExpression {
 
   static nodeNames = ['object', 'property'];
 
-  exit(object, property, [objectPath, propertyPath]) {
+  exit() {
+    const [objectPath, propertyPath] = this.getChildPaths();
+    
     const {
       dynamicIndexes,
       template,
@@ -56,14 +58,13 @@ export default class MemberExpression extends BaseExpression {
     } = this;
 
     const { computed/* , optional */ } = path.node;
+    // TODO: `optional`
 
     if (!this.leftId) {
       // inner-most ME is exited first; has leftId
       this.leftId = objectPath.node;
       template.push(objectPath.toString());
     }
-
-    // TODO: optional
 
     if (computed) {
       dynamicIndexes.push(template.length);

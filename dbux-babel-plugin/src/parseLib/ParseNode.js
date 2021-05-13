@@ -2,6 +2,7 @@ import isString from 'lodash/isString';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { getPresentableString } from '../helpers/pathHelpers';
 import ParseRegistry from './ParseRegistry';
+import { getChildPaths, getNodeOfPath } from './parseUtil';
 
 /** @typedef { import("@babel/traverse").NodePath } NodePath */
 /** @typedef { import("./ParseStack").default } ParseStack */
@@ -43,6 +44,10 @@ export default class ParseNode {
     this.nodeId = ++stack.lastId;
   }
 
+  // ###########################################################################
+  // getters
+  // ###########################################################################
+
   /**
    * @type {NodePath}
    */
@@ -60,7 +65,27 @@ export default class ParseNode {
   }
 
   toString() {
-    return `${this.constructor.name}: ${getPresentableString(this.enterPath)}`;
+    return `[${this.constructor.name}] ${getPresentableString(this.enterPath)}`;
+  }
+
+  // ###########################################################################
+  // children utilities
+  // ###########################################################################
+
+  getChildPaths() {
+    const { nodeNames } = this.constructor;
+    if (!nodeNames) {
+      throw new Error(`Could not getChildPaths - missing \`static nodeNames\` in ${this}.`);
+    }
+    // NOTE: cache _childPaths
+    this._childPaths = this._childPaths || getChildPaths(this.path, nodeNames);
+    return this._childPaths;
+  }
+
+  getChildNodes() {
+    this._childNodes = this._childNodes ||
+      getChildPaths().map(p => Array.isArray(p) ? p.map(getNodeOfPath) : getNodeOfPath(p));
+    return this._childNodes;
   }
 
   // ###########################################################################

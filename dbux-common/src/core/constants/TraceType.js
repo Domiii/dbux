@@ -48,7 +48,10 @@ let TraceType = {
   // ReturnAwait: 1,
   // ReturnAwaitCallExpression: 1,
 
-  EndOfContext: 22
+  EndOfContext: 22,
+
+  Binding: 25,
+  
 };
 
 /**

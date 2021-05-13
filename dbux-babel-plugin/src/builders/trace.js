@@ -12,7 +12,7 @@ const Verbose = 2;
 export const buildTraceId = bindTemplate(
   '%%traceId%% = %%makeTraceId%%(%%staticTraceId%%)',
 
-  function buildTraceId(templ, path, state, traceType) {
+  function buildTraceId(templ, state, traceIdVar, inProgramStaticTraceId) {
     // TODO: add custom trace data
     const { ids: { aliases: {
       makeTraceId
@@ -21,7 +21,7 @@ export const buildTraceId = bindTemplate(
     return templ({
       makeTraceId,
       staticTraceId: t.numericLiteral(inProgramStaticTraceId),
-      traceId
+      traceId: traceIdVar
     });
   }
 );
