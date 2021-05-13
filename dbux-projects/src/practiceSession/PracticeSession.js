@@ -63,12 +63,12 @@ export default class PracticeSession {
   }
 
   /**
-   * Activate bug of and process the result
+   * Activate bug, run the test and process the result
    * @param {Object} inputCfg 
    */
-  async activate(inputCfg = EmptyObject) {
+  async testBug(inputCfg = EmptyObject) {
     const { bug } = this;
-    const result = await this.manager.activateBug(bug, inputCfg);
+    const result = await this.manager.switchAndTestBug(bug, inputCfg);
     this.maybeUpdateBugStatusByResult(result);
     this.manager._emitter.emit('bugStatusChanged', bug);
 

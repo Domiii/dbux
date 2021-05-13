@@ -96,7 +96,17 @@ export default class Bug {
     }
     if (targetFile) {
       const fpath = path.join(this.project.projectPath, targetFile);
-      await this.manager.externals.editor.openFile(fpath);
+      try {
+        await this.manager.externals.editor.openFile(fpath);
+      }
+      catch (err) {
+        this.project.logger.error(`Cannot open file for bug ${this.id}, ${err}`);
+        return false;
+      }
+      return true;
+    }
+    else {
+      return false;
     }
   }
 

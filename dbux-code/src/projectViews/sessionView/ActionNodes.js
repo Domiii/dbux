@@ -85,7 +85,8 @@ class ShowEntryNode extends SessionNode {
   }
 
   async doHandleClick() {
-    await this.entry.openInEditor();
+    const success = await this.entry.openInEditor();
+    !success && await showInformationMessage(`No entry file of this bug.`);
   }
 }
 
@@ -108,7 +109,8 @@ class OpenWorkspaceNode extends SessionNode {
   }
 
   async showEntry() {
-    return await this.entry.openInEditor();
+    const success = await this.entry.openInEditor();
+    !success && await showInformationMessage(`No entry file of this bug.`);
   }
 }
 
@@ -126,7 +128,7 @@ class RunNode extends SessionNode {
   }
 
   async doHandleClick() {
-    await this.controller.activate();
+    await this.controller.testBug();
   }
 }
 
@@ -144,7 +146,7 @@ class RunWithoutDbuxNode extends SessionNode {
   }
 
   async doHandleClick() {
-    await this.controller.activate({ dbuxEnabled: false });
+    await this.controller.testBug({ dbuxEnabled: false });
   }
 }
 
@@ -162,7 +164,7 @@ class DebugWithoutDbuxNode extends SessionNode {
   }
 
   async doHandleClick() {
-    await this.controller.activate({ debugMode: true, dbuxEnabled: false });
+    await this.controller.testBug({ debugMode: true, dbuxEnabled: false });
   }
 }
 

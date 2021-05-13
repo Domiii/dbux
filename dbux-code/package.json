@@ -461,7 +461,7 @@
         }
       },
       {
-        "command": "dbuxProjectView.node.activateBug",
+        "command": "dbuxProjectView.node.startPractice",
         "title": "Start Practice",
         "icon": {
           "light": "resources/light/play.svg",
@@ -665,7 +665,7 @@
           "group": "inline@0"
         },
         {
-          "command": "dbuxProjectView.node.activateBug",
+          "command": "dbuxProjectView.node.startPractice",
           "when": "viewItem =~ /dbuxProjectView\\.bugNode\\.(None|Done)\\..*/ && !dbuxProjectView.context.isBusy",
           "group": "inline@20"
         },
@@ -1056,7 +1056,7 @@
           "when": "false"
         },
         {
-          "command": "dbuxProjectView.node.activateBug",
+          "command": "dbuxProjectView.node.startPractice",
           "when": "false"
         },
         {

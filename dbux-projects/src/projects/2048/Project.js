@@ -28,7 +28,7 @@ export default class _2048Project extends Project {
     return [
       {
         label: 'baseline',
-        // patch: 'patch1',
+        patch: null,
         description: 'The original game',
         runArgs: [],
         // bugLocations: [

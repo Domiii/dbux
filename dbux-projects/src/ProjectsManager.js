@@ -208,7 +208,7 @@ export default class ProjectsManager {
     this.practiceSession.setupStopwatch();
     await this.savePracticeSession();
     await this.bdp.save();
-    this.maybeAskForRunBug(bug);
+    this.maybeAskForTestBug(bug);
   }
 
   /**
@@ -300,7 +300,7 @@ export default class ProjectsManager {
       const sessionData = this.externals.storage.get(savedPracticeSessionDataKeyName) || EmptyObject;
       this._resetPracticeSession(bug, sessionData, true);
       this.practiceSession.setupStopwatch();
-      this.maybeAskForRunBug(bug);
+      this.maybeAskForTestBug(bug);
     }
     catch (err) {
       logError(`Unable to load PracticeSession: ${err.stack}`);
@@ -358,14 +358,14 @@ export default class ProjectsManager {
     // TODO: maybe a new data type? or submit remotely?
   }
 
-  async maybeAskForRunBug(bug) {
+  async maybeAskForTestBug(bug) {
     try {
       if (!allApplications.getAll().length) {
         // TOTRANSLATE
         const confirmMessage = 'You have not run any test yet, do you want to run it?';
         const result = await this.externals.confirm(confirmMessage, false);
         if (result) {
-          await this.activateBug(bug);
+          await this.switchAndTestBug(bug);
           return true;
         }
       }
@@ -438,12 +438,11 @@ export default class ProjectsManager {
   // ###########################################################################
 
   /**
-   * Install and run a bug, then save testRun after result
-   * NOTE: Only used internally to manage practice flow
+   * Switch to bug and run the test
    * @param {Bug} bug 
    * @param {Object} inputCfg
    */
-  async activateBug(bug, inputCfg = EmptyObject) {
+  async switchAndTestBug(bug, inputCfg = EmptyObject) {
     await this.switchToBug(bug);
     const result = await this.runTest(bug, inputCfg);
     return result;

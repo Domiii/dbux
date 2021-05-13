@@ -14,8 +14,10 @@ import { checkSystemWithRequirement } from '../checkSystem';
 import { MultipleFileWatcher } from '../util/multipleFileWatcher';
 import RunStatus, { isStatusRunningType } from './RunStatus';
 
+const Verbose = false;
 const SharedAssetFolder = '_shared_assets_';
 const PatchFolderName = '_patches_';
+const GitInstalledTag = '__dbux_project_installed';
 
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
 /** @typedef {import('./Bug').default} Bug */
@@ -208,13 +210,16 @@ This may be solved by using \`Delete project folder\` button.`);
   // ###########################################################################
 
   /**
-   * @virtual
+   * Clone + install
    */
   async installProject() {
     await checkSystemWithRequirement(this.manager, this.systemRequirements);
 
     // git clone
     await this.gitClone();
+
+    // run hook
+    await this.install();
   }
 
   /**
@@ -229,8 +234,11 @@ This may be solved by using \`Delete project folder\` button.`);
    * @param {Bug} bug 
    */
   async selectBug(bug) {
-    if (bug.patch) {
-      return await this.switchToBugPatchTag(bug);
+    if ('patch' in bug) {
+      if (bug.patch) {
+        // NOTE: this way we may set `bug.patch = null` to avoid applying any patch
+        await this.applyPatch(bug.patch);
+      }
     }
     else {
       throw new Error(this + ' abstract method not implemented');
@@ -419,7 +427,7 @@ This may be solved by using \`Delete project folder\` button.`);
 
     // NOTE: returns status code 1, if there are any changes, IFF --exit-code or --quiet is provided
     // see: https://stackoverflow.com/questions/28296130/what-does-this-git-diff-index-quiet-head-mean
-    const code = await this.exec('git diff-index --exit-code HEAD --', { failOnStatusCode: false });
+    const code = await this.exec('git diff-index --exit-code HEAD --', { failOnStatusCode: false, logStdout: false });
 
     return !!code;  // code !== 0 means that there are pending changes
   }
@@ -434,35 +442,37 @@ This may be solved by using \`Delete project folder\` button.`);
   // ###########################################################################
 
   /**
-   * NOTE: This method is called by `gitClone`, only after a new clone has succeeded.
+   * NOTE: This method is called by `installProject`, and will be skipped if installed tag exists
    */
   async install() {
-    // remove and copy assets
-    await this.installAssets();
-    await this.autoCommit();  // auto-commit -> to be on the safe side
+    const installedTag = this.getProjectInstalledTagName();
+    if (!await this.gitDoesTagExist(installedTag)) {
+      this.log(`Installing...`);
 
-    await this.applyBugPatchToTags();
+      // remove and copy assets
+      await this.installAssets();
 
-    // install dbux dependencies
-    await this.manager.installDependencies();
+      // install dbux dependencies
+      await this.manager.installDependencies();
 
-    // NOTE: disable yarn support for now
-    // if (this.packageManager === 'yarn') {
-    //   await this.yarnInstall();
-    // }
-    // else {
-    await this.npmInstall();
-    // }
+      // install project dependencies
+      await this.npmInstall();
 
-    // custom dependencies
-    await this.installDependencies();
+      // custom dependencies
+      await this.installDependencies();
 
-    // custom `afterInstall` hook
-    await this.afterInstall();
-    await this.builder?.afterInstall?.();
+      // custom `afterInstall` hook
+      await this.afterInstall();
+      await this.builder?.afterInstall?.();
 
-    // after install completed: commit modifications, so we can easily apply patches etc (if necessary)
-    await this.autoCommit();
+      await this.autoCommit(`Project installed`);
+      await this.gitSetTag(installedTag);
+
+      this.log(`Install finished.`);
+    }
+    else {
+      this.log(`(skipped installing)`);
+    }
   }
 
   /**
@@ -475,23 +485,20 @@ This may be solved by using \`Delete project folder\` button.`);
 
   async afterInstall() { }
 
-  async autoCommit(bug) {
+  async autoCommit(message = '') {
     await this.checkCorrectGitRepository();
 
     if (await this.checkFilesChanged()) {
       // only auto commit if files changed
-      const files = this.getAllAssetFiles();
-      // this.logger.log(`[auto commit] ${files.join(', ')}`);
 
-      // await this.exec(`git add ${files.map(name => `"${name}"`).join(' ')} && git commit -am '"[dbux auto commit]"' --allow-empty`);
-
+      // add assest files to git
       // NOTE: && is not supported in all shells (e.g. Powershell)
+      const files = this.getAllAssetFiles();
       await this.exec(`git add ${files.map(name => `"${name}"`).join(' ')}`);
 
+      message && (message = ' ' + message);
       // TODO: should not need '--allow-empty', if `checkFilesChanged` is correct (but somehow still bugs out)
-      await this.exec(`git commit -am '"[dbux auto commit]"' --allow-empty`);
-
-      await this.gitAddOrUpdateTag(bug);
+      await this.exec(`git commit -am '"[dbux auto commit]${message}"' --allow-empty`, { logStdout: false });
     }
   }
 
@@ -541,9 +548,6 @@ This may be solved by using \`Delete project folder\` button.`);
 
     // clone (will do nothing if already cloned)
     if (!this.doesProjectFolderExist()) {
-      // const curDir = sh.pwd().toString();
-      // this.log(`Cloning from "${githubUrl}"\n  in "${curDir}"...`);
-      // project does not exist yet
       try {
         this.runner.createMainFolder();
         await this.execInTerminal(`git clone "${githubUrl}" "${projectPath}"`, {
@@ -563,37 +567,12 @@ This may be solved by using \`Delete project folder\` button.`);
         await this.gitCheckoutCommit(this.gitCommit);
       }
 
-      this.log(`Cloned. Installing...`);
-
-      // run hook
-      await this.install();
-
-      // log('  ->', result.err || result.out);
-      // (result.err && warn || log)('  ->', result.err || result.out);
-      this.log(`Install finished.`);
+      this.log(`Cloned.`);
     }
     else {
       sh.cd(projectPath);
       this.log('(skipped cloning)');
     }
-  }
-
-  async applyBugPatchToTags() {
-    await this.gitAddOrUpdateTag(null);
-    let bugs = this.getOrLoadBugs();
-    for (let bug of bugs) {
-      if (bug.patch) {
-        await this.applyPatch(bug.patch);
-        await this.exec(`git commit -am '"[dbux auto commit] Patch ${bug.patch}"' --allow-empty`);
-        await this.gitAddOrUpdateTag(bug);
-        await this.revertPatch(bug.patch);
-      }
-    }
-  }
-
-  async switchToBugPatchTag(bug) {
-    const tagName = this.getBugTagName(bug);
-    return this.gitCheckout(tagName);
   }
 
   get preferredPackageManager() {
@@ -692,14 +671,14 @@ This may be solved by using \`Delete project folder\` button.`);
     // const assetDir = path.resolve(path.join(__dirname, `../../dbux-projects/assets/${assetFolderName}`));
     const assetDir = this.getAssetDir(assetFolderName);
     // copy assets, if this project has any
-    this.logger.log(`Copying assets from ${assetDir} to ${this.projectPath}`);
+    Verbose && this.log(`Copying assets from ${assetDir} to ${this.projectPath}`);
 
     // Globs are tricky. See: https://stackoverflow.com/a/31438355/2228771
     const copyRes = sh.cp('-rf', `${assetDir}/{.[!.],..?,}*`, this.projectPath);
 
     const assetFiles = getAllFilesInFolders(assetDir).join(',');
     // this.log(`Copied assets. All root files: ${await getAllFilesInFolders(this.projectPath, false).join(', ')}`);
-    this.log(`Copied assets (${assetDir}): result=${copyRes.toString()}, files=${assetFiles}`,
+    Verbose && this.log(`Copied assets (${assetDir}): result=${copyRes.toString()}, files=${assetFiles}`,
       // this.execCaptureOut(`cat ${this.projectPath}/.babelrc.js`)
     );
   }
@@ -756,12 +735,6 @@ This may be solved by using \`Delete project folder\` button.`);
     return this.execCaptureOut(`git diff --color=never`);
   }
 
-  async getTagName() {
-    await this.checkCorrectGitRepository();
-
-    return (await this.execCaptureOut(`git describe --tags`)).trim();
-  }
-
   /**
    * Checkout to some distination
    * @param {String} checkoutTo 
@@ -770,21 +743,15 @@ This may be solved by using \`Delete project folder\` button.`);
     return this.exec(`git checkout "${checkoutTo}"`);
   }
 
-  getBugTagName(bug) {
-    if (bug?.patch) {
-      return `__dbux_bug_${bug.patch}`;
-    }
-    return '__dbux_bug_nopatch';
+  // ###########################################################################
+  // tags
+  // ###########################################################################
+
+  async gitGetCurrentTagName() {
+    await this.checkCorrectGitRepository();
+    return (await this.execCaptureOut(`git describe --tags`)).trim();
   }
 
-  /**
-   * @param {Bug} bug
-   */
-  async gitAddOrUpdateTag(bug) {
-    const tagName = this.getBugTagName(bug);
-    return this.gitSetTag(tagName);
-  }
-  
   /**
    * Tag current commit
    * @param {String} tagName 
@@ -794,6 +761,36 @@ This may be solved by using \`Delete project folder\` button.`);
     return this.exec(`git tag -f "${tagName}"`);
   }
 
+
+  async gitDoesTagExist(tag) {
+    await this.checkCorrectGitRepository();
+    const code = (await this.exec(`git rev-parse "${tag}" --`, { failOnStatusCode: false }));
+    return !code;
+  }
+
+  getProjectInstalledTagName() {
+    return GitInstalledTag;
+  }
+
+  async gitAddInstalledTag() {
+    return await this.gitSetTag(this.getProjectInstalledTagName());
+  }
+
+  async isProjectInstalled() {
+    return await this.gitDoesTagExist(this.getProjectInstalledTagName());
+  }
+
+  getBugSelectedTagName(bug) {
+    return `__dbux_bug_${bug.id}_selected`;
+  }
+
+  async gitAddBugSelectedTag(bug) {
+    return await this.gitSetTag(this.getBugSelectedTagName(bug));
+  }
+
+  async gitDoesBugSelectedTagExists(bug) {
+    return await this.gitDoesTagExist(this.getBugSelectedTagName(bug));
+  }
 
   // ###########################################################################
   // bugs

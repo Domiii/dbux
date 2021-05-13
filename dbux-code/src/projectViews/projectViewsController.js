@@ -203,13 +203,13 @@ export class ProjectViewController {
     }
   }
 
-  async activate(inputCfg) {
+  async testBug(inputCfg) {
     const { bug } = this.manager.practiceSession;
     const title = `Bug ${`"${bug.label}"` || ''} (${bug.id})`;
     await this.runProjectTask(title, async (report) => {
       // TOTRANSLATE
       report({ message: 'Running test...' });
-      await this.manager.practiceSession.activate(inputCfg);
+      await this.manager.practiceSession.testBug(inputCfg);
     });
   }
 
