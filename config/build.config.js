@@ -6,7 +6,7 @@ const shouldInjectSelf = false;
  * big play experiments: use dbux to debug itself
  */
 function tryInjectSelf(babelCfg) {
-  if (!shouldInjectSelf || process.env.NODE_ENV !== 'development') {
+  if (process.env.NODE_ENV !== 'development' || !shouldInjectSelf) {
     return;
   }
   

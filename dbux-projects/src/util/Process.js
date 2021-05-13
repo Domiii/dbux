@@ -86,7 +86,7 @@ export default class Process {
     //   // NOTE: shell = true exists only for spawn, not for exec
     //   processOptions.shell = true;
     // }
-    // processOptions.shell = 'bash';
+    processOptions.shell = 'bash';
 
     // some weird problem where some shells don't recognize things correctly
     // see: https://github.com/shelljs/shelljs/blob/master/src/exec.js#L51

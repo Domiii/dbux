@@ -1,16 +1,16 @@
 {
-	"compilerOptions": {
-		"module": "esnext",
-		"target": "esnext",
-		"checkJs": false,  /* Typecheck .js files. */
-		"baseUrl": "./",
-		"paths": {
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "esnext",
+    "checkJs": false,  /* Typecheck .js files. */
+    "baseUrl": "./",
+    "paths": {
       "@dbux/common/*": ["../dbux-common/*"],
       "@dbux/graph-common/*": ["../dbux-graph-common/*"],
     }
-	},
-	"include": [
-		"src",
-		"src/**/*"
-	]
+  },
+  "include": [
+    "src",
+    "src/**/*"
+  ]
 }

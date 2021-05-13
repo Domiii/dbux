@@ -11,7 +11,7 @@ import { processEnv } from '../util/processEnv';
 import buildBabelOptions from '../buildBabelOptions';
 import { buildCommonCommandOptions, resolveCommandTargetPath, processRemainingOptions } from '../commandCommons';
 
-export const command = 'instrument <file>';
+export const command = 'instrument <file> [<outputFile>]';
 export const aliases = ['i'];
 export const describe = `Instrument file with dbux and print resulting code.
   NOTE: If you want to investigate the result in VSCode you can use 'dbux instrument myFile.js | code -'`;
@@ -29,7 +29,7 @@ export const builder = {
 /**
  * Run file with dbux instrumentations (using babel-register).
  */
-export const handler = wrapCommand(async ({ file, ...options }) => {
+export const handler = wrapCommand(async ({ file, outputFile, ...options }) => {
   processEnv(options.env);
 
   const babelOptions = buildBabelOptions(options);
@@ -47,11 +47,17 @@ export const handler = wrapCommand(async ({ file, ...options }) => {
   const prettyCode = prettier.format(outputCode, 
     // see https://stackoverflow.com/questions/50561649/module-build-failed-error-no-parser-and-no-file-path-given-couldnt-infer-a-p
     { parser: "babel" }
-  );
+  ) + '\n';
 
   // show in vscode
   // sh.exec(`echo output | code -`);
 
-  process.stdout.write(prettyCode + '\n');
+  if (!outputFile) {
+    process.stdout.write(prettyCode);
+  }
+  else {
+    fs.writeFileSync(outputFile, prettyCode);
+    console.debug(`Wrote outputFile: ${outputFile}`);
+  }
 });
 

@@ -1,10 +1,9 @@
-
-countPromiseTicks();
-countAwaitTicks();
-countNextTick();
 setImmediate(() => {
   console.log('setImmediate');
 });
+countPromiseTicks();
+countAwaitTicks();
+countNextTick();
 
 
 // (async function main() {

@@ -18,7 +18,8 @@ function parseEnv(env) {
       }
       else {
         // console.warn(option.join('='));
-        option[1] = JSON.parse(option[1]);
+        // option[1] = JSON.parse(option[1]);
+        option[1] = JSON.parse(Buffer.from(option[1], 'base64').toString('ascii'));
         // // eslint-disable-next-line no-eval
         // option[1] = eval(option[1]);
       }
