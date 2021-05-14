@@ -49,6 +49,8 @@ export default class CallExpression extends BaseNode {
   // }
 
   // instrument() {
+  //   // TODO: instrumentMemberCallExpressionEnter
+  //   // TODO: instrumentDefaultCallExpressionEnter
   //   // TODO: static trace data
   //   // _callId = cfg?.callId || type === TraceType.BeforeCallExpression && _traceId;
   //   // _resultCallId = cfg?.resultCallId;

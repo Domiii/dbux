@@ -127,6 +127,15 @@ export default class MemberExpression extends BaseExpression {
   // ###########################################################################
 
   instrument(staticData, state) {
-    // TODO: instrument
+    // TODO: need instrumentNestedMELval (see `instrumentMemberCallExpressionEnter`)
+    /**
+     * var a = { b: { c: { d: { x: 3 } }}}
+     * var o;
+     * ((o = a.b.c.d), o.x)
+     *
+     * 
+     * TODO: store `varTid`, `refTid` for `a`
+     * TODO: store `memberPath`, `memberRefTid` for nested MEs (`a.b`, `b.c`, `c.d`, `o.x` (== `d.x`))
+     */
   }
 }

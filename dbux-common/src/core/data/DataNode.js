@@ -6,36 +6,52 @@
 /**
  * 
  */
-export class VarAccess {
+export class VarAccessId {
   /**
    * Id of the trace of variable declaration/binding (or first recorded instance of variable).
-   * Is `null` if accessing a nested object member.
+   * Is `null` when accessing **nested** object member.
    */
-  varId;
+  varTid;
   /**
    * Id of the trace of object creation (or first recorded instance of object).
-   * Is `null` if accessing a non-reference/-object type.
+   * Is `null` when accessing a non-reference/-object type.
    */
-  refId;
+  refTid;
+}
+
+/**
+ * Describes access of a member in `MemberExpression`
+ */
+export class VarAccesME {
+  /**
+   * The `traceId` of the object of the ME.
+   * NOTE: This is used to connect the two DataNodes of an ME.
+   */
+  objectTid;
+
   /**
    * The name of the property accessed within an object.
-   * Is `null` if accessing a variable that is not a `MemberExpression`.
    * 
    * @type {string}
    */
   memberPath;
+
+  /**
+   * The refTid of the object stored at given `memberPath`.
+   */
+  refId;
 }
 
 export default class DataNode {
+  nodeId;
+
   /**
    * The trace that recorded this `DataNode`.
    */
   traceId;
 
   /**
-   * TODO: varAccessId - (i) bindingTraceId, (ii) object refId
-   * TODO: varAccessME - (i) bindingTraceId + pathString, (ii) object refId
-   * @type {VarAccess}
+   * @type {VarAccessId | VarAccessME}
    */
   varAccess;
 

@@ -367,10 +367,6 @@ export default class RuntimeMonitor {
     this._pop(resumeContextId);
   }
 
-  // ###########################################################################
-  // traces
-  // ###########################################################################
-
   _ensureExecuting() {
     if (!this._runtime._executingStack) {
       logError('Encountered trace when stack is empty');
@@ -378,6 +374,10 @@ export default class RuntimeMonitor {
     }
     return true;
   }
+
+  // ###########################################################################
+  // traces
+  // ###########################################################################
 
   trace(programId, inProgramStaticTraceId) {
     if (!this._ensureExecuting()) {
@@ -403,15 +403,103 @@ export default class RuntimeMonitor {
     return trace.traceId;
   }
 
-  traceExpression(value, tid) {
+  // ###########################################################################
+  // TODO: fix up new trace calls with data binding!!
+  // ###########################################################################
+
+  traceExpression(value, tid, varTid, ...inputs) {
     if (!this._ensureExecuting()) {
       return value;
     }
 
-    // TODO: track data flow
-
+    /* const trace =  */registerTrace(value, tid);
+    const { refTid } = registerValue(tid, value);
+    createDataNodes(value, tid, { varTid, refTid }, inputs);
     return value;
   }
+
+  registerTrace(value, tid) {
+    // TODO: register traceWrite + X information
+    return trace;
+  }
+
+  traceME(value, objectTid, tid, memberPath, ...inputs) {
+  /* const trace =  */registerTrace(value, tid);
+    const { refTid } = registerValue(tid, value);
+    createDataNodes(tid, { objectTid, memberPath, refTid }, inputs);
+    return value;
+  }
+
+  createDataNodes(tid, varAccess, inputs) {
+    const staticTrace = getStaticTrace(tid);
+    const { dataNode: staticDataNode } = staticTrace;
+
+  /* const dataNode =  */createDataNode(tid, varAccess, inputs);
+
+    // TODO: resolve deferred access
+    // const deferredChildrenTids = getDeferredTids(tid);
+
+    // handleNodeX(value, trace, dataNode, inputs, deferredChildrenTids);
+  }
+
+  createWriteDataNodesX(value, trace, inputs) {
+    const { tid } = trace;
+    const staticTrace = getStaticTrace(trace);
+    const { dataNode: staticDataNode } = staticTrace;
+
+    const dataNode = createDataNode(tid, inputs);
+    const deferredChildrenTids = getDeferredTids(tid);
+
+    handleNodeX(value, trace, dataNode, inputs, deferredChildrenTids);
+  }
+
+  handleNodeX(value, trace, dataNode, inputs, deferredChildrenTids) {
+    // TODO: varAccess{Id,ME}
+    if (deferredChildrenTids) {
+      // TODO: children
+    }
+  }
+
+  traceWriteX(value, tid/* , bindingTid, memberPath */, deferTid, ...inputs) {
+    // NOTE: (currently,) this is mostly the same as the code for te
+    // TODO: missing bindingTid
+    const trace = registerTrace(value, tid);
+    createWriteDataNodesX(value, trace, inputs);
+    if (deferTid) {
+      addDeferredTid(deferTid, tid);
+    }
+    else {
+      finishDataNode(tid);
+    }
+  }
+
+  /**
+   * Called on the last node of a deferred chain, indicating that the sub-tree is complete.
+   * NOTE: Might not need this...
+   */
+  finishDataNode(tid) {
+    // const dataNode = getDataNode(tid);
+    // const children = getDataNodeChildren(tid);
+  }
+
+
+  deferredTids = new Map();
+  getDeferredTids(deferTid) {
+    return deferredTids.get(deferTid);
+  }
+
+  addDeferredTid(deferTid, tid) {
+    let tids = deferredTids.get(deferTid);
+    if (!tids) {
+      deferredTids.set(deferTid, tids = []);
+    }
+    tids.push(tid);
+    return tids;
+  }
+
+  // ###########################################################################
+  // traces (OLD)
+  // ###########################################################################
 
   traceArg(programId, inProgramStaticTraceId, value) {
     // currently behaves exactly the same as traceExpression
@@ -467,7 +555,6 @@ export default class RuntimeMonitor {
       this._runtime.addBCEForContext(contextId, traceId);
     }
     this._runtime.setLastContextTrace(contextId, traceId);
-    this.logbindin
   }
 
   // ###########################################################################

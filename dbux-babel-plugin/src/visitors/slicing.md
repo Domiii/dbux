@@ -428,72 +428,14 @@ twME(value, tid, deferTid, inputTids, pathTids)
 
 // TODO: how to nest deferred writes? (e.g. `tOe -> tOe -> tAe` etc.)
 // traceExpression{Object,Array}
-(tw{O,A}E)(objOrArr, tid, deferTid, inputTids)
-  twOAE(
+(trace{O,A}E)(objOrArr, tid, deferTid, inputTids)
+  traceExpression(
     { 
       a: tw(1, %tid1%, %nid1%, %tid0%, []),
       [b]: tw(f(), %tid2%, %nid2%, tid0, [])
     },
     %tid0%,
+    %varTid%,
     [tid1, tid2, ...]
   )
-
-function registerTwX(value, trace) {
-  // TODO: register traceWrite + X information
-}
-
-function createDataNodesX(value, trace, deferTid, inputs) {
-  const { tid } = trace;
-  const staticTrace = getStaticTrace(trace);
-  const { dataNode: staticDataNode } = staticTrace;
-
-  const dataNode = createDataNodeX(tid, inputs);
-  const deferredChildrenTids = getDeferredTids(tid);
-
-  handleNodeX(value, trace, dataNode, inputs, deferredChildrenTids);
-}
-
-function handleNodeX(value, trace, dataNode, inputs, deferredChildrenTids) {
-  // TODO: varAccessId - (i) bindingTraceId, (ii) object refId
-  // TODO: varAccessME - (i) bindingTraceId + pathString, (ii) object refId
-  if (deferredChildrenTids) {
-    // TODO: children
-  }
-}
-
-function twX(value, tid/* , bindingTid, memberPath */, deferTid, ...inputs) {
-  // NOTE: (currently,) this is mostly the same as the code for te
-  // TODO: missing bindingTid
-  const trace = registerTwX(value, tid);
-  createDataNodesX(value, trace, deferTid, inputs);
-  if (deferTid) {
-    addDeferredTid(deferTid, tid);
-  }
-  else {
-    finishDataNode(tid);
-  }
-}
-
-/**
- * Called on the last node of a deferred chain, indicating that the sub-tree is complete.
- * NOTE: Might not need this...
- */
-function finishDataNode(tid) {
-  // const dataNode = getDataNode(tid);
-  // const children = getDataNodeChildren(tid);
-}
-
-
-const deferredTids = new Map();
-function getDeferredTids(deferTid) {
-  return deferredTids.get(deferTid);
-}
-function addDeferredTid(deferTid, tid) {
-  let tids = deferredTids.get(deferTid);
-  if (!tids) {
-    deferredTids.set(deferTid, tids = []);
-  }
-  tids.push(tid);
-  return tids;
-}
 ```

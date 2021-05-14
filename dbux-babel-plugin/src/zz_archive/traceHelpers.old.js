@@ -188,11 +188,13 @@ export const traceValueBeforeExpression = function traceValueBeforePath(
 // ###########################################################################
 
 /**
- * NOTE: the call templates do not have arguments.
- * We will push them in manually.
+ * NOTE: the call templates do not have arguments. We will put them in manually, so as to avoid loss of path data.
+ * NOTE: the `null` expression (i.e. `newPath.get('expressions.2')`) is a placeholder for BCE id.
  */
 const callTemplatesMember = {
-  // NOTE: `f.call.call(f, args)` also works (i.e. function f(x) { console.log(this, x); } f.call(this, 1); // -> f.call.call(f, this, 1))
+  // NOTE: `f.call.call(f, args)` also works 
+  //        i.e. `f.call(this, 1);`
+  //          -> `f.call.call(f, this, 1))`
   CallExpression: () => template(`
   %%o%% = %%oNode%%,
     %%f%% = %%fNode%%,
@@ -242,6 +244,10 @@ const callTemplatesDefault = {
 function getCalleeDisplayName(calleePath) {
   return calleePath.node.name || 'func';
 }
+
+// ###########################################################################
+// instrumentMemberCallExpressionEnter
+// ###########################################################################
 
 /**
  * Convert `o.f(...args)` to:
@@ -319,7 +325,7 @@ const instrumentMemberCallExpressionEnter =
     const bcePathId = 'expressions.2';
     const newPath = path.get('expressions.3');
 
-    // hackfix: put `o` and `args` in as-is; since they are still going to get instrumented and cloning in templates is not guaranteed to keep all properties
+    // hackfix: put `o` and `args` in as-is; since they are still going to get instrumented (and node-cloning loses path data)
     if (!isSuper) {
       // NOTE: if super -> don't replace
       path.node.expressions[0].right = oPath.node;
@@ -349,6 +355,11 @@ const instrumentMemberCallExpressionEnter =
 
     return newPath;
   });
+
+
+// ###########################################################################
+// instrumentDefaultCallExpressionEnter
+// ###########################################################################
 
 function getIsRequire(calleePath) {
   return calleePath.isIdentifier() && calleePath.node.name === 'require';
@@ -524,6 +535,9 @@ export function traceWrapArg(argPath, state, beforeCallTraceId) {
   });
 }
 
+// ###########################################################################
+// traceCallExpression
+// ###########################################################################
 
 export function traceCallExpression(callPath, state, resultType) {
   const bcePathId = callPath.getData('_bcePathId');
