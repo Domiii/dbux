@@ -193,7 +193,6 @@ const StylingsByName = {
   //     }
   //   }
   // },
-  CalleeObject: false,
   ExpressionValue: false,
   CallArgument: false,
   Callee: false,

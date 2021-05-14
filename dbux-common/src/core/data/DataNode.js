@@ -8,15 +8,22 @@
  */
 export class VarAccess {
   /**
-   * Refers to `ValueRef`, if this node represents access to a reference type (object, array, function etc.).
-   * Else null.
+   * Id of the trace of variable declaration/binding (or first recorded instance of variable).
+   * Is `null` if accessing a nested object member.
+   */
+  varId;
+  /**
+   * Id of the trace of object creation (or first recorded instance of object).
+   * Is `null` if accessing a non-reference/-object type.
    */
   refId;
-  dataPath;
-}
-
-export class InvolvedNode extends VarAccess {
-  staticTraceId;
+  /**
+   * The name of the property accessed within an object.
+   * Is `null` if accessing a variable that is not a `MemberExpression`.
+   * 
+   * @type {string}
+   */
+  memberPath;
 }
 
 export default class DataNode {
@@ -28,7 +35,7 @@ export default class DataNode {
   /**
    * TODO: varAccessId - (i) bindingTraceId, (ii) object refId
    * TODO: varAccessME - (i) bindingTraceId + pathString, (ii) object refId
-   * TODO: varAccessMENested - varAccessME + (iii) involved (array of varAccessME)
+   * @type {VarAccess}
    */
   varAccess;
 
@@ -45,14 +52,6 @@ export default class DataNode {
   //  * Function call: Parent is `CallExpression` logging data access of the function itself. Children are arguments.
   //  */
   // parentId;
-
-  /**
-   * Involved variables are read during an operation (but not otherwise concerned):
-   * @example nested `MemberExpression`: `o.a` has [`o`] and `p.c.d` has [`p`, `p.c`]
-   * 
-   * @type {InvolvedNode[]}
-   */
-  involved;
 }
 
 // /**

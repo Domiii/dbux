@@ -130,6 +130,7 @@ TODO
     * Setters: `kind` === 'set'
       * e.g. `set f(val)`
 * `ClassPrivateProperty`, `ClassProperty`
+  * Variables: `static`
 * `{Array,Object}Expression.properties`
   * NOTE: recursive
   * NOTE: need to get `refId` from parent, before being able to store the writes
@@ -203,27 +204,22 @@ TODO
 
 Most expressions just pass along memory addresses, without actually generating new data. We want to differentiate between those, and those that create new values. The following AST types (mostly expressions) generate new values:
 
-* CallExpression
-  * *might* be "value-creating" if function is not instrumented
-* NewExpression
-* UpdateExpression
-* BinaryExpression
-* LogicalExpression (||, &&, ??)
-* {Array,Object}Expression
+* `{Call,New}Expression`
+  * NOTE: is new iff we did not instrument the called function
+* `ArighmeticExpression`
+* `UpdateExpression`
+* `{Array,Object}Expression`
   * (object initializer)
-* TemplateLiteral
-* UnaryExpression
-  * iff input and output is not equal (`===`)
-* Literal
+* `Literal`
+  * (implies `TemplateLiteral`)
   * Expression, Pureish, Literal, Immutable
-  * {BigInt,Boolean,Decimal,Null,Numeric,String}Literal
-* Decorator
-* ClassDeclaration
-* TryStatement
-* CatchClause
-  * `param` is new iff we did not record `throw`
-* Function
-  * NOTE: includes `FunctionDeclaration` which is not an expression
+    * {BigInt,Boolean,Decimal,Null,Numeric,RegExp,String}Literal
+* `ClassDeclaration`
+* `Function`
+  * NOTE: includes `FunctionDeclaration` and `Method` which are not expressions
+* `CatchClause.param`
+  * NOTE: is new iff we did not record corresponding `throw`
+* `Decorator`
 
 
 ## read tree propagation
@@ -419,9 +415,6 @@ function traceId(inProgramStaticTraceId) {
   const trace = createTrace(inProgramStaticTraceId);
   return trace.traceId;
 }
-function registerTwX(value, trace) {
-  // TODO: register traceWrite + X information
-}
 
 // traceExpression(inProgramStaticTraceId, value, traceId);
 te(value, thisTraceId = traceId(inProgramStaticTraceId))
@@ -445,6 +438,10 @@ twME(value, tid, deferTid, inputTids, pathTids)
     [tid1, tid2, ...]
   )
 
+function registerTwX(value, trace) {
+  // TODO: register traceWrite + X information
+}
+
 function createDataNodesX(value, trace, deferTid, inputs) {
   const { tid } = trace;
   const staticTrace = getStaticTrace(trace);
@@ -459,14 +456,12 @@ function createDataNodesX(value, trace, deferTid, inputs) {
 function handleNodeX(value, trace, dataNode, inputs, deferredChildrenTids) {
   // TODO: varAccessId - (i) bindingTraceId, (ii) object refId
   // TODO: varAccessME - (i) bindingTraceId + pathString, (ii) object refId
-  // TODO: varAccessMENested - varAccessME + (iii) involved (array of varAccessME)
   if (deferredChildrenTids) {
     // TODO: children
   }
-  // TODO: involved
 }
 
-function twX(value, tid, deferTid, ...inputs) {
+function twX(value, tid/* , bindingTid, memberPath */, deferTid, ...inputs) {
   // NOTE: (currently,) this is mostly the same as the code for te
   // TODO: missing bindingTid
   const trace = registerTwX(value, tid);

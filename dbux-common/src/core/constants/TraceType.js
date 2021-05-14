@@ -10,11 +10,10 @@ let TraceType = {
    * NOTE: `BeforeCallExpression` has now become `Callee`, meaning it also holds a value
    */
   BeforeCallExpression: 4,
-  /**
-   * E.g. `a.b.c` for `a.b.c.f()` method call.
-   * Not traced for `f()` (no object involved).
-   */
-  CalleeObject: 5,
+  // /**
+  //  * E.g. `a.b.c` for `a.b.c.f()` method call.
+  //  * Not traced for `f()` (no object involved).
+  //  */
   CallExpressionResult: 6,
   ExpressionResult: 7,
   ExpressionValue: 8,
@@ -48,10 +47,7 @@ let TraceType = {
   // ReturnAwait: 1,
   // ReturnAwaitCallExpression: 1,
 
-  EndOfContext: 22,
-
-  Binding: 25,
-  
+  EndOfContext: 22
 };
 
 /**

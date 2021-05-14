@@ -14,8 +14,8 @@ export default class StaticDataNode {
   isNew;
 
   /**
-   * 
-   * @type {boolean}
+   * @see {DataNodeType}
+   * @type {number}
    */
-  isWrite;
+  type;
 }
