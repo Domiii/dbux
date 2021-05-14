@@ -1,4 +1,3 @@
-
 import BaseNode from './BaseNode';
 
 export default class ReferencedIdentifier extends BaseNode {
@@ -13,7 +12,7 @@ export default class ReferencedIdentifier extends BaseNode {
     //   throw new Error(`Weird Babel issue - ReferencedIdentifier does not have binding - ${this}`);
     // }
 
-    const plugin = this.stack.getPlugin('StaticContext');
+    const plugin = this.stack.peekPlugin('StaticContext');
     plugin.addBinding(path, binding);
   }
 }

@@ -10,7 +10,7 @@ import { getNodeNames } from '../visitors/nameVisitors';
 import BaseNode from './BaseNode';
 
 export default class FunctionExpression extends BaseNode {
-  pluginNames = [
+  pluginConfigs = [
     'Function',
     'StaticContext'
   ];

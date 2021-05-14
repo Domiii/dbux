@@ -1,17 +1,21 @@
 
 export default class StaticDataNode {
-  staticNodeId;
-  staticTraceId;
+  // staticTraceId;
 
   /**
    * Is `true` if this node:
    * * created a new value or
    * * modified an existing value
    * 
-   * Might be `true`, but input and output might nevertheless be the same.
+   * NOTE: even if `true`, input and output might nevertheless be the same.
    * 
    * @type {boolean}
    */
   isNew;
+
+  /**
+   * 
+   * @type {boolean}
+   */
   isWrite;
 }

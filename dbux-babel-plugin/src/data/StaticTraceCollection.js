@@ -111,24 +111,25 @@ export default class StaticTraceCollection extends StaticCollection {
     return traceId && this.getById(traceId) || null;
   }
 
+
   /**
    * Tracing a path in its entirety
    * (usually means, the trace is recorded right before the given path).
    */
-  addTrace(path, type, customArg, cfg) {
+  addTrace(path, type, customArg) {
     this.checkPath(path);
 
     const { state } = this;
 
     // console.log('TRACE', '@', `${state.filename}:${line}`);
-    // per-type data
+    // get `displayName`, `loc`
     const _traceId = this._getNextId();
     let trace;
     if (traceCustomizationsByType[type]) {
       trace = traceCustomizationsByType[type](path, state, customArg);
     }
     else {
-      trace = traceDefault(path, state, customArg);
+      trace = traceDefault(path, state);
     }
 
     // misc data
@@ -139,7 +140,7 @@ export default class StaticTraceCollection extends StaticCollection {
     // push
     this._push(trace);
 
-    path.setData('_traceId', _traceId);
+    // path.setData('_traceId', _traceId);
 
     return _traceId;
   }

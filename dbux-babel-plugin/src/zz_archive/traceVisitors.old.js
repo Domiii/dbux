@@ -360,16 +360,6 @@
 // // ###########################################################################
 
 // function enterExpression(traceResultType, path, state) {
-//   if (isCallPath(path)) {
-//     // call expressions get special treatment
-//     // some of the ExpressionResult + ExpressionValue nodes we are interested in, might also be CallExpressions
-//     return enterCallExpression(traceResultType, path, state);
-//   }
-
-//   if (t.isAwaitExpression(path)) {
-//     // await expressions get special treatment
-//     return awaitVisitEnter(path, state);
-//   }
 
 //   // we want to trace CallResult on exit
 //   if (!path.getData('traceResultType')) {
@@ -378,73 +368,7 @@
 //   return null;
 // }
 
-// function enterCallExpression(traceResultType, path, state) {
-//   // CallExpression
-
-//   // TODO: need to fix for parameter assignments in function declarations: `function f(x = o.g()) { }`
-//   //      NOTE: in this case, utility variables are allocated inside function; but that would change semantics.
-//   const parent = path.parentPath;
-//   const grandParent = path.parentPath?.parentPath;
-//   if (grandParent &&
-//     t.isFunction(grandParent) &&
-//     grandParent.node.params.includes(parent.node)
-//   ) {
-//     // ignore
-//   }
-//   else {
-//     path = instrumentCallExpressionEnter(path, state);
-//     path.setData('traceResultType', traceResultType);
-//   }
-// }
-
 // const enterInstrumentors = {
-//   CallExpression(path, state) {
-//     return enterCallExpression(TraceType.CallExpressionResult, path, state);
-//   },
-//   ExpressionResult(path, state) {
-//     return enterExpression(TraceType.ExpressionResult, path, state);
-//   },
-//   // ExpressionValue(pathOrPaths, state) {
-//   //   if (Array.isArray(pathOrPaths)) {
-//   //     // e.g. `SequenceExpression`
-//   //     for (const path of pathOrPaths) {
-//   //       beforeExpression(TraceType.ExpressionValue, path, state);
-//   //     }
-//   //     return null;  // returning originalPaths is currently meanignless since `path.get` would not work on it
-//   //   }
-//   //   else {
-//   //     return beforeExpression(TraceType.ExpressionValue, pathOrPaths, state);
-//   //   }
-//   // },
-
-//   MemberProperty(propertyPath, state) {
-//     const path = propertyPath.parentPath;
-//     if (path.node.computed) {
-//       return enterExpression(TraceType.ExpressionValue, propertyPath, state);
-//     }
-//     return null;
-//   },
-
-//   MemberObject(objPath, state) {
-//     if (objPath.isSuper()) {
-//       // Do nothing. We already take care of this via `instrumentMemberCallExpressionEnter`.
-//       // return traceBeforeSuper(objPath, state);
-//       return null;
-//     }
-//     else {
-//       // trace object (e.g. `x` in `x.y`) as-is
-//       return enterExpression(TraceType.ExpressionValue, objPath, state, null, false);
-//     }
-//   },
-
-//   Statement(path, state) {
-//     const traceStart = buildTraceNoValue(path, state, TraceType.Statement);
-//     path.insertBefore(traceStart);
-//   },
-//   Loop(path, state) {
-//     // loopVisitor(path, state);
-//   },
-
 //   ReturnNoArgument(path, state) {
 //     if (!path.node.argument) {
 //       // insert trace before `return;` statement
@@ -474,24 +398,8 @@
 // // EXIT instrumentors
 // // ###########################################################################
 
-// // function wrapExpressionExit(path, state, traceType) {
-// //   if (isCallPath(path)) {
-// //     return exitCallExpression(path, state, traceType);
-// //   }  
-// // }
-
 // function wrapExpression(traceType, path, state) {
 //   let tracePath = getTracePath(path);
-
-//   if (isCallPath(path)) {
-//     // call expressions get special treatment
-//     return wrapCallExpression(path, state);
-//   }
-
-//   if (t.isAwaitExpression(path)) {
-//     // await expressions get special treatment
-//     return awaitVisitExit(path, state);
-//   }
 
 //   if (traceType === TraceType.ExpressionResult) {
 //     traceType = path.getData('traceResultType') || traceType;
@@ -499,50 +407,11 @@
 //   return traceWrapExpression(traceType, path, state, tracePath);
 // }
 
-// function wrapCallExpression(path, state) {
-//   // CallExpression
-//   // instrument args after everything else has already been done
-
-//   // const calleePath = path.get('callee');
-//   // const beforeCallTraceId = getPathTraceId(calleePath);
-//   // traceCallExpression(path, state, beforeCallTraceId);
-
-//   // TODO: instrument BCE as well, here
-
-//   let traceResultType = path.getData('traceResultType');
-//   if (!traceResultType || TraceType.is.ExpressionResult(traceResultType) || TraceType.is.ExpressionValue(traceResultType)) {
-//     traceResultType = TraceType.CallExpressionResult;
-//   }
-//   return traceCallExpression(path, state, traceResultType);
-// }
-
 // /**
 //  * NOTE: we have these specifically for expressions that
 //  * potentially can be `CallExpression`.
 //  */
 // const exitInstrumentors = {
-//   Block(path, state) {
-//     // NOTE: don't change order of statements here. We first MUST build all new nodes
-//     //    before instrumenting the path (because instrumentation causes the path to lose information)
-//     const trace = buildTraceNoValue(path, state, TraceType.BlockStart);
-//     const traceEnd = buildTraceNoValue(path, state, TraceType.BlockEnd);
-
-//     path.insertBefore(trace);
-//     path.insertAfter(traceEnd);
-//     // if (!t.isBlockStatement(path)) {
-//     //   // make a new block
-
-//     // }
-//     // else {
-//     //   // insert at the top of existing block
-//     // }
-//   },
-//   CallExpression(path, state) {
-//     return wrapExpression(null, path, state);
-//   },
-//   ExpressionResult(path, state) {
-//     return wrapExpression(TraceType.ExpressionResult, path, state);
-//   },
 //   ExpressionValue(pathOrPaths, state) {
 //     if (Array.isArray(pathOrPaths)) {
 //       // e.g. `SequenceExpression`
@@ -553,27 +422,6 @@
 //     }
 //     else {
 //       return wrapExpression(TraceType.ExpressionValue, pathOrPaths, state);
-//     }
-//   },
-//   MemberProperty(propertyPath, state) {
-//     const path = propertyPath.parentPath;
-//     if (path.node.computed) {
-//       return wrapExpression(TraceType.ExpressionValue, propertyPath, state);
-//     }
-//     return null;
-//   },
-
-//   MemberObject(objPath, state) {
-//     if (objPath.isSuper()) {
-//       // nothing to do here
-//       return null;
-//     }
-//     else {
-//       // trace object (e.g. `x` in `x.y`) as-is
-//       wrapExpression(TraceType.ExpressionValue, objPath, state, null, false);
-
-//       // NOTE: the `originalPath` is not maintained
-//       return null;
 //     }
 //   },
 //   // Super(path, state) {
@@ -588,7 +436,6 @@
 //   ThrowArgument(path, state) {
 //     return wrapExpression(TraceType.ThrowArgument, path, state);
 //   },
-//   Await: awaitVisitExit,
 // };
 
 // // ###########################################################################

@@ -1,5 +1,6 @@
-import BaseArithmeticExpression from './BaseArithmeticExpression';
+import BaseNode from './BaseNode';
 
-export default class LogicalExpression extends BaseArithmeticExpression {
-  static nodes = ['left', 'right'];
+export default class UnaryExpression extends BaseNode {
+  static children = ['argument'];
+  static plugins = ['ArithmeticExpression'];
 }

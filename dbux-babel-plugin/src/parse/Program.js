@@ -36,7 +36,9 @@ function buildProgramInit(path, { ids, contexts: { genContextIdName } }) {
   ${importLine}
   var ${dbux} = ${dbuxInit}(${dbuxRuntime});
   var ${contextIdName} = ${dbux}.getProgramContextId();
-  ${Object.entries(aliases).map(([dbuxProp, varName]) => `var ${varName} = ${dbux}.${dbuxProp}`).join('; ')}
+  ${Object.entries(aliases)
+    .map(([dbuxProp, varName]) => `var ${varName} = ${dbux}.${dbuxProp}`)
+    .join('; ')}
   `);
 }
 
@@ -74,7 +76,7 @@ function wrapProgram(path, state) {
 }
 
 export default class Program extends BaseNode {
-  static nodeNames = [
+  static children = [
     'StaticContext'
   ];
 
@@ -95,9 +97,15 @@ export default class Program extends BaseNode {
       fileName,
       filePath,
     };
+    
+    /**
+     * NOTE: push/pop context and traces is hardcoded into `ProgramMonitor`
+     * Look for: `Program{Start,Stop}TraceId`
+     */
     state.contexts.addStaticContext(path, staticProgramContext);
-    state.traces.addTrace(path, TraceType.PushImmediate, true);      // === 1
-    state.traces.addTrace(path, TraceType.PopImmediate, true);       // === 2
+
+    state.traces.addTrace(path, TraceType.PushImmediate);      // === 1
+    state.traces.addTrace(path, TraceType.PopImmediate);       // === 2
   }
 
   instrument() {

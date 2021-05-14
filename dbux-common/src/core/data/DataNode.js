@@ -26,7 +26,9 @@ export default class DataNode {
   traceId;
 
   /**
-   * TODO: nodes can have a combination of 0 or 1 `refId` and 0 or 1 `dataPath`
+   * TODO: varAccessId - (i) bindingTraceId, (ii) object refId
+   * TODO: varAccessME - (i) bindingTraceId + pathString, (ii) object refId
+   * TODO: varAccessMENested - varAccessME + (iii) involved (array of varAccessME)
    */
   varAccess;
 

@@ -3,5 +3,9 @@ import template from '@babel/template';
 
 
 export function bindTemplate(templateString, fn) {
-  return fn.bind(null, template(templateString));
+  const templ = template(templateString);
+  return (...args) => {
+    const options = fn(...args);
+    return templ(options);
+  };
 }

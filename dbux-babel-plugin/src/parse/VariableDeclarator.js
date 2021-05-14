@@ -1,9 +1,9 @@
 import BaseNode from './BaseNode';
 
 export default class VariableDeclarator extends BaseNode {
-  static pluginNames = ['BindingNode'];
+  static plugins = ['BindingNode'];
 
-  static nodeNames = ['id', 'init'];
+  static children = ['id', 'init'];
 
   exit(id, init, [idPath, initPath]) {
     // creates a new binding

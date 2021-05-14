@@ -1,4 +1,5 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
+import { traceWrapExpression } from '../../instrumentation/trace';
 // import { getPresentableString } from '../../helpers/pathHelpers';
 import ParsePlugin from '../../parseLib/ParsePlugin';
 
@@ -11,21 +12,16 @@ export default class Traces extends ParsePlugin {
   // trace bookkeeping
   // ###########################################################################
 
-  addTrace() {
+  addTrace(type, staticTraceData) {
     const { path, state } = this.node;
     const { scope } = path;
 
-    // TODO: instrument inputs (if not already instrumented)
-    // TODO: track DataNodes with inputs + outputs
-    // TODO: add DataNodes to dbux-code DP + UI
-
-    const inProgramStaticTraceId = state.traces.addTrace(path, TraceType.ExpressionResult);
+    const inProgramStaticTraceId = state.traces.addTrace(path, type, staticTraceData);
     const traceIdVar = scope.generateUidIdentifier(`t${inProgramStaticTraceId}_`);
 
-    // TODO: store trace data in `this.traces`
+    this.traces.push({ inProgramStaticTraceId, traceIdVar, type });
 
     this.Verbose >= 2 && this.debug('[traceId]', traceIdVar.name, `@${this}`);
-    return;
   }
   // exit() {
   // }
@@ -40,11 +36,20 @@ export default class Traces extends ParsePlugin {
     const { path, state } = node;
     const { scope } = path;
 
-    for (const trace of traces) {
-      const { traceId } = trace;
+    // TODO: DataNode.varAccess
+
+    for (const traceCfg of traces) {
+      // add variable to scope
+      const { /* inProgramStaticTraceId, */ traceIdVar } = traceCfg;
       scope.push({
-        id: traceId
+        id: traceIdVar
       });
+
+      // TODO: generalize to any type of trace (not just expression)
+      // TODO: add DataNodes to runtime 
+      // TODO: add DataNodes to dbux-code DP + UI
+
+      traceWrapExpression(path, state, traceCfg);
     }
   }
 }

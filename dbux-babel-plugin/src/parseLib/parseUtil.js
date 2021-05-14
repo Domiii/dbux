@@ -1,8 +1,7 @@
-
 export const DbuxNodeId = '_dbux_node_';
 
-export function getChildPaths(path, nodeNames) {
-  return nodeNames.map(name => path.get(name));
+export function getChildPaths(path, childrenNames) {
+  return childrenNames.map(name => path.get(name));
 }
 
 export function getNodeOfPath(path) {

@@ -1,9 +1,10 @@
 import isString from 'lodash/isString';
 import maxBy from 'lodash/maxBy';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { getChildPaths, setNodeOfPath } from './parseUtil';
+import { getChildPaths, getNodeOfPath, setNodeOfPath } from './parseUtil';
 import { getPresentableString } from '../helpers/pathHelpers';
 import ParseRegistry from './ParseRegistry';
+import ParsePhase from './ParsePhase';
 
 /** @typedef { import("./ParseNode").default } ParseNode */
 
@@ -52,7 +53,7 @@ export default class ParseStack {
   /**
    * @return {ParseNode}
    */
-  getNode(nameOrParseNodeClazz) {
+  peekNode(nameOrParseNodeClazz) {
     const name = isString(nameOrParseNodeClazz) ? nameOrParseNodeClazz : nameOrParseNodeClazz.name;
     const { _stack } = this;
     const nodesOfType = _stack.get(name);
@@ -62,11 +63,6 @@ export default class ParseStack {
     return null;
   }
 
-  getChildNodes(path, ParseNodeClazz) {
-    const childPaths = getChildPaths(path, ParseNodeClazz.nodeNames);
-    return childPaths.map(getNodeOfPath);
-  }
-
   getNodeOfPath(path) {
     return getNodeOfPath(path);
   }
@@ -74,8 +70,10 @@ export default class ParseStack {
   /**
    * @return {ParseNode}
    */
-  getNodeOfPlugin(pluginNameOrClazz) {
-    const pluginName = isString(pluginNameOrClazz) ? pluginNameOrClazz : pluginNameOrClazz.name;
+  peekNodeOfPlugin(pluginNameOrClazz) {
+    const pluginName = isString(pluginNameOrClazz) ?
+      pluginNameOrClazz :
+      pluginNameOrClazz.name;
     const nodeNames = ParseRegistry.getParseNodeNamesOfPluginName(pluginName);
     if (!nodeNames) {
       return null;
@@ -83,13 +81,14 @@ export default class ParseStack {
 
     // Of all candidate node types, peek the stack top, and of those take the last one created.
     return maxBy(
-      nodeNames.map(name => this.getNode(name)),
+      nodeNames.map(name => this.peekNode(name)),
       node => node.nodeId
     );
   }
 
-  getPlugin(pluginNameOrClazz) {
-    return this.getNodeOfPlugin(pluginNameOrClazz)?.getPlugin(pluginNameOrClazz);
+  peekPlugin(pluginNameOrClazz) {
+    const node = this.peekNodeOfPlugin(pluginNameOrClazz);
+    return node?.getPlugin(pluginNameOrClazz);
   }
 
   // ###########################################################################
@@ -131,13 +130,23 @@ export default class ParseStack {
    * @return {ParseNode}
    */
   createOnEnter(path, state, ParseNodeClazz) {
+    /**
+     * @type {ParseNode}
+     */
     let newNode = null;
     const initialData = ParseNodeClazz.prospectOnEnter(path, state);
     if (initialData) {
       newNode = new ParseNodeClazz(path, state, this, initialData);
-      newNode.createPlugins();
       newNode.init();
+      newNode.initPlugins();
 
+      if (getNodeOfPath(path)) {
+        // TODO: this is definitely going to happen. need to fix this somehow
+        this.logger.warn(
+          `Path has more than one matching node type: ` +
+          `${newNode.nodeTypeName} and ${getNodeOfPath(path.nodeTypeName)}`
+        );
+      }
       setNodeOfPath(path, newNode);
     }
     return newNode;
@@ -155,6 +164,7 @@ export default class ParseStack {
     let parseNode = this.createOnEnter(path, state, ParseNodeClazz, this);
     if (parseNode) {
       // push new node
+      parseNode.phase = ParsePhase.Enter;
       Verbose && parseNode.hasPhase('enter', 'exit') && this.debug(`enter ${parseNode}`);
       this.push(ParseNodeClazz, parseNode);
       const data = parseNode.enter?.(path, state);
@@ -167,7 +177,7 @@ export default class ParseStack {
     }
     else {
       // not a new node -> enterNested (prospectOnEnter returned false)
-      parseNode = this.getNode(ParseNodeClazz);
+      parseNode = this.peekNode(ParseNodeClazz);
       if (!parseNode) {
         throw new Error(`In ${ParseNodeClazz.name}'s first enter prospectOnEnter returned (but should not return) null - ${getPresentableString(path)}`);
       }
@@ -190,11 +200,13 @@ export default class ParseStack {
 
     // NOTE: even if we don't create a newNode, we push `null`.
     //    This way, every `push` will always match a `pop`.
-    const parseNode = this.getNode(ParseNodeClazz);
+    const parseNode = this.peekNode(ParseNodeClazz);
     if (!parseNode) {
       // eslint-disable-next-line max-len
       throw new Error(`Parsing failed. Exited same ${ParseNodeClazz.name} node more thance once.\n  Node was not on stack anymore: ${getNodeOfPath(path)} \n  Path: ${getPresentableString(path)}`);
     }
+
+    parseNode.phase = ParsePhase.Exit;
     Verbose && parseNode.hasPhase('enter', 'exit') && this.debug(`exit ${parseNode}`);
 
     if (parseNode._nestedEnterCount) {
@@ -256,6 +268,7 @@ export default class ParseStack {
     for (const task of genTasks) {
       const { parseNode } = task;
       Verbose && parseNode.hasPhase('inst') && debug(`instrument ${parseNode}`);
+      parseNode.phase = ParsePhase.Instrument;
       this.gen(parseNode, parseNode.instrumentPlugins);
       this.gen(parseNode, parseNode.instrument);
     }
@@ -263,6 +276,7 @@ export default class ParseStack {
     for (const task of genTasks) {
       const { parseNode } = task;
       Verbose && parseNode.hasPhase('inst2') && debug(`instrument2 ${parseNode}`);
+      parseNode.phase = ParsePhase.Instrument2;
       this.gen(parseNode, parseNode.instrument2Plugins);
       this.gen(parseNode, parseNode.instrument2);
     }
@@ -273,7 +287,6 @@ export default class ParseStack {
    */
   gen(parseNode, f) {
     // const staticData = parseNode.genStaticData(this.state);
-
     f?.call(parseNode, /* staticData, */);
     // return staticData;
   }

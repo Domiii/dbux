@@ -3,15 +3,19 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { getPresentableString } from '../helpers/pathHelpers';
 import ParseRegistry from './ParseRegistry';
 import { getChildPaths, getNodeOfPath } from './parseUtil';
+import ParsePhase from './ParsePhase';
 
 /** @typedef { import("@babel/traverse").NodePath } NodePath */
 /** @typedef { import("./ParseStack").default } ParseStack */
 
-const Phases = [
-  'enter', 'exit', 'instrument', 'instrument2'
-]
+const PhaseMethodNames = ParsePhase.names.map(name => name.toLowerCase());
 
 export default class ParseNode {
+  /**
+   * @type {number}
+   */
+  phase = ParsePhase.Init;
+
   /**
    * @type {NodePath}
    */
@@ -55,6 +59,10 @@ export default class ParseNode {
     return this.enterPath;
   }
 
+  get nodeTypeName() {
+    return this.constructor.name;
+  }
+
   // static get prop() {
   //   return 
   // }
@@ -65,7 +73,7 @@ export default class ParseNode {
   }
 
   toString() {
-    return `[${this.constructor.name}] ${getPresentableString(this.enterPath)}`;
+    return `[${this.nodeTypeName}] ${getPresentableString(this.enterPath)}`;
   }
 
   // ###########################################################################
@@ -73,16 +81,20 @@ export default class ParseNode {
   // ###########################################################################
 
   getChildPaths() {
-    const { nodeNames } = this.constructor;
-    if (!nodeNames) {
-      throw new Error(`Could not getChildPaths - missing \`static nodeNames\` in ${this}.`);
+    const { children } = this.constructor;
+    if (!children) {
+      throw new Error(`Could not getChildPaths - missing \`static children\` in ${this}.`);
     }
     // NOTE: cache _childPaths
-    this._childPaths = this._childPaths || getChildPaths(this.path, nodeNames);
+    this._childPaths = this._childPaths || getChildPaths(this.path, children);
     return this._childPaths;
   }
 
   getChildNodes() {
+    if (this.phase < ParsePhase.Exit) {
+      throw new Error(`Cannot getChildNodes before Exit or Instrument phases - ${this} (${ParsePhase.nameFromForce(this.phase)})`);
+    }
+    // NOTE: cache _childNodes
     this._childNodes = this._childNodes ||
       getChildPaths().map(p => Array.isArray(p) ? p.map(getNodeOfPath) : getNodeOfPath(p));
     return this._childNodes;
@@ -148,33 +160,29 @@ export default class ParseNode {
     return plugin;
   }
 
-  createPlugins() {
-    const { PluginClassesByName } = ParseRegistry;
+  initPlugins() {
+    // get all plugin names
+    const allPluginConfigs = ParseRegistry.getAllPluginConfigsOfNodeClass(this.constructor);
 
     // add plugins (possibly conditionally)
-    for (const h of (this.pluginNames || EmptyArray)) {
-      let predicate, helperName;
-      if (Array.isArray(h)) {
-        [predicate, helperName] = h;
+    for (const pluginCfg of allPluginConfigs.values()) {
+      let predicate, name;
+      if (Array.isArray(pluginCfg)) {
+        [predicate, name] = pluginCfg;
       }
       else {
-        helperName = h;
+        name = pluginCfg;
       }
 
       if (!predicate || predicate()) {
-        const HelperClazz = PluginClassesByName[helperName];
-        if (!HelperClazz) {
-          throw new Error(`${this} referenced non-existing helperName = "${helperName}" (available: ${Object.keys(PluginClassesByName).join(', ')})`);
-        }
-
         // add plugin
-        this.addPlugin(HelperClazz);
+        this.addPlugin(ParseRegistry.getPluginClassByName(name));
       }
     }
 
     // add plugin phases conditionally
     const pluginArray = Object.values(this.plugins);
-    for (const phase of Phases) {
+    for (const phase of PhaseMethodNames) {
       if (pluginArray.some(p => p[phase])) {
         this.makePluginPhase(phase);
       }
@@ -186,17 +194,17 @@ export default class ParseNode {
   // static members
   // ###########################################################################
 
-  get nodeNames() {
-    return this.constructor.nodeNames;
+  get children() {
+    return this.constructor.children;
   }
-  get pluginNames() {
-    return this.constructor.pluginNames;
+  get pluginConfigs() {
+    return this.constructor.plugin;
   }
   get logger() {
     return this.constructor.logger;
   }
 
-  static nodeNames = [];
+  static children = [];
 
   /**
    * @returns `false`, `true` or some initial state (which will be stored in `data`)

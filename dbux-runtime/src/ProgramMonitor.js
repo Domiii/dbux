@@ -126,7 +126,7 @@ export default class ProgramMonitor {
   // ###########################################################################
 
   /**
-   * `t` is short for `trace` (we have a lot of these, so we want to keep the name short)
+   * `t` is short for `trace`
    */
   t(inProgramStaticTraceId) {
     if (this.areTracesDisabled) {
@@ -148,7 +148,12 @@ export default class ProgramMonitor {
     }
 
 
+    // TODO
   }
+
+  // ###########################################################################
+  // old traces
+  // ###########################################################################
 
   /**
    * 

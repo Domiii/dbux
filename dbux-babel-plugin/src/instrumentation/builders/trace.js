@@ -11,53 +11,54 @@ const Verbose = 2;
 
 export const buildTraceId = bindTemplate(
   '%%traceId%% = %%makeTraceId%%(%%staticTraceId%%)',
-
-  function buildTraceId(templ, state, traceIdVar, inProgramStaticTraceId) {
+  function buildTraceId(state, { traceIdVar, inProgramStaticTraceId }) {
     // TODO: add custom trace data
     const { ids: { aliases: {
       makeTraceId
     } } } = state;
 
-    return templ({
+    return {
       makeTraceId,
       staticTraceId: t.numericLiteral(inProgramStaticTraceId),
       traceId: traceIdVar
-    });
+    };
   }
 );
 
 export const buildTraceExpression = bindTemplate(
   '%%traceExpression%%(%%expr%%, %%tid%%)',
-  function buildTraceExpression(templ, path, state, traceType) {
-    // TODO: add custom trace data
+  function buildTraceExpression(path, state, traceCfg) {
     // const { scope } = path;
     const { ids: { aliases: {
       traceExpression
     } } } = state;
 
-    const tid = buildTraceId(path, state, traceType);
+    const tid = buildTraceId(state, traceCfg);
     const expr = path.node;
     Verbose && debug('[te]', getPresentableString(path));
 
     // NOTE: templates only work on `Node`, not on `NodePath`, thus they lose all path-related information.
-    
+
     // TODO: keep `path` data etc, if necessary - `onCopy(path, newPath);`
 
-    return templ({
+    return {
       traceExpression,
       expr,
       tid
-    });
+    };
   }
 );
 
-export const buildTraceNoValue = function buildTraceNoValue(templ, path, state, traceType) {
-  const { ids: { dbux } } = state;
-  const traceId = state.traces.addTrace(path, traceType);
-  // console.warn(`traces`, state.traces);
-  return templ({
-    dbux,
-    traceId: t.numericLiteral(traceId)
-  });
-}.bind(null, template('%%dbux%%.t(%%traceId%%)'));
+export const buildTraceNoValue = bindTemplate(
+  '%%dbux%%.t(%%traceId%%)',
+  function buildTraceNoValue(path, state, traceType) {
+    const { ids: { dbux } } = state;
+    const traceId = state.traces.addTrace(path, traceType);
+    // console.warn(`traces`, state.traces);
+    return {
+      dbux,
+      traceId: t.numericLiteral(traceId)
+    };
+  }
+);
 
