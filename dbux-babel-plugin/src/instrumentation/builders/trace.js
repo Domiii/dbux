@@ -1,8 +1,8 @@
-import template from '@babel/template';
+// import template from '@babel/template';
 import * as t from '@babel/types';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { getPresentableString } from '../helpers/pathHelpers';
-import { bindTemplate } from '../helpers/templateUtil';
+import { getPresentableString } from '../../helpers/pathHelpers';
+import { bindTemplate } from '../../helpers/templateUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('builders/trace');
@@ -39,8 +39,6 @@ export const buildTraceExpression = bindTemplate(
 
     // NOTE: templates only work on `Node`, not on `NodePath`, thus they lose all path-related information.
 
-    // TODO: keep `path` data etc, if necessary - `onCopy(path, newPath);`
-
     return {
       traceExpression,
       expr,
@@ -48,6 +46,31 @@ export const buildTraceExpression = bindTemplate(
     };
   }
 );
+
+export const buildTraceWrite = bindTemplate(
+  // TODO: value, tid, deferTid, ...inputs
+  '%%traceWrite%%(%%expr%%, %%tid%%)',
+  function buildTraceNoValue(path, state, traceCfg) {
+    const { ids: { aliases: {
+      traceWrite
+    } } } = state;
+
+    const tid = buildTraceId(state, traceCfg);
+    const expr = path.node;
+    Verbose && debug('[te]', getPresentableString(path));
+
+    // NOTE: templates only work on `Node`, not on `NodePath`, thus they lose all path-related information.
+
+    // TODO: keep `path` data etc, if necessary - `onCopy(path, newPath);`
+
+    return {
+      traceWrite,
+      expr,
+      tid
+    };
+  }
+);
+
 
 export const buildTraceNoValue = bindTemplate(
   '%%dbux%%.t(%%traceId%%)',

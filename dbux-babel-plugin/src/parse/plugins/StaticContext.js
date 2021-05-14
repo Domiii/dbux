@@ -11,12 +11,14 @@ export default class StaticContext extends ParsePlugin {
   bindings = new Set();
   globals = new Set();
 
-  addBinding(path, binding) {
+  addBinding(referencedPath, binding) {
+    const { path } = binding;
+    // const 
     if (!binding) {
-      this.bindings.push(binding);
+      this.bindings.add(binding);
     }
     else {
-      this.globals.push(binding.path.toString());
+      this.globals.add(path.toString());
     }
   }
 
@@ -42,7 +44,7 @@ export default class StaticContext extends ParsePlugin {
       return node;
     }).filter(n => !!n);
 
-    
+
     // TODO: trace bindings
     // TODO: track binding `traceId`s of used variable names in nested functions
 
