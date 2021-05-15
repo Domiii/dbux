@@ -1,3 +1,7 @@
+/*
+node --stack-trace-limit=1000 --enable-source-maps "C:\Users\domin\code\dbux\node_modules\@dbux\cli\bin\dbux.js" run --esnext --d c:\Users\domin\code\dbux\samples\__samplesInput__\bintree1.inst.js
+*/
+
 "use strict";
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 var _isString2 = _interopRequireDefault(require("lodash/isString")); // import isString from '../node_modules/lodash/isString';

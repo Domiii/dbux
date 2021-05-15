@@ -66,33 +66,43 @@ module.exports = (env, argv) => {
           ]
         };
       }],
-      ["dbux-runtime", {
-        resolve: {
-          // fix for https://github.com/websockets/ws/issues/1538
-          mainFields: ['main'],
+      ["dbux-runtime", (resolve) => {
+        return {
+          resolve: {
+            // fix for https://github.com/websockets/ws/issues/1538
+            mainFields: ['main'],
 
-          // fix for https://github.com/websockets/ws/issues/1538
-          alias: {
-            // ws: path.resolve(path.join(MonoRoot, 'dbux-runtime', 'node_modules', 'ws', 'index.js'))
+            // fix for https://github.com/websockets/ws/issues/1538
+            alias: {
+              // ws: path.resolve(path.join(MonoRoot, 'dbux-runtime', 'node_modules', 'ws', 'index.js'))
+            },
+
+            fallback: {
+              tty: false,
+              util: false
+            }
           },
 
-          fallback: {
-            tty: false,
-            util: false
-          }
-        },
-
-        externals: [
-          nodeExternals()
-          // (info, callback) => {
-          //   // eslint-disable-next-line no-shadow
-          //   const { request, context } = info;
-          //   if (/^util|debug/.test(request)) {
-          //     console.error(request, context, new Error().stack);
-          //   }
-          //   callback();
-          // }
-        ]
+          externals: [
+            nodeExternals({
+              allowlist: [
+                ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/src/.*`))
+                // (...args) => {
+                //   console.error(...args);
+                //   return true;
+                // }
+              ]
+            })
+            // (info, callback) => {
+            //   // eslint-disable-next-line no-shadow
+            //   const { request, context } = info;
+            //   if (/^util|debug/.test(request)) {
+            //     console.error(request, context, new Error().stack);
+            //   }
+            //   callback();
+            // }
+          ]
+        };
       }]
     ];
 
@@ -294,7 +304,7 @@ module.exports = (env, argv) => {
     // ###########################################################################
 
     const otherWebpackConfigPaths = [
-      // `./dbux-runtime/deps/ws.webpack.config`,
+      `./dbux-runtime/deps/ws.webpack.config`,
 
       // NOTE: Don't build `dbux-graph-client` here bc/ Webpack bugs out when merging configs with different targets (i.e. `node` + `browser`)
       ...[

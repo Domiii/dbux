@@ -2,8 +2,9 @@
 //      See: https://github.com/Domiii/dbux/issues/456
 
 function loadBabel(name) {
-  // eslint-disable-next-line import/no-dynamic-require,global-require
-  const module = require(name);
+  // eslint-disable-next-line import/no-dynamic-require,global-require,camelcase
+  const requireFunc = typeof __non_webpack_require__ === "function" ? __non_webpack_require__ : require;
+  const module = requireFunc(name);
   if (module.default) {
     return module.default;
   }

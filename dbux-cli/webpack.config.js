@@ -23,7 +23,7 @@ const { globToEntry } = require('../dbux-common-node/src/util/webpackUtil');
 const projectRoot = path.resolve(__dirname);
 // const projectRootNormalized = projectRoot.replace(/\\/g, '/');
 const projectSrc = path.resolve(projectRoot, 'src');
-const projectConfig = path.resolve(projectRoot, 'config');
+// const projectConfig = path.resolve(projectRoot, 'config');
 const MonoRoot = path.resolve(__dirname, '..');
 
 module.exports = (env, argv) => {
@@ -161,14 +161,18 @@ module.exports = (env, argv) => {
     //   }
     // },
     externals: [
-      /^fs$/,
-      /^process$/,
-      /^path$/,
+      // /^fs$/,
+      // /^process$/,
+      // /^path$/,
+      // /^@babel\//,
 
       // NOTE: these are part of experiments for https://github.com/Domiii/dbux/issues/513
       // /(semver|@babel|module\\-alias|prettier)\//,
 
       nodeExternals({
+        additionalModuleDirs: [
+          path.join(MonoRoot, 'node_modules')
+        ],
         allowlist: [
           ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/src/.*`))
           // (...args) => {
