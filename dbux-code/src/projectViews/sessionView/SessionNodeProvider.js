@@ -1,6 +1,6 @@
 import EmptyNode from './EmptyNode';
 import BaseTreeViewNodeProvider from '../../codeUtil/BaseTreeViewNodeProvider';
-import { ActionNodeClasses } from './ActionNodes';
+import { getActionNodeClasses } from './ActionNodes';
 
 /** @typedef {import('../projectViewsController').ProjectViewController} ProjectViewController */
 
@@ -29,7 +29,8 @@ export default class SessionNodeProvider extends BaseTreeViewNodeProvider {
 
     if (this.manager.practiceSession) {
       const { bug } = this.manager.practiceSession;
-      roots.push(...ActionNodeClasses.map(nodeClass => this.buildNode(nodeClass, bug, this)));
+      const ActionNodeClasses = getActionNodeClasses(bug);
+      roots.push(...ActionNodeClasses.map(nodeClass => this.buildNode(nodeClass, bug, null)));
     }
 
     if (!roots.length) {

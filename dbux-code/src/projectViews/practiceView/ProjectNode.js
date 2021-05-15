@@ -1,8 +1,6 @@
-import { Uri, workspace } from 'vscode';
-import { pathGetBasename } from '@dbux/common/src/util/pathUtil';
 import sleep from '@dbux/common/src/util/sleep';
 import Project from '@dbux/projects/src/projectLib/Project';
-import RunStatus, { isStatusRunningType } from '@dbux/projects/src/projectLib/RunStatus';
+import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import BugNode from './BugNode';
 import { runTaskWithProgressBar } from '../../codeUtil/runTaskWithProgressBar';
@@ -54,7 +52,7 @@ export default class ProjectNode extends BaseTreeViewNode {
   }
 
   buildBugNode(bug) {
-    return this.treeNodeProvider.buildNode(BugNode, bug);
+    return this.treeNodeProvider.buildNode(BugNode, bug, this);
   }
 
   async deleteProject() {
@@ -81,14 +79,5 @@ export default class ProjectNode extends BaseTreeViewNode {
       }
     };
     await showInformationMessage(confirmMessage, btnConfig, { modal: true });
-  }
-
-  addToWorkspace() {
-    const uri = Uri.file(this.project.projectPath);
-    const i = workspace.workspaceFolders?.length || 0;
-    workspace.updateWorkspaceFolders(i, null, {
-      name: pathGetBasename(this.project.projectPath),
-      uri
-    });
   }
 }

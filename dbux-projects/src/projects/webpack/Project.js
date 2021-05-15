@@ -73,7 +73,7 @@ export default class WebpackProject extends Project {
     );
   }
 
-  async verifyInstallation() {
+  async installWebpackCli() {
     if (await this.checkCliInstallation(false)) {
       return;
     }
@@ -120,6 +120,8 @@ export default class WebpackProject extends Project {
 
     await this.installPackages('shebang-loader');
 
+    await this.installWebpackCli();
+
     // see https://github.com/webpack/webpack-cli/releases/tag/webpack-cli%404.6.0
     // NOTE: path.resolve(await this.execCaptureOut('readlink -f node_modules/webpack')) === path.resolve(this.projectPath)
     // await this.applyPatch('baseline');
@@ -161,10 +163,6 @@ export default class WebpackProject extends Project {
 
   decorateBug(bug) {
     bug.mainEntryPoint = ['webpack-cli/packages/webpack-cli/bin/cli.js'];
-  }
-
-  async selectBug(bug) {
-    return this.switchToBugPatchTag(bug);
   }
 
   async testBugCommand(bug, cfg) {

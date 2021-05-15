@@ -42,10 +42,6 @@ export default class EditorMdProject extends Project {
     bug.mainEntryPoint = ['src/editormd.js'];
   }
 
-  async selectBug(bug) {
-    return this.switchToBugPatchTag(bug);
-  }
-
   async testBugCommand(bug, cfg) {
     // nothing to do
   }

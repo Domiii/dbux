@@ -461,7 +461,7 @@
         }
       },
       {
-        "command": "dbuxProjectView.node.activateBug",
+        "command": "dbuxProjectView.node.startPractice",
         "title": "Start Practice",
         "icon": {
           "light": "resources/light/play.svg",
@@ -534,6 +534,14 @@
         "icon": {
           "light": "resources/light/i.svg",
           "dark": "resources/dark/i.svg"
+        }
+      },
+      {
+        "command": "dbuxSessionView.node.showEntryFile",
+        "title": "Go to program entry point",
+        "icon": {
+          "light": "resources/light/document.svg",
+          "dark": "resources/dark/document.svg"
         }
       }
     ],
@@ -657,7 +665,7 @@
           "group": "inline@0"
         },
         {
-          "command": "dbuxProjectView.node.activateBug",
+          "command": "dbuxProjectView.node.startPractice",
           "when": "viewItem =~ /dbuxProjectView\\.bugNode\\.(None|Done)\\..*/ && !dbuxProjectView.context.isBusy",
           "group": "inline@20"
         },
@@ -700,6 +708,11 @@
           "command": "dbuxSessionView.node.annotateTraceI",
           "when": "viewItem == dbuxSessionView.tagNode",
           "group": "inline@2"
+        },
+        {
+          "command": "dbuxSessionView.node.showEntryFile",
+          "when": "viewItem == dbuxSessionView.openWorkspaceNode",
+          "group": "inline"
         }
       ],
       "view/title": [
@@ -1043,7 +1056,7 @@
           "when": "false"
         },
         {
-          "command": "dbuxProjectView.node.activateBug",
+          "command": "dbuxProjectView.node.startPractice",
           "when": "false"
         },
         {
@@ -1084,6 +1097,10 @@
         },
         {
           "command": "dbuxSessionView.node.annotateTraceI",
+          "when": "false"
+        },
+        {
+          "command": "dbuxSessionView.node.showEntryFile",
           "when": "false"
         }
       ]

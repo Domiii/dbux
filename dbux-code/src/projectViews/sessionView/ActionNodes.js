@@ -1,11 +1,11 @@
 import traceSelection from '@dbux/data/src/traceSelection';
-import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
 import PracticeSessionState from '@dbux/projects/src/practiceSession/PracticeSessionState';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import { showInformationMessage, showWarningMessage } from '../../codeUtil/codeModals';
 import { emitTagTraceAction } from '../../userEvents';
 import { getCursorLocation } from '../../codeUtil/codeNav';
 import { codeLineToBabelLine } from '../../helpers/codeLocHelpers';
+import { isInCorrectWorkspace, openProjectWorkspace } from '../../codeUtil/workspaceUtil';
 
 /** @typedef {import('../projectViewsController').default} ProjectViewsController */
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
@@ -85,7 +85,32 @@ class ShowEntryNode extends SessionNode {
   }
 
   async doHandleClick() {
-    await this.entry.openInEditor();
+    const success = await this.entry.openInEditor();
+    !success && await showInformationMessage(`No entry file of this bug.`);
+  }
+}
+
+class OpenWorkspaceNode extends SessionNode {
+  static makeLabel() {
+    return 'Open VSCode workspace';
+  }
+
+  init() {
+    this.contextValue = 'dbuxSessionView.openWorkspaceNode';
+  }
+
+  makeIconPath() {
+    return 'workspace.svg';
+  }
+
+  async doHandleClick() {
+    const { project } = this.entry;
+    await openProjectWorkspace(project);
+  }
+
+  async showEntry() {
+    const success = await this.entry.openInEditor();
+    !success && await showInformationMessage(`No entry file of this bug.`);
   }
 }
 
@@ -103,7 +128,7 @@ class RunNode extends SessionNode {
   }
 
   async doHandleClick() {
-    await this.controller.activate();
+    await this.controller.testBug();
   }
 }
 
@@ -121,7 +146,7 @@ class RunWithoutDbuxNode extends SessionNode {
   }
 
   async doHandleClick() {
-    await this.controller.activate({ dbuxEnabled: false });
+    await this.controller.testBug({ dbuxEnabled: false });
   }
 }
 
@@ -139,7 +164,7 @@ class DebugWithoutDbuxNode extends SessionNode {
   }
 
   async doHandleClick() {
-    await this.controller.activate({ debugMode: true, dbuxEnabled: false });
+    await this.controller.testBug({ debugMode: true, dbuxEnabled: false });
   }
 }
 
@@ -204,12 +229,15 @@ class StopPracticeNode extends SessionNode {
   }
 }
 
-export const ActionNodeClasses = [
-  DetailNode,
-  ShowEntryNode,
-  RunNode,
-  RunWithoutDbuxNode,
-  DebugWithoutDbuxNode,
-  TagNode,
-  StopPracticeNode
-];
+export function getActionNodeClasses(bug) {
+  const { project } = bug;
+  return [
+    DetailNode,
+    isInCorrectWorkspace(project) ? ShowEntryNode : OpenWorkspaceNode,
+    RunNode,
+    RunWithoutDbuxNode,
+    DebugWithoutDbuxNode,
+    TagNode,
+    StopPracticeNode
+  ];
+}
