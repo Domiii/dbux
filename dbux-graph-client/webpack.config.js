@@ -4,14 +4,11 @@ const path = require('path');
 const webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
 
-// add some of our own good stuff
-require('../dbux-cli/lib/dbux-register-self');
-require('../dbux-common/src/util/prettyLogs');
+const webpackCommon = require('../config/webpack.config.common');
 
 const {
   makeResolve,
-  makeAbsolutePaths,
-  getDbuxVersion
+  makeAbsolutePaths
 } = require('../dbux-cli/lib/package-util');
 
 
@@ -33,12 +30,11 @@ const dependencies = [
 
 module.exports = (env, argv) => {
   const mode = argv.mode || 'development';
-  const DBUX_VERSION = getDbuxVersion(mode);
-  const DBUX_ROOT = mode === 'development' ? MonoRoot : '';
-  process.env.NODE_ENV = mode; // set these, so babel configs also have it
-  process.env.DBUX_ROOT = DBUX_ROOT;
 
-  console.debug(`[dbux-graph-client] (DBUX_VERSION=${DBUX_VERSION}, mode=${mode}, DBUX_ROOT=${DBUX_ROOT}) building...`);
+  const {
+    DBUX_VERSION,
+    DBUX_ROOT
+  } = webpackCommon('dbux-graph-client', mode);
 
   const webpackPlugins = [
     new webpack.EnvironmentPlugin({

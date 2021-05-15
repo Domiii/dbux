@@ -39,9 +39,6 @@
     "yargs": "^15.4.1"
   },
   "devDependencies": {
-    "glob": "^7.1.6",
-    "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10",
-    "webpack-node-externals": "^2.5.0"
+    "glob": "^7.1.6"
   }
 }

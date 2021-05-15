@@ -139,6 +139,8 @@ export default function buildBabelOptions(options) {
     delete babelOptions.presets;
   }
 
+  console.warn('babelOptions', JSON.stringify(babelOptions, null, 2));
+
   // TODO: add babel override config here
 
   return babelOptions;
