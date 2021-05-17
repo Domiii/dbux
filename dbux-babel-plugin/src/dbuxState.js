@@ -68,7 +68,7 @@ export default function injectDbuxState(programPath, programState) {
       dbux: scope.generateUid('dbux' + (++iProgram)),
 
       aliases: {
-        makeTraceId: scope.generateUid('tid' + (++iProgram)),
+        newTraceId: scope.generateUid('tid' + (++iProgram)),
         traceExpression: scope.generateUid('te' + (++iProgram)),
         traceWrite: scope.generateUid('tw' + (++iProgram)),
       }

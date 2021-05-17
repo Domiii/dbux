@@ -52,6 +52,8 @@ class TrackedValue {
  * Keeps track of `StaticTrace` objects that contain static code information
  */
 class ValueCollection extends Collection {
+  valuesDisabled = false;
+
   // trackedValues = new Map();
   /**
    * WeakMap to store recorded object references and their `TrackedValue`.
@@ -62,37 +64,64 @@ class ValueCollection extends Collection {
     super('values');
   }
 
-  _log(...args) {
-    this.logger.log(...args);
-  }
+  // ###########################################################################
+  // public methods
+  // ###########################################################################
 
-  registerValueMaybe(hasValue, value, valueHolder, valuesDisabled) {
-    if (valuesDisabled) {
+  registerValueMaybe(value, valueHolder) {
+    if (this.valuesDisabled) {
       valueHolder.valueId = this._addValueDisabled().valueId;
       // valueHolder.value = undefined;
     }
-    else if (!hasValue) {
-      valueHolder.valueId = 0;
-      // valueHolder.value = undefined;
-    }
     else {
-      this.registerValue(value, valueHolder);
+      const category = determineValueTypeCategory(value);
+      if (category === ValueTypeCategory.Primitive) {
+        valueHolder.valueId = 0;
+        valueHolder.value = value;
+      }
+      else {
+        const valueRef = this._serialize(value, 1, null, category);
+        Verbose && this._log(`value #${valueRef.valueId} for trace #${valueHolder.traceId}: ${ValueTypeCategory.nameFrom(category)} (${valueRef.serialized})`);
+        valueHolder.valueId = valueRef.valueId;
+        valueHolder.value = undefined;
+      }
     }
   }
 
-  // NOTE: (for now) `valueHolder` is always trace
-  registerValue(value, valueHolder) {
-    const category = determineValueTypeCategory(value);
-    if (category === ValueTypeCategory.Primitive) {
-      valueHolder.valueId = 0;
-      valueHolder.value = value;
+  // ###########################################################################
+  // misc private methods
+  // ###########################################################################
+
+  /**
+   * 
+   * @param {*} value 
+   * @param {*} category
+   * @return {ValueRef}
+   */
+  _addValueRef(value, category) {
+    // create new ref + track object value
+    const valueRef = pools.values.allocate();
+    const valueId = this._all.length;
+    valueRef.valueId = valueId;
+    valueRef.category = category;
+
+    if (isTrackableCategory(category)) {
+      const tracked = this._trackValue(value, valueRef, category);
+      valueRef.trackId = tracked.trackId;
     }
-    else {
-      const valueRef = this._serialize(value, 1, null, category);
-      Verbose && this._log(`value #${valueRef.valueId} for trace #${valueHolder.traceId}: ${ValueTypeCategory.nameFrom(category)} (${valueRef.serialized})`);
-      valueHolder.valueId = valueRef.valueId;
-      valueHolder.value = undefined;
-    }
+
+
+    // register by id
+    this._all.push(valueRef);
+
+    // mark for sending
+    this._send(valueRef);
+
+    return valueRef;
+  }
+
+  _log(...args) {
+    this.logger.log(...args);
   }
 
   /**
@@ -125,7 +154,7 @@ class ValueCollection extends Collection {
    */
   _addOmitted() {
     if (!this._omitted) {
-      this._omitted = this._registerValue(null, null);
+      this._omitted = this._addValueRef(null, null);
       this._finishValue(this._omitted, null, '(...)', ValuePruneState.Omitted);
     }
     return this._omitted;
@@ -136,38 +165,10 @@ class ValueCollection extends Collection {
    */
   _addValueDisabled() {
     if (!this._valueDisabled) {
-      this._valueDisabled = this._registerValue(null, null);
+      this._valueDisabled = this._addValueRef(null, null);
       this._finishValue(this._valueDisabled, null, '(...)', ValuePruneState.ValueDisabled);
     }
     return this._valueDisabled;
-  }
-
-  /**
-   * 
-   * @param {*} value 
-   * @param {*} category
-   * @return {ValueRef}
-   */
-  _registerValue(value, category) {
-    // create new ref + track object value
-    const valueRef = pools.values.allocate();
-    const valueId = this._all.length;
-    valueRef.valueId = valueId;
-    valueRef.category = category;
-
-    if (isTrackableCategory(category)) {
-      const tracked = this._trackValue(value, valueRef, category);
-      valueRef.trackId = tracked.trackId;
-    }
-
-
-    // register by id
-    this._all.push(valueRef);
-
-    // mark for sending
-    this._send(valueRef);
-
-    return valueRef;
   }
 
   /**
@@ -330,7 +331,7 @@ class ValueCollection extends Collection {
     }
 
     // register
-    const valueRef = this._registerValue(value, category);
+    const valueRef = this._addValueRef(value, category);
 
     // add to visited, if necessary
     visited && visited.set(value, valueRef);

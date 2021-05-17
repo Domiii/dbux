@@ -52,25 +52,25 @@ class StaticTraceCollection extends Collection {
     this._sendAll(list);
   }
 
-  _getTraces(programId) {
+  getStaticTraces(programId) {
     return this._staticTracesByProgram[programId];
   }
 
-  getTrace(programId, inProgramStaticTraceId) {
-    const traces = this._getTraces(programId);
-    if (!traces) {
+  getStaticTrace(programId, inProgramStaticTraceId) {
+    const staticTraces = this.getStaticTraces(programId);
+    if (!staticTraces) {
       logInternalError("Invalid programId has no registered static traces:", programId);
       return null;
     }
-    return traces[inProgramStaticTraceId - 1];  // ids start at 1, array starts at 0
+    return staticTraces[inProgramStaticTraceId - 1];  // ids start at 1, array starts at 0
   }
 
   getStaticTraceId(programId, inProgramStaticTraceId) {
-    const staticTrace = this.getTrace(programId, inProgramStaticTraceId);
+    const staticTrace = this.getStaticTrace(programId, inProgramStaticTraceId);
     if (!staticTrace) {
       debugger;
       // eslint-disable-next-line max-len
-      throw new Error(`Could not lookup staticTrace - programId=${programId}, inProgramStaticTraceId=${inProgramStaticTraceId} - allTraces:\n ${JSON.stringify(this._getTraces(programId), null, 2)}`);
+      throw new Error(`Could not lookup staticTrace - programId=${programId}, inProgramStaticTraceId=${inProgramStaticTraceId} - allTraces:\n ${JSON.stringify(this.getStaticTraces(programId), null, 2)}`);
     }
     return staticTrace.staticTraceId;
   }

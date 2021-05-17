@@ -24,10 +24,6 @@ export default class Trace extends HasValue {
   /**
    * @type {number}
    */
-  valueId;
-  /**
-   * @type {number}
-   */
   loopId;
 
   /**

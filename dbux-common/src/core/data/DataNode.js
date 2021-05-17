@@ -68,6 +68,16 @@ export default class DataNode {
   //  * Function call: Parent is `CallExpression` logging data access of the function itself. Children are arguments.
   //  */
   // parentId;
+
+  /**
+   * value is set for primitive value type vars
+   */
+  value;
+
+  /**
+   * valueId is set for non-primitive value type vars, and refers to a `ValueRef` entry in `valuesCollection`
+   */
+  valueId;
 }
 
 // /**

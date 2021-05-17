@@ -8,6 +8,8 @@ import traceCollection from './data/traceCollection';
 import staticTraceCollection from './data/staticTraceCollection';
 import Runtime from './Runtime';
 import ProgramMonitor from './ProgramMonitor';
+import { DataNodeCollection as dataNodeCollection } from './data/dataNodeCollection';
+import valueCollection from './data/valueCollection';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('RM');
@@ -407,71 +409,59 @@ export default class RuntimeMonitor {
   // TODO: fix up new trace calls with data binding!!
   // ###########################################################################
 
-  traceExpression(value, tid, varTid, ...inputs) {
+  traceExpression(programId, value, tid, varTid, ...inputs) {
     if (!this._ensureExecuting()) {
       return value;
     }
 
-    /* const trace =  */registerTrace(value, tid);
-    const { refTid } = registerValue(tid, value);
-    createDataNodes(value, tid, { varTid, refTid }, inputs);
+    // this.registerTrace(value, tid);
+    const { refTid } = this.registerValue(value, tid);
+    dataNodeCollection._createDataNodes(value, tid, { varTid, refTid }, inputs);
     return value;
   }
 
-  registerTrace(value, tid) {
-    // TODO: register traceWrite + X information
-    return trace;
-  }
+  // registerTrace(value, tid) {
+  //   const trace = traceCollection.getById(tid);
+  // }
 
-  traceME(value, objectTid, tid, memberPath, ...inputs) {
-  /* const trace =  */registerTrace(value, tid);
-    const { refTid } = registerValue(tid, value);
-    createDataNodes(tid, { objectTid, memberPath, refTid }, inputs);
-    return value;
-  }
+  // // TODO: traceME
+  // traceME(value, objectTid, tid, memberPath, ...inputs) {
+  // /* const trace =  */registerTrace(value, tid);
+  //   const { refTid } = registerValue(tid, value);
+  //   createDataNodes(tid, { objectTid, memberPath, refTid }, inputs);
+  //   return value;
+  // }
 
-  createDataNodes(tid, varAccess, inputs) {
-    const staticTrace = getStaticTrace(tid);
-    const { dataNode: staticDataNode } = staticTrace;
+  // createWriteDataNodesX(value, trace, inputs) {
+  //   const { tid } = trace;
+  //   const staticTrace = getStaticTrace(trace);
+  //   const { dataNode: staticDataNode } = staticTrace;
 
-  /* const dataNode =  */createDataNode(tid, varAccess, inputs);
+  //   const dataNode = createDataNode(tid, inputs);
+  //   const deferredChildrenTids = getDeferredTids(tid);
 
-    // TODO: resolve deferred access
-    // const deferredChildrenTids = getDeferredTids(tid);
+  //   handleNodeX(value, trace, dataNode, inputs, deferredChildrenTids);
+  // }
 
-    // handleNodeX(value, trace, dataNode, inputs, deferredChildrenTids);
-  }
+  // handleNodeX(value, trace, dataNode, inputs, deferredChildrenTids) {
+  //   // TODO: varAccess{Id,ME}
+  //   if (deferredChildrenTids) {
+  //     // TODO: children
+  //   }
+  // }
 
-  createWriteDataNodesX(value, trace, inputs) {
-    const { tid } = trace;
-    const staticTrace = getStaticTrace(trace);
-    const { dataNode: staticDataNode } = staticTrace;
-
-    const dataNode = createDataNode(tid, inputs);
-    const deferredChildrenTids = getDeferredTids(tid);
-
-    handleNodeX(value, trace, dataNode, inputs, deferredChildrenTids);
-  }
-
-  handleNodeX(value, trace, dataNode, inputs, deferredChildrenTids) {
-    // TODO: varAccess{Id,ME}
-    if (deferredChildrenTids) {
-      // TODO: children
-    }
-  }
-
-  traceWriteX(value, tid/* , bindingTid, memberPath */, deferTid, ...inputs) {
-    // NOTE: (currently,) this is mostly the same as the code for te
-    // TODO: missing bindingTid
-    const trace = registerTrace(value, tid);
-    createWriteDataNodesX(value, trace, inputs);
-    if (deferTid) {
-      addDeferredTid(deferTid, tid);
-    }
-    else {
-      finishDataNode(tid);
-    }
-  }
+  // traceWriteX(value, tid/* , bindingTid, memberPath */, deferTid, ...inputs) {
+  //   // NOTE: (currently,) this is mostly the same as the code for te
+  //   // TODO: missing bindingTid
+  //   const trace = registerTrace(value, tid);
+  //   createWriteDataNodesX(value, trace, inputs);
+  //   if (deferTid) {
+  //     addDeferredTid(deferTid, tid);
+  //   }
+  //   else {
+  //     finishDataNode(tid);
+  //   }
+  // }
 
   /**
    * Called on the last node of a deferred chain, indicating that the sub-tree is complete.
@@ -485,13 +475,13 @@ export default class RuntimeMonitor {
 
   deferredTids = new Map();
   getDeferredTids(deferTid) {
-    return deferredTids.get(deferTid);
+    return this.deferredTids.get(deferTid);
   }
 
   addDeferredTid(deferTid, tid) {
-    let tids = deferredTids.get(deferTid);
+    let tids = this.deferredTids.get(deferTid);
     if (!tids) {
-      deferredTids.set(deferTid, tids = []);
+      this.deferredTids.set(deferTid, tids = []);
     }
     tids.push(tid);
     return tids;
@@ -657,7 +647,16 @@ export default class RuntimeMonitor {
 
   disabled = 0;
   tracesDisabled = 0;
-  valuesDisabled = 0;
+  _valuesDisabled = 0;
+
+  get valuesDisabled() {
+    return this._valuesDisabled;
+  }
+
+  set valuesDisabled(val) {
+    this._valuesDisabled = val;
+    valueCollection.valuesDisabled = val;
+  }
 
   incDisabled() {
     ++this.disabled;

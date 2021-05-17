@@ -18,6 +18,7 @@ TODO
 6. New approach to visualization
    * Call graph filtering: allow toggle showing `node_modules`?
      * Also: Give `node_modules` nodes a more blant color
+7. `delete o[x]`
 
 
 5. Capture effects of built-in functions
