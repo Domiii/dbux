@@ -179,7 +179,7 @@ class TraceCollection extends Collection {
     for (const trace of traces) {
       trace.applicationId = this.dp.application.applicationId;
     }
-    
+
     // debug(`traces`, JSON.stringify(traces, null, 2));
 
     super.add(traces);
@@ -462,20 +462,40 @@ class ValueCollection extends Collection {
       else {
         switch (category) {
           case ValueTypeCategory.Array: {
-            value = this.getAllById(entry.serialized);
-            value = value.map(child => this._deserializeValue(child));
+            value = [];
+            for (let i = 0; i < entry.serialized.length; ++i) {
+              const [childId, childValue] = entry.serialized[i];
+              if (childId) {
+                const childEntry = this.getById(childId);
+                if (!childEntry) {
+                  value[i] = '(Dbux: lookup failed)';
+                  warn(`Could not lookup object property "${i}" by id "${childId}": ${JSON.stringify(childEntry.serialized)}`);
+                }
+                else {
+                  value[i] = this._deserializeValue(childEntry);
+                }
+              }
+              else {
+                value[i] = childValue;
+              }
+            }
             break;
           }
           case ValueTypeCategory.Object: {
             value = {};
-            for (const [key, childId] of entry.serialized) {
-              const child = this.getById(childId);
-              if (!child) {
-                value[key] = '(Dbux: lookup failed)';
-                warn(`Could not lookup object property "${key}" by id "${childId}": ${JSON.stringify(entry.serialized)}`);
+            for (const [key, childId, childValue] of entry.serialized) {
+              if (childId) {
+                const childEntry = this.getById(childId);
+                if (!childEntry) {
+                  value[key] = '(Dbux: lookup failed)';
+                  warn(`Could not lookup object property "${key}" by id "${childId}": ${JSON.stringify(childEntry.serialized)}`);
+                }
+                else {
+                  value[key] = this._deserializeValue(childEntry);
+                }
               }
               else {
-                value[key] = this._deserializeValue(child);
+                value[key] = childValue;
               }
             }
             break;

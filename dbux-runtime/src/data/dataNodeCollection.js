@@ -25,25 +25,21 @@ export class DataNodeCollection extends Collection {
     // handleNodeX(value, trace, dataNode, inputs, deferredChildrenTids);
   }
 
-  createDataNode(value, tid, varTid, inputs) {
+  createDataNode(value, traceId, varTid, inputs) {
     const dataNode = pools.dataNodes.allocate();
+
     dataNode.nodeId = this._all.length;
+    dataNode.traceId = traceId;
     this._all.push(dataNode);
 
-    // TODO: call getOrCreateObjectReferenceId
-    //      -> BUT already called to get `varAccess.refId`
-
     // value
-    const refId = valueCollection.registerValueMaybe(value, dataNode);
-    // TODO: get refTid instead of refId
-    const varAccess = { refTid, varTid };
-
-    dataNode.traceId = tid;
-    dataNode.varAccess = varAccess;
-    dataNode.inputs = inputs;
-
     // NOTE: this currently only registers new objects and primitives
     // TODO: also register object changes
+    const valueRef = valueCollection.registerValueMaybe(value, dataNode);
+    const varAccess = { refNid: valueRef?.nodeId || 0, varTid };
+
+    dataNode.varAccess = varAccess;
+    dataNode.inputs = inputs;
 
     return dataNode;
   }

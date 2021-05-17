@@ -8,7 +8,7 @@ import traceCollection from './data/traceCollection';
 import staticTraceCollection from './data/staticTraceCollection';
 import Runtime from './Runtime';
 import ProgramMonitor from './ProgramMonitor';
-import { DataNodeCollection as dataNodeCollection } from './data/dataNodeCollection';
+import dataNodeCollection from './data/dataNodeCollection';
 import valueCollection from './data/valueCollection';
 
 // eslint-disable-next-line no-unused-vars
@@ -411,6 +411,10 @@ export default class RuntimeMonitor {
 
   traceExpression(programId, value, tid, varTid, ...inputs) {
     if (!this._ensureExecuting()) {
+      return value;
+    }
+    if (!tid) {
+      logError(`traceExpression failed to capture tid`);
       return value;
     }
 

@@ -48,20 +48,24 @@ class ValueCollection extends Collection {
   // public methods
   // ###########################################################################
 
+  /**
+   * 
+   * @returns {ValueRef}
+   */
   registerValueMaybe(value, dataNode) {
-    let refId;
+    let valueRef;
     const category = determineValueTypeCategory(value);
-    if (category === ValueTypeCategory.Primitive) {
-      refId = 0;
+    if (!isTrackableCategory(category)) {
+      valueRef = null;
       dataNode.value = value;
+      Verbose && this._log(`valuefor dataNode #${dataNode.nodeId}: ${ValueTypeCategory.nameFrom(category)} (${value})`);
     }
     else {
-      const valueRef = this._serialize(value, 1, null, category);
-      Verbose && this._log(`value #${valueRef.refId} for dataNode #${dataNode.nodeId}: ${ValueTypeCategory.nameFrom(category)} (${valueRef.serialized})`);
-      refId = valueRef.refId;
+      valueRef = this._serialize(value, dataNode.nodeId, 1, category);
+      Verbose && this._log(`valueRef #${valueRef.refId} (${valueRef.nodeId}) for dataNode #${dataNode.nodeId}: ${ValueTypeCategory.nameFrom(category)} (${valueRef.serialized})`);
       dataNode.value = undefined;
     }
-    return refId;
+    return valueRef;
   }
 
   // ###########################################################################
@@ -74,12 +78,13 @@ class ValueCollection extends Collection {
    * @param {*} category
    * @return {ValueRef}
    */
-  _addValueRef(category) {
+  _addValueRef(category = null, nodeId = null) {
     // create new ref + track object value
     const valueRef = pools.values.allocate();
     valueRef.refId = this._all.length;
     this._all.push(valueRef);
 
+    valueRef.nodeId = nodeId;
     valueRef.category = category;
 
     // mark for sending
@@ -119,7 +124,7 @@ class ValueCollection extends Collection {
    */
   _addOmitted() {
     if (!this._omitted) {
-      this._omitted = this._addValueRef(null);
+      this._omitted = this._addValueRef();
       this._finishValue(this._omitted, null, '(...)', ValuePruneState.Omitted);
     }
     return this._omitted;
@@ -130,7 +135,7 @@ class ValueCollection extends Collection {
    */
   _addValueDisabled() {
     if (!this._valueDisabled) {
-      this._valueDisabled = this._addValueRef(null, null);
+      this._valueDisabled = this._addValueRef();
       this._finishValue(this._valueDisabled, null, '(...)', ValuePruneState.ValueDisabled);
     }
     return this._valueDisabled;
@@ -141,7 +146,7 @@ class ValueCollection extends Collection {
    * @param {ValueRef} valueRef
    * @return {ValueRef}
    */
-  _finishValue(valueRef, typeName, serialized, pruneState = false) {
+  _finishValue(valueRef, typeName, serialized, pruneState = null) {
     // store all other props
     valueRef.typeName = typeName;
     valueRef.pruneState = pruneState;
@@ -270,11 +275,7 @@ class ValueCollection extends Collection {
    * @param {Map} visited
    * @return {ValueRef}
    */
-  _serialize(value, depth = 1, category = null) {
-    if (depth > SerializationConfig.maxDepth) {
-      return this._addOmitted();
-    }
-
+  _serialize(value, nodeId, depth = 1, category = null) {
     // let serialized = serialize(category, value, serializationConfig);
     let serialized;
     let pruneState = ValuePruneState.Normal;
@@ -288,7 +289,7 @@ class ValueCollection extends Collection {
       valueRef = this.trackedRefs.get(value);
       if (!valueRef) {
         isNewObject = true;
-        valueRef = this._addValueRef(category);
+        valueRef = this._addValueRef(category, nodeId);
       }
     }
 
@@ -298,6 +299,9 @@ class ValueCollection extends Collection {
 
     if (this.valuesDisabled) {
       return this._addValueDisabled();
+    }
+    if (depth > SerializationConfig.maxDepth) {
+      return this._addOmitted();
     }
 
     // serialize value
@@ -335,7 +339,8 @@ class ValueCollection extends Collection {
         serialized = [];
         for (let i = 0; i < n; ++i) {
           const childValue = value[i];
-          const childRef = this._serialize(childValue, depth + 1);
+          const childRef = this._serialize(childValue, nodeId, depth + 1);
+          // TODO: fix raw values
           Verbose && this._log(`${' '.repeat(depth)}#${childRef.refId} A[${i}] ${ValueTypeCategory.nameFrom(determineValueTypeCategory(childValue))} (${childRef.serialized})`);
           serialized.push(childRef.refId);
         }
@@ -379,7 +384,8 @@ class ValueCollection extends Collection {
               // serialize built-in types - especially: RegExp, Map, Set
               const entries = builtInSerializer(value);
               for (const [prop, childValue] of entries) {
-                const childRef = this._serialize(childValue, depth + 1);
+                const childRef = this._serialize(childValue, nodeId, depth + 1);
+                // TODO: fix raw values
                 Verbose && this._log(`${' '.repeat(depth)}#${childRef.refId} O[${prop}] ` +
                   `${ValueTypeCategory.nameFrom(determineValueTypeCategory(childValue))} (${childRef.serialized})`);
                 serialized.push([prop, childRef.refId]);
@@ -395,7 +401,8 @@ class ValueCollection extends Collection {
                 }
                 else {
                   const childValue = this._readProperty(value, prop);
-                  childRef = this._serialize(childValue, depth + 1);
+                  childRef = this._serialize(childValue, nodeId, depth + 1);
+                  // TODO: fix raw values
                   Verbose && this._log(`${' '.repeat(depth)}#${childRef.refId} O[${prop}] ` +
                     `${ValueTypeCategory.nameFrom(determineValueTypeCategory(childValue))} (${childRef.serialized})`);
                 }

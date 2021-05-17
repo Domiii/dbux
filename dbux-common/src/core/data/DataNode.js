@@ -4,7 +4,7 @@
 
 
 /**
- * 
+ * VarAccess of an `Identifier`.
  */
 export class VarAccessId {
   /**
@@ -13,14 +13,14 @@ export class VarAccessId {
    */
   varTid;
   /**
-   * Id of the trace of object creation (or first recorded instance of object).
+   * Id of the `DataNode` of object creation (or first recorded instance of object).
    * Is `null` when accessing a non-reference/-object type.
    */
-  refTid;
+  refNid;
 }
 
 /**
- * Describes access of a member in `MemberExpression`
+ * VarAccess of a `MemberExpression`.
  */
 export class VarAccesME {
   /**
@@ -37,9 +37,10 @@ export class VarAccesME {
   memberPath;
 
   /**
-   * The refTid of the object stored at given `memberPath`.
+   * Id of the `DataNode` of object creation (or first recorded instance of object).
+   * Is `null` when accessing a non-reference/-object type.
    */
-  refId;
+  refNid;
 }
 
 export default class DataNode {

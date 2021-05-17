@@ -2,12 +2,12 @@ export default class ValueRef {
   /**
    * @type {number}
    */
-  valueId;
+  refId;
   
   /**
    * @type {number}
    */
-  refId;
+  nodeId;
 
   /**
    * @type {number}
