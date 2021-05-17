@@ -1,6 +1,6 @@
 import * as t from '@babel/types';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { buildVarDecl, buildVarAssignments } from './builders';
+import { buildVarDecl, buildVarAssignments } from '../instrumentation/builders/common';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('topLevelHelpers');

@@ -1,6 +1,6 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { buildSource, buildWrapTryFinally } from '../helpers/builders';
+import { buildSource, buildWrapTryFinally } from '../instrumentation/builders/common';
 import { extractTopLevelDeclarations } from '../helpers/topLevelHelpers';
 import { replaceProgramBody } from '../helpers/program';
 import errorWrapVisitor from '../helpers/errorWrapVisitor';

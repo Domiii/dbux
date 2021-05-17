@@ -1,5 +1,5 @@
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
-import { buildSource } from '../helpers/builders';
+import { buildSource } from '../instrumentation/builders/common';
 
 // const Verbose = false;
 const Verbose = true;
