@@ -16,8 +16,8 @@ const Verbose = false;
 const VerboseErrors = Verbose || false;
 
 const SerializationConfig = {
-  maxDepth: 3,
-  maxObjectSize: 20,   // applies to arrays and object
+  maxDepth: 10,
+  maxObjectSize: 100,   // applies to arrays and object
   maxStringLength: 1000
 };
 
@@ -27,65 +27,41 @@ const builtInTypeSerializers = new Map([
   [RegExp, obj => [['regex', obj.toString()]]]
 ]);
 
-
-class TrackedValue {
-  static _lastId = 0;
-
-  value;
-  
-  /**
-   * @type {ValueRef[]}
-   */
-  refs = [];
-
-  constructor(value) {
-    this.value = value;
-    this.trackId = ++TrackedValue._lastId;
-  }
-
-  addRef(ref) {
-    this.refs.push(ref);
-  }
-}
-
 /**
  * Keeps track of `StaticTrace` objects that contain static code information
  */
 class ValueCollection extends Collection {
   valuesDisabled = false;
 
-  // trackedValues = new Map();
   /**
-   * WeakMap to store recorded object references and their `TrackedValue`.
+   * @type {WeakMap<object, ValueRef>}
    */
-  trackedValues = new WeakMap();
+  trackedRefs = new WeakMap();
+  _lastRefId = 0;
 
   constructor() {
     super('values');
   }
 
+
   // ###########################################################################
   // public methods
   // ###########################################################################
 
-  registerValueMaybe(value, valueHolder) {
-    if (this.valuesDisabled) {
-      valueHolder.valueId = this._addValueDisabled().valueId;
-      // valueHolder.value = undefined;
+  registerValueMaybe(value, dataNode) {
+    let refId;
+    const category = determineValueTypeCategory(value);
+    if (category === ValueTypeCategory.Primitive) {
+      refId = 0;
+      dataNode.value = value;
     }
     else {
-      const category = determineValueTypeCategory(value);
-      if (category === ValueTypeCategory.Primitive) {
-        valueHolder.valueId = 0;
-        valueHolder.value = value;
-      }
-      else {
-        const valueRef = this._serialize(value, 1, null, category);
-        Verbose && this._log(`value #${valueRef.valueId} for trace #${valueHolder.traceId}: ${ValueTypeCategory.nameFrom(category)} (${valueRef.serialized})`);
-        valueHolder.valueId = valueRef.valueId;
-        valueHolder.value = undefined;
-      }
+      const valueRef = this._serialize(value, 1, null, category);
+      Verbose && this._log(`value #${valueRef.refId} for dataNode #${dataNode.nodeId}: ${ValueTypeCategory.nameFrom(category)} (${valueRef.serialized})`);
+      refId = valueRef.refId;
+      dataNode.value = undefined;
     }
+    return refId;
   }
 
   // ###########################################################################
@@ -98,21 +74,13 @@ class ValueCollection extends Collection {
    * @param {*} category
    * @return {ValueRef}
    */
-  _addValueRef(value, category) {
+  _addValueRef(category) {
     // create new ref + track object value
     const valueRef = pools.values.allocate();
-    const valueId = this._all.length;
-    valueRef.valueId = valueId;
-    valueRef.category = category;
-
-    if (isTrackableCategory(category)) {
-      const tracked = this._trackValue(value, valueRef, category);
-      valueRef.trackId = tracked.trackId;
-    }
-
-
-    // register by id
+    valueRef.refId = this._all.length;
     this._all.push(valueRef);
+
+    valueRef.category = category;
 
     // mark for sending
     this._send(valueRef);
@@ -125,28 +93,25 @@ class ValueCollection extends Collection {
   }
 
   /**
-   * Keep track of all refs of a value.
+   * Look-up refId of given object value.
+   * NOTE: In case of internal errors, `refId` might be set, but it might not have been registered.
    */
-  _trackValue(value, valueRef) {
-    let tracked = this.trackedValues.get(value);
-    if (!tracked) {
-      // if (value === undefined) {
-      //   this.logger.warn(new Error(`Tried to track value but is undefined`).stack);
-      // }
-      try {
-        this.trackedValues.set(value, tracked = new TrackedValue(value));
-      }
-      catch (err) {
-        let typeInfo = typeof value;
-        if (isObject(value)) {
-          typeInfo += `(${Object.getPrototypeOf(value)})`;
-        }
-        logError(`could not store value ("${err.message}"): ${typeInfo} ${JSON.stringify(value)}`);
-      }
+  trackObjectRef(value) {
+    // if (value === undefined) {
+    //   this.logger.warn(new Error(`Tried to track value but is undefined`).stack);
+    // }
+    let refId;
+    try {
+      this.trackedRefs.set(value, refId = ++this._lastRefId);
     }
-    tracked.addRef(valueRef);
-
-    return tracked;
+    catch (err) {
+      let typeInfo = typeof value;
+      if (isObject(value)) {
+        typeInfo += ` (${Object.getPrototypeOf(value)})`;
+      }
+      logError(`could not store value ("${err.message}"): ${typeInfo} ${JSON.stringify(value)}`);
+    }
+    return refId;
   }
 
   /**
@@ -154,7 +119,7 @@ class ValueCollection extends Collection {
    */
   _addOmitted() {
     if (!this._omitted) {
-      this._omitted = this._addValueRef(null, null);
+      this._omitted = this._addValueRef(null);
       this._finishValue(this._omitted, null, '(...)', ValuePruneState.Omitted);
     }
     return this._omitted;
@@ -179,8 +144,8 @@ class ValueCollection extends Collection {
   _finishValue(valueRef, typeName, serialized, pruneState = false) {
     // store all other props
     valueRef.typeName = typeName;
-    valueRef.serialized = serialized;
     valueRef.pruneState = pruneState;
+    valueRef.serialized = serialized;
 
     return valueRef;
   }
@@ -305,36 +270,41 @@ class ValueCollection extends Collection {
    * @param {Map} visited
    * @return {ValueRef}
    */
-  _serialize(value, depth = 1, visited = null, category = null) {
+  _serialize(value, depth = 1, category = null) {
     if (depth > SerializationConfig.maxDepth) {
       return this._addOmitted();
     }
-
-    category = category || determineValueTypeCategory(value);
 
     // let serialized = serialize(category, value, serializationConfig);
     let serialized;
     let pruneState = ValuePruneState.Normal;
     let typeName = '';
+    let valueRef;
+    let isNewObject = false;
 
-    // infinite loop prevention
-    if (isObjectCategory(category)) {
-      if (!visited) {
-        visited = new Map();
-      }
-      else {
-        const existingValueRef = visited.get(value);
-        if (existingValueRef) {
-          return existingValueRef;
-        }
+    // look-up existing value
+    category = category || determineValueTypeCategory(value);
+    if (isTrackableCategory(category)) {
+      valueRef = this.trackedRefs.get(value);
+      if (!valueRef) {
+        isNewObject = true;
+        valueRef = this._addValueRef(category);
       }
     }
 
-    // register
-    const valueRef = this._addValueRef(value, category);
+    if (!isNewObject) {
+      return valueRef;
+    }
 
-    // add to visited, if necessary
-    visited && visited.set(value, valueRef);
+    if (this.valuesDisabled) {
+      return this._addValueDisabled();
+    }
+
+    // serialize value
+
+    // TODO: only store values, if `isNewObject || staticTrace.dataNode.isNew` (mostly helps avoid copying cost of long strings)
+    // TODO: in general, find a better way to deal with strings (don't want to arbitrarily copy long strings)
+
 
     // process by category
     switch (category) {
@@ -365,9 +335,9 @@ class ValueCollection extends Collection {
         serialized = [];
         for (let i = 0; i < n; ++i) {
           const childValue = value[i];
-          const childRef = this._serialize(childValue, depth + 1, visited);
-          Verbose && this._log(`${' '.repeat(depth)}#${childRef.valueId} A[${i}] ${ValueTypeCategory.nameFrom(determineValueTypeCategory(childValue))} (${childRef.serialized})`);
-          serialized.push(childRef.valueId);
+          const childRef = this._serialize(childValue, depth + 1);
+          Verbose && this._log(`${' '.repeat(depth)}#${childRef.refId} A[${i}] ${ValueTypeCategory.nameFrom(determineValueTypeCategory(childValue))} (${childRef.serialized})`);
+          serialized.push(childRef.refId);
         }
         break;
       }
@@ -409,10 +379,10 @@ class ValueCollection extends Collection {
               // serialize built-in types - especially: RegExp, Map, Set
               const entries = builtInSerializer(value);
               for (const [prop, childValue] of entries) {
-                const childRef = this._serialize(childValue, depth + 1, visited);
-                Verbose && this._log(`${' '.repeat(depth)}#${childRef.valueId} O[${prop}] ` +
+                const childRef = this._serialize(childValue, depth + 1);
+                Verbose && this._log(`${' '.repeat(depth)}#${childRef.refId} O[${prop}] ` +
                   `${ValueTypeCategory.nameFrom(determineValueTypeCategory(childValue))} (${childRef.serialized})`);
-                serialized.push([prop, childRef.valueId]);
+                serialized.push([prop, childRef.refId]);
               }
             }
             else {
@@ -425,11 +395,11 @@ class ValueCollection extends Collection {
                 }
                 else {
                   const childValue = this._readProperty(value, prop);
-                  childRef = this._serialize(childValue, depth + 1, visited);
-                  Verbose && this._log(`${' '.repeat(depth)}#${childRef.valueId} O[${prop}] ` +
+                  childRef = this._serialize(childValue, depth + 1);
+                  Verbose && this._log(`${' '.repeat(depth)}#${childRef.refId} O[${prop}] ` +
                     `${ValueTypeCategory.nameFrom(determineValueTypeCategory(childValue))} (${childRef.serialized})`);
                 }
-                serialized.push([prop, childRef.valueId]);
+                serialized.push([prop, childRef.refId]);
               }
             }
           }

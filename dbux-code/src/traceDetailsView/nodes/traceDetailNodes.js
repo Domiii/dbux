@@ -57,6 +57,7 @@ export class DebugTDNode extends TraceDetailNode {
     const { staticContextId } = context;
     const staticContext = dataProvider.collections.staticContexts.getById(staticContextId);
 
+    // TODO: ddg (go through DataNode instead)
     const valueRef = valueId && dataProvider.collections.values.getById(valueId);
     const valueNode = [
       'valueRef', 

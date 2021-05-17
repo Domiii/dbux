@@ -415,8 +415,7 @@ export default class RuntimeMonitor {
     }
 
     // this.registerTrace(value, tid);
-    const { refTid } = this.registerValue(value, tid);
-    dataNodeCollection._createDataNodes(value, tid, { varTid, refTid }, inputs);
+    dataNodeCollection.createDataNodes(value, tid, varTid, inputs);
     return value;
   }
 
@@ -569,18 +568,7 @@ export default class RuntimeMonitor {
      * ```
      */
   }
-
-  // ###########################################################################
-  // varible tracking?
-  // ###########################################################################
-
-  // addVar(programId, inProgramStaticVarAccessId, value) {
-  //   const staticVar = staticVarAccessCollection.getVar(programId, inProgramStaticVarAccessId);
-  //   const { staticVarId } = staticVar;
-
-  //   // const loopIterationId = ...;
-  //   // const varAccess = varAccessCollection.addVar(staticVarId, value);
-  // }
+  
 
   // ###########################################################################
   // error handling

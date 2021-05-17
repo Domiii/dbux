@@ -5,7 +5,6 @@ import { pathGetBasename } from '@dbux/common/src/util/pathUtil';
 import StaticContextCollection from './data/StaticContextCollection';
 import StaticTraceCollection from './data/StaticTraceCollection';
 import StaticLoopCollection from './data/StaticLoopCollection';
-import StaticVarAccessCollection from './data/StaticVarAccessCollection';
 import { isNodeInstrumented } from './helpers/astUtil';
 import ParseStack from './parseLib/ParseStack';
 
@@ -56,7 +55,6 @@ export default function injectDbuxState(programPath, programState) {
 
     contexts: new StaticContextCollection(programState),
     traces: new StaticTraceCollection(programState),
-    varAccess: new StaticVarAccessCollection(programState),
     loops: new StaticLoopCollection(programState),
 
     ids: {

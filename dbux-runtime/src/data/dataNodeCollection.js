@@ -1,4 +1,5 @@
 import Trace from '@dbux/common/src/core/data/Trace';
+import isObject from 'lodash/isObject';
 import Collection from './Collection';
 import pools from './pools';
 import staticTraceCollection from './staticTraceCollection';
@@ -12,11 +13,11 @@ export class DataNodeCollection extends Collection {
   /**
    * @param {Trace} trace 
    */
-  createDataNodes(value, trace, varAccess, inputs) {
+  createDataNodes(value, trace, varTid, inputs) {
     // const staticTrace = staticTraceCollection.getStaticTrace(trace.staticTraceId);
     // const { dataNode: staticDataNode } = staticTrace;
 
-    /* const dataNode =  */this.createDataNode(value, trace.traceId, varAccess, inputs);
+    /* const dataNode =  */this.createDataNode(value, trace.traceId, varTid, inputs);
 
     // TODO: resolve deferred access
     // const deferredChildrenTids = getDeferredTids(tid);
@@ -24,7 +25,7 @@ export class DataNodeCollection extends Collection {
     // handleNodeX(value, trace, dataNode, inputs, deferredChildrenTids);
   }
 
-  createDataNode(value, tid, varAccess, inputs) {
+  createDataNode(value, tid, varTid, inputs) {
     const dataNode = pools.dataNodes.allocate();
     dataNode.nodeId = this._all.length;
     this._all.push(dataNode);
@@ -32,30 +33,24 @@ export class DataNodeCollection extends Collection {
     // TODO: call getOrCreateObjectReferenceId
     //      -> BUT already called to get `varAccess.refId`
 
+    // value
+    const refId = valueCollection.registerValueMaybe(value, dataNode);
+    // TODO: get refTid instead of refId
+    const varAccess = { refTid, varTid };
+
     dataNode.traceId = tid;
     dataNode.varAccess = varAccess;
     dataNode.inputs = inputs;
 
-    // value
-    valueCollection.registerValueMaybe(value, this);
-    
+    // NOTE: this currently only registers new objects and primitives
+    // TODO: also register object changes
+
     return dataNode;
   }
 
   // ###########################################################################
   // util
   // ###########################################################################
-
-  objectRefIds = new WeakMap();
-  getOrCreateObjectReferenceId(obj) {
-    const { objectRefIds } = this;
-    let refId = objectRefIds.get(obj);
-    if (!refId) {
-      objectRefIds.set(obj, refId = ++this.lastRefId);
-    }
-    return refId;
-  }
-  // ...
 
   // // TODO: get `lvarBindingId`
   // // @param lvarBindingId `traceId` of left-most object variable binding (i.e. traceId of `let o;` for `o.

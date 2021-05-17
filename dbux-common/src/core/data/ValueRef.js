@@ -7,7 +7,7 @@ export default class ValueRef {
   /**
    * @type {number}
    */
-  trackId;
+  refId;
 
   /**
    * @type {number}
@@ -24,8 +24,8 @@ export default class ValueRef {
    */
   typeName;
 
-  // when stored in DataProvider, serialized is taken out
-  // serialized,
-
-  value;
+  /**
+   * NOTE: when stored in DataProvider, `serialized` is deleted
+   */
+  serialized;
 }

@@ -172,19 +172,6 @@ export default class ProgramMonitor {
   }
 
   // ###########################################################################
-  // values
-  // ###########################################################################
-
-  addVarAccess(inProgramStaticVarAccessId, value) {
-    // NIY
-    return value;
-    // if (this.disabled) {
-    //   return value;
-    // }
-    // return this._runtimeMonitor.addVarAccess(this.getProgramId(), inProgramStaticVarAccessId, value);
-  }
-
-  // ###########################################################################
   // loops
   // ###########################################################################
 

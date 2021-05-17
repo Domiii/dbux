@@ -8,19 +8,17 @@ import RuntimeDataProvider from '../../RuntimeDataProvider';
  */
 function makeKey(dp, trace) {
   const {
-    valueId
+    refId
   } = trace;
-  if (!valueId) return false;
-  const { trackId } = dp.collections.values.getById(valueId);
-
-  return trackId || false;
+  
+  return refId || false;
 }
 
 
 /** @extends {CollectionIndex<Trace>} */
-export default class TracesByTrackIdIndex extends CollectionIndex {
+export default class TracesByRefIdIndex extends CollectionIndex {
   constructor() {
-    super('traces', 'byTrackId');
+    super('dataNodes', 'byRefId');
   }
 
   makeKey = makeKey

@@ -56,13 +56,13 @@ export default {
     return dp.indexes.traces.firsts.get(1);
   },
   /**
-   * Get all contexts in which an object of given `trackId` has been recorded.
+   * Get all contexts in which an object of given `refId` has been recorded.
    * 
    * @param {DataProvider} dp
    */
-  getContextsByTrackId(dp, trackId) {
+  getContextsByRefId(dp, refId) {
     // get all participating traces
-    const traces = dp.indexes.traces.byTrackId.get(trackId);
+    const traces = dp.indexes.traces.byRefId.get(refId);
 
     // generate set of contexts of those traces
     const contextsSet = new Set();
@@ -289,6 +289,7 @@ export default {
    * @param {DataProvider} dp
    */
   doesTraceHaveValue(dp, traceId) {
+    // TODO: ddg (go through DataNode instead)
     const trace = dp.util.getValueTrace(traceId);
     if (trace.value !== undefined || trace.valueId) {
       return true;
@@ -436,16 +437,16 @@ export default {
     return null;
   },
 
-  getTraceTrackId(dp, traceId) {
+  getTraceRefId(dp, traceId) {
     const valueRef = dp.util.getTraceValueRef(traceId);
-    return valueRef?.trackId;
+    return valueRef?.refId;
   },
 
   /** @param {DataProvider} dp */
   getAllTracesOfObjectOfTrace(dp, traceId) {
     const valueRef = dp.util.getTraceValueRef(traceId);
-    if (valueRef?.trackId) {
-      return dp.indexes.traces.byTrackId.get(valueRef.trackId);
+    if (valueRef?.refId) {
+      return dp.indexes.traces.byRefId.get(valueRef.refId);
     }
     return null;
   },

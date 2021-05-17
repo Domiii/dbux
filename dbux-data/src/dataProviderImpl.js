@@ -11,7 +11,7 @@ import TracesByParentContextIndex from './impl/indexes/TracesByParentContextInde
 import TracesByStaticTraceIndex from './impl/indexes/TracesByStaticTraceIndex';
 import TracesByRunIndex from './impl/indexes/TracesByRunIndex';
 import TracesByStaticContextIndex from './impl/indexes/TracesByStaticContextIndex';
-import TracesByTrackIdIndex from './impl/indexes/TracesByTrackIdIndex';
+import TracesByRefIdIndex from './impl/indexes/TracesByRefIdIndex';
 import TracesByCalleeTraceIndex from './impl/indexes/TracesByCalleeTraceIndex';
 import TracesByParentStaticContextIndex from './impl/indexes/TracesByParentStaticContextIndex';
 import TracesByRealContextIndex from './impl/indexes/TracesByRealContextIndex';
@@ -69,7 +69,7 @@ export function newDataProvider(application) {
   dataProvider.addIndex(new TracesByStaticContextIndex());
   dataProvider.addIndex(new TracesByParentStaticContextIndex());
   dataProvider.addIndex(new TracesByRunIndex());
-  dataProvider.addIndex(new TracesByTrackIdIndex());
+  dataProvider.addIndex(new TracesByRefIdIndex());
   dataProvider.addIndex(new TracesByCallIndex());
   dataProvider.addIndex(new ErrorTracesIndex());
   dataProvider.addIndex(new ErrorTracesByContextIndex());
