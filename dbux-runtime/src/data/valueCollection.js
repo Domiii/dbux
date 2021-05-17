@@ -4,6 +4,7 @@ import ValueTypeCategory, { determineValueTypeCategory, ValuePruneState, isObjec
 import { newLogger } from '@dbux/common/src/log/logger';
 import Collection from './Collection';
 import pools from './pools';
+import { truncate } from 'lodash';
 
 /** @typedef {import('@dbux/common/src/core/data/ValueRef').default} ValueRef */
 
@@ -16,15 +17,17 @@ const Verbose = false;
 const VerboseErrors = Verbose || false;
 
 const SerializationConfig = {
-  maxDepth: 10,
-  maxObjectSize: 100,   // applies to arrays and object
-  maxStringLength: 1000
+  maxDepth: 15,
+  maxObjectSize: 500,   // applies to arrays and object
+  maxStringLength: 5000
 };
 
 const builtInTypeSerializers = new Map([
   [Map, obj => [['entries', obj.entries()]]],
   [Set, obj => [['entries', obj.entries()]]],
   [RegExp, obj => [['regex', obj.toString()]]]
+
+  // TODO: thenables and many other built-ins
 ]);
 
 /**
@@ -54,17 +57,18 @@ class ValueCollection extends Collection {
    */
   registerValueMaybe(value, dataNode) {
     let valueRef;
+    const { nodeId } = dataNode;
     const category = determineValueTypeCategory(value);
+    Verbose > 1 && this._log(`[val] dataNode #${nodeId}`);
     if (!isTrackableCategory(category)) {
       valueRef = null;
       dataNode.value = value;
-      Verbose && this._log(`valuefor dataNode #${dataNode.nodeId}: ${ValueTypeCategory.nameFrom(category)} (${value})`);
     }
     else {
-      valueRef = this._serialize(value, dataNode.nodeId, 1, category);
-      Verbose && this._log(`valueRef #${valueRef.refId} (${valueRef.nodeId}) for dataNode #${dataNode.nodeId}: ${ValueTypeCategory.nameFrom(category)} (${valueRef.serialized})`);
+      valueRef = this._serialize(value, nodeId, 1, category);
       dataNode.value = undefined;
     }
+    Verbose && this._logValue(`[/val] dataNode #${nodeId}:`, valueRef, category, value);
     return valueRef;
   }
 
@@ -95,6 +99,16 @@ class ValueCollection extends Collection {
 
   _log(...args) {
     this.logger.log(...args);
+  }
+
+  _logValue(prefix, valueRef, value) {
+    const category = ValueTypeCategory.nameFrom(determineValueTypeCategory(value));
+    if (valueRef) {
+      this._log(`${prefix}${ValueTypeCategory.nameFrom(category)} -`, value);
+    }
+    else {
+      this._log(`${prefix}${ValueTypeCategory.nameFrom(category)} (ref #${valueRef.refId} (${valueRef.nodeId})) - ${truncate(valueRef.serialized, { length: 100 })})`);
+    }
   }
 
   /**
@@ -271,6 +285,12 @@ class ValueCollection extends Collection {
   // serialize
   // ###########################################################################
 
+  _pushObjectProp(depth, prop, valueRef, value, serialized) {
+    Verbose > 1 && this._logValue(`${' '.repeat(depth)}[${prop}]`, valueRef, value);
+
+    serialized.push([prop, valueRef && valueRef.refId, !valueRef && value]);
+  }
+
   /**
    * @param {Map} visited
    * @return {ValueRef}
@@ -339,10 +359,11 @@ class ValueCollection extends Collection {
         serialized = [];
         for (let i = 0; i < n; ++i) {
           const childValue = value[i];
+
           const childRef = this._serialize(childValue, nodeId, depth + 1);
-          // TODO: fix raw values
-          Verbose && this._log(`${' '.repeat(depth)}#${childRef.refId} A[${i}] ${ValueTypeCategory.nameFrom(determineValueTypeCategory(childValue))} (${childRef.serialized})`);
-          serialized.push(childRef.refId);
+          Verbose > 1 && this._logValue(`${' '.repeat(depth)}[${i}]`, childRef, childValue);
+
+          serialized.push([childRef && childRef.refId, !childRef && childValue]);
         }
         break;
       }
@@ -376,19 +397,13 @@ class ValueCollection extends Collection {
             // start serializing
             serialized = [];
 
-            // TODO: won't work for polyfills :(
-            // TODO: consider thenables
-
             const builtInSerializer = value.constructor ? builtInTypeSerializers.get(value.constructor) : null;
             if (builtInSerializer) {
               // serialize built-in types - especially: RegExp, Map, Set
               const entries = builtInSerializer(value);
               for (const [prop, childValue] of entries) {
-                const childRef = this._serialize(childValue, nodeId, depth + 1);
-                // TODO: fix raw values
-                Verbose && this._log(`${' '.repeat(depth)}#${childRef.refId} O[${prop}] ` +
-                  `${ValueTypeCategory.nameFrom(determineValueTypeCategory(childValue))} (${childRef.serialized})`);
-                serialized.push([prop, childRef.refId]);
+                const childRef = this._serialize(value, nodeId, depth + 1);
+                this._pushObjectProp(depth, prop, childRef, childValue, serialized);
               }
             }
             else {
@@ -396,17 +411,15 @@ class ValueCollection extends Collection {
               for (let i = 0; i < n; ++i) {
                 const prop = props[i];
                 let childRef;
+                let childValue;
                 if (!this._canAccess(value)) {
                   childRef = this._addOmitted();
                 }
                 else {
-                  const childValue = this._readProperty(value, prop);
+                  childValue = this._readProperty(value, prop);
                   childRef = this._serialize(childValue, nodeId, depth + 1);
-                  // TODO: fix raw values
-                  Verbose && this._log(`${' '.repeat(depth)}#${childRef.refId} O[${prop}] ` +
-                    `${ValueTypeCategory.nameFrom(determineValueTypeCategory(childValue))} (${childRef.serialized})`);
                 }
-                serialized.push([prop, childRef.refId]);
+                this._pushObjectProp(depth, prop, childRef, childValue, serialized);
               }
             }
           }
