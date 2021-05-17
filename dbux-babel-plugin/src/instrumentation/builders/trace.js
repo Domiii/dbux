@@ -3,6 +3,7 @@ import * as t from '@babel/types';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { getPresentableString } from '../../helpers/pathHelpers';
 import { bindTemplate } from '../../helpers/templateUtil';
+import { buildArrayOfVariables } from './common';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('builders/trace');
@@ -10,15 +11,15 @@ const { log, debug, warn, error: logError } = newLogger('builders/trace');
 const Verbose = 2;
 
 export const buildTraceId = bindTemplate(
-  '%%traceId%% = %%makeTraceId%%(%%staticTraceId%%)',
+  '%%traceId%% = %%newTraceId%%(%%staticTraceId%%)',
   function buildTraceId(state, { traceIdVar, inProgramStaticTraceId }) {
     // TODO: add custom trace data
     const { ids: { aliases: {
-      makeTraceId
+      newTraceId
     } } } = state;
 
     return {
-      makeTraceId,
+      newTraceId,
       staticTraceId: t.numericLiteral(inProgramStaticTraceId),
       traceId: traceIdVar
     };
@@ -26,8 +27,8 @@ export const buildTraceId = bindTemplate(
 );
 
 export const buildTraceExpression = bindTemplate(
-  '%%traceExpression%%(%%expr%%, %%tid%%)',
-  function buildTraceExpression(path, state, traceCfg) {
+  '%%traceExpression%%(%%expr%%, %%tid%%, %%bindingTid%%, %%inputs%%)',
+  function buildTraceExpression(path, state, traceCfg, bindingTidIdentifier, inputVariableIds) {
     // const { scope } = path;
     const { ids: { aliases: {
       traceExpression
@@ -42,7 +43,9 @@ export const buildTraceExpression = bindTemplate(
     return {
       traceExpression,
       expr,
-      tid
+      tid,
+      bindingTid: bindingTidIdentifier,
+      inputs: t.arrayExpression(inputVariableIds)
     };
   }
 );

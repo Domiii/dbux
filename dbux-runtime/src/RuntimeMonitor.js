@@ -409,7 +409,7 @@ export default class RuntimeMonitor {
   // TODO: fix up new trace calls with data binding!!
   // ###########################################################################
 
-  traceExpression(programId, value, tid, varTid, ...inputs) {
+  traceExpression(programId, value, tid, bindingTid, inputs) {
     if (!this._ensureExecuting()) {
       return value;
     }
@@ -419,7 +419,7 @@ export default class RuntimeMonitor {
     }
 
     // this.registerTrace(value, tid);
-    dataNodeCollection.createDataNodes(value, tid, varTid, inputs);
+    dataNodeCollection.createDataNodes(value, tid, bindingTid, inputs);
     return value;
   }
 

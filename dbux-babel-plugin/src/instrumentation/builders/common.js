@@ -68,6 +68,10 @@ export function buildProgram(origPathOrNode, bodyNodes) {
   return newProgramNode;
 }
 
+// ###########################################################################
+// buildSource
+// ###########################################################################
+
 /**
  * Build AST from source through @babel/parser
  * @param {String} source 
@@ -98,4 +102,11 @@ export function buildSource(source) {
   return nodes;
 }
 
-// https://stackoverflow.com/questions/35925798/how-to-add-an-import-to-the-file-with-babel
+
+// ###########################################################################
+// arrays
+// ###########################################################################
+
+export function buildArrayOfVariables(names) {
+  return t.arrayExpression(names.map(name => t.identifier(name)));
+}
