@@ -4,9 +4,11 @@ import { getPresentableString } from '../helpers/pathHelpers';
 import ParseRegistry from './ParseRegistry';
 import { getChildPaths, getNodeOfPath } from './parseUtil';
 import ParsePhase from './ParsePhase';
+import { Logger } from '@dbux/common/src/log/logger';
 
 /** @typedef { import("@babel/traverse").NodePath } NodePath */
 /** @typedef { import("./ParseStack").default } ParseStack */
+/** @typedef { import("@dbux/common/src/log/logger").Logger } Logger */
 
 const PhaseMethodNames = ParsePhase.names.map(name => name.toLowerCase());
 
@@ -90,13 +92,17 @@ export default class ParseNode {
     return this._childPaths;
   }
 
+  getNodeOfChildPath = path => {
+    return Array.isArray(path) ? path.map(getNodeOfPath) : getNodeOfPath(path);
+  }
+
   getChildNodes() {
     if (this.phase < ParsePhase.Exit) {
       throw new Error(`Cannot getChildNodes before Exit or Instrument phases - ${this} (${ParsePhase.nameFromForce(this.phase)})`);
     }
     // NOTE: cache _childNodes
     this._childNodes = this._childNodes ||
-      getChildPaths().map(p => Array.isArray(p) ? p.map(getNodeOfPath) : getNodeOfPath(p));
+      getChildPaths().map(this.getNodeOfChildPath);
     return this._childNodes;
   }
 
@@ -214,6 +220,10 @@ export default class ParseNode {
   get pluginConfigs() {
     return this.constructor.plugin;
   }
+
+  /**
+   * @type {Logger}
+   */
   get logger() {
     return this.constructor.logger;
   }

@@ -89,6 +89,11 @@ function nsWrapper(logCb, ns) {
 }
 
 export class Logger {
+  log;
+  debug;
+  warn;
+  error;
+
   constructor(ns, logWrapper = nsWrapper) {
     this.ns = ns;
     // this._emitter = 
@@ -101,7 +106,7 @@ export class Logger {
     };
     this._addLoggers(logFunctions, logWrapper);
   }
-  
+
   _addLoggers(logFunctions, logWrapper) {
     for (const name in logFunctions) {
       const f = logFunctions[name];

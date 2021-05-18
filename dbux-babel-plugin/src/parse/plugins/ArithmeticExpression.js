@@ -13,8 +13,8 @@ export default class ArithmeticExpression extends Expression {
     // const [...inputs, inputPaths] = args; // NOTE: esnext does not allow this (yet)
     const { node } = this;
     const { path } = node;
-    const childNodes = node.getChildNodes();
-    // const childPaths = node.getChildPaths();
+    // const childNodes = node.getChildNodes();
+    const childPaths = node.getChildPaths();
 
     const traces = node.getPlugin('Traces');
 
@@ -30,19 +30,10 @@ export default class ArithmeticExpression extends Expression {
     };
 
     const varNode = null;
+    // const inputNodes = childNodes;
 
-    // TODO: make sure that childNodes are traced if `literal` or `identifier`
-    const inputNodes = childNodes;
-
-    traces.addTrace(path, type, varNode, inputNodes, staticTraceData);
-
-    // NOTE: AEs propagate all their inputs (their inputs should be captured by next in chain)
-    // const propagatedInputs = this.getInputs(childNodes, childPaths);
-    // return {
-    //   isNew: true, // new value
-    //   inputs: propagatedInputs,
-    //   propagatedInputs
-    // };
+    // TODO: propagate inputs
+    traces.addTraceWithInputs(path, type, varNode, childPaths, staticTraceData);
   }
 
   instrument() {
