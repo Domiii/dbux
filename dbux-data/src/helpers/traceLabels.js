@@ -55,10 +55,10 @@ const byType = {
     // const context = application.dataProvider.collections.executionContexts.getById(trace.contextId);
     return `${makeDefaultTraceLabel(trace, application)} ✦`;
   },
-  [TraceType.CallArgument](trace, application) {
-    // const context = application.dataProvider.collections.executionContexts.getById(trace.contextId);
-    return `${makeDefaultTraceLabel(trace, application)}`;
-  },
+  // [TraceType.CallArgument](trace, application) {
+  //   // const context = application.dataProvider.collections.executionContexts.getById(trace.contextId);
+  //   return `${makeDefaultTraceLabel(trace, application)}`;
+  // },
   [TraceType.CallbackArgument](trace, application) {
     // const context = application.dataProvider.collections.executionContexts.getById(trace.contextId);
     return `ƒ ${makeDefaultTraceLabel(trace, application)}`;

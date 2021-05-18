@@ -194,7 +194,6 @@ const StylingsByName = {
   //   }
   // },
   ExpressionValue: false,
-  CallArgument: false,
   Callee: false,
   EndOfContext: false,
   Parameter: false
@@ -215,14 +214,6 @@ const decoNamesByType = {
     // unknown function call
     return 'CallExpressionNoStep';
   },
-  CallArgument(dp, staticTrace, trace) {
-    const { traceId } = trace;
-    if (dp.util.isTraceFunctionValue(traceId)) {
-      return 'CallbackArgument';
-    }
-
-    return false;
-  },
   ExpressionResult(dp, staticTrace, trace) {
     const { traceId } = trace;
     if (dp.util.isTraceFunctionValue(traceId)) {
@@ -231,6 +222,14 @@ const decoNamesByType = {
 
     return 'ExpressionResult';
   },
+  // CallArgument(dp, staticTrace, trace) {
+  //   const { traceId } = trace;
+  //   if (dp.util.isTraceFunctionValue(traceId)) {
+  //     return 'CallbackArgument';
+  //   }
+
+  //   return false;
+  // },
   Parameter(dp, staticTrace, trace) {
     const { traceId } = trace;
     if (dp.util.isTraceFunctionValue(traceId)) {

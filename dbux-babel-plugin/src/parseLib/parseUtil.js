@@ -4,8 +4,12 @@ export function getChildPaths(path, childrenNames) {
   return childrenNames.map(name => path.get(name));
 }
 
-export function getNodeOfPath(path) {
+function getSingleNodeOfPath(path) {
   return path.getData(DbuxNodeId);
+}
+
+export function getNodeOfPath(path) {
+  return Array.isArray(path) ? path.map(getSingleNodeOfPath) : getSingleNodeOfPath(path);
 }
 
 export function setNodeOfPath(path, node) {

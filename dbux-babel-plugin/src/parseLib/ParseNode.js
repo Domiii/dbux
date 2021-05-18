@@ -92,7 +92,7 @@ export default class ParseNode {
     return this._childPaths;
   }
 
-  getNodeOfChildPath = path => {
+  getNodeOfPath = path => {
     return Array.isArray(path) ? path.map(getNodeOfPath) : getNodeOfPath(path);
   }
 
@@ -102,7 +102,7 @@ export default class ParseNode {
     }
     // NOTE: cache _childNodes
     this._childNodes = this._childNodes ||
-      getChildPaths().map(this.getNodeOfChildPath);
+      getChildPaths().map(this.getNodeOfPath);
     return this._childNodes;
   }
 
@@ -194,20 +194,6 @@ export default class ParseNode {
       }
     }
     return this.plugins;
-  }
-
-
-  // ###########################################################################
-  // utilitiy getter functions
-  // ###########################################################################
-
-
-  getTidIdentifier = () => {
-    // TODO
-  }
-
-  getBindingTidIdentifier = () => {
-    // TODO
   }
 
   // ###########################################################################

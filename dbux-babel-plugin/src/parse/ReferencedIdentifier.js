@@ -1,4 +1,5 @@
 import { Binding } from '@babel/traverse';
+import TraceType from '@dbux/common/src/core/constants/TraceType';
 import BaseNode from './BaseNode';
 
 export default class ReferencedIdentifier extends BaseNode {
@@ -6,6 +7,64 @@ export default class ReferencedIdentifier extends BaseNode {
    * @type {Binding}
    */
   binding;
+
+  // ###########################################################################
+  // binding
+  // ###########################################################################
+
+  getBinding() {
+    return this.binding;
+  }
+
+  getBindingPath() {
+    return this.binding?.path;
+  }
+
+  getBindingNode() {
+    const bindingPath = this.getBindingPath();
+    return bindingPath && this.getNodeOfPath(bindingPath) || null;
+  }
+
+  // ###########################################################################
+  // traceId
+  // ###########################################################################
+
+  getTidIdentifier() {
+    // TODO
+    return null;
+  }
+
+  getBindingTidIdentifier() {
+    return this.getBindingNode()?.getTidIdentifier();
+  }
+
+  // ###########################################################################
+  // inputs
+  // ###########################################################################
+
+  createInputTrace() {
+    // TODO: also handle globals
+    const varNode = this.getBindingNode();
+
+    const rawTraceData = {
+      path: this.path,
+      node: this,
+      traceType: TraceType.Identifier,
+      varNode,
+      staticTraceData: {
+        dataNode: {
+          isNew: false,
+          isWrite: false
+        }
+      }
+    };
+
+    return this.addTrace(rawTraceData);
+  }
+
+  // ###########################################################################
+  // enter
+  // ###########################################################################
 
   enter() {
     const { path } = this;

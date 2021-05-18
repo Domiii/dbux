@@ -18,8 +18,11 @@ let TraceType = {
   ExpressionResult: 7,
   ExpressionValue: 8,
 
-  CallArgument: 9,
-  CallbackArgument: 10,
+  // CallArgument: 9,
+  // CallbackArgument: 10,
+
+  Identifier: 9,
+  Literal: 10,
 
   Parameter: 31,
 

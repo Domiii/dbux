@@ -5,8 +5,26 @@ import Expression from './Expression';
 export default class ArithmeticExpression extends Expression {
   static plugins = ['Traces'];
 
+
+  createInputTrace() {
+    const rawTraceData = {
+      path: this.path,
+      node: this,
+      traceType: TraceType.ExpressionResult,
+      varNode: null,
+      staticTraceData: {
+        dataNode: {
+          isNew: true,
+          isWrite: false
+        }
+      }
+    };
+
+    return this.addTrace(rawTraceData);
+  }
+
   // ###########################################################################
-  // Exit
+  // exit
   // ###########################################################################
 
   exit() {
@@ -17,8 +35,6 @@ export default class ArithmeticExpression extends Expression {
     const childPaths = node.getChildPaths();
 
     const traces = node.getPlugin('Traces');
-
-    // TODO: trace children, if not traced already
 
     // trace AE itself
     const type = TraceType.ExpressionResult;
@@ -33,14 +49,12 @@ export default class ArithmeticExpression extends Expression {
     // const inputNodes = childNodes;
 
     // TODO: propagate inputs
-    traces.addTraceWithInputs(path, type, varNode, childPaths, staticTraceData);
+    traces.addTraceWithInputs(path, node, type, varNode, childPaths, staticTraceData);
   }
 
-  instrument() {
-
-    //   const { path, state, data } = this;
-    //   const { scope } = path;
-
-    //   // TODO
-  }
+  // instrument() {
+  //   //   const { path, state, data } = this;
+  //   //   const { scope } = path;
+  //   //   // TODO
+  // }
 }

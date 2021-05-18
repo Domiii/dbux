@@ -16,6 +16,31 @@ export default class BaseNode extends ParseNode {
     super(...args);
   }
 
+
+  // ###########################################################################
+  // trace utility
+  // ###########################################################################
+
+  getTidIdentifier() {
+    return this._traceData?.tidIdentifier;
+  }
+
+  getBindingTidIdentifier() {
+    return null;
+  }
+
+  _getOrCreateInputTrace() {
+    if (!this._traceData) {
+      this.createInputTrace?.();
+    }
+    return this._traceData;
+  }
+
+  _setTraceData(traceData) {
+    this._traceData = traceData;
+  }
+
+
   // ###########################################################################
   // static
   // ###########################################################################

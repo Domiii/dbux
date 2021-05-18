@@ -3,12 +3,14 @@ import TraceType from '@dbux/common/src/core/constants/TraceType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { getPresentableString } from '../../helpers/pathHelpers';
 import { traceWrapExpression } from '../../instrumentation/trace';
+import ParseNode from '../../parseLib/ParseNode';
 // import { getPresentableString } from '../../helpers/pathHelpers';
 import ParsePlugin from '../../parseLib/ParsePlugin';
 
 const makeInputTrace = {
   Literal(path) {
     return {
+      node: null,
       path,
       traceType: TraceType.ExpressionValue,
       varNode: null,
@@ -47,8 +49,15 @@ export default class Traces extends ParsePlugin {
         this.addTrace(traceData);
       }
       else {
-        const inputs = node;
-        // TODO
+        if (!(node instanceof ParseNode)) {
+          this.node.logger.warn(`ParseNode.getNodeOfChildPath did not return object of type "ParseNode": ${this.node}\n  (instead it returned: ${node})`);
+          continue;
+        }
+        const traceData = node._getOrCreateInputTrace?.();
+        if (!traceData) {
+          this.node.logger.warn(`ParseNode did not implement "createInputTrace": ${node}`);
+          continue;
+        }
       }
     }
   }
@@ -57,7 +66,7 @@ export default class Traces extends ParsePlugin {
   // addTrace
   // ###########################################################################
 
-  addTrace(pathOrCfgOrArray, type, varNode, staticTraceData, inputNodes) {
+  addTrace(pathOrCfgOrArray, node, type, varNode, staticTraceData, inputNodes) {
     if (Array.isArray(pathOrCfgOrArray)) {
       for (const traceCfg of pathOrCfgOrArray) {
         this.addTrace(traceCfg);
@@ -67,34 +76,38 @@ export default class Traces extends ParsePlugin {
 
     let path = pathOrCfgOrArray;
     if (!(pathOrCfgOrArray instanceof NodePath)) {
-      ({ path, type, varNode, staticTraceData, inputNodes } = pathOrCfgOrArray);
+      ({ path, node, type, varNode, staticTraceData, inputNodes } = pathOrCfgOrArray);
     }
-    
+
     const { state } = this.node;
     const { scope } = path;
     const inProgramStaticTraceId = state.traces.addTrace(path, type, staticTraceData);
-    const traceIdVar = scope.generateUidIdentifier(`t${inProgramStaticTraceId}_`);
+    const tidIdentifier = scope.generateUidIdentifier(`t${inProgramStaticTraceId}_`);
 
-    this.traces.push({
+    const traceData = {
       inProgramStaticTraceId,
-      traceIdVar,
+      tidIdentifier,
       type,
       varNode,
       inputNodes
-    });
+    };
+    this.traces.push(traceData);
+    if (node) {
+      node._setTraceData(traceData);
+    }
 
-    this.Verbose >= 2 && this.debug('[traceId]', traceIdVar.name, `@${this}`);
+    this.Verbose >= 2 && this.debug('[traceId]', tidIdentifier.name, `@${this}`);
   }
 
   // ###########################################################################
   // addTraceWithInputs
   // ###########################################################################
 
-  addTraceWithInputs(path, type, varNode, inputPaths, staticTraceData) {
+  addTraceWithInputs(path, node, type, varNode, inputPaths, staticTraceData) {
     // also trace inputNodes if they are `Literal` or `ReferencedIdentifier`
     const inputNodes = this.addInputs(inputPaths);
 
-    return this.addTrace(path, type, varNode, staticTraceData, inputNodes);
+    return this.addTrace(path, node, type, varNode, staticTraceData, inputNodes);
   }
 
   // exit() {
@@ -112,13 +125,13 @@ export default class Traces extends ParsePlugin {
 
     for (const traceCfg of traces) {
       // add variable to scope
-      const { /* inProgramStaticTraceId, */ traceIdVar, varNode, inputNodes } = traceCfg;
+      const { /* inProgramStaticTraceId, */ tidIdentifier, varNode, inputNodes } = traceCfg;
       scope.push({
-        id: traceIdVar
+        id: tidIdentifier
       });
 
       const bindingTidIdentifier = varNode?.getBindingTidIdentifier();
-      const inputTidIds = inputNodes.map(n => n.getTidIdentifier());
+      const inputTidIds = inputNodes.flatMap(n => n.getTidIdentifier());
 
       // TODO: generalize to any type of trace (not just expression)
 
