@@ -11,7 +11,6 @@ export function buildDbuxInit(state) {
     filePath,
     contexts,
     traces,
-    varAccess,
     loops,
     runtimeCfg
   } = state;
@@ -26,7 +25,6 @@ export function buildDbuxInit(state) {
 
     contexts: contexts._all,
     traces: traces._all,
-    varAccess: varAccess._all,
     loops: loops._all
   };
 
@@ -56,7 +54,6 @@ function ${dbuxInit}(dbuxRuntime) {
   // free up some memory (doesn't make a difference)
   // delete state.contexts;
   // delete state.traces;
-  // delete state.varAccess;
   // delete state.loops;
   // const result = buildSource(`"";`);
   return result;

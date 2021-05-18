@@ -5,12 +5,12 @@ export default class VariableDeclarator extends BaseNode {
 
   static children = ['id', 'init'];
 
-  exit(id, init, [idPath, initPath]) {
-    // creates a new binding
-    // TODO: very similar to `AssignmentExpression` but not an expression
-  }
+  // exit() {
+  //   // creates a new binding
+  //   // TODO: very similar to `AssignmentExpression` but not an expression
+  // }
 
-  instrument() {
-    // TODO: wrap rval in td(rval, tid)
-  }
+  // instrument() {
+  //   // TODO: wrap rval in td(rval, tid)
+  // }
 }

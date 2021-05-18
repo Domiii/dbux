@@ -29,11 +29,6 @@ export default class ReferencedIdentifier extends BaseNode {
   // traceId
   // ###########################################################################
 
-  getTidIdentifier() {
-    // TODO
-    return null;
-  }
-
   getBindingTidIdentifier() {
     return this.getBindingNode()?.getTidIdentifier();
   }

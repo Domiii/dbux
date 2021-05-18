@@ -1,9 +1,9 @@
-import BaseExpression from './BaseExpression';
+import BaseNode from './BaseNode';
 
 /**
  * 
  */
-export default class AssignmentExpression extends BaseExpression {
+export default class AssignmentExpression extends BaseNode {
   static children = ['left', 'right'];
   static plugins = [];
 

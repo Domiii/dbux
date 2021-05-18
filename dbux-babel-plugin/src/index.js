@@ -9,7 +9,7 @@ import programVisitor from './visitors/programVisitor';
  * 
  * NOTE: The config is also available via state.opts (see `dbuxState.js`).
  */
-export default function dbuxBabelPlugin(_, cfg) {
+export default function dbuxBabelPlugin(/* _, cfg */) {
   const visitor = { Program: programVisitor() };
   // const visitor = _slicingTestVisitor;
   return {

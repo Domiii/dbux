@@ -10,11 +10,17 @@ export default class FunctionDeclaration extends BaseNode {
     'BindingNode'
   ];
 
-  instrument() {
-    const { path } = this;
-    const [idPath] = this.getChildPaths();
+  enter() {
+    const traces = this.getPlugin('Traces');
 
-    const binding = path.scope.getBinding(idPath.node.name);
-    
+    traces
   }
+
+  // instrument() {
+  //   const { path } = this;
+  //   const [idPath] = this.getChildPaths();
+
+  //   const binding = path.scope.getBinding(idPath.node.name);
+    
+  // }
 }

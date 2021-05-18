@@ -1,4 +1,4 @@
-import BaseExpression from './BaseExpression';
+import BaseNode from './BaseNode';
 
 /**
  * TODO
@@ -15,7 +15,7 @@ import BaseExpression from './BaseExpression';
 
 /** @typedef {import('@babel/types/lib').Identifier} Identifier */
 
-export default class MemberExpression extends BaseExpression {
+export default class MemberExpression extends BaseNode {
   /**
    * @example `o` in `o.a[x].b.c[y]`
    * @type {Identifier}

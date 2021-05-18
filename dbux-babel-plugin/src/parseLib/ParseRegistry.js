@@ -1,6 +1,7 @@
 import mapValues from 'lodash/mapValues';
 import groupBy from 'lodash/groupBy';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import NestedError from '@dbux/common/src/NestedError';
 
 
 class Registry {
@@ -16,9 +17,8 @@ class Registry {
       groupBy(
         Object.entries(ParseNodeClassesByName)
           .flatMap(([nodeName, NodeClazz]) => {
-            const allPluginConfigs = this.getAllPluginConfigsOfNodeClass(NodeClazz.plugins);
-            return allPluginConfigs
-              .keys()
+            const allPluginConfigs = this.getAllPluginConfigsOfNodeClass(NodeClazz);
+            return Array.from(allPluginConfigs.keys())
               .map(pluginName => ([pluginName, nodeName]));
           }),
         ([pluginName]) => pluginName
@@ -42,21 +42,29 @@ class Registry {
 
   /**
    * Lookup all plugin dependencies recursively.
-   * @param {Map?} allPluginConfigs
+   * @param {Map?} rootMap
    * 
    * @return {Map}
    */
   getAllPluginConfigsOfNodeClass(NodeClazz) {
-    if (!NodeClazz._allPluginConfigs) {
-      NodeClazz._allPluginConfigs = this._getAllPluginConfigs(NodeClazz.plugins);
-    }
-    return NodeClazz._allPluginConfigs;
+    return this._getAllPluginConfigsOfClass(NodeClazz, new Set());
   }
 
-  _getAllPluginConfigs(inputNames, allPluginConfigs = null) {
-    allPluginConfigs = allPluginConfigs || new Map();
+  _getAllPluginConfigsOfClass(NodeOrPluginClazz, visited) {
+    if (!NodeOrPluginClazz._allPluginConfigs) {
+      NodeOrPluginClazz._allPluginConfigs = this._getAllPluginConfigs(NodeOrPluginClazz, visited);
+    }
+    return NodeOrPluginClazz._allPluginConfigs;
+  }
 
-    for (const pluginCfg of (inputNames || EmptyArray)) {
+  _getAllPluginConfigs(Clazz, visited) {
+    const pluginMap = new Map();
+    if (visited.has(Clazz)) {
+      throw new Error(`Cyclic plugin dependency: ${Clazz.name}`);
+    }
+    visited.add(Clazz);
+
+    for (const pluginCfg of (Clazz.plugins || EmptyArray)) {
       let name;
       if (Array.isArray(pluginCfg)) {
         [, name] = pluginCfg;
@@ -64,14 +72,21 @@ class Registry {
       else {
         name = pluginCfg;
       }
-      if (!allPluginConfigs.has(name)) {
-        allPluginConfigs.set(name, pluginCfg);
 
-        const Clazz = this.getPluginClassByName(name);
-        this.getAllPluginConfigsOfNodeClass(Clazz.plugins, allPluginConfigs);
+      pluginMap.set(name, pluginCfg);
+
+      try {
+        const PluginClazz = this.getPluginClassByName(name);
+        const pluginConfigs = this._getAllPluginConfigsOfClass(PluginClazz, visited);
+        for (const [key, value] of pluginConfigs.entries()) {
+          pluginMap.set(key, value);
+        }
+      }
+      catch (err) {
+        throw new NestedError(`ParseRegistry.getAllPluginConfigs failed to resolve dependency ${Clazz.name} -> ${name}`, err);
       }
     }
-    return allPluginConfigs;
+    return pluginMap;
   }
 }
 
