@@ -12,6 +12,11 @@ function concatArrays(a, b) {
  * Custom layer on top of generic ParseNode.
  */
 export default class BaseNode extends ParseNode {
+  /**
+   * NOTE: Managed by `plugins/Traces`
+   */
+  _traceData;
+
   constructor(...args) {
     super(...args);
   }
@@ -27,13 +32,6 @@ export default class BaseNode extends ParseNode {
 
   getBindingTidIdentifier() {
     return null;
-  }
-
-  _getOrCreateInputTrace() {
-    if (!this._traceData) {
-      this.createInputTrace?.();
-    }
-    return this._traceData;
   }
 
   _setTraceData(traceData) {

@@ -2,16 +2,15 @@
 import * as t from '@babel/types';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { getPresentableString } from '../../helpers/pathHelpers';
-import { bindTemplate } from '../../helpers/templateUtil';
-import { buildArrayOfVariables } from './common';
+import { bindExpressionTemplate, bindTemplate } from '../../helpers/templateUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('builders/trace');
 
 const Verbose = 2;
 
-export const buildTraceId = bindTemplate(
-  '%%traceId%% = %%newTraceId%%(%%staticTraceId%%)',
+export const buildTraceId = bindExpressionTemplate(
+  '(%%traceId%% = %%newTraceId%%(%%staticTraceId%%))',
   function buildTraceId(state, { tidIdentifier, inProgramStaticTraceId }) {
     // TODO: add custom trace data
     const { ids: { aliases: {
@@ -26,9 +25,9 @@ export const buildTraceId = bindTemplate(
   }
 );
 
-export const buildTraceExpression = bindTemplate(
+export const buildTraceExpression = bindExpressionTemplate(
   '%%traceExpression%%(%%expr%%, %%tid%%, %%bindingTid%%, %%inputs%%)',
-  function buildTraceExpression(path, state, traceCfg, bindingTidIdentifier, inputVariableIds) {
+  function buildTraceExpression(path, state, traceCfg, bindingTidIdentifier, inputTidIds) {
     // const { scope } = path;
     const { ids: { aliases: {
       traceExpression
@@ -36,7 +35,7 @@ export const buildTraceExpression = bindTemplate(
 
     const tid = buildTraceId(state, traceCfg);
     const expr = path.node;
-    Verbose && debug('[te]', getPresentableString(path));
+    Verbose && debug(`[te] ${path.node.type} [${inputTidIds?.map(i => i.name).join(',') || ''}]`, getPresentableString(path));
 
     // NOTE: templates only work on `Node`, not on `NodePath`, thus they lose all path-related information.
 
@@ -45,12 +44,12 @@ export const buildTraceExpression = bindTemplate(
       expr,
       tid,
       bindingTid: bindingTidIdentifier || t.nullLiteral(),
-      inputs: t.arrayExpression(inputVariableIds)
+      inputs: t.arrayExpression(inputTidIds)
     };
   }
 );
 
-export const buildTraceWrite = bindTemplate(
+export const buildTraceWrite = bindExpressionTemplate(
   // TODO: value, tid, deferTid, ...inputs
   '%%traceWrite%%(%%expr%%, %%tid%%)',
   function buildTraceNoValue(path, state, traceCfg) {

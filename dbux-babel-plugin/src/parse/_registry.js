@@ -12,6 +12,7 @@ import MemberExpression from './MemberExpression';
 import Method from './Method';
 import ObjectExpression from './ObjectExpression';
 import Program from './Program';
+import ReferencedIdentifier from './ReferencedIdentifier';
 import ReturnStatement from './ReturnStatement';
 import SequenceExpression from './SequenceExpression';
 import UnaryExpression from './UnaryExpression';
@@ -33,6 +34,7 @@ init(MemberExpression);
 init(Method);
 init(ObjectExpression);
 init(Program);
+init(ReferencedIdentifier);
 init(ReturnStatement);
 init(SequenceExpression);
 init(UnaryExpression);
@@ -52,6 +54,7 @@ export {
   Method,
   ObjectExpression,
   Program,
+  ReferencedIdentifier,
   ReturnStatement,
   SequenceExpression,
   UnaryExpression,

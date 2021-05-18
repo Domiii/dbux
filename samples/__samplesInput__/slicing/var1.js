@@ -1,4 +1,5 @@
-let x;
-x = 1;
+let a, b;
+a = 1;
+b = 2;
 
-console.log(x);
+a + b

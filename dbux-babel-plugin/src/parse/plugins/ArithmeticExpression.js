@@ -1,8 +1,8 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
-import Expression from './Expression';
+import ParsePlugin from '../../parseLib/ParsePlugin';
 
 
-export default class ArithmeticExpression extends Expression {
+export default class ArithmeticExpression extends ParsePlugin {
   static plugins = ['Traces'];
 
 

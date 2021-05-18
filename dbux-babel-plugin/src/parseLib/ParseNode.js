@@ -54,6 +54,10 @@ export default class ParseNode {
   // getters
   // ###########################################################################
 
+  get name() {
+    return this.constructor.name;
+  }
+
   /**
    * @type {NodePath}
    */
@@ -93,7 +97,7 @@ export default class ParseNode {
   }
 
   getNodeOfPath = path => {
-    return Array.isArray(path) ? path.map(getNodeOfPath) : getNodeOfPath(path);
+    return getNodeOfPath(path);
   }
 
   getChildNodes() {
@@ -132,6 +136,22 @@ export default class ParseNode {
 
   init() { }
 
+  enterPlugins() {
+    this.pluginPhases.enter?.();
+  }
+
+  exitPlugins() {
+    this.pluginPhases.exit?.();
+  }
+
+  instrumentPlugins() {
+    this.pluginPhases.instrument?.();
+  }
+
+  instrument2Plugins() {
+    this.pluginPhases.instrument2?.();
+  }
+
   // enter() {
   // }
 
@@ -153,14 +173,20 @@ export default class ParseNode {
   makePluginPhase(phase) {
     this.pluginPhases[phase] = () => {
       for (const name in this.plugins) {
-        this.plugins[name][phase]?.(this);
+        const plugin = this.plugins[name];
+        const f = plugin[phase];
+        // this.debug(` [P] ${name}`, !!f);
+        if (f) {
+          this.debug(`[P] ${name}`);
+          f.call(plugin);
+        }
       }
     };
   }
 
   addPlugin(Clazz) {
     const plugin = new Clazz();
-    plugin.parseNode = this;
+    plugin.node = this;
     plugin.init?.();
     this.plugins[Clazz.name] = plugin;
     return plugin;
@@ -179,6 +205,8 @@ export default class ParseNode {
       else {
         name = pluginCfg;
       }
+
+      // this.debug(this.nodeTypeName, `[initPlugins] add`, name, !predicate || predicate());
 
       if (!predicate || predicate()) {
         // add plugin

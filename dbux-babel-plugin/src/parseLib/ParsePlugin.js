@@ -12,11 +12,15 @@ export default class ParsePlugin {
   // ###########################################################################
 
   get Verbose() {
-    return this.stack.Verbose;
+    return this.node.stack.Verbose;
   }
 
   debug(...args) {
-    return this.stack.debug(' >', ...args);
+    return this.node.stack.debug(' >', ...args);
+  }
+
+  warn(...args) {
+    return this.node.stack.warn(' >', ...args);
   }
 
   get debugTag() {

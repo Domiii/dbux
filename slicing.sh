@@ -5,8 +5,8 @@
 set -e # cancel on error
 # set -x # verbose echo mode
 
-fname="slicing/bindings1"
-nodeArgs=""
+fname="slicing/var1"
+nodeArgs="--enable-source-maps "
 
 dbuxCmd="$1"
 if [[ $dbuxCmd = "" ]]
@@ -17,9 +17,9 @@ isInstrument=$([[ $dbuxCmd == "i" ]] && echo 1 || echo 0)
 
 if [[ "$2" = "d" ]]
 then
-  nodeArgs="--inspect-brk "
+  nodeArgs="${nodeArgs}--inspect-brk "
 else
-  nodeArgs="--enable-source-maps "
+  nodeArgs="${nodeArgs} "
 fi
 
 if [[ $dbuxCmd = "i" ]]

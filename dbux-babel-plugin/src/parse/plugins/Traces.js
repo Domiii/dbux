@@ -36,37 +36,44 @@ export default class Traces extends ParsePlugin {
    * NOTE: we assume inputs to be RVals.
    */
   addInputs(inputPaths) {
-    inputPaths = inputPaths.flat();
-    for (const inputPath of inputPaths) {
-      const node = this.node.getNodeOfChildPath(inputPath);
-      if (!node) {
-        // handle some (basic) default AST node types
-        const traceData = makeInputTrace[inputPath.node.type]?.(inputPath);
-        if (!traceData) {
-          this.node.logger.warn(`Found unknown AST node type "${inputPath.node.type}" for input node: ${getPresentableString(inputPath)}`);
-          continue;
+    return inputPaths.flat()
+      .map(inputPath => {
+        const node = this.node.getNodeOfPath(inputPath);
+        if (!node) {
+          // handle some (basic) default AST node types
+          const traceData = makeInputTrace[inputPath.node.type]?.(inputPath);
+          if (!traceData) {
+            this.node.logger.warn(`Found unknown AST node type "${inputPath.node.type}" for input node: ${getPresentableString(inputPath)}`);
+            return null;
+          }
+          this.addTrace(traceData);
         }
-        this.addTrace(traceData);
-      }
-      else {
-        if (!(node instanceof ParseNode)) {
-          this.node.logger.warn(`ParseNode.getNodeOfChildPath did not return object of type "ParseNode": ${this.node}\n  (instead it returned: ${node})`);
-          continue;
+        else {
+          if (!(node instanceof ParseNode)) {
+            this.node.logger.warn(`ParseNode.getNodeOfPath did not return object of type "ParseNode": ${this.node}\n  (instead it returned: ${node})`);
+            return null;
+          }
+
+          if (!node._traceData) {
+            const rawTraceData = node.createInputTrace?.();
+            if (!rawTraceData) {
+              this.node.logger.warn(`ParseNode did not implement "createInputTrace": ${node}`);
+              return null;
+            }
+            this.addTrace(rawTraceData);
+          }
+          return node._traceData.tidIdentifier;
         }
-        const traceData = node._getOrCreateInputTrace?.();
-        if (!traceData) {
-          this.node.logger.warn(`ParseNode did not implement "createInputTrace": ${node}`);
-          continue;
-        }
-      }
-    }
+        return null;
+      })
+      .filter(node => !!node);
   }
 
   // ###########################################################################
   // addTrace
   // ###########################################################################
 
-  addTrace(pathOrCfgOrArray, node, type, varNode, staticTraceData, inputNodes) {
+  addTrace(pathOrCfgOrArray, node, type, varNode, staticTraceData, inputTidIds) {
     if (Array.isArray(pathOrCfgOrArray)) {
       for (const traceCfg of pathOrCfgOrArray) {
         this.addTrace(traceCfg);
@@ -75,8 +82,8 @@ export default class Traces extends ParsePlugin {
     }
 
     let path = pathOrCfgOrArray;
-    if (!(pathOrCfgOrArray instanceof NodePath)) {
-      ({ path, node, type, varNode, staticTraceData, inputNodes } = pathOrCfgOrArray);
+    if (path.path) {
+      ({ path, node, type, varNode, staticTraceData, inputTidIds } = pathOrCfgOrArray);
     }
 
     const { state } = this.node;
@@ -85,18 +92,21 @@ export default class Traces extends ParsePlugin {
     const tidIdentifier = scope.generateUidIdentifier(`t${inProgramStaticTraceId}_`);
 
     const traceData = {
+      path,
+      node,
       inProgramStaticTraceId,
       tidIdentifier,
       type,
       varNode,
-      inputNodes
+      inputTidIds
     };
     this.traces.push(traceData);
     if (node) {
+      // TODO: in case of non-Node, might want to attach to `path` instead
       node._setTraceData(traceData);
     }
 
-    this.Verbose >= 2 && this.debug('[traceId]', tidIdentifier.name, `@${this}`);
+    this.Verbose >= 2 && this.debug('[traceId]', tidIdentifier.name, `([${inputTidIds?.map(tid => tid.name).join(',') || ''}])`, `@"${this}"`);
   }
 
   // ###########################################################################
@@ -104,10 +114,12 @@ export default class Traces extends ParsePlugin {
   // ###########################################################################
 
   addTraceWithInputs(path, node, type, varNode, inputPaths, staticTraceData) {
-    // also trace inputNodes if they are `Literal` or `ReferencedIdentifier`
-    const inputNodes = this.addInputs(inputPaths);
+    // also trace inputTidIds if they are `Literal` or `ReferencedIdentifier`
+    const inputTidIds = this.addInputs(inputPaths);
 
-    return this.addTrace(path, node, type, varNode, staticTraceData, inputNodes);
+    // this.warn(`[${this.node.name}] traceData`, tidIdentifier.name);
+
+    return this.addTrace(path, node, type, varNode, staticTraceData, inputTidIds);
   }
 
   // exit() {
@@ -123,19 +135,19 @@ export default class Traces extends ParsePlugin {
     const { path, state } = node;
     const { scope } = path;
 
+    // this.debug(`traces`, traces.map(t => t.tidIdentifier));
     for (const traceCfg of traces) {
       // add variable to scope
-      const { /* inProgramStaticTraceId, */ tidIdentifier, varNode, inputNodes } = traceCfg;
+      const { /* inProgramStaticTraceId, */ path: tracePath, tidIdentifier, varNode, inputTidIds } = traceCfg;
       scope.push({
         id: tidIdentifier
       });
 
       const bindingTidIdentifier = varNode?.getBindingTidIdentifier();
-      const inputTidIds = inputNodes.flatMap(n => n.getTidIdentifier());
 
       // TODO: generalize to any type of trace (not just expression)
 
-      traceWrapExpression(path, state, traceCfg, bindingTidIdentifier, inputTidIds);
+      traceWrapExpression(tracePath, state, traceCfg, bindingTidIdentifier, inputTidIds);
     }
   }
 }

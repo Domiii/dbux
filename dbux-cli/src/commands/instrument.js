@@ -40,7 +40,7 @@ export const handler = wrapCommand(async ({ file, outputFile, ...options }) => {
   const targetPath = resolveCommandTargetPath(file);
 
   // instrument
-  process.stdout.write(`// Instrumenting file ${targetPath}...\n`);
+  process.stdout.write(`// Instrumenting file ${targetPath} ...\n`);
   const inputCode = fs.readFileSync(targetPath, 'utf8');
   const outputCode = transformSync(inputCode, babelOptions).code;
 

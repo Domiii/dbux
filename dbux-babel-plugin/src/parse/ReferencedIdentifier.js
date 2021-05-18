@@ -54,7 +54,7 @@ export default class ReferencedIdentifier extends BaseNode {
       }
     };
 
-    return this.addTrace(rawTraceData);
+    return rawTraceData;
   }
 
   // ###########################################################################

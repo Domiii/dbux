@@ -29,7 +29,11 @@
 			// "trace": true,
 			// "preLaunchTask": "npm: build-dbux-code"
 			"outFiles": [
-				"${workspaceRoot}/dbux-code/dist/**/*.js"
+        "${workspaceRoot}/dbux-babel-plugin/dist/**/*.js",
+        "${workspaceRoot}/dbux-runtime/dist/**/*.js",
+        "${workspaceRoot}/dbux-cli/dist/**/*.js",
+        "${workspaceRoot}/dbux-code/dist/**/*.js",
+        "${workspaceRoot}/dbux-server/dist/**/*.js"
 			]
 		},
 		{

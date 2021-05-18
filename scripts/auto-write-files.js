@@ -4,6 +4,7 @@ const path = require('path');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const t = require('@babel/types');
 // const nodeExternals = require('webpack-node-externals');
+const virtualTypes = require('@babel/traverse/lib/path/lib/virtual-types.js');
 
 // add some of our own good stuff
 require('../dbux-cli/lib/dbux-register-self');
@@ -30,7 +31,7 @@ function isCapitalized(s) {
 
 writeDirectoryIndex(
   'dbux-babel-plugin/src/parse',
-  (name) => isCapitalized(name) && !!t['is' + name],
+  (name) => isCapitalized(name) && (t['is' + name] || virtualTypes[name]),
   `import { newLogger } from '@dbux/common/src/log/logger';`,
 function init(Clazz) {
   Clazz.logger = newLogger(`parse/${Clazz.name}`);

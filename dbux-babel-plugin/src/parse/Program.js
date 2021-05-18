@@ -76,7 +76,7 @@ function wrapProgram(path, state) {
 }
 
 export default class Program extends BaseNode {
-  static children = [
+  static plugins = [
     'StaticContext'
   ];
 

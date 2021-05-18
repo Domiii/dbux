@@ -8,7 +8,7 @@ import ParsePhase from './ParsePhase';
 
 /** @typedef { import("./ParseNode").default } ParseNode */
 
-const Verbose = 1;
+const Verbose = 2;
 // const Verbose = 0;
 
 // eslint-disable-next-line no-unused-vars
@@ -44,6 +44,10 @@ export default class ParseStack {
 
   debug(arg0, ...args) {
     this.logger.debug(`${' '.repeat(this.recordedDepth)}${arg0}`, ...args);
+  }
+
+  warn(arg0, ...args) {
+    this.logger.warn(`${' '.repeat(this.recordedDepth)}${arg0}`, ...args);
   }
 
   // ###########################################################################
@@ -136,10 +140,6 @@ export default class ParseStack {
     let newNode = null;
     const initialData = ParseNodeClazz.prospectOnEnter(path, state);
     if (initialData) {
-      newNode = new ParseNodeClazz(path, state, this, initialData);
-      newNode.init();
-      newNode.initPlugins();
-
       if (getNodeOfPath(path)) {
         // TODO: this is definitely going to happen. need to fix this somehow
         this.logger.warn(
@@ -147,6 +147,10 @@ export default class ParseStack {
           `${newNode.nodeTypeName} and ${getNodeOfPath(path.nodeTypeName)}`
         );
       }
+      
+      newNode = new ParseNodeClazz(path, state, this, initialData);
+      newNode.init();
+      newNode.initPlugins();
       setNodeOfPath(path, newNode);
     }
     return newNode;
@@ -267,7 +271,7 @@ export default class ParseStack {
 
     for (const task of genTasks) {
       const { parseNode } = task;
-      Verbose && parseNode.hasPhase('inst') && debug(`instrument ${parseNode}`);
+      Verbose && parseNode.hasPhase('instrument') && debug(`instrument ${parseNode}`);
       parseNode.phase = ParsePhase.Instrument;
       this.gen(parseNode, parseNode.instrumentPlugins);
       this.gen(parseNode, parseNode.instrument);
@@ -275,7 +279,7 @@ export default class ParseStack {
 
     for (const task of genTasks) {
       const { parseNode } = task;
-      Verbose && parseNode.hasPhase('inst2') && debug(`instrument2 ${parseNode}`);
+      Verbose && parseNode.hasPhase('instrument2') && debug(`instrument2 ${parseNode}`);
       parseNode.phase = ParsePhase.Instrument2;
       this.gen(parseNode, parseNode.instrument2Plugins);
       this.gen(parseNode, parseNode.instrument2);
