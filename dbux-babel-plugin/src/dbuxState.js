@@ -40,7 +40,7 @@ export default function injectDbuxState(programPath, programState) {
   const filePath = filenameOverride || programState.filename || `__unnamed_script_${++unknownCount}.js`;
   const fileName = filePath && pathGetBasename(filePath);
 
-  // console.debug(filePath, JSON.stringify(buildCfg)); //, ' ## ', JSON.stringify(_buildCfg));
+  // console.warn('[@dbux/babel-plugin]', filePath, Object.keys(programState)); //, ' ## ', JSON.stringify(_buildCfg));
 
   const { scope } = programPath;
   const { file: programFile } = programState;

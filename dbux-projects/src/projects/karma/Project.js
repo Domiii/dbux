@@ -77,7 +77,7 @@ export default class KarmaProject extends Project {
     const tagCategory = "test"; // "test", "fix" or "full"
     const tag = this.getBugGitTag(id, tagCategory);
 
-    if ((await this.getTagName()).startsWith(tag)) {
+    if ((await this.gitGetCurrentTagName()).startsWith(tag)) {
       // do not checkout bug, if we already on the right tag
       return;
     }

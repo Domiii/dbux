@@ -461,7 +461,7 @@
         }
       },
       {
-        "command": "dbuxProjectView.node.activateBug",
+        "command": "dbuxProjectView.node.startPractice",
         "title": "Start Practice",
         "icon": {
           "light": "resources/light/play.svg",
@@ -534,6 +534,14 @@
         "icon": {
           "light": "resources/light/i.svg",
           "dark": "resources/dark/i.svg"
+        }
+      },
+      {
+        "command": "dbuxSessionView.node.showEntryFile",
+        "title": "Go to program entry point",
+        "icon": {
+          "light": "resources/light/document.svg",
+          "dark": "resources/dark/document.svg"
         }
       }
     ],
@@ -657,7 +665,7 @@
           "group": "inline@0"
         },
         {
-          "command": "dbuxProjectView.node.activateBug",
+          "command": "dbuxProjectView.node.startPractice",
           "when": "viewItem =~ /dbuxProjectView\\.bugNode\\.(None|Done)\\..*/ && !dbuxProjectView.context.isBusy",
           "group": "inline@20"
         },
@@ -700,6 +708,11 @@
           "command": "dbuxSessionView.node.annotateTraceI",
           "when": "viewItem == dbuxSessionView.tagNode",
           "group": "inline@2"
+        },
+        {
+          "command": "dbuxSessionView.node.showEntryFile",
+          "when": "viewItem == dbuxSessionView.openWorkspaceNode",
+          "group": "inline"
         }
       ],
       "view/title": [
@@ -1043,7 +1056,7 @@
           "when": "false"
         },
         {
-          "command": "dbuxProjectView.node.activateBug",
+          "command": "dbuxProjectView.node.startPractice",
           "when": "false"
         },
         {
@@ -1084,6 +1097,10 @@
         },
         {
           "command": "dbuxSessionView.node.annotateTraceI",
+          "when": "false"
+        },
+        {
+          "command": "dbuxSessionView.node.showEntryFile",
           "when": "false"
         }
       ]
@@ -1182,7 +1199,6 @@
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.11.7",
     "@types/vscode": "^1.41.0",
-    "copy-webpack-plugin": "^6.0.3",
     "glob": "^7.1.5",
     "lodash": "^4.17.19",
     "mocha": "^6.2.2",
@@ -1191,15 +1207,10 @@
     "open": "^7.1.0",
     "socket.io": "^2.3.0",
     "strip-color": "^0.1.0",
-    "terser-webpack-plugin": "^4.1.0",
     "typescript": "^3.6.4",
     "uuid": "^8.3.0",
     "vsce": "*",
-    "vscode-test": "^1.2.2",
-    "webpack": "^4.41.5",
-    "webpack-bundle-analyzer": "^3.8.0",
-    "webpack-cli": "^3.3.10",
-    "webpack-node-externals": "^2.5.0"
+    "vscode-test": "^1.2.2"
   },
   "dependencies": {
     "firebase": "7.17.2",

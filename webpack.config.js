@@ -4,30 +4,26 @@
 
 
 const path = require('path');
-const process = require('process');
 const fs = require('fs');
 const mergeWith = require('lodash/mergeWith');
 const isArray = require('lodash/isArray');
+const { isFunction } = require('lodash');
+
 const webpack = require('webpack');
 // eslint-disable-next-line import/no-extraneous-dependencies
-const t = require('@babel/types');
+// const t = require('@babel/types');
 // const nodeExternals = require('webpack-node-externals');
+const nodeExternals = require('webpack-node-externals');
 
-// add some of our own good stuff
-require('./dbux-cli/lib/dbux-register-self');
-require('./dbux-common/src/util/prettyLogs');
+const webpackCommon = require('./config/webpack.config.common');
 
 const Process = require('./dbux-projects/src/util/Process').default;
 
 const {
   getDependenciesPackageJson,
   makeResolve,
-  makeAbsolutePaths,
-  getDbuxVersion
+  makeAbsolutePaths
 } = require('./dbux-cli/lib/package-util');
-
-process.env.BABEL_DISABLE_CACHE = 1;
-
 
 // NOTE: we use this for bundling `debug` as "browser", which is used by `socket.io-client
 require('process').type = 'renderer';
@@ -38,7 +34,7 @@ const MonoRoot = path.resolve(__dirname);
 // run external scripts
 // ###########################################################################
 
-const execCaptureOut = (cmd, options) => Process.execCaptureOut(cmd, options);
+// const execCaptureOut = (cmd, options) => Process.execCaptureOut(cmd, options);
 const exec = (cmd, options) => Process.exec(cmd, options);
 
 exec(`node ./scripts/auto-write-files.js`);
@@ -66,21 +62,67 @@ module.exports = (env, argv) => {
     // ###########################################################################
 
     const targets = [
-      // "dbux-cli",
-      ["dbux-babel-plugin"],
-      ["dbux-runtime", {
-        resolve: {
-          // fix for https://github.com/websockets/ws/issues/1538
-          mainFields: ['main'],
+      ["dbux-babel-plugin", (resolve) => {
+        return {
+          target: 'node',
+          externals: [
+            // /^fs$/,
+            // /^process$/,
+            // /^path$/,
 
-          // fix for https://github.com/websockets/ws/issues/1538
-          alias: {
-            // ws: path.resolve(path.join(MonoRoot, 'dbux-runtime', 'node_modules', 'ws', 'index.js'))
-          }
-        }
+            // NOTE: these are part of experiments for https://github.com/Domiii/dbux/issues/513
+            // /(semver|@babel|module\\-alias|prettier)\//,
+
+            nodeExternals({
+              allowlist: [
+                ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/src/.*`))
+                // (...args) => {
+                //   console.error(...args);
+                //   return true;
+                // }
+              ]
+            })
+          ]
+        };
       }],
-      // ["dbux-graph-host"],
-      // ["dbux-projects"]
+      ["dbux-runtime", (resolve) => {
+        return {
+          resolve: {
+            // fix for https://github.com/websockets/ws/issues/1538
+            mainFields: ['main'],
+
+            // fix for https://github.com/websockets/ws/issues/1538
+            alias: {
+              // ws: path.resolve(path.join(MonoRoot, 'dbux-runtime', 'node_modules', 'ws', 'index.js'))
+            },
+
+            fallback: {
+              tty: false,
+              util: false
+            }
+          },
+
+          externals: [
+            nodeExternals({
+              allowlist: [
+                ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/src/.*`))
+                // (...args) => {
+                //   console.error(...args);
+                //   return true;
+                // }
+              ]
+            })
+            // (info, callback) => {
+            //   // eslint-disable-next-line no-shadow
+            //   const { request, context } = info;
+            //   if (/^util|debug/.test(request)) {
+            //     console.error(request, context, new Error().stack);
+            //   }
+            //   callback();
+            // }
+          ]
+        };
+      }]
     ];
 
 
@@ -95,17 +137,16 @@ module.exports = (env, argv) => {
     // console.warn(resol);
 
     const mode = argv.mode || 'development';
-    const DBUX_VERSION = getDbuxVersion(mode);
-    const DBUX_ROOT = mode === 'development' ? MonoRoot : '';
-    process.env.NODE_ENV = mode; // set these, so babel configs also have it
-    process.env.DBUX_ROOT = DBUX_ROOT;
 
-    // const context = path.join(root, target);
+    const {
+      DBUX_VERSION,
+      DBUX_ROOT
+    } = webpackCommon('main', mode);
+
+    // const entry = fromEntries(targets.map(target => [target, path.resolve(path.join(target, defaultEntryPoint))]));
 
     // `context` is the path from which any relative paths are resolved
     const context = MonoRoot;
-
-    console.debug(`[main] (DBUX_VERSION=${DBUX_VERSION}, mode=${mode}, DBUX_ROOT=${DBUX_ROOT}) building...`);
 
     // ###########################################################################
     // plugins
@@ -120,8 +161,11 @@ module.exports = (env, argv) => {
     ];
 
 
+    // ###########################################################################
+    // output
+    // ###########################################################################
 
-    // const entry = fromEntries(targets.map(target => [target, path.resolve(path.join(target, defaultEntryPoint))]));
+    // const context = path.join(root, target);
     // const entry = {
     //   bundle: './src/index.js'
     // };
@@ -146,6 +190,15 @@ module.exports = (env, argv) => {
       // hackfix for bug: https://medium.com/@JakeXiao/window-is-undefined-in-umd-library-output-for-webpack4-858af1b881df
       // globalObject: '(typeof self !== "undefined" ? self : this)',
       globalObject: '(typeof globalThis !== "undefined" ? globalThis : (typeof self !== "undefined" ? self : this))'
+    };
+
+
+    // ###########################################################################
+    // stats
+    // ###########################################################################
+
+    const stats = {
+      errorDetails: true
     };
 
     // ###########################################################################
@@ -199,6 +252,7 @@ module.exports = (env, argv) => {
         context,
         entry,
         output,
+        stats,
         resolve,
 
         // ###########################################################################
@@ -239,38 +293,40 @@ module.exports = (env, argv) => {
         //     chunks: 'all',
         //   },
         // },
-        externals: [{
-          fs: 'commonjs fs',
-          net: 'commonjs net',
-          // tls: 'commonjs tls',
+        // externals: [{
+        //   fs: 'commonjs fs',
+        //   net: 'commonjs net',
+        //   // tls: 'commonjs tls',
 
-          // NOTE: `ws` is externalized for `@dbux/runtime` because we don't need it for running in the browser
-          ws: 'commonjs ws',
+        //   // NOTE: `ws` is externalized for `@dbux/runtime` because we don't need it for running in the browser
+        //   ws: 'commonjs ws',
 
-          util: 'commonjs util'
-        }
-          // see: https://www.npmjs.com/package/webpack-node-externals
-          // NOTE: `node-externals` does not bundle `node_modules`
-          // nodeExternals({
-          //   allowlist: [
-          //     'perf_hooks',
-          //     ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/src/.*`))
-          //   ],
-          //   // (...args) {
-          //   //   console.debug('nodeExternals', ...args);
-          //   //   return true;
-          //   // }
-          //   // [
-          //   //   'perf_hooks',
+        //   util: 'commonjs util',
+        //   // util: (target === 'dbux-runtime') ? 'commonjs util'
+        // },
 
-          //   //   // quote from the docs: "Important - if you have set aliases in your webpack config with the exact same names as modules in node_modules, you need to whitelist them so Webpack will know they should be bundled."
-          //   //   ...Object.keys(resol.alias)
-          //   // ]
-          // }),
-          // 'fs', 'net'   // debug library complains about these
-        ]
+        // see: https://www.npmjs.com/package/webpack-node-externals
+        // NOTE: `node-externals` does not bundle `node_modules`
+        // nodeExternals({
+        //   allowlist: [
+        //     'perf_hooks',
+        //     ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/src/.*`))
+        //   ],
+        //   // (...args) {
+        //   //   console.debug('nodeExternals', ...args);
+        //   //   return true;
+        //   // }
+        //   // [
+        //   //   'perf_hooks',
+
+        //   //   // quote from the docs: "Important - if you have set aliases in your webpack config with the exact same names as modules in node_modules, you need to whitelist them so Webpack will know they should be bundled."
+        //   //   ...Object.keys(resol.alias)
+        //   // ]
+        // }),
+        // 'fs', 'net'   // debug library complains about these
       };
 
+      configOverrides = isFunction(configOverrides) ? configOverrides(resolve) : configOverrides;
       cfg = mergeWithArrays(cfg, configOverrides);
 
       return cfg;
@@ -284,12 +340,11 @@ module.exports = (env, argv) => {
     const otherWebpackConfigPaths = [
       `./dbux-runtime/deps/ws.webpack.config`,
 
+      // NOTE: Don't build `dbux-graph-client` here bc/ Webpack bugs out when merging configs with different targets (i.e. `node` + `browser`)
       ...[
         'cli',
         'server',
         'code',
-        // NOTE: Don't build `dbux-graph-client` here bc/ Webpack bugs out when merging configs with different targets (i.e. `node` + `browser`)
-        // 'graph-client'
       ].map(name => `./dbux-${name}/webpack.config`),
     ];
 

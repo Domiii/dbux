@@ -63,12 +63,12 @@ export default class PracticeSession {
   }
 
   /**
-   * Activate bug of and process the result
+   * Activate bug, run the test and process the result
    * @param {Object} inputCfg 
    */
-  async activate(inputCfg = EmptyObject) {
+  async testBug(inputCfg = EmptyObject) {
     const { bug } = this;
-    const result = await this.manager.activateBug(bug, inputCfg);
+    const result = await this.manager.switchAndTestBug(bug, inputCfg);
     this.maybeUpdateBugStatusByResult(result);
     this.manager._emitter.emit('bugStatusChanged', bug);
 
@@ -166,7 +166,7 @@ export default class PracticeSession {
       return true;
     }
 
-    if (!await this.manager.externals.confirm(`You have not found the bug, are you sure?`, true)) {
+    if (!await this.manager.externals.confirm(`You have not found the bug, are you sure?`)) {
       return false;
     }
 
@@ -180,7 +180,7 @@ export default class PracticeSession {
   }
 
   async confirmExit(dontRefreshView) {
-    if (!await this.manager.externals.confirm(`Do you want to exit the practice session?`, true)) {
+    if (!await this.manager.externals.confirm(`Do you want to exit the practice session?`)) {
       return false;
     }
 
@@ -215,7 +215,7 @@ export default class PracticeSession {
 
   async askToFinish() {
     const confirmString = 'You have solved the bug, do you want to stop the practice session?';
-    const result = await this.manager.externals.confirm(confirmString, true);
+    const result = await this.manager.externals.confirm(confirmString);
 
     if (result) {
       await this.manager.stopPractice();

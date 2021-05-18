@@ -114,8 +114,8 @@ export async function queryTerminalPid() {
 export function getOrCreateTerminal(terminalOptions) {
   const { name } = terminalOptions;
   let terminal = findTerminal(name);
-  if (!terminal) {
-    terminal = window.createTerminal(terminalOptions);
+  if (!terminal || !!terminal.exitStatus) {
+    terminal = recreateTerminal(terminalOptions);
   }
   return terminal;
 }
@@ -134,11 +134,14 @@ export async function runInTerminalInteractive(cwd, command, createNew = false) 
     cwd,
     shellPath: pathToBash
   };
+
+  await sleep(300);
+
   const terminal = createNew ?
     recreateTerminal(terminalOptions) :
     getOrCreateTerminal(terminalOptions);
 
-  await sleep(300);
+  await sleep(1);
 
   terminal.sendText(command, true);
   terminal.show(false);

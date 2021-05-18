@@ -7,15 +7,15 @@
   "scripts": {
     "clean": "rm -rf ./dist",
     "__start": "npm run build:serve",
-    "__build:serve": "npx nodemon --exec \"node ../node_modules/webpack-dev-server/bin/webpack-dev-server\"",
+    "__build:serve": "npx nodemon --exec \"node --trace-deprecation --stack-trace-limit=1000 ../node_modules/webpack-dev-server/bin/webpack-dev-server\"",
     "start": "npm run build:watch",
     "start:prod": "npm run build:watch:prod",
-    "build:prod": "node ../node_modules/webpack/bin/webpack --mode production",
-    "build:dev": "node ../node_modules/webpack/bin/webpack --mode development",
-    "build:watch": "node ../node_modules/webpack/bin/webpack --mode development --watch",
-    "build:watch___": "npx nodemon --exec \"node ../node_modules/webpack/bin/webpack --mode development --watch\"",
-    "build:watch:prod": "node ../node_modules/webpack/bin/webpack --mode production --watch",
-    "build:watch:prod___": "npx nodemon --exec \"node ../node_modules/webpack/bin/webpack --mode production --watch\"",
+    "build:prod": "node --trace-deprecation --stack-trace-limit=1000 ../node_modules/webpack/bin/webpack --mode production",
+    "build:dev": "node --trace-deprecation --stack-trace-limit=1000 ../node_modules/webpack/bin/webpack --mode development",
+    "build:watch": "node --trace-deprecation --stack-trace-limit=1000 ../node_modules/webpack/bin/webpack --mode development --watch",
+    "build:watch___": "npx nodemon --exec \"node --trace-deprecation --stack-trace-limit=1000 ../node_modules/webpack/bin/webpack --mode development --watch\"",
+    "build:watch:prod": "node --trace-deprecation --stack-trace-limit=1000 ../node_modules/webpack/bin/webpack --mode production --watch",
+    "build:watch:prod___": "npx nodemon --exec \"node --trace-deprecation --stack-trace-limit=1000 ../node_modules/webpack/bin/webpack --mode production --watch\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -33,11 +33,6 @@
     "serialize-javascript": "^5.0.1"
   },
   "devDependencies": {
-    "copy-webpack-plugin": "^6.0.3",
-    "express": "^4.17.1",
-    "npm-run-all": "^4.1.5",
-    "open-cli": "^6.0.0",
-    "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10"
+    "open-cli": "^6.0.0"
   }
 }

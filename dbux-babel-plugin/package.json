@@ -32,9 +32,7 @@
   "devDependencies": {
     "@babel/core": "^7.10.1",
     "@babel/generator": "^7.10.1",
-    "babel-loader": "^8.0.6",
-    "babel-plugin-tester": "^8.0.1",
-    "webpack-node-externals": "^2.5.0"
+    "babel-plugin-tester": "^8.0.1"
   },
   "keywords": [
     "dbux",

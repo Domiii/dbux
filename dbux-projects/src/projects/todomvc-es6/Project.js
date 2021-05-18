@@ -225,10 +225,6 @@ export default class TodomvcEs6Project extends Project {
     bug.watchFilePaths = bug.testFilePaths.map(file => path.join(this.projectPath, 'dist', file));
   }
 
-  async selectBug(bug) {
-    return this.switchToBugPatchTag(bug);
-  }
-
   async testBugCommand(bug, cfg) {
     // nothing to do yet
     // TODO: run tests?
