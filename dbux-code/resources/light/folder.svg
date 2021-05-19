@@ -1,1 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><style type="text/css">.icon-canvas-transparent{opacity:0;fill:#F6F6F6;} .icon-vs-out{opacity:0;fill:#F6F6F6;} .icon-vs-fg{fill:#F0EFF1;} .icon-folder{fill:#656565;}</style><path class="icon-canvas-transparent" d="M16 16h-16v-16h16v16z" id="canvas"/><path class="icon-vs-out" d="M16 2.5v10c0 .827-.673 1.5-1.5 1.5h-11.996c-.827 0-1.5-.673-1.5-1.5v-8c0-.827.673-1.5 1.5-1.5h2.886l1-2h8.11c.827 0 1.5.673 1.5 1.5z" id="outline"/><path class="icon-folder" d="M14.5 2h-7.492l-1 2h-3.504c-.277 0-.5.224-.5.5v8c0 .276.223.5.5.5h11.996c.275 0 .5-.224.5-.5v-10c0-.276-.225-.5-.5-.5zm-.496 2h-6.496l.5-1h5.996v1z" id="iconBg"/><path class="icon-vs-fg" d="M14 3v1h-6.5l.5-1h6z" id="iconFg"/></svg>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16pt" height="16pt" viewBox="0 0 16 16" version="1.1">
+<g id="surface1">
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(39.607843%,39.607843%,39.607843%);fill-opacity:1;" d="M 14.5 2 L 7.007812 2 L 6.007812 4 L 2.503906 4 C 2.226562 4 2.003906 4.222656 2.003906 4.5 L 2.003906 12.5 C 2.003906 12.777344 2.226562 13 2.503906 13 L 14.5 13 C 14.773438 13 15 12.777344 15 12.5 L 15 2.5 C 15 2.222656 14.773438 2 14.5 2 Z M 14.003906 4 L 7.507812 4 L 8.007812 3 L 14.003906 3 Z M 14.003906 4 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(94.117647%,93.72549%,94.509804%);fill-opacity:1;" d="M 14 3 L 14 4 L 7.5 4 L 8 3 Z M 14 3 "/>
+</g>
+</svg>

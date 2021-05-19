@@ -1,7 +1,6 @@
-<svg width="64" height="64" xmlns="http://www.w3.org/2000/svg">
-
- <g>
-  <title>Layer 1</title>
-  <path fill="#ffffff" stroke="null" id="svg_1" d="m9.72181,26.43045l44.55638,0l0,11.1391l-44.55638,0l0,-11.1391z"/>
- </g>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16pt" height="16pt" viewBox="0 0 16 16" version="1.1">
+<g id="surface1">
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 2.429688 6.609375 L 13.570312 6.609375 L 13.570312 9.390625 L 2.429688 9.390625 Z M 2.429688 6.609375 "/>
+</g>
 </svg>
