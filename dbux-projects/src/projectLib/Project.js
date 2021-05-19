@@ -711,7 +711,7 @@ This may be solved by using \`Delete project folder\` button.`);
   async applyPatch(patchFName, revert = false) {
     await this.checkCorrectGitRepository();
 
-    const patchPath = this.getPatchFile(patchFName);
+    const patchPath = this.getPatchFile(patchFName).replace(/\\/g, '/');
     return this.exec(`git apply ${revert ? '-R' : ''} --ignore-space-change --ignore-whitespace "${patchPath}"`);
   }
 
