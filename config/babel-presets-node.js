@@ -1,11 +1,22 @@
 // NOTE: we cannot use preset + plugin names, but *must* `require` them directly
 //      See: https://github.com/Domiii/dbux/issues/456
 
+function loadBabel(name) {
+  // eslint-disable-next-line import/no-dynamic-require,global-require,camelcase
+  const requireFunc = typeof __non_webpack_require__ === "function" ? __non_webpack_require__ : require;
+  const module = requireFunc(name);
+  if (module.default) {
+    return module.default;
+  }
+  return module;
+}
+
+
 module.exports = {
   sourceType: 'unambiguous',
   presets: [
     [
-      require('@babel/preset-env').default,
+      loadBabel('@babel/preset-env'),
       {
         targets: {
           node: '12'
@@ -17,22 +28,22 @@ module.exports = {
   ],
   plugins: [
     [
-      require("@babel/plugin-proposal-class-properties").default,
+      loadBabel('@babel/plugin-proposal-class-properties'),
       {
         // loose: true
       }
     ],
-    require("@babel/plugin-proposal-optional-chaining").default,
+    loadBabel('@babel/plugin-proposal-optional-chaining'),
     [
-      require("@babel/plugin-proposal-decorators").default,
+      loadBabel('@babel/plugin-proposal-decorators'),
       {
         legacy: true
       }
     ],
-    require("@babel/plugin-proposal-function-bind").default,
-    require("@babel/plugin-syntax-export-default-from").default,
-    require("@babel/plugin-syntax-dynamic-import").default,
-    require("@babel/plugin-transform-runtime").default,
+    loadBabel('@babel/plugin-proposal-function-bind'),
+    loadBabel('@babel/plugin-syntax-export-default-from'),
+    loadBabel('@babel/plugin-syntax-dynamic-import'),
+    loadBabel('@babel/plugin-transform-runtime'),
 
     // NOTE: cannot convert mjs with @babel/register: https://github.com/babel/babel/issues/6737
     // '@babel/plugin-transform-modules-commonjs'
