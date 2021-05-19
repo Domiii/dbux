@@ -59,7 +59,7 @@ export default class VariableDeclarator extends BaseNode {
       }
     };
 
-    // TODO: need deferTid etc, ensure the order `binding` -> `read` -> `write`
+    // TODO: probably need `deferTid` to ensure order `binding` -> `read` -> `write`
     //      something like this: `lval = (bindingTrace, rvalTrace(..., bidingTid, inputs=null, writeAfterReadCommand))`
     // TODO: `isNested`
 
