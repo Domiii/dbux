@@ -428,7 +428,7 @@ This may be solved by using \`Delete project folder\` button.`);
 
     // NOTE: returns status code 1, if there are any changes, IFF --exit-code or --quiet is provided
     // see: https://stackoverflow.com/questions/28296130/what-does-this-git-diff-index-quiet-head-mean
-    const code = await this.exec('git diff-index --exit-code HEAD --', { failOnStatusCode: false, logStdout: false });
+    const code = await this.exec('git diff-index --exit-code HEAD --', { failOnStatusCode: false });
 
     return !!code;  // code !== 0 means that there are pending changes
   }
@@ -499,7 +499,7 @@ This may be solved by using \`Delete project folder\` button.`);
 
       message && (message = ' ' + message);
       // TODO: should not need '--allow-empty', if `checkFilesChanged` is correct (but somehow still bugs out)
-      await this.exec(`git commit -am '"[dbux auto commit]${message}"' --allow-empty`, { logStdout: false });
+      await this.exec(`git commit -am '"[dbux auto commit]${message}"' --allow-empty`);
     }
   }
 
@@ -672,14 +672,14 @@ This may be solved by using \`Delete project folder\` button.`);
     // const assetDir = path.resolve(path.join(__dirname, `../../dbux-projects/assets/${assetFolderName}`));
     const assetDir = this.getAssetDir(assetFolderName);
     // copy assets, if this project has any
-    Verbose && this.log(`Copying assets from ${assetDir} to ${this.projectPath}`);
+    this.log(`Copying assets from ${assetDir} to ${this.projectPath}`);
 
     // Globs are tricky. See: https://stackoverflow.com/a/31438355/2228771
     const copyRes = sh.cp('-rf', `${assetDir}/{.[!.],..?,}*`, this.projectPath);
 
     const assetFiles = getAllFilesInFolders(assetDir).join(',');
     // this.log(`Copied assets. All root files: ${await getAllFilesInFolders(this.projectPath, false).join(', ')}`);
-    Verbose && this.log(`Copied assets (${assetDir}): result=${copyRes.toString()}, files=${assetFiles}`,
+    this.log(`Copied assets (${assetDir}): result=${copyRes.toString()}, files=${assetFiles}`,
       // this.execCaptureOut(`cat ${this.projectPath}/.babelrc.js`)
     );
   }

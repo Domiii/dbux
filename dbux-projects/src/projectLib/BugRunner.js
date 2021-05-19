@@ -203,8 +203,8 @@ export default class BugRunner {
         this.installBug.bind(this, bug),
 
         // Step 3: Do these again to get the latest update
-        project.npmInstall.bind(project),
         project.installAssets.bind(project),
+        project.npmInstall.bind(project),
 
         // Step 4: Auto commit in the end to avoid `uncommit changes` error for any further git operation
         project.autoCommit.bind(project),
