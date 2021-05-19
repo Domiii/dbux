@@ -1,1 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><style>.icon-canvas-transparent{opacity:0;fill:#2d2d30}.icon-vs-out{fill:#2d2d30}.icon-vs-bg{fill:#c5c5c5}.icon-vs-fg{fill:#2b282e}</style><path class="icon-canvas-transparent" d="M16 16H0V0h16v16z" id="canvas"/><path class="icon-vs-out" d="M15 16H2V0h8.621L15 4.379V16z" id="outline"/><path class="icon-vs-fg" d="M13 14H4V2h5v4h4v8zm-3-9V2.207L12.793 5H10z" id="iconFg"/><path class="icon-vs-bg" d="M3 1v14h11V4.793L10.207 1H3zm10 13H4V2h5v4h4v8zm-3-9V2.207L12.793 5H10z" id="iconBg"/></svg>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16pt" height="16pt" viewBox="0 0 16 16" version="1.1">
+<g id="surface1">
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(17.647059%,17.647059%,18.823529%);fill-opacity:1;" d="M 15 16 L 2 16 L 2 0 L 10.621094 0 L 15 4.378906 Z M 15 16 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(16.862745%,15.686275%,18.039216%);fill-opacity:1;" d="M 13 14 L 4 14 L 4 2 L 9 2 L 9 6 L 13 6 Z M 10 5 L 10 2.207031 L 12.792969 5 Z M 10 5 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(77.254902%,77.254902%,77.254902%);fill-opacity:1;" d="M 3 1 L 3 15 L 14 15 L 14 4.792969 L 10.207031 1 Z M 13 14 L 4 14 L 4 2 L 9 2 L 9 6 L 13 6 Z M 10 5 L 10 2.207031 L 12.792969 5 Z M 10 5 "/>
+</g>
+</svg>
