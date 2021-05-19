@@ -9,6 +9,9 @@ const { log, debug, warn, error: logError } = newLogger('builders/trace');
 
 const Verbose = 2;
 
+const ZeroNode = t.numericLiteral(0);
+const NullNode = t.nullLiteral();
+
 export const buildTraceId = bindExpressionTemplate(
   '(%%traceId%% = %%newTraceId%%(%%staticTraceId%%))',
   function buildTraceId(state, { tidIdentifier, inProgramStaticTraceId }) {
@@ -26,15 +29,20 @@ export const buildTraceId = bindExpressionTemplate(
 );
 
 /**
- * TODO: change template, based on argument count
+ * 
  */
 export const buildTraceExpression = bindExpressionTemplate(
   '%%traceExpression%%(%%expr%%, %%tid%%, %%bindingTid%%, %%inputs%%)',
-  function buildTraceExpression(path, state, traceCfg, bindingTidIdentifier = null, inputTidIds = null) {
+  function buildTraceExpression(path, state, traceCfg) {
     // const { scope } = path;
     const { ids: { aliases: {
       traceExpression
     } } } = state;
+
+    const {
+      bindingTidIdentifier,
+      inputTidIds
+    } = traceCfg;
 
     const tid = buildTraceId(state, traceCfg);
     const expr = path.node;
@@ -46,23 +54,27 @@ export const buildTraceExpression = bindExpressionTemplate(
       traceExpression,
       expr,
       tid,
-      bindingTid: bindingTidIdentifier || t.nullLiteral(),
-      inputs: t.arrayExpression(inputTidIds || [])
+      bindingTid: bindingTidIdentifier || ZeroNode,
+      inputs: inputTidIds && t.arrayExpression(inputTidIds) || NullNode
     };
   }
 );
 
 export const buildTraceWrite = bindExpressionTemplate(
   // TODO: value, tid, deferTid, ...inputs
-  '%%traceWrite%%(%%expr%%, %%tid%%)',
-  function buildTraceWrite(path, state, traceCfg) {
+  '%%traceWrite%%(%%tid%%, %%bindingTid%%, %%deferTid%%, %%inputs%%)',
+  function buildTraceWrite(state, traceCfg) {
     const { ids: { aliases: {
       traceWrite
     } } } = state;
 
+    const {
+      bindingTidIdentifier,
+      inputTidIds
+    } = traceCfg;
+
     const tid = buildTraceId(state, traceCfg);
-    const expr = path.node;
-    Verbose && debug('[te]', getPresentableString(path));
+    // Verbose && debug('[tw]', getPresentableString(path));
 
     // NOTE: templates only work on `Node`, not on `NodePath`, thus they lose all path-related information.
 
@@ -70,8 +82,10 @@ export const buildTraceWrite = bindExpressionTemplate(
 
     return {
       traceWrite,
-      expr,
-      tid
+      tid,
+      bindingTid: bindingTidIdentifier || ZeroNode,
+      deferTid: NullNode,
+      inputs: inputTidIds && t.arrayExpression(inputTidIds) || NullNode
     };
   }
 );

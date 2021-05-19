@@ -8,7 +8,7 @@ let DataNodeType = {
 };
 
 /**
- * @type {(Enum|TraceTypeSet)}
+ * @type {(Enum)}
  */
 DataNodeType = new Enum(DataNodeType);
 

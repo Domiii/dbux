@@ -1,8 +1,10 @@
 import { NodePath } from '@babel/traverse';
+import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { getPresentableString } from '../../helpers/pathHelpers';
-import { traceWrapExpression } from '../../instrumentation/trace';
+import { traceWrapExpression, traceWrapWrite } from '../../instrumentation/trace';
 import ParseNode from '../../parseLib/ParseNode';
 // import { getPresentableString } from '../../helpers/pathHelpers';
 import ParsePlugin from '../../parseLib/ParsePlugin';
@@ -18,7 +20,7 @@ const makeInputTrace = {
         dataNode: {
           // TODO: `isNew` for literals is only `true` the first time. Need dynamic `isNew` to mirror this.
           isNew: true,
-          isWrite: false
+          type: DataNodeType.Read
         }
       }
     };
@@ -73,18 +75,15 @@ export default class Traces extends ParsePlugin {
   // addTrace
   // ###########################################################################
 
-  addTrace(pathOrCfgOrArray, node, varNode, staticTraceData, inputTidIds) {
-    if (Array.isArray(pathOrCfgOrArray)) {
-      for (const traceCfg of pathOrCfgOrArray) {
+  addTrace(traceDataOrArray) {
+    if (Array.isArray(traceDataOrArray)) {
+      for (const traceCfg of traceDataOrArray) {
         this.addTrace(traceCfg);
       }
-      return;
+      return null;
     }
 
-    let path = pathOrCfgOrArray;
-    if (path.path) {
-      ({ path, node, varNode, staticTraceData, inputTidIds } = pathOrCfgOrArray);
-    }
+    const { path, node, varNode, staticTraceData, inputTidIds, meta } = traceDataOrArray;
 
     const { state } = this.node;
     const { scope } = path;
@@ -96,8 +95,9 @@ export default class Traces extends ParsePlugin {
       node,
       inProgramStaticTraceId,
       tidIdentifier,
-      varNode,
-      inputTidIds
+      bindingTidIdentifier: varNode?.getBindingTidIdentifier(),
+      inputTidIds,
+      meta
     };
     this.traces.push(traceData);
     if (node) {
@@ -106,19 +106,39 @@ export default class Traces extends ParsePlugin {
     }
 
     this.Verbose >= 2 && this.debug('[traceId]', tidIdentifier.name, `([${inputTidIds?.map(tid => tid.name).join(',') || ''}])`, `@"${this}"`);
+
+    return traceData;
+  }
+
+  // ###########################################################################
+  // 
+  // ###########################################################################
+
+  addWriteTrace(writeTraceData, rvalPath) {
+    if (rvalPath.node) {
+      const inputTrace = this.addInputs(rvalPath);
+      writeTraceData.meta = writeTraceData.meta || {};
+
+      // TODO: generalize from `expressionTraceCfg` to `nestedTraceCfgs`
+
+      writeTraceData.meta.expressionTraceCfg = inputTrace;
+    }
+
+    return this.addTrace(writeTraceData);
   }
 
   // ###########################################################################
   // addTraceWithInputs
   // ###########################################################################
 
-  addTraceWithInputs(path, node, varNode, staticTraceData, inputPaths) {
+  addTraceWithInputs(traceCfg, inputPaths) {
     // also trace inputTidIds if they are `Literal` or `ReferencedIdentifier`
     const inputTidIds = this.addInputs(inputPaths);
 
     // this.warn(`[${this.node.name}] traceData`, tidIdentifier.name);
 
-    return this.addTrace(path, node, varNode, staticTraceData, inputTidIds);
+    traceCfg.inputTidIds = inputTidIds;
+    return this.addTrace(traceCfg);
   }
 
   // exit() {
@@ -126,27 +146,65 @@ export default class Traces extends ParsePlugin {
 
 
   // ###########################################################################
+  // instrumentTrace*
+  // ###########################################################################
+
+  instrumentTraceExpression = (traceCfg) => {
+    const { node } = this;
+    const { state } = node;
+    // const { scope } = path;
+
+    const {
+      path: tracePath,
+      meta: {
+        replacePath
+      } = EmptyObject
+    } = traceCfg;
+
+    traceWrapExpression(replacePath || tracePath, state, traceCfg);
+  }
+
+  instrumentTraceWrite(writeTraceCfg) {
+    const { node } = this;
+    const { state } = node;
+
+    const {
+      path: tracePath,
+      meta: {
+        replacePath
+      } = EmptyObject
+    } = writeTraceCfg;
+
+    traceWrapWrite(replacePath || tracePath, state, writeTraceCfg, expressionTraceCfg);
+  }
+
+  // ###########################################################################
   // instrument
   // ###########################################################################
 
   instrument() {
     const { traces, node } = this;
-    const { path, state } = node;
+    const { path } = node;
     const { scope } = path;
 
     // this.debug(`traces`, traces.map(t => t.tidIdentifier));
     for (const traceCfg of traces) {
       // add variable to scope
-      const { /* inProgramStaticTraceId, */ path: tracePath, tidIdentifier, varNode, inputTidIds } = traceCfg;
+      const {
+        /* inProgramStaticTraceId, */
+        tidIdentifier,
+        meta: {
+          isNested = false,
+          instrument = this.instrumentTraceExpression
+        } = EmptyObject
+      } = traceCfg;
       scope.push({
         id: tidIdentifier
       });
 
-      const bindingTidIdentifier = varNode?.getBindingTidIdentifier();
-
-      // TODO: generalize to any type of trace (not just expression)
-
-      traceWrapExpression(tracePath, state, traceCfg, bindingTidIdentifier, inputTidIds);
+      if (!isNested) {
+        instrument(traceCfg);
+      }
     }
   }
 }

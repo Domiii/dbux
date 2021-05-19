@@ -453,18 +453,29 @@ export default class RuntimeMonitor {
   //   }
   // }
 
-  // traceWriteX(value, tid/* , bindingTid, memberPath */, deferTid, ...inputs) {
-  //   // NOTE: (currently,) this is mostly the same as the code for te
-  //   // TODO: missing bindingTid
-  //   const trace = registerTrace(value, tid);
-  //   createWriteDataNodesX(value, trace, inputs);
-  //   if (deferTid) {
-  //     addDeferredTid(deferTid, tid);
-  //   }
-  //   else {
-  //     finishDataNode(tid);
-  //   }
-  // }
+  // traceWriteME(programId, value, tid/* , bindingTid, memberPath */, deferTid, inputs) {
+
+  traceWriteVar(programId, tid, bindingTid, deferTid, inputs) {
+    if (!this._ensureExecuting()) {
+      return;
+    }
+    if (!tid) {
+      logError(`traceExpression failed to capture tid`);
+      return;
+    }
+
+    // this.registerTrace(value, tid);
+    dataNodeCollection.createDataNodes(undefined, tid, bindingTid, inputs);
+
+    // TODO: defer
+    // if (deferTid) {
+    //   addDeferredTid(deferTid, tid);
+    // }
+    // else {
+    //   finishDataNode(tid);
+    // }
+    // return;
+  }
 
   /**
    * Called on the last node of a deferred chain, indicating that the sub-tree is complete.
@@ -572,7 +583,7 @@ export default class RuntimeMonitor {
      * ```
      */
   }
-  
+
 
   // ###########################################################################
   // error handling

@@ -86,13 +86,13 @@ export default class ParseNode {
   // children utilities
   // ###########################################################################
 
-  getChildPaths() {
+  getChildPaths(addEmpty = false) {
     const { children } = this.constructor;
     if (!children) {
       throw new Error(`Could not getChildPaths - missing \`static children\` in ${this}.`);
     }
     // NOTE: cache _childPaths
-    this._childPaths = this._childPaths || getChildPaths(this.path, children);
+    this._childPaths = this._childPaths || getChildPaths(this.path, children, addEmpty);
     return this._childPaths;
   }
 

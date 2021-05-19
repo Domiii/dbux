@@ -25,6 +25,9 @@ export class DataNodeCollection extends Collection {
     // handleNodeX(value, trace, dataNode, inputs, deferredChildrenTids);
   }
 
+  
+  // NOTE: this currently only registers new objects and primitives
+  // TODO: support object changes
   createDataNode(value, traceId, bindingTid, inputs) {
     const dataNode = pools.dataNodes.allocate();
 
@@ -33,8 +36,6 @@ export class DataNodeCollection extends Collection {
     this._all.push(dataNode);
 
     // value
-    // NOTE: this currently only registers new objects and primitives
-    // TODO: also register object changes
     const valueRef = valueCollection.registerValueMaybe(value, dataNode);
     const varAccess = { refNid: valueRef?.nodeId || 0, varTid: bindingTid };
 

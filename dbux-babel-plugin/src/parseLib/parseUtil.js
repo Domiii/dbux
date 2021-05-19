@@ -4,11 +4,11 @@ const { debug } = newLogger('parseUtil');
 
 export const DbuxNodeId = '_dbux_node_';
 
-export function getChildPaths(path, childrenNames) {
+export function getChildPaths(path, childrenNames, addEmpty = false) {
   // childrenNames.map(name => path.get(name));
   return childrenNames.map(name => {
     const child = path.get(name);
-    if (!child.node) {
+    if (!addEmpty && !child.node) {
       return null;
     }
     return child;

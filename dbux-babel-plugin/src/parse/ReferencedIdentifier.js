@@ -1,5 +1,6 @@
 import { Binding } from '@babel/traverse';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
+import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 import BaseNode from './BaseNode';
 
 export default class ReferencedIdentifier extends BaseNode {
@@ -58,7 +59,7 @@ export default class ReferencedIdentifier extends BaseNode {
         type: TraceType.Identifier,
         dataNode: {
           isNew: false,
-          isWrite: false
+          type: DataNodeType.Read
         }
       }
     };
