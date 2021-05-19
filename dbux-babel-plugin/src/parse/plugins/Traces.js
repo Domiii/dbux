@@ -12,9 +12,9 @@ const makeInputTrace = {
     return {
       node: null,
       path,
-      traceType: TraceType.ExpressionValue,
       varNode: null,
       staticTraceData: {
+        type: TraceType.ExpressionValue,
         dataNode: {
           // TODO: `isNew` for literals is only `true` the first time. Need dynamic `isNew` to mirror this.
           isNew: true,
@@ -73,7 +73,7 @@ export default class Traces extends ParsePlugin {
   // addTrace
   // ###########################################################################
 
-  addTrace(pathOrCfgOrArray, node, type, varNode, staticTraceData, inputTidIds) {
+  addTrace(pathOrCfgOrArray, node, varNode, staticTraceData, inputTidIds) {
     if (Array.isArray(pathOrCfgOrArray)) {
       for (const traceCfg of pathOrCfgOrArray) {
         this.addTrace(traceCfg);
@@ -83,12 +83,12 @@ export default class Traces extends ParsePlugin {
 
     let path = pathOrCfgOrArray;
     if (path.path) {
-      ({ path, node, type, varNode, staticTraceData, inputTidIds } = pathOrCfgOrArray);
+      ({ path, node, varNode, staticTraceData, inputTidIds } = pathOrCfgOrArray);
     }
 
     const { state } = this.node;
     const { scope } = path;
-    const inProgramStaticTraceId = state.traces.addTrace(path, type, staticTraceData);
+    const inProgramStaticTraceId = state.traces.addTrace(path, staticTraceData);
     const tidIdentifier = scope.generateUidIdentifier(`t${inProgramStaticTraceId}_`);
 
     const traceData = {
@@ -96,7 +96,6 @@ export default class Traces extends ParsePlugin {
       node,
       inProgramStaticTraceId,
       tidIdentifier,
-      type,
       varNode,
       inputTidIds
     };
@@ -113,13 +112,13 @@ export default class Traces extends ParsePlugin {
   // addTraceWithInputs
   // ###########################################################################
 
-  addTraceWithInputs(path, node, type, varNode, inputPaths, staticTraceData) {
+  addTraceWithInputs(path, node, varNode, staticTraceData, inputPaths) {
     // also trace inputTidIds if they are `Literal` or `ReferencedIdentifier`
     const inputTidIds = this.addInputs(inputPaths);
 
     // this.warn(`[${this.node.name}] traceData`, tidIdentifier.name);
 
-    return this.addTrace(path, node, type, varNode, staticTraceData, inputTidIds);
+    return this.addTrace(path, node, varNode, staticTraceData, inputTidIds);
   }
 
   // exit() {

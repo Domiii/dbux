@@ -77,8 +77,8 @@ export default class Function extends ParsePlugin {
       isInterruptable
     };
     const staticContextId = state.contexts.addStaticContext(path, staticContextData);
-    const pushTraceId = state.traces.addTrace(bodyPath, TraceType.PushImmediate);
-    const popTraceId = state.traces.addTrace(bodyPath, TraceType.PopImmediate);
+    const pushTraceId = state.traces.addTrace(bodyPath, { type: TraceType.PushImmediate });
+    const popTraceId = state.traces.addTrace(bodyPath, { type: TraceType.PopImmediate });
 
     // // add varAccess
     // const ownerId = staticContextId;

@@ -104,8 +104,8 @@ export default class Program extends BaseNode {
      */
     state.contexts.addStaticContext(path, staticProgramContext);
 
-    state.traces.addTrace(path, TraceType.PushImmediate);      // === 1
-    state.traces.addTrace(path, TraceType.PopImmediate);       // === 2
+    state.traces.addTrace(path, { type: TraceType.PushImmediate });      // === 1
+    state.traces.addTrace(path, { type: TraceType.PopImmediate });       // === 2
   }
 
   instrument() {

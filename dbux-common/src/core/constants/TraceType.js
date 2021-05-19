@@ -21,8 +21,9 @@ let TraceType = {
   // CallArgument: 9,
   // CallbackArgument: 10,
 
-  Identifier: 9,
-  Literal: 10,
+  Binding: 11,
+  Identifier: 12,
+  Literal: 13,
 
   Parameter: 31,
 

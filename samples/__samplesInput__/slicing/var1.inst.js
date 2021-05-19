@@ -7,8 +7,8 @@ var _te = _dbux.traceExpression;
 var _tw = _dbux.traceWrite;
 try {
   var _t3_, _t4_, _t5_;
-  let a, b;
-  a = 1;
+  let a = 1,
+    b;
   b = 2;
 
   _te(
@@ -29,7 +29,7 @@ function _dbux_init(dbuxRuntime) {
       contexts: [
         {
           _staticId: 1,
-          loc: { start: { line: 1, column: 0 }, end: { line: 6, column: 0 } },
+          loc: { start: { line: 1, column: 0 }, end: { line: 5, column: 0 } },
           type: 1,
           name: "__unnamed_script_1.js",
           displayName: "__unnamed_script_1.js",
@@ -45,7 +45,7 @@ function _dbux_init(dbuxRuntime) {
           type: 1,
         },
         {
-          loc: { start: { line: 6, column: 0 }, end: { line: 6, column: 0 } },
+          loc: { start: { line: 5, column: 0 }, end: { line: 5, column: 0 } },
           _traceId: 2,
           _staticContextId: 1,
           type: 2,
@@ -53,8 +53,8 @@ function _dbux_init(dbuxRuntime) {
         {
           displayName: "a",
           loc: {
-            start: { line: 5, column: 0 },
-            end: { line: 5, column: 1 },
+            start: { line: 4, column: 0 },
+            end: { line: 4, column: 1 },
             identifierName: "a",
           },
           _traceId: 3,
@@ -63,8 +63,8 @@ function _dbux_init(dbuxRuntime) {
         {
           displayName: "b",
           loc: {
-            start: { line: 5, column: 4 },
-            end: { line: 5, column: 5 },
+            start: { line: 4, column: 4 },
+            end: { line: 4, column: 5 },
             identifierName: "b",
           },
           _traceId: 4,
@@ -72,13 +72,13 @@ function _dbux_init(dbuxRuntime) {
         },
         {
           displayName: "a + b",
-          loc: { start: { line: 5, column: 0 }, end: { line: 5, column: 5 } },
+          loc: { start: { line: 4, column: 0 }, end: { line: 4, column: 5 } },
           _traceId: 5,
           _staticContextId: 1,
           type: 7,
         },
         {
-          loc: { start: { line: 6, column: 0 }, end: { line: 6, column: 0 } },
+          loc: { start: { line: 5, column: 0 }, end: { line: 5, column: 0 } },
           _traceId: 6,
           _staticContextId: 1,
           type: 22,
@@ -89,5 +89,5 @@ function _dbux_init(dbuxRuntime) {
     {}
   );
 }
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInVua25vd24iXSwibmFtZXMiOlsiYSIsImIiXSwibWFwcGluZ3MiOiI0UkFBQSxJQUFJQSxDQUFKLEVBQU9DLENBQVA7QUFDQUQsRUFBQUEsQ0FBQyxHQUFHLENBQUo7QUFDQUMsRUFBQUEsQ0FBQyxHQUFHLENBQUo7O0FBRUEsVUFBQUQsQ0FBQywyQkFBRCxPQUFJQyxDQUFKLGlFIiwic291cmNlc0NvbnRlbnQiOlsibGV0IGEsIGI7XHJcbmEgPSAxO1xyXG5iID0gMjtcclxuXHJcbmEgKyBiXHJcbiJdfQ==
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInVua25vd24iXSwibmFtZXMiOlsiYSIsImIiXSwibWFwcGluZ3MiOiI0UkFBQSxJQUFJQSxDQUFDLEdBQUcsQ0FBUixDQUFXQyxDQUFYO0FBQ0FBLEVBQUFBLENBQUMsR0FBRyxDQUFKOztBQUVBLFVBQUFELENBQUMsMkJBQUQsT0FBSUMsQ0FBSixpRSIsInNvdXJjZXNDb250ZW50IjpbImxldCBhID0gMSwgYjtcclxuYiA9IDI7XHJcblxyXG5hICsgYlxyXG4iXX0=
 

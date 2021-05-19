@@ -101,12 +101,11 @@ export default class ParseNode {
   }
 
   getChildNodes() {
-    if (this.phase < ParsePhase.Exit) {
-      throw new Error(`Cannot getChildNodes before Exit or Instrument phases - ${this} (${ParsePhase.nameFromForce(this.phase)})`);
-    }
+    // if (this.phase < ParsePhase.Exit) {
+    //   throw new Error(`Cannot getChildNodes before Exit or Instrument phases - ${this} (${ParsePhase.nameFromForce(this.phase)})`);
+    // }
     // NOTE: cache _childNodes
-    this._childNodes = this._childNodes ||
-      getChildPaths().map(this.getNodeOfPath);
+    this._childNodes = this._childNodes || this.getChildPaths().map(this.getNodeOfPath);
     return this._childNodes;
   }
 
@@ -120,6 +119,10 @@ export default class ParseNode {
 
   debug(...args) {
     return this.stack.debug(' >', ...args);
+  }
+
+  warn(...args) {
+    return this.stack.warn(' >', ...args);
   }
 
   get debugTag() {

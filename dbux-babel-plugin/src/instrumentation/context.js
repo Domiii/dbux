@@ -3,7 +3,7 @@ import TraceType from '@dbux/common/src/core/constants/TraceType';
 import { buildTraceNoValue } from './builders/trace';
 
 export function buildContextEndTrace(path, state) {
-  return buildTraceNoValue(path, state, TraceType.EndOfContext);
+  return buildTraceNoValue(path, state, { type: TraceType.EndOfContext });
 }
 
 /**

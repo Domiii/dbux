@@ -70,7 +70,7 @@
     "nra": "node node_modules/npm-run-all/bin/npm-run-all",
     "runall:dev": "npm run nra -- -p build:watch graph:build:watch",
     "_runall:dev": "(yarn build:watch) & (graph:build:watch)",
-    "write-registry-files": "node --stack-trace-limit=1000 scripts/auto-write-files.js",
+    "registry-files": "node --stack-trace-limit=1000 scripts/auto-write-files.js",
     "start:prod": "yarn run build:clean && yarn run version:prod && npm run nra -- -p build:watch:prod graph:build:watch:prod",
     "version:dev": "node --unhandled-rejections=strict -e \"require('./scripts/fix-versions').revertToDevVersion().then(() => process.exit(0))\"",
     "version:prod": "node --unhandled-rejections=strict -e \"require('./scripts/fix-versions').downgradeProdVersion().then(() => process.exit(0))\"",

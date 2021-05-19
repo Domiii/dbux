@@ -25,9 +25,12 @@ export const buildTraceId = bindExpressionTemplate(
   }
 );
 
+/**
+ * TODO: change template, based on argument count
+ */
 export const buildTraceExpression = bindExpressionTemplate(
   '%%traceExpression%%(%%expr%%, %%tid%%, %%bindingTid%%, %%inputs%%)',
-  function buildTraceExpression(path, state, traceCfg, bindingTidIdentifier, inputTidIds) {
+  function buildTraceExpression(path, state, traceCfg, bindingTidIdentifier = null, inputTidIds = null) {
     // const { scope } = path;
     const { ids: { aliases: {
       traceExpression
@@ -44,7 +47,7 @@ export const buildTraceExpression = bindExpressionTemplate(
       expr,
       tid,
       bindingTid: bindingTidIdentifier || t.nullLiteral(),
-      inputs: t.arrayExpression(inputTidIds)
+      inputs: t.arrayExpression(inputTidIds || [])
     };
   }
 );
@@ -52,7 +55,7 @@ export const buildTraceExpression = bindExpressionTemplate(
 export const buildTraceWrite = bindExpressionTemplate(
   // TODO: value, tid, deferTid, ...inputs
   '%%traceWrite%%(%%expr%%, %%tid%%)',
-  function buildTraceNoValue(path, state, traceCfg) {
+  function buildTraceWrite(path, state, traceCfg) {
     const { ids: { aliases: {
       traceWrite
     } } } = state;
@@ -74,11 +77,14 @@ export const buildTraceWrite = bindExpressionTemplate(
 );
 
 
+/**
+ * TODO: rewrite using `traceCfg`
+ */
 export const buildTraceNoValue = bindTemplate(
   '%%dbux%%.t(%%traceId%%)',
-  function buildTraceNoValue(path, state, traceType) {
+  function buildTraceNoValue(path, state, staticTraceData) {
     const { ids: { dbux } } = state;
-    const traceId = state.traces.addTrace(path, traceType);
+    const traceId = state.traces.addTrace(path, staticTraceData);
     // console.warn(`traces`, state.traces);
     return {
       dbux,

@@ -7,7 +7,11 @@ export const DbuxNodeId = '_dbux_node_';
 export function getChildPaths(path, childrenNames) {
   // childrenNames.map(name => path.get(name));
   return childrenNames.map(name => {
-    return path.get(name);
+    const child = path.get(name);
+    if (!child.node) {
+      return null;
+    }
+    return child;
   });
 }
 
@@ -17,7 +21,7 @@ export function getNodeOfPath(path) {
 
 function getSingleNodeOfPath(path) {
   // debug(`getNodeOfPath ${path}`, Object.keys(path.data || {}));
-  return path.getData(DbuxNodeId);
+  return path?.getData(DbuxNodeId) || null;
 }
 
 export function setNodeOfPath(path, node) {

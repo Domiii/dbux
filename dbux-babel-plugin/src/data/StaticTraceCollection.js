@@ -116,7 +116,7 @@ export default class StaticTraceCollection extends StaticCollection {
    * Tracing a path in its entirety
    * (usually means, the trace is recorded right before the given path).
    */
-  addTrace(path, type, customArg) {
+  addTrace(path, staticData) {
     this.checkPath(path);
 
     const { state } = this;
@@ -125,8 +125,12 @@ export default class StaticTraceCollection extends StaticCollection {
     // get `displayName`, `loc`
     const _traceId = this._getNextId();
     let trace;
+    const { type } = staticData;
+    if (!type) {
+      throw new Error(`invalid call to "addTrace" - missing staticData.type, in path: ${getPresentableString(path)}`);
+    }
     if (traceCustomizationsByType[type]) {
-      trace = traceCustomizationsByType[type](path, state, customArg);
+      trace = traceCustomizationsByType[type](path, state);
     }
     else {
       trace = traceDefault(path, state);

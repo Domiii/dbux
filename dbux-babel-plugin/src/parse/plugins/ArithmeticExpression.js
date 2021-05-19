@@ -1,4 +1,5 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
+import { getPresentableString } from '../../helpers/pathHelpers';
 import ParsePlugin from '../../parseLib/ParsePlugin';
 
 
@@ -7,12 +8,13 @@ export default class ArithmeticExpression extends ParsePlugin {
 
 
   createInputTrace() {
+    const { node } = this;
     const rawTraceData = {
-      path: this.path,
-      node: this,
-      traceType: TraceType.ExpressionResult,
+      path: node.path,
+      node: node,
       varNode: null,
       staticTraceData: {
+        type: TraceType.ExpressionResult,
         dataNode: {
           isNew: true,
           isWrite: false
@@ -20,7 +22,8 @@ export default class ArithmeticExpression extends ParsePlugin {
       }
     };
 
-    return this.addTrace(rawTraceData);
+    const traces = node.getPlugin('Traces');
+    return traces.addTrace(rawTraceData);
   }
 
   // ###########################################################################
@@ -34,11 +37,13 @@ export default class ArithmeticExpression extends ParsePlugin {
     // const childNodes = node.getChildNodes();
     const childPaths = node.getChildPaths();
 
+    this.warn('childPaths', childPaths.map(c => getPresentableString(c)));
+
     const traces = node.getPlugin('Traces');
 
     // trace AE itself
-    const type = TraceType.ExpressionResult;
     const staticTraceData = {
+      type: TraceType.ExpressionResult,
       dataNode: {
         isNew: true,
         isWrite: false
@@ -49,7 +54,7 @@ export default class ArithmeticExpression extends ParsePlugin {
     // const inputNodes = childNodes;
 
     // TODO: propagate inputs
-    traces.addTraceWithInputs(path, node, type, varNode, childPaths, staticTraceData);
+    traces.addTraceWithInputs(path, node, varNode, staticTraceData, childPaths);
   }
 
   // instrument() {

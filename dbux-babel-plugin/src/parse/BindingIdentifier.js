@@ -2,12 +2,16 @@ import { Binding } from '@babel/traverse';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import BaseNode from './BaseNode';
 
-export default class ReferencedIdentifier extends BaseNode {
+/**
+ * NOTE: The `bindingPath` (and thus `bindingNode`) is usually the parent of the `BindingIdentifier`
+ */
+export default class BindingIdentifier extends BaseNode {
   /**
    * @type {Binding}
    */
   _binding;
-  
+
+  // NOTE: `!binding` indicates that this is a global (or otherwise not previously defined variable)
   get binding() {
     if (!this._binding) {
       const { path } = this;
@@ -26,7 +30,7 @@ export default class ReferencedIdentifier extends BaseNode {
   }
 
   getBindingPath() {
-    return this.binding?.path;
+    return this.binding.path;
   }
 
   /**
@@ -34,7 +38,7 @@ export default class ReferencedIdentifier extends BaseNode {
    */
   getBindingNode() {
     const bindingPath = this.getBindingPath();
-    this.debug(`[RId] bindingPath L${bindingPath.node.loc.start.line}: ${bindingPath.toString()}`);
+    this.debug(`[BId] bindingPath L${bindingPath.node.loc.start.line}: ${bindingPath.toString()}`);
     return bindingPath && this.getNodeOfPath(bindingPath) || null;
   }
 
@@ -43,26 +47,17 @@ export default class ReferencedIdentifier extends BaseNode {
   }
 
   // ###########################################################################
-  // inputs
+  // enter
   // ###########################################################################
 
-  createInputTrace() {
-    // TODO: also handle globals
-    const varNode = this.getBindingNode();
+  enter() {
+    const { binding, path } = this;
 
-    const rawTraceData = {
-      path: this.path,
-      node: this,
-      varNode,
-      staticTraceData: {
-        type: TraceType.Identifier,
-        dataNode: {
-          isNew: false,
-          isWrite: false
-        }
-      }
-    };
+    // if (!binding) {
+    //   throw new Error(`Weird Babel issue - ReferencedIdentifier does not have binding - ${this}`);
+    // }
 
-    return rawTraceData;
+    const plugin = this.stack.peekPlugin('StaticContext');
+    plugin.addBinding(path, binding);
   }
 }

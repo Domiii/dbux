@@ -3,6 +3,7 @@ import ArrowFunctionExpression from './ArrowFunctionExpression';
 import AssignmentExpression from './AssignmentExpression';
 import AwaitExpression from './AwaitExpression';
 import BinaryExpression from './BinaryExpression';
+import BindingIdentifier from './BindingIdentifier';
 import Block from './Block';
 import CallExpression from './CallExpression';
 import FunctionDeclaration from './FunctionDeclaration';
@@ -25,6 +26,7 @@ init(ArrowFunctionExpression);
 init(AssignmentExpression);
 init(AwaitExpression);
 init(BinaryExpression);
+init(BindingIdentifier);
 init(Block);
 init(CallExpression);
 init(FunctionDeclaration);
@@ -45,6 +47,7 @@ export {
   AssignmentExpression,
   AwaitExpression,
   BinaryExpression,
+  BindingIdentifier,
   Block,
   CallExpression,
   FunctionDeclaration,

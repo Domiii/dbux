@@ -13,14 +13,15 @@ export default class FunctionDeclaration extends BaseNode {
   enter() {
     const traces = this.getPlugin('Traces');
 
-    traces
+    
+    // traces
   }
 
-  // instrument() {
-  //   const { path } = this;
-  //   const [idPath] = this.getChildPaths();
+  instrument() {
+    const { path } = this;
+    const [idPath] = this.getChildPaths();
 
-  //   const binding = path.scope.getBinding(idPath.node.name);
+    const binding = path.scope.getBinding(idPath.node.name);
     
-  // }
+  }
 }
