@@ -134,6 +134,10 @@ export default class Project {
     return this.manager.runner;
   }
 
+  get sharedRoot() {
+    return this.dependencyRoot;
+  }
+
   get projectsRoot() {
     return this.manager.config.projectsRoot;
   }
@@ -156,7 +160,7 @@ export default class Project {
   }
 
   getSharedDependencyPath(relativePath = '.') {
-    return path.resolve(this.projectsRoot, 'node_modules', relativePath);
+    return path.resolve(this.sharedRoot, 'node_modules', relativePath);
   }
 
   getNodeVersion(bug) {
@@ -414,16 +418,16 @@ This may be solved by using \`Delete project folder\` button.`);
     // NOTE: somehow Node module resolution algorithm skips a directory, that is `projectsRoot`
     //       -> That is why we choose `dependencyRoot` instead
 
-    // TODO: make sure, `shared` does not override existing dependencies
-
-    const cwd = shared ? this.projectsRoot : this.projectPath;
+    const cwd = shared ? this.sharedRoot : this.projectPath;
 
     if (!sh.test('-f', path.join(cwd, 'package.json'))) {
       await this.exec('npm init -y', { cwd });
     }
 
+    // TODO: make sure, `shared` does not override existing dependencies
+
     const cmd = this.preferredPackageManager === 'yarn' ?
-      `yarn add --dev ${shared && (process.env.NODE_ENV === 'development') ? '-W' : ''}` :
+      `yarn add ${shared && (process.env.NODE_ENV === 'development') ? '-W --dev' : ''}` :
       `npm install -D`;
     return this.execInTerminal(`${cmd} ${s}`, { cwd });
   }
