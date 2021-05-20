@@ -45,6 +45,8 @@ export default function injectDbuxState(programPath, programState) {
   const { scope } = programPath;
   const { file: programFile } = programState;
 
+  const programUid = ++iProgram;
+
   const dbuxState = {
     runtimeCfg,
 
@@ -63,12 +65,13 @@ export default function injectDbuxState(programPath, programState) {
 
       // NOTE: We might have multiple dbux programs in the same context (e.g. multiple <script> tags in same HTML file)
       //        So we want to add `iProgram` for unique flavor (which works if they are all instrumented by the same process).
-      dbux: scope.generateUid('dbux' + (++iProgram)),
+      dbux: scope.generateUid('dbux' + programUid),
 
       aliases: {
-        newTraceId: scope.generateUid('tid' + (++iProgram)),
-        traceExpression: scope.generateUid('te' + (++iProgram)),
-        traceWrite: scope.generateUid('tw' + (++iProgram)),
+        newTraceId: scope.generateUid('tid' + programUid),
+        traceExpression: scope.generateUid('te' + programUid),
+        traceBind: scope.generateUid('tb' + programUid),
+        traceWrite: scope.generateUid('tw' + programUid),
       }
     },
     // console.log('[Program]', state.filename);

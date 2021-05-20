@@ -1,5 +1,5 @@
 import * as t from '@babel/types';
-import { buildTraceExpression, buildTraceWrite } from './builders/trace';
+import { buildTraceExpression, buildTraceId, buildTraceWrite } from './builders/trace';
 
 export function traceWrapExpression(expressionPath, state, traceCfg) {
   // if (t.isLiteral(node)) {
@@ -15,20 +15,19 @@ export function traceWrapExpression(expressionPath, state, traceCfg) {
   return replacePath;
 }
 
-export function traceWrapWrite(expressionPath, state, writeTraceCfg, expressionTraceCfg) {
+export function traceWrapBindAndWrite(expressionPath, state, readTraceCfg, writeTraceConfig) {
   // if (t.isLiteral(node)) {
   //   // don't care about literals
   //   return;
   // }
-  const writeNode = buildTraceWrite(state, writeTraceCfg);
-  const expressionNode = expressionTraceCfg ?
-    buildTraceExpression(expressionPath, state, expressionTraceCfg) :
-    expressionPath.node;
+  // const bindNode = buildTraceWrite(state, writeTraceCfg);
+  const bindNode = buildTraceId(state, traceCfg);
+  const expressionNode = buildTraceExpression(expressionPath, state, readTraceCfg, writeTraceConfig);
 
-  expressionPath.replaceWith(t.sequenceExpression([
-    writeNode,
-    expressionNode
-  ]));
+  // expressionPath.replaceWith(t.sequenceExpression([
+  //   bindNode,
+  //   expressionNode
+  // ]));
 
   const replacePath = expressionPath.get('expressions.1');
   state.onCopy(expressionPath, replacePath);

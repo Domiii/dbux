@@ -175,7 +175,7 @@ export default class Traces extends ParsePlugin {
       } = EmptyObject
     } = writeTraceCfg;
 
-    traceWrapWrite(replacePath || tracePath, state, writeTraceCfg, expressionTraceCfg);
+    traceWrapWrite(replacePath || tracePath, state, writeTraceCfg);
   }
 
   // ###########################################################################

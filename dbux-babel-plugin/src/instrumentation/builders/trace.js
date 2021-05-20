@@ -33,11 +33,13 @@ export const buildTraceId = bindExpressionTemplate(
  */
 export const buildTraceExpression = bindExpressionTemplate(
   '%%traceExpression%%(%%expr%%, %%tid%%, %%bindingTid%%, %%inputs%%)',
-  function buildTraceExpression(path, state, traceCfg) {
+  function buildTraceExpression(path, state, traceCfg, nestedCfg) {
     // const { scope } = path;
     const { ids: { aliases: {
       traceExpression
     } } } = state;
+
+    // TODO: (i) read -> write, (ii) bind only
 
     const {
       bindingTidIdentifier,
@@ -60,35 +62,52 @@ export const buildTraceExpression = bindExpressionTemplate(
   }
 );
 
-export const buildTraceWrite = bindExpressionTemplate(
-  // TODO: value, tid, deferTid, ...inputs
-  '%%traceWrite%%(%%tid%%, %%bindingTid%%, %%deferTid%%, %%inputs%%)',
-  function buildTraceWrite(state, traceCfg) {
-    const { ids: { aliases: {
-      traceWrite
-    } } } = state;
+// export const buildTraceBind = bindExpressionTemplate(
+//   // TODO: value, tid, deferTid, ...inputs
+//   '%%traceBind%%(%%tid%%)',
+//   function buildTraceWrite(state, traceCfg) {
+//     const { ids: { aliases: {
+//       traceBind
+//     } } } = state;
 
-    const {
-      bindingTidIdentifier,
-      inputTidIds
-    } = traceCfg;
+//     const tid = buildTraceId(state, traceCfg);
 
-    const tid = buildTraceId(state, traceCfg);
-    // Verbose && debug('[tw]', getPresentableString(path));
+//     return {
+//       traceBind,
+//       tid
+//     };
+//   }
+// );
 
-    // NOTE: templates only work on `Node`, not on `NodePath`, thus they lose all path-related information.
+// export const buildTraceWrite = bindExpressionTemplate(
+//   // TODO: value, tid, deferTid, ...inputs
+//   '%%traceWrite%%(%%tid%%, %%bindingTid%%, %%deferTid%%, %%inputs%%)',
+//   function buildTraceWrite(state, traceCfg) {
+//     const { ids: { aliases: {
+//       traceWrite
+//     } } } = state;
 
-    // TODO: keep `path` data etc, if necessary - `onCopy(path, newPath);`
+//     const {
+//       bindingTidIdentifier,
+//       inputTidIds
+//     } = traceCfg;
 
-    return {
-      traceWrite,
-      tid,
-      bindingTid: bindingTidIdentifier || ZeroNode,
-      deferTid: NullNode,
-      inputs: inputTidIds && t.arrayExpression(inputTidIds) || NullNode
-    };
-  }
-);
+//     const tid = buildTraceId(state, traceCfg);
+//     // Verbose && debug('[tw]', getPresentableString(path));
+
+//     // NOTE: templates only work on `Node`, not on `NodePath`, thus they lose all path-related information.
+
+//     // TODO: keep `path` data etc, if necessary - `onCopy(path, newPath);`
+
+//     return {
+//       traceWrite,
+//       tid,
+//       bindingTid: bindingTidIdentifier || ZeroNode,
+//       deferTid: NullNode,
+//       inputs: inputTidIds && t.arrayExpression(inputTidIds) || NullNode
+//     };
+//   }
+// );
 
 
 /**
