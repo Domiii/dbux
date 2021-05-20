@@ -189,14 +189,6 @@ This may be solved by using \`Delete project folder\` button.`);
     await this.exec('git reset --hard ' + (args || ''));
   }
 
-  async gitResetHardForBug(bug) {
-    // TODO: make sure, user gets to save own changes first
-    sh.cd(this.projectPath);
-    if (bug.patch) {
-      await this.gitResetHard();
-    }
-  }
-
   async gitResetHard() {
     await this.checkCorrectGitRepository();
 
@@ -699,10 +691,6 @@ This may be solved by using \`Delete project folder\` button.`);
     return path.join(this.getPatchFolder(), patchFName);
   }
 
-  // ###########################################################################
-  // git commands
-  // ###########################################################################
-
   /**
    * Apply (or revert) a patch file
    * @param {String} patchFName 
@@ -762,7 +750,6 @@ This may be solved by using \`Delete project folder\` button.`);
     return this.exec(`git tag -f "${tagName}"`);
   }
 
-
   async gitDoesTagExist(tag) {
     await this.checkCorrectGitRepository();
     const code = (await this.exec(`git rev-parse "${tag}" --`, { failOnStatusCode: false }));
@@ -773,24 +760,8 @@ This may be solved by using \`Delete project folder\` button.`);
     return GitInstalledTag;
   }
 
-  async gitAddInstalledTag() {
-    return await this.gitSetTag(this.getProjectInstalledTagName());
-  }
-
-  async isProjectInstalled() {
-    return await this.gitDoesTagExist(this.getProjectInstalledTagName());
-  }
-
   getBugSelectedTagName(bug) {
     return `__dbux_bug_${bug.id}_selected`;
-  }
-
-  async gitAddBugSelectedTag(bug) {
-    return await this.gitSetTag(this.getBugSelectedTagName(bug));
-  }
-
-  async gitDoesBugSelectedTagExists(bug) {
-    return await this.gitDoesTagExist(this.getBugSelectedTagName(bug));
   }
 
   // ###########################################################################
