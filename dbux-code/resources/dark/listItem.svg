@@ -1,18 +1,11 @@
-<svg width="500" height="500" xmlns="http://www.w3.org/2000/svg">
- <g>
-  <title>background</title>
-  <rect fill="none" id="canvas_background" height="502" width="502" y="-1" x="-1"/>
- </g>
-
- <g>
-  <title>Layer 1</title>
-  <g id="svg_5">
-   <path fill="#ffffff" id="svg_2" d="m156.39658,74.25774l303.37825,0l0,95.53578l-303.37825,0l0,-95.53578z" stroke="null"/>
-   <path fill="#ffffff" id="svg_4" d="m215.94724,201.63877l243.8276,0l0,95.53578l-243.8276,0l0,-95.53578z" stroke="null"/>
-   <path fill="#ffffff" id="svg_6" d="m215.94723,330.20648l243.8276,0l0,95.53578l-243.8276,0l0,-95.53578z" stroke="null"/>
-   <path stroke="null" fill="#ffffff" stroke-width="null" stroke-opacity="null" fill-opacity="null" d="m41.22519,79.19078l74.96097,42.83485l-74.96097,42.83485l0,-85.6697z" id="svg_10"/>
-   <path stroke="null" fill="#ffffff" stroke-width="null" stroke-opacity="null" fill-opacity="null" d="m86.72519,212.19078l74.96097,42.83485l-74.96097,42.83485l0,-85.6697z" id="svg_1"/>
-   <path stroke="null" fill="#ffffff" stroke-width="null" stroke-opacity="null" fill-opacity="null" d="m86.72519,338.19078l74.96097,42.83485l-74.96097,42.83485l0,-85.6697z" id="svg_3"/>
-  </g>
- </g>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16pt" height="16pt" viewBox="0 0 16 16" version="1.1">
+<g id="surface1">
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 5.003906 2.375 L 14.710938 2.375 L 14.710938 5.433594 L 5.003906 5.433594 Z M 5.003906 2.375 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 6.910156 6.453125 L 14.710938 6.453125 L 14.710938 9.507812 L 6.910156 9.507812 Z M 6.910156 6.453125 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 6.910156 10.566406 L 14.710938 10.566406 L 14.710938 13.625 L 6.910156 13.625 Z M 6.910156 10.566406 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 1.320312 2.535156 L 3.71875 3.90625 L 1.320312 5.277344 Z M 1.320312 2.535156 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 2.773438 6.789062 L 5.175781 8.160156 L 2.773438 9.53125 Z M 2.773438 6.789062 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 2.773438 10.820312 L 5.175781 12.191406 L 2.773438 13.5625 Z M 2.773438 10.820312 "/>
+</g>
 </svg>

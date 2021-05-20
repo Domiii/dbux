@@ -44,9 +44,10 @@
     "string-replace-loader": "2.3.0",
     "style-loader": "^1.1.3",
     "tablemark": "^2.0.0",
-    "webpack": "^5",
+    "webpack": "5",
     "webpack-bundle-analyzer": "^4",
-    "webpack-cli": "^4",
+    "webpack-cli": "4",
+    "webpack-dev-server": "3",
     "webpack-node-externals": "^3"
   },
   "dependencies": {

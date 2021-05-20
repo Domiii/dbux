@@ -84,7 +84,7 @@ export default class TerminalWrapper {
     // const runJsCommand = `pwd && node -v && which node && echo %PATH% && node ${pathToDbuxRun} ${serializedRunJsArgs}`;
     const runJsCommand = `"${pathToNode}" "${pathToDbuxRun}" ${!!isInteractive + 0} ${serializedRunJsArgs}`;
 
-    Verbose && debug('wrapping terminal command: ', JSON.stringify(runJsargs), `pathToDbuxRun: ${pathToDbuxRun}`);
+    debug('wrapping terminal command: ', JSON.stringify(runJsargs), `pathToDbuxRun: ${pathToDbuxRun}`);
 
     // execute command
 
