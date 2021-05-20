@@ -4,7 +4,7 @@ import TraceType from '@dbux/common/src/core/constants/TraceType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { getPresentableString } from '../../helpers/pathHelpers';
-import { traceWrapExpression, traceWrapWrite } from '../../instrumentation/trace';
+import { traceWrapExpression, traceWrapWrite, traceWrapWrite } from '../../instrumentation/trace';
 import ParseNode from '../../parseLib/ParseNode';
 // import { getPresentableString } from '../../helpers/pathHelpers';
 import ParsePlugin from '../../parseLib/ParsePlugin';
@@ -48,7 +48,7 @@ export default class Traces extends ParsePlugin {
             this.node.logger.warn(`Found unknown AST node type "${inputPath.node.type}" for input node: ${getPresentableString(inputPath)}`);
             return null;
           }
-          this.addTrace(traceData);
+          return this.addTrace(traceData);
         }
         else {
           if (!(node instanceof ParseNode)) {
@@ -64,9 +64,8 @@ export default class Traces extends ParsePlugin {
             }
             this.addTrace(rawTraceData);
           }
-          return node._traceData.tidIdentifier;
+          return node._traceData;
         }
-        return null;
       })
       .filter(node => !!node);
   }
@@ -83,7 +82,7 @@ export default class Traces extends ParsePlugin {
       return null;
     }
 
-    const { path, node, varNode, staticTraceData, inputTidIds, meta } = traceDataOrArray;
+    const { path, node, varNode, staticTraceData, inputTraces, meta } = traceDataOrArray;
 
     const { state } = this.node;
     const { scope } = path;
@@ -95,8 +94,8 @@ export default class Traces extends ParsePlugin {
       node,
       inProgramStaticTraceId,
       tidIdentifier,
-      bindingTidIdentifier: varNode?.getBindingTidIdentifier(),
-      inputTidIds,
+      bindingTidNode: varNode?.getBindingTidIdentifier(),
+      inputTraces,
       meta
     };
     this.traces.push(traceData);
@@ -105,26 +104,9 @@ export default class Traces extends ParsePlugin {
       node._setTraceData(traceData);
     }
 
-    this.Verbose >= 2 && this.debug('[traceId]', tidIdentifier.name, `([${inputTidIds?.map(tid => tid.name).join(',') || ''}])`, `@"${this}"`);
+    this.Verbose >= 2 && this.debug('[traceId]', tidIdentifier.name, `([${inputTraces?.map(tid => tid.name).join(',') || ''}])`, `@"${this}"`);
 
     return traceData;
-  }
-
-  // ###########################################################################
-  // 
-  // ###########################################################################
-
-  addWriteTrace(writeTraceData, rvalPath) {
-    if (rvalPath.node) {
-      const inputTrace = this.addInputs(rvalPath);
-      writeTraceData.meta = writeTraceData.meta || {};
-
-      // TODO: generalize from `expressionTraceCfg` to `nestedTraceCfgs`
-
-      writeTraceData.meta.expressionTraceCfg = inputTrace;
-    }
-
-    return this.addTrace(writeTraceData);
   }
 
   // ###########################################################################
@@ -132,18 +114,13 @@ export default class Traces extends ParsePlugin {
   // ###########################################################################
 
   addTraceWithInputs(traceCfg, inputPaths) {
-    // also trace inputTidIds if they are `Literal` or `ReferencedIdentifier`
-    const inputTidIds = this.addInputs(inputPaths);
-
-    // this.warn(`[${this.node.name}] traceData`, tidIdentifier.name);
-
-    traceCfg.inputTidIds = inputTidIds;
+    // also trace inputTraces if they are `Literal` or `ReferencedIdentifier`
+    traceCfg.inputTraces = this.addInputs(inputPaths);
     return this.addTrace(traceCfg);
   }
 
   // exit() {
   // }
-
 
   // ###########################################################################
   // instrumentTrace*
@@ -170,12 +147,14 @@ export default class Traces extends ParsePlugin {
 
     const {
       path: tracePath,
+      inputTraces,
       meta: {
         replacePath
       } = EmptyObject
     } = writeTraceCfg;
 
-    traceWrapWrite(replacePath || tracePath, state, writeTraceCfg);
+    const readTraceCfg = inputTraces?.[0] || null;
+    traceWrapWrite(replacePath || tracePath, state, writeTraceCfg, readTraceCfg);
   }
 
   // ###########################################################################
