@@ -114,7 +114,7 @@ export default class EslintProject extends Project {
     this.log(`Checking out bug ${name || number}...`);
 
     // see: https://git-scm.com/docs/git-checkout#Documentation/git-checkout.txt-emgitcheckoutem-b-Bltnewbranchgtltstartpointgt
-    await this.exec(`git checkout -B ${tag} tags/${tag}`);
+    await this.exec(`${this.gitCommand} checkout -B ${tag} tags/${tag}`);
   }
 
 

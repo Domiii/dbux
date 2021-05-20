@@ -1,4 +1,3 @@
-import fs from 'fs';
 import path from 'path';
 import pull from 'lodash/pull';
 import defaultsDeep from 'lodash/defaultsDeep';
@@ -7,6 +6,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { getAllFilesInFolders, globRelative } from '@dbux/common-node/src/util/fileUtil';
+import { realPathSyncPosix } from '@dbux/common-node/src/util/pathUtil';
 import isObject from 'lodash/isObject';
 import BugList from './BugList';
 import Process from '../util/Process';
@@ -100,6 +100,7 @@ export default class Project {
 
     // NOTE: we get `constructorName` from the registry
     this.name = this.folderName = this.constructor.constructorName;
+    this.hiddenGitFolderPath = path.posix.join(this.projectsRoot, this.GitFolderName);
 
     this.logger = newLogger(this.debugTag);
   }
@@ -143,7 +144,7 @@ export default class Project {
   }
 
   get projectPath() {
-    return path.join(this.projectsRoot, this.folderName);
+    return path.posix.join(this.projectsRoot, this.folderName);
   }
 
   get runStatus() {
@@ -153,6 +154,14 @@ export default class Project {
     else {
       return RunStatus.None;
     }
+  }
+
+  get GitFolderName() {
+    return `${this.name}.git`;
+  }
+
+  get gitCommand() {
+    return `git --git-dir=${this.hiddenGitFolderPath}`;
   }
 
   getDependencyPath(relativePath) {
@@ -167,18 +176,30 @@ export default class Project {
   // git stuff
   // ###########################################################################
 
+  maybeHideGitFolder() {
+    if (sh.test('-d', '.git')) {
+      try {
+        sh.mv('.git', this.hiddenGitFolderPath);
+      }
+      catch (err) {
+        this.logger.error(`Cannot hide .git folder for project ${this.name}`);
+        throw new Error(err);
+      }
+    }
+  }
+
   async isCorrectGitRepository() {
     if (!this.gitRemote) {
       return false;
     }
 
-    const remote = await this.execCaptureOut(`git remote -v`);
+    const remote = await this.execCaptureOut(`${this.gitCommand} remote -v`);
     return remote?.includes(this.gitRemote);
   }
 
   async checkCorrectGitRepository() {
     if (!await this.isCorrectGitRepository()) {
-      throw new Error(`Trying to execute command in wrong git repository:\n${await this.execCaptureOut(`git remote -v`)}
+      throw new Error(`Trying to execute command in wrong git repository:\n${await this.execCaptureOut(`${this.gitCommand} remote -v`)}
 This may be solved by using \`Delete project folder\` button.`);
     }
   }
@@ -186,14 +207,14 @@ This may be solved by using \`Delete project folder\` button.`);
   async gitCheckoutCommit(args) {
     await this.checkCorrectGitRepository();
 
-    await this.exec('git reset --hard ' + (args || ''));
+    await this.exec(`${this.gitCommand} reset --hard ${args || ''}`);
   }
 
   async gitResetHard() {
     await this.checkCorrectGitRepository();
 
     if (await this.checkFilesChanged()) {
-      await this.exec('git reset --hard');
+      await this.exec(`${this.gitCommand} reset --hard`);
     }
   }
 
@@ -209,6 +230,7 @@ This may be solved by using \`Delete project folder\` button.`);
 
     // git clone
     await this.gitClone();
+    this.maybeHideGitFolder();
 
     // run hook
     await this.install();
@@ -420,7 +442,7 @@ This may be solved by using \`Delete project folder\` button.`);
 
     // NOTE: returns status code 1, if there are any changes, IFF --exit-code or --quiet is provided
     // see: https://stackoverflow.com/questions/28296130/what-does-this-git-diff-index-quiet-head-mean
-    const code = await this.exec('git diff-index --exit-code HEAD --', { failOnStatusCode: false });
+    const code = await this.exec(`${this.gitCommand} diff-index --exit-code HEAD --`, { failOnStatusCode: false });
 
     return !!code;  // code !== 0 means that there are pending changes
   }
@@ -487,11 +509,11 @@ This may be solved by using \`Delete project folder\` button.`);
       // add assest files to git
       // NOTE: && is not supported in all shells (e.g. Powershell)
       const files = this.getAllAssetFiles();
-      await this.exec(`git add ${files.map(name => `"${name}"`).join(' ')}`);
+      await this.exec(`${this.gitCommand} add ${files.map(name => `"${name}"`).join(' ')}`);
 
       message && (message = ' ' + message);
       // TODO: should not need '--allow-empty', if `checkFilesChanged` is correct (but somehow still bugs out)
-      await this.exec(`git commit -am '"[dbux auto commit]${message}"' --allow-empty`);
+      await this.exec(`${this.gitCommand} commit -am '"[dbux auto commit]${message}"' --allow-empty`);
     }
   }
 
@@ -521,14 +543,14 @@ This may be solved by using \`Delete project folder\` button.`);
     }
 
     sh.rm('-rf', this.projectPath);
+    sh.rm('-rf', this.hiddenGitFolderPath);
     this._installed = false;
     return true;
   }
 
   doesProjectFolderExist() {
-    return sh.test('-d', path.join(this.projectPath, '.git'));
+    return sh.test('-d', path.join(this.projectPath, '.git')) || sh.test('-d', this.hiddenGitFolderPath);
   }
-
 
   async gitClone() {
     const {
@@ -635,7 +657,7 @@ This may be solved by using \`Delete project folder\` button.`);
   getAssetDir(assetPath) {
     if (path.isAbsolute(assetPath)) {
       // absolute path
-      return fs.realpathSync(assetPath);
+      return realPathSyncPosix(assetPath);
     }
     else {
       // relative to dbux-internal asset path
@@ -681,14 +703,14 @@ This may be solved by using \`Delete project folder\` button.`);
   // ###########################################################################
 
   getPatchFolder() {
-    return path.join(this.getAssetDir(PatchFolderName), this.folderName);
+    return path.posix.join(this.getAssetDir(PatchFolderName), this.folderName);
   }
 
   getPatchFile(patchFName) {
     if (!patchFName.endsWith('.patch')) {
       patchFName += '.patch';
     }
-    return path.join(this.getPatchFolder(), patchFName);
+    return path.posix.join(this.getPatchFolder(), patchFName);
   }
 
   /**
@@ -699,8 +721,8 @@ This may be solved by using \`Delete project folder\` button.`);
   async applyPatch(patchFName, revert = false) {
     await this.checkCorrectGitRepository();
 
-    const patchPath = this.getPatchFile(patchFName).replace(/\\/g, '/');
-    return this.exec(`git apply ${revert ? '-R' : ''} --ignore-space-change --ignore-whitespace "${patchPath}"`);
+    const patchPath = this.getPatchFile(patchFName);
+    return this.exec(`${this.gitCommand} apply ${revert ? '-R' : ''} --ignore-space-change --ignore-whitespace "${patchPath}"`);
   }
 
   async revertPatch(patchFName) {
@@ -715,13 +737,13 @@ This may be solved by using \`Delete project folder\` button.`);
   async applyPatchString(patchString) {
     await this.checkCorrectGitRepository();
 
-    return this.exec(`git apply --ignore-space-change --ignore-whitespace`, null, patchString);
+    return this.exec(`${this.gitCommand} apply --ignore-space-change --ignore-whitespace`, null, patchString);
   }
 
   async getPatchString() {
     await this.checkCorrectGitRepository();
 
-    return this.execCaptureOut(`git diff --color=never`);
+    return this.execCaptureOut(`${this.gitCommand} diff --color=never`);
   }
 
   /**
@@ -729,7 +751,7 @@ This may be solved by using \`Delete project folder\` button.`);
    * @param {String} checkoutTo 
    */
   async gitCheckout(checkoutTo) {
-    return this.exec(`git checkout "${checkoutTo}"`);
+    return this.exec(`${this.gitCommand} checkout "${checkoutTo}"`);
   }
 
   // ###########################################################################
@@ -738,7 +760,7 @@ This may be solved by using \`Delete project folder\` button.`);
 
   async gitGetCurrentTagName() {
     await this.checkCorrectGitRepository();
-    return (await this.execCaptureOut(`git describe --tags`)).trim();
+    return (await this.execCaptureOut(`${this.gitCommand} describe --tags`)).trim();
   }
 
   /**
@@ -747,12 +769,12 @@ This may be solved by using \`Delete project folder\` button.`);
    */
   async gitSetTag(tagName) {
     await this.checkCorrectGitRepository();
-    return this.exec(`git tag -f "${tagName}"`);
+    return this.exec(`${this.gitCommand} tag -f "${tagName}"`);
   }
 
   async gitDoesTagExist(tag) {
     await this.checkCorrectGitRepository();
-    const code = (await this.exec(`git rev-parse "${tag}" --`, { failOnStatusCode: false }));
+    const code = (await this.exec(`${this.gitCommand} rev-parse "${tag}" --`, { failOnStatusCode: false }));
     return !code;
   }
 

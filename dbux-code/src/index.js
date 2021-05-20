@@ -16,7 +16,7 @@ import { initProjectView } from './projectViews/projectViewsController';
 import { initGraphView } from './webViews/graphWebView';
 import { initPathwaysView } from './webViews/pathwaysWebView';
 import { initWebviewWrapper } from './codeUtil/WebviewWrapper';
-import { installDbuxDependencies, initInstallUtil } from './codeUtil/installUtil';
+import { installDbuxDependencies } from './codeUtil/installUtil';
 // import { maybeStartSurvey1ForTheFirstTime } from './dialogs/dialogController';
 
 // eslint-disable-next-line no-unused-vars
@@ -31,8 +31,6 @@ async function activate(context) {
 
     // make sure, projectManager is available
     createProjectManager(context);
-
-    initInstallUtil(context);
 
     // install dependencies (and show progress bar) right away
     await installDbuxDependencies();

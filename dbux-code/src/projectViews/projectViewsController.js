@@ -12,7 +12,7 @@ import { get as mementoGet, set as mementoSet } from '../memento';
 import { showInformationMessage } from '../codeUtil/codeModals';
 import { initCodeEvents } from '../practice/codeEvents';
 import { translate } from '../lang';
-import { getLogsDirectory } from '../resources';
+import { getLogsDirectory } from '../codeUtil/codePath';
 import { openProjectWorkspace, isInCorrectWorkspace } from '../codeUtil/workspaceUtil';
 
 /** @typedef {import('./practiceView/BugNode').default} BugNode */

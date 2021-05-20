@@ -1,6 +1,6 @@
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
-import which from '@dbux/projects/src/util/which';
+import { whichPosix } from '@dbux/common-node/src/util/pathUtil';
 import sleep from '@dbux/common/src/util/sleep';
 
 // eslint-disable-next-line no-unused-vars
@@ -57,7 +57,7 @@ export function runInTerminal(cwd, command) {
   const name = DefaultTerminalName;
   closeTerminal(name);
 
-  const pathToBash = which('bash');
+  const pathToBash = whichPosix('bash');
 
   // WARNING: terminal is not properly initialized when running the command. cwd is not set when executing `command`.
   const wrappedCommand = `cd "${cwd}" && ${command}; read -p "(Done. Press any key to exit.)"`;
@@ -127,7 +127,7 @@ export async function runInTerminalInteractive(cwd, command, createNew = false) 
   }
   const terminalName = DefaultTerminalName;
 
-  const pathToBash = which('bash');
+  const pathToBash = whichPosix('bash');
 
   const terminalOptions = {
     name: terminalName,

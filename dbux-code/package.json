@@ -1190,6 +1190,7 @@
     "@dbux/babel-plugin": "^0.4.2-dev.0",
     "@dbux/cli": "^0.4.2-dev.0",
     "@dbux/common": "^0.4.2-dev.0",
+    "@dbux/common-node": "^0.4.2-dev.0",
     "@dbux/data": "^0.4.2-dev.0",
     "@dbux/graph-common": "^0.4.2-dev.0",
     "@dbux/graph-host": "^0.4.2-dev.0",

@@ -2,13 +2,14 @@ import { env, Uri } from 'vscode';
 import path from 'path';
 import { newLogger } from '@dbux/common/src/log/logger';
 import sleep from '@dbux/common/src/util/sleep';
+import { pathNormalized } from '@dbux/common-node/src/util/pathUtil';
 import { initDbuxProjects } from '@dbux/projects/src';
 import Process from '@dbux/projects/src/util/Process';
 import { showWarningMessage, showInformationMessage, confirm } from '../codeUtil/codeModals';
 import { showTextDocument, showTextInNewFile } from '../codeUtil/codeNav';
+import { getResourcePath, getLogsDirectory, asAbsolutePath } from '../codeUtil/codePath';
 import TerminalWrapper from '../terminal/TerminalWrapper';
 import { set as storageSet, get as storageGet } from '../memento';
-import { getResourcePath, getLogsDirectory } from '../resources';
 import { interactiveGithubLogin } from '../net/GithubAuth';
 import WebviewWrapper from '../codeUtil/WebviewWrapper';
 import { showBugIntroduction } from './BugIntroduction';
@@ -41,14 +42,15 @@ export function createProjectManager(extensionContext) {
   // ########################################
 
   // the folder that is parent to `node_modules` for installing all extraneous dependencies (such as @dbux/cli, firebase etc.)
-  let dependencyRoot = extensionContext.asAbsolutePath('.');     // extension_folder
+  let dependencyRoot = asAbsolutePath('.');     // extension_folder
   // let dependencyRoot = extensionContext.extensionPath;              // extension_folder
   const pathMatch = dependencyRoot.match(/(.+)[/\\](?:.+\.)?dbux-code(?:.*[/\\]?)?/);    // NOTE: in prod, folder name changes to "author.dbux-code-version"
   if (pathMatch) {
     if (process.env.NODE_ENV === 'development') {
       // eslint-disable-next-line prefer-destructuring
       dependencyRoot = pathMatch[1];                                          // same as DBUX_ROOT
-      if (dependencyRoot.toLowerCase() !== process.env.DBUX_ROOT?.toLowerCase()) { // weird drive letter inconsistencies in Windows force us to do case-insensitive comparison
+      // TODO: normalize DBUX_ROOT elsewhere?
+      if (dependencyRoot.toLowerCase() !== pathNormalized(process.env.DBUX_ROOT?.toLowerCase())) { // weird drive letter inconsistencies in Windows force us to do case-insensitive comparison
         throw new Error(`Path problems: ${dependencyRoot} !== DBUX_ROOT (${process.env.DBUX_ROOT})`);
       }
     }
@@ -60,7 +62,7 @@ export function createProjectManager(extensionContext) {
   }
 
   // the folder that contains the sample projects for dbux-practice
-  const projectsRoot = path.join(dependencyRoot, 'dbux_projects');
+  const projectsRoot = path.posix.join(dependencyRoot, 'dbux_projects');
   const dbuxLanguage = storageGet(`dbux.language`);
   const stopwatch = getStopwatch();
 

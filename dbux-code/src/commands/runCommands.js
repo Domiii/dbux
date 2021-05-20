@@ -1,7 +1,7 @@
-import fs from 'fs';
 import path from 'path';
-import { window, workspace, commands } from 'vscode';
+import { window, workspace } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { realPathSyncPosix } from '@dbux/common-node/src/util/pathUtil';
 import { checkSystem } from '@dbux/projects/src/checkSystem';
 import { getOrCreateProjectManager } from '../projectViews/projectControl';
 import { runInTerminalInteractive } from '../codeUtil/terminalUtil';
@@ -74,7 +74,7 @@ export async function runFile(extensionContext, debugMode = false) {
   let file;
   let cwd;
   try {
-    file = fs.realpathSync(activePath);
+    file = realPathSyncPosix(activePath);
     cwd = path.dirname(file);
   }
   catch (err) {

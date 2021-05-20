@@ -1,7 +1,7 @@
 import { TreeItemCollapsibleState, EventEmitter, window } from 'vscode';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { getThemeResourcePath } from '../resources';
+import { getThemeResourcePath } from './codePath';
 import { registerCommand } from '../commands/commandUtil';
 import { emitTreeViewAction, emitTreeViewCollapseChangeAction } from '../userEvents';
 

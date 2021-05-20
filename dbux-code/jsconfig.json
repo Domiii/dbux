@@ -11,6 +11,9 @@
       "@dbux/common/*": [
         "../dbux-common/*"
       ],
+      "@dbux/common-node/*": [
+        "../dbux-common-node/*"
+      ],
       "@dbux/data/*": [
         "../dbux-data/*"
       ],
