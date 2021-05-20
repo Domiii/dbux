@@ -18,9 +18,9 @@ export default class WebpackProject extends Project {
   rmFiles = ['.husky'];
 
   makeBuilder() {
-    // "node" "-r" "./dbux_projects/webpack/_dbux_/alias.build.js" "--stack-trace-limit=100" "./node_modules/webpack/bin/webpack.js" "--display-error-details" "--watch" "--config" "./dbux_projects/webpack/dbux.webpack.config.js" "--env" "entry={\"bin/webpack\":\"bin//webpack.js\"}"
-    // node --stack-trace-limit=100 ../../node_modules/@dbux/cli/bin/dbux.js run --pw=webpack,webpack-cli --verbose=1 --runtime="{\"tracesDisabled\":1}" -d -r=./_dbux_/alias.build.js ../../node_modules/webpack/bin/webpack.js -- --display-error-details --watch --config ./dbux.webpack.config.js --env entry={"bin/webpack":"bin\\\\webpack.js"}
-    // node --stack-trace-limit=100 -r ./_dbux_/alias.build.js ../../node_modules/webpack/bin/webpack.js -- --display-error-details --watch --config ./dbux.webpack.config.js --env entry={"bin/webpack":"bin\\\\webpack.js"}
+    // "node" "-r" "./dbux_projects/webpack/_dbux_/alias.build.js" "--stack-trace-limit=100" "./node_modules/webpack/bin/webpack.js" "--config" "./dbux_projects/webpack/dbux.webpack.config.js" "--env" "entry={\"bin/webpack\":\"bin//webpack.js\"}"
+    // node --stack-trace-limit=100 ../../node_modules/@dbux/cli/bin/dbux.js run --pw=webpack,webpack-cli --verbose=1 --runtime="{\"tracesDisabled\":1}" -d -r=./_dbux_/alias.build.js ../../node_modules/webpack/bin/webpack.js -- --config ./dbux.webpack.config.js --env entry={"bin/webpack":"bin\\\\webpack.js"}
+    // node --stack-trace-limit=100 -r ./_dbux_/alias.build.js ../../node_modules/webpack/bin/webpack.js -- --config ./dbux.webpack.config.js --env entry={"bin/webpack":"bin\\\\webpack.js"}
     
     return new WebpackBuilder({
       inputPattern: [
@@ -29,9 +29,9 @@ export default class WebpackProject extends Project {
       ],
 
       nodeArgs: `-r "${path.join(this.projectPath, './_dbux_/alias.build.js')}"`,
-      webpackBin: this.getDependencyPath('webpack/bin/webpack.js'),
+      webpackCliBin: this.getSharedDependencyPath('webpack-cli/bin/cli.js'),
       processOptions: {
-        cwd: this.getDependencyPath('.')
+        cwd: this.getSharedDependencyPath('.')
       },
       env: {
         WEBPACK_CLI_SKIP_IMPORT_LOCAL: 1

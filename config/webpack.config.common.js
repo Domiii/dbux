@@ -22,7 +22,7 @@ const MonoRoot = path.resolve(__dirname, '..');
 
 process.env.BABEL_DISABLE_CACHE = 1;
 
-module.exports = (name, mode) => {
+module.exports = function webpackCommon(name, mode) {
   const DBUX_VERSION = getDbuxVersion(mode);
   const DBUX_ROOT = mode === 'development' ? MonoRoot : '';
   process.env.NODE_ENV = mode; // set these, so babel configs also have it
@@ -31,7 +31,6 @@ module.exports = (name, mode) => {
   console.debug(`[${name}] (DBUX_VERSION=${DBUX_VERSION}, mode=${mode}, DBUX_ROOT=${DBUX_ROOT}) building...`);
 
   return {
-    // MonoRoot,
     DBUX_VERSION,
     DBUX_ROOT
   };
