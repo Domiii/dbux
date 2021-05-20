@@ -6,6 +6,7 @@ import traceCollection from './data/traceCollection';
 import valueCollection from './data/valueCollection.js';
 import promiseCollection from './data/promiseCollection.js';
 import scheduleNextPossibleRun from './scheduleNextPossibleRun';
+import { RuntimeThreads } from './RuntimeThreads.js';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -58,6 +59,8 @@ export default class Runtime {
   _lastTraceByContextId = {};
 
   _bcesInByContextId = {};
+
+  _runtimeThreads = new RuntimeThreads();
 
 
   // ###########################################################################
@@ -272,6 +275,8 @@ export default class Runtime {
     // this._previousPoppedContextId = null;
     this._executingStack.push(contextId);
 
+    this._runtimeThreads.push(contextId);
+
     if (isInterruptable) {
       // start with a resume context
       this._markWaiting(contextId);
@@ -290,6 +295,8 @@ export default class Runtime {
     // const name = staticContext.displayName || '';
     // const typeName = ExecutionContextType.nameFromForce(context.contextType);
     // console.debug('<-', context.runId, contextId, `[${typeName}] ${name}`);
+
+    this._runtimeThreads.pop(contextId);
 
     this._lastPoppedContextId = contextId;
 
