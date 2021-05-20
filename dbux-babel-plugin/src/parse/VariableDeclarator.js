@@ -47,7 +47,7 @@ export default class VariableDeclarator extends BaseNode {
       node: idNode, 
       varNode: idNode, 
       staticTraceData: {
-        type: TraceType.Binding,
+        type: TraceType.WriteVar,
         dataNode: {
           isNew: false,
           type: DataNodeType.Write
@@ -59,14 +59,12 @@ export default class VariableDeclarator extends BaseNode {
       }
     };
 
-    // TODO: probably need `deferTid` to ensure order `binding` -> `read` -> `write`
-    //      something like this: `lval = (bindingTrace, rvalTrace(..., bidingTid, inputs=null, writeAfterReadCommand))`
-    // TODO: `isNested`
+    // TODO: move `BindingIdentifier` binding collection code back to `ReferencedIdentifier`
+    // TODO: add `binding` trace
+    // TODO: insert `binding` trace at top of scope block (see `Scope.push` for reference)
 
     traces.addTraceWithInputs(writeTraceCfg, initPath.node && [initPath] || EmptyArray);
 
-    // TODO: traceWrite
-    // TODO: handle the case where rval was already instrumented
     // traces.addTraceWithInputs({ path: initPath, node: initNode, varNode: idNode, staticTraceData}, [initPath]);
   }
 
