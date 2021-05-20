@@ -59,9 +59,11 @@ export default class VariableDeclarator extends BaseNode {
       }
     };
 
+    // TODO: fix peekNode, peekNodePlugin to just use `parentPath`, instead of trying to decipher stack?
     // TODO: move `BindingIdentifier` binding collection code back to `ReferencedIdentifier`
     // TODO: add `binding` trace
     // TODO: insert `binding` trace at top of scope block (see `Scope.push` for reference)
+    //        -> create `binding` trace on `enter`
 
     traces.addTraceWithInputs(writeTraceCfg, initPath.node && [initPath] || EmptyArray);
 
