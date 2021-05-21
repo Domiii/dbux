@@ -8,6 +8,7 @@ import Block from './Block';
 import CallExpression from './CallExpression';
 import FunctionDeclaration from './FunctionDeclaration';
 import FunctionExpression from './FunctionExpression';
+import Literal from './Literal';
 import LogicalExpression from './LogicalExpression';
 import MemberExpression from './MemberExpression';
 import Method from './Method';
@@ -31,6 +32,7 @@ init(Block);
 init(CallExpression);
 init(FunctionDeclaration);
 init(FunctionExpression);
+init(Literal);
 init(LogicalExpression);
 init(MemberExpression);
 init(Method);
@@ -52,6 +54,7 @@ export {
   CallExpression,
   FunctionDeclaration,
   FunctionExpression,
+  Literal,
   LogicalExpression,
   MemberExpression,
   Method,

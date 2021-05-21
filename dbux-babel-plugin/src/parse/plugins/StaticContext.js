@@ -47,6 +47,8 @@ export default class StaticContext extends ParsePlugin {
     const { binding } = id;
     this.declaredBindings.push(binding);
 
+    this.Verbose && this.debug(`DECL ${id}`);
+
     // this.bindingTraces.push({
     this.Traces.addTrace({
       path: id.path,

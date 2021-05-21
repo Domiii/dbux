@@ -42,7 +42,7 @@ export const buildTraceExpression = bindExpressionTemplate(
 
 
     const {
-      bindingTidNode,
+      bindingTidIdentifier,
       inputTraces
     } = traceCfg;
 
@@ -55,7 +55,7 @@ export const buildTraceExpression = bindExpressionTemplate(
       traceExpression,
       expr: expressionNode,
       tid,
-      bindingTid: bindingTidNode || ZeroNode,
+      bindingTid: bindingTidIdentifier || ZeroNode,
       inputs: inputTraces && t.arrayExpression(inputTraces.map(i => i.tidIdentifier)) || NullNode
     };
   }
@@ -63,14 +63,15 @@ export const buildTraceExpression = bindExpressionTemplate(
 
 // TODO: deferTid?
 export const buildTraceWrite = bindExpressionTemplate(
-  '%%traceWrite%%(%%expr%%, %%tid%%, %%inputs%%)',
+  '%%traceWrite%%(%%expr%%, %%tid%%, %%bindingTid%%, %%inputs%%)',
   function buildTraceWrite(expr, state, traceCfg) {
     const { ids: { aliases: {
       traceWrite
     } } } = state;
 
     const {
-      inputTidIds
+      bindingTidIdentifier,
+      inputTraces
     } = traceCfg;
 
     const tid = buildTraceId(state, traceCfg);
@@ -79,7 +80,8 @@ export const buildTraceWrite = bindExpressionTemplate(
       expr,
       traceWrite,
       tid,
-      inputs: inputTidIds && t.arrayExpression(inputTidIds) || NullNode
+      bindingTid: bindingTidIdentifier || ZeroNode,
+      inputs: inputTraces && t.arrayExpression(inputTraces.map(i => i.tidIdentifier)) || NullNode
     };
   }
 );
@@ -93,7 +95,7 @@ export const buildTraceWrite = bindExpressionTemplate(
 //     } } } = state;
 
 //     const {
-//       bindingTidNode,
+//       bindingTidIdentifier,
 //       inputTidIds
 //     } = traceCfg;
 
@@ -107,7 +109,7 @@ export const buildTraceWrite = bindExpressionTemplate(
 //     return {
 //       traceWrite,
 //       tid,
-//       bindingTid: bindingTidNode || ZeroNode,
+//       bindingTid: bindingTidIdentifier || ZeroNode,
 //       deferTid: NullNode,
 //       inputs: inputTidIds && t.arrayExpression(inputTidIds) || NullNode
 //     };

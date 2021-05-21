@@ -12,15 +12,13 @@ export default class VariableDeclarator extends BaseNode {
 
   static children = ['id', 'init'];
 
-  enter() {
-    this.peekStaticContext().addDeclaration(this);
-  }
-
   exit() {
     const traces = this.getPlugin('Traces');
 
     const [idPath, initPath] = this.getChildPaths(true);
     const [idNode, initNode] = this.getChildNodes();
+
+    this.peekStaticContext().addDeclaration(idNode);
 
     // const expressionTraceCfg = {
     //   path: idPath,

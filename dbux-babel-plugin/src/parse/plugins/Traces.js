@@ -1,6 +1,6 @@
 // import { NodePath } from '@babel/traverse';
-import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
-import TraceType from '@dbux/common/src/core/constants/TraceType';
+// import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
+// import TraceType from '@dbux/common/src/core/constants/TraceType';
 // import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { getPresentableString } from '../../helpers/pathHelpers';
@@ -10,21 +10,8 @@ import ParseNode from '../../parseLib/ParseNode';
 import ParsePlugin from '../../parseLib/ParsePlugin';
 
 const makeInputTrace = {
-  Literal(path) {
-    return {
-      node: null,
-      path,
-      varNode: null,
-      staticTraceData: {
-        type: TraceType.ExpressionValue,
-        dataNode: {
-          // TODO: `isNew` for literals is only `true` the first time. Need dynamic `isNew` to mirror this.
-          isNew: true,
-          type: DataNodeType.Read
-        }
-      }
-    };
-  }
+  // Literal(path) {
+  // }
 };
 
 function getInstrumentPath(traceCfg) {
@@ -84,6 +71,9 @@ export default class Traces extends ParsePlugin {
   // addTrace
   // ###########################################################################
 
+  /**
+   * TODO: fix order of `staticTraceId`
+   */
   addTrace(traceDataOrArray) {
     if (Array.isArray(traceDataOrArray)) {
       for (const traceCfg of traceDataOrArray) {
@@ -98,19 +88,26 @@ export default class Traces extends ParsePlugin {
     const { scope } = path;
     const inProgramStaticTraceId = state.traces.addTrace(path, staticTraceData);
     const tidIdentifier = scope.generateUidIdentifier(`t${inProgramStaticTraceId}_`);
+    let bindingTidIdentifier;
+    if (node === varNode) {
+      bindingTidIdentifier = tidIdentifier;
+    }
+    else {
+      bindingTidIdentifier = varNode?.getBindingTidIdentifier();
+    }
 
     const traceData = {
       path,
       node,
       inProgramStaticTraceId,
       tidIdentifier,
-      bindingTidNode: varNode?.getBindingTidIdentifier(),
+      bindingTidIdentifier,
       inputTraces,
       meta
     };
     this.traces.push(traceData);
     if (node) {
-      // TODO: in case of non-Node, might want to attach to `path` instead
+      // TODO: node can have multiple traces (e.g. VariableDeclarator.id has binding and write nodes)
       node._setTraceData(traceData);
     }
 
@@ -186,6 +183,8 @@ export default class Traces extends ParsePlugin {
       scope.push({
         id: tidIdentifier
       });
+
+      // TODO: fix order of insertion, to match order of `staticTraceId` somehow
 
       if (!isNested) {
         instrument(traceCfg);

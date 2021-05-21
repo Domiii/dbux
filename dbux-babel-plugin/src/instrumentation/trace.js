@@ -26,10 +26,10 @@ export function unshiftScopeTrace(targetPath, state, traceCfg) {
 
 /**
  * Input: `c = a + b`
- * Output: `c = tb(te(...a+b..., %tid1%, %bindingId1%, %inputs1%), %tid2%, [tid1])`
+ * Output: `c = tw(te(...a+b..., %tid1%, 0, %inputs1%), %tid2%, [tid1])`
  * 
  * Input: `var x;
- * Output: `var x = tb(undefined, %tid2%, [])`
+ * Output: `var x = tw(undefined, %tid1%, [])`
  */
 export function traceWrapWrite(path, state, writeTraceCfg) {
   let expressionNode = path.node || UndefinedNode;

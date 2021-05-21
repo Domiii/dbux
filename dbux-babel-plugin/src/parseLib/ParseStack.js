@@ -110,7 +110,7 @@ export default class ParseStack {
     if (!nodesOfType) {
       _stack.set(name, nodesOfType = []);
     }
-    (Verbose >= 2) && this.debug(`push ${name}`);
+    (Verbose >= 3) && this.debug(`push ${name}`);
     nodesOfType.push(newNode);
   }
 
@@ -118,7 +118,7 @@ export default class ParseStack {
     const { name } = ParseNodeClazz;
     const { _stack } = this;
     const nodesOfType = _stack.get(name);
-    (Verbose >= 2) && this.debug(`pop ${name}`);
+    (Verbose >= 3) && this.debug(`pop ${name}`);
     const node = nodesOfType.pop();
     if (node.path !== path) {
       throw new Error(`ParseStack corrupted - exit path does not match stack node (of type ${name}) - ${getPresentableString(path)}`);

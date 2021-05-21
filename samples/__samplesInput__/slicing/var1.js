@@ -1,4 +1,4 @@
-let a, b;
+let a, b = 0;
 a = 1;
 b = 2;
 
