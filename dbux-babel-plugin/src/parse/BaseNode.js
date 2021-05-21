@@ -1,4 +1,5 @@
 import ParseNode from '../parseLib/ParseNode';
+import StaticContext from './plugins/StaticContext';
 
 
 function concatArrays(a, b) {
@@ -36,6 +37,17 @@ export default class BaseNode extends ParseNode {
 
   _setTraceData(traceData) {
     this._traceData = traceData;
+  }
+
+  // ###########################################################################
+  // Tree Accessors
+  // ###########################################################################
+
+  /**
+   * @return {StaticContext}
+   */
+  peekStaticContext() {
+    return this.stack.peekPlugin('StaticContext');
   }
 
 

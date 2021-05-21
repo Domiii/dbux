@@ -1,10 +1,10 @@
 import isString from 'lodash/isString';
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
+// import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import { Logger } from '@dbux/common/src/log/logger';
 import { getPresentableString } from '../helpers/pathHelpers';
 import ParseRegistry from './ParseRegistry';
 import { getChildPaths, getNodeOfPath } from './parseUtil';
 import ParsePhase from './ParsePhase';
-import { Logger } from '@dbux/common/src/log/logger';
 
 /** @typedef { import("@babel/traverse").NodePath } NodePath */
 /** @typedef { import("./ParseStack").default } ParseStack */
@@ -63,6 +63,13 @@ export default class ParseNode {
    */
   get path() {
     return this.enterPath;
+  }
+
+  /**
+   * @type {import('@babel/types').Node}
+   */
+  get astNode() {
+    return this.path.node;
   }
 
   get nodeTypeName() {

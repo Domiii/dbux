@@ -1,10 +1,10 @@
-import { NodePath } from '@babel/traverse';
+// import { NodePath } from '@babel/traverse';
 import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
+// import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { getPresentableString } from '../../helpers/pathHelpers';
-import { traceWrapExpression, traceWrapWrite, traceWrapWrite } from '../../instrumentation/trace';
+import { traceWrapExpression, traceWrapWrite, unshiftScopeTrace } from '../../instrumentation/trace';
 import ParseNode from '../../parseLib/ParseNode';
 // import { getPresentableString } from '../../helpers/pathHelpers';
 import ParsePlugin from '../../parseLib/ParsePlugin';
@@ -26,6 +26,16 @@ const makeInputTrace = {
     };
   }
 };
+
+function getInstrumentPath(traceCfg) {
+  const {
+    path: tracePath,
+    meta: {
+      replacePath
+    } = EmptyObject
+  } = traceCfg;
+  return replacePath || tracePath;
+}
 
 export default class Traces extends ParsePlugin {
   traces = [];
@@ -113,10 +123,10 @@ export default class Traces extends ParsePlugin {
   // addTraceWithInputs
   // ###########################################################################
 
-  addTraceWithInputs(traceCfg, inputPaths) {
+  addTraceWithInputs(traceData, inputPaths) {
     // also trace inputTraces if they are `Literal` or `ReferencedIdentifier`
-    traceCfg.inputTraces = this.addInputs(inputPaths);
-    return this.addTrace(traceCfg);
+    traceData.inputTraces = this.addInputs(inputPaths);
+    return this.addTrace(traceData);
   }
 
   // exit() {
@@ -131,30 +141,26 @@ export default class Traces extends ParsePlugin {
     const { state } = node;
     // const { scope } = path;
 
-    const {
-      path: tracePath,
-      meta: {
-        replacePath
-      } = EmptyObject
-    } = traceCfg;
-
-    traceWrapExpression(replacePath || tracePath, state, traceCfg);
+    traceWrapExpression(getInstrumentPath(traceCfg), state, traceCfg);
   }
 
-  instrumentTraceWrite(writeTraceCfg) {
+  instrumentTraceBind = (traceCfg) => {
+    const { node } = this;
+    const { state } = node;
+
+    return unshiftScopeTrace(getInstrumentPath(traceCfg), state, traceCfg);
+  }
+
+  instrumentTraceWrite = (traceCfg) => {
     const { node } = this;
     const { state } = node;
 
     const {
-      path: tracePath,
       inputTraces,
-      meta: {
-        replacePath
-      } = EmptyObject
-    } = writeTraceCfg;
+    } = traceCfg;
 
     const readTraceCfg = inputTraces?.[0] || null;
-    traceWrapWrite(replacePath || tracePath, state, writeTraceCfg, readTraceCfg);
+    traceWrapWrite(getInstrumentPath(traceCfg), state, traceCfg, readTraceCfg);
   }
 
   // ###########################################################################

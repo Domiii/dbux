@@ -1,5 +1,11 @@
+import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
+import TraceType from '@dbux/common/src/core/constants/TraceType';
 import { getPresentableString } from '../../helpers/pathHelpers';
 import ParsePlugin from '../../parseLib/ParsePlugin';
+
+/** @typedef { import("../BindingIdentifier").default } BindingIdentifier */
+/** @typedef { import("./BindingNode").default } BindingNode */
+/** @typedef { import("./Traces").default } Traces */
 
 /**
  * This is for `Program`, `Function`.
@@ -8,17 +14,67 @@ import ParsePlugin from '../../parseLib/ParsePlugin';
  * To capture all scopes, one can use [Scopable](https://babeljs.io/docs/en/babel-types#scopable).
  */
 export default class StaticContext extends ParsePlugin {
-  bindings = new Set();
-  globals = new Set();
+  static plugins = [
+    'Traces'
+  ];
 
-  addBinding(referencedPath, binding) {
-    const { path } = binding;
-    // const 
-    if (!binding) {
-      this.bindings.add(binding);
+  /**
+   * @type {Traces}
+   */
+  get Traces() {
+    return this.node.getPlugin('Traces');
+  }
+
+  /**
+   * @type {BindingIdentifier}
+   */
+  declaredBindings = [];
+  /**
+   * @type {Set<BindingIdentifier>}
+   */
+  referencedBindings = new Set();
+  /**
+   * @type {Set<String>}
+   */
+  referencedGlobals = new Set();
+
+  bindingTraces = [];
+
+  /**
+   * @param {BindingIdentifier} id
+   */
+  addDeclaration(id) {
+    const { binding } = id;
+    this.declaredBindings.push(binding);
+
+    // this.bindingTraces.push({
+    this.Traces.addTrace({
+      path: id.path,
+      node: id,
+      varNode: id,
+      staticTraceData: {
+        type: TraceType.Identifier,
+        dataNode: {
+          isNew: false,
+          type: DataNodeType.Binding
+        }
+      },
+      meta: {
+        instrument: this.Traces.instrumentTraceBind
+      }
+    });
+  }
+
+  /**
+   * @param {BindingIdentifier} id
+   */
+  addReferencedIdentifier(id) {
+    const { binding } = id;
+    if (binding) {
+      this.referencedBindings.add(binding);
     }
     else {
-      this.globals.add(path.toString());
+      this.referencedGlobals.add(id.astNode.name);
     }
   }
 
@@ -26,6 +82,13 @@ export default class StaticContext extends ParsePlugin {
   // ###########################################################################
   // enter + exit
   // ###########################################################################
+
+  // enter() {
+  //   // add binding traces
+  //   for (const trace of this.bindingTraces) {
+  //     this.Traces.addTrace(trace);
+  //   }
+  // }
 
   exit() {
     const {

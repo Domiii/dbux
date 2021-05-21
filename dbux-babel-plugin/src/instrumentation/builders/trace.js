@@ -117,6 +117,7 @@ export const buildTraceWrite = bindExpressionTemplate(
 
 /**
  * TODO: rewrite using `traceCfg`
+ * @deprecated
  */
 export const buildTraceNoValue = bindTemplate(
   '%%dbux%%.t(%%traceId%%)',

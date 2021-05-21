@@ -78,7 +78,6 @@ export default class Function extends ParsePlugin {
     };
     const staticContextId = state.contexts.addStaticContext(path, staticContextData);
     const pushTraceId = state.traces.addTrace(bodyPath, { type: TraceType.PushImmediate });
-    const popTraceId = state.traces.addTrace(bodyPath, { type: TraceType.PopImmediate });
 
     // // add varAccess
     // const ownerId = staticContextId;
@@ -108,10 +107,16 @@ export default class Function extends ParsePlugin {
     return {
       staticContextId,
       pushTraceId,
-      popTraceId,
       // recordParams,
       staticResumeContextId
     };
+  }
+
+  exit() {
+    const { path, state } = this;
+    const bodyPath = path.get('body');
+    
+    this.data.popTraceId = state.traces.addTrace(bodyPath, { type: TraceType.PopImmediate });
   }
 
 
