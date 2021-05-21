@@ -140,6 +140,14 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceExpression(this.getProgramId(), value, tid, varTid, ...inputs);
   }
 
+  traceWrite = (value, tid, varTid, ...inputs) => {
+    if (this.areTracesDisabled) {
+      return value;
+    }
+
+    return this._runtimeMonitor.traceWrite(this.getProgramId(), value, tid, varTid, ...inputs);
+  }
+
   // ###########################################################################
   // old traces
   // ###########################################################################

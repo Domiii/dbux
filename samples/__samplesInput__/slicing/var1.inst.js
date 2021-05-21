@@ -22,13 +22,13 @@ try {
     _t3_,
     _t5_,
     _t14_;
-  let a = _tw(undefined, (_t4_ = _tid(4)), _t4_, []),
-    b = _tw(_te(0, (_t6_ = _tid(6)), 0, null), (_t7_ = _tid(7)), _t7_, [_t6_]);
+  let a = _tw(undefined, (_t4_ = _tid(4)), _t3_, []),
+    b = _tw(_te(0, (_t6_ = _tid(6)), 0, null), (_t7_ = _tid(7)), _t5_, [_t6_]);
   a = 1;
   b = 2;
 
   _te(
-    _te(a, (_t8_ = _tid(8)), _t4_, null) + _te(b, (_t9_ = _tid(9)), _t7_, null),
+    _te(a, (_t8_ = _tid(8)), _t3_, null) + _te(b, (_t9_ = _tid(9)), _t5_, null),
     (_t10_ = _tid(10)),
     0,
     [_t8_, _t9_]
@@ -36,14 +36,14 @@ try {
 
   const c = _tw(
     _te(
-      _te(a, (_t11_ = _tid(11)), _t4_, null) +
-        _te(b, (_t12_ = _tid(12)), _t7_, null),
+      _te(a, (_t11_ = _tid(11)), _t3_, null) +
+        _te(b, (_t12_ = _tid(12)), _t5_, null),
       (_t13_ = _tid(13)),
       0,
       [_t11_, _t12_]
     ),
     (_t15_ = _tid(15)),
-    _t15_,
+    _t14_,
     [_t13_]
   );
   _dbux.t(16);

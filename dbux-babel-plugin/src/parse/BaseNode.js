@@ -16,7 +16,7 @@ export default class BaseNode extends ParseNode {
   /**
    * NOTE: Managed by `plugins/Traces`
    */
-  _traceData;
+  _traceCfg;
 
   constructor(...args) {
     super(...args);
@@ -28,7 +28,7 @@ export default class BaseNode extends ParseNode {
   // ###########################################################################
 
   getTidIdentifier() {
-    return this._traceData?.tidIdentifier;
+    return this._traceCfg?.tidIdentifier;
   }
 
   getBindingTidIdentifier() {
@@ -36,7 +36,7 @@ export default class BaseNode extends ParseNode {
   }
 
   _setTraceData(traceData) {
-    this._traceData = traceData;
+    this._traceCfg = traceData;
   }
 
   // ###########################################################################

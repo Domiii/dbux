@@ -8,6 +8,16 @@ import BaseId from './BaseId';
  * NOTE: The `bindingPath` (and thus `bindingNode`) is usually the parent of the `BindingIdentifier`
  */
 export default class BindingIdentifier extends BaseId {
+  bindingTrace;
+
+  getTidIdentifier() {
+    if (!this.bindingTrace) {
+      throw new Error(`Tried to "getTidIdentifier" too early in ${this} - bindingTrace was not created yet.`);
+    }
+    return this.bindingTrace.tidIdentifier;
+  }
+
+
   // ###########################################################################
   // enter
   // ###########################################################################

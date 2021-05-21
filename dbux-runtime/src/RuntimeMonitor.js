@@ -455,17 +455,18 @@ export default class RuntimeMonitor {
 
   // traceWriteME(programId, value, tid/* , bindingTid, memberPath */, deferTid, inputs) {
 
-  traceWriteVar(programId, tid, bindingTid, deferTid, inputs) {
+  // TODO: rename to traceWriteVar
+  traceWrite(programId, value, tid, bindingTid, deferTid, inputs) {
     if (!this._ensureExecuting()) {
-      return;
+      return value;
     }
     if (!tid) {
       logError(`traceExpression failed to capture tid`);
-      return;
+      return value;
     }
 
     // this.registerTrace(value, tid);
-    dataNodeCollection.createDataNodes(undefined, tid, bindingTid, inputs);
+    dataNodeCollection.createDataNodes(value, tid, bindingTid, inputs);
 
     // TODO: defer
     // if (deferTid) {
@@ -475,6 +476,7 @@ export default class RuntimeMonitor {
     //   finishDataNode(tid);
     // }
     // return;
+    return value;
   }
 
   /**

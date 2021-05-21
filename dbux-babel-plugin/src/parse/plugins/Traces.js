@@ -2,6 +2,7 @@
 // import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 // import TraceType from '@dbux/common/src/core/constants/TraceType';
 // import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { getPresentableString } from '../../helpers/pathHelpers';
 import { traceWrapExpression, traceWrapWrite, unshiftScopeTrace } from '../../instrumentation/trace';
@@ -53,7 +54,7 @@ export default class Traces extends ParsePlugin {
             return null;
           }
 
-          if (!node._traceData) {
+          if (!node._traceCfg) {
             const rawTraceData = node.createInputTrace?.();
             if (!rawTraceData) {
               this.node.logger.warn(`ParseNode did not implement "createInputTrace": ${node}`);
@@ -61,7 +62,7 @@ export default class Traces extends ParsePlugin {
             }
             this.addTrace(rawTraceData);
           }
-          return node._traceData;
+          return node._traceCfg;
         }
       })
       .filter(node => !!node);
@@ -89,7 +90,7 @@ export default class Traces extends ParsePlugin {
     const inProgramStaticTraceId = state.traces.addTrace(path, staticTraceData);
     const tidIdentifier = scope.generateUidIdentifier(`t${inProgramStaticTraceId}_`);
     let bindingTidIdentifier;
-    if (node === varNode) {
+    if (staticTraceData?.dataNode?.type === DataNodeType.Binding) {
       bindingTidIdentifier = tidIdentifier;
     }
     else {
@@ -106,7 +107,7 @@ export default class Traces extends ParsePlugin {
       meta
     };
     this.traces.push(traceData);
-    if (node) {
+    if (node && node !== varNode) {
       // TODO: node can have multiple traces (e.g. VariableDeclarator.id has binding and write nodes)
       node._setTraceData(traceData);
     }

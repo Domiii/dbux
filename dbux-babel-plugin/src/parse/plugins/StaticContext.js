@@ -50,10 +50,10 @@ export default class StaticContext extends ParsePlugin {
     this.Verbose && this.debug(`DECL ${id}`);
 
     // this.bindingTraces.push({
-    this.Traces.addTrace({
+    id.bindingTrace = this.Traces.addTrace({
       path: id.path,
       node: id,
-      varNode: id,
+      // varNode: id,
       staticTraceData: {
         type: TraceType.Identifier,
         dataNode: {
