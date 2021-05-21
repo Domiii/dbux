@@ -83,14 +83,17 @@ export default class Traces extends ParsePlugin {
       return null;
     }
 
+    
     const { path, node, varNode, staticTraceData, inputTraces, meta } = traceDataOrArray;
+
+    const isBinding = staticTraceData?.dataNode?.type === DataNodeType.Binding;
 
     const { state } = this.node;
     const { scope } = path;
     const inProgramStaticTraceId = state.traces.addTrace(path, staticTraceData);
     const tidIdentifier = scope.generateUidIdentifier(`t${inProgramStaticTraceId}_`);
     let bindingTidIdentifier;
-    if (staticTraceData?.dataNode?.type === DataNodeType.Binding) {
+    if (isBinding) {
       bindingTidIdentifier = tidIdentifier;
     }
     else {
@@ -107,8 +110,8 @@ export default class Traces extends ParsePlugin {
       meta
     };
     this.traces.push(traceData);
-    if (node && node !== varNode) {
-      // TODO: node can have multiple traces (e.g. VariableDeclarator.id has binding and write nodes)
+    if (!isBinding) {
+      // NOTE: node can have multiple traces (e.g. VariableDeclarator.id has binding and write nodes)
       node._setTraceData(traceData);
     }
 
@@ -184,8 +187,6 @@ export default class Traces extends ParsePlugin {
       scope.push({
         id: tidIdentifier
       });
-
-      // TODO: fix order of insertion, to match order of `staticTraceId` somehow
 
       if (!isNested) {
         instrument(traceCfg);

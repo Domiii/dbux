@@ -49,6 +49,10 @@ export default class StaticContext extends ParsePlugin {
 
     this.Verbose && this.debug(`DECL ${id}`);
 
+
+
+    // TODO: fix order of insertion, to match order of `staticTraceId`. binding nodes are the only ones out of order.
+
     // this.bindingTraces.push({
     id.bindingTrace = this.Traces.addTrace({
       path: id.path,
