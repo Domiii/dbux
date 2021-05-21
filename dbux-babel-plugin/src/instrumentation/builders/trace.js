@@ -14,7 +14,7 @@ export const NullNode = t.nullLiteral();
 export const UndefinedNode = t.identifier('undefined');
 
 export const buildTraceId = bindExpressionTemplate(
-  '(%%traceId%% = %%newTraceId%%(%%staticTraceId%%))',
+  '%%traceId%% = %%newTraceId%%(%%staticTraceId%%)',
   function buildTraceId(state, { tidIdentifier, inProgramStaticTraceId }) {
     // TODO: add custom trace data
     const { ids: { aliases: {
@@ -26,7 +26,7 @@ export const buildTraceId = bindExpressionTemplate(
       staticTraceId: t.numericLiteral(inProgramStaticTraceId),
       traceId: tidIdentifier
     };
-  }
+  },
 );
 
 /**
@@ -66,7 +66,7 @@ export const buildTraceWrite = bindExpressionTemplate(
   '%%traceWrite%%(%%expr%%, %%tid%%, %%inputs%%)',
   function buildTraceWrite(expr, state, traceCfg) {
     const { ids: { aliases: {
-      traceBind
+      traceWrite
     } } } = state;
 
     const {
@@ -77,7 +77,7 @@ export const buildTraceWrite = bindExpressionTemplate(
 
     return {
       expr,
-      traceBind,
+      traceWrite,
       tid,
       inputs: inputTidIds && t.arrayExpression(inputTidIds) || NullNode
     };

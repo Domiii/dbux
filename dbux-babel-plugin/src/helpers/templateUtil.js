@@ -5,9 +5,10 @@ import template from '@babel/template';
 export function bindExpressionTemplate(templateString, fn) {
   const templ = template(templateString);
   return (...args) => {
-    const options = fn(...args);
-    let newNode = templ(options);
-    if (newNode.type === 'ExpressionStatement') {
+    const vars = fn(...args);
+    const cfg = args[args.length - 1];
+    let newNode = templ(vars);
+    if (!cfg?.meta?.keepStatement && newNode.type === 'ExpressionStatement') {
       // we wanted an expression, not a statement
       newNode = newNode.expression;
     }
@@ -18,8 +19,8 @@ export function bindExpressionTemplate(templateString, fn) {
 export function bindTemplate(templateString, fn) {
   const templ = template(templateString);
   return (...args) => {
-    const options = fn(...args);
-    let newNode = templ(options);
+    const vars = fn(...args);
+    let newNode = templ(vars);
     return newNode;
   };
 }

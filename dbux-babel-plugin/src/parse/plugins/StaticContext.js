@@ -68,7 +68,7 @@ export default class StaticContext extends ParsePlugin {
   /**
    * @param {BindingIdentifier} id
    */
-  addReferencedIdentifier(id) {
+  addReferencedBinding(id) {
     const { binding } = id;
     if (binding) {
       this.referencedBindings.add(binding);
@@ -91,21 +91,20 @@ export default class StaticContext extends ParsePlugin {
   // }
 
   exit() {
-    const {
-      node: { stack }
-    } = this;
+    // const {
+    //   node: { stack }
+    // } = this;
 
     // const staticContext = stack.getPlugin('StaticContext');
-    const staticContext = this;
-    const { bindings, globals } = staticContext;
+    // const { declaredBindings, referencedBindings, referencedGlobals } = this;
 
-    const bindingNodes = Array.from(bindings).map(binding => {
-      const node = stack.getNodeOfPath(binding.path);
-      if (!node) {
-        this.node.logger.warn(`Binding did not have a matching "ParseNode": ${getPresentableString(binding.path)}`);
-      }
-      return node;
-    }).filter(n => !!n);
+    // const bindingNodes = Array.from(bindings).map(binding => {
+    //   const node = stack.getNodeOfPath(binding.path);
+    //   if (!node) {
+    //     this.node.logger.warn(`Binding did not have a matching "ParseNode": ${getPresentableString(binding.path)}`);
+    //   }
+    //   return node;
+    // }).filter(n => !!n);
 
 
     // TODO: trace bindings
