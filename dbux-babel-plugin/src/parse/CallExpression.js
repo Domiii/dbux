@@ -1,3 +1,4 @@
+import { instrumentCallExpressionEnter } from '../zz_archive/traceHelpers.old';
 import BaseNode from './BaseNode';
 
 // function wrapCallExpression(path, state) {
@@ -24,7 +25,6 @@ export default class CallExpression extends BaseNode {
   //   // function enterCallExpression(traceResultType, path, state) {
   //   //   // CallExpression
 
-  //   //   // TODO: need to fix for parameter assignments in function declarations: `function f(x = o.g()) { }`
   //   //   //      NOTE: in this case, utility variables are allocated inside function; but that would change semantics.
   //   //   const parent = path.parentPath;
   //   //   const grandParent = path.parentPath?.parentPath;
@@ -33,6 +33,7 @@ export default class CallExpression extends BaseNode {
   //   //     grandParent.node.params.includes(parent.node)
   //   //   ) {
   //   //     // ignore
+  //   //     // TODO: need to fix for parameter assignments in function declarations: `function f(x = o.g()) { }`
   //   //   }
   //   //   else {
   //   //     path = instrumentCallExpressionEnter(path, state);
@@ -41,18 +42,24 @@ export default class CallExpression extends BaseNode {
   //   // }
   // }
 
-  // exit() {
-  //   if (isCallPath(path)) {
-  //     // call expressions get special treatment
-  //     return wrapCallExpression(path, state);
-  //   }
-  // }
+  exit() {
+    // TODO: static trace data
+    
+    // TODO: get/instrument/manage bcePath
+    // const bcePathId = callPath.getData('_bcePathId');
+    // const bcePath = bcePathId && callPath.parentPath.get(bcePathId) || null;
+    
+    // TODO: set argument.callId = beforeCallTraceId
 
-  // instrument() {
-  //   // TODO: instrumentMemberCallExpressionEnter
-  //   // TODO: instrumentDefaultCallExpressionEnter
-  //   // TODO: static trace data
-  //   // _callId = cfg?.callId || type === TraceType.BeforeCallExpression && _traceId;
-  //   // _resultCallId = cfg?.resultCallId;
-  // }
+    // TODO: set callId + resultCallId
+    // // _callId = cfg?.callId || type === TraceType.BeforeCallExpression && _traceId;
+    // // _resultCallId = cfg?.resultCallId;
+  }
+
+  instrument() {
+    const { path, state } = this;
+    instrumentCallExpressionEnter(path, state);
+    // TODO: instrumentMemberCallExpressionEnter
+    // TODO: instrumentDefaultCallExpressionEnter
+  }
 }
