@@ -14,8 +14,7 @@ export default class Literal extends BaseNode {
         type: TraceType.ExpressionValue,
         dataNode: {
           // TODO: `isNew` for literals is only `true` the first time. Need dynamic `isNew` to mirror this.
-          isNew: true,
-          type: DataNodeType.Read
+          isNew: true
         }
       }
     };

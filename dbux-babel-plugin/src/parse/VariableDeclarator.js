@@ -1,39 +1,31 @@
-import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
+// import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import BaseNode from './BaseNode';
 
 // TODO: very similar to `AssignmentExpression` but (1) not an expression, (2) optional rval, (3) more limited lvals
 export default class VariableDeclarator extends BaseNode {
+  static children = ['id', 'init'];
   static plugins = [
-    'Traces',
     'BindingNode'
   ];
 
-  static children = ['id', 'init'];
 
   exit() {
-    const { path } = this;
-    const traces = this.getPlugin('Traces');
+    const { path, Traces } = this;
 
     const [, initPath] = this.getChildPaths(true);
     const [idNode] = this.getChildNodes();
 
+    // ddg: declaration
     this.peekStaticContext().addDeclaration(idNode);
 
-    // const expressionTraceCfg = {
-    //   path: idPath,
-    //   node: idNode,
-    //   varNode: idNode,
-    //   staticTraceData: {
-    //     type: TraceType.ExpressionResult,
-    //     dataNode: {
-    //       isNew: false,
-    //       type: DataNodeType.Read
-    //     }
-    //   }
-    // };
+    if (!initPath.node) {
+      // nothing to write
+      return;
+    }
 
+    // ddg: write
     const writeTraceCfg = {
       path,
       node: this,
@@ -41,17 +33,16 @@ export default class VariableDeclarator extends BaseNode {
       staticTraceData: {
         type: TraceType.WriteVar,
         dataNode: {
-          isNew: false,
-          type: DataNodeType.Write
+          isNew: false
         }
       },
       meta: {
-        instrument: traces.instrumentTraceWrite,
+        instrument: Traces.instrumentTraceWrite,
         replacePath: initPath
       }
     };
 
-    traces.addTraceWithInputs(writeTraceCfg, initPath.node && [initPath] || EmptyArray);
+    Traces.addTraceWithInputs(writeTraceCfg, [initPath]);
 
     // traces.addTraceWithInputs({ path: initPath, node: initNode, varNode: idNode, staticTraceData}, [initPath]);
   }

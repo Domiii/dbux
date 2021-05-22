@@ -14,17 +14,6 @@ import ParsePlugin from '../../parseLib/ParsePlugin';
  * To capture all scopes, one can use [Scopable](https://babeljs.io/docs/en/babel-types#scopable).
  */
 export default class StaticContext extends ParsePlugin {
-  static plugins = [
-    'Traces'
-  ];
-
-  /**
-   * @type {Traces}
-   */
-  get Traces() {
-    return this.node.getPlugin('Traces');
-  }
-
   /**
    * @type {BindingIdentifier}
    */
@@ -49,24 +38,21 @@ export default class StaticContext extends ParsePlugin {
 
     this.Verbose && this.debug(`DECL ${id}`);
 
-
-
     // TODO: fix order of insertion, to match order of `staticTraceId`. binding nodes are the only ones out of order.
 
     // this.bindingTraces.push({
-    id.bindingTrace = this.Traces.addTrace({
+    id.bindingTrace = this.node.Traces.addTrace({
       path: id.path,
       node: id,
       // varNode: id,
       staticTraceData: {
         type: TraceType.Identifier,
         dataNode: {
-          isNew: false,
-          type: DataNodeType.Binding
+          isNew: false
         }
       },
       meta: {
-        instrument: this.Traces.instrumentTraceBind
+        instrument: this.node.Traces.instrumentTraceBind
       }
     });
   }
@@ -92,7 +78,7 @@ export default class StaticContext extends ParsePlugin {
   // enter() {
   //   // add binding traces
   //   for (const trace of this.bindingTraces) {
-  //     this.Traces.addTrace(trace);
+  //     this.node.Traces.addTrace(trace);
   //   }
   // }
 

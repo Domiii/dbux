@@ -1,5 +1,6 @@
 import ParseNode from '../parseLib/ParseNode';
 import StaticContext from './plugins/StaticContext';
+import Traces from './plugins/Traces';
 
 
 function concatArrays(a, b) {
@@ -13,6 +14,8 @@ function concatArrays(a, b) {
  * Custom layer on top of generic ParseNode.
  */
 export default class BaseNode extends ParseNode {
+  static plugins = ['Traces'];
+
   /**
    * NOTE: Managed by `plugins/Traces`
    */
@@ -20,6 +23,13 @@ export default class BaseNode extends ParseNode {
 
   constructor(...args) {
     super(...args);
+  }
+
+  /**
+   * @return {import('./plugins/Traces').default}
+   */
+  get Traces() {
+    return this.getPlugin('Traces');
   }
 
 

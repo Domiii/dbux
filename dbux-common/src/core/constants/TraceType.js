@@ -21,12 +21,10 @@ let TraceType = {
   // CallArgument: 9,
   // CallbackArgument: 10,
 
-  Binding: 11,
+  Declaration: 11,
   WriteVar: 12,
   Identifier: 13,
   Literal: 14,
-
-  Parameter: 31,
 
   PushCallback: 11,
   PopCallback: 12,
@@ -114,21 +112,14 @@ expressionTypes[TraceType.ExpressionValue] = true;
 expressionTypes[TraceType.CallArgument] = true;
 expressionTypes[TraceType.CallbackArgument] = true;
 expressionTypes[TraceType.CallExpressionResult] = true;
-expressionTypes[TraceType.Parameter] = true;
 expressionTypes[TraceType.ReturnArgument] = true;
 expressionTypes[TraceType.ThrowArgument] = true;
+expressionTypes[TraceType.Identifier] = true;
+expressionTypes[TraceType.Literal] = true;
 
 export function isTraceExpression(traceType) {
   return expressionTypes[traceType];
 }
-
-const valueTypes = [...expressionTypes];
-valueTypes[TraceType.PopCallback] = true; // has return value of function
-
-export function hasTraceValue(traceType) {
-  return valueTypes[traceType];
-}
-
 
 const callbackTypes = new Array(TraceType.getValueMaxIndex()).map(() => false);
 callbackTypes[TraceType.CallbackArgument] = true;
@@ -143,6 +134,8 @@ export function isCallbackRelatedTrace(traceType) {
 const dataOnlyTypes = new Array(TraceType.getValueMaxIndex()).map(() => false);
 dataOnlyTypes[TraceType.CallArgument] = true;
 dataOnlyTypes[TraceType.ExpressionValue] = true;
+dataOnlyTypes[TraceType.Literal] = true;
+
 /**
  * Traces that are important for data flow analysis, but not important for control flow analysis
  */

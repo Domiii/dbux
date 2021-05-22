@@ -1,4 +1,4 @@
-import TraceType, { hasDynamicTypes, hasTraceValue, isTracePop, isBeforeCallExpression } from '@dbux/common/src/core/constants/TraceType';
+import TraceType, { hasDynamicTypes, isTracePop, isBeforeCallExpression } from '@dbux/common/src/core/constants/TraceType';
 import { pushArrayOfArray } from '@dbux/common/src/util/arrayUtil';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
@@ -315,11 +315,6 @@ export default {
     const trace = dp.util.getValueTrace(traceId);
     return !!dp.util.getDataNodeOfTrace(traceId);
   },
-
-  // doesStaticTraceHaveValue(dp, staticTraceId) {
-  //   const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
-  //   return hasTraceValue(staticTrace.type);
-  // },
 
   /**
    * WARNING: Call `doesTraceHaveValue` to make sure, the trace has a value.

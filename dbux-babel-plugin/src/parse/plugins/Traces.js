@@ -3,6 +3,7 @@
 // import TraceType from '@dbux/common/src/core/constants/TraceType';
 // import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
+import TraceType from '@dbux/common/src/core/constants/TraceType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { getPresentableString } from '../../helpers/pathHelpers';
 import { traceWrapExpression, traceWrapWrite, unshiftScopeTrace } from '../../instrumentation/trace';
@@ -86,7 +87,7 @@ export default class Traces extends ParsePlugin {
     
     const { path, node, varNode, staticTraceData, inputTraces, meta } = traceDataOrArray;
 
-    const isBinding = staticTraceData?.dataNode?.type === DataNodeType.Binding;
+    const isBinding = TraceType.is.Declaration(staticTraceData?.type);
 
     const { state } = this.node;
     const { scope } = path;

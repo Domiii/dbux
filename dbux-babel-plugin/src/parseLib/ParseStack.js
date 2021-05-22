@@ -79,16 +79,21 @@ export default class ParseStack {
     const pluginName = isString(pluginNameOrClazz) ?
       pluginNameOrClazz :
       pluginNameOrClazz.name;
-    const nodeNames = ParseRegistry.getParseNodeNamesOfPluginName(pluginName);
-    if (!nodeNames) {
-      return null;
-    }
+    try {
+      const nodeNames = ParseRegistry.getParseNodeNamesOfPluginName(pluginName);
+      if (!nodeNames) {
+        return null;
+      }
 
-    // Of all candidate node types, peek the stack top, and of those take the last one created.
-    return maxBy(
-      nodeNames.map(name => this.peekNode(name)),
-      node => node.nodeId
-    );
+      // Of all candidate node types, peek the stack top, and of those take the last one created.
+      return maxBy(
+        nodeNames.map(name => this.peekNode(name)),
+        node => node?.nodeId || -1
+      );
+    }
+    catch (err) {
+      throw new Error(`peekNodeOfPlugin failed for "${pluginName}" - ${err.stack}`);
+    }
   }
 
   peekPlugin(pluginNameOrClazz) {
@@ -148,7 +153,7 @@ export default class ParseStack {
           `${newNode.nodeTypeName} and ${getNodeOfPath(path.nodeTypeName)}`
         );
       }
-      
+
       newNode = new ParseNodeClazz(path, state, this, initialData);
       newNode.init();
       newNode.initPlugins();

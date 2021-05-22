@@ -4,24 +4,18 @@ import BaseNode from './BaseNode';
 export default class FunctionDeclaration extends BaseNode {
   static children = ['id', 'params', 'body'];
 
-  pluginConfigs = [
+  static plugins = [
     'Function',
     'StaticContext',
     'BindingNode'
   ];
 
-  enter() {
-    const traces = this.getPlugin('Traces');
+  exit() {
+    // const { path, Traces } = this;
+    // const [, initPath] = this.getChildPaths(true);
 
-    
-    // traces
-  }
+    const [idNode] = this.getChildNodes();
 
-  instrument() {
-    const { path } = this;
-    const [idPath] = this.getChildPaths();
-
-    const binding = path.scope.getBinding(idPath.node.name);
-    
+    this.peekStaticContext().addDeclaration(idNode);
   }
 }

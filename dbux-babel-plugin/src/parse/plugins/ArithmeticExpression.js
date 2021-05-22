@@ -5,9 +5,6 @@ import ParsePlugin from '../../parseLib/ParsePlugin';
 
 
 export default class ArithmeticExpression extends ParsePlugin {
-  static plugins = ['Traces'];
-
-
   // createInputTrace() {
   //   const { node } = this;
   //   const rawTraceData = {
@@ -18,13 +15,11 @@ export default class ArithmeticExpression extends ParsePlugin {
   //       type: TraceType.ExpressionResult,
   //       dataNode: {
   //         isNew: true,
-  //         type: DataNodeType.Read
   //       }
   //     }
   //   };
 
-  //   const traces = node.getPlugin('Traces');
-  //   return traces.addTrace(rawTraceData);
+  //   return Traces.addTrace(rawTraceData);
   // }
 
   // ###########################################################################
@@ -34,28 +29,27 @@ export default class ArithmeticExpression extends ParsePlugin {
   exit() {
     // const [...inputs, inputPaths] = args; // NOTE: esnext does not allow this (yet)
     const { node } = this;
-    const { path } = node;
+    const { path, Traces } = node;
     // const childNodes = node.getChildNodes();
     const childPaths = node.getChildPaths();
 
     this.warn('childPaths', childPaths.map(c => getPresentableString(c)));
 
-    const traces = node.getPlugin('Traces');
-
     // trace AE itself
     const staticTraceData = {
       type: TraceType.ExpressionResult,
       dataNode: {
-        isNew: true,
-        type: DataNodeType.Read
+        isNew: true
       }
     };
 
     const varNode = null;
     // const inputNodes = childNodes;
 
+    const traceData = { path, node, varNode, staticTraceData };
+
     // TODO: propagate inputs
-    traces.addTraceWithInputs({ path, node, varNode, staticTraceData }, childPaths);
+    Traces.addTraceWithInputs(traceData, childPaths);
   }
 
   // instrument() {

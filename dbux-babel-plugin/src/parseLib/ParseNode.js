@@ -50,6 +50,14 @@ export default class ParseNode {
     this.nodeId = ++stack.lastId;
   }
 
+  getAllClassPlugins() {
+    if (!this.constructor._pluginConfigs) {
+      const allPluginConfigs = ParseRegistry.getAllPluginConfigsOfNodeClass(this.constructor);
+      this.constructor._pluginConfigs = Array.from(allPluginConfigs.values());
+    }
+    return this.constructor._pluginConfigs;
+  }
+
   // ###########################################################################
   // getters
   // ###########################################################################
@@ -203,11 +211,8 @@ export default class ParseNode {
   }
 
   initPlugins() {
-    // get all plugin names
-    const allPluginConfigs = ParseRegistry.getAllPluginConfigsOfNodeClass(this.constructor);
-
     // add plugins (possibly conditionally)
-    for (const pluginCfg of allPluginConfigs.values()) {
+    for (const pluginCfg of this.getAllClassPlugins()) {
       let predicate, name;
       if (Array.isArray(pluginCfg)) {
         [predicate, name] = pluginCfg;

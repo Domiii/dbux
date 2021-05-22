@@ -1,6 +1,7 @@
 import mapValues from 'lodash/mapValues';
 import groupBy from 'lodash/groupBy';
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
+// import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import { getAllStaticPropsInInheritanceChain } from '@dbux/common/src/util/oopUtil';
 import NestedError from '@dbux/common/src/NestedError';
 
 
@@ -64,7 +65,9 @@ class Registry {
     }
     visited.add(Clazz);
 
-    for (const pluginCfg of (Clazz.plugins || EmptyArray)) {
+    const pluginNames = getAllStaticPropsInInheritanceChain(Clazz, 'plugins').flat();
+
+    for (const pluginCfg of pluginNames) {
       let name;
       if (Array.isArray(pluginCfg)) {
         [, name] = pluginCfg;
