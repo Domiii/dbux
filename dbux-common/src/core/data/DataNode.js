@@ -42,7 +42,7 @@ export default class DataNode {
 
   /**
    * Id of object's `ValueRef`.
-   * Is `null` when accessing a non-reference/-object type.
+   * Is `0` when accessing a non-reference/-object type.
    */
   refId;
 

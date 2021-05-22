@@ -29,6 +29,9 @@ export default class Collection {
   dp;
 
   constructor(name, dp) {
+    if (!name || !dp) {
+      throw new Error(`Collection did not provide name and dp to ctor - ${this.constructor.name}`);
+    }
     this.log = newLogger(`${name} (Col)`);
     this.name = name;
     this.dp = dp;

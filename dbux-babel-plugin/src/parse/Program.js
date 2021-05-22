@@ -14,7 +14,7 @@ import BaseNode from './BaseNode';
 function buildProgramInit(path, { ids, contexts: { genContextIdName } }) {
   const {
     dbuxInit,
-    dbuxRuntime,
+    // dbuxRuntime,
     dbux,
     aliases
   } = ids;
@@ -25,16 +25,8 @@ function buildProgramInit(path, { ids, contexts: { genContextIdName } }) {
   // const { sourceType } = path.node;
   // console.log(path.fileName, sourceType);
 
-  let importLine;
-  // if (sourceType === 'module') {
-  //   importLine = `import ${dbuxRuntime} from '@dbux/runtime';`;
-  // }
-  // else 
-  importLine = `var ${dbuxRuntime} = typeof __dbux__ === 'undefined' ? require('@dbux/runtime') : __dbux__;`;
-
   return buildSource(`
-  ${importLine}
-  var ${dbux} = ${dbuxInit}(${dbuxRuntime});
+  var ${dbux} = ${dbuxInit}(typeof __dbux__ !== 'undefined' || require('@dbux/runtime'));
   var ${contextIdName} = ${dbux}.getProgramContextId();
   ${Object.entries(aliases)
     .map(([dbuxProp, varName]) => `var ${varName} = ${dbux}.${dbuxProp}`)

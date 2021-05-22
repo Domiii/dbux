@@ -3,6 +3,7 @@ import dbuxBabelPlugin from '@dbux/babel-plugin';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import defaultsDeep from 'lodash/defaultsDeep';
 import colors from 'colors/safe';
+import isString from 'lodash/isString';
 
 // sanity check: make sure, some core stuff is loaded and working before starting instrumentation
 // import '@babel/preset-env';
@@ -58,11 +59,11 @@ function otherArgsToString(otherArgs) {
 export default function buildBabelOptions(options) {
   process.env.BABEL_DISABLE_CACHE = 1;
 
-  const {
+  let {
     esnext,
     dontInjectDbux,
     dontAddPresets,
-    dbuxOptions: dbuxOptionsString,
+    dbuxOptions: babelPluginOptions,
     packageWhitelist,
     verbose = 0,
     runtime = null
@@ -75,8 +76,11 @@ export default function buildBabelOptions(options) {
     return null;
   }
 
-  const dbuxOptions = dbuxOptionsString && JSON.parse(dbuxOptionsString) || {};
-  defaultsDeep(dbuxOptions, {
+  // babel-plugin options
+  if (!babelPluginOptions || isString(babelPluginOptions)) {
+    babelPluginOptions = babelPluginOptions && JSON.parse(babelPluginOptions) || {};
+  }
+  defaultsDeep(babelPluginOptions, {
     verbose,
     runtime: runtime
   });
@@ -92,6 +96,7 @@ export default function buildBabelOptions(options) {
 
   verbose > 1 && debugLog(`packageWhitelist`, packageWhitelistRegExps.join(','));
   
+  // TODO: use Webpack5 magic comments instead
   const requireFunc = typeof __non_webpack_require__ === "function" ? __non_webpack_require__ : require;
   verbose > 1 && debugLog(`[@dbux/babel-plugin]`, 
     requireFunc.resolve/* ._resolveFilename */('@dbux/babel-plugin/package.json'));
@@ -136,7 +141,7 @@ export default function buildBabelOptions(options) {
 
   if (!dontInjectDbux) {
     babelOptions.plugins = babelOptions.plugins || [];
-    babelOptions.plugins.push([dbuxBabelPlugin, dbuxOptions]);
+    babelOptions.plugins.push([dbuxBabelPlugin, babelPluginOptions]);
   }
 
   if (dontAddPresets) {

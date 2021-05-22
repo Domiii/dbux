@@ -9,15 +9,19 @@ import valueCollection from './valueCollection';
 export class DataNodeCollection extends Collection {
   lastRefId = 0;
 
+  constructor() {
+    super('dataNodes');
+  }
+
 
   /**
    * @param {Trace} trace 
    */
-  createDataNodes(value, trace, bindingTid, inputs) {
+  createDataNodes(value, traceId, bindingTid, inputs) {
     // const staticTrace = staticTraceCollection.getStaticTrace(trace.staticTraceId);
     // const { dataNode: staticDataNode } = staticTrace;
 
-    const dataNode = this.createDataNode(value, trace.traceId, bindingTid, inputs);
+    const dataNode = this.createDataNode(value, traceId, bindingTid, inputs);
 
 
     // TODO: resolve deferred access
@@ -48,6 +52,8 @@ export class DataNodeCollection extends Collection {
     dataNode.varAccess = {
       varTid: bindingTid
     };
+
+    this._send(dataNode);
 
     return dataNode;
   }

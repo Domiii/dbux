@@ -427,7 +427,9 @@ class TraceCollection extends Collection {
  * @extends {Collection<DataNode>}
  */
 class DataNodeCollection extends Collection {
-  
+  constructor(dp) {
+    super('dataNodes', dp);
+  }
 }
 
 // ###########################################################################

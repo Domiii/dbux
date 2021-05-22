@@ -22,8 +22,10 @@ try {
     _t3_,
     _t5_,
     _t14_;
-  let a = _tw(undefined, (_t4_ = _tid(4)), _t3_, []),
-    b = _tw(_te(0, (_t6_ = _tid(6)), 0, null), (_t7_ = _tid(7)), _t5_, [_t6_]);
+  let a = _tw(undefined, (_t4_ = _tid(4)), _t3_, 0, []),
+    b = _tw(_te(0, (_t6_ = _tid(6)), 0, null), (_t7_ = _tid(7)), _t5_, 0, [
+      _t6_,
+    ]);
   a = 1;
   b = 2;
 
@@ -44,6 +46,7 @@ try {
     ),
     (_t15_ = _tid(15)),
     _t14_,
+    0,
     [_t13_]
   );
   _dbux.t(16);
@@ -53,17 +56,19 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram(
     {
-      fileName: "__unnamed_script_1.js",
-      filePath: "__unnamed_script_1.js",
+      fileName: "var1.js",
+      filePath:
+        "C:\\Users\\domin\\code\\dbux\\samples\\__samplesInput__\\slicing\\var1.js",
       contexts: [
         {
           _staticId: 1,
           loc: { start: { line: 1, column: 0 }, end: { line: 7, column: 16 } },
           type: 1,
-          name: "__unnamed_script_1.js",
-          displayName: "__unnamed_script_1.js",
-          fileName: "__unnamed_script_1.js",
-          filePath: "__unnamed_script_1.js",
+          name: "var1.js",
+          displayName: "var1.js",
+          fileName: "var1.js",
+          filePath:
+            "C:\\Users\\domin\\code\\dbux\\samples\\__samplesInput__\\slicing\\var1.js",
         },
       ],
       traces: [
@@ -92,11 +97,7 @@ function _dbux_init(dbuxRuntime) {
         },
         {
           displayName: "a",
-          loc: {
-            start: { line: 1, column: 4 },
-            end: { line: 1, column: 5 },
-            identifierName: "a",
-          },
+          loc: { start: { line: 1, column: 4 }, end: { line: 1, column: 5 } },
           _traceId: 4,
           _staticContextId: 1,
           type: 12,
@@ -120,12 +121,8 @@ function _dbux_init(dbuxRuntime) {
           type: 8,
         },
         {
-          displayName: "b",
-          loc: {
-            start: { line: 1, column: 7 },
-            end: { line: 1, column: 8 },
-            identifierName: "b",
-          },
+          displayName: "b = 0",
+          loc: { start: { line: 1, column: 7 }, end: { line: 1, column: 12 } },
           _traceId: 7,
           _staticContextId: 1,
           type: 12,
@@ -200,12 +197,8 @@ function _dbux_init(dbuxRuntime) {
           type: 13,
         },
         {
-          displayName: "c",
-          loc: {
-            start: { line: 7, column: 6 },
-            end: { line: 7, column: 7 },
-            identifierName: "c",
-          },
+          displayName: "c = a + b",
+          loc: { start: { line: 7, column: 6 }, end: { line: 7, column: 15 } },
           _traceId: 15,
           _staticContextId: 1,
           type: 12,
@@ -222,5 +215,5 @@ function _dbux_init(dbuxRuntime) {
     {}
   );
 }
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInVua25vd24iXSwibmFtZXMiOlsiYSIsImIiLCJjIl0sIm1hcHBpbmdzIjoiNllBQUEsSUFBSUEsQ0FBQywyQ0FBTCxDQUFPQyxDQUFDLFdBQUcsQ0FBSCx5REFBUjtBQUNBRCxFQUFBQSxDQUFDLEdBQUcsQ0FBSjtBQUNBQyxFQUFBQSxDQUFDLEdBQUcsQ0FBSjs7QUFFQSxVQUFBRCxDQUFDLDZCQUFELE9BQUlDLENBQUo7O0FBRUEsUUFBTUMsQ0FBQyxXQUFHLElBQUFGLENBQUMsK0JBQUQsT0FBSUMsQ0FBSiwrQkFBSCx5RUFBUCxDIiwic291cmNlc0NvbnRlbnQiOlsibGV0IGEsIGIgPSAwO1xyXG5hID0gMTtcclxuYiA9IDI7XHJcblxyXG5hICsgYlxyXG5cclxuY29uc3QgYyA9IGEgKyBiOyJdfQ==
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInVua25vd24iXSwibmFtZXMiOlsiYSIsImIiLCJjIl0sIm1hcHBpbmdzIjoiNllBQUEsSUFBSUEsQ0FBQyw4Q0FBTCxDQUFPQyxDQUFDLFdBQUcsQ0FBSCw0REFBUjtBQUNBRCxFQUFBQSxDQUFDLEdBQUcsQ0FBSjtBQUNBQyxFQUFBQSxDQUFDLEdBQUcsQ0FBSjs7QUFFQSxVQUFBRCxDQUFDLDZCQUFELE9BQUlDLENBQUo7O0FBRUEsUUFBTUMsQ0FBQyxXQUFHLElBQUFGLENBQUMsK0JBQUQsT0FBSUMsQ0FBSiwrQkFBSCw0RUFBUCxDIiwic291cmNlc0NvbnRlbnQiOlsibGV0IGEsIGIgPSAwO1xyXG5hID0gMTtcclxuYiA9IDI7XHJcblxyXG5hICsgYlxyXG5cclxuY29uc3QgYyA9IGEgKyBiOyJdfQ==
 

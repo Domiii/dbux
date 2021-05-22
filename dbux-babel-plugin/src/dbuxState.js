@@ -36,7 +36,8 @@ export default function injectDbuxState(programPath, programState) {
     filenameOverride: filenameOverrideOrFn,
     runtime: runtimeCfg
   } = buildCfg;
-  const filenameOverride = filenameOverrideOrFn && (isFunction(filenameOverrideOrFn) ? filenameOverrideOrFn(programState) : null);
+  const filenameOverride = filenameOverrideOrFn && (isFunction(filenameOverrideOrFn) ? filenameOverrideOrFn(programState) : filenameOverrideOrFn);
+  // console.warn('options', JSON.stringify(buildCfg), filenameOverride);
   const filePath = filenameOverride || programState.filename || `__unnamed_script_${++unknownCount}.js`;
   const fileName = filePath && pathGetBasename(filePath);
 

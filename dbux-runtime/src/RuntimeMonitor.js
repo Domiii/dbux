@@ -390,7 +390,7 @@ export default class RuntimeMonitor {
     this._trace(programId, contextId, runId, inProgramStaticTraceId);
   }
 
-  newTraceId(programId, inProgramStaticTraceId) {
+  newTraceId = (programId, inProgramStaticTraceId) => {
     if (!this._ensureExecuting()) {
       return -1;
     }
@@ -399,7 +399,7 @@ export default class RuntimeMonitor {
     const runId = this._runtime.getCurrentRunId();
     const overrideType = null;
 
-    const trace = traceCollection.trace(programId, contextId, inProgramStaticTraceId, runId, overrideType);
+    const trace = traceCollection.trace(programId, contextId, runId, inProgramStaticTraceId, overrideType);
     this._onTrace(contextId, trace);
 
     return trace.traceId;

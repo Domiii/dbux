@@ -9,6 +9,9 @@ export default class Collection {
   _all = [null];
 
   constructor(name) {
+    if (!name) {
+      throw new Error(`Collection did not provide name to ctor - ${this.constructor.name}`);
+    }
     this._name = name;
     this.logger = newLogger(`${name} Collection`);
   }

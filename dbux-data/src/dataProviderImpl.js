@@ -34,6 +34,7 @@ import StaticTracesByContextIndex from './impl/indexes/StaticTracesByContextInde
 import ProgramIdByFilePathQuery from './impl/queries/ProgramIdByFilePathQuery';
 import ProgramFilePathByTraceIdQuery from './impl/queries/ProgramFilePathByTraceIdQuery';
 import StatsByContextQuery from './impl/queries/StatsByContextQuery';
+import DataNodesByTraceIndex from './impl/indexes/DataNodesByTraceIndex';
 
 
 export function newDataProvider(application) {
@@ -69,13 +70,16 @@ export function newDataProvider(application) {
   dataProvider.addIndex(new TracesByStaticContextIndex());
   dataProvider.addIndex(new TracesByParentStaticContextIndex());
   dataProvider.addIndex(new TracesByRunIndex());
-  dataProvider.addIndex(new TracesByRefIdIndex());
   dataProvider.addIndex(new TracesByCallIndex());
   dataProvider.addIndex(new ErrorTracesIndex());
   dataProvider.addIndex(new ErrorTracesByContextIndex());
   dataProvider.addIndex(new ErrorTracesByRunIndex());
 
   dataProvider.addIndex(new TracesByRealContextIndex());
+
+  // data + values
+  dataProvider.addIndex(new TracesByRefIdIndex());
+  dataProvider.addIndex(new DataNodesByTraceIndex());
 
   // complex indexes (that have dependencies)
   // NOTE: we are currently solving index dependencies by simply adding depdendents after dependees
