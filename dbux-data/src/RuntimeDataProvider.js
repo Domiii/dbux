@@ -3,6 +3,7 @@ import findLastIndex from 'lodash/findLastIndex';
 import { newLogger } from '@dbux/common/src/log/logger';
 import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
 import Trace from '@dbux/common/src/core/data/Trace';
+import DataNode from '@dbux/common/src/core/data/DataNode';
 import ValueRef from '@dbux/common/src/core/data/ValueRef';
 import StaticProgramContext from '@dbux/common/src/core/data/StaticProgramContext';
 import StaticContext from '@dbux/common/src/core/data/StaticContext';
@@ -36,6 +37,11 @@ function deleteCachedRange(locObj) {
   delete locObj.end._pos;
   return locObj;
 }
+
+
+// ###########################################################################
+// StaticProgramContextCollection
+// ###########################################################################
 
 /**
  * @extends {Collection<StaticProgramContext>}
@@ -88,6 +94,11 @@ class StaticContextCollection extends Collection {
   }
 }
 
+
+// ###########################################################################
+// StaticTraceCollection
+// ###########################################################################
+
 /**
  * @extends {Collection<StaticTrace>}
  */
@@ -120,6 +131,10 @@ class StaticTraceCollection extends Collection {
   //   staticTrace.staticCodeChunkId = this.lastStaticCodeChunkId;
   // }
 }
+
+// ###########################################################################
+// ExecutionContextCollection
+// ###########################################################################
 
 /**
  * @extends {Collection<ExecutionContext>}
@@ -162,6 +177,9 @@ class ExecutionContextCollection extends Collection {
   // }
 }
 
+// ###########################################################################
+// TraceCollection
+// ###########################################################################
 
 /**
  * @extends {Collection<Trace>}
@@ -401,6 +419,21 @@ class TraceCollection extends Collection {
   }
 }
 
+// ###########################################################################
+// DataNodeCollection
+// ###########################################################################
+
+/**
+ * @extends {Collection<DataNode>}
+ */
+class DataNodeCollection extends Collection {
+  
+}
+
+// ###########################################################################
+// ValueCollection
+// ###########################################################################
+
 /**
  * @extends {Collection<ValueRef>}
  */
@@ -512,6 +545,11 @@ class ValueCollection extends Collection {
   }
 }
 
+
+// ###########################################################################
+// RDP
+// ###########################################################################
+
 export default class RuntimeDataProvider extends DataProviderBase {
   /**
    * @type {DataProviderUtil}
@@ -531,6 +569,7 @@ export default class RuntimeDataProvider extends DataProviderBase {
 
       executionContexts: new ExecutionContextCollection(this),
       traces: new TraceCollection(this),
+      dataNodes: new DataNodeCollection(this),
       values: new ValueCollection(this)
     };
 

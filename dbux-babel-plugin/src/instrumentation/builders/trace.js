@@ -63,7 +63,7 @@ export const buildTraceExpression = bindExpressionTemplate(
 
 // TODO: deferTid?
 export const buildTraceWrite = bindExpressionTemplate(
-  '%%traceWrite%%(%%expr%%, %%tid%%, %%bindingTid%%, %%inputs%%)',
+  '%%traceWrite%%(%%expr%%, %%tid%%, %%bindingTid%%, %%deferTid%%, %%inputs%%)',
   function buildTraceWrite(expr, state, traceCfg) {
     const { ids: { aliases: {
       traceWrite
@@ -76,11 +76,15 @@ export const buildTraceWrite = bindExpressionTemplate(
 
     const tid = buildTraceId(state, traceCfg);
 
+    const bindingTid = bindingTidIdentifier || ZeroNode;
+    const deferTid = ZeroNode;
+
     return {
       expr,
       traceWrite,
       tid,
-      bindingTid: bindingTidIdentifier || ZeroNode,
+      bindingTid,
+      deferTid,
       inputs: inputTraces && t.arrayExpression(inputTraces.map(i => i.tidIdentifier)) || NullNode
     };
   }

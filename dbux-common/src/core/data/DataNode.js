@@ -12,11 +12,6 @@ export class VarAccessId {
    * Is `null` when accessing **nested** object member.
    */
   varTid;
-  /**
-   * Id of the `DataNode` of object creation (or first recorded instance of object).
-   * Is `null` when accessing a non-reference/-object type.
-   */
-  refNid;
 }
 
 /**
@@ -35,12 +30,6 @@ export class VarAccesME {
    * @type {string}
    */
   memberPath;
-
-  /**
-   * Id of the `DataNode` of object creation (or first recorded instance of object).
-   * Is `null` when accessing a non-reference/-object type.
-   */
-  refNid;
 }
 
 export default class DataNode {
@@ -50,6 +39,12 @@ export default class DataNode {
    * The trace that recorded this `DataNode`.
    */
   traceId;
+
+  /**
+   * Id of object's `ValueRef`.
+   * Is `null` when accessing a non-reference/-object type.
+   */
+  refId;
 
   /**
    * @type {VarAccessId | VarAccessME}

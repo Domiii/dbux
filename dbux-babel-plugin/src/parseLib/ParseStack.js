@@ -55,6 +55,7 @@ export default class ParseStack {
   // ###########################################################################
 
   /**
+  // TODO: fix peekNode, peekNodePlugin to just use `parentPath`, instead of trying to decipher stack?
    * @return {ParseNode}
    */
   peekNode(nameOrParseNodeClazz) {

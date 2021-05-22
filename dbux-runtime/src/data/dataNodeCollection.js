@@ -17,30 +17,37 @@ export class DataNodeCollection extends Collection {
     // const staticTrace = staticTraceCollection.getStaticTrace(trace.staticTraceId);
     // const { dataNode: staticDataNode } = staticTrace;
 
-    /* const dataNode =  */this.createDataNode(value, trace.traceId, bindingTid, inputs);
+    const dataNode = this.createDataNode(value, trace.traceId, bindingTid, inputs);
+
 
     // TODO: resolve deferred access
     // const deferredChildrenTids = getDeferredTids(tid);
 
     // handleNodeX(value, trace, dataNode, inputs, deferredChildrenTids);
+    return dataNode;
   }
 
-  
+
   // NOTE: this currently only registers new objects and primitives
-  // TODO: support object changes
   createDataNode(value, traceId, bindingTid, inputs) {
     const dataNode = pools.dataNodes.allocate();
 
     dataNode.nodeId = this._all.length;
     dataNode.traceId = traceId;
+    dataNode.inputs = inputs;
+
     this._all.push(dataNode);
+
+    // TODO: support object changes
+    // TODO: also support ME
 
     // value
     const valueRef = valueCollection.registerValueMaybe(value, dataNode);
-    const varAccess = { refNid: valueRef?.nodeId || 0, varTid: bindingTid };
 
-    dataNode.varAccess = varAccess;
-    dataNode.inputs = inputs;
+    dataNode.refId = valueRef?.refId || 0;
+    dataNode.varAccess = {
+      varTid: bindingTid
+    };
 
     return dataNode;
   }

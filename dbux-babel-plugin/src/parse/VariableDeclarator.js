@@ -13,10 +13,11 @@ export default class VariableDeclarator extends BaseNode {
   static children = ['id', 'init'];
 
   exit() {
+    const { path } = this;
     const traces = this.getPlugin('Traces');
 
-    const [idPath, initPath] = this.getChildPaths(true);
-    const [idNode, initNode] = this.getChildNodes();
+    const [, initPath] = this.getChildPaths(true);
+    const [idNode] = this.getChildNodes();
 
     this.peekStaticContext().addDeclaration(idNode);
 
@@ -34,8 +35,8 @@ export default class VariableDeclarator extends BaseNode {
     // };
 
     const writeTraceCfg = {
-      path: idPath,
-      node: idNode,
+      path,
+      node: this,
       varNode: idNode,
       staticTraceData: {
         type: TraceType.WriteVar,
@@ -49,12 +50,6 @@ export default class VariableDeclarator extends BaseNode {
         replacePath: initPath
       }
     };
-
-    // TODO: move `BindingIdentifier` binding collection code back to `ReferencedIdentifier`
-    // TODO: add `binding` trace
-    // TODO: insert `binding` trace at top of scope block (see `Scope.push` for reference)
-    //        -> create `binding` trace on `enter`
-    // TODO: fix peekNode, peekNodePlugin to just use `parentPath`, instead of trying to decipher stack?
 
     traces.addTraceWithInputs(writeTraceCfg, initPath.node && [initPath] || EmptyArray);
 

@@ -4,20 +4,18 @@ import RuntimeDataProvider from '../../RuntimeDataProvider';
 
 
 /** @extends {CollectionIndex<Trace>} */
-export default class TracesByRefIdIndex extends CollectionIndex {
+export default class DataNodesByTraceIndex extends CollectionIndex {
   constructor() {
-    super('traces', 'byRefId');
+    super('dataNodes', 'byTrace');
   }
 
   /** 
    * @param {RuntimeDataProvider} dp
-   * @param {Trace} trace
+   * @param {DataNode} dataNode
    */
-  makeKey(dp, trace) {
-    const {
-      refId
-    } = trace;
+  makeKey(dp, dataNode) {
+    const { traceId } = dataNode;
 
-    return refId || false;
+    return traceId;
   }
 }

@@ -5,6 +5,7 @@ export default class ValueRef {
   refId;
   
   /**
+   * Id of `DataNode` that captured the first instance of this value.
    * @type {number}
    */
   nodeId;

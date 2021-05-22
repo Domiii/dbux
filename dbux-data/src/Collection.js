@@ -5,7 +5,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
  */
 
 /**
- * @template {T}
+ * @template T
  */
 export default class Collection {
   /**

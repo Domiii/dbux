@@ -242,6 +242,30 @@ export default {
   },
 
   // ###########################################################################
+  // DataNodes
+  // ###########################################################################
+
+  /** @param {DataProvider} dp */
+  getDataNodeOfTrace(dp, traceId) {
+    return dp.indexes.dataNodes.byTrace.get(traceId)?.[0];
+  },
+
+  /** @param {DataProvider} dp */
+  getDataNodesOfTrace(dp, traceId) {
+    return dp.indexes.dataNodes.byTrace.get(traceId);
+  },
+
+  /** @param {DataProvider} dp */
+  getDataNodeValueRef(dp, traceId) {
+    const dataNode = dp.util.getDataNodeOfTrace(traceId);
+    const refId = dataNode?.varAccess?.refId;
+    if (refId) {
+      return dp.collections.values.getById(refId);
+    }
+    return null;
+  },
+
+  // ###########################################################################
   // trace values
   // ###########################################################################
 
@@ -285,38 +309,11 @@ export default {
   },
 
   /**
-   * True if trace has value that is not `undefined`.
    * @param {DataProvider} dp
    */
   doesTraceHaveValue(dp, traceId) {
-    // TODO: ddg (go through DataNode instead)
     const trace = dp.util.getValueTrace(traceId);
-    if (trace.value !== undefined || trace.valueId) {
-      return true;
-    }
-    else {
-      return false;
-    }
-
-    // const trace = dp.util.getValueTrace(traceId);
-    // const { value } = trace;
-    // if (value === undefined) {
-    //   const valueRef = dp.util.getTraceValueRef(traceId);
-    //   if (!valueRef) { // || valueRef.value === undefined) {
-    //     // TODO: better distinguish between existing and non-existing values
-    //     return false;
-    //   }
-    // }
-    // return true;
-
-    // const value = dp.util.getTraceValue(traceId);
-    // return value !== undefined;
-    // const trace = dp.collections.traces.getById(traceId);
-    // const { staticTraceId, type: dynamicType } = trace;
-    // if (dynamicType) {
-    //   return hasTraceValue(dynamicType);
-    // }
-    // return dp.util.doesStaticTraceHaveValue(staticTraceId);
+    return !!dp.util.getDataNodeOfTrace(traceId);
   },
 
   // doesStaticTraceHaveValue(dp, staticTraceId) {
@@ -424,16 +421,11 @@ export default {
 
   /** @param {DataProvider} dp */
   getTraceValueRef(dp, traceId) {
-    const trace = dp.util.getValueTrace(traceId);
-    const { valueId } = trace;
-
-    if (valueId) {
-      // value is reference type
-      const ref = dp.collections.values.getById(valueId);
-      return ref;
+    const dataNode = dp.util.getDataNodeOfTrace(traceId);
+    const refId = dataNode?.varAccess?.refId;
+    if (refId) {
+      return dp.collections.values.getById(refId);
     }
-
-    // value is primitive type (or trace has no value)
     return null;
   },
 
