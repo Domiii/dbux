@@ -90,9 +90,10 @@ class ContextNode extends ClientComponentEndpoint {
     if (statsEnabled) {
       const {
         nTreeContexts,
-        nTreeStaticContexts
+        nTreeStaticContexts,
+        nTreeFileCalled
       } = this.state;
-      this.els.stats.textContent = `${nTreeContexts} / ${nTreeStaticContexts}`;
+      this.els.stats.textContent = `${nTreeContexts} / ${nTreeStaticContexts} / ${nTreeFileCalled}`;
     }
     else {
       this.els.stats.textContent = '';
