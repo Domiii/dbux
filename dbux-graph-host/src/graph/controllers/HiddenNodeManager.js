@@ -17,8 +17,11 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
       const visible = this.shouldBeVisible(runNode);
       this._setVisible(runNode, visible);
     }
-    this._notifyStateChanged();
     this._notifyHiddenCountChanged();
+
+    this.waitForUpdate()
+      .then(() => this._notifyStateChanged())
+      .catch(err => this.logger.error(err));
   }
 
   get hiddenBeforeNode() {

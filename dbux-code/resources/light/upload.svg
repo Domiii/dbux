@@ -1,37 +1,7 @@
-<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
-
- <g>
-  <title>background</title>
-  <rect fill="none" id="canvas_background" height="514" width="514" y="-1" x="-1"/>
- </g>
- <g>
-  <title>Layer 1</title>
-  <g stroke="null" id="svg_22">
-   <g stroke="null" id="svg_1">
-    <g stroke="null" id="svg_2">
-     <path stroke="null" id="svg_3" d="m418.84377,298.70276l0,104.79298c0,8.31408 -6.76405,15.07813 -15.07813,15.07813l-295.53129,0c-8.31408,0 -15.07813,-6.76405 -15.07813,-15.07813l0,-104.79298l-30.15625,0l0,104.79298c0,24.94224 20.29214,45.23438 45.23438,45.23438l295.53129,0c24.94224,0 45.23438,-20.29214 45.23438,-45.23438l0,-104.79298l-30.15625,0z"/>
-    </g>
-   </g>
-   <g stroke="null" id="svg_4">
-    <g stroke="null" id="svg_5">
-     <polygon stroke="null" id="svg_6" points="255.99998474121094,63.269866943359375 162.301513671875,156.96835327148438 183.62496948242188,178.29185485839844 240.92185974121094,120.99497985839844 240.92185974121094,355.99957275390625 271.07810974121094,355.99957275390625 271.07810974121094,120.99497985839844 328.37498474121094,178.29185485839844 349.69850158691406,156.96835327148438 "/>
-    </g>
-   </g>
-   <g stroke="null" id="svg_7"/>
-   <g stroke="null" id="svg_8"/>
-   <g stroke="null" id="svg_9"/>
-   <g stroke="null" id="svg_10"/>
-   <g stroke="null" id="svg_11"/>
-   <g stroke="null" id="svg_12"/>
-   <g stroke="null" id="svg_13"/>
-   <g stroke="null" id="svg_14"/>
-   <g stroke="null" id="svg_15"/>
-   <g stroke="null" id="svg_16"/>
-   <g stroke="null" id="svg_17"/>
-   <g stroke="null" id="svg_18"/>
-   <g stroke="null" id="svg_19"/>
-   <g stroke="null" id="svg_20"/>
-   <g stroke="null" id="svg_21"/>
-  </g>
- </g>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16pt" height="16pt" viewBox="0 0 16 16" version="1.1">
+<g id="surface1">
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 13.089844 9.335938 L 13.089844 12.609375 C 13.089844 12.867188 12.878906 13.082031 12.617188 13.082031 L 3.382812 13.082031 C 3.121094 13.082031 2.910156 12.867188 2.910156 12.609375 L 2.910156 9.335938 L 1.96875 9.335938 L 1.96875 12.609375 C 1.96875 13.390625 2.601562 14.023438 3.382812 14.023438 L 12.617188 14.023438 C 13.398438 14.023438 14.03125 13.390625 14.03125 12.609375 L 14.03125 9.335938 Z M 13.089844 9.335938 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 8 1.976562 L 5.070312 4.90625 L 5.738281 5.570312 L 7.527344 3.78125 L 7.527344 11.125 L 8.472656 11.125 L 8.472656 3.78125 L 10.261719 5.570312 L 10.929688 4.90625 Z M 8 1.976562 "/>
+</g>
 </svg>

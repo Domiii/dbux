@@ -134,6 +134,10 @@ export default class Project {
     return this.manager.runner;
   }
 
+  get sharedRoot() {
+    return this.dependencyRoot;
+  }
+
   get projectsRoot() {
     return this.manager.config.projectsRoot;
   }
@@ -155,8 +159,8 @@ export default class Project {
     }
   }
 
-  getDependencyPath(relativePath) {
-    return path.resolve(this.dependencyRoot, 'node_modules', relativePath);
+  getSharedDependencyPath(relativePath = '.') {
+    return path.resolve(this.sharedRoot, 'node_modules', relativePath);
   }
 
   getNodeVersion(bug) {
@@ -314,7 +318,7 @@ This may be solved by using \`Delete project folder\` button.`);
   }
 
   // ###########################################################################
-  // utilities
+  // exec
   // ###########################################################################
 
   execInTerminal = async (command, options) => {
@@ -339,21 +343,6 @@ This may be solved by using \`Delete project folder\` button.`);
       throw new Error(`Process failed with exit code ${code} (${processExecMsg})`);
     }
     return 0;
-  }
-
-  async installPackages(s, force = true) {
-    // TODO: yarn workspaces causes trouble for `yarn add`.
-    //        Might need to use a hack, where we manually insert it into `package.json` and then run yarn install.
-    // TODO: let user choose, or just prefer yarn by default?
-
-    if (isObject(s)) {
-      s = Object.entries(s).map(([name, version]) => `${name}@${version}`).join(' ');
-    }
-
-    const cmd = this.preferredPackageManager === 'yarn' ?
-      'yarn add --dev' :
-      `npm install -D ${force && '--force'}`;
-    return this.execInTerminal(`${cmd} ${s}`);
   }
 
   exec = async (command, options, input) => {
@@ -415,6 +404,34 @@ This may be solved by using \`Delete project folder\` button.`);
     return process;
   }
 
+  // ###########################################################################
+  // more file + package utilities
+  // ###########################################################################
+
+  async installPackages(s, shared = true/* , force = true */) {
+    // TODO: let user choose, or just prefer yarn by default?
+
+    if (isObject(s)) {
+      s = Object.entries(s).map(([name, version]) => `${name}@${version}`).join(' ');
+    }
+
+    // NOTE: somehow Node module resolution algorithm skips a directory, that is `projectsRoot`
+    //       -> That is why we choose `dependencyRoot` instead
+
+    const cwd = shared ? this.sharedRoot : this.projectPath;
+
+    if (!sh.test('-f', path.join(cwd, 'package.json'))) {
+      await this.exec('npm init -y', { cwd });
+    }
+
+    // TODO: make sure, `shared` does not override existing dependencies
+
+    const cmd = this.preferredPackageManager === 'yarn' ?
+      `yarn add ${shared && (process.env.NODE_ENV === 'development') ? '-W --dev' : ''}` :
+      `npm install -D`;
+    return this.execInTerminal(`${cmd} ${s}`, { cwd });
+  }
+
   /**
    * NOTE: does not include new files. For that, consider `hasAnyChangedFiles()` below.
    * @return {bool} Whether any files in this project have changed.
@@ -428,7 +445,7 @@ This may be solved by using \`Delete project folder\` button.`);
 
     // NOTE: returns status code 1, if there are any changes, IFF --exit-code or --quiet is provided
     // see: https://stackoverflow.com/questions/28296130/what-does-this-git-diff-index-quiet-head-mean
-    const code = await this.exec('git diff-index --exit-code HEAD --', { failOnStatusCode: false, logStdout: false });
+    const code = await this.exec('git diff-index --exit-code HEAD --', { failOnStatusCode: false });
 
     return !!code;  // code !== 0 means that there are pending changes
   }
@@ -499,7 +516,7 @@ This may be solved by using \`Delete project folder\` button.`);
 
       message && (message = ' ' + message);
       // TODO: should not need '--allow-empty', if `checkFilesChanged` is correct (but somehow still bugs out)
-      await this.exec(`git commit -am '"[dbux auto commit]${message}"' --allow-empty`, { logStdout: false });
+      await this.exec(`git commit -am '"[dbux auto commit]${message}"' --allow-empty`);
     }
   }
 
@@ -672,14 +689,14 @@ This may be solved by using \`Delete project folder\` button.`);
     // const assetDir = path.resolve(path.join(__dirname, `../../dbux-projects/assets/${assetFolderName}`));
     const assetDir = this.getAssetDir(assetFolderName);
     // copy assets, if this project has any
-    Verbose && this.log(`Copying assets from ${assetDir} to ${this.projectPath}`);
+    this.log(`Copying assets from ${assetDir} to ${this.projectPath}`);
 
     // Globs are tricky. See: https://stackoverflow.com/a/31438355/2228771
     const copyRes = sh.cp('-rf', `${assetDir}/{.[!.],..?,}*`, this.projectPath);
 
     const assetFiles = getAllFilesInFolders(assetDir).join(',');
     // this.log(`Copied assets. All root files: ${await getAllFilesInFolders(this.projectPath, false).join(', ')}`);
-    Verbose && this.log(`Copied assets (${assetDir}): result=${copyRes.toString()}, files=${assetFiles}`,
+    this.log(`Copied assets (${assetDir}): result=${copyRes.toString()}, files=${assetFiles}`,
       // this.execCaptureOut(`cat ${this.projectPath}/.babelrc.js`)
     );
   }
@@ -711,7 +728,7 @@ This may be solved by using \`Delete project folder\` button.`);
   async applyPatch(patchFName, revert = false) {
     await this.checkCorrectGitRepository();
 
-    const patchPath = this.getPatchFile(patchFName);
+    const patchPath = this.getPatchFile(patchFName).replace(/\\/g, '/');
     return this.exec(`git apply ${revert ? '-R' : ''} --ignore-space-change --ignore-whitespace "${patchPath}"`);
   }
 

@@ -270,7 +270,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     // ###########################################################################
 
     const cfg = {
-      watch: true,
+      // watch: true,
       mode: buildMode,
       entry,
       target,
@@ -284,7 +284,10 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
         filename: '[name].js',
         path: path.resolve(ProjectRoot, 'dist'),
         publicPath: 'dist',
-        libraryTarget: target === 'node' ? 'commonjs2' : 'var',
+        // library: {
+        //   name: '[name]',
+        //   type: target === 'node' ? 'commonjs2' : 'var',
+        // },
         devtoolModuleFilenameTemplate: "../[resource-path]",
       },
       resolve: {
