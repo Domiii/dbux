@@ -61,6 +61,23 @@ export const buildTraceExpression = bindExpressionTemplate(
   }
 );
 
+
+export const buildTraceDeclaration = bindTemplate(
+  '%%traceDeclaration%%(%%tid%%)',
+  function buildTraceDeclaration(state, traceCfg) {
+    const { ids: { aliases: {
+      traceDeclaration
+    } } } = state;
+
+    const tid = buildTraceId(state, traceCfg);
+
+    return {
+      traceDeclaration,
+      tid
+    };
+  }
+);
+
 // TODO: deferTid?
 export const buildTraceWrite = bindExpressionTemplate(
   '%%traceWrite%%(%%expr%%, %%tid%%, %%bindingTid%%, %%deferTid%%, %%inputs%%)',

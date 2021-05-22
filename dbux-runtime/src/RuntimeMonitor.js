@@ -377,6 +377,10 @@ export default class RuntimeMonitor {
     return true;
   }
 
+  logFail(msg) {
+    this.logError(new Error(msg).stack);
+  }
+
   // ###########################################################################
   // traces
   // ###########################################################################
@@ -405,16 +409,25 @@ export default class RuntimeMonitor {
     return trace.traceId;
   }
 
-  // ###########################################################################
-  // TODO: fix up new trace calls with data binding!!
-  // ###########################################################################
+  traceDeclaration(programId, tid) {
+    if (!this._ensureExecuting()) {
+      return;
+    }
+    if (!tid) {
+      this.logFail(`traceExpression failed to capture tid`);
+      return;
+    }
+
+    // this.registerTrace(value, tid);
+    dataNodeCollection.createDataNodes(undefined, tid, tid);
+  }
 
   traceExpression(programId, value, tid, bindingTid, inputs) {
     if (!this._ensureExecuting()) {
       return value;
     }
     if (!tid) {
-      logError(`traceExpression failed to capture tid`);
+      this.logFail(`traceExpression failed to capture tid`);
       return value;
     }
 
@@ -461,7 +474,7 @@ export default class RuntimeMonitor {
       return value;
     }
     if (!tid) {
-      logError(`traceExpression failed to capture tid`);
+      this.logFail(`traceExpression failed to capture tid`);
       return value;
     }
 

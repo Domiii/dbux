@@ -6,7 +6,7 @@ import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { getPresentableString } from '../../helpers/pathHelpers';
-import { traceWrapExpression, traceWrapWrite, unshiftScopeTrace } from '../../instrumentation/trace';
+import { traceWrapExpression, traceWrapWrite, traceDeclaration } from '../../instrumentation/trace';
 import ParseNode from '../../parseLib/ParseNode';
 // import { getPresentableString } from '../../helpers/pathHelpers';
 import ParsePlugin from '../../parseLib/ParsePlugin';
@@ -146,23 +146,18 @@ export default class Traces extends ParsePlugin {
     traceWrapExpression(getInstrumentPath(traceCfg), state, traceCfg);
   }
 
-  instrumentTraceBind = (traceCfg) => {
+  instrumentTraceDeclaration = (traceCfg) => {
     const { node } = this;
     const { state } = node;
 
-    return unshiftScopeTrace(getInstrumentPath(traceCfg), state, traceCfg);
+    traceDeclaration(getInstrumentPath(traceCfg), state, traceCfg);
   }
 
   instrumentTraceWrite = (traceCfg) => {
     const { node } = this;
     const { state } = node;
 
-    const {
-      inputTraces,
-    } = traceCfg;
-
-    const readTraceCfg = inputTraces?.[0] || null;
-    traceWrapWrite(getInstrumentPath(traceCfg), state, traceCfg, readTraceCfg);
+    traceWrapWrite(getInstrumentPath(traceCfg), state, traceCfg);
   }
 
   // ###########################################################################
