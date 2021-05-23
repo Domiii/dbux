@@ -41,7 +41,7 @@ export default class BaseNode extends ParseNode {
     return this._traceCfg?.tidIdentifier;
   }
 
-  getBindingTidIdentifier() {
+  getDeclarationTidIdentifier() {
     return null;
   }
 

@@ -87,18 +87,25 @@ export default class Traces extends ParsePlugin {
     
     const { path, node, varNode, staticTraceData, inputTraces, meta } = traceDataOrArray;
 
-    const isBinding = TraceType.is.Declaration(staticTraceData?.type);
+    if (!path || !staticTraceData) {
+      throw new Error(`addTrace data missing \`path\` or \`staticTraceData\``);
+    }
+
+    const isDeclaration = TraceType.is.Declaration(staticTraceData.type);
+
+    // set default static DataNode
+    staticTraceData.dataNode = staticTraceData.dataNode || { isNew: false };
 
     const { state } = this.node;
     const { scope } = path;
     const inProgramStaticTraceId = state.traces.addTrace(path, staticTraceData);
     const tidIdentifier = scope.generateUidIdentifier(`t${inProgramStaticTraceId}_`);
-    let bindingTidIdentifier;
-    if (isBinding) {
-      bindingTidIdentifier = tidIdentifier;
+    let declarationTidIdentifier;
+    if (isDeclaration) {
+      declarationTidIdentifier = tidIdentifier;
     }
     else {
-      bindingTidIdentifier = varNode?.getBindingTidIdentifier();
+      declarationTidIdentifier = varNode?.getDeclarationTidIdentifier();
     }
 
     const traceData = {
@@ -106,12 +113,12 @@ export default class Traces extends ParsePlugin {
       node,
       inProgramStaticTraceId,
       tidIdentifier,
-      bindingTidIdentifier,
+      declarationTidIdentifier,
       inputTraces,
       meta
     };
     this.traces.push(traceData);
-    if (!isBinding) {
+    if (!isDeclaration) {
       // NOTE: node can have multiple traces (e.g. VariableDeclarator.id has binding and write nodes)
       node._setTraceData(traceData);
     }

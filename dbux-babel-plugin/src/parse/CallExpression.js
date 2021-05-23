@@ -1,4 +1,4 @@
-import { instrumentCallExpressionEnter } from '../zz_archive/traceHelpers.old';
+// import { instrumentCallExpressionEnter } from '../zz_archive/traceHelpers.old';
 import BaseNode from './BaseNode';
 
 // function wrapCallExpression(path, state) {
@@ -25,6 +25,7 @@ export default class CallExpression extends BaseNode {
   //   // function enterCallExpression(traceResultType, path, state) {
   //   //   // CallExpression
 
+  //   //   // TODO: need to fix for parameter assignments in function declarations: `function f(x = o.g()) { }`
   //   //   //      NOTE: in this case, utility variables are allocated inside function; but that would change semantics.
   //   //   const parent = path.parentPath;
   //   //   const grandParent = path.parentPath?.parentPath;
@@ -33,7 +34,6 @@ export default class CallExpression extends BaseNode {
   //   //     grandParent.node.params.includes(parent.node)
   //   //   ) {
   //   //     // ignore
-  //   //     // TODO: need to fix for parameter assignments in function declarations: `function f(x = o.g()) { }`
   //   //   }
   //   //   else {
   //   //     path = instrumentCallExpressionEnter(path, state);
@@ -43,12 +43,24 @@ export default class CallExpression extends BaseNode {
   // }
 
   exit() {
-    // TODO: static trace data
+    // TODO: callId + resultCallId
+
+    const calleeTraceData = {
+      path,
+      node,
+      varNode,
+      staticTraceData: {
+        type: TraceType.BeforeCallExpression
+      }
+    };
+    this.Traces.addTrace(calleeTraceData);
+
+
     
     // TODO: get/instrument/manage bcePath
     // const bcePathId = callPath.getData('_bcePathId');
     // const bcePath = bcePathId && callPath.parentPath.get(bcePathId) || null;
-    
+
     // TODO: set argument.callId = beforeCallTraceId
 
     // TODO: set callId + resultCallId
@@ -57,8 +69,8 @@ export default class CallExpression extends BaseNode {
   }
 
   instrument() {
-    const { path, state } = this;
-    instrumentCallExpressionEnter(path, state);
+    // const { path, state } = this;
+    // instrumentCallExpressionEnter(path, state);
     // TODO: instrumentMemberCallExpressionEnter
     // TODO: instrumentDefaultCallExpressionEnter
   }

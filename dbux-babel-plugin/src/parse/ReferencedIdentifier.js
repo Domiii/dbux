@@ -21,10 +21,7 @@ export default class ReferencedIdentifier extends BaseId {
       node: this,
       varNode,
       staticTraceData: {
-        type: TraceType.Identifier,
-        dataNode: {
-          isNew: false
-        }
+        type: TraceType.Identifier
       }
     };
 

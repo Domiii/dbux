@@ -21,10 +21,7 @@ export default class AssignmentExpression extends BaseNode {
       node: this,
       varNode: leftNode,
       staticTraceData: {
-        type: TraceType.WriteVar,
-        dataNode: {
-          isNew: false
-        }
+        type: TraceType.WriteVar
       },
       meta: {
         instrument: Traces.instrumentTraceWrite

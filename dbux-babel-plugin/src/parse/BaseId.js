@@ -43,7 +43,7 @@ export default class BaseId extends BaseNode {
     return bindingPath && this.getNodeOfPath(bindingPath) || null;
   }
 
-  getBindingTidIdentifier() {
+  getDeclarationTidIdentifier() {
     return this.getBindingIdNode()?.getTidIdentifier();
   }
 

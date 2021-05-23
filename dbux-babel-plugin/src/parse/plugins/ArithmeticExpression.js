@@ -5,23 +5,6 @@ import ParsePlugin from '../../parseLib/ParsePlugin';
 
 
 export default class ArithmeticExpression extends ParsePlugin {
-  // createInputTrace() {
-  //   const { node } = this;
-  //   const rawTraceData = {
-  //     path: node.path,
-  //     node: node,
-  //     varNode: null,
-  //     staticTraceData: {
-  //       type: TraceType.ExpressionResult,
-  //       dataNode: {
-  //         isNew: true,
-  //       }
-  //     }
-  //   };
-
-  //   return Traces.addTrace(rawTraceData);
-  // }
-
   // ###########################################################################
   // exit
   // ###########################################################################
@@ -37,10 +20,7 @@ export default class ArithmeticExpression extends ParsePlugin {
 
     // trace AE itself
     const staticTraceData = {
-      type: TraceType.ExpressionResult,
-      dataNode: {
-        isNew: true
-      }
+      type: TraceType.ExpressionResult
     };
 
     const varNode = null;

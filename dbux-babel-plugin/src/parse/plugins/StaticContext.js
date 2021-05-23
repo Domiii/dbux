@@ -46,10 +46,7 @@ export default class StaticContext extends ParsePlugin {
       node: id,
       // varNode: id,
       staticTraceData: {
-        type: TraceType.Declaration,
-        dataNode: {
-          isNew: false
-        }
+        type: TraceType.Declaration
       },
       meta: {
         instrument: this.node.Traces.instrumentTraceDeclaration

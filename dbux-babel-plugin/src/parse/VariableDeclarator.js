@@ -31,10 +31,7 @@ export default class VariableDeclarator extends BaseNode {
       node: this,
       varNode: idNode,
       staticTraceData: {
-        type: TraceType.WriteVar,
-        dataNode: {
-          isNew: false
-        }
+        type: TraceType.WriteVar
       },
       meta: {
         instrument: Traces.instrumentTraceWrite,

@@ -42,7 +42,7 @@ export const buildTraceExpression = bindExpressionTemplate(
 
 
     const {
-      bindingTidIdentifier,
+      declarationTidIdentifier,
       inputTraces
     } = traceCfg;
 
@@ -55,7 +55,7 @@ export const buildTraceExpression = bindExpressionTemplate(
       traceExpression,
       expr: expressionNode,
       tid,
-      bindingTid: bindingTidIdentifier || ZeroNode,
+      bindingTid: declarationTidIdentifier || ZeroNode,
       inputs: inputTraces && t.arrayExpression(inputTraces.map(i => i.tidIdentifier)) || NullNode
     };
   }
@@ -87,13 +87,13 @@ export const buildTraceWrite = bindExpressionTemplate(
     } } } = state;
 
     const {
-      bindingTidIdentifier,
+      declarationTidIdentifier,
       inputTraces
     } = traceCfg;
 
     const tid = buildTraceId(state, traceCfg);
 
-    const bindingTid = bindingTidIdentifier || ZeroNode;
+    const bindingTid = declarationTidIdentifier || ZeroNode;
     const deferTid = ZeroNode;
 
     return {
@@ -116,7 +116,7 @@ export const buildTraceWrite = bindExpressionTemplate(
 //     } } } = state;
 
 //     const {
-//       bindingTidIdentifier,
+//       declarationTidIdentifier,
 //       inputTidIds
 //     } = traceCfg;
 
@@ -130,7 +130,7 @@ export const buildTraceWrite = bindExpressionTemplate(
 //     return {
 //       traceWrite,
 //       tid,
-//       bindingTid: bindingTidIdentifier || ZeroNode,
+//       bindingTid: declarationTidIdentifier || ZeroNode,
 //       deferTid: NullNode,
 //       inputs: inputTidIds && t.arrayExpression(inputTidIds) || NullNode
 //     };
