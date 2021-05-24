@@ -32,12 +32,9 @@ module.exports = (env, argv) => {
 
   const webpackPlugins = [
     new webpack.EnvironmentPlugin({
-      // NODE_ENV: mode,
+      NODE_ENV: mode,
       DBUX_VERSION,
       DBUX_ROOT
-    }),
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(mode)
     }),
     new CopyPlugin({
       patterns: [
