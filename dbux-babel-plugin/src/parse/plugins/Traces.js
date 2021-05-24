@@ -129,7 +129,7 @@ export default class Traces extends ParsePlugin {
       node._setTraceData(traceData);
     }
 
-    this.Verbose >= 2 && this.debug('[traceId]', tidIdentifier.name, `([${inputTraces?.map(tid => tid.name).join(',') || ''}])`, `@"${this}"`);
+    this.Verbose >= 2 && this.debug('[traceId]', tidIdentifier.name, `([${inputTraces?.map(tid => tid.name).join(',') || ''}])`, `@"${this.node}"`);
 
     return traceData;
   }

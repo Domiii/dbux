@@ -21,15 +21,16 @@ export default class VariableDeclarator extends BaseNode {
     return idNode;
   }
 
+  enter() {
+
+  }
+
 
   exit() {
     const { path, Traces } = this;
 
     const [, initPath] = this.getChildPaths();
     const [idNode] = this.getChildNodes();
-
-    // ddg: declaration
-    this.peekStaticContext().addDeclaration(idNode);
 
     if (!initPath.node) {
       // nothing to write

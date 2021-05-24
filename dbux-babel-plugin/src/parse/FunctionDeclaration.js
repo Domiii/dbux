@@ -10,12 +10,12 @@ export default class FunctionDeclaration extends BaseNode {
     'BindingNode'
   ];
 
-  exit() {
-    // const { path, Traces } = this;
-    // const [, initPath] = this.getChildPaths();
+  // enter() {
+  //   // const { path, Traces } = this;
+  //   // const [, initPath] = this.getChildPaths();
 
-    const [idNode] = this.getChildNodes();
+  //   const [idNode] = this.getChildNodes();
 
-    this.peekStaticContext().addDeclaration(idNode);
-  }
+  //   this.peekStaticContext().addDeclaration(idNode);
+  // }
 }

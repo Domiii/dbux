@@ -71,14 +71,15 @@ export default class StaticContext extends ParsePlugin {
   // enter + exit
   // ###########################################################################
 
-  // enter() {
-  //   // add binding traces
-  //   for (const trace of this.bindingTraces) {
-  //     this.node.Traces.addTrace(trace);
-  //   }
-  // }
+  enter() {
+    // TODO: addDeclaration for all `BindingIdentifier`
+
+    //   const [idNode] = this.getChildNodes();
+    //   this.peekStaticContext().addDeclaration(idNode);
+  }
 
   exit() {
+
     // const {
     //   node: { stack }
     // } = this;
