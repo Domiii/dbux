@@ -163,30 +163,35 @@ export default class ParseNode {
     this.pluginPhases.enter?.();
   }
 
+  exit1Plugins() {
+    this.pluginPhases.exit1?.();
+  }
+
   exitPlugins() {
     this.pluginPhases.exit?.();
+  }
+
+  instrument1Plugins() {
+    this.pluginPhases.instrument1?.();
   }
 
   instrumentPlugins() {
     this.pluginPhases.instrument?.();
   }
 
-  instrument2Plugins() {
-    this.pluginPhases.instrument2?.();
-  }
-
   // enter() {
+  // }
+
+  // exit1() {
   // }
 
   // exit() {
   // }
 
-  // instrument() {
-
+  // instrument1() {
   // }
 
-  // instrument2() {
-
+  // instrument() {
   // }
 
   // ###########################################################################

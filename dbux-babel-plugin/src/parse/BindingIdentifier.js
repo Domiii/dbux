@@ -19,6 +19,10 @@ export default class BindingIdentifier extends BaseId {
 
 
   // ###########################################################################
-  // enter
+  // exit1
   // ###########################################################################
+  
+  exit1() {
+    this.peekStaticContext().addDeclaration(this);
+  }
 }

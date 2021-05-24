@@ -216,15 +216,14 @@ export default class ParseStack {
       throw new Error(`Parsing failed. Exited same ${ParseNodeClazz.name} node more thance once.\n  Node was not on stack anymore: ${getNodeOfPath(path)} \n  Path: ${getPresentableString(path)}`);
     }
 
-    parseNode.phase = ParsePhase.Exit;
-    Verbose && parseNode.hasPhase('enter', 'exit') && this.debug(`exit ${parseNode}`);
+    Verbose && parseNode.hasPhase('exit1') && this.debug(`exit1 ${parseNode}`);
 
     if (parseNode._nestedEnterCount) {
       --parseNode._nestedEnterCount;
-      this._callExit(path, ParseNodeClazz, parseNode, parseNode.exitNested);
+      this.nodePhase(ParsePhase.Exit1, parseNode, parseNode.exit1Nested);
     }
     else {
-      this._callExit(path, ParseNodeClazz, parseNode, parseNode.exitPlugins, parseNode.exit);
+      this.nodePhase(ParsePhase.Exit1, parseNode, parseNode.exit1Plugins, parseNode.exit1);
       this.pop(path, ParseNodeClazz);
 
       this.genTasks.push({
@@ -233,15 +232,6 @@ export default class ParseStack {
     }
     --this.recordedDepth;
   }
-
-  _callExit(path, ParseNodeClazz, node, ...fs) {
-    // pass child ParseNodes, followed by array of actual paths
-    // NOTE: childPaths might contain null, childPaths wouldn't
-    for (const f of fs) {
-      f?.call(node);
-    }
-  }
-
 
   // ###########################################################################
   // gen
@@ -274,30 +264,42 @@ export default class ParseStack {
     //   // parseNode.staticId = ++staticId;
     // }
 
+    // NOTE: the actual "exit" is run here for convinience. `exit1` is more of a "warm-up round".
+    for (const task of genTasks) {
+      const { parseNode } = task;
+      Verbose && parseNode.hasPhase('enter', 'exit') && this.debug(`exit ${parseNode}`);
+      this.nodePhase(ParsePhase.Exit, parseNode, parseNode.exitPlugins, parseNode.exit);
+    }
+
+
+    for (const task of genTasks) {
+      const { parseNode } = task;
+      Verbose && parseNode.hasPhase('instrument1') && debug(`instrument1 ${parseNode}`);
+      this.nodePhase(ParsePhase.Instrument1, parseNode, parseNode.instrument1Plugins, parseNode.instrument1);
+    }
 
     for (const task of genTasks) {
       const { parseNode } = task;
       Verbose && parseNode.hasPhase('instrument') && debug(`instrument ${parseNode}`);
-      parseNode.phase = ParsePhase.Instrument;
-      this.gen(parseNode, parseNode.instrumentPlugins);
-      this.gen(parseNode, parseNode.instrument);
-    }
-
-    for (const task of genTasks) {
-      const { parseNode } = task;
-      Verbose && parseNode.hasPhase('instrument2') && debug(`instrument2 ${parseNode}`);
-      parseNode.phase = ParsePhase.Instrument2;
-      this.gen(parseNode, parseNode.instrument2Plugins);
-      this.gen(parseNode, parseNode.instrument2);
+      this.nodePhase(ParsePhase.Instrument, parseNode, parseNode.instrumentPlugins, parseNode.instrument);
     }
   }
+
 
   /**
-   * @param {ParseNode} parseNode 
+   * @param {ParseNode} parseNode
    */
-  gen(parseNode, f) {
-    // const staticData = parseNode.genStaticData(this.state);
-    f?.call(parseNode, /* staticData, */);
-    // return staticData;
+  nodePhase(phase, parseNode, ...fs) {
+    if (parseNode.phase > phase) {
+      // every phase must only occur once
+      throw new Error(`ParseNode phase order - is in ` +
+        `${ParsePhase.nameFromForce(parseNode.phase)} when entering ` +
+        `${ParsePhase.nameFromForce(phase)} - ${parseNode}`);
+    }
+    parseNode.phase = phase;
+    for (const f of fs) {
+      f?.call(parseNode);
+    }
   }
 }
+

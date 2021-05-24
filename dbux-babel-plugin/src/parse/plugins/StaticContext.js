@@ -41,7 +41,9 @@ export default class StaticContext extends ParsePlugin {
     // TODO: fix order of insertion, to match order of `staticTraceId`. binding nodes are the only ones out of order.
 
     // this.bindingTraces.push({
-    id.bindingTrace = this.node.Traces.addTrace({
+    
+    // TODO: add `declarationTraces` to their corresponding block/scope instead
+    id.bindingTrace = this.node.Traces.addDeclarationTrace({
       path: id.path,
       node: id,
       staticTraceData: {
@@ -71,51 +73,43 @@ export default class StaticContext extends ParsePlugin {
   // enter + exit
   // ###########################################################################
 
-  enter() {
-    // TODO: addDeclaration for all `BindingIdentifier`
+  // exit() {
+  //   // const {
+  //   //   node: { stack }
+  //   // } = this;
 
-    //   const [idNode] = this.getChildNodes();
-    //   this.peekStaticContext().addDeclaration(idNode);
-  }
+  //   // const staticContext = stack.getPlugin('StaticContext');
+  //   // const { declaredBindings, referencedBindings, referencedGlobals } = this;
 
-  exit() {
-
-    // const {
-    //   node: { stack }
-    // } = this;
-
-    // const staticContext = stack.getPlugin('StaticContext');
-    // const { declaredBindings, referencedBindings, referencedGlobals } = this;
-
-    // const bindingNodes = Array.from(bindings).map(binding => {
-    //   const node = stack.getNodeOfPath(binding.path);
-    //   if (!node) {
-    //     this.node.logger.warn(`Binding did not have a matching "ParseNode": ${getPresentableString(binding.path)}`);
-    //   }
-    //   return node;
-    // }).filter(n => !!n);
+  //   // const bindingNodes = Array.from(bindings).map(binding => {
+  //   //   const node = stack.getNodeOfPath(binding.path);
+  //   //   if (!node) {
+  //   //     this.node.logger.warn(`Binding did not have a matching "ParseNode": ${getPresentableString(binding.path)}`);
+  //   //   }
+  //   //   return node;
+  //   // }).filter(n => !!n);
 
 
-    // TODO: trace bindings
-    // TODO: track binding `traceId`s of used variable names in nested functions
+  //   // TODO: trace bindings
+  //   // TODO: track binding `traceId`s of used variable names in nested functions
 
 
-    //   const name = path.node.id?.name || '(anonymous)';
-    //   const bindings = Array.from(bindingsStack.pop());
-    //   console.log(`${name}@${loc2s(path.node.loc)} - referenced bindings:`, [''].concat(
-    //     bindings.map((b) => binding2s(b))
-    //   ).join('\n  '));
+  //   //   const name = path.node.id?.name || '(anonymous)';
+  //   //   const bindings = Array.from(bindingsStack.pop());
+  //   //   console.log(`${name}@${loc2s(path.node.loc)} - referenced bindings:`, [''].concat(
+  //   //     bindings.map((b) => binding2s(b))
+  //   //   ).join('\n  '));
 
-    /**
-     * == Scenarios ==
-     * 
-     * function f1() {}
-     * const f2 = () => {};
-     * const f3 = function ff() {};
-     * var i;
-     * let j;
-     * const k = 33;
-     * class A {}
-     */
-  }
+  //   /**
+  //    * == Scenarios ==
+  //    * 
+  //    * function f1() {}
+  //    * const f2 = () => {};
+  //    * const f3 = function ff() {};
+  //    * var i;
+  //    * let j;
+  //    * const k = 33;
+  //    * class A {}
+  //    */
+  // }
 }

@@ -1,5 +1,5 @@
 // import * as t from '@babel/types';
-import { buildTraceExpression, buildTraceDeclaration, UndefinedNode } from './builders/trace';
+import { buildTraceExpression, buildTraceDeclaration, UndefinedNode, buildTraceDeclarations } from './builders/trace';
 import { unshiftScopeBlock } from './scope';
 
 const keepStatementCfg = {
@@ -21,7 +21,7 @@ export function traceWrapExpression(expressionPath, state, traceCfg) {
   return replacePath;
 }
 
-export function traceDeclaration(targetPath, state, traceCfg) {
-  const newNode = buildTraceDeclaration(state, traceCfg);
-  return unshiftScopeBlock(targetPath, newNode)[0];
+export function traceDeclarations(targetPath, state, traceCfgs) {
+  const newNodes = buildTraceDeclarations(state, traceCfgs);
+  unshiftScopeBlock(targetPath, newNodes)[0];
 }

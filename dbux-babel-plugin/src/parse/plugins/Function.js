@@ -170,6 +170,7 @@ export default class Function extends ParsePlugin {
     const origBodyNode = bodyPath.node;
     let bodyNode = origBodyNode;
     if (!Array.isArray(origBodyNode) && !t.isStatement(origBodyNode)) {
+      // TODO: replace with functionPath.ensureBlock();
       // simple lambda expression -> convert to block lambda expression with return statement
       // NOTE: This enables us to add `try/finally`; also the return statement indicates `ContextEnd`.
       bodyNode = t.blockStatement([t.returnStatement(origBodyNode)]);

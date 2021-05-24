@@ -1,12 +1,12 @@
-f();
+// f(1, 2);
 
-var a = 1, b = 2;
-g(a, b);
+// var a = 1, b = 2;
+// g(a, b);
 
 function f() {
-  console.log('f');
+  // console.log('f');
 }
 
-function g(a, b) {
-  console.log('g', a, b);
-}
+// function g(a, b) {
+//   console.log('g', a, b);
+// }

@@ -69,21 +69,24 @@ export const buildTraceExpression = buildTraceCall(
 // traceDeclaration
 // ###########################################################################
 
-export const buildTraceDeclaration = bindTemplate(
-  '%%traceDeclaration%%(%%tid%%)',
-  function buildTraceDeclaration(state, traceCfg) {
-    const { ids: { aliases: {
-      traceDeclaration
-    } } } = state;
+export function buildTraceDeclarations(state, traceCfgs) {
+  const { ids: { aliases: {
+    newTraceId
+    // traceDeclarations
+  } } } = state;
 
-    const tid = buildTraceId(state, traceCfg);
-
-    return {
-      traceDeclaration,
-      tid
-    };
-  }
-);
+  // return [
+  return t.variableDeclaration('var', [
+    traceCfgs.map(({ tidIdentifier, inProgramStaticTraceId }) => t.variableDeclarator(
+      tidIdentifier,
+      t.callExpression(newTraceId, [
+        t.numericLiteral(inProgramStaticTraceId)
+      ])
+    ))
+  ]);
+  // t.callExpression(traceDeclarations, traceCfgs.map())
+  // ];
+}
 
 // ###########################################################################
 // traceWrite

@@ -6,7 +6,7 @@ import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { getPresentableString } from '../../helpers/pathHelpers';
-import { traceWrapExpression, traceWrapWrite, traceDeclaration } from '../../instrumentation/trace';
+import { traceWrapExpression, traceWrapWrite, traceDeclarations } from '../../instrumentation/trace';
 import ParseNode from '../../parseLib/ParseNode';
 // import { getPresentableString } from '../../helpers/pathHelpers';
 import ParsePlugin from '../../parseLib/ParsePlugin';
@@ -27,6 +27,8 @@ function getInstrumentPath(traceCfg) {
 }
 
 export default class Traces extends ParsePlugin {
+  declarationTraces = [];
+
   traces = [];
 
   // ###########################################################################
@@ -73,6 +75,12 @@ export default class Traces extends ParsePlugin {
   // addTrace
   // ###########################################################################
 
+  addDeclarationTrace(traceData) {
+    const traceCfg = this.addTrace(traceData);
+    this.declarationTraces.push(traceCfg);
+    return traceCfg;
+  }
+
   /**
    * TODO: fix order of `staticTraceId`
    */
@@ -84,8 +92,8 @@ export default class Traces extends ParsePlugin {
       return null;
     }
 
-    
-    const { 
+
+    const {
       path,
       node,
       staticTraceData,
@@ -106,7 +114,7 @@ export default class Traces extends ParsePlugin {
     const { scope } = path;
     const inProgramStaticTraceId = state.traces.addTrace(path, staticTraceData);
     const tidIdentifier = scope.generateUidIdentifier(`t${inProgramStaticTraceId}_`);
-    
+
     let declarationTidIdentifier;
     if (isDeclaration) {
       declarationTidIdentifier = tidIdentifier;
@@ -124,9 +132,10 @@ export default class Traces extends ParsePlugin {
       inputTraces,
       meta
     };
-    this.traces.push(traceData);
-    if (path === node.path) {
+
+    if (!isDeclaration) {
       node._setTraceData(traceData);
+      this.traces.push(traceData);
     }
 
     this.Verbose >= 2 && this.debug('[traceId]', tidIdentifier.name, `([${inputTraces?.map(tid => tid.name).join(',') || ''}])`, `@"${this.node}"`);
@@ -162,7 +171,7 @@ export default class Traces extends ParsePlugin {
     const { node } = this;
     const { state } = node;
 
-    traceDeclaration(getInstrumentPath(traceCfg), state, traceCfg);
+    traceDeclarations(getInstrumentPath(traceCfg), state, traceCfg);
   }
 
   // ###########################################################################
@@ -175,13 +184,25 @@ export default class Traces extends ParsePlugin {
     const { scope } = path;
 
     // this.debug(`traces`, traces.map(t => t.tidIdentifier));
+
     for (const traceCfg of traces) {
       // add variable to scope
       const {
         /* inProgramStaticTraceId, */
         tidIdentifier,
         meta: {
-          isNested = false,
+          instrument = this.instrumentTraceExpression
+        } = EmptyObject
+      } = traceCfg;
+      instrument(traceCfg);
+    }
+
+    for (const traceCfg of traces) {
+      // add variable to scope
+      const {
+        /* inProgramStaticTraceId, */
+        tidIdentifier,
+        meta: {
           instrument = this.instrumentTraceExpression
         } = EmptyObject
       } = traceCfg;
@@ -189,9 +210,7 @@ export default class Traces extends ParsePlugin {
         id: tidIdentifier
       });
 
-      if (!isNested) {
-        instrument(traceCfg);
-      }
+      instrument(traceCfg);
     }
   }
 }

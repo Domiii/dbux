@@ -5,9 +5,10 @@ import Enum from '@dbux/common/src/util/Enum';
 let ParsePhase = {
   Init: 1,
   Enter: 2,
-  Exit: 3,
-  Instrument: 4,
-  Instrument2: 5
+  Exit1: 3,
+  Exit: 4,
+  Instrument1: 5,
+  Instrument: 6
 };
 
 ParsePhase = new Enum(ParsePhase);
