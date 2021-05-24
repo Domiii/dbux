@@ -73,7 +73,9 @@ export default function injectDbuxState(programPath, programState) {
         traceDeclaration: scope.generateUid('td' + programUid),
         traceExpression: scope.generateUid('te' + programUid),
         traceWrite: scope.generateUid('tw' + programUid),
-        // traceBind: scope.generateUid('tb' + programUid),
+        traceCallee: scope.generateUid('tc' + programUid),
+        traceCallArgument: scope.generateUid('tca' + programUid),
+        traceCallResult: scope.generateUid('tcr' + programUid),
       }
     },
     // console.log('[Program]', state.filename);

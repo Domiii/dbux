@@ -1,7 +1,7 @@
 import isString from 'lodash/isString';
 import maxBy from 'lodash/maxBy';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { getChildPaths, getNodeOfPath, setNodeOfPath } from './parseUtil';
+import { getNodeOfPath, setNodeOfPath } from './parseUtil';
 import { getPresentableString } from '../helpers/pathHelpers';
 import ParseRegistry from './ParseRegistry';
 import ParsePhase from './ParsePhase';

@@ -12,7 +12,7 @@ export default class FunctionDeclaration extends BaseNode {
 
   exit() {
     // const { path, Traces } = this;
-    // const [, initPath] = this.getChildPaths(true);
+    // const [, initPath] = this.getChildPaths();
 
     const [idNode] = this.getChildNodes();
 

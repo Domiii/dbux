@@ -85,7 +85,13 @@ export default class Traces extends ParsePlugin {
     }
 
     
-    const { path, node, varNode, staticTraceData, inputTraces, meta } = traceDataOrArray;
+    const { 
+      path,
+      node,
+      staticTraceData,
+      meta,
+      inputTraces
+    } = traceDataOrArray;
 
     if (!path || !staticTraceData) {
       throw new Error(`addTrace data missing \`path\` or \`staticTraceData\``);
@@ -100,12 +106,13 @@ export default class Traces extends ParsePlugin {
     const { scope } = path;
     const inProgramStaticTraceId = state.traces.addTrace(path, staticTraceData);
     const tidIdentifier = scope.generateUidIdentifier(`t${inProgramStaticTraceId}_`);
+    
     let declarationTidIdentifier;
     if (isDeclaration) {
       declarationTidIdentifier = tidIdentifier;
     }
     else {
-      declarationTidIdentifier = varNode?.getDeclarationTidIdentifier();
+      declarationTidIdentifier = node?.getDeclarationTidIdentifier();
     }
 
     const traceData = {
@@ -118,8 +125,7 @@ export default class Traces extends ParsePlugin {
       meta
     };
     this.traces.push(traceData);
-    if (!isDeclaration) {
-      // NOTE: node can have multiple traces (e.g. VariableDeclarator.id has binding and write nodes)
+    if (path === node.path) {
       node._setTraceData(traceData);
     }
 
@@ -148,7 +154,6 @@ export default class Traces extends ParsePlugin {
   instrumentTraceExpression = (traceCfg) => {
     const { node } = this;
     const { state } = node;
-    // const { scope } = path;
 
     traceWrapExpression(getInstrumentPath(traceCfg), state, traceCfg);
   }
@@ -158,13 +163,6 @@ export default class Traces extends ParsePlugin {
     const { state } = node;
 
     traceDeclaration(getInstrumentPath(traceCfg), state, traceCfg);
-  }
-
-  instrumentTraceWrite = (traceCfg) => {
-    const { node } = this;
-    const { state } = node;
-
-    traceWrapWrite(getInstrumentPath(traceCfg), state, traceCfg);
   }
 
   // ###########################################################################

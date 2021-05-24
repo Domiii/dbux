@@ -2,7 +2,7 @@
 import * as t from '@babel/types';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { getPresentableString } from '../../helpers/pathHelpers';
-import { bindExpressionTemplate, bindTemplate } from '../../helpers/templateUtil';
+import { buildTraceCall, bindTemplate, bindExpressionTemplate } from '../../helpers/templateUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('builders/trace');
@@ -16,7 +16,6 @@ export const UndefinedNode = t.identifier('undefined');
 export const buildTraceId = bindExpressionTemplate(
   '%%traceId%% = %%newTraceId%%(%%staticTraceId%%)',
   function buildTraceId(state, { tidIdentifier, inProgramStaticTraceId }) {
-    // TODO: add custom trace data
     const { ids: { aliases: {
       newTraceId
     } } } = state;
@@ -29,17 +28,22 @@ export const buildTraceId = bindExpressionTemplate(
   },
 );
 
+// ###########################################################################
+// traceExpression
+// ###########################################################################
+
 /**
  * 
  */
-export const buildTraceExpression = bindExpressionTemplate(
-  '%%traceExpression%%(%%expr%%, %%tid%%, %%bindingTid%%, %%inputs%%)',
+export const buildTraceExpression = buildTraceCall(
+  '%%trace%%(%%expr%%, %%tid%%, %%declarationTid%%, %%inputs%%)',
   function buildTraceExpression(expressionNode, state, traceCfg) {
     // const { scope } = path;
-    const { ids: { aliases: {
-      traceExpression
-    } } } = state;
-
+    const { ids: { aliases } } = state;
+    const trace = aliases[traceCfg?.meta?.traceCall || 'traceExpression'];
+    if (!trace) {
+      throw new Error(`Invalid meta.traceCall "${traceCfg.meta.traceCall}" - Valid choices are: ${Object.keys(aliases).join(', ')}`);
+    }
 
     const {
       declarationTidIdentifier,
@@ -47,20 +51,23 @@ export const buildTraceExpression = bindExpressionTemplate(
     } = traceCfg;
 
     const tid = buildTraceId(state, traceCfg);
-    Verbose && debug(`[te] ${expressionNode.type} [${inputTraces?.map(i => i.tidIdentifier.name).join(',') || ''}]`, getPresentableString(expressionNode));
+    // Verbose && debug(`[te] ${expressionNode.type} [${inputTraces?.map(i => i.tidIdentifier.name).join(',') || ''}]`, getPresentableString(expressionNode));
 
     // NOTE: templates only work on `Node`, not on `NodePath`, thus they lose all path-related information.
 
     return {
-      traceExpression,
+      trace,
       expr: expressionNode,
       tid,
-      bindingTid: declarationTidIdentifier || ZeroNode,
+      declarationTid: declarationTidIdentifier || ZeroNode,
       inputs: inputTraces && t.arrayExpression(inputTraces.map(i => i.tidIdentifier)) || NullNode
     };
   }
 );
 
+// ###########################################################################
+// traceDeclaration
+// ###########################################################################
 
 export const buildTraceDeclaration = bindTemplate(
   '%%traceDeclaration%%(%%tid%%)',
@@ -78,9 +85,13 @@ export const buildTraceDeclaration = bindTemplate(
   }
 );
 
-// TODO: deferTid?
-export const buildTraceWrite = bindExpressionTemplate(
-  '%%traceWrite%%(%%expr%%, %%tid%%, %%bindingTid%%, %%deferTid%%, %%inputs%%)',
+// ###########################################################################
+// traceWrite
+// ###########################################################################
+
+// TODO: deferTid
+export const buildTraceWrite = buildTraceCall(
+  '%%traceWrite%%(%%expr%%, %%tid%%, %%declarationTid%%, %%inputs%%, %%deferTid%%)',
   function buildTraceWrite(expr, state, traceCfg) {
     const { ids: { aliases: {
       traceWrite
@@ -93,50 +104,56 @@ export const buildTraceWrite = bindExpressionTemplate(
 
     const tid = buildTraceId(state, traceCfg);
 
-    const bindingTid = declarationTidIdentifier || ZeroNode;
+    const declarationTid = declarationTidIdentifier || ZeroNode;
     const deferTid = ZeroNode;
 
     return {
       expr,
       traceWrite,
       tid,
-      bindingTid,
-      deferTid,
-      inputs: inputTraces && t.arrayExpression(inputTraces.map(i => i.tidIdentifier)) || NullNode
+      declarationTid,
+      inputs: inputTraces && t.arrayExpression(inputTraces.map(i => i.tidIdentifier)) || NullNode,
+      deferTid
     };
   }
 );
 
-// export const buildTraceWrite = bindExpressionTemplate(
-//   // TODO: value, tid, deferTid, ...inputs
-//   '%%traceWrite%%(%%tid%%, %%bindingTid%%, %%deferTid%%, %%inputs%%)',
-//   function buildTraceWrite(state, traceCfg) {
-//     const { ids: { aliases: {
-//       traceWrite
-//     } } } = state;
+// ###########################################################################
+// traceCallArgument
+// ###########################################################################
 
-//     const {
-//       declarationTidIdentifier,
-//       inputTidIds
-//     } = traceCfg;
+export const buildTraceCallArgument = buildTraceCall(
+  '%%traceCallArgument%%(%%expr%%, %%tid%%, %%declarationTid%%, %%calleeTid%%, %%inputs%%)',
+  function buildTraceCallArgument(expr, state, traceCfg) {
+    const { ids: { aliases: {
+      traceCallArgument
+    } } } = state;
 
-//     const tid = buildTraceId(state, traceCfg);
-//     // Verbose && debug('[tw]', getPresentableString(path));
+    const {
+      declarationTidIdentifier,
+      inputTraces,
+      calleeTid
+    } = traceCfg;
 
-//     // NOTE: templates only work on `Node`, not on `NodePath`, thus they lose all path-related information.
+    const tid = buildTraceId(state, traceCfg);
 
-//     // TODO: keep `path` data etc, if necessary - `onCopy(path, newPath);`
+    const declarationTid = declarationTidIdentifier || ZeroNode;
 
-//     return {
-//       traceWrite,
-//       tid,
-//       bindingTid: declarationTidIdentifier || ZeroNode,
-//       deferTid: NullNode,
-//       inputs: inputTidIds && t.arrayExpression(inputTidIds) || NullNode
-//     };
-//   }
-// );
+    return {
+      expr,
+      traceCallArgument,
+      tid,
+      declarationTid,
+      inputs: inputTraces && t.arrayExpression(inputTraces.map(i => i.tidIdentifier)) || NullNode,
+      calleeTid
+    };
+  }
+);
 
+
+// ###########################################################################
+// traceNoValue
+// ###########################################################################
 
 /**
  * TODO: rewrite using `traceCfg`

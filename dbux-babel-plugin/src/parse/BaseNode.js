@@ -37,14 +37,25 @@ export default class BaseNode extends ParseNode {
   // trace utility
   // ###########################################################################
 
-  getTidIdentifier() {
-    return this._traceCfg?.tidIdentifier;
-  }
-
-  getDeclarationTidIdentifier() {
+  getDeclarationNode() {
     return null;
   }
 
+  getTidIdentifier() {
+    if (!this._traceCfg) {
+      throw new Error(`Tried to "getTidIdentifier" before node trace was added: ${this}`);
+    }
+    return this._traceCfg.tidIdentifier;
+  }
+
+  getDeclarationTidIdentifier() {
+    return this.getDeclarationNode()?.getTidIdentifier();
+  }
+
+  /**
+   * NOTE: same path can be wrapped multiple times.
+   * This will store the latest (outer-most) version of it.
+   */
   _setTraceData(traceData) {
     this._traceCfg = traceData;
   }

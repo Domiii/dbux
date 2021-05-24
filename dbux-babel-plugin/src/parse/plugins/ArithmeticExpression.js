@@ -22,13 +22,10 @@ export default class ArithmeticExpression extends ParsePlugin {
     const staticTraceData = {
       type: TraceType.ExpressionResult
     };
-
-    const varNode = null;
     // const inputNodes = childNodes;
 
-    const traceData = { path, node, varNode, staticTraceData };
+    const traceData = { path, node, staticTraceData };
 
-    // TODO: propagate inputs
     Traces.addTraceWithInputs(traceData, childPaths);
   }
 

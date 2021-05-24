@@ -1,16 +1,12 @@
-const a = [1, 2];
+f();
 
-// console.log(process.argv.join(' # '));
+var a = 1, b = 2;
+g(a, b);
 
-f(1, g(...a));
-
-f(1, g())
-
-function f(...args) {
-  console.log('f', ...args);
+function f() {
+  console.log('f');
 }
 
-function g(...args) {
-  console.log('g', ...args);
-  // return 2;
+function g(a, b) {
+  console.log('g', a, b);
 }

@@ -2,26 +2,27 @@ import { NodePath } from '@babel/traverse';
 
 
 /**
- * @param {NodePath} path 
+ * @param {NodePath} scopePath 
  * 
  * Based on `Scope.push`.
  * @see `@babel/traverse/lib/scope/index.js`
  * @return {NodePath}
  */
 export function getScopeBlockPath(path) {
-  path = path.scope.path;
+  const { scope } = path;
+  let scopePath = scope.path;
 
-  if (!path.isBlockStatement() && !path.isProgram()) {
-    path = this.getBlockParent().path;
+  if (!scopePath.isBlockStatement() && !scopePath.isProgram()) {
+    scopePath = scope.getBlockParent().path;
   }
 
-  if (path.isSwitchStatement()) {
-    path = (this.getFunctionParent() || this.getProgramParent()).path;
+  if (scopePath.isSwitchStatement()) {
+    scopePath = (scope.getFunctionParent() || scope.getProgramParent()).path;
   }
 
-  if (path.isLoop() || path.isCatchClause() || path.isFunction()) {
-    path.ensureBlock();
-    path = path.get("body");
+  if (scopePath.isLoop() || scopePath.isCatchClause() || scopePath.isFunction()) {
+    scopePath.ensureBlock();
+    scopePath = scopePath.get("body");
   }
-  return path;
+  return scopePath;
 }

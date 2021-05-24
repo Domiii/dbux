@@ -422,7 +422,7 @@ export default class RuntimeMonitor {
     dataNodeCollection.createDataNodes(undefined, tid, tid);
   }
 
-  traceExpression(programId, value, tid, bindingTid, inputs) {
+  traceExpression(programId, value, tid, declarationTid, inputs) {
     if (!this._ensureExecuting()) {
       return value;
     }
@@ -432,7 +432,7 @@ export default class RuntimeMonitor {
     }
 
     // this.registerTrace(value, tid);
-    dataNodeCollection.createDataNodes(value, tid, bindingTid, inputs);
+    dataNodeCollection.createDataNodes(value, tid, declarationTid, inputs);
     return value;
   }
 
@@ -466,10 +466,8 @@ export default class RuntimeMonitor {
   //   }
   // }
 
-  // traceWriteME(programId, value, tid/* , bindingTid, memberPath */, deferTid, inputs) {
-
   // TODO: rename to traceWriteVar
-  traceWrite(programId, value, tid, bindingTid, deferTid, inputs) {
+  traceWrite(programId, value, tid, declarationTid, inputs, deferTid) {
     if (!this._ensureExecuting()) {
       return value;
     }
@@ -479,7 +477,7 @@ export default class RuntimeMonitor {
     }
 
     // this.registerTrace(value, tid);
-    dataNodeCollection.createDataNodes(value, tid, bindingTid, inputs);
+    dataNodeCollection.createDataNodes(value, tid, declarationTid, inputs);
 
     // TODO: defer
     // if (deferTid) {

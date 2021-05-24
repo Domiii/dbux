@@ -44,7 +44,6 @@ export default class StaticContext extends ParsePlugin {
     id.bindingTrace = this.node.Traces.addTrace({
       path: id.path,
       node: id,
-      // varNode: id,
       staticTraceData: {
         type: TraceType.Declaration
       },
@@ -55,7 +54,7 @@ export default class StaticContext extends ParsePlugin {
   }
 
   /**
-   * @param {BindingIdentifier} id
+   * @param {BaseId} id
    */
   addReferencedBinding(id) {
     const { binding } = id;

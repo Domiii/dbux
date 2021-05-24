@@ -1,6 +1,7 @@
 // import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import { buildTraceWrite } from '../instrumentation/builders/trace';
 import BaseNode from './BaseNode';
 
 // TODO: very similar to `AssignmentExpression` but (1) not an expression, (2) optional rval, (3) more limited lvals
@@ -10,11 +11,21 @@ export default class VariableDeclarator extends BaseNode {
     'BindingNode'
   ];
 
+  /**
+   * NOTE: Might return null, if variable has no initial value.
+   * 
+   * @returns {BaseNode}
+   */
+  getDeclarationNode() {
+    const [idNode] = this.getChildNodes();
+    return idNode;
+  }
+
 
   exit() {
     const { path, Traces } = this;
 
-    const [, initPath] = this.getChildPaths(true);
+    const [, initPath] = this.getChildPaths();
     const [idNode] = this.getChildNodes();
 
     // ddg: declaration
@@ -34,14 +45,15 @@ export default class VariableDeclarator extends BaseNode {
         type: TraceType.WriteVar
       },
       meta: {
-        instrument: Traces.instrumentTraceWrite,
+        // instrument: Traces.instrumentTraceWrite,
+        build: buildTraceWrite,
         replacePath: initPath
       }
     };
 
     Traces.addTraceWithInputs(writeTraceCfg, [initPath]);
 
-    // traces.addTraceWithInputs({ path: initPath, node: initNode, varNode: idNode, staticTraceData}, [initPath]);
+    // traces.addTraceWithInputs({ path: initPath, node: initNode, staticTraceData}, [initPath]);
   }
 
   // exit() {

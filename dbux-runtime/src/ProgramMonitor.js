@@ -140,20 +140,20 @@ export default class ProgramMonitor {
     this._runtimeMonitor.traceDeclaration(this.getProgramId(), tid);
   }
 
-  traceExpression = (value, tid, varTid, ...inputs) => {
+  traceExpression = (value, tid, varTid, inputs) => {
     if (this.areTracesDisabled) {
       return value;
     }
 
-    return this._runtimeMonitor.traceExpression(this.getProgramId(), value, tid, varTid, ...inputs);
+    return this._runtimeMonitor.traceExpression(this.getProgramId(), value, tid, varTid, inputs);
   }
 
-  traceWrite = (value, tid, varTid, ...inputs) => {
+  traceWrite = (value, tid, varTid, inputs, deferTid) => {
     if (this.areTracesDisabled) {
       return value;
     }
 
-    return this._runtimeMonitor.traceWrite(this.getProgramId(), value, tid, varTid, ...inputs);
+    return this._runtimeMonitor.traceWrite(this.getProgramId(), value, tid, varTid, inputs, deferTid);
   }
 
   // ###########################################################################

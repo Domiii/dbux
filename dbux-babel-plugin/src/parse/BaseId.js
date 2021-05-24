@@ -22,29 +22,20 @@ export default class BaseId extends BaseNode {
     return this._binding;
   }
 
-
-  getBinding() {
-    return this.binding;
-  }
-
-  getBindingIdPath() {
+  getDeclarationIdPath() {
     return this.binding?.path.get('id');
   }
 
   /**
    * @returns {BindingNode}
    */
-  getBindingIdNode() {
-    const bindingPath = this.getBindingIdPath();
+  getDeclarationNode() {
+    const bindingPath = this.getDeclarationIdPath();
     if (!bindingPath) {
       return null;
     }
     // this.debug(`[RId] bindingPath L${bindingPath.node.loc.start.line}: ${bindingPath.toString()}`);
     return bindingPath && this.getNodeOfPath(bindingPath) || null;
-  }
-
-  getDeclarationTidIdentifier() {
-    return this.getBindingIdNode()?.getTidIdentifier();
   }
 
   // ###########################################################################

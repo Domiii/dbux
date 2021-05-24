@@ -17,11 +17,11 @@ export class DataNodeCollection extends Collection {
   /**
    * @param {Trace} trace 
    */
-  createDataNodes(value, traceId, bindingTid, inputs) {
+  createDataNodes(value, traceId, declarationTid, inputs) {
     // const staticTrace = staticTraceCollection.getStaticTrace(trace.staticTraceId);
     // const { dataNode: staticDataNode } = staticTrace;
 
-    const dataNode = this.createDataNode(value, traceId, bindingTid, inputs);
+    const dataNode = this.createDataNode(value, traceId, declarationTid, inputs);
 
 
     // TODO: resolve deferred access
@@ -33,7 +33,7 @@ export class DataNodeCollection extends Collection {
 
 
   // NOTE: this currently only registers new objects and primitives
-  createDataNode(value, traceId, bindingTid, inputs) {
+  createDataNode(value, traceId, declarationTid, inputs) {
     const dataNode = pools.dataNodes.allocate();
 
     dataNode.nodeId = this._all.length;
@@ -50,7 +50,7 @@ export class DataNodeCollection extends Collection {
 
     dataNode.refId = valueRef?.refId || 0;
     dataNode.varAccess = {
-      varTid: bindingTid
+      varTid: declarationTid
     };
 
     this._send(dataNode);

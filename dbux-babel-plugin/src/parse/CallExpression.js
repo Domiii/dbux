@@ -1,4 +1,6 @@
 // import { instrumentCallExpressionEnter } from '../zz_archive/traceHelpers.old';
+import TraceType from '@dbux/common/src/core/constants/TraceType';
+import { buildTraceCallArgument } from '../instrumentation/builders/trace';
 import BaseNode from './BaseNode';
 
 // function wrapCallExpression(path, state) {
@@ -43,29 +45,50 @@ export default class CallExpression extends BaseNode {
   // }
 
   exit() {
-    // TODO: callId + resultCallId
+    const [calleePath, argumentPaths] = this.getChildPaths();
+    const [calleeNode, argumentNodes] = this.getChildNodes();
 
     const calleeTraceData = {
-      path,
-      node,
-      varNode,
+      path: calleePath,
+      node: calleeNode,
       staticTraceData: {
         type: TraceType.BeforeCallExpression
+      },
+      meta: {
+        traceCall: 'traceCallee',
       }
     };
-    this.Traces.addTrace(calleeTraceData);
+    const calleeTrace = this.Traces.addTrace(calleeTraceData);
 
+    const calleeTidIdentifier = calleeTrace.tidIdentifier;
 
-    
-    // TODO: get/instrument/manage bcePath
-    // const bcePathId = callPath.getData('_bcePathId');
-    // const bcePath = bcePathId && callPath.parentPath.get(bcePathId) || null;
+    for (let i = 0; i < argumentPaths.length; ++i) {
+      const argPath = argumentPaths[i];
+      const argNode = argumentNodes[i];
+      this.Traces.addTrace({
+        path: argPath,
+        node: argNode,
+        staticTraceData: {
+          type: TraceType.BeforeCallExpression
+        },
+        meta: {
+          traceCall: 'traceCallArgument',
+          moreTraceCallArgs: [calleeTidIdentifier]
+        }
+      });
+    }
 
-    // TODO: set argument.callId = beforeCallTraceId
-
-    // TODO: set callId + resultCallId
-    // // _callId = cfg?.callId || type === TraceType.BeforeCallExpression && _traceId;
-    // // _resultCallId = cfg?.resultCallId;
+    this.Traces.addTrace({
+      path: this.path,
+      node: this,
+      staticTraceData: {
+        type: TraceType.CallExpressionResult
+      },
+      meta: {
+        traceCall: 'traceCallResult',
+        moreTraceCallArgs: [calleeTidIdentifier]
+      }
+    });
   }
 
   instrument() {

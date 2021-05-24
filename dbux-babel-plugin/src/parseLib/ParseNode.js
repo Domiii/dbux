@@ -101,7 +101,12 @@ export default class ParseNode {
   // children utilities
   // ###########################################################################
 
-  getChildPaths(addEmpty = false) {
+  /**
+   * Gets all child paths. 
+   * NOTE: You can choose to ommit optional missing children, but optional children are rare.
+   * @param {boolean} addEmpty Whether to include optional missing paths (e.g. VariableDeclarator.init)
+   */
+  getChildPaths(addEmpty = true) {
     const { children } = this.constructor;
     if (!children) {
       throw new Error(`Could not getChildPaths - missing \`static children\` in ${this}.`);

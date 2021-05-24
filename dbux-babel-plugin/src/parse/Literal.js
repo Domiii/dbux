@@ -9,7 +9,6 @@ export default class Literal extends BaseNode {
     return {
       node: this,
       path,
-      varNode: null,
       staticTraceData: {
         type: TraceType.ExpressionValue,
         dataNode: {

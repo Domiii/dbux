@@ -57,7 +57,7 @@ export default class Function extends ParsePlugin {
   // ###########################################################################
 
   enter() {
-    const { path, state } = this;
+    const { path, state } = this.node;
 
     const isGenerator = path.node.generator;
     const isAsync = path.node.async;
@@ -104,7 +104,7 @@ export default class Function extends ParsePlugin {
       staticResumeContextId = addResumeContext(bodyPath, state, staticContextId);
     }
 
-    return {
+    this.data = {
       staticContextId,
       pushTraceId,
       // recordParams,
@@ -113,7 +113,7 @@ export default class Function extends ParsePlugin {
   }
 
   exit() {
-    const { path, state } = this;
+    const { path, state } = this.node;
     const bodyPath = path.get('body');
     
     this.data.popTraceId = state.traces.addTrace(bodyPath, { type: TraceType.PopImmediate });
@@ -136,7 +136,7 @@ export default class Function extends ParsePlugin {
     //      -> maybe try instrumenting it if it is a simple string?
     //      -> consider bundling `@dbux/babel-plugin` and `@babel/register` with runtime in case of eval?
 
-    const { path, state } = this;
+    const { path, state } = this.node;
     const { ids: { dbux }, contexts: { genContextIdName } } = state;
     const bodyPath = path.get('body');
     const contextIdVar = genContextIdName(bodyPath);
@@ -199,6 +199,6 @@ export default class Function extends ParsePlugin {
     // bodyPath.context.create(bodyNode, bodyNode, 'xx')
     bodyPath.replaceWith(newBody);
 
-    // TODO: get access to `bindingTids`
+    // TODO: get access to `declarationTids`
   }
 }
