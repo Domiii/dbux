@@ -55,7 +55,7 @@ export default class ProgramMonitor {
   // context management
   // ###########################################################################
 
-  pushImmediate(inProgramStaticContextId, traceId, isInterruptable) {
+  pushImmediate = (inProgramStaticContextId, traceId, isInterruptable) => {
     if (this.disabled) {
       return 0;
     }
@@ -64,7 +64,7 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.pushImmediate(this.getProgramId(), inProgramStaticContextId, traceId, isInterruptable, tracesDisabled);
   }
 
-  popImmediate(contextId, traceId) {
+  popImmediate = (contextId, traceId) => {
     if (this.disabled) {
       return undefined;
     }
@@ -72,7 +72,7 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.popImmediate(contextId, traceId);
   }
 
-  popFunction(contextId, traceId) {
+  popFunction = (contextId, traceId) => {
     if (this.disabled) {
       return undefined;
     }
@@ -80,7 +80,7 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.popFunction(contextId, traceId);
   }
 
-  popProgram() {
+  popProgram = () => {
     // finished initializing the program
     return this.popImmediate(this._programContextId, ProgramStopTraceId);
   }
@@ -95,7 +95,7 @@ export default class ProgramMonitor {
   //     inProgramStaticContextId, schedulerId, traceId, cb);
   // }
 
-  preAwait(inProgramStaticContextId, traceId) {
+  preAwait = (inProgramStaticContextId, traceId) => {
     if (this.disabled) {
       // TODO: calling asynchronous methods when disabled hints at non-pure getters and will most likely cause trouble :(
       this._logger.error(`Encountered await in disabled call #${traceId} (NOTE: dbux does not play well with impure getters, especially if tey  call asynchronous code)`);
@@ -104,20 +104,20 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.preAwait(this.getProgramId(), inProgramStaticContextId, traceId);
   }
 
-  wrapAwait(awaitContextId, awaitValue) {
+  wrapAwait = (awaitContextId, awaitValue) => {
     // nothing to do
     return this._runtimeMonitor.wrapAwait(this.getProgramId(), awaitContextId, awaitValue);
   }
 
-  postAwait(awaitResult, awaitContextId, resumeTraceId) {
+  postAwait = (awaitResult, awaitContextId, resumeTraceId) => {
     return this._runtimeMonitor.postAwait(this.getProgramId(), awaitResult, awaitContextId, resumeTraceId);
   }
 
-  pushResume(resumeStaticContextId, inProgramStaticTraceId) {
+  pushResume = (resumeStaticContextId, inProgramStaticTraceId) => {
     return this._runtimeMonitor.pushResume(this.getProgramId(), resumeStaticContextId, inProgramStaticTraceId, true);
   }
 
-  popResume(resumeContextId) {
+  popResume = (resumeContextId) => {
     return this._runtimeMonitor.popResume(resumeContextId);
   }
 

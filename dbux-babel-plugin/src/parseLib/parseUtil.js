@@ -26,5 +26,5 @@ function getSingleNodeOfPath(path) {
 
 export function setNodeOfPath(path, node) {
   path.setData(DbuxNodeId, node);
-  // debug(`setNodeOfPath ${path}`, Object.keys(path.data));
+  debug(`setNodeOfPath ${path.node.type} <-`, node.toString());
 }

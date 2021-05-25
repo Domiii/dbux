@@ -30,32 +30,6 @@ export default class StaticContext extends ParsePlugin {
   bindingTraces = [];
 
   /**
-   * @param {BindingIdentifier} id
-   */
-  addDeclaration(id) {
-    const { binding } = id;
-    this.declaredBindings.push(binding);
-
-    this.Verbose && this.debug(`DECL ${id}`);
-
-    // TODO: fix order of insertion, to match order of `staticTraceId`. binding nodes are the only ones out of order.
-
-    // this.bindingTraces.push({
-    
-    // TODO: add `declarationTraces` to their corresponding block/scope instead
-    id.bindingTrace = this.node.Traces.addDeclarationTrace({
-      path: id.path,
-      node: id,
-      staticTraceData: {
-        type: TraceType.Declaration
-      },
-      meta: {
-        instrument: this.node.Traces.instrumentTraceDeclaration
-      }
-    });
-  }
-
-  /**
    * @param {BaseId} id
    */
   addReferencedBinding(id) {

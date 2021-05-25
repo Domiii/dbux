@@ -13,15 +13,12 @@ import ParsePlugin from '../../parseLib/ParsePlugin';
 // builders + templates
 // ###########################################################################
 
-function buildPushImmediate(contextId, dbux, staticId, traceId, isInterruptable) {
-  // TODO: use @babel/template instead
-  return buildSource(`var ${contextId} = ${dbux}.pushImmediate(${staticId}, ${traceId}, ${isInterruptable});`);
-}
+// TODO: `isInterruptable` should be in `staticContext`, not dynamically recorded
+const pushImmediateTemplate = template(
+  'var %%contextId%% = %%pushImmediate%%(%%staticContextId%%, %%tid%%, %%isInterruptable%%);'
+);
 
-function buildPopFunction(contextIdVar, dbux, traceId) {
-  // TODO: use @babel/template instead
-  return buildSource(`${dbux}.popFunction(${contextIdVar}, ${traceId});`);
-}
+const popFunctionTemplate = template('%%popFunction%%(%%contextId%%, %%tid%%);');
 
 const pushResumeTemplate = template(
   /*var %%resumeContextId%% =*/
@@ -57,6 +54,7 @@ export default class Function extends ParsePlugin {
   // ###########################################################################
 
   enter() {
+    // TODO: move `push` and `pop`s to their corresponding correct phases
     const { path, state } = this.node;
 
     const isGenerator = path.node.generator;
@@ -77,7 +75,7 @@ export default class Function extends ParsePlugin {
       isInterruptable
     };
     const staticContextId = state.contexts.addStaticContext(path, staticContextData);
-    const pushTraceId = state.traces.addTrace(bodyPath, { type: TraceType.PushImmediate });
+    const pushTrace = state.traces.addTrace(bodyPath, { type: TraceType.PushImmediate });
 
     // // add varAccess
     // const ownerId = staticContextId;
@@ -106,7 +104,7 @@ export default class Function extends ParsePlugin {
 
     this.data = {
       staticContextId,
-      pushTraceId,
+      pushTraceId: pushTrace.tidIdentifier,
       // recordParams,
       staticResumeContextId
     };
@@ -115,8 +113,8 @@ export default class Function extends ParsePlugin {
   exit() {
     const { path, state } = this.node;
     const bodyPath = path.get('body');
-    
-    this.data.popTraceId = state.traces.addTrace(bodyPath, { type: TraceType.PopImmediate });
+
+    this.data.popTrace = state.traces.addTrace(bodyPath, { type: TraceType.PopImmediate });
   }
 
 
@@ -129,7 +127,7 @@ export default class Function extends ParsePlugin {
    */
   instrument() {
     const {
-      staticContextId, pushTraceId, popTraceId, recordParams, staticResumeContextId
+      staticContextId, pushTraceId, popTrace, recordParams, staticResumeContextId
     } = this.data;
 
     // TODO: warn of eval
@@ -137,12 +135,37 @@ export default class Function extends ParsePlugin {
     //      -> consider bundling `@dbux/babel-plugin` and `@babel/register` with runtime in case of eval?
 
     const { path, state } = this.node;
-    const { ids: { dbux }, contexts: { genContextIdName } } = state;
+    const {
+      ids: {
+        dbux,
+        aliases: {
+          pushImmediate,
+          popFunction
+        }
+      },
+      contexts: { genContextId }
+    } = state;
     const bodyPath = path.get('body');
-    const contextIdVar = genContextIdName(bodyPath);
+    const contextId = genContextId(bodyPath);
 
-    let pushes = buildPushImmediate(contextIdVar, dbux, staticContextId, pushTraceId, !!staticResumeContextId);
-    let pops = buildPopFunction(contextIdVar, dbux, popTraceId);
+    let pushes = [
+      pushImmediateTemplate({
+        contextId,
+        pushImmediate,
+        staticContextId: t.numericLiteral(staticContextId),
+        tid: pushTraceId,
+        isInterruptable: t.booleanLiteral(!!staticResumeContextId)
+      })
+    ];
+
+    let pops = [
+      popFunctionTemplate({
+        popFunction,
+        contextId,
+        tid: popTrace.tidIdentifier
+      })
+    ];
+
     if (staticResumeContextId) {
       // this is an interruptable function -> push + pop "resume contexts"
       // const resumeContextId = bodyPath.scope.generateUid('resumeContextId');

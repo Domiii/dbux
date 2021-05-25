@@ -11,7 +11,7 @@ import BaseNode from './BaseNode';
 // Builders
 // ###########################################################################
 
-function buildProgramInit(path, { ids, contexts: { genContextIdName } }) {
+function buildProgramInit(path, { ids, contexts: { genContextId } }) {
   const {
     dbuxInit,
     // dbuxRuntime,
@@ -19,23 +19,25 @@ function buildProgramInit(path, { ids, contexts: { genContextIdName } }) {
     aliases
   } = ids;
 
-  const contextIdName = genContextIdName(path);
+  const contextId = genContextId(path);
 
   // see https://babeljs.io/docs/en/babel-types#program
   // const { sourceType } = path.node;
   // console.log(path.fileName, sourceType);
 
-  return buildSource(`
-  var ${dbux} = ${dbuxInit}(typeof __dbux__ !== 'undefined' || require('@dbux/runtime'));
-  var ${contextIdName} = ${dbux}.getProgramContextId();
-  ${Object.entries(aliases)
-    .map(([dbuxProp, varName]) => `var ${varName} = ${dbux}.${dbuxProp}`)
-    .join('; ')}
-  `);
+  // TODO: use template instead
+  return buildSource([
+    `var ${dbux.name} = ${dbuxInit.name}(typeof __dbux__ !== 'undefined' || require('@dbux/runtime'));`,
+    `var ${contextId.name} = ${dbux.name}.getProgramContextId();`,
+    `var ${Object.entries(aliases)
+      .map(([dbuxProp, varName]) => `${varName.name} = ${dbux.name}.${dbuxProp}`)
+      .join(', ')};`
+  ].join('\n'));
 }
 
 function buildPopProgram(dbux) {
-  return buildSource(`${dbux}.popProgram();`);
+  // TODO: use template instead
+  return buildSource(`${dbux.name}.popProgram();`);
 }
 
 function addDbuxInitDeclaration(path, state) {
@@ -89,7 +91,7 @@ export default class Program extends BaseNode {
       fileName,
       filePath,
     };
-    
+
     /**
      * NOTE: push/pop context and traces is hardcoded into `ProgramMonitor`
      * Look for: `Program{Start,Stop}TraceId`

@@ -61,21 +61,23 @@ export default function injectDbuxState(programPath, programState) {
     loops: new StaticLoopCollection(programState),
 
     ids: {
-      dbuxInit: scope.generateUid('dbux_init'),
-      dbuxRuntime: scope.generateUid('dbuxRuntime'),
+      dbuxInit: scope.generateUidIdentifier('dbux_init'),
+      dbuxRuntime: scope.generateUidIdentifier('dbuxRuntime'),
 
       // NOTE: We might have multiple dbux programs in the same context (e.g. multiple <script> tags in same HTML file)
       //        So we want to add `iProgram` for unique flavor (which works if they are all instrumented by the same process).
-      dbux: scope.generateUid('dbux' + programUid),
+      dbux: scope.generateUidIdentifier('dbux' + programUid),
 
       aliases: {
-        newTraceId: scope.generateUid('tid' + programUid),
-        traceDeclaration: scope.generateUid('td' + programUid),
-        traceExpression: scope.generateUid('te' + programUid),
-        traceWrite: scope.generateUid('tw' + programUid),
-        traceCallee: scope.generateUid('tc' + programUid),
-        traceCallArgument: scope.generateUid('tca' + programUid),
-        traceCallResult: scope.generateUid('tcr' + programUid),
+        newTraceId: scope.generateUidIdentifier('tid' + programUid),
+        pushImmediate: scope.generateUidIdentifier('pI' + programUid),
+        popFunction: scope.generateUidIdentifier('pF' + programUid),
+        traceDeclaration: scope.generateUidIdentifier('td' + programUid),
+        traceExpression: scope.generateUidIdentifier('te' + programUid),
+        traceWrite: scope.generateUidIdentifier('tw' + programUid),
+        traceCallee: scope.generateUidIdentifier('tc' + programUid),
+        traceCallArgument: scope.generateUidIdentifier('tca' + programUid),
+        traceCallResult: scope.generateUidIdentifier('tcr' + programUid),
       }
     },
     // console.log('[Program]', state.filename);

@@ -65,25 +65,47 @@ export const buildTraceExpression = buildTraceCall(
   }
 );
 
+/**
+ * Same as `buildTraceExpression` but without declaration nor inputs.
+ */
+export const buildTraceExpressionSimple = buildTraceCall(
+  '%%trace%%(%%expr%%, %%tid%%)',
+  function buildTraceExpressionSimple(expressionNode, state, traceCfg) {
+    const { ids: { aliases } } = state;
+    const trace = aliases[traceCfg?.meta?.traceCall || 'traceExpression'];
+    if (!trace) {
+      throw new Error(`Invalid meta.traceCall "${traceCfg.meta.traceCall}" - Valid choices are: ${Object.keys(aliases).join(', ')}`);
+    }
+
+    const tid = buildTraceId(state, traceCfg);
+    // Verbose && debug(`[te] ${expressionNode.type} [${inputTraces?.map(i => i.tidIdentifier.name).join(',') || ''}]`, getPresentableString(expressionNode));
+    // NOTE: templates only work on `Node`, not on `NodePath`, thus they lose all path-related information.
+
+    return {
+      trace,
+      expr: expressionNode,
+      tid
+    };
+  }
+);
+
 // ###########################################################################
 // traceDeclaration
 // ###########################################################################
 
 export function buildTraceDeclarations(state, traceCfgs) {
   const { ids: { aliases: {
-    newTraceId
-    // traceDeclarations
+    traceDeclaration
   } } } = state;
 
   // return [
-  return t.variableDeclaration('var', [
-    traceCfgs.map(({ tidIdentifier, inProgramStaticTraceId }) => t.variableDeclarator(
-      tidIdentifier,
-      t.callExpression(newTraceId, [
-        t.numericLiteral(inProgramStaticTraceId)
-      ])
-    ))
-  ]);
+  const decls = traceCfgs.map(({ tidIdentifier, inProgramStaticTraceId }) => t.variableDeclarator(
+    tidIdentifier,
+    t.callExpression(traceDeclaration, [
+      t.numericLiteral(inProgramStaticTraceId)
+    ])
+  ));
+  return t.variableDeclaration('var', decls);
   // t.callExpression(traceDeclarations, traceCfgs.map())
   // ];
 }

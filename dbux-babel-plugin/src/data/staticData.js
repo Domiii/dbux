@@ -46,7 +46,7 @@ export function buildDbuxInit(state) {
 
   // Verbose && console.time(`[Dbux] babel write (AST)`);
   const result = buildSource(`
-function ${dbuxInit}(dbuxRuntime) {
+function ${dbuxInit.name}(dbuxRuntime) {
   return dbuxRuntime.initProgram(${staticDataString}, ${runtimeCfgString});
 }`);
   // Verbose && console.timeEnd(`[Dbux] babel write (AST)`);
