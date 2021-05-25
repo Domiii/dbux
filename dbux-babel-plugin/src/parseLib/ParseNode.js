@@ -5,6 +5,7 @@ import { getPresentableString } from '../helpers/pathHelpers';
 import ParseRegistry from './ParseRegistry';
 import { getChildPaths, getNodeOfPath } from './parseUtil';
 import ParsePhase from './ParsePhase';
+import NestedError from '@dbux/common/src/NestedError';
 
 /** @typedef { import("@babel/traverse").NodePath } NodePath */
 /** @typedef { import("./ParseStack").default } ParseStack */
@@ -121,7 +122,7 @@ export default class ParseNode {
   }
 
   getChildNodes() {
-    if (this.phase < ParsePhase.Exit) {
+    if (this.phase < ParsePhase.Exit1) {
       throw new Error(`Cannot getChildNodes before Exit or Instrument phases - ${this} (${ParsePhase.nameFromForce(this.phase)})`);
     }
     // NOTE: cache _childNodes
@@ -235,7 +236,12 @@ export default class ParseNode {
 
       if (!predicate || predicate()) {
         // add plugin
-        this.addPlugin(ParseRegistry.getPluginClassByName(name));
+        try {
+          this.addPlugin(ParseRegistry.getPluginClassByName(name));
+        }
+        catch (err) {
+          throw new NestedError(`Failed to addPlugin "${name}" to node "${this}"`, err);
+        }
       }
     }
 

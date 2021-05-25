@@ -10,10 +10,18 @@ export default class AssignmentExpression extends BaseNode {
   static children = ['left', 'right'];
   static plugins = [];
 
+  /**
+   * @returns {BaseNode}
+   */
+  getDeclarationNode() {
+    const [leftNode] = this.getChildNodes();
+    return leftNode.getDeclarationNode();
+  }
+
   exit() {
     const { path, Traces } = this;
 
-    const [leftNode, rightNode] = this.getChildNodes();
+    const [, rightNode] = this.getChildNodes();
 
     // TODO: WriteME
 

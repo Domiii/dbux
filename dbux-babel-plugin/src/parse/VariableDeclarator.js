@@ -12,8 +12,6 @@ export default class VariableDeclarator extends BaseNode {
   ];
 
   /**
-   * NOTE: Might return null, if variable has no initial value.
-   * 
    * @returns {BaseNode}
    */
   getDeclarationNode() {
@@ -25,23 +23,30 @@ export default class VariableDeclarator extends BaseNode {
 
   }
 
+  exit1() {
+    this.getDeclarationNode().addOwnDeclarationTrace();
+  }
 
   exit() {
     const { path, Traces } = this;
 
     const [, initPath] = this.getChildPaths();
-    const [idNode] = this.getChildNodes();
+    // const [idNode] = this.getChildNodes();
 
     if (!initPath.node) {
       // nothing to write
       return;
     }
 
+    // TODO: "write trace" must double as "declaration trace", if id.getBindingScope()'s body is below/behind declaration
+    //      -> especially important in `for` statements
+    //      -> don't `addOwnDeclarationTrace`
+    //      -> TraceType of "write trace" must reflect the double usage
+
     // ddg: write
     const writeTraceCfg = {
       path,
       node: this,
-      varNode: idNode,
       staticTraceData: {
         type: TraceType.WriteVar
       },

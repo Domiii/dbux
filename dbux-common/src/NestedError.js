@@ -15,7 +15,7 @@ class NestedError extends Error {
       this.message = message;
     }
 
-    this.name = null;
+    this.name = 'NestedError';
     this.nested = nestedErr;
 
     Error.captureStackTrace(this, this.constructor);

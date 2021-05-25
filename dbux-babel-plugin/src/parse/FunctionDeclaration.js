@@ -1,4 +1,3 @@
-
 import BaseNode from './BaseNode';
 
 export default class FunctionDeclaration extends BaseNode {
@@ -9,6 +8,11 @@ export default class FunctionDeclaration extends BaseNode {
     'StaticContext',
     'BindingNode'
   ];
+
+  exit1() {
+    const [idNode] = this.getChildNodes();
+    idNode.addOwnDeclarationTrace();
+  }
 
   // enter() {
   //   // const { path, Traces } = this;

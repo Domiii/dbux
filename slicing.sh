@@ -5,7 +5,7 @@
 set -e # cancel on error
 # set -x # verbose echo mode
 
-fname="calls0"
+fname="for1"
 nodeArgs="--enable-source-maps "
 
 dbuxCmd="$1"

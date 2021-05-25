@@ -77,26 +77,6 @@ export default class Function extends ParsePlugin {
     const staticContextId = state.contexts.addStaticContext(path, staticContextData);
     const pushTrace = state.traces.addTrace(bodyPath, { type: TraceType.PushImmediate });
 
-    // // add varAccess
-    // const ownerId = staticContextId;
-
-    // TODO: also trace `this`?
-    // state.varAccess.addVarAccess(path, ownerId, VarOwnerType.Context, 'this', false);
-
-    // const params = path.get('params');
-    // const paramIds = params.map(param =>
-    //   // get all variable declarations in `param`
-    //   // see: https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/family.js#L215
-    //   // see: https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/lib/virtual-types.js
-    //   Object.values(param.getBindingIdentifierPaths())
-    // ).flat();
-    // let recordParams = paramIds.map(paramPath => {
-    //   state.varAccess.addVarAccess(
-    //     paramPath.node.name, paramPath, ownerId, VarOwnerType.Trace
-    //   );
-    //   return traceWrapExpressionStatement(TraceType.Parameter, paramPath, state);
-    // });
-
     let staticResumeContextId;
     if (isInterruptable) {
       staticResumeContextId = addResumeContext(bodyPath, state, staticContextId);
@@ -108,6 +88,19 @@ export default class Function extends ParsePlugin {
       // recordParams,
       staticResumeContextId
     };
+  }
+
+  exit1() {
+    // TODO: add parameter declarations
+    
+    // const params = path.get('params');
+    // const paramIds = params.map(param =>
+    //   // get all variable declarations in `param`
+    //   // see: https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/family.js#L215
+    //   // see: https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/lib/virtual-types.js
+    //   Object.values(param.getBindingIdentifierPaths())
+    // ).flat();
+    // this.getDeclarationNode().addOwnDeclarationTrace();
   }
 
   exit() {
@@ -222,7 +215,5 @@ export default class Function extends ParsePlugin {
     newBody.loc = origBodyNode.loc;
     // bodyPath.context.create(bodyNode, bodyNode, 'xx')
     bodyPath.replaceWith(newBody);
-
-    // TODO: get access to `declarationTids`
   }
 }

@@ -6,6 +6,9 @@ import BinaryExpression from './BinaryExpression';
 import BindingIdentifier from './BindingIdentifier';
 import Block from './Block';
 import CallExpression from './CallExpression';
+import ForInStatement from './ForInStatement';
+import ForOfStatement from './ForOfStatement';
+import ForStatement from './ForStatement';
 import FunctionDeclaration from './FunctionDeclaration';
 import FunctionExpression from './FunctionExpression';
 import Literal from './Literal';
@@ -19,6 +22,7 @@ import ReturnStatement from './ReturnStatement';
 import SequenceExpression from './SequenceExpression';
 import UnaryExpression from './UnaryExpression';
 import VariableDeclarator from './VariableDeclarator';
+import WhileStatement from './WhileStatement';
 
 function init(Clazz) {
   Clazz.logger = newLogger(`parse/${Clazz.name}`);
@@ -30,6 +34,9 @@ init(BinaryExpression);
 init(BindingIdentifier);
 init(Block);
 init(CallExpression);
+init(ForInStatement);
+init(ForOfStatement);
+init(ForStatement);
 init(FunctionDeclaration);
 init(FunctionExpression);
 init(Literal);
@@ -43,6 +50,7 @@ init(ReturnStatement);
 init(SequenceExpression);
 init(UnaryExpression);
 init(VariableDeclarator);
+init(WhileStatement);
 
 export {
   ArrowFunctionExpression,
@@ -52,6 +60,9 @@ export {
   BindingIdentifier,
   Block,
   CallExpression,
+  ForInStatement,
+  ForOfStatement,
+  ForStatement,
   FunctionDeclaration,
   FunctionExpression,
   Literal,
@@ -64,5 +75,6 @@ export {
   ReturnStatement,
   SequenceExpression,
   UnaryExpression,
-  VariableDeclarator
+  VariableDeclarator,
+  WhileStatement
 };

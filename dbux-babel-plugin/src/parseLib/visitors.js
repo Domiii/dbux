@@ -121,11 +121,25 @@ function logInst(tag, path, direction = null, ParserNodeClazz, ...other) {
 // buildVisitors
 // ###########################################################################
 
+/**
+ * hackfix: JS has no reliable way to determine whether something is a `class`
+ * 
+ * @see https://stackoverflow.com/a/30760236
+ */
+function isClassGuess(v) {
+  return typeof v === 'function' && /^\s*class\s+/.test(v.toString());
+}
+
 export function buildVisitors() {
   const visitors = {};
   const { ParseNodeClassesByName } = ParseRegistry;
   for (const name in ParseNodeClassesByName) {
     const ParserNodeClazz = ParseNodeClassesByName[name];
+    
+    if (!isClassGuess(ParserNodeClazz)) {
+      throw new Error(`ParserNode clazz is not a class: ${name} - ${ParserNodeClazz}`);
+    }
+
     visitors[name] = {
       enter(path, state) {
         // if (path.getData()) {

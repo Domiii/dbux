@@ -1,8 +1,3 @@
-// import { Binding } from '@babel/traverse';
-import * as t from '@babel/types';
-// import TraceType from '@dbux/common/src/core/constants/TraceType';
-import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
-import TraceType from '@dbux/common/src/core/constants/TraceType';
 import { getPresentableString } from '../helpers/pathHelpers';
 import BaseId from './BaseId';
 
@@ -27,7 +22,7 @@ export default class BindingIdentifier extends BaseId {
   /**
    * Based on `@babel/traverse/lib/scope/index.js` -> `collectVisitor`
    */
-  _getScope() {
+  getBindingScope() {
     const { path } = this.binding;
     if (path.isBlockScoped()) {
       let { scope } = path;
@@ -51,9 +46,19 @@ export default class BindingIdentifier extends BaseId {
     return path.scope;
   }
 
-  exit1() {
+  addOwnDeclarationTrace() {
+    if (!this.binding?.path.node.id) {
+      // TODO: there can be other types of declarations, that don't have an `id` prop
+      throw new Error(`Assertion failed - node binding did not have "id" child node ` +
+      `"${getPresentableString(this.binding?.path)}" in "${getPresentableString(this.path.parentPath)}"`);
+    }
+
+    if (this.binding?.path.node.id !== this.path.node) {
+      return;
+    }
+
     // const scopePath = this.binding.path.scope.path;
-    const scopePath = this._getScope().path;
+    const scopePath = this.getBindingScope().path;
     const bindingScopeNode = this.stack.getNodeOfPath(scopePath);
     if (!bindingScopeNode || !bindingScopeNode.Traces) {
       throw new Error(`BindingIdentifier's scope did not have a scope: ${getPresentableString(scopePath)}`);
