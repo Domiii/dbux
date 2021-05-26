@@ -129,7 +129,7 @@ export default class EslintProject extends Project {
     // start webpack using latest node (long-time support)
     // make sure we have Dbux dependencies ready (since linkage might be screwed up in dev+install mode)
     const req = `-r "${this.manager.getDbuxPath('@dbux/cli/dist/linkOwnDependencies.js')}"`;
-    const args = `--config ./dbux.webpack.config.js --watch --env entry=${bug.testFilePaths.join(',')}`;
+    const args = `--config ./dbux.webpack.config.js --env entry=${bug.testFilePaths.join(',')}`;
     
     // weird bug - sometimes it just will keep saying "volta not found"... gotta hate system configuration problems...
     const volta = 'volta'; //'/Users/domi/.volta/bin/volta'; // 'volta';
@@ -138,6 +138,7 @@ export default class EslintProject extends Project {
     // await this.execBackground(`echo $PATH`);
     
     return this.execBackground(
+      // TODO: use `WebpackBuilder` instead
       `"${volta}" run --node 12 node ${req} "${this.getWebpackJs()}" ${args}`
     );
   }

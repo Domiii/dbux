@@ -135,6 +135,10 @@ export default class Project {
     return this.manager.runner;
   }
 
+  get sharedRoot() {
+    return this.dependencyRoot;
+  }
+
   get projectsRoot() {
     return this.manager.config.projectsRoot;
   }
@@ -164,8 +168,8 @@ export default class Project {
     return `git --git-dir=${this.hiddenGitFolderPath}`;
   }
 
-  getDependencyPath(relativePath) {
-    return path.resolve(this.dependencyRoot, 'node_modules', relativePath);
+  getSharedDependencyPath(relativePath = '.') {
+    return pathResolve(this.sharedRoot, 'node_modules', relativePath);
   }
 
   getNodeVersion(bug) {
@@ -329,7 +333,7 @@ This may be solved by using \`Delete project folder\` button.`);
   }
 
   // ###########################################################################
-  // utilities
+  // exec
   // ###########################################################################
 
   execInTerminal = async (command, options) => {
@@ -354,21 +358,6 @@ This may be solved by using \`Delete project folder\` button.`);
       throw new Error(`Process failed with exit code ${code} (${processExecMsg})`);
     }
     return 0;
-  }
-
-  async installPackages(s, force = true) {
-    // TODO: yarn workspaces causes trouble for `yarn add`.
-    //        Might need to use a hack, where we manually insert it into `package.json` and then run yarn install.
-    // TODO: let user choose, or just prefer yarn by default?
-
-    if (isObject(s)) {
-      s = Object.entries(s).map(([name, version]) => `${name}@${version}`).join(' ');
-    }
-
-    const cmd = this.preferredPackageManager === 'yarn' ?
-      'yarn add --dev' :
-      `npm install -D ${force && '--force'}`;
-    return this.execInTerminal(`${cmd} ${s}`);
   }
 
   exec = async (command, options, input) => {
@@ -428,6 +417,34 @@ This may be solved by using \`Delete project folder\` button.`);
         }
       });
     return process;
+  }
+
+  // ###########################################################################
+  // more file + package utilities
+  // ###########################################################################
+
+  async installPackages(s, shared = true/* , force = true */) {
+    // TODO: let user choose, or just prefer yarn by default?
+
+    if (isObject(s)) {
+      s = Object.entries(s).map(([name, version]) => `${name}@${version}`).join(' ');
+    }
+
+    // NOTE: somehow Node module resolution algorithm skips a directory, that is `projectsRoot`
+    //       -> That is why we choose `dependencyRoot` instead
+
+    const cwd = shared ? this.sharedRoot : this.projectPath;
+
+    if (!sh.test('-f', path.join(cwd, 'package.json'))) {
+      await this.exec('npm init -y', { cwd });
+    }
+
+    // TODO: make sure, `shared` does not override existing dependencies
+
+    const cmd = this.preferredPackageManager === 'yarn' ?
+      `yarn add ${shared && (process.env.NODE_ENV === 'development') ? '-W --dev' : ''}` :
+      `npm install -D`;
+    return this.execInTerminal(`${cmd} ${s}`, { cwd });
   }
 
   /**
