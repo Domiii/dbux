@@ -217,7 +217,7 @@ class TraceCollection extends Collection {
   postAddRaw(traces) {
     // build dynamic call expression tree
     errorWrapMethod(this, 'resolveCodeChunks', traces);
-    errorWrapMethod(this, 'resolveCallIds', traces);
+    // errorWrapMethod(this, 'resolveCallIds', traces);
     errorWrapMethod(this, 'resolveErrorTraces', traces);
   }
 
@@ -279,78 +279,78 @@ class TraceCollection extends Collection {
   //   return false;
   // }
 
-  /**
-   * TODO: This will not work with asynchronous call expressions (which have `await` arguments).
-   * @param {Trace[]} traces
-   */
-  resolveCallIds(traces) {
-    const beforeCalls = [];
-    for (const trace of traces) {
-      const { traceId, staticTraceId } = trace;
-      const staticTrace = this.dp.collections.staticTraces.getById(staticTraceId);
-      const traceType = this.dp.util.getTraceType(traceId);
-      if (isBeforeCallExpression(traceType)) {
-        trace.callId = trace.traceId;  // refers to its own call
-        beforeCalls.push(trace);
-        // debug('[callIds]', ' '.repeat(beforeCalls.length - 1), '>', trace.traceId, staticTrace.displayName);
-      }
-      else if (isCallExpressionTrace(staticTrace)) {
-        // NOTE: `isTraceExpression` to filter out Push/PopCallback
-        if (isCallResult(staticTrace)) {
-          // call results: reference their call by `resultCallId` and vice versa by `resultId`
-          // NOTE: upon seeing a result, we need to pop *before* handling its potential role as argument
-          let beforeCall = beforeCalls.pop();
-          // debug('[callIds]', ' '.repeat(beforeCalls.length), '<', beforeCall.traceId, `(${staticTrace.displayName} [${TraceType.nameFrom(this.dp.util.getTraceType(traceId))}])`);
-          if (staticTrace.resultCallId !== beforeCall?.staticTraceId) {
-            // maybe something did not get popped. Let's look for it directly!
-            const idx = findLastIndex(beforeCalls, bce => bce.staticTraceId === staticTrace.resultCallId);
-            if (idx >= 0) {
-              // it's on the stack - just take it (and also push the wrong one back)
-              beforeCalls.push(beforeCall);
-              beforeCall = beforeCalls[idx];
-              beforeCalls.splice(idx, 1);
-            }
-            else {
-              // it's just not there...
-              beforeCalls.push(beforeCall);   // something is wrong -> push it back
+  // /**
+  //  * TODO: This will not work with asynchronous call expressions (which have `await` arguments).
+  //  * @param {Trace[]} traces
+  //  */
+  // resolveCallIds(traces) {
+  //   const beforeCalls = [];
+  //   for (const trace of traces) {
+  //     const { traceId, staticTraceId } = trace;
+  //     const staticTrace = this.dp.collections.staticTraces.getById(staticTraceId);
+  //     const traceType = this.dp.util.getTraceType(traceId);
+  //     if (isBeforeCallExpression(traceType)) {
+  //       trace.callId = trace.traceId;  // refers to its own call
+  //       beforeCalls.push(trace);
+  //       // debug('[callIds]', ' '.repeat(beforeCalls.length - 1), '>', trace.traceId, staticTrace.displayName);
+  //     }
+  //     else if (isCallExpressionTrace(staticTrace)) {
+  //       // NOTE: `isTraceExpression` to filter out Push/PopCallback
+  //       if (isCallResult(staticTrace)) {
+  //         // call results: reference their call by `resultCallId` and vice versa by `resultId`
+  //         // NOTE: upon seeing a result, we need to pop *before* handling its potential role as argument
+  //         let beforeCall = beforeCalls.pop();
+  //         // debug('[callIds]', ' '.repeat(beforeCalls.length), '<', beforeCall.traceId, `(${staticTrace.displayName} [${TraceType.nameFrom(this.dp.util.getTraceType(traceId))}])`);
+  //         if (staticTrace.resultCallId !== beforeCall?.staticTraceId) {
+  //           // maybe something did not get popped. Let's look for it directly!
+  //           const idx = findLastIndex(beforeCalls, bce => bce.staticTraceId === staticTrace.resultCallId);
+  //           if (idx >= 0) {
+  //             // it's on the stack - just take it (and also push the wrong one back)
+  //             beforeCalls.push(beforeCall);
+  //             beforeCall = beforeCalls[idx];
+  //             beforeCalls.splice(idx, 1);
+  //           }
+  //           else {
+  //             // it's just not there...
+  //             beforeCalls.push(beforeCall);   // something is wrong -> push it back
 
-              // log error
-              this.logCallResolveError(traceId, staticTrace, beforeCall, beforeCalls);
+  //             // log error
+  //             this.logCallResolveError(traceId, staticTrace, beforeCall, beforeCalls);
 
-              // unset beforeCall
-              beforeCall = null;
-            }
-          }
-          else if (!beforeCall) {
-            // log error
-            this.logCallResolveError(traceId, staticTrace, beforeCall, beforeCalls);
-          }
+  //             // unset beforeCall
+  //             beforeCall = null;
+  //           }
+  //         }
+  //         else if (!beforeCall) {
+  //           // log error
+  //           this.logCallResolveError(traceId, staticTrace, beforeCall, beforeCalls);
+  //         }
 
-          if (beforeCall) {
-            // all good!
-            beforeCall.resultId = traceId;
-            trace.resultCallId = beforeCall.traceId;
-          }
-        }
-        if (hasCallId(staticTrace)) {
-          // call args: reference their call by `callId`
-          const beforeCall = beforeCalls[beforeCalls.length - 1];
-          if (staticTrace.callId !== beforeCall?.staticTraceId) {
-            // if (!this.checkLogInconsistentTrace(trace, staticTrace)) 
-            // {
-            // eslint-disable-next-line max-len
-            logError(`[${this.dp.util.getTraceProgramPath(traceId)}] [callId missing] beforeCall.callId !== staticTrace.staticTraceId - ${this.makeTraceInfo(beforeCall)} !== ${this.makeTraceInfo(trace)}`, '- is trace participating in a CallExpression-tree? [', staticTrace.displayName, `][${JSON.stringify(staticTrace.loc)}]. Stack staticTraces: ${beforeCalls.map(t =>
-              this.makeStaticTraceInfo(t.staticTraceId)
-            )}`);
-            // }
-          }
-          else {
-            trace.callId = beforeCall.traceId;
-          }
-        }
-      }
-    }
-  }
+  //         if (beforeCall) {
+  //           // all good!
+  //           beforeCall.resultId = traceId;
+  //           trace.resultCallId = beforeCall.traceId;
+  //         }
+  //       }
+  //       if (hasCallId(staticTrace)) {
+  //         // call args: reference their call by `callId`
+  //         const beforeCall = beforeCalls[beforeCalls.length - 1];
+  //         if (staticTrace.callId !== beforeCall?.staticTraceId) {
+  //           // if (!this.checkLogInconsistentTrace(trace, staticTrace)) 
+  //           // {
+  //           // eslint-disable-next-line max-len
+  //           logError(`[${this.dp.util.getTraceProgramPath(traceId)}] [callId missing] beforeCall.callId !== staticTrace.staticTraceId - ${this.makeTraceInfo(beforeCall)} !== ${this.makeTraceInfo(trace)}`, '- is trace participating in a CallExpression-tree? [', staticTrace.displayName, `][${JSON.stringify(staticTrace.loc)}]. Stack staticTraces: ${beforeCalls.map(t =>
+  //             this.makeStaticTraceInfo(t.staticTraceId)
+  //           )}`);
+  //           // }
+  //         }
+  //         else {
+  //           trace.callId = beforeCall.traceId;
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
   resolveErrorTraces(traces) {
     for (const trace of traces) {

@@ -164,20 +164,20 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceCallee(this.getProgramId(), value, tid, declarationTid);
   }
 
-  traceCallArgument = (value, tid, declarationTid) => {
+  traceCallArgument = (value, tid, declarationTid, callTid) => {
     if (this.areTracesDisabled) {
       return value;
     }
 
-    return this._runtimeMonitor.traceCallArgument(this.getProgramId(), value, tid, declarationTid);
+    return this._runtimeMonitor.traceCallArgument(this.getProgramId(), value, tid, declarationTid, callTid);
   }
 
-  traceCallResult = (value) => {
+  traceCallResult = (value, callTid) => {
     if (this.areTracesDisabled) {
       return value;
     }
 
-    return this._runtimeMonitor.traceCallResult(this.getProgramId(), value);
+    return this._runtimeMonitor.traceCallResult(this.getProgramId(), value, callTid);
   }
 
   // ###########################################################################

@@ -378,7 +378,7 @@ export default class RuntimeMonitor {
   }
 
   logFail(msg) {
-    this.logError(new Error(msg).stack);
+    logError(new Error(msg).stack);
   }
 
   // ###########################################################################
@@ -494,11 +494,11 @@ export default class RuntimeMonitor {
     return this.traceExpression(programId, value, tid, declarationTid);
   }
 
-  traceCallArgument(programId, value, tid, declarationTid) {
+  traceCallArgument(programId, value, tid, declarationTid, callTid) {
     return this.traceExpression(programId, value, tid, declarationTid);
   }
 
-  traceCallResult(programId, value, tid) {
+  traceCallResult(programId, value, tid, callTid) {
     return this.traceExpression(programId, value, tid, 0);
   }
 
