@@ -9,7 +9,7 @@ const ProgramStartTraceId = 1;
 /**
  * Comes from the order we execute things in programVisitor
  */
-const ProgramStopTraceId = 2;
+const ProgramEndTraceId = 2;
 
 /**
  * In Babel-lingo, a "Program" is one *.js file.
@@ -55,13 +55,19 @@ export default class ProgramMonitor {
   // context management
   // ###########################################################################
 
-  pushImmediate = (inProgramStaticContextId, tid, isInterruptable) => {
+  pushImmediate = (inProgramStaticContextId, inProgramStaticTraceId, isInterruptable) => {
     if (this.disabled) {
       return 0;
     }
 
     const tracesDisabled = this.areTracesDisabled;
-    return this._runtimeMonitor.pushImmediate(this.getProgramId(), inProgramStaticContextId, tid, isInterruptable, tracesDisabled);
+    return this._runtimeMonitor.pushImmediate(
+      this.getProgramId(), 
+      inProgramStaticContextId,
+      inProgramStaticTraceId,
+      isInterruptable,
+      tracesDisabled
+    );
   }
 
   popImmediate = (contextId, traceId) => {
@@ -82,7 +88,7 @@ export default class ProgramMonitor {
 
   popProgram = () => {
     // finished initializing the program
-    return this.popImmediate(this._programContextId, ProgramStopTraceId);
+    return this.popImmediate(this._programContextId, ProgramEndTraceId);
   }
 
   // ###########################################################################

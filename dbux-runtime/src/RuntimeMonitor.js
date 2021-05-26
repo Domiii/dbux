@@ -123,8 +123,9 @@ export default class RuntimeMonitor {
     const { contextId } = context;
     this._runtime.push(contextId, isInterruptable);
 
-    // trace
-    this._trace(programId, contextId, runId, inProgramStaticTraceId);
+    this.newTraceId(programId, inProgramStaticTraceId);
+
+    // this._trace(programId, contextId, runId, inProgramStaticTraceId);
 
     return contextId;
   }
@@ -139,7 +140,7 @@ export default class RuntimeMonitor {
     // TODO
   }
 
-  popImmediate(contextId, inProgramStaticTraceId) {
+  popImmediate(contextId, traceId) {
     // sanity checks
     const context = executionContextCollection.getById(contextId);
     if (!context) {
@@ -163,7 +164,14 @@ export default class RuntimeMonitor {
       );
     }
 
-    this._trace(programId, contextId, runId, inProgramStaticTraceId, null, true);
+    // finishTrace
+    const trace = traceCollection.getById(traceId);
+    trace.contextId = contextId;
+    trace.runId = runId;
+    this._onTrace(contextId, trace, true);
+    trace.previousTrace = this._runtime.getLastTraceInContext(contextId);
+
+    // this._trace(programId, contextId, runId, inProgramStaticTraceId, null, true);
   }
 
   _pop(contextId) {

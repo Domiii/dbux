@@ -7,7 +7,23 @@ import { getNodeNames } from '../../visitors/nameVisitors';
 
 import { doesNodeEndScope } from '../../helpers/astUtil';
 import ParsePlugin from '../../parseLib/ParsePlugin';
+import { buildTraceId } from '../../instrumentation/builders/trace';
 
+
+function addContextTrace(bodyPath, state, type) {
+  const { scope } = bodyPath;
+  const inProgramStaticTraceId = state.traces.addTrace(
+    bodyPath,
+    {
+      type
+    }
+  );
+  const tidIdentifier = scope.generateUidIdentifier(`t${inProgramStaticTraceId}_`);
+  return {
+    inProgramStaticTraceId,
+    tidIdentifier
+  };
+}
 
 // ###########################################################################
 // builders + templates
@@ -15,10 +31,12 @@ import ParsePlugin from '../../parseLib/ParsePlugin';
 
 // TODO: `isInterruptable` should be in `staticContext`, not dynamically recorded
 const pushImmediateTemplate = template(
-  'var %%contextId%% = %%pushImmediate%%(%%staticContextId%%, %%tid%%, %%isInterruptable%%);'
+  'var %%contextIdIdentifier%% = %%pushImmediate%%(%%staticContextId%%, %%inProgramStaticTraceId%%, %%isInterruptable%%);'
 );
 
-const popFunctionTemplate = template('%%popFunction%%(%%contextId%%, %%tid%%);');
+const popFunctionTemplate = template(
+  '%%popFunction%%(%%contextIdIdentifier%%, %%tid%%);'
+);
 
 const pushResumeTemplate = template(
   /*var %%resumeContextId%% =*/
@@ -74,17 +92,35 @@ export default class Function extends ParsePlugin {
       displayName,
       isInterruptable
     };
-    const staticContextId = state.contexts.addStaticContext(path, staticContextData);
-    const pushTrace = state.traces.addTrace(bodyPath, { type: TraceType.PushImmediate });
 
+    // TODO: use `const pushTrace = this.Traces.addTrace` instead
+    const staticContextId = state.contexts.addStaticContext(path, staticContextData);
+    // const pushTraceCfg = addContextTrace(bodyPath, state, TraceType.PushImmediate);
+    const staticPushTid = state.traces.addTrace(
+      bodyPath,
+      {
+        type: TraceType.PushImmediate
+      }
+    );
+
+    // contextIdIdentifier
+    const {
+      contexts: { genContextId }
+    } = state;
+    const contextIdIdentifier = genContextId(bodyPath);
+
+
+    // staticResumeContextId
     let staticResumeContextId;
     if (isInterruptable) {
       staticResumeContextId = addResumeContext(bodyPath, state, staticContextId);
     }
 
     this.data = {
+      contextIdIdentifier,
       staticContextId,
-      pushTraceId: pushTrace.tidIdentifier,
+      staticPushTid,
+      // pushTraceCfg,
       // recordParams,
       staticResumeContextId
     };
@@ -92,7 +128,7 @@ export default class Function extends ParsePlugin {
 
   exit1() {
     // TODO: add parameter declarations
-    
+
     // const params = path.get('params');
     // const paramIds = params.map(param =>
     //   // get all variable declarations in `param`
@@ -104,10 +140,21 @@ export default class Function extends ParsePlugin {
   }
 
   exit() {
-    const { path, state } = this.node;
+    const { path } = this.node;
     const bodyPath = path.get('body');
 
-    this.data.popTrace = state.traces.addTrace(bodyPath, { type: TraceType.PopImmediate });
+    // NOTE: `finalizeInstrument` will trigger with the final `pop` trace, and then does everything
+    // this.data.popTrace = state.traces.addTrace(bodyPath, { type: TraceType.PopImmediate });
+    // this.data.popTraceCfg = addContextTrace(bodyPath, state, TraceType.PopImmediate);
+    this.data.popTraceCfg = this.node.Traces.addTrace({
+      path: bodyPath,
+      staticTraceData: {
+        type: TraceType.PopImmediate
+      },
+      meta: {
+        instrument: this.finalizeInstrument
+      }
+    });
   }
 
 
@@ -115,12 +162,55 @@ export default class Function extends ParsePlugin {
   // instrument
   // ###########################################################################
 
+  buildPush = () => {
+    const {
+      contextIdIdentifier, staticContextId, staticPushTid, staticResumeContextId
+    } = this.data;
+    const { state } = this.node;
+    const {
+      ids: {
+        aliases: {
+          pushImmediate
+        }
+      }
+    } = state;
+    return pushImmediateTemplate({
+      contextIdIdentifier,
+      pushImmediate,
+      staticContextId: t.numericLiteral(staticContextId),
+      inProgramStaticTraceId: t.numericLiteral(staticPushTid),
+      isInterruptable: t.booleanLiteral(!!staticResumeContextId)
+    });
+  }
+
+  buildPop = () => {
+    const {
+      contextIdIdentifier, popTraceCfg
+    } = this.data;
+    const { state } = this.node;
+    const {
+      ids: {
+        aliases: {
+          popFunction
+        }
+      }
+    } = state;
+
+    const tid = buildTraceId(state, popTraceCfg);
+
+    return popFunctionTemplate({
+      popFunction,
+      contextIdIdentifier,
+      tid
+    });
+  }
+
   /**
    * Instrument all Functions to keep track of all (possibly async) execution stacks.
    */
-  instrument() {
+  finalizeInstrument = () => {
     const {
-      staticContextId, pushTraceId, popTrace, recordParams, staticResumeContextId
+      staticResumeContextId
     } = this.data;
 
     // TODO: warn of eval
@@ -128,67 +218,47 @@ export default class Function extends ParsePlugin {
     //      -> consider bundling `@dbux/babel-plugin` and `@babel/register` with runtime in case of eval?
 
     const { path, state } = this.node;
-    const {
-      ids: {
-        dbux,
-        aliases: {
-          pushImmediate,
-          popFunction
-        }
-      },
-      contexts: { genContextId }
-    } = state;
     const bodyPath = path.get('body');
-    const contextId = genContextId(bodyPath);
 
-    // TODO: change tid to become a `newTraceId` call
+    // NOTE: `pushImmediate` also records the `trace` for us.
 
     let pushes = [
-      pushImmediateTemplate({
-        contextId,
-        pushImmediate,
-        staticContextId: t.numericLiteral(staticContextId),
-        tid: pushTraceId,
-        isInterruptable: t.booleanLiteral(!!staticResumeContextId)
-      })
+      this.buildPush()
     ];
 
     let pops = [
-      popFunctionTemplate({
-        popFunction,
-        contextId,
-        tid: popTrace.tidIdentifier
-      })
+      this.buildPop()
     ];
 
     if (staticResumeContextId) {
       // this is an interruptable function -> push + pop "resume contexts"
       // const resumeContextId = bodyPath.scope.generateUid('resumeContextId');
-      pushes = [
-        ...pushes,
-        pushResumeTemplate({
-          dbux,
-          // resumeContextId,
-          resumeStaticContextId: t.numericLiteral(staticResumeContextId),
-          traceId: t.numericLiteral(pushTraceId)
-        })
-      ];
+      throw new Error(`TODO: Fix async functions`);
+      // pushes = [
+      //   ...pushes,
+      //   pushResumeTemplate({
+      //     dbux,
+      //     // resumeContextId,
+      //     resumeStaticContextId: t.numericLiteral(staticResumeContextId),
+      //     traceId: t.numericLiteral(staticPushTraceId)
+      //   })
+      // ];
 
-      pops = [
-        popResumeTemplate({
-          dbux,
-          // resumeContextId,
-          // traceId: t.numericLiteral(popTraceId)
-          // contextId: contextIdVar
-        }),
-        ...pops
-      ];
+      // pops = [
+      //   popResumeTemplate({
+      //     dbux,
+      //     // resumeContextId,
+      //     // traceId: t.numericLiteral(popTraceId)
+      //     // contextId: contextIdVar
+      //   }),
+      //   ...pops
+      // ];
     }
 
     const origBodyNode = bodyPath.node;
     let bodyNode = origBodyNode;
     if (!Array.isArray(origBodyNode) && !t.isStatement(origBodyNode)) {
-      // TODO: replace with functionPath.ensureBlock();
+      // TODO: replace with `functionPath.ensureBlock()`??
       // simple lambda expression -> convert to block lambda expression with return statement
       // NOTE: This enables us to add `try/finally`; also the return statement indicates `ContextEnd`.
       bodyNode = t.blockStatement([t.returnStatement(origBodyNode)]);

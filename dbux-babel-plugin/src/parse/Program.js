@@ -94,7 +94,8 @@ export default class Program extends BaseNode {
 
     /**
      * NOTE: push/pop context and traces is hardcoded into `ProgramMonitor`
-     * Look for: `Program{Start,Stop}TraceId`
+     *        -> Look for: `Program{Start,Stop}TraceId`
+     * TODO: make sure, final `PopImmediate` has the highest `staticTraceId` of the program instead
      */
     state.contexts.addStaticContext(path, staticProgramContext);
 

@@ -127,7 +127,7 @@ export default class Traces extends ParsePlugin {
     };
 
     if (!isDeclaration) {
-      node._setTraceData(traceData);
+      node?._setTraceData(traceData);
       this.traces.push(traceData);
     }
 
