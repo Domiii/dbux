@@ -69,7 +69,7 @@ export default class CallExpression extends BaseNode {
         path: argPath,
         node: argNode,
         staticTraceData: {
-          type: TraceType.BeforeCallExpression
+          type: TraceType.CallArgument
         },
         meta: {
           traceCall: 'traceCallArgument',

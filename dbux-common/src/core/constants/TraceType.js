@@ -17,14 +17,12 @@ let TraceType = {
   CallExpressionResult: 6,
   ExpressionResult: 7,
   ExpressionValue: 8,
-
-  // CallArgument: 9,
-  // CallbackArgument: 10,
-
+  
   Declaration: 11,
   WriteVar: 12,
   Identifier: 13,
   Literal: 14,
+  CallArgument: 15,
 
   PushCallback: 11,
   PopCallback: 12,
@@ -154,5 +152,9 @@ export function isTraceThrow(traceType) {
 // export function isPlainExpressionValue(traceType) {
 //   return TraceType.is.ExpressionValue(traceType);
 // }
+
+export function isPopTrace(traceType) {
+  return TraceType.is.PopImmediate(traceType);
+}
 
 export default TraceType;

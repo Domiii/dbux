@@ -1,6 +1,6 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
-import TraceType, { isBeforeCallExpression } from '@dbux/common/src/core/constants/TraceType';
+import TraceType, { isBeforeCallExpression, isPopTrace } from '@dbux/common/src/core/constants/TraceType';
 import staticProgramContextCollection from './data/staticProgramContextCollection';
 import executionContextCollection from './data/executionContextCollection';
 import staticContextCollection from './data/staticContextCollection';
@@ -164,12 +164,10 @@ export default class RuntimeMonitor {
       );
     }
 
-    // finishTrace
-    const trace = traceCollection.getById(traceId);
-    trace.contextId = contextId;
-    trace.runId = runId;
-    this._onTrace(contextId, trace, true);
-    trace.previousTrace = this._runtime.getLastTraceInContext(contextId);
+    // finishTrace (already done...)
+    // const trace = traceCollection.getById(traceId);
+    // this._onTrace(contextId, trace, true);
+    // trace.previousTrace = this._runtime.getLastTraceInContext(contextId);
 
     // this._trace(programId, contextId, runId, inProgramStaticTraceId, null, true);
   }
@@ -561,7 +559,7 @@ export default class RuntimeMonitor {
   //   return cb;
   // }
 
-  _trace(programId, contextId, runId, inProgramStaticTraceId, traceType = null, isPop = false) {
+  _trace(programId, contextId, runId, inProgramStaticTraceId, traceType = null) {
     const trace = traceCollection.trace(programId, contextId, runId, inProgramStaticTraceId, traceType);
 
     // if (Verbose > 1) {
@@ -573,22 +571,28 @@ export default class RuntimeMonitor {
     //   );
     // }
 
-    this._onTrace(contextId, trace, isPop);
-    if (isPop) {
+    const { staticTraceId } = trace;
+    const { type: staticTraceType } = staticTraceCollection.getById(staticTraceId);
+    this._onTrace(contextId, trace, staticTraceType);
+    if (isPopTrace(staticTraceType)) {
       trace.previousTrace = this._runtime.getLastTraceInContext(contextId);
     }
     return trace;
   }
 
-  _onTrace(contextId, trace, isPop = false) {
-    if (isPop) {
+  _onTrace(contextId, trace, staticTraceType = undefined) {
+    if (!staticTraceType) {
+      const { staticTraceId } = trace;
+      ({ type: staticTraceType } = staticTraceCollection.getById(staticTraceId));
+    }
+
+    if (isPopTrace(staticTraceType)) {
       // NOTE: we do not want to consider `pop`s as "last trace of a context"
       return;
     }
 
-    const { traceId, staticTraceId } = trace;
-    const { type: traceType } = staticTraceCollection.getById(staticTraceId);
-    if (isBeforeCallExpression(traceType)) {
+    const { traceId } = trace;
+    if (isBeforeCallExpression(staticTraceType)) {
       this._runtime.addBCEForContext(contextId, traceId);
     }
     this._runtime.setLastContextTrace(contextId, traceId);

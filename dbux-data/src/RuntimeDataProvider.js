@@ -373,7 +373,8 @@ class TraceCollection extends Collection {
 
       const staticContext = this.dp.util.getTraceStaticContext(traceId);
       if (staticContext.isInterruptable) {
-        // interruptable contexts only have `Push` and `Pop` traces, everything else (including error handling!) is in `Resume` children
+        // NOTE: interruptable contexts only have `Push` and `Pop` traces.
+        //    Everything else (including error handling!) is in `Resume` children.
         continue;
       }
 

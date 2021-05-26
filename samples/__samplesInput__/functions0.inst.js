@@ -32,6 +32,7 @@ try {
         _t5_
       );
       // throw new Error();
+      debugger;
       _dbux.t(13);
     } finally {
       _pF(_contextId, (_t9_ = _tid(9)));
@@ -116,22 +117,16 @@ function _dbux_init(dbuxRuntime) {
           type: 4,
         },
         {
-          displayName: "'f'",
-          loc: { start: { line: 2, column: 14 }, end: { line: 2, column: 17 } },
+          loc: { start: { line: 2, column: 17 }, end: { line: 2, column: 17 } },
           _traceId: 6,
           _staticContextId: 2,
-          type: 4,
+          type: 15,
         },
         {
-          displayName: "x",
-          loc: {
-            start: { line: 2, column: 19 },
-            end: { line: 2, column: 20 },
-            identifierName: "x",
-          },
+          loc: { start: { line: 2, column: 20 }, end: { line: 2, column: 20 } },
           _traceId: 7,
           _staticContextId: 2,
-          type: 4,
+          type: 15,
         },
         {
           displayName: "console.log('f', x)",
@@ -158,11 +153,10 @@ function _dbux_init(dbuxRuntime) {
           type: 4,
         },
         {
-          displayName: "1",
-          loc: { start: { line: 5, column: 2 }, end: { line: 5, column: 3 } },
+          loc: { start: { line: 5, column: 3 }, end: { line: 5, column: 3 } },
           _traceId: 11,
           _staticContextId: 1,
-          type: 4,
+          type: 15,
         },
         {
           displayName: "f(1)",
