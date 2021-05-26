@@ -134,7 +134,7 @@ export default class MemberExpression extends BaseNode {
      * ((o = a.b.c.d), o.x)
      *
      * 
-     * TODO: store `varTid`, `refTid` for `a`
+     * TODO: store `declarationTid`, `refTid` for `a`
      * TODO: store `memberPath`, `memberRefTid` for nested MEs (`a.b`, `b.c`, `c.d`, `o.x` (== `d.x`))
      */
   }

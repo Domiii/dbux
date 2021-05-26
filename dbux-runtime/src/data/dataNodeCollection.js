@@ -1,14 +1,16 @@
 import Trace from '@dbux/common/src/core/data/Trace';
+import { newLogger } from '@dbux/common/src/log/logger';
 import isObject from 'lodash/isObject';
 import Collection from './Collection';
 import pools from './pools';
 import staticTraceCollection from './staticTraceCollection';
 import valueCollection from './valueCollection';
 
+const { log, debug, warn, error: logError } = newLogger('DataNodes');
+
+const Verbose = 1;
 
 export class DataNodeCollection extends Collection {
-  lastRefId = 0;
-
   constructor() {
     super('dataNodes');
   }
@@ -49,9 +51,14 @@ export class DataNodeCollection extends Collection {
     const valueRef = valueCollection.registerValueMaybe(value, dataNode);
 
     dataNode.refId = valueRef?.refId || 0;
-    dataNode.varAccess = {
-      varTid: declarationTid
-    };
+    dataNode.varAccess = declarationTid > 0 ? {
+      declarationTid: declarationTid
+    } : null;
+
+    if (Verbose) {
+      const valueStr = dataNode.refId ? `refId=${dataNode.refId}` : `value=${value}`;
+      debug(`createDataNode #${dataNode.nodeId}, tid=${traceId}, declarationTid=${declarationTid}, ${valueStr}`);
+    }
 
     this._send(dataNode);
 

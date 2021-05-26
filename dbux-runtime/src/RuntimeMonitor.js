@@ -409,17 +409,17 @@ export default class RuntimeMonitor {
     return trace.traceId;
   }
 
-  traceDeclaration(programId, tid) {
+  traceDeclaration = (programId, inProgramStaticTraceId) => {
     if (!this._ensureExecuting()) {
-      return;
-    }
-    if (!tid) {
-      this.logFail(`traceExpression failed to capture tid`);
-      return;
+      return -1;
     }
 
+    const traceId = this.newTraceId(programId, inProgramStaticTraceId);
+
     // this.registerTrace(value, tid);
-    dataNodeCollection.createDataNodes(undefined, tid, tid);
+    dataNodeCollection.createDataNodes(undefined, traceId, traceId);
+
+    return traceId;
   }
 
   traceExpression(programId, value, tid, declarationTid, inputs) {
@@ -466,13 +466,13 @@ export default class RuntimeMonitor {
   //   }
   // }
 
-  // TODO: rename to traceWriteVar
   traceWrite(programId, value, tid, declarationTid, inputs, deferTid) {
     if (!this._ensureExecuting()) {
       return value;
     }
     if (!tid) {
-      this.logFail(`traceExpression failed to capture tid`);
+      // TODO: also trace ME
+      this.logFail(`traceWrite failed to capture tid`);
       return value;
     }
 
@@ -490,14 +490,26 @@ export default class RuntimeMonitor {
     return value;
   }
 
-  /**
-   * Called on the last node of a deferred chain, indicating that the sub-tree is complete.
-   * NOTE: Might not need this...
-   */
-  finishDataNode(tid) {
-    // const dataNode = getDataNode(tid);
-    // const children = getDataNodeChildren(tid);
+  traceCallee(programId, value, tid, declarationTid) {
+    return this.traceExpression(programId, value, tid, declarationTid);
   }
+
+  traceCallArgument(programId, value, tid, declarationTid) {
+    return this.traceExpression(programId, value, tid, declarationTid);
+  }
+
+  traceCallResult(programId, value, tid) {
+    return this.traceExpression(programId, value, tid, 0);
+  }
+
+  // /**
+  //  * Called on the last node of a deferred chain, indicating that the sub-tree is complete.
+  //  * NOTE: Might not need this...
+  //  */
+  // finishDataNode(tid) {
+  //   // const dataNode = getDataNode(tid);
+  //   // const children = getDataNodeChildren(tid);
+  // }
 
 
   deferredTids = new Map();

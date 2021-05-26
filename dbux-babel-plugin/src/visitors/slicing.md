@@ -1,35 +1,4 @@
-
-TODO
-1. capture full expression tree and dependency tree for all `traceId`s
-   * then pass dependency tree as argument to `traceWrite`
-2. produce all rules to build `targetPathId` for any LVal
-   * PROBLEM: sometimes, we cannot build it at the time of `DataNode` creation (e.g. `{Array,Object}Expression`)
-3. Determine all reads and writes
-4. Instrument all missing babel-types
-5. Capture effects of built-ins
-   * TODO: `event` objects need some tracking
-     * at least track `event.target`
-   * TODO: Determine whether a given function is instrumented or not
-   * TODO: Annotate built-ins with value-creating effects?
-     * Some simple generalizations:
-       * Check if return value of function is reference type, and reference was not recorded before
-   * TODO: Some basic DOM wrapper?
-     * event handlers need to track `event` objects
-6. New approach to visualization
-   * Call graph filtering: allow toggle showing `node_modules`?
-     * Also: Give `node_modules` nodes a more blant color
-7. `delete o[x]`
-
-
-5. Capture effects of built-in functions
- * NOTE: require monkey patching and/or proxies:
- * 
- * * Object (e.g. assign, defineProperty, getOwnPropertyDescriptor etc.)
- * * Array (e.g. copyWithin, map, entries, every etc.)
- * * any other built-in global object (Map, Set etc.): https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
- * 
- * => Can we automize this process for any function that we know is not instrumented?
- * => Seems possible: https://javascript.info/proxy#proxy-apply
+TODOs moved to: https://github.com/Domiii/dbux/issues/521
 
 
 # Relevant types
@@ -263,9 +232,6 @@ o[f('p')][f('q')].a
       * NOTE: should work as-is, thanks to `tid0`
       * `o[q[a][b].c][p[x][y[z]].w]`
 
-## 
-
-
 # Parser
 
 ## Concepts
@@ -281,77 +247,28 @@ o[f('p')][f('q')].a
 * `ParseStack`
 * generic data (mark `onEnter`):
   * `isLVal`
-* TODO: do we need to separate parsing from code generation into two separate passes?
-  * `parse`
-  * `gen`
 
+# Some Complex Parsing Examples
 
-# Runtime Data Structures
-
-## Examples
-
-
-
-## List
-
-* ```js
-  const TraceSliceType = new Enum({
-    
-  });
-  class TraceSliceInfo {
-    traceId,
-    inputRefs,
-    outputPath
-  }
-  class SliceReference {
-    path,
-    traceId,
-    type
-  }
-  ```
-
-
-## Other Parser notes....
-
-# Parsing Examples
-
-## Assignments
-
+## Object/array property assignments
 
 ```js
-// const d = a + b + c;
-
-// let dPath, dId, aId, bId, cId;
-const d = traceWrite(
-  [bId, cId, aId],
-  te(a, aId = traceId()) + 
-    (te(b, bId = traceId()) + te(c, cId = traceId())),
-  dId = traceId()
-);
-```
-
-```js
-// const o[a] = p[b].c + q.d[e];
-
-// let dPath, dId, aId, bId, cId;
-const d = traceWrite(
-  [bId, cId, aId],
-  te(a, aId = traceId()) + 
-    (te(b, bId = traceId()) + te(c, cId = traceId())),
-  dId = traceId()
-);
+// TODO: how to nest deferred writes? (e.g. `tOe -> tOe -> tAe` etc.)
+// traceExpression{Object,Array}
+(trace{O,A}E)(objOrArr, tid, deferTid, inputTids)
+  traceExpression(
+    { 
+      a: tw(1, %tid1%, %nid1%, %tid0%, []),
+      [b]: tw(f(), %tid2%, %nid2%, tid0, [])
+    },
+    %tid0%,
+    %declarationTid%,
+    [tid1, tid2, ...]
+  )
 ```
 
 
-## CallExpression
-
-
-### Object/array property assignments
-
-TODO
-
-
-### ClassProperty
+## ClassProperty
 
 NOTE: `ClassProperty` can observe some complex recursive behavior. E.g.:
 
@@ -403,40 +320,4 @@ class A {
 
 var a = new A();
 console.log(a.p1);
-```
-
-
-# @dbux/runtime
-
-## Runtime functions
-
-```js
-// NOTE: creates new `Trace` and returns the `traceId`
-function traceId(inProgramStaticTraceId) {
-  const trace = createTrace(inProgramStaticTraceId);
-  return trace.traceId;
-}
-
-// traceExpression(inProgramStaticTraceId, value, traceId);
-te(value, thisTraceId = traceId(inProgramStaticTraceId))
-
-tw(value, tid, deferTid, inputTids) // traceWrite
-ta = tw // traceAssignment
-
-// traceWriteMemberExpression
-twME(value, tid, deferTid, inputTids, pathTids)
-// 
-
-// TODO: how to nest deferred writes? (e.g. `tOe -> tOe -> tAe` etc.)
-// traceExpression{Object,Array}
-(trace{O,A}E)(objOrArr, tid, deferTid, inputTids)
-  traceExpression(
-    { 
-      a: tw(1, %tid1%, %nid1%, %tid0%, []),
-      [b]: tw(f(), %tid2%, %nid2%, tid0, [])
-    },
-    %tid0%,
-    %varTid%,
-    [tid1, tid2, ...]
-  )
 ```

@@ -1,4 +1,4 @@
-import { getPresentableString } from '../../helpers/pathHelpers';
+// import { getPresentableString } from '../../helpers/pathHelpers';
 import ParsePlugin from '../../parseLib/ParsePlugin';
 
 /**

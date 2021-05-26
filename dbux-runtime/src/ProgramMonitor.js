@@ -132,28 +132,52 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.newTraceId(this.getProgramId(), inProgramStaticTraceId);
   }
 
-  traceDeclaration = (tid) => {
+  traceDeclaration = (inProgramStaticTraceId) => {
     if (this.areTracesDisabled) {
-      return;
+      return -1;
     }
 
-    this._runtimeMonitor.traceDeclaration(this.getProgramId(), tid);
+    return this._runtimeMonitor.traceDeclaration(this.getProgramId(), inProgramStaticTraceId);
   }
 
-  traceExpression = (value, tid, varTid, inputs) => {
+  traceExpression = (value, tid, declarationTid, inputs) => {
     if (this.areTracesDisabled) {
       return value;
     }
 
-    return this._runtimeMonitor.traceExpression(this.getProgramId(), value, tid, varTid, inputs);
+    return this._runtimeMonitor.traceExpression(this.getProgramId(), value, tid, declarationTid, inputs);
   }
 
-  traceWrite = (value, tid, varTid, inputs, deferTid) => {
+  traceWrite = (value, tid, declarationTid, inputs, deferTid) => {
     if (this.areTracesDisabled) {
       return value;
     }
 
-    return this._runtimeMonitor.traceWrite(this.getProgramId(), value, tid, varTid, inputs, deferTid);
+    return this._runtimeMonitor.traceWrite(this.getProgramId(), value, tid, declarationTid, inputs, deferTid);
+  }
+
+  traceCallee = (value, tid, declarationTid) => {
+    if (this.areTracesDisabled) {
+      return value;
+    }
+
+    return this._runtimeMonitor.traceCallee(this.getProgramId(), value, tid, declarationTid);
+  }
+
+  traceCallArgument = (value, tid, declarationTid) => {
+    if (this.areTracesDisabled) {
+      return value;
+    }
+
+    return this._runtimeMonitor.traceCallArgument(this.getProgramId(), value, tid, declarationTid);
+  }
+
+  traceCallResult = (value) => {
+    if (this.areTracesDisabled) {
+      return value;
+    }
+
+    return this._runtimeMonitor.traceCallResult(this.getProgramId(), value);
   }
 
   // ###########################################################################

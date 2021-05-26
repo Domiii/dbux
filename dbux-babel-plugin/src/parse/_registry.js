@@ -6,6 +6,7 @@ import BinaryExpression from './BinaryExpression';
 import BindingIdentifier from './BindingIdentifier';
 import Block from './Block';
 import CallExpression from './CallExpression';
+import ClassDeclaration from './ClassDeclaration';
 import ForInStatement from './ForInStatement';
 import ForOfStatement from './ForOfStatement';
 import ForStatement from './ForStatement';
@@ -34,6 +35,7 @@ init(BinaryExpression);
 init(BindingIdentifier);
 init(Block);
 init(CallExpression);
+init(ClassDeclaration);
 init(ForInStatement);
 init(ForOfStatement);
 init(ForStatement);
@@ -60,6 +62,7 @@ export {
   BindingIdentifier,
   Block,
   CallExpression,
+  ClassDeclaration,
   ForInStatement,
   ForOfStatement,
   ForStatement,

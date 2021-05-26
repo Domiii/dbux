@@ -1,6 +1,7 @@
 import omit from 'lodash/omit';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { makeTreeItems } from '../../helpers/treeViewHelpers';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import ExecutionsTDNode from './ExecutionsTDNodes';
@@ -25,7 +26,7 @@ export class DebugTDNode extends TraceDetailNode {
   static makeLabel(/* trace, parent */) {
     return 'Debug';
   }
-  
+
   get collapseChangeUserActionType() {
     return UserActionType.TDDebugUse;
   }
@@ -60,12 +61,14 @@ export class DebugTDNode extends TraceDetailNode {
 
     const valueRef = valueId && dataProvider.collections.values.getById(valueId);
     const valueNode = [
-      'valueRef', 
+      'valueRef',
       valueRef,
-      { 
+      {
         description: (valueRef?.valueId + '') || 0
       }
     ];
+
+    const dataNodeCount = dataNodes?.length || 0;
 
     const children = [
       ...this.treeNodeProvider.buildDetailNodes(this.trace, this, [
@@ -74,7 +77,12 @@ export class DebugTDNode extends TraceDetailNode {
       ]),
       ...makeTreeItems(
         ['trace', otherTraceProps],
-        [`dataNode (${dataNodes?.length || 0})`, dataNodes?.[0]],
+        [`dataNodes[0]`, dataNodes?.[0]],
+        ...(
+          dataNodeCount > 1 ?
+            [[`other dataNodes (${dataNodeCount - 1})`, dataNodes.slice(1)]] :
+            EmptyArray
+        ),
         [`context`, context],
         ['staticTrace', omit(staticTrace, 'loc')],
         ['staticContext', omit(staticContext, 'loc')],

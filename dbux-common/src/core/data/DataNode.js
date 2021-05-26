@@ -11,7 +11,7 @@ export class VarAccessId {
    * Id of the trace of variable declaration/binding (or first recorded instance of variable).
    * Is `null` when accessing **nested** object member.
    */
-  varTid;
+  declarationTid;
 }
 
 /**
