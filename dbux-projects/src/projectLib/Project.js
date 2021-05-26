@@ -6,7 +6,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { getAllFilesInFolders, globRelative } from '@dbux/common-node/src/util/fileUtil';
-import { realPathSyncPosix } from '@dbux/common-node/src/util/pathUtil';
+import { pathResolve, realPathSyncPosix } from '@dbux/common-node/src/util/pathUtil';
 import isObject from 'lodash/isObject';
 import BugList from './BugList';
 import Process from '../util/Process';
@@ -176,10 +176,12 @@ export default class Project {
   // git stuff
   // ###########################################################################
 
-  maybeHideGitFolder() {
-    if (sh.test('-d', '.git')) {
+  async maybeHideGitFolder() {
+    if (!sh.test('-d', this.hiddenGitFolderPath)) {
       try {
         sh.mv('.git', this.hiddenGitFolderPath);
+        // here we init a new .git folder, no need to use `this.gitCommand`
+        await this.exec(`git init`);
       }
       catch (err) {
         this.logger.error(`Cannot hide .git folder for project ${this.name}`);
@@ -230,7 +232,6 @@ This may be solved by using \`Delete project folder\` button.`);
 
     // git clone
     await this.gitClone();
-    this.maybeHideGitFolder();
 
     // run hook
     await this.install();
@@ -549,7 +550,7 @@ This may be solved by using \`Delete project folder\` button.`);
   }
 
   doesProjectFolderExist() {
-    return sh.test('-d', path.join(this.projectPath, '.git')) || sh.test('-d', this.hiddenGitFolderPath);
+    return sh.test('-d', this.hiddenGitFolderPath);
   }
 
   async gitClone() {
@@ -575,6 +576,8 @@ This may be solved by using \`Delete project folder\` button.`);
       }
 
       sh.cd(projectPath);
+
+      await this.maybeHideGitFolder();
 
       // if given, switch to specific commit hash, branch or tag name
       // see: https://stackoverflow.com/questions/3489173/how-to-clone-git-repository-with-specific-revision-changeset
@@ -632,7 +635,7 @@ This may be solved by using \`Delete project folder\` button.`);
     // remove unwanted files
     let { projectPath, rmFiles } = this;
     if (rmFiles?.length) {
-      const absRmFiles = rmFiles.map(fName => path.resolve(projectPath, fName));
+      const absRmFiles = rmFiles.map(fName => pathResolve(projectPath, fName));
       const iErr = absRmFiles.findIndex(f => !f.startsWith(projectPath));
       if (iErr >= 0) {
         throw new Error('invalid entry in `rmFiles` is not in `projectPath`: ' + rmFiles[iErr]);

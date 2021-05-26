@@ -1,5 +1,6 @@
 import sh from 'shelljs';
 import fs from 'fs';
+import path from 'path';
 
 /**
  * Get command executable path
@@ -12,6 +13,10 @@ export function whichPosix(command) {
 
 export function realPathSyncPosix(fpath, options) {
   return pathNormalized(fs.realpathSync(fpath, options));
+}
+
+export function pathResolve(...paths) {
+  return pathNormalized(path.resolve(...paths));
 }
 
 export function pathNormalized(fpath) {
