@@ -55,13 +55,13 @@ export default class ProgramMonitor {
   // context management
   // ###########################################################################
 
-  pushImmediate = (inProgramStaticContextId, traceId, isInterruptable) => {
+  pushImmediate = (inProgramStaticContextId, tid, isInterruptable) => {
     if (this.disabled) {
       return 0;
     }
 
     const tracesDisabled = this.areTracesDisabled;
-    return this._runtimeMonitor.pushImmediate(this.getProgramId(), inProgramStaticContextId, traceId, isInterruptable, tracesDisabled);
+    return this._runtimeMonitor.pushImmediate(this.getProgramId(), inProgramStaticContextId, tid, isInterruptable, tracesDisabled);
   }
 
   popImmediate = (contextId, traceId) => {

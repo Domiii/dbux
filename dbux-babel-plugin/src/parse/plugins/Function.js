@@ -141,6 +141,8 @@ export default class Function extends ParsePlugin {
     const bodyPath = path.get('body');
     const contextId = genContextId(bodyPath);
 
+    // TODO: change tid to become a `newTraceId` call
+
     let pushes = [
       pushImmediateTemplate({
         contextId,
