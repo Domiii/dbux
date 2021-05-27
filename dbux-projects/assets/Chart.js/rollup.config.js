@@ -45,7 +45,11 @@ module.exports = [
         babelHelpers: 'inline',
         skipPreflightCheck: true, // WARNING: if not skipped, causes serious memory leak
         plugins: [
-          '@dbux/babel-plugin'
+          ['@dbux/babel-plugin', {
+            runtime: {
+              tracesDisabled: 1
+            }
+          }]
           // 'D:/code/dbux/dbux-babel-plugin'
         ],
         // exclude: 'node_modules/**',
@@ -77,7 +81,9 @@ module.exports = [
           }
         ]
       }),
-      resolve(),
+      resolve({
+        browser: true
+      }),
       // cleanup({
       // 	sourcemap: true
       // }),
@@ -87,7 +93,7 @@ module.exports = [
       name: 'Chart',
       file: 'dist/chart.min.js', // call it 'min' to make samples work (but it is not min!)
       banner,
-      format: 'umd',
+      format: 'iife',
       indent: false,
     },
   },

@@ -19,7 +19,7 @@ export default class RuntimeClient extends SocketClient {
   constructor(server, socket) {
     super(server, socket);
 
-    Verbose && debug('connected');
+    debug('connected');
 
     this.on('init', this._handleInit);
     this.on('data', this._handleData);
@@ -63,7 +63,6 @@ export default class RuntimeClient extends SocketClient {
       }
     }
 
-    debug('init');
     this.socket.emit('init_ack', this.application.applicationId);
   }
 
@@ -71,7 +70,7 @@ export default class RuntimeClient extends SocketClient {
     const str = Object.entries(data)
       .map(([name, entries]) => `${name}: ${entries.length}`)
       .join(', ');
-    debug(`data received - ${str}`);
+    debug(`data received - [${str}]`);
     this.application.addData(data);
   }
 }
