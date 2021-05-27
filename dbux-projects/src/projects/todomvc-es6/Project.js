@@ -216,7 +216,10 @@ export default class TodomvcEs6Project extends Project {
         ]
       },
 
-    ];
+    ].map(bug => {
+      bug.website = 'http://localhost:3842/';
+      return bug;
+    });
   }
 
   decorateBug(bug) {
