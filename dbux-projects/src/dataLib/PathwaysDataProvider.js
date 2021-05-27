@@ -46,7 +46,31 @@ class TestRunCollection extends Collection {
 class ApplicationCollection extends Collection {
   constructor(pdp) {
     super('applications', pdp);
-    this.deserializedCount = 0;
+  }
+
+  getApplicationFilePath(app) {
+    return path.join(this.dp.manager.externals.resources.getLogsDirectory(), `${app.uuid}.dbuxapp`);
+  }
+
+  /**
+   * @param {Array<Application>} applications 
+   */
+  postAddRaw(applications) {
+    for (const app of applications) {
+      const filePath = this.getApplicationFilePath(app);
+      const { version, collections } = app.dataProvider.serializeJson();
+      const header = JSON.stringify({ headerTag: true, version });
+      try {
+        fs.appendFileSync(filePath, `${header}\n${JSON.stringify(collections)}\n`, { flag: 'ax' });
+      }
+      catch (err) {
+        logError(`Cannot write header of application log file at ${filePath}`);
+      }
+      app.dataProvider.onAnyData(data => {
+        const { collections: serializedNewData } = app.dataProvider.serializeJson(Object.entries(data));
+        fs.appendFileSync(filePath, JSON.stringify(serializedNewData) + '\n');
+      });
+    }
   }
 
   /**
@@ -54,25 +78,36 @@ class ApplicationCollection extends Collection {
    * @return {Object} plain JS Object
    */
   serialize(application) {
-    const { entryPointPath, createdAt } = application;
+    const { entryPointPath, createdAt, uuid } = application;
     const relativeEntryPointPath = path.relative(this.dp.manager.config.projectsRoot, entryPointPath).replace(/\\/g, '/');
-    const serializedDpData = JSON.stringify(application.dataProvider.serializeJson());
     return {
       relativeEntryPointPath,
       createdAt,
-      uuid: application.uuid,
-      serializedDpData
+      uuid
     };
   }
 
   /**
-   * 
    * @param {PathwaysDataProvider} pdp 
    */
-  deserialize({ relativeEntryPointPath, createdAt, uuid, serializedDpData }) {
+  deserialize({ relativeEntryPointPath, createdAt, uuid }) {
     const entryPointPath = path.join(this.dp.manager.config.projectsRoot, relativeEntryPointPath);
     const app = allApplications.addApplication({ entryPointPath, createdAt, uuid });
-    app.dataProvider.deserializeJson(JSON.parse(serializedDpData));
+    const filePath = this.getApplicationFilePath(app);
+    try {
+      const fileString = fs.readFileSync(filePath, 'utf8');
+      const [header, ...lines] = fileString.split(/\r?\n/);
+      const { version } = JSON.parse(header);
+      for (const line of lines.filter(l => !!l)) {
+        app.dataProvider.deserializeJson({ version, collections: JSON.parse(line) });
+      }
+    }
+    catch (err) {
+      if (err.code === 'ENOENT') {
+        logError(`Cannot recover application: log file not found at ${filePath}`);
+      }
+      throw err;
+    }
     return app;
   }
 }
@@ -427,7 +462,6 @@ export default class PathwaysDataProvider extends DataProviderBase {
   /**
    * Load data from log file
    * NOTE: PDP uses a different way to save/load since we want to store data incrementally, which we cannot do with serialize/deserializeJSON
-   * @param {string} [logFilePath] 
    */
   load() {
     try {
@@ -466,11 +500,11 @@ export default class PathwaysDataProvider extends DataProviderBase {
     Object.entries(LogFileLoader).map(([name, func]) => [name, func.bind(this)])
   );
 
-  addData(allData, writeToLog = true) {
+  addData(allData, isRaw = true) {
     // TODO: remove this override, and do log writting by listener maybe?
-    super.addData(allData);
+    super.addData(allData, isRaw);
 
-    if (writeToLog) {
+    if (isRaw) {
       this.writeAll(allData);
     }
   }
@@ -481,11 +515,11 @@ export default class PathwaysDataProvider extends DataProviderBase {
       .join(', ');
     this.logger.debug(`writeAll - ${str}`);
     for (const collectionName in data) {
-      for (let entry of data[collectionName]) {  
+      for (let entry of data[collectionName]) {
         if (this.collections[collectionName].serialize) {
           entry = this.collections[collectionName].serialize(entry);
         }
-        this.writeOnData(collectionName, entry);
+        this.writeCollectionData(collectionName, entry);
       }
     }
   }
@@ -493,7 +527,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
   /**
    * @param {string} collectionName
    */
-  writeOnData(collectionName, data) {
+  writeCollectionData(collectionName, data) {
     fs.appendFileSync(this.session.logFilePath, `${JSON.stringify({ collectionName, data })}\n`, { flag: 'a' });
   }
 
@@ -507,7 +541,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
     const firstLine = await getFirstLine(filePath);
     const header = JSON.parse(firstLine);
     if (!header.headerTag) {
-      throw new Error('No header imformation in log file');
+      throw new Error('No header information in log file');
     }
     return header;
   }
