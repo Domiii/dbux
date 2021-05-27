@@ -263,7 +263,7 @@ class GraphRoot extends HostComponentEndpoint {
 
     while (!(currentNode = this.contextNodesByContext.get(currentContext))) {
       if (!currentContext) {
-        this.logger.warn(`RootContextNode does not exist, contextQueue=${contextQueue.map(x => x?.contextId)}`);
+        this.logger.error(`Cannot build context node: RootContextNode does not exist. contextQueue=[${contextQueue.map(x => x?.contextId)}]`);
         return null;
       }
       contextQueue.push(currentContext);
