@@ -1,4 +1,3 @@
-import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import { getPresentableString } from '../../helpers/pathHelpers';
 import ParsePlugin from '../../parseLib/ParsePlugin';
@@ -9,7 +8,7 @@ export default class ArithmeticExpression extends ParsePlugin {
   // exit
   // ###########################################################################
 
-  exit() {
+  addTraces() {
     // const [...inputs, inputPaths] = args; // NOTE: esnext does not allow this (yet)
     const { node } = this;
     const { path, Traces } = node;
@@ -22,11 +21,16 @@ export default class ArithmeticExpression extends ParsePlugin {
     const staticTraceData = {
       type: TraceType.ExpressionResult
     };
-    // const inputNodes = childNodes;
-
-    const traceData = { path, node, staticTraceData };
-
+    const traceData = { 
+      path,
+      node,
+      staticTraceData
+    };
     Traces.addTraceWithInputs(traceData, childPaths);
+  }
+
+  exit() {
+    this.addTraces();
   }
 
   // instrument() {
