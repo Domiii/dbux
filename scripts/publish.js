@@ -1,6 +1,12 @@
 /* eslint no-console: 0 */
 /* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
 
+// Examples:
+//
+// npm run pub -- n
+// npm run pub -- n minor
+//
+
 let chooseAlwaysNo = false;
 let chooseVersionBump;
 
@@ -249,8 +255,6 @@ function getBranchName() {
 async function main() {
   input = new LineReader();
   // console.log(process.argv);
-  // npm run publish -- n
-  // npm run publish -- n minor
   if (process.argv[2] === 'n') {
     chooseAlwaysNo = true;
     chooseVersionBump = process.argv[3] || 'patch';
