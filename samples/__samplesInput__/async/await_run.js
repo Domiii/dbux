@@ -13,7 +13,7 @@ async function f(x) {
 
 
 let waits = 0;
-waitOne().then(waitOne).then(waitOne).then(waitOne)
+// waitOne().then(waitOne).then(waitOne).then(waitOne)
 
 f(1);
 

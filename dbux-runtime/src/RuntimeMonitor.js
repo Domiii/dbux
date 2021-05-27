@@ -281,21 +281,7 @@ export default class RuntimeMonitor {
 
     // await part
     const currentRunId = this._runtime.getCurrentRunId();
-    // debug('here1', { awaitArgument }, awaitArgument instanceof Promise, this._runtime.isPromiseCreatedInRun(awaitArgument, currentRunId));
-    if (awaitArgument instanceof Promise && (!this._runtime.isPromiseRecorded(awaitArgument) || this._runtime.isPromiseCreatedInRun(awaitArgument, currentRunId))) {
-      const promise = awaitArgument;
-
-      // debug('here2');
-      const isFirstAwait = this._runtime.isFirstContextInParent(resumeContextId, parentContextId);
-      if (isFirstAwait) {
-        this._runtime.storeFirstAwaitPromise(currentRunId, parentContextId, awaitArgument);
-      } 
-
-      // debug('here3');
-      if (!isFirstAwait || this._runtime.isRootContext(parentContextId)) {
-        this._runtime.setOwnPromiseThreadId(promise, this._runtime.getRunThreadId(currentRunId));
-      }
-    }
+    this._runtime.thread1.preAwait(currentRunId, awaitArgument, resumeContextId, parentContextId);
 
     return awaitContextId;
   }
@@ -327,8 +313,11 @@ export default class RuntimeMonitor {
       const { resumeId: resumeStaticContextId } = staticContext;
       const resumeContextId = this.pushResume(programId, resumeStaticContextId, resumeInProgramStaticTraceId);
 
+      if (awaitArgument instanceof Promise) {
+        this._runtime.thread2.promiseAwaited(awaitArgument, this._runtime.getCurrentRunId());
+      }
+
       debug(awaitArgument, 'is awaited at context', awaitContextId);
-      if (awaitArgument instanceof Promise) debug('this argument thread', this._runtime.getPromiseThreadId(awaitArgument));
 
       const { parentContextId } = executionContextCollection.getById(resumeContextId);
       const preEventContext = this.beforeAwaitContext.get(parentContextId);
@@ -336,36 +325,7 @@ export default class RuntimeMonitor {
       const preEventRun = this.beforeAwaitRun.get(parentContextId);
       const postEventRun = this._runtime.getCurrentRunId();
 
-      if (this._runtime.getRunThreadId(postEventRun) === undefined) {
-        const startThreadId = this._runtime.getRunThreadId(preEventRun);
-
-        let edgeType = ''; // TODO change to enum
-
-        if (this._runtime.isFirstContextInParent(preEventContext)) {
-          const callerContextId = executionContextCollection.getById(preEventContext).contextId;
-          const callerPromise = this._runtime.getContextReturnValue(callerContextId); // get return value
-          const promiseThreadId = this._runtime.getPromiseThreadId(callerPromise);
-
-          // debug('caller promise', callerPromise);
-          // debug('promise thread id', promiseThreadId);
-
-          if (startThreadId === promiseThreadId) {
-            edgeType = 'CHAIN';
-          }
-          else {
-            edgeType = 'FORK';
-          }
-        }
-        else {
-          edgeType = 'CHAIN';
-        }
-
-        this._runtime.addEdge(this._runtime.getLastRunOfThread(startThreadId), postEventRun, edgeType);
-
-        // if (awaitArgument instanceof Promise) {
-        //   get all last run bruh;
-        // }
-      }
+      this._runtime.thread1.postAwait(parentContextId, preEventContext, postEventContext, preEventRun, postEventRun);
     }
 
 
@@ -495,25 +455,15 @@ export default class RuntimeMonitor {
     const trace = traceCollection.traceWithResultValue(programId, contextId, runId, inProgramStaticTraceId, overrideType, value);
     this._onTrace(contextId, trace);
 
-    // about await part
     if (!(value instanceof Promise)) {
-      // debug('instance is not promise');
       return value;
     }
 
-    const promiseRunId = this._runtime.getPromiseRunId(value);
-    if (promiseRunId && promiseRunId !== this._runtime.getCurrentRunId()) {
-      // debug('promise not create in this run');
-      return value;
-    }
     const calledContextId = this._runtime.getLastPoppedContextId();
-    const calledContextFirstPromise = this._runtime.getContextFirstAwaitPromise(calledContextId);
 
-    this._runtime.recordContextReturnValue(contextId, calledContextId, value);
+    this._runtime.thread1.traceCall(contextId, calledContextId, trace, value);
+    this._runtime.thread2.recordMaybeNewPromise(value, runId, contextId, calledContextId);
 
-    if (calledContextFirstPromise) {
-      this._runtime.storeAsyncCallPromise(this._runtime.getCurrentRunId(), calledContextId, trace.traceId, calledContextFirstPromise);
-    }
 
     return value;
   }
