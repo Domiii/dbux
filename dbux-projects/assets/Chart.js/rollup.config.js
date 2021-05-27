@@ -7,7 +7,7 @@ const json = require('@rollup/plugin-json');
 const { babel } = require('@rollup/plugin-babel');
 const serve = require('rollup-plugin-serve');
 const resolve = require('@rollup/plugin-node-resolve').default;
-const terser = require('rollup-plugin-terser').terser;
+// const terser = require('rollup-plugin-terser').terser;
 const pkg = require('./package.json');
 
 const input = 'src/index.js';

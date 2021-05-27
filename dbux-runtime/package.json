@@ -2,8 +2,9 @@
   "name": "@dbux/runtime",
   "version": "0.4.3-dev.0",
   "description": "",
-  "module": "dist/index.js",
-  "main": "dist/index.js",
+  "module": "dist/index-node.js",
+  "main": "dist/index-node.js",
+  "browser": "dist/index-web.js",
   "scripts": {
     "clean": "rm -rf dist",
     "build": "npm run clean && webpack --config config/webpack.config.js",
@@ -26,7 +27,7 @@
     "lodash": "4.17.19",
     "nanoevents": "^2.0.0",
     "serialize-javascript": "^5.0.1",
-    "socket.io-client": "2.3.0",
+    "socket.io-client": "^4",
     "ws": "7.3.1"
   },
   "_moduleAliases": {}

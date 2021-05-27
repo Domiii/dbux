@@ -99,9 +99,10 @@ export default class Client {
 
   _handleDisconnect = () => {
     Verbose && debug('disconnected');
-    this._connected = false;
-    this._ready = false;
-    this._socket = null;
+    // NOTE: socket io somehow stays "ready" after disconnect
+    // this._connected = false;
+    // this._ready = false;
+    // this._socket = null;
   }
 
   _handleError = (err) => {
@@ -197,7 +198,6 @@ export default class Client {
   // ###########################################################################
 
   _connect() {
-    // debugger;
     // TODO: add config port
     const port = DefaultPort;
     const Remote = `ws://localhost:${port}`;
@@ -207,6 +207,7 @@ export default class Client {
       // port: DefaultPort,
       transports: ['websocket']
     });
+    // Verbose && debug('connecting...');
 
     // on reconnection, reset the transports option
     // -> because the Websocket
