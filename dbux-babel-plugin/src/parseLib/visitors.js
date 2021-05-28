@@ -135,25 +135,28 @@ export function buildVisitors() {
   const { ParseNodeClassesByName } = ParseRegistry;
   for (const name in ParseNodeClassesByName) {
     const ParserNodeClazz = ParseNodeClassesByName[name];
-    
+
     if (!isClassGuess(ParserNodeClazz)) {
       throw new Error(`ParserNode clazz is not a class: ${name} - ${ParserNodeClazz}`);
     }
 
-    visitors[name] = {
-      enter(path, state) {
-        // if (path.getData()) {
-        //   visit(state.onTrace.bind(state), enterInstrumentors, path, state, visitorCfg)
-        // }
-        // builtInVisitors[name]?.enter?.(path, state);
-        visitEnter(ParserNodeClazz, path, state);
-      },
+    const names = ParserNodeClazz.visitors || [name];
+    for (const visitorName of names) {
+      visitors[visitorName] = {
+        enter(path, state) {
+          // if (path.getData()) {
+          //   visit(state.onTrace.bind(state), enterInstrumentors, path, state, visitorCfg)
+          // }
+          // builtInVisitors[name]?.enter?.(path, state);
+          visitEnter(ParserNodeClazz, path, state);
+        },
 
-      exit(path, state) {
-        visitExit(ParserNodeClazz, path, state);
-        // builtInVisitors[name]?.exit?.(path, state);
-      }
-    };
+        exit(path, state) {
+          visitExit(ParserNodeClazz, path, state);
+          // builtInVisitors[name]?.exit?.(path, state);
+        }
+      };
+    }
   }
   return visitors;
 }

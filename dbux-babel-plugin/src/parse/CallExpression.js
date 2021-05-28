@@ -21,6 +21,11 @@ import BaseNode from './BaseNode';
 // }
 
 export default class CallExpression extends BaseNode {
+  static visitors = [
+    `CallExpression`,
+    `OptionalCallExpression`,
+    `NewExpression`
+  ];
   static children = ['callee', 'arguments'];
 
   // enter() {

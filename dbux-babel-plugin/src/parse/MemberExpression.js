@@ -1,3 +1,4 @@
+import { NodePath } from '@babel/traverse';
 import BaseNode from './BaseNode';
 
 /**
@@ -15,57 +16,102 @@ import BaseNode from './BaseNode';
 
 /** @typedef {import('@babel/types/lib').Identifier} Identifier */
 
-export default class MemberExpression extends BaseNode {
+/**
+ * NOTE: only assignments can have ME LVals
+ */
+function isLValME(node) {
+  const { path: p } = node;
+  return p.parentPath.isAssignment() && p.node === p.parentPath.node.id;
+}
+
+class MemberElement {
   /**
-   * @example `o` in `o.a[x].b.c[y]`
-   * @type {Identifier}
+   * @type {NodePath}
    */
-  leftId;
-  template = [];
-  dynamicIndexes = [];
-  // staticNodes = [];
-  // dynamicNodes = [];
+  path;
+  /**
+   * @type {boolean}
+   */
+  computed;
 
-  // init() {
-  // }
+  /**
+   * @type {boolean}
+   */
+  optional;
 
+  constructor(path, computed, optional) {
+    this.path = path;
+    this.computed = computed;
+    this.optional = optional;
+  }
+}
 
-  // ###########################################################################
-  // enter
-  // ###########################################################################
+export default class MemberExpression extends BaseNode {
+  static visitors = [
+    'MemberExpression',
+    'OptionalMemberExpression'
+  ];
+  static children = ['object', 'property'];
+  static plugins = [
+    [isLValME, 'MELVal'],
+    [(node) => !isLValME(node), 'MERVal']
+  ];
 
+  /**
+   * Don't create separate MEs if nested.
+   */
   static shouldCreateOnEnter(path/* , state */) {
     return !path.parentPath.isMemberExpression() || path.node === path.parentPath.node.property;
   }
 
-  // enter() {
-  //   //   MemberProperty(propertyPath, state) {
-  //   //     const path = propertyPath.parentPath;
-  //   //     if (path.node.computed) {
-  //   //       return enterExpression(TraceType.ExpressionValue, propertyPath, state);
-  //   //     }
-  //   //     return null;
-  //   //   },
+  /**
+   * All `MemberElements` of MemberExpression chain left-to-right order.
+   * 
+   * @type {array<MemberElement>}
+   */
+  chain = [];
 
-  //   //   MemberObject(objPath, state) {
+  // ###########################################################################
+  // enter + exit
+  // ###########################################################################
+
+  exitNested(path) {
+    this._anyExit(path);
+  }
+
+  exit() {
+    this._anyExit(this.path);
+  }
+
+  _anyExit(path) {
+    if (!this.chain.length) {
+      // inner-most ME is exited first; has leftId
+      this.chain.push(
+        new MemberElement(path.get('object'), false, false)
+      );
+    }
+
+    // NOTE: property is required
+    const {
+      computed, optional
+    } = path.node;
+    this.chain.push(
+      new MemberElement(path.get('property'), computed, optional)
+    );
+  }
+
+  // enter() {
   //   //     if (objPath.isSuper()) {
   //   //       // Do nothing. We already take care of this via `instrumentMemberCallExpressionEnter`.
   //   //       // return traceBeforeSuper(objPath, state);
   //   //       return null;
   //   //     }
-  //   //     else {
-  //   //       // trace object (e.g. `x` in `x.y`) as-is
-  //   //       return enterExpression(TraceType.ExpressionValue, objPath, state, null, false);
-  //   //     }
-  //   //   },
   // }
 
 
   // ###########################################################################
   // exit
   // ###########################################################################
-
-  static children = ['object', 'property'];
 
   // exit() {
   //   //   MemberProperty(propertyPath, state) {

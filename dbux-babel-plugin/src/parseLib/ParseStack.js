@@ -220,7 +220,7 @@ export default class ParseStack {
 
     if (parseNode._nestedEnterCount) {
       --parseNode._nestedEnterCount;
-      this.nodePhase(ParsePhase.Exit1, parseNode, parseNode.exit1Nested);
+      this.nodePhase(ParsePhase.Exit1, parseNode, parseNode.exitNested);
     }
     else {
       this.nodePhase(ParsePhase.Exit1, parseNode, parseNode.exit1Plugins, parseNode.exit1);

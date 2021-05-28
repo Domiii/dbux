@@ -234,7 +234,7 @@ export default class ParseNode {
 
       // this.debug(this.nodeTypeName, `[initPlugins] add`, name, !predicate || predicate());
 
-      if (!predicate || predicate()) {
+      if (!predicate || predicate(this)) {
         // add plugin
         try {
           this.addPlugin(ParseRegistry.getPluginClassByName(name));
