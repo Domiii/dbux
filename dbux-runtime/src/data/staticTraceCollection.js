@@ -30,7 +30,7 @@ class StaticTraceCollection extends Collection {
       entry.staticTraceId = this._all.length;
       // delete entry._traceId;
       
-      this._all.push(entry);
+      this.push(entry);
     }
 
     // fix up callId + resultCallId, then send out

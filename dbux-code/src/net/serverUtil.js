@@ -1,5 +1,6 @@
 import http from 'http';
-import * as SocketIOServer from 'socket.io';
+// import {Server} from 'socket.io';  // socket.io@3+
+import Server from 'socket.io';       // socket.io@2
 import { newLogger } from '@dbux/common/src/log/logger';
 
 // eslint-disable-next-line no-unused-vars
@@ -34,12 +35,13 @@ export async function makeListenSocket(port) {
   const httpServer = await makeHttpServer(port);
 
   // see: https://socket.io/docs/server-api/
-  const listenSocket = SocketIOServer(httpServer, {
+  const listenSocket = new Server(httpServer, {
     // const server = require('socket.io')(httpServer, {
     serveClient: false,
+    allowUpgrades: false
 
-    // see: https://github.com/socketio/engine.io/blob/6a16ea119280a02029618544d44eb515f7f2d076/lib/server.js#L107
-    wsEngine: 'ws' // in case uws is not supported
+    // NOTE: `wsEngine` is 'ws' by default since 4.0
+    // wsEngine: 'ws' // in case uws is not supported
   });
 
   listenSocket.on('error', err => {

@@ -1,12 +1,7 @@
 import { newLogger } from '@dbux/common/src/log/logger';
-import TraceType from '@dbux/common/src/core/constants/TraceType';
 import staticTraceCollection from './staticTraceCollection';
-import executionContextCollection from './executionContextCollection';
-import staticContextCollection from './staticContextCollection';
 import Collection from './Collection';
 import pools from './pools';
-import valueCollection from './valueCollection';
-import staticProgramContextCollection from './staticProgramContextCollection';
 
 const { log, debug, warn, error: logError } = newLogger('T');
 
@@ -22,8 +17,8 @@ class TraceCollection extends Collection {
 
     const trace = pools.traces.allocate();
     trace.traceId = this._all.length;
-    this._all.push(trace);
-
+    this.push(trace);
+    
     // // eslint-disable-next-line no-console
     // console.debug(`${this._all.length} ${trace.traceId}`);
 

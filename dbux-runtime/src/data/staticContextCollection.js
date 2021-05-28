@@ -25,7 +25,7 @@ export class StaticContextCollection extends Collection {
       entry.staticContextId = entry.staticId = this._all.length;
       // delete entry._staticId;
 
-      this._all.push(entry);
+      this.push(entry);
     }
 
     // fix-up parentId:

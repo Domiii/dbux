@@ -1,10 +1,12 @@
 // import 'ws'; // this must work on Node!
 import io, { Socket } from 'socket.io-client';
+import minBy from 'lodash/minBy';
+import maxBy from 'lodash/maxBy';
 import { newLogger, logInternalError } from '@dbux/common/src/log/logger';
 // import universalLibs from '@dbux/common/src/util/universalLibs';
 import SendQueue from './SendQueue';
 
-const Verbose = true;
+const Verbose = 1;
 // const Verbose = false;
 
 // eslint-disable-next-line no-unused-vars
@@ -81,7 +83,7 @@ export default class Client {
   _connectFailed = false;
 
   _handleConnect = () => {
-    Verbose && debug('connected');
+    Verbose > 1 && debug('-> connected');
     this._connected = true;
     this._connectFailed = false;
 
@@ -98,7 +100,7 @@ export default class Client {
   }
 
   _handleDisconnect = () => {
-    Verbose && debug('disconnected');
+    Verbose && debug('-> disconnected');
     this._connected = false;
     this._ready = false;
     this._socket = null;
@@ -140,16 +142,22 @@ export default class Client {
     }
 
     // send init to server
+    // Verbose && debug(`<- init`, initPacket);
     this._socket.emit('init', initPacket);
 
     // wait for ack to come back from server
     this._socket.once('init_ack', applicationId => {
-      // then: remember applicationId
-      this._applicationId = applicationId;
+      Verbose && debug(`-> init_ack`, initPacket);
+      // NOOP experiment - see https://github.com/socketio/socket.io/issues/3946
+      // const N = 1e6;
+      // const noopData = new Array(N).fill(1).join('');
+      // this._socket.emit('noop', noopData);
+      // debug(`<- noop, N=${N}`);
 
+      // remember applicationId
+      this._applicationId = applicationId;
       // ready!
       this._ready = true;
-
       // finally: send out anything that was already buffered
       this._sendQueue._flushLater();
     });
@@ -175,7 +183,11 @@ export default class Client {
       this._connect();
     }
     else if (this.isReady()) {
-      // debug(`sending: ${Object.entries(data).map(([key, arr]) => `${key}: ${arr.length}`)}`);
+      Verbose && debug(`<- data: ` +
+        Object.entries(data)
+          .map(([key, arr]) => `${key} (${minBy(arr, entry => entry._id)._id}~${maxBy(arr, entry => entry._id)._id})`)
+          .join(', ')
+      );
       this._socket.emit('data', data);
       this._refreshInactivityTimer();
       this._waitingCb?.();
@@ -197,7 +209,6 @@ export default class Client {
   // ###########################################################################
 
   _connect() {
-    // debugger;
     // TODO: add config port
     const port = DefaultPort;
     const Remote = `ws://localhost:${port}`;
@@ -205,14 +216,19 @@ export default class Client {
       // jsonp: false,
       // forceNode: true,
       // port: DefaultPort,
-      transports: ['websocket']
+      transports: ['websocket'],
+
+      // fixes seemingly immediate disconnects - see https://stackoverflow.com/a/40993490
+      //  longer explanations: https://stackoverflow.com/questions/28238628/socket-io-1-x-use-websockets-only/28240802#28240802
+      upgrade: false
     });
+    Verbose && debug('<- connecting...');
 
     // on reconnection, reset the transports option
     // -> because the Websocket
     //  connection may have failed (caused by proxy, firewall, browser, ...)
     socket.on('reconnect_attempt', () => {
-      Verbose && debug('reconnecting...');
+      Verbose && debug('<- reconnecting...');
       // socket.io.opts.transports = ['websocket'];
     });
 

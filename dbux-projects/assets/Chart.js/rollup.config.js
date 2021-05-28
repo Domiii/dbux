@@ -7,7 +7,7 @@ const json = require('@rollup/plugin-json');
 const { babel } = require('@rollup/plugin-babel');
 const serve = require('rollup-plugin-serve');
 const resolve = require('@rollup/plugin-node-resolve').default;
-const terser = require('rollup-plugin-terser').terser;
+// const terser = require('rollup-plugin-terser').terser;
 const pkg = require('./package.json');
 
 const input = 'src/index.js';
@@ -45,7 +45,11 @@ module.exports = [
         babelHelpers: 'inline',
         skipPreflightCheck: true, // WARNING: if not skipped, causes serious memory leak
         plugins: [
-          '@dbux/babel-plugin'
+          ['@dbux/babel-plugin', {
+            runtime: {
+              tracesDisabled: 1
+            }
+          }]
           // 'D:/code/dbux/dbux-babel-plugin'
         ],
         // exclude: 'node_modules/**',
@@ -77,7 +81,9 @@ module.exports = [
           }
         ]
       }),
-      resolve(),
+      resolve({
+        browser: true
+      }),
       // cleanup({
       // 	sourcemap: true
       // }),
@@ -87,7 +93,7 @@ module.exports = [
       name: 'Chart',
       file: 'dist/chart.min.js', // call it 'min' to make samples work (but it is not min!)
       banner,
-      format: 'umd',
+      format: 'iife',
       indent: false,
     },
   },

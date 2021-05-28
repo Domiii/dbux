@@ -27,6 +27,7 @@ export default class SocketServer {
     // debug(`listening on ${port}`);
     this._listenSocket.on('connect', this._handleAccept.bind(this));
     this._listenSocket.on('error', this._handleError.bind(this));
+    this._listenSocket.on('connect_error', this._handleConnectError.bind(this));
   }
 
   /**
@@ -46,7 +47,11 @@ export default class SocketServer {
   }
 
   _handleError(err) {
-    logError(err);
+    logError('error', err);
+  }
+
+  _handleConnectError(err) {
+    logError('connect_error', err);
   }
 
   dispose() {

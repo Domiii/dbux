@@ -16,6 +16,11 @@ export default class Collection {
     this.logger = newLogger(`${name} Collection`);
   }
 
+  push(entry) {
+    entry._id = this._all.length;
+    this._all.push(entry);
+  }
+
   getAll() {
     return this._all;
   }
@@ -25,7 +30,7 @@ export default class Collection {
   }
 
   /**
-   * @private
+   * 
    */
   _send(newEntry) {
     const client = getDefaultClient();
@@ -33,7 +38,7 @@ export default class Collection {
   }
 
   /**
-   * @private
+   * 
    */
   _sendAll(newEntry) {
     const client = getDefaultClient();

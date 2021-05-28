@@ -14,7 +14,6 @@ const webpack = require('webpack');
 // const t = require('@babel/types');
 // const nodeExternals = require('webpack-node-externals');
 const nodeExternals = require('webpack-node-externals');
-
 const webpackCommon = require('./config/webpack.config.common');
 
 const Process = require('./dbux-projects/src/util/Process').default;
@@ -61,71 +60,6 @@ module.exports = (env, argv) => {
     // setup
     // ###########################################################################
 
-    const targets = [
-      ["dbux-babel-plugin", (resolve) => {
-        return {
-          target: 'node',
-          externals: [
-            // /^fs$/,
-            // /^process$/,
-            // /^path$/,
-
-            // NOTE: these are part of experiments for https://github.com/Domiii/dbux/issues/513
-            // /(semver|@babel|module\\-alias|prettier)\//,
-
-            nodeExternals({
-              allowlist: [
-                ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/src/.*`))
-                // (...args) => {
-                //   console.error(...args);
-                //   return true;
-                // }
-              ]
-            })
-          ]
-        };
-      }],
-      ["dbux-runtime", (resolve) => {
-        return {
-          resolve: {
-            // fix for https://github.com/websockets/ws/issues/1538
-            mainFields: ['main'],
-
-            // fix for https://github.com/websockets/ws/issues/1538
-            alias: {
-              // ws: path.resolve(path.join(MonoRoot, 'dbux-runtime', 'node_modules', 'ws', 'index.js'))
-            },
-
-            fallback: {
-              tty: false,
-              util: false
-            }
-          },
-
-          externals: [
-            nodeExternals({
-              allowlist: [
-                ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/src/.*`))
-                // (...args) => {
-                //   console.error(...args);
-                //   return true;
-                // }
-              ]
-            })
-            // (info, callback) => {
-            //   // eslint-disable-next-line no-shadow
-            //   const { request, context } = info;
-            //   if (/^util|debug/.test(request)) {
-            //     console.error(request, context, new Error().stack);
-            //   }
-            //   callback();
-            // }
-          ]
-        };
-      }]
-    ];
-
-
     // const outputFolderName = 'dist';
     // const outFile = 'bundle.js';
     const defaultEntryPoint = 'src/index.js';
@@ -141,65 +75,75 @@ module.exports = (env, argv) => {
     const {
       DBUX_VERSION,
       DBUX_ROOT
-    } = webpackCommon('main', mode);
-
-    // const entry = fromEntries(targets.map(target => [target, path.resolve(path.join(target, defaultEntryPoint))]));
+    } = webpackCommon('dbux-runtime', mode);
 
     // `context` is the path from which any relative paths are resolved
     const context = MonoRoot;
 
     // ###########################################################################
-    // plugins
+    // multi config
     // ###########################################################################
 
-    const webpackPlugins = [
-      new webpack.EnvironmentPlugin({
-        NODE_ENV: mode,
-        DBUX_VERSION,
-        DBUX_ROOT
-      })
+    // NOTE: this used to be used for multiple different cfgs
+    //      -> now only used for dbux-runtime
+    const targets = [
+      ...[
+        {
+          target: 'node'
+        },
+        {
+          target: 'web'
+        }
+      ].map(cfg => ['dbux-runtime', resolve => {
+        const { target } = cfg;
+        const externals = target !== 'node' ? [] : [
+          nodeExternals({
+            allowlist: [
+              ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/src/.*`))
+              // (...args) => {
+              //   console.error(...args);
+              //   return true;
+              // }
+            ]
+          })
+        ];
+        return {
+          ...cfg,
+          output: {
+            filename: `[name]/dist/index-${target}.js`,
+            sourceMapFilename: `[name]/dist/index-${target}.js.map`,
+          },
+          externals
+          // externals: [
+          //   'tty',
+          //   'tls',
+          //   'fs',
+          //   'net',
+          //   'util'
+          // ]
+
+          // externals: [
+          //   nodeExternals({
+          //     allowlist: [
+          //       ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/src/.*`))
+          //       // (...args) => {
+          //       //   console.error(...args);
+          //       //   return true;
+          //       // }
+          //     ]
+          //   })
+          //   // (info, callback) => {
+          //   //   // eslint-disable-next-line no-shadow
+          //   //   const { request, context } = info;
+          //   //   if (/^util|debug/.test(request)) {
+          //   //     console.error(request, context, new Error().stack);
+          //   //   }
+          //   //   callback();
+          //   // }
+          // ]
+        };
+      }])
     ];
-
-
-    // ###########################################################################
-    // output
-    // ###########################################################################
-
-    // const context = path.join(root, target);
-    // const entry = {
-    //   bundle: './src/index.js'
-    // };
-
-
-    // ###########################################################################
-    // output
-    // ###########################################################################
-    const output = {
-      // path: path.join(context, outputFolderName),
-      path: context,
-      library: '[name]',     // see https://github.com/webpack/webpack/tree/master/examples/multi-part-library
-      libraryTarget: 'umd',
-      libraryExport: 'default',
-      publicPath: 'dbux',
-      filename: '[name]/dist/index.js',
-      sourceMapFilename: '[name]/dist/index.js.map',
-
-      // see: https://gist.github.com/jarshwah/389f93f2282a165563990ed60f2b6d6c
-      devtoolModuleFilenameTemplate: 'file:///[absolute-resource-path]',  // map to source with absolute file path not webpack:// protocol
-
-      // hackfix for bug: https://medium.com/@JakeXiao/window-is-undefined-in-umd-library-output-for-webpack4-858af1b881df
-      // globalObject: '(typeof self !== "undefined" ? self : this)',
-      globalObject: '(typeof globalThis !== "undefined" ? globalThis : (typeof self !== "undefined" ? self : this))'
-    };
-
-
-    // ###########################################################################
-    // stats
-    // ###########################################################################
-
-    const stats = {
-      // errorDetails: true
-    };
 
     // ###########################################################################
     // buildConfig
@@ -209,9 +153,55 @@ module.exports = (env, argv) => {
     function buildConfig([target, configOverrides]) {
       const targetRoot = path.join(MonoRoot, target);
 
+      // console.error('base', JSON.stringify(targets.map(([target, c]) => ({ target, c: c({ alias: {} }) })), null, 2));
+
+      // ###########################################################################
+      // plugins
+      // ###########################################################################
+
+      const webpackPlugins = [
+        new webpack.EnvironmentPlugin({
+          NODE_ENV: mode,
+          DBUX_VERSION,
+          DBUX_ROOT
+        })
+      ];
+
+
+      // ###########################################################################
+      // output
+      // ###########################################################################
+
+      const output = {
+        // path: path.join(context, outputFolderName),
+        path: context,
+        library: '[name]',     // see https://github.com/webpack/webpack/tree/master/examples/multi-part-library
+        // library: target
+        libraryTarget: 'umd',
+        libraryExport: 'default',
+        publicPath: 'dbux',
+        filename: '[name]/dist/index.js',
+        sourceMapFilename: '[name]/dist/index.js.map',
+
+        // see: https://gist.github.com/jarshwah/389f93f2282a165563990ed60f2b6d6c
+        devtoolModuleFilenameTemplate: 'file:///[absolute-resource-path]',  // map to source with absolute file path not webpack:// protocol
+
+        // hackfix for bug: https://medium.com/@JakeXiao/window-is-undefined-in-umd-library-output-for-webpack4-858af1b881df
+        // globalObject: '(typeof self !== "undefined" ? self : this)',
+        globalObject: '(typeof globalThis !== "undefined" ? globalThis : (typeof self !== "undefined" ? self : this))'
+      };
+
+      // ###########################################################################
+      // entry
+      // ###########################################################################
+
       const entry = {
         [target]: path.join(targetRoot, defaultEntryPoint)
       };
+
+      // ###########################################################################
+      // resolve + dependencies
+      // ###########################################################################
 
       // find all dbux depencies in target, so we can resolve their `src` folders
       const dependencyPattern = /^@dbux\/.*/;
@@ -233,9 +223,24 @@ module.exports = (env, argv) => {
 
       // add `src` folders to babel-loader
       const absoluteDependencies = makeAbsolutePaths(MonoRoot, resolveFolderNames);
-      const includeSrcs = absoluteDependencies.map(r => path.join(r, 'src'));
 
-      console.debug(` babel targets for ${target}: ${absoluteDependencies.map(s => s.substring(MonoRoot.length + 1)).join(', ')}`);
+      const includeSrcs = absoluteDependencies.map(r => path.join(r, 'src'));
+      console.debug(` babel targets for ${target}: ${absoluteDependencies
+        .map(s => s.substring(MonoRoot.length + 1))
+        .join(', ')
+      }`);
+
+      // ###########################################################################
+      // stats
+      // ###########################################################################
+
+      const stats = {
+        errorDetails: true
+      };
+
+      // ###########################################################################
+      // final cfg
+      // ###########################################################################
 
       let cfg = {
         watchOptions: {
@@ -342,6 +347,7 @@ module.exports = (env, argv) => {
 
       // NOTE: Don't build `dbux-graph-client` here bc/ Webpack bugs out when merging configs with different targets (i.e. `node` + `browser`)
       ...[
+        'babel-plugin',
         'cli',
         'server',
         'code',
@@ -358,7 +364,7 @@ module.exports = (env, argv) => {
     // module.exports
     // ###########################################################################
 
-    return [
+    const allCfgs = [
       ...targets.map(buildConfig),
 
       // NOTE: you can have multiple configs per file (see https://stackoverflow.com/a/46825869)
@@ -366,6 +372,12 @@ module.exports = (env, argv) => {
         map(cb => cb(env, argv)).
         flat()
     ];
+
+    // allCfgs.forEach(cfg => {
+    //   console.warn(cfg.output.filename);
+    // });
+
+    return allCfgs;
   }
   catch (err) {
     console.error('webpack.config failed:', err);

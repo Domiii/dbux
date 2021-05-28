@@ -471,6 +471,10 @@ class ValueCollection extends Collection {
    * NOTE: This still only returns a string representation?
    */
   _deserializeValue(entry) {
+    if (entry === undefined) {
+      logError(`_deserializeValue failed: entry not found`);
+      return undefined;
+    }
     if (!('value' in entry)) {
       if (this._visited.has(entry)) {
         return '(Dbux: circular reference)';
@@ -505,7 +509,7 @@ class ValueCollection extends Collection {
                 const childEntry = this.getById(childId);
                 if (!childEntry) {
                   value[i] = '(Dbux: lookup failed)';
-                  warn(`Could not lookup object property "${i}" by id "${childId}": ${JSON.stringify(childEntry.serialized)}`);
+                  warn(`Could not lookup object property "${i}" (id = "${childId}"): ${JSON.stringify(childEntry.serialized)}`);
                 }
                 else {
                   value[i] = this._deserializeValue(childEntry);
@@ -524,7 +528,7 @@ class ValueCollection extends Collection {
                 const childEntry = this.getById(childId);
                 if (!childEntry) {
                   value[key] = '(Dbux: lookup failed)';
-                  warn(`Could not lookup object property "${key}" by id "${childId}": ${JSON.stringify(childEntry.serialized)}`);
+                  warn(`Could not lookup object property "${key}" (id = "${childId}"): ${JSON.stringify(childEntry.serialized)}`);
                 }
                 else {
                   value[key] = this._deserializeValue(childEntry);
