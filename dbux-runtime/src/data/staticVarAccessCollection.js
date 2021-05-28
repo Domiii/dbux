@@ -30,7 +30,7 @@ class StaticVarAccessCollection extends Collection {
       entry.staticVarAccessId = this._all.length;
       delete entry._staticId;
 
-      this._all.push(entry);
+      this.push(entry);
     }
 
     // -> send out

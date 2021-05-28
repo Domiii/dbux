@@ -431,6 +431,10 @@ class ValueCollection extends Collection {
    * NOTE: This still only returns a string representation?
    */
   _deserializeValue(entry) {
+    if (entry === undefined) {
+      logError(`_deserializeValue failed: entry not found`);
+      return undefined;
+    }
     if (!('value' in entry)) {
       if (this._visited.has(entry)) {
         return '(Dbux: circular reference)';
@@ -458,8 +462,17 @@ class ValueCollection extends Collection {
       else {
         switch (category) {
           case ValueTypeCategory.Array: {
-            value = this.getAllById(entry.serialized);
-            value = value.map(child => this._deserializeValue(child));
+            for (let i = 0; i < entry.serialized.length; ++i) {
+              const childId = entry.serialized[i];
+              const child = this.getById(childId);
+              if (!child) {
+                warn(`Could not lookup array index "${i}" (id = "${childId}"): ${JSON.stringify(entry.serialized)}`);
+                return '(Dbux: lookup failed)';
+              }
+              else {
+                return this._deserializeValue(child);
+              }
+            }
             break;
           }
           case ValueTypeCategory.Object: {
@@ -468,7 +481,7 @@ class ValueCollection extends Collection {
               const child = this.getById(childId);
               if (!child) {
                 value[key] = '(Dbux: lookup failed)';
-                warn(`Could not lookup object property "${key}" by id "${childId}": ${JSON.stringify(entry.serialized)}`);
+                warn(`Could not lookup object property "${key}" (id = "${childId}"): ${JSON.stringify(entry.serialized)}`);
               }
               else {
                 value[key] = this._deserializeValue(child);

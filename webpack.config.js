@@ -339,9 +339,9 @@ module.exports = (env, argv) => {
         flat()
     ];
 
-    allCfgs.forEach(cfg => {
-      console.warn(cfg.output.filename);
-    });
+    // allCfgs.forEach(cfg => {
+    //   console.warn(cfg.output.filename);
+    // });
 
     return allCfgs;
   }

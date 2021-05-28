@@ -36,7 +36,7 @@ class LoopCollection extends Collection {
     // store unique `loopId`
     loop.loopId = this._all.length;
 
-    this._all.push(loop);
+    this.push(loop);
 
     // -> send out
     this._send(loop);

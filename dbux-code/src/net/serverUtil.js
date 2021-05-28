@@ -1,5 +1,6 @@
 import http from 'http';
-import { Server } from 'socket.io';
+// import {Server} from 'socket.io';  // socket.io@3+
+import Server from 'socket.io';       // socket.io@2
 import { newLogger } from '@dbux/common/src/log/logger';
 
 // eslint-disable-next-line no-unused-vars
@@ -37,6 +38,7 @@ export async function makeListenSocket(port) {
   const listenSocket = new Server(httpServer, {
     // const server = require('socket.io')(httpServer, {
     serveClient: false,
+    allowUpgrades: false
 
     // NOTE: `wsEngine` is 'ws' by default since 4.0
     // wsEngine: 'ws' // in case uws is not supported

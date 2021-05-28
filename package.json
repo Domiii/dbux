@@ -59,7 +59,6 @@
     "lodash": "^4.17.19",
     "shell-escape": "^0.2.0",
     "shelljs": "0.8.4",
-    "socket.io-client": "^4",
     "yargs": "^15.4.1"
   },
   "optionalDependencies": {

@@ -13,6 +13,11 @@ export default class Collection {
     this.logger = newLogger(`${name} Collection`);
   }
 
+  push(entry) {
+    entry._id = this._all.length;
+    this._all.push(entry);
+  }
+
   getAll() {
     return this._all;
   }
@@ -22,20 +27,7 @@ export default class Collection {
   }
 
   /**
-   * @private
    * 
-   * @returns {number} The id of the new entry
-   */
-  _add(newEntry) {
-    if (!newEntry.valueId) {
-      throw new Error(this._name + `valueId must be set before call to _add`);
-    }
-    this._all[newEntry.valueId] = newEntry;
-    this._send(newEntry);
-  }
-
-  /**
-   * @private
    */
   _send(newEntry) {
     const client = getDefaultClient();
@@ -43,7 +35,7 @@ export default class Collection {
   }
 
   /**
-   * @private
+   * 
    */
   _sendAll(newEntry) {
     const client = getDefaultClient();

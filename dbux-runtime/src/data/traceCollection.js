@@ -34,7 +34,7 @@ class TraceCollection extends Collection {
     const trace = pools.traces.allocate();
     // generate new traceId and store
     trace.traceId = this._all.length;
-    this._all.push(trace);
+    this.push(trace);
     
     // // eslint-disable-next-line no-console
     // console.debug(`${this._all.length} ${trace.traceId}`);

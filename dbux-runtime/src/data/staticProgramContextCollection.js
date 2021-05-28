@@ -18,7 +18,7 @@ export class StaticProgramContextCollection extends Collection {
       filePath
     };
     
-    this._all.push(staticProgramContext);
+    this.push(staticProgramContext);
     this._send(staticProgramContext);
 
     return staticProgramContext;

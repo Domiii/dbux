@@ -28,7 +28,7 @@ class StaticLoopCollection extends Collection {
       entry.staticLoopId = this._all.length;
       delete entry._loopId;
 
-      this._all.push(entry);
+      this.push(entry);
     }
 
     // -> send out
