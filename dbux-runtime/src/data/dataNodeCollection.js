@@ -42,7 +42,7 @@ export class DataNodeCollection extends Collection {
     dataNode.traceId = traceId;
     dataNode.inputs = inputs;
 
-    this._all.push(dataNode);
+    this.push(dataNode);
 
     // TODO: support object changes
     // TODO: also support ME

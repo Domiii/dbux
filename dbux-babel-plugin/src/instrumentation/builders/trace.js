@@ -66,6 +66,37 @@ export const buildTraceExpression = buildTraceCall(
 );
 
 /**
+ * 
+ */
+export const buildTraceExpressionNoInput = buildTraceCall(
+  '%%trace%%(%%expr%%, %%tid%%, %%declarationTid%%)',
+  function buildTraceExpressionNoInput(expressionNode, state, traceCfg) {
+    // const { scope } = path;
+    const { ids: { aliases } } = state;
+    const trace = aliases[traceCfg?.meta?.traceCall || 'traceExpression'];
+    if (!trace) {
+      throw new Error(`Invalid meta.traceCall "${traceCfg.meta.traceCall}" - Valid choices are: ${Object.keys(aliases).join(', ')}`);
+    }
+
+    const {
+      declarationTidIdentifier
+    } = traceCfg;
+
+    const tid = buildTraceId(state, traceCfg);
+    // Verbose && debug(`[te] ${expressionNode.type} [${inputTraces?.map(i => i.tidIdentifier.name).join(',') || ''}]`, getPresentableString(expressionNode));
+
+    // NOTE: templates only work on `Node`, not on `NodePath`, thus they lose all path-related information.
+
+    return {
+      trace,
+      expr: expressionNode,
+      tid,
+      declarationTid: declarationTidIdentifier || ZeroNode
+    };
+  }
+);
+
+/**
  * Same as `buildTraceExpression` but without declaration nor inputs.
  */
 export const buildTraceExpressionSimple = buildTraceCall(

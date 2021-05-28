@@ -178,12 +178,12 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceCallArgument(this.getProgramId(), value, tid, declarationTid, callTid);
   }
 
-  traceCallResult = (value, callTid) => {
+  traceCallResult = (value, tid, callTid) => {
     if (this.areTracesDisabled) {
       return value;
     }
 
-    return this._runtimeMonitor.traceCallResult(this.getProgramId(), value, callTid);
+    return this._runtimeMonitor.traceCallResult(this.getProgramId(), value, tid, callTid);
   }
 
   // ###########################################################################

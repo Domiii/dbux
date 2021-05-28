@@ -1,10 +1,10 @@
 import isObject from 'lodash/isObject';
+import truncate from 'lodash/truncate';
 import ValueTypeCategory, { determineValueTypeCategory, ValuePruneState, isObjectCategory, isTrackableCategory } from '@dbux/common/src/core/constants/ValueTypeCategory';
 // import serialize from '@dbux/common/src/serialization/serialize';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Collection from './Collection';
 import pools from './pools';
-import { truncate } from 'lodash';
 
 /** @typedef {import('@dbux/common/src/core/data/ValueRef').default} ValueRef */
 
@@ -86,7 +86,7 @@ class ValueCollection extends Collection {
     // create new ref + track object value
     const valueRef = pools.values.allocate();
     valueRef.refId = this._all.length;
-    this._all.push(valueRef);
+    this.push(valueRef);
 
     valueRef.nodeId = nodeId;
     valueRef.category = category;

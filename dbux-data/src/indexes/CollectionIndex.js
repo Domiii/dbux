@@ -1,4 +1,4 @@
-import { newLogger } from '@dbux/common/src/log/logger';
+import { logError, newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 // ###########################################################################
@@ -98,7 +98,7 @@ class ContainerMethods {
   getFirstInContainter(container) {
     throw new Error('abstract method not implemented');
   }
-  
+
   // eslint-disable-next-line no-unused-vars
   addEntry(container, entry) {
     throw new Error('abstract method not implemented');
@@ -241,7 +241,14 @@ export default class CollectionIndex {
 
   addEntryById(id) {
     const entry = this.dp.collections[this.collectionName].getById(id);
-    this.addEntry(entry);
+    if (!entry) {
+      logError(new Error(
+        `Tried to ${this.constructor.name}.addEntryById(id = ${JSON.stringify(id)}), but there are no ${this.collectionName} with that id.`
+      ).stack);
+    }
+    else {
+      this.addEntry(entry);
+    }
   }
 
   /** 

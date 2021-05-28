@@ -497,15 +497,22 @@ export default class RuntimeMonitor {
   }
 
   traceCallee(programId, value, tid, declarationTid) {
-    return this.traceExpression(programId, value, tid, declarationTid);
+    this.traceExpression(programId, value, tid, declarationTid);
+    return value;
   }
 
   traceCallArgument(programId, value, tid, declarationTid, callTid) {
-    return this.traceExpression(programId, value, tid, declarationTid);
+    const trace = traceCollection.getById(tid);
+    trace.callId = callTid;
+    this.traceExpression(programId, value, tid, declarationTid);
+    return value;
   }
 
   traceCallResult(programId, value, tid, callTid) {
-    return this.traceExpression(programId, value, tid, 0);
+    const trace = traceCollection.getById(tid);
+    trace.resultCallId = callTid;
+    this.traceExpression(programId, value, tid, 0);
+    return value;
   }
 
   // /**

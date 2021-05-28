@@ -185,7 +185,16 @@ export default class Client {
     else if (this.isReady()) {
       Verbose && debug(`<- data: ` +
         Object.entries(data)
-          .map(([key, arr]) => `${key} (${minBy(arr, entry => entry._id)._id}~${maxBy(arr, entry => entry._id)._id})`)
+          .map(([key, arr]) => {
+            try {
+              return `${arr.length} ${key} (${minBy(arr, entry => entry._id)?._id}~${maxBy(arr, entry => entry._id)?._id})`;
+            }
+            catch (err) {
+              const idx = arr?.findIndex?.(x => x === null || x === undefined);
+              logError(`Invalid "${key}" data received: "${err.message}". Index #${idx} is ${arr?.[idx]} (${arr})`);
+              return '(err)';
+            }
+          })
           .join(', ')
       );
       this._socket.emit('data', data);

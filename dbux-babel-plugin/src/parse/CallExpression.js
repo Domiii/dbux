@@ -1,6 +1,6 @@
 // import { instrumentCallExpressionEnter } from '../zz_archive/traceHelpers.old';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
-import { buildTraceCallArgument, buildTraceExpressionSimple } from '../instrumentation/builders/trace';
+import { buildTraceCallArgument, buildTraceExpressionNoInput, buildTraceExpressionSimple } from '../instrumentation/builders/trace';
 import BaseNode from './BaseNode';
 
 // function wrapCallExpression(path, state) {
@@ -72,6 +72,7 @@ export default class CallExpression extends BaseNode {
           type: TraceType.CallArgument
         },
         meta: {
+          build: buildTraceExpressionNoInput,
           traceCall: 'traceCallArgument',
           moreTraceCallArgs: [calleeTidIdentifier]
         }
