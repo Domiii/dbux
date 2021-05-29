@@ -19,9 +19,9 @@ import BaseNode from './BaseNode';
 /**
  * NOTE: only assignments can have ME LVals
  */
-function isLValME(node) {
+function isRValME(node) {
   const { path: p } = node;
-  return p.parentPath.isAssignment() && p.node === p.parentPath.node.id;
+  return !(p.parentPath.isAssignment() && p.node === p.parentPath.node.id);
 }
 
 class MemberElement {
@@ -52,10 +52,6 @@ export default class MemberExpression extends BaseNode {
     'OptionalMemberExpression'
   ];
   static children = ['object', 'property'];
-  static plugins = [
-    [isLValME, 'MELVal'],
-    [(node) => !isLValME(node), 'MERVal']
-  ];
 
   /**
    * Don't create separate MEs if nested.
@@ -100,18 +96,12 @@ export default class MemberExpression extends BaseNode {
     );
   }
 
-  // enter() {
-  //   //     if (objPath.isSuper()) {
-  //   //       // Do nothing. We already take care of this via `instrumentMemberCallExpressionEnter`.
-  //   //       // return traceBeforeSuper(objPath, state);
-  //   //       return null;
-  //   //     }
-  // }
-
 
   // ###########################################################################
-  // exit
+  // ME rval handling
   // ###########################################################################
+
+  // TODO: import.meta (rval only)
 
   // exit() {
   //   //   MemberProperty(propertyPath, state) {

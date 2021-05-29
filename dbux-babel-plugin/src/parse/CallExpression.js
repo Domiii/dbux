@@ -50,6 +50,13 @@ export default class CallExpression extends BaseNode {
   // }
 
   exit() {
+    // TODO: special cases - `calleePath.isMemberExpression()`, `calleePath.isCallExpression`
+
+    // TODO: more special cases - super, import, require
+    //    -> cannot separate callee for `super` or `import`
+    //    -> cannot modify args for `import` or `require`, if they are constants
+
+
     const [calleePath, argumentPaths] = this.getChildPaths();
     const [calleeNode, argumentNodes] = this.getChildNodes();
 

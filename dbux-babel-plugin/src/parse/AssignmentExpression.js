@@ -1,14 +1,40 @@
-import TraceType from '@dbux/common/src/core/constants/TraceType';
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import { buildTraceWrite } from '../instrumentation/builders/trace';
+import { getPresentableString } from '../helpers/pathHelpers';
 import BaseNode from './BaseNode';
+
+
+// ###########################################################################
+// util
+// ###########################################################################
+
+const PluginsByType = {
+  Identifier: 'LValIdentifier',
+  ObjectPattern: 'LValPattern',
+  ArrayPattern: 'LValPattern',
+  MemberExpression: 'LValME'
+};
+
+function getLValPlugin(node) {
+  const [lvalPath] = node.getChildPaths();
+  const lvalType = lvalPath.node.type;
+  const pluginName = PluginsByType[lvalType];
+  if (!pluginName) {
+    node.logger.error(`unknown lval type: ${lvalType} for "${getPresentableString(lvalPath)}"`);
+  }
+  return pluginName;
+}
+
+// ###########################################################################
+// AssignmentExpression
+// ###########################################################################
 
 /**
  * 
  */
 export default class AssignmentExpression extends BaseNode {
   static children = ['left', 'right'];
-  static plugins = [];
+  static plugins = [
+    getLValPlugin
+  ];
 
   /**
    * @returns {BaseNode}
@@ -16,29 +42,5 @@ export default class AssignmentExpression extends BaseNode {
   getDeclarationNode() {
     const [leftNode] = this.getChildNodes();
     return leftNode.getDeclarationNode();
-  }
-
-  exit() {
-    const { path, Traces } = this;
-
-    const [, rightNode] = this.getChildNodes();
-
-    // TODO: WriteME
-
-    const writeTraceCfg = {
-      path,
-      node: this,
-      staticTraceData: {
-        type: TraceType.WriteVar
-      },
-      meta: {
-        // instrument: Traces.instrumentTraceWrite
-        build: buildTraceWrite
-      }
-    };
-
-    Traces.addTraceWithInputs(writeTraceCfg, [rightNode.path] || EmptyArray);
-
-    // traces.addTraceWithInputs({ path: initPath, node: initNode, staticTraceData}, [initPath]);
   }
 }

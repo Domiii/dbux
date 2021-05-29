@@ -1,11 +1,13 @@
 import isString from 'lodash/isString';
+import isFunction from 'lodash/isFunction';
+import toString from 'serialize-javascript';
 // import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import NestedError from '@dbux/common/src/NestedError';
 import { Logger } from '@dbux/common/src/log/logger';
 import { getPresentableString } from '../helpers/pathHelpers';
 import ParseRegistry from './ParseRegistry';
 import { getChildPaths, getNodeOfPath } from './parseUtil';
 import ParsePhase from './ParsePhase';
-import NestedError from '@dbux/common/src/NestedError';
 
 /** @typedef { import("@babel/traverse").NodePath } NodePath */
 /** @typedef { import("./ParseStack").default } ParseStack */
@@ -222,26 +224,39 @@ export default class ParseNode {
   }
 
   initPlugins() {
-    // add plugins (possibly conditionally)
-    for (const pluginCfg of this.getAllClassPlugins()) {
-      let predicate, name;
-      if (Array.isArray(pluginCfg)) {
-        [predicate, name] = pluginCfg;
+    // add plugins
+    for (let pluginCfg of this.getAllClassPlugins()) {
+      let name, PluginClazz;
+      if (isFunction(pluginCfg)) {
+        pluginCfg = pluginCfg();
+        if (!pluginCfg) {
+          // NOTE: plugin's conditions are not met
+          continue;
+        }
+        if (isString(pluginCfg)) {
+          name = pluginCfg;
+        }
+        else {
+          PluginClazz = pluginCfg;
+          name = PluginClazz.name;
+        }
       }
-      else {
+      else if (isString(pluginCfg)) {
         name = pluginCfg;
       }
+      else {
+        throw new Error(`Invalid plugin - must be string or function but was "${toString(pluginCfg)}" in ${this}`);
+      }
+      PluginClazz = PluginClazz || ParseRegistry.getPluginClassByName(name);
 
       // this.debug(this.nodeTypeName, `[initPlugins] add`, name, !predicate || predicate());
 
-      if (!predicate || predicate(this)) {
-        // add plugin
-        try {
-          this.addPlugin(ParseRegistry.getPluginClassByName(name));
-        }
-        catch (err) {
-          throw new NestedError(`Failed to addPlugin "${name}" to node "${this}"`, err);
-        }
+      // add plugin
+      try {
+        this.addPlugin(PluginClazz);
+      }
+      catch (err) {
+        throw new NestedError(`Failed to addPlugin "${PluginClazz?.name || PluginClazz}" to node "${this}"`, err);
       }
     }
 
