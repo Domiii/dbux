@@ -145,20 +145,15 @@ export default class Traces extends ParsePlugin {
    * @param {BindingIdentifier} id
    */
   addDeclarationTrace(id) {
-    // const { binding } = id;
-    // this.declarationTraces.push(binding);
-
-    // TODO: fix order of insertion, to match order of `staticTraceId`. binding nodes are the only ones out of order.
-
-    // this.bindingTraces.push({
-
-    // TODO: add `declarationTraces` to their corresponding block/scope instead
-    
     const traceCfg = this.addTrace({
       path: id.path,
       node: id,
       staticTraceData: {
-        type: TraceType.Declaration
+        type: TraceType.Declaration,
+        dataNode: {
+          // NOTE: declaration trace is always hoisted to some scope, always assigned a "new" `undefined` value (until assignment/definition happens)
+          isNew: true
+        }
       },
       meta: {
         instrument: this.node.Traces.instrumentTraceDeclaration

@@ -7,7 +7,7 @@ let TraceType = {
 
   BeforeExpression: 3,
   /**
-   * NOTE: `BeforeCallExpression` has now become `Callee`, meaning it also holds a value
+   * NOTE: `BeforeCallExpression` is now also a function's `Callee`, meaning it also holds a value.
    */
   BeforeCallExpression: 4,
   // /**
@@ -31,7 +31,6 @@ let TraceType = {
 
   // Throw
   ThrowArgument: 18,
-  ThrowCallExpession: 19,
 
   // Await
   Await: 20,
@@ -46,11 +45,25 @@ let TraceType = {
 
 
   Declaration: 31,
+  /**
+   * NOTE: Can be `AssignmentExpression`, or `VariableDeclarator`'s `init` (which is not an expression).
+   * @example `var x = 3`, `x = 5`
+   */
   WriteVar: 31,
   Identifier: 32,
   Literal: 33,
   CallArgument: 34,
-  MemberExpression: 35
+  /**
+   * MemberExpression
+   * @example `o.x`, `f(x)[g(y)]`
+   */
+  ME: 35,
+  /**
+   * WriteMemberExpression
+   * NOTE: Can only be `AssignmentExpression`
+   * @example `o.x = 3`
+   */
+  WriteME: 35
 };
 
 /**
@@ -117,7 +130,7 @@ expressionTypes[TraceType.ThrowArgument] = true;
 expressionTypes[TraceType.Identifier] = true;
 expressionTypes[TraceType.Literal] = true;
 expressionTypes[TraceType.CallArgument] = true;
-expressionTypes[TraceType.MemberExpression] = true;
+expressionTypes[TraceType.ME] = true;
 
 export function isTraceExpression(traceType) {
   return expressionTypes[traceType];

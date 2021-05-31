@@ -60,6 +60,11 @@ export default class CallExpression extends BaseNode {
     const [calleePath, argumentPaths] = this.getChildPaths();
     const [calleeNode, argumentNodes] = this.getChildNodes();
 
+    // TODO: go back to what we had before; insert `BCE` between callee and actual call.
+    //      -> because it represents the entire call, and not the callee
+
+    // TODO: fix `CallArgument`; link against nested trace.
+
     const calleeTraceData = {
       path: calleePath,
       node: calleeNode,

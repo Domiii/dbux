@@ -51,6 +51,18 @@ export default class DataNode {
   varAccess;
 
   /**
+   * NOTE: computed in post-processing.
+   * @type {number}
+   */
+  accessId;
+
+  /**
+   * NOTE: computed in post-processing.
+   * @type {number}
+   */
+  valueId;
+
+  /**
    * Array of `traceId`, representing incoming edges.
    * @type {number[]}
    */

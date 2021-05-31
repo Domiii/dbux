@@ -321,3 +321,62 @@ class A {
 var a = new A();
 console.log(a.p1);
 ```
+
+
+# Value identity
+
+"Value identity" is a uid that can uniquely identify a value:
+
+* For `object`, `array`, `function` ("reference types" or "object types"), it is `dataNode.refId`
+  * That `refId` is assigned in `runtime`. It is the `traceId` that first recorded that object.
+* For non-"object types", we, similarly, want to determine the `traceId` of when that value first came into existence.
+  * Consider that many traces just access and move existing values, and do not actually create new values.
+  * The algorithm is explained in [getValueIdentity](#getValueIdentity).
+
+
+## ReferencedIdentifier vs. MemberExpression
+
+* any `ReferencedIdentifier` refers to a variable name
+  * -> `dataNode.varAccess` contains `declarationTid` (`traceId` that declared (or first recorded) the variable)
+  * `accessId = declarationTid`
+* any `ME` (`MemberExpression`) refers to accessing some object's (or other value, such as `int` or `string`) property
+  * example of an `ME`: `f(x)[g(y)]`, where `object` = `f(x)` and `property` = `g(y)`
+  * -> `dataNode.varAccess` contains:
+    *  `objectTid` (`traceId` of `object`)
+    *  `prop` (value of `property`)
+  * `accessId = makeUid(${getValueIdentity(objectTid)}#${prop})`
+    * TODO: `makeUid` should use a `Map` to convert that string into a number; to more easily maintain `AccessIdIndex`
+
+## getValueIdentity
+
+If a `value` is not an object, we can compute `valueIdentity` by post-processing in `DataNodeCollection.postAddRaw`.
+
+Once computed, we want to store the computed `valueIdentity` in `dataNode.valueId`.
+
+The algorithm is based on each `DataNode`'s `Trace`'s `TraceType`, as follows:
+
+* Expressions
+  * Steps
+    * -> if `staticTrace.dataNode.isNew`: `valueIdentity` = `traceId`
+    * -> else: `valueIdentity` = `inputs[0]` (`inputs.length === 1` is implied)
+  * `TraceType` set:
+    * `Literal`
+      * NOTE: always new
+    * `Declaration`
+      * NOTE: always implies a "new" `undefined` value (if not initialized)
+    * `ExpressionResult`, `ExpressionValue`
+      * who? `ArithmeticExpression`
+    * `CallExpressionResult`
+      * NOTE: will need runtime to connect `CER` with its corresponding `return` trace
+    * `CallArgument`
+      * TODO: make sure, this works correctly
+    * `WriteVar`
+    * `WriteME`
+    * `ReturnArgument`, `ThrowArgument`, `AwaitArgument`
+* `BeforeCallExpression` -> same as `CallExpressionResult` (resolve in `CallExpressionResult`)
+  * -> don't assign a `valueIdentity`.
+  * NOTE: special handling in UI should reflect `CER` instead.
+* `Identifier`, `ME` (`MemberExpression`)
+  * `valueIdentity` same as the last `DataNode` referencing this `identifier`
+    * -> lookup last entry in `Index` by `dataNode.accessId`
+
