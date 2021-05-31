@@ -106,7 +106,7 @@ export default class MemberExpression extends BaseNode {
       path,
       node: this,
       staticTraceData: {
-        type: TraceType.BeforeCallExpression,
+        type: TraceType.ME,
         data: {
           optional
         }
