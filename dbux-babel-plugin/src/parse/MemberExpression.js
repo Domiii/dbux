@@ -116,8 +116,8 @@ export default class MemberExpression extends BaseNode {
       }
     };
     const inputs = [objectPath];
-    if (computed) {
-      // NOTE: if
+    if (computed && !propertyPath.isConstantExpression()) {
+      // NOTE: only trace property, if it is not a constant
       inputs.push(propertyPath);
     }
     this.Traces.addTraceWithInputs(traceData, inputs);

@@ -524,20 +524,7 @@ export default class RuntimeMonitor {
     return value;
   }
 
-  traceMemberExpression(programId, objValue, propValue, tid, inputs) {
-    const { staticTraceId } = traceCollection.getById(tid);
-    const staticTrace = staticTraceCollection.getById(staticTraceId);
-    const { data: { optional } } = staticTrace;
-
-    let value;
-    if (optional) {
-      value = objValue?.[propValue];
-    }
-    else {
-      // NOTE: this can be a guaranteed run-time error in many cases.
-      value = objValue[propValue];
-    }
-
+  traceMemberExpression(programId, value, propValue, tid, inputs) {
     if (!this._ensureExecuting()) {
       return value;
     }

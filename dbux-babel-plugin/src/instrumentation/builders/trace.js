@@ -29,8 +29,8 @@ export const buildTraceId = bindExpressionTemplate(
 );
 
 function makeInputs(inputTraces) {
-  return inputTraces && 
-    t.arrayExpression(inputTraces.map(trace => trace.tidIdentifier)) || 
+  return inputTraces &&
+    t.arrayExpression(inputTraces.map(trace => trace.tidIdentifier)) ||
     NullNode;
 }
 
@@ -249,18 +249,15 @@ export const buildTraceMemberExpression = bindTemplate(
     }
 
     const obj = path.node.object;
-    let propNode;
-    if (path.node.computed) {
-      // keep property as-is
-      propNode = path.node.property;
+    let prop;
+    if (!path.node.computed && path.get('property').isIdentifier()) {
+      // NOTE: `o.x` becomes `tme(..., 'x', ...)`
+      //      -> convert `Identifier` to `StringLiteral`
+      prop = t.stringLiteral(path.node.property.name);
     }
     else {
-      // convert `Identifier` to `StringLiteral`
-      // NOTE: `o.x` becomes `tme(..., 'x', ...)`
-      if (!path.get('property').isIdentifier()) {
-        throw new Error(`Could not trace MemberExpression property. Must be computed OR identifier: "${getPresentableString(path)}" (${path.node.property?.type})`);
-      }
-      propNode = t.stringLiteral(path.node.property.name);
+      // keep property as-is
+      prop = path.node.property;
     }
 
     const {
@@ -275,7 +272,7 @@ export const buildTraceMemberExpression = bindTemplate(
     return {
       tme: trace,
       obj,
-      prop: ,
+      prop,
       tid,
       inputs: makeInputs(inputTraces)
     };

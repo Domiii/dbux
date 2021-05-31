@@ -1,4 +1,6 @@
 import { newLogger } from '@dbux/common/src/log/logger';
+import staticTraceCollection from './data/staticTraceCollection';
+import traceCollection from './data/traceCollection';
 
 
 /**
@@ -184,6 +186,26 @@ export default class ProgramMonitor {
     }
 
     return this._runtimeMonitor.traceCallResult(this.getProgramId(), value, tid, callTid);
+  }
+
+  traceMemberExpression(objValue, propValue, tid, inputs) {
+    const { staticTraceId } = traceCollection.getById(tid);
+    const staticTrace = staticTraceCollection.getById(staticTraceId);
+    const { data: { optional } } = staticTrace;
+
+    let value;
+    if (optional) {
+      value = objValue?.[propValue];
+    }
+    else {
+      // NOTE: this can be a guaranteed run-time error in many cases.
+      value = objValue[propValue];
+    }
+    if (this.areTracesDisabled) {
+      return value;
+    }
+
+    return this._runtimeMonitor.traceMemberExpression(this.getProgramId(), value, propValue, tid, inputs);
   }
 
   // ###########################################################################

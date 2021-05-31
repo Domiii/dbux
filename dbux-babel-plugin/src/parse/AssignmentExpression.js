@@ -18,7 +18,7 @@ function getLValPlugin(node) {
   const lvalType = lvalPath.node.type;
   const pluginName = PluginsByType[lvalType];
   if (!pluginName) {
-    node.logger.error(`unknown lval type: ${lvalType} for "${getPresentableString(lvalPath)}"`);
+    node.logger.error(`unknown lval type: "${lvalType}" at "${getPresentableString(lvalPath)}"`);
   }
   return pluginName;
 }
@@ -42,5 +42,9 @@ export default class AssignmentExpression extends BaseNode {
   getDeclarationNode() {
     const [leftNode] = this.getChildNodes();
     return leftNode.getDeclarationNode();
+  }
+
+  decorateWriteTraceData(/* traceData */) {
+    // nothing to do (for now)
   }
 }

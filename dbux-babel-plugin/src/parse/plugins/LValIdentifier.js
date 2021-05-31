@@ -1,5 +1,4 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { buildTraceWrite } from '../../instrumentation/builders/trace';
 import ParsePlugin from '../../parseLib/ParsePlugin';
 
@@ -10,7 +9,12 @@ export default class LValIdentifier extends ParsePlugin {
 
     const [, rightNode] = node.getChildNodes();
 
-    const writeTraceCfg = {
+    if (!rightNode.path.node) {
+      // no write
+      return;
+    }
+
+    const traceData = {
       path,
       node,
       staticTraceData: {
@@ -22,6 +26,8 @@ export default class LValIdentifier extends ParsePlugin {
       }
     };
 
-    Traces.addTraceWithInputs(writeTraceCfg, [rightNode.path] || EmptyArray);
+    this.node.decorateWriteTraceData(traceData);
+
+    Traces.addTraceWithInputs(traceData, [rightNode.path]);
   }
 }
