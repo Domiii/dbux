@@ -1,4 +1,6 @@
 import { NodePath } from '@babel/traverse';
+import TraceType from '@dbux/common/src/core/constants/TraceType';
+import { buildTraceMemberExpression } from '../instrumentation/builders/trace';
 import BaseNode from './BaseNode';
 
 /**
@@ -54,130 +56,70 @@ export default class MemberExpression extends BaseNode {
   static children = ['object', 'property'];
 
   /**
-   * Don't create separate MEs if nested.
+   * A `handler`, if assigned, takes care of this ME.
+   * Disables default (rval) behavior.
    */
-  static shouldCreateOnEnter(path/* , state */) {
-    return !path.parentPath.isMemberExpression() || path.node === path.parentPath.node.property;
-  }
-
-  /**
-   * All `MemberElements` of MemberExpression chain left-to-right order.
-   * 
-   * @type {array<MemberElement>}
-   */
-  chain = [];
-
-  // ###########################################################################
-  // enter + exit
-  // ###########################################################################
-
-  exitNested(path) {
-    this._anyExit(path);
-  }
-
-  exit() {
-    this._anyExit(this.path);
-  }
-
-  _anyExit(path) {
-    if (!this.chain.length) {
-      // inner-most ME is exited first; has leftId
-      this.chain.push(
-        new MemberElement(path.get('object'), false, false)
-      );
-    }
-
-    // NOTE: property is required
-    const {
-      computed, optional
-    } = path.node;
-    this.chain.push(
-      new MemberElement(path.get('property'), computed, optional)
-    );
-  }
-
-  /** 
-   * TODO: order of execution!
-function f(msg, value) { console.log(msg, value); return value; }
-var o = null;
-f(1, o).x = (f(2), f(3, o = {}), f(4, o))
-   */
+  handler;
 
   // ###########################################################################
   // ME rval handling
   // ###########################################################################
 
-  // TODO: import.meta (rval only)
+  exit() {
+    if (this.handler) {
+      // disable default behavior
+      return;
+    }
 
-  // exit() {
-  //   //   MemberProperty(propertyPath, state) {
-  //   //     const path = propertyPath.parentPath;
-  //   //     if (path.node.computed) {
-  //   //       return wrapExpression(TraceType.ExpressionValue, propertyPath, state);
-  //   //     }
-  //   //     return null;
-  //   //   },
+    // default behavior
+    this.wrapRVal();
+  }
 
-  //   //   MemberObject(objPath, state) {
-  //   //     if (objPath.isSuper()) {
-  //   //       // nothing to do here
-  //   //       return null;
-  //   //     }
-  //   //     else {
-  //   //       // trace object (e.g. `x` in `x.y`) as-is
-  //   //       wrapExpression(TraceType.ExpressionValue, objPath, state, null, false);
+  /**
+   * @example
+   * Case 1: object identifier, prop simple
+   * `o.x` ->
+   * `tme(te(o, tid1), 'x', tid0, [tid1])`
+   *
+   * Case 2: object identifier, prop computed
+   * `o[f(x)]` ->
+   * `tme(te(o, tid1), te(f(...(x)), tid2), tid0, [tid1, tid2])`
+   *
+   * Case 3: prop computed
+   * `g().[f(x)]` ->
+   * `tme(te(g(), tid1), te(f(...(x)), tid2), tid0, [tid1, tid2])`
+   */
+  wrapRVal() {
+    // TODO: `import.meta` (rval only)
+    // TODO: `super.f()`, `super.x = 3` etc.
 
-  //   //       // NOTE: the `originalPath` is not maintained
-  //   //       return null;
-  //   //     }
-  //   //   },
-  //   const [objectPath, propertyPath] = this.getChildPaths();
+    const { path } = this;
 
-  //   const {
-  //     dynamicIndexes,
-  //     template,
-  //     path
-  //   } = this;
+    const [objectPath, propertyPath] = this.getChildPaths();
+    // const [objectNode, propertyNode] = this.getChildNodes();
+    const {
+      computed,
+      optional
+    } = path.node;
 
-  //   const { computed/* , optional */ } = path.node;
-  //   // TODO: `optional`
-
-  //   if (!this.leftId) {
-  //     // inner-most ME is exited first; has leftId
-  //     this.leftId = objectPath.node;
-  //     template.push(objectPath.toString());
-  //   }
-
-  //   if (computed) {
-  //     dynamicIndexes.push(template.length);
-  //     template.push(null);
-  //   }
-  //   else {
-  //     template.push(propertyPath.toString());
-  //   }
-
-  //   // TODO: only return on final exit
-  //   return {
-  //     template,
-  //     dynamicIndexes
-  //   };
-  // }
-
-
-  // ###########################################################################
-  // gen
-  // ###########################################################################
-
-  instrument(staticData, state) {
-    // TODO: need instrumentNestedMELval (see `instrumentMemberCallExpressionEnter`)
-    /**
-     * var a = { b: { c: { d: { x: 3 } }}}
-     * var o;
-     * ((o = a.b.c.d), o.x)
-     *
-     * 
-     * TODO: store `declarationTid`, `refTid` for `a`
-     * TODO: store `memberPath`, `memberRefTid` for nested MEs (`a.b`, `b.c`, `c.d`, `o.x` (== `d.x`))
-     */
+    const traceData = {
+      path,
+      node: this,
+      staticTraceData: {
+        type: TraceType.BeforeCallExpression,
+        data: {
+          optional
+        }
+      },
+      meta: {
+        build: buildTraceMemberExpression
+      }
+    };
+    const inputs = [objectPath];
+    if (computed) {
+      // NOTE: if
+      inputs.push(propertyPath);
+    }
+    this.Traces.addTraceWithInputs(traceData, inputs);
   }
 }

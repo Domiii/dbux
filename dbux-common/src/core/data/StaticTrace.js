@@ -30,4 +30,10 @@ export default class StaticTrace {
    * @type {StaticDataNode}
    */
   dataNode;
+
+  /**
+   * Other data.
+   * Currently used by `MemberExpression` to store whether it's optional.
+   */
+  data;
 }

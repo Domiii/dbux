@@ -28,6 +28,12 @@ export const buildTraceId = bindExpressionTemplate(
   },
 );
 
+function makeInputs(inputTraces) {
+  return inputTraces && 
+    t.arrayExpression(inputTraces.map(trace => trace.tidIdentifier)) || 
+    NullNode;
+}
+
 // ###########################################################################
 // traceExpression
 // ###########################################################################
@@ -60,7 +66,7 @@ export const buildTraceExpression = buildTraceCall(
       expr: expressionNode,
       tid,
       declarationTid: declarationTidIdentifier || ZeroNode,
-      inputs: inputTraces && t.arrayExpression(inputTraces.map(i => i.tidIdentifier)) || NullNode
+      inputs: makeInputs()
     };
   }
 );
@@ -168,7 +174,7 @@ export const buildTraceWrite = buildTraceCall(
       traceWrite,
       tid,
       declarationTid,
-      inputs: inputTraces && t.arrayExpression(inputTraces.map(i => i.tidIdentifier)) || NullNode,
+      inputs: makeInputs(inputTraces),
       deferTid
     };
   }
@@ -200,7 +206,7 @@ export const buildTraceCallArgument = buildTraceCall(
       traceCallArgument,
       tid,
       declarationTid,
-      inputs: inputTraces && t.arrayExpression(inputTraces.map(i => i.tidIdentifier)) || NullNode,
+      inputs: makeInputs(inputTraces),
       calleeTid
     };
   }
@@ -228,3 +234,50 @@ export const buildTraceNoValue = bindTemplate(
   }
 );
 
+// ###########################################################################
+// traceMemberExpression
+// ###########################################################################
+
+export const buildTraceMemberExpression = bindTemplate(
+  '%%tme%%(%%obj%%, %%prop%%, %%tid%%, %%inputs%%)',
+  function buildTraceMemberExpression(path, state, traceCfg) {
+    // const { scope } = path;
+    const { ids: { aliases } } = state;
+    const trace = aliases[traceCfg?.meta?.traceCall || 'traceMemberExpression'];
+    if (!trace) {
+      throw new Error(`Invalid meta.traceCall "${traceCfg.meta.traceCall}" - Valid choices are: ${Object.keys(aliases).join(', ')}`);
+    }
+
+    const obj = path.node.object;
+    let propNode;
+    if (path.node.computed) {
+      // keep property as-is
+      propNode = path.node.property;
+    }
+    else {
+      // convert `Identifier` to `StringLiteral`
+      // NOTE: `o.x` becomes `tme(..., 'x', ...)`
+      if (!path.get('property').isIdentifier()) {
+        throw new Error(`Could not trace MemberExpression property. Must be computed OR identifier: "${getPresentableString(path)}" (${path.node.property?.type})`);
+      }
+      propNode = t.stringLiteral(path.node.property.name);
+    }
+
+    const {
+      inputTraces
+    } = traceCfg;
+
+    const tid = buildTraceId(state, traceCfg);
+    // Verbose && debug(`[te] ${expressionNode.type} [${inputTraces?.map(i => i.tidIdentifier.name).join(',') || ''}]`, getPresentableString(expressionNode));
+
+    // NOTE: templates only work on `Node`, not on `NodePath`, thus they lose all path-related information.
+
+    return {
+      tme: trace,
+      obj,
+      prop: ,
+      tid,
+      inputs: makeInputs(inputTraces)
+    };
+  }
+);

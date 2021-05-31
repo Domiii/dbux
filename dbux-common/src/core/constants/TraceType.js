@@ -17,12 +17,6 @@ let TraceType = {
   CallExpressionResult: 6,
   ExpressionResult: 7,
   ExpressionValue: 8,
-  
-  Declaration: 11,
-  WriteVar: 12,
-  Identifier: 13,
-  Literal: 14,
-  CallArgument: 15,
 
   PushCallback: 11,
   PopCallback: 12,
@@ -48,7 +42,15 @@ let TraceType = {
   // ReturnAwait: 1,
   // ReturnAwaitCallExpression: 1,
 
-  EndOfContext: 22
+  EndOfContext: 22,
+
+
+  Declaration: 31,
+  WriteVar: 31,
+  Identifier: 32,
+  Literal: 33,
+  CallArgument: 34,
+  MemberExpression: 35
 };
 
 /**
@@ -114,6 +116,8 @@ expressionTypes[TraceType.ReturnArgument] = true;
 expressionTypes[TraceType.ThrowArgument] = true;
 expressionTypes[TraceType.Identifier] = true;
 expressionTypes[TraceType.Literal] = true;
+expressionTypes[TraceType.CallArgument] = true;
+expressionTypes[TraceType.MemberExpression] = true;
 
 export function isTraceExpression(traceType) {
   return expressionTypes[traceType];

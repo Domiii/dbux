@@ -423,7 +423,10 @@ export default class RuntimeMonitor {
     const traceId = this.newTraceId(programId, inProgramStaticTraceId);
 
     // this.registerTrace(value, tid);
-    dataNodeCollection.createDataNodes(undefined, traceId, traceId);
+    const varAccess = {
+      declarationTid: traceId
+    };
+    dataNodeCollection.createDataNodes(undefined, traceId, varAccess);
 
     return traceId;
   }
@@ -438,7 +441,10 @@ export default class RuntimeMonitor {
     }
 
     // this.registerTrace(value, tid);
-    dataNodeCollection.createDataNodes(value, tid, declarationTid, inputs);
+    const varAccess = {
+      declarationTid
+    };
+    dataNodeCollection.createDataNodes(value, tid, varAccess, inputs);
     return value;
   }
 
@@ -483,7 +489,10 @@ export default class RuntimeMonitor {
     }
 
     // this.registerTrace(value, tid);
-    dataNodeCollection.createDataNodes(value, tid, declarationTid, inputs);
+    const varAccess = {
+      declarationTid
+    };
+    dataNodeCollection.createDataNodes(value, tid, varAccess, inputs);
 
     // TODO: defer
     // if (deferTid) {
@@ -512,6 +521,38 @@ export default class RuntimeMonitor {
     const trace = traceCollection.getById(tid);
     trace.resultCallId = callTid;
     this.traceExpression(programId, value, tid, 0);
+    return value;
+  }
+
+  traceMemberExpression(programId, objValue, propValue, tid, inputs) {
+    const { staticTraceId } = traceCollection.getById(tid);
+    const staticTrace = staticTraceCollection.getById(staticTraceId);
+    const { data: { optional } } = staticTrace;
+
+    let value;
+    if (optional) {
+      value = objValue?.[propValue];
+    }
+    else {
+      // NOTE: this can be a guaranteed run-time error in many cases.
+      value = objValue[propValue];
+    }
+
+    if (!this._ensureExecuting()) {
+      return value;
+    }
+    if (!tid) {
+      this.logFail(`traceMemberExpression failed to capture tid`);
+      return value;
+    }
+
+    const objectTid = inputs[0];
+
+    const varAccess = {
+      objectTid,
+      prop: propValue
+    };
+    dataNodeCollection.createDataNodes(value, tid, varAccess, inputs);
     return value;
   }
 

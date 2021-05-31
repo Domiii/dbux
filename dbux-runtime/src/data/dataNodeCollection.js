@@ -19,11 +19,11 @@ export class DataNodeCollection extends Collection {
   /**
    * @param {Trace} trace 
    */
-  createDataNodes(value, traceId, declarationTid, inputs) {
+  createDataNodes(value, traceId, varAccess, inputs) {
     // const staticTrace = staticTraceCollection.getStaticTrace(trace.staticTraceId);
     // const { dataNode: staticDataNode } = staticTrace;
 
-    const dataNode = this.createDataNode(value, traceId, declarationTid, inputs);
+    const dataNode = this.createDataNode(value, traceId, varAccess, inputs);
 
 
     // TODO: resolve deferred access
@@ -35,7 +35,7 @@ export class DataNodeCollection extends Collection {
 
 
   // NOTE: this currently only registers new objects and primitives
-  createDataNode(value, traceId, declarationTid, inputs) {
+  createDataNode(value, traceId, varAccess, inputs) {
     const dataNode = pools.dataNodes.allocate();
 
     dataNode.nodeId = this._all.length;
@@ -51,13 +51,11 @@ export class DataNodeCollection extends Collection {
     const valueRef = valueCollection.registerValueMaybe(value, dataNode);
 
     dataNode.refId = valueRef?.refId || 0;
-    dataNode.varAccess = declarationTid > 0 ? {
-      declarationTid: declarationTid
-    } : null;
+    dataNode.varAccess = varAccess;
 
     if (Verbose) {
       const valueStr = dataNode.refId ? `refId=${dataNode.refId}` : `value=${value}`;
-      debug(`createDataNode #${dataNode.nodeId}, tid=${traceId}, declarationTid=${declarationTid}, ${valueStr}`);
+      debug(`createDataNode #${dataNode.nodeId}, tid=${traceId}, varAccess=${JSON.stringify(varAccess)}, ${valueStr}`);
     }
 
     this._send(dataNode);

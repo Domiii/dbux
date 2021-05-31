@@ -8,8 +8,7 @@
  */
 export class VarAccessId {
   /**
-   * Id of the trace of variable declaration/binding (or first recorded instance of variable).
-   * Is `null` when accessing **nested** object member.
+   * Tid of variable declaration/binding (or first recorded instance of variable).
    */
   declarationTid;
 }
@@ -19,17 +18,17 @@ export class VarAccessId {
  */
 export class VarAccesME {
   /**
-   * The `traceId` of the object of the ME.
-   * NOTE: This is used to connect the two DataNodes of an ME.
+   * Tid of object being accessed.
+   * NOTE: We can get variable `declarationTid` as well as `refId` through this.
    */
   objectTid;
 
   /**
-   * The name of the property accessed within an object.
+   * The property string.
    * 
    * @type {string}
    */
-  memberPath;
+  prop;
 }
 
 export default class DataNode {

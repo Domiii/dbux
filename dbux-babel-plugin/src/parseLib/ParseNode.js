@@ -108,6 +108,7 @@ export default class ParseNode {
    * Gets all child paths. 
    * NOTE: You can choose to ommit optional missing children, but optional children are rare.
    * @param {boolean} addEmpty Whether to include optional missing paths (e.g. VariableDeclarator.init)
+   * @returns {NodePath[]}
    */
   getChildPaths(addEmpty = true) {
     const { children } = this.constructor;
@@ -119,10 +120,16 @@ export default class ParseNode {
     return this._childPaths;
   }
 
+  /**
+   * @returns {ParseNode}
+   */
   getNodeOfPath = path => {
     return getNodeOfPath(path);
   }
 
+  /**
+   * @returns {ParseNode[]}
+   */
   getChildNodes() {
     if (this.phase < ParsePhase.Exit1) {
       throw new Error(`Cannot getChildNodes before Exit or Instrument phases - ${this} (${ParsePhase.nameFromForce(this.phase)})`);

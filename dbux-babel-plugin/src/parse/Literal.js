@@ -1,4 +1,3 @@
-import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import BaseNode from './BaseNode';
 

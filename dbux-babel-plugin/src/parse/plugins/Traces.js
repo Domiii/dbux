@@ -113,6 +113,7 @@ export default class Traces extends ParsePlugin {
       declarationTidIdentifier = tidIdentifier;
     }
     else {
+      // NOTE: this (roughly) translates to `node.getDeclarationNode()._traceCfg.tidIdentifier`
       declarationTidIdentifier = node?.getDeclarationTidIdentifier();
     }
 
