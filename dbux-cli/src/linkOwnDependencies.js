@@ -48,7 +48,7 @@ function linkOwnDependencies() {
 
   // check if linkage works
   // console.warn('###########\n\n', dependencyRoot, process.env.NODE_ENV);
-  // console.warn('  ', require('@babel/plugin-proposal-class-properties'));
+  // console.warn('  ', require('@babel/plugin-proposal-optional-chaining'));
 
   // link dependencies against their folders in the `node_modules` folder
   const absoluteDeps = depNames.map(name =>
