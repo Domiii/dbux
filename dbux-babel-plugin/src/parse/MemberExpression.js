@@ -96,6 +96,12 @@ export default class MemberExpression extends BaseNode {
     );
   }
 
+  /** 
+   * TODO: order of execution!
+function f(msg, value) { console.log(msg, value); return value; }
+var o = null;
+f(1, o).x = (f(2), f(3, o = {}), f(4, o))
+   */
 
   // ###########################################################################
   // ME rval handling
