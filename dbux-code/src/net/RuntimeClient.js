@@ -1,3 +1,5 @@
+import minBy from 'lodash/minBy';
+import maxBy from 'lodash/maxBy';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 // eslint-disable-next-line no-unused-vars
@@ -19,8 +21,11 @@ export default class RuntimeClient extends SocketClient {
   constructor(server, socket) {
     super(server, socket);
 
-    Verbose && debug('connected');
+    debug('connected');
 
+    this.on('noop', () => {
+      debug(`received NOOP`);
+    });
     this.on('init', this._handleInit);
     this.on('data', this._handleData);
   }
@@ -63,15 +68,14 @@ export default class RuntimeClient extends SocketClient {
       }
     }
 
-    debug('init');
     this.socket.emit('init_ack', this.application.applicationId);
   }
 
   _handleData = (data) => {
     const str = Object.entries(data)
-      .map(([name, entries]) => `${name}: ${entries.length}`)
+      .map(([key, arr]) => `${key} (${minBy(arr, entry => entry._id)._id}~${maxBy(arr, entry => entry._id)._id})`)
       .join(', ');
-    debug(`data received - ${str}`);
+    debug(`data received: ${str}`);
     this.application.addData(data);
   }
 }

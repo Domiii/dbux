@@ -1,36 +1,33 @@
 /* eslint no-console: 0 */
 
 const path = require('path');
-const glob = require('glob');
 // const process = require('process');
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
-const fromEntries = require('object.fromentries');    // NOTE: Object.fromEntries was only added in Node v12
+const webpackCommon = require('../config/webpack.config.common');
+// const fromEntries = require('object.fromentries');    // NOTE: Object.fromEntries was only added in Node v12
 const {
   makeResolve,
-  makeAbsolutePaths,
-  getDbuxVersion
+  makeAbsolutePaths
 } = require('../dbux-cli/lib/package-util');
 
+// register self, so we can load dbux src files
+require('../dbux-cli/lib/dbux-register-self');
 
 // const _oldLog = console.log; console.log = (...args) => _oldLog(new Error(' ').stack.split('\n')[2], ...args);
-const projectRoot = path.resolve(__dirname);
-// const projectRootNormalized = projectRoot.replace(/\\/g, '/');
-const projectSrc = path.resolve(projectRoot, 'src');
-const projectConfig = path.resolve(projectRoot, 'config');
+const PackageRoot = path.resolve(__dirname);
+// const projectConfig = path.resolve(projectRoot, 'config');
 const MonoRoot = path.resolve(__dirname, '..');
 
 module.exports = (env, argv) => {
   const outputFolderName = 'dist';
-
   const mode = argv.mode || 'development';
-  const DBUX_VERSION = getDbuxVersion(mode);
-  const DBUX_ROOT = mode === 'development' ? MonoRoot : '';
-  process.env.NODE_ENV = mode; // set these, so babel configs also have it
-  process.env.DBUX_ROOT = DBUX_ROOT;
 
-  console.debug(`[dbux-server] (DBUX_VERSION=${DBUX_VERSION}, mode=${mode}, DBUX_ROOT=${DBUX_ROOT}) building...`);
+  const {
+    DBUX_VERSION,
+    DBUX_ROOT
+  } = webpackCommon('dbux-babel-plugin', mode);
 
   const webpackPlugins = [
     new webpack.EnvironmentPlugin({
@@ -38,30 +35,12 @@ module.exports = (env, argv) => {
       DBUX_VERSION,
       DBUX_ROOT
     }),
-    // new webpack.IgnorePlugin({
-    //   checkResource(name, dir) {
-    //     // console.error(name, dir);
-    //     if (!name.startsWith(projectRootNormalized) && !name.startsWith('.')) {
-    //       // ignore non-local files
-    //       return true;
-    //     }
-    //     const fpath = path.resolve(dir, name);
-    //     const regex = `^(${projectSrc}|${projectConfig})`.replace(/\\/g, '\\\\');
-    //     const include = !!fpath.match(regex);
-    //     // console.debug('[Webpack.ignore]', fpath, include);
-    //     return !include;
-    //   }
-    // }),
-    new webpack.ProvidePlugin({
-      process: 'process'
-    })
   ];
 
 
   const dependencyPaths = [
-    "dbux-common",
-    "dbux-common-node",
-    "dbux-projects",
+    'dbux-common', 
+    'dbux-common-node'
   ];
 
 
@@ -69,7 +48,7 @@ module.exports = (env, argv) => {
   const absoluteDependencies = makeAbsolutePaths(MonoRoot, dependencyPaths);
 
   // allow resolving `.babelrc` and `babel.config.js`
-  resolve.modules.push(projectRoot);
+  resolve.modules.push(PackageRoot);
 
   // console.log(resolve.modules);
   const rules = [
@@ -88,21 +67,11 @@ module.exports = (env, argv) => {
     }
   ];
 
-  const inputFiles = 'src/index.js';
   const entry = {
-    // see https://stackoverflow.com/questions/34907999/best-way-to-have-all-files-in-a-directory-be-entry-points-in-webpack
-
-    // generate all files in `src` and `src/commands`
-    ...fromEntries(glob.sync(path.join(projectRoot, inputFiles)).map(fpath =>
-      [fpath.substring(projectSrc.length + 1, fpath.length - 3), fpath]
-    )),
-
-    // TODO: dependOn
-
-    // ...fromEntries(glob.sync(path.join(projectRoot, 'config/*.js')).map(fpath =>
-    //   [fpath.substring(projectConfig.length + 1, fpath.length - 3), fpath]
-    // )),
+    'index.js': path.join(PackageRoot, 'src/index.js')
   };
+
+  // console.warn('[dbux-cli] entry:', JSON.stringify(entry, null, 2));
 
 
   return {
@@ -117,13 +86,13 @@ module.exports = (env, argv) => {
     //devtool: 'inline-source-map',
     target: 'node',
     plugins: webpackPlugins,
-    context: path.join(projectRoot, '.'),
+    context: path.join(PackageRoot, '.'),
     entry,
     output: {
-      path: path.join(projectRoot, outputFolderName),
+      path: path.join(PackageRoot, outputFolderName),
       filename: '[name].js',
       publicPath: outputFolderName,
-      libraryTarget: "commonjs",
+      libraryTarget: "umd", // probably want commonjs instead
       devtoolModuleFilenameTemplate: "../[resource-path]",
       // sourceMapFilename: outFile + ".map"
     },
@@ -156,40 +125,14 @@ module.exports = (env, argv) => {
     //   }
     // },
     externals: [
-      // /^fs$/,
-      // /^process$/,
-      // /^path$/,
-      // { 
-      //   firebase: 'commonjs firebase',
-      //   'firebase-admin': 'commonjs firebase-admin'
-      // },
       nodeExternals({
+        additionalModuleDirs: [
+          path.join(MonoRoot, 'node_modules')
+        ],
         allowlist: [
           ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/src/.*`))
-          // (...args) => {
-          //   console.error(...args);
-          //   return true;
-          // }
         ]
       })
-      // /node_modules\//,
-      // /@babel\//,
-      // /@dbux\//,
-      // function (dir, name, callback) {
-      //   // console.error(name, dir);
-      //   if (!name.startsWith(projectRoot) && !name.startsWith('.')) {
-      //     // ignore non-local files
-      //     return callback(null, name);
-      //   }
-      //   const fpath = path.resolve(dir, name);
-      //   const regex = `^(${projectSrc}|${projectConfig})`.replace(/\\/g, '\\\\');
-      //   const include = !!fpath.match(regex);
-      //   console.debug('[Webpack.include]', fpath, include);
-      //   if (!include) {
-
-      //   }
-      //   callback();
-      // }
     ],
     node: {
       // generate actual output file information

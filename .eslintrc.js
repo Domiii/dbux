@@ -1,4 +1,7 @@
 module.exports = {
+  ignorePatterns: [
+    '**/dist/*'
+  ],
   extends: [
     "airbnb-base"
   ],
