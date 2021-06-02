@@ -25,7 +25,7 @@ import { renderValueAsJsonInEditor } from '../traceDetailsView/valueRender';
 import { getAllMemento, clearAll } from '../memento';
 import { showErrorMessage, showInformationMessage } from '../codeUtil/codeModals';
 import { translate } from '../lang';
-import { getLogsDirectory } from '../resources';
+import { getLogsDirectory } from '../codeUtil/codePath';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('userCommands');

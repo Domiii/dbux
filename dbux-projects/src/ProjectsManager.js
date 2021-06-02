@@ -5,6 +5,7 @@ import NanoEvents from 'nanoevents';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { realPathSyncNormalized } from '@dbux/common-node/src/util/pathUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { readPackageJson } from '@dbux/cli/lib/package-util';
 import projectRegistry from './_projectRegistry';
@@ -593,7 +594,7 @@ export default class ProjectsManager {
 
   getDevPackageRoot() {
     // NOTE: __dirname is actually "..../dbux-code/dist", because of webpack
-    return fs.realpathSync(path.join(__dirname, '..', '..'));
+    return realPathSyncNormalized(path.join(__dirname, '..', '..'));
   }
 
   // _convertPkgToLocalIfNecessary(pkgName, version = null) {
