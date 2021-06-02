@@ -1,17 +1,13 @@
 // import template from '@babel/template';
 import * as t from '@babel/types';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { getPresentableString } from '../../helpers/pathHelpers';
 import { buildTraceCall, bindTemplate, bindExpressionTemplate } from '../../helpers/templateUtil';
+import { makeInputs, ZeroNode } from './buildHelpers';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('builders/trace');
 
 const Verbose = 2;
-
-export const ZeroNode = t.numericLiteral(0);
-export const NullNode = t.nullLiteral();
-export const UndefinedNode = t.identifier('undefined');
 
 export const buildTraceId = bindExpressionTemplate(
   '%%traceId%% = %%newTraceId%%(%%staticTraceId%%)',
@@ -27,12 +23,6 @@ export const buildTraceId = bindExpressionTemplate(
     };
   },
 );
-
-function makeInputs(inputTraces) {
-  return inputTraces &&
-    t.arrayExpression(inputTraces.map(trace => trace.tidIdentifier)) ||
-    NullNode;
-}
 
 // ###########################################################################
 // traceExpression
@@ -66,7 +56,7 @@ export const buildTraceExpression = buildTraceCall(
       expr: expressionNode,
       tid,
       declarationTid: declarationTidIdentifier || ZeroNode,
-      inputs: makeInputs()
+      inputs: makeInputs(inputTraces)
     };
   }
 );

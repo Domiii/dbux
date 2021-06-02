@@ -19,4 +19,11 @@ export default class StaticDataNode {
    * @type {number}
    */
   type;
+
+  /**
+   * NOTE: Only available in BCE trace.
+   * 
+   * @type {Array | undefined}
+   */
+  argConfigs;
 }

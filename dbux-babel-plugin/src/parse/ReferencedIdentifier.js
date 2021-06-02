@@ -9,7 +9,7 @@ export default class ReferencedIdentifier extends BaseId {
   /**
    * TODO: consider getting rid of this entirely?
    */
-  createInputTrace() {
+  createDefaultTrace() {
     const rawTraceData = {
       path: this.path,
       node: this,

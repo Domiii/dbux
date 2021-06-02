@@ -20,6 +20,12 @@ import BaseNode from './BaseNode';
 //   return traceCallExpression(path, state, traceResultType);
 // }
 
+function getArgumentCfg(node) {
+  return {
+    isSpread: node.type === 'SpreadElement'
+  };
+}
+
 export default class CallExpression extends BaseNode {
   static visitors = [
     `CallExpression`,
@@ -56,61 +62,53 @@ export default class CallExpression extends BaseNode {
     const { path } = this;
 
 
-    const [calleePath, argumentPaths] = this.getChildPaths();
-    const [calleeNode, argumentNodes] = this.getChildNodes();
+    const [calleePath, argumentPath] = this.getChildPaths();
+    // const [calleeNode, argumentNodes] = this.getChildNodes();
 
     /**
      * TODO:
-     * 1. remove `CallArgument`; link against nested trace via a new `link` property (optional arg to `newTraceId`). Set to `callId` in post.
-     *    * TODO: runtime needs to track arguments and link against parameters
-     *    * TODO: some built-ins are called with one set of arguments and then call our function with another
-     *    * TODO: `bind` etc
-     * 2. go back to what we had before; insert `BCE` between callee and actual call (because it represents the entire call, and not the callee)
-     * 3. special case: `calleePath.isMemberExpression()`
-     * 4. special case: `calleePath.isCallExpression()`
+     * 1. special case: `calleePath.isMemberExpression()`
+     * 2. special case: `calleePath.isCallExpression()`
+     * 3. special case: built-in functions
+     *    * some built-ins are called with one set of arguments and then call our function with another
+     * 4. special case: `bind` etc.
      */
+
+    // 1. trace callee
+    this.Traces.addDefaultTrace(calleePath);
+
+    // 2. trace args + 3. BCE
     const bceTraceData = {
       path,
       // node: this,
       staticTraceData: {
-        type: TraceType.BeforeCallExpression
+        type: TraceType.BeforeCallExpression,
+        dataNode: {
+          argConfigs: argumentPath.node.map(getArgumentCfg)
+        }
       },
       meta: {
-        instrument: this.Traces.instrumentTraceNoValue,
-        replacePath: bcePath
+        // NOTE: will be instrumented by `CallExpressionResult`
+        instrument: null
       }
     };
-    const calleeTrace = this.Traces.addTrace(bceTraceData);
-
-    const calleeTidIdentifier = calleeTrace.tidIdentifier;
-
-    for (let i = 0; i < argumentPaths.length; ++i) {
-      const argPath = argumentPaths[i];
-      const argNode = argumentNodes[i];
-      this.Traces.addTrace({
-        path: argPath,
-        node: argNode,
-        staticTraceData: {
-          type: TraceType.CallArgument
-        },
-        meta: {
-          build: buildTraceExpressionNoInput,
-          traceCall: 'traceCallArgument',
-          moreTraceCallArgs: [calleeTidIdentifier]
-        }
-      });
-    }
-
+    const bceInputs = argumentPath.node.map((_, i) => argumentPath.get(i));
+    const bceTrace = this.Traces.addTraceWithInputs(bceTraceData, bceInputs);
+    const bceTidIdentifier = bceTrace.tidIdentifier;
+    
+    // 4. wrap `CallExpression` (as `CallExpressionResult`)
     this.Traces.addTrace({
       path: this.path,
       node: this,
       staticTraceData: {
         type: TraceType.CallExpressionResult
       },
+      data: {
+        bceTrace
+      },
       meta: {
-        build: buildTraceExpressionSimple,
-        traceCall: 'traceCallResult',
-        moreTraceCallArgs: [calleeTidIdentifier]
+        instrument: this.Traces.instrumentCallExpression,
+        moreTraceCallArgs: [bceTidIdentifier]
       }
     });
   }

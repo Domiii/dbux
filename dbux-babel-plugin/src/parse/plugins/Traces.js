@@ -5,13 +5,14 @@
 import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import TraceCfg from '../../definitions/TraceCfg';
 import { getPresentableString } from '../../helpers/pathHelpers';
 import { traceWrapExpression, traceWrapWrite, traceDeclarations, traceNoValue } from '../../instrumentation/trace';
 import ParseNode from '../../parseLib/ParseNode';
 // import { getPresentableString } from '../../helpers/pathHelpers';
 import ParsePlugin from '../../parseLib/ParsePlugin';
 
-const makeInputTrace = {
+const makeDefaultTrace = {
   // Literal(path) {
   // }
 };
@@ -34,39 +35,41 @@ export default class Traces extends ParsePlugin {
   // trace inputs
   // ###########################################################################
 
+  addDefaultTrace = (path) => {
+    const node = this.node.getNodeOfPath(path);
+    if (!node) {
+      // handle some (basic) default AST node types
+      const traceData = makeDefaultTrace[path.node.type]?.(path);
+      if (!traceData) {
+        this.node.logger.warn(`Found unknown AST node type "${path.node.type}" for input node: ${getPresentableString(path)}`);
+        return null;
+      }
+      return this.addTrace(traceData);
+    }
+    else {
+      if (!(node instanceof ParseNode)) {
+        this.node.logger.warn(`ParseNode.getNodeOfPath did not return object of type "ParseNode": ${this.node}\n  (instead it returned: ${node})`);
+        return null;
+      }
+
+      if (!node._traceCfg) {
+        const rawTraceData = node.createDefaultTrace?.();
+        if (!rawTraceData) {
+          this.node.logger.warn(`ParseNode did not implement "createDefaultTrace": ${node}`);
+          return null;
+        }
+        this.addTrace(rawTraceData);
+      }
+      return node._traceCfg;
+    }
+  }
+
   /**
    * NOTE: we assume inputs to be RVals.
    */
   addInputs(inputPaths) {
     return inputPaths.flat()
-      .map(inputPath => {
-        const node = this.node.getNodeOfPath(inputPath);
-        if (!node) {
-          // handle some (basic) default AST node types
-          const traceData = makeInputTrace[inputPath.node.type]?.(inputPath);
-          if (!traceData) {
-            this.node.logger.warn(`Found unknown AST node type "${inputPath.node.type}" for input node: ${getPresentableString(inputPath)}`);
-            return null;
-          }
-          return this.addTrace(traceData);
-        }
-        else {
-          if (!(node instanceof ParseNode)) {
-            this.node.logger.warn(`ParseNode.getNodeOfPath did not return object of type "ParseNode": ${this.node}\n  (instead it returned: ${node})`);
-            return null;
-          }
-
-          if (!node._traceCfg) {
-            const rawTraceData = node.createInputTrace?.();
-            if (!rawTraceData) {
-              this.node.logger.warn(`ParseNode did not implement "createInputTrace": ${node}`);
-              return null;
-            }
-            this.addTrace(rawTraceData);
-          }
-          return node._traceCfg;
-        }
-      })
+      .map(this.addDefaultTrace)
       .filter(node => !!node);
   }
 
@@ -76,11 +79,12 @@ export default class Traces extends ParsePlugin {
 
   /**
    * TODO: fix order of `staticTraceId`
+   * @return {TraceCfg}
    */
-  addTrace(traceDataOrArray) {
-    if (Array.isArray(traceDataOrArray)) {
-      for (const traceCfg of traceDataOrArray) {
-        this.addTrace(traceCfg);
+  addTrace(traceData) {
+    if (Array.isArray(traceData)) {
+      for (const t of traceData) {
+        this.addTrace(t);
       }
       return null;
     }
@@ -90,9 +94,10 @@ export default class Traces extends ParsePlugin {
       path,
       node,
       staticTraceData,
+      inputTraces,
       meta,
-      inputTraces
-    } = traceDataOrArray;
+      data
+    } = traceData;
 
     if (!path || !staticTraceData) {
       throw new Error(`addTrace data missing \`path\` or \`staticTraceData\``);
@@ -117,24 +122,25 @@ export default class Traces extends ParsePlugin {
       declarationTidIdentifier = node?.getDeclarationTidIdentifier();
     }
 
-    const traceData = {
+    const traceCfg = {
       path,
       node,
       inProgramStaticTraceId,
       tidIdentifier,
       declarationTidIdentifier,
       inputTraces,
-      meta
+      meta,
+      data
     };
 
     if (!isDeclaration) {
-      node?._setTraceData(traceData);
-      this.traces.push(traceData);
+      node?._setTraceData(traceCfg);
+      this.traces.push(traceCfg);
     }
 
     this.Verbose >= 2 && this.debug('[traceId]', tidIdentifier.name, `([${inputTraces?.map(tid => tid.name).join(',') || ''}])`, `@"${this.node}"`);
 
-    return traceData;
+    return traceCfg;
   }
 
   // ###########################################################################
@@ -171,8 +177,10 @@ export default class Traces extends ParsePlugin {
   // ###########################################################################
 
   addTraceWithInputs(traceData, inputPaths) {
-    // also trace inputTraces if they are `Literal` or `ReferencedIdentifier`
+    // add trace for inputTraces if they don't have any yet
+    // NOTE: especially for `Literal` or `ReferencedIdentifier`
     traceData.inputTraces = this.addInputs(inputPaths);
+
     return this.addTrace(traceData);
   }
 
@@ -195,12 +203,32 @@ export default class Traces extends ParsePlugin {
     traceNoValue(getInstrumentPath(traceCfg), state, traceCfg);
   }
 
-  instrumentCallExpression = traceCfg => {
-    const { path } = traceCfg;
-    this.instrumentTraceExpression(traceCfg);
+  instrumentCallExpression = callResultCfg => {
+    const { path } = callResultCfg;
 
-    const bcePath = path.get();
-    this.instrumentBCE();
+    // for (let i = 0; i < argumentPaths.length; ++i) {
+    //   const argPath = argumentPaths[i];
+    //   const argNode = argumentNodes[i];
+    //   this.Traces.addTrace({
+    //     path: argPath,
+    //     node: argNode,
+    //     staticTraceData: {
+    //       type: TraceType.CallArgument
+    //     },
+    //     meta: {
+    //       build: buildTraceExpressionNoInput,
+    //       traceCall: 'traceCallArgument',
+    //       moreTraceCallArgs: [calleeTidIdentifier]
+    //     }
+    //   });
+    // }
+
+    // const bcePath = path.get('expressions.1');
+    // bceCfg.meta.replacePath = bcePath;
+    // this.instrumentTraceExpression(bceCfg);
+
+    // CallExpressionResult
+    this.instrumentTraceExpression(callResultCfg);
   }
 
   instrumentTraceDeclarations = (traceCfgs) => {
@@ -237,7 +265,7 @@ export default class Traces extends ParsePlugin {
         id: tidIdentifier
       });
 
-      instrument(traceCfg);
+      instrument?.(traceCfg);
     }
   }
 }

@@ -75,8 +75,7 @@ export default function injectDbuxState(programPath, programState) {
         traceDeclaration: scope.generateUidIdentifier('td' + programUid),
         traceExpression: scope.generateUidIdentifier('te' + programUid),
         traceWrite: scope.generateUidIdentifier('tw' + programUid),
-        traceCallee: scope.generateUidIdentifier('tc' + programUid),
-        traceCallArgument: scope.generateUidIdentifier('tca' + programUid),
+        traceBCE: scope.generateUidIdentifier('tc' + programUid),
         traceCallResult: scope.generateUidIdentifier('tcr' + programUid),
         traceMemberExpression: scope.generateUidIdentifier('tme' + programUid),
         traceWriteMemberExpression: scope.generateUidIdentifier('twme' + programUid)

@@ -38,6 +38,9 @@ export default class StaticContext extends ParsePlugin {
       this.referencedBindings.add(binding);
     }
     else {
+      // TODO: special variables
+      //      -> `Scope.contextVariables = ["arguments", "undefined", "Infinity", "NaN"]`
+      //      -> `module` and other special variables (e.g. `commonjs` introduces https://nodejs.org/docs/latest/api/modules.html#modules_the_module_scope)
       this.referencedGlobals.add(id.astNode.name);
     }
   }

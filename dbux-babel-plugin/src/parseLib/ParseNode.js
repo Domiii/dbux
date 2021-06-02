@@ -108,7 +108,7 @@ export default class ParseNode {
    * Gets all child paths. 
    * NOTE: You can choose to ommit optional missing children, but optional children are rare.
    * @param {boolean} addEmpty Whether to include optional missing paths (e.g. VariableDeclarator.init)
-   * @returns {NodePath[]}
+   * @returns {Array.<NodePath>}
    */
   getChildPaths(addEmpty = true) {
     const { children } = this.constructor;
