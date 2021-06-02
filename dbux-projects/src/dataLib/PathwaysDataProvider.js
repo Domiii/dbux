@@ -31,10 +31,16 @@ const { log, debug, warn, error: logError } = newLogger('PathwaysDataProvider');
 /** @typedef {import('./TestRun').default} TestRun */
 /** @typedef {import('@dbux/data/src/applications/Application').default} Application */
 
+class PathwaysCollection extends Collection {
+  handleAdd(entry) {
+    entry.id = this._all.length;
+  }
+}
+
 /**
  * @extends {Collection<TestRun>}
  */
-class TestRunCollection extends Collection {
+class TestRunCollection extends PathwaysCollection {
   constructor(pdp) {
     super('testRuns', pdp);
   }
@@ -43,7 +49,7 @@ class TestRunCollection extends Collection {
 /**
  * @extends {Collection<Application>}
  */
-class ApplicationCollection extends Collection {
+class ApplicationCollection extends PathwaysCollection {
   constructor(pdp) {
     super('applications', pdp);
   }
@@ -115,7 +121,7 @@ class ApplicationCollection extends Collection {
 /**
  * @extends {Collection<UserAction>}
  */
-class UserActionCollection extends Collection {
+class UserActionCollection extends PathwaysCollection {
   constructor(pdp) {
     super('userActions', pdp);
   }
@@ -167,7 +173,7 @@ class UserActionCollection extends Collection {
 /**
  * @extends {Collection<Step>}
  */
-class StepCollection extends Collection {
+class StepCollection extends PathwaysCollection {
   groupIdsByKey = new Map();
 
   constructor(pdp) {
@@ -202,7 +208,7 @@ class StepCollection extends Collection {
 /**
  * @extends {Collection<ActionGroup>}
  */
-class ActionGroupCollection extends Collection {
+class ActionGroupCollection extends PathwaysCollection {
   constructor(pdp) {
     super('actionGroups', pdp);
   }
