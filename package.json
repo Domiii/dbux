@@ -9,7 +9,6 @@
   "devDependencies": {
     "@babel/cli": "^7.10.1",
     "@babel/core": "^7.10.1",
-    "@babel/plugin-proposal-class-properties": "^7.10.1",
     "@babel/plugin-proposal-decorators": "^7.10.1",
     "@babel/plugin-proposal-function-bind": "^7.10.1",
     "@babel/plugin-proposal-optional-chaining": "^7.10.1",
@@ -59,7 +58,6 @@
     "lodash": "^4.17.19",
     "shell-escape": "^0.2.0",
     "shelljs": "0.8.4",
-    "socket.io-client": "^2.3.0",
     "yargs": "^15.4.1"
   },
   "optionalDependencies": {
@@ -68,6 +66,7 @@
   },
   "scripts": {
     "start": "yarn run build:clean && yarn run version:dev && yarn runall:dev",
+    "pub": "node scripts/publish.js",
     "nra": "node node_modules/npm-run-all/bin/npm-run-all",
     "runall:dev": "npm run nra -- -p build:watch graph:build:watch",
     "_runall:dev": "(yarn build:watch) & (graph:build:watch)",
@@ -89,10 +88,10 @@
     "graph:build:prod": "cd dbux-graph-client && yarn run build:prod",
     "graph:build:dev": "cd dbux-graph-client && yarn run build:dev",
     "i": "npx lerna bootstrap --force-local && npx lerna link --force-local",
-    "dbux-reinstall": "yarn run dbux-uninstall && yarn run i",
-    "dbux-all": "bash scripts/dbux-run-all.sh",
-    "dbux-uninstall": "yarn run build:clean && rm -rf ./node_modules && rm -f ./package-lock.json && rm -f yarn.lock && bash scripts/dbux-run-all.sh \"rm -rf ./node_modules && rm -f ./package-lock.json && rm -f yarn.lock\"",
+    "force-reinstall": "yarn run force-uninstall && yarn install && yarn i",
+    "force-uninstall": "yarn run build:clean && rm -rf ./node_modules && rm -f ./package-lock.json && rm -f yarn.lock && bash scripts/dbux-run-all.sh \"rm -rf ./node_modules && rm -f ./package-lock.json && rm -f yarn.lock\"",
     "dbux-lerna-fix": "lerna exec -- node ../scripts/lerna-fix.js",
+    "dbux-all": "bash scripts/dbux-run-all.sh",
     "clinic": "clinic flame -- node dbux-cli/bin/run-js-unbabel ../samples/__samplesOutput__/oop1.es5.js || (echo \"\\033[1;31mCould not execute clinic - checking installed version:\\033[0m\" && clinic -v)",
     "cloc": "npx cloc --match-f='.*\\.((js)|(py))$' --fullpath --match-d='(dbux-[^/]+|analysis|samples/(__samplesInput__|case-studies))' --not-match-d='(dbux_projects|node_modules|dist|project_sandbox)$'  --by-file .",
     "cloc-eslint": "cd dbux_projects/eslint && volta run --node lts npx cloc --match-f=\".*\\.(e?js|ts)$\" --by-file lib bin tests templates packages",
