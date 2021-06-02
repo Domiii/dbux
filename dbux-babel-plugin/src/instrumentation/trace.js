@@ -1,5 +1,5 @@
 // import * as t from '@babel/types';
-import { buildTraceExpression, buildTraceDeclaration, UndefinedNode, buildTraceDeclarations } from './builders/trace';
+import { buildTraceExpression, buildTraceDeclaration, UndefinedNode, buildTraceDeclarations, buildTraceId } from './builders/misc';
 import { unshiftScopeBlock } from './scope';
 
 const keepStatementCfg = {
@@ -19,6 +19,14 @@ export function traceWrapExpression(expressionPath, state, traceCfg) {
 
   // return path of original expression node
   return replacePath;
+}
+
+export function traceNoValue(path, state, traceCfg) {
+  const expressionNode = path.node || UndefinedNode;
+  const build = traceCfg.meta?.build || buildTraceId;
+  const newNode = build(expressionNode, state, traceCfg);
+  path.replaceWith(newNode);
+  return path;
 }
 
 export function traceDeclarations(targetPath, state, traceCfgs) {

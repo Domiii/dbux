@@ -181,39 +181,6 @@ export const buildTraceWrite = buildTraceCall(
 );
 
 // ###########################################################################
-// traceCallArgument
-// ###########################################################################
-
-export const buildTraceCallArgument = buildTraceCall(
-  '%%traceCallArgument%%(%%expr%%, %%tid%%, %%declarationTid%%, %%calleeTid%%, %%inputs%%)',
-  function buildTraceCallArgument(expr, state, traceCfg) {
-    const { ids: { aliases: {
-      traceCallArgument
-    } } } = state;
-
-    const {
-      declarationTidIdentifier,
-      inputTraces,
-      calleeTid
-    } = traceCfg;
-
-    const tid = buildTraceId(state, traceCfg);
-
-    const declarationTid = declarationTidIdentifier || ZeroNode;
-
-    return {
-      expr,
-      traceCallArgument,
-      tid,
-      declarationTid,
-      inputs: makeInputs(inputTraces),
-      calleeTid
-    };
-  }
-);
-
-
-// ###########################################################################
 // traceNoValue
 // ###########################################################################
 

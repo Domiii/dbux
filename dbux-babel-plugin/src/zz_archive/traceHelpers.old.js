@@ -388,14 +388,14 @@ const instrumentDefaultCallExpressionEnter =
     // build
     // const { ids: { dbux } } = state;
 
-    
+
     // super(), import(), require() all need special treatment
     const canTraceArgs = getCanTraceArgs(calleePath);
     const isSpecialCallee = calleePath.isSuper() || !canTraceArgs;
-    const f = isSpecialCallee && 
-      null || 
+    const f = isSpecialCallee &&
+      null ||
       path.scope.generateDeclaredUidIdentifier(getCalleeDisplayName(calleePath));
-    
+
     // replace with our custom callee
     if (!isSpecialCallee) {   // NOTE: `super`, `require`, `import` cannot be easily replaced
       const templ = callTemplatesDefault[path.type];
@@ -407,9 +407,7 @@ const instrumentDefaultCallExpressionEnter =
     }
 
     // prepend actual call with (i) callee assignment + (ii) BCE placeholder
-    path.replaceWith(t.sequenceExpression([
-      // (i) callee assignment (%%f%% = %%fNode%%)
-      isSpecialCallee &&
+    const calleeNode = isSpecialCallee &&
 
       // callee cannot be assigned, so we set it to `null` (`f` will not be used in that case)
       t.nullLiteral() ||
@@ -418,7 +416,10 @@ const instrumentDefaultCallExpressionEnter =
       t.assignmentExpression('=',
         f,
         calleePath.node
-      ),
+      );
+    path.replaceWith(t.sequenceExpression([
+      // (i) callee assignment (%%f%% = %%fNode%%)
+      calleeNode,
 
       // (ii) BCE placeholder
       t.nullLiteral(),

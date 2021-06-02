@@ -6,7 +6,7 @@ import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { getPresentableString } from '../../helpers/pathHelpers';
-import { traceWrapExpression, traceWrapWrite, traceDeclarations } from '../../instrumentation/trace';
+import { traceWrapExpression, traceWrapWrite, traceDeclarations, traceNoValue } from '../../instrumentation/trace';
 import ParseNode from '../../parseLib/ParseNode';
 // import { getPresentableString } from '../../helpers/pathHelpers';
 import ParsePlugin from '../../parseLib/ParsePlugin';
@@ -136,7 +136,7 @@ export default class Traces extends ParsePlugin {
 
     return traceData;
   }
-  
+
   // ###########################################################################
   // addDeclarationTrace
   // ###########################################################################
@@ -184,10 +184,23 @@ export default class Traces extends ParsePlugin {
   // ###########################################################################
 
   instrumentTraceExpression = (traceCfg) => {
-    const { node } = this;
-    const { state } = node;
+    const { state } = this.node;
 
     traceWrapExpression(getInstrumentPath(traceCfg), state, traceCfg);
+  }
+
+  instrumentTraceNoValue = (traceCfg) => {
+    const { state } = this.node;
+
+    traceNoValue(getInstrumentPath(traceCfg), state, traceCfg);
+  }
+
+  instrumentCallExpression = traceCfg => {
+    const { path } = traceCfg;
+    this.instrumentTraceExpression(traceCfg);
+
+    const bcePath = path.get();
+    this.instrumentBCE();
   }
 
   instrumentTraceDeclarations = (traceCfgs) => {

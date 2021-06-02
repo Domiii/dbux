@@ -1,5 +1,5 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
-import { buildTraceWrite } from '../../instrumentation/builders/trace';
+import { buildTraceWrite } from '../../instrumentation/builders/misc';
 import ParsePlugin from '../../parseLib/ParsePlugin';
 
 export default class LValIdentifier extends ParsePlugin {

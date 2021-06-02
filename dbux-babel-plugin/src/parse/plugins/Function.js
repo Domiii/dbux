@@ -7,7 +7,7 @@ import { getNodeNames } from '../../visitors/nameVisitors';
 
 import { doesNodeEndScope } from '../../helpers/astUtil';
 import ParsePlugin from '../../parseLib/ParsePlugin';
-import { buildTraceId } from '../../instrumentation/builders/trace';
+import { buildTraceId } from '../../instrumentation/builders/misc';
 
 
 function addContextTrace(bodyPath, state, type) {

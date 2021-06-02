@@ -1,6 +1,6 @@
 import { NodePath } from '@babel/traverse';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
-import { buildTraceMemberExpression } from '../instrumentation/builders/trace';
+import { buildTraceMemberExpression } from '../instrumentation/builders/misc';
 import BaseNode from './BaseNode';
 
 /**

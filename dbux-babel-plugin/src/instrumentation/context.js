@@ -1,6 +1,6 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 // import { buildTraceNoValue } from './traceHelpers.old';
-import { buildTraceNoValue } from './builders/trace';
+import { buildTraceNoValue } from './builders/misc';
 
 export function buildContextEndTrace(path, state) {
   return buildTraceNoValue(path, state, { type: TraceType.EndOfContext });

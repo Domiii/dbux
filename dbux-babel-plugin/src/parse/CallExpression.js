@@ -1,6 +1,6 @@
 // import { instrumentCallExpressionEnter } from '../zz_archive/traceHelpers.old';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
-import { buildTraceCallArgument, buildTraceExpressionNoInput, buildTraceExpressionSimple } from '../instrumentation/builders/trace';
+import { buildTraceExpressionNoInput, buildTraceExpressionSimple } from '../instrumentation/builders/misc';
 import BaseNode from './BaseNode';
 
 // function wrapCallExpression(path, state) {
@@ -53,6 +53,7 @@ export default class CallExpression extends BaseNode {
     // TODO: more special cases - super, import, require
     //    -> cannot separate callee for `super` or `import`
     //    -> cannot modify args for `import` or `require`, if they are constants
+    const { path } = this;
 
 
     const [calleePath, argumentPaths] = this.getChildPaths();
@@ -61,22 +62,25 @@ export default class CallExpression extends BaseNode {
     /**
      * TODO:
      * 1. remove `CallArgument`; link against nested trace via a new `link` property (optional arg to `newTraceId`). Set to `callId` in post.
+     *    * TODO: runtime needs to track arguments and link against parameters
+     *    * TODO: some built-ins are called with one set of arguments and then call our function with another
+     *    * TODO: `bind` etc
      * 2. go back to what we had before; insert `BCE` between callee and actual call (because it represents the entire call, and not the callee)
      * 3. special case: `calleePath.isMemberExpression()`
      * 4. special case: `calleePath.isCallExpression()`
      */
-
-    const calleeTraceData = {
-      path: calleePath,
-      node: calleeNode,
+    const bceTraceData = {
+      path,
+      // node: this,
       staticTraceData: {
         type: TraceType.BeforeCallExpression
       },
       meta: {
-        traceCall: 'traceCallee',
+        instrument: this.Traces.instrumentTraceNoValue,
+        replacePath: bcePath
       }
     };
-    const calleeTrace = this.Traces.addTrace(calleeTraceData);
+    const calleeTrace = this.Traces.addTrace(bceTraceData);
 
     const calleeTidIdentifier = calleeTrace.tidIdentifier;
 
