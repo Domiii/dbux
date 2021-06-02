@@ -1,15 +1,12 @@
-/*
-node --stack-trace-limit=1000 --enable-source-maps "C:\Users\domin\code\dbux\node_modules\@dbux\cli\bin\dbux.js" run --esnext --d c:\Users\domin\code\dbux\samples\__samplesInput__\bintree1.inst.js
-*/
-
 "use strict";
-var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-var _isString2 = _interopRequireDefault(require("lodash/isString")); // import isString from '../node_modules/lodash/isString';
 var _dbuxRuntime =
   typeof __dbux__ === "undefined" ? require("@dbux/runtime") : __dbux__;
-console.error('_dbuxRuntime', Object.keys(_dbuxRuntime).join(','));
 var _dbux = _dbux_init(_dbuxRuntime);
 var _contextId = _dbux.getProgramContextId();
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+var _isString2 = _interopRequireDefault(require("lodash/isString")); // import isString from '../node_modules/lodash/isString';
+
 try {
   var _main;
   // https://leetcode.com/submissions/detail/258300839/
