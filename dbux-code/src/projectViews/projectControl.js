@@ -2,7 +2,7 @@ import { env, Uri } from 'vscode';
 import path from 'path';
 import { newLogger } from '@dbux/common/src/log/logger';
 import sleep from '@dbux/common/src/util/sleep';
-import { pathNormalized } from '@dbux/common-node/src/util/pathUtil';
+import { pathJoin, pathNormalized } from '@dbux/common-node/src/util/pathUtil';
 import { initDbuxProjects } from '@dbux/projects/src';
 import Process from '@dbux/projects/src/util/Process';
 import { showWarningMessage, showInformationMessage, confirm } from '../codeUtil/codeModals';
@@ -62,7 +62,7 @@ export function createProjectManager(extensionContext) {
   }
 
   // the folder that contains the sample projects for dbux-practice
-  const projectsRoot = path.posix.join(dependencyRoot, 'dbux_projects');
+  const projectsRoot = pathJoin(dependencyRoot, 'dbux_projects');
   const dbuxLanguage = storageGet(`dbux.language`);
   const stopwatch = getStopwatch();
 

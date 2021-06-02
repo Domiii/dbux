@@ -1,5 +1,4 @@
-import { pathNormalized } from '@dbux/common-node/src/util/pathUtil';
-import path from 'path';
+import { pathNormalized, pathJoin } from '@dbux/common-node/src/util/pathUtil';
 import {
   ExtensionContext,
   Uri
@@ -11,7 +10,7 @@ import {
 let context;
 
 export function getResourcePath(...relativePathSegments) {
-  return asAbsolutePath(path.posix.join('resources', ...relativePathSegments));
+  return asAbsolutePath(pathJoin('resources', ...relativePathSegments));
 }
 
 export function getLogsDirectory() {

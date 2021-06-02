@@ -19,6 +19,10 @@ export function pathResolve(...paths) {
   return pathNormalized(path.resolve(...paths));
 }
 
+export function pathJoin(...paths) {
+  return pathNormalized(path.join(...paths));
+}
+
 export function pathNormalized(fpath) {
   return fpath.replace(/\\/g, '/');
 }

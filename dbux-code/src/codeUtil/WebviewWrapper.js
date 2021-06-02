@@ -5,8 +5,8 @@ import {
   commands,
   ColorThemeKind
 } from 'vscode';
-import path from 'path';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { pathJoin } from '@dbux/common-node/src/util/pathUtil';
 import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import { wrapScriptTag, wrapScriptFileInTag } from './domTransformUtil';
 import { set as mementoSet, get as mementoGet } from '../memento';
@@ -27,7 +27,7 @@ export default class WebviewWrapper {
     this.title = title;
     this.preferredColumn = preferredColumn;
     this.wasVisible = false;
-    this.resourceRoot = path.posix.join(getExtensionPath(), 'resources');
+    this.resourceRoot = pathJoin(getExtensionPath(), 'resources');
 
     this.logger = newLogger(`${title} WebviewWrapper`);
   }
@@ -49,7 +49,7 @@ export default class WebviewWrapper {
   // ###########################################################################
 
   getResourcePath(...pathSegments) {
-    return path.posix.join(this.resourceRoot, ...pathSegments);
+    return pathJoin(this.resourceRoot, ...pathSegments);
   }
 
   getThemeMode() {

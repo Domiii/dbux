@@ -6,7 +6,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { getAllFilesInFolders, globRelative } from '@dbux/common-node/src/util/fileUtil';
-import { pathResolve, realPathSyncPosix } from '@dbux/common-node/src/util/pathUtil';
+import { pathJoin, pathResolve, realPathSyncPosix } from '@dbux/common-node/src/util/pathUtil';
 import isObject from 'lodash/isObject';
 import BugList from './BugList';
 import Process from '../util/Process';
@@ -100,9 +100,12 @@ export default class Project {
 
     // NOTE: we get `constructorName` from the registry
     this.name = this.folderName = this.constructor.constructorName;
-    this.hiddenGitFolderPath = path.posix.join(this.projectsRoot, this.GitFolderName);
 
     this.logger = newLogger(this.debugTag);
+  }
+
+  get hiddenGitFolderPath() {
+    return pathJoin(this.projectsRoot, this.GitFolderName);
   }
 
   initProject() {
@@ -148,7 +151,7 @@ export default class Project {
   }
 
   get projectPath() {
-    return path.posix.join(this.projectsRoot, this.folderName);
+    return pathJoin(this.projectsRoot, this.folderName);
   }
 
   get runStatus() {
@@ -723,14 +726,14 @@ This may be solved by using \`Delete project folder\` button.`);
   // ###########################################################################
 
   getPatchFolder() {
-    return path.posix.join(this.getAssetDir(PatchFolderName), this.folderName);
+    return pathJoin(this.getAssetDir(PatchFolderName), this.folderName);
   }
 
   getPatchFile(patchFName) {
     if (!patchFName.endsWith('.patch')) {
       patchFName += '.patch';
     }
-    return path.posix.join(this.getPatchFolder(), patchFName);
+    return pathJoin(this.getPatchFolder(), patchFName);
   }
 
   /**
