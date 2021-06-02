@@ -33,7 +33,7 @@ const { log, debug, warn, error: logError } = newLogger('PathwaysDataProvider');
 
 class PathwaysCollection extends Collection {
   handleAdd(entry) {
-    entry.id = this._all.length;
+    entry._id = this._all.length;
   }
 }
 
@@ -321,8 +321,8 @@ export default class PathwaysDataProvider extends DataProviderBase {
 
 
   addNewGroup(step, firstAction, writeToLog = true) {
-    const { id: stepId } = step;
-    // const { id: actionId } = firstAction;
+    const { _id: stepId } = step;
+    // const { _id: actionId } = firstAction;
     const {
       createdAt,
       type: actionType,
@@ -353,7 +353,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
       // create new step
       step = this.addNewStep(action, writeToLog);
     }
-    action.stepId = step.id;
+    action.stepId = step._id;
 
     // actionGroup
     const lastActionGroup = this.collections.actionGroups.getLast();
@@ -362,14 +362,14 @@ export default class PathwaysDataProvider extends DataProviderBase {
       // create new group
       actionGroup = this.addNewGroup(step, action, writeToLog);
     }
-    action.groupId = actionGroup.id;
+    action.groupId = actionGroup._id;
 
     // add action
     this.addData({ userActions: [action] }, writeToLog);
   }
 
   shouldAddNewStep(action) {
-    // NOTE: action.id is not set yet (will be set during `addData`)
+    // NOTE: action._id is not set yet (will be set during `addData`)
     const {
       applicationId,
       staticContextId,
