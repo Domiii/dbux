@@ -20,4 +20,9 @@ export default class StaticProgramContext {
    * @type {string}
    */
   fileName;
+
+  /**
+   * @type {string | null}
+   */
+  moduleName;
 }

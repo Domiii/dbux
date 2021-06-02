@@ -11,11 +11,11 @@ const {
   makeAbsolutePaths,
   getDbuxVersion
 } = require('../dbux-cli/lib/package-util');
-
+const { pathResolve } = require('../dbux-common-node/src/util/pathUtil');
 
 // const _oldLog = console.log; console.log = (...args) => _oldLog(new Error(' ').stack.split('\n')[2], ...args);
-const projectRoot = path.resolve(__dirname);
-const MonoRoot = path.resolve(__dirname, '..');
+const projectRoot = pathResolve(__dirname);
+const MonoRoot = pathResolve(__dirname, '..');
 
 module.exports = (env, argv) => {
   const outputFolderName = 'dist';

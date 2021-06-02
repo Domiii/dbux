@@ -3,7 +3,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { initMemento, get as mementoGet, set as mementoSet } from './memento';
 import { initInstallId } from './installId';
 import { initLogging } from './logging';
-import { initResources } from './resources';
+import { initCodePath } from './codeUtil/codePath';
 import { activate } from '.';
 import { initPreActivateView } from './preActivateView/preActivateNodeProvider';
 import { registerCommand } from './commands/commandUtil';
@@ -52,7 +52,7 @@ export async function preActivate(context) {
     initMemento(context);
     await initInstallId();
     initLogging();
-    initResources(context);
+    initCodePath(context);
     const dialogController = initDialogController();
 
     await maybeSelectLanguage();
