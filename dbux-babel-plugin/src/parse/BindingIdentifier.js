@@ -53,9 +53,10 @@ export default class BindingIdentifier extends BaseId {
       `"${getPresentableString(this.binding?.path)}" in "${getPresentableString(this.path.parentPath)}"`);
     }
 
-    if (this.binding?.path.node.id !== this.path.node) {
-      return;
-    }
+    // if (this.binding?.path.node.id !== this.path.node) {
+    //   // NOTE: should never happen
+    //   return;
+    // }
 
     // const scopePath = this.binding.path.scope.path;
     const scopePath = this.getBindingScope().path;
@@ -64,6 +65,7 @@ export default class BindingIdentifier extends BaseId {
       throw new Error(`BindingIdentifier's scope did not have a scope: ${getPresentableString(scopePath)}`);
     }
 
+    // addDeclarationTrace
     this.bindingTrace = bindingScopeNode.Traces.addDeclarationTrace(this);
   }
 }

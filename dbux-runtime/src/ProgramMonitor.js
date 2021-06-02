@@ -54,6 +54,27 @@ export default class ProgramMonitor {
   }
 
   // ###########################################################################
+  // utilities
+  // ###########################################################################
+
+  getArgLength = (arg) => {
+    return arg?.length;
+  }
+
+  arrayFrom = (arg) => {
+    // TODO: see Scope.toArray(node, i, arrayLikeIsIterable)
+    /**
+     * NOTE: Babel does it more carefully:
+     * ```js
+     * function _iterableToArray(iter) {
+     *   if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
+     * }
+     * ```
+     */
+    return Array.from(arg);
+  }
+
+  // ###########################################################################
   // context management
   // ###########################################################################
 
@@ -64,7 +85,7 @@ export default class ProgramMonitor {
 
     const tracesDisabled = this.areTracesDisabled;
     return this._runtimeMonitor.pushImmediate(
-      this.getProgramId(), 
+      this.getProgramId(),
       inProgramStaticContextId,
       inProgramStaticTraceId,
       isInterruptable,
@@ -164,20 +185,12 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceWrite(this.getProgramId(), value, tid, declarationTid, inputs, deferTid);
   }
 
-  traceCallee = (value, tid, declarationTid) => {
+  traceBCE = (tid, argTids, spreadLengths) => {
     if (this.areTracesDisabled) {
-      return value;
+      return;
     }
 
-    return this._runtimeMonitor.traceCallee(this.getProgramId(), value, tid, declarationTid);
-  }
-
-  traceCallArgument = (value, tid, declarationTid, callTid) => {
-    if (this.areTracesDisabled) {
-      return value;
-    }
-
-    return this._runtimeMonitor.traceCallArgument(this.getProgramId(), value, tid, declarationTid, callTid);
+    this._runtimeMonitor.traceBCE(this.getProgramId(), tid, argTids, spreadLengths);
   }
 
   traceCallResult = (value, tid, callTid) => {

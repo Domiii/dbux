@@ -38,4 +38,10 @@ export default class Trace extends HasValue {
    * @type {number}
    */
   type;
+
+  /**
+   * Extra data related to this trace, based on circumstances.
+   * E.g. contains { argTids, spreadLengths } for BCE.
+   */
+  data;
 }

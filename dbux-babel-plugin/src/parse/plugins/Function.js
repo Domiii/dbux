@@ -7,7 +7,7 @@ import { getNodeNames } from '../../visitors/nameVisitors';
 
 import { doesNodeEndScope } from '../../helpers/astUtil';
 import ParsePlugin from '../../parseLib/ParsePlugin';
-import { buildTraceId } from '../../instrumentation/builders/misc';
+import { buildTraceExpressionSimple, buildTraceId } from '../../instrumentation/builders/misc';
 
 
 function addContextTrace(bodyPath, state, type) {
@@ -127,16 +127,38 @@ export default class Function extends ParsePlugin {
   }
 
   exit1() {
-    // TODO: add parameter declarations
+    const paramsPath = path.get('params');
+    const paramIds = paramsPath.node.map(param =>
+      // get all variable declarations in `param`
+      // see: https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/family.js#L215
+      // see: https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/lib/virtual-types.js
+      Object.values(param.getBindingIdentifierPaths())
+    ).flat();
 
-    // const params = path.get('params');
-    // const paramIds = params.map(param =>
-    //   // get all variable declarations in `param`
-    //   // see: https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/family.js#L215
-    //   // see: https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/lib/virtual-types.js
-    //   Object.values(param.getBindingIdentifierPaths())
-    // ).flat();
-    // this.getDeclarationNode().addOwnDeclarationTrace();
+    for (let i = 0; i < paramsPath.node.length; ++i) {
+      // TODO: in `dbux-data`, compute inputs[0] = `argTid` from `i`, using
+      //      (i) `bceStaticTrace.dataNode.argConfigs`,
+      //      (ii) `{ argTids, spreadLengths } = bceTrace.data`
+
+      // TODO: also add declaration in same trace
+      //  -> paramNode.getDeclarationNode().addOwnDeclarationTrace();
+
+      // trace -> `traceParam(param, tid, i)`
+      this.Traces.addTrace({
+        path: paramsPath.get(i.toString()),
+        // node,
+        staticTraceData: {
+          type: TraceType.Param
+        },
+        meta: {
+          build: buildTraceExpressionSimple,
+          traceCall: 'traceParam',
+          moreTraceCallArgs: [t.numericLiteral(i)]
+        }
+      });
+
+      // TODO: `{Object,Array,Assignment}Pattern
+    }
   }
 
   exit() {
@@ -152,17 +174,19 @@ export default class Function extends ParsePlugin {
         type: TraceType.PopImmediate
       },
       meta: {
-        instrument: this.finalizeInstrument
+        instrument: this.instrumentTrace
       }
     });
   }
 
 
   // ###########################################################################
-  // instrument
+  // buildPush
   // ###########################################################################
 
   buildPush = () => {
+    // TODO: capture closure variables, to get their correct `declarationTid`
+
     const {
       contextIdIdentifier, staticContextId, staticPushTid, staticResumeContextId
     } = this.data;
@@ -182,6 +206,10 @@ export default class Function extends ParsePlugin {
       isInterruptable: t.booleanLiteral(!!staticResumeContextId)
     });
   }
+
+  // ###########################################################################
+  // buildPop
+  // ###########################################################################
 
   buildPop = () => {
     const {
@@ -205,10 +233,15 @@ export default class Function extends ParsePlugin {
     });
   }
 
+  // ###########################################################################
+  // instrumentTrace
+  // ###########################################################################
+
   /**
    * Instrument all Functions to keep track of all (possibly async) execution stacks.
+   * Called as trace.instrument.
    */
-  finalizeInstrument = () => {
+  instrumentTrace = (traceCfg) => {
     const {
       staticResumeContextId
     } = this.data;
@@ -263,7 +296,8 @@ export default class Function extends ParsePlugin {
       // NOTE: This enables us to add `try/finally`; also the return statement indicates `ContextEnd`.
       bodyNode = t.blockStatement([t.returnStatement(origBodyNode)]);
 
-      // patch return loc to keep loc of original expression (needed for `ReturnStatement` `traceVisitor`)
+      // patch return loc to keep loc of original expression 
+      //    -> needed for `ReturnStatement` `traceVisitor`
       bodyNode.body[0].loc = origBodyNode.loc;
       bodyNode.body[0].argument.loc = origBodyNode.loc;
     }

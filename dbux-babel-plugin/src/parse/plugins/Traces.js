@@ -206,6 +206,8 @@ export default class Traces extends ParsePlugin {
   instrumentCallExpression = callResultCfg => {
     const { path } = callResultCfg;
 
+    // TODO: finish this
+
     // for (let i = 0; i < argumentPaths.length; ++i) {
     //   const argPath = argumentPaths[i];
     //   const argNode = argumentNodes[i];
@@ -226,9 +228,6 @@ export default class Traces extends ParsePlugin {
     // const bcePath = path.get('expressions.1');
     // bceCfg.meta.replacePath = bcePath;
     // this.instrumentTraceExpression(bceCfg);
-
-    // CallExpressionResult
-    this.instrumentTraceExpression(callResultCfg);
   }
 
   instrumentTraceDeclarations = (traceCfgs) => {

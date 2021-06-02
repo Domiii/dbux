@@ -63,7 +63,9 @@ let TraceType = {
    * NOTE: Can only be `AssignmentExpression`
    * @example `o.x = 3`
    */
-  WriteME: 35
+  WriteME: 36,
+
+  Param: 38,
 };
 
 /**

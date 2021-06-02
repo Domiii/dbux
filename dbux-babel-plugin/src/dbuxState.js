@@ -32,7 +32,7 @@ let iProgram = 0;
 export default function injectDbuxState(programPath, programState) {
   const buildCfg = programState.opts || EmptyObject;
 
-  const { 
+  const {
     filenameOverride: filenameOverrideOrFn,
     runtime: runtimeCfg
   } = buildCfg;
@@ -47,6 +47,13 @@ export default function injectDbuxState(programPath, programState) {
   const { file: programFile } = programState;
 
   const programUid = ++iProgram;
+
+  function makeProgramId(name) {
+    // NOTE: This is because we might have multiple dbux programs in the same context (e.g. multiple <script> tags in same HTML file)
+    //        So we want to add `iProgram` for unique flavor (which works if they are all instrumented by the same process).
+    // TODO: fix this. Babel seems to remove the number suffix anyway.
+    return scope.generateUidIdentifier(name + programUid);
+  }
 
   const dbuxState = {
     runtimeCfg,
@@ -64,21 +71,33 @@ export default function injectDbuxState(programPath, programState) {
       dbuxInit: scope.generateUidIdentifier('dbux_init'),
       dbuxRuntime: scope.generateUidIdentifier('dbuxRuntime'),
 
-      // NOTE: We might have multiple dbux programs in the same context (e.g. multiple <script> tags in same HTML file)
-      //        So we want to add `iProgram` for unique flavor (which works if they are all instrumented by the same process).
-      dbux: scope.generateUidIdentifier('dbux' + programUid),
+      dbux: makeProgramId('dbux'),
 
       aliases: {
-        newTraceId: scope.generateUidIdentifier('tid' + programUid),
-        pushImmediate: scope.generateUidIdentifier('pI' + programUid),
-        popFunction: scope.generateUidIdentifier('pF' + programUid),
-        traceDeclaration: scope.generateUidIdentifier('td' + programUid),
-        traceExpression: scope.generateUidIdentifier('te' + programUid),
-        traceWrite: scope.generateUidIdentifier('tw' + programUid),
-        traceBCE: scope.generateUidIdentifier('tc' + programUid),
-        traceCallResult: scope.generateUidIdentifier('tcr' + programUid),
-        traceMemberExpression: scope.generateUidIdentifier('tme' + programUid),
-        traceWriteMemberExpression: scope.generateUidIdentifier('twme' + programUid)
+        // utilities
+        getArgLength: makeProgramId('al'),
+        arrayFrom: makeProgramId('af'),
+
+        // Function
+        pushImmediate: makeProgramId('pI'),
+        popFunction: makeProgramId('pF'),
+        traceParam: makeProgramId('tp'),
+
+        // misc
+        newTraceId: makeProgramId('tid'),
+        traceDeclaration: makeProgramId('td'),
+        traceExpression: makeProgramId('te'),
+        traceWrite: makeProgramId('tw'),
+
+        // calls
+        traceBCE: makeProgramId('tc'),
+        traceCallResult: makeProgramId('tcr'),
+
+        // ME
+        traceMemberExpression: makeProgramId('tme'),
+        traceWriteMemberExpression: makeProgramId('twme'),
+
+
       }
     },
     // console.log('[Program]', state.filename);
@@ -92,7 +111,7 @@ export default function injectDbuxState(programPath, programState) {
       return staticContextParent?.getData(dataName);
     },
 
-    
+
     // ###########################################################################
     // visitor check-ins
     // ###########################################################################

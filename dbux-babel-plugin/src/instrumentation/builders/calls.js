@@ -67,17 +67,52 @@ function generateCalleeVar(calleePath) {
   // return calleePath.node.name || 'func';
 }
 
-const lengthId = t.identifier('length');
 
-function buildSpreadLengths(argsPath) {
+// ###########################################################################
+// arguments
+// ###########################################################################
+
+
+function buildArgsValue(state, argsPath) {
+  const { ids: { aliases: {
+    arrayFrom
+  } } } = state;
+  return t.arrayExpression(argsPath.node.map(argNode =>
+    t.isSpreadElement(argNode) ?
+      t.callExpression(
+        arrayFrom,
+        argNode.argument
+      ) :
+      argNode));
+}
+
+function buildArgI(argsVar, i) {
+  return t.memberExpression(argsVar, t.numericLiteral(i), true, false);
+}
+
+function buildSpreadLengths(state, argsVar, argsPath) {
+  const { ids: { aliases: {
+    getArgLength
+  } } } = state;
   return t.arrayExpression(argsPath.node
-    .map((argNode) => t.isSpreadElement(argNode) ?
-      // TODO: cannot just invoke argNode here
-      t.memberExpression(argNode.argument, lengthId, true, true) :
+    .map((argNode, i) => t.isSpreadElement(argNode) ?
+      t.callExpression(
+        getArgLength,
+        buildArgI(argsVar, i)
+      ) :
       null
     )
     .filter(n => !!n)
   );
+}
+
+function buildCallArgs(argsVar, argsPath) {
+  return argsPath.node.map((argNode, i) => {
+    const arg = buildArgI(argsVar, i);
+    return t.isSpreadElement(argNode) ?
+      t.spreadElement(arg) :
+      arg;
+  });
 }
 
 /**
@@ -102,10 +137,13 @@ function buildBCE(state, traceCfg, spreadLengths) {
   ]);
 }
 
-function buildCallNode(path, calleeVar, argsVar) {
+function buildCallNode(path, calleeVar, argsVar, argsPath) {
   const { type } = path.node;
   const callTempl = callTemplatesVar[type];
-  return callTempl({ callee: calleeVar, args: argsVar });
+  return callTempl({
+    callee: calleeVar,
+    args: buildCallArgs(argsVar, argsPath)
+  });
 }
 
 // ###########################################################################
@@ -134,8 +172,8 @@ export function buildTraceCallVar(state, traceCfg) {
   // TODO: args.forEach(arg => onCopy(arg))
   // TODO: onCopy(result)
 
-  const args = t.arrayExpression(argsPath.node);
-  const spreadLengths = buildSpreadLengths(argsPath);
+  const args = buildArgsValue(argsPath);
+  const spreadLengths = buildSpreadLengths(argsVar, argsPath);
 
   return t.sequenceExpression([
     // (i) callee assignment - `callee = te(...)`
@@ -149,7 +187,7 @@ export function buildTraceCallVar(state, traceCfg) {
 
     // (iv) actual call
     buildTraceExpressionSimple(
-      buildCallNode(path, calleeVar, argsVar),
+      buildCallNode(path, calleeVar, argsVar, argsPath),
       state,
       traceCfg
     )

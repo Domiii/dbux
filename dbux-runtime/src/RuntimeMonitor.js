@@ -510,10 +510,13 @@ export default class RuntimeMonitor {
   //   return value;
   // }
 
-  traceBCE(programId, tid, argTids) {
+  traceBCE(programId, tid, argTids, spreadLengths) {
     const trace = traceCollection.getById(tid);
     trace.callId = tid;
-    trace.argTids = argTids;
+    trace.data = {
+      argTids,
+      spreadLengths
+    };
   }
 
   traceCallResult(programId, value, tid, callTid) {

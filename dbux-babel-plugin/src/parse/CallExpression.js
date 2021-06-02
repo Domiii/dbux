@@ -1,6 +1,5 @@
 // import { instrumentCallExpressionEnter } from '../zz_archive/traceHelpers.old';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
-import { buildTraceExpressionNoInput, buildTraceExpressionSimple } from '../instrumentation/builders/misc';
 import BaseNode from './BaseNode';
 
 // function wrapCallExpression(path, state) {
@@ -34,26 +33,26 @@ export default class CallExpression extends BaseNode {
   ];
   static children = ['callee', 'arguments'];
 
-  // enter() {
-  //   // function enterCallExpression(traceResultType, path, state) {
-  //   //   // CallExpression
+  // function enterCallExpression(traceResultType, path, state) {
+  //   // CallExpression
 
-  //   //   // TODO: need to fix for parameter assignments in function declarations: `function f(x = o.g()) { }`
-  //   //   //      NOTE: in this case, utility variables are allocated inside function; but that would change semantics.
-  //   //   const parent = path.parentPath;
-  //   //   const grandParent = path.parentPath?.parentPath;
-  //   //   if (grandParent &&
-  //   //     t.isFunction(grandParent) &&
-  //   //     grandParent.node.params.includes(parent.node)
-  //   //   ) {
-  //   //     // ignore
-  //   //   }
-  //   //   else {
-  //   //     path = instrumentCallExpressionEnter(path, state);
-  //   //     path.setData('traceResultType', traceResultType);
-  //   //   }
-  //   // }
+  //   // TODO: need to fix for parameter assignments in function declarations: 
+  //   //      -> `function f(x = o.g()) { }`
+  //   //      NOTE: in this case, utility variables are allocated inside function; but that would change semantics.
+  //   const parent = path.parentPath;
+  //   const grandParent = path.parentPath?.parentPath;
+  //   if (grandParent &&
+  //     t.isFunction(grandParent) &&
+  //     grandParent.node.params.includes(parent.node)
+  //   ) {
+  //     // ignore
+  //   }
+  //   else {
+  //     path = instrumentCallExpressionEnter(path, state);
+  //     path.setData('traceResultType', traceResultType);
+  //   }
   // }
+  
 
   exit() {
     // TODO: more special cases - super, import, require
@@ -95,7 +94,7 @@ export default class CallExpression extends BaseNode {
     const bceInputs = argumentPath.node.map((_, i) => argumentPath.get(i));
     const bceTrace = this.Traces.addTraceWithInputs(bceTraceData, bceInputs);
     const bceTidIdentifier = bceTrace.tidIdentifier;
-    
+
     // 4. wrap `CallExpression` (as `CallExpressionResult`)
     this.Traces.addTrace({
       path: this.path,
