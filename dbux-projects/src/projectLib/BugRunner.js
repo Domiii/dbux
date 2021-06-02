@@ -167,7 +167,7 @@ export default class BugRunner {
 
       // Add selected tag
       await project.autoCommit(`Select bug ${bug.id}`);
-      await project.gitAddBugSelectedTag(bug);
+      await project.gitSetTag(bugSelectedTag);
     }
   }
 
@@ -405,7 +405,7 @@ export default class BugRunner {
   }
 
   /**
-   * @returns {Bug} The deactivated bug
+   * @returns {Promise<Bug>} The deactivated bug
    */
   async deactivateBug() {
     const { bug } = this;

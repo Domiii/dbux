@@ -1,19 +1,12 @@
 import lockfile from 'lockfile';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { getOrCreateProjectManager } from '../projectViews/projectControl';
-import { showOutputChannel } from '../projectViews/projectViewsController';
 import { runTaskWithProgressBar } from './runTaskWithProgressBar';
 import { showWarningMessage } from './codeModals';
+import { asAbsolutePath } from './codePath';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('installUtil');
-
-let _extensionContext;
-
-export function initInstallUtil(extensionContext) {
-  _extensionContext = extensionContext;
-}
-
 
 export async function installDbuxDependencies() {
   const projectManager = getOrCreateProjectManager();
@@ -34,7 +27,7 @@ export async function installDbuxDependencies() {
       }
       progress.report({ message: `New version. Installing ${missingDependencies.length} libraries (1-3 mins)${'...'}` });
 
-      let lockfilePath = _extensionContext.asAbsolutePath('install.lock');
+      let lockfilePath = asAbsolutePath('install.lock');
       debug(`install: obtaining file lock. If stuck here, make sure that no other VSCode instance is running and manually remove the lock file at: "${lockfilePath}"`);
 
       try {
