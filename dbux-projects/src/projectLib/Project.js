@@ -6,7 +6,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { getAllFilesInFolders, globRelative } from '@dbux/common-node/src/util/fileUtil';
-import { pathJoin, pathResolve, realPathSyncPosix } from '@dbux/common-node/src/util/pathUtil';
+import { pathJoin, pathResolve, realPathSyncNormalized } from '@dbux/common-node/src/util/pathUtil';
 import isObject from 'lodash/isObject';
 import BugList from './BugList';
 import Process from '../util/Process';
@@ -680,7 +680,7 @@ This may be solved by using \`Delete project folder\` button.`);
   getAssetDir(assetPath) {
     if (path.isAbsolute(assetPath)) {
       // absolute path
-      return realPathSyncPosix(assetPath);
+      return realPathSyncNormalized(assetPath);
     }
     else {
       // relative to dbux-internal asset path

@@ -1,7 +1,7 @@
 import merge from 'lodash/merge';
 import semver from 'semver';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { whichPosix } from '@dbux/common-node/src/util/pathUtil';
+import { whichNormalized } from '@dbux/common-node/src/util/pathUtil';
 import Process from './util/Process';
 
 /** @typedef {import('./ProjectsManager').default} ProjectManager */
@@ -67,7 +67,7 @@ async function _checkSystem(projectManager, requirements, calledFromUser) {
     ' Please make sure, you have all of them installed.\n\n';
 
   for (let program of Object.keys(requirements)) {
-    const result = { path: whichPosix(program) };
+    const result = { path: whichNormalized(program) };
     let message = '';
     let requirement = requirements[program];
 

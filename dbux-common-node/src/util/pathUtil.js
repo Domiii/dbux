@@ -7,11 +7,11 @@ import path from 'path';
  * @param {string} command the command being queried
  * @return {string} the actual path where `command` is
  */
-export function whichPosix(command) {
+export function whichNormalized(command) {
   return pathNormalized(sh.which(command)?.toString());
 }
 
-export function realPathSyncPosix(fpath, options) {
+export function realPathSyncNormalized(fpath, options) {
   return pathNormalized(fs.realpathSync(fpath, options));
 }
 

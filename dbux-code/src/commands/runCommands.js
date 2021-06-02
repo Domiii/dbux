@@ -1,7 +1,7 @@
 import path from 'path';
 import { window, workspace } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { realPathSyncPosix } from '@dbux/common-node/src/util/pathUtil';
+import { realPathSyncNormalized } from '@dbux/common-node/src/util/pathUtil';
 import { checkSystem } from '@dbux/projects/src/checkSystem';
 import { getOrCreateProjectManager } from '../projectViews/projectControl';
 import { runInTerminalInteractive } from '../codeUtil/terminalUtil';
@@ -74,7 +74,7 @@ export async function runFile(extensionContext, debugMode = false) {
   let file;
   let cwd;
   try {
-    file = realPathSyncPosix(activePath);
+    file = realPathSyncNormalized(activePath);
     cwd = path.dirname(file);
   }
   catch (err) {
