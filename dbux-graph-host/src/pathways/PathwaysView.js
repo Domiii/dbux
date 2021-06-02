@@ -123,7 +123,7 @@ class PathwaysView extends HostComponentEndpoint {
 
   makeStep = (themeMode, modeName, step) => {
     const {
-      id: stepId,
+      _id: stepId,
       applicationId,
       staticContextId,
       type: stepType
@@ -201,7 +201,7 @@ class PathwaysView extends HostComponentEndpoint {
       if (!group) {
         return false;
       }
-      const action = this.pdp.util.getActionGroupAction(group.id);
+      const action = this.pdp.util.getActionGroupAction(group._id);
       const trace = action?.trace;
       if (trace && !addedStaticTraceIds.has(trace.staticTraceId)) {
         addedStaticTraceIds.add(trace.staticTraceId);
@@ -257,7 +257,7 @@ class PathwaysView extends HostComponentEndpoint {
       steps: steps.map(step => {
         return {
           createdAt: step.createdAt,
-          timeSpent: this.pdp.util.getStepTimeSpent(step.id),
+          timeSpent: this.pdp.util.getStepTimeSpent(step._id),
           background: this.makeStepBackground(step, themeMode),
           tag: makeTagByType[step.type](step)
         };
@@ -287,10 +287,10 @@ class PathwaysView extends HostComponentEndpoint {
       stepGroups = pdp.indexes.steps.byGroup.getAllKeys().map(stepGroupId => {
         const timeSpentMillis = pdp.indexes.steps.byGroup.
           get(stepGroupId).
-          reduce((a, step) => a + pdp.util.getStepTimeSpent(step.id), 0);
+          reduce((a, step) => a + pdp.util.getStepTimeSpent(step._id), 0);
 
         return {
-          id: stepGroupId,
+          _id: stepGroupId,
           timeSpentMillis,
           timeSpent: formatTimeSpent(timeSpentMillis),
           firstStep: this.makeStep(themeMode, modeName, pdp.indexes.steps.byGroup.getFirst(stepGroupId))
@@ -322,7 +322,7 @@ class PathwaysView extends HostComponentEndpoint {
       filter(actionGroup => actionGroup && !isHiddenGroup(actionGroup.type)).
       map(actionGroup => {
         const {
-          id: groupId,
+          _id: groupId,
           stepId,
           type
         } = actionGroup;
