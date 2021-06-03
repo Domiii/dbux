@@ -173,7 +173,7 @@ export class RuntimeThreads1 {
   logger = newLogger('RuntimeThread1');
 
   preAwait(currentRunId, awaitArgument, resumeContextId, parentContextId) {
-    this.logger.debug('pre await', awaitArgument);
+    // this.logger.debug('pre await', awaitArgument);
 
     // this.floatingPromises.delete(awaitArgument);
     // this.logger.debug('delete floating promise', awaitArgument);
@@ -196,6 +196,8 @@ export class RuntimeThreads1 {
   postAwait(parentContextId, preEventContext, postEventContext, preEventRun, postEventRun) {
     if (this.getRunThreadId(postEventRun) === undefined) {
       const startThreadId = this.getRunThreadId(preEventRun);
+
+      // this.logger.debug("pre ev run", preEventRun, 'thread id', startThreadId);
 
       let edgeType = ''; // TODO change to enum
 
@@ -287,7 +289,7 @@ export class RuntimeThreads1 {
     this.logger.debug('set run', runId, 'thread id', threadId);
 
     this.runToThreadMap.set(runId, threadId);
-    this.threadLastRun.set(threadId, Math.max(runId, this.threadLastRun.get(threadId)));
+    this.threadLastRun.set(threadId, Math.max(runId, this.threadLastRun.get(threadId) || 0));
   }
 
   /**
@@ -350,6 +352,7 @@ export class RuntimeThreads1 {
         this.setRunThreadId(toRun, this.getRunThreadId(fromRun));
       }
     } else {
+      this.logger.debug('to run', toRun, 'thread id', this.getRunThreadId(toRun));
       if (!this.getRunThreadId(toRun)) {
         this.assignRunNewThreadId(toRun);
       }

@@ -4,6 +4,7 @@ import ValueRef from '@dbux/common/src/core/data/ValueRef';
 import Loop from '@dbux/common/src/core/data/loops/Loop';
 import PromiseData from '@dbux/common/src/core/data/PromiseData';
 import AsyncEvent from '@dbux/common/src/core/data/AsyncEvent';
+import Run from '@dbux/common/src/core/data/Run';
 
 /**
  * TODO: proper object pooling
@@ -45,6 +46,12 @@ const pools = {
   asyncEvent: {
     allocate() {
       return new AsyncEvent();
+    }
+  },
+
+  run: {
+    allocate() {
+      return new Run();
     }
   }
 };

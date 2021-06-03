@@ -5,6 +5,7 @@ import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
 import Trace from '@dbux/common/src/core/data/Trace';
 import ValueRef from '@dbux/common/src/core/data/ValueRef';
 import AsyncEvent from '@dbux/common/src/core/data/AsyncEvent';
+import Run from '@dbux/common/src/core/data/Run';
 import StaticProgramContext from '@dbux/common/src/core/data/StaticProgramContext';
 import StaticContext from '@dbux/common/src/core/data/StaticContext';
 import StaticTrace from '@dbux/common/src/core/data/StaticTrace';
@@ -519,6 +520,15 @@ class AsyncEventCollection extends Collection {
   }
 }
 
+/**
+ * @extends {Collection<Run>}
+ */
+class RunCollection extends Collection {
+  constructor(dp) {
+    super('runs', dp);
+  }
+}
+
 export default class RuntimeDataProvider extends DataProviderBase {
   /**
    * @type {DataProviderUtil}
@@ -540,6 +550,7 @@ export default class RuntimeDataProvider extends DataProviderBase {
       traces: new TraceCollection(this),
       values: new ValueCollection(this),
       asyncEvents: new AsyncEventCollection(this),
+      runs: new RunCollection(this),
     };
 
     // const collectionClasses = [
