@@ -7,6 +7,7 @@ import { isVirtualContextType } from '@dbux/common/src/core/constants/StaticCont
 import { isRealContextType } from '@dbux/common/src/core/constants/ExecutionContextType';
 import { isCallResult, hasCallId } from '@dbux/common/src/core/constants/traceCategorization';
 import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory, ValuePruneState } from '@dbux/common/src/core/constants/ValueTypeCategory';
+import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
 
 /**
  * @typedef {import('./RuntimeDataProvider').default} DataProvider
@@ -23,6 +24,18 @@ export default {
   /** @param {DataProvider} dp */
   getFilePathFromProgramId(dp, programId) {
     return dp.collections.staticProgramContexts.getById(programId)?.filePath || null;
+  },
+
+  /** @param {DataProvider} dp */
+  getProgramModuleName(dp, programId) {
+    const programContext = dp.collections.staticProgramContexts.getById(programId);
+
+    if ('_moduleName' in programContext) {
+      return programContext._moduleName;
+    }
+    else {
+      return programContext._moduleName = parseNodeModuleName(programContext.filePath);
+    }
   },
 
   // ###########################################################################
@@ -100,6 +113,13 @@ export default {
         dp.indexes.executionContexts.byStaticContext.get(staticContext.staticContextId)
       ).
       flat();
+  },
+
+  /** @param {DataProvider} dp */
+  getContextModuleName(dp, contextId) {
+    const context = dp.collections.executionContexts.getById(contextId);
+    const staticContext = dp.collections.staticContexts.getById(context.staticContextId);
+    return dp.util.getProgramModuleName(staticContext.programId);
   },
 
   // ###########################################################################

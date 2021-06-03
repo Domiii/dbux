@@ -26,3 +26,8 @@ export function pathJoin(...paths) {
 export function pathNormalized(fpath) {
   return fpath.replace(/\\/g, '/');
 }
+
+export function parseNodeModuleName(fpath) {
+  const matchResult = fpath.match(/(?<=node_modules[/\\])(?!node_modules)(?<packageName>[^/\\]+)(?=[/\\](?!node_modules).*)/);
+  return matchResult?.groups.packageName || null;
+}

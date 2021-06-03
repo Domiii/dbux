@@ -1,5 +1,6 @@
 import process from 'process';
 import dbuxBabelPlugin from '@dbux/babel-plugin';
+import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import defaultsDeep from 'lodash/defaultsDeep';
 import colors from 'colors/safe';
@@ -98,7 +99,7 @@ export default function buildBabelOptions(options) {
   
   // TODO: use Webpack5 magic comments instead
   const requireFunc = typeof __non_webpack_require__ === "function" ? __non_webpack_require__ : require;
-  verbose > 1 && debugLog(`[@dbux/babel-plugin]`, 
+  verbose > 1 && debugLog(`[@dbux/babel-plugin]`,
     requireFunc.resolve/* ._resolveFilename */('@dbux/babel-plugin/package.json'));
 
   // setup babel-register
@@ -122,8 +123,7 @@ export default function buildBabelOptions(options) {
         }
 
         const matchSkipFileResult = modulePath.match(/([/\\]dist[/\\])|(\.mjs$)/);
-        const matchResult = modulePath.match(/(?<=node_modules[/\\])(?!node_modules)(?<packageName>[^/\\]+)(?=[/\\](?!node_modules).*)/);
-        const packageName = matchResult ? matchResult.groups.packageName : null;
+        const packageName = parseNodeModuleName(modulePath);
 
         if (matchSkipFileResult || (packageName && !batchTestRegExp(packageWhitelistRegExps, packageName))) {
           verbose > 1 && debugLog(`no-register`, modulePath);

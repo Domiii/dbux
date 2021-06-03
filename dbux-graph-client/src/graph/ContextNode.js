@@ -72,17 +72,20 @@ class ContextNode extends ClientComponentEndpoint {
       traceId,
       isSelectedTraceCallRelated,
       contextIdOfSelectedCallTrace,
-      statsEnabled
+      statsEnabled,
+      moduleName
     } = this.state;
 
     const {
       themeMode,
     } = this.context;
 
+    const moduleLabel = moduleName ? `${moduleName} | ` : '';
+
     this.el.id = `application_${applicationId}-context_${contextId}`;
-    this.el.style.background = getStaticContextColor(themeMode, staticContextId);
+    this.el.style.background = getStaticContextColor(themeMode, staticContextId, !!moduleName);
     this.els.contextLabel.textContent = contextNameLabel;
-    this.els.locLabel.textContent = contextLocLabel && ` @ ${contextLocLabel}` || '';
+    this.els.locLabel.textContent = contextLocLabel && ` @ ${moduleLabel}${contextLocLabel}` || '';
     this.els.parentLabel.textContent = parentTraceNameLabel || '';
     // this.els.parentLocLabel.textContent = parentTraceLocLabel || '';
     this.els.valueLabel.textContent = valueLabel;
