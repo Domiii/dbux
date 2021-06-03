@@ -111,11 +111,4 @@ export default class CallExpression extends BaseNode {
       }
     });
   }
-
-  instrument() {
-    // const { path, state } = this;
-    // instrumentCallExpressionEnter(path, state);
-    // TODO: instrumentMemberCallExpressionEnter
-    // TODO: instrumentDefaultCallExpressionEnter
-  }
 }

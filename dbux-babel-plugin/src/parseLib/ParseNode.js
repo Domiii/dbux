@@ -55,7 +55,7 @@ export default class ParseNode {
 
   getAllClassPlugins() {
     if (!this.constructor._pluginConfigs) {
-      const allPluginConfigs = ParseRegistry.getAllPluginConfigsOfNodeClass(this.constructor);
+      const allPluginConfigs = ParseRegistry.getAllPluginConfigsOfNodeClass(this.constructor, this);
       this.constructor._pluginConfigs = Array.from(allPluginConfigs.values());
     }
     return this.constructor._pluginConfigs;

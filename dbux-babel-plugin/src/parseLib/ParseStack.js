@@ -5,6 +5,7 @@ import { getNodeOfPath, setNodeOfPath } from './parseUtil';
 import { getPresentableString } from '../helpers/pathHelpers';
 import ParseRegistry from './ParseRegistry';
 import ParsePhase from './ParsePhase';
+import ParsePlugin from './ParsePlugin';
 
 /** @typedef { import("./ParseNode").default } ParseNode */
 
@@ -22,7 +23,14 @@ function debugTag(obj) {
  * Track read and write dependencies as we move through the AST.
  */
 export default class ParseStack {
-  _stack = new Map();
+  /**
+   * @type {Map.<string, ParseNode>}
+   */
+  _stacksByType = new Map();
+  /**
+   * @type {Array.<ParseNode>}
+   */
+  _stack = [];
   genTasks = [];
   isGen = false;
   /**
@@ -60,8 +68,8 @@ export default class ParseStack {
    */
   peekNode(nameOrParseNodeClazz) {
     const name = isString(nameOrParseNodeClazz) ? nameOrParseNodeClazz : nameOrParseNodeClazz.name;
-    const { _stack } = this;
-    const nodesOfType = _stack.get(name);
+    const { _stacksByType } = this;
+    const nodesOfType = _stacksByType.get(name);
     if (nodesOfType?.length) {
       return nodesOfType[nodesOfType.length - 1];
     }
@@ -73,32 +81,20 @@ export default class ParseStack {
   }
 
   /**
-   * @return {ParseNode}
+   * Looks through the stack to find the top-most node that has the given `pluginNameOrClazz`.
+   * @return {ParsePlugin}
    */
-  peekNodeOfPlugin(pluginNameOrClazz) {
-    const pluginName = isString(pluginNameOrClazz) ?
-      pluginNameOrClazz :
-      pluginNameOrClazz.name;
-    try {
-      const nodeNames = ParseRegistry.getParseNodeNamesOfPluginName(pluginName);
-      if (!nodeNames) {
-        return null;
-      }
-
-      // Of all candidate node types, peek the stack top, and of those take the last one created.
-      return maxBy(
-        nodeNames.map(name => this.peekNode(name)),
-        node => node?.nodeId || -1
-      );
-    }
-    catch (err) {
-      throw new Error(`peekNodeOfPlugin failed for "${pluginName}" - ${err.stack}`);
-    }
-  }
-
   peekPlugin(pluginNameOrClazz) {
-    const node = this.peekNodeOfPlugin(pluginNameOrClazz);
-    return node?.getPlugin(pluginNameOrClazz);
+    // look through the stack to find the top-most node that has the given `pluginNameOrClazz`
+    const { _stack } = this;
+    for (let i = _stack.length - 1; i >= 0; --i) {
+      const node = _stack[i];
+      const plugin = node.getPlugin(pluginNameOrClazz);
+      if (plugin) {
+        return plugin;
+      }
+    }
+    return null;
   }
 
   // ###########################################################################
@@ -111,10 +107,11 @@ export default class ParseStack {
       throw new Error(`\`static name\` is missing on ParseNode class: ${debugTag(ParseNodeClazz)}`);
     }
 
-    const { _stack } = this;
-    let nodesOfType = _stack.get(name);
+    const { _stack, _stacksByType } = this;
+    _stack.push(newNode);
+    let nodesOfType = _stacksByType.get(name);
     if (!nodesOfType) {
-      _stack.set(name, nodesOfType = []);
+      _stacksByType.set(name, nodesOfType = []);
     }
     (Verbose >= 3) && this.debug(`push ${name}`);
     nodesOfType.push(newNode);
@@ -122,13 +119,14 @@ export default class ParseStack {
 
   pop(path, ParseNodeClazz) {
     const { name } = ParseNodeClazz;
-    const { _stack } = this;
-    const nodesOfType = _stack.get(name);
+    const { _stack, _stacksByType } = this;
+    const nodesOfType = _stacksByType.get(name);
     (Verbose >= 3) && this.debug(`pop ${name}`);
     const node = nodesOfType.pop();
     if (node.path !== path) {
       throw new Error(`ParseStack corrupted - exit path does not match stack node (of type ${name}) - ${getPresentableString(path)}`);
     }
+    _stack.pop();
     return node;
   }
 
