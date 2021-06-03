@@ -52,6 +52,23 @@ export default {
   },
 
   /** @param {DataProvider} dp */
+  getRootContextsByRun(dp, runId) {
+    return dp.indexes.executionContexts.rootsByRun.get(runId);
+  },
+
+  /** @param {DataProvider} dp */
+  isRootContextInRun(dp, contextId) {
+    const { parentContextId, runId } = dp.collections.executionContexts.getById(contextId);
+    if (parentContextId) {
+      const parentContext = dp.collections.executionContexts.getById(parentContextId);
+      if (runId === parentContext.runId) {
+        return false;
+      }
+    }
+    return true;
+  },
+
+  /** @param {DataProvider} dp */
   getFirstTracesInRuns(dp) {
     return dp.indexes.traces.firsts.get(1);
   },

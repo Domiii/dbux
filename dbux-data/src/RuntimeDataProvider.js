@@ -8,7 +8,7 @@ import StaticProgramContext from '@dbux/common/src/core/data/StaticProgramContex
 import StaticContext from '@dbux/common/src/core/data/StaticContext';
 import StaticTrace from '@dbux/common/src/core/data/StaticTrace';
 import ValueTypeCategory, { ValuePruneState } from '@dbux/common/src/core/constants/ValueTypeCategory';
-import { isTracePop, isTraceFunctionExit, isBeforeCallExpression, isTraceThrow } from '@dbux/common/src/core/constants/TraceType';
+import TraceType, { isTracePop, isTraceFunctionExit, isBeforeCallExpression, isTraceThrow } from '@dbux/common/src/core/constants/TraceType';
 import { hasCallId, isCallResult, isCallExpressionTrace } from '@dbux/common/src/core/constants/traceCategorization';
 
 import Collection from './Collection';

@@ -27,7 +27,7 @@ class RunNode extends HostComponentEndpoint {
       this.state.createdAt = dp.util.getRunCreatedAt(runId);
     }
     else {
-      logError('Creating RunNode with no context');
+      logError(`Creating RunNode with no context, runId: ${runId}`);
     }
 
     const hiddenNodeManager = this.parent.controllers.getComponent('HiddenNodeManager');
