@@ -174,7 +174,9 @@ export class RuntimeThreads1 {
 
   preAwait(currentRunId, awaitArgument, resumeContextId, parentContextId) {
     this.logger.debug('pre await', awaitArgument);
-    this.floatingPromises.delete(awaitArgument);
+
+    // this.floatingPromises.delete(awaitArgument);
+    // this.logger.debug('delete floating promise', awaitArgument);
 
     if (awaitArgument instanceof Promise && (!this.isPromiseRecorded(awaitArgument) || this._runtime.isPromiseCreatedInRun(awaitArgument, currentRunId))) {
       const promise = awaitArgument;
@@ -184,7 +186,7 @@ export class RuntimeThreads1 {
         this.storeFirstAwaitPromise(currentRunId, parentContextId, awaitArgument);
       } 
 
-      this.logger.debug('this promise', promise, 'first await', isFirstAwait, 'is root', this.isRootContext(parentContextId));
+      // this.logger.debug('this promise', promise, 'first await', isFirstAwait, 'is root', this.isRootContext(parentContextId));
       if (!isFirstAwait || this.isRootContext(parentContextId)) {
         this.setOwnPromiseThreadId(promise, this.getRunThreadId(currentRunId));
       }
@@ -202,10 +204,11 @@ export class RuntimeThreads1 {
         const callerPromise = this.getContextReturnValue(callerContextId); // get return value
         const promiseThreadId = this.getPromiseThreadId(callerPromise);
 
-        this.logger.debug('in post await start thread id', startThreadId);
-        this.logger.debug('called promise', callerPromise, 'thread id', promiseThreadId);
+        // this.logger.debug('in post await start thread id', startThreadId);
+        // this.logger.debug('called promise', callerPromise, 'thread id', promiseThreadId);
 
         this.setRunThreadId(postEventRun, promiseThreadId);
+
         edgeType = this.getOwnPromiseThreadType(callerPromise);
       }
       else {
