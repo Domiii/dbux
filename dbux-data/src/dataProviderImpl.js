@@ -37,6 +37,7 @@ import ContextsByTypeIndex from './impl/indexes/ContextsByTypeIndex';
 import ProgramIdByFilePathQuery from './impl/queries/ProgramIdByFilePathQuery';
 import ProgramFilePathByTraceIdQuery from './impl/queries/ProgramFilePathByTraceIdQuery';
 import StatsByContextQuery from './impl/queries/StatsByContextQuery';
+import AsyncEventsByFromIndex from './impl/indexes/AsyncEventsByFromIndex';
 
 
 export function newDataProvider(application) {
@@ -82,6 +83,8 @@ export function newDataProvider(application) {
   dataProvider.addIndex(new ErrorTracesByRunIndex());
 
   dataProvider.addIndex(new TracesByRealContextIndex());
+
+  dataProvider.addIndex(new AsyncEventsByFromIndex());
 
   // complex indexes (that have dependencies)
   // NOTE: we are currently solving index dependencies by simply adding depdendents after dependees

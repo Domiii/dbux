@@ -3,6 +3,7 @@ import Trace from '@dbux/common/src/core/data/Trace';
 import ValueRef from '@dbux/common/src/core/data/ValueRef';
 import Loop from '@dbux/common/src/core/data/loops/Loop';
 import PromiseData from '@dbux/common/src/core/data/PromiseData';
+import AsyncEvent from '@dbux/common/src/core/data/AsyncEvent';
 
 /**
  * TODO: proper object pooling
@@ -40,6 +41,12 @@ const pools = {
       return new PromiseData();
     },
   },
+
+  asyncEvent: {
+    allocate() {
+      return new AsyncEvent();
+    }
+  }
 };
 
 export default pools;

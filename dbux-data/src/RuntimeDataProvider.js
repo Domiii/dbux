@@ -4,6 +4,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
 import Trace from '@dbux/common/src/core/data/Trace';
 import ValueRef from '@dbux/common/src/core/data/ValueRef';
+import AsyncEvent from '@dbux/common/src/core/data/AsyncEvent';
 import StaticProgramContext from '@dbux/common/src/core/data/StaticProgramContext';
 import StaticContext from '@dbux/common/src/core/data/StaticContext';
 import StaticTrace from '@dbux/common/src/core/data/StaticTrace';
@@ -509,6 +510,15 @@ class ValueCollection extends Collection {
   }
 }
 
+/**
+ * @extends {Collection<AsyncEvent>}
+ */
+class AsyncEventCollection extends Collection {
+  constructor(dp) {
+    super('asyncEvents', dp);
+  }
+}
+
 export default class RuntimeDataProvider extends DataProviderBase {
   /**
    * @type {DataProviderUtil}
@@ -529,6 +539,7 @@ export default class RuntimeDataProvider extends DataProviderBase {
       executionContexts: new ExecutionContextCollection(this),
       traces: new TraceCollection(this),
       values: new ValueCollection(this),
+      asyncEvents: new AsyncEventCollection(this),
     };
 
     // const collectionClasses = [

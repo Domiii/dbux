@@ -1,4 +1,5 @@
 import { newLogger } from '@dbux/common/src/log/logger';
+import asyncEventCollection from './data/asyncEventCollection.js';
 import executionContextCollection from './data/executionContextCollection';
 import traceCollection from './data/traceCollection';
 import valueCollection from './data/valueCollection';
@@ -41,7 +42,7 @@ export class ExecutingStack {
     } else {
       const index = this.stack.indexOf(x);
       if (index === -1) {
-        warn(`Trying to pop ${x} but not in execting stack: ${this.stack}, ignoring.`);
+        // warn(`Trying to pop ${x} but not in execting stack: ${this.stack}, ignoring.`);
         return null;
       } else {
         const abandonedStack = this.stack.splice(index);
@@ -360,6 +361,8 @@ export class RuntimeThreads1 {
 
     this.runGraph[fromRun].set(toRun, edgeType);
     this.invRunGraph[toRun].set(fromRun, edgeType);
+
+    asyncEventCollection.addEdge(fromRun, toRun, edgeType);
   }
 
   /**
