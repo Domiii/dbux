@@ -12,7 +12,7 @@ import colors from 'colors/safe';
 const baseBabelOptions = require('../.babelrc');
 
 function debugLog(...args) {
-  console.log(colors.gray(args.join(' ')));
+  console.log(colors.gray(`[@dbux/cli] ${args.join(' ')}`));
   // if (args.length > 1) {
   //   const [arg0, ...moreArgs] = args;
 
@@ -51,6 +51,10 @@ function batchTestRegExp(regexps, target) {
     ].map((s, i) => ${ i }.${ s } ${ re.test(s) }).join('\n'));
  */
 
+function otherArgsToString(otherArgs) {
+  return JSON.stringify(otherArgs);
+}
+
 export default function buildBabelOptions(options) {
   process.env.BABEL_DISABLE_CACHE = 1;
 
@@ -86,7 +90,11 @@ export default function buildBabelOptions(options) {
     .map(s => s.trim())
     .map(generateFullMatchRegExp);
 
-  verbose > 1 && debugLog(`[Dbux] packageWhitelist`, packageWhitelistRegExps.join(','));
+  verbose > 1 && debugLog(`packageWhitelist`, packageWhitelistRegExps.join(','));
+  
+  const requireFunc = typeof __non_webpack_require__ === "function" ? __non_webpack_require__ : require;
+  verbose > 1 && debugLog(`[@dbux/babel-plugin]`, 
+    requireFunc.resolve/* ._resolveFilename */('@dbux/babel-plugin/package.json'));
 
   // setup babel-register
   const baseOptions = esnext ? baseBabelOptions : EmptyObject;
@@ -98,11 +106,14 @@ export default function buildBabelOptions(options) {
     // see https://babeljs.io/docs/en/options#parseropts
     parserOpts: { allowReturnOutsideFunction: true },
     ignore: [
-      // '**/node_modules/**',
       function shouldIgnore(modulePath, ...otherArgs) {
         if (!modulePath) {
-          verbose && debugLog(`[Dbux] no modulePath`, ...otherArgs);
+          verbose && debugLog(`no modulePath`);
           return undefined;
+        }
+        if (modulePath.match(/((dbux-runtime)|(@dbux[/\\]runtime))[/\\]/)) {
+          // TODO: only debug this if we are targeting dbux directly; else this could cause infinite loops
+          return true;
         }
 
         const matchSkipFileResult = modulePath.match(/([/\\]dist[/\\])|(\.mjs$)/);
@@ -110,14 +121,14 @@ export default function buildBabelOptions(options) {
         const packageName = matchResult ? matchResult.groups.packageName : null;
 
         if (matchSkipFileResult || (packageName && !batchTestRegExp(packageWhitelistRegExps, packageName))) {
-          verbose > 1 && debugLog(`[Dbux] no-register`, modulePath);
+          verbose > 1 && debugLog(`no-register`, modulePath);
           return true;
         }
 
-        modulePath = modulePath.toLowerCase();
+        // modulePath = modulePath.toLowerCase();
 
         const ignore = dontInjectDbux;
-        verbose && debugLog(`[Dbux] REGISTER`, modulePath);
+        verbose && debugLog(`REGISTER`, modulePath);
         return ignore;
       }
     ]
@@ -131,6 +142,8 @@ export default function buildBabelOptions(options) {
   if (dontAddPresets) {
     delete babelOptions.presets;
   }
+
+  // console.warn('babelOptions', JSON.stringify(babelOptions, null, 2));
 
   // TODO: add babel override config here
 

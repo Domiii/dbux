@@ -11,11 +11,11 @@ const {
   makeAbsolutePaths,
   getDbuxVersion
 } = require('../dbux-cli/lib/package-util');
-
+const { pathResolve } = require('../dbux-common-node/src/util/pathUtil');
 
 // const _oldLog = console.log; console.log = (...args) => _oldLog(new Error(' ').stack.split('\n')[2], ...args);
-const projectRoot = path.resolve(__dirname);
-const MonoRoot = path.resolve(__dirname, '..');
+const projectRoot = pathResolve(__dirname);
+const MonoRoot = pathResolve(__dirname, '..');
 
 module.exports = (env, argv) => {
   const outputFolderName = 'dist';
@@ -25,9 +25,10 @@ module.exports = (env, argv) => {
   const DBUX_ROOT = mode === 'development' ? MonoRoot : '';
   process.env.NODE_ENV = mode; // set these, so babel configs also have it
   process.env.DBUX_ROOT = DBUX_ROOT;
-  const aggregateTimeout = mode === 'development' ? 200 : 3000;
-
+  
   console.debug(`[dbux-code] (DBUX_VERSION=${DBUX_VERSION}, mode=${mode}, DBUX_ROOT=${DBUX_ROOT}) building...`);
+  
+  const aggregateTimeout = mode === 'development' ? 200 : 3000;
 
   const webpackPlugins = [
     new webpack.EnvironmentPlugin({

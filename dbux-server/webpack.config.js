@@ -156,13 +156,13 @@ module.exports = (env, argv) => {
     //   }
     // },
     externals: [
-      /^fs$/,
-      /^process$/,
-      /^path$/,
-      { 
-        firebase: 'commonjs firebase',
-        'firebase-admin': 'commonjs firebase-admin'
-      },
+      // /^fs$/,
+      // /^process$/,
+      // /^path$/,
+      // { 
+      //   firebase: 'commonjs firebase',
+      //   'firebase-admin': 'commonjs firebase-admin'
+      // },
       nodeExternals({
         allowlist: [
           ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/src/.*`))

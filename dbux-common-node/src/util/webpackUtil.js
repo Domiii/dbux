@@ -14,7 +14,7 @@ export function serializeEnv(o) {
   const res = Object.entries(o)
     // .map(([key, value]) => `--env ${key}='${JSON.stringify(JSON.stringify(value))}'`)
     // .map(([key, value]) => `--env ${key}=${JSON.stringify(JSON.stringify(value))}`)
-    .map(([key, value]) => `--env ${esc(key)}=${esc(JSON.stringify(value))}`)
+    .map(([key, value]) => `--env ${esc(key)}=${Buffer.from(JSON.stringify(value)).toString('base64')}`)
     .join(' ');
 
   return res;

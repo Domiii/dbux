@@ -10,7 +10,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import Process from '../util/Process';
-import BugRunnerStatus from './RunStatus';
+import BugRunnerStatus, { isStatusRunningType } from './RunStatus';
 
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
 /** @typedef {import('./Bug').default} Bug */
@@ -44,7 +44,9 @@ export default class BugRunner {
     this._ownLogger = newLogger('BugRunner');
     this._emitter = new NanoEvents();
 
-    this._bug = this.getSavedActivatedBug();
+    // NOTE: We use git tags instead of externalStorage saves for safety 
+    // this._bug = this.getSavedActivatedBug();
+    this._bug = null;
   }
 
   get logger() {
@@ -97,7 +99,12 @@ export default class BugRunner {
   // ###########################################################################
 
   isBusy() {
-    return this._queue.isBusy() || this._process || this.bug;
+    // return this._queue.isBusy() || this._process || this.bug;
+    return BugRunnerStatus.is.Busy(this.status);
+  }
+
+  isRunning() {
+    return isStatusRunningType(this.status);
   }
 
   isProjectActive(project) {
@@ -124,20 +131,44 @@ export default class BugRunner {
   // }
 
   /**
-   * Install project
-   * NOTE: synchronized.
+   * Clone and install the project
+   * @param {Project} project 
    */
-  async activateProject(project) {
-    if (this.isProjectActive(project) && project._installed) {
+  async installProject(project) {
+    if (this.isProjectActive(project)) {
       return;
     }
 
     // init
-    await project.initProject();
+    project.initProject();
 
-    // install
     await project.installProject();
-    project._installed = true;
+  }
+
+  /**
+   * @param {Bug} bug 
+   */
+  async installBug(bug) {
+    if (this.isBugActive(bug)) {
+      return;
+    }
+
+    const { project } = bug;
+    const installedTag = project.getProjectInstalledTagName();
+    const bugSelectedTag = project.getBugSelectedTagName(bug);
+
+    if (await project.gitDoesTagExist(bugSelectedTag)) {
+      await project.gitCheckout(bugSelectedTag);
+    }
+    else {
+      await project.gitCheckout(installedTag);
+      // apply bug patch or checkout to tag
+      await project.selectBug(bug);
+
+      // Add selected tag
+      await project.autoCommit(`Select bug ${bug.id}`);
+      await project.gitSetTag(bugSelectedTag);
+    }
   }
 
   getOrLoadBugs(project) {
@@ -152,7 +183,6 @@ export default class BugRunner {
   }
 
   /**
-   * Install bug
    * @param {Bug} bug 
    */
   async activateBug(bug) {
@@ -161,50 +191,29 @@ export default class BugRunner {
     }
 
     const { project } = bug;
-    this._bug = bug;
 
     this.setStatus(BugRunnerStatus.Busy);
 
     try {
       await this._enqueue(
-        // install project
-        this.activateProject.bind(this, project),
-        // git reset hard
-        project.gitResetHardForBug.bind(project, bug),
-        // async () => {
-        //   // activate patch
-        //   // if (bug.patch) {
-        //   //   await project.applyPatch(bug.patch);
-        //   // }
-        // },
-        // select bug
+        // Step 1: Clone, install the project
+        this.installProject.bind(this, project),
 
-        project.selectBug.bind(project, bug),
+        // Step 2: Apply patch or checkout to specific commit
+        this.installBug.bind(this, bug),
 
-        // `npm install` again (NOTE: the newly checked out tag might have different dependencies)
-        project.npmInstall.bind(project),
-        // Copy assets again in this branch
+        // Step 3: Do these again to get the latest update
         project.installAssets.bind(project),
-        // Auto commit again
-        project.autoCommit.bind(project, bug),
+        project.npmInstall.bind(project),
 
-        async () => await this.saveActivatedBug()
+        // Step 4: Auto commit in the end to avoid `uncommit changes` error for any further git operation
+        project.autoCommit.bind(project),
+        this.setActivatedBug.bind(this, bug)
       );
-    }
-    catch (err) {
-      this._bug = null;
-      throw err;
     }
     finally {
       this._updateStatus();
     }
-  }
-
-  async deactivateBug() {
-    const { bug } = this;
-    this._bug = null;
-    await this.saveActivatedBug();
-    return bug;
   }
 
   /**
@@ -318,7 +327,7 @@ export default class BugRunner {
 
   // NOTE: May cause error if used while running
   async cancel() {
-    if (!this.isBusy()) {
+    if (!this.isRunning()) {
       // nothing to do
       return;
     }
@@ -390,8 +399,18 @@ export default class BugRunner {
   //  Bug save util
   // ###########################################################################
 
-  async saveActivatedBug() {
-    await this.manager.setKeyToBug(activatedBugKeyName, this.bug);
+  async setActivatedBug(bug = null) {
+    this._bug = bug;
+    await this.manager.setKeyToBug(activatedBugKeyName, bug);
+  }
+
+  /**
+   * @returns {Promise<Bug>} The deactivated bug
+   */
+  async deactivateBug() {
+    const { bug } = this;
+    await this.setActivatedBug(null);
+    return bug;
   }
 
   /**

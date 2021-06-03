@@ -4,7 +4,6 @@ import {
 import PathwaysHost from '@dbux/graph-host/src/PathwaysHost';
 import { goToTrace, goToCodeLoc } from '../codeUtil/codeNav';
 import { getOrCreateProjectManager } from '../projectViews/projectControl';
-import { getThemeResourcePathUri } from '../resources';
 import RichWebView from './RichWebView';
 import { decorateVisitedTraces, stopDecorating } from './pathwaysDecorations';
 

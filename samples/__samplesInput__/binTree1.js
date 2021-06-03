@@ -1,4 +1,8 @@
+// import isString from '../node_modules/lodash/isString';
 import isString from 'lodash/isString';
+// import 'mytest-a';
+// const isString = require('lodash/isString');
+// require('mytest-a');
 
 // https://leetcode.com/submissions/detail/258300839/
 // https://leetcode.com/problems/trim-a-binary-search-tree/

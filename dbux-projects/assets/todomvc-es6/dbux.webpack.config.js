@@ -7,22 +7,24 @@ const ProjectRoot = path.resolve(__dirname);
 
 const customCfg = {
   target: 'web',
-  devServer: true
+  devServer: {
+    publicPath: '/'
+  }
 };
 
 const resultCfg = buildWebpackConfig(ProjectRoot, customCfg, (env, arg) => {
   return {
     context: path.join(ProjectRoot, 'src'),
 
+    // TODO: if necessary, publicPath probably needs to be fixed, since `context` is not root
+    output: {
+      publicPath: '.'
+    },
+
     plugins: [
       new HtmlWebpackPlugin({
         template: './index.html',
         inject: 'head',
-      }),
-      new webpack.DefinePlugin({
-        'process.env': {
-          NODE_ENV: JSON.stringify("development")
-        }
       })
     ],
     module: {

@@ -26,7 +26,7 @@ export default class KeyedComponentSet {
   }
 
   makeKey(entry) {
-    return entry?.id || 0;
+    return entry?._id || 0;
   }
 
 

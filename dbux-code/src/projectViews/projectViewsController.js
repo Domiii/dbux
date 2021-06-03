@@ -1,20 +1,21 @@
-import { commands, window, Uri } from 'vscode';
+import { commands, window, Uri, workspace } from 'vscode';
 import { newLogger, setOutputStreams } from '@dbux/common/src/log/logger';
 import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
-import { checkSystem } from '@dbux/projects/src/checkSystem';
 import ProjectNodeProvider from './practiceView/ProjectNodeProvider';
 import SessionNodeProvider from './sessionView/SessionNodeProvider';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import OutputChannel from './OutputChannel';
 import { getStopwatch } from './practiceStopwatch';
 import { getOrCreateProjectManager } from './projectControl';
-import { initRuntimeServer } from '../net/SocketServer';
 import { initProjectCommands } from '../commands/projectCommands';
 import { get as mementoGet, set as mementoSet } from '../memento';
 import { showInformationMessage } from '../codeUtil/codeModals';
 import { initCodeEvents } from '../practice/codeEvents';
 import { translate } from '../lang';
-import { getLogsDirectory } from '../resources';
+import { getLogsDirectory } from '../codeUtil/codePath';
+import { openProjectWorkspace, isInCorrectWorkspace } from '../codeUtil/workspaceUtil';
+
+/** @typedef {import('./practiceView/BugNode').default} BugNode */
 
 const showProjectViewKeyName = 'dbux.projectView.showing';
 
@@ -42,7 +43,6 @@ export function showOutputChannel() {
 
 export class ProjectViewController {
   constructor(context) {
-    this.extensionContext = context;
     this.manager = getOrCreateProjectManager(context);
 
     // ########################################
@@ -151,17 +151,12 @@ export class ProjectViewController {
   }
 
   // ###########################################################################
-  // project node buttons
-  // ###########################################################################
-
-  nodeAddToWorkspace(projectNode) {
-    projectNode.addToWorkspace();
-  }
-
-  // ###########################################################################
   // practice session
   // ###########################################################################
 
+  /**
+   * @param {BugNode} bugNode 
+   */
   async startPractice(bugNode) {
     if (this.manager.practiceSession) {
       if (!await this.confirmCancelPracticeSession()) {
@@ -169,13 +164,15 @@ export class ProjectViewController {
       }
     }
 
-    const { bug } = bugNode;
+    const { bug, projectNode: { project } } = bugNode;
     const title = `Bug ${`"${bug.label}"` || ''} (${bug.id})`;
-    await this.runProjectTask(title, {
+    await this.runProjectTask(title, async (report) => {
       // TOTRANSLATE
-      message: 'Activating...',
-      callback: async () => {
-        await this.manager.startPractice(bug);
+      report({ message: 'Activating...' });
+      await this.manager.startPractice(bug);
+
+      if (!isInCorrectWorkspace(project)) {
+        await openProjectWorkspace(project);
       }
     });
   }
@@ -195,12 +192,10 @@ export class ProjectViewController {
     if (file) {
       // TOTRANSLATE
       const title = 'Load practice log';
-      const loaded = await this.runProjectTask(title, {
+      const loaded = await this.runProjectTask(title, async (report) => {
         // TOTRANSLATE
-        message: 'Loading file....',
-        callback: async () => {
-          return await this.manager.loadPracticeSessionFromFile(file.fsPath);
-        }
+        report({ message: 'Loading file....' });
+        return await this.manager.loadPracticeSessionFromFile(file.fsPath);
       });
       if (loaded) {
         await showInformationMessage(`Log file ${file.fsPath} loaded`);
@@ -208,49 +203,31 @@ export class ProjectViewController {
     }
   }
 
-  async activate(inputCfg) {
+  async testBug(inputCfg) {
     const { bug } = this.manager.practiceSession;
     const title = `Bug ${`"${bug.label}"` || ''} (${bug.id})`;
-    await this.runProjectTask(title, {
+    await this.runProjectTask(title, async (report) => {
       // TOTRANSLATE
-      message: 'Running test...',
-      callback: async () => {
-        await this.manager.practiceSession.activate(inputCfg);
-      }
+      report({ message: 'Running test...' });
+      await this.manager.practiceSession.testBug(inputCfg);
     });
   }
 
   /**
    * 
    * @param {string} title 
-   * @param {{message: string, callback: function}} task 
+   * @param {taskCallback} task 
    * @param {boolean} cancellable 
    */
   async runProjectTask(title, task, cancellable = false) {
     showOutputChannel();
     return await runTaskWithProgressBar(async (progress) => {
-      // TOTRANSLATE
-      progress.report({ message: 'Initializing runtime server...' });
-      await initRuntimeServer(this.extensionContext);
-
-      progress.report({ message: task.message });
-      return await task.callback();
+      return await task(progress.report.bind(progress));
     }, { title, cancellable });
   }
 
   async confirmCancelPracticeSession(dontRefreshView = false) {
-    if (this.manager.practiceSession) {
-      const result = await showInformationMessage(translate('projectView.cancelPractice.message'), {
-        [translate('projectView.cancelPractice.giveUp')]: async () => {
-          return await this.manager.stopPractice(dontRefreshView);
-        }
-      }, { modal: true });
-
-      return result || false;
-    }
-    else {
-      return true;
-    }
+    return await this.manager.stopPractice(dontRefreshView);
   }
 }
 

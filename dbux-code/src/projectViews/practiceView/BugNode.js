@@ -6,8 +6,8 @@ import { showInformationMessage } from '../../codeUtil/codeModals';
 
 /** @typedef {import('@dbux/projects/src/projectLib/Bug').default} Bug */
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
-
 /** @typedef {import('@dbux/projects/src/projectLib/Bug').default} Bug */
+/** @typedef {import('./ProjectNode').default} ProjectNode */
 
 export default class BugNode extends BaseTreeViewNode {
   static makeLabel(bug) {
@@ -23,6 +23,13 @@ export default class BugNode extends BaseTreeViewNode {
    */
   get bug() {
     return this.entry;
+  }
+
+  /**
+   * @return {ProjectNode}
+   */
+  get projectNode() {
+    return this.parent;
   }
 
   /**

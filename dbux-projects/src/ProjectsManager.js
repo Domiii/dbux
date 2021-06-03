@@ -5,13 +5,13 @@ import NanoEvents from 'nanoevents';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { realPathSyncNormalized } from '@dbux/common-node/src/util/pathUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { readPackageJson } from '@dbux/cli/lib/package-util';
 import projectRegistry from './_projectRegistry';
 import ProjectList from './projectLib/ProjectList';
 import BugRunner from './projectLib/BugRunner';
 import PracticeSession from './practiceSession/PracticeSession';
-import RunStatus from './projectLib/RunStatus';
 import BugStatus from './dataLib/BugStatus';
 import BackendController from './backend/BackendController';
 import PathwaysDataProvider from './dataLib/PathwaysDataProvider';
@@ -69,11 +69,11 @@ export default class ProjectsManager {
   // NOTE: npm flattens dependency tree by default, and other important dependencies are dependencies of @dbux/cli
   _sharedDependencyNames = [
     '@dbux/cli',
-    
+
     // // webpack is used by most projects
     // 'webpack@^4.43.0',
     // 'webpack-cli@^3.3.11',
-    
+
     // // these are used in dbux.webpack.config.base.js
     // 'copy-webpack-plugin@6'
   ];
@@ -182,10 +182,6 @@ export default class ProjectsManager {
     return this.bugDataProvider;
   }
 
-  get runStatus() {
-    return this.runner.status;
-  }
-
   async getAndInitBackend() {
     await this._backend.init();
     return this._backend;
@@ -196,8 +192,7 @@ export default class ProjectsManager {
   // ###########################################################################
 
   async startPractice(bug) {
-    if (this.practiceSession) {
-      await this.externals.alert(`You are currently practicing ${bug.id}`, true);
+    if (!await this.stopPractice()) {
       return;
     }
 
@@ -211,10 +206,10 @@ export default class ProjectsManager {
     bug.project.initProject();
     await this.switchToBug(bug);
     this._resetPracticeSession(bug);
-    await this.maybeActivateBugForTheFirstTime(bug);
     this.practiceSession.setupStopwatch();
     await this.savePracticeSession();
     await this.bdp.save();
+    this.maybeAskForTestBug(bug);
   }
 
   /**
@@ -305,8 +300,8 @@ export default class ProjectsManager {
       bug.project.initProject();
       const sessionData = this.externals.storage.get(savedPracticeSessionDataKeyName) || EmptyObject;
       this._resetPracticeSession(bug, sessionData, true);
-      await this.maybeActivateBugForTheFirstTime(bug);
       this.practiceSession.setupStopwatch();
+      this.maybeAskForTestBug(bug);
     }
     catch (err) {
       logError(`Unable to load PracticeSession: ${err.stack}`);
@@ -345,12 +340,12 @@ export default class ProjectsManager {
     // TOTRANSLATE
     const confirmMsg = `This is your first time activate this bug, do you want to start a timer?\n`
       + `[WARN] You will not be able to time this bug once you activate it.`;
-    return await this.externals.confirm(confirmMsg, true);
+    return await this.externals.confirm(confirmMsg);
   }
 
   async askForSubmit() {
     const confirmString = 'Congratulations!! You have passed all test 🎉🎉🎉\nWould you like to submit the result?';
-    const shouldSubmit = await this.externals.confirm(confirmString);
+    const shouldSubmit = await this.externals.confirm(confirmString, false);
 
     if (shouldSubmit) {
       this.submit();
@@ -364,6 +359,25 @@ export default class ProjectsManager {
     // TODO: maybe a new data type? or submit remotely?
   }
 
+  async maybeAskForTestBug(bug) {
+    try {
+      if (!allApplications.getAll().length) {
+        // TOTRANSLATE
+        const confirmMessage = 'You have not run any test yet, do you want to run it?';
+        const result = await this.externals.confirm(confirmMessage, false);
+        if (result) {
+          await this.switchAndTestBug(bug);
+          return true;
+        }
+      }
+      return false;
+    }
+    catch (err) {
+      logError(err);
+      return false;
+    }
+  }
+
   // ###########################################################################
   // Project Controll
   // ###########################################################################
@@ -373,7 +387,7 @@ export default class ProjectsManager {
    */
   async resetBug(bug) {
     const confirmMessage = 'This will discard all your changes on this bug. Are you sure?';
-    if (!await this.externals.confirm(confirmMessage, true)) {
+    if (!await this.externals.confirm(confirmMessage)) {
       const err = new Error('Action rejected by user');
       err.userCanceled = true;
       throw err;
@@ -425,26 +439,17 @@ export default class ProjectsManager {
   // ###########################################################################
 
   /**
-   * Install and run a bug, then save testRun after result
-   * NOTE: Only used internally to manage practice flow
+   * Switch to bug and run the test
    * @param {Bug} bug 
    * @param {Object} inputCfg
    */
-  async activateBug(bug, inputCfg = EmptyObject) {
+  async switchAndTestBug(bug, inputCfg = EmptyObject) {
     await this.switchToBug(bug);
     const result = await this.runTest(bug, inputCfg);
     return result;
   }
 
-  async maybeActivateBugForTheFirstTime(bug) {
-    if (!allApplications.getAll().length) {
-      await this.activateBug(bug);
-    }
-  }
-
   async switchToBug(bug) {
-    await bug.project.verifyInstallation?.();
-    
     if (this.runner.isBugActive(bug)) {
       // skip if bug is already activated
       return;
@@ -533,6 +538,10 @@ export default class ProjectsManager {
     await this.runner.cancel();
   }
 
+  isBusy() {
+    return this.runner.isBusy();
+  }
+
   // ########################################
   // BugRunner: event
   // ########################################
@@ -542,32 +551,8 @@ export default class ProjectsManager {
   }
 
   // ###########################################################################
-  // Project/Bug run status getter
+  // Project/Bug run status
   // ###########################################################################
-
-  /**
-   * @param {Project} project 
-   */
-  getProjectRunStatus(project) {
-    if (this.runner.isProjectActive(project)) {
-      return this.runner.status;
-    }
-    else {
-      return RunStatus.None;
-    }
-  }
-
-  /**
-   * @param {Bug} bug 
-   */
-  getBugRunStatus(bug) {
-    if (this.runner.isBugActive(bug)) {
-      return this.runner.status;
-    }
-    else {
-      return RunStatus.None;
-    }
-  }
 
   onRunStatusChanged(cb) {
     return this.runner.onStatusChanged(cb);
@@ -609,7 +594,7 @@ export default class ProjectsManager {
 
   getDevPackageRoot() {
     // NOTE: __dirname is actually "..../dbux-code/dist", because of webpack
-    return fs.realpathSync(path.join(__dirname, '..', '..'));
+    return realPathSyncNormalized(path.join(__dirname, '..', '..'));
   }
 
   // _convertPkgToLocalIfNecessary(pkgName, version = null) {

@@ -223,10 +223,7 @@ export default class TodomvcEs6Project extends Project {
     bug.testFilePaths = ['app.js'];
     // bug.runFilePaths = bug.testFilePaths;
     bug.watchFilePaths = bug.testFilePaths.map(file => path.join(this.projectPath, 'dist', file));
-  }
-
-  async selectBug(bug) {
-    return this.switchToBugPatchTag(bug);
+    bug.website = 'http://localhost:3842/';
   }
 
   async testBugCommand(bug, cfg) {

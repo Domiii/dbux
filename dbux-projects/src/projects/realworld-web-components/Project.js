@@ -23,7 +23,7 @@ export default class RealworldWebComponentsProject extends Project {
   }
 
   async runWebpack() {
-    return this.execBackground('node node_modules/webpack-dev-server/bin/webpack-dev-server.js --config ./dbux.webpack.config.js');
+    return this.execBackground('npx webpack serve --config ./dbux.webpack.config.js');
   }
 
   async selectBug(bug) {

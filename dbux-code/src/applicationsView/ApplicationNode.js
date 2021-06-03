@@ -1,4 +1,3 @@
-import { window } from 'vscode';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
 

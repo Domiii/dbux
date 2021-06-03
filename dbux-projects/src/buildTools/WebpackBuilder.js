@@ -4,7 +4,14 @@ import isFunction from 'lodash/isFunction';
 import { filesToEntry, getWebpackJs, getWebpackDevServerJs, serializeEnv } from '@dbux/common-node/src/util/webpackUtil';
 import { globRelative } from '@dbux/common-node/src/util/fileUtil';
 
+/** @typedef { import("../projectLib/Project").default } Project */
+
 export default class WebpackBuilder {
+  /**
+   * @type {Project}
+   */
+  project;
+
   constructor(cfg) {
     this.cfg = cfg;
   }
@@ -25,16 +32,18 @@ export default class WebpackBuilder {
   }
 
   async afterInstall() {
+    const shared = true;
+    const deps = {
+      // eslint-disable-next-line quote-props
+      'webpack': '^5',
+      'webpack-cli': '^4',
+      // 'webpack-config-utils': '???',
+      // 'copy-webpack-plugin': '^8'
+    };
     if (this.needsDevServer) {
-      await this.project.installPackages({
-        // eslint-disable-next-line quote-props
-        // 'webpack': '^4.43.0',
-        // 'webpack-cli': '^3.3.11',
-        // 'webpack-config-utils': '2.0.0',
-        // 'copy-webpack-plugin': '^6.0.3'
-        'webpack-dev-server': '^3.11.0',
-      });
+      deps['webpack-dev-server'] = '^3';
     }
+    await this.project.installPackages(deps, shared);
   }
 
   initProject(project) {
@@ -97,18 +106,23 @@ export default class WebpackBuilder {
     }
   }
 
-  getWebpackDevServerJs() {
-    // return this.project.getDependencyPath(getWebpackDevServerJs());
-    return path.join('node_modules', getWebpackDevServerJs());
+  // getWebpackDevServerJs() {
+  //   // return this.project.getSharedDependencyPath(getWebpackDevServerJs());
+  //   return path.join('node_modules', getWebpackDevServerJs());
+  // }
+
+  // getWebpackJs() {
+  //   // return this.project.getSharedDependencyPath(getWebpackJs());
+  //   return path.join('node_modules', getWebpackJs());
+  // }
+
+  webpackCliCommand() {
+    return this.needsDevServer ? 'serve' : 'watch';
   }
 
-  getWebpackJs() {
-    // return this.project.getDependencyPath(getWebpackJs());
-    return path.join('node_modules', getWebpackJs());
-  }
-
-  webpackBin() {
-    return this.cfg.webpackBin || (this.needsDevServer ? this.getWebpackDevServerJs() : this.getWebpackJs());
+  webpackCliBin() {
+    // return this.cfg.webpackCliBin || (this.needsDevServer ? this.getWebpackDevServerJs() : this.getWebpackJs());
+    return this.project.getSharedDependencyPath('webpack-cli/bin/cli.js');
   }
 
   async startWatchMode(bug) {
@@ -134,11 +148,15 @@ export default class WebpackBuilder {
     });
 
     const webpackConfig = path.join(projectPath, 'dbux.webpack.config.js');
-    const webpackArgs = `--display-error-details --watch --config ${webpackConfig} ${env}`;
+    const webpackArgs = `--config ${webpackConfig} ${env}`;
 
-    const webpackBin = this.webpackBin();
-    // NOTE: --display-error-details is part of `--stats` in webpack@5
-    let cmd = `node ${nodeArgs} --stack-trace-limit=100 ${webpackBin} ${webpackArgs}`;
+    const webpackCliBin = this.webpackCliBin();
+    const webpackCliCommand = this.webpackCliCommand();
+    let cmd = `node ${nodeArgs} --stack-trace-limit=100 ${webpackCliBin} ${webpackCliCommand} ${webpackArgs}`;
+    
+    // TODO: find better solution for this
+    cmd = cmd.replace(/\\/g, '/');
+
     return project.execBackground(cmd, processOptions);
   }
 }

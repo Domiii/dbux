@@ -57,12 +57,6 @@ const defaultBabelOptions = {
     ]
   ],
   plugins: [
-    // [
-    //   "@babel/plugin-proposal-class-properties",
-    //   {
-    //     loose: true
-    //   }
-    // ],
     // "@babel/plugin-proposal-optional-chaining",
     //   "@babel/plugin-proposal-decorators",
     // [
@@ -137,7 +131,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
       else if (devServerCfg !== true) {
         throw new Error(`Invalid devServer config (must be true, object or function) - ${JSON.stringify(devServerCfg)}`);
       }
-      Object.assign(devServer, devServerOverrides);
+      devServer = mergeConcatArray(devServer, devServerOverrides);
     }
 
     // ###########################################################################
@@ -167,7 +161,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     // entry
     // ###########################################################################
 
-    entry = entry || env?.entry || { main: 'src/index.js' };
+    entry = entry || (env && env.entry) || { main: 'src/index.js' };
 
     entry = Object.fromEntries(
       Object.entries(entry)
@@ -184,10 +178,8 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
 
     plugins = plugins || [];
     plugins.push(
-      new webpack.DefinePlugin({
-        'process.env': {
-          NODE_ENV: JSON.stringify("development")
-        }
+      new webpack.EnvironmentPlugin({
+        NODE_ENV: 'development'
       })
     );
     
@@ -270,7 +262,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     // ###########################################################################
 
     const cfg = {
-      watch: true,
+      // watch: true,
       mode: buildMode,
       entry,
       target,
@@ -284,7 +276,10 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
         filename: '[name].js',
         path: path.resolve(ProjectRoot, 'dist'),
         publicPath: 'dist',
-        libraryTarget: target === 'node' ? 'commonjs2' : 'var',
+        // library: {
+        //   name: '[name]',
+        //   type: target === 'node' ? 'commonjs2' : 'var',
+        // },
         devtoolModuleFilenameTemplate: "../[resource-path]",
       },
       resolve: {

@@ -1,6 +1,6 @@
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
-import which from '@dbux/projects/src/util/which';
+import { whichNormalized } from '@dbux/common-node/src/util/pathUtil';
 import sleep from '@dbux/common/src/util/sleep';
 
 // eslint-disable-next-line no-unused-vars
@@ -57,7 +57,7 @@ export function runInTerminal(cwd, command) {
   const name = DefaultTerminalName;
   closeTerminal(name);
 
-  const pathToBash = which('bash');
+  const pathToBash = whichNormalized('bash');
 
   // WARNING: terminal is not properly initialized when running the command. cwd is not set when executing `command`.
   const wrappedCommand = `cd "${cwd}" && ${command}; read -p "(Done. Press any key to exit.)"`;
@@ -114,8 +114,8 @@ export async function queryTerminalPid() {
 export function getOrCreateTerminal(terminalOptions) {
   const { name } = terminalOptions;
   let terminal = findTerminal(name);
-  if (!terminal) {
-    terminal = window.createTerminal(terminalOptions);
+  if (!terminal || !!terminal.exitStatus) {
+    terminal = recreateTerminal(terminalOptions);
   }
   return terminal;
 }
@@ -127,18 +127,21 @@ export async function runInTerminalInteractive(cwd, command, createNew = false) 
   }
   const terminalName = DefaultTerminalName;
 
-  const pathToBash = which('bash');
+  const pathToBash = whichNormalized('bash');
 
   const terminalOptions = {
     name: terminalName,
     cwd,
     shellPath: pathToBash
   };
+
+  await sleep(300);
+
   const terminal = createNew ?
     recreateTerminal(terminalOptions) :
     getOrCreateTerminal(terminalOptions);
 
-  await sleep(300);
+  await sleep(1);
 
   terminal.sendText(command, true);
   terminal.show(false);

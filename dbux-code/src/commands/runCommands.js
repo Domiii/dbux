@@ -1,7 +1,7 @@
-import fs from 'fs';
 import path from 'path';
-import { window, workspace, commands } from 'vscode';
+import { window, workspace } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { realPathSyncNormalized } from '@dbux/common-node/src/util/pathUtil';
 import { checkSystem } from '@dbux/projects/src/checkSystem';
 import { getOrCreateProjectManager } from '../projectViews/projectControl';
 import { runInTerminalInteractive } from '../codeUtil/terminalUtil';
@@ -39,7 +39,7 @@ function getArgs(debugMode) {
   //          Must be a bug or misconfiguration somewhere.
   //          Angular has similar issues: https://github.com/angular/angular-cli/issues/5423
 
-  let nodeArgs = config.get(`dbux.${runMode}.nodeArgs`);
+  let nodeArgs = config.get(`dbux.${runMode}.nodeArgs`) + ' --stack-trace-limit=1000';
   nodeArgs += debugMode ? ' --inspect-brk' : '';
 
   let dbuxArgs = config.get(`dbux.${runMode}.dbuxArgs`);
@@ -74,7 +74,7 @@ export async function runFile(extensionContext, debugMode = false) {
   let file;
   let cwd;
   try {
-    file = fs.realpathSync(activePath);
+    file = realPathSyncNormalized(activePath);
     cwd = path.dirname(file);
   }
   catch (err) {

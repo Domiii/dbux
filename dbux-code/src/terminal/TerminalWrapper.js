@@ -3,14 +3,14 @@ import os from 'os';
 import path from 'path';
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { pathNormalized, whichNormalized } from '@dbux/common-node/src/util/pathUtil';
 import Process from '@dbux/projects/src/util/Process';
-import which from '@dbux/projects/src/util/which';
 // import sleep from '@dbux/common/src/util/sleep';
 import { closeDefaultTerminal, runInTerminal, runInTerminalInteractive } from '../codeUtil/terminalUtil';
-import { getResourcePath } from '../resources';
+import { getResourcePath } from '../codeUtil/codePath';
 
-const Verbose = true;
-// const Verbose = false;
+// const Verbose = true;
+const Verbose = false;
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('terminalWrapper');
@@ -23,10 +23,11 @@ const { log, debug, warn, error: logError } = newLogger('terminalWrapper');
  * TODO: clean this up and move it to a more suitable place
  */
 async function getPathToNode() {
-  const hasVolta = !!which('volta');
+  const hasVolta = !!whichNormalized('volta');
   if (hasVolta) {
     // get the actual Node binary location that is not inside the target directory (i.e. the globally installed version)
-    return Process.execCaptureOut(`volta which node`, { processOptions: { cwd: __dirname } });
+    const nodePath = await Process.execCaptureOut(`volta which node`, { processOptions: { cwd: __dirname } });
+    return pathNormalized(nodePath);
   }
   return 'node';
 }
@@ -34,11 +35,6 @@ async function getPathToNode() {
 // ###########################################################################
 // TerminalWrapper
 // ###########################################################################
-
-function fixPathForSerialization(p) {
-  // fix backslashes (Process, Terminal, babelInclude)
-  return p.replace(/\\/g, '\\\\');
-}
 
 export default class TerminalWrapper {
   _disposable;
@@ -72,11 +68,9 @@ export default class TerminalWrapper {
 
   async _run(cwd, command, options, isInteractive = false) {
     // NOTE: fix paths on Windows
-    let tmpFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'dbux-'));
-    const pathToNode = fixPathForSerialization(await getPathToNode());
-    const pathToDbuxRun = fixPathForSerialization(getResourcePath('../dist/_dbux_run.js'));
-
-    // command = fixPathForSerialization(command); // not necessary (due to base64 serialization)
+    let tmpFolder = pathNormalized(fs.mkdtempSync(path.join(os.tmpdir(), 'dbux-')));
+    const pathToNode = await getPathToNode();
+    const pathToDbuxRun = getResourcePath('../dist/_dbux_run.js');
 
     // serialize everything
     const runJsargs = { cwd, command, options, tmpFolder };

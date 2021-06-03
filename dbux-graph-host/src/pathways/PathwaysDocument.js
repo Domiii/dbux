@@ -4,12 +4,24 @@ import PathwaysView from './PathwaysView';
 // import GraphRoot from './GraphRoot';
 import Toolbar from './Toolbar';
 
+/** @typedef {import('@dbux/projects/src/dataLib/PathwaysDataProvider').default} PathwaysDataProvider */
+
 class PathwaysDocument extends HostComponentEndpoint {
   toolbar;
   // minimap;
 
   isAnalyzing = () => {
     return PathwaysMode.is.Analyze(this.state.pathwaysMode);
+  }
+
+  /**
+   * @type {PathwaysDataProvider}
+   */
+  get pdp() {
+    const {
+      getPathwaysDataProvider
+    } = this.componentManager.externals;
+    return getPathwaysDataProvider();
   }
 
   update() {
@@ -35,11 +47,7 @@ class PathwaysDocument extends HostComponentEndpoint {
   }
 
   _addHooks = () => {
-    const {
-      getPathwaysDataProvider
-    } = this.componentManager.externals;
-
-    const pdp = getPathwaysDataProvider();
+    const { pdp } = this;
     const { sessionId } = pdp;
     if (sessionId !== this.sessionId) {
       // stop listening on previous events

@@ -6,6 +6,7 @@ const glob = require('glob');
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
+const webpackCommon = require('../config/webpack.config.common');
 // const fromEntries = require('object.fromentries');    // NOTE: Object.fromEntries was only added in Node v12
 const {
   makeResolve,
@@ -23,19 +24,18 @@ const { globToEntry } = require('../dbux-common-node/src/util/webpackUtil');
 const projectRoot = path.resolve(__dirname);
 // const projectRootNormalized = projectRoot.replace(/\\/g, '/');
 const projectSrc = path.resolve(projectRoot, 'src');
-const projectConfig = path.resolve(projectRoot, 'config');
+// const projectConfig = path.resolve(projectRoot, 'config');
 const MonoRoot = path.resolve(__dirname, '..');
 
 module.exports = (env, argv) => {
   const outputFolderName = 'dist';
 
   const mode = argv.mode || 'development';
-  const DBUX_VERSION = getDbuxVersion(mode);
-  const DBUX_ROOT = mode === 'development' ? MonoRoot : '';
-  process.env.NODE_ENV = mode; // set these, so babel configs also have it
-  process.env.DBUX_ROOT = DBUX_ROOT;
 
-  console.debug(`[dbux-cli] (DBUX_VERSION=${DBUX_VERSION}, mode=${mode}, DBUX_ROOT=${DBUX_ROOT}) building...`);
+  const {
+    DBUX_VERSION,
+    DBUX_ROOT
+  } = webpackCommon('dbux-cli', mode);
 
   const webpackPlugins = [
     new webpack.EnvironmentPlugin({
@@ -161,10 +161,10 @@ module.exports = (env, argv) => {
     //   }
     // },
     externals: [
-      /^fs$/,
-      /^process$/,
-      /^path$/,
       nodeExternals({
+        additionalModuleDirs: [
+          path.join(MonoRoot, 'node_modules')
+        ],
         allowlist: [
           ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/src/.*`))
           // (...args) => {
@@ -173,24 +173,6 @@ module.exports = (env, argv) => {
           // }
         ]
       })
-      // /node_modules\//,
-      // /@babel\//,
-      // /@dbux\//,
-      // function (dir, name, callback) {
-      //   // console.error(name, dir);
-      //   if (!name.startsWith(projectRoot) && !name.startsWith('.')) {
-      //     // ignore non-local files
-      //     return callback(null, name);
-      //   }
-      //   const fpath = path.resolve(dir, name);
-      //   const regex = `^(${projectSrc}|${projectConfig})`.replace(/\\/g, '\\\\');
-      //   const include = !!fpath.match(regex);
-      //   console.debug('[Webpack.include]', fpath, include);
-      //   if (!include) {
-
-      //   }
-      //   callback();
-      // }
     ],
     node: {
       // generate actual output file information

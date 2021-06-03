@@ -143,7 +143,7 @@ class ValueCollection extends Collection {
 
 
     // register by id
-    this._all.push(valueRef);
+    this.push(valueRef);
 
     // mark for sending
     this._send(valueRef);

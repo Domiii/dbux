@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "jest.config.js",
-  "scripts": {
-  },
+  "scripts": {},
   "keywords": [],
   "author": "Domi",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "dependencies": {
+    "lodash": "^4.17.21"
+  }
 }

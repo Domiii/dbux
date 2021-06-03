@@ -1,22 +1,38 @@
 {
-	"compilerOptions": {
-		"module": "esnext",
-		"moduleResolution": "node",
-		"target": "esnext",
-		"checkJs": false, /* Typecheck .js files. */
-		"lib": [
-			"es6"
-		],
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "node",
+    "target": "esnext",
+    "checkJs": false, /* Typecheck .js files. */
+    "lib": [
+      "es6"
+    ],
     "paths": {
-      "@dbux/common/*": ["../dbux-common/*"],
-      "@dbux/data/*": ["../dbux-data/*"],
-      "@dbux/graph-common/*": ["../dbux-graph-common/*"],
-      "@dbux/graph-host/*": ["../dbux-graph-host/*"],
-      "@dbux/projects/*": ["../dbux-projects/*"],
-      "@dbux/runtime/*": ["../dbux-runtime/*"],
+      "@dbux/common/*": [
+        "../dbux-common/*"
+      ],
+      "@dbux/common-node/*": [
+        "../dbux-common-node/*"
+      ],
+      "@dbux/data/*": [
+        "../dbux-data/*"
+      ],
+      "@dbux/graph-common/*": [
+        "../dbux-graph-common/*"
+      ],
+      "@dbux/graph-host/*": [
+        "../dbux-graph-host/*"
+      ],
+      "@dbux/projects/*": [
+        "../dbux-projects/*"
+      ],
+      "@dbux/runtime/*": [
+        "../dbux-runtime/*"
+      ],
     }
-	},
-	"exclude": [
-		"node_modules"
-	]
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

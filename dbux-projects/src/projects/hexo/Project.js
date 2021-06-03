@@ -85,7 +85,7 @@ export default class HexoProject extends Project {
     const tagCategory = "test"; // "test", "fix" or "full"
     const tag = this.getBugGitTag(number, tagCategory);
 
-    if ((await this.getTagName()).startsWith(tag)) {
+    if ((await this.gitGetCurrentTagName()).startsWith(tag)) {
       // do not checkout bug, if we already on the right tag
       return;
     }
@@ -95,7 +95,7 @@ export default class HexoProject extends Project {
     this.log(`Checking out bug ${name || number}...`);
 
     // see: https://git-scm.com/docs/git-checkout#Documentation/git-checkout.txt-emgitcheckoutem-b-Bltnewbranchgtltstartpointgt
-    await this.exec(`git checkout -B ${tag} tags/${tag}`);
+    await this.exec(`${this.gitCommand} checkout -B ${tag} tags/${tag}`);
   }
 
   async testBugCommand(bug, cfg) {
