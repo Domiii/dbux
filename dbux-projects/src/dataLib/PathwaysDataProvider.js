@@ -31,10 +31,16 @@ const { log, debug, warn, error: logError } = newLogger('PathwaysDataProvider');
 /** @typedef {import('./TestRun').default} TestRun */
 /** @typedef {import('@dbux/data/src/applications/Application').default} Application */
 
+class PathwaysCollection extends Collection {
+  handleAdd(entry) {
+    entry._id = this._all.length;
+  }
+}
+
 /**
  * @extends {Collection<TestRun>}
  */
-class TestRunCollection extends Collection {
+class TestRunCollection extends PathwaysCollection {
   constructor(pdp) {
     super('testRuns', pdp);
   }
@@ -43,7 +49,7 @@ class TestRunCollection extends Collection {
 /**
  * @extends {Collection<Application>}
  */
-class ApplicationCollection extends Collection {
+class ApplicationCollection extends PathwaysCollection {
   constructor(pdp) {
     super('applications', pdp);
   }
@@ -115,7 +121,7 @@ class ApplicationCollection extends Collection {
 /**
  * @extends {Collection<UserAction>}
  */
-class UserActionCollection extends Collection {
+class UserActionCollection extends PathwaysCollection {
   constructor(pdp) {
     super('userActions', pdp);
   }
@@ -167,7 +173,7 @@ class UserActionCollection extends Collection {
 /**
  * @extends {Collection<Step>}
  */
-class StepCollection extends Collection {
+class StepCollection extends PathwaysCollection {
   groupIdsByKey = new Map();
 
   constructor(pdp) {
@@ -202,7 +208,7 @@ class StepCollection extends Collection {
 /**
  * @extends {Collection<ActionGroup>}
  */
-class ActionGroupCollection extends Collection {
+class ActionGroupCollection extends PathwaysCollection {
   constructor(pdp) {
     super('actionGroups', pdp);
   }
@@ -315,8 +321,8 @@ export default class PathwaysDataProvider extends DataProviderBase {
 
 
   addNewGroup(step, firstAction, writeToLog = true) {
-    const { id: stepId } = step;
-    // const { id: actionId } = firstAction;
+    const { _id: stepId } = step;
+    // const { _id: actionId } = firstAction;
     const {
       createdAt,
       type: actionType,
@@ -347,7 +353,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
       // create new step
       step = this.addNewStep(action, writeToLog);
     }
-    action.stepId = step.id;
+    action.stepId = step._id;
 
     // actionGroup
     const lastActionGroup = this.collections.actionGroups.getLast();
@@ -356,14 +362,14 @@ export default class PathwaysDataProvider extends DataProviderBase {
       // create new group
       actionGroup = this.addNewGroup(step, action, writeToLog);
     }
-    action.groupId = actionGroup.id;
+    action.groupId = actionGroup._id;
 
     // add action
     this.addData({ userActions: [action] }, writeToLog);
   }
 
   shouldAddNewStep(action) {
-    // NOTE: action.id is not set yet (will be set during `addData`)
+    // NOTE: action._id is not set yet (will be set during `addData`)
     const {
       applicationId,
       staticContextId,
