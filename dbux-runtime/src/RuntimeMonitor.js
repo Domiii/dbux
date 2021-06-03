@@ -8,7 +8,6 @@ import traceCollection from './data/traceCollection';
 import staticTraceCollection from './data/staticTraceCollection';
 import Runtime from './Runtime';
 import ProgramMonitor from './ProgramMonitor';
-import promiseCollection from './data/promiseCollection';
 import { ensurePromiseWrapped } from './wrapPromise';
 
 // eslint-disable-next-line no-unused-vars
@@ -583,21 +582,6 @@ export default class RuntimeMonitor {
   }
 
   popLoop() {
-  }
-
-  // ###########################################################################
-  // promises
-  // ###########################################################################
-
-  promise(promiseId, parentPromiseId = null) {
-    const currentContextId = this._runtime.peekCurrentContextId();
-    // debug('create new promise', promiseId, parentPromiseId, currentContextId);
-    promiseCollection.promise(promiseId, parentPromiseId, currentContextId);
-  }
-
-  updatePromiseParent(promiseId, parentPromiseId) {
-    // debug('update promise with parent promise id', promiseId, parentPromiseId);
-    promiseCollection.updatePromiseParent(promiseId, parentPromiseId);
   }
 
   // ###########################################################################

@@ -398,14 +398,14 @@ export class RuntimeThreads1 {
   }
 
   getPromiseThreadId(promise) {
-    this.logger.debug('get promise thread id', { promise });
+    // this.logger.debug('get promise thread id', { promise });
     const threadId = this.getOwnPromiseThreadId(promise);
     if (threadId) {
       return threadId;
     }
 
     const callerPromise = this.getCallerPromise(promise);
-    this.logger.debug('caller promise', callerPromise);
+    // this.logger.debug('caller promise', callerPromise);
     if (callerPromise) {
       return this.getPromiseThreadId(callerPromise);
     }

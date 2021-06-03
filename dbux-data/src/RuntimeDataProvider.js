@@ -406,20 +406,6 @@ class TraceCollection extends Collection {
 }
 
 /**
- * @extends {Collection<PromiseData>}
- */
-
-class PromiseCollection extends Collection {
-  constructor(dp) {
-    super('promises', dp);
-  }
-
-  registerPromiseCallbackContextId(promiseId, contextId) {
-    this.getAll()[promiseId].callbackContextId = contextId;
-  }
-}
-
-/**
  * @extends {Collection<ValueRef>}
  */
 class ValueCollection extends Collection {
@@ -543,7 +529,6 @@ export default class RuntimeDataProvider extends DataProviderBase {
       executionContexts: new ExecutionContextCollection(this),
       traces: new TraceCollection(this),
       values: new ValueCollection(this),
-      promises: new PromiseCollection(this),
     };
 
     // const collectionClasses = [
