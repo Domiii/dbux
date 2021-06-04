@@ -1,20 +1,4 @@
-import TraceType from '@dbux/common/src/core/constants/TraceType';
-import { buildTraceNoValue } from '../zz_archive/traceHelpers.old';
-import { traceWrapExpression } from './trace';
-
-
-export function instrumentCallExpressionEnter(path, state) {
-  const calleePath = path.get('callee');
-
-  if (isAnyMemberExpression(calleePath)) {
-    return instrumentMemberCallExpressionEnter(path, state);
-  }
-  else {
-    return instrumentDefaultCallExpressionEnter(path, state);
-    // const tracePath = getTracePath(path);
-    // return traceBeforeExpression(TraceType.BeforeCallExpression, path, state, tracePath);
-  }
-}
+import { buildTraceCallDefault, buildTraceCallME } from './builders/callExpressions';
 
 
 // ###########################################################################
@@ -73,29 +57,28 @@ export function instrumentCallExpressionEnter(path, state) {
 // }
 
 // ###########################################################################
-// traceCallExpression
+// traceCallExpressionDefault
 // ###########################################################################
 
-export function traceCallExpression(path, state, traceCfg) {
-  // if (!getPathTraceId(calleePath) && !isPathInstrumented(calleePath)) {
-  //   // trace callee, if not traced before (left-hand side of parenthesis; e.g. `o.f` in `o.f(x)`)
-  //   traceWrapExpression(TraceType.ExpressionValue, calleePath, state);
-  // }
 
-  // trace BCE
-  if (bcePath) {
-    const bceNode = buildTraceNoValue(path, state, TraceType.BeforeCallExpression);
-    bcePath.replaceWith(bceNode);
-  }
+export function traceCallExpressionDefault(path, state, traceCfg) {
+  const newNode = buildTraceCallDefault(state, traceCfg);
+  path.replaceWith(newNode);
 
-  // trace args + return value
-  if (bceTraceId) {
-    // return value 
-    // TODO: resultCallId: bceTraceId
-    traceWrapExpression(path, state, traceCfg);
-    // {
-    //   resultCallId: bceTraceId,
-    //   // tracePath
-    // }
-  }
+  // NOTE: `onCopy` should not be necessary anymore, since nested paths should already have finished instrumentation
+  // const calleeNew = path.get('arguments.0.right');
+}
+
+// ###########################################################################
+// traceCallExpressionME
+// ###########################################################################
+
+export function traceCallExpressionME(path, state, traceCfg) {
+  const newNode = buildTraceCallME(state, traceCfg);
+  path.replaceWith(newNode);
+
+  // NOTE: `onCopy` should not be necessary anymore, since nested paths should already have finished instrumentation
+  // onCopy(callee)
+  // args.forEach(arg => onCopy(arg))
+  // onCopy(result)
 }

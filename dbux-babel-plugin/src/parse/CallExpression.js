@@ -1,6 +1,6 @@
 // import { instrumentCallExpressionEnter } from '../zz_archive/traceHelpers.old';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
-import { getPresentableString } from '../helpers/pathHelpers';
+import { traceCallExpressionDefault } from '../instrumentation/callExpressions';
 import BaseNode from './BaseNode';
 
 // function wrapCallExpression(path, state) {
@@ -27,18 +27,23 @@ function getStaticArgumentCfg(argNode) {
 }
 
 const CalleePluginsByType = {
-  Identifier: 'CalleeIdentifier',
-  CallExpression: 'CalleeCallExpression',
+  // default!
+  // Identifier: 'CalleeIdentifier',
+  // CallExpression: 'CalleeCallExpression',
+
+  /**
+   * ME
+   */
   MemberExpression: 'CalleeMemberExpression'
 };
 
 function getCalleePlugin(node) {
   const [calleePath] = node.getChildPaths();
   const { type } = calleePath.node;
-  const pluginName = CalleePluginsByType[type];
-  if (!pluginName) {
-    node.logger.error(`unknown callee type: "${type}" at "${getPresentableString(calleePath)}"`);
-  }
+  let pluginName = CalleePluginsByType[type];
+  // if (!pluginName) {
+  //   // node.logger.error(`unknown callee type: "${type}" at "${getPresentableString(calleePath)}"`);
+  // }
   return pluginName;
 }
 
@@ -56,6 +61,12 @@ export default class CallExpression extends BaseNode {
     getCalleePlugin
   ];
   static children = ['callee', 'arguments'];
+
+  get calleePlugin() {
+    // NOTE: first plugin is `calleePlugin`
+    const [calleePlugin] = this.plugins;
+    return calleePlugin;
+  }
 
   // function enterCallExpression(traceResultType, path, state) {
   //   // CallExpression
@@ -97,7 +108,7 @@ export default class CallExpression extends BaseNode {
      * 4. special case: `bind` etc.
      */
 
-    // 1. trace callee
+    // 1. make sure, callee is traced
     this.Traces.addDefaultTrace(calleePath);
 
     // 2. trace args + 3. BCE
@@ -117,6 +128,11 @@ export default class CallExpression extends BaseNode {
     };
     const bceInputs = argumentPath.node.map((_, i) => argumentPath.get(i));
     const bceTrace = this.Traces.addTraceWithInputs(bceTraceData, bceInputs);
+
+    /**
+     * @see `CalleeMemberExpression`
+     */
+    const instrument = this.calleePlugin?.instrumentCallExpression || traceCallExpressionDefault;
     const bceTidIdentifier = bceTrace.tidIdentifier;
 
     // 4. wrap `CallExpression` (as `CallExpressionResult`)
@@ -130,7 +146,7 @@ export default class CallExpression extends BaseNode {
         bceTrace
       },
       meta: {
-        instrument: this.Traces.instrumentCallExpression,
+        instrument,
         moreTraceCallArgs: [bceTidIdentifier]
       }
     });

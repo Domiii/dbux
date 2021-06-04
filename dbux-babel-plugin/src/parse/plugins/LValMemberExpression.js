@@ -16,11 +16,15 @@ f(1, o).x = (f(2), f(3, o = {}), f(4, o))
  * `a.b.c.prop = f(x)` ->
  * `rhs = te(f(x)), o = tme(...a.b.c...), o.prop = twME(rhs)`
  *
- * Case c-2:
+ * Case c-2: `CallExpression` object (not nested)
+ * `f().y = f(x)` ->
+ * `rhs = te(f(x)), o = tce(...f()...), o.prop = twME(rhs)`
+ *
+ * Case c-3:
  * `a.b.c[prop()] = f(x)` ->
  * `rhs = te(f(x)), o = tme(...a.b.c...), o[te(prop())] = twME(rhs)`
  *
- * Case c-3: nested CallExpression
+ * Case c-4: nested CallExpression
  * `g(a).h(b).y = f(x)` ->
  * `rhs = te(f(x)), o = tcr(tc(tcr(tc(g)(ta(a))).h)(ta(b))), o.y = twME(rhs)`
  *
@@ -28,13 +32,9 @@ f(1, o).x = (f(2), f(3, o = {}), f(4, o))
  * `o.prop = f(x)` ->
  * `o.prop = twME(te(f(x)))`
  *
- * Case s-2 (same as previous): TODO(trace `this` access for `super`)
+ * Case s-2: `super` TODO(trace `this` access for `super`)
  * `super.prop = f(x)` ->
  * `super.prop = twME(te(f(x)))`
- * 
- * Case s-3: a little extra when o is CallExpression
- * `f().y = f(x)` ->
- * ``
  * ```
  */
 export default class LValMemberExpression extends ParsePlugin {

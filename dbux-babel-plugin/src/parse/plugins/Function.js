@@ -241,7 +241,7 @@ export default class Function extends ParsePlugin {
    * Instrument all Functions to keep track of all (possibly async) execution stacks.
    * Called as trace.instrument.
    */
-  instrumentTrace = (traceCfg) => {
+  instrumentTrace = (path, state /*, traceCfg */) => {
     const {
       staticResumeContextId
     } = this.data;
@@ -249,8 +249,6 @@ export default class Function extends ParsePlugin {
     // TODO: warn of eval
     //      -> maybe try instrumenting it if it is a simple string?
     //      -> consider bundling `@dbux/babel-plugin` and `@babel/register` with runtime in case of eval?
-
-    const { path, state } = this.node;
     const bodyPath = path.get('body');
 
     // NOTE: `pushImmediate` also records the `trace` for us.

@@ -15,11 +15,12 @@ export function traceWrapExpression(expressionPath, state, traceCfg) {
   const newNode = build(expressionNode, state, traceCfg);
   expressionPath.replaceWith(newNode);
 
-  const replacePath = expressionPath.get('arguments.0');
-  state.onCopy(expressionPath, replacePath);
+  // NOTE: `onCopy` should not be necessary anymore, since nested paths should already have finished instrumentation
+  // const replacePath = expressionPath.get('arguments.0');
+  // state.onCopy(expressionPath, replacePath);
 
-  // return path of original expression node
-  return replacePath;
+  // // return path of original expression node
+  // return replacePath;
 }
 
 export function traceNoValue(path, state, traceCfg) {

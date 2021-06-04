@@ -6,8 +6,7 @@ import TraceType from '@dbux/common/src/core/constants/TraceType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import TraceCfg from '../../definitions/TraceCfg';
 import { getPresentableString } from '../../helpers/pathHelpers';
-import { buildTraceCallDefault } from '../../instrumentation/builders/calls';
-import { traceWrapExpression, traceDeclarations, traceNoValue } from '../../instrumentation/trace';
+import { traceWrapExpression, traceDeclarations } from '../../instrumentation/trace';
 import ParseNode from '../../parseLib/ParseNode';
 // import { getPresentableString } from '../../helpers/pathHelpers';
 import ParsePlugin from '../../parseLib/ParsePlugin';
@@ -187,48 +186,8 @@ export default class Traces extends ParsePlugin {
   // }
 
   // ###########################################################################
-  // instrumentTrace*
+  // instrument
   // ###########################################################################
-
-  instrumentTraceExpression = (traceCfg) => {
-    const { state } = this.node;
-
-    traceWrapExpression(getInstrumentPath(traceCfg), state, traceCfg);
-  }
-
-  instrumentTraceNoValue = (traceCfg) => {
-    const { state } = this.node;
-
-    traceNoValue(getInstrumentPath(traceCfg), state, traceCfg);
-  }
-
-  instrumentCallExpression = callResultTraceCfg => {
-    const { state } = this.node;
-
-    buildTraceCallDefault(getInstrumentPath(callResultTraceCfg), state, callResultTraceCfg);
-
-
-    // for (let i = 0; i < argumentPaths.length; ++i) {
-    //   const argPath = argumentPaths[i];
-    //   const argNode = argumentNodes[i];
-    //   this.Traces.addTrace({
-    //     path: argPath,
-    //     node: argNode,
-    //     staticTraceData: {
-    //       type: TraceType.CallArgument
-    //     },
-    //     meta: {
-    //       build: buildTraceExpressionNoInput,
-    //       traceCall: 'traceCallArgument',
-    //       moreTraceCallArgs: [calleeTidIdentifier]
-    //     }
-    //   });
-    // }
-
-    // const bcePath = path.get('expressions.1');
-    // bceCfg.meta.replacePath = bcePath;
-    // this.instrumentTraceExpression(bceCfg);
-  }
 
   instrumentTraceDeclarations = (traceCfgs) => {
     const { node } = this;
@@ -238,10 +197,6 @@ export default class Traces extends ParsePlugin {
       traceDeclarations(node.path, state, traceCfgs);
     }
   }
-
-  // ###########################################################################
-  // instrument
-  // ###########################################################################
 
   instrument() {
     const { node, traces, declarationTraces } = this;
@@ -257,14 +212,16 @@ export default class Traces extends ParsePlugin {
         /* inProgramStaticTraceId, */
         tidIdentifier,
         meta: {
-          instrument = this.instrumentTraceExpression
+          instrument = traceWrapExpression
         } = EmptyObject
       } = traceCfg;
       scope.push({
         id: tidIdentifier
       });
 
-      instrument?.(traceCfg);
+      // instrument?.(traceCfg);
+      const { state } = this.node;
+      instrument?.(getInstrumentPath(traceCfg), state, traceCfg);
     }
   }
 }
