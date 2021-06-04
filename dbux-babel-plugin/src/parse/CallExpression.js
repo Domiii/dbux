@@ -1,5 +1,6 @@
 // import { instrumentCallExpressionEnter } from '../zz_archive/traceHelpers.old';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { traceCallExpressionDefault } from '../instrumentation/callExpressions';
 import BaseNode from './BaseNode';
 
@@ -58,14 +59,18 @@ export default class CallExpression extends BaseNode {
     `NewExpression`
   ];
   static plugins = [
-    getCalleePlugin
+    (node) => node.calleePluginName
   ];
   static children = ['callee', 'arguments'];
 
+  calleePluginName;
+
+  init() {
+    this.calleePluginName = getCalleePlugin(this) || null;
+  }
+
   get calleePlugin() {
-    // NOTE: first plugin is `calleePlugin`
-    const [calleePlugin] = this.plugins;
-    return calleePlugin;
+    return this.calleePluginName && this.getPlugin(this.calleePluginName) || null;
   }
 
   // function enterCallExpression(traceResultType, path, state) {
@@ -118,7 +123,7 @@ export default class CallExpression extends BaseNode {
       staticTraceData: {
         type: TraceType.BeforeCallExpression,
         dataNode: {
-          argConfigs: argumentPath.node.map(getStaticArgumentCfg)
+          argConfigs: argumentPath.node?.map(getStaticArgumentCfg) || EmptyArray
         }
       },
       meta: {
@@ -126,7 +131,7 @@ export default class CallExpression extends BaseNode {
         instrument: null
       }
     };
-    const bceInputs = argumentPath.node.map((_, i) => argumentPath.get(i));
+    const bceInputs = argumentPath.node?.map((_, i) => argumentPath.get(i)) || EmptyArray;
     const bceTrace = this.Traces.addTraceWithInputs(bceTraceData, bceInputs);
 
     /**

@@ -11,28 +11,46 @@ class NestedError extends Error {
     if (message instanceof Error) {
       nestedErr = message;
     }
-    else if (message) {
-      this.message = message;
-    }
+    
+    this.message = message;
 
     this.name = 'NestedError';
-    this.nested = nestedErr;
+    this.nestedErr = nestedErr;
 
-    Error.captureStackTrace(this, this.constructor);
-  }
-
-  stack() {
-    const stack = super.stack?.() || '';
-    return buildCombinedStacks(stack, this.nested);
+    // TODO: fix combined stack, to be less confusing (should not include messages multiple times)
+    // const outer = this.outer = {};
+    // Error.captureStackTrace(outer, this.constructor);
+    // var oldStackDescriptor = Object.getOwnPropertyDescriptor(this, 'stack');
+    // var stackDescriptor = buildStackDescriptor(oldStackDescriptor, nestedErr);
+    Object.defineProperty(this, 'stack', {
+      value: `${message || ''}\n  [Caused By] ${nestedErr.stack || nestedErr}`
+    });
   }
 }
 
-function buildCombinedStacks(stack, nested) {
-  if (nested && nested) {
-    stack += '\n---------------------------\nCaused By: ' + nested.stack;
-  }
-  return stack || nested;
-}
+// function buildStackDescriptor(outerErrorStackDescriptor, nestedErr) {
+//   if (outerErrorStackDescriptor.get) {
+//     return {
+//       get: function () {
+//         var outerStack = outerErrorStackDescriptor.get.call(this);
+//         return buildCombinedStacks(this.nested?.stack, outerStack);
+//       }
+//     };
+//   } else {
+//     var outerStack = outerErrorStackDescriptor.value;
+//     return {
+//       value: buildCombinedStacks(nestedErr?.stack, outerStack)
+//     };
+//   }
+// }
+
+// function buildCombinedStacks(nested, outer) {
+//   if (nested) {
+//     nested = `[NestedError] ${nested}\n\n################################\n\n [Outer Error] ${outer}`;
+//   }
+
+//   return `${nested || outer}`;
+// }
 
 
 export default NestedError;

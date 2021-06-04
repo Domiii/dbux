@@ -3,6 +3,7 @@ import { NodePath } from '@babel/traverse';
 // import { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
 import { newLogger } from '@dbux/common/src/log/logger';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import TraceCfg from '../../definitions/TraceCfg';
 import { makeInputs, ZeroNode } from './buildHelpers';
 import { buildTraceExpressionSimple, buildTraceId } from './misc';
@@ -17,7 +18,7 @@ const { log, debug, warn, error: logError } = newLogger('builders/trace');
  */
 function generateCalleeVar(calleePath) {
   const id = calleePath.scope.generateUidIdentifierBasedOnNode(calleePath.node);
-  this.push({
+  calleePath.scope.push({
     id
   });
   return id;
@@ -38,29 +39,30 @@ function generateVar(path, name) {
 // ###########################################################################
 
 
-function buildArgsValue(state, argsPath) {
+function buildArgsValue(state, argNodes) {
   const { ids: { aliases: {
     arrayFrom
   } } } = state;
-  return t.arrayExpression(argsPath.node.map(argNode =>
-    t.isSpreadElement(argNode) ?
+  return t.arrayExpression(argNodes
+    .map(argNode => t.isSpreadElement(argNode) ?
       t.callExpression(
         arrayFrom,
         argNode.argument
       ) :
       argNode
-  ));
+    )
+  );
 }
 
 function buildArgI(argsVar, i) {
   return t.memberExpression(argsVar, t.numericLiteral(i), true, false);
 }
 
-function buildSpreadLengths(state, argsVar, argsPath) {
+function buildSpreadLengths(state, argsVar, argNodes) {
   const { ids: { aliases: {
     getArgLength
   } } } = state;
-  return t.arrayExpression(argsPath.node
+  return t.arrayExpression(argNodes
     .map((argNode, i) => t.isSpreadElement(argNode) ?
       t.callExpression(
         getArgLength,
@@ -76,8 +78,8 @@ function buildSpreadLengths(state, argsVar, argsPath) {
  * Build call arguments as array of Nodes, spread elements as necessary.
  * @example `[argsVar[0], argsVar[1], ...argsVar[2], argsVar[3]]`
  */
-function buildCallArgs(argsVar, argsPath) {
-  return argsPath.node.map((argNode, i) => {
+function buildCallArgs(argsVar, argNodes) {
+  return argNodes.map((argNode, i) => {
     const arg = buildArgI(argsVar, i);
     return t.isSpreadElement(argNode) ?
       t.spreadElement(arg) :
@@ -137,13 +139,13 @@ const callTemplatesDefault = {
   `)
 };
 
-function buildCallNodeDefault(path, calleeVar, argsVar, argsPath) {
+function buildCallNodeDefault(path, calleeVar, argsVar, argNodes) {
   const { type } = path.node;
   const callTempl = callTemplatesDefault[type];
   return callTempl({
     callee: calleeVar,
-    args: buildCallArgs(argsVar, argsPath)
-  });
+    args: buildCallArgs(argsVar, argNodes)
+  }).expression;
 }
 
 
@@ -176,14 +178,14 @@ const callTemplatesME = {
 `)
 };
 
-function buildCallNodeME(path, objectVar, calleeVar, argsVar, argsPath) {
+function buildCallNodeME(path, objectVar, calleeVar, argsVar, argNodes) {
   const { type } = path.node;
   const callTempl = callTemplatesME[type];
   return callTempl({
     o: objectVar,
     callee: calleeVar,
-    args: buildCallArgs(argsVar, argsPath)
-  });
+    args: buildCallArgs(argsVar, argNodes)
+  }).expression;
 }
 
 
@@ -203,12 +205,13 @@ export function buildTraceCallDefault(state, traceCfg) {
 
   const calleePath = path.get('callee');
   const argsPath = path.get('arguments');
+  const argNodes = argsPath.node || EmptyArray;
 
-  const calleeVar = generateCalleeVar(calleePath);
+  const calleeVar = generateVar(calleePath, 'f'); // generateCalleeVar(calleePath);
   const argsVar = generateVar(path, 'args');
 
-  const args = buildArgsValue(argsPath);
-  const spreadLengths = buildSpreadLengths(argsVar, argsPath);
+  const args = buildArgsValue(state, argNodes);
+  const spreadLengths = buildSpreadLengths(state, argsVar, argNodes);
 
   return t.sequenceExpression([
     // (i) callee assignment - `f = ...`
@@ -222,7 +225,7 @@ export function buildTraceCallDefault(state, traceCfg) {
 
     // (iv) wrap actual call - `tcr(f(args[0], ...args[1], args[2]))`
     buildTraceExpressionSimple(
-      buildCallNodeDefault(path, calleeVar, argsVar, argsPath),
+      buildCallNodeDefault(path, calleeVar, argsVar, argNodes),
       state,
       traceCfg
     )
@@ -247,13 +250,14 @@ export function buildTraceCallME(state, traceCfg) {
   const calleePath = path.get('callee');
   const objectPath = calleePath.get('object');
   const argsPath = path.get('arguments');
+  const argNodes = argsPath.node || EmptyArray;
 
   const objectVar = generateVar(objectPath, 'o');
-  const calleeVar = generateCalleeVar(calleePath);
+  const calleeVar = generateVar(calleePath, 'f'); // generateCalleeVar(calleePath);
   const argsVar = generateVar(path, 'args');
 
-  const args = buildArgsValue(argsPath);
-  const spreadLengths = buildSpreadLengths(argsVar, argsPath);
+  const args = buildArgsValue(state, argNodes);
+  const spreadLengths = buildSpreadLengths(state, argsVar, argNodes);
 
   return t.sequenceExpression([
     // (i) object assignment - `o = ...`
@@ -270,7 +274,7 @@ export function buildTraceCallME(state, traceCfg) {
 
     // (v) wrap actual call - `tcr(f.call(o, args[0], ...args[1], args[2]))`
     buildTraceExpressionSimple(
-      buildCallNodeME(path, objectVar, calleeVar, argsVar, argsPath),
+      buildCallNodeME(path, objectVar, calleeVar, argsVar, argNodes),
       state,
       traceCfg
     )

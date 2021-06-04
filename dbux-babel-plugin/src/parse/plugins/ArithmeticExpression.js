@@ -15,7 +15,7 @@ export default class ArithmeticExpression extends ParsePlugin {
     // const childNodes = node.getChildNodes();
     const childPaths = node.getChildPaths();
 
-    this.warn('childPaths', childPaths.map(c => getPresentableString(c)));
+    // this.warn('childPaths', childPaths.map(c => getPresentableString(c)));
 
     // trace AE itself
     const staticTraceData = {

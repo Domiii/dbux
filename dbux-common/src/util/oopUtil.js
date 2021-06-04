@@ -10,15 +10,20 @@
  */
 export function getAllStaticPropsInInheritanceChain(Clazz, propName) {
   const res = [];
-  // let Prev = null;
+  let Prev = null;
   let Cur = Clazz;
   do {
     if (propName in Cur) {
-      res.push(Cur[propName]);
+      const val = Cur[propName];
+      if (!Prev || val !== Prev[propName]) {
+        // NOTE: if base class does not define the prop, this will access the extending class prop
+        res.push(val);
+      }
     }
     // Prev = Clazz;
+    Prev = Cur;
     Cur = Object.getPrototypeOf(Cur);
-    // console.log(Prev, Cur);
+    // console.log(' static recurse', Cur?.name, Cur?.[propName], '--', Prev.name);
   }
   while (Cur);
   return res;

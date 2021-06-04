@@ -1,7 +1,5 @@
-import mapValues from 'lodash/mapValues';
-import groupBy from 'lodash/groupBy';
 import isFunction from 'lodash/isFunction';
-import isArray from 'lodash/isArray';
+import isString from 'lodash/isString';
 // import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { getAllStaticPropsInInheritanceChain } from '@dbux/common/src/util/oopUtil';
 import NestedError from '@dbux/common/src/NestedError';
@@ -68,26 +66,35 @@ class Registry {
 
     const pluginNames = getAllStaticPropsInInheritanceChain(Clazz, 'plugins').flat();
 
-    for (const pluginCfg of pluginNames) {
+    for (const _pluginCfg of pluginNames) {
       let name;
-      if (isArray(pluginCfg)) {
-        [, name] = pluginCfg;
+      let pluginCfg = _pluginCfg;
+      if (isFunction(pluginCfg)) {
+        pluginCfg = pluginCfg(requester);
+        if (!pluginCfg) {
+          // ignore
+          continue;
+        }
       }
-      else if (isFunction(pluginCfg)) {
-        name = pluginCfg(requester);
-      }
-      else {
+      if (isString(pluginCfg)) {
         name = pluginCfg;
       }
+      else {
+        throw new Error(`Invalid plugin - must be string or function returning string but was "${toString(pluginCfg)}" in ${this}`);
+      }
 
-      pluginMap.set(name, pluginCfg);
+      // NOTE: currently, there is no configuration needed for the plugin
+      name = pluginCfg;
 
       try {
         const PluginClazz = this.getPluginClassByName(name);
         if (!PluginClazz) {
           throw new Error(`ParseNode "${Clazz.name}" referenced non-existing pluginName = "${name}" (available: ${Object.keys(this.PluginClassesByName).join(', ')})`);
         }
-        const pluginConfigs = this._getAllPluginConfigsOfClass(PluginClazz, visited, requester);
+        pluginMap.set(name, PluginClazz);
+        const pluginConfigs = this._getAllPluginConfigs(PluginClazz, visited, requester);
+
+        // add children plugins to this pluginMap
         for (const [key, value] of pluginConfigs.entries()) {
           pluginMap.set(key, value);
         }

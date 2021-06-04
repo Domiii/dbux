@@ -36,6 +36,10 @@ export default class ParseNode {
    * @type {{ [string]: object }}
    */
   plugins = {};
+  // /**
+  //  * Array of plugins, in order of initialization.
+  //  */
+  // pluginList = [];
   pluginPhases = {};
 
   /**
@@ -56,7 +60,7 @@ export default class ParseNode {
   getAllClassPlugins() {
     if (!this.constructor._pluginConfigs) {
       const allPluginConfigs = ParseRegistry.getAllPluginConfigsOfNodeClass(this.constructor, this);
-      this.constructor._pluginConfigs = Array.from(allPluginConfigs.values());
+      this.constructor._pluginConfigs = allPluginConfigs;
     }
     return this.constructor._pluginConfigs;
   }
@@ -227,35 +231,13 @@ export default class ParseNode {
     plugin.node = this;
     plugin.init?.();
     this.plugins[Clazz.name] = plugin;
+    // this.pluginList.push(plugin);
     return plugin;
   }
 
   initPlugins() {
     // add plugins
-    for (let pluginCfg of this.getAllClassPlugins()) {
-      let name, PluginClazz;
-      if (isFunction(pluginCfg)) {
-        pluginCfg = pluginCfg();
-        if (!pluginCfg) {
-          // NOTE: plugin's conditions are not met
-          continue;
-        }
-        if (isString(pluginCfg)) {
-          name = pluginCfg;
-        }
-        else {
-          PluginClazz = pluginCfg;
-          name = PluginClazz.name;
-        }
-      }
-      else if (isString(pluginCfg)) {
-        name = pluginCfg;
-      }
-      else {
-        throw new Error(`Invalid plugin - must be string or function but was "${toString(pluginCfg)}" in ${this}`);
-      }
-      PluginClazz = PluginClazz || ParseRegistry.getPluginClassByName(name);
-
+    for (let [/* name */, PluginClazz] of this.getAllClassPlugins().entries()) {
       // this.debug(this.nodeTypeName, `[initPlugins] add`, name, !predicate || predicate());
 
       // add plugin
