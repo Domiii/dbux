@@ -2,12 +2,12 @@
 // import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 // import TraceType from '@dbux/common/src/core/constants/TraceType';
 // import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import TraceCfg from '../../definitions/TraceCfg';
 import { getPresentableString } from '../../helpers/pathHelpers';
-import { traceWrapExpression, traceWrapWrite, traceDeclarations, traceNoValue } from '../../instrumentation/trace';
+import { buildTraceCallDefault } from '../../instrumentation/builders/calls';
+import { traceWrapExpression, traceDeclarations, traceNoValue } from '../../instrumentation/trace';
 import ParseNode from '../../parseLib/ParseNode';
 // import { getPresentableString } from '../../helpers/pathHelpers';
 import ParsePlugin from '../../parseLib/ParsePlugin';
@@ -78,7 +78,6 @@ export default class Traces extends ParsePlugin {
   // ###########################################################################
 
   /**
-   * TODO: fix order of `staticTraceId`
    * @return {TraceCfg}
    */
   addTrace(traceData) {
@@ -203,10 +202,11 @@ export default class Traces extends ParsePlugin {
     traceNoValue(getInstrumentPath(traceCfg), state, traceCfg);
   }
 
-  instrumentCallExpression = callResultCfg => {
-    const { path } = callResultCfg;
+  instrumentCallExpression = callResultTraceCfg => {
+    const { state } = this.node;
 
-    // TODO: finish this
+    buildTraceCallDefault(getInstrumentPath(callResultTraceCfg), state, callResultTraceCfg);
+
 
     // for (let i = 0; i < argumentPaths.length; ++i) {
     //   const argPath = argumentPaths[i];

@@ -6,7 +6,7 @@ import BaseNode from './BaseNode';
 // util
 // ###########################################################################
 
-const PluginsByType = {
+const LValPluginsByType = {
   Identifier: 'LValIdentifier',
   ObjectPattern: 'LValPattern',
   ArrayPattern: 'LValPattern',
@@ -16,7 +16,7 @@ const PluginsByType = {
 function getLValPlugin(node) {
   const [lvalPath] = node.getChildPaths();
   const lvalType = lvalPath.node.type;
-  const pluginName = PluginsByType[lvalType];
+  const pluginName = LValPluginsByType[lvalType];
   if (!pluginName) {
     node.logger.error(`unknown lval type: "${lvalType}" at "${getPresentableString(lvalPath)}"`);
   }

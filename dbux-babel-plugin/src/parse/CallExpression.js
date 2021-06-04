@@ -1,5 +1,6 @@
 // import { instrumentCallExpressionEnter } from '../zz_archive/traceHelpers.old';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
+import { getPresentableString } from '../helpers/pathHelpers';
 import BaseNode from './BaseNode';
 
 // function wrapCallExpression(path, state) {
@@ -19,17 +20,40 @@ import BaseNode from './BaseNode';
 //   return traceCallExpression(path, state, traceResultType);
 // }
 
-function getArgumentCfg(node) {
+function getStaticArgumentCfg(argNode) {
   return {
-    isSpread: node.type === 'SpreadElement'
+    isSpread: argNode.type === 'SpreadElement'
   };
 }
+
+const CalleePluginsByType = {
+  Identifier: 'CalleeIdentifier',
+  CallExpression: 'CalleeCallExpression',
+  MemberExpression: 'CalleeMemberExpression'
+};
+
+function getCalleePlugin(node) {
+  const [calleePath] = node.getChildPaths();
+  const { type } = calleePath.node;
+  const pluginName = CalleePluginsByType[type];
+  if (!pluginName) {
+    node.logger.error(`unknown callee type: "${type}" at "${getPresentableString(calleePath)}"`);
+  }
+  return pluginName;
+}
+
+// ###########################################################################
+// CallExpression
+// ###########################################################################
 
 export default class CallExpression extends BaseNode {
   static visitors = [
     `CallExpression`,
     `OptionalCallExpression`,
     `NewExpression`
+  ];
+  static plugins = [
+    getCalleePlugin
   ];
   static children = ['callee', 'arguments'];
 
@@ -52,7 +76,7 @@ export default class CallExpression extends BaseNode {
   //     path.setData('traceResultType', traceResultType);
   //   }
   // }
-  
+
 
   exit() {
     // TODO: more special cases - super, import, require
@@ -83,7 +107,7 @@ export default class CallExpression extends BaseNode {
       staticTraceData: {
         type: TraceType.BeforeCallExpression,
         dataNode: {
-          argConfigs: argumentPath.node.map(getArgumentCfg)
+          argConfigs: argumentPath.node.map(getStaticArgumentCfg)
         }
       },
       meta: {

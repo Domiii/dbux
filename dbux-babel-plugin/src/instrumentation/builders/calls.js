@@ -1,4 +1,5 @@
 import template from '@babel/template';
+import { NodePath } from '@babel/traverse';
 // import { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
 import { newLogger } from '@dbux/common/src/log/logger';
@@ -15,19 +16,19 @@ const { log, debug, warn, error: logError } = newLogger('builders/trace');
  * NOTE: the call templates do not have arguments. We will put them in manually, so as to avoid loss of path data.
  * NOTE: the `null` expression (i.e. `newPath.get('expressions.2')`) is a placeholder for BCE id.
  */
-const callTemplatesMember = {
+const callTemplatesME = {
   // NOTE: `f.call.call(f, args)` also works 
   //        i.e. `f.call(this, 1);`
   //          -> `f.call.call(f, this, 1))`
   CallExpression: () => template(`
-    %%callee%%.apply(%%o%%, %%args%%)
+    %%callee%%.call(%%o%%, %%args%%)
   `),
 
   /**
    * @see https://github.com/babel/babel/blob/master/packages/babel-plugin-proposal-optional-chaining/src/index.js
    */
   OptionalCallExpression: () => template(`
-    %%callee%%?.apply(%%o%%, %%args%%)
+    %%callee%%?.call(%%o%%, %%args%%)
   `),
 
   NewExpression: () => template(`
@@ -40,14 +41,14 @@ const callTemplatesMember = {
  */
 const callTemplatesVar = {
   CallExpression: template(`
-    %%callee%%(%%args%%)
+    %%callee%%.call(null, %%args%%)
   `),
 
   /**
    * @see https://github.com/babel/babel/blob/master/packages/babel-plugin-proposal-optional-chaining/src/index.js
    */
   OptionalCallExpression: template(`
-    %%callee%%?.(%%args%%)
+    %%callee%%?.call(null, %%args%%)
   `),
 
   NewExpression: template(`
@@ -64,6 +65,14 @@ function generateCalleeVar(calleePath) {
     id
   });
   return id;
+  // return calleePath.node.name || 'func';
+}
+
+/**
+ * @param {NodePath} path
+ */
+function generateVar(path, name) {
+  return path.scope.generateDeclaredUidIdentifier(name);
   // return calleePath.node.name || 'func';
 }
 
@@ -106,6 +115,10 @@ function buildSpreadLengths(state, argsVar, argsPath) {
   );
 }
 
+/**
+ * Build call arguments as array of Nodes, spread elements as necessary.
+ * @example `[argsVar[0], argsVar[1], ...argsVar[2], argsVar[3]]`
+ */
 function buildCallArgs(argsVar, argsPath) {
   return argsPath.node.map((argNode, i) => {
     const arg = buildArgI(argsVar, i);
@@ -137,7 +150,7 @@ function buildBCE(state, traceCfg, spreadLengths) {
   ]);
 }
 
-function buildCallNode(path, calleeVar, argsVar, argsPath) {
+function buildCallNodeDefault(path, calleeVar, argsVar, argsPath) {
   const { type } = path.node;
   const callTempl = callTemplatesVar[type];
   return callTempl({
@@ -146,27 +159,36 @@ function buildCallNode(path, calleeVar, argsVar, argsPath) {
   });
 }
 
+function buildCallNodeME(path, objectVar, calleeVar, argsVar, argsPath) {
+  const { type } = path.node;
+  const callTempl = callTemplatesME[type];
+  return callTempl({
+    o: objectVar,
+    callee: calleeVar,
+    args: buildCallArgs(argsVar, argsPath)
+  });
+}
+
+
 // ###########################################################################
-// traceCall
+// buildTraceCallVar
 // ###########################################################################
 
 /**
  * @param {TraceCfg} traceCfg 
  * @returns 
  */
-export function buildTraceCallVar(state, traceCfg) {
+export function buildTraceCallDefault(state, traceCfg) {
   const {
     path,
-    path: {
-      scope
-    },
     data: { bceTrace }
   } = traceCfg;
 
   const calleePath = path.get('callee');
   const argsPath = path.get('arguments');
+
   const calleeVar = generateCalleeVar(calleePath);
-  const argsVar = scope.generateUidIdentifier('args');
+  const argsVar = generateVar(path, 'args');
 
   // TODO: onCopy(callee)
   // TODO: args.forEach(arg => onCopy(arg))
@@ -176,18 +198,70 @@ export function buildTraceCallVar(state, traceCfg) {
   const spreadLengths = buildSpreadLengths(argsVar, argsPath);
 
   return t.sequenceExpression([
-    // (i) callee assignment - `callee = te(...)`
+    // (i) callee assignment - `f = ...`
     t.assignmentExpression('=', calleeVar, calleePath),
 
-    // (ii) args assignment `args = [...]`
+    // (ii) args assignment - `args = [...]`
     t.assignmentExpression('=', argsVar, args),
 
     // (iii) BCE - `tbce(tid, argTids, spreadLengths)`
     buildBCE(state, bceTrace, spreadLengths),
 
-    // (iv) actual call
+    // (iv) wrap actual call - `te(f.call(null, args[0], ...args[1], args[2]))`
     buildTraceExpressionSimple(
-      buildCallNode(path, calleeVar, argsVar, argsPath),
+      buildCallNodeDefault(path, calleeVar, argsVar, argsPath),
+      state,
+      traceCfg
+    )
+  ]);
+}
+
+
+// ###########################################################################
+// buildTraceCallME
+// ###########################################################################
+
+/**
+ * @param {TraceCfg} traceCfg 
+ * @returns 
+ */
+export function buildTraceCallME(state, traceCfg) {
+  const {
+    path,
+    data: { bceTrace }
+  } = traceCfg;
+
+  const calleePath = path.get('callee');
+  const objectPath = calleePath.get('object');
+  const argsPath = path.get('arguments');
+
+  const objectVar = generateVar(objectPath, 'o');
+  const calleeVar = generateCalleeVar(calleePath);
+  const argsVar = generateVar(path, 'args');
+
+  // TODO: onCopy(callee)
+  // TODO: args.forEach(arg => onCopy(arg))
+  // TODO: onCopy(result)
+
+  const args = buildArgsValue(argsPath);
+  const spreadLengths = buildSpreadLengths(argsVar, argsPath);
+
+  return t.sequenceExpression([
+    // (i) object assignment - `o = ...`
+    t.assignmentExpression('=', objectVar, objectPath),
+
+    // (ii) callee assignment - `f = ...`
+    t.assignmentExpression('=', calleeVar, calleePath),
+
+    // (iii) args assignment `args = [...]`
+    t.assignmentExpression('=', argsVar, args),
+
+    // (iv) BCE - `tbce(tid, argTids, spreadLengths)`
+    buildBCE(state, bceTrace, spreadLengths),
+
+    // (v) wrap actual call - `te(f.call(o, args[0], ...args[1], args[2]))`
+    buildTraceExpressionSimple(
+      buildCallNodeME(path, objectVar, calleeVar, argsVar, argsPath),
       state,
       traceCfg
     )
