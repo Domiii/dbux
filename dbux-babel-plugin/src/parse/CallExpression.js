@@ -21,9 +21,9 @@ import BaseNode from './BaseNode';
 //   return traceCallExpression(path, state, traceResultType);
 // }
 
-function getStaticArgumentCfg(argNode) {
+function getStaticArgumentCfg(argPath) {
   return {
-    isSpread: argNode.type === 'SpreadElement'
+    isSpread: argPath.node.type === 'SpreadElement'
   };
 }
 
@@ -101,7 +101,7 @@ export default class CallExpression extends BaseNode {
     const { path } = this;
 
 
-    const [calleePath, argumentPath] = this.getChildPaths();
+    const [calleePath, argumentPaths] = this.getChildPaths();
     // const [calleeNode, argumentNodes] = this.getChildNodes();
 
     /**
@@ -123,7 +123,7 @@ export default class CallExpression extends BaseNode {
       staticTraceData: {
         type: TraceType.BeforeCallExpression,
         dataNode: {
-          argConfigs: argumentPath.node?.map(getStaticArgumentCfg) || EmptyArray
+          argConfigs: argumentPaths?.map(getStaticArgumentCfg) || EmptyArray
         }
       },
       meta: {
@@ -131,8 +131,8 @@ export default class CallExpression extends BaseNode {
         instrument: null
       }
     };
-    const bceInputs = argumentPath.node?.map((_, i) => argumentPath.get(i)) || EmptyArray;
-    const bceTrace = this.Traces.addTraceWithInputs(bceTraceData, bceInputs);
+    const bceInputPaths = argumentPaths || EmptyArray;
+    const bceTrace = this.Traces.addTraceWithInputs(bceTraceData, bceInputPaths);
 
     /**
      * @see `CalleeMemberExpression`
@@ -151,6 +151,7 @@ export default class CallExpression extends BaseNode {
         bceTrace
       },
       meta: {
+        traceCall: 'traceCallResult',
         instrument,
         moreTraceCallArgs: [bceTidIdentifier]
       }

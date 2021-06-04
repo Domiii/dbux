@@ -205,7 +205,7 @@ export function buildTraceCallDefault(state, traceCfg) {
 
   const calleePath = path.get('callee');
   const argsPath = path.get('arguments');
-  const argNodes = argsPath.node || EmptyArray;
+  const argNodes = argsPath?.map(a => a.node) || EmptyArray;
 
   const calleeVar = generateVar(calleePath, 'f'); // generateCalleeVar(calleePath);
   const argsVar = generateVar(path, 'args');
@@ -220,7 +220,7 @@ export function buildTraceCallDefault(state, traceCfg) {
     // (ii) args assignment - `args = [...]`
     t.assignmentExpression('=', argsVar, args),
 
-    // (iii) BCE - `tbce(tid, argTids, spreadLengths)`
+    // (iii) BCE - `bce(tid, argTids, spreadLengths)`
     buildBCE(state, bceTrace, spreadLengths),
 
     // (iv) wrap actual call - `tcr(f(args[0], ...args[1], args[2]))`
@@ -269,7 +269,7 @@ export function buildTraceCallME(state, traceCfg) {
     // (iii) args assignment - `args = [...]`
     t.assignmentExpression('=', argsVar, args),
 
-    // (iv) BCE - `tbce(tid, argTids, spreadLengths)`
+    // (iv) BCE - `bce(tid, argTids, spreadLengths)`
     buildBCE(state, bceTrace, spreadLengths),
 
     // (v) wrap actual call - `tcr(f.call(o, args[0], ...args[1], args[2]))`
