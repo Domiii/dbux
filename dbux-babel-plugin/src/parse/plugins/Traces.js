@@ -16,16 +16,6 @@ const makeDefaultTrace = {
   // }
 };
 
-function getInstrumentPath(traceCfg) {
-  const {
-    path: tracePath,
-    meta: {
-      replacePath
-    } = EmptyObject
-  } = traceCfg;
-  return replacePath || tracePath;
-}
-
 export default class Traces extends ParsePlugin {
   declarationTraces = [];
   traces = [];
@@ -158,9 +148,6 @@ export default class Traces extends ParsePlugin {
           // NOTE: declaration trace is always hoisted to some scope, always assigned a "new" `undefined` value (until assignment/definition happens)
           isNew: true
         }
-      },
-      meta: {
-        instrument: this.node.Traces.instrumentTraceDeclaration
       }
     });
     this.declarationTraces.push(traceCfg);
@@ -221,7 +208,7 @@ export default class Traces extends ParsePlugin {
 
       // instrument?.(traceCfg);
       const { state } = this.node;
-      instrument?.(getInstrumentPath(traceCfg), state, traceCfg);
+      instrument?.(state, traceCfg);
     }
   }
 }

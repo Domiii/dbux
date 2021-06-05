@@ -51,12 +51,20 @@ export default class DataNode {
   varAccess;
 
   /**
+   * An id that uniquely identifies variable access:
+   * (i) Either a single variable (`declarationTid`), or
+   * (ii) a property of an object (makeUid(`${getValueIdentity(objectTid)}#${prop}`)).
+   * 
    * NOTE: computed in post-processing.
    * @type {number}
    */
   accessId;
 
   /**
+   * An id that uniquely identifies this "value":
+   * (i) Either object (for which we use `refId`) or
+   * (ii) non-reference type (see `slicing.md`).
+   * 
    * NOTE: computed in post-processing.
    * @type {number}
    */

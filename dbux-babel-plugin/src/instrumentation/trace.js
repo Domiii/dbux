@@ -1,4 +1,5 @@
 // import * as t from '@babel/types';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { UndefinedNode } from './builders/buildHelpers';
 import { buildTraceExpression, buildTraceDeclarations, buildTraceId } from './builders/misc';
 import { unshiftScopeBlock } from './scope';
@@ -9,11 +10,26 @@ const keepStatementCfg = {
   }
 };
 
-export function traceWrapExpression(expressionPath, state, traceCfg) {
-  const expressionNode = expressionPath.node || UndefinedNode;
+
+function getInstrumentPath(traceCfg) {
+  const {
+    path: tracePath,
+    meta: {
+      replacePath
+    } = EmptyObject
+  } = traceCfg;
+  return replacePath || tracePath;
+}
+
+export function traceWrapExpression(state, traceCfg) {
+  const { path } = getInstrumentPath(traceCfg);
+  const expressionNode = path.node || UndefinedNode;
   const build = traceCfg.meta?.build || buildTraceExpression;
   const newNode = build(expressionNode, state, traceCfg);
-  expressionPath.replaceWith(newNode);
+  
+  // TODO: only replace if `replacePath !== false`?
+
+  path.replaceWith(newNode);
 
   // NOTE: `onCopy` should not be necessary anymore, since nested paths should already have finished instrumentation
   // const replacePath = expressionPath.get('arguments.0');
@@ -21,14 +37,6 @@ export function traceWrapExpression(expressionPath, state, traceCfg) {
 
   // // return path of original expression node
   // return replacePath;
-}
-
-export function traceNoValue(path, state, traceCfg) {
-  const expressionNode = path.node || UndefinedNode;
-  const build = traceCfg.meta?.build || buildTraceId;
-  const newNode = build(expressionNode, state, traceCfg);
-  path.replaceWith(newNode);
-  return path;
 }
 
 export function traceDeclarations(targetPath, state, traceCfgs) {

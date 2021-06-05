@@ -243,10 +243,13 @@ export default class Function extends ParsePlugin {
    * Instrument all Functions to keep track of all (possibly async) execution stacks.
    * Called as trace.instrument.
    */
-  instrumentTrace = (path, state /*, traceCfg */) => {
-    const {
-      staticResumeContextId
-    } = this.data;
+  instrumentTrace = (state /*, traceCfg */) => {
+    const { 
+      path,
+      data: {
+        staticResumeContextId
+      }
+    } = this;
 
     // TODO: warn of eval
     //      -> maybe try instrumenting it if it is a simple string?

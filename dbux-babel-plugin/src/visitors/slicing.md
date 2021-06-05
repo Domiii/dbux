@@ -325,10 +325,13 @@ console.log(a.p1);
 
 # Value identity
 
-"Value identity" is a uid that can uniquely identify a value:
+"Value identity" refer to a uid (`valueId`) that can uniquely identify a value:
 
-* For `object`, `array`, `function` ("reference types" or "object types"), it is `dataNode.refId`
-  * That `refId` is assigned in `runtime`. It is the `traceId` that first recorded that object.
+* For `object`, `array`, `function` ("reference types" or "object types")
+  * It is `dataNode.refId`
+  * NOTEs:
+    * `refId` is assigned in `runtime`.
+    * It is the `traceId` that first recorded that object.
 * For non-"object types", we, similarly, want to determine the `traceId` of when that value first came into existence.
   * Consider that many traces just access and move existing values, and do not actually create new values.
   * The algorithm is explained in [getValueIdentity](#getValueIdentity).
