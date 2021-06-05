@@ -98,7 +98,8 @@ export default class MemberExpression extends BaseNode {
     const [objectPath, propertyPath] = this.getChildPaths();
     // const [objectNode, propertyNode] = this.getChildNodes();
     const {
-      computed
+      computed,
+      optional
     } = path.node;
 
     const traceData = {
@@ -108,6 +109,7 @@ export default class MemberExpression extends BaseNode {
         type: TraceType.ME
       },
       meta: {
+        traceCall: optional ? 'traceMemberExpressionOptional' : 'traceMemberExpression',
         build: buildTraceMemberExpression
       }
     };

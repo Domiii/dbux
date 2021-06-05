@@ -13,23 +13,23 @@ import { buildTraceExpressionSimple, buildTraceId } from './misc';
 const { log, debug, warn, error: logError } = newLogger('builders/trace');
 
 
-/**
- * NOTE: the name chosen here will show up in error messages
- */
-function generateCalleeVar(calleePath) {
-  const id = calleePath.scope.generateUidIdentifierBasedOnNode(calleePath.node);
-  calleePath.scope.push({
-    id
-  });
-  return id;
-  // return calleePath.node.name || 'func';
-}
+// /**
+//  * NOTE: the name chosen here will show up in error messages
+//  */
+// function generateCalleeVar(calleePath) {
+//   const id = calleePath.scope.generateUidIdentifierBasedOnNode(calleePath.node);
+//   calleePath.scope.push({
+//     id
+//   });
+//   return id;
+//   // return calleePath.node.name || 'func';
+// }
 
 /**
  * @param {NodePath} path
  */
-function generateVar(path, name) {
-  return path.scope.generateDeclaredUidIdentifier(name);
+function generateVar(scope, name) {
+  return scope.generateDeclaredUidIdentifier(name);
   // return calleePath.node.name || 'func';
 }
 
@@ -200,6 +200,7 @@ function buildCallNodeME(path, objectVar, calleeVar, argsVar, argNodes) {
 export function buildTraceCallDefault(state, traceCfg) {
   const {
     path,
+    path: { scope },
     data: { bceTrace }
   } = traceCfg;
 
@@ -207,8 +208,8 @@ export function buildTraceCallDefault(state, traceCfg) {
   const argsPath = path.get('arguments');
   const argNodes = argsPath?.map(a => a.node) || EmptyArray;
 
-  const calleeVar = generateVar(calleePath, 'f'); // generateCalleeVar(calleePath);
-  const argsVar = generateVar(path, 'args');
+  const calleeVar = generateVar(scope, 'f'); // generateCalleeVar(calleePath);
+  const argsVar = generateVar(scope, 'args');
 
   const args = buildArgsValue(state, argNodes);
   const spreadLengths = buildSpreadLengths(state, argsVar, argNodes);
@@ -244,27 +245,31 @@ export function buildTraceCallDefault(state, traceCfg) {
 export function buildTraceCallME(state, traceCfg) {
   const {
     path,
+    path: { scope },
     data: { bceTrace }
   } = traceCfg;
 
   const calleePath = path.get('callee');
   const objectPath = calleePath.get('object');
+  const propertyPath = calleePath.get('property');
   const argsPath = path.get('arguments');
   const argNodes = argsPath.node || EmptyArray;
 
-  const objectVar = generateVar(objectPath, 'o');
-  const calleeVar = generateVar(calleePath, 'f'); // generateCalleeVar(calleePath);
-  const argsVar = generateVar(path, 'args');
+  const objectVar = generateVar(scope, 'o');
+  const calleeVar = generateVar(scope, 'f'); // generateCalleeVar(calleePath);
+  const argsVar = generateVar(scope, 'args');
 
+  // TODO: `calleeNode` should be a customized version of ME.wrapRVal
+  const calleeNode = wrapRVal(objectVar, propertyPath.node);
   const args = buildArgsValue(state, argNodes);
   const spreadLengths = buildSpreadLengths(state, argsVar, argNodes);
 
   return t.sequenceExpression([
     // (i) object assignment - `o = ...`
-    t.assignmentExpression('=', objectVar, objectPath),
+    t.assignmentExpression('=', objectVar, objectPath.node),
 
     // (ii) callee assignment - `f = ...`
-    t.assignmentExpression('=', calleeVar, calleePath),
+    t.assignmentExpression('=', calleeVar, calleeNode),
 
     // (iii) args assignment - `args = [...]`
     t.assignmentExpression('=', argsVar, args),

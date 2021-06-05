@@ -142,7 +142,7 @@ export default class CallExpression extends BaseNode {
 
     // 4. wrap `CallExpression` (as `CallExpressionResult`)
     this.Traces.addTrace({
-      path: this.path,
+      path,
       node: this,
       staticTraceData: {
         type: TraceType.CallExpressionResult

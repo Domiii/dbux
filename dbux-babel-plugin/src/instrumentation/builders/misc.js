@@ -209,13 +209,18 @@ export const buildTraceMemberExpression = bindTemplate(
     const obj = path.node.object;
     let prop;
     if (!path.node.computed) {
+      let propName;
       if (!path.get('property').isIdentifier()) {
         // NOTE: should never happen
-        logError(`ME property was not computed and NOT identifier: ${pathToString(path)}`);
+        logError(`ME property was not computed and NOT identifier: ${pathToString(path, true)}`);
+        propName = path.node.property.name || path.get('property').toString();
+      }
+      else {
+        propName = path.node.property.name;
       }
       // NOTE: `o.x` becomes `tme(..., 'x', ...)`
       //      -> convert `Identifier` to `StringLiteral`
-      prop = t.stringLiteral(path.node.property.name);
+      prop = t.stringLiteral(propName);
     }
     else {
       // keep property as-is
