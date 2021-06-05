@@ -1,5 +1,5 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
-import { getPresentableString } from '../../helpers/pathHelpers';
+import { pathToString } from '../../helpers/pathHelpers';
 import ParsePlugin from '../../parseLib/ParsePlugin';
 
 
@@ -15,7 +15,7 @@ export default class ArithmeticExpression extends ParsePlugin {
     // const childNodes = node.getChildNodes();
     const childPaths = node.getChildPaths();
 
-    // this.warn('childPaths', childPaths.map(c => getPresentableString(c)));
+    // this.warn('childPaths', childPaths.map(c => pathToString(c)));
 
     // trace AE itself
     const staticTraceData = {

@@ -98,26 +98,22 @@ export default class MemberExpression extends BaseNode {
     const [objectPath, propertyPath] = this.getChildPaths();
     // const [objectNode, propertyNode] = this.getChildNodes();
     const {
-      computed,
-      optional
+      computed
     } = path.node;
 
     const traceData = {
       path,
       node: this,
       staticTraceData: {
-        type: TraceType.ME,
-        data: {
-          optional
-        }
+        type: TraceType.ME
       },
       meta: {
         build: buildTraceMemberExpression
       }
     };
     const inputs = [objectPath];
-    if (computed && !propertyPath.isConstantExpression()) {
-      // NOTE: only trace property, if it is not a constant
+    if (computed /* && !propertyPath.isConstantExpression() */) {
+      // future-work: only trace property, if it is not a constant
       inputs.push(propertyPath);
     }
     this.Traces.addTraceWithInputs(traceData, inputs);

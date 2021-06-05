@@ -4,7 +4,7 @@ import BaseNode from './BaseNode';
 // import * as t from "@babel/types";
 // import TraceType from '@dbux/common/src/core/constants/TraceType';
 // import StaticContextType from '@dbux/common/src/core/constants/StaticContextType';
-// import { getPresentableString } from '../helpers/pathHelpers';
+// import { pathToString } from '../helpers/pathHelpers';
 // import { isPathInstrumented } from '../helpers/astUtil';
 // import { traceWrapExpressionStatement } from '../helpers/traceHelpers.old';
 
@@ -29,7 +29,7 @@ import BaseNode from './BaseNode';
 
 
 // function getAwaitDisplayName(path) {
-//   return `(${getPresentableString(path)})`;
+//   return `(${pathToString(path)})`;
 // }
 
 // // ###########################################################################

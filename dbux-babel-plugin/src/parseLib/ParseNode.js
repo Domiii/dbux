@@ -4,7 +4,7 @@ import toString from 'serialize-javascript';
 // import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import NestedError from '@dbux/common/src/NestedError';
 import { Logger } from '@dbux/common/src/log/logger';
-import { getPresentableString } from '../helpers/pathHelpers';
+import { pathToString } from '../helpers/pathHelpers';
 import ParseRegistry from './ParseRegistry';
 import { getChildPaths, getNodeOfPath } from './parseUtil';
 import ParsePhase from './ParsePhase';
@@ -101,7 +101,7 @@ export default class ParseNode {
   }
 
   toString() {
-    return `[${this.nodeTypeName}] ${getPresentableString(this.enterPath)}`;
+    return `[${this.nodeTypeName}] ${pathToString(this.enterPath)}`;
   }
 
   // ###########################################################################

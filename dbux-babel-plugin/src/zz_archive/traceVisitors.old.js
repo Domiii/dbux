@@ -24,7 +24,7 @@
 // import { isPathInstrumented } from '../helpers/astUtil';
 // import TraceInstrumentationType from '../constants/TraceInstrumentationType';
 // import InstrumentationDirection from '../constants/InstrumentationDirection';
-// import { getPresentableString } from '../helpers/pathHelpers';
+// import { pathToString } from '../helpers/pathHelpers';
 
 
 

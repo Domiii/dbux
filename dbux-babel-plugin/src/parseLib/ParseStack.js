@@ -2,7 +2,7 @@ import isString from 'lodash/isString';
 import maxBy from 'lodash/maxBy';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { getNodeOfPath, setNodeOfPath } from './parseUtil';
-import { getPresentableString } from '../helpers/pathHelpers';
+import { pathToString } from '../helpers/pathHelpers';
 import ParseRegistry from './ParseRegistry';
 import ParsePhase from './ParsePhase';
 import ParsePlugin from './ParsePlugin';
@@ -124,7 +124,7 @@ export default class ParseStack {
     (Verbose >= 3) && this.debug(`pop ${name}`);
     const node = nodesOfType.pop();
     if (node.path !== path) {
-      throw new Error(`ParseStack corrupted - exit path does not match stack node (of type ${name}) - ${getPresentableString(path)}`);
+      throw new Error(`ParseStack corrupted - exit path does not match stack node (of type ${name}) - ${pathToString(path)}`);
     }
     _stack.pop();
     return node;
@@ -187,7 +187,7 @@ export default class ParseStack {
       // not a new node -> enterNested (prospectOnEnter returned false)
       parseNode = this.peekNode(ParseNodeClazz);
       if (!parseNode) {
-        throw new Error(`In ${ParseNodeClazz.name}'s first enter prospectOnEnter returned (but should not return) null - ${getPresentableString(path)}`);
+        throw new Error(`In ${ParseNodeClazz.name}'s first enter prospectOnEnter returned (but should not return) null - ${pathToString(path)}`);
       }
       // if (!parseNode.enterNested) {
       //   throw new Error(`${ParseNodeClazz.name}.enterNested missing`);
@@ -211,7 +211,7 @@ export default class ParseStack {
     const parseNode = this.peekNode(ParseNodeClazz);
     if (!parseNode) {
       // eslint-disable-next-line max-len
-      throw new Error(`Parsing failed. Exited same ${ParseNodeClazz.name} node more thance once.\n  Node was not on stack anymore: ${getNodeOfPath(path)} \n  Path: ${getPresentableString(path)}`);
+      throw new Error(`Parsing failed. Exited same ${ParseNodeClazz.name} node more thance once.\n  Node was not on stack anymore: ${getNodeOfPath(path)} \n  Path: ${pathToString(path)}`);
     }
 
     Verbose && parseNode.hasPhase('exit1') && this.debug(`exit1 ${parseNode}`);

@@ -1,4 +1,4 @@
-import { getPresentableString } from '../helpers/pathHelpers';
+import { pathToString } from '../helpers/pathHelpers';
 import BaseId from './BaseId';
 
 /**
@@ -50,7 +50,7 @@ export default class BindingIdentifier extends BaseId {
     if (!this.binding?.path.node.id) {
       // TODO: there can be other types of declarations, that don't have an `id` prop
       throw new Error(`Assertion failed - node binding did not have "id" child node ` +
-      `"${getPresentableString(this.binding?.path)}" in "${getPresentableString(this.path.parentPath)}"`);
+      `"${pathToString(this.binding?.path)}" in "${pathToString(this.path.parentPath)}"`);
     }
 
     // if (this.binding?.path.node.id !== this.path.node) {
@@ -62,7 +62,7 @@ export default class BindingIdentifier extends BaseId {
     const scopePath = this.getBindingScope().path;
     const bindingScopeNode = this.stack.getNodeOfPath(scopePath);
     if (!bindingScopeNode || !bindingScopeNode.Traces) {
-      throw new Error(`BindingIdentifier's scope did not have a scope: ${getPresentableString(scopePath)}`);
+      throw new Error(`BindingIdentifier's scope did not have a scope: ${pathToString(scopePath)}`);
     }
 
     // addDeclarationTrace

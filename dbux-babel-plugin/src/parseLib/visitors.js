@@ -9,7 +9,7 @@ import ParseDirection from './ParseDirection';
 import ParseRegistry from './ParseRegistry';
 
 import { isPathInstrumented } from '../helpers/astUtil';
-import { getPresentableString } from '../helpers/pathHelpers';
+import { pathToString } from '../helpers/pathHelpers';
 
 /**
  * @typedef {import('./ParseStack').default} ParseStack
@@ -89,7 +89,7 @@ function logInst(tag, path, direction = null, ParserNodeClazz, ...other) {
   //   `${ParserNodeClazz.name}:`,
   //   // nodeName &&
   //   //   `${path.node.type} ${nodeName}` ||
-  //   getPresentableString(path),
+  //   pathToString(path),
   //   // TraceInstrumentationType.nameFromForce(instrumentationType),
   //   ...other
   // );

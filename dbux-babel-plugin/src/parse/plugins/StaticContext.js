@@ -1,6 +1,6 @@
 import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
-import { getPresentableString } from '../../helpers/pathHelpers';
+import { pathToString } from '../../helpers/pathHelpers';
 import ParsePlugin from '../../parseLib/ParsePlugin';
 
 /** @typedef { import("../BindingIdentifier").default } BindingIdentifier */
@@ -61,7 +61,7 @@ export default class StaticContext extends ParsePlugin {
   //   // const bindingNodes = Array.from(bindings).map(binding => {
   //   //   const node = stack.getNodeOfPath(binding.path);
   //   //   if (!node) {
-  //   //     this.node.logger.warn(`Binding did not have a matching "ParseNode": ${getPresentableString(binding.path)}`);
+  //   //     this.node.logger.warn(`Binding did not have a matching "ParseNode": ${pathToString(binding.path)}`);
   //   //   }
   //   //   return node;
   //   // }).filter(n => !!n);

@@ -1,7 +1,7 @@
 // import truncate from 'lodash/truncate';
 
 export function pathToStringAnnotated(path) {
-  return `[${path.node.type}] "${getPresentableString(path)}"`;
+  return `[${path.node.type}] "${pathToString(path)}"`;
 }
 
 export function loc2s(loc) {
@@ -17,7 +17,7 @@ export function loc2s(loc) {
 /**
  * NOTE: This is a slightly more adavanced version of `truncate(..., {length: MaxLen})`
  */
-export function getPresentableString(path, addLoc = false, MaxLen = 100) {
+export function pathToString(path, addLoc = false, MaxLen = 100) {
   // TODO: remove comments from node
 
   let presentableString = path.toString();

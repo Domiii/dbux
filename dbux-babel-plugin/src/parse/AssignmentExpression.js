@@ -1,4 +1,4 @@
-import { getPresentableString } from '../helpers/pathHelpers';
+import { pathToString } from '../helpers/pathHelpers';
 import BaseNode from './BaseNode';
 
 
@@ -18,7 +18,7 @@ function getLValPlugin(node) {
   const lvalType = lvalPath.node.type;
   const pluginName = LValPluginsByType[lvalType];
   if (!pluginName) {
-    node.logger.error(`unknown lval type: "${lvalType}" at "${getPresentableString(lvalPath)}"`);
+    node.logger.error(`unknown lval type: "${lvalType}" at "${pathToString(lvalPath)}"`);
   }
   return pluginName;
 }

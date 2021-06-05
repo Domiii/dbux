@@ -5,10 +5,10 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import TraceCfg from '../../definitions/TraceCfg';
-import { getPresentableString } from '../../helpers/pathHelpers';
+import { pathToString } from '../../helpers/pathHelpers';
 import { traceWrapExpression, traceDeclarations } from '../../instrumentation/trace';
 import ParseNode from '../../parseLib/ParseNode';
-// import { getPresentableString } from '../../helpers/pathHelpers';
+// import { pathToString } from '../../helpers/pathHelpers';
 import ParsePlugin from '../../parseLib/ParsePlugin';
 
 const makeDefaultTrace = {
@@ -40,7 +40,7 @@ export default class Traces extends ParsePlugin {
       // handle some (basic) default AST node types
       const traceData = makeDefaultTrace[path.node.type]?.(path);
       if (!traceData) {
-        this.node.logger.warn(`Found unknown AST node type "${path.node.type}" for input node: ${getPresentableString(path)}`);
+        this.node.logger.warn(`Found unknown AST node type "${path.node.type}" for input node: ${pathToString(path)}`);
         return null;
       }
       return this.addTrace(traceData);

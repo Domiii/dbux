@@ -21,7 +21,7 @@ export function isAnyMemberExpression(pathOrNode) {
 }
 
 export function functionNoName() {
-  // return `(${getPresentableString(functionPath.toString(), 30)})`;
+  // return `(${pathToString(functionPath.toString(), 30)})`;
   return '(anonymous)';
 }
 

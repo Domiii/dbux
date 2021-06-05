@@ -3,7 +3,7 @@ import * as t from '@babel/types';
 import StaticCollection from './StaticCollection';
 
 import { extractSourceStringWithoutComments } from '../helpers/sourceHelpers';
-import { getPresentableString } from '../helpers/pathHelpers';
+import { pathToString } from '../helpers/pathHelpers';
 import { getFunctionDisplayName } from '../helpers/functionHelpers';
 import { getNodeNames } from '../visitors/nameVisitors';
 
@@ -75,7 +75,7 @@ function getTraceDisplayName(path, state) {
   }
   else {
     const str = extractSourceStringWithoutComments(path.node, state);
-    displayName = getPresentableString(str);
+    displayName = pathToString(str);
   }
   return displayName;
 }
@@ -127,7 +127,7 @@ export default class StaticTraceCollection extends StaticCollection {
     let trace;
     const { type } = staticData;
     if (!type) {
-      throw new Error(`invalid call to "addTrace" - missing staticData.type, in path: ${getPresentableString(path)}`);
+      throw new Error(`invalid call to "addTrace" - missing staticData.type, in path: ${pathToString(path)}`);
     }
     if (traceCustomizationsByType[type]) {
       trace = traceCustomizationsByType[type](path, state);

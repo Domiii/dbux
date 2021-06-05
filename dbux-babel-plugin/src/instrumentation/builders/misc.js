@@ -1,6 +1,7 @@
 // import template from '@babel/template';
 import * as t from '@babel/types';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { pathToString } from '../../helpers/pathHelpers';
 import { buildTraceCall, bindTemplate, bindExpressionTemplate } from '../../helpers/templateUtil';
 import { makeInputs, ZeroNode } from './buildHelpers';
 
@@ -47,7 +48,7 @@ export const buildTraceExpression = buildTraceCall(
     } = traceCfg;
 
     const tid = buildTraceId(state, traceCfg);
-    // Verbose && debug(`[te] ${expressionNode.type} [${inputTraces?.map(i => i.tidIdentifier.name).join(',') || ''}]`, getPresentableString(expressionNode));
+    // Verbose && debug(`[te] ${expressionNode.type} [${inputTraces?.map(i => i.tidIdentifier.name).join(',') || ''}]`, pathToString(expressionNode));
 
     // NOTE: templates only work on `Node`, not on `NodePath`, thus they lose all path-related information.
 
@@ -79,7 +80,7 @@ export const buildTraceExpressionNoInput = buildTraceCall(
     } = traceCfg;
 
     const tid = buildTraceId(state, traceCfg);
-    // Verbose && debug(`[te] ${expressionNode.type} [${inputTraces?.map(i => i.tidIdentifier.name).join(',') || ''}]`, getPresentableString(expressionNode));
+    // Verbose && debug(`[te] ${expressionNode.type} [${inputTraces?.map(i => i.tidIdentifier.name).join(',') || ''}]`, pathToString(expressionNode));
 
     // NOTE: templates only work on `Node`, not on `NodePath`, thus they lose all path-related information.
 
@@ -105,7 +106,7 @@ export const buildTraceExpressionSimple = buildTraceCall(
     }
 
     const tid = buildTraceId(state, traceCfg);
-    // Verbose && debug(`[te] ${expressionNode.type} [${inputTraces?.map(i => i.tidIdentifier.name).join(',') || ''}]`, getPresentableString(expressionNode));
+    // Verbose && debug(`[te] ${expressionNode.type} [${inputTraces?.map(i => i.tidIdentifier.name).join(',') || ''}]`, pathToString(expressionNode));
     // NOTE: templates only work on `Node`, not on `NodePath`, thus they lose all path-related information.
 
     return {
@@ -207,7 +208,11 @@ export const buildTraceMemberExpression = bindTemplate(
 
     const obj = path.node.object;
     let prop;
-    if (!path.node.computed && path.get('property').isIdentifier()) {
+    if (!path.node.computed) {
+      if (!path.get('property').isIdentifier()) {
+        // NOTE: should never happen
+        logError(`ME property was not computed and NOT identifier: ${pathToString(path)}`);
+      }
       // NOTE: `o.x` becomes `tme(..., 'x', ...)`
       //      -> convert `Identifier` to `StringLiteral`
       prop = t.stringLiteral(path.node.property.name);
@@ -222,7 +227,7 @@ export const buildTraceMemberExpression = bindTemplate(
     } = traceCfg;
 
     const tid = buildTraceId(state, traceCfg);
-    // Verbose && debug(`[te] ${expressionNode.type} [${inputTraces?.map(i => i.tidIdentifier.name).join(',') || ''}]`, getPresentableString(expressionNode));
+    // Verbose && debug(`[te] ${expressionNode.type} [${inputTraces?.map(i => i.tidIdentifier.name).join(',') || ''}]`, pathToString(expressionNode));
 
     // NOTE: templates only work on `Node`, not on `NodePath`, thus they lose all path-related information.
 

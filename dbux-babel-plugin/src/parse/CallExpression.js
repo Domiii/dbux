@@ -43,7 +43,7 @@ function getCalleePlugin(node) {
   const { type } = calleePath.node;
   let pluginName = CalleePluginsByType[type];
   // if (!pluginName) {
-  //   // node.logger.error(`unknown callee type: "${type}" at "${getPresentableString(calleePath)}"`);
+  //   // node.logger.error(`unknown callee type: "${type}" at "${pathToString(calleePath)}"`);
   // }
   return pluginName;
 }
