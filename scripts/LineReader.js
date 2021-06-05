@@ -15,8 +15,8 @@ class LineReader {
     this.rl.on('line', this._handleLine);
   }
 
-  async readLine() {
-    this.rl.prompt();
+  async readLine(text = '') {
+    this.rl.prompt(text);
     return this._nextLinePromise;
   }
 
