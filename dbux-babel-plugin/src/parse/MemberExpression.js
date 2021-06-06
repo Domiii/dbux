@@ -72,7 +72,7 @@ export default class MemberExpression extends BaseNode {
     }
 
     // default behavior
-    this.wrapRVal();
+    this.addRValTrace();
   }
 
   /**
@@ -89,7 +89,7 @@ export default class MemberExpression extends BaseNode {
    * `g().[f(x)]` ->
    * `tme(te(g(), tid1), te(f(...(x)), tid2), tid0, [tid1, tid2])`
    */
-  wrapRVal() {
+  addRValTrace() {
     // TODO: `import.meta` (rval only)
     // TODO: `super.f()`, `super.x = 3` etc.
 

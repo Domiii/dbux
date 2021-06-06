@@ -98,11 +98,12 @@ export default class CallExpression extends BaseNode {
     // TODO: more special cases - super, import, require
     //    -> cannot separate callee for `super` or `import`
     //    -> cannot modify args for `import` or `require`, if they are constants
-    const { path } = this;
+    const { 
+      path,
+      path: { scope },
+      calleePlugin
+    } = this;
 
-
-    const [calleePath, argumentPaths] = this.getChildPaths();
-    // const [calleeNode, argumentNodes] = this.getChildNodes();
 
     /**
      * TODO:
@@ -112,6 +113,9 @@ export default class CallExpression extends BaseNode {
      *    * some built-ins are called with one set of arguments and then call our function with another
      * 4. special case: `bind` etc.
      */
+
+    const [calleePath, argumentPaths] = this.getChildPaths();
+    // const [calleeNode, argumentNodes] = this.getChildNodes();
 
     // 1. make sure, callee is traced
     this.Traces.addDefaultTrace(calleePath);
@@ -137,11 +141,11 @@ export default class CallExpression extends BaseNode {
     /**
      * @see `CalleeMemberExpression`
      */
-    const instrument = this.calleePlugin?.instrumentCallExpression || traceCallExpressionDefault;
+    const instrument = calleePlugin?.instrumentCallExpression || traceCallExpressionDefault;
     const bceTidIdentifier = bceTrace.tidIdentifier;
 
     // 4. wrap `CallExpression` (as `CallExpressionResult`)
-    this.Traces.addTrace({
+    const trace = this.Traces.addTrace({
       path,
       node: this,
       staticTraceData: {
@@ -156,5 +160,8 @@ export default class CallExpression extends BaseNode {
         moreTraceCallArgs: [bceTidIdentifier]
       }
     });
+
+    // 5. callee might need modifications
+    calleePlugin?.handleCallTrace(trace);
   }
 }

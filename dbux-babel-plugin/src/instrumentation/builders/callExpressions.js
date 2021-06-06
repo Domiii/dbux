@@ -246,7 +246,10 @@ export function buildTraceCallME(state, traceCfg) {
   const {
     path,
     path: { scope },
-    data: { bceTrace }
+    data: { 
+      bceTrace,
+      objectVar
+    }
   } = traceCfg;
 
   const calleePath = path.get('callee');
@@ -255,12 +258,11 @@ export function buildTraceCallME(state, traceCfg) {
   const argsPath = path.get('arguments');
   const argNodes = argsPath.node || EmptyArray;
 
-  const objectVar = generateVar(scope, 'o');
   const calleeVar = generateVar(scope, 'f'); // generateCalleeVar(calleePath);
   const argsVar = generateVar(scope, 'args');
 
   // TODO: `calleeNode` should be a customized version of ME.wrapRVal
-  const calleeNode = wrapRVal(objectVar, propertyPath.node);
+  const calleeNode = ;
   const args = buildArgsValue(state, argNodes);
   const spreadLengths = buildSpreadLengths(state, argsVar, argNodes);
 
