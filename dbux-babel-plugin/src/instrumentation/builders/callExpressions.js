@@ -5,12 +5,14 @@ import * as t from '@babel/types';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import TraceCfg from '../../definitions/TraceCfg';
+import { astNodeToString } from '../../helpers/pathHelpers';
 import { makeInputs, ZeroNode } from './buildHelpers';
+import { getInstrumentTargetNode } from './common';
 import { buildTraceExpressionSimple, buildTraceId } from './misc';
 
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('builders/trace');
+const { log, debug, warn, error: logError } = newLogger('builders/callExpressions');
 
 
 // /**
@@ -180,10 +182,10 @@ const callTemplatesME = {
 
 function buildCallNodeME(path, objectVar, calleeVar, argsVar, argNodes) {
   const { type } = path.node;
-  const callTempl = callTemplatesME[type];
+  const callTempl = callTemplatesME[type]();
   return callTempl({
-    o: objectVar,
     callee: calleeVar,
+    o: objectVar,
     args: buildCallArgs(argsVar, argNodes)
   }).expression;
 }
@@ -201,14 +203,17 @@ export function buildTraceCallDefault(state, traceCfg) {
   const {
     path,
     path: { scope },
-    data: { bceTrace }
+    data: {
+      bceTrace,
+      calleeVar
+    }
   } = traceCfg;
 
   const calleePath = path.get('callee');
   const argsPath = path.get('arguments');
   const argNodes = argsPath?.map(a => a.node) || EmptyArray;
 
-  const calleeVar = generateVar(scope, 'f'); // generateCalleeVar(calleePath);
+  // const calleeVar = generateVar(scope, 'f'); // generateCalleeVar(calleePath);
   const argsVar = generateVar(scope, 'args');
 
   const args = buildArgsValue(state, argNodes);
@@ -246,23 +251,33 @@ export function buildTraceCallME(state, traceCfg) {
   const {
     path,
     path: { scope },
-    data: { 
+    data: {
       bceTrace,
+      calleeVar,
       objectVar,
-      calleeAstNode
+      calleeTrace: {
+        // NOTE: callee was built (but not replaced) by MemberExpression
+        resultNode: calleeAstNode
+      }
     }
   } = traceCfg;
 
   const calleePath = path.get('callee');
+
+  // NOTE: `object` is instrumented by ME adding it as `input`
   const objectPath = calleePath.get('object');
+
   const argsPath = path.get('arguments');
   const argNodes = argsPath.node || EmptyArray;
 
-  const calleeVar = generateVar(scope, 'f'); // generateCalleeVar(calleePath);
   const argsVar = generateVar(scope, 'args');
 
   const args = buildArgsValue(state, argNodes);
   const spreadLengths = buildSpreadLengths(state, argsVar, argNodes);
+
+  // hackfix: override targetNode during instrumentation (generally, not a great idea, is it?)
+  traceCfg.meta.targetNode = buildCallNodeME(path, objectVar, calleeVar, argsVar, argNodes);
+  debug(`tcr target: ${astNodeToString(getInstrumentTargetNode(traceCfg))}`);
 
   return t.sequenceExpression([
     // (i) object assignment - `o = ...`
@@ -279,7 +294,6 @@ export function buildTraceCallME(state, traceCfg) {
 
     // (v) wrap actual call - `tcr(f.call(o, args[0], ...args[1], args[2]))`
     buildTraceExpressionSimple(
-      buildCallNodeME(path, objectVar, calleeVar, argsVar, argNodes),
       state,
       traceCfg
     )
@@ -288,7 +302,7 @@ export function buildTraceCallME(state, traceCfg) {
 
 // export const buildTraceCallArgument = buildTraceCall(
 //   '%%traceCallArgument%%(%%expr%%, %%tid%%, %%declarationTid%%, %%calleeTid%%, %%inputs%%)',
-//   function buildTraceCallArgument(expr, state, traceCfg) {
+//   function buildTraceCallArgument(state, traceCfg) {
 //     const { ids: { aliases: {
 //       traceCallArgument
 //     } } } = state;

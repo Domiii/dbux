@@ -3,6 +3,7 @@
 // import TraceType from '@dbux/common/src/core/constants/TraceType';
 // import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
+import NestedError from '@dbux/common/src/NestedError';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import TraceCfg from '../../definitions/TraceCfg';
 import { pathToString } from '../../helpers/pathHelpers';
@@ -208,7 +209,13 @@ export default class Traces extends ParsePlugin {
 
       // instrument?.(traceCfg);
       const { state } = this.node;
-      instrument?.(state, traceCfg);
+
+      try {
+        instrument?.(state, traceCfg);
+      }
+      catch (err) {
+        throw new NestedError(`Failed to instrument path "${pathToString(path)}"`, err);
+      }
     }
   }
 }

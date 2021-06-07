@@ -6,6 +6,7 @@ import { parse } from '@babel/parser';
 import { codeFrameColumns } from "@babel/code-frame";
 import traverse from "@babel/traverse";
 import * as t from "@babel/types";
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 // import { template } from '@babel/core';
 
 export function buildNamedExport(ids) {
@@ -100,6 +101,35 @@ export function buildSource(source) {
   const nodes = ast.program.body;
   nodes.forEach(n => traverse.removeProperties(n));
   return nodes;
+}
+
+export function getReplacePath(traceCfg) {
+  const {
+    meta: {
+      replacePath
+    } = EmptyObject
+  } = traceCfg;
+  return replacePath;
+}
+
+export function getInstrumentationTargetNode(traceCfg) {
+  const {
+    meta: {
+      targetNode
+    } = EmptyObject
+  } = traceCfg;
+  return targetNode;
+}
+
+export function getInstrumentPath(traceCfg) {
+  const {
+    path: tracePath
+  } = traceCfg;
+  return getReplacePath(traceCfg) || tracePath;
+}
+
+export function getInstrumentTargetNode(traceCfg) {
+  return getInstrumentationTargetNode(traceCfg) || getInstrumentPath(traceCfg).node;
 }
 
 

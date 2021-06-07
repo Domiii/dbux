@@ -48,9 +48,23 @@ function getCalleePlugin(node) {
   return pluginName;
 }
 
+/**
+ * NOTE: the name chosen here will show up in error messages
+ */
+function generateCalleeVar(calleePath) {
+  const id = calleePath.scope.generateUidIdentifierBasedOnNode(calleePath.node);
+  calleePath.scope.push({
+    id
+  });
+  return id;
+  // return calleePath.node.name || 'func';
+}
+
+
 // ###########################################################################
 // CallExpression
 // ###########################################################################
+
 
 export default class CallExpression extends BaseNode {
   static visitors = [
@@ -100,7 +114,7 @@ export default class CallExpression extends BaseNode {
     //    -> cannot modify args for `import` or `require`, if they are constants
     const { 
       path,
-      path: { scope },
+      // path: { scope },
       calleePlugin
     } = this;
 
@@ -152,7 +166,8 @@ export default class CallExpression extends BaseNode {
         type: TraceType.CallExpressionResult
       },
       data: {
-        bceTrace
+        bceTrace,
+        calleeVar: generateCalleeVar(calleePath)
       },
       meta: {
         traceCall: 'traceCallResult',

@@ -1,12 +1,15 @@
-const a = 'a1';
+/**
+ * Nested combinations involving all kinds of `MemberExpressions`
+ */
 
-const p = { a };
-const o = {
-  b: {
-    [p.a]: {
-      c: 'qwe'
-    }
-  }
-}
+// const o = {
+//   b: {
+//     c: 3
+//   }
+// };
 
-console.log(o.b[p.a].c);
+// const x = o.b.c;
+// const y = o;
+
+// console.log(o.b.c);
+console.log();

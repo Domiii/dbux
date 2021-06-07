@@ -37,18 +37,15 @@ export default class CalleeMemberExpression extends ParsePlugin {
     const [objectPath/* , propertyPath */] = node.getChildPaths();
 
     const objectVar = scope.generateDeclaredUidIdentifier('o');
-    const calleeAstNode = t.cloneNode(calleeNode.path.node);
-    calleeAstNode.object = objectVar;
 
     // NOTE: for the final CallExpression, the callee is chopped into pieces -
     //  1. store object in `objectVar` (`o`)
     //  2. store callee (`calleeAstNode`) in `calleeVar` (`o[prop]`)
     trace.data.objectVar = objectVar;
-    trace.data.calleeAstNode = calleeAstNode;
 
     // NOTE:
     //  1. instrument (replace) the new calleeAstNode, not the original
     //  2. input should point to original object, not objectVar
-    trace.data.calleeTrace = calleeNode.addRValTrace(calleeAstNode, objectPath);
+    trace.data.calleeTrace = calleeNode.addRValTrace(false, objectPath);
   }
 }

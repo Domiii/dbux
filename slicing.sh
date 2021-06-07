@@ -6,7 +6,7 @@ set -e # cancel on error
 # set -x # verbose echo mode
 
 # fname="slicing/var1"
-fname="calls0"
+fname="memberExpressions0"
 nodeArgs="--enable-source-maps "
 
 dbuxCmd="$1"

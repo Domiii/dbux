@@ -1,4 +1,5 @@
 // import truncate from 'lodash/truncate';
+import generator from '@babel/generator';
 
 export function pathToStringAnnotated(path) {
   return `[${path.node.type}] "${pathToString(path)}"`;
@@ -18,17 +19,30 @@ export function loc2s(loc) {
  * NOTE: This is a slightly more adavanced version of `truncate(..., {length: MaxLen})`
  */
 export function pathToString(path, addLoc = false, MaxLen = 100) {
-  // TODO: remove comments from node
-
-  let presentableString = path.toString();
-  if (MaxLen && presentableString.length > MaxLen) {
-    presentableString = presentableString.substring(0, MaxLen - 3).trim() + '...';
+  let s = astNodeToString(path.node, MaxLen);
+  if (addLoc) {
+    s = `${s} @${loc2s(path.node.loc)}`;
   }
-  presentableString = presentableString
+  return s;
+}
+
+/**
+ * @see https://babeljs.io/docs/en/babel-generator#options
+ */
+const DefaultGenOptions = {
+  comments: false,
+  concise: true,
+  decoratorsBeforeExport: false
+};
+
+export function astNodeToString(astNode, MaxLen = 100) {
+  // NOTE: `path.toString()` is simply `generator(astNode).code`
+  let s = generator(astNode, DefaultGenOptions).code;
+
+  if (MaxLen && s.length > MaxLen) {
+    s = s.substring(0, MaxLen - 3).trim() + '...';
+  }
+  return s
     // .replace(/[\r\n]/g, '')
     .replace(/\s+/g, ' ');      // replace any amount and type of whitespace with a single space
-  if (addLoc) {
-    presentableString = `${presentableString} @${loc2s(path.node.loc)}`;
-  }
-  return presentableString;
 }

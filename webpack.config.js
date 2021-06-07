@@ -225,10 +225,10 @@ module.exports = (env, argv) => {
       const absoluteDependencies = makeAbsolutePaths(MonoRoot, resolveFolderNames);
 
       const includeSrcs = absoluteDependencies.map(r => path.join(r, 'src'));
-      console.debug(` babel targets for ${target}: ${absoluteDependencies
-        .map(s => s.substring(MonoRoot.length + 1))
-        .join(', ')
-      }`);
+      // console.debug(` babel targets for ${target}: ${absoluteDependencies
+      //   .map(s => s.substring(MonoRoot.length + 1))
+      //   .join(', ')
+      // }`);
 
       // ###########################################################################
       // stats

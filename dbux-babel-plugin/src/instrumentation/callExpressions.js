@@ -61,8 +61,9 @@ import { buildTraceCallDefault, buildTraceCallME } from './builders/callExpressi
 // ###########################################################################
 
 
-export function traceCallExpressionDefault(path, state, traceCfg) {
+export function traceCallExpressionDefault(state, traceCfg) {
   const newNode = buildTraceCallDefault(state, traceCfg);
+  const { path } = traceCfg;
   path.replaceWith(newNode);
 
   // NOTE: `onCopy` should not be necessary anymore, since nested paths should already have finished instrumentation
@@ -73,8 +74,9 @@ export function traceCallExpressionDefault(path, state, traceCfg) {
 // traceCallExpressionME
 // ###########################################################################
 
-export function traceCallExpressionME(path, state, traceCfg) {
+export function traceCallExpressionME(state, traceCfg) {
   const newNode = buildTraceCallME(state, traceCfg);
+  const { path } = traceCfg;
   path.replaceWith(newNode);
 
   // NOTE: `onCopy` should not be necessary anymore, since nested paths should already have finished instrumentation

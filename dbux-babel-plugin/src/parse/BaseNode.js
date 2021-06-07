@@ -25,6 +25,10 @@ export default class BaseNode extends ParseNode {
     super(...args);
   }
 
+  get traceCfg() {
+    return this._traceCfg;
+  }
+
   /**
    * @return {import('./plugins/Traces').default}
    */
