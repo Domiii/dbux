@@ -248,21 +248,19 @@ export function buildTraceCallME(state, traceCfg) {
     path: { scope },
     data: { 
       bceTrace,
-      objectVar
+      objectVar,
+      calleeAstNode
     }
   } = traceCfg;
 
   const calleePath = path.get('callee');
   const objectPath = calleePath.get('object');
-  const propertyPath = calleePath.get('property');
   const argsPath = path.get('arguments');
   const argNodes = argsPath.node || EmptyArray;
 
   const calleeVar = generateVar(scope, 'f'); // generateCalleeVar(calleePath);
   const argsVar = generateVar(scope, 'args');
 
-  // TODO: `calleeNode` should be a customized version of ME.wrapRVal
-  const calleeNode = ;
   const args = buildArgsValue(state, argNodes);
   const spreadLengths = buildSpreadLengths(state, argsVar, argNodes);
 
@@ -271,7 +269,7 @@ export function buildTraceCallME(state, traceCfg) {
     t.assignmentExpression('=', objectVar, objectPath.node),
 
     // (ii) callee assignment - `f = ...`
-    t.assignmentExpression('=', calleeVar, calleeNode),
+    t.assignmentExpression('=', calleeVar, calleeAstNode),
 
     // (iii) args assignment - `args = [...]`
     t.assignmentExpression('=', argsVar, args),

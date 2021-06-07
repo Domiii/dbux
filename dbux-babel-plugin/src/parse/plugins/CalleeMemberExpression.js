@@ -1,3 +1,4 @@
+import * as t from '@babel/types';
 import { traceCallExpressionME } from '../../instrumentation/callExpressions';
 import ParsePlugin from '../../parseLib/ParsePlugin';
 
@@ -8,7 +9,7 @@ import ParsePlugin from '../../parseLib/ParsePlugin';
  */
 export default class CalleeMemberExpression extends ParsePlugin {
   /**
-   * @type {MemberExpression}
+   * @return {MemberExpression}
    */
   get calleeNode() {
     const [calleeNode] = this.node.getChildNodes();
@@ -33,14 +34,21 @@ export default class CalleeMemberExpression extends ParsePlugin {
       node: { path: { scope } }
     } = this;
 
+    const [objectPath/* , propertyPath */] = node.getChildPaths();
+
     const objectVar = scope.generateDeclaredUidIdentifier('o');
-    const [, propertyPath] = node.getChildPaths();
+    const calleeAstNode = t.cloneNode(calleeNode.path.node);
+    calleeAstNode.object = objectVar;
 
+    // NOTE: for the final CallExpression, the callee is chopped into pieces -
+    //  1. store object in `objectVar` (`o`)
+    //  2. store callee (`calleeAstNode`) in `calleeVar` (`o[prop]`)
     trace.data.objectVar = objectVar;
+    trace.data.calleeAstNode = calleeAstNode;
 
-    // TODO: need more changes to ME.addRValTrace
-    //  1. need to add a new assignment trace, not replace the original
+    // NOTE:
+    //  1. instrument (replace) the new calleeAstNode, not the original
     //  2. input should point to original object, not objectVar
-    trace.data.calleeTrace = calleeNode.wrapRVal(objectVar, propertyPath.node, false);
+    trace.data.calleeTrace = calleeNode.addRValTrace(calleeAstNode, objectPath);
   }
 }
