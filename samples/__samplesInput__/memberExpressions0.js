@@ -11,5 +11,4 @@
 // const x = o.b.c;
 // const y = o;
 
-// console.log(o.b.c);
-console.log();
+console.log(o.b.c);

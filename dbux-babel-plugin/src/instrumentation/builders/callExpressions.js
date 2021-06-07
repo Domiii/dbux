@@ -211,11 +211,11 @@ export function buildTraceCallDefault(state, traceCfg) {
 
   const calleePath = path.get('callee');
   const argsPath = path.get('arguments');
-  const argNodes = argsPath?.map(a => a.node) || EmptyArray;
 
   // const calleeVar = generateVar(scope, 'f'); // generateCalleeVar(calleePath);
   const argsVar = generateVar(scope, 'args');
 
+  const argNodes = argsPath?.map(a => a.node) || EmptyArray;
   const args = buildArgsValue(state, argNodes);
   const spreadLengths = buildSpreadLengths(state, argsVar, argNodes);
 
@@ -268,16 +268,16 @@ export function buildTraceCallME(state, traceCfg) {
   const objectPath = calleePath.get('object');
 
   const argsPath = path.get('arguments');
-  const argNodes = argsPath.node || EmptyArray;
-
+  
   const argsVar = generateVar(scope, 'args');
-
+  
+  const argNodes = argsPath?.map(a => a.node) || EmptyArray;
   const args = buildArgsValue(state, argNodes);
   const spreadLengths = buildSpreadLengths(state, argsVar, argNodes);
 
   // hackfix: override targetNode during instrumentation (generally, not a great idea, is it?)
   traceCfg.meta.targetNode = buildCallNodeME(path, objectVar, calleeVar, argsVar, argNodes);
-  debug(`tcr target: ${astNodeToString(getInstrumentTargetNode(traceCfg))}`);
+  // debug(`tcr target: ${astNodeToString(getInstrumentTargetNode(traceCfg))}`);
 
   return t.sequenceExpression([
     // (i) object assignment - `o = ...`

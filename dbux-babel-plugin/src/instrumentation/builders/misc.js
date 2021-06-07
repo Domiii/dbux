@@ -217,7 +217,7 @@ export const buildTraceMemberExpression = bindExpressionTemplate(
       let propName;
       if (!t.isIdentifier(prop)) {
         // NOTE: should never happen
-        logError(`ME property was not computed and NOT identifier: ${pathToString(path)}`);
+        logError(`ME property was not computed and NOT identifier: ${pathToString(traceCfg.path)}`);
         propName = prop.name || prop.toString();
       }
       else {

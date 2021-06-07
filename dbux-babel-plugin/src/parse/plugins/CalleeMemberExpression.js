@@ -30,11 +30,11 @@ export default class CalleeMemberExpression extends ParsePlugin {
   handleCallTrace(trace) {
     const {
       calleeNode,
-      node,
+      // node,
       node: { path: { scope } }
     } = this;
 
-    const [objectPath/* , propertyPath */] = node.getChildPaths();
+    // const [objectPath/* , propertyPath */] = calleeNode.getChildPaths();
 
     const objectVar = scope.generateDeclaredUidIdentifier('o');
 
@@ -46,6 +46,6 @@ export default class CalleeMemberExpression extends ParsePlugin {
     // NOTE:
     //  1. instrument (replace) the new calleeAstNode, not the original
     //  2. input should point to original object, not objectVar
-    trace.data.calleeTrace = calleeNode.addRValTrace(false, objectPath);
+    trace.data.calleeTrace = calleeNode.addRValTrace(false, objectVar);
   }
 }

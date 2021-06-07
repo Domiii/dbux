@@ -17,22 +17,15 @@ export function traceWrapExpression(state, traceCfg) {
   const build = traceCfg.meta?.build || buildTraceExpression;
   const resultNode = build(state, traceCfg);
 
+  const s = pathToString(path);
+  const { type } = path.node;
 
   if (getReplacePath(traceCfg) !== false) {
     // we don't always want ad hoc replacement.
     // e.g. CalleeME straddles a more complicated relationship between CallExpression and ME
-    const s = pathToString(path);
-    const { type } = path.node;
     path.replaceWith(resultNode);
-
-    // NOTE: `astNodeToString` will bug out sometimes (ME)
-    console.debug(`tWE`, type, s, '->', astNodeToString(resultNode));
   }
-  else {
-    const s = pathToString(path);
-    const { type } = path.node;
-    console.debug(`tWE`, type, s);
-  }
+  console.debug(`tWE`, type, s, '->', astNodeToString(resultNode));
 
   traceCfg.resultNode = resultNode;
 
