@@ -46,7 +46,7 @@ export default class BindingIdentifier extends BaseId {
     return path.scope;
   }
 
-  addOwnDeclarationTrace() {
+  addOwnDeclarationTrace(valuePath) {
     if (!this.binding?.path.node.id) {
       // TODO: there can be other types of declarations, that don't have an `id` prop
       throw new Error(`Assertion failed - node binding did not have "id" child node ` +
@@ -62,10 +62,10 @@ export default class BindingIdentifier extends BaseId {
     const scopePath = this.getBindingScope().path;
     const bindingScopeNode = this.stack.getNodeOfPath(scopePath);
     if (!bindingScopeNode || !bindingScopeNode.Traces) {
-      throw new Error(`BindingIdentifier's scope did not have a scope: ${pathToString(scopePath)}`);
+      throw new Error(`BindingIdentifier's binding scope did not have a ParseNode: ${pathToString(scopePath)}`);
     }
 
     // addDeclarationTrace
-    this.bindingTrace = bindingScopeNode.Traces.addDeclarationTrace(this);
+    this.bindingTrace = bindingScopeNode.Traces.addDeclarationTrace(this, valuePath);
   }
 }

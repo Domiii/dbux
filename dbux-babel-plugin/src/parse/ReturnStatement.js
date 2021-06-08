@@ -1,8 +1,15 @@
+// import TraceType from '@dbux/common/src/core/constants/TraceType';
 import BaseNode from './BaseNode';
 
 
 export default class ReturnStatement extends BaseNode {
-  static children = [];
+  static children = ['argument'];
 
-  // TODO: also make sure that `Function.exit` traces things correctly when it adds a new `return` statement
+  exit() {
+    const { path } = this;
+    const childPaths = this.getChildPaths();
+    const [returnArgPath] = childPaths;
+
+    return this.Traces.addReturnTrace(this, path, returnArgPath);
+  }
 }

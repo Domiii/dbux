@@ -125,7 +125,7 @@ export default class StaticTraceCollection extends StaticCollection {
     // get `displayName`, `loc`
     const _traceId = this._getNextId();
     let trace;
-    const { type } = staticData;
+    const { type, dataNode } = staticData;
     if (!type) {
       throw new Error(`invalid call to "addTrace" - missing staticData.type, in path: ${pathToString(path)}`);
     }
@@ -140,6 +140,7 @@ export default class StaticTraceCollection extends StaticCollection {
     trace._traceId = _traceId;
     trace._staticContextId = state.contexts.getCurrentStaticContextId(path);
     trace.type = type;
+    trace.dataNode = dataNode;
 
     // push
     this._push(trace);

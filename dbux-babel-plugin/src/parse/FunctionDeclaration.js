@@ -11,7 +11,7 @@ export default class FunctionDeclaration extends BaseNode {
 
   exit1() {
     const [idNode] = this.getChildNodes();
-    idNode.addOwnDeclarationTrace();
+    idNode.addOwnDeclarationTrace(idNode.path);
   }
 
   // enter() {

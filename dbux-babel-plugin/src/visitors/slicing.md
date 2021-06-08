@@ -343,8 +343,8 @@ console.log(a.p1);
   * -> `dataNode.varAccess` contains `declarationTid` (`traceId` that declared (or first recorded) the variable)
   * `accessId = declarationTid`
 * any `ME` (`MemberExpression`) refers to accessing some object's (or other value, such as `int` or `string`) property
-  * example of an `ME`: `f(x)[g(y)]`, where `object` = `f(x)` and `property` = `g(y)`
-  * -> `dataNode.varAccess` contains:
+  * example: `f(x)[g(y)]`, where `object` = `f(x)` and `property` = `g(y)`
+  * `varAccess` consists of:
     *  `objTid` (`traceId` of `object`)
     *  `prop` (value of `property`)
   * `accessId = makeUid(${getValueIdentity(objTid)}#${prop})`

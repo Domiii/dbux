@@ -1,5 +1,5 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
-import { buildTraceWrite } from '../../instrumentation/builders/misc';
+import { buildTraceWriteVar } from '../../instrumentation/builders/misc';
 import ParsePlugin from '../../parseLib/ParsePlugin';
 
 export default class LValIdentifier extends ParsePlugin {
@@ -20,7 +20,7 @@ export default class LValIdentifier extends ParsePlugin {
       },
       meta: {
         // instrument: Traces.instrumentTraceWrite
-        build: buildTraceWrite
+        build: buildTraceWriteVar
       }
     };
 

@@ -3,6 +3,7 @@
 /dbux_projects
 /projects
 __samplesOutput__
+/samples/__samplesInput__/*.inst.js
 project_sandbox/projects
 project_sandbox/bug-dataset
 _testOut

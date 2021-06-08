@@ -7,6 +7,7 @@ import { codeFrameColumns } from "@babel/code-frame";
 import traverse from "@babel/traverse";
 import * as t from "@babel/types";
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import { UndefinedNode } from './buildHelpers';
 // import { template } from '@babel/core';
 
 export function buildNamedExport(ids) {
@@ -129,7 +130,7 @@ export function getInstrumentTargetAstNode(traceCfg) {
       targetNode
     } = EmptyObject
   } = traceCfg;
-  return targetNode || getInstrumentPath(traceCfg).node;
+  return targetNode || getInstrumentPath(traceCfg).node || UndefinedNode;
 }
 
 

@@ -123,32 +123,37 @@ export const buildTraceExpressionSimple = buildTraceCall(
 // ###########################################################################
 
 export function buildTraceDeclarations(state, traceCfgs) {
-  const { ids: { aliases: {
+  const { ids: { aliases, aliases: {
     traceDeclaration
   } } } = state;
 
-  // return [
-  const decls = traceCfgs.map(({ tidIdentifier, inProgramStaticTraceId }) => t.variableDeclarator(
-    tidIdentifier,
-    t.callExpression(traceDeclaration, [
-      t.numericLiteral(inProgramStaticTraceId)
-    ])
-  ));
+  const decls = traceCfgs.map(({ tidIdentifier, inProgramStaticTraceId, data, meta }) => {
+    const trace = meta?.traceCall && aliases[meta.traceCall] || traceDeclaration;
+    const args = [t.numericLiteral(inProgramStaticTraceId)];
+
+    const valuePath = data?.valuePath;
+    if (valuePath) {
+      args.push(valuePath.node);
+    }
+
+    return t.variableDeclarator(
+      tidIdentifier,
+      t.callExpression(trace, args)
+    );
+  });
   return t.variableDeclaration('var', decls);
-  // t.callExpression(traceDeclarations, traceCfgs.map())
-  // ];
 }
 
 // ###########################################################################
-// traceWrite
+// traceWriteVar
 // ###########################################################################
 
 // TODO: deferTid
-export const buildTraceWrite = buildTraceCall(
-  '%%traceWrite%%(%%expr%%, %%tid%%, %%declarationTid%%, %%inputs%%, %%deferTid%%)',
-  function buildTraceWrite(state, traceCfg) {
+export const buildTraceWriteVar = buildTraceCall(
+  '%%traceWriteVar%%(%%expr%%, %%tid%%, %%declarationTid%%, %%inputs%%, %%deferTid%%)',
+  function buildTraceWriteVar(state, traceCfg) {
     const { ids: { aliases: {
-      traceWrite
+      traceWriteVar
     } } } = state;
 
     const {
@@ -163,7 +168,7 @@ export const buildTraceWrite = buildTraceCall(
 
     return {
       expr: getInstrumentTargetAstNode(traceCfg),
-      traceWrite,
+      traceWriteVar,
       tid,
       declarationTid,
       inputs: makeInputs(inputTraces),

@@ -197,12 +197,12 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceMemberExpression(this.getProgramId(), value, propValue, tid, inputs);
   }
 
-  traceWrite = (value, tid, declarationTid, inputs, deferTid) => {
+  traceWriteVar = (value, tid, declarationTid, inputs, deferTid) => {
     if (this.areTracesDisabled) {
       return value;
     }
 
-    return this._runtimeMonitor.traceWrite(this.getProgramId(), value, tid, declarationTid, inputs, deferTid);
+    return this._runtimeMonitor.traceWriteVar(this.getProgramId(), value, tid, declarationTid, inputs, deferTid);
   }
 
   traceWriteME = (objValue, propValue, value, tid, objTid, inputs, deferTid) => {

@@ -176,7 +176,7 @@ export default class Function extends ParsePlugin {
         type: TraceType.PopImmediate
       },
       meta: {
-        instrument: this.instrumentTrace
+        instrument: this.doInstrument
       }
     });
   }
@@ -243,10 +243,11 @@ export default class Function extends ParsePlugin {
    * Instrument all Functions to keep track of all (possibly async) execution stacks.
    * Called as trace.instrument.
    */
-  instrumentTrace = (state /*, traceCfg */) => {
+  doInstrument = (state /*, traceCfg */) => {
     const {
       node: { path },
       data: {
+        returnTraceCfg,
         staticResumeContextId
       }
     } = this;
@@ -292,16 +293,7 @@ export default class Function extends ParsePlugin {
     }
 
     let bodyNode = bodyPath.node;
-    if (!bodyPath.isBlockStatement()) {
-      // simple lambda expression -> convert to block lambda expression with return statement
-      // NOTE: This enables us to add `try/finally`; also the return statement indicates `ContextEnd`.
-      bodyNode = t.blockStatement([t.returnStatement(bodyNode)]);
-
-      // TODO: make sure that the new `ReturnStatement` is properly traced
-      // bodyNode.body[0].loc = origBodyNode.loc;
-      // bodyNode.body[0].argument.loc = origBodyNode.loc;
-    }
-    else {
+    if (!returnTraceCfg) {
       const lastNode = getLastNodeOfBody(bodyNode);
       if (!lastNode || !doesNodeEndScope(lastNode)) {
         // add ContextEnd trace

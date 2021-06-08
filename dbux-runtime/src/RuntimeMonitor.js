@@ -441,9 +441,7 @@ export default class RuntimeMonitor {
     }
 
     // this.registerTrace(value, tid);
-    const varAccess = {
-      declarationTid
-    };
+    const varAccess = declarationTid && { declarationTid };
     dataNodeCollection.createDataNodes(value, tid, varAccess, inputs);
     return value;
   }
@@ -497,7 +495,7 @@ export default class RuntimeMonitor {
   //   }
   // }
 
-  traceWrite(programId, value, tid, declarationTid, inputs, deferTid) {
+  traceWriteVar(programId, value, tid, declarationTid, inputs, deferTid) {
     if (!this._ensureExecuting()) {
       return value;
     }
@@ -508,9 +506,7 @@ export default class RuntimeMonitor {
     }
 
     // this.registerTrace(value, tid);
-    const varAccess = {
-      declarationTid
-    };
+    const varAccess = declarationTid && { declarationTid };
     dataNodeCollection.createDataNodes(value, tid, varAccess, inputs);
 
     // TODO: defer

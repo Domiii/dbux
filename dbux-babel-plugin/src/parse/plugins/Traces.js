@@ -18,7 +18,14 @@ const makeDefaultTrace = {
 };
 
 export default class Traces extends ParsePlugin {
-  declarationTraces = [];
+  /**
+   * Special declaration traces that will be hoisted to scope of this.node.
+   */
+  hoistedDeclarationTraces = [];
+
+  /**
+   * Traces that will be instrumented in order.
+   */
   traces = [];
 
   // ###########################################################################
@@ -82,6 +89,7 @@ export default class Traces extends ParsePlugin {
     const {
       path,
       node,
+      scope,
       staticTraceData,
       inputTraces,
       meta,
@@ -98,9 +106,10 @@ export default class Traces extends ParsePlugin {
     staticTraceData.dataNode = staticTraceData.dataNode || { isNew: false };
 
     const { state } = this.node;
-    const { scope } = path;
     const inProgramStaticTraceId = state.traces.addTrace(path, staticTraceData);
-    const tidIdentifier = scope.generateUidIdentifier(`t${inProgramStaticTraceId}_`);
+
+    // NOTE: `scope.push` happens during `instrument`
+    const tidIdentifier = (scope || path.scope).generateUidIdentifier(`t${inProgramStaticTraceId}_`);
 
     let declarationTidIdentifier;
     if (isDeclaration) {
@@ -114,6 +123,7 @@ export default class Traces extends ParsePlugin {
     const traceCfg = {
       path,
       node,
+      scope,
       inProgramStaticTraceId,
       tidIdentifier,
       declarationTidIdentifier,
@@ -139,8 +149,8 @@ export default class Traces extends ParsePlugin {
   /**
    * @param {BindingIdentifier} id
    */
-  addDeclarationTrace(id) {
-    const traceCfg = this.addTrace({
+  addDeclarationTrace(id, valuePath) {
+    const traceData = {
       path: id.path,
       node: id,
       staticTraceData: {
@@ -150,12 +160,37 @@ export default class Traces extends ParsePlugin {
           isNew: true
         }
       }
-    });
-    this.declarationTraces.push(traceCfg);
+    };
+    if (valuePath) {
+      traceData.data = { valuePath };
+    }
+    const traceCfg = this.addTrace(traceData);
+    this.hoistedDeclarationTraces.push(traceCfg);
 
     this.Verbose && this.debug(`DECL ${traceCfg.tidIdentifier.name} to ${this.node}`);
 
     return traceCfg;
+  }
+
+  // ###########################################################################
+  // addReturnTrace
+  // ###########################################################################
+
+  addReturnTrace(node, path, argPath) {
+    const hasArgument = !!argPath.node;
+
+    const traceData = {
+      node,
+      path,
+      staticTraceData: {
+        type: hasArgument ? TraceType.ReturnArgument : TraceType.ReturnNoArgument,
+      },
+      meta: {
+        replacePath: argPath
+      }
+    };
+
+    return this.addTraceWithInputs(traceData, argPath && [argPath]);
   }
 
   // ###########################################################################
@@ -177,7 +212,7 @@ export default class Traces extends ParsePlugin {
   // instrument
   // ###########################################################################
 
-  instrumentTraceDeclarations = (traceCfgs) => {
+  instrumentHoistedTraceDeclarations = (traceCfgs) => {
     const { node } = this;
     const { state } = node;
 
@@ -187,23 +222,23 @@ export default class Traces extends ParsePlugin {
   }
 
   instrument() {
-    const { node, traces, declarationTraces } = this;
+    const { node, traces, hoistedDeclarationTraces } = this;
     const { path } = node;
-    const { scope } = path;
 
     // this.debug(`traces`, traces.map(t => t.tidIdentifier));
-    this.instrumentTraceDeclarations(declarationTraces);
+    this.instrumentHoistedTraceDeclarations(hoistedDeclarationTraces);
 
     for (const traceCfg of traces) {
       // add variable to scope
       const {
         /* inProgramStaticTraceId, */
         tidIdentifier,
+        scope,
         meta: {
           instrument = traceWrapExpression
         } = EmptyObject
       } = traceCfg;
-      scope.push({
+      (scope || path.scope).push({
         id: tidIdentifier
       });
 

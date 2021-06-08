@@ -1,4 +1,5 @@
 function f(x) {
-  console.log('f', x);
+  return x + 2;
 };
-f(1);
+
+console.log(f(1));

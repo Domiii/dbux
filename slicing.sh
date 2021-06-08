@@ -7,7 +7,7 @@ set -e # cancel on error
 
 # fname="slicing/var1"
 # fname="memberExpressions0"
-fname="calls0"
+fname="functions1"
 nodeArgs="--enable-source-maps "
 
 dbuxCmd="$1"

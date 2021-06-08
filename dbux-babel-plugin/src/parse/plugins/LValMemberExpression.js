@@ -1,5 +1,5 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
-import { buildTraceWrite, buildTraceWriteME } from '../../instrumentation/builders/misc';
+import { buildTraceWriteME } from '../../instrumentation/builders/misc';
 import ParsePlugin from '../../parseLib/ParsePlugin';
 
 /**
