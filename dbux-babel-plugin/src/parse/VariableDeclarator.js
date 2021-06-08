@@ -29,8 +29,7 @@ export default class VariableDeclarator extends BaseNode {
   exit1() {
     // TODO: "write trace" must double as "declaration trace", if id.getBindingScope()'s body is below/behind declaration
     //      -> especially important in `for` statements
-    //      -> don't `addOwnDeclarationTrace`
-    //      -> TraceType of "write trace" must reflect the double usage
+    //      -> maybe need a new TraceType to reflect the double usage of such "declare + define traces"?
     this.getDeclarationNode().addOwnDeclarationTrace();
   }
 }

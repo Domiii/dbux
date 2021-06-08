@@ -20,7 +20,7 @@ export default class BindingIdentifier extends BaseId {
   // ###########################################################################
 
   /**
-   * Based on `@babel/traverse/lib/scope/index.js` -> `collectVisitor`
+   * Based on `@babel/traverse/lib/scope/index.js` -> `collectorVisitor`
    */
   getBindingScope() {
     const { path } = this.binding;
