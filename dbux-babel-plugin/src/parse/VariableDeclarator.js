@@ -19,8 +19,10 @@ export default class VariableDeclarator extends BaseNode {
 
   decorateWriteTraceData(traceData) {
     const [, initPath] = this.getChildPaths();
-    // const [idNode] = this.getChildNodes();
+    const [lvalNode] = this.getChildNodes();
 
+    traceData.path = lvalNode.path;
+    traceData.node = this;
     traceData.meta.replacePath = initPath;
   }
 

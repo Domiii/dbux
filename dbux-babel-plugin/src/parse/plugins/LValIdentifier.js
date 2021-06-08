@@ -5,7 +5,7 @@ import ParsePlugin from '../../parseLib/ParsePlugin';
 export default class LValIdentifier extends ParsePlugin {
   exit() {
     const { node } = this;
-    const { path, Traces } = node;
+    const { Traces } = node;
 
     const [, rightNode] = node.getChildNodes();
 
@@ -15,8 +15,6 @@ export default class LValIdentifier extends ParsePlugin {
     }
 
     const traceData = {
-      path,
-      node,
       staticTraceData: {
         type: TraceType.WriteVar
       },
@@ -27,7 +25,8 @@ export default class LValIdentifier extends ParsePlugin {
     };
 
     this.node.decorateWriteTraceData(traceData);
-
+    
+    // NOTE: `declarationTid` comes from `AssignmentExpression.getDeclarationNode`
     Traces.addTraceWithInputs(traceData, [rightNode.path]);
   }
 }

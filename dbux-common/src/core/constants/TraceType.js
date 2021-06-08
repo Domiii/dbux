@@ -44,28 +44,28 @@ let TraceType = {
   EndOfContext: 22,
 
 
-  Declaration: 31,
+  Declaration: 30,
   /**
    * NOTE: Can be `AssignmentExpression`, or `VariableDeclarator`'s `init` (which is not an expression).
    * @example `var x = 3`, `x = 5`
    */
   WriteVar: 31,
-  Identifier: 32,
-  Literal: 33,
-  CallArgument: 34,
-  /**
-   * MemberExpression
-   * @example `o.x`, `f(x)[g(y)]`
-   */
-  ME: 35,
   /**
    * WriteMemberExpression
    * NOTE: Can only be `AssignmentExpression`
    * @example `o.x = 3`
    */
-  WriteME: 36,
+  WriteME: 32,
+  Identifier: 33,
+  Literal: 34,
+  CallArgument: 35,
+  /**
+   * MemberExpression
+   * @example `o.x`, `f(x)[g(y)]`
+   */
+  ME: 36,
 
-  Param: 38,
+  Param: 37,
 };
 
 /**

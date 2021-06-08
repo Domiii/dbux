@@ -345,20 +345,19 @@ console.log(a.p1);
 * any `ME` (`MemberExpression`) refers to accessing some object's (or other value, such as `int` or `string`) property
   * example of an `ME`: `f(x)[g(y)]`, where `object` = `f(x)` and `property` = `g(y)`
   * -> `dataNode.varAccess` contains:
-    *  `objectTid` (`traceId` of `object`)
+    *  `objTid` (`traceId` of `object`)
     *  `prop` (value of `property`)
-  * `accessId = makeUid(${getValueIdentity(objectTid)}#${prop})`
+  * `accessId = makeUid(${getValueIdentity(objTid)}#${prop})`
     * TODO: `makeUid` should use a `Map` to convert that string into a number; to more easily maintain `AccessIdIndex`
 
 ## getValueIdentity
 
-If a `value` is not an object, we can compute `valueIdentity` by post-processing in `DataNodeCollection.postAddRaw`.
-
+Compute `getValueIdentity(objTid)` as explained above.
 Once computed, we want to store the computed `valueIdentity` in `dataNode.valueId`.
 
-The algorithm is based on each `DataNode`'s `Trace`'s `TraceType`, as follows:
+If a `value` is not an object, we can compute `valueIdentity` by post-processing in `DataNodeCollection.postAddRaw`. The algorithm is based on each `DataNode`'s `Trace`'s `TraceType`, as follows:
 
-* Expressions
+* Default
   * Steps
     * -> if `staticTrace.dataNode.isNew`: `valueIdentity` = `traceId`
     * -> else: `valueIdentity` = `inputs[0]` (`inputs.length === 1` is implied)

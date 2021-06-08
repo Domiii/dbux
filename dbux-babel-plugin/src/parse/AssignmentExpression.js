@@ -10,7 +10,7 @@ const LValPluginsByType = {
   Identifier: 'LValIdentifier',
   ObjectPattern: 'LValPattern',
   ArrayPattern: 'LValPattern',
-  MemberExpression: 'LValME'
+  MemberExpression: 'LValMemberExpression'
 };
 
 function getLValPlugin(node) {
@@ -44,7 +44,12 @@ export default class AssignmentExpression extends BaseNode {
     return leftNode.getDeclarationNode();
   }
 
-  decorateWriteTraceData(/* traceData */) {
-    // nothing to do (for now)
+  decorateWriteTraceData(traceData) {
+    const { path } = this;
+    const [lvalNode] = this.getChildNodes();
+    
+    traceData.path = lvalNode.path;
+    traceData.node = this;
+    traceData.meta.replacePath = path;
   }
 }

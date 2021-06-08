@@ -112,14 +112,6 @@ export function getReplacePath(traceCfg) {
   return replacePath;
 }
 
-export function getInstrumentationTargetNode(traceCfg) {
-  const {
-    meta: {
-      targetNode
-    } = EmptyObject
-  } = traceCfg;
-  return targetNode;
-}
 
 export function getInstrumentPath(traceCfg) {
   const {
@@ -128,8 +120,16 @@ export function getInstrumentPath(traceCfg) {
   return getReplacePath(traceCfg) || tracePath;
 }
 
-export function getInstrumentTargetNode(traceCfg) {
-  return getInstrumentationTargetNode(traceCfg) || getInstrumentPath(traceCfg).node;
+/**
+ * NOTE: actual `targetNode` node might have been moved; e.g. by `CalleeMemberExpression`.
+ */
+export function getInstrumentTargetAstNode(traceCfg) {
+  const {
+    meta: {
+      targetNode
+    } = EmptyObject
+  } = traceCfg;
+  return targetNode || getInstrumentPath(traceCfg).node;
 }
 
 

@@ -177,12 +177,42 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceExpression(this.getProgramId(), value, tid, declarationTid, inputs);
   }
 
+  traceMemberExpression = (objValue, propValue, tid, inputs) => {
+    // [runtime-error]
+    const value = objValue[propValue];
+
+    if (this.areTracesDisabled) {
+      return value;
+    }
+
+    return this._runtimeMonitor.traceMemberExpression(this.getProgramId(), value, propValue, tid, inputs);
+  }
+
+  traceMemberExpressionOptional = (objValue, propValue, tid, inputs) => {
+    const value = objValue?.[propValue];
+    if (this.areTracesDisabled) {
+      return value;
+    }
+
+    return this._runtimeMonitor.traceMemberExpression(this.getProgramId(), value, propValue, tid, inputs);
+  }
+
   traceWrite = (value, tid, declarationTid, inputs, deferTid) => {
     if (this.areTracesDisabled) {
       return value;
     }
 
     return this._runtimeMonitor.traceWrite(this.getProgramId(), value, tid, declarationTid, inputs, deferTid);
+  }
+
+  traceWriteME = (objValue, propValue, value, tid, objTid, inputs, deferTid) => {
+    // [runtime-error]
+    objValue[propValue] = value;
+    if (this.areTracesDisabled) {
+      return value;
+    }
+
+    return this._runtimeMonitor.traceWriteME(this.getProgramId(), value, propValue, tid, objTid, inputs, deferTid);
   }
 
   traceBCE = (tid, argTids, spreadLengths) => {
@@ -199,25 +229,6 @@ export default class ProgramMonitor {
     }
 
     return this._runtimeMonitor.traceCallResult(this.getProgramId(), value, tid, callTid);
-  }
-
-  traceMemberExpressionOptional(objValue, propValue, tid, inputs) {
-    const value = objValue?.[propValue];
-    if (this.areTracesDisabled) {
-      return value;
-    }
-
-    return this._runtimeMonitor.traceMemberExpression(this.getProgramId(), value, propValue, tid, inputs);
-  }
-
-  traceMemberExpression(objValue, propValue, tid, inputs) {
-    // [runtime-error] this commonly generates run-time errors
-    const value = objValue[propValue];
-    if (this.areTracesDisabled) {
-      return value;
-    }
-
-    return this._runtimeMonitor.traceMemberExpression(this.getProgramId(), value, propValue, tid, inputs);
   }
 
   // ###########################################################################

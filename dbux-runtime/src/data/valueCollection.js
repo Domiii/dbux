@@ -51,6 +51,10 @@ class ValueCollection extends Collection {
   // public methods
   // ###########################################################################
 
+  // getRefId(value) {
+  //   return this.trackedRefs.get(value);
+  // }
+
   /**
    * 
    * @returns {ValueRef}

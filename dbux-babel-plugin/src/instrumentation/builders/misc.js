@@ -4,7 +4,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { astNodeToString, pathToString } from '../../helpers/pathHelpers';
 import { buildTraceCall, bindTemplate, bindExpressionTemplate } from '../../helpers/templateUtil';
 import { makeInputs, ZeroNode } from './buildHelpers';
-import { getInstrumentTargetNode } from './common';
+import { getInstrumentTargetAstNode } from './common';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('builders/trace');
@@ -55,7 +55,7 @@ export const buildTraceExpression = buildTraceCall(
 
     return {
       trace,
-      expr: getInstrumentTargetNode(traceCfg),
+      expr: getInstrumentTargetAstNode(traceCfg),
       tid,
       declarationTid: declarationTidIdentifier || ZeroNode,
       inputs: makeInputs(inputTraces)
@@ -87,7 +87,7 @@ export const buildTraceExpressionNoInput = buildTraceCall(
 
     return {
       trace,
-      expr: getInstrumentTargetNode(traceCfg),
+      expr: getInstrumentTargetAstNode(traceCfg),
       tid,
       declarationTid: declarationTidIdentifier || ZeroNode
     };
@@ -112,7 +112,7 @@ export const buildTraceExpressionSimple = buildTraceCall(
 
     return {
       trace,
-      expr: getInstrumentTargetNode(traceCfg),
+      expr: getInstrumentTargetAstNode(traceCfg),
       tid
     };
   }
@@ -162,7 +162,7 @@ export const buildTraceWrite = buildTraceCall(
     const deferTid = ZeroNode;
 
     return {
-      expr: getInstrumentTargetNode(traceCfg),
+      expr: getInstrumentTargetAstNode(traceCfg),
       traceWrite,
       tid,
       declarationTid,
@@ -197,52 +197,117 @@ export const buildTraceNoValue = bindTemplate(
 // traceMemberExpression
 // ###########################################################################
 
+function getMEObjectNode(meNode, traceCfg) {
+  return traceCfg.data.objectNode || meNode.object;
+}
+
+function getMEPropNode(meNode) {
+  let prop = meNode.property;
+  if (!meNode.computed) {
+    let propName;
+    if (!t.isIdentifier(prop)) {
+      // NOTE: should never happen
+      logError(`ME property was not computed and NOT identifier: ${astNodeToString(meNode)}`);
+      propName = prop.name || prop.toString();
+    }
+    else {
+      propName = prop.name;
+    }
+    // NOTE: `o.x` becomes `tme(..., 'x', ...)`
+    //      -> convert `Identifier` to `StringLiteral`
+    prop = t.stringLiteral(propName);
+  }
+  return prop;
+}
+
 export const buildTraceMemberExpression = bindExpressionTemplate(
-  '%%tme%%(%%obj%%, %%prop%%, %%tid%%, %%inputs%%)',
+  '%%tme%%(%%objValue%%, %%propValue%%, %%tid%%, %%inputs%%)',
   function buildTraceMemberExpression(state, traceCfg) {
     // const { scope } = path;
-    const meNode = getInstrumentTargetNode(traceCfg);
+    const meNode = getInstrumentTargetAstNode(traceCfg);
     const { ids: { aliases } } = state;
     const trace = aliases[traceCfg?.meta?.traceCall || 'traceMemberExpression'];
     if (!trace) {
       throw new Error(`Invalid meta.traceCall "${traceCfg.meta.traceCall}" - Valid choices are: ${Object.keys(aliases).join(', ')}`);
     }
 
-    // obj
-    const obj = traceCfg.data.objectNode || meNode.object;
-
-    // prop
-    let prop = meNode.property;
-    if (!meNode.computed) {
-      let propName;
-      if (!t.isIdentifier(prop)) {
-        // NOTE: should never happen
-        logError(`ME property was not computed and NOT identifier: ${pathToString(traceCfg.path)}`);
-        propName = prop.name || prop.toString();
-      }
-      else {
-        propName = prop.name;
-      }
-      // NOTE: `o.x` becomes `tme(..., 'x', ...)`
-      //      -> convert `Identifier` to `StringLiteral`
-      prop = t.stringLiteral(propName);
-    }
-
     const {
       inputTraces
     } = traceCfg;
-
-    const tid = buildTraceId(state, traceCfg);
     // Verbose && debug(`[te] ${expressionNode.type} [${inputTraces?.map(i => i.tidIdentifier.name).join(',') || ''}]`, pathToString(expressionNode));
 
     // NOTE: templates only work on `Node`, not on `NodePath`, thus they lose all path-related information.
 
     return {
       tme: trace,
-      obj,
-      prop,
-      tid,
+
+      /**
+       * NOTE: actual `object` node might have been moved; e.g. by `CalleeMemberExpression`
+       */
+      objValue: getMEObjectNode(meNode, traceCfg),
+
+      /**
+       * NOTE: we are getting the `prop` here (and not earlier), to make sure its the final instrumented version.
+       */
+      propValue: getMEPropNode(meNode),
+      tid: buildTraceId(state, traceCfg),
       inputs: makeInputs(inputTraces)
+    };
+  }
+);
+
+
+// ###########################################################################
+// traceWriteME
+// ###########################################################################
+
+/**
+ * NOTE: order arguments enforces order of execution!
+ * TODO: deferTid
+ * @example
+ * ```js
+ * function f(msg, value) { console.log(msg, value); return value; }
+ * var o = {};
+ * f(1, o)[f(2, 'prop')] = f(3, 'value')
+ * o
+ * ```
+ */
+export const buildTraceWriteME = buildTraceCall(
+  '%%traceWriteME%%(%%objValue%%, %%propValue%%, %%rVal%%, %%tid%%, %%objTid%%, %%inputs%%, %%deferTid%%)',
+  function buildTraceWriteME(state, traceCfg) {
+    const { ids: { aliases: {
+      traceWriteME
+    } } } = state;
+
+    const assignmentNode = getInstrumentTargetAstNode(traceCfg);
+    const {
+      left: meNode,
+      right: rVal
+    } = assignmentNode;
+
+    const {
+      inputTraces,
+      data: {
+        objTid
+      }
+    } = traceCfg;
+
+    const tid = buildTraceId(state, traceCfg);
+    const deferTid = ZeroNode;
+
+    return {
+      traceWriteME,
+      objValue: getMEObjectNode(meNode, traceCfg),
+
+      /**
+       * NOTE: we are getting the `prop` in this method (and not earlier), to make sure its the final instrumented version.
+       */
+      propValue: getMEPropNode(meNode),
+      rVal,
+      tid,
+      objTid,
+      inputs: makeInputs(inputTraces),
+      deferTid
     };
   }
 );

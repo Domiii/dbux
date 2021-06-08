@@ -448,15 +448,34 @@ export default class RuntimeMonitor {
     return value;
   }
 
+  traceMemberExpression(programId, value, propValue, tid, inputs) {
+    if (!this._ensureExecuting()) {
+      return value;
+    }
+    if (!tid) {
+      this.logFail(`traceMemberExpression failed to capture tid`);
+      return value;
+    }
+
+    const objTid = inputs[0];
+
+    const varAccess = {
+      objTid,
+      prop: propValue
+    };
+    dataNodeCollection.createDataNodes(value, tid, varAccess, inputs);
+    return value;
+  }
+
   // registerTrace(value, tid) {
   //   const trace = traceCollection.getById(tid);
   // }
 
   // // TODO: traceME
-  // traceME(value, objectTid, tid, memberPath, ...inputs) {
+  // traceME(value, objTid, tid, memberPath, ...inputs) {
   // /* const trace =  */registerTrace(value, tid);
   //   const { refTid } = registerValue(tid, value);
-  //   createDataNodes(tid, { objectTid, memberPath, refTid }, inputs);
+  //   createDataNodes(tid, { objTid, memberPath, refTid }, inputs);
   //   return value;
   // }
 
@@ -505,6 +524,33 @@ export default class RuntimeMonitor {
     return value;
   }
 
+  traceWriteME(programId, value, propValue, tid, objTid, inputs/* , deferTid */) {
+    if (!this._ensureExecuting()) {
+      return value;
+    }
+    if (!tid) {
+      this.logFail(`traceWriteME failed to capture tid`);
+      return value;
+    }
+
+    // this.registerTrace(value, tid);
+    const varAccess = {
+      objTid,
+      prop: propValue
+    };
+    dataNodeCollection.createDataNodes(value, tid, varAccess, inputs);
+
+    // TODO: defer
+    // if (deferTid) {
+    //   addDeferredTid(deferTid, tid);
+    // }
+    // else {
+    //   finishDataNode(tid);
+    // }
+    // return;
+    return value;
+  }
+
   // traceCallee(programId, value, tid, declarationTid) {
   //   this.traceExpression(programId, value, tid, declarationTid);
   //   return value;
@@ -523,25 +569,6 @@ export default class RuntimeMonitor {
     const trace = traceCollection.getById(tid);
     trace.resultCallId = callTid;
     this.traceExpression(programId, value, tid, 0);
-    return value;
-  }
-
-  traceMemberExpression(programId, value, propValue, tid, inputs) {
-    if (!this._ensureExecuting()) {
-      return value;
-    }
-    if (!tid) {
-      this.logFail(`traceMemberExpression failed to capture tid`);
-      return value;
-    }
-
-    const objectTid = inputs[0];
-
-    const varAccess = {
-      objectTid,
-      prop: propValue
-    };
-    dataNodeCollection.createDataNodes(value, tid, varAccess, inputs);
     return value;
   }
 

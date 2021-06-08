@@ -244,8 +244,8 @@ export default class Function extends ParsePlugin {
    * Called as trace.instrument.
    */
   instrumentTrace = (state /*, traceCfg */) => {
-    const { 
-      path,
+    const {
+      node: { path },
       data: {
         staticResumeContextId
       }

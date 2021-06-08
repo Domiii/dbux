@@ -5,9 +5,7 @@ import * as t from '@babel/types';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import TraceCfg from '../../definitions/TraceCfg';
-import { astNodeToString } from '../../helpers/pathHelpers';
 import { makeInputs, ZeroNode } from './buildHelpers';
-import { getInstrumentTargetNode } from './common';
 import { buildTraceExpressionSimple, buildTraceId } from './misc';
 
 
@@ -219,6 +217,9 @@ export function buildTraceCallDefault(state, traceCfg) {
   const args = buildArgsValue(state, argNodes);
   const spreadLengths = buildSpreadLengths(state, argsVar, argNodes);
 
+  // hackfix: override targetNode during instrumentation
+  traceCfg.meta.targetNode = buildCallNodeDefault(path, calleeVar, argsVar, argNodes);
+
   return t.sequenceExpression([
     // (i) callee assignment - `f = ...`
     t.assignmentExpression('=', calleeVar, calleePath.node),
@@ -231,7 +232,7 @@ export function buildTraceCallDefault(state, traceCfg) {
 
     // (iv) wrap actual call - `tcr(f(args[0], ...args[1], args[2]))`
     buildTraceExpressionSimple(
-      buildCallNodeDefault(path, calleeVar, argsVar, argNodes),
+      // NOTE: targets `traceCfg.meta.targetNode`
       state,
       traceCfg
     )
@@ -275,7 +276,7 @@ export function buildTraceCallME(state, traceCfg) {
   const args = buildArgsValue(state, argNodes);
   const spreadLengths = buildSpreadLengths(state, argsVar, argNodes);
 
-  // hackfix: override targetNode during instrumentation (generally, not a great idea, is it?)
+  // hackfix: override targetNode during instrumentation
   traceCfg.meta.targetNode = buildCallNodeME(path, objectVar, calleeVar, argsVar, argNodes);
   // debug(`tcr target: ${astNodeToString(getInstrumentTargetNode(traceCfg))}`);
 
@@ -294,6 +295,7 @@ export function buildTraceCallME(state, traceCfg) {
 
     // (v) wrap actual call - `tcr(f.call(o, args[0], ...args[1], args[2]))`
     buildTraceExpressionSimple(
+      // NOTE: targets `traceCfg.meta.targetNode`
       state,
       traceCfg
     )

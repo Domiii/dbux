@@ -1,11 +1,6 @@
+import TraceType from '@dbux/common/src/core/constants/TraceType';
+import { buildTraceWrite, buildTraceWriteME } from '../../instrumentation/builders/misc';
 import ParsePlugin from '../../parseLib/ParsePlugin';
-
-/**
- * TODO: order of execution!
-function f(msg, value) { console.log(msg, value); return value; }
-var o = null;
-f(1, o).x = (f(2), f(3, o = {}), f(4, o))
- */
 
 /**
  * @example
@@ -50,8 +45,39 @@ export default class LValMemberExpression extends ParsePlugin {
   }
 
   wrapLVal() {
-    // TODO
+    const { node } = this;
+    const { Traces } = node;
 
+    const [meNode, rValNode] = node.getChildNodes();
+    const [objectNode] = meNode.getChildNodes();
+
+    if (!rValNode.path.node) {
+      // no write
+      return;
+    }
+
+    const objTid = objectNode.traceCfg?.tidIdentifier;
+    if (!objTid) {
+      this.warn(`objectNode did not have traceCfg.tidIdentifier in ${objectNode}`);
+    }
+
+    const traceData = {
+      staticTraceData: {
+        type: TraceType.WriteME
+      },
+      data: {
+        objTid
+      },
+      meta: {
+        // instrument: Traces.instrumentTraceWrite
+        build: buildTraceWriteME
+      }
+    };
+
+    this.node.decorateWriteTraceData(traceData);
+    
+    // NOTE: `declarationTid` comes from `AssignmentExpression.getDeclarationNode`
+    Traces.addTraceWithInputs(traceData, [rValNode.path]);
   }
 
   exit() {
