@@ -2,6 +2,7 @@
 import ArithmeticExpression from './ArithmeticExpression';
 import BindingNode from './BindingNode';
 import CalleeMemberExpression from './CalleeMemberExpression';
+import Class from './Class';
 import Function from './Function';
 import Loop from './Loop';
 import LValIdentifier from './LValIdentifier';
@@ -15,6 +16,7 @@ export {
   ArithmeticExpression,
   BindingNode,
   CalleeMemberExpression,
+  Class,
   Function,
   Loop,
   LValIdentifier,
