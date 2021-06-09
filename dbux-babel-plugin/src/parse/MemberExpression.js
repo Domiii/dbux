@@ -115,7 +115,7 @@ export default class MemberExpression extends BaseNode {
       meta: {
         traceCall: optional ? 'traceMemberExpressionOptional' : 'traceMemberExpression',
         build: buildTraceMemberExpression,
-        replacePath: replacePath
+        replacePath
       },
       data: {
         // NOTE: don't set `objectNode` if not requested, because if we do, it will not get the final instrumented version of `object`

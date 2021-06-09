@@ -95,7 +95,7 @@ export default class RuntimeMonitor {
   }
 
   // ###########################################################################
-  // public interface
+  // context + function traces
   // ###########################################################################
 
   /**
@@ -128,6 +128,10 @@ export default class RuntimeMonitor {
     // this._trace(programId, contextId, runId, inProgramStaticTraceId);
 
     return contextId;
+  }
+
+  registerParams(programId, paramTids) {
+    // TODO
   }
 
 
@@ -415,7 +419,7 @@ export default class RuntimeMonitor {
     return trace.traceId;
   }
 
-  traceDeclaration = (programId, inProgramStaticTraceId) => {
+  traceDeclaration = (programId, inProgramStaticTraceId, value = undefined) => {
     if (!this._ensureExecuting()) {
       return -1;
     }
@@ -426,7 +430,7 @@ export default class RuntimeMonitor {
     const varAccess = {
       declarationTid: traceId
     };
-    dataNodeCollection.createDataNodes(undefined, traceId, varAccess);
+    dataNodeCollection.createDataNodes(value, traceId, varAccess);
 
     return traceId;
   }

@@ -1,9 +1,6 @@
 // import * as t from '@babel/types';
-import EmptyObject from '@dbux/common/src/util/EmptyObject';
-import { astNodeToString, pathToString } from '../helpers/pathHelpers';
-import { UndefinedNode } from './builders/buildHelpers';
 import { getInstrumentPath, getReplacePath } from './builders/common';
-import { buildTraceExpression, buildTraceDeclarations, buildTraceId } from './builders/misc';
+import { buildTraceExpression, buildTraceDeclarations } from './builders/misc';
 import { unshiftScopeBlock } from './scope';
 
 // const keepStatementCfg = {
@@ -17,15 +14,15 @@ export function traceWrapExpression(state, traceCfg) {
   const build = traceCfg.meta?.build || buildTraceExpression;
   const resultNode = build(state, traceCfg);
 
-  const s = pathToString(path);
-  const { type } = path.node;
+  // const s = pathToString(path);
+  // const { type } = path.node;
 
   if (getReplacePath(traceCfg) !== false) {
     // we don't always want ad hoc replacement.
     // e.g. CalleeME straddles a more complicated relationship between CallExpression and ME
     path.replaceWith(resultNode);
   }
-  console.debug(`tWE`, type, s, '->', astNodeToString(resultNode));
+  // console.debug(`tWE`, type, s, '->', astNodeToString(resultNode));
 
   traceCfg.resultNode = resultNode;
 
