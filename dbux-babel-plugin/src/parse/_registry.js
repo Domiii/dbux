@@ -1,4 +1,5 @@
 import { newLogger } from '@dbux/common/src/log/logger';
+import ArrayExpression from './ArrayExpression';
 import ArrowFunctionExpression from './ArrowFunctionExpression';
 import AssignmentExpression from './AssignmentExpression';
 import AwaitExpression from './AwaitExpression';
@@ -22,6 +23,7 @@ import Program from './Program';
 import ReferencedIdentifier from './ReferencedIdentifier';
 import ReturnStatement from './ReturnStatement';
 import SequenceExpression from './SequenceExpression';
+import SpreadElement from './SpreadElement';
 import UnaryExpression from './UnaryExpression';
 import VariableDeclarator from './VariableDeclarator';
 import WhileStatement from './WhileStatement';
@@ -29,6 +31,7 @@ import WhileStatement from './WhileStatement';
 function init(Clazz) {
   Clazz.logger = newLogger(`parse/${Clazz.name}`);
 }
+init(ArrayExpression);
 init(ArrowFunctionExpression);
 init(AssignmentExpression);
 init(AwaitExpression);
@@ -52,11 +55,13 @@ init(Program);
 init(ReferencedIdentifier);
 init(ReturnStatement);
 init(SequenceExpression);
+init(SpreadElement);
 init(UnaryExpression);
 init(VariableDeclarator);
 init(WhileStatement);
 
 export {
+  ArrayExpression,
   ArrowFunctionExpression,
   AssignmentExpression,
   AwaitExpression,
@@ -80,6 +85,7 @@ export {
   ReferencedIdentifier,
   ReturnStatement,
   SequenceExpression,
+  SpreadElement,
   UnaryExpression,
   VariableDeclarator,
   WhileStatement

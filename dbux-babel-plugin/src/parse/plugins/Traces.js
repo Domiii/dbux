@@ -50,7 +50,7 @@ export default class Traces extends ParsePlugin {
         return null;
       }
 
-      if (!node._traceCfg) {
+      if (!node.traceCfg) {
         const traceData = node.createDefaultTrace?.();
         if (!traceData) {
           this.node.logger.warn(`ParseNode did not implement "createDefaultTrace": ${node}`);
@@ -58,7 +58,7 @@ export default class Traces extends ParsePlugin {
         }
         this.addTrace(traceData);
       }
-      return node._traceCfg;
+      return node.traceCfg;
     }
   }
 
@@ -192,6 +192,7 @@ export default class Traces extends ParsePlugin {
         type: hasArgument ? TraceType.ReturnArgument : TraceType.ReturnNoArgument,
       },
       meta: {
+        traceCall: 'traceReturn',
         replacePath: argPath
       }
     };

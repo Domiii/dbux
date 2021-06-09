@@ -140,6 +140,7 @@ export default class Function extends ParsePlugin {
     //  -> paramNode.getDeclarationNode().addOwnDeclarationTrace();
 
     // TODO: `{Object,Array,Assignment}Pattern
+    // TODO: `RestElement`
 
     // -> `registerParams([traceDeclaration(tid0, p0), traceDeclaration(tid1, p1), ...])`
     this.data.paramTraces = paramsPath.map((paramPath) => {

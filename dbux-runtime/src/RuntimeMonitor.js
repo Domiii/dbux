@@ -134,6 +134,11 @@ export default class RuntimeMonitor {
     // TODO
   }
 
+  traceReturn(programId, value, tid, declarationTid, inputs) {
+    // for now: same as `te`
+    return this.traceExpression(programId, value, tid, declarationTid, inputs);
+  }
+
 
   popFunction(contextId, inProgramStaticTraceId) {
     // this.checkErrorOnFunctionExit(contextId, inProgramStaticTraceId);

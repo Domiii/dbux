@@ -9,6 +9,11 @@ export default class LValIdentifier extends ParsePlugin {
 
     const [, rightNode] = node.getChildNodes();
 
+    if (!rightNode) {
+      this.warn(`assignment rval did not have a node: ${this.node.path}`);
+      return;
+    }
+
     if (!rightNode.path.node) {
       // no write
       return;

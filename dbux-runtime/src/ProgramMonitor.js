@@ -97,11 +97,19 @@ export default class ProgramMonitor {
     if (this.areTracesDisabled) {
       return;
     }
-    
+
     this._runtimeMonitor.registerParams(
       this.getProgramId(),
       paramTids
     );
+  }
+
+  traceReturn = (value, tid, declarationTid, inputs) => {
+    if (this.areTracesDisabled) {
+      return value;
+    }
+
+    return this._runtimeMonitor.traceReturn(this.getProgramId(), value, tid, declarationTid, inputs);
   }
 
   popImmediate = (contextId, traceId) => {

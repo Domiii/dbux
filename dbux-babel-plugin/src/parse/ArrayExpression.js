@@ -4,11 +4,8 @@ import BaseNode from './BaseNode';
 /**
  * 
  */
-export default class ObjectExpression extends BaseNode {
-  static children = ['properties'];
-  /**
-   * TODO: associate children `dataPath` with parent's `refId`.
-   */
+export default class ArrayExpression extends BaseNode {
+  static children = ['elements'];
 
   exit() {
     const { path } = this;
@@ -24,11 +21,10 @@ export default class ObjectExpression extends BaseNode {
       }
     };
 
-    // TODO: ObjectMethod
-    // TODO: ObjectProperty
     // TODO: SpreadElement
-    // const inputs = path.get('properties').map(p => p.get('value'));
-    const inputs = [];
+    
+    const inputs = path.get('elements');
+    // const inputs = [];
 
     this.Traces.addTraceWithInputs(traceData, inputs);
   }
