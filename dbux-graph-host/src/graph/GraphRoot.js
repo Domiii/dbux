@@ -95,6 +95,7 @@ class GraphRoot extends HostComponentEndpoint {
   updateRunNodes() {
     if (this.context.graphDocument.asyncGraphMode) {
       this.removeAllRunNode();
+      this._setApplicationState();
     }
     else {
       // oldApps
