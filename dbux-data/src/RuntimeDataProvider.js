@@ -360,6 +360,98 @@ class TraceCollection extends Collection {
 class DataNodeCollection extends Collection {
   constructor(dp) {
     super('dataNodes', dp);
+    this.accessUIdMap = new Map();
+    this.lastNodeByAccessId = new Map();
+  }
+
+  getValueId(dataNode) {
+    if (!('valueId' in dataNode)) {
+      if (dataNode.refId) {
+        return dataNode.refId;
+      }
+      else {
+        const { traceId, accessId } = dataNode;
+        const traceType = this.dp.util.getTraceType(traceId);
+        if (TraceType.is.BeforeCallExpression(traceType)) {
+          // skip in this case, special handling in UI - BCE rendering should reflect CallExpressionResult
+          return null;
+        }
+        else if (TraceType.is.Identifier(traceType) || TraceType.is.ME(traceType)) {
+          if (!accessId) {
+            // sanity check
+            warn(`[getValueId] Cannot find accessId of dataNode: ${JSON.stringify(dataNode)}`);
+          }
+          const lastNode = this.lastNodeByAccessId.get(accessId);
+          return lastNode.valueId;
+        }
+      }
+    }
+    return dataNode.valueId;
+  }
+
+  getAccessId(dataNode) {
+    if ('accessId' in dataNode) {
+      return dataNode.accessId;
+    }
+
+    const { varAccess } = dataNode;
+    if (!varAccess) {
+      return null;
+    }
+    else {
+      let key;
+      const { declarationTid, objTid, prop } = varAccess;
+      if (declarationTid) {
+        key = declarationTid;
+      }
+      else if (objTid && prop) {
+        const objectTrace = this.dp.collections.traces.getById(objTid);
+        const objectDataNode = this.dp.collections.dataNodes.getById(objectTrace.dataNodeId);
+        const objectValueId = objectDataNode.valueId;
+        if (!objectValueId) {
+          // sanity check
+          warn(`[getAccessId] Cannot find objectValueId of dataNode: ${JSON.stringify(dataNode)}`);
+        }
+        key = `${objectValueId}#${prop}`;
+      }
+      else {
+        logError(`Trying to generate accessId with illegal dataNode: ${JSON.stringify(dataNode)}`);
+        return null;
+      }
+
+      if (!this.accessUIdMap.get(key)) {
+        this.accessUIdMap.set(key, this.accessUIdMap.size + 1);
+      }
+      return this.accessUIdMap.get(key);
+    }
+  }
+
+  postAddRaw(dataNodes) {
+    errorWrapMethod(this, 'registerTraceNodeId', dataNodes);
+    errorWrapMethod(this, 'resolveDataIds', dataNodes);
+  }
+
+  /**
+   * hackfix: we add `trace.dataNodeId` here to lookup `dataNode`s in `resolveDataIds`
+   * @param {DataNode[]} dataNodes 
+   */
+  registerTraceNodeId(dataNodes) {
+    for (const dataNode of dataNodes) {
+      const trace = this.dp.collections.traces.getById(dataNode.traceId);
+      trace.dataNodeId = dataNode.nodeId;
+    }
+  }
+
+  /**
+   * Resolves `accessId` and `valueId` simultaneously
+   * @param {DataNode[]} dataNodes 
+   */
+  resolveDataIds(dataNodes) {
+    for (const dataNode of dataNodes) {
+      dataNode.accessId = this.getAccessId(dataNode);
+      this.lastNodeByAccessId.set(dataNode.accessId, dataNode);
+      dataNode.valueId = this.getValueId(dataNode);
+    }
   }
 }
 

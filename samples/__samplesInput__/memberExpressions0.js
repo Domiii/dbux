@@ -1,5 +1,7 @@
 var x = 3;
-const o = {};
+let o = {};
+o.b = {};
+o = {};
 o.b = {};
 o.b.c = x;
 var a = o.b;
