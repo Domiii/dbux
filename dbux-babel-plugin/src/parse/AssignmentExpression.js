@@ -20,6 +20,7 @@ function getLValPlugin(node) {
   if (!pluginName) {
     node.logger.error(`unknown lval type: "${lvalType}" at "${pathToString(lvalPath)}"`);
   }
+  // console.debug(`[LVAL] lvalType = ${lvalType} - ${pathToString(node.path)}`);
   return pluginName;
 }
 
