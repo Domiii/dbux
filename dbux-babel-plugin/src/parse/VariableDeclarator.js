@@ -1,7 +1,6 @@
 // import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 import BaseNode from './BaseNode';
 
-// TODO: very similar to `AssignmentExpression` but (1) not an expression, (2) optional rval, (3) more limited lvals
 export default class VariableDeclarator extends BaseNode {
   static children = ['id', 'init'];
   static plugins = [
@@ -18,10 +17,12 @@ export default class VariableDeclarator extends BaseNode {
   }
 
   decorateWriteTraceData(traceData) {
+    const { path } = this;
     const [, initPath] = this.getChildPaths();
-    const [lvalNode] = this.getChildNodes();
+    // const [lvalNode] = this.getChildNodes();
 
-    traceData.path = lvalNode.path;
+    // traceData.path = lvalNode.path;
+    traceData.path = path;
     traceData.node = this;
     traceData.meta.replacePath = initPath;
   }

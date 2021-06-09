@@ -441,7 +441,7 @@ export default class RuntimeMonitor {
     }
 
     // this.registerTrace(value, tid);
-    const varAccess = declarationTid && { declarationTid };
+    const varAccess = declarationTid && { declarationTid } || null;
     dataNodeCollection.createDataNodes(value, tid, varAccess, inputs);
     return value;
   }

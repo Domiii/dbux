@@ -46,9 +46,10 @@ export default class AssignmentExpression extends BaseNode {
 
   decorateWriteTraceData(traceData) {
     const { path } = this;
-    const [lvalNode] = this.getChildNodes();
-    
-    traceData.path = lvalNode.path;
+    // const [lvalNode] = this.getChildNodes();
+
+    // traceData.path = lvalNode.path;
+    traceData.path = path;
     traceData.node = this;
     traceData.meta.replacePath = path;
   }

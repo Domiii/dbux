@@ -172,13 +172,14 @@ TODOs moved to: https://github.com/Domiii/dbux/issues/521
 
 ## "Value-creating" types
 
-Most expressions just pass along memory addresses, without actually generating new data. We want to differentiate between those, and those that create new values. The following AST types (mostly expressions) generate new values:
+Most expressions just pass along memory addresses, without actually generating new data. We want to differentiate between those, and those that create new values. In that case `staticTrace.dataNode.isNew === true`.
 
-* `{Call,New}Expression`
-  * NOTE: is new iff we did not instrument the called function
-* `ArighmeticExpression`
+The following AST types (mostly expressions) generate new values:
+
+* `NewExpression` (`new A()`)
+* `ArithmeticExpression`
 * `UpdateExpression`
-* `{Array,Object}Expression`
+* `{Array,Object}Expression` (`[1,2]`, `{x : 3}`)
   * (object initializer)
 * `Literal`
   * (implies `TemplateLiteral`)
@@ -187,8 +188,6 @@ Most expressions just pass along memory addresses, without actually generating n
 * `ClassDeclaration`
 * `Function`
   * NOTE: includes `FunctionDeclaration` and `Method` which are not expressions
-* `CatchClause.param`
-  * NOTE: is new iff we did not record corresponding `throw`
 * `Decorator`
 
 

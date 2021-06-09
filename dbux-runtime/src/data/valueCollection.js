@@ -37,9 +37,12 @@ class ValueCollection extends Collection {
   valuesDisabled = false;
 
   /**
-   * @type {WeakMap<object, ValueRef>}
+   * Stores `refId` by `object`.
+   * [future-work] In order to reduce memory pressure, collections need to be "cleaned over time" first.
+   *        Only then, using `WeakMap` instead of `Map` here would be worth it.
+   * @type {Map<object, number>}
    */
-  trackedRefs = new WeakMap();
+  valueRefsByObject = new Map();
   _lastRefId = 0;
 
   constructor() {
@@ -51,9 +54,9 @@ class ValueCollection extends Collection {
   // public methods
   // ###########################################################################
 
-  // getRefId(value) {
-  //   return this.trackedRefs.get(value);
-  // }
+  getRefByValue(value) {
+    return this.valueRefsByObject.get(value);
+  }
 
   /**
    * 
@@ -86,11 +89,14 @@ class ValueCollection extends Collection {
    * @param {*} category
    * @return {ValueRef}
    */
-  _addValueRef(category = null, nodeId = null) {
+  _addValueRef(category = null, nodeId = null, value = null) {
     // create new ref + track object value
     const valueRef = pools.values.allocate();
     valueRef.refId = this._all.length;
     this.push(valueRef);
+    if (value) {
+      this.valueRefsByObject.set(value, valueRef);
+    }
 
     valueRef.nodeId = nodeId;
     valueRef.category = category;
@@ -115,27 +121,27 @@ class ValueCollection extends Collection {
     }
   }
 
-  /**
-   * Look-up refId of given object value.
-   * NOTE: In case of internal errors, `refId` might be set, but it might not have been registered.
-   */
-  trackObjectRef(value) {
-    // if (value === undefined) {
-    //   this.logger.warn(new Error(`Tried to track value but is undefined`).stack);
-    // }
-    let refId;
-    try {
-      this.trackedRefs.set(value, refId = ++this._lastRefId);
-    }
-    catch (err) {
-      let typeInfo = typeof value;
-      if (isObject(value)) {
-        typeInfo += ` (${Object.getPrototypeOf(value)})`;
-      }
-      logError(`could not store value ("${err.message}"): ${typeInfo} ${JSON.stringify(value)}`);
-    }
-    return refId;
-  }
+  // /**
+  //  * Look-up refId of given object value.
+  //  * NOTE: In case of internal errors, `refId` might be set, but it might not have been registered.
+  //  */
+  // trackObjectRef(value) {
+  //   // if (value === undefined) {
+  //   //   this.logger.warn(new Error(`Tried to track value but is undefined`).stack);
+  //   // }
+  //   let refId;
+  //   try {
+  //     this.trackedRefs.set(value, refId = ++this._lastRefId);
+  //   }
+  //   catch (err) {
+  //     let typeInfo = typeof value;
+  //     if (isObject(value)) {
+  //       typeInfo += ` (${Object.getPrototypeOf(value)})`;
+  //     }
+  //     logError(`could not store value ("${err.message}"): ${typeInfo} ${JSON.stringify(value)}`);
+  //   }
+  //   return refId;
+  // }
 
   /**
    * @return {ValueRef}
@@ -310,10 +316,10 @@ class ValueCollection extends Collection {
     // look-up existing value
     category = category || determineValueTypeCategory(value);
     if (isTrackableCategory(category)) {
-      valueRef = this.trackedRefs.get(value);
+      valueRef = this.getRefByValue(value);
       if (!valueRef) {
         isNewObject = true;
-        valueRef = this._addValueRef(category, nodeId);
+        valueRef = this._addValueRef(category, nodeId, value);
       }
     }
 

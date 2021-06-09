@@ -46,7 +46,7 @@ export default class DataNode {
   refId;
 
   /**
-   * @type {VarAccessId | VarAccessME}
+   * @type {VarAccessId | VarAccessME | null}
    */
   varAccess;
 

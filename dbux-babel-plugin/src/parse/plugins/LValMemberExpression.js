@@ -44,6 +44,10 @@ export default class LValMemberExpression extends ParsePlugin {
     meNode.handler = this;
   }
 
+  exit() {
+    this.wrapLVal();
+  }
+
   wrapLVal() {
     const { node } = this;
     const { Traces } = node;
@@ -51,16 +55,21 @@ export default class LValMemberExpression extends ParsePlugin {
     const [meNode, rValNode] = node.getChildNodes();
     const [objectNode] = meNode.getChildNodes();
 
-    if (!rValNode.path.node) {
-      // no write
-      return;
-    }
+    // if (!rValNode.path.node) {
+    //   // no write
+    //   // NOTE: should never happen
+    //   return;
+    // }
+
+    // make sure, `object` is traced
+    Traces.addDefaultTrace(objectNode.path);
 
     const objTid = objectNode.traceCfg?.tidIdentifier;
     if (!objTid) {
       this.warn(`objectNode did not have traceCfg.tidIdentifier in ${objectNode}`);
     }
 
+    // add actual WriteME trace
     const traceData = {
       staticTraceData: {
         type: TraceType.WriteME
@@ -75,12 +84,8 @@ export default class LValMemberExpression extends ParsePlugin {
     };
 
     this.node.decorateWriteTraceData(traceData);
-    
+
     // NOTE: `declarationTid` comes from `AssignmentExpression.getDeclarationNode`
     Traces.addTraceWithInputs(traceData, [rValNode.path]);
-  }
-
-  exit() {
-    this.wrapLVal();
   }
 }
