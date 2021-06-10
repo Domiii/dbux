@@ -204,9 +204,9 @@ export default class DataProviderBase {
     }
 
     // debug('received', JSON.stringify(allData).substring(0, 500));
-
-    this._addData(allData);
-    this._postAdd(allData, isRaw);
+    const collectionNames = this._getSortedCollectionNames(allData);
+    this._addData(collectionNames, allData);
+    this._postAdd(collectionNames, allData, isRaw);
   }
 
   addQuery(newQuery) {
@@ -242,26 +242,33 @@ export default class DataProviderBase {
   // Private methods
   // ###########################################################################
 
-  _addData(allData) {
-    for (const collectionName in allData) {
-      const collection = this.collections[collectionName];
-      if (!collection) {
+  _getSortedCollectionNames(allData) {
+    const collectionNames = Object.keys(allData);
+    for (const collectionName of collectionNames) {
+      if (!this.collections[collectionName]) {
         // should never happen
         this.logger.error('received data with invalid collection name -', collectionName);
-        delete this.collections[collectionName];
+        delete allData[collectionName];
         continue;
       }
+    }
+    collectionNames.sort((a, b) => this.collections[a]._id - this.collections[b]._id);
+    return collectionNames;
+  }
 
+  _addData(collectionNames, allData) {
+    for (const collectionName of collectionNames) {
+      const collection = this.collections[collectionName];
       const entries = allData[collectionName];
       ++this.versions[collection._id]; // update version
       collection.add(entries);
     }
   }
 
-  _postAdd(allData, isRaw) {
+  _postAdd(collectionNames, allData, isRaw) {
     if (isRaw) {
       // notify collections that adding(raw data) has finished
-      for (const collectionName in allData) {
+      for (const collectionName of collectionNames) {
         const collection = this.collections[collectionName];
         const entries = allData[collectionName];
         collection.postAddRaw(entries);
@@ -269,14 +276,14 @@ export default class DataProviderBase {
     }
 
     // notify collections that adding(processed data) has finished
-    for (const collectionName in allData) {
+    for (const collectionName of collectionNames) {
       const collection = this.collections[collectionName];
       const entries = allData[collectionName];
       collection.postAddProcessed(entries);
     }
 
     // indexes
-    for (const collectionName in allData) {
+    for (const collectionName of collectionNames) {
       const indexes = this.indexes[collectionName];
       if (indexes) {
         const data = allData[collectionName];
@@ -292,7 +299,7 @@ export default class DataProviderBase {
     // NOTE: needs to ensure that these `postIndex` methods wont affect previous indexes' key
     if (isRaw) {
       // notify collections that adding(raw data) has finished
-      for (const collectionName in allData) {
+      for (const collectionName of collectionNames) {
         const collection = this.collections[collectionName];
         const entries = allData[collectionName];
         collection.postIndexRaw(entries);
@@ -300,19 +307,19 @@ export default class DataProviderBase {
     }
 
     // notify collections that adding(processed data) has finished
-    for (const collectionName in allData) {
+    for (const collectionName of collectionNames) {
       const collection = this.collections[collectionName];
       const entries = allData[collectionName];
       collection.postIndexProcessed(entries);
     }
 
     // notify internal and external listeners
-    this._notifyData(allData);
+    this._notifyData(collectionNames, allData);
   }
 
-  _notifyData(allData) {
+  _notifyData(collectionNames, allData) {
     // fire internal event listeners
-    for (const collectionName in allData) {
+    for (const collectionName of collectionNames) {
       // const collection = this.collections[collectionName];
       const data = allData[collectionName];
       this._notifyDataSet(collectionName, data, this._dataEventListenersInternal);
@@ -320,7 +327,7 @@ export default class DataProviderBase {
 
 
     // fire public event listeners
-    for (const collectionName in allData) {
+    for (const collectionName of collectionNames) {
       // const collection = this.collections[collectionName];
       const data = allData[collectionName];
       this._notifyDataSet(collectionName, data, this._dataEventListeners);

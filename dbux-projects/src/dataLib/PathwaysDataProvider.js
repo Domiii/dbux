@@ -23,6 +23,7 @@ import StepsByGroupIndex from './indexes/StepsByGroupIndex';
 import TestRun from './TestRun';
 import LogFileLoader from './LogFileLoader';
 import VisitedStaticTracesByFile from './indexes/VisitedStaticTracesByFileIndex';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PathwaysDataProvider');
@@ -460,9 +461,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
       )
     );
 
-    this._notifyData({
-
-    });
+    this._notifyData(EmptyArray, EmptyObject);
   }
 
   /**

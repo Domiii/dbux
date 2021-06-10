@@ -139,14 +139,16 @@ export default class Function extends ParsePlugin {
     // TODO: also add declaration in same trace
     //  -> paramNode.getDeclarationNode().addOwnDeclarationTrace();
 
-    // TODO: `{Object,Array,Assignment}Pattern
     // TODO: `RestElement`
+    // TODO: `{Object,Array,Assignment}Pattern
+    // TODO: Special case - `{Object,Array,Assignment}Pattern on `RestElement`
+    //        e.g. `function f(...[a, b]) {}`
 
     // -> `registerParams([traceDeclaration(tid0, p0), traceDeclaration(tid1, p1), ...])`
     this.data.paramTraces = paramsPath.map((paramPath) => {
       const idPaths = getBindingIdentifierPaths(paramPath);
       if (idPaths.length !== 1) {
-        this.warn(`NIY: param is destructured into less or more than 1 variable ${pathToString(paramPath)}`);
+        this.warn(`NYI: param is destructured into less or more than 1 variable ${pathToString(paramPath)}`);
       }
       const idPath = idPaths[0];
       return Traces.addDeclarationTrace({

@@ -155,6 +155,16 @@ class ExecutionContextCollection extends Collection {
   }
 
   // /**
+  //  * NOTE: This will execute before `DataNodeCollection.postIndexRaw`
+  //  */
+  // postIndexRaw(entries) {
+  //   for (const entry of entries) {
+  //     const params = getParamTracesOfContext(contextId);
+  //     // TODO: set input of all `Param` traces
+  //   }
+  // }
+
+  // /**
   //  * @param {ExecutionContext[]} contexts 
   //  */
   // postIndex(contexts) {
@@ -446,7 +456,8 @@ class DataNodeCollection extends Collection {
   }
 
   /**
-   * Resolves `accessId` and `valueId` simultaneously
+   * Resolves `accessId` and `valueId` simultaneously.
+   * Manually add the index entries (because this is run `postIndex`).
    * @param {DataNode[]} dataNodes 
    */
   resolveDataIds(dataNodes) {
