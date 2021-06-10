@@ -33,7 +33,9 @@ export default class StaticTrace {
 
   /**
    * Other data.
-   * Currently used by `MemberExpression` to store whether it's optional.
+   * Currently used by:
+   * * `ME`: `{ optional }`
+   * * `BCE`: `{ argConfigs }`.
    */
   data;
 }

@@ -140,7 +140,7 @@ export default class CallExpression extends BaseNode {
       // node: this,
       staticTraceData: {
         type: TraceType.BeforeCallExpression,
-        dataNode: {
+        data: {
           argConfigs: argumentPaths?.map(getStaticArgumentCfg) || EmptyArray
         }
       },

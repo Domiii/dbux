@@ -154,15 +154,44 @@ class ExecutionContextCollection extends Collection {
     super.add(entries);
   }
 
-  // /**
-  //  * NOTE: This will execute before `DataNodeCollection.postIndexRaw`
-  //  */
-  // postIndexRaw(entries) {
-  //   for (const entry of entries) {
-  //     const params = getParamTracesOfContext(contextId);
-  //     // TODO: set input of all `Param` traces
-  //   }
-  // }
+  /**
+   * NOTE: This will execute before `DataNodeCollection.postIndexRaw`
+   */
+  postIndexRaw(entries) {
+    this.setParamInputs(entries);
+  }
+
+  setParamInputs(entries) {
+    // TODO: fix this up. should be working fine.
+    // for (const entry of entries) {
+    //   const paramTraces = getParamTracesOfContext(contextId);
+    //   const callTrace = getCallTraceOfContext(contextId); // BCE
+    //   const callId = callTrace.traceId;
+    //   const argTraces = getArgTracesOfCall(callId); // via callTrace.data.argTids
+    //   const argConfigs = getStaticTrace(callId).data.argConfigs;
+
+    //   // get `argDataNodes`
+    //   const argDataNodes = argTraces.flatMap((t, i) => {
+    //     const dataNodes = getDataNodesOfTrace(t.traceId);
+    //     if (!argConfigs[i]?.isSpread) {
+    //       // not spread -> take the argument's own `dataNode`
+    //       return dataNodes[0];
+    //     }
+    //     // spread -> take all of the argument's additional `dataNode`s
+    //     return dataNodes.slice(1);
+    //   });
+
+    //   // assign as input to `Param`s
+    //   for (let i = 0; i < paramTraces.length; i++) {
+    //     const paramTrace = paramTraces[i];
+    //     const argDataNode = argDataNodes[i];
+
+    //     // TODO: `RestElement`
+
+    //     paramTrace.dataNodes[0].inputs = [argDataNode.nodeId];
+    //   }
+    // }
+  }
 
   // /**
   //  * @param {ExecutionContext[]} contexts 
