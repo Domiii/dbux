@@ -324,7 +324,7 @@ export default class RuntimeMonitor {
       const preEventRun = this.beforeAwaitRun.get(parentContextId);
       const postEventRun = this._runtime.getCurrentRunId();
 
-      this._runtime.thread1.postAwait(parentContextId, preEventContext, postEventContext, preEventRun, postEventRun);
+      this._runtime.thread1.postAwait(parentContextId, preEventContext, postEventContext, preEventRun, postEventRun, awaitArgument);
     }
 
 

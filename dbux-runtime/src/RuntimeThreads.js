@@ -189,16 +189,17 @@ export class RuntimeThreads1 {
 
       // this.logger.debug('this promise', promise, 'first await', isFirstAwait, 'is root', this.isRootContext(parentContextId));
       if (!isFirstAwait || this.isRootContext(parentContextId)) {
+        // TODO, check the promise thread type here
+        this.logger.debug('set promise thread at pre await');
         this.setOwnPromiseThreadId(promise, this.getRunThreadId(currentRunId));
+        this.setOwnPromiseThreadType(promise, 'CHAIN');
       }
     }
   }
 
-  postAwait(parentContextId, preEventContext, postEventContext, preEventRun, postEventRun) {
+  postAwait(parentContextId, preEventContext, postEventContext, preEventRun, postEventRun, awaitArgument) {
     if (this.getRunThreadId(postEventRun) === undefined) {
       const startThreadId = this.getRunThreadId(preEventRun);
-
-      // this.logger.debug("pre ev run", preEventRun, 'thread id', startThreadId);
 
       let edgeType = ''; // TODO change to enum
 
@@ -210,15 +211,23 @@ export class RuntimeThreads1 {
         // this.logger.debug('in post await start thread id', startThreadId);
         // this.logger.debug('called promise', callerPromise, 'thread id', promiseThreadId);
 
-        this.setRunThreadId(postEventRun, promiseThreadId);
+        // temp comment out this since I think this maybe handled in current case:w
+        // this.logger.debug('post await set', postEventRun, promiseThreadId);
+        // this.setRunThreadId(postEventRun, promiseThreadId);
 
+        this.logger.debug('caller promise', callerPromise);
+        
         edgeType = this.getOwnPromiseThreadType(callerPromise);
       }
       else {
         edgeType = 'CHAIN';
       }
 
-      this.addEdge(this.getLastRunOfThread(startThreadId), postEventRun, edgeType);
+      if (this.getLastRunOfThread(startThreadId) === postEventRun) {
+        this.logger.warn('Trying to add a edge with start run = end run with type', edgeType, ', skipped');
+      } else {
+        this.addEdge(this.getLastRunOfThread(startThreadId), postEventRun, edgeType);
+      }
 
       // if (awaitArgument instanceof Promise) {
       //   get all last run bruh;
@@ -226,7 +235,7 @@ export class RuntimeThreads1 {
     }
   }
 
-  floatingPromises = new Set();
+  floatingPromises = [];
 
   traceCall(contextId, calledContextId, trace, value) {
     const promiseRunId = this.getPromiseRunId(value);
@@ -235,7 +244,7 @@ export class RuntimeThreads1 {
       return;
     }
 
-    this.floatingPromises.add(value);
+    this.floatingPromises.push(value);
 
     const calledContextFirstPromise = this.getContextFirstAwaitPromise(calledContextId);
 
@@ -247,8 +256,12 @@ export class RuntimeThreads1 {
   }
 
   cleanFloatingPromises() {
+    // this.logger.debug('clean flating promise');
     const maintainPromiseThreadId = promise => {
+      // this.logger.debug('do promise', promise);
+
       if (this.getOwnPromiseThreadId(promise)) {
+        // this.logger.debug('get own thread id', this.getOwnPromiseThreadId(promise));
         return this.getOwnPromiseThreadId(promise);
       }
 
@@ -264,6 +277,7 @@ export class RuntimeThreads1 {
         this.setOwnPromiseThreadType(promise, "FORK");
       }
 
+      // this.logger.debug('promise become', promise);
       return this.getOwnPromiseThreadId(promise);
     };
 
@@ -271,7 +285,9 @@ export class RuntimeThreads1 {
       maintainPromiseThreadId(promise);
     }
 
-    this.floatingPromises.clear();
+    this.floatingPromises = [];
+
+    this.logger.debug("end clean");
   }
 
   /**
@@ -355,6 +371,7 @@ export class RuntimeThreads1 {
     }
 
     if (!this.getRunThreadId(fromRun)) {
+      this.logger.debug("From run", fromRun, "is a new run, assign thread id");
       this.assignRunNewThreadId(fromRun);
     }
 
