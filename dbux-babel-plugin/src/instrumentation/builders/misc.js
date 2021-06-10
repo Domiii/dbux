@@ -1,7 +1,7 @@
 // import template from '@babel/template';
 import * as t from '@babel/types';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { astNodeToString, pathToString } from '../../helpers/pathHelpers';
+import { astNodeToString } from '../../helpers/pathHelpers';
 import { buildTraceCall, bindTemplate, bindExpressionTemplate } from '../../helpers/templateUtil';
 import { makeInputs, ZeroNode } from './buildHelpers';
 import { getInstrumentTargetAstNode } from './common';
@@ -22,6 +22,29 @@ export const buildTraceId = bindExpressionTemplate(
       newTraceId,
       staticTraceId: t.numericLiteral(inProgramStaticTraceId),
       traceId: tidIdentifier
+    };
+  },
+);
+
+/**
+ * `newTraceId(staticTraceId, value)`
+ * 
+ * NOTE: Combines `newTraceId` with effect of `traceExpression` into one.
+ * NOTE2: This is used if return value of expression is not used. Example: `registerParams`
+ * NOTE3: this is different from `buildTraceDeclarations` when a `decl` has a `value`, since in that case, declaration and definition are separated.
+ */
+export const buildTraceIdValue = bindExpressionTemplate(
+  '%%traceId%% = %%newTraceId%%(%%staticTraceId%%, %%value%%)',
+  function buildTraceIdValue(state, { tidIdentifier, inProgramStaticTraceId }, value) {
+    const { ids: { aliases: {
+      newTraceId
+    } } } = state;
+
+    return {
+      newTraceId,
+      staticTraceId: t.numericLiteral(inProgramStaticTraceId),
+      traceId: tidIdentifier,
+      value
     };
   },
 );
@@ -122,24 +145,24 @@ export const buildTraceExpressionSimple = buildTraceCall(
 // traceDeclaration
 // ###########################################################################
 
-export function buildTraceDeclarations(state, traceCfgs) {
+export function buildTraceDeclaration(state, { tidIdentifier, inProgramStaticTraceId, meta }, value) {
   const { ids: { aliases, aliases: {
     traceDeclaration
   } } } = state;
+  const trace = meta?.traceCall && aliases[meta.traceCall] || traceDeclaration;
+  const args = [t.numericLiteral(inProgramStaticTraceId)];
+  value && args.push(value);
 
-  const decls = traceCfgs.map(({ tidIdentifier, inProgramStaticTraceId, data, meta }) => {
-    const trace = meta?.traceCall && aliases[meta.traceCall] || traceDeclaration;
-    const args = [t.numericLiteral(inProgramStaticTraceId)];
+  return t.variableDeclarator(
+    tidIdentifier,
+    t.callExpression(trace, args)
+  );
+}
 
-    const valuePath = data?.valuePath;
-    if (valuePath) {
-      args.push(valuePath.node);
-    }
-
-    return t.variableDeclarator(
-      tidIdentifier,
-      t.callExpression(trace, args)
-    );
+export function buildTraceDeclarations(state, traceCfgs) {
+  const decls = traceCfgs.map((traceCfg) => {
+    const valuePath = traceCfg.data?.valuePath;
+    return buildTraceDeclaration(state, traceCfg, valuePath?.node);
   });
   return t.variableDeclaration('var', decls);
 }

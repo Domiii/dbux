@@ -93,6 +93,25 @@ export default class ProgramMonitor {
     );
   }
 
+  registerParams = (paramTids) => {
+    if (this.areTracesDisabled) {
+      return;
+    }
+
+    this._runtimeMonitor.registerParams(
+      this.getProgramId(),
+      paramTids
+    );
+  }
+
+  traceReturn = (value, tid, declarationTid, inputs) => {
+    if (this.areTracesDisabled) {
+      return value;
+    }
+
+    return this._runtimeMonitor.traceReturn(this.getProgramId(), value, tid, declarationTid, inputs);
+  }
+
   popImmediate = (contextId, traceId) => {
     if (this.disabled) {
       return undefined;
@@ -161,12 +180,12 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.newTraceId(this.getProgramId(), inProgramStaticTraceId);
   }
 
-  traceDeclaration = (inProgramStaticTraceId) => {
+  traceDeclaration = (inProgramStaticTraceId, value = undefined) => {
     if (this.areTracesDisabled) {
       return -1;
     }
 
-    return this._runtimeMonitor.traceDeclaration(this.getProgramId(), inProgramStaticTraceId);
+    return this._runtimeMonitor.traceDeclaration(this.getProgramId(), inProgramStaticTraceId, value);
   }
 
   traceExpression = (value, tid, declarationTid, inputs) => {

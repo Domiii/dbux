@@ -176,4 +176,12 @@ export function isPopTrace(traceType) {
   return TraceType.is.PopImmediate(traceType);
 }
 
+const declarationTypes = new Array(TraceType.getValueMaxIndex()).map(() => false);
+declarationTypes[TraceType.Declaration] = true;
+declarationTypes[TraceType.Param] = true;
+
+export function isDeclarationTrace(traceType) {
+  return declarationTypes[traceType];
+}
+
 export default TraceType;

@@ -2,7 +2,7 @@
 // import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 // import TraceType from '@dbux/common/src/core/constants/TraceType';
 // import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import TraceType from '@dbux/common/src/core/constants/TraceType';
+import TraceType, { isDeclarationTrace } from '@dbux/common/src/core/constants/TraceType';
 import NestedError from '@dbux/common/src/NestedError';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import TraceCfg from '../../definitions/TraceCfg';
@@ -45,12 +45,12 @@ export default class Traces extends ParsePlugin {
     }
     else {
       if (!(node instanceof ParseNode)) {
-        // TODO: it might return an array
+        // NOTE: `node` might be array. That should be handled separately.
         this.node.logger.warn(`ParseNode.getNodeOfPath did not return object of type "ParseNode": ${this.node}\n  (instead it returned: ${node})`);
         return null;
       }
 
-      if (!node._traceCfg) {
+      if (!node.traceCfg) {
         const traceData = node.createDefaultTrace?.();
         if (!traceData) {
           this.node.logger.warn(`ParseNode did not implement "createDefaultTrace": ${node}`);
@@ -58,7 +58,7 @@ export default class Traces extends ParsePlugin {
         }
         this.addTrace(traceData);
       }
-      return node._traceCfg;
+      return node.traceCfg;
     }
   }
 
@@ -101,7 +101,7 @@ export default class Traces extends ParsePlugin {
       throw new Error(`addTrace data missing \`path\` or \`staticTraceData\``);
     }
 
-    const isDeclaration = TraceType.is.Declaration(staticTraceData.type);
+    const isDeclaration = isDeclarationTrace(staticTraceData.type);
 
     // set default static DataNode
     staticTraceData.dataNode = staticTraceData.dataNode || { isNew: false };
@@ -144,26 +144,31 @@ export default class Traces extends ParsePlugin {
   }
 
   // ###########################################################################
-  // addDeclarationTrace
+  // addNewDeclarationTrace
   // ###########################################################################
 
   /**
    * @param {BindingIdentifier} id
    */
-  addDeclarationTrace(id, valuePath) {
+  addNewDeclarationTrace(id, valuePath) {
     const traceData = {
       path: id.path,
       node: id,
       staticTraceData: {
         type: TraceType.Declaration,
         dataNode: {
-          // NOTE: declaration trace is always hoisted to some scope, always assigned a "new" `undefined` value (until assignment/definition happens)
+          // NOTE: this type of trace is always hoisted to some scope, always assigned a "new" value (`undefined`, if `valuePath` not given)
           isNew: true
         }
       }
     };
+    return this.addDeclarationTrace(traceData, valuePath);
+  }
+
+  addDeclarationTrace(traceData, valuePath) {
     if (valuePath) {
-      traceData.data = { valuePath };
+      traceData.data = traceData.data || {};
+      traceData.data.valuePath = valuePath;
     }
     const traceCfg = this.addTrace(traceData);
     this.hoistedDeclarationTraces.push(traceCfg);
@@ -187,6 +192,7 @@ export default class Traces extends ParsePlugin {
         type: hasArgument ? TraceType.ReturnArgument : TraceType.ReturnNoArgument,
       },
       meta: {
+        traceCall: 'traceReturn',
         replacePath: argPath
       }
     };

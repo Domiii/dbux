@@ -176,7 +176,7 @@ export default class CallExpression extends BaseNode {
       }
     });
 
-    // 5. callee might need modifications
-    calleePlugin?.handleCallTrace(trace);
+    // 5. callee might add modifications
+    calleePlugin?.decorateCallTrace(trace);
   }
 }

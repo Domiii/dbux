@@ -47,7 +47,7 @@ function buildArgsValue(state, argNodes) {
     .map(argNode => t.isSpreadElement(argNode) ?
       t.callExpression(
         arrayFrom,
-        argNode.argument
+        [argNode.argument]
       ) :
       argNode
     )
@@ -66,7 +66,7 @@ function buildSpreadLengths(state, argsVar, argNodes) {
     .map((argNode, i) => t.isSpreadElement(argNode) ?
       t.callExpression(
         getArgLength,
-        buildArgI(argsVar, i)
+        [buildArgI(argsVar, i)]
       ) :
       null
     )

@@ -5,9 +5,12 @@ import { buildWrapTryFinally, buildSource, buildBlock } from '../../instrumentat
 import { injectContextEndTrace } from '../../instrumentation/context';
 import { getNodeNames } from '../../visitors/nameVisitors';
 
+import { getBindingIdentifierPaths } from '../../helpers/bindingsUtil';
 import { doesNodeEndScope } from '../../helpers/astUtil';
 import ParsePlugin from '../../parseLib/ParsePlugin';
 import { buildTraceExpressionSimple, buildTraceId } from '../../instrumentation/builders/misc';
+import { buildRegisterParams } from '../../instrumentation/builders/function';
+import { pathToString } from '../../helpers/pathHelpers';
 
 
 function addContextTrace(bodyPath, state, type) {
@@ -93,7 +96,7 @@ export default class Function extends ParsePlugin {
       isInterruptable
     };
 
-    // TODO: use `const pushTrace = this.Traces.addTrace` instead
+    // TODO: use `const pushTrace = Traces.addTrace` instead
     const staticContextId = state.contexts.addStaticContext(path, staticContextData);
     // const pushTraceCfg = addContextTrace(bodyPath, state, TraceType.PushImmediate);
     const staticPushTid = state.traces.addTrace(
@@ -127,50 +130,41 @@ export default class Function extends ParsePlugin {
   }
 
   exit1() {
-    // const { path } = this.node;
-    // const paramsPath = path.get('params');
-    // // const paramIds = paramsPath.node.map(param =>
-    // //   // get all variable declarations in `param`
-    // //   // see: https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/family.js#L215
-    // //   // see: https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/lib/virtual-types.js
-    // //   Object.values(param.getBindingIdentifierPaths())
-    // // ).flat();
+    const { path, Traces } = this.node;
+    const paramsPath = path.get('params');
+    // TODO: in `dbux-data`, compute inputs[0] = `argTid` from `i`, using
+    //      (i) `bceStaticTrace.dataNode.argConfigs`,
+    //      (ii) `{ argTids, spreadLengths } = bceTrace.data`
 
-    // for (let i = 0; i < paramsPath.node.length; ++i) {
-    //   // TODO: in `dbux-data`, compute inputs[0] = `argTid` from `i`, using
-    //   //      (i) `bceStaticTrace.dataNode.argConfigs`,
-    //   //      (ii) `{ argTids, spreadLengths } = bceTrace.data`
+    // TODO: also add declaration in same trace
+    //  -> paramNode.getDeclarationNode().addOwnDeclarationTrace();
 
-    //   // TODO: also add declaration in same trace
-    //   //  -> paramNode.getDeclarationNode().addOwnDeclarationTrace();
+    // TODO: `{Object,Array,Assignment}Pattern
+    // TODO: `RestElement`
 
-    //   // TODO: need to insert new `traceParam` call; cannot default (replacement-based) instrumentation
-
-    //   // trace -> `traceParam(param, tid, i)`
-    //   this.Traces.addTrace({
-    //     path: paramsPath.get(i.toString()),
-    //     // node,
-    //     staticTraceData: {
-    //       type: TraceType.Param
-    //     },
-    //     meta: {
-    //       build: buildTraceExpressionSimple,
-    //       traceCall: 'traceParam',
-    //       moreTraceCallArgs: [t.numericLiteral(i)]
-    //     }
-    //   });
-
-    //   // TODO: `{Object,Array,Assignment}Pattern
-    // }
+    // -> `registerParams([traceDeclaration(tid0, p0), traceDeclaration(tid1, p1), ...])`
+    this.data.paramTraces = paramsPath.map((paramPath) => {
+      const idPaths = getBindingIdentifierPaths(paramPath);
+      if (idPaths.length !== 1) {
+        this.warn(`NIY: param is destructured into less or more than 1 variable ${pathToString(paramPath)}`);
+      }
+      const idPath = idPaths[0];
+      return Traces.addDeclarationTrace({
+        path: idPath,
+        staticTraceData: {
+          type: TraceType.Param
+        }
+      }, idPath);
+    });
   }
 
   exit() {
-    const { path } = this.node;
+    const { path, Traces } = this.node;
 
     // NOTE: `finalizeInstrument` will trigger with the final `pop` trace, and then does everything
     // this.data.popTrace = state.traces.addTrace(bodyPath, { type: TraceType.PopImmediate });
     // this.data.popTraceCfg = addContextTrace(bodyPath, state, TraceType.PopImmediate);
-    this.data.popTraceCfg = this.node.Traces.addTrace({
+    this.data.popTraceCfg = Traces.addTrace({
       path,
       staticTraceData: {
         type: TraceType.PopImmediate
@@ -186,6 +180,14 @@ export default class Function extends ParsePlugin {
   // buildPush
   // ###########################################################################
 
+  injectParamsTrace() {
+    const { state } = this.node;
+    const { paramTraces } = this.data;
+
+    const p = buildRegisterParams(state, paramTraces);
+    this.node.path.get('body').unshiftContainer("body", p);
+  }
+
   buildPush = () => {
     // TODO: capture closure variables, to get their correct `declarationTid`
 
@@ -200,13 +202,16 @@ export default class Function extends ParsePlugin {
         }
       }
     } = state;
-    return pushImmediateTemplate({
-      contextIdIdentifier,
-      pushImmediate,
-      staticContextId: t.numericLiteral(staticContextId),
-      inProgramStaticTraceId: t.numericLiteral(staticPushTid),
-      isInterruptable: t.booleanLiteral(!!staticResumeContextId)
-    });
+
+    return [
+      pushImmediateTemplate({
+        contextIdIdentifier,
+        pushImmediate,
+        staticContextId: t.numericLiteral(staticContextId),
+        inProgramStaticTraceId: t.numericLiteral(staticPushTid),
+        isInterruptable: t.booleanLiteral(!!staticResumeContextId)
+      })
+    ];
   }
 
   // ###########################################################################
@@ -235,8 +240,12 @@ export default class Function extends ParsePlugin {
     });
   }
 
+  instrument1() {
+    this.injectParamsTrace();
+  }
+
   // ###########################################################################
-  // instrumentTrace
+  // doInstrument
   // ###########################################################################
 
   /**
@@ -259,9 +268,7 @@ export default class Function extends ParsePlugin {
 
     // NOTE: `pushImmediate` also records the `trace` for us.
 
-    let pushes = [
-      this.buildPush()
-    ];
+    let pushes = this.buildPush();
 
     let pops = [
       this.buildPop()

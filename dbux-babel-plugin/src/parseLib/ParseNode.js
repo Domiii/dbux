@@ -58,11 +58,12 @@ export default class ParseNode {
   }
 
   getAllClassPlugins() {
-    if (!this.constructor._pluginConfigs) {
-      const allPluginConfigs = ParseRegistry.getAllPluginConfigsOfNodeClass(this.constructor, this);
-      this.constructor._pluginConfigs = allPluginConfigs;
-    }
-    return this.constructor._pluginConfigs;
+    // if (!this.constructor._pluginConfigs) {
+    //   const allPluginConfigs = ParseRegistry.getAllPluginConfigsOfNodeClass(this.constructor, this);
+    //   this.constructor._pluginConfigs = allPluginConfigs;
+    // }
+    // return this.constructor._pluginConfigs;
+    return ParseRegistry.getAllPluginConfigsOfNodeClass(this.constructor, this);
   }
 
   // ###########################################################################

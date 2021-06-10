@@ -19,6 +19,9 @@
 // import { isInLoc1D } from './locHelpers';
 // import { isNodeInstrumented } from './astUtil';
 
+/** @typedef { import("@babel/types").Node } AstNode */
+/** @typedef { import("@babel/traverse").NodePath } NodePath */
+
 // /**
 //  * Find only bindings which have at least one non-instrumented path;
 //  * i.e. variables that exist in the original source code.
@@ -134,4 +137,18 @@ function crawl(path) {
  */
 export function getBindingPath(idPath) {
   return getBinding(idPath)?.path;
+}
+
+
+/**
+ * @type {NodePath[]}
+ * @see https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/family.js#L215
+ * @see https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/lib/virtual-types.js
+ */
+export function getBindingIdentifierPaths(path) {
+  /**
+   * @type {{ [string]: NodePath }}
+   */
+  const pathsByName = path.getBindingIdentifierPaths();
+  return Object.values(pathsByName);
 }

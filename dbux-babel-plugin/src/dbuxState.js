@@ -81,7 +81,8 @@ export default function injectDbuxState(programPath, programState) {
         // Function
         pushImmediate: makeProgramId('pI'),
         popFunction: makeProgramId('pF'),
-        traceParam: makeProgramId('tp'),
+        registerParams: makeProgramId('par'),
+        traceReturn: makeProgramId('tr'),
 
         // misc
         newTraceId: makeProgramId('tid'),

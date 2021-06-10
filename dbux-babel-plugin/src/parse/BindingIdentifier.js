@@ -65,7 +65,7 @@ export default class BindingIdentifier extends BaseId {
       throw new Error(`BindingIdentifier's binding scope did not have a ParseNode: ${pathToString(scopePath)}`);
     }
 
-    // addDeclarationTrace
-    this.bindingTrace = bindingScopeNode.Traces.addDeclarationTrace(this, valuePath);
+    // addNewDeclarationTrace
+    this.bindingTrace = bindingScopeNode.Traces.addNewDeclarationTrace(this, valuePath);
   }
 }
