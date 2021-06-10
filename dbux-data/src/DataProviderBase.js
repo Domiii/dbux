@@ -289,13 +289,22 @@ export default class DataProviderBase {
       }
     }
 
-    // NOTE: Temporarily disabled, needs to ensure this wont mutate data
-    // // notify collections that adding + index processing has finished
-    // for (const collectionName in allData) {
-    //   const collection = this.collections[collectionName];
-    //   const entries = allData[collectionName];
-    //   collection.postIndex(entries);
-    // }
+    // NOTE: needs to ensure that these `postIndex` methods wont affect previous indexes' key
+    if (isRaw) {
+      // notify collections that adding(raw data) has finished
+      for (const collectionName in allData) {
+        const collection = this.collections[collectionName];
+        const entries = allData[collectionName];
+        collection.postIndexRaw(entries);
+      }
+    }
+
+    // notify collections that adding(processed data) has finished
+    for (const collectionName in allData) {
+      const collection = this.collections[collectionName];
+      const entries = allData[collectionName];
+      collection.postIndexProcessed(entries);
+    }
 
     // notify internal and external listeners
     this._notifyData(allData);
@@ -354,7 +363,7 @@ export default class DataProviderBase {
       version: this.version,
       collections: Object.fromEntries(collections.map(([name, entries]) => {
         const collection = this.collections[name];
-        
+
         if (!entries[0]) {
           entries = entries.slice(1);
         }

@@ -48,6 +48,11 @@
           "when": "dbux.context.activated"
         },
         {
+          "id": "dbuxDataFlowView",
+          "name": "Data Flow",
+          "when": "dbux.context.activated"
+        },
+        {
           "id": "dbuxProjectView",
           "name": "Practice Projects",
           "when": "dbux.context.activated && dbux.context.showPracticeViews && !dbux.context.hasPracticeSession"
@@ -413,6 +418,22 @@
         }
       },
       {
+        "command": "dbuxDataFlowView.setByAccessIdMode",
+        "title": "Search by accessId",
+        "icon": {
+          "light": "resources/light/string.svg",
+          "dark": "resources/dark/string.svg"
+        }
+      },
+      {
+        "command": "dbuxDataFlowView.setByValueIdMode",
+        "title": "Search by valueId",
+        "icon": {
+          "light": "resources/light/string.svg",
+          "dark": "resources/dark/string.svg"
+        }
+      },
+      {
         "command": "dbuxApplicationsView.showEntryPoint",
         "title": "Go to Entry",
         "icon": {
@@ -757,6 +778,16 @@
           "group": "navigation@20"
         },
         {
+          "command": "dbuxDataFlowView.setByAccessIdMode",
+          "when": "view == dbuxDataFlowView",
+          "group": "navigation"
+        },
+        {
+          "command": "dbuxDataFlowView.setByValueIdMode",
+          "when": "view == dbuxDataFlowView",
+          "group": "navigation"
+        },
+        {
           "command": "dbux.runFile",
           "when": "view == dbuxTraceDetailsView",
           "group": "navigation@5"
@@ -1037,6 +1068,14 @@
         },
         {
           "command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
+          "when": "false"
+        },
+        {
+          "command": "dbuxDataFlowView.setByAccessIdMode",
+          "when": "false"
+        },
+        {
+          "command": "dbuxDataFlowView.setByValueIdMode",
           "when": "false"
         },
         {

@@ -70,23 +70,30 @@ export default class Collection {
   /**
    * Collections can use this to massage data after all data has been added, but before indexes have been processed. This will be executed only on the first time that data has been added.
    * @virtual
-   * 
    * @param {T[]} entries
    */
-  postAddRaw(entries) {}
+  postAddRaw(entries) { }
 
   /**
    * Collections can use this to massage data after all data has been added, but before indexes have been processed. This will be executed everytime data has been added(even when deserialize).
    * @virtual
    * @param {T[]} entries
    */
-  postAddProcessed(entries) {}
+  postAddProcessed(entries) { }
 
-  // /**
-  //  * Collections can use this to massage data after all data has been added, and after indexes have been processed.
-  //  * @virtual
-  //  */
-  // postIndex(/* entries */) { }
+  /**
+   * Collections can use this to massage data after all data has been added, and after indexes have been processed. This will be executed only on the first time that data has been added.
+   * @virtual
+   * @param {T[]} entries
+   */
+  postIndexRaw(entries) { }
+
+  /**
+   * Collections can use this to massage data after all data has been added, and after indexes have been processed. This will be executed everytime data has been added(even when deserialize).
+   * @virtual
+   * @param {T[]} entries
+   */
+  postIndexProcessed(entries) { }
 
   // ###########################################################################
   // Reads

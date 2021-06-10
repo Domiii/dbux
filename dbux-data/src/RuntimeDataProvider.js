@@ -1,5 +1,4 @@
 import path from 'path';
-import findLastIndex from 'lodash/findLastIndex';
 import { newLogger } from '@dbux/common/src/log/logger';
 import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
 import Trace from '@dbux/common/src/core/data/Trace';
@@ -9,8 +8,7 @@ import StaticProgramContext from '@dbux/common/src/core/data/StaticProgramContex
 import StaticContext from '@dbux/common/src/core/data/StaticContext';
 import StaticTrace from '@dbux/common/src/core/data/StaticTrace';
 import ValueTypeCategory, { ValuePruneState } from '@dbux/common/src/core/constants/ValueTypeCategory';
-import TraceType, { isTraceExpression, isTracePop, isTraceFunctionExit, isBeforeCallExpression, isTraceThrow } from '@dbux/common/src/core/constants/TraceType';
-import { hasCallId, isCallResult, isCallExpressionTrace } from '@dbux/common/src/core/constants/traceCategorization';
+import TraceType, { isTracePop, isTraceFunctionExit, isTraceThrow } from '@dbux/common/src/core/constants/TraceType';
 
 import Collection from './Collection';
 
@@ -361,17 +359,22 @@ class DataNodeCollection extends Collection {
   constructor(dp) {
     super('dataNodes', dp);
     this.accessUIdMap = new Map();
-    this.lastNodeByAccessId = new Map();
   }
 
+  /**
+   * @param {DataNode} dataNode
+   */
   getValueId(dataNode) {
     if (!('valueId' in dataNode)) {
       if (dataNode.refId) {
-        return dataNode.refId;
+        const firstRef = this.dp.indexes.dataNodes.byRefId.getFirst(dataNode.refId);
+        return firstRef.traceId;
       }
       else {
         const { traceId, accessId } = dataNode;
         const traceType = this.dp.util.getTraceType(traceId);
+        const trace = this.dp.collections.traces.getById(traceId);
+        const staticTrace = this.dp.collections.staticTraces.getById(trace.staticTraceId);
         if (TraceType.is.BeforeCallExpression(traceType)) {
           // skip in this case, special handling in UI - BCE rendering should reflect CallExpressionResult
           return null;
@@ -381,8 +384,21 @@ class DataNodeCollection extends Collection {
             // sanity check
             warn(`[getValueId] Cannot find accessId of dataNode: ${JSON.stringify(dataNode)}`);
           }
-          const lastNode = this.lastNodeByAccessId.get(accessId);
+          const lastNode = this.dp.indexes.dataNodes.byAccessId.getLast(accessId);
           return lastNode.valueId;
+        }
+        else if (staticTrace.dataNode.isNew) {
+          return traceId;
+        }
+        else if (dataNode.inputs?.length) {
+          const inputDataNode = this.dp.indexes.dataNodes.byTrace.getFirst(dataNode.inputs[0]);
+          return inputDataNode.valueId;
+        }
+        else if (!TraceType.is.CallExpressionResult(traceType)) {
+          warn(`[getValueId] Cannot find valueId for empty inputs.\n    trace: ${JSON.stringify(trace, null, 2)}\n    dataNode: ${JSON.stringify(dataNode, null, 2)}`);
+        }
+        else {
+          return null;
         }
       }
     }
@@ -405,8 +421,7 @@ class DataNodeCollection extends Collection {
         key = declarationTid;
       }
       else if (objTid && prop) {
-        const objectTrace = this.dp.collections.traces.getById(objTid);
-        const objectDataNode = this.dp.collections.dataNodes.getById(objectTrace.dataNodeId);
+        const objectDataNode = this.dp.indexes.dataNodes.byTrace.getFirst(objTid);
         const objectValueId = objectDataNode.valueId;
         if (!objectValueId) {
           // sanity check
@@ -426,20 +441,8 @@ class DataNodeCollection extends Collection {
     }
   }
 
-  postAddRaw(dataNodes) {
-    errorWrapMethod(this, 'registerTraceNodeId', dataNodes);
+  postIndexRaw(dataNodes) {
     errorWrapMethod(this, 'resolveDataIds', dataNodes);
-  }
-
-  /**
-   * hackfix: we add `trace.dataNodeId` here to lookup `dataNode`s in `resolveDataIds`
-   * @param {DataNode[]} dataNodes 
-   */
-  registerTraceNodeId(dataNodes) {
-    for (const dataNode of dataNodes) {
-      const trace = this.dp.collections.traces.getById(dataNode.traceId);
-      trace.dataNodeId = dataNode.nodeId;
-    }
   }
 
   /**
@@ -449,8 +452,9 @@ class DataNodeCollection extends Collection {
   resolveDataIds(dataNodes) {
     for (const dataNode of dataNodes) {
       dataNode.accessId = this.getAccessId(dataNode);
-      this.lastNodeByAccessId.set(dataNode.accessId, dataNode);
       dataNode.valueId = this.getValueId(dataNode);
+      this.dp.indexes.dataNodes.byAccessId.addEntry(dataNode);
+      this.dp.indexes.dataNodes.byValueId.addEntry(dataNode);
     }
   }
 }

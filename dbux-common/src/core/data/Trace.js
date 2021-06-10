@@ -44,10 +44,4 @@ export default class Trace extends HasValue {
    * E.g. contains { argTids, spreadLengths } for BCE.
    */
   data;
-
-  /**
-   * hackfix
-   * @see `registerTraceNodeId` in `RuntimeDataProvider.js`
-   */
-  dataNodeId;
 }
