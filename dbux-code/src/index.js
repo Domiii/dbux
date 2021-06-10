@@ -17,6 +17,7 @@ import { initGraphView } from './webViews/graphWebView';
 import { initPathwaysView } from './webViews/pathwaysWebView';
 import { initWebviewWrapper } from './codeUtil/WebviewWrapper';
 import { installDbuxDependencies } from './codeUtil/installUtil';
+import { initDataFlowView } from './dataFlowView/dataFlowViewController';
 // import { maybeStartSurvey1ForTheFirstTime } from './dialogs/dialogController';
 
 // eslint-disable-next-line no-unused-vars
@@ -46,6 +47,7 @@ async function activate(context) {
 
     initApplicationsView(context);
     const traceDetailsController = initTraceDetailsView(context);
+    const dataFlowController = initDataFlowView(context);
     initProjectView(context);
 
     //  To bring these three views back, uncomment relevant lines and add this to `package.json` `contributes.views.dbuxViewContainer`:
@@ -69,7 +71,8 @@ async function activate(context) {
     initCommands(
       context,
       traceDetailsController,
-      callGraphViewController
+      callGraphViewController,
+      dataFlowController
     );
 
     // init the webviews

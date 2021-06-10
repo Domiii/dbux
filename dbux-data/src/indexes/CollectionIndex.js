@@ -1,4 +1,4 @@
-import { logError, newLogger } from '@dbux/common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 // ###########################################################################
@@ -86,6 +86,9 @@ class MapIndexManager extends IndexManager {
 // ###########################################################################
 
 class ContainerMethods {
+  /**
+   * @param {CollectionIndex} index 
+   */
   constructor(index) {
     this.index = index;
   }
@@ -96,6 +99,11 @@ class ContainerMethods {
 
   // eslint-disable-next-line no-unused-vars
   getFirstInContainter(container) {
+    throw new Error('abstract method not implemented');
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  getLastInContainter(container) {
     throw new Error('abstract method not implemented');
   }
 
@@ -111,7 +119,11 @@ class ArrayContainerMethods extends ContainerMethods {
   }
 
   getFirstInContainter(container) {
-    return container[0] || null;
+    return container?.[0];
+  }
+
+  getLastInContainter(container) {
+    return container?.[container.length - 1];
   }
 
   addEntry(container, entry) {
@@ -125,7 +137,13 @@ class SetContainerMethods extends ContainerMethods {
   }
 
   getFirstInContainter(container) {
-    return container.values().next().value || null;
+    this.index.log.warn(`Trying to get first item in a set container`);
+    return container.values().next().value;
+  }
+
+  getLastInContainter(container) {
+    this.index.log.warn(`Trying to get last item in a set container`);
+    return container.values().next().value;
   }
 
   addEntry(container, entry) {
@@ -193,6 +211,11 @@ export default class CollectionIndex {
     return this._containerMethods.getFirstInContainter(container) || null;
   }
 
+  getLast(key) {
+    const container = this.get(key);
+    return this._containerMethods.getLastInContainter(container) || null;
+  }
+
   getAll() {
     return this._byKey;
   }
@@ -242,7 +265,7 @@ export default class CollectionIndex {
   addEntryById(id) {
     const entry = this.dp.collections[this.collectionName].getById(id);
     if (!entry) {
-      logError(new Error(
+      this.log.error(new Error(
         `Tried to ${this.constructor.name}.addEntryById(id = ${JSON.stringify(id)}), but there are no ${this.collectionName} with that id.`
       ).stack);
     }
