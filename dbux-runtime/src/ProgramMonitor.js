@@ -188,12 +188,20 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceDeclaration(this.getProgramId(), inProgramStaticTraceId, value);
   }
 
-  traceExpression = (value, tid, declarationTid, inputs) => {
+  traceExpression = (value, tid, inputs) => {
     if (this.areTracesDisabled) {
       return value;
     }
 
-    return this._runtimeMonitor.traceExpression(this.getProgramId(), value, tid, declarationTid, inputs);
+    return this._runtimeMonitor.traceExpression(this.getProgramId(), value, tid, inputs);
+  }
+
+  traceExpressionVar = (value, tid, declarationTid, inputs) => {
+    if (this.areTracesDisabled) {
+      return value;
+    }
+
+    return this._runtimeMonitor.traceExpressionVar(this.getProgramId(), value, tid, declarationTid, inputs);
   }
 
   traceMemberExpression = (objValue, propValue, tid, inputs) => {
@@ -252,6 +260,10 @@ export default class ProgramMonitor {
     }
 
     return this._runtimeMonitor.traceCallResult(this.getProgramId(), value, tid, callTid);
+  }
+
+  traceObjectCreate = (value, ) => {
+    
   }
 
   // ###########################################################################

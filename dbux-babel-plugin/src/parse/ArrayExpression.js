@@ -9,6 +9,7 @@ export default class ArrayExpression extends BaseNode {
 
   exit() {
     const { path } = this;
+    const [elements] = this.getChildPaths();
 
     const traceData = {
       path,
@@ -18,13 +19,15 @@ export default class ArrayExpression extends BaseNode {
         dataNode: {
           isNew: true
         }
-      }
+      },
+      // meta: {
+      //   traceCall: 'traceObjectCreate'
+      // }
     };
 
     // TODO: SpreadElement
     
-    const inputs = path.get('elements');
-    // const inputs = [];
+    const inputs = elements;
 
     this.Traces.addTraceWithInputs(traceData, inputs);
   }

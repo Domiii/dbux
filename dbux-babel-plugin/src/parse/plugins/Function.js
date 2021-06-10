@@ -8,7 +8,7 @@ import { getNodeNames } from '../../visitors/nameVisitors';
 import { getBindingIdentifierPaths } from '../../helpers/bindingsUtil';
 import { doesNodeEndScope } from '../../helpers/astUtil';
 import ParsePlugin from '../../parseLib/ParsePlugin';
-import { buildTraceExpressionSimple, buildTraceId } from '../../instrumentation/builders/misc';
+import { buildTraceId } from '../../instrumentation/builders/misc';
 import { buildRegisterParams } from '../../instrumentation/builders/function';
 import { pathToString } from '../../helpers/pathHelpers';
 

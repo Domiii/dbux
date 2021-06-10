@@ -42,7 +42,7 @@ export default class BaseNode extends ParseNode {
   // ###########################################################################
 
   getDeclarationNode() {
-    return null;
+    return undefined;
   }
 
   getTidIdentifier() {
@@ -53,7 +53,11 @@ export default class BaseNode extends ParseNode {
   }
 
   getDeclarationTidIdentifier() {
-    return this.getDeclarationNode()?.getTidIdentifier();
+    const decl = this.getDeclarationNode();
+    if (decl) {
+      return decl.getTidIdentifier();
+    }
+    return undefined;
   }
 
   /**

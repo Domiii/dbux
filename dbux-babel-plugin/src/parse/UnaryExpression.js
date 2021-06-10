@@ -5,10 +5,10 @@ export default class UnaryExpression extends ParseNode {
   static plugins = ['ArithmeticExpression'];
 
   addTraces() {
-    const { path } = this;
+    // const { path } = this;
 
-    if (path.node.operator !== 'typeof') {
-      super.addTraces();
-    }
+    // if (path.node.operator !== 'typeof') {
+    //   super.addTraces();
+    // }
   }
 }

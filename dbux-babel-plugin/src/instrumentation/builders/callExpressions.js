@@ -6,7 +6,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import TraceCfg from '../../definitions/TraceCfg';
 import { makeInputs, NullNode, ZeroNode } from './buildHelpers';
-import { buildTraceExpressionSimple, buildTraceId } from './misc';
+import { buildTraceExpressionNoInput, buildTraceId } from './misc';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -232,7 +232,7 @@ export function buildTraceCallDefault(state, traceCfg) {
     buildBCE(state, bceTrace, spreadArgs),
 
     // (iv) wrap actual call - `tcr(f(args[0], ...args[1], args[2]))`
-    buildTraceExpressionSimple(
+    buildTraceExpressionNoInput(
       // NOTE: targets `traceCfg.meta.targetNode`
       state,
       traceCfg
@@ -295,7 +295,7 @@ export function buildTraceCallME(state, traceCfg) {
     buildBCE(state, bceTrace, spreadArgs),
 
     // (v) wrap actual call - `tcr(f.call(o, args[0], ...args[1], args[2]))`
-    buildTraceExpressionSimple(
+    buildTraceExpressionNoInput(
       // NOTE: targets `traceCfg.meta.targetNode`
       state,
       traceCfg

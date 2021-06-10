@@ -440,7 +440,7 @@ export default class RuntimeMonitor {
     return traceId;
   }
 
-  traceExpression(programId, value, tid, declarationTid, inputs) {
+  traceExpression(programId, value, tid, inputs) {
     if (!this._ensureExecuting()) {
       return value;
     }
@@ -449,7 +449,20 @@ export default class RuntimeMonitor {
       return value;
     }
 
-    // this.registerTrace(value, tid);
+    const varAccess = null;
+    dataNodeCollection.createDataNode(value, tid, varAccess, inputs);
+    return value;
+  }
+
+  traceExpressionVar(programId, value, tid, declarationTid, inputs) {
+    if (!this._ensureExecuting()) {
+      return value;
+    }
+    if (!tid) {
+      this.logFail(`traceExpression failed to capture tid`);
+      return value;
+    }
+
     const varAccess = declarationTid && { declarationTid } || null;
     dataNodeCollection.createDataNode(value, tid, varAccess, inputs);
     return value;

@@ -1,4 +1,5 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
+import { buildTraceExpressionVar } from '../instrumentation/builders/misc';
 import BaseId from './BaseId';
 
 export default class ReferencedIdentifier extends BaseId {
@@ -7,7 +8,7 @@ export default class ReferencedIdentifier extends BaseId {
   // ###########################################################################
 
   /**
-   * TODO: consider getting rid of this entirely?
+   * 
    */
   createDefaultTrace() {
     const rawTraceData = {
@@ -15,6 +16,9 @@ export default class ReferencedIdentifier extends BaseId {
       node: this,
       staticTraceData: {
         type: TraceType.Identifier
+      },
+      meta: {
+        build: buildTraceExpressionVar
       }
     };
 

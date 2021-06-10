@@ -1,6 +1,7 @@
 // import * as t from '@babel/types';
+import TraceCfg from '../definitions/TraceCfg';
 import { getInstrumentPath, getReplacePath } from './builders/common';
-import { buildTraceExpression, buildTraceDeclarations } from './builders/misc';
+import { buildTraceDeclarations, buildTraceExpression } from './builders/misc';
 import { unshiftScopeBlock } from './scope';
 
 // const keepStatementCfg = {
@@ -9,9 +10,18 @@ import { unshiftScopeBlock } from './scope';
 //   }
 // };
 
+// /**
+//  * @param {TraceCfg} traceCfg 
+//  */
+// function getDefaultBuild(traceCfg) {
+//   return traceCfg.declarationTidIdentifier === undefined ? 
+//     buildTraceExpression : 
+//     buildtraceExpressionVar;
+// }
+
 export function traceWrapExpression(state, traceCfg) {
   const path = getInstrumentPath(traceCfg);
-  const build = traceCfg.meta?.build || buildTraceExpression;
+  const build = traceCfg.meta?.build || buildTraceExpression;// getDefaultBuild(traceCfg);
   const resultNode = build(state, traceCfg);
 
   // const s = pathToString(path);

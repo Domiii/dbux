@@ -3,13 +3,17 @@ import * as t from '@babel/types';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { astNodeToString } from '../../helpers/pathHelpers';
 import { buildTraceCall, bindTemplate, bindExpressionTemplate } from '../../helpers/templateUtil';
-import { makeInputs, ZeroNode } from './buildHelpers';
+import { getTraceCall, makeInputs, ZeroNode } from './buildHelpers';
 import { getInstrumentTargetAstNode } from './common';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('builders/trace');
 
 const Verbose = 2;
+
+// ###########################################################################
+// newTraceId
+// ###########################################################################
 
 export const buildTraceId = bindExpressionTemplate(
   '%%traceId%% = %%newTraceId%%(%%staticTraceId%%)',
@@ -56,25 +60,16 @@ export const buildTraceIdValue = bindExpressionTemplate(
 /**
  * 
  */
-export const buildTraceExpression = buildTraceCall(
+export const buildTraceExpressionVar = buildTraceCall(
   '%%trace%%(%%expr%%, %%tid%%, %%declarationTid%%, %%inputs%%)',
-  function buildTraceExpression(state, traceCfg) {
-    // const { scope } = path;
-    const { ids: { aliases } } = state;
-    const trace = aliases[traceCfg?.meta?.traceCall || 'traceExpression'];
-    if (!trace) {
-      throw new Error(`Invalid meta.traceCall "${traceCfg.meta.traceCall}" - Valid choices are: ${Object.keys(aliases).join(', ')}`);
-    }
+  function buildTraceExpressionVar(state, traceCfg) {
+    const trace = getTraceCall(state, traceCfg, 'traceExpressionVar');
+    const tid = buildTraceId(state, traceCfg);
 
     const {
       declarationTidIdentifier,
       inputTraces
     } = traceCfg;
-
-    const tid = buildTraceId(state, traceCfg);
-    // Verbose && debug(`[te] ${expressionNode.type} [${inputTraces?.map(i => i.tidIdentifier.name).join(',') || ''}]`, pathToString(expressionNode));
-
-    // NOTE: templates only work on `Node`, not on `NodePath`, thus they lose all path-related information.
 
     return {
       trace,
@@ -85,25 +80,19 @@ export const buildTraceExpression = buildTraceCall(
     };
   }
 );
-
 /**
  * 
  */
-export const buildTraceExpressionNoInput = buildTraceCall(
-  '%%trace%%(%%expr%%, %%tid%%, %%declarationTid%%)',
-  function buildTraceExpressionNoInput(state, traceCfg) {
-    // const { scope } = path;
-    const { ids: { aliases } } = state;
-    const trace = aliases[traceCfg?.meta?.traceCall || 'traceExpression'];
-    if (!trace) {
-      throw new Error(`Invalid meta.traceCall "${traceCfg.meta.traceCall}" - Valid choices are: ${Object.keys(aliases).join(', ')}`);
-    }
+export const buildTraceExpression = buildTraceCall(
+  '%%trace%%(%%expr%%, %%tid%%, %%inputs%%)',
+  function buildTraceExpression(state, traceCfg) {
+    const trace = getTraceCall(state, traceCfg);
+    const tid = buildTraceId(state, traceCfg);
 
     const {
-      declarationTidIdentifier
+      inputTraces
     } = traceCfg;
 
-    const tid = buildTraceId(state, traceCfg);
     // Verbose && debug(`[te] ${expressionNode.type} [${inputTraces?.map(i => i.tidIdentifier.name).join(',') || ''}]`, pathToString(expressionNode));
 
     // NOTE: templates only work on `Node`, not on `NodePath`, thus they lose all path-related information.
@@ -112,26 +101,19 @@ export const buildTraceExpressionNoInput = buildTraceCall(
       trace,
       expr: getInstrumentTargetAstNode(traceCfg),
       tid,
-      declarationTid: declarationTidIdentifier || ZeroNode
+      inputs: makeInputs(inputTraces)
     };
   }
 );
 
 /**
- * Same as `buildTraceExpression` but without declaration nor inputs.
+ * 
  */
-export const buildTraceExpressionSimple = buildTraceCall(
+export const buildTraceExpressionNoInput = buildTraceCall(
   '%%trace%%(%%expr%%, %%tid%%)',
-  function buildTraceExpressionSimple(state, traceCfg) {
-    const { ids: { aliases } } = state;
-    const trace = aliases[traceCfg?.meta?.traceCall || 'traceExpression'];
-    if (!trace) {
-      throw new Error(`Invalid meta.traceCall "${traceCfg.meta.traceCall}" - Valid choices are: ${Object.keys(aliases).join(', ')}`);
-    }
-
+  function buildTraceExpressionNoInput(state, traceCfg) {
+    const trace = getTraceCall(state, traceCfg);
     const tid = buildTraceId(state, traceCfg);
-    // Verbose && debug(`[te] ${expressionNode.type} [${inputTraces?.map(i => i.tidIdentifier.name).join(',') || ''}]`, pathToString(expressionNode));
-    // NOTE: templates only work on `Node`, not on `NodePath`, thus they lose all path-related information.
 
     return {
       trace,
@@ -145,11 +127,9 @@ export const buildTraceExpressionSimple = buildTraceCall(
 // traceDeclaration
 // ###########################################################################
 
-export function buildTraceDeclaration(state, { tidIdentifier, inProgramStaticTraceId, meta }, value) {
-  const { ids: { aliases, aliases: {
-    traceDeclaration
-  } } } = state;
-  const trace = meta?.traceCall && aliases[meta.traceCall] || traceDeclaration;
+export function buildTraceDeclaration(state, traceCfg, value) {
+  const { tidIdentifier, inProgramStaticTraceId } = traceCfg;
+  const trace = getTraceCall(state, traceCfg, 'traceDeclaration');
   const args = [t.numericLiteral(inProgramStaticTraceId)];
   value && args.push(value);
 
@@ -253,11 +233,8 @@ export const buildTraceMemberExpression = bindExpressionTemplate(
   function buildTraceMemberExpression(state, traceCfg) {
     // const { scope } = path;
     const meNode = getInstrumentTargetAstNode(traceCfg);
-    const { ids: { aliases } } = state;
-    const trace = aliases[traceCfg?.meta?.traceCall || 'traceMemberExpression'];
-    if (!trace) {
-      throw new Error(`Invalid meta.traceCall "${traceCfg.meta.traceCall}" - Valid choices are: ${Object.keys(aliases).join(', ')}`);
-    }
+    const trace = getTraceCall(state, traceCfg, 'traceMemberExpression');
+    const tid = buildTraceId(state, traceCfg);
 
     const {
       inputTraces
@@ -278,7 +255,7 @@ export const buildTraceMemberExpression = bindExpressionTemplate(
        * NOTE: we are getting the `prop` here (and not earlier), to make sure its the final instrumented version.
        */
       propValue: getMEPropNode(meNode),
-      tid: buildTraceId(state, traceCfg),
+      tid,
       inputs: makeInputs(inputTraces)
     };
   }
@@ -306,6 +283,7 @@ export const buildTraceWriteME = buildTraceCall(
     const { ids: { aliases: {
       traceWriteME
     } } } = state;
+    const tid = buildTraceId(state, traceCfg);
 
     const assignmentNode = getInstrumentTargetAstNode(traceCfg);
     const {
@@ -320,7 +298,6 @@ export const buildTraceWriteME = buildTraceCall(
       }
     } = traceCfg;
 
-    const tid = buildTraceId(state, traceCfg);
     const deferTid = ZeroNode;
 
     return {

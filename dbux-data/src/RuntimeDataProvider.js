@@ -161,9 +161,9 @@ class ExecutionContextCollection extends Collection {
     this.setParamInputs(entries);
   }
 
-  setParamInputs(entries) {
-    // TODO: fix this up. should be working fine.
-    // for (const entry of entries) {
+  setParamInputs(contexts) {
+    // // TODO: fix this up. should be working fine.
+    // for (const entry of contexts) {
     //   const paramTraces = getParamTracesOfContext(contextId);
     //   const callTrace = getCallTraceOfContext(contextId); // BCE
     //   const callId = callTrace.traceId;
