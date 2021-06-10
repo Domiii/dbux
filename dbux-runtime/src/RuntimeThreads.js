@@ -1,6 +1,7 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import asyncEventCollection from './data/asyncEventCollection.js';
 import executionContextCollection from './data/executionContextCollection';
+import runCollection from './data/runCollection.js';
 import traceCollection from './data/traceCollection';
 import valueCollection from './data/valueCollection';
 
@@ -271,6 +272,16 @@ export class RuntimeThreads1 {
     }
 
     this.floatingPromises.clear();
+  }
+
+  /**
+   * Called when a run is finished.
+   * @param {number} runId 
+   */
+  runFinished(runId) {
+    const threadId = this.getRunThreadId(runId);
+
+    runCollection.addRun(runId, threadId);
   }
 
   runGraph = [];

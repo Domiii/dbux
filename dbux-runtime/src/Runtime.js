@@ -445,6 +445,7 @@ export default class Runtime {
 
   _runFinished() {
     this._executingStack = null;
+    this.thread1.runFinished(this.getCurrentRunId());
     this.thread2.handleThreadData();
     // console.warn('[RunEnd]', this._currentRootId, this.getLingeringStackCount(), new Error().stack);
     // console.timeEnd('[RunEnd] ' + this._currentRunId);
