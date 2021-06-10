@@ -97,6 +97,7 @@ export default function injectDbuxState(programPath, programState) {
 
         // calls
         traceBCE: makeProgramId('bce'),
+        // traceSpreadArg: makeProgramId('tsa'),
         traceCallResult: makeProgramId('tcr'),
       }
     },

@@ -8,7 +8,8 @@ import valueCollection from './valueCollection';
 
 const { log, debug, warn, error: logError } = newLogger('DataNodes');
 
-const Verbose = 1;
+const Verbose = 0;
+// const Verbose = 1;
 
 export class DataNodeCollection extends Collection {
   constructor() {

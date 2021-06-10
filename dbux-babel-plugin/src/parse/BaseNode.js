@@ -64,6 +64,11 @@ export default class BaseNode extends ParseNode {
     this._traceCfg = traceData;
   }
 
+  createDefaultTrace() {
+    this.logger.warn(`ParseNode did not implement "createDefaultTrace": ${this}`);
+    return null;
+  }
+
   // ###########################################################################
   // Tree Accessors
   // ###########################################################################

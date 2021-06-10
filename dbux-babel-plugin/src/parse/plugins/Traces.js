@@ -51,9 +51,8 @@ export default class Traces extends ParsePlugin {
       }
 
       if (!node.traceCfg) {
-        const traceData = node.createDefaultTrace?.();
+        const traceData = node.createDefaultTrace();
         if (!traceData) {
-          this.node.logger.warn(`ParseNode did not implement "createDefaultTrace": ${node}`);
           return null;
         }
         this.addTrace(traceData);

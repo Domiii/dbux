@@ -1,4 +1,4 @@
-import TraceType from '@dbux/common/src/core/constants/TraceType';
+// import TraceType from '@dbux/common/src/core/constants/TraceType';
 import BaseNode from './BaseNode';
 
 export default class SpreadElement extends BaseNode {
@@ -11,17 +11,17 @@ export default class SpreadElement extends BaseNode {
 
   createDefaultTrace() {
     const [argNode] = this.getChildNodes();
-    return argNode?.createDefaultTrace?.() || this.createOwnDefaultTrace();
+    return argNode?.createDefaultTrace(); // || this.createOwnDefaultTrace();
   }
 
-  createOwnDefaultTrace() {
-    const [argPath] = this.getChildPaths();
-    return {
-      path: argPath,
-      node: this,
-      staticTraceData: {
-        type: TraceType.ExpressionResult
-      }
-    };
-  }
+  // createOwnDefaultTrace() {
+  //   const [argPath] = this.getChildPaths();
+  //   return {
+  //     path: argPath,
+  //     node: this,
+  //     staticTraceData: {
+  //       type: TraceType.ExpressionResult
+  //     }
+  //   };
+  // }
 }

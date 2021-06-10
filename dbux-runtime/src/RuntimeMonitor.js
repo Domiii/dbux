@@ -435,7 +435,7 @@ export default class RuntimeMonitor {
     const varAccess = {
       declarationTid: traceId
     };
-    dataNodeCollection.createDataNodes(value, traceId, varAccess);
+    dataNodeCollection.createDataNode(value, traceId, varAccess);
 
     return traceId;
   }
@@ -451,7 +451,7 @@ export default class RuntimeMonitor {
 
     // this.registerTrace(value, tid);
     const varAccess = declarationTid && { declarationTid } || null;
-    dataNodeCollection.createDataNodes(value, tid, varAccess, inputs);
+    dataNodeCollection.createDataNode(value, tid, varAccess, inputs);
     return value;
   }
 
@@ -470,7 +470,11 @@ export default class RuntimeMonitor {
       objTid,
       prop: propValue
     };
-    dataNodeCollection.createDataNodes(value, tid, varAccess, inputs);
+
+    // NOTE: should not have actual inputs
+    inputs = null;
+    
+    dataNodeCollection.createDataNode(value, tid, varAccess, inputs);
     return value;
   }
 
@@ -482,7 +486,7 @@ export default class RuntimeMonitor {
   // traceME(value, objTid, tid, memberPath, ...inputs) {
   // /* const trace =  */registerTrace(value, tid);
   //   const { refTid } = registerValue(tid, value);
-  //   createDataNodes(tid, { objTid, memberPath, refTid }, inputs);
+  //   createDataNode(tid, { objTid, memberPath, refTid }, inputs);
   //   return value;
   // }
 
@@ -516,7 +520,7 @@ export default class RuntimeMonitor {
 
     // this.registerTrace(value, tid);
     const varAccess = declarationTid && { declarationTid };
-    dataNodeCollection.createDataNodes(value, tid, varAccess, inputs);
+    dataNodeCollection.createDataNode(value, tid, varAccess, inputs);
 
     // TODO: defer
     // if (deferTid) {
@@ -543,7 +547,7 @@ export default class RuntimeMonitor {
       objTid,
       prop: propValue
     };
-    dataNodeCollection.createDataNodes(value, tid, varAccess, inputs);
+    dataNodeCollection.createDataNode(value, tid, varAccess, inputs);
 
     // TODO: defer
     // if (deferTid) {
@@ -561,13 +565,35 @@ export default class RuntimeMonitor {
   //   return value;
   // }
 
-  traceBCE(programId, tid, argTids, spreadLengths) {
-    const trace = traceCollection.getById(tid);
-    trace.callId = tid;
+  traceBCE(programId, iterableTid, argTids, spreadArgs) {
+    const trace = traceCollection.getById(iterableTid);
+    trace.callId = iterableTid;
     trace.data = {
       argTids,
-      spreadLengths
+      spreadLengths: spreadArgs.map(a => a && a.length || null)
     };
+    
+    for (let i = 0; i < spreadArgs.length; i++) {
+      const spreadArg = spreadArgs[i];
+      if (!spreadArg) {
+        // NOTE: trying to spread a non-iterator results in Error anyway; e.g.:
+        //      "Found non-callable @@iterator"
+        //      "XX is not iterable"
+        continue;
+      }
+      
+      const argTid = argTids[i];
+
+      for (let j = 0; j < spreadArg.length; j++) {
+        const arg = spreadArg[j];
+        
+        const varAccess = {
+          objTid: argTid,
+          prop: i
+        };
+        dataNodeCollection.createDataNode(arg, argTid, varAccess);
+      }
+    }
   }
 
   traceCallResult(programId, value, tid, callTid) {
