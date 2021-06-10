@@ -316,3 +316,22 @@ export const buildTraceWriteME = buildTraceCall(
     };
   }
 );
+
+export const buildArrayExpression = buildTraceCall(
+  '%%trace%%(%%expr%%, %%tid%%, %%traceIds%%, %%restElement%%)',
+  function buildArrayExpression(state, traceCfg) {
+    const trace = getTraceCall(state, traceCfg);
+    const tid = buildTraceId(state, traceCfg);
+
+    // TODO: traceIds
+    // TODO: restElement
+
+    return {
+      trace,
+      expr: getInstrumentTargetAstNode(traceCfg),
+      tid,
+      traceIds,
+      restElement
+    };
+  }
+);

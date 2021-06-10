@@ -10,6 +10,10 @@ class TraceCollection extends Collection {
     super('traces');
   }
 
+  getDataNodeIdsByTraceIds(traceIds) {
+    return traceIds.map(traceId => this.getById(traceId).nodeId);
+  }
+
   trace(programId, contextId, runId, inProgramStaticTraceId, type = null) {
     if (!inProgramStaticTraceId) {
       throw new Error('missing inProgramStaticTraceId');

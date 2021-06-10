@@ -181,15 +181,15 @@ class ExecutionContextCollection extends Collection {
     //     return dataNodes.slice(1);
     //   });
 
-    //   // assign as input to `Param`s
+    //   // add to `Param` trace's `inputs`
     //   for (let i = 0; i < paramTraces.length; i++) {
     //     const paramTrace = paramTraces[i];
     //     const argDataNode = argDataNodes[i];
 
-    //     // TODO: `RestElement`
-
     //     paramTrace.dataNodes[0].inputs = [argDataNode.nodeId];
     //   }
+
+    //   // TODO: `RestElement`
     // }
   }
 
@@ -418,20 +418,19 @@ class DataNodeCollection extends Collection {
           // skip in this case, special handling in UI - BCE rendering should reflect CallExpressionResult
           return null;
         }
-        else if (TraceType.is.Identifier(traceType) || TraceType.is.ME(traceType)) {
-          if (!accessId) {
-            // sanity check
-            warn(`[getValueId] Cannot find accessId of dataNode: ${JSON.stringify(dataNode)}`);
-          }
-          const lastNode = this.dp.indexes.dataNodes.byAccessId.getLast(accessId);
-          return lastNode.valueId;
-        }
         else if (staticTrace.dataNode.isNew) {
           return traceId;
         }
         else if (dataNode.inputs?.length) {
-          const inputDataNode = this.dp.indexes.dataNodes.byTrace.getFirst(dataNode.inputs[0]);
+          const inputDataNode = this.dp.collections.dataNodes.getById(dataNode.inputs[0]);
           return inputDataNode.valueId;
+        }
+        // else if (TraceType.is.Identifier(traceType) || TraceType.is.ME(traceType)) {
+        else if (accessId) {
+          // warn(`[getValueId] Cannot find accessId of dataNode: ${JSON.stringify(dataNode)}`);
+          // NOTE: currently, last in `byAccessId` index is actually "the last before this one", since we are still resolving the index.
+          const lastNode = this.dp.indexes.dataNodes.byAccessId.getLast(accessId);
+          return lastNode.valueId;
         }
         else if (!TraceType.is.CallExpressionResult(traceType)) {
           warn(`[getValueId] Cannot find valueId for empty inputs.\n    trace: ${JSON.stringify(trace, null, 2)}\n    dataNode: ${JSON.stringify(dataNode, null, 2)}`);

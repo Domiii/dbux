@@ -435,7 +435,7 @@ export default class RuntimeMonitor {
     const varAccess = {
       declarationTid: traceId
     };
-    dataNodeCollection.createDataNode(value, traceId, varAccess);
+    dataNodeCollection.createOwnDataNode(value, traceId, varAccess);
 
     return traceId;
   }
@@ -450,7 +450,7 @@ export default class RuntimeMonitor {
     }
 
     const varAccess = null;
-    dataNodeCollection.createDataNode(value, tid, varAccess, inputs);
+    dataNodeCollection.createOwnDataNode(value, tid, varAccess, traceCollection.getDataNodeIdsByTraceIds(inputs));
     return value;
   }
 
@@ -464,7 +464,7 @@ export default class RuntimeMonitor {
     }
 
     const varAccess = declarationTid && { declarationTid } || null;
-    dataNodeCollection.createDataNode(value, tid, varAccess, inputs);
+    dataNodeCollection.createOwnDataNode(value, tid, varAccess, traceCollection.getDataNodeIdsByTraceIds(inputs));
     return value;
   }
 
@@ -486,8 +486,8 @@ export default class RuntimeMonitor {
 
     // NOTE: should not have actual inputs
     inputs = null;
-    
-    dataNodeCollection.createDataNode(value, tid, varAccess, inputs);
+
+    dataNodeCollection.createOwnDataNode(value, tid, varAccess, traceCollection.getDataNodeIdsByTraceIds(inputs));
     return value;
   }
 
@@ -521,7 +521,7 @@ export default class RuntimeMonitor {
   //   }
   // }
 
-  traceWriteVar(programId, value, tid, declarationTid, inputs, deferTid) {
+  traceWriteVar(programId, value, tid, declarationTid, inputs) {
     if (!this._ensureExecuting()) {
       return value;
     }
@@ -532,21 +532,16 @@ export default class RuntimeMonitor {
     }
 
     // this.registerTrace(value, tid);
+    // [future-work] `declarationTid` should always be defined. If not, assume global?
+    if (!declarationTid) {
+      declarationTid = tid;
+    }
     const varAccess = declarationTid && { declarationTid };
-    dataNodeCollection.createDataNode(value, tid, varAccess, inputs);
-
-    // TODO: defer
-    // if (deferTid) {
-    //   addDeferredTid(deferTid, tid);
-    // }
-    // else {
-    //   finishDataNode(tid);
-    // }
-    // return;
+    dataNodeCollection.createOwnDataNode(value, tid, varAccess, traceCollection.getDataNodeIdsByTraceIds(inputs));
     return value;
   }
 
-  traceWriteME(programId, value, propValue, tid, objTid, inputs/* , deferTid */) {
+  traceWriteME(programId, value, propValue, tid, objTid, inputs) {
     if (!this._ensureExecuting()) {
       return value;
     }
@@ -560,16 +555,7 @@ export default class RuntimeMonitor {
       objTid,
       prop: propValue
     };
-    dataNodeCollection.createDataNode(value, tid, varAccess, inputs);
-
-    // TODO: defer
-    // if (deferTid) {
-    //   addDeferredTid(deferTid, tid);
-    // }
-    // else {
-    //   finishDataNode(tid);
-    // }
-    // return;
+    dataNodeCollection.createOwnDataNode(value, tid, varAccess, traceCollection.getDataNodeIdsByTraceIds(inputs));
     return value;
   }
 
@@ -579,13 +565,16 @@ export default class RuntimeMonitor {
   // }
 
   traceBCE(programId, iterableTid, argTids, spreadArgs) {
+    // [runtime-error] potential runtime error
+    spreadArgs = spreadArgs.map(a => Array.from(a));
+
     const trace = traceCollection.getById(iterableTid);
     trace.callId = iterableTid;
     trace.data = {
       argTids,
       spreadLengths: spreadArgs.map(a => a && a.length || null)
     };
-    
+
     for (let i = 0; i < spreadArgs.length; i++) {
       const spreadArg = spreadArgs[i];
       if (!spreadArg) {
@@ -594,12 +583,13 @@ export default class RuntimeMonitor {
         //      "XX is not iterable"
         continue;
       }
-      
+
       const argTid = argTids[i];
 
+      // add one `DataNode` per element in spread arg
       for (let j = 0; j < spreadArg.length; j++) {
         const arg = spreadArg[j];
-        
+
         const varAccess = {
           objTid: argTid,
           prop: i
@@ -616,29 +606,42 @@ export default class RuntimeMonitor {
     return value;
   }
 
-  // /**
-  //  * Called on the last node of a deferred chain, indicating that the sub-tree is complete.
-  //  * NOTE: Might not need this...
-  //  */
-  // finishDataNode(tid) {
-  //   // const dataNode = getDataNode(tid);
-  //   // const children = getDataNodeChildren(tid);
+  traceCreateArray(programId, value, arrTid, traceIds, restElement) {
+    dataNodeCollection.createOwnDataNode(value, arrTid);
+
+    // for each element: add (new) write node which has (original) read node as input
+    for (let i = 0; i < traceIds.length; i++) {
+      const argTid = traceIds[i];
+      const argTrace = traceCollection.getById(argTid);
+      const readNode = dataNodeCollection.getById(argTrace.nodeId);
+
+      const varAccess = {
+        objTid: arrTid,
+        prop: i
+      };
+      const writeNode = dataNodeCollection.createDataNode(undefined, argTid, varAccess);
+      writeNode.refId = readNode.refId;
+    }
+
+    // TODO: `RestElement`
+
+    return value;
+  }
+
+
+  // deferredTids = new Map();
+  // getDeferredTids(deferTid) {
+  //   return this.deferredTids.get(deferTid);
   // }
 
-
-  deferredTids = new Map();
-  getDeferredTids(deferTid) {
-    return this.deferredTids.get(deferTid);
-  }
-
-  addDeferredTid(deferTid, tid) {
-    let tids = this.deferredTids.get(deferTid);
-    if (!tids) {
-      this.deferredTids.set(deferTid, tids = []);
-    }
-    tids.push(tid);
-    return tids;
-  }
+  // addDeferredTid(deferTid, tid) {
+  //   let tids = this.deferredTids.get(deferTid);
+  //   if (!tids) {
+  //     this.deferredTids.set(deferTid, tids = []);
+  //   }
+  //   tids.push(tid);
+  //   return tids;
+  // }
 
   // ###########################################################################
   // traces (OLD)

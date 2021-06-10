@@ -1,4 +1,5 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
+import { buildArrayExpression } from '../instrumentation/builders/misc';
 import BaseNode from './BaseNode';
 
 /**
@@ -20,9 +21,9 @@ export default class ArrayExpression extends BaseNode {
           isNew: true
         }
       },
-      // meta: {
-      //   traceCall: 'traceObjectCreate'
-      // }
+      meta: {
+        build: buildArrayExpression
+      }
     };
 
     // TODO: SpreadElement

@@ -4,6 +4,7 @@ import isObject from 'lodash/isObject';
 import Collection from './Collection';
 import pools from './pools';
 import staticTraceCollection from './staticTraceCollection';
+import traceCollection from './traceCollection';
 import valueCollection from './valueCollection';
 
 const { log, debug, warn, error: logError } = newLogger('DataNodes');
@@ -24,7 +25,7 @@ export class DataNodeCollection extends Collection {
     // const staticTrace = staticTraceCollection.getStaticTrace(trace.staticTraceId);
     // const { dataNode: staticDataNode } = staticTrace;
 
-    const dataNode = this.createDataNode(value, traceId, varAccess, inputs);
+    const dataNode = this.createOwnDataNode(value, traceId, varAccess, inputs);
 
 
     // TODO: resolve deferred access
@@ -34,8 +35,13 @@ export class DataNodeCollection extends Collection {
     return dataNode;
   }
 
+  createOwnDataNode(value, traceId, varAccess = null, inputs = null) {
+    const dataNode = this.createDataNode(value, traceId, varAccess, inputs);
+    const trace = traceCollection.getById(traceId);
+    trace.nodeId = dataNode.nodeId;
+    return dataNode;
+  }
 
-  // NOTE: this currently only registers new objects and primitives
   createDataNode(value, traceId, varAccess, inputs) {
     const dataNode = pools.dataNodes.allocate();
 

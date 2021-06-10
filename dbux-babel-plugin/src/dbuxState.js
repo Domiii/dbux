@@ -90,7 +90,7 @@ export default function injectDbuxState(programPath, programState) {
         traceExpression: makeProgramId('te'),
         traceExpressionVar: makeProgramId('tev'),
         traceWriteVar: makeProgramId('twv'),
-        traceObjectCreate: makeProgramId('toc'),
+        traceCreateArray: makeProgramId('tca'),
 
         // ME
         traceMemberExpression: makeProgramId('tme'),

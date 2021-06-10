@@ -205,7 +205,7 @@ export default class ProgramMonitor {
   }
 
   traceMemberExpression = (objValue, propValue, tid, inputs) => {
-    // [runtime-error]
+    // [runtime-error] potential runtime error
     const value = objValue[propValue];
 
     if (this.areTracesDisabled) {
@@ -262,8 +262,12 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceCallResult(this.getProgramId(), value, tid, callTid);
   }
 
-  traceObjectCreate = (value, ) => {
-    
+  traceCreateArray = (value, tid, traceIds, restElement) => {
+    if (this.areTracesDisabled) {
+      return value;
+    }
+
+    return this._runtimeMonitor.traceCreateArray(this.getProgramId(), value, tid, traceIds, restElement);
   }
 
   // ###########################################################################
