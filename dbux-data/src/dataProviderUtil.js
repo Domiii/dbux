@@ -209,8 +209,9 @@ export default {
   },
 
   /**
-   * Returns the parentTrace of a context, not necessarily a BCE
-   * Use getCallerTraceOfContext if you want the BCE of a context
+   * Returns the parentTrace of a context, not necessarily a BCE.
+   * Use getCallerTraceOfContext if you want the BCE of a context.
+   * 
    * @param {DataProvider} dp 
    * @param {number} contextId 
    */
@@ -276,9 +277,9 @@ export default {
   },
 
   /** @param {DataProvider} dp */
-  getDataNodeValueRef(dp, traceId) {
-    const dataNode = dp.util.getDataNodeOfTrace(traceId);
-    const refId = dataNode?.varAccess?.refId;
+  getDataNodeValueRef(dp, nodeId) {
+    const dataNode = dp.collections.dataNodes.getById(nodeId);
+    const refId = dataNode?.refId;
     if (refId) {
       return dp.collections.values.getById(refId);
     }
@@ -333,7 +334,7 @@ export default {
    */
   doesTraceHaveValue(dp, traceId) {
     const trace = dp.util.getValueTrace(traceId);
-    return !!dp.util.getDataNodeOfTrace(traceId);
+    return !!dp.util.getDataNodeOfTrace(trace.traceId);
   },
 
   /**
@@ -344,13 +345,21 @@ export default {
    */
   getTraceValue(dp, traceId) {
     const valueTrace = dp.util.getValueTrace(traceId);
-
-    if (valueTrace.value !== undefined) {
-      return valueTrace.value;
+    const dataNode = dp.util.getDataNodeOfTrace(valueTrace.traceId);
+    if (!dataNode) {
+      return undefined;
     }
 
-    if (valueTrace.valueId) {
-      const valueRef = dp.util.getTraceValueRef(traceId);
+    if (dataNode.value !== undefined) {
+      return dataNode.value;
+    }
+
+    if (dataNode.refId) {
+      const valueRef = dp.collections.values.getById(dataNode.refId);
+      if (!valueRef) {
+        logError(`valueRef does not exist for dataNode - ${JSON.stringify(dataNode)}`);
+        return undefined;
+      }
       return valueRef.value;
     }
 
@@ -437,7 +446,7 @@ export default {
   /** @param {DataProvider} dp */
   getTraceValueRef(dp, traceId) {
     const dataNode = dp.util.getDataNodeOfTrace(traceId);
-    const refId = dataNode?.varAccess?.refId;
+    const refId = dataNode?.refId;
     if (refId) {
       return dp.collections.values.getById(refId);
     }
@@ -545,19 +554,19 @@ export default {
   },
 
   /**
-   * Returns the BCE of a context
+   * Returns the BCE of a context, if it has one. Else it returns the last trace before the context.
+   * NOTE: `parentTrace` of a context might not participate in a call, e.g. in case of getters or setters
    * @param {DataProvider} dp 
    * @param {number} contextId
   */
   getCallerTraceOfContext(dp, contextId) {
     const parentTrace = dp.util.getParentTraceOfContext(contextId);
-    if (parentTrace) {
-      // try to get BCE of call
-      // NOTE: `parentTrace` of a context might not participate in a call, e.g. in case of getters or setters
-      const callerTrace = dp.util.getPreviousCallerTraceOfTrace(parentTrace.traceId);
-      return callerTrace;
-    }
-    return null;
+    // if (parentTrace) {
+    //   // try to get BCE of call
+    //   const callerTrace = dp.util.getPreviousCallerTraceOfTrace(parentTrace.traceId);
+    //   return callerTrace;
+    // }
+    return parentTrace;
   },
 
   /** @param {DataProvider} dp */
@@ -860,6 +869,25 @@ export default {
   },
 
   // ###########################################################################
+  // trace info + debugging
+  // ###########################################################################
+
+  makeStaticTraceInfo(dp, st) {
+    return `"${st?.displayName}" (stid=${st?.staticTraceId}, ${st?._traceId})`;
+  },
+
+  /**
+   * TODO: move to `util`
+   */
+  makeTraceInfo(dp, trace) {
+    const { traceId } = trace;
+    const st = dp.util.getStaticTrace(traceId);
+    const traceType = dp.util.getTraceType(traceId);
+    const typeName = TraceType.nameFrom(traceType);
+    return `[${typeName}] #${traceId} ${dp.util.makeStaticTraceInfo(st)}`;
+  },
+
+  // ###########################################################################
   // Contexts + their traces
   // ###########################################################################
 
@@ -923,6 +951,10 @@ export default {
       last = staticTraces[staticTraces.length - 2] || null;
     }
     return last;
+  },
+
+  getTracesOfContextAndType(dp, contextId, type) {
+    return dp.indexes.traces.byContext.get(contextId).filter(trace => dp.util.getTraceType(trace.traceId) === type);
   },
 
   /** @param {DataProvider} dp */

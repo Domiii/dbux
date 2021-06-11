@@ -1,5 +1,4 @@
 import path from 'path';
-import { newLogger } from '@dbux/common/src/log/logger';
 import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
 import Trace from '@dbux/common/src/core/data/Trace';
 import DataNode from '@dbux/common/src/core/data/DataNode';
@@ -16,18 +15,7 @@ import DataProviderBase from './DataProviderBase';
 import DataProviderUtil from './dataProviderUtil';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('DataProvider');
-
-function errorWrapMethod(obj, methodName, ...args) {
-  try {
-    // build dynamic call expression tree
-    /* eslint prefer-spread: 0 */ // (false positive)
-    obj[methodName].apply(obj, args);
-  }
-  catch (err) {
-    logError(`${obj.constructor.name}.${methodName}`, 'failed\n  ', err); //...args);
-  }
-}
+// const { log, debug, warn, error: logError } = newLogger('DataProvider');
 
 function deleteCachedRange(locObj) {
   delete locObj._range;
@@ -52,7 +40,7 @@ class StaticProgramContextCollection extends Collection {
   add(entries) {
     for (const entry of entries) {
       if (!entry.filePath || !path.isAbsolute(entry.filePath)) {
-        logError('invalid `staticProgramContext.filePath` is not absolute - don\'t know how to resolve', entry.fileName);
+        this.logger.error('invalid `staticProgramContext.filePath` is not absolute - don\'t know how to resolve', entry.fileName);
       }
 
       // set applicationId, so we can trace any data point back to it's application
@@ -158,39 +146,50 @@ class ExecutionContextCollection extends Collection {
    * NOTE: This will execute before `DataNodeCollection.postIndexRaw`
    */
   postIndexRaw(entries) {
-    this.setParamInputs(entries);
+    this.errorWrapMethod('setParamInputs', entries);
   }
 
   setParamInputs(contexts) {
-    // // TODO: fix this up. should be working fine.
-    // for (const entry of contexts) {
-    //   const paramTraces = getParamTracesOfContext(contextId);
-    //   const callTrace = getCallTraceOfContext(contextId); // BCE
-    //   const callId = callTrace.traceId;
-    //   const argTraces = getArgTracesOfCall(callId); // via callTrace.data.argTids
-    //   const argConfigs = getStaticTrace(callId).data.argConfigs;
+    // TODO: fix this up. should be working fine.
+    const { dp, dp: { util } } = this;
+    for (const { contextId } of contexts) {
+      const paramTraces = util.getTracesOfContextAndType(contextId, TraceType.Param);
+      if (!paramTraces.length) {
+        // nothing to do
+        continue;
+      }
+      const bceTrace = util.getCallerTraceOfContext(contextId); // BCE
+      if (!bceTrace) {
+        // TODO: establish data flow of parameters for root contexts, if necessary?
+        // should only happen in case of root contexts
+        continue;
+      }
+      const callId = bceTrace.traceId;
+      const argTraces = bceTrace.data.argTids.map(tid => dp.collections.traces.getById(tid));
+      const { argConfigs } = util.getStaticTrace(callId).data;
 
-    //   // get `argDataNodes`
-    //   const argDataNodes = argTraces.flatMap((t, i) => {
-    //     const dataNodes = getDataNodesOfTrace(t.traceId);
-    //     if (!argConfigs[i]?.isSpread) {
-    //       // not spread -> take the argument's own `dataNode`
-    //       return dataNodes[0];
-    //     }
-    //     // spread -> take all of the argument's additional `dataNode`s
-    //     return dataNodes.slice(1);
-    //   });
+      // get `argDataNodes`
+      const argDataNodes = argTraces.flatMap((t, i) => {
+        const dataNodes = util.getDataNodesOfTrace(t.traceId);
+        if (!argConfigs[i]?.isSpread) {
+          // not spread -> take the argument's own `dataNode`
+          return dataNodes[0];
+        }
+        // spread -> take all of the argument's additional `dataNode`s
+        return dataNodes.slice(1);
+      });
 
-    //   // add to `Param` trace's `inputs`
-    //   for (let i = 0; i < paramTraces.length; i++) {
-    //     const paramTrace = paramTraces[i];
-    //     const argDataNode = argDataNodes[i];
+      // add to `Param` trace's `inputs`
+      for (let i = 0; i < paramTraces.length; i++) {
+        const paramTrace = paramTraces[i];
+        const argDataNode = argDataNodes[i];
+        const paramDataNodes = util.getDataNodesOfTrace(paramTrace.traceId);
 
-    //     paramTrace.dataNodes[0].inputs = [argDataNode.nodeId];
-    //   }
+        paramDataNodes[0].inputs = [argDataNode.nodeId];
+      }
 
-    //   // TODO: `RestElement`
-    // }
+      // TODO: `RestElement`
+    }
   }
 
   // /**
@@ -253,9 +252,9 @@ class TraceCollection extends Collection {
    */
   postAddRaw(traces) {
     // build dynamic call expression tree
-    errorWrapMethod(this, 'resolveCodeChunks', traces);
-    errorWrapMethod(this, 'resolveCallIds', traces);
-    errorWrapMethod(this, 'resolveErrorTraces', traces);
+    this.errorWrapMethod('resolveCodeChunks', traces);
+    this.errorWrapMethod('resolveCallIds', traces);
+    this.errorWrapMethod('resolveErrorTraces', traces);
   }
 
   resolveCodeChunks(traces) {
@@ -287,22 +286,7 @@ class TraceCollection extends Collection {
       '(null)');
 
     // eslint-disable-next-line max-len
-    logError(`Could not resolve resultCallId for trace #${staticTrace.staticTraceId} "${staticTrace.displayName}" (traceId ${traceId}). resultCallId ${staticTrace.resultCallId} not matching beforeCall.staticTraceId #${beforeCall?.staticTraceId || 'NA'}. BCE Stack:\n  ${stackInfo.join('\n  ')}`);
-  }
-
-  makeStaticTraceInfo(st) {
-    return `"${st?.displayName}" (${st.callId}, ${st?.staticTraceId}, ${st?._traceId})`;
-  }
-
-  /**
-   * TODO: move to `util`
-   */
-  makeTraceInfo(trace) {
-    const { traceId } = trace;
-    const st = this.dp.util.getStaticTrace(traceId);
-    const traceType = this.dp.util.getTraceType(traceId);
-    const typeName = TraceType.nameFrom(traceType);
-    return `[${typeName}] ${this.makeStaticTraceInfo(st)}`;
+    this.logger.error(`Could not resolve resultCallId for trace #${staticTrace.staticTraceId} "${staticTrace.displayName}" (traceId ${traceId}). resultCallId ${staticTrace.resultCallId} not matching beforeCall.staticTraceId #${beforeCall?.staticTraceId || 'NA'}. BCE Stack:\n  ${stackInfo.join('\n  ')}`);
   }
 
   resolveCallIds(traces) {
@@ -350,7 +334,7 @@ class TraceCollection extends Collection {
         // before pop must be a function exit trace, else -> error!
         trace.error = true;
 
-        debug(`ERROR trace: ${this.makeTraceInfo(trace)}`);
+        this.logger.debug(`ERROR trace: ${this.dp.util.makeTraceInfo(trace)}`);
 
         // guess error trace
         const previousTrace = this.dp.collections.traces.getById(previousTraceId);
@@ -364,7 +348,7 @@ class TraceCollection extends Collection {
           const callTrace = this.dp.collections.traces.getById(callId);
           if (callTrace.resultId) {
             // strange...
-            logError('last (non-result) call trace in error context has `resultId`', callTrace.resultId, callTrace);
+            this.logger.error('last (non-result) call trace in error context has `resultId`', callTrace.resultId, callTrace);
           }
           else {
             // the call trace caused the error
@@ -414,6 +398,7 @@ class DataNodeCollection extends Collection {
         const traceType = this.dp.util.getTraceType(traceId);
         const trace = this.dp.collections.traces.getById(traceId);
         const staticTrace = this.dp.collections.staticTraces.getById(trace.staticTraceId);
+        let lastNode;
         if (TraceType.is.BeforeCallExpression(traceType)) {
           // skip in this case, special handling in UI - BCE rendering should reflect CallExpressionResult
           return null;
@@ -426,14 +411,14 @@ class DataNodeCollection extends Collection {
           return inputDataNode.valueId;
         }
         // else if (TraceType.is.Identifier(traceType) || TraceType.is.ME(traceType)) {
-        else if (accessId) {
+        else if (accessId && (lastNode = this.dp.indexes.dataNodes.byAccessId.getLast(accessId))) {
           // warn(`[getValueId] Cannot find accessId of dataNode: ${JSON.stringify(dataNode)}`);
           // NOTE: currently, last in `byAccessId` index is actually "the last before this one", since we are still resolving the index.
-          const lastNode = this.dp.indexes.dataNodes.byAccessId.getLast(accessId);
           return lastNode.valueId;
         }
         else if (!TraceType.is.CallExpressionResult(traceType)) {
-          warn(`[getValueId] Cannot find valueId for empty inputs.\n    trace: ${JSON.stringify(trace, null, 2)}\n    dataNode: ${JSON.stringify(dataNode, null, 2)}`);
+          // eslint-disable-next-line max-len
+          this.logger.warn(`[getValueId] Cannot find valueId for empty inputs.\n    trace: ${this.dp.util.makeTraceInfo(trace)}\n    dataNode: ${JSON.stringify(dataNode)}`);
         }
         else {
           return null;
@@ -458,17 +443,17 @@ class DataNodeCollection extends Collection {
       if (declarationTid) {
         key = declarationTid;
       }
-      else if (objTid && prop) {
+      else if (objTid && (prop ?? null) !== null) {
         const objectDataNode = this.dp.indexes.dataNodes.byTrace.getFirst(objTid);
         const objectValueId = objectDataNode.valueId;
         if (!objectValueId) {
           // sanity check
-          warn(`[getAccessId] Cannot find objectValueId of dataNode: ${JSON.stringify(dataNode)}`);
+          this.logger.warn(`[getAccessId] Cannot find objectValueId of dataNode: ${JSON.stringify(dataNode)}`);
         }
         key = `${objectValueId}#${prop}`;
       }
       else {
-        logError(`Trying to generate accessId with illegal dataNode: ${JSON.stringify(dataNode)}`);
+        this.logger.error(`Trying to generate accessId with illegal dataNode: ${JSON.stringify(dataNode)}`);
         return null;
       }
 
@@ -480,7 +465,7 @@ class DataNodeCollection extends Collection {
   }
 
   postIndexRaw(dataNodes) {
-    errorWrapMethod(this, 'resolveDataIds', dataNodes);
+    this.errorWrapMethod('resolveDataIds', dataNodes);
   }
 
   /**
@@ -537,7 +522,7 @@ class ValueCollection extends Collection {
    */
   _deserializeValue(entry) {
     if (entry === undefined) {
-      logError(`_deserializeValue failed: entry not found`);
+      this.logger.error(`_deserializeValue failed: entry not found`);
       return undefined;
     }
     if (!('value' in entry)) {
@@ -574,7 +559,7 @@ class ValueCollection extends Collection {
                 const childEntry = this.getById(childId);
                 if (!childEntry) {
                   value[i] = '(Dbux: lookup failed)';
-                  warn(`Could not lookup object property "${i}" (id = "${childId}"): ${JSON.stringify(childEntry.serialized)}`);
+                  this.logger.warn(`Could not lookup object property "${i}" (id = "${childId}"): ${JSON.stringify(childEntry.serialized)}`);
                 }
                 else {
                   value[i] = this._deserializeValue(childEntry);
@@ -593,7 +578,7 @@ class ValueCollection extends Collection {
                 const childEntry = this.getById(childId);
                 if (!childEntry) {
                   value[key] = '(Dbux: lookup failed)';
-                  warn(`Could not lookup object property "${key}" (id = "${childId}"): ${JSON.stringify(childEntry.serialized)}`);
+                  this.logger.warn(`Could not lookup object property "${key}" (id = "${childId}"): ${JSON.stringify(childEntry.serialized)}`);
                 }
                 else {
                   value[key] = this._deserializeValue(childEntry);

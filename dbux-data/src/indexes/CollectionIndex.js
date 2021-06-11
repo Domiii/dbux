@@ -137,12 +137,12 @@ class SetContainerMethods extends ContainerMethods {
   }
 
   getFirstInContainter(container) {
-    this.index.log.warn(`Trying to get first item in a set container`);
+    this.index.logger.warn(`Trying to get first item in a set container`);
     return container.values().next().value;
   }
 
   getLastInContainter(container) {
-    this.index.log.warn(`Trying to get last item in a set container`);
+    this.index.logger.warn(`Trying to get last item in a set container`);
     return container.values().next().value;
   }
 
@@ -169,7 +169,7 @@ export default class CollectionIndex {
   constructor(collectionName, indexName, { addOnNewData = true, isMap = false, isContainerSet = false } = EmptyObject) {
     this.collectionName = collectionName;
     this.name = indexName;
-    this.log = newLogger(`${indexName} (Index)`);
+    this.logger = newLogger(`${indexName} (Index)`);
     this.addOnNewData = addOnNewData;
     this.isMap = isMap;
     this.isContainerSet = isContainerSet;
@@ -237,7 +237,7 @@ export default class CollectionIndex {
     const key = this.makeKey(this.dp, entry);
     if (key === undefined) {
       // debugger;
-      this.log.error('makeKey returned undefined');
+      this.logger.error('makeKey returned undefined');
       return;
     }
     if (key === false) {
@@ -249,7 +249,7 @@ export default class CollectionIndex {
 
     // sanity check
     // if (container.includes(undefined)) {
-    //   this.log.error('Index contains undefined values', key, entry, container);
+    //   this.loger.error('Index contains undefined values', key, entry, container);
     // }
   }
 
@@ -265,7 +265,7 @@ export default class CollectionIndex {
   addEntryById(id) {
     const entry = this.dp.collections[this.collectionName].getById(id);
     if (!entry) {
-      this.log.error(new Error(
+      this.logger.error(new Error(
         `Tried to ${this.constructor.name}.addEntryById(id = ${JSON.stringify(id)}), but there are no ${this.collectionName} with that id.`
       ).stack);
     }

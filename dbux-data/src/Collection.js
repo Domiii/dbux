@@ -32,7 +32,7 @@ export default class Collection {
     if (!name || !dp) {
       throw new Error(`Collection did not provide name and dp to ctor - ${this.constructor.name}`);
     }
-    this.log = newLogger(`${name} (Col)`);
+    this.logger = newLogger(`${name}`);
     this.name = name;
     this.dp = dp;
 
@@ -148,5 +148,17 @@ export default class Collection {
       }
     }
     return undefined;
+  }
+  
+  errorWrapMethod(methodName, ...args) {
+    const obj = this;
+    try {
+      // build dynamic call expression tree
+      /* eslint prefer-spread: 0 */ // (false positive)
+      obj[methodName].apply(obj, args);
+    }
+    catch (err) {
+      this.logger.error(`${obj.constructor.name}.${methodName}`, 'failed\n  ', err); //...args);
+    }
   }
 }
