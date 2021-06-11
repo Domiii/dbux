@@ -56,7 +56,7 @@ export class DataNodeCollection extends Collection {
   }
 
   createWriteNodeFromReadNode(traceId, readNode, varAccess) {
-    const inputs = [readNode.id];
+    const inputs = [readNode.nodeId];
     const writeNode = this.createDataNode(undefined, traceId, varAccess, inputs);
     writeNode.refId = readNode.refId;
     return writeNode;

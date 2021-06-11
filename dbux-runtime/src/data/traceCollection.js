@@ -11,6 +11,9 @@ class TraceCollection extends Collection {
   }
 
   getDataNodeIdsByTraceIds(traceIds) {
+    if (!traceIds) {
+      return null;
+    }
     return traceIds.map(traceId => this.getById(traceId).nodeId);
   }
 
@@ -39,6 +42,7 @@ class TraceCollection extends Collection {
     // look-up globally unique staticTraceId
 
     // const programId = executionContextCollection.getProgramId(contextId);
+    // trace._inProgramStaticTraceId = inProgramStaticTraceId;
     trace.staticTraceId = staticTraceCollection.getStaticTraceId(programId, inProgramStaticTraceId);
 
     this._send(trace);

@@ -486,87 +486,87 @@ export function instrumentCallExpressionEnter(path, state) {
 // ###########################################################################
 
 
-function instrumentArgs(callPath, state, beforeCallTraceId) {
-  const calleePath = callPath.get('callee');
-  if (!getCanTraceArgs(calleePath)) {
-    return;
-  }
+// function instrumentArgs(callPath, state, beforeCallTraceId) {
+//   const calleePath = callPath.get('callee');
+//   if (!getCanTraceArgs(calleePath)) {
+//     return;
+//   }
 
-  const args = callPath.node.arguments;
+//   const args = callPath.node.arguments;
 
-  for (let i = 0; i < args.length; ++i) {
-    // if (t.isFunction(args[i])) {
-    //   instrumentCallbackSchedulingArg(callPath, state, i);
-    // }
-    // else {
-    const argPath = callPath.get('arguments.' + i);
-    if (!argPath.node.loc && !argPath.getData('traceResultType')) {
-      // synthetic node -> ignore
-      // E.g.: we replace `o.f(x)` with `_o = ..., _f = ..., f.call(o, x)`, and we do not want to trace `o` in `call`
-      continue;
-    }
+//   for (let i = 0; i < args.length; ++i) {
+//     // if (t.isFunction(args[i])) {
+//     //   instrumentCallbackSchedulingArg(callPath, state, i);
+//     // }
+//     // else {
+//     const argPath = callPath.get('arguments.' + i);
+//     if (!argPath.node.loc && !argPath.getData('traceResultType')) {
+//       // synthetic node -> ignore
+//       // E.g.: we replace `o.f(x)` with `_o = ..., _f = ..., f.call(o, x)`, and we do not want to trace `o` in `call`
+//       continue;
+//     }
 
-    const argTraceId = getPathTraceId(argPath);
-    // const argContextId = !argTraceId && getPathContextId(argPath) || null;
-    if (!argTraceId) {
-      // not instrumented yet -> add trace
-      // replacements.push(() => 
-      traceWrapArg(argPath, state, beforeCallTraceId);
-      // );
-    }
-    else { // if (argTraceId) {
-      // has been instrumented and has a trace -> just set it's callId
-      // Example: in `f(await g())` `await g()` has already been instrumented by `awaitVisitor`
-      const argTrace = state.traces.getById(argTraceId);
-      argTrace._callId = beforeCallTraceId;
-    }
-  }
-}
+//     const argTraceId = getPathTraceId(argPath);
+//     // const argContextId = !argTraceId && getPathContextId(argPath) || null;
+//     if (!argTraceId) {
+//       // not instrumented yet -> add trace
+//       // replacements.push(() => 
+//       traceWrapArg(argPath, state, beforeCallTraceId);
+//       // );
+//     }
+//     else { // if (argTraceId) {
+//       // has been instrumented and has a trace -> just set it's callId
+//       // Example: in `f(await g())` `await g()` has already been instrumented by `awaitVisitor`
+//       const argTrace = state.traces.getById(argTraceId);
+//       argTrace._callId = beforeCallTraceId;
+//     }
+//   }
+// }
 
 
-export function traceWrapArg(argPath, state, beforeCallTraceId) {
-  const tracePath = argPath;
-  if (argPath.isSpreadElement()) {
-    argPath = argPath.get('argument');
-  }
-  const traceType = argPath.getData('traceResultType') || TraceType.CallArgument;
-  return _traceWrapExpression('traceArg', traceType, argPath, state, {
-    callId: beforeCallTraceId,
-    tracePath
-  });
-}
+// export function traceWrapArg(argPath, state, beforeCallTraceId) {
+//   const tracePath = argPath;
+//   if (argPath.isSpreadElement()) {
+//     argPath = argPath.get('argument');
+//   }
+//   const traceType = argPath.getData('traceResultType') || TraceType.CallArgument;
+//   return _traceWrapExpression('traceArg', traceType, argPath, state, {
+//     callId: beforeCallTraceId,
+//     tracePath
+//   });
+// }
 
 // ###########################################################################
 // traceCallExpression
 // ###########################################################################
 
-export function traceCallExpression(callPath, state, resultType) {
-  const bcePathId = callPath.getData('_bcePathId');
+// export function traceCallExpression(callPath, state, resultType) {
+//   const bcePathId = callPath.getData('_bcePathId');
 
-  const bcePath = bcePathId && callPath.parentPath.get(bcePathId) || null;
+//   const bcePath = bcePathId && callPath.parentPath.get(bcePathId) || null;
 
-  // if (!getPathTraceId(calleePath) && !isPathInstrumented(calleePath)) {
-  //   // trace callee, if not traced before (left-hand side of parenthesis; e.g. `o.f` in `o.f(x)`)
-  //   traceWrapExpression(TraceType.ExpressionValue, calleePath, state);
-  // }
+//   // if (!getPathTraceId(calleePath) && !isPathInstrumented(calleePath)) {
+//   //   // trace callee, if not traced before (left-hand side of parenthesis; e.g. `o.f` in `o.f(x)`)
+//   //   traceWrapExpression(TraceType.ExpressionValue, calleePath, state);
+//   // }
 
-  // trace BCE
-  if (bcePath) {
-    const bceNode = buildTraceNoValue(callPath, state, TraceType.BeforeCallExpression);
-    bcePath.replaceWith(bceNode);
-  }
+//   // trace BCE
+//   if (bcePath) {
+//     const bceNode = buildTraceNoValue(callPath, state, TraceType.BeforeCallExpression);
+//     bcePath.replaceWith(bceNode);
+//   }
 
-  // trace args + return value
-  const bceTraceId = getPathTraceId(callPath);
-  if (bceTraceId) {
-    // call args
-    instrumentArgs(callPath, state, bceTraceId);
-    //const originalCallPath =
+//   // trace args + return value
+//   const bceTraceId = getPathTraceId(callPath);
+//   if (bceTraceId) {
+//     // call args
+//     instrumentArgs(callPath, state, bceTraceId);
+//     //const originalCallPath =
 
-    // return value 
-    _traceWrapExpression('traceExpr', resultType, callPath, state, {
-      resultCallId: bceTraceId,
-      // tracePath
-    });
-  }
-}
+//     // return value 
+//     _traceWrapExpression('traceExpr', resultType, callPath, state, {
+//       resultCallId: bceTraceId,
+//       // tracePath
+//     });
+//   }
+// }

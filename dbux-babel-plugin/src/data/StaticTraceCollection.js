@@ -1,10 +1,10 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import * as t from '@babel/types';
+import difference from 'lodash/difference';
 import StaticCollection from './StaticCollection';
 
 import { extractSourceStringWithoutComments } from '../helpers/sourceHelpers';
 import { pathToString } from '../helpers/pathHelpers';
-import { getFunctionDisplayName } from '../helpers/functionHelpers';
 import { getNodeNames } from '../visitors/nameVisitors';
 
 
@@ -125,7 +125,16 @@ export default class StaticTraceCollection extends StaticCollection {
     // get `displayName`, `loc`
     const _traceId = this._getNextId();
     let trace;
-    const { type, dataNode } = staticData;
+
+    const { type, dataNode, data } = staticData;
+
+    if (process.env.NODE_ENV === 'development') {
+      // add some sanity checks for the contents of staticTraceData
+      if (difference(Object.keys(staticData), ['type', 'dataNode', 'data']).length) {
+        throw new Error(`Unknown key(s) in staticTraceData: ${JSON.stringify(staticData)}`);
+      }
+    }
+
     if (!type) {
       throw new Error(`invalid call to "addTrace" - missing staticData.type, in path: ${pathToString(path)}`);
     }
@@ -140,6 +149,7 @@ export default class StaticTraceCollection extends StaticCollection {
     trace._traceId = _traceId;
     trace._staticContextId = state.contexts.getCurrentStaticContextId(path);
     trace.type = type;
+    trace.data = data;
     trace.dataNode = dataNode;
 
     // push

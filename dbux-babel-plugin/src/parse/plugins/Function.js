@@ -158,7 +158,8 @@ export default class Function extends ParsePlugin {
       }
       const idPath = idPaths[0];
       const idNode = this.node.getNodeOfPath(idPath);
-      const initialValuePath = getParamInitialValuePath(idPath);
+      // const initialValuePath = getParamInitialValuePath(idPath);
+      const initialValuePath = idPath;
       const staticTraceData = {
         type: TraceType.Param
       };

@@ -565,11 +565,13 @@ export default class RuntimeMonitor {
   // }
 
   traceBCE(programId, iterableTid, argTids, spreadArgs) {
+    spreadArgs = spreadArgs.map(a => {
     // [runtime-error] potential runtime error
     // NOTE: trying to spread a non-iterator results in Error anyway; e.g.:
     //      "Found non-callable @@iterator"
     //      "XX is not iterable"
-    spreadArgs = spreadArgs.map(a => Array.from(a));
+      return a && Array.from(a);
+    });
 
     const trace = traceCollection.getById(iterableTid);
     trace.callId = iterableTid;
@@ -592,7 +594,7 @@ export default class RuntimeMonitor {
 
         const varAccess = {
           objTid: argTid,
-          prop: i
+          prop: j
         };
         // [spread]
         dataNodeCollection.createDataNode(arg, argTid, varAccess);

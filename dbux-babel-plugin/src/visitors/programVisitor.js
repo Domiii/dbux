@@ -1,14 +1,8 @@
-import TraceType from '@dbux/common/src/core/constants/TraceType';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { buildSource, buildWrapTryFinally } from '../instrumentation/builders/common';
-import { extractTopLevelDeclarations } from '../helpers/topLevelHelpers';
-import { replaceProgramBody } from '../helpers/program';
 import errorWrapVisitor from '../helpers/errorWrapVisitor';
-import { buildContextEndTrace } from '../instrumentation/context';
 import injectDbuxState from '../dbuxState';
 import { buildVisitors as traceVisitors } from '../parseLib/visitors';
 import Program from '../parse/Program';
-import { buildDbuxInit } from '../data/staticData';
 import nameVisitors, { clearNames } from './nameVisitors';
 
 // eslint-disable-next-line no-unused-vars

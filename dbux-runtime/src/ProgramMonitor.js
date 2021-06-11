@@ -1,5 +1,5 @@
 import { newLogger } from '@dbux/common/src/log/logger';
-import staticTraceCollection from './data/staticTraceCollection';
+// import staticTraceCollection from './data/staticTraceCollection';
 import traceCollection from './data/traceCollection';
 
 
@@ -263,6 +263,7 @@ export default class ProgramMonitor {
   }
 
   traceArrayExpression = (args, tid, argTids) => {
+    console.debug(`[Dbux traceArrayExpression] tid=${tid}, strace=${JSON.stringify(traceCollection.getStaticTraceByTraceId(tid))}`);
     const { data: { argConfigs } } = traceCollection.getStaticTraceByTraceId(tid);
 
     const value = [];

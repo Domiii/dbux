@@ -58,7 +58,6 @@ let TraceType = {
   WriteME: 32,
   Identifier: 33,
   Literal: 34,
-  CallArgument: 35,
   /**
    * MemberExpression
    * @example `o.x`, `f(x)[g(y)]`
@@ -113,7 +112,6 @@ const dynamicTypeTypes = new Array(TraceType.getValueMaxIndex()).map(() => false
 // shared w/ PushCallback + PopCallback
 dynamicTypeTypes[TraceType.CallbackArgument] = true;  
 // might be shared w/ CallbackArgument, PushCallback + PopCallback
-dynamicTypeTypes[TraceType.CallArgument] = true;
 
 export function hasDynamicTypes(traceType) {
   return dynamicTypeTypes[traceType];
@@ -124,14 +122,12 @@ const expressionTypes = new Array(TraceType.getValueMaxIndex()).map(() => false)
 expressionTypes[TraceType.BeforeCallExpression] = true;
 expressionTypes[TraceType.ExpressionResult] = true;
 expressionTypes[TraceType.ExpressionValue] = true;
-expressionTypes[TraceType.CallArgument] = true;
 expressionTypes[TraceType.CallbackArgument] = true;
 expressionTypes[TraceType.CallExpressionResult] = true;
 expressionTypes[TraceType.ReturnArgument] = true;
 expressionTypes[TraceType.ThrowArgument] = true;
 expressionTypes[TraceType.Identifier] = true;
 expressionTypes[TraceType.Literal] = true;
-expressionTypes[TraceType.CallArgument] = true;
 expressionTypes[TraceType.ME] = true;
 
 export function isTraceExpression(traceType) {
@@ -149,7 +145,6 @@ export function isCallbackRelatedTrace(traceType) {
 
 
 const dataOnlyTypes = new Array(TraceType.getValueMaxIndex()).map(() => false);
-dataOnlyTypes[TraceType.CallArgument] = true;
 dataOnlyTypes[TraceType.ExpressionValue] = true;
 dataOnlyTypes[TraceType.Literal] = true;
 
