@@ -52,7 +52,7 @@ const popResumeTemplate = template(
 
 
 // ###########################################################################
-// helpers
+// util
 // ###########################################################################
 
 function addResumeContext(bodyPath, state/* , staticId */) {
@@ -66,6 +66,15 @@ function addResumeContext(bodyPath, state/* , staticId */) {
 function getLastNodeOfBody(bodyNode) {
   const nodes = Array.isArray(bodyNode) ? bodyNode : bodyNode.body;
   return nodes[nodes.length - 1];
+}
+
+function getParamInitialValuePath(paramPath) {
+  // TODO: support destructuring
+  if (paramPath.parentPath.isAssignmentPattern()) {
+    // e.g. get `3` from `a` in `function f(a = 3) {}`
+    return paramPath.parentPath.get('right');
+  }
+  return null;
 }
 
 
@@ -136,9 +145,6 @@ export default class Function extends ParsePlugin {
     //      (i) `bceStaticTrace.dataNode.argConfigs`,
     //      (ii) `{ argTids, spreadLengths } = bceTrace.data`
 
-    // TODO: also add declaration in same trace
-    //  -> paramNode.getDeclarationNode().addOwnDeclarationTrace();
-
     // TODO: `RestElement`
     // TODO: `{Object,Array,Assignment}Pattern
     // TODO: Special case - `{Object,Array,Assignment}Pattern on `RestElement`
@@ -151,12 +157,12 @@ export default class Function extends ParsePlugin {
         this.warn(`NYI: param is destructured into less or more than 1 variable ${pathToString(paramPath)}`);
       }
       const idPath = idPaths[0];
-      return Traces.addDeclarationTrace({
-        path: idPath,
-        staticTraceData: {
-          type: TraceType.Param
-        }
-      }, idPath);
+      const idNode = this.node.getNodeOfPath(idPath);
+      const initialValuePath = getParamInitialValuePath(idPath);
+      const staticTraceData = {
+        type: TraceType.Param
+      };
+      return idNode.addOwnDeclarationTrace(initialValuePath, staticTraceData);
     });
   }
 

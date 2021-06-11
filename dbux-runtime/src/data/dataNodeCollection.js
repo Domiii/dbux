@@ -42,6 +42,26 @@ export class DataNodeCollection extends Collection {
     return dataNode;
   }
 
+  /**
+   * Sometimes a single trace doubles as a read and a write node.
+   * In that case:
+   * * the read was recorded already
+   * * the `refId` of the two is the same
+   * * the new write node's single input is the read node
+   */
+  createWriteNodeFromReadWriteTrace(traceId, varAccess) {
+    const { nodeId: readNodeId } = traceCollection.getById(traceId);
+    const readNode = this.getById(readNodeId);
+    return this.createWriteNodeFromReadNode(traceId, readNode, varAccess);
+  }
+
+  createWriteNodeFromReadNode(traceId, readNode, varAccess) {
+    const inputs = [readNode.id];
+    const writeNode = this.createDataNode(undefined, traceId, varAccess, inputs);
+    writeNode.refId = readNode.refId;
+    return writeNode;
+  }
+
   createDataNode(value, traceId, varAccess, inputs) {
     const dataNode = pools.dataNodes.allocate();
 

@@ -46,8 +46,11 @@ export default class BindingIdentifier extends BaseId {
     return path.scope;
   }
 
-  addOwnDeclarationTrace(valuePath) {
-    if (!this.binding?.path.node.id) {
+  /**
+   * @param {NodePath?} definitionPath Only given if initialization occurs upon declaration.
+   */
+  addOwnDeclarationTrace(definitionPath = null, staticTraceData = null) {
+    if (!this.getDeclarationIdPath()) {
       // TODO: there can be other types of declarations, that don't have an `id` prop
       throw new Error(`Assertion failed - node binding did not have "id" child node ` +
       `"${pathToString(this.binding?.path)}" in "${pathToString(this.path.parentPath)}"`);
@@ -61,11 +64,11 @@ export default class BindingIdentifier extends BaseId {
     // const scopePath = this.binding.path.scope.path;
     const scopePath = this.getBindingScope().path;
     const bindingScopeNode = this.stack.getNodeOfPath(scopePath);
-    if (!bindingScopeNode || !bindingScopeNode.Traces) {
+    if (!bindingScopeNode?.Traces) {
       throw new Error(`BindingIdentifier's binding scope did not have a ParseNode: ${pathToString(scopePath)}`);
     }
 
-    // addNewDeclarationTrace
-    this.bindingTrace = bindingScopeNode.Traces.addNewDeclarationTrace(this, valuePath);
+    // addDefaultDeclarationTrace
+    return this.bindingTrace = bindingScopeNode.Traces.addDefaultDeclarationTrace(this, definitionPath, staticTraceData);
   }
 }

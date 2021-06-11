@@ -1,31 +1,10 @@
 // import { instrumentCallExpressionEnter } from '../zz_archive/traceHelpers.old';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import { makeStaticArrayArgsCfg } from '../helpers/callExpressionHelpers';
 import { traceCallExpressionDefault } from '../instrumentation/callExpressions';
 import BaseNode from './BaseNode';
 
-// function wrapCallExpression(path, state) {
-//   // CallExpression
-//   // instrument args after everything else has already been done
-
-//   // const calleePath = path.get('callee');
-//   // const beforeCallTraceId = getPathTraceId(calleePath);
-//   // traceCallExpression(path, state, beforeCallTraceId);
-
-//   // TODO: instrument BCE as well, here
-
-//   let traceResultType = path.getData('traceResultType');
-//   if (!traceResultType || TraceType.is.ExpressionResult(traceResultType) || TraceType.is.ExpressionValue(traceResultType)) {
-//     traceResultType = TraceType.CallExpressionResult;
-//   }
-//   return traceCallExpression(path, state, traceResultType);
-// }
-
-function getStaticArgumentCfg(argPath) {
-  return {
-    isSpread: argPath.node.type === 'SpreadElement'
-  };
-}
 
 const CalleePluginsByType = {
   // default!
@@ -141,7 +120,7 @@ export default class CallExpression extends BaseNode {
       staticTraceData: {
         type: TraceType.BeforeCallExpression,
         data: {
-          argConfigs: argumentPaths?.map(getStaticArgumentCfg) || EmptyArray
+          argConfigs: makeStaticArrayArgsCfg(argumentPaths)
         }
       },
       meta: {

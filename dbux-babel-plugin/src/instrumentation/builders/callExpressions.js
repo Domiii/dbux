@@ -6,6 +6,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import TraceCfg from '../../definitions/TraceCfg';
 import { makeInputs, NullNode, ZeroNode } from './buildHelpers';
+import { buildArrayArgsNoSpread, buildGetI } from './common';
 import { buildTraceExpressionNoInput, buildTraceId } from './misc';
 
 
@@ -38,28 +39,7 @@ function generateVar(scope, name) {
 // arguments
 // ###########################################################################
 
-
-function buildArgsValue(state, argNodes) {
-  const { ids: { aliases: {
-    arrayFrom
-  } } } = state;
-  return t.arrayExpression(argNodes
-    .map(argNode => t.isSpreadElement(argNode) ?
-      t.callExpression(
-        arrayFrom,
-        [argNode.argument]
-      ) :
-      // argNode.argument :
-      argNode
-    )
-  );
-}
-
-function buildArgI(argsVar, i) {
-  return t.memberExpression(argsVar, t.numericLiteral(i), true, false);
-}
-
-function buildSpreadArgs(state, argsVar, argNodes) {
+function buildSpreadArgs(argsVar, argNodes) {
   // const { ids: { aliases: {
   //   getArgLength
   // } } } = state;
@@ -67,7 +47,7 @@ function buildSpreadArgs(state, argsVar, argNodes) {
     .map((argNode, i) => t.isSpreadElement(argNode) ?
       // t.callExpression(
       //   getArgLength,
-      buildArgI(argsVar, i) :
+      buildGetI(argsVar, i) :
       // ) :
       NullNode
     )
@@ -77,11 +57,11 @@ function buildSpreadArgs(state, argsVar, argNodes) {
 
 /**
  * Build call arguments as array of Nodes, spread elements as necessary.
- * @example `[argsVar[0], argsVar[1], ...argsVar[2], argsVar[3]]`
+ * @example `[argsVar[0], ...argsVar[1], ...argsVar[2], argsVar[3]]`
  */
 function buildCallArgs(argsVar, argNodes) {
   return argNodes.map((argNode, i) => {
-    const arg = buildArgI(argsVar, i);
+    const arg = buildGetI(argsVar, i);
     return t.isSpreadElement(argNode) ?
       t.spreadElement(arg) :
       arg;
@@ -100,12 +80,9 @@ function buildBCE(state, traceCfg, spreadArgs) {
   const { ids: { aliases: {
     traceBCE
   } } } = state;
-  const {
-    inputTraces
-  } = traceCfg;
 
   const tid = buildTraceId(state, traceCfg);
-  const argTids = makeInputs(inputTraces);
+  const argTids = makeInputs(traceCfg);
 
   return t.callExpression(traceBCE, [
     tid,
@@ -209,14 +186,13 @@ export function buildTraceCallDefault(state, traceCfg) {
   } = traceCfg;
 
   const calleePath = path.get('callee');
-  const argsPath = path.get('arguments');
-
+  const argPaths = path.get('arguments');
   // const calleeVar = generateVar(scope, 'f'); // generateCalleeVar(calleePath);
   const argsVar = generateVar(scope, 'args');
 
-  const argNodes = argsPath?.map(a => a.node) || EmptyArray;
-  const args = buildArgsValue(state, argNodes);
-  const spreadArgs = buildSpreadArgs(state, argsVar, argNodes);
+  const args = buildArrayArgsNoSpread(argPaths);
+  const argNodes = argPaths?.map(a => a.node) || EmptyArray;
+  const spreadArgs = buildSpreadArgs(argsVar, argNodes);
 
   // hackfix: override targetNode during instrumentation
   traceCfg.meta.targetNode = buildCallNodeDefault(path, calleeVar, argsVar, argNodes);
@@ -265,17 +241,15 @@ export function buildTraceCallME(state, traceCfg) {
   } = traceCfg;
 
   const calleePath = path.get('callee');
-
   // NOTE: `object` is instrumented by ME adding it as `input`
   const objectPath = calleePath.get('object');
-
-  const argsPath = path.get('arguments');
+  const argPaths = path.get('arguments');
 
   const argsVar = generateVar(scope, 'args');
 
-  const argNodes = argsPath?.map(a => a.node) || EmptyArray;
-  const args = buildArgsValue(state, argNodes);
-  const spreadArgs = buildSpreadArgs(state, argsVar, argNodes);
+  const args = buildArrayArgsNoSpread(argPaths);
+  const argNodes = argPaths?.map(a => a.node) || EmptyArray;
+  const spreadArgs = buildSpreadArgs(argsVar, argNodes);
 
   // hackfix: override targetNode during instrumentation
   traceCfg.meta.targetNode = buildCallNodeME(path, objectVar, calleeVar, argsVar, argNodes);

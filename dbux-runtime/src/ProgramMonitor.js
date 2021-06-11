@@ -224,22 +224,22 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceMemberExpression(this.getProgramId(), value, propValue, tid, inputs);
   }
 
-  traceWriteVar = (value, tid, declarationTid, inputs, deferTid) => {
+  traceWriteVar = (value, tid, declarationTid, inputs) => {
     if (this.areTracesDisabled) {
       return value;
     }
 
-    return this._runtimeMonitor.traceWriteVar(this.getProgramId(), value, tid, declarationTid, inputs, deferTid);
+    return this._runtimeMonitor.traceWriteVar(this.getProgramId(), value, tid, declarationTid, inputs);
   }
 
-  traceWriteME = (objValue, propValue, value, tid, objTid, inputs, deferTid) => {
+  traceWriteME = (objValue, propValue, value, tid, objTid, inputs) => {
     // [runtime-error]
     objValue[propValue] = value;
     if (this.areTracesDisabled) {
       return value;
     }
 
-    return this._runtimeMonitor.traceWriteME(this.getProgramId(), value, propValue, tid, objTid, inputs, deferTid);
+    return this._runtimeMonitor.traceWriteME(this.getProgramId(), value, propValue, tid, objTid, inputs);
   }
 
   traceBCE = (tid, argTids, spreadArgs) => {
@@ -262,12 +262,31 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceCallResult(this.getProgramId(), value, tid, callTid);
   }
 
-  traceCreateArray = (value, tid, traceIds, restElement) => {
+  traceArrayExpression = (args, tid, argTids) => {
+    const { data: { argConfigs } } = traceCollection.getStaticTraceByTraceId(tid);
+
+    const value = [];
+    const spreadLengths = new Array(args.length);
+    for (let i = 0; i < args.length; ++i) {
+      const arg = args[i];
+      if (argConfigs[i].isSpread) {
+        // compute arg length (NOTE: we cannot easily get the size of an iterator)
+        const l = value.length;
+        // [runtime error] potential runtime error: spreading arg
+        value.push(...arg);
+        spreadLengths[i] = value.length - l;
+      }
+      else {
+        value.push(arg);
+        spreadLengths[i] = -1; // not a spread
+      }
+    }
+
     if (this.areTracesDisabled) {
       return value;
     }
 
-    return this._runtimeMonitor.traceCreateArray(this.getProgramId(), value, tid, traceIds, restElement);
+    return this._runtimeMonitor.traceArrayExpression(this.getProgramId(), value, spreadLengths, tid, argTids);
   }
 
   // ###########################################################################

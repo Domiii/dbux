@@ -143,23 +143,26 @@ export default class Traces extends ParsePlugin {
   }
 
   // ###########################################################################
-  // addNewDeclarationTrace
+  // addDefaultDeclarationTrace
   // ###########################################################################
 
   /**
    * @param {BindingIdentifier} id
    */
-  addNewDeclarationTrace(id, valuePath) {
+  addDefaultDeclarationTrace(id, valuePath, staticTraceData = null) {
+    staticTraceData = staticTraceData || {
+      type: TraceType.Declaration,
+      dataNode: {
+        // NOTE: Most declarations are hoisted to some scope, always assigned a "new" value (`undefined`, if `valuePath` not given)
+        //      Notable exception: `param`.
+        isNew: true
+      }
+    };
+
     const traceData = {
       path: id.path,
       node: id,
-      staticTraceData: {
-        type: TraceType.Declaration,
-        dataNode: {
-          // NOTE: this type of trace is always hoisted to some scope, always assigned a "new" value (`undefined`, if `valuePath` not given)
-          isNew: true
-        }
-      }
+      staticTraceData
     };
     return this.addDeclarationTrace(traceData, valuePath);
   }

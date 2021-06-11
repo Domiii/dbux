@@ -23,15 +23,20 @@ export default class BaseId extends BaseNode {
   }
 
   getDeclarationIdPath() {
-    return this.binding?.path.get('id');
+    const p = this.binding?.path;
+    if (!p) {
+      return null;
+    }
+    // NOTE: for some reason, binding.path (if is declaration) refers to the declaration, not the `id` node.
+    return p.isIdentifier() ? p : p.get('id');
   }
 
   /**
-   * @returns {BindingNode}
+   * @returns {BindingIdentifier}
    */
   getDeclarationNode() {
     const bindingPath = this.getDeclarationIdPath();
-    if (!bindingPath) {
+    if (!bindingPath?.node) {
       return null;
     }
     // this.debug(`[RId] bindingPath L${bindingPath.node.loc.start.line}: ${bindingPath.toString()}`);

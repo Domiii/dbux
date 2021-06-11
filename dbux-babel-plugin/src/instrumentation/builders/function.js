@@ -4,7 +4,6 @@
  */
 
 import { bindTemplate } from '../../helpers/templateUtil';
-import { buildTraceDeclaration } from './misc';
 
 // ###########################################################################
 // traceParams

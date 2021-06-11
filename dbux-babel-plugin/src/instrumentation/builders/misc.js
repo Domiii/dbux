@@ -4,7 +4,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { astNodeToString } from '../../helpers/pathHelpers';
 import { buildTraceCall, bindTemplate, bindExpressionTemplate } from '../../helpers/templateUtil';
 import { getTraceCall, makeInputs, ZeroNode } from './buildHelpers';
-import { getInstrumentTargetAstNode } from './common';
+import { buildArrayArgsNoSpread, getInstrumentTargetAstNode } from './common';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('builders/trace');
@@ -67,8 +67,7 @@ export const buildTraceExpressionVar = buildTraceCall(
     const tid = buildTraceId(state, traceCfg);
 
     const {
-      declarationTidIdentifier,
-      inputTraces
+      declarationTidIdentifier
     } = traceCfg;
 
     return {
@@ -76,7 +75,7 @@ export const buildTraceExpressionVar = buildTraceCall(
       expr: getInstrumentTargetAstNode(traceCfg),
       tid,
       declarationTid: declarationTidIdentifier || ZeroNode,
-      inputs: makeInputs(inputTraces)
+      inputs: makeInputs(traceCfg)
     };
   }
 );
@@ -89,10 +88,6 @@ export const buildTraceExpression = buildTraceCall(
     const trace = getTraceCall(state, traceCfg);
     const tid = buildTraceId(state, traceCfg);
 
-    const {
-      inputTraces
-    } = traceCfg;
-
     // Verbose && debug(`[te] ${expressionNode.type} [${inputTraces?.map(i => i.tidIdentifier.name).join(',') || ''}]`, pathToString(expressionNode));
 
     // NOTE: templates only work on `Node`, not on `NodePath`, thus they lose all path-related information.
@@ -101,7 +96,7 @@ export const buildTraceExpression = buildTraceCall(
       trace,
       expr: getInstrumentTargetAstNode(traceCfg),
       tid,
-      inputs: makeInputs(inputTraces)
+      inputs: makeInputs(traceCfg)
     };
   }
 );
@@ -151,31 +146,27 @@ export function buildTraceDeclarations(state, traceCfgs) {
 // traceWriteVar
 // ###########################################################################
 
-// TODO: deferTid
 export const buildTraceWriteVar = buildTraceCall(
-  '%%traceWriteVar%%(%%expr%%, %%tid%%, %%declarationTid%%, %%inputs%%, %%deferTid%%)',
+  '%%traceWriteVar%%(%%expr%%, %%tid%%, %%declarationTid%%, %%inputs%%)',
   function buildTraceWriteVar(state, traceCfg) {
     const { ids: { aliases: {
       traceWriteVar
     } } } = state;
 
     const {
-      declarationTidIdentifier,
-      inputTraces
+      declarationTidIdentifier
     } = traceCfg;
 
     const tid = buildTraceId(state, traceCfg);
 
     const declarationTid = declarationTidIdentifier || ZeroNode;
-    const deferTid = ZeroNode;
 
     return {
       expr: getInstrumentTargetAstNode(traceCfg),
       traceWriteVar,
       tid,
       declarationTid,
-      inputs: makeInputs(inputTraces),
-      deferTid
+      inputs: makeInputs(traceCfg)
     };
   }
 );
@@ -235,10 +226,6 @@ export const buildTraceMemberExpression = bindExpressionTemplate(
     const meNode = getInstrumentTargetAstNode(traceCfg);
     const trace = getTraceCall(state, traceCfg, 'traceMemberExpression');
     const tid = buildTraceId(state, traceCfg);
-
-    const {
-      inputTraces
-    } = traceCfg;
     // Verbose && debug(`[te] ${expressionNode.type} [${inputTraces?.map(i => i.tidIdentifier.name).join(',') || ''}]`, pathToString(expressionNode));
 
     // NOTE: templates only work on `Node`, not on `NodePath`, thus they lose all path-related information.
@@ -256,7 +243,7 @@ export const buildTraceMemberExpression = bindExpressionTemplate(
        */
       propValue: getMEPropNode(meNode),
       tid,
-      inputs: makeInputs(inputTraces)
+      inputs: makeInputs(traceCfg)
     };
   }
 );
@@ -267,8 +254,7 @@ export const buildTraceMemberExpression = bindExpressionTemplate(
 // ###########################################################################
 
 /**
- * NOTE: order arguments enforces order of execution!
- * TODO: deferTid
+ * NOTE: argument order enforces order of execution!
  * @example
  * ```js
  * function f(msg, value) { console.log(msg, value); return value; }
@@ -278,7 +264,7 @@ export const buildTraceMemberExpression = bindExpressionTemplate(
  * ```
  */
 export const buildTraceWriteME = buildTraceCall(
-  '%%traceWriteME%%(%%objValue%%, %%propValue%%, %%rVal%%, %%tid%%, %%objTid%%, %%inputs%%, %%deferTid%%)',
+  '%%traceWriteME%%(%%objValue%%, %%propValue%%, %%rVal%%, %%tid%%, %%objTid%%, %%inputs%%)',
   function buildTraceWriteME(state, traceCfg) {
     const { ids: { aliases: {
       traceWriteME
@@ -292,13 +278,10 @@ export const buildTraceWriteME = buildTraceCall(
     } = assignmentNode;
 
     const {
-      inputTraces,
       data: {
         objTid
       }
     } = traceCfg;
-
-    const deferTid = ZeroNode;
 
     return {
       traceWriteME,
@@ -311,27 +294,28 @@ export const buildTraceWriteME = buildTraceCall(
       rVal,
       tid,
       objTid,
-      inputs: makeInputs(inputTraces),
-      deferTid
+      inputs: makeInputs(traceCfg)
     };
   }
 );
 
 export const buildArrayExpression = buildTraceCall(
-  '%%trace%%(%%expr%%, %%tid%%, %%traceIds%%, %%restElement%%)',
+  '%%traceArrayExpression%%(%%args%%, %%tid%%, %%argTids%%)',
   function buildArrayExpression(state, traceCfg) {
-    const trace = getTraceCall(state, traceCfg);
+    const { ids: { aliases: { traceArrayExpression } } } = state;
     const tid = buildTraceId(state, traceCfg);
 
-    // TODO: traceIds
-    // TODO: restElement
+    const {
+      path
+    } = traceCfg;
+
+    const argPaths = path.get('elements');
 
     return {
-      trace,
-      expr: getInstrumentTargetAstNode(traceCfg),
+      traceArrayExpression,
+      args: buildArrayArgsNoSpread(argPaths),
       tid,
-      traceIds,
-      restElement
+      argTids: makeInputs(traceCfg)
     };
   }
 );

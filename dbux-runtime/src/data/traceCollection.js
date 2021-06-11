@@ -14,6 +14,11 @@ class TraceCollection extends Collection {
     return traceIds.map(traceId => this.getById(traceId).nodeId);
   }
 
+  getStaticTraceByTraceId(traceId) {
+    const trace = this.getById(traceId);
+    return staticTraceCollection.getById(trace.staticTraceId);
+  }
+
   trace(programId, contextId, runId, inProgramStaticTraceId, type = null) {
     if (!inProgramStaticTraceId) {
       throw new Error('missing inProgramStaticTraceId');

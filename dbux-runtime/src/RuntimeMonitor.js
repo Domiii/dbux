@@ -566,6 +566,9 @@ export default class RuntimeMonitor {
 
   traceBCE(programId, iterableTid, argTids, spreadArgs) {
     // [runtime-error] potential runtime error
+    // NOTE: trying to spread a non-iterator results in Error anyway; e.g.:
+    //      "Found non-callable @@iterator"
+    //      "XX is not iterable"
     spreadArgs = spreadArgs.map(a => Array.from(a));
 
     const trace = traceCollection.getById(iterableTid);
@@ -578,15 +581,12 @@ export default class RuntimeMonitor {
     for (let i = 0; i < spreadArgs.length; i++) {
       const spreadArg = spreadArgs[i];
       if (!spreadArg) {
-        // NOTE: trying to spread a non-iterator results in Error anyway; e.g.:
-        //      "Found non-callable @@iterator"
-        //      "XX is not iterable"
         continue;
       }
 
       const argTid = argTids[i];
 
-      // add one `DataNode` per element in spread arg
+      // a spread arg has its own `DataNode`, plus one per element
       for (let j = 0; j < spreadArg.length; j++) {
         const arg = spreadArg[j];
 
@@ -594,6 +594,7 @@ export default class RuntimeMonitor {
           objTid: argTid,
           prop: i
         };
+        // [spread]
         dataNodeCollection.createDataNode(arg, argTid, varAccess);
       }
     }
@@ -606,24 +607,42 @@ export default class RuntimeMonitor {
     return value;
   }
 
-  traceCreateArray(programId, value, arrTid, traceIds, restElement) {
+  traceArrayExpression(programId, value, spreadLengths, arrTid, argTids) {
     dataNodeCollection.createOwnDataNode(value, arrTid);
 
     // for each element: add (new) write node which has (original) read node as input
-    for (let i = 0; i < traceIds.length; i++) {
-      const argTid = traceIds[i];
-      const argTrace = traceCollection.getById(argTid);
-      const readNode = dataNodeCollection.getById(argTrace.nodeId);
+    let idx = 0;
+    for (let i = 0; i < argTids.length; i++) {
+      const argTid = argTids[i];
+      const len = spreadLengths[i];
 
-      const varAccess = {
-        objTid: arrTid,
-        prop: i
-      };
-      const writeNode = dataNodeCollection.createDataNode(undefined, argTid, varAccess);
-      writeNode.refId = readNode.refId;
+      if (len >= 0) {
+        // [spread]
+        for (let j = 0; j < len; j++) {
+          const readAccess = {
+            objTid: argTid,
+            prop: j
+          };
+          const readNode = dataNodeCollection.createDataNode(value[idx], argTid, readAccess);
+          const writeAccess = {
+            objTid: arrTid,
+            prop: idx
+          };
+          dataNodeCollection.createWriteNodeFromReadNode(argTid, readNode, writeAccess);
+          ++idx;
+        }
+      }
+      else {
+        // not spread
+        const varAccess = {
+          objTid: arrTid,
+          prop: i
+        };
+        // [write]
+        dataNodeCollection.createWriteNodeFromReadWriteTrace(argTid, varAccess);
+        ++idx;
+      }
     }
-
-    // TODO: `RestElement`
 
     return value;
   }

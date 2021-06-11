@@ -90,7 +90,6 @@ export default function injectDbuxState(programPath, programState) {
         traceExpression: makeProgramId('te'),
         traceExpressionVar: makeProgramId('tev'),
         traceWriteVar: makeProgramId('twv'),
-        traceCreateArray: makeProgramId('tca'),
 
         // ME
         traceMemberExpression: makeProgramId('tme'),
@@ -101,6 +100,9 @@ export default function injectDbuxState(programPath, programState) {
         traceBCE: makeProgramId('bce'),
         // traceSpreadArg: makeProgramId('tsa'),
         traceCallResult: makeProgramId('tcr'),
+
+        // {Array,Object}Expression
+        traceArrayExpression: makeProgramId('tae'),
       }
     },
     // console.log('[Program]', state.filename);
