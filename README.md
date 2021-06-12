@@ -53,7 +53,11 @@ This page covers more broad topics related to the Dbux project:
 
 # Adding Dbux to your build pipeline
 
-In order to analyze you runtime, your program must be instrumented with Dbux and injected with the [@dbux/runtime](dbux-runtime#readme). We employ [@dbux/babel-plugin](dbux-babel-plugin#readme) to do these two jobs for us.
+In order to analyze your program's runtime, the program must:
+1. be instrumented with Dbux and
+1. injected with the [@dbux/runtime](dbux-runtime#readme).
+
+We employ [@dbux/babel-plugin](dbux-babel-plugin#readme) to do these two jobs for us.
 
 That means that you need to "[babel](https://babeljs.io/) your program" with [@dbux/babel-plugin](dbux-babel-plugin#readme) enabled.
 
@@ -64,7 +68,6 @@ There are two approaches:
    * This is also used by `Dbux VSCode Plugin`'s "Run with Dbux" button
    * [Read more here](dbux-cli#readme).
 2. or: Add the [@dbux/babel-plugin](dbux-babel-plugin#readme) to your build pipeline manually
-   * IMPORTANT: it must be the **last** entry in your `plugins` array.
    * [Read more here](dbux-babel-plugin#readme).
 
 

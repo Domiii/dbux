@@ -23,6 +23,7 @@
     "@babel/template": "^7.10.1",
     "@babel/traverse": "^7.10.1",
     "@babel/types": "^7.10.1",
+    "@babel/generator": "^7.10.1",
     "@dbux/common": "^0.4.4-dev.0",
     "@dbux/common-node": "^0.4.4-dev.0",
     "i18next": "^19.8.2",
