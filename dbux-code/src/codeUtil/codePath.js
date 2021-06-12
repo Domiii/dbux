@@ -1,4 +1,4 @@
-import path from 'path';
+import { pathNormalized, pathJoin } from '@dbux/common-node/src/util/pathUtil';
 import {
   ExtensionContext,
   Uri
@@ -10,11 +10,11 @@ import {
 let context;
 
 export function getResourcePath(...relativePathSegments) {
-  return context.asAbsolutePath(path.join('resources', ...relativePathSegments));
+  return asAbsolutePath(pathJoin('resources', ...relativePathSegments));
 }
 
 export function getLogsDirectory() {
-  return context.asAbsolutePath('logs');
+  return asAbsolutePath('logs');
 }
 
 export function getThemeResourcePath(...relativePathSegments) {
@@ -31,6 +31,14 @@ export function getThemeResourcePathUri(...relativePathSegments) {
   };
 }
 
-export function initResources(_context) {
+export function asAbsolutePath(fpath) {
+  return pathNormalized(context.asAbsolutePath(fpath));
+}
+
+export function getExtensionPath() {
+  return pathNormalized(context.extensionPath);
+}
+
+export function initCodePath(_context) {
   context = _context;
 }

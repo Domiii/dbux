@@ -3,7 +3,7 @@ import {
 } from 'vscode';
 import GraphHost from '@dbux/graph-host/src/GraphHost';
 import { goToTrace } from '../codeUtil/codeNav';
-import { getThemeResourcePathUri } from '../resources';
+import { getThemeResourcePathUri } from '../codeUtil/codePath';
 import RichWebView from './RichWebView';
 import { emitCallGraphAction } from '../userEvents';
 

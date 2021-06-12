@@ -57,12 +57,6 @@ const defaultBabelOptions = {
     ]
   ],
   plugins: [
-    // [
-    //   "@babel/plugin-proposal-class-properties",
-    //   {
-    //     loose: true
-    //   }
-    // ],
     // "@babel/plugin-proposal-optional-chaining",
     //   "@babel/plugin-proposal-decorators",
     // [
@@ -137,7 +131,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
       else if (devServerCfg !== true) {
         throw new Error(`Invalid devServer config (must be true, object or function) - ${JSON.stringify(devServerCfg)}`);
       }
-      Object.assign(devServer, devServerOverrides);
+      devServer = mergeConcatArray(devServer, devServerOverrides);
     }
 
     // ###########################################################################
@@ -184,10 +178,8 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
 
     plugins = plugins || [];
     plugins.push(
-      new webpack.DefinePlugin({
-        'process.env': {
-          NODE_ENV: JSON.stringify("development")
-        }
+      new webpack.EnvironmentPlugin({
+        NODE_ENV: 'development'
       })
     );
     

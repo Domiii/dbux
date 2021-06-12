@@ -21,11 +21,10 @@ class RunNode extends HostComponentEndpoint {
     });
 
     // add root context
-    const firstContext = dp.util.getFirstContextOfRun(runId);
-    if (firstContext) {
-      this.rootContextNode = this.context.graphRoot._buildContextNode(this, applicationId, firstContext, true);
+    const rootContexts = dp.indexes.executionContexts.rootsByRun.get(runId);
+    if (rootContexts?.length) {
+      this.rootContextNodes = rootContexts.map(context => this.context.graphRoot._buildContextNode(this, applicationId, context, true));
       this.state.createdAt = dp.util.getRunCreatedAt(runId);
-      this.state.firstContextId = firstContext.contextId;
     }
     else {
       logError('Creating RunNode with no context');

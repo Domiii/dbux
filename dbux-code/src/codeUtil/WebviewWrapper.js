@@ -5,11 +5,12 @@ import {
   commands,
   ColorThemeKind
 } from 'vscode';
-import path from 'path';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { pathJoin } from '@dbux/common-node/src/util/pathUtil';
 import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import { wrapScriptTag, wrapScriptFileInTag } from './domTransformUtil';
 import { set as mementoSet, get as mementoGet } from '../memento';
+import { getExtensionPath } from './codePath';
 
 
 let _extensionContext;
@@ -26,7 +27,7 @@ export default class WebviewWrapper {
     this.title = title;
     this.preferredColumn = preferredColumn;
     this.wasVisible = false;
-    this.resourceRoot = path.join(_extensionContext.extensionPath, 'resources');
+    this.resourceRoot = pathJoin(getExtensionPath(), 'resources');
 
     this.logger = newLogger(`${title} WebviewWrapper`);
   }
@@ -48,7 +49,7 @@ export default class WebviewWrapper {
   // ###########################################################################
 
   getResourcePath(...pathSegments) {
-    return path.join(this.resourceRoot, ...pathSegments);
+    return pathJoin(this.resourceRoot, ...pathSegments);
   }
 
   getThemeMode() {
@@ -231,7 +232,7 @@ export default class WebviewWrapper {
     let html = await this.buildClientHtml();
     html = `
 <script>
-  window._WebResourceRoot = ${JSON.stringify(this.resourceRoot.replace(/\\/g, '/'))};
+  window._WebResourceRoot = ${JSON.stringify(this.resourceRoot)};
 </script>
 ${html}
 <!-- ${++this._webviewUpdateToken} -->`;

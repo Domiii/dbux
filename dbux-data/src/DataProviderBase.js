@@ -345,20 +345,19 @@ export default class DataProviderBase {
   }
 
   /**
-   * Serialize all raw data into a simple JS object.
+   * Serialize collection data into a simple JS object. Including all collection data by default.
    * Usage: `JSON.stringify(dataProvider.serializeJson())`.
+   * Usage: `JSON.stringify(dataProvider.serializeJson(Object.entries(allData)))`.
    */
-  serializeJson() {
-    const collections = Object.values(this.collections);
+  serializeJson(collections = Object.entries(this.collections).map(([name, collection]) => [name, collection._all])) {
     const obj = {
       version: this.version,
-      collections: Object.fromEntries(collections.map(collection => {
-        const {
-          name,
-          _all
-        } = collection;
-
-        let entries = _all.slice(1);
+      collections: Object.fromEntries(collections.map(([name, entries]) => {
+        const collection = this.collections[name];
+        
+        if (!entries[0]) {
+          entries = entries.slice(1);
+        }
 
         // convert complex entry into simple JS Object
         if (collection.serialize) {

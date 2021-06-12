@@ -27,12 +27,6 @@ module.exports = {
     ]
   ],
   plugins: [
-    [
-      loadBabel('@babel/plugin-proposal-class-properties'),
-      {
-        // loose: true
-      }
-    ],
     loadBabel('@babel/plugin-proposal-optional-chaining'),
     [
       loadBabel('@babel/plugin-proposal-decorators'),

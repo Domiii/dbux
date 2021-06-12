@@ -5,7 +5,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
  */
 
 /**
- * @template {T}
+ * @template T
  */
 export default class Collection {
   /**
@@ -42,6 +42,12 @@ export default class Collection {
   // ###########################################################################
 
   /**
+   * @virtual
+   * @param {T} entry 
+   */
+  handleAdd(entry) { }
+
+  /**
    * @param {T[]} entries 
    */
   add(entries) {
@@ -53,10 +59,7 @@ export default class Collection {
     // WARNING: cannot use push(...entries) for large `entries` array.
     // see: https://github.com/nodejs/node/issues/27732
     for (const entry of entries) {
-      if (!entry.id) {
-        // add a general purpose id
-        entry.id = this._all.length;
-      }
+      this.handleAdd(entry);
       this._all.push(entry);
     }
   }

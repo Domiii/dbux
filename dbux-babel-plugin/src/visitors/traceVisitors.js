@@ -56,7 +56,8 @@ const TraceInstrumentationType = new Enum({
   ThrowArgument: 13,
 
   Function: 14,
-  Await: 15
+  Await: 15,
+  UnaryExpressionArgument: 16
 });
 
 const InstrumentationDirection = {
@@ -71,6 +72,7 @@ const traceCfg = (() => {
     CallExpression,
     ExpressionResult,
     ExpressionValue,
+    UnaryExpressionArgument,
     // ExpressionNoValue,
     Statement,
     Block,
@@ -198,7 +200,7 @@ const traceCfg = (() => {
 
     UnaryExpression: [
       NoTrace,
-      [['argument', ExpressionValue]]
+      [['argument', UnaryExpressionArgument]]
     ],
 
     Super: [
@@ -580,6 +582,14 @@ const exitInstrumentors = {
     else {
       return wrapExpression(TraceType.ExpressionValue, pathOrPaths, state);
     }
+  },
+  UnaryExpressionArgument(path, state) {
+    // NOTE: same as `ExpressionValue`, but w/ some special checks for special operators
+    if (path.parentPath.node.operator !== 'typeof') {
+      return wrapExpression(TraceType.ExpressionValue, path, state);
+    }
+    return path;
+    // return wrapExpression(TraceType.ExpressionValue, path, state);
   },
   MemberProperty(propertyPath, state) {
     const path = propertyPath.parentPath;

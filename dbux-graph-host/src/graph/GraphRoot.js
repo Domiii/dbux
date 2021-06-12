@@ -222,7 +222,7 @@ class GraphRoot extends HostComponentEndpoint {
 
   _buildContextNode(parentNode, applicationId, context, isRoot = false) {
     if (this.contextNodesByContext.get(context)) {
-      this.logger.warn(`ContextNode with id=${context.id} already exist`);
+      this.logger.warn(`ContextNode with id=${context.contextId} already exist`);
       return null;
     }
 
@@ -238,7 +238,7 @@ class GraphRoot extends HostComponentEndpoint {
       this.contextNodesByContext.delete(context);
     });
 
-    // this.logger.log(`ContextNode created id=${context.id}`);
+    // this.logger.log(`ContextNode created id=${context.contextId}`);
     return contextNode;
   }
 
@@ -263,7 +263,7 @@ class GraphRoot extends HostComponentEndpoint {
 
     while (!(currentNode = this.contextNodesByContext.get(currentContext))) {
       if (!currentContext) {
-        this.logger.warn(`RootContextNode does not exist, contextQueue=${contextQueue.map(x => x?.contextId)}`);
+        this.logger.error(`Cannot build context node: RootContextNode does not exist. contextQueue=[${contextQueue.map(x => x?.contextId)}]`);
         return null;
       }
       contextQueue.push(currentContext);
