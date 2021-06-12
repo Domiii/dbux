@@ -4,7 +4,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { astNodeToString } from '../../helpers/pathHelpers';
 import { buildTraceCall, bindTemplate, bindExpressionTemplate } from '../../helpers/templateUtil';
 import { getTraceCall, makeInputs, ZeroNode } from './buildHelpers';
-import { buildArrayArgsNoSpread, getInstrumentTargetAstNode } from './common';
+import { getInstrumentTargetAstNode } from './common';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('builders/trace');
@@ -295,27 +295,6 @@ export const buildTraceWriteME = buildTraceCall(
       tid,
       objTid,
       inputs: makeInputs(traceCfg)
-    };
-  }
-);
-
-export const buildArrayExpression = buildTraceCall(
-  '%%traceArrayExpression%%(%%args%%, %%tid%%, %%argTids%%)',
-  function buildArrayExpression(state, traceCfg) {
-    const { ids: { aliases: { traceArrayExpression } } } = state;
-    const tid = buildTraceId(state, traceCfg);
-
-    const {
-      path
-    } = traceCfg;
-
-    const argPaths = path.get('elements');
-
-    return {
-      traceArrayExpression,
-      args: buildArrayArgsNoSpread(argPaths),
-      tid,
-      argTids: makeInputs(traceCfg)
     };
   }
 );

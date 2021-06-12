@@ -5,8 +5,8 @@ import * as t from '@babel/types';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import TraceCfg from '../../definitions/TraceCfg';
-import { makeInputs, NullNode, ZeroNode } from './buildHelpers';
-import { buildArrayArgsNoSpread, buildGetI } from './common';
+import { makeInputs, NullNode } from './buildHelpers';
+import { buildSpreadableArgArrayNoSpread, buildGetI } from './common';
 import { buildTraceExpressionNoInput, buildTraceId } from './misc';
 
 
@@ -190,7 +190,7 @@ export function buildTraceCallDefault(state, traceCfg) {
   // const calleeVar = generateVar(scope, 'f'); // generateCalleeVar(calleePath);
   const argsVar = generateVar(scope, 'args');
 
-  const args = buildArrayArgsNoSpread(argPaths);
+  const args = buildSpreadableArgArrayNoSpread(argPaths);
   const argNodes = argPaths?.map(a => a.node) || EmptyArray;
   const spreadArgs = buildSpreadArgs(argsVar, argNodes);
 
@@ -247,7 +247,7 @@ export function buildTraceCallME(state, traceCfg) {
 
   const argsVar = generateVar(scope, 'args');
 
-  const args = buildArrayArgsNoSpread(argPaths);
+  const args = buildSpreadableArgArrayNoSpread(argPaths);
   const argNodes = argPaths?.map(a => a.node) || EmptyArray;
   const spreadArgs = buildSpreadArgs(argsVar, argNodes);
 

@@ -103,6 +103,7 @@ export default function injectDbuxState(programPath, programState) {
 
         // {Array,Object}Expression
         traceArrayExpression: makeProgramId('tae'),
+        traceObjectExpression: makeProgramId('toe'),
       }
     },
     // console.log('[Program]', state.filename);

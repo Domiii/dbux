@@ -35,6 +35,7 @@ This page covers more broad topics related to the Dbux project:
   - [Calling `process.exit` as well as uncaught exceptions are not handled properly](#calling-processexit-as-well-as-uncaught-exceptions-are-not-handled-properly)
   - [Observer Effect](#observer-effect)
   - [`eval` and dynamically loaded code](#eval-and-dynamically-loaded-code)
+  - [Function.prototype.toString and Function.name do not behave as expected](#functionprototypetostring-and-functionname-do-not-behave-as-expected)
   - [SyntaxError: Unexpected reserved word 'XX'](#syntaxerror-unexpected-reserved-word-xx)
   - [Async Call Graph + Callback tracking](#async-call-graph--callback-tracking)
   - [Issues on Windows](#issues-on-windows)
@@ -127,14 +128,10 @@ Tracked in [#222](https://github.com/Domiii/dbux/issues/222).
 
 The following JS syntax constructs are not supported at all or support is limited.
 
-* Loops in general
-   * Loops are traced, however the loop is not properly instrumented and many important aspects of a loop are not yet recorded.
-   * Tracked in #222
 * Generator functions
    * *Probably* broken so bad that it will lead to errors when trying to run JS code with generator function declarations in it.
 * do-while loops
-   * Not breaking other things. Just won't know much about your do-while loop.
-   * Afaik, there was some issue with Babel just not wanting the do-while visitor. Have not further researched.
+   * `do-while` loops are currently not traced because Babel complained any kind of `DoWhileStatement` visitor. Will have to investigate further.
 
 
 ## Problems with Values
@@ -193,6 +190,12 @@ In order to trace such code, the runtime would have to:
 
 While this is not impossible, we certainly do not currently support this feature.
 
+## Function.prototype.toString and Function.name do not behave as expected
+
+Because we instrument the function body, and sometimes even change the structure of functions to allow better tracing their behavior, their `toString()` and `name` might not be what you expect it to be.
+
+This is only of concern to those who rely on serializing and deserializing functions, e.g. for sending functions of to run in a `webworker` ([related discussion here](https://stackoverflow.com/questions/11354992/why-cant-web-worker-call-a-function-directly)).
+
 
 ## SyntaxError: Unexpected reserved word 'XX'
 
@@ -225,12 +228,12 @@ The "Asynchronous Call Graph" feature is tracked in issue #210.
 
 ## Issues on Windows
 
-* An entirely unrelated bug occurs **very rarely**, when running things in VSCode's built-in terminal, it might change to lower-case drive letter.
+* A bug unrelated to Dbux occurs **very rarely**, when running things in VSCode's built-in terminal: it might change `require` or `import` paths to lower-case drive letter.
    * NOTE: Luckily, we have not seen this bug occur in quite some time.
-   * This causes a mixture of lower-case and upper-case drive letters to start appearing in `require` paths
+   * The bug causes a mixture of lower-case and upper-case drive letters to start appearing in `require` paths
       * => this makes `babel` unhappy ([github issue](https://github.com/webpack/webpack/issues/2815))
    * Official bug report: https://github.com/microsoft/vscode/issues/9448
-   * Solution: Restart your computer (can help!), run command in external `cmd` or find a better behaving terminal
+   * Workaround: Restart your computer (can help!), run command in external `cmd` or find a better behaving shell/terminal
 
 
 # Dbux Data Analysis

@@ -249,24 +249,6 @@ o[f('p')][f('q')].a
 
 # Some Complex Parsing Examples
 
-## Object/array property assignments
-
-```js
-// TODO: how to nest deferred writes? (e.g. `tOe -> tOe -> tAe` etc.)
-// traceExpression{Object,Array}
-(trace{O,A}E)(objOrArr, tid, deferTid, inputTids)
-  traceExpression(
-    { 
-      a: tw(1, %tid1%, %nid1%, %tid0%, []),
-      [b]: tw(f(), %tid2%, %nid2%, tid0, [])
-    },
-    %tid0%,
-    %declarationTid%,
-    [tid1, tid2, ...]
-  )
-```
-
-
 ## ClassProperty
 
 NOTE: `ClassProperty` can observe some complex recursive behavior. E.g.:

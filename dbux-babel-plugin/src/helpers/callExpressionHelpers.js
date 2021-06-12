@@ -47,16 +47,3 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 //   }
 //   return false;
 // }
-
-/**
- * NOTE: CallExpression and ArrayExpression take the same type of arguments.
- */
-function makeStaticArrayArgCfg(argPath) {
-  return {
-    isSpread: argPath.isSpreadElement()
-  };
-}
-
-export function makeStaticArrayArgsCfg(argumentPaths) {
-  return argumentPaths?.map(makeStaticArrayArgCfg) || EmptyArray;
-}

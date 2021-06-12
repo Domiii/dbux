@@ -1,6 +1,7 @@
 /**
  * @file
  */
+/** @typedef { import("../constants/DataNodeType").default } DataNodeType */
 
 
 /**
@@ -38,6 +39,11 @@ export default class DataNode {
    * The trace that recorded this `DataNode`.
    */
   traceId;
+
+  /**
+   * @type {DataNodeType}
+   */
+  type;
 
   /**
    * Id of object's `ValueRef`.

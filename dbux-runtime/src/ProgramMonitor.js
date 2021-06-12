@@ -263,7 +263,7 @@ export default class ProgramMonitor {
   }
 
   traceArrayExpression = (args, tid, argTids) => {
-    console.debug(`[Dbux traceArrayExpression] tid=${tid}, strace=${JSON.stringify(traceCollection.getStaticTraceByTraceId(tid))}`);
+    // console.debug(`[Dbux traceArrayExpression] tid=${tid}, strace=${JSON.stringify(traceCollection.getStaticTraceByTraceId(tid))}`);
     const { data: { argConfigs } } = traceCollection.getStaticTraceByTraceId(tid);
 
     const value = [];
@@ -279,7 +279,7 @@ export default class ProgramMonitor {
       }
       else {
         value.push(arg);
-        spreadLengths[i] = -1; // not a spread
+        spreadLengths[i] = -1; // not spread
       }
     }
 
@@ -288,6 +288,57 @@ export default class ProgramMonitor {
     }
 
     return this._runtimeMonitor.traceArrayExpression(this.getProgramId(), value, spreadLengths, tid, argTids);
+  }
+
+  /**
+   * 
+   */
+  traceObjectExpression = (entries, objTid, propTids) => {
+    // console.debug(`[Dbux traceArrayExpression] tid=${tid}, strace=${JSON.stringify(traceCollection.getStaticTraceByTraceId(tid))}`);
+    const { data: { argConfigs } } = traceCollection.getStaticTraceByTraceId(objTid);
+
+    // compute final object
+    const value = {};
+    const spreadLengths = new Array(entries.length);
+    for (let i = 0; i < entries.length; ++i) {
+      if (argConfigs[i].isSpread) {
+        // Get all arg spread keys.
+        // The spread operator observes `Object.assign` semantics.
+        // Explained in: https://babeljs.io/docs/en/babel-plugin-proposal-object-rest-spread
+        /**
+         * It is important to use spread (or `Object.assign` before using the spreaded object), as shown in the following example.
+         * NOTE: The following will not succeed, if one used `Object.keys` to substitute `Object.assign`.
+         * NOTE2: That is why `lodash.size` is also incorrect - https://github.com/lodash/lodash/blob/2f79053d7bc7c9c9561a30dda202b3dcd2b72b90/size.js#L40
+         * @example
+         * ```
+           function f() {}
+           var o = {};
+           Object.assign(f, { get x() { return 1; } });
+           Object.assign(o, f)
+           console.assert(!!o.x);
+           o
+         * ```
+         */
+
+        // NOTE: object spreading does not throw (more lenient than array and argument spreading)
+        const o = { ...entries[i] };
+        Object.assign(value, o);
+
+        // store spreaded object back in `entries`, for creating `DataNode`s
+        entries[i] = o;
+      }
+      else {
+        const [key, entryVal] = entries[i];
+        value[key] = entryVal;
+        spreadLengths[i] = -1; // not spread
+      }
+    }
+
+    if (this.areTracesDisabled) {
+      return value;
+    }
+
+    return this._runtimeMonitor.traceObjectExpression(this.getProgramId(), value, entries, argConfigs, objTid, propTids);
   }
 
   // ###########################################################################

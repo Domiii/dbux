@@ -1,11 +1,24 @@
-function f(a, b) {
-  return a + b;
+/**
+ * NOTE: `ObjectMethod` observes the same semantics as `FunctionExpression`.
+ * 
+ * @see https://eslint.org/docs/rules/object-shorthand
+ */
+
+function f() { console.log(...arguments); }
+class A {
+  o = {
+    g() { f('g', this); },
+    h: function () { f('h', this); }
+  };
 }
 
-// function g(x) {
-//   return x * 4;
-// }
+var o = new A().o;
+o.g();
+o['g']();
+var g = o.g;
+g()
 
-// const x = f(1, 2);
-// const y = g(x);
-// console.log(y);
+o.h();
+o['h']();
+var h = o.h;
+h()

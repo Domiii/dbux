@@ -1,3 +1,4 @@
+import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 import Trace from '@dbux/common/src/core/data/Trace';
 import { newLogger } from '@dbux/common/src/log/logger';
 import isObject from 'lodash/isObject';
@@ -35,8 +36,8 @@ export class DataNodeCollection extends Collection {
     return dataNode;
   }
 
-  createOwnDataNode(value, traceId, varAccess = null, inputs = null) {
-    const dataNode = this.createDataNode(value, traceId, varAccess, inputs);
+  createOwnDataNode(value, traceId, type, varAccess = null, inputs = null) {
+    const dataNode = this.createDataNode(value, traceId, type, varAccess, inputs);
     const trace = traceCollection.getById(traceId);
     trace.nodeId = dataNode.nodeId;
     return dataNode;
@@ -45,7 +46,7 @@ export class DataNodeCollection extends Collection {
   /**
    * Sometimes a single trace doubles as a read and a write node.
    * In that case:
-   * * the read was recorded already
+   * * the read was the (only) previously recorded DataNode of that Trace
    * * the `refId` of the two is the same
    * * the new write node's single input is the read node
    */
@@ -57,16 +58,17 @@ export class DataNodeCollection extends Collection {
 
   createWriteNodeFromReadNode(traceId, readNode, varAccess) {
     const inputs = [readNode.nodeId];
-    const writeNode = this.createDataNode(undefined, traceId, varAccess, inputs);
+    const writeNode = this.createDataNode(undefined, traceId, DataNodeType.Write, varAccess, inputs);
     writeNode.refId = readNode.refId;
     return writeNode;
   }
 
-  createDataNode(value, traceId, varAccess, inputs) {
+  createDataNode(value, traceId, type, varAccess, inputs) {
     const dataNode = pools.dataNodes.allocate();
 
     dataNode.nodeId = this._all.length;
     dataNode.traceId = traceId;
+    dataNode.type = type;
     dataNode.inputs = inputs;
 
     this.push(dataNode);
@@ -82,7 +84,7 @@ export class DataNodeCollection extends Collection {
 
     if (Verbose) {
       const valueStr = dataNode.refId ? `refId=${dataNode.refId}` : `value=${value}`;
-      debug(`createDataNode #${dataNode.nodeId}, tid=${traceId}, varAccess=${JSON.stringify(varAccess)}, ${valueStr}`);
+      debug(`createDataNode #${dataNode.nodeId}, ${DataNodeType.nameFromForce(type)}, tid=${traceId}, varAccess=${JSON.stringify(varAccess)}, ${valueStr}`);
     }
 
     this._send(dataNode);

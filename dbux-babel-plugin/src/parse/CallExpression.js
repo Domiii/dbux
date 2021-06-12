@@ -1,7 +1,7 @@
 // import { instrumentCallExpressionEnter } from '../zz_archive/traceHelpers.old';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import { makeStaticArrayArgsCfg } from '../helpers/callExpressionHelpers';
+import { makeSpreadableArgumentArrayCfg } from '../helpers/argsUtil';
 import { traceCallExpressionDefault } from '../instrumentation/callExpressions';
 import BaseNode from './BaseNode';
 
@@ -120,7 +120,7 @@ export default class CallExpression extends BaseNode {
       staticTraceData: {
         type: TraceType.BeforeCallExpression,
         data: {
-          argConfigs: makeStaticArrayArgsCfg(argumentPaths)
+          argConfigs: makeSpreadableArgumentArrayCfg(argumentPaths)
         }
       },
       meta: {

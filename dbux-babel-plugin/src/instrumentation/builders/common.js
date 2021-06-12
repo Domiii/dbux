@@ -137,31 +137,3 @@ export function getInstrumentTargetAstNode(traceCfg) {
   return targetNode || getInstrumentPath(traceCfg).node || UndefinedNode;
 }
 
-
-// ###########################################################################
-// arrays
-// ###########################################################################
-
-export function buildArrayOfVariables(names) {
-  return t.arrayExpression(names.map(name => t.identifier(name)));
-}
-
-export function buildGetI(argsVar, i) {
-  return t.memberExpression(argsVar, t.numericLiteral(i), true, false);
-}
-
-export function buildArrayArgsNoSpread(argPaths) {
-  // const { ids: { aliases: {
-  //   arrayFrom
-  // } } } = state;
-  return t.arrayExpression(argPaths
-    .map(argPath => argPath.isSpreadElement() ?
-      // t.callExpression(
-      //   arrayFrom,
-      //   [argNode.argument]
-      // ) :
-      argPath.node.argument :
-      argPath.node
-    )
-  );
-}

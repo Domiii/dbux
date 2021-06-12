@@ -10,6 +10,7 @@ import Runtime from './Runtime';
 import ProgramMonitor from './ProgramMonitor';
 import dataNodeCollection from './data/dataNodeCollection';
 import valueCollection from './data/valueCollection';
+import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('RM');
@@ -131,10 +132,10 @@ export default class RuntimeMonitor {
   }
 
   registerParams(programId, paramTids) {
-    // TODO
+    // nothing to do (for now)
   }
 
-  traceReturn(programId, value, tid, declarationTid, inputs) {
+  traceReturn(programId, value, tid, inputs) {
     // for now: same as `te`
     return this.traceExpression(programId, value, tid, declarationTid, inputs);
   }
@@ -435,7 +436,7 @@ export default class RuntimeMonitor {
     const varAccess = {
       declarationTid: traceId
     };
-    dataNodeCollection.createOwnDataNode(value, traceId, varAccess);
+    dataNodeCollection.createOwnDataNode(value, traceId, varAccess, DataNodeType.Write);
 
     return traceId;
   }
@@ -450,7 +451,7 @@ export default class RuntimeMonitor {
     }
 
     const varAccess = null;
-    dataNodeCollection.createOwnDataNode(value, tid, varAccess, traceCollection.getDataNodeIdsByTraceIds(inputs));
+    dataNodeCollection.createOwnDataNode(value, tid, varAccess, DataNodeType.Read, traceCollection.getDataNodeIdsByTraceIds(inputs));
     return value;
   }
 
@@ -464,7 +465,7 @@ export default class RuntimeMonitor {
     }
 
     const varAccess = declarationTid && { declarationTid } || null;
-    dataNodeCollection.createOwnDataNode(value, tid, varAccess, traceCollection.getDataNodeIdsByTraceIds(inputs));
+    dataNodeCollection.createOwnDataNode(value, tid, varAccess, DataNodeType.Read, traceCollection.getDataNodeIdsByTraceIds(inputs));
     return value;
   }
 
@@ -487,38 +488,12 @@ export default class RuntimeMonitor {
     // NOTE: should not have actual inputs
     inputs = null;
 
-    dataNodeCollection.createOwnDataNode(value, tid, varAccess, traceCollection.getDataNodeIdsByTraceIds(inputs));
+    dataNodeCollection.createOwnDataNode(value, tid, varAccess, DataNodeType.Read, traceCollection.getDataNodeIdsByTraceIds(inputs));
     return value;
   }
 
   // registerTrace(value, tid) {
   //   const trace = traceCollection.getById(tid);
-  // }
-
-  // // TODO: traceME
-  // traceME(value, objTid, tid, memberPath, ...inputs) {
-  // /* const trace =  */registerTrace(value, tid);
-  //   const { refTid } = registerValue(tid, value);
-  //   createDataNode(tid, { objTid, memberPath, refTid }, inputs);
-  //   return value;
-  // }
-
-  // createWriteDataNodesX(value, trace, inputs) {
-  //   const { tid } = trace;
-  //   const staticTrace = getStaticTrace(trace);
-  //   const { dataNode: staticDataNode } = staticTrace;
-
-  //   const dataNode = createDataNode(tid, inputs);
-  //   const deferredChildrenTids = getDeferredTids(tid);
-
-  //   handleNodeX(value, trace, dataNode, inputs, deferredChildrenTids);
-  // }
-
-  // handleNodeX(value, trace, dataNode, inputs, deferredChildrenTids) {
-  //   // TODO: varAccess{Id,ME}
-  //   if (deferredChildrenTids) {
-  //     // TODO: children
-  //   }
   // }
 
   traceWriteVar(programId, value, tid, declarationTid, inputs) {
@@ -537,7 +512,7 @@ export default class RuntimeMonitor {
       declarationTid = tid;
     }
     const varAccess = declarationTid && { declarationTid };
-    dataNodeCollection.createOwnDataNode(value, tid, varAccess, traceCollection.getDataNodeIdsByTraceIds(inputs));
+    dataNodeCollection.createOwnDataNode(value, tid, varAccess, DataNodeType.Write, traceCollection.getDataNodeIdsByTraceIds(inputs));
     return value;
   }
 
@@ -555,7 +530,7 @@ export default class RuntimeMonitor {
       objTid,
       prop: propValue
     };
-    dataNodeCollection.createOwnDataNode(value, tid, varAccess, traceCollection.getDataNodeIdsByTraceIds(inputs));
+    dataNodeCollection.createOwnDataNode(value, tid, varAccess, DataNodeType.Write, traceCollection.getDataNodeIdsByTraceIds(inputs));
     return value;
   }
 
@@ -588,7 +563,7 @@ export default class RuntimeMonitor {
 
       const argTid = argTids[i];
 
-      // a spread arg has its own `DataNode`, plus one per element
+      // Add one `DataNode` per spread argument
       for (let j = 0; j < spreadArg.length; j++) {
         const arg = spreadArg[j];
 
@@ -597,7 +572,7 @@ export default class RuntimeMonitor {
           prop: j
         };
         // [spread]
-        dataNodeCollection.createDataNode(arg, argTid, varAccess);
+        dataNodeCollection.createDataNode(arg, argTid, varAccess, DataNodeType.Read);
       }
     }
   }
@@ -610,7 +585,7 @@ export default class RuntimeMonitor {
   }
 
   traceArrayExpression(programId, value, spreadLengths, arrTid, argTids) {
-    dataNodeCollection.createOwnDataNode(value, arrTid);
+    dataNodeCollection.createOwnDataNode(value, arrTid, null, DataNodeType.Create);
 
     // for each element: add (new) write node which has (original) read node as input
     let idx = 0;
@@ -625,7 +600,7 @@ export default class RuntimeMonitor {
             objTid: argTid,
             prop: j
           };
-          const readNode = dataNodeCollection.createDataNode(value[idx], argTid, readAccess);
+          const readNode = dataNodeCollection.createDataNode(value[idx], argTid, readAccess, DataNodeType.Read);
           const writeAccess = {
             objTid: arrTid,
             prop: idx
@@ -640,9 +615,46 @@ export default class RuntimeMonitor {
           objTid: arrTid,
           prop: i
         };
-        // [write]
         dataNodeCollection.createWriteNodeFromReadWriteTrace(argTid, varAccess);
         ++idx;
+      }
+    }
+
+    return value;
+  }
+
+  traceObjectExpression(programId, value, entries, argConfigs, objTid, propTids) {
+    dataNodeCollection.createOwnDataNode(value, objTid, null, DataNodeType.Create);
+
+    // for each prop: add (new) write node which has (original) read node as input
+    for (let i = 0; i < entries.length; i++) {
+      const propTid = propTids[i];
+
+      if (argConfigs[i].isSpread) {
+        // [spread]
+        const nested = entries[i];
+        // NOTE: we can use `for in` here, because this is the "spread copy" of the object
+        for (const key in nested) {
+          const readAccess = {
+            objTid: propTid,
+            prop: key
+          };
+          const readNode = dataNodeCollection.createDataNode(value[key], propTid, readAccess, DataNodeType.Read);
+          const writeAccess = {
+            objTid: objTid,
+            prop: key
+          };
+          dataNodeCollection.createWriteNodeFromReadNode(propTid, readNode, writeAccess);
+        }
+      }
+      else {
+        // not spread
+        const [key] = entries[i];
+        const varAccess = {
+          objTid: objTid,
+          prop: key
+        };
+        dataNodeCollection.createWriteNodeFromReadWriteTrace(propTid, varAccess);
       }
     }
 

@@ -1,7 +1,7 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
-import { buildArrayExpression } from '../instrumentation/builders/misc';
+import { buildArrayExpression } from '../instrumentation/builders/arrays';
 import BaseNode from './BaseNode';
-import { makeStaticArrayArgsCfg } from '../helpers/callExpressionHelpers';
+import { makeSpreadableArgumentArrayCfg } from '../helpers/argsUtil';
 
 /**
  * 
@@ -22,7 +22,7 @@ export default class ArrayExpression extends BaseNode {
           isNew: true
         },
         data: {
-          argConfigs: makeStaticArrayArgsCfg(elements)
+          argConfigs: makeSpreadableArgumentArrayCfg(elements)
         }
       },
       meta: {
