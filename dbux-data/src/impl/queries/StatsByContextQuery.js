@@ -74,11 +74,7 @@ export default class StatsByContextQuery extends IncrementalQuery {
         stats.nTreeContexts = 1;
 
         const staticContextProgramId = dp.util.getContextStaticContext(contextId)?.programId;
-        programIdSet.add(staticContextProgramId);
-      
-        // const programId =
-        //   programIdSet.add(programId);
-        // stats.fileCalled = 1;
+        programIdSet.add(staticContextProgramId); 
 
         for (const child of children) {
           const childSet = dfs(child);
