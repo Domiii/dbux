@@ -21,8 +21,8 @@ export function makeSpreadableArgumentArrayCfg(argumentPaths) {
  * 
  * NOTE: This is used by `ObjectExpression`.
  */
-export function makeSpreadableArgumentObjectCfg(propPaths) {
-  return propPaths?.map((propPath) => ({ 
+export function makeSpreadableArgumentObjectCfg(propertyPaths) {
+  return propertyPaths?.map((propPath) => ({ 
     key: propPath.node.key,
     isSpread: propPath.isSpreadElement()
   })) || EmptyArray;

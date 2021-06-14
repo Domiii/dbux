@@ -1,13 +1,9 @@
 // import template from '@babel/template';
 import * as t from '@babel/types';
-import { newLogger } from '@dbux/common/src/log/logger';
-import { astNodeToString } from '../../helpers/pathHelpers';
 import { buildTraceCall, bindTemplate, bindExpressionTemplate } from '../../helpers/templateUtil';
 import { getTraceCall, makeInputs, ZeroNode } from './buildHelpers';
 import { getInstrumentTargetAstNode } from './common';
-
-// eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('builders/trace');
+import { convertNonComputedPropToStringLiteral } from './objects';
 
 const Verbose = 2;
 
@@ -200,25 +196,6 @@ function getMEObjectNode(meNode, traceCfg) {
   return traceCfg.data.objectNode || meNode.object;
 }
 
-function getMEPropNode(meNode) {
-  let prop = meNode.property;
-  if (!meNode.computed) {
-    let propName;
-    if (!t.isIdentifier(prop)) {
-      // NOTE: should never happen
-      logError(`ME property was not computed and NOT identifier: ${astNodeToString(meNode)}`);
-      propName = prop.name || prop.toString();
-    }
-    else {
-      propName = prop.name;
-    }
-    // NOTE: `o.x` becomes `tme(..., 'x', ...)`
-    //      -> convert `Identifier` to `StringLiteral`
-    prop = t.stringLiteral(propName);
-  }
-  return prop;
-}
-
 export const buildTraceMemberExpression = bindExpressionTemplate(
   '%%tme%%(%%objValue%%, %%propValue%%, %%tid%%, %%inputs%%)',
   function buildTraceMemberExpression(state, traceCfg) {
@@ -241,7 +218,7 @@ export const buildTraceMemberExpression = bindExpressionTemplate(
       /**
        * NOTE: we are getting the `prop` here (and not earlier), to make sure its the final instrumented version.
        */
-      propValue: getMEPropNode(meNode),
+      propValue: convertNonComputedPropToStringLiteral(meNode.property, meNode.computed),
       tid,
       inputs: makeInputs(traceCfg)
     };
@@ -290,7 +267,7 @@ export const buildTraceWriteME = buildTraceCall(
       /**
        * NOTE: we are getting the `prop` in this method (and not earlier), to make sure its the final instrumented version.
        */
-      propValue: getMEPropNode(meNode),
+      propValue: convertNonComputedPropToStringLiteral(meNode),
       rVal,
       tid,
       objTid,

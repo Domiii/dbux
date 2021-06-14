@@ -19,23 +19,25 @@ export default class BindingIdentifier extends BaseId {
   // exit1
   // ###########################################################################
 
-  /**
-   * Based on `@babel/traverse/lib/scope/index.js` -> `collectorVisitor`
-   */
   getBindingScope() {
-    const { path } = this.binding;
-    if (path.isBlockScoped()) {
-      let { scope } = path;
-      if (scope.path === path) scope = scope.parent;
-      return scope.getBlockParent();
-    }
-    else if (path.isDeclaration()) {
-      // if (path.isBlockScoped()) return;
-      // if (path.isExportDeclaration()) return;
-      // const parent = path.scope.getFunctionParent() || path.scope.getProgramParent();
-      // parent.registerDeclaration(path);
-      return path.scope.getFunctionParent() || path.scope.getProgramParent();
-    }
+    const { path, scope } = this.binding;
+
+
+    // /**
+    //  * Based on `@babel/traverse/lib/scope/index.js` -> `collectorVisitor`
+    //  */
+    // if (path.isBlockScoped()) {
+    //   let { scope } = path;
+    //   if (scope.path === path) scope = scope.parent;
+    //   return scope.getBlockParent();
+    // }
+    // else if (path.isDeclaration() || path.isFunction()) {
+    //   // if (path.isBlockScoped()) return;
+    //   // if (path.isExportDeclaration()) return;
+    //   // const parent = path.scope.getFunctionParent() || path.scope.getProgramParent();
+    //   // parent.registerDeclaration(path);
+    //   return path.scope.getFunctionParent() || path.scope.getProgramParent();
+    // }
 
     // TODO: Class/FunctionExpressions vs. t.NOT_LOCAL_BINDING?
 
@@ -43,7 +45,8 @@ export default class BindingIdentifier extends BaseId {
     // CatchClause(path) {
     //   path.scope.registerBinding("let", path);
     // }
-    return path.scope;
+    // return path.scope;
+    return scope;
   }
 
   /**

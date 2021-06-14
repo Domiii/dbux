@@ -10,13 +10,10 @@ export default class FunctionExpression extends BaseNode {
   exit() {
     const { path } = this;
 
-    // NOTE: have to get the `parent` because else it will add the variable to its own body
-    const { scope } = path.parentPath;
-
     const traceData = {
       node: this,
       path,
-      scope,
+      scope: path.parentPath.scope, // prevent adding `tid` variable to own body
       staticTraceData: {
         type: TraceType.ExpressionResult,
         dataNode: {

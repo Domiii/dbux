@@ -1,4 +1,5 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
+import { makeSpreadableArgumentObjectCfg } from '../helpers/argsUtil';
 import { buildObjectExpression } from '../instrumentation/builders/objects';
 import BaseNode from './BaseNode';
 
@@ -7,7 +8,7 @@ import BaseNode from './BaseNode';
  * To: `toe([['a', a], ['b', 3], spread1, ['c', function () {}], [d, f()], spread2], tids)`
  */
 export default class ObjectExpression extends BaseNode {
-  static children = ['elements'];
+  static children = ['properties'];
 
   // /**
   //  * Whether this OE is ES5.
@@ -15,8 +16,8 @@ export default class ObjectExpression extends BaseNode {
   //  * If `true`, can be instrument without reshaping.
   //  */
   // isES5() {
-  //   const [elements] = this.getChildPaths();
-  //   return !elements.some(
+  //   const [properties] = this.getChildPaths();
+  //   return !properties.some(
   //     el => el.isSpreadElement() || el.isObjectMethod() || el.node.computed || el.node.shorthand
   //   );
   // }
@@ -28,7 +29,7 @@ export default class ObjectExpression extends BaseNode {
     // }
 
     const { path } = this;
-    const [elements] = this.getChildPaths();
+    const [propertyPaths] = this.getChildPaths();
 
     const traceData = {
       path,
@@ -38,16 +39,16 @@ export default class ObjectExpression extends BaseNode {
         dataNode: {
           isNew: true
         },
-        // data: {
-        //   argConfigs: makeSpreadableArgumentObjectCfg(elements)
-        // }
+        data: {
+          argConfigs: makeSpreadableArgumentObjectCfg(propertyPaths)
+        }
       },
       meta: {
         build: buildObjectExpression
       }
     };
 
-    const inputs = elements;
+    const inputs = propertyPaths;
 
     this.Traces.addTraceWithInputs(traceData, inputs);
   }

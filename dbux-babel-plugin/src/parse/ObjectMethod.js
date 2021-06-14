@@ -1,3 +1,6 @@
+import * as t from '@babel/types';
+import TraceType from '@dbux/common/src/core/constants/TraceType';
+import { buildTraceExpression } from '../instrumentation/builders/misc';
 import BaseNode from './BaseNode';
 
 /**
@@ -14,26 +17,64 @@ export default class ObjectMethod extends BaseNode {
     'StaticContext'
   ];
 
-  // TODO: `ObjectMethod` -> `kind !== method`
+  buildDefaultTrace() {
+    const { path } = this;
+    return {
+      path,
+      node: this,
+      scope: path.parentPath.scope, // prevent adding `tid` variable to own body
+      staticTraceData: {
+        type: TraceType.ExpressionResult
+      },
+      dataNode: {
+        isNew: true
+      },
+      meta: {
+        instrument: this.convertToObjectProperty
+      }
+    };
+  }
 
-  // get traceCfg() {
-  //   const [TODO] = this.getChildNodes();
-  //   return argNode?.traceCfg;
-  // }
+  addDefaultTrace() {
+    // TODO: `decorators`
 
-  // createDefaultTrace() {
-  //   const [TODO] = this.getChildNodes();
-  //   const traceData = argNode?.createDefaultTrace(); // || this.createOwnDefaultTrace();
+    /**
+     * TODO: `ObjectMethod` -> `kind !== 'method'`
+     *  -> Consider using `defineProperty`
+     *  -> https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get#defining_a_getter_on_existing_objects_using_defineproperty
+     *
+     * Consider:
+     * ```js
+       var o = {
+        a: 0,
+        get b() { return this.a + 1; }
+      };
+      Object.getOwnPropertyDescriptor(o, 'b')
+      ```
+     */
 
-  //   // TODO: need to instrument in order to trace this
+    const [keyNode] = this.getChildNodes();
+    // NOTE: non-computed keys don't have their own ParseNode (for now).
+    //      `ObjectExpression` instrumentation will assure correct traces + DataNodes nevertheless.
+    keyNode?.addDefaultTrace();
 
-  //   if (traceData.path === argNode.path) {  // small sanity check
-  //     // // NOTE: we actually tace `argument`, but we want the "selectable trace" to be the entire `SpreadElement`
-  //     // traceData.path = this.path;
-  //     // traceData.meta = traceData.meta || {};
-  //     // traceData.meta.replacePath = argNode.path;
-  //   }
+    return super.addDefaultTrace();
+  }
 
-  //   return traceData;
-  // }
+  convertToObjectProperty = () => {
+    const { path, state, traceCfg } = this;
+
+    const { key, params, body, generator, async, computed, shorthand, decorators } = path.node;
+
+    traceCfg.meta.targetNode = t.functionExpression(t.isIdentifier(key) ? key : null, params, body, generator, async);
+    const value = buildTraceExpression(state, traceCfg);
+
+    path.replaceWith(t.objectProperty(
+      key,
+      value,
+      computed,
+      shorthand,
+      decorators
+    ));
+  }
 }

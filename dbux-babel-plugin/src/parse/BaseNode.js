@@ -1,3 +1,4 @@
+import NestedError from '@dbux/common/src/NestedError';
 import ParseNode from '../parseLib/ParseNode';
 import StaticContext from './plugins/StaticContext';
 import Traces from './plugins/Traces';
@@ -68,9 +69,28 @@ export default class BaseNode extends ParseNode {
     this._traceCfg = traceData;
   }
 
-  createDefaultTrace() {
-    this.logger.warn(`ParseNode did not implement "createDefaultTrace": ${this}`);
+  /**
+   * @protected
+   */
+  buildDefaultTrace() {
+    this.logger.warn(`ParseNode did not implement "buildDefaultTrace": ${this}`);
     return null;
+  }
+
+  addDefaultTrace() {
+    try {
+      if (!this.traceCfg) {
+        const traceData = this.buildDefaultTrace();
+        if (!traceData) {
+          return null;
+        }
+        this.Traces.addTrace(traceData);
+      }
+    }
+    catch (err) {
+      throw new NestedError(`addDefaultTrace failed for Node ${this}`, err);
+    }
+    return this.traceCfg;
   }
 
   // ###########################################################################

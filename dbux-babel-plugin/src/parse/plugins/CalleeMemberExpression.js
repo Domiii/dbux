@@ -22,8 +22,6 @@ export default class CalleeMemberExpression extends ParsePlugin {
 
   exit1() {
     const { calleeNode } = this;
-
-    // NOTE: `calleeNode instanceof MemberExpression`
     calleeNode.handler = this;
   }
 
@@ -45,7 +43,7 @@ export default class CalleeMemberExpression extends ParsePlugin {
 
     // NOTE:
     //  1. instrument (replace) the new calleeAstNode, not the original
-    //  2. input should point to original object, not objectVar
+    //  2. input should point to original object
     traceCfg.data.calleeTrace = calleeNode.addRValTrace(false, objectVar);
   }
 }

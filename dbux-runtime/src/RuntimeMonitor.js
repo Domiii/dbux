@@ -137,7 +137,7 @@ export default class RuntimeMonitor {
 
   traceReturn(programId, value, tid, inputs) {
     // for now: same as `te`
-    return this.traceExpression(programId, value, tid, declarationTid, inputs);
+    return this.traceExpression(programId, value, tid, inputs);
   }
 
 
@@ -436,7 +436,7 @@ export default class RuntimeMonitor {
     const varAccess = {
       declarationTid: traceId
     };
-    dataNodeCollection.createOwnDataNode(value, traceId, varAccess, DataNodeType.Write);
+    dataNodeCollection.createOwnDataNode(value, traceId, DataNodeType.Write, varAccess);
 
     return traceId;
   }
@@ -451,7 +451,7 @@ export default class RuntimeMonitor {
     }
 
     const varAccess = null;
-    dataNodeCollection.createOwnDataNode(value, tid, varAccess, DataNodeType.Read, traceCollection.getDataNodeIdsByTraceIds(inputs));
+    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess, traceCollection.getDataNodeIdsByTraceIds(inputs));
     return value;
   }
 
@@ -465,7 +465,7 @@ export default class RuntimeMonitor {
     }
 
     const varAccess = declarationTid && { declarationTid } || null;
-    dataNodeCollection.createOwnDataNode(value, tid, varAccess, DataNodeType.Read, traceCollection.getDataNodeIdsByTraceIds(inputs));
+    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess, traceCollection.getDataNodeIdsByTraceIds(inputs));
     return value;
   }
 
@@ -488,7 +488,7 @@ export default class RuntimeMonitor {
     // NOTE: should not have actual inputs
     inputs = null;
 
-    dataNodeCollection.createOwnDataNode(value, tid, varAccess, DataNodeType.Read, traceCollection.getDataNodeIdsByTraceIds(inputs));
+    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess, traceCollection.getDataNodeIdsByTraceIds(inputs));
     return value;
   }
 
@@ -512,7 +512,7 @@ export default class RuntimeMonitor {
       declarationTid = tid;
     }
     const varAccess = declarationTid && { declarationTid };
-    dataNodeCollection.createOwnDataNode(value, tid, varAccess, DataNodeType.Write, traceCollection.getDataNodeIdsByTraceIds(inputs));
+    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess, traceCollection.getDataNodeIdsByTraceIds(inputs));
     return value;
   }
 
@@ -530,7 +530,7 @@ export default class RuntimeMonitor {
       objTid,
       prop: propValue
     };
-    dataNodeCollection.createOwnDataNode(value, tid, varAccess, DataNodeType.Write, traceCollection.getDataNodeIdsByTraceIds(inputs));
+    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess, traceCollection.getDataNodeIdsByTraceIds(inputs));
     return value;
   }
 
@@ -572,7 +572,7 @@ export default class RuntimeMonitor {
           prop: j
         };
         // [spread]
-        dataNodeCollection.createDataNode(arg, argTid, varAccess, DataNodeType.Read);
+        dataNodeCollection.createDataNode(arg, argTid, DataNodeType.Read, varAccess);
       }
     }
   }
@@ -585,7 +585,7 @@ export default class RuntimeMonitor {
   }
 
   traceArrayExpression(programId, value, spreadLengths, arrTid, argTids) {
-    dataNodeCollection.createOwnDataNode(value, arrTid, null, DataNodeType.Create);
+    dataNodeCollection.createOwnDataNode(value, arrTid, DataNodeType.Create);
 
     // for each element: add (new) write node which has (original) read node as input
     let idx = 0;
@@ -600,7 +600,7 @@ export default class RuntimeMonitor {
             objTid: argTid,
             prop: j
           };
-          const readNode = dataNodeCollection.createDataNode(value[idx], argTid, readAccess, DataNodeType.Read);
+          const readNode = dataNodeCollection.createDataNode(value[idx], argTid, DataNodeType.Read, readAccess);
           const writeAccess = {
             objTid: arrTid,
             prop: idx
@@ -624,7 +624,7 @@ export default class RuntimeMonitor {
   }
 
   traceObjectExpression(programId, value, entries, argConfigs, objTid, propTids) {
-    dataNodeCollection.createOwnDataNode(value, objTid, null, DataNodeType.Create);
+    dataNodeCollection.createOwnDataNode(value, objTid, DataNodeType.Create);
 
     // for each prop: add (new) write node which has (original) read node as input
     for (let i = 0; i < entries.length; i++) {
@@ -639,7 +639,7 @@ export default class RuntimeMonitor {
             objTid: propTid,
             prop: key
           };
-          const readNode = dataNodeCollection.createDataNode(value[key], propTid, readAccess, DataNodeType.Read);
+          const readNode = dataNodeCollection.createDataNode(value[key], propTid, DataNodeType.Read, readAccess);
           const writeAccess = {
             objTid: objTid,
             prop: key

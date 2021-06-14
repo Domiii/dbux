@@ -44,28 +44,8 @@ export default class Traces extends ParsePlugin {
       return this.addTrace(traceData);
     }
     else {
-      return this.addNodeDefaultTrace(node);
+      return node.addDefaultTrace();
     }
-  }
-
-  /**
-   * We generally prefer `addDefaultTrace` over `addNodeDefaultTrace`
-   */
-  addNodeDefaultTrace = (node) => {
-    if (!(node instanceof ParseNode)) {
-      // NOTE: `node` might be array. That should be handled separately.
-      this.node.logger.error(`Invalid call of addNodeDefaultTrace on non-"ParseNode" in ${this.node}\n  Instead it returned: ${node}`);
-      return null;
-    }
-
-    if (!node.traceCfg) {
-      const traceData = node.createDefaultTrace();
-      if (!traceData) {
-        return null;
-      }
-      node.Traces.addTrace(traceData);
-    }
-    return node.traceCfg;
   }
 
   /**

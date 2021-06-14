@@ -119,14 +119,12 @@ export function getReplacePath(traceCfg) {
 
 
 export function getInstrumentPath(traceCfg) {
-  const {
-    path: tracePath
-  } = traceCfg;
-  return getReplacePath(traceCfg) || tracePath;
+  return getReplacePath(traceCfg) || traceCfg.path;
 }
 
 /**
- * NOTE: actual `targetNode` node might have been moved; e.g. by `CalleeMemberExpression`.
+ * NOTE: actual `targetNode` node might have been moved
+ *    -> E.g. by `CallExpression`, `CalleeMemberExpression`, `ObjectMethod`.
  */
 export function getInstrumentTargetAstNode(traceCfg) {
   const {

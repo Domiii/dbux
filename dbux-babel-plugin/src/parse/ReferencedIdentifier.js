@@ -10,8 +10,8 @@ export default class ReferencedIdentifier extends BaseId {
   /**
    * 
    */
-  createDefaultTrace() {
-    const rawTraceData = {
+  buildDefaultTrace() {
+    const traceData = {
       path: this.path,
       node: this,
       staticTraceData: {
@@ -22,7 +22,7 @@ export default class ReferencedIdentifier extends BaseId {
       }
     };
 
-    return rawTraceData;
+    return traceData;
   }
 
   // ###########################################################################

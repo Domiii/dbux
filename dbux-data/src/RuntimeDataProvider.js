@@ -449,8 +449,11 @@ class DataNodeCollection extends Collection {
         if (!objectValueId) {
           // sanity check
           this.logger.warn(`[getAccessId] Cannot find objectValueId of dataNode: ${JSON.stringify(dataNode)}`);
+          key = null;
         }
-        key = `${objectValueId}#${prop}`;
+        else {
+          key = `${objectValueId}#${prop}`;
+        }
       }
       else {
         this.logger.error(`Trying to generate accessId with illegal dataNode: ${JSON.stringify(dataNode)}`);

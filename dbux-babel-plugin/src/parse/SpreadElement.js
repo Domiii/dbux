@@ -9,9 +9,9 @@ export default class SpreadElement extends BaseNode {
     return argNode?.traceCfg;
   }
 
-  createDefaultTrace() {
+  buildDefaultTrace() {
     const [argNode] = this.getChildNodes();
-    const traceData = argNode?.createDefaultTrace(); // || this.createOwnDefaultTrace();
+    const traceData = argNode?.buildDefaultTrace(); // || this.createOwnDefaultTrace();
 
     if (traceData.path === argNode.path) {  // small sanity check
       // NOTE: we actually tace `argument`, but we want the "selectable trace" to be the entire `SpreadElement`

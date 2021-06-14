@@ -1,6 +1,5 @@
 import * as t from "@babel/types";
 import TraceType from '@dbux/common/src/core/constants/TraceType';
-import { getScopeBlockPath } from '../helpers/scopeHelpers';
 import BaseNode from './BaseNode';
 
 export default class ArrowFunctionExpression extends BaseNode {
@@ -13,7 +12,6 @@ export default class ArrowFunctionExpression extends BaseNode {
   exit() {
     const { path } = this;
     const [, bodyPath] = this.getChildPaths();
-    const { scope } = path.parentPath;
 
     if (!bodyPath.isBlockStatement()) {
       // simple lambda expression -> convert to block lambda expression with return statement
@@ -21,11 +19,10 @@ export default class ArrowFunctionExpression extends BaseNode {
       this.data.returnTraceCfg = this.Traces.addReturnTrace(null, bodyPath, bodyPath);
     }
 
-
     const traceData = {
       node: this,
       path,
-      scope,
+      scope: path.parentPath.scope, // prevent adding `tid` variable to own body
       staticTraceData: {
         type: TraceType.ExpressionResult,
         dataNode: {

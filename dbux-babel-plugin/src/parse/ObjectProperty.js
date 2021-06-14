@@ -14,28 +14,17 @@ export default class ObjectProperty extends BaseNode {
     return valueNode?.traceCfg;
   }
 
-  createDefaultTrace() {
-    const { path } = this;
-    if (path.node.shorthand || path.node.computed) {
-      // TODO!
-      return;
-    }
-
-    const [, valueNode] = this.getChildNodes();
-    const traceData = valueNode?.createDefaultTrace();
-
-    // TODO: if `shorthand`, we require further instrumentation (cannot replace as-is)
-    // TODO: special key '__proto__'
+  addDefaultTrace() {
     // TODO: `decorators`
+    // TODO: special key '__proto__'
     // see: https://babeljs.io/docs/en/babel-types#objectproperty
 
-    // if (traceData.path === valueNode.path) {  // small sanity check
-    //   // // NOTE: we actually tace `argument`, but we want the "selectable trace" to be the entire `SpreadElement`
-    //   // traceData.path = this.path;
-    //   // traceData.meta = traceData.meta || {};
-    //   // traceData.meta.replacePath = argNode.path;
-    // }
+    const [keyNode, valueNode] = this.getChildNodes();
+    
+    // NOTE: non-computed keys don't have their own ParseNode (for now).
+    //      `ObjectExpression` instrumentation will assure correct traces + DataNodes nevertheless.
+    keyNode?.addDefaultTrace();
 
-    return traceData;
+    return valueNode?.addDefaultTrace();
   }
 }

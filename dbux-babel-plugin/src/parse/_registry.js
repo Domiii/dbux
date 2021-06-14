@@ -17,8 +17,9 @@ import FunctionExpression from './FunctionExpression';
 import Literal from './Literal';
 import LogicalExpression from './LogicalExpression';
 import MemberExpression from './MemberExpression';
-import Method from './Method';
 import ObjectExpression from './ObjectExpression';
+import ObjectMethod from './ObjectMethod';
+import ObjectProperty from './ObjectProperty';
 import Program from './Program';
 import ReferencedIdentifier from './ReferencedIdentifier';
 import ReturnStatement from './ReturnStatement';
@@ -49,8 +50,9 @@ init(FunctionExpression);
 init(Literal);
 init(LogicalExpression);
 init(MemberExpression);
-init(Method);
 init(ObjectExpression);
+init(ObjectMethod);
+init(ObjectProperty);
 init(Program);
 init(ReferencedIdentifier);
 init(ReturnStatement);
@@ -79,8 +81,9 @@ export {
   Literal,
   LogicalExpression,
   MemberExpression,
-  Method,
   ObjectExpression,
+  ObjectMethod,
+  ObjectProperty,
   Program,
   ReferencedIdentifier,
   ReturnStatement,

@@ -1,6 +1,4 @@
 import isString from 'lodash/isString';
-import isFunction from 'lodash/isFunction';
-import toString from 'serialize-javascript';
 // import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import NestedError from '@dbux/common/src/NestedError';
 import { Logger } from '@dbux/common/src/log/logger';

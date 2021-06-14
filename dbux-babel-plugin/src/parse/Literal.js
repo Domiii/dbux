@@ -2,7 +2,7 @@ import TraceType from '@dbux/common/src/core/constants/TraceType';
 import BaseNode from './BaseNode';
 
 export default class Literal extends BaseNode {
-  createDefaultTrace() {
+  buildDefaultTrace() {
     const { path } = this;
 
     return {
