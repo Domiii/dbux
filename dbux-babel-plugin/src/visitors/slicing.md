@@ -44,7 +44,7 @@ TODOs moved to: https://github.com/Domiii/dbux/issues/521
 * loops (all have reads + writes)
   * `ForStatement`
   * `ForInStatement`
-  * `DoWhileLoop`
+  * `DoWhileStatement`
   * `WhileStatement`
   * `ForOfStatement` [es6]
 * Class [es6]

@@ -220,10 +220,6 @@
 //     ForOfStatement: [
 //       Loop
 //     ],
-//     // TODO: babel is unhappy with any DoWhileLoop visitor
-//     // DoWhileLoop: [
-//     //   Loop
-//     // ],
 //     WhileStatement: [
 //       Loop
 //     ],

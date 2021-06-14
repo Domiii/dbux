@@ -138,8 +138,63 @@ export default class Function extends ParsePlugin {
     };
   }
 
+  _addParamTrace = (paramPath) => {
+    const { Traces } = this.node;
+
+    const idPaths = getBindingIdentifierPaths(paramPath);
+    if (idPaths.length !== 1) {
+      this.warn(`NYI: param is destructured into less or more than 1 variable ${pathToString(paramPath)}`);
+    }
+    const idPath = idPaths[0];
+    const idNode = this.node.getNodeOfPath(idPath);
+    const initialValuePath = getParamInitialValuePath(idPath);
+    const moreTraceData = {
+      staticTraceData: {
+        type: TraceType.Param
+      },
+      meta: {}
+    };
+
+    let definitionPath;
+    if (initialValuePath) {
+      // handle default parameter
+      definitionPath = null;  // NOTE: we will inject the value in post (moreTraceArgs)
+
+      const writeTraceData = {
+        path: paramPath,
+        // node: idNode,
+        staticTraceData: {
+          type: TraceType.WriteVar
+        },
+        meta: {
+          build: buildTraceWriteVar,
+          replacePath: initialValuePath
+        }
+      };
+
+      const writeTrace = idNode.Traces.addTrace(writeTraceData);
+
+      moreTraceData.meta.moreTraceArgs = () => {
+        // hackfix: instrument as we go
+        // 1. remove default value: `x = twv(init(), initTid,...)` becomes `x`
+        paramPath.replace(idPath.node);
+        // 2. add to instrumentation trace: `var x = td(stid, twv(init(), initTid,...), [initTid])`
+        return [
+          initialValuePath.node,
+          t.arrayExpression([writeTrace.tidIdentifier])
+        ];
+      };
+    }
+    else {
+      definitionPath = idPath;
+    }
+
+    const declTrace = idNode.addOwnDeclarationTrace(definitionPath, moreTraceData);
+    return declTrace;
+  }
+
   exit1() {
-    const { path, Traces } = this.node;
+    const { path } = this.node;
     const paramsPath = path.get('params');
     // TODO: in `dbux-data`, compute inputs[0] = `argTid` from `i`, using
     //      (i) `bceStaticTrace.dataNode.argConfigs`,
@@ -151,58 +206,7 @@ export default class Function extends ParsePlugin {
     //        e.g. `function f(...[a, b]) {}`
 
     // -> `registerParams([traceDeclaration(tid0, p0), traceDeclaration(tid1, p1), ...])`
-    this.data.paramTraces = paramsPath.map((paramPath) => {
-      const idPaths = getBindingIdentifierPaths(paramPath);
-      if (idPaths.length !== 1) {
-        this.warn(`NYI: param is destructured into less or more than 1 variable ${pathToString(paramPath)}`);
-      }
-      const idPath = idPaths[0];
-      const idNode = this.node.getNodeOfPath(idPath);
-      const initialValuePath = getParamInitialValuePath(idPath);
-      const moreTraceData = {
-        staticTraceData: {
-          type: TraceType.Param
-        },
-        meta: {}
-      };
-
-      let definitionPath;
-      if (initialValuePath) {
-        // handle default parameter
-        definitionPath = null;  // NOTE: we will inject the value in post (moreTraceArgs)
-
-        const writeTraceData = {
-          path: paramPath,
-          // node: idNode,
-          staticTraceData: {
-            type: TraceType.WriteVar
-          },
-          meta: {
-            build: buildTraceWriteVar,
-            replacePath: initialValuePath
-          }
-        };
-
-        const writeTrace = idNode.Traces.addTrace(writeTraceData);
-
-        moreTraceData.meta.moreTraceArgs = () => {
-          // hackfix: instrument as we go
-          // 1. remove default value: `x = twv(init(), initTid,...)` becomes `x`
-          paramPath.replace(idPath.node);
-          // 2. add to instrumentation trace: `var x = td(stid, twv(init(), initTid,...), [initTid])`
-          return [
-            initialValuePath.node,
-            t.arrayExpression([writeTrace.tidIdentifier])
-          ];
-        };
-      }
-      else {
-        definitionPath = idPath;
-      }
-
-      const declTrace = idNode.addOwnDeclarationTrace(definitionPath, moreTraceData);
-      return declTrace;
-    });
+    this.data.paramTraces = paramsPath.map(this._addParamTrace);
   }
 
   exit() {

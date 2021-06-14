@@ -42,9 +42,6 @@ function enter(path, state) {
 }
 
 function traverse(path, state, visitors) {
-  // TODO: babel is unhappy with any DoWhileLoop visitor
-  // delete visitors.DoWhileLoop;
-
   // error wrap!
   visitors = errorWrapVisitor(visitors);
 

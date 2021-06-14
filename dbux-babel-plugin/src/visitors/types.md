@@ -46,7 +46,7 @@
 * `ForStatement`
 * `ForInStatement`
 * `ForOfStatement`
-* `DoWhileLoop`
+* `DoWhileStatement`
 * `WhileStatement`
 * `IfStatement`
 * `SwitchStatement`

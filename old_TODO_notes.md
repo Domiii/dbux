@@ -144,8 +144,6 @@ NOTE: the important TODO items here need to be transcribed into Github issues ov
       * move a basic `server` implementation from `dbux-code` to `dbux-data`
       * then: let sample tests easily run their own server to operate on the data level
       * make sure the `test file` `launch.json` entry work withs `samples/__tests__`
-* [loops]
-   * fix `DoWhileLoop` :(
 * [generators]
    * not done yet :(
    * possible Test projects
@@ -154,19 +152,18 @@ NOTE: the important TODO items here need to be transcribed into Github issues ov
    edges, which is caused by JavaScript generator functions.
             * ref: [Towards the Efficient Use of Dynamic Call Graph Generators of Node.js Applications [2020]]
 * [async_runs]
-   * possible Test projects
-      * `shields`
-            * ref: [Towards the Efficient Use of Dynamic Call Graph Generators of Node.js Applications [2020]]
-   * re-group execution order s.t. "asynchronous runs" can be visually running "as one"
-   * consider: async functions (in a way) run parallel to normal functions
-      * (while execution is single-threaded, I/O and other system tasks will keep on doing work in the background)
-   * what to do with callbacks that preceded and then triggered a `Resume`?
-   * link up promise chains
-   * make sure that we don't accidentally use/cause evil promise semantics [[1](https://stackoverflow.com/questions/46889290/waiting-for-more-than-one-concurrent-await-operation)] [[2](https://stackoverflow.com/questions/58288256/with-a-promise-why-do-browsers-return-a-reject-twice-but-not-a-resolve-twice/58288370#58288370)]
-   * double check against the [Promise/A+ spec](https://promisesaplus.com/#notes), especially semantics of promise rejections and their execution order
-      * rejections might be triggered from "platform code"
-      * https://stackoverflow.com/questions/42118900/when-is-the-body-of-a-promise-executed
-      * http://www.ecma-international.org/ecma-262/6.0/#sec-promise-executor
+  * possible Test projects: `shields`
+  * ref: [Towards the Efficient Use of Dynamic Call Graph Generators of Node.js Applications [2020]]
+  * re-group execution order s.t. "asynchronous runs" can be visually running "as one"
+  * consider: async functions (in a way) run parallel to normal functions
+    * (while execution is single-threaded, I/O and other system tasks will keep on doing work in the background)
+  * what to do with callbacks that preceded and then triggered a `Resume`?
+  * link up promise chains
+  * make sure that we don't accidentally use/cause evil promise semantics [[1](https://stackoverflow.com/questions/46889290/waiting-for-more-than-one-concurrent-await-operation)] [[2](https://stackoverflow.com/questions/58288256/with-a-promise-why-do-browsers-return-a-reject-twice-but-not-a-resolve-twice/58288370#58288370)]
+  * double check against the [Promise/A+ spec](https://promisesaplus.com/#notes), especially semantics of promise rejections and their execution order
+  * rejections might be triggered from "platform code"
+  * https://stackoverflow.com/questions/42118900/when-is-the-body-of-a-promise-executed
+  * http://www.ecma-international.org/ecma-262/6.0/#sec-promise-executor
 * fix: `sourceHelper` must use original code, but exclude comments
 * fix: `StaticTrace.staticContextId`
    * generally less accurate than `trace.context.staticContextId`

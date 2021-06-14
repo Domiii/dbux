@@ -1,6 +1,6 @@
 import BaseNode from './BaseNode';
 
-export default class WhileStatement extends BaseNode {
+export default class DoWhileStatement extends BaseNode {
   static children = ['test', 'body'];
 
   static plugins = [
@@ -8,7 +8,6 @@ export default class WhileStatement extends BaseNode {
   ];
 
   exit() {
-    // const { path } = this;
     const [test] = this.getChildPaths();
     this.Traces.addDefaultTrace(test);
   }
