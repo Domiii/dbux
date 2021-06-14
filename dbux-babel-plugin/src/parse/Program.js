@@ -25,11 +25,16 @@ function buildProgramInit(path, { ids, contexts: { genContextId } }) {
   // const { sourceType } = path.node;
   // console.log(path.fileName, sourceType);
 
-  // TODO: use template instead
+  // future-work: only add referenced aliases
+  const aliasesEntries = Object.entries(aliases);
+  if (aliasesEntries.length !== new Set(Object.values(aliases)).size) {
+    throw new Error(`Non-unique alias detected: ${Object.values(aliases).join(',')}`);
+  }
+
   return buildSource([
     `var ${dbux.name} = ${dbuxInit.name}(typeof __dbux__ !== 'undefined' || require('@dbux/runtime'));`,
     `var ${contextId.name} = ${dbux.name}.getProgramContextId();`,
-    `var ${Object.entries(aliases)
+    `var ${aliasesEntries
       .map(([dbuxProp, varName]) => `${varName.name} = ${dbux.name}.${dbuxProp}`)
       .join(', ')};`
   ].join('\n'));

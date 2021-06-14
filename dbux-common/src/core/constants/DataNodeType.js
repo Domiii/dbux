@@ -2,9 +2,8 @@ import Enum from '../../util/Enum';
 
 // eslint-disable-next-line import/no-mutable-exports
 let DataNodeType = {
-  Create: 1,
-  Write: 2,
-  Read: 3,
+  Write: 1,
+  Read: 2,
 };
 
 /**

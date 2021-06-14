@@ -17,8 +17,6 @@ TODOs moved to: https://github.com/Domiii/dbux/issues/521
 * assignments
   * `AssignmentExpression`
   * `VariableDeclaration`
-  * `ClassPrivateProperty`
-  * `ClassProperty`
 
 * function + calls
   * `Function`
@@ -36,9 +34,9 @@ TODOs moved to: https://github.com/Domiii/dbux/issues/521
   * `LogicalExpression`
 
 * Value-creating/-changing
-  * `UpdateExpression` [write]
+  * `UpdateExpression`
     * add both `read` and `write` nodes, similar to the corresponding `AssignmentExpression` (i++ ~ i = i+1)
-  * `{Array,Object}Expression` [write]
+  * `{Array,Object}Expression`
     * 1 parent `read` + many `write` children
     * problem: we don't know the path when capturing the children writes
   * `TemplateLiteral`
@@ -46,9 +44,13 @@ TODOs moved to: https://github.com/Domiii/dbux/issues/521
 * loops (all have reads + writes)
   * `ForStatement`
   * `ForInStatement`
-  * `ForOfStatement`
   * `DoWhileLoop`
   * `WhileStatement`
+  * `ForOfStatement`
+* Class
+  * `Class{Expression,Statement}`
+  * `ClassPrivateProperty`
+  * `ClassProperty`
 
 * other
   * `IfStatement`

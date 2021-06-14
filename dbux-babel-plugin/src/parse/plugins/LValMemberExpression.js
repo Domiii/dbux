@@ -62,7 +62,7 @@ export default class LValMemberExpression extends ParsePlugin {
     // }
 
     // make sure, `object` is traced
-    Traces.addDefaultTrace(objectNode.path);
+    objectNode.addDefaultTrace();
 
     const objTid = objectNode.traceCfg?.tidIdentifier;
     if (!objTid) {

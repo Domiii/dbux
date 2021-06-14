@@ -540,6 +540,10 @@ export default class RuntimeMonitor {
   // }
 
   traceBCE(programId, iterableTid, argTids, spreadArgs) {
+    if (!this._ensureExecuting()) {
+      return;
+    }
+
     spreadArgs = spreadArgs.map(a => {
     // [runtime-error] potential runtime error
     // NOTE: trying to spread a non-iterator results in Error anyway; e.g.:
@@ -578,6 +582,9 @@ export default class RuntimeMonitor {
   }
 
   traceCallResult(programId, value, tid, callTid) {
+    if (!this._ensureExecuting()) {
+      return value;
+    }
     const trace = traceCollection.getById(tid);
     trace.resultCallId = callTid;
     this.traceExpression(programId, value, tid, 0);
@@ -585,7 +592,10 @@ export default class RuntimeMonitor {
   }
 
   traceArrayExpression(programId, value, spreadLengths, arrTid, argTids) {
-    dataNodeCollection.createOwnDataNode(value, arrTid, DataNodeType.Create);
+    if (!this._ensureExecuting()) {
+      return value;
+    }
+    dataNodeCollection.createOwnDataNode(value, arrTid, DataNodeType.Read);
 
     // for each element: add (new) write node which has (original) read node as input
     let idx = 0;
@@ -615,7 +625,7 @@ export default class RuntimeMonitor {
           objTid: arrTid,
           prop: i
         };
-        dataNodeCollection.createWriteNodeFromReadWriteTrace(argTid, varAccess);
+        dataNodeCollection.createWriteNodeFromTrace(argTid, varAccess);
         ++idx;
       }
     }
@@ -624,7 +634,10 @@ export default class RuntimeMonitor {
   }
 
   traceObjectExpression(programId, value, entries, argConfigs, objTid, propTids) {
-    dataNodeCollection.createOwnDataNode(value, objTid, DataNodeType.Create);
+    if (!this._ensureExecuting()) {
+      return value;
+    }
+    dataNodeCollection.createOwnDataNode(value, objTid, DataNodeType.Read);
 
     // for each prop: add (new) write node which has (original) read node as input
     for (let i = 0; i < entries.length; i++) {
@@ -654,27 +667,25 @@ export default class RuntimeMonitor {
           objTid: objTid,
           prop: key
         };
-        dataNodeCollection.createWriteNodeFromReadWriteTrace(propTid, varAccess);
+        dataNodeCollection.createWriteNodeFromTrace(propTid, varAccess);
       }
     }
 
     return value;
   }
 
+  traceUpdateEpxression(programId, value, tid, inputs) {
+    if (!this._ensureExecuting()) {
+      return value;
+    }
 
-  // deferredTids = new Map();
-  // getDeferredTids(deferTid) {
-  //   return this.deferredTids.get(deferTid);
-  // }
+    const [inputTraceId] = inputs;
 
-  // addDeferredTid(deferTid, tid) {
-  //   let tids = this.deferredTids.get(deferTid);
-  //   if (!tids) {
-  //     this.deferredTids.set(deferTid, tids = []);
-  //   }
-  //   tids.push(tid);
-  //   return tids;
-  // }
+    // add `Write` `DataNode` to update the argument's `varAccess`.
+    dataNodeCollection.createWriteNodeFromInputTrace(inputTraceId, tid);
+
+    return value;
+  }
 
   // ###########################################################################
   // traces (OLD)
