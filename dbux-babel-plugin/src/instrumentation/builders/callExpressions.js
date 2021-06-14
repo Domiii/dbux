@@ -5,7 +5,7 @@ import * as t from '@babel/types';
 // import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import TraceCfg from '../../definitions/TraceCfg';
-import { makeInputs, NullNode } from './buildHelpers';
+import { makeInputs, NullNode } from './buildUtil';
 import { buildSpreadableArgArrayNoSpread, buildGetI } from './arrays';
 import { buildTraceExpressionNoInput, buildTraceId } from './misc';
 

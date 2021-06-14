@@ -1,3 +1,4 @@
+import reverse from 'lodash/reverse';
 
 /**
  * @example ```
@@ -26,7 +27,9 @@ export function getAllStaticPropsInInheritanceChain(Clazz, propName) {
     // console.log(' static recurse', Cur?.name, Cur?.[propName], '--', Prev.name);
   }
   while (Cur);
-  return res;
+
+  // reverse result (so deepest comes first)
+  return reverse(res);
 }
 
 

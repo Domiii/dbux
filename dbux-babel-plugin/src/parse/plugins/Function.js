@@ -8,7 +8,7 @@ import { getNodeNames } from '../../visitors/nameVisitors';
 import { getBindingIdentifierPaths } from '../../helpers/bindingsUtil';
 import { doesNodeEndScope } from '../../helpers/astUtil';
 import ParsePlugin from '../../parseLib/ParsePlugin';
-import { buildTraceId } from '../../instrumentation/builders/misc';
+import { buildTraceId, buildTraceWriteVar } from '../../instrumentation/builders/misc';
 import { buildRegisterParams } from '../../instrumentation/builders/function';
 import { pathToString } from '../../helpers/pathHelpers';
 
@@ -158,12 +158,50 @@ export default class Function extends ParsePlugin {
       }
       const idPath = idPaths[0];
       const idNode = this.node.getNodeOfPath(idPath);
-      // const initialValuePath = getParamInitialValuePath(idPath);
-      const initialValuePath = idPath;
-      const staticTraceData = {
-        type: TraceType.Param
+      const initialValuePath = getParamInitialValuePath(idPath);
+      const moreTraceData = {
+        staticTraceData: {
+          type: TraceType.Param
+        },
+        meta: {}
       };
-      return idNode.addOwnDeclarationTrace(initialValuePath, staticTraceData);
+
+      let definitionPath;
+      if (initialValuePath) {
+        // handle default parameter
+        definitionPath = null;  // NOTE: we will inject the value in post (moreTraceArgs)
+
+        const writeTraceData = {
+          path: paramPath,
+          // node: idNode,
+          staticTraceData: {
+            type: TraceType.WriteVar
+          },
+          meta: {
+            build: buildTraceWriteVar,
+            replacePath: initialValuePath
+          }
+        };
+
+        const writeTrace = idNode.Traces.addTrace(writeTraceData);
+
+        moreTraceData.meta.moreTraceArgs = () => {
+          // hackfix: instrument as we go
+          // 1. remove default value: `x = twv(init(), initTid,...)` becomes `x`
+          paramPath.replace(idPath.node);
+          // 2. add to instrumentation trace: `var x = td(stid, twv(init(), initTid,...), [initTid])`
+          return [
+            initialValuePath.node,
+            t.arrayExpression([writeTrace.tidIdentifier])
+          ];
+        };
+      }
+      else {
+        definitionPath = idPath;
+      }
+
+      const declTrace = idNode.addOwnDeclarationTrace(definitionPath, moreTraceData);
+      return declTrace;
     });
   }
 

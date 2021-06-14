@@ -3,7 +3,7 @@
  * future-work: move remaining `build` functions from `Function.js` to here
  */
 
-import { bindTemplate } from '../../helpers/templateUtil';
+import { bindTemplate } from './templateUtil';
 
 // ###########################################################################
 // traceParams

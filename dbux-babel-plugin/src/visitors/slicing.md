@@ -5,10 +5,10 @@ TODOs moved to: https://github.com/Domiii/dbux/issues/521
 
 * Potential lvals
   * `MemberExpression`
-    * `OptionalMemberExpression`
+    * `OptionalMemberExpression` [es6]
   * `Identifier`
 
-  * patterns
+  * patterns [es6]
      * `AssignmentPattern`
      * `RestElement`
      * `ObjectPattern`
@@ -21,12 +21,12 @@ TODOs moved to: https://github.com/Domiii/dbux/issues/521
 * function + calls
   * `Function`
   * `ReturnStatement`
-  * `YieldExpression`
+  * `YieldExpression` [es6]
 
   * `CallExpression`
-  * `OptionalCallExpression`
+    * `OptionalCallExpression` [es6]
   * `NewExpression`
-  * `Super`
+  * `Super` [es6]
 
 * Arithmetic
   * `BinaryExpression`
@@ -39,15 +39,15 @@ TODOs moved to: https://github.com/Domiii/dbux/issues/521
   * `{Array,Object}Expression`
     * 1 parent `read` + many `write` children
     * problem: we don't know the path when capturing the children writes
-  * `TemplateLiteral`
+  * `TemplateLiteral` [es6]
 
 * loops (all have reads + writes)
   * `ForStatement`
   * `ForInStatement`
   * `DoWhileLoop`
   * `WhileStatement`
-  * `ForOfStatement`
-* Class
+  * `ForOfStatement` [es6]
+* Class [es6]
   * `Class{Expression,Statement}`
   * `ClassPrivateProperty`
   * `ClassProperty`
@@ -58,11 +58,11 @@ TODOs moved to: https://github.com/Domiii/dbux/issues/521
   * `SwitchCase`
   * `ConditionalExpression`
   * `SequenceExpression`
-  * `Decorator`
+  * `Decorator` [es6]
 
 * error propagation
   * `ThrowStatement`
-  * `CatchClause` [write]
+  * `CatchClause`
 
 * `AwaitExpression`
 
@@ -72,7 +72,7 @@ TODOs moved to: https://github.com/Domiii/dbux/issues/521
   * `ContinueStatement`
   * `TryStatement`
   * `ExpressionStatement`
-  * `VariableDeclarator`
+  * `VariableDeclaration`
 
 
 

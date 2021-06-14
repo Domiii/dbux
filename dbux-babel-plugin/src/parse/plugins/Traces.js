@@ -51,7 +51,7 @@ export default class Traces extends ParsePlugin {
   /**
    * NOTE: we assume inputs to be RVals.
    */
-  addInputs(inputPaths) {
+  addDefaultTraces(inputPaths) {
     return inputPaths.flat()
       .map(this.addDefaultTrace)
       .filter(node => !!node);
@@ -136,8 +136,9 @@ export default class Traces extends ParsePlugin {
   /**
    * @param {BindingIdentifier} id
    */
-  addDefaultDeclarationTrace(id, valuePath, staticTraceData = null) {
-    staticTraceData = staticTraceData || {
+  addDefaultDeclarationTrace(id, valuePath, moreTraceData = null) {
+    moreTraceData = moreTraceData || {};
+    moreTraceData.staticTraceData = moreTraceData.staticTraceData || {
       type: TraceType.Declaration,
       dataNode: {
         // NOTE: Most declarations are hoisted to some scope, always assigned a "new" value (`undefined`, if `valuePath` not given)
@@ -149,7 +150,7 @@ export default class Traces extends ParsePlugin {
     const traceData = {
       path: id.path,
       node: id,
-      staticTraceData
+      ...moreTraceData
     };
     return this.addDeclarationTrace(traceData, valuePath);
   }
@@ -168,7 +169,7 @@ export default class Traces extends ParsePlugin {
   }
 
   // ###########################################################################
-  // addReturnTrace
+  // addReturnTrace, addThrowTrace
   // ###########################################################################
 
   addReturnTrace(node, path, argPath) {
@@ -196,7 +197,7 @@ export default class Traces extends ParsePlugin {
   addTraceWithInputs(traceData, inputPaths) {
     // add trace for inputTraces if they don't have any yet
     // NOTE: especially for `Literal` or `ReferencedIdentifier`
-    traceData.inputTraces = this.addInputs(inputPaths);
+    traceData.inputTraces = this.addDefaultTraces(inputPaths);
 
     return this.addTrace(traceData);
   }

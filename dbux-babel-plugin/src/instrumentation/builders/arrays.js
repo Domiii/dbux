@@ -1,6 +1,6 @@
 import * as t from '@babel/types';
-import { buildTraceCall } from '../../helpers/templateUtil';
-import { makeInputs } from './buildHelpers';
+import { buildTraceCall } from './templateUtil';
+import { makeInputs } from './buildUtil';
 import { buildTraceId } from './misc';
 
 // ###########################################################################

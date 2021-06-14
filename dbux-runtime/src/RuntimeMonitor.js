@@ -140,6 +140,11 @@ export default class RuntimeMonitor {
     return this.traceExpression(programId, value, tid, inputs);
   }
 
+  traceThrow(programId, value, tid, inputs) {
+    // for now: same as `te`
+    return this.traceExpression(programId, value, tid, inputs);
+  }
+
 
   popFunction(contextId, inProgramStaticTraceId) {
     // this.checkErrorOnFunctionExit(contextId, inProgramStaticTraceId);
@@ -425,7 +430,7 @@ export default class RuntimeMonitor {
     return trace.traceId;
   }
 
-  traceDeclaration = (programId, inProgramStaticTraceId, value = undefined) => {
+  traceDeclaration = (programId, inProgramStaticTraceId, value = undefined, inputs = undefined) => {
     if (!this._ensureExecuting()) {
       return -1;
     }
@@ -436,7 +441,7 @@ export default class RuntimeMonitor {
     const varAccess = {
       declarationTid: traceId
     };
-    dataNodeCollection.createOwnDataNode(value, traceId, DataNodeType.Write, varAccess);
+    dataNodeCollection.createOwnDataNode(value, traceId, DataNodeType.Write, varAccess, inputs);
 
     return traceId;
   }

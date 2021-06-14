@@ -1,7 +1,7 @@
 // import template from '@babel/template';
 import * as t from '@babel/types';
-import { buildTraceCall, bindTemplate, bindExpressionTemplate } from '../../helpers/templateUtil';
-import { getTraceCall, makeInputs, ZeroNode } from './buildHelpers';
+import { buildTraceCall, bindTemplate, bindExpressionTemplate } from './templateUtil';
+import { addMoreTraceCallArgs, getTraceCall, makeInputs, ZeroNode } from './buildUtil';
 import { getInstrumentTargetAstNode } from './common';
 import { convertNonComputedPropToStringLiteral } from './objects';
 
@@ -123,6 +123,7 @@ export function buildTraceDeclaration(state, traceCfg, value) {
   const trace = getTraceCall(state, traceCfg, 'traceDeclaration');
   const args = [t.numericLiteral(inProgramStaticTraceId)];
   value && args.push(value);
+  addMoreTraceCallArgs(args, traceCfg);
 
   return t.variableDeclarator(
     tidIdentifier,

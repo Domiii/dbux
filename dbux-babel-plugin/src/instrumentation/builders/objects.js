@@ -3,7 +3,7 @@ import * as t from '@babel/types';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { astNodeToString } from '../../helpers/pathHelpers';
 import { pathToString } from '../../helpers/pathHelpers';
-import { makeInputs } from './buildHelpers';
+import { makeInputs } from './buildUtil';
 import { buildTraceId } from './misc';
 
 // eslint-disable-next-line no-unused-vars

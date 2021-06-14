@@ -1,4 +1,5 @@
 import * as t from "@babel/types";
+import isFunction from 'lodash/isFunction';
 
 export const ZeroNode = t.numericLiteral(0);
 export const NullNode = t.nullLiteral();
@@ -20,4 +21,14 @@ export function getTraceCall(state, traceCfg, defaultCall = 'traceExpression') {
     throw new Error(`Invalid meta.traceCall "${traceCfg.meta.traceCall}" - Valid choices are: ${Object.keys(aliases).join(', ')}`);
   }
   return trace;
+}
+
+export function addMoreTraceCallArgs(args, traceCfg) {
+  let moreTraceCallArgs = traceCfg?.meta?.moreTraceCallArgs;
+  if (moreTraceCallArgs) {
+    if (isFunction(moreTraceCallArgs)) {
+      moreTraceCallArgs = moreTraceCallArgs();
+    }
+    args.push(...moreTraceCallArgs);
+  }
 }

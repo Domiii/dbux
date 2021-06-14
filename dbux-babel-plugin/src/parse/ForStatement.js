@@ -6,4 +6,10 @@ export default class ForStatement extends BaseNode {
   static plugins = [
     'Loop'
   ];
+
+  exit() {
+    const [init, test, update] = this.getChildPaths();
+    
+    this.Traces.addDefaultTraces([init, test, update]);
+  }
 }

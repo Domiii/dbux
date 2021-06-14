@@ -1,4 +1,5 @@
 import template from '@babel/template';
+import { addMoreTraceCallArgs } from './buildUtil';
 // import * as t from '@babel/types';
 
 
@@ -12,10 +13,7 @@ export function buildTraceCall(templateString, varFn) {
       // we wanted an expression, not a statement
       newNode = newNode.expression;
     }
-    const moreTraceCallArgs = cfg?.meta?.moreTraceCallArgs;
-    if (moreTraceCallArgs) {
-      newNode.arguments.push(...moreTraceCallArgs);
-    }
+    addMoreTraceCallArgs(newNode.arguments, cfg);
     return newNode;
   };
 }
