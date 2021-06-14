@@ -1,5 +1,3 @@
-// TODO: use parallel-webpack to run this together with dbux-code
-// (see https://github.com/trivago/parallel-webpack)
 /* eslint no-console: 0 */
 
 
@@ -363,6 +361,13 @@ module.exports = (env, argv) => {
     // ###########################################################################
     // module.exports
     // ###########################################################################
+
+    /**
+     * future-work: use parallel-webpack to build multiple packages at the same time?
+     * (see https://github.com/trivago/parallel-webpack)
+     * Alternatively: `lerna --parallel exec -- npm start`
+     * NOTE: Probably not necessary, since only initial build takes more than 10s, else it's all rather fast.
+     */
 
     const allCfgs = [
       ...targets.map(buildConfig),

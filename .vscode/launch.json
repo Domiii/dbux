@@ -3,312 +3,308 @@
 // Hover to view descriptions of existing attributes.
 // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
 {
-	"version": "0.2.0",
-	"configurations": [
-		{
-			"name": "Launch Program",
-			"program": "${file}",
-			"request": "launch",
-			"skipFiles": [
-				"<node_internals>/**"
-			],
-			"type": "pwa-node"
-		},
-		{
-			"name": "dbux-code",
-			"type": "extensionHost",
-			"request": "launch",
-			"runtimeExecutable": "${execPath}",
-			"args": [
-				"--extensionDevelopmentPath=${workspaceRoot}/dbux-code",
-				"--disable-extensions=1"
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch Program",
+      "program": "${file}",
+      "request": "launch",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "type": "pwa-node"
+    },
+    {
+      "name": "dbux-code",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceRoot}/dbux-code",
+        "--disable-extensions=1"
         // "--verbose"
-			],
-			"stopOnEntry": false,
-			"sourceMaps": true,
-			// "trace": true,
-			// "preLaunchTask": "npm: build-dbux-code"
-			"outFiles": [
+      ],
+      "stopOnEntry": false,
+      "sourceMaps": true,
+      // "trace": true,
+      // "preLaunchTask": "npm: build-dbux-code"
+      "outFiles": [
         "${workspaceRoot}/dbux-babel-plugin/dist/**/*.js",
         "${workspaceRoot}/dbux-runtime/dist/**/*.js",
         "${workspaceRoot}/dbux-cli/dist/**/*.js",
         "${workspaceRoot}/dbux-code/dist/**/*.js",
         "${workspaceRoot}/dbux-server/dist/**/*.js"
-			]
-		},
-		{
-			"name": "dbux-run",
-			"type": "node",
-			"request": "launch",
-			"cwd": "${workspaceFolder}/dbux-cli",
-			"runtimeArgs": [
-				"--stack-trace-limit=1000",
-
-				// NOTE: it appears that --enable-source maps slows things down, and in debug mode it just grinds to a halt
-				// "--enable-source-maps",
-				"--nolazy",
-			],
-			"sourceMaps": true,
-			"restart": true,
-			"program": "${workspaceFolder}/dbux-cli/bin/dbux.js",
-			"args": [
-				"run",
-				"--esnext",
-				"${file}"
-			],
-			"protocol": "inspector",
-			// "trace": true,
-			"disableOptimisticBPs": true,
-			"console": "integratedTerminal",
-			"internalConsoleOptions": "neverOpen",
-			"outFiles": [
-				"${workspaceFolder}/dbux-cli/dist/**/*.js",
-				"${workspaceFolder}/dbux-babel-plugin/dist/**/*.js",
-				"${workspaceFolder}/dbux-runtime/dist/**/*.js"
-			]
-		},
-		{
-			"name": "[dbux-project] attach",
-			"type": "node",
-			"request": "attach",
-			"port": 9853,
-			"skipFiles": [
-				"<node_internals>/**"
-			]
-		},
-		{
-			"name": "dbux-instrument",
-			"type": "node",
-			"request": "launch",
-			"cwd": "${workspaceFolder}/dbux-cli",
-			"runtimeArgs": [
-				"--stack-trace-limit=1000",
-				"--enable-source-maps",
-				"--nolazy",
-			],
-			"program": "${workspaceFolder}/dbux-cli/bin/dbux.js",
-			"args": [
-				"instrument",
-				"${file}",
-			],
-			// see: https://github.com/microsoft/vscode/issues/5422
-			"restart": true,
-			"protocol": "inspector",
-			"trace": "all",
-			"disableOptimisticBPs": true,
-			"console": "integratedTerminal",
-			"internalConsoleOptions": "neverOpen",
-			"outFiles": [
-				"${workspaceFolder}/dbux-cli/dist/**/*.js",
-				"${workspaceRoot}/dbux-babel-plugin/dist/**/*.js"
-			]
-		},
-		{
-			"name": "test file",
-			"type": "node",
-			"request": "launch",
-			"program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
-			"runtimeArgs": [
-				"--stack-trace-limit=1000",
-				"--enable-source-maps",
-				"--preserve-symlinks"
-			],
-			"cwd": "${workspaceFolder}/dbux-cli",
-			"args": [
-				"-i",
-				"--config=jest.config.js",
-				"--runTestsByPath",
-				// "--",
-				// @see https: //code.visualstudio.com/docs/nodejs/nodejs-debugging#_common-questions
-
-				// hackfix: see https://github.com/microsoft/vscode-recipes/issues/205
-				"../${relativeFile}"
-			],
-			// see: https://github.com/microsoft/vscode/issues/5422
-			"restart": true,
-			"protocol": "inspector",
-			"trace": "all",
-			"disableOptimisticBPs": true,
-			"console": "integratedTerminal",
-			"internalConsoleOptions": "neverOpen",
-		},
-
-		{
-			"name": "run js (no dbux, yes babel)",
-			"type": "node",
-			"request": "launch",
-			"cwd": "${workspaceFolder}/dbux-cli",
-			"runtimeArgs": [
-				"--stack-trace-limit=1000",
-				"--enable-source-maps",
-				"--nolazy",
-			],
-			"program": "${workspaceFolder}/dbux-cli/bin/dbux.js",
-			"args": [
-				"run",
-				"-d",
-				"--esnext",
-				"${file}",
-			],
-			// see: https://github.com/microsoft/vscode/issues/5422
-			"restart": true,
-			"protocol": "inspector",
-			"trace": "all",
-			"disableOptimisticBPs": true,
-			"console": "integratedTerminal",
-			"internalConsoleOptions": "neverOpen",
-			"outFiles": [
-				"${workspaceRoot}/dbux-runtime/dist/**/*.js"
-			]
-		},
-		{
-			"name": "run js (no dbux, no babel)",
-			"type": "node",
-			"request": "launch",
-			"cwd": "${workspaceFolder}/dbux-cli",
-			"runtimeArgs": [
-				"--stack-trace-limit=1000",
-				"--enable-source-maps",
-				"--nolazy",
-			],
-			"program": "${workspaceFolder}/dbux-cli/bin/dbux.js",
-			"args": [
+      ]
+    },
+    {
+      "name": "dbux-run",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/dbux-cli",
+      "runtimeArgs": [
+        "--stack-trace-limit=1000",
+        // NOTE: it appears that --enable-source maps slows things down, and in debug mode it just grinds to a halt
+        // "--enable-source-maps",
+        "--nolazy",
+      ],
+      "sourceMaps": true,
+      "restart": true,
+      "program": "${workspaceFolder}/dbux-cli/bin/dbux.js",
+      "args": [
+        "run",
+        "--esnext",
+        "${file}"
+      ],
+      "protocol": "inspector",
+      // "trace": true,
+      "disableOptimisticBPs": true,
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "outFiles": [
+        "${workspaceFolder}/dbux-cli/dist/**/*.js",
+        "${workspaceFolder}/dbux-babel-plugin/dist/**/*.js",
+        "${workspaceFolder}/dbux-runtime/dist/**/*.js"
+      ]
+    },
+    {
+      "name": "[dbux-project] attach",
+      "type": "node",
+      "request": "attach",
+      "port": 9853,
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    },
+    {
+      "name": "dbux-instrument",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/dbux-cli",
+      "runtimeArgs": [
+        "--stack-trace-limit=1000",
+        "--enable-source-maps",
+        "--nolazy",
+      ],
+      "program": "${workspaceFolder}/dbux-cli/bin/dbux.js",
+      "args": [
+        "instrument",
+        "${file}",
+      ],
+      // see: https://github.com/microsoft/vscode/issues/5422
+      "restart": true,
+      "protocol": "inspector",
+      "trace": "all",
+      "disableOptimisticBPs": true,
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "outFiles": [
+        "${workspaceFolder}/dbux-cli/dist/**/*.js",
+        "${workspaceRoot}/dbux-babel-plugin/dist/**/*.js"
+      ]
+    },
+    {
+      "name": "test file",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+      "runtimeArgs": [
+        "--stack-trace-limit=1000",
+        "--enable-source-maps",
+        "--preserve-symlinks"
+      ],
+      "cwd": "${workspaceFolder}/dbux-cli",
+      "args": [
+        "-i",
+        "--config=jest.config.js",
+        "--runTestsByPath",
+        // "--",
+        // @see https: //code.visualstudio.com/docs/nodejs/nodejs-debugging#_common-questions
+        // hackfix: see https://github.com/microsoft/vscode-recipes/issues/205
+        "../${relativeFile}"
+      ],
+      // see: https://github.com/microsoft/vscode/issues/5422
+      "restart": true,
+      "protocol": "inspector",
+      "trace": "all",
+      "disableOptimisticBPs": true,
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+    },
+    {
+      "name": "run js (no dbux, yes babel)",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/dbux-cli",
+      "runtimeArgs": [
+        "--stack-trace-limit=1000",
+        "--enable-source-maps",
+        "--nolazy",
+      ],
+      "program": "${workspaceFolder}/dbux-cli/bin/dbux.js",
+      "args": [
+        "run",
+        "-d",
+        "--esnext",
+        "${file}",
+      ],
+      // see: https://github.com/microsoft/vscode/issues/5422
+      "restart": true,
+      "protocol": "inspector",
+      "trace": "all",
+      "disableOptimisticBPs": true,
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "outFiles": [
+        "${workspaceRoot}/dbux-runtime/dist/**/*.js"
+      ]
+    },
+    {
+      "name": "run js (no dbux, no babel)",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/dbux-cli",
+      "runtimeArgs": [
+        "--stack-trace-limit=1000",
+        "--enable-source-maps",
+        "--nolazy",
+      ],
+      "program": "${workspaceFolder}/dbux-cli/bin/dbux.js",
+      "args": [
         "run",
         "-d",
         "-p",
-				"${file}",
-			],
-			"restart": true,
-			"protocol": "inspector",
-			"trace": "all",
-			"disableOptimisticBPs": true,
-			"console": "integratedTerminal",
-			"internalConsoleOptions": "neverOpen",
-			"outFiles": [
-				"${workspaceRoot}/dbux-runtime/dist/**/*.js"
-			]
-		},
-		{
-			// debugging of Chrome-bound code - https://github.com/Microsoft/vscode-chrome-debug
-			"name": "chrome todomvc",
-			"type": "chrome",
-			"request": "launch",
-			// "trace": true,
-			"url": "http://localhost:3030",
-			"pathMapping": {
-				// "/samples/": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/src/dbux/samples/",
-				"/bundle.js": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/dist/bundle.js",
-				"/": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/www",
-			},
-			"sourceMapPathOverrides": {
-				"webpack:///*": "*",
-				"webpack:///./~/*": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/node_modules/*",
-				"webpack:///./*": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/*"
-			},
-			"showAsyncStacks": true
-		},
-		{
-			"name": "test plugin (dbux-babel-plugin)",
-			"type": "node",
-			"request": "launch",
-			"program": "${workspaceFolder}/dbux-babel-plugin/node_modules/jest/bin/jest.js",
-			"cwd": "${workspaceFolder}/dbux-babel-plugin",
-			"args": [
-				"--runInBand",
-				"--config",
-				"jest.config.js",
-				// @see https: //code.visualstudio.com/docs/nodejs/nodejs-debugging#_common-questions
-				// "--preserve-symlinks"
-			],
-			// see: https://github.com/microsoft/vscode/issues/5422
-			"restart": true,
-			"protocol": "inspector",
-			"trace": "all",
-			"disableOptimisticBPs": true,
-			"console": "integratedTerminal",
-			"internalConsoleOptions": "neverOpen",
-		},
-		{
-			"name": "npm run build-debug",
-			"type": "node",
-			"request": "launch",
-			"port": 9233,
-			// "cwd": "${workspaceFolder}",
-			"cwd": "${fileDirname}",
-			"runtimeExecutable": "npm",
-			"runtimeArgs": [
-				// "--stack-trace-limit=1000",
-				"--enable-source-maps",
-				// "--nolazy",
-				"run",
-				"build-debug"
-			],
-			"sourceMaps": true,
-			// "program": "${file}",
-			"protocol": "inspector",
-			// "trace": true,
-			"disableOptimisticBPs": true,
-			"console": "integratedTerminal",
-			"internalConsoleOptions": "neverOpen",
-		},
-		{
-			"name": "npm run start-debug",
-			"type": "node",
-			"request": "launch",
-			"port": 9233,
-			// "cwd": "${workspaceFolder}",
-			"cwd": "${fileDirname}",
-			"runtimeExecutable": "npm",
-			"runtimeArgs": [
-				// "--stack-trace-limit=1000",
-				"--enable-source-maps",
-				// "--nolazy",
-				"run",
-				"start-debug"
-			],
-			"sourceMaps": true,
-			// "program": "${file}",
-			"protocol": "inspector",
-			// "trace": true,
-			"disableOptimisticBPs": true,
-			"console": "integratedTerminal",
-			"internalConsoleOptions": "neverOpen",
-		},
-		{
-			"name": "Extension:Tests",
-			"type": "extensionHost",
-			"request": "launch",
-			"runtimeExecutable": "${execPath}",
-			"args": [
-				"--extensionDevelopmentPath=${workspaceFolder}/dbux-code",
-				"--extensionTestsPath=${workspaceFolder}/dbux-code/test/suite/index"
-			]
-		},
-		{
-			"name": "__dbux-publish",
-			"type": "node",
-			"request": "launch",
-			"cwd": "${workspaceFolder}",
-			"runtimeArgs": [
-				"--stack-trace-limit=1000",
-				"--enable-source-maps",
-				"--nolazy",
-			],
-			"sourceMaps": true,
-			"restart": true,
-			"program": "${workspaceFolder}/scripts/publish.js",
-			"args": [
-			],
-			"protocol": "inspector",
-			// "trace": true,
-			"disableOptimisticBPs": true,
-			"console": "integratedTerminal",
-			"internalConsoleOptions": "neverOpen",
-			"outFiles": [
-				"${workspaceFolder}/dbux-cli/dist/**/*.js",
-				"${workspaceFolder}/dbux-babel-plugin/dist/**/*.js",
-				"${workspaceFolder}/dbux-runtime/dist/**/*.js"
-			]
-		},
-	]
+        "${file}",
+      ],
+      "restart": true,
+      "protocol": "inspector",
+      "trace": "all",
+      "disableOptimisticBPs": true,
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "outFiles": [
+        "${workspaceRoot}/dbux-runtime/dist/**/*.js"
+      ]
+    },
+    {
+      // debugging of Chrome-bound code - https://github.com/Microsoft/vscode-chrome-debug
+      "name": "chrome todomvc",
+      "type": "chrome",
+      "request": "launch",
+      // "trace": true,
+      "url": "http://localhost:3030",
+      "pathMapping": {
+        // "/samples/": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/src/dbux/samples/",
+        "/bundle.js": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/dist/bundle.js",
+        "/": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/www",
+      },
+      "sourceMapPathOverrides": {
+        "webpack:///*": "*",
+        "webpack:///./~/*": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/node_modules/*",
+        "webpack:///./*": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/*"
+      },
+      "showAsyncStacks": true
+    },
+    {
+      "name": "test plugin (dbux-babel-plugin)",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/dbux-babel-plugin/node_modules/jest/bin/jest.js",
+      "cwd": "${workspaceFolder}/dbux-babel-plugin",
+      "args": [
+        "--runInBand",
+        "--config",
+        "jest.config.js",
+        // @see https: //code.visualstudio.com/docs/nodejs/nodejs-debugging#_common-questions
+        // "--preserve-symlinks"
+      ],
+      // see: https://github.com/microsoft/vscode/issues/5422
+      "restart": true,
+      "protocol": "inspector",
+      "trace": "all",
+      "disableOptimisticBPs": true,
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+    },
+    {
+      "name": "npm run build-debug",
+      "type": "node",
+      "request": "launch",
+      "port": 9233,
+      // "cwd": "${workspaceFolder}",
+      "cwd": "${fileDirname}",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        // "--stack-trace-limit=1000",
+        "--enable-source-maps",
+        // "--nolazy",
+        "run",
+        "build-debug"
+      ],
+      "sourceMaps": true,
+      // "program": "${file}",
+      "protocol": "inspector",
+      // "trace": true,
+      "disableOptimisticBPs": true,
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+    },
+    {
+      "name": "npm run start-debug",
+      "type": "node",
+      "request": "launch",
+      "port": 9233,
+      // "cwd": "${workspaceFolder}",
+      "cwd": "${fileDirname}",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        // "--stack-trace-limit=1000",
+        "--enable-source-maps",
+        // "--nolazy",
+        "run",
+        "start-debug"
+      ],
+      "sourceMaps": true,
+      // "program": "${file}",
+      "protocol": "inspector",
+      // "trace": true,
+      "disableOptimisticBPs": true,
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+    },
+    {
+      "name": "Extension:Tests",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}/dbux-code",
+        "--extensionTestsPath=${workspaceFolder}/dbux-code/test/suite/index"
+      ]
+    },
+    {
+      "name": "__dbux-publish",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeArgs": [
+        "--stack-trace-limit=1000",
+        "--enable-source-maps",
+        "--nolazy",
+      ],
+      "sourceMaps": true,
+      "restart": true,
+      "program": "${workspaceFolder}/scripts/publish.js",
+      "args": [],
+      "protocol": "inspector",
+      // "trace": true,
+      "disableOptimisticBPs": true,
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "outFiles": [
+        "${workspaceFolder}/dbux-cli/dist/**/*.js",
+        "${workspaceFolder}/dbux-babel-plugin/dist/**/*.js",
+        "${workspaceFolder}/dbux-runtime/dist/**/*.js"
+      ]
+    },
+  ]
 }
