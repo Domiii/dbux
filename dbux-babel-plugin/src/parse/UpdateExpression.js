@@ -1,24 +1,26 @@
-import TraceType from '@dbux/common/src/core/constants/TraceType';
-import ParseNode from '../parseLib/ParseNode';
+import BaseNode from './BaseNode';
+import { getLValPlugin } from './lvalUtil';
 
-export default class UpdateExpression extends ParseNode {
+export default class UpdateExpression extends BaseNode {
   static children = ['argument'];
+  static plugins = [
+    getLValPlugin
+  ];
 
-  exit() {
-    const { path, Traces } = this;
+  /**
+   * @returns {BaseNode}
+   */
+  getDeclarationNode() {
+    const [argNode] = this.getChildNodes();
+    return argNode.getDeclarationNode();
+  }
 
-    // NOTE: argument must be `Identifier` or `ME`
-    // const [argumentNode] = this.getChildNodes();
-    const childPaths = this.getChildPaths();
+  decorateWriteTraceData(traceData) {
+    const { path } = this;
+    // const [argNode] = this.getChildNodes();
 
-    const traceData = {
-      path,
-      node: this,
-      staticTraceData: {
-        type: TraceType.ExpressionResult
-      }
-    };
-
-    Traces.addTraceWithInputs(traceData, childPaths);
+    traceData.path = path;
+    traceData.node = this;
+    traceData.meta.replacePath = path;
   }
 }

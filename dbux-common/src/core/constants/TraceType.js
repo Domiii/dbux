@@ -65,6 +65,7 @@ let TraceType = {
   ME: 36,
 
   Param: 37,
+  CatchParam: 38,
 };
 
 /**
@@ -124,11 +125,11 @@ expressionTypes[TraceType.ExpressionResult] = true;
 expressionTypes[TraceType.ExpressionValue] = true;
 expressionTypes[TraceType.CallbackArgument] = true;
 expressionTypes[TraceType.CallExpressionResult] = true;
-expressionTypes[TraceType.ReturnArgument] = true;
-expressionTypes[TraceType.ThrowArgument] = true;
 expressionTypes[TraceType.Identifier] = true;
 expressionTypes[TraceType.Literal] = true;
 expressionTypes[TraceType.ME] = true;
+// expressionTypes[TraceType.ReturnArgument] = true;
+// expressionTypes[TraceType.ThrowArgument] = true;
 
 export function isTraceExpression(traceType) {
   return expressionTypes[traceType];

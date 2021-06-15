@@ -249,6 +249,7 @@ export const buildTraceWriteME = buildTraceCall(
     } } } = state;
     const tid = buildTraceId(state, traceCfg);
 
+    // TODO: fix for `UpdateExpression`
     const assignmentNode = getInstrumentTargetAstNode(traceCfg);
     const {
       left: meNode,

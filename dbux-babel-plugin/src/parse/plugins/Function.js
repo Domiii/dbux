@@ -139,7 +139,9 @@ export default class Function extends ParsePlugin {
   }
 
   _addParamTrace = (paramPath) => {
-    const { Traces } = this.node;
+    // TODO: `RestElement`
+    // TODO: `{Object,Array,Assignment}Pattern
+    // TODO: `{Object,Array,Assignment}Pattern on `RestElement`
 
     const idPaths = getBindingIdentifierPaths(paramPath);
     if (idPaths.length !== 1) {
@@ -196,14 +198,6 @@ export default class Function extends ParsePlugin {
   exit1() {
     const { path } = this.node;
     const paramsPath = path.get('params');
-    // TODO: in `dbux-data`, compute inputs[0] = `argTid` from `i`, using
-    //      (i) `bceStaticTrace.dataNode.argConfigs`,
-    //      (ii) `{ argTids, spreadLengths } = bceTrace.data`
-
-    // TODO: `RestElement`
-    // TODO: `{Object,Array,Assignment}Pattern
-    // TODO: Special case - `{Object,Array,Assignment}Pattern on `RestElement`
-    //        e.g. `function f(...[a, b]) {}`
 
     // -> `registerParams([traceDeclaration(tid0, p0), traceDeclaration(tid1, p1), ...])`
     this.data.paramTraces = paramsPath.map(this._addParamTrace);

@@ -31,7 +31,7 @@ export default class LValIdentifier extends ParsePlugin {
 
     this.node.decorateWriteTraceData(traceData);
     
-    // NOTE: `declarationTid` comes from `AssignmentExpression.getDeclarationNode`
+    // NOTE: `declarationTid` comes from `getDeclarationNode`
     Traces.addTraceWithInputs(traceData, [rightNode.path]);
   }
 }

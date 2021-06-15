@@ -31,6 +31,10 @@ import ParsePlugin from '../../parseLib/ParsePlugin';
  * `super.prop = f(x)` ->
  * `super.prop = twME(te(f(x)))`
  * ```
+ * 
+ * Case u-1: UpdateExpression
+ * `++a[x]` ->
+ * `tmME((o = a, ++o[te(x)]), tid...)`
  */
 export default class LValMemberExpression extends ParsePlugin {
   get meNode() {
@@ -85,7 +89,6 @@ export default class LValMemberExpression extends ParsePlugin {
 
     this.node.decorateWriteTraceData(traceData);
 
-    // NOTE: `declarationTid` comes from `AssignmentExpression.getDeclarationNode`
     Traces.addTraceWithInputs(traceData, [rValNode.path]);
   }
 }

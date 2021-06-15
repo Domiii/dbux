@@ -155,13 +155,12 @@ class ExecutionContextCollection extends Collection {
     for (const { contextId } of contexts) {
       const paramTraces = util.getTracesOfContextAndType(contextId, TraceType.Param);
       if (!paramTraces.length) {
-        // nothing to do
+        // function has no no parameters -> nothing to do
         continue;
       }
       const bceTrace = util.getCallerTraceOfContext(contextId); // BCE
       if (!bceTrace) {
-        // TODO: establish data flow of parameters for root contexts, if necessary?
-        // should only happen in case of root contexts
+        // no BCE -> must be root context (not called by us) -> nothing to do
         continue;
       }
       const callId = bceTrace.traceId;

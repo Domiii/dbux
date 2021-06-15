@@ -13,7 +13,7 @@ export default class CatchClause extends BaseNode {
       // NOTE: very similar to `Function._addParamTrace` (without default value)
       const moreTraceData = {
         staticTraceData: {
-          type: TraceType.Param
+          type: TraceType.CatchParam
         }
       };
       paramNode.addOwnDeclarationTrace(paramNode.path, moreTraceData);

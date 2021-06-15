@@ -7,13 +7,17 @@ import BinaryExpression from './BinaryExpression';
 import BindingIdentifier from './BindingIdentifier';
 import Block from './Block';
 import CallExpression from './CallExpression';
+import CatchClause from './CatchClause';
 import ClassDeclaration from './ClassDeclaration';
 import ClassExpression from './ClassExpression';
+import ConditionalExpression from './ConditionalExpression';
+import DoWhileStatement from './DoWhileStatement';
 import ForInStatement from './ForInStatement';
 import ForOfStatement from './ForOfStatement';
 import ForStatement from './ForStatement';
 import FunctionDeclaration from './FunctionDeclaration';
 import FunctionExpression from './FunctionExpression';
+import IfStatement from './IfStatement';
 import Literal from './Literal';
 import LogicalExpression from './LogicalExpression';
 import MemberExpression from './MemberExpression';
@@ -25,7 +29,12 @@ import ReferencedIdentifier from './ReferencedIdentifier';
 import ReturnStatement from './ReturnStatement';
 import SequenceExpression from './SequenceExpression';
 import SpreadElement from './SpreadElement';
+import SwitchCase from './SwitchCase';
+import SwitchStatement from './SwitchStatement';
+import TemplateLiteral from './TemplateLiteral';
+import ThrowStatement from './ThrowStatement';
 import UnaryExpression from './UnaryExpression';
+import UpdateExpression from './UpdateExpression';
 import VariableDeclarator from './VariableDeclarator';
 import WhileStatement from './WhileStatement';
 
@@ -40,13 +49,17 @@ init(BinaryExpression);
 init(BindingIdentifier);
 init(Block);
 init(CallExpression);
+init(CatchClause);
 init(ClassDeclaration);
 init(ClassExpression);
+init(ConditionalExpression);
+init(DoWhileStatement);
 init(ForInStatement);
 init(ForOfStatement);
 init(ForStatement);
 init(FunctionDeclaration);
 init(FunctionExpression);
+init(IfStatement);
 init(Literal);
 init(LogicalExpression);
 init(MemberExpression);
@@ -58,7 +71,12 @@ init(ReferencedIdentifier);
 init(ReturnStatement);
 init(SequenceExpression);
 init(SpreadElement);
+init(SwitchCase);
+init(SwitchStatement);
+init(TemplateLiteral);
+init(ThrowStatement);
 init(UnaryExpression);
+init(UpdateExpression);
 init(VariableDeclarator);
 init(WhileStatement);
 
@@ -71,13 +89,17 @@ export {
   BindingIdentifier,
   Block,
   CallExpression,
+  CatchClause,
   ClassDeclaration,
   ClassExpression,
+  ConditionalExpression,
+  DoWhileStatement,
   ForInStatement,
   ForOfStatement,
   ForStatement,
   FunctionDeclaration,
   FunctionExpression,
+  IfStatement,
   Literal,
   LogicalExpression,
   MemberExpression,
@@ -89,7 +111,12 @@ export {
   ReturnStatement,
   SequenceExpression,
   SpreadElement,
+  SwitchCase,
+  SwitchStatement,
+  TemplateLiteral,
+  ThrowStatement,
   UnaryExpression,
+  UpdateExpression,
   VariableDeclarator,
   WhileStatement
 };

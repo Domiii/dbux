@@ -42,6 +42,7 @@ export default class DataFlowNodeProvider extends BaseTreeViewNodeProvider {
   buildDataNodes(trace) {
     const { applicationId, traceId } = trace;
     const dp = allApplications.getById(applicationId).dataProvider;
+    const dataNodes = dp.indexes.dataNodes.byTrace.get(traceId);
     const dataNode = dp.indexes.dataNodes.byTrace.getFirst(traceId);
     if (!dataNode) {
       return [EmptyDataNode.instance];
