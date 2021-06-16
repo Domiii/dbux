@@ -269,7 +269,7 @@ export const buildTraceWriteME = buildTraceCall(
       /**
        * NOTE: we are getting the `prop` in this method (and not earlier), to make sure its the final instrumented version.
        */
-      propValue: convertNonComputedPropToStringLiteral(meNode),
+      propValue: convertNonComputedPropToStringLiteral(meNode.property, meNode.computed),
       rVal,
       tid,
       objTid,
