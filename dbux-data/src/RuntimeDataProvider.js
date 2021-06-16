@@ -150,7 +150,6 @@ class ExecutionContextCollection extends Collection {
   }
 
   setParamInputs(contexts) {
-    // TODO: fix this up. should be working fine.
     const { dp, dp: { util } } = this;
     for (const { contextId } of contexts) {
       const paramTraces = util.getTracesOfContextAndType(contextId, TraceType.Param);
