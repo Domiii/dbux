@@ -14,19 +14,6 @@ import { buildTraceExpressionNoInput } from './misc';
 // // eslint-disable-next-line no-unused-vars
 // const { log, debug, warn, error: logError } = newLogger('builders/callExpressions');
 
-
-// /**
-//  * NOTE: the name chosen here will show up in error messages
-//  */
-// function generateCalleeVar(calleePath) {
-//   const id = calleePath.scope.generateUidIdentifierBasedOnNode(calleePath.node);
-//   calleePath.scope.push({
-//     id
-//   });
-//   return id;
-//   // return calleePath.node.name || 'func';
-// }
-
 /**
  * @param {NodePath} path
  */

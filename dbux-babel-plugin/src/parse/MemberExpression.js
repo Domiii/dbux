@@ -1,6 +1,6 @@
 import { NodePath } from '@babel/traverse';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
-import { buildTraceMemberExpression } from '../instrumentation/builders/misc';
+import { buildtraceExpressionME } from '../instrumentation/builders/misc';
 import BaseNode from './BaseNode';
 
 /**
@@ -90,8 +90,19 @@ export default class MemberExpression extends BaseNode {
    * `tme(te(g(), tid1), te(f(...(x)), tid2), tid0, [tid1, tid2])`
    */
   addRValTrace(replacePath, objectNode) {
+    /**
+     * TODO: `super` (e.g. `super.f()`, `super.x = 3` etc.)
+     * @example
+     * class A { x = 3; }
+     * class B extends A { 
+     *   f() { 
+     *     console.log(Object.getPrototypeOf(this.constructor.prototype).constructor.name, super.constructor.name);
+     *   }
+     * }
+     * console.log(new B().f(), super.constructor.name);  // 'A A'
+     * 
+     */
     // TODO: `import.meta` (rval only)
-    // TODO: `super.f()`, `super.x = 3` etc.
 
     const { path } = this;
     const [objectPath, propertyPath] = this.getChildPaths();
@@ -113,8 +124,8 @@ export default class MemberExpression extends BaseNode {
         type: TraceType.ME
       },
       meta: {
-        traceCall: optional ? 'traceMemberExpressionOptional' : 'traceMemberExpression',
-        build: buildTraceMemberExpression,
+        traceCall: optional ? 'traceExpressionMEOptional' : 'traceExpressionME',
+        build: buildtraceExpressionME,
         replacePath
       },
       data: {
@@ -124,7 +135,6 @@ export default class MemberExpression extends BaseNode {
     };
     const inputs = [objectPath];
     if (computed /* && !propertyPath.isConstantExpression() */) {
-      // future-work: only trace property, if it is not a constant
       inputs.push(propertyPath);
     }
 

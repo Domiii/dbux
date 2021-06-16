@@ -212,7 +212,7 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceExpressionVar(this.getProgramId(), value, tid, declarationTid, inputs);
   }
 
-  traceMemberExpression = (objValue, propValue, tid, inputs) => {
+  traceExpressionME = (objValue, propValue, tid, inputs) => {
     // [runtime-error] potential runtime error
     const value = objValue[propValue];
 
@@ -220,16 +220,16 @@ export default class ProgramMonitor {
       return value;
     }
 
-    return this._runtimeMonitor.traceMemberExpression(this.getProgramId(), value, propValue, tid, inputs);
+    return this._runtimeMonitor.traceExpressionME(this.getProgramId(), value, propValue, tid, inputs);
   }
 
-  traceMemberExpressionOptional = (objValue, propValue, tid, inputs) => {
+  traceExpressionMEOptional = (objValue, propValue, tid, inputs) => {
     const value = objValue?.[propValue];
     if (this.areTracesDisabled) {
       return value;
     }
 
-    return this._runtimeMonitor.traceMemberExpression(this.getProgramId(), value, propValue, tid, inputs);
+    return this._runtimeMonitor.traceExpressionME(this.getProgramId(), value, propValue, tid, inputs);
   }
 
   traceWriteVar = (value, tid, declarationTid, inputs) => {

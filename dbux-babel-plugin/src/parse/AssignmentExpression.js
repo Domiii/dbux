@@ -1,6 +1,6 @@
 import { LValHolderNode } from './_types';
 import BaseNode from './BaseNode';
-import { getLValPlugin } from './lvalUtil';
+import { getAssignmentLValPlugin } from './helpers/assignmentUtil';
 
 // ###########################################################################
 // AssignmentExpression
@@ -12,7 +12,7 @@ import { getLValPlugin } from './lvalUtil';
 export default class AssignmentExpression extends BaseNode {
   static children = ['left', 'right'];
   static plugins = [
-    getLValPlugin
+    getAssignmentLValPlugin
   ];
 
   /**
@@ -31,15 +31,5 @@ export default class AssignmentExpression extends BaseNode {
     traceData.path = path;
     traceData.node = this;
     traceData.meta.replacePath = path;
-  }
-
-  getLValNode() {
-    const [leftNode] = this.getChildNodes();
-    return leftNode;
-  }
-
-  getRValNode() {
-    const [, rightNode] = this.getChildNodes();
-    return rightNode;
   }
 }

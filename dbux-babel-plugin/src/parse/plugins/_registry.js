@@ -5,8 +5,8 @@ import CalleeMemberExpression from './CalleeMemberExpression';
 import Class from './Class';
 import Function from './Function';
 import Loop from './Loop';
-import LValIdentifier from './LValIdentifier';
-import LValMemberExpression from './LValMemberExpression';
+import AssignmentLValVar from './AssignmentLValVar';
+import AssignmentLValME from './AssignmentAssignmentLValME';
 import AssignmentLValPattern from './AssignmentLValPattern';
 import StaticContext from './StaticContext';
 import Traces from './Traces';
@@ -19,8 +19,8 @@ export {
   Class,
   Function,
   Loop,
-  LValIdentifier,
-  LValMemberExpression,
+  AssignmentLValVar,
+  AssignmentLValME,
   AssignmentLValPattern,
   StaticContext,
   Traces

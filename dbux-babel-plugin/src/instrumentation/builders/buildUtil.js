@@ -32,3 +32,16 @@ export function addMoreTraceCallArgs(args, traceCfg) {
     args.push(...moreTraceCallArgs);
   }
 }
+
+
+/**
+ * NOTE: a variation of the input name will show up in error messages
+ */
+export function generateDeclaredIdentifier(path) {
+  const id = path.scope.generateUidIdentifierBasedOnNode(path.node);
+  path.scope.push({
+    id
+  });
+  return id;
+  // return calleePath.node.name || 'func';
+}

@@ -8,7 +8,7 @@ export default class VariableDeclarator extends BaseNode {
   static children = ['id', 'init'];
   static plugins = [
     'BindingNode',
-    'LValIdentifier'
+    'AssignmentLValVar'
   ];
 
   /**
@@ -28,16 +28,6 @@ export default class VariableDeclarator extends BaseNode {
     traceData.path = path;
     traceData.node = this;
     traceData.meta.replacePath = initPath;
-  }
-
-  getLValNode() {
-    const [idNode] = this.getChildNodes();
-    return idNode;
-  }
-
-  getRValNode() {
-    const [, initNode] = this.getChildNodes();
-    return initNode;
   }
 
   exit1() {

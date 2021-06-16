@@ -148,19 +148,19 @@ export const buildTraceNoValue = bindTemplate(
 );
 
 // ###########################################################################
-// traceMemberExpression
+// traceExpressionME
 // ###########################################################################
 
 function getMEObjectNode(meNode, traceCfg) {
   return traceCfg.data.objectNode || meNode.object;
 }
 
-export const buildTraceMemberExpression = bindExpressionTemplate(
+export const buildtraceExpressionME = bindExpressionTemplate(
   '%%tme%%(%%objValue%%, %%propValue%%, %%tid%%, %%inputs%%)',
-  function buildTraceMemberExpression(state, traceCfg) {
+  function buildtraceExpressionME(state, traceCfg) {
     // const { scope } = path;
     const meNode = getInstrumentTargetAstNode(traceCfg);
-    const trace = getTraceCall(state, traceCfg, 'traceMemberExpression');
+    const trace = getTraceCall(state, traceCfg, 'traceExpressionME');
     const tid = buildTraceId(state, traceCfg);
     // Verbose && debug(`[te] ${expressionNode.type} [${inputTraces?.map(i => i.tidIdentifier.name).join(',') || ''}]`, pathToString(expressionNode));
 

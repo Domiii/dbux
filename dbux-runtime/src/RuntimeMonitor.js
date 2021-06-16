@@ -474,12 +474,12 @@ export default class RuntimeMonitor {
     return value;
   }
 
-  traceMemberExpression(programId, value, propValue, tid, inputs) {
+  traceExpressionME(programId, value, propValue, tid, inputs) {
     if (!this._ensureExecuting()) {
       return value;
     }
     if (!tid) {
-      this.logFail(`traceMemberExpression failed to capture tid`);
+      this.logFail(`traceExpressionME failed to capture tid`);
       return value;
     }
 

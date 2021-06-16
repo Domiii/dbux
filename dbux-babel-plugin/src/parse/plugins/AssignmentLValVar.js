@@ -3,7 +3,7 @@ import { LValHolderNode } from '../_types';
 import { buildTraceWriteVar } from '../../instrumentation/builders/misc';
 import BasePlugin from './BasePlugin';
 
-export default class LValIdentifier extends BasePlugin {
+export default class AssignmentLValVar extends BasePlugin {
   /**
    * @type {LValHolderNode}
    */
@@ -18,7 +18,7 @@ export default class LValIdentifier extends BasePlugin {
     const valueNode = node.getRValNode();
 
     if (!valueNode) {
-      this.warn(`LValIdentifier did not have an RVal node: ${this.node.path}`);
+      this.warn(`AssignmentLValVar did not have an RVal node: ${this.node.path}`);
       return;
     }
 

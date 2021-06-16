@@ -12,14 +12,4 @@ export class LValHolderNode extends BaseNode {
   getDeclarationNode() {}
 
   decorateWriteTraceData(traceData) {}
-
-  /**
-   * @return {BaseNode}
-   */
-  getRValNode() { }
-  
-  /**
-   * @return {BaseNode}
-   */
-  getLValNode() { }
 }

@@ -6,38 +6,27 @@ import { buildTraceWriteME } from '../../instrumentation/builders/misc';
 /**
  * @example
  * 
- * Two situations: "complex" (c) and "simple" (s)
+ * Two situations: "default" (d) and "simple object" (s)
  * 
- * Case c-1:
+ * Case d-1:
  * `a.b.c.prop = f(x)` ->
- * `rhs = te(f(x)), o = tme(...a.b.c...), o.prop = twME(rhs)`
+ * `twME(o = tme(a.b.c..., objectTid), p = 'prop', o[p] = te(f(x)..., rhsTid), tid, objectTid, rhsTid)`
  *
- * Case c-2: `CallExpression` object (not nested)
- * `f().y = f(x)` ->
- * `rhs = te(f(x)), o = tce(...f()...), o.prop = twME(rhs)`
- *
- * Case c-3:
+ * Case d-3:
  * `a.b.c[prop()] = f(x)` ->
- * `rhs = te(f(x)), o = tme(...a.b.c...), o[te(prop())] = twME(rhs)`
+ * `twME(tme(a.b.c..., objectTid), te(prop()...), te(f(x), rhsTid), tid, objectTid, rhsTid)`
  *
- * Case c-4: nested CallExpression
- * `g(a).h(b).y = f(x)` ->
- * `rhs = te(f(x)), o = tcr(tc(tcr(tc(g)(ta(a))).h)(ta(b))), o.y = twME(rhs)`
- *
- * Case s-1: simplify if possible
+ * TODO: "simple object" NYI
+ * Case s-1: 
  * `o.prop = f(x)` ->
- * `o.prop = twME(te(f(x)))`
+ * `twME(te(o..., objectTid), p = 'prop', o[p] = te(f(x)..., rhsTid), tid, objectTid, rhsTid)`
  *
- * Case s-2: `super` TODO(trace `this` access for `super`)
+ * Case s-2: `super`
+ * TODO: NYI! - Cannot pass `super` as individual argument; must trace `Object.getPrototypeOf(this.constructor.prototype)` for `super`.
  * `super.prop = f(x)` ->
- * `super.prop = twME(te(f(x)))`
- * ```
- * 
- * Case u-1: UpdateExpression
- * `++a[x]` ->
- * `tmME((o = a, ++o[te(x)]), tid...)`
+ * `twME(te(TODO..., objectTid), p = 'prop', super[p] = te(f(x)..., rhsTid), tid, objectTid, rhsTid)`
  */
-export default class LValMemberExpression extends BasePlugin {
+export default class AssignmentLValME extends BasePlugin {
   /**
    * @type {LValHolderNode}
    */
@@ -62,9 +51,7 @@ export default class LValMemberExpression extends BasePlugin {
     const { node } = this;
     const { Traces } = node;
 
-    // const [meNode, rValNode] = node.getChildNodes();
-    const meNode = node.getLValNode();
-    const valueNode = node.getRValNode();
+    const [meNode, valueNode] = node.getChildNodes();
     const [objectNode] = meNode.getChildNodes();
 
     // if (!rValNode.path.node) {
