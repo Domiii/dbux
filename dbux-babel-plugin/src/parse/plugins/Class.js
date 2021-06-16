@@ -1,10 +1,10 @@
-import ParsePlugin from '../../parseLib/ParsePlugin';
+import BasePlugin from './BasePlugin';
 
 /** @typedef { import("../MemberExpression").default } MemberExpression */
 
 /**
  * 
  */
-export default class Class extends ParsePlugin {
+export default class Class extends BasePlugin {
   // TODO
 }

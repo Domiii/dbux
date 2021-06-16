@@ -1,6 +1,6 @@
-import ParsePlugin from '../../parseLib/ParsePlugin';
+import BasePlugin from './BasePlugin';
 
 
-export default class Loop extends ParsePlugin {
+export default class Loop extends BasePlugin {
   // TODO
 }

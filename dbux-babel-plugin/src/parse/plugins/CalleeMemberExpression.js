@@ -1,13 +1,12 @@
-import * as t from '@babel/types';
 import { traceCallExpressionME } from '../../instrumentation/callExpressions';
-import ParsePlugin from '../../parseLib/ParsePlugin';
+import BasePlugin from './BasePlugin';
 
 /** @typedef { import("../MemberExpression").default } MemberExpression */
 
 /**
  * 
  */
-export default class CalleeMemberExpression extends ParsePlugin {
+export default class CalleeMemberExpression extends BasePlugin {
   /**
    * @return {MemberExpression}
    */

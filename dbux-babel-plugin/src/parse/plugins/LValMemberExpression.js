@@ -1,6 +1,7 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
+import BasePlugin from './BasePlugin';
+import { LValHolderNode } from '../_types';
 import { buildTraceWriteME } from '../../instrumentation/builders/misc';
-import ParsePlugin from '../../parseLib/ParsePlugin';
 
 /**
  * @example
@@ -36,7 +37,12 @@ import ParsePlugin from '../../parseLib/ParsePlugin';
  * `++a[x]` ->
  * `tmME((o = a, ++o[te(x)]), tid...)`
  */
-export default class LValMemberExpression extends ParsePlugin {
+export default class LValMemberExpression extends BasePlugin {
+  /**
+   * @type {LValHolderNode}
+   */
+  node;
+
   get meNode() {
     const [meNode] = this.node.getChildNodes();
     return meNode;
@@ -56,7 +62,9 @@ export default class LValMemberExpression extends ParsePlugin {
     const { node } = this;
     const { Traces } = node;
 
-    const [meNode, rValNode] = node.getChildNodes();
+    // const [meNode, rValNode] = node.getChildNodes();
+    const meNode = node.getLValNode();
+    const valueNode = node.getRValNode();
     const [objectNode] = meNode.getChildNodes();
 
     // if (!rValNode.path.node) {
@@ -89,6 +97,6 @@ export default class LValMemberExpression extends ParsePlugin {
 
     this.node.decorateWriteTraceData(traceData);
 
-    Traces.addTraceWithInputs(traceData, [rValNode.path]);
+    Traces.addTraceWithInputs(traceData, [valueNode.path]);
   }
 }

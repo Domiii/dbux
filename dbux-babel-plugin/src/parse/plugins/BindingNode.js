@@ -1,5 +1,5 @@
 // import { pathToString } from '../../helpers/pathHelpers';
-import ParsePlugin from '../../parseLib/ParsePlugin';
+import BasePlugin from './BasePlugin';
 
 /**
  * This is for ClassDeclaration, FunctionDeclaration.
@@ -8,7 +8,7 @@ import ParsePlugin from '../../parseLib/ParsePlugin';
  * 
  * TODO: Import*
  */
-export default class BindingNode extends ParsePlugin {
+export default class BindingNode extends BasePlugin {
   // instrument() {
   //   // TODO: call traceBinding
   // }

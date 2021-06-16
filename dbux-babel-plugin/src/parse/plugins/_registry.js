@@ -7,7 +7,7 @@ import Function from './Function';
 import Loop from './Loop';
 import LValIdentifier from './LValIdentifier';
 import LValMemberExpression from './LValMemberExpression';
-import LValPattern from './LValPattern';
+import AssignmentLValPattern from './AssignmentLValPattern';
 import StaticContext from './StaticContext';
 import Traces from './Traces';
 
@@ -21,7 +21,7 @@ export {
   Loop,
   LValIdentifier,
   LValMemberExpression,
-  LValPattern,
+  AssignmentLValPattern,
   StaticContext,
   Traces
 };

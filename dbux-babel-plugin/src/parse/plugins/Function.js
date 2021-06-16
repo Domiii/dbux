@@ -1,7 +1,7 @@
 import template from '@babel/template';
 import * as t from "@babel/types";
 import TraceType from '@dbux/common/src/core/constants/TraceType';
-import ParsePlugin from '../../parseLib/ParsePlugin';
+import BasePlugin from './BasePlugin';
 import { getNodeNames } from '../../visitors/nameVisitors';
 import { getBindingIdentifierPaths } from '../../helpers/bindingsUtil';
 import { doesNodeEndScope } from '../../helpers/astUtil';
@@ -78,7 +78,7 @@ function getParamInitialValuePath(paramPath) {
 }
 
 
-export default class Function extends ParsePlugin {
+export default class Function extends BasePlugin {
   // ###########################################################################
   // enter
   // ###########################################################################

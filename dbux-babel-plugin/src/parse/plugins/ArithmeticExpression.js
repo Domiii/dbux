@@ -1,9 +1,9 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import { pathToString } from '../../helpers/pathHelpers';
-import ParsePlugin from '../../parseLib/ParsePlugin';
+import BasePlugin from './BasePlugin';
 
 
-export default class ArithmeticExpression extends ParsePlugin {
+export default class ArithmeticExpression extends BasePlugin {
   // ###########################################################################
   // exit
   // ###########################################################################

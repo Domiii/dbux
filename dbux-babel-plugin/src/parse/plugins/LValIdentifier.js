@@ -1,20 +1,28 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
+import { LValHolderNode } from '../_types'; 
 import { buildTraceWriteVar } from '../../instrumentation/builders/misc';
-import ParsePlugin from '../../parseLib/ParsePlugin';
+import BasePlugin from './BasePlugin';
 
-export default class LValIdentifier extends ParsePlugin {
+export default class LValIdentifier extends BasePlugin {
+  /**
+   * @type {LValHolderNode}
+   */
+  node;
+
   exit() {
-    const { node } = this;
+    const {
+      node
+    } = this;
     const { Traces } = node;
 
-    const [, rightNode] = node.getChildNodes();
+    const valueNode = node.getRValNode();
 
-    if (!rightNode) {
-      this.warn(`assignment rval did not have a node: ${this.node.path}`);
+    if (!valueNode) {
+      this.warn(`LValIdentifier did not have an RVal node: ${this.node.path}`);
       return;
     }
 
-    if (!rightNode.path.node) {
+    if (!valueNode.path.node) {
       // no write
       return;
     }
@@ -31,7 +39,7 @@ export default class LValIdentifier extends ParsePlugin {
 
     this.node.decorateWriteTraceData(traceData);
     
-    // NOTE: `declarationTid` comes from `getDeclarationNode`
-    Traces.addTraceWithInputs(traceData, [rightNode.path]);
+    // NOTE: `declarationTid` comes from `node.getDeclarationNode`
+    Traces.addTraceWithInputs(traceData, [valueNode.path]);
   }
 }

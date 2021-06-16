@@ -1,7 +1,6 @@
 import NestedError from '@dbux/common/src/NestedError';
 import ParseNode from '../parseLib/ParseNode';
 import StaticContext from './plugins/StaticContext';
-import Traces from './plugins/Traces';
 
 
 function concatArrays(a, b) {

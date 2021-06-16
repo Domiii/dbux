@@ -10,14 +10,14 @@ import { pathToString } from '../../helpers/pathHelpers';
 import { traceWrapExpression, traceDeclarations } from '../../instrumentation/trace';
 import ParseNode from '../../parseLib/ParseNode';
 // import { pathToString } from '../../helpers/pathHelpers';
-import ParsePlugin from '../../parseLib/ParsePlugin';
+import BasePlugin from './BasePlugin';
 
 const makeDefaultTrace = {
   // Literal(path) {
   // }
 };
 
-export default class Traces extends ParsePlugin {
+export default class Traces extends BasePlugin {
   /**
    * Special declaration traces that will be hoisted to scope of this.node.
    */

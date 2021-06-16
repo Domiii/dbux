@@ -1,7 +1,14 @@
-
 /** @typedef { import("./ParseNode").default } ParseNode */
 
+
+// /**
+//  * @template N
+//  */
 export default class ParsePlugin {
+  // /** @typedef {ParseNode | N} _ParseNodeType */
+  // /**
+  //  * @type {_ParseNodeType}
+  //  */
   /**
    * @type {ParseNode}
    */

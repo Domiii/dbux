@@ -1,7 +1,7 @@
 import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import { pathToString } from '../../helpers/pathHelpers';
-import ParsePlugin from '../../parseLib/ParsePlugin';
+import BasePlugin from './BasePlugin';
 
 /** @typedef { import("../BindingIdentifier").default } BindingIdentifier */
 /** @typedef { import("./BindingNode").default } BindingNode */
@@ -13,7 +13,7 @@ import ParsePlugin from '../../parseLib/ParsePlugin';
  * This is not a general "Scope container".
  * To capture all scopes, one can use [Scopable](https://babeljs.io/docs/en/babel-types#scopable).
  */
-export default class StaticContext extends ParsePlugin {
+export default class StaticContext extends BasePlugin {
   /**
    * @type {BindingIdentifier}
    */

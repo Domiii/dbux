@@ -1,6 +1,9 @@
 // import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 import BaseNode from './BaseNode';
 
+/**
+ * @implements {LValHolderNode}
+ */
 export default class VariableDeclarator extends BaseNode {
   static children = ['id', 'init'];
   static plugins = [
@@ -25,6 +28,16 @@ export default class VariableDeclarator extends BaseNode {
     traceData.path = path;
     traceData.node = this;
     traceData.meta.replacePath = initPath;
+  }
+
+  getLValNode() {
+    const [idNode] = this.getChildNodes();
+    return idNode;
+  }
+
+  getRValNode() {
+    const [, initNode] = this.getChildNodes();
+    return initNode;
   }
 
   exit1() {

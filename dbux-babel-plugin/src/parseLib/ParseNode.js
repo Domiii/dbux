@@ -9,6 +9,7 @@ import ParsePhase from './ParsePhase';
 
 /** @typedef { import("@babel/traverse").NodePath } NodePath */
 /** @typedef { import("./ParseStack").default } ParseStack */
+/** @typedef { import("./ParsePlugin").default } ParsePlugin */
 /** @typedef { import("@dbux/common/src/log/logger").Logger } Logger */
 
 const PhaseMethodNames = ParsePhase.names.map(name => name.toLowerCase());
@@ -31,7 +32,7 @@ export default class ParseNode {
   stack;
 
   /**
-   * @type {{ [string]: object }}
+   * @type {{ [string]: ParsePlugin }}
    */
   plugins = {};
   // /**
