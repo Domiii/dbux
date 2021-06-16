@@ -21,10 +21,11 @@ export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
 
     if (traceSelection.selected) {
       const trace = traceSelection.selected;
-      
+      const nodeId = traceSelection.nodeId;
+
       roots.push(
         this.buildSelectedTraceNode(trace),
-        ...this.buildTraceDetailNodes(trace, null)
+        ...this.buildTraceDetailNodes(trace, nodeId, null)
       );
     }
     else {
@@ -35,13 +36,13 @@ export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
     return roots;
   }
 
-  buildTraceDetailNodes(trace, parent) {
+  buildTraceDetailNodes(trace, nodeId, parent) {
     const nodes = [
       // navigation node
       this.buildNavigationNode(trace, parent),
 
       // other detail nodes
-      ...this.buildDetailNodes(trace, parent, DetailNodeClasses)
+      ...this.buildDetailNodes(trace, nodeId, parent, DetailNodeClasses)
     ].filter(node => !!node);
 
     return nodes;
@@ -51,13 +52,13 @@ export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
   // Detail nodes
   // ###########################################################################
 
-  buildDetailNodes(trace, parent, NodeClasses) {
+  buildDetailNodes(trace, nodeId, parent, NodeClasses) {
     return NodeClasses
-      .map(NodeClass => this.maybeBuildTraceDetailNode(NodeClass, trace, parent))
+      .map(NodeClass => this.maybeBuildTraceDetailNode(NodeClass, trace, parent, { nodeId }))
       .filter(node => !!node);
   }
 
-  maybeBuildTraceDetailNode(NodeClass, trace, parent) {
+  maybeBuildTraceDetailNode(NodeClass, trace, parent, { nodeId }) {
     const detail = NodeClass.makeTraceDetail(trace, parent);
     const props = NodeClass.makeProperties?.(trace, parent, detail) || EmptyObject;
     if (!detail) {
@@ -65,15 +66,16 @@ export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
     }
     const treeItemProps = {
       trace,
+      nodeId,
       ...props
     };
     return this.buildNode(NodeClass, detail, parent, treeItemProps);
   }
-  
+
   // ###########################################################################
   // Util
   // ###########################################################################
-  
+
   buildSelectedTraceNode(trace) {
     return this.buildNode(SelectedTraceNode, trace);
   }

@@ -99,7 +99,7 @@ export class InfoTDNode extends BaseTreeViewNode {
   }
 
   buildChildren() {
-    return this.treeNodeProvider.buildDetailNodes(this.trace, this, [
+    return this.treeNodeProvider.buildDetailNodes(this.trace, this.nodeId, this, [
       ApplicationTDNode,
       ContextTDNode,
       TraceTypeTDNode,

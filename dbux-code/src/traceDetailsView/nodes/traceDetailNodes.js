@@ -11,6 +11,12 @@ import ValueTDNode from './ValueTDNode';
 import { InfoTDNode, ContextTDNode, TraceTypeTDNode } from './traceInfoNodes';
 // import NearbyValuesTDNode from './NearbyValuesTDNode';
 
+/** @typedef {import('@dbux/common/src/core/data/Trace').default} Trace */
+
+/**
+ * @property {Trace} trace
+ * @property {number} nodeId
+ */
 export class TraceDetailNode extends BaseTreeViewNode {
 }
 
@@ -40,7 +46,7 @@ export class DebugTDNode extends TraceDetailNode {
   // }
 
   buildChildren() {
-    const { trace } = this;
+    const { trace, nodeId } = this;
 
     const application = allApplications.getApplication(trace.applicationId);
     const { dataProvider } = application;
@@ -57,7 +63,17 @@ export class DebugTDNode extends TraceDetailNode {
     const { staticContextId } = context;
     const staticContext = dataProvider.collections.staticContexts.getById(staticContextId);
     const dataNodes = dataProvider.util.getDataNodesOfTrace(traceId);
-    const dataNode = dataNodes?.[0];
+    
+    let dataNode;
+    if (nodeId) {
+      dataNode = dataProvider.collections.dataNodes.getById(nodeId);
+    }
+    else {
+      dataNode = dataNodes?.[0];
+    }
+
+    const dataNodeLabel = dataNode ? `dataNodes[${dataNodes?.indexOf(dataNode)}]` : `dataNodes: []`;
+    const dataNodeCount = dataNodes?.length || 0;
 
     const refId = dataNode?.refId;
     const valueRef = refId && dataProvider.collections.values.getById(refId);
@@ -69,19 +85,17 @@ export class DebugTDNode extends TraceDetailNode {
       }
     ];
 
-    const dataNodeCount = dataNodes?.length || 0;
-
     const children = [
-      ...this.treeNodeProvider.buildDetailNodes(this.trace, this, [
+      ...this.treeNodeProvider.buildDetailNodes(this.trace, this.nodeId, this, [
         TraceTypeTDNode,
         ContextTDNode,
       ]),
       ...makeTreeItems(
         ['trace', otherTraceProps],
-        [`dataNodes[0]`, dataNode],
+        [dataNodeLabel, dataNode],
         ...(
           dataNodeCount > 1 ?
-            [[`other dataNodes (${dataNodeCount - 1})`, dataNodes.slice(1)]] :
+            [[`all dataNodes (${dataNodeCount})`, dataNodes]] :
             EmptyArray
         ),
         [`context`, context],
