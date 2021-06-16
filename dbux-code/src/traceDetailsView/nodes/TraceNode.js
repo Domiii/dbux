@@ -33,6 +33,6 @@ export default class TraceNode extends BaseTreeViewNode {
   }
 
   handleClick() {
-    traceSelection.selectTrace(this.trace);
+    traceSelection.selectTrace(this.trace, 'TraceNode', this.nodeId );
   }
 }

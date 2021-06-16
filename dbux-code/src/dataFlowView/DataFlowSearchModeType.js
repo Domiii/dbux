@@ -1,11 +1,11 @@
 import Enum from '@dbux/common/src/util/Enum';
 
 // eslint-disable-next-line import/no-mutable-exports
-let DataFlowViewModeType = {
+let DataFlowSearchModeType = {
   ByAccessId: 1,
   ByValueId: 2,
 };
 
-DataFlowViewModeType = new Enum(DataFlowViewModeType);
+DataFlowSearchModeType = new Enum(DataFlowSearchModeType);
 
-export default DataFlowViewModeType;
+export default DataFlowSearchModeType;
