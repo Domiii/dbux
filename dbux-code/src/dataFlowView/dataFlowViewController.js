@@ -14,29 +14,29 @@ let controller;
 
 export class DataFlowViewController {
   constructor() {
-    this.searchMode = DataFlowSearchModeType.ByAccessId;
-    this.filterMode = DataFlowFilterModeType.None;
     this.treeDataProvider = new DataFlowNodeProvider(this);
-
-    commands.executeCommand('setContext', 'dbuxDataFlowView.context.filterModeName', DataFlowFilterModeType.nameFromForce(this.filterMode));
+    
+    this.setSearchMode(DataFlowSearchModeType.ByAccessId, false);
+    this.setFilterMode(DataFlowFilterModeType.None, false);
   }
 
   get treeView() {
     return this.treeDataProvider.treeView;
   }
 
-  setSearchMode(mode) {
+  setSearchMode(mode, refresh = true) {
     if (mode !== this.searchMode) {
+      commands.executeCommand('setContext', 'dbuxDataFlowView.context.searchModeName', DataFlowSearchModeType.nameFromForce(mode));
       this.searchMode = mode;
-      this.refresh();
+      refresh && this.refresh();
     }
   }
 
-  setFilterMode(mode) {
+  setFilterMode(mode, refresh = true) {
     if (mode !== this.filterMode) {
       commands.executeCommand('setContext', 'dbuxDataFlowView.context.filterModeName', DataFlowFilterModeType.nameFromForce(mode));
       this.filterMode = mode;
-      this.refresh();
+      refresh && this.refresh();
     }
   }
 

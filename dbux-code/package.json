@@ -419,23 +419,23 @@
       },
       {
         "command": "dbuxDataFlowView.setSearchMode.ByAccessId",
-        "title": "Search by accessId",
+        "title": "Search by: accessId",
         "icon": {
-          "light": "resources/light/string.svg",
-          "dark": "resources/dark/string.svg"
+          "light": "resources/light/variable.svg",
+          "dark": "resources/dark/variable.svg"
         }
       },
       {
         "command": "dbuxDataFlowView.setSearchMode.ByValueId",
-        "title": "Search by valueId",
+        "title": "Search by: valueId",
         "icon": {
-          "light": "resources/light/string.svg",
-          "dark": "resources/dark/string.svg"
+          "light": "resources/light/brackets.svg",
+          "dark": "resources/dark/brackets.svg"
         }
       },
       {
         "command": "dbuxDataFlowView.setFilterMode.None",
-        "title": "No filter",
+        "title": "Filter: None",
         "icon": {
           "light": "resources/light/filter_disabled.svg",
           "dark": "resources/dark/filter_disabled.svg"
@@ -443,7 +443,7 @@
       },
       {
         "command": "dbuxDataFlowView.setFilterMode.ReadOnly",
-        "title": "Read only",
+        "title": "Filter: Read only",
         "icon": {
           "light": "resources/light/filterR.svg",
           "dark": "resources/dark/filterR.svg"
@@ -451,7 +451,7 @@
       },
       {
         "command": "dbuxDataFlowView.setFilterMode.WriteOnly",
-        "title": "Write only",
+        "title": "Filter: Write only",
         "icon": {
           "light": "resources/light/filterW.svg",
           "dark": "resources/dark/filterW.svg"
@@ -803,12 +803,12 @@
         },
         {
           "command": "dbuxDataFlowView.setSearchMode.ByAccessId",
-          "when": "view == dbuxDataFlowView",
+          "when": "view == dbuxDataFlowView && dbuxDataFlowView.context.searchModeName == ByAccessId",
           "group": "navigation@1"
         },
         {
           "command": "dbuxDataFlowView.setSearchMode.ByValueId",
-          "when": "view == dbuxDataFlowView",
+          "when": "view == dbuxDataFlowView && dbuxDataFlowView.context.searchModeName == ByValueId",
           "group": "navigation@1"
         },
         {

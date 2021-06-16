@@ -11,14 +11,14 @@ export function initDataFlowViewCommands(context, dataFlowViewController) {
   registerCommand(context,
     'dbuxDataFlowView.setSearchMode.ByAccessId',
     (/* node */) => {
-      dataFlowViewController.setSearchMode(DataFlowSearchModeType.ByAccessId);
+      dataFlowViewController.setSearchMode(DataFlowSearchModeType.nextValue(DataFlowSearchModeType.ByAccessId));
     }
   );
 
   registerCommand(context,
     'dbuxDataFlowView.setSearchMode.ByValueId',
     (/* node */) => {
-      dataFlowViewController.setSearchMode(DataFlowSearchModeType.ByValueId);
+      dataFlowViewController.setSearchMode(DataFlowSearchModeType.nextValue(DataFlowSearchModeType.ByValueId));
     }
   );
 
