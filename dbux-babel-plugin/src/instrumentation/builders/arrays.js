@@ -1,7 +1,7 @@
 import * as t from '@babel/types';
 import { buildTraceCall } from './templateUtil';
 import { makeInputs } from './buildUtil';
-import { buildTraceId } from './misc';
+import { buildTraceId } from './traceId';
 
 // ###########################################################################
 // arrays

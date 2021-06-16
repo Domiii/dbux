@@ -1,53 +1,11 @@
-// import template from '@babel/template';
 import * as t from '@babel/types';
 import { buildTraceCall, bindTemplate, bindExpressionTemplate } from './templateUtil';
 import { addMoreTraceCallArgs, getTraceCall, makeInputs, ZeroNode } from './buildUtil';
 import { getInstrumentTargetAstNode } from './common';
 import { convertNonComputedPropToStringLiteral } from './objects';
+import { buildTraceId } from './traceId';
 
 const Verbose = 2;
-
-// ###########################################################################
-// newTraceId
-// ###########################################################################
-
-export const buildTraceId = bindExpressionTemplate(
-  '%%traceId%% = %%newTraceId%%(%%staticTraceId%%)',
-  function buildTraceId(state, { tidIdentifier, inProgramStaticTraceId }) {
-    const { ids: { aliases: {
-      newTraceId
-    } } } = state;
-
-    return {
-      newTraceId,
-      staticTraceId: t.numericLiteral(inProgramStaticTraceId),
-      traceId: tidIdentifier
-    };
-  },
-);
-
-/**
- * `newTraceId(staticTraceId, value)`
- * 
- * NOTE: Combines `newTraceId` with effect of `traceExpression` into one.
- * NOTE2: This is used if return value of expression is not used. Example: `registerParams`
- * NOTE3: this is different from `buildTraceDeclarations` when a `decl` has a `value`, since in that case, declaration and definition are separated.
- */
-export const buildTraceIdValue = bindExpressionTemplate(
-  '%%traceId%% = %%newTraceId%%(%%staticTraceId%%, %%value%%)',
-  function buildTraceIdValue(state, { tidIdentifier, inProgramStaticTraceId }, value) {
-    const { ids: { aliases: {
-      newTraceId
-    } } } = state;
-
-    return {
-      newTraceId,
-      staticTraceId: t.numericLiteral(inProgramStaticTraceId),
-      traceId: tidIdentifier,
-      value
-    };
-  },
-);
 
 // ###########################################################################
 // traceExpression

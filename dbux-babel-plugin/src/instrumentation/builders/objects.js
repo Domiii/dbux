@@ -1,10 +1,9 @@
 import { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { astNodeToString } from '../../helpers/pathHelpers';
-import { pathToString } from '../../helpers/pathHelpers';
+import { astNodeToString, pathToString } from '../../helpers/pathHelpers';
 import { makeInputs } from './buildUtil';
-import { buildTraceId } from './misc';
+import { buildTraceId } from './traceId';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('builders/objects');

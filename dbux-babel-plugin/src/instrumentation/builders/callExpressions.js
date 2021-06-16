@@ -6,8 +6,9 @@ import * as t from '@babel/types';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import TraceCfg from '../../definitions/TraceCfg';
 import { makeInputs, NullNode } from './buildUtil';
+import { buildTraceId } from './traceId';
 import { buildSpreadableArgArrayNoSpread, buildGetI } from './arrays';
-import { buildTraceExpressionNoInput, buildTraceId } from './misc';
+import { buildTraceExpressionNoInput } from './misc';
 
 
 // // eslint-disable-next-line no-unused-vars

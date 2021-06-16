@@ -1,14 +1,14 @@
 import template from '@babel/template';
 import * as t from "@babel/types";
 import TraceType from '@dbux/common/src/core/constants/TraceType';
-import { buildWrapTryFinally, buildSource, buildBlock } from '../../instrumentation/builders/common';
-import { injectContextEndTrace } from '../../instrumentation/context';
+import ParsePlugin from '../../parseLib/ParsePlugin';
 import { getNodeNames } from '../../visitors/nameVisitors';
-
 import { getBindingIdentifierPaths } from '../../helpers/bindingsUtil';
 import { doesNodeEndScope } from '../../helpers/astUtil';
-import ParsePlugin from '../../parseLib/ParsePlugin';
-import { buildTraceId, buildTraceWriteVar } from '../../instrumentation/builders/misc';
+import { buildWrapTryFinally, buildBlock } from '../../instrumentation/builders/common';
+import { injectContextEndTrace } from '../../instrumentation/context';
+import { buildTraceId } from '../../instrumentation/builders/traceId';
+import { buildTraceWriteVar } from '../../instrumentation/builders/misc';
 import { buildRegisterParams } from '../../instrumentation/builders/function';
 import { pathToString } from '../../helpers/pathHelpers';
 
