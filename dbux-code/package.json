@@ -418,7 +418,7 @@
         }
       },
       {
-        "command": "dbuxDataFlowView.setByAccessIdMode",
+        "command": "dbuxDataFlowView.setSearchMode.ByAccessId",
         "title": "Search by accessId",
         "icon": {
           "light": "resources/light/string.svg",
@@ -426,11 +426,35 @@
         }
       },
       {
-        "command": "dbuxDataFlowView.setByValueIdMode",
+        "command": "dbuxDataFlowView.setSearchMode.ByValueId",
         "title": "Search by valueId",
         "icon": {
           "light": "resources/light/string.svg",
           "dark": "resources/dark/string.svg"
+        }
+      },
+      {
+        "command": "dbuxDataFlowView.setFilterMode.None",
+        "title": "No filter",
+        "icon": {
+          "light": "resources/light/filter_disabled.svg",
+          "dark": "resources/dark/filter_disabled.svg"
+        }
+      },
+      {
+        "command": "dbuxDataFlowView.setFilterMode.ReadOnly",
+        "title": "Read only",
+        "icon": {
+          "light": "resources/light/filterR.svg",
+          "dark": "resources/dark/filterR.svg"
+        }
+      },
+      {
+        "command": "dbuxDataFlowView.setFilterMode.WriteOnly",
+        "title": "Write only",
+        "icon": {
+          "light": "resources/light/filterW.svg",
+          "dark": "resources/dark/filterW.svg"
         }
       },
       {
@@ -778,14 +802,29 @@
           "group": "navigation@20"
         },
         {
-          "command": "dbuxDataFlowView.setByAccessIdMode",
+          "command": "dbuxDataFlowView.setSearchMode.ByAccessId",
           "when": "view == dbuxDataFlowView",
-          "group": "navigation"
+          "group": "navigation@1"
         },
         {
-          "command": "dbuxDataFlowView.setByValueIdMode",
+          "command": "dbuxDataFlowView.setSearchMode.ByValueId",
           "when": "view == dbuxDataFlowView",
-          "group": "navigation"
+          "group": "navigation@1"
+        },
+        {
+          "command": "dbuxDataFlowView.setFilterMode.None",
+          "when": "view == dbuxDataFlowView && dbuxDataFlowView.context.filterModeName == None",
+          "group": "navigation@2"
+        },
+        {
+          "command": "dbuxDataFlowView.setFilterMode.ReadOnly",
+          "when": "view == dbuxDataFlowView && dbuxDataFlowView.context.filterModeName == ReadOnly",
+          "group": "navigation@2"
+        },
+        {
+          "command": "dbuxDataFlowView.setFilterMode.WriteOnly",
+          "when": "view == dbuxDataFlowView && dbuxDataFlowView.context.filterModeName == WriteOnly",
+          "group": "navigation@2"
         },
         {
           "command": "dbux.runFile",
@@ -1071,11 +1110,23 @@
           "when": "false"
         },
         {
-          "command": "dbuxDataFlowView.setByAccessIdMode",
+          "command": "dbuxDataFlowView.setSearchMode.ByAccessId",
           "when": "false"
         },
         {
-          "command": "dbuxDataFlowView.setByValueIdMode",
+          "command": "dbuxDataFlowView.setSearchMode.ByValueId",
+          "when": "false"
+        },
+        {
+          "command": "dbuxDataFlowView.setFilterMode.None",
+          "when": "false"
+        },
+        {
+          "command": "dbuxDataFlowView.setFilterMode.ReadOnly",
+          "when": "false"
+        },
+        {
+          "command": "dbuxDataFlowView.setFilterMode.WriteOnly",
           "when": "false"
         },
         {

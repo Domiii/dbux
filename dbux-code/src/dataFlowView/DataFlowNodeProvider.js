@@ -3,15 +3,22 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
 import BaseTreeViewNodeProvider from '../codeUtil/BaseTreeViewNodeProvider';
 import TraceNode from '../traceDetailsView/nodes/TraceNode';
-import DataFlowViewModeType from './DataFlowViewModeType';
+import DataFlowSearchModeType from './DataFlowSearchModeType';
 import EmptyNode from './EmptyNode';
 import EmptyDataNode from './EmptyDataNode';
+import DataFlowFilterModeType from './DataFlowFilterModeType';
+import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 
 /** @typedef {import('@dbux/common/src/core/data/Trace').default} Trace */
+/** @typedef {import('./dataFlowViewController.js').DataFlowViewController} DataFlowViewController */
 
 export default class DataFlowNodeProvider extends BaseTreeViewNodeProvider {
-  constructor() {
+  /**
+   * @param {DataFlowViewController} controller
+   */
+  constructor(controller) {
     super('dbuxDataFlowView');
+    this.controller = controller;
   }
 
   // ###########################################################################
@@ -42,22 +49,28 @@ export default class DataFlowNodeProvider extends BaseTreeViewNodeProvider {
   buildDataNodes(trace) {
     const { applicationId, traceId } = trace;
     const dp = allApplications.getById(applicationId).dataProvider;
-    const dataNodes = dp.indexes.dataNodes.byTrace.get(traceId);
     const dataNode = dp.indexes.dataNodes.byTrace.getFirst(traceId);
     if (!dataNode) {
       return [EmptyDataNode.instance];
     }
     
     const { accessId, valueId } = dataNode;
-    let childDataNodes;
-    if (DataFlowViewModeType.is.ByAccessId(this.controller.mode)) {
-      childDataNodes = dp.indexes.dataNodes.byAccessId.get(accessId);
+    let dataNodes;
+    if (DataFlowSearchModeType.is.ByAccessId(this.controller.searchMode)) {
+      dataNodes = dp.indexes.dataNodes.byAccessId.get(accessId);
     }
-    else if (DataFlowViewModeType.is.ByValueId(this.controller.mode)) {
-      childDataNodes = dp.indexes.dataNodes.byValueId.get(valueId);
+    else if (DataFlowSearchModeType.is.ByValueId(this.controller.searchMode)) {
+      dataNodes = dp.indexes.dataNodes.byValueId.get(valueId);
     }
 
-    return childDataNodes?.map(({ traceId }) => {
+    if (DataFlowFilterModeType.is.ReadOnly(this.controller.filterMode)) {
+      dataNodes = dataNodes?.filter(node => DataNodeType.is.Read(node.type))
+    }
+    else if (DataFlowFilterModeType.is.WriteOnly(this.controller.filterMode)) {
+      dataNodes = dataNodes?.filter(node => DataNodeType.is.Write(node.type))
+    }
+
+    return dataNodes?.map(({ traceId }) => {
       const childTrace = dp.collections.traces.getById(traceId);
       return this.buildNode(TraceNode, childTrace, null);
     }) || EmptyArray;

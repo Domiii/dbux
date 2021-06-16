@@ -1,10 +1,11 @@
-import { ExtensionContext } from 'vscode';
+import { ExtensionContext, commands } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import traceSelection from '@dbux/data/src/traceSelection';
 import { makeDebounce } from '@dbux/common/src/util/scheduling';
-import DataFlowNodeProvider from './DataFlowNodeProvider';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import DataFlowViewModeType from './DataFlowViewModeType';
+import DataFlowNodeProvider from './DataFlowNodeProvider';
+import DataFlowSearchModeType from './DataFlowSearchModeType';
+import DataFlowFilterModeType from './DataFlowFilterModeType';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('DataFlowViewController');
@@ -12,19 +13,29 @@ const { log, debug, warn, error: logError } = newLogger('DataFlowViewController'
 let controller;
 
 export class DataFlowViewController {
-  constructor(context) {
-    this.mode = DataFlowViewModeType.ByAccessId;
-    this.treeDataProvider = new DataFlowNodeProvider();
-    this.treeDataProvider.controller = this;
+  constructor() {
+    this.searchMode = DataFlowSearchModeType.ByAccessId;
+    this.filterMode = DataFlowFilterModeType.None;
+    this.treeDataProvider = new DataFlowNodeProvider(this);
+
+    commands.executeCommand('setContext', 'dbuxDataFlowView.context.filterModeName', DataFlowFilterModeType.nameFromForce(this.filterMode));
   }
 
   get treeView() {
     return this.treeDataProvider.treeView;
   }
 
-  setMode(mode) {
-    if (mode !== this.mode) {
-      this.mode = mode;
+  setSearchMode(mode) {
+    if (mode !== this.searchMode) {
+      this.searchMode = mode;
+      this.refresh();
+    }
+  }
+
+  setFilterMode(mode) {
+    if (mode !== this.filterMode) {
+      commands.executeCommand('setContext', 'dbuxDataFlowView.context.filterModeName', DataFlowFilterModeType.nameFromForce(mode));
+      this.filterMode = mode;
       this.refresh();
     }
   }
