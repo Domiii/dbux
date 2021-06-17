@@ -80,6 +80,12 @@ export class DebugTDNode extends TraceDetailNode {
       dataProvider.indexes.asyncEvents.byFrom.get(runId),
     ];
 
+    const runNode = [
+      'run',
+      dataProvider.collections.runs.getById(runId),
+    ];
+
+
     const children = [
       ...this.treeNodeProvider.buildDetailNodes(this.trace, this, [
         TraceTypeTDNode,
@@ -87,11 +93,12 @@ export class DebugTDNode extends TraceDetailNode {
       ]),
       ...makeTreeItems(
         ['trace', otherTraceProps],
+        valueNode,
         [`context`, context],
+        runNode,
+        asyncEventChildren,
         ['staticTrace', omit(staticTrace, 'loc')],
         ['staticContext', omit(staticContext, 'loc')],
-        valueNode,
-        asyncEventChildren,
         // promiseNode
       )
     ];
