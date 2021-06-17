@@ -54,12 +54,6 @@ export default class AssignmentLValME extends BasePlugin {
     const [meNode, valueNode] = node.getChildNodes();
     const [objectNode] = meNode.getChildNodes();
 
-    // if (!rValNode.path.node) {
-    //   // no write
-    //   // NOTE: should never happen
-    //   return;
-    // }
-
     // make sure, `object` is traced
     objectNode.addDefaultTrace();
 

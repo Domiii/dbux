@@ -241,13 +241,29 @@ export default class ProgramMonitor {
   }
 
   traceWriteME = (objValue, propValue, value, tid, objTid, inputs) => {
-    // [runtime-error]
+    // [runtime-error] potential run-time error
     objValue[propValue] = value;
     if (this.areTracesDisabled) {
       return value;
     }
 
     return this._runtimeMonitor.traceWriteME(this.getProgramId(), value, propValue, tid, objTid, inputs);
+  }
+
+  traceUpdateExpressionVar(updateValue, returnValue, readTid, tid, declarationTid) {
+    if (this.areTracesDisabled) {
+      return returnValue;
+    }
+
+    return this._runtimeMonitor.traceUpdateExpressionVar(this.getProgramId(), updateValue, returnValue, readTid, tid, declarationTid);
+  }
+
+  traceUpdateExpressionME(obj, prop, updateValue, returnValue, readTid, tid, objTid) {
+    if (this.areTracesDisabled) {
+      return returnValue;
+    }
+
+    return this._runtimeMonitor.traceUpdateExpressionME(this.getProgramId(), obj, prop, updateValue, returnValue, readTid, tid, objTid);
   }
 
   traceBCE = (tid, argTids, spreadArgs) => {
@@ -347,14 +363,6 @@ export default class ProgramMonitor {
     }
 
     return this._runtimeMonitor.traceObjectExpression(this.getProgramId(), value, entries, argConfigs, objTid, propTids);
-  }
-
-  traceUpdateEpxression(value, tid, inputs) {
-    if (this.areTracesDisabled) {
-      return value;
-    }
-
-    return this._runtimeMonitor.traceUpdateEpxression(this.getProgramId(), value, tid, inputs);
   }
 
   // ###########################################################################

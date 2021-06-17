@@ -23,6 +23,13 @@ export function getTraceCall(state, traceCfg, defaultCall = 'traceExpression') {
   return trace;
 }
 
+export function getDeclarationTid(traceCfg) {
+  const {
+    declarationTidIdentifier
+  } = traceCfg;
+  return declarationTidIdentifier || ZeroNode;
+}
+
 export function addMoreTraceCallArgs(args, traceCfg) {
   let moreTraceCallArgs = traceCfg?.meta?.moreTraceCallArgs;
   if (moreTraceCallArgs) {

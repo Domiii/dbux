@@ -10,6 +10,10 @@ class TraceCollection extends Collection {
     super('traces');
   }
 
+  getDataNodeIdByTraceId(traceId) {
+    return this.getById(traceId).nodeId;
+  }
+
   getDataNodeIdsByTraceIds(traceIds) {
     if (!traceIds) {
       return null;

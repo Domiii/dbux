@@ -56,8 +56,9 @@ let TraceType = {
    * @example `o.x = 3`
    */
   WriteME: 32,
-  Identifier: 33,
-  Literal: 34,
+  UpdateExpression: 33,
+  Identifier: 34,
+  Literal: 35,
   /**
    * MemberExpression
    * @example `o.x`, `f(x)[g(y)]`

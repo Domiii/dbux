@@ -98,6 +98,7 @@ export default class Traces extends BasePlugin {
     // NOTE: `scope.push` happens during `instrument`
     const tidIdentifier = (scope || path.scope).generateUidIdentifier(`t${inProgramStaticTraceId}_`);
 
+    // future - work: `declarationTidIdentifier` is very specific to * Var traces, and thus does not belong into generic`TraceCfg`
     let declarationTidIdentifier;
     if (isDeclaration) {
       declarationTidIdentifier = tidIdentifier;

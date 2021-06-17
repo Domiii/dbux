@@ -1,6 +1,6 @@
 import * as t from '@babel/types';
 import { buildTraceCall, bindTemplate, bindExpressionTemplate } from './templateUtil';
-import { addMoreTraceCallArgs, getTraceCall, makeInputs, ZeroNode } from './buildUtil';
+import { addMoreTraceCallArgs, getDeclarationTid, getTraceCall, makeInputs } from './buildUtil';
 import { getInstrumentTargetAstNode } from './common';
 import { convertNonComputedPropToStringLiteral } from './objects';
 import { buildTraceId } from './traceId';
@@ -19,16 +19,13 @@ export const buildTraceExpressionVar = buildTraceCall(
   function buildTraceExpressionVar(state, traceCfg) {
     const trace = getTraceCall(state, traceCfg, 'traceExpressionVar');
     const tid = buildTraceId(state, traceCfg);
-
-    const {
-      declarationTidIdentifier
-    } = traceCfg;
+    const declarationTid = getDeclarationTid(traceCfg);
 
     return {
       trace,
       expr: getInstrumentTargetAstNode(traceCfg),
       tid,
-      declarationTid: declarationTidIdentifier || ZeroNode,
+      declarationTid,
       inputs: makeInputs(traceCfg)
     };
   }
@@ -108,13 +105,8 @@ export const buildTraceWriteVar = buildTraceCall(
       traceWriteVar
     } } } = state;
 
-    const {
-      declarationTidIdentifier
-    } = traceCfg;
-
     const tid = buildTraceId(state, traceCfg);
-
-    const declarationTid = declarationTidIdentifier || ZeroNode;
+    const declarationTid = getDeclarationTid(traceCfg);
 
     return {
       expr: getInstrumentTargetAstNode(traceCfg),

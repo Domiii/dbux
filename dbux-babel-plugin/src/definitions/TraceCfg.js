@@ -56,6 +56,7 @@ export default class TraceCfg {
    */
   tidIdentifier;
   /**
+   * future-work: `declarationTidIdentifier` is very specific to *Var traces, and thus does not belong into generic `TraceCfg`
    * @type {number}
    */
   declarationTidIdentifier;

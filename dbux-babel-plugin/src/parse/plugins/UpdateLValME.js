@@ -48,24 +48,15 @@ export default class UpdateLValME extends BasePlugin {
     const { node } = this;
     const { Traces } = node;
 
-    const [meNode, valueNode] = node.getChildNodes();
+    const [meNode] = node.getChildNodes();
     const [objectNode] = meNode.getChildNodes();
 
-    // if (!rValNode.path.node) {
-    //   // no write
-    //   // NOTE: should never happen
-    //   return;
-    // }
-
     // make sure, `object` is traced
-    objectNode.addDefaultTrace();
-
-    const objTid = objectNode.traceCfg?.tidIdentifier;
+    const objectTraceCfg = objectNode.addDefaultTrace();
+    const objTid = objectTraceCfg?.tidIdentifier;
     if (!objTid) {
-      this.warn(`objectNode did not have traceCfg.tidIdentifier in ${objectNode}`);
+      this.warn(`objectNode did not have traceCfg.tidIdentifier in ME ${meNode}`);
     }
-
-    // TODO: fix all this
 
     // add actual WriteME trace
     const traceData = {

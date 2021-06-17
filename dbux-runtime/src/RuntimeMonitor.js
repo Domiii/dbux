@@ -539,12 +539,50 @@ export default class RuntimeMonitor {
     return value;
   }
 
+  _traceUpdateExpression(updateValue, returnValue, readTid, tid, varAccess) {
+    const trace = traceCollection.getById(tid);
+
+    // add write node
+    const writeNode = dataNodeCollection.createDataNode(updateValue, tid, DataNodeType.Write, varAccess, traceCollection.getDataNodeIdByTraceId(readTid));
+
+    if (updateValue !== returnValue) {
+      // add separate expression value node
+      const updateNode = dataNodeCollection.createDataNode(returnValue, tid, DataNodeType.Read, null, traceCollection.getDataNodeIdByTraceId(readTid));
+      trace.nodeId = updateNode.nodeId;
+    }
+    else {
+      trace.nodeId = writeNode.nodeId;
+    }
+    return returnValue;
+  }
+
+  traceUpdateExpressionVar(programId, updateValue, returnValue, readTid, tid, declarationTid) {
+    if (!this._ensureExecuting()) {
+      return returnValue;
+    }
+
+    const varAccess = declarationTid && { declarationTid };
+    return this._traceUpdateExpression(updateValue, returnValue, readTid, tid, varAccess);
+  }
+
+  traceUpdateExpressionME(programId, obj, prop, updateValue, returnValue, readTid, tid, objTid) {
+    if (!this._ensureExecuting()) {
+      return returnValue;
+    }
+
+    const varAccess = {
+      objTid,
+      prop: prop
+    };
+    return this._traceUpdateExpression(updateValue, returnValue, readTid, tid, varAccess);
+  }
+
   // traceCallee(programId, value, tid, declarationTid) {
   //   this.traceExpression(programId, value, tid, declarationTid);
   //   return value;
   // }
 
-  traceBCE(programId, iterableTid, argTids, spreadArgs) {
+  traceBCE(programId, tid, argTids, spreadArgs) {
     if (!this._ensureExecuting()) {
       return;
     }
@@ -557,8 +595,8 @@ export default class RuntimeMonitor {
       return a && Array.from(a);
     });
 
-    const trace = traceCollection.getById(iterableTid);
-    trace.callId = iterableTid;
+    const trace = traceCollection.getById(tid);
+    trace.callId = tid;
     trace.data = {
       argTids,
       spreadLengths: spreadArgs.map(a => a && a.length || null)
@@ -679,7 +717,7 @@ export default class RuntimeMonitor {
     return value;
   }
 
-  traceUpdateEpxression(programId, value, tid, inputs) {
+  traceUpdateExpression(programId, value, tid, inputs) {
     if (!this._ensureExecuting()) {
       return value;
     }
