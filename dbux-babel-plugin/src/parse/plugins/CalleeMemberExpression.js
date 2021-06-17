@@ -36,8 +36,8 @@ export default class CalleeMemberExpression extends BasePlugin {
     const objectVar = scope.generateDeclaredUidIdentifier('o');
 
     // NOTE: for the final CallExpression, the callee is chopped into pieces -
-    //  1. store object in `objectVar` (`o`)
-    //  2. store callee (`calleeAstNode`) in `calleeVar` (`o[prop]`)
+    //  1. store object (`o`) in both, callee node (as `objectAstNode`) and call node (as `objectVar`)
+    //  2. store calleeAstNode in callee trace (`o[prop]`)
     traceCfg.data.objectVar = objectVar;
 
     // NOTE:

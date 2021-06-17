@@ -89,7 +89,7 @@ export default class MemberExpression extends BaseNode {
    * `g().[f(x)]` ->
    * `tme(te(g(), tid1), te(f(...(x)), tid2), tid0, [tid1, tid2])`
    */
-  addRValTrace(replacePath, objectNode) {
+  addRValTrace(replacePath, objectAstNode) {
     /**
      * TODO: `super` (e.g. `super.f()`, `super.x = 3` etc.)
      * @example
@@ -105,17 +105,22 @@ export default class MemberExpression extends BaseNode {
     // TODO: `import.meta` (rval only)
 
     const { path } = this;
-    const [objectPath, propertyPath] = this.getChildPaths();
+    const [objectPath] = this.getChildPaths();
 
     if (replacePath === undefined) {
       replacePath = path;
     }
 
-    // const [objectNode, propertyNode] = this.getChildNodes();
+    const [, propertyNode] = this.getChildNodes();
     const {
       computed,
       optional
     } = path.node;
+    
+    if (computed /* && !propertyPath.isConstantExpression() */) {
+      // inputs.push(propertyPath);
+      propertyNode.addDefaultTrace();
+    }
 
     const traceData = {
       path,
@@ -129,14 +134,11 @@ export default class MemberExpression extends BaseNode {
         replacePath
       },
       data: {
-        // NOTE: don't set `objectNode` if not requested, because if we do, it will not get the final instrumented version of `object`
-        objectNode
+        // remember `objectAstNode`, if given
+        objectAstNode
       }
     };
     const inputs = [objectPath];
-    if (computed /* && !propertyPath.isConstantExpression() */) {
-      inputs.push(propertyPath);
-    }
 
     return this.Traces.addTraceWithInputs(traceData, inputs);
   }

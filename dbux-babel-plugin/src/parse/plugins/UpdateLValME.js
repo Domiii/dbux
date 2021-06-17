@@ -2,6 +2,7 @@ import TraceType from '@dbux/common/src/core/constants/TraceType';
 import BasePlugin from './BasePlugin';
 import { LValHolderNode } from '../_types';
 import { buildTraceWriteME } from '../../instrumentation/builders/misc';
+import { buildUpdateExpressionME } from '../../instrumentation/builders/updateExpressions';
 
 /**
  * @example
@@ -40,23 +41,47 @@ export default class UpdateLValME extends BasePlugin {
     meNode.handler = this;
   }
 
-  exit() {
-    this.wrapLVal();
+  addReadTrace(objectAstNode, propertyAstNode, objTid) {
+    const [argumentNode] = this.node.getChildNodes();
+    return this.node.Traces.addTrace({
+      path: argumentNode.path,
+      node: argumentNode,
+      staticTraceData: {
+        type: TraceType.ME
+      },
+      data: {
+        objectAstNode,
+        propertyAstNode,
+        objTid
+      },
+      meta: {
+        // will be instrumented by `buildUpdateExpressionME`
+        instrument: null
+      }
+    });
   }
 
-  wrapLVal() {
+  exit() {
     const { node } = this;
-    const { Traces } = node;
+    const { path, Traces } = node;
 
     const [meNode] = node.getChildNodes();
-    const [objectNode] = meNode.getChildNodes();
+    const [objectNode, propertyNode] = meNode.getChildNodes();
 
-    // make sure, `object` is traced
+    const { computed } = meNode.path.node;
+
+    // make sure, `object` + `property` are traced
     const objectTraceCfg = objectNode.addDefaultTrace();
     const objTid = objectTraceCfg?.tidIdentifier;
-    if (!objTid) {
-      this.warn(`objectNode did not have traceCfg.tidIdentifier in ME ${meNode}`);
+    if (computed /* && !propertyPath.isConstantExpression() */) {
+      // inputs.push(propertyPath);
+      propertyNode.addDefaultTrace();
     }
+
+    // add read trace
+    const objectVar = path.scope.generateDeclaredUidIdentifier('o');
+    const propertyVar = path.scope.generateDeclaredUidIdentifier('p');
+    const readTraceCfg = this.addReadTrace(objectVar, propertyVar, objTid);
 
     // add actual WriteME trace
     const traceData = {
@@ -64,16 +89,14 @@ export default class UpdateLValME extends BasePlugin {
         type: TraceType.WriteME
       },
       data: {
+        readTraceCfg,
         objTid
       },
       meta: {
-        // instrument: Traces.instrumentTraceWrite
-        build: buildTraceWriteME
+        build: buildUpdateExpressionME
       }
     };
 
-    this.node.decorateWriteTraceData(traceData);
-
-    Traces.addTraceWithInputs(traceData, [valueNode.path]);
+    Traces.addTrace(traceData);
   }
 }

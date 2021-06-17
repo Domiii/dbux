@@ -1,8 +1,7 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import BasePlugin from './BasePlugin';
 import { LValHolderNode } from '../_types';
-import { buildTraceWriteME } from '../../instrumentation/builders/misc';
-import { buildUpdateVar } from '../../instrumentation/builders/updateExpressions';
+import { buildUpdateExpressionVar } from '../../instrumentation/builders/updateExpressions';
 
 /**
  * @example
@@ -20,15 +19,30 @@ export default class UpdateLValME extends BasePlugin {
    */
   node;
 
+  addReadTrace() {
+    // NOTE: same as `ReferencedIdentifier.createDefaultTrace`
+    // NOTE2: `argumentNode.addDefaultTrace()` cannot work, since it's a `BindingIdentifier`, not a `ReferencedIdentifier`
+    // const readTrace = argumentNode.addDefaultTrace();
+
+    const [argumentNode] = this.node.getChildNodes();
+    return this.node.Traces.addTrace({
+      path: argumentNode.path,
+      node: argumentNode,
+      staticTraceData: {
+        type: TraceType.Identifier
+      },
+      meta: {
+        instrument: null
+      }
+    });
+  }
+
   exit() {
     const { node } = this;
     const { path, Traces } = node;
 
-    const [argumentNode] = this.node.getChildNodes();
-
     // make sure, argument is traced
-    // TODO: addDefaultTrace is not going to work, since it's a `BindingIdentifier`, not a `ReferencedIdentifier`
-    const readTrace = argumentNode.addDefaultTrace();
+    const readTrace = this.addReadTrace();
     const readTid = readTrace?.tidIdentifier;
 
     // add trace
@@ -45,7 +59,7 @@ export default class UpdateLValME extends BasePlugin {
         readTid
       },
       meta: {
-        build: buildUpdateVar
+        build: buildUpdateExpressionVar
       }
     };
 

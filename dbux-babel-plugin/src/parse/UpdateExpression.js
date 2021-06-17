@@ -31,29 +31,4 @@ export default class UpdateExpression extends BaseNode {
   static plugins = [
     getLValPlugin
   ];
-
-  exit() {
-    const [argNode] = this.getChildNodes();
-    argNode.addDefaultTrace();
-  }
-
-  /**
-   * @returns {BaseNode}
-   */
-  getDeclarationNode() {
-    const [argNode] = this.getChildNodes();
-    return argNode.getDeclarationNode();
-  }
-
-  decorateWriteTraceData(traceData) {
-    const { path } = this;
-    // const [argNode] = this.getChildNodes();
-    traceData.staticTraceData.dataNode = {
-      isNew: true
-    };
-
-    traceData.path = path;
-    traceData.node = this;
-    traceData.meta.replacePath = path;
-  }
 }

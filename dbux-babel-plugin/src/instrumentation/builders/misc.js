@@ -144,7 +144,12 @@ export const buildTraceNoValue = bindTemplate(
 // ###########################################################################
 
 function getMEObjectNode(meNode, traceCfg) {
-  return traceCfg.data.objectNode || meNode.object;
+  return traceCfg.data.objectAstNode || meNode.object;
+}
+
+function getMEPropertyNode(meNode, traceCfg) {
+  return traceCfg.data.propertyAstNode || 
+    convertNonComputedPropToStringLiteral(meNode.property, meNode.computed);
 }
 
 export const buildtraceExpressionME = bindExpressionTemplate(
@@ -169,7 +174,7 @@ export const buildtraceExpressionME = bindExpressionTemplate(
       /**
        * NOTE: we are getting the `prop` here (and not earlier), to make sure its the final instrumented version.
        */
-      propValue: convertNonComputedPropToStringLiteral(meNode.property, meNode.computed),
+      propValue: getMEPropertyNode(meNode, traceCfg),
       tid,
       inputs: makeInputs(traceCfg)
     };
@@ -215,11 +220,7 @@ export const buildTraceWriteME = buildTraceCall(
     return {
       traceWriteME,
       objValue: getMEObjectNode(meNode, traceCfg),
-
-      /**
-       * NOTE: we are getting the `prop` in this method (and not earlier), to make sure its the final instrumented version.
-       */
-      propValue: convertNonComputedPropToStringLiteral(meNode.property, meNode.computed),
+      propValue: getMEPropertyNode(meNode, traceCfg),
       rVal,
       tid,
       objTid,
