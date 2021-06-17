@@ -218,6 +218,8 @@ export class RuntimeThreads1 {
         this.logger.debug('caller promise', callerPromise);
         
         edgeType = this.getOwnPromiseThreadType(callerPromise);
+
+        this.setRunThreadId(postEventRun, this.getOwnPromiseThreadId(callerPromise));
       }
       else {
         edgeType = 'CHAIN';
@@ -248,6 +250,7 @@ export class RuntimeThreads1 {
 
     const calledContextFirstPromise = this.getContextFirstAwaitPromise(calledContextId);
 
+    // this.logger.debug('trace call', contextId, calledContextId, value);
     this.recordContextReturnValue(contextId, calledContextId, value);
 
     if (calledContextFirstPromise) {
@@ -287,7 +290,7 @@ export class RuntimeThreads1 {
 
     this.floatingPromises = [];
 
-    this.logger.debug("end clean");
+    // this.logger.debug("end clean");
   }
 
   /**
