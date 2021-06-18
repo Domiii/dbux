@@ -16,11 +16,11 @@
         // "problemMatcher": ["$tsc-watch"]
     },
     {
-      "label": "Test node",
+      "label": "Write registry files",
       "type": "shell",
-      "command": "node ",
+      "command": "yarn",
       "args": [
-        "-v"
+        "registry-files"
       ],
     },
     {

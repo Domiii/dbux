@@ -176,6 +176,7 @@ export function isPopTrace(traceType) {
 const declarationTypes = new Array(TraceType.getValueMaxIndex()).map(() => false);
 declarationTypes[TraceType.Declaration] = true;
 declarationTypes[TraceType.Param] = true;
+declarationTypes[TraceType.CatchParam] = true;
 
 export function isDeclarationTrace(traceType) {
   return declarationTypes[traceType];

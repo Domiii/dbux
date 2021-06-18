@@ -57,10 +57,10 @@ export default class BindingIdentifier extends BaseId {
    * @param {NodePath?} definitionPath Only given if initialization occurs upon declaration.
    */
   addOwnDeclarationTrace(definitionPath = null, moreTraceData = null) {
-    if (!this.getDeclarationIdPath()) {
+    if (!this.getDeclarationNode()) {
       // TODO: there can be other types of declarations, that don't have an `id` prop
-      throw new Error(`Assertion failed - node binding did not have "id" child node ` +
-      `"${pathToString(this.binding?.path)}" in "${pathToString(this.path.parentPath)}"`);
+      throw new Error(`Assertion failed - BindingIdentifier.getDeclarationTidIdentifier() returned nothing ` +
+        `binding "${pathToString(this.binding?.path)}" in "${this.getParent()}`);
     }
 
     // if (this.binding?.path.node.id !== this.path.node) {

@@ -37,7 +37,6 @@ export default class UpdateLValME extends BasePlugin {
 
   exit1() {
     const { meNode } = this;
-
     meNode.handler = this;
   }
 

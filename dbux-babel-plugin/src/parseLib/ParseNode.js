@@ -105,7 +105,7 @@ export default class ParseNode {
   }
 
   // ###########################################################################
-  // children utilities
+  // children + parent getters
   // ###########################################################################
 
   /**
@@ -141,6 +141,10 @@ export default class ParseNode {
     // NOTE: cache _childNodes
     this._childNodes = this._childNodes || this.getChildPaths().map(this.getNodeOfPath);
     return this._childNodes;
+  }
+
+  getParent() {
+    return this.getNodeOfPath(this.path.parentPath);
   }
 
   // ###########################################################################

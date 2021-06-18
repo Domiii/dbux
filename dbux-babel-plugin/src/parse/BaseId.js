@@ -22,13 +22,16 @@ export default class BaseId extends BaseNode {
     return this._binding;
   }
 
+  // TODO: getBindingNode
+
   getDeclarationIdPath() {
-    const p = this.binding?.path;
-    if (!p) {
+    const path = this.binding?.path;
+    if (!path) {
       return null;
     }
-    // NOTE: for some reason, binding.path (if is declaration) refers to the declaration, not the `id` node.
-    return p.isIdentifier() ? p : p.get('id');
+    // NOTE: binding.path often refers to the Declaration, not the `id` node.
+    // NOTE2: even more odd for `CatchClause.param` it returns `CatchClause` node.
+    return path.isIdentifier() && path || path.get('id') || this.getNodeOfPath(path)?.getDeclarationIdPath;
   }
 
   /**

@@ -5,7 +5,7 @@ export default class ThrowStatement extends BaseNode {
   static children = ['argument'];
 
   exit() {
-    const { path } = this;
+    const { path, Traces } = this;
     const childPaths = this.getChildPaths();
     const [argPath] = childPaths;
 
@@ -21,6 +21,6 @@ export default class ThrowStatement extends BaseNode {
       }
     };
 
-    return this.addTraceWithInputs(traceData, [argPath]);
+    return Traces.addTraceWithInputs(traceData, [argPath]);
   }
 }

@@ -241,13 +241,13 @@ export default class Traces extends BasePlugin {
       });
 
       // instrument?.(traceCfg);
-      const { state } = this.node;
+      const { state } = node;
 
       try {
         instrument?.(state, traceCfg);
       }
       catch (err) {
-        throw new NestedError(`Failed to instrument path "${pathToString(path)}"`, err);
+        throw new NestedError(`[${node.debugTag}] - failed to instrument path "${pathToString(path)}"`, err);
       }
     }
   }

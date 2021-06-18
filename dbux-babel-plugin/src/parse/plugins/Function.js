@@ -3,14 +3,11 @@ import * as t from "@babel/types";
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import BasePlugin from './BasePlugin';
 import { getNodeNames } from '../../visitors/nameVisitors';
-import { getBindingIdentifierPaths } from '../../helpers/bindingsUtil';
 import { doesNodeEndScope } from '../../helpers/astUtil';
 import { buildWrapTryFinally, buildBlock } from '../../instrumentation/builders/common';
 import { injectContextEndTrace } from '../../instrumentation/context';
 import { buildTraceId } from '../../instrumentation/builders/traceId';
-import { buildTraceWriteVar } from '../../instrumentation/builders/misc';
 import { buildRegisterParams } from '../../instrumentation/builders/function';
-import { pathToString } from '../../helpers/pathHelpers';
 
 
 function addContextTrace(bodyPath, state, type) {
@@ -68,17 +65,10 @@ function getLastNodeOfBody(bodyNode) {
   return nodes[nodes.length - 1];
 }
 
-function getParamInitialValuePath(paramPath) {
-  // TODO: support destructuring
-  if (paramPath.parentPath.isAssignmentPattern()) {
-    // e.g. get `3` from `a` in `function f(a = 3) {}`
-    return paramPath.parentPath.get('right');
-  }
-  return null;
-}
-
 
 export default class Function extends BasePlugin {
+  static plugins = ['Params'];
+
   // ###########################################################################
   // enter
   // ###########################################################################
@@ -133,74 +123,12 @@ export default class Function extends BasePlugin {
       staticContextId,
       staticPushTid,
       // pushTraceCfg,
-      // recordParams,
       staticResumeContextId
     };
   }
 
-  _addParamTrace = (paramPath) => {
-    // TODO: `RestElement`
-    // TODO: `{Object,Array,Assignment}Pattern
-    // TODO: `{Object,Array,Assignment}Pattern on `RestElement`
-
-    const idPaths = getBindingIdentifierPaths(paramPath);
-    if (idPaths.length !== 1) {
-      this.warn(`NYI: param is destructured into less or more than 1 variable ${pathToString(paramPath)}`);
-    }
-    const idPath = idPaths[0];
-    const idNode = this.node.getNodeOfPath(idPath);
-    const initialValuePath = getParamInitialValuePath(idPath);
-    const moreTraceData = {
-      staticTraceData: {
-        type: TraceType.Param
-      },
-      meta: {}
-    };
-
-    let definitionPath;
-    if (initialValuePath) {
-      // handle default parameter
-      definitionPath = null;  // NOTE: we will inject the value in post (moreTraceArgs)
-
-      const writeTraceData = {
-        path: paramPath,
-        // node: idNode,
-        staticTraceData: {
-          type: TraceType.WriteVar
-        },
-        meta: {
-          build: buildTraceWriteVar,
-          replacePath: initialValuePath
-        }
-      };
-
-      const writeTrace = idNode.Traces.addTrace(writeTraceData);
-
-      moreTraceData.meta.moreTraceArgs = () => {
-        // hackfix: instrument as we go
-        // 1. remove default value: `x = twv(init(), initTid,...)` becomes `x`
-        paramPath.replace(idPath.node);
-        // 2. add to instrumentation trace: `var x = td(stid, twv(init(), initTid,...), [initTid])`
-        return [
-          initialValuePath.node,
-          t.arrayExpression([writeTrace.tidIdentifier])
-        ];
-      };
-    }
-    else {
-      definitionPath = idPath;
-    }
-
-    const declTrace = idNode.addOwnDeclarationTrace(definitionPath, moreTraceData);
-    return declTrace;
-  }
-
   exit1() {
-    const { path } = this.node;
-    const paramsPath = path.get('params');
-
-    // -> `registerParams([traceDeclaration(tid0, p0), traceDeclaration(tid1, p1), ...])`
-    this.data.paramTraces = paramsPath.map(this._addParamTrace);
+    this.data.paramTraces = this.node.getPlugin('Params').addParamTraces();
   }
 
   exit() {

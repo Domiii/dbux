@@ -9,6 +9,7 @@ import CalleeMemberExpression from './CalleeMemberExpression';
 import Class from './Class';
 import Function from './Function';
 import Loop from './Loop';
+import Params from './Params';
 import StaticContext from './StaticContext';
 import Traces from './Traces';
 import UpdateLValME from './UpdateLValME';
@@ -26,6 +27,7 @@ export {
   Class,
   Function,
   Loop,
+  Params,
   StaticContext,
   Traces,
   UpdateLValME,

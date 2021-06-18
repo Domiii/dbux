@@ -4,22 +4,17 @@ import BaseNode from './BaseNode';
 
 export default class CatchClause extends BaseNode {
   static children = ['param'];
+  static plugins = ['Params'];
 
   exit() {
     const [paramNode] = this.getChildNodes();
 
     if (paramNode) {
-      // e.g. `catch (err) { ... }`
-      // NOTE: very similar to `Function._addParamTrace` (without default value)
-      const moreTraceData = {
-        staticTraceData: {
-          type: TraceType.CatchParam
-        }
-      };
-      paramNode.addOwnDeclarationTrace(paramNode.path, moreTraceData);
+      // -> `catch (err) { ... }`
+      this.getPlugin('Params').addParamTrace(paramNode.path, TraceType.CatchParam);
     }
     else {
-      // e.g. `catch { ... }`
+      // -> `catch { ... }`
     }
   }
 }
