@@ -2,14 +2,14 @@ import { pathToString } from '../helpers/pathHelpers';
 import BaseId from './BaseId';
 
 /**
- * NOTE: The `bindingPath` (and thus `bindingNode`) is usually the parent of the `BindingIdentifier`
+ * 
  */
 export default class BindingIdentifier extends BaseId {
   bindingTrace;
 
   getTidIdentifier() {
     if (!this.bindingTrace) {
-      throw new Error(`Tried to "getTidIdentifier" too early in ${this} - bindingTrace was not created yet.`);
+      throw new Error(`Tried to "getTidIdentifier" too early in ${this} (parent: ${this.getParent()}) - bindingTrace was not recorded yet.`);
     }
     return this.bindingTrace.tidIdentifier;
   }
@@ -58,9 +58,10 @@ export default class BindingIdentifier extends BaseId {
    */
   addOwnDeclarationTrace(definitionPath = null, moreTraceData = null) {
     if (!this.getDeclarationNode()) {
+      this.getDeclarationNode();
       // TODO: there can be other types of declarations, that don't have an `id` prop
       throw new Error(`Assertion failed - BindingIdentifier.getDeclarationTidIdentifier() returned nothing ` +
-        `binding "${pathToString(this.binding?.path)}" in "${this.getParent()}`);
+        `for binding "${pathToString(this.binding?.path)}" in "${this.getParent()}`);
     }
 
     // if (this.binding?.path.node.id !== this.path.node) {

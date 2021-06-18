@@ -128,6 +128,9 @@ export default class Function extends BasePlugin {
   }
 
   exit1() {
+    /**
+     * NOTE: this must be in `exit1`, because it must happen before `body` nodes exit.
+     */
     this.data.paramTraces = this.node.getPlugin('Params').addParamTraces();
   }
 

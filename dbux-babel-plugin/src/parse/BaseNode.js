@@ -41,6 +41,9 @@ export default class BaseNode extends ParseNode {
   // trace utility
   // ###########################################################################
 
+  /**
+   * @returns {BaseNode}
+   */
   getDeclarationNode() {
     return undefined;
   }
@@ -55,6 +58,9 @@ export default class BaseNode extends ParseNode {
   getDeclarationTidIdentifier() {
     const decl = this.getDeclarationNode();
     if (decl) {
+      if (!decl.getTidIdentifier) {
+        throw new Error(`"getDeclarationNode" returned "${decl}", which has no "getTidIdentifier" in "${this}"`);
+      }
       return decl.getTidIdentifier();
     }
     return undefined;

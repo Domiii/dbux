@@ -22,28 +22,28 @@ export default class BaseId extends BaseNode {
     return this._binding;
   }
 
-  // TODO: getBindingNode
-
-  getDeclarationIdPath() {
+  /**
+   * NOTE: The `bindingPath` (and thus `bindingNode`) is usually the parent of the `BindingIdentifier`
+   * 
+   * @returns {BindingIdentifier}
+   */
+  getDeclarationNode() {
     const path = this.binding?.path;
     if (!path) {
       return null;
     }
-    // NOTE: binding.path often refers to the Declaration, not the `id` node.
-    // NOTE2: even more odd for `CatchClause.param` it returns `CatchClause` node.
-    return path.isIdentifier() && path || path.get('id') || this.getNodeOfPath(path)?.getDeclarationIdPath;
-  }
-
-  /**
-   * @returns {BindingIdentifier}
-   */
-  getDeclarationNode() {
-    const bindingPath = this.getDeclarationIdPath();
-    if (!bindingPath?.node) {
-      return null;
+    // NOTE: `binding.path` (if is `Declaration`) refers to the Declaration, not the `id` node.
+    // NOTE2: even more odd - for `CatchClause.param` it returns `CatchClause` the path.
+    if (path.isIdentifier()) {
+      return this.getNodeOfPath(path);
     }
-    // this.debug(`[RId] bindingPath L${bindingPath.node.loc.start.line}: ${bindingPath.toString()}`);
-    return bindingPath && this.getNodeOfPath(bindingPath) || null;
+    else if (path.node.id) {
+      // future-work: override `getDeclarationNode` in Declarations instead.
+      return this.getNodeOfPath(path.get('id'));
+    }
+    const bindingNode = this.getNodeOfPath(path);
+    const declarationNode = bindingNode !== this && bindingNode.getDeclarationNode?.();
+    return declarationNode;
   }
 
   // ###########################################################################
