@@ -15,7 +15,7 @@ export default class AssignmentLValVar extends BasePlugin {
     } = this;
     const { Traces } = node;
 
-    const valueNode = node.getRValNode();
+    const [, valueNode] = node.getChildNodes();
 
     if (!valueNode) {
       this.warn(`AssignmentLValVar did not have an RVal node: ${this.node.path}`);

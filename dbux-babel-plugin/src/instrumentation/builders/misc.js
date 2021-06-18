@@ -15,7 +15,7 @@ const Verbose = 2;
  * 
  */
 export const buildTraceExpressionVar = buildTraceCall(
-  '%%trace%%(%%expr%%, %%tid%%, %%declarationTid%%, %%inputs%%)',
+  '%%trace%%(%%expr%%, %%tid%%, %%declarationTid%%)',
   function buildTraceExpressionVar(state, traceCfg) {
     const trace = getTraceCall(state, traceCfg, 'traceExpressionVar');
     const tid = buildTraceId(state, traceCfg);
@@ -25,8 +25,7 @@ export const buildTraceExpressionVar = buildTraceCall(
       trace,
       expr: getInstrumentTargetAstNode(traceCfg),
       tid,
-      declarationTid,
-      inputs: makeInputs(traceCfg)
+      declarationTid
     };
   }
 );
@@ -148,17 +147,18 @@ function getMEObjectNode(meNode, traceCfg) {
 }
 
 function getMEPropertyNode(meNode, traceCfg) {
-  return traceCfg.data.propertyAstNode || 
+  return traceCfg.data.propertyAstNode ||
     convertNonComputedPropToStringLiteral(meNode.property, meNode.computed);
 }
 
 export const buildtraceExpressionME = bindExpressionTemplate(
-  '%%tme%%(%%objValue%%, %%propValue%%, %%tid%%, %%inputs%%)',
+  '%%tme%%(%%objValue%%, %%propValue%%, %%tid%%, %%objectTid%%)',
   function buildtraceExpressionME(state, traceCfg) {
     // const { scope } = path;
     const meNode = getInstrumentTargetAstNode(traceCfg);
     const trace = getTraceCall(state, traceCfg, 'traceExpressionME');
     const tid = buildTraceId(state, traceCfg);
+    const { objectTid } = traceCfg.data;
     // Verbose && debug(`[te] ${expressionNode.type} [${inputTraces?.map(i => i.tidIdentifier.name).join(',') || ''}]`, pathToString(expressionNode));
 
     // NOTE: templates only work on `Node`, not on `NodePath`, thus they lose all path-related information.
@@ -176,7 +176,7 @@ export const buildtraceExpressionME = bindExpressionTemplate(
        */
       propValue: getMEPropertyNode(meNode, traceCfg),
       tid,
-      inputs: makeInputs(traceCfg)
+      objectTid
     };
   }
 );
@@ -197,7 +197,7 @@ export const buildtraceExpressionME = bindExpressionTemplate(
  * ```
  */
 export const buildTraceWriteME = buildTraceCall(
-  '%%traceWriteME%%(%%objValue%%, %%propValue%%, %%rVal%%, %%tid%%, %%objTid%%, %%inputs%%)',
+  '%%traceWriteME%%(%%objValue%%, %%propValue%%, %%rVal%%, %%tid%%, %%objectTid%%, %%inputs%%)',
   function buildTraceWriteME(state, traceCfg) {
     const { ids: { aliases: {
       traceWriteME
@@ -213,7 +213,7 @@ export const buildTraceWriteME = buildTraceCall(
 
     const {
       data: {
-        objTid
+        objectTid
       }
     } = traceCfg;
 
@@ -223,7 +223,7 @@ export const buildTraceWriteME = buildTraceCall(
       propValue: getMEPropertyNode(meNode, traceCfg),
       rVal,
       tid,
-      objTid,
+      objectTid,
       inputs: makeInputs(traceCfg)
     };
   }

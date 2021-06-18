@@ -42,8 +42,7 @@ export default class UpdateLValME extends BasePlugin {
     const { path, Traces } = node;
 
     // make sure, argument is traced
-    const readTrace = this.addReadTrace();
-    const readTid = readTrace?.tidIdentifier;
+    const readTraceCfg = this.addReadTrace();
 
     // add trace
     const traceData = {
@@ -56,7 +55,7 @@ export default class UpdateLValME extends BasePlugin {
         }
       },
       data: {
-        readTid
+        readTraceCfg
       },
       meta: {
         build: buildUpdateExpressionVar

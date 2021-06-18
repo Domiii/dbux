@@ -49,14 +49,16 @@ export function buildUpdateExpressionVar(state, traceCfg) {
   const { ids: { aliases: { traceUpdateExpressionVar } } } = state;
   let { path, data: { readTraceCfg } } = traceCfg;
   const readTid = readTraceCfg?.tidIdentifier || ZeroNode;
-  const argumentNode = path.node;
+  const argumentNode = path.node.argument;
   const rvalNode = buildTraceExpressionVar(state, readTraceCfg);
   const returnValue = generateDeclaredIdentifier(path);
   const updateValue = buildUpdatedValue(path, argumentNode, rvalNode, returnValue);
   const updateTid = buildTraceId(state, traceCfg);
   const declarationTid = getDeclarationTid(traceCfg);
 
-  return t.callExpression(traceUpdateExpressionVar, [updateValue, returnValue, readTid, updateTid, declarationTid]);
+  return t.callExpression(traceUpdateExpressionVar, [
+    updateValue, returnValue, readTid || ZeroNode, updateTid, declarationTid
+  ]);
 }
 
 /**
@@ -85,7 +87,7 @@ export function buildUpdateExpressionME(state, traceCfg) {
       propertyAstNode: propertyVar
     }
   } = readTraceCfg;
-  const meNode = path.node;
+  const meNode = path.node.argument;
   const { 
     object: objectNode,
     property: propertyNode
@@ -98,6 +100,6 @@ export function buildUpdateExpressionME(state, traceCfg) {
   const updateTid = buildTraceId(state, traceCfg);
   
   return t.callExpression(traceUpdateExpressionME, [
-    o, p, updateValue, returnValue, readTid || ZeroNode, updateTid, objectTid
+    o, p, updateValue, returnValue, readTid || ZeroNode, updateTid, objectTid || ZeroNode
   ]);
 }

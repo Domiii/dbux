@@ -460,7 +460,7 @@ export default class RuntimeMonitor {
     return value;
   }
 
-  traceExpressionVar(programId, value, tid, declarationTid, inputs) {
+  traceExpressionVar(programId, value, tid, declarationTid) {
     if (!this._ensureExecuting()) {
       return value;
     }
@@ -470,11 +470,11 @@ export default class RuntimeMonitor {
     }
 
     const varAccess = declarationTid && { declarationTid } || null;
-    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess, traceCollection.getDataNodeIdsByTraceIds(inputs));
+    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess);
     return value;
   }
 
-  traceExpressionME(programId, value, propValue, tid, inputs) {
+  traceExpressionME(programId, value, propValue, tid, objectTid) {
     if (!this._ensureExecuting()) {
       return value;
     }
@@ -483,17 +483,12 @@ export default class RuntimeMonitor {
       return value;
     }
 
-    const objTid = inputs[0];
-
     const varAccess = {
-      objTid,
+      objectTid,
       prop: propValue
     };
 
-    // NOTE: should not have actual inputs
-    inputs = null;
-
-    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess, traceCollection.getDataNodeIdsByTraceIds(inputs));
+    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess);
     return value;
   }
 
@@ -521,7 +516,7 @@ export default class RuntimeMonitor {
     return value;
   }
 
-  traceWriteME(programId, value, propValue, tid, objTid, inputs) {
+  traceWriteME(programId, value, propValue, tid, objectTid, inputs) {
     if (!this._ensureExecuting()) {
       return value;
     }
@@ -532,7 +527,7 @@ export default class RuntimeMonitor {
 
     // this.registerTrace(value, tid);
     const varAccess = {
-      objTid,
+      objectTid,
       prop: propValue
     };
     dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess, traceCollection.getDataNodeIdsByTraceIds(inputs));
@@ -543,11 +538,13 @@ export default class RuntimeMonitor {
     const trace = traceCollection.getById(tid);
 
     // add write node
-    const writeNode = dataNodeCollection.createDataNode(updateValue, tid, DataNodeType.Write, varAccess, traceCollection.getDataNodeIdByTraceId(readTid));
+    const inputs = [traceCollection.getDataNodeIdByTraceId(readTid)];
+    const writeNode = dataNodeCollection.createDataNode(updateValue, tid, DataNodeType.Write, varAccess, inputs);
 
     if (updateValue !== returnValue) {
       // add separate expression value node
-      const updateNode = dataNodeCollection.createDataNode(returnValue, tid, DataNodeType.Read, null, traceCollection.getDataNodeIdByTraceId(readTid));
+      // future work consideration: input to UE is the `Read` node -> somehow missing the missing `1`.
+      const updateNode = dataNodeCollection.createDataNode(returnValue, tid, DataNodeType.Read, null, inputs);
       trace.nodeId = updateNode.nodeId;
     }
     else {
@@ -565,13 +562,13 @@ export default class RuntimeMonitor {
     return this._traceUpdateExpression(updateValue, returnValue, readTid, tid, varAccess);
   }
 
-  traceUpdateExpressionME(programId, obj, prop, updateValue, returnValue, readTid, tid, objTid) {
+  traceUpdateExpressionME(programId, obj, prop, updateValue, returnValue, readTid, tid, objectTid) {
     if (!this._ensureExecuting()) {
       return returnValue;
     }
 
     const varAccess = {
-      objTid,
+      objectTid,
       prop: prop
     };
     return this._traceUpdateExpression(updateValue, returnValue, readTid, tid, varAccess);
@@ -615,7 +612,7 @@ export default class RuntimeMonitor {
         const arg = spreadArg[j];
 
         const varAccess = {
-          objTid: argTid,
+          objectTid: argTid,
           prop: j
         };
         // [spread]
@@ -650,12 +647,12 @@ export default class RuntimeMonitor {
         // [spread]
         for (let j = 0; j < len; j++) {
           const readAccess = {
-            objTid: argTid,
+            objectTid: argTid,
             prop: j
           };
           const readNode = dataNodeCollection.createDataNode(value[idx], argTid, DataNodeType.Read, readAccess);
           const writeAccess = {
-            objTid: arrTid,
+            objectTid: arrTid,
             prop: idx
           };
           dataNodeCollection.createWriteNodeFromReadNode(argTid, readNode, writeAccess);
@@ -665,7 +662,7 @@ export default class RuntimeMonitor {
       else {
         // not spread
         const varAccess = {
-          objTid: arrTid,
+          objectTid: arrTid,
           prop: i
         };
         dataNodeCollection.createWriteNodeFromTrace(argTid, varAccess);
@@ -676,11 +673,11 @@ export default class RuntimeMonitor {
     return value;
   }
 
-  traceObjectExpression(programId, value, entries, argConfigs, objTid, propTids) {
+  traceObjectExpression(programId, value, entries, argConfigs, objectTid, propTids) {
     if (!this._ensureExecuting()) {
       return value;
     }
-    dataNodeCollection.createOwnDataNode(value, objTid, DataNodeType.Read);
+    dataNodeCollection.createOwnDataNode(value, objectTid, DataNodeType.Read);
 
     // for each prop: add (new) write node which has (original) read node as input
     for (let i = 0; i < entries.length; i++) {
@@ -692,12 +689,12 @@ export default class RuntimeMonitor {
         // NOTE: we can use `for in` here, because this is the "spread copy" of the object
         for (const key in nested) {
           const readAccess = {
-            objTid: propTid,
+            objectTid: propTid,
             prop: key
           };
           const readNode = dataNodeCollection.createDataNode(value[key], propTid, DataNodeType.Read, readAccess);
           const writeAccess = {
-            objTid: objTid,
+            objectTid: objectTid,
             prop: key
           };
           dataNodeCollection.createWriteNodeFromReadNode(propTid, readNode, writeAccess);
@@ -707,7 +704,7 @@ export default class RuntimeMonitor {
         // not spread
         const [key] = entries[i];
         const varAccess = {
-          objTid: objTid,
+          objectTid: objectTid,
           prop: key
         };
         dataNodeCollection.createWriteNodeFromTrace(propTid, varAccess);

@@ -437,12 +437,12 @@ class DataNodeCollection extends Collection {
     }
     else {
       let key;
-      const { declarationTid, objTid, prop } = varAccess;
+      const { declarationTid, objectTid, prop } = varAccess;
       if (declarationTid) {
         key = declarationTid;
       }
-      else if (objTid && (prop ?? null) !== null) {
-        const objectDataNode = this.dp.indexes.dataNodes.byTrace.getFirst(objTid);
+      else if (objectTid && (prop ?? null) !== null) {
+        const objectDataNode = this.dp.indexes.dataNodes.byTrace.getFirst(objectTid);
         const objectValueId = objectDataNode.valueId;
         if (!objectValueId) {
           // sanity check

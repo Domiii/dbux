@@ -31,4 +31,12 @@ export default class UpdateExpression extends BaseNode {
   static plugins = [
     getLValPlugin
   ];
+
+  /**
+   * @returns {BaseNode}
+   */
+  getDeclarationNode() {
+    const [leftNode] = this.getChildNodes();
+    return leftNode.getDeclarationNode();
+  }
 }

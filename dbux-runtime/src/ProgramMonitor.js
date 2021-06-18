@@ -204,15 +204,15 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceExpression(this.getProgramId(), value, tid, inputs);
   }
 
-  traceExpressionVar = (value, tid, declarationTid, inputs) => {
+  traceExpressionVar = (value, tid, declarationTid) => {
     if (this.areTracesDisabled) {
       return value;
     }
 
-    return this._runtimeMonitor.traceExpressionVar(this.getProgramId(), value, tid, declarationTid, inputs);
+    return this._runtimeMonitor.traceExpressionVar(this.getProgramId(), value, tid, declarationTid);
   }
 
-  traceExpressionME = (objValue, propValue, tid, inputs) => {
+  traceExpressionME = (objValue, propValue, tid, objectTid) => {
     // [runtime-error] potential runtime error
     const value = objValue[propValue];
 
@@ -220,16 +220,16 @@ export default class ProgramMonitor {
       return value;
     }
 
-    return this._runtimeMonitor.traceExpressionME(this.getProgramId(), value, propValue, tid, inputs);
+    return this._runtimeMonitor.traceExpressionME(this.getProgramId(), value, propValue, tid, objectTid);
   }
 
-  traceExpressionMEOptional = (objValue, propValue, tid, inputs) => {
+  traceExpressionMEOptional = (objValue, propValue, tid, objectTid) => {
     const value = objValue?.[propValue];
     if (this.areTracesDisabled) {
       return value;
     }
 
-    return this._runtimeMonitor.traceExpressionME(this.getProgramId(), value, propValue, tid, inputs);
+    return this._runtimeMonitor.traceExpressionME(this.getProgramId(), value, propValue, tid, objectTid);
   }
 
   traceWriteVar = (value, tid, declarationTid, inputs) => {
@@ -240,17 +240,17 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceWriteVar(this.getProgramId(), value, tid, declarationTid, inputs);
   }
 
-  traceWriteME = (objValue, propValue, value, tid, objTid, inputs) => {
+  traceWriteME = (objValue, propValue, value, tid, objectTid, inputs) => {
     // [runtime-error] potential run-time error
     objValue[propValue] = value;
     if (this.areTracesDisabled) {
       return value;
     }
 
-    return this._runtimeMonitor.traceWriteME(this.getProgramId(), value, propValue, tid, objTid, inputs);
+    return this._runtimeMonitor.traceWriteME(this.getProgramId(), value, propValue, tid, objectTid, inputs);
   }
 
-  traceUpdateExpressionVar(updateValue, returnValue, readTid, tid, declarationTid) {
+  traceUpdateExpressionVar = (updateValue, returnValue, readTid, tid, declarationTid) => {
     if (this.areTracesDisabled) {
       return returnValue;
     }
@@ -258,12 +258,12 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceUpdateExpressionVar(this.getProgramId(), updateValue, returnValue, readTid, tid, declarationTid);
   }
 
-  traceUpdateExpressionME(obj, prop, updateValue, returnValue, readTid, tid, objTid) {
+  traceUpdateExpressionME = (obj, prop, updateValue, returnValue, readTid, tid, objectTid) => {
     if (this.areTracesDisabled) {
       return returnValue;
     }
 
-    return this._runtimeMonitor.traceUpdateExpressionME(this.getProgramId(), obj, prop, updateValue, returnValue, readTid, tid, objTid);
+    return this._runtimeMonitor.traceUpdateExpressionME(this.getProgramId(), obj, prop, updateValue, returnValue, readTid, tid, objectTid);
   }
 
   traceBCE = (tid, argTids, spreadArgs) => {
@@ -317,9 +317,9 @@ export default class ProgramMonitor {
   /**
    * 
    */
-  traceObjectExpression = (entries, objTid, propTids) => {
+  traceObjectExpression = (entries, objectTid, propTids) => {
     // console.debug(`[Dbux traceArrayExpression] tid=${tid}, strace=${JSON.stringify(traceCollection.getStaticTraceByTraceId(tid))}`);
-    const { data: { argConfigs } } = traceCollection.getStaticTraceByTraceId(objTid);
+    const { data: { argConfigs } } = traceCollection.getStaticTraceByTraceId(objectTid);
 
     // compute final object
     const value = {};
@@ -362,7 +362,7 @@ export default class ProgramMonitor {
       return value;
     }
 
-    return this._runtimeMonitor.traceObjectExpression(this.getProgramId(), value, entries, argConfigs, objTid, propTids);
+    return this._runtimeMonitor.traceObjectExpression(this.getProgramId(), value, entries, argConfigs, objectTid, propTids);
   }
 
   // ###########################################################################

@@ -41,7 +41,7 @@ export default class UpdateLValME extends BasePlugin {
     meNode.handler = this;
   }
 
-  addReadTrace(objectAstNode, propertyAstNode, objTid) {
+  addReadTrace(objectAstNode, propertyAstNode, objectTid) {
     const [argumentNode] = this.node.getChildNodes();
     return this.node.Traces.addTrace({
       path: argumentNode.path,
@@ -50,9 +50,9 @@ export default class UpdateLValME extends BasePlugin {
         type: TraceType.ME
       },
       data: {
+        objectTid,
         objectAstNode,
         propertyAstNode,
-        objTid
       },
       meta: {
         // will be instrumented by `buildUpdateExpressionME`
@@ -72,7 +72,7 @@ export default class UpdateLValME extends BasePlugin {
 
     // make sure, `object` + `property` are traced
     const objectTraceCfg = objectNode.addDefaultTrace();
-    const objTid = objectTraceCfg?.tidIdentifier;
+    const objectTid = objectTraceCfg?.tidIdentifier;
     if (computed /* && !propertyPath.isConstantExpression() */) {
       // inputs.push(propertyPath);
       propertyNode.addDefaultTrace();
@@ -81,16 +81,21 @@ export default class UpdateLValME extends BasePlugin {
     // add read trace
     const objectVar = path.scope.generateDeclaredUidIdentifier('o');
     const propertyVar = path.scope.generateDeclaredUidIdentifier('p');
-    const readTraceCfg = this.addReadTrace(objectVar, propertyVar, objTid);
+    const readTraceCfg = this.addReadTrace(objectVar, propertyVar, objectTid);
 
     // add actual WriteME trace
     const traceData = {
+      path,
+      node,
       staticTraceData: {
-        type: TraceType.WriteME
+        type: TraceType.UpdateExpression,
+        dataNode: {
+          isNew: true
+        }
       },
       data: {
         readTraceCfg,
-        objTid
+        objectTid
       },
       meta: {
         build: buildUpdateExpressionME

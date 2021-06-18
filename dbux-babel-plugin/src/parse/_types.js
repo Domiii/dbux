@@ -7,6 +7,9 @@ import BaseNode from './BaseNode';
  */
 export class LValHolderNode extends BaseNode {
   /**
+   * Used by {@link Traces} to determine `declarationTid`.
+   * TODO: `declarationTid` should not be handled by the system (just like ME data is also not handled by the system, but rather the ME nodes themselves).
+   * 
    * @returns {BaseNode}
    */
   getDeclarationNode() {}

@@ -57,8 +57,8 @@ export default class AssignmentLValME extends BasePlugin {
     // make sure, `object` is traced
     objectNode.addDefaultTrace();
 
-    const objTid = objectNode.traceCfg?.tidIdentifier;
-    if (!objTid) {
+    const objectTid = objectNode.traceCfg?.tidIdentifier;
+    if (!objectTid) {
       this.warn(`objectNode did not have traceCfg.tidIdentifier in ${objectNode}`);
     }
 
@@ -68,7 +68,7 @@ export default class AssignmentLValME extends BasePlugin {
         type: TraceType.WriteME
       },
       data: {
-        objTid
+        objectTid
       },
       meta: {
         // instrument: Traces.instrumentTraceWrite

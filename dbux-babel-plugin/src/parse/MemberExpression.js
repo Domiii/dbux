@@ -111,12 +111,14 @@ export default class MemberExpression extends BaseNode {
       replacePath = path;
     }
 
-    const [, propertyNode] = this.getChildNodes();
+    const [objectNode, propertyNode] = this.getChildNodes();
     const {
       computed,
       optional
     } = path.node;
-    
+
+    const objectTraceCfg = objectNode.addDefaultTrace();
+    const objectTid = objectTraceCfg?.tidIdentifier;
     if (computed /* && !propertyPath.isConstantExpression() */) {
       // inputs.push(propertyPath);
       propertyNode.addDefaultTrace();
@@ -134,12 +136,12 @@ export default class MemberExpression extends BaseNode {
         replacePath
       },
       data: {
+        objectTid,
         // remember `objectAstNode`, if given
         objectAstNode
       }
     };
-    const inputs = [objectPath];
 
-    return this.Traces.addTraceWithInputs(traceData, inputs);
+    return this.Traces.addTrace(traceData);
   }
 }

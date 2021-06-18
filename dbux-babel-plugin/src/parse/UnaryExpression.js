@@ -7,7 +7,8 @@ export default class UnaryExpression extends BaseNode {
   static children = ['argument'];
   static plugins = ['ArithmeticExpression'];
 
+  // TODO: `typeof` targets a `BindingIdentifier`
   // TODO: `delete` -> writeME(undefined); returns `true` if argument is valid (e.g. `delete o.x`); `false` if not (e.g. `delete o`).
 
-  // other special operators: `typeof`, `void`
+  // other special operators: `void`
 }
