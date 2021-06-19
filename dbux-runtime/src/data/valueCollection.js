@@ -1,6 +1,5 @@
-import isObject from 'lodash/isObject';
 import truncate from 'lodash/truncate';
-import ValueTypeCategory, { determineValueTypeCategory, ValuePruneState, isObjectCategory, isTrackableCategory } from '@dbux/common/src/core/constants/ValueTypeCategory';
+import ValueTypeCategory, { determineValueTypeCategory, ValuePruneState, isTrackableCategory } from '@dbux/common/src/core/constants/ValueTypeCategory';
 // import serialize from '@dbux/common/src/serialization/serialize';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Collection from './Collection';
@@ -34,7 +33,10 @@ const builtInTypeSerializers = new Map([
  * Keeps track of `StaticTrace` objects that contain static code information
  */
 class ValueCollection extends Collection {
-  valuesDisabled = false;
+  /**
+   * NOTE: initialized from `RuntimeMonitor`
+   */
+  valuesDisabled;
 
   /**
    * Stores `refId` by `object`.
@@ -63,12 +65,22 @@ class ValueCollection extends Collection {
    * @returns {ValueRef}
    */
   registerValueMaybe(value, dataNode) {
+    if (this.valuesDisabled) {
+      return null;
+    }
+
     let valueRef;
     const { nodeId } = dataNode;
     const category = determineValueTypeCategory(value);
     Verbose > 1 && this._log(`[val] dataNode #${nodeId}`);
     if (!isTrackableCategory(category)) {
       valueRef = null;
+
+      // hackfix: coerce to string
+      // NOTE: workaround for https://github.com/Domiii/dbux/issues/533
+      if (typeof value === 'bigint') {
+        value = value + 'n';
+      }
       dataNode.value = value;
     }
     else {

@@ -74,6 +74,16 @@ export default class ProgramMonitor {
     return Array.from(arg);
   }
 
+  /**
+   * NOTE: must discern between different numerical types
+   * @see https://tc39.es/ecma262/#sec-postfix-increment-operator-runtime-semantics-evaluation
+   * @see https://tc39.es/ecma262/#sec-numeric-types
+   * @see https://stackoverflow.com/questions/57996921/why-bigint-demand-explicit-conversion-from-number?noredirect=1&lq=1
+   */
+  unitOfType = (n) => {
+    return n?.constructor === BigInt ? 1n : 1;
+  }
+
   // ###########################################################################
   // context management
   // ###########################################################################

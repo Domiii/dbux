@@ -26,6 +26,9 @@ function getLValPlugin(node) {
 // UpdateExpression
 // ###########################################################################
 
+/**
+ * @see https://tc39.es/ecma262/#sec-postfix-increment-operator
+ */
 export default class UpdateExpression extends BaseNode {
   static children = ['argument'];
   static plugins = [

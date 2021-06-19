@@ -83,7 +83,7 @@ export class DataNodeCollection extends Collection {
     this.push(dataNode);
 
     // TODO: support object changes
-    // TODO: also support ME
+    
 
     // value
     const valueRef = valueCollection.registerValueMaybe(value, dataNode);

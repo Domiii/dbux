@@ -18,9 +18,10 @@ import { buildtraceExpressionME, buildTraceExpressionVar } from './misc';
  * 
  * @param {NodePath} uePath
  */
-export function buildUpdatedValue(uePath, lval, rval, returnValue) {
+export function buildUpdatedValue(state, uePath, lval, rval, returnValue) {
+  const { ids: { aliases: { unitOfType } } } = state;
   const { operator, prefix } = uePath.node;
-  const one = t.numericLiteral(1);
+  const one = t.callExpression(unitOfType, [lval]);
   const op = operator[1];
 
   if (prefix) {
@@ -45,6 +46,18 @@ export function buildUpdatedValue(uePath, lval, rval, returnValue) {
   );
 }
 
+/**
+ * Builds the final UE:
+ *
+ * `++a` ->
+ * `tuv(
+ *    ret = twv(tev(a..., readTid), ++a, updateTid),
+ *    ret,
+ *    readTid,
+ *    updateTid,
+ *    objectTid
+ * )`
+ */
 export function buildUpdateExpressionVar(state, traceCfg) {
   const { ids: { aliases: { traceUpdateExpressionVar } } } = state;
   let { path, data: { readTraceCfg } } = traceCfg;
@@ -52,7 +65,7 @@ export function buildUpdateExpressionVar(state, traceCfg) {
   const argumentNode = path.node.argument;
   const rvalNode = buildTraceExpressionVar(state, readTraceCfg);
   const returnValue = generateDeclaredIdentifier(path);
-  const updateValue = buildUpdatedValue(path, argumentNode, rvalNode, returnValue);
+  const updateValue = buildUpdatedValue(state, path, argumentNode, rvalNode, returnValue);
   const updateTid = buildTraceId(state, traceCfg);
   const declarationTid = getDeclarationTid(traceCfg);
 
@@ -88,7 +101,7 @@ export function buildUpdateExpressionME(state, traceCfg) {
     }
   } = readTraceCfg;
   const meNode = path.node.argument;
-  const { 
+  const {
     object: objectNode,
     property: propertyNode
   } = meNode;
@@ -96,9 +109,9 @@ export function buildUpdateExpressionME(state, traceCfg) {
   const p = t.assignmentExpression('=', propertyVar, convertNonComputedPropToStringLiteral(propertyNode, meNode.computed));
   const rval = buildtraceExpressionME(state, readTraceCfg);
   const returnValue = generateDeclaredIdentifier(path);
-  const updateValue = buildUpdatedValue(path, meNode, rval, returnValue);
+  const updateValue = buildUpdatedValue(state, path, meNode, rval, returnValue);
   const updateTid = buildTraceId(state, traceCfg);
-  
+
   return t.callExpression(traceUpdateExpressionME, [
     o, p, updateValue, returnValue, readTid || ZeroNode, updateTid, objectTid || ZeroNode
   ]);
