@@ -9,8 +9,10 @@ set -e # cancel on error
 # fname="memberExpressions0"
 # fname="functions3"
 # fname="objectExpressions1"
-fname="updateExpressions1"
+# fname="updateExpressions1"
 # fname="throw2"
+# fname="while1"
+fname="for1"
 nodeArgs="--enable-source-maps "
 
 dbuxCmd="$1"

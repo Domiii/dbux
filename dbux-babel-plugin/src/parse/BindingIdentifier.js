@@ -1,5 +1,6 @@
 import { pathToString } from '../helpers/pathHelpers';
 import BaseId from './BaseId';
+import BaseNode from './BaseNode';
 
 /**
  * 
@@ -71,9 +72,12 @@ export default class BindingIdentifier extends BaseId {
 
     // const scopePath = this.binding.path.scope.path;
     const scopePath = this.getBindingScope().path;
+    /**
+     * @type {BaseNode}
+     */
     const bindingScopeNode = this.stack.getNodeOfPath(scopePath);
     if (!bindingScopeNode?.Traces) {
-      throw new Error(`BindingIdentifier's binding scope did not have a ParseNode: ${pathToString(scopePath)}`);
+      throw new Error(`BindingIdentifier's binding scope did not have a ParseNode: "${pathToString(scopePath)}" in "${this.getParent()}"`);
     }
 
     // addDefaultDeclarationTrace

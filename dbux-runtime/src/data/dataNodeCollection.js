@@ -81,8 +81,6 @@ export class DataNodeCollection extends Collection {
     dataNode.inputs = inputs;
 
     this.push(dataNode);
-
-    // TODO: support object changes
     
 
     // value

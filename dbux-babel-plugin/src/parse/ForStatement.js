@@ -10,6 +10,10 @@ export default class ForStatement extends BaseNode {
   exit() {
     const [init, test, update] = this.getChildPaths();
     
-    this.Traces.addDefaultTraces([init, test, update]);
+    // TODO: all tid variable declarations from these three children need to be moved to `scope.getFunctionParent() || scope.getProgramParent()`
+    // TODO: merge decl + write, of `init` variables, if they are not `var`
+    
+
+    this.Traces.addDefaultTraces([test, update]);
   }
 }
