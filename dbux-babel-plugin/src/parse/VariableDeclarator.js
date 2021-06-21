@@ -2,6 +2,7 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import BaseNode from './BaseNode';
 import BindingIdentifier from './BindingIdentifier';
+import { getVariableDeclaratorLValPlugin } from './helpers/lvalUtil';
 
 /**
  * @implements {LValHolderNode}
@@ -10,18 +11,19 @@ export default class VariableDeclarator extends BaseNode {
   static children = ['id', 'init'];
   static plugins = [
     'BindingNode',
-    'AssignmentLValVar'
+    {
+      plugin: getVariableDeclaratorLValPlugin,
+      as: 'lval'
+    }
   ];
 
   get hasSeparateDeclarationTrace() {
-    const { path } = this;
-    const [, initNode] = this.getChildNodes();
-
-    // if `var`, hoist to function scope
-    // if no `initNode`, there is no write trace, so we need an independent `Declaration` trace anyway
-    return path.parentPath.node.kind === 'var' || !initNode;
+    return this.plugins.lval.hasSeparateDeclarationTrace;
   }
 
+  /**
+   * Used by `AssignmentLValVar`
+   */
   get writeTraceType() {
     // NOTE: `write` trace doubles as declaration trace, if not hoisted
     return this.hasSeparateDeclarationTrace ? TraceType.WriteVar : TraceType.Declaration;
@@ -47,8 +49,7 @@ export default class VariableDeclarator extends BaseNode {
   }
 
   exit1() {
-    // NOTE: This adds the hoisted declaration trace, while `AssignmentLValVar` adds the write trace (after calling `decorateWriteTraceData`).
-
+    // NOTE: This adds the hoisted declaration trace, while `plugins.lval` adds the write trace (after calling `decorateWriteTraceData`).
     if (this.hasSeparateDeclarationTrace) {
       // add declaration trace
       this.getDeclarationNode().addOwnDeclarationTrace();

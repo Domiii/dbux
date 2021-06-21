@@ -7,6 +7,7 @@ import BasePlugin from './BasePlugin';
 import BindingNode from './BindingNode';
 import CalleeMemberExpression from './CalleeMemberExpression';
 import Class from './Class';
+import ForInLValVar from './ForInLValVar';
 import Function from './Function';
 import Loop from './Loop';
 import Params from './Params';
@@ -25,6 +26,7 @@ export {
   BindingNode,
   CalleeMemberExpression,
   Class,
+  ForInLValVar,
   Function,
   Loop,
   Params,

@@ -126,7 +126,7 @@ export default class Traces extends BasePlugin {
     else {
       node.getDeclarationNode().bindingTrace = traceCfg;
 
-      if (meta.hoisted) {
+      if (meta?.hoisted) {
         this.hoistedDeclarationTraces.push(traceCfg);
       }
       else {
@@ -169,13 +169,17 @@ export default class Traces extends BasePlugin {
 
   addDeclarationTrace(traceData, valuePath) {
     if (valuePath) {
+      // `data.valuePath`
       traceData.data = traceData.data || {};
       traceData.data.valuePath = valuePath;
     }
-    valuePath.meta = valuePath.meta || {};
-    if (!('hoisted' in valuePath.meta)) {
-      valuePath.meta.hoisted = true;
+    
+    // `meta.hoisted`
+    traceData.meta = traceData.meta || {};
+    if (!('hoisted' in traceData.meta)) {
+      traceData.meta.hoisted = true;
     }
+
     const traceCfg = this.addTrace(traceData);
 
     this.Verbose && this.debug(`DECL ${traceCfg.tidIdentifier.name} for ${this.node}`);

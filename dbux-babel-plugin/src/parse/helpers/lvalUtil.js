@@ -18,3 +18,10 @@ export function getAssignmentLValPlugin(node) {
   // console.debug(`[LVAL] lvalType = ${lvalType} - ${pathToString(node.path)}`);
   return pluginName;
 }
+
+export function getVariableDeclaratorLValPlugin(node) {
+  if (node.getParent().path.isForInStatement()) {
+    return 'ForInLValVar';
+  }
+  return 'AssignmentLValVar';
+}

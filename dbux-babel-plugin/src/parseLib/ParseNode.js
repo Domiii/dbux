@@ -6,6 +6,7 @@ import { pathToString } from '../helpers/pathHelpers';
 import ParseRegistry from './ParseRegistry';
 import { getChildPaths, getNodeOfPath } from './parseUtil';
 import ParsePhase from './ParsePhase';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 /** @typedef { import("@babel/traverse").NodePath } NodePath */
 /** @typedef { import("./ParseStack").default } ParseStack */
@@ -230,23 +231,28 @@ export default class ParseNode {
     };
   }
 
-  addPlugin(Clazz) {
+  addPlugin(Clazz, cfg = EmptyObject) {
     const plugin = new Clazz();
     plugin.node = this;
-    plugin.init?.();
+    plugin.init?.(cfg);
     this.plugins[Clazz.name] = plugin;
-    // this.pluginList.push(plugin);
+    if (cfg.alias) {
+      if (this.plugins[cfg.as]) {
+        throw new Error(`Plugin config's "as" conflict: already used - ${cfg.as} in "${this}"`);
+      }
+      this.plugins[cfg.as] = plugin;
+    }
     return plugin;
   }
 
   initPlugins() {
     // add plugins
-    for (let [/* name */, PluginClazz] of this.getAllClassPlugins().entries()) {
+    for (let [/* name */, { PluginClazz, ...cfg }] of this.getAllClassPlugins().entries()) {
       // this.debug(this.nodeTypeName, `[initPlugins] add`, name, !predicate || predicate());
 
       // add plugin
       try {
-        this.addPlugin(PluginClazz);
+        this.addPlugin(PluginClazz, cfg);
       }
       catch (err) {
         throw new NestedError(`Failed to addPlugin "${PluginClazz?.name || PluginClazz}" to node "${this}"`, err);

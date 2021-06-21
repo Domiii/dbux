@@ -2,18 +2,17 @@
   "version": "2.0.0",
   "tasks": [
     {
-        "type": "npm",
-        "script": "webpack-dev",
-        "isBackground": true,
-        "group": {
-            "kind": "build",
-            "isDefault": true
-        },
-        "presentation": {
-            "reveal": "never",
-            "panel": "dedicated"
-        },
-        // "problemMatcher": ["$tsc-watch"]
+      "type": "npm",
+      "script": "webpack-dev",
+      "isBackground": true,
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "never",
+        "panel": "dedicated"
+      }
     },
     {
       "label": "Write registry files",
@@ -22,6 +21,7 @@
       "args": [
         "registry-files"
       ],
+      "problemMatcher": []
     },
     {
       "label": "Test shell",
@@ -31,7 +31,7 @@
         "-lc",
         "--",
         "echo $PATH && node -v"
-      ],
+      ]
     },
     {
       "label": "Test node",
@@ -39,7 +39,7 @@
       "command": "node",
       "args": [
         "-v"
-      ],
+      ]
     },
     {
       "label": "eslint:files:open",
@@ -48,23 +48,8 @@
       "args": [
         "-lc",
         "--",
-        //"code $(npx eslint \"dbux-**/src/**/*.js\" | grep -E \"^(\\w|/).*\\.js\")"
-        // "npx eslint \\\"dbux-**/src/**/*.js\\\" | grep -E \"^(\\w|/).*\\.js\")"
         "echo \\\"x.js\\\" | grep -E \\\"^[\\\\w/].*\\\\.js\\\""
-      ],
+      ]
     }
-    // {
-    //   "label": "Instrument folder (test)",
-    //   "command": "${workspaceRoot}/dbux-cli/bin/dbux.sh",
-    //   "args": [
-    //     "i",
-    //     "${fileDirname}"
-    //   ],
-    //   "type": "shell",
-    //   "runOptions": {
-    //     "reevaluateOnRerun": false
-    //   },
-    //   "problemMatcher": []
-    // }
   ]
 }

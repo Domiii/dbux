@@ -3,6 +3,7 @@ import isString from 'lodash/isString';
 // import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { getAllStaticPropsInInheritanceChain } from '@dbux/common/src/util/oopUtil';
 import NestedError from '@dbux/common/src/NestedError';
+import isObject from 'lodash/isObject';
 
 
 class Registry {
@@ -69,6 +70,10 @@ class Registry {
     for (const _pluginCfg of pluginNames) {
       let name;
       let pluginCfg = _pluginCfg;
+      let moreCfg;
+      if (isObject(pluginCfg)) {
+        ({ plugin: pluginCfg, ...moreCfg } = pluginCfg);
+      }
       if (isFunction(pluginCfg)) {
         pluginCfg = pluginCfg(requester);
         if (!pluginCfg) {
@@ -91,11 +96,11 @@ class Registry {
         if (!PluginClazz) {
           throw new Error(`ParseNode "${Clazz.name}" referenced non-existing pluginName = "${name}" (available: ${Object.keys(this.PluginClassesByName).join(', ')})`);
         }
-        pluginMap.set(name, PluginClazz);
-        const pluginConfigs = this._getAllPluginConfigs(PluginClazz, visited, requester);
+        pluginMap.set(name, { ...moreCfg, PluginClazz });
+        const nestedPluginMap = this._getAllPluginConfigs(PluginClazz, visited, requester);
 
         // add children plugins to this pluginMap
-        for (const [key, value] of pluginConfigs.entries()) {
+        for (const [key, value] of nestedPluginMap.entries()) {
           pluginMap.set(key, value);
         }
       }

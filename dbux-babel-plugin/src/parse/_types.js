@@ -9,6 +9,9 @@ export class LValHolderNode extends BaseNode {
   // eslint-disable-next-line getter-return
   get traceType() {}
 
+  // eslint-disable-next-line getter-return
+  get hasSeparateDeclarationTrace() {}
+
   /**
    * Used by {@link Traces} to determine `declarationTid`.
    * TODO: `declarationTid` should not be handled by the system (just like ME data is also not handled by the system, but rather the ME nodes themselves).

@@ -1,7 +1,7 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import { LValHolderNode } from './_types';
 import BaseNode from './BaseNode';
-import { getAssignmentLValPlugin } from './helpers/assignmentUtil';
+import { getAssignmentLValPlugin } from './helpers/lvalUtil';
 
 // ###########################################################################
 // AssignmentExpression
@@ -13,12 +13,11 @@ import { getAssignmentLValPlugin } from './helpers/assignmentUtil';
 export default class AssignmentExpression extends BaseNode {
   static children = ['left', 'right'];
   static plugins = [
-    getAssignmentLValPlugin
+    {
+      plugin: getAssignmentLValPlugin,
+      as: 'lval'
+    }
   ];
-
-  get writeTraceType() {
-    return TraceType.WriteVar;
-  }
 
   /**
    * @returns {BaseNode}

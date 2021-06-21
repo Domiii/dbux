@@ -1,22 +1,34 @@
-import { LValHolderNode } from '../_types'; 
+import { LValHolderNode } from '../_types';
 import { buildTraceWriteVar } from '../../instrumentation/builders/misc';
 import BasePlugin from './BasePlugin';
 
-export default class AssignmentLValVar extends BasePlugin {
+export default class VariableDeclaratorLVal extends BasePlugin {
   /**
    * @type {LValHolderNode}
    */
   node;
 
+  get rvalNode() {
+    const [, initNode] = this.getChildNodes();
+    return initNode;
+  }
+
+  get hasSeparateDeclarationTrace() {
+    const { path } = this;
+
+    // if `var`, hoist to function scope
+    // if no `initNode`, there is no write trace, so we need an independent `Declaration` trace anyway
+    return path.parentPath.node.kind === 'var' || !this.rvalNode;
+  }
+
   exit() {
     const {
-      node
+      node,
+      rvalNode
     } = this;
     const { Traces, writeTraceType } = node;
 
-    const [/* lvalNode */, valueNode] = node.getChildNodes();
-
-    if (!valueNode) {
+    if (!rvalNode) {
       this.error(`missing RVal node in "${this.node}"`);
       return;
     }
@@ -26,7 +38,7 @@ export default class AssignmentLValVar extends BasePlugin {
       return;
     }
 
-    if (!valueNode.path.node) {
+    if (!rvalNode.path.node) {
       // no write
       return;
     }
@@ -42,8 +54,8 @@ export default class AssignmentLValVar extends BasePlugin {
     };
 
     this.node.decorateWriteTraceData(traceData);
-    
-    // NOTE: `declarationTid` comes from `node.getDeclarationNode`
-    Traces.addTraceWithInputs(traceData, [valueNode.path]);
+
+    // NOTE: `declarationTid` comes from `this.node.getDeclarationNode`
+    Traces.addTraceWithInputs(traceData, [rvalNode.path]);
   }
 }

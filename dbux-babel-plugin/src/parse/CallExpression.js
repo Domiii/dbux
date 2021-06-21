@@ -52,19 +52,12 @@ export default class CallExpression extends BaseNode {
     `NewExpression`
   ];
   static plugins = [
-    (node) => node.calleePluginName
+    { 
+      plugin: getCalleePlugin,
+      as: 'callee'
+    }
   ];
   static children = ['callee', 'arguments'];
-
-  calleePluginName;
-
-  init() {
-    this.calleePluginName = getCalleePlugin(this) || null;
-  }
-
-  get calleePlugin() {
-    return this.calleePluginName && this.getPlugin(this.calleePluginName) || null;
-  }
 
   // function enterCallExpression(traceResultType, path, state) {
   //   // CallExpression
@@ -94,7 +87,9 @@ export default class CallExpression extends BaseNode {
     const { 
       path,
       // path: { scope },
-      calleePlugin
+      plugins: {
+        callee: calleePlugin
+      }
     } = this;
 
 
