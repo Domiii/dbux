@@ -31,7 +31,7 @@ export default class Params extends BasePlugin {
 
     const idPaths = getBindingIdentifierPaths(paramPath);
     if (idPaths.length !== 1) {
-      this.warn(`NYI: param is destructured into less or more than 1 variable ${pathToString(paramPath)}`);
+      this.warn(`NYI - param is destructured into less or more than 1 variable: "${pathToString(paramPath)}" in "${this.node}"`);
     }
     const idPath = idPaths[0];
     const idNode = this.node.getNodeOfPath(idPath);

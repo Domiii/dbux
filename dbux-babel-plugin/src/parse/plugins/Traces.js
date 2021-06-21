@@ -8,7 +8,6 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import TraceCfg from '../../definitions/TraceCfg';
 import { pathToString } from '../../helpers/pathHelpers';
 import { traceWrapExpression, traceDeclarations } from '../../instrumentation/trace';
-import ParseNode from '../../parseLib/ParseNode';
 // import { pathToString } from '../../helpers/pathHelpers';
 import BasePlugin from './BasePlugin';
 
@@ -98,13 +97,13 @@ export default class Traces extends BasePlugin {
     // NOTE: `scope.push` happens during `instrument`
     const tidIdentifier = (scope || path.scope).generateUidIdentifier(`t${inProgramStaticTraceId}_`);
 
-    // future - work: `declarationTidIdentifier` is very specific to * Var traces, and thus does not belong into generic`TraceCfg`
+    // future-work: `declarationTidIdentifier` is very specific to *Var traces, and thus does not belong into generic `TraceCfg`
     let declarationTidIdentifier;
     if (isDeclaration) {
       declarationTidIdentifier = tidIdentifier;
     }
     else {
-      // NOTE: this (roughly) translates to `node.getDeclarationNode()._traceCfg.tidIdentifier`
+      // NOTE: this (roughly) translates to `node.getDeclarationNode().bindingTrace.tidIdentifier`
       declarationTidIdentifier = node?.getDeclarationTidIdentifier();
     }
 
@@ -124,8 +123,20 @@ export default class Traces extends BasePlugin {
       node?._setTraceData(traceCfg);
       this.traces.push(traceCfg);
     }
+    else {
+      node.getDeclarationNode().bindingTrace = traceCfg;
 
-    this.Verbose >= 2 && this.debug('[traceId]', tidIdentifier.name, `([${inputTraces?.map(tid => tid.name).join(',') || ''}])`, `@"${this.node}"`);
+      if (meta.hoisted) {
+        this.hoistedDeclarationTraces.push(traceCfg);
+      }
+      else {
+        this.traces.push(traceCfg);
+      }
+
+      this.Verbose && this.debug(`DECL ${traceCfg.tidIdentifier.name} for ${this.node}`);
+    }
+
+    this.Verbose >= 2 && this.debug('[addTrace]', tidIdentifier.name, `([${inputTraces?.map(tid => tid.name).join(',') || ''}])`, `@"${this.node}"`);
 
     return traceCfg;
   }
@@ -161,10 +172,13 @@ export default class Traces extends BasePlugin {
       traceData.data = traceData.data || {};
       traceData.data.valuePath = valuePath;
     }
+    valuePath.meta = valuePath.meta || {};
+    if (!('hoisted' in valuePath.meta)) {
+      valuePath.meta.hoisted = true;
+    }
     const traceCfg = this.addTrace(traceData);
-    this.hoistedDeclarationTraces.push(traceCfg);
 
-    this.Verbose && this.debug(`DECL ${traceCfg.tidIdentifier.name} to ${this.node}`);
+    this.Verbose && this.debug(`DECL ${traceCfg.tidIdentifier.name} for ${this.node}`);
 
     return traceCfg;
   }

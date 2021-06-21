@@ -10,7 +10,7 @@ export default class BindingIdentifier extends BaseId {
 
   getTidIdentifier() {
     if (!this.bindingTrace) {
-      throw new Error(`Tried to "getTidIdentifier" too early in ${this} (parent: ${this.getParent()}) - bindingTrace was not recorded yet.`);
+      throw new Error(`Tried to "getTidIdentifier" too early in "${this.getParent()}" - bindingTrace was not recorded yet.`);
     }
     return this.bindingTrace.tidIdentifier;
   }
@@ -50,6 +50,23 @@ export default class BindingIdentifier extends BaseId {
     return scope;
   }
 
+  getDefaultBindingScopeNode() {
+    // const scopePath = this.binding.path.scope.path;
+    let scopePath = this.getBindingScope().path;
+    if (!scopePath.isFunction() && !scopePath.isProgram()) {
+      // hackfix: just make sure, the declared variable is not hoisted to nested scope
+      scopePath = scopePath.parentPath;
+    }
+    /**
+     * @type {BaseNode}
+     */
+    const bindingScopeNode = this.stack.getNodeOfPath(scopePath);
+    if (!bindingScopeNode?.Traces) {
+      throw new Error(`BindingIdentifier's binding scope did not have a valid BaseNode: "${pathToString(scopePath)}" in "${this.getParent()}"`);
+    }
+    return bindingScopeNode;
+  }
+
   /**
    * Add declaration trace to scope.
    * Hoisted by default (unless `scope` is given).
@@ -59,8 +76,6 @@ export default class BindingIdentifier extends BaseId {
    */
   addOwnDeclarationTrace(definitionPath = null, moreTraceData = null) {
     if (!this.getDeclarationNode()) {
-      this.getDeclarationNode();
-      // TODO: there can be other types of declarations, that don't have an `id` prop
       throw new Error(`Assertion failed - BindingIdentifier.getDeclarationTidIdentifier() returned nothing ` +
         `for binding "${pathToString(this.binding?.path)}" in "${this.getParent()}`);
     }
@@ -70,17 +85,7 @@ export default class BindingIdentifier extends BaseId {
     //   return;
     // }
 
-    // const scopePath = this.binding.path.scope.path;
-    const scopePath = this.getBindingScope().path;
-    /**
-     * @type {BaseNode}
-     */
-    const bindingScopeNode = this.stack.getNodeOfPath(scopePath);
-    if (!bindingScopeNode?.Traces) {
-      throw new Error(`BindingIdentifier's binding scope did not have a ParseNode: "${pathToString(scopePath)}" in "${this.getParent()}"`);
-    }
-
-    // addDefaultDeclarationTrace
-    return this.bindingTrace = bindingScopeNode.Traces.addDefaultDeclarationTrace(this, definitionPath, moreTraceData);
+    const bindingScopeNode = this.getDefaultBindingScopeNode();
+    return bindingScopeNode.Traces.addDefaultDeclarationTrace(this, definitionPath, moreTraceData);
   }
 }

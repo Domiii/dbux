@@ -1,4 +1,5 @@
 // import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
+import TraceType from '@dbux/common/src/core/constants/TraceType';
 import BaseNode from './BaseNode';
 import BindingIdentifier from './BindingIdentifier';
 
@@ -11,6 +12,20 @@ export default class VariableDeclarator extends BaseNode {
     'BindingNode',
     'AssignmentLValVar'
   ];
+
+  get hasSeparateDeclarationTrace() {
+    const { path } = this;
+    const [, initNode] = this.getChildNodes();
+
+    // if `var`, hoist to function scope
+    // if no `initNode`, there is no write trace, so we need an independent `Declaration` trace anyway
+    return path.parentPath.node.kind === 'var' || !initNode;
+  }
+
+  get writeTraceType() {
+    // NOTE: `write` trace doubles as declaration trace, if not hoisted
+    return this.hasSeparateDeclarationTrace ? TraceType.WriteVar : TraceType.Declaration;
+  }
 
   /**
    * @returns {BindingIdentifier}
@@ -32,11 +47,11 @@ export default class VariableDeclarator extends BaseNode {
   }
 
   exit1() {
-    // NOTE: This adds the declaration trace, while `AssignmentLValVar` adds the write trace (after calling `decorateWriteTraceData`).
+    // NOTE: This adds the hoisted declaration trace, while `AssignmentLValVar` adds the write trace (after calling `decorateWriteTraceData`).
 
-    // TODO: "write trace" must double as "declaration trace", if id.getBindingScope()'s body is below/behind declaration
-    //      -> especially important in `for` statements
-    //      -> maybe need a new TraceType to reflect the double usage of such "declare + define traces"?
-    this.getDeclarationNode().addOwnDeclarationTrace();
+    if (this.hasSeparateDeclarationTrace) {
+      // add declaration trace
+      this.getDeclarationNode().addOwnDeclarationTrace();
+    }
   }
 }

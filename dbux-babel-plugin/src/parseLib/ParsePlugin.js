@@ -30,6 +30,10 @@ export default class ParsePlugin {
     return this.node.stack.warn(' >', ...args);
   }
 
+  error(...args) {
+    return this.node.logger.error(`[${this}]`, ...args);
+  }
+
   get debugTag() {
     return this.toString();
   }

@@ -1,4 +1,3 @@
-import TraceType from '@dbux/common/src/core/constants/TraceType';
 import { LValHolderNode } from '../_types'; 
 import { buildTraceWriteVar } from '../../instrumentation/builders/misc';
 import BasePlugin from './BasePlugin';
@@ -13,12 +12,17 @@ export default class AssignmentLValVar extends BasePlugin {
     const {
       node
     } = this;
-    const { Traces } = node;
+    const { Traces, writeTraceType } = node;
 
-    const [, valueNode] = node.getChildNodes();
+    const [lvalNode, valueNode] = node.getChildNodes();
 
     if (!valueNode) {
-      this.warn(`AssignmentLValVar did not have an RVal node: ${this.node.path}`);
+      this.error(`missing RVal node in "${this.node}"`);
+      return;
+    }
+
+    if (!writeTraceType) {
+      this.error(`missing writeTraceType in "${this.node}"`);
       return;
     }
 
@@ -29,7 +33,7 @@ export default class AssignmentLValVar extends BasePlugin {
 
     const traceData = {
       staticTraceData: {
-        type: TraceType.WriteVar
+        type: writeTraceType
       },
       meta: {
         // instrument: Traces.instrumentTraceWrite
