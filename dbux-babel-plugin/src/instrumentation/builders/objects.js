@@ -10,21 +10,14 @@ const { log, debug, warn, error: logError } = newLogger('builders/objects');
 
 
 
-export function convertNonComputedPropToStringLiteral(prop, computed) {
-  if (!computed) {
-    let propName;
-    if (!t.isIdentifier(prop)) {
-      // NOTE: should never happen
-      throw new Error(`property was not computed and NOT identifier: ${astNodeToString(prop)}`);
-    }
-    else {
-      propName = prop.name;
-    }
+export function convertNonComputedPropToStringLiteral(keyAstNode, computed) {
+  if (!computed && !t.isLiteral(keyAstNode)) {
+    let propName = keyAstNode.name;
     // NOTE: `o.x` becomes `tme(..., 'x', ...)`
     //      -> convert `Identifier` to `StringLiteral`
-    prop = t.stringLiteral(propName);
+    keyAstNode = t.stringLiteral(propName);
   }
-  return prop;
+  return keyAstNode;
 }
 
 // // eslint-disable-next-line no-unused-vars

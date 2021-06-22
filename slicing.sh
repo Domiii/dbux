@@ -9,7 +9,7 @@ set -e # cancel on error
 # fname="calls0"
 # fname="memberExpressions0"
 # fname="functions3"
-# fname="objectExpressions1"
+fname="objectExpressions1"
 # fname="updateExpressions1"
 # fname="throw2"
 # fname="while1"
@@ -19,7 +19,7 @@ set -e # cancel on error
 # fname="throw2"
 # fname="this1"
 # fname="return2"
-fname="slicing/var3"
+# fname="slicing/var3"
 # fname="for-in1`"
 nodeArgs="--enable-source-maps "
 

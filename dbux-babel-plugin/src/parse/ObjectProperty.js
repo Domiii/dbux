@@ -20,10 +20,12 @@ export default class ObjectProperty extends BaseNode {
     // see: https://babeljs.io/docs/en/babel-types#objectproperty
 
     const [keyNode, valueNode] = this.getChildNodes();
-    
-    // NOTE: non-computed keys don't have their own ParseNode (for now).
-    //      `ObjectExpression` instrumentation will assure correct traces + DataNodes nevertheless.
-    keyNode?.addDefaultTrace();
+
+    if (this.path.node.computed) {
+      // NOTE: non-computed keys don't have their own ParseNode (for now).
+      //      `ObjectExpression` instrumentation will assure correct traces + DataNodes nevertheless.
+      keyNode?.addDefaultTrace();
+    }
 
     return valueNode?.addDefaultTrace();
   }
