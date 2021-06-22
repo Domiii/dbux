@@ -5,14 +5,14 @@ export function pathToStringAnnotated(path) {
   return `[${path.node.type}] "${pathToString(path)}"`;
 }
 
-export function loc2s(loc) {
+export function locToString(loc) {
   return `${loc.start.line}:${loc.start.column}`;
 }
 
 // function binding2s(binding) {
 //   const p = binding.path.get('id') || binding.path;
 //   const name = p.toString();
-//   return `[${binding.path.node.type}] ${name} ${binding.scope.block.type} (${loc2s(binding.path.node.loc)})`;
+//   return `[${binding.path.node.type}] ${name} ${binding.scope.block.type} (${locToString(binding.path.node.loc)})`;
 // }
 
 /**
@@ -21,7 +21,7 @@ export function loc2s(loc) {
 export function pathToString(path, addLoc = false, MaxLen = 100) {
   let s = astNodeToString(path.node, MaxLen);
   if (addLoc) {
-    s = `${s} @${loc2s(path.node.loc)}`;
+    s = `${s} @${locToString(path.node.loc)}`;
   }
   return s;
 }

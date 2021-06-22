@@ -156,10 +156,16 @@ export default class ParseNode {
     const arr = [];
     let { path } = this;
     do {
-      path = path.parentPath;
       arr.push([path, this.getNodeOfPath(path)]);
+      path = path.parentPath;
     } while (path);
     return arr;
+  }
+
+  getParseNodeStackToString() {
+    const stack = this.getParseNodeStack();
+    return ` - current stack (${stack.length}):\n  ` +
+      stack.map(([path, node]) => `${node}${!node ? ` ${path?.node && pathToString(path) || '(null)'}` : ''}`).join('\n  ');
   }
 
   peekNode(nameOrParseNodeClazz) {
@@ -179,7 +185,7 @@ export default class ParseNode {
   peekNodeForce(nameOrParseNodeClazz) {
     const node = this.peekNode(nameOrParseNodeClazz);
     if (!node) {
-      this._peekFail(nameOrParseNodeClazz);
+      this._nodeFail(`Node "${nameOrParseNodeClazz?.name || nameOrParseNodeClazz}" not found on stack`);
     }
     return node;
   }
@@ -202,16 +208,14 @@ export default class ParseNode {
   peekPluginForce(pluginNameOrClazz) {
     const node = this.peekPlugin(pluginNameOrClazz);
     if (!node) {
-      this._peekFail(pluginNameOrClazz);
+      this._nodeFail(`Plugin "${pluginNameOrClazz?.name || pluginNameOrClazz}" not found on stack`);
     }
     return node;
   }
 
-  _peekFail(nameOrParseNodeClazz) {
-    const stack = this.getParseNodeStack();
-    const s = stack.map(([path, node]) => `${node}${!node ? ` ${pathToString(path)}` : ''}`).join('\n  ');
+  _nodeFail(msg) {
     throw new Error(
-      `Node "${nameOrParseNodeClazz?.name || nameOrParseNodeClazz}" not found on stack - current stack (${stack.length}):\n  ${s}\n`
+      `${msg}${this.getParseNodeStackToString()}\n`
     );
   }
 

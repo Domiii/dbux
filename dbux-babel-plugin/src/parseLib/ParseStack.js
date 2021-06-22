@@ -1,7 +1,8 @@
 import isString from 'lodash/isString';
 import { newLogger } from '@dbux/common/src/log/logger';
+import NestedError from '@dbux/common/src/NestedError';
 import { getNodeOfPath, setNodeOfPath } from './parseUtil';
-import { pathToString } from '../helpers/pathHelpers';
+import { locToString, pathToString } from '../helpers/pathHelpers';
 import ParsePhase from './ParsePhase';
 
 /** @typedef { import("./ParseNode").default } ParseNode */
@@ -277,15 +278,23 @@ export default class ParseStack {
    * @param {ParseNode} parseNode
    */
   nodePhase(phase, parseNode, ...fs) {
-    if (parseNode.phase > phase) {
-      // every phase must only occur once
-      throw new Error(`ParseNode phase order - is in ` +
-        `${ParsePhase.nameFromForce(parseNode.phase)} when entering ` +
-        `${ParsePhase.nameFromForce(phase)} - ${parseNode}`);
+    try {
+      if (parseNode.phase > phase) {
+        // every phase must only occur once
+        throw new Error(`ParseNode phase order - is in ` +
+          `${ParsePhase.nameFromForce(parseNode.phase)} when entering ` +
+          `${ParsePhase.nameFromForce(phase)} - ${parseNode}`);
+      }
+      parseNode.phase = phase;
+      for (const f of fs) {
+        f?.call(parseNode);
+      }
     }
-    parseNode.phase = phase;
-    for (const f of fs) {
-      f?.call(parseNode);
+    catch (err) {
+      const loc = parseNode.path.node?.loc || parseNode.path.parentPath?.node?.loc;
+      const where = `${this.state.filePath}${loc ? `:${locToString(loc)}` : ''}`;
+      const s = parseNode.getParseNodeStackToString();
+      throw new NestedError(`ParseStack.nodePhase failed at ${where}${s}\n`, err);
     }
   }
 }
