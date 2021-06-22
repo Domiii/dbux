@@ -10,6 +10,7 @@ import CallExpression from './CallExpression';
 import CatchClause from './CatchClause';
 import ClassDeclaration from './ClassDeclaration';
 import ClassExpression from './ClassExpression';
+import ClassMethod from './ClassMethod';
 import ConditionalExpression from './ConditionalExpression';
 import DoWhileStatement from './DoWhileStatement';
 import ForInStatement from './ForInStatement';
@@ -32,6 +33,7 @@ import SpreadElement from './SpreadElement';
 import SwitchCase from './SwitchCase';
 import SwitchStatement from './SwitchStatement';
 import TemplateLiteral from './TemplateLiteral';
+import ThisExpression from './ThisExpression';
 import ThrowStatement from './ThrowStatement';
 import UnaryExpression from './UnaryExpression';
 import UpdateExpression from './UpdateExpression';
@@ -52,6 +54,7 @@ init(CallExpression);
 init(CatchClause);
 init(ClassDeclaration);
 init(ClassExpression);
+init(ClassMethod);
 init(ConditionalExpression);
 init(DoWhileStatement);
 init(ForInStatement);
@@ -74,6 +77,7 @@ init(SpreadElement);
 init(SwitchCase);
 init(SwitchStatement);
 init(TemplateLiteral);
+init(ThisExpression);
 init(ThrowStatement);
 init(UnaryExpression);
 init(UpdateExpression);
@@ -92,6 +96,7 @@ export {
   CatchClause,
   ClassDeclaration,
   ClassExpression,
+  ClassMethod,
   ConditionalExpression,
   DoWhileStatement,
   ForInStatement,
@@ -114,6 +119,7 @@ export {
   SwitchCase,
   SwitchStatement,
   TemplateLiteral,
+  ThisExpression,
   ThrowStatement,
   UnaryExpression,
   UpdateExpression,
