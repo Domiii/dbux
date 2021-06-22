@@ -1,6 +1,7 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
 import TraceType, { isBeforeCallExpression, isPopTrace } from '@dbux/common/src/core/constants/TraceType';
+import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 import staticProgramContextCollection from './data/staticProgramContextCollection';
 import executionContextCollection from './data/executionContextCollection';
 import staticContextCollection from './data/staticContextCollection';
@@ -10,7 +11,6 @@ import Runtime from './Runtime';
 import ProgramMonitor from './ProgramMonitor';
 import dataNodeCollection from './data/dataNodeCollection';
 import valueCollection from './data/valueCollection';
-import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('RM');
@@ -585,10 +585,10 @@ export default class RuntimeMonitor {
     }
 
     spreadArgs = spreadArgs.map(a => {
-    // [runtime-error] potential runtime error
-    // NOTE: trying to spread a non-iterator results in Error anyway; e.g.:
-    //      "Found non-callable @@iterator"
-    //      "XX is not iterable"
+      // [runtime-error] potential runtime error
+      // NOTE: trying to spread a non-iterator results in Error anyway; e.g.:
+      //      "Found non-callable @@iterator"
+      //      "XX is not iterable"
       return a && Array.from(a);
     });
 
@@ -725,6 +725,38 @@ export default class RuntimeMonitor {
     dataNodeCollection.createWriteNodeFromInputTrace(inputTraceId, tid);
 
     return value;
+  }
+
+  traceForIn(programId, value, tid, declarationTid, inProgramStaticTraceId) {
+    if (!this._ensureExecuting()) {
+      return value;
+    }
+    if (!tid) {
+      this.logFail(`traceForIn failed to capture tid`);
+      return value;
+    }
+
+    if (!declarationTid) {
+      declarationTid = tid;
+    }
+
+    const varAccess = declarationTid && { declarationTid };
+
+    // create iterator which logs `DataNode` on key access
+    const pd = { enumerable: true, configurable: true };
+    return new Proxy(value, {
+      /**
+       * NOTE: for some reason, `getOwnPropertyDescriptor` is called every iteration, while
+       *   the entire array returned from `ownKeys` is read at the beginning of the loop.
+       */
+      getOwnPropertyDescriptor: function (target, key) {
+        console.debug('gpd', key, target[key]);
+
+        const iterationTraceId = this.newTraceId(programId, inProgramStaticTraceId);
+        dataNodeCollection.createOwnDataNode(key, iterationTraceId, DataNodeType.Write, varAccess);
+        return pd;
+      }
+    });
   }
 
   // ###########################################################################

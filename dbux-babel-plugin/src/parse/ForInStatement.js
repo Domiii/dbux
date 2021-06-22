@@ -7,7 +7,8 @@ export default class ForInStatement extends BaseNode {
   static children = ['left', 'right', 'body'];
 
   static plugins = [
-    'Loop'
+    'Loop',
+    'ForInLValVar'
   ];
 
   // exit() {

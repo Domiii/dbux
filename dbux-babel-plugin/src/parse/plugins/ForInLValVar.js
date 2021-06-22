@@ -1,5 +1,7 @@
+import * as t from '@babel/types';
+import TraceType from '@dbux/common/src/core/constants/TraceType';
 import { LValHolderNode } from '../_types';
-import { buildTraceWriteVar } from '../../instrumentation/builders/misc';
+import { buildTraceExpressionVar, buildTraceWriteVar } from '../../instrumentation/builders/misc';
 import BasePlugin from './BasePlugin';
 
 export default class ForInLValVar extends BasePlugin {
@@ -36,18 +38,20 @@ export default class ForInLValVar extends BasePlugin {
 
     const traceData = {
       staticTraceData: {
-        type: writeTraceType
+        type: TraceType.ExpressionResult
       },
       meta: {
-        // TODO: wrap iterator, to record DataNodes for all types of iterator access
-        // traceCall: 'writeWrapIterator',
-        build: buildTraceWriteVar
+        traceCall: 'traceForIn',
+        build: buildTraceExpressionVar
       }
     };
 
     this.node.decorateWriteTraceData(traceData);
 
     // NOTE: `declarationTid` comes from `this.node.getDeclarationNode`
-    Traces.addTraceWithInputs(traceData, [rvalNode.path]);
+    const traceCfg = Traces.addTraceWithInputs(traceData, [rvalNode.path]);
+
+    // we need the inProgramStaticTraceId to generate one trace per iteration
+    traceCfg.meta.moreTraceCallArgs = [t.numericLiteral(traceCfg.inProgramStaticTraceId)];
   }
 }

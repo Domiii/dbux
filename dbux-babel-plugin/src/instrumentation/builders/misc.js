@@ -98,18 +98,15 @@ export function buildTraceDeclarations(state, traceCfgs) {
 // ###########################################################################
 
 export const buildTraceWriteVar = buildTraceCall(
-  '%%traceWriteVar%%(%%expr%%, %%tid%%, %%declarationTid%%, %%inputs%%)',
+  '%%trace%%(%%expr%%, %%tid%%, %%declarationTid%%, %%inputs%%)',
   function buildTraceWriteVar(state, traceCfg) {
-    const { ids: { aliases: {
-      traceWriteVar
-    } } } = state;
-
+    const trace = getTraceCall(state, traceCfg, 'traceWriteVar');
     const tid = buildTraceId(state, traceCfg);
     const declarationTid = getDeclarationTid(traceCfg);
 
     return {
+      trace,
       expr: getInstrumentTargetAstNode(traceCfg),
-      traceWriteVar,
       tid,
       declarationTid,
       inputs: makeInputs(traceCfg)
