@@ -1,4 +1,5 @@
 import path from 'path';
+import NestedError from '@dbux/common/src/NestedError';
 import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
 import Trace from '@dbux/common/src/core/data/Trace';
 import DataNode from '@dbux/common/src/core/data/DataNode';
@@ -420,7 +421,7 @@ class DataNodeCollection extends Collection {
         }
         else if (!TraceType.is.CallExpressionResult(traceType)) {
           // eslint-disable-next-line max-len
-          this.logger.warn(`[getValueId] Cannot find valueId for empty inputs.\n    trace: ${this.dp.util.makeTraceInfo(trace)}\n    dataNode: ${JSON.stringify(dataNode)}`);
+          this.logger.warn(`[getValueId] Cannot find valueId for empty inputs.\n    trace: ${this.dp.util.makeTraceInfo(traceId)}\n    dataNode: ${JSON.stringify(dataNode)}`);
         }
         else {
           return null;
@@ -489,23 +490,20 @@ class DataNodeCollection extends Collection {
 }
 
 // ###########################################################################
-// ValueCollection
+// ValueRefCollection
 // ###########################################################################
 
 /**
  * @extends {Collection<ValueRef>}
  */
-class ValueCollection extends Collection {
+class ValueRefCollection extends Collection {
   _visited = new Set();
 
   constructor(dp) {
     super('values', dp);
   }
 
-  add(entries) {
-    // add entries to collection
-    super.add(entries);
-
+  postAddRaw(entries) {
     // deserialize
     for (const entry of entries) {
       this._deserialize(entry);
@@ -517,9 +515,18 @@ class ValueCollection extends Collection {
   }
 
   _deserialize(entry) {
-    this._deserializeValue(entry);
-    // entry.valueString = JSON.stringify(entry.value);
-    delete entry.serialized; // don't need this, so don't keep it around
+    try {
+      this._deserializeValue(entry);
+      // entry.valueString = JSON.stringify(entry.value);
+      delete entry.serialized; // don't need this, so don't keep it around
+    }
+    catch (err) {
+      const dataNode = entry.nodeId && this.dp.collections.dataNodes.getById(entry.nodeId);
+      const { traceId } = dataNode;
+      // const trace = dataNode && this.dp.collections.traces.getById(dataNode.traceId);
+      const traceInfo = this.dp.util.makeTraceInfo(traceId);
+      throw new NestedError(`Failed to deserialize value for trace ${traceInfo} - ${JSON.stringify(entry, null, 2)}`, err);
+    }
   }
 
   /**
@@ -632,7 +639,7 @@ export default class RuntimeDataProvider extends DataProviderBase {
       executionContexts: new ExecutionContextCollection(this),
       traces: new TraceCollection(this),
       dataNodes: new DataNodeCollection(this),
-      values: new ValueCollection(this)
+      values: new ValueRefCollection(this)
     };
 
     // const collectionClasses = [

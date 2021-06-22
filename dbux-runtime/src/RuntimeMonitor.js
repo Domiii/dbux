@@ -15,9 +15,9 @@ import valueCollection from './data/valueCollection';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('RM');
 
-// const Verbose = 0;
+const Verbose = 0;
 // const Verbose = 1;
-const Verbose = 2;
+// const Verbose = 2;
 
 // TODO: we can properly use Proxy to wrap callbacks
 // function _inheritsLoose(subClass, superClass) {

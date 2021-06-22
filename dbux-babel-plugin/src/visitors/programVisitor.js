@@ -88,7 +88,7 @@ function exit(path, state) {
   clearNames();
 
   // done!
-  playbackLogRecords();
+  // playbackLogRecords();
 }
 
 // ########################################
