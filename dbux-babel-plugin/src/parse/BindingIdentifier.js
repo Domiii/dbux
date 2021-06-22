@@ -10,7 +10,8 @@ export default class BindingIdentifier extends BaseId {
 
   getTidIdentifier() {
     if (!this.bindingTrace) {
-      throw new Error(`Tried to "getTidIdentifier" too early in "${this.getParent()}" - BindingIdentifier.bindingTrace was not recorded yet.`);
+      // eslint-disable-next-line max-len
+      throw new Error(`Tried to "getTidIdentifier" too early for "${this}" in "${this.getParent()}" - BindingIdentifier.bindingTrace was not recorded yet. getDeclarationNode() = "${this.getDeclarationNode()}"`);
     }
     return this.bindingTrace.tidIdentifier;
   }

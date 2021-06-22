@@ -17,7 +17,9 @@ set -e # cancel on error
 # fname="class1"
 # fname="new1"
 # fname="throw2"
-fname="this1"
+# fname="this1"
+# fname="return2"
+fname="slicing/var3"
 # fname="for-in1`"
 nodeArgs="--enable-source-maps "
 

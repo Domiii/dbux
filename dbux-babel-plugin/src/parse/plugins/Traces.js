@@ -4,6 +4,7 @@
 // import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import TraceType, { isDeclarationTrace } from '@dbux/common/src/core/constants/TraceType';
 import NestedError from '@dbux/common/src/NestedError';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import TraceCfg from '../../definitions/TraceCfg';
 import { pathToString } from '../../helpers/pathHelpers';
@@ -196,7 +197,7 @@ export default class Traces extends BasePlugin {
       }
     };
 
-    return this.addTraceWithInputs(traceData, argPath && [argPath]);
+    return this.addTraceWithInputs(traceData, hasArgument && [argPath] || EmptyArray);
   }
 
   // ###########################################################################

@@ -46,27 +46,31 @@ let TraceType = {
 
   Declaration: 30,
   /**
-   * NOTE: Can be `AssignmentExpression`, or `VariableDeclarator`'s `init` (which is not an expression).
-   * @example `var x = 3`, `x = 5`
+   * NOTE: Mostly `AssignmentExpression`
+   * @example `x = 3`, `x = 5`
    */
   WriteVar: 31,
+  /**
+   * `VariableDeclarator`'s `init`
+   */
+  DeclareAndWriteVar: 32,
   /**
    * WriteMemberExpression
    * NOTE: Can only be `AssignmentExpression`
    * @example `o.x = 3`
    */
-  WriteME: 32,
-  UpdateExpression: 33,
-  Identifier: 34,
-  Literal: 35,
+  WriteME: 33,
+  UpdateExpression: 34,
+  Identifier: 35,
+  Literal: 36,
   /**
    * MemberExpression
    * @example `o.x`, `f(x)[g(y)]`
    */
-  ME: 36,
+  ME: 37,
 
-  Param: 37,
-  CatchParam: 38,
+  Param: 38,
+  CatchParam: 39
 };
 
 /**
@@ -176,6 +180,7 @@ export function isPopTrace(traceType) {
 
 const declarationTypes = new Array(TraceType.getValueMaxIndex()).map(() => false);
 declarationTypes[TraceType.Declaration] = true;
+declarationTypes[TraceType.DeclareAndWriteVar] = true;
 declarationTypes[TraceType.Param] = true;
 declarationTypes[TraceType.CatchParam] = true;
 

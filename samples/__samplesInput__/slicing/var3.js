@@ -1,6 +1,12 @@
-const x = 1;
-const y = x + 3;
+defineGetter(req, 'subdomains', function subdomains() {
+  var hostname = this.hostname;
 
-function f(x) {
-  console.log(x + 5);
-}
+  if (!hostname) return [];
+
+  var offset = this.app.get('subdomain offset');
+  var subdomains = !isIP(hostname)
+    ? hostname.split('.').reverse()
+    : [hostname];
+
+  return subdomains.slice(offset);
+})
