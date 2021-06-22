@@ -11,7 +11,7 @@ export default class ForInStatement extends BaseNode {
     'Loop'
   ];
 
-  // exit() {
-    
-  // }
+  exit() {
+    // TODO: insert trace in `body` to track write to `left` variable(s); similar to `Params`
+  }
 }

@@ -1,7 +1,4 @@
-import * as t from '@babel/types';
-import TraceType from '@dbux/common/src/core/constants/TraceType';
 import { LValHolderNode } from '../_types';
-import { buildTraceExpressionVar, buildTraceWriteVar } from '../../instrumentation/builders/misc';
 import BasePlugin from './BasePlugin';
 
 export default class ForInLValVar extends BasePlugin {
@@ -25,7 +22,8 @@ export default class ForInLValVar extends BasePlugin {
   }
 
   exit() {
-    // NOTE: there is no tracing of the lval itself. Instead, we handle the iterator variable similar to parameters.
+    // NOTE: there is no tracing of the lval itself.
+    //    Instead, we handle the iterator variable similar to parameters.
 
     // const {
     //   node,
