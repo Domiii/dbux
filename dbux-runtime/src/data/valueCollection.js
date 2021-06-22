@@ -103,6 +103,7 @@ class ValueCollection extends Collection {
    */
   _addValueRef(category = null, nodeId = null, value = null) {
     // create new ref + track object value
+    // Verbose && debug(`addValueRef (nodeId=${nodeId}):`, value);
     const valueRef = pools.values.allocate();
     valueRef.refId = this._all.length;
     this.push(valueRef);
