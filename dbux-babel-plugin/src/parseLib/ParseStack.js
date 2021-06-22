@@ -3,12 +3,11 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { getNodeOfPath, setNodeOfPath } from './parseUtil';
 import { pathToString } from '../helpers/pathHelpers';
 import ParsePhase from './ParsePhase';
-import ParsePlugin from './ParsePlugin';
 
 /** @typedef { import("./ParseNode").default } ParseNode */
 
-const Verbose = 2;
-// const Verbose = 0;
+// const Verbose = 2;
+const Verbose = 0;
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Stack');

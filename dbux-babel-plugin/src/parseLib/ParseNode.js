@@ -290,7 +290,7 @@ export default class ParseNode {
         const f = plugin[phase];
         // this.debug(` [P] ${name}`, !!f);
         if (f) {
-          this.debug(`[P] ${plugin.name}`);
+          this.Verbose && this.debug(`[P] ${plugin.name}`);
           f.call(plugin);
         }
       }

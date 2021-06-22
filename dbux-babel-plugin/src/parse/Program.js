@@ -32,7 +32,8 @@ function buildProgramInit(path, { ids, contexts: { genContextId } }) {
   }
 
   return buildSource([
-    `var ${dbux.name} = ${dbuxInit.name}(typeof __dbux__ !== 'undefined' || require('@dbux/runtime'));`,
+    // call `dbuxInit`
+    `var ${dbux.name} = ${dbuxInit.name}(typeof __dbux__ !== 'undefined' && __dbux__ || require('@dbux/runtime'));`,
     `var ${contextId.name} = ${dbux.name}.getProgramContextId();`,
     `var ${aliasesEntries
       .map(([dbuxProp, varName]) => `${varName.name} = ${dbux.name}.${dbuxProp}`)

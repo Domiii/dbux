@@ -60,6 +60,7 @@ export function buildDbuxInit(state) {
   // Verbose && console.debug(`[Dbux] babel write size:`, (staticDataString.length / 1000).toFixed(2), 'k');
 
   // Verbose && console.time(`[Dbux] babel write (AST)`);
+  // console.trace('dbuxRuntime', dbuxRuntime);
   const result = buildSource(`
 function ${dbuxInit.name}(dbuxRuntime) {
   return dbuxRuntime.initProgram(${staticDataString}, ${runtimeCfgString});
