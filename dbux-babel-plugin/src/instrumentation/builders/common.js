@@ -111,10 +111,10 @@ export function buildSource(source) {
 export function getReplacePath(traceCfg) {
   const {
     meta: {
-      replacePath
+      targetPath
     } = EmptyObject
   } = traceCfg;
-  return replacePath;
+  return targetPath;
 }
 
 
@@ -123,7 +123,9 @@ export function getInstrumentPath(traceCfg) {
 }
 
 /**
- * NOTE: actual `targetNode` node might have been moved
+ * NOTE: sometimes we want to trace something that is not the original AST node.
+ *    -> e.g. `ClassDeclaration`
+ * NOTE2: actual `targetNode` node might have been moved
  *    -> E.g. by `CallExpression`, `CalleeMemberExpression`, `ObjectMethod`.
  */
 export function getInstrumentTargetAstNode(traceCfg) {

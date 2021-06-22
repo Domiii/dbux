@@ -13,7 +13,9 @@ set -e # cancel on error
 # fname="updateExpressions1"
 # fname="throw2"
 # fname="while1"
-fname="for1"
+# fname="for1"
+# fname="class1"
+fname="new1"
 # fname="for-in1`"
 nodeArgs="--enable-source-maps "
 

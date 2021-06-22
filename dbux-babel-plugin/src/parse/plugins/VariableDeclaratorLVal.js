@@ -54,7 +54,7 @@ export default class VariableDeclaratorLVal extends BasePlugin {
       meta: {
         // instrument: Traces.instrumentTraceWrite
         build: buildTraceWriteVar,
-        replacePath: initPath
+        targetPath: initPath
       }
     };
 

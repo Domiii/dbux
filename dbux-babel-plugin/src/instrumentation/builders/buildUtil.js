@@ -1,9 +1,15 @@
-import * as t from "@babel/types";
 import isFunction from 'lodash/isFunction';
+import * as t from "@babel/types";
+import { newLogger } from '@dbux/common/src/log/logger';
+import { pathToString } from '../../helpers/pathHelpers';
 
 export const ZeroNode = t.numericLiteral(0);
 export const NullNode = t.nullLiteral();
 export const UndefinedNode = t.identifier('undefined');
+
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('buildUtil');
 
 export function makeInputs(traceCfg) {
   const {
@@ -25,9 +31,20 @@ export function getTraceCall(state, traceCfg, defaultCall = 'traceExpression') {
 
 export function getDeclarationTid(traceCfg) {
   const {
-    declarationTidIdentifier
+    isDeclaration
   } = traceCfg;
-  return declarationTidIdentifier || ZeroNode;
+
+  let declarationTid;
+  if (isDeclaration) {
+    declarationTid = traceCfg.tidIdentifier;
+  }
+  else {
+    declarationTid = traceCfg.node?.getDeclarationTidIdentifier();
+  }
+  if (!declarationTid) {
+    logError(`getDeclarationTid returned nothing for traceCfg at "${traceCfg.node || pathToString(traceCfg.path)}"${isDeclaration ? ' (Declaration)' : ''}`);
+  }
+  return declarationTid || ZeroNode;
 }
 
 export function addMoreTraceCallArgs(args, traceCfg) {

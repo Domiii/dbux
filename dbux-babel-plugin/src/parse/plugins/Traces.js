@@ -97,33 +97,19 @@ export default class Traces extends BasePlugin {
     // NOTE: `scope.push` happens during `instrument`
     const tidIdentifier = (scope || path.scope).generateUidIdentifier(`t${inProgramStaticTraceId}_`);
 
-    // future-work: `declarationTidIdentifier` is very specific to *Var traces, and thus does not belong into generic `TraceCfg`
-    let declarationTidIdentifier;
-    if (isDeclaration) {
-      declarationTidIdentifier = tidIdentifier;
-    }
-    else {
-      // NOTE: this (roughly) translates to `node.getDeclarationNode().bindingTrace.tidIdentifier`
-      declarationTidIdentifier = node?.getDeclarationTidIdentifier();
-    }
-
     const traceCfg = {
       path,
       node,
       scope,
       inProgramStaticTraceId,
       tidIdentifier,
-      declarationTidIdentifier,
+      isDeclaration,
       inputTraces,
       meta,
       data
     };
 
-    if (!isDeclaration) {
-      node?._setTraceData(traceCfg);
-      this.traces.push(traceCfg);
-    }
-    else {
+    if (isDeclaration) {
       node.getDeclarationNode().bindingTrace = traceCfg;
 
       if (meta?.hoisted) {
@@ -134,6 +120,10 @@ export default class Traces extends BasePlugin {
       }
 
       this.Verbose && this.debug(`DECL ${traceCfg.tidIdentifier.name} for ${this.node}`);
+    }
+    else {
+      node?._setTraceData(traceCfg);
+      this.traces.push(traceCfg);
     }
 
     this.Verbose >= 2 && this.debug('[addTrace]', tidIdentifier.name, `([${inputTraces?.map(tid => tid.name).join(',') || ''}])`, `@"${this.node}"`);
@@ -202,7 +192,7 @@ export default class Traces extends BasePlugin {
       },
       meta: {
         traceCall: 'traceReturn',
-        replacePath: argPath
+        targetPath: argPath
       }
     };
 

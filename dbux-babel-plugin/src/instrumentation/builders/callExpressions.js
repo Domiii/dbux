@@ -147,11 +147,18 @@ const callTemplatesME = {
 function buildCallNodeME(path, objectVar, calleeVar, argsVar, argNodes) {
   const { type } = path.node;
   const callTempl = callTemplatesME[type]();
-  return callTempl({
+
+  const templateArgs = {
     callee: calleeVar,
-    o: objectVar,
     args: buildCallArgs(argsVar, argNodes)
-  }).expression;
+  };
+
+  // future-work: no need to trace `o` separately for `NewExpression`
+  if (type !== 'NewExpression') {
+    templateArgs.o = objectVar;
+  }
+
+  return callTempl(templateArgs).expression;
 }
 
 
@@ -264,32 +271,3 @@ export function buildTraceCallME(state, traceCfg) {
     )
   ]);
 }
-
-// export const buildTraceCallArgument = buildTraceCall(
-//   '%%traceCallArgument%%(%%expr%%, %%tid%%, %%declarationTid%%, %%calleeTid%%, %%inputs%%)',
-//   function buildTraceCallArgument(state, traceCfg) {
-//     const { ids: { aliases: {
-//       traceCallArgument
-//     } } } = state;
-
-//     const {
-//       declarationTidIdentifier,
-//       inputTraces,
-//       calleeTid
-//     } = traceCfg;
-
-//     const tid = buildTraceId(state, traceCfg);
-
-//     const declarationTid = declarationTidIdentifier || ZeroNode;
-
-//     return {
-//       expr,
-//       traceCallArgument,
-//       tid,
-//       declarationTid,
-//       inputs: makeInputs(inputTraces),
-//       calleeTid
-//     };
-//   }
-// );
-

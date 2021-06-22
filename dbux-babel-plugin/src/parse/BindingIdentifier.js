@@ -10,7 +10,7 @@ export default class BindingIdentifier extends BaseId {
 
   getTidIdentifier() {
     if (!this.bindingTrace) {
-      throw new Error(`Tried to "getTidIdentifier" too early in "${this.getParent()}" - bindingTrace was not recorded yet.`);
+      throw new Error(`Tried to "getTidIdentifier" too early in "${this.getParent()}" - BindingIdentifier.bindingTrace was not recorded yet.`);
     }
     return this.bindingTrace.tidIdentifier;
   }
@@ -76,7 +76,7 @@ export default class BindingIdentifier extends BaseId {
    */
   addOwnDeclarationTrace(definitionPath = null, moreTraceData = null) {
     if (!this.getDeclarationNode()) {
-      throw new Error(`Assertion failed - BindingIdentifier.getDeclarationTidIdentifier() returned nothing ` +
+      throw new Error(`Assertion failed - BindingIdentifier.getDeclarationNode() returned nothing ` +
         `for binding "${pathToString(this.binding?.path)}" in "${this.getParent()}`);
     }
 

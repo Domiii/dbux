@@ -34,6 +34,6 @@ export default class AssignmentExpression extends BaseNode {
     // traceData.path = lvalNode.path;
     traceData.path = path;
     traceData.node = this;
-    traceData.meta.replacePath = path;
+    traceData.meta.targetPath = path;
   }
 }

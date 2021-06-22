@@ -17,7 +17,7 @@ export default class SpreadElement extends BaseNode {
       // NOTE: we actually tace `argument`, but we want the "selectable trace" to be the entire `SpreadElement`
       traceData.path = this.path;
       traceData.meta = traceData.meta || {};
-      traceData.meta.replacePath = argNode.path;
+      traceData.meta.targetPath = argNode.path;
     }
 
     return traceData;

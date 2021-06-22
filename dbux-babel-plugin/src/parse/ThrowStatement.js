@@ -17,7 +17,7 @@ export default class ThrowStatement extends BaseNode {
       },
       meta: {
         traceCall: 'traceThrow',
-        replacePath: argPath
+        targetPath: argPath
       }
     };
 

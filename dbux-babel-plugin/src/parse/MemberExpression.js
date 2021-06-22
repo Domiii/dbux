@@ -89,7 +89,7 @@ export default class MemberExpression extends BaseNode {
    * `g().[f(x)]` ->
    * `tme(te(g(), tid1), te(f(...(x)), tid2), tid0, [tid1, tid2])`
    */
-  addRValTrace(replacePath, objectAstNode) {
+  addRValTrace(targetPath, objectAstNode) {
     /**
      * TODO: `super` (e.g. `super.f()`, `super.x = 3` etc.)
      * @example
@@ -107,8 +107,8 @@ export default class MemberExpression extends BaseNode {
     const { path } = this;
     const [objectPath] = this.getChildPaths();
 
-    if (replacePath === undefined) {
-      replacePath = path;
+    if (targetPath === undefined) {
+      targetPath = path;
     }
 
     const [objectNode, propertyNode] = this.getChildNodes();
@@ -133,7 +133,7 @@ export default class MemberExpression extends BaseNode {
       meta: {
         traceCall: optional ? 'traceExpressionMEOptional' : 'traceExpressionME',
         build: buildtraceExpressionME,
-        replacePath
+        targetPath
       },
       data: {
         objectTid,

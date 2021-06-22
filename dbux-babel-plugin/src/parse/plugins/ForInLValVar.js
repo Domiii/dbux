@@ -49,7 +49,7 @@ export default class ForInLValVar extends BasePlugin {
     //   meta: {
     //     traceCall: 'traceForIn',
     //     build: buildTraceExpressionVar,
-    //     replacePath: rvalNode.path
+    //     targetPath: rvalNode.path
     //   }
     // };
 

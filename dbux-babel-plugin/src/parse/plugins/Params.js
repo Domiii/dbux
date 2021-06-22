@@ -56,7 +56,7 @@ export default class Params extends BasePlugin {
         },
         meta: {
           build: buildTraceWriteVar,
-          replacePath: initialValuePath
+          targetPath: initialValuePath
         }
       };
 

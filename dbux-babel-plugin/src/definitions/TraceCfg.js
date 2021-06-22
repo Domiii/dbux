@@ -26,7 +26,7 @@ export class TraceCfgMeta {
    * In that case, it can be accessed via `traceCfg.data.resultNode`
    * @type {(NodePath | false)?}
    */
-  replacePath;
+  targetPath;
 }
 
 export class TraceCfgData {
@@ -55,11 +55,6 @@ export default class TraceCfg {
    * @type {number}
    */
   tidIdentifier;
-  /**
-   * future-work: `declarationTidIdentifier` is very specific to *Var traces, and thus does not belong into generic `TraceCfg`
-   * @type {number}
-   */
-  declarationTidIdentifier;
 
   /**
    * @type {Array.<TraceCfg>}
