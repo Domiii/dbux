@@ -1,17 +1,17 @@
 import { pathToString } from '../../helpers/pathHelpers';
 
 
-const LValPluginsByType = {
+const AssignmentLValPluginsByType = {
   Identifier: 'AssignmentLValVar',
   ObjectPattern: 'AssignmentLValPattern',
   ArrayPattern: 'AssignmentLValPattern',
   MemberExpression: 'AssignmentLValME'
 };
 
-export function getAssignmentLValPlugin(node) {
+function getLValPlugin(node, types) {
   const [lvalPath] = node.getChildPaths();
   const lvalType = lvalPath.node.type;
-  const pluginName = LValPluginsByType[lvalType];
+  const pluginName = types[lvalType];
   if (!pluginName) {
     node.logger.error(`unknown lval type: "${lvalType}" at "${pathToString(lvalPath)}"`);
   }
@@ -19,9 +19,23 @@ export function getAssignmentLValPlugin(node) {
   return pluginName;
 }
 
+export function getAssignmentLValPlugin(node) {
+  return getLValPlugin(node, AssignmentLValPluginsByType);
+}
+
+
+const DeclaratorLValPluginsByType = {
+  Identifier: 'VariableDeclaratorLVal',
+  // ObjectPattern: 'AssignmentLValPattern',
+  // ArrayPattern: 'AssignmentLValPattern',
+  // MemberExpression: 'AssignmentLValME'
+};
+
 export function getVariableDeclaratorLValPlugin(node) {
-  if (node.getParent().path.isForInStatement()) {
+  if (node.path.parentPath.parentPath.isForInStatement()) {
+    // NOTE: `ForInStatement` is grand-parent (not parent) of `VariableDeclarator`
     return 'ForInLValVar';
   }
-  return 'AssignmentLValVar';
+
+  return getLValPlugin(node, DeclaratorLValPluginsByType);
 }

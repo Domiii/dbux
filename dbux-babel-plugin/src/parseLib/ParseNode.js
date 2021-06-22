@@ -2,11 +2,11 @@ import isString from 'lodash/isString';
 // import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import NestedError from '@dbux/common/src/NestedError';
 import { Logger } from '@dbux/common/src/log/logger';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { pathToString } from '../helpers/pathHelpers';
 import ParseRegistry from './ParseRegistry';
 import { getChildPaths, getNodeOfPath } from './parseUtil';
 import ParsePhase from './ParsePhase';
-import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 /** @typedef { import("@babel/traverse").NodePath } NodePath */
 /** @typedef { import("./ParseStack").default } ParseStack */
@@ -39,7 +39,7 @@ export default class ParseNode {
   // /**
   //  * Array of plugins, in order of initialization.
   //  */
-  // pluginList = [];
+  pluginList = [];
   pluginPhases = {};
 
   /**
@@ -149,6 +149,73 @@ export default class ParseNode {
   }
 
   // ###########################################################################
+  // peek logic (NOTE: cannot do on stack, since stack structure disappears after `exit1`)
+  // ###########################################################################
+
+  getParseNodeStack() {
+    const arr = [];
+    let { path } = this;
+    do {
+      path = path.parentPath;
+      arr.push([path, this.getNodeOfPath(path)]);
+    } while (path);
+    return arr;
+  }
+
+  peekNode(nameOrParseNodeClazz) {
+    const Clazz = isString(nameOrParseNodeClazz) ?
+      ParseRegistry.getNodeClassByName(nameOrParseNodeClazz) :
+      nameOrParseNodeClazz;
+
+    let current = this;
+    let { path } = this;
+    while (path && !(current instanceof Clazz)) {
+      path = path.parentPath;
+      path && (current = this.getNodeOfPath(path));
+    }
+    return current;
+  }
+
+  peekNodeForce(nameOrParseNodeClazz) {
+    const node = this.peekNode(nameOrParseNodeClazz);
+    if (!node) {
+      this._peekFail(nameOrParseNodeClazz);
+    }
+    return node;
+  }
+
+  /**
+   * Looks through the stack to find the top-most node that has the given `pluginNameOrClazz`.
+   * @return {ParsePlugin}
+   */
+  peekPlugin(pluginNameOrClazz) {
+    let current = this;
+    let { path } = this;
+    let plugin;
+    while (path && !(plugin = current?.getPlugin(pluginNameOrClazz))) {
+      path = path.parentPath;
+      path && (current = this.getNodeOfPath(path));
+    }
+    return plugin;
+  }
+
+  peekPluginForce(pluginNameOrClazz) {
+    const node = this.peekPlugin(pluginNameOrClazz);
+    if (!node) {
+      this._peekFail(pluginNameOrClazz);
+    }
+    return node;
+  }
+
+  _peekFail(nameOrParseNodeClazz) {
+    const stack = this.getParseNodeStack();
+    const s = stack.map(([path, node]) => `${node}${!node ? ` ${pathToString(path)}` : ''}`).join('\n  ');
+    throw new Error(
+      `Node "${nameOrParseNodeClazz?.name || nameOrParseNodeClazz}" not found on stack - current stack (${stack.length}):\n  ${s}\n`
+    );
+  }
+
+  // ###########################################################################
   // debugging
   // ###########################################################################
 
@@ -219,12 +286,11 @@ export default class ParseNode {
 
   makePluginPhase(phase) {
     this.pluginPhases[phase] = () => {
-      for (const name in this.plugins) {
-        const plugin = this.plugins[name];
+      for (const plugin of this.pluginList) {
         const f = plugin[phase];
         // this.debug(` [P] ${name}`, !!f);
         if (f) {
-          this.debug(`[P] ${name}`);
+          this.debug(`[P] ${plugin.name}`);
           f.call(plugin);
         }
       }
@@ -236,11 +302,12 @@ export default class ParseNode {
     plugin.node = this;
     plugin.init?.(cfg);
     this.plugins[Clazz.name] = plugin;
+    this.pluginList.push(plugin);
     if (cfg.alias) {
-      if (this.plugins[cfg.as]) {
-        throw new Error(`Plugin config's "as" conflict: already used - ${cfg.as} in "${this}"`);
+      if (this.plugins[cfg.alias]) {
+        throw new Error(`Plugin config's "alias" conflict: already used - ${cfg.alias} in "${this}"`);
       }
-      this.plugins[cfg.as] = plugin;
+      this.plugins[cfg.alias] = plugin;
     }
     return plugin;
   }
@@ -260,9 +327,8 @@ export default class ParseNode {
     }
 
     // add plugin phases conditionally
-    const pluginArray = Object.values(this.plugins);
     for (const phase of PhaseMethodNames) {
-      if (pluginArray.some(p => p[phase])) {
+      if (this.pluginList.some(p => p[phase])) {
         this.makePluginPhase(phase);
       }
     }

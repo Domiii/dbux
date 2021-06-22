@@ -45,15 +45,4 @@ export default class BaseId extends BaseNode {
     const declarationNode = bindingNode !== this && bindingNode.getDeclarationNode?.();
     return declarationNode;
   }
-
-  // ###########################################################################
-  // tree accessors
-  // ###########################################################################
-
-  /**
-   * @type {BindingNode}
-   */
-  peekBindingNode() {
-    return this.stack.peekPlugin('BindingNode');
-  }
 }

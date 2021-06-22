@@ -3,7 +3,7 @@ import isString from 'lodash/isString';
 // import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { getAllStaticPropsInInheritanceChain } from '@dbux/common/src/util/oopUtil';
 import NestedError from '@dbux/common/src/NestedError';
-import isObject from 'lodash/isObject';
+import isPlainObject from 'lodash/isPlainObject';
 
 
 class Registry {
@@ -32,6 +32,12 @@ class Registry {
   // getParseNodeNamesOfPluginName(pluginName) {
   //   return this.ParseNodeNamesByPluginName[pluginName];
   // }
+
+  getNodeClassByName(name) {
+    const { ParseNodeClassesByName } = this;
+    const Clazz = ParseNodeClassesByName[name];
+    return Clazz;
+  }
 
   getPluginClassByName(plugin) {
     const { PluginClassesByName } = this;
@@ -71,7 +77,7 @@ class Registry {
       let name;
       let pluginCfg = _pluginCfg;
       let moreCfg;
-      if (isObject(pluginCfg)) {
+      if (isPlainObject(pluginCfg)) {
         ({ plugin: pluginCfg, ...moreCfg } = pluginCfg);
       }
       if (isFunction(pluginCfg)) {

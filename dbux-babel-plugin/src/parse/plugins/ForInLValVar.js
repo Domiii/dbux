@@ -11,13 +11,13 @@ export default class ForInLValVar extends BasePlugin {
   node;
 
   get rvalNode() {
-    const forInNode = this.node.stack.peekNode('ForInStatement');
+    const forInNode = this.node.peekNodeForce('ForInStatement');
     const [, rightNode] = forInNode.getChildNodes();
     return rightNode;
   }
 
   get hasSeparateDeclarationTrace() {
-    const { path } = this;
+    const { path } = this.node;
     // const [, initNode] = this.getChildNodes();
 
     // if `var`, hoist to function scope
@@ -25,33 +25,40 @@ export default class ForInLValVar extends BasePlugin {
   }
 
   exit() {
-    const {
-      node,
-      rvalNode
-    } = this;
-    const { Traces, writeTraceType } = node;
+    // NOTE: there is no tracing of the lval itself. Instead, we handle the iterator variable similar to parameters.
 
-    if (!writeTraceType) {
-      this.error(`missing writeTraceType in "${this.node}"`);
-      return;
-    }
+    // const {
+    //   node,
+    //   rvalNode
+    // } = this;
+    // const { Traces, writeTraceType } = node;
 
-    const traceData = {
-      staticTraceData: {
-        type: TraceType.ExpressionResult
-      },
-      meta: {
-        traceCall: 'traceForIn',
-        build: buildTraceExpressionVar
-      }
-    };
+    // if (!writeTraceType) {
+    //   this.error(`missing writeTraceType in "${this.node}"`);
+    //   return;
+    // }
 
-    this.node.decorateWriteTraceData(traceData);
+    // const [lvalPath] = this.node.getChildPaths();
 
-    // NOTE: `declarationTid` comes from `this.node.getDeclarationNode`
-    const traceCfg = Traces.addTraceWithInputs(traceData, [rvalNode.path]);
+    // rvalNode.addDefaultTrace();
 
-    // we need the inProgramStaticTraceId to generate one trace per iteration
-    traceCfg.meta.moreTraceCallArgs = [t.numericLiteral(traceCfg.inProgramStaticTraceId)];
+    // const traceData = {
+    //   path: lvalPath,
+    //   node,
+    //   staticTraceData: {
+    //     type: TraceType.ExpressionResult
+    //   },
+    //   meta: {
+    //     traceCall: 'traceForIn',
+    //     build: buildTraceExpressionVar,
+    //     replacePath: rvalNode.path
+    //   }
+    // };
+
+    // // NOTE: `declarationTid` comes from `this.node.getDeclarationNode`
+    // const traceCfg = Traces.addTrace(traceData);
+
+    // // we need the inProgramStaticTraceId to generate one trace per iteration
+    // traceCfg.meta.moreTraceCallArgs = [t.numericLiteral(traceCfg.inProgramStaticTraceId)];
   }
 }

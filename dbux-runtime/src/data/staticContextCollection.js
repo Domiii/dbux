@@ -1,4 +1,4 @@
-import { logInternalError } from '@dbux/common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 import Collection from './Collection';
 
 export class StaticContextCollection extends Collection {
@@ -50,7 +50,7 @@ export class StaticContextCollection extends Collection {
   getContext(programId, inProgramStaticContextId) {
     const contexts = this.getContexts(programId);
     if (!contexts) {
-      logInternalError("Invalid programId has no registered static contexts:", programId);
+      this.logger.error("Invalid programId has no registered static contexts:", programId);
       return null;
     }
     return contexts[inProgramStaticContextId - 1];  // ids start at 1, array starts at 0

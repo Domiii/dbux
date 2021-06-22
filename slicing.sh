@@ -6,14 +6,15 @@ set -e # cancel on error
 # set -x # verbose echo mode
 
 # fname="slicing/var1"
+# fname="calls0"
 # fname="memberExpressions0"
 # fname="functions3"
 # fname="objectExpressions1"
 # fname="updateExpressions1"
 # fname="throw2"
 # fname="while1"
-# fname="for1"
-fname="for-in1"
+fname="for1"
+# fname="for-in1`"
 nodeArgs="--enable-source-maps "
 
 dbuxCmd="$1"

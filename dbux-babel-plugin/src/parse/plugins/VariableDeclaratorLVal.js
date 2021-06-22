@@ -9,12 +9,12 @@ export default class VariableDeclaratorLVal extends BasePlugin {
   node;
 
   get rvalNode() {
-    const [, initNode] = this.getChildNodes();
+    const [, initNode] = this.node.getChildNodes();
     return initNode;
   }
 
   get hasSeparateDeclarationTrace() {
-    const { path } = this;
+    const { path } = this.node;
 
     // if `var`, hoist to function scope
     // if no `initNode`, there is no write trace, so we need an independent `Declaration` trace anyway
@@ -26,7 +26,7 @@ export default class VariableDeclaratorLVal extends BasePlugin {
       node,
       rvalNode
     } = this;
-    const { Traces, writeTraceType } = node;
+    const { path, Traces, writeTraceType } = node;
 
     if (!rvalNode) {
       this.error(`missing RVal node in "${this.node}"`);
@@ -43,17 +43,20 @@ export default class VariableDeclaratorLVal extends BasePlugin {
       return;
     }
 
+    const [, initPath] = this.node.getChildPaths();
+
     const traceData = {
+      path,
+      node,
       staticTraceData: {
         type: writeTraceType
       },
       meta: {
         // instrument: Traces.instrumentTraceWrite
-        build: buildTraceWriteVar
+        build: buildTraceWriteVar,
+        replacePath: initPath
       }
     };
-
-    this.node.decorateWriteTraceData(traceData);
 
     // NOTE: `declarationTid` comes from `this.node.getDeclarationNode`
     Traces.addTraceWithInputs(traceData, [rvalNode.path]);

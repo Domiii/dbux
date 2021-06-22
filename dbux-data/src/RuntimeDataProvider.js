@@ -181,9 +181,13 @@ class ExecutionContextCollection extends Collection {
       for (let i = 0; i < paramTraces.length; i++) {
         const paramTrace = paramTraces[i];
         const argDataNode = argDataNodes[i];
-        const paramDataNodes = util.getDataNodesOfTrace(paramTrace.traceId);
-
-        paramDataNodes[0].inputs = [argDataNode.nodeId];
+        if (argDataNode) {
+          const paramDataNodes = util.getDataNodesOfTrace(paramTrace.traceId);
+          paramDataNodes[0].inputs = [argDataNode.nodeId];
+        }
+        else {
+          // NOTE: this parameter did not have a corresponding argument
+        }
       }
 
       // TODO: `RestElement`

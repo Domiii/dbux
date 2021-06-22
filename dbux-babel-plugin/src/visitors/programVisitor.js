@@ -1,4 +1,4 @@
-import { newLogger } from '@dbux/common/src/log/logger';
+import { newLogger, playbackLogRecords } from '@dbux/common/src/log/logger';
 import errorWrapVisitor from '../helpers/errorWrapVisitor';
 import injectDbuxState from '../dbuxState';
 import { buildVisitors as traceVisitors } from '../parseLib/visitors';
@@ -77,7 +77,7 @@ function exit(path, state) {
   // }
 
   // hackfix: manually exit `Program`
-  state.stack.exit(path, Program);
+  state.stack.exit1(path, Program);
 
   path.stop();
 
@@ -86,6 +86,9 @@ function exit(path, state) {
 
   // clean up on aisle 4 (prevent memory leaks)
   clearNames();
+
+  // done!
+  playbackLogRecords();
 }
 
 // ########################################

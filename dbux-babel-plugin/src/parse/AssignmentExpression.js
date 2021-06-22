@@ -15,7 +15,7 @@ export default class AssignmentExpression extends BaseNode {
   static plugins = [
     {
       plugin: getAssignmentLValPlugin,
-      as: 'lval'
+      alias: 'lval'
     }
   ];
 

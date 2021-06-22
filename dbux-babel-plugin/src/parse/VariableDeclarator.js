@@ -13,7 +13,7 @@ export default class VariableDeclarator extends BaseNode {
     'BindingNode',
     {
       plugin: getVariableDeclaratorLValPlugin,
-      as: 'lval'
+      alias: 'lval'
     }
   ];
 
@@ -22,7 +22,7 @@ export default class VariableDeclarator extends BaseNode {
   }
 
   /**
-   * Used by `AssignmentLValVar`
+   * Used by `VariableDeclaratorLVal`
    */
   get writeTraceType() {
     // NOTE: `write` trace doubles as declaration trace, if not hoisted
@@ -35,17 +35,6 @@ export default class VariableDeclarator extends BaseNode {
   getDeclarationNode() {
     const [idNode] = this.getChildNodes();
     return idNode;
-  }
-
-  decorateWriteTraceData(traceData) {
-    const { path } = this;
-    const [, initPath] = this.getChildPaths();
-    // const [lvalNode] = this.getChildNodes();
-
-    // traceData.path = lvalNode.path;
-    traceData.path = path;
-    traceData.node = this;
-    traceData.meta.replacePath = initPath;
   }
 
   exit1() {

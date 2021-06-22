@@ -54,7 +54,7 @@ export default class CallExpression extends BaseNode {
   static plugins = [
     { 
       plugin: getCalleePlugin,
-      as: 'callee'
+      alias: 'callee'
     }
   ];
   static children = ['callee', 'arguments'];

@@ -1,5 +1,7 @@
 /** @typedef { import("./ParseNode").default } ParseNode */
 
+import { pathToString } from '../helpers/pathHelpers';
+
 
 // /**
 //  * @template N
@@ -13,6 +15,10 @@ export default class ParsePlugin {
    * @type {ParseNode}
    */
   node;
+
+  get name() {
+    return this.constructor.name;
+  }
 
   // ###########################################################################
   // debugging
@@ -39,6 +45,6 @@ export default class ParsePlugin {
   }
 
   toString() {
-    return `[${this.constructor.name}] ${this.node}`;
+    return `[${this.node.nodeTypeName} > ${this.name}] ${pathToString(this.node.enterPath)}`;
   }
 }

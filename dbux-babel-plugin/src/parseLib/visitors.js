@@ -72,7 +72,7 @@ function visit(direction, ParserNodeClazz, path, state) {
   }
   else {
     // <- Exit
-    state.stack.exit(path, ParserNodeClazz);
+    state.stack.exit1(path, ParserNodeClazz);
   }
 }
 

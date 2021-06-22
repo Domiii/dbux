@@ -1,5 +1,5 @@
 import get from 'lodash/get';
-import { newPerfLogger, logDebug } from '@dbux/common/src/log/logger';
+import { newPerfLogger } from '@dbux/common/src/log/PerfLogger';
 // import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import MessageType from './MessageType';
 import ComponentEndpoint from './ComponentEndpoint';

@@ -1,6 +1,8 @@
-import { logInternalError } from '@dbux/common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 import Client from './Client';
 
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('Client');
 
 /**
  * @type {Client}
@@ -13,7 +15,7 @@ export function getDefaultClient() {
 
 export function initClient() {
   if (client) {
-    logInternalError('initClient called more than once');
+    logError('initClient called more than once');
   }
   client = new Client();
   return client;

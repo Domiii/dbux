@@ -1,4 +1,3 @@
-import { logInternalError } from '@dbux/common/src/log/logger';
 import Collection from './Collection';
 
 /**
@@ -59,7 +58,7 @@ class StaticTraceCollection extends Collection {
   getStaticTrace(programId, inProgramStaticTraceId) {
     const staticTraces = this.getStaticTraces(programId);
     if (!staticTraces) {
-      logInternalError("Invalid programId has no registered static traces:", programId);
+      this.logger.error("Invalid programId has no registered static traces:", programId);
       return null;
     }
     return staticTraces[inProgramStaticTraceId - 1];  // ids start at 1, array starts at 0

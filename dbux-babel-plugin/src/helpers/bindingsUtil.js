@@ -14,7 +14,6 @@
  * @see https://github.com/babel/babel/blob/672a58660f0b15691c44582f1f3fdcdac0fa0d2f/packages/babel-traverse/src/scope/index.ts#L515
  */
 
-// import { logInternalError } from '../log/logger';
 // import EmptyObject from '@dbux/common/src/util/EmptyObject';
 // import { isInLoc1D } from './locHelpers';
 // import { isNodeInstrumented } from './astUtil';

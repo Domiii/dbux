@@ -2,7 +2,7 @@
 import io, { Socket } from 'socket.io-client';
 import minBy from 'lodash/minBy';
 import maxBy from 'lodash/maxBy';
-import { newLogger, logInternalError } from '@dbux/common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 // import universalLibs from '@dbux/common/src/util/universalLibs';
 import SendQueue from './SendQueue';
 

@@ -15,6 +15,7 @@ import StaticContext from './StaticContext';
 import Traces from './Traces';
 import UpdateLValME from './UpdateLValME';
 import UpdateLValVar from './UpdateLValVar';
+import VariableDeclaratorLVal from './VariableDeclaratorLVal';
 
 
 export {
@@ -33,5 +34,6 @@ export {
   StaticContext,
   Traces,
   UpdateLValME,
-  UpdateLValVar
+  UpdateLValVar,
+  VariableDeclaratorLVal
 };

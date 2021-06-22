@@ -61,10 +61,11 @@ export default class ParseStack {
   // ###########################################################################
 
   /**
-  // TODO: fix peekNode, peekNodePlugin to just use `parentPath`, instead of trying to decipher stack?
+   * NOTE: cannot do on stack, since stack structure disappears after `exit1`
+   * Use `ParseNode.peekNode` instead.
    * @return {ParseNode}
    */
-  peekNode(nameOrParseNodeClazz) {
+  _peekNode(nameOrParseNodeClazz) {
     const name = isString(nameOrParseNodeClazz) ? nameOrParseNodeClazz : nameOrParseNodeClazz.name;
     const { _stacksByType } = this;
     const nodesOfType = _stacksByType.get(name);
@@ -74,25 +75,18 @@ export default class ParseStack {
     return null;
   }
 
-  getNodeOfPath(path) {
-    return getNodeOfPath(path);
+  _peekNodeForce(nameOrParseNodeClazz) {
+    const node = this._peekNode(nameOrParseNodeClazz);
+    if (!node) {
+      const { _stack } = this;
+      const s = _stack.join('\n ');
+      throw new Error(`Node "${nameOrParseNodeClazz}" not found on stack - current stack (${_stack.length}):\n ${s}`);
+    }
+    return node;
   }
 
-  /**
-   * Looks through the stack to find the top-most node that has the given `pluginNameOrClazz`.
-   * @return {ParsePlugin}
-   */
-  peekPlugin(pluginNameOrClazz) {
-    // look through the stack to find the top-most node that has the given `pluginNameOrClazz`
-    const { _stack } = this;
-    for (let i = _stack.length - 1; i >= 0; --i) {
-      const node = _stack[i];
-      const plugin = node.getPlugin(pluginNameOrClazz);
-      if (plugin) {
-        return plugin;
-      }
-    }
-    return null;
+  getNodeOfPath(path) {
+    return getNodeOfPath(path);
   }
 
   // ###########################################################################
@@ -183,7 +177,7 @@ export default class ParseStack {
     }
     else {
       // not a new node -> enterNested (prospectOnEnter returned false)
-      parseNode = this.peekNode(ParseNodeClazz);
+      parseNode = this._peekNode(ParseNodeClazz);
       if (!parseNode) {
         throw new Error(`In ${ParseNodeClazz.name}'s first enter prospectOnEnter returned (but should not return) null - ${pathToString(path)}`);
       }
@@ -201,12 +195,10 @@ export default class ParseStack {
   // exit
   // ###########################################################################
 
-  exit(path, ParseNodeClazz) {
+  exit1(path, ParseNodeClazz) {
     this.checkGen();
 
-    // NOTE: even if we don't create a newNode, we push `null`.
-    //    This way, every `push` will always match a `pop`.
-    const parseNode = this.peekNode(ParseNodeClazz);
+    const parseNode = this._peekNode(ParseNodeClazz);
     if (!parseNode) {
       // eslint-disable-next-line max-len
       throw new Error(`Parsing failed. Exited same ${ParseNodeClazz.name} node more thance once.\n  Node was not on stack anymore: ${getNodeOfPath(path)} \n  Path: ${pathToString(path)}`);

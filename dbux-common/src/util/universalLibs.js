@@ -14,7 +14,6 @@ function universalLib(globalName, fallbackCb) {
     return fallbackCb();
   }
   catch (err) {
-    // logInternalError(`could not load library ${globalName}`, err);
     throw new Error(`could not load library ${globalName} --\n  ${err}`);
   }
 }

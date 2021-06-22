@@ -8,7 +8,7 @@ export default class ForStatement extends BaseNode {
   ];
 
   exit() {
-    const [test, update] = this.getChildPaths();
+    const [, test, update] = this.getChildPaths();
     
     
     // TODO: all tid variable declarationTids from `init` need to be inlined
