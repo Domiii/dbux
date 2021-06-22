@@ -148,6 +148,7 @@ export function isCallbackRelatedTrace(traceType) {
 
 const dataOnlyTypes = new Array(TraceType.getValueMaxIndex()).map(() => false);
 dataOnlyTypes[TraceType.ExpressionValue] = true;
+dataOnlyTypes[TraceType.Identifier] = true;
 dataOnlyTypes[TraceType.Literal] = true;
 
 /**

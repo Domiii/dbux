@@ -58,6 +58,10 @@ export default class VariableDeclaratorLVal extends BasePlugin {
       }
     };
 
+    if (path.parentPath.node.kind !== 'var') {
+      traceData.scope = path.parentPath.scope; // prevent adding `tid` variable to own body,
+    }
+
     // NOTE: `declarationTid` comes from `this.node.getDeclarationNode`
     Traces.addTraceWithInputs(traceData, [rvalNode.path]);
   }

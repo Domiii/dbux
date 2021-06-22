@@ -53,14 +53,15 @@ export default class BindingIdentifier extends BaseId {
   getDefaultBindingScopeNode() {
     // const scopePath = this.binding.path.scope.path;
     let scopePath = this.getBindingScope().path;
-    if (!scopePath.isFunction() && !scopePath.isProgram()) {
-      // hackfix: just make sure, the declared variable is not hoisted to nested scope
-      scopePath = scopePath.parentPath;
-    }
+    // if (!scopePath.isFunction() && !scopePath.isProgram()) {
+    //   // hackfix: just make sure, the declared variable is not hoisted to nested scope
+    //   scopePath = scopePath.parentPath;
+    // }
+    
     /**
      * @type {BaseNode}
      */
-    const bindingScopeNode = this.stack.getNodeOfPath(scopePath);
+    const bindingScopeNode = this.getNodeOfPath(scopePath);
     if (!bindingScopeNode?.Traces) {
       throw new Error(`BindingIdentifier's binding scope did not have a valid BaseNode: "${pathToString(scopePath)}" in "${this.getParent()}"`);
     }
