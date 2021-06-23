@@ -1,5 +1,4 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
-import { pathToString } from '../../helpers/pathHelpers';
 import BasePlugin from './BasePlugin';
 
 
@@ -19,7 +18,10 @@ export default class ArithmeticExpression extends BasePlugin {
 
     // trace AE itself
     const staticTraceData = {
-      type: TraceType.ExpressionResult
+      type: TraceType.ExpressionResult,
+      dataNode: {
+        isNew: true
+      }
     };
     const traceData = { 
       path,
