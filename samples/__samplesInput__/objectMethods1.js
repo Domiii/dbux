@@ -1,5 +1,5 @@
 /**
- * NOTE: `ObjectMethod` observes the same semantics as `FunctionExpression`.
+ * NOTE: `ObjectMethod` observes similar semantics to `FunctionExpression`.
  * 
  * @see https://eslint.org/docs/rules/object-shorthand
  */

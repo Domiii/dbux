@@ -37,7 +37,7 @@ export default class ParsePlugin {
   }
 
   error(...args) {
-    return this.node.logger.error(`[${this}]`, ...args);
+    return this.node.logger.error(`[>${this.name}]`, ...args);
   }
 
   get debugTag() {

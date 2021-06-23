@@ -89,7 +89,7 @@ export default class BaseNode extends ParseNode {
    * @protected
    */
   buildDefaultTrace() {
-    this.logger.warn(`ParseNode did not implement "buildDefaultTrace": ${this}`);
+    // this.logger.warn(`ParseNode did not implement "buildDefaultTrace": ${this}`);
     return null;
   }
 

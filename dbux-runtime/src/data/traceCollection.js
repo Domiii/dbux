@@ -3,7 +3,7 @@ import staticTraceCollection from './staticTraceCollection';
 import Collection from './Collection';
 import pools from './pools';
 
-const { log, debug, warn, error: logError } = newLogger('Traces');
+const { log, debug, warn, error: logError } = newLogger('TraceCollection');
 
 class TraceCollection extends Collection {
   constructor() {

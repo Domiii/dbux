@@ -41,7 +41,8 @@ function getArgs(debugMode) {
   //          Must be a bug or misconfiguration somewhere.
   //          Angular has similar issues: https://github.com/angular/angular-cli/issues/5423
 
-  let nodeArgs = config.get(`dbux.${runMode}.nodeArgs`) + ' --stack-trace-limit=1000 --enable-source-maps';
+  let nodeArgs = config.get(`dbux.${runMode}.nodeArgs`) + ' --stack-trace-limit=1000';
+  // nodeArgs += ' --enable-source-maps';
   nodeArgs += debugMode ? ' --inspect-brk' : '';
 
   let dbuxArgs = config.get(`dbux.${runMode}.dbuxArgs`);
