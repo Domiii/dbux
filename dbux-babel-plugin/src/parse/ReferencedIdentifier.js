@@ -2,25 +2,34 @@ import TraceType from '@dbux/common/src/core/constants/TraceType';
 import { buildTraceExpressionVar } from '../instrumentation/builders/misc';
 import BaseId from './BaseId';
 
+const ConstantIds = new Set([
+  'undefined',
+  'NaN',
+  'Infinity'
+]);
+
 export default class ReferencedIdentifier extends BaseId {
-  // ###########################################################################
-  // inputs
-  // ###########################################################################
+  isConstant;
 
   /**
    * 
    */
   buildDefaultTrace() {
+    const { path, isConstant } = this;
+
     const traceData = {
-      path: this.path,
+      path,
       node: this,
       staticTraceData: {
-        type: TraceType.Identifier
+        type: !isConstant ? TraceType.Identifier : TraceType.Literal
       },
       meta: {
-        build: buildTraceExpressionVar
       }
     };
+
+    if (!isConstant) {
+      traceData.meta.build = buildTraceExpressionVar;
+    }
 
     return traceData;
   }
@@ -30,11 +39,11 @@ export default class ReferencedIdentifier extends BaseId {
   // ###########################################################################
 
   enter() {
-    // if (!binding) {
-    //   throw new Error(`Weird Babel issue - ReferencedIdentifier does not have binding - ${this}`);
-    // }
+    this.isConstant = ConstantIds.has(this.path.node.name);
 
-    this.peekStaticContext().addReferencedBinding(this);
+    if (!this.isConstant) {
+      this.peekStaticContext().addReferencedBinding(this);
+    }
   }
 
   // TODO: fix exports --

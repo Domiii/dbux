@@ -20,8 +20,9 @@ set -e # cancel on error
 # fname="this1"
 # fname="return2"
 # fname="slicing/var3"
-fname="module1"
-# fname="for-in1`"
+# fname="module1"
+# fname="for-in1"
+fname="mix2"
 nodeArgs="--enable-source-maps "
 
 dbuxCmd="$1"
