@@ -31,12 +31,6 @@ const Verbose = 0;
 //   }
 // }
 
-const DataNodeMetaBySpecialIdentifierType = {
-  [SpecialIdentifierType.Module]: {
-    omit: true
-  }
-};
-
 /**
  * 
  */
@@ -480,11 +474,9 @@ export default class RuntimeMonitor {
     const varAccess = declarationTid && { declarationTid } || null;
     const trace = traceCollection.getById(tid);
     const { staticTraceId } = trace;
-    const { data } = staticTraceCollection.getById(staticTraceId);
-    const specialType = data?.specialType;
-    const dataNodeMeta = specialType && DataNodeMetaBySpecialIdentifierType[specialType];
+    const { dataNode } = staticTraceCollection.getById(staticTraceId);
 
-    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess, null, dataNodeMeta);
+    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess, null, dataNode);
     
     return value;
   }

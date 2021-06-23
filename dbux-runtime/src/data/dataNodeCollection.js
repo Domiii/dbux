@@ -84,14 +84,7 @@ export class DataNodeCollection extends Collection {
     
 
     // valueRef
-    let valueRef;
-    if (meta?.omit) {
-      valueRef = valueCollection.addOmitted();
-      dataNode.value = undefined;
-    }
-    else {
-      valueRef = valueCollection.registerValueMaybe(value, dataNode);
-    }
+    const valueRef = valueCollection.registerValueMaybe(value, dataNode, meta);
 
     dataNode.refId = valueRef?.refId || 0;
     dataNode.varAccess = varAccess;

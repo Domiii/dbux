@@ -1,5 +1,6 @@
 import truncate from 'lodash/truncate';
 import ValueTypeCategory, { determineValueTypeCategory, ValuePruneState, isTrackableCategory } from '@dbux/common/src/core/constants/ValueTypeCategory';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 // import serialize from '@dbux/common/src/serialization/serialize';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Collection from './Collection';
@@ -326,25 +327,32 @@ class ValueCollection extends Collection {
     let valueRef;
     let isNewObject = false;
 
-    // look-up existing value
-    category = category || determineValueTypeCategory(value);
-    if (isTrackableCategory(category)) {
-      valueRef = this.getRefByValue(value);
-      if (!valueRef) {
-        isNewObject = true;
-        valueRef = this._addValueRef(category, nodeId, value);
-      }
-    }
-
-    if (!isNewObject) {
-      return valueRef;
-    }
-
     if (this.valuesDisabled) {
       return this._addValueDisabled();
     }
     if (depth > SerializationConfig.maxDepth) {
       return this.addOmitted();
+    }
+
+    // look-up existing value
+    category = category || determineValueTypeCategory(value);
+    if (!isTrackableCategory(category)) {
+      return null;
+    }
+    valueRef = this.getRefByValue(value);
+    if (!valueRef) {
+      isNewObject = true;
+      valueRef = this._addValueRef(category, nodeId, value);
+    }
+
+    if (!isNewObject) {
+      return valueRef;
+    }
+    if (meta?.omit) {
+      // shortcut -> don't serialize children
+      typeName = value.constructor?.name || '';
+      this._finishValue(valueRef, typeName, EmptyArray, ValuePruneState.Omitted);
+      return valueRef;
     }
 
     // serialize value
@@ -386,7 +394,7 @@ class ValueCollection extends Collection {
           const childRef = this._serialize(childValue, nodeId, depth + 1);
           Verbose > 1 && this._logValue(`${' '.repeat(depth)}[${i}]`, childRef, childValue);
 
-          serialized.push([childRef && childRef.refId, !childRef && childValue]);
+          serialized.push([childRef?.refId, !childRef && childValue]);
         }
         break;
       }
@@ -406,8 +414,7 @@ class ValueCollection extends Collection {
             pruneState = ValuePruneState.Omitted;
           }
           else {
-            // NOTE: the name might be mangled. We ideally want to get it from source code when we can.
-            //    (NOTE: not all types are instrumented by dbux)
+            // future-work: the name might be mangled. We ideally want to get it from source code when we can.
             typeName = value.constructor?.name || '';
 
             // prune

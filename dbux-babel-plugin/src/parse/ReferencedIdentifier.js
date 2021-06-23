@@ -17,11 +17,18 @@ const SpecialIdentifierTypeMap = {
 };
 
 
+const DataNodeMetaBySpecialIdentifierType = {
+  [SpecialIdentifierType.Module]: {
+    omit: true
+  }
+};
+
+
 export default class ReferencedIdentifier extends BaseId {
   isConstant;
 
   get specialType() {
-    return SpecialIdentifierTypeMap[this.path.node.name];
+    return !this.binding ? SpecialIdentifierTypeMap[this.path.node.name] : null;
   }
 
   getDeclarationTidIdentifier() {
@@ -46,6 +53,10 @@ export default class ReferencedIdentifier extends BaseId {
       node: this,
       staticTraceData: {
         type: !isConstant ? TraceType.Identifier : TraceType.Literal,
+        dataNode: {
+          isNew: isConstant,
+          omit: specialType && DataNodeMetaBySpecialIdentifierType[specialType]?.omit || false
+        },
         data: { }
       },
       meta: { }
