@@ -16,6 +16,9 @@ export default class TraceNode extends BaseTreeViewNode {
     return makeTraceLabel(trace);
   }
 
+  /**
+   * @type {Trace}
+   */
   get trace() {
     return this.entry;
   }
@@ -33,6 +36,6 @@ export default class TraceNode extends BaseTreeViewNode {
   }
 
   handleClick() {
-    traceSelection.selectTrace(this.trace, 'TraceNode', this.nodeId );
+    traceSelection.selectTrace(this.trace, 'TraceNode');
   }
 }

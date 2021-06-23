@@ -15,7 +15,6 @@ import { InfoTDNode, ContextTDNode, TraceTypeTDNode } from './traceInfoNodes';
 
 /**
  * @property {Trace} trace
- * @property {number} nodeId
  */
 export class TraceDetailNode extends BaseTreeViewNode {
 }
@@ -46,7 +45,8 @@ export class DebugTDNode extends TraceDetailNode {
   // }
 
   buildChildren() {
-    const { trace, nodeId } = this;
+    const { trace } = this;
+    const { nodeId } = trace;
 
     const application = allApplications.getApplication(trace.applicationId);
     const { dataProvider } = application;
@@ -63,7 +63,7 @@ export class DebugTDNode extends TraceDetailNode {
     const { staticContextId } = context;
     const staticContext = dataProvider.collections.staticContexts.getById(staticContextId);
     const dataNodes = dataProvider.util.getDataNodesOfTrace(traceId);
-    
+
     let dataNode;
     if (nodeId) {
       dataNode = dataProvider.collections.dataNodes.getById(nodeId);
@@ -86,7 +86,7 @@ export class DebugTDNode extends TraceDetailNode {
     ];
 
     const children = [
-      ...this.treeNodeProvider.buildDetailNodes(this.trace, this.nodeId, this, [
+      ...this.treeNodeProvider.buildDetailNodes(this.trace, this, [
         TraceTypeTDNode,
         ContextTDNode,
       ]),
