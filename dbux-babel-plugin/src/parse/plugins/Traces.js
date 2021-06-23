@@ -117,9 +117,14 @@ export default class Traces extends BasePlugin {
           `for Declaration "${node}" in "${node.getParent()}`);
       }
       if (declarationNode.bindingTrace) {
-        throw new Error(`Tried to add declaration trace multiple times for "${declarationNode}" in "${declarationNode.getParent()}"`);
+        // NOTE: this can currently happen, if parameter has same name as hoisted `var` local
+        const msg = `Tried to add declaration trace multiple times for "${declarationNode}" in "${declarationNode.getParent()}"`;
+        this.warn(msg);
+        // throw new Error(msg);
       }
-      declarationNode.bindingTrace = traceCfg;
+      else {
+        declarationNode.bindingTrace = traceCfg;
+      }
 
       if (meta?.hoisted) {
         this.hoistedDeclarationTraces.push(traceCfg);
@@ -128,7 +133,7 @@ export default class Traces extends BasePlugin {
         this.traces.push(traceCfg);
       }
 
-      this.Verbose && this.debug(`DECL "${node}" (${traceCfg.tidIdentifier.name})`);
+      this.Verbose && this.debug(`DECL "${declarationNode}" in "${declarationNode.getParent()}" by "${node}" in "${node.getParent()}" (${traceCfg.tidIdentifier.name})`);
     }
     else {
       node?._setTraceData(traceCfg);

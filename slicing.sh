@@ -25,7 +25,9 @@ set -e # cancel on error
 # fname="mix2"
 # fname="module_exports1"
 # fname="functionExpression1"
-fname="classExpression1"
+# fname="classExpression1"
+fname="params1"
+
 
 nodeArgs="--enable-source-maps "
 

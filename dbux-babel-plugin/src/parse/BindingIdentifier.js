@@ -1,4 +1,5 @@
 import { pathToString } from '../helpers/pathHelpers';
+import { ZeroNode } from '../instrumentation/builders/buildUtil';
 import BaseId from './BaseId';
 import BaseNode from './BaseNode';
 
@@ -11,7 +12,8 @@ export default class BindingIdentifier extends BaseId {
   getTidIdentifier() {
     if (!this.bindingTrace) {
       // eslint-disable-next-line max-len
-      throw new Error(`Tried to "getTidIdentifier" too early for "${this}" in "${this.getParent()}" - BindingIdentifier.bindingTrace was not recorded yet. getDeclarationNode() = "${this.getDeclarationNode()}"`);
+      this.logger.error(new Error(`Tried to "getTidIdentifier" too early for "${this}" in "${this.getParent()}" - BindingIdentifier.bindingTrace was not recorded yet. getDeclarationNode() = "${this.getDeclarationNode()}" in "${this.getDeclarationNode().getParent()}"`));
+      return ZeroNode;
     }
     return this.bindingTrace.tidIdentifier;
   }
@@ -83,6 +85,10 @@ export default class BindingIdentifier extends BaseId {
     // }
 
     const bindingScopeNode = this.getDefaultBindingScopeNode();
+    const declarationNode = this.getDeclarationNode();
+    if (declarationNode !== this) {
+      // TODO: if `definitionPath`, convert to `write` trace?
+    }
     return bindingScopeNode.Traces.addDefaultDeclarationTrace(this, definitionPath, moreTraceData);
   }
 }

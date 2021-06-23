@@ -28,26 +28,31 @@ export default class BaseId extends BaseNode {
    * 
    * @returns {BindingIdentifier}
    */
-  getDeclarationNode() {
+  getOwnDeclarationNode() {
     const path = this.binding?.path;
     if (!path) {
       return null;
     }
     // NOTE: `binding.path` (if is `Declaration`) refers to the Declaration, not the `id` node.
     // NOTE2: even more odd - for `CatchClause.param` it returns `CatchClause` the path.
+    let declarationNode;
     if (path.isIdentifier()) {
-      return this.getNodeOfPath(path);
+      declarationNode = this.getNodeOfPath(path);
     }
     else if (path.node.id) {
-      // future-work: override `getDeclarationNode` in Declarations instead.
-      return this.getNodeOfPath(path.get('id'));
+      // hackfix: check for declaration
+      // future-work: this is a declaration -> override `getDeclarationNode` there instead
+      declarationNode = this.getNodeOfPath(path.get('id'));
     }
-    const bindingNode = this.getNodeOfPath(path);
-    if (!bindingNode) {
+    else {
+      declarationNode = this.getNodeOfPath(path);
+    }
+
+    if (!declarationNode) {
       this.logger.error(`Binding path did not have ParseNode: ${pathToString(path)} in "${this}" in "${this.getParent()}"`);
       return null;
     }
-    const declarationNode = bindingNode !== this && bindingNode.getDeclarationNode?.();
+    // declarationNode = declarationNode === this ? declarationNode : declarationNode.getDeclarationNode?.();
     return declarationNode;
   }
 }

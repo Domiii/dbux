@@ -5,15 +5,24 @@ export default class ClassDeclaration extends BaseNode {
   static children = ['id', 'superClass', 'body', 'decorators'];
   static plugins = ['Class'];
 
+
+  /**
+   * @returns {BindingIdentifier}
+   */
+  getOwnDeclarationNode() {
+    const [idNode] = this.getChildNodes();
+    return idNode;
+  }
+
   exit1() {
     const { path } = this;
-    const [idNode] = this.getChildNodes();
-    idNode.addOwnDeclarationTrace(idNode.path, {
+    const declarationNode = this.getOwnDeclarationNode();
+    declarationNode.addOwnDeclarationTrace(declarationNode.path, {
       meta: {
         hoisted: false,
         keepStatement: true,
         targetPath: path,
-        targetNode: idNode.path.node,
+        targetNode: declarationNode.path.node,
         instrument: traceBehind
       }
     });

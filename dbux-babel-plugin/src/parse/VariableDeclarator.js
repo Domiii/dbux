@@ -32,7 +32,7 @@ export default class VariableDeclarator extends BaseNode {
   /**
    * @returns {BindingIdentifier}
    */
-  getDeclarationNode() {
+  getOwnDeclarationNode() {
     const [idNode] = this.getChildNodes();
     return idNode;
   }

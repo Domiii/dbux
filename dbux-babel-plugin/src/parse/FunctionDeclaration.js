@@ -9,9 +9,17 @@ export default class FunctionDeclaration extends BaseNode {
     'BindingNode'
   ];
 
-  exit1() {
+  /**
+   * @returns {BindingIdentifier}
+   */
+  getOwnDeclarationNode() {
     const [idNode] = this.getChildNodes();
-    idNode.addOwnDeclarationTrace(idNode.path);
+    return idNode;
+  }
+
+  exit1() {
+    const declarationNode = this.getOwnDeclarationNode();
+    declarationNode.addOwnDeclarationTrace(declarationNode.path);
   }
 
   // enter() {

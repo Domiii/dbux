@@ -38,8 +38,8 @@ export default class UpdateExpression extends BaseNode {
   /**
    * @returns {BaseNode}
    */
-  getDeclarationNode() {
+  getOwnDeclarationNode() {
     const [leftNode] = this.getChildNodes();
-    return leftNode.getDeclarationNode();
+    return leftNode.getOwnDeclarationNode();
   }
 }
