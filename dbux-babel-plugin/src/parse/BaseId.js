@@ -1,5 +1,6 @@
 // import { Binding } from '@babel/traverse';
 // import TraceType from '@dbux/common/src/core/constants/TraceType';
+import { pathToString } from '../helpers/pathHelpers';
 import BaseNode from './BaseNode';
 
 /**
@@ -42,6 +43,10 @@ export default class BaseId extends BaseNode {
       return this.getNodeOfPath(path.get('id'));
     }
     const bindingNode = this.getNodeOfPath(path);
+    if (!bindingNode) {
+      this.logger.error(`Binding path did not have ParseNode: ${pathToString(path)} in "${this}" in "${this.getParent()}"`);
+      return null;
+    }
     const declarationNode = bindingNode !== this && bindingNode.getDeclarationNode?.();
     return declarationNode;
   }

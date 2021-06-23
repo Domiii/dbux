@@ -61,6 +61,10 @@ export function buildDbuxInit(state) {
 
   // Verbose && console.time(`[Dbux] babel write (AST)`);
   // console.trace('dbuxRuntime', dbuxRuntime);
+
+  // WARNING: "TypeError: `initProgram` is not a function" is a common problem here.
+  //    -> that can be due to circular dependencies or other issues breaking `require('@dbux/runtime')`
+  //    -> console.warn('dbux_init', dbuxRuntime, typeof __dbux__, require('@dbux/runtime'));
   const result = buildSource(`
 function ${dbuxInit.name}(dbuxRuntime) {
   return dbuxRuntime.initProgram(${staticDataString}, ${runtimeCfgString});

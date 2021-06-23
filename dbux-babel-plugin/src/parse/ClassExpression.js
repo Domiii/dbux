@@ -8,21 +8,32 @@ export default class ClassExpression extends BaseNode {
   exit() {
     const { path } = this;
 
-    // TODO: check if we have to get the `parent` because else it will add the variable to its own body?
     // const { scope } = path.parentPath;
 
-    const traceData = {
-      node: this,
-      path,
-      // scope,
-      staticTraceData: {
-        type: TraceType.ExpressionResult,
-        dataNode: {
-          isNew: true
-        }
-      }
-    };
+    const [idNode] = this.getChildNodes();
 
-    this.Traces.addTrace(traceData);
+    if (idNode) {
+      idNode.addOwnDeclarationTrace(idNode.path, {
+        meta: {
+          hoisted: false,
+          targetPath: path
+        }
+      });
+    }
+    else {
+      const traceData = {
+        node: this,
+        path,
+        scope: path.parentPath.scope, // prevent adding `tid` variable to own body
+        staticTraceData: {
+          type: TraceType.ExpressionResult,
+          dataNode: {
+            isNew: true
+          }
+        }
+      };
+
+      this.Traces.addTrace(traceData);
+    }
   }
 }

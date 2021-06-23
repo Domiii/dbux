@@ -95,15 +95,15 @@ module.exports = (env, argv) => {
       ].map(cfg => ['dbux-runtime', resolve => {
         const { target } = cfg;
         const externals = target !== 'node' ? [] : [
-          nodeExternals({
-            allowlist: [
-              ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/src/.*`))
-              // (...args) => {
-              //   console.error(...args);
-              //   return true;
-              // }
-            ]
-          })
+          // nodeExternals({
+          //   allowlist: [
+          //     ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/src/.*`))
+          //     // (...args) => {
+          //     //   console.error(...args);
+          //     //   return true;
+          //     // }
+          //   ]
+          // })
         ];
         return {
           ...cfg,

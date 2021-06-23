@@ -1,5 +1,10 @@
 class A {
-  constructor() { console.log('new A'); }
+  constructor() { 
+    console.log('new A');
+    this.x = 3;
+  }
 }
 
-new A();
+var a = new A();
+
+console.log(a.x);

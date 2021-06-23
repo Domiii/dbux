@@ -26,7 +26,7 @@ export default class VariableDeclarator extends BaseNode {
    */
   get writeTraceType() {
     // NOTE: `write` trace doubles as declaration trace, if not hoisted to beginning of function scope
-    return this.hasSeparateDeclarationTrace ? TraceType.DeclareAndWriteVar : TraceType.Declaration;
+    return this.hasSeparateDeclarationTrace ? TraceType.WriteVar : TraceType.DeclareAndWriteVar;
   }
 
   /**

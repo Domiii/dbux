@@ -111,7 +111,15 @@ export default class Traces extends BasePlugin {
     };
 
     if (isDeclaration) {
-      node.getDeclarationNode().bindingTrace = traceCfg;
+      const declarationNode = node.getDeclarationNode();
+      if (!declarationNode) {
+        throw new Error(`Assertion failed - node.getDeclarationNode() returned nothing ` +
+          `for Declaration "${node}" in "${node.getParent()}`);
+      }
+      if (declarationNode.bindingTrace) {
+        throw new Error(`Tried to add declaration trace multiple times for "${declarationNode}" in "${declarationNode.getParent()}"`);
+      }
+      declarationNode.bindingTrace = traceCfg;
 
       if (meta?.hoisted) {
         this.hoistedDeclarationTraces.push(traceCfg);
@@ -120,7 +128,7 @@ export default class Traces extends BasePlugin {
         this.traces.push(traceCfg);
       }
 
-      this.Verbose && this.debug(`DECL ${traceCfg.tidIdentifier.name} for ${this.node}`);
+      this.Verbose && this.debug(`DECL "${node}" (${traceCfg.tidIdentifier.name})`);
     }
     else {
       node?._setTraceData(traceCfg);
@@ -172,8 +180,6 @@ export default class Traces extends BasePlugin {
     }
 
     const traceCfg = this.addTrace(traceData);
-
-    this.Verbose && this.debug(`DECL ${traceCfg.tidIdentifier.name} for ${this.node}`);
 
     return traceCfg;
   }
