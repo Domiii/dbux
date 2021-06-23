@@ -218,8 +218,13 @@ class ExecutionContextCollection extends Collection {
       }
       const cerTrace = dp.collections.traces.getById(bceTrace.resultId);
 
-      const cerDataNode = dp.collections.dataNodes.getById(cerTrace.nodeId);
-      cerDataNode.inputs = [returnTrace.nodeId];
+      if (!cerTrace) {
+        // NOTE: function was called, but did not have CER. Possible due to exceptions etc.
+      }
+      else {
+        const cerDataNode = dp.collections.dataNodes.getById(cerTrace.nodeId);
+        cerDataNode.inputs = [returnTrace.nodeId];
+      }
     }
   }
 
@@ -599,7 +604,7 @@ class ValueRefCollection extends Collection {
       }
       else {
         switch (category) {
-          case ValueTypeCategory.Array: 
+          case ValueTypeCategory.Array:
           case ValueTypeCategory.Object: {
             value = {};
             for (const [key, [childId, childValue]] of Object.entries(entry.serialized)) {

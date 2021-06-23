@@ -3,7 +3,7 @@ import staticTraceCollection from './staticTraceCollection';
 import Collection from './Collection';
 import pools from './pools';
 
-const { log, debug, warn, error: logError } = newLogger('T');
+const { log, debug, warn, error: logError } = newLogger('Traces');
 
 class TraceCollection extends Collection {
   constructor() {
@@ -18,7 +18,14 @@ class TraceCollection extends Collection {
     if (!traceIds) {
       return null;
     }
-    return traceIds.map(traceId => this.getById(traceId).nodeId);
+    return traceIds.map(traceId => {
+      const trace = this.getById(traceId);
+      if (!trace) {
+        warn(`could not lookup trace of traceId=${traceId}`);
+        return null;
+      }
+      return trace.nodeId;
+    });
   }
 
   getStaticTraceByTraceId(traceId) {
@@ -34,7 +41,7 @@ class TraceCollection extends Collection {
     const trace = pools.traces.allocate();
     trace.traceId = this._all.length;
     this.push(trace);
-    
+
     // // eslint-disable-next-line no-console
     // console.debug(`${this._all.length} ${trace.traceId}`);
 
