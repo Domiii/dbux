@@ -21,7 +21,7 @@ class TraceCollection extends Collection {
     return traceIds.map(traceId => {
       const trace = this.getById(traceId);
       if (!trace) {
-        warn(`could not lookup trace of traceId=${traceId}`);
+        warn(`Could not lookup trace of traceId=${traceId} in getDataNodeIdsByTraceIds([${traceIds.join(', ')}])`);
         return null;
       }
       return trace.nodeId;

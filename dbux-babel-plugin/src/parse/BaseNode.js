@@ -45,11 +45,11 @@ export default class BaseNode extends ParseNode {
    * @returns {BaseNode}
    */
   getDeclarationNode() {
-    let declarationNode;
+    let declarationNode = this;
     let next;
 
     // NOTE: Babel's bindings can be recursive if a symbol name is defined multiple times inside the same scope.
-    while ((next = this.getOwnDeclarationNode()) && next !== declarationNode) {
+    while ((next = declarationNode.getOwnDeclarationNode()) && next !== declarationNode) {
       declarationNode = next;
     }
     return declarationNode;

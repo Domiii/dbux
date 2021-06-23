@@ -165,7 +165,12 @@ class ExecutionContextCollection extends Collection {
         continue;
       }
       const callId = bceTrace.traceId;
-      const argTraces = bceTrace.data.argTids.map(tid => dp.collections.traces.getById(tid));
+      if (!bceTrace.data) {
+        // TODO: odd bug
+        this.logger.warn(`bceTrace.data is missing in "setParamInputs" for trace "${util.makeTraceInfo(callId)}"`);
+        continue;
+      }
+      const argTraces = bceTrace.data?.argTids.map(tid => dp.collections.traces.getById(tid));
       const { argConfigs } = util.getStaticTrace(callId).data;
 
       // get `argDataNodes`
