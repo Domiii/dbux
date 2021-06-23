@@ -457,13 +457,11 @@ class DataNodeCollection extends Collection {
           // NOTE: currently, last in `byAccessId` index is actually "the last before this one", since we are still resolving the index.
           return lastNode.valueId;
         }
-        else if (!TraceType.is.CallExpressionResult(traceType)) {
-          // eslint-disable-next-line max-len
-          this.logger.warn(`[getValueId] Cannot find valueId for empty inputs.\n    trace: ${this.dp.util.makeTraceInfo(traceId)}\n    dataNode: ${JSON.stringify(dataNode)}`);
-        }
         else {
-          return traceId;
+          // eslint-disable-next-line max-len
+          // this.logger.warn(`[getValueId] Cannot find valueId for empty inputs.\n    trace: ${this.dp.util.makeTraceInfo(traceId)}\n    dataNode: ${JSON.stringify(dataNode)}`);
         }
+        return traceId;
       }
     }
     return dataNode.valueId;
