@@ -3,17 +3,6 @@ import TraceType from '@dbux/common/src/core/constants/TraceType';
 import { buildtraceExpressionME } from '../instrumentation/builders/misc';
 import BaseNode from './BaseNode';
 
-/**
- * TODO
- * 
- * 1. track all read access (lval or rval), for each read o[x]:
- *    * VarRead(o): referenceId + path
- *    * VarRead(x): referenceId (if it has any) + path [if x is not constant]
- *    * VarRead(o[x]): referenceId (if it has any) + path
- * 2. track write access on final write o[x] = y
- *   * 
- */
-
 
 
 /** @typedef {import('@babel/types/lib').Identifier} Identifier */
@@ -26,27 +15,27 @@ function isRValME(node) {
   return !(p.parentPath.isAssignment() && p.node === p.parentPath.node.id);
 }
 
-class MemberElement {
-  /**
-   * @type {NodePath}
-   */
-  path;
-  /**
-   * @type {boolean}
-   */
-  computed;
+// class MemberElement {
+//   /**
+//    * @type {NodePath}
+//    */
+//   path;
+//   /**
+//    * @type {boolean}
+//    */
+//   computed;
 
-  /**
-   * @type {boolean}
-   */
-  optional;
+//   /**
+//    * @type {boolean}
+//    */
+//   optional;
 
-  constructor(path, computed, optional) {
-    this.path = path;
-    this.computed = computed;
-    this.optional = optional;
-  }
-}
+//   constructor(path, computed, optional) {
+//     this.path = path;
+//     this.computed = computed;
+//     this.optional = optional;
+//   }
+// }
 
 export default class MemberExpression extends BaseNode {
   static visitors = [
@@ -105,7 +94,7 @@ export default class MemberExpression extends BaseNode {
     // TODO: `import.meta` (rval only)
 
     const { path } = this;
-    const [objectPath] = this.getChildPaths();
+    // const [objectPath] = this.getChildPaths();
 
     if (targetPath === undefined) {
       targetPath = path;
