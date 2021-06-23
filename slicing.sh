@@ -29,7 +29,8 @@ set -e # cancel on error
 # fname="params1"
 # fname="eval1"
 # fname="params2"
-fname="prototype1"
+# fname="prototype1"
+fname="variableDeclarationPatterns1"
 
 
 nodeArgs=""

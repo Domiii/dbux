@@ -12,7 +12,7 @@ export default class BindingIdentifier extends BaseId {
   getTidIdentifier() {
     if (!this.bindingTrace) {
       // eslint-disable-next-line max-len
-      this.logger.error(new Error(`Tried to "getTidIdentifier" too early for "${this}" in "${this.getParent()}" - BindingIdentifier.bindingTrace was not recorded yet. getDeclarationNode() = "${this.getDeclarationNode()}" in "${this.getDeclarationNode().getParent()}"`));
+      this.logger.error(new Error(`Tried to "getTidIdentifier" too early for "${this}" in "${this.getParentString()}" - BindingIdentifier.bindingTrace was not recorded yet. getDeclarationNode() = "${this.getDeclarationNode()}" in "${this.getDeclarationNode().getParentString()}"`));
       return ZeroNode;
     }
     return this.bindingTrace.tidIdentifier;
@@ -66,7 +66,7 @@ export default class BindingIdentifier extends BaseId {
      */
     const bindingScopeNode = this.getNodeOfPath(scopePath);
     if (!bindingScopeNode?.Traces) {
-      throw new Error(`BindingIdentifier's binding scope did not have a valid BaseNode: "${pathToString(scopePath)}" in "${this.getParent()}"`);
+      throw new Error(`BindingIdentifier's binding scope did not have a valid BaseNode: "${pathToString(scopePath)}" in "${this.getParentString()}"`);
     }
     return bindingScopeNode;
   }

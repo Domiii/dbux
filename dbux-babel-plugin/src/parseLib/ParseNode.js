@@ -148,6 +148,22 @@ export default class ParseNode {
     return this.getNodeOfPath(this.path.parentPath);
   }
 
+  /**
+   * Goal: get a string representation of parent.
+   * If parent AST node does not have a `ParseNode`, get path representation instead.
+   */
+  getParentString() {
+    let parent = this.getParent();
+    if (!parent) {
+      // 
+      const { parentPath } = this.path;
+      if (parentPath) {
+        return `[${parentPath.node.type}] ${pathToString(parentPath)}`;
+      }
+    }
+    return parent?.toString();
+  }
+
   // ###########################################################################
   // peek logic (NOTE: cannot do on stack, since stack structure disappears after `exit1`)
   // ###########################################################################

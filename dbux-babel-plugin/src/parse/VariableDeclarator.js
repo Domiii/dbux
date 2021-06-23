@@ -18,7 +18,7 @@ export default class VariableDeclarator extends BaseNode {
   ];
 
   get hasSeparateDeclarationTrace() {
-    return this.plugins.lval.hasSeparateDeclarationTrace;
+    return this.plugins.lval?.hasSeparateDeclarationTrace;
   }
 
   /**
@@ -42,6 +42,14 @@ export default class VariableDeclarator extends BaseNode {
     if (this.hasSeparateDeclarationTrace) {
       // add declaration trace
       this.getDeclarationNode().addOwnDeclarationTrace();
+    }
+  }
+
+  exit() {
+    if (!this.plugins.lval) {
+      // TODO - remove hackfix (when Patterns are implemented)
+      const [, rval] = this.getChildNodes();
+      rval.addDefaultTrace();
     }
   }
 }

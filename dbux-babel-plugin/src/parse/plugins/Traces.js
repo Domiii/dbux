@@ -114,11 +114,11 @@ export default class Traces extends BasePlugin {
       const declarationNode = node.getDeclarationNode();
       if (!declarationNode) {
         throw new Error(`Assertion failed - node.getDeclarationNode() returned nothing ` +
-          `for Declaration "${node}" in "${node.getParent()}`);
+          `for Declaration "${node}" in "${node.getParentString()}`);
       }
       if (declarationNode.bindingTrace) {
         // NOTE: this can currently happen, if parameter has same name as hoisted `var` local
-        const msg = `Tried to add declaration trace multiple times for "${declarationNode}" in "${declarationNode.getParent()}"`;
+        const msg = `Tried to add declaration trace multiple times for "${declarationNode}" in "${declarationNode.getParentString()}"`;
         this.warn(msg);
         // throw new Error(msg);
       }
@@ -133,7 +133,8 @@ export default class Traces extends BasePlugin {
         this.traces.push(traceCfg);
       }
 
-      this.Verbose && this.debug(`DECL "${declarationNode}" in "${declarationNode.getParent()}" by "${node}" in "${node.getParent()}" (${traceCfg.tidIdentifier.name})`);
+      // eslint-disable-next-line max-len
+      this.Verbose && this.debug(`DECL "${declarationNode}" in "${declarationNode.getParentString()}" by "${node}" in "${node.getParentString()}" (${traceCfg.tidIdentifier.name})`);
     }
     else {
       node?._setTraceData(traceCfg);
