@@ -52,7 +52,7 @@ export default class BaseId extends BaseNode {
       this.logger.error(`Binding path did not have ParseNode: ${pathToString(path)} in "${this}" in "${this.getParent()}"`);
       return null;
     }
-    // declarationNode = declarationNode === this ? declarationNode : declarationNode.getDeclarationNode?.();
+    declarationNode = declarationNode === this ? declarationNode : declarationNode.getDeclarationNode?.();
     return declarationNode;
   }
 }
