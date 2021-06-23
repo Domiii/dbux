@@ -599,29 +599,10 @@ class ValueRefCollection extends Collection {
       }
       else {
         switch (category) {
-          case ValueTypeCategory.Array: {
-            value = [];
-            for (let i = 0; i < entry.serialized.length; ++i) {
-              const [childId, childValue] = entry.serialized[i];
-              if (childId) {
-                const childEntry = this.getById(childId);
-                if (!childEntry) {
-                  value[i] = '(Dbux: lookup failed)';
-                  this.logger.warn(`Could not lookup object property "${i}" (id = "${childId}"): ${JSON.stringify(childEntry.serialized)}`);
-                }
-                else {
-                  value[i] = this._deserializeValue(childEntry);
-                }
-              }
-              else {
-                value[i] = childValue;
-              }
-            }
-            break;
-          }
+          case ValueTypeCategory.Array: 
           case ValueTypeCategory.Object: {
             value = {};
-            for (const [key, childId, childValue] of entry.serialized) {
+            for (const [key, [childId, childValue]] of Object.entries(entry.serialized)) {
               if (childId) {
                 const childEntry = this.getById(childId);
                 if (!childEntry) {
