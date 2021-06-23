@@ -1,5 +1,5 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
-import SpecialIdentifierType from '@dbux/common/src/core/constants/SpecialIdentifierType';
+import SpecialIdentifierType, { lookupSpecialIdentifierType } from '@dbux/common/src/core/constants/SpecialIdentifierType';
 import { buildTraceExpressionVar } from '../instrumentation/builders/misc';
 import BaseId from './BaseId';
 import { ZeroNode } from '../instrumentation/builders/buildUtil';
@@ -9,12 +9,6 @@ const ConstantIds = new Set([
   'NaN',
   'Infinity'
 ]);
-
-
-const SpecialIdentifierTypeMap = {
-  module: SpecialIdentifierType.Module,
-  arguments: SpecialIdentifierType.Arguments
-};
 
 
 const DataNodeMetaBySpecialIdentifierType = {
@@ -28,15 +22,18 @@ export default class ReferencedIdentifier extends BaseId {
   isConstant;
 
   get specialType() {
-    return !this.binding ? SpecialIdentifierTypeMap[this.path.node.name] : null;
+    const { name } = this.path.node;
+    return !this.binding ?
+      lookupSpecialIdentifierType(name) :
+      null;
   }
 
   getDeclarationTidIdentifier() {
     const { specialType } = this;
 
     if (specialType) {
-    // hackfix: for now, just don't care about declarationTid
-    //    NOTE: can use `refId` to trace access, since they 100% coincide)
+      // hackfix: for now, just don't care about declarationTid
+      //    NOTE: can use `refId` to trace access, since they 100% coincide)
       return ZeroNode;
     }
     return super.getDeclarationTidIdentifier();
@@ -57,9 +54,9 @@ export default class ReferencedIdentifier extends BaseId {
           isNew: isConstant,
           omit: specialType && DataNodeMetaBySpecialIdentifierType[specialType]?.omit || false
         },
-        data: { }
+        data: {}
       },
-      meta: { }
+      meta: {}
     };
 
     if (specialType) {

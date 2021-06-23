@@ -1,12 +1,10 @@
 import SpecialIdentifierType from '@dbux/common/src/core/constants/SpecialIdentifierType';
-import TraceType from '@dbux/common/src/core/constants/TraceType';
 import { ZeroNode } from '../instrumentation/builders/buildUtil';
-import { buildTraceExpressionVar } from '../instrumentation/builders/misc';
 import BaseId from './BaseId';
 
 export default class ThisExpression extends BaseId {
   get specialType() {
-    return SpecialIdentifierType.This;
+    return SpecialIdentifierType.Super;
   }
 
   getDeclarationNode() {
@@ -24,18 +22,7 @@ export default class ThisExpression extends BaseId {
    * 
    */
   buildDefaultTrace() {
-    const traceData = {
-      path: this.path,
-      node: this,
-      staticTraceData: {
-        type: TraceType.Identifier
-      },
-      meta: {
-        build: buildTraceExpressionVar
-      }
-    };
-
-    return traceData;
+    return null;
   }
 
   // ###########################################################################
