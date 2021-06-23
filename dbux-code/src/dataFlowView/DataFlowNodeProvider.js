@@ -4,11 +4,11 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
 import BaseTreeViewNodeProvider from '../codeUtil/BaseTreeViewNodeProvider';
-import TraceNode from '../traceDetailsView/nodes/TraceNode';
 import DataFlowSearchModeType from './DataFlowSearchModeType';
 import EmptyNode from './EmptyNode';
 import EmptyDataNode from './EmptyDataNode';
 import DataFlowFilterModeType from './DataFlowFilterModeType';
+import ParentDataNode from './ParentDataNode';
 
 // eslint-disable-next-line no-unused-vars
 /** @typedef {import('@dbux/common/src/core/data/Trace').default} Trace */
@@ -55,20 +55,18 @@ export default class DataFlowNodeProvider extends BaseTreeViewNodeProvider {
   buildDataNodes(trace, nodeId) {
     const { applicationId, traceId } = trace;
     const dp = allApplications.getById(applicationId).dataProvider;
-    let dataNode;
-    if (nodeId) {
-      dataNode = dp.collections.dataNodes.getById(nodeId);
-      if (dataNode.traceId !== traceId) {
-        // sanity check
-        warn(`Rendering dataNode ${dataNode} but its trace is not selected.`)
-      }
+    if (!nodeId) {
+      ({ nodeId } = trace);
     }
-    else {
-      dataNode = dp.indexes.dataNodes.byTrace.getFirst(traceId);
-    }
-    
+    const dataNode = dp.collections.dataNodes.getById(nodeId);
+
     if (!dataNode) {
       return [EmptyDataNode.instance];
+    }
+
+    if (dataNode.traceId !== traceId) {
+      // sanity check
+      warn(`Rendering dataNode ${JSON.stringify(dataNode)} but its trace is not selected.`)
     }
 
     const { accessId, valueId } = dataNode;
@@ -87,9 +85,9 @@ export default class DataFlowNodeProvider extends BaseTreeViewNodeProvider {
       dataNodes = dataNodes?.filter(node => DataNodeType.is.Write(node.type))
     }
 
-    return dataNodes?.map(({ nodeId, traceId }) => {
-      const childTrace = dp.collections.traces.getById(traceId);
-      return this.buildNode(TraceNode, childTrace, null, { nodeId });
+    return dataNodes?.map((dataNode) => {
+      const trace = dp.collections.traces.getById(dataNode.traceId);
+      return this.buildNode(ParentDataNode, trace, null, { nodeId: dataNode.nodeId });
     }) || EmptyArray;
   }
 }

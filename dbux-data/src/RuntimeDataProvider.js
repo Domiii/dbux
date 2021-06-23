@@ -148,6 +148,7 @@ class ExecutionContextCollection extends Collection {
    */
   postIndexRaw(entries) {
     this.errorWrapMethod('setParamInputs', entries);
+    this.errorWrapMethod('setCallExpressionResultInputs', entries);
   }
 
   setParamInputs(contexts) {
@@ -155,7 +156,7 @@ class ExecutionContextCollection extends Collection {
     for (const { contextId } of contexts) {
       const paramTraces = util.getTracesOfContextAndType(contextId, TraceType.Param);
       if (!paramTraces.length) {
-        // function has no no parameters -> nothing to do
+        // function has no parameters -> nothing to do
         continue;
       }
       const bceTrace = util.getCallerTraceOfContext(contextId); // BCE
@@ -192,6 +193,33 @@ class ExecutionContextCollection extends Collection {
       }
 
       // TODO: `RestElement`
+    }
+  }
+
+  setCallExpressionResultInputs(contexts) {
+    const { dp, dp: { util } } = this;
+    for (const { contextId } of contexts) {
+      const returnTraces = util.getTracesOfContextAndType(contextId, TraceType.ReturnArgument);
+      if (!returnTraces.length) {
+        // function has no return value -> nothing to do
+        continue;
+      }
+      else if (returnTraces.length > 1) {
+        this.logger.error(`Found context containing more than one CER trace. contextId: ${contextId}, CER traceIds: [${returnTraces}]`);
+        continue;
+      }
+
+      const returnTrace = returnTraces[0];
+
+      const bceTrace = util.getCallerTraceOfContext(contextId); // BCE
+      if (!bceTrace) {
+        // no BCE -> must be root context (not called by us) -> nothing to do
+        continue;
+      }
+      const cerTrace = dp.collections.traces.getById(bceTrace.resultId);
+
+      const cerDataNode = dp.collections.dataNodes.getById(cerTrace.nodeId);
+      cerDataNode.inputs = [returnTrace.nodeId];
     }
   }
 
@@ -255,9 +283,19 @@ class TraceCollection extends Collection {
    */
   postAddRaw(traces) {
     // build dynamic call expression tree
+    this.errorWrapMethod('registerResultId', traces);
     this.errorWrapMethod('resolveCodeChunks', traces);
     this.errorWrapMethod('resolveCallIds', traces);
     this.errorWrapMethod('resolveErrorTraces', traces);
+  }
+
+  registerResultId(traces) {
+    for (const { traceId, resultCallId } of traces) {
+      if (resultCallId) {
+        const bceTrace = this.dp.collections.traces.getById(resultCallId);
+        bceTrace.resultId = traceId;
+      }
+    }
   }
 
   resolveCodeChunks(traces) {
@@ -419,13 +457,11 @@ class DataNodeCollection extends Collection {
           // NOTE: currently, last in `byAccessId` index is actually "the last before this one", since we are still resolving the index.
           return lastNode.valueId;
         }
-        else if (!TraceType.is.CallExpressionResult(traceType)) {
-          // eslint-disable-next-line max-len
-          this.logger.warn(`[getValueId] Cannot find valueId for empty inputs.\n    trace: ${this.dp.util.makeTraceInfo(traceId)}\n    dataNode: ${JSON.stringify(dataNode)}`);
-        }
         else {
-          return null;
+          // eslint-disable-next-line max-len
+          // this.logger.warn(`[getValueId] Cannot find valueId for empty inputs.\n    trace: ${this.dp.util.makeTraceInfo(traceId)}\n    dataNode: ${JSON.stringify(dataNode)}`);
         }
+        return traceId;
       }
     }
     return dataNode.valueId;
@@ -563,29 +599,10 @@ class ValueRefCollection extends Collection {
       }
       else {
         switch (category) {
-          case ValueTypeCategory.Array: {
-            value = [];
-            for (let i = 0; i < entry.serialized.length; ++i) {
-              const [childId, childValue] = entry.serialized[i];
-              if (childId) {
-                const childEntry = this.getById(childId);
-                if (!childEntry) {
-                  value[i] = '(Dbux: lookup failed)';
-                  this.logger.warn(`Could not lookup object property "${i}" (id = "${childId}"): ${JSON.stringify(childEntry.serialized)}`);
-                }
-                else {
-                  value[i] = this._deserializeValue(childEntry);
-                }
-              }
-              else {
-                value[i] = childValue;
-              }
-            }
-            break;
-          }
+          case ValueTypeCategory.Array: 
           case ValueTypeCategory.Object: {
             value = {};
-            for (const [key, childId, childValue] of entry.serialized) {
+            for (const [key, [childId, childValue]] of Object.entries(entry.serialized)) {
               if (childId) {
                 const childEntry = this.getById(childId);
                 if (!childEntry) {

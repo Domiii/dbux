@@ -11,6 +11,10 @@ export class TraceSelection {
   }
 
   selectTrace(trace, sender = null, nodeId = null) {
+    if (!nodeId) {
+      // select its node by default
+      nodeId = trace.nodeId || null;
+    }
     this._setSelectTrace(trace, nodeId);
     this._emitSelectionChangedEvent(sender, nodeId);
   }

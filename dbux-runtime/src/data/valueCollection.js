@@ -312,7 +312,7 @@ class ValueCollection extends Collection {
   _pushObjectProp(depth, prop, valueRef, value, serialized) {
     Verbose > 1 && this._logValue(`${' '.repeat(depth)}[${prop}]`, valueRef, value);
 
-    serialized.push([prop, valueRef && valueRef.refId, !valueRef && value]);
+    serialized[prop] = [valueRef && valueRef.refId, !valueRef && value];
   }
 
   /**
@@ -425,7 +425,7 @@ class ValueCollection extends Collection {
             }
 
             // start serializing
-            serialized = [];
+            serialized = {};
 
             const builtInSerializer = value.constructor ? builtInTypeSerializers.get(value.constructor) : null;
             if (builtInSerializer) {
