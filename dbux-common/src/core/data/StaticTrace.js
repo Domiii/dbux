@@ -35,7 +35,8 @@ export default class StaticTrace {
    * Other data.
    * Currently used by:
    * * `ME`: `{ optional }`
-   * * `BCE`: `{ argConfigs }`.
+   * * `BCE`: `{ argConfigs }`
+   * * `ReferencedIdentifier`: `{ specialType }`
    */
   data;
 }

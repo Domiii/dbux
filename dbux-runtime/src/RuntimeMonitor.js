@@ -1,6 +1,7 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
 import TraceType, { isBeforeCallExpression, isPopTrace } from '@dbux/common/src/core/constants/TraceType';
+import SpecialIdentifierType from '@dbux/common/src/core/constants/SpecialIdentifierType';
 import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 import staticProgramContextCollection from './data/staticProgramContextCollection';
 import executionContextCollection from './data/executionContextCollection';
@@ -29,6 +30,12 @@ const Verbose = 0;
 //     subClass.__proto__ = superClass;
 //   }
 // }
+
+const DataNodeMetaBySpecialIdentifierType = {
+  [SpecialIdentifierType.Module]: {
+    omit: true
+  }
+};
 
 /**
  * 
@@ -456,7 +463,8 @@ export default class RuntimeMonitor {
     }
 
     const varAccess = null;
-    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess, traceCollection.getDataNodeIdsByTraceIds(inputs));
+    inputs = traceCollection.getDataNodeIdsByTraceIds(inputs);
+    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess, inputs);
     return value;
   }
 
@@ -470,7 +478,14 @@ export default class RuntimeMonitor {
     }
 
     const varAccess = declarationTid && { declarationTid } || null;
-    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess);
+    const trace = traceCollection.getById(tid);
+    const { staticTraceId } = trace;
+    const { data } = staticTraceCollection.getById(staticTraceId);
+    const specialType = data?.specialType;
+    const dataNodeMeta = specialType && DataNodeMetaBySpecialIdentifierType[specialType];
+
+    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess, null, dataNodeMeta);
+    
     return value;
   }
 

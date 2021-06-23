@@ -36,8 +36,8 @@ export class DataNodeCollection extends Collection {
     return dataNode;
   }
 
-  createOwnDataNode(value, traceId, type, varAccess = null, inputs = null) {
-    const dataNode = this.createDataNode(value, traceId, type, varAccess, inputs);
+  createOwnDataNode(value, traceId, type, varAccess = null, inputs = null, meta = null) {
+    const dataNode = this.createDataNode(value, traceId, type, varAccess, inputs, meta);
     const trace = traceCollection.getById(traceId);
     trace.nodeId = dataNode.nodeId;
     return dataNode;
@@ -72,7 +72,7 @@ export class DataNodeCollection extends Collection {
     return writeNode;
   }
 
-  createDataNode(value, traceId, type, varAccess, inputs) {
+  createDataNode(value, traceId, type, varAccess, inputs, meta = null) {
     const dataNode = pools.dataNodes.allocate();
 
     dataNode.nodeId = this._all.length;
@@ -83,8 +83,15 @@ export class DataNodeCollection extends Collection {
     this.push(dataNode);
     
 
-    // value
-    const valueRef = valueCollection.registerValueMaybe(value, dataNode);
+    // valueRef
+    let valueRef;
+    if (meta?.omit) {
+      valueRef = valueCollection.addOmitted();
+      dataNode.value = undefined;
+    }
+    else {
+      valueRef = valueCollection.registerValueMaybe(value, dataNode);
+    }
 
     dataNode.refId = valueRef?.refId || 0;
     dataNode.varAccess = varAccess;

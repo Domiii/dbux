@@ -64,7 +64,7 @@ class ValueCollection extends Collection {
    * 
    * @returns {ValueRef}
    */
-  registerValueMaybe(value, dataNode) {
+  registerValueMaybe(value, dataNode, meta = null) {
     if (this.valuesDisabled) {
       return null;
     }
@@ -84,7 +84,7 @@ class ValueCollection extends Collection {
       dataNode.value = value;
     }
     else {
-      valueRef = this._serialize(value, nodeId, 1, category);
+      valueRef = this._serialize(value, nodeId, 1, category, meta);
       dataNode.value = undefined;
     }
     Verbose && this._logValue(`[/val] dataNode #${nodeId}:`, valueRef, category, value);
@@ -159,7 +159,7 @@ class ValueCollection extends Collection {
   /**
    * @return {ValueRef}
    */
-  _addOmitted() {
+  addOmitted() {
     if (!this._omitted) {
       this._omitted = this._addValueRef();
       this._finishValue(this._omitted, null, '(...)', ValuePruneState.Omitted);
@@ -318,7 +318,7 @@ class ValueCollection extends Collection {
    * @param {Map} visited
    * @return {ValueRef}
    */
-  _serialize(value, nodeId, depth = 1, category = null) {
+  _serialize(value, nodeId, depth = 1, category = null, meta = null) {
     // let serialized = serialize(category, value, serializationConfig);
     let serialized;
     let pruneState = ValuePruneState.Normal;
@@ -344,7 +344,7 @@ class ValueCollection extends Collection {
       return this._addValueDisabled();
     }
     if (depth > SerializationConfig.maxDepth) {
-      return this._addOmitted();
+      return this.addOmitted();
     }
 
     // serialize value
@@ -436,7 +436,7 @@ class ValueCollection extends Collection {
                 let childRef;
                 let childValue;
                 if (!this._canAccess(value)) {
-                  childRef = this._addOmitted();
+                  childRef = this.addOmitted();
                 }
                 else {
                   childValue = this._readProperty(value, prop);

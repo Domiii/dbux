@@ -1,6 +1,8 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
+import SpecialIdentifierType from '@dbux/common/src/core/constants/SpecialIdentifierType';
 import { buildTraceExpressionVar } from '../instrumentation/builders/misc';
 import BaseId from './BaseId';
+import { ZeroNode } from '../instrumentation/builders/buildUtil';
 
 const ConstantIds = new Set([
   'undefined',
@@ -8,24 +10,51 @@ const ConstantIds = new Set([
   'Infinity'
 ]);
 
+
+const SpecialIdentifierTypeMap = {
+  module: SpecialIdentifierType.Module,
+  arguments: SpecialIdentifierType.Arguments
+};
+
+
 export default class ReferencedIdentifier extends BaseId {
   isConstant;
+
+  get specialType() {
+    return SpecialIdentifierTypeMap[this.path.node.name];
+  }
+
+  getDeclarationTidIdentifier() {
+    const { specialType } = this;
+
+    if (specialType) {
+    // hackfix: for now, just don't care about declarationTid
+    //    NOTE: can use `refId` to trace access, since they 100% coincide)
+      return ZeroNode;
+    }
+    return super.getDeclarationTidIdentifier();
+  }
 
   /**
    * 
    */
   buildDefaultTrace() {
-    const { path, isConstant } = this;
+    const { path, isConstant, specialType } = this;
 
     const traceData = {
       path,
       node: this,
       staticTraceData: {
-        type: !isConstant ? TraceType.Identifier : TraceType.Literal
+        type: !isConstant ? TraceType.Identifier : TraceType.Literal,
+        data: { }
       },
-      meta: {
-      }
+      meta: { }
     };
+
+    if (specialType) {
+      traceData.staticTraceData.data.specialType = specialType;
+      // TODO: custom build functions by `specialType`
+    }
 
     if (!isConstant) {
       traceData.meta.build = buildTraceExpressionVar;
