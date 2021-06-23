@@ -4,11 +4,14 @@ import Enum from '../../util/Enum';
 let SpecialIdentifierType = {
   Module: 1,
   Arguments: 2,
-  Eval: 3,
-  Require: 4,
-  This: 5,
-  Super: 6,
-  Undefined: 20,
+  Undefined: 3,
+  Eval: 4,
+  
+  Require: 10,
+  Import: 11,
+
+  This: 20,
+  Super: 21,
 
   // NOTE: types past NaN are named as-is
   NaN: 100,
