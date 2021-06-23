@@ -27,10 +27,10 @@ set -e # cancel on error
 # fname="functionExpression1"
 # fname="classExpression1"
 # fname="params1"
-# fname="eval1"
+fname="eval1"
 # fname="params2"
 # fname="prototype1"
-fname="variableDeclarationPatterns1"
+# fname="variableDeclarationPatterns1"
 
 
 nodeArgs=""

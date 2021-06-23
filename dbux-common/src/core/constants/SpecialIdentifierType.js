@@ -10,7 +10,7 @@ let SpecialIdentifierType = {
   Super: 6,
   Undefined: 20,
 
-  // NOTE: types past NaN are upper case
+  // NOTE: types past NaN are named as-is
   NaN: 100,
   Infinity: 101
 };
@@ -23,15 +23,21 @@ let SpecialIdentifierType = {
 SpecialIdentifierType = new Enum(SpecialIdentifierType);
 
 
+const TypesByIdentifierName = Object.fromEntries(
+  SpecialIdentifierType.values
+    .map(val => {
+      let name = SpecialIdentifierType.nameFromForce(val);
+      if (val < SpecialIdentifierType.NaN) {
+        // NOTE: types before NaN are lower-case versions of the type name
+        name = name[0].toLowerCase() + name.substring(1);
+      }
+      return [name, val];
+    })
+);
+
 
 export function lookupSpecialIdentifierType(identifierName) {
-  const testName = identifierName[0].toUpperCase() + identifierName.substring(1);
-  const type = SpecialIdentifierType[testName];
-  if (type &&
-    (type >= SpecialIdentifierType.NaN || identifierName[0] === identifierName[0].toLowerCase())) {
-    return type;
-  }
-  return null;
+  return TypesByIdentifierName[identifierName];
 }
 
 const notTraceable = new Array(SpecialIdentifierType.getValueMaxIndex()).map(() => false);
