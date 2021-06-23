@@ -1,26 +1,64 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
+import SpecialIdentifierType from '@dbux/common/src/core/constants/SpecialIdentifierType';
 import { buildTraceExpressionVar } from '../instrumentation/builders/misc';
 import BaseId from './BaseId';
+import { ZeroNode } from '../instrumentation/builders/buildUtil';
+
+const ConstantIds = new Set([
+  'undefined',
+  'NaN',
+  'Infinity'
+]);
+
+
+const SpecialIdentifierTypeMap = {
+  module: SpecialIdentifierType.Module,
+  arguments: SpecialIdentifierType.Arguments
+};
+
 
 export default class ReferencedIdentifier extends BaseId {
-  // ###########################################################################
-  // inputs
-  // ###########################################################################
+  isConstant;
+
+  get specialType() {
+    return SpecialIdentifierTypeMap[this.path.node.name];
+  }
+
+  getDeclarationTidIdentifier() {
+    const { specialType } = this;
+
+    if (specialType) {
+    // hackfix: for now, just don't care about declarationTid
+    //    NOTE: can use `refId` to trace access, since they 100% coincide)
+      return ZeroNode;
+    }
+    return super.getDeclarationTidIdentifier();
+  }
 
   /**
    * 
    */
   buildDefaultTrace() {
+    const { path, isConstant, specialType } = this;
+
     const traceData = {
-      path: this.path,
+      path,
       node: this,
       staticTraceData: {
-        type: TraceType.Identifier
+        type: !isConstant ? TraceType.Identifier : TraceType.Literal,
+        data: { }
       },
-      meta: {
-        build: buildTraceExpressionVar
-      }
+      meta: { }
     };
+
+    if (specialType) {
+      traceData.staticTraceData.data.specialType = specialType;
+      // TODO: custom build functions by `specialType`
+    }
+
+    if (!isConstant) {
+      traceData.meta.build = buildTraceExpressionVar;
+    }
 
     return traceData;
   }
@@ -30,11 +68,11 @@ export default class ReferencedIdentifier extends BaseId {
   // ###########################################################################
 
   enter() {
-    // if (!binding) {
-    //   throw new Error(`Weird Babel issue - ReferencedIdentifier does not have binding - ${this}`);
-    // }
+    this.isConstant = ConstantIds.has(this.path.node.name);
 
-    this.peekStaticContext().addReferencedBinding(this);
+    if (!this.isConstant) {
+      this.peekStaticContext().addReferencedBinding(this);
+    }
   }
 
   // TODO: fix exports --

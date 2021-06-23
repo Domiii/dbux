@@ -8,6 +8,7 @@ import { isRealContextType } from '@dbux/common/src/core/constants/ExecutionCont
 import { isCallResult, hasCallId } from '@dbux/common/src/core/constants/traceCategorization';
 import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory, ValuePruneState } from '@dbux/common/src/core/constants/ValueTypeCategory';
 import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
+import { locToString } from './util/misc';
 
 /**
  * @typedef {import('./RuntimeDataProvider').default} DataProvider
@@ -467,6 +468,20 @@ export default {
     return null;
   },
 
+  getDataNodeByRefId(dp, refId) {
+    return dp.indexes.dataNodes.byRefId.get(refId);
+  },
+
+  getTraceIdByRefId(dp, refId) {
+    const dataNode = dp.indexes.dataNodes.byRefId.get(refId);
+    return dataNode?.traceId;
+  },
+
+  getTraceByRefId(dp, refId) {
+    const dataNode = dp.indexes.dataNodes.byRefId.get(refId);
+    return dataNode?.traceId && dp.util.getTrace(dataNode.traceId);
+  },
+
   // ###########################################################################
   // call related trace
   // ###########################################################################
@@ -872,19 +887,23 @@ export default {
   // trace info + debugging
   // ###########################################################################
 
-  makeStaticTraceInfo(dp, st) {
-    return `"${st?.displayName}" (stid=${st?.staticTraceId}, ${st?._traceId})`;
+  makeStaticTraceInfo(dp, traceId) {
+    const fpath = dp.util.getTraceProgramPath(traceId);
+    const st = dp.util.getStaticTrace(traceId);
+    const loc = locToString(st.loc);
+    const where = `${fpath}:${loc}`;
+    return `"${st?.displayName}" at ${where} (stid=${st?.staticTraceId})`;
   },
 
   /**
-   * TODO: move to `util`
+   * 
    */
-  makeTraceInfo(dp, trace) {
-    const { traceId } = trace;
-    const st = dp.util.getStaticTrace(traceId);
+  makeTraceInfo(dp, traceId) {
+    // const { traceId } = trace;
+    // const trace = this.dp.collections.traces.getById(traceId);
     const traceType = dp.util.getTraceType(traceId);
     const typeName = TraceType.nameFrom(traceType);
-    return `[${typeName}] #${traceId} ${dp.util.makeStaticTraceInfo(st)}`;
+    return `[${typeName}] #${traceId} ${dp.util.makeStaticTraceInfo(traceId)}`;
   },
 
   // ###########################################################################
