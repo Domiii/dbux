@@ -20,6 +20,7 @@ import { initUserEvent, emitSessionFinishedEvent, emitPracticeSessionEvent, onUs
 import BugDataProvider from './dataLib/BugDataProvider';
 import initLang, { getTranslationScope } from './lang';
 import upload from './fileUpload';
+import { checkSystemWithRequirement } from './checkSystem';
 
 const logger = newLogger('PracticeManager');
 // eslint-disable-next-line no-unused-vars
@@ -77,6 +78,10 @@ export default class ProjectsManager {
     // // these are used in dbux.webpack.config.base.js
     // 'copy-webpack-plugin@6'
   ];
+
+  _systemRequirement = {
+    node: {},
+  };
 
   /**
    * // NOTE: does not work - https://github.com/jsdoc/jsdoc/issues/1349
@@ -195,6 +200,8 @@ export default class ProjectsManager {
     if (!await this.stopPractice()) {
       return;
     }
+
+    await checkSystemWithRequirement(this, this._systemRequirement);
 
     const bugProgress = this.bdp.getBugProgressByBug(bug);
     if (!bugProgress) {

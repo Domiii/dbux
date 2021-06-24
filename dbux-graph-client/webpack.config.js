@@ -137,7 +137,7 @@ module.exports = (env, argv) => {
     target: 'web',
 
     // see https://stackoverflow.com/questions/54147824/can-the-vs-code-webview-developer-tools-deal-with-source-maps
-    devtool: 'eval-source-map',
+    devtool: 'source-map',
 
     // https://github.com/webpack/webpack/issues/2145
     // devtool: 'inline-module-source-map',
