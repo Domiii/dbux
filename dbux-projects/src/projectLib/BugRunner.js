@@ -142,6 +142,8 @@ export default class BugRunner {
     // init
     project.initProject();
 
+    await project.checkSystemRequirement();
+
     await project.installProject();
   }
 
