@@ -160,11 +160,16 @@ export default class Function extends BasePlugin {
   // ###########################################################################
 
   injectParamsTrace() {
-    const { state } = this.node;
+    const { state, path } = this.node;
     const { paramTraces } = this.data;
 
     const p = buildRegisterParams(state, paramTraces);
-    this.node.path.get('body').unshiftContainer("body", p);
+
+    // convert lambda expression to block with return statement
+    path.ensureBlock();
+
+    // insert parameter traces at the top
+    path.get('body').unshiftContainer("body", p);
   }
 
   buildPush = () => {
