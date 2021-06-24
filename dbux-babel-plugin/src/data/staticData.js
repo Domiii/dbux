@@ -2,8 +2,8 @@ import { isPlainObject } from 'lodash';
 import isString from 'lodash/isString';
 import { buildSource } from '../instrumentation/builders/common';
 
-// const Verbose = false;
-const Verbose = true;
+const Verbose = false;
+// const Verbose = true;
 
 export function buildDbuxInit(state) {
   const {
@@ -37,6 +37,7 @@ export function buildDbuxInit(state) {
     if (isString(runtimeCfg)) {
       try {
         JSON.parse(runtimeCfg);
+        runtimeCfgString = runtimeCfg;
       }
       catch (err) {
         throw new Error(`Invalid runtimeCfg is string but not JSON-parsable - "${err.message}": "${runtimeCfg}"`);
@@ -53,6 +54,8 @@ export function buildDbuxInit(state) {
     else {
       throw new Error(`Invalid runtimeCfg must be string or object but was: "${runtimeCfg}"`);
     }
+
+    Verbose && console.debug(`Received runtime cfg: ${runtimeCfgString}`);
   }
 
   // Verbose && console.timeEnd(`[Dbux] babel write 1 (stringify) "${filePath}"`);

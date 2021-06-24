@@ -1,7 +1,7 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
 import TraceType, { isBeforeCallExpression, isPopTrace } from '@dbux/common/src/core/constants/TraceType';
-import SpecialIdentifierType from '@dbux/common/src/core/constants/SpecialIdentifierType';
+// import SpecialIdentifierType from '@dbux/common/src/core/constants/SpecialIdentifierType';
 import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 import staticProgramContextCollection from './data/staticProgramContextCollection';
 import executionContextCollection from './data/executionContextCollection';
@@ -74,7 +74,7 @@ export default class RuntimeMonitor {
     staticContextCollection.addEntries(programId, staticContexts);
 
 
-    Verbose && debug(`addProgram ${programId}: ${programData.fileName}`); // (td=${!!runtimeCfg.tracesDisabled})
+    Verbose && debug(`addProgram ${programId}: ${programData.fileName} (tracesDisabled=${runtimeCfg.tracesDisabled})`);
 
     // change program-local _staticContextId to globally unique staticContextId
     for (let i = 0; i < staticTraces.length; ++i) {

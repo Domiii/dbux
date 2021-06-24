@@ -35,11 +35,10 @@ function getArgs(debugMode) {
   const runMode = debugMode ? 'debug' : 'run';
   const config = workspace.getConfiguration('');
 
-  // WARNING: for some reason, --enable-source-maps is very slow with Node@14.
+  // WARNING: For some reason, --enable-source-maps is very slow with Node@14.
   //          Good news: things are way better with Node@16.
-  //          Adding it when in debugger becomes unbearable (so we don't mix the two for now).
-  //          Must be a bug or misconfiguration somewhere.
-  //          Angular has similar issues: https://github.com/angular/angular-cli/issues/5423
+  //          But with old Node, adding it when in debugger becomes unbearable (so we don't mix the two for now).
+  //          Angular reported similar issues: https://github.com/angular/angular-cli/issues/5423
 
   let nodeArgs = config.get(`dbux.${runMode}.nodeArgs`) + ' --stack-trace-limit=1000';
   // nodeArgs += ' --enable-source-maps';

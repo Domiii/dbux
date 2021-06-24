@@ -192,9 +192,9 @@ export default class ProgramMonitor {
   // ###########################################################################
 
   newTraceId = (inProgramStaticTraceId) => {
-    if (this.areTracesDisabled) {
-      return -1;
-    }
+    // if (this.areTracesDisabled) {
+    //   return -1;
+    // }
     return this._runtimeMonitor.newTraceId(this.getProgramId(), inProgramStaticTraceId);
   }
 
