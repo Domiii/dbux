@@ -492,7 +492,7 @@ class DataNodeCollection extends Collection {
       if (declarationTid) {
         key = declarationTid;
       }
-      else if (objectTid && (prop ?? null) !== null) {
+      else if (objectTid) {
         const objectDataNode = this.dp.indexes.dataNodes.byTrace.getFirst(objectTid);
         const objectValueId = objectDataNode.valueId;
         if (!objectValueId) {
@@ -505,7 +505,9 @@ class DataNodeCollection extends Collection {
         }
       }
       else {
-        this.logger.error(`Trying to generate accessId with illegal dataNode: ${JSON.stringify(dataNode)}`);
+        const { traceId } = dataNode;
+        const traceInfo = this.dp.util.makeTraceInfo(traceId);
+        this.logger.error(`Trying to generate accessId with illegal dataNode: ${JSON.stringify(dataNode)}\n  at trace: ${traceInfo}`);
         return null;
       }
 
