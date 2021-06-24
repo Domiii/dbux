@@ -469,7 +469,9 @@ export default {
       valueString = 'undefined';
     }
     else {
-      valueString = JSON.stringify(value);
+      // TODO: fix this
+      // valueString = JSON.stringify(value);
+      valueString = value?.toString() || String(value);
     }
 
     // hackfix: we cache this thing
