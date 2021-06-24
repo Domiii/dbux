@@ -31,7 +31,8 @@ set -e # cancel on error
 # fname="params2"
 # fname="prototype1"
 # fname="variableDeclarationPatterns1"
-fname="conditionalExpressions1"
+# fname="conditionalExpressions1"
+fname="memberExpressions3"
 
 
 nodeArgs=""

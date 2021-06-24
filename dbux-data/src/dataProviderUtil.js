@@ -1,4 +1,5 @@
 import TraceType, { hasDynamicTypes, isTracePop, isBeforeCallExpression } from '@dbux/common/src/core/constants/TraceType';
+import SpecialIdentifierType from '@dbux/common/src/core/constants/SpecialIdentifierType';
 import { pushArrayOfArray } from '@dbux/common/src/util/arrayUtil';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
@@ -37,6 +38,13 @@ export default {
     else {
       return programContext._moduleName = parseNodeModuleName(programContext.filePath);
     }
+  },
+
+  getAllProgramModuleNames(dp, startId = 1) {
+    const programIds = new Set(
+      dp.collections.staticProgramContexts.getAllActual(startId).map(p => p.programId)
+    );
+    return Array.from(programIds).map(programId => dp.util.getProgramModuleName(programId));
   },
 
   // ###########################################################################
@@ -636,6 +644,34 @@ export default {
     return staticTrace.resultCallId || staticTrace.callId;
   },
 
+  getCallArgTraces(dp, callId) {
+    const bceTrace = dp.collections.traces.getById(callId);
+    return bceTrace.data?.argTids.map(tid => dp.collections.traces.getById(tid));
+  },
+
+  getCallArgDataNodes(dp, callId) {
+    const argTraces = dp.util.getCallArgTraces(callId);
+    const { argConfigs } = dp.util.getStaticTrace(callId).data;
+    return argTraces.flatMap((t, i) => {
+      const dataNodes = util.getDataNodesOfTrace(t.traceId);
+      if (!argConfigs[i]?.isSpread) {
+        // not spread -> take the argument's own `dataNode`
+        return dataNodes[0];
+      }
+      // spread -> take all of the argument's additional `dataNode`s
+      return dataNodes.slice(1);
+    });
+  },
+
+  /**
+   * Returns array of values of args, but only for primitive values.
+   * Non-primitive argument values will be `undefined`.
+   */
+  getCallArgPrimitiveValues(dp, callId) {
+    const dataNodes = dp.util.getCallArgDataNodes(callId);
+    return dataNodes?.map(node => node.value);
+  },
+
   // ###########################################################################
   // contexts
   // ###########################################################################
@@ -796,6 +832,34 @@ export default {
   getTraceFileName(dp, traceId) {
     const programId = dp.util.getTraceProgramId(traceId);
     return programId && dp.collections.staticProgramContexts.getById(programId).fileName || null;
+  },
+
+  // ###########################################################################
+  // SpecialIdentifierType
+  // ###########################################################################
+
+  getTracesOfSpecialIdentifierType(dp, specialType, startId = 1) {
+    return dp.indexes.traces.bySpecialIdentifierType.get(specialType);
+  },
+
+  getAllRequireTraces(dp, startId = 1) {
+    return dp.util.getTracesOfSpecialIdentifierType(SpecialIdentifierType.Require, startId);
+  },
+
+  getAllRequirePaths(dp, startId = 1) {
+    // NOTE: these should be BCE traces, meaning traceId === callId
+    const traces = dp.util.getAllRequireTraces(startId);
+    return traces.map(t => dp.util.getCallArgPrimitiveValues(t.traceId)?.[0]);
+  },
+
+  getAllRequireModuleNames(dp, startId = 1) {
+    const set = new Set(
+      dp.util.getAllRequirePaths(startId)
+        .map(p => p.split('/', 1)[0])
+    );
+    set.delete('.');
+    set.delete('..');
+    return Array.from(set);
   },
 
   // ###########################################################################
@@ -1049,7 +1113,7 @@ export default {
   },
 
   // ###########################################################################
-  // dynamic tracing
+  // dynamic tracing meta
   // ###########################################################################
 
   /**
