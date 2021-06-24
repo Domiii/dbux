@@ -1,5 +1,7 @@
 import path from 'path';
 import difference from 'lodash/difference';
+import minBy from 'lodash/minBy';
+import maxBy from 'lodash/maxBy';
 import NestedError from '@dbux/common/src/NestedError';
 import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
 import Trace from '@dbux/common/src/core/data/Trace';
@@ -681,7 +683,7 @@ export default class RuntimeDataProvider extends DataProviderBase {
     const oldRequireModuleNames = this.util.getAllRequireModuleNames();
     const result = super.addData(data, isRaw);
 
-    this._reportNewDataStats(allData, oldRequireModuleNames);
+    this._reportNewDataStats(data, oldRequireModuleNames);
 
     return result;
   }
@@ -702,29 +704,31 @@ export default class RuntimeDataProvider extends DataProviderBase {
       .join('\n ');
 
     // require stats
-    // TODO: import + dynamic `import`
+    // TODO: import + dynamic `import``
     const allRequireModuleNames = this.util.getAllRequireModuleNames();
     const newRequireModuleNames = difference(allRequireModuleNames, oldRequireModuleNames);
-    const requireInfo = `Newly required modules (${newRequireModuleNames.length}/${allRequireModuleNames.length}): ${newRequireModuleNames.join(', ')}`;
+    const requireInfo = `Newly required external modules (${newRequireModuleNames.length}/${allRequireModuleNames.length}): ${newRequireModuleNames.join(', ')}`;
 
     // program stats
     const programData = collectionStats.staticProgramContexts;
     const minProgramId = programData?.min;
-    const allModuleNames = this.dp.util.getAllProgramModuleNames();
-    const newModuleNames = minProgramId && this.dp.util.getAllProgramModuleNames(minProgramId);
-    const moduleInfo = `Newly recorded modules (${newModuleNames.length}/${allModuleNames.length}): ${newModuleNames.join(', ')}`;
+    const allModuleNames = this.util.getAllExternalProgramModuleNames();
+    const newModuleNames = minProgramId && this.util.getAllExternalProgramModuleNames(minProgramId);
+    const moduleInfo = `Newly recorded external modules (${newModuleNames.length}/${allModuleNames.length}): ${newModuleNames.join(', ')}`;
 
     const allMissingModules = difference(allRequireModuleNames, allModuleNames);
     const newMissingModules = difference(newRequireModuleNames, newModuleNames);
-    const missingModuleInfo = newMissingModules.length && `Modules missing recording (${newMissingModules}/${allMissingModules}): ${newMissingModules.join(', ')}`;
+    const missingModuleInfo = newMissingModules.length && 
+      `External modules missing recording (${newMissingModules.length}/${allMissingModules.length}): ${newMissingModules.join(', ')}`;
 
     // final message
     const msgs = [
       `##### Data received #####\nCollection Data:\n ${collectionInfo}`,
+      '',
       requireInfo,
       moduleInfo,
     ];
     missingModuleInfo && msgs.push(missingModuleInfo);
-    this.logger.debug(msgs.join('\n\n'));
+    this.logger.debug(msgs.join('\n'));
   }
 }

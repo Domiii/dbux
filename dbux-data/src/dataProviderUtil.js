@@ -28,8 +28,11 @@ export default {
     return dp.collections.staticProgramContexts.getById(programId)?.filePath || null;
   },
 
-  /** @param {DataProvider} dp */
-  getProgramModuleName(dp, programId) {
+  /** 
+   * @param {DataProvider} dp
+   * @return {Array.<string>} Names of all modules from `node_modules` folders that were executed.
+   */
+  getExternalProgramModuleName(dp, programId) {
     const programContext = dp.collections.staticProgramContexts.getById(programId);
 
     if ('_moduleName' in programContext) {
@@ -40,11 +43,17 @@ export default {
     }
   },
 
-  getAllProgramModuleNames(dp, startId = 1) {
+  getAllExternalProgramModuleNames(dp, startId = 1) {
     const programIds = new Set(
-      dp.collections.staticProgramContexts.getAllActual(startId).map(p => p.programId)
+      dp.collections.staticProgramContexts
+        .getAllActual(startId)
+        .map(p => dp.util.getExternalProgramModuleName(p.programId))
     );
-    return Array.from(programIds).map(programId => dp.util.getProgramModuleName(programId));
+
+    // NOTE: `getExternalProgramModuleName` returns null if a program is not in `node_modules`.
+    programIds.delete(null);
+
+    return Array.from(programIds);
   },
 
   // ###########################################################################
@@ -128,7 +137,7 @@ export default {
   getContextModuleName(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
     const staticContext = dp.collections.staticContexts.getById(context.staticContextId);
-    return dp.util.getProgramModuleName(staticContext.programId);
+    return dp.util.getExternalProgramModuleName(staticContext.programId);
   },
 
   // ###########################################################################
@@ -653,7 +662,7 @@ export default {
     const argTraces = dp.util.getCallArgTraces(callId);
     const { argConfigs } = dp.util.getStaticTrace(callId).data;
     return argTraces.flatMap((t, i) => {
-      const dataNodes = util.getDataNodesOfTrace(t.traceId);
+      const dataNodes = dp.util.getDataNodesOfTrace(t.traceId);
       if (!argConfigs[i]?.isSpread) {
         // not spread -> take the argument's own `dataNode`
         return dataNodes[0];
@@ -839,7 +848,7 @@ export default {
   // ###########################################################################
 
   getTracesOfSpecialIdentifierType(dp, specialType, startId = 1) {
-    return dp.indexes.traces.bySpecialIdentifierType.get(specialType);
+    return dp.indexes.traces.bySpecialIdentifierType.get(specialType) || EmptyArray;
   },
 
   getAllRequireTraces(dp, startId = 1) {

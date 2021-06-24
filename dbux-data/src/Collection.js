@@ -132,6 +132,10 @@ export default class Collection {
     return this._all[id];
   }
 
+  getAllActual(startId = 1) {
+    return this._all.slice(startId);
+  }
+
   getLast() {
     if (!this._all.length) {
       return null;

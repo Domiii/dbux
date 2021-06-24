@@ -14,7 +14,7 @@ export default class TracesBySpecialIdentifierTypeIndex extends CollectionIndex 
    * @param {Trace} trace
    */
   makeKey(dp, trace) {
-    const { data } = dp.collections.staticContexts.getById(trace.staticTraceId);
+    const { data } = dp.collections.staticTraces.getById(trace.staticTraceId);
 
     return data?.specialType || 0;
   }

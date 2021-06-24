@@ -39,6 +39,7 @@ import DataNodesByTraceIndex from './impl/indexes/DataNodesByTraceIndex';
 import DataNodesByAccessIdIndex from './impl/indexes/DataNodesByAccessIdIndex';
 import DataNodesByValueIdIndex from './impl/indexes/DataNodesByValueIdIndex';
 import DataNodesByRefIdIndex from './impl/indexes/DataNodesByRefIdIndex';
+import TracesBySpecialIdentifierTypeIndex from './impl/indexes/TracesBySpecialIdentifierTypeIndex';
 
 
 export function newDataProvider(application) {
@@ -81,6 +82,7 @@ export function newDataProvider(application) {
   dataProvider.addIndex(new ErrorTracesByRunIndex());
 
   dataProvider.addIndex(new TracesByRealContextIndex());
+  dataProvider.addIndex(new TracesBySpecialIdentifierTypeIndex());
 
   // data + values
   dataProvider.addIndex(new TracesByRefIdIndex());

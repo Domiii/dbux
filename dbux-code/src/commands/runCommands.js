@@ -44,12 +44,12 @@ function getArgs(debugMode) {
   // nodeArgs += ' --enable-source-maps';
   nodeArgs += debugMode ? ' --inspect-brk' : '';
 
-  let dbuxArgs = config.get(`dbux.${runMode}.dbuxArgs`);
+  let dbuxArgs = config.get(`dbux.${runMode}.dbuxArgs`) || '--esnext --verbose=1';
   let env = config.get(`dbux.${runMode}.env`);
   dbuxArgs += `${parseEnv(env)}`;
 
-  let packageWhitelists = config.get(`dbux.packageWhitelist`);
-  if (packageWhitelists) dbuxArgs += ` -w '${packageWhitelists}'`;
+  let packageWhitelists = config.get(`dbux.packageWhitelist`) || '.*';
+  if (packageWhitelists) dbuxArgs += ` --pw=${packageWhitelists}`;
 
   let programArgs = config.get(`dbux.${runMode}.programArgs`);
   if (programArgs) programArgs = ` ${programArgs}`;
