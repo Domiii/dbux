@@ -235,13 +235,15 @@ This may be solved by using \`Delete project folder\` button.`);
    * Clone + install
    */
   async installProject() {
-    await checkSystemWithRequirement(this.manager, this.systemRequirements);
-
     // git clone
     await this.gitClone();
 
     // run hook
     await this.install();
+  }
+
+  async checkSystemRequirement() {
+    await checkSystemWithRequirement(this.manager, this.systemRequirements);
   }
 
   /**
