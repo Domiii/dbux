@@ -27,10 +27,11 @@ set -e # cancel on error
 # fname="functionExpression1"
 # fname="classExpression1"
 # fname="params1"
-fname="eval1"
+# fname="eval1"
 # fname="params2"
 # fname="prototype1"
 # fname="variableDeclarationPatterns1"
+fname="conditionalExpressions1"
 
 
 nodeArgs=""
@@ -59,10 +60,16 @@ outPath="./samples/__samplesInput__/$fname.inst.js"
 # x=$(( $isInstrument ))
 # echo "$dbuxCmd i:$isInstrument x:$x"
 
-node $nodeArgs --enable-source-maps --stack-trace-limit=100 "./node_modules/@dbux/cli/bin/dbux.js" i --esnext "./samples/__samplesInput__/$fname.js" $outPath
+if [[ "$dbuxCmd" != "rr" ]]
+then
+  node $nodeArgs --enable-source-maps --stack-trace-limit=100 "./node_modules/@dbux/cli/bin/dbux.js" i --esnext "./samples/__samplesInput__/$fname.js" $outPath
+fi
 
-# NOTE: --enable-source-maps will mess things up when executing the raw output
-node $nodeArgs --stack-trace-limit=100 -r "@dbux/runtime" $outPath
+if [[ "$dbuxCmd" = "r" ]] || [[ "$dbuxCmd" = "rr" ]]
+then
+  # NOTE: --enable-source-maps will mess things up when executing the raw output
+  node $nodeArgs --stack-trace-limit=100 -r "@dbux/runtime" $outPath
+fi
 
 # if (( $isInstrument ))
 # then

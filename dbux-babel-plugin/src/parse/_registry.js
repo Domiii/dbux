@@ -30,6 +30,7 @@ import ReferencedIdentifier from './ReferencedIdentifier';
 import ReturnStatement from './ReturnStatement';
 import SequenceExpression from './SequenceExpression';
 import SpreadElement from './SpreadElement';
+import Super from './Super';
 import SwitchCase from './SwitchCase';
 import SwitchStatement from './SwitchStatement';
 import TemplateLiteral from './TemplateLiteral';
@@ -74,6 +75,7 @@ init(ReferencedIdentifier);
 init(ReturnStatement);
 init(SequenceExpression);
 init(SpreadElement);
+init(Super);
 init(SwitchCase);
 init(SwitchStatement);
 init(TemplateLiteral);
@@ -116,6 +118,7 @@ export {
   ReturnStatement,
   SequenceExpression,
   SpreadElement,
+  Super,
   SwitchCase,
   SwitchStatement,
   TemplateLiteral,

@@ -457,7 +457,7 @@ export default class RuntimeMonitor {
     }
 
     const varAccess = null;
-    inputs = traceCollection.getDataNodeIdsByTraceIds(inputs);
+    inputs = traceCollection.getDataNodeIdsByTraceIds(tid, inputs);
     dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess, inputs);
     return value;
   }
@@ -477,7 +477,7 @@ export default class RuntimeMonitor {
     const { dataNode } = staticTraceCollection.getById(staticTraceId);
 
     dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess, null, dataNode);
-    
+
     return value;
   }
 
@@ -519,7 +519,7 @@ export default class RuntimeMonitor {
       declarationTid = tid;
     }
     const varAccess = declarationTid && { declarationTid };
-    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess, traceCollection.getDataNodeIdsByTraceIds(inputs));
+    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess, traceCollection.getDataNodeIdsByTraceIds(tid, inputs));
     return value;
   }
 
@@ -537,7 +537,7 @@ export default class RuntimeMonitor {
       objectTid,
       prop: propValue
     };
-    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess, traceCollection.getDataNodeIdsByTraceIds(inputs));
+    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess, traceCollection.getDataNodeIdsByTraceIds(tid, inputs));
     return value;
   }
 
@@ -689,6 +689,11 @@ export default class RuntimeMonitor {
     // for each prop: add (new) write node which has (original) read node as input
     for (let i = 0; i < entries.length; i++) {
       const propTid = propTids[i];
+      if (!propTid) {
+        const traceInfo = traceCollection.makeTraceInfo(objectTid);
+        warn(new Error(`Missing propTid #${i} in traceObjectExpression\n  at trace #${objectTid}: ${traceInfo} `));
+        continue;
+      }
 
       if (argConfigs[i].isSpread) {
         // [spread]

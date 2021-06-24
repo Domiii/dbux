@@ -51,7 +51,7 @@ export class DataNodeCollection extends Collection {
   createWriteNodeFromTrace(traceId, varAccess) {
     const trace = traceCollection.getById(traceId);
     if (!trace) {
-      this.logger.warn(`Could not lookup trace of traceId ${traceId} in createWriteNodeFromTrace`);
+      this.logger.warn(new Error(`Could not lookup trace of traceId ${traceId} in createWriteNodeFromTrace`));
       return null;
     }
     const { nodeId: readNodeId } = trace;
@@ -84,7 +84,7 @@ export class DataNodeCollection extends Collection {
     dataNode.inputs = inputs;
 
     this.push(dataNode);
-    
+
 
     // valueRef
     const valueRef = valueCollection.registerValueMaybe(value, dataNode, meta);
