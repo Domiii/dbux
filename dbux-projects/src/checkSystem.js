@@ -1,12 +1,10 @@
 import merge from 'lodash/merge';
 import semver from 'semver';
+import isArray from 'lodash/isArray';
+import isFunction from 'lodash/isFunction';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { whichNormalized } from '@dbux/common-node/src/util/pathUtil';
 import Process from './util/Process';
-import isArray from 'lodash/isArray';
-import { config } from 'yargs';
-import isFunction from 'lodash/isFunction';
-
 
 /** @typedef {import('./ProjectsManager').default} ProjectManager */
 
