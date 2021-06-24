@@ -690,34 +690,41 @@ export default class RuntimeDataProvider extends DataProviderBase {
     const collectionStats = Object.fromEntries(
       Object.entries(data)
         .map(([key, arr]) => ([key, {
-          len: arr.length, 
+          len: arr.length,
           min: minBy(arr, entry => entry._id)?._id,
           max: maxBy(arr, entry => entry._id)?._id
         }]))
     );
-    
+
     // collection stats
     const collectionInfo = Object.entries(collectionStats)
       .map(([key, { len, min, max }]) => `${len} ${key} (${min}~${max})`)
       .join('\n ');
 
     // require stats
+    // TODO: import + dynamic `import`
     const allRequireModuleNames = this.util.getAllRequireModuleNames();
     const newRequireModuleNames = difference(allRequireModuleNames, oldRequireModuleNames);
+    const requireInfo = `Newly required modules (${newRequireModuleNames.length}/${allRequireModuleNames.length}): ${newRequireModuleNames.join(', ')}`;
 
     // program stats
     const programData = collectionStats.staticProgramContexts;
     const minProgramId = programData?.min;
     const allModuleNames = this.dp.util.getAllProgramModuleNames();
     const newModuleNames = minProgramId && this.dp.util.getAllProgramModuleNames(minProgramId);
-    const moduleInfo = `Newly executed modules (${newModuleNames.length}/${allModuleNames.length}): ${newModuleNames.join(', ')}`;
-    const requireInfo = `Newly required modules (${newRequireModuleNames.length}/${allRequireModuleNames.length}): ${newRequireModuleNames.join(', ')}`;
+    const moduleInfo = `Newly recorded modules (${newModuleNames.length}/${allModuleNames.length}): ${newModuleNames.join(', ')}`;
+
+    const allMissingModules = difference(allRequireModuleNames, allModuleNames);
+    const newMissingModules = difference(newRequireModuleNames, newModuleNames);
+    const missingModuleInfo = newMissingModules.length && `Modules missing recording (${newMissingModules}/${allMissingModules}): ${newMissingModules.join(', ')}`;
 
     // final message
-    this.logger.debug([
+    const msgs = [
       `##### Data received #####\nCollection Data:\n ${collectionInfo}`,
+      requireInfo,
       moduleInfo,
-      requireInfo
-    ].join('\n\n'));
+    ];
+    missingModuleInfo && msgs.push(missingModuleInfo);
+    this.logger.debug(msgs.join('\n\n'));
   }
 }
