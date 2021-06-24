@@ -39,6 +39,7 @@ import DataNodesByTraceIndex from './impl/indexes/DataNodesByTraceIndex';
 import DataNodesByAccessIdIndex from './impl/indexes/DataNodesByAccessIdIndex';
 import DataNodesByValueIdIndex from './impl/indexes/DataNodesByValueIdIndex';
 import DataNodesByRefIdIndex from './impl/indexes/DataNodesByRefIdIndex';
+import DataNodesByObjectRefIdIndex from './impl/indexes/DataNodesByObjectRefIdIndex';
 
 
 export function newDataProvider(application) {
@@ -88,6 +89,7 @@ export function newDataProvider(application) {
   dataProvider.addIndex(new DataNodesByAccessIdIndex());
   dataProvider.addIndex(new DataNodesByValueIdIndex());
   dataProvider.addIndex(new DataNodesByRefIdIndex());
+  dataProvider.addIndex(new DataNodesByObjectRefIdIndex());
 
   // complex indexes (that have dependencies)
   // NOTE: we are currently solving index dependencies by simply adding depdendents after dependees

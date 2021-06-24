@@ -2,47 +2,31 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import ValueTypeCategory from '@dbux/common/src/core/constants/ValueTypeCategory';
 import { isTraceExpression } from '@dbux/common/src/core/constants/TraceType';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
-import isEmpty from 'lodash/isEmpty';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
-import { makeTreeChildren } from '../../helpers/treeViewHelpers';
 import { valueRender } from '../valueRender';
+import EmptyValueNode from './EmptyValueNode';
 
-const noValueMessage = '(no value or undefined)';
 
 export default class ValueTDNode extends BaseTreeViewNode {
-  static makeTraceDetail(trace/* , parent */) {
-    return trace;
-  }
-
-  static makeProperties(trace/* , parent, detail */) {
+  static makeProperties({ nodeId }, parent, { trace }) {
     const { applicationId, traceId } = trace;
     const dp = allApplications.getById(applicationId).dataProvider;
-    const hasValue = dp.util.doesTraceHaveValue(traceId);
-    const value = hasValue ? dp.util.getTraceValue(traceId) : undefined;
-    const valueMessage = hasValue ? dp.util.getTraceValueMessage(traceId) : undefined;
-    const hasChildren = dp.util.isTracePlainObjectOrArrayValue(traceId) && !isEmpty(value);
+    const value = dp.util.getDataNodeValuePrimitive(nodeId);
+    const hasChildren = dp.util.isDataNodePlainObjectOrArrayValue(nodeId);
 
     return {
       value,
-      valueMessage,
-      hasValue,
       hasChildren
     };
   }
 
-  static makeLabel(trace, parent, { value, valueMessage, hasValue, hasChildren }) {
+  static makeLabel(dataNode, parent, { key, trace, value, hasChildren }) {
     const dp = allApplications.getById(trace.applicationId).dataProvider;
     const traceType = dp.util.getTraceType(trace.traceId);
-    if (!hasValue) {
-      return noValueMessage;
-    }
-    if (valueMessage) {
-      return valueMessage;
-    }
     if (isTraceExpression(traceType) && !hasChildren) {
-      return `Value: ${JSON.stringify(value)}`;
+      return `${key}: ${JSON.stringify(value)}`;
     }
-    return 'Value';
+    return key;
   }
 
   get clickUserActionType() {
@@ -54,9 +38,13 @@ export default class ValueTDNode extends BaseTreeViewNode {
   }
 
   get valueRef() {
-    const { trace: { applicationId, traceId } } = this;
+    const { trace: { applicationId }, dataNode: { nodeId } } = this;
     const dp = allApplications.getById(applicationId).dataProvider;
-    return dp.util.getTraceValueRef(traceId);
+    return dp.util.getDataNodeValueRef(nodeId);
+  }
+
+  get dataNode() {
+    return this.entry;
   }
 
   canHaveChildren() {
@@ -73,10 +61,23 @@ export default class ValueTDNode extends BaseTreeViewNode {
   }
 
   buildChildren() {
-    const { value, hasChildren } = this;
+    const { hasChildren, trace, dataNode: { nodeId } } = this;
+    const selectedNodeId = this.selectedNodeId || nodeId;
 
     if (hasChildren) {
-      return makeTreeChildren(value);
+      const { applicationId } = trace;
+      const dp = allApplications.getById(applicationId).dataProvider;
+      const entries = Object.entries(dp.util.constructValueObjectShallow(nodeId, selectedNodeId));
+
+      if (entries.length) {
+        return entries.map(([key, nodeId]) => {
+          const dataNode = dp.collections.dataNodes.getById(nodeId);
+          return this.treeNodeProvider.maybeBuildTraceDetailNode(ValueTDNode, dataNode, this, { key, trace, selectedNodeId });
+        });
+      }
+      else {
+        return [EmptyValueNode.instance];
+      }
     }
     return null;
   }
