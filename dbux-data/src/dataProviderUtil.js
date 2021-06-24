@@ -411,7 +411,7 @@ export default {
     else {
       // TODO: fix this
       // valueString = JSON.stringify(value);
-      valueString = value?.toString() || String(value);
+      valueString = value?.toString?.() || String(value);
     }
 
     // hackfix: we cache this thing
