@@ -3,6 +3,10 @@ import semver from 'semver';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { whichNormalized } from '@dbux/common-node/src/util/pathUtil';
 import Process from './util/Process';
+import isArray from 'lodash/isArray';
+import { config } from 'yargs';
+import isFunction from 'lodash/isFunction';
+
 
 /** @typedef {import('./ProjectsManager').default} ProjectManager */
 
@@ -90,6 +94,29 @@ async function _checkSystem(projectManager, requirements, calledFromUser) {
         message += `✓  ${program}\n    Found at "${result.path}"`;
         result.success = true;
       }
+      
+      const customRequirement = requirement.custom;
+      if (customRequirement) {
+        if (isArray(customRequirement)) {
+          for (const customRequirementFunction of customRequirement) {
+            if (isFunction(customRequirementFunction)) {
+              const customResult = await customRequirementFunction?.();
+              message += `${customResult}\n`;
+            } else {
+              warn("Provided custom requirement is not a function");
+            }
+          }
+        } else if (isFunction(customRequirement)) {
+          try {
+            const customResult = await customRequirement?.();
+            message += `\n✓  ${customResult}`;
+          } catch (e) {
+            message += `\nx  ${e.message}`;
+          }
+        } else {
+          warn("Provided custom requirement is not a function");
+        }
+      }
     }
     else {
       // TOTRANSLATE
@@ -152,7 +179,19 @@ export function getRequirement(fullCheck) {
       bash: {},
       node: { version: ">=12" },
       npm: {},
-      git: {},
+      git: {
+        custom: async () => {
+          const gitConfig = await Process.execCaptureOut(`git config -l`);
+          const configs = Object.fromEntries(gitConfig.split("\n").map(line => line.split('=')));
+          const checkKeys = ["user.name", "user.email"];
+          for (const checkKey of checkKeys) {
+            if (!(checkKey in configs)) {
+              throw new Error(`Can't find git config with key ${checkKey}`);
+            }
+          }
+          return "Found all required configs";
+        }
+      },
     };
   }
 }
