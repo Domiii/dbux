@@ -1,6 +1,12 @@
-module.exports = Test;
+// module.exports = Test;
 
-console.log(Object.keys(Object.assign({}, module)));
+// console.log(Object.keys(Object.assign({}, module)));
 
-function Test() {
-}
+// function Test() {
+// }
+
+exports.f = function f(n = 1) {
+  if (n) {
+    f(n);
+  }
+};

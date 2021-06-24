@@ -165,7 +165,12 @@ class ExecutionContextCollection extends Collection {
         continue;
       }
       const callId = bceTrace.traceId;
-      const argTraces = bceTrace.data.argTids.map(tid => dp.collections.traces.getById(tid));
+      if (!bceTrace.data) {
+        // TODO: odd bug
+        this.logger.warn(`bceTrace.data is missing in "setParamInputs" for trace "${util.makeTraceInfo(callId)}"`);
+        continue;
+      }
+      const argTraces = bceTrace.data?.argTids.map(tid => dp.collections.traces.getById(tid));
       const { argConfigs } = util.getStaticTrace(callId).data;
 
       // get `argDataNodes`
@@ -218,8 +223,13 @@ class ExecutionContextCollection extends Collection {
       }
       const cerTrace = dp.collections.traces.getById(bceTrace.resultId);
 
-      const cerDataNode = dp.collections.dataNodes.getById(cerTrace.nodeId);
-      cerDataNode.inputs = [returnTrace.nodeId];
+      if (!cerTrace) {
+        // NOTE: function was called, but did not have CER. Possible due to exceptions etc.
+      }
+      else {
+        const cerDataNode = dp.collections.dataNodes.getById(cerTrace.nodeId);
+        cerDataNode.inputs = [returnTrace.nodeId];
+      }
     }
   }
 
@@ -482,7 +492,7 @@ class DataNodeCollection extends Collection {
       if (declarationTid) {
         key = declarationTid;
       }
-      else if (objectTid && (prop ?? null) !== null) {
+      else if (objectTid) {
         const objectDataNode = this.dp.indexes.dataNodes.byTrace.getFirst(objectTid);
         const objectValueId = objectDataNode.valueId;
         if (!objectValueId) {
@@ -495,7 +505,9 @@ class DataNodeCollection extends Collection {
         }
       }
       else {
-        this.logger.error(`Trying to generate accessId with illegal dataNode: ${JSON.stringify(dataNode)}`);
+        const { traceId } = dataNode;
+        const traceInfo = this.dp.util.makeTraceInfo(traceId);
+        this.logger.error(`Trying to generate accessId with illegal dataNode: ${JSON.stringify(dataNode)}\n  at trace: ${traceInfo}`);
         return null;
       }
 
@@ -599,7 +611,7 @@ class ValueRefCollection extends Collection {
       }
       else {
         switch (category) {
-          case ValueTypeCategory.Array: 
+          case ValueTypeCategory.Array:
           case ValueTypeCategory.Object: {
             value = {};
             for (const [key, [childId, childValue]] of Object.entries(entry.serialized)) {

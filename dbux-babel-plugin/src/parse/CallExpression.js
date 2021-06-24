@@ -1,4 +1,5 @@
 // import { instrumentCallExpressionEnter } from '../zz_archive/traceHelpers.old';
+import { isNotTraceable } from '@dbux/common/src/core/constants/SpecialIdentifierType';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { makeSpreadableArgumentArrayCfg } from '../helpers/argsUtil';
@@ -40,6 +41,11 @@ function generateCalleeVar(calleePath) {
 }
 
 
+function canTraceCallee(calleeNode) {
+  const { specialType } = calleeNode;
+  return !specialType || !isNotTraceable(specialType);
+}
+
 // ###########################################################################
 // CallExpression
 // ###########################################################################
@@ -52,7 +58,7 @@ export default class CallExpression extends BaseNode {
     `NewExpression`
   ];
   static plugins = [
-    { 
+    {
       plugin: getCalleePlugin,
       alias: 'callee'
     }
@@ -84,7 +90,7 @@ export default class CallExpression extends BaseNode {
     // TODO: more special cases - super, import, require
     //    -> cannot separate callee for `super` or `import`
     //    -> cannot modify args for `import` or `require`, if they are constants
-    const { 
+    const {
       path,
       // path: { scope },
       plugins: {
@@ -103,10 +109,14 @@ export default class CallExpression extends BaseNode {
      */
 
     const [calleePath, argumentPaths] = this.getChildPaths();
-    // const [calleeNode, argumentNodes] = this.getChildNodes();
+    const [calleeNode/* , argumentNodes */] = this.getChildNodes();
 
-    // 1. make sure, callee is traced
-    this.Traces.addDefaultTrace(calleePath);
+    // 1. make sure, callee is traced (if is traceable)
+    let calleeVar = null;
+    if (canTraceCallee(calleeNode)) {
+      this.Traces.addDefaultTrace(calleePath);
+      calleeVar = generateCalleeVar(calleePath);
+    }
 
     // 2. trace args + 3. BCE
     const bceTraceData = {
@@ -141,7 +151,7 @@ export default class CallExpression extends BaseNode {
       },
       data: {
         bceTrace,
-        calleeVar: generateCalleeVar(calleePath)
+        calleeVar
       },
       meta: {
         traceCall: 'traceCallResult',

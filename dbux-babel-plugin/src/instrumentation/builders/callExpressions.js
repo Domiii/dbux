@@ -105,11 +105,11 @@ const callTemplatesDefault = {
   `)
 };
 
-function buildCallNodeDefault(path, calleeVar, argsVar, argNodes) {
+function buildCallNodeDefault(path, callee, argsVar, argNodes) {
   const { type } = path.node;
   const callTempl = callTemplatesDefault[type];
   return callTempl({
-    callee: calleeVar,
+    callee,
     args: buildCallArgs(argsVar, argNodes)
   }).expression;
 }
@@ -203,6 +203,55 @@ export function buildTraceCallDefault(state, traceCfg) {
     buildBCE(state, bceTrace, spreadArgs),
 
     // (iv) wrap actual call - `tcr(f(args[0], ...args[1], args[2]))`
+    buildTraceExpressionNoInput(
+      // NOTE: targets `traceCfg.meta.targetNode`
+      state,
+      traceCfg
+    )
+  ]);
+}
+
+
+// ###########################################################################
+// buildTraceCallFixCallee
+// ###########################################################################
+
+
+/**
+ * Special callees that cannot be re-written.
+ * E.g. `eval`, `require`, `super` etc.
+ * 
+ * @param {TraceCfg} traceCfg 
+ * @returns 
+ */
+export function buildTraceCallUntraceableCallee(state, traceCfg) {
+  const {
+    path,
+    path: { scope },
+    data: {
+      bceTrace
+    }
+  } = traceCfg;
+
+  const calleePath = path.get('callee');
+  const argPaths = path.get('arguments');
+  const argsVar = generateVar(scope, 'args');
+
+  const args = buildSpreadableArgArrayNoSpread(argPaths);
+  const argNodes = argPaths?.map(a => a.node) || EmptyArray;
+  const spreadArgs = buildSpreadArgs(argsVar, argNodes);
+
+  // hackfix: override targetNode during instrumentation
+  traceCfg.meta.targetNode = buildCallNodeDefault(path, calleePath.node, argsVar, argNodes);
+
+  return t.sequenceExpression([
+    // (i) args assignment - `args = [...]`
+    t.assignmentExpression('=', argsVar, args),
+
+    // (ii) BCE - `bce(tid, argTids, spreadArgs)`
+    buildBCE(state, bceTrace, spreadArgs),
+
+    // (iii) wrap actual call - `tcr(f(args[0], ...args[1], args[2]))`
     buildTraceExpressionNoInput(
       // NOTE: targets `traceCfg.meta.targetNode`
       state,

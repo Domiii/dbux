@@ -8,8 +8,6 @@ import staticTraceCollection from './staticTraceCollection';
 import traceCollection from './traceCollection';
 import valueCollection from './valueCollection';
 
-const { log, debug, warn, error: logError } = newLogger('DataNodes');
-
 const Verbose = 0;
 // const Verbose = 1;
 
@@ -51,7 +49,12 @@ export class DataNodeCollection extends Collection {
    * * the new write node's single input is the read node
    */
   createWriteNodeFromTrace(traceId, varAccess) {
-    const { nodeId: readNodeId } = traceCollection.getById(traceId);
+    const trace = traceCollection.getById(traceId);
+    if (!trace) {
+      this.logger.warn(new Error(`Could not lookup trace of traceId ${traceId} in createWriteNodeFromTrace`));
+      return null;
+    }
+    const { nodeId: readNodeId } = trace;
     const readNode = this.getById(readNodeId);
     return this.createWriteNodeFromReadNode(traceId, readNode, varAccess);
   }
@@ -81,7 +84,7 @@ export class DataNodeCollection extends Collection {
     dataNode.inputs = inputs;
 
     this.push(dataNode);
-    
+
 
     // valueRef
     const valueRef = valueCollection.registerValueMaybe(value, dataNode, meta);
@@ -91,7 +94,7 @@ export class DataNodeCollection extends Collection {
 
     if (Verbose) {
       const valueStr = dataNode.refId ? `refId=${dataNode.refId}` : `value=${value}`;
-      debug(`createDataNode #${dataNode.nodeId}, ${DataNodeType.nameFromForce(type)}, tid=${traceId}, varAccess=${JSON.stringify(varAccess)}, ${valueStr}`);
+      this.logger.debug(`createDataNode #${dataNode.nodeId}, ${DataNodeType.nameFromForce(type)}, tid=${traceId}, varAccess=${JSON.stringify(varAccess)}, ${valueStr}`);
     }
 
     this._send(dataNode);

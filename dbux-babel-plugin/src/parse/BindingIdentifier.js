@@ -1,4 +1,5 @@
 import { pathToString } from '../helpers/pathHelpers';
+import { ZeroNode } from '../instrumentation/builders/buildUtil';
 import BaseId from './BaseId';
 import BaseNode from './BaseNode';
 
@@ -11,7 +12,8 @@ export default class BindingIdentifier extends BaseId {
   getTidIdentifier() {
     if (!this.bindingTrace) {
       // eslint-disable-next-line max-len
-      throw new Error(`Tried to "getTidIdentifier" too early for "${this}" in "${this.getParent()}" - BindingIdentifier.bindingTrace was not recorded yet. getDeclarationNode() = "${this.getDeclarationNode()}"`);
+      this.logger.error(new Error(`Tried to "getTidIdentifier" too early for "${this}" in "${this.getParentString()}" - BindingIdentifier.bindingTrace was not recorded yet. getDeclarationNode() = "${this.getDeclarationNode()}" in "${this.getDeclarationNode().getParentString()}"`));
+      return ZeroNode;
     }
     return this.bindingTrace.tidIdentifier;
   }
@@ -64,7 +66,7 @@ export default class BindingIdentifier extends BaseId {
      */
     const bindingScopeNode = this.getNodeOfPath(scopePath);
     if (!bindingScopeNode?.Traces) {
-      throw new Error(`BindingIdentifier's binding scope did not have a valid BaseNode: "${pathToString(scopePath)}" in "${this.getParent()}"`);
+      throw new Error(`BindingIdentifier's binding scope did not have a valid BaseNode: "${pathToString(scopePath)}" in "${this.getParentString()}"`);
     }
     return bindingScopeNode;
   }
@@ -77,17 +79,16 @@ export default class BindingIdentifier extends BaseId {
    * @param {NodePath?} definitionPath Only given if initialization occurs upon declaration.
    */
   addOwnDeclarationTrace(definitionPath = null, moreTraceData = null) {
-    if (!this.getDeclarationNode()) {
-      throw new Error(`Assertion failed - BindingIdentifier.getDeclarationNode() returned nothing ` +
-        `for binding "${pathToString(this.binding?.path)}" in "${this.getParent()}`);
-    }
-
     // if (this.binding?.path.node.id !== this.path.node) {
     //   // NOTE: should never happen
     //   return;
     // }
 
     const bindingScopeNode = this.getDefaultBindingScopeNode();
+    const declarationNode = this.getDeclarationNode();
+    if (declarationNode !== this) {
+      // TODO: if `definitionPath`, convert to `write` trace?
+    }
     return bindingScopeNode.Traces.addDefaultDeclarationTrace(this, definitionPath, moreTraceData);
   }
 }

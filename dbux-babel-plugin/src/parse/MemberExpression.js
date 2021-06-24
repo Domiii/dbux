@@ -50,6 +50,13 @@ export default class MemberExpression extends BaseNode {
    */
   handler;
 
+  buildDefaultTrace() {
+    // No need for a default trace.
+    // NOTE: MEs are traced depending on whether they are rvals or lvals
+    //      but they are always taken care of.
+    return null;
+  }
+
   // ###########################################################################
   // ME rval handling
   // ###########################################################################

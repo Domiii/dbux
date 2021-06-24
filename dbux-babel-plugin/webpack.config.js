@@ -68,7 +68,7 @@ module.exports = (env, argv) => {
   ];
 
   const entry = {
-    'index.js': path.join(PackageRoot, 'src/index.js')
+    index: path.join(PackageRoot, 'src/index.js')
   };
 
   // console.warn('[dbux-cli] entry:', JSON.stringify(entry, null, 2));

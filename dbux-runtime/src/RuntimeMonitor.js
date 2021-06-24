@@ -1,7 +1,7 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
 import TraceType, { isBeforeCallExpression, isPopTrace } from '@dbux/common/src/core/constants/TraceType';
-import SpecialIdentifierType from '@dbux/common/src/core/constants/SpecialIdentifierType';
+// import SpecialIdentifierType from '@dbux/common/src/core/constants/SpecialIdentifierType';
 import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 import staticProgramContextCollection from './data/staticProgramContextCollection';
 import executionContextCollection from './data/executionContextCollection';
@@ -74,7 +74,7 @@ export default class RuntimeMonitor {
     staticContextCollection.addEntries(programId, staticContexts);
 
 
-    Verbose && debug(`addProgram ${programId}: ${programData.fileName}`); // (td=${!!runtimeCfg.tracesDisabled})
+    Verbose && debug(`addProgram ${programId}: ${programData.fileName} (tracesDisabled=${runtimeCfg.tracesDisabled})`);
 
     // change program-local _staticContextId to globally unique staticContextId
     for (let i = 0; i < staticTraces.length; ++i) {
@@ -457,7 +457,7 @@ export default class RuntimeMonitor {
     }
 
     const varAccess = null;
-    inputs = traceCollection.getDataNodeIdsByTraceIds(inputs);
+    inputs = traceCollection.getDataNodeIdsByTraceIds(tid, inputs);
     dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess, inputs);
     return value;
   }
@@ -477,7 +477,7 @@ export default class RuntimeMonitor {
     const { dataNode } = staticTraceCollection.getById(staticTraceId);
 
     dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess, null, dataNode);
-    
+
     return value;
   }
 
@@ -519,7 +519,7 @@ export default class RuntimeMonitor {
       declarationTid = tid;
     }
     const varAccess = declarationTid && { declarationTid };
-    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess, traceCollection.getDataNodeIdsByTraceIds(inputs));
+    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess, traceCollection.getDataNodeIdsByTraceIds(tid, inputs));
     return value;
   }
 
@@ -537,7 +537,7 @@ export default class RuntimeMonitor {
       objectTid,
       prop: propValue
     };
-    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess, traceCollection.getDataNodeIdsByTraceIds(inputs));
+    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess, traceCollection.getDataNodeIdsByTraceIds(tid, inputs));
     return value;
   }
 
@@ -689,6 +689,11 @@ export default class RuntimeMonitor {
     // for each prop: add (new) write node which has (original) read node as input
     for (let i = 0; i < entries.length; i++) {
       const propTid = propTids[i];
+      if (!propTid) {
+        const traceInfo = traceCollection.makeTraceInfo(objectTid);
+        warn(new Error(`Missing propTid #${i} in traceObjectExpression\n  at trace #${objectTid}: ${traceInfo} `));
+        continue;
+      }
 
       if (argConfigs[i].isSpread) {
         // [spread]

@@ -45,6 +45,17 @@ export default class BaseNode extends ParseNode {
    * @returns {BaseNode}
    */
   getDeclarationNode() {
+    let declarationNode = this;
+    let next;
+
+    // NOTE: Babel's bindings can be recursive if a symbol name is defined multiple times inside the same scope.
+    while ((next = declarationNode.getOwnDeclarationNode()) && next !== declarationNode) {
+      declarationNode = next;
+    }
+    return declarationNode;
+  }
+
+  getOwnDeclarationNode() {
     return undefined;
   }
 
@@ -78,7 +89,7 @@ export default class BaseNode extends ParseNode {
    * @protected
    */
   buildDefaultTrace() {
-    this.logger.warn(`ParseNode did not implement "buildDefaultTrace": ${this}`);
+    // this.logger.warn(`ParseNode did not implement "buildDefaultTrace": ${this}`);
     return null;
   }
 

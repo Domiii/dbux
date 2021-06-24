@@ -3,9 +3,9 @@ import BasePlugin from './BasePlugin';
 
 
 export default class ArithmeticExpression extends BasePlugin {
-  // ###########################################################################
-  // exit
-  // ###########################################################################
+  get isNew() {
+    return true;
+  }
 
   addTraces() {
     // const [...inputs, inputPaths] = args; // NOTE: esnext does not allow this (yet)
@@ -20,7 +20,7 @@ export default class ArithmeticExpression extends BasePlugin {
     const staticTraceData = {
       type: TraceType.ExpressionResult,
       dataNode: {
-        isNew: true
+        isNew: this.isNew
       }
     };
     const traceData = { 

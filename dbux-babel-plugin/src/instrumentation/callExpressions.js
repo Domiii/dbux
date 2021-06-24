@@ -1,4 +1,4 @@
-import { buildTraceCallDefault, buildTraceCallME } from './builders/callExpressions';
+import { buildTraceCallDefault, buildTraceCallUntraceableCallee, buildTraceCallME } from './builders/callExpressions';
 
 
 // ###########################################################################
@@ -7,7 +7,14 @@ import { buildTraceCallDefault, buildTraceCallME } from './builders/callExpressi
 
 
 export function traceCallExpressionDefault(state, traceCfg) {
-  const newNode = buildTraceCallDefault(state, traceCfg);
+  let newNode;
+  if (traceCfg.data.calleeVar) {
+    newNode = buildTraceCallDefault(state, traceCfg);
+  }
+  else {
+    // special treatment for untraceable callees
+    newNode = buildTraceCallUntraceableCallee(state, traceCfg);
+  }
   const { path } = traceCfg;
   path.replaceWith(newNode);
 

@@ -18,7 +18,7 @@ export default class VariableDeclarator extends BaseNode {
   ];
 
   get hasSeparateDeclarationTrace() {
-    return this.plugins.lval.hasSeparateDeclarationTrace;
+    return this.plugins.lval?.hasSeparateDeclarationTrace;
   }
 
   /**
@@ -26,13 +26,13 @@ export default class VariableDeclarator extends BaseNode {
    */
   get writeTraceType() {
     // NOTE: `write` trace doubles as declaration trace, if not hoisted to beginning of function scope
-    return this.hasSeparateDeclarationTrace ? TraceType.DeclareAndWriteVar : TraceType.Declaration;
+    return this.hasSeparateDeclarationTrace ? TraceType.WriteVar : TraceType.DeclareAndWriteVar;
   }
 
   /**
    * @returns {BindingIdentifier}
    */
-  getDeclarationNode() {
+  getOwnDeclarationNode() {
     const [idNode] = this.getChildNodes();
     return idNode;
   }
@@ -42,6 +42,14 @@ export default class VariableDeclarator extends BaseNode {
     if (this.hasSeparateDeclarationTrace) {
       // add declaration trace
       this.getDeclarationNode().addOwnDeclarationTrace();
+    }
+  }
+
+  exit() {
+    if (!this.plugins.lval) {
+      // TODO - remove hackfix (when Patterns are implemented)
+      const [, rval] = this.getChildNodes();
+      rval.addDefaultTrace();
     }
   }
 }

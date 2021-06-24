@@ -28,17 +28,12 @@ export default class VariableDeclaratorLVal extends BasePlugin {
     } = this;
     const { path, Traces, writeTraceType } = node;
 
-    if (!rvalNode) {
-      this.error(`missing RVal node in "${this.node}"`);
-      return;
-    }
-
     if (!writeTraceType) {
       this.error(`missing writeTraceType in "${this.node}"`);
       return;
     }
 
-    if (!rvalNode.path.node) {
+    if (!rvalNode) {
       // no write
       return;
     }

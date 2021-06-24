@@ -10,7 +10,7 @@ export default class CatchClause extends BaseNode {
   /**
    * @return {BindingIdentifier}
    */
-  getDeclarationNode() {
+  getOwnDeclarationNode() {
     const [paramNode] = this.getChildNodes();
     return paramNode;
   }

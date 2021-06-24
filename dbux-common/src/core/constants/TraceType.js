@@ -130,6 +130,7 @@ expressionTypes[TraceType.ExpressionResult] = true;
 expressionTypes[TraceType.ExpressionValue] = true;
 expressionTypes[TraceType.CallbackArgument] = true;
 expressionTypes[TraceType.CallExpressionResult] = true;
+expressionTypes[TraceType.UpdateExpression] = true;
 expressionTypes[TraceType.Identifier] = true;
 expressionTypes[TraceType.Literal] = true;
 expressionTypes[TraceType.ME] = true;

@@ -1,5 +1,7 @@
 import merge from 'lodash/merge';
 import semver from 'semver';
+import isArray from 'lodash/isArray';
+import isFunction from 'lodash/isFunction';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { whichNormalized } from '@dbux/common-node/src/util/pathUtil';
 import Process from './util/Process';
@@ -81,7 +83,7 @@ async function _checkSystem(projectManager, requirements, calledFromUser) {
         }
         else {
           // TOTRANSLATE
-          message += `¯\\_(ツ)_/¯ "${program}"\n    Installed but old. Version is ${result.version} but we recommend ${requirement.version}.`;
+          message += `¯\\_(ツ)_/¯ ${program}\n    Installed but old. Version is ${result.version} but we recommend ${requirement.version}.`;
           result.success = false;
         }
       }
@@ -89,6 +91,39 @@ async function _checkSystem(projectManager, requirements, calledFromUser) {
         // TOTRANSLATE
         message += `✓  ${program}\n    Found at "${result.path}"`;
         result.success = true;
+      }
+      
+      let customRequirement = requirement.custom;
+      if (result.success && customRequirement) {
+        if (!isArray(customRequirement)) {
+          customRequirement = [customRequirement];
+        }
+
+        for (const customRequirementFunction of customRequirement) {
+          if (isFunction(customRequirementFunction)) {
+            const customResult = await customRequirementFunction?.();
+            if (customResult.success) {
+              if (customResult.message) {
+                message += `\n\t✓  ${customResult.message}`;
+              }
+            } 
+            else {
+              result.success = false;
+
+              if (customResult.message) {
+                message = `x  ${program}\n    ${customResult.message}`;
+              }
+              else {
+                warn("Custom requirement failed without message.");
+                message = `x  ${program}`;
+              }
+              break;
+            }
+          }
+          else {
+            warn("Provided custom requirement is not a function. Skipped.");
+          }
+        }
       }
     }
     else {
@@ -152,7 +187,32 @@ export function getRequirement(fullCheck) {
       bash: {},
       node: { version: ">=12" },
       npm: {},
-      git: {},
+      git: {
+        custom: async () => {
+          const gitConfig = await Process.execCaptureOut(`git config -l`);
+          const configs = Object.fromEntries(gitConfig.split("\n").map(line => line.split('=')));
+          const checkKeys = ["user.name", "user.email"];
+          let success = true;
+          let message = "";
+          for (const checkKey of checkKeys) {
+            if (!(checkKey in configs)) {
+              success = false;
+
+              if (message) {
+                message += "\n";
+              }
+              message += `Can't find git config with key ${checkKey}`;
+            }
+          }
+          if (success) {
+            return { success };
+          }
+          return {
+            success,
+            message: `${message}\nAdd these config via \`git config --global <key> <value>\`\n`,
+          };
+        }
+      },
     };
   }
 }

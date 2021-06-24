@@ -15,7 +15,7 @@ function getLValPlugin(node) {
   const lvalType = lvalPath.node.type;
   const pluginName = LValPluginsByType[lvalType];
   if (!pluginName) {
-    node.logger.error(`unknown lval type: "${lvalType}" at "${pathToString(lvalPath)}"`);
+    node.logger.error(`unknown lval type: "${lvalType}" at "${pathToString(lvalPath)}" in "${pathToString(lvalPath.parentPath)}"`);
   }
   // console.debug(`[LVAL] lvalType = ${lvalType} - ${pathToString(node.path)}`);
   return pluginName;
@@ -38,8 +38,8 @@ export default class UpdateExpression extends BaseNode {
   /**
    * @returns {BaseNode}
    */
-  getDeclarationNode() {
+  getOwnDeclarationNode() {
     const [leftNode] = this.getChildNodes();
-    return leftNode.getDeclarationNode();
+    return leftNode.getOwnDeclarationNode();
   }
 }

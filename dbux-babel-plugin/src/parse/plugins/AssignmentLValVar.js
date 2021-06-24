@@ -1,7 +1,7 @@
+import TraceType from '@dbux/common/src/core/constants/TraceType';
 import { LValHolderNode } from '../_types'; 
 import { buildTraceWriteVar } from '../../instrumentation/builders/misc';
 import BasePlugin from './BasePlugin';
-import TraceType from '@dbux/common/src/core/constants/TraceType';
 
 export default class AssignmentLValVar extends BasePlugin {
   /**
