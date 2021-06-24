@@ -17,9 +17,9 @@ const Verbose = false;
 const VerboseErrors = Verbose || false;
 
 const SerializationConfig = {
-  maxDepth: 15,
-  maxObjectSize: 500,   // applies to arrays and object
-  maxStringLength: 5000
+  maxDepth: 4,          // applies to arrays and object
+  maxObjectSize: 50,    // applies to arrays and object
+  maxStringLength: 1000
 };
 
 const builtInTypeSerializers = new Map([
