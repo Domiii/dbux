@@ -93,27 +93,37 @@ async function _checkSystem(projectManager, requirements, calledFromUser) {
         result.success = true;
       }
       
-      const customRequirement = requirement.custom;
+      let customRequirement = requirement.custom;
       if (customRequirement) {
-        if (isArray(customRequirement)) {
-          for (const customRequirementFunction of customRequirement) {
-            if (isFunction(customRequirementFunction)) {
-              const customResult = await customRequirementFunction?.();
-              message += `${customResult}\n`;
-            } else {
-              warn("Provided custom requirement is not a function");
+        if (!isArray(customRequirement)) {
+          customRequirement = [customRequirement];
+        }
+
+        for (const customRequirementFunction of customRequirement) {
+          if (isFunction(customRequirementFunction)) {
+            message += "\n";
+            const customResult = await customRequirementFunction?.();
+            if (customResult.success) {
+              if (customResult.message) {
+                message += `\t✓  ${customResult.message}`;
+              }
+              else {
+                message += `\t✓  Custom requirement passed.`;
+              }
+            } 
+            else {
+              if (customResult.message) {
+                message += `\tx  ${customResult.message}`;
+              }
+              else {
+                warn("Custom requirement failed without message.");
+                message += `\tx  Custom requirement failed.`;
+              }
             }
           }
-        } else if (isFunction(customRequirement)) {
-          try {
-            const customResult = await customRequirement?.();
-            message += `\n✓  ${customResult}`;
-          } catch (e) {
-            message += `\nx  ${e.message}`;
-            result.success = false;
+          else {
+            warn("Provided custom requirement is not a function. Skipped.");
           }
-        } else {
-          warn("Provided custom requirement is not a function");
         }
       }
     }
@@ -183,12 +193,25 @@ export function getRequirement(fullCheck) {
           const gitConfig = await Process.execCaptureOut(`git config -l`);
           const configs = Object.fromEntries(gitConfig.split("\n").map(line => line.split('=')));
           const checkKeys = ["user.name", "user.email"];
+          let success = true;
+          let message = "";
           for (const checkKey of checkKeys) {
             if (!(checkKey in configs)) {
-              throw new Error(`Can't find git config with key ${checkKey}`);
+              success = false;
+
+              if (message) {
+                message += "\n";
+              }
+              message += `Can't find git config with key ${checkKey}`;
             }
           }
-          return "Found all required configs";
+          if (success) {
+            return { success };
+          }
+          return {
+            success,
+            message: `${message}\nAdd these config via \`git config --global <key> <value>\`\n`,
+          };
         }
       },
     };
