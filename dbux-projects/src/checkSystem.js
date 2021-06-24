@@ -94,33 +94,30 @@ async function _checkSystem(projectManager, requirements, calledFromUser) {
       }
       
       let customRequirement = requirement.custom;
-      if (customRequirement) {
+      if (result.success && customRequirement) {
         if (!isArray(customRequirement)) {
           customRequirement = [customRequirement];
         }
 
         for (const customRequirementFunction of customRequirement) {
           if (isFunction(customRequirementFunction)) {
-            message += "\n";
             const customResult = await customRequirementFunction?.();
             if (customResult.success) {
               if (customResult.message) {
-                message += `\t✓  ${customResult.message}`;
+                message += `\n\t✓  ${customResult.message}`;
               }
             } 
             else {
-              if (result.success) {
-                message = "";
-              }
               result.success = false;
 
               if (customResult.message) {
-                message += `\tx  ${customResult.message}`;
+                message = `x  "${program}"\n    ${customResult.message}`;
               }
               else {
                 warn("Custom requirement failed without message.");
-                message += `\tx  Failed without message.`;
+                message = `x  "${program}"\n    Failed without message.`;
               }
+              break;
             }
           }
           else {
