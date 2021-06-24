@@ -1092,8 +1092,9 @@ export default {
     // find all roots
     // let lastResult = null;
     for (const runId of runIds) {
-      const root = dp.util.getFirstContextOfRun(runId);
-      dfs(root);
+      for (const root of dp.indexes.executionContexts.byRun.get(runId)) {
+        dfs(root);
+      }
     }
   },
 
@@ -1111,3 +1112,4 @@ export default {
     return `[${typeName}]`;
   }
 };
+

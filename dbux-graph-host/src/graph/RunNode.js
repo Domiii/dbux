@@ -67,7 +67,11 @@ class RunNode extends HostComponentEndpoint {
     const stats = this.dp.queries.statsByContext(this.rootContextId);
     return stats?.nTreeStaticContexts || 0;
   }
-
+  //get amount of file call
+  get nTreeFileCalled() {
+    const state = this.dp.queries.statsByContext(this.rootContextId);
+    return state?.nTreeFileCalled || 0;
+  }
   // /**
   //  * TODO: move this to `dbux-data`
   //  */
