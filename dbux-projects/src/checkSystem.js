@@ -107,17 +107,19 @@ async function _checkSystem(projectManager, requirements, calledFromUser) {
               if (customResult.message) {
                 message += `\t✓  ${customResult.message}`;
               }
-              else {
-                message += `\t✓  Custom requirement passed.`;
-              }
             } 
             else {
+              if (result.success) {
+                message = "";
+              }
+              result.success = false;
+
               if (customResult.message) {
                 message += `\tx  ${customResult.message}`;
               }
               else {
                 warn("Custom requirement failed without message.");
-                message += `\tx  Custom requirement failed.`;
+                message += `\tx  Failed without message.`;
               }
             }
           }
