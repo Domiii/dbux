@@ -83,7 +83,7 @@ async function _checkSystem(projectManager, requirements, calledFromUser) {
         }
         else {
           // TOTRANSLATE
-          message += `¯\\_(ツ)_/¯ "${program}"\n    Installed but old. Version is ${result.version} but we recommend ${requirement.version}.`;
+          message += `¯\\_(ツ)_/¯ ${program}\n    Installed but old. Version is ${result.version} but we recommend ${requirement.version}.`;
           result.success = false;
         }
       }
@@ -111,11 +111,11 @@ async function _checkSystem(projectManager, requirements, calledFromUser) {
               result.success = false;
 
               if (customResult.message) {
-                message = `x  "${program}"\n    ${customResult.message}`;
+                message = `x  ${program}\n    ${customResult.message}`;
               }
               else {
                 warn("Custom requirement failed without message.");
-                message = `x  "${program}"\n    Failed without message.`;
+                message = `x  ${program}`;
               }
               break;
             }
