@@ -110,6 +110,7 @@ async function _checkSystem(projectManager, requirements, calledFromUser) {
             message += `\n✓  ${customResult}`;
           } catch (e) {
             message += `\nx  ${e.message}`;
+            result.success = false;
           }
         } else {
           warn("Provided custom requirement is not a function");
