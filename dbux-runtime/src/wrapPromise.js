@@ -11,7 +11,7 @@ const Verbose = false;
 
 const debug = (...args) => Verbose && _debug(...args);
 
-const disable = true;
+const disable = false;
 
 /**
  * @type {RuntimeMonitor}
@@ -37,7 +37,6 @@ export function ensurePromiseWrapped(promise) {
       if (promise.promiseId === undefined) {
         logError('Exist a promise in promise set but without promise id.');
         promise.promiseId = getNewPromiseId();
-        // runtimeMonitor.promise(promise.promiseId);
       }
     } 
     else {
@@ -47,7 +46,6 @@ export function ensurePromiseWrapped(promise) {
       }
       else {
         promise.promiseId = getNewPromiseId();
-        // runtimeMonitor.promise(promise.promiseId);
       }
     }
   }
@@ -73,56 +71,31 @@ export default function wrapPromise(_runtimeMonitor) {
         };
 
         if (typeof executor === 'function') {
-          const beforeExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
-          
           executor?.(wrapResolve, wrapReject);
-
-          const afterExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
-          if (beforeExecutorLastContextId !== afterExecutorLastContextId) {
-            runtimeMonitor.updateExecutionContextPromiseId(beforeExecutorLastContextId + 1, thisPromiseId);
-          }
         }
       };
 
-      // runtimeMonitor.promise(thisPromiseId);
-
       super(wrapExecutor);
       this.promiseId = thisPromiseId;
+      // this._dbux_threadId = this.runtimeMonitor._runtime.thread1.
       promiseSet.add(this);
     }
 
     then(successCb, failCb) {
       let childPromise = super.then((result) => {
         if (typeof successCb === 'function') {
-          const beforeExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
-
           const returnValue = successCb(result);
-
-          const afterExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
-          debug('before after @ then', beforeExecutorLastContextId, afterExecutorLastContextId);
-          if (beforeExecutorLastContextId !== afterExecutorLastContextId) {
-            runtimeMonitor.updateExecutionContextPromiseId(beforeExecutorLastContextId + 1, childPromise.promiseId);
-          }
 
           return returnValue;
         }
       }, (err) => {
         if (typeof failCb === 'function') {
-          const beforeExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
-          
           const returnValue = failCb(err);
-
-          const afterExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
-          if (beforeExecutorLastContextId !== afterExecutorLastContextId) {
-            runtimeMonitor.updateExecutionContextPromiseId(beforeExecutorLastContextId + 1, childPromise.promiseId);
-          }
-
           return returnValue;
         }
       });
 
       debug(`Promise ${this.promiseId} has child promise ${childPromise.promiseId} (then)`);
-      // runtimeMonitor.updatePromiseParent(childPromise.promiseId, this.promiseId);
       return childPromise;
     }
 
@@ -132,14 +105,7 @@ export default function wrapPromise(_runtimeMonitor) {
 
     finally(cb) {
       let childPromise = super.finally(() => {
-        const beforeExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
-          
         cb();
-
-        const afterExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
-        if (beforeExecutorLastContextId !== afterExecutorLastContextId) {
-          runtimeMonitor.updateExecutionContextPromiseId(beforeExecutorLastContextId + 1, childPromise.promiseId);
-        }
       });
 
       debug(`Promise ${this.promiseId} has child promise ${childPromise.promiseId} (finally)`);
@@ -152,21 +118,14 @@ export default function wrapPromise(_runtimeMonitor) {
     if (!promiseSet.has(this)) {
       promiseSet.add(this);
       this.promiseId = getNewPromiseId();
-      // runtimeMonitor.promise(this.promiseId);
     }
 
     let childPromise = originalPromiseThen.call(this, (...args) => {
       if (typeof successCb !== 'function') {
         return successCb;
       }
-      const beforeExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
 
       const r = successCb(...args);
-
-      const afterExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
-      if (beforeExecutorLastContextId !== afterExecutorLastContextId) {
-        runtimeMonitor.updateExecutionContextPromiseId(beforeExecutorLastContextId + 1, childPromise.promiseId);
-      }
 
       return r;
     }, (...args) => {
@@ -174,14 +133,7 @@ export default function wrapPromise(_runtimeMonitor) {
         return failCb;
       }
 
-      const beforeExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
-
       const r = failCb(...args);
-
-      const afterExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
-      if (beforeExecutorLastContextId !== afterExecutorLastContextId) {
-        runtimeMonitor.updateExecutionContextPromiseId(beforeExecutorLastContextId + 1, childPromise.promiseId);
-      }
 
       return r;
     });
@@ -189,12 +141,10 @@ export default function wrapPromise(_runtimeMonitor) {
     promiseSet.add(childPromise);
     if (childPromise.promiseId === undefined) {
       childPromise.promiseId = getNewPromiseId();
-      // runtimeMonitor.promise(childPromise.promiseId);
     }
 
     debug(`Original promise ${this.promiseId} has child ${childPromise.promiseId} (then)`);
 
-    // runtimeMonitor.updatePromiseParent(childPromise.promiseId, this.promiseId);
     return childPromise;
   };
 
@@ -208,21 +158,14 @@ export default function wrapPromise(_runtimeMonitor) {
     if (!promiseSet.has(this)) {
       promiseSet.add(this);
       this.promiseId = getNewPromiseId();
-      // runtimeMonitor.promise(this.promiseId);
     }
 
     let childPromise = originalPromiseFinally.call(this, (...args) => {
       if (typeof cb !== 'function') {
         return cb;
       }
-      const beforeExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
 
       const r = cb(...args);
-
-      const afterExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
-      if (beforeExecutorLastContextId !== afterExecutorLastContextId) {
-        runtimeMonitor.updateExecutionContextPromiseId(beforeExecutorLastContextId + 1, childPromise.promiseId);
-      }
 
       return r;
     });
@@ -230,12 +173,10 @@ export default function wrapPromise(_runtimeMonitor) {
     promiseSet.add(childPromise);
     if (childPromise.promiseId === undefined) {
       childPromise.promiseId = getNewPromiseId();
-      // runtimeMonitor.promise(childPromise.promiseId);
     }
 
     debug(`Original promise ${this.promiseId} has child ${childPromise.promiseId} (finally)`);
 
-    // runtimeMonitor.updatePromiseParent(childPromise.promiseId, this.promiseId);
     return childPromise;
   };
 }
