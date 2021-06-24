@@ -11,6 +11,10 @@ __data__
 lerna.debug.log
 /downloads
 
+# auto-generated files
+dbux-babel-plugin/src/parse/_registry.js
+dbux-babel-plugin/src/parse/plugins/_registry.js
+
 
 # yarn
 # see https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored
