@@ -717,7 +717,7 @@ export default class RuntimeDataProvider extends DataProviderBase {
     const moduleInfo = `Newly traced external modules (${newModuleNames.length}/${allModuleNames.length}): ${newModuleNames.join(', ')}`;
 
     const allMissingModules = difference(allRequireModuleNames, allModuleNames);
-    const newMissingModules = difference(newRequireModuleNames, newModuleNames);
+    const newMissingModules = difference(newRequireModuleNames, allModuleNames);
     const missingModuleInfo = newMissingModules.length && 
       `Required but untraced external modules (${newMissingModules.length}/${allMissingModules.length}): ${newMissingModules.join(', ')}`;
 
