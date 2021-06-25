@@ -33,7 +33,7 @@ set -e # cancel on error
 # fname="variableDeclarationPatterns1"
 # fname="conditionalExpressions1"
 # fname="memberExpressions3"
-fname="arrowExpressions1"
+fname="dbuxDisable1"
 
 
 nodeArgs=""

@@ -54,6 +54,11 @@ export default class AssignmentLValME extends BasePlugin {
     const [meNode, valueNode] = node.getChildNodes();
     const [objectNode] = meNode.getChildNodes();
 
+    if (!valueNode) {
+      // rval was skipped
+      return;
+    }
+
     // make sure, `object` is traced
     objectNode.addDefaultTrace();
 

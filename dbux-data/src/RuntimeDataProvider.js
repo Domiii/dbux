@@ -718,7 +718,7 @@ export default class RuntimeDataProvider extends DataProviderBase {
     const minProgramId = programData?.min;
     const allModuleNames = this.util.getAllExternalProgramModuleNames();
     const newModuleNames = minProgramId && this.util.getAllExternalProgramModuleNames(minProgramId);
-    const moduleInfo = `Newly traced external modules (${newModuleNames.length}/${allModuleNames.length}): ${newModuleNames.join(', ')}`;
+    const moduleInfo = `Newly traced external modules (${newModuleNames?.length}/${allModuleNames.length}): ${newModuleNames.join(', ')}`;
 
     const allMissingModules = difference(allRequireModuleNames, allModuleNames);
     const newMissingModules = difference(newRequireModuleNames, allModuleNames);

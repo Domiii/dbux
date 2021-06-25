@@ -24,7 +24,7 @@ const Verbose = 1;
 // const Verbose = 2;
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('traceVisitors');
+const { log, debug, warn, error: logError } = newLogger('visitors');
 
 // ###########################################################################
 // new visit
@@ -130,6 +130,14 @@ function isClassGuess(v) {
   return typeof v === 'function' && /^\s*class\s+/.test(v.toString());
 }
 
+/**
+ * Warning: There is an issue in Babel where comments on certain syntax elements are ignored.
+ * @see https://github.com/babel/babel/issues/13511
+ */
+function checkDisabled(path) {
+  return path.node.leadingComments?.find(({ value }) => value?.trim().includes('dbux disable')) || false;
+}
+
 export function buildVisitors() {
   const visitors = {};
   const { ParseNodeClassesByName } = ParseRegistry;
@@ -148,7 +156,14 @@ export function buildVisitors() {
           //   visit(state.onTrace.bind(state), enterInstrumentors, path, state, visitorCfg)
           // }
           // builtInVisitors[name]?.enter?.(path, state);
-          visitEnter(ParserNodeClazz, path, state);
+          // path.node && debug(`[${path.node.type}] ${pathToString(path, true)} ${path.node.leadingComments}`);
+          if (checkDisabled(path)) {
+            debug(` (skipped path: ${pathToString(path, true)})`);
+            path.skip();
+          }
+          else {
+            visitEnter(ParserNodeClazz, path, state);
+          }
         },
 
         exit(path, state) {
