@@ -400,8 +400,8 @@ export default class ExpressProject extends Project {
             ...bug.testFilePaths
           ],
           require: bug.require || ['./test/support/env.js'],
-          dbuxArgs: '--pw=superagent',
-          // dbuxArgs: '--pw=.*',
+          // dbuxArgs: '--pw=superagent',
+          dbuxArgs: '--pw=.*',
           ...bug,
           // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
         };
