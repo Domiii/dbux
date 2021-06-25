@@ -19,6 +19,11 @@ export const handler = wrapCommand(({ file, _, ...moreOptions }) => {
   // patch up file path
   const targetPath = resolveCommandTargetPath(file);
 
+  // hackfix: get some weird libraries out of the way, so that @babel/register will not instrument them
+  require('cliui');
+  require('socket.io-client');
+  require('lodash');
+
   // dbuxRegister (injects babel + dbux)
   dbuxRegister(moreOptions);
 
@@ -28,7 +33,6 @@ export const handler = wrapCommand(({ file, _, ...moreOptions }) => {
   const programArgs = _.slice(1); //.map(arg => `"${arg}"`).join(' ');
   // console.warn('argv', process.argv);
   process.argv = [process.argv[0] /* node */, targetPath /* program */, ...programArgs];
-  
   
   // go time!
 

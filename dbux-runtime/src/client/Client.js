@@ -1,7 +1,7 @@
 // import 'ws'; // this must work on Node!
 import io, { Socket } from 'socket.io-client';
-import minBy from 'lodash/minBy';
-import maxBy from 'lodash/maxBy';
+// import minBy from 'lodash/minBy';
+// import maxBy from 'lodash/maxBy';
 import { newLogger, logInternalError } from '@dbux/common/src/log/logger';
 // import universalLibs from '@dbux/common/src/util/universalLibs';
 import SendQueue from './SendQueue';
@@ -183,11 +183,11 @@ export default class Client {
       this._connect();
     }
     else if (this.isReady()) {
-      Verbose && debug(`<- data: ` +
-        Object.entries(data)
-          .map(([key, arr]) => `${key} (${minBy(arr, entry => entry._id)._id}~${maxBy(arr, entry => entry._id)._id})`)
-          .join(', ')
-      );
+      // Verbose && debug(`<- data: ` +
+      //   Object.entries(data)
+      //     .map(([key, arr]) => `${key} (${minBy(arr, entry => entry._id)._id}~${maxBy(arr, entry => entry._id)._id})`)
+      //     .join(', ')
+      // );
       this._socket.emit('data', data);
       this._refreshInactivityTimer();
       this._waitingCb?.();

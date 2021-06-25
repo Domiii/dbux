@@ -3,13 +3,17 @@
 /dbux_projects
 /projects
 __samplesOutput__
-/samples/__samplesInput__/*.inst.js
+/samples/__samplesInput__/**/*.inst.js
 project_sandbox/projects
 project_sandbox/bug-dataset
 _testOut
 __data__
 lerna.debug.log
 /downloads
+
+# auto-generated files
+dbux-babel-plugin/src/parse/_registry.js
+dbux-babel-plugin/src/parse/plugins/_registry.js
 
 
 # yarn

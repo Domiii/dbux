@@ -42,12 +42,12 @@ function getArgs(debugMode) {
   let nodeArgs = config.get(`dbux.${runMode}.nodeArgs`) + ' --stack-trace-limit=1000';
   nodeArgs += debugMode ? ' --inspect-brk' : '';
 
-  let dbuxArgs = config.get(`dbux.${runMode}.dbuxArgs`);
+  let dbuxArgs = config.get(`dbux.${runMode}.dbuxArgs`) || '--esnext --verbose=1';
   let env = config.get(`dbux.${runMode}.env`);
   dbuxArgs += `${parseEnv(env)}`;
 
   let packageWhitelists = config.get(`dbux.packageWhitelist`);
-  if (packageWhitelists) dbuxArgs += ` -w '${packageWhitelists}'`;
+  if (packageWhitelists) dbuxArgs += ` -pw=${packageWhitelists}`;
 
   let programArgs = config.get(`dbux.${runMode}.programArgs`);
   if (programArgs) programArgs = ` ${programArgs}`;

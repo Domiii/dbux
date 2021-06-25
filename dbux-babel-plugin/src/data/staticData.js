@@ -40,6 +40,7 @@ export function buildDbuxInit(state) {
     if (isString(runtimeCfg)) {
       try {
         JSON.parse(runtimeCfg);
+        runtimeCfgString = runtimeCfg;
       }
       catch (err) {
         throw new Error(`Invalid runtimeCfg is string but not JSON-parsable - "${err.message}": "${runtimeCfg}"`);
@@ -57,6 +58,8 @@ export function buildDbuxInit(state) {
       throw new Error(`Invalid runtimeCfg must be string or object but was: "${runtimeCfg}"`);
     }
   }
+
+  // Verbose && console.debug(`Received runtime cfg: ${runtimeCfgString}`);
 
   // Verbose && console.timeEnd(`[Dbux] babel write 1 (stringify) "${filePath}"`);
 

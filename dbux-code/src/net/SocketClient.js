@@ -35,7 +35,7 @@ export default class SocketClient {
         cb(...args);
       }
       catch (err) {
-        logError(`socket event ${eventName} failed`, err.stack);
+        logError(`socket event "${eventName}" failed -`, err.stack);
       }
     });
   }
