@@ -7,10 +7,10 @@ set -e # cancel on error
 
 # fname="slicing/var1"
 # fname="calls0"
-# fname="memberExpressions0"
+fname="memberExpressions2"
 # fname="functions3"
 # fname="objectExpressions1"
-# fname="updateExpressions1"
+# fname="updateExpressions2"
 # fname="throw2"
 # fname="while1"
 # fname="for1"
@@ -33,7 +33,8 @@ set -e # cancel on error
 # fname="variableDeclarationPatterns1"
 # fname="conditionalExpressions1"
 # fname="memberExpressions3"
-fname="dbuxDisable1"
+# fname="dbuxDisable1"
+# fname="assignments2"
 
 
 nodeArgs=""

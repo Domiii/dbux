@@ -1,7 +1,6 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import BasePlugin from './BasePlugin';
 import { LValHolderNode } from '../_types';
-import { buildTraceWriteME } from '../../instrumentation/builders/misc';
 import { buildUpdateExpressionME } from '../../instrumentation/builders/updateExpressions';
 
 /**

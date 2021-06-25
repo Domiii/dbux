@@ -107,9 +107,10 @@ export function buildUpdateExpressionME(state, traceCfg) {
   } = meNode;
   const o = t.assignmentExpression('=', objectVar, objectNode);
   const p = t.assignmentExpression('=', propertyVar, convertNonComputedPropToStringLiteral(propertyNode, meNode.computed));
+  const lval = t.memberExpression(objectVar, propertyVar, true, false);
   const rval = buildtraceExpressionME(state, readTraceCfg);
   const returnValue = generateDeclaredIdentifier(path);
-  const updateValue = buildUpdatedValue(state, path, meNode, rval, returnValue);
+  const updateValue = buildUpdatedValue(state, path, lval, rval, returnValue);
   const updateTid = buildTraceId(state, traceCfg);
 
   return t.callExpression(traceUpdateExpressionME, [

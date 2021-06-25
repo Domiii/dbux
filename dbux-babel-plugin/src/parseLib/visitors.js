@@ -135,6 +135,7 @@ function isClassGuess(v) {
  * @see https://github.com/babel/babel/issues/13511
  */
 function checkDisabled(path) {
+  // console.debug('checkDisabled', path.node.type, pathToString(path), '- Comments:', path.node.leadingComments);
   return path.node.leadingComments?.find(({ value }) => value?.trim().includes('dbux disable')) || false;
 }
 

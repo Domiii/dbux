@@ -49,7 +49,7 @@ export default class AssignmentLValME extends BasePlugin {
 
   wrapLVal() {
     const { node } = this;
-    const { Traces } = node;
+    const { path, Traces } = node;
 
     const [meNode, valueNode] = node.getChildNodes();
     const [objectNode] = meNode.getChildNodes();
@@ -67,13 +67,18 @@ export default class AssignmentLValME extends BasePlugin {
       this.warn(`objectNode did not have traceCfg.tidIdentifier in ${objectNode}`);
     }
 
+    const objectAstNode = path.scope.generateDeclaredUidIdentifier('o');
+    const propertyAstNode = path.scope.generateDeclaredUidIdentifier('p');
+
     // add actual WriteME trace
     const traceData = {
       staticTraceData: {
         type: TraceType.WriteME
       },
       data: {
-        objectTid
+        objectTid,
+        objectAstNode,
+        propertyAstNode
       },
       meta: {
         // instrument: Traces.instrumentTraceWrite
