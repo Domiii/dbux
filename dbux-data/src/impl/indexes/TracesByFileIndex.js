@@ -14,6 +14,10 @@ export default class TracesByFileIndex extends CollectionIndex {
    * @param {Trace} trace
    */
   makeKey(dp, trace) {
-    return dp.util.getTraceProgramId(trace.traceId);
+    const programId = dp.util.getTraceProgramId(trace.traceId);
+    if (!programId) {
+      console.error('TracesByFileIndex.makeKey failed to getTraceProgramId for trace:', JSON.stringify(trace));
+    }
+    return programId;
   }
 }

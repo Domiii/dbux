@@ -26,7 +26,7 @@ function errorWrapMethod(obj, methodName, ...args) {
     obj[methodName].apply(obj, args);
   }
   catch (err) {
-    logError(`${obj.constructor.name}.${methodName}`, 'failed\n  ', err); //...args);
+    warn(`${obj.constructor.name}.${methodName}`, 'failed\n  ', err); //...args);
   }
 }
 
@@ -462,11 +462,15 @@ class ValueCollection extends Collection {
       else {
         switch (category) {
           case ValueTypeCategory.Array: {
-            for (let i = 0; i < entry.serialized.length; ++i) {
-              const childId = entry.serialized[i];
+            if (!serialized) {
+              value = `(_deserializeValue failed: Array entry had no "serialized": ${JSON.stringify(entry)})`;
+              break;
+            }
+            for (let i = 0; i < serialized.length; ++i) {
+              const childId = serialized[i];
               const child = this.getById(childId);
               if (!child) {
-                warn(`Could not lookup array index "${i}" (id = "${childId}"): ${JSON.stringify(entry.serialized)}`);
+                warn(`Could not lookup array index "${i}" (id = "${childId}"): ${JSON.stringify(serialized)}`);
                 return '(Dbux: lookup failed)';
               }
               else {
@@ -476,12 +480,16 @@ class ValueCollection extends Collection {
             break;
           }
           case ValueTypeCategory.Object: {
+            if (!serialized) {
+              value = `(_deserializeValue failed: Object entry had no "serialized": ${JSON.stringify(entry)})`;
+              break;
+            }
             value = {};
-            for (const [key, childId] of entry.serialized) {
+            for (const [key, childId] of serialized) {
               const child = this.getById(childId);
               if (!child) {
                 value[key] = '(Dbux: lookup failed)';
-                warn(`Could not lookup object property "${key}" (id = "${childId}"): ${JSON.stringify(entry.serialized)}`);
+                warn(`Could not lookup object property "${key}" (id = "${childId}"): ${JSON.stringify(serialized)}`);
               }
               else {
                 value[key] = this._deserializeValue(child);

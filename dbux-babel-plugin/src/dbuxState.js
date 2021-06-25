@@ -35,6 +35,8 @@ export default function injectDbuxState(_buildCfg, programPath, programState) {
   const { scope } = programPath;
   const { file: programFile } = programState;
 
+  // console.log('[@dbux/babel-plugin Program]', filePath);
+
   const dbuxState = {
     runtimeCfg,
 
@@ -56,7 +58,6 @@ export default function injectDbuxState(_buildCfg, programPath, programState) {
       //        So we want to add `iProgram` for unique flavor (which works if they are all instrumented by the same process).
       dbux: scope.generateUid('dbux' + (++iProgram))
     },
-    // console.log('[Program]', state.filename);
 
     // ###########################################################################
     // getters
