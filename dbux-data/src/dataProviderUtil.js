@@ -235,6 +235,9 @@ export default {
    */
   getParentTraceOfContext(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
+    if (!context) {
+      return null;
+    }
 
     const parentTrace = dp.collections.traces.getById(context.parentTraceId);
     if (!parentTrace) {
@@ -801,6 +804,9 @@ export default {
   /** @param {DataProvider} dp */
   getStaticTraceProgramId(dp, staticTraceId) {
     const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
+    if (!staticTrace) {
+      return null;
+    }
     const {
       staticContextId
     } = staticTrace;
@@ -826,7 +832,7 @@ export default {
 
     const {
       staticTraceId,
-    } = trace;
+    } = trace || EmptyObject;
 
     return dp.util.getStaticTraceProgramId(staticTraceId);
   },

@@ -21,6 +21,8 @@ export const handler = wrapCommand(({ file, _, ...moreOptions }) => {
 
   // hackfix: get some weird libraries out of the way, so that @babel/register will not instrument them
   require('cliui');
+  require('socket.io-client');
+  require('lodash');
 
   // dbuxRegister (injects babel + dbux)
   dbuxRegister(moreOptions);

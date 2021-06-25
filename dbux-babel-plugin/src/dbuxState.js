@@ -115,7 +115,6 @@ export default function injectDbuxState(programPath, programState) {
         traceForIn: makeProgramId('tfi'),
       }
     },
-    // console.log('[Program]', state.filename);
 
     // ###########################################################################
     // getters

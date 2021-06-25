@@ -58,6 +58,8 @@ export function buildDbuxInit(state) {
     Verbose && console.debug(`Received runtime cfg: ${runtimeCfgString}`);
   }
 
+  // Verbose && console.debug(`Received runtime cfg: ${runtimeCfgString}`);
+
   // Verbose && console.timeEnd(`[Dbux] babel write 1 (stringify) "${filePath}"`);
 
   // Verbose && console.debug(`[Dbux] babel write size:`, (staticDataString.length / 1000).toFixed(2), 'k');

@@ -606,6 +606,10 @@ class ValueRefCollection extends Collection {
         switch (category) {
           case ValueTypeCategory.Array:
           case ValueTypeCategory.Object: {
+            if (!serialized) {
+              value = `(_deserializeValue failed: Object entry had no "serialized": ${JSON.stringify(entry)})`;
+              break;
+            }
             value = {};
             for (const [key, [childId, childValue]] of Object.entries(entry.serialized)) {
               if (childId) {
