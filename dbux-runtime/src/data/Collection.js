@@ -29,6 +29,10 @@ export default class Collection {
     return this._all.slice(startId);
   }
 
+  getLast() {
+    return this._all[this._all.length - 1];
+  }
+
   getById(id) {
     return this._all[id];
   }

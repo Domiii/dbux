@@ -7,7 +7,7 @@ set -e # cancel on error
 
 # fname="slicing/var1"
 # fname="calls0"
-fname="memberExpressions2"
+# fname="memberExpressions2"
 # fname="functions3"
 # fname="objectExpressions1"
 # fname="updateExpressions2"
@@ -35,6 +35,7 @@ fname="memberExpressions2"
 # fname="memberExpressions3"
 # fname="dbuxDisable1"
 # fname="assignments2"
+fname="arrays2"
 
 
 nodeArgs=""
@@ -53,6 +54,15 @@ else
   nodeArgs="${nodeArgs}"
 fi
 
+if [[ $dbuxCmd = "i" ]]
+then
+  nodeArgsI="$nodeArgs"
+  nodeArgsR=""
+else
+  nodeArgsI=""
+  nodeArgsR="$nodeArgs"
+fi
+
 outPath="./samples/__samplesInput__/$fname.inst.js"
 # if [[ $dbuxCmd = "i" ]]
 # then
@@ -65,13 +75,13 @@ outPath="./samples/__samplesInput__/$fname.inst.js"
 
 if [[ "$dbuxCmd" != "rr" ]]
 then
-  node $nodeArgs --enable-source-maps --stack-trace-limit=100 "./node_modules/@dbux/cli/bin/dbux.js" i --esnext "./samples/__samplesInput__/$fname.js" $outPath
+  node $nodeArgsI --enable-source-maps --stack-trace-limit=100 "./node_modules/@dbux/cli/bin/dbux.js" i --esnext "./samples/__samplesInput__/$fname.js" $outPath
 fi
 
 if [[ "$dbuxCmd" = "r" ]] || [[ "$dbuxCmd" = "rr" ]]
 then
   # NOTE: --enable-source-maps will mess things up when executing the raw output
-  node $nodeArgs --stack-trace-limit=100 -r "@dbux/runtime" $outPath
+  node $nodeArgsR --stack-trace-limit=100 -r "@dbux/runtime" $outPath
 fi
 
 # if (( $isInstrument ))
