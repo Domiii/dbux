@@ -370,7 +370,8 @@ class TraceCollection extends Collection {
           const monkeyDataNode = monkeyDataNodes[i];
           const argDataNode = argDataNodes[i];
 
-          monkeyDataNode.inputs = [argDataNode.nodeId];
+          // NOTE: argDataNode might be missing (e.g. because it had a "dbux disable" instruction)
+          argDataNode && (monkeyDataNode.inputs = [argDataNode.nodeId]);
         }
       }
     }
