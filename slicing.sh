@@ -35,7 +35,8 @@ set -e # cancel on error
 # fname="memberExpressions3"
 # fname="dbuxDisable1"
 # fname="assignments2"
-fname="array_slice1"
+fname="defaultParams1"
+# fname="params1"
 
 
 nodeArgs=""

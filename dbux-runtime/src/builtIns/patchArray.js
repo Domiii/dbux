@@ -20,7 +20,7 @@ function wrapIndex(i, arr) {
   if (i >= 0) {
     return i;
   }
-  if (i < 0) {
+  else {
     return arr.length + i;
   }
 }

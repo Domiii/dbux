@@ -27,7 +27,6 @@ export default class Params extends BasePlugin {
   addParamTrace = (paramPath, traceType = TraceType.Param) => {
     // TODO: `RestElement`
     // TODO: `{Object,Array,Assignment}Pattern
-    // TODO: `{Object,Array,Assignment}Pattern on `RestElement`
 
     const idPaths = getBindingIdentifierPaths(paramPath);
     if (idPaths.length !== 1) {
@@ -36,48 +35,49 @@ export default class Params extends BasePlugin {
     const idPath = idPaths[0];
     const idNode = this.node.getNodeOfPath(idPath);
     const initialValuePath = getParamInitialValuePath(idPath);
-    const moreTraceData = {
-      staticTraceData: {
-        type: traceType
-      },
-      meta: {}
-    };
 
-    let definitionPath;
+    let declarationTrace;
     if (initialValuePath) {
       // handle default parameter
-      definitionPath = null;  // NOTE: we will inject the value in post (moreTraceArgs)
 
+      let writeTrace;
+      // const paramNode = paramPath.node;
       const writeTraceData = {
         path: paramPath,
-        // node: idNode,
+        scope: this.node.path.scope.parent,  // important: declare in Function's (or CatchClause's) parent scope
+        node: this.node.getNodeOfPath(paramPath),
         staticTraceData: {
-          type: TraceType.WriteVar
+          type: TraceType.Param
         },
         meta: {
           build: buildTraceWriteVar,
-          targetPath: initialValuePath
+          targetPath: initialValuePath,
+          moreTraceCallArgs: () => {
+            // paramPath.replaceWith(idPath.node);
+            // 2. add to instrumentation trace: `var x = td(stid, twv(init(), initTid,...), [initTid])`
+            return [
+              idPath.node,
+              t.arrayExpression([writeTrace.tidIdentifier])
+            ];
+          }
         }
       };
 
-      const writeTrace = idNode.Traces.addTrace(writeTraceData);
+      writeTrace = idNode.Traces.addTrace(writeTraceData);
 
-      moreTraceData.meta.moreTraceArgs = () => {
-        // hackfix: instrument as we go
-        // 1. remove default value: `x = twv(init(), initTid,...)` becomes `x`
-        paramPath.replace(idPath.node);
-        // 2. add to instrumentation trace: `var x = td(stid, twv(init(), initTid,...), [initTid])`
-        return [
-          initialValuePath.node,
-          t.arrayExpression([writeTrace.tidIdentifier])
-        ];
-      };
+      // TODO: if (initialValuePath) -> the write trace will never get initialized, if parameter has a matching argument.
+      //      -> in that case, we need to go with the default declaration trace.
     }
     else {
-      definitionPath = idPath;
+      const moreTraceData = {
+        staticTraceData: {
+          type: traceType
+        },
+        meta: {}
+      };
+      declarationTrace = idNode.addOwnDeclarationTrace(idPath, moreTraceData);
     }
 
-    const declTrace = idNode.addOwnDeclarationTrace(definitionPath, moreTraceData);
-    return declTrace;
+    return declarationTrace;
   }
 }
