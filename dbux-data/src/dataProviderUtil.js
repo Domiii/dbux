@@ -661,16 +661,21 @@ export default {
     return bceTrace.data?.argTids.map(tid => dp.collections.traces.getById(tid));
   },
 
+  /**
+   * NOTE: This works automatically for spread operator.
+   * 
+   * @return Flattened version of DataNodes of `CallExpression` arguments.
+   */
   getCallArgDataNodes(dp, callId) {
     const argTraces = dp.util.getCallArgTraces(callId);
     const { argConfigs } = dp.util.getStaticTrace(callId).data;
     return argTraces.flatMap((t, i) => {
       const dataNodes = dp.util.getDataNodesOfTrace(t.traceId);
       if (!argConfigs[i]?.isSpread) {
-        // not spread -> take the argument's own `dataNode`
+        // not spread -> take the argument's own `DataNode`
         return dataNodes[0];
       }
-      // spread -> take all of the argument's additional `dataNode`s
+      // spread -> take all of the spread argument's additional `DataNode`s (which are the argument DataNodes)
       return dataNodes.slice(1);
     });
   },

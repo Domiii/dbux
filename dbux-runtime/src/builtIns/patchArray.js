@@ -5,6 +5,10 @@ import valueCollection from '../data/valueCollection';
 import { monkeyPatchMethod } from '../util/monkeyPatchUtil';
 
 export default function patchArray(rm) {
+  // ###########################################################################
+  // push
+  // ###########################################################################
+
   monkeyPatchMethod(Array, 'push', null,
     (arr, args) => {
       const ref = valueCollection.getRefByValue(arr);
@@ -13,7 +17,7 @@ export default function patchArray(rm) {
       //   debugger;
       // }
       if (ref) {
-        console.log(`pushing indexes [${args.map((_, i) => arr.length + i).join(',')}]`);
+        // console.log(`pushing indexes [${args.map((_, i) => arr.length + i).join(',')}]`);
         for (let i = 0; i < args.length; ++i) {
           // NOTE: last trace before a function call should be BCE
           const bceTrace = traceCollection.getLast();
@@ -27,7 +31,14 @@ export default function patchArray(rm) {
             objectTid,
             prop: arr.length + i
           };
+          // console.debug(`[Array.push] #${traceId} ref ${ref.refId}, node ${nodeId}, objectTid ${objectTid}`);
           dataNodeCollection.createOwnDataNode(args[i], traceId, DataNodeType.Write, varAccess);
+
+          // NOTE: trace was marked for sending, but will be actually sent with all traces of run, so changes **should** still be possible.
+          bceTrace.data = bceTrace.data || {};
+          bceTrace.data.monkey = {
+            wireInputs: true
+          };
         }
       }
     }

@@ -174,7 +174,7 @@ class ExecutionContextCollection extends Collection {
         continue;
       }
 
-      // get `argDataNodes`
+      // get `argDataNodes` (flattened, in case of spread)
       const argDataNodes = this.dp.util.getCallArgDataNodes(callId);
 
       // add to `Param` trace's `inputs`
@@ -292,6 +292,10 @@ class TraceCollection extends Collection {
     this.errorWrapMethod('resolveErrorTraces', traces);
   }
 
+  postIndexRaw(traces) {
+    this.errorWrapMethod('resolveMonkeyCalls', traces);
+  }
+
   registerResultId(traces) {
     for (const { traceId, resultCallId } of traces) {
       if (resultCallId) {
@@ -334,14 +338,39 @@ class TraceCollection extends Collection {
   }
 
   resolveCallIds(traces) {
-    // set `callId` for all argument traces
     for (const trace of traces) {
-      const argTids = trace.data?.argTids;
-      if (argTids) {
-        const { traceId } = trace;
-        for (const argTid of argTids) {
-          const argTrace = this.getById(argTid);
-          argTrace.callId = traceId;
+      const { traceId: callId } = trace;
+
+      const argTraces = this.dp.util.getCallArgTraces(callId);
+      if (argTraces) {
+        // BCE
+        argTraces.forEach(t => t.callId = callId);
+      }
+    }
+  }
+
+  resolveMonkeyCalls(traces) {
+    for (const trace of traces) {
+      const { traceId: callId, data } = trace;
+      const monkey = data?.monkey;
+      if (monkey?.wireInputs) {
+        // NOTE: BCE was monkey patched, and generated it's own set of `DataNode`s, one per argument
+        // Link BCE's new DataNode to argument input node
+
+        // get `argDataNodes` (flattened, in case of spread)
+        const monkeyDataNodes = this.dp.util.getDataNodesOfTrace(callId);
+        const argDataNodes = this.dp.util.getCallArgDataNodes(callId);
+
+        if (!monkeyDataNodes || !argDataNodes) {
+          continue;
+        }
+
+        // wire monkey <-> arg DataNodes (should be 1:1)
+        for (let i = 0; i < monkeyDataNodes.length; i++) {
+          const monkeyDataNode = monkeyDataNodes[i];
+          const argDataNode = argDataNodes[i];
+
+          monkeyDataNode.inputs = [argDataNode.nodeId];
         }
       }
     }
@@ -443,11 +472,11 @@ class DataNodeCollection extends Collection {
         const trace = this.dp.collections.traces.getById(traceId);
         const staticTrace = this.dp.collections.staticTraces.getById(trace.staticTraceId);
         let lastNode;
-        if (TraceType.is.BeforeCallExpression(traceType)) {
-          // skip in this case, special handling in UI - BCE rendering should reflect CallExpressionResult
-          return null;
-        }
-        else if (staticTrace.dataNode.isNew) {
+        // if (TraceType.is.BeforeCallExpression(traceType)) {
+        //   // skip in this case, special handling in UI - BCE rendering should reflect CallExpressionResult
+        //   return null;
+        // }
+        if (staticTrace.dataNode.isNew) {
           return traceId;
         }
         else if (dataNode.inputs?.length) {
@@ -722,7 +751,7 @@ export default class RuntimeDataProvider extends DataProviderBase {
 
     const allMissingModules = difference(allRequireModuleNames, allModuleNames);
     const newMissingModules = difference(newRequireModuleNames, allModuleNames);
-    const missingModuleInfo = newMissingModules.length && 
+    const missingModuleInfo = newMissingModules.length &&
       `Required but untraced external modules (${newMissingModules.length}/${allMissingModules.length}): ${newMissingModules.join(', ')}`;
 
     // final message
