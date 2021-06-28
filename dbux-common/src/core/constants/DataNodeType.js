@@ -4,6 +4,7 @@ import Enum from '../../util/Enum';
 let DataNodeType = {
   Write: 1,
   Read: 2,
+  Delete: 3
 };
 
 /**

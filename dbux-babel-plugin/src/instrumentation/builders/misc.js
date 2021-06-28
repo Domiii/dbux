@@ -199,10 +199,10 @@ export const buildtraceExpressionME = bindExpressionTemplate(
  * ```
  */
 export const buildTraceWriteME = buildTraceCall(
-  '%%traceWriteME%%(%%objValue%%, %%propValue%%, %%value%%, %%tid%%, %%objectTid%%, %%inputs%%)',
+  '%%trace%%(%%objValue%%, %%propValue%%, %%value%%, %%tid%%, %%objectTid%%, %%inputs%%)',
   function buildTraceWriteME(state, traceCfg) {
     const { ids: { aliases: {
-      traceWriteME
+      traceWriteME: trace
     } } } = state;
     const tid = buildTraceId(state, traceCfg);
 
@@ -232,10 +232,54 @@ export const buildTraceWriteME = buildTraceCall(
     const value = t.assignmentExpression(operator, lVal, rVal);
 
     return {
-      traceWriteME,
+      trace,
       objValue: o,
       propValue: p,
       value,
+      tid,
+      objectTid,
+      inputs: makeInputs(traceCfg)
+    };
+  }
+);
+
+// ###########################################################################
+// buildTraceDeleteME
+// ###########################################################################
+
+export const buildTraceDeleteME = buildTraceCall(
+  '%%trace%%(%%objValue%%, %%propValue%%, %%tid%%, %%objectTid%%, %%inputs%%)',
+  function buildTraceDeleteME(state, traceCfg) {
+    const { ids: { aliases: {
+      traceDeleteME: trace
+    } } } = state;
+    const tid = buildTraceId(state, traceCfg);
+
+    const unaryExpression = getInstrumentTargetAstNode(state, traceCfg);
+    const {
+      argument: meNode
+    } = unaryExpression;
+
+    const {
+      object: objectNode,
+      property: propertyNode
+    } = meNode;
+
+    const {
+      data: {
+        objectTid,
+        objectAstNode: objectVar,
+        propertyAstNode: propertyVar
+      }
+    } = traceCfg;
+
+    const o = t.assignmentExpression('=', objectVar, objectNode);
+    const p = t.assignmentExpression('=', propertyVar, convertNonComputedPropToStringLiteral(propertyNode, meNode.computed));
+
+    return {
+      trace,
+      objValue: o,
+      propValue: p,
       tid,
       objectTid,
       inputs: makeInputs(traceCfg)

@@ -1,14 +1,28 @@
 import BaseNode from './BaseNode';
+import { pickPlugin } from './helpers/pluginUtil';
+
+
+
+const ArgumentPlugins = {
+  // `delete` -> traceDeleteME
+  delete: 'Delete'
+  
+  // TODO: `typeof` targets a `BindingIdentifier`
+  // other special operators: `void`
+};
 
 /**
  * @see https://babeljs.io/docs/en/babel-types#unaryexpression
  */
 export default class UnaryExpression extends BaseNode {
   static children = ['argument'];
-  static plugins = ['ArithmeticExpression'];
-
-  // TODO: `typeof` targets a `BindingIdentifier`
-  // TODO: `delete` -> writeME(undefined); returns `true` if argument is valid (e.g. `delete o.x`); `false` if not (e.g. `delete o`).
-
-  // other special operators: `void`
+  static plugins = [
+    function (node) {
+      const key = node.path.node.operator;
+      if (ArgumentPlugins[key]) {
+        return pickPlugin(node, key, ArgumentPlugins);
+      }
+      return 'ArithmeticExpression';
+    }
+  ];
 }

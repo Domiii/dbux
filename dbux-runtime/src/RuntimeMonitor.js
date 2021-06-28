@@ -548,6 +548,20 @@ export default class RuntimeMonitor {
     return value;
   }
 
+  traceDeleteME(programId, result, propValue, tid, objectTid) {
+    if (!this._ensureExecuting()) {
+      return result;
+    }
+
+    // this.registerTrace(value, tid);
+    const varAccess = {
+      objectTid,
+      prop: propValue
+    };
+    dataNodeCollection.createOwnDataNode(undefined, tid, DataNodeType.Delete, varAccess);
+    return result;
+  }
+
   _traceUpdateExpression(updateValue, returnValue, readTid, tid, varAccess) {
     const trace = traceCollection.getById(tid);
 

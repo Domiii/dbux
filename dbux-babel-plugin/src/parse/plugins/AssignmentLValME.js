@@ -51,13 +51,9 @@ export default class AssignmentLValME extends BasePlugin {
     const { node } = this;
     const { path, Traces } = node;
 
-    const [meNode, valueNode] = node.getChildNodes();
+    const [, valuePath] = node.getChildPaths();
+    const [meNode] = node.getChildNodes();
     const [objectNode] = meNode.getChildNodes();
-
-    if (!valueNode) {
-      // rval was skipped
-      return;
-    }
 
     // make sure, `object` is traced
     objectNode.addDefaultTrace();
@@ -88,6 +84,6 @@ export default class AssignmentLValME extends BasePlugin {
 
     this.node.decorateWriteTraceData(traceData);
 
-    Traces.addTraceWithInputs(traceData, [valueNode.path]);
+    Traces.addTraceWithInputs(traceData, [valuePath]);
   }
 }
