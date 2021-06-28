@@ -64,6 +64,9 @@ else
   nodeArgsR="$nodeArgs"
 fi
 
+# echo "i $nodeArgsI r $nodeArgsR ($nodeArgs, $2)"
+
+inPath="./samples/__samplesInput__/$fname.js"
 outPath="./samples/__samplesInput__/$fname.inst.js"
 # if [[ $dbuxCmd = "i" ]]
 # then
@@ -74,15 +77,23 @@ outPath="./samples/__samplesInput__/$fname.inst.js"
 # x=$(( $isInstrument ))
 # echo "$dbuxCmd i:$isInstrument x:$x"
 
-if [[ "$dbuxCmd" != "rr" ]]
+if [[ "$dbuxCmd" == "b" ]]
 then
-  node $nodeArgsI --enable-source-maps --stack-trace-limit=100 "./node_modules/@dbux/cli/bin/dbux.js" i --esnext "./samples/__samplesInput__/$fname.js" $outPath
-fi
+  # babel
+  node $nodeArgs --enable-source-maps --stack-trace-limit=100 "./node_modules/@babel/cli/bin/babel.js" --config-file="./config/babel-presets-node.js" $inPath
+else
+  if [[ "$dbuxCmd" != "rr" ]]
+  then
+    # instrument
+    node $nodeArgsI --enable-source-maps --stack-trace-limit=100 "./node_modules/@dbux/cli/bin/dbux.js" i --esnext $inPath $outPath
+  fi
 
-if [[ "$dbuxCmd" = "r" ]] || [[ "$dbuxCmd" = "rr" ]]
-then
-  # NOTE: --enable-source-maps will mess things up when executing the raw output
-  node $nodeArgsR --stack-trace-limit=100 -r "@dbux/runtime" $outPath
+  if [[ "$dbuxCmd" = "r" ]] || [[ "$dbuxCmd" = "rr" ]]
+  then
+    # run
+    # NOTE: --enable-source-maps will mess things up when executing the raw output
+    node $nodeArgsR --stack-trace-limit=100 -r "@dbux/runtime" $outPath
+  fi
 fi
 
 # if (( $isInstrument ))
