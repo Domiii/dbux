@@ -80,7 +80,7 @@ outPath="./samples/__samplesInput__/$fname.inst.js"
 if [[ "$dbuxCmd" == "b" ]]
 then
   # babel
-  node $nodeArgs --enable-source-maps --stack-trace-limit=100 "./node_modules/@babel/cli/bin/babel.js" --config-file="./config/babel-presets-node.js" $inPath
+  node $nodeArgs --enable-source-maps --stack-trace-limit=100 "./node_modules/@babel/cli/bin/babel.js" --config-file="./config/babel-es5.js" $inPath
 else
   if [[ "$dbuxCmd" != "rr" ]]
   then

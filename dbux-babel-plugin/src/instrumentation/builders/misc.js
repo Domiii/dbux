@@ -1,7 +1,8 @@
 import * as t from '@babel/types';
+import isFunction from 'lodash/isFunction';
 import { buildTraceCall, bindTemplate, bindExpressionTemplate } from './templateUtil';
 import { addMoreTraceCallArgs, getDeclarationTid, getTraceCall, makeInputs } from './buildUtil';
-import { getInstrumentTargetAstNode } from './common';
+import { applyPreconditionToExpression, getInstrumentTargetAstNode } from './common';
 import { convertNonComputedPropToStringLiteral } from './objects';
 import { buildTraceId } from './traceId';
 
@@ -23,7 +24,7 @@ export const buildTraceExpressionVar = buildTraceCall(
 
     return {
       trace,
-      expr: getInstrumentTargetAstNode(traceCfg),
+      expr: getInstrumentTargetAstNode(state, traceCfg),
       tid,
       declarationTid
     };
@@ -36,6 +37,7 @@ export const buildTraceExpression = buildTraceCall(
   '%%trace%%(%%expr%%, %%tid%%, %%inputs%%)',
   function buildTraceExpression(state, traceCfg) {
     const trace = getTraceCall(state, traceCfg);
+    const expr = getInstrumentTargetAstNode(state, traceCfg);
     const tid = buildTraceId(state, traceCfg);
 
     // Verbose && debug(`[te] ${expressionNode.type} [${inputTraces?.map(i => i.tidIdentifier.name).join(',') || ''}]`, pathToString(expressionNode));
@@ -44,7 +46,7 @@ export const buildTraceExpression = buildTraceCall(
 
     return {
       trace,
-      expr: getInstrumentTargetAstNode(traceCfg),
+      expr,
       tid,
       inputs: makeInputs(traceCfg)
     };
@@ -62,7 +64,7 @@ export const buildTraceExpressionNoInput = buildTraceCall(
 
     return {
       trace,
-      expr: getInstrumentTargetAstNode(traceCfg),
+      expr: getInstrumentTargetAstNode(state, traceCfg),
       tid
     };
   }
@@ -72,7 +74,7 @@ export const buildTraceExpressionNoInput = buildTraceCall(
 // traceDeclaration
 // ###########################################################################
 
-export function buildTraceDeclaration(state, traceCfg, value) {
+export function buildTraceDeclarationVar(state, traceCfg, value) {
   const { tidIdentifier, inProgramStaticTraceId } = traceCfg;
   const trace = getTraceCall(state, traceCfg, 'traceDeclaration');
   const args = [t.numericLiteral(inProgramStaticTraceId)];
@@ -81,14 +83,17 @@ export function buildTraceDeclaration(state, traceCfg, value) {
 
   return t.variableDeclarator(
     tidIdentifier,
-    t.callExpression(trace, args)
+    applyPreconditionToExpression(traceCfg, t.callExpression(trace, args))
   );
 }
 
 export function buildTraceDeclarations(state, traceCfgs) {
   const decls = traceCfgs.map((traceCfg) => {
-    const valuePath = traceCfg.data?.valuePath;
-    return buildTraceDeclaration(state, traceCfg, valuePath?.node);
+    let valueNode = traceCfg.data?.valueNode;
+    if (isFunction(valueNode)) {
+      valueNode = valueNode(state, traceCfg);
+    }
+    return buildTraceDeclarationVar(state, traceCfg, valueNode);
   });
   return t.variableDeclaration('var', decls);
 }
@@ -106,7 +111,7 @@ export const buildTraceWriteVar = buildTraceCall(
 
     return {
       trace,
-      expr: getInstrumentTargetAstNode(traceCfg),
+      expr: getInstrumentTargetAstNode(state, traceCfg),
       tid,
       declarationTid,
       inputs: makeInputs(traceCfg)
@@ -152,7 +157,7 @@ export const buildtraceExpressionME = bindExpressionTemplate(
   '%%tme%%(%%objValue%%, %%propValue%%, %%tid%%, %%objectTid%%)',
   function buildtraceExpressionME(state, traceCfg) {
     // const { scope } = path;
-    const meNode = getInstrumentTargetAstNode(traceCfg);
+    const meNode = getInstrumentTargetAstNode(state, traceCfg);
     const trace = getTraceCall(state, traceCfg, 'traceExpressionME');
     const tid = buildTraceId(state, traceCfg);
     const { objectTid } = traceCfg.data;
@@ -201,7 +206,7 @@ export const buildTraceWriteME = buildTraceCall(
     } } } = state;
     const tid = buildTraceId(state, traceCfg);
 
-    const assignmentExpression = getInstrumentTargetAstNode(traceCfg);
+    const assignmentExpression = getInstrumentTargetAstNode(state, traceCfg);
     const {
       left: meNode,
       right: rVal,

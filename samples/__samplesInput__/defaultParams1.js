@@ -7,4 +7,5 @@ function g(a = 3, b) {
 }
 
 f();
+f(undefined, undefined);
 g(101, 102);

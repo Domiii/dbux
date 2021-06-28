@@ -16,10 +16,12 @@ export class TraceCfgMeta {
    * @type {Function?}
    */
   instrument;
+
   /**
-   * @type {Array.<AstNode>}
+   * If given, traceCall will only execute if condition met.
+   * @type {AstNode}
    */
-  moreTraceCallArgs;
+  preCondition;
 
   /**
    * If `false`, it indicates that instrumentation should build, but not store the `trace` call `AstNode`.
@@ -27,6 +29,11 @@ export class TraceCfgMeta {
    * @type {(NodePath | false)?}
    */
   targetPath;
+
+  /**
+   * @type {Array.<AstNode>}
+   */
+  moreTraceCallArgs;
 }
 
 export class TraceCfgData {

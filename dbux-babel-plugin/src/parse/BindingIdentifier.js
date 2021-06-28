@@ -76,9 +76,9 @@ export default class BindingIdentifier extends BaseId {
    * Hoisted by default (unless `scope` is given).
    * Will insert all declaration in one: `var {declarations.map(buildTraceDeclaration)}`
    * 
-   * @param {NodePath?} definitionPath Only given if initialization occurs upon declaration.
+   * @param {NodePath?} definitionPathOrNode Only given if initialization occurs upon declaration.
    */
-  addOwnDeclarationTrace(definitionPath = null, moreTraceData = null) {
+  addOwnDeclarationTrace(definitionPathOrNode = null, moreTraceData = null) {
     // if (this.binding?.path.node.id !== this.path.node) {
     //   // NOTE: should never happen
     //   return;
@@ -89,6 +89,6 @@ export default class BindingIdentifier extends BaseId {
     if (declarationNode !== this) {
       // TODO: if `definitionPath`, convert to `write` trace?
     }
-    return bindingScopeNode.Traces.addDefaultDeclarationTrace(this, definitionPath, moreTraceData);
+    return bindingScopeNode.Traces.addDefaultDeclarationTrace(this, definitionPathOrNode, moreTraceData);
   }
 }

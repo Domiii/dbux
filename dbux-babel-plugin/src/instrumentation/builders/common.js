@@ -128,7 +128,7 @@ export function getInstrumentPath(traceCfg) {
  * NOTE2: actual `targetNode` node might have been moved
  *    -> E.g. by `CallExpression`, `CalleeMemberExpression`, `ObjectMethod`.
  */
-export function getInstrumentTargetAstNode(traceCfg) {
+export function getInstrumentTargetAstNode(state, traceCfg) {
   const {
     meta: {
       targetNode
@@ -137,3 +137,19 @@ export function getInstrumentTargetAstNode(traceCfg) {
   return targetNode || getInstrumentPath(traceCfg).node || UndefinedNode;
 }
 
+export function applyPreconditionToExpression(traceCfg, expr) {
+  const { meta } = traceCfg;
+  const preCondition = meta?.preCondition;
+
+  if (preCondition) {
+    const isStatement = t.isExpressionStatement(expr);
+    if (isStatement) {
+      expr = expr.expression;
+    }
+    expr = t.logicalExpression('&&', preCondition, expr);
+    if (isStatement) {
+      expr = t.expressionStatement(expr);
+    }
+  }
+  return expr;
+}
