@@ -46,7 +46,6 @@ export default class Delete extends BasePlugin {
         propertyAstNode
       },
       meta: {
-        // instrument: Traces.instrumentTraceWrite
         build: buildTraceDeleteME
       }
     };

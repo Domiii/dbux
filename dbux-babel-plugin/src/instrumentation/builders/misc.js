@@ -226,9 +226,9 @@ export const buildTraceWriteME = buildTraceCall(
       }
     } = traceCfg;
 
-    const o = t.assignmentExpression('=', objectVar, objectNode);
+    const o = objectVar ? t.assignmentExpression('=', objectVar, objectNode) : objectNode;
     const p = t.assignmentExpression('=', propertyVar, convertNonComputedPropToStringLiteral(propertyNode, meNode.computed));
-    const lVal = t.memberExpression(objectVar, propertyVar, true, false);
+    const lVal = t.memberExpression(objectVar || objectNode, propertyVar, true, false);
     const value = t.assignmentExpression(operator, lVal, rVal);
 
     return {
