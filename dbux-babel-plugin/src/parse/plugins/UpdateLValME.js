@@ -4,6 +4,8 @@ import { LValHolderNode } from '../_types';
 import { buildUpdateExpressionME } from '../../instrumentation/builders/updateExpressions';
 
 /**
+ * [ME]
+ * 
  * @example
  * 
  * Case d-1:
@@ -76,9 +78,17 @@ export default class UpdateLValME extends BasePlugin {
       propertyNode.addDefaultTrace();
     }
 
-    // add read trace
+    // prepare object
     const objectVar = path.scope.generateDeclaredUidIdentifier('o');
-    const propertyVar = path.scope.generateDeclaredUidIdentifier('p');
+
+    // prepare property
+    let propertyVar;
+    if (computed) {
+      propertyNode.addDefaultTrace();
+      propertyVar = path.scope.generateDeclaredUidIdentifier('p');
+    }
+
+    // add read trace
     const readTraceCfg = this.addReadTrace(objectVar, propertyVar, objectTid);
 
     // add actual WriteME trace

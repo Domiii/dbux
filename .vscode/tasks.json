@@ -42,6 +42,16 @@
       ]
     },
     {
+      "label": "eslint:files",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-lc",
+        "--",
+        "yarn eslint:files"
+      ]
+    },
+    {
       "label": "eslint:files:open",
       "type": "shell",
       "command": "bash",

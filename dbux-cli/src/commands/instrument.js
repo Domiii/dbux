@@ -55,19 +55,28 @@ export const handler = wrapCommand(async ({ file, outputFile, ...options }) => {
   const inputCode = fs.readFileSync(file, 'utf8');
   const outputCode = transformSync(inputCode, babelOptions).code;
 
-  const prettyCode = prettier.format(outputCode, 
-    // see https://stackoverflow.com/questions/50561649/module-build-failed-error-no-parser-and-no-file-path-given-couldnt-infer-a-p
-    { parser: "babel" }
-  ) + '\n';
+  let finalCode;
+  try {
+    finalCode = prettier.format(outputCode,
+      // see https://stackoverflow.com/questions/50561649/module-build-failed-error-no-parser-and-no-file-path-given-couldnt-infer-a-p
+      { parser: "babel" }
+    ) + '\n';
+  }
+  catch (err) {
+    console.error(`prettier failed:\n################################################`,
+      err,
+      '\n################################################\n\n');
+    finalCode = outputCode;
+  }
 
   // show in vscode
   // sh.exec(`echo output | code -`);
 
   if (!outputFile) {
-    process.stdout.write(prettyCode);
+    process.stdout.write(finalCode);
   }
   else {
-    fs.writeFileSync(outputFile, prettyCode);
+    fs.writeFileSync(outputFile, finalCode);
     console.debug(`Wrote outputFile: ${outputFile}`);
   }
 });

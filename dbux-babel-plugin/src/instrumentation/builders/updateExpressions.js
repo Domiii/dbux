@@ -4,7 +4,8 @@ import TraceCfg from '../../definitions/TraceCfg';
 import { generateDeclaredIdentifier, getDeclarationTid, ZeroNode } from './buildUtil';
 import { buildTraceId } from './traceId';
 import { convertNonComputedPropToStringLiteral } from './objects';
-import { buildtraceExpressionME, buildTraceExpressionVar } from './misc';
+import { buildTraceExpressionVar } from './misc';
+import { buildtraceExpressionME } from './me';
 
 /**
  * Produces new value and return value of update expression:
@@ -75,6 +76,7 @@ export function buildUpdateExpressionVar(state, traceCfg) {
 }
 
 /**
+ * [ME]
  * Builds the final UE:
  * 
  * `++o.x` ->
@@ -103,11 +105,23 @@ export function buildUpdateExpressionME(state, traceCfg) {
   const meNode = path.node.argument;
   const {
     object: objectNode,
-    property: propertyNode
+    property: propertyNode,
+    computed
   } = meNode;
+
+  // build object
   const o = t.assignmentExpression('=', objectVar, objectNode);
-  const p = t.assignmentExpression('=', propertyVar, convertNonComputedPropToStringLiteral(propertyNode, meNode.computed));
-  const lval = t.memberExpression(objectVar, propertyVar, true, false);
+
+  // build property
+  let p = convertNonComputedPropToStringLiteral(propertyNode, computed);
+  if (computed) {
+    p = t.assignmentExpression('=',
+      propertyVar,
+      p
+    );
+  }
+
+  const lval = t.memberExpression(objectNode, propertyVar || propertyNode, computed, false);
   const rval = buildtraceExpressionME(state, readTraceCfg);
   const returnValue = generateDeclaredIdentifier(path);
   const updateValue = buildUpdatedValue(state, path, lval, rval, returnValue);

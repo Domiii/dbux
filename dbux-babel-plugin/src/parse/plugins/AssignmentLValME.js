@@ -1,7 +1,8 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import BasePlugin from './BasePlugin';
 import { LValHolderNode } from '../_types';
-import { buildTraceWriteME } from '../../instrumentation/builders/misc';
+import { buildTraceWriteME } from '../../instrumentation/builders/me';
+import { ZeroNode } from '../../instrumentation/builders/buildUtil';
 
 /**
  * @example
@@ -53,18 +54,26 @@ export default class AssignmentLValME extends BasePlugin {
 
     const [, valuePath] = node.getChildPaths();
     const [meNode] = node.getChildNodes();
-    const [objectNode] = meNode.getChildNodes();
+    const [objectNode, propertyNode] = meNode.getChildNodes();
+    const {
+      computed
+    } = meNode.path.node;
 
-    // make sure, `object` is traced
-    objectNode.addDefaultTrace();
-
-    const objectTid = objectNode.traceCfg?.tidIdentifier;
+    // prepare object
+    const objectTraceCfg = objectNode.addDefaultTrace();
+    let objectTid = objectTraceCfg?.tidIdentifier;
     if (!objectTid) {
       this.warn(`objectNode did not have traceCfg.tidIdentifier in ${objectNode}`);
+      objectTid = ZeroNode;
     }
-
     const objectAstNode = path.scope.generateDeclaredUidIdentifier('o');
-    const propertyAstNode = path.scope.generateDeclaredUidIdentifier('p');
+
+    // prepare property
+    let propertyAstNode;
+    if (computed) {
+      propertyNode.addDefaultTrace();
+      propertyAstNode = path.scope.generateDeclaredUidIdentifier('p');
+    }
 
     // add actual WriteME trace
     const traceData = {

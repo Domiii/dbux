@@ -1,6 +1,6 @@
 import * as t from '@babel/types';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
-import { buildTraceExpression, buildTraceWriteME } from '../instrumentation/builders/misc';
+import { buildTraceWriteClassProperty } from '../instrumentation/builders/me';
 import BaseNode from './BaseNode';
 
 const thisAstNode = t.thisExpression();
@@ -17,7 +17,19 @@ export default class ClassProperty extends BaseNode {
   exit() {
     const { path, Traces } = this;
 
+    const [keyNode] = this.getChildPaths();
     const [keyPath, valuePath] = this.getChildPaths();
+
+    const { computed } = path.node;
+
+    let propertyAstNode;
+    if (computed) {
+      // only assign `propertyAstNode` if computed
+      // NOTE: this is because private properties do not support dynamic access
+      // see: https://github.com/tc39/proposal-private-fields/issues/94
+      keyNode?.addDefaultTrace();
+      propertyAstNode = path.scope.generateDeclaredUidIdentifier('p');
+    }
 
     // add trace for `this`
     const thisTraceCfg = Traces.addTrace({
@@ -38,8 +50,6 @@ export default class ClassProperty extends BaseNode {
       this.warn(`objectNode did not have traceCfg.tidIdentifier in ${thisAstNode}`);
     }
 
-    const propertyAstNode = path.scope.generateDeclaredUidIdentifier('p');
-
     const traceData = {
       path,
       node: this,
@@ -47,18 +57,19 @@ export default class ClassProperty extends BaseNode {
         type: TraceType.WriteME
       },
       data: {
+        thisTraceCfg,
         objectTid,
         propertyAstNode
       },
       meta: {
-        build: buildTraceWriteME,
-        targetNode(state) {
-          return {
-            left: buildTraceExpression(state, thisTraceCfg),
-            right: valuePath.node,
-            operator: '='
-          };
-        }
+        build: buildTraceWriteClassProperty,
+        // targetNode(state) {
+        //   return {
+        //     left: buildTraceExpression(state, thisTraceCfg),
+        //     right: valuePath.node,
+        //     operator: '='
+        //   };
+        // }
       }
     };
 

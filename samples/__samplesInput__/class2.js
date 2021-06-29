@@ -1,16 +1,18 @@
 class A {
   constructor() { }
-  p = f();
-  #p2 = g();
-  // m = function m() { return this.p; }.bind(this)
-  m() { return this.p; }
-  #m2() { }
+  #q = g();
+  p = f(this.#q);
+
+  change() {
+    this.#q = 3;
+    return this.#q;
+  }
 }
 
 
 var a = new A();
 
-console.log(a.p, a.m());
+console.log(a.p, a.change());
 
-function f() { return 5; }
-function g() { return 6; }
+function g() { return 1; }
+function f(x) { console.log('f', x); return 2; }

@@ -8,9 +8,11 @@ const CopyPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const {
   makeResolve,
-  makeAbsolutePaths,
-  getDbuxVersion
+  makeAbsolutePaths
 } = require('../dbux-cli/lib/package-util');
+
+const webpackCommon = require('../config/webpack.config.common');
+
 const { pathResolve } = require('../dbux-common-node/src/util/pathUtil');
 
 // const _oldLog = console.log; console.log = (...args) => _oldLog(new Error(' ').stack.split('\n')[2], ...args);
@@ -18,15 +20,13 @@ const projectRoot = pathResolve(__dirname);
 const MonoRoot = pathResolve(__dirname, '..');
 
 module.exports = (env, argv) => {
-  const outputFolderName = 'dist';
-
   const mode = argv.mode || 'development';
-  const DBUX_VERSION = getDbuxVersion(mode);
-  const DBUX_ROOT = mode === 'development' ? MonoRoot : '';
-  process.env.NODE_ENV = mode; // set these, so babel configs also have it
-  process.env.DBUX_ROOT = DBUX_ROOT;
-
-  console.debug(`[dbux-code] (DBUX_VERSION=${DBUX_VERSION}, mode=${mode}, DBUX_ROOT=${DBUX_ROOT}) building...`);
+  const {
+    DBUX_VERSION,
+    DBUX_ROOT
+  } = webpackCommon('dbux-runtime', mode);
+  
+  const outputFolderName = 'dist';
 
   const aggregateTimeout = mode === 'development' ? 200 : 3000;
 

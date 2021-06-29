@@ -69,13 +69,14 @@ export default class TraceCfg {
   inputTraces;
 
   /**
+   * Use this to store context-sensitive configuration logic for generic `build` and `instrument` functions.
    * @type {TraceCfgMeta | null}
    */
   meta;
 
   /**
-   * This is mostly used to store custom context-sensitive per-trace data.
-   * But it is also used for storing results.
+   * Use this to store context-sensitive configuration logic and data for specialized `build` and `instrument` functions.
+   * Is also sometimes used for storing build results.
    * @type {TraceCfgData | null}
    */
   data;

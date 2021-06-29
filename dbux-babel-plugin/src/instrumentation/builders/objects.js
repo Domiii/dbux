@@ -12,9 +12,15 @@ const { log, debug, warn, error: logError } = newLogger('builders/objects');
 
 export function convertNonComputedPropToStringLiteral(keyAstNode, computed) {
   if (!computed && !t.isLiteral(keyAstNode)) {
-    let propName = keyAstNode.name;
+    // NOTE: ME can be `Identifier` or `PrivateName` (https://babeljs.io/docs/en/babel-types#privatename)
+    let propName = t.isPrivateName(keyAstNode) ? 
+      `#${keyAstNode.id.name}` :
+      keyAstNode.name;
     // NOTE: `o.x` becomes `tme(..., 'x', ...)`
     //      -> convert `Identifier` to `StringLiteral`
+    if (!propName) {
+      throw new Error(`Given AST node does not have a "name" property: ${JSON.stringify(keyAstNode)}`);
+    }
     keyAstNode = t.stringLiteral(propName);
   }
   return keyAstNode;

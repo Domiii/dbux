@@ -18,10 +18,8 @@ const isArray = require('lodash/isArray');
 const run = require('./run');
 const LineReader = require('./LineReader');
 
-// add babel-register, so we can import dbux src files
-require('../dbux-cli/lib/dbux-register-self');
-
-require('../dbux-common/src/util/prettyLogs'); // make console log pretty
+require('../dbux-cli/lib/dbux-register-self');    // add babel-register, so we can import dbux src files
+require('../dbux-common/src/util/prettyLogs');    // make console log pretty
 
 const { newLogger } = require('../dbux-common/src/log/logger');
 const Process = require('../dbux-projects/src/util/Process').default;

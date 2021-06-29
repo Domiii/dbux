@@ -35,7 +35,7 @@ set -e # cancel on error
 # fname="memberExpressions3"
 # fname="dbuxDisable1"
 # fname="assignments2"
-fname="class2"
+fname="updateExpressions4"
 
 
 nodeArgs=""

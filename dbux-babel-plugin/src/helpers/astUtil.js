@@ -29,3 +29,12 @@ const scopeBreakingNodeTypes = Object.fromEntries([
 export function doesNodeEndScope(node) {
   return !!scopeBreakingNodeTypes[node.type];
 }
+
+export function isPrivateClassMember(node) {
+  switch (node.type) {
+    case "ClassPrivateProperty":
+    case "ClassPrivateMethod":
+      return true;
+  }
+  return false;
+}

@@ -33,6 +33,7 @@ export default class CalleeMemberExpression extends BasePlugin {
 
     // const [objectPath/* , propertyPath */] = calleeNode.getChildPaths();
 
+    // NOTE: o.#x is valid, if inside of o's class
     const objectVar = scope.generateDeclaredUidIdentifier('o');
 
     // NOTE: for the final CallExpression, the callee is chopped into pieces -

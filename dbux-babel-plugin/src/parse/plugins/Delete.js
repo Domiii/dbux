@@ -1,5 +1,5 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
-import { buildTraceDeleteME } from '../../instrumentation/builders/misc';
+import { buildTraceDeleteME } from '../../instrumentation/builders/me';
 import BasePlugin from './BasePlugin';
 
 /** @typedef { import("../MemberExpression").default } MemberExpression */
