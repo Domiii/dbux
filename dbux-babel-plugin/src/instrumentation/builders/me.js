@@ -43,13 +43,14 @@ export const buildtraceExpressionME = bindExpressionTemplate(
     const {
       data: {
         objectTid,
+        isObjectTracedAlready,
         objectAstNode: objectVar,
         propertyAstNode: propertyVar // NOTE: this is `undefined`, if `!computed`
       }
     } = traceCfg;
 
     // build object
-    const o = t.assignmentExpression('=', objectVar, objectNode);
+    const o = isObjectTracedAlready ? objectVar : t.assignmentExpression('=', objectVar, objectNode);
 
     // build propertyValue
     let propertyValue = convertNonComputedPropToStringLiteral(propertyNode, computed);
@@ -62,7 +63,7 @@ export const buildtraceExpressionME = bindExpressionTemplate(
 
     // build actual MemberExpression
     const newMemberExpression = (optional ? t.optionalMemberExpression : t.memberExpression)(
-      objectNode,
+      objectVar,
       propertyVar || propertyNode,
       computed, false
     );
@@ -119,13 +120,14 @@ export const buildTraceWriteME = buildTraceCall(
     const {
       data: {
         objectTid,
+        isObjectTracedAlready,
         objectAstNode: objectVar,
         propertyAstNode: propertyVar // NOTE: this is `undefined`, if `!computed`
       }
     } = traceCfg;
 
     // build object
-    const o = t.assignmentExpression('=', objectVar, objectNode);
+    const o = isObjectTracedAlready ? objectVar : t.assignmentExpression('=', objectVar, objectNode);
 
     // build propertyValue
     let propertyValue = convertNonComputedPropToStringLiteral(propertyNode, computed);
@@ -137,7 +139,11 @@ export const buildTraceWriteME = buildTraceCall(
     }
 
     // build value
-    const newMemberExpression = t.memberExpression(objectNode, propertyVar || propertyNode, computed, false);
+    const newMemberExpression = t.memberExpression(
+      objectVar,
+      propertyVar || propertyNode,
+      computed, false
+    );
     const value = t.assignmentExpression(
       operator,
       newMemberExpression,
@@ -194,8 +200,16 @@ export const buildTraceDeleteME = buildTraceCall(
       }
     } = traceCfg;
 
-    const o = t.assignmentExpression('=', objectVar, objectNode);
-    const p = t.assignmentExpression('=', propertyVar, convertNonComputedPropToStringLiteral(propertyNode, meNode.computed));
+    const o = t.assignmentExpression(
+      '=',
+      objectVar,
+      objectNode
+    );
+    const p = t.assignmentExpression(
+      '=',
+      propertyVar,
+      convertNonComputedPropToStringLiteral(propertyNode, meNode.computed)
+    );
 
     return {
       trace,

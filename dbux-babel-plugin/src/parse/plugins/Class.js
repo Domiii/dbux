@@ -32,13 +32,14 @@ export default class Class extends BasePlugin {
       }
     }
 
-    this.classTraceData = {
-      path,
-      node,
-      staticTraceData,
-      meta: {
+    // TODO
+    // this.classTraceData = {
+    //   path,
+    //   node,
+    //   staticTraceData,
+    //   meta: {
 
-      }
-    };
+    //   }
+    // };
   }
 }

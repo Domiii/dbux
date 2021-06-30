@@ -119,6 +119,7 @@ export default class MemberExpression extends BaseNode {
       this.warn(`objectNode did not have traceCfg.tidIdentifier in ${objectNode}`);
       objectTid = ZeroNode;
     }
+    const isObjectTracedAlready = !!objectAstNode;
     objectAstNode = objectAstNode || path.scope.generateDeclaredUidIdentifier('o');
 
     // prepare property
@@ -141,6 +142,7 @@ export default class MemberExpression extends BaseNode {
       },
       data: {
         objectTid,
+        isObjectTracedAlready,
         objectAstNode,
         propertyAstNode
       }
