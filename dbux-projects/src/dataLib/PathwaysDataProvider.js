@@ -67,16 +67,21 @@ class ApplicationCollection extends PathwaysCollection {
       const filePath = this.getApplicationFilePath(app);
       const { version, collections } = app.dataProvider.serializeJson();
       const header = JSON.stringify({ headerTag: true, version });
-      try {
-        fs.appendFileSync(filePath, `${header}\n${JSON.stringify(collections)}\n`, { flag: 'ax' });
+      if (!fs.existsSync(filePath)) {
+        try {
+          fs.appendFileSync(filePath, `${header}\n${JSON.stringify(collections)}\n`, { flag: 'ax' });
+        }
+        catch (err) {
+          logError(`Cannot write header of application log file at ${filePath}. Error: ${err}`);
+        }
+        app.dataProvider.onAnyData(data => {
+          const { collections: serializedNewData } = app.dataProvider.serializeJson(Object.entries(data));
+          fs.appendFileSync(filePath, JSON.stringify(serializedNewData) + '\n');
+        });
       }
-      catch (err) {
-        logError(`Cannot write header of application log file at ${filePath}`);
+      else {
+        warn(`Added old application without \`isNew=false\``);
       }
-      app.dataProvider.onAnyData(data => {
-        const { collections: serializedNewData } = app.dataProvider.serializeJson(Object.entries(data));
-        fs.appendFileSync(filePath, JSON.stringify(serializedNewData) + '\n');
-      });
     }
   }
 

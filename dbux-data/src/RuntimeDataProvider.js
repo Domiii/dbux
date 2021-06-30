@@ -635,6 +635,7 @@ class ValueRefCollection extends Collection {
       }
       else {
         switch (category) {
+          case ValueTypeCategory.Function:
           case ValueTypeCategory.Array:
           case ValueTypeCategory.Object: {
             if (!serialized) {

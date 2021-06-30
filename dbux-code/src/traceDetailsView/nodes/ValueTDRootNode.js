@@ -9,7 +9,7 @@ export default class ValueTDRootNode extends ValueTDNode {
     const dataNode = dp.util.getDataNodeOfTrace(traceId);
     const hasValue = !!dataNode;
     const value = hasValue ? dp.util.getTraceValuePrimitive(traceId) : undefined;
-    const hasChildren = hasValue ? dp.util.isTracePlainObjectOrArrayValue(traceId) : false;
+    const hasChildren = hasValue ? dp.util.isTraceTrackableValue(traceId) : false;
 
     return {
       dataNode,

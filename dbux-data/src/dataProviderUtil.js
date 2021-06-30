@@ -2,6 +2,7 @@ import TraceType, { hasDynamicTypes, isTracePop, isBeforeCallExpression } from '
 import SpecialIdentifierType from '@dbux/common/src/core/constants/SpecialIdentifierType';
 import { pushArrayOfArray } from '@dbux/common/src/util/arrayUtil';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 import StaticTrace from '@dbux/common/src/core/data/StaticTrace';
@@ -393,7 +394,8 @@ export default {
   constructValueObjectShallow(dp, nodeId, terminateNodeId = null) {
     const dataNode = dp.collections.dataNodes.getById(nodeId);
     if (dataNode.refId) {
-      const entries = {};
+      const valueRef = dp.collections.values.getById(dataNode.refId);
+      const entries = Object.fromEntries(Object.entries(valueRef.value).map(([key, val]) => [key, [null, val]]));
       const writeNodes = dp.indexes.dataNodes.byObjectRefId.get(dataNode.refId)?.filter(node => node.type === DataNodeType.Write) || EmptyArray;
       !terminateNodeId && (terminateNodeId = nodeId);
       for (const writeNode of writeNodes) {
@@ -403,7 +405,7 @@ export default {
         }
         const { prop } = writeNode.varAccess;
         const inputNodeId = writeNode.inputs[0];
-        entries[prop] = inputNodeId;
+        entries[prop] = [inputNodeId, null];
       }
       return entries;
     }

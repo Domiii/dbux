@@ -1,19 +1,18 @@
 import allApplications from '@dbux/data/src/applications/allApplications';
 import ValueTypeCategory from '@dbux/common/src/core/constants/ValueTypeCategory';
-import { isTraceExpression } from '@dbux/common/src/core/constants/TraceType';
-import UserActionType from '@dbux/data/src/pathways/UserActionType';
-import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
-import { valueRender } from '../valueRender';
+// import { isTraceExpression } from '@dbux/common/src/core/constants/TraceType';
 import EmptyValueNode from './EmptyValueNode';
+import ValueNode from './ValueNode';
+import ValueTDLeafNode from './ValueTDLeafNode';
 
 export const noValueMessage = '(no value or undefined)';
 
-export default class ValueTDNode extends BaseTreeViewNode {
+export default class ValueTDNode extends ValueNode {
   static makeProperties({ nodeId }, parent, { trace }) {
-    const { applicationId, traceId } = trace;
+    const { applicationId } = trace;
     const dp = allApplications.getById(applicationId).dataProvider;
     const value = dp.util.getDataNodeValuePrimitive(nodeId);
-    const hasChildren = dp.util.isDataNodePlainObjectOrArrayValue(nodeId);
+    const hasChildren = dp.util.isDataNodeTrackableValue(nodeId);
 
     return {
       value,
@@ -22,20 +21,13 @@ export default class ValueTDNode extends BaseTreeViewNode {
   }
 
   static makeLabel(dataNode, parent, { key, trace, value, hasChildren }) {
-    const dp = allApplications.getById(trace.applicationId).dataProvider;
-    const traceType = dp.util.getTraceType(trace.traceId);
-    if (isTraceExpression(traceType) && !hasChildren) {
+    // const dp = allApplications.getById(trace.applicationId).dataProvider;
+    // const traceType = dp.util.getTraceType(trace.traceId);
+    // if (isTraceExpression(traceType) && !hasChildren) {
+    if (!!value && !hasChildren) {
       return `${key}: ${JSON.stringify(value)}`;
     }
     return key;
-  }
-
-  get clickUserActionType() {
-    return UserActionType.TDValueClick;
-  }
-
-  get collapseChangeUserActionType() {
-    return UserActionType.TDValueCollapseChange;
   }
 
   get valueRef() {
@@ -48,21 +40,6 @@ export default class ValueTDNode extends BaseTreeViewNode {
     return this.entry;
   }
 
-  canHaveChildren() {
-    return this.hasChildren;
-  }
-
-  init() {
-    // hackfix: to show valueRender button in simple logic
-    this.contextValue = 'dbuxTraceDetailsView.node.traceValueNode';
-    if (this.hasValue) {
-      const { valueRef } = this;
-      if (valueRef) {
-        this.description = `${ValueTypeCategory.nameFrom(valueRef.category)}${valueRef.typeName && ` (${valueRef.typeName})`}`;
-      }
-    }
-  }
-
   buildChildren() {
     const { hasChildren, trace, dataNode: { nodeId } } = this;
     const selectedNodeId = this.selectedNodeId || nodeId;
@@ -73,9 +50,15 @@ export default class ValueTDNode extends BaseTreeViewNode {
       const entries = Object.entries(dp.util.constructValueObjectShallow(nodeId, selectedNodeId));
 
       if (entries.length) {
-        return entries.map(([key, entryNodeId]) => {
-          const dataNode = dp.collections.dataNodes.getById(entryNodeId);
-          return this.treeNodeProvider.maybeBuildTraceDetailNode(ValueTDNode, dataNode, this, { key, trace, selectedNodeId });
+        return entries.map(([key, [entryNodeId, entryValue]]) => {
+          // TODO
+          if (entryNodeId) {
+            const dataNode = dp.collections.dataNodes.getById(entryNodeId);
+            return this.treeNodeProvider.maybeBuildTraceDetailNode(ValueTDNode, dataNode, this, { key, trace, selectedNodeId });
+          }
+          else {
+            return this.treeNodeProvider.maybeBuildTraceDetailNode(ValueTDLeafNode, null, this, { key, value: entryValue });
+          }
         });
       }
       else {
@@ -83,19 +66,5 @@ export default class ValueTDNode extends BaseTreeViewNode {
       }
     }
     return null;
-  }
-
-  handleClick() {
-    this.valueRender();
-  }
-
-  valueRender() {
-    const { valueRef, value, hasValue } = this;
-    if (hasValue) {
-      valueRender(valueRef, value);
-    }
-    else {
-      valueRender(null, noValueMessage);
-    }
   }
 }
