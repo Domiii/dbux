@@ -462,42 +462,43 @@ class DataNodeCollection extends Collection {
    * @param {DataNode} dataNode
    */
   getValueId(dataNode) {
-    if (!('valueId' in dataNode)) {
-      if (dataNode.refId) {
-        const firstRef = this.dp.indexes.dataNodes.byRefId.getFirst(dataNode.refId);
-        return firstRef.traceId;
-      }
-      else {
-        const { traceId, accessId } = dataNode;
-        const traceType = this.dp.util.getTraceType(traceId);
-        const trace = this.dp.collections.traces.getById(traceId);
-        const staticTrace = this.dp.collections.staticTraces.getById(trace.staticTraceId);
-        let lastNode;
-        // if (TraceType.is.BeforeCallExpression(traceType)) {
-        //   // skip in this case, special handling in UI - BCE rendering should reflect CallExpressionResult
-        //   return null;
-        // }
-        if (staticTrace.dataNode.isNew) {
-          return traceId;
-        }
-        else if (dataNode.inputs?.length) {
-          const inputDataNode = this.dp.collections.dataNodes.getById(dataNode.inputs[0]);
-          return inputDataNode.valueId;
-        }
-        // else if (TraceType.is.Identifier(traceType) || TraceType.is.ME(traceType)) {
-        else if (accessId && (lastNode = this.dp.indexes.dataNodes.byAccessId.getLast(accessId))) {
-          // warn(`[getValueId] Cannot find accessId of dataNode: ${JSON.stringify(dataNode)}`);
-          // NOTE: currently, last in `byAccessId` index is actually "the last before this one", since we are still resolving the index.
-          return lastNode.valueId;
-        }
-        else {
-          // eslint-disable-next-line max-len
-          // this.logger.warn(`[getValueId] Cannot find valueId for empty inputs.\n    trace: ${this.dp.util.makeTraceInfo(traceId)}\n    dataNode: ${JSON.stringify(dataNode)}`);
-        }
+    if ('valueId' in dataNode) {
+      return dataNode.valueId;
+    }
+
+    if (dataNode.refId) {
+      const firstRef = this.dp.indexes.dataNodes.byRefId.getFirst(dataNode.refId);
+      return firstRef.traceId;
+    }
+    else {
+      const { traceId, accessId } = dataNode;
+      const traceType = this.dp.util.getTraceType(traceId);
+      const trace = this.dp.collections.traces.getById(traceId);
+      const staticTrace = this.dp.collections.staticTraces.getById(trace.staticTraceId);
+      let lastNode;
+      // if (TraceType.is.BeforeCallExpression(traceType)) {
+      //   // skip in this case, special handling in UI - BCE rendering should reflect CallExpressionResult
+      //   return null;
+      // }
+      if (staticTrace.dataNode.isNew) {
         return traceId;
       }
+      else if (dataNode.inputs?.length) {
+        const inputDataNode = this.dp.collections.dataNodes.getById(dataNode.inputs[0]);
+        return inputDataNode.valueId;
+      }
+      // else if (TraceType.is.Identifier(traceType) || TraceType.is.ME(traceType)) {
+      else if (accessId && (lastNode = this.dp.indexes.dataNodes.byAccessId.getLast(accessId))) {
+        // warn(`[getValueId] Cannot find accessId of dataNode: ${JSON.stringify(dataNode)}`);
+        // NOTE: currently, last in `byAccessId` index is actually "the last before this one", since we are still resolving the index.
+        return lastNode.valueId;
+      }
+      else {
+        // eslint-disable-next-line max-len
+        // this.logger.warn(`[getValueId] Cannot find valueId for empty inputs.\n    trace: ${this.dp.util.makeTraceInfo(traceId)}\n    dataNode: ${JSON.stringify(dataNode)}`);
+      }
+      return traceId;
     }
-    return dataNode.valueId;
   }
 
   getAccessId(dataNode) {
@@ -541,7 +542,7 @@ class DataNodeCollection extends Collection {
     }
   }
 
-  postIndexRaw(dataNodes) {
+  postIndexProcessed(dataNodes) {
     this.errorWrapMethod('resolveDataIds', dataNodes);
   }
 
