@@ -304,25 +304,25 @@ export default {
   /** @param {DataProvider} dp */
   isTraceTrackableValue(dp, traceId) {
     const dataNode = dp.util.getDataNodeOfTrace(traceId);
-    return dp.util.isDataNodeTrackableValue(dataNode.nodeId);
+    return dataNode ? dp.util.isDataNodeTrackableValue(dataNode.nodeId) : null;
   },
 
   /** @param {DataProvider} dp */
   isTracePlainObjectOrArrayValue(dp, traceId) {
     const dataNode = dp.util.getDataNodeOfTrace(traceId);
-    return dp.util.isDataNodePlainObjectOrArrayValue(dataNode.nodeId);
+    return dataNode ? dp.util.isDataNodePlainObjectOrArrayValue(dataNode.nodeId) : null;
   },
 
   /** @param {DataProvider} dp */
   isTracePlainObject(dp, traceId) {
     const dataNode = dp.util.getDataNodeOfTrace(traceId);
-    return dp.util.isDataNodePlainObject(dataNode.nodeId);
+    return dataNode ? dp.util.isDataNodePlainObject(dataNode.nodeId) : null;
   },
 
   /** @param {DataProvider} dp */
   isTraceFunctionValue(dp, traceId) {
     const dataNode = dp.util.getDataNodeOfTrace(traceId);
-    return dp.util.isDataNodeFunctionValue(dataNode.nodeId);
+    return dataNode ? dp.util.isDataNodeFunctionValue(dataNode.nodeId) : null;
   },
 
   /** @param {DataProvider} dp */
@@ -509,13 +509,13 @@ export default {
   /** @param {DataProvider} dp */
   getTraceValueRef(dp, traceId) {
     const dataNode = dp.util.getDataNodeOfTrace(traceId);
-    return dp.util.getDataNodeValueRef(dataNode.nodeId);
+    return dataNode ? dp.util.getDataNodeValueRef(dataNode.nodeId) : null;
   },
 
   /** @param {DataProvider} dp */
   getDataNodeValueRef(dp, nodeId) {
     const dataNode = dp.collections.dataNodes.getById(nodeId);
-    const refId = dataNode?.refId;
+    const { refId } = dataNode;
     if (refId) {
       return dp.collections.values.getById(refId);
     }

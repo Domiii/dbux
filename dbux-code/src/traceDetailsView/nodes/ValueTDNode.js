@@ -54,9 +54,11 @@ export default class ValueTDNode extends BaseTreeViewNode {
   init() {
     // hackfix: to show valueRender button in simple logic
     this.contextValue = 'dbuxTraceDetailsView.node.traceValueNode';
-    const { valueRef } = this;
-    if (valueRef) {
-      this.description = `${ValueTypeCategory.nameFrom(valueRef.category)}${valueRef.typeName && ` (${valueRef.typeName})`}`;
+    if (this.hasValue) {
+      const { valueRef } = this;
+      if (valueRef) {
+        this.description = `${ValueTypeCategory.nameFrom(valueRef.category)}${valueRef.typeName && ` (${valueRef.typeName})`}`;
+      }
     }
   }
 

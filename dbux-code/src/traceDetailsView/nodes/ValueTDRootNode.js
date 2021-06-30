@@ -9,9 +9,9 @@ export default class ValueTDRootNode extends ValueTDNode {
     const { applicationId, traceId } = trace;
     const dp = allApplications.getById(applicationId).dataProvider;
     const dataNode = dp.util.getDataNodeOfTrace(traceId);
-    const hasValue = dp.util.doesTraceHaveValue(traceId);
+    const hasValue = !!dataNode;
     const value = hasValue ? dp.util.getTraceValuePrimitive(traceId) : undefined;
-    const hasChildren = dp.util.isTracePlainObjectOrArrayValue(traceId);
+    const hasChildren = hasValue ? dp.util.isTracePlainObjectOrArrayValue(traceId) : false;
 
     return {
       dataNode,
