@@ -72,9 +72,8 @@ let TraceType = {
   Param: 38,
   CatchParam: 39,
 
-  Class: 40,
-
-  FunctionDefinition: 41
+  FunctionDefinition: 41,
+  ClassDefinition: 42
 };
 
 /**

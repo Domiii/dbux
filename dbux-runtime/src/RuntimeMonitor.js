@@ -454,6 +454,59 @@ export default class RuntimeMonitor {
     return traceId;
   }
 
+  traceClass(programId, value, tid, staticMethods) {
+    if (!this._ensureExecuting()) {
+      return value;
+    }
+
+    this.traceExpression(programId, value, tid);
+
+    const trace = traceCollection.getById(tid);
+    if (trace) {
+      const { staticTraceId } = trace;
+      const { data: { 
+        staticMethods: staticMethodNames,
+        publicMethods: publicMethodNames
+      } } = staticTraceCollection.getById(staticTraceId);
+
+      for (const name of publicMethodNames) {
+        const method = value.prototype[name];
+        // TODO: trace publicMethod
+      }
+      for (let i = 0; i < staticMethodNames.length; ++i) {
+        // NOTE: we cannot access private static methods dynamically, that is why we do this
+        const method = staticMethods[i];
+        // TODO: trace staticMethod
+      }
+    }
+
+    return value;
+  }
+
+  traceInstance(programId, value, tid, privateMethods) {
+    if (!this._ensureExecuting()) {
+      return value;
+    }
+
+    this.traceExpression(programId, value, tid);
+
+    const trace = traceCollection.getById(tid);
+    if (trace) {
+      const { staticTraceId } = trace;
+      const { data: {
+        privateMethods: privateMethodNames
+      } } = staticTraceCollection.getById(staticTraceId);
+
+      for (let i = 0; i < privateMethodNames.length; ++i) {
+        // NOTE: this is so convoluted because we cannot access private methods dynamically
+        const method = privateMethods[i];
+        // TODO: trace staticMethod
+      }
+    }
+
+    return value;
+  }
+
   traceExpression(programId, value, tid, inputs) {
     if (!this._ensureExecuting()) {
       return value;

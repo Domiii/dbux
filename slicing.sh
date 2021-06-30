@@ -35,7 +35,7 @@ set -e # cancel on error
 # fname="memberExpressions3"
 # fname="dbuxDisable1"
 # fname="assignments2"
-fname="callChains1"
+fname="classes3"
 
 
 nodeArgs=""
@@ -66,7 +66,6 @@ fi
 # echo "i $nodeArgsI r $nodeArgsR ($nodeArgs, $2)"
 
 inPath="./samples/__samplesInput__/$fname.js"
-outPath="./samples/__samplesInput__/$fname.inst.js"
 # if [[ $dbuxCmd = "i" ]]
 # then
 # else
@@ -79,8 +78,11 @@ outPath="./samples/__samplesInput__/$fname.inst.js"
 if [[ "$dbuxCmd" == "b" ]]
 then
   # babel
-  node $nodeArgs --enable-source-maps --stack-trace-limit=100 "./node_modules/@babel/cli/bin/babel.js" --config-file="./config/babel-es5.js" $inPath
+  outPath="./samples/__samplesInput__/$fname.es5.js"
+  node $nodeArgs --enable-source-maps --stack-trace-limit=100 "./node_modules/@babel/cli/bin/babel.js" --config-file="./config/babel-es5.js" $inPath --out-file="$outPath"
+  echo "Babel ES5: $outPath"
 else
+  outPath="./samples/__samplesInput__/$fname.inst.js"
   if [[ "$dbuxCmd" != "rr" ]]
   then
     # instrument

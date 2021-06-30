@@ -23,7 +23,7 @@ export default class TodomvcEs6Project extends Project {
   makeBuilder() {
     return new WebpackBuilder({
       websitePort: 3842,
-      rootPath: 'src'
+      rootPath: 'src',
     });
   }
 

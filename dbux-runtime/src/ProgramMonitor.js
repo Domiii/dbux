@@ -198,12 +198,31 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.newTraceId(this.getProgramId(), inProgramStaticTraceId);
   }
 
+  /**
+   * 
+   */
   traceDeclaration = (inProgramStaticTraceId, value = undefined, inputs = undefined) => {
     if (this.areTracesDisabled) {
       return -1;
     }
 
     return this._runtimeMonitor.traceDeclaration(this.getProgramId(), inProgramStaticTraceId, value, inputs);
+  }
+
+  traceClass = (value, tid, staticMethods) => {
+    if (this.areTracesDisabled) {
+      return value;
+    }
+
+    return this._runtimeMonitor.traceClass(this.getProgramId(), value, tid, staticMethods);
+  }
+
+  traceInstance = (value, tid, privateMethods) => {
+    if (this.areTracesDisabled) {
+      return;
+    }
+
+    this._runtimeMonitor.traceInstance(this.getProgramId(), value, tid, privateMethods);
   }
 
   traceExpression = (value, tid, inputs) => {

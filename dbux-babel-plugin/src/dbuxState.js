@@ -72,6 +72,8 @@ export default function injectDbuxState(programPath, programState) {
       dbuxRuntime: scope.generateUidIdentifier('dbuxRuntime'),
 
       dbux: makeProgramId('dbux'),
+      dbuxClass: scope.generateUidIdentifier('__dbux_class'),
+      dbuxInstance: scope.generateUidIdentifier('__dbux_instance'),
 
       aliases: {
         // utilities
@@ -114,6 +116,10 @@ export default function injectDbuxState(programPath, programState) {
 
         // loops
         traceForIn: makeProgramId('tfi'),
+
+        // classes
+        traceClass: makeProgramId('tc'),
+        traceInstance: makeProgramId('ti')
       }
     },
 

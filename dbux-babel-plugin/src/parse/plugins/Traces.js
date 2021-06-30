@@ -8,7 +8,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import TraceCfg from '../../definitions/TraceCfg';
 import { pathToString } from '../../helpers/pathHelpers';
-import { traceWrapExpression, traceDeclarations } from '../../instrumentation/trace';
+import { instrumentExpression, traceDeclarations } from '../../instrumentation/instrumentMisc';
 // import { pathToString } from '../../helpers/pathHelpers';
 import BasePlugin from './BasePlugin';
 
@@ -257,7 +257,7 @@ export default class Traces extends BasePlugin {
         staticTraceData: { type: traceType },
         meta: {
           preInstrument,
-          instrument = traceWrapExpression
+          instrument = instrumentExpression
         } = EmptyObject
       } = traceCfg;
       (scope || path.scope).push({

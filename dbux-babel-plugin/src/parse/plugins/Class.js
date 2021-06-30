@@ -1,45 +1,76 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
+import merge from 'lodash/merge';
 import ClassMethod from '../ClassMethod';
 import BasePlugin from './BasePlugin';
 
 /** @typedef { import("../MemberExpression").default } MemberExpression */
 
 /**
+ * Classes are instrumented as follows:
  * 
+ * 1. Add `static __dbux_class = () => traceClass(CLASS, tid, staticNames)` property.
+ * 2a. Add `#__dbux_instance = (function () { traceInstance(this, tid, privateNames); })()` property.
+ * 2b. Add `delete this.__dbux_instance` to constructor.
+ * 3. Add `CLASS.__dbux_class(), delete CLASS.__dbux_class` behind the class (depending on node type).
+ * 
+ * NOTEs:
+ * * Adding `__dbux_class` and `#__dbux_instance` props is the only way to access private members.
+ * * `__dbux_class` cannot be `private`:
+ *    * It needs to be called **after** class is fully declared.
+ *    * Else, we might not have access to a class variable (in case of anonymous `ClassExpression`).
+ * * We delete both props as soon as we safely can.
  */
 export default class Class extends BasePlugin {
-  exit1() {
+  addClassTraces(moreTraceData) {
     const { node } = this;
-    const { path } = node;
-    const [, , bodyNode] = node.getChildNodes();
+    const [idNode, , bodyNode] = node.getChildNodes();
     const memberPaths = bodyNode.path.get('body');
 
-    // record all ClassMethods
-    const methods = [];
-    const staticTraceData = {
-      type: TraceType.Class,
-      dataNode: {
-        isNew: true
-      },
-      data: {
-        methods
-      }
-    };
+    // add all class member traces
+    // also, get all types of ClassMethods
+    const staticMethods = [], publicMethods = [], privateMethods = [];
+
     for (const memberPath of memberPaths) {
       const memberNode = node.getNodeOfPath(memberPath);
+      /* const memberTraceCfg = */ memberNode.addTrace(); // addTrace
+
+      // register all method names
       if (memberNode instanceof ClassMethod) {
-        methods.push(memberNode.createTraceData());
+        const astNode = memberNode.path.node;
+        let methods;
+        if (astNode.static) {
+          methods = staticMethods;
+        }
+        else {
+          methods = astNode.public ? publicMethods : privateMethods;
+        }
+        methods.push(memberNode.name);
       }
     }
 
-    // TODO
-    // this.classTraceData = {
-    //   path,
-    //   node,
-    //   staticTraceData,
-    //   meta: {
+    const traceInstanceTraceCfg = TODO;
 
-    //   }
-    // };
+    const classTraceData = {
+      staticTraceData: {
+        type: TraceType.Class,
+        dataNode: {
+          isNew: true
+        },
+        data: {
+          name: idNode?.path?.toString(),
+          publicMethods,
+          privateMethods
+        }
+      },
+      meta: {
+        moreTraceCallArgs: [
+          staticMethods
+        ]
+      }
+    };
+
+    merge(classTraceData, moreTraceData);
+
+    return this.Traces.addTrace(classTraceData);
   }
 }

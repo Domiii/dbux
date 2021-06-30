@@ -73,10 +73,14 @@ export default class BindingIdentifier extends BaseId {
 
   /**
    * Add declaration trace to scope.
-   * Hoisted by default (unless `scope` is given).
-   * Will insert all declaration in one: `var {declarations.map(buildTraceDeclaration)}`
+   * Hoisted by default (unless `hoisted` set to false).
    * 
-   * @param {NodePath?} definitionPathOrNode Only given if initialization occurs upon declaration.
+   * Will unshift all `hoisted` declarations as:
+   *   `var {declarations.map(traceDeclaration(stid, value))}`
+   * Not `hoisted` declarations as:
+   *    `te(value, tid)`
+   * 
+   * @param {NodePath?} definitionPathOrNode Initialization occurs upon declaration. Only used if `hoisted`.
    */
   addOwnDeclarationTrace(definitionPathOrNode = null, moreTraceData = null) {
     // if (this.binding?.path.node.id !== this.path.node) {

@@ -1,6 +1,6 @@
 import * as t from '@babel/types';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
-import { buildTraceWriteClassProperty } from '../instrumentation/builders/me';
+import { buildTraceWriteClassProperty } from '../instrumentation/builders/classes';
 import BaseNode from './BaseNode';
 
 const thisAstNode = t.thisExpression();
@@ -14,7 +14,7 @@ export default class ClassProperty extends BaseNode {
     'value'
   ];
 
-  exit() {
+  addTrace() {
     const { path, Traces } = this;
 
     const [keyNode] = this.getChildPaths();

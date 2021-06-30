@@ -7,6 +7,7 @@ import { buildTraceId } from './traceId';
 
 const Verbose = 2;
 
+
 // ###########################################################################
 // traceExpression
 // ###########################################################################
@@ -138,3 +139,15 @@ export const buildTraceNoValue = bindTemplate(
     };
   }
 );
+
+
+
+// ###########################################################################
+// buildDefault
+// ###########################################################################
+
+export function buildDefault(state, traceCfg) {
+  const build = traceCfg.meta?.build || buildTraceExpression;// getDefaultBuild(traceCfg);
+  const result = build(state, traceCfg);
+  return applyPreconditionToExpression(traceCfg, result);
+}

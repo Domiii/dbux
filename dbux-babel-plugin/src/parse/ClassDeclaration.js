@@ -1,4 +1,4 @@
-import { traceBehind } from '../instrumentation/trace';
+import { instrumentClassDeclaration } from '../instrumentation/builders/classes';
 import BaseNode from './BaseNode';
 
 export default class ClassDeclaration extends BaseNode {
@@ -15,15 +15,11 @@ export default class ClassDeclaration extends BaseNode {
   }
 
   exit1() {
-    const { path } = this;
-    const declarationNode = this.getOwnDeclarationNode();
-    declarationNode.addOwnDeclarationTrace(declarationNode.path, {
+    const [idNode] = this.getChildNodes();
+
+    this.getPlugin('Class').addClassTraces(idNode, {
       meta: {
-        hoisted: false,
-        keepStatement: true,
-        targetPath: path,
-        targetNode: declarationNode.path.node,
-        instrument: traceBehind
+        instrument: instrumentClassDeclaration
       }
     });
   }

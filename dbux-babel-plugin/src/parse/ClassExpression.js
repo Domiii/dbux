@@ -1,4 +1,4 @@
-import TraceType from '@dbux/common/src/core/constants/TraceType';
+import { instrumentClassExpression } from '../instrumentation/builders/classes';
 import BaseNode from './BaseNode';
 
 export default class ClassExpression extends BaseNode {
@@ -12,28 +12,13 @@ export default class ClassExpression extends BaseNode {
 
     const [idNode] = this.getChildNodes();
 
-    if (idNode) {
-      idNode.addOwnDeclarationTrace(idNode.path, {
-        meta: {
-          hoisted: false,
-          targetPath: path
-        }
-      });
-    }
-    else {
-      const traceData = {
-        node: this,
-        path,
-        scope: path.parentPath.scope, // prevent adding `tid` variable to own body
-        staticTraceData: {
-          type: TraceType.ExpressionResult,
-          dataNode: {
-            isNew: true
-          }
-        }
-      };
-
-      this.Traces.addTrace(traceData);
-    }
+    this.getPlugin('Class').addClassTraces(idNode, {
+      node: this,
+      path,
+      scope: path.parentPath.scope, // prevent adding `tid` variable to own body
+      meta: {
+        instrument: instrumentClassExpression
+      }
+    });
   }
 }
