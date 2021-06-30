@@ -7,8 +7,8 @@ export function buildTraceCall(templateString, varFn) {
   const templ = template(templateString);
   return (...args) => {
     const vars = varFn(...args);
-    const cfg = args[args.length - 1];
     let newNode = templ(vars);
+    const cfg = args[args.length - 1];
     if (!cfg?.meta?.keepStatement && newNode.type === 'ExpressionStatement') {
       // we wanted an expression, not a statement
       newNode = newNode.expression;

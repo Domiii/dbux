@@ -4,13 +4,14 @@ import BasePlugin from './BasePlugin';
 import { getBindingIdentifierPaths } from '../../helpers/bindingsUtil';
 import { buildTraceWriteVar } from '../../instrumentation/builders/misc';
 import { pathToString } from '../../helpers/pathHelpers';
+import BindingIdentifier from '../BindingIdentifier';
 
 
-function getParamInitialValuePath(paramPath) {
+function getParamDefaultValuePath(paramPath) {
   // TODO: support destructuring
-  if (paramPath.parentPath.isAssignmentPattern()) {
+  if (paramPath.isAssignmentPattern()) {
     // e.g. get `3` from `a` in `function f(a = 3) {}`
-    return paramPath.parentPath.get('right');
+    return paramPath.get('right');
   }
   return null;
 }
@@ -25,59 +26,101 @@ export default class Params extends BasePlugin {
   }
 
   addParamTrace = (paramPath, traceType = TraceType.Param) => {
-    // TODO: `RestElement`
-    // TODO: `{Object,Array,Assignment}Pattern
-    // TODO: `{Object,Array,Assignment}Pattern on `RestElement`
+    if (!paramPath.isIdentifier() && !paramPath.isAssignmentPattern()) {
+      // TODO: `RestElement`
+      // TODO: `{Object,Array}Pattern
+      this.warn(`NYI - unsupported param type: [${paramPath.node?.type}] "${pathToString(paramPath)}" in "${this.node}"`);
+      return null;
+    }
 
     const idPaths = getBindingIdentifierPaths(paramPath);
     if (idPaths.length !== 1) {
       this.warn(`NYI - param is destructured into less or more than 1 variable: "${pathToString(paramPath)}" in "${this.node}"`);
     }
     const idPath = idPaths[0];
+    /**
+     * @type {BindingIdentifier}
+     */
     const idNode = this.node.getNodeOfPath(idPath);
-    const initialValuePath = getParamInitialValuePath(idPath);
-    const moreTraceData = {
+
+    const paramNode = this.node.getNodeOfPath(paramPath);
+    const defaultValuePath = getParamDefaultValuePath(paramPath);
+    const defaultValueNode = defaultValuePath && this.node.getNodeOfPath(defaultValuePath);
+
+    // ########################################
+    // parameter declaration (with defaultValue) [v1]
+    // ########################################
+
+    // let defaultValueTrace;
+    // if (defaultValuePath) {
+    //   // NOTE: defaultValueTrace will not be triggered if the parameter has matching argument (no default value)
+
+    //   // const paramNode = paramPath.node;
+    //   const defaultValueTraceData = {
+    //     path: paramPath,
+    //     scope: this.node.path.scope.parent,  // important: declare in Function's (or CatchClause's) parent scope
+    //     node: paramNode,
+    //     staticTraceData: {
+    //       // NOTE: we use `Param` type because several algorithms depend on this.
+    //       type: TraceType.Param
+    //     },
+    //     meta: {
+    //       build: buildTraceWriteVar,
+    //       targetPath: defaultValuePath,
+    //       hoisted: false
+    //       // moreTraceCallArgs: () => {
+    //       //   return [
+    //       //     // idPath.node,
+    //       //     t.arrayExpression()
+    //       //   ];
+    //       // }
+    //     }
+    //   };
+
+    //   const inputs = [defaultValuePath];
+    //   defaultValueTrace = paramNode.Traces.addTraceWithInputs(defaultValueTraceData, inputs);
+    // }
+    // else {
+    //   // no default value
+    // }
+
+    // parameter declaration (without defaultValue)
+    const paramTraceData = {
+      path: paramNode.path,
+      node: paramNode,
       staticTraceData: {
         type: traceType
       },
+      data: {},
       meta: {}
     };
 
-    let definitionPath;
-    if (initialValuePath) {
-      // handle default parameter
-      definitionPath = null;  // NOTE: we will inject the value in post (moreTraceArgs)
-
-      const writeTraceData = {
-        path: paramPath,
-        // node: idNode,
-        staticTraceData: {
-          type: TraceType.WriteVar
-        },
-        meta: {
-          build: buildTraceWriteVar,
-          targetPath: initialValuePath
-        }
+    // ########################################
+    // parameter declaration (with defaultValue) [v2]
+    // ########################################
+    let value;
+    if (defaultValueNode) {
+      value = () => {
+        // 1. move (conditional) default value to hoisted parameter declaration
+        const valueAstNode = t.assignmentExpression('=', idPath.node, paramNode.buildParam());
+        // 2. remove original default value
+        paramNode.path.replaceWith(idPath.node);
+        return valueAstNode;
       };
 
-      const writeTrace = idNode.Traces.addTrace(writeTraceData);
-
-      moreTraceData.meta.moreTraceArgs = () => {
-        // hackfix: instrument as we go
-        // 1. remove default value: `x = twv(init(), initTid,...)` becomes `x`
-        paramPath.replace(idPath.node);
-        // 2. add to instrumentation trace: `var x = td(stid, twv(init(), initTid,...), [initTid])`
-        return [
-          initialValuePath.node,
-          t.arrayExpression([writeTrace.tidIdentifier])
-        ];
-      };
+      // add default value as input to param trace
+      // NOTE: will be overwritten by `ExecutionContextCollection.setParamInputs`, if not default
+      paramTraceData.inputTraces = defaultValueNode.Traces.addDefaultTraces([
+        defaultValuePath
+      ]);
     }
     else {
-      definitionPath = idPath;
+      value = idPath;
     }
 
-    const declTrace = idNode.addOwnDeclarationTrace(definitionPath, moreTraceData);
-    return declTrace;
+    const declarationOnlyTrace = idNode.addOwnDeclarationTrace(value, paramTraceData);
+
+
+    return declarationOnlyTrace;
   }
 }

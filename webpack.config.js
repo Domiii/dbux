@@ -58,6 +58,12 @@ module.exports = (env, argv) => {
     // setup
     // ###########################################################################
 
+    const mode = argv.mode || 'development';
+    const {
+      DBUX_VERSION,
+      DBUX_ROOT
+    } = webpackCommon('dbux-runtime', mode);
+
     // const outputFolderName = 'dist';
     // const outFile = 'bundle.js';
     const defaultEntryPoint = 'src/index.js';
@@ -67,13 +73,6 @@ module.exports = (env, argv) => {
 
     // alias['socket.io-client'] = path.resolve(path.join(root, 'dbux-runtime/node_modules', 'socket.io-client', 'socket.io.js' ));
     // console.warn(resol);
-
-    const mode = argv.mode || 'development';
-
-    const {
-      DBUX_VERSION,
-      DBUX_ROOT
-    } = webpackCommon('dbux-runtime', mode);
 
     // `context` is the path from which any relative paths are resolved
     const context = MonoRoot;

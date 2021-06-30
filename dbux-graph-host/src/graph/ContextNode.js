@@ -36,7 +36,7 @@ class ContextNode extends HostComponentEndpoint {
     if (statsEnabled) {
       this._addStats(this.state);
     }
-    
+
     // add controllers
     let hasChildren = !!this.getValidChildContexts().length;
     this.controllers.createComponent('GraphNode', { hasChildren });
@@ -68,6 +68,11 @@ class ContextNode extends HostComponentEndpoint {
     const stats = this.dp.queries.statsByContext(this.contextId);
     return stats?.nTreeStaticContexts || 0;
   }
+  //get amount of file call
+  get nTreeFileCalled() {
+    const state = this.dp.queries.statsByContext(this.contextId);
+    return state?.nTreeFileCalled || 0;
+  }
 
   setStatsEnabled(enabled) {
     const upd = {
@@ -82,6 +87,8 @@ class ContextNode extends HostComponentEndpoint {
   _addStats(_update) {
     _update.nTreeContexts = this.nTreeContexts;
     _update.nTreeStaticContexts = this.nTreeStaticContexts;
+    //nTreeFileCalled
+    _update.nTreeFileCalled = this.nTreeFileCalled;
   }
 
   getValidChildContexts() {

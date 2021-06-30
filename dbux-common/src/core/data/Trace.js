@@ -41,7 +41,7 @@ export default class Trace extends HasValue {
 
   /**
    * Extra data related to this trace, based on circumstances.
-   * E.g. contains { argTids, spreadLengths } for BCE.
+   * -> contains { argTids, spreadLengths[, monkey] } for BCE.
    */
   data;
 }

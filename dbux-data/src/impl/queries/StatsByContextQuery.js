@@ -13,6 +13,12 @@ class ContextStats {
    * @type {number}
    */
   nTreeStaticContexts = 0;
+
+  /**
+   * Amount of file called in context, plus it's entire sub-tree.?
+   * @type {number}
+   */
+  nTreeFileCalled = 0;
 }
 
 export default class StatsByContextQuery extends IncrementalQuery {
@@ -59,25 +65,34 @@ export default class StatsByContextQuery extends IncrementalQuery {
       (dfs, context, children) => {
         const { contextId } = context;
         const stats = this._cache.get(contextId) || new ContextStats();
-        const ownSet = new Set();
 
-        // add own staticContextId to set
+        const staticContextSet = new Set();
+        const programIdSet = new Set();
+
         const staticContextId = dp.util.getContextStaticContextId(contextId);
-        ownSet.add(staticContextId);
+        staticContextSet.add(staticContextId);
         stats.nTreeContexts = 1;
+
+        const staticContextProgramId = dp.util.getContextStaticContext(contextId)?.programId;
+        programIdSet.add(staticContextProgramId); 
 
         for (const child of children) {
           const childSet = dfs(child);
 
-          // add childSet to ownSet
-          childSet.forEach(ownSet.add, ownSet);
+          // add childSet to staticContextSet
+          childSet.staticContextSet.forEach(staticContextSet.add, staticContextSet);
+          childSet.programIdSet.forEach(programIdSet.add, programIdSet);
+
           stats.nTreeContexts += this.getContextNTreeContexts(child.contextId);
         }
-        stats.nTreeStaticContexts = ownSet.size;
-
+        stats.nTreeStaticContexts = staticContextSet.size;
+        stats.nTreeFileCalled = programIdSet.size;
+        
         this.storeByKey(contextId, stats);
 
-        return ownSet;
+        const statsSet = { staticContextSet, programIdSet };
+
+        return statsSet;
       }
     );
   }

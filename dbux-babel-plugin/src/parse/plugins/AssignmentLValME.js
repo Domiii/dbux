@@ -1,7 +1,8 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import BasePlugin from './BasePlugin';
 import { LValHolderNode } from '../_types';
-import { buildTraceWriteME } from '../../instrumentation/builders/misc';
+import { buildTraceWriteME } from '../../instrumentation/builders/me';
+import { ZeroNode } from '../../instrumentation/builders/buildUtil';
 
 /**
  * @example
@@ -49,17 +50,29 @@ export default class AssignmentLValME extends BasePlugin {
 
   wrapLVal() {
     const { node } = this;
-    const { Traces } = node;
+    const { path, Traces } = node;
 
-    const [meNode, valueNode] = node.getChildNodes();
-    const [objectNode] = meNode.getChildNodes();
+    const [, valuePath] = node.getChildPaths();
+    const [meNode] = node.getChildNodes();
+    const [objectNode, propertyNode] = meNode.getChildNodes();
+    const {
+      computed
+    } = meNode.path.node;
 
-    // make sure, `object` is traced
-    objectNode.addDefaultTrace();
-
-    const objectTid = objectNode.traceCfg?.tidIdentifier;
+    // prepare object
+    const objectTraceCfg = objectNode.addDefaultTrace();
+    let objectTid = objectTraceCfg?.tidIdentifier;
     if (!objectTid) {
       this.warn(`objectNode did not have traceCfg.tidIdentifier in ${objectNode}`);
+      objectTid = ZeroNode;
+    }
+    const objectAstNode = path.scope.generateDeclaredUidIdentifier('o');
+
+    // prepare property
+    let propertyAstNode;
+    if (computed) {
+      propertyNode.addDefaultTrace();
+      propertyAstNode = path.scope.generateDeclaredUidIdentifier('p');
     }
 
     // add actual WriteME trace
@@ -68,7 +81,9 @@ export default class AssignmentLValME extends BasePlugin {
         type: TraceType.WriteME
       },
       data: {
-        objectTid
+        objectTid,
+        objectAstNode,
+        propertyAstNode
       },
       meta: {
         // instrument: Traces.instrumentTraceWrite
@@ -78,6 +93,6 @@ export default class AssignmentLValME extends BasePlugin {
 
     this.node.decorateWriteTraceData(traceData);
 
-    Traces.addTraceWithInputs(traceData, [valueNode.path]);
+    Traces.addTraceWithInputs(traceData, [valuePath]);
   }
 }

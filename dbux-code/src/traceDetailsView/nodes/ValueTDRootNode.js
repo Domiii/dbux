@@ -1,8 +1,6 @@
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { isTraceExpression } from '@dbux/common/src/core/constants/TraceType';
-import ValueTDNode from './ValueTDNode';
-
-const noValueMessage = '(no value or undefined)';
+import ValueTDNode, { noValueMessage } from './ValueTDNode';
 
 export default class ValueTDRootNode extends ValueTDNode {
   static makeProperties(trace/* , parent, props */) {

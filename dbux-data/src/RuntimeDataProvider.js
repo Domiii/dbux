@@ -1,4 +1,7 @@
 import path from 'path';
+import difference from 'lodash/difference';
+import minBy from 'lodash/minBy';
+import maxBy from 'lodash/maxBy';
 import NestedError from '@dbux/common/src/NestedError';
 import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
 import Trace from '@dbux/common/src/core/data/Trace';
@@ -170,19 +173,9 @@ class ExecutionContextCollection extends Collection {
         this.logger.warn(`bceTrace.data is missing in "setParamInputs" for trace "${util.makeTraceInfo(callId)}"`);
         continue;
       }
-      const argTraces = bceTrace.data?.argTids.map(tid => dp.collections.traces.getById(tid));
-      const { argConfigs } = util.getStaticTrace(callId).data;
 
-      // get `argDataNodes`
-      const argDataNodes = argTraces.flatMap((t, i) => {
-        const dataNodes = util.getDataNodesOfTrace(t.traceId);
-        if (!argConfigs[i]?.isSpread) {
-          // not spread -> take the argument's own `dataNode`
-          return dataNodes[0];
-        }
-        // spread -> take all of the argument's additional `dataNode`s
-        return dataNodes.slice(1);
-      });
+      // get `argDataNodes` (flattened, in case of spread)
+      const argDataNodes = this.dp.util.getCallArgDataNodes(callId);
 
       // add to `Param` trace's `inputs`
       for (let i = 0; i < paramTraces.length; i++) {
@@ -299,6 +292,10 @@ class TraceCollection extends Collection {
     this.errorWrapMethod('resolveErrorTraces', traces);
   }
 
+  postIndexRaw(traces) {
+    this.errorWrapMethod('resolveMonkeyCalls', traces);
+  }
+
   registerResultId(traces) {
     for (const { traceId, resultCallId } of traces) {
       if (resultCallId) {
@@ -341,14 +338,40 @@ class TraceCollection extends Collection {
   }
 
   resolveCallIds(traces) {
-    // set `callId` for all argument traces
     for (const trace of traces) {
-      const argTids = trace.data?.argTids;
-      if (argTids) {
-        const { traceId } = trace;
-        for (const argTid of argTids) {
-          const argTrace = this.getById(argTid);
-          argTrace.callId = traceId;
+      const { traceId: callId } = trace;
+
+      const argTraces = this.dp.util.getCallArgTraces(callId);
+      if (argTraces) {
+        // BCE
+        argTraces.forEach(t => t.callId = callId);
+      }
+    }
+  }
+
+  resolveMonkeyCalls(traces) {
+    for (const trace of traces) {
+      const { traceId: callId, data } = trace;
+      const monkey = data?.monkey;
+      if (monkey?.wireInputs) {
+        // NOTE: BCE was monkey patched, and generated it's own set of `DataNode`s, one per argument
+        // Link BCE's new DataNode to argument input node
+
+        // get `argDataNodes` (flattened, in case of spread)
+        const monkeyDataNodes = this.dp.util.getDataNodesOfTrace(callId);
+        const argDataNodes = this.dp.util.getCallArgDataNodes(callId);
+
+        if (!monkeyDataNodes || !argDataNodes) {
+          continue;
+        }
+
+        // wire monkey <-> arg DataNodes (should be 1:1)
+        for (let i = 0; i < monkeyDataNodes.length; i++) {
+          const monkeyDataNode = monkeyDataNodes[i];
+          const argDataNode = argDataNodes[i];
+
+          // NOTE: argDataNode might be missing (e.g. because it had a "dbux disable" instruction)
+          argDataNode && (monkeyDataNode.inputs = [argDataNode.nodeId]);
         }
       }
     }
@@ -450,11 +473,11 @@ class DataNodeCollection extends Collection {
         const trace = this.dp.collections.traces.getById(traceId);
         const staticTrace = this.dp.collections.staticTraces.getById(trace.staticTraceId);
         let lastNode;
-        if (TraceType.is.BeforeCallExpression(traceType)) {
-          // skip in this case, special handling in UI - BCE rendering should reflect CallExpressionResult
-          return null;
-        }
-        else if (staticTrace.dataNode.isNew) {
+        // if (TraceType.is.BeforeCallExpression(traceType)) {
+        //   // skip in this case, special handling in UI - BCE rendering should reflect CallExpressionResult
+        //   return null;
+        // }
+        if (staticTrace.dataNode.isNew) {
           return traceId;
         }
         else if (dataNode.inputs?.length) {
@@ -613,6 +636,10 @@ class ValueRefCollection extends Collection {
         switch (category) {
           case ValueTypeCategory.Array:
           case ValueTypeCategory.Object: {
+            if (!serialized) {
+              value = `(_deserializeValue failed: Object entry had no "serialized": ${JSON.stringify(entry)})`;
+              break;
+            }
             value = {};
             for (const [key, [childId, childValue]] of Object.entries(entry.serialized)) {
               if (childId) {
@@ -684,5 +711,58 @@ export default class RuntimeDataProvider extends DataProviderBase {
     //   const col = new Col(this);
     //   return [col.name, col];
     // }));
+  }
+
+  addData(data, isRaw = true) {
+    const oldRequireModuleNames = this.util.getAllRequireModuleNames();
+    const result = super.addData(data, isRaw);
+
+    this._reportNewDataStats(data, oldRequireModuleNames);
+
+    return result;
+  }
+
+  _reportNewDataStats(data, oldRequireModuleNames) {
+    const collectionStats = Object.fromEntries(
+      Object.entries(data)
+        .map(([key, arr]) => ([key, {
+          len: arr.length,
+          min: minBy(arr, entry => entry._id)?._id,
+          max: maxBy(arr, entry => entry._id)?._id
+        }]))
+    );
+
+    // collection stats
+    const collectionInfo = Object.entries(collectionStats)
+      .map(([key, { len, min, max }]) => `${len} ${key} (${min}~${max})`)
+      .join('\n ');
+
+    // require stats
+    // TODO: import + dynamic `import``
+    const allRequireModuleNames = this.util.getAllRequireModuleNames();
+    const newRequireModuleNames = difference(allRequireModuleNames, oldRequireModuleNames);
+    const requireInfo = `Newly required external modules (${newRequireModuleNames.length}/${allRequireModuleNames.length}): ${newRequireModuleNames.join(', ')}`;
+
+    // program stats
+    const programData = collectionStats.staticProgramContexts;
+    const minProgramId = programData?.min;
+    const allModuleNames = this.util.getAllExternalProgramModuleNames();
+    const newModuleNames = minProgramId && this.util.getAllExternalProgramModuleNames(minProgramId);
+    const moduleInfo = `Newly traced external modules (${newModuleNames?.length || 0}/${allModuleNames.length}): ${newModuleNames?.join(', ') || ''}`;
+
+    const allMissingModules = difference(allRequireModuleNames, allModuleNames);
+    const newMissingModules = difference(newRequireModuleNames, allModuleNames);
+    const missingModuleInfo = newMissingModules.length &&
+      `Required but untraced external modules (${newMissingModules.length}/${allMissingModules.length}): ${newMissingModules.join(', ')}`;
+
+    // final message
+    const msgs = [
+      `##### Data received #####\nCollection Data:\n ${collectionInfo}`,
+      '',
+      requireInfo,
+      moduleInfo,
+    ];
+    missingModuleInfo && msgs.push(missingModuleInfo);
+    this.logger.debug(msgs.join('\n'));
   }
 }

@@ -1,10 +1,11 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import BasePlugin from './BasePlugin';
 import { LValHolderNode } from '../_types';
-import { buildTraceWriteME } from '../../instrumentation/builders/misc';
 import { buildUpdateExpressionME } from '../../instrumentation/builders/updateExpressions';
 
 /**
+ * [ME]
+ * 
  * @example
  * 
  * Case d-1:
@@ -77,9 +78,17 @@ export default class UpdateLValME extends BasePlugin {
       propertyNode.addDefaultTrace();
     }
 
-    // add read trace
+    // prepare object
     const objectVar = path.scope.generateDeclaredUidIdentifier('o');
-    const propertyVar = path.scope.generateDeclaredUidIdentifier('p');
+
+    // prepare property
+    let propertyVar;
+    if (computed) {
+      propertyNode.addDefaultTrace();
+      propertyVar = path.scope.generateDeclaredUidIdentifier('p');
+    }
+
+    // add read trace
     const readTraceCfg = this.addReadTrace(objectVar, propertyVar, objectTid);
 
     // add actual WriteME trace

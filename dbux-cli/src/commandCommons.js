@@ -35,6 +35,7 @@ export function buildCommonCommandOptions() {
       alias: ['pw'],
       describe: "Specify which packages will be instrumented.",
       default: '',
+      type: 'string',
       // type: 'array',
     },
     runtime: {

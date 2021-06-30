@@ -84,7 +84,7 @@ export default class Traces extends BasePlugin {
     } = traceData;
 
     if (!path || !staticTraceData) {
-      throw new Error(`addTrace data missing \`path\` or \`staticTraceData\``);
+      throw new Error(`addTrace data missing \`path\` or \`staticTraceData\`: ${JSON.stringify(traceData)}`);
     }
 
     const isDeclaration = isDeclarationTrace(staticTraceData.type);
@@ -105,6 +105,7 @@ export default class Traces extends BasePlugin {
       inProgramStaticTraceId,
       tidIdentifier,
       isDeclaration,
+      staticTraceData,
       inputTraces,
       meta,
       data
@@ -117,7 +118,7 @@ export default class Traces extends BasePlugin {
           `for Declaration "${node}" in "${node.getParentString()}`);
       }
       if (declarationNode.bindingTrace) {
-        // NOTE: this can currently happen, if parameter has same name as hoisted `var` local
+        // NOTE: this happens if parameter has same name as hoisted `var` local.
         const msg = `Tried to add declaration trace multiple times for "${declarationNode}" in "${declarationNode.getParentString()}"`;
         this.warn(msg);
         // throw new Error(msg);
@@ -153,12 +154,12 @@ export default class Traces extends BasePlugin {
   /**
    * @param {BindingIdentifier} id
    */
-  addDefaultDeclarationTrace(id, valuePath, moreTraceData = null) {
+  addDefaultDeclarationTrace(id, valuePathOrNode, moreTraceData = null) {
     moreTraceData = moreTraceData || {};
     moreTraceData.staticTraceData = moreTraceData.staticTraceData || {
       type: TraceType.Declaration,
       dataNode: {
-        // NOTE: Most declarations are hoisted to some scope, always assigned a "new" value (`undefined`, if `valuePath` not given)
+        // NOTE: Most declarations are hoisted to some scope, always assigned a "new" value (`undefined`, if `valueNode` not given)
         //      Notable exception: `param`.
         isNew: true
       }
@@ -169,14 +170,14 @@ export default class Traces extends BasePlugin {
       node: id,
       ...moreTraceData
     };
-    return this.addDeclarationTrace(traceData, valuePath);
+    return this.addDeclarationTrace(traceData, valuePathOrNode);
   }
 
-  addDeclarationTrace(traceData, valuePath) {
-    if (valuePath) {
-      // `data.valuePath`
+  addDeclarationTrace(traceData, valuePathOrNode) {
+    if (valuePathOrNode) {
+      // `data.valueNode`
       traceData.data = traceData.data || {};
-      traceData.data.valuePath = valuePath;
+      traceData.data.valueNode = valuePathOrNode.node || valuePathOrNode;
     }
     
     // `meta.hoisted`
@@ -242,7 +243,6 @@ export default class Traces extends BasePlugin {
 
   instrument() {
     const { node, traces, hoistedDeclarationTraces } = this;
-    const { path } = node;
 
     // this.debug(`traces`, traces.map(t => t.tidIdentifier));
     this.instrumentHoistedTraceDeclarations(hoistedDeclarationTraces);
@@ -251,9 +251,12 @@ export default class Traces extends BasePlugin {
       // add variable to scope
       const {
         /* inProgramStaticTraceId, */
+        path,
         tidIdentifier,
         scope,
+        staticTraceData: { type: traceType },
         meta: {
+          preInstrument,
           instrument = traceWrapExpression
         } = EmptyObject
       } = traceCfg;
@@ -265,7 +268,9 @@ export default class Traces extends BasePlugin {
       const { state } = node;
 
       try {
+        preInstrument?.(state, traceCfg);
         instrument?.(state, traceCfg);
+        this.Verbose > 1 && this.debug(` ins [${TraceType.nameFromForce(traceType)}] -> ${pathToString(path)}`);
       }
       catch (err) {
         throw new NestedError(`[${node.debugTag}] - failed to instrument path "${pathToString(path)}"`, err);

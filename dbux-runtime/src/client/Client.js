@@ -7,7 +7,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import SendQueue from './SendQueue';
 
 const Verbose = 1;
-// const Verbose = false;
+// const Verbose = 0;
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Runtime Client');
@@ -147,7 +147,7 @@ export default class Client {
 
     // wait for ack to come back from server
     this._socket.once('init_ack', applicationId => {
-      Verbose && debug(`-> init_ack`, initPacket);
+      Verbose > 1 && debug(`-> init_ack`, initPacket);
       // NOOP experiment - see https://github.com/socketio/socket.io/issues/3946
       // const N = 1e6;
       // const noopData = new Array(N).fill(1).join('');

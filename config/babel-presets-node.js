@@ -22,7 +22,7 @@ module.exports = {
           node: '12'
         },
         useBuiltIns: 'usage',
-        corejs: 3
+        corejs: 3.15
       }
     ]
   ],

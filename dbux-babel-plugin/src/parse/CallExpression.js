@@ -113,7 +113,8 @@ export default class CallExpression extends BaseNode {
 
     // 1. make sure, callee is traced (if is traceable)
     let calleeVar = null;
-    if (canTraceCallee(calleeNode)) {
+    const isCalleeTraced = canTraceCallee(calleeNode);
+    if (isCalleeTraced) {
       this.Traces.addDefaultTrace(calleePath);
       calleeVar = generateCalleeVar(calleePath);
     }
@@ -125,7 +126,7 @@ export default class CallExpression extends BaseNode {
       staticTraceData: {
         type: TraceType.BeforeCallExpression,
         data: {
-          argConfigs: makeSpreadableArgumentArrayCfg(argumentPaths)
+          argConfigs: makeSpreadableArgumentArrayCfg(argumentPaths),
         }
       },
       meta: {
@@ -133,6 +134,12 @@ export default class CallExpression extends BaseNode {
         instrument: null
       }
     };
+
+    if (!isCalleeTraced) {
+      // hackfix: since we cannot trace the callee, just add it's specialType to BCE
+      bceTraceData.staticTraceData.data.specialType = calleeNode.specialType;
+    }
+
     const bceInputPaths = argumentPaths || EmptyArray;
     const bceTrace = this.Traces.addTraceWithInputs(bceTraceData, bceInputPaths);
 

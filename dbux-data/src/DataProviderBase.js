@@ -1,3 +1,5 @@
+import minBy from 'lodash/minBy';
+import maxBy from 'lodash/maxBy';
 import pull from 'lodash/pull';
 import isPlainObject from 'lodash/isPlainObject';
 // import isString from 'lodash/isString';

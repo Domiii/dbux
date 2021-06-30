@@ -400,6 +400,7 @@ export default class ExpressProject extends Project {
             ...bug.testFilePaths
           ],
           require: bug.require || ['./test/support/env.js'],
+          // dbuxArgs: '--pw=superagent',
           dbuxArgs: '--pw=.*',
           ...bug,
           // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
@@ -442,6 +443,9 @@ export default class ExpressProject extends Project {
       ...cfg,
       ...bugConfig
     };
+
+    // Debug shortcut:
+    // DEBUG=http node --inspect-brk --stack-trace-limit=100    --require "./test/support/env.js" "C:\\Users\\domin\\code\\dbux\\node_modules\\@dbux\\cli\\bin\\dbux.js" run  --verbose=1 --pw=superagent "c:\\Users\\domin\\code\\dbux\\dbux_projects\\express/node_modules/mocha/bin/_mocha" -- --no-exit -c -t 10000 --grep "OPTIONS should only include each method once" -- test/app.options.js
 
     return buildMochaRunCommand(mochaCfg);
 

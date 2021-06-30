@@ -6,6 +6,7 @@ import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import { valueRender } from '../valueRender';
 import EmptyValueNode from './EmptyValueNode';
 
+export const noValueMessage = '(no value or undefined)';
 
 export default class ValueTDNode extends BaseTreeViewNode {
   static makeProperties({ nodeId }, parent, { trace }) {
@@ -72,8 +73,8 @@ export default class ValueTDNode extends BaseTreeViewNode {
       const entries = Object.entries(dp.util.constructValueObjectShallow(nodeId, selectedNodeId));
 
       if (entries.length) {
-        return entries.map(([key, nodeId]) => {
-          const dataNode = dp.collections.dataNodes.getById(nodeId);
+        return entries.map(([key, entryNodeId]) => {
+          const dataNode = dp.collections.dataNodes.getById(entryNodeId);
           return this.treeNodeProvider.maybeBuildTraceDetailNode(ValueTDNode, dataNode, this, { key, trace, selectedNodeId });
         });
       }

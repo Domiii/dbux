@@ -222,19 +222,7 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceExpressionVar(this.getProgramId(), value, tid, declarationTid);
   }
 
-  traceExpressionME = (objValue, propValue, tid, objectTid) => {
-    // [runtime-error] potential runtime error
-    const value = objValue[propValue];
-
-    if (this.areTracesDisabled) {
-      return value;
-    }
-
-    return this._runtimeMonitor.traceExpressionME(this.getProgramId(), value, propValue, tid, objectTid);
-  }
-
-  traceExpressionMEOptional = (objValue, propValue, tid, objectTid) => {
-    const value = objValue?.[propValue];
+  traceExpressionME = (objValue, propValue, value, tid, objectTid) => {
     if (this.areTracesDisabled) {
       return value;
     }
@@ -258,6 +246,16 @@ export default class ProgramMonitor {
     }
 
     return this._runtimeMonitor.traceWriteME(this.getProgramId(), value, propValue, tid, objectTid, inputs);
+  }
+
+  traceDeleteME = (objValue, propValue, tid, objectTid) => {
+    // [runtime-error] potential run-time error
+    const result = delete objValue[propValue];
+    if (this.areTracesDisabled) {
+      return result;
+    }
+
+    return this._runtimeMonitor.traceDeleteME(this.getProgramId(), result, propValue, tid, objectTid);
   }
 
   traceUpdateExpressionVar = (updateValue, returnValue, readTid, tid, declarationTid) => {

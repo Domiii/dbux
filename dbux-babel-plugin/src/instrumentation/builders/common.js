@@ -6,6 +6,7 @@ import { parse } from '@babel/parser';
 import { codeFrameColumns } from "@babel/code-frame";
 import traverse from "@babel/traverse";
 import * as t from "@babel/types";
+import isFunction from 'lodash/isFunction';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { UndefinedNode } from './buildUtil';
 // import { template } from '@babel/core';
@@ -128,12 +129,31 @@ export function getInstrumentPath(traceCfg) {
  * NOTE2: actual `targetNode` node might have been moved
  *    -> E.g. by `CallExpression`, `CalleeMemberExpression`, `ObjectMethod`.
  */
-export function getInstrumentTargetAstNode(traceCfg) {
-  const {
+export function getInstrumentTargetAstNode(state, traceCfg) {
+  let {
     meta: {
       targetNode
     } = EmptyObject
   } = traceCfg;
+  if (isFunction(targetNode)) {
+    targetNode = targetNode();
+  }
   return targetNode || getInstrumentPath(traceCfg).node || UndefinedNode;
 }
 
+export function applyPreconditionToExpression(traceCfg, expr) {
+  const { meta } = traceCfg;
+  const preCondition = meta?.preCondition;
+
+  if (preCondition) {
+    const isStatement = t.isExpressionStatement(expr);
+    if (isStatement) {
+      expr = expr.expression;
+    }
+    expr = t.logicalExpression('&&', preCondition, expr);
+    if (isStatement) {
+      expr = t.expressionStatement(expr);
+    }
+  }
+  return expr;
+}

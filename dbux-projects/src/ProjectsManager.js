@@ -519,7 +519,8 @@ export default class ProjectsManager {
       dbuxEnabled,
 
       // NOTE: if !dbuxEnabled -> we don't actually run dbux at all anymore.
-      dbuxArgs: dbuxEnabled ? '--verbose=1 --runtime={\\"tracesDisabled\\":1}' : '--dontInjectDbux',
+      // dbuxArgs: dbuxEnabled ? '--verbose=1 --runtime={\\"tracesDisabled\\":1}' : '--dontInjectDbux',
+      dbuxArgs: dbuxEnabled ? '--verbose=1' : '--dontInjectDbux',
     };
 
     const result = await this.runner.testBug(bug, cfg);

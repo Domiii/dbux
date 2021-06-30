@@ -1,24 +1,13 @@
+var a = 'a';
+var b = 'b';
 
-e(1).get('hi');
-e(2).get('hi').end();
+var o = {};
+o[a] = 11;
+o[b] = 12;
 
-e(3)
-  .get('hi')
-  .end(function (err, res) {
-    e(app)
-      .get('/user/123')
-      .expect(404, done);
-  });
-
-function e() {
-  return {
-    get(a) {
-      return {
-        end(cb) {
-        },
-        expect() {
-        }
-      }
-    }
-  };
+var p = {
+  [a]: 21,
+  [b]: 22
 }
+
+console.log(o.a, o.b, p[a], p[b]);

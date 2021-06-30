@@ -90,8 +90,11 @@ export default function buildBabelOptions(options) {
   //   injectDependencies();
   // }
 
-  const packageWhitelistRegExps = packageWhitelist
-    .split(',')
+  if (!isString(packageWhitelist)) {
+    // console.debug(JSON.stringify(packageWhitelist), typeof packageWhitelist);
+    packageWhitelist = Array.from(packageWhitelist).join(',');
+  }
+  const packageWhitelistRegExps = packageWhitelist?.split(',')
     .map(s => s.trim())
     .map(generateFullMatchRegExp);
 
@@ -125,7 +128,7 @@ export default function buildBabelOptions(options) {
         const matchSkipFileResult = modulePath.match(/([/\\]dist[/\\])|(\.mjs$)/);
         const packageName = parseNodeModuleName(modulePath);
 
-        if (matchSkipFileResult || (packageName && !batchTestRegExp(packageWhitelistRegExps, packageName))) {
+        if (matchSkipFileResult || (packageName && packageWhitelistRegExps && !batchTestRegExp(packageWhitelistRegExps, packageName))) {
           verbose > 1 && debugLog(`no-register`, modulePath);
           return true;
         }

@@ -1,6 +1,6 @@
-import { NodePath } from '@babel/traverse';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
-import { buildtraceExpressionME } from '../instrumentation/builders/misc';
+import { ZeroNode } from '../instrumentation/builders/buildUtil';
+import { buildtraceExpressionME } from '../instrumentation/builders/me';
 import BaseNode from './BaseNode';
 
 
@@ -109,15 +109,23 @@ export default class MemberExpression extends BaseNode {
 
     const [objectNode, propertyNode] = this.getChildNodes();
     const {
-      computed,
-      optional
+      computed
     } = path.node;
 
+    // prepare object
     const objectTraceCfg = objectNode.addDefaultTrace();
-    const objectTid = objectTraceCfg?.tidIdentifier;
-    if (computed /* && !propertyPath.isConstantExpression() */) {
-      // inputs.push(propertyPath);
+    let objectTid = objectTraceCfg?.tidIdentifier;
+    if (!objectTid) {
+      this.warn(`objectNode did not have traceCfg.tidIdentifier in ${objectNode}`);
+      objectTid = ZeroNode;
+    }
+    objectAstNode = objectAstNode || path.scope.generateDeclaredUidIdentifier('o');
+
+    // prepare property
+    let propertyAstNode;
+    if (computed) {
       propertyNode.addDefaultTrace();
+      propertyAstNode = path.scope.generateDeclaredUidIdentifier('p');
     }
 
     const traceData = {
@@ -127,14 +135,14 @@ export default class MemberExpression extends BaseNode {
         type: TraceType.ME
       },
       meta: {
-        traceCall: optional ? 'traceExpressionMEOptional' : 'traceExpressionME',
+        traceCall: 'traceExpressionME',
         build: buildtraceExpressionME,
         targetPath
       },
       data: {
         objectTid,
-        // remember `objectAstNode`, if given
-        objectAstNode
+        objectAstNode,
+        propertyAstNode
       }
     };
 

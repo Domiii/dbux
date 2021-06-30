@@ -12,6 +12,7 @@ import Runtime from './Runtime';
 import ProgramMonitor from './ProgramMonitor';
 import dataNodeCollection from './data/dataNodeCollection';
 import valueCollection from './data/valueCollection';
+import registerBuiltins from './builtIns/index';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('RM');
@@ -41,11 +42,17 @@ export default class RuntimeMonitor {
    * @type {RuntimeMonitor}
    */
   static get instance() {
-    return this._instance || (this._instance = new RuntimeMonitor());
+    return this._instance || (this._instance = new RuntimeMonitor()._init());
   }
 
   _programMonitors = new Map();
   _runtime = new Runtime();
+
+  _init() {
+    registerBuiltins();
+
+    return this;
+  }
 
   // ###########################################################################
   // Program management
@@ -539,6 +546,20 @@ export default class RuntimeMonitor {
     };
     dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess, traceCollection.getDataNodeIdsByTraceIds(tid, inputs));
     return value;
+  }
+
+  traceDeleteME(programId, result, propValue, tid, objectTid) {
+    if (!this._ensureExecuting()) {
+      return result;
+    }
+
+    // this.registerTrace(value, tid);
+    const varAccess = {
+      objectTid,
+      prop: propValue
+    };
+    dataNodeCollection.createOwnDataNode(undefined, tid, DataNodeType.Delete, varAccess);
+    return result;
   }
 
   _traceUpdateExpression(updateValue, returnValue, readTid, tid, varAccess) {

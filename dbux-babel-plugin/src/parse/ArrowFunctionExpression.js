@@ -14,7 +14,7 @@ export default class ArrowFunctionExpression extends BaseNode {
     const [, bodyPath] = this.getChildPaths();
 
     if (!bodyPath.isBlockStatement()) {
-      // simple lambda expression -> convert to block lambda expression with return statement
+      // body is lambda expression -> wrap body with "return trace"
       // NOTE: this is executed before `Function.exit`
       this.data.returnTraceCfg = this.Traces.addReturnTrace(null, bodyPath, bodyPath);
     }

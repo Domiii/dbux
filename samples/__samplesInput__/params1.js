@@ -1,10 +1,8 @@
-f(1);
+f(1, 2);
 
-function f(x) {
-  if (0 == arguments.length) {
-    var x = 123;
-    console.log(x);
-  }
+function f(x, y) {
+  // var x = 123;
+  console.log(x, y);
 }
 
 // function g(x) {

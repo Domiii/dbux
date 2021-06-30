@@ -97,6 +97,7 @@ export default function injectDbuxState(programPath, programState) {
         traceExpressionME: makeProgramId('tme'),
         traceExpressionMEOptional: makeProgramId('tmeo'),
         traceWriteME: makeProgramId('twme'),
+        traceDeleteME: makeProgramId('tdme'),
 
         // UE
         traceUpdateExpressionVar: makeProgramId('tue'),
@@ -115,7 +116,6 @@ export default function injectDbuxState(programPath, programState) {
         traceForIn: makeProgramId('tfi'),
       }
     },
-    // console.log('[Program]', state.filename);
 
     // ###########################################################################
     // getters

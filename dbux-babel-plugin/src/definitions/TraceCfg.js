@@ -16,10 +16,12 @@ export class TraceCfgMeta {
    * @type {Function?}
    */
   instrument;
+
   /**
-   * @type {Array.<AstNode>}
+   * If given, traceCall will only execute if condition met.
+   * @type {AstNode}
    */
-  moreTraceCallArgs;
+  preCondition;
 
   /**
    * If `false`, it indicates that instrumentation should build, but not store the `trace` call `AstNode`.
@@ -27,6 +29,11 @@ export class TraceCfgMeta {
    * @type {(NodePath | false)?}
    */
   targetPath;
+
+  /**
+   * @type {Array.<AstNode>}
+   */
+  moreTraceCallArgs;
 }
 
 export class TraceCfgData {
@@ -62,13 +69,14 @@ export default class TraceCfg {
   inputTraces;
 
   /**
+   * Use this to store context-sensitive configuration logic for generic `build` and `instrument` functions.
    * @type {TraceCfgMeta | null}
    */
   meta;
 
   /**
-   * This is mostly used to store custom context-sensitive per-trace data.
-   * But it is also used for storing results.
+   * Use this to store context-sensitive configuration logic and data for specialized `build` and `instrument` functions.
+   * Is also sometimes used for storing build results.
    * @type {TraceCfgData | null}
    */
   data;

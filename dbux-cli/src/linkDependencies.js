@@ -6,5 +6,7 @@ export default function linkDependencies(deps) {
   for (let [alias, target] of deps) {
     target = fs.realpathSync(target);
     moduleAlias.addAlias(alias, target);
+    // console.debug(alias, '<-', fs.realpathSync(require.resolve(alias)));
+    // require(alias);
   }
 }

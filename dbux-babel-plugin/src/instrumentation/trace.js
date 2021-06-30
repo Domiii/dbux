@@ -1,16 +1,14 @@
 // import * as t from '@babel/types';
-import TraceCfg from '../definitions/TraceCfg';
-import { getInstrumentPath, getReplacePath } from './builders/common';
+import { applyPreconditionToExpression, getInstrumentPath, getReplacePath } from './builders/common';
 import { buildTraceDeclarations, buildTraceExpression } from './builders/misc';
 import { unshiftScopeBlock } from './scope';
 
 export function traceWrapExpression(state, traceCfg) {
   const path = getInstrumentPath(traceCfg);
   const build = traceCfg.meta?.build || buildTraceExpression;// getDefaultBuild(traceCfg);
-  const resultNode = build(state, traceCfg);
-
-  // const s = pathToString(path);
-  // const { type } = path.node;
+  
+  let resultNode = build(state, traceCfg);
+  resultNode = applyPreconditionToExpression(traceCfg, resultNode);
 
   if (getReplacePath(traceCfg) !== false) {
     // we don't always want ad hoc replacement.
@@ -35,7 +33,9 @@ export function traceWrapExpression(state, traceCfg) {
 export function traceBehind(state, traceCfg) {
   const path = getInstrumentPath(traceCfg);
   const build = traceCfg.meta?.build || buildTraceExpression;// getDefaultBuild(traceCfg);
-  const resultNode = build(state, traceCfg);
+  
+  let resultNode = build(state, traceCfg);
+  resultNode = applyPreconditionToExpression(traceCfg, resultNode);
 
   // const s = pathToString(path);
   // const { type } = path.node;
