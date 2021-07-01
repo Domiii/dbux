@@ -1,6 +1,7 @@
 import truncate from 'lodash/truncate';
 import ValueTypeCategory, { determineValueTypeCategory, ValuePruneState, isTrackableCategory } from '@dbux/common/src/core/constants/ValueTypeCategory';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 // import serialize from '@dbux/common/src/serialization/serialize';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Collection from './Collection';
@@ -349,7 +350,7 @@ class ValueCollection extends Collection {
       return valueRef;
     }
     if (meta?.shallow) {
-      this._finishValue(valueRef, typeName, EmptyArray, pruneState);
+      this._finishValue(valueRef, typeName, Array.isArray(value) ? EmptyArray : EmptyObject, pruneState);
       return valueRef;
     }
 
