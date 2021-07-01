@@ -16,6 +16,7 @@ import TracesByCalleeTraceIndex from './impl/indexes/TracesByCalleeTraceIndex';
 import TracesByParentStaticContextIndex from './impl/indexes/TracesByParentStaticContextIndex';
 import TracesByRealContextIndex from './impl/indexes/TracesByRealContextIndex';
 import TracesByCallIndex from './impl/indexes/TracesByCallIndex';
+import TracesBySpecialIdentifierTypeIndex from './impl/indexes/TracesBySpecialIdentifierTypeIndex';
 import ErrorTracesIndex from './impl/indexes/ErrorTracesIndex';
 import ErrorTracesByContextIndex from './impl/indexes/ErrorTracesByContextIndex';
 import ErrorTracesByRunIndex from './impl/indexes/ErrorTracesByRunIndex';
@@ -39,7 +40,7 @@ import DataNodesByTraceIndex from './impl/indexes/DataNodesByTraceIndex';
 import DataNodesByAccessIdIndex from './impl/indexes/DataNodesByAccessIdIndex';
 import DataNodesByValueIdIndex from './impl/indexes/DataNodesByValueIdIndex';
 import DataNodesByRefIdIndex from './impl/indexes/DataNodesByRefIdIndex';
-import TracesBySpecialIdentifierTypeIndex from './impl/indexes/TracesBySpecialIdentifierTypeIndex';
+import DataNodesByObjectRefIdIndex from './impl/indexes/DataNodesByObjectRefIdIndex';
 
 
 export function newDataProvider(application) {
@@ -90,6 +91,7 @@ export function newDataProvider(application) {
   dataProvider.addIndex(new DataNodesByAccessIdIndex());
   dataProvider.addIndex(new DataNodesByValueIdIndex());
   dataProvider.addIndex(new DataNodesByRefIdIndex());
+  dataProvider.addIndex(new DataNodesByObjectRefIdIndex());
 
   // complex indexes (that have dependencies)
   // NOTE: we are currently solving index dependencies by simply adding depdendents after dependees

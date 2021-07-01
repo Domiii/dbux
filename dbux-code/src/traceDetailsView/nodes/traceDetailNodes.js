@@ -7,7 +7,8 @@ import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import ExecutionsTDNode from './ExecutionsTDNodes';
 // import StaticContextTDNode from './StaticContextTDNodes';
 import TrackObjectTDNode from './TrackObjectTDNodes';
-import ValueTDNode from './ValueTDNode';
+import ValueTDRefNode from './ValueTDRefNode';
+import ValueTDSimpleNode from './ValueTDSimpleNode';
 import { InfoTDNode, ContextTDNode, TraceTypeTDNode } from './traceInfoNodes';
 // import NearbyValuesTDNode from './NearbyValuesTDNode';
 
@@ -17,6 +18,9 @@ import { InfoTDNode, ContextTDNode, TraceTypeTDNode } from './traceInfoNodes';
  * @property {Trace} trace
  */
 export class TraceDetailNode extends BaseTreeViewNode {
+  get trace() {
+    return this.entry;
+  }
 }
 
 // ###########################################################################
@@ -24,10 +28,6 @@ export class TraceDetailNode extends BaseTreeViewNode {
 // ###########################################################################
 
 export class DebugTDNode extends TraceDetailNode {
-  static makeTraceDetail(trace/* , parent */) {
-    return trace;
-  }
-
   static makeLabel(/* trace, parent */) {
     return 'Debug';
   }
@@ -115,7 +115,8 @@ export class DebugTDNode extends TraceDetailNode {
 // ###########################################################################
 
 export const DetailNodeClasses = [
-  ValueTDNode,
+  ValueTDRefNode,
+  ValueTDSimpleNode,
   TrackObjectTDNode,
   ExecutionsTDNode,
   // DataNodeTDNode,

@@ -214,11 +214,11 @@ class ValueCollection extends Collection {
   }
 
   _canReadKeys(obj) {
-    if (obj.constructor?.prototype === obj) {
-      // NOTE: we cannot read properties of many built-in prototype objects
-      // e.g. `NodeList.prototype`
-      return false;
-    }
+    // if (obj.constructor?.prototype === obj) {
+    //   // NOTE: we cannot read properties of many built-in prototype objects
+    //   // e.g. `NodeList.prototype`
+    //   return false;
+    // }
 
     // TODO: `getPrototypeOf` can trigger a proxy trap
     return !this._getKeysErrorsByType.has(Object.getPrototypeOf(obj));
@@ -378,11 +378,15 @@ class ValueCollection extends Collection {
         }
         break;
 
-      case ValueTypeCategory.Function:
+      case ValueTypeCategory.Function: {
         // TODO: look up staticContext information by function instead
         // TODO: functions can have custom properties too
-        serialized = 'ƒ ' + value.name;
+        serialized = {};
+        this._pushObjectProp(depth, 'name', null, 'ƒ ' + (value.name || ''), serialized);
+        const prototypeRef = this._serialize(value.prototype, nodeId, depth + 1);
+        this._pushObjectProp(depth, 'prototype', prototypeRef, null, serialized);
         break;
+      }
 
       case ValueTypeCategory.Array: {
         let n = value.length;

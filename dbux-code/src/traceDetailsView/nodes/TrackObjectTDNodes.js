@@ -6,11 +6,7 @@ import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import ObjectNode from './ObjectNode';
 
 export default class TrackObjectTDNode extends BaseTreeViewNode {
-  static makeTraceDetail(trace/* , parent */) {
-    return trace;
-  }
-
-  static makeProperties(trace/* , parent, detail */) {
+  static makeProperties(trace/* , parent, props */) {
     const dp = allApplications.getById(trace.applicationId).dataProvider;
 
     const trackedTraces = dp.util.getAllTracesOfObjectOfTrace(trace.traceId);
@@ -29,6 +25,10 @@ export default class TrackObjectTDNode extends BaseTreeViewNode {
 
   get collapseChangeUserActionType() {
     return UserActionType.TDTrackObjectUse;
+  }
+
+  get trace() {
+    return this.entry;
   }
   
   canHaveChildren() {
