@@ -1,3 +1,7 @@
+/**
+ * @file reassignment
+ */
+
 var x = 1;
 let o = {};
 o.b = {};

@@ -377,7 +377,7 @@ class ValueCollection extends Collection {
         // TODO: look up staticContext information by function instead
         // TODO: functions can have custom properties too
         serialized = {};
-        this._pushObjectProp(depth, 'ƒ', null, value.name, serialized);
+        this._pushObjectProp(depth, 'name', null, 'ƒ ' + (value.name || ''), serialized);
         const prototypeRef = this._serialize(value.prototype, nodeId, depth + 1);
         this._pushObjectProp(depth, 'prototype', prototypeRef, null, serialized);
         break;

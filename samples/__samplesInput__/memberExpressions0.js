@@ -1,7 +1,8 @@
+/**
+ * @file recursive assignment
+ */
+
 var x = 3;
-let y = x;
-x = 5;
-console.log(y);
 
 let o = {};
 o.b = {};

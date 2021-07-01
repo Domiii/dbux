@@ -391,26 +391,35 @@ export default {
    * @param {DataProvider} dp
    * @return {{prop: number}} returns the `prop`, `nodeId` key-value pairs
    */
-  constructValueObjectShallow(dp, nodeId, terminateNodeId = null) {
-    const dataNode = dp.collections.dataNodes.getById(nodeId);
-    if (dataNode.refId) {
-      const valueRef = dp.collections.values.getById(dataNode.refId);
-      const entries = Object.fromEntries(Object.entries(valueRef.value).map(([key, val]) => [key, [null, val]]));
-      const writeNodes = dp.indexes.dataNodes.byObjectRefId.get(dataNode.refId)?.filter(node => node.type === DataNodeType.Write) || EmptyArray;
-      !terminateNodeId && (terminateNodeId = nodeId);
-      for (const writeNode of writeNodes) {
-        if (writeNode.nodeId > terminateNodeId) {
-          // only apply write operations `before` this node
-          break;
-        }
-        const { prop } = writeNode.varAccess;
-        const inputNodeId = writeNode.inputs[0];
-        entries[prop] = [inputNodeId, null];
-      }
-      return entries;
+  constructValueObjectShallow(dp, refId, terminateNodeId) {
+    const valueRef = dp.collections.values.getById(refId);
+
+    // initial values
+    const entries = { ...valueRef.value };
+
+    if (!entries) {
+      // sanity check
+      dp.logger.error(`Cannot construct non-object valueRef: ${JSON.stringify(valueRef)}`);
     }
 
-    return undefined;
+    // + writes
+    const writeNodes = dp.indexes.dataNodes.byObjectRefId.get(refId)?.filter(node => node.type === DataNodeType.Write) || EmptyArray;
+    for (const writeNode of writeNodes) {
+      if (writeNode.nodeId > terminateNodeId) {
+        // only apply write operations `before` the terminateNodeId
+        break;
+      }
+      const { prop } = writeNode.varAccess;
+      const inputNode = dp.collections.dataNodes.getById(writeNode.inputs[0]);
+      if (inputNode.refId) {
+        entries[prop] = [inputNode.nodeId, inputNode.refId, null];
+      }
+      else {
+        entries[prop] = [inputNode.nodeId, null, inputNode.value];
+      }
+    }
+
+    return entries;
   },
 
   /**

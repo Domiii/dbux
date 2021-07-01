@@ -1,9 +1,13 @@
 import ValueTypeCategory from '@dbux/common/src/core/constants/ValueTypeCategory';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
+import { newLogger } from '@dbux/common/src/log/logger';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
-import { valueRender } from '../valueRender';
 
-export const noValueMessage = '(no value or undefined)';
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('ValueTDNode');
+
+export const NoValueMessage = '(no value or undefined)';
+export const ValueLabel = 'Value';
 
 export default class ValueNode extends BaseTreeViewNode {
   get clickUserActionType() {
@@ -14,18 +18,12 @@ export default class ValueNode extends BaseTreeViewNode {
     return UserActionType.TDValueCollapseChange;
   }
 
-  canHaveChildren() {
-    return this.hasChildren;
-  }
-
   init() {
     // hackfix: to show valueRender button in simple logic
     this.contextValue = 'dbuxTraceDetailsView.node.traceValueNode';
-    if (this.hasValue) {
-      const { valueRef } = this;
-      if (valueRef) {
-        this.description = `${ValueTypeCategory.nameFrom(valueRef.category)}${valueRef.typeName && ` (${valueRef.typeName})`}`;
-      }
+    if (this.valueRef) {
+      const { category, typeName } = this.valueRef;
+      this.description = `${ValueTypeCategory.nameFrom(category)}${typeName && ` (${typeName})`}`;
     }
   }
 
@@ -34,12 +32,14 @@ export default class ValueNode extends BaseTreeViewNode {
   }
 
   valueRender() {
-    const { valueRef, value, hasValue } = this;
-    if (hasValue) {
-      valueRender(valueRef, value);
-    }
-    else {
-      valueRender(null, noValueMessage);
-    }
+    // needs `dp.util.constructValueObjectFull`
+    log(`Temporarily disabled.`);
+    // const { valueRef, value, hasValue } = this;
+    // if (hasValue) {
+    //   valueRender(valueRef, value);
+    // }
+    // else {
+    //   valueRender(null, NoValueMessage);
+    // }
   }
 }

@@ -7,7 +7,8 @@ import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import ExecutionsTDNode from './ExecutionsTDNodes';
 // import StaticContextTDNode from './StaticContextTDNodes';
 import TrackObjectTDNode from './TrackObjectTDNodes';
-import ValueTDNode from './ValueTDRootNode';
+import ValueTDRefNode from './ValueTDRefNode';
+import ValueTDSimpleNode from './ValueTDSimpleNode';
 import { InfoTDNode, ContextTDNode, TraceTypeTDNode } from './traceInfoNodes';
 // import NearbyValuesTDNode from './NearbyValuesTDNode';
 
@@ -114,7 +115,8 @@ export class DebugTDNode extends TraceDetailNode {
 // ###########################################################################
 
 export const DetailNodeClasses = [
-  ValueTDNode,
+  ValueTDRefNode,
+  ValueTDSimpleNode,
   TrackObjectTDNode,
   ExecutionsTDNode,
   // DataNodeTDNode,

@@ -10,6 +10,8 @@ import NavigationNode from './nodes/NavigationNode';
 export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
   constructor() {
     super('dbuxTraceDetailsView');
+
+    this.trace = null;
   }
 
   // ###########################################################################
@@ -21,6 +23,7 @@ export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
 
     if (traceSelection.selected) {
       const trace = traceSelection.selected;
+      this.trace = trace;
 
       roots.push(
         this.buildSelectedTraceNode(trace),
@@ -28,6 +31,7 @@ export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
       );
     }
     else {
+      this.trace = null;
       // add empty node
       roots.push(EmptyNode.instance);
     }

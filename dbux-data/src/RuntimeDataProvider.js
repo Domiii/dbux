@@ -2,7 +2,6 @@ import path from 'path';
 import difference from 'lodash/difference';
 import minBy from 'lodash/minBy';
 import maxBy from 'lodash/maxBy';
-import NestedError from '@dbux/common/src/NestedError';
 import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
 import Trace from '@dbux/common/src/core/data/Trace';
 import DataNode from '@dbux/common/src/core/data/DataNode';
@@ -10,7 +9,7 @@ import ValueRef from '@dbux/common/src/core/data/ValueRef';
 import StaticProgramContext from '@dbux/common/src/core/data/StaticProgramContext';
 import StaticContext from '@dbux/common/src/core/data/StaticContext';
 import StaticTrace from '@dbux/common/src/core/data/StaticTrace';
-import ValueTypeCategory, { ValuePruneState } from '@dbux/common/src/core/constants/ValueTypeCategory';
+import { isObjectCategory, ValuePruneState } from '@dbux/common/src/core/constants/ValueTypeCategory';
 import TraceType, { isTracePop, isTraceFunctionExit, isTraceThrow } from '@dbux/common/src/core/constants/TraceType';
 
 import Collection from './Collection';
@@ -577,98 +576,33 @@ class ValueRefCollection extends Collection {
 
   postAddRaw(entries) {
     // deserialize
-    for (const entry of entries) {
-      this._deserialize(entry);
-    }
+    this.errorWrapMethod('deserializeShallow', entries);
   }
 
   getAllById(ids) {
     return ids.map(id => this.getById(id));
   }
 
-  _deserialize(entry) {
-    try {
-      this._deserializeValue(entry);
-      // entry.valueString = JSON.stringify(entry.value);
-      delete entry.serialized; // don't need this, so don't keep it around
-    }
-    catch (err) {
-      const dataNode = entry.nodeId && this.dp.collections.dataNodes.getById(entry.nodeId);
-      const { traceId } = dataNode;
-      // const trace = dataNode && this.dp.collections.traces.getById(dataNode.traceId);
-      const traceInfo = this.dp.util.makeTraceInfo(traceId);
-      throw new NestedError(`Failed to deserialize value for trace ${traceInfo} - ${JSON.stringify(entry, null, 2)}`, err);
-    }
-  }
-
-  /**
-   * NOTE: This still only returns a string representation?
-   */
-  _deserializeValue(entry) {
-    if (entry === undefined) {
-      this.logger.error(`_deserializeValue failed: entry not found`);
-      return undefined;
-    }
-    if (!('value' in entry)) {
-      if (this._visited.has(entry)) {
-        return '(Dbux: circular reference)';
-      }
-      this._visited.add(entry);
-
-      // NOTE: if `undefined`, object property is not actually sent/received via SocketIO?
-      // if (!('serialized' in entry)) {
-      //   logError(`error when deserializing value #${entry.valueId} (data missing): ${JSON.stringify(entry)}`);
-      //   entry.category = ValueTypeCategory.String;
-      //   entry.pruneState = ValuePruneState.Omitted;
-      //   return entry.value = '(error when deserializing)';
-      // }
-
-      const {
-        category,
-        serialized,
-        pruneState
-      } = entry;
-
-      let value;
-      if (pruneState === ValuePruneState.Omitted) {
-        value = serialized;
-      }
-      else {
-        switch (category) {
-          case ValueTypeCategory.Function:
-          case ValueTypeCategory.Array:
-          case ValueTypeCategory.Object: {
-            if (!serialized) {
-              value = `(_deserializeValue failed: Object entry had no "serialized": ${JSON.stringify(entry)})`;
-              break;
-            }
-            value = {};
-            for (const [key, [childId, childValue]] of Object.entries(entry.serialized)) {
-              if (childId) {
-                const childEntry = this.getById(childId);
-                if (!childEntry) {
-                  value[key] = '(Dbux: lookup failed)';
-                  this.logger.warn(`Could not lookup object property "${key}" (id = "${childId}"): ${JSON.stringify(childEntry.serialized)}`);
-                }
-                else {
-                  value[key] = this._deserializeValue(childEntry);
-                }
-              }
-              else {
-                value[key] = childValue;
-              }
-            }
-            break;
-          }
-          default:
-            value = serialized;
-            break;
+  deserializeShallow(valueRefs) {
+    for (let valueRef of valueRefs) {
+      if (!('value' in valueRef)) {
+        const {
+          nodeId,
+          category,
+          serialized,
+          pruneState
+        } = valueRef;
+  
+        if (pruneState !== ValuePruneState.Omitted && isObjectCategory(category)) {
+          // map: [childRefId, childValue] => [(creation)nodeId, childRefId, childValue]
+          valueRef.value = Object.fromEntries(Object.entries(serialized).map(([key, childEntry]) => [key, [nodeId, ...childEntry]]));
         }
+        else {
+          valueRef.value = serialized;
+        }
+        delete valueRef.serialized;
       }
-      entry.value = value;
     }
-
-    return entry.value;
   }
 }
 
