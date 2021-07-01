@@ -6,7 +6,7 @@ import BasePlugin from './BasePlugin';
 /**
  * 
  */
-export default class CalleeMemberExpression extends BasePlugin {
+export default class CalleeME extends BasePlugin {
   /**
    * @return {MemberExpression}
    */

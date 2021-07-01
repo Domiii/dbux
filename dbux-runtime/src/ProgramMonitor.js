@@ -293,12 +293,12 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceUpdateExpressionME(this.getProgramId(), obj, prop, updateValue, returnValue, readTid, tid, objectTid);
   }
 
-  traceBCE = (tid, argTids, spreadArgs) => {
+  traceBCE = (tid, calleeTid, argTids, spreadArgs) => {
     if (this.areTracesDisabled) {
       return;
     }
 
-    this._runtimeMonitor.traceBCE(this.getProgramId(), tid, argTids, spreadArgs);
+    this._runtimeMonitor.traceBCE(this.getProgramId(), tid, calleeTid, argTids, spreadArgs);
   }
 
   // traceSpreadArg = () => {

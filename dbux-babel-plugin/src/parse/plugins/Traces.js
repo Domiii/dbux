@@ -102,10 +102,10 @@ export default class Traces extends BasePlugin {
       path,
       node,
       scope,
+      staticTraceData,
       inProgramStaticTraceId,
       tidIdentifier,
       isDeclaration,
-      staticTraceData,
       inputTraces,
       meta,
       data

@@ -15,7 +15,7 @@ const CalleePluginsByType = {
   /**
    * ME
    */
-  MemberExpression: 'CalleeMemberExpression'
+  MemberExpression: 'CalleeME'
 };
 
 function getCalleePlugin(node) {
@@ -144,7 +144,7 @@ export default class CallExpression extends BaseNode {
     const bceTrace = this.Traces.addTraceWithInputs(bceTraceData, bceInputPaths);
 
     /**
-     * @see `CalleeMemberExpression`
+     * @see `CalleeME`
      */
     const instrument = calleePlugin?.instrumentCallExpression || traceCallExpressionDefault;
     const bceTidIdentifier = bceTrace.tidIdentifier;
@@ -158,6 +158,7 @@ export default class CallExpression extends BaseNode {
       },
       data: {
         bceTrace,
+        calleeNode,
         calleeVar
       },
       meta: {
