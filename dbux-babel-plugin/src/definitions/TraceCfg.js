@@ -63,6 +63,8 @@ export default class TraceCfg {
    */
   tidIdentifier;
 
+  staticTraceData;
+
   /**
    * @type {Array.<TraceCfg>}
    */

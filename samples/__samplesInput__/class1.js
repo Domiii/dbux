@@ -3,6 +3,9 @@ class A {
     console.log('new A');
     this.x = 3;
   }
+
+  f() {}
+  g() {}
 }
 
 var a = new A();

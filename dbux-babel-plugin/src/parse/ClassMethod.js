@@ -1,6 +1,4 @@
-import * as t from '@babel/types';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
-import { buildTraceExpression } from '../instrumentation/builders/misc';
 import BaseNode from './BaseNode';
 
 /**
@@ -16,4 +14,23 @@ export default class ClassMethod extends BaseNode {
     'Function',
     'StaticContext'
   ];
+
+  createTraceData() {
+    const { path } = this;
+    const methodName = path.node.key;
+
+    return {
+      path,
+      node: this,
+      staticTraceData: {
+        type: TraceType.FunctionDefinition,
+        data: {
+          methodName
+        }
+      },
+      dataNode: {
+        isNew: true
+      }
+    };
+  }
 }

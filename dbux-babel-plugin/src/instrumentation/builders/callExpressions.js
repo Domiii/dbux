@@ -146,7 +146,7 @@ const callTemplatesME = {
 
 function buildCallNodeME(path, objectVar, calleeVar, argsVar, argNodes) {
   const { type } = path.node;
-  const callTempl = callTemplatesME[type]();
+  const callTemplate = callTemplatesME[type]();
 
   const templateArgs = {
     callee: calleeVar,
@@ -158,7 +158,7 @@ function buildCallNodeME(path, objectVar, calleeVar, argsVar, argNodes) {
     templateArgs.o = objectVar;
   }
 
-  return callTempl(templateArgs).expression;
+  return callTemplate(templateArgs).expression;
 }
 
 
@@ -266,6 +266,20 @@ export function buildTraceCallUntraceableCallee(state, traceCfg) {
 // ###########################################################################
 
 /**
+ * [ME]
+ * 
+ * In: `obj.fun()`
+ * Out: `(o=obj, f=o.fun, args=[...], BCE, callTemplate(o, f, args))`
+ * 
+ * In: `obj.fun().gun()`
+ * Out: `(
+ *   o2=(o=obj, f=o.fun, args=[...], BCE, callTemplate(o, f, args),
+ *   f2=o2.gun,
+ *   args2=[...],
+ *   BCE2,
+ *   callTemplate(o2, f2, args2)
+ * )`
+ * 
  * @param {TraceCfg} traceCfg 
  * @returns 
  */
@@ -277,6 +291,7 @@ export function buildTraceCallME(state, traceCfg) {
       bceTrace,
       calleeVar,
       objectVar,
+      // objectPath,
       calleeTrace: {
         // NOTE: callee was built (but not replaced) by MemberExpression
         resultNode: calleeAstNode
@@ -285,7 +300,6 @@ export function buildTraceCallME(state, traceCfg) {
   } = traceCfg;
 
   const calleePath = path.get('callee');
-  // NOTE: `object` is instrumented by ME adding it as `input`
   const objectPath = calleePath.get('object');
   const argPaths = path.get('arguments');
 
@@ -299,7 +313,9 @@ export function buildTraceCallME(state, traceCfg) {
   traceCfg.meta.targetNode = buildCallNodeME(path, objectVar, calleeVar, argsVar, argNodes);
   // debug(`tcr target: ${astNodeToString(getInstrumentTargetNode(traceCfg))}`);
 
-  return t.sequenceExpression([
+  const expressions = [];
+
+  expressions.push(
     // (i) object assignment - `o = ...`
     t.assignmentExpression('=', objectVar, objectPath.node),
 
@@ -318,5 +334,7 @@ export function buildTraceCallME(state, traceCfg) {
       state,
       traceCfg
     )
-  ]);
+  );
+
+  return t.sequenceExpression(expressions);
 }
