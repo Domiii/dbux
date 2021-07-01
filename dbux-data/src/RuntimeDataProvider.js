@@ -471,18 +471,18 @@ class DataNodeCollection extends Collection {
     }
     else {
       const { traceId, accessId } = dataNode;
-      const traceType = this.dp.util.getTraceType(traceId);
+      // const traceType = this.dp.util.getTraceType(traceId);
       const trace = this.dp.collections.traces.getById(traceId);
-      const staticTrace = this.dp.collections.staticTraces.getById(trace.staticTraceId);
+      // const staticTrace = this.dp.collections.staticTraces.getById(trace.staticTraceId);
       let lastNode;
       // if (TraceType.is.BeforeCallExpression(traceType)) {
       //   // skip in this case, special handling in UI - BCE rendering should reflect CallExpressionResult
       //   return null;
       // }
-      if (staticTrace.dataNode.isNew) {
-        return traceId;
-      }
-      else if (dataNode.inputs?.length) {
+      // if (staticTrace.dataNode.isNew) {
+      //   return traceId;
+      // }
+      if (dataNode.inputs?.length) {
         const inputDataNode = this.dp.collections.dataNodes.getById(dataNode.inputs[0]);
         return inputDataNode.valueId;
       }
