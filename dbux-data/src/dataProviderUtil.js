@@ -325,25 +325,25 @@ export default {
   /** @param {DataProvider} dp */
   isTraceTrackableValue(dp, traceId) {
     const dataNode = dp.util.getDataNodeOfTrace(traceId);
-    return dataNode ? dp.util.isDataNodeTrackableValue(dataNode.nodeId) : null;
+    return dataNode ? dp.util.isDataNodeTrackableValue(dataNode.nodeId) : false;
   },
 
   /** @param {DataProvider} dp */
   isTracePlainObjectOrArrayValue(dp, traceId) {
     const dataNode = dp.util.getDataNodeOfTrace(traceId);
-    return dataNode ? dp.util.isDataNodePlainObjectOrArrayValue(dataNode.nodeId) : null;
+    return dataNode ? dp.util.isDataNodePlainObjectOrArrayValue(dataNode.nodeId) : false;
   },
 
   /** @param {DataProvider} dp */
   isTracePlainObject(dp, traceId) {
     const dataNode = dp.util.getDataNodeOfTrace(traceId);
-    return dataNode ? dp.util.isDataNodePlainObject(dataNode.nodeId) : null;
+    return dataNode ? dp.util.isDataNodePlainObject(dataNode.nodeId) : false;
   },
 
   /** @param {DataProvider} dp */
   isTraceFunctionValue(dp, traceId) {
     const dataNode = dp.util.getDataNodeOfTrace(traceId);
-    return dataNode ? dp.util.isDataNodeFunctionValue(dataNode.nodeId) : null;
+    return dataNode ? dp.util.isDataNodeFunctionValue(dataNode.nodeId) : false;
   },
 
   /** @param {DataProvider} dp */
