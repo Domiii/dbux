@@ -80,7 +80,7 @@ class ApplicationCollection extends PathwaysCollection {
         });
       }
       else {
-        warn(`Added old application without \`isNew=false\``);
+        warn(`Found exsiting log file, added old application without \`isNew=false\``);
       }
     }
   }
