@@ -10,9 +10,9 @@ export default class ClassExpression extends BaseNode {
 
     // const { scope } = path.parentPath;
 
-    const [idNode] = this.getChildNodes();
+    // const [idNode] = this.getChildNodes();
 
-    this.getPlugin('Class').addClassTraces(idNode, {
+    this.getPlugin('Class').addClassTraces({
       node: this,
       path,
       scope: path.parentPath.scope, // prevent adding `tid` variable to own body

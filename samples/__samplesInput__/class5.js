@@ -1,8 +1,4 @@
 
-function ff({ o: { p: { a: [x, y] } }, p: { z, w } }) {
-  console.log(x, y, z, w);
-}
-
 class A {
   // __dbux_class = (() => traceClassMembers(this, [this.f, this.#g]))();
   // static __dbux_class = (() => traceClassStaticMembers(A, [A.sf, A.#sg]))();

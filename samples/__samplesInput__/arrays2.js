@@ -2,7 +2,6 @@ const a = [1,2];
 
 a.push(3);
 
-
 var x = 4;
 var y = 5;
 

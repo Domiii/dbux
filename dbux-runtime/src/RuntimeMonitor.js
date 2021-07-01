@@ -10,7 +10,7 @@ import traceCollection from './data/traceCollection';
 import staticTraceCollection from './data/staticTraceCollection';
 import Runtime from './Runtime';
 import ProgramMonitor from './ProgramMonitor';
-import dataNodeCollection from './data/dataNodeCollection';
+import dataNodeCollection, { ShallowValueRefMeta } from './data/dataNodeCollection';
 import valueCollection from './data/valueCollection';
 import registerBuiltins from './builtIns/index';
 
@@ -454,58 +454,9 @@ export default class RuntimeMonitor {
     return traceId;
   }
 
-  traceClass(programId, value, tid, staticMethods) {
-    if (!this._ensureExecuting()) {
-      return value;
-    }
-
-    this.traceExpression(programId, value, tid);
-
-    const trace = traceCollection.getById(tid);
-    if (trace) {
-      const { staticTraceId } = trace;
-      const { data: { 
-        staticMethods: staticMethodNames,
-        publicMethods: publicMethodNames
-      } } = staticTraceCollection.getById(staticTraceId);
-
-      for (const name of publicMethodNames) {
-        const method = value.prototype[name];
-        // TODO: trace publicMethod
-      }
-      for (let i = 0; i < staticMethodNames.length; ++i) {
-        // NOTE: we cannot access private static methods dynamically, that is why we do this
-        const method = staticMethods[i];
-        // TODO: trace staticMethod
-      }
-    }
-
-    return value;
-  }
-
-  traceInstance(programId, value, tid, privateMethods) {
-    if (!this._ensureExecuting()) {
-      return value;
-    }
-
-    this.traceExpression(programId, value, tid);
-
-    const trace = traceCollection.getById(tid);
-    if (trace) {
-      const { staticTraceId } = trace;
-      const { data: {
-        privateMethods: privateMethodNames
-      } } = staticTraceCollection.getById(staticTraceId);
-
-      for (let i = 0; i < privateMethodNames.length; ++i) {
-        // NOTE: this is so convoluted because we cannot access private methods dynamically
-        const method = privateMethods[i];
-        // TODO: trace staticMethod
-      }
-    }
-
-    return value;
-  }
+  // ###########################################################################
+  // Basics
+  // ###########################################################################
 
   traceExpression(programId, value, tid, inputs) {
     if (!this._ensureExecuting()) {
@@ -615,6 +566,68 @@ export default class RuntimeMonitor {
     return result;
   }
 
+  // ###########################################################################
+  // Class
+  // ###########################################################################
+
+  traceClass(programId, value, tid, staticMethods) {
+    if (!this._ensureExecuting()) {
+      return value;
+    }
+
+    this.traceExpression(programId, value, tid);
+
+    const trace = traceCollection.getById(tid);
+    if (trace) {
+      const { staticTraceId } = trace;
+      const { data: {
+        staticMethods: staticMethodNames,
+        publicMethods: publicMethodNames
+      } } = staticTraceCollection.getById(staticTraceId);
+
+      for (const name of publicMethodNames) {
+        const method = value.prototype[name];
+        // TODO: trace publicMethod
+      }
+      for (let i = 0; i < staticMethodNames.length; ++i) {
+        // NOTE: we cannot access private static methods dynamically, that is why we do this
+        const method = staticMethods[i];
+        // TODO: trace staticMethod
+      }
+    }
+
+    return value;
+  }
+
+  traceInstance(programId, value, tid, privateMethods) {
+    if (!this._ensureExecuting()) {
+      return value;
+    }
+
+    this.traceExpression(programId, value, tid);
+
+    const trace = traceCollection.getById(tid);
+    if (trace) {
+      const { staticTraceId } = trace;
+      const { data: {
+        privateMethods: privateMethodNames
+      } } = staticTraceCollection.getById(staticTraceId);
+
+      for (let i = 0; i < privateMethodNames.length; ++i) {
+        // NOTE: this is so convoluted because we cannot access private methods dynamically
+        const method = privateMethods[i];
+        // TODO: trace staticMethod
+      }
+    }
+
+    return value;
+  }
+
+
+  // ###########################################################################
+  // UpdateExpression
+  // ###########################################################################
+
   _traceUpdateExpression(updateValue, returnValue, readTid, tid, varAccess) {
     const trace = traceCollection.getById(tid);
 
@@ -655,12 +668,29 @@ export default class RuntimeMonitor {
     return this._traceUpdateExpression(updateValue, returnValue, readTid, tid, varAccess);
   }
 
+  traceUpdateExpression(programId, value, tid, inputs) {
+    if (!this._ensureExecuting()) {
+      return value;
+    }
+
+    const [inputTraceId] = inputs;
+
+    // add `Write` `DataNode` to update the argument's `varAccess`.
+    dataNodeCollection.createWriteNodeFromInputTrace(inputTraceId, tid);
+
+    return value;
+  }
+
+  // ###########################################################################
+  // CallExpression
+  // ###########################################################################
+
   // traceCallee(programId, value, tid, declarationTid) {
   //   this.traceExpression(programId, value, tid, declarationTid);
   //   return value;
   // }
 
-  traceBCE(programId, tid, argTids, spreadArgs) {
+  traceBCE(programId, tid, calleeTid, argTids, spreadArgs) {
     if (!this._ensureExecuting()) {
       return;
     }
@@ -676,6 +706,7 @@ export default class RuntimeMonitor {
     const trace = traceCollection.getById(tid);
     trace.callId = tid;
     trace.data = {
+      calleeTid,
       argTids,
       spreadLengths: spreadArgs.map(a => a && a.length || null)
     };
@@ -712,11 +743,15 @@ export default class RuntimeMonitor {
     return value;
   }
 
+  // ###########################################################################
+  // {Array,Object}Expression
+  // ###########################################################################
+
   traceArrayExpression(programId, value, spreadLengths, arrTid, argTids) {
     if (!this._ensureExecuting()) {
       return value;
     }
-    dataNodeCollection.createOwnDataNode(value, arrTid, DataNodeType.Read);
+    dataNodeCollection.createOwnDataNode(value, arrTid, DataNodeType.Read, null, null, ShallowValueRefMeta);
 
     // for each element: add (new) write node which has (original) read node as input
     let idx = 0;
@@ -746,7 +781,7 @@ export default class RuntimeMonitor {
           objectTid: arrTid,
           prop: i
         };
-        dataNodeCollection.createWriteNodeFromTrace(argTid, varAccess);
+        dataNodeCollection.createWriteNodeFromTrace(arrTid, argTid, varAccess);
         ++idx;
       }
     }
@@ -758,7 +793,7 @@ export default class RuntimeMonitor {
     if (!this._ensureExecuting()) {
       return value;
     }
-    dataNodeCollection.createOwnDataNode(value, objectTid, DataNodeType.Read);
+    dataNodeCollection.createOwnDataNode(value, objectTid, DataNodeType.Read, null, null, ShallowValueRefMeta);
 
     // for each prop: add (new) write node which has (original) read node as input
     for (let i = 0; i < entries.length; i++) {
@@ -793,25 +828,16 @@ export default class RuntimeMonitor {
           objectTid: objectTid,
           prop: key
         };
-        dataNodeCollection.createWriteNodeFromTrace(propTid, varAccess);
+        dataNodeCollection.createWriteNodeFromTrace(objectTid, propTid, varAccess);
       }
     }
 
     return value;
   }
 
-  traceUpdateExpression(programId, value, tid, inputs) {
-    if (!this._ensureExecuting()) {
-      return value;
-    }
-
-    const [inputTraceId] = inputs;
-
-    // add `Write` `DataNode` to update the argument's `varAccess`.
-    dataNodeCollection.createWriteNodeFromInputTrace(inputTraceId, tid);
-
-    return value;
-  }
+  // ###########################################################################
+  // Loops (unfinished)
+  // ###########################################################################
 
   traceForIn(programId, value, tid, declarationTid, inProgramStaticTraceId) {
     if (!this._ensureExecuting()) {

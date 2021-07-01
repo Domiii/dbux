@@ -103,12 +103,12 @@ function injectTraceInstance(state, traceCfg) {
   const {
     path,
     data: {
-      traceInstanceTraceCfg
+      instanceTraceCfg
     }
   } = traceCfg;
 
   // inject __dbux_instance iife property
-  const traceInstanceCall = build(state, traceInstanceTraceCfg);
+  const traceInstanceCall = build(state, instanceTraceCfg);
   const traceInstanceProperty = t.classPrivateProperty(
     dbuxInstance,
     t.callExpression(

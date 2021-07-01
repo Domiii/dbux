@@ -348,6 +348,11 @@ class ValueCollection extends Collection {
     if (!isNewObject) {
       return valueRef;
     }
+    if (meta?.shallow) {
+      this._finishValue(valueRef, typeName, EmptyArray, pruneState);
+      return valueRef;
+    }
+
     if (meta?.omit) {
       // shortcut -> don't serialize children
       typeName = value.constructor?.name || '';

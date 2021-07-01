@@ -36,19 +36,35 @@ export default class Class extends BasePlugin {
 
       // register all method names
       if (memberNode instanceof ClassMethod) {
-        const astNode = memberNode.path.node;
+        const { public: isPublic, static: isStatic } = memberNode.path.node;
         let methods;
-        if (astNode.static) {
+        if (isStatic) {
           methods = staticMethods;
         }
         else {
-          methods = astNode.public ? publicMethods : privateMethods;
+          methods = isPublic ? publicMethods : privateMethods;
         }
         methods.push(memberNode.name);
       }
     }
 
-    const traceInstanceTraceCfg = TODO;
+    const instanceTraceCfg = this.Traces.addTrace({
+      staticTraceData: {
+        type: TraceType.Class,
+        dataNode: {
+          isNew: true
+        },
+        data: {
+          name: idNode?.path?.toString(),
+          privateMethods
+        }
+      },
+      meta: {
+        moreTraceCallArgs: [
+          staticMethods
+        ]
+      }
+    });
 
     const classTraceData = {
       staticTraceData: {
@@ -57,9 +73,9 @@ export default class Class extends BasePlugin {
           isNew: true
         },
         data: {
+          instanceTraceCfg,
           name: idNode?.path?.toString(),
-          publicMethods,
-          privateMethods
+          publicMethods
         }
       },
       meta: {
