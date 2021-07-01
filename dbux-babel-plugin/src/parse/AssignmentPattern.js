@@ -13,7 +13,7 @@ import BaseNode from './BaseNode';
  * NOTE: this is also Babel's translation of a default parameter to es5.
  */
 const buildDefaultValueAccessor = template(
-  `(arguments.length < %%i%% || arguments[%%i%%] === undefined) ? %%defaultValue%% : undefined`
+  `(arguments.length < %%i%% || arguments[%%i%%] === undefined) ? %%defaultValue%% : arguments[%%i%%]`
 );
 
 /**

@@ -72,8 +72,9 @@ let TraceType = {
   Param: 38,
   CatchParam: 39,
 
-  FunctionDefinition: 41,
-  ClassDefinition: 42
+  FunctionDeclaration: 41,
+  FunctionDefinition: 42,
+  ClassDefinition: 43
 };
 
 /**
@@ -184,6 +185,7 @@ export function isPopTrace(traceType) {
 
 const declarationTypes = new Array(TraceType.getValueMaxIndex()).map(() => false);
 declarationTypes[TraceType.Declaration] = true;
+declarationTypes[TraceType.FunctionDeclaration] = true;
 declarationTypes[TraceType.DeclareAndWriteVar] = true;
 declarationTypes[TraceType.Param] = true;
 declarationTypes[TraceType.CatchParam] = true;

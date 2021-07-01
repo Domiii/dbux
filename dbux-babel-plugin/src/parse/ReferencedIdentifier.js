@@ -1,5 +1,5 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
-import SpecialIdentifierType, { lookupSpecialIdentifierType } from '@dbux/common/src/core/constants/SpecialIdentifierType';
+import SpecialIdentifierType, { isNotTraceable, lookupSpecialIdentifierType } from '@dbux/common/src/core/constants/SpecialIdentifierType';
 import { buildTraceExpressionVar } from '../instrumentation/builders/misc';
 import BaseId from './BaseId';
 import { ZeroNode } from '../instrumentation/builders/buildUtil';
@@ -28,12 +28,22 @@ export default class ReferencedIdentifier extends BaseId {
       null;
   }
 
+  getTidIdentifier() {
+    const { specialType } = this;
+
+    if (specialType && isNotTraceable(specialType)) {
+      // NOTE: this identifier cannot be traced, and thus does not have a traceId
+      return ZeroNode;
+    }
+    return super.getTidIdentifier();
+  }
+
   getDeclarationTidIdentifier() {
     const { specialType } = this;
 
     if (specialType) {
       // hackfix: for now, just don't care about declarationTid
-      //    NOTE: can use `refId` to trace access, since they 100% coincide)
+      //    NOTE: often times, we can use `refId` instead
       return ZeroNode;
     }
     return super.getDeclarationTidIdentifier();
@@ -52,7 +62,7 @@ export default class ReferencedIdentifier extends BaseId {
         type: !isConstant ? TraceType.Identifier : TraceType.Literal,
         dataNode: {
           isNew: isConstant,
-          omit: specialType && DataNodeMetaBySpecialIdentifierType[specialType]?.omit || false
+          ...(specialType && DataNodeMetaBySpecialIdentifierType[specialType])
         },
         data: {}
       },

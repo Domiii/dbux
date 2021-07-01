@@ -22,7 +22,7 @@ export default class FunctionDeclaration extends BaseNode {
   exit1() {
     const [idNode] = this.getChildNodes();
     const moreTraceData = {
-      staticTraceData: this.getPlugin('Function').createStaticTraceData(idNode.path)
+      staticTraceData: this.getPlugin('Function').createStaticTraceData(idNode.path, TraceType.FunctionDeclaration)
     };
 
     const declarationNode = this.getOwnDeclarationNode();

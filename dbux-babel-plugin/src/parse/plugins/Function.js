@@ -69,10 +69,10 @@ function getLastNodeOfBody(bodyNode) {
 export default class Function extends BasePlugin {
   static plugins = ['Params'];
 
-  createStaticTraceData(namePath) {
+  createStaticTraceData(namePath, traceType) {
     const { data: { staticContextId } } = this;
     return {
-      type: TraceType.FunctionDefinition,
+      type: traceType || TraceType.FunctionDefinition,
       dataNode: {
         isNew: true
       },

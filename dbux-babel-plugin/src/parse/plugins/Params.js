@@ -2,7 +2,6 @@ import * as t from "@babel/types";
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import BasePlugin from './BasePlugin';
 import { getBindingIdentifierPaths } from '../../helpers/bindingsUtil';
-import { buildTraceWriteVar } from '../../instrumentation/builders/misc';
 import { pathToString } from '../../helpers/pathHelpers';
 import BindingIdentifier from '../BindingIdentifier';
 

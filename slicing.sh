@@ -5,7 +5,7 @@
 set -e # cancel on error
 # set -x # verbose echo mode
 
-fname="arrays1"
+fname="recursion1"
 
 
 nodeArgs=""

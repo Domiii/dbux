@@ -112,7 +112,7 @@ export default class Traces extends BasePlugin {
     };
 
     if (isDeclaration) {
-      const declarationNode = node.getDeclarationNode();
+      const declarationNode = node.getOwnDeclarationNode();
       if (!declarationNode) {
         throw new Error(`Assertion failed - node.getDeclarationNode() returned nothing ` +
           `for Declaration "${node}" in "${node.getParentString()}`);
@@ -138,8 +138,11 @@ export default class Traces extends BasePlugin {
       this.Verbose && this.debug(`DECL "${declarationNode}" in "${declarationNode.getParentString()}" by "${node}" in "${node.getParentString()}" (${traceCfg.tidIdentifier.name})`);
     }
     else {
-      node?._setTraceData(traceCfg);
       this.traces.push(traceCfg);
+    }
+
+    if (node && !node._traceCfg) {
+      node._setTraceCfg(traceCfg);
     }
 
     this.Verbose >= 2 && this.debug('[addTrace]', tidIdentifier.name, `([${inputTraces?.map(tid => tid.name).join(',') || ''}])`, `@"${this.node}"`);

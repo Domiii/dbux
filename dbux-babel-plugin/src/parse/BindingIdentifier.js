@@ -1,3 +1,4 @@
+import { isDeclarationTrace } from '@dbux/common/src/core/constants/TraceType';
 import { pathToString } from '../helpers/pathHelpers';
 import { ZeroNode } from '../instrumentation/builders/buildUtil';
 import BaseId from './BaseId';
@@ -87,6 +88,11 @@ export default class BindingIdentifier extends BaseId {
     //   // NOTE: should never happen
     //   return;
     // }
+
+    const traceType = moreTraceData?.staticTraceData?.type;
+    if (traceType && !isDeclarationTrace(traceType)) {
+      this.warn(`staticTraceData.type is not declaration type. You might prefer "addTrace" over "addOwnDeclarationTrace" in this case.`);
+    }
 
     const bindingScopeNode = this.getDefaultBindingScopeNode();
     const declarationNode = this.getDeclarationNode();

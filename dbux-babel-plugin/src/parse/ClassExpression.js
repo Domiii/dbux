@@ -5,6 +5,11 @@ export default class ClassExpression extends BaseNode {
   static children = ['id', 'superClass', 'body', 'decorators'];
   static plugins = ['Class'];
 
+  getOwnDeclarationNode() {
+    const [idNode] = this.getChildNodes();
+    return idNode;
+  }
+
   exit() {
     const { path } = this;
 
