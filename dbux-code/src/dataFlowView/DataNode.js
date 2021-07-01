@@ -23,7 +23,6 @@ export default class DataNode extends TraceNode {
 
   handleClick() {
     traceSelection.selectTrace(this.trace, 'TraceNode', this.nodeId);
-    console.log(`Selecting trace#${this.trace.traceId}, node#${this.nodeId}`);
   }
 
   getTraceDataNodes() {

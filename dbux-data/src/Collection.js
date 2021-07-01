@@ -155,14 +155,12 @@ export default class Collection {
   }
   
   errorWrapMethod(methodName, ...args) {
-    const obj = this;
     try {
       // build dynamic call expression tree
-      /* eslint prefer-spread: 0 */ // (false positive)
-      obj[methodName].apply(obj, args);
+      this[methodName](...args);
     }
     catch (err) {
-      this.logger.error(`${obj.constructor.name}.${methodName}`, 'failed\n  ', err); //...args);
+      this.logger.error(`${this.constructor.name}.${methodName}`, 'failed\n  ', err); //...args);
     }
   }
 }

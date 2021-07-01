@@ -10,6 +10,8 @@ import NavigationNode from './nodes/NavigationNode';
 export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
   constructor() {
     super('dbuxTraceDetailsView');
+
+    this.trace = null;
   }
 
   // ###########################################################################
@@ -21,6 +23,7 @@ export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
 
     if (traceSelection.selected) {
       const trace = traceSelection.selected;
+      this.trace = trace;
 
       roots.push(
         this.buildSelectedTraceNode(trace),
@@ -28,6 +31,7 @@ export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
       );
     }
     else {
+      this.trace = null;
       // add empty node
       roots.push(EmptyNode.instance);
     }
@@ -57,17 +61,20 @@ export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
       .filter(node => !!node);
   }
 
-  maybeBuildTraceDetailNode(NodeClass, trace, parent) {
-    const detail = NodeClass.makeTraceDetail(trace, parent);
-    const props = NodeClass.makeProperties?.(trace, parent, detail) || EmptyObject;
-    if (!detail) {
-      return null;
+  maybeBuildTraceDetailNode(NodeClass, entry, parent, props) {
+    if (NodeClass.makeEntry) {
+      entry = NodeClass.makeEntry(entry, parent, props);
+      if (!entry) {
+        return null;
+      }
     }
-    const treeItemProps = {
-      trace,
-      ...props
+    const newProps = NodeClass.makeProperties?.(entry, parent, props) || EmptyObject;
+    props = {
+      entry,
+      ...props,
+      ...newProps
     };
-    return this.buildNode(NodeClass, detail, parent, treeItemProps);
+    return this.buildNode(NodeClass, entry, parent, props);
   }
 
   // ###########################################################################
