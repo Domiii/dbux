@@ -209,12 +209,12 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceDeclaration(this.getProgramId(), inProgramStaticTraceId, value, inputs);
   }
 
-  traceClass = (value, tid, staticMethods) => {
+  traceClass = (value, tid, staticMethods, publicMethods) => {
     if (this.areTracesDisabled) {
       return value;
     }
 
-    return this._runtimeMonitor.traceClass(this.getProgramId(), value, tid, staticMethods);
+    return this._runtimeMonitor.traceClass(this.getProgramId(), value, tid, staticMethods, publicMethods);
   }
 
   traceInstance = (value, tid, privateMethods) => {

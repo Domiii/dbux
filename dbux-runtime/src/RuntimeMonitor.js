@@ -570,12 +570,13 @@ export default class RuntimeMonitor {
   // Class
   // ###########################################################################
 
-  traceClass(programId, value, tid, staticMethods) {
+  traceClass(programId, value, tid, staticMethods, publicMethodTids) {
     if (!this._ensureExecuting()) {
       return value;
     }
 
     this.traceExpression(programId, value, tid);
+    // TODO: trace prototype
 
     const trace = traceCollection.getById(tid);
     if (trace) {
@@ -585,14 +586,21 @@ export default class RuntimeMonitor {
         publicMethods: publicMethodNames
       } } = staticTraceCollection.getById(staticTraceId);
 
-      for (const name of publicMethodNames) {
-        const method = value.prototype[name];
-        // TODO: trace publicMethod
+      for (let i = 0; i < publicMethodNames.length; i++) {
+        const methodTid = publicMethodTids[i];
+        const methodName = publicMethodNames[i];
+        const method = value.prototype[methodName];
+        const varAccess = {
+          objectTid: prototypeTid,
+          
+        };
+        dataNodeCollection.createDataNode(method, methodTid, DataNodeType.Read, varAccess);
       }
       for (let i = 0; i < staticMethodNames.length; ++i) {
         // NOTE: we cannot access private static methods dynamically, that is why we do this
-        const method = staticMethods[i];
+        const [method, methodTid] = staticMethods[i];
         // TODO: trace staticMethod
+        dataNodeCollection.createDataNode(method, argTid, DataNodeType.Read, readAccess);
       }
     }
 

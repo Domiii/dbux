@@ -74,7 +74,8 @@ let TraceType = {
 
   FunctionDeclaration: 41,
   FunctionDefinition: 42,
-  ClassDefinition: 43
+  ClassDefinition: 43,
+  ClassInstance: 44
 };
 
 /**

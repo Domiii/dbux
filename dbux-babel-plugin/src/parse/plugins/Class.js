@@ -5,6 +5,10 @@ import BasePlugin from './BasePlugin';
 
 /** @typedef { import("../MemberExpression").default } MemberExpression */
 
+function buildMethodArray(methods) {
+  return t.arrayExpression(methods.map(({ name }) => t.memberExpression(ThisNode, t.identifier(name))));
+}
+
 /**
  * Classes are instrumented as follows:
  * 
@@ -32,7 +36,29 @@ export default class Class extends BasePlugin {
 
     for (const memberPath of memberPaths) {
       const memberNode = node.getNodeOfPath(memberPath);
-      /* const memberTraceCfg = */ memberNode.addTrace(); // addTrace
+
+      // ################################################################################
+      // memberTrace
+      // ################################################################################
+
+      const memberTraceCfg = memberNode.addTrace({  // addTrace
+        path: memberPath,
+        node: memberNode,
+        staticTraceData: {
+          type: TraceType.ClassInstance,
+          dataNode: {
+            isNew: true
+          },
+          data: {
+            name: idNode?.path?.toString()
+          }
+        },
+        meta: {
+          moreTraceCallArgs: [
+            staticMethods
+          ]
+        }
+      });
 
       // register all method names
       if (memberNode instanceof ClassMethod) {
@@ -44,18 +70,27 @@ export default class Class extends BasePlugin {
         else {
           methods = isPublic ? publicMethods : privateMethods;
         }
-        methods.push(memberNode.name);
+        methods.push({
+          name: memberNode.name,
+          trace: memberTraceCfg
+        });
       }
     }
 
+
+    // ################################################################################
+    // instanceTrace
+    // ################################################################################
+
     const instanceTraceCfg = this.Traces.addTrace({
+      path: idNode.path,
+      node: null,
       staticTraceData: {
         type: TraceType.Class,
         dataNode: {
           isNew: true
         },
         data: {
-          name: idNode?.path?.toString(),
           privateMethods
         }
       },
@@ -66,17 +101,24 @@ export default class Class extends BasePlugin {
       }
     });
 
+
+    // ################################################################################
+    // classTrace
+    // ################################################################################
+
     const classTraceData = {
       staticTraceData: {
-        type: TraceType.Class,
+        type: TraceType.ClassDefinition,
         dataNode: {
           isNew: true
         },
         data: {
-          instanceTraceCfg,
           name: idNode?.path?.toString(),
           publicMethods
         }
+      },
+      data: {
+        instanceTraceCfg
       },
       meta: {
         moreTraceCallArgs: [
@@ -84,9 +126,6 @@ export default class Class extends BasePlugin {
         ]
       }
     };
-
-    merge(classTraceData, moreTraceData);
-
-    return this.Traces.addTrace(classTraceData);
+    return this.Traces.addTrace(merge(classTraceData, moreTraceData));
   }
 }
