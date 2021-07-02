@@ -7,7 +7,7 @@ import { convertNonComputedPropToStringLiteral } from './objects';
 import { buildTraceId } from './traceId';
 import { buildTraceExpression, buildTraceExpressionNoInput } from './misc';
 import { postInstrument } from '../instrumentMisc';
-import { findSuperCallPath } from '../../visitors/superVisitor';
+import { findConstructorMethod, findSuperCallPath } from '../../visitors/classUtil';
 
 // ###########################################################################
 // util
@@ -151,10 +151,28 @@ function buildTraceInstance(state, instanceTraceCfg) {
   ]);
 }
 
+function buildConstructor(classPath) {
+  const params = EmptyArray;
+  const body = [];
+
+  // addSuperIfHasSuperClass
+  if (classPath.node.superClass) {
+    body.push(t.callExpression(t.super(), EmptyArray));
+  }
+
+  // return new ctor
+  return t.classMethod(
+    'constructor',
+    t.identifier('constructor'),
+    params,
+    t.blockStatement(body)
+  );
+}
+
 function injectTraceInstance(state, traceCfg) {
   const { ids: { dbuxInstance } } = state;
   const {
-    path,
+    path: classPath,
     data: {
       instanceTraceCfg
     }
@@ -175,19 +193,19 @@ function injectTraceInstance(state, traceCfg) {
       EmptyArray
     )
   );
-  path.unshiftContainer('body', traceInstanceProperty);
+  classPath.unshiftContainer('body', traceInstanceProperty);
 
   // delete __dbux_instance property after ctor
-  let constructor = TODO;
+  let constructor = findConstructorMethod(classPath);
   let superPath;
   if (!constructor) {
-    constructor = createConstructor;
-    addSuperIfHasSuperClass(constructor);
+    constructor = buildConstructor(classPath);
   }
   else {
     superPath = findSuperCallPath(constructor);
   }
 
+  // insert `traceInstance` after `super` call, or at top of ctor
   if (!superPath) {
     constructor.unshiftContainer('body', traceInstanceCall);
   }

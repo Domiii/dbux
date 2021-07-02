@@ -5,9 +5,9 @@
  * 
  * @see https://github.com/babel/babel/blob/v7.14.7/packages/babel-traverse/src/path/conversion.ts#L205
  */
-export function findSuperCallPath(path) {
+export function findSuperCallPath(constructorPath) {
   let superPath;
-  path.traverse({
+  constructorPath.traverse({
     Function(child) {
       if (child.isArrowFunctionExpression()) return;
       child.skip();
@@ -25,4 +25,12 @@ export function findSuperCallPath(path) {
     }
   });
   return superPath;
+}
+
+export function findConstructorMethod(classPath) {
+  return classPath.get('body.body')?.find(prop => prop.isClassMethod() && prop.node.kind === 'constructor');
+}
+
+export function findMethod(classPath, name) {
+  return classPath.get('body.body')?.find(prop => prop.isClassMethod() && prop.node.key.name === name);
 }

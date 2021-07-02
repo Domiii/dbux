@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import { pathToString } from './helpers/pathHelpers';
-import { findSuperCallPath } from './visitors/superVisitor';
+import { findSuperCallPath } from './visitors/classUtil';
 
 // import injectDbuxState from './dbuxState';
 // import { getBinding, getBindingPath } from './helpers/bindingsHelper';
