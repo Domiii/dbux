@@ -60,15 +60,6 @@ export class DataNodeCollection extends Collection {
     return this.createWriteNodeFromReadNode(writeTraceId, readNode, varAccess);
   }
 
-  /**
-   * NOTE: Used by `UpdateExpression`.
-   */
-  createWriteNodeFromInputTrace(inputTraceId, traceId) {
-    const { nodeId: readNodeId } = traceCollection.getById(inputTraceId);
-    const readNode = this.getById(readNodeId);
-    return this.createWriteNodeFromReadNode(traceId, readNode, readNode.varAccess);
-  }
-
   createWriteNodeFromReadNode(traceId, readNode, varAccess) {
     const inputs = [readNode.nodeId];
     const writeNode = this.createDataNode(undefined, traceId, DataNodeType.Write, varAccess, inputs);

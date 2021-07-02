@@ -502,7 +502,7 @@ export default class RuntimeMonitor {
     }
 
     const varAccess = {
-      objectTid,
+      objectNodeId: traceCollection.getDataNodeIdByTraceId(objectTid),
       prop: propValue
     };
 
@@ -545,7 +545,7 @@ export default class RuntimeMonitor {
 
     // this.registerTrace(value, tid);
     const varAccess = {
-      objectTid,
+      objectNodeId: traceCollection.getDataNodeIdByTraceId(objectTid),
       prop: propValue
     };
     dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess, traceCollection.getDataNodeIdsByTraceIds(tid, inputs));
@@ -559,7 +559,7 @@ export default class RuntimeMonitor {
 
     // this.registerTrace(value, tid);
     const varAccess = {
-      objectTid,
+      objectNodeId: traceCollection.getDataNodeIdByTraceId(objectTid),
       prop: propValue
     };
     dataNodeCollection.createOwnDataNode(undefined, tid, DataNodeType.Delete, varAccess);
@@ -575,8 +575,22 @@ export default class RuntimeMonitor {
       return value;
     }
 
-    this.traceExpression(programId, value, tid);
-    // TODO: trace prototype
+    // add class node
+    const varAccess = {
+      declarationTid: tid
+    };
+    const classNode = dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess);
+
+    // [runtime-error] potential runtime error (but should actually never happen)
+    const proto = value.prototype;
+
+    // add prototype node
+    const prototypeVarAccess = {
+      objectNodeId: classNode.nodeId,
+      prop: 'prototype'
+    };
+    const prototypeNode = dataNodeCollection.createDataNode(proto, tid, DataNodeType.Read, prototypeVarAccess);
+
 
     const trace = traceCollection.getById(tid);
     if (trace) {
@@ -586,21 +600,28 @@ export default class RuntimeMonitor {
         publicMethods: publicMethodNames
       } } = staticTraceCollection.getById(staticTraceId);
 
+      // add staticMethod nodes
+      for (let i = 0; i < staticMethodNames.length; ++i) {
+        // NOTE: we cannot access private static methods dynamically, that is why we do this
+        const methodName = staticMethodNames[i];
+        const [method, methodTid] = staticMethods[i];
+        const methodAccess = {
+          objectNodeId: classNode.nodeId,
+          prop: methodName
+        };
+        dataNodeCollection.createDataNode(method, methodTid, DataNodeType.Read, methodAccess);
+      }
+
+      // add publicMethods nodes to prototype
       for (let i = 0; i < publicMethodNames.length; i++) {
         const methodTid = publicMethodTids[i];
         const methodName = publicMethodNames[i];
         const method = value.prototype[methodName];
-        const varAccess = {
-          objectTid: prototypeTid,
-          
+        const methodAccess = {
+          objectNodeId: prototypeNode.nodeId,
+          prop: methodName
         };
-        dataNodeCollection.createDataNode(method, methodTid, DataNodeType.Read, varAccess);
-      }
-      for (let i = 0; i < staticMethodNames.length; ++i) {
-        // NOTE: we cannot access private static methods dynamically, that is why we do this
-        const [method, methodTid] = staticMethods[i];
-        // TODO: trace staticMethod
-        dataNodeCollection.createDataNode(method, argTid, DataNodeType.Read, readAccess);
+        dataNodeCollection.createDataNode(method, methodTid, DataNodeType.Read, methodAccess);
       }
     }
 
@@ -612,7 +633,7 @@ export default class RuntimeMonitor {
       return value;
     }
 
-    this.traceExpression(programId, value, tid);
+    const instanceNode = dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read);
 
     const trace = traceCollection.getById(tid);
     if (trace) {
@@ -622,9 +643,14 @@ export default class RuntimeMonitor {
       } } = staticTraceCollection.getById(staticTraceId);
 
       for (let i = 0; i < privateMethodNames.length; ++i) {
-        // NOTE: this is so convoluted because we cannot access private methods dynamically
-        const method = privateMethods[i];
-        // TODO: trace staticMethod
+        // NOTE: we cannot access private methods dynamically, that is why we do this
+        const methodName = privateMethodNames[i];
+        const [method, methodTid] = privateMethods[i];
+        const methodAccess = {
+          objectNodeId: instanceNode.nodeId,
+          prop: methodName
+        };
+        dataNodeCollection.createDataNode(method, methodTid, DataNodeType.Read, methodAccess);
       }
     }
 
@@ -670,23 +696,10 @@ export default class RuntimeMonitor {
     }
 
     const varAccess = {
-      objectTid,
+      objectNodeId: traceCollection.getDataNodeIdByTraceId(objectTid),
       prop: prop
     };
     return this._traceUpdateExpression(updateValue, returnValue, readTid, tid, varAccess);
-  }
-
-  traceUpdateExpression(programId, value, tid, inputs) {
-    if (!this._ensureExecuting()) {
-      return value;
-    }
-
-    const [inputTraceId] = inputs;
-
-    // add `Write` `DataNode` to update the argument's `varAccess`.
-    dataNodeCollection.createWriteNodeFromInputTrace(inputTraceId, tid);
-
-    return value;
   }
 
   // ###########################################################################
@@ -719,6 +732,7 @@ export default class RuntimeMonitor {
       spreadLengths: spreadArgs.map(a => a && a.length || null)
     };
 
+    // [spread]
     for (let i = 0; i < spreadArgs.length; i++) {
       const spreadArg = spreadArgs[i];
       if (!spreadArg) {
@@ -732,10 +746,9 @@ export default class RuntimeMonitor {
         const arg = spreadArg[j];
 
         const varAccess = {
-          objectTid: argTid,
+          objectNodeId: traceCollection.getDataNodeIdByTraceId(argTid),
           prop: j
         };
-        // [spread]
         dataNodeCollection.createDataNode(arg, argTid, DataNodeType.Read, varAccess);
       }
     }
@@ -771,12 +784,12 @@ export default class RuntimeMonitor {
         // [spread]
         for (let j = 0; j < len; j++) {
           const readAccess = {
-            objectTid: argTid,
+            objectNodeId: traceCollection.getDataNodeIdByTraceId(argTid),
             prop: j
           };
           const readNode = dataNodeCollection.createDataNode(value[idx], argTid, DataNodeType.Read, readAccess);
           const writeAccess = {
-            objectTid: arrTid,
+            objectNodeId: traceCollection.getDataNodeIdByTraceId(arrTid),
             prop: idx
           };
           dataNodeCollection.createWriteNodeFromReadNode(argTid, readNode, writeAccess);
@@ -786,7 +799,7 @@ export default class RuntimeMonitor {
       else {
         // not spread
         const varAccess = {
-          objectTid: arrTid,
+          objectNodeId: traceCollection.getDataNodeIdByTraceId(arrTid),
           prop: i
         };
         dataNodeCollection.createWriteNodeFromTrace(arrTid, argTid, varAccess);
@@ -801,7 +814,8 @@ export default class RuntimeMonitor {
     if (!this._ensureExecuting()) {
       return value;
     }
-    dataNodeCollection.createOwnDataNode(value, objectTid, DataNodeType.Read, null, null, ShallowValueRefMeta);
+    const objectNode = dataNodeCollection.createOwnDataNode(value, objectTid, DataNodeType.Read, null, null, ShallowValueRefMeta);
+    const objectNodeId = objectNode.nodeId;
 
     // for each prop: add (new) write node which has (original) read node as input
     for (let i = 0; i < entries.length; i++) {
@@ -818,12 +832,12 @@ export default class RuntimeMonitor {
         // NOTE: we can use `for in` here, because this is the "spread copy" of the object
         for (const key in nested) {
           const readAccess = {
-            objectTid: propTid,
+            objectNodeId: traceCollection.getDataNodeIdByTraceId(propTid),
             prop: key
           };
           const readNode = dataNodeCollection.createDataNode(value[key], propTid, DataNodeType.Read, readAccess);
           const writeAccess = {
-            objectTid: objectTid,
+            objectNodeId,
             prop: key
           };
           dataNodeCollection.createWriteNodeFromReadNode(propTid, readNode, writeAccess);
@@ -833,7 +847,7 @@ export default class RuntimeMonitor {
         // not spread
         const [key] = entries[i];
         const varAccess = {
-          objectTid: objectTid,
+          objectNodeId,
           prop: key
         };
         dataNodeCollection.createWriteNodeFromTrace(objectTid, propTid, varAccess);
@@ -866,7 +880,7 @@ export default class RuntimeMonitor {
     const pd = { enumerable: true, configurable: true };
     return new Proxy(value, {
       /**
-       * NOTE: for some reason, `getOwnPropertyDescriptor` is called every iteration, while
+       * NOTE: `getOwnPropertyDescriptor` is called every iteration, while
        *   the entire array returned from `ownKeys` is read at the beginning of the loop.
        */
       getOwnPropertyDescriptor: function (target, key) {

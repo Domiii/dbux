@@ -10,14 +10,27 @@ import { postInstrument } from '../instrumentMisc';
 import { findSuperCallPath } from '../../visitors/superVisitor';
 
 // ###########################################################################
+// util
+// ###########################################################################
+
+function buildMethodArray(state, methodOwner, methods) {
+  return t.arrayExpression(methods.map(({ name, traceCfg }) =>
+    t.arrayExpression([
+      t.memberExpression(methodOwner, t.identifier(name)),
+      buildTraceId(state, traceCfg)
+    ])
+  ));
+}
+
+// ###########################################################################
 // instrumentClass
 // ###########################################################################
 
 /**
  * 
  */
-function instrumentClassDefault(state, traceCfg) {
-  injectTraceClass(state, traceCfg);
+function instrumentClassDefault(classVar, state, traceCfg) {
+  injectTraceClass(classVar, state, traceCfg);
   injectTraceInstance(state, traceCfg);
 }
 
@@ -27,17 +40,19 @@ function instrumentClassDefault(state, traceCfg) {
 
 export function instrumentClassExpression(state, traceCfg) {
   const { path } = traceCfg;
-  const classVar = path.node.id || path.scope.generateDeclaredUidIdentifier('class');
+  const classVar = path.scope.generateDeclaredUidIdentifier(path.node.id?.name || 'anonymous_class');
 
-  instrumentClassDefault(state, traceCfg);
+  instrumentClassDefault(classVar, state, traceCfg);
   const postClassNodes = buildPostClassNodes(classVar, state);
 
   // wrap ClassExpression, with postNodes afterwards
-  const resultNode = t.sequenceExpression(
+  const expressions = [
     t.assignmentExpression('=', classVar, path.node),
-    ...postClassNodes
-  );
+    ...postClassNodes,
+    classVar
+  ];
 
+  const resultNode = t.sequenceExpression(expressions);
   path.replaceWith(resultNode);
   postInstrument(traceCfg, resultNode);
 }
@@ -51,7 +66,7 @@ export function instrumentClassDeclaration(state, traceCfg) {
   const { path } = traceCfg;
   const classVar = path.node.id;
 
-  instrumentClassDefault(state, traceCfg);
+  instrumentClassDefault(classVar, state, traceCfg);
 
   // insert post nodes
   const postClassNodes = buildPostClassNodes(classVar, state);
@@ -66,7 +81,26 @@ export function instrumentClassDeclaration(state, traceCfg) {
 // injectTraceClass
 // ###########################################################################
 
-function injectTraceClass(state, traceCfg) {
+function buildTraceClass(classVar, state, traceCfg) {
+  const {
+    data: {
+      staticMethods,
+      publicMethods
+    }
+  } = traceCfg;
+
+  const { ids: { aliases: { traceClass } } } = state;
+
+  return t.callExpression(traceClass, [
+    classVar,
+    buildTraceId(traceCfg),
+    buildMethodArray(state, classVar, staticMethods),
+    buildMethodArray(state, classVar, publicMethods)
+  ]);
+}
+
+
+function injectTraceClass(classVar, state, traceCfg) {
   const {
     path
   } = traceCfg;
@@ -79,12 +113,14 @@ function injectTraceClass(state, traceCfg) {
 
   const bodyPath = path.get('body');
 
-  const traceClassCall = TODO;
+  // dbux.traceClass
+  const traceClassCall = buildTraceClass(classVar, state, traceCfg);
+
   bodyPath.unshiftContainer('body', t.classProperty(
     dbuxClass,
     t.functionExpression(null, [],
       t.blockStatement(
-        traceClassCall,
+        traceClassCall
       )
     ),
     t.noop(),
@@ -98,6 +134,23 @@ function injectTraceClass(state, traceCfg) {
 // injectTraceInstance
 // ###########################################################################
 
+function buildTraceInstance(state, instanceTraceCfg) {
+  const {
+    data: {
+      privateMethods
+    }
+  } = instanceTraceCfg;
+
+  const { ids: { aliases: { traceInstance } } } = state;
+  const thisNode = t.thisExpression();
+
+  return t.callExpression(traceInstance, [
+    thisNode,
+    buildTraceId(instanceTraceCfg),
+    buildMethodArray(state, thisNode, privateMethods)
+  ]);
+}
+
 function injectTraceInstance(state, traceCfg) {
   const { ids: { dbuxInstance } } = state;
   const {
@@ -107,8 +160,10 @@ function injectTraceInstance(state, traceCfg) {
     }
   } = traceCfg;
 
+  // dbux.traceInstance
+  const traceInstanceCall = buildTraceInstance(state, instanceTraceCfg);
+
   // inject __dbux_instance iife property
-  const traceInstanceCall = build(state, instanceTraceCfg);
   const traceInstanceProperty = t.classPrivateProperty(
     dbuxInstance,
     t.callExpression(
@@ -146,7 +201,10 @@ function injectTraceInstance(state, traceCfg) {
 // ###########################################################################
 
 /**
- * Returns `[CLASS.__dbux_class(), delete CLASS.__dbux_class]`
+ * 1. Call the utility property `__dbux_class` to trace the class *after* it has fully initialized.
+ * 2. Delete the utility property.
+ * 
+ * Returns `[CLASS.__dbux_class(), delete CLASS.__dbux_class]` to be inserted after the class.
  */
 function buildPostClassNodes(classVar, state) {
   const {

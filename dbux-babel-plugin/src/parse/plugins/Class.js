@@ -5,8 +5,8 @@ import BasePlugin from './BasePlugin';
 
 /** @typedef { import("../MemberExpression").default } MemberExpression */
 
-function buildMethodArray(methods) {
-  return t.arrayExpression(methods.map(({ name }) => t.memberExpression(ThisNode, t.identifier(name))));
+function methodNames(methods) {
+  return methods.map(m => m.name);
 }
 
 /**
@@ -54,9 +54,7 @@ export default class Class extends BasePlugin {
           }
         },
         meta: {
-          moreTraceCallArgs: [
-            staticMethods
-          ]
+          
         }
       });
 
@@ -91,13 +89,10 @@ export default class Class extends BasePlugin {
           isNew: true
         },
         data: {
-          privateMethods
+          privateMethods: methodNames(privateMethods)
         }
       },
       meta: {
-        moreTraceCallArgs: [
-          staticMethods
-        ]
       }
     });
 
@@ -114,16 +109,16 @@ export default class Class extends BasePlugin {
         },
         data: {
           name: idNode?.path?.toString(),
-          publicMethods
+          staticMethods: methodNames(staticMethods),
+          publicMethods: methodNames(publicMethods)
         }
       },
       data: {
-        instanceTraceCfg
+        instanceTraceCfg,
+        staticMethods,
+        publicMethods
       },
       meta: {
-        moreTraceCallArgs: [
-          staticMethods
-        ]
       }
     };
     return this.Traces.addTrace(merge(classTraceData, moreTraceData));

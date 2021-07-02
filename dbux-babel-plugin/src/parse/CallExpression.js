@@ -135,10 +135,7 @@ export default class CallExpression extends BaseNode {
       }
     };
 
-    if (!isCalleeTraced) {
-      // hackfix: since we cannot trace the callee, just add it's specialType to BCE
-      bceTraceData.staticTraceData.data.specialType = calleeNode.specialType;
-    }
+    bceTraceData.staticTraceData.data.specialType = calleeNode.specialType;
 
     const bceInputPaths = argumentPaths || EmptyArray;
     const bceTrace = this.Traces.addTraceWithInputs(bceTraceData, bceInputPaths);
