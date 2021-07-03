@@ -1,4 +1,4 @@
-import TraceType, { hasDynamicTypes, hasTraceValue, isTracePop, isBeforeCallExpression } from '@dbux/common/src/core/constants/TraceType';
+import { hasDynamicTypes, isTracePop, isBeforeCallExpression } from '@dbux/common/src/core/constants/TraceType';
 import { pushArrayOfArray } from '@dbux/common/src/util/arrayUtil';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
@@ -7,6 +7,8 @@ import { isVirtualContextType } from '@dbux/common/src/core/constants/StaticCont
 import { isRealContextType } from '@dbux/common/src/core/constants/ExecutionContextType';
 import { isCallResult, hasCallId } from '@dbux/common/src/core/constants/traceCategorization';
 import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory, ValuePruneState } from '@dbux/common/src/core/constants/ValueTypeCategory';
+import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 /**
  * @typedef {import('./RuntimeDataProvider').default} DataProvider
@@ -23,6 +25,18 @@ export default {
   /** @param {DataProvider} dp */
   getFilePathFromProgramId(dp, programId) {
     return dp.collections.staticProgramContexts.getById(programId)?.filePath || null;
+  },
+
+  /** @param {DataProvider} dp */
+  getProgramModuleName(dp, programId) {
+    const programContext = dp.collections.staticProgramContexts.getById(programId);
+
+    if ('_moduleName' in programContext) {
+      return programContext._moduleName;
+    }
+    else {
+      return programContext._moduleName = parseNodeModuleName(programContext.filePath);
+    }
   },
 
   // ###########################################################################
@@ -119,6 +133,13 @@ export default {
       flat();
   },
 
+  /** @param {DataProvider} dp */
+  getContextModuleName(dp, contextId) {
+    const context = dp.collections.executionContexts.getById(contextId);
+    const staticContext = dp.collections.staticContexts.getById(context.staticContextId);
+    return dp.util.getProgramModuleName(staticContext.programId);
+  },
+
   // ###########################################################################
   // static contexts + static traces
   // ###########################################################################
@@ -213,6 +234,9 @@ export default {
    */
   getParentTraceOfContext(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
+    if (!context) {
+      return null;
+    }
 
     const parentTrace = dp.collections.traces.getById(context.parentTraceId);
     if (!parentTrace) {
@@ -739,6 +763,9 @@ export default {
   /** @param {DataProvider} dp */
   getStaticTraceProgramId(dp, staticTraceId) {
     const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
+    if (!staticTrace) {
+      return null;
+    }
     const {
       staticContextId
     } = staticTrace;
@@ -764,7 +791,7 @@ export default {
 
     const {
       staticTraceId,
-    } = trace;
+    } = trace || EmptyObject;
 
     return dp.util.getStaticTraceProgramId(staticTraceId);
   },

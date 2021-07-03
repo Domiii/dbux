@@ -8,6 +8,7 @@
     ],
     "paths": {
       "@dbux/common/*": ["../dbux-common/*"],
+      "@dbux/common-node/*": ["../dbux-common-node/*"],
     }
   },
   "exclude": [

@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 set -e # cancel on error
 # set -x # verbose echo mode
 

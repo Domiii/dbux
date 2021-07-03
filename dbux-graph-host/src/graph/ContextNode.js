@@ -31,6 +31,7 @@ class ContextNode extends HostComponentEndpoint {
     this.state.valueLabel = this.parentTrace && makeTraceValueLabel(this.parentTrace) || '';
     this.state.parentTraceNameLabel = this.parentTrace && makeTraceLabel(this.parentTrace) || '';
     this.state.parentTraceLocLabel = this.parentTrace && makeTraceLocLabel(this.parentTrace);
+    this.state.moduleName = dp.util.getContextModuleName(context.contextId);
 
     if (statsEnabled) {
       this._addStats(this.state);

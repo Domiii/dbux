@@ -44,7 +44,10 @@ export default class RichWebView extends WebviewWrapper {
     const scriptPath = this.getResourcePath(this.getMainScriptPath());
     const modeFolderName = ThemeMode.getName(mode).toLowerCase();
     const themePath = this.getResourcePath(`dist/web/${modeFolderName}/bootstrap.min.css`);
-    return await buildWebviewClientHtml([scriptPath], themePath);
+    const src = await buildWebviewClientHtml([scriptPath], themePath);
+    // console.debug('webview', src);
+    return src;
+    // return '<div id="root">hi!!</div>';
   }
 
   async startHost(ipcAdapter) {
@@ -101,10 +104,15 @@ export default class RichWebView extends WebviewWrapper {
 
     getThemeMode: this.getThemeMode,
 
+    /**
+     * NOTE: we want to be very careful with vscode-resource urls.
+     * @see https://github.com/microsoft/vscode/issues/127068
+     */
     getClientResourceUri: (...segments) => {
       const p = this.getResourcePath(...segments);
-      const uri = this.panel.webview.asWebviewUri(Uri.file(p));
-      return uri.toString();
+      const uri = this.panel.webview.asWebviewUri(Uri.file(p)).toString();
+      // console.debug('getClientResourceUri', uri);
+      return uri;
     }
   }
 }

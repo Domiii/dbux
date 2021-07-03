@@ -2,6 +2,7 @@ import getGlobal from '@dbux/common/src/getGlobal';
 import RuntimeMonitor from './RuntimeMonitor';
 import { initClient } from './client/index';
 import wrapPromise from './wrapPromise';
+import monkeyPatching from './monkeyPatching';
 
 
 const dbux = {
@@ -55,6 +56,8 @@ function handleShutdown() {
 (function main() {
   __global__ = getGlobal();
   registerDbuxAsGlobal();
+
+  monkeyPatching();
 
   // NOTE: make sure to `initClient` right at the start, or else:
   // make sure that the client's `createdAt` will be smaller than any other `createdAt` in data set!
