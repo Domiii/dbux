@@ -106,11 +106,10 @@ export default class CallExpression extends BaseNode {
 
     /**
      * TODO:
-     * 1. special case: `calleePath.isMemberExpression()`
-     * 2. special case: `calleePath.isCallExpression()`
-     * 3. special case: built-in functions
-     *    * some built-ins are called with one set of arguments and then call our function with another
-     * 4. special case: `bind` etc.
+     * 1. special case: built-in functions
+     *    * built-ins should be monkey-patched
+     * 2. monkey-patched callbacks
+     * 3. special case: `bind` etc.
      */
 
     const [calleePath, argumentPaths] = this.getChildPaths();
