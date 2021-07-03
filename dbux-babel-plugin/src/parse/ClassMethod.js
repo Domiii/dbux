@@ -14,18 +14,26 @@ export default class ClassMethod extends BaseNode {
     'StaticContext'
   ];
 
-  name() {
+  get name() {
     return this.path.get('key').toString();
+  }
+
+  get isPublic() {
+    return true;
   }
 
   addTrace() {
     const { path } = this;
     const [keyPath] = this.getChildPaths();
 
+    // TODO: computed
+
     return this.Traces.addTrace({
       path,
       node: this,
-      staticTraceData: this.getPlugin('Function').createStaticTraceData(keyPath)
+      scope: this.getExistingParent().peekContextNode().path.scope, // prevent adding `tid` variable to own body
+      staticTraceData: this.getPlugin('Function').createStaticTraceData(keyPath),
+      meta: { instrument: null }
     });
   }
 }

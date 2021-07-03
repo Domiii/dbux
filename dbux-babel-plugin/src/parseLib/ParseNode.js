@@ -148,6 +148,14 @@ export default class ParseNode {
     return this.getNodeOfPath(this.path.parentPath);
   }
 
+  getExistingParent() {
+    let { path } = this;
+    let parent = null;
+    // eslint-disable-next-line no-empty
+    while ((path = path.parentPath) && !(parent = this.getNodeOfPath(path))) { }
+    return parent;
+  }
+
   /**
    * Goal: get a string representation of parent.
    * If parent AST node does not have a `ParseNode`, get path representation instead.
@@ -165,8 +173,12 @@ export default class ParseNode {
   }
 
   // ###########################################################################
-  // peek logic (NOTE: cannot do on stack, since stack structure disappears after `exit1`)
+  // more ancestry logic (NOTE: cannot use ParseStack, since stack structure disappears after `exit1`)
   // ###########################################################################
+
+  peekContextNode() {
+    return this.peekPlugin('StaticContext').node;
+  }
 
   getParseNodeStack() {
     const arr = [];
@@ -184,6 +196,9 @@ export default class ParseNode {
       stack.map(([path, node]) => `${node}${!node ? ` ${path?.node && pathToString(path) || '(null)'}` : ''}`).join('\n  ');
   }
 
+  /**
+   * @return {ParseNode} The first ancestor of given type.
+   */
   peekNode(nameOrParseNodeClazz) {
     const Clazz = isString(nameOrParseNodeClazz) ?
       ParseRegistry.getNodeClassByName(nameOrParseNodeClazz) :
@@ -198,6 +213,9 @@ export default class ParseNode {
     return current;
   }
 
+  /**
+   * @return {ParseNode} The first ancestor of given type. Throws error if none found.
+   */
   peekNodeForce(nameOrParseNodeClazz) {
     const node = this.peekNode(nameOrParseNodeClazz);
     if (!node) {
@@ -207,8 +225,7 @@ export default class ParseNode {
   }
 
   /**
-   * Looks through the stack to find the top-most node that has the given `pluginNameOrClazz`.
-   * @return {ParsePlugin}
+   * @return {ParsePlugin} The plugin of the first ancestor node that has the given `pluginNameOrClazz`.
    */
   peekPlugin(pluginNameOrClazz) {
     let current = this;

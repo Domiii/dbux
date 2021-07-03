@@ -1,5 +1,6 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import merge from 'lodash/merge';
+import { findConstructorMethod } from '../../visitors/classUtil';
 import ClassMethod from '../ClassMethod';
 import BasePlugin from './BasePlugin';
 
@@ -26,9 +27,10 @@ function methodNames(methods) {
  */
 export default class Class extends BasePlugin {
   addClassTraces(moreTraceData) {
-    const { node } = this;
-    const [idNode, , bodyNode] = node.getChildNodes();
-    const memberPaths = bodyNode.path.get('body');
+    const { node, node: { path: classPath, Traces } } = this;
+    const [idNode] = node.getChildNodes();
+    const [, , bodyPath] = node.getChildPaths();
+    const memberPaths = bodyPath.get('body');
 
     // add all class member traces
     // also, get all types of ClassMethods
@@ -41,26 +43,15 @@ export default class Class extends BasePlugin {
       // memberTrace
       // ################################################################################
 
-      const memberTraceCfg = memberNode.addTrace({  // addTrace
-        path: memberPath,
-        node: memberNode,
-        staticTraceData: {
-          type: TraceType.ClassInstance,
-          dataNode: {
-            isNew: true
-          },
-          data: {
-            name: idNode?.path?.toString()
-          }
-        },
-        meta: {
-          
-        }
-      });
+      const isMethod = memberNode instanceof ClassMethod;
+
+      const memberTraceCfg = memberNode.addTrace();   // addTrace
 
       // register all method names
-      if (memberNode instanceof ClassMethod) {
-        const { public: isPublic, static: isStatic } = memberNode.path.node;
+      if (isMethod) {
+        const { static: isStatic } = memberNode.path.node;
+        const { isPublic } = memberNode;
+        
         let methods;
         if (isStatic) {
           methods = staticMethods;
@@ -80,11 +71,13 @@ export default class Class extends BasePlugin {
     // instanceTrace
     // ################################################################################
 
-    const instanceTraceCfg = this.Traces.addTrace({
-      path: idNode.path,
+    // TODO: instance and prop initializers are all in the context of the ctor
+    const instanceTraceCfg = Traces.addTrace({
+      path: findConstructorMethod(classPath) || classPath.get('body'),
       node: null,
+      scope: node.peekContextNode().path.scope, // prevent adding `tid` variable to own body
       staticTraceData: {
-        type: TraceType.Class,
+        type: TraceType.ClassInstance,
         dataNode: {
           isNew: true
         },
@@ -92,7 +85,12 @@ export default class Class extends BasePlugin {
           privateMethods: methodNames(privateMethods)
         }
       },
+      data: {
+        privateMethods
+      },
       meta: {
+        // NOTE: will be instrumented by class trace below
+        instrument: null
       }
     });
 
@@ -102,8 +100,10 @@ export default class Class extends BasePlugin {
     // ################################################################################
 
     const classTraceData = {
+      node,
+      path: classPath,
       staticTraceData: {
-        type: TraceType.ClassDefinition,
+        type: idNode ? TraceType.ClassDeclaration : TraceType.ClassDefinition,
         dataNode: {
           isNew: true
         },
@@ -121,6 +121,6 @@ export default class Class extends BasePlugin {
       meta: {
       }
     };
-    return this.Traces.addTrace(merge(classTraceData, moreTraceData));
+    return Traces.addTrace(merge(classTraceData, moreTraceData));
   }
 }

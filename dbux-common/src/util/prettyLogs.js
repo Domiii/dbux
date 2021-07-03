@@ -23,7 +23,7 @@ export function makePrettyLog(origLog, customColor) {
   return function customLogger(...args) {
     return origLog(
       ...args.map(
-        arg => (arg && arg.constructor === String) ? 
+        arg => (arg && (arg.constructor === String || arg instanceof Error)) ? 
           colorize(arg) : 
           // _inspect(arg)
           arg

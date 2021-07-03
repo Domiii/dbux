@@ -511,12 +511,12 @@ class DataNodeCollection extends Collection {
     }
     else {
       let key;
-      const { declarationTid, objctNodeId, prop } = varAccess;
+      const { declarationTid, objectNodeId, prop } = varAccess;
       if (declarationTid) {
         key = declarationTid;
       }
-      else if (objctNodeId) {
-        const objectDataNode = this.dp.collections.dataNodes.getById(objctNodeId);
+      else if (objectNodeId) {
+        const objectDataNode = this.dp.collections.dataNodes.getById(objectNodeId);
         const objectValueId = objectDataNode.valueId;
         if (!objectValueId) {
           // sanity check

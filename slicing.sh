@@ -5,7 +5,7 @@
 set -e # cancel on error
 # set -x # verbose echo mode
 
-fname="recursion1"
+fname="class4"
 
 
 nodeArgs=""

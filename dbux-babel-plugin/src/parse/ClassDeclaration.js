@@ -6,6 +6,11 @@ export default class ClassDeclaration extends BaseNode {
   static plugins = ['Class'];
 
 
+  get classVar() {
+    const { path } = this;
+    return path.node.id;
+  }
+
   /**
    * @returns {BindingIdentifier}
    */
@@ -15,9 +20,12 @@ export default class ClassDeclaration extends BaseNode {
   }
 
   exit1() {
-    const [idNode] = this.getChildNodes();
+    const { classVar } = this;
 
-    this.getPlugin('Class').addClassTraces(idNode, {
+    this.getPlugin('Class').addClassTraces({
+      data: {
+        classVar
+      },
       meta: {
         instrument: instrumentClassDeclaration
       }

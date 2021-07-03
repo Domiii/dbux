@@ -61,7 +61,7 @@ import BaseNode from './BaseNode';
 //     resumeId
 //   });
 
-//   const awaitContextId = path.scope.generateDeclaredUidIdentifier('contextId');
+//   const awaitContextId = Traces.generateDeclaredUidIdentifier('contextId');
 //   const argumentPath = path.get('argument');
 //   const argument = argumentPath.node;
 

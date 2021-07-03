@@ -5,7 +5,7 @@ import { makeInputs } from './buildUtil';
 import { getInstrumentTargetAstNode } from './common';
 import { convertNonComputedPropToStringLiteral } from './objects';
 import { buildTraceId } from './traceId';
-import { buildTraceExpression, buildTraceExpressionNoInput } from './misc';
+import { buildTraceExpressionNoInput } from './misc';
 import { postInstrument } from '../instrumentMisc';
 import { findConstructorMethod, findSuperCallPath } from '../../visitors/classUtil';
 
@@ -13,13 +13,33 @@ import { findConstructorMethod, findSuperCallPath } from '../../visitors/classUt
 // util
 // ###########################################################################
 
-function buildMethodArray(state, methodOwner, methods) {
-  return t.arrayExpression(methods.map(({ name, traceCfg }) =>
+const thisNode = t.thisExpression();
+
+function buildMethodsArray(state, methodOwner, methods) {
+  return t.arrayExpression(methods.map(({ name, trace }) =>
     t.arrayExpression([
       t.memberExpression(methodOwner, t.identifier(name)),
-      buildTraceId(state, traceCfg)
+      buildTraceId(state, trace)
     ])
   ));
+}
+
+function buildMethodTidsArray(state, methods) {
+  return t.arrayExpression(methods.map(({ trace }) =>
+    buildTraceId(state, trace)
+  ));
+}
+
+function buildDelete(obj, prop) {
+  return t.expressionStatement(
+    t.unaryExpression(
+      'delete',
+      t.memberExpression(
+        obj,
+        prop
+      )
+    )
+  );
 }
 
 // ###########################################################################
@@ -39,8 +59,7 @@ function instrumentClassDefault(classVar, state, traceCfg) {
 // ###########################################################################
 
 export function instrumentClassExpression(state, traceCfg) {
-  const { path } = traceCfg;
-  const classVar = path.scope.generateDeclaredUidIdentifier(path.node.id?.name || 'anonymous_class');
+  const { path, data: { classVar } } = traceCfg;
 
   instrumentClassDefault(classVar, state, traceCfg);
   const postClassNodes = buildPostClassNodes(classVar, state);
@@ -63,8 +82,7 @@ export function instrumentClassExpression(state, traceCfg) {
 // ###########################################################################
 
 export function instrumentClassDeclaration(state, traceCfg) {
-  const { path } = traceCfg;
-  const classVar = path.node.id;
+  const { path, data: { classVar } } = traceCfg;
 
   instrumentClassDefault(classVar, state, traceCfg);
 
@@ -91,12 +109,14 @@ function buildTraceClass(classVar, state, traceCfg) {
 
   const { ids: { aliases: { traceClass } } } = state;
 
-  return t.callExpression(traceClass, [
-    classVar,
-    buildTraceId(traceCfg),
-    buildMethodArray(state, classVar, staticMethods),
-    buildMethodArray(state, classVar, publicMethods)
-  ]);
+  return t.expressionStatement(
+    t.callExpression(traceClass, [
+      classVar,
+      buildTraceId(state, traceCfg),
+      buildMethodsArray(state, classVar, staticMethods),
+      buildMethodTidsArray(state, publicMethods)
+    ])
+  );
 }
 
 
@@ -119,9 +139,9 @@ function injectTraceClass(classVar, state, traceCfg) {
   bodyPath.unshiftContainer('body', t.classProperty(
     dbuxClass,
     t.functionExpression(null, [],
-      t.blockStatement(
+      t.blockStatement([
         traceClassCall
-      )
+      ])
     ),
     t.noop(),
     EmptyArray,
@@ -134,7 +154,7 @@ function injectTraceClass(classVar, state, traceCfg) {
 // injectTraceInstance
 // ###########################################################################
 
-function buildTraceInstance(state, instanceTraceCfg) {
+function buildTraceInstanceExpression(state, instanceTraceCfg) {
   const {
     data: {
       privateMethods
@@ -142,12 +162,11 @@ function buildTraceInstance(state, instanceTraceCfg) {
   } = instanceTraceCfg;
 
   const { ids: { aliases: { traceInstance } } } = state;
-  const thisNode = t.thisExpression();
 
   return t.callExpression(traceInstance, [
     thisNode,
-    buildTraceId(instanceTraceCfg),
-    buildMethodArray(state, thisNode, privateMethods)
+    buildTraceId(state, instanceTraceCfg),
+    buildMethodsArray(state, thisNode, privateMethods)
   ]);
 }
 
@@ -170,7 +189,7 @@ function buildConstructor(classPath) {
 }
 
 function injectTraceInstance(state, traceCfg) {
-  const { ids: { dbuxInstance } } = state;
+  const { ids: { dbuxInstance, aliases: { traceInstance } } } = state;
   const {
     path: classPath,
     data: {
@@ -179,38 +198,38 @@ function injectTraceInstance(state, traceCfg) {
   } = traceCfg;
 
   // dbux.traceInstance
-  const traceInstanceCall = buildTraceInstance(state, instanceTraceCfg);
+  const traceInstanceCall = buildTraceInstanceExpression(state, instanceTraceCfg);
 
   // inject __dbux_instance iife property
-  const traceInstanceProperty = t.classPrivateProperty(
+  const traceInstanceProperty = t.classProperty(
     dbuxInstance,
     t.callExpression(
-      t.functionExpression(null, [],
-        t.blockStatement(
-          traceInstanceCall,
-        )
-      ),
+      t.arrowFunctionExpression([], traceInstanceCall),
       EmptyArray
     )
   );
-  classPath.unshiftContainer('body', traceInstanceProperty);
+  classPath.get('body').unshiftContainer('body', traceInstanceProperty);
 
   // delete __dbux_instance property after ctor
-  let constructor = findConstructorMethod(classPath);
+  const traceInstanceCleanup = buildDelete(thisNode, traceInstance);
+  let constructorPath = findConstructorMethod(classPath);
   let superPath;
-  if (!constructor) {
-    constructor = buildConstructor(classPath);
+  if (!constructorPath) {
+    // inject new ctor
+    const constructorNode = buildConstructor(classPath);
+    classPath.get('body').unshiftContainer('body', constructorNode);
+    constructorPath = findConstructorMethod(classPath);
   }
   else {
-    superPath = findSuperCallPath(constructor);
+    superPath = findSuperCallPath(constructorPath);
   }
 
   // insert `traceInstance` after `super` call, or at top of ctor
   if (!superPath) {
-    constructor.unshiftContainer('body', traceInstanceCall);
+    constructorPath.get('body').unshiftContainer('body', traceInstanceCleanup);
   }
   else {
-    superPath.insertAfter(traceInstanceCall);
+    superPath.insertAfter(traceInstanceCleanup);
   }
 }
 
@@ -292,14 +311,12 @@ export function buildTraceWriteClassProperty(state, traceCfg) {
   const {
     data: {
       objectTid,
-      thisTraceCfg,
+      objectTraceCfg,
       propertyAstNode: propertyVar // NOTE: this is `undefined`, if `!computed`
     }
   } = traceCfg;
 
-  const thisNode = buildTraceExpression(state, thisTraceCfg);
-
-  const o = thisNode;
+  const o = buildTraceExpressionNoInput(state, objectTraceCfg);
   const p = convertNonComputedPropToStringLiteral(keyNode, computed);
 
   // fix `key`, if `computed`

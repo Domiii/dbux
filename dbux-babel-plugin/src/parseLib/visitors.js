@@ -53,7 +53,12 @@ function visit(direction, ParserNodeClazz, path, state) {
   if (isPathInstrumented(path)) {
     // path.skip();
     // return;
-    throw new Error(`Visiting already instrumented path. Should not happen.`);
+    // eslint-disable-next-line max-len
+    const dirName = ParseDirection.nameFromForce(direction);
+    throw new Error(
+      `Visiting [${dirName}] already instrumented path: [${ParserNodeClazz.name}] "${pathToString(path)}".` +
+      ` Make sure not to instrument before instrumentation phase; this includes calls to scope.generateDeclared* etc.`
+    );
   }
 
   state.stack.checkGen();

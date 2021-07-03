@@ -233,7 +233,7 @@ export function buildTraceCallUntraceableCallee(state, traceCfg) {
     path: { scope },
     data: {
       bceTrace,
-      calleeNode
+      // calleeNode
     }
   } = traceCfg;
 
@@ -253,7 +253,7 @@ export function buildTraceCallUntraceableCallee(state, traceCfg) {
     t.assignmentExpression('=', argsVar, args),
 
     // (ii) BCE - `bce(tid, argTids, spreadArgs)`
-    buildBCE(state, bceTrace, calleeNode, spreadArgs),
+    buildBCE(state, bceTrace, null, spreadArgs),
 
     // (iii) wrap actual call - `tcr(f(args[0], ...args[1], args[2]))`
     buildTraceExpressionNoInput(

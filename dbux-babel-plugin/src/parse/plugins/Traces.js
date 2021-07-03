@@ -2,6 +2,7 @@
 // import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 // import TraceType from '@dbux/common/src/core/constants/TraceType';
 // import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import omit from 'lodash/omit';
 import TraceType, { isDeclarationTrace } from '@dbux/common/src/core/constants/TraceType';
 import NestedError from '@dbux/common/src/NestedError';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
@@ -27,6 +28,19 @@ export default class Traces extends BasePlugin {
    * Traces that will be instrumented in order.
    */
   traces = [];
+
+  declaredIdentifiers = [];
+
+  // ###########################################################################
+  // simplified declarations
+  // ###########################################################################
+
+  generateDeclaredUidIdentifier(name) {
+    const context = this.node.peekContextNode();
+    const id = context.path.scope.generateUidIdentifier(name);
+    context.Traces.declaredIdentifiers.push(id);
+    return id;
+  }
 
   // ###########################################################################
   // trace inputs
@@ -84,7 +98,9 @@ export default class Traces extends BasePlugin {
     } = traceData;
 
     if (!path || !staticTraceData) {
-      throw new Error(`addTrace data missing \`path\` or \`staticTraceData\`: ${JSON.stringify(traceData)}`);
+      throw new Error(
+        `addTrace data missing \`path\` or \`staticTraceData\`: node=${node}, path=${path && pathToString(path)}, staticTraceData=${JSON.stringify(staticTraceData)}`
+      );
     }
 
     const isDeclaration = isDeclarationTrace(staticTraceData.type);
@@ -182,7 +198,7 @@ export default class Traces extends BasePlugin {
       traceData.data = traceData.data || {};
       traceData.data.valueNode = valuePathOrNode.node || valuePathOrNode;
     }
-    
+
     // `meta.hoisted`
     traceData.meta = traceData.meta || {};
     if (!('hoisted' in traceData.meta)) {
@@ -247,6 +263,10 @@ export default class Traces extends BasePlugin {
   instrument() {
     const { node, traces, hoistedDeclarationTraces } = this;
 
+    for (const id of this.declaredIdentifiers) {
+      this.node.path.scope.push({ id });
+    }
+
     // this.debug(`traces`, traces.map(t => t.tidIdentifier));
     this.instrumentHoistedTraceDeclarations(hoistedDeclarationTraces);
 
@@ -276,7 +296,7 @@ export default class Traces extends BasePlugin {
         this.Verbose > 1 && this.debug(` ins [${TraceType.nameFromForce(traceType)}] -> ${pathToString(path)}`);
       }
       catch (err) {
-        throw new NestedError(`[${node.debugTag}] - failed to instrument path "${pathToString(path)}"`, err);
+        throw new NestedError(`Failed to instrument node="${node.debugTag}", path="${pathToString(path)}"`, err);
       }
     }
   }

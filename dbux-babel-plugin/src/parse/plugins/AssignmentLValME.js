@@ -66,13 +66,13 @@ export default class AssignmentLValME extends BasePlugin {
       this.warn(`objectNode did not have traceCfg.tidIdentifier in ${objectNode}`);
       objectTid = ZeroNode;
     }
-    const objectAstNode = path.scope.generateDeclaredUidIdentifier('o');
+    const objectAstNode = Traces.generateDeclaredUidIdentifier('o');
 
     // prepare property
     let propertyAstNode;
     if (computed) {
       propertyNode.addDefaultTrace();
-      propertyAstNode = path.scope.generateDeclaredUidIdentifier('p');
+      propertyAstNode = Traces.generateDeclaredUidIdentifier('p');
     }
 
     // add actual WriteME trace
