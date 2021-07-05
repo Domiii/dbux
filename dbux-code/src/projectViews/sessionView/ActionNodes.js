@@ -119,20 +119,16 @@ class RunNode extends SessionNode {
     return 'Run';
   }
 
+  get clickCommandName() {
+    return 'dbuxSessionView.run#dbux';
+  }
+
   init() {
-    this.contextValue = 'dbuxSessionView.runNode';
+    this.contextValue = 'dbuxSessionView.runNode#dbux';
   }
 
   makeIconPath() {
     return 'play.svg';
-  }
-
-  async doHandleClick() {
-    return await this.controller.testBug();
-  }
-
-  async runInDebugMode() {
-    return await this.controller.testBug({ debugMode: true });
   }
 }
 
@@ -142,19 +138,15 @@ class RunWithoutDbuxNode extends SessionNode {
   }
 
   init() {
-    this.contextValue = 'dbuxSessionView.runNode.noDbux';
+    this.contextValue = 'dbuxSessionView.runNode';
   }
 
   makeIconPath() {
     return 'play_gray.svg';
   }
 
-  async doHandleClick() {
-    return await this.controller.testBug({ dbuxEnabled: false });
-  }
-
-  async runInDebugMode() {
-    return await this.controller.testBug({ debugMode: true, dbuxEnabled: false });
+  get clickCommandName() {
+    return 'dbuxSessionView.run';
   }
 }
 
