@@ -525,6 +525,38 @@
         "title": "Dbux Dev: Delete all user events"
       },
       {
+        "command": "dbuxSessionView.run",
+        "title": "Dbux Project: Run without dbux",
+        "icon": {
+          "light": "resources/light/play_gray.svg",
+          "dark": "resources/dark/play_gray.svg"
+        }
+      },
+      {
+        "command": "dbuxSessionView.run#debug",
+        "title": "Dbux Project: Run without dbux in debug mode",
+        "icon": {
+          "light": "resources/light/bug_gray.svg",
+          "dark": "resources/dark/bug_gray.svg"
+        }
+      },
+      {
+        "command": "dbuxSessionView.run#dbux",
+        "title": "Dbux Project: Run with dbux",
+        "icon": {
+          "light": "resources/light/play.svg",
+          "dark": "resources/dark/play.svg"
+        }
+      },
+      {
+        "command": "dbuxSessionView.run#debug#dbux",
+        "title": "Dbux Project: Run with dbux in debug mode",
+        "icon": {
+          "light": "resources/light/bug.svg",
+          "dark": "resources/dark/bug.svg"
+        }
+      },
+      {
         "command": "dbuxSessionView.node.annotateTraceQ",
         "title": "Ask question of this trace",
         "icon": {
@@ -702,6 +734,16 @@
           "command": "dbuxProjectView.node.showBugLog",
           "when": "viewItem =~ /dbuxProjectView\\.bugNode/",
           "group": "inline@8"
+        },
+        {
+          "command": "dbuxSessionView.run#debug",
+          "when": "viewItem == dbuxSessionView.runNode",
+          "group": "inline"
+        },
+        {
+          "command": "dbuxSessionView.run#debug#dbux",
+          "when": "viewItem == dbuxSessionView.runNode#dbux",
+          "group": "inline"
         },
         {
           "command": "dbuxSessionView.node.annotateTraceQ",
@@ -994,6 +1036,22 @@
         {
           "command": "dbux.deleteUserEvents",
           "when": "dbux.context.activated && dbux.context.nodeEnv == development"
+        },
+        {
+          "command": "dbuxSessionView.run",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbuxSessionView.run#debug",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbuxSessionView.run#dbux",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbuxSessionView.run#debug#dbux",
+          "when": "dbux.context.activated"
         },
         {
           "command": "dbuxCallStackView.itemClick",
