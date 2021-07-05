@@ -40,7 +40,7 @@ const popFunctionTemplate = template(
 
 const pushResumeTemplate = template(
   /*var %%resumeContextId%% =*/
-  `%%dbux%%.pushResume(%%resumeStaticContextId%%, %%traceId%%);`);
+  `%%dbux%%.pushResume(%%resumeStaticContextId%%, %%inProgramStaticTraceId%%);`);
 
 const popResumeTemplate = template(
   // `%%dbux%%.popResume(%%resumeContextId%%);`
@@ -255,7 +255,10 @@ export default class Function extends BasePlugin {
       node: { path },
       data: {
         returnTraceCfg,
-        staticResumeContextId
+        staticPushTid,
+        staticResumeContextId,
+        contextIdIdentifier,
+        popTraceCfg
       }
     } = this;
 
@@ -274,27 +277,27 @@ export default class Function extends BasePlugin {
 
     if (staticResumeContextId) {
       // this is an interruptable function -> push + pop "resume contexts"
-      // const resumeContextId = bodyPath.scope.generateUid('resumeContextId');
-      throw new Error(`TODO: Fix async functions`);
-      // pushes = [
-      //   ...pushes,
-      //   pushResumeTemplate({
-      //     dbux,
-      //     // resumeContextId,
-      //     resumeStaticContextId: t.numericLiteral(staticResumeContextId),
-      //     traceId: t.numericLiteral(staticPushTraceId)
-      //   })
-      // ];
+      const { ids: { dbux } } = state;
+      // const resumeContextId = bodyPath.scope.generateUid('resumeCid');
+      pushes = [
+        ...pushes,
+        pushResumeTemplate({
+          dbux,
+          // resumeContextId,
+          resumeStaticContextId: t.numericLiteral(staticResumeContextId),
+          inProgramStaticTraceId: t.numericLiteral(staticPushTid)
+        })
+      ];
 
-      // pops = [
-      //   popResumeTemplate({
-      //     dbux,
-      //     // resumeContextId,
-      //     // traceId: t.numericLiteral(popTraceId)
-      //     // contextId: contextIdVar
-      //   }),
-      //   ...pops
-      // ];
+      pops = [
+        popResumeTemplate({
+          dbux,
+          // resumeContextId,
+          // traceId: t.numericLiteral(popTraceCfg.tidIdentifier),
+          // contextId: contextIdIdentifier
+        }),
+        ...pops
+      ];
     }
 
     let bodyNode = bodyPath.node;

@@ -292,17 +292,20 @@ export default class RuntimeMonitor {
 
 
   // ###########################################################################
-  // Interrupts, await et al
+  // await
   // ###########################################################################
 
-  preAwait(programId, inProgramStaticContextId, inProgramStaticTraceId) {
+  wrapAwait(programId, awaitValue) {
+    // nothing to do
+    return awaitValue;
+  }
+
+  preAwait(programId, inProgramStaticContextId, preAwaitTid) {
     const stackDepth = this._runtime.getStackDepth();
     const runId = this._runtime.getCurrentRunId();
     const resumeContextId = this._runtime.peekCurrentContextId(); // NOTE: parent == Resume
-    const parentTraceId = this._runtime.getParentTraceId();
-
-    // trace Await
-    this._trace(programId, resumeContextId, runId, inProgramStaticTraceId);
+    // const parentTraceId = this._runtime.getParentTraceId();
+    const parentTraceId = preAwaitTid;
 
     // pop Resume context
     this.popResume(resumeContextId);
@@ -321,15 +324,10 @@ export default class RuntimeMonitor {
     return awaitContextId;
   }
 
-  wrapAwait(programId, awaitValue, /* awaitContextId */) {
-    // nothing to do
-    return awaitValue;
-  }
-
   /**
    * Resume given stack
    */
-  postAwait(programId, awaitResult, awaitContextId, resumeInProgramStaticTraceId) {
+  postAwait(programId, awaitContextId) {
     // sanity checks
     const context = executionContextCollection.getById(awaitContextId);
     if (!context) {
@@ -342,18 +340,19 @@ export default class RuntimeMonitor {
       // traceCollection.trace(awaitContextId, runId, inProgramStaticTraceId, TraceType.Await);
       // this._pop(awaitContextId);
 
-      // resume: push new Resume context
+      // add resume context
+      // NOTE: staticContext is the same for resume and await
       const { staticContextId } = context;
       const staticContext = staticContextCollection.getById(staticContextId);
       const { resumeId: resumeStaticContextId } = staticContext;
-      this.pushResume(programId, resumeStaticContextId, resumeInProgramStaticTraceId);
-    }
 
-    return awaitResult;
+      // pushResume
+      this.pushResume(programId, resumeStaticContextId);
+    }
   }
 
 
-  pushResume(programId, resumeStaticContextId, inProgramStaticTraceId/* , dontTrace = false */) {
+  pushResume(programId, resumeStaticContextId, resumeInProgramStaticTraceId = 0/* , dontTrace = false */) {
     this._runtime.beforePush(null);
 
     const stackDepth = this._runtime.getStackDepth();
@@ -361,33 +360,36 @@ export default class RuntimeMonitor {
     const parentContextId = this._runtime.peekCurrentContextId();
     const parentTraceId = this._runtime.getParentTraceId();
 
-    // NOTE: we don't really need a `schedulerTraceId`, since the parent context is always the calling function
+    // add resumeContext
     const schedulerTraceId = null;
     const resumeContext = executionContextCollection.resume(
       stackDepth, runId, parentContextId, parentTraceId, programId, resumeStaticContextId, schedulerTraceId
     );
-
     const { contextId: resumeContextId } = resumeContext;
     this._runtime.push(resumeContextId);
 
-    this._trace(programId, resumeContextId, runId, inProgramStaticTraceId, TraceType.Resume);
+    if (resumeInProgramStaticTraceId) {
+      // add "push" trace after context!
+      this.newTraceId(programId, resumeInProgramStaticTraceId);
+      // this._trace(programId, resumeContextId, runId, inProgramStaticTraceId, TraceType.Resume);
+    }
 
     return resumeContextId;
   }
 
-  popResume(resumeContextId = null) {
+  popResume(resumeCid = null) {
     // sanity checks
-    if (resumeContextId === 0) {
-      logError('Tried to popResume, but id was 0. Is this an async function that started in an object getter?');
+    if (resumeCid === 0) {
+      logError('Tried to popResume, but cid was 0. Is this an async function that started in an object getter?');
       return;
     }
 
-    resumeContextId = resumeContextId || this._runtime.peekCurrentContextId();
-    const context = executionContextCollection.getById(resumeContextId);
+    resumeCid = resumeCid || this._runtime.peekCurrentContextId();
+    const context = executionContextCollection.getById(resumeCid);
 
     // more sanity checks
     if (!context) {
-      logError('Tried to popResume, but context was not registered:', resumeContextId);
+      logError('Tried to popResume, but context was not registered:', resumeCid);
       return;
     }
     if (context.contextType !== ExecutionContextType.Resume) {
@@ -395,7 +397,7 @@ export default class RuntimeMonitor {
       return;
     }
 
-    this._pop(resumeContextId);
+    this._pop(resumeCid);
   }
 
   _ensureExecuting() {

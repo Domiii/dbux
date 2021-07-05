@@ -153,13 +153,17 @@ export default class ProgramMonitor {
 
   // ###########################################################################
   // await/async
-  // TODO: allow disabling tracing these?
   // ###########################################################################
 
   // CallbackArgument(inProgramStaticContextId, schedulerId, traceId, cb) {
   //   return this._runtimeMonitor.CallbackArgument(this.getProgramId(), 
   //     inProgramStaticContextId, schedulerId, traceId, cb);
   // }
+
+  wrapAwait = (awaitValue/*, awaitContextId */) => {
+    // nothing to do
+    return this._runtimeMonitor.wrapAwait(this.getProgramId(), awaitValue);
+  }
 
   preAwait = (inProgramStaticContextId, traceId) => {
     if (this.disabled) {
@@ -170,13 +174,8 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.preAwait(this.getProgramId(), inProgramStaticContextId, traceId);
   }
 
-  wrapAwait = (awaitContextId, awaitValue) => {
-    // nothing to do
-    return this._runtimeMonitor.wrapAwait(this.getProgramId(), awaitContextId, awaitValue);
-  }
-
-  postAwait = (awaitResult, awaitContextId, resumeTraceId) => {
-    return this._runtimeMonitor.postAwait(this.getProgramId(), awaitResult, awaitContextId, resumeTraceId);
+  postAwait = (awaitContextId) => {
+    return this._runtimeMonitor.postAwait(this.getProgramId(), awaitContextId);
   }
 
   pushResume = (resumeStaticContextId, inProgramStaticTraceId) => {

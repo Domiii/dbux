@@ -119,7 +119,13 @@ export default function injectDbuxState(programPath, programState) {
 
         // classes
         traceClass: makeProgramId('tc'),
-        traceInstance: makeProgramId('ti')
+        traceInstance: makeProgramId('ti'),
+
+        // async
+        preAwait: makeProgramId('aw0'),
+        wrapAwait: makeProgramId('aw1'),
+        postAwait: makeProgramId('aw2'),
+        // traceAwaitResult: makeProgramId('aw3')
       }
     },
 
