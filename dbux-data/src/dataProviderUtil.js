@@ -546,9 +546,11 @@ export default {
   /** @param {DataProvider} dp */
   getDataNodeValueRef(dp, nodeId) {
     const dataNode = dp.collections.dataNodes.getById(nodeId);
-    const { refId } = dataNode;
-    if (refId) {
-      return dp.collections.values.getById(refId);
+    if (dataNode) {
+      const { refId } = dataNode;
+      if (refId) {
+        return dp.collections.values.getById(refId);
+      }
     }
     return null;
   },

@@ -18,7 +18,7 @@ export function getFunctionStaticContextId(functionRef) {
   const functionNode = functionRef && dataNodeCollection.getById(functionRef.nodeId);
   const functionTrace = functionNode && traceCollection.getById(functionNode.traceId);
   const functionStaticTrace = functionTrace && staticTraceCollection.getById(functionTrace.staticTraceId);
-  return functionStaticTrace?.data.staticContextId;
+  return functionStaticTrace?.data?.staticContextId;
 }
 
 export function getBCECalleeStaticContextId(bceTrace) {
