@@ -1,17 +1,11 @@
-async function sleep(ms) {
-   return new Promise(r => setTimeout(() => r(13), ms)); 
-  }
+// async function sleep(ms) {
+//    return new Promise(r => setTimeout(() => r(13), ms)); 
+//   }
 
 async function main() {
   console.log(1);
-  await sleep(800);
+  await 0;
   console.log(2);
-  await sleep(800);
-  console.log(3);
-  await sleep(800);
-  console.log(4);
-  await sleep(800);
-  console.log(5);
 }
 
 main();

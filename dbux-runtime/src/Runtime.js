@@ -57,7 +57,7 @@ export default class Runtime {
 
   _bcesInByContextId = {};
 
-  _runtimeThreads = new RuntimeThreadsStack();
+  // _runtimeThreadStack = new RuntimeThreadsStack();
   thread1 = new RuntimeThreads1();
   thread2 = new RuntimeThreads2();
 
@@ -275,7 +275,7 @@ export default class Runtime {
     // this._previousPoppedContextId = null;
     this._executingStack.push(contextId);
 
-    this._runtimeThreads.push(contextId);
+    // this._runtimeThreadStack.push(contextId);
 
     if (isInterruptable) {
       // start with a resume context
@@ -296,7 +296,7 @@ export default class Runtime {
     // const typeName = ExecutionContextType.nameFromForce(context.contextType);
     // console.debug('<-', context.runId, contextId, `[${typeName}] ${name}`);
 
-    this._runtimeThreads.pop(contextId);
+    // this._runtimeThreadStack.pop(contextId);
 
     this._lastPoppedContextId = contextId;
 
@@ -445,8 +445,8 @@ export default class Runtime {
 
   _runFinished() {
     this._executingStack = null;
-    this.thread1.runFinished(this.getCurrentRunId());
-    this.thread2.handleThreadData();
+    this.thread1.postRun(this.getCurrentRunId());
+    this.thread2.postRun();
     // console.warn('[RunEnd]', this._currentRootId, this.getLingeringStackCount(), new Error().stack);
     // console.timeEnd('[RunEnd] ' + this._currentRunId);
   }

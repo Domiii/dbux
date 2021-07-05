@@ -8,121 +8,6 @@ import valueCollection from './data/valueCollection';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('RuntimeThreads');
 
-export class ExecutingStack {
-  stack = [];
-
-  constructor(stack = []) {
-    this.stack = [...stack];
-  }
-
-  /**
-   * Get the length of the executing stack.
-   */
-  length() {
-    return this.stack.length;
-  }
-
-  /**
-   * Push a context into executing stack.
-   * @param {number} x Context id
-   */
-  push(x) {
-    this.stack.push(x);
-  }
-
-  /**
-   * Pop context `x` from executing stack.
-   * Returns abandoned executing stack if `x` is not `top(1)`, `null` otherwise.
-   * @param {number} x Context id
-   * @return {ExecutingStack?}
-   */
-  pop(x) {
-    if (this.stack[this.stack.length - 1] === x) {
-      this.stack.pop();
-      return null;
-    } else {
-      const index = this.stack.indexOf(x);
-      if (index === -1) {
-        // warn(`Trying to pop ${x} but not in execting stack: ${this.stack}, ignoring.`);
-        return null;
-      } else {
-        const abandonedStack = this.stack.splice(index);
-        this.stack.pop();
-
-        return new ExecutingStack(abandonedStack);
-      }
-    }
-  }
-
-  /**
-   * @param {number} z 
-   * @returns {number} The top `z` excuting stack context 
-   */
-  top(z = 1) {
-    return this.stack[this.stack.length - z];
-  }
-}
-
-export class RuntimeThreadsStack {
-  /**
-   * @type {ExecutingStack} The current executing stack, filling with context id
-   */
-  currentStack = new ExecutingStack();
-
-  /**
-   * @type {Map<number, ExecutingStack>}
-   */
-  waitingStack = new Map();
-
-  /**
-   * Add a context id into the current stack
-   * @param {number} contextId 
-   */
-  push(contextId) {
-    this.currentStack.push(contextId);
-  }  
-
-  /**
-   * Pop a context id from current stack
-   * @param {number} contextId 
-   */
-  pop(contextId) {
-    const abandonedStack = this.currentStack.pop(contextId);
-
-    if (abandonedStack) {
-      this.addWaitingStack(abandonedStack);
-    }
-  }
-
-  /**
-   * Add a stack into waiting stack.
-   * @param {ExecutingStack} stack 
-   */
-  addWaitingStack(stack) {
-    const lastContext = stack.top(1);
-    this.waitingStack.set(lastContext, stack);
-  }
-  
-  /**
-   * Resume a stack with specific last context id back to executing stack
-   * @param {number} x contextId
-   */
-  resumeWaitingStack(x) {
-    const stack = this.waitingStack.get(x);
-    if (!stack) {
-      warn(`trying to resume a waiting stack with top = ${x} but not found.`);
-    } else {
-      if (this.currentStack.length !== 0) {
-        warn(`trying to resume a waiting stack while there is still a stack with contexts executing. Put into waiting stack.`);
-        this.addWaitingStack(this.currentStack);
-      }
-
-      this.currentStack = stack;
-      this.waitingStack.delete(x);
-    }
-  }
-}
-
 export class RuntimeThreads2 {
   logger = newLogger('RuntimeThread2');
 
@@ -153,7 +38,7 @@ export class RuntimeThreads2 {
     this.promiseAwaitedInThisRunSet.add(promise);
   }
 
-  handleThreadData() {
+  postRun() {
     for (const promise of this.promiseCreatedInThisRunSet) {
       const { createAtContext, contextIdInsidePromise } = this.promiseExecutionContextMap.get(promise);
       if (this.promiseAwaitedInThisRunSet.has(promise)) {
@@ -172,12 +57,36 @@ export class RuntimeThreads2 {
 
 export class RuntimeThreads1 {
   logger = newLogger('RuntimeThread1');
+  floatingPromises = [];
+
+  runGraph = [];
+  invRunGraph = [];
+
+  runToThreadMap = new Map();
+  threadFirstRun = new Map();
+  threadLastRun = new Map([[1, 1]]);
+
+  /**
+   * @type {number} Maintain thread count
+   */
+  _currentThreadId = 1;
+  contextReturnValueMap = new Map();
+  returnValueCallerContextMap = new Map();
+
+  beforeAwaitContext = new Map();
+  beforeAwaitRun = new Map();
+
+  // ###########################################################################
+  // await
+  // ###########################################################################
 
   preAwait(currentRunId, awaitArgument, resumeContextId, parentContextId) {
     // this.logger.debug('pre await', awaitArgument);
 
     // this.floatingPromises.delete(awaitArgument);
     // this.logger.debug('delete floating promise', awaitArgument);
+    this.beforeAwaitContext.set(parentContextId, resumeContextId);
+    this.beforeAwaitRun.set(parentContextId, currentRunId);
 
     if (awaitArgument instanceof Promise && (!this.isPromiseRecorded(awaitArgument) || this._runtime.isPromiseCreatedInRun(awaitArgument, currentRunId))) {
       const promise = awaitArgument;
@@ -197,7 +106,10 @@ export class RuntimeThreads1 {
     }
   }
 
-  postAwait(parentContextId, preEventContext, postEventContext, preEventRun, postEventRun, awaitArgument) {
+  postAwait(parentContextId, postEventContext, postEventRun, awaitArgument) {
+    const preEventContext = this.beforeAwaitContext.get(parentContextId);
+    const preEventRun = this.beforeAwaitRun.get(parentContextId);
+
     if (this.getRunThreadId(postEventRun) === undefined) {
       const startThreadId = this.getRunThreadId(preEventRun);
 
@@ -237,8 +149,6 @@ export class RuntimeThreads1 {
     }
   }
 
-  floatingPromises = [];
-
   traceCall(contextId, calledContextId, trace, value) {
     const promiseRunId = this.getPromiseRunId(value);
     if (promiseRunId && promiseRunId !== this.getCurrentRunId()) {
@@ -260,7 +170,7 @@ export class RuntimeThreads1 {
 
   cleanFloatingPromises() {
     // this.logger.debug('clean flating promise');
-    const maintainPromiseThreadId = promise => {
+    const maintainPromiseThreadIdDfs = promise => {
       // this.logger.debug('do promise', promise);
 
       if (this.getOwnPromiseThreadId(promise)) {
@@ -271,7 +181,7 @@ export class RuntimeThreads1 {
       const callerPromise = this.getCallerPromise(promise);
       
       if (callerPromise) {
-        const threadId = maintainPromiseThreadId(callerPromise);
+        const threadId = maintainPromiseThreadIdDfs(callerPromise);
         this.setOwnPromiseThreadId(promise, threadId);
         this.setOwnPromiseThreadType(promise, "CHAIN");
       } else {
@@ -285,7 +195,7 @@ export class RuntimeThreads1 {
     };
 
     for (let promise of this.floatingPromises) {
-      maintainPromiseThreadId(promise);
+      maintainPromiseThreadIdDfs(promise);
     }
 
     this.floatingPromises = [];
@@ -293,22 +203,20 @@ export class RuntimeThreads1 {
     // this.logger.debug("end clean");
   }
 
+
+  // ###########################################################################
+  // runs
+  // ###########################################################################
+
   /**
    * Called when a run is finished.
    * @param {number} runId 
    */
-  runFinished(runId) {
+  postRun(runId) {
     const threadId = this.getRunThreadId(runId);
 
     runCollection.addRun(runId, threadId);
   }
-
-  runGraph = [];
-  invRunGraph = [];
-
-  runToThreadMap = new Map();
-  threadFirstRun = new Map();
-  threadLastRun = new Map([[1, 1]]);
 
   /**
    * Maintain `runToThreadMap` map and `threadId`'s last run in `threadLastRun` map
@@ -334,11 +242,6 @@ export class RuntimeThreads1 {
     // this.logger.debug("get run thread id", runId, "returns", this.runToThreadMap.get(runId));
     return this.runToThreadMap.get(runId);
   }
-
-  /**
-   * @type {number} Maintain thread count
-   */
-  _currentThreadId = 1;
 
   assignRunThreadId(runId, threadId) {
     this.setRunThreadId(runId, threadId);
@@ -421,6 +324,10 @@ export class RuntimeThreads1 {
     return null;
   }
 
+  // ###########################################################################
+  // promises
+  // ###########################################################################
+
   setOwnPromiseThreadId(promise, threadId) {
     Object.assign(promise, { _dbux_threadId: threadId });
   }
@@ -475,6 +382,7 @@ export class RuntimeThreads1 {
     // TOD: seems like useless
   }
 
+  // TODO: move to `dataUtil.js`
   getTraceValue(trace) {
     if (trace.value) {
       return trace.value;
@@ -545,8 +453,6 @@ export class RuntimeThreads1 {
     } 
   }
 
-  contextReturnValueMap = new Map();
-  returnValueCallerContextMap = new Map();
   recordContextReturnValue(callerContextId, contextId, value) {
     // this.logger.debug('set context return value', contextId, 'to', value);
     this.contextReturnValueMap.set(contextId, value);
@@ -558,3 +464,120 @@ export class RuntimeThreads1 {
     return this.contextReturnValueMap.get(contextId);
   }
 }
+
+
+
+// export class ExecutingStack {
+//   stack = [];
+
+//   constructor(stack = []) {
+//     this.stack = [...stack];
+//   }
+
+//   /**
+//    * Get the length of the executing stack.
+//    */
+//   length() {
+//     return this.stack.length;
+//   }
+
+//   /**
+//    * Push a context into executing stack.
+//    * @param {number} x Context id
+//    */
+//   push(x) {
+//     this.stack.push(x);
+//   }
+
+//   /**
+//    * Pop context `x` from executing stack.
+//    * Returns abandoned executing stack if `x` is not `top(1)`, `null` otherwise.
+//    * @param {number} x Context id
+//    * @return {ExecutingStack?}
+//    */
+//   pop(x) {
+//     if (this.stack[this.stack.length - 1] === x) {
+//       this.stack.pop();
+//       return null;
+//     } else {
+//       const index = this.stack.indexOf(x);
+//       if (index === -1) {
+//         // warn(`Trying to pop ${x} but not in execting stack: ${this.stack}, ignoring.`);
+//         return null;
+//       } else {
+//         const abandonedStack = this.stack.splice(index);
+//         this.stack.pop();
+
+//         return new ExecutingStack(abandonedStack);
+//       }
+//     }
+//   }
+
+//   /**
+//    * @param {number} z 
+//    * @returns {number} The top `z` excuting stack context 
+//    */
+//   top(z = 1) {
+//     return this.stack[this.stack.length - z];
+//   }
+// }
+
+// export class RuntimeThreadsStack {
+//   /**
+//    * @type {ExecutingStack} The current executing stack, filling with context id
+//    */
+//   currentStack = new ExecutingStack();
+
+//   /**
+//    * @type {Map<number, ExecutingStack>}
+//    */
+//   waitingStack = new Map();
+
+//   /**
+//    * Add a context id into the current stack
+//    * @param {number} contextId 
+//    */
+//   push(contextId) {
+//     this.currentStack.push(contextId);
+//   }  
+
+//   /**
+//    * Pop a context id from current stack
+//    * @param {number} contextId 
+//    */
+//   pop(contextId) {
+//     const abandonedStack = this.currentStack.pop(contextId);
+
+//     if (abandonedStack) {
+//       this.addWaitingStack(abandonedStack);
+//     }
+//   }
+
+//   /**
+//    * Add a stack into waiting stack.
+//    * @param {ExecutingStack} stack 
+//    */
+//   addWaitingStack(stack) {
+//     const lastContext = stack.top(1);
+//     this.waitingStack.set(lastContext, stack);
+//   }
+
+//   /**
+//    * Resume a stack with specific last context id back to executing stack
+//    * @param {number} x contextId
+//    */
+//   resumeWaitingStack(x) {
+//     const stack = this.waitingStack.get(x);
+//     if (!stack) {
+//       warn(`trying to resume a waiting stack with top = ${x} but not found.`);
+//     } else {
+//       if (this.currentStack.length !== 0) {
+//         warn(`trying to resume a waiting stack while there is still a stack with contexts executing. Put into waiting stack.`);
+//         this.addWaitingStack(this.currentStack);
+//       }
+
+//       this.currentStack = stack;
+//       this.waitingStack.delete(x);
+//     }
+//   }
+// }

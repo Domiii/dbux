@@ -249,9 +249,6 @@ export default class RuntimeMonitor {
   // Interrupts, await et al
   // ###########################################################################
 
-  beforeAwaitContext = new Map();
-  beforeAwaitRun = new Map();
-
   preAwait(programId, inProgramStaticContextId, inProgramStaticTraceId, awaitArgument) {
     const stackDepth = this._runtime.getStackDepth();
     const runId = this._runtime.getCurrentRunId();
@@ -274,9 +271,6 @@ export default class RuntimeMonitor {
 
     // manually climb up the stack
     this._runtime.skipPopPostAwait();
-
-    this.beforeAwaitContext.set(parentContextId, resumeContextId);
-    this.beforeAwaitRun.set(parentContextId, this._runtime.getCurrentRunId());
 
     // await part
     const currentRunId = this._runtime.getCurrentRunId();
@@ -319,14 +313,11 @@ export default class RuntimeMonitor {
       debug(awaitArgument, 'is awaited at context', awaitContextId);
 
       const { parentContextId } = executionContextCollection.getById(resumeContextId);
-      const preEventContext = this.beforeAwaitContext.get(parentContextId);
       const postEventContext = resumeContextId;
-      const preEventRun = this.beforeAwaitRun.get(parentContextId);
       const postEventRun = this._runtime.getCurrentRunId();
 
-      this._runtime.thread1.postAwait(parentContextId, preEventContext, postEventContext, preEventRun, postEventRun, awaitArgument);
+      this._runtime.thread1.postAwait(parentContextId, postEventContext, postEventRun, awaitArgument);
     }
-
 
     return awaitResult;
   }
