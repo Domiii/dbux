@@ -521,6 +521,14 @@
         "title": "Dbux Dev: Delete all user events"
       },
       {
+        "command": "dbuxSessionView.node.runInDebugMode",
+        "title": "Run in debug mode",
+        "icon": {
+          "light": "resources/light/bug.svg",
+          "dark": "resources/dark/bug.svg"
+        }
+      },
+      {
         "command": "dbuxSessionView.node.annotateTraceQ",
         "title": "Ask question of this trace",
         "icon": {
@@ -698,6 +706,11 @@
           "command": "dbuxProjectView.node.showBugLog",
           "when": "viewItem =~ /dbuxProjectView\\.bugNode/",
           "group": "inline@8"
+        },
+        {
+          "command": "dbuxSessionView.node.runInDebugMode",
+          "when": "viewItem =~ /dbuxSessionView.runNode.*/",
+          "group": "inline@1"
         },
         {
           "command": "dbuxSessionView.node.annotateTraceQ",
@@ -1089,6 +1102,10 @@
         },
         {
           "command": "dbuxTraceDetailsView.expandNode",
+          "when": "false"
+        },
+        {
+          "command": "dbuxSessionView.node.runInDebugMode",
           "when": "false"
         },
         {

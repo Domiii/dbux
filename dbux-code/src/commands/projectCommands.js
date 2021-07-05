@@ -99,6 +99,10 @@ export function initProjectCommands(extensionContext, projectViewController) {
     projectViewController.manager._backend.clearDBStats();
   });
 
+  registerCommand(extensionContext, 'dbuxSessionView.node.runInDebugMode', async (node) => {
+    return await node.runInDebugMode();
+  });
+
   registerCommand(extensionContext, 'dbuxSessionView.node.annotateTraceQ', async (node) => {
     if (!traceSelection.selected) {
       await showWarningMessage('You have not selected any trace yet.');
