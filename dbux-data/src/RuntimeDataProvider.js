@@ -2,6 +2,10 @@ import path from 'path';
 import difference from 'lodash/difference';
 import minBy from 'lodash/minBy';
 import maxBy from 'lodash/maxBy';
+import SpecialIdentifierType from '@dbux/common/src/core/constants/SpecialIdentifierType';
+import SpecialObjectType from '@dbux/common/src/core/constants/SpecialObjectType';
+import { isObjectCategory, ValuePruneState } from '@dbux/common/src/core/constants/ValueTypeCategory';
+import TraceType, { isTracePop, isTraceFunctionExit, isTraceThrow } from '@dbux/common/src/core/constants/TraceType';
 import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
 import Trace from '@dbux/common/src/core/data/Trace';
 import DataNode from '@dbux/common/src/core/data/DataNode';
@@ -9,8 +13,7 @@ import ValueRef from '@dbux/common/src/core/data/ValueRef';
 import StaticProgramContext from '@dbux/common/src/core/data/StaticProgramContext';
 import StaticContext from '@dbux/common/src/core/data/StaticContext';
 import StaticTrace from '@dbux/common/src/core/data/StaticTrace';
-import { isObjectCategory, ValuePruneState } from '@dbux/common/src/core/constants/ValueTypeCategory';
-import TraceType, { isTracePop, isTraceFunctionExit, isTraceThrow } from '@dbux/common/src/core/constants/TraceType';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 import Collection from './Collection';
 
@@ -202,7 +205,7 @@ class ExecutionContextCollection extends Collection {
         continue;
       }
       else if (returnTraces.length > 1) {
-        this.logger.error(`Found context containing more than one CER trace. contextId: ${contextId}, CER traceIds: [${returnTraces}]`);
+        this.logger.error(`Found context containing more than one ReturnArgument. contextId: ${contextId}, ReturnArgument ids: [${returnTraces}]`);
         continue;
       }
 
@@ -286,6 +289,7 @@ class TraceCollection extends Collection {
   postAddRaw(traces) {
     // build dynamic call expression tree
     this.errorWrapMethod('registerResultId', traces);
+    this.errorWrapMethod('registerValueRefSpecialObjectType', traces);
     this.errorWrapMethod('resolveCodeChunks', traces);
     this.errorWrapMethod('resolveCallIds', traces);
     this.errorWrapMethod('resolveErrorTraces', traces);
@@ -300,6 +304,23 @@ class TraceCollection extends Collection {
       if (resultCallId) {
         const bceTrace = this.dp.collections.traces.getById(resultCallId);
         bceTrace.resultId = traceId;
+      }
+    }
+  }
+
+  registerValueRefSpecialObjectType(traces) {
+    for (const trace of traces) {
+      const { staticTraceId, nodeId } = trace;
+      const staticTrace = this.dp.collections.staticTraces.getById(staticTraceId);
+      if (staticTrace.data?.specialType === SpecialIdentifierType.Arguments) {
+        const dataNode = this.dp.collections.dataNodes.getById(nodeId);
+        const valueRef = this.dp.collections.values.getById(dataNode.refId);
+        if (valueRef) {
+          valueRef.specialObjectType = SpecialObjectType.Arguments;
+        }
+        else {
+          this.logger.warn(`Cannot register SpecialObjectType for Argument trace, valueRef not found. trace: ${trace}, dataNode: ${dataNode}`);
+        }
       }
     }
   }
@@ -471,31 +492,35 @@ class DataNodeCollection extends Collection {
     }
     else {
       const { traceId, accessId } = dataNode;
-      // const traceType = this.dp.util.getTraceType(traceId);
-      const trace = this.dp.collections.traces.getById(traceId);
-      // const staticTrace = this.dp.collections.staticTraces.getById(trace.staticTraceId);
-      let lastNode;
-      // if (TraceType.is.BeforeCallExpression(traceType)) {
-      //   // skip in this case, special handling in UI - BCE rendering should reflect CallExpressionResult
-      //   return null;
-      // }
-      // if (staticTrace.dataNode.isNew) {
-      //   return traceId;
-      // }
+
       if (dataNode.inputs?.length) {
         const inputDataNode = this.dp.collections.dataNodes.getById(dataNode.inputs[0]);
         return inputDataNode.valueId;
       }
-      // else if (TraceType.is.Identifier(traceType) || TraceType.is.ME(traceType)) {
-      else if (accessId && (lastNode = this.dp.indexes.dataNodes.byAccessId.getLast(accessId))) {
+
+      const lastNode = this.dp.indexes.dataNodes.byAccessId.getLast(accessId);
+      if (accessId && lastNode) {
         // warn(`[getValueId] Cannot find accessId of dataNode: ${JSON.stringify(dataNode)}`);
         // NOTE: currently, last in `byAccessId` index is actually "the last before this one", since we are still resolving the index.
         return lastNode.valueId;
       }
-      else {
-        // eslint-disable-next-line max-len
-        // this.logger.warn(`[getValueId] Cannot find valueId for empty inputs.\n    trace: ${this.dp.util.makeTraceInfo(traceId)}\n    dataNode: ${JSON.stringify(dataNode)}`);
+
+      const { contextId } = this.dp.collections.traces.getById(traceId);
+      const { specialObjectType } = this.dp.util.getDataNodeValueRef(dataNode.varAccess?.objectNodeId) || EmptyObject;
+      if (specialObjectType) {
+        // NOTE: specialObjectType can be looked up `valueId`
+        const SpecialObjectTypeHandlers = {
+          [SpecialObjectType.Arguments]: ({ varAccess: { prop } }) => {
+            const { traceId: callId } = this.dp.util.getCallerTraceOfContext(contextId);
+            return this.dp.util.getCallArgDataNodes(callId)[prop].valueId;
+          }
+        };
+        return SpecialObjectTypeHandlers[specialObjectType](dataNode);
       }
+
+      // eslint-disable-next-line max-len
+      // this.logger.warn(`[getValueId] Cannot find valueId for dataNode.\n    trace: ${this.dp.util.makeTraceInfo(traceId)}\n    dataNode: ${JSON.stringify(dataNode)}`);
+
       return traceId;
     }
   }
@@ -592,7 +617,7 @@ class ValueRefCollection extends Collection {
           serialized,
           pruneState
         } = valueRef;
-  
+
         if (pruneState !== ValuePruneState.Omitted && isObjectCategory(category)) {
           // map: [childRefId, childValue] => [(creation)nodeId, childRefId, childValue]
           valueRef.value = Object.fromEntries(Object.entries(serialized).map(([key, childEntry]) => [key, [nodeId, ...childEntry]]));
