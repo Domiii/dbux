@@ -1,23 +1,59 @@
+import * as t from "@babel/types";
 import { getInstrumentTargetAstNode } from './common';
 import { buildTraceCall } from './templateUtil';
-import { buildTraceId } from './traceId';
+import { buildTraceId, buildTraceIdValue } from './traceId';
 
 
 export const buildWrapAwait = buildTraceCall(
-  '(%%wrapAwait%%(%%argument%%, %%awaitContextId%% = %%preAwait%%(%%contextId%%, %%preTraceId%%)))',
+  '(%%wrapAwait%%(%%argument%%, %%awaitContextIdVar%% = %%preAwait%%(%%awaitContextId%%, %%tid%%)))',
   function buildWrapAwait(state, traceCfg) {
     const { ids: { aliases: { preAwait, wrapAwait } } } = state;
+    const {
+      data: {
+        awaitContextId,
+        awaitContextIdVar
+      }
+    } = traceCfg;
     const argument = getInstrumentTargetAstNode(state, traceCfg);
-    const preTraceId = buildTraceId(state, traceCfg);
+    const tid = buildTraceId(state, traceCfg);
     // const { } = ;
 
     return {
       preAwait,
       wrapAwait,
       argument,
-      awaitContextId,
-      contextId,
-      preTraceId,
+      awaitContextIdVar,
+      awaitContextId: t.numericLiteral(awaitContextId),
+      tid,
+    };
+  }
+);
+
+export const buildPostAwait = buildTraceCall(
+  `(
+  %%resultVar%% = %%awaitNode%%,
+  %%postAwait%%(%%awaitContextIdVar%%),
+  %%tid%%
+)`,
+  function buildPostAwait(state, traceCfg) {
+    const { ids: { aliases: { 
+      postAwait
+    } } } = state;
+    const {
+      data: {
+        awaitContextIdVar,
+        resultVar
+      }
+    } = traceCfg;
+    const awaitNode = getInstrumentTargetAstNode(state, traceCfg);
+    const tid = buildTraceIdValue(state, traceCfg, resultVar);
+
+    return {
+      resultVar,
+      awaitNode,
+      postAwait,
+      awaitContextIdVar,
+      tid
     };
   }
 );

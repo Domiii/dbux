@@ -1,26 +1,12 @@
-
-import template from "@babel/template";
-import * as t from "@babel/types";
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import StaticContextType from '@dbux/common/src/core/constants/StaticContextType';
 import { pathToString } from '../helpers/pathHelpers';
 import BaseNode from './BaseNode';
-import { buildTraceExpressionNoInput } from '../instrumentation/builders/misc';
-import { buildWrapAwait } from '../instrumentation/builders/await';
+import { buildPostAwait, buildWrapAwait } from '../instrumentation/builders/await';
 
 // ###########################################################################
 // builders
 // ###########################################################################
-
-// WARNING: id must be passed AFTER awaitNode, 
-//    because else it will be undefined.
-//    The value will be bound before `await` and thus before `preAwait` was called.
-const postAwaitTemplate = template(`
-%%postAwait%%(
-  %%awaitNode%%,
-  %%awaitContextId%%,
-  %%resumeTraceId%%
-)`);
 
 
 function getAwaitDisplayName(path) {
@@ -39,8 +25,7 @@ export default class AwaitExpression extends BaseNode {
   addResumeContext() {
     const {
       path,
-      state,
-      Traces
+      state
     } = this;
 
     // NOTE: the "resume context" starts after the await statement
@@ -53,14 +38,14 @@ export default class AwaitExpression extends BaseNode {
    * Assumption: `path` has already been instrumented with `wrapAwait`.
    */
   exit() {
-    const [argumentNode] = this.getChildNodes();
-    argumentNode.addDefaultTrace();
-
     const {
       path,
       state,
       Traces
     } = this;
+
+    const [argumentNode] = this.getChildNodes();
+    argumentNode.addDefaultTrace();
 
     const resumeId = this.addResumeContext();
     const awaitContextId = state.contexts.addStaticContext(path, {
@@ -70,15 +55,15 @@ export default class AwaitExpression extends BaseNode {
     });
 
     const awaitContextIdVar = Traces.generateDeclaredUidIdentifier('cid');
-    const argumentPath = path.get('argument');
-    const argument = argumentPath.node;
+    const resultVar = Traces.generateDeclaredUidIdentifier('res');
+    const argumentPath = argumentNode.path;
 
-    const preTraceId = state.traces.addTrace(argumentPath, TraceType.Await, true);
-    const resumeTraceId = state.traces.addTrace(path, TraceType.Resume, true);
-
-    // trace argument
+    // pre trace
     Traces.addTrace({
       path: argumentPath,
+      staticTraceData: {
+        type: TraceType.Await
+      },
       data: {
         awaitContextId,
         awaitContextIdVar
@@ -88,32 +73,24 @@ export default class AwaitExpression extends BaseNode {
       }
     });
 
+    // const staticPushTraceId = state.traces.addTrace(path, {
+    //   type: TraceType.Resume
+    // });
+
     // trace self
     Traces.addTrace({
       path,
       node: this,
+      staticTraceData: {
+        type: TraceType.Resume
+      },
+      data: {
+        resultVar,
+        awaitContextIdVar
+      },
       meta: {
-        traceCall: 'postAwait',
-        build: buildTraceExpressionNoInput,
-        moreTraceCallArgs() {
-          return [
-            t.numericLiteral(awaitContextId),
-            awaitContextIdVar,
-            t.numericLiteral(preTraceId),
-            argument
-          ];
-        }
+        build: buildPostAwait
       }
     });
-  }
-
-  instrumentSelf() {
-    const awaitReplacement = postAwaitTemplate({
-      dbux,
-      awaitNode: path.node,
-      awaitContextId,
-      resumeTraceId: t.numericLiteral(resumeTraceId)
-    });
-    path.replaceWith(awaitReplacement);
   }
 }
