@@ -13,3 +13,11 @@ let DataNodeType = {
 DataNodeType = new Enum(DataNodeType);
 
 export default DataNodeType;
+
+const modifyTypes = new Array(DataNodeType.getValueMaxIndex()).map(() => false);
+modifyTypes[DataNodeType.Write] = true;
+modifyTypes[DataNodeType.Delete] = true;
+
+export function isDataNodeModifyType(dataNodeType) {
+  return modifyTypes[dataNodeType];
+}

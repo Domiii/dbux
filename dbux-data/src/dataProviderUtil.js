@@ -4,7 +4,7 @@ import { pushArrayOfArray } from '@dbux/common/src/util/arrayUtil';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
-import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
+import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/core/constants/DataNodeType';
 import StaticTrace from '@dbux/common/src/core/data/StaticTrace';
 import { isVirtualContextType } from '@dbux/common/src/core/constants/StaticContextType';
 import { isRealContextType } from '@dbux/common/src/core/constants/ExecutionContextType';
@@ -402,20 +402,26 @@ export default {
       dp.logger.error(`Cannot construct non-object valueRef: ${JSON.stringify(valueRef)}`);
     }
 
-    // + writes
-    const writeNodes = dp.indexes.dataNodes.byObjectRefId.get(refId)?.filter(node => node.type === DataNodeType.Write) || EmptyArray;
-    for (const writeNode of writeNodes) {
-      if (writeNode.nodeId > terminateNodeId) {
+    // + writes - delete
+    const modifyNodes = dp.indexes.dataNodes.byObjectRefId.get(refId)?.filter(node => isDataNodeModifyType(node.type)) || EmptyArray;
+    for (const modifyNode of modifyNodes) {
+      if (modifyNode.nodeId > terminateNodeId) {
         // only apply write operations `before` the terminateNodeId
         break;
       }
-      const { prop } = writeNode.varAccess;
-      const inputNode = dp.collections.dataNodes.getById(writeNode.inputs[0]);
-      if (inputNode.refId) {
-        entries[prop] = [inputNode.nodeId, inputNode.refId, null];
+      if (modifyNode.type === DataNodeType.Write) {
+        const { prop } = modifyNode.varAccess;
+        const inputNode = dp.collections.dataNodes.getById(modifyNode.inputs[0]);
+        if (inputNode.refId) {
+          entries[prop] = [inputNode.nodeId, inputNode.refId, null];
+        }
+        else {
+          entries[prop] = [inputNode.nodeId, null, inputNode.value];
+        }
       }
-      else {
-        entries[prop] = [inputNode.nodeId, null, inputNode.value];
+      else if (modifyNode.type === DataNodeType.Delete) {
+        const { prop } = modifyNode.varAccess;
+        delete entries[prop];
       }
     }
 
