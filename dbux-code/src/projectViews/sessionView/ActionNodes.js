@@ -119,16 +119,16 @@ class RunNode extends SessionNode {
     return 'Run';
   }
 
+  get clickCommandName() {
+    return 'dbuxSessionView.run#dbux';
+  }
+
   init() {
-    this.contextValue = 'dbuxSessionView.runNode';
+    this.contextValue = 'dbuxSessionView.runNode#dbux';
   }
 
   makeIconPath() {
     return 'play.svg';
-  }
-
-  async doHandleClick() {
-    await this.controller.testBug();
   }
 }
 
@@ -138,33 +138,15 @@ class RunWithoutDbuxNode extends SessionNode {
   }
 
   init() {
-    this.contextValue = 'dbuxSessionView.runWithoutDbuxNode';
+    this.contextValue = 'dbuxSessionView.runNode';
   }
 
   makeIconPath() {
     return 'play_gray.svg';
   }
 
-  async doHandleClick() {
-    await this.controller.testBug({ dbuxEnabled: false });
-  }
-}
-
-class DebugWithoutDbuxNode extends SessionNode {
-  static makeLabel() {
-    return 'Debug without Dbux';
-  }
-
-  init() {
-    this.contextValue = 'dbuxSessionView.debugNode';
-  }
-
-  makeIconPath() {
-    return 'bug_gray.svg';
-  }
-
-  async doHandleClick() {
-    await this.controller.testBug({ debugMode: true, dbuxEnabled: false });
+  get clickCommandName() {
+    return 'dbuxSessionView.run';
   }
 }
 
@@ -236,7 +218,6 @@ export function getActionNodeClasses(bug) {
     isInCorrectWorkspace(project) ? ShowEntryNode : OpenWorkspaceNode,
     RunNode,
     RunWithoutDbuxNode,
-    DebugWithoutDbuxNode,
     TagNode,
     StopPracticeNode
   ];

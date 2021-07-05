@@ -266,12 +266,14 @@ export default class BaseTreeViewNodeProvider {
   }
 
   _setNodeCommand(node) {
-    if (!this.clickCommandName) {
+    const commandName = node.clickCommandName || this.clickCommandName;
+
+    if (!commandName) {
       return;
     }
 
     node.command = {
-      command: this.clickCommandName,
+      command: commandName,
       arguments: [node]
     };
   }

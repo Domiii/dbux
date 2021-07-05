@@ -99,6 +99,22 @@ export function initProjectCommands(extensionContext, projectViewController) {
     projectViewController.manager._backend.clearDBStats();
   });
 
+  registerCommand(extensionContext, 'dbuxSessionView.run', async () => {
+    return await projectViewController.testBug({ debugMode: false, dbuxEnabled: false });
+  });
+
+  registerCommand(extensionContext, 'dbuxSessionView.run#debug', async () => {
+    return await projectViewController.testBug({ debugMode: true, dbuxEnabled: false });
+  });
+
+  registerCommand(extensionContext, 'dbuxSessionView.run#dbux', async () => {
+    return await projectViewController.testBug({ debugMode: false, dbuxEnabled: true });
+  });
+
+  registerCommand(extensionContext, 'dbuxSessionView.run#debug#dbux', async () => {
+    return await projectViewController.testBug({ debugMode: true, dbuxEnabled: true });
+  });
+
   registerCommand(extensionContext, 'dbuxSessionView.node.annotateTraceQ', async (node) => {
     if (!traceSelection.selected) {
       await showWarningMessage('You have not selected any trace yet.');
