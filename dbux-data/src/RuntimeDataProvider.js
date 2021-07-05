@@ -202,7 +202,7 @@ class ExecutionContextCollection extends Collection {
         continue;
       }
       else if (returnTraces.length > 1) {
-        this.logger.error(`Found context containing more than one CER trace. contextId: ${contextId}, CER traceIds: [${returnTraces}]`);
+        this.logger.error(`Found context containing more than one ReturnArgument. contextId: ${contextId}, ReturnArgument ids: [${returnTraces}]`);
         continue;
       }
 
