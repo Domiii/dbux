@@ -514,11 +514,15 @@ class DataNodeCollection extends Collection {
       const { contextId } = this.dp.collections.traces.getById(traceId);
       const { specialObjectType } = this.dp.util.getDataNodeValueRef(dataNode.varAccess?.objectNodeId) || EmptyObject;
       if (specialObjectType) {
-        // NOTE: specialObjectType can be looked up `valueId`
+        // NOTE: specialObjectType is looked up by `valueId`
         const SpecialObjectTypeHandlers = {
           [SpecialObjectType.Arguments]: ({ varAccess: { prop } }) => {
-            const { traceId: callId } = this.dp.util.getCallerTraceOfContext(contextId);
-            return this.dp.util.getCallArgDataNodes(callId)[prop].valueId;
+            const trace = this.dp.util.getCallerTraceOfContext(contextId);
+            if (trace) {
+              // NOTE: sometimes, (e.g. in root contexts) we might not have an "own" caller trace
+              const { traceId: callId } = trace;
+              return this.dp.util.getCallArgDataNodes(callId)[prop].valueId;
+            }
           }
         };
         return SpecialObjectTypeHandlers[specialObjectType](dataNode);
@@ -728,8 +732,8 @@ export default class RuntimeDataProvider extends DataProviderBase {
       '',
       requireInfo,
       moduleInfo,
+      missingModuleInfo
     ];
-    missingModuleInfo && msgs.push(missingModuleInfo);
     this.logger.debug(msgs.join('\n'));
   }
 }
