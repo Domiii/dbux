@@ -156,6 +156,9 @@ class ExecutionContextCollection extends Collection {
     this.errorWrapMethod('setCallExpressionResultInputs', entries);
   }
 
+  /**
+   * Set Param trace `inputs` to `[argNodeId]`.
+   */
   setParamInputs(contexts) {
     const { dp: { util } } = this;
     for (const { contextId } of contexts) {
@@ -196,6 +199,9 @@ class ExecutionContextCollection extends Collection {
     }
   }
 
+  /**
+   * Set CallExpression result trace `inputs` to `[returnNodeId]`.
+   */
   setCallExpressionResultInputs(contexts) {
     const { dp, dp: { util } } = this;
     for (const { contextId } of contexts) {

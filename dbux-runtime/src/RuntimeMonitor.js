@@ -377,19 +377,19 @@ export default class RuntimeMonitor {
     return resumeContextId;
   }
 
-  popResume(resumeContextId = null) {
+  popResume(resumeCid = null) {
     // sanity checks
-    if (resumeContextId === 0) {
-      logError('Tried to popResume, but id was 0. Is this an async function that started in an object getter?');
+    if (resumeCid === 0) {
+      logError('Tried to popResume, but cid was 0. Is this an async function that started in an object getter?');
       return;
     }
 
-    resumeContextId = resumeContextId || this._runtime.peekCurrentContextId();
-    const context = executionContextCollection.getById(resumeContextId);
+    resumeCid = resumeCid || this._runtime.peekCurrentContextId();
+    const context = executionContextCollection.getById(resumeCid);
 
     // more sanity checks
     if (!context) {
-      logError('Tried to popResume, but context was not registered:', resumeContextId);
+      logError('Tried to popResume, but context was not registered:', resumeCid);
       return;
     }
     if (context.contextType !== ExecutionContextType.Resume) {
@@ -397,7 +397,7 @@ export default class RuntimeMonitor {
       return;
     }
 
-    this._pop(resumeContextId);
+    this._pop(resumeCid);
   }
 
   _ensureExecuting() {

@@ -1138,7 +1138,12 @@ export default {
   },
 
   getTracesOfContextAndType(dp, contextId, type) {
-    return dp.indexes.traces.byContext.get(contextId).filter(trace => dp.util.getTraceType(trace.traceId) === type);
+    const traces = dp.indexes.traces.byContext.get(contextId);
+    // NOTE: `Await` contexts don't have traces
+    // if (!traces) {
+    //   dp.logger.error(`Context did not have any traces: ${contextId}`);
+    // }
+    return traces?.filter(trace => dp.util.getTraceType(trace.traceId) === type) || EmptyArray;
   },
 
   /** @param {DataProvider} dp */

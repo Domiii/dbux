@@ -5,7 +5,7 @@
 set -e # cancel on error
 # set -x # verbose echo mode
 
-fname="class4"
+fname="await0"
 
 
 nodeArgs=""
