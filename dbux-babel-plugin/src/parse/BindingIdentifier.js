@@ -1,3 +1,4 @@
+import { isDeclarationTrace } from '@dbux/common/src/core/constants/TraceType';
 import { pathToString } from '../helpers/pathHelpers';
 import { ZeroNode } from '../instrumentation/builders/buildUtil';
 import BaseId from './BaseId';
@@ -73,16 +74,25 @@ export default class BindingIdentifier extends BaseId {
 
   /**
    * Add declaration trace to scope.
-   * Hoisted by default (unless `scope` is given).
-   * Will insert all declaration in one: `var {declarations.map(buildTraceDeclaration)}`
+   * Hoisted by default (unless `hoisted` set to false).
    * 
-   * @param {NodePath?} definitionPathOrNode Only given if initialization occurs upon declaration.
+   * Will unshift all `hoisted` declarations as:
+   *   `var {declarations.map(traceDeclaration(stid, value))}`
+   * Not `hoisted` declarations as:
+   *    `te(value, tid)`
+   * 
+   * @param {NodePath?} definitionPathOrNode Initialization occurs upon declaration. Only used if `hoisted`.
    */
   addOwnDeclarationTrace(definitionPathOrNode = null, moreTraceData = null) {
     // if (this.binding?.path.node.id !== this.path.node) {
     //   // NOTE: should never happen
     //   return;
     // }
+
+    const traceType = moreTraceData?.staticTraceData?.type;
+    if (traceType && !isDeclarationTrace(traceType)) {
+      this.warn(`staticTraceData.type is not declaration type. You might prefer "addTrace" over "addOwnDeclarationTrace" in this case.`);
+    }
 
     const bindingScopeNode = this.getDefaultBindingScopeNode();
     const declarationNode = this.getDeclarationNode();

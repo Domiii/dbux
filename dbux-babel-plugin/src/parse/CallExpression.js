@@ -7,41 +7,27 @@ import { traceCallExpressionDefault } from '../instrumentation/callExpressions';
 import BaseNode from './BaseNode';
 
 
-const CalleePluginsByType = {
-  // default!
-  // Identifier: 'CalleeIdentifier',
-  // CallExpression: 'CalleeCallExpression',
-
-  /**
-   * ME
-   */
-  MemberExpression: 'CalleeMemberExpression'
-};
-
 function getCalleePlugin(node) {
   const [calleePath] = node.getChildPaths();
-  const { type } = calleePath.node;
-  let pluginName = CalleePluginsByType[type];
+  if (calleePath.isMemberExpression() && canTraceMECalleePath(calleePath)) {
+    return 'CalleeME';
+  }
   // if (!pluginName) {
   //   // node.logger.error(`unknown callee type: "${type}" at "${pathToString(calleePath)}"`);
   // }
-  return pluginName;
+  // no special handling
+  return null;
 }
 
-/**
- * NOTE: the name chosen here will show up in error messages
- */
-function generateCalleeVar(calleePath) {
-  const id = calleePath.scope.generateUidIdentifierBasedOnNode(calleePath.node);
-  calleePath.scope.push({
-    id
-  });
-  return id;
-  // return calleePath.node.name || 'func';
+function canTraceMECalleePath(calleePath) {
+  return !calleePath.get('object').isSuper();
 }
 
 
 function canTraceCallee(calleeNode) {
+  if (calleeNode.path.isMemberExpression()) {
+    return canTraceMECalleePath(calleeNode.path);
+  }
   const { specialType } = calleeNode;
   return !specialType || !isNotTraceable(specialType);
 }
@@ -65,6 +51,11 @@ export default class CallExpression extends BaseNode {
   ];
   static children = ['callee', 'arguments'];
 
+  get calleeNode() {
+    const [calleeNode] = this.getChildNodes();
+    return calleeNode;
+  }
+
   // function enterCallExpression(traceResultType, path, state) {
   //   // CallExpression
 
@@ -85,6 +76,20 @@ export default class CallExpression extends BaseNode {
   //   }
   // }
 
+  /**
+   * NOTE: the name chosen here will show up in error messages
+   */
+  generateCalleeVar(calleePath) {
+    this._calleeVar = calleePath.scope.generateUidIdentifierBasedOnNode(calleePath.node);
+    return this._calleeVar;
+    // return calleePath.node.name || 'func';
+  }
+
+  exit1() {
+    // NOTE: we do this here, since `CalleeME` will not always get initialized
+    const { calleeNode } = this;
+    calleeNode.handler = this;
+  }
 
   exit() {
     // TODO: more special cases - super, import, require
@@ -101,11 +106,10 @@ export default class CallExpression extends BaseNode {
 
     /**
      * TODO:
-     * 1. special case: `calleePath.isMemberExpression()`
-     * 2. special case: `calleePath.isCallExpression()`
-     * 3. special case: built-in functions
-     *    * some built-ins are called with one set of arguments and then call our function with another
-     * 4. special case: `bind` etc.
+     * 1. special case: built-in functions
+     *    * built-ins should be monkey-patched
+     * 2. monkey-patched callbacks
+     * 3. special case: `bind` etc.
      */
 
     const [calleePath, argumentPaths] = this.getChildPaths();
@@ -116,7 +120,7 @@ export default class CallExpression extends BaseNode {
     const isCalleeTraced = canTraceCallee(calleeNode);
     if (isCalleeTraced) {
       this.Traces.addDefaultTrace(calleePath);
-      calleeVar = generateCalleeVar(calleePath);
+      calleeVar = this.generateCalleeVar(calleePath);
     }
 
     // 2. trace args + 3. BCE
@@ -135,16 +139,13 @@ export default class CallExpression extends BaseNode {
       }
     };
 
-    if (!isCalleeTraced) {
-      // hackfix: since we cannot trace the callee, just add it's specialType to BCE
-      bceTraceData.staticTraceData.data.specialType = calleeNode.specialType;
-    }
+    bceTraceData.staticTraceData.data.specialType = calleeNode.specialType;
 
     const bceInputPaths = argumentPaths || EmptyArray;
     const bceTrace = this.Traces.addTraceWithInputs(bceTraceData, bceInputPaths);
 
     /**
-     * @see `CalleeMemberExpression`
+     * @see `CalleeME`
      */
     const instrument = calleePlugin?.instrumentCallExpression || traceCallExpressionDefault;
     const bceTidIdentifier = bceTrace.tidIdentifier;
@@ -158,6 +159,7 @@ export default class CallExpression extends BaseNode {
       },
       data: {
         bceTrace,
+        calleeNode,
         calleeVar
       },
       meta: {
@@ -169,5 +171,15 @@ export default class CallExpression extends BaseNode {
 
     // 5. callee might add modifications
     calleePlugin?.decorateCallTrace(trace);
+  }
+
+  instrument1() {
+    const { path } = this;
+    const id = this._calleeVar;
+    if (id) {
+      path.scope.push({
+        id
+      });
+    }
   }
 }

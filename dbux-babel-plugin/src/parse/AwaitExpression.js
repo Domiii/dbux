@@ -6,7 +6,6 @@ import BaseNode from './BaseNode';
 // import StaticContextType from '@dbux/common/src/core/constants/StaticContextType';
 // import { pathToString } from '../helpers/pathHelpers';
 // import { isPathInstrumented } from '../helpers/astUtil';
-// import { traceWrapExpressionStatement } from '../helpers/traceHelpers.old';
 
 // // ###########################################################################
 // // builders
@@ -62,7 +61,7 @@ import BaseNode from './BaseNode';
 //     resumeId
 //   });
 
-//   const awaitContextId = path.scope.generateDeclaredUidIdentifier('contextId');
+//   const awaitContextId = Traces.generateDeclaredUidIdentifier('contextId');
 //   const argumentPath = path.get('argument');
 //   const argument = argumentPath.node;
 

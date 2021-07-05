@@ -30,8 +30,8 @@ export default class Delete extends BasePlugin {
       this.warn(`objectNode did not have traceCfg.tidIdentifier in ${objectNode}`);
     }
 
-    const objectAstNode = path.scope.generateDeclaredUidIdentifier('o');
-    const propertyAstNode = path.scope.generateDeclaredUidIdentifier('p');
+    const objectAstNode = Traces.generateDeclaredUidIdentifier('o');
+    const propertyAstNode = Traces.generateDeclaredUidIdentifier('p');
 
     // add delete trace
     const traceData = {

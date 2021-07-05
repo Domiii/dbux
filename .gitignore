@@ -4,6 +4,7 @@
 /projects
 __samplesOutput__
 /samples/__samplesInput__/**/*.inst.js
+/samples/__samplesInput__/**/*.es5.js
 project_sandbox/projects
 project_sandbox/bug-dataset
 _testOut

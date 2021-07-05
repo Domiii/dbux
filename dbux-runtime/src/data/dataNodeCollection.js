@@ -1,15 +1,16 @@
 import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 import Trace from '@dbux/common/src/core/data/Trace';
-import { newLogger } from '@dbux/common/src/log/logger';
-import isObject from 'lodash/isObject';
 import Collection from './Collection';
 import pools from './pools';
-import staticTraceCollection from './staticTraceCollection';
 import traceCollection from './traceCollection';
 import valueCollection from './valueCollection';
 
 const Verbose = 0;
 // const Verbose = 1;
+
+export const ShallowValueRefMeta = {
+  shallow: true
+};
 
 export class DataNodeCollection extends Collection {
   constructor() {
@@ -48,24 +49,15 @@ export class DataNodeCollection extends Collection {
    * * the `refId` of the two is the same
    * * the new write node's single input is the read node
    */
-  createWriteNodeFromTrace(traceId, varAccess) {
-    const trace = traceCollection.getById(traceId);
-    if (!trace) {
-      this.logger.warn(new Error(`Could not lookup trace of traceId ${traceId} in createWriteNodeFromTrace`));
+  createWriteNodeFromTrace(writeTraceId, readTraceId, varAccess) {
+    const readTrace = traceCollection.getById(readTraceId);
+    if (!readTrace) {
+      this.logger.warn(new Error(`Could not lookup trace of readTraceId ${readTraceId} in createWriteNodeFromTrace`));
       return null;
     }
-    const { nodeId: readNodeId } = trace;
+    const { nodeId: readNodeId } = readTrace;
     const readNode = this.getById(readNodeId);
-    return this.createWriteNodeFromReadNode(traceId, readNode, varAccess);
-  }
-
-  /**
-   * NOTE: Used by `UpdateExpression`.
-   */
-  createWriteNodeFromInputTrace(inputTraceId, traceId) {
-    const { nodeId: readNodeId } = traceCollection.getById(inputTraceId);
-    const readNode = this.getById(readNodeId);
-    return this.createWriteNodeFromReadNode(traceId, readNode, readNode.varAccess);
+    return this.createWriteNodeFromReadNode(writeTraceId, readNode, varAccess);
   }
 
   createWriteNodeFromReadNode(traceId, readNode, varAccess) {

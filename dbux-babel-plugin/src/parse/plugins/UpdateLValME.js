@@ -79,13 +79,13 @@ export default class UpdateLValME extends BasePlugin {
     }
 
     // prepare object
-    const objectVar = path.scope.generateDeclaredUidIdentifier('o');
+    const objectVar = Traces.generateDeclaredUidIdentifier('o');
 
     // prepare property
     let propertyVar;
     if (computed) {
       propertyNode.addDefaultTrace();
-      propertyVar = path.scope.generateDeclaredUidIdentifier('p');
+      propertyVar = Traces.generateDeclaredUidIdentifier('p');
     }
 
     // add read trace

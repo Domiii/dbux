@@ -1,4 +1,3 @@
-import TraceType from '@dbux/common/src/core/constants/TraceType';
 import BaseNode from './BaseNode';
 
 /**
@@ -15,22 +14,26 @@ export default class ClassMethod extends BaseNode {
     'StaticContext'
   ];
 
-  createTraceData() {
-    const { path } = this;
-    const methodName = path.node.key;
+  get name() {
+    return this.path.get('key').toString();
+  }
 
-    return {
+  get isPublic() {
+    return true;
+  }
+
+  addTrace() {
+    const { path } = this;
+    const [keyPath] = this.getChildPaths();
+
+    // TODO: computed
+
+    return this.Traces.addTrace({
       path,
       node: this,
-      staticTraceData: {
-        type: TraceType.FunctionDefinition,
-        data: {
-          methodName
-        }
-      },
-      dataNode: {
-        isNew: true
-      }
-    };
+      scope: this.getExistingParent().peekContextNode().path.scope, // prevent adding `tid` variable to own body
+      staticTraceData: this.getPlugin('Function').createStaticTraceData(keyPath),
+      meta: { instrument: null }
+    });
   }
 }

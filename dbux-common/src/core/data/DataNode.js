@@ -19,10 +19,10 @@ export class VarAccessId {
  */
 export class VarAccesME {
   /**
-   * Tid of object being accessed.
+   * DataNode.nodeId of object being accessed.
    * NOTE: We can get variable `declarationTid` as well as `refId` through this.
    */
-  objectTid;
+  objectNodeId;
 
   /**
    * The property string.
@@ -59,7 +59,7 @@ export default class DataNode {
   /**
    * An id that uniquely identifies variable access:
    * (i) Either a single variable (`declarationTid`), or
-   * (ii) a property of an object (makeUid(`${getValueIdentity(objectTid)}#${prop}`)).
+   * (ii) a property of an object (makeUid(`${getValueIdentity(objectNodeId)}#${prop}`)).
    * 
    * NOTE: computed in post-processing.
    * @type {number}

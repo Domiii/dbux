@@ -23,12 +23,7 @@ export default class ArrowFunctionExpression extends BaseNode {
       node: this,
       path,
       scope: path.parentPath.scope, // prevent adding `tid` variable to own body
-      staticTraceData: {
-        type: TraceType.ExpressionResult,
-        dataNode: {
-          isNew: true
-        }
-      }
+      staticTraceData: this.getPlugin('Function').createStaticTraceData()
     };
 
     this.Traces.addTrace(traceData);

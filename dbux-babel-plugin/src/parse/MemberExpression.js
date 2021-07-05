@@ -100,7 +100,7 @@ export default class MemberExpression extends BaseNode {
      */
     // TODO: `import.meta` (rval only)
 
-    const { path } = this;
+    const { path, Traces } = this;
     // const [objectPath] = this.getChildPaths();
 
     if (targetPath === undefined) {
@@ -120,13 +120,13 @@ export default class MemberExpression extends BaseNode {
       objectTid = ZeroNode;
     }
     const isObjectTracedAlready = !!objectAstNode;
-    objectAstNode = objectAstNode || path.scope.generateDeclaredUidIdentifier('o');
+    objectAstNode = objectAstNode || Traces.generateDeclaredUidIdentifier('o');
 
     // prepare property
     let propertyAstNode;
     if (computed) {
       propertyNode.addDefaultTrace();
-      propertyAstNode = path.scope.generateDeclaredUidIdentifier('p');
+      propertyAstNode = Traces.generateDeclaredUidIdentifier('p');
     }
 
     const traceData = {

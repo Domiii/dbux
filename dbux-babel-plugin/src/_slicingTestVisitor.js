@@ -1,5 +1,8 @@
 /* eslint-disable no-console */
 
+import { pathToString } from './helpers/pathHelpers';
+import { findSuperCallPath } from './visitors/classUtil';
+
 // import injectDbuxState from './dbuxState';
 // import { getBinding, getBindingPath } from './helpers/bindingsHelper';
 // import nameVisitors from './visitors/nameVisitors';
@@ -67,35 +70,42 @@ const contextVisitor = {
 //   ).join('\n  '));
 // }
 
+// const visitor = {
+//   // CallExpression
+//   // Program(path, state) {
+//   //   // const cfg = state.opts;
+//   //   if (state.onEnter) return; // make sure to not visit Program node more than once
+
+//   //   // inject data + methods that we are going to use for instrumentation
+//   //   injectDbuxState(path, state);
+
+//   //   // before starting instrumentation, first get raw data from unmodified AST
+//   //   const nameVisitorObj = nameVisitors();
+//   //   traverse(path, state, nameVisitorObj);
+//   // },
+//   Program: contextVisitor,
+//   Function: contextVisitor,
+
+//   /**
+//    * @see https://github.com/babel/babel/blob/672a58660f0b15691c44582f1f3fdcdac0fa0d2f/packages/babel-traverse/src/scope/index.ts#L215
+//    */
+//   ReferencedIdentifier(path, state) {
+//     const binding = path.scope.getBinding(path.node.name);
+//     // if (binding) {
+//     addBinding(path, binding);
+//     // binding.reference(ref);
+//     // } else {
+//     //   programParent.addGlobal(ref.node);
+//     // }
+//   }
+//   // Function,
+// };
+
 const visitor = {
-  // CallExpression
-  // Program(path, state) {
-  //   // const cfg = state.opts;
-  //   if (state.onEnter) return; // make sure to not visit Program node more than once
-
-  //   // inject data + methods that we are going to use for instrumentation
-  //   injectDbuxState(path, state);
-
-  //   // before starting instrumentation, first get raw data from unmodified AST
-  //   const nameVisitorObj = nameVisitors();
-  //   traverse(path, state, nameVisitorObj);
-  // },
-  Program: contextVisitor,
-  Function: contextVisitor,
-
-  /**
-   * @see https://github.com/babel/babel/blob/672a58660f0b15691c44582f1f3fdcdac0fa0d2f/packages/babel-traverse/src/scope/index.ts#L215
-   */
-  ReferencedIdentifier(path, state) {
-    const binding = path.scope.getBinding(path.node.name);
-    // if (binding) {
-    addBinding(path, binding);
-    // binding.reference(ref);
-    // } else {
-    //   programParent.addGlobal(ref.node);
-    // }
+  ClassMethod(path, state) {
+    const superCall = findSuperCallPath(path);
+    console.log('[visit]', pathToString(path), ' - SUPER:', superCall && pathToString(superCall));
   }
-  // Function,
 };
 
 export default visitor;

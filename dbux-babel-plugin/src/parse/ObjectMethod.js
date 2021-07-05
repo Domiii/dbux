@@ -19,16 +19,13 @@ export default class ObjectMethod extends BaseNode {
 
   buildDefaultTrace() {
     const { path } = this;
+    const [keyPath] = this.getChildPaths();
+    
     return {
       path,
       node: this,
       scope: path.parentPath.scope, // prevent adding `tid` variable to own body
-      staticTraceData: {
-        type: TraceType.ExpressionResult
-      },
-      dataNode: {
-        isNew: true
-      },
+      staticTraceData: this.getPlugin('Function').createStaticTraceData(keyPath),
       meta: {
         instrument: this.convertToObjectProperty
       }

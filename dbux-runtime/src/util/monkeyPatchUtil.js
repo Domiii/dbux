@@ -1,16 +1,16 @@
 
-
 export function monkeyPatchFunction(holder, name, post, pre) {
-  const f = holder[name];
-  if (!(f instanceof Function)) {
+  const originalFunction = holder[name];
+  if (!(originalFunction instanceof Function)) {
     throw new Error(`Monkey-patching failed: ${holder}.${name} is not a function.`);
   }
-  holder[name] = function (...args) {
-    pre?.(this, args);
-    const result = f.apply(this, args);
-    post?.(this, args, result);
+  const patchedFunction = function (...args) {
+    pre?.(this, args, patchedFunction);
+    const result = originalFunction.apply(this, args);
+    post?.(this, args, result, patchedFunction);
     return result;
   };
+  holder[name] = patchedFunction;
 }
 
 export function monkeyPatchMethod(Clazz, methodName, post, pre) {

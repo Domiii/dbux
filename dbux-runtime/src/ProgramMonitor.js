@@ -198,12 +198,31 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.newTraceId(this.getProgramId(), inProgramStaticTraceId);
   }
 
+  /**
+   * 
+   */
   traceDeclaration = (inProgramStaticTraceId, value = undefined, inputs = undefined) => {
     if (this.areTracesDisabled) {
       return -1;
     }
 
     return this._runtimeMonitor.traceDeclaration(this.getProgramId(), inProgramStaticTraceId, value, inputs);
+  }
+
+  traceClass = (value, tid, staticMethods, publicMethods) => {
+    if (this.areTracesDisabled) {
+      return value;
+    }
+
+    return this._runtimeMonitor.traceClass(this.getProgramId(), value, tid, staticMethods, publicMethods);
+  }
+
+  traceInstance = (value, tid, privateMethods) => {
+    if (this.areTracesDisabled) {
+      return;
+    }
+
+    this._runtimeMonitor.traceInstance(this.getProgramId(), value, tid, privateMethods);
   }
 
   traceExpression = (value, tid, inputs) => {
@@ -274,12 +293,12 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceUpdateExpressionME(this.getProgramId(), obj, prop, updateValue, returnValue, readTid, tid, objectTid);
   }
 
-  traceBCE = (tid, argTids, spreadArgs) => {
+  traceBCE = (tid, calleeTid, argTids, spreadArgs) => {
     if (this.areTracesDisabled) {
       return;
     }
 
-    this._runtimeMonitor.traceBCE(this.getProgramId(), tid, argTids, spreadArgs);
+    this._runtimeMonitor.traceBCE(this.getProgramId(), tid, calleeTid, argTids, spreadArgs);
   }
 
   // traceSpreadArg = () => {

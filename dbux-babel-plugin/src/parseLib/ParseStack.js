@@ -7,8 +7,8 @@ import ParsePhase from './ParsePhase';
 
 /** @typedef { import("./ParseNode").default } ParseNode */
 
-// const Verbose = 2;
-const Verbose = 0;
+const Verbose = 2;
+// const Verbose = 0;
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Stack');
@@ -165,7 +165,7 @@ export default class ParseStack {
     if (parseNode) {
       // push new node
       parseNode.phase = ParsePhase.Enter;
-      Verbose && parseNode.hasPhase('enter', 'exit') && this.debug(`enter ${parseNode}`);
+      Verbose /* && parseNode.hasPhase('enter', 'exit') */ && this.debug(`enter ${parseNode}`);
       this.push(ParseNodeClazz, parseNode);
       const data = parseNode.enter?.(path, state);
       parseNode.enterPlugins?.();
@@ -294,7 +294,7 @@ export default class ParseStack {
       const loc = parseNode.path.node?.loc || parseNode.path.parentPath?.node?.loc;
       const where = `${this.state.filePath}${loc ? `:${locToString(loc)}` : ''}`;
       const s = parseNode.getParseNodeStackToString();
-      throw new NestedError(`ParseStack.nodePhase failed at ${where}${s}\n`, err);
+      throw new NestedError(`Node phase "${ParsePhase.nameFromForce(phase)}" failed at ${where}${s}\n`, err);
     }
   }
 }

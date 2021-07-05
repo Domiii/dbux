@@ -81,7 +81,7 @@ export default class BaseNode extends ParseNode {
    * NOTE: same path can be wrapped multiple times.
    * This will store the latest (outer-most) version of it.
    */
-  _setTraceData(traceData) {
+  _setTraceCfg(traceData) {
     this._traceCfg = traceData;
   }
 

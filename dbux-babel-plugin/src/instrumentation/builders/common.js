@@ -127,7 +127,7 @@ export function getInstrumentPath(traceCfg) {
  * NOTE: sometimes we want to trace something that is not the original AST node.
  *    -> e.g. `ClassDeclaration`
  * NOTE2: actual `targetNode` node might have been moved
- *    -> E.g. by `CallExpression`, `CalleeMemberExpression`, `ObjectMethod`.
+ *    -> E.g. by `CallExpression`, `CalleeME`, `ObjectMethod`.
  */
 export function getInstrumentTargetAstNode(state, traceCfg) {
   let {

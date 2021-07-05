@@ -1,6 +1,7 @@
 import * as t from '@babel/types';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
-import { buildTraceWriteClassProperty } from '../instrumentation/builders/me';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import { buildTraceWriteClassProperty } from '../instrumentation/builders/classes';
 import BaseNode from './BaseNode';
 
 const thisAstNode = t.thisExpression();
@@ -14,11 +15,42 @@ export default class ClassProperty extends BaseNode {
     'value'
   ];
 
-  exit() {
+  getClassVar() {
+    const classNode = this.peekPlugin('Class').node;
+    return classNode.classVar;
+  }
+
+  /**
+   * When encountering this property, 
+   */
+  addObjectTrace() {
+    const { path, Traces } = this;
+    const [keyPath] = this.getChildPaths();
+    const { static: isStatic } = path.node;
+    const targetNode = isStatic ?
+      this.getClassVar() :  // static property is called on class var
+      thisAstNode;          // instance property
+
+    return Traces.addTrace({
+      path: keyPath,
+      staticTraceData: {
+        type: TraceType.Identifier
+      },
+      meta: {
+        targetNode,
+
+        // NOTE: will be instrumented during `targetNode` call below
+        instrument: null
+      }
+    });
+  }
+
+
+  addTrace() {
     const { path, Traces } = this;
 
     const [keyNode] = this.getChildPaths();
-    const [keyPath, valuePath] = this.getChildPaths();
+    const [, valuePath] = this.getChildPaths();
 
     const { computed } = path.node;
 
@@ -28,52 +60,30 @@ export default class ClassProperty extends BaseNode {
       // NOTE: this is because private properties do not support dynamic access
       // see: https://github.com/tc39/proposal-private-fields/issues/94
       keyNode?.addDefaultTrace();
-      propertyAstNode = path.scope.generateDeclaredUidIdentifier('p');
+      propertyAstNode = Traces.generateDeclaredUidIdentifier('p');
     }
 
-    // add trace for `this`
-    const thisTraceCfg = Traces.addTrace({
-      path: keyPath,
-      staticTraceData: {
-        type: TraceType.Identifier
-      },
-      meta: {
-        targetNode: thisAstNode,
-
-        // NOTE: will be instrumented during `targetNode` call below
-        instrument: null
-      }
-    });
-
-    const objectTid = thisTraceCfg?.tidIdentifier;
-    if (!objectTid) {
-      this.warn(`objectNode did not have traceCfg.tidIdentifier in ${thisAstNode}`);
-    }
+    // add trace for `this` or `className`
+    const objectTraceCfg = this.addObjectTrace();
+    const objectTid = objectTraceCfg.tidIdentifier;
 
     const traceData = {
       path,
       node: this,
       staticTraceData: {
-        type: TraceType.WriteME
+        type: TraceType.ClassProperty
       },
       data: {
-        thisTraceCfg,
+        objectTraceCfg,
         objectTid,
         propertyAstNode
       },
       meta: {
         build: buildTraceWriteClassProperty,
-        // targetNode(state) {
-        //   return {
-        //     left: buildTraceExpression(state, thisTraceCfg),
-        //     right: valuePath.node,
-        //     operator: '='
-        //   };
-        // }
       }
     };
 
-    Traces.addTraceWithInputs(traceData, [valuePath]);
+    return Traces.addTraceWithInputs(traceData, valuePath && [valuePath] || EmptyArray);
   }
 
   // TODO: fix this

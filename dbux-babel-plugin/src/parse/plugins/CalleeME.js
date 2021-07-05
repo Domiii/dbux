@@ -6,13 +6,12 @@ import BasePlugin from './BasePlugin';
 /**
  * 
  */
-export default class CalleeMemberExpression extends BasePlugin {
+export default class CalleeME extends BasePlugin {
   /**
    * @return {MemberExpression}
    */
   get calleeNode() {
-    const [calleeNode] = this.node.getChildNodes();
-    return calleeNode;
+    return this.node.calleeNode;
   }
 
   get instrumentCallExpression() {
@@ -28,13 +27,13 @@ export default class CalleeMemberExpression extends BasePlugin {
     const {
       calleeNode,
       // node,
-      node: { path: { scope } }
+      node: { Traces }
     } = this;
 
     // const [objectPath/* , propertyPath */] = calleeNode.getChildPaths();
 
     // NOTE: o.#x is valid, if inside of o's class
-    const objectVar = scope.generateDeclaredUidIdentifier('o');
+    const objectVar = Traces.generateDeclaredUidIdentifier('o');
 
     // NOTE: for the final CallExpression, the callee is chopped into pieces -
     //  1. store object (`o`) in both, callee node (as `objectAstNode`) and call node (as `objectVar`)

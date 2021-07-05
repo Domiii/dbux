@@ -5,7 +5,7 @@ import * as t from '@babel/types';
 // import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import TraceCfg from '../../definitions/TraceCfg';
-import { makeInputs, NullNode } from './buildUtil';
+import { makeInputs, NullNode, ZeroNode } from './buildUtil';
 import { buildTraceId } from './traceId';
 import { buildSpreadableArgArrayNoSpread, buildGetI } from './arrays';
 import { buildTraceExpressionNoInput } from './misc';
@@ -64,16 +64,18 @@ function buildCallArgs(argsVar, argNodes) {
  * @param {DbuxState} state 
  * @param {TraceCfg} traceCfg 
  */
-function buildBCE(state, traceCfg, spreadArgs) {
+function buildBCE(state, traceCfg, calleeNode, spreadArgs) {
   const { ids: { aliases: {
     traceBCE
   } } } = state;
 
   const tid = buildTraceId(state, traceCfg);
+  const calleeTid = calleeNode?.getTidIdentifier() || ZeroNode;
   const argTids = makeInputs(traceCfg);
 
   return t.callExpression(traceBCE, [
     tid,
+    calleeTid,
     argTids,
     spreadArgs
   ]);
@@ -175,6 +177,7 @@ export function buildTraceCallDefault(state, traceCfg) {
     path,
     path: { scope },
     data: {
+      calleeNode,
       bceTrace,
       calleeVar
     }
@@ -200,7 +203,7 @@ export function buildTraceCallDefault(state, traceCfg) {
     t.assignmentExpression('=', argsVar, args),
 
     // (iii) BCE - `bce(tid, argTids, spreadArgs)`
-    buildBCE(state, bceTrace, spreadArgs),
+    buildBCE(state, bceTrace, calleeNode, spreadArgs),
 
     // (iv) wrap actual call - `tcr(f(args[0], ...args[1], args[2]))`
     buildTraceExpressionNoInput(
@@ -229,7 +232,8 @@ export function buildTraceCallUntraceableCallee(state, traceCfg) {
     path,
     path: { scope },
     data: {
-      bceTrace
+      bceTrace,
+      // calleeNode
     }
   } = traceCfg;
 
@@ -249,7 +253,7 @@ export function buildTraceCallUntraceableCallee(state, traceCfg) {
     t.assignmentExpression('=', argsVar, args),
 
     // (ii) BCE - `bce(tid, argTids, spreadArgs)`
-    buildBCE(state, bceTrace, spreadArgs),
+    buildBCE(state, bceTrace, null, spreadArgs),
 
     // (iii) wrap actual call - `tcr(f(args[0], ...args[1], args[2]))`
     buildTraceExpressionNoInput(
@@ -288,7 +292,8 @@ export function buildTraceCallME(state, traceCfg) {
     path,
     path: { scope },
     data: {
-      bceTrace,
+      bceTrace, 
+      calleeNode,
       calleeVar,
       objectVar,
       // objectPath,
@@ -326,7 +331,7 @@ export function buildTraceCallME(state, traceCfg) {
     t.assignmentExpression('=', argsVar, args),
 
     // (iv) BCE - `bce(tid, argTids, spreadArgs)`
-    buildBCE(state, bceTrace, spreadArgs),
+    buildBCE(state, bceTrace, calleeNode, spreadArgs),
 
     // (v) wrap actual call - `tcr(f.call(o, args[0], ...args[1], args[2]))`
     buildTraceExpressionNoInput(
