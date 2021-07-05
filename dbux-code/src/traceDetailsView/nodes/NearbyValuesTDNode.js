@@ -13,6 +13,9 @@ const { log, debug, warn, error: logError } = newLogger('NearbyValueTDNodes');
 
 /** @typedef {import('@dbux/common/src/core/data/Trace').default} Trace */
 
+/**
+ * @deprecated `dp.util.getTraceValue` does not work now
+ */
 export default class NearbyValuesTDNode extends BaseTreeViewNode {
   static makeLabel(/* trace, parent, props */) {
     return 'Nearby Values';

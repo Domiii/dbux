@@ -6,6 +6,7 @@ import TraceNode from './TraceNode';
 
 /**
  * Children of `NearbyValuesTDNode`
+ * @deprecated `dp.util.getTraceValue` does not work now
  */
 export default class TraceValueNode extends TraceNode {
   get value() {
