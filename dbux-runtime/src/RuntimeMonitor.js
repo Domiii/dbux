@@ -370,7 +370,8 @@ export default class RuntimeMonitor {
     const { contextId: resumeContextId } = resumeContext;
     this._runtime.push(resumeContextId);
 
-    this._trace(programId, resumeContextId, runId, inProgramStaticTraceId, TraceType.Resume);
+    this.newTraceId(programId, inProgramStaticTraceId);
+    // this._trace(programId, resumeContextId, runId, inProgramStaticTraceId, TraceType.Resume);
 
     return resumeContextId;
   }

@@ -154,7 +154,7 @@ class ExecutionContextCollection extends Collection {
   }
 
   setParamInputs(contexts) {
-    const { dp, dp: { util } } = this;
+    const { dp: { util } } = this;
     for (const { contextId } of contexts) {
       const paramTraces = util.getTracesOfContextAndType(contextId, TraceType.Param);
       if (!paramTraces.length) {

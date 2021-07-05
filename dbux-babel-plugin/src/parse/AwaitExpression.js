@@ -4,9 +4,9 @@ import * as t from "@babel/types";
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import StaticContextType from '@dbux/common/src/core/constants/StaticContextType';
 import { pathToString } from '../helpers/pathHelpers';
-import { isPathInstrumented } from '../helpers/astUtil';
 import BaseNode from './BaseNode';
 import { buildTraceExpressionNoInput } from '../instrumentation/builders/misc';
+import { buildWrapAwait } from '../instrumentation/builders/await';
 
 // ###########################################################################
 // builders
@@ -21,10 +21,6 @@ const postAwaitTemplate = template(`
   %%awaitContextId%%,
   %%resumeTraceId%%
 )`);
-
-const wrapAwaitExpressionTemplate = template(`
-(%%wrapAwait%%(%%argument%%, %%awaitContextId%% = %%dbux%%.preAwait(%%contextId%%, %%preTraceId%%)))
-`);
 
 
 function getAwaitDisplayName(path) {
@@ -67,13 +63,13 @@ export default class AwaitExpression extends BaseNode {
     } = this;
 
     const resumeId = this.addResumeContext();
-    const contextId = state.contexts.addStaticContext(path, {
+    const awaitContextId = state.contexts.addStaticContext(path, {
       type: StaticContextType.Await,
       displayName: getAwaitDisplayName(path),
       resumeId
     });
 
-    const awaitContextId = Traces.generateDeclaredUidIdentifier('cid');
+    const awaitContextIdVar = Traces.generateDeclaredUidIdentifier('cid');
     const argumentPath = path.get('argument');
     const argument = argumentPath.node;
 
@@ -83,17 +79,12 @@ export default class AwaitExpression extends BaseNode {
     // trace argument
     Traces.addTrace({
       path: argumentPath,
+      data: {
+        awaitContextId,
+        awaitContextIdVar
+      },
       meta: {
-        traceCall: 'wrapAwait',
-        build: buildTraceExpressionNoInput,
-        moreTraceCallArgs() {
-          return [
-            t.numericLiteral(contextId),
-            awaitContextId,
-            t.numericLiteral(preTraceId),
-            argument
-          ];
-        }
+        build: buildWrapAwait
       }
     });
 
@@ -106,8 +97,8 @@ export default class AwaitExpression extends BaseNode {
         build: buildTraceExpressionNoInput,
         moreTraceCallArgs() {
           return [
-            t.numericLiteral(contextId),
-            awaitContextId,
+            t.numericLiteral(awaitContextId),
+            awaitContextIdVar,
             t.numericLiteral(preTraceId),
             argument
           ];

@@ -122,6 +122,7 @@ export default function injectDbuxState(programPath, programState) {
         traceInstance: makeProgramId('ti'),
 
         // async
+        preAwait: makeProgramId('aw0'),
         wrapAwait: makeProgramId('aw1'),
         postAwait: makeProgramId('aw2'),
       }

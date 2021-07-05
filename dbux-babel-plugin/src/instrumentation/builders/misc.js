@@ -40,10 +40,6 @@ export const buildTraceExpression = buildTraceCall(
     const expr = getInstrumentTargetAstNode(state, traceCfg);
     const tid = buildTraceId(state, traceCfg);
 
-    // Verbose && debug(`[te] ${expressionNode.type} [${inputTraces?.map(i => i.tidIdentifier.name).join(',') || ''}]`, pathToString(expressionNode));
-
-    // NOTE: templates only work on `Node`, not on `NodePath`, thus they lose all path-related information.
-
     return {
       trace,
       expr,

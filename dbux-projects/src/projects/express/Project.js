@@ -146,6 +146,9 @@ export default class ExpressProject extends Project {
       //   testRe: 'should be called for any URL when "*"',
       //   testFilePaths: ['test/Router.js']
       // },
+      // NOTE: multiple tests per bug
+      // see: https://github.com/BugsJS/express/releases/tag/Bug-10-test 
+      //    -> https://github.com/BugsJS/express/commit/690be5b929559ab4590f45cc031c5c2609dd0a0f
       {
         id: 11,
         label: 'send numbers as json',
