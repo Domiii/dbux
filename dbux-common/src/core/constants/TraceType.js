@@ -1,7 +1,7 @@
 import Enum from '../../util/Enum';
 
 // eslint-disable-next-line import/no-mutable-exports
-let TraceType = {
+const traceTypeObj = {
   PushImmediate: 1,
   PopImmediate: 2,
 
@@ -81,9 +81,9 @@ let TraceType = {
 };
 
 /**
- * @type {(Enum|TraceTypeSet)}
+ * @type {(Enum|typeof traceTypeObj)}
  */
-TraceType = new Enum(TraceType);
+const TraceType = new Enum(traceTypeObj);
 
 const pushTypes = new Array(TraceType.getValueMaxIndex()).map(() => false);
 pushTypes[TraceType.PushImmediate] = true;

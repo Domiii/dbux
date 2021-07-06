@@ -55,6 +55,7 @@ export default class AwaitExpression extends BaseNode {
     });
 
     const awaitContextIdVar = Traces.generateDeclaredUidIdentifier('resumeCid');
+    const argumentVar = Traces.generateDeclaredUidIdentifier('arg');
     const resultVar = Traces.generateDeclaredUidIdentifier('res');
     const argumentPath = argumentNode.path;
 
@@ -65,6 +66,7 @@ export default class AwaitExpression extends BaseNode {
         type: TraceType.Await
       },
       data: {
+        argumentVar,
         awaitContextId,
         awaitContextIdVar
       },
@@ -85,6 +87,7 @@ export default class AwaitExpression extends BaseNode {
         type: TraceType.Resume
       },
       data: {
+        argumentVar,
         resultVar,
         awaitContextIdVar
       },

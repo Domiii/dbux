@@ -691,7 +691,7 @@ export default class RuntimeDataProvider extends DataProviderBase {
       executionContexts: new ExecutionContextCollection(this),
       traces: new TraceCollection(this),
       dataNodes: new DataNodeCollection(this),
-      values: new ValueCollection(this),
+      values: new ValueRefCollection(this),
       asyncEvents: new AsyncEventCollection(this),
       runs: new RunCollection(this),
     };

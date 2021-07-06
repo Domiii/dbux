@@ -356,7 +356,9 @@ export default class RuntimeMonitor {
       const { resumeId: resumeStaticContextId } = staticContext;
 
       // pushResume
-      const resumeContextId = this.pushResume(programId, resumeStaticContextId);
+      // NOTE: `tid` is a separate instruction, following `postAwait`
+      const resumeInProgramStaticTraceId = 0;
+      const resumeContextId = this.pushResume(programId, resumeStaticContextId, resumeInProgramStaticTraceId);
 
       if (awaitArgument instanceof Promise) {
         this._runtime.thread2.promiseAwaited(awaitArgument, this._runtime.getCurrentRunId());
@@ -410,7 +412,7 @@ export default class RuntimeMonitor {
 
     // more sanity checks
     if (!context) {
-      logError('Tried to popResume, but context was not registered:', resumeCid);
+      logError(`Tried to popResume, but context was not registered - resumeContextId=${resumeCid}`);
       return;
     }
     if (context.contextType !== ExecutionContextType.Resume) {

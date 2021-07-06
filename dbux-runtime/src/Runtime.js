@@ -3,7 +3,11 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import Stack from './Stack';
 import traceCollection from './data/traceCollection';
 import scheduleNextPossibleRun from './scheduleNextPossibleRun';
-import { RuntimeThreadsStack, RuntimeThreads1, RuntimeThreads2 } from './RuntimeThreads';
+import { RuntimeThreads1, RuntimeThreads2 } from './RuntimeThreads';
+
+// import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
+// import executionContextCollection from './data/executionContextCollection';
+// import staticContextCollection from './data/staticContextCollection';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -287,7 +291,7 @@ export default class Runtime {
     // const staticContext = staticContextCollection.getById(context.staticContextId);
     // const name = staticContext.displayName || '';
     // const typeName = ExecutionContextType.nameFromForce(context.contextType);
-    // console.debug('->', context.runId, contextId, `[${typeName}] ${name}`);
+    // console.debug(`-> ${context.runId} ${contextId} [${typeName}] ${name}`);
   }
 
   pop(contextId) {
@@ -295,7 +299,7 @@ export default class Runtime {
     // const staticContext = staticContextCollection.getById(context.staticContextId);
     // const name = staticContext.displayName || '';
     // const typeName = ExecutionContextType.nameFromForce(context.contextType);
-    // console.debug('<-', context.runId, contextId, `[${typeName}] ${name}`);
+    // console.debug(`<- ${context.runId} ${contextId} [${typeName}] ${name}`);
 
     // this._runtimeThreadStack.pop(contextId);
 

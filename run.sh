@@ -5,7 +5,7 @@
 set -e # cancel on error
 # set -x # verbose echo mode
 
-fname="async/basic1"
+fname="await0"
 
 
 nodeArgs=""
