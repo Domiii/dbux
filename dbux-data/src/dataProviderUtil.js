@@ -1,14 +1,17 @@
-import { hasDynamicTypes, isTracePop, isBeforeCallExpression } from '@dbux/common/src/core/constants/TraceType';
+import TraceType, { hasDynamicTypes, isTracePop, isBeforeCallExpression } from '@dbux/common/src/core/constants/TraceType';
+import SpecialIdentifierType from '@dbux/common/src/core/constants/SpecialIdentifierType';
 import { pushArrayOfArray } from '@dbux/common/src/util/arrayUtil';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
+import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/core/constants/DataNodeType';
 import StaticTrace from '@dbux/common/src/core/data/StaticTrace';
 import { isVirtualContextType } from '@dbux/common/src/core/constants/StaticContextType';
 import { isRealContextType } from '@dbux/common/src/core/constants/ExecutionContextType';
 import { isCallResult, hasCallId } from '@dbux/common/src/core/constants/traceCategorization';
 import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory, ValuePruneState } from '@dbux/common/src/core/constants/ValueTypeCategory';
 import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
-import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import { locToString } from './util/misc';
 
 /**
  * @typedef {import('./RuntimeDataProvider').default} DataProvider
@@ -27,8 +30,11 @@ export default {
     return dp.collections.staticProgramContexts.getById(programId)?.filePath || null;
   },
 
-  /** @param {DataProvider} dp */
-  getProgramModuleName(dp, programId) {
+  /** 
+   * @param {DataProvider} dp
+   * @return {Array.<string>} Names of all modules from `node_modules` folders that were executed.
+   */
+  getExternalProgramModuleName(dp, programId) {
     const programContext = dp.collections.staticProgramContexts.getById(programId);
 
     if ('_moduleName' in programContext) {
@@ -37,6 +43,19 @@ export default {
     else {
       return programContext._moduleName = parseNodeModuleName(programContext.filePath);
     }
+  },
+
+  getAllExternalProgramModuleNames(dp, startId = 1) {
+    const programIds = new Set(
+      dp.collections.staticProgramContexts
+        .getAllActual(startId)
+        .map(p => dp.util.getExternalProgramModuleName(p.programId))
+    );
+
+    // NOTE: `getExternalProgramModuleName` returns null if a program is not in `node_modules`.
+    programIds.delete(null);
+
+    return Array.from(programIds);
   },
 
   // ###########################################################################
@@ -87,13 +106,13 @@ export default {
     return dp.indexes.traces.firsts.get(1);
   },
   /**
-   * Get all contexts in which an object of given `trackId` has been recorded.
+   * Get all contexts in which an object of given `refId` has been recorded.
    * 
    * @param {DataProvider} dp
    */
-  getContextsByTrackId(dp, trackId) {
+  getContextsByRefId(dp, refId) {
     // get all participating traces
-    const traces = dp.indexes.traces.byTrackId.get(trackId);
+    const traces = dp.indexes.traces.byRefId.get(refId);
 
     // generate set of contexts of those traces
     const contextsSet = new Set();
@@ -137,7 +156,7 @@ export default {
   getContextModuleName(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
     const staticContext = dp.collections.staticContexts.getById(context.staticContextId);
-    return dp.util.getProgramModuleName(staticContext.programId);
+    return dp.util.getExternalProgramModuleName(staticContext.programId);
   },
 
   // ###########################################################################
@@ -227,8 +246,9 @@ export default {
   },
 
   /**
-   * Returns the parentTrace of a context, not necessarily a BCE
-   * Use getCallerTraceOfContext if you want the BCE of a context
+   * Returns the parentTrace of a context, not necessarily a BCE.
+   * Use getCallerTraceOfContext if you want the BCE of a context.
+   * 
    * @param {DataProvider} dp 
    * @param {number} contextId 
    */
@@ -283,6 +303,24 @@ export default {
   },
 
   // ###########################################################################
+  // DataNodes
+  // ###########################################################################
+
+  /**
+   * @param {DataProvider} dp
+   * @return {DataNode} DataNode of value trace
+   */
+  getDataNodeOfTrace(dp, traceId) {
+    const valueTrace = dp.util.getValueTrace(traceId);
+    return dp.collections.dataNodes.getById(valueTrace.nodeId);
+  },
+
+  /** @param {DataProvider} dp */
+  getDataNodesOfTrace(dp, traceId) {
+    return dp.indexes.dataNodes.byTrace.get(traceId);
+  },
+
+  // ###########################################################################
   // trace values
   // ###########################################################################
 
@@ -303,66 +341,109 @@ export default {
 
   /** @param {DataProvider} dp */
   isTraceTrackableValue(dp, traceId) {
-    const valueRef = dp.util.getTraceValueRef(traceId);
-    return valueRef && isObjectCategory(valueRef.category) || false;
+    const dataNode = dp.util.getDataNodeOfTrace(traceId);
+    return dataNode ? dp.util.isDataNodeTrackableValue(dataNode.nodeId) : false;
   },
 
   /** @param {DataProvider} dp */
   isTracePlainObjectOrArrayValue(dp, traceId) {
-    const valueRef = dp.util.getTraceValueRef(traceId);
-    return valueRef && isPlainObjectOrArrayCategory(valueRef.category) || false;
+    const dataNode = dp.util.getDataNodeOfTrace(traceId);
+    return dataNode ? dp.util.isDataNodePlainObjectOrArrayValue(dataNode.nodeId) : false;
   },
 
   /** @param {DataProvider} dp */
   isTracePlainObject(dp, traceId) {
-    const valueRef = dp.util.getTraceValueRef(traceId);
-    return valueRef && isPlainObjectOrArrayCategory(valueRef.category) || false;
+    const dataNode = dp.util.getDataNodeOfTrace(traceId);
+    return dataNode ? dp.util.isDataNodePlainObject(dataNode.nodeId) : false;
   },
 
   /** @param {DataProvider} dp */
   isTraceFunctionValue(dp, traceId) {
-    const valueRef = dp.util.getTraceValueRef(traceId);
+    const dataNode = dp.util.getDataNodeOfTrace(traceId);
+    return dataNode ? dp.util.isDataNodeFunctionValue(dataNode.nodeId) : false;
+  },
+
+  /** @param {DataProvider} dp */
+  isDataNodeTrackableValue(dp, nodeId) {
+    const valueRef = dp.util.getDataNodeValueRef(nodeId);
+    return valueRef && isObjectCategory(valueRef.category) || false;
+  },
+
+  /** @param {DataProvider} dp */
+  isDataNodePlainObjectOrArrayValue(dp, nodeId) {
+    const valueRef = dp.util.getDataNodeValueRef(nodeId);
+    return valueRef && isPlainObjectOrArrayCategory(valueRef.category) || false;
+  },
+
+  /** @param {DataProvider} dp */
+  isDataNodePlainObject(dp, nodeId) {
+    const valueRef = dp.util.getDataNodeValueRef(nodeId);
+    return valueRef && isPlainObjectOrArrayCategory(valueRef.category) || false;
+  },
+
+  /** @param {DataProvider} dp */
+  isDataNodeFunctionValue(dp, nodeId) {
+    const valueRef = dp.util.getDataNodeValueRef(nodeId);
     return valueRef && isFunctionCategory(valueRef.category) || false;
   },
 
   /**
-   * True if trace has value that is not `undefined`.
    * @param {DataProvider} dp
    */
   doesTraceHaveValue(dp, traceId) {
-    const trace = dp.util.getValueTrace(traceId);
-    if (trace.value !== undefined || trace.valueId) {
-      return true;
-    }
-    else {
-      return false;
-    }
-
-    // const trace = dp.util.getValueTrace(traceId);
-    // const { value } = trace;
-    // if (value === undefined) {
-    //   const valueRef = dp.util.getTraceValueRef(traceId);
-    //   if (!valueRef) { // || valueRef.value === undefined) {
-    //     // TODO: better distinguish between existing and non-existing values
-    //     return false;
-    //   }
-    // }
-    // return true;
-
-    // const value = dp.util.getTraceValue(traceId);
-    // return value !== undefined;
-    // const trace = dp.collections.traces.getById(traceId);
-    // const { staticTraceId, type: dynamicType } = trace;
-    // if (dynamicType) {
-    //   return hasTraceValue(dynamicType);
-    // }
-    // return dp.util.doesStaticTraceHaveValue(staticTraceId);
+    return !!dp.util.getDataNodeOfTrace(traceId);
   },
 
-  // doesStaticTraceHaveValue(dp, staticTraceId) {
-  //   const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
-  //   return hasTraceValue(staticTrace.type);
-  // },
+  /** 
+   * NOTE: Call `isTracePlainObjectOrArrayValue` to make sure it is reconstructable
+   * @param {DataProvider} dp
+   */
+  constructValueObjectFull(dp, nodeId) {
+    // TODO
+  },
+
+  /**
+   * NOTE: Call `isTracePlainObjectOrArrayValue` to make sure it is reconstructable
+   * 
+   * @param {DataProvider} dp
+   * @return {{prop: number}} returns the `prop`, `nodeId` key-value pairs
+   */
+  constructValueObjectShallow(dp, refId, terminateNodeId) {
+    const valueRef = dp.collections.values.getById(refId);
+
+    // initial values
+    const entries = { ...valueRef.value };
+
+    if (!entries) {
+      // sanity check
+      dp.logger.error(`Cannot construct non-object valueRef: ${JSON.stringify(valueRef)}`);
+    }
+
+    // + writes - delete
+    const modifyNodes = dp.indexes.dataNodes.byObjectRefId.get(refId)?.filter(node => isDataNodeModifyType(node.type)) || EmptyArray;
+    for (const modifyNode of modifyNodes) {
+      if (modifyNode.nodeId > terminateNodeId) {
+        // only apply write operations `before` the terminateNodeId
+        break;
+      }
+      if (modifyNode.type === DataNodeType.Write) {
+        const { prop } = modifyNode.varAccess;
+        const inputNode = dp.collections.dataNodes.getById(modifyNode.inputs[0]);
+        if (inputNode.refId) {
+          entries[prop] = [inputNode.nodeId, inputNode.refId, null];
+        }
+        else {
+          entries[prop] = [inputNode.nodeId, null, inputNode.value];
+        }
+      }
+      else if (modifyNode.type === DataNodeType.Delete) {
+        const { prop } = modifyNode.varAccess;
+        delete entries[prop];
+      }
+    }
+
+    return entries;
+  },
 
   /**
    * WARNING: Call `doesTraceHaveValue` to make sure, the trace has a value.
@@ -370,15 +451,30 @@ export default {
    * @param {DataProvider} dp
    * @return Value of given trace. If value is `undefined`, it could mean that the `value` is actually `undefined`, or, in case of traces that are not expressions, that there is no value.
    */
-  getTraceValue(dp, traceId) {
-    const valueTrace = dp.util.getValueTrace(traceId);
+  getTraceValuePrimitive(dp, traceId) {
+    const dataNode = dp.util.getDataNodeOfTrace(traceId);
+    return dp.util.getDataNodeValuePrimitive(dataNode.nodeId);
+  },
 
-    if (valueTrace.value !== undefined) {
-      return valueTrace.value;
+  /** @param {DataProvider} dp */
+  getDataNodeValuePrimitive(dp, nodeId) {
+    const dataNode = dp.collections.dataNodes.getById(nodeId);
+    if (!dataNode) {
+      return undefined;
     }
 
-    if (valueTrace.valueId) {
-      const valueRef = dp.util.getTraceValueRef(traceId);
+    if (dataNode.value !== undefined) {
+      return dataNode.value;
+    }
+
+    if (dataNode.refId) {
+      const valueRef = dp.collections.values.getById(dataNode.refId);
+      if (!valueRef) {
+        logError(`valueRef does not exist for dataNode - ${JSON.stringify(dataNode)}`);
+        return undefined;
+      }
+      // TODO: this is not the correct value for objects or arrays, needs reconstruct
+      // TODO: some shallow reconstruct?
       return valueRef.value;
     }
 
@@ -417,7 +513,7 @@ export default {
     }
 
     // get value
-    const value = dp.util.getTraceValue(traceId);
+    const value = dp.util.getTraceValuePrimitive(traceId);
 
     let valueString;
     if (dp.util.isTraceFunctionValue(traceId)) {
@@ -427,7 +523,9 @@ export default {
       valueString = 'undefined';
     }
     else {
-      valueString = JSON.stringify(value);
+      // TODO: fix this
+      // valueString = JSON.stringify(value);
+      valueString = value?.toString?.() || String(value);
     }
 
     // hackfix: we cache this thing
@@ -464,31 +562,48 @@ export default {
 
   /** @param {DataProvider} dp */
   getTraceValueRef(dp, traceId) {
-    const trace = dp.util.getValueTrace(traceId);
-    const { valueId } = trace;
+    const dataNode = dp.util.getDataNodeOfTrace(traceId);
+    return dataNode ? dp.util.getDataNodeValueRef(dataNode.nodeId) : null;
+  },
 
-    if (valueId) {
-      // value is reference type
-      const ref = dp.collections.values.getById(valueId);
-      return ref;
+  /** @param {DataProvider} dp */
+  getDataNodeValueRef(dp, nodeId) {
+    const dataNode = dp.collections.dataNodes.getById(nodeId);
+    if (dataNode) {
+      const { refId } = dataNode;
+      if (refId) {
+        return dp.collections.values.getById(refId);
+      }
     }
-
-    // value is primitive type (or trace has no value)
     return null;
   },
 
-  getTraceTrackId(dp, traceId) {
+  getTraceRefId(dp, traceId) {
     const valueRef = dp.util.getTraceValueRef(traceId);
-    return valueRef?.trackId;
+    return valueRef?.refId;
   },
 
   /** @param {DataProvider} dp */
   getAllTracesOfObjectOfTrace(dp, traceId) {
     const valueRef = dp.util.getTraceValueRef(traceId);
-    if (valueRef?.trackId) {
-      return dp.indexes.traces.byTrackId.get(valueRef.trackId);
+    if (valueRef?.refId) {
+      return dp.indexes.traces.byRefId.get(valueRef.refId);
     }
     return null;
+  },
+
+  getDataNodeByRefId(dp, refId) {
+    return dp.indexes.dataNodes.byRefId.get(refId);
+  },
+
+  getTraceIdByRefId(dp, refId) {
+    const dataNode = dp.indexes.dataNodes.byRefId.get(refId);
+    return dataNode?.traceId;
+  },
+
+  getTraceByRefId(dp, refId) {
+    const dataNode = dp.indexes.dataNodes.byRefId.get(refId);
+    return dataNode?.traceId && dp.util.getTrace(dataNode.traceId);
   },
 
   // ###########################################################################
@@ -578,19 +693,19 @@ export default {
   },
 
   /**
-   * Returns the BCE of a context
+   * Returns the BCE of a context, if it has one. Else it returns the last trace before the context.
+   * NOTE: `parentTrace` of a context might not participate in a call, e.g. in case of getters or setters
    * @param {DataProvider} dp 
    * @param {number} contextId
   */
   getCallerTraceOfContext(dp, contextId) {
     const parentTrace = dp.util.getParentTraceOfContext(contextId);
-    if (parentTrace) {
-      // try to get BCE of call
-      // NOTE: `parentTrace` of a context might not participate in a call, e.g. in case of getters or setters
-      const callerTrace = dp.util.getPreviousCallerTraceOfTrace(parentTrace.traceId);
-      return callerTrace;
-    }
-    return null;
+    // if (parentTrace) {
+    //   // try to get BCE of call
+    //   const callerTrace = dp.util.getPreviousCallerTraceOfTrace(parentTrace.traceId);
+    //   return callerTrace;
+    // }
+    return parentTrace;
   },
 
   /** @param {DataProvider} dp */
@@ -641,6 +756,39 @@ export default {
   getStaticCallId(dp, staticTraceId) {
     const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
     return staticTrace.resultCallId || staticTrace.callId;
+  },
+
+  getCallArgTraces(dp, callId) {
+    const bceTrace = dp.collections.traces.getById(callId);
+    return bceTrace.data?.argTids.map(tid => dp.collections.traces.getById(tid));
+  },
+
+  /**
+   * NOTE: This works automatically for spread operator.
+   * 
+   * @return Flattened version of DataNodes of `CallExpression` arguments.
+   */
+  getCallArgDataNodes(dp, callId) {
+    const argTraces = dp.util.getCallArgTraces(callId);
+    const { argConfigs } = dp.util.getStaticTrace(callId).data;
+    return argTraces.flatMap((t, i) => {
+      const dataNodes = dp.util.getDataNodesOfTrace(t.traceId);
+      if (!argConfigs[i]?.isSpread) {
+        // not spread -> take the argument's own `DataNode`
+        return dataNodes[0];
+      }
+      // spread -> take all of the spread argument's additional `DataNode`s (which are the argument DataNodes)
+      return dataNodes.slice(1);
+    });
+  },
+
+  /**
+   * Returns array of values of args, but only for primitive values.
+   * Non-primitive argument values will be `undefined`.
+   */
+  getCallArgPrimitiveValues(dp, callId) {
+    const dataNodes = dp.util.getCallArgDataNodes(callId);
+    return dataNodes?.map(node => node.value);
   },
 
   // ###########################################################################
@@ -809,6 +957,34 @@ export default {
   },
 
   // ###########################################################################
+  // SpecialIdentifierType
+  // ###########################################################################
+
+  getTracesOfSpecialIdentifierType(dp, specialType, startId = 1) {
+    return dp.indexes.traces.bySpecialIdentifierType.get(specialType) || EmptyArray;
+  },
+
+  getAllRequireTraces(dp, startId = 1) {
+    return dp.util.getTracesOfSpecialIdentifierType(SpecialIdentifierType.Require, startId);
+  },
+
+  getAllRequirePaths(dp, startId = 1) {
+    // NOTE: these should be BCE traces, meaning traceId === callId
+    const traces = dp.util.getAllRequireTraces(startId);
+    return traces.map(t => dp.util.getCallArgPrimitiveValues(t.traceId)?.[0]);
+  },
+
+  getAllRequireModuleNames(dp, startId = 1) {
+    const set = new Set(
+      dp.util.getAllRequirePaths(startId)
+        .map(p => p.split('/', 1)[0])
+    );
+    set.delete('.');
+    set.delete('..');
+    return Array.from(set);
+  },
+
+  // ###########################################################################
   // traces of interruptable functions
   // ###########################################################################
   /**
@@ -896,6 +1072,29 @@ export default {
   },
 
   // ###########################################################################
+  // trace info + debugging
+  // ###########################################################################
+
+  makeStaticTraceInfo(dp, traceId) {
+    const fpath = dp.util.getTraceProgramPath(traceId);
+    const st = dp.util.getStaticTrace(traceId);
+    const loc = locToString(st.loc);
+    const where = `${fpath}:${loc}`;
+    return `"${st?.displayName}" at ${where} (stid=${st?.staticTraceId})`;
+  },
+
+  /**
+   * 
+   */
+  makeTraceInfo(dp, traceId) {
+    // const { traceId } = trace;
+    // const trace = this.dp.collections.traces.getById(traceId);
+    const traceType = dp.util.getTraceType(traceId);
+    const typeName = TraceType.nameFrom(traceType);
+    return `[${typeName}] #${traceId} ${dp.util.makeStaticTraceInfo(traceId)}`;
+  },
+
+  // ###########################################################################
   // Contexts + their traces
   // ###########################################################################
 
@@ -959,6 +1158,15 @@ export default {
       last = staticTraces[staticTraces.length - 2] || null;
     }
     return last;
+  },
+
+  getTracesOfContextAndType(dp, contextId, type) {
+    const traces = dp.indexes.traces.byContext.get(contextId);
+    // NOTE: `Await` contexts don't have traces
+    // if (!traces) {
+    //   dp.logger.error(`Context did not have any traces: ${contextId}`);
+    // }
+    return traces?.filter(trace => dp.util.getTraceType(trace.traceId) === type) || EmptyArray;
   },
 
   /** @param {DataProvider} dp */
@@ -1032,7 +1240,7 @@ export default {
   },
 
   // ###########################################################################
-  // dynamic tracing
+  // dynamic tracing meta
   // ###########################################################################
 
   /**
@@ -1075,13 +1283,24 @@ export default {
     // find all roots
     // let lastResult = null;
     for (const runId of runIds) {
-      const root = dp.util.getFirstContextOfRun(runId);
-      dfs(root);
+      for (const root of dp.indexes.executionContexts.byRun.get(runId)) {
+        dfs(root);
+      }
     }
   },
 
   getChildrenOfContext(dp, contextId) {
     return dp.indexes.executionContexts.children.get(contextId) || EmptyArray;
-  }
+  },
 
+  // ###########################################################################
+  // labels
+  // ###########################################################################
+
+  makeTypeNameLabel(dp, traceId) {
+    const traceType = dp.util.getTraceType(traceId);
+    const typeName = TraceType.nameFrom(traceType);
+    return `[${typeName}]`;
+  }
 };
+

@@ -1,10 +1,10 @@
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import * as t from '@babel/types';
+import difference from 'lodash/difference';
 import StaticCollection from './StaticCollection';
 
 import { extractSourceStringWithoutComments } from '../helpers/sourceHelpers';
-import { getPresentableString } from '../helpers/misc';
-import { getFunctionDisplayName } from '../helpers/functionHelpers';
+import { pathToString } from '../helpers/pathHelpers';
 import { getNodeNames } from '../visitors/nameVisitors';
 
 
@@ -75,7 +75,8 @@ function getTraceDisplayName(path, state) {
   }
   else {
     const str = extractSourceStringWithoutComments(path.node, state);
-    displayName = getPresentableString(str);
+    displayName = str;
+    // displayName = pathToString(str);
   }
   return displayName;
 }
@@ -111,39 +112,51 @@ export default class StaticTraceCollection extends StaticCollection {
     return traceId && this.getById(traceId) || null;
   }
 
+
   /**
    * Tracing a path in its entirety
    * (usually means, the trace is recorded right before the given path).
    */
-  addTrace(path, type, customArg, cfg) {
+  addTrace(path, staticData) {
     this.checkPath(path);
 
     const { state } = this;
 
     // console.log('TRACE', '@', `${state.filename}:${line}`);
-    // per-type data
+    // get `displayName`, `loc`
     const _traceId = this._getNextId();
     let trace;
-    if (traceCustomizationsByType[type]) {
-      trace = traceCustomizationsByType[type](path, state, customArg);
-    }
-    else {
-      trace = traceDefault(path, state, customArg);
+
+    const { type, dataNode, data } = staticData;
+
+    if (process.env.NODE_ENV === 'development') {
+      // add some sanity checks for the contents of staticTraceData
+      if (difference(Object.keys(staticData), ['type', 'dataNode', 'data']).length) {
+        throw new Error(`Unknown key(s) in staticTraceData: ${JSON.stringify(staticData)}`);
+      }
     }
 
-    // context-sensitive data
-    trace._callId = cfg?.callId || type === TraceType.BeforeCallExpression && _traceId;
-    trace._resultCallId = cfg?.resultCallId;
+    if (!type) {
+      throw new Error(`invalid call to "addTrace" - missing "staticData.type", in path: ${pathToString(path)}`);
+    }
+    if (traceCustomizationsByType[type]) {
+      trace = traceCustomizationsByType[type](path, state);
+    }
+    else {
+      trace = traceDefault(path, state);
+    }
 
     // misc data
     trace._traceId = _traceId;
     trace._staticContextId = state.contexts.getCurrentStaticContextId(path);
     trace.type = type;
+    trace.data = data;
+    trace.dataNode = dataNode;
 
     // push
     this._push(trace);
 
-    path.setData('_traceId', _traceId);
+    // path.setData('_traceId', _traceId);
 
     return _traceId;
   }

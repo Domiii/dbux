@@ -1,6 +1,8 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
-import TraceType, { isBeforeCallExpression } from '@dbux/common/src/core/constants/TraceType';
+import TraceType, { isBeforeCallExpression, isPopTrace } from '@dbux/common/src/core/constants/TraceType';
+// import SpecialIdentifierType from '@dbux/common/src/core/constants/SpecialIdentifierType';
+import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
 import staticProgramContextCollection from './data/staticProgramContextCollection';
 import executionContextCollection from './data/executionContextCollection';
 import staticContextCollection from './data/staticContextCollection';
@@ -9,23 +11,29 @@ import staticTraceCollection from './data/staticTraceCollection';
 import Runtime from './Runtime';
 import ProgramMonitor from './ProgramMonitor';
 import { ensurePromiseWrapped } from './wrapPromise';
+import dataNodeCollection, { ShallowValueRefMeta } from './data/dataNodeCollection';
+import valueCollection from './data/valueCollection';
+import registerBuiltins from './builtIns/index';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError } = newLogger('RuntimeMonitor');
 
-const Verbose = true;
-// const Verbose = false;
+// const Verbose = 2;
+const Verbose = 1;
+// const Verbose = 0;
+
 const debug = (...args) => Verbose && _debug(...args);
 
-function _inheritsLoose(subClass, superClass) {
-  if (superClass.prototype) {
-    subClass.prototype = Object.create(superClass.prototype);
-    subClass.prototype.constructor = subClass;
+// TODO: we can properly use Proxy to wrap callbacks
+// function _inheritsLoose(subClass, superClass) {
+//   if (superClass.prototype) {
+//     subClass.prototype = Object.create(superClass.prototype);
+//     subClass.prototype.constructor = subClass;
 
-    // eslint-disable-next-line no-proto
-    subClass.__proto__ = superClass;
-  }
-}
+//     // eslint-disable-next-line no-proto
+//     subClass.__proto__ = superClass;
+//   }
+// }
 
 /**
  * 
@@ -37,11 +45,17 @@ export default class RuntimeMonitor {
    * @type {RuntimeMonitor}
    */
   static get instance() {
-    return this._instance || (this._instance = new RuntimeMonitor());
+    return this._instance || (this._instance = new RuntimeMonitor()._init());
   }
 
   _programMonitors = new Map();
   _runtime = new Runtime();
+
+  _init() {
+    registerBuiltins();
+
+    return this;
+  }
 
   // ###########################################################################
   // Program management
@@ -69,7 +83,8 @@ export default class RuntimeMonitor {
     const { contexts: staticContexts, traces: staticTraces } = programData;
     staticContextCollection.addEntries(programId, staticContexts);
 
-    // warn(`RuntimeMonitor.addProgram ${programId}: ${programData.fileName} (td=${!!runtimeCfg.tracesDisabled})`);
+
+    Verbose && debug(`addProgram ${programId}: ${programData.fileName} (tracesDisabled=${runtimeCfg.tracesDisabled})`);
 
     // change program-local _staticContextId to globally unique staticContextId
     for (let i = 0; i < staticTraces.length; ++i) {
@@ -92,7 +107,7 @@ export default class RuntimeMonitor {
   }
 
   // ###########################################################################
-  // public interface
+  // context + function traces
   // ###########################################################################
 
   /**
@@ -106,18 +121,39 @@ export default class RuntimeMonitor {
     const parentContextId = this._runtime.peekCurrentContextId();
     const parentTraceId = this._runtime.getParentTraceId();
 
+    if (Verbose) {
+      const staticContext = staticContextCollection.getContext(programId, inProgramStaticContextId);
+      debug(
+        // ${JSON.stringify(staticContext)}
+        `pushImmediate ${programId}.${inProgramStaticContextId} ${staticContext?.displayName} (${runId}))`
+      );
+    }
+
     const context = executionContextCollection.executeImmediate(
       stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId, tracesDisabled
     );
     const { contextId } = context;
     this._runtime.push(contextId, isInterruptable);
 
-    // debug('push immediate, stack size', this._runtime._executingStack.length());
+    this.newTraceId(programId, inProgramStaticTraceId);
 
-    // trace
-    this._trace(programId, contextId, runId, inProgramStaticTraceId);
+    // this._trace(programId, contextId, runId, inProgramStaticTraceId);
 
     return contextId;
+  }
+
+  registerParams(programId, paramTids) {
+    // nothing to do (for now)
+  }
+
+  traceReturn(programId, value, tid, inputs) {
+    // for now: same as `te`
+    return this.traceExpression(programId, value, tid, inputs);
+  }
+
+  traceThrow(programId, value, tid, inputs) {
+    // for now: same as `te`
+    return this.traceExpression(programId, value, tid, inputs);
   }
 
 
@@ -130,7 +166,7 @@ export default class RuntimeMonitor {
     // TODO
   }
 
-  popImmediate(contextId, inProgramStaticTraceId) {
+  popImmediate(contextId, traceId) {
     // sanity checks
     const context = executionContextCollection.getById(contextId);
     if (!context) {
@@ -146,7 +182,22 @@ export default class RuntimeMonitor {
     // trace
     const runId = this._runtime.getCurrentRunId();
     const programId = executionContextCollection.getProgramId(contextId);
-    this._trace(programId, contextId, runId, inProgramStaticTraceId, null, true);
+
+    if (Verbose) {
+      const { staticContextId } = context;
+      const staticContext = staticContextCollection.getById(staticContextId);
+      debug(
+        // ${JSON.stringify(staticContext)}
+        `popImmediate ${programId}.${staticContext._staticId} ${staticContext?.displayName} (${runId}))`
+      );
+    }
+
+    // finishTrace (already done...)
+    // const trace = traceCollection.getById(traceId);
+    // this._onTrace(contextId, trace, true);
+    // trace.previousTrace = this._runtime.getLastTraceInContext(contextId);
+
+    // this._trace(programId, contextId, runId, inProgramStaticTraceId, null, true);
   }
 
   _pop(contextId) {
@@ -199,64 +250,67 @@ export default class RuntimeMonitor {
   //   return wrappedCb;
   // }
 
-  /**
-   * Very similar to `pushImmediate`.
-   * We need it to establish the link with it's scheduling context.
-   */
-  pushCallback(programId, schedulerContextId, schedulerTraceId, inProgramStaticTraceId, tracesDisabled) {
-    this._runtime.beforePush(null);
+  // /**
+  //  * Very similar to `pushImmediate`.
+  //  * We need it to establish the link with it's scheduling context.
+  //  */
+  // pushCallback(programId, schedulerContextId, schedulerTraceId, inProgramStaticTraceId, tracesDisabled) {
+  //   this._runtime.beforePush(null);
 
-    const stackDepth = this._runtime.getStackDepth();
-    const runId = this._runtime.getCurrentRunId();
-    const parentContextId = this._runtime.peekCurrentContextId();
-    const parentTraceId = this._runtime.getParentTraceId();
+  //   const stackDepth = this._runtime.getStackDepth();
+  //   const runId = this._runtime.getCurrentRunId();
+  //   const parentContextId = this._runtime.peekCurrentContextId();
+  //   const parentTraceId = this._runtime.getParentTraceId();
 
-    // register context
-    // console.debug('pushCallback', { parentContextId, schedulerContextId, schedulerTraceId });
-    const context = executionContextCollection.executeCallback(
-      stackDepth, runId, parentContextId, parentTraceId, schedulerContextId, schedulerTraceId, tracesDisabled
-    );
-    const { contextId } = context;
-    this._runtime.push(contextId);
+  //   // register context
+  //   // console.debug('pushCallback', { parentContextId, schedulerContextId, schedulerTraceId });
+  //   const context = executionContextCollection.executeCallback(
+  //     stackDepth, runId, parentContextId, parentTraceId, schedulerContextId, schedulerTraceId, tracesDisabled
+  //   );
+  //   const { contextId } = context;
+  //   this._runtime.push(contextId);
 
-    // trace
-    this._trace(programId, contextId, runId, inProgramStaticTraceId, TraceType.PushCallback);
+  //   // trace
+  //   this._trace(programId, contextId, runId, inProgramStaticTraceId, TraceType.PushCallback);
 
-    return contextId;
-  }
+  //   return contextId;
+  // }
 
-  popCallback(programId, callbackContextId, inProgramTraceId, resultValue) {
-    // sanity checks
-    const context = executionContextCollection.getById(callbackContextId);
-    if (!context) {
-      logError('Tried to popCallback, but context was not registered:',
-        callbackContextId);
-      return;
-    }
+  // popCallback(programId, callbackContextId, inProgramTraceId, resultValue) {
+  //   // sanity checks
+  //   const context = executionContextCollection.getById(callbackContextId);
+  //   if (!context) {
+  //     logError('Tried to popCallback, but context was not registered:',
+  //       callbackContextId);
+  //     return;
+  //   }
 
-    const runId = this._runtime.getCurrentRunId(); // get runId before pop
+  //   const runId = this._runtime.getCurrentRunId(); // get runId before pop
 
-    // pop from stack
-    this._pop(callbackContextId);
+  //   // pop from stack
+  //   this._pop(callbackContextId);
 
-    // trace
-    const trace = traceCollection.traceWithResultValue(programId, callbackContextId, runId, inProgramTraceId, TraceType.PopCallback, resultValue, this.valuesDisabled);
-    this._onTrace(callbackContextId, trace, true);
-  }
+  //   // trace
+  //   const trace = traceCollection.traceWithResultValue(programId, callbackContextId, runId, inProgramTraceId, TraceType.PopCallback, resultValue, this.valuesDisabled);
+  //   this._onTrace(callbackContextId, trace, true);
+  // }
 
 
   // ###########################################################################
-  // Interrupts, await et al
+  // await
   // ###########################################################################
 
-  preAwait(programId, inProgramStaticContextId, inProgramStaticTraceId, awaitArgument) {
+  wrapAwait(programId, awaitValue) {
+    // nothing to do
+    return awaitValue;
+  }
+
+  preAwait(programId, inProgramStaticContextId, preAwaitTid, awaitArgument) {
     const stackDepth = this._runtime.getStackDepth();
     const runId = this._runtime.getCurrentRunId();
     const resumeContextId = this._runtime.peekCurrentContextId(); // NOTE: parent == Resume
-    const parentTraceId = this._runtime.getParentTraceId();
-
-    // trace Await
-    this._trace(programId, resumeContextId, runId, inProgramStaticTraceId);
+    // const parentTraceId = this._runtime.getParentTraceId();
+    const parentTraceId = preAwaitTid;
 
     // pop Resume context
     this.popResume(resumeContextId);
@@ -279,15 +333,10 @@ export default class RuntimeMonitor {
     return awaitContextId;
   }
 
-  wrapAwait(programId, awaitValue, /* awaitContextId */) {
-    // nothing to do
-    return awaitValue;
-  }
-
   /**
    * Resume given stack
    */
-  postAwait(programId, awaitResult, awaitArgument, awaitContextId, resumeInProgramStaticTraceId) {
+  postAwait(programId, awaitResult, awaitArgument, awaitContextId) {
     // sanity checks
     const context = executionContextCollection.getById(awaitContextId);
     if (!context) {
@@ -300,11 +349,14 @@ export default class RuntimeMonitor {
       // traceCollection.trace(awaitContextId, runId, inProgramStaticTraceId, TraceType.Await);
       // this._pop(awaitContextId);
 
-      // resume: push new Resume context
+      // add resume context
+      // NOTE: staticContext is the same for resume and await
       const { staticContextId } = context;
       const staticContext = staticContextCollection.getById(staticContextId);
       const { resumeId: resumeStaticContextId } = staticContext;
-      const resumeContextId = this.pushResume(programId, resumeStaticContextId, resumeInProgramStaticTraceId);
+
+      // pushResume
+      const resumeContextId = this.pushResume(programId, resumeStaticContextId);
 
       if (awaitArgument instanceof Promise) {
         this._runtime.thread2.promiseAwaited(awaitArgument, this._runtime.getCurrentRunId());
@@ -318,12 +370,10 @@ export default class RuntimeMonitor {
 
       this._runtime.thread1.postAwait(parentContextId, postEventContext, postEventRun, awaitArgument);
     }
-
-    return awaitResult;
   }
 
 
-  pushResume(programId, resumeStaticContextId, inProgramStaticTraceId/* , dontTrace = false */) {
+  pushResume(programId, resumeStaticContextId, resumeInProgramStaticTraceId = 0/* , dontTrace = false */) {
     this._runtime.beforePush(null);
 
     const stackDepth = this._runtime.getStackDepth();
@@ -331,33 +381,36 @@ export default class RuntimeMonitor {
     const parentContextId = this._runtime.peekCurrentContextId();
     const parentTraceId = this._runtime.getParentTraceId();
 
-    // NOTE: we don't really need a `schedulerTraceId`, since the parent context is always the calling function
+    // add resumeContext
     const schedulerTraceId = null;
     const resumeContext = executionContextCollection.resume(
       stackDepth, runId, parentContextId, parentTraceId, programId, resumeStaticContextId, schedulerTraceId
     );
-
     const { contextId: resumeContextId } = resumeContext;
     this._runtime.push(resumeContextId);
 
-    this._trace(programId, resumeContextId, runId, inProgramStaticTraceId, TraceType.Resume);
+    if (resumeInProgramStaticTraceId) {
+      // add "push" trace after context!
+      this.newTraceId(programId, resumeInProgramStaticTraceId);
+      // this._trace(programId, resumeContextId, runId, inProgramStaticTraceId, TraceType.Resume);
+    }
 
     return resumeContextId;
   }
 
-  popResume(resumeContextId = null) {
+  popResume(resumeCid = null) {
     // sanity checks
-    if (resumeContextId === 0) {
-      logError('Tried to popResume, but id was 0. Is this an async function that started in an object getter?');
+    if (resumeCid === 0) {
+      logError('Tried to popResume, but cid was 0. Is this an async function that started in an object getter?');
       return;
     }
 
-    resumeContextId = resumeContextId || this._runtime.peekCurrentContextId();
-    const context = executionContextCollection.getById(resumeContextId);
+    resumeCid = resumeCid || this._runtime.peekCurrentContextId();
+    const context = executionContextCollection.getById(resumeCid);
 
     // more sanity checks
     if (!context) {
-      logError('Tried to popResume, but context was not registered:', resumeContextId);
+      logError('Tried to popResume, but context was not registered:', resumeCid);
       return;
     }
     if (context.contextType !== ExecutionContextType.Resume) {
@@ -365,7 +418,7 @@ export default class RuntimeMonitor {
       return;
     }
 
-    this._pop(resumeContextId);
+    this._pop(resumeCid);
   }
 
   getLastExecutionContextId() {
@@ -394,6 +447,14 @@ export default class RuntimeMonitor {
     return true;
   }
 
+  logFail(msg) {
+    logError(new Error(msg).stack);
+  }
+
+  // ###########################################################################
+  // traces
+  // ###########################################################################
+
   trace(programId, inProgramStaticTraceId) {
     if (!this._ensureExecuting()) {
       return;
@@ -403,8 +464,47 @@ export default class RuntimeMonitor {
     this._trace(programId, contextId, runId, inProgramStaticTraceId);
   }
 
-  traceExpression(programId, inProgramStaticTraceId, value) {
+  newTraceId = (programId, inProgramStaticTraceId) => {
     if (!this._ensureExecuting()) {
+      return -1;
+    }
+
+    const contextId = this._runtime.peekCurrentContextId();
+    const runId = this._runtime.getCurrentRunId();
+    const overrideType = null;
+
+    const trace = traceCollection.trace(programId, contextId, runId, inProgramStaticTraceId, overrideType);
+    this._onTrace(contextId, trace);
+
+    return trace.traceId;
+  }
+
+  traceDeclaration = (programId, inProgramStaticTraceId, value = undefined, inputs = undefined) => {
+    if (!this._ensureExecuting()) {
+      return -1;
+    }
+
+    const traceId = this.newTraceId(programId, inProgramStaticTraceId);
+
+    // this.registerTrace(value, tid);
+    const varAccess = {
+      declarationTid: traceId
+    };
+    dataNodeCollection.createOwnDataNode(value, traceId, DataNodeType.Write, varAccess, inputs);
+
+    return traceId;
+  }
+
+  // ###########################################################################
+  // Basics
+  // ###########################################################################
+
+  traceExpression(programId, value, tid, inputs) {
+    if (!this._ensureExecuting()) {
+      return value;
+    }
+    if (!tid) {
+      this.logFail(`traceExpression failed to capture tid`);
       return value;
     }
 
@@ -423,26 +523,306 @@ export default class RuntimeMonitor {
       const runId = this._runtime.getCurrentRunId();
       const overrideType = null;
 
-      const trace = traceCollection.traceWithResultValue(programId, contextId, runId, inProgramStaticTraceId, overrideType, value, this.valuesDisabled);
-      this._onTrace(contextId, trace);
-
+      const varAccess = null;
+      inputs = traceCollection.getDataNodeIdsByTraceIds(tid, inputs);
+      dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess, inputs);
       return value;
     }
   }
 
-  traceCall(programId, inProgramStaticTraceId, value) {
-    // debug('trace call', value);
+  traceExpressionVar(programId, value, tid, declarationTid) {
     if (!this._ensureExecuting()) {
       return value;
     }
+    if (!tid) {
+      this.logFail(`traceExpression failed to capture tid`);
+      return value;
+    }
+
+    const varAccess = declarationTid && { declarationTid } || null;
+    const trace = traceCollection.getById(tid);
+    const { staticTraceId } = trace;
+    const { dataNode } = staticTraceCollection.getById(staticTraceId);
+
+    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess, null, dataNode);
+
+    return value;
+  }
+
+  traceExpressionME(programId, value, propValue, tid, objectTid) {
+    if (!this._ensureExecuting()) {
+      return value;
+    }
+    if (!tid) {
+      this.logFail(`traceExpressionME failed to capture tid`);
+      return value;
+    }
+
+    const varAccess = {
+      objectNodeId: traceCollection.getDataNodeIdByTraceId(objectTid),
+      prop: propValue
+    };
+
+    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess);
+    return value;
+  }
+
+  // registerTrace(value, tid) {
+  //   const trace = traceCollection.getById(tid);
+  // }
+
+  traceWriteVar(programId, value, tid, declarationTid, inputs) {
+    if (!this._ensureExecuting()) {
+      return value;
+    }
+    if (!tid) {
+      // TODO: also trace ME
+      this.logFail(`traceWrite failed to capture tid`);
+      return value;
+    }
+
+    // this.registerTrace(value, tid);
+    // [future-work] `declarationTid` should always be defined. If not, assume global?
+    if (!declarationTid) {
+      declarationTid = tid;
+    }
+    const varAccess = declarationTid && { declarationTid };
+    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess, traceCollection.getDataNodeIdsByTraceIds(tid, inputs));
+    return value;
+  }
+
+  traceWriteME(programId, value, propValue, tid, objectTid, inputs) {
+    if (!this._ensureExecuting()) {
+      return value;
+    }
+    if (!tid) {
+      this.logFail(`traceWriteME failed to capture tid`);
+      return value;
+    }
+
+    // this.registerTrace(value, tid);
+    const varAccess = {
+      objectNodeId: traceCollection.getDataNodeIdByTraceId(objectTid),
+      prop: propValue
+    };
+    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess, traceCollection.getDataNodeIdsByTraceIds(tid, inputs));
+    return value;
+  }
+
+  traceDeleteME(programId, result, propValue, tid, objectTid) {
+    if (!this._ensureExecuting()) {
+      return result;
+    }
+
+    // this.registerTrace(value, tid);
+    const varAccess = {
+      objectNodeId: traceCollection.getDataNodeIdByTraceId(objectTid),
+      prop: propValue
+    };
+    dataNodeCollection.createOwnDataNode(undefined, tid, DataNodeType.Delete, varAccess);
+    return result;
+  }
+
+  // ###########################################################################
+  // Class
+  // ###########################################################################
+
+  traceClass(programId, value, tid, staticMethods, publicMethodTids) {
+    if (!this._ensureExecuting()) {
+      return value;
+    }
+
+    // add class node
+    const varAccess = {
+      declarationTid: tid
+    };
+    const classNode = dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess);
+
+    // [runtime-error] potential runtime error (but should actually never happen)
+    const proto = value.prototype;
+
+    // add prototype node
+    const prototypeVarAccess = {
+      objectNodeId: classNode.nodeId,
+      prop: 'prototype'
+    };
+    const prototypeNode = dataNodeCollection.createDataNode(proto, tid, DataNodeType.Read, prototypeVarAccess);
+
+
+    const trace = traceCollection.getById(tid);
+    if (trace) {
+      const { staticTraceId } = trace;
+      const { data: {
+        staticMethods: staticMethodNames,
+        publicMethods: publicMethodNames
+      } } = staticTraceCollection.getById(staticTraceId);
+
+      // add staticMethod nodes
+      for (let i = 0; i < staticMethodNames.length; ++i) {
+        // NOTE: we cannot access private static methods dynamically, that is why we do this
+        const methodName = staticMethodNames[i];
+        const [method, methodTid] = staticMethods[i];
+        const methodAccess = {
+          objectNodeId: classNode.nodeId,
+          prop: methodName
+        };
+        dataNodeCollection.createDataNode(method, methodTid, DataNodeType.Read, methodAccess);
+      }
+
+      // add publicMethods nodes to prototype
+      for (let i = 0; i < publicMethodNames.length; i++) {
+        const methodTid = publicMethodTids[i];
+        const methodName = publicMethodNames[i];
+        const method = value.prototype[methodName];
+        const methodAccess = {
+          objectNodeId: prototypeNode.nodeId,
+          prop: methodName
+        };
+        dataNodeCollection.createDataNode(method, methodTid, DataNodeType.Read, methodAccess);
+      }
+    }
+
+    return value;
+  }
+
+  traceInstance(programId, value, tid, privateMethods) {
+    if (!this._ensureExecuting()) {
+      return value;
+    }
+
+    const instanceNode = dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read);
+
+    const trace = traceCollection.getById(tid);
+    if (trace) {
+      const { staticTraceId } = trace;
+      const { data: {
+        privateMethods: privateMethodNames
+      } } = staticTraceCollection.getById(staticTraceId);
+
+      for (let i = 0; i < privateMethodNames.length; ++i) {
+        // NOTE: we cannot access private methods dynamically, that is why we do this
+        const methodName = privateMethodNames[i];
+        const [method, methodTid] = privateMethods[i];
+        const methodAccess = {
+          objectNodeId: instanceNode.nodeId,
+          prop: methodName
+        };
+        dataNodeCollection.createDataNode(method, methodTid, DataNodeType.Read, methodAccess);
+      }
+    }
+
+    return value;
+  }
+
+
+  // ###########################################################################
+  // UpdateExpression
+  // ###########################################################################
+
+  _traceUpdateExpression(updateValue, returnValue, readTid, tid, varAccess) {
+    const trace = traceCollection.getById(tid);
+
+    // add write node
+    const inputs = [traceCollection.getDataNodeIdByTraceId(readTid)];
+    const writeNode = dataNodeCollection.createDataNode(updateValue, tid, DataNodeType.Write, varAccess, inputs);
+
+    if (updateValue !== returnValue) {
+      // add separate expression value node
+      // future work consideration: input to UE is the `Read` node -> somehow missing the missing `1`.
+      const updateNode = dataNodeCollection.createDataNode(returnValue, tid, DataNodeType.Read, null, inputs);
+      trace.nodeId = updateNode.nodeId;
+    }
+    else {
+      trace.nodeId = writeNode.nodeId;
+    }
+    return returnValue;
+  }
+
+  traceUpdateExpressionVar(programId, updateValue, returnValue, readTid, tid, declarationTid) {
+    if (!this._ensureExecuting()) {
+      return returnValue;
+    }
+
+    const varAccess = declarationTid && { declarationTid };
+    return this._traceUpdateExpression(updateValue, returnValue, readTid, tid, varAccess);
+  }
+
+  traceUpdateExpressionME(programId, obj, prop, updateValue, returnValue, readTid, tid, objectTid) {
+    if (!this._ensureExecuting()) {
+      return returnValue;
+    }
+
+    const varAccess = {
+      objectNodeId: traceCollection.getDataNodeIdByTraceId(objectTid),
+      prop: prop
+    };
+    return this._traceUpdateExpression(updateValue, returnValue, readTid, tid, varAccess);
+  }
+
+  // ###########################################################################
+  // CallExpression
+  // ###########################################################################
+
+  // traceCallee(programId, value, tid, declarationTid) {
+  //   this.traceExpression(programId, value, tid, declarationTid);
+  //   return value;
+  // }
+
+  traceBCE(programId, tid, calleeTid, argTids, spreadArgs) {
+    if (!this._ensureExecuting()) {
+      return;
+    }
+
+    spreadArgs = spreadArgs.map(a => {
+      // [runtime-error] potential runtime error
+      // NOTE: trying to spread a non-iterator results in Error anyway; e.g.:
+      //      "Found non-callable @@iterator"
+      //      "XX is not iterable"
+      return a && Array.from(a);
+    });
+
+    const trace = traceCollection.getById(tid);
+    trace.callId = tid;
+    trace.data = {
+      calleeTid,
+      argTids,
+      spreadLengths: spreadArgs.map(a => a && a.length || null)
+    };
+
+    // [spread]
+    for (let i = 0; i < spreadArgs.length; i++) {
+      const spreadArg = spreadArgs[i];
+      if (!spreadArg) {
+        continue;
+      }
+
+      const argTid = argTids[i];
+
+      // Add one `DataNode` per spread argument
+      for (let j = 0; j < spreadArg.length; j++) {
+        const arg = spreadArg[j];
+
+        const varAccess = {
+          objectNodeId: traceCollection.getDataNodeIdByTraceId(argTid),
+          prop: j
+        };
+        dataNodeCollection.createDataNode(arg, argTid, DataNodeType.Read, varAccess);
+      }
+    }
+  }
+
+  traceCallResult(programId, value, tid, callTid) {
+    if (!this._ensureExecuting()) {
+      return value;
+    }
+    const trace = traceCollection.getById(tid);
+    trace.resultCallId = callTid;
+    this.traceExpression(programId, value, tid, 0);
 
     ensurePromiseWrapped(value);
 
     const contextId = this._runtime.peekCurrentContextId();
     const runId = this._runtime.getCurrentRunId();
-    const overrideType = null;
-
-    const trace = traceCollection.traceWithResultValue(programId, contextId, runId, inProgramStaticTraceId, overrideType, value);
     this._onTrace(contextId, trace);
 
     if (!(value instanceof Promise)) {
@@ -454,9 +834,141 @@ export default class RuntimeMonitor {
     this._runtime.thread1.traceCall(contextId, calledContextId, trace, value);
     this._runtime.thread2.recordMaybeNewPromise(value, runId, contextId, calledContextId);
 
+    return value;
+  }
+
+  // ###########################################################################
+  // {Array,Object}Expression
+  // ###########################################################################
+
+  traceArrayExpression(programId, value, spreadLengths, arrTid, argTids) {
+    if (!this._ensureExecuting()) {
+      return value;
+    }
+    dataNodeCollection.createOwnDataNode(value, arrTid, DataNodeType.Read, null, null, ShallowValueRefMeta);
+
+    // for each element: add (new) write node which has (original) read node as input
+    let idx = 0;
+    for (let i = 0; i < argTids.length; i++) {
+      const argTid = argTids[i];
+      const len = spreadLengths[i];
+
+      if (len >= 0) {
+        // [spread]
+        for (let j = 0; j < len; j++) {
+          const readAccess = {
+            objectNodeId: traceCollection.getDataNodeIdByTraceId(argTid),
+            prop: j
+          };
+          const readNode = dataNodeCollection.createDataNode(value[idx], argTid, DataNodeType.Read, readAccess);
+          const writeAccess = {
+            objectNodeId: traceCollection.getDataNodeIdByTraceId(arrTid),
+            prop: idx
+          };
+          dataNodeCollection.createWriteNodeFromReadNode(argTid, readNode, writeAccess);
+          ++idx;
+        }
+      }
+      else {
+        // not spread
+        const varAccess = {
+          objectNodeId: traceCollection.getDataNodeIdByTraceId(arrTid),
+          prop: i
+        };
+        dataNodeCollection.createWriteNodeFromTrace(arrTid, argTid, varAccess);
+        ++idx;
+      }
+    }
 
     return value;
   }
+
+  traceObjectExpression(programId, value, entries, argConfigs, objectTid, propTids) {
+    if (!this._ensureExecuting()) {
+      return value;
+    }
+    const objectNode = dataNodeCollection.createOwnDataNode(value, objectTid, DataNodeType.Read, null, null, ShallowValueRefMeta);
+    const objectNodeId = objectNode.nodeId;
+
+    // for each prop: add (new) write node which has (original) read node as input
+    for (let i = 0; i < entries.length; i++) {
+      const propTid = propTids[i];
+      if (!propTid) {
+        const traceInfo = traceCollection.makeTraceInfo(objectTid);
+        warn(new Error(`Missing propTid #${i} in traceObjectExpression\n  at trace #${objectTid}: ${traceInfo} `));
+        continue;
+      }
+
+      if (argConfigs[i].isSpread) {
+        // [spread]
+        const nested = entries[i];
+        // NOTE: we can use `for in` here, because this is the "spread copy" of the object
+        for (const key in nested) {
+          const readAccess = {
+            objectNodeId: traceCollection.getDataNodeIdByTraceId(propTid),
+            prop: key
+          };
+          const readNode = dataNodeCollection.createDataNode(value[key], propTid, DataNodeType.Read, readAccess);
+          const writeAccess = {
+            objectNodeId,
+            prop: key
+          };
+          dataNodeCollection.createWriteNodeFromReadNode(propTid, readNode, writeAccess);
+        }
+      }
+      else {
+        // not spread
+        const [key] = entries[i];
+        const varAccess = {
+          objectNodeId,
+          prop: key
+        };
+        dataNodeCollection.createWriteNodeFromTrace(objectTid, propTid, varAccess);
+      }
+    }
+
+    return value;
+  }
+
+  // ###########################################################################
+  // Loops (unfinished)
+  // ###########################################################################
+
+  traceForIn(programId, value, tid, declarationTid, inProgramStaticTraceId) {
+    if (!this._ensureExecuting()) {
+      return value;
+    }
+    if (!tid) {
+      this.logFail(`traceForIn failed to capture tid`);
+      return value;
+    }
+
+    if (!declarationTid) {
+      declarationTid = tid;
+    }
+
+    const varAccess = declarationTid && { declarationTid };
+
+    // create iterator which logs `DataNode` on key access
+    const pd = { enumerable: true, configurable: true };
+    return new Proxy(value, {
+      /**
+       * NOTE: `getOwnPropertyDescriptor` is called every iteration, while
+       *   the entire array returned from `ownKeys` is read at the beginning of the loop.
+       */
+      getOwnPropertyDescriptor: function (target, key) {
+        console.debug('gpd', key, target[key]);
+
+        const iterationTraceId = this.newTraceId(programId, inProgramStaticTraceId);
+        dataNodeCollection.createOwnDataNode(key, iterationTraceId, DataNodeType.Write, varAccess);
+        return pd;
+      }
+    });
+  }
+
+  // ###########################################################################
+  // traces (OLD)
+  // ###########################################################################
 
   traceArg(programId, inProgramStaticTraceId, value) {
     // currently behaves exactly the same as traceExpression
@@ -464,57 +976,85 @@ export default class RuntimeMonitor {
   }
 
 
-  /**
-   * Push a new context for a scheduled callback for later execution.
-   */
-  _traceCallbackArgument(programId, inProgramStaticTraceId, cb) {
-    // trace
-    const contextId = this._runtime.peekCurrentContextId();
-    const runId = this._runtime.getCurrentRunId();
+  // /**
+  //  * Push a new context for a scheduled callback for later execution.
+  //  */
+  // _traceCallbackArgument(programId, inProgramStaticTraceId, cb) {
+  //   // trace
+  //   const contextId = this._runtime.peekCurrentContextId();
+  //   const runId = this._runtime.getCurrentRunId();
 
-    const schedulerTrace = traceCollection.traceWithResultValue(programId, contextId, runId, inProgramStaticTraceId, TraceType.CallbackArgument, cb, this.valuesDisabled);
-    this._onTrace(contextId, schedulerTrace);
+  //   const schedulerTrace = traceCollection.traceWithResultValue(programId, contextId, runId, inProgramStaticTraceId, TraceType.CallbackArgument, cb, this.valuesDisabled);
+  //   this._onTrace(contextId, schedulerTrace);
 
-    // const wrapper = this.makeCallbackWrapper(programId, contextId, schedulerTraceId, inProgramStaticTraceId, cb);
-    // return wrapper;
+  //   // const wrapper = this.makeCallbackWrapper(programId, contextId, schedulerTraceId, inProgramStaticTraceId, cb);
+  //   // return wrapper;
 
-    return cb;
-  }
+  //   return cb;
+  // }
 
-  _trace(programId, contextId, runId, inProgramStaticTraceId, traceType = null, isPop = false) {
+  _trace(programId, contextId, runId, inProgramStaticTraceId, traceType = null) {
     const trace = traceCollection.trace(programId, contextId, runId, inProgramStaticTraceId, traceType);
-    this._onTrace(contextId, trace, isPop);
-    if (isPop) {
+
+    // if (Verbose > 1) {
+    //   const { staticContextId } = context;
+    //   const staticContext = staticContextCollection.getById(staticContextId);
+    //   debug(
+    //     // ${JSON.stringify(staticContext)}
+    //     `  t ${trace.traceId} ${staticContext?.displayName} (${runId}))`
+    //   );
+    // }
+
+    const { staticTraceId } = trace;
+    const { type: staticTraceType } = staticTraceCollection.getById(staticTraceId);
+    this._onTrace(contextId, trace, staticTraceType);
+    if (isPopTrace(staticTraceType)) {
       trace.previousTrace = this._runtime.getLastTraceInContext(contextId);
     }
     return trace;
   }
 
-  _onTrace(contextId, trace, isPop = false) {
-    if (isPop) {
+  _onTrace(contextId, trace, staticTraceType = undefined) {
+    if (!staticTraceType) {
+      const { staticTraceId } = trace;
+      ({ type: staticTraceType } = staticTraceCollection.getById(staticTraceId));
+    }
+
+    if (isPopTrace(staticTraceType)) {
       // NOTE: we do not want to consider `pop`s as "last trace of a context"
       return;
     }
 
-    const { traceId, staticTraceId } = trace;
-    const { type: traceType } = staticTraceCollection.getById(staticTraceId);
-    if (isBeforeCallExpression(traceType)) {
+    const { traceId } = trace;
+    if (isBeforeCallExpression(staticTraceType)) {
       this._runtime.addBCEForContext(contextId, traceId);
     }
     this._runtime.setLastContextTrace(contextId, traceId);
   }
 
   // ###########################################################################
-  // varible tracking?
+  // slicing
   // ###########################################################################
 
-  // addVar(programId, inProgramStaticVarAccessId, value) {
-  //   const staticVar = staticVarAccessCollection.getVar(programId, inProgramStaticVarAccessId);
-  //   const { staticVarId } = staticVar;
+  // TODO
 
-  //   // const loopIterationId = ...;
-  //   // const varAccess = varAccessCollection.addVar(staticVarId, value);
-  // }
+  /**
+   *
+   */
+  logBinding() {
+    /**
+     * Examples of difficult bindings to deal with:
+     * ```js
+     * {
+     *   const i = 3;
+     * }
+     * for (let i = 0; i < 10; ++i) {
+     *   setTimeout(() => console.log(i), 100);
+     * }
+     * ```
+     */
+  }
+
 
   // ###########################################################################
   // error handling
@@ -581,7 +1121,16 @@ export default class RuntimeMonitor {
 
   disabled = 0;
   tracesDisabled = 0;
-  valuesDisabled = 0;
+  _valuesDisabled = 0;
+
+  get valuesDisabled() {
+    return this._valuesDisabled;
+  }
+
+  set valuesDisabled(val) {
+    this._valuesDisabled = val;
+    valueCollection.valuesDisabled = val;
+  }
 
   incDisabled() {
     ++this.disabled;

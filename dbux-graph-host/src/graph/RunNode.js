@@ -1,4 +1,4 @@
-import { newLogger } from '@dbux/common/src/log/logger';
+import { logWarn, newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
@@ -27,7 +27,7 @@ class RunNode extends HostComponentEndpoint {
       this.state.createdAt = dp.util.getRunCreatedAt(runId);
     }
     else {
-      logError(`Creating RunNode with no context, runId: ${runId}`);
+      logError(`Creating RunNode with no context - runId=${runId}`);
     }
 
     const hiddenNodeManager = this.parent.controllers.getComponent('HiddenNodeManager');
@@ -67,7 +67,11 @@ class RunNode extends HostComponentEndpoint {
     const stats = this.dp.queries.statsByContext(this.rootContextId);
     return stats?.nTreeStaticContexts || 0;
   }
-
+  //get amount of file call
+  get nTreeFileCalled() {
+    const state = this.dp.queries.statsByContext(this.rootContextId);
+    return state?.nTreeFileCalled || 0;
+  }
   // /**
   //  * TODO: move this to `dbux-data`
   //  */

@@ -1,5 +1,5 @@
 import { commands, window, Uri, workspace } from 'vscode';
-import { newLogger, setOutputStreams } from '@dbux/common/src/log/logger';
+import { newLogger, addOutputStreams } from '@dbux/common/src/log/logger';
 import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
 import ProjectNodeProvider from './practiceView/ProjectNodeProvider';
 import SessionNodeProvider from './sessionView/SessionNodeProvider';
@@ -30,7 +30,7 @@ const { log, debug, warn, error: logError } = logger;
 
 const outputChannel = new OutputChannel('Dbux');
 
-setOutputStreams({
+addOutputStreams({
   log: outputChannel.log.bind(outputChannel),
   warn: outputChannel.log.bind(outputChannel),
   error: outputChannel.log.bind(outputChannel),

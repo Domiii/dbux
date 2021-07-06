@@ -1,4 +1,3 @@
-import { logInternalError } from '@dbux/common/src/log/logger';
 import Collection from './Collection';
 
 /**
@@ -42,7 +41,7 @@ class StaticLoopCollection extends Collection {
   getLoop(programId, inProgramStaticId) {
     const loops = this.getLoops(programId);
     if (!loops) {
-      logInternalError("Invalid programId has no registered static loops:", programId);
+      this.logger.error("Invalid programId has no registered static loops:", programId);
       return null;
     }
     return loops[inProgramStaticId - 1];   // ids start at 1, array starts at 0

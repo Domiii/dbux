@@ -39,6 +39,7 @@
 	"settings": {
 		"debug.node.autoAttach": "off",
 		"dbux.autoStart": true,
+		"dbux.run.nodeArgs": "--enable-source-maps --stack-trace-limit=100",
 		// "dbux.run.dbuxArgs": "--esnext=false"
 	}
 }

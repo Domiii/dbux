@@ -1,6 +1,5 @@
 /* eslint no-console: 0 */
 import NanoEvents from 'nanoevents';
-import { performance } from '../util/universalLibs';
 
 
 (function _compatabilityHackfix() {
@@ -9,15 +8,54 @@ import { performance } from '../util/universalLibs';
   console.debug = console.debug || console.log;
 })();
 
-const errors = [];
 
-const emitter = new NanoEvents();
+// ###########################################################################
+// outside log event handler
+// ###########################################################################
 
+let logRecords;
+// let logRecorder;
+
+function addLogRecord(type, ...args) {
+  (logRecords[type] = logRecords[type] || []).push(args);
+}
+
+export function playbackLogRecords() {
+  const entries = Object.entries(logRecords);
+  const n = entries.reduce((a, [, msgs]) => a + msgs.length, 0);
+  if (!n) {
+    // nothing to report
+    return;
+  }
+  
+  for (const [type, msgs] of entries) {
+    console[type].call(console, `${msgs.length} x ${type}s:`);
+    msgs.forEach((args, i) => {
+      console[type].call(console, ` `, ...args);
+    });
+  }
+}
+
+/**
+ * Little hackfix for simplistic "log counting".
+ */
+export function enableLogRecording() {
+  logRecords = {};
+
+  // NOTE: for now, only count warn + error log messages
+  addOutputStreams(Object.fromEntries(
+    ['warn', 'error']
+      .map(type => {
+        return [type, addLogRecord.bind(null, type)];
+      })
+  ));
+}
 
 // ###########################################################################
 // reporting + flood gating
 // ###########################################################################
 
+const reportEmitter = new NanoEvents();
 const MinSecondsPerReport = 2;
 const MinGateReportThreshold = 1;
 let floodGate = false;
@@ -67,14 +105,14 @@ function report(...args) {
 }
 
 function reportUnchecked(...args) {
-  emitter.emit(...args);
+  reportEmitter.emit(...args);
 }
 
 /**
  * Use this as error hook
  */
 export function onLogError(cb) {
-  emitter.on('error', cb);
+  reportEmitter.on('error', cb);
 }
 
 // ###########################################################################
@@ -89,6 +127,11 @@ function nsWrapper(logCb, ns) {
 }
 
 export class Logger {
+  log;
+  debug;
+  warn;
+  error;
+
   constructor(ns, logWrapper = nsWrapper) {
     this.ns = ns;
     // this._emitter = 
@@ -101,7 +144,7 @@ export class Logger {
     };
     this._addLoggers(logFunctions, logWrapper);
   }
-  
+
   _addLoggers(logFunctions, logWrapper) {
     for (const name in logFunctions) {
       const f = logFunctions[name];
@@ -111,43 +154,13 @@ export class Logger {
   }
 }
 
-// ###########################################################################
-// PerfLogger
-// ###########################################################################
-
-function makeTimestampDefault() {
-  return `[${((performance.now() / 1000).toFixed(3) + '').padStart(7, 0)}]`;
-}
-
-export function nsPerfWrapper(logCb, ns, timestampCb = makeTimestampDefault) {
-  return (...args) => logCb(ns, timestampCb(), ...args);
-}
-
-export class PerfLogger extends Logger {
-  constructor(ns) {
-    super(ns);
-
-    const logFunctions = {
-      logPerf: loglog,
-      debugPerf: logDebug,
-      warnPerf: logWarn,
-      errorPerf: logError
-    };
-    this._addLoggers(logFunctions, nsPerfWrapper);
-  }
-}
-
 
 // ###########################################################################
-// log functions
+// utility functions
 // ###########################################################################
 
 export function newLogger(ns) {
   return new Logger(ns && `Dbux ${ns}`);
-}
-
-export function newPerfLogger(ns) {
-  return new PerfLogger(ns && `Dbux ${ns}`);
 }
 
 export function newFileLogger(fpath) {
@@ -171,7 +184,7 @@ let outputStreams = consoleOutputStreams;
 
 function mergeOutputStreams(newStreams) {
   return Object.fromEntries(
-    Object.entries(consoleOutputStreams).map(([name, cb]) => {
+    Object.entries(outputStreams).map(([name, cb]) => {
       return [
         name,
         (...args) => {
@@ -213,41 +226,13 @@ export function logError(ns, ...args) {
 }
 
 // ###########################################################################
-// more error handling stuff
-// ###########################################################################
-
-export function logInternalError(...args) {
-  const msgArgs = ['[Dbux INTERNAL ERROR]', ...args];
-  outputStreams.error(...msgArgs);
-  errors.push(msgArgs);
-  report('error', ...msgArgs);
-}
-
-export function getErrors() {
-  return errors;
-}
-
-export function getErrorCount() {
-  return errors.length;
-}
-
-export function hasErrors() {
-  return !!errors.length;
-}
-
-export function getLastError() {
-  return errors[errors.length - 1];
-}
-
-
-// ###########################################################################
 // setOutputStreams
 // ###########################################################################
 
-export function setOutputStreams(newOutputStreams, fullErrorStack = true) {
+export function addOutputStreams(newOutputStreams, fullErrorStack = true) {
   if (fullErrorStack) {
     // fix up error logging to log Error.stack
-    // NOTE: by default, Error.toString returns only the message for some reason?
+    // NOTE: by default, Error.toString() returns only the message for some reason
     const cb = newOutputStreams.error;
     newOutputStreams.error = (...args) => {
       args = args.map(arg => arg instanceof Error ? arg.stack : arg);

@@ -249,10 +249,6 @@ export default class ExecutionsTDNode extends BaseTreeViewNode {
     return props.label;
   }
 
-  static makeTraceDetail(trace/* , parent */) {
-    return trace;
-  }
-
   get collapseChangeUserActionType() {
     return UserActionType.TDExecutionsUse;
   }
@@ -261,7 +257,7 @@ export default class ExecutionsTDNode extends BaseTreeViewNode {
     return TreeItemCollapsibleState.Collapsed;
   }
 
-  static makeProperties(trace/* , parent, detail */) {
+  static makeProperties(trace/* , parent, props */) {
     // build children here since label depends on children
     const { applicationId, staticTraceId } = trace;
     const application = allApplications.getById(applicationId);

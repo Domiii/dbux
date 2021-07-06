@@ -1,10 +1,9 @@
 import * as t from '@babel/types';
-import { isDebug } from '@dbux/common/src/util/nodeUtil';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { getClassAncestryString } from './traversalHelpers';
 import { getMemberExpressionName } from './objectHelpers';
 import { extractSourceStringWithoutComments } from './sourceHelpers';
-import { isNodeInstrumented } from './instrumentationHelper';
+import { isNodeInstrumented } from './astUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('functionHelpers');
@@ -22,7 +21,7 @@ export function isAnyMemberExpression(pathOrNode) {
 }
 
 export function functionNoName() {
-  // return `(${getPresentableString(functionPath.toString(), 30)})`;
+  // return `(${pathToString(functionPath.toString(), 30)})`;
   return '(anonymous)';
 }
 

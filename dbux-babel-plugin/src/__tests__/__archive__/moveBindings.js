@@ -1,5 +1,5 @@
 import { runAllSnapshotTests } from '../../testing/test-util';
-import { buildSource, buildVarDecl, buildVarAssignments } from '../../helpers/builders';
+import { buildSource, buildVarDecl, buildVarAssignments } from '../../instrumentation/builders/common';
 import * as t from '@babel/types';
 import { replaceProgramBody } from '../../helpers/program';
 

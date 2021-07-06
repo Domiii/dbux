@@ -8,8 +8,13 @@ const isArray = require('lodash/isArray');
 const { isFunction } = require('lodash');
 
 const webpack = require('webpack');
+// eslint-disable-next-line import/no-extraneous-dependencies
+// const t = require('@babel/types');
+// const nodeExternals = require('webpack-node-externals');
 const nodeExternals = require('webpack-node-externals');
 const webpackCommon = require('./config/webpack.config.common');
+
+const Process = require('./dbux-projects/src/util/Process').default;
 
 const {
   getDependenciesPackageJson,
@@ -19,6 +24,18 @@ const {
 
 // NOTE: we use this for bundling `debug` as "browser", which is used by `socket.io-client
 require('process').type = 'renderer';
+
+const MonoRoot = path.resolve(__dirname);
+
+// ###########################################################################
+// run external scripts
+// ###########################################################################
+
+// const execCaptureOut = (cmd, options) => Process.execCaptureOut(cmd, options);
+const exec = (cmd, options) => Process.exec(cmd, options);
+
+exec(`node ./scripts/auto-write-files.js`);
+
 
 // ###########################################################################
 // utilities
@@ -37,7 +54,15 @@ function mergeWithArrays(dst, src) {
 
 module.exports = (env, argv) => {
   try {
-    const MonoRoot = path.resolve(__dirname);
+    // ###########################################################################
+    // setup
+    // ###########################################################################
+
+    const mode = argv.mode || 'development';
+    const {
+      DBUX_VERSION,
+      DBUX_ROOT
+    } = webpackCommon('dbux-runtime', mode);
 
     // const outputFolderName = 'dist';
     // const outFile = 'bundle.js';
@@ -48,13 +73,6 @@ module.exports = (env, argv) => {
 
     // alias['socket.io-client'] = path.resolve(path.join(root, 'dbux-runtime/node_modules', 'socket.io-client', 'socket.io.js' ));
     // console.warn(resol);
-
-    const mode = argv.mode || 'development';
-
-    const {
-      DBUX_VERSION,
-      DBUX_ROOT
-    } = webpackCommon('dbux-runtime', mode);
 
     // `context` is the path from which any relative paths are resolved
     const context = MonoRoot;
@@ -76,15 +94,15 @@ module.exports = (env, argv) => {
       ].map(cfg => ['dbux-runtime', resolve => {
         const { target } = cfg;
         const externals = target !== 'node' ? [] : [
-          nodeExternals({
-            allowlist: [
-              ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/src/.*`))
-              // (...args) => {
-              //   console.error(...args);
-              //   return true;
-              // }
-            ]
-          })
+          // nodeExternals({
+          //   allowlist: [
+          //     ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/src/.*`))
+          //     // (...args) => {
+          //     //   console.error(...args);
+          //     //   return true;
+          //     // }
+          //   ]
+          // })
         ];
         return {
           ...cfg,
@@ -190,19 +208,24 @@ module.exports = (env, argv) => {
         map(depName => path.join(MonoRoot, 'node_modules', depName));
 
       // look up folders of each dependency
-      const dependencyFolderNames = dependencyLinks.map(
+      const resolveFolderNames = dependencyLinks.map(
         // link => fs.realpathSync(link).replace(MonoRoot, '')
         link => path.relative(MonoRoot, fs.realpathSync(link))
       );
-      dependencyFolderNames.push(target);
+      resolveFolderNames.push(target);
 
       // resolve
-      const resolve = makeResolve(MonoRoot, dependencyFolderNames);
+      const resolve = makeResolve(MonoRoot, resolveFolderNames);
       // resolve.alias['@'] = src;
 
       // add `src` folders to babel-loader
-      const absoluteDependencies = makeAbsolutePaths(MonoRoot, dependencyFolderNames);
+      const absoluteDependencies = makeAbsolutePaths(MonoRoot, resolveFolderNames);
+
       const includeSrcs = absoluteDependencies.map(r => path.join(r, 'src'));
+      // console.debug(` babel targets for ${target}: ${absoluteDependencies
+      //   .map(s => s.substring(MonoRoot.length + 1))
+      //   .join(', ')
+      // }`);
 
       // ###########################################################################
       // stats
@@ -233,6 +256,11 @@ module.exports = (env, argv) => {
         output,
         stats,
         resolve,
+
+        // ###########################################################################
+        // module
+        // ###########################################################################
+
         module: {
           rules: [
             {
@@ -254,6 +282,11 @@ module.exports = (env, argv) => {
               enforce: 'pre'
             }
           ],
+        },
+
+        node: {
+          __dirname: true,
+          __filename: true
         },
 
         // see: https://webpack.js.org/guides/code-splitting/

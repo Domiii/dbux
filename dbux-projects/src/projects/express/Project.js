@@ -146,6 +146,9 @@ export default class ExpressProject extends Project {
       //   testRe: 'should be called for any URL when "*"',
       //   testFilePaths: ['test/Router.js']
       // },
+      // NOTE: multiple tests per bug
+      // see: https://github.com/BugsJS/express/releases/tag/Bug-10-test 
+      //    -> https://github.com/BugsJS/express/commit/690be5b929559ab4590f45cc031c5c2609dd0a0f
       {
         id: 11,
         label: 'send numbers as json',
@@ -400,8 +403,8 @@ export default class ExpressProject extends Project {
             ...bug.testFilePaths
           ],
           require: bug.require || ['./test/support/env.js'],
-          dbuxArgs: '--pw=supertest',
-          // dbuxArgs: '--pw=.*',
+          // dbuxArgs: '--pw=superagent',
+          dbuxArgs: '--pw=.*',
           ...bug,
           // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
         };
@@ -443,6 +446,9 @@ export default class ExpressProject extends Project {
       ...cfg,
       ...bugConfig
     };
+
+    // Debug shortcut:
+    // DEBUG=http node --inspect-brk --stack-trace-limit=100    --require "./test/support/env.js" "C:\\Users\\domin\\code\\dbux\\node_modules\\@dbux\\cli\\bin\\dbux.js" run  --verbose=1 --pw=superagent "c:\\Users\\domin\\code\\dbux\\dbux_projects\\express/node_modules/mocha/bin/_mocha" -- --no-exit -c -t 10000 --grep "OPTIONS should only include each method once" -- test/app.options.js
 
     return buildMochaRunCommand(mochaCfg);
 

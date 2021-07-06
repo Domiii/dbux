@@ -1,12 +1,10 @@
-// import minBy from 'lodash/minBy';
-// import maxBy from 'lodash/maxBy';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 // eslint-disable-next-line no-unused-vars
 import Application from '@dbux/data/src/applications/Application';
 import SocketClient from './SocketClient';
 
-const Verbose = false;
+const Verbose = 1;
 // const Verbose = true;
 
 // eslint-disable-next-line no-unused-vars
@@ -72,10 +70,6 @@ export default class RuntimeClient extends SocketClient {
   }
 
   _handleData = (data) => {
-    // const str = Object.entries(data)
-    //   .map(([key, arr]) => `${key} (${minBy(arr, entry => entry._id)._id}~${maxBy(arr, entry => entry._id)._id})`)
-    //   .join(', ');
-    // debug(`data received: ${str}`);
     this.application.addData(data);
   }
 }

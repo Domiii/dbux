@@ -12,11 +12,12 @@ import TracesByParentContextIndex from './impl/indexes/TracesByParentContextInde
 import TracesByStaticTraceIndex from './impl/indexes/TracesByStaticTraceIndex';
 import TracesByRunIndex from './impl/indexes/TracesByRunIndex';
 import TracesByStaticContextIndex from './impl/indexes/TracesByStaticContextIndex';
-import TracesByTrackIdIndex from './impl/indexes/TracesByTrackIdIndex';
+import TracesByRefIdIndex from './impl/indexes/TracesByRefIdIndex';
 import TracesByCalleeTraceIndex from './impl/indexes/TracesByCalleeTraceIndex';
 import TracesByParentStaticContextIndex from './impl/indexes/TracesByParentStaticContextIndex';
 import TracesByRealContextIndex from './impl/indexes/TracesByRealContextIndex';
 import TracesByCallIndex from './impl/indexes/TracesByCallIndex';
+import TracesBySpecialIdentifierTypeIndex from './impl/indexes/TracesBySpecialIdentifierTypeIndex';
 import ErrorTracesIndex from './impl/indexes/ErrorTracesIndex';
 import ErrorTracesByContextIndex from './impl/indexes/ErrorTracesByContextIndex';
 import ErrorTracesByRunIndex from './impl/indexes/ErrorTracesByRunIndex';
@@ -38,6 +39,11 @@ import ProgramIdByFilePathQuery from './impl/queries/ProgramIdByFilePathQuery';
 import ProgramFilePathByTraceIdQuery from './impl/queries/ProgramFilePathByTraceIdQuery';
 import StatsByContextQuery from './impl/queries/StatsByContextQuery';
 import AsyncEventsByFromIndex from './impl/indexes/AsyncEventsByFromIndex';
+import DataNodesByTraceIndex from './impl/indexes/DataNodesByTraceIndex';
+import DataNodesByAccessIdIndex from './impl/indexes/DataNodesByAccessIdIndex';
+import DataNodesByValueIdIndex from './impl/indexes/DataNodesByValueIdIndex';
+import DataNodesByRefIdIndex from './impl/indexes/DataNodesByRefIdIndex';
+import DataNodesByObjectRefIdIndex from './impl/indexes/DataNodesByObjectRefIdIndex';
 
 
 export function newDataProvider(application) {
@@ -76,13 +82,21 @@ export function newDataProvider(application) {
   dataProvider.addIndex(new TracesByStaticContextIndex());
   dataProvider.addIndex(new TracesByParentStaticContextIndex());
   dataProvider.addIndex(new TracesByRunIndex());
-  dataProvider.addIndex(new TracesByTrackIdIndex());
   dataProvider.addIndex(new TracesByCallIndex());
   dataProvider.addIndex(new ErrorTracesIndex());
   dataProvider.addIndex(new ErrorTracesByContextIndex());
   dataProvider.addIndex(new ErrorTracesByRunIndex());
 
   dataProvider.addIndex(new TracesByRealContextIndex());
+  dataProvider.addIndex(new TracesBySpecialIdentifierTypeIndex());
+
+  // data + values
+  dataProvider.addIndex(new TracesByRefIdIndex());
+  dataProvider.addIndex(new DataNodesByTraceIndex());
+  dataProvider.addIndex(new DataNodesByAccessIdIndex());
+  dataProvider.addIndex(new DataNodesByValueIdIndex());
+  dataProvider.addIndex(new DataNodesByRefIdIndex());
+  dataProvider.addIndex(new DataNodesByObjectRefIdIndex());
 
   dataProvider.addIndex(new AsyncEventsByFromIndex());
 

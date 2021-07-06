@@ -1,4 +1,4 @@
-import { buildProgram } from './builders';
+import { buildProgram } from '../instrumentation/builders/common';
 
 
 export function replaceProgramBody(programPath, newBody) {

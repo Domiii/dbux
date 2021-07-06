@@ -13,11 +13,10 @@ const { log, debug, warn, error: logError } = newLogger('NearbyValueTDNodes');
 
 /** @typedef {import('@dbux/common/src/core/data/Trace').default} Trace */
 
+/**
+ * @deprecated `dp.util.getTraceValue` does not work now
+ */
 export default class NearbyValuesTDNode extends BaseTreeViewNode {
-  static makeTraceDetail(trace/* , parent */) {
-    return trace;
-  }
-
   static makeLabel(/* trace, parent, props */) {
     return 'Nearby Values';
   }
@@ -106,7 +105,7 @@ export default class NearbyValuesTDNode extends BaseTreeViewNode {
 
     traces.forEach(childTrace => {
       if (indexByTraces.has(childTrace)) {
-        const value = dp.util.getTraceValue(childTrace.traceId);
+        const value = dp.util.getTraceValuePrimitive(childTrace.traceId);
         // ignore undefined
         if (value === undefined) {
           return;

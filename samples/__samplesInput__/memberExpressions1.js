@@ -1,14 +1,13 @@
-/**
- * Nested combinations involving all kinds of `MemberExpressions`
- */
 
+const a = 'a1';
+
+const p = { a };
 const o = {
   b: {
-    c: 3
+    [p.a]: {
+      c: 'qwe'
+    }
   }
-};
+}
 
-const x = o.b.c;
-const y = o;
-
-console.log(o.b.c);
+console.log(o.b[p.a].c);

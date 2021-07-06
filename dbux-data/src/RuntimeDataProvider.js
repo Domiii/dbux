@@ -1,38 +1,28 @@
 import path from 'path';
-import findLastIndex from 'lodash/findLastIndex';
-import { newLogger } from '@dbux/common/src/log/logger';
+import difference from 'lodash/difference';
+import minBy from 'lodash/minBy';
+import maxBy from 'lodash/maxBy';
+import SpecialIdentifierType from '@dbux/common/src/core/constants/SpecialIdentifierType';
+import SpecialObjectType from '@dbux/common/src/core/constants/SpecialObjectType';
+import ValueTypeCategory, { isObjectCategory, ValuePruneState } from '@dbux/common/src/core/constants/ValueTypeCategory';
+import TraceType, { isTracePop, isTraceFunctionExit, isBeforeCallExpression, isTraceThrow } from '@dbux/common/src/core/constants/TraceType';
 import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
 import Trace from '@dbux/common/src/core/data/Trace';
+import DataNode from '@dbux/common/src/core/data/DataNode';
 import ValueRef from '@dbux/common/src/core/data/ValueRef';
 import AsyncEvent from '@dbux/common/src/core/data/AsyncEvent';
 import Run from '@dbux/common/src/core/data/Run';
 import StaticProgramContext from '@dbux/common/src/core/data/StaticProgramContext';
 import StaticContext from '@dbux/common/src/core/data/StaticContext';
 import StaticTrace from '@dbux/common/src/core/data/StaticTrace';
-import ValueTypeCategory, { ValuePruneState } from '@dbux/common/src/core/constants/ValueTypeCategory';
-import TraceType, { isTracePop, isTraceFunctionExit, isBeforeCallExpression, isTraceThrow } from '@dbux/common/src/core/constants/TraceType';
 import { hasCallId, isCallResult, isCallExpressionTrace } from '@dbux/common/src/core/constants/traceCategorization';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 import Collection from './Collection';
 
 import DataProviderBase from './DataProviderBase';
 import DataProviderUtil from './dataProviderUtil';
 
-// eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('DataProvider');
-
-/** @typedef {import('../../dbux-common/src/core/data/PromiseData').default} PromiseData */
-
-function errorWrapMethod(obj, methodName, ...args) {
-  try {
-    // build dynamic call expression tree
-    /* eslint prefer-spread: 0 */ // (false positive)
-    obj[methodName].apply(obj, args);
-  }
-  catch (err) {
-    warn(`${obj.constructor.name}.${methodName}`, 'failed\n  ', err); //...args);
-  }
-}
 
 function deleteCachedRange(locObj) {
   delete locObj._range;
@@ -40,6 +30,11 @@ function deleteCachedRange(locObj) {
   delete locObj.end._pos;
   return locObj;
 }
+
+
+// ###########################################################################
+// StaticProgramContextCollection
+// ###########################################################################
 
 /**
  * @extends {Collection<StaticProgramContext>}
@@ -52,7 +47,7 @@ class StaticProgramContextCollection extends Collection {
   add(entries) {
     for (const entry of entries) {
       if (!entry.filePath || !path.isAbsolute(entry.filePath)) {
-        logError('invalid `staticProgramContext.filePath` is not absolute - don\'t know how to resolve', entry.fileName);
+        this.logger.error('invalid `staticProgramContext.filePath` is not absolute - don\'t know how to resolve', entry.fileName);
       }
 
       // set applicationId, so we can trace any data point back to it's application
@@ -92,6 +87,11 @@ class StaticContextCollection extends Collection {
   }
 }
 
+
+// ###########################################################################
+// StaticTraceCollection
+// ###########################################################################
+
 /**
  * @extends {Collection<StaticTrace>}
  */
@@ -125,6 +125,10 @@ class StaticTraceCollection extends Collection {
   // }
 }
 
+// ###########################################################################
+// ExecutionContextCollection
+// ###########################################################################
+
 /**
  * @extends {Collection<ExecutionContext>}
  */
@@ -144,6 +148,92 @@ class ExecutionContextCollection extends Collection {
       entry.applicationId = this.dp.application.applicationId;
     }
     super.add(entries);
+  }
+
+  /**
+   * NOTE: This will execute before `DataNodeCollection.postIndexRaw`
+   */
+  postIndexRaw(entries) {
+    this.errorWrapMethod('setParamInputs', entries);
+    this.errorWrapMethod('setCallExpressionResultInputs', entries);
+  }
+
+  /**
+   * Set Param trace `inputs` to `[argNodeId]`.
+   */
+  setParamInputs(contexts) {
+    const { dp: { util } } = this;
+    for (const { contextId } of contexts) {
+      const paramTraces = util.getTracesOfContextAndType(contextId, TraceType.Param);
+      if (!paramTraces.length) {
+        // function has no parameters -> nothing to do
+        continue;
+      }
+      const bceTrace = util.getCallerTraceOfContext(contextId); // BCE
+      if (!bceTrace) {
+        // no BCE -> must be root context (not called by us) -> nothing to do
+        continue;
+      }
+      const callId = bceTrace.traceId;
+      if (!bceTrace.data) {
+        // TODO: odd bug
+        this.logger.warn(`bceTrace.data is missing in "setParamInputs" for trace "${util.makeTraceInfo(callId)}"`);
+        continue;
+      }
+
+      // get `argDataNodes` (flattened, in case of spread)
+      const argDataNodes = this.dp.util.getCallArgDataNodes(callId);
+
+      // add to `Param` trace's `inputs`
+      for (let i = 0; i < paramTraces.length; i++) {
+        const paramTrace = paramTraces[i];
+        const argDataNode = argDataNodes[i];
+        if (argDataNode) {
+          const paramDataNodes = util.getDataNodesOfTrace(paramTrace.traceId);
+          paramDataNodes[0].inputs = [argDataNode.nodeId];
+        }
+        else {
+          // NOTE: this parameter did not have a corresponding argument
+        }
+      }
+
+      // TODO: `RestElement`
+    }
+  }
+
+  /**
+   * Set CallExpression result trace `inputs` to `[returnNodeId]`.
+   */
+  setCallExpressionResultInputs(contexts) {
+    const { dp, dp: { util } } = this;
+    for (const { contextId } of contexts) {
+      const returnTraces = util.getTracesOfContextAndType(contextId, TraceType.ReturnArgument);
+      if (!returnTraces.length) {
+        // function has no return value -> nothing to do
+        continue;
+      }
+      else if (returnTraces.length > 1) {
+        this.logger.error(`Found context containing more than one ReturnArgument. contextId: ${contextId}, ReturnArgument ids: [${returnTraces}]`);
+        continue;
+      }
+
+      const returnTrace = returnTraces[0];
+
+      const bceTrace = util.getCallerTraceOfContext(contextId); // BCE
+      if (!bceTrace) {
+        // no BCE -> must be root context (not called by us) -> nothing to do
+        continue;
+      }
+      const cerTrace = dp.collections.traces.getById(bceTrace.resultId);
+
+      if (!cerTrace) {
+        // NOTE: function was called, but did not have CER. Possible due to exceptions etc.
+      }
+      else {
+        const cerDataNode = dp.collections.dataNodes.getById(cerTrace.nodeId);
+        cerDataNode.inputs = [returnTrace.nodeId];
+      }
+    }
   }
 
   // /**
@@ -167,6 +257,9 @@ class ExecutionContextCollection extends Collection {
   // }
 }
 
+// ###########################################################################
+// TraceCollection
+// ###########################################################################
 
 /**
  * @extends {Collection<Trace>}
@@ -184,6 +277,8 @@ class TraceCollection extends Collection {
     for (const trace of traces) {
       trace.applicationId = this.dp.application.applicationId;
     }
+
+    // debug(`traces`, JSON.stringify(traces, null, 2));
 
     super.add(traces);
   }
@@ -206,9 +301,41 @@ class TraceCollection extends Collection {
    */
   postAddRaw(traces) {
     // build dynamic call expression tree
-    errorWrapMethod(this, 'resolveCodeChunks', traces);
-    errorWrapMethod(this, 'resolveCallIds', traces);
-    errorWrapMethod(this, 'resolveErrorTraces', traces);
+    this.errorWrapMethod('registerResultId', traces);
+    this.errorWrapMethod('registerValueRefSpecialObjectType', traces);
+    this.errorWrapMethod('resolveCodeChunks', traces);
+    this.errorWrapMethod('resolveCallIds', traces);
+    this.errorWrapMethod('resolveErrorTraces', traces);
+  }
+
+  postIndexRaw(traces) {
+    this.errorWrapMethod('resolveMonkeyCalls', traces);
+  }
+
+  registerResultId(traces) {
+    for (const { traceId, resultCallId } of traces) {
+      if (resultCallId) {
+        const bceTrace = this.dp.collections.traces.getById(resultCallId);
+        bceTrace.resultId = traceId;
+      }
+    }
+  }
+
+  registerValueRefSpecialObjectType(traces) {
+    for (const trace of traces) {
+      const { staticTraceId, nodeId } = trace;
+      const staticTrace = this.dp.collections.staticTraces.getById(staticTraceId);
+      if (staticTrace.data?.specialType === SpecialIdentifierType.Arguments) {
+        const dataNode = this.dp.collections.dataNodes.getById(nodeId);
+        const valueRef = this.dp.collections.values.getById(dataNode.refId);
+        if (valueRef) {
+          valueRef.specialObjectType = SpecialObjectType.Arguments;
+        }
+        else {
+          this.logger.warn(`Cannot register SpecialObjectType for Argument trace, valueRef not found. trace: ${trace}, dataNode: ${dataNode}`);
+        }
+      }
+    }
   }
 
   resolveCodeChunks(traces) {
@@ -240,103 +367,44 @@ class TraceCollection extends Collection {
       '(null)');
 
     // eslint-disable-next-line max-len
-    logError(`Could not resolve resultCallId for trace #${staticTrace.staticTraceId} "${staticTrace.displayName}" (traceId ${traceId}). resultCallId ${staticTrace.resultCallId} not matching beforeCall.staticTraceId #${beforeCall?.staticTraceId || 'NA'}. BCE Stack:\n  ${stackInfo.join('\n  ')}`);
+    this.logger.error(`Could not resolve resultCallId for trace #${staticTrace.staticTraceId} "${staticTrace.displayName}" (traceId ${traceId}). resultCallId ${staticTrace.resultCallId} not matching beforeCall.staticTraceId #${beforeCall?.staticTraceId || 'NA'}. BCE Stack:\n  ${stackInfo.join('\n  ')}`);
   }
 
-  makeStaticTraceInfo(st) {
-    return `"${st?.displayName}" (${st.callId}, ${st?.staticTraceId}, ${st?._traceId})`;
-  }
-
-  makeTraceInfo(trace) {
-    const { traceId } = trace;
-    const st = this.dp.util.getStaticTrace(traceId);
-    const traceType = this.dp.util.getTraceType(traceId);
-    const typeName = TraceType.nameFrom(traceType);
-    return `[${typeName}] ${this.makeStaticTraceInfo(st)}`;
-  }
-
-  // checkLogInconsistentTrace(trace, stOrig) {
-  //   const { traceId } = trace;
-  //   const st = this.dp.util.getStaticTrace(traceId);
-
-  //   const { /* traceId, */ staticTraceId } = trace;
-  //   stOrig = this.dp.collections.staticTraces.getById(staticTraceId);
-
-  //   if (stOrig && st !== stOrig) {
-  //     logError(`inconsistent trace has two different STs: ${this.makeStaticTraceInfo(stOrig)} vs. ${this.makeStaticTraceInfo(st)}`);
-  //     return true;
-  //   }
-  //   return false;
-  // }
-
-  /**
-   * TODO: This will not work with asynchronous call expressions (which have `await` arguments).
-   * @param {Trace[]} traces
-   */
   resolveCallIds(traces) {
-    const beforeCalls = [];
     for (const trace of traces) {
-      const { traceId, staticTraceId } = trace;
-      const staticTrace = this.dp.collections.staticTraces.getById(staticTraceId);
-      const traceType = this.dp.util.getTraceType(traceId);
-      if (isBeforeCallExpression(traceType)) {
-        trace.callId = trace.traceId;  // refers to its own call
-        beforeCalls.push(trace);
-        // debug('[callIds]', ' '.repeat(beforeCalls.length - 1), '>', trace.traceId, staticTrace.displayName);
+      const { traceId: callId } = trace;
+
+      const argTraces = this.dp.util.getCallArgTraces(callId);
+      if (argTraces) {
+        // BCE
+        argTraces.forEach(t => t.callId = callId);
       }
-      else if (isCallExpressionTrace(staticTrace)) {
-        // NOTE: `isTraceExpression` to filter out Push/PopCallback
-        if (isCallResult(staticTrace)) {
-          // call results: reference their call by `resultCallId` and vice versa by `resultId`
-          // NOTE: upon seeing a result, we need to pop *before* handling its potential role as argument
-          let beforeCall = beforeCalls.pop();
-          // debug('[callIds]', ' '.repeat(beforeCalls.length), '<', beforeCall.traceId, `(${staticTrace.displayName} [${TraceType.nameFrom(this.dp.util.getTraceType(traceId))}])`);
-          if (staticTrace.resultCallId !== beforeCall?.staticTraceId) {
-            // maybe something did not get popped. Let's look for it directly!
-            const idx = findLastIndex(beforeCalls, bce => bce.staticTraceId === staticTrace.resultCallId);
-            if (idx >= 0) {
-              // it's on the stack - just take it (and also push the wrong one back)
-              beforeCalls.push(beforeCall);
-              beforeCall = beforeCalls[idx];
-              beforeCalls.splice(idx, 1);
-            }
-            else {
-              // it's just not there...
-              beforeCalls.push(beforeCall);   // something is wrong -> push it back
+    }
+  }
 
-              // log error
-              this.logCallResolveError(traceId, staticTrace, beforeCall, beforeCalls);
+  resolveMonkeyCalls(traces) {
+    for (const trace of traces) {
+      const { traceId: callId, data } = trace;
+      const monkey = data?.monkey;
+      if (monkey?.wireInputs) {
+        // NOTE: BCE was monkey patched, and generated it's own set of `DataNode`s, one per argument
+        // Link BCE's new DataNode to argument input node
 
-              // unset beforeCall
-              beforeCall = null;
-            }
-          }
-          else if (!beforeCall) {
-            // log error
-            this.logCallResolveError(traceId, staticTrace, beforeCall, beforeCalls);
-          }
+        // get `argDataNodes` (flattened, in case of spread)
+        const monkeyDataNodes = this.dp.util.getDataNodesOfTrace(callId);
+        const argDataNodes = this.dp.util.getCallArgDataNodes(callId);
 
-          if (beforeCall) {
-            // all good!
-            beforeCall.resultId = traceId;
-            trace.resultCallId = beforeCall.traceId;
-          }
+        if (!monkeyDataNodes || !argDataNodes) {
+          continue;
         }
-        if (hasCallId(staticTrace)) {
-          // call args: reference their call by `callId`
-          const beforeCall = beforeCalls[beforeCalls.length - 1];
-          if (staticTrace.callId !== beforeCall?.staticTraceId) {
-            // if (!this.checkLogInconsistentTrace(trace, staticTrace)) 
-            // {
-            // eslint-disable-next-line max-len
-            logError(`[${this.dp.util.getTraceProgramPath(traceId)}] [callId missing] beforeCall.callId !== staticTrace.staticTraceId - ${this.makeTraceInfo(beforeCall)} !== ${this.makeTraceInfo(trace)}`, '- is trace participating in a CallExpression-tree? [', staticTrace.displayName, `][${JSON.stringify(staticTrace.loc)}]. Stack staticTraces: ${beforeCalls.map(t =>
-              this.makeStaticTraceInfo(t.staticTraceId)
-            )}`);
-            // }
-          }
-          else {
-            trace.callId = beforeCall.traceId;
-          }
+
+        // wire monkey <-> arg DataNodes (should be 1:1)
+        for (let i = 0; i < monkeyDataNodes.length; i++) {
+          const monkeyDataNode = monkeyDataNodes[i];
+          const argDataNode = argDataNodes[i];
+
+          // NOTE: argDataNode might be missing (e.g. because it had a "dbux disable" instruction)
+          argDataNode && (monkeyDataNode.inputs = [argDataNode.nodeId]);
         }
       }
     }
@@ -363,7 +431,8 @@ class TraceCollection extends Collection {
 
       const staticContext = this.dp.util.getTraceStaticContext(traceId);
       if (staticContext.isInterruptable) {
-        // interruptable contexts only have `Push` and `Pop` traces, everything else (including error handling!) is in `Resume` children
+        // NOTE: interruptable contexts only have `Push` and `Pop` traces.
+        //    Everything else (including error handling!) is in `Resume` children.
         continue;
       }
 
@@ -371,6 +440,8 @@ class TraceCollection extends Collection {
       if (!isTraceFunctionExit(previousTraceType)) {
         // before pop must be a function exit trace, else -> error!
         trace.error = true;
+
+        this.logger.debug(`ERROR trace: ${this.dp.util.makeTraceInfo(trace)}`);
 
         // guess error trace
         const previousTrace = this.dp.collections.traces.getById(previousTraceId);
@@ -384,7 +455,7 @@ class TraceCollection extends Collection {
           const callTrace = this.dp.collections.traces.getById(callId);
           if (callTrace.resultId) {
             // strange...
-            logError('last (non-result) call trace in error context has `resultId`', callTrace.resultId, callTrace);
+            this.logger.error('last (non-result) call trace in error context has `resultId`', callTrace.resultId, callTrace);
           }
           else {
             // the call trace caused the error
@@ -407,115 +478,174 @@ class TraceCollection extends Collection {
   }
 }
 
+// ###########################################################################
+// DataNodeCollection
+// ###########################################################################
+
+/**
+ * @extends {Collection<DataNode>}
+ */
+class DataNodeCollection extends Collection {
+  constructor(dp) {
+    super('dataNodes', dp);
+    this.accessUIdMap = new Map();
+  }
+
+  /**
+   * @param {DataNode} dataNode
+   */
+  getValueId(dataNode) {
+    if ('valueId' in dataNode) {
+      return dataNode.valueId;
+    }
+
+    if (dataNode.refId) {
+      const firstRef = this.dp.indexes.dataNodes.byRefId.getFirst(dataNode.refId);
+      return firstRef.traceId;
+    }
+    else {
+      const { traceId, accessId } = dataNode;
+
+      if (dataNode.inputs?.length) {
+        const inputDataNode = this.dp.collections.dataNodes.getById(dataNode.inputs[0]);
+        return inputDataNode.valueId;
+      }
+
+      const lastNode = this.dp.indexes.dataNodes.byAccessId.getLast(accessId);
+      if (accessId && lastNode) {
+        // warn(`[getValueId] Cannot find accessId of dataNode: ${JSON.stringify(dataNode)}`);
+        // NOTE: currently, last in `byAccessId` index is actually "the last before this one", since we are still resolving the index.
+        return lastNode.valueId;
+      }
+
+      const { contextId } = this.dp.collections.traces.getById(traceId);
+      const { specialObjectType } = this.dp.util.getDataNodeValueRef(dataNode.varAccess?.objectNodeId) || EmptyObject;
+      if (specialObjectType) {
+        // NOTE: specialObjectType is looked up by `valueId`
+        const SpecialObjectTypeHandlers = {
+          [SpecialObjectType.Arguments]: ({ varAccess: { prop } }) => {
+            const trace = this.dp.util.getCallerTraceOfContext(contextId);
+            if (trace) {
+              // NOTE: sometimes, (e.g. in root contexts) we might not have an "own" caller trace
+              const { traceId: callId } = trace;
+              return this.dp.util.getCallArgDataNodes(callId)[prop].valueId;
+            }
+            return null;
+          }
+        };
+        return SpecialObjectTypeHandlers[specialObjectType](dataNode);
+      }
+
+      // eslint-disable-next-line max-len
+      // this.logger.warn(`[getValueId] Cannot find valueId for dataNode.\n    trace: ${this.dp.util.makeTraceInfo(traceId)}\n    dataNode: ${JSON.stringify(dataNode)}`);
+
+      return traceId;
+    }
+  }
+
+  getAccessId(dataNode) {
+    if ('accessId' in dataNode) {
+      return dataNode.accessId;
+    }
+
+    const { varAccess } = dataNode;
+    if (!varAccess) {
+      return null;
+    }
+    else {
+      let key;
+      const { declarationTid, objectNodeId, prop } = varAccess;
+      if (declarationTid) {
+        key = declarationTid;
+      }
+      else if (objectNodeId) {
+        const objectDataNode = this.dp.collections.dataNodes.getById(objectNodeId);
+        const objectValueId = objectDataNode.valueId;
+        if (!objectValueId) {
+          // sanity check
+          this.logger.warn(`[getAccessId] Cannot find objectValueId of dataNode: ${JSON.stringify(dataNode)}`);
+          key = null;
+        }
+        else {
+          key = `${objectValueId}#${prop}`;
+        }
+      }
+      else {
+        const { traceId } = dataNode;
+        const traceInfo = this.dp.util.makeTraceInfo(traceId);
+        this.logger.error(`Trying to generate accessId with illegal dataNode: ${JSON.stringify(dataNode)}\n  at trace: ${traceInfo}`);
+        return null;
+      }
+
+      if (!this.accessUIdMap.get(key)) {
+        this.accessUIdMap.set(key, this.accessUIdMap.size + 1);
+      }
+      return this.accessUIdMap.get(key);
+    }
+  }
+
+  postIndexProcessed(dataNodes) {
+    this.errorWrapMethod('resolveDataIds', dataNodes);
+  }
+
+  /**
+   * Resolves `accessId` and `valueId` simultaneously.
+   * Manually add the index entries (because this is run `postIndex`).
+   * @param {DataNode[]} dataNodes 
+   */
+  resolveDataIds(dataNodes) {
+    for (const dataNode of dataNodes) {
+      dataNode.accessId = this.getAccessId(dataNode);
+      dataNode.valueId = this.getValueId(dataNode);
+      this.dp.indexes.dataNodes.byAccessId.addEntry(dataNode);
+      this.dp.indexes.dataNodes.byValueId.addEntry(dataNode);
+    }
+  }
+}
+
+// ###########################################################################
+// ValueRefCollection
+// ###########################################################################
+
 /**
  * @extends {Collection<ValueRef>}
  */
-class ValueCollection extends Collection {
+class ValueRefCollection extends Collection {
   _visited = new Set();
 
   constructor(dp) {
     super('values', dp);
   }
 
-  add(entries) {
-    // add entries to collection
-    super.add(entries);
-
+  postAddRaw(entries) {
     // deserialize
-    for (const entry of entries) {
-      this._deserialize(entry);
-    }
+    this.errorWrapMethod('deserializeShallow', entries);
   }
 
   getAllById(ids) {
     return ids.map(id => this.getById(id));
   }
 
-  _deserialize(entry) {
-    this._deserializeValue(entry);
-    // entry.valueString = JSON.stringify(entry.value);
-    delete entry.serialized; // don't need this, so don't keep it around
-  }
+  deserializeShallow(valueRefs) {
+    for (let valueRef of valueRefs) {
+      if (!('value' in valueRef)) {
+        const {
+          nodeId,
+          category,
+          serialized,
+          pruneState
+        } = valueRef;
 
-  /**
-   * NOTE: This still only returns a string representation?
-   */
-  _deserializeValue(entry) {
-    if (entry === undefined) {
-      logError(`_deserializeValue failed: entry not found`);
-      return undefined;
-    }
-    if (!('value' in entry)) {
-      if (this._visited.has(entry)) {
-        return '(Dbux: circular reference)';
-      }
-      this._visited.add(entry);
-
-      // NOTE: if `undefined`, object property is not actually sent/received via SocketIO?
-      // if (!('serialized' in entry)) {
-      //   logError(`error when deserializing value #${entry.valueId} (data missing): ${JSON.stringify(entry)}`);
-      //   entry.category = ValueTypeCategory.String;
-      //   entry.pruneState = ValuePruneState.Omitted;
-      //   return entry.value = '(error when deserializing)';
-      // }
-
-      const {
-        category,
-        serialized,
-        pruneState
-      } = entry;
-
-      let value;
-      if (pruneState === ValuePruneState.Omitted) {
-        value = serialized;
-      }
-      else {
-        switch (category) {
-          case ValueTypeCategory.Array: {
-            if (!serialized) {
-              value = `(_deserializeValue failed: Array entry had no "serialized": ${JSON.stringify(entry)})`;
-              break;
-            }
-            for (let i = 0; i < serialized.length; ++i) {
-              const childId = serialized[i];
-              const child = this.getById(childId);
-              if (!child) {
-                warn(`Could not lookup array index "${i}" (id = "${childId}"): ${JSON.stringify(serialized)}`);
-                return '(Dbux: lookup failed)';
-              }
-              else {
-                return this._deserializeValue(child);
-              }
-            }
-            break;
-          }
-          case ValueTypeCategory.Object: {
-            if (!serialized) {
-              value = `(_deserializeValue failed: Object entry had no "serialized": ${JSON.stringify(entry)})`;
-              break;
-            }
-            value = {};
-            for (const [key, childId] of serialized) {
-              const child = this.getById(childId);
-              if (!child) {
-                value[key] = '(Dbux: lookup failed)';
-                warn(`Could not lookup object property "${key}" (id = "${childId}"): ${JSON.stringify(serialized)}`);
-              }
-              else {
-                value[key] = this._deserializeValue(child);
-              }
-            }
-            break;
-          }
-          default:
-            value = serialized;
-            break;
+        if (pruneState !== ValuePruneState.Omitted && isObjectCategory(category)) {
+          // map: [childRefId, childValue] => [(creation)nodeId, childRefId, childValue]
+          valueRef.value = Object.fromEntries(Object.entries(serialized).map(([key, childEntry]) => [key, [nodeId, ...childEntry]]));
         }
+        else {
+          valueRef.value = serialized;
+        }
+        delete valueRef.serialized;
       }
-      entry.value = value;
     }
-
-    return entry.value;
   }
 }
 
@@ -537,6 +667,10 @@ class RunCollection extends Collection {
   }
 }
 
+// ###########################################################################
+// RDP
+// ###########################################################################
+
 export default class RuntimeDataProvider extends DataProviderBase {
   /**
    * @type {DataProviderUtil}
@@ -556,6 +690,7 @@ export default class RuntimeDataProvider extends DataProviderBase {
 
       executionContexts: new ExecutionContextCollection(this),
       traces: new TraceCollection(this),
+      dataNodes: new DataNodeCollection(this),
       values: new ValueCollection(this),
       asyncEvents: new AsyncEventCollection(this),
       runs: new RunCollection(this),
@@ -574,5 +709,58 @@ export default class RuntimeDataProvider extends DataProviderBase {
     //   const col = new Col(this);
     //   return [col.name, col];
     // }));
+  }
+
+  addData(data, isRaw = true) {
+    const oldRequireModuleNames = this.util.getAllRequireModuleNames();
+    const result = super.addData(data, isRaw);
+
+    this._reportNewDataStats(data, oldRequireModuleNames);
+
+    return result;
+  }
+
+  _reportNewDataStats(data, oldRequireModuleNames) {
+    const collectionStats = Object.fromEntries(
+      Object.entries(data)
+        .map(([key, arr]) => ([key, {
+          len: arr.length,
+          min: minBy(arr, entry => entry._id)?._id,
+          max: maxBy(arr, entry => entry._id)?._id
+        }]))
+    );
+
+    // collection stats
+    const collectionInfo = Object.entries(collectionStats)
+      .map(([key, { len, min, max }]) => `${len} ${key} (${min}~${max})`)
+      .join('\n ');
+
+    // require stats
+    // TODO: import + dynamic `import``
+    const allRequireModuleNames = this.util.getAllRequireModuleNames();
+    const newRequireModuleNames = difference(allRequireModuleNames, oldRequireModuleNames);
+    const requireInfo = `Newly required external modules (${newRequireModuleNames.length}/${allRequireModuleNames.length}): ${newRequireModuleNames.join(', ')}`;
+
+    // program stats
+    const programData = collectionStats.staticProgramContexts;
+    const minProgramId = programData?.min;
+    const allModuleNames = this.util.getAllExternalProgramModuleNames();
+    const newModuleNames = minProgramId && this.util.getAllExternalProgramModuleNames(minProgramId);
+    const moduleInfo = `Newly traced external modules (${newModuleNames?.length || 0}/${allModuleNames.length}): ${newModuleNames?.join(', ') || ''}`;
+
+    const allMissingModules = difference(allRequireModuleNames, allModuleNames);
+    const newMissingModules = difference(newRequireModuleNames, allModuleNames);
+    const missingModuleInfo = newMissingModules.length &&
+      `Required but untraced external modules (${newMissingModules.length}/${allMissingModules.length}): ${newMissingModules.join(', ')}`;
+
+    // final message
+    const msgs = [
+      `##### Data received #####\nCollection Data:\n ${collectionInfo}`,
+      '',
+      requireInfo,
+      moduleInfo,
+      missingModuleInfo
+    ];
+    this.logger.debug(msgs.join('\n'));
   }
 }

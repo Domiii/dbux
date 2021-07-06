@@ -9,6 +9,9 @@ export default class Collection {
   _all = [null];
 
   constructor(name) {
+    if (!name) {
+      throw new Error(`Collection did not provide name to ctor - ${this.constructor.name}`);
+    }
     this._name = name;
     this.logger = newLogger(`${name} Collection`);
   }
@@ -20,6 +23,14 @@ export default class Collection {
 
   getAll() {
     return this._all;
+  }
+
+  getAllActual(startId = 1) {
+    return this._all.slice(startId);
+  }
+
+  getLast() {
+    return this._all[this._all.length - 1];
   }
 
   getById(id) {

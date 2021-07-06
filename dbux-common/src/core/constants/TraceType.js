@@ -7,22 +7,16 @@ let TraceType = {
 
   BeforeExpression: 3,
   /**
-   * NOTE: `BeforeCallExpression` has now become `Callee`, meaning it also holds a value
+   * NOTE: `BeforeCallExpression` is now also a function's `Callee`, meaning it also holds a value.
    */
   BeforeCallExpression: 4,
-  /**
-   * E.g. `a.b.c` for `a.b.c.f()` method call.
-   * Not traced for `f()` (no object involved).
-   */
-  CalleeObject: 5,
+  // /**
+  //  * E.g. `a.b.c` for `a.b.c.f()` method call.
+  //  * Not traced for `f()` (no object involved).
+  //  */
   CallExpressionResult: 6,
   ExpressionResult: 7,
   ExpressionValue: 8,
-
-  CallArgument: 9,
-  CallbackArgument: 10,
-
-  Parameter: 31,
 
   PushCallback: 11,
   PopCallback: 12,
@@ -37,7 +31,6 @@ let TraceType = {
 
   // Throw
   ThrowArgument: 18,
-  ThrowCallExpession: 19,
 
   // Await
   Await: 20,
@@ -48,13 +41,49 @@ let TraceType = {
   // ReturnAwait: 1,
   // ReturnAwaitCallExpression: 1,
 
-  EndOfContext: 22
+  EndOfContext: 22,
+
+
+  Declaration: 30,
+  /**
+   * NOTE: Mostly `AssignmentExpression`
+   * @example `x = 3`, `x = 5`
+   */
+  WriteVar: 31,
+  /**
+   * `VariableDeclarator`'s `init`
+   */
+  DeclareAndWriteVar: 32,
+  /**
+   * WriteMemberExpression
+   * NOTE: Can only be `AssignmentExpression`
+   * @example `o.x = 3`
+   */
+  WriteME: 33,
+  UpdateExpression: 34,
+  Identifier: 35,
+  Literal: 36,
+  /**
+   * MemberExpression
+   * @example `o.x`, `f(x)[g(y)]`
+   */
+  ME: 37,
+
+  Param: 38,
+  CatchParam: 39,
+
+  FunctionDeclaration: 41,
+  FunctionDefinition: 42,
+  ClassDeclaration: 43,
+  ClassDefinition: 44,
+  ClassInstance: 45,
+  ClassProperty: 45
 };
 
 /**
  * @type {(Enum|TraceTypeSet)}
  */
-TraceType = new Enum(Object.keys(TraceType));
+TraceType = new Enum(TraceType);
 
 const pushTypes = new Array(TraceType.getValueMaxIndex()).map(() => false);
 pushTypes[TraceType.PushImmediate] = true;
@@ -96,7 +125,6 @@ const dynamicTypeTypes = new Array(TraceType.getValueMaxIndex()).map(() => false
 // shared w/ PushCallback + PopCallback
 dynamicTypeTypes[TraceType.CallbackArgument] = true;  
 // might be shared w/ CallbackArgument, PushCallback + PopCallback
-dynamicTypeTypes[TraceType.CallArgument] = true;
 
 export function hasDynamicTypes(traceType) {
   return dynamicTypeTypes[traceType];
@@ -107,24 +135,18 @@ const expressionTypes = new Array(TraceType.getValueMaxIndex()).map(() => false)
 expressionTypes[TraceType.BeforeCallExpression] = true;
 expressionTypes[TraceType.ExpressionResult] = true;
 expressionTypes[TraceType.ExpressionValue] = true;
-expressionTypes[TraceType.CallArgument] = true;
 expressionTypes[TraceType.CallbackArgument] = true;
 expressionTypes[TraceType.CallExpressionResult] = true;
-expressionTypes[TraceType.Parameter] = true;
-expressionTypes[TraceType.ReturnArgument] = true;
-expressionTypes[TraceType.ThrowArgument] = true;
+expressionTypes[TraceType.UpdateExpression] = true;
+expressionTypes[TraceType.Identifier] = true;
+expressionTypes[TraceType.Literal] = true;
+expressionTypes[TraceType.ME] = true;
+// expressionTypes[TraceType.ReturnArgument] = true;
+// expressionTypes[TraceType.ThrowArgument] = true;
 
 export function isTraceExpression(traceType) {
   return expressionTypes[traceType];
 }
-
-const valueTypes = [...expressionTypes];
-valueTypes[TraceType.PopCallback] = true; // has return value of function
-
-export function hasTraceValue(traceType) {
-  return valueTypes[traceType];
-}
-
 
 const callbackTypes = new Array(TraceType.getValueMaxIndex()).map(() => false);
 callbackTypes[TraceType.CallbackArgument] = true;
@@ -137,8 +159,10 @@ export function isCallbackRelatedTrace(traceType) {
 
 
 const dataOnlyTypes = new Array(TraceType.getValueMaxIndex()).map(() => false);
-dataOnlyTypes[TraceType.CallArgument] = true;
 dataOnlyTypes[TraceType.ExpressionValue] = true;
+dataOnlyTypes[TraceType.Identifier] = true;
+dataOnlyTypes[TraceType.Literal] = true;
+
 /**
  * Traces that are important for data flow analysis, but not important for control flow analysis
  */
@@ -157,5 +181,21 @@ export function isTraceThrow(traceType) {
 // export function isPlainExpressionValue(traceType) {
 //   return TraceType.is.ExpressionValue(traceType);
 // }
+
+export function isPopTrace(traceType) {
+  return TraceType.is.PopImmediate(traceType);
+}
+
+const declarationTypes = new Array(TraceType.getValueMaxIndex()).map(() => false);
+declarationTypes[TraceType.Declaration] = true;
+declarationTypes[TraceType.FunctionDeclaration] = true;
+declarationTypes[TraceType.ClassDeclaration] = true;
+declarationTypes[TraceType.DeclareAndWriteVar] = true;
+declarationTypes[TraceType.Param] = true;
+declarationTypes[TraceType.CatchParam] = true;
+
+export function isDeclarationTrace(traceType) {
+  return declarationTypes[traceType];
+}
 
 export default TraceType;

@@ -6,12 +6,13 @@ import TraceNode from './TraceNode';
 
 /**
  * Children of `NearbyValuesTDNode`
+ * @deprecated `dp.util.getTraceValue` does not work now
  */
 export default class TraceValueNode extends TraceNode {
   get value() {
     const { trace: { applicationId, traceId } } = this;
     const dp = allApplications.getById(applicationId).dataProvider;
-    return dp.util.getTraceValue(traceId);
+    return dp.util.getTraceValuePrimitive(traceId);
   }
 
   get valueRef() {

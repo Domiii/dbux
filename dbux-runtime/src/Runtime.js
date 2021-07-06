@@ -198,7 +198,8 @@ export default class Runtime {
     const lastTrace = traceCollection.getById(lastTraceId);
     if (lastTrace?.callId) {
       // last trace was a parameter or a BCE -> return BCE
-      return this._bcesInByContextId[parentContextId];
+      // return this._bcesInByContextId[parentContextId];
+      return lastTrace?.callId;
     }
 
     // this context was probably not created by a call.

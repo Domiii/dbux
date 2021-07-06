@@ -114,7 +114,7 @@ function reportStatusCode(code, signal) {
     fs.writeFileSync(path.join(tmpFolder, code?.toString() || '0'), '');
   }
   else {
-    reportError(`Exited with SIGNAL = ${signal} (code = ${code})`);
+    reportError(new Error(`Exited with SIGNAL = ${signal} (code = ${code})`));
   }
 }
 

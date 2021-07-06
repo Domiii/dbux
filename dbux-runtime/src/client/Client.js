@@ -1,13 +1,13 @@
 // import 'ws'; // this must work on Node!
 import io, { Socket } from 'socket.io-client';
-// import minBy from 'lodash/minBy';
-// import maxBy from 'lodash/maxBy';
-import { newLogger, logInternalError } from '@dbux/common/src/log/logger';
+import minBy from 'lodash/minBy';
+import maxBy from 'lodash/maxBy';
+import { newLogger } from '@dbux/common/src/log/logger';
 // import universalLibs from '@dbux/common/src/util/universalLibs';
 import SendQueue from './SendQueue';
 
 const Verbose = 1;
-// const Verbose = false;
+// const Verbose = 0;
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Runtime Client');
@@ -147,7 +147,7 @@ export default class Client {
 
     // wait for ack to come back from server
     this._socket.once('init_ack', applicationId => {
-      Verbose && debug(`-> init_ack`, initPacket);
+      Verbose > 1 && debug(`-> init_ack`, initPacket);
       // NOOP experiment - see https://github.com/socketio/socket.io/issues/3946
       // const N = 1e6;
       // const noopData = new Array(N).fill(1).join('');
@@ -183,11 +183,20 @@ export default class Client {
       this._connect();
     }
     else if (this.isReady()) {
-      // Verbose && debug(`<- data: ` +
-      //   Object.entries(data)
-      //     .map(([key, arr]) => `${key} (${minBy(arr, entry => entry._id)._id}~${maxBy(arr, entry => entry._id)._id})`)
-      //     .join(', ')
-      // );
+      Verbose && debug(`<- data: ` +
+        Object.entries(data)
+          .map(([key, arr]) => {
+            try {
+              return `${arr.length} ${key} (${minBy(arr, entry => entry._id)?._id}~${maxBy(arr, entry => entry._id)?._id})`;
+            }
+            catch (err) {
+              const idx = arr?.findIndex?.(x => x === null || x === undefined);
+              logError(`Invalid "${key}" data received: "${err.message}". Index #${idx} is ${arr?.[idx]} (${arr})`);
+              return '(err)';
+            }
+          })
+          .join(', ')
+      );
       this._socket.emit('data', data);
       this._refreshInactivityTimer();
       this._waitingCb?.();

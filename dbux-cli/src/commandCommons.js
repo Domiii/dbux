@@ -35,18 +35,18 @@ export function buildCommonCommandOptions() {
       alias: ['pw'],
       describe: "Specify which packages will be instrumented.",
       default: '',
+      type: 'string',
       // type: 'array',
     },
     runtime: {
       alias: ['rt'],
-      describe: 'Runtime config (JSON.stringify)',
+      describe: 'Runtime config (JSON format)',
       // example: "{\"tracesDisabled\":1}"
       default: null
     },
     require: {
       alias: ['r'],
       describe: 'Require files, after babel/register, but before doing the actual work.',
-      // example: "{\"tracesDisabled\":1}"
       default: null
     }
   };

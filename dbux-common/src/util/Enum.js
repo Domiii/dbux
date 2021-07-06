@@ -1,5 +1,7 @@
 /**
  * Enum class
+ * 
+ * @see https://github.com/Domiii/dbux/tree/master/dbux-common/src/util/Enum.js
  */
 export default class Enum {
   constructor(namesOrValuesByNames) {

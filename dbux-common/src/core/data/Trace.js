@@ -1,4 +1,3 @@
-import TraceType from '../constants/TraceType';
 import HasValue from './HasValue';
 
 export default class Trace extends HasValue {
@@ -25,10 +24,6 @@ export default class Trace extends HasValue {
   /**
    * @type {number}
    */
-  valueId;
-  /**
-   * @type {number}
-   */
   loopId;
 
   /**
@@ -43,4 +38,10 @@ export default class Trace extends HasValue {
    * @type {number}
    */
   type;
+
+  /**
+   * Extra data related to this trace, based on circumstances.
+   * -> contains { argTids, spreadLengths[, monkey] } for BCE.
+   */
+  data;
 }

@@ -31,7 +31,10 @@ export default class Collection {
   dp;
 
   constructor(name, dp) {
-    this.log = newLogger(`${name} (Col)`);
+    if (!name || !dp) {
+      throw new Error(`Collection did not provide name and dp to ctor - ${this.constructor.name}`);
+    }
+    this.logger = newLogger(`${name}`);
     this.name = name;
     this.dp = dp;
 
@@ -69,23 +72,30 @@ export default class Collection {
   /**
    * Collections can use this to massage data after all data has been added, but before indexes have been processed. This will be executed only on the first time that data has been added.
    * @virtual
-   * 
    * @param {T[]} entries
    */
-  postAddRaw(entries) {}
+  postAddRaw(entries) { }
 
   /**
    * Collections can use this to massage data after all data has been added, but before indexes have been processed. This will be executed everytime data has been added(even when deserialize).
    * @virtual
    * @param {T[]} entries
    */
-  postAddProcessed(entries) {}
+  postAddProcessed(entries) { }
 
-  // /**
-  //  * Collections can use this to massage data after all data has been added, and after indexes have been processed.
-  //  * @virtual
-  //  */
-  // postIndex(/* entries */) { }
+  /**
+   * Collections can use this to massage data after all data has been added, and after indexes have been processed. This will be executed only on the first time that data has been added.
+   * @virtual
+   * @param {T[]} entries
+   */
+  postIndexRaw(entries) { }
+
+  /**
+   * Collections can use this to massage data after all data has been added, and after indexes have been processed. This will be executed everytime data has been added(even when deserialize).
+   * @virtual
+   * @param {T[]} entries
+   */
+  postIndexProcessed(entries) { }
 
   // ###########################################################################
   // Reads
@@ -124,6 +134,10 @@ export default class Collection {
     return this._all[id];
   }
 
+  getAllActual(startId = 1) {
+    return this._all.slice(startId);
+  }
+
   getLast() {
     if (!this._all.length) {
       return null;
@@ -140,5 +154,15 @@ export default class Collection {
       }
     }
     return undefined;
+  }
+  
+  errorWrapMethod(methodName, ...args) {
+    try {
+      // build dynamic call expression tree
+      this[methodName](...args);
+    }
+    catch (err) {
+      this.logger.error(`${this.constructor.name}.${methodName}`, 'failed\n  ', err); //...args);
+    }
   }
 }

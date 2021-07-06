@@ -1,6 +1,6 @@
 import { runAllSnapshotTests } from '../../testing/test-util';
 import { replaceProgramBody } from '../../helpers/program';
-import { buildWrapTryFinally } from '../../helpers/builders';
+import { buildWrapTryFinally } from '../../instrumentation/builders/common';
 import { extractTopLevelDeclarations } from '../../helpers/topLevelHelpers';
 
 const codes = [

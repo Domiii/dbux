@@ -6,14 +6,16 @@
  * 3. ReturnArgument
  */
 
-var q = 1;
-var binaryExpression = (z) => q + z;
-var updateExpression = () => ++q;
-function complex1(z) {
-  return z + ++q;
-}
+// var q = 1;
+var f = () => 2;
+// var binaryExpression = (z) => q + z;
+// var updateExpression = () => ++q;
+// function complex1(z) {
+//   return z + ++q;
+// }
 
-updateExpression();
+// binaryExpression(3);
+// updateExpression();
 
 // complex1();
 

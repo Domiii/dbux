@@ -5,9 +5,19 @@ import { pathGetBasename } from '@dbux/common/src/util/pathUtil';
 import StaticContextCollection from './data/StaticContextCollection';
 import StaticTraceCollection from './data/StaticTraceCollection';
 import StaticLoopCollection from './data/StaticLoopCollection';
-import StaticVarAccessCollection from './data/StaticVarAccessCollection';
-import { isNodeInstrumented } from './helpers/instrumentationHelper';
+import { isNodeInstrumented } from './helpers/astUtil';
+import ParseStack from './parseLib/ParseStack';
 
+import * as ParseNodeClassesByName from './parse/_registry';
+import * as PluginClassesByName from './parse/plugins/_registry';
+
+import ParseRegistry from './parseLib/ParseRegistry';
+
+// ###########################################################################
+// init parser
+// ###########################################################################
+
+ParseRegistry.init(ParseNodeClassesByName, PluginClassesByName);
 
 // ###########################################################################
 // Build custom dbux state object
@@ -19,14 +29,15 @@ let iProgram = 0;
 /**
  * Build the state used by dbux-babel-plugin throughout the entire AST visit.
  */
-export default function injectDbuxState(_buildCfg, programPath, programState) {
+export default function injectDbuxState(programPath, programState) {
   const buildCfg = programState.opts || EmptyObject;
 
-  const { 
+  const {
     filenameOverride: filenameOverrideOrFn,
     runtime: runtimeCfg
   } = buildCfg;
-  const filenameOverride = filenameOverrideOrFn && (isFunction(filenameOverrideOrFn) ? filenameOverrideOrFn(programState) : null);
+  const filenameOverride = filenameOverrideOrFn && (isFunction(filenameOverrideOrFn) ? filenameOverrideOrFn(programState) : filenameOverrideOrFn);
+  // console.warn('options', JSON.stringify(buildCfg), filenameOverride);
   const filePath = filenameOverride || programState.filename || `__unnamed_script_${++unknownCount}.js`;
   const fileName = filePath && pathGetBasename(filePath);
 
@@ -35,7 +46,14 @@ export default function injectDbuxState(_buildCfg, programPath, programState) {
   const { scope } = programPath;
   const { file: programFile } = programState;
 
-  // console.log('[@dbux/babel-plugin Program]', filePath);
+  const programUid = ++iProgram;
+
+  function makeProgramId(name) {
+    // NOTE: This is because we might have multiple dbux programs in the same context (e.g. multiple <script> tags in same HTML file)
+    //        So we want to add `iProgram` for unique flavor (which works if they are all instrumented by the same process).
+    // TODO: fix this. Babel seems to remove the number suffix anyway.
+    return scope.generateUidIdentifier(name + programUid);
+  }
 
   const dbuxState = {
     runtimeCfg,
@@ -47,16 +65,68 @@ export default function injectDbuxState(_buildCfg, programPath, programState) {
 
     contexts: new StaticContextCollection(programState),
     traces: new StaticTraceCollection(programState),
-    varAccess: new StaticVarAccessCollection(programState),
     loops: new StaticLoopCollection(programState),
 
     ids: {
-      dbuxInit: scope.generateUid('dbux_init'),
-      dbuxRuntime: scope.generateUid('dbuxRuntime'),
+      dbuxInit: scope.generateUidIdentifier('dbux_init'),
+      dbuxRuntime: scope.generateUidIdentifier('dbuxRuntime'),
 
-      // NOTE: We might have multiple dbux programs in the same context (e.g. multiple <script> tags in same HTML file)
-      //        So we want to add `iProgram` for unique flavor (which works if they are all instrumented by the same process).
-      dbux: scope.generateUid('dbux' + (++iProgram))
+      dbux: makeProgramId('dbux'),
+      dbuxClass: scope.generateUidIdentifier('__dbux_class'),
+      dbuxInstance: scope.generateUidIdentifier('__dbux_instance'),
+
+      aliases: {
+        // utilities
+        getArgLength: makeProgramId('al'),
+        arrayFrom: makeProgramId('af'),
+        unitOfType: makeProgramId('uot'),
+
+        // Function
+        pushImmediate: makeProgramId('pI'),
+        popFunction: makeProgramId('pF'),
+        registerParams: makeProgramId('par'),
+        traceReturn: makeProgramId('tr'),
+        traceThrow: makeProgramId('tt'),
+
+        // misc
+        newTraceId: makeProgramId('tid'),
+        traceDeclaration: makeProgramId('td'),
+        traceExpression: makeProgramId('te'),
+        traceExpressionVar: makeProgramId('tev'),
+        traceWriteVar: makeProgramId('twv'),
+
+        // ME
+        traceExpressionME: makeProgramId('tme'),
+        traceExpressionMEOptional: makeProgramId('tmeo'),
+        traceWriteME: makeProgramId('twme'),
+        traceDeleteME: makeProgramId('tdme'),
+
+        // UE
+        traceUpdateExpressionVar: makeProgramId('tue'),
+        traceUpdateExpressionME: makeProgramId('tume'),
+
+        // calls
+        traceBCE: makeProgramId('bce'),
+        // traceSpreadArg: makeProgramId('tsa'),
+        traceCallResult: makeProgramId('tcr'),
+
+        // {Array,Object}Expression
+        traceArrayExpression: makeProgramId('tae'),
+        traceObjectExpression: makeProgramId('toe'),
+
+        // loops
+        traceForIn: makeProgramId('tfi'),
+
+        // classes
+        traceClass: makeProgramId('tc'),
+        traceInstance: makeProgramId('ti'),
+
+        // async
+        preAwait: makeProgramId('aw0'),
+        wrapAwait: makeProgramId('aw1'),
+        postAwait: makeProgramId('aw2'),
+        // traceAwaitResult: makeProgramId('aw3')
+      }
     },
 
     // ###########################################################################
@@ -68,7 +138,7 @@ export default function injectDbuxState(_buildCfg, programPath, programState) {
       return staticContextParent?.getData(dataName);
     },
 
-    
+
     // ###########################################################################
     // visitor check-ins
     // ###########################################################################
@@ -93,10 +163,12 @@ export default function injectDbuxState(_buildCfg, programPath, programState) {
       // if (entered.has(path)) {
       //   return false;
       // }
-      if (!path.node || isNodeInstrumented(path.node)) {
-        // this node has been dynamically emitted; not part of the original source code -> not interested in it
-        return false;
-      }
+
+      // NOTE: gen happens after parsing now
+      // if (!path.node || isNodeInstrumented(path.node)) {
+      //   // this node has been dynamically emitted; not part of the original source code -> not interested in it
+      //   return false;
+      // }
 
       // remember our visit
       dbuxState.markEntered(path, purpose);
@@ -171,6 +243,8 @@ export default function injectDbuxState(_buildCfg, programPath, programState) {
   };
 
   Object.assign(programState, dbuxState);
+
+  programState.stack = new ParseStack(programState);
 
   return programState;
 }

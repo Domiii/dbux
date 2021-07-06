@@ -1,8 +1,8 @@
 import getGlobal from '@dbux/common/src/getGlobal';
+// import { enableLogRecording, playbackLogRecords } from '@dbux/common/src/log/logger';
 import RuntimeMonitor from './RuntimeMonitor';
 import { initClient } from './client/index';
 import wrapPromise from './wrapPromise';
-import monkeyPatching from './monkeyPatching';
 
 
 const dbux = {
@@ -51,13 +51,15 @@ function handleShutdown() {
     console.error('[dbux-runtime] Process exiting but not all data has been sent out. Analysis will be incomplete. ' +
       'This is probably because of a crash or `process.exit` was called manually.');
   }
+  // console.log('playbackLogRecords');
+  // playbackLogRecords();
 }
 
 (function main() {
+  // enableLogRecording();
+
   __global__ = getGlobal();
   registerDbuxAsGlobal();
-
-  monkeyPatching();
 
   // NOTE: make sure to `initClient` right at the start, or else:
   // make sure that the client's `createdAt` will be smaller than any other `createdAt` in data set!

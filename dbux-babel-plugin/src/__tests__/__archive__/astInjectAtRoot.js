@@ -1,5 +1,5 @@
 import { runSnapshotTests, runAllSnapshotTests } from '../../testing/test-util';
-import { buildSource } from '../../helpers/builders';
+import { buildSource } from '../../instrumentation/builders/common';
 
 const codes = [
   `

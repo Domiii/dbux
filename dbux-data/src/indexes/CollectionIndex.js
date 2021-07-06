@@ -86,6 +86,9 @@ class MapIndexManager extends IndexManager {
 // ###########################################################################
 
 class ContainerMethods {
+  /**
+   * @param {CollectionIndex} index 
+   */
   constructor(index) {
     this.index = index;
   }
@@ -98,7 +101,12 @@ class ContainerMethods {
   getFirstInContainter(container) {
     throw new Error('abstract method not implemented');
   }
-  
+
+  // eslint-disable-next-line no-unused-vars
+  getLastInContainter(container) {
+    throw new Error('abstract method not implemented');
+  }
+
   // eslint-disable-next-line no-unused-vars
   addEntry(container, entry) {
     throw new Error('abstract method not implemented');
@@ -111,7 +119,11 @@ class ArrayContainerMethods extends ContainerMethods {
   }
 
   getFirstInContainter(container) {
-    return container[0] || null;
+    return container?.[0];
+  }
+
+  getLastInContainter(container) {
+    return container?.[container.length - 1];
   }
 
   addEntry(container, entry) {
@@ -125,7 +137,13 @@ class SetContainerMethods extends ContainerMethods {
   }
 
   getFirstInContainter(container) {
-    return container.values().next().value || null;
+    this.index.logger.warn(`Trying to get first item in a set container`);
+    return container.values().next().value;
+  }
+
+  getLastInContainter(container) {
+    this.index.logger.warn(`Trying to get last item in a set container`);
+    return container.values().next().value;
   }
 
   addEntry(container, entry) {
@@ -151,7 +169,7 @@ export default class CollectionIndex {
   constructor(collectionName, indexName, { addOnNewData = true, isMap = false, isContainerSet = false } = EmptyObject) {
     this.collectionName = collectionName;
     this.name = indexName;
-    this.log = newLogger(`${indexName} (Index)`);
+    this.logger = newLogger(`${indexName} (Index)`);
     this.addOnNewData = addOnNewData;
     this.isMap = isMap;
     this.isContainerSet = isContainerSet;
@@ -193,6 +211,11 @@ export default class CollectionIndex {
     return this._containerMethods.getFirstInContainter(container) || null;
   }
 
+  getLast(key) {
+    const container = this.get(key);
+    return this._containerMethods.getLastInContainter(container) || null;
+  }
+
   getAll() {
     return this._byKey;
   }
@@ -222,7 +245,7 @@ export default class CollectionIndex {
     const key = this.makeKey(this.dp, entry);
     if (key === undefined) {
       // debugger;
-      this.log.error('makeKey returned undefined');
+      this.logger.error('makeKey returned undefined');
       return;
     }
     if (key === false) {
@@ -234,7 +257,7 @@ export default class CollectionIndex {
 
     // sanity check
     // if (container.includes(undefined)) {
-    //   this.log.error('Index contains undefined values', key, entry, container);
+    //   this.loger.error('Index contains undefined values', key, entry, container);
     // }
   }
 
@@ -249,7 +272,14 @@ export default class CollectionIndex {
 
   addEntryById(id) {
     const entry = this.dp.collections[this.collectionName].getById(id);
-    this.addEntry(entry);
+    if (!entry) {
+      this.logger.error(new Error(
+        `Tried to ${this.constructor.name}.addEntryById(id = ${JSON.stringify(id)}), but there are no ${this.collectionName} with that id.`
+      ).stack);
+    }
+    else {
+      this.addEntry(entry);
+    }
   }
 
   /** 

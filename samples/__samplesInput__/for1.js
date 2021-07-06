@@ -1,14 +1,8 @@
 let sum = 0;
-identity();
-for (let i = 1; i < 8; i += 2) {
-  sum += i * i;
-  console.log(sum);
-  if (i < 4) {
-    identity(sum);
-  }
+for (var j = 1; j < 4; j += 2) {
+  console.log(j, sum += j);
 }
 
-
-function identity(x) {
-  return x;
+for (let i = 1; i < 4; i += 2) {
+  console.log(i, sum += i);
 }

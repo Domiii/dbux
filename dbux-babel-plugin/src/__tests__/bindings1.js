@@ -1,9 +1,9 @@
 import justRunMyPlugin from '../testing/justRunMyPlugin';
-import { getRealVariableNamesInLoc1D } from '../helpers/bindingsHelper';
+import { getRealVariableNamesInLoc1D } from '../helpers/bindingsUtil';
 import { getPreBodyLoc1D } from '../helpers/locHelpers';
 import { getContextPath } from '../helpers/traversalHelpers';
 import { getCalleeName } from '../helpers/callHelpers';
-import { isNodeInstrumented } from '../helpers/instrumentationHelper';
+import { isNodeInstrumented } from '../helpers/astUtil';
 
 function expectPathBindingNames(path, names) {
   const ids = Object.values(path.getBindingIdentifierPaths());
@@ -82,7 +82,6 @@ test('for-of bindings', () => {
     }
   `, {
     ForOfStatement(path, /* state */) {
-      // see: https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/family.js#L215
       // const ids = path.get('left').getBindingIdentifierPaths();
 
       expectPathBindingNames(path, []);  // no variable is declared in the loop signature

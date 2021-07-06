@@ -1,4 +1,7 @@
-import { logInternalError } from '@dbux/common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('Stack');
 
 
 export default class Stack {
@@ -129,7 +132,7 @@ export default class Stack {
     }
     const i = this.indexOf(contextId);
     if (i < 0) {
-      logInternalError('setPeek failed: contextId not on stack', contextId);
+      logError('setPeek failed: contextId not on stack', contextId);
       return;
     }
     this._peekIdx = i;

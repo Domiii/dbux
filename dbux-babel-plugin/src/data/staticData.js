@@ -1,10 +1,9 @@
-import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { isPlainObject } from 'lodash';
 import isString from 'lodash/isString';
-import { buildSource } from '../helpers/builders';
+import { buildSource } from '../instrumentation/builders/common';
 
-// const Verbose = false;
-const Verbose = true;
+const Verbose = false;
+// const Verbose = true;
 
 export function buildDbuxInit(state) {
   const {
@@ -13,7 +12,6 @@ export function buildDbuxInit(state) {
     filePath,
     contexts,
     traces,
-    varAccess,
     loops,
     runtimeCfg
   } = state;
@@ -28,7 +26,6 @@ export function buildDbuxInit(state) {
 
     contexts: contexts._all,
     traces: traces._all,
-    varAccess: varAccess._all,
     loops: loops._all
   };
 
@@ -57,6 +54,8 @@ export function buildDbuxInit(state) {
     else {
       throw new Error(`Invalid runtimeCfg must be string or object but was: "${runtimeCfg}"`);
     }
+
+    Verbose && console.debug(`Received runtime cfg: ${runtimeCfgString}`);
   }
 
   // Verbose && console.debug(`Received runtime cfg: ${runtimeCfgString}`);
@@ -66,8 +65,13 @@ export function buildDbuxInit(state) {
   // Verbose && console.debug(`[Dbux] babel write size:`, (staticDataString.length / 1000).toFixed(2), 'k');
 
   // Verbose && console.time(`[Dbux] babel write (AST)`);
+  // console.trace('dbuxRuntime', dbuxRuntime);
+
+  // WARNING: "TypeError: `initProgram` is not a function" is a common problem here.
+  //    -> that can be due to circular dependencies or other issues breaking `require('@dbux/runtime')`
+  //    -> console.warn('dbux_init', dbuxRuntime, typeof __dbux__, require('@dbux/runtime'));
   const result = buildSource(`
-function ${dbuxInit}(dbuxRuntime) {
+function ${dbuxInit.name}(dbuxRuntime) {
   return dbuxRuntime.initProgram(${staticDataString}, ${runtimeCfgString});
 }`);
   // Verbose && console.timeEnd(`[Dbux] babel write (AST)`);
@@ -75,7 +79,6 @@ function ${dbuxInit}(dbuxRuntime) {
   // free up some memory (doesn't make a difference)
   // delete state.contexts;
   // delete state.traces;
-  // delete state.varAccess;
   // delete state.loops;
   // const result = buildSource(`"";`);
   return result;

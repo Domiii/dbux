@@ -16,3 +16,7 @@ const {
   }
 } = o;
 console.log(x, y);
+
+function ff({ o: { p: { a: [x, y] } }, p: { z, w } }) {
+  console.log(x, y, z, w);
+}

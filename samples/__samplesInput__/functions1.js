@@ -1,39 +1,21 @@
 
 // FunctionDeclaration
-function f() { return f; };
+function f() { return 2; }
 
 // FunctionExpression
-const g = function g() { return g; };
-const g2 = function g2() { return g2; };
-// const g3 = (null, function g3() { })
-class B {
-  // NOTE: same as `A::i`; we keep (i) bindings and (ii) function name
-  g = (function g() { return this.g; }.bind(this));
-}
-const p = { 
-  // NOTE: same as `o.j`; we keep (i) bindings and (ii) function name (unlike `{ g: () => { } }`!)
-  g: (() => (function g() { return this.g; }.bind(this)))
-};
+const g = function g() { return 3; };
+const g2 = function g2() { return g; };
 
 // ArrowFunctionExpression
-const h = () => { return h; };
-
-// ClassMethod
-class A {
-  i() { return this.i; }
-}
-
-// ObjectMethod
-const o = {
-  j() { return o.j; }
-};
+const h = () => { return 4; };
+const h2 = () => 5;
 
 [
-  f(),
-  g(), new B().g(), p.g(),
-  h(),
-  new A().i(),
-  o.j()
+  f,
+  g,
+  g2(),
+  h,
+  h2
 ].forEach((res, i) => {
   console.log(i, res.name);
 });

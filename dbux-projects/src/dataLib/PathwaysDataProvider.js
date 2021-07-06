@@ -23,6 +23,7 @@ import StepsByGroupIndex from './indexes/StepsByGroupIndex';
 import TestRun from './TestRun';
 import LogFileLoader from './LogFileLoader';
 import VisitedStaticTracesByFile from './indexes/VisitedStaticTracesByFileIndex';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PathwaysDataProvider');
@@ -66,16 +67,21 @@ class ApplicationCollection extends PathwaysCollection {
       const filePath = this.getApplicationFilePath(app);
       const { version, collections } = app.dataProvider.serializeJson();
       const header = JSON.stringify({ headerTag: true, version });
-      try {
-        fs.appendFileSync(filePath, `${header}\n${JSON.stringify(collections)}\n`, { flag: 'ax' });
+      if (!fs.existsSync(filePath)) {
+        try {
+          fs.appendFileSync(filePath, `${header}\n${JSON.stringify(collections)}\n`, { flag: 'ax' });
+        }
+        catch (err) {
+          logError(`Cannot write header of application log file at ${filePath}. Error: ${err}`);
+        }
+        app.dataProvider.onAnyData(data => {
+          const { collections: serializedNewData } = app.dataProvider.serializeJson(Object.entries(data));
+          fs.appendFileSync(filePath, JSON.stringify(serializedNewData) + '\n');
+        });
       }
-      catch (err) {
-        logError(`Cannot write header of application log file at ${filePath}`);
+      else {
+        warn(`Found existing log file at "${filePath}", added old application without \`isNew=false\``);
       }
-      app.dataProvider.onAnyData(data => {
-        const { collections: serializedNewData } = app.dataProvider.serializeJson(Object.entries(data));
-        fs.appendFileSync(filePath, JSON.stringify(serializedNewData) + '\n');
-      });
     }
   }
 
@@ -460,9 +466,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
       )
     );
 
-    this._notifyData({
-
-    });
+    this._notifyData(EmptyArray, EmptyObject);
   }
 
   /**

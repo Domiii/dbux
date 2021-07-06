@@ -208,8 +208,9 @@ export default class Project {
 
   async checkCorrectGitRepository() {
     if (!await this.isCorrectGitRepository()) {
-      throw new Error(`Trying to execute command in wrong git repository:\n${await this.execCaptureOut(`${this.gitCommand} remote -v`)}
-This may be solved by using \`Delete project folder\` button.`);
+      const repo = await this.execCaptureOut(`${this.gitCommand} remote -v`);
+      throw new Error(`Trying to execute command in wrong git repository:\n${repo}
+Sometimes a reset (by using the \`Delete project folder\` button) can help fix this.`);
     }
   }
 
@@ -593,7 +594,7 @@ This may be solved by using \`Delete project folder\` button.`);
         });
       }
       catch (err) {
-        const errMsg = `Failed to clone git repository. This may be solved by using \`Delete project folder\` button. ${err.stack}`;
+        const errMsg = `Failed to clone git repository. Sometimes a reset (by using the \`Delete project folder\` button) can help fix this - ${err.stack}`;
         throw new Error(errMsg);
       }
 

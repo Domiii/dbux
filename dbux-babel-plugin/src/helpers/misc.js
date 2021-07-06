@@ -6,14 +6,3 @@ export function getLine(path) {
 
   return loc?.start?.line;
 }
-
-export function getPresentableString(path, MaxLen) {
-  let presentableString = path.toString();
-  if (MaxLen && presentableString.length > MaxLen) {
-    presentableString = presentableString.substring(0, MaxLen - 3).trim() + '...';
-  }
-  presentableString = presentableString
-    // .replace(/[\r\n]/g, '')
-    .replace(/\s+/g, ' ');      // replace any amount and type of whitespace with a single space
-  return presentableString;
-}

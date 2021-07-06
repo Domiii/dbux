@@ -11,7 +11,7 @@ import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 // ###########################################################################
 
 export class ApplicationTDNode extends BaseTreeViewNode {
-  static makeTraceDetail(trace) {
+  static makeEntry(trace) {
     const application = allApplications.getApplication(trace.applicationId);
     const fpath = application.dataProvider.util.getTraceFilePath(trace.traceId);
     if (allApplications.selection.data.getApplicationCountAtPath(fpath) < 2) {
@@ -46,7 +46,7 @@ export class ApplicationTDNode extends BaseTreeViewNode {
 // ###########################################################################
 
 export class ContextTDNode extends BaseTreeViewNode {
-  static makeTraceDetail(trace) {
+  static makeEntry(trace) {
     const application = allApplications.getApplication(trace.applicationId);
     return application.dataProvider.util.getTraceContext(trace.traceId);
   }
@@ -68,10 +68,6 @@ export class ContextTDNode extends BaseTreeViewNode {
 // ###########################################################################
 
 export class TraceTypeTDNode extends BaseTreeViewNode {
-  static makeTraceDetail(trace) {
-    return trace;
-  }
-
   static makeLabel(trace) {
     const application = allApplications.getApplication(trace.applicationId);
     const traceType = application.dataProvider.util.getTraceType(trace.traceId);
@@ -90,10 +86,6 @@ export class TraceTypeTDNode extends BaseTreeViewNode {
 // ###########################################################################
 
 export class InfoTDNode extends BaseTreeViewNode {
-  static makeTraceDetail(trace) {
-    return trace;
-  }
-
   static makeLabel() {
     return 'Info';
   }

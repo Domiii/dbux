@@ -1,4 +1,4 @@
-import { newLogger, logInternalError } from '@dbux/common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import groupBy from 'lodash/groupBy';
@@ -78,7 +78,7 @@ export function renderTraceDecorations(editor, fpath) {
 
     if (!config?.editorDecorationType) {
       if (decorations && config !== false) {
-        logError('found decoName for trace that is not configured (suggestion: set to `false` to avoid displaying it)', decoName);
+        warn(`found decoName "${decoName}" for trace that is not configured (suggestion: set to false to avoid displaying it)`);
       }
       continue;
     }

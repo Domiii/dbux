@@ -1,4 +1,6 @@
 import { newLogger } from '@dbux/common/src/log/logger';
+// import staticTraceCollection from './data/staticTraceCollection';
+import traceCollection from './data/traceCollection';
 
 
 /**
@@ -9,7 +11,7 @@ const ProgramStartTraceId = 1;
 /**
  * Comes from the order we execute things in programVisitor
  */
-const ProgramStopTraceId = 2;
+const ProgramEndTraceId = 2;
 
 /**
  * In Babel-lingo, a "Program" is one *.js file.
@@ -52,19 +54,83 @@ export default class ProgramMonitor {
   }
 
   // ###########################################################################
+  // utilities
+  // ###########################################################################
+
+  getArgLength = (arg) => {
+    return arg?.length;
+  }
+
+  arrayFrom = (arg) => {
+    // TODO: see Scope.toArray(node, i, arrayLikeIsIterable)
+    /**
+     * NOTE: Babel does it more carefully:
+     * ```js
+     * function _iterableToArray(iter) {
+     *   if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
+     * }
+     * ```
+     */
+    return Array.from(arg);
+  }
+
+  /**
+   * NOTE: must discern between different numerical types
+   * @see https://tc39.es/ecma262/#sec-postfix-increment-operator-runtime-semantics-evaluation
+   * @see https://tc39.es/ecma262/#sec-numeric-types
+   * @see https://stackoverflow.com/questions/57996921/why-bigint-demand-explicit-conversion-from-number?noredirect=1&lq=1
+   */
+  unitOfType = (n) => {
+    return n?.constructor === BigInt ? 1n : 1;
+  }
+
+  // ###########################################################################
   // context management
   // ###########################################################################
 
-  pushImmediate(inProgramStaticContextId, traceId, isInterruptable) {
+  pushImmediate = (inProgramStaticContextId, inProgramStaticTraceId, isInterruptable) => {
     if (this.disabled) {
       return 0;
     }
 
     const tracesDisabled = this.areTracesDisabled;
-    return this._runtimeMonitor.pushImmediate(this.getProgramId(), inProgramStaticContextId, traceId, isInterruptable, tracesDisabled);
+    return this._runtimeMonitor.pushImmediate(
+      this.getProgramId(),
+      inProgramStaticContextId,
+      inProgramStaticTraceId,
+      isInterruptable,
+      tracesDisabled
+    );
   }
 
-  popImmediate(contextId, traceId) {
+  registerParams = (paramTids) => {
+    if (this.areTracesDisabled) {
+      return;
+    }
+
+    this._runtimeMonitor.registerParams(
+      this.getProgramId(),
+      paramTids
+    );
+  }
+
+  traceReturn = (value, tid, inputs) => {
+    if (this.areTracesDisabled) {
+      return value;
+    }
+
+    return this._runtimeMonitor.traceReturn(this.getProgramId(), value, tid, inputs);
+  }
+
+  traceThrow = (value, tid, inputs) => {
+    if (this.areTracesDisabled) {
+      return value;
+    }
+
+    return this._runtimeMonitor.traceReturn(this.getProgramId(), value, tid, inputs);
+  }
+
+  popImmediate = (contextId, traceId) => {
     if (this.disabled) {
       return undefined;
     }
@@ -72,7 +138,7 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.popImmediate(contextId, traceId);
   }
 
-  popFunction(contextId, traceId) {
+  popFunction = (contextId, traceId) => {
     if (this.disabled) {
       return undefined;
     }
@@ -80,14 +146,13 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.popFunction(contextId, traceId);
   }
 
-  popProgram() {
+  popProgram = () => {
     // finished initializing the program
-    return this.popImmediate(this._programContextId, ProgramStopTraceId);
+    return this.popImmediate(this._programContextId, ProgramEndTraceId);
   }
 
   // ###########################################################################
   // await/async
-  // TODO: allow disabling tracing these?
   // ###########################################################################
 
   // CallbackArgument(inProgramStaticContextId, schedulerId, traceId, cb) {
@@ -95,7 +160,12 @@ export default class ProgramMonitor {
   //     inProgramStaticContextId, schedulerId, traceId, cb);
   // }
 
-  preAwait(inProgramStaticContextId, traceId, awaitArgument) {
+  wrapAwait = (awaitValue/*, awaitContextId */) => {
+    // nothing to do
+    return this._runtimeMonitor.wrapAwait(this.getProgramId(), awaitValue);
+  }
+
+  preAwait = (inProgramStaticContextId, traceId, awaitArgument) => {
     if (this.disabled) {
       // TODO: calling asynchronous methods when disabled hints at non-pure getters and will most likely cause trouble :(
       this._logger.error(`Encountered await in disabled call #${traceId} (NOTE: dbux does not play well with impure getters, especially if tey  call asynchronous code)`);
@@ -104,21 +174,16 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.preAwait(this.getProgramId(), inProgramStaticContextId, traceId, awaitArgument);
   }
 
-  wrapAwait(awaitContextId, awaitValue) {
-    // nothing to do
-    return this._runtimeMonitor.wrapAwait(this.getProgramId(), awaitContextId, awaitValue);
-  }
-
   postAwait(awaitResult, awaitArgument, awaitContextId, resumeTraceId) {
     // this._logger.debug('await argument is', awaitArgument);
     return this._runtimeMonitor.postAwait(this.getProgramId(), awaitResult, awaitArgument, awaitContextId, resumeTraceId);
   }
 
-  pushResume(resumeStaticContextId, inProgramStaticTraceId) {
+  pushResume = (resumeStaticContextId, inProgramStaticTraceId) => {
     return this._runtimeMonitor.pushResume(this.getProgramId(), resumeStaticContextId, inProgramStaticTraceId, true);
   }
 
-  popResume(resumeContextId) {
+  popResume = (resumeContextId) => {
     return this._runtimeMonitor.popResume(resumeContextId);
   }
 
@@ -126,8 +191,221 @@ export default class ProgramMonitor {
   // traces
   // ###########################################################################
 
+  newTraceId = (inProgramStaticTraceId) => {
+    // if (this.areTracesDisabled) {
+    //   return -1;
+    // }
+    return this._runtimeMonitor.newTraceId(this.getProgramId(), inProgramStaticTraceId);
+  }
+
   /**
-   * `t` is short for `trace` (we have a lot of these, so we want to keep the name short)
+   * 
+   */
+  traceDeclaration = (inProgramStaticTraceId, value = undefined, inputs = undefined) => {
+    if (this.areTracesDisabled) {
+      return -1;
+    }
+
+    return this._runtimeMonitor.traceDeclaration(this.getProgramId(), inProgramStaticTraceId, value, inputs);
+  }
+
+  traceClass = (value, tid, staticMethods, publicMethods) => {
+    if (this.areTracesDisabled) {
+      return value;
+    }
+
+    return this._runtimeMonitor.traceClass(this.getProgramId(), value, tid, staticMethods, publicMethods);
+  }
+
+  traceInstance = (value, tid, privateMethods) => {
+    if (this.areTracesDisabled) {
+      return;
+    }
+
+    this._runtimeMonitor.traceInstance(this.getProgramId(), value, tid, privateMethods);
+  }
+
+  traceExpression = (value, tid, inputs) => {
+    if (this.areTracesDisabled) {
+      return value;
+    }
+
+    return this._runtimeMonitor.traceExpression(this.getProgramId(), value, tid, inputs);
+  }
+
+  traceExpressionVar = (value, tid, declarationTid) => {
+    if (this.areTracesDisabled) {
+      return value;
+    }
+
+    return this._runtimeMonitor.traceExpressionVar(this.getProgramId(), value, tid, declarationTid);
+  }
+
+  traceExpressionME = (objValue, propValue, value, tid, objectTid) => {
+    if (this.areTracesDisabled) {
+      return value;
+    }
+
+    return this._runtimeMonitor.traceExpressionME(this.getProgramId(), value, propValue, tid, objectTid);
+  }
+
+  traceWriteVar = (value, tid, declarationTid, inputs) => {
+    if (this.areTracesDisabled) {
+      return value;
+    }
+
+    return this._runtimeMonitor.traceWriteVar(this.getProgramId(), value, tid, declarationTid, inputs);
+  }
+
+  traceWriteME = (objValue, propValue, value, tid, objectTid, inputs) => {
+    // [runtime-error] potential run-time error
+    objValue[propValue] = value;
+    if (this.areTracesDisabled) {
+      return value;
+    }
+
+    return this._runtimeMonitor.traceWriteME(this.getProgramId(), value, propValue, tid, objectTid, inputs);
+  }
+
+  traceDeleteME = (objValue, propValue, tid, objectTid) => {
+    // [runtime-error] potential run-time error
+    const result = delete objValue[propValue];
+    if (this.areTracesDisabled) {
+      return result;
+    }
+
+    return this._runtimeMonitor.traceDeleteME(this.getProgramId(), result, propValue, tid, objectTid);
+  }
+
+  traceUpdateExpressionVar = (updateValue, returnValue, readTid, tid, declarationTid) => {
+    if (this.areTracesDisabled) {
+      return returnValue;
+    }
+
+    return this._runtimeMonitor.traceUpdateExpressionVar(this.getProgramId(), updateValue, returnValue, readTid, tid, declarationTid);
+  }
+
+  traceUpdateExpressionME = (obj, prop, updateValue, returnValue, readTid, tid, objectTid) => {
+    if (this.areTracesDisabled) {
+      return returnValue;
+    }
+
+    return this._runtimeMonitor.traceUpdateExpressionME(this.getProgramId(), obj, prop, updateValue, returnValue, readTid, tid, objectTid);
+  }
+
+  traceBCE = (tid, calleeTid, argTids, spreadArgs) => {
+    if (this.areTracesDisabled) {
+      return;
+    }
+
+    this._runtimeMonitor.traceBCE(this.getProgramId(), tid, calleeTid, argTids, spreadArgs);
+  }
+
+  // traceSpreadArg = () => {
+
+  // }
+
+  traceCallResult = (value, tid, callTid) => {
+    if (this.areTracesDisabled) {
+      return value;
+    }
+
+    return this._runtimeMonitor.traceCallResult(this.getProgramId(), value, tid, callTid);
+  }
+
+  traceArrayExpression = (args, tid, argTids) => {
+    // console.debug(`[Dbux traceArrayExpression] tid=${tid}, strace=${JSON.stringify(traceCollection.getStaticTraceByTraceId(tid))}`);
+    const { data: { argConfigs } } = traceCollection.getStaticTraceByTraceId(tid);
+
+    const value = [];
+    const spreadLengths = new Array(args.length);
+    for (let i = 0; i < args.length; ++i) {
+      const arg = args[i];
+      if (argConfigs[i].isSpread) {
+        // compute arg length (NOTE: we cannot easily get the size of an iterator)
+        const l = value.length;
+        // [runtime error] potential runtime error: spreading arg
+        value.push(...arg);
+        spreadLengths[i] = value.length - l;
+      }
+      else {
+        value.push(arg);
+        spreadLengths[i] = -1; // not spread
+      }
+    }
+
+    if (this.areTracesDisabled) {
+      return value;
+    }
+
+    return this._runtimeMonitor.traceArrayExpression(this.getProgramId(), value, spreadLengths, tid, argTids);
+  }
+
+  /**
+   * 
+   */
+  traceObjectExpression = (entries, objectTid, propTids) => {
+    // console.debug(`[Dbux traceArrayExpression] tid=${tid}, strace=${JSON.stringify(traceCollection.getStaticTraceByTraceId(tid))}`);
+    const { data: { argConfigs } } = traceCollection.getStaticTraceByTraceId(objectTid);
+
+    // compute final object
+    const value = {};
+    const spreadLengths = new Array(entries.length);
+    for (let i = 0; i < entries.length; ++i) {
+      if (argConfigs[i].isSpread) {
+        // Get all arg spread keys.
+        // The spread operator observes `Object.assign` semantics.
+        // Explained in: https://babeljs.io/docs/en/babel-plugin-proposal-object-rest-spread
+        /**
+         * It is important to use spread (or `Object.assign` before using the spreaded object), as shown in the following example.
+         * NOTE: The following will not succeed, if one used `Object.keys` to substitute `Object.assign`.
+         * NOTE2: That is why `lodash.size` is also incorrect - https://github.com/lodash/lodash/blob/2f79053d7bc7c9c9561a30dda202b3dcd2b72b90/size.js#L40
+         * @example
+         * ```
+           function f() {}
+           var o = {};
+           Object.assign(f, { get x() { return 1; } });
+           Object.assign(o, f)
+           console.assert(!!o.x);
+           o
+         * ```
+         */
+
+        // NOTE: object spreading does not throw (more lenient than array and argument spreading)
+        const o = { ...entries[i] };
+        Object.assign(value, o);
+
+        // store spreaded object back in `entries`, for creating `DataNode`s
+        entries[i] = o;
+      }
+      else {
+        const [key, entryVal] = entries[i];
+        value[key] = entryVal;
+        spreadLengths[i] = -1; // not spread
+      }
+    }
+
+    if (this.areTracesDisabled) {
+      return value;
+    }
+
+    return this._runtimeMonitor.traceObjectExpression(this.getProgramId(), value, entries, argConfigs, objectTid, propTids);
+  }
+
+  traceForIn = (value, tid, declarationTid, inputs) => {
+    if (this.areTracesDisabled) {
+      return value;
+    }
+
+    return this._runtimeMonitor.traceForIn(this.getProgramId(), value, tid, declarationTid, inputs);
+  }
+
+  // ###########################################################################
+  // old traces
+  // ###########################################################################
+
+  /**
+   * `t` is short for `trace`
    */
   t(inProgramStaticTraceId) {
     if (this.areTracesDisabled) {
@@ -147,33 +425,11 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceExpression(this.getProgramId(), inProgramStaticTraceId, value);
   }
 
-  traceCall(inProgramStaticTraceId, value) {
-    // this._logger.debug('trace call', { inProgramStaticTraceId, value });
-    if (this.areTracesDisabled) {
-      return value;
-    }
-    return this._runtimeMonitor.traceCall(this.getProgramId(), inProgramStaticTraceId, value);
-    // return this.traceExpr(inProgramStaticTraceId, value);
-  }
-
   traceArg(inProgramStaticTraceId, value) {
     if (this.areTracesDisabled) {
       return value;
     }
     return this._runtimeMonitor.traceArg(this.getProgramId(), inProgramStaticTraceId, value);
-  }
-
-  // ###########################################################################
-  // values
-  // ###########################################################################
-
-  addVarAccess(inProgramStaticVarAccessId, value) {
-    // NIY
-    return value;
-    // if (this.disabled) {
-    //   return value;
-    // }
-    // return this._runtimeMonitor.addVarAccess(this.getProgramId(), inProgramStaticVarAccessId, value);
   }
 
   // ###########################################################################

@@ -2,12 +2,13 @@ export default class ValueRef {
   /**
    * @type {number}
    */
-  valueId;
+  refId;
   
   /**
+   * Id of `DataNode` that captured the first instance of this value.
    * @type {number}
    */
-  trackId;
+  nodeId;
 
   /**
    * @type {number}
@@ -24,8 +25,8 @@ export default class ValueRef {
    */
   typeName;
 
-  // when stored in DataProvider, serialized is taken out
-  // serialized,
-
-  value;
+  /**
+   * NOTE: when stored in DataProvider, `serialized` is deleted
+   */
+  serialized;
 }
