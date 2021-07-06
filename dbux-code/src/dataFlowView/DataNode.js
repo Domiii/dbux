@@ -14,7 +14,7 @@ export default class DataNode extends TraceNode {
   }
 
   get dataNode() {
-    return this.entry
+    return this.entry;
   }
   
   makeIconPath() {
