@@ -677,6 +677,7 @@ export default {
   /**
    * Returns the BCE of a context, if it has one. Else it returns the last trace before the context.
    * NOTE: `parentTrace` of a context might not participate in a call, e.g. in case of getters or setters
+   * NOTE: To get the actual caller of the context, see `util.getOwnCallerTraceOfContext`
    * @param {DataProvider} dp 
    * @param {number} contextId
   */
@@ -688,6 +689,35 @@ export default {
     //   return callerTrace;
     // }
     return parentTrace;
+  },
+
+  /**
+   * like `util.getCallerTraceOfContext` but returns null if its callee's `staticContextId` matches the context's.
+   * @param {DataProvider} dp 
+   * @param {number} contextId
+   */
+  getOwnCallerTraceOfContext(dp, contextId) {
+    const bceTrace = dp.util.getCallerTraceOfContext(contextId);
+    if (!bceTrace) {
+      return null;
+    }
+
+    // check if it is the actual bce
+    const calleeTrace = dp.collections.traces.getById(bceTrace.data.calleeTid);
+    const calleeDataNode = dp.collections.dataNodes.getById(calleeTrace.nodeId);
+    const functionRef = dp.collections.values.getById(calleeDataNode.refId);
+    const functionDefinitionDataNode = dp.collections.dataNodes.getById(functionRef.nodeId);
+    const functionDefinitionTrace = dp.collections.traces.getById(functionDefinitionDataNode.traceId);
+    const functionStaticTrace = dp.collections.staticTraces.getById(functionDefinitionTrace.staticTraceId);
+    const context = dp.collections.executionContexts.getById(contextId);
+    if (context.staticContextId === functionStaticTrace.data?.staticContextId) {
+      // Accept: staticContextIds are matched
+      return bceTrace;
+    }
+    else {
+      // Reject
+      return null;
+    }
   },
 
   /** @param {DataProvider} dp */
