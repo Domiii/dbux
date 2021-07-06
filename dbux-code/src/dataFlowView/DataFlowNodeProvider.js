@@ -94,13 +94,13 @@ export default class DataFlowNodeProvider extends BaseTreeViewNodeProvider {
       }
       else {
         dataTraceIds.add(dataTrace.traceId);
-        return this.buildNode(ParentDataNode, dataTrace, null, { nodeId: node.nodeId });
+        return this.buildNode(ParentDataNode, dataTrace, null, { dataNode: node });
       }
     }).filter(x => !!x) || EmptyArray;
 
     // return dataNodes?.map((dataNode) => {
     //   const trace = dp.collections.traces.getById(dataNode.traceId);
-    //   return this.buildNode(ParentDataNode, trace, null, { nodeId: dataNode.nodeId });
+    //   return this.buildNode(ParentDataNode, trace, null, { dataNode: node });
     // }) || EmptyArray;
   }
 }

@@ -418,6 +418,22 @@
         }
       },
       {
+        "command": "dbuxTraceDetailsView.node.selectWriteTrace",
+        "title": "Go to: Write trace",
+        "icon": {
+          "light": "resources/light/edit.svg",
+          "dark": "resources/dark/edit.svg"
+        }
+      },
+      {
+        "command": "dbuxTraceDetailsView.node.selectValueCreation",
+        "title": "Go to: Value creation",
+        "icon": {
+          "light": "resources/light/boolean.svg",
+          "dark": "resources/dark/boolean.svg"
+        }
+      },
+      {
         "command": "dbuxDataFlowView.setSearchMode.ByAccessId",
         "title": "Search by: accessId",
         "icon": {
@@ -720,6 +736,16 @@
           "command": "dbuxTraceDetailsView.navigation.NextTrace",
           "when": "viewItem == dbuxTraceDetailsView.navigationNode",
           "group": "inline@10"
+        },
+        {
+          "command": "dbuxTraceDetailsView.node.selectWriteTrace",
+          "when": "viewItem == dbuxTraceDetailsView.node.traceValueNode",
+          "group": "inline@1"
+        },
+        {
+          "command": "dbuxTraceDetailsView.node.selectValueCreation",
+          "when": "viewItem == dbuxTraceDetailsView.node.traceValueNode",
+          "group": "inline@2"
         },
         {
           "command": "dbuxApplicationsView.showEntryPoint",
@@ -1165,6 +1191,14 @@
         },
         {
           "command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.node.selectWriteTrace",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.node.selectValueCreation",
           "when": "false"
         },
         {

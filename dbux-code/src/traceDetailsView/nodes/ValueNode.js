@@ -1,6 +1,9 @@
 import ValueTypeCategory from '@dbux/common/src/core/constants/ValueTypeCategory';
-import UserActionType from '@dbux/data/src/pathways/UserActionType';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
+import allApplications from '@dbux/data/src/applications/allApplications';
+import traceSelection from '@dbux/data/src/traceSelection';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 
 // eslint-disable-next-line no-unused-vars
@@ -41,5 +44,28 @@ export default class ValueNode extends BaseTreeViewNode {
     // else {
     //   valueRender(null, NoValueMessage);
     // }
+  }
+
+  selectWriteTrace() {
+    const { treeNodeProvider: { trace: { applicationId } } } = this;
+    const dp = allApplications.getById(applicationId).dataProvider;
+    const writeNode = dp.collections.dataNodes.getById(this.nodeId);
+    const writeTrace = dp.collections.traces.getById(writeNode.traceId);
+
+    traceSelection.selectTrace(writeTrace, writeNode.nodeId);
+  }
+
+  selectValueCreationTrace() {
+    const { treeNodeProvider: { trace: { applicationId } } } = this;
+    const dp = allApplications.getById(applicationId).dataProvider;
+    const { valueId } = dp.collections.dataNodes.getById(this.nodeId);
+    const firstNodeByValue = dp.indexes.dataNodes.byValueId.getFirst(valueId) || EmptyArray;
+    if (firstNodeByValue) {
+      const firstTraceByValue = dp.collections.traces.getById(firstNodeByValue.traceId);
+      traceSelection.selectTrace(firstTraceByValue);
+    }
+    else {
+      logError(`Cannot find value creation trace for dataNode:${JSON.stringify(this.dataNode)}`);
+    }
   }
 }

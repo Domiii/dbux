@@ -411,12 +411,11 @@ export default {
       }
       if (modifyNode.type === DataNodeType.Write) {
         const { prop } = modifyNode.varAccess;
-        const inputNode = dp.collections.dataNodes.getById(modifyNode.inputs[0]);
-        if (inputNode.refId) {
-          entries[prop] = [inputNode.nodeId, inputNode.refId, null];
+        if (modifyNode.refId) {
+          entries[prop] = [modifyNode.nodeId, modifyNode.refId, null];
         }
         else {
-          entries[prop] = [inputNode.nodeId, null, inputNode.value];
+          entries[prop] = [modifyNode.nodeId, null, modifyNode.value];
         }
       }
       else if (modifyNode.type === DataNodeType.Delete) {
