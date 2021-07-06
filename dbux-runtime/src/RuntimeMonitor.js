@@ -831,6 +831,7 @@ export default class RuntimeMonitor {
       return value;
     }
 
+    // register promise
     const calledContextId = this._runtime.getLastPoppedContextId();
 
     this._runtime.thread1.traceCall(contextId, calledContextId, trace, value);

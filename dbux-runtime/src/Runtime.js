@@ -62,7 +62,7 @@ export default class Runtime {
   _bcesInByContextId = {};
 
   // _runtimeThreadStack = new RuntimeThreadsStack();
-  thread1 = new RuntimeThreads1();
+  thread1 = new RuntimeThreads1(this);
   thread2 = new RuntimeThreads2();
 
   // ###########################################################################

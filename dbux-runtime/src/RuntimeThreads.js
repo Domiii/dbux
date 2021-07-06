@@ -5,6 +5,8 @@ import runCollection from './data/runCollection.js';
 import traceCollection from './data/traceCollection';
 import valueCollection from './data/valueCollection';
 
+/** @typedef { import("./Runtime").default } Runtime */
+
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('RuntimeThreads');
 
@@ -75,6 +77,19 @@ export class RuntimeThreads1 {
 
   beforeAwaitContext = new Map();
   beforeAwaitRun = new Map();
+
+  /**
+   * @type {Runtime}
+   */
+  _runtime;
+
+  constructor(runtime) {
+    this._runtime = runtime;
+  }
+
+  getCurrentRunId() {
+    return this._runtime.getCurrentRunId();
+  }
 
   // ###########################################################################
   // await
@@ -149,19 +164,19 @@ export class RuntimeThreads1 {
     }
   }
 
-  traceCall(contextId, calledContextId, trace, value) {
-    const promiseRunId = this.getPromiseRunId(value);
+  traceCall(contextId, calledContextId, trace, promise) {
+    const promiseRunId = this.getPromiseRunId(promise);
     if (promiseRunId && promiseRunId !== this.getCurrentRunId()) {
       // this.logger.debug('promise not create in this run');
       return;
     }
 
-    this.floatingPromises.push(value);
+    this.floatingPromises.push(promise);
 
     const calledContextFirstPromise = this.getContextFirstAwaitPromise(calledContextId);
 
     // this.logger.debug('trace call', contextId, calledContextId, value);
-    this.recordContextReturnValue(contextId, calledContextId, value);
+    this.recordContextReturnValue(contextId, calledContextId, promise);
 
     if (calledContextFirstPromise) {
       this.storeAsyncCallPromise(this.getCurrentRunId(), calledContextId, trace.traceId, calledContextFirstPromise);
