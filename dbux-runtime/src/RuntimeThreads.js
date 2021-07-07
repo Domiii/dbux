@@ -1,9 +1,10 @@
 import { newLogger } from '@dbux/common/src/log/logger';
-import asyncEventCollection from './data/asyncEventCollection.js';
+import asyncEventCollection from './data/asyncEventCollection';
 import executionContextCollection from './data/executionContextCollection';
-import runCollection from './data/runCollection.js';
+import runCollection from './data/runCollection';
 import traceCollection from './data/traceCollection';
 import valueCollection from './data/valueCollection';
+import { isPromise } from './wrapPromise';
 
 /** @typedef { import("./Runtime").default } Runtime */
 
@@ -103,7 +104,9 @@ export class RuntimeThreads1 {
     this.beforeAwaitContext.set(parentContextId, resumeContextId);
     this.beforeAwaitRun.set(parentContextId, currentRunId);
 
-    if (awaitArgument instanceof Promise && (!this.isPromiseRecorded(awaitArgument) || this._runtime.isPromiseCreatedInRun(awaitArgument, currentRunId))) {
+    if (isPromise(awaitArgument) &&
+      (!this.isPromiseRecorded(awaitArgument) || this._runtime.isPromiseCreatedInRun(awaitArgument, currentRunId))
+    ) {
       const promise = awaitArgument;
 
       const isFirstAwait = this.isFirstContextInParent(resumeContextId, parentContextId);
@@ -291,7 +294,7 @@ export class RuntimeThreads1 {
       warn("Trying to add CHAIN to an run already had outgoing CHAIN edge");
     }
 
-    
+
     // assign run <-> threadId
     const previousRunThreadId = this.getRunThreadId(toRun);
     this.logger.debug('to run', toRun, ' (previousRunThreadId =', previousRunThreadId, ')');
@@ -346,6 +349,7 @@ export class RuntimeThreads1 {
   }
 
   setOwnPromiseThreadType(promise, type) {
+    // console.trace(`setOwnPromiseThreadType ${type}`);
     Object.assign(promise, { _dbux_threadType: type });
   }
 

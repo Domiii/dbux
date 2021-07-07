@@ -18,10 +18,20 @@ const disable = false;
  */
 let runtimeMonitor;
 
-export const originalPromise = globalThis.Promise;
+let WrappedPromiseClass;
+
+export const OriginalPromiseClass = globalThis.Promise;
 
 let promiseId = 0;
 const promiseSet = new Set();
+
+export function isWrappedPromise(value) {
+  return value instanceof WrappedPromiseClass;
+}
+
+export function isPromise(value) {
+  return value instanceof OriginalPromiseClass;
+}
 
 export function getNewPromiseId() {
   return ++promiseId;
@@ -32,7 +42,7 @@ export function ensurePromiseWrapped(promise) {
   //   return;
   // }
 
-  if (promise instanceof originalPromise) {
+  if (promise instanceof OriginalPromiseClass) {
     if (promiseSet.has(promise)) {
       if (promise.promiseId === undefined) {
         logError('Exist a promise in promise set but without promise id.');
@@ -58,7 +68,7 @@ export default function wrapPromise(_runtimeMonitor) {
     return;
   }
 
-  globalThis.Promise = class Promise extends originalPromise {
+  WrappedPromiseClass = globalThis.Promise = class Promise extends OriginalPromiseClass {
     constructor(executor) {
       let thisPromiseId = getNewPromiseId();
 
@@ -113,8 +123,8 @@ export default function wrapPromise(_runtimeMonitor) {
     }
   };
 
-  const originalPromiseThen = originalPromise.prototype.then;
-  originalPromise.prototype.then = function (successCb, failCb) {
+  const originalPromiseThen = OriginalPromiseClass.prototype.then;
+  OriginalPromiseClass.prototype.then = function (successCb, failCb) {
     if (!promiseSet.has(this)) {
       promiseSet.add(this);
       this.promiseId = getNewPromiseId();
@@ -148,13 +158,13 @@ export default function wrapPromise(_runtimeMonitor) {
     return childPromise;
   };
 
-  const originalPromiseCatch = originalPromise.prototype.catch;
-  originalPromise.prototype.catch = function (failCb) {
+  const originalPromiseCatch = OriginalPromiseClass.prototype.catch;
+  OriginalPromiseClass.prototype.catch = function (failCb) {
     return originalPromiseCatch.call(this, failCb);
   };
 
-  const originalPromiseFinally = originalPromise.prototype.finally;
-  originalPromise.prototype.finally = function (cb) {
+  const originalPromiseFinally = OriginalPromiseClass.prototype.finally;
+  OriginalPromiseClass.prototype.finally = function (cb) {
     if (!promiseSet.has(this)) {
       promiseSet.add(this);
       this.promiseId = getNewPromiseId();

@@ -10,7 +10,7 @@ import traceCollection from './data/traceCollection';
 import staticTraceCollection from './data/staticTraceCollection';
 import Runtime from './Runtime';
 import ProgramMonitor from './ProgramMonitor';
-import { ensurePromiseWrapped } from './wrapPromise';
+import { ensurePromiseWrapped, isPromise } from './wrapPromise';
 import dataNodeCollection, { ShallowValueRefMeta } from './data/dataNodeCollection';
 import valueCollection from './data/valueCollection';
 import registerBuiltins from './builtIns/index';
@@ -360,7 +360,7 @@ export default class RuntimeMonitor {
       const resumeInProgramStaticTraceId = 0;
       const resumeContextId = this.pushResume(programId, resumeStaticContextId, resumeInProgramStaticTraceId);
 
-      if (awaitArgument instanceof Promise) {
+      if (isPromise(awaitArgument)) {
         this._runtime.thread2.promiseAwaited(awaitArgument, this._runtime.getCurrentRunId());
       }
 
@@ -827,7 +827,7 @@ export default class RuntimeMonitor {
     const runId = this._runtime.getCurrentRunId();
     this._onTrace(contextId, trace);
 
-    if (!(value instanceof Promise)) {
+    if (!(isPromise(value))) {
       return value;
     }
 
