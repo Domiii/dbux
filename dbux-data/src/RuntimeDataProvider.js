@@ -665,6 +665,21 @@ class RunCollection extends Collection {
   constructor(dp) {
     super('runs', dp);
   }
+
+  /**
+   * @param {T[]} entries 
+   */
+  add(entries) {
+    if (!this._all.length && entries[0] !== null) {
+      // pad with a `null`, if necessary
+      this._all.push(null);
+    }
+
+    // Run ids might be (slightly) out of order
+    for (const entry of entries) {
+      this._all[entry.runId] = entry;
+    }
+  }
 }
 
 // ###########################################################################

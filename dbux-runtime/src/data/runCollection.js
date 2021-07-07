@@ -14,8 +14,11 @@ class RunCollection extends Collection {
   addRun(runId, threadId) {
     const run = pools.run.allocate();
 
-    run.runId = this._all.length;
-    this.push(run);
+    // run.runId = this._all.length;
+    // this.push(run);
+    // NOTE: runs might be created out of order, but they will still create a dense id space
+    run._id = run.runId = runId;
+    this._all[runId] = run;
 
     run.threadId = threadId;
 

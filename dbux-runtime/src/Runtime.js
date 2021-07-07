@@ -358,6 +358,13 @@ export default class Runtime {
   // Complex scheduling
   // ###########################################################################
 
+  /**
+   * NOTE: we use this to make sure that every `postAwait` event has its own `run`.
+   */
+  newRun() {
+    return ++this._currentRunId;
+  }
+
   registerAwait(awaitContextId, parentContext, awaitArgument) {
     if (!this.isExecuting()) {
       logError('Encountered `await`, but there was no active stack ', awaitContextId);
