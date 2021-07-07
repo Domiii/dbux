@@ -1,33 +1,37 @@
-async function sleep(ms) {
-  return new Promise(r => setTimeout(r, ms));
+// async function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function f(x) {
+  console.log('f1', x);
+  // await g();
+  await 0;
+  // console.log('f2');
+  // await g();
+  console.log('f2', x);
 }
 
-function f1(g) { g(); return sleep(2000); }
 
-async function f2() { await sleep(2000); }
+// async function g() {
+//   console.log('g1');
+//   h();
+//   // await 0;
+//   // await h();
+//   console.log('g2');
+// }
 
-async function f3() {
-  await sleep(2000);
-}
+// async function h() {
+//   console.log('h1');
+//   await 0;
+//   console.log('h2');
+// }
 
-async function f4(...fs) {
-  for (const f of fs) {
-    await f();
-    console.log('done!', f.name);
-  }
-}
-
-// TODO: *VSCode bug* here - only displays one (not multiple) `traceDecoration` 
-//    behind last argument of function call, if there is nothing following it on the same line
-async function main() {
-  await f1(
-    f2
-  );
-  await f4(
-    f2,
-    sleep.bind(null, 2000),
-    f3
-  );
-}
-
-main();
+(async () => {
+  console.log('main1');
+  f(1);
+  console.log('main2');
+  var p = f(2);
+  await p;
+  console.log('main3');
+  // var p2 = f(3);
+  await 0;
+  console.log('main4');
+})();

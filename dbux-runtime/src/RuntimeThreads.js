@@ -120,75 +120,70 @@ export class RuntimeThreads1 {
     }
   }
 
-  postAwait(parentContextId, postEventContext, postEventRun, awaitArgument) {
-    const preEventContext = this.beforeAwaitContext.get(parentContextId);
-    const preEventRun = this.beforeAwaitRun.get(parentContextId);
-
-    this.logger.debug(`postAwait ${preEventRun}->${postEventRun}`);
-
-    const startThreadId = this.getRunThreadId(preEventRun);
-
+  postAwait(parentContextId, postEventContext, postEventRunId, awaitArgument) {
+    let fromRun;
+    const isNested = isPromise(awaitArgument);
+    let threadId;
     let edgeType = ''; // TODO change to enum
-
-    if (this.getLastRunOfThread(startThreadId) === postEventRun) {
-      this.logger.warn(
-        `[postAwait] did not addEdge for thread`, startThreadId, `with startRun === endRun. Type=${edgeType}, ` +
-      `runs=${this.debugGetAllRunsOfThread(startThreadId)} (Skipped).`
-      );
+    if (isNested) {
+      // chain to nested argument promise
+      threadId = this.getPromiseThreadId(awaitArgument);
+      fromRun = this.getLastRunOfThread(threadId);
+      edgeType = 'CHAIN';
     }
     else {
-      let fromRun;
-      const isNested = isPromise(awaitArgument);
-      let threadId;
-      if (isNested) {
-        // nested await argument
-        threadId = this.getPromiseThreadId(awaitArgument);
-        fromRun = this.getLastRunOfThread(threadId);
-        edgeType = 'CHAIN';
+      // chain depends on whether caller is chained to root context
+      const preEventContext = this.beforeAwaitContext.get(parentContextId);
+      const preEventRun = this.beforeAwaitRun.get(parentContextId);
+      this.logger.debug(`postAwait ${preEventRun}->${postEventRunId}`);
+      const startThreadId = this.getRunThreadId(preEventRun);
+      if (this.getLastRunOfThread(startThreadId) === postEventRunId) {
+        this.logger.warn(
+          `[postAwait] did not addEdge for thread`, startThreadId, `with startRun === endRun. Type=${edgeType}, ` +
+        `runs=${this.debugGetAllRunsOfThread(startThreadId)} (Skipped).`
+        );
+      }
+
+      fromRun = preEventRun;
+
+      // // assign run <-> threadId
+      // NOTE: this should probably not happen
+      // let fromRunThreadId = this.getRunThreadId(fromRun);
+      // if (!fromRunThreadId) {
+      //   // this.logger.debug("From run", fromRun, "is a new run, assign thread id");
+      //   fromRunThreadId = this.assignRunNewThreadId(fromRun);
+      // }
+
+      if (this.isFirstContextInParent(preEventContext)) {
+        // inner-most "first await"
+        //      -> depends on whether or not callers are chained back to root
+        const callerContextId = executionContextCollection.getById(preEventContext).contextId;
+        const callerPromise = this.getContextReturnValue(callerContextId); // get return value
+        // const isChainedToRoot = this.getPromiseChainedToRoot(callerPromise);
+
+        threadId = this.getPromiseThreadId(callerPromise);
+        edgeType = this.getPromiseEdgeType(callerPromise);
+        // if (!isChainedToRoot) {
+        //   threadId = this.getPromiseThreadId(callerPromise);
+        //   edgeType = this.getPromiseEdgeType(callerPromise);
+        // }
+        // else {
+        //   threadId = this.getRunThreadId(preEventRun);
+        //   edgeType = 'CHAIN';
+        // }
       }
       else {
-        // chain depends on caller semantics
-        fromRun = preEventRun;
-
-        // // assign run <-> threadId
-        // NOTE: this should probably not happen
-        // let fromRunThreadId = this.getRunThreadId(fromRun);
-        // if (!fromRunThreadId) {
-        //   // this.logger.debug("From run", fromRun, "is a new run, assign thread id");
-        //   fromRunThreadId = this.assignRunNewThreadId(fromRun);
-        // }
-
-        if (this.isFirstContextInParent(preEventContext)) {
-          // inner-most "first await"
-          //      -> depends on whether or not callers are chained back to root
-          const callerContextId = executionContextCollection.getById(preEventContext).contextId;
-          const callerPromise = this.getContextReturnValue(callerContextId); // get return value
-          // const isChainedToRoot = this.getPromiseChainedToRoot(callerPromise);
-
-          threadId = this.getPromiseThreadId(callerPromise);
-          edgeType = this.getPromiseEdgeType(callerPromise);
-          // if (!isChainedToRoot) {
-          //   threadId = this.getPromiseThreadId(callerPromise);
-          //   edgeType = this.getPromiseEdgeType(callerPromise);
-          // }
-          // else {
-          //   threadId = this.getRunThreadId(preEventRun);
-          //   edgeType = 'CHAIN';
-          // }
-        }
-        else {
-          threadId = this.getRunThreadId(preEventRun);
-          edgeType = 'CHAIN';
-        }
+        threadId = this.getRunThreadId(preEventRun);
+        edgeType = 'CHAIN';
       }
 
-      if (!this.getRunThreadId(postEventRun)) {
-        this.setRunThreadId(postEventRun, threadId);
+      if (!this.getRunThreadId(postEventRunId)) {
+        this.setRunThreadId(postEventRunId, threadId);
       }
 
       // add edge
-      this.logger.debug(`[${edgeType === 'FORK' ? `${startThreadId}->` : ''}${threadId}] ${edgeType} - Runs: ${fromRun}->${postEventRun} (${isNested ? `nested` : ''})`);
-      this.addEdge(fromRun, postEventRun, edgeType);
+      this.logger.debug(`[${edgeType === 'FORK' ? `${startThreadId}->` : ''}${threadId}] ${edgeType} - Runs: ${fromRun}->${postEventRunId} (${isNested ? `nested` : ''})`);
+      this.addEdge(fromRun, postEventRunId, edgeType);
     }
   }
 

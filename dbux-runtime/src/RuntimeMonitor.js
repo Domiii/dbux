@@ -370,13 +370,13 @@ export default class RuntimeMonitor {
       const postEventContext = resumeContextId;
 
       // get runId
-      let postEventRun = this._runtime.getCurrentRunId();
-      if (this._runtime.thread1.getRunThreadId(postEventRun)) {
-        postEventRun = this._runtime.newRun();
+      let postEventRunId = this._runtime.getCurrentRunId();
+      if (this._runtime.thread1.getRunThreadId(postEventRunId)) {
+        postEventRunId = this._runtime.newRun();
       }
 
       // register thread logic
-      this._runtime.thread1.postAwait(parentContextId, postEventContext, postEventRun, awaitArgument);
+      this._runtime.thread1.postAwait(parentContextId, postEventContext, postEventRunId, awaitArgument);
     }
   }
 

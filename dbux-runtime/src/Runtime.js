@@ -56,6 +56,7 @@ export default class Runtime {
    * Used for root management
    */
   _currentRunId = 0;
+  _maxRunId = 0;
 
   _lastTraceByContextId = {};
 
@@ -236,6 +237,10 @@ export default class Runtime {
     return this._currentRunId;
   }
 
+  getMaxRunId() {
+    return this._maxRunId;
+  }
+
   // /**
   //  * Looks up the stack until it finds a context that is Immediate.
   //  */
@@ -362,7 +367,7 @@ export default class Runtime {
    * NOTE: we use this to make sure that every `postAwait` event has its own `run`.
    */
   newRun() {
-    return ++this._currentRunId;
+    return this._currentRunId = ++this._maxRunId;
   }
 
   registerAwait(awaitContextId, parentContext, awaitArgument) {
@@ -449,7 +454,7 @@ export default class Runtime {
   // ###########################################################################
 
   _runStart(stack) {
-    ++this._currentRunId;
+    this.newRun();
     this._executingStack = stack;
     // console.warn('[RunStart] ' + this._currentRunId, new Error().stack); //, this.getLingeringStackCount());
     // console.time('[RunEnd] ' + this._currentRunId);
@@ -457,9 +462,9 @@ export default class Runtime {
 
   _runFinished() {
     this._executingStack = null;
-    const maxRunId = this.getCurrentRunId();
-    for (let i = (this._lastSavedRun || 0) + 1; i <= maxRunId; ++i) {
-      this.thread1.postRun(i);
+    const maxRunId = this.getMaxRunId();
+    for (let runId = (this._lastSavedRun || 0) + 1; runId <= maxRunId; ++runId) {
+      this.thread1.postRun(runId);
       this.thread2.postRun();
     }
     this._lastSavedRun = maxRunId;
