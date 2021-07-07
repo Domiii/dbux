@@ -10,10 +10,10 @@ import EmptyDataNode from './EmptyDataNode';
 import DataFlowFilterModeType from './DataFlowFilterModeType';
 import ParentDataNode from './ParentDataNode';
 
-// eslint-disable-next-line no-unused-vars
 /** @typedef {import('@dbux/common/src/core/data/Trace').default} Trace */
 /** @typedef {import('./dataFlowViewController.js').DataFlowViewController} DataFlowViewController */
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('DataFlowNodeProvider');
 
 export default class DataFlowNodeProvider extends BaseTreeViewNodeProvider {
@@ -34,7 +34,7 @@ export default class DataFlowNodeProvider extends BaseTreeViewNodeProvider {
 
     if (traceSelection.selected) {
       const trace = traceSelection.selected;
-      const nodeId = traceSelection.nodeId;
+      const { nodeId } = traceSelection;
 
       roots.push(
         ...this.buildDataNodes(trace, nodeId)
@@ -66,9 +66,10 @@ export default class DataFlowNodeProvider extends BaseTreeViewNodeProvider {
 
     if (dataNode.traceId !== traceId) {
       // sanity check
-      warn(`Rendering dataNode ${JSON.stringify(dataNode)} but its trace is not selected.`)
+      warn(`Rendering dataNode ${JSON.stringify(dataNode)} but its trace is not selected.`);
     }
 
+    // apply filters
     const { accessId, valueId } = dataNode;
     let dataNodes;
     if (DataFlowSearchModeType.is.ByAccessId(this.controller.searchMode)) {
@@ -79,15 +80,27 @@ export default class DataFlowNodeProvider extends BaseTreeViewNodeProvider {
     }
 
     if (DataFlowFilterModeType.is.ReadOnly(this.controller.filterMode)) {
-      dataNodes = dataNodes?.filter(node => DataNodeType.is.Read(node.type))
+      dataNodes = dataNodes?.filter(node => DataNodeType.is.Read(node.type));
     }
     else if (DataFlowFilterModeType.is.WriteOnly(this.controller.filterMode)) {
-      dataNodes = dataNodes?.filter(node => DataNodeType.is.Write(node.type))
+      dataNodes = dataNodes?.filter(node => DataNodeType.is.Write(node.type));
     }
 
-    return dataNodes?.map((dataNode) => {
-      const trace = dp.collections.traces.getById(dataNode.traceId);
-      return this.buildNode(ParentDataNode, trace, null, { nodeId: dataNode.nodeId });
-    }) || EmptyArray;
+    const dataTraceIds = new Set();
+    return dataNodes?.map((node) => {
+      const dataTrace = dp.collections.traces.getById(node.traceId);
+      if (dataTraceIds.has(dataTrace.traceId)) {
+        return null;
+      }
+      else {
+        dataTraceIds.add(dataTrace.traceId);
+        return this.buildNode(ParentDataNode, dataTrace, null, { dataNode: node });
+      }
+    }).filter(x => !!x) || EmptyArray;
+
+    // return dataNodes?.map((dataNode) => {
+    //   const trace = dp.collections.traces.getById(dataNode.traceId);
+    //   return this.buildNode(ParentDataNode, trace, null, { dataNode: node });
+    // }) || EmptyArray;
   }
 }

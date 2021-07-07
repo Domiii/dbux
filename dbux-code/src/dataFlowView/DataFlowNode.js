@@ -3,20 +3,21 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
 import TraceNode from '../traceDetailsView/nodes/TraceNode';
 
+
 /**
- * Besides a `Trace`, this node also has a `nodeId` to specify one of it's dataNodes.
- * @property {number} nodeId
+ * Besides a `Trace`, this node also has a `dataNode` to specify one of it's dataNodes.
+ * @property {DataNode} dataNode
  */
-export default class DataNode extends TraceNode {
+export default class DataFlowNode extends TraceNode {
   get clickUserActionType() {
     // TODO: add a new action type?
     return null;
   }
 
-  get dataNode() {
-    return this.entry
+  init() {
+    this.contextValue = 'dbuxDataFlowView.node.data';
   }
-  
+
   makeIconPath() {
     return (traceSelection.isSelected(this.trace) && traceSelection.nodeId === this.nodeId) ? 'play.svg' : ' ';
   }

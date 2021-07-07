@@ -56,4 +56,18 @@ export function initTraceDetailsViewCommands(context, traceDetailsViewController
     'dbuxTraceDetailsView.selectTraceAtCursor.empty',
     () => showInformationMessage(translate('noTrace'))
   );
+
+  registerCommand(context,
+    'dbuxTraceDetailsView.node.selectWriteTrace',
+    (node) => {
+      node.selectWriteTrace();
+    }
+  );
+
+  registerCommand(context,
+    'dbuxTraceDetailsView.node.selectValueCreation',
+    (node) => {
+      node.selectValueCreationTrace();
+    }
+  );
 }

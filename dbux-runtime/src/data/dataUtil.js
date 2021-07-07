@@ -34,7 +34,7 @@ export function getBCECalleeStaticContextId(bceTrace) {
 
 /**
  * WARNING: Does not work with monkey-patched runtime functions.
- * @returns {*} top bceTrace on stack, if it's callee's `staticContextId` matches that of the stack top.
+ * @returns {*} top bceTrace on stack, if its callee's `staticContextId` matches that of the stack top.
  */
 export function peekBCECheckCallee() {
   const bceTrace = traceCollection.getLast();
@@ -49,7 +49,7 @@ export function peekBCECheckCallee() {
 }
 
 /**
- * @returns {*} top bceTrace on stack, if it's callee's `staticContextId` matches that of the stack top.
+ * @returns {*} top bceTrace on stack, if its callee's `staticContextId` matches that of the stack top.
  */
 export function peekBCEMatchCallee(func) {
   const bceTrace = traceCollection.getLast();

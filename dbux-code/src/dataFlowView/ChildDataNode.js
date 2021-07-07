@@ -1,11 +1,9 @@
-import allApplications from '@dbux/data/src/applications/allApplications';
-import DataNode from './DataNode';
+import DataFlowNode from './DataFlowNode';
 
-export default class ChildDataNode extends DataNode {
+export default class ChildDataNode extends DataFlowNode {
   static makeLabel(trace, parent, props) {
-    const dp = allApplications.getById(trace.applicationId).dataProvider;
-    const node = dp.collections.dataNodes.getById(props.nodeId);
-    return `[${node.varAccess?.prop}]`;
+    const { dataNode } = props;
+    return `[${dataNode.varAccess?.prop}]`;
   }
 
   canHaveChildren() {
