@@ -145,7 +145,7 @@ export class RuntimeThreads1 {
         // this.logger.debug('post await set', postEventRun, promiseThreadId);
         // this.setRunThreadId(postEventRun, promiseThreadId);
 
-        this.logger.debug('caller promise', callerPromise);
+        // this.logger.debug('caller promise', callerPromise);
 
         edgeType = this.getOwnPromiseThreadType(callerPromise);
 
