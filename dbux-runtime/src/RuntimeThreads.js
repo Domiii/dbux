@@ -8,9 +8,6 @@ import { isPromise } from './wrapPromise';
 
 /** @typedef { import("./Runtime").default } Runtime */
 
-// eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('RuntimeThreads');
-
 export class RuntimeThreads2 {
   logger = newLogger('RuntimeThread2');
 
@@ -42,16 +39,16 @@ export class RuntimeThreads2 {
   }
 
   postRun() {
-    for (const promise of this.promiseCreatedInThisRunSet) {
-      const { createAtContext, contextIdInsidePromise } = this.promiseExecutionContextMap.get(promise);
-      if (this.promiseAwaitedInThisRunSet.has(promise)) {
-        this.logger.debug(`context ${createAtContext} -> ${contextIdInsidePromise} not fork`);
-        // not a fork
-      } else {
-        this.logger.debug(`context ${createAtContext} -> ${contextIdInsidePromise} fork`);
-        // fork to different thread
-      }
-    }
+    // for (const promise of this.promiseCreatedInThisRunSet) {
+    //   const { createAtContext, contextIdInsidePromise } = this.promiseExecutionContextMap.get(promise);
+    //   if (this.promiseAwaitedInThisRunSet.has(promise)) {
+    //     this.logger.debug(`context ${createAtContext} -> ${contextIdInsidePromise} not fork`);
+    //     // not a fork
+    //   } else {
+    //     this.logger.debug(`context ${createAtContext} -> ${contextIdInsidePromise} fork`);
+    //     // fork to different thread
+    //   }
+    // }
 
     this.promiseCreatedInThisRunSet.clear();
     this.promiseAwaitedInThisRunSet.clear();
@@ -59,7 +56,7 @@ export class RuntimeThreads2 {
 }
 
 export class RuntimeThreads1 {
-  logger = newLogger('RuntimeThread1');
+  logger = newLogger('Threads');
   floatingPromises = [];
 
   runGraph = [];
@@ -117,9 +114,8 @@ export class RuntimeThreads1 {
       // this.logger.debug('this promise', promise, 'first await', isFirstAwait, 'is root', this.isRootContext(parentContextId));
       if (!isFirstAwait || this.isRootContext(parentContextId)) {
         // TODO, check the promise thread type here
-        this.logger.debug('set promise thread at pre await');
-        this.setOwnPromiseThreadId(promise, this.getRunThreadId(currentRunId));
-        this.setOwnPromiseThreadType(promise, 'CHAIN');
+        // this.logger.debug('set promise thread at pre await');
+        this.setupPromise(promise, this.getRunThreadId(currentRunId), 'CHAIN', true);
       }
     }
   }
@@ -128,42 +124,71 @@ export class RuntimeThreads1 {
     const preEventContext = this.beforeAwaitContext.get(parentContextId);
     const preEventRun = this.beforeAwaitRun.get(parentContextId);
 
-    if (this.getRunThreadId(postEventRun) === undefined) {
+    if (!this.getRunThreadId(postEventRun)) {
       const startThreadId = this.getRunThreadId(preEventRun);
 
       let edgeType = ''; // TODO change to enum
 
-      if (this.isFirstContextInParent(preEventContext)) {
-        const callerContextId = executionContextCollection.getById(preEventContext).contextId;
-        const callerPromise = this.getContextReturnValue(callerContextId); // get return value
-        const promiseThreadId = this.getPromiseThreadId(callerPromise);
-
-        // this.logger.debug('in post await start thread id', startThreadId);
-        // this.logger.debug('called promise', callerPromise, 'thread id', promiseThreadId);
-
-        // temp comment out this since I think this maybe handled in current case:w
-        // this.logger.debug('post await set', postEventRun, promiseThreadId);
-        // this.setRunThreadId(postEventRun, promiseThreadId);
-
-        // this.logger.debug('caller promise', callerPromise);
-
-        edgeType = this.getOwnPromiseThreadType(callerPromise);
-
-        this.setRunThreadId(postEventRun, this.getOwnPromiseThreadId(callerPromise));
+      if (this.getLastRunOfThread(startThreadId) === postEventRun) {
+        this.logger.warn(
+          `[postAwait] did not addEdge for thread`, startThreadId, `with startRun === endRun. Type=${edgeType}, ` +
+        `runs=${this.debugGetAllRunsOfThread(startThreadId)} (Skipped).`
+        );
       }
       else {
-        edgeType = 'CHAIN';
-      }
+        let fromRun;
+        const isNested = isPromise(awaitArgument);
+        let threadId;
+        if (isNested) {
+          // nested await argument
+          threadId = this.getPromiseThreadId(awaitArgument);
+          fromRun = this.getLastRunOfThread(threadId);
+          edgeType = 'CHAIN';
+        }
+        else {
+          // chain depends on caller semantics
+          fromRun = preEventRun;
 
-      if (this.getLastRunOfThread(startThreadId) === postEventRun) {
-        this.logger.warn('Trying to add a edge with start run = end run with type', edgeType, ', skipped');
-      } else {
-        this.addEdge(this.getLastRunOfThread(startThreadId), postEventRun, edgeType);
-      }
+          // // assign run <-> threadId
+          // NOTE: this should probably not happen
+          // let fromRunThreadId = this.getRunThreadId(fromRun);
+          // if (!fromRunThreadId) {
+          //   // this.logger.debug("From run", fromRun, "is a new run, assign thread id");
+          //   fromRunThreadId = this.assignRunNewThreadId(fromRun);
+          // }
 
-      // if (awaitArgument instanceof Promise) {
-      //   get all last run bruh;
-      // }
+          if (this.isFirstContextInParent(preEventContext)) {
+            // inner-most "first await"
+            //      -> depends on whether or not callers are chained back to root
+            const callerContextId = executionContextCollection.getById(preEventContext).contextId;
+            const callerPromise = this.getContextReturnValue(callerContextId); // get return value
+            // const isChainedToRoot = this.getPromiseChainedToRoot(callerPromise);
+
+            threadId = this.getPromiseThreadId(callerPromise);
+            edgeType = this.getPromiseEdgeType(callerPromise);
+            // if (!isChainedToRoot) {
+            //   threadId = this.getPromiseThreadId(callerPromise);
+            //   edgeType = this.getPromiseEdgeType(callerPromise);
+            // }
+            // else {
+            //   threadId = this.getRunThreadId(preEventRun);
+            //   edgeType = 'CHAIN';
+            // }
+          }
+          else {
+            threadId = this.getRunThreadId(preEventRun);
+            edgeType = 'CHAIN';
+          }
+        }
+
+        if (!this.getRunThreadId(postEventRun)) {
+          this.setRunThreadId(postEventRun, threadId);
+        }
+
+        // add edge
+        this.logger.debug(`[${edgeType === 'FORK' ? `${startThreadId}->` : ''}${threadId}] ${edgeType} - Runs: ${fromRun}->${postEventRun} (${isNested ? `nested` : ''})`);
+        this.addEdge(fromRun, postEventRun, edgeType);
+      }
     }
   }
 
@@ -199,13 +224,12 @@ export class RuntimeThreads1 {
       const callerPromise = this.getCallerPromise(promise);
 
       if (callerPromise) {
-        const threadId = maintainPromiseThreadIdDfs(callerPromise);
-        this.setOwnPromiseThreadId(promise, threadId);
-        this.setOwnPromiseThreadType(promise, "CHAIN");
+        // // this promise participates in an await chain. Does not have "own" threadId.
+        // const threadId = maintainPromiseThreadIdDfs(callerPromise);
+        // this.setupPromise(callerPromise, threadId, 'CHAIN');
       } else {
-        this._currentThreadId += 1;
-        this.setOwnPromiseThreadId(promise, this._currentThreadId);
-        this.setOwnPromiseThreadType(promise, "FORK");
+        const threadId = this.newThreadId();
+        this.setupPromise(promise, threadId, 'FORK', false);
       }
 
       // this.logger.debug('promise become', promise);
@@ -227,6 +251,15 @@ export class RuntimeThreads1 {
   // ###########################################################################
 
   /**
+   * Used for debugging purposes.
+   */
+  debugGetAllRunsOfThread(threadId) {
+    return Array.from(this.runToThreadMap.entries())
+      .filter(([, t]) => t === threadId)
+      .map(([r]) => r);
+  }
+
+  /**
    * Called when a run is finished.
    * @param {number} runId 
    */
@@ -242,10 +275,11 @@ export class RuntimeThreads1 {
    * @param {number} threadId 
    */
   setRunThreadId(runId, threadId) {
-    this.logger.debug('set run', runId, 'thread id', threadId);
+    const threadLastRun = Math.max(runId, this.threadLastRun.get(threadId) || 0);
+    // this.logger.debug(`[${threadId}] set runId=${runId}, threadLastRun=${threadLastRun}`);
 
     this.runToThreadMap.set(runId, threadId);
-    this.threadLastRun.set(threadId, Math.max(runId, this.threadLastRun.get(threadId) || 0));
+    this.threadLastRun.set(threadId, threadLastRun);
   }
 
   /**
@@ -264,7 +298,6 @@ export class RuntimeThreads1 {
   assignRunThreadId(runId, threadId) {
     this.setRunThreadId(runId, threadId);
     this.threadFirstRun.set(threadId, runId);
-    this.threadLastRun.set(threadId, runId);
   }
 
   /**
@@ -272,11 +305,10 @@ export class RuntimeThreads1 {
    * @param {number} runId 
    * @return The new thread id
    */
-  assignRunNewThreadId(runId) {
+  newThreadId() {
     // this.logger.debug("assign run new thread id", runId);
-    this._currentThreadId += 1;
-    this.assignRunThreadId(runId, this._currentThreadId);
-    return this._currentThreadId;
+    // console.trace('newThreadId', this._currentThreadId + 1);
+    return ++this._currentThreadId;
   }
 
   /**
@@ -286,26 +318,10 @@ export class RuntimeThreads1 {
    * @param {string} edgeType should be either 'CHAIN' or 'FORK'
    */
   addEdge(fromRun, toRun, edgeType) {
-    this.logger.debug(`Add edge from run ${fromRun} to ${toRun} - type=${edgeType}`);
-
     if (edgeType === 'CHAIN' && this.getNextRunInChain(fromRun) !== null) {
       edgeType = 'FORK';
 
-      warn("Trying to add CHAIN to an run already had outgoing CHAIN edge");
-    }
-
-
-    // assign run <-> threadId
-    const previousRunThreadId = this.getRunThreadId(toRun);
-    this.logger.debug('to run', toRun, ' (previousRunThreadId =', previousRunThreadId, ')');
-    if (!previousRunThreadId) {
-      // this.logger.debug("From run", fromRun, "is a new run, assign thread id");
-      this.assignRunNewThreadId(fromRun);
-      if (edgeType === 'CHAIN') {
-        this.setRunThreadId(toRun, this.getRunThreadId(fromRun));
-      } else {
-        this.assignRunNewThreadId(toRun);
-      }
+      // warn("Trying to add CHAIN to an run already had outgoing CHAIN edge");
     }
 
     if (!this.runGraph[fromRun]) {
@@ -344,23 +360,62 @@ export class RuntimeThreads1 {
   // promises
   // ###########################################################################
 
-  setOwnPromiseThreadId(promise, threadId) {
-    Object.assign(promise, { _dbux_threadId: threadId });
-  }
-
-  setOwnPromiseThreadType(promise, type) {
-    // console.trace(`setOwnPromiseThreadType ${type}`);
-    Object.assign(promise, { _dbux_threadType: type });
+  setupPromise(promise, threadId, edgeType, chainedToRoot = undefined) {
+    Object.defineProperty(promise, '_dbux_', {
+      value: {
+        threadId,
+        edgeType,
+        chainedToRoot
+      },
+      writable: true,
+      enumerable: false,
+      configurable: false
+    });
   }
 
   getOwnPromiseThreadId(promise) {
-    return promise?._dbux_threadId;
+    return promise?._dbux_?.threadId;
   }
 
-  getOwnPromiseThreadType(promise) {
-    return promise?._dbux_threadType;
+  getOwnPromiseEdgeType(promise) {
+    return promise?._dbux_?.edgeType;
   }
 
+  getOwnPromiseChainedToRoot(promise) {
+    return promise?._dbux_?.chainedToRoot;
+  }
+
+  getPromiseEdgeType(promise) {
+    const threadId = this.getOwnPromiseEdgeType(promise);
+    if (threadId) {
+      return threadId;
+    }
+
+    const callerPromise = this.getCallerPromise(promise);
+    if (callerPromise) {
+      return this.getPromiseEdgeType(callerPromise);
+    }
+
+    return 0;
+  }
+
+  getPromiseChainedToRoot(promise) {
+    const chainedToRoot = this.getOwnPromiseChainedToRoot(promise);
+    if (chainedToRoot !== undefined) {
+      return chainedToRoot;
+    }
+
+    const callerPromise = this.getCallerPromise(promise);
+    if (callerPromise) {
+      return this.getPromiseChainedToRoot(callerPromise);
+    }
+
+    return false;
+  }
+
+  /**
+   * 
+   */
   getPromiseThreadId(promise) {
     // this.logger.debug('get promise thread id', { promise });
     const threadId = this.getOwnPromiseThreadId(promise);
@@ -374,7 +429,7 @@ export class RuntimeThreads1 {
       return this.getPromiseThreadId(callerPromise);
     }
 
-    return undefined;
+    return 0;
   }
 
   promiseContextMap = new Map();

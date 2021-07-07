@@ -53,7 +53,7 @@ globalThis.Promise = class Promise extends originalPromise {
 };
 
 const originalPromiseThen = originalPromise.prototype.then;
-originalPromise.prototype.then = function(successCb, failCb) {
+originalPromise.prototype.then = function (successCb, failCb) {
   if (!promiseSet.has(this)) {
     promiseSet.add(this);
     this.promiseId = promiseId++;
@@ -70,12 +70,12 @@ originalPromise.prototype.then = function(successCb, failCb) {
 };
 
 const originalPromiseCatch = originalPromise.prototype.catch;
-originalPromise.prototype.catch = function(failCb) {
+originalPromise.prototype.catch = function (failCb) {
   return this.then(null, failCb);
 };
 
 const originalPromiseFinally = originalPromise.prototype.finally;
-originalPromise.prototype.finally = function(cb) {
+originalPromise.prototype.finally = function (cb) {
   if (!promiseSet.has(this)) {
     promiseSet.add(this);
     this.promiseId = promiseId++;
@@ -86,7 +86,7 @@ originalPromise.prototype.finally = function(cb) {
   if (childPromise.promiseId === undefined) {
     childPromise.promiseId = promiseId++;
   }
-  
+
   console.log(`Original promise ${this.promiseId} has child ${childPromise.promiseId} (finally)`);
   return childPromise;
 };
@@ -100,28 +100,33 @@ originalPromise.prototype.finally = function(cb) {
 // let op3 = op.catch(console.error);
 // let op4 = op.finally(() => console.log('fff'));
 
-// console.log('should be false: ', op instanceof Promise);
+// console.log('should be false: ', isPromise(op));
 // console.log('should be 0 1 2 3: ', op.promiseId, op2.promiseId, op3.promiseId, op4.promiseId);
 
 // let op5 = Promise.all([op, op2, op3, op4]);
 // console.log('op5: ', op5.promiseId);
 
-// Test 2
-let p1 = new Promise((r) => r(432)).then(x => x + 4).then(x => x * 2).then(console.log).catch(e => 'error').finally(() => console.log('meow'));
-console.log('should be 9: ', p1.promiseId);
+// // Test 2
+// let p1 = new Promise((r) => r(432))
+//   .then(x => x + 4)
+//   .then(x => x * 2)
+//   .then(console.log)
+//   .catch(e => 'error')
+//   .finally(() => console.log('meow'));
+// console.log('should be 9: ', p1.promiseId);
 
-let p2 = new Promise(123);
-let p3 = new Promise(324);
-let p4 = Promise.race([p1, p2, p3]);
-p4.then(console.log);
-console.log(`p2 = ${p2.promiseId}`);
-console.log(`p3 = ${p3.promiseId}`);
-console.log(`p4 = ${p4.promiseId}`);
+// let p2 = new Promise(123);
+// let p3 = new Promise(324);
+// let p4 = Promise.race([p1, p2, p3]);
+// p4.then(console.log);
+// console.log(`p2 = ${p2.promiseId}`);
+// console.log(`p3 = ${p3.promiseId}`);
+// console.log(`p4 = ${p4.promiseId}`);
 
-let p5 = Promise.resolve(p3);
-p5.then(console.log);
-console.log(`p5 = ${p5.promiseId}`);
+// let p5 = Promise.resolve(p3);
+// p5.then(console.log);
+// console.log(`p5 = ${p5.promiseId}`);
 
-let p6 = Promise.reject("QAQ");
-p6.catch(console.error);
-console.log(`p6 = ${p6.promiseId}`);
+// let p6 = Promise.reject("QAQ");
+// p6.catch(console.error);
+// console.log(`p6 = ${p6.promiseId}`);
