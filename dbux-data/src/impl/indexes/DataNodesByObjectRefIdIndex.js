@@ -17,9 +17,9 @@ export default class DataNodesByObjectRefIdIndex extends CollectionIndex {
    * @param {DataNode} dataNode
    */
   makeKey(dp, dataNode) {
-    const objctNodeId = dataNode.varAccess?.objctNodeId;
-    if (objctNodeId) {
-      const objectDataNode = dp.collections.dataNodes.getById(objctNodeId);
+    const objectNodeId = dataNode.varAccess?.objectNodeId;
+    if (objectNodeId) {
+      const objectDataNode = dp.collections.dataNodes.getById(objectNodeId);
       return objectDataNode.refId;
     }
     return false;

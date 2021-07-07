@@ -167,7 +167,7 @@ class ExecutionContextCollection extends Collection {
         // function has no parameters -> nothing to do
         continue;
       }
-      const bceTrace = util.getCallerTraceOfContext(contextId); // BCE
+      const bceTrace = util.getOwnCallerTraceOfContext(contextId); // BCE
       if (!bceTrace) {
         // no BCE -> must be root context (not called by us) -> nothing to do
         continue;
@@ -217,7 +217,7 @@ class ExecutionContextCollection extends Collection {
 
       const returnTrace = returnTraces[0];
 
-      const bceTrace = util.getCallerTraceOfContext(contextId); // BCE
+      const bceTrace = util.getOwnCallerTraceOfContext(contextId); // BCE
       if (!bceTrace) {
         // no BCE -> must be root context (not called by us) -> nothing to do
         continue;
@@ -498,8 +498,10 @@ class DataNodeCollection extends Collection {
     }
     else {
       const { traceId, accessId } = dataNode;
+      const trace = this.dp.collections.traces.getById(traceId);
+      const staticTrace = this.dp.collections.staticTraces.getById(trace.staticTraceId);
 
-      if (dataNode.inputs?.length) {
+      if (dataNode.inputs?.length && staticTrace.dataNode && !staticTrace.dataNode.isNew) {
         const inputDataNode = this.dp.collections.dataNodes.getById(dataNode.inputs[0]);
         return inputDataNode.valueId;
       }
@@ -511,21 +513,24 @@ class DataNodeCollection extends Collection {
         return lastNode.valueId;
       }
 
-      const { contextId } = this.dp.collections.traces.getById(traceId);
+      const { contextId } = trace;
       const { specialObjectType } = this.dp.util.getDataNodeValueRef(dataNode.varAccess?.objectNodeId) || EmptyObject;
       if (specialObjectType) {
         // NOTE: specialObjectType is looked up by `valueId`
         const SpecialObjectTypeHandlers = {
           [SpecialObjectType.Arguments]: ({ varAccess: { prop } }) => {
-            const trace = this.dp.util.getCallerTraceOfContext(contextId);
-            if (trace) {
+            const callerTrace = this.dp.util.getOwnCallerTraceOfContext(contextId);
+            if (callerTrace) {
               // NOTE: sometimes, (e.g. in root contexts) we might not have an "own" caller trace
-              const { traceId: callId } = trace;
-              return this.dp.util.getCallArgDataNodes(callId)[prop].valueId;
+              return this.dp.util.getCallArgDataNodes(callerTrace.traceId)[prop].valueId;
             }
+            return null;
           }
         };
-        return SpecialObjectTypeHandlers[specialObjectType](dataNode);
+        const specialValueId = SpecialObjectTypeHandlers[specialObjectType](dataNode);
+        if (specialValueId) {
+          return specialValueId;
+        }
       }
 
       // eslint-disable-next-line max-len

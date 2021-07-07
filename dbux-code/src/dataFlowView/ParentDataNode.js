@@ -1,10 +1,10 @@
 import ChildDataNode from './ChildDataNode';
-import DataNode from './DataNode';
+import DataFlowNode from './DataFlowNode';
 
 /**
  * @property {number} nodeId
  */
-export default class ParentDataNode extends DataNode {
+export default class ParentDataNode extends DataFlowNode {
   canHaveChildren() {
     return this.getTraceDataNodes().length > 1;
   }
@@ -12,6 +12,6 @@ export default class ParentDataNode extends DataNode {
   buildChildren() {
     const { nodeId } = this;
     const dataNodes = this.getTraceDataNodes().filter(node => node.nodeId !== nodeId);
-    return dataNodes.map(node => this.treeNodeProvider.buildNode(ChildDataNode, this.trace, this, { nodeId: node.nodeId }));
+    return dataNodes.map(node => this.treeNodeProvider.buildNode(ChildDataNode, this.trace, this, { dataNode: node }));
   }
 }
