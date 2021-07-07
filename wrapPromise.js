@@ -1,13 +1,17 @@
 /* eslint-disable prefer-promise-reject-errors */
 /* eslint-disable no-console */
 
-let promiseId = 0;
+let lastPromiseId = 0;
 const promiseSet = new Set();
+
+function newPromiseId() {
+  return ++lastPromiseId;
+}
 
 const originalPromise = globalThis.Promise;
 globalThis.Promise = class Promise extends originalPromise {
   constructor(executor) {
-    let thisPromiseId = promiseId++;
+    let thisPromiseId = newPromiseId();
 
     const wrapExecutor = (resolve, reject) => {
       const wrapResolve = (result) => {
@@ -56,13 +60,13 @@ const originalPromiseThen = originalPromise.prototype.then;
 originalPromise.prototype.then = function (successCb, failCb) {
   if (!promiseSet.has(this)) {
     promiseSet.add(this);
-    this.promiseId = promiseId++;
+    this.promiseId = newPromiseId();
   }
 
   let childPromise = originalPromiseThen.call(this, successCb, failCb);
   promiseSet.add(childPromise);
   if (childPromise.promiseId === undefined) {
-    childPromise.promiseId = promiseId++;
+    childPromise.promiseId = newPromiseId();
   }
 
   console.log(`Original promise ${this.promiseId} has child ${childPromise.promiseId} (then)`);
@@ -78,13 +82,13 @@ const originalPromiseFinally = originalPromise.prototype.finally;
 originalPromise.prototype.finally = function (cb) {
   if (!promiseSet.has(this)) {
     promiseSet.add(this);
-    this.promiseId = promiseId++;
+    this.promiseId = newPromiseId();
   }
 
   let childPromise = originalPromiseFinally.call(this, cb);
   promiseSet.add(childPromise);
   if (childPromise.promiseId === undefined) {
-    childPromise.promiseId = promiseId++;
+    childPromise.promiseId = newPromiseId();
   }
 
   console.log(`Original promise ${this.promiseId} has child ${childPromise.promiseId} (finally)`);

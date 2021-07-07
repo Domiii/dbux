@@ -85,7 +85,7 @@ export default class Runtime {
     }
     this._emptyStackBarrier = null;
 
-    this.thread1.cleanFloatingPromises();
+    this.thread1.processFloatingPromises();
   }
 
   /**
@@ -367,7 +367,9 @@ export default class Runtime {
    * NOTE: we use this to make sure that every `postAwait` event has its own `run`.
    */
   newRun() {
-    return this._currentRunId = ++this._maxRunId;
+    this._currentRunId = ++this._maxRunId;
+    debug(`newRun`, this._currentRunId);
+    return this._currentRunId;
   }
 
   registerAwait(awaitContextId, parentContext, awaitArgument) {

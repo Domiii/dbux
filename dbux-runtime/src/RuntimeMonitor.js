@@ -338,6 +338,7 @@ export default class RuntimeMonitor {
    */
   postAwait(programId, awaitResult, awaitArgument, awaitContextId) {
     // sanity checks
+    // console.trace('postAwait', awaitArgument);
     const context = executionContextCollection.getById(awaitContextId);
     if (!context) {
       logError('Tried to postAwait, but context was not registered:', awaitContextId);
@@ -372,6 +373,7 @@ export default class RuntimeMonitor {
       // get runId
       let postEventRunId = this._runtime.getCurrentRunId();
       if (this._runtime.thread1.getRunThreadId(postEventRunId)) {
+        // special case: multiple nested postAwaits resolve during the same run
         postEventRunId = this._runtime.newRun();
       }
 
@@ -840,7 +842,7 @@ export default class RuntimeMonitor {
     // register promise
     const calledContextId = this._runtime.getLastPoppedContextId();
 
-    this._runtime.thread1.traceCall(contextId, calledContextId, trace, value);
+    this._runtime.thread1.traceCallPromiseResult(contextId, calledContextId, trace, value);
     this._runtime.thread2.recordMaybeNewPromise(value, runId, contextId, calledContextId);
 
     return value;

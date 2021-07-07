@@ -28,10 +28,11 @@ async function f(x) {
   console.log('main1');
   f(1);
   console.log('main2');
-  var p = f(2);
-  await p;
+  // var p = f(2);
+  // await p;
+  await f(2);
   console.log('main3');
   // var p2 = f(3);
-  await 0;
-  console.log('main4');
+  // await p2;
+  // console.log('main4');
 })();
