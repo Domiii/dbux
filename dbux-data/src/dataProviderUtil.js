@@ -715,14 +715,22 @@ export default {
    */
   getOwnCallerTraceOfContext(dp, contextId) {
     const bceTrace = dp.util.getCallerTraceOfContext(contextId);
-    if (!bceTrace) {
+    if (!bceTrace?.data) {
       return null;
     }
 
     // check if it is the actual bce
     const calleeTrace = dp.collections.traces.getById(bceTrace.data.calleeTid);
+    if (!calleeTrace) {
+      return null;
+    }
+
     const calleeDataNode = dp.collections.dataNodes.getById(calleeTrace.nodeId);
     const functionRef = dp.collections.values.getById(calleeDataNode.refId);
+    if (!functionRef) {
+      return null;
+    }
+
     const functionDefinitionDataNode = dp.collections.dataNodes.getById(functionRef.nodeId);
     const functionDefinitionTrace = dp.collections.traces.getById(functionDefinitionDataNode.traceId);
     const functionStaticTrace = dp.collections.staticTraces.getById(functionDefinitionTrace.staticTraceId);

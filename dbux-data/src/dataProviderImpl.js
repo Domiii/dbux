@@ -38,12 +38,13 @@ import ContextsByTypeIndex from './impl/indexes/ContextsByTypeIndex';
 import ProgramIdByFilePathQuery from './impl/queries/ProgramIdByFilePathQuery';
 import ProgramFilePathByTraceIdQuery from './impl/queries/ProgramFilePathByTraceIdQuery';
 import StatsByContextQuery from './impl/queries/StatsByContextQuery';
-import AsyncEventsByFromIndex from './impl/indexes/AsyncEventsByFromIndex';
+import AsyncEventsToIndex from './impl/indexes/AsyncEventsToIndex';
 import DataNodesByTraceIndex from './impl/indexes/DataNodesByTraceIndex';
 import DataNodesByAccessIdIndex from './impl/indexes/DataNodesByAccessIdIndex';
 import DataNodesByValueIdIndex from './impl/indexes/DataNodesByValueIdIndex';
 import DataNodesByRefIdIndex from './impl/indexes/DataNodesByRefIdIndex';
 import DataNodesByObjectRefIdIndex from './impl/indexes/DataNodesByObjectRefIdIndex';
+import AsyncEventsFromIndex from './impl/indexes/AsyncEventsFromIndex';
 
 
 export function newDataProvider(application) {
@@ -98,7 +99,8 @@ export function newDataProvider(application) {
   dataProvider.addIndex(new DataNodesByRefIdIndex());
   dataProvider.addIndex(new DataNodesByObjectRefIdIndex());
 
-  dataProvider.addIndex(new AsyncEventsByFromIndex());
+  dataProvider.addIndex(new AsyncEventsFromIndex());
+  dataProvider.addIndex(new AsyncEventsToIndex());
 
   // complex indexes (that have dependencies)
   // NOTE: we are currently solving index dependencies by simply adding depdendents after dependees

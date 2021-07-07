@@ -24,5 +24,10 @@ async function f(x) {
 //   console.log('h2');
 // }
 
-f(1);
-f(2);
+(async () => {
+  console.log('main1');
+  f(1);
+  console.log('main2');
+  await f(2);
+  console.log('main3');
+})();

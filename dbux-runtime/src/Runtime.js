@@ -457,8 +457,12 @@ export default class Runtime {
 
   _runFinished() {
     this._executingStack = null;
-    this.thread1.postRun(this.getCurrentRunId());
-    this.thread2.postRun();
+    const maxRunId = this.getCurrentRunId();
+    for (let i = (this._lastSavedRun || 0) + 1; i <= maxRunId; ++i) {
+      this.thread1.postRun(i);
+      this.thread2.postRun();
+    }
+    this._lastSavedRun = maxRunId;
     // console.warn('[RunEnd]', this._currentRootId, this.getLingeringStackCount(), new Error().stack);
     // console.timeEnd('[RunEnd] ' + this._currentRunId);
   }
