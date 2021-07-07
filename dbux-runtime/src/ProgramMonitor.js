@@ -165,17 +165,18 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.wrapAwait(this.getProgramId(), awaitValue);
   }
 
-  preAwait = (inProgramStaticContextId, traceId) => {
+  preAwait = (inProgramStaticContextId, traceId, awaitArgument) => {
     if (this.disabled) {
       // TODO: calling asynchronous methods when disabled hints at non-pure getters and will most likely cause trouble :(
       this._logger.error(`Encountered await in disabled call #${traceId} (NOTE: dbux does not play well with impure getters, especially if tey  call asynchronous code)`);
       return 0;
     }
-    return this._runtimeMonitor.preAwait(this.getProgramId(), inProgramStaticContextId, traceId);
+    return this._runtimeMonitor.preAwait(this.getProgramId(), inProgramStaticContextId, traceId, awaitArgument);
   }
 
-  postAwait = (awaitContextId) => {
-    return this._runtimeMonitor.postAwait(this.getProgramId(), awaitContextId);
+  postAwait = (awaitResult, awaitArgument, awaitContextId, resumeTraceId) => {
+    // this._logger.debug('await argument is', awaitArgument);
+    return this._runtimeMonitor.postAwait(this.getProgramId(), awaitResult, awaitArgument, awaitContextId, resumeTraceId);
   }
 
   pushResume = (resumeStaticContextId, inProgramStaticTraceId) => {
@@ -417,6 +418,7 @@ export default class ProgramMonitor {
    * 
    */
   traceExpr(inProgramStaticTraceId, value) {
+    // this._logger.debug('trace expr', { inProgramStaticTraceId, value });
     if (this.areTracesDisabled) {
       return value;
     }

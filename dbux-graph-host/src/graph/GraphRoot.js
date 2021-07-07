@@ -69,9 +69,7 @@ class GraphRoot extends HostComponentEndpoint {
       mode: GraphNodeMode.ExpandChildren,
       hasChildren: true
     });
-    this.controllers.createComponent('PopperManager');
     this.controllers.createComponent('ContextNodeManager');
-    this.controllers.createComponent('ZoomBar');
     this.controllers.createComponent('HiddenNodeManager');
     this.controllers.createComponent('PopperController');
     this.controllers.createComponent('FocusController');
@@ -79,35 +77,54 @@ class GraphRoot extends HostComponentEndpoint {
     this.children.createComponent('HiddenBeforeNode');
     this.children.createComponent('HiddenAfterNode');
 
+    // register event listeners
+    this.addDisposable(
+      allApplications.selection.onApplicationsChanged(() => {
+        this.updateRunNodes();
+      })
+    );
+    this.addDisposable(
+      this.context.graphDocument.onAsyncGraphModeChanged(() => {
+        this.updateRunNodes();
+      })
+    );
+
     this.updateRunNodes();
   }
 
   updateRunNodes() {
-    // oldApps
-    const oldAppIds = new Set(this.runNodesById.getApplicationIds());
-    const newAppIds = new Set(allApplications.selection.getAll().map(app => app.applicationId));
-
-    // always re-subscribe since applicationSet clears subscribtion everytime it changes
-    this._resubscribeOnData();
-    this._setApplicationState();
-
-    // remove old runNodes
-    for (const runNode of this.runNodesById.getAll()) {
-      const { applicationId, runId } = runNode.state;
-      if (!newAppIds.has(applicationId)) {
-        this.removeRunNode(applicationId, runId);
-      }
+    if (this.context.graphDocument.asyncGraphMode) {
+      this.removeAllRunNode();
+      this._setApplicationState();
     }
+    else {
+      // oldApps
+      const oldAppIds = new Set(this.runNodesById.getApplicationIds());
+      const newAppIds = new Set(allApplications.selection.getAll().map(app => app.applicationId));
 
-    // add new runNodes
-    for (const appId of newAppIds) {
-      if (!oldAppIds.has(appId)) {
-        const app = allApplications.getById(appId);
-        const allContexts = app.dataProvider.collections.executionContexts.getAll();
-        this.addRunNodeByContexts(appId, allContexts);
+      // always re-subscribe since applicationSet clears subscribtion everytime it changes
+      this._resubscribeOnData();
+      this._setApplicationState();
+
+      // remove old runNodes
+      for (const runNode of this.runNodesById.getAll()) {
+        const { applicationId, runId } = runNode.state;
+        if (!newAppIds.has(applicationId)) {
+          this.removeRunNode(applicationId, runId);
+        }
+      }
+
+      // add new runNodes
+      for (const appId of newAppIds) {
+        if (!oldAppIds.has(appId)) {
+          const app = allApplications.getById(appId);
+          const allContexts = app.dataProvider.collections.executionContexts.getAll();
+          this.addRunNodeByContexts(appId, allContexts);
+        }
       }
     }
   }
+
 
   _resubscribeOnData() {
     // unsubscribe old
@@ -203,6 +220,12 @@ class GraphRoot extends HostComponentEndpoint {
     const runNode = this.runNodesById.get(applicationId, runId);
     runNode.dispose();
     this.runNodesById.delete(applicationId, runId);
+  }
+
+  removeAllRunNode() {
+    for (const { state: { applicationId, runId } } of this.getAllRunNode()) {
+      this.removeRunNode(applicationId, runId);
+    }
   }
 
   /**

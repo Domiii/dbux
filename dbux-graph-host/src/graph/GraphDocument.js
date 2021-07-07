@@ -1,10 +1,13 @@
+import NanoEvents from 'nanoevents';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
-import allApplications from '@dbux/data/src/applications/allApplications';
 import HighlightManager from './controllers/HighlightManager';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import GraphRoot from './GraphRoot';
 import Toolbar from './Toolbar';
+import AsyncGraph from './asyncGraph/AsyncGraph';
+import PopperManager from './controllers/PopperManager';
 
 class GraphDocument extends HostComponentEndpoint {
   toolbar;
@@ -15,8 +18,10 @@ class GraphDocument extends HostComponentEndpoint {
   // ###########################################################################
 
   init() {
-    this.createOwnComponents();
+    this._emitter = new NanoEvents();
+    this.state.asyncGraphMode = true;
 
+    this.createOwnComponents();
     // register event listeners
     this.addDisposable(
       allApplications.selection.onApplicationsChanged(() => {
@@ -26,7 +31,10 @@ class GraphDocument extends HostComponentEndpoint {
   }
 
   createOwnComponents() {
+    this.controllers.createComponent(PopperManager);
     this.controllers.createComponent(HighlightManager);
+    this.controllers.createComponent('ZoomBar');
+    this.asyncGraph = this.children.createComponent(AsyncGraph);
     this.graphRoot = this.children.createComponent(GraphRoot);
     this.toolbar = this.children.createComponent(Toolbar);
     // this.minimap = this.children.createComponent(MiniMap);
@@ -34,6 +42,25 @@ class GraphDocument extends HostComponentEndpoint {
 
   getIconUri(modeName, fileName) {
     return this.componentManager.externals.getClientResourceUri(`${modeName}/${fileName}`);
+  }
+
+  // ###########################################################################
+  // async graph mode
+  // ###########################################################################
+
+  get asyncGraphMode() {
+    return this.state.asyncGraphMode;
+  }
+
+  setAsyncGraphMode(mode) {
+    if (this.asyncGraphMode !== mode) {
+      this.setState({ asyncGraphMode: mode });
+      this._emitter.emit('asyncGraphModeChanged', mode);
+    }
+  }
+
+  onAsyncGraphModeChanged(cb) {
+    return this._emitter.on('asyncGraphModeChanged', cb);
   }
 
   // ###########################################################################

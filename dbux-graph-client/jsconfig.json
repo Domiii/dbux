@@ -6,7 +6,7 @@
     "baseUrl": "./",
     "paths": {
       "@dbux/common/*": ["../dbux-common/*"],
-      "@dbux/graph-common/*": ["../dbux-graph-common/*"],
+      "@dbux/graph-common/*": ["../dbux-graph-common/*"]
     }
   },
   "include": [

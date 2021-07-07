@@ -10,16 +10,19 @@ import traceCollection from './data/traceCollection';
 import staticTraceCollection from './data/staticTraceCollection';
 import Runtime from './Runtime';
 import ProgramMonitor from './ProgramMonitor';
+import { ensurePromiseWrapped, isPromise } from './wrapPromise';
 import dataNodeCollection, { ShallowValueRefMeta } from './data/dataNodeCollection';
 import valueCollection from './data/valueCollection';
 import registerBuiltins from './builtIns/index';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('RM');
+const { log, debug: _debug, warn, error: logError } = newLogger('RuntimeMonitor');
 
-const Verbose = 0;
-// const Verbose = 1;
 // const Verbose = 2;
+// const Verbose = 1;
+const Verbose = 0;
+
+const debug = (...args) => Verbose && _debug(...args);
 
 // TODO: we can properly use Proxy to wrap callbacks
 // function _inheritsLoose(subClass, superClass) {
@@ -174,6 +177,8 @@ export default class RuntimeMonitor {
     // pop from stack
     this._pop(contextId);
 
+    // debug('pop immediate, stack size', this._runtime?._executingStack?.length?.() || 0);
+
     // trace
     const runId = this._runtime.getCurrentRunId();
     const programId = executionContextCollection.getProgramId(contextId);
@@ -300,7 +305,7 @@ export default class RuntimeMonitor {
     return awaitValue;
   }
 
-  preAwait(programId, inProgramStaticContextId, preAwaitTid) {
+  preAwait(programId, inProgramStaticContextId, preAwaitTid, awaitArgument) {
     const stackDepth = this._runtime.getStackDepth();
     const runId = this._runtime.getCurrentRunId();
     const resumeContextId = this._runtime.peekCurrentContextId(); // NOTE: parent == Resume
@@ -311,15 +316,19 @@ export default class RuntimeMonitor {
     this.popResume(resumeContextId);
 
     // register Await context
-    const parentContextId = this._runtime.peekCurrentContextId(); // NOTE: parent == Resume
+    const parentContextId = this._runtime.peekCurrentContextId(); // Real context
     const context = executionContextCollection.await(
       stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId
     );
     const { contextId: awaitContextId } = context;
-    this._runtime.registerAwait(awaitContextId);  // mark as "waiting"
+    this._runtime.registerAwait(awaitContextId, parentContextId, awaitArgument);  // mark as "waiting"
 
     // manually climb up the stack
     this._runtime.skipPopPostAwait();
+
+    // await part
+    const currentRunId = this._runtime.getCurrentRunId();
+    this._runtime.thread1.preAwait(currentRunId, awaitArgument, resumeContextId, parentContextId);
 
     return awaitContextId;
   }
@@ -327,7 +336,7 @@ export default class RuntimeMonitor {
   /**
    * Resume given stack
    */
-  postAwait(programId, awaitContextId) {
+  postAwait(programId, awaitResult, awaitArgument, awaitContextId) {
     // sanity checks
     const context = executionContextCollection.getById(awaitContextId);
     if (!context) {
@@ -347,7 +356,27 @@ export default class RuntimeMonitor {
       const { resumeId: resumeStaticContextId } = staticContext;
 
       // pushResume
-      this.pushResume(programId, resumeStaticContextId);
+      // NOTE: `tid` is a separate instruction, following `postAwait`
+      const resumeInProgramStaticTraceId = 0;
+      const resumeContextId = this.pushResume(programId, resumeStaticContextId, resumeInProgramStaticTraceId);
+
+      if (isPromise(awaitArgument)) {
+        this._runtime.thread2.promiseAwaited(awaitArgument, this._runtime.getCurrentRunId());
+      }
+
+      debug(awaitArgument, 'is awaited at context', awaitContextId);
+
+      const { parentContextId } = executionContextCollection.getById(resumeContextId);
+      const postEventContext = resumeContextId;
+
+      // get runId
+      let postEventRun = this._runtime.getCurrentRunId();
+      if (this._runtime.thread1.getRunThreadId(postEventRun)) {
+        postEventRun = this._runtime.newRun();
+      }
+
+      // register thread logic
+      this._runtime.thread1.postAwait(parentContextId, postEventContext, postEventRun, awaitArgument);
     }
   }
 
@@ -389,7 +418,7 @@ export default class RuntimeMonitor {
 
     // more sanity checks
     if (!context) {
-      logError('Tried to popResume, but context was not registered:', resumeCid);
+      logError(`Tried to popResume, but context was not registered - resumeContextId=${resumeCid}`);
       return;
     }
     if (context.contextType !== ExecutionContextType.Resume) {
@@ -399,6 +428,24 @@ export default class RuntimeMonitor {
 
     this._pop(resumeCid);
   }
+
+  getLastExecutionContextId() {
+    const lastExecutionContext = executionContextCollection.getLast();
+    return lastExecutionContext.contextId;
+  }
+
+  updateExecutionContextPromiseId(contextId, promiseId) {
+    debug('update execution context promise id', contextId, promiseId);
+    executionContextCollection.getById(contextId).promiseId = promiseId;
+  }
+
+  isValidContext() {
+    return this._runtime._executingStack?.length?.();
+  }
+
+  // ###########################################################################
+  // traces
+  // ###########################################################################
 
   _ensureExecuting() {
     if (!this._runtime._executingStack) {
@@ -469,10 +516,26 @@ export default class RuntimeMonitor {
       return value;
     }
 
-    const varAccess = null;
-    inputs = traceCollection.getDataNodeIdsByTraceIds(tid, inputs);
-    dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess, inputs);
-    return value;
+    ensurePromiseWrapped(value);
+
+    // if (value instanceof Function && !isClass(value)) {
+    // if (value instanceof Function) {
+    //   // NOTE: this would override TraceType, but TraceType must sometimes not be overridden (e.g. `ReturnArgument`)
+    //   // scheduled callback
+    //   const cb = value;
+    //   return this._traceCallbackArgument(programId, inProgramStaticTraceId, cb);
+    // }
+    // else 
+    {
+      const contextId = this._runtime.peekCurrentContextId();
+      const runId = this._runtime.getCurrentRunId();
+      const overrideType = null;
+
+      const varAccess = null;
+      inputs = traceCollection.getDataNodeIdsByTraceIds(tid, inputs);
+      dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess, inputs);
+      return value;
+    }
   }
 
   traceExpressionVar(programId, value, tid, declarationTid) {
@@ -763,6 +826,23 @@ export default class RuntimeMonitor {
     const trace = traceCollection.getById(tid);
     trace.resultCallId = callTid;
     this.traceExpression(programId, value, tid, 0);
+
+    ensurePromiseWrapped(value);
+
+    const contextId = this._runtime.peekCurrentContextId();
+    const runId = this._runtime.getCurrentRunId();
+    this._onTrace(contextId, trace);
+
+    if (!(isPromise(value))) {
+      return value;
+    }
+
+    // register promise
+    const calledContextId = this._runtime.getLastPoppedContextId();
+
+    this._runtime.thread1.traceCall(contextId, calledContextId, trace, value);
+    this._runtime.thread2.recordMaybeNewPromise(value, runId, contextId, calledContextId);
+
     return value;
   }
 

@@ -64,7 +64,7 @@ function computeDelta(node) {
 
 export default class FocusController extends ClientComponentEndpoint {
   get panzoom() {
-    return this.owner.panzoom;
+    return this.context.graphDocument.panzoom;
   }
 
   init() {
@@ -75,7 +75,7 @@ export default class FocusController extends ClientComponentEndpoint {
   /**
    * @param {ClientComponentEndpoint} node
    */
-  slide = (node) => {
+  slideToNode = (node) => {
     // Note: Slide to given node. referance https://codepen.io/relign/pen/qqZxqW?editors=0011
     if (!node) {
       this.stopSlide();
@@ -87,16 +87,25 @@ export default class FocusController extends ClientComponentEndpoint {
       return;
     }
 
-    const targetDOM = this.targetDOM = node.el;
+    this.slide(node.el);
+  }
 
-    let nodeBounds = targetDOM.getBoundingClientRect();
+  slide = (target) => {
+    if (!target) {
+      this.stopSlide();
+      return;
+    }
+
+    const targetDOM = this.targetDOM = target;
+
+    const nodeBounds = target.getBoundingClientRect();
     if (!nodeBounds.height && !nodeBounds.width) {
       this.logger.error(`Trying to slide to unrevealed DOM: ${targetDOM.outerHTML}, ${JSON.stringify(nodeBounds)}`);
       return;
     }
 
     // [scroll fix]
-    const delta = computeDelta(targetDOM);
+    const delta = computeDelta(target);
     // console.log('\n');
     // console.log('scroll position:', 'Top:', this.panzoom.getTransform().y, 'Left:', this.panzoom.getTransform().x);
     // console.log('delta:', 'x', delta.x, 'y:', delta.y);
@@ -114,7 +123,7 @@ export default class FocusController extends ClientComponentEndpoint {
       animTime: 0.1
     };
 
-    requestAnimationFrame(() => this._step(targetDOM, slideData));
+    requestAnimationFrame(() => this._step(target, slideData));
   }
 
   stopSlide() {
@@ -149,7 +158,49 @@ export default class FocusController extends ClientComponentEndpoint {
     }
   }
 
+  getAsyncNodeEl({ applicationId, runId, threadId }) {
+    const data = {
+      'application-id': applicationId,
+      'run-id': runId,
+      'thread-id': threadId,
+    };
+    const dataSelector = Object.entries(data).map(([key, val]) => `[data-${key}="${val || ''}"]`).join('');
+    const selector = `.async-node${dataSelector}`;
+    return document.querySelector(selector);
+  }
+
   public = {
-    slide: this.slide
+    slideToNode: this.slideToNode,
+    /**
+     * @param {{applicationId: number, runId: number, threadId: number}} selector 
+     * @param {boolean} ignoreFailed 
+     */
+    focusAsyncNode: (selector, ignoreFailed = false) => {
+      const asyncNodeEl = this.getAsyncNodeEl(selector);
+      if (!asyncNodeEl) {
+        !ignoreFailed && this.logger.error(`Cannot find asyncNode with data ${JSON.stringify(selector)} when trying to focus`);
+      }
+      else {
+        this.slide(asyncNodeEl);
+      }
+    },
+    /**
+     * @param {{applicationId: number, runId: number, threadId: number}} selector 
+     * @param {boolean} ignoreFailed 
+     */
+    selectAsyncNode: (selector, ignoreFailed = false) => {
+      document.querySelectorAll('.async-node-selected').forEach(node => {
+        node.classList.remove('async-node-selected');
+      });
+      if (selector) {
+        const asyncNodeEl = this.getAsyncNodeEl(selector);
+        if (!asyncNodeEl) {
+          !ignoreFailed && this.logger.error(`Cannot find asyncNode with data ${JSON.stringify(selector)} when trying to select`);
+        }
+        else {
+          asyncNodeEl.classList.add('async-node-selected');
+        }
+      }
+    }
   }
 }

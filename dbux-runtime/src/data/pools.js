@@ -3,6 +3,9 @@ import Trace from '@dbux/common/src/core/data/Trace';
 import ValueRef from '@dbux/common/src/core/data/ValueRef';
 import DataNode from '@dbux/common/src/core/data/DataNode';
 import Loop from '@dbux/common/src/core/data/loops/Loop';
+import PromiseData from '@dbux/common/src/core/data/PromiseData';
+import AsyncEvent from '@dbux/common/src/core/data/AsyncEvent';
+import Run from '@dbux/common/src/core/data/Run';
 
 /**
  * TODO: proper object pooling
@@ -38,6 +41,24 @@ const pools = {
   loops: {
     allocate() {
       return new Loop();
+    }
+  },
+
+  promiseData: {
+    allocate() {
+      return new PromiseData();
+    },
+  },
+
+  asyncEvent: {
+    allocate() {
+      return new AsyncEvent();
+    }
+  },
+
+  run: {
+    allocate() {
+      return new Run();
     }
   }
 };

@@ -1,62 +1,29 @@
-import { ConsumerBase, ProducerBase } from './producer_consumer_base';
-import { sleep } from '../asyncUtil';
+import { hasSpace, reserveSpace, produce, append, hasItems, reserveItem, consume, remove, idle, N } from 'producer_consumer_base';
 
-async function forever(cb) {
-  while (true) {
-    await cb();
-  }
-}
-
-// ###########################################################################
-// Consumer
-// ###########################################################################
-
-class Consumer extends ConsumerBase {
-  forever = forever;
-  sleep = sleep;
-
-  consumeOrIdle = async () => {
-    if (this.canConsume()) {
-      const idx = this.startConsume();
-
-      await this.doWork();
-
-      this.finishConsume(idx);
+async function producer(n) {
+  while (n--) {
+    if (hasSpace()) {
+      await produce();
     }
     else {
-      await sleep();
+      await idle();
     }
   }
 }
 
-
-// ###########################################################################
-// Producer
-// ###########################################################################
-
-class Producer extends ProducerBase {
-  forever = forever;
-  sleep = sleep;
-
-  produceOrIdle = async () => {
-    if (this.canProduce()) {
-      this.startProduce();
-
-      await this.doWork();
-
-      this.finishProduce();
+async function consumer(n) {
+  while (n--) {
+    if (hasItems()) {
+      await consume();
     }
     else {
-      await sleep();
+      await idle();
     }
   }
 }
 
-// main
-
-// start all producers + consumers
-new Producer().run();
-new Producer().run();
-
-new Consumer().run();
-new Consumer().run();
+// main: start all producers + consumers
+producer(N);
+producer(N);
+consumer(N);
+consumer(N);

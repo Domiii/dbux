@@ -4,15 +4,18 @@ import minBy from 'lodash/minBy';
 import maxBy from 'lodash/maxBy';
 import SpecialIdentifierType from '@dbux/common/src/core/constants/SpecialIdentifierType';
 import SpecialObjectType from '@dbux/common/src/core/constants/SpecialObjectType';
-import { isObjectCategory, ValuePruneState } from '@dbux/common/src/core/constants/ValueTypeCategory';
-import TraceType, { isTracePop, isTraceFunctionExit, isTraceThrow } from '@dbux/common/src/core/constants/TraceType';
+import ValueTypeCategory, { isObjectCategory, ValuePruneState } from '@dbux/common/src/core/constants/ValueTypeCategory';
+import TraceType, { isTracePop, isTraceFunctionExit, isBeforeCallExpression, isTraceThrow } from '@dbux/common/src/core/constants/TraceType';
 import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
 import Trace from '@dbux/common/src/core/data/Trace';
 import DataNode from '@dbux/common/src/core/data/DataNode';
 import ValueRef from '@dbux/common/src/core/data/ValueRef';
+import AsyncEvent from '@dbux/common/src/core/data/AsyncEvent';
+import Run from '@dbux/common/src/core/data/Run';
 import StaticProgramContext from '@dbux/common/src/core/data/StaticProgramContext';
 import StaticContext from '@dbux/common/src/core/data/StaticContext';
 import StaticTrace from '@dbux/common/src/core/data/StaticTrace';
+import { hasCallId, isCallResult, isCallExpressionTrace } from '@dbux/common/src/core/constants/traceCategorization';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 import Collection from './Collection';
@@ -20,8 +23,6 @@ import Collection from './Collection';
 import DataProviderBase from './DataProviderBase';
 import DataProviderUtil from './dataProviderUtil';
 
-// eslint-disable-next-line no-unused-vars
-// const { log, debug, warn, error: logError } = newLogger('DataProvider');
 
 function deleteCachedRange(locObj) {
   delete locObj._range;
@@ -134,6 +135,7 @@ class StaticTraceCollection extends Collection {
 class ExecutionContextCollection extends Collection {
   constructor(dp) {
     super('executionContexts', dp);
+    this.currentThreadCount = 1;
   }
 
   add(entries) {
@@ -285,6 +287,11 @@ class TraceCollection extends Collection {
     const traceData = { ...trace };
     delete traceData._valueString;
     delete traceData._valueStringShort;
+
+    // these properties will be resolved on addData, don't need to store them
+    delete traceData.applicationId;
+    delete traceData.codeChunkId;
+    delete traceData.staticTraceIndex;
     return traceData;
   }
 
@@ -646,6 +653,38 @@ class ValueRefCollection extends Collection {
   }
 }
 
+/**
+ * @extends {Collection<AsyncEvent>}
+ */
+class AsyncEventCollection extends Collection {
+  constructor(dp) {
+    super('asyncEvents', dp);
+  }
+}
+
+/**
+ * @extends {Collection<Run>}
+ */
+class RunCollection extends Collection {
+  constructor(dp) {
+    super('runs', dp);
+  }
+
+  /**
+   * @param {T[]} entries 
+   */
+  add(entries) {
+    if (!this._all.length && entries[0] !== null) {
+      // pad with a `null`, if necessary
+      this._all.push(null);
+    }
+
+    // Run ids might be (slightly) out of order
+    for (const entry of entries) {
+      this._all[entry.runId] = entry;
+    }
+  }
+}
 
 // ###########################################################################
 // RDP
@@ -671,7 +710,9 @@ export default class RuntimeDataProvider extends DataProviderBase {
       executionContexts: new ExecutionContextCollection(this),
       traces: new TraceCollection(this),
       dataNodes: new DataNodeCollection(this),
-      values: new ValueRefCollection(this)
+      values: new ValueRefCollection(this),
+      asyncEvents: new AsyncEventCollection(this),
+      runs: new RunCollection(this),
     };
 
     // const collectionClasses = [

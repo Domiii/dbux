@@ -6,6 +6,7 @@ import CallGraph from './callGraph/CallGraph';
 import TracesByFileIndex from './impl/indexes/TracesByFileIndex';
 import FirstTracesIndex from './impl/indexes/FirstTracesIndex';
 import FirstContextsInRunsIndex from './impl/indexes/FirstContextsInRunsIndex';
+import FirstContextsInRunsByThreadIndex from './impl/indexes/FirstContextsInRunsByThreadIndex';
 import TracesByContextIndex from './impl/indexes/TracesByContextIndex';
 import TracesByParentContextIndex from './impl/indexes/TracesByParentContextIndex';
 import TracesByStaticTraceIndex from './impl/indexes/TracesByStaticTraceIndex';
@@ -32,20 +33,23 @@ import ParentTracesInRealContextIndex from './impl/indexes/ParentTracesInRealCon
 import StaticContextsByFileIndex from './impl/indexes/StaticContextsByFileIndex';
 import StaticContextsByParentIndex from './impl/indexes/StaticContextsByParentIndex';
 import StaticTracesByContextIndex from './impl/indexes/StaticTracesByContextIndex';
+import ContextsByTypeIndex from './impl/indexes/ContextsByTypeIndex';
 
 import ProgramIdByFilePathQuery from './impl/queries/ProgramIdByFilePathQuery';
 import ProgramFilePathByTraceIdQuery from './impl/queries/ProgramFilePathByTraceIdQuery';
 import StatsByContextQuery from './impl/queries/StatsByContextQuery';
+import AsyncEventsToIndex from './impl/indexes/AsyncEventsToIndex';
 import DataNodesByTraceIndex from './impl/indexes/DataNodesByTraceIndex';
 import DataNodesByAccessIdIndex from './impl/indexes/DataNodesByAccessIdIndex';
 import DataNodesByValueIdIndex from './impl/indexes/DataNodesByValueIdIndex';
 import DataNodesByRefIdIndex from './impl/indexes/DataNodesByRefIdIndex';
 import DataNodesByObjectRefIdIndex from './impl/indexes/DataNodesByObjectRefIdIndex';
+import AsyncEventsFromIndex from './impl/indexes/AsyncEventsFromIndex';
 
 
 export function newDataProvider(application) {
   const dataProvider = new RuntimeDataProvider(application);
-  
+
   // util
   const utilNames = Object.keys(dataProviderUtil);
   dataProvider.util = Object.fromEntries(
@@ -54,7 +58,7 @@ export function newDataProvider(application) {
 
   // call graph
   dataProvider.callGraph = new CallGraph(dataProvider);
-  
+
   // indexes
   dataProvider.addIndex(new StaticContextsByFileIndex());
   dataProvider.addIndex(new StaticContextsByParentIndex());
@@ -62,12 +66,14 @@ export function newDataProvider(application) {
 
   dataProvider.addIndex(new ContextsByStaticContextIndex());
   dataProvider.addIndex(new ContextsByRunIndex());
+  dataProvider.addIndex(new ContextsByTypeIndex());
   dataProvider.addIndex(new ContextsByCalleeTraceIndex());
   dataProvider.addIndex(new ContextChildrenIndex());
   dataProvider.addIndex(new RootContextsByRunIndex());
   dataProvider.addIndex(new RootContextsIndex());
   dataProvider.addIndex(new FirstContextsInRunsIndex());
-  
+  dataProvider.addIndex(new FirstContextsInRunsByThreadIndex());
+
   dataProvider.addIndex(new FirstTracesIndex());
   dataProvider.addIndex(new TracesByFileIndex());
   dataProvider.addIndex(new TracesByContextIndex());
@@ -92,6 +98,9 @@ export function newDataProvider(application) {
   dataProvider.addIndex(new DataNodesByValueIdIndex());
   dataProvider.addIndex(new DataNodesByRefIdIndex());
   dataProvider.addIndex(new DataNodesByObjectRefIdIndex());
+
+  dataProvider.addIndex(new AsyncEventsFromIndex());
+  dataProvider.addIndex(new AsyncEventsToIndex());
 
   // complex indexes (that have dependencies)
   // NOTE: we are currently solving index dependencies by simply adding depdendents after dependees

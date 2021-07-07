@@ -1,60 +1,46 @@
 import { ConsumerBase, ProducerBase } from './producer_consumer_base';
-
-const sleep = setTimeout;
-
-/**
- * 
- */
-function foreverCb(task) {
-  function next() {
-    return task(next);
-  }
-  return next();
-}
+import { sleepImmediate, repeatNAsync } from 'asyncUtil';
 
 // ###########################################################################
 // Consumer
 // ###########################################################################
 
 class Consumer extends ConsumerBase {
-  forever = foreverCb;
-  sleep = sleep;
+  repeatN = repeatNAsync;
+  sleep = sleepImmediate;
 
-  consumeOrIdle = (next) => {
+  consumeOrIdle = async () => {
     if (this.canConsume()) {
       const idx = this.startConsume();
 
-      this.doWork(() => {
-        this.finishConsume(idx);
-        next();
-      });
+      await this.doWork();
+
+      this.finishConsume(idx);
     }
     else {
-      sleep(next);
+      await this.sleep(2);
     }
   }
 }
-
 
 // ###########################################################################
 // Producer
 // ###########################################################################
 
 class Producer extends ProducerBase {
-  forever = foreverCb;
-  sleep = sleep;
+  repeatN = repeatNAsync;
+  sleep = sleepImmediate;
 
-  produceOrIdle = (next) => {
+  produceOrIdle = async () => {
     if (this.canProduce()) {
       this.startProduce();
 
-      this.doWork(() => {
-        this.finishProduce();
-        next();
-      });
+      await this.doWork();
+
+      this.finishProduce();
     }
     else {
-      sleep(next);
+      await this.sleep(2);
     }
   }
 }
@@ -63,7 +49,5 @@ class Producer extends ProducerBase {
 
 // start all producers + consumers
 new Producer().run();
-new Producer().run();
 
-new Consumer().run();
 new Consumer().run();

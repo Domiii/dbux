@@ -1,10 +1,13 @@
-import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
+
 import { newLogger } from '@dbux/common/src/log/logger';
 import Stack from './Stack';
-import executionContextCollection from './data/executionContextCollection';
-import staticContextCollection from './data/staticContextCollection';
 import traceCollection from './data/traceCollection';
 import scheduleNextPossibleRun from './scheduleNextPossibleRun';
+import { RuntimeThreads1, RuntimeThreads2 } from './RuntimeThreads';
+
+// import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
+// import executionContextCollection from './data/executionContextCollection';
+// import staticContextCollection from './data/staticContextCollection';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -58,6 +61,9 @@ export default class Runtime {
 
   _bcesInByContextId = {};
 
+  // _runtimeThreadStack = new RuntimeThreadsStack();
+  thread1 = new RuntimeThreads1(this);
+  thread2 = new RuntimeThreads2();
 
   // ###########################################################################
   // Stack management
@@ -77,12 +83,15 @@ export default class Runtime {
       this.interrupt();
     }
     this._emptyStackBarrier = null;
+
+    this.thread1.cleanFloatingPromises();
   }
 
   /**
    * We currently have no good heuristics for checking whether we want to resume
    * an interrupted stack when pushing to an empty stack.
    * Instead, we need to rely on `_maybeResumeInterruptedStackOnPop` to try healing things
+
    * retroactively.
    */
   _maybeResumeInterruptedStackOnPushEmpty(contextId) {
@@ -271,6 +280,8 @@ export default class Runtime {
     // this._previousPoppedContextId = null;
     this._executingStack.push(contextId);
 
+    // this._runtimeThreadStack.push(contextId);
+
     if (isInterruptable) {
       // start with a resume context
       this._markWaiting(contextId);
@@ -280,7 +291,7 @@ export default class Runtime {
     // const staticContext = staticContextCollection.getById(context.staticContextId);
     // const name = staticContext.displayName || '';
     // const typeName = ExecutionContextType.nameFromForce(context.contextType);
-    // console.debug('->', context.runId, contextId, `[${typeName}] ${name}`);
+    // console.debug(`-> ${context.runId} ${contextId} [${typeName}] ${name}`);
   }
 
   pop(contextId) {
@@ -288,7 +299,11 @@ export default class Runtime {
     // const staticContext = staticContextCollection.getById(context.staticContextId);
     // const name = staticContext.displayName || '';
     // const typeName = ExecutionContextType.nameFromForce(context.contextType);
-    // console.debug('<-', context.runId, contextId, `[${typeName}] ${name}`);
+    // console.debug(`<- ${context.runId} ${contextId} [${typeName}] ${name}`);
+
+    // this._runtimeThreadStack.pop(contextId);
+
+    this._lastPoppedContextId = contextId;
 
     let stack = this._executingStack;
     let stackPos;
@@ -334,11 +349,23 @@ export default class Runtime {
     return stackPos;
   }
 
+  _lastPoppedContextId = null;
+  getLastPoppedContextId() {
+    return this._lastPoppedContextId;
+  }
+
   // ###########################################################################
   // Complex scheduling
   // ###########################################################################
 
-  registerAwait(awaitContextId) {
+  /**
+   * NOTE: we use this to make sure that every `postAwait` event has its own `run`.
+   */
+  newRun() {
+    return ++this._currentRunId;
+  }
+
+  registerAwait(awaitContextId, parentContext, awaitArgument) {
     if (!this.isExecuting()) {
       logError('Encountered `await`, but there was no active stack ', awaitContextId);
       return;
@@ -348,6 +375,8 @@ export default class Runtime {
     // this._markWaiting(awaitContextId);
 
     // NOTE: stack might keep popping before it actually pauses, so we don't unset executingStack quite yet.
+
+    this.thread1.registerAwait(parentContext, awaitArgument);
   }
 
   /**
@@ -380,6 +409,8 @@ export default class Runtime {
 
     // waitingStack.resumeFrom(contextId);
     const oldStack = this._executingStack;
+
+    // console.log(oldStack, waitingStack);
 
     if (oldStack !== waitingStack) {
       if (this.isExecuting()) {
@@ -420,13 +451,19 @@ export default class Runtime {
   _runStart(stack) {
     ++this._currentRunId;
     this._executingStack = stack;
-    // console.warn('[RunStart] ' + this._currentRunId); //, this.getLingeringStackCount());
+    // console.warn('[RunStart] ' + this._currentRunId, new Error().stack); //, this.getLingeringStackCount());
     // console.time('[RunEnd] ' + this._currentRunId);
   }
 
   _runFinished() {
     this._executingStack = null;
-    // console.warn('[RootEnd]', this._currentRootId, this.getLingeringStackCount());
+    const maxRunId = this.getCurrentRunId();
+    for (let i = (this._lastSavedRun || 0) + 1; i <= maxRunId; ++i) {
+      this.thread1.postRun(i);
+      this.thread2.postRun();
+    }
+    this._lastSavedRun = maxRunId;
+    // console.warn('[RunEnd]', this._currentRootId, this.getLingeringStackCount(), new Error().stack);
     // console.timeEnd('[RunEnd] ' + this._currentRunId);
   }
 }

@@ -5,23 +5,26 @@ import { buildTraceId, buildTraceIdValue } from './traceId';
 
 
 export const buildWrapAwait = buildTraceCall(
-  '(%%wrapAwait%%(%%argument%%, %%awaitContextIdVar%% = %%preAwait%%(%%awaitContextId%%, %%tid%%)))',
+  '(%%wrapAwait%%(%%argumentVar%% = %%argument%%, %%awaitContextIdVar%% = %%preAwait%%(%%awaitContextId%%, %%tid%%, %%argumentVar%%)))',
   function buildWrapAwait(state, traceCfg) {
     const { ids: { aliases: { preAwait, wrapAwait } } } = state;
     const {
       data: {
+        argumentVar,
         awaitContextId,
         awaitContextIdVar
       }
     } = traceCfg;
     const argument = getInstrumentTargetAstNode(state, traceCfg);
     const tid = buildTraceId(state, traceCfg);
+    // TODO: add argumentVar
     // const { } = ;
 
     return {
       preAwait,
       wrapAwait,
       argument,
+      argumentVar,
       awaitContextIdVar,
       awaitContextId: t.numericLiteral(awaitContextId),
       tid,
@@ -32,7 +35,7 @@ export const buildWrapAwait = buildTraceCall(
 export const buildPostAwait = buildTraceCall(
   `(
   %%resultVar%% = %%awaitNode%%,
-  %%postAwait%%(%%awaitContextIdVar%%),
+  %%postAwait%%(%%resultVar%%, %%argumentVar%%, %%awaitContextIdVar%%),
   %%tid%%
 )`,
   function buildPostAwait(state, traceCfg) {
@@ -41,8 +44,9 @@ export const buildPostAwait = buildTraceCall(
     } } } = state;
     const {
       data: {
-        awaitContextIdVar,
-        resultVar
+        argumentVar,
+        resultVar,
+        awaitContextIdVar
       }
     } = traceCfg;
     const awaitNode = getInstrumentTargetAstNode(state, traceCfg);
@@ -51,6 +55,7 @@ export const buildPostAwait = buildTraceCall(
     return {
       resultVar,
       awaitNode,
+      argumentVar,
       postAwait,
       awaitContextIdVar,
       tid

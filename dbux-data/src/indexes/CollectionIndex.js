@@ -220,6 +220,14 @@ export default class CollectionIndex {
     return this._byKey;
   }
 
+  getLast(key) {
+    const ofKey = this.get(key);
+    if (!ofKey?.length) {
+      return null;
+    }
+    return ofKey?.[ofKey.length - 1] || null;
+  }
+
   getAllKeys() {
     return this._manager.getAllKeys();
   }

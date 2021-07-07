@@ -1,35 +1,36 @@
 import { ConsumerBase, ProducerBase } from './producer_consumer_base';
-import { sleep } from '../asyncUtil';
+
+const sleep = setTimeout;
 
 /**
- * @see https://github.com/caolan/async/blob/master/lib/forever.js#L37
+ * 
  */
-function foreverPromise(task) {
+function foreverCb(task) {
   function next() {
-    return Promise.resolve(task()).
-      then(next);
+    return task(next);
   }
   return next();
 }
-
 
 // ###########################################################################
 // Consumer
 // ###########################################################################
 
 class Consumer extends ConsumerBase {
-  forever = foreverPromise;
+  forever = foreverCb;
   sleep = sleep;
 
-  consumeOrIdle = () => {
+  consumeOrIdle = (next) => {
     if (this.canConsume()) {
       const idx = this.startConsume();
 
-      return this.doWork().
-        then(() => this.finishConsume(idx));
+      this.doWork(() => {
+        this.finishConsume(idx);
+        next();
+      });
     }
     else {
-      return sleep();
+      sleep(next, 300);
     }
   }
 }
@@ -40,18 +41,20 @@ class Consumer extends ConsumerBase {
 // ###########################################################################
 
 class Producer extends ProducerBase {
-  forever = foreverPromise;
+  forever = foreverCb;
   sleep = sleep;
 
-  produceOrIdle = () => {
+  produceOrIdle = (next) => {
     if (this.canProduce()) {
       this.startProduce();
 
-      return this.doWork().
-        then(this.finishProduce);
+      this.doWork(() => {
+        this.finishProduce();
+        next();
+      });
     }
     else {
-      return sleep();
+      sleep(next, 300);
     }
   }
 }
@@ -60,7 +63,5 @@ class Producer extends ProducerBase {
 
 // start all producers + consumers
 new Producer().run();
-new Producer().run();
 
-new Consumer().run();
 new Consumer().run();

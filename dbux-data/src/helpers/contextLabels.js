@@ -20,7 +20,8 @@ export function makeContextLabel(context, app) {
     const staticTrace = dp.collections.staticTraces.getById(firstTrace.staticTraceId);
     let displayName;
     if (staticTrace.displayName?.match(/^await /)) {
-      displayName = staticTrace.displayName.replace('await ', '').replace(/\([^(]*\)$/, '');
+      // displayName = staticTrace.displayName.replace('await ', '').replace(/\([^(]*\)$/, '');
+      displayName = staticTrace.displayName.replace('await ', '').replace(/;$/, '');
     }
     else {
       displayName = '(async start)';

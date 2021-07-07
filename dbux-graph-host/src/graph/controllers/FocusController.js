@@ -1,6 +1,6 @@
 import NanoEvents from 'nanoevents';
 import { newLogger } from '@dbux/common/src/log/logger';
-import sleep from '@dbux/common/src/util/sleep';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
@@ -38,29 +38,50 @@ export default class FocusController extends HostComponentEndpoint {
     const unbindSubscription = traceSelection.onTraceSelectionChanged(this.handleTraceSelected);
     this.addDisposable(unbindSubscription);
     // if already selected, show things right away
-    this.handleTraceSelected();
+    this.handleTraceSelected(true);
   }
 
-  handleTraceSelected = async () => {
+  handleTraceSelected = async (ignoreFailed = false) => {
     try {
       const trace = traceSelection.selected;
       await this.waitForInit();
-      
-      let contextNode;
-      if (trace) {
-        const { applicationId, contextId } = trace;
-        contextNode = await this.owner.getContextNodeById(applicationId, contextId);
-        if (this.syncMode && contextNode) {
-          // NOTE: since we do this right after init, need to check if contextNode have been built
-          await this.focus(contextNode);
+      if (this.context.graphDocument.asyncGraphMode) {
+        // goto async node of trace
+        let applicationId, contextId, runId, threadId;
+        if (trace) {
+          ({ applicationId, contextId } = trace);
+          const dp = allApplications.getById(applicationId).dataProvider;
+          const context = dp.collections.executionContexts.getById(contextId);
+          ({ runId, threadId } = context);
+          if (this.syncMode) {
+            await this.remote.focusAsyncNode({ applicationId, runId, threadId }, ignoreFailed);
+          }
+        }
+        else {
+          this.clearFocus();
+        }
+
+        if (applicationId && runId && threadId) {
+          this.remote.selectAsyncNode({ applicationId, runId, threadId }, ignoreFailed);
+        }
+        else {
+          this.remote.selectAsyncNode(null);
         }
       }
       else {
-        this.clearFocus();
+        let contextNode;
+        if (trace) {
+          const { applicationId, contextId } = trace;
+          contextNode = await this.owner.getContextNodeById(applicationId, contextId);
+          if (this.syncMode && contextNode) {
+            // NOTE: since we do this right after init, need to check if contextNode have been built
+            await this.focus(contextNode);
+          }
+        }
+
+        // always decorate ContextNode
+        this._selectContextNode(contextNode);
       }
-  
-      // always decorate ContextNode
-      this._selectContextNode(contextNode);
     }
     catch (err) {
       logError('Cannot focus on selected trace', err);
@@ -72,7 +93,7 @@ export default class FocusController extends HostComponentEndpoint {
   }
 
   _selectContextNode(contextNode) {
-    if (this._selectedContextNode && !this._selectedContextNode._isDisposed) {
+    if (this._selectedContextNode && !this._selectedContextNode.isDisposed) {
       // deselect old
       this._selectedContextNode.setSelected(false);
     }
@@ -116,7 +137,7 @@ export default class FocusController extends HostComponentEndpoint {
 
     await targetNode.reveal?.(true);
     // this.highlight(targetNode);
-    this.remote.slide(targetNode);
+    this.remote.slideToNode(targetNode);
   }
 
   clearFocus() {
@@ -124,7 +145,7 @@ export default class FocusController extends HostComponentEndpoint {
     //   this.lastHighlighter?.dec();
     // }
     // this.lastHighlighter = null;
-    this.remote.slide(null);
+    this.remote.slideToNode(null);
   }
 
   // highlight(node) {
@@ -136,7 +157,7 @@ export default class FocusController extends HostComponentEndpoint {
   // ###########################################################################
   // own event
   // ###########################################################################
-  
+
   on(evtName, cb) {
     this._emitter.on(evtName, cb);
   }

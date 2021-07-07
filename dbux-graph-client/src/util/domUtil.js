@@ -185,3 +185,29 @@ export async function addInputTypeEvent($input, cb) {
 export function setElementStyle(styles, element) {
   Object.assign(element.style, styles);
 }
+
+// ###########################################################################
+// DOM tree traversing
+// ###########################################################################
+
+/**
+ * Find a parent of given HTMLElement that matching the pattern
+ * @param {string} pattern css selector pattern
+ * @param {HTMLElement} from start search from this element
+ * @param {HTMLElement} [root] stop search for parent after this element
+ */
+export function getMatchParent(pattern, from, root) {
+  if (!from) {
+    return null;
+  }
+
+  if (from.matches(pattern)) {
+    return from;
+  }
+  else if (root !== from) {
+    return getMatchParent(pattern, from.parentElement, root);
+  }
+  else {
+    return null;
+  }
+}

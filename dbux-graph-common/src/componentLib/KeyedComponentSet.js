@@ -15,6 +15,9 @@ export default class KeyedComponentSet {
    */
   entriesByKey;
 
+  /**
+   * @param {{forceUpdate:boolean}} cfg 
+   */
   constructor(owner, ComponentClass, cfg) {
     this.owner = isFunction(owner) ? owner : () => owner;
     this.ComponentClass = ComponentClass;
@@ -36,7 +39,7 @@ export default class KeyedComponentSet {
     return this.componentsById.get(key);
   }
 
-  update(entries) {
+  update(entries, forceUpdate = false) {
     const oldKeys = new Set(this.componentsById.keys());
     const newEntries = new Map(entries.map(entry => [this.makeKey(entry), entry]));
 
@@ -50,8 +53,13 @@ export default class KeyedComponentSet {
 
     // add new components
     for (const [key, entry] of newEntries.entries()) {
-      if (key && !oldKeys.has(key)) {
-        this.addComponent(key, entry);
+      if (key) {
+        if (!oldKeys.has(key)) {
+          this.addComponent(key, entry);
+        }
+        else if (this.forceUpdate || forceUpdate) {
+          this.updateComponent(key, entry);
+        }
       }
     }
 
@@ -80,5 +88,10 @@ export default class KeyedComponentSet {
     const comp = this.componentsById.get(key);
     this.componentsById.delete(key);
     comp.dispose();
+  }
+
+  updateComponent(key, entry) {
+    const comp = this.componentsById.get(key);
+    comp.setState(entry);
   }
 }
