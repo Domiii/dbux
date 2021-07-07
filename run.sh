@@ -62,8 +62,8 @@ else
   if [[ "$dbuxCmd" = "r" ]] || [[ "$dbuxCmd" = "rr" ]]
   then
     # run
-    # NOTE: --enable-source-maps will mess things up when executing the raw output
-    node $nodeArgsR --stack-trace-limit=100 -r "@dbux/runtime" $outPath
+    # NOTE: --enable-source-maps can mess things up when executing the raw output
+    node $nodeArgsR --enable-source-maps --stack-trace-limit=100 -r "@dbux/runtime" $outPath
   fi
 fi
 
