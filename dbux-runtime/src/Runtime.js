@@ -487,8 +487,8 @@ export default class Runtime {
     this._executingStack = null;
     this._virtualRootContextId = 0;
 
-    // post-process all newly created runs
-    // TODO: for now, there should only ever be 1 run finished at a time
+    // TODO: change to post-process all `virtualRootContexts` of run
+
     const maxRunId = this.getMaxRunId();
     for (let runId = (this._lastSavedRun || 0) + 1; runId <= maxRunId; ++runId) {
       this.thread1.postRun(runId);

@@ -88,8 +88,9 @@ export class RuntimeThreads1 {
 
 
     // TODO: also log promise itself
-    // TODO: add an outward edge, if pointing to a promise that already has a threadId?
-    // TODO: in postAwait, add an inward edge from the `lastRootContextId` of the promise
+    // TODO: add edge
+    //    * if nested and promise already has `lastAsyncNode`
+    //      -> add an edge from `preEvent` `AsyncNode` to promise's `lastAsyncNode`
 
     this.lastAwaitByRealContext.set(parentContextId, { resumeContextId, rootId: currentRootId });
 
@@ -132,9 +133,25 @@ export class RuntimeThreads1 {
 
     this.logger.debug(`postAwait ${preEventRootId}->${postEventRootId}`);
 
+    // TODO:
+    //
+    // if is not first await:
+    //    * postEvent threadId = preEvent threadId
+    // else:
+    //    * 
+    //
+    // if has nested promise:
+    //    * if promise has `lastRootContextId` that is different from `current`:
+    //      -> add an edge from the `lastRootContextId` of the promise to `postEvent`
+
+    // if is inner-most first await:
+    //    -> add an edge from all "callerPromises" to postEvent `AsyncNode`
+    //
+
+    // TODO: what other cases are there? Do we need to add prevention checks against duplicate threads?
+
     const startThreadId = this.getRootContextThreadId(preEventRootId);
 
-    let edgeType = ''; // TODO change to enum
 
     if (this.getLastRootContextOfThread(startThreadId) === postEventRootId) {
       this.logger.warn(
@@ -152,7 +169,6 @@ export class RuntimeThreads1 {
         // NOTE: `threadId` might be null
         fromThreadId = this.getPromiseThreadId(awaitArgument);
         fromRootId = this.getLastRootContextOfThread(fromThreadId);
-        edgeType = fromThreadId && 'CHAIN';
       }
       else {
         // chain depends on caller semantics
@@ -175,17 +191,15 @@ export class RuntimeThreads1 {
           // look up root threadId + edgeType
           // NOTE: `threadId` might be null
           fromThreadId = this.getPromiseThreadId(callerPromise);
-          edgeType = this.getPromiseEdgeType(callerPromise);
         }
         else {
           fromThreadId = getRunThreadId(preEventRun);
-          edgeType = 'CHAIN';
         }
       }
 
       // add edge
       this.logger.debug(`[${edgeType === 'FORK' ? `${startThreadId}->` : ''}${fromThreadId}] ${edgeType} - Runs: ${fromRootId}->${postEventRun} (${isNested ? `nested` : ''})`);
-      this.addEdge(fromRootId, postEventRun, fromThreadId, edgeType);
+      this.addEdge(fromRootId, postEventRun, fromThreadId);
     }
   }
 
@@ -240,7 +254,7 @@ export class RuntimeThreads1 {
    * Called when a run is finished.
    * @param {number} runId 
    */
-  postRootContext(rootContextId) {
+  postRun(rootContextId) {
     const threadId = getRunThreadId(runId);
 
     runCollection.addRun(runId, threadId);
@@ -287,12 +301,13 @@ export class RuntimeThreads1 {
   }
 
   /**
-   * Make an edge between `fromRootId` and `toRootId`, with type `edgeType`
+   * Add an edge between `fromRootId` and `toRootId`
    * @param {number} fromRootId 
    * @param {number} toRootId 
-   * @param {string} edgeType should be either 'CHAIN' or 'FORK'
    */
-  addEdge(fromRootId, toRootId, fromThreadId, edgeType) {
+  addEdge(fromRootId, toRootId, fromThreadId) {
+    
+    // TODO: if fromNode already has outgoing toNode, of same `threadId` -> newThreadId
     const coerceToFork = !fromThreadId ||
       // this root already has an out-going chain
       // NOTE: this can happen if multiple promises where then-chained to the same promise.
@@ -410,8 +425,8 @@ export class RuntimeThreads1 {
   //   return undefined;
   // }
 
+  // TODO: should be plural. Also change name: 
   getAsyncCallerPromise(promise) {
-    // TODO: fix this
     const callerTrace = getAsyncPromiseCallerTrace(promise);
     const callerPromise = getTraceValue(callerTrace);
 
