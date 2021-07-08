@@ -22,15 +22,15 @@ let WrappedPromiseClass;
 
 export const OriginalPromiseClass = globalThis.Promise;
 
-let promiseId = 0;
+let lastPromiseId = 0;
 const promiseSet = new Set();
+
+function newPromiseId() {
+  return ++lastPromiseId;
+}
 
 export function isWrappedPromise(value) {
   return value instanceof WrappedPromiseClass;
-}
-
-export function getNewPromiseId() {
-  return ++promiseId;
 }
 
 export function ensurePromiseWrapped(promise) {
@@ -42,7 +42,7 @@ export function ensurePromiseWrapped(promise) {
     if (promiseSet.has(promise)) {
       if (promise.promiseId === undefined) {
         logError('Exist a promise in promise set but without promise id.');
-        promise.promiseId = getNewPromiseId();
+        promise.promiseId = newPromiseId();
       }
     } 
     else {
@@ -51,7 +51,7 @@ export function ensurePromiseWrapped(promise) {
         logError('Exist a promise with promise id but not in promise set.');
       }
       else {
-        promise.promiseId = getNewPromiseId();
+        promise.promiseId = newPromiseId();
       }
     }
   }
@@ -66,7 +66,7 @@ export default function wrapPromise(_runtimeMonitor) {
 
   WrappedPromiseClass = globalThis.Promise = class Promise extends OriginalPromiseClass {
     constructor(executor) {
-      let thisPromiseId = getNewPromiseId();
+      let thisPromiseId = newPromiseId();
 
       const wrapExecutor = (resolve, reject) => {
         const wrapResolve = (result) => {
@@ -123,7 +123,7 @@ export default function wrapPromise(_runtimeMonitor) {
   OriginalPromiseClass.prototype.then = function (successCb, failCb) {
     if (!promiseSet.has(this)) {
       promiseSet.add(this);
-      this.promiseId = getNewPromiseId();
+      this.promiseId = newPromiseId();
     }
 
     let childPromise = originalPromiseThen.call(this, (...args) => {
@@ -146,7 +146,7 @@ export default function wrapPromise(_runtimeMonitor) {
 
     promiseSet.add(childPromise);
     if (childPromise.promiseId === undefined) {
-      childPromise.promiseId = getNewPromiseId();
+      childPromise.promiseId = newPromiseId();
     }
 
     debug(`Original promise ${this.promiseId} has child ${childPromise.promiseId} (then)`);
@@ -163,7 +163,7 @@ export default function wrapPromise(_runtimeMonitor) {
   OriginalPromiseClass.prototype.finally = function (cb) {
     if (!promiseSet.has(this)) {
       promiseSet.add(this);
-      this.promiseId = getNewPromiseId();
+      this.promiseId = newPromiseId();
     }
 
     let childPromise = originalPromiseFinally.call(this, (...args) => {
@@ -178,7 +178,7 @@ export default function wrapPromise(_runtimeMonitor) {
 
     promiseSet.add(childPromise);
     if (childPromise.promiseId === undefined) {
-      childPromise.promiseId = getNewPromiseId();
+      childPromise.promiseId = newPromiseId();
     }
 
     debug(`Original promise ${this.promiseId} has child ${childPromise.promiseId} (finally)`);

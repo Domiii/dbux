@@ -1,10 +1,10 @@
 import HasValue from './HasValue';
 
-export default class Run extends HasValue {
+export default class RootContext extends HasValue {
   /**
    * @type {number}
    */
-  runId;
+  rootContextId;
   /**
    * @type {number}
    */

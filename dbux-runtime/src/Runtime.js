@@ -99,17 +99,23 @@ export default class Runtime {
     if (this._waitingStacks.has(contextId)) {
       // resume previous stack
       this.resumeWaitingStack(contextId);
+      return true;
     }
     else {
       const mysteriousStack = this._interruptedStacksOfUnknownCircumstances.find(stack => stack._stack.includes(contextId));
       if (mysteriousStack) {
         warn('found mysterious stack for contextId:', contextId);
         this._runStart(mysteriousStack);
+        return true;
       }
       else if (!this._executingStack) {
         this.newStack();
+        return true;
       }
     }
+
+    // keeps existing stack
+    return false;
   }
 
 
@@ -237,6 +243,10 @@ export default class Runtime {
     return this._currentRunId;
   }
 
+  getCurrentRootContextId() {
+    this._executingStack?.[0];
+  }
+
   getMaxRunId() {
     return this._maxRunId;
   }
@@ -264,13 +274,20 @@ export default class Runtime {
     return this._executingStack?.peek() || null;
   }
 
+  getVirtualRootContext() {
+    return this._virtualRootContextId;
+  }
+
   // ###########################################################################
   // Push + Pop basics
   // ###########################################################################
 
   beforePush(contextId) {
     this._ensureEmptyStackBarrier();
-    this._maybeResumeInterruptedStackOnPushEmpty(contextId);
+    const stackChanged = this._maybeResumeInterruptedStackOnPushEmpty(contextId);
+    if (stackChanged) {
+      this._virtualRootContextId = contextId;
+    }
 
     // TODO: when unconditionally overriding current context, traces receive incorrect `contextId`
     //  -> do we need to set peek to contextId? for what?
@@ -464,9 +481,10 @@ export default class Runtime {
 
   _runFinished() {
     this._executingStack = null;
+    this._virtualRootContextId = 0;
 
     // post-process all newly created runs
-    // TODO: we might have created multiple "virtual" runs during a "real" run
+    // TODO: for now, there should only ever be 1 run finished at a time
     const maxRunId = this.getMaxRunId();
     for (let runId = (this._lastSavedRun || 0) + 1; runId <= maxRunId; ++runId) {
       this.thread1.postRun(runId);

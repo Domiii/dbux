@@ -8,11 +8,11 @@ export default class AsyncEvent extends HasValue {
   /**
    * @type {number}
    */
-  fromRun;
+  fromRootContextId;
   /**
    * @type {number}
    */
-  toRun;
+  toRootContextId;
   /**
    * @type {number}
    */

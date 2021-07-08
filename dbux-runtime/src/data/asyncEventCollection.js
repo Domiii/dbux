@@ -6,14 +6,14 @@ class AsyncEventCollection extends Collection {
     super('asyncEvents');
   }
 
-  addEdge(fromRun, toRun, edgeType) {
+  addEdge(fromRootContextId, toRootContextId, edgeType) {
     const event = pools.asyncEvent.allocate();
 
     event.asyncEventId = this._all.length;
     this.push(event);
 
-    event.fromRun = fromRun;
-    event.toRun = toRun;
+    event.fromRootContextId = fromRootContextId;
+    event.toRootContextId = toRootContextId;
     event.edgeType = edgeType;
 
     this._send(event);

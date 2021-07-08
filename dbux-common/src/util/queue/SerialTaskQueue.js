@@ -1,7 +1,7 @@
 import isFunction from 'lodash/isFunction';
 import isString from 'lodash/isString';
 import { newLogger } from '../../log/logger';
-import { isPromise } from '../isPromise';
+import isPromise from '../isPromise';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('SerialTaskQueue');

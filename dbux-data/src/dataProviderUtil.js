@@ -84,7 +84,9 @@ export default {
     return dp.indexes.executionContexts.firstInRuns.get(1);
   },
 
-  /** @param {DataProvider} dp */
+  /**
+   * @param {DataProvider} dp 
+   */
   getRootContextsByRun(dp, runId) {
     return dp.indexes.executionContexts.rootsByRun.get(runId);
   },

@@ -368,8 +368,8 @@ export default class RuntimeMonitor {
 
       debug(awaitArgument, 'is awaited at context', awaitContextId);
 
-      const { parentContextId } = executionContextCollection.getById(resumeContextId);
-      const postEventContext = resumeContextId;
+      const { parentContextId: realContextId } = executionContextCollection.getById(resumeContextId);
+      const postEventContextId = resumeContextId;
 
       // get runId
       let postEventRunId = this._runtime.getCurrentRunId();
@@ -381,7 +381,7 @@ export default class RuntimeMonitor {
       }
 
       // register thread logic
-      this._runtime.thread1.postAwait(parentContextId, postEventContext, postEventRunId, awaitArgument);
+      this._runtime.thread1.postAwait(realContextId, postEventContextId, postEventRunId, awaitArgument);
     }
   }
 
