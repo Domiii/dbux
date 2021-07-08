@@ -328,8 +328,7 @@ export default class RuntimeMonitor {
     this._runtime.skipPopPostAwait();
 
     // await part
-    const currentRunId = this._runtime.getCurrentRunId();
-    this._runtime.thread1.preAwait(currentRunId, awaitArgument, resumeContextId, parentContextId);
+    this._runtime.thread1.preAwait(awaitArgument, resumeContextId, parentContextId);
 
     return awaitContextId;
   }
@@ -366,22 +365,13 @@ export default class RuntimeMonitor {
         this._runtime.thread2.promiseAwaited(awaitArgument, this._runtime.getCurrentRunId());
       }
 
-      debug(awaitArgument, 'is awaited at context', awaitContextId);
+      // debug(awaitArgument, 'is awaited at context', awaitContextId);
 
       const { parentContextId: realContextId } = executionContextCollection.getById(resumeContextId);
       const postEventContextId = resumeContextId;
 
-      // get runId
-      let postEventRunId = this._runtime.getCurrentRunId();
-      if (this._runtime.thread1.getRunThreadId(postEventRunId)) {
-        // special case: multiple nested postAwaits resolve during the same run
-        // NOTE: This is to handle the `parallel-nested-await` case.
-        // TODO: this has some significant repercussions -> handle all edge cases properly!
-        // postEventRunId = this._runtime.newRun();
-      }
-
       // register thread logic
-      this._runtime.thread1.postAwait(realContextId, postEventContextId, postEventRunId, awaitArgument);
+      this._runtime.thread1.postAwait(awaitContextId, realContextId, postEventContextId, awaitArgument);
     }
   }
 

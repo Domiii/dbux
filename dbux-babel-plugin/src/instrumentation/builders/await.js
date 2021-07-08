@@ -5,7 +5,10 @@ import { buildTraceId, buildTraceIdValue } from './traceId';
 
 
 export const buildWrapAwait = buildTraceCall(
-  '(%%wrapAwait%%(%%argumentVar%% = %%argument%%, %%awaitContextIdVar%% = %%preAwait%%(%%awaitContextId%%, %%tid%%, %%argumentVar%%)))',
+  `(%%wrapAwait%%(
+  %%argumentVar%% = %%argument%%,
+  %%awaitContextIdVar%% = %%preAwait%%(%%awaitContextId%%, %%tid%%, %%argumentVar%%)
+))`,
   function buildWrapAwait(state, traceCfg) {
     const { ids: { aliases: { preAwait, wrapAwait } } } = state;
     const {

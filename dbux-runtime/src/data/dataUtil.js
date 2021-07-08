@@ -5,6 +5,10 @@ import traceCollection from './traceCollection';
 import valueCollection from './valueCollection';
 
 
+// ###########################################################################
+// BCE + callees
+// ###########################################################################
+
 /**
  * Looks up the latest BCE on the stack.
  * Returns the `staticContextId` of `BCE` -> `callee` -> `FunctionDefinition`.
@@ -61,4 +65,12 @@ export function peekBCEMatchCallee(func) {
     return bceTrace;
   }
   return null;
+}
+
+// ###########################################################################
+// ExecutionContexts
+// ###########################################################################
+
+export function isFirstContextInParent(contextId) {
+  return executionContextCollection.isFirstContextInParent(contextId);
 }

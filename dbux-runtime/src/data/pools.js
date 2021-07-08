@@ -5,7 +5,7 @@ import DataNode from '@dbux/common/src/core/data/DataNode';
 import Loop from '@dbux/common/src/core/data/loops/Loop';
 import PromiseData from '@dbux/common/src/core/data/PromiseData';
 import AsyncEvent from '@dbux/common/src/core/data/AsyncEvent';
-import Run from '@dbux/common/src/core/data/Run';
+import AsyncNode from '@dbux/common/src/core/data/RootContext';
 
 /**
  * TODO: proper object pooling
@@ -56,9 +56,9 @@ const pools = {
     }
   },
 
-  run: {
+  asyncNodes: {
     allocate() {
-      return new Run();
+      return new AsyncNode();
     }
   }
 };

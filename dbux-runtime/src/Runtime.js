@@ -243,8 +243,19 @@ export default class Runtime {
     return this._currentRunId;
   }
 
-  getCurrentRootContextId() {
-    this._executingStack?.[0];
+  /**
+   * Same as `getVirtualRootContext()`, except when in async functions.
+   * In `async` functions, this returns the root context of the real context.
+   */
+  getCurrentRealRootContextId() {
+    return this._executingStack?.[0];
+  }
+
+  /**
+   * Returns the oldest ancestor context within the current run.
+   */
+  getCurrentVirtualRootContextId() {
+    return this._virtualRootContextId;
   }
 
   getMaxRunId() {
@@ -272,10 +283,6 @@ export default class Runtime {
 
   peekCurrentContextId() {
     return this._executingStack?.peek() || null;
-  }
-
-  getVirtualRootContext() {
-    return this._virtualRootContextId;
   }
 
   // ###########################################################################
@@ -397,10 +404,7 @@ export default class Runtime {
 
     this.push(awaitContextId, true);
     // this._markWaiting(awaitContextId);
-
     // NOTE: stack might keep popping before it actually pauses, so we don't unset executingStack quite yet.
-
-    this.thread1.registerAwait(parentContext, awaitArgument);
   }
 
   /**

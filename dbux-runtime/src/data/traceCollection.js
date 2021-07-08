@@ -7,8 +7,6 @@ import { locToString } from '../util/locUtil';
 import staticContextCollection from './staticContextCollection';
 import staticProgramContextCollection from './staticProgramContextCollection';
 
-const { log, debug, warn, error: logError } = newLogger('TraceCollection');
-
 class TraceCollection extends Collection {
   constructor() {
     super('traces');
