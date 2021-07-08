@@ -8,8 +8,6 @@ async function main() {
   console.log(2);
   await 0;
   console.log(3);
-  await 0;
-  console.log(4);
 }
 
 main();

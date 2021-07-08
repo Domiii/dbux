@@ -1,9 +1,14 @@
-// async function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+/**
+ * @file 
+ */
 
+/**
+ * 
+ */
 async function f(x) {
   console.log('f1', x);
   // await g();
-  await 0;
+  await 0;   // 2x FORK: [1->2], [1->3]
   // console.log('f2');
   // await g();
   console.log('f2', x);
@@ -28,6 +33,6 @@ async function f(x) {
   console.log('main1');
   f(1);
   console.log('main2');
-  await f(2);
+  f(2);
   console.log('main3');
 })();

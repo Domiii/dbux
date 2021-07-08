@@ -85,7 +85,7 @@ export default class Runtime {
     }
     this._emptyStackBarrier = null;
 
-    this.thread1.processFloatingPromises();
+    this.thread1.processAsyncPromises();
   }
 
   /**
@@ -464,6 +464,9 @@ export default class Runtime {
 
   _runFinished() {
     this._executingStack = null;
+
+    // post-process all newly created runs
+    // TODO: we might have created multiple "virtual" runs during a "real" run
     const maxRunId = this.getMaxRunId();
     for (let runId = (this._lastSavedRun || 0) + 1; runId <= maxRunId; ++runId) {
       this.thread1.postRun(runId);

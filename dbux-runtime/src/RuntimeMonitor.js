@@ -3,6 +3,7 @@ import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionConte
 import TraceType, { isBeforeCallExpression, isPopTrace } from '@dbux/common/src/core/constants/TraceType';
 // import SpecialIdentifierType from '@dbux/common/src/core/constants/SpecialIdentifierType';
 import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
+import isPromise from '@dbux/common/src/util/isPromise';
 import staticProgramContextCollection from './data/staticProgramContextCollection';
 import executionContextCollection from './data/executionContextCollection';
 import staticContextCollection from './data/staticContextCollection';
@@ -10,7 +11,7 @@ import traceCollection from './data/traceCollection';
 import staticTraceCollection from './data/staticTraceCollection';
 import Runtime from './Runtime';
 import ProgramMonitor from './ProgramMonitor';
-import { ensurePromiseWrapped, isPromise } from './wrapPromise';
+import { ensurePromiseWrapped } from './wrapPromise';
 import dataNodeCollection, { ShallowValueRefMeta } from './data/dataNodeCollection';
 import valueCollection from './data/valueCollection';
 import registerBuiltins from './builtIns/index';
@@ -374,7 +375,9 @@ export default class RuntimeMonitor {
       let postEventRunId = this._runtime.getCurrentRunId();
       if (this._runtime.thread1.getRunThreadId(postEventRunId)) {
         // special case: multiple nested postAwaits resolve during the same run
-        postEventRunId = this._runtime.newRun();
+        // NOTE: This is to handle the `parallel-nested-await` case.
+        // TODO: this has some significant repercussions -> handle all edge cases properly!
+        // postEventRunId = this._runtime.newRun();
       }
 
       // register thread logic

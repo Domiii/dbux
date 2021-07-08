@@ -1,4 +1,4 @@
-
+// import isPromise from '@dbux/common/src/util/isPromise';
 import { newLogger } from '@dbux/common/src/log/logger';
 
 // eslint-disable-next-line no-unused-vars
@@ -27,10 +27,6 @@ const promiseSet = new Set();
 
 export function isWrappedPromise(value) {
   return value instanceof WrappedPromiseClass;
-}
-
-export function isPromise(value) {
-  return value instanceof OriginalPromiseClass;
 }
 
 export function getNewPromiseId() {
