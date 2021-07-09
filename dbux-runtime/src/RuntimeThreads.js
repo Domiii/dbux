@@ -77,16 +77,18 @@ export class RuntimeThreads1 {
       return;
     }
 
-    // register previously unseen promise
-    this.recordFloatingPromise(promise, currentRootId);
-
     const lastAwaitData = this.lastAwaitByRealContext.get(calledContextId);
     if (lastAwaitData?.isFirstAwait) { // NOTE: in this case, `isFirstAwait` should always be true, if exists
       // -> the first time this promise has been seen, and it is the return value of `calledContextId`
       // -> this should be the caller of `calledContextId`
 
       // TODO: establish async caller chain
+      lastAwaitData.returnPromise = promise;
     }
+
+    // register previously unseen promise
+    this.recordFloatingPromise(promise, currentRootId, lastAwaitData && calledContextId);
+
     // if (calledFirstAwaitPromise) {
     //   // const key = { runId, contextId, traceId };
     //   // this.runContextCallTracePromiseMap.set(key, promise);
@@ -105,7 +107,7 @@ export class RuntimeThreads1 {
     // TODO: add edge
     //    * if nested and promise already has `lastAsyncNode`
     //      -> add an edge from `preEvent` `AsyncNode` to promise's `lastAsyncNode`
-    // const isFirstAwait = isFirstContextInParent(resumeContextId);
+    const isFirstAwait = isFirstContextInParent(resumeContextId);
 
     this.lastAwaitByRealContext.set(parentContextId, {
       resumeContextId,
@@ -118,6 +120,15 @@ export class RuntimeThreads1 {
       return;
     }
 
+    const asyncFunctionContextId = getPromiseOwnAsyncFunctionContextId(awaitArgument);
+    const nestedAsyncData = this.lastAwaitByRealContext.get(asyncFunctionContextId);
+    if (!nestedAsyncData) {
+      this.logger.warn(`nestedAsyncData not found for parentContextId=${parentContextId}`);
+      return;
+    }
+
+    nestedAsyncData.firstAwaitingAsyncFunctionContextId = parentContextId;
+
     // this.logger.debug('this promise', promise, 'first await', isFirstAwait, 'is root', this.isRootContext(parentContextId));
     // if (!isFirstAwait || isRootContext(parentContextId)) {
     //   const threadId = this.getRootThreadId(currentRootId);
@@ -125,8 +136,8 @@ export class RuntimeThreads1 {
     // }
   }
 
-  recordFloatingPromise(promise, currentRootId) {
-    setPromiseData(promise, setPromiseData(promise, { rootId: currentRootId }));
+  recordFloatingPromise(promise, currentRootId, asyncFunctionContextId) {
+    setPromiseData(promise, setPromiseData(promise, { rootId: currentRootId, asyncFunctionContextId }));
     this.floatingPromises.push(promise);
   }
 
@@ -138,7 +149,8 @@ export class RuntimeThreads1 {
   postAwait(awaitContextId, realContextId, postEventContextId, awaitArgument) {
     const {
       resumeContextId: preEventContextId,
-      rootId: preEventRootId
+      rootId: preEventRootId,
+      returnPromise
     } = this.lastAwaitByRealContext.get(realContextId);
 
     const postEventRootId = this.getCurrentVirtualRootId();
@@ -167,13 +179,12 @@ export class RuntimeThreads1 {
 
     const isFirstAwait = isFirstContextInParent(preEventContextId);
     if (isFirstAwait) {
-      // -> first await -> determine `fromThreadId` from caller
-      const callerContextId = executionContextCollection.getById(preEventContextId).contextId;
-      const callerPromise = this.getAsyncCallerPromise(callerContextId); // get return value
-
-      if (this.getAsyncCallerPromiseChainedToRoot(callerPromise)) {
+      // // -> first await -> determine `fromThreadId` from caller
+      // const callerContextId = executionContextCollection.getById(preEventContextId).contextId;
+      // const callerPromise = this.getAsyncCallerPromise(callerContextId); // get return value
+      if (this.getAsyncFunctionChainedToRoot(realContextId)) {
         // caller chained to root -> CHAIN
-        fromThreadId = ;
+        fromThreadId = TODO;
       }
       else {
         // caller chained to root -> FORK
@@ -188,7 +199,7 @@ export class RuntimeThreads1 {
     const isNested = isPromise(awaitArgument);
     if (isNested) {
       // nested promise
-      fromThreadId = getOwnPromiseThreadId(awaitArgument);
+      fromThreadId = getPromiseOwnThreadId(awaitArgument);
       fromRootId = this.getLastRootContextOfThread(fromThreadId);
       toThreadId = preEventThreadId;
     }
@@ -229,9 +240,9 @@ export class RuntimeThreads1 {
 
     //   console.warn(`floatingPromise`, promise, this.getAsyncCallerPromise(promise));
 
-    //   if (getOwnPromiseThreadId(promise)) {
-    //     // this.logger.debug('get own thread id', getOwnPromiseThreadId(promise));
-    //     return getOwnPromiseThreadId(promise);
+    //   if (getPromiseOwnThreadId(promise)) {
+    //     // this.logger.debug('get own thread id', getPromiseOwnThreadId(promise));
+    //     return getPromiseOwnThreadId(promise);
     //   }
     //   const callerPromise = this.getAsyncCallerPromise(promise);
 
@@ -243,7 +254,7 @@ export class RuntimeThreads1 {
     //     this.setupPromise(promise, rootId, 0, false);
     //   }
     //   // this.logger.debug('promise become', promise);
-    //   return getOwnPromiseThreadId(promise);
+    //   return getPromiseOwnThreadId(promise);
     // };
     // for (let promise of this.floatingPromises) {
     //   maintainPromiseThreadIdDfs(promise);
@@ -254,8 +265,45 @@ export class RuntimeThreads1 {
 
 
   // ###########################################################################
-  // runs
+  // bookkeeping utilities
   // ###########################################################################
+
+  /**
+   * Traverse nested awaits, to find out, if outer-most await is in root.
+   */
+  getAsyncFunctionChainedToRoot(realContextId) {
+    const asyncData = this.lastAwaitByRealContext.get(realContextId);
+
+    const {
+      // asyncFunctionContextId,
+      // threadId,
+      // returnPromise,
+      firstAwaitingAsyncFunctionContextId
+    } = asyncData; // NOTE: asyncData should always exist
+
+    if (!firstAwaitingAsyncFunctionContextId) {
+      return isRootContext(realContextId);
+    }
+    else {
+      // keep going up
+      return this.getAsyncFunctionChainedToRoot(firstAwaitingAsyncFunctionContextId);
+    }
+
+    // const parentContextId = getPromiseOwnAsyncFunctionContextId(returnPromise);
+
+
+    // const chainedToRoot = getPromiseOwnChainedToRoot(promise);
+    // if (chainedToRoot !== undefined) {
+    //   return chainedToRoot;
+    // }
+
+    // const callerPromise = this.getAsyncCallerPromise(promise);
+    // if (callerPromise) {
+    //   return this.getAsyncCallerPromiseChainedToRoot(callerPromise);
+    // }
+
+    // return false;
+  }
 
   /**
    * Used for debugging purposes.
@@ -394,58 +442,6 @@ export class RuntimeThreads1 {
       enumerable: false,
       configurable: false
     });
-  }
-
-  // getAsyncCallerPromiseEdgeType(promise) {
-  //   const threadId = getOwnPromiseEdgeType(promise);
-  //   if (threadId) {
-  //     return threadId;
-  //   }
-
-  //   const callerPromise = this.getAsyncCallerPromise(promise);
-  //   if (callerPromise) {
-  //     return this.getAsyncCallerPromiseEdgeType(callerPromise);
-  //   }
-
-  //   return 0;
-  // }
-
-  getAsyncCallerPromiseChainedToRoot(promise) {
-    const chainedToRoot = getOwnPromiseChainedToRoot(promise);
-    if (chainedToRoot !== undefined) {
-      return chainedToRoot;
-    }
-
-    const callerPromise = this.getAsyncCallerPromise(promise);
-    if (callerPromise) {
-      return this.getAsyncCallerPromiseChainedToRoot(callerPromise);
-    }
-
-    return false;
-  }
-
-  // getTraceValue(trace) {
-  //   if (trace.value) {
-  //     return trace.value;
-  //   }
-
-  //   if (trace.valueId) {
-  //     return valueCollection.getById(trace.valueId).value;
-  //   }
-
-  //   return undefined;
-  // }
-
-  // TODO: fix this/get rid of it
-  getAsyncCallerPromise(promise) {
-    const callerTrace = getAsyncPromiseCallerTrace(promise);
-    const callerPromise = getTraceValue(callerTrace);
-
-    if (getPromiseRunId(callerPromise) === getPromiseRunId(promise)) {
-      return callerPromise;
-    }
-
-    throw new Error('Something shouldn\'t happen: we are only looking this up in case of a first await');
   }
 
   getContextFirstAwaitPromise(contextId) {
@@ -589,16 +585,20 @@ function getPromiseRootId(promise) {
   return promise._dbux_?.rootId;
 }
 
-function getOwnPromiseThreadId(promise) {
+function getPromiseOwnThreadId(promise) {
   return promise?._dbux_?.threadId;
 }
 
-function getOwnPromiseEdgeType(promise) {
+function getPromiseOwnEdgeType(promise) {
   return promise?._dbux_?.edgeType;
 }
 
-function getOwnPromiseChainedToRoot(promise) {
+function getPromiseOwnChainedToRoot(promise) {
   return promise?._dbux_?.chainedToRoot;
+}
+
+function getPromiseOwnAsyncFunctionContextId(promise) {
+  return promise?._dbux_?.asyncFunctionContextId;
 }
 
 function isNewPromise(promise) {
