@@ -74,3 +74,7 @@ export function peekBCEMatchCallee(func) {
 export function isFirstContextInParent(contextId) {
   return executionContextCollection.isFirstContextInParent(contextId);
 }
+
+export function isRootContext(contextId) {
+  return !executionContextCollection.getById(contextId).parentContextId;
+}

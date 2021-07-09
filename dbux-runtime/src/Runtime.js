@@ -489,12 +489,8 @@ export default class Runtime {
 
     // TODO: change to post-process all `virtualRootContexts` of run
 
-    const maxRunId = this.getMaxRunId();
-    for (let runId = (this._lastSavedRun || 0) + 1; runId <= maxRunId; ++runId) {
-      this.thread1.postRun(runId);
-      this.thread2.postRun();
-    }
-    this._lastSavedRun = maxRunId;
+    this.thread1.postRun(this._virtualRootContextIdsThisRun);
+    this.thread2.postRun();
     // console.warn('[RunEnd]', this._currentRootId, this.getLingeringStackCount(), new Error().stack);
     // console.timeEnd('[RunEnd] ' + this._currentRunId);
   }
