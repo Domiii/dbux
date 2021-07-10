@@ -1,5 +1,3 @@
-import { newLogger } from '@dbux/common/src/log/logger';
-
 import Collection from './Collection';
 import pools from './pools';
 

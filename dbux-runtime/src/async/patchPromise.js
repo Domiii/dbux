@@ -2,7 +2,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import isThenable from '@dbux/common/src/util/isThenable';
 import { isFunction } from 'lodash';
-import { monkeyPatchMethodRaw } from '../util/monkeyPatchUtil';
+import { isMonkeyPatched, monkeyPatchFunctionRaw, monkeyPatchMethodRaw } from '../util/monkeyPatchUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError } = newLogger('patchPromise');
@@ -24,9 +24,33 @@ let RuntimeMonitorInstance;
 export const NativePromiseClass = (async function () { })().constructor/* globalThis.Promise */;
 export const OriginalPromiseClass = Promise;
 
-// export function isWrappedPromise(value) {
-//   return value instanceof WrappedPromiseClass;
-// }
+
+// ###########################################################################
+// runtime events
+// ###########################################################################
+
+/**
+ * Event: New promise has been scheduled.
+ */
+function onThen(preEventPromise, postEventPromise) {
+  // take care of new promise
+  maybePatchPromise(postEventPromise);
+
+  // TODO
+
+  debug(`promise ${getPromiseId(preEventPromise)} has child ${getPromiseId(postEventPromise)} (then)`);
+}
+
+/**
+ * Event: New promise has been settled.
+ */
+function onThenCallback() {
+  // TODO
+}
+
+// ###########################################################################
+// patchPromise
+// ###########################################################################
 
 export function maybePatchPromise(value) {
   if (PromiseInstrumentationDisabled) {
@@ -38,26 +62,94 @@ export function maybePatchPromise(value) {
   }
 
   patchThenable(value);
-  // if (value instanceof NativePromiseClass || value instanceof OriginalPromiseClass) {
-  //   // TODO?
-  // }
 }
-
-// ###########################################################################
-// patchPromise
-// ###########################################################################
 
 export function patchThenable(promise) {
   if (!hasRecordedPromiseData(promise)) {
     recordPromiseInit(promise);
   }
 
+  if (isMonkeyPatched(promise.then)) {
+    return;
+  }
 
+  const proto = promise.constructor?.prototype;
+  if (proto && promise.then === proto.then) {
+    // patch prototype
+    patchPromiseMethods(proto);
+  }
+  else {
+    // patch promise itself
+    patchPromiseMethods(promise);
+  }
 }
 
 // ###########################################################################
-// patchPromiseClass
+// patchThen*
 // ###########################################################################
+
+function patchThenCallback(cb) {
+  if (!isFunction(cb)) {
+    return cb;
+  }
+
+  const originalCb = cb;
+  return function patchedPromiseCb(previousResult) {
+    const result = originalCb(previousResult);
+
+    onThenCallback(previousResult, result);
+
+    return result;
+  };
+}
+
+function patchThen(holder) {
+  monkeyPatchFunctionRaw(holder, 'then',
+    (preEventPromise, [successCb, failCb], originalThen) => {
+      maybePatchPromise(preEventPromise);
+      successCb = patchThenCallback(successCb);
+      failCb = patchThenCallback(failCb);
+
+      const postEventPromise = originalThen.call(preEventPromise, successCb, failCb);
+      onThen(preEventPromise, postEventPromise);
+      return postEventPromise;
+    }
+  );
+}
+
+function patchFinally(holder) {
+  monkeyPatchFunctionRaw(holder, 'finally',
+    (preEventPromise, [cb], originalFinally) => {
+      maybePatchPromise(preEventPromise);
+      cb = patchThenCallback(cb);
+
+      const postEventPromise = originalFinally.call(preEventPromise, cb);
+      onThen(preEventPromise, postEventPromise);
+      return postEventPromise;
+    }
+  );
+}
+
+function patchCatch(holder) {
+  /**
+   * Same as `then(undefined, failCb)`
+   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/catch
+   */
+  holder.catch = function (failCb) {
+    return this.then(undefined, failCb);
+  };
+}
+
+
+// ###########################################################################
+// patchPromiseClass + prototype
+// ###########################################################################
+
+function patchPromiseMethods(holder) {
+  patchThen(holder);
+  patchCatch(holder);
+  patchFinally(holder);
+}
 
 function patchPromiseClass(BasePromiseClass) {
   class PatchedPromise extends BasePromiseClass {
@@ -81,66 +173,7 @@ function patchPromiseClass(BasePromiseClass) {
     }
   }
 
-  monkeyPatchMethodRaw(BasePromiseClass, 'then',
-    (arr, [successCb, failCb], originalThen) => {
-      maybePatchPromise(this);
-
-      // patch `then`
-      if (isFunction(successCb)) {
-        successCb = function patchedSuccessCb(...args) {
-          const r = successCb(...args);
-
-          return r;
-        };
-      }
-
-      if (isFunction(failCb)) {
-        failCb = function patchedFailCb(...args) {
-          const r = failCb(...args);
-          return r;
-        };
-      }
-
-      // actual then call
-      let childPromise = originalThen.call(this, successCb, failCb);
-
-      // take care of new promise
-      maybePatchPromise(childPromise);
-
-      debug(`Original promise ${this.promiseId} has child ${childPromise.promiseId} (then)`);
-
-      return childPromise;
-    }
-  );
-
-  /**
-   * Same as `then(undefined, failCb)`
-   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/catch
-   */
-  BasePromiseClass.prototype.catch = function (failCb) {
-    return this.then(undefined, failCb);
-  };
-
-  const originalPromiseFinally = BasePromiseClass.prototype.finally;
-  BasePromiseClass.prototype.finally = function (cb) {
-    maybePatchPromise(this);
-
-    let childPromise = originalPromiseFinally.call(this, (...args) => {
-      if (typeof cb !== 'function') {
-        return cb;
-      }
-
-      const r = cb(...args);
-
-      return r;
-    });
-
-    maybePatchPromise(childPromise);
-
-    debug(`Original promise ${this.promiseId} has child ${childPromise.promiseId} (finally)`);
-
-    return childPromise;
-  };
+  patchPromiseMethods(BasePromiseClass.prototype);
 
   return PatchedPromise;
 }
@@ -156,8 +189,13 @@ export default function initPatchPromise(_runtimeMonitorInstance) {
     return;
   }
 
-  patchPromiseClass(NativePromiseClass);
+  // NOTE: `OriginalPromiseClass` might not be native Promise class.
   globalThis.Promise = patchPromiseClass(OriginalPromiseClass);
+
+  if (OriginalPromiseClass !== NativePromiseClass) {
+    // NOTE: NativePromiseClass ctor is unaffected from this call
+    patchPromiseClass(NativePromiseClass);
+  }
 }
 
 

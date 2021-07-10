@@ -1,3 +1,4 @@
+import { logError, logWarn } from '@dbux/common/src/log/logger';
 
 const monkeyPatchedFunctionSet = new Set();
 
@@ -8,7 +9,12 @@ export function isMonkeyPatched(f) {
 function _monkeyPatchFunction(holder, name, patchedFunction) {
   const originalFunction = holder[name];
   if (!(originalFunction instanceof Function)) {
-    throw new Error(`Monkey-patching failed: ${holder}.${name} is not a function: ${originalFunction}`);
+    throw new Error(`Monkey-patching failed - ${holder}.${name} is not a function: ${originalFunction}`);
+  }
+  if (isMonkeyPatched(originalFunction)) {
+    // don't patch already patched function
+    logError(`Monkey-patching failed - ${holder}.${name} is already patched.`);
+    return;
   }
   holder[name] = patchedFunction;
   monkeyPatchedFunctionSet.add(patchedFunction);
