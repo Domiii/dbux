@@ -1,4 +1,4 @@
-import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
+import ExecutionContextType, { isRealContextType } from '@dbux/common/src/core/constants/ExecutionContextType';
 import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
 import staticContextCollection from './staticContextCollection';
 import Collection from './Collection';
@@ -38,8 +38,15 @@ export class ExecutionContextCollection extends Collection {
     return programId;
   }
 
-  getLast() {
-    return this._all[this._all.length - 1];
+  getLastRealContext() {
+    let lastContext = this.getLast();
+    if (!lastContext) {
+      return null;
+    }
+    if (!isRealContextType(lastContext.contextType)) {
+      lastContext = this.getById(lastContext.parentContextId);
+    }
+    return lastContext;
   }
 
   // ###########################################################################

@@ -3,7 +3,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import Stack from './Stack';
 import traceCollection from './data/traceCollection';
 import scheduleNextPossibleRun from './scheduleNextPossibleRun';
-import { RuntimeThreads1, RuntimeThreads2 } from './RuntimeThreads';
+import { RuntimeThreads1 } from './RuntimeThreads';
 
 // import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
 // import executionContextCollection from './data/executionContextCollection';
@@ -64,7 +64,7 @@ export default class Runtime {
 
   // _runtimeThreadStack = new RuntimeThreadsStack();
   thread1 = new RuntimeThreads1(this);
-  thread2 = new RuntimeThreads2();
+  // thread2 = new RuntimeThreads2();
 
   // ###########################################################################
   // Stack management
@@ -85,7 +85,7 @@ export default class Runtime {
     }
     this._emptyStackBarrier = null;
 
-    this.thread1.processAsyncPromises();
+    // this.thread1.processAsyncPromises();
   }
 
   /**
@@ -289,12 +289,9 @@ export default class Runtime {
   // Push + Pop basics
   // ###########################################################################
 
-  beforePush(contextId) {
+  beforePush(/* contextId */) {
     this._ensureEmptyStackBarrier();
-    const stackChanged = this._maybeResumeInterruptedStackOnPushEmpty(contextId);
-    if (stackChanged) {
-      this._virtualRootContextId = contextId;
-    }
+    this._maybeResumeInterruptedStackOnPushEmpty(/* contextId */);
 
     // TODO: when unconditionally overriding current context, traces receive incorrect `contextId`
     //  -> do we need to set peek to contextId? for what?
@@ -490,7 +487,7 @@ export default class Runtime {
     // TODO: change to post-process all `virtualRootContexts` of run
 
     this.thread1.postRun(this._virtualRootContextIdsThisRun);
-    this.thread2.postRun();
+    // this.thread2.postRun();
     // console.warn('[RunEnd]', this._currentRootId, this.getLingeringStackCount(), new Error().stack);
     // console.timeEnd('[RunEnd] ' + this._currentRunId);
   }

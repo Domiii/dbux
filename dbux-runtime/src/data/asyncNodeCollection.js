@@ -9,8 +9,9 @@ class AsyncNodeCollection extends Collection {
   }
 
   addAsyncNode(rootContextId, threadId) {
-    const asyncNode = pools.run.allocate();
+    const asyncNode = pools.asyncNodes.allocate();
 
+    asyncNode.asyncNodeId = this._all.length;
     this.push(asyncNode);
 
     asyncNode.threadId = threadId;

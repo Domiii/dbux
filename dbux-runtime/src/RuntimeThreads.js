@@ -1,13 +1,13 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import isPromise from '@dbux/common/src/util/isPromise';
-import asyncEventCollection from './data/asyncEventCollection';
-import executionContextCollection from './data/executionContextCollection';
-import asyncNodeCollection from './data/asyncNodeCollection';
-import traceCollection from './data/traceCollection';
-import valueCollection from './data/valueCollection';
-import { isFirstContextInParent, isRootContext } from './data/dataUtil';
 import { some } from 'lodash';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import asyncEventCollection from './data/asyncEventCollection';
+import asyncNodeCollection from './data/asyncNodeCollection';
+// import executionContextCollection from './data/executionContextCollection';
+// import traceCollection from './data/traceCollection';
+// import valueCollection from './data/valueCollection';
+import { getBCEContext, isFirstContextInParent, isRootContext, peekBCECheckCallee, peekContextCheckCallee } from './data/dataUtil';
 
 /** @typedef { import("./Runtime").default } Runtime */
 
@@ -54,8 +54,8 @@ export class RuntimeThreads1 {
   // getCurrentRunId() {
   //   return this._runtime.getCurrentRunId();
   // }
-  getCurrentVirtualRootId() {
-    return this._runtime.getCurrentVirtualRootId();
+  getCurrentVirtualRootContextId() {
+    return this._runtime.getCurrentVirtualRootContextId();
   }
 
   // ###########################################################################
@@ -65,20 +65,29 @@ export class RuntimeThreads1 {
   /**
    * Track any created promise (that is the return value of a function or ctor call).
    */
-  traceCallPromiseResult(contextId, calledContextId, trace, promise) {
-    const currentRootId = this.getCurrentVirtualRootId();
+  traceCallPromiseResult(contextId, trace, promise) {
+    const currentRootId = this.getCurrentVirtualRootContextId();
     if (!isNewPromise(promise)) {
       // this.logger.warn('have seen promise before', currentRootId, promise._dbux_);
       return;
     }
 
-    const lastAwaitData = this.lastAwaitByRealContext.get(calledContextId);
-    if (lastAwaitData?.isFirstAwait) { // NOTE: in this case, `isFirstAwait` should always be true, if exists
-      // -> the first time this promise has been seen, and it is the return value of `calledContextId`
-      // -> this should be the caller of `calledContextId`
+    const callId = trace.resultCallId;
+    const calledContext = getBCEContext(callId);
 
-      // TODO: establish async caller chain
-      lastAwaitData.returnPromise = promise;
+    let calledContextId;
+    let lastAwaitData;
+
+    if (calledContext) {
+      calledContextId = calledContext?.contextId;
+      lastAwaitData = this.lastAwaitByRealContext.get(calledContextId);
+      if (lastAwaitData?.isFirstAwait) { // NOTE: in this case, `isFirstAwait` should always be true, if exists
+        // -> the first time this promise has been seen, and it is the return value of `calledContextId`
+        // -> this should be the caller of `calledContextId`
+
+        // TODO: establish async caller chain
+        lastAwaitData.returnPromise = promise;
+      }
     }
 
     // register previously unseen promise
@@ -92,7 +101,7 @@ export class RuntimeThreads1 {
   }
 
   preAwait(awaitArgument, resumeContextId, parentContextId) {
-    const currentRootId = this.getCurrentVirtualRootId();
+    const currentRootId = this.getCurrentVirtualRootContextId();
     // this.logger.debug('pre await', awaitArgument);
 
     // this.floatingPromises.delete(awaitArgument);
@@ -132,7 +141,7 @@ export class RuntimeThreads1 {
   }
 
   recordFloatingPromise(promise, currentRootId, asyncFunctionContextId) {
-    setPromiseData(promise, { 
+    setPromiseData(promise, {
       rootId: currentRootId,
       lastRootId: currentRootId,
       asyncFunctionContextId
@@ -152,7 +161,7 @@ export class RuntimeThreads1 {
       returnPromise
     } = this.lastAwaitByRealContext.get(realContextId);
 
-    const postEventRootId = this.getCurrentVirtualRootId();
+    const postEventRootId = this.getCurrentVirtualRootContextId();
     const preEventThreadId = this.getRootThreadId(preEventRootId);
 
     let fromRootId;
@@ -207,16 +216,22 @@ export class RuntimeThreads1 {
     }
 
     // add edge
-    // eslint-disable-next-line max-len
-    this.logger.debug(`postAwait [${fromThreadId !== toThreadId ? `${preEventThreadId}->` : ''}${toThreadId}] Roots: ${fromRootId}->${postEventRootId} (${isNested ? `nested` : ''})`);
-
     const actualToThreadId = this.addEdge(fromRootId, postEventRootId, fromThreadId, toThreadId);
 
+    // eslint-disable-next-line max-len
+    this.logger.debug(`postAwait [${fromThreadId !== actualToThreadId ? `${preEventThreadId}->` : ''}${actualToThreadId}] Roots: ${fromRootId}->${postEventRootId} (${isNested ? `nested` : ''})`);
+
     // store `actualToThreadId` and `postEventRootId` with `returnPromise`
-    setPromiseData(returnPromise, {
-      threadId: actualToThreadId,
-      lastRootId: postEventRootId
-    });
+    if (returnPromise) {
+      // NOTE: `returnPromise` is also set for "first await".
+      //   this.logger.warn(` "returnPromise" not found in "postAwait":`, realContextId, postEventContextId);
+      // }
+      // else {
+      setPromiseData(returnPromise, {
+        threadId: actualToThreadId,
+        lastRootId: postEventRootId
+      });
+    }
   }
 
   /**
@@ -368,7 +383,7 @@ export class RuntimeThreads1 {
     // this.logger.debug("assign run new thread id", runId);
     ++this._maxThreadId;
     // eslint-disable-next-line no-console
-    console.trace('newThreadId', this._maxThreadId);
+    this.logger.debug('[newThreadId]', this._maxThreadId);
     return this._maxThreadId;
   }
 
@@ -378,10 +393,8 @@ export class RuntimeThreads1 {
    * @param {number} toRootId 
    */
   addEdge(fromRootId, toRootId, fromThreadId, toThreadId) {
-    // TODO: fix this -> asyncNodeCollection.getById does not take rootId
-    // TODO: what to do with `fromThreadId` and `toThreadId`?
-    // const previousFromThreadId = asyncNodeCollection.getById(fromRootId)?.threadId;
-    // const previousToThreadId = asyncNodeCollection.getById(toRootId)?.threadId;
+    const previousFromThreadId = this.getRootThreadId(fromRootId);
+    const previousToThreadId = this.getRootThreadId(toRootId);
 
     if (!previousFromThreadId) {
       this.logger.warn(`Tried to add edge from root ${fromRootId} but it did not have a threadId`);
@@ -394,13 +407,12 @@ export class RuntimeThreads1 {
 
     const isFork = !toThreadId ||
       // check if this is CHAIN and fromRoot already has an out-going CHAIN
-      // NOTE: this can happen, e.g. when multiple promises where then-chained to the same promise.
+      // NOTE: this can happen, e.g. when the same promise's `then` was called multiple times.
       (fromThreadId === toThreadId && this.hasChainFrom(fromRootId));
 
     if (isFork) {
       // fork!
       toThreadId = this.newThreadId();
-      // warn("Trying to add CHAIN to an run already had outgoing CHAIN edge");
     }
 
     if (!previousToThreadId) {
@@ -578,14 +590,6 @@ function getPromiseOwnThreadId(promise) {
   return promise?._dbux_?.threadId;
 }
 
-function getPromiseOwnEdgeType(promise) {
-  return promise?._dbux_?.edgeType;
-}
-
-function getPromiseOwnChainedToRoot(promise) {
-  return promise?._dbux_?.chainedToRoot;
-}
-
 function getPromiseOwnAsyncFunctionContextId(promise) {
   return promise?._dbux_?.asyncFunctionContextId;
 }
@@ -594,10 +598,10 @@ function isNewPromise(promise) {
   return !getPromiseRootId(promise);
 }
 
-function isPromiseOfRoot(promise, rootId) {
-  const promiseRootId = getPromiseRootId(promise);
-  return promiseRootId === rootId;
-}
+// function isPromiseOfRoot(promise, rootId) {
+//   const promiseRootId = getPromiseRootId(promise);
+//   return promiseRootId === rootId;
+// }
 
 
 // // TODO: fix this entire class

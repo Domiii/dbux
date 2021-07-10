@@ -63,31 +63,31 @@ export class CallStackNodeProvider {
     this._allNodes = [...callStack, node, ...newNodes];
   }
   
-  _getCallStackOfTrace(trace) {
-    /**
-     * @type {CallStackNode}
-     */
-    let currentNode;
-    /**
-     * @type {CallStackNode}
-     */
-    let nextNode;
-    let callStack = [];
-    let lastRunId = null;
-    nextNode = this._createNodeByTrace(trace);
+  // _getCallStackOfTrace(trace) {
+  //   /**
+  //    * @type {CallStackNode}
+  //    */
+  //   let currentNode;
+  //   /**
+  //    * @type {CallStackNode}
+  //    */
+  //   let nextNode;
+  //   let callStack = [];
+  //   let lastRunId = null;
+  //   nextNode = this._createNodeByTrace(trace);
     
-    while (nextNode) {
-      currentNode = nextNode;
-      if (lastRunId && nextNode.trace.runId !== lastRunId) {
-        callStack.push(BarrierNode);
-      }
-      lastRunId = nextNode.trace.runId;
-      callStack.push(currentNode);
+  //   while (nextNode) {
+  //     currentNode = nextNode;
+  //     if (lastRunId && nextNode.trace.runId !== lastRunId) {
+  //       callStack.push(BarrierNode);
+  //     }
+  //     lastRunId = nextNode.trace.runId;
+  //     callStack.push(currentNode);
       
-      nextNode = this._getNextNode(currentNode);
-    }
-    return callStack;
-  }
+  //     nextNode = this._getNextNode(currentNode);
+  //   }
+  //   return callStack;
+  // }
   
   _getNextNode(node) {
     const { trace, searchMode } = node;

@@ -1,3 +1,4 @@
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import dataNodeCollection from './dataNodeCollection';
 import executionContextCollection from './executionContextCollection';
 import staticTraceCollection from './staticTraceCollection';
@@ -27,7 +28,7 @@ export function getFunctionStaticContextId(functionRef) {
 
 export function getBCECalleeStaticContextId(bceTrace) {
   // lookup callee
-  const { calleeTid } = bceTrace;
+  const { calleeTid } = bceTrace?.data || EmptyObject;
   const calleeTrace = calleeTid && traceCollection.getById(calleeTid);
   const calleeNode = calleeTrace && dataNodeCollection.getById(calleeTrace.nodeId);
   
@@ -38,16 +39,28 @@ export function getBCECalleeStaticContextId(bceTrace) {
 
 /**
  * WARNING: Does not work with monkey-patched runtime functions.
- * @returns {*} top bceTrace on stack, if its callee's `staticContextId` matches that of the stack top.
+ * @returns {*} top bceTrace on stack, if its current function's callee's `staticContextId` matches that of the stack top.
  */
 export function peekBCECheckCallee() {
   const bceTrace = traceCollection.getLast();
   const calleeStaticContextId = bceTrace && getBCECalleeStaticContextId(bceTrace);
 
-  const context = executionContextCollection.getLast();
+  const context = executionContextCollection.getLastRealContext();
   const currentStaticContextId = context?.staticContextId;
   if (currentStaticContextId && currentStaticContextId === calleeStaticContextId) {
     return bceTrace;
+  }
+  return null;
+}
+
+export function getBCEContext(callId) {
+  const bceTrace = traceCollection.getById(callId);
+  const calleeStaticContextId = bceTrace && getBCECalleeStaticContextId(bceTrace);
+
+  const context = executionContextCollection.getLastRealContext();
+  const currentStaticContextId = context?.staticContextId;
+  if (currentStaticContextId && currentStaticContextId === calleeStaticContextId) {
+    return context;
   }
   return null;
 }

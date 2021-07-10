@@ -169,7 +169,7 @@ export default class CollectionIndex {
   constructor(collectionName, indexName, { addOnNewData = true, isMap = false, isContainerSet = false } = EmptyObject) {
     this.collectionName = collectionName;
     this.name = indexName;
-    this.logger = newLogger(`${indexName} (Index)`);
+    this.logger = newLogger(`indexes.${collectionName}.${indexName}`);
     this.addOnNewData = addOnNewData;
     this.isMap = isMap;
     this.isContainerSet = isContainerSet;
@@ -220,13 +220,13 @@ export default class CollectionIndex {
     return this._byKey;
   }
 
-  getLast(key) {
-    const ofKey = this.get(key);
-    if (!ofKey?.length) {
-      return null;
-    }
-    return ofKey?.[ofKey.length - 1] || null;
-  }
+  // getLast(key) {
+  //   const ofKey = this.get(key);
+  //   if (!ofKey?.length) {
+  //     return null;
+  //   }
+  //   return ofKey?.[ofKey.length - 1] || null;
+  // }
 
   getAllKeys() {
     return this._manager.getAllKeys();

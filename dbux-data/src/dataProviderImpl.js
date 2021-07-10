@@ -45,6 +45,7 @@ import DataNodesByValueIdIndex from './impl/indexes/DataNodesByValueIdIndex';
 import DataNodesByRefIdIndex from './impl/indexes/DataNodesByRefIdIndex';
 import DataNodesByObjectRefIdIndex from './impl/indexes/DataNodesByObjectRefIdIndex';
 import AsyncEventsFromIndex from './impl/indexes/AsyncEventsFromIndex';
+import AsyncNodesByRootIndex from './impl/indexes/AsyncNodesByRootIndex';
 
 
 export function newDataProvider(application) {
@@ -101,6 +102,7 @@ export function newDataProvider(application) {
 
   dataProvider.addIndex(new AsyncEventsFromIndex());
   dataProvider.addIndex(new AsyncEventsToIndex());
+  dataProvider.addIndex(new AsyncNodesByRootIndex());
 
   // complex indexes (that have dependencies)
   // NOTE: we are currently solving index dependencies by simply adding depdendents after dependees

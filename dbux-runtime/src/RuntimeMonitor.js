@@ -20,8 +20,8 @@ import registerBuiltins from './builtIns/index';
 const { log, debug: _debug, warn, error: logError } = newLogger('RuntimeMonitor');
 
 // const Verbose = 2;
-// const Verbose = 1;
-const Verbose = 0;
+const Verbose = 1;
+// const Verbose = 0;
 
 const debug = (...args) => Verbose && _debug(...args);
 
@@ -122,19 +122,23 @@ export default class RuntimeMonitor {
     const parentContextId = this._runtime.peekCurrentContextId();
     const parentTraceId = this._runtime.getParentTraceId();
 
-    if (Verbose) {
-      const staticContext = staticContextCollection.getContext(programId, inProgramStaticContextId);
-      debug(
-        // ${JSON.stringify(staticContext)}
-        `pushImmediate ${programId}.${inProgramStaticContextId} ${staticContext?.displayName} (${runId}))`
-      );
-    }
-
     const context = executionContextCollection.executeImmediate(
       stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId, tracesDisabled
     );
     const { contextId } = context;
+
+    if (!parentContextId) {
+      this.updateVirtualContextRoot(contextId);
+    }
     this._runtime.push(contextId, isInterruptable);
+
+    if (Verbose) {
+      const staticContext = staticContextCollection.getContext(programId, inProgramStaticContextId);
+      debug(
+        // ${JSON.stringify(staticContext)}
+        `-> Immediate ${contextId} ${staticContext?.displayName} (pid=${programId}, runId=${runId}, cid=${contextId}, pcid=${parentContextId})`
+      );
+    }
 
     this.newTraceId(programId, inProgramStaticTraceId);
 
@@ -181,15 +185,15 @@ export default class RuntimeMonitor {
     // debug('pop immediate, stack size', this._runtime?._executingStack?.length?.() || 0);
 
     // trace
-    const runId = this._runtime.getCurrentRunId();
-    const programId = executionContextCollection.getProgramId(contextId);
+    // const runId = this._runtime.getCurrentRunId();
+    // const programId = executionContextCollection.getProgramId(contextId);
 
     if (Verbose) {
       const { staticContextId } = context;
       const staticContext = staticContextCollection.getById(staticContextId);
       debug(
         // ${JSON.stringify(staticContext)}
-        `popImmediate ${programId}.${staticContext._staticId} ${staticContext?.displayName} (${runId}))`
+        `<- Immediate ${staticContext?.displayName}`
       );
     }
 
@@ -324,6 +328,14 @@ export default class RuntimeMonitor {
     const { contextId: awaitContextId } = context;
     this._runtime.registerAwait(awaitContextId, parentContextId, awaitArgument);  // mark as "waiting"
 
+    if (Verbose) {
+      debug(
+        // ${JSON.stringify(staticContext)}
+        `-> Await ${awaitContextId}`
+      );
+    }
+
+
     // manually climb up the stack
     this._runtime.skipPopPostAwait();
 
@@ -347,6 +359,13 @@ export default class RuntimeMonitor {
       // resume after await
       this._runtime.resumeWaitingStack(awaitContextId);
 
+      if (Verbose) {
+        debug(
+          // ${JSON.stringify(staticContext)}
+          `<- Await ${awaitContextId}`
+        );
+      }
+
       // traceCollection.trace(awaitContextId, runId, inProgramStaticTraceId, TraceType.Await);
       // this._pop(awaitContextId);
 
@@ -361,9 +380,11 @@ export default class RuntimeMonitor {
       const resumeInProgramStaticTraceId = 0;
       const resumeContextId = this.pushResume(programId, resumeStaticContextId, resumeInProgramStaticTraceId);
 
-      if (isPromise(awaitArgument)) {
-        this._runtime.thread2.promiseAwaited(awaitArgument, this._runtime.getCurrentRunId());
-      }
+      this.updateVirtualContextRoot(resumeContextId);
+
+      // if (isPromise(awaitArgument)) {
+      //   this._runtime.thread2.promiseAwaited(awaitArgument, this._runtime.getCurrentRunId());
+      // }
 
       // debug(awaitArgument, 'is awaited at context', awaitContextId);
 
@@ -389,8 +410,17 @@ export default class RuntimeMonitor {
     const resumeContext = executionContextCollection.resume(
       stackDepth, runId, parentContextId, parentTraceId, programId, resumeStaticContextId, schedulerTraceId
     );
+
     const { contextId: resumeContextId } = resumeContext;
     this._runtime.push(resumeContextId);
+
+    if (Verbose) {
+      const staticContext = staticContextCollection.getContext(programId, resumeStaticContextId);
+      debug(
+        // ${JSON.stringify(staticContext)}
+        `-> Resume ${resumeContextId} (pid=${programId}, runId=${runId}, cid=${resumeContextId}, pcid=${parentContextId})`
+      );
+    }
 
     if (resumeInProgramStaticTraceId) {
       // add "push" trace after context!
@@ -401,19 +431,26 @@ export default class RuntimeMonitor {
     return resumeContextId;
   }
 
-  popResume(resumeCid = null) {
+  popResume(resumeContextId = null) {
     // sanity checks
-    if (resumeCid === 0) {
+    if (resumeContextId === 0) {
       logError('Tried to popResume, but cid was 0. Is this an async function that started in an object getter?');
       return;
     }
 
-    resumeCid = resumeCid || this._runtime.peekCurrentContextId();
-    const context = executionContextCollection.getById(resumeCid);
+    resumeContextId = resumeContextId || this._runtime.peekCurrentContextId();
+    const context = executionContextCollection.getById(resumeContextId);
+    
+    if (Verbose) {
+      debug(
+        // ${JSON.stringify(staticContext)}
+        `<- Resume ${resumeContextId}`
+      );
+    }
 
     // more sanity checks
     if (!context) {
-      logError(`Tried to popResume, but context was not registered - resumeContextId=${resumeCid}`);
+      logError(`Tried to popResume, but context was not registered - resumeContextId=${resumeContextId}`);
       return;
     }
     if (context.contextType !== ExecutionContextType.Resume) {
@@ -421,7 +458,7 @@ export default class RuntimeMonitor {
       return;
     }
 
-    this._pop(resumeCid);
+    this._pop(resumeContextId);
   }
 
   getLastExecutionContextId() {
@@ -436,6 +473,11 @@ export default class RuntimeMonitor {
 
   isValidContext() {
     return this._runtime._executingStack?.length?.();
+  }
+  
+  updateVirtualContextRoot(contextId) {
+    debug(`[updateVirtualContextRoot] ${contextId}`);
+    this._runtime._virtualRootContextId = contextId;
   }
 
   // ###########################################################################
@@ -474,9 +516,10 @@ export default class RuntimeMonitor {
 
     const contextId = this._runtime.peekCurrentContextId();
     const runId = this._runtime.getCurrentRunId();
+    const rootContextId = this._runtime.getCurrentVirtualRootContextId();
     const overrideType = null;
 
-    const trace = traceCollection.trace(programId, contextId, runId, inProgramStaticTraceId, overrideType);
+    const trace = traceCollection.trace(programId, contextId, rootContextId, runId, inProgramStaticTraceId, overrideType);
     this._onTrace(contextId, trace);
 
     return trace.traceId;
@@ -832,11 +875,9 @@ export default class RuntimeMonitor {
       return value;
     }
 
-    // register promise
-    const calledContextId = this._runtime.getLastPoppedContextId();
-
-    this._runtime.thread1.traceCallPromiseResult(contextId, calledContextId, trace, value);
-    this._runtime.thread2.recordMaybeNewPromise(value, runId, contextId, calledContextId);
+    // register promise-valued CallExpression
+    this._runtime.thread1.traceCallPromiseResult(contextId, trace, value);
+    // this._runtime.thread2.recordMaybeNewPromise(value, runId, contextId, calledContextId);
 
     return value;
   }
@@ -961,7 +1002,7 @@ export default class RuntimeMonitor {
        *   the entire array returned from `ownKeys` is read at the beginning of the loop.
        */
       getOwnPropertyDescriptor: function (target, key) {
-        console.debug('gpd', key, target[key]);
+        debug('gpd', key, target[key]);
 
         const iterationTraceId = this.newTraceId(programId, inProgramStaticTraceId);
         dataNodeCollection.createOwnDataNode(key, iterationTraceId, DataNodeType.Write, varAccess);
@@ -998,7 +1039,8 @@ export default class RuntimeMonitor {
   // }
 
   _trace(programId, contextId, runId, inProgramStaticTraceId, traceType = null) {
-    const trace = traceCollection.trace(programId, contextId, runId, inProgramStaticTraceId, traceType);
+    const rootContextId = this._runtime.getCurrentVirtualRootContextId();
+    const trace = traceCollection.trace(programId, contextId, rootContextId, runId, inProgramStaticTraceId, traceType);
 
     // if (Verbose > 1) {
     //   const { staticContextId } = context;

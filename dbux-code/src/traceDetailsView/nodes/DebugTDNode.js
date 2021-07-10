@@ -33,18 +33,20 @@ export class DebugTDNode extends TraceDetailNode {
 
   buildChildren() {
     const { trace } = this;
-    const { nodeId } = trace;
-
-    const application = allApplications.getApplication(trace.applicationId);
-    const { dataProvider } = application;
 
     const {
       traceId,
-      runId,
+      nodeId,
       contextId,
+      rootContextId,
+      runId,
       staticTraceId,
+      applicationId,
       ...otherTraceProps
     } = trace;
+
+    const application = allApplications.getApplication(applicationId);
+    const { dataProvider } = application;
 
     const context = dataProvider.collections.executionContexts.getById(contextId);
     const staticTrace = dataProvider.collections.staticTraces.getById(staticTraceId);
@@ -87,17 +89,17 @@ export class DebugTDNode extends TraceDetailNode {
     //   }
     // ];
 
-    const inEvents = dataProvider.indexes.asyncEvents.from.get(runId);
-    const outEvents = dataProvider.indexes.asyncEvents.to.get(runId);
+    const inEvents = dataProvider.indexes.asyncEvents.from.get(rootContextId);
+    const outEvents = dataProvider.indexes.asyncEvents.to.get(rootContextId);
     const runNode = [
-      'run',
+      'async',
       {
-        run: dataProvider.collections.runs.getById(runId),
+        asyncNode: dataProvider.indexes.asyncNodes.byRoot.get(rootContextId),
         [`InEvents (${inEvents?.length || 0})`]: inEvents || {},
         [`OutEvents (${outEvents?.length || 0})`]: outEvents || {}
       },
       {
-        description: `${runId}`
+        description: `${rootContextId}`
       }
     ];
 

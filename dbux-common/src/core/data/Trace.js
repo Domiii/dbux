@@ -18,6 +18,11 @@ export default class Trace extends HasValue {
    */
   runId;
   /**
+   * NOTE: this is the **virtual** rootContextId.
+   * @type {number}
+   */
+  rootContextId;
+  /**
    * @type {number}
    */
   contextId;

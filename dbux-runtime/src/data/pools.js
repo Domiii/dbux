@@ -5,7 +5,7 @@ import DataNode from '@dbux/common/src/core/data/DataNode';
 import Loop from '@dbux/common/src/core/data/loops/Loop';
 import PromiseData from '@dbux/common/src/core/data/PromiseData';
 import AsyncEvent from '@dbux/common/src/core/data/AsyncEvent';
-import AsyncNode from '@dbux/common/src/core/data/RootContext';
+import AsyncNode from '@dbux/common/src/core/data/AsyncNode';
 
 /**
  * TODO: proper object pooling

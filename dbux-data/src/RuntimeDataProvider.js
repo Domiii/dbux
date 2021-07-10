@@ -11,11 +11,11 @@ import Trace from '@dbux/common/src/core/data/Trace';
 import DataNode from '@dbux/common/src/core/data/DataNode';
 import ValueRef from '@dbux/common/src/core/data/ValueRef';
 import AsyncEvent from '@dbux/common/src/core/data/AsyncEvent';
-import Run from '@dbux/common/src/core/data/Run';
+import AsyncNode from '@dbux/common/src/core/data/AsyncNode';
 import StaticProgramContext from '@dbux/common/src/core/data/StaticProgramContext';
 import StaticContext from '@dbux/common/src/core/data/StaticContext';
 import StaticTrace from '@dbux/common/src/core/data/StaticTrace';
-import { hasCallId, isCallResult, isCallExpressionTrace } from '@dbux/common/src/core/constants/traceCategorization';
+import { isCallResult, isCallExpressionTrace } from '@dbux/common/src/core/constants/traceCategorization';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 import Collection from './Collection';
@@ -663,26 +663,11 @@ class AsyncEventCollection extends Collection {
 }
 
 /**
- * @extends {Collection<Run>}
+ * @extends {Collection<AsyncNode>}
  */
-class RunCollection extends Collection {
+class AsyncNodeCollection extends Collection {
   constructor(dp) {
-    super('runs', dp);
-  }
-
-  /**
-   * @param {T[]} entries 
-   */
-  add(entries) {
-    if (!this._all.length && entries[0] !== null) {
-      // pad with a `null`, if necessary
-      this._all.push(null);
-    }
-
-    // Run ids might be (slightly) out of order
-    for (const entry of entries) {
-      this._all[entry.runId] = entry;
-    }
+    super('asyncNodes', dp);
   }
 }
 
@@ -711,8 +696,8 @@ export default class RuntimeDataProvider extends DataProviderBase {
       traces: new TraceCollection(this),
       dataNodes: new DataNodeCollection(this),
       values: new ValueRefCollection(this),
-      asyncEvents: new AsyncEventCollection(this),
-      runs: new RunCollection(this),
+      asyncNodes: new AsyncNodeCollection(this),
+      asyncEvents: new AsyncEventCollection(this)
     };
 
     // const collectionClasses = [
@@ -758,19 +743,19 @@ export default class RuntimeDataProvider extends DataProviderBase {
     // TODO: import + dynamic `import``
     const allRequireModuleNames = this.util.getAllRequireModuleNames();
     const newRequireModuleNames = difference(allRequireModuleNames, oldRequireModuleNames);
-    const requireInfo = `Newly required external modules (${newRequireModuleNames.length}/${allRequireModuleNames.length}): ${newRequireModuleNames.join(', ')}`;
+    const requireInfo = `Newly required external modules (${newRequireModuleNames.length}/${allRequireModuleNames.length}):\n  ${newRequireModuleNames.join(',')}`;
 
     // program stats
     const programData = collectionStats.staticProgramContexts;
     const minProgramId = programData?.min;
     const allModuleNames = this.util.getAllExternalProgramModuleNames();
     const newModuleNames = minProgramId && this.util.getAllExternalProgramModuleNames(minProgramId);
-    const moduleInfo = `Newly traced external modules (${newModuleNames?.length || 0}/${allModuleNames.length}): ${newModuleNames?.join(', ') || ''}`;
+    const moduleInfo = `Newly traced external modules (${newModuleNames?.length || 0}/${allModuleNames.length}):\n  ${newModuleNames?.join(',') || ''}`;
 
     const allMissingModules = difference(allRequireModuleNames, allModuleNames);
     const newMissingModules = difference(newRequireModuleNames, allModuleNames);
     const missingModuleInfo = newMissingModules.length &&
-      `Required but untraced external modules (${newMissingModules.length}/${allMissingModules.length}): ${newMissingModules.join(', ')}`;
+      `Required but untraced external modules (${newMissingModules.length}/${allMissingModules.length}):\n  ${newMissingModules.join(',')}`;
 
     // final message
     const msgs = [

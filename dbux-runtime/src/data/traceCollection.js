@@ -40,7 +40,7 @@ class TraceCollection extends Collection {
     return staticTraceCollection.getById(trace.staticTraceId);
   }
 
-  trace(programId, contextId, runId, inProgramStaticTraceId, type = null) {
+  trace(programId, contextId, rootContextId, runId, inProgramStaticTraceId, type = null) {
     if (!inProgramStaticTraceId) {
       throw new Error('missing inProgramStaticTraceId');
     }
@@ -53,6 +53,7 @@ class TraceCollection extends Collection {
     // console.debug(`${this._all.length} ${trace.traceId}`);
 
     trace.contextId = contextId;
+    trace.rootContextId = rootContextId;
     trace.runId = runId;
     trace.type = type;
     trace.createdAt = Date.now();  // { createdAt }

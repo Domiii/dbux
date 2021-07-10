@@ -14,7 +14,7 @@ export default class AsyncEventsToIndex extends CollectionIndex {
    * @param {RuntimeDataProvider} dp
    * @param {AsyncEvent} asyncEvent
    */
-  makeKey(dp, { fromRootContext }) {
-    return fromRootContext;
+  makeKey(dp, { fromRootContextId }) {
+    return fromRootContextId;
   }
 }
