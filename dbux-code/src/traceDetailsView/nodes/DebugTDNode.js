@@ -89,17 +89,20 @@ export class DebugTDNode extends TraceDetailNode {
     //   }
     // ];
 
-    const inEvents = dataProvider.indexes.asyncEvents.from.get(rootContextId);
-    const outEvents = dataProvider.indexes.asyncEvents.to.get(rootContextId);
+    const asyncNode = dataProvider.indexes.asyncNodes.byRoot.getFirst(rootContextId);
+    const inEvents = dataProvider.indexes.asyncEvents.from.get(rootContextId)
+      ?.map(evt => evt.fromRootContextId);
+    const outEvents = dataProvider.indexes.asyncEvents.to.get(rootContextId)
+      ?.map(evt => evt.toRootContextId);
     const runNode = [
       'async',
       {
-        asyncNode: dataProvider.indexes.asyncNodes.byRoot.get(rootContextId),
+        asyncNode,
         [`InEvents (${inEvents?.length || 0})`]: inEvents || {},
         [`OutEvents (${outEvents?.length || 0})`]: outEvents || {}
       },
       {
-        description: `${rootContextId}`
+        description: `thread=${asyncNode?.threadId}, rootId=${rootContextId}`
       }
     ];
 

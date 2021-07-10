@@ -17,7 +17,7 @@ export class RuntimeThreads1 {
   /**
    * @type {number} Maintain thread count
    */
-  _maxThreadId = 1;
+  _maxThreadId = 0;
 
   floatingPromises = [];
 
@@ -85,7 +85,7 @@ export class RuntimeThreads1 {
         // -> the first time this promise has been seen, and it is the return value of `calledContextId`
         // -> this should be the caller of `calledContextId`
 
-        // TODO: establish async caller chain
+        // NOTE: establish async caller chain
         lastAwaitData.returnPromise = promise;
       }
     }
@@ -108,7 +108,7 @@ export class RuntimeThreads1 {
     // this.logger.debug('delete floating promise', awaitArgument);
 
 
-    // TODO: add edge
+    // TODO: add sync edge
     //    * if nested and promise already has `lastAsyncNode`
     //      -> add an edge from `preEvent` `AsyncNode` to promise's `lastAsyncNode`
     const isFirstAwait = isFirstContextInParent(resumeContextId);
@@ -328,10 +328,13 @@ export class RuntimeThreads1 {
    * Called when a run is finished.
    * @param {number} runId 
    */
-  postRun(runId, /* rootContextIds */) {
-    // TODO: process rootContextIds
-    // if (runId === 1) {
-    //   this.setRootThreadId(rootContextId, newThreadId());
+  postRun(/* runId, rootContextIds */) {
+    // TODO: is this not necessary?
+    // for (const rootContextId of rootContextIds) {
+    //   if (!this.getRootThreadId(rootContextId)) {
+    //     // NOTE: rootContexts without any async event
+    //     this.setRootThreadId(rootContextId, this.newThreadId());
+    //   }
     // }
     this.processFloatingPromises();
   }
@@ -355,10 +358,6 @@ export class RuntimeThreads1 {
    * 
    */
   getRootThreadId(rootId) {
-    if (rootId === 1) {
-      return 1;
-    }
-
     return this.threadsByRoot.get(rootId);
   }
 
@@ -393,12 +392,15 @@ export class RuntimeThreads1 {
    * @param {number} toRootId 
    */
   addEdge(fromRootId, toRootId, fromThreadId, toThreadId) {
-    const previousFromThreadId = this.getRootThreadId(fromRootId);
+    let previousFromThreadId = this.getRootThreadId(fromRootId);
     const previousToThreadId = this.getRootThreadId(toRootId);
 
     if (!previousFromThreadId) {
-      this.logger.warn(`Tried to add edge from root ${fromRootId} but it did not have a threadId`);
-      return 0;
+      // NOTE: this can happen, if a root executed that was not connected to any previous asynchronous events
+      //    (e.g. initial root, or caused by unrecorded asynchronous events)
+      // this.logger.warn(`Tried to add edge from root ${fromRootId} but it did not have a threadId`);
+      // return 0;
+      this.setRootThreadId(fromRootId, previousFromThreadId = this.newThreadId());
     }
     if (this.hasEdgeFromTo(fromRootId, toRootId)) {
       this.logger.warn(`Tried to add edge twice from ${fromRootId} (t = ${previousFromThreadId} => ${fromThreadId}) to ${toRootId} (t = ${previousToThreadId} => ${toThreadId})`);
