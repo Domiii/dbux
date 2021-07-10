@@ -7,11 +7,12 @@
  */
 async function f(x) {
   console.log('f1', x);
-  // await g();
-  await 0;   // 2x FORK: [1->2], [1->3]
-  // console.log('f2');
-  // await g();
+  await 0;  // 2x FORK
   console.log('f2', x);
+  await 0;
+  console.log('f3', x);
+  await 0;
+  console.log('f3', x);
 }
 
 

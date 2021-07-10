@@ -3,8 +3,17 @@
  * `fB` and `gB` execute in the same "physical run" (requires inserting "virtual runs").
  */
 
-function f() { 'fA'; await 0; 'fB'; }
-function g() { 'gA'; await 0; 'gB'; }
+async function f() { 
+  console.log('fA');
+  await 0;
+  console.log('fB');
+}
+
+async function g() {
+  console.log('gA');
+  await 0;
+  console.log('gB');
+}
 
 f();
 g();
