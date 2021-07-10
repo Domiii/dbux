@@ -1,7 +1,7 @@
 import isFunction from 'lodash/isFunction';
 import isString from 'lodash/isString';
 import { newLogger } from '../../log/logger';
-import isPromise from '../isPromise';
+import isThenable from '../isThenable';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('SerialTaskQueue');
@@ -241,7 +241,7 @@ export default class SerialTaskQueue {
         try {
           // execute task
           const result = cb();
-          if (isPromise(result)) {
+          if (isThenable(result)) {
             this._activeTask = result;
             await result;
           }

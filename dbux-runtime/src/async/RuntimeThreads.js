@@ -1,13 +1,13 @@
 import { newLogger } from '@dbux/common/src/log/logger';
-import isPromise from '@dbux/common/src/util/isPromise';
+import isThenable from '@dbux/common/src/util/isThenable';
 import { some } from 'lodash';
-import EmptyObject from '@dbux/common/src/util/EmptyObject';
-import asyncEventCollection from './data/asyncEventCollection';
-import asyncNodeCollection from './data/asyncNodeCollection';
+import asyncEventCollection from '../data/asyncEventCollection';
+import asyncNodeCollection from '../data/asyncNodeCollection';
 // import executionContextCollection from './data/executionContextCollection';
 // import traceCollection from './data/traceCollection';
 // import valueCollection from './data/valueCollection';
 import { getBCEContext, isFirstContextInParent, isRootContext, peekBCECheckCallee, peekContextCheckCallee } from './data/dataUtil';
+import { getPromiseOwnAsyncFunctionContextId, isNewPromise, setPromiseData } from './patchPromise';
 
 /** @typedef { import("./Runtime").default } Runtime */
 
@@ -67,7 +67,7 @@ export class RuntimeThreads1 {
    */
   traceCallPromiseResult(contextId, trace, promise) {
     const currentRootId = this.getCurrentVirtualRootContextId();
-    if (!isNewPromise(promise)) {
+    if (!isNewPromise(promise, currentRootId)) {
       // this.logger.warn('have seen promise before', currentRootId, promise._dbux_);
       return;
     }
@@ -82,7 +82,7 @@ export class RuntimeThreads1 {
       calledContextId = calledContext?.contextId;
       lastAwaitData = this.lastAwaitByRealContext.get(calledContextId);
       if (lastAwaitData?.isFirstAwait) { // NOTE: in this case, `isFirstAwait` should always be true, if exists
-        // -> the first time this promise has been seen, and it is the return value of `calledContextId`
+        // -> this is the return value of `calledContextId`
         // -> this should be the caller of `calledContextId`
 
         // NOTE: establish async caller chain
@@ -100,7 +100,7 @@ export class RuntimeThreads1 {
     // }
   }
 
-  preAwait(awaitArgument, resumeContextId, parentContextId) {
+  preAwait(awaitArgument, resumeContextId, parentContextId, preAwaitTid) {
     const currentRootId = this.getCurrentVirtualRootContextId();
     // this.logger.debug('pre await', awaitArgument);
 
@@ -117,10 +117,11 @@ export class RuntimeThreads1 {
       resumeContextId,
       rootId: currentRootId,
       isFirstAwait,
+      preAwaitTid
       // awaitArgument
     });
 
-    if (!isPromise(awaitArgument)) {
+    if (!isThenable(awaitArgument)) {
       return;
     }
 
@@ -142,8 +143,9 @@ export class RuntimeThreads1 {
 
   recordFloatingPromise(promise, currentRootId, asyncFunctionContextId) {
     setPromiseData(promise, {
-      rootId: currentRootId,
-      lastRootId: currentRootId,
+      // NOTE: rootId should already be set by recordPromise
+      // rootId: currentRootId,
+      // lastRootId: currentRootId,
       asyncFunctionContextId
     });
     this.floatingPromises.push(promise);
@@ -158,6 +160,7 @@ export class RuntimeThreads1 {
     const {
       resumeContextId: preEventContextId,
       rootId: preEventRootId,
+      preAwaitTid,
       returnPromise
     } = this.lastAwaitByRealContext.get(realContextId);
 
@@ -182,7 +185,7 @@ export class RuntimeThreads1 {
       toThreadId = 0;
     }
 
-    const isNested = isPromise(awaitArgument);
+    const isNested = isThenable(awaitArgument);
     if (isNested) {
       // nested promise:
       //  -> an out-going edge has already been added from `preEventRootId` to the beginning of that promise
@@ -216,7 +219,7 @@ export class RuntimeThreads1 {
     }
 
     // add edge
-    const actualToThreadId = this.addEdge(fromRootId, postEventRootId, fromThreadId, toThreadId);
+    const actualToThreadId = this.addEdge(fromRootId, postEventRootId, fromThreadId, toThreadId, preAwaitTid);
 
     // eslint-disable-next-line max-len
     this.logger.debug(`postAwait [${fromThreadId !== actualToThreadId ? `${preEventThreadId}->` : ''}${actualToThreadId}] Roots: ${fromRootId}->${postEventRootId} (${isNested ? `nested` : ''})`);
@@ -344,13 +347,13 @@ export class RuntimeThreads1 {
    * @param {number} runId 
    * @param {number} threadId 
    */
-  setRootThreadId(rootId, threadId) {
+  setRootThreadId(rootId, threadId, schedulerTraceId) {
     // const threadLastRun = Math.max(runId, this.lastRootContextByThread.get(threadId) || 0);
     // this.logger.debug(`[${threadId}] set runId=${runId}, threadLastRun=${threadLastRun}`);
 
     this.threadsByRoot.set(rootId, threadId);
 
-    asyncNodeCollection.addAsyncNode(rootId, threadId);
+    asyncNodeCollection.addAsyncNode(rootId, threadId, schedulerTraceId);
     // this.lastRootContextByThread.set(threadId, threadLastRun);
   }
 
@@ -391,7 +394,7 @@ export class RuntimeThreads1 {
    * @param {number} fromRootId 
    * @param {number} toRootId 
    */
-  addEdge(fromRootId, toRootId, fromThreadId, toThreadId) {
+  addEdge(fromRootId, toRootId, fromThreadId, toThreadId, schedulerTraceId) {
     let previousFromThreadId = this.getRootThreadId(fromRootId);
     const previousToThreadId = this.getRootThreadId(toRootId);
 
@@ -418,7 +421,7 @@ export class RuntimeThreads1 {
     }
 
     if (!previousToThreadId) {
-      this.setRootThreadId(toRootId, toThreadId);
+      this.setRootThreadId(toRootId, toThreadId, schedulerTraceId);
     }
 
 
@@ -446,158 +449,6 @@ export class RuntimeThreads1 {
     // this.logger.debug("get last run of thread", threadId, "returns", this.threadLastRun.get(threadId));
     return this.lastRootContextByThread.get(threadId);
   }
-}
-
-
-
-// export class ExecutingStack {
-//   stack = [];
-
-//   constructor(stack = []) {
-//     this.stack = [...stack];
-//   }
-
-//   /**
-//    * Get the length of the executing stack.
-//    */
-//   length() {
-//     return this.stack.length;
-//   }
-
-//   /**
-//    * Push a context into executing stack.
-//    * @param {number} x Context id
-//    */
-//   push(x) {
-//     this.stack.push(x);
-//   }
-
-//   /**
-//    * Pop context `x` from executing stack.
-//    * Returns abandoned executing stack if `x` is not `top(1)`, `null` otherwise.
-//    * @param {number} x Context id
-//    * @return {ExecutingStack?}
-//    */
-//   pop(x) {
-//     if (this.stack[this.stack.length - 1] === x) {
-//       this.stack.pop();
-//       return null;
-//     } else {
-//       const index = this.stack.indexOf(x);
-//       if (index === -1) {
-//         // warn(`Trying to pop ${x} but not in execting stack: ${this.stack}, ignoring.`);
-//         return null;
-//       } else {
-//         const abandonedStack = this.stack.splice(index);
-//         this.stack.pop();
-
-//         return new ExecutingStack(abandonedStack);
-//       }
-//     }
-//   }
-
-//   /**
-//    * @param {number} z 
-//    * @returns {number} The top `z` excuting stack context 
-//    */
-//   top(z = 1) {
-//     return this.stack[this.stack.length - z];
-//   }
-// }
-
-// export class RuntimeThreadsStack {
-//   /**
-//    * @type {ExecutingStack} The current executing stack, filling with context id
-//    */
-//   currentStack = new ExecutingStack();
-
-//   /**
-//    * @type {Map<number, ExecutingStack>}
-//    */
-//   waitingStack = new Map();
-
-//   /**
-//    * Add a context id into the current stack
-//    * @param {number} contextId 
-//    */
-//   push(contextId) {
-//     this.currentStack.push(contextId);
-//   }  
-
-//   /**
-//    * Pop a context id from current stack
-//    * @param {number} contextId 
-//    */
-//   pop(contextId) {
-//     const abandonedStack = this.currentStack.pop(contextId);
-
-//     if (abandonedStack) {
-//       this.addWaitingStack(abandonedStack);
-//     }
-//   }
-
-//   /**
-//    * Add a stack into waiting stack.
-//    * @param {ExecutingStack} stack 
-//    */
-//   addWaitingStack(stack) {
-//     const lastContext = stack.top(1);
-//     this.waitingStack.set(lastContext, stack);
-//   }
-
-//   /**
-//    * Resume a stack with specific last context id back to executing stack
-//    * @param {number} x contextId
-//    */
-//   resumeWaitingStack(x) {
-//     const stack = this.waitingStack.get(x);
-//     if (!stack) {
-//       warn(`trying to resume a waiting stack with top = ${x} but not found.`);
-//     } else {
-//       if (this.currentStack.length !== 0) {
-//         warn(`trying to resume a waiting stack while there is still a stack with contexts executing. Put into waiting stack.`);
-//         this.addWaitingStack(this.currentStack);
-//       }
-
-//       this.currentStack = stack;
-//       this.waitingStack.delete(x);
-//     }
-//   }
-// }
-
-
-function setPromiseData(promise, data) {
-  let { _dbux_ } = promise;
-  if (!_dbux_) {
-    Object.defineProperty(promise, '_dbux_', {
-      value: _dbux_ = {},
-      writable: true,
-      enumerable: false,
-      configurable: false
-    });
-  }
-  Object.assign(_dbux_, data);
-}
-
-function getPromiseData(promise) {
-  return promise._dbux_ || EmptyObject;
-}
-
-
-function getPromiseRootId(promise) {
-  return promise._dbux_?.rootId;
-}
-
-function getPromiseOwnThreadId(promise) {
-  return promise?._dbux_?.threadId;
-}
-
-function getPromiseOwnAsyncFunctionContextId(promise) {
-  return promise?._dbux_?.asyncFunctionContextId;
-}
-
-function isNewPromise(promise) {
-  return !getPromiseRootId(promise);
 }
 
 // function isPromiseOfRoot(promise, rootId) {

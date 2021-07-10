@@ -3,7 +3,7 @@ import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionConte
 import TraceType, { isBeforeCallExpression, isPopTrace } from '@dbux/common/src/core/constants/TraceType';
 // import SpecialIdentifierType from '@dbux/common/src/core/constants/SpecialIdentifierType';
 import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
-import isPromise from '@dbux/common/src/util/isPromise';
+import isThenable from '@dbux/common/src/util/isPromise';
 import staticProgramContextCollection from './data/staticProgramContextCollection';
 import executionContextCollection from './data/executionContextCollection';
 import staticContextCollection from './data/staticContextCollection';
@@ -11,7 +11,6 @@ import traceCollection from './data/traceCollection';
 import staticTraceCollection from './data/staticTraceCollection';
 import Runtime from './Runtime';
 import ProgramMonitor from './ProgramMonitor';
-import { ensurePromiseWrapped } from './wrapPromise';
 import dataNodeCollection, { ShallowValueRefMeta } from './data/dataNodeCollection';
 import valueCollection from './data/valueCollection';
 import registerBuiltins from './builtIns/index';
@@ -56,6 +55,10 @@ export default class RuntimeMonitor {
     registerBuiltins();
 
     return this;
+  }
+
+  getCurrentVirtualRootContextId() {
+    return this._runtime.getCurrentVirtualRootContextId();
   }
 
   // ###########################################################################
@@ -340,7 +343,7 @@ export default class RuntimeMonitor {
     this._runtime.skipPopPostAwait();
 
     // await part
-    this._runtime.thread1.preAwait(awaitArgument, resumeContextId, parentContextId);
+    this._runtime.thread1.preAwait(awaitArgument, resumeContextId, parentContextId, preAwaitTid);
 
     return awaitContextId;
   }
@@ -553,8 +556,6 @@ export default class RuntimeMonitor {
       this.logFail(`traceExpression failed to capture tid`);
       return value;
     }
-
-    ensurePromiseWrapped(value);
 
     // if (value instanceof Function && !isClass(value)) {
     // if (value instanceof Function) {
@@ -865,13 +866,11 @@ export default class RuntimeMonitor {
     trace.resultCallId = callTid;
     this.traceExpression(programId, value, tid, 0);
 
-    ensurePromiseWrapped(value);
-
     const contextId = this._runtime.peekCurrentContextId();
     const runId = this._runtime.getCurrentRunId();
     this._onTrace(contextId, trace);
 
-    if (!(isPromise(value))) {
+    if (!(isThenable(value))) {
       return value;
     }
 

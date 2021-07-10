@@ -3,7 +3,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import Stack from './Stack';
 import traceCollection from './data/traceCollection';
 import scheduleNextPossibleRun from './scheduleNextPossibleRun';
-import { RuntimeThreads1 } from './RuntimeThreads';
+import { RuntimeThreads1 } from './async/RuntimeThreads';
 
 // import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
 // import executionContextCollection from './data/executionContextCollection';

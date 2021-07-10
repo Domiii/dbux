@@ -1,20 +1,43 @@
 
-export function monkeyPatchFunction(holder, name, post, pre) {
+const monkeyPatchedFunctionSet = new Set();
+
+export function isMonkeyPatched(f) {
+  return f in monkeyPatchedFunctionSet;
+}
+
+function _monkeyPatchFunction(holder, name, patchedFunction) {
   const originalFunction = holder[name];
   if (!(originalFunction instanceof Function)) {
-    throw new Error(`Monkey-patching failed: ${holder}.${name} is not a function.`);
+    throw new Error(`Monkey-patching failed: ${holder}.${name} is not a function: ${originalFunction}`);
   }
-  const patchedFunction = function (...args) {
+  holder[name] = patchedFunction;
+  monkeyPatchedFunctionSet.add(patchedFunction);
+}
+
+export function monkeyPatchFunction(holder, name, post, pre) {
+  const originalFunction = holder[name];
+  _monkeyPatchFunction(holder, name, function patchedFunction(...args) {
     pre?.(this, args, patchedFunction);
     const result = originalFunction.apply(this, args);
     post?.(this, args, result, patchedFunction);
     return result;
-  };
-  holder[name] = patchedFunction;
+  });
 }
 
 export function monkeyPatchMethod(Clazz, methodName, post, pre) {
   return monkeyPatchFunction(Clazz.prototype, methodName, post, pre);
+}
+
+
+export function monkeyPatchFunctionRaw(holder, name, cb) {
+  const originalFunction = holder[name];
+  _monkeyPatchFunction(holder, name, function patchedFunction(...args) {
+    return cb(this, args, originalFunction, patchedFunction);
+  });
+}
+
+export function monkeyPatchMethodRaw(Clazz, methodName, post, pre) {
+  return monkeyPatchFunctionRaw(Clazz.prototype, methodName, post, pre);
 }
 
 
