@@ -2,7 +2,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import isThenable from '@dbux/common/src/util/isThenable';
 import { isFunction } from 'lodash';
-import { isMonkeyPatched, monkeyPatchFunctionRaw, monkeyPatchMethodRaw } from '../util/monkeyPatchUtil';
+import { isMonkeyPatched, monkeyPatchFunctionRaw } from '../util/monkeyPatchUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError } = newLogger('patchPromise');
@@ -32,7 +32,7 @@ export const OriginalPromiseClass = Promise;
 /**
  * Event: New promise (`postEventPromise`) has been scheduled.
  */
-function onThen(preEventPromise, postEventPromise) {
+function preThen(preEventPromise, postEventPromise) {
   // take care of new promise
   maybePatchPromise(postEventPromise);
 
@@ -44,7 +44,7 @@ function onThen(preEventPromise, postEventPromise) {
 /**
  * Event: Promise has been settled.
  */
-function onThenCallback() {
+function postThen() {
   // TODO
 }
 
@@ -97,7 +97,7 @@ function patchThenCallback(cb) {
   return function patchedPromiseCb(previousResult) {
     const result = originalCb(previousResult);
 
-    onThenCallback(previousResult, result);
+    postThen(previousResult, result);
 
     return result;
   };
@@ -111,7 +111,7 @@ function patchThen(holder) {
       failCb = patchThenCallback(failCb);
 
       const postEventPromise = originalThen.call(preEventPromise, successCb, failCb);
-      onThen(preEventPromise, postEventPromise);
+      preThen(preEventPromise, postEventPromise);
       return postEventPromise;
     }
   );
@@ -124,7 +124,7 @@ function patchFinally(holder) {
       cb = patchThenCallback(cb);
 
       const postEventPromise = originalFinally.call(preEventPromise, cb);
-      onThen(preEventPromise, postEventPromise);
+      preThen(preEventPromise, postEventPromise);
       return postEventPromise;
     }
   );

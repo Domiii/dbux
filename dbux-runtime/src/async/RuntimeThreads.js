@@ -6,7 +6,7 @@ import asyncNodeCollection from '../data/asyncNodeCollection';
 // import executionContextCollection from './data/executionContextCollection';
 // import traceCollection from './data/traceCollection';
 // import valueCollection from './data/valueCollection';
-import { getBCEContext, isFirstContextInParent, isRootContext, peekBCECheckCallee, peekContextCheckCallee } from './data/dataUtil';
+import { getBCEContext, isFirstContextInParent, isRootContext } from '../data/dataUtil';
 import { getPromiseData, getPromiseOwnAsyncFunctionContextId, isNewPromise, setPromiseData } from './patchPromise';
 
 /** @typedef { import("./Runtime").default } Runtime */

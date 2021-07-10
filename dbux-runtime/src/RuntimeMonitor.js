@@ -3,7 +3,7 @@ import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionConte
 import TraceType, { isBeforeCallExpression, isPopTrace } from '@dbux/common/src/core/constants/TraceType';
 // import SpecialIdentifierType from '@dbux/common/src/core/constants/SpecialIdentifierType';
 import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
-import isThenable from '@dbux/common/src/util/isPromise';
+import isThenable from '@dbux/common/src/util/isThenable';
 import staticProgramContextCollection from './data/staticProgramContextCollection';
 import executionContextCollection from './data/executionContextCollection';
 import staticContextCollection from './data/staticContextCollection';
@@ -474,6 +474,11 @@ export default class RuntimeMonitor {
     return this._runtime._executingStack?.length?.();
   }
   
+  /**
+   * Called:
+   * * during `pushImmediate`, if there is no parent on the stack
+   * * during `postAwait`, after `pushResume`
+   */
   updateVirtualContextRoot(contextId) {
     debug(`[updateVirtualContextRoot] ${contextId}`);
     this._runtime._virtualRootContextId = contextId;
