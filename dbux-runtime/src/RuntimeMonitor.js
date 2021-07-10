@@ -385,10 +385,6 @@ export default class RuntimeMonitor {
 
       this.updateVirtualContextRoot(resumeContextId);
 
-      // if (isPromise(awaitArgument)) {
-      //   this._runtime.thread2.promiseAwaited(awaitArgument, this._runtime.getCurrentRunId());
-      // }
-
       // debug(awaitArgument, 'is awaited at context', awaitContextId);
 
       const { parentContextId: realContextId } = executionContextCollection.getById(resumeContextId);

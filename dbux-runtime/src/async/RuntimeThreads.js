@@ -332,7 +332,7 @@ export class RuntimeThreads1 {
    * @param {number} runId 
    */
   postRun(/* runId, rootContextIds */) {
-    // TODO: is this not necessary?
+    // NOTE: note currently necessary
     // for (const rootContextId of rootContextIds) {
     //   if (!this.getRootThreadId(rootContextId)) {
     //     // NOTE: rootContexts without any async event
@@ -450,57 +450,3 @@ export class RuntimeThreads1 {
     return this.lastRootContextByThread.get(threadId);
   }
 }
-
-// function isPromiseOfRoot(promise, rootId) {
-//   const promiseRootId = getPromiseRootId(promise);
-//   return promiseRootId === rootId;
-// }
-
-
-// // TODO: fix this entire class
-// export class RuntimeThreads2 {
-//   logger = newLogger('RuntimeThread2');
-
-//   promiseSet = new WeakSet();
-//   promiseAwaitedSet = new WeakSet();
-
-//   promiseCreatedInThisRunSet = new WeakSet();
-//   promiseAwaitedInThisRunSet = new WeakSet();
-//   promiseExecutionContextMap = new WeakMap();
-
-//   recordMaybeNewPromise(promise, createAtRunId, createAtContext, contextIdInsidePromise) {
-//     if (this.promiseSet.has(promise)) {
-//       return;
-//     }
-
-//     this.promiseSet.add(promise);
-//     this.promiseCreatedInThisRunSet.add(promise);
-//     this.promiseExecutionContextMap.set(promise, { createAtContext, contextIdInsidePromise });
-//   }
-
-//   promiseAwaited(promise, awaitAtRunId) {
-//     if (this.promiseAwaitedSet.has(promise)) {
-//       // This promise is awaited previously
-//       return;
-//     }
-
-//     this.promiseAwaitedSet.add(promise);
-//     this.promiseAwaitedInThisRunSet.add(promise);
-//   }
-
-//   postRun() {
-//     // for (const promise of this.promiseCreatedInThisRunSet) {
-//     //   const { createAtContext, contextIdInsidePromise } = this.promiseExecutionContextMap.get(promise);
-//     //   if (this.promiseAwaitedInThisRunSet.has(promise)) {
-//     //     this.logger.debug(`context ${createAtContext} -> ${contextIdInsidePromise} not fork`);
-//     //     // not a fork
-//     //   } else {
-//     //     this.logger.debug(`context ${createAtContext} -> ${contextIdInsidePromise} fork`);
-//     //     // fork to different thread
-//     //   }
-//     // }
-
-//     this.promiseCreatedInThisRunSet.clear();
-//     this.promiseAwaitedInThisRunSet.clear();
-//   }
-// }

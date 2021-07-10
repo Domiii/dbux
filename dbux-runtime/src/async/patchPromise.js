@@ -30,7 +30,7 @@ export const OriginalPromiseClass = Promise;
 // ###########################################################################
 
 /**
- * Event: New promise has been scheduled.
+ * Event: New promise (`postEventPromise`) has been scheduled.
  */
 function onThen(preEventPromise, postEventPromise) {
   // take care of new promise
@@ -42,7 +42,7 @@ function onThen(preEventPromise, postEventPromise) {
 }
 
 /**
- * Event: New promise has been settled.
+ * Event: Promise has been settled.
  */
 function onThenCallback() {
   // TODO
