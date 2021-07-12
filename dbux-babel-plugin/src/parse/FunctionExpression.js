@@ -18,15 +18,16 @@ export default class FunctionExpression extends BaseNode {
     const { path } = this;
 
     const [idNode] = this.getChildNodes();
-    const staticTraceData = this.getPlugin('Function').createStaticTraceData(
+    const Function = this.getPlugin('Function');
+    const staticTraceData = Function.createStaticTraceData(
       idNode?.path,
-      idNode ? TraceType.FunctionDeclaration : null
+      idNode ? TraceType.FunctionDeclaration : TraceType.FunctionDefinition
     );
 
     if (idNode) {
       // NOTE: if `FunctionExpression` has an `id`, it is not declared on the outside scope, but still available inside `body`.
       // e.g.: This is legal syntax: `(function f(n) { n && f(--n); })(3)`
-      idNode.addOwnDeclarationTrace(null /* NOTE: unused if not hoisted */, {
+      const functionTraceCfg = idNode.addOwnDeclarationTrace(null /* NOTE: unused if not hoisted */, {
         node: this,
         staticTraceData,
         meta: {
@@ -34,6 +35,8 @@ export default class FunctionExpression extends BaseNode {
           targetPath: path
         }
       });
+
+      Function.setFunctionTraceCfg(functionTraceCfg);
     }
     else {
       const traceData = {
@@ -42,7 +45,9 @@ export default class FunctionExpression extends BaseNode {
         scope: path.parentPath.scope, // prevent adding `tid` variable to own body
         staticTraceData
       };
-      this.Traces.addTrace(traceData);
+
+      const functionTraceCfg = this.Traces.addTrace(traceData);
+      Function.setFunctionTraceCfg(functionTraceCfg);
     }
   }
 }

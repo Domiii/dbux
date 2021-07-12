@@ -55,7 +55,13 @@ export default class ObjectMethod extends BaseNode {
     //      `ObjectExpression` instrumentation will assure correct traces + DataNodes nevertheless.
     keyNode?.addDefaultTrace();
 
-    return super.addDefaultTrace();
+    // add trace
+    const traceCfg = super.addDefaultTrace();
+
+    const Function = this.getPlugin('Function');
+    Function.setFunctionTraceCfg(traceCfg);
+
+    return traceCfg;
   }
 
   convertToObjectProperty = () => {

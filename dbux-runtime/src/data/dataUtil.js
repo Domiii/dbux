@@ -26,6 +26,27 @@ export function getFunctionStaticContextId(functionRef) {
   return functionStaticTrace?.data?.staticContextId;
 }
 
+export function getRefByTraceId(traceId) {
+  const trace = traceCollection.getById(traceId);
+  const calleeNode = trace && dataNodeCollection.getById(trace.nodeId);
+
+  // lookup function data
+  return calleeNode?.refId && valueCollection.getById(calleeNode.refId);
+}
+
+/**
+ * @return {ValueRef} ValueRef of the function whose context is currently executing.
+ */
+export function getCurrentFunctionRef() {
+  const context = executionContextCollection.getLastRealContext();
+  return context && getFunctionRefByContext(context);
+}
+
+export function getFunctionRefByContext(context) {
+  const functionTid = context?.definitionTid;
+  return functionTid && getRefByTraceId(functionTid);
+}
+
 export function getBCECalleeStaticContextId(bceTrace) {
   const functionRef = getBCECalleeFunctionRef(bceTrace);
   return functionRef && getFunctionStaticContextId(functionRef);
@@ -41,22 +62,6 @@ export function getBCECalleeFunctionRef(bceTrace) {
   return calleeNode?.refId && valueCollection.getById(calleeNode.refId);
 }
 
-/**
- * WARNING: Does not work with monkey-patched runtime functions.
- * @returns {*} top bceTrace on stack, if its current function's callee's `staticContextId` matches that of the stack top.
- */
-export function peekBCECheckCallee() {
-  const bceTrace = traceCollection.getLast();
-  const calleeStaticContextId = bceTrace && getBCECalleeStaticContextId(bceTrace);
-
-  const context = executionContextCollection.getLastRealContext();
-  const currentStaticContextId = context?.staticContextId;
-  if (currentStaticContextId && currentStaticContextId === calleeStaticContextId) {
-    return bceTrace;
-  }
-  return null;
-}
-
 export function getBCEContext(callId) {
   const bceTrace = traceCollection.getById(callId);
   const calleeStaticContextId = bceTrace && getBCECalleeStaticContextId(bceTrace);
@@ -69,6 +74,18 @@ export function getBCEContext(callId) {
   return null;
 }
 
+/**
+ * WARNING: Only works when called from inside an instrumented function.
+ * @returns {*} top bceTrace on stack, if its current function's callee's `staticContextId` matches that of the current context.
+ */
+export function peekBCECheckCallee() {
+  const bceTrace = traceCollection.getLast();
+  const calleeRef = bceTrace && getBCECalleeFunctionRef(bceTrace);
+  const functionRef = getCurrentFunctionRef();
+  return calleeRef && calleeRef === functionRef && bceTrace || null;
+}
+
+
 /// OLD:* @returns {*} top bceTrace on stack, if its callee's `staticContextId` matches that of the stack top.
 /**
  * @returns {*} top bceTrace on stack, if its callee is `func`
@@ -78,11 +95,6 @@ export function peekBCEMatchCallee(func) {
   const calleeRef = bceTrace && getBCECalleeFunctionRef(bceTrace);
   const functionRef = calleeRef && valueCollection.getRefByValue(func);
   return calleeRef && calleeRef === functionRef && bceTrace || null;
-  // const functionStaticContextId = functionRef && getFunctionStaticContextId(functionRef);
-  // if (functionStaticContextId && functionStaticContextId === calleeStaticContextId) {
-  //   return bceTrace;
-  // }
-  // return null;
 }
 
 // ###########################################################################

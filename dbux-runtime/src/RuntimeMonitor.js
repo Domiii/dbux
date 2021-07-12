@@ -117,7 +117,7 @@ export default class RuntimeMonitor {
   /**
    * Very similar to `pushCallback`
    */
-  pushImmediate(programId, inProgramStaticContextId, inProgramStaticTraceId, isInterruptable, tracesDisabled) {
+  pushImmediate(programId, inProgramStaticContextId, inProgramStaticTraceId, definitionTid, isInterruptable, tracesDisabled) {
     this._runtime.beforePush(null);
 
     const stackDepth = this._runtime.getStackDepth();
@@ -126,7 +126,7 @@ export default class RuntimeMonitor {
     const parentTraceId = this._runtime.getParentTraceId();
 
     const context = executionContextCollection.executeImmediate(
-      stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId, tracesDisabled
+      stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId, definitionTid, tracesDisabled
     );
     const { contextId } = context;
 

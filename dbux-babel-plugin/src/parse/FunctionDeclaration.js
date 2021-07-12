@@ -21,12 +21,14 @@ export default class FunctionDeclaration extends BaseNode {
 
   exit1() {
     const [idNode] = this.getChildNodes();
+    const Function = this.getPlugin('Function');
     const moreTraceData = {
-      staticTraceData: this.getPlugin('Function').createStaticTraceData(idNode.path, TraceType.FunctionDeclaration)
+      staticTraceData: Function.createStaticTraceData(idNode.path, TraceType.FunctionDeclaration)
     };
 
     const declarationNode = this.getOwnDeclarationNode();
-    declarationNode.addOwnDeclarationTrace(declarationNode.path, moreTraceData);
+    const functionTraceCfg = declarationNode.addOwnDeclarationTrace(declarationNode.path, moreTraceData);
+    Function.setFunctionTraceCfg(functionTraceCfg);
   }
 
   // enter() {

@@ -19,14 +19,16 @@ export default class ArrowFunctionExpression extends BaseNode {
       this.data.returnTraceCfg = this.Traces.addReturnTrace(null, bodyPath, bodyPath);
     }
 
+    const Function = this.getPlugin('Function');
     const traceData = {
       node: this,
       path,
       scope: path.parentPath.scope, // prevent adding `tid` variable to own body
-      staticTraceData: this.getPlugin('Function').createStaticTraceData()
+      staticTraceData: Function.createStaticTraceData()
     };
 
-    this.Traces.addTrace(traceData);
+    const traceCfg = this.Traces.addTrace(traceData);
+    Function.setFunctionTraceCfg(traceCfg);
   }
 
   instrument() {

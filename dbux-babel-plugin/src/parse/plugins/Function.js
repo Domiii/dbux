@@ -31,7 +31,7 @@ function addContextTrace(bodyPath, state, type) {
 
 // TODO: `isInterruptable` should be in `staticContext`, not dynamically recorded
 const pushImmediateTemplate = template(
-  'var %%contextIdIdentifier%% = %%pushImmediate%%(%%staticContextId%%, %%inProgramStaticTraceId%%, %%isInterruptable%%);'
+  'var %%contextIdIdentifier%% = %%pushImmediate%%(%%staticContextId%%, %%inProgramStaticTraceId%%, %%definitionTid%%, %%isInterruptable%%);'
 );
 
 const popFunctionTemplate = template(
@@ -81,6 +81,10 @@ export default class Function extends BasePlugin {
         staticContextId
       }
     };
+  }
+
+  setFunctionTraceCfg(traceCfg) {
+    this.functionTraceCfg = traceCfg;
   }
 
   // ###########################################################################
@@ -201,12 +205,15 @@ export default class Function extends BasePlugin {
       }
     } = state;
 
+    const definitionTid = this.functionTraceCfg.tidIdentifier;
+
     return [
       pushImmediateTemplate({
         contextIdIdentifier,
         pushImmediate,
         staticContextId: t.numericLiteral(staticContextId),
         inProgramStaticTraceId: t.numericLiteral(staticPushTid),
+        definitionTid,
         isInterruptable: t.booleanLiteral(!!staticResumeContextId)
       })
     ];

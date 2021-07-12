@@ -2,6 +2,7 @@ import TraceType from '@dbux/common/src/core/constants/TraceType';
 import merge from 'lodash/merge';
 import { findConstructorMethod } from '../../visitors/classUtil';
 import ClassMethod from '../ClassMethod';
+import ClassProperty from '../ClassProperty';
 import BasePlugin from './BasePlugin';
 
 /** @typedef { import("../MemberExpression").default } MemberExpression */
@@ -37,6 +38,9 @@ export default class Class extends BasePlugin {
     const staticMethods = [], publicMethods = [], privateMethods = [];
 
     for (const memberPath of memberPaths) {
+      /**
+       * @type {ClassMethod | ClassProperty}
+       */
       const memberNode = node.getNodeOfPath(memberPath);
 
       // ################################################################################

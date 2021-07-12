@@ -33,7 +33,7 @@ export default class ProgramMonitor {
     const inProgramStaticContextId = 1;
     this._runtimeMonitor = runtimeMonitor;
     this._staticProgramContext = staticProgramContext;
-    this._programContextId = this.pushImmediate(inProgramStaticContextId, ProgramStartTraceId, false);
+    this._programContextId = this.pushImmediate(inProgramStaticContextId, ProgramStartTraceId, 0, false);
     this._logger = newLogger(staticProgramContext.filePath);
 
     // this._logger.debug(`Started tracing program...`);
@@ -88,7 +88,7 @@ export default class ProgramMonitor {
   // context management
   // ###########################################################################
 
-  pushImmediate = (inProgramStaticContextId, inProgramStaticTraceId, isInterruptable) => {
+  pushImmediate = (inProgramStaticContextId, inProgramStaticTraceId, definitionTid, isInterruptable) => {
     if (this.disabled) {
       return 0;
     }
@@ -98,6 +98,7 @@ export default class ProgramMonitor {
       this.getProgramId(),
       inProgramStaticContextId,
       inProgramStaticTraceId,
+      definitionTid,
       isInterruptable,
       tracesDisabled
     );
