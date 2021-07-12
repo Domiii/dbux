@@ -65,6 +65,7 @@ module.exports = {
     "no-multiple-empty-lines": 0,
     "no-path-concat": 0,
     "no-return-await": 0,
+    "no-lonely-if": 0,
     "constructor-super": "warn",
     "valid-typeof": "warn",
     // "class-methods-use-this": "warn",
