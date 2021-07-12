@@ -3,7 +3,7 @@ import { logError, logWarn } from '@dbux/common/src/log/logger';
 const monkeyPatchedFunctionSet = new Set();
 
 export function isMonkeyPatched(f) {
-  return f in monkeyPatchedFunctionSet;
+  return monkeyPatchedFunctionSet.has(f);
 }
 
 function _monkeyPatchFunction(holder, name, patchedFunction) {
@@ -17,6 +17,7 @@ function _monkeyPatchFunction(holder, name, patchedFunction) {
     return;
   }
   holder[name] = patchedFunction;
+  monkeyPatchedFunctionSet.add(originalFunction);
   monkeyPatchedFunctionSet.add(patchedFunction);
 }
 

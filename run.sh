@@ -5,7 +5,7 @@
 set -e # cancel on error
 # set -x # verbose echo mode
 
-fname="async/await0"
+fname="async/promise0"
 
 
 nodeArgs=""

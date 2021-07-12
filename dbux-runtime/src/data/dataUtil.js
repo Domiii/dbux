@@ -27,14 +27,18 @@ export function getFunctionStaticContextId(functionRef) {
 }
 
 export function getBCECalleeStaticContextId(bceTrace) {
+  const functionRef = getBCECalleeFunctionRef(bceTrace);
+  return functionRef && getFunctionStaticContextId(functionRef);
+}
+
+export function getBCECalleeFunctionRef(bceTrace) {
   // lookup callee
   const { calleeTid } = bceTrace?.data || EmptyObject;
   const calleeTrace = calleeTid && traceCollection.getById(calleeTid);
   const calleeNode = calleeTrace && dataNodeCollection.getById(calleeTrace.nodeId);
-  
+
   // lookup function data
-  const functionRef = calleeNode?.refId && valueCollection.getById(calleeNode.refId);
-  return getFunctionStaticContextId(functionRef);
+  return calleeNode?.refId && valueCollection.getById(calleeNode.refId);
 }
 
 /**
@@ -65,19 +69,20 @@ export function getBCEContext(callId) {
   return null;
 }
 
+/// OLD:* @returns {*} top bceTrace on stack, if its callee's `staticContextId` matches that of the stack top.
 /**
- * @returns {*} top bceTrace on stack, if its callee's `staticContextId` matches that of the stack top.
+ * @returns {*} top bceTrace on stack, if its callee is `func`
  */
 export function peekBCEMatchCallee(func) {
   const bceTrace = traceCollection.getLast();
-  const calleeStaticContextId = bceTrace && getBCECalleeStaticContextId(bceTrace);
-
-  const functionRef = valueCollection.getRefByValue(func);
-  const functionStaticContextId = functionRef && getFunctionStaticContextId(functionRef);
-  if (functionStaticContextId && functionStaticContextId === calleeStaticContextId) {
-    return bceTrace;
-  }
-  return null;
+  const calleeRef = bceTrace && getBCECalleeFunctionRef(bceTrace);
+  const functionRef = calleeRef && valueCollection.getRefByValue(func);
+  return calleeRef && calleeRef === functionRef && bceTrace || null;
+  // const functionStaticContextId = functionRef && getFunctionStaticContextId(functionRef);
+  // if (functionStaticContextId && functionStaticContextId === calleeStaticContextId) {
+  //   return bceTrace;
+  // }
+  // return null;
 }
 
 // ###########################################################################

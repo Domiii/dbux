@@ -6,7 +6,6 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Collection from './Collection';
 import pools from './pools';
-import { maybePatchPromise } from '../async/patchPromise';
 
 /** @typedef {import('@dbux/common/src/core/data/ValueRef').default} ValueRef */
 
@@ -40,6 +39,11 @@ class ValueCollection extends Collection {
    * NOTE: initialized from `RuntimeMonitor`
    */
   valuesDisabled;
+
+  /**
+   * hackfix: set `maybePatchPromise` to avoid dependency cycle.
+   */
+  maybePatchPromise;
 
   /**
    * Stores `refId` by `object`.
@@ -352,7 +356,7 @@ class ValueCollection extends Collection {
     }
 
     // this is a new object
-    maybePatchPromise(value);
+    this.maybePatchPromise(value);
 
     if (meta?.shallow) {
       this._finishValue(valueRef, typeName, Array.isArray(value) ? EmptyArray : EmptyObject, pruneState);

@@ -2,6 +2,10 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import isThenable from '@dbux/common/src/util/isThenable';
 import { isFunction } from 'lodash';
+import { peekBCEMatchCallee } from '../data/dataUtil';
+import PromiseRuntimeData from '../data/PromiseRuntimeData';
+import traceCollection from '../data/traceCollection';
+import valueCollection from '../data/valueCollection';
 import { isMonkeyPatched, monkeyPatchFunctionRaw } from '../util/monkeyPatchUtil';
 
 // eslint-disable-next-line no-unused-vars
@@ -24,6 +28,8 @@ let RuntimeMonitorInstance;
 export const NativePromiseClass = (async function () { })().constructor/* globalThis.Promise */;
 export const OriginalPromiseClass = Promise;
 
+valueCollection.maybePatchPromise = maybePatchPromise;
+
 
 // ###########################################################################
 // runtime events
@@ -32,20 +38,17 @@ export const OriginalPromiseClass = Promise;
 /**
  * Event: New promise (`postEventPromise`) has been scheduled.
  */
-function preThen(preEventPromise, postEventPromise) {
-  // take care of new promise
-  maybePatchPromise(postEventPromise);
-
-  // TODO
-
-  debug(`promise ${getPromiseId(preEventPromise)} has child ${getPromiseId(postEventPromise)} (then)`);
+function thenScheduled(thenRef) {
+  RuntimeMonitorInstance._runtime.thread1.thenScheduled(thenRef);
 }
 
 /**
  * Event: Promise has been settled.
  */
-function postThen() {
-  // TODO
+function thenExecuted(thenRef, previousResult, returnValue) {
+  // TODO: add `previousResult` into data flow graph
+
+  RuntimeMonitorInstance._runtime.thread1.thenExecuted(thenRef, returnValue);
 }
 
 // ###########################################################################
@@ -60,19 +63,20 @@ export function maybePatchPromise(value) {
   if (!isThenable(value)) {
     return;
   }
-
-  patchThenable(value);
-}
-
-export function patchThenable(promise) {
-  if (!hasRecordedPromiseData(promise)) {
-    recordPromiseInit(promise);
-  }
-
-  if (isMonkeyPatched(promise.then)) {
+  if (hasRecordedPromiseData(value)) {
     return;
   }
 
+  recordUnseenPromise(value);
+
+  if (isMonkeyPatched(value.then)) {
+    return;
+  }
+
+  patchPromise(value);
+}
+
+export function patchPromise(promise) {
   const proto = promise.constructor?.prototype;
   if (proto && promise.then === proto.then) {
     // patch prototype
@@ -88,30 +92,60 @@ export function patchThenable(promise) {
 // patchThen*
 // ###########################################################################
 
-function patchThenCallback(cb) {
+function patchThenCallback(cb, thenRef) {
   if (!isFunction(cb)) {
     return cb;
   }
 
   const originalCb = cb;
   return function patchedPromiseCb(previousResult) {
-    const result = originalCb(previousResult);
+    const returnValue = originalCb(previousResult);
+    maybePatchPromise(returnValue);
 
-    postThen(previousResult, result);
+    thenExecuted(thenRef, previousResult, returnValue);
 
-    return result;
+    return returnValue;
+  };
+}
+
+/**
+ * 
+ * @param {*} preEventPromise 
+ * @param {*} originalThen 
+ * @returns 
+ */
+function _makeThenRef(preEventPromise, patchedThen) {
+  const ref = valueCollection.getRefByValue(preEventPromise);
+  if (!ref) {
+    // not traced!
+    return null;
+  }
+
+  const bceTrace = peekBCEMatchCallee(patchedThen);
+  return {
+    preEventPromise,
+    schedulerTraceId: bceTrace?.traceId
   };
 }
 
 function patchThen(holder) {
   monkeyPatchFunctionRaw(holder, 'then',
-    (preEventPromise, [successCb, failCb], originalThen) => {
-      maybePatchPromise(preEventPromise);
-      successCb = patchThenCallback(successCb);
-      failCb = patchThenCallback(failCb);
+    (preEventPromise, [successCb, failCb], originalThen, patchedThen) => {
+      const thenRef = _makeThenRef(preEventPromise, patchedThen);
+      if (thenRef) { // NOTE: !!thenRef implies that this is instrumented
+        maybePatchPromise(preEventPromise);
+        successCb = patchThenCallback(successCb, thenRef);
+        failCb = patchThenCallback(failCb, thenRef);
+      }
 
       const postEventPromise = originalThen.call(preEventPromise, successCb, failCb);
-      preThen(preEventPromise, postEventPromise);
+
+      if (thenRef) {
+        maybePatchPromise(postEventPromise);
+        thenRef.postEventPromise = postEventPromise;
+        thenScheduled(thenRef);
+      }
+
       return postEventPromise;
     }
   );
@@ -120,11 +154,20 @@ function patchThen(holder) {
 function patchFinally(holder) {
   monkeyPatchFunctionRaw(holder, 'finally',
     (preEventPromise, [cb], originalFinally) => {
-      maybePatchPromise(preEventPromise);
-      cb = patchThenCallback(cb);
+      const thenRef = _makeThenRef(preEventPromise, originalFinally);
+      if (thenRef) {
+        maybePatchPromise(preEventPromise);
+        cb = patchThenCallback(cb, thenRef);
+      }
 
       const postEventPromise = originalFinally.call(preEventPromise, cb);
-      preThen(preEventPromise, postEventPromise);
+
+      if (thenRef) {
+        maybePatchPromise(postEventPromise);
+        thenRef.postEventPromise = postEventPromise;
+        thenScheduled(thenRef);
+      }
+
       return postEventPromise;
     }
   );
@@ -209,7 +252,7 @@ function newPromiseId() {
   return ++lastPromiseId;
 }
 
-function recordPromiseInit(promise) {
+function recordUnseenPromise(promise) {
   const currentRootId = RuntimeMonitorInstance.getCurrentVirtualRootContextId();
   setPromiseData(promise, {
     rootId: currentRootId,
@@ -218,14 +261,15 @@ function recordPromiseInit(promise) {
   });
 }
 
+/**
+ * @param {*} promise 
+ * @param {PromiseRuntimeData} data
+ */
 export function setPromiseData(promise, data) {
   let { _dbux_ } = promise;
   if (!_dbux_) {
     Object.defineProperty(promise, '_dbux_', {
-      value: _dbux_ = {},
-      writable: true,
-      enumerable: false,
-      configurable: false
+      value: _dbux_ = {}
     });
   }
   Object.assign(_dbux_, data);
@@ -235,6 +279,9 @@ export function hasRecordedPromiseData(promise) {
   return !!promise._dbux_;
 }
 
+/**
+ * @returns {PromiseRuntimeData}
+ */
 export function getPromiseData(promise) {
   return promise._dbux_ || EmptyObject;
 }

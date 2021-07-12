@@ -7,7 +7,8 @@ import asyncNodeCollection from '../data/asyncNodeCollection';
 // import traceCollection from './data/traceCollection';
 // import valueCollection from './data/valueCollection';
 import { getBCEContext, isFirstContextInParent, isRootContext } from '../data/dataUtil';
-import { getPromiseData, getPromiseOwnAsyncFunctionContextId, isNewPromise, setPromiseData } from './patchPromise';
+import ThenRef from '../data/ThenRef';
+import { getPromiseData, getPromiseId, getPromiseOwnAsyncFunctionContextId, isNewPromise, setPromiseData } from './patchPromise';
 
 /** @typedef { import("./Runtime").default } Runtime */
 
@@ -156,6 +157,9 @@ export class RuntimeThreads1 {
   // postAwait
   // ###########################################################################
 
+  /**
+   * TODO: also add a similar (but not the same) logic to `return` value of `async` functions.
+   */
   postAwait(awaitContextId, realContextId, postEventContextId, awaitArgument) {
     const {
       resumeContextId: preEventContextId,
@@ -214,15 +218,12 @@ export class RuntimeThreads1 {
         // eslint-disable-next-line max-len
         `[postAwait] tried to handle postEventRootId more than once for thread ${preEventThreadId}` +
         `getLastRootContextOfThread(startThreadId) === postEventRootId. ` +
-        `Runs=${this.debugGetAllRunsOfThread(preEventThreadId)} (Skipped).`
+        `Runs=${this.debugGetAllRootIdsOfThread(preEventThreadId)} (Skipped).`
       );
     }
 
     // add edge
-    const actualToThreadId = this.addEdge(fromRootId, postEventRootId, fromThreadId, toThreadId, preAwaitTid);
-
-    // eslint-disable-next-line max-len
-    this.logger.debug(`postAwait [${fromThreadId !== actualToThreadId ? `${preEventThreadId}->` : ''}${actualToThreadId}] Roots: ${fromRootId}->${postEventRootId} (${isNested ? `nested` : ''})`);
+    const actualToThreadId = this.addEdge(fromRootId, postEventRootId, fromThreadId, toThreadId, preAwaitTid, isNested);
 
     // store `actualToThreadId` and `postEventRootId` with `returnPromise`
     if (returnPromise) {
@@ -268,6 +269,70 @@ export class RuntimeThreads1 {
     // }
     // this.floatingPromises = [];
     // // this.logger.debug("end clean");
+  }
+
+  // ###########################################################################
+  // Promises: thenScheduled
+  // ###########################################################################
+
+  /**
+   * Event: New promise (`postEventPromise`) has been scheduled.
+   * @param {ThenRef} thenRef
+   */
+  thenScheduled(thenRef) {
+    const {
+      preEventPromise,
+      postEventPromise,
+      schedulerTraceId
+    } = thenRef;
+
+    const rootId = this.getCurrentVirtualRootContextId();
+    this.logger.debug(`[thenScheduled] #${rootId} ${getPromiseId(preEventPromise)} -> ${getPromiseId(postEventPromise)} (tid=${schedulerTraceId})`);
+  }
+
+  // ###########################################################################
+  // Promises: thenExecuted
+  // ###########################################################################
+
+  /**
+   * Event: Promise has been settled.
+   * 
+   * @param {ThenRef} thenRef
+   */
+  thenExecuted(thenRef, returnValue) {
+    const {
+      preEventPromise,
+      postEventPromise,
+      schedulerTraceId
+    } = thenRef;
+    const {
+      threadId: preEventThreadId,
+      lastRootId: preEventRootId
+    } = getPromiseData(preEventPromise);
+
+    // const {
+    //   rootId: scheduleRootId
+    // } = getPromiseData(postEventPromise);
+
+    const postEventRootId = this.getCurrentVirtualRootContextId();
+
+    const isNested = isThenable(returnValue);
+    if (isNested) {
+      // TODO
+    }
+
+    const actualToThreadId = this.addEdge(preEventRootId, postEventRootId, preEventThreadId, preEventThreadId, schedulerTraceId, isNested);
+
+    // TODO: also don't set `threadId` on async result promises?
+    // TODO: keep set of all "promise dependencies" and resolve on next promise event
+
+    if (!getPromiseData(postEventPromise).threadId) {
+      // don't override previous `threadId`
+      setPromiseData(postEventPromise, {
+        threadId: actualToThreadId
+        // lastRootId: postEventRootId
+      });
+    }
   }
 
 
@@ -321,7 +386,7 @@ export class RuntimeThreads1 {
   /**
    * Used for debugging purposes.
    */
-  debugGetAllRunsOfThread(threadId) {
+  debugGetAllRootIdsOfThread(threadId) {
     return Array.from(this.threadsByRoot.entries())
       .filter(([, t]) => t === threadId)
       .map(([r]) => r);
@@ -343,7 +408,9 @@ export class RuntimeThreads1 {
   }
 
   /**
-   * Maintain `runToThreadMap` map and `threadId`'s last run in `threadLastRun` map
+   * Maintain `threadsByRoot` map.
+   * Called by `addEdge`.
+   * 
    * @param {number} runId 
    * @param {number} threadId 
    */
@@ -390,21 +457,32 @@ export class RuntimeThreads1 {
   }
 
   /**
-   * Add an edge between `fromRootId` and `toRootId`
-   * @param {number} fromRootId 
-   * @param {number} toRootId 
+   * If given root was started by a recorded async event, threadId is already assigned.
+   * If not, we assume a FORK, and assign a new threadId.
+   * 
+   * TODO: move to `postRun` or `postRoot`?
    */
-  addEdge(fromRootId, toRootId, fromThreadId, toThreadId, schedulerTraceId) {
-    let previousFromThreadId = this.getRootThreadId(fromRootId);
-    const previousToThreadId = this.getRootThreadId(toRootId);
-
-    if (!previousFromThreadId) {
+  getOrAssignRootThreadId(rootId) {
+    let threadId = this.getRootThreadId(rootId);
+    if (!threadId) {
       // NOTE: this can happen, if a root executed that was not connected to any previous asynchronous events
       //    (e.g. initial root, or caused by unrecorded asynchronous events)
       // this.logger.warn(`Tried to add edge from root ${fromRootId} but it did not have a threadId`);
       // return 0;
-      this.setRootThreadId(fromRootId, previousFromThreadId = this.newThreadId());
+      this.setRootThreadId(rootId, threadId = this.newThreadId());
     }
+    return threadId;
+  }
+
+  /**
+   * Add an edge between `fromRootId` and `toRootId`
+   * @param {number} fromRootId 
+   * @param {number} toRootId 
+   */
+  addEdge(fromRootId, toRootId, fromThreadId, toThreadId, schedulerTraceId, isNested) {
+    const previousFromThreadId = this.getOrAssignRootThreadId(fromRootId);
+    const previousToThreadId = this.getRootThreadId(toRootId);
+
     if (this.hasEdgeFromTo(fromRootId, toRootId)) {
       this.logger.warn(`Tried to add edge twice from ${fromRootId} (t = ${previousFromThreadId} => ${fromThreadId}) to ${toRootId} (t = ${previousToThreadId} => ${toThreadId})`);
       return 0;
@@ -421,6 +499,7 @@ export class RuntimeThreads1 {
     }
 
     if (!previousToThreadId) {
+      // toRootId was not assigned to any thread yet
       this.setRootThreadId(toRootId, toThreadId, schedulerTraceId);
     }
 
@@ -436,6 +515,9 @@ export class RuntimeThreads1 {
     this.inEdges[toRootId].set(fromRootId, 1);
 
     asyncEventCollection.addEdge(fromRootId, toRootId);
+
+    // eslint-disable-next-line max-len
+    this.logger.debug(`[addEdge] [${fromThreadId !== toThreadId ? `${fromThreadId}->` : ''}${toThreadId}] Roots: ${fromRootId}->${toRootId} (tid=${schedulerTraceId}${isNested ? `, nested` : ''})`);
 
     return toThreadId;
   }
