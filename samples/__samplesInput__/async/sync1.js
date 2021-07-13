@@ -1,12 +1,17 @@
 /**
- * Old promise.
+ * Two FORKs: 
+ * * 1 for main
+ * * 1 for f
  */
 
-(function main() {
+(async function main() {
   const p = f();
-  await p;
+  // const p = 0;
+  // await 0;
+  // await p;
   await g(1, p);
   await g(2, p);
+  await g(3, p);
 })();
 
 async function f() {

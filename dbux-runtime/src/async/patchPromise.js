@@ -101,6 +101,7 @@ function patchThenCallback(cb, thenRef) {
   return function patchedPromiseCb(previousResult) {
     const returnValue = originalCb(previousResult);
     maybePatchPromise(returnValue);
+    isThenable(returnValue) && maybeSetPromiseFirstEventRootId(returnValue, RuntimeMonitorInstance.getCurrentVirtualRootContextId());
 
     thenExecuted(thenRef, previousResult, returnValue);
 
@@ -256,7 +257,6 @@ function recordUnseenPromise(promise) {
   const currentRootId = RuntimeMonitorInstance.getCurrentVirtualRootContextId();
   setPromiseData(promise, {
     rootId: currentRootId,
-    lastRootId: currentRootId,
     id: newPromiseId()
   });
 }
@@ -266,13 +266,18 @@ function recordUnseenPromise(promise) {
  * @param {PromiseRuntimeData} data
  */
 export function setPromiseData(promise, data) {
+  const _dbux_ = getOrCreatePromiseDbuxData(promise);
+  Object.assign(_dbux_, data);
+}
+
+function getOrCreatePromiseDbuxData(promise) {
   let { _dbux_ } = promise;
   if (!_dbux_) {
     Object.defineProperty(promise, '_dbux_', {
       value: _dbux_ = {}
     });
   }
-  Object.assign(_dbux_, data);
+  return _dbux_;
 }
 
 export function hasRecordedPromiseData(promise) {
@@ -290,6 +295,14 @@ export function getPromiseRootId(promise) {
   return promise._dbux_?.rootId;
 }
 
+export function getPromiseFirstEventRootId(promise) {
+  return promise._dbux_?.firstEventRootId;
+}
+
+export function getPromiseLastRootId(promise) {
+  return promise._dbux_?.lastRootId;
+}
+
 export function getPromiseId(promise) {
   return promise._dbux_?.id;
 }
@@ -305,4 +318,21 @@ export function getPromiseOwnAsyncFunctionContextId(promise) {
 export function isNewPromise(promise, currentRootId) {
   const rootId = getPromiseRootId(promise);
   return !rootId || rootId === currentRootId;
+}
+
+export function maybeSetPromiseFirstEventRootId(promise, rootId) {
+  if (!getPromiseFirstEventRootId(promise)) {
+    setPromiseData(promise, {
+      firstEventRootId: rootId
+    });
+  }
+}
+
+export function pushPromisePendingRootId(promise, pendingRootId) {
+  const _dbux_ = getOrCreatePromiseDbuxData(promise);
+  let { pendingRootIds } = _dbux_;
+  if (!pendingRootIds) {
+    pendingRootIds = _dbux_.pendingRootIds = [];
+  }
+  pendingRootIds.push(pendingRootId);
 }

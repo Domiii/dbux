@@ -70,21 +70,10 @@ export default function buildBabelOptions(options) {
     runtime = null
   } = options;
 
-  // console.log(`buildBabelOptions: verbose=${verbose}, runtime=${runtime}`);
-
   if (dontInjectDbux && !esnext && !verbose) {
     // nothing to babel
     return null;
   }
-
-  // babel-plugin options
-  if (!babelPluginOptions || isString(babelPluginOptions)) {
-    babelPluginOptions = babelPluginOptions && JSON.parse(babelPluginOptions) || {};
-  }
-  defaultsDeep(babelPluginOptions, {
-    verbose,
-    runtime: runtime
-  });
 
   // if (process.env.NODE_ENV === 'development') {
   //   injectDependencies();
@@ -143,6 +132,14 @@ export default function buildBabelOptions(options) {
   };
 
   if (!dontInjectDbux) {
+    // add @dbux/babel-plugin
+    if (!babelPluginOptions || isString(babelPluginOptions)) {
+      babelPluginOptions = babelPluginOptions && JSON.parse(babelPluginOptions) || {};
+    }
+    defaultsDeep(babelPluginOptions, {
+      verbose,
+      runtime
+    });
     babelOptions.plugins = babelOptions.plugins || [];
     babelOptions.plugins.push([dbuxBabelPlugin, babelPluginOptions]);
   }

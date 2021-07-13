@@ -165,7 +165,7 @@ export function buildVisitors() {
           // path.node && debug(`[${path.node.type}] ${pathToString(path, true)} ${path.node.leadingComments}`);
           if (checkDisabled(path)) {
             debug(` (skipped path: ${pathToString(path, true)})`);
-            path.skip();
+            // path.skip(); // `skip()` will also skip it for all other plugins
           }
           else {
             visitEnter(ParserNodeClazz, path, state);

@@ -5,7 +5,8 @@
 set -e # cancel on error
 # set -x # verbose echo mode
 
-fname="async/promise0"
+# fname="__samplesInput__/async/sync1"
+fname="case-studies/async/producer_consumer/producer_consumer_async"
 
 
 nodeArgs=""
@@ -35,7 +36,7 @@ fi
 
 # echo "i $nodeArgsI r $nodeArgsR ($nodeArgs, $2)"
 
-inPath="./samples/__samplesInput__/$fname.js"
+inPath="./samples/$fname.js"
 # if [[ $dbuxCmd = "i" ]]
 # then
 # else
@@ -48,11 +49,13 @@ inPath="./samples/__samplesInput__/$fname.js"
 if [[ "$dbuxCmd" == "b" ]]
 then
   # babel
-  outPath="./samples/__samplesInput__/$fname.es5.js"
-  node $nodeArgs --enable-source-maps --stack-trace-limit=100 "./node_modules/@babel/cli/bin/babel.js" --config-file="./config/babel-es5.js" $inPath --out-file="$outPath"
-  echo "Babel ES5: $outPath"
+  # babelTarget="es5"
+  babelTarget="node"
+  outPath="./samples/$fname.$babelTarget.js"
+  node $nodeArgs --enable-source-maps --stack-trace-limit=100 "./node_modules/@babel/cli/bin/babel.js" --config-file="./config/babel-presets-$babelTarget.js" $inPath --out-file="$outPath"
+  echo "Babeled ($babelTarget): $outPath"
 else
-  outPath="./samples/__samplesInput__/$fname.inst.js"
+  outPath="./samples/$fname.inst.js"
   if [[ "$dbuxCmd" != "rr" ]]
   then
     # instrument
