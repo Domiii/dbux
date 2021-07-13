@@ -87,7 +87,8 @@ class AsyncGraph extends HostComponentEndpoint {
     return dp.indexes.asyncNodes.byThread.get(threadId).map(asyncNode => {
       const trace = dp.collections.traces.getById(asyncNode.traceId);
       const context = dp.collections.executionContexts.getById(asyncNode.rootContextId);
-      const displayName = trace ? makeTraceLabel(trace) : makeContextLabel(context, app);
+      // const displayName = trace ? makeTraceLabel(trace) : makeContextLabel(context, app);
+      const displayName = makeContextLabel(context, app);
       return {
         displayName,
         locLabel: makeContextLocLabel(applicationId, context),
