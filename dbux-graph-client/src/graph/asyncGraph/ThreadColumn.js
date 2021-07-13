@@ -31,7 +31,7 @@ class ThreadColumn extends ClientComponentEndpoint {
   update() {
     const { threadId } = this.state;
     this.els.title.innerHTML = `t${threadId}`;
-    this.el.style.order = threadId;
+    this.el.style.order = threadId * (this.parent.state.ascendingMode ? 1 : -1);
     this.els.children.innerHTML = this.buildChildrenHTML();
   }
 
