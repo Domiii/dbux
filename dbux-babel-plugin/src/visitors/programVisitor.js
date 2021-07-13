@@ -79,7 +79,8 @@ function exit(path, state) {
   // hackfix: manually exit `Program`
   state.stack.exit1(path, Program);
 
-  path.stop();
+  // NOTE: `stop()` would also stop all other traversals
+  // path.stop();
 
   // actual process of transpilation
   state.stack.genAll();

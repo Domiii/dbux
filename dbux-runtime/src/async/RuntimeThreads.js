@@ -190,8 +190,7 @@ export class RuntimeThreads1 {
       preAwaitRootId: preEventRootId,
       preEventThreadId,
       preAwaitTid,
-      asyncFunctionPromise,
-      firstAwaitingAsyncFunctionContextId
+      asyncFunctionPromise
     } = asyncData;
 
     const postEventRootId = this.getCurrentVirtualRootContextId();

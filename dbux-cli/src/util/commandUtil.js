@@ -10,7 +10,7 @@ export function wrapCommand(commandCallback) {
       // }
     }
     catch (err) {
-      console.error('Dbux command failed:', err);
+      console.error('@dbux/cli command failed:', err);
       exitProcess(-1);
     }
   };
