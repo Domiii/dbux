@@ -1,7 +1,6 @@
 /**
- * Old, but unfinished, promise.
- * Because it goes first, g(1) makes `p` part of it's thread.
- * g(2) then synchronizes against `p`.
+ * Four FORKs: `f` is its own FORK + one FORK per `g`.
+ * All `g`s SYNC against `f`.
  */
 
 const p = f();
@@ -13,6 +12,7 @@ const p = f();
   console.log('mainB');
   g(1, p);
   g(2, p);
+  g(3, p);
 })();
 
 async function f() {
