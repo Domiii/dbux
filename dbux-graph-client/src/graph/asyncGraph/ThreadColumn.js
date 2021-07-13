@@ -6,7 +6,7 @@ class ThreadColumn extends ClientComponentEndpoint {
     const el = compileHtmlElement(/*html*/`
       <div class="flex-column cross-axis-align-center">
         <div data-el="title"></div>
-        <div data-el="children" class="flex-column full-width main-axis-align-start ellipsis-20"></div>
+        <div data-el="children" class="async-thread flex-column full-width main-axis-align-start"></div>
       </div>
     `);
 

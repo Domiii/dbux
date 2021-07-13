@@ -267,6 +267,21 @@ html, body {
   display: none !important;
 }
 
+[data-async-compression-mode="1"] .async-node {
+  height: 6px !important;
+  padding: 0px !important;
+  min-height: 6px !important;
+  font-size: 6px;
+}
+
+[data-async-compression-mode="1"] .async-fork-button {
+  display: none !important;
+}
+
+.async-thread {
+  overflow: visible;
+}
+
 /** ###########################################################################
  * graph decorations
  * ############################################################################ */
