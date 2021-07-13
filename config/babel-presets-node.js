@@ -1,16 +1,5 @@
-// NOTE: we cannot use preset + plugin names, but *must* `require` them directly
-//      See: https://github.com/Domiii/dbux/issues/456
-
-function loadBabel(name) {
-  // eslint-disable-next-line import/no-dynamic-require,global-require,camelcase
-  const requireFunc = typeof __non_webpack_require__ === "function" ? __non_webpack_require__ : require;
-  const module = requireFunc(name);
-  if (module.default) {
-    return module.default;
-  }
-  return module;
-}
-
+const loadBabel = require('./loadBabel');
+const sharedPlugins = require('./_sharedPlugins');
 
 module.exports = {
   sourceType: 'unambiguous',
@@ -27,24 +16,20 @@ module.exports = {
         // /**
         //  * @see https://babeljs.io/docs/en/babel-preset-env#modules
         //  */
-        // modules: 'cjs'
+        // modules: 'cjs' // convert modules to cjs
+        
+        /**
+         * Enforce modules.
+         * Only works if node is told to load file as module (e.g. `--input-type=module`).
+         * Can be useful for features such as top-level-await when using `@dbux/cli`.
+         * TODO: also requires `instrumentation` to use `import` instead of `require` for runtime.
+         * TODO: also requires @dbux/cli to enforce loading the file as an ESM.
+         * 
+         * @see https://stackoverflow.com/questions/61056049/babel-preset-env-not-loading-top-level-await-syntax-for-node-target/68364846#68364846
+         */
+        // modules: false
       }
     ]
   ],
-  plugins: [
-    loadBabel('@babel/plugin-proposal-optional-chaining'),
-    [
-      loadBabel('@babel/plugin-proposal-decorators'),
-      {
-        legacy: true
-      }
-    ],
-    loadBabel('@babel/plugin-proposal-function-bind'),
-    loadBabel('@babel/plugin-syntax-export-default-from'),
-    loadBabel('@babel/plugin-syntax-dynamic-import'),
-    loadBabel('@babel/plugin-transform-runtime'),
-
-    // NOTE: cannot convert mjs with @babel/register: https://github.com/babel/babel/issues/6737
-    // '@babel/plugin-transform-modules-commonjs'
-  ]
+  plugins: sharedPlugins
 };

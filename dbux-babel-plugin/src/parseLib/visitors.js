@@ -2,7 +2,6 @@
  * @file
  */
 
-import isFunction from 'lodash/isFunction';
 import { newLogger } from '@dbux/common/src/log/logger';
 
 import ParseDirection from './ParseDirection';
