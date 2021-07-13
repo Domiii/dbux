@@ -82,7 +82,7 @@ class Toolbar extends ClientComponentEndpoint {
       searchTermContexts,
       searchTermTraces,
       asyncGraphMode,
-      asyncDetailMode
+      asyncDetailMode,
     } = this.state;
 
     const themeModeName = ThemeMode.getName(this.context.themeMode).toLowerCase();
@@ -135,7 +135,7 @@ class Toolbar extends ClientComponentEndpoint {
       callMode,
       valueMode,
       thinMode,
-      asyncDetailMode
+      asyncDetailMode,
     } = this.state;
 
     const docEl = this.context.graphDocument.el;
@@ -147,7 +147,7 @@ class Toolbar extends ClientComponentEndpoint {
 
     decorateAttr(docEl, {
       'data-call-mode': callMode && 1 || 0,
-      'data-async-detail-mode': asyncDetailMode && 1 || 0
+      'data-async-detail-mode': asyncDetailMode && 1 || 0,
     });
   }
 

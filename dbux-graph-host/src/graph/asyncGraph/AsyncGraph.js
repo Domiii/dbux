@@ -17,6 +17,8 @@ class ThreadColumnSet extends KeyedComponentSet {
 class AsyncGraph extends HostComponentEndpoint {
   init() {
     this.state.applications = [];
+    // this.state.ascendingMode = false;
+    this.state.ascendingMode = true;
     this._emitter = new NanoEvents();
     this._unsubscribeOnNewData = [];
     this.threadColumns = new ThreadColumnSet(this, ThreadColumn, { forceUpdate: true });
@@ -85,7 +87,8 @@ class AsyncGraph extends HostComponentEndpoint {
     return dp.indexes.asyncNodes.byThread.get(threadId).map(asyncNode => {
       const trace = dp.collections.traces.getById(asyncNode.traceId);
       const context = dp.collections.executionContexts.getById(asyncNode.rootContextId);
-      const displayName = trace ? makeTraceLabel(trace) : makeContextLabel(context, app);
+      // const displayName = trace ? makeTraceLabel(trace) : makeContextLabel(context, app);
+      const displayName = makeContextLabel(context, app);
       return {
         displayName,
         locLabel: makeContextLocLabel(applicationId, context),
