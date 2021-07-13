@@ -3,9 +3,7 @@
  * All `g`s SYNC against `f`.
  */
 
-const p = f();
-
-(function main() {
+(async function main() {
   console.log('mainA');
   const p = f();
   await 0;

@@ -605,8 +605,16 @@ export class RuntimeThreads1 {
   }
 
   addEdge(fromRootId, toRootId, edgeType) {
+    if (!fromRootId || !toRootId) {
+      this.logger.error(new Error(
+        `Tried to add invalid ${AsyncEdgeType.nameFromForce(edgeType)} edge, from ${fromRootId} to ${toRootId}`
+      ).stack); // (t = ${previousFromThreadId} => ${fromThreadId}) to ${toRootId} (t = ${previousToThreadId} => $
+      return false;
+    }
     if (this.hasEdgeFromTo(fromRootId, toRootId)) {
-      this.logger.warn(`Tried to add ${AsyncEdgeType.nameFromForce(edgeType)} edge, but there already was one, from ${fromRootId} to ${toRootId} `); // (t = ${previousFromThreadId} => ${fromThreadId}) to ${toRootId} (t = ${previousToThreadId} => ${toThreadId})`);
+      this.logger.error(new Error(
+        `Tried to add ${AsyncEdgeType.nameFromForce(edgeType)} edge, but there already was one, from ${fromRootId} to ${toRootId}`
+      ).stack); // (t = ${previousFromThreadId} => ${fromThreadId}) to ${toRootId} (t = ${previousToThreadId} => ${toThreadId})`);
       return false;
     }
 
