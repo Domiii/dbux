@@ -195,13 +195,24 @@ export class RuntimeThreads1 {
 
     const isNested = isThenable(awaitArgument);
     if (isNested) {
-      // nested promise:
-      //  -> an out-going edge has already been added from `preEventRootId` to the beginning of that promise
-      //  -> we now reel it back in
+      /**
+       * nested promise: 2 possibilities
+       * 
+       * 1. nested promise is chained into the same thread: add single edge
+       * 2. nested promise is not chained: add a second SYNC edge
+       */
       ({
         lastRootId: fromRootId,
         threadId: fromThreadId    // NOTE `threadId === getRootThreadId(lastRootId)` is NOT guaranteed!
       } = getPromiseData(awaitArgument));
+      if (fromThreadId && fromThreadId !== preEventThreadId) {
+        // case 2: add SYNC edge
+        this.addEdge(fromRootId, postEventRootId, fromThreadId, toThreadId, preAwaitTid, isNested);
+
+        // add edge from previous event, as usual
+        fromRootId = preEventRootId;
+        fromThreadId = preEventThreadId;
+      }
     }
     else {
       // not nested
