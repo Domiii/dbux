@@ -69,7 +69,6 @@ export default {
 
   /** @param {DataProvider} dp */
   getRootContextIdByContextId(dp, contextId) {
-    // TODO: use `this.getFirstContextOfRun(runId)` instead
     const { executionContexts } = dp.collections;
     let lastContextId = contextId;
     let parentContextId;

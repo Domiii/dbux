@@ -38,14 +38,15 @@ import ContextsByTypeIndex from './impl/indexes/ContextsByTypeIndex';
 import ProgramIdByFilePathQuery from './impl/queries/ProgramIdByFilePathQuery';
 import ProgramFilePathByTraceIdQuery from './impl/queries/ProgramFilePathByTraceIdQuery';
 import StatsByContextQuery from './impl/queries/StatsByContextQuery';
-import AsyncEventsToIndex from './impl/indexes/AsyncEventsToIndex';
 import DataNodesByTraceIndex from './impl/indexes/DataNodesByTraceIndex';
 import DataNodesByAccessIdIndex from './impl/indexes/DataNodesByAccessIdIndex';
 import DataNodesByValueIdIndex from './impl/indexes/DataNodesByValueIdIndex';
 import DataNodesByRefIdIndex from './impl/indexes/DataNodesByRefIdIndex';
 import DataNodesByObjectRefIdIndex from './impl/indexes/DataNodesByObjectRefIdIndex';
+import AsyncEventsToIndex from './impl/indexes/AsyncEventsToIndex';
 import AsyncEventsFromIndex from './impl/indexes/AsyncEventsFromIndex';
 import AsyncNodesByRootIndex from './impl/indexes/AsyncNodesByRootIndex';
+import AsyncNodesByThreadIndex from './impl/indexes/AsyncNodesByThreadIndex';
 
 
 export function newDataProvider(application) {
@@ -103,6 +104,7 @@ export function newDataProvider(application) {
   dataProvider.addIndex(new AsyncEventsFromIndex());
   dataProvider.addIndex(new AsyncEventsToIndex());
   dataProvider.addIndex(new AsyncNodesByRootIndex());
+  dataProvider.addIndex(new AsyncNodesByThreadIndex());
 
   // complex indexes (that have dependencies)
   // NOTE: we are currently solving index dependencies by simply adding depdendents after dependees

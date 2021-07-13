@@ -36,34 +36,37 @@ class ThreadColumn extends ClientComponentEndpoint {
   }
 
   buildChildrenHTML() {
-    const { nodes, lastRunId, applicationId, threadId } = this.state;
-    const firstRunInThread = nodes[0]?.context.runId;
-    const lastRunInThread = nodes[nodes.length - 1]?.context.runId;
+    const { nodes, parentRootContextId, parentAsyncNodeId, rootContextIds, applicationId } = this.state;
+    const firstRootInThread = nodes[0]?.asyncNode.rootContextId;
+    const lastRootInThread = nodes[nodes.length - 1]?.asyncNode.rootContextId;
     let html = '';
-    const nodesById = new Map(nodes.map(node => [node.context.runId, node]));
-    for (let runId = 1; runId <= lastRunId; ++runId) {
-      const node = nodesById.get(runId);
-      let dotLabel, displayName, locLabel, parentThreadId, contextId, parentContextId;
+    const nodesById = new Map(nodes.map(node => [node.asyncNode.rootContextId, node]));
+    for (let rootContextId of rootContextIds) {
+      const node = nodesById.get(rootContextId);
+      let dotLabel, displayName, locLabel;
       if (node) {
         dotLabel = '⬤';
-        ({ displayName, locLabel, parentThreadId, context: { contextId, parentContextId } } = node);
+        ({ displayName, locLabel } = node);
+      }
+      else if (parentRootContextId === rootContextId) {
+        dotLabel = '&nbsp;';
+        displayName = '⬤';
+        locLabel = '';
       }
       else {
-        const shouldAddLine = (firstRunInThread < runId) && (runId < lastRunInThread);
+        const shouldAddLine = (firstRootInThread < rootContextId) && (rootContextId < lastRootInThread);
         dotLabel = shouldAddLine ? '|' : '&nbsp;';
         displayName = shouldAddLine ? '|' : '&nbsp;';
         locLabel = '';
       }
 
-      const forkButton = (runId === firstRunInThread && parentContextId) ? /*html*/`
-        <div style="width:0px"><div class="async-fork-button">${parentThreadId}</div></div>
+      const forkButton = (firstRootInThread === rootContextId && parentRootContextId) ? /*html*/`
+        <div style="width:0px"><div class="async-fork-button">${parentRootContextId}</div></div>
       ` : '';
       const data = {
-        'application-id': applicationId,
-        'run-id': runId,
-        'context-id': contextId,
-        'thread-id': threadId,
-        'parent-context-id': parentContextId
+        'async-node-id': node?.asyncNode.asyncNodeId,
+        'parent-async-node-id': parentAsyncNodeId,
+        'application-id': applicationId
       };
       const dataTag = Object.entries(data).map(([key, val]) => `data-${key}="${val || ''}"`).join(' ');
 
@@ -90,16 +93,16 @@ class ThreadColumn extends ClientComponentEndpoint {
   }
 
   handleClickAsyncNode(asyncNode) {
-    const { applicationId, contextId } = asyncNode.dataset;
-    if (applicationId && contextId) {
-      this.remote.gotoContext(applicationId, contextId);
+    const { asyncNodeId, applicationId } = asyncNode.dataset;
+    if (asyncNodeId) {
+      this.remote.gotoAsyncNode(applicationId, asyncNodeId);
     }
   }
 
   handleClickForkButton(asyncNode) {
-    const { applicationId, parentContextId } = asyncNode.dataset;
-    if (applicationId && parentContextId) {
-      this.remote.gotoContext(applicationId, parentContextId);
+    const { parentAsyncNodeId, applicationId } = asyncNode.dataset;
+    if (parentAsyncNodeId) {
+      this.remote.gotoAsyncNode(applicationId, parentAsyncNodeId);
     }
   }
 }

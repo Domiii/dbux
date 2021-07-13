@@ -47,22 +47,22 @@ export default class FocusController extends HostComponentEndpoint {
       await this.waitForInit();
       if (this.context.graphDocument.asyncGraphMode) {
         // goto async node of trace
-        let applicationId, contextId, runId, threadId;
+        let asyncNode;
         if (trace) {
-          ({ applicationId, contextId } = trace);
+          const { applicationId } = trace;
           const dp = allApplications.getById(applicationId).dataProvider;
-          const context = dp.collections.executionContexts.getById(contextId);
-          ({ runId, threadId } = context);
+          const { rootContextId } = trace;
+          asyncNode = dp.indexes.asyncNodes.byRoot.getFirst(rootContextId);
           if (this.syncMode) {
-            await this.remote.focusAsyncNode({ applicationId, runId, threadId }, ignoreFailed);
+            await this.remote.focusAsyncNode(asyncNode, ignoreFailed);
           }
         }
         else {
           this.clearFocus();
         }
 
-        if (applicationId && runId && threadId) {
-          this.remote.selectAsyncNode({ applicationId, runId, threadId }, ignoreFailed);
+        if (asyncNode) {
+          this.remote.selectAsyncNode(asyncNode, ignoreFailed);
         }
         else {
           this.remote.selectAsyncNode(null);
