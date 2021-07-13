@@ -11,7 +11,6 @@ class Toolbar extends HostComponentEndpoint {
     this.state.hideNewMode = this.hiddenNodeManager.hideNewMode;
     this.state.asyncGraphMode = this.context.graphDocument.asyncGraphMode;
     this.state.asyncDetailMode = false;
-    this.state.asyncCompressionMode = false;
 
     // listen on mode changed event
     this.hiddenNodeManager.onStateChanged(({ hideBefore, hideAfter }) => {

@@ -43,13 +43,14 @@ html, body {
 }
 
 .mode-btn-wrapper .graph-mode-button {
-  background-color: rgba(0,0,0,0.1);
-  display:inline-block;
-  margin:0;
+  background-color: rgba(0, 0, 0, 0.1);
+  display: inline-block;
+  margin: 0;
   padding: 0;
   border: 0;
   line-height: 1rem;
-  min-width: 1.2rem; /* NOTE: on some systems, some of those emojis are extra-wide */
+  min-width: 1.2rem;
+  /* NOTE: on some systems, some of those emojis are extra-wide */
 }
 
 .theme-mode-dark .root-graph-mode-button {
@@ -187,6 +188,7 @@ html, body {
     padding: 10px;
   }
 } */
+
 /* @keyframes new-run-node-content {
   from {
     border: 10px solid yellow;
@@ -195,10 +197,12 @@ html, body {
     border: 1px solid orange;
   }
 } */
+
 /* .new {
   animation: new-run-node 10s linear;
   animation-fill-mode: forwards;
 } */
+
 /* .new > div {
   animation: new-run-node-content 10s linear;
   animation-fill-mode: forwards;
@@ -211,13 +215,14 @@ html, body {
 .async-node {
   border: 1px solid transparent;
   min-height: 1.6em;
-  min-width: 5em;
+  min-width: 1.2em;
   line-height: 1.1;
   padding: 1.5px;
 }
 
 [data-async-detail-mode="1"] .async-node {
   min-height: 2.8em;
+  min-width: 5em;
 }
 
 .async-node:hover:not([data-async-node-id=""]) {
@@ -267,14 +272,18 @@ html, body {
   display: none !important;
 }
 
-[data-async-compression-mode="1"] .async-node {
+[data-async-detail-mode="0"] .async-node {
   height: 6px !important;
   padding: 0px !important;
   min-height: 6px !important;
-  font-size: 6px;
+  font-size: 6px !important;
 }
 
-[data-async-compression-mode="1"] .async-fork-button {
+[data-async-detail-mode="0"] .async-fork-button {
+  display: none !important;
+}
+
+[data-async-detail-mode="0"] .async-thread-title {
   display: none !important;
 }
 

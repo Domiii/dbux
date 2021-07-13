@@ -5,7 +5,7 @@ class ThreadColumn extends ClientComponentEndpoint {
   createEl() {
     const el = compileHtmlElement(/*html*/`
       <div class="flex-column cross-axis-align-center">
-        <div data-el="title"></div>
+        <div data-el="title" class="async-thread-title"></div>
         <div data-el="children" class="async-thread flex-column full-width main-axis-align-start"></div>
       </div>
     `);
@@ -30,7 +30,7 @@ class ThreadColumn extends ClientComponentEndpoint {
 
   update() {
     const { threadId } = this.state;
-    this.els.title.innerHTML = `t${threadId}`;
+    this.els.title.innerHTML = `${threadId}`;
     this.el.style.order = threadId * (this.parent.state.ascendingMode ? 1 : -1);
     this.els.children.innerHTML = this.buildChildrenHTML();
   }
