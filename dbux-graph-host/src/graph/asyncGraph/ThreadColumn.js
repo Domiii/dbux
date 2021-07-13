@@ -7,10 +7,10 @@ const { log, debug, warn, error: logError } = newLogger('ThreadColumn');
 
 class ThreadColumn extends HostComponentEndpoint {
   public = {
-    gotoContext(applicationId, contextId) {
-      const app = allApplications.getById(applicationId);
-      const firstTrace = app.dataProvider.indexes.traces.byContext.getFirst(contextId);
-
+    gotoAsyncNode(applicationId, asyncNodeId) {
+      const dp = allApplications.getById(applicationId).dataProvider;
+      const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
+      const firstTrace = dp.indexes.traces.byContext.getFirst(asyncNode.rootContextId);
       if (firstTrace) {
         traceSelection.selectTrace(firstTrace);
       }

@@ -1,7 +1,7 @@
 import NanoEvents from 'nanoevents';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { makeContextLabel } from '@dbux/data/src/helpers/contextLabels';
-import { makeContextLocLabel } from '@dbux/data/src/helpers/traceLabels';
+import { makeContextLocLabel, makeTraceLabel } from '@dbux/data/src/helpers/traceLabels';
 import KeyedComponentSet from '@dbux/graph-common/src/componentLib/KeyedComponentSet';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 import ThreadColumn from './ThreadColumn';
@@ -59,26 +59,40 @@ class AsyncGraph extends HostComponentEndpoint {
    */
   buildChildrenColumns(app) {
     const { dataProvider: dp, applicationId } = app;
-    const threadIds = dp.indexes.executionContexts.firstsInRunsByThread.getAllKeys();
-
-    const lastRunId = dp.collections.executionContexts.getLast()?.runId;
+    const threadIds = dp.indexes.asyncNodes.byThread.getAllKeys();
+    const rootContextIds = dp.indexes.asyncNodes.byRoot.getAllKeys();
+    const lastRootContextId = dp.collections.asyncNodes.getLast()?.rootContextId;
 
     this.threadColumns.update(threadIds.map((threadId) => {
+      const firstNode = dp.indexes.asyncNodes.byThread.getFirst(threadId);
+      const parentEdge = dp.indexes.asyncEvents.from.getFirst(firstNode.rootContextId);
+      const parentRootContextId = parentEdge?.fromRootContextId;
+      const parentAsyncNodeId = dp.indexes.asyncNodes.byRoot.getUnique(parentRootContextId)?.asyncNodeId;
       return {
         applicationId,
         threadId,
-        nodes: dp.indexes.executionContexts.firstsInRunsByThread.get(threadId).map(context => {
-          const parentThreadId = dp.collections.executionContexts.getById(context.parentContextId)?.threadId;
-          return {
-            displayName: makeContextLabel(context, app),
-            locLabel: makeContextLocLabel(applicationId, context),
-            parentThreadId,
-            context
-          };
-        }),
-        lastRunId
+        parentRootContextId,
+        parentAsyncNodeId,
+        lastRootContextId,
+        rootContextIds,
+        nodes: this.makeThreadColumnNodes(app, threadId),
       };
     }));
+  }
+
+  makeThreadColumnNodes(app, threadId) {
+    const { dataProvider: dp, applicationId } = app;
+    return dp.indexes.asyncNodes.byThread.get(threadId).map(asyncNode => {
+      const trace = dp.collections.traces.getById(asyncNode.traceId);
+      const context = dp.collections.executionContexts.getById(asyncNode.rootContextId);
+      const displayName = trace ? makeTraceLabel(trace) : makeContextLabel(context, app);
+      return {
+        displayName,
+        locLabel: makeContextLocLabel(applicationId, context),
+        asyncNode,
+        context
+      };
+    });
   }
 
   _resubscribeOnData() {

@@ -158,11 +158,9 @@ export default class FocusController extends ClientComponentEndpoint {
     }
   }
 
-  getAsyncNodeEl({ applicationId, runId, threadId }) {
+  getAsyncNodeEl(asyncNode) {
     const data = {
-      'application-id': applicationId,
-      'run-id': runId,
-      'thread-id': threadId,
+      'async-node-id': asyncNode.asyncNodeId,
     };
     const dataSelector = Object.entries(data).map(([key, val]) => `[data-${key}="${val || ''}"]`).join('');
     const selector = `.async-node${dataSelector}`;
@@ -175,30 +173,30 @@ export default class FocusController extends ClientComponentEndpoint {
      * @param {{applicationId: number, runId: number, threadId: number}} selector 
      * @param {boolean} ignoreFailed 
      */
-    focusAsyncNode: (selector, ignoreFailed = false) => {
-      const asyncNodeEl = this.getAsyncNodeEl(selector);
-      if (!asyncNodeEl) {
-        !ignoreFailed && this.logger.error(`Cannot find asyncNode with data ${JSON.stringify(selector)} when trying to focus`);
-      }
-      else {
+    focusAsyncNode: (asyncNode, ignoreFailed = false) => {
+      const asyncNodeEl = this.getAsyncNodeEl(asyncNode);
+      if (asyncNodeEl) {
         this.slide(asyncNodeEl);
+      }
+      else if (!ignoreFailed) {
+        this.logger.error(`Cannot find DOM of asyncNode: ${JSON.stringify(asyncNode)} when trying to focus`);
       }
     },
     /**
      * @param {{applicationId: number, runId: number, threadId: number}} selector 
      * @param {boolean} ignoreFailed 
      */
-    selectAsyncNode: (selector, ignoreFailed = false) => {
+    selectAsyncNode: (asyncNode, ignoreFailed = false) => {
       document.querySelectorAll('.async-node-selected').forEach(node => {
         node.classList.remove('async-node-selected');
       });
-      if (selector) {
-        const asyncNodeEl = this.getAsyncNodeEl(selector);
-        if (!asyncNodeEl) {
-          !ignoreFailed && this.logger.error(`Cannot find asyncNode with data ${JSON.stringify(selector)} when trying to select`);
-        }
-        else {
+      if (asyncNode) {
+        const asyncNodeEl = this.getAsyncNodeEl(asyncNode);
+        if (asyncNodeEl) {
           asyncNodeEl.classList.add('async-node-selected');
+        }
+        else if (!ignoreFailed) {
+          this.logger.error(`Cannot find DOM of asyncNode: ${JSON.stringify(asyncNode)} when trying to select`);
         }
       }
     }

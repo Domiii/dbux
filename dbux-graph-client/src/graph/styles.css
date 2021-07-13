@@ -220,7 +220,7 @@ html, body {
   min-height: 2.8em;
 }
 
-.async-node:hover:not([data-context-id=""]) {
+.async-node:hover:not([data-async-node-id=""]) {
   border: 1px solid white;
   cursor: pointer;
 }
