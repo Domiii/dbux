@@ -715,6 +715,7 @@ export default {
    * @param {number} contextId
    */
   getOwnCallerTraceOfContext(dp, contextId) {
+    const context = dp.collections.executionContexts.getById(contextId);
     const bceTrace = dp.util.getCallerTraceOfContext(contextId);
     if (!bceTrace?.data) {
       return null;
@@ -732,12 +733,9 @@ export default {
       return null;
     }
 
-    const functionDefinitionDataNode = dp.collections.dataNodes.getById(functionRef.nodeId);
-    const functionDefinitionTrace = dp.collections.traces.getById(functionDefinitionDataNode.traceId);
-    const functionStaticTrace = dp.collections.staticTraces.getById(functionDefinitionTrace.staticTraceId);
-    const context = dp.collections.executionContexts.getById(contextId);
-    if (context.staticContextId === functionStaticTrace.data?.staticContextId) {
-      // Accept: staticContextIds are matched
+    const { traceId } = dp.collections.dataNodes.getById(functionRef.nodeId);
+    if (context.definitionTid === traceId) {
+      // Accept: definitionTid are matched
       return bceTrace;
     }
     else {
