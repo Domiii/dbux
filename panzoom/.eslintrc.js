@@ -7,7 +7,7 @@ module.exports = {
 		console: true,
 		globalThis: false // stage-3, not finalized yet - https://github.com/eslint/eslint/issues/11553
 	},
-	parser: "babel-eslint",
+  parser: "@babel/eslint-parser",
 	// parserOptions: {
 	// 	ecmaVersion: "2018",
 	// 	ecmaFeatures: {

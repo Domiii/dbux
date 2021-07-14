@@ -14,8 +14,8 @@ import { getPromiseData, getPromiseFirstEventRootId, getPromiseId, getPromiseOwn
 
 /** @typedef { import("./Runtime").default } Runtime */
 
-export class RuntimeThreads1 {
-  logger = newLogger('Threads');
+export class AsyncRuntime {
+  logger = newLogger('Async');
 
   /**
    * @type {number} Maintain thread count
@@ -245,7 +245,7 @@ export class RuntimeThreads1 {
       }
       else {
         // Case 2: add SYNC edge
-        this.addSyncEdge(nestedRootId, nestedThreadId);
+        this.addSyncEdge(nestedRootId, postEventRootId);
 
         // add edge from previous event, as usual
         fromRootId = preEventRootId;
@@ -565,6 +565,8 @@ export class RuntimeThreads1 {
   // ###########################################################################
 
   addSyncEdge(fromRootId, toRootId) {
+    // eslint-disable-next-line max-len
+    this.logger.debug(`[addSyncEdge] Roots: ${fromRootId}->${toRootId}`);
     this.addEdge(fromRootId, toRootId, AsyncEdgeType.Sync);
   }
 

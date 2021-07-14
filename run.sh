@@ -5,8 +5,10 @@
 set -e # cancel on error
 # set -x # verbose echo mode
 
-fname="__samplesInput__/async/sync1"
+fname="__samplesInput__/async/sync2"
 # fname="case-studies/async/producer_consumer/producer_consumer_async"
+
+
 
 
 nodeArgs=""
@@ -66,7 +68,7 @@ else
   then
     # run
     # NOTE: --enable-source-maps can mess things up when executing the raw output
-    node $nodeArgsR --input-type=module --enable-source-maps --stack-trace-limit=100 -r "@dbux/runtime" $outPath
+    node $nodeArgsR --enable-source-maps --stack-trace-limit=100 -r "@dbux/runtime" $outPath
   fi
 fi
 

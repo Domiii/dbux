@@ -1,7 +1,9 @@
+import { TreeItem } from 'vscode';
 import omit from 'lodash/omit';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import AsyncEdgeType from '@dbux/common/src/core/constants/AsyncEdgeType';
 import { makeTreeItems } from '../../helpers/treeViewHelpers';
 import { ContextTDNode, TraceTypeTDNode } from './traceInfoNodes';
 import TraceDetailNode from './traceDetailNode';
@@ -39,7 +41,7 @@ export class DebugTDNode extends TraceDetailNode {
       nodeId,
       contextId,
       rootContextId,
-      runId,
+      // runId,
       staticTraceId,
       applicationId,
       ...otherTraceProps
@@ -90,10 +92,13 @@ export class DebugTDNode extends TraceDetailNode {
     // ];
 
     const asyncNode = dataProvider.indexes.asyncNodes.byRoot.getFirst(rootContextId);
+
+    function evtPrefix(evt) {
+      return `${evt.asyncEventId}: [${AsyncEdgeType.nameFromForce(evt.edgeType)}]`;
+    }
     const inEvents = dataProvider.indexes.asyncEvents.from.get(rootContextId)
-      ?.map(evt => evt.fromRootContextId);
-    const outEvents = dataProvider.indexes.asyncEvents.to.get(rootContextId)
-      ?.map(evt => evt.toRootContextId);
+      ?.map(evt => new TreeItem(`${evtPrefix(evt)} <- ${evt.fromRootContextId}`));
+    const outEvents = dataProvider.indexes.asyncEvents.to.get(rootContextId)?.map(evt => new TreeItem(`${evtPrefix(evt)} -> ${evt.toRootContextId}`));
     const runNode = [
       'async',
       {

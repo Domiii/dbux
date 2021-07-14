@@ -4,8 +4,6 @@
  * * 1 for f
  */
 
-await 0;
-
 (async function main() {
   const p = f();
   // const p = 0;

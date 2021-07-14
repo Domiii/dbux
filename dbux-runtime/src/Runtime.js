@@ -3,7 +3,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import Stack from './Stack';
 import traceCollection from './data/traceCollection';
 import scheduleNextPossibleRun from './scheduleNextPossibleRun';
-import { RuntimeThreads1 } from './async/RuntimeThreads';
+import { AsyncRuntime } from './async/RuntimeThreads';
 
 // import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
 // import executionContextCollection from './data/executionContextCollection';
@@ -63,7 +63,7 @@ export default class Runtime {
   _bcesInByContextId = {};
 
   // _runtimeThreadStack = new RuntimeThreadsStack();
-  thread1 = new RuntimeThreads1(this);
+  thread1 = new AsyncRuntime(this);
   // thread2 = new RuntimeThreads2();
 
   // ###########################################################################

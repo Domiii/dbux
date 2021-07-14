@@ -53,15 +53,9 @@ export function makeTreeChildren(obj) {
     objectToTreeItems(obj);    // object
 }
 
-export function makeTreeItem(labelOrArr, children, props) {
+export function makeTreeItem(labelOrArrOrItem, children, props) {
   let label;
-  if (Array.isArray(labelOrArr)) {
-    [label, children, props] = labelOrArr;
-  }
-  else {
-    label = labelOrArr;
-  }
-  label = ('' + label); // coerce to string (else it won't show up)
+  let item;
 
   const hasChildren = children && !isEmpty(children);
   let collapsibleState;
@@ -70,12 +64,26 @@ export function makeTreeItem(labelOrArr, children, props) {
   }
   else {
     collapsibleState = TreeItemCollapsibleState.None;
-    if (children) {
-      label = keyValueLabel(label, children);
-    }
   }
 
-  const item = new TreeItem(label, collapsibleState);
+  if (labelOrArrOrItem instanceof TreeItem) {
+    item = labelOrArrOrItem;
+  }
+  else {
+    if (Array.isArray(labelOrArrOrItem)) {
+      [label, children, props] = labelOrArrOrItem;
+    }
+    else {
+      label = labelOrArrOrItem;
+    }
+    label = ('' + label); // coerce to string (else it won't show up)
+
+    if (!hasChildren && children) {
+      label = keyValueLabel(label, children);
+    }
+    item = new TreeItem(label, collapsibleState);
+  }
+  
   if (hasChildren) {
     item.children = makeTreeChildren(children);
   }
