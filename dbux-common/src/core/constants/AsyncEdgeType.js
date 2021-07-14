@@ -4,7 +4,8 @@ import Enum from '../../util/Enum';
 let asyncEdgeTypeObj = {
   Chain: 1,
   Fork: 2,
-  Sync: 3
+  SyncIn: 3,
+  SyncOut: 4
 };
 
 /**

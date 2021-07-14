@@ -84,11 +84,7 @@ export class AsyncRuntime {
     if (calledContext) {
       calledContextId = calledContext?.contextId;
       lastAwaitData = this.lastAwaitByRealContext.get(calledContextId);
-      if (lastAwaitData?.isFirstAwait) { // NOTE: in this case, `isFirstAwait` should always be true, if exists
-        // -> this is the return value of `calledContextId`
-        // -> this should be the caller of `calledContextId`
-
-        // NOTE: establish async caller chain
+      if (lastAwaitData) {
         lastAwaitData.asyncFunctionPromise = promise;
       }
     }
@@ -123,7 +119,7 @@ export class AsyncRuntime {
       this.getOrAssignRootThreadId(resumeContextId);
     }
 
-    this.lastAwaitByRealContext.set(realContextId, {
+    this.updateLastAwaitByRealContext(realContextId, {
       resumeContextId,
       preAwaitRootId: currentRootId,
       isFirstAwait,
@@ -138,7 +134,7 @@ export class AsyncRuntime {
 
     const nestedAsyncData = this.getPromiseLastAwait(awaitArgument);
     if (!nestedAsyncData) {
-      // invalid data issue
+      // invalid data
       return;
     }
 
@@ -154,7 +150,7 @@ export class AsyncRuntime {
         pushPromisePendingRootId(awaitArgument, currentRootId);
       }
       else {
-        this.addSyncEdge(currentRootId, toRootId);
+        this.addSyncEdge(currentRootId, toRootId, AsyncEdgeType.SyncOut);
       }
     }
 
@@ -205,12 +201,12 @@ export class AsyncRuntime {
 
     const isFirstAwait = isFirstContextInParent(preEventContextId);
     const isNested = isThenable(awaitArgument);
-    const nestedAwaitData = isNested && this.getPromiseLastAwait(awaitArgument);
+    // const nestedAwaitData = isNested && this.getPromiseLastAwait(awaitArgument);
     const nestedPromiseData = isNested && getPromiseData(awaitArgument);
-    const isNestedChain = nestedAwaitData?.firstAwaitingAsyncFunctionContextId === realContextId;
+    const isNestedChain = nestedPromiseData?.rootId === preEventRootId;
 
     if (!isFirstAwait || this.isAsyncFunctionChainedToRoot(realContextId)) {
-      // (1) not first await or (2) chained to root  -> CHAIN
+      // (1) not first await or (2) chained to root -> CHAIN
       toThreadId = preEventThreadId;
     }
     else if (isNestedChain) {
@@ -245,7 +241,7 @@ export class AsyncRuntime {
       }
       else {
         // Case 2: add SYNC edge
-        this.addSyncEdge(nestedRootId, postEventRootId);
+        this.addSyncEdge(nestedRootId, postEventRootId, AsyncEdgeType.SyncIn);
 
         // add edge from previous event, as usual
         fromRootId = preEventRootId;
@@ -256,7 +252,7 @@ export class AsyncRuntime {
       const { pendingRootIds } = nestedPromiseData;
       if (pendingRootIds && isFirstAwait) {
         for (const pendingRootId of pendingRootIds) {
-          this.addSyncEdge(pendingRootId, postEventRootId);
+          this.addSyncEdge(pendingRootId, postEventRootId, AsyncEdgeType.SyncIn);
         }
       }
     }
@@ -286,12 +282,12 @@ export class AsyncRuntime {
     // add edge
     const actualToThreadId = this.addEventEdge(fromRootId, postEventRootId, fromThreadId, toThreadId, preAwaitTid, isNested);
 
+    // update promise data
+    const promiseUpdate = { lastRootId: postEventRootId };
     if (isFirstAwait) {
-      setPromiseData(asyncFunctionPromise, {
-        threadId: actualToThreadId,
-        lastRootId: postEventRootId
-      });
+      promiseUpdate.threadId = actualToThreadId;
     }
+    setPromiseData(asyncFunctionPromise, promiseUpdate);
   }
 
   /**
@@ -408,6 +404,16 @@ export class AsyncRuntime {
   // ###########################################################################
   // bookkeeping utilities
   // ###########################################################################
+
+  updateLastAwaitByRealContext(realContextId, data) {
+    const previousData = this.lastAwaitByRealContext.get(realContextId);
+    data = {
+      ...previousData,
+      ...data
+    };
+    this.lastAwaitByRealContext.set(realContextId, data);
+    return data;
+  }
 
   getPromiseLastAwait(promise) {
     const nestedAsyncContextId = getPromiseOwnAsyncFunctionContextId(promise);
@@ -564,10 +570,10 @@ export class AsyncRuntime {
   // addEdge
   // ###########################################################################
 
-  addSyncEdge(fromRootId, toRootId) {
+  addSyncEdge(fromRootId, toRootId, edgeType) {
     // eslint-disable-next-line max-len
-    this.logger.debug(`[addSyncEdge] Roots: ${fromRootId}->${toRootId}`);
-    this.addEdge(fromRootId, toRootId, AsyncEdgeType.Sync);
+    this.logger.debug(`[add${AsyncEdgeType.nameFromForce(edgeType)}Edge] ${fromRootId}->${toRootId}`);
+    this.addEdge(fromRootId, toRootId, edgeType);
   }
 
   /**

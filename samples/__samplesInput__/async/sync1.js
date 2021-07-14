@@ -13,22 +13,24 @@
   console.log('mainA');
   await p;
   console.log('mainB');
-  await 0;
+  await q;
   console.log('mainC');
+  await 0;
+  console.log('mainD');
 })();
 
 async function f() {
   console.log('fA');
   await 0;
   console.log('fB');
-  await 0;
-  console.log('fC');
 }
 
 async function g(x, p) {
   console.log('gA', x);
   await 0;
   console.log('gB', x);
-  await 0;
+  await 1;
   console.log('gC', x);
+  await 2;
+  console.log('gD', x);
 }
