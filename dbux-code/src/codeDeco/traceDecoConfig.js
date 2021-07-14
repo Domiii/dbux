@@ -1,12 +1,16 @@
 import { window } from 'vscode';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import ValueTypeCategory from '@dbux/common/src/core/constants/ValueTypeCategory';
+import { newLogger } from '@dbux/common/src/log/logger';
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('TraceDecoConfig');
 
 // TODO: use proper theming
 
 const lightred = 'rgba(1, 0, 0, 0.5)';
 
-const StylingsByName = {
+const StylingsByDecoName = {
   PushImmediate: {
     styling: {
       after: {
@@ -33,7 +37,7 @@ const StylingsByName = {
       }
     }
   },
-  
+
   PushCallback: {
     styling: {
       after: {
@@ -50,7 +54,7 @@ const StylingsByName = {
       }
     }
   },
-  
+
   Await: {
     styling: {
       after: {
@@ -196,7 +200,13 @@ const StylingsByName = {
   ExpressionValue: false,
   Callee: false,
   EndOfContext: false,
-  Parameter: false
+  Declaration: false,
+  Literal: false,
+  Identifier: false,
+  WriteVar: false,
+  DeclareAndWriteVar: false,
+  WriteME:false,
+  ClassInstance: false,
 };
 
 const decoNamesByType = {
@@ -230,14 +240,38 @@ const decoNamesByType = {
 
   //   return false;
   // },
-  Parameter(dp, staticTrace, trace) {
+  Param(dp, staticTrace, trace) {
     const { traceId } = trace;
     if (dp.util.isTraceFunctionValue(traceId)) {
       return 'CallbackArgument';
     }
 
     return 'ExpressionResult';
-  }
+  },
+  CatchParam(/*dp, staticTrace, trace*/) {
+    return 'ExpressionResult';
+  },
+  UpdateExpression() {
+    return 'ExpressionResult';
+  },
+  ME() {
+    return 'ExpressionResult';
+  },
+  FunctionDeclaration() {
+    return 'ExpressionResult';
+  },
+  FunctionDefinition() {
+    return 'ExpressionResult';
+  },
+  ClassDeclaration() {
+    return 'ExpressionResult';
+  },
+  ClassDefinition() {
+    return 'ExpressionResult';
+  },
+  ClassProperty() {
+    return 'ExpressionResult';
+  },
 };
 
 
@@ -262,7 +296,8 @@ function initConfig(decoConfig) {
 }
 
 export function initTraceDecorators() {
-  initConfig(StylingsByName);
+  initConfig(StylingsByDecoName);
+  configSanityCheck();
 }
 
 export function getTraceDecoName(dataProvider, staticTrace, trace) {
@@ -301,4 +336,24 @@ export function getDecoConfigByName(decoName) {
 
 export function getAllTraceDecoNames() {
   return decoNames;
+}
+
+function configSanityCheck() {
+  const missingTypes = [];
+  for (const traceTypeName of TraceType.names) {
+    if (traceTypeName in decoNamesByType) {
+      continue;
+    }
+
+    const config = getDecoConfigByName(traceTypeName);
+    if (config || config === false) {
+      continue;
+    }
+
+    missingTypes.push(traceTypeName);
+  }
+
+  if (missingTypes.length) {
+    warn(`Missing decoration config for trace types: ${missingTypes.join(', ')}`);
+  }
 }
