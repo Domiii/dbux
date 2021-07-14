@@ -53,7 +53,7 @@ export default class FocusController extends HostComponentEndpoint {
           const dp = allApplications.getById(applicationId).dataProvider;
           const { rootContextId } = trace;
           asyncNode = dp.indexes.asyncNodes.byRoot.getFirst(rootContextId);
-          if (this.syncMode) {
+          if (this.syncMode && asyncNode) {
             await this.remote.focusAsyncNode(asyncNode, ignoreFailed);
           }
         }
