@@ -8,6 +8,7 @@ class AsyncGraph extends ClientComponentEndpoint {
         <h4>Applications:</h4>
         <pre data-el="applications"></pre>
         <div data-el="nodeChildren" data-mount="ThreadColumn" class="node-children flex-row align-start"></div>
+        <div data-el="content">
       </div>
     `);
   }
@@ -29,6 +30,12 @@ class AsyncGraph extends ClientComponentEndpoint {
       }
       else {
         this.els.applications.textContent = '(no applications selected)';
+      }
+      if (!this.children.getComponent('ThreadColumn')) {
+        this.els.content.textContent = '(no async event recorded)'
+      }
+      else {
+        this.els.content.textContent = '';
       }
     }
   }
