@@ -98,7 +98,8 @@ export class DebugTDNode extends TraceDetailNode {
     }
     const inEvents = dataProvider.indexes.asyncEvents.from.get(rootContextId)
       ?.map(evt => new TreeItem(`${evtPrefix(evt)} <- ${evt.fromRootContextId}`));
-    const outEvents = dataProvider.indexes.asyncEvents.to.get(rootContextId)?.map(evt => new TreeItem(`${evtPrefix(evt)} -> ${evt.toRootContextId}`));
+    const outEvents = dataProvider.indexes.asyncEvents.to.get(rootContextId)
+      ?.map(evt => new TreeItem(`${evtPrefix(evt)} -> ${evt.toRootContextId}`));
     const runNode = [
       'async',
       {

@@ -2,6 +2,7 @@ import { TreeItem, TreeItemCollapsibleState } from 'vscode';
 import map from 'lodash/map';
 import isObject from 'lodash/isObject';
 import isEmpty from 'lodash/isEmpty';
+import isFunction from 'lodash/isFunction';
 
 /**
  * Use:
@@ -42,6 +43,12 @@ function keyValueLabel(key, value) {
 }
 
 function makeChildNode(key, value) {
+  if (value instanceof TreeItem) {
+    return makeTreeItem(value);
+  }
+  if (isFunction(value)) {
+    return makeTreeItem(value(key));
+  }
   return isObject(value) ?
     makeTreeItem(key, value) :  // open up objects recursively
     makeTreeItem(keyValueLabel(key, value));
@@ -57,6 +64,13 @@ export function makeTreeItem(labelOrArrOrItem, children, props) {
   let label;
   let item;
 
+  if (Array.isArray(labelOrArrOrItem)) {
+    [label, children, props] = labelOrArrOrItem;
+  }
+  else {
+    label = labelOrArrOrItem;
+  }
+
   const hasChildren = children && !isEmpty(children);
   let collapsibleState;
   if (hasChildren) {
@@ -66,16 +80,10 @@ export function makeTreeItem(labelOrArrOrItem, children, props) {
     collapsibleState = TreeItemCollapsibleState.None;
   }
 
-  if (labelOrArrOrItem instanceof TreeItem) {
-    item = labelOrArrOrItem;
+  if (label instanceof TreeItem) {
+    item = label;
   }
   else {
-    if (Array.isArray(labelOrArrOrItem)) {
-      [label, children, props] = labelOrArrOrItem;
-    }
-    else {
-      label = labelOrArrOrItem;
-    }
     label = ('' + label); // coerce to string (else it won't show up)
 
     if (!hasChildren && children) {
@@ -83,7 +91,7 @@ export function makeTreeItem(labelOrArrOrItem, children, props) {
     }
     item = new TreeItem(label, collapsibleState);
   }
-  
+
   if (hasChildren) {
     item.children = makeTreeChildren(children);
   }
