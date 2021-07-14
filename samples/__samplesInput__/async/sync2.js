@@ -16,10 +16,14 @@ async function f() {
   console.log('fA');
   await 0;
   console.log('fB');
+  await 1;
+  console.log('fC');
 }
 
 async function g(x, p) {
   console.log('gA', x);
   await p;
   console.log('gB', x);
+  await 0;
+  console.log('gc', x);
 }

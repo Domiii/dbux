@@ -8,7 +8,7 @@
   const p = f();
   const q = g();
   // const p = 0;
-  // await 0;
+  await 0;
   // await p;
   console.log('mainA');
   await p;
@@ -23,6 +23,8 @@ async function f() {
   console.log('fA');
   await 0;
   console.log('fB');
+  await 1;
+  console.log('fC');
 }
 
 async function g(x, p) {

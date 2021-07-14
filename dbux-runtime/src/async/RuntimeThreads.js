@@ -10,7 +10,7 @@ import asyncNodeCollection from '../data/asyncNodeCollection';
 import { getBCEContext, isFirstContextInParent, isRootContext } from '../data/dataUtil';
 import ThenRef from '../data/ThenRef';
 // eslint-disable-next-line max-len
-import { getPromiseData, getPromiseFirstEventRootId, getPromiseId, getPromiseOwnAsyncFunctionContextId, isNewPromise, maybeSetPromiseFirstEventRootId, pushPromisePendingRootId, setPromiseData } from './patchPromise';
+import { getPromiseData, getPromiseFirstEventRootId, getPromiseId, getPromiseOwnAsyncFunctionContextId, getPromiseRootId, isNewPromise, maybeSetPromiseFirstEventRootId, pushPromisePendingRootId, setPromiseData } from './patchPromise';
 
 /** @typedef { import("./Runtime").default } Runtime */
 
@@ -143,14 +143,24 @@ export class AsyncRuntime {
       nestedAsyncData.firstAwaitingAsyncFunctionContextId = realContextId;
     }
 
+    const {
+      rootId: nestedRootId,
+      firstEventRootId,
+      firstNestingTraceId
+    } = getPromiseData(awaitArgument);
+    if (nestedRootId === currentRootId && !firstNestingTraceId) {
+      setPromiseData(awaitArgument, {
+        firstNestingTraceId: preAwaitTid
+      });
+    }
+
     // later callers add SYNC edges to first root of `awaitArgument`
-    const toRootId = getPromiseFirstEventRootId(awaitArgument);
-    if (!toRootId) {
+    if (!firstEventRootId) {
       // promise has not resolved its first event yet, so we add this context as pending
       pushPromisePendingRootId(awaitArgument, currentRootId);
     }
     else {
-      this.addSyncEdge(currentRootId, toRootId, AsyncEdgeType.SyncOut);
+      this.addSyncEdge(currentRootId, firstEventRootId, AsyncEdgeType.SyncOut);
     }
 
     // this.logger.debug('this promise', promise, 'first await', isFirstAwait, 'is root', this.isRootContext(parentContextId));
@@ -202,7 +212,7 @@ export class AsyncRuntime {
     const isNested = isThenable(awaitArgument);
     // const nestedAwaitData = isNested && this.getPromiseLastAwait(awaitArgument);
     const nestedPromiseData = isNested && getPromiseData(awaitArgument);
-    const isNestedChain = nestedPromiseData?.rootId === preEventRootId;
+    const isNestedChain = nestedPromiseData?.firstNestingTraceId === preAwaitTid;
 
     maybeSetPromiseFirstEventRootId(asyncFunctionPromise, postEventRootId);
 
@@ -245,7 +255,7 @@ export class AsyncRuntime {
       }
 
       // TODO: complex nested syncs
-      
+
       // // add SYNC edge for more waiting callers
       // const { pendingRootIds } = nestedPromiseData;
       // if (pendingRootIds && isFirstAwait) {
@@ -366,14 +376,13 @@ export class AsyncRuntime {
 
     const postEventRootId = this.getCurrentVirtualRootContextId();
     const fromThreadId = preEventThreadId;
-    let toThreadId;
     const isNested = isThenable(returnValue);
+    let toThreadId;
 
     maybeSetPromiseFirstEventRootId(preEventPromise, this.getCurrentVirtualRootContextId());
     maybeSetPromiseFirstEventRootId(postEventPromise, this.getCurrentVirtualRootContextId());
 
     if (isNested) {
-      // maybeSetPromiseFirstEventRootId(returnValue, this.getCurrentVirtualRootContextId()); ???
       toThreadId = TODO;
     }
     else {
@@ -534,8 +543,8 @@ export class AsyncRuntime {
     return edges && some(edges.values(), (toRootId) => fromThreadId === this.getRootThreadId(toRootId)) || false;
   }
 
-  hasEdgeFromTo(fromRootId, toRootId) {
-    return !!this.outEdges[fromRootId]?.get(toRootId);
+  hasEdgeFromTo(fromRootId, firstEventRootId) {
+    return !!this.outEdges[fromRootId]?.get(firstEventRootId);
   }
 
   /**
@@ -572,10 +581,10 @@ export class AsyncRuntime {
   // addEdge
   // ###########################################################################
 
-  addSyncEdge(fromRootId, toRootId, edgeType) {
+  addSyncEdge(fromRootId, firstEventRootId, edgeType) {
     // eslint-disable-next-line max-len
-    this.logger.debug(`[add${AsyncEdgeType.nameFromForce(edgeType)}Edge] ${fromRootId}->${toRootId}`);
-    this.addEdge(fromRootId, toRootId, edgeType);
+    this.logger.debug(`[add${AsyncEdgeType.nameFromForce(edgeType)}Edge] ${fromRootId}->${firstEventRootId}`);
+    this.addEdge(fromRootId, firstEventRootId, edgeType);
   }
 
   /**
@@ -583,9 +592,9 @@ export class AsyncRuntime {
    * @param {number} fromRootId 
    * @param {number} toRootId 
    */
-  addEventEdge(fromRootId, toRootId, fromThreadId, toThreadId, schedulerTraceId, isNested) {
-    const previousFromThreadId = this.getOrAssignRootThreadId(fromRootId);
-    const previousToThreadId = this.getRootThreadId(toRootId);
+  addEventEdge(fromRootId, firstEventRootId, fromThreadId, toThreadId, schedulerTraceId, isNested) {
+    // const previousFromThreadId = this.getOrAssignRootThreadId(fromRootId);
+    const previousToThreadId = this.getRootThreadId(firstEventRootId);
 
     const isFork = !toThreadId ||
       // check if this is CHAIN and fromRoot already has an out-going CHAIN
@@ -599,31 +608,31 @@ export class AsyncRuntime {
 
     if (!previousToThreadId) {
       // toRootId was not assigned to any thread yet
-      this.setRootThreadId(toRootId, toThreadId, schedulerTraceId);
+      this.setRootThreadId(firstEventRootId, toThreadId, schedulerTraceId);
     }
 
     // add edge
     const edgeType = fromThreadId !== toThreadId ? AsyncEdgeType.Fork : AsyncEdgeType.Chain;
-    if (!this.addEdge(fromRootId, toRootId, edgeType)) {
+    if (!this.addEdge(fromRootId, firstEventRootId, edgeType)) {
       return 0;
     }
 
     // eslint-disable-next-line max-len
-    this.logger.debug(`[add${AsyncEdgeType.nameFromForce(edgeType)}] [${fromThreadId !== toThreadId ? `${fromThreadId}->` : ''}${toThreadId}] Roots: ${fromRootId}->${toRootId} (tid=${schedulerTraceId}${isNested ? `, nested` : ''})`);
+    this.logger.debug(`[add${AsyncEdgeType.nameFromForce(edgeType)}] [${fromThreadId !== toThreadId ? `${fromThreadId}->` : ''}${toThreadId}] Roots: ${fromRootId}->${firstEventRootId} (tid=${schedulerTraceId}${isNested ? `, nested` : ''})`);
 
     return toThreadId;
   }
 
-  addEdge(fromRootId, toRootId, edgeType) {
-    if (!fromRootId || !toRootId) {
+  addEdge(fromRootId, firstEventRootId, edgeType) {
+    if (!fromRootId || !firstEventRootId) {
       this.logger.error(new Error(
-        `Tried to add invalid ${AsyncEdgeType.nameFromForce(edgeType)} edge, from ${fromRootId} to ${toRootId}`
+        `Tried to add invalid ${AsyncEdgeType.nameFromForce(edgeType)} edge, from ${fromRootId} to ${firstEventRootId}`
       ).stack); // (t = ${previousFromThreadId} => ${fromThreadId}) to ${toRootId} (t = ${previousToThreadId} => $
       return false;
     }
-    if (this.hasEdgeFromTo(fromRootId, toRootId)) {
+    if (this.hasEdgeFromTo(fromRootId, firstEventRootId)) {
       this.logger.error(new Error(
-        `Tried to add ${AsyncEdgeType.nameFromForce(edgeType)} edge, but there already was one, from ${fromRootId} to ${toRootId}`
+        `Tried to add ${AsyncEdgeType.nameFromForce(edgeType)} edge, but there already was one, from ${fromRootId} to ${firstEventRootId}`
       ).stack); // (t = ${previousFromThreadId} => ${fromThreadId}) to ${toRootId} (t = ${previousToThreadId} => ${toThreadId})`);
       return false;
     }
@@ -631,13 +640,13 @@ export class AsyncRuntime {
     if (!this.outEdges[fromRootId]) {
       this.outEdges[fromRootId] = new Map();
     }
-    if (!this.inEdges[toRootId]) {
-      this.inEdges[toRootId] = new Map();
+    if (!this.inEdges[firstEventRootId]) {
+      this.inEdges[firstEventRootId] = new Map();
     }
-    this.outEdges[fromRootId].set(toRootId, 1);
-    this.inEdges[toRootId].set(fromRootId, 1);
+    this.outEdges[fromRootId].set(firstEventRootId, 1);
+    this.inEdges[firstEventRootId].set(fromRootId, 1);
 
-    asyncEventCollection.addEdge(fromRootId, toRootId, edgeType);
+    asyncEventCollection.addEdge(fromRootId, firstEventRootId, edgeType);
     return true;
   }
 

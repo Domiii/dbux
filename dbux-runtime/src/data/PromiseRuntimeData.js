@@ -21,4 +21,16 @@ export default class PromiseRuntimeData {
    * this stores the function call's `contextId`.
    */
   asyncFunctionContextId;
+
+
+  /**
+   * Post-event `rootId` of the first event of the promise.
+   */
+  firstEventRootId;
+
+  /**
+   * `traceId` of the first nesting event.
+   * Is not set, if promise was created in a different rootId as the nesting event.
+   */
+  firstNestingTraceId;
 }
