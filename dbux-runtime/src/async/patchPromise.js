@@ -101,7 +101,6 @@ function patchThenCallback(cb, thenRef) {
   return function patchedPromiseCb(previousResult) {
     const returnValue = originalCb(previousResult);
     maybePatchPromise(returnValue);
-    isThenable(returnValue) && maybeSetPromiseFirstEventRootId(returnValue, RuntimeMonitorInstance.getCurrentVirtualRootContextId());
 
     thenExecuted(thenRef, previousResult, returnValue);
 
