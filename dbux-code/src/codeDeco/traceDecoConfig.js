@@ -29,7 +29,7 @@ const StylingsByDecoName = {
     }
   },
 
-  CallbackArgument: {
+  Function: {
     styling: {
       after: {
         contentText: 'ƒ',
@@ -205,7 +205,7 @@ const StylingsByDecoName = {
   Identifier: false,
   WriteVar: false,
   DeclareAndWriteVar: false,
-  WriteME:false,
+  WriteME: false,
   ClassInstance: false,
 };
 
@@ -213,7 +213,7 @@ const decoNamesByType = {
   CallExpressionResult(dataProvider, staticTrace, trace) {
     // const valueRef = dataProvider.util.getTraceValueRef(trace.traceId);
     // if (valueRef?.category === ValueTypeCategory.Function) {
-    //   return 'CallbackArgument';
+    //   return 'Function';
     // }
 
     const previousTrace = dataProvider.collections.traces.getById(trace.traceId - 1);
@@ -227,7 +227,7 @@ const decoNamesByType = {
   ExpressionResult(dp, staticTrace, trace) {
     const { traceId } = trace;
     if (dp.util.isTraceFunctionValue(traceId)) {
-      return 'CallbackArgument';
+      return 'Function';
     }
 
     return 'ExpressionResult';
@@ -235,7 +235,7 @@ const decoNamesByType = {
   // CallArgument(dp, staticTrace, trace) {
   //   const { traceId } = trace;
   //   if (dp.util.isTraceFunctionValue(traceId)) {
-  //     return 'CallbackArgument';
+  //     return 'Function';
   //   }
 
   //   return false;
@@ -243,7 +243,7 @@ const decoNamesByType = {
   Param(dp, staticTrace, trace) {
     const { traceId } = trace;
     if (dp.util.isTraceFunctionValue(traceId)) {
-      return 'CallbackArgument';
+      return 'Function';
     }
 
     return 'ExpressionResult';
@@ -258,10 +258,10 @@ const decoNamesByType = {
     return 'ExpressionResult';
   },
   FunctionDeclaration() {
-    return 'ExpressionResult';
+    return 'Function';
   },
   FunctionDefinition() {
-    return 'ExpressionResult';
+    return 'Function';
   },
   ClassDeclaration() {
     return 'ExpressionResult';

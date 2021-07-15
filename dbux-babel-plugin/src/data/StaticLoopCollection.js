@@ -7,7 +7,6 @@ export default class StaticLoopCollection extends StaticCollection {
 
     const loop = {
       _loopId: this._getNextId(),
-      _staticContextId: this.state.contexts.getCurrentStaticContextId(path),
 
       type,
       loopHeadLoc,

@@ -26,10 +26,9 @@ export default class StaticContextCollection extends StaticCollection {
 
   /**
    * Contexts are (mostly) potential stackframes; that is `Program` and `Function` nodes.
-   * 
-   * TODO: move this legacy code (use StaticCollection instead)
    */
   addStaticContext(path, data) {
+    path = path.isFunction() ? path.get('body') : path;
     this.checkPath(path);
 
     // console.log('STATIC', path.get('id')?.name, '@', `${state.filename}:${line}`);
@@ -43,8 +42,11 @@ export default class StaticContextCollection extends StaticCollection {
       loc,
       ...data
     });
-
+    
+    // NOTE: `staticId` is used to determine which `context` the given path is "in".
+    //    -> For Function{Expression,Declaration} et al., we want to set it for the body, not the path itself.
     path.setData('staticId', _staticId);
+
     return _staticId;
   }
 
