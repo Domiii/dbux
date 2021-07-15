@@ -3,7 +3,7 @@ import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
 class Toolbar extends HostComponentEndpoint {
   init() {
-    this.state.syncMode = this.focusController.syncMode;
+    this.state.followMode = this.focusController.followMode;
     this.state.locMode = true;
     this.state.callMode = false;
     this.state.valueMode = false;
@@ -25,7 +25,7 @@ class Toolbar extends HostComponentEndpoint {
     });
 
     this.focusController.on('modeChanged', (mode) => {
-      this.setState({ syncMode: mode });
+      this.setState({ followMode: mode });
     });
   }
 
@@ -40,8 +40,8 @@ class Toolbar extends HostComponentEndpoint {
   }
 
   public = {
-    toggleSyncMode() {
-      this.focusController.toggleSyncMode();
+    toggleFollowMode() {
+      this.focusController.toggleFollowMode();
     },
 
     hideOldRun(time) {

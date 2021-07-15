@@ -15,7 +15,7 @@ class Toolbar extends ClientComponentEndpoint {
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
           <button title="Stop recording: Do not add new runs/traces" data-el="hideNewRunBtn" class="btn btn-info" href="#"></button>
           <button title="Clear: Hide all existing runs/traces" data-el="hideOldRunBtn" class="btn btn-info" href="#">x</button>
-          <button title="Sync and always lock onto selected trace" data-el="syncModeBtn" class="btn btn-info" href="#">sync</button>
+          <button title="Sync and always lock onto selected trace" data-el="followModeBtn" class="btn btn-info" href="#">follow</button>
           <button title="Show location of context (function declaration or start of file)" data-el="locModeBtn" class="btn btn-info" href="#">loc</button>
           <button title="Show caller (call trace) of function call" data-el="callModeBtn" class="btn btn-info" href="#">call</button>
           <button title="Show arguments and return value of function call in the form of: (args) -> returnValue" data-el="valueModeBtn" class="btn btn-info" href="#">val</button>
@@ -72,7 +72,7 @@ class Toolbar extends ClientComponentEndpoint {
 
   update = () => {
     const {
-      syncMode,
+      followMode,
       locMode,
       callMode,
       valueMode,
@@ -88,8 +88,8 @@ class Toolbar extends ClientComponentEndpoint {
     const themeModeName = ThemeMode.getName(this.context.themeMode).toLowerCase();
 
     // render buttons
-    decorateClasses(this.els.syncModeBtn, {
-      active: syncMode
+    decorateClasses(this.els.followModeBtn, {
+      active: followMode
     });
     decorateClasses(this.els.locModeBtn, {
       active: locMode
@@ -168,10 +168,10 @@ class Toolbar extends ClientComponentEndpoint {
       focus(evt) { evt.target.blur(); }
     },
 
-    syncModeBtn: {
+    followModeBtn: {
       click(evt) {
         evt.preventDefault();
-        this.remote.toggleSyncMode();
+        this.remote.toggleFollowMode();
       },
 
       focus(evt) { evt.target.blur(); }

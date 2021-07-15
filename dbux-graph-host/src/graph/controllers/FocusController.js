@@ -25,8 +25,8 @@ export default class FocusController extends HostComponentEndpoint {
 
   init() {
     // NOTE: sync mode is on by default
-    // TODO: move `syncMode` to `state.syncMode`
-    this.syncMode = true;
+    // TODO: move `followMode` to `state.followMode`
+    this.followMode = true;
     this._emitter = new NanoEvents();
 
     this.highlightManager.on('clear', () => {
@@ -53,7 +53,7 @@ export default class FocusController extends HostComponentEndpoint {
           const dp = allApplications.getById(applicationId).dataProvider;
           const { rootContextId } = trace;
           asyncNode = dp.indexes.asyncNodes.byRoot.getFirst(rootContextId);
-          if (this.syncMode && asyncNode) {
+          if (this.followMode && asyncNode) {
             await this.remote.focusAsyncNode(asyncNode, ignoreFailed);
           }
         }
@@ -73,7 +73,7 @@ export default class FocusController extends HostComponentEndpoint {
         if (trace) {
           const { applicationId, contextId } = trace;
           contextNode = await this.owner.getContextNodeById(applicationId, contextId);
-          if (this.syncMode && contextNode) {
+          if (this.followMode && contextNode) {
             // NOTE: since we do this right after init, need to check if contextNode have been built
             await this.focus(contextNode);
           }
@@ -106,25 +106,25 @@ export default class FocusController extends HostComponentEndpoint {
     this._selectedContextNode = contextNode;
   }
 
-  toggleSyncMode() {
-    const mode = !this.syncMode;
-    this.setSyncMode(mode);
+  toggleFollowMode() {
+    const mode = !this.followMode;
+    this.setFollowMode(mode);
     return mode;
   }
 
-  setSyncMode(mode) {
-    if (this.syncMode === mode) {
+  setFollowMode(mode) {
+    if (this.followMode === mode) {
       return;
     }
-    this.syncMode = mode;
-    if (this.syncMode) {
+    this.followMode = mode;
+    if (this.followMode) {
       this.handleTraceSelected();
     }
     else {
       // this.lastHighlighter?.dec();
       // this.lastHighlighter = null;
     }
-    this._emitter.emit('modeChanged', this.syncMode);
+    this._emitter.emit('modeChanged', this.followMode);
   }
 
   async focus(node) {
