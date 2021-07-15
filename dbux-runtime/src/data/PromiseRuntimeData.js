@@ -10,10 +10,11 @@ export default class PromiseRuntimeData {
   rootId;
 
   /**
-   * If promise is return value of `async` function: last `currentVirtualRootContextId` in which the function executed.
-   * Else: same as `rootId`.
+   * If promise is return value of `async` function: `lastRootId` is corresponding last recorded `resumeContext` id.
+   * Else: `undefined`
    */
   lastRootId;
+
   threadId;
 
   /**
@@ -33,4 +34,16 @@ export default class PromiseRuntimeData {
    * Is not set, if promise was created in a different rootId as the nesting event.
    */
   firstNestingTraceId;
+
+  /**
+   * @type {Promise}
+   * 
+   * This promise is the return value of calling `then`ish on `preThenPromise`.
+   */
+  preThenPromise;
+
+  /**
+   * The first promise whose `then`ish callback returned this promise.
+   */
+  firstNestedBy;
 }

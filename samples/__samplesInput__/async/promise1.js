@@ -1,10 +1,17 @@
+Promise.resolve().
+  then(f(1));
 
-async function main() {
-  10;
-  await (new Promise(r => {
-    setTimeout(() => r(17), 1000);
-  }));
-  11;
+Promise.resolve().
+  then(f(2)).
+  then(f(3));
+
+
+function f(x) {
+  return async () => {
+    console.log(`fA`, x);
+    await 0;
+    console.log(`fB`, x);
+    await 0;
+    console.log(`fC`, x);
+  };
 }
-
-main();
