@@ -27,7 +27,7 @@
     "express": "^4.17.1",
     "firebase-admin": "^9.1.1",
     "i18next": "^19.8.2",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "module-alias": "^2.2.2",
     "node-fetch": "^2.6.0",
     "object.fromentries": "^2.0.2",

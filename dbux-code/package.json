@@ -1391,7 +1391,7 @@
     "@types/node": "^12.11.7",
     "@types/vscode": "^1.41.0",
     "glob": "^7.1.5",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "mocha": "^6.2.2",
     "moment": "^2.24.0",
     "nanoevents": "^2.0.0",
