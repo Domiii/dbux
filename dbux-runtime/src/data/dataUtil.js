@@ -1,3 +1,4 @@
+import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import dataNodeCollection from './dataNodeCollection';
 import executionContextCollection from './executionContextCollection';
@@ -62,16 +63,16 @@ export function getBCECalleeFunctionRef(bceTrace) {
   return calleeNode?.refId && valueCollection.getById(calleeNode.refId);
 }
 
-export function getBCEContext(callId) {
+/**
+ * @return {ExecutionContext} the context of the call of given `callId`, if it matches the BCE.
+ */
+export function peekBCEContextCheckCallee(callId) {
   const bceTrace = traceCollection.getById(callId);
-  const calleeStaticContextId = bceTrace && getBCECalleeStaticContextId(bceTrace);
-
   const context = executionContextCollection.getLastRealContext();
-  const currentStaticContextId = context?.staticContextId;
-  if (currentStaticContextId && currentStaticContextId === calleeStaticContextId) {
-    return context;
-  }
-  return null;
+
+  const calleeRef = bceTrace && getBCECalleeFunctionRef(bceTrace);
+  const contextFunctionRef = getFunctionRefByContext(context);
+  return calleeRef && calleeRef === contextFunctionRef && bceTrace || null;
 }
 
 /**

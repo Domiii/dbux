@@ -1,29 +1,41 @@
-import { hasSpace, reserveSpace, produce, append, hasItems, reserveItem, consume, remove, idle, N } from 'producer_consumer_base';
+import { hasSpace, produce, hasItems, consume, idle, N } from 'producer_consumer_base';
 
-async function producer(n) {
-  while (n--) {
-    if (hasSpace()) {
-      await produce();
-    }
-    else {
-      await idle();
-    }
-  }
-}
+// async function producer(n) {
+//   while (n--) {
+//     // if (hasSpace()) {
+//       await produce();
+//     // }
+//     // else {
+//     //   await idle();
+//     // }
+//   }
+// }
+produce();
 
-async function consumer(n) {
-  while (n--) {
-    if (hasItems()) {
-      await consume();
-    }
-    else {
-      await idle();
-    }
-  }
-}
+// async function producer(n) {
+//   while (n--) {
+//     // if (hasSpace()) {
+//       await produce();
+//     // }
+//     // else {
+//     //   await idle();
+//     // }
+//   }
+// }
 
-// main: start all producers + consumers
-producer(N);
-producer(N);
-consumer(N);
-consumer(N);
+// async function consumer(n) {
+//   while (n--) {
+//     if (hasItems()) {
+//       await consume();
+//     }
+//     else {
+//       await idle();
+//     }
+//   }
+// }
+
+// // main: start all producers + consumers
+// producer(N);
+// producer(N);
+// consumer(N);
+// consumer(N);

@@ -29,7 +29,7 @@ export default class PromiseRuntimeData {
   firstEventRootId;
 
   /**
-   * `traceId` of the first nesting event.
+   * `traceId` of the first event that nests the promise.
    * Is not set, if promise was created in a different rootId as the nesting event.
    */
   firstNestingTraceId;

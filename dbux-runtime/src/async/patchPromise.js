@@ -39,7 +39,7 @@ valueCollection.maybePatchPromise = maybePatchPromise;
  * Event: New promise (`postEventPromise`) has been scheduled.
  */
 function thenScheduled(thenRef) {
-  RuntimeMonitorInstance._runtime.thread1.thenScheduled(thenRef);
+  RuntimeMonitorInstance._runtime.async.preThen(thenRef);
 }
 
 /**
@@ -48,7 +48,7 @@ function thenScheduled(thenRef) {
 function thenExecuted(thenRef, previousResult, returnValue) {
   // TODO: add `previousResult` into data flow graph
 
-  RuntimeMonitorInstance._runtime.thread1.thenExecuted(thenRef, returnValue);
+  RuntimeMonitorInstance._runtime.async.postThen(thenRef, returnValue);
 }
 
 // ###########################################################################

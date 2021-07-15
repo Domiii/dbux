@@ -42,8 +42,8 @@ export default class FocusController extends HostComponentEndpoint {
   }
 
   handleTraceSelected = async (ignoreFailed = false) => {
+    const trace = traceSelection.selected;
     try {
-      const trace = traceSelection.selected;
       await this.waitForInit();
       if (this.context.graphDocument.asyncGraphMode) {
         // goto async node of trace
@@ -84,7 +84,7 @@ export default class FocusController extends HostComponentEndpoint {
       }
     }
     catch (err) {
-      logError('Cannot focus on selected trace', err);
+      logError(`Cannot focus on selected trace #${trace?.traceId}`, trace, err);
     }
   }
 

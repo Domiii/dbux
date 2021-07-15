@@ -29,6 +29,7 @@ export default class FunctionExpression extends BaseNode {
       // e.g.: This is legal syntax: `(function f(n) { n && f(--n); })(3)`
       const functionTraceCfg = idNode.addOwnDeclarationTrace(null /* NOTE: unused if not hoisted */, {
         node: this,
+        scope: path.parentPath.scope, // prevent adding `tid` variable to own body
         staticTraceData,
         meta: {
           hoisted: false,

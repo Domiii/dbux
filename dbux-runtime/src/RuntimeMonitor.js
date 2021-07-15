@@ -343,7 +343,7 @@ export default class RuntimeMonitor {
     this._runtime.skipPopPostAwait();
 
     // await part
-    this._runtime.thread1.preAwait(awaitArgument, resumeContextId, parentContextId, preAwaitTid);
+    this._runtime.async.preAwait(awaitArgument, resumeContextId, parentContextId, preAwaitTid);
 
     return awaitContextId;
   }
@@ -391,7 +391,7 @@ export default class RuntimeMonitor {
       const postEventContextId = resumeContextId;
 
       // register thread logic
-      this._runtime.thread1.postAwait(awaitContextId, realContextId, postEventContextId, awaitArgument);
+      this._runtime.async.postAwait(awaitContextId, realContextId, postEventContextId, awaitArgument);
     }
   }
 
@@ -876,7 +876,7 @@ export default class RuntimeMonitor {
     }
 
     // register promise-valued CallExpression
-    this._runtime.thread1.traceCallPromiseResult(contextId, trace, value);
+    this._runtime.async.traceCallPromiseResult(contextId, trace, value);
     // this._runtime.thread2.recordMaybeNewPromise(value, runId, contextId, calledContextId);
 
     return value;

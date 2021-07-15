@@ -3,7 +3,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import Stack from './Stack';
 import traceCollection from './data/traceCollection';
 import scheduleNextPossibleRun from './scheduleNextPossibleRun';
-import { AsyncRuntime } from './async/RuntimeThreads';
+import RuntimeAsync from './async/RuntimeAsync';
 
 // import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
 // import executionContextCollection from './data/executionContextCollection';
@@ -62,9 +62,7 @@ export default class Runtime {
 
   _bcesInByContextId = {};
 
-  // _runtimeThreadStack = new RuntimeThreadsStack();
-  thread1 = new AsyncRuntime(this);
-  // thread2 = new RuntimeThreads2();
+  async = new RuntimeAsync(this);
 
   // ###########################################################################
   // Stack management
@@ -486,7 +484,7 @@ export default class Runtime {
 
     // TODO: change to post-process all `virtualRootContexts` of run
 
-    this.thread1.postRun(this._virtualRootContextIdsThisRun);
+    this.async.postRun(this._virtualRootContextIdsThisRun);
     // this.thread2.postRun();
     // console.warn('[RunEnd]', this._currentRootId, this.getLingeringStackCount(), new Error().stack);
     // console.timeEnd('[RunEnd] ' + this._currentRunId);

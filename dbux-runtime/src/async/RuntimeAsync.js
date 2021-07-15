@@ -7,14 +7,16 @@ import asyncNodeCollection from '../data/asyncNodeCollection';
 // import executionContextCollection from './data/executionContextCollection';
 // import traceCollection from './data/traceCollection';
 // import valueCollection from './data/valueCollection';
-import { getBCEContext, isFirstContextInParent, isRootContext } from '../data/dataUtil';
+import { peekBCEContextCheckCallee, isFirstContextInParent, isRootContext, getFunctionRefByContext } from '../data/dataUtil';
 import ThenRef from '../data/ThenRef';
 // eslint-disable-next-line max-len
 import { getPromiseData, getPromiseFirstEventRootId, getPromiseId, getPromiseOwnAsyncFunctionContextId, getPromiseRootId, isNewPromise, maybeSetPromiseFirstEventRootId, pushPromisePendingRootId, setPromiseData } from './patchPromise';
+import traceCollection from '../data/traceCollection';
+import executionContextCollection from '../data/executionContextCollection';
 
 /** @typedef { import("./Runtime").default } Runtime */
 
-export class AsyncRuntime {
+export default class RuntimeAsync {
   logger = newLogger('Async');
 
   /**
@@ -76,7 +78,7 @@ export class AsyncRuntime {
     }
 
     const callId = trace.resultCallId;
-    const calledContext = getBCEContext(callId);
+    const calledContext = peekBCEContextCheckCallee(callId);
 
     let calledContextId;
     let lastAwaitData;
@@ -87,6 +89,10 @@ export class AsyncRuntime {
       if (lastAwaitData) {
         lastAwaitData.asyncFunctionPromise = promise;
       }
+    }
+    else if (!getFunctionRefByContext(executionContextCollection.getLastRealContext())) {
+      // eslint-disable-next-line max-len
+      this.logger.warn(`[traceCallPromiseResult] function is not instrumented, trace=${traceCollection.makeTraceInfo(trace.traceId)}, lastContextId=${executionContextCollection.getLastRealContext()?.contextId}, `);
     }
 
     // register previously unseen promise
@@ -143,25 +149,7 @@ export class AsyncRuntime {
       nestedAsyncData.firstAwaitingAsyncFunctionContextId = realContextId;
     }
 
-    const {
-      rootId: nestedRootId,
-      firstEventRootId,
-      firstNestingTraceId
-    } = getPromiseData(awaitArgument);
-    if (nestedRootId === currentRootId && !firstNestingTraceId) {
-      setPromiseData(awaitArgument, {
-        firstNestingTraceId: preAwaitTid
-      });
-    }
-
-    // later callers add SYNC edges to first root of `awaitArgument`
-    if (!firstEventRootId) {
-      // promise has not resolved its first event yet, so we add this context as pending
-      pushPromisePendingRootId(awaitArgument, currentRootId);
-    }
-    else {
-      this.addSyncEdge(currentRootId, firstEventRootId, AsyncEdgeType.SyncOut);
-    }
+    this._preNestPromise(awaitArgument, currentRootId, preAwaitTid);
 
     // this.logger.debug('this promise', promise, 'first await', isFirstAwait, 'is root', this.isRootContext(parentContextId));
     // if (!isFirstAwait || isRootContext(parentContextId)) {
@@ -169,6 +157,29 @@ export class AsyncRuntime {
     //   this.setupPromise(awaitArgument, currentRootId, threadId, true);
     // }
   }
+
+  _preNestPromise(promise, currentRootId, tid) {
+    const {
+      rootId: nestedRootId,
+      firstEventRootId,
+      firstNestingTraceId
+    } = getPromiseData(promise);
+    if (nestedRootId === currentRootId && !firstNestingTraceId) {
+      setPromiseData(promise, {
+        firstNestingTraceId: tid
+      });
+    }
+
+    // later callers add SYNC edges to first root of `awaitArgument`
+    if (!firstEventRootId) {
+      // promise has not resolved its first event yet, so we add this context as pending
+      pushPromisePendingRootId(promise, currentRootId);
+    }
+    else {
+      this.addSyncEdge(currentRootId, firstEventRootId, AsyncEdgeType.SyncOut);
+    }
+  }
+
 
   recordFloatingPromise(promise, currentRootId, asyncFunctionContextId) {
     setPromiseData(promise, {
@@ -213,6 +224,15 @@ export class AsyncRuntime {
     // const nestedAwaitData = isNested && this.getPromiseLastAwait(awaitArgument);
     const nestedPromiseData = isNested && getPromiseData(awaitArgument);
     const isNestedChain = nestedPromiseData?.firstNestingTraceId === preAwaitTid;
+
+    if (!asyncFunctionPromise) {
+      /* this.logger.error */
+      // return;
+      /* throw new Error */
+      // eslint-disable-next-line max-len
+      this.logger.error(`postAwait did not have "asyncFunctionPromise" at trace="${traceCollection.makeTraceInfo(preAwaitTid)}", realContextId=${realContextId}, postEventRootId=${postEventRootId}, asyncData=${JSON.stringify(asyncData, null, 2)}`);
+      return;
+    }
 
     maybeSetPromiseFirstEventRootId(asyncFunctionPromise, postEventRootId);
 
@@ -339,7 +359,7 @@ export class AsyncRuntime {
    * Event: New promise (`postEventPromise`) has been scheduled.
    * @param {ThenRef} thenRef
    */
-  thenScheduled(thenRef) {
+  preThen(thenRef) {
     const {
       preEventPromise,
       postEventPromise,
@@ -347,7 +367,7 @@ export class AsyncRuntime {
     } = thenRef;
 
     const rootId = this.getCurrentVirtualRootContextId();
-    this.logger.debug(`[thenScheduled] #${rootId} ${getPromiseId(preEventPromise)} -> ${getPromiseId(postEventPromise)} (tid=${schedulerTraceId})`);
+    this.logger.debug(`[preThen] #${rootId} ${getPromiseId(preEventPromise)} -> ${getPromiseId(postEventPromise)} (tid=${schedulerTraceId})`);
   }
 
   // ###########################################################################
@@ -359,7 +379,7 @@ export class AsyncRuntime {
    * 
    * @param {ThenRef} thenRef
    */
-  thenExecuted(thenRef, returnValue) {
+  postThen(thenRef, returnValue) {
     const {
       preEventPromise,
       postEventPromise,
@@ -422,6 +442,7 @@ export class AsyncRuntime {
       ...previousData,
       ...data
     };
+    this.logger.debug(`updateLastAwaitByRealContext`, realContextId, data);
     this.lastAwaitByRealContext.set(realContextId, data);
     return data;
   }
