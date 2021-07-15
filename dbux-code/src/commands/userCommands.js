@@ -161,26 +161,11 @@ export function initUserCommands(extensionContext) {
 
   async function openSelectTraceUI() {
     // input application
-    const applicationIdByLabel = new Map();
-    const labels = [];
-    const allSelectedApps = allApplications.selection.getAll();
-    allSelectedApps.forEach(app => {
-      // NOTE: label should be a unique key
-      const label = `${app.getPreferredName()} (id: ${app.applicationId})`;
-      labels.push(label);
-      applicationIdByLabel.set(label, app.applicationId);
-    });
-    if (!allSelectedApps.length) {
-      await showInformationMessage(translate('noApplication'));
+    const application = await getSelectedApplicationInActiveEditorWithUserFeedback();
+    if (!application) {
       return;
     }
-    // TOTRANSLATE
-    const applicationName = await window.showQuickPick(labels, { placeHolder: 'Select an application' });
-    if (!applicationName) {
-      // user canceled selection
-      return;
-    }
-    const applicationId = applicationIdByLabel.get(applicationName);
+    const { applicationId } = application;
 
     // input traceId
     // TOTRANSLATE
