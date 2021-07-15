@@ -86,14 +86,19 @@ export default class RuntimeAsync {
     if (calledContext) {
       calledContextId = calledContext?.contextId;
       lastAwaitData = this.lastAwaitByRealContext.get(calledContextId);
+
+      // eslint-disable-next-line max-len
+      // this.logger.warn(`[traceCallPromiseResult] trace=${traceCollection.makeTraceInfo(trace.traceId)}, lastContextId=${executionContextCollection.getLastRealContext()?.contextId}`, calledContext?.contextId,
+      //   lastAwaitData);
+
       if (lastAwaitData) {
         lastAwaitData.asyncFunctionPromise = promise;
       }
     }
-    else if (!getFunctionRefByContext(executionContextCollection.getLastRealContext())) {
-      // eslint-disable-next-line max-len
-      this.logger.warn(`[traceCallPromiseResult] function is not instrumented, trace=${traceCollection.makeTraceInfo(trace.traceId)}, lastContextId=${executionContextCollection.getLastRealContext()?.contextId}, `);
-    }
+    // else if (!getFunctionRefByContext(executionContextCollection.getLastRealContext())) {
+    //   // eslint-disable-next-line max-len
+    //   this.logger.warn(`[traceCallPromiseResult] function is not instrumented, trace=${traceCollection.makeTraceInfo(trace.traceId)}, lastContextId=${executionContextCollection.getLastRealContext()?.contextId}`);
+    // }
 
     // register previously unseen promise
     this.recordFloatingPromise(promise, currentRootId, lastAwaitData && calledContextId);

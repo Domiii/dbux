@@ -72,7 +72,7 @@ export function peekBCEContextCheckCallee(callId) {
 
   const calleeRef = bceTrace && getBCECalleeFunctionRef(bceTrace);
   const contextFunctionRef = getFunctionRefByContext(context);
-  return calleeRef && calleeRef === contextFunctionRef && bceTrace || null;
+  return calleeRef && calleeRef === contextFunctionRef && context || null;
 }
 
 /**
