@@ -33,7 +33,7 @@
     "colors": "^1.4.0",
     "glob": "^7.1.6",
     "i18next": "^19.8.2",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "module-alias": "^2.2.2",
     "object.fromentries": "^2.0.2",
     "prettier": "^2.0.5",

@@ -57,7 +57,7 @@
     "cross-spawn": "^7.0.3",
     "find-package-json": "^1.2.0",
     "firebase-admin": "^9.1.1",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "shell-escape": "^0.2.0",
     "shelljs": "0.8.4",
     "yargs": "^15.4.1"
