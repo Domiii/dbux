@@ -1,6 +1,4 @@
-import HasValue from './HasValue';
-
-export default class AsyncEvent extends HasValue {
+export default class AsyncEvent {
   /**
    * @type {number}
    */

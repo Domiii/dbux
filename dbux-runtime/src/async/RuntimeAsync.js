@@ -410,15 +410,15 @@ export default class RuntimeAsync {
       lastRootId || -1,
       createdRootId
     );
-    console.debug(preEventRootId, schedulerTraceId,
-      getPromiseData(preThenPromise),
-      getPromiseData(preThenPromise) && getPromiseData(getPromiseData(preThenPromise).preThenPromise),
-      [
-        firstNestedBy && getPromiseAnyRootId(firstNestedBy) || -1,
-        preThenPromise && getPromiseAnyRootId(preThenPromise) || -1,
-        lastRootId || -1,
-        createdRootId
-      ]);
+    // console.debug(preEventRootId, schedulerTraceId,
+    //   getPromiseData(preThenPromise),
+    //   getPromiseData(preThenPromise) && getPromiseData(getPromiseData(preThenPromise).preThenPromise),
+    //   [
+    //     firstNestedBy && getPromiseAnyRootId(firstNestedBy) || -1,
+    //     preThenPromise && getPromiseAnyRootId(preThenPromise) || -1,
+    //     lastRootId || -1,
+    //     createdRootId
+    //   ]);
     preEventThreadId = preEventThreadId || this.getOrAssignRootThreadId(preEventRootId);
     const isNested = isThenable(returnValue);
 
