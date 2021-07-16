@@ -1,4 +1,4 @@
-import AsyncEventUpdateType from '../constants/AsyncEventUpdateType';
+import AsyncEventUpdateType from './constants/AsyncEventUpdateType';
 
 export class AsyncUpdateBase {
   updateId;
@@ -10,7 +10,16 @@ export class AsyncUpdateBase {
    * @see https://stackoverflow.com/questions/49285864/is-there-a-valueof-similar-to-keyof-in-typescript
    */
   type;
+
   rootId;
+
+  /**
+   * For `preAwait`: Resume context during which `await` was called.
+   * For `postAwait`: Resume context that was pushed as result of this `await`.
+   * For `preThen`: Context during which `then` was called.
+   * For `postThen`: Context of the `then` callback.
+   */
+  contextId;
 }
 
 // ###########################################################################
@@ -18,26 +27,25 @@ export class AsyncUpdateBase {
 // ###########################################################################
 
 export class AsyncFunctionUpdate extends AsyncUpdateBase {
-  realContextId;
-}
+  /**
+   * uniquely identifies the event.
+   */
+  schedulerTraceId;
 
-export class AsyncCallUpdate extends AsyncFunctionUpdate {
-  promiseId;
-}
-
-export class PreAwaitUpdate extends AsyncFunctionUpdate {
   /** @type {number} */
   realContextId;
+}
 
-  resumeContextId;
+// export class AsyncCallUpdate extends AsyncFunctionUpdate {
+//   callId;
+//   promiseId;
+// }
 
+export class PreAwaitUpdate extends AsyncFunctionUpdate {
   nestedPromiseId;
-
-  traceId;
 }
 
 export class PostAwaitUpdate extends AsyncFunctionUpdate {
-
 }
 
 // ###########################################################################
@@ -49,11 +57,19 @@ export class PromiseUpdate extends AsyncUpdateBase {
 }
 
 export class PreThenUpdate extends PromiseUpdate {
+  nestedPromiseId;
 
+  /**
+   * uniquely identifies the event.
+   */
+  schedulerTraceId;
 }
 
 export class PostThenUpdate extends PromiseUpdate {
-
+  /**
+   * uniquely identifies the event.
+   */
+  schedulerTraceId;
 }
 
 

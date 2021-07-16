@@ -143,15 +143,18 @@ export default class RuntimeAsync {
       return;
     }
 
-    const nestedAsyncData = this.getPromiseLastAwait(awaitArgument);
-    if (!nestedAsyncData) {
+    /**
+     * If `awaitArgument` is return value of `async` function, `nestedPromiseAsyncData` is its lastAwaitData
+     */
+    const nestedPromiseAsyncData = this.getPromiseLastAwait(awaitArgument);
+    if (!nestedPromiseAsyncData) {
       // invalid data
       return;
     }
 
-    if (!nestedAsyncData.firstAwaitingAsyncFunctionContextId) {
+    if (!nestedPromiseAsyncData.firstAwaitingAsyncFunctionContextId) {
       // first nesting caller is part of the CHAIN
-      nestedAsyncData.firstAwaitingAsyncFunctionContextId = realContextId;
+      nestedPromiseAsyncData.firstAwaitingAsyncFunctionContextId = realContextId;
     }
 
     this._preNestPromise(awaitArgument, currentRootId, preAwaitTid);
@@ -301,15 +304,6 @@ export default class RuntimeAsync {
       // }
     }
 
-    if (this.getLastRootContextOfThread(fromThreadId) === postEventRootId) {
-      this.logger.warn(
-        // eslint-disable-next-line max-len
-        `[postAwait] tried to handle postEventRootId more than once for thread ${preEventThreadId}` +
-        `getLastRootContextOfThread(startThreadId) === postEventRootId. ` +
-        `Runs=${this.debugGetAllRootIdsOfThread(preEventThreadId)} (Skipped).`
-      );
-    }
-
     // add edge
     const actualToThreadId = this.addEventEdge(fromRootId, postEventRootId, fromThreadId, toThreadId, preAwaitTid, isNested);
 
@@ -355,7 +349,7 @@ export default class RuntimeAsync {
   }
 
   // ###########################################################################
-  // Promises: thenScheduled
+  // Promises: preThen
   // ###########################################################################
 
   /**

@@ -248,7 +248,7 @@ export default {
 
   /**
    * Returns the parentTrace of a context, not necessarily a BCE.
-   * Use getCallerTraceOfContext if you want the BCE of a context.
+   * Use `getOwnCallerTraceOfContext` if you want the BCE of a context.
    * 
    * @param {DataProvider} dp 
    * @param {number} contextId 
@@ -334,7 +334,7 @@ export default {
     let trace = dp.collections.traces.getById(traceId);
     const traceType = dp.util.getTraceType(traceId);
     if (isBeforeCallExpression(traceType) && trace.resultId) {
-      // trace is a BeforeCallExpression and has result
+      // trace is `BeforeCallExpression` and has a matching result trace
       return dp.collections.traces.getById(trace.resultId);
     }
     return trace;
@@ -709,6 +709,11 @@ export default {
     return parentTrace;
   },
 
+  getReturnValueRefOfContext(dp, contextId) {
+    const bceTrace = dp.util.getOwnCallerTraceOfContext(contextId);
+    return bceTrace && dp.util.getTraceValueRef(bceTrace.traceId) || null;
+  },
+
   /**
    * like `util.getCallerTraceOfContext` but returns null if its callee's `staticContextId` matches the context's.
    * @param {DataProvider} dp 
@@ -917,6 +922,15 @@ export default {
     const firstContextId = dp.util.getFirstContextOfRun(runId)?.contextId;
     return firstContextId === contextId;
   },
+
+  isFirstContextInParent(dp, contextId) {
+    const context = dp.collections.executionContexts.getById(contextId);
+    const { parentContextId } = context;
+    if (parentContextId) {
+      return dp.indexes.executionContexts.children.getFirst(parentContextId) === context;
+    }
+    return false;
+  }
 
   // ###########################################################################
   // misc
