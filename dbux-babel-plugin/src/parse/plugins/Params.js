@@ -1,5 +1,5 @@
 import * as t from "@babel/types";
-import TraceType from '@dbux/common/src/core/constants/TraceType';
+import TraceType from '@dbux/common/src/types/constants/TraceType';
 import BasePlugin from './BasePlugin';
 import { getBindingIdentifierPaths } from '../../helpers/bindingsUtil';
 import { pathToString } from '../../helpers/pathHelpers';

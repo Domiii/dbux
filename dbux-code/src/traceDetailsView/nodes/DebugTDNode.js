@@ -3,12 +3,12 @@ import omit from 'lodash/omit';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import AsyncEdgeType from '@dbux/common/src/core/constants/AsyncEdgeType';
+import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import { makeTreeItems } from '../../helpers/treeViewHelpers';
 import { ContextTDNode, TraceTypeTDNode } from './traceInfoNodes';
 import TraceDetailNode from './traceDetailNode';
 
-/** @typedef {import('@dbux/common/src/core/data/Trace').default} Trace */
+/** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
 
 

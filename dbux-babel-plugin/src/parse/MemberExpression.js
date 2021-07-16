@@ -1,4 +1,4 @@
-import TraceType from '@dbux/common/src/core/constants/TraceType';
+import TraceType from '@dbux/common/src/types/constants/TraceType';
 import { ZeroNode } from '../instrumentation/builders/buildUtil';
 import { buildtraceExpressionME } from '../instrumentation/builders/me';
 import BaseNode from './BaseNode';

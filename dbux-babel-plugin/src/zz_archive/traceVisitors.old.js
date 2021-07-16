@@ -11,7 +11,7 @@
 // import merge from 'lodash/merge';
 // import mapValues from 'lodash/mapValues';
 // import * as t from '@babel/types';
-// import TraceType from '@dbux/common/src/core/constants/TraceType';
+// import TraceType from '@dbux/common/src/types/constants/TraceType';
 // import { newLogger } from '@dbux/common/src/log/logger';
 // import EmptyObject from '@dbux/common/src/util/EmptyObject';
 // import { requireAllByName } from '@dbux/common-node/src/util/requireUtil';

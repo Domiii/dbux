@@ -1,5 +1,5 @@
-import StaticTrace from '@dbux/common/src/core/data/StaticTrace';
-import Trace from '@dbux/common/src/core/data/Trace';
+import StaticTrace from '@dbux/common/src/types/StaticTrace';
+import Trace from '@dbux/common/src/types/Trace';
 import CollectionIndex from '../../indexes/CollectionIndex';
 import RuntimeDataProvider from '../../RuntimeDataProvider';
 

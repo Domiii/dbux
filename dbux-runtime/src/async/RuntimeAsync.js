@@ -1,6 +1,6 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import isThenable from '@dbux/common/src/util/isThenable';
-import AsyncEdgeType from '@dbux/common/src/core/constants/AsyncEdgeType';
+import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import { some } from 'lodash';
 import asyncEventCollection from '../data/asyncEventCollection';
 import asyncNodeCollection from '../data/asyncNodeCollection';
@@ -404,12 +404,12 @@ export default class RuntimeAsync {
     const postEventRootId = this.getCurrentVirtualRootContextId();
     // const parent = firstNestedBy || preThenPromise;
     // const parentRootId = parent && 
-    const preEventRootId = Math.max(
-      firstNestedBy && getPromiseAnyRootId(firstNestedBy) || -1,
-      preThenPromise && getPromiseAnyRootId(preThenPromise) || -1,
-      lastRootId || -1,
-      createdRootId
-    );
+    // const preEventRootId = Math.max(
+    //   firstNestedBy && getPromiseAnyRootId(firstNestedBy) || -1,
+    //   preThenPromise && getPromiseAnyRootId(preThenPromise) || -1,
+    //   lastRootId || -1,
+    //   createdRootId
+    // );
     // console.debug(preEventRootId, schedulerTraceId,
     //   getPromiseData(preThenPromise),
     //   getPromiseData(preThenPromise) && getPromiseData(getPromiseData(preThenPromise).preThenPromise),

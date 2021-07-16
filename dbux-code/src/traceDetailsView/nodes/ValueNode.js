@@ -1,4 +1,4 @@
-import ValueTypeCategory from '@dbux/common/src/core/constants/ValueTypeCategory';
+import ValueTypeCategory from '@dbux/common/src/types/constants/ValueTypeCategory';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';

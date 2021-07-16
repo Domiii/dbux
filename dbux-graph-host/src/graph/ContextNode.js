@@ -1,4 +1,4 @@
-import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
+import ExecutionContextType from '@dbux/common/src/types/constants/ExecutionContextType';
 import { binarySearchByKey } from '@dbux/common/src/util/arrayUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';

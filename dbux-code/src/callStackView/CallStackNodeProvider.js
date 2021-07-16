@@ -1,5 +1,5 @@
 import { newLogger } from '@dbux/common/src/log/logger';
-import Trace from '@dbux/common/src/core/data/Trace';
+import Trace from '@dbux/common/src/types/Trace';
 import traceSelection from '@dbux/data/src/traceSelection';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import CallStackNode, { EmptyNode, BarrierNode } from './CallStackNode';

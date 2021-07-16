@@ -1,7 +1,7 @@
 import { TreeItemCollapsibleState } from 'vscode';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
-import TraceType from '@dbux/common/src/core/constants/TraceType';
+import TraceType from '@dbux/common/src/types/constants/TraceType';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
@@ -11,7 +11,7 @@ import { getRangeByTrace } from '../../codeUtil/codeRangeUtil';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('NearbyValueTDNodes');
 
-/** @typedef {import('@dbux/common/src/core/data/Trace').default} Trace */
+/** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
 /**
  * @deprecated `dp.util.getTraceValue` does not work now

@@ -1,4 +1,4 @@
-import Trace from '@dbux/common/src/core/data/Trace';
+import Trace from '@dbux/common/src/types/Trace';
 import CollectionIndex from '../../indexes/CollectionIndex';
 import RuntimeDataProvider from '../../RuntimeDataProvider';
 

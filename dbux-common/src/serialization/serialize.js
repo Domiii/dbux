@@ -1,6 +1,6 @@
 import { newLogger } from '../log/logger';
 import SerializationMethod from './SerializationMethod';
-import ValueTypeCategory from '../core/constants/ValueTypeCategory';
+import ValueTypeCategory from '../types/constants/ValueTypeCategory';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('serialize');

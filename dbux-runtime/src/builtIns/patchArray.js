@@ -1,4 +1,4 @@
-import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
+import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import dataNodeCollection from '../data/dataNodeCollection';
 import { peekBCECheckCallee, peekBCEMatchCallee } from '../data/dataUtil';
 import valueCollection from '../data/valueCollection';

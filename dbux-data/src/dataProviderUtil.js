@@ -1,15 +1,15 @@
-import TraceType, { hasDynamicTypes, isTracePop, isBeforeCallExpression } from '@dbux/common/src/core/constants/TraceType';
-import SpecialIdentifierType from '@dbux/common/src/core/constants/SpecialIdentifierType';
+import TraceType, { hasDynamicTypes, isTracePop, isBeforeCallExpression } from '@dbux/common/src/types/constants/TraceType';
+import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
 import { pushArrayOfArray } from '@dbux/common/src/util/arrayUtil';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
-import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/core/constants/DataNodeType';
-import StaticTrace from '@dbux/common/src/core/data/StaticTrace';
-import { isVirtualContextType } from '@dbux/common/src/core/constants/StaticContextType';
-import { isRealContextType } from '@dbux/common/src/core/constants/ExecutionContextType';
-import { isCallResult, hasCallId } from '@dbux/common/src/core/constants/traceCategorization';
-import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory, ValuePruneState } from '@dbux/common/src/core/constants/ValueTypeCategory';
+import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
+import StaticTrace from '@dbux/common/src/types/StaticTrace';
+import { isVirtualContextType } from '@dbux/common/src/types/constants/StaticContextType';
+import { isRealContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
+import { isCallResult, hasCallId } from '@dbux/common/src/types/constants/traceCategorization';
+import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory, ValuePruneState } from '@dbux/common/src/types/constants/ValueTypeCategory';
 import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
 import { locToString } from './util/misc';
 

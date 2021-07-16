@@ -20,7 +20,7 @@ const ProgramEndTraceId = 2;
  */
 export default class ProgramMonitor {
   /**
-   * @type {import('@dbux/common/src/core/data/StaticProgramContext').default}
+   * @type {import('@dbux/common/src/types/StaticProgramContext').default}
    */
   _staticProgramContext;
 

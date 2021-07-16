@@ -9,7 +9,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { babelLocToCodeRange } from '../helpers/codeLocHelpers';
 
-/** @typedef {import('@dbux/common/src/core/data/Loc').default} Loc */
+/** @typedef {import('@dbux/common/src/types/Loc').default} Loc */
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('codeNav');

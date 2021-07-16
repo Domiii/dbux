@@ -1,7 +1,7 @@
 import isNumber from 'lodash/isNumber';
 
-/** @typedef {import('@dbux/common/src/core/data/Loc').LocPos} LocPos */
-/** @typedef {import('@dbux/common/src/core/data/Loc').Loc1D} Loc1D */
+/** @typedef {import('@dbux/common/src/types/Loc').LocPos} LocPos */
+/** @typedef {import('@dbux/common/src/types/Loc').Loc1D} Loc1D */
 
 /**
  * @param {LocPos} a 

@@ -1,4 +1,4 @@
-import TraceType from '@dbux/common/src/core/constants/TraceType';
+import TraceType from '@dbux/common/src/types/constants/TraceType';
 import merge from 'lodash/merge';
 import { findConstructorMethod } from '../../visitors/classUtil';
 import ClassMethod from '../ClassMethod';

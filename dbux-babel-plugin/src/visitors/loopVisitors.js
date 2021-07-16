@@ -1,5 +1,5 @@
 // import * as t from '@babel/types';
-// import LoopType from '@dbux/common/src/core/constants/LoopType';
+// import LoopType from '@dbux/common/src/types/constants/LoopType';
 // import { EmptyObject } from '@dbux/common/src/util/EmptyObject';
 // import { extractSourceStringWithoutCommentsAtLoc } from '../helpers/sourceHelpers';
 // import { callDbuxMethod } from '../helpers/callHelpers';

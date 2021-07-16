@@ -1,6 +1,6 @@
-import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
+import ExecutionContextType from '@dbux/common/src/types/constants/ExecutionContextType';
 
-/** @typedef {import('@dbux/common/src/core/data/ExecutionContext').default} ExecutionContext */
+/** @typedef {import('@dbux/common/src/types/ExecutionContext').default} ExecutionContext */
 /** @typedef {import('../applications/Application').default} Application */
 
 /**

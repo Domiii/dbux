@@ -1,6 +1,6 @@
 
-import StaticTrace from '@dbux/common/src/core/data/StaticTrace';
-import StaticContext from '@dbux/common/src/core/data/StaticContext';
+import StaticTrace from '@dbux/common/src/types/StaticTrace';
+import StaticContext from '@dbux/common/src/types/StaticContext';
 import CollectionIndex from '../../indexes/CollectionIndex';
 import RuntimeDataProvider from '../../RuntimeDataProvider';
 

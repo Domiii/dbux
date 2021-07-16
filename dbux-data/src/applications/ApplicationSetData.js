@@ -1,5 +1,5 @@
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import Trace from '@dbux/common/src/core/data/Trace';
+import Trace from '@dbux/common/src/types/Trace';
 
 // ###########################################################################
 // FirstTracesInOrder

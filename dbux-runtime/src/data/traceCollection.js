@@ -1,5 +1,5 @@
 import { newLogger } from '@dbux/common/src/log/logger';
-import TraceType from '@dbux/common/src/core/constants/TraceType';
+import TraceType from '@dbux/common/src/types/constants/TraceType';
 import staticTraceCollection from './staticTraceCollection';
 import Collection from './Collection';
 import pools from './pools';

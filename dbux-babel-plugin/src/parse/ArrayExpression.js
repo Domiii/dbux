@@ -1,4 +1,4 @@
-import TraceType from '@dbux/common/src/core/constants/TraceType';
+import TraceType from '@dbux/common/src/types/constants/TraceType';
 import { buildArrayExpression } from '../instrumentation/builders/arrays';
 import BaseNode from './BaseNode';
 import { makeSpreadableArgumentArrayCfg } from '../helpers/argsUtil';

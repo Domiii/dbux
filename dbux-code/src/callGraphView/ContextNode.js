@@ -1,6 +1,6 @@
 import { makeContextLabel } from '@dbux/data/src/helpers/contextLabels';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
+import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
 import traceSelection from '@dbux/data/src/traceSelection';
 import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
 

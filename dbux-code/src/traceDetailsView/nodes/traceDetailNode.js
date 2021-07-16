@@ -1,6 +1,6 @@
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 
-/** @typedef {import('@dbux/common/src/core/data/Trace').default} Trace */
+/** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
 /**
  * @property {Trace} trace

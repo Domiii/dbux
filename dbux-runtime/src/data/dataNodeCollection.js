@@ -1,5 +1,5 @@
-import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
-import Trace from '@dbux/common/src/core/data/Trace';
+import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
+import Trace from '@dbux/common/src/types/Trace';
 import Collection from './Collection';
 import pools from './pools';
 import traceCollection from './traceCollection';

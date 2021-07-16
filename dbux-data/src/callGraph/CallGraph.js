@@ -1,9 +1,9 @@
 import last from 'lodash/last';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { binarySearchByKey } from '@dbux/common/src/util/arrayUtil';
-import TraceType, { isTracePush, isTracePop, isDataOnlyTrace } from '@dbux/common/src/core/constants/TraceType';
+import TraceType, { isTracePush, isTracePop, isDataOnlyTrace } from '@dbux/common/src/types/constants/TraceType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import { hasCallId } from '@dbux/common/src/core/constants/traceCategorization';
+import { hasCallId } from '@dbux/common/src/types/constants/traceCategorization';
 import RuntimeDataProvider from '../RuntimeDataProvider';
 
 // eslint-disable-next-line no-unused-vars

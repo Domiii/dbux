@@ -1,8 +1,8 @@
 import { newLogger } from '@dbux/common/src/log/logger';
-import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
-import TraceType, { isBeforeCallExpression, isPopTrace } from '@dbux/common/src/core/constants/TraceType';
-// import SpecialIdentifierType from '@dbux/common/src/core/constants/SpecialIdentifierType';
-import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
+import ExecutionContextType from '@dbux/common/src/types/constants/ExecutionContextType';
+import TraceType, { isBeforeCallExpression, isPopTrace } from '@dbux/common/src/types/constants/TraceType';
+// import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
+import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import isThenable from '@dbux/common/src/util/isThenable';
 import staticProgramContextCollection from './data/staticProgramContextCollection';
 import executionContextCollection from './data/executionContextCollection';
