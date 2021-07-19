@@ -15,6 +15,7 @@ export default class Collection {
    * @type {number}
    */
   _id;
+
   /**
    * @type {T[]}
    */
@@ -62,11 +63,16 @@ export default class Collection {
     }
 
     // WARNING: cannot use push(...entries) for large `entries` array.
+    // future-work: `concat` can be faster than for loop.
     // see: https://github.com/nodejs/node/issues/27732
     for (const entry of entries) {
-      this.handleAdd(entry);
-      this._all.push(entry);
+      this.addEntry(entry);
     }
+  }
+
+  addEntry(entry) {
+    this.handleAdd(entry);
+    this._all.push(entry);
   }
 
   /**
@@ -164,5 +170,23 @@ export default class Collection {
     catch (err) {
       this.logger.error(`${this.constructor.name}.${methodName}`, 'failed\n  ', err); //...args);
     }
+  }
+
+
+  /**
+   * Cached `collectionNames`, used in `addEntryPostAdd`.
+   */
+  get _collectionNames() {
+    Object.defineProperty(this, '_collectionNames', { value: [this.name] });
+    return this._collectionNames;
+  }
+
+  addEntryPostAdd(entry) {
+    this.addEntry(entry);
+
+    // TODO: can we postpone `_postAdd` to run once per run instead?
+    // populate indexes, trigger data dependencies etc.
+    const allData = { asyncEvents: [entry] };
+    this.dp._postAdd(this._collectionNames, allData, true);
   }
 }

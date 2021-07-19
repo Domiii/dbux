@@ -244,6 +244,10 @@ export default class DataProviderBase {
   // Private methods
   // ###########################################################################
 
+  /**
+   * This is used to ensure the order in which we added collections to the DataProvider,
+   * since they might have invisible later-on-earlier dependencies on another.
+   */
   _getSortedCollectionNames(allData) {
     const collectionNames = Object.keys(allData);
     for (const collectionName of collectionNames) {

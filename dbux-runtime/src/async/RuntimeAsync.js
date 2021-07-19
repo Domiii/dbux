@@ -529,11 +529,6 @@ export default class RuntimeAsync {
     // return false;
   }
 
-  isPromiseChainedToRoot(promise) {
-    const { firstNestingTraceId } = getPromiseData(promise);
-
-  }
-
   /**
    * Used for debugging purposes.
    */
