@@ -1,13 +1,18 @@
 import difference from 'lodash/difference';
 import minBy from 'lodash/minBy';
 import maxBy from 'lodash/maxBy';
-import AsyncEvent from '@dbux/common/src/types/AsyncEvent';
-import AsyncNode from '@dbux/common/src/types/AsyncNode';
-
-import Collection from './Collection';
 
 import DataProviderBase from './DataProviderBase';
 import DataProviderUtil from './dataProviderUtil';
+import StaticProgramContextCollection from './collections/StaticProgramContextCollection';
+import StaticContextCollection from './collections/StaticContextCollection';
+import StaticTraceCollection from './collections/StaticTraceCollection';
+import ExecutionContextCollection from './collections/ExecutionContextCollection';
+import TraceCollection from './collections/TraceCollection';
+import DataNodeCollection from './collections/DataNodeCollection';
+import ValueRefCollection from './collections/ValueRefCollection';
+import AsyncNodeCollection from './collections/AsyncNodeCollection';
+import AsyncEventCollection from './collections/AsyncEventCollection';
 
 
 

@@ -1,5 +1,6 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import { isObject, isPlainObject } from 'lodash';
 
 // ###########################################################################
 //  Mangers
@@ -58,17 +59,33 @@ class ArrayIndexManager extends IndexManager {
   }
 }
 
+function serializeKey(key) {
+  if (isObject(key)) {
+    key = JSON.stringify(key);
+  }
+  return key;
+}
+
 class MapIndexManager extends IndexManager {
   createNew() {
     return new Map();
   }
 
   get(key) {
-    return this.index._byKey.get(key);
+    key = serializeKey(key);
+    return this._get(key);
+  }
+
+  /**
+   * @private
+   */
+  _get(serializedKey) {
+    return this.index._byKey.get(serializedKey);
   }
 
   getOrCreateContainer(key) {
-    let container = this.get(key);
+    key = serializeKey(key);
+    let container = this._get(key);
     if (!container) {
       container = this.index._containerMethods.createNewContainer();
       this.index._byKey.set(key, container);
@@ -174,6 +191,24 @@ class SetContainerMethods extends ContainerMethods {
   }
 }
 
+export class CollectionIndexConfig {
+  /**
+   * Default = `true`.
+   * If set to `false`, the index is populated manually, usually through one of two ways:
+   * 1. calling `addEntry` manually
+   * 2. through the dependencies -> `added` event
+   * 
+   * @type {boolean}
+   */
+  addOnNewData;
+
+  /**
+   * By default, for performance reasons, indexes are backed by arrays ({@link ArrayIndexManager}).
+   * If the key set is not a dense value of numbers, set this to `false` ({@link MapIndexManager}).
+   */
+  isMap;
+}
+
 /**
  * @template {T}
  */
@@ -189,10 +224,18 @@ export default class CollectionIndex {
    */
   _byKey;
 
-  constructor(collectionName, indexName, { addOnNewData = true, isMap = false, isContainerSet = false } = EmptyObject) {
+  /**
+   * 
+   * @param {string} collectionName 
+   * @param {string} indexName
+   * @param {CollectionIndexConfig} cfg 
+   */
+  constructor(collectionName, indexName, cfg = EmptyObject) {
     this.collectionName = collectionName;
     this.name = indexName;
     this.logger = newLogger(`indexes.${collectionName}.${indexName}`);
+
+    const { addOnNewData = true, isMap = false, isContainerSet = false } = cfg;
     this.addOnNewData = addOnNewData;
     this.isMap = isMap;
     this.isContainerSet = isContainerSet;
