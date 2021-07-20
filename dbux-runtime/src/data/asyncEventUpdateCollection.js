@@ -1,5 +1,6 @@
 // import '@dbux/common/src/types/AsyncEventUpdate';
-import { AsyncCallUpdate, PreAwaitUpdate, PostAwaitUpdate, PreThenUpdate, PostThenUpdate } from '@dbux/common/src/types/AsyncEventUpdate';
+import { PreAwaitUpdate, PostAwaitUpdate, PreThenUpdate, PostThenUpdate } from '@dbux/common/src/types/AsyncEventUpdate';
+import AsyncEventUpdateType from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import Collection from './Collection';
 import pools from './pools';
 
@@ -18,67 +19,38 @@ export class AsyncEventUpdateCollection extends Collection {
   }
 
   /**
-   * @return {AsyncCallUpdate}
-   */
-  addAsyncCallUpdate() {
-    const upd = pools.addAsyncCallUpdates.allocate();
-
-    // upd. = ;
-
-    this._addUpdate(upd);
-
-    return upd;
-  }
-
-  /**
    * @return {PreAwaitUpdate}
    */
-  addPreAwaitUpdate() {
-    const upd = pools.preAwaitUpdates.allocate();
-
-    // upd. = ;
-
+  addPreAwaitUpdate(upd) {
+    upd.type = AsyncEventUpdateType.PreAwait;
     this._addUpdate(upd);
-
     return upd;
   }
 
   /**
    * @return {PostAwaitUpdate}
    */
-  addPostAwaitUpdate() {
-    const upd = pools.postAwaitUpdates.allocate();
-
-    // upd. = ;
-
+  addPostAwaitUpdate(upd) {
+    upd.type = AsyncEventUpdateType.PostAwait;
     this._addUpdate(upd);
-
     return upd;
   }
 
   /**
    * @return {PreThenUpdate}
    */
-  addPreThenUpdate() {
-    const upd = pools.preThenUpdates.allocate();
-
-    // upd. = ;
-
+  addPreThenUpdate(upd) {
+    upd.type = AsyncEventUpdateType.PreThen;
     this._addUpdate(upd);
-
     return upd;
   }
 
   /**
    * @return {PostThenUpdate}
    */
-  addPostThenUpdate() {
-    const upd = pools.postThenUpdates.allocate();
-
-    // upd. = ;
-
+  addPostThenUpdate(upd) {
+    upd.type = AsyncEventUpdateType.PostThen;
     this._addUpdate(upd);
-
     return upd;
   }
 }

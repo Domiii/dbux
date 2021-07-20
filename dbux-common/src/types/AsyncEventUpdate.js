@@ -20,19 +20,31 @@ export class AsyncUpdateBase {
    * For PreAwait + PostAwait: the return value of the async function.
    * For PreThen: the promise on which `then` was called.
    * For PostThen: the promise returned by `then`.
+   * 
+   * NOTE: for async function - collected in `postAddRaw`.
    */
   promiseId;
 
+
   /**
-   * For `PreAwait`: Resume context during which `await` was called.
-   * For `PostAwait`: Resume context that was pushed as result of this `await`.
-   * For `PreThen`: Context during which `then` was called.
-   * For `PostThen`: Context of the `then` callback.
+   * For PreAwait + PostAwait: promiseId of the await argument (if it is a promise).
+   * For PreThen + PostThen: promiseId of the value returned from `then` callback (if it is a promise).
+   */
+  nestedPromiseId;
+
+  /**
+   * For PreAwait: Resume context during which `await` was called.
+   * For PostAwait: Resume context that was pushed as result of this `await`.
+   * For PreThen: Context during which `then` was called.
+   * For PostThen: Context of the `then` callback.
    */
   contextId;
 
   /**
-   * uniquely identifies the event.
+   * Uniquely identifies the event.
+   * 
+   * For PreAwait + PostAwait: trace of the AwaitExpression.
+   * For PreThen + PostThen: callId of the `then` CallExpression's.
    */
   schedulerTraceId;
 }
@@ -52,7 +64,6 @@ export class AsyncFunctionUpdate extends AsyncUpdateBase {
 // }
 
 export class PreAwaitUpdate extends AsyncFunctionUpdate {
-  nestedPromiseId;
 }
 
 export class PostAwaitUpdate extends AsyncFunctionUpdate {
@@ -67,7 +78,6 @@ export class PromiseUpdate extends AsyncUpdateBase {
 }
 
 export class PreThenUpdate extends PromiseUpdate {
-  nestedPromiseId;
 }
 
 export class PostThenUpdate extends PromiseUpdate {

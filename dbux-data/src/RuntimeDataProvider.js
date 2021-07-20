@@ -13,6 +13,7 @@ import DataNodeCollection from './collections/DataNodeCollection';
 import ValueRefCollection from './collections/ValueRefCollection';
 import AsyncNodeCollection from './collections/AsyncNodeCollection';
 import AsyncEventCollection from './collections/AsyncEventCollection';
+import AsyncEventUpdateCollection from './collections/AsyncEventUpdateCollection';
 
 
 
@@ -41,6 +42,7 @@ export default class RuntimeDataProvider extends DataProviderBase {
       traces: new TraceCollection(this),
       dataNodes: new DataNodeCollection(this),
       values: new ValueRefCollection(this),
+      asyncEventUpdates: new AsyncEventUpdateCollection(this),
       asyncNodes: new AsyncNodeCollection(this),
       asyncEvents: new AsyncEventCollection(this)
     };

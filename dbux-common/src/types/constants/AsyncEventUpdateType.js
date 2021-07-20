@@ -23,4 +23,13 @@ export function isPostEventUpdate(type) {
   return postEventUpdateTypes[type];
 }
 
+
+const awaitEventTypes = new Array(AsyncEventUpdateType.getValueMaxIndex()).map(() => false);
+awaitEventTypes[AsyncEventUpdateType.PreAwait] = true;
+awaitEventTypes[AsyncEventUpdateType.PostAwait] = true;
+
+export function isAwaitEvent(type) {
+  return awaitEventTypes[type];
+}
+
 export default AsyncEventUpdateType;

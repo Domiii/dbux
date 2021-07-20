@@ -19,6 +19,6 @@ export default class PostAsyncEventUpdateByPromiseIndex extends CollectionIndex 
     if (isPostEventUpdate(type)) {
       return promiseId;
     }
-    return undefined;
+    return false;
   }
 }

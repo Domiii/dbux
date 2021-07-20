@@ -1357,6 +1357,10 @@ export default {
   // ###########################################################################
   // async
   // ###########################################################################
+  
+  getAsyncRootThreadId(dp, rootId) {
+    return dp.indexes.asyncNodes.byRoot.get(rootId)?.threadId;
+  },
 
   getAsyncPreEventUpdateOfTrace(dp, traceId) {
     return dp.indexes.asyncEventUpdates.byTrace.get(traceId)?.[0];

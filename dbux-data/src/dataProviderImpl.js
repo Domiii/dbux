@@ -104,11 +104,6 @@ export function newDataProvider(application) {
   dataProvider.addIndex(new DataNodesByRefIdIndex());
   dataProvider.addIndex(new DataNodesByObjectRefIdIndex());
 
-  dataProvider.addIndex(new AsyncEventsFromIndex());
-  dataProvider.addIndex(new AsyncEventsToIndex());
-  dataProvider.addIndex(new AsyncNodesByRootIndex());
-  dataProvider.addIndex(new AsyncNodesByThreadIndex());
-
   // complex indexes (that have dependencies)
   // NOTE: we are currently solving index dependencies by simply adding depdendents after dependees
   dataProvider.addIndex(new ExecutedStaticTracesByFileIndex());
@@ -117,6 +112,12 @@ export function newDataProvider(application) {
   // ########################################
   // async
   // ########################################
+
+  dataProvider.addIndex(new AsyncEventsFromIndex());
+  dataProvider.addIndex(new AsyncEventsToIndex());
+  dataProvider.addIndex(new AsyncNodesByRootIndex());
+  dataProvider.addIndex(new AsyncNodesByThreadIndex());
+
   dataProvider.addIndex(new AsyncEventUpdatesByNestedPromiseIndex());
   dataProvider.addIndex(new AsyncEventUpdatesByTraceIndex());
   dataProvider.addIndex(new PostAsyncEventUpdateByPromiseIndex());

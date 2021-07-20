@@ -13,6 +13,7 @@ import ThenRef from '../data/ThenRef';
 import { getPromiseAnyRootId, getPromiseData, getPromiseFirstEventRootId, getPromiseId, getPromiseLastRootId, getPromiseOwnAsyncFunctionContextId, getPromiseRootId, isNewPromise, maybeSetPromiseFirstEventRootId, pushPromisePendingRootId, setPromiseData } from './patchPromise';
 import traceCollection from '../data/traceCollection';
 import executionContextCollection from '../data/executionContextCollection';
+import asyncEventUpdateCollection from '../data/asyncEventUpdateCollection';
 
 /** @typedef { import("./Runtime").default } Runtime */
 
@@ -110,12 +111,19 @@ export default class RuntimeAsync {
     // }
   }
 
-  preAwait(awaitArgument, resumeContextId, realContextId, preAwaitTid) {
+  preAwait(awaitArgument, resumeContextId, realContextId, schedulerTraceId) {
     const currentRootId = this.getCurrentVirtualRootContextId();
-    // this.logger.debug('pre await', awaitArgument);
-
-    // this.floatingPromises.delete(awaitArgument);
-    // this.logger.debug('delete floating promise', awaitArgument);
+    const currentRunId = this._runtime.getCurrentRunId();
+    
+    // store update
+    asyncEventUpdateCollection.addPreAwaitUpdate({
+      runId: currentRunId,
+      rootId: currentRootId,
+      contextId: resumeContextId,
+      schedulerTraceId, // preAwaitTid
+      realContextId,
+      nestedPromiseId: isThenable(awaitArgument) ? getPromiseId(awaitArgument) : 0
+    });
 
 
     // TODO: add sync edge
@@ -134,7 +142,7 @@ export default class RuntimeAsync {
       resumeContextId,
       preAwaitRootId: currentRootId,
       isFirstAwait,
-      preAwaitTid
+      schedulerTraceId
       // awaitArgument
     });
 
@@ -157,7 +165,7 @@ export default class RuntimeAsync {
       nestedPromiseAsyncData.firstAwaitingAsyncFunctionContextId = realContextId;
     }
 
-    this._preNestPromise(awaitArgument, currentRootId, preAwaitTid);
+    this._preNestPromise(awaitArgument, currentRootId, schedulerTraceId);
 
     // this.logger.debug('this promise', promise, 'first await', isFirstAwait, 'is root', this.isRootContext(parentContextId));
     // if (!isFirstAwait || isRootContext(parentContextId)) {
@@ -213,12 +221,23 @@ export default class RuntimeAsync {
       resumeContextId: preEventContextId,
       preAwaitRootId: preEventRootId,
       preEventThreadId,
-      preAwaitTid,
+      schedulerTraceId,
       asyncFunctionPromise
     } = asyncData;
 
     const postEventRootId = this.getCurrentVirtualRootContextId();
+    const postEventRunId = this._runtime.getCurrentRunId();
     preEventThreadId = preEventThreadId || this.getOrAssignRootThreadId(preEventRootId);
+    
+    // store update
+    asyncEventUpdateCollection.addPostAwaitUpdate({
+      runId: postEventRunId,
+      rootId: postEventRootId,
+      contextId: postEventContextId,
+      schedulerTraceId,
+      realContextId,
+      nestedPromiseId: isThenable(awaitArgument) ? getPromiseId(awaitArgument) : 0
+    });
 
     // // update `rootId` for the next guy
     // asyncData.rootId = postEventRootId;
@@ -231,14 +250,14 @@ export default class RuntimeAsync {
     const isNested = isThenable(awaitArgument);
     // const nestedAwaitData = isNested && this.getPromiseLastAwait(awaitArgument);
     const nestedPromiseData = isNested && getPromiseData(awaitArgument);
-    const isNestedChain = nestedPromiseData?.firstNestingTraceId === preAwaitTid;
+    const isNestedChain = nestedPromiseData?.firstNestingTraceId === schedulerTraceId;
 
     if (!asyncFunctionPromise) {
       /* this.logger.error */
       // return;
       /* throw new Error */
       // eslint-disable-next-line max-len
-      this.logger.error(`postAwait did not have "asyncFunctionPromise" at trace="${traceCollection.makeTraceInfo(preAwaitTid)}", realContextId=${realContextId}, postEventRootId=${postEventRootId}, asyncData=${JSON.stringify(asyncData, null, 2)}`);
+      this.logger.error(`postAwait did not have "asyncFunctionPromise" at trace="${traceCollection.makeTraceInfo(schedulerTraceId)}", realContextId=${realContextId}, postEventRootId=${postEventRootId}, asyncData=${JSON.stringify(asyncData, null, 2)}`);
       return;
     }
 
@@ -305,7 +324,7 @@ export default class RuntimeAsync {
     }
 
     // add edge
-    const actualToThreadId = this.addEventEdge(fromRootId, postEventRootId, fromThreadId, toThreadId, preAwaitTid, isNested);
+    const actualToThreadId = this.addEventEdge(fromRootId, postEventRootId, fromThreadId, toThreadId, schedulerTraceId, isNested);
 
     // update promise data
     if (isFirstAwait) {
@@ -690,7 +709,8 @@ export default class RuntimeAsync {
     this.outEdges[fromRootId].set(firstEventRootId, 1);
     this.inEdges[firstEventRootId].set(fromRootId, 1);
 
-    asyncEventCollection.addEdge(fromRootId, firstEventRootId, edgeType);
+    // TODO: get rid of all of this
+    // asyncEventCollection.addEdge(fromRootId, firstEventRootId, edgeType);
     return true;
   }
 
