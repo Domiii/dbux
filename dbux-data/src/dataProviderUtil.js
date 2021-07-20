@@ -593,18 +593,18 @@ export default {
     return null;
   },
 
-  getDataNodeByRefId(dp, refId) {
+  getDataNodesByRefId(dp, refId) {
     return dp.indexes.dataNodes.byRefId.get(refId);
   },
 
-  getTraceIdByRefId(dp, refId) {
-    const dataNode = dp.indexes.dataNodes.byRefId.get(refId);
+  getFirstTraceIdByRefId(dp, refId) {
+    const dataNode = dp.indexes.dataNodes.byRefId.getFirst(refId);
     return dataNode?.traceId;
   },
 
-  getTraceByRefId(dp, refId) {
-    const dataNode = dp.indexes.dataNodes.byRefId.get(refId);
-    return dataNode?.traceId && dp.util.getTrace(dataNode.traceId);
+  getFirstTraceByRefId(dp, refId) {
+    const traceId = dp.util.getFirstTraceIdByRefId(refId);
+    return traceId && dp.util.getTrace(traceId);
   },
 
   // ###########################################################################
@@ -1377,12 +1377,17 @@ export default {
 
   /**
    * Find the last "Post" asyncEvent (also an "edge trigger event") of a given promise.
+   * That update must have `rootId` < `beforeRootId`
    * 
    * @return {AsyncEventUpdate}
    */
-  getLastPostAsyncEventUpdateOfPromiseBeforeRun(dp, promiseId, runId) {
+  getPreviousPostAsyncEventOfPromise(dp, promiseId, beforeRootId) {
     const updates = dp.indexes.asyncEventUpdates.byPromise.get(promiseId);
-    return updates && findLast(updates, update => update.runId < runId);
+    return updates && findLast(updates, update => update.rootId < beforeRootId);
+  },
+
+  getFirstPostAsyncEventOfPromise(dp, promiseId) {
+    return dp.indexes.asyncEventUpdates.byPromise.getFirst(promiseId);
   }
 };
 

@@ -1,22 +1,19 @@
 /**
- * Two FORKs: 
- * * 1 for main
- * * 1 for f
+ * 3 FORKs: main, f, g
+ * 2 SYNCs: f -> main, g -> main
  */
 
 (async function main() {
   const p = f();
   const q = g();
-  // const p = 0;
   await 0;
-  // await p;
   console.log('mainA');
   await p;
   console.log('mainB');
   await q;
   console.log('mainC');
-  await 0;
-  console.log('mainD');
+  // await 0;
+  // console.log('mainD');
 })();
 
 async function f() {

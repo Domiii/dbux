@@ -14,6 +14,7 @@ import { getPromiseAnyRootId, getPromiseData, getPromiseFirstEventRootId, getPro
 import traceCollection from '../data/traceCollection';
 import executionContextCollection from '../data/executionContextCollection';
 import asyncEventUpdateCollection from '../data/asyncEventUpdateCollection';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 /** @typedef { import("./Runtime").default } Runtime */
 
@@ -114,6 +115,7 @@ export default class RuntimeAsync {
   preAwait(awaitArgument, resumeContextId, realContextId, schedulerTraceId) {
     const currentRootId = this.getCurrentVirtualRootContextId();
     const currentRunId = this._runtime.getCurrentRunId();
+    const { asyncFunctionPromise } = this.lastAwaitByRealContext.get(realContextId) || EmptyObject;
     
     // store update
     asyncEventUpdateCollection.addPreAwaitUpdate({
@@ -122,9 +124,11 @@ export default class RuntimeAsync {
       contextId: resumeContextId,
       schedulerTraceId, // preAwaitTid
       realContextId,
+      promiseId: asyncFunctionPromise && getPromiseId(asyncFunctionPromise),
       nestedPromiseId: isThenable(awaitArgument) ? getPromiseId(awaitArgument) : 0
     });
 
+    console.debug('preAwait', currentRootId, asyncFunctionPromise && getPromiseId(asyncFunctionPromise));
 
     // TODO: add sync edge
     //    * if nested and promise already has `lastAsyncNode`
@@ -229,6 +233,8 @@ export default class RuntimeAsync {
     const postEventRunId = this._runtime.getCurrentRunId();
     preEventThreadId = preEventThreadId || this.getOrAssignRootThreadId(preEventRootId);
     
+    console.debug('postAwait', postEventRootId, asyncFunctionPromise && getPromiseId(asyncFunctionPromise));
+
     // store update
     asyncEventUpdateCollection.addPostAwaitUpdate({
       runId: postEventRunId,
@@ -236,6 +242,7 @@ export default class RuntimeAsync {
       contextId: postEventContextId,
       schedulerTraceId,
       realContextId,
+      promiseId: asyncFunctionPromise && getPromiseId(asyncFunctionPromise),
       nestedPromiseId: isThenable(awaitArgument) ? getPromiseId(awaitArgument) : 0
     });
 
