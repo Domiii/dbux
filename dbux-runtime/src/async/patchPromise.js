@@ -60,9 +60,6 @@ export function maybePatchPromise(value) {
     return;
   }
 
-  if (!isThenable(value)) {
-    return;
-  }
   if (hasRecordedPromiseData(value)) {
     return;
   }
@@ -100,7 +97,11 @@ function patchThenCallback(cb, thenRef) {
   const originalCb = cb;
   return function patchedPromiseCb(previousResult) {
     const returnValue = originalCb(previousResult);
-    maybePatchPromise(returnValue);
+
+    if (isThenable(returnValue)) {
+      maybePatchPromise(returnValue);
+      setNestingPromise(returnValue, thenRef.postEventPromise);
+    }
 
     thenExecuted(thenRef, previousResult, returnValue);
 
@@ -140,18 +141,17 @@ function patchThen(holder) {
 
       const postEventPromise = originalThen.call(preEventPromise, successCb, failCb);
 
-      if (thenRef) {
-        maybePatchPromise(postEventPromise);
-        thenRef.postEventPromise = postEventPromise;
-        thenScheduled(thenRef);
-      }
-
+      _onThen(thenRef, preEventPromise, postEventPromise);
       return postEventPromise;
     }
   );
 }
 
 function patchFinally(holder) {
+  if (!holder.finally) {
+    return;
+  }
+
   monkeyPatchFunctionRaw(holder, 'finally',
     (preEventPromise, [cb], originalFinally) => {
       const thenRef = _makeThenRef(preEventPromise, originalFinally);
@@ -162,18 +162,28 @@ function patchFinally(holder) {
 
       const postEventPromise = originalFinally.call(preEventPromise, cb);
 
-      if (thenRef) {
-        maybePatchPromise(postEventPromise);
-        thenRef.postEventPromise = postEventPromise;
-        thenScheduled(thenRef);
-      }
-
+      _onThen(thenRef, preEventPromise, postEventPromise);
       return postEventPromise;
     }
   );
 }
 
+function _onThen(thenRef, preEventPromise, postEventPromise) {
+  maybePatchPromise(postEventPromise);
+
+  setPreThenPromise(postEventPromise, preEventPromise);
+
+  if (thenRef) {
+    thenRef.postEventPromise = postEventPromise;
+    thenScheduled(thenRef);
+  }
+}
+
 function patchCatch(holder) {
+  if (!holder.catch) {
+    return;
+  }
+
   /**
    * Same as `then(undefined, failCb)`
    * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/catch
@@ -213,6 +223,17 @@ function patchPromiseClass(BasePromiseClass) {
       super(wrapExecutor);
 
       maybePatchPromise(this);
+    }
+
+    toJSON() {
+      return {
+        _: 'PatchedPromise',
+        ...getPromiseData(this)
+      };
+    }
+
+    toString() {
+      return `[PatchedPromise (${JSON.stringify(getPromiseData(this))})]`;
     }
   }
 
@@ -260,23 +281,38 @@ function recordUnseenPromise(promise) {
   });
 }
 
+function setPreThenPromise(promise, preThenPromise) {
+  setPromiseData(promise, {
+    preThenPromise
+  });
+}
+
+function setNestingPromise(promise, nestedBy) {
+  const promiseData = getOrCreatePromiseDbuxData(promise);
+  if (!promiseData.firstNestedBy) {
+    Object.assign(promiseData, {
+      firstNestedBy: nestedBy
+    });
+  }
+}
+
 /**
  * @param {*} promise 
  * @param {PromiseRuntimeData} data
  */
 export function setPromiseData(promise, data) {
-  const _dbux_ = getOrCreatePromiseDbuxData(promise);
-  Object.assign(_dbux_, data);
+  const promiseData = getOrCreatePromiseDbuxData(promise);
+  Object.assign(promiseData, data);
 }
 
 function getOrCreatePromiseDbuxData(promise) {
-  let { _dbux_ } = promise;
-  if (!_dbux_) {
+  let { _dbux_: promiseData } = promise;
+  if (!promiseData) {
     Object.defineProperty(promise, '_dbux_', {
-      value: _dbux_ = {}
+      value: promiseData = {}
     });
   }
-  return _dbux_;
+  return promiseData;
 }
 
 export function hasRecordedPromiseData(promise) {
@@ -302,8 +338,13 @@ export function getPromiseLastRootId(promise) {
   return promise._dbux_?.lastRootId;
 }
 
+export function getPromiseAnyRootId(promise) {
+  return promise._dbux_?.lastRootId || promise._dbux_?.rootId;
+}
+
 export function getPromiseId(promise) {
-  return promise._dbux_?.id;
+  return valueCollection.getRefByValue(promise)?.refId;
+  // return promise._dbux_?.id;
 }
 
 export function getPromiseOwnThreadId(promise) {
@@ -319,10 +360,16 @@ export function isNewPromise(promise, currentRootId) {
   return !rootId || rootId === currentRootId;
 }
 
-export function maybeSetPromiseFirstEventRootId(promise, rootId) {
+export function maybeSetPromiseFirstEventRootId(promise, lastRootId) {
   if (!getPromiseFirstEventRootId(promise)) {
     setPromiseData(promise, {
-      firstEventRootId: rootId
+      lastRootId,
+      firstEventRootId: lastRootId
+    });
+  }
+  else {
+    setPromiseData(promise, {
+      lastRootId
     });
   }
 }

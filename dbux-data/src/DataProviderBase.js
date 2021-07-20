@@ -209,6 +209,9 @@ export default class DataProviderBase {
     const collectionNames = this._getSortedCollectionNames(allData);
     this._addData(collectionNames, allData);
     this._postAdd(collectionNames, allData, isRaw);
+
+    // notify internal and external listeners
+    this._notifyData(collectionNames, allData);
   }
 
   addQuery(newQuery) {
@@ -244,6 +247,10 @@ export default class DataProviderBase {
   // Private methods
   // ###########################################################################
 
+  /**
+   * This is used to ensure the order in which we added collections to the DataProvider,
+   * since they might have invisible later-on-earlier dependencies on another.
+   */
   _getSortedCollectionNames(allData) {
     const collectionNames = Object.keys(allData);
     for (const collectionName of collectionNames) {
@@ -314,9 +321,6 @@ export default class DataProviderBase {
       const entries = allData[collectionName];
       collection.postIndexProcessed(entries);
     }
-
-    // notify internal and external listeners
-    this._notifyData(collectionNames, allData);
   }
 
   _notifyData(collectionNames, allData) {

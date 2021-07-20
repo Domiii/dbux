@@ -1,7 +1,7 @@
 import CollectionIndex from '../../indexes/CollectionIndex';
 import RuntimeDataProvider from '../../RuntimeDataProvider';
 
-/** @typedef {import('@dbux/common/src/core/data/DataNode').default} DataNode */
+/** @typedef {import('@dbux/common/src/types/DataNode').default} DataNode */
 
 /** 
  * Indexed by dataNode.varAccess.objctNodeId's refId

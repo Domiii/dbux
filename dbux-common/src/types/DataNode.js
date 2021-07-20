@@ -1,7 +1,7 @@
 /**
  * @file
  */
-/** @typedef { import("../constants/DataNodeType").default } DataNodeType */
+/** @typedef { import("./constants/DataNodeType").default } DataNodeType */
 
 
 /**

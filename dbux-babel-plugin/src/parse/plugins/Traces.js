@@ -1,9 +1,9 @@
 // import { NodePath } from '@babel/traverse';
-// import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
-// import TraceType from '@dbux/common/src/core/constants/TraceType';
+// import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
+// import TraceType from '@dbux/common/src/types/constants/TraceType';
 // import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import omit from 'lodash/omit';
-import TraceType, { isDeclarationTrace } from '@dbux/common/src/core/constants/TraceType';
+import TraceType, { isDeclarationTrace } from '@dbux/common/src/types/constants/TraceType';
 import NestedError from '@dbux/common/src/NestedError';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';

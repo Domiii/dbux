@@ -5,12 +5,12 @@ import { makeContextLabel } from '@dbux/data/src/helpers/contextLabels';
 import { makeRootTraceLabel, makeTraceLabel, makeTraceValueLabel, makeCallValueLabel } from '@dbux/data/src/helpers/traceLabels';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
-import { isCallbackRelatedTrace } from '@dbux/common/src/core/constants/TraceType';
+import { isCallbackRelatedTrace } from '@dbux/common/src/types/constants/TraceType';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import { emitSelectTraceAction } from '../../userEvents';
 import TraceNode from './TraceNode';
 
-/** @typedef {import('@dbux/common/src/core/data/Trace').default} Trace */
+/** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
 // ###########################################################################
 //  Group Nodes

@@ -1,6 +1,6 @@
 import { window } from 'vscode';
-import TraceType from '@dbux/common/src/core/constants/TraceType';
-import ValueTypeCategory from '@dbux/common/src/core/constants/ValueTypeCategory';
+import TraceType from '@dbux/common/src/types/constants/TraceType';
+import ValueTypeCategory from '@dbux/common/src/types/constants/ValueTypeCategory';
 import { newLogger } from '@dbux/common/src/log/logger';
 
 // eslint-disable-next-line no-unused-vars

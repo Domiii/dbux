@@ -1,13 +1,14 @@
 import truncate from 'lodash/truncate';
-import ValueTypeCategory, { determineValueTypeCategory, ValuePruneState, isTrackableCategory } from '@dbux/common/src/core/constants/ValueTypeCategory';
+import ValueTypeCategory, { determineValueTypeCategory, ValuePruneState, isTrackableCategory } from '@dbux/common/src/types/constants/ValueTypeCategory';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 // import serialize from '@dbux/common/src/serialization/serialize';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Collection from './Collection';
 import pools from './pools';
+import isThenable from '@dbux/common/src/util/isThenable';
 
-/** @typedef {import('@dbux/common/src/core/data/ValueRef').default} ValueRef */
+/** @typedef {import('@dbux/common/src/types/ValueRef').default} ValueRef */
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('RuntimeMonitor');
@@ -356,7 +357,9 @@ class ValueCollection extends Collection {
     }
 
     // this is a new object
-    this.maybePatchPromise(value);
+    if (isThenable(value)) {
+      this.maybePatchPromise(value);
+    }
 
     if (meta?.shallow) {
       this._finishValue(valueRef, typeName, Array.isArray(value) ? EmptyArray : EmptyObject, pruneState);

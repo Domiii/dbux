@@ -1,6 +1,6 @@
 import template from '@babel/template';
 import * as t from "@babel/types";
-import TraceType from '@dbux/common/src/core/constants/TraceType';
+import TraceType from '@dbux/common/src/types/constants/TraceType';
 import BasePlugin from './BasePlugin';
 import { getNodeNames } from '../../visitors/nameVisitors';
 import { doesNodeEndScope } from '../../helpers/astUtil';

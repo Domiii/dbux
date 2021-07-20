@@ -1,4 +1,4 @@
-import SpecialIdentifierType from '@dbux/common/src/core/constants/SpecialIdentifierType';
+import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
 import { ZeroNode } from '../instrumentation/builders/buildUtil';
 import BaseId from './BaseId';
 

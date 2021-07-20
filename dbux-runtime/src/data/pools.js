@@ -1,11 +1,12 @@
-import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
-import Trace from '@dbux/common/src/core/data/Trace';
-import ValueRef from '@dbux/common/src/core/data/ValueRef';
-import DataNode from '@dbux/common/src/core/data/DataNode';
-import Loop from '@dbux/common/src/core/data/loops/Loop';
-import PromiseData from '@dbux/common/src/core/data/PromiseData';
-import AsyncEvent from '@dbux/common/src/core/data/AsyncEvent';
-import AsyncNode from '@dbux/common/src/core/data/AsyncNode';
+import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
+import Trace from '@dbux/common/src/types/Trace';
+import ValueRef from '@dbux/common/src/types/ValueRef';
+import DataNode from '@dbux/common/src/types/DataNode';
+import Loop from '@dbux/common/src/types/loops/Loop';
+import PromiseData from '@dbux/common/src/types/PromiseData';
+import AsyncEvent from '@dbux/common/src/types/AsyncEvent';
+import AsyncNode from '@dbux/common/src/types/AsyncNode';
+import { AsyncCallUpdate, PreAwaitUpdate, PostAwaitUpdate, PreThenUpdate, PostThenUpdate } from '@dbux/common/src/types/AsyncEventUpdate';
 
 /**
  * TODO: proper object pooling
@@ -59,6 +60,36 @@ const pools = {
   asyncNodes: {
     allocate() {
       return new AsyncNode();
+    }
+  },
+
+  // ###########################################################################
+  // AsyncEventUpdate
+  // ###########################################################################
+
+  asyncCallUpdates: {
+    allocate() {
+      return new AsyncCallUpdate();
+    }
+  },
+  preAwaitUpdates: {
+    allocate() {
+      return new PreAwaitUpdate();
+    }
+  },
+  postAwaitUpdates: {
+    allocate() {
+      return new PostAwaitUpdate();
+    }
+  },
+  preThenUpdates: {
+    allocate() {
+      return new PreThenUpdate();
+    }
+  },
+  postThenUpdates: {
+    allocate() {
+      return new PostThenUpdate();
     }
   }
 };

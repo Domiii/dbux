@@ -3,7 +3,7 @@ import EmptyValueNode from './EmptyValueNode';
 import ValueNode, { ValueLabel } from './ValueNode';
 import ValueTDSimpleNode from './ValueTDSimpleNode';
 
-/** @typedef {import('@dbux/common/src/core/data/Trace').default} Trace */
+/** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
 export default class ValueTDRefNode extends ValueNode {
   /**

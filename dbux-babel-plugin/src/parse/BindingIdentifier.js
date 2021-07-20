@@ -1,4 +1,4 @@
-import { isDeclarationTrace } from '@dbux/common/src/core/constants/TraceType';
+import { isDeclarationTrace } from '@dbux/common/src/types/constants/TraceType';
 import { pathToString } from '../helpers/pathHelpers';
 import { ZeroNode } from '../instrumentation/builders/buildUtil';
 import BaseId from './BaseId';

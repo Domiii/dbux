@@ -1,4 +1,4 @@
-import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
+import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
 import CollectionIndex from '../../indexes/CollectionIndex';
 import RuntimeDataProvider from '../../RuntimeDataProvider';
 

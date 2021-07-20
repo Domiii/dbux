@@ -2,11 +2,10 @@
 
 async function f(x) {
   console.log('f1', x);
-  // await g();
   await 0;
-  // console.log('f2');
-  // await g();
   console.log('f2', x);
+  // await 1;
+  // console.log('f3', x);
 }
 
 

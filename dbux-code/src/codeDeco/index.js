@@ -16,7 +16,7 @@ import { initTraceDecorators } from './traceDecoConfig';
 import { initEditedWarning } from './editedWarning';
 import { set as mementoSet, get as mementoGet } from '../memento';
 // import DataProvider from '@dbux/data/src/DataProvider';
-// import StaticContextType from '@dbux/common/src/core/constants/StaticContextType';
+// import StaticContextType from '@dbux/common/src/types/constants/StaticContextType';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('code-deco');

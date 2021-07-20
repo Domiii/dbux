@@ -1,5 +1,5 @@
 import NanoEvents from 'nanoevents';
-import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
+import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';

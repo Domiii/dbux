@@ -1,5 +1,5 @@
 import { window, workspace } from 'vscode';
-import { isPlainObjectOrArrayCategory } from '@dbux/common/src/core/constants/ValueTypeCategory';
+import { isPlainObjectOrArrayCategory } from '@dbux/common/src/types/constants/ValueTypeCategory';
 import { showInformationMessage } from '../codeUtil/codeModals';
 
 export function valueRender(valueRef, value) {

@@ -1,15 +1,16 @@
-import TraceType, { hasDynamicTypes, isTracePop, isBeforeCallExpression } from '@dbux/common/src/core/constants/TraceType';
-import SpecialIdentifierType from '@dbux/common/src/core/constants/SpecialIdentifierType';
+import findLast from 'lodash/findLast';
+import TraceType, { hasDynamicTypes, isTracePop, isBeforeCallExpression } from '@dbux/common/src/types/constants/TraceType';
+import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
 import { pushArrayOfArray } from '@dbux/common/src/util/arrayUtil';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
-import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/core/constants/DataNodeType';
-import StaticTrace from '@dbux/common/src/core/data/StaticTrace';
-import { isVirtualContextType } from '@dbux/common/src/core/constants/StaticContextType';
-import { isRealContextType } from '@dbux/common/src/core/constants/ExecutionContextType';
-import { isCallResult, hasCallId } from '@dbux/common/src/core/constants/traceCategorization';
-import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory, ValuePruneState } from '@dbux/common/src/core/constants/ValueTypeCategory';
+import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
+import StaticTrace from '@dbux/common/src/types/StaticTrace';
+import { isVirtualContextType } from '@dbux/common/src/types/constants/StaticContextType';
+import { isRealContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
+import { isCallResult, hasCallId } from '@dbux/common/src/types/constants/traceCategorization';
+import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory, ValuePruneState } from '@dbux/common/src/types/constants/ValueTypeCategory';
 import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
 import { locToString } from './util/misc';
 
@@ -248,7 +249,7 @@ export default {
 
   /**
    * Returns the parentTrace of a context, not necessarily a BCE.
-   * Use getCallerTraceOfContext if you want the BCE of a context.
+   * Use `getOwnCallerTraceOfContext` if you want the BCE of a context.
    * 
    * @param {DataProvider} dp 
    * @param {number} contextId 
@@ -334,7 +335,7 @@ export default {
     let trace = dp.collections.traces.getById(traceId);
     const traceType = dp.util.getTraceType(traceId);
     if (isBeforeCallExpression(traceType) && trace.resultId) {
-      // trace is a BeforeCallExpression and has result
+      // trace is `BeforeCallExpression` and has a matching result trace
       return dp.collections.traces.getById(trace.resultId);
     }
     return trace;
@@ -592,18 +593,18 @@ export default {
     return null;
   },
 
-  getDataNodeByRefId(dp, refId) {
+  getDataNodesByRefId(dp, refId) {
     return dp.indexes.dataNodes.byRefId.get(refId);
   },
 
-  getTraceIdByRefId(dp, refId) {
-    const dataNode = dp.indexes.dataNodes.byRefId.get(refId);
+  getFirstTraceIdByRefId(dp, refId) {
+    const dataNode = dp.indexes.dataNodes.byRefId.getFirst(refId);
     return dataNode?.traceId;
   },
 
-  getTraceByRefId(dp, refId) {
-    const dataNode = dp.indexes.dataNodes.byRefId.get(refId);
-    return dataNode?.traceId && dp.util.getTrace(dataNode.traceId);
+  getFirstTraceByRefId(dp, refId) {
+    const traceId = dp.util.getFirstTraceIdByRefId(refId);
+    return traceId && dp.util.getTrace(traceId);
   },
 
   // ###########################################################################
@@ -707,6 +708,11 @@ export default {
     //   return callerTrace;
     // }
     return parentTrace;
+  },
+
+  getReturnValueRefOfContext(dp, contextId) {
+    const bceTrace = dp.util.getOwnCallerTraceOfContext(contextId);
+    return bceTrace && dp.util.getTraceValueRef(bceTrace.traceId) || null;
   },
 
   /**
@@ -916,6 +922,15 @@ export default {
     const { runId } = dp.collections.executionContexts.getById(contextId);
     const firstContextId = dp.util.getFirstContextOfRun(runId)?.contextId;
     return firstContextId === contextId;
+  },
+
+  isFirstContextInParent(dp, contextId) {
+    const context = dp.collections.executionContexts.getById(contextId);
+    const { parentContextId } = context;
+    if (parentContextId) {
+      return dp.indexes.executionContexts.children.getFirst(parentContextId) === context;
+    }
+    return false;
   },
 
   // ###########################################################################
@@ -1337,6 +1352,42 @@ export default {
     const traceType = dp.util.getTraceType(traceId);
     const typeName = TraceType.nameFrom(traceType);
     return `[${typeName}]`;
+  },
+
+  // ###########################################################################
+  // async
+  // ###########################################################################
+  
+  getAsyncRootThreadId(dp, rootId) {
+    return dp.indexes.asyncNodes.byRoot.getUnique(rootId)?.threadId;
+  },
+
+  doesRootHaveAsyncEdgeFromTo(dp, fromRootId, toRootId) {
+    const toRootEdges = dp.indexes.asyncEvents.to.get(toRootId);
+    return toRootEdges?.some(edge => edge.fromRootContextId === fromRootId) || false;
+  },
+
+  getAsyncPreEventUpdateOfTrace(dp, traceId) {
+    return dp.indexes.asyncEventUpdates.byTrace.get(traceId)?.[0];
+  },
+
+  getAsyncPostEventUpdateOfTrace(dp, traceId) {
+    return dp.indexes.asyncEventUpdates.byTrace.get(traceId)?.[1];
+  },
+
+  /**
+   * Find the last "Post" asyncEvent (also an "edge trigger event") of a given promise.
+   * That update must have `rootId` < `beforeRootId`
+   * 
+   * @return {AsyncEventUpdate}
+   */
+  getPreviousPostAsyncEventOfPromise(dp, promiseId, beforeRootId) {
+    const updates = dp.indexes.asyncEventUpdates.byPromise.get(promiseId);
+    return updates && findLast(updates, update => update.rootId < beforeRootId);
+  },
+
+  getFirstPostAsyncEventOfPromise(dp, promiseId) {
+    return dp.indexes.asyncEventUpdates.byPromise.getFirst(promiseId);
   }
 };
 

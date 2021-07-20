@@ -67,9 +67,9 @@ class AsyncGraph extends HostComponentEndpoint {
 
     this.threadColumns.update(threadIds.map((threadId) => {
       const firstNode = dp.indexes.asyncNodes.byThread.getFirst(threadId);
-      const parentEdge = dp.indexes.asyncEvents.from.getFirst(firstNode.rootContextId);
+      const parentEdge = dp.indexes.asyncEvents.to.getFirst(firstNode.rootContextId);
       const parentRootContextId = parentEdge?.fromRootContextId;
-      const parentAsyncNodeId = dp.indexes.asyncNodes.byRoot.getUnique(parentRootContextId)?.asyncNodeId;
+      const parentAsyncNodeId = parentRootContextId && dp.indexes.asyncNodes.byRoot.getUniqueNotNull(parentRootContextId)?.asyncNodeId;
       return {
         applicationId,
         threadId,

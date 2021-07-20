@@ -1,4 +1,4 @@
-import TraceType from '@dbux/common/src/core/constants/TraceType';
+import TraceType from '@dbux/common/src/types/constants/TraceType';
 import { buildTraceDeleteME } from '../../instrumentation/builders/me';
 import BasePlugin from './BasePlugin';
 

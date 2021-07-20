@@ -1,5 +1,5 @@
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
+import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
@@ -10,7 +10,7 @@ import EmptyDataNode from './EmptyDataNode';
 import DataFlowFilterModeType from './DataFlowFilterModeType';
 import ParentDataNode from './ParentDataNode';
 
-/** @typedef {import('@dbux/common/src/core/data/Trace').default} Trace */
+/** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 /** @typedef {import('./dataFlowViewController.js').DataFlowViewController} DataFlowViewController */
 
 // eslint-disable-next-line no-unused-vars

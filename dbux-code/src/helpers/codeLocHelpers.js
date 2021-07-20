@@ -10,8 +10,8 @@ import {
   Position, Range
 } from 'vscode';
 
-/** @typedef {import('@dbux/common/src/core/data/Loc').default} Loc */
-/** @typedef {import('@dbux/common/src/core/data/Loc').LocPos} LocPos */
+/** @typedef {import('@dbux/common/src/types/Loc').default} Loc */
+/** @typedef {import('@dbux/common/src/types/Loc').LocPos} LocPos */
 
 /**
  * VSCode's `Position` is slightly different from Babel's `start` and `end` in `SourceLocation`.

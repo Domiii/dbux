@@ -1,5 +1,5 @@
-import ExecutionContextType, { isRealContextType } from '@dbux/common/src/core/constants/ExecutionContextType';
-import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
+import ExecutionContextType, { isRealContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
+import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
 import staticContextCollection from './staticContextCollection';
 import Collection from './Collection';
 import pools from './pools';

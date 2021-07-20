@@ -7,7 +7,7 @@ import { getCursorLocation } from '../codeUtil/codeNav';
 import { getTracesAt } from '../helpers/codeRangeQueries';
 import { compareTraceInner } from '../codeUtil/codeRangeUtil';
 
-/** @typedef {import('@dbux/common/src/core/data/Trace').default} Trace */
+/** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
 /**
  * @param {Trace} t1 

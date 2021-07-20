@@ -1,6 +1,6 @@
 // import { instrumentCallExpressionEnter } from '../zz_archive/traceHelpers.old';
-import { isNotTraceable } from '@dbux/common/src/core/constants/SpecialIdentifierType';
-import TraceType from '@dbux/common/src/core/constants/TraceType';
+import { isNotTraceable } from '@dbux/common/src/types/constants/SpecialIdentifierType';
+import TraceType from '@dbux/common/src/types/constants/TraceType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { makeSpreadableArgumentArrayCfg } from '../helpers/argsUtil';
 import { traceCallExpressionDefault } from '../instrumentation/callExpressions';

@@ -1,5 +1,5 @@
-// import DataNodeType from '@dbux/common/src/core/constants/DataNodeType';
-import TraceType from '@dbux/common/src/core/constants/TraceType';
+// import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
+import TraceType from '@dbux/common/src/types/constants/TraceType';
 import BaseNode from './BaseNode';
 import BindingIdentifier from './BindingIdentifier';
 import { getVariableDeclaratorLValPlugin } from './helpers/lvalUtil';

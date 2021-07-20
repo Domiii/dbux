@@ -1,5 +1,5 @@
-import TraceType from '@dbux/common/src/core/constants/TraceType';
-import StaticContextType from '@dbux/common/src/core/constants/StaticContextType';
+import TraceType from '@dbux/common/src/types/constants/TraceType';
+import StaticContextType from '@dbux/common/src/types/constants/StaticContextType';
 import { pathToString } from '../helpers/pathHelpers';
 import BaseNode from './BaseNode';
 import { buildPostAwait, buildWrapAwait } from '../instrumentation/builders/await';

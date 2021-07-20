@@ -1,5 +1,5 @@
-import SpecialIdentifierType from '@dbux/common/src/core/constants/SpecialIdentifierType';
-import TraceType from '@dbux/common/src/core/constants/TraceType';
+import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
+import TraceType from '@dbux/common/src/types/constants/TraceType';
 import { ZeroNode } from '../instrumentation/builders/buildUtil';
 import { buildTraceExpressionVar } from '../instrumentation/builders/misc';
 import BaseId from './BaseId';

@@ -1,4 +1,4 @@
-import TraceType from '@dbux/common/src/core/constants/TraceType';
+import TraceType from '@dbux/common/src/types/constants/TraceType';
 import { makeSpreadableArgumentObjectCfg } from '../helpers/argsUtil';
 import { buildObjectExpression } from '../instrumentation/builders/objects';
 import BaseNode from './BaseNode';

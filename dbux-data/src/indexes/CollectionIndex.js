@@ -6,8 +6,9 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 // ###########################################################################
 
 class IndexManager {
-  constructor(index) {
+  constructor(index, cfg) {
     this.index = index;
+    this.cfg = cfg;
   }
 
   createNew() {
@@ -63,12 +64,29 @@ class MapIndexManager extends IndexManager {
     return new Map();
   }
 
+  serializeKey(key) {
+    if (this.cfg.serializeKey) {
+    // if (isObject(key)) {
+      key = JSON.stringify(key);
+    }
+    return key;
+  }
+
   get(key) {
-    return this.index._byKey.get(key);
+    key = this.serializeKey(key);
+    return this._get(key);
+  }
+
+  /**
+   * @private
+   */
+  _get(serializedKey) {
+    return this.index._byKey.get(serializedKey);
   }
 
   getOrCreateContainer(key) {
-    let container = this.get(key);
+    key = this.serializeKey(key);
+    let container = this._get(key);
     if (!container) {
       container = this.index._containerMethods.createNewContainer();
       this.index._byKey.set(key, container);
@@ -174,6 +192,44 @@ class SetContainerMethods extends ContainerMethods {
   }
 }
 
+export class IndexMapContainerCfg {
+  /**
+   * @type {boolean}
+   */
+  serializeKey;
+}
+
+export class IndexArrayContainerCfg {
+
+}
+
+export class CollectionIndexConfig {
+  /**
+   * Default = `true`.
+   * If set to `false`, the index is populated manually, usually through one of two ways:
+   * 1. calling `addEntry` manually
+   * 2. through the dependencies -> `added` event
+   * 
+   * @type {boolean}
+   */
+  addOnNewData;
+
+  /**
+   * By default, for performance reasons, indexes are backed by arrays ({@link ArrayIndexManager}).
+   * If the key set is not a dense value of numbers, set this to `false` ({@link MapIndexManager}).
+   */
+  isMap;
+
+  /**
+   * @type {IndexMapContainerCfg | IndexArrayContainerCfg}
+   */
+  containerCfg;
+}
+
+/**
+ * @typedef {CollectionIndexConfig} CollectionIndexConfig
+ */
+
 /**
  * @template {T}
  */
@@ -189,19 +245,27 @@ export default class CollectionIndex {
    */
   _byKey;
 
-  constructor(collectionName, indexName, { addOnNewData = true, isMap = false, isContainerSet = false } = EmptyObject) {
+  /**
+   * 
+   * @param {string} collectionName 
+   * @param {string} indexName
+   * @param {CollectionIndexConfig} cfg 
+   */
+  constructor(collectionName, indexName, cfg = EmptyObject) {
     this.collectionName = collectionName;
     this.name = indexName;
     this.logger = newLogger(`indexes.${collectionName}.${indexName}`);
+
+    const { addOnNewData = true, isMap = false, containerCfg = EmptyObject, isContainerSet = false } = cfg;
     this.addOnNewData = addOnNewData;
     this.isMap = isMap;
     this.isContainerSet = isContainerSet;
 
     if (this.isMap) {
-      this._manager = new MapIndexManager(this);
+      this._manager = new MapIndexManager(this, containerCfg);
     }
     else {
-      this._manager = new ArrayIndexManager(this);
+      this._manager = new ArrayIndexManager(this, containerCfg);
     }
 
     if (this.isContainerSet) {
@@ -241,7 +305,11 @@ export default class CollectionIndex {
 
   getUnique(key) {
     const container = this.get(key);
-    const entry = this._containerMethods.getUniqueInContainer(container);
+    return this._containerMethods.getUniqueInContainer(container);
+  }
+
+  getUniqueNotNull(key) {
+    const entry = this.getUnique(key);
     if (key && !entry) {
       this.logger.error(`Cannot getUnique entry for key: ${key}`);
     }

@@ -1,7 +1,7 @@
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import CollectionIndex from '../../indexes/CollectionIndex';
 
-/** @typedef {import('@dbux/common/src/core/data/ExecutionContext').default} ExecutionContext */
+/** @typedef {import('@dbux/common/src/types/ExecutionContext').default} ExecutionContext */
 /** @typedef {import('../../RuntimeDataProvider').default} RuntimeDataProvider */
 
 /** @extends {CollectionIndex<ExecutionContext>} */

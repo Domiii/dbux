@@ -47,6 +47,9 @@ import AsyncEventsToIndex from './impl/indexes/AsyncEventsToIndex';
 import AsyncEventsFromIndex from './impl/indexes/AsyncEventsFromIndex';
 import AsyncNodesByRootIndex from './impl/indexes/AsyncNodesByRootIndex';
 import AsyncNodesByThreadIndex from './impl/indexes/AsyncNodesByThreadIndex';
+import AsyncEventUpdatesByNestedPromiseIndex from './impl/indexes/AsyncEventUpdatesByNestedPromiseIndex';
+import AsyncEventUpdatesByTraceIndex from './impl/indexes/AsyncEventUpdatesByTraceIndex';
+import PostAsyncEventUpdateByPromiseIndex from './impl/indexes/PostAsyncEventUpdateByPromiseIndex';
 
 
 export function newDataProvider(application) {
@@ -101,15 +104,23 @@ export function newDataProvider(application) {
   dataProvider.addIndex(new DataNodesByRefIdIndex());
   dataProvider.addIndex(new DataNodesByObjectRefIdIndex());
 
+  // complex indexes (that have dependencies)
+  // NOTE: we are currently solving index dependencies by simply adding depdendents after dependees
+  dataProvider.addIndex(new ExecutedStaticTracesByFileIndex());
+  dataProvider.addIndex(new ParentTracesInRealContextIndex());
+
+  // ########################################
+  // async
+  // ########################################
+
   dataProvider.addIndex(new AsyncEventsFromIndex());
   dataProvider.addIndex(new AsyncEventsToIndex());
   dataProvider.addIndex(new AsyncNodesByRootIndex());
   dataProvider.addIndex(new AsyncNodesByThreadIndex());
 
-  // complex indexes (that have dependencies)
-  // NOTE: we are currently solving index dependencies by simply adding depdendents after dependees
-  dataProvider.addIndex(new ExecutedStaticTracesByFileIndex());
-  dataProvider.addIndex(new ParentTracesInRealContextIndex());
+  dataProvider.addIndex(new AsyncEventUpdatesByNestedPromiseIndex());
+  dataProvider.addIndex(new AsyncEventUpdatesByTraceIndex());
+  dataProvider.addIndex(new PostAsyncEventUpdateByPromiseIndex());
 
 
   // queries

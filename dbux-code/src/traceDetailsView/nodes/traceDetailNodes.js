@@ -7,7 +7,7 @@ import ValueTDRefNode from './ValueTDRefNode';
 import ValueTDSimpleNode from './ValueTDSimpleNode';
 // import NearbyValuesTDNode from './NearbyValuesTDNode';
 
-/** @typedef {import('@dbux/common/src/core/data/Trace').default} Trace */
+/** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
 // ###########################################################################
 // DetailNodeClasses

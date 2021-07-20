@@ -1,4 +1,4 @@
-import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
+import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import dataNodeCollection from './dataNodeCollection';
 import executionContextCollection from './executionContextCollection';

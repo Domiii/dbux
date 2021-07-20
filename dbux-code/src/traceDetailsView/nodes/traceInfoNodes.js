@@ -1,7 +1,7 @@
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { makeContextLabel } from '@dbux/data/src/helpers/contextLabels';
-import TraceType from '@dbux/common/src/core/constants/TraceType';
-import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
+import TraceType from '@dbux/common/src/types/constants/TraceType';
+import ExecutionContextType from '@dbux/common/src/types/constants/ExecutionContextType';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 
 /** @typedef {import('@dbux/data/src/applications/Application').default} Application */

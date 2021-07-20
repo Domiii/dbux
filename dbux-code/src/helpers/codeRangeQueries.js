@@ -1,7 +1,7 @@
 import findLast from 'lodash/findLast';
-import StaticContext from '@dbux/common/src/core/data/StaticContext';
-import Trace from '@dbux/common/src/core/data/Trace';
-import TraceType from '@dbux/common/src/core/constants/TraceType';
+import StaticContext from '@dbux/common/src/types/StaticContext';
+import Trace from '@dbux/common/src/types/Trace';
+import TraceType from '@dbux/common/src/types/constants/TraceType';
 import { babelLocToCodeRange } from './codeLocHelpers';
 
 /** @typedef {import('@dbux/data/src/applications/Application').default} Application */

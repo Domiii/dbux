@@ -1,4 +1,3 @@
-import DataNodeType from '../constants/DataNodeType';
 
 export default class StaticDataNode {
   // staticTraceId;

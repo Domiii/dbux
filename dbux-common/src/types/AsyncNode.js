@@ -1,6 +1,4 @@
-import HasValue from './HasValue';
-
-export default class AsyncNode extends HasValue {
+export default class AsyncNode {
   /**
    * @type {number}
    */

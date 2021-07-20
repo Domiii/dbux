@@ -5,7 +5,7 @@ import traceCollection from './data/traceCollection';
 import scheduleNextPossibleRun from './scheduleNextPossibleRun';
 import RuntimeAsync from './async/RuntimeAsync';
 
-// import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
+// import ExecutionContextType from '@dbux/common/src/types/constants/ExecutionContextType';
 // import executionContextCollection from './data/executionContextCollection';
 // import staticContextCollection from './data/staticContextCollection';
 

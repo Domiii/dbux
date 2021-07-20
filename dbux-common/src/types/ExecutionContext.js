@@ -1,4 +1,4 @@
-import ExecutionContextType from '../constants/ExecutionContextType';
+import ExecutionContextType from './constants/ExecutionContextType';
 
 // TODO: the following code won't work with webpack since webpack runs in node, gathering all dependencies; would need more configuration parameters
 // let _performance;

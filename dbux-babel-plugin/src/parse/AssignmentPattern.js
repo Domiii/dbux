@@ -1,4 +1,4 @@
-// import TraceType from '@dbux/common/src/core/constants/TraceType';
+// import TraceType from '@dbux/common/src/types/constants/TraceType';
 import template from '@babel/template';
 import * as t from '@babel/types';
 import { LValHolderNode } from './_types';

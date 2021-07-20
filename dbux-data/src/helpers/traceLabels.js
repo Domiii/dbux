@@ -1,4 +1,4 @@
-import TraceType, { isCallbackRelatedTrace } from '@dbux/common/src/core/constants/TraceType';
+import TraceType, { isCallbackRelatedTrace } from '@dbux/common/src/types/constants/TraceType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { makeContextLabel } from './contextLabels';
 import allApplications from '../applications/allApplications';

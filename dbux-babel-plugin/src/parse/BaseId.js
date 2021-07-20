@@ -1,5 +1,5 @@
 // import { Binding } from '@babel/traverse';
-// import TraceType from '@dbux/common/src/core/constants/TraceType';
+// import TraceType from '@dbux/common/src/types/constants/TraceType';
 import { pathToString } from '../helpers/pathHelpers';
 import BaseNode from './BaseNode';
 

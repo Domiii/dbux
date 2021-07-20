@@ -1,4 +1,4 @@
-import AsyncNode from '@dbux/common/src/core/data/AsyncNode';
+import AsyncNode from '@dbux/common/src/types/AsyncNode';
 import CollectionIndex from '../../indexes/CollectionIndex';
 import RuntimeDataProvider from '../../RuntimeDataProvider';
 

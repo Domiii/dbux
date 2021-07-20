@@ -1,4 +1,4 @@
-import AsyncEvent from '@dbux/common/src/core/data/AsyncEvent';
+import AsyncEvent from '@dbux/common/src/types/AsyncEvent';
 import CollectionIndex from '../../indexes/CollectionIndex';
 import RuntimeDataProvider from '../../RuntimeDataProvider';
 
@@ -7,7 +7,7 @@ import RuntimeDataProvider from '../../RuntimeDataProvider';
 /** @extends {CollectionIndex<AsyncEvent>} */
 export default class AsyncEventsFromIndex extends CollectionIndex {
   constructor() {
-    super('asyncEvents', 'from');
+    super('asyncEvents', 'to');
   }
 
   /** 

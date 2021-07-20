@@ -1,7 +1,7 @@
 import allApplications from '@dbux/data/src/applications/allApplications';
 import ValueNode, { ValueLabel } from './ValueNode';
 
-/** @typedef {import('@dbux/common/src/core/data/Trace').default} Trace */
+/** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
 /**
  * Node contains pure value, no entry(dataNode) available
