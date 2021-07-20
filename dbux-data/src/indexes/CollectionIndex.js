@@ -305,7 +305,11 @@ export default class CollectionIndex {
 
   getUnique(key) {
     const container = this.get(key);
-    const entry = this._containerMethods.getUniqueInContainer(container);
+    return this._containerMethods.getUniqueInContainer(container);
+  }
+
+  getUniqueNotNull(key) {
+    const entry = this.getUnique(key);
     if (key && !entry) {
       this.logger.error(`Cannot getUnique entry for key: ${key}`);
     }

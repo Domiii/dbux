@@ -186,7 +186,7 @@ export default class Collection {
 
     // TODO: can we postpone `_postAdd` to run once per run instead?
     // populate indexes, trigger data dependencies etc.
-    const allData = { asyncEvents: [entry] };
+    const allData = { [this.name]: [entry] };
     this.dp._postAdd(this._collectionNames, allData, true);
   }
 }

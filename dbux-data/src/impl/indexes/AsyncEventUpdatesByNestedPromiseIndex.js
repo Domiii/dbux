@@ -15,6 +15,9 @@ export default class AsyncEventUpdatesByNestedPromiseIndex extends CollectionInd
    * @param {AsyncEventUpdate} asyncEventUpdate
    */
   makeKey(dp, { runId, nestedPromiseId }) {
-    return { runId, nestedPromiseId };
+    if (!nestedPromiseId) {
+      return false;
+    }
+    return [runId, nestedPromiseId];
   }
 }

@@ -96,9 +96,9 @@ export class DebugTDNode extends TraceDetailNode {
     function evtPrefix(evt) {
       return `${evt.asyncEventId}: [${AsyncEdgeType.nameFromForce(evt.edgeType)}]`;
     }
-    const inEvents = dataProvider.indexes.asyncEvents.from.get(rootContextId)
+    const inEvents = dataProvider.indexes.asyncEvents.to.get(rootContextId)
       ?.map(evt => new TreeItem(`${evtPrefix(evt)} <- ${evt.fromRootContextId}`));
-    const outEvents = dataProvider.indexes.asyncEvents.to.get(rootContextId)
+    const outEvents = dataProvider.indexes.asyncEvents.from.get(rootContextId)
       ?.map(evt => new TreeItem(`${evtPrefix(evt)} -> ${evt.toRootContextId}`));
     const runNode = [
       'async',

@@ -1359,7 +1359,12 @@ export default {
   // ###########################################################################
   
   getAsyncRootThreadId(dp, rootId) {
-    return dp.indexes.asyncNodes.byRoot.get(rootId)?.threadId;
+    return dp.indexes.asyncNodes.byRoot.getUnique(rootId)?.threadId;
+  },
+
+  doesRootHaveAsyncEdgeFromTo(dp, fromRootId, toRootId) {
+    const toRootEdges = dp.indexes.asyncEvents.to.get(toRootId);
+    return toRootEdges?.some(edge => edge.fromRootContextId === fromRootId) || false;
   },
 
   getAsyncPreEventUpdateOfTrace(dp, traceId) {

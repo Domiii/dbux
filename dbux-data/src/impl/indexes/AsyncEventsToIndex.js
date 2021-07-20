@@ -4,10 +4,13 @@ import RuntimeDataProvider from '../../RuntimeDataProvider';
 
 
 
-/** @extends {CollectionIndex<AsyncEvent>} */
+/** 
+ * 
+ * @extends {CollectionIndex<AsyncEvent>}
+ */
 export default class AsyncEventsToIndex extends CollectionIndex {
   constructor() {
-    super('asyncEvents', 'to');
+    super('asyncEvents', 'from');
   }
 
   /** 

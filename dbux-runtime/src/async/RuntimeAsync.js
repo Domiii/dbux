@@ -585,7 +585,8 @@ export default class RuntimeAsync {
 
     this.threadsByRoot.set(rootId, threadId);
 
-    asyncNodeCollection.addAsyncNode(rootId, threadId, schedulerTraceId);
+    // TODO: remove all this
+    // asyncNodeCollection.addAsyncNode(rootId, threadId, schedulerTraceId);
     // this.lastRootContextByThread.set(threadId, threadLastRun);
   }
 
