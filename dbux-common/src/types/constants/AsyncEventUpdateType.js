@@ -15,4 +15,12 @@ const asyncEventUpdate = {
  */
 const AsyncEventUpdateType = new Enum(asyncEventUpdate);
 
+const postEventUpdateTypes = new Array(AsyncEventUpdateType.getValueMaxIndex()).map(() => false);
+postEventUpdateTypes[AsyncEventUpdateType.PostAwait] = true;
+postEventUpdateTypes[AsyncEventUpdateType.PostThen] = true;
+
+export function isPostEventUpdate(type) {
+  return postEventUpdateTypes[type];
+}
+
 export default AsyncEventUpdateType;

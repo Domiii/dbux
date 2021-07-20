@@ -1,14 +1,14 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
-import { isObject, isPlainObject } from 'lodash';
 
 // ###########################################################################
 //  Mangers
 // ###########################################################################
 
 class IndexManager {
-  constructor(index) {
+  constructor(index, cfg) {
     this.index = index;
+    this.cfg = cfg;
   }
 
   createNew() {
@@ -59,20 +59,21 @@ class ArrayIndexManager extends IndexManager {
   }
 }
 
-function serializeKey(key) {
-  if (isObject(key)) {
-    key = JSON.stringify(key);
-  }
-  return key;
-}
-
 class MapIndexManager extends IndexManager {
   createNew() {
     return new Map();
   }
 
+  serializeKey(key) {
+    if (this.cfg.serializeKey) {
+    // if (isObject(key)) {
+      key = JSON.stringify(key);
+    }
+    return key;
+  }
+
   get(key) {
-    key = serializeKey(key);
+    key = this.serializeKey(key);
     return this._get(key);
   }
 
@@ -84,7 +85,7 @@ class MapIndexManager extends IndexManager {
   }
 
   getOrCreateContainer(key) {
-    key = serializeKey(key);
+    key = this.serializeKey(key);
     let container = this._get(key);
     if (!container) {
       container = this.index._containerMethods.createNewContainer();
@@ -191,6 +192,17 @@ class SetContainerMethods extends ContainerMethods {
   }
 }
 
+export class IndexMapContainerCfg {
+  /**
+   * @type {boolean}
+   */
+  serializeKey;
+}
+
+export class IndexArrayContainerCfg {
+
+}
+
 export class CollectionIndexConfig {
   /**
    * Default = `true`.
@@ -207,7 +219,16 @@ export class CollectionIndexConfig {
    * If the key set is not a dense value of numbers, set this to `false` ({@link MapIndexManager}).
    */
   isMap;
+
+  /**
+   * @type {IndexMapContainerCfg | IndexArrayContainerCfg}
+   */
+  containerCfg;
 }
+
+/**
+ * @typedef {CollectionIndexConfig} CollectionIndexConfig
+ */
 
 /**
  * @template {T}
@@ -235,16 +256,16 @@ export default class CollectionIndex {
     this.name = indexName;
     this.logger = newLogger(`indexes.${collectionName}.${indexName}`);
 
-    const { addOnNewData = true, isMap = false, isContainerSet = false } = cfg;
+    const { addOnNewData = true, isMap = false, containerCfg = EmptyObject, isContainerSet = false } = cfg;
     this.addOnNewData = addOnNewData;
     this.isMap = isMap;
     this.isContainerSet = isContainerSet;
 
     if (this.isMap) {
-      this._manager = new MapIndexManager(this);
+      this._manager = new MapIndexManager(this, containerCfg);
     }
     else {
-      this._manager = new ArrayIndexManager(this);
+      this._manager = new ArrayIndexManager(this, containerCfg);
     }
 
     if (this.isContainerSet) {

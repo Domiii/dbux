@@ -15,6 +15,14 @@ export class AsyncUpdateBase {
 
   rootId;
 
+
+  /**
+   * For PreAwait + PostAwait: the return value of the async function.
+   * For PreThen: the promise on which `then` was called.
+   * For PostThen: the promise returned by `then`.
+   */
+  promiseId;
+
   /**
    * For `PreAwait`: Resume context during which `await` was called.
    * For `PostAwait`: Resume context that was pushed as result of this `await`.
@@ -36,7 +44,6 @@ export class AsyncUpdateBase {
 export class AsyncFunctionUpdate extends AsyncUpdateBase {
   /** @type {number} */
   realContextId;
-  returnPromiseId;
 }
 
 // export class AsyncCallUpdate extends AsyncFunctionUpdate {
@@ -57,11 +64,6 @@ export class PostAwaitUpdate extends AsyncFunctionUpdate {
 // ###########################################################################
 
 export class PromiseUpdate extends AsyncUpdateBase {
-  /**
-   * For PreThen: the promise on which `then` was called.
-   * For PostThen: the promise returned by `then`.
-   */
-  promiseId;
 }
 
 export class PreThenUpdate extends PromiseUpdate {

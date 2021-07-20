@@ -209,6 +209,9 @@ export default class DataProviderBase {
     const collectionNames = this._getSortedCollectionNames(allData);
     this._addData(collectionNames, allData);
     this._postAdd(collectionNames, allData, isRaw);
+
+    // notify internal and external listeners
+    this._notifyData(collectionNames, allData);
   }
 
   addQuery(newQuery) {
@@ -318,9 +321,6 @@ export default class DataProviderBase {
       const entries = allData[collectionName];
       collection.postIndexProcessed(entries);
     }
-
-    // notify internal and external listeners
-    this._notifyData(collectionNames, allData);
   }
 
   _notifyData(collectionNames, allData) {

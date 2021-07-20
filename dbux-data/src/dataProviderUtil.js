@@ -1,3 +1,4 @@
+import findLast from 'lodash/findLast';
 import TraceType, { hasDynamicTypes, isTracePop, isBeforeCallExpression } from '@dbux/common/src/types/constants/TraceType';
 import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
 import { pushArrayOfArray } from '@dbux/common/src/util/arrayUtil';
@@ -1357,7 +1358,22 @@ export default {
   // async
   // ###########################################################################
 
-  
+  getAsyncPreEventUpdateOfTrace(dp, traceId) {
+    return dp.indexes.asyncEventUpdates.byTrace.get(traceId)?.[0];
+  },
 
+  getAsyncPostEventUpdateOfTrace(dp, traceId) {
+    return dp.indexes.asyncEventUpdates.byTrace.get(traceId)?.[1];
+  },
+
+  /**
+   * Find the last "Post" asyncEvent (also an "edge trigger event") of a given promise.
+   * 
+   * @return {AsyncEventUpdate}
+   */
+  getLastPostAsyncEventUpdateOfPromiseBeforeRun(dp, promiseId, runId) {
+    const updates = dp.indexes.asyncEventUpdates.byPromise.get(promiseId);
+    return updates && findLast(updates, update => update.runId < runId);
+  }
 };
 
