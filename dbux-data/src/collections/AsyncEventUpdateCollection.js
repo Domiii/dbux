@@ -1,8 +1,8 @@
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import AsyncEventUpdateType, { isAwaitEvent } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import AsyncEventUpdate, { PostAwaitUpdate } from '@dbux/common/src/types/AsyncEventUpdate';
-import Collection from '../Collection';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import Collection from '../Collection';
 
 /** @typedef { import("@dbux/common/src/types/AsyncEventUpdate").AsyncEventUpdate } AsyncEventUpdate */
 
