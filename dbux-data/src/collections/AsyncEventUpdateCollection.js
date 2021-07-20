@@ -2,6 +2,7 @@ import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import AsyncEventUpdateType, { isAwaitEvent } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import AsyncEventUpdate, { PostAwaitUpdate } from '@dbux/common/src/types/AsyncEventUpdate';
 import Collection from '../Collection';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 /** @typedef { import("@dbux/common/src/types/AsyncEventUpdate").AsyncEventUpdate } AsyncEventUpdate */
 
@@ -116,14 +117,15 @@ export default class AsyncEventUpdateCollection extends Collection {
       // Case 1: (1.a) not first await OR (1.b) chained to root -> CHAIN
     }
     else if (isNested) {
-      const nestedRootId = dp.util.getLastPostAsyncEventUpdateOfPromiseBeforeRun(promiseId, postEventRunId);
+      const nestedUpdate = dp.util.getLastPostAsyncEventUpdateOfPromiseBeforeRun(nestedPromiseId, postEventRunId);
+      const { rootId: nestedRootId } = nestedUpdate ?? EmptyObject;
       if (isNestedChain) {
         // Case 2: nested promise is chained into the same thread: add single edge
         // CHAIN with nested promise: get `fromRootId` of latest `PostThen` or `PostAwait` (before this one) of promise.
         fromRootId = nestedRootId || preEventRootId;   // in case the promise had no Post event.
-        fromThreadId = this.dp.util.getAsyncRootThreadId(fromRootId);
+        fromThreadId = toThreadId = this.dp.util.getAsyncRootThreadId(fromRootId);
       }
-      else {
+      else if (nestedRootId) {
         // Case 3: nested, but not chained -> add SYNC edge
         this.addSyncEdge(nestedRootId, toRootId, AsyncEdgeType.SyncIn);
 

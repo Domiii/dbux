@@ -343,7 +343,8 @@ export function getPromiseAnyRootId(promise) {
 }
 
 export function getPromiseId(promise) {
-  return promise._dbux_?.id;
+  return valueCollection.getRefByValue(promise)?.refId;
+  // return promise._dbux_?.id;
 }
 
 export function getPromiseOwnThreadId(promise) {
