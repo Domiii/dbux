@@ -6,6 +6,7 @@
     "lib": [
       "es6"
     ],
+    "baseUrl": "./",
     "paths": {
       "@dbux/common/*": ["../dbux-common/*"],
       "@dbux/common-node/*": ["../dbux-common-node/*"],

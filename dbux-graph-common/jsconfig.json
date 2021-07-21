@@ -3,6 +3,7 @@
     "module": "esnext",
     "target": "esnext",
     "checkJs": false,  /* Typecheck .js files. */
+    "baseUrl": "./",
     "paths": {
       "@dbux/common/*": ["../dbux-common/*"]
     }
