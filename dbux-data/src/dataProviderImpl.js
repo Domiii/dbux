@@ -50,6 +50,7 @@ import AsyncNodesByThreadIndex from './impl/indexes/AsyncNodesByThreadIndex';
 import AsyncEventUpdatesByNestedPromiseIndex from './impl/indexes/AsyncEventUpdatesByNestedPromiseIndex';
 import AsyncEventUpdatesByTraceIndex from './impl/indexes/AsyncEventUpdatesByTraceIndex';
 import PostAsyncEventUpdateByPromiseIndex from './impl/indexes/PostAsyncEventUpdateByPromiseIndex';
+import AsyncEventUpdatesByRootIndex from './impl/indexes/AsyncEventUpdatesByRootIndex';
 
 
 export function newDataProvider(application) {
@@ -120,6 +121,7 @@ export function newDataProvider(application) {
 
   dataProvider.addIndex(new AsyncEventUpdatesByNestedPromiseIndex());
   dataProvider.addIndex(new AsyncEventUpdatesByTraceIndex());
+  dataProvider.addIndex(new AsyncEventUpdatesByRootIndex());
   dataProvider.addIndex(new PostAsyncEventUpdateByPromiseIndex());
 
 

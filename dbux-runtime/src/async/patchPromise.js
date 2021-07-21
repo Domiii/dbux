@@ -89,22 +89,36 @@ export function patchPromise(promise) {
 // patchThen*
 // ###########################################################################
 
-function patchThenCallback(cb, thenRef) {
-  if (!isFunction(cb)) {
-    return cb;
+let activeThenCbCount = 0;
+function patchThenCallback(thenCb, thenRef) {
+  if (!isFunction(thenCb)) {
+    return thenCb;
   }
 
-  const originalCb = cb;
+  const originalThenCb = thenCb;
   return function patchedPromiseCb(previousResult) {
-    const returnValue = originalCb(previousResult);
-
-    if (isThenable(returnValue)) {
-      maybePatchPromise(returnValue);
-      setNestingPromise(returnValue, thenRef.postEventPromise);
+    if (activeThenCbCount) {
+      warn(`then callback called before previous then callback has finished, schedulerTraceId=${thenRef.schedulerTraceId}`);
     }
+    ++activeThenCbCount;
 
-    thenExecuted(thenRef, previousResult, returnValue);
-
+    let returnValue;
+    try {
+      try {
+        // actually call `then`
+        returnValue = originalThenCb(previousResult);
+      }
+      finally {
+        if (isThenable(returnValue)) {
+          maybePatchPromise(returnValue);
+          setNestingPromise(returnValue, thenRef.postEventPromise);
+        }
+        thenExecuted(thenRef, previousResult, returnValue);
+      }
+    }
+    finally {
+      --activeThenCbCount;
+    }
     return returnValue;
   };
 }

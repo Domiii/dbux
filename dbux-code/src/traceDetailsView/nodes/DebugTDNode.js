@@ -7,6 +7,7 @@ import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import { makeTreeItems } from '../../helpers/treeViewHelpers';
 import { ContextTDNode, TraceTypeTDNode } from './traceInfoNodes';
 import TraceDetailNode from './traceDetailNode';
+import { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
@@ -15,6 +16,13 @@ import TraceDetailNode from './traceDetailNode';
 // ###########################################################################
 // Debug
 // ###########################################################################
+
+function makeArrayNodes(obj) {
+  return Object.fromEntries(
+    Object.entries(obj)
+      .map(([name, arr]) => [`${name} (${arr?.length || 0})`, arr || {}])
+  );
+}
 
 export class DebugTDNode extends TraceDetailNode {
   static makeLabel(/* trace, parent */) {
@@ -92,6 +100,13 @@ export class DebugTDNode extends TraceDetailNode {
     // ];
 
     const asyncNode = dataProvider.indexes.asyncNodes.byRoot.getFirst(rootContextId);
+    const asyncEventUpdates = dataProvider.indexes.asyncEventUpdates.byRoot.get(rootContextId);
+
+    // one POST event per `rootId`
+    const postEventUpdate = asyncEventUpdates?.find(({ type }) => isPostEventUpdate(type));
+
+    // many PRE events per `rootId`
+    const preEventUpdates = asyncEventUpdates?.filter(({ type }) => !isPostEventUpdate(type));
 
     function evtPrefix(evt) {
       return `${evt.asyncEventId}: [${AsyncEdgeType.nameFromForce(evt.edgeType)}]`;
@@ -103,9 +118,13 @@ export class DebugTDNode extends TraceDetailNode {
     const runNode = [
       'async',
       {
-        asyncNode,
-        [`InEvents (${inEvents?.length || 0})`]: inEvents || {},
-        [`OutEvents (${outEvents?.length || 0})`]: outEvents || {}
+        AsyncNode: asyncNode,
+        PostUpdate: postEventUpdate,
+        ...makeArrayNodes({
+          PreUpdates: preEventUpdates,
+          InEvents: inEvents,
+          OutEvents: outEvents
+        })
       },
       {
         description: `thread=${asyncNode?.threadId}, rootId=${rootContextId}`

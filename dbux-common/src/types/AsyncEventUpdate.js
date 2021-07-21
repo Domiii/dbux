@@ -18,7 +18,7 @@ export class AsyncUpdateBase {
 
   /**
    * For PreAwait + PostAwait: the return value of the async function (collected in `postAddRaw`).
-   * For PreThen: undefined
+   * For PreThen: the promise on which `then` was called.
    * For PostThen: the promise returned by `then`.
    */
   promiseId;
