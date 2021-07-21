@@ -1,4 +1,5 @@
 import NanoEvents from 'nanoevents';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { makeContextLabel } from '@dbux/data/src/helpers/contextLabels';
 import { makeContextLocLabel, makeTraceLabel } from '@dbux/data/src/helpers/traceLabels';
@@ -41,19 +42,21 @@ class AsyncGraph extends HostComponentEndpoint {
   }
 
   handleRefresh() {
+    const apps = [];
     if (this.context.graphDocument.asyncGraphMode) {
       const app = allApplications.selection.getAll()?.[0];
 
       if (app) {
         this.buildChildrenColumns(app);
+        apps.push(app);
       }
 
       this._resubscribeOnData();
     }
     else {
-      this.threadColumns.update([]);
+      this.threadColumns.update(EmptyArray);
     }
-    this._setApplicationState();
+    this._setApplicationState(apps);
   }
 
   /**
@@ -65,7 +68,7 @@ class AsyncGraph extends HostComponentEndpoint {
     const rootContextIds = dp.indexes.asyncNodes.byRoot.getAllKeys();
     const lastRootContextId = dp.collections.asyncNodes.getLast()?.rootContextId;
 
-    this.threadColumns.update(threadIds.map((threadId) => {
+    const threadColumns = threadIds.map((threadId) => {
       const firstNode = dp.indexes.asyncNodes.byThread.getFirst(threadId);
       const parentEdge = dp.indexes.asyncEvents.to.getFirst(firstNode.rootContextId);
       const parentRootContextId = parentEdge?.fromRootContextId;
@@ -79,19 +82,26 @@ class AsyncGraph extends HostComponentEndpoint {
         rootContextIds,
         nodes: this.makeThreadColumnNodes(app, threadId),
       };
-    }));
+    });
+
+    this.threadColumns.update(threadColumns);
   }
 
   makeThreadColumnNodes(app, threadId) {
     const { dataProvider: dp, applicationId } = app;
     return dp.indexes.asyncNodes.byThread.get(threadId).map(asyncNode => {
-      const trace = dp.collections.traces.getById(asyncNode.traceId);
-      const context = dp.collections.executionContexts.getById(asyncNode.rootContextId);
+      const { rootContextId } = asyncNode;
+      const context = dp.collections.executionContexts.getById(rootContextId);
+      // const trace = dp.collections.traces.getById(asyncNode.traceId);
       // const displayName = trace ? makeTraceLabel(trace) : makeContextLabel(context, app);
       const displayName = makeContextLabel(context, app);
+      const syncInCount = dp.indexes.asyncEvents.syncInByRoot.getSize(rootContextId);
+      const syncOutCount = dp.indexes.asyncEvents.syncOutByRoot.getSize(rootContextId);
       return {
         displayName,
         locLabel: makeContextLocLabel(applicationId, context),
+        syncInCount,
+        syncOutCount,
         asyncNode,
         context
       };
@@ -118,15 +128,19 @@ class AsyncGraph extends HostComponentEndpoint {
     }
   }
 
-  _setApplicationState() {
-    const update = {
-      applications: allApplications.selection.getAll().map(app => ({
-        applicationId: app.applicationId,
-        entryPointPath: app.entryPointPath,
-        name: app.getPreferredName()
-      }))
-    };
-    this.setState(update);
+  _setApplicationState(apps = EmptyArray) {
+    // const applications = allApplications.selection.getAll().map(app => ({
+    //   applicationId: app.applicationId,
+    //   entryPointPath: app.entryPointPath,
+    //   name: app.getPreferredName()
+    // }));
+
+    const applications = apps.map(app => ({
+      applicationId: app.applicationId,
+      entryPointPath: app.entryPointPath,
+      name: app.getPreferredName()
+    }));
+    this.setState({ applications });
   }
 
   // ###########################################################################

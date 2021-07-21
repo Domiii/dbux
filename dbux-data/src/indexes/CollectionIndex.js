@@ -131,6 +131,11 @@ class ContainerMethods {
   }
 
   // eslint-disable-next-line no-unused-vars
+  getSize(container) {
+    throw new Error('abstract method not implemented');
+  }
+
+  // eslint-disable-next-line no-unused-vars
   addEntry(container, entry) {
     throw new Error('abstract method not implemented');
   }
@@ -150,12 +155,16 @@ class ArrayContainerMethods extends ContainerMethods {
   }
 
   getUniqueInContainer(container) {
-    if (container?.length === 1) {
+    if (this.getSize(container) === 1) {
       return container[0];
     }
     else {
       return null;
     }
+  }
+
+  getSize(container) {
+    return container?.length || 0;
   }
 
   addEntry(container, entry) {
@@ -179,12 +188,16 @@ class SetContainerMethods extends ContainerMethods {
   }
 
   getUniqueInContainer(container) {
-    if (container?.size === 1) {
+    if (this.getSize(container) === 1) {
       return container.values().next().value;
     }
     else {
       return null;
     }
+  }
+
+  getSize(container) {
+    return container?.size || 0;
   }
 
   addEntry(container, entry) {
@@ -314,6 +327,11 @@ export default class CollectionIndex {
       this.logger.error(`Cannot getUnique entry for key: ${key}`);
     }
     return entry;
+  }
+
+  getSize(key) {
+    const container = this.get(key);
+    return this._containerMethods.getSize(container);
   }
 
   getAll() {

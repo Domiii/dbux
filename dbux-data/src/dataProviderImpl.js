@@ -45,6 +45,8 @@ import DataNodesByRefIdIndex from './impl/indexes/DataNodesByRefIdIndex';
 import DataNodesByObjectRefIdIndex from './impl/indexes/DataNodesByObjectRefIdIndex';
 import AsyncEventsToIndex from './impl/indexes/AsyncEventsToIndex';
 import AsyncEventsFromIndex from './impl/indexes/AsyncEventsFromIndex';
+import SyncInAsyncEventsByRootIndex from './impl/indexes/SyncInAsyncEventsByRootIndex';
+import SyncOutAsyncEventsByRootIndex from './impl/indexes/SyncOutAsyncEventsByRootIndex';
 import AsyncNodesByRootIndex from './impl/indexes/AsyncNodesByRootIndex';
 import AsyncNodesByThreadIndex from './impl/indexes/AsyncNodesByThreadIndex';
 import AsyncEventUpdatesByNestedPromiseIndex from './impl/indexes/AsyncEventUpdatesByNestedPromiseIndex';
@@ -115,6 +117,8 @@ export function newDataProvider(application) {
 
   dataProvider.addIndex(new AsyncEventsFromIndex());
   dataProvider.addIndex(new AsyncEventsToIndex());
+  dataProvider.addIndex(new SyncInAsyncEventsByRootIndex());
+  dataProvider.addIndex(new SyncOutAsyncEventsByRootIndex());
   dataProvider.addIndex(new AsyncNodesByRootIndex());
   dataProvider.addIndex(new AsyncNodesByThreadIndex());
 
