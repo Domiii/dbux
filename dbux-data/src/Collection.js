@@ -31,10 +31,20 @@ export default class Collection {
    */
   dp;
 
-  constructor(name, dp) {
+  /**
+   * NOTE: some collections are populated entirely by dbux-data, and not by runtime.
+   *    These collections (for now) have some small differences in the way they are populated:
+   * 
+   * 1. no `entry._id`
+   * 2. no first `null` element
+   */
+  hasNoRuntime;
+
+  constructor(name, dp, hasNoRuntime = false) {
     if (!name || !dp) {
       throw new Error(`Collection did not provide name and dp to ctor - ${this.constructor.name}`);
     }
+    this.hasNoRuntime = hasNoRuntime;
     this.logger = newLogger(`${name}`);
     this.name = name;
     this.dp = dp;

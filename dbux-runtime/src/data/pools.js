@@ -6,7 +6,7 @@ import Loop from '@dbux/common/src/types/loops/Loop';
 import PromiseData from '@dbux/common/src/types/PromiseData';
 import AsyncEvent from '@dbux/common/src/types/AsyncEvent';
 import AsyncNode from '@dbux/common/src/types/AsyncNode';
-import { AsyncCallUpdate, PreAwaitUpdate, PostAwaitUpdate, PreThenUpdate, PostThenUpdate } from '@dbux/common/src/types/AsyncEventUpdate';
+import { PreAwaitUpdate, PostAwaitUpdate, PreThenUpdate, PostThenUpdate } from '@dbux/common/src/types/AsyncEventUpdate';
 
 /**
  * TODO: proper object pooling
@@ -67,11 +67,6 @@ const pools = {
   // AsyncEventUpdate
   // ###########################################################################
 
-  asyncCallUpdates: {
-    allocate() {
-      return new AsyncCallUpdate();
-    }
-  },
   preAwaitUpdates: {
     allocate() {
       return new PreAwaitUpdate();

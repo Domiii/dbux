@@ -17,18 +17,17 @@ export class AsyncUpdateBase {
 
 
   /**
-   * For PreAwait + PostAwait: the return value of the async function.
-   * For PreThen: the promise on which `then` was called.
+   * For PreAwait + PostAwait: the return value of the async function (collected in `postAddRaw`).
+   * For PreThen: undefined
    * For PostThen: the promise returned by `then`.
-   * 
-   * NOTE: for async function - collected in `postAddRaw`.
    */
   promiseId;
 
 
   /**
    * For PreAwait + PostAwait: promiseId of the await argument (if it is a promise).
-   * For PreThen + PostThen: promiseId of the value returned from `then` callback (if it is a promise).
+   * For PreThen: undefined
+   * For PostThen: promiseId of the value returned from `then` callback (if it is a promise).
    */
   nestedPromiseId;
 
@@ -58,11 +57,6 @@ export class AsyncFunctionUpdate extends AsyncUpdateBase {
   realContextId;
 }
 
-// export class AsyncCallUpdate extends AsyncFunctionUpdate {
-//   callId;
-//   promiseId;
-// }
-
 export class PreAwaitUpdate extends AsyncFunctionUpdate {
 }
 
@@ -90,5 +84,5 @@ export class PostThenUpdate extends PromiseUpdate {
  *    Consider asyncEventUpdateCollection for usage example.
  * @see https://github.com/jsdoc/jsdoc/issues/1537
  * 
- * @typedef {(AsyncCallUpdate | PreAwaitUpdate | PostAwaitUpdate | PreThenUpdate | PostThenUpdate)} AsyncEventUpdate
+ * @typedef {(PreAwaitUpdate | PostAwaitUpdate | PreThenUpdate | PostThenUpdate)} AsyncEventUpdate
  */
