@@ -223,7 +223,7 @@ export default class AsyncEventUpdateCollection extends Collection {
 
     const preEventThreadId = this.getOrAssignRootThreadId(preEventRootId, schedulerTraceId);
 
-    const previousPostUpdate = dp.util.getPreviousPostAsyncEventOfPromise(prePromiseId, preEventRootId);
+    const previousPostUpdate = dp.util.getPreviousPostAsyncEventOfPromise(prePromiseId, postEventRootId);
     const isNested = !!nestedPromiseId;
     // const isNestedChain = this.isNestedChain(nestedPromiseId, schedulerTraceId);
     // const nestedUpdate = nestedPromiseId && dp.util.getPreviousPostAsyncEventOfPromise(nestedPromiseId, postEventRootId);

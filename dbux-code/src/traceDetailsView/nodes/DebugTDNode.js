@@ -4,10 +4,10 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
+import { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import { makeTreeItems } from '../../helpers/treeViewHelpers';
 import { ContextTDNode, TraceTypeTDNode } from './traceInfoNodes';
 import TraceDetailNode from './traceDetailNode';
-import { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
