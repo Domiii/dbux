@@ -247,96 +247,96 @@ export default class RuntimeAsync {
     // // update `rootId` for the next guy
     // asyncData.rootId = postEventRootId;
 
-    let fromRootId;
-    let fromThreadId;
-    let toThreadId;
+    // let fromRootId;
+    // let fromThreadId;
+    // let toThreadId;
 
-    const isFirstAwait = isFirstContextInParent(preEventContextId);
-    const isNested = isThenable(awaitArgument);
-    // const nestedAwaitData = isNested && this.getPromiseLastAwait(awaitArgument);
-    const nestedPromiseData = isNested && getPromiseData(awaitArgument);
-    const isNestedChain = nestedPromiseData?.firstNestingTraceId === schedulerTraceId;
+    // const isFirstAwait = isFirstContextInParent(preEventContextId);
+    // const isNested = isThenable(awaitArgument);
+    // // const nestedAwaitData = isNested && this.getPromiseLastAwait(awaitArgument);
+    // const nestedPromiseData = isNested && getPromiseData(awaitArgument);
+    // const isNestedChain = nestedPromiseData?.firstNestingTraceId === schedulerTraceId;
 
-    if (!asyncFunctionPromise) {
-      /* this.logger.error */
-      // return;
-      /* throw new Error */
-      // eslint-disable-next-line max-len
-      this.logger.error(`postAwait did not have "asyncFunctionPromise" at trace="${traceCollection.makeTraceInfo(schedulerTraceId)}", realContextId=${realContextId}, postEventRootId=${postEventRootId}, asyncData=${JSON.stringify(asyncData, null, 2)}`);
-      return;
-    }
+    // if (!asyncFunctionPromise) {
+    //   /* this.logger.error */
+    //   // return;
+    //   /* throw new Error */
+    //   // eslint-disable-next-line max-len
+    //   this.logger.error(`postAwait did not have "asyncFunctionPromise" at trace="${traceCollection.makeTraceInfo(schedulerTraceId)}", realContextId=${realContextId}, postEventRootId=${postEventRootId}, asyncData=${JSON.stringify(asyncData, null, 2)}`);
+    //   return;
+    // }
 
-    if (!isFirstAwait || this.isAsyncFunctionChainedToRoot(realContextId)) {
-      // (1) not first await or (2) chained to root -> CHAIN
-      toThreadId = preEventThreadId;
-    }
-    else if (isNestedChain) {
-      // CHAIN with nested promise
-      toThreadId = nestedPromiseData.threadId;
-    }
-    else {
-      // first await, and NOT chained by caller and NOT chained to root -> FORK
-      toThreadId = 0;
-    }
+    // if (!isFirstAwait || this.isAsyncFunctionChainedToRoot(realContextId)) {
+    //   // (1) not first await or (2) chained to root -> CHAIN
+    //   toThreadId = preEventThreadId;
+    // }
+    // else if (isNestedChain) {
+    //   // CHAIN with nested promise
+    //   toThreadId = nestedPromiseData.threadId;
+    // }
+    // else {
+    //   // first await, and NOT chained by caller and NOT chained to root -> FORK
+    //   toThreadId = 0;
+    // }
 
-    if (isNested) {
-      /**
-       * nested promise: 2 cases
-       * 
-       * Case 1: nested promise is chained into the same thread: add single edge
-       * Case 2: nested promise is not chained: add a second SYNC edge
-       */
-      const {
-        lastRootId: nestedRootId,
-        threadId: nestedThreadId,
-      } = nestedPromiseData;
-      if (isNestedChain) {
-        // Case 1
-        fromRootId = nestedRootId;
-        fromThreadId = nestedThreadId;
-      }
-      else {
-        // Case 2: add SYNC edge
-        this.addSyncEdge(nestedRootId, postEventRootId, AsyncEdgeType.SyncIn);
+    // if (isNested) {
+    //   /**
+    //    * nested promise: 2 cases
+    //    * 
+    //    * Case 1: nested promise is chained into the same thread: add single edge
+    //    * Case 2: nested promise is not chained: add a second SYNC edge
+    //    */
+    //   const {
+    //     lastRootId: nestedRootId,
+    //     threadId: nestedThreadId,
+    //   } = nestedPromiseData;
+    //   if (isNestedChain) {
+    //     // Case 1
+    //     fromRootId = nestedRootId;
+    //     fromThreadId = nestedThreadId;
+    //   }
+    //   else {
+    //     // Case 2: add SYNC edge
+    //     this.addSyncEdge(nestedRootId, postEventRootId, AsyncEdgeType.SyncIn);
 
-        // add edge from previous event, as usual
-        fromRootId = preEventRootId;
-        fromThreadId = preEventThreadId;
-      }
+    //     // add edge from previous event, as usual
+    //     fromRootId = preEventRootId;
+    //     fromThreadId = preEventThreadId;
+    //   }
 
-      // TODO: complex nested syncs
+    //   // TODO: complex nested syncs
 
-      // // add SYNC edge for more waiting callers
-      // const { pendingRootIds } = nestedPromiseData;
-      // if (pendingRootIds && isFirstAwait) {
-      //   for (const pendingRootId of pendingRootIds) {
-      //     this.addSyncEdge(pendingRootId, postEventRootId, AsyncEdgeType.SyncIn);
-      //   }
-      // }
-    }
-    else {
-      // not nested
-      fromRootId = preEventRootId;
-      fromThreadId = preEventThreadId;
+    //   // // add SYNC edge for more waiting callers
+    //   // const { pendingRootIds } = nestedPromiseData;
+    //   // if (pendingRootIds && isFirstAwait) {
+    //   //   for (const pendingRootId of pendingRootIds) {
+    //   //     this.addSyncEdge(pendingRootId, postEventRootId, AsyncEdgeType.SyncIn);
+    //   //   }
+    //   // }
+    // }
+    // else {
+    //   // not nested
+    //   fromRootId = preEventRootId;
+    //   fromThreadId = preEventThreadId;
 
-      // // assign run <-> threadId
-      // NOTE: this should probably not happen
-      // let fromRootIdThreadId = getRunThreadId(fromRootId);
-      // if (!fromRootIdThreadId) {
-      //   // this.logger.debug("From run", fromRootId, "is a new run, assign thread id");
-      //   fromRootIdThreadId = this.assignRunNewThreadId(fromRootId);
-      // }
-    }
+    //   // // assign run <-> threadId
+    //   // NOTE: this should probably not happen
+    //   // let fromRootIdThreadId = getRunThreadId(fromRootId);
+    //   // if (!fromRootIdThreadId) {
+    //   //   // this.logger.debug("From run", fromRootId, "is a new run, assign thread id");
+    //   //   fromRootIdThreadId = this.assignRunNewThreadId(fromRootId);
+    //   // }
+    // }
 
-    // add edge
-    const actualToThreadId = this.addEventEdge(fromRootId, postEventRootId, fromThreadId, toThreadId, schedulerTraceId, isNested);
+    // // add edge
+    // const actualToThreadId = this.addEventEdge(fromRootId, postEventRootId, fromThreadId, toThreadId, schedulerTraceId, isNested);
 
-    // update promise data
-    if (isFirstAwait) {
-      setPromiseData(asyncFunctionPromise, { threadId: actualToThreadId });
-    }
+    // // update promise data
+    // if (isFirstAwait) {
+    //   setPromiseData(asyncFunctionPromise, { threadId: actualToThreadId });
+    // }
 
-    maybeSetPromiseFirstEventRootId(asyncFunctionPromise, postEventRootId);
+    // maybeSetPromiseFirstEventRootId(asyncFunctionPromise, postEventRootId);
   }
 
   /**

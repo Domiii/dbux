@@ -81,13 +81,13 @@ export class DebugTDNode extends TraceDetailNode {
         EmptyArray
     );
 
-    const refId = dataNode?.refId;
-    const valueRef = refId && dataProvider.collections.values.getById(refId);
+    // const refId = dataNode?.refId;
+    const valueRef = dataProvider.util.getTraceValueRef(traceId);
     const valueNode = [
       'valueRef',
       valueRef,
       {
-        description: (valueRef?.valueId + '') || 0
+        description: (valueRef?.valueId || 0) + ''
       }
     ];
     // const promiseData = dataProvider.collections.promises.getById(context.promiseId);
@@ -103,7 +103,7 @@ export class DebugTDNode extends TraceDetailNode {
     const asyncEventUpdates = dataProvider.indexes.asyncEventUpdates.byRoot.get(rootContextId);
 
     // one POST event per `rootId`
-    const postEventUpdate = asyncEventUpdates?.find(({ type }) => isPostEventUpdate(type));
+    const postEventUpdates = asyncEventUpdates?.filter(({ type }) => isPostEventUpdate(type));
 
     // many PRE events per `rootId`
     const preEventUpdates = asyncEventUpdates?.filter(({ type }) => !isPostEventUpdate(type));
@@ -119,7 +119,7 @@ export class DebugTDNode extends TraceDetailNode {
       'async',
       {
         AsyncNode: asyncNode,
-        PostUpdate: postEventUpdate,
+        PostUpdate: postEventUpdates?.length === 1 ? postEventUpdates[0] : (postEventUpdates || {}),
         ...makeArrayNodes({
           PreUpdates: preEventUpdates,
           InEvents: inEvents,

@@ -1,10 +1,12 @@
 import { newLogger } from '@dbux/common/src/log/logger';
+import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import isThenable from '@dbux/common/src/util/isThenable';
 import { isFunction } from 'lodash';
+import dataNodeCollection from '../data/dataNodeCollection';
 import { peekBCEMatchCallee } from '../data/dataUtil';
 import PromiseRuntimeData from '../data/PromiseRuntimeData';
-import traceCollection from '../data/traceCollection';
+// import traceCollection from '../data/traceCollection';
 import valueCollection from '../data/valueCollection';
 import { isMonkeyPatched, monkeyPatchFunctionRaw } from '../util/monkeyPatchUtil';
 
@@ -105,12 +107,17 @@ function patchThenCallback(thenCb, thenRef) {
     let returnValue;
     try {
       try {
-        // actually call `then`
+        // actually call `then` callback
         returnValue = originalThenCb(previousResult);
       }
       finally {
         if (isThenable(returnValue)) {
-          maybePatchPromise(returnValue);
+          // NOTE: we must make sure, that we have the promise's `ValueRef`.
+          //  We might not have seen this promise for several reasons:
+          //  1. Then callback is an async function.
+          //  2. (other reasons?)
+          // maybePatchPromise(returnValue);
+          dataNodeCollection.createDataNode(returnValue, thenRef.schedulerTraceId, DataNodeType.Read, null);
           setNestingPromise(returnValue, thenRef.postEventPromise);
         }
         thenExecuted(thenRef, previousResult, returnValue);
@@ -137,9 +144,13 @@ function _makeThenRef(preEventPromise, patchedThen) {
   }
 
   const bceTrace = peekBCEMatchCallee(patchedThen);
+  const schedulerTraceId = bceTrace?.traceId;
+  if (!schedulerTraceId) {
+    warn(`schedulerTraceId not found in PreThen for promise, ref=`, ref);
+  }
   return {
     preEventPromise,
-    schedulerTraceId: bceTrace?.traceId
+    schedulerTraceId
   };
 }
 

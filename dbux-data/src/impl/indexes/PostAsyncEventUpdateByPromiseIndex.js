@@ -16,9 +16,13 @@ export default class PostAsyncEventUpdateByPromiseIndex extends CollectionIndex 
    * @param {AsyncEventUpdate} asyncEvent
    */
   makeKey(dp, { type, promiseId }) {
-    if (isPostEventUpdate(type)) {
+    if (isPostEventUpdate(type) && promiseId) {
       return promiseId;
     }
+
+    // NOTE: Post events do not have a `promiseId` if...
+    //  1. type === PostAwait && the function itself is a then callback.
+    //  2. type === PostThen && its callback is an async function.
     return false;
   }
 }

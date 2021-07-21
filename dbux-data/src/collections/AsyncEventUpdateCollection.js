@@ -36,11 +36,13 @@ export default class AsyncEventUpdateCollection extends Collection {
       if (isAwaitEvent(update.type)) {
         // async function
         const { realContextId } = update;
+
+        // NOTE: `getReturnValueRefOfContext` might not return anything for `f`'s contextId in case of `then(f)`
         update.promiseId = dp.util.getReturnValueRefOfContext(realContextId)?.refId;   // returnPromiseId
-        if (!update.promiseId) {
-          // should never happen!
-          this.logger.warn(`postAddRaw [${AsyncEventUpdateType.nameFromForce(update.type)}] "getReturnValueRefOfContext" failed:`, update);
-        }
+        // if (!update.promiseId) {
+        //   // should never happen!
+        //   this.logger.warn(`postAddRaw [${AsyncEventUpdateType.nameFromForce(update.type)}] "getReturnValueRefOfContext" failed:`, update);
+        // }
       }
     }
   }
@@ -132,7 +134,7 @@ export default class AsyncEventUpdateCollection extends Collection {
     //   fromRootId = firstNestingUpdate.rootId;
     //   fromThreadId = toThreadId = this.dp.util.getAsyncRootThreadId(fromRootId);
     // }
-    else if (this.isPromiseChainedToRoot(preEventRunId, promiseId)) {
+    else if (!promiseId || this.isPromiseChainedToRoot(preEventRunId, promiseId)) {
       // Case 2: chained to root -> CHAIN
       // NOTE: implies firstNestingUpdate
     }
