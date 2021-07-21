@@ -9,7 +9,7 @@ export default class ApplicationSetData {
     this.applicationSet = applicationSet;
     // // TODO
     // this.threadSelection; // { _all: [threadId] }
-    // this.rootContextsInOrder; // listen on selection
+    // this.asyncNodesInOrder; // listen on selection
     // this.firstTracesInOrder = new FirstTracesInOrder(this);
 
     // this.applicationSet._emitter.on('_applicationsChanged0', this._handleApplicationsChanged);
