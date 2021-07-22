@@ -378,7 +378,7 @@ export default class AsyncEventUpdateCollection extends Collection {
       return false;
     }
 
-    const { contextId, rootId, returnPromiseId } = firstNestingAsyncUpdate;
+    const { contextId, rootId, promiseId: returnPromiseId } = firstNestingAsyncUpdate;
 
     if (contextId === rootId) {
       // root
