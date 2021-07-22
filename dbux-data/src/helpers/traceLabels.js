@@ -101,7 +101,8 @@ export function makeTraceLabel(trace) {
     label = makeDefaultTraceLabel(trace, application);
   }
 
-  return label.trim();
+  // trim and replace many whitespaces with only one
+  return label.trim().replace(/\s+/g, ' ');
 }
 
 

@@ -54,19 +54,25 @@ export class DebugTDNode extends TraceDetailNode {
       applicationId,
       ...otherTraceProps
     } = trace;
-
+    
+    
     const application = allApplications.getApplication(applicationId);
-    const { dataProvider } = application;
-
-    const context = dataProvider.collections.executionContexts.getById(contextId);
-    const staticTrace = dataProvider.collections.staticTraces.getById(staticTraceId);
+    const { dataProvider: dp } = application;
+    
+    const context = dp.collections.executionContexts.getById(contextId);
+    const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
     const { staticContextId } = context;
-    const staticContext = dataProvider.collections.staticContexts.getById(staticContextId);
-    const dataNodes = dataProvider.util.getDataNodesOfTrace(traceId);
+    const staticContext = dp.collections.staticContexts.getById(staticContextId);
+    const dataTraceId = dp.util.getValueTrace(traceId)?.traceId || traceId;
+
+    // ###########################################################################
+    // dataNodes
+    // ###########################################################################
+    const dataNodes = dp.util.getDataNodesOfTrace(dataTraceId);
 
     let dataNode;
     if (nodeId) {
-      dataNode = dataProvider.collections.dataNodes.getById(nodeId);
+      dataNode = dp.collections.dataNodes.getById(nodeId);
     }
     else {
       dataNode = dataNodes?.[0];
@@ -75,19 +81,21 @@ export class DebugTDNode extends TraceDetailNode {
     const dataNodeLabel = dataNode ? `dataNodes[${dataNodes?.indexOf(dataNode)}]` : `dataNodes: []`;
     const dataNodeCount = dataNodes?.length || 0;
 
-    const allDataNodes = (
-      dataNodeCount > 1 ?
-        [[`all dataNodes (${dataNodeCount})`, dataNodes]] :
-        EmptyArray
-    );
+    const allDataNodes = [];
+    dataNodeCount > 0 && allDataNodes.push([dataNodeLabel, dataNode, { description: `nodeId=${dataNode.nodeId}, valueId=${dataNode.valueId}, accessId=${dataNode.accessId}` }]);
+    dataNodeCount > 1 && allDataNodes.push([`all dataNodes (${dataNodeCount})`, dataNodes]);
+
+    // ###########################################################################
+    // valueRef
+    // ###########################################################################
 
     // const refId = dataNode?.refId;
-    const valueRef = dataProvider.util.getTraceValueRef(traceId);
+    const valueRef = dp.util.getTraceValueRef(dataTraceId);
     const valueNode = [
       'valueRef',
       valueRef,
       {
-        description: (valueRef?.valueId || 0) + ''
+        description: `refId=${valueRef?.refId || 0}`
       }
     ];
     // const promiseData = dataProvider.collections.promises.getById(context.promiseId);
@@ -99,8 +107,12 @@ export class DebugTDNode extends TraceDetailNode {
     //   }
     // ];
 
-    const asyncNode = dataProvider.indexes.asyncNodes.byRoot.getFirst(rootContextId);
-    const asyncEventUpdates = dataProvider.indexes.asyncEventUpdates.byRoot.get(rootContextId);
+    // ###########################################################################
+    // async
+    // ###########################################################################
+
+    const asyncNode = dp.indexes.asyncNodes.byRoot.getFirst(rootContextId);
+    const asyncEventUpdates = dp.indexes.asyncEventUpdates.byRoot.get(rootContextId);
 
     // one POST event per `rootId`
     const postEventUpdates = asyncEventUpdates?.filter(({ type }) => isPostEventUpdate(type));
@@ -111,11 +123,11 @@ export class DebugTDNode extends TraceDetailNode {
     function evtPrefix(evt) {
       return `${evt.asyncEventId}: [${AsyncEdgeType.nameFromForce(evt.edgeType)}]`;
     }
-    const inEvents = dataProvider.indexes.asyncEvents.to.get(rootContextId)
+    const inEvents = dp.indexes.asyncEvents.to.get(rootContextId)
       ?.map(evt => new TreeItem(`${evtPrefix(evt)} <- ${evt.fromRootContextId}`));
-    const outEvents = dataProvider.indexes.asyncEvents.from.get(rootContextId)
+    const outEvents = dp.indexes.asyncEvents.from.get(rootContextId)
       ?.map(evt => new TreeItem(`${evtPrefix(evt)} -> ${evt.toRootContextId}`));
-    const runNode = [
+    const asyncContainerNode = [
       'async',
       {
         AsyncNode: asyncNode,
@@ -131,6 +143,10 @@ export class DebugTDNode extends TraceDetailNode {
       }
     ];
 
+    
+    // ###########################################################################
+    // final result
+    // ###########################################################################
 
     const children = [
       ...this.treeNodeProvider.buildDetailNodes(this.trace, this, [
@@ -140,10 +156,9 @@ export class DebugTDNode extends TraceDetailNode {
       ...makeTreeItems(
         ['trace', otherTraceProps],
         valueNode,
-        [dataNodeLabel, dataNode],
         ...allDataNodes,
         [`context`, context],
-        runNode,
+        asyncContainerNode,
         // ['staticTrace', omit(staticTrace, 'loc')],
         ['staticTrace', staticTrace],
         ['staticContext', omit(staticContext, 'loc')],

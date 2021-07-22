@@ -77,7 +77,8 @@ export default class AsyncEventUpdateCollection extends Collection {
     } = update;
 
     const nestedUpdate = nestedPromiseId && dp.util.getFirstPostAsyncEventOfPromise(nestedPromiseId, preEventRootId);
-    if (nestedUpdate) {
+    if (nestedUpdate?.rootId <= preEventRootId) {
+      // console.trace(`preAwait ${preEventRootId}, nestedUpdate=`, nestedUpdate);
       this.addSyncEdge(preEventRootId, nestedUpdate.rootId, AsyncEdgeType.SyncOut);
     }
   }
@@ -135,22 +136,16 @@ export default class AsyncEventUpdateCollection extends Collection {
     //   fromRootId = firstNestingUpdate.rootId;
     //   fromThreadId = toThreadId = this.dp.util.getAsyncRootThreadId(fromRootId);
     // }
-    else if (!promiseId || this.isPromiseChainedToRoot(preEventRunId, promiseId)) {
-      // Case 2: chained to root -> CHAIN
-      // NOTE: implies firstNestingUpdate
-    }
-    else if (isNestedChain) {
+    else if (isNestedChain && nestedRootId) {
+      // Case 2: nested promise is chained into the same thread: CHAIN
       // CHAIN with nested promise: get `fromRootId` of latest `PostThen` or `PostAwait` (before this one) of promise.
-      if (nestedRootId) {
-        // Case 3a: nested promise is chained into the same thread: CHAIN
-        fromRootId = nestedRootId;
-        fromThreadId = toThreadId = this.dp.util.getAsyncRootThreadId(nestedRootId);
-      }
-      else {
-        // Case 3b: the promise had no Post event -> same as Case 3 -> FORK
-        toThreadId = 0;
-      }
+      fromRootId = nestedRootId;
+      fromThreadId = toThreadId = this.dp.util.getAsyncRootThreadId(nestedRootId);
       // }
+    }
+    else if (!promiseId || this.isPromiseChainedToRoot(preEventRunId, promiseId)) {
+      // Case 3: chained to root -> CHAIN
+      // NOTE: implies firstNestingUpdate
     }
     else {
       // Case 4: first await and NOT chained to root and NOT nested -> FORK
@@ -454,7 +449,7 @@ export default class AsyncEventUpdateCollection extends Collection {
     }
 
     // eslint-disable-next-line max-len
-    this.logger.debug(`[add${AsyncEdgeType.nameFromForce(edgeType)}] [${fromThreadId !== toThreadId ? `${fromThreadId}->` : ''}${toThreadId}] Roots: ${fromRootId}->${toRootId} (tid=${schedulerTraceId}${isNested ? `, nested` : ''})`);
+    this.logger.debug(`[add${AsyncEdgeType.nameFromForce(edgeType)}] [${fromThreadId !== toThreadId ? `${fromThreadId}->` : ''}${toThreadId}] ${fromRootId}->${toRootId} (tid=${schedulerTraceId}${isNested ? `, nested` : ''})`);
 
     return newEdge;
   }

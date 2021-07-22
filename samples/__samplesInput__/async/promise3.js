@@ -1,7 +1,7 @@
 (function main() {
   f(1)()
-    .then(f(2));
-    // .then(f(3));
+    .then(f(2))
+    .then(f(3));
 })();
 
 function f(x) {
