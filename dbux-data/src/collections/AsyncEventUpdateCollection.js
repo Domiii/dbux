@@ -371,6 +371,8 @@ export default class AsyncEventUpdateCollection extends Collection {
    *  -> Because: all following updates are SYNC, not CHAIN.
    */
   isPromiseChainedToRoot(runId, promiseId) {
+    // TODO: won't work when chaining promises that don't have their own Post* AsyncEvent (e.g. `Promise.resolve().then`)
+
     const firstNestingAsyncUpdate = this.getFirstNestingAsyncUpdate(runId, promiseId);
     if (!firstNestingAsyncUpdate) {
       return false;

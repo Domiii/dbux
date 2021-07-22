@@ -23,7 +23,7 @@ import AsyncEventUpdateCollection from './collections/AsyncEventUpdateCollection
 
 export default class RuntimeDataProvider extends DataProviderBase {
   /**
-   * @type {DataProviderUtil}
+   * @type {typeof DataProviderUtil}
    */
   util;
 

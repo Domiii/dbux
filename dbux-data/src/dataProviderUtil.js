@@ -12,9 +12,9 @@ import { isRealContextType } from '@dbux/common/src/types/constants/ExecutionCon
 import { isCallResult, hasCallId } from '@dbux/common/src/types/constants/traceCategorization';
 import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory, ValuePruneState } from '@dbux/common/src/types/constants/ValueTypeCategory';
 import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
-import { locToString } from './util/misc';
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import AsyncEventUpdateType from '@dbux/common/src/types/constants/AsyncEventUpdateType';
+import { locToString } from './util/misc';
 
 /**
  * @typedef {import('./RuntimeDataProvider').default} DataProvider
