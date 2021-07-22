@@ -36,9 +36,9 @@ export function getRefByTraceId(traceId) {
 }
 
 /**
- * @return {ValueRef} ValueRef of the function whose context is currently executing.
+ * @return {ValueRef} ValueRef of the function whose context last executed.
  */
-export function getCurrentFunctionRef() {
+export function getLastFunctionRef() {
   const context = executionContextCollection.getLastRealContext();
   return context && getFunctionRefByContext(context);
 }
@@ -82,12 +82,10 @@ export function peekBCEContextCheckCallee(callId) {
 export function peekBCECheckCallee() {
   const bceTrace = traceCollection.getLast();
   const calleeRef = bceTrace && getBCECalleeFunctionRef(bceTrace);
-  const functionRef = getCurrentFunctionRef();
+  const functionRef = getLastFunctionRef();
   return calleeRef && calleeRef === functionRef && bceTrace || null;
 }
 
-
-/// OLD:* @returns {*} top bceTrace on stack, if its callee's `staticContextId` matches that of the stack top.
 /**
  * @returns {*} top bceTrace on stack, if its callee is `func`
  */
@@ -96,6 +94,17 @@ export function peekBCEMatchCallee(func) {
   const calleeRef = bceTrace && getBCECalleeFunctionRef(bceTrace);
   const functionRef = calleeRef && valueCollection.getRefByValue(func);
   return calleeRef && calleeRef === functionRef && bceTrace || null;
+}
+
+
+export function peekContextCheckCallee(func) {
+  const functionRef = valueCollection.getRefByValue(func);
+  if (!functionRef) {
+    return null;
+  }
+  const context = executionContextCollection.getLastRealContext();
+  const lastFunctionRef = context && getFunctionRefByContext(context);
+  return functionRef && lastFunctionRef && context || null;
 }
 
 // ###########################################################################

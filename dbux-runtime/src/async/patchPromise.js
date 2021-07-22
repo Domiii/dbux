@@ -4,7 +4,7 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import isThenable from '@dbux/common/src/util/isThenable';
 import { isFunction } from 'lodash';
 import dataNodeCollection from '../data/dataNodeCollection';
-import { peekBCEMatchCallee } from '../data/dataUtil';
+import { peekBCEMatchCallee, peekContextCheckCallee } from '../data/dataUtil';
 import PromiseRuntimeData from '../data/PromiseRuntimeData';
 // import traceCollection from '../data/traceCollection';
 import valueCollection from '../data/valueCollection';
@@ -57,22 +57,23 @@ function thenExecuted(thenRef, previousResult, returnValue) {
 // patchPromise
 // ###########################################################################
 
-export function maybePatchPromise(value) {
+export function maybePatchPromise(promise) {
   if (PromiseInstrumentationDisabled) {
     return;
   }
+  // console.trace(`maybePatchPromise`, getPromiseId(promise));
+  if (hasRecordedPromiseData(promise)) {
+    return;
+  }
+  recordUnseenPromise(promise);
 
-  if (hasRecordedPromiseData(value)) {
+  if (isMonkeyPatched(promise.then)) {
     return;
   }
 
-  recordUnseenPromise(value);
+  // console.trace('new promise', valueRef.refId);
 
-  if (isMonkeyPatched(value.then)) {
-    return;
-  }
-
-  patchPromise(value);
+  patchPromise(promise);
 }
 
 export function patchPromise(promise) {
@@ -94,13 +95,19 @@ export function patchPromise(promise) {
 let activeThenCbCount = 0;
 function patchThenCallback(thenCb, thenRef) {
   if (!isFunction(thenCb)) {
+    // not a cb
+    return thenCb;
+  }
+  if (!valueCollection.getRefByValue(thenCb)) {
+    // not instrumented
     return thenCb;
   }
 
   const originalThenCb = thenCb;
   return function patchedPromiseCb(previousResult) {
     if (activeThenCbCount) {
-      warn(`then callback called before previous then callback has finished, schedulerTraceId=${thenRef.schedulerTraceId}`);
+      // NOTE: then callbacks should not observe nested calls
+      warn(`a "then" callback was called before a previous "then" callback has finished, schedulerTraceId=${thenRef.schedulerTraceId}`);
     }
     ++activeThenCbCount;
 
@@ -118,6 +125,13 @@ function patchThenCallback(thenCb, thenRef) {
           //  2. (other reasons?)
           // maybePatchPromise(returnValue);
           dataNodeCollection.createDataNode(returnValue, thenRef.schedulerTraceId, DataNodeType.Read, null);
+
+          // set async function's returnValue promise (used to set AsyncEventUpdate.promiseId)
+          const cbContext = peekContextCheckCallee(originalThenCb);
+          // console.trace('thenCb', cbContext?.contextId, getPromiseId(returnValue));
+          cbContext && RuntimeMonitorInstance._runtime.async.setAsyncContextPromise(cbContext.contextId, returnValue);
+
+          // set nestingPromiseId
           setNestingPromise(returnValue, thenRef.postEventPromise);
         }
         thenExecuted(thenRef, previousResult, returnValue);
@@ -145,8 +159,15 @@ function _makeThenRef(preEventPromise, patchedThen) {
 
   const bceTrace = peekBCEMatchCallee(patchedThen);
   const schedulerTraceId = bceTrace?.traceId;
+
+  if (preEventPromise instanceof NativePromiseClass && !schedulerTraceId) {
+    // NOTE: when `then`ing async functions, patched `then` will be called internally
+    //    -> called on an unpatched promise instance
+    //    -> seemingly happens right after the async function is called (possibly in a new run)
+    return null;
+  }
   if (!schedulerTraceId) {
-    warn(`schedulerTraceId not found in PreThen for promise, ref=`, ref);
+    console.trace(`schedulerTraceId not found in PreThen for promise, ref=`, ref);
   }
   return {
     preEventPromise,
@@ -194,14 +215,14 @@ function patchFinally(holder) {
 }
 
 function _onThen(thenRef, preEventPromise, postEventPromise) {
-  maybePatchPromise(postEventPromise);
-
-  setPreThenPromise(postEventPromise, preEventPromise);
-
-  if (thenRef) {
-    thenRef.postEventPromise = postEventPromise;
-    thenScheduled(thenRef);
+  if (!thenRef) {
+    return;
   }
+
+  maybePatchPromise(postEventPromise);
+  setPreThenPromise(postEventPromise, preEventPromise);
+  thenRef.postEventPromise = postEventPromise;
+  thenScheduled(thenRef);
 }
 
 function patchCatch(holder) {
@@ -224,6 +245,9 @@ function patchCatch(holder) {
 // ###########################################################################
 
 function patchPromiseMethods(holder) {
+  // NOTE: we do this to tag promise prototypes -> so we don't accidentally re-register those
+  getOrCreatePromiseDbuxData(holder);
+
   patchThen(holder);
   patchCatch(holder);
   patchFinally(holder);

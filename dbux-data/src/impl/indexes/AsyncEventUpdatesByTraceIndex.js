@@ -14,6 +14,9 @@ export default class AsyncEventUpdatesByTraceIndex extends CollectionIndex {
    * @param {AsyncEventUpdate} asyncEventUpdate
    */
   makeKey(dp, { schedulerTraceId }) {
+    // if (!schedulerTraceId) {
+    //   return false;
+    // }
     return schedulerTraceId;
   }
 }

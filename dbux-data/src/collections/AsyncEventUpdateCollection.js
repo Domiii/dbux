@@ -38,7 +38,8 @@ export default class AsyncEventUpdateCollection extends Collection {
         const { realContextId } = update;
 
         // NOTE: `getReturnValueRefOfContext` might not return anything for `f`'s contextId in case of `then(f)`
-        update.promiseId = dp.util.getReturnValueRefOfContext(realContextId)?.refId;   // returnPromiseId
+        //    -> we handle that case in `patchedPromiseCb`
+        update.promiseId = update.promiseId || dp.util.getReturnValueRefOfContext(realContextId)?.refId;   // returnPromiseId
         // if (!update.promiseId) {
         //   // should never happen!
         //   this.logger.warn(`postAddRaw [${AsyncEventUpdateType.nameFromForce(update.type)}] "getReturnValueRefOfContext" failed:`, update);
@@ -358,7 +359,7 @@ export default class AsyncEventUpdateCollection extends Collection {
   getNestingAsyncUpdates(runId, promiseId) {
     const { dp } = this;
     const eventKey = [runId, promiseId];
-    return dp.indexes.asyncEventUpdates.byNestedPromise.get(eventKey);
+    return dp.indexes.asyncEventUpdates.byNestedPromiseAndRun.get(eventKey);
   }
 
   getFirstNestingAsyncUpdate(runId, promiseId) {
@@ -410,14 +411,6 @@ export default class AsyncEventUpdateCollection extends Collection {
   // addEdge
   // ###########################################################################
 
-  /**
-   * NOTE: used in FORK logic.
-   */
-  doesRootHaveDifferentChain(rootId, threadId) {
-    const fromThreadId = this.dp.util.getAsyncRootThreadId(rootId);
-    return fromThreadId && threadId !== fromThreadId;
-  }
-
   addSyncEdge(fromRootId, toRootId, edgeType) {
     // eslint-disable-next-line max-len
     this.logger.debug(`[add${AsyncEdgeType.nameFromForce(edgeType)}Edge] ${fromRootId}->${toRootId}`);
@@ -437,7 +430,9 @@ export default class AsyncEventUpdateCollection extends Collection {
     const isFork = !toThreadId ||
       // check if this is CHAIN and fromRoot already has an out-going CHAIN
       // NOTE: this can happen, e.g. when the same promise's `then` was called multiple times.
-      (fromThreadId === toThreadId && this.doesRootHaveDifferentChain(fromRootId, fromThreadId));
+      (fromThreadId === toThreadId && dp.util.doesRootHaveChainFrom(fromRootId));
+
+    // this.logger.debug(`addEventEdge`, fromRootId, dp.util.doesRootHaveChainFrom(fromRootId));
 
     if (isFork) {
       // fork!

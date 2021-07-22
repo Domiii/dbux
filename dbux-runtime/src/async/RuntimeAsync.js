@@ -65,6 +65,29 @@ export default class RuntimeAsync {
     return this._runtime.getCurrentVirtualRootContextId();
   }
 
+  /**
+   * We use this to associate `contextId` of an async function `f`, with its returned `promise`,
+   * in the SPECIAL CASE of `then(f)`.
+   */
+  setAsyncContextPromise(contextId, promise) {
+    const lastAwaitData = this.lastAwaitByRealContext.get(contextId);
+
+    // eslint-disable-next-line max-len
+    // this.logger.warn(`[traceCallPromiseResult] trace=${traceCollection.makeTraceInfo(trace.traceId)}, lastContextId=${executionContextCollection.getLastRealContext()?.contextId}`, calledContext?.contextId,
+    //   lastAwaitData);
+
+    if (lastAwaitData) {
+      const promiseId = getPromiseId(promise);
+      lastAwaitData.asyncFunctionPromiseId = promiseId;
+
+      // NOTE: the function has already returned -> the first `preAwait` was already executed (but not been sent yet)
+      // [edit-after-send]
+      const lastUpdate = asyncEventUpdateCollection.getById(lastAwaitData.updateId);
+      lastUpdate.promiseId = promiseId;
+    }
+    return lastAwaitData;
+  }
+
   // ###########################################################################
   // preAwait
   // ###########################################################################
@@ -73,58 +96,51 @@ export default class RuntimeAsync {
    * Track any created promise (that is the return value of a function or ctor call).
    */
   traceCallPromiseResult(contextId, trace, promise) {
-    const currentRootId = this.getCurrentVirtualRootContextId();
-    if (!isNewPromise(promise, currentRootId)) {
-      // this.logger.warn('have seen promise before', currentRootId, promise._dbux_);
-      return;
-    }
+    //   const currentRootId = this.getCurrentVirtualRootContextId();
+    //   if (!isNewPromise(promise, currentRootId)) {
+    //     // this.logger.warn('have seen promise before', currentRootId, promise._dbux_);
+    //     return;
+    //   }
 
-    const callId = trace.resultCallId;
-    const calledContext = peekBCEContextCheckCallee(callId);
+    //   const callId = trace.resultCallId;
+    //   const calledContext = peekBCEContextCheckCallee(callId);
 
-    let calledContextId;
-    let lastAwaitData;
+    //   let calledContextId;
+    //   let lastAwaitData;
 
-    if (calledContext) {
-      calledContextId = calledContext?.contextId;
-      lastAwaitData = this.lastAwaitByRealContext.get(calledContextId);
+    //   if (calledContext) {
+    //     calledContextId = calledContext?.contextId;
+    //     lastAwaitData = this.setAsyncContextPromise(calledContextId, promise);
+    //   }
+    //   // else if (!getFunctionRefByContext(executionContextCollection.getLastRealContext())) {
+    //   //   // eslint-disable-next-line max-len
+    //   //   this.logger.warn(`[traceCallPromiseResult] function is not instrumented, trace=${traceCollection.makeTraceInfo(trace.traceId)}, lastContextId=${executionContextCollection.getLastRealContext()?.contextId}`);
+    //   // }
 
-      // eslint-disable-next-line max-len
-      // this.logger.warn(`[traceCallPromiseResult] trace=${traceCollection.makeTraceInfo(trace.traceId)}, lastContextId=${executionContextCollection.getLastRealContext()?.contextId}`, calledContext?.contextId,
-      //   lastAwaitData);
+    //   // register previously unseen promise
+    //   this.recordFloatingPromise(promise, currentRootId, lastAwaitData && calledContextId);
 
-      if (lastAwaitData) {
-        lastAwaitData.asyncFunctionPromise = promise;
-      }
-    }
-    // else if (!getFunctionRefByContext(executionContextCollection.getLastRealContext())) {
-    //   // eslint-disable-next-line max-len
-    //   this.logger.warn(`[traceCallPromiseResult] function is not instrumented, trace=${traceCollection.makeTraceInfo(trace.traceId)}, lastContextId=${executionContextCollection.getLastRealContext()?.contextId}`);
-    // }
-
-    // register previously unseen promise
-    this.recordFloatingPromise(promise, currentRootId, lastAwaitData && calledContextId);
-
-    // if (calledFirstAwaitPromise) {
-    //   // const key = { runId, contextId, traceId };
-    //   // this.runContextCallTracePromiseMap.set(key, promise);
-    //   // this.promiseRunContextTraceMap.set(promise, key);
-    // }
+    //   // if (calledFirstAwaitPromise) {
+    //   //   // const key = { runId, contextId, traceId };
+    //   //   // this.runContextCallTracePromiseMap.set(key, promise);
+    //   //   // this.promiseRunContextTraceMap.set(promise, key);
+    //   // }
   }
 
   preAwait(awaitArgument, resumeContextId, realContextId, schedulerTraceId) {
     const currentRootId = this.getCurrentVirtualRootContextId();
     const currentRunId = this._runtime.getCurrentRunId();
-    const { asyncFunctionPromise } = this.lastAwaitByRealContext.get(realContextId) || EmptyObject;
-    
+    const awaitData = this.lastAwaitByRealContext.get(realContextId) || EmptyObject;
+    const { asyncFunctionPromiseId } = awaitData;
+
     // store update
-    asyncEventUpdateCollection.addPreAwaitUpdate({
+    const update = asyncEventUpdateCollection.addPreAwaitUpdate({
       runId: currentRunId,
       rootId: currentRootId,
       contextId: resumeContextId,
       schedulerTraceId, // preAwaitTid
       realContextId,
-      promiseId: asyncFunctionPromise && getPromiseId(asyncFunctionPromise),
+      promiseId: asyncFunctionPromiseId,
       nestedPromiseId: isThenable(awaitArgument) ? getPromiseId(awaitArgument) : 0
     });
 
@@ -144,7 +160,8 @@ export default class RuntimeAsync {
       resumeContextId,
       preAwaitRootId: currentRootId,
       isFirstAwait,
-      schedulerTraceId
+      schedulerTraceId,
+      updateId: update.updateId
       // awaitArgument
     });
 
@@ -224,14 +241,12 @@ export default class RuntimeAsync {
       preAwaitRootId: preEventRootId,
       preEventThreadId,
       schedulerTraceId,
-      asyncFunctionPromise
+      asyncFunctionPromiseId
     } = asyncData;
 
     const postEventRootId = this.getCurrentVirtualRootContextId();
     const postEventRunId = this._runtime.getCurrentRunId();
     preEventThreadId = preEventThreadId || this.getOrAssignRootThreadId(preEventRootId);
-    
-    // debug('postAwait', postEventRootId, asyncFunctionPromise && getPromiseId(asyncFunctionPromise));
 
     // store update
     asyncEventUpdateCollection.addPostAwaitUpdate({
@@ -240,7 +255,7 @@ export default class RuntimeAsync {
       contextId: postEventContextId,
       schedulerTraceId,
       realContextId,
-      promiseId: asyncFunctionPromise && getPromiseId(asyncFunctionPromise),
+      promiseId: asyncFunctionPromiseId,
       nestedPromiseId: isThenable(awaitArgument) ? getPromiseId(awaitArgument) : 0
     });
 
@@ -421,6 +436,8 @@ export default class RuntimeAsync {
 
     const runId = this._runtime.getCurrentRunId();
     const postEventRootId = this.getCurrentVirtualRootContextId();
+
+    // console.trace(`postThen`, getPromiseId(postEventPromise), '->', getPromiseId(returnValue));
 
     // store update
     asyncEventUpdateCollection.addPostThenUpdate({

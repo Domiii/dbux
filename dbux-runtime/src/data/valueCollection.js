@@ -193,6 +193,7 @@ class ValueCollection extends Collection {
    */
   _finishValue(valueRef, typeName, serialized, pruneState = null) {
     // store all other props
+    // [edit-after-send]
     valueRef.typeName = typeName;
     valueRef.pruneState = pruneState;
     valueRef.serialized = serialized;

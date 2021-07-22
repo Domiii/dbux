@@ -5,19 +5,19 @@ import RuntimeDataProvider from '../../RuntimeDataProvider';
 
 
 /** @extends {CollectionIndex<AsyncEventUpdate>} */
-export default class AsyncEventUpdatesByNestedPromiseIndex extends CollectionIndex {
+export default class AsyncEventUpdatesByNestedPromiseAndRunIndex extends CollectionIndex {
   constructor() {
-    super('asyncEventUpdates', 'byNestedPromise');
+    super('asyncEventUpdates', 'byNestedPromiseAndRun', { isMap: true, containerCfg: { serializeKey: true } });
   }
 
   /** 
    * @param {RuntimeDataProvider} dp
    * @param {AsyncEventUpdate} asyncEventUpdate
    */
-  makeKey(dp, nestedPromiseId) {
+  makeKey(dp, { runId, nestedPromiseId }) {
     if (!nestedPromiseId) {
       return false;
     }
-    return nestedPromiseId;
+    return [runId, nestedPromiseId];
   }
 }

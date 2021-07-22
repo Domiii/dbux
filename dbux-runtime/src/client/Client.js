@@ -164,7 +164,8 @@ export default class Client {
   }
 
   send(dataName, data) {
-    // TODO: in case of "immediate sync mode", use sendNow instead
+    // future-work: in case of "immediate sync mode", use sendNow instead?
+    // NOTE: all instances of the [edit-after-send] tag need to be fixed if send delay is disabled.
     this._sendQueue.send(dataName, data);
   }
 

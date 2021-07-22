@@ -43,14 +43,15 @@ import DataNodesByAccessIdIndex from './impl/indexes/DataNodesByAccessIdIndex';
 import DataNodesByValueIdIndex from './impl/indexes/DataNodesByValueIdIndex';
 import DataNodesByRefIdIndex from './impl/indexes/DataNodesByRefIdIndex';
 import DataNodesByObjectRefIdIndex from './impl/indexes/DataNodesByObjectRefIdIndex';
-import AsyncEventsToIndex from './impl/indexes/AsyncEventsToIndex';
 import AsyncEventsFromIndex from './impl/indexes/AsyncEventsFromIndex';
+import AsyncEventsToIndex from './impl/indexes/AsyncEventsToIndex';
 import AsyncNodesByRootIndex from './impl/indexes/AsyncNodesByRootIndex';
 import AsyncNodesByThreadIndex from './impl/indexes/AsyncNodesByThreadIndex';
-import AsyncEventUpdatesByNestedPromiseIndex from './impl/indexes/AsyncEventUpdatesByNestedPromiseIndex';
+import AsyncEventUpdatesByNestedPromiseAndRunIndex from './impl/indexes/AsyncEventUpdatesByNestedPromiseAndRunIndex';
 import AsyncEventUpdatesByTraceIndex from './impl/indexes/AsyncEventUpdatesByTraceIndex';
 import PostAsyncEventUpdateByPromiseIndex from './impl/indexes/PostAsyncEventUpdateByPromiseIndex';
 import AsyncEventUpdatesByRootIndex from './impl/indexes/AsyncEventUpdatesByRootIndex';
+import AsyncEventUpdatesByNestedPromiseIndex from './impl/indexes/AsyncEventUpdatesByNestedPromiseIndex';
 
 
 export function newDataProvider(application) {
@@ -120,6 +121,7 @@ export function newDataProvider(application) {
   dataProvider.addIndex(new AsyncNodesByThreadIndex());
 
   dataProvider.addIndex(new AsyncEventUpdatesByNestedPromiseIndex());
+  dataProvider.addIndex(new AsyncEventUpdatesByNestedPromiseAndRunIndex());
   dataProvider.addIndex(new AsyncEventUpdatesByTraceIndex());
   dataProvider.addIndex(new AsyncEventUpdatesByRootIndex());
   dataProvider.addIndex(new PostAsyncEventUpdateByPromiseIndex());
