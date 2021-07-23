@@ -7,6 +7,7 @@ let SpecialIdentifierType = {
   Undefined: 3,
   Eval: 4,
   
+  // future-work: consider `@babel/traverse` -> referencesImport
   Require: 10,
   Import: 11,
 
