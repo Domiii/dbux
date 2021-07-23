@@ -1,11 +1,10 @@
 import Enum from '../../util/Enum';
 
 const asyncEventUpdate = {
-  AsyncCall: 1,
-  PreAwait: 2,
-  PostAwait: 3,
-  PreThen: 4,
-  PostThen: 5,
+  PreAwait: 1,
+  PostAwait: 2,
+  PreThen: 3,
+  PostThen: 4,
 
   // TODO: callback-based asynchronicity
 };

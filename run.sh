@@ -5,7 +5,7 @@
 set -e # cancel on error
 # set -x # verbose echo mode
 
-fname="__samplesInput__/async/promise0"
+fname="__samplesInput__/async/promise2"
 # fname="case-studies/async/producer_consumer/producer_consumer_async"
 
 
@@ -20,11 +20,15 @@ then
 fi
 isInstrument=$([[ $dbuxCmd == "i" ]] && echo 1 || echo 0)
 
-if [[ "$2" = "d" ]]
+if [[ "$2" = "d" || "$3" = "d" ]]
 then
   nodeArgs="${nodeArgs} --inspect-brk"
-else
-  nodeArgs="${nodeArgs}"
+fi
+
+if [[ "$2" = "sm" || "$3" = "sm" ]]
+then
+  # NOTE: --enable-source-maps can mess things up when executing the raw output
+  nodeArgs="${nodeArgs} --enable-source-maps"
 fi
 
 if [[ $dbuxCmd = "i" ]]
@@ -67,8 +71,7 @@ else
   if [[ "$dbuxCmd" = "r" ]] || [[ "$dbuxCmd" = "rr" ]]
   then
     # run
-    # NOTE: --enable-source-maps can mess things up when executing the raw output
-    node $nodeArgsR --enable-source-maps --stack-trace-limit=100 -r "@dbux/runtime" $outPath
+    node $nodeArgsR --stack-trace-limit=100 -r "@dbux/runtime" $outPath
   fi
 fi
 

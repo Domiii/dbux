@@ -5,14 +5,14 @@ import RuntimeDataProvider from '../../RuntimeDataProvider';
 /** @extends {CollectionIndex<AsyncEvent>} */
 export default class AsyncEventsToIndex extends CollectionIndex {
   constructor() {
-    super('asyncEvents', 'from');
+    super('asyncEvents', 'to');
   }
 
   /** 
    * @param {RuntimeDataProvider} dp
    * @param {AsyncEvent} asyncEvent
    */
-  makeKey(dp, { fromRootContextId }) {
-    return fromRootContextId;
+  makeKey(dp, { toRootContextId }) {
+    return toRootContextId;
   }
 }

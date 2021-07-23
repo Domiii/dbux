@@ -1,9 +1,8 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 
-/** @typedef {import('./DataProviderBase').default} DataProvider */
-
 /**
  * @typedef {import('./DataProviderBase').default} DataProviderBase
+ * @typedef {import('./RuntimeDataProvider').default} RuntimeDataProvider
  */
 
 /**
@@ -27,7 +26,7 @@ export default class Collection {
   name;
 
   /**
-   * @type {DataProviderBase}
+   * @type {DataProviderBase & RuntimeDataProvider}
    */
   dp;
 

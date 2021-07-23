@@ -62,6 +62,9 @@ export default class Runtime {
 
   _bcesInByContextId = {};
 
+  /**
+   * @type {RuntimeAsync}
+   */
   async = new RuntimeAsync(this);
 
   // ###########################################################################

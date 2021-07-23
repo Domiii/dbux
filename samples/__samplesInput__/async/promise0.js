@@ -1,15 +1,14 @@
-Promise.resolve().
-  then(f(1));
+Promise.resolve()
+  .then(f(11))
+  .then(f(12));
 
-Promise.resolve().
-  then(f(2)).
-  then(f(3));
+Promise.resolve()
+  .then(f(21))
+  .then(f(22));
 
 
 function f(x) {
   return () => {
     console.log('f', x);
-    // await 0;
-    // console.log(`f${x}`, 3);
   };
 }

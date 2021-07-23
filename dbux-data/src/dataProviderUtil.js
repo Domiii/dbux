@@ -12,6 +12,8 @@ import { isRealContextType } from '@dbux/common/src/types/constants/ExecutionCon
 import { isCallResult, hasCallId } from '@dbux/common/src/types/constants/traceCategorization';
 import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory, ValuePruneState } from '@dbux/common/src/types/constants/ValueTypeCategory';
 import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
+import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
+import AsyncEventUpdateType from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import { locToString } from './util/misc';
 
 /**
@@ -1362,9 +1364,14 @@ export default {
     return dp.indexes.asyncNodes.byRoot.getUnique(rootId)?.threadId;
   },
 
+  doesRootHaveChainFrom(dp, fromRootId) {
+    const fromEdges = dp.indexes.asyncEvents.from.get(fromRootId);
+    return fromEdges?.some(edge => edge.edgeType === AsyncEdgeType.Chain) || false;
+  },
+
   doesRootHaveAsyncEdgeFromTo(dp, fromRootId, toRootId) {
-    const toRootEdges = dp.indexes.asyncEvents.to.get(toRootId);
-    return toRootEdges?.some(edge => edge.fromRootContextId === fromRootId) || false;
+    const toEdges = dp.indexes.asyncEvents.to.get(toRootId);
+    return toEdges?.some(edge => edge.fromRootContextId === fromRootId) || false;
   },
 
   getAsyncPreEventUpdateOfTrace(dp, traceId) {
@@ -1383,7 +1390,12 @@ export default {
    */
   getPreviousPostAsyncEventOfPromise(dp, promiseId, beforeRootId) {
     const updates = dp.indexes.asyncEventUpdates.byPromise.get(promiseId);
-    return updates && findLast(updates, update => update.rootId < beforeRootId);
+    let postUpdate = updates && findLast(updates, update => update.rootId < beforeRootId);
+    if (postUpdate && AsyncEventUpdateType.is.PostThen(postUpdate.type) && postUpdate.nestedPromiseId) {
+      // recurse on nested promises
+      postUpdate = dp.util.getPreviousPostAsyncEventOfPromise(postUpdate.nestedPromiseId, beforeRootId);
+    }
+    return postUpdate;
   },
 
   getFirstPostAsyncEventOfPromise(dp, promiseId) {

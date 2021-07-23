@@ -51,6 +51,10 @@ export default class RuntimeMonitor {
   _programMonitors = new Map();
   _runtime = new Runtime();
 
+  get runtime() {
+    return this._runtime;
+  }
+
   _init() {
     registerBuiltins();
 
@@ -467,6 +471,8 @@ export default class RuntimeMonitor {
 
   updateExecutionContextPromiseId(contextId, promiseId) {
     debug('update execution context promise id', contextId, promiseId);
+    
+    // [edit-after-send]
     executionContextCollection.getById(contextId).promiseId = promiseId;
   }
 
@@ -567,9 +573,9 @@ export default class RuntimeMonitor {
     // }
     // else 
     {
-      const contextId = this._runtime.peekCurrentContextId();
-      const runId = this._runtime.getCurrentRunId();
-      const overrideType = null;
+      // const contextId = this._runtime.peekCurrentContextId();
+      // const runId = this._runtime.getCurrentRunId();
+      // const overrideType = null;
 
       const varAccess = null;
       inputs = traceCollection.getDataNodeIdsByTraceIds(tid, inputs);

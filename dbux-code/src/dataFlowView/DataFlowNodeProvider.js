@@ -39,9 +39,12 @@ export default class DataFlowNodeProvider extends BaseTreeViewNodeProvider {
       roots.push(
         ...this.buildDataNodes(trace, nodeId)
       );
-    }
 
-    if (!roots.length) {
+      if (!roots.length) {
+        roots.push(EmptyDataNode.instance);
+      }
+    }
+    else {
       roots.push(EmptyNode.instance);
     }
 
@@ -53,13 +56,16 @@ export default class DataFlowNodeProvider extends BaseTreeViewNodeProvider {
    * @param {number} [nodeId]
    */
   buildDataNodes(trace, nodeId) {
-    const { applicationId, traceId } = trace;
+    const { applicationId } = trace;
     const dp = allApplications.getById(applicationId).dataProvider;
+    trace = dp.util.getValueTrace(trace.traceId);
+
+    const { traceId } = trace;
+
     if (!nodeId) {
       ({ nodeId } = trace);
     }
     const dataNode = dp.collections.dataNodes.getById(nodeId);
-
     if (!dataNode) {
       return [EmptyDataNode.instance];
     }
