@@ -1,3 +1,7 @@
+/** @typedef {import('./ApplicationSet').default} ApplicationSet */
+
+import AsyncNodesInOrder from './AsyncNodesInOrder';
+
 /**
  * Encapsulates all data that is related to the set of selected applications;
  * specifically, any data that changes when selected applications change.
@@ -5,11 +9,14 @@
  * Also provides muliti-casted utility methods that work with the dataProviders of all selected applications.
  */
 export default class ApplicationSetData {
+  /**
+   * @param {ApplicationSet} applicationSet 
+   */
   constructor(applicationSet) {
     this.applicationSet = applicationSet;
     // // TODO
     // this.threadSelection; // { _all: [threadId] }
-    // this.asyncNodesInOrder; // listen on selection
+    this.asyncNodesInOrder = new AsyncNodesInOrder(this);
     // this.firstTracesInOrder = new FirstTracesInOrder(this);
 
     // this.applicationSet._emitter.on('_applicationsChanged0', this._handleApplicationsChanged);
@@ -22,6 +29,7 @@ export default class ApplicationSetData {
 
   _handleApplicationsChanged = () => {
     // this.firstTracesInOrder._handleApplicationsChanged();
+    this.asyncNodesInOrder._handleApplicationsChanged();
   }
 
   getTrace(applicationId, traceId) {

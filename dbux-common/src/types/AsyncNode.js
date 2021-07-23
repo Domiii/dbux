@@ -2,6 +2,10 @@ export default class AsyncNode {
   /**
    * @type {number}
    */
+  asyncNodeId;
+  /**
+   * @type {number}
+   */
   rootContextId;
   /**
    * @type {number}
@@ -14,4 +18,9 @@ export default class AsyncNode {
    * @type {number}
    */
   traceId;
+
+  /**
+   * @type {number}
+   */
+  applicationId;
 }

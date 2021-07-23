@@ -2,7 +2,8 @@ import pull from 'lodash/pull';
 import { areArraysEqual } from '@dbux/common/src/util/arrayUtil';
 import NanoEvents from 'nanoevents';
 import ApplicationSetData from './ApplicationSetData';
-// import Application from './Application';
+
+/** @typedef {import('./Application').default} Application */
 
 export default class ApplicationSet {
   _unsubscribeCallbacks = [];
@@ -29,6 +30,10 @@ export default class ApplicationSet {
    */
   getAll() {
     return this._applications;
+  }
+
+  getById(applicationId) {
+    return this.getApplication(applicationId);
   }
 
   // /**

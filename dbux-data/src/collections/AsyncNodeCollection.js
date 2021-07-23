@@ -19,6 +19,7 @@ export default class AsyncNodeCollection extends Collection {
     entry.rootContextId = rootId;
     entry.threadId = threadId;
     entry.schedulerTraceId = schedulerTraceId;
+    entry.applicationId = this.dp.application.applicationId;
 
     this.addEntryPostAdd(entry);
 
