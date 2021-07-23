@@ -212,6 +212,10 @@ html, body {
  * Async Graph
  * ############################################################################ */
 
+.async-grid {
+  gap: 0px 1px;
+}
+
 .async-node {
   border: 1px solid transparent;
   min-height: 1.6em;

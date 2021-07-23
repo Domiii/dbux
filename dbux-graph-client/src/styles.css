@@ -56,6 +56,10 @@
   align-self: center;
 }
 
+.grid {
+  display: grid;
+}
+
 .space-between {
   justify-content: space-between;
 }

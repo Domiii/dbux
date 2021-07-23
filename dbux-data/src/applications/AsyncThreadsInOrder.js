@@ -3,7 +3,7 @@ import { mergeSortedArray } from '@dbux/common/src/util/arrayUtil';
 
 /** @typedef {import('./ApplicationSetData').default} ApplicationSetData */
 
-export default class AsyncNodesInOrder {
+export default class AsyncThreadsInOrder {
   /**
    * @param {ApplicationSetData} applicationSetData 
    */
@@ -16,7 +16,7 @@ export default class AsyncNodesInOrder {
     /**
      * @type {Map<string, number>}
      */
-    this._nodeIndexByKey = new Map();
+    this.threadIndexByKey = new Map();
   }
 
   get applicationSet() {
@@ -25,19 +25,27 @@ export default class AsyncNodesInOrder {
 
   refresh() {
     const applications = this.applicationSet.getAll();
-    const allAsyncNodes = applications.map((app) => app.dataProvider.collections.asyncNodes.getAllActual());
-
-    this._all = mergeSortedArray(allAsyncNodes, (node) => {
-      const dp = this.applicationSet.getById(node.applicationId).dataProvider;
-      const rootContext = dp.collections.executionContexts.getById(node.rootContextId);
-      return rootContext.createdAt;
+    const allThreads = applications.map((app) => {
+      const { dataProvider: dp, applicationId } = app;
+      const threadIds = dp.indexes.asyncNodes.byThread.getAllKeys();
+      return threadIds.map(threadId => {
+        const firstNode = dp.indexes.asyncNodes.byThread.getFirst(threadId);
+        const { createdAt } = dp.collections.executionContexts.getById(firstNode.rootContextId);
+        return {
+          applicationId,
+          threadId,
+          createdAt
+        };
+      });
     });
 
-    this._nodeIndexByKey.clear();
+    this._all = mergeSortedArray(allThreads, node => node.createdAt);
+
+    this.threadIndexByKey.clear();
 
     for (let i = 0; i < this._all.length; ++i) {
       const node = this._all[i];
-      this._nodeIndexByKey.set(this._makeKey(node), i);
+      this.threadIndexByKey.set(this._makeKey(node), i);
     }
   }
 
@@ -57,8 +65,8 @@ export default class AsyncNodesInOrder {
     this.refresh();
   }
 
-  _makeKey({ asyncNodeId, applicationId }) {
-    return `${applicationId}_${asyncNodeId}`;
+  _makeKey({ threadId, applicationId }) {
+    return `${applicationId}_${threadId}`;
   }
 
   // ###########################################################################
@@ -69,11 +77,11 @@ export default class AsyncNodesInOrder {
     return this._all;
   }
 
-  getIndex(node) {
-    const key = this._makeKey(node);
-    const index = this._nodeIndexByKey.get(key);
+  getIndex(asyncNode) {
+    const key = this._makeKey(asyncNode);
+    const index = this.threadIndexByKey.get(key);
     if (index === undefined) {
-      throw new Error(`AsyncNode not included. asyncNode: ${JSON.stringify(node)}`);
+      throw new Error(`AsyncNode not included. asyncNode: ${JSON.stringify(asyncNode)}`);
     }
     return index;
   }

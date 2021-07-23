@@ -1,6 +1,7 @@
 /** @typedef {import('./ApplicationSet').default} ApplicationSet */
 
 import AsyncNodesInOrder from './AsyncNodesInOrder';
+import AsyncThreadsInOrder from './AsyncThreadsInOrder';
 
 /**
  * Encapsulates all data that is related to the set of selected applications;
@@ -17,6 +18,7 @@ export default class ApplicationSetData {
     // // TODO
     // this.threadSelection; // { _all: [threadId] }
     this.asyncNodesInOrder = new AsyncNodesInOrder(this);
+    this.asyncThreadsInOrder = new AsyncThreadsInOrder(this);
     // this.firstTracesInOrder = new FirstTracesInOrder(this);
 
     // this.applicationSet._emitter.on('_applicationsChanged0', this._handleApplicationsChanged);
@@ -30,6 +32,7 @@ export default class ApplicationSetData {
   _handleApplicationsChanged = () => {
     // this.firstTracesInOrder._handleApplicationsChanged();
     this.asyncNodesInOrder._handleApplicationsChanged();
+    this.asyncThreadsInOrder._handleApplicationsChanged();    
   }
 
   getTrace(applicationId, traceId) {
