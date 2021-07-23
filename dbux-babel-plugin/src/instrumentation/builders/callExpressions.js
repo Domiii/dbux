@@ -63,8 +63,9 @@ function buildCallArgs(argsVar, argNodes) {
 /**
  * @param {DbuxState} state 
  * @param {TraceCfg} traceCfg 
+ * @param {BaseNode} calleeNode The callee BaseNode (used to get `calleeTid`).
  */
-function buildBCE(state, traceCfg, calleeNode, spreadArgs) {
+function buildBCE(state, traceCfg, calleeVar, calleeNode, spreadArgs) {
   const { ids: { aliases: {
     traceBCE
   } } } = state;
@@ -75,6 +76,7 @@ function buildBCE(state, traceCfg, calleeNode, spreadArgs) {
 
   return t.callExpression(traceBCE, [
     tid,
+    calleeVar || NullNode,
     calleeTid,
     argTids,
     spreadArgs
@@ -203,8 +205,8 @@ export function buildTraceCallDefault(state, traceCfg) {
     // (ii) args assignment - `args = [...]`
     ...argAssignment,
 
-    // (iii) BCE - `bce(tid, argTids, spreadArgs)`
-    buildBCE(state, bceTrace, calleeNode, spreadArgs),
+    // (iii) BCE - `f = bce(tid, f, calleeTid, argTids, spreadArgs)`
+    t.assignmentExpression('=', calleeVar, buildBCE(state, bceTrace, calleeVar, calleeNode, spreadArgs)),
 
     // (iv) wrap actual call - `tcr(f(args[0], ...args[1], args[2]))`
     buildTraceExpressionNoInput(
@@ -267,7 +269,7 @@ export function buildTraceCallUntraceableCallee(state, traceCfg) {
     ...argAssignment,
 
     // (ii) BCE - `bce(tid, argTids, spreadArgs)`
-    buildBCE(state, bceTrace, null, spreadArgs),
+    buildBCE(state, bceTrace, null, null, spreadArgs),
 
     // (iii) wrap actual call - `tcr(f(args[0], ...args[1], args[2]))`
     buildTraceExpressionNoInput(
@@ -343,8 +345,8 @@ export function buildTraceCallME(state, traceCfg) {
     // (iii) args assignment - `args = [...]`
     t.assignmentExpression('=', argsVar, args),
 
-    // (iv) BCE - `bce(tid, argTids, spreadArgs)`
-    buildBCE(state, bceTrace, calleeNode, spreadArgs),
+    // (iv) BCE - `bce(tid, f, calleeTid, argTids, spreadArgs)`
+    t.assignmentExpression('=', calleeVar, buildBCE(state, bceTrace, calleeVar, calleeNode, spreadArgs)),
 
     // (v) wrap actual call - `tcr(f.call(o, args[0], ...args[1], args[2]))`
     buildTraceExpressionNoInput(

@@ -817,14 +817,18 @@ export default class RuntimeMonitor {
   // CallExpression
   // ###########################################################################
 
+  instrumentCallee(callee, calleeTid) {
+    return callee;
+  }
+
   // traceCallee(programId, value, tid, declarationTid) {
   //   this.traceExpression(programId, value, tid, declarationTid);
   //   return value;
   // }
 
-  traceBCE(programId, tid, calleeTid, argTids, spreadArgs) {
+  traceBCE(programId, tid, callee, calleeTid, argTids, spreadArgs) {
     if (!this._ensureExecuting()) {
-      return;
+      return callee;
     }
 
     spreadArgs = spreadArgs.map(a => {
@@ -865,6 +869,8 @@ export default class RuntimeMonitor {
         dataNodeCollection.createDataNode(arg, argTid, DataNodeType.Read, varAccess);
       }
     }
+
+    return this.instrumentCallee(callee, calleeTid);
   }
 
   traceCallResult(programId, value, tid, callTid) {
