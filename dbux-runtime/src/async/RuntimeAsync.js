@@ -480,55 +480,6 @@ export default class RuntimeAsync {
   }
 
   /**
-   * Traverse nested awaits, to find out, if outer-most await is in root.
-   * @return {boolean}
-   */
-  isAsyncFunctionChainedToRoot(realContextId) {
-    // NOTE: asyncData should always exist, since we are calling this `postAwait`
-    const asyncData = this.lastAwaitByRealContext.get(realContextId);
-
-    const {
-      // asyncFunctionContextId,
-      // threadId,
-      // asyncFunctionPromise,
-      isFirstAwait,
-      firstAwaitingAsyncFunctionContextId
-    } = asyncData;
-
-    // NOTE: `this.getAsyncFunctionChainedToRoot` uses firstAwaitingAsyncFunctionContextId
-    //    -> what if await, but its not first?
-    //    -> TODO: add synchronization links (out and back in)
-
-    if (!isFirstAwait) {
-      // chained to ResumeContext
-      return true;
-    }
-
-    if (!firstAwaitingAsyncFunctionContextId) {
-      return isRootContext(realContextId);
-    }
-    else {
-      // first await in first await -> keep going up
-      return this.isAsyncFunctionChainedToRoot(firstAwaitingAsyncFunctionContextId);
-    }
-
-    // const parentContextId = getPromiseOwnAsyncFunctionContextId(asyncFunctionPromise);
-
-
-    // const chainedToRoot = getPromiseOwnChainedToRoot(promise);
-    // if (chainedToRoot !== undefined) {
-    //   return chainedToRoot;
-    // }
-
-    // const callerPromise = this.getAsyncCallerPromise(promise);
-    // if (callerPromise) {
-    //   return this.getAsyncCallerPromiseChainedToRoot(callerPromise);
-    // }
-
-    // return false;
-  }
-
-  /**
    * Used for debugging purposes.
    */
   debugGetAllRootIdsOfThread(threadId) {

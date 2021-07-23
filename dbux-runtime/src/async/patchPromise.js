@@ -28,9 +28,39 @@ const PromiseInstrumentationDisabled = false;
 let RuntimeMonitorInstance;
 
 export const NativePromiseClass = (async function () { })().constructor/* globalThis.Promise */;
+
+/**
+ * NOTE: library might be using non-native promises.
+ *    This is only (a very crude, desperate) attempt at getting that patched up early.
+ *    -> In all likelihood will not work too well.
+ */
 export const OriginalPromiseClass = Promise;
 
+/**
+ * hackfix: prevent circular dependency
+ */
 valueCollection.maybePatchPromise = maybePatchPromise;
+
+
+// ###########################################################################
+// init
+// ###########################################################################
+
+export default function initPatchPromise(_runtimeMonitorInstance) {
+  RuntimeMonitorInstance = _runtimeMonitorInstance;
+
+  if (PromiseInstrumentationDisabled) {
+    return;
+  }
+
+  // NOTE: `OriginalPromiseClass` might not be native Promise class.
+  globalThis.Promise = patchPromiseClass(OriginalPromiseClass);
+
+  if (OriginalPromiseClass !== NativePromiseClass) {
+    // NOTE: NativePromiseClass ctor is unaffected from this call
+    patchPromiseClass(NativePromiseClass);
+  }
+}
 
 
 // ###########################################################################
@@ -167,6 +197,7 @@ function _makeThenRef(preEventPromise, patchedThen) {
     return null;
   }
   if (!schedulerTraceId) {
+    // eslint-disable-next-line no-console
     console.trace(`schedulerTraceId not found in PreThen for promise, ref=`, ref);
   }
   return {
@@ -186,7 +217,6 @@ function patchThen(holder) {
       }
 
       const postEventPromise = originalThen.call(preEventPromise, successCb, failCb);
-
       _onThen(thenRef, preEventPromise, postEventPromise);
       return postEventPromise;
     }
@@ -291,26 +321,6 @@ function patchPromiseClass(BasePromiseClass) {
   return PatchedPromise;
 }
 
-// ###########################################################################
-// init
-// ###########################################################################
-
-export default function initPatchPromise(_runtimeMonitorInstance) {
-  RuntimeMonitorInstance = _runtimeMonitorInstance;
-
-  if (PromiseInstrumentationDisabled) {
-    return;
-  }
-
-  // NOTE: `OriginalPromiseClass` might not be native Promise class.
-  globalThis.Promise = patchPromiseClass(OriginalPromiseClass);
-
-  if (OriginalPromiseClass !== NativePromiseClass) {
-    // NOTE: NativePromiseClass ctor is unaffected from this call
-    patchPromiseClass(NativePromiseClass);
-  }
-}
-
 
 // ###########################################################################
 // promise data
@@ -394,10 +404,6 @@ export function getPromiseAnyRootId(promise) {
 export function getPromiseId(promise) {
   return valueCollection.getRefByValue(promise)?.refId;
   // return promise._dbux_?.id;
-}
-
-export function getPromiseOwnThreadId(promise) {
-  return promise?._dbux_?.threadId;
 }
 
 export function getPromiseOwnAsyncFunctionContextId(promise) {
