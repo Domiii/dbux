@@ -2,9 +2,9 @@ import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdent
 import { ZeroNode } from '../instrumentation/builders/buildUtil';
 import BaseId from './BaseId';
 
-export default class SuperExpression extends BaseId {
+export default class ImportExpression extends BaseId {
   get specialType() {
-    return SpecialIdentifierType.Super;
+    return SpecialIdentifierType.Import;
   }
 
   getDeclarationNode() {

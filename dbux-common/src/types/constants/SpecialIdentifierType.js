@@ -48,8 +48,17 @@ notTraceable[SpecialIdentifierType.Eval] = true;
 notTraceable[SpecialIdentifierType.Require] = true;
 notTraceable[SpecialIdentifierType.Super] = true;
 
-export function isNotTraceable(type) {
+export function isNotCalleeTraceableType(type) {
   return notTraceable[type];
 }
+
+
+const argsNotTraceableIfConstant = new Array(SpecialIdentifierType.getValueMaxIndex()).map(() => false);
+argsNotTraceableIfConstant[SpecialIdentifierType.Require] = true;
+argsNotTraceableIfConstant[SpecialIdentifierType.Super] = true;
+
+export function isNotArgsTraceableIfConstantType(type) {
+  return argsNotTraceableIfConstant[type];
+} 
 
 export default SpecialIdentifierType;

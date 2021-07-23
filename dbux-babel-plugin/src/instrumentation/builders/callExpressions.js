@@ -107,12 +107,12 @@ const callTemplatesDefault = {
   `)
 };
 
-function buildCallNodeDefault(path, callee, argsVar, argNodes) {
+function buildCallNodeDefault(path, callee, args) {
   const { type } = path.node;
   const callTempl = callTemplatesDefault[type];
   return callTempl({
     callee,
-    args: buildCallArgs(argsVar, argNodes)
+    args
   }).expression;
 }
 
@@ -184,23 +184,24 @@ export function buildTraceCallDefault(state, traceCfg) {
   } = traceCfg;
 
   const calleePath = path.get('callee');
-  const argPaths = path.get('arguments');
-  // const calleeVar = generateVar(scope, 'f'); // generateCalleeVar(calleePath);
-  const argsVar = generateVar(scope, 'args');
 
-  const args = buildSpreadableArgArrayNoSpread(argPaths);
+  const argPaths = path.get('arguments');
+  const argsVar = generateVar(scope, 'args');
+  const argsArray = buildSpreadableArgArrayNoSpread(argPaths);
   const argNodes = argPaths?.map(a => a.node) || EmptyArray;
   const spreadArgs = buildSpreadArgs(argsVar, argNodes);
+  const args = buildCallArgs(argsVar, argNodes);
+  const argAssignment = [t.assignmentExpression('=', argsVar, argsArray)];
 
   // hackfix: override targetNode during instrumentation
-  traceCfg.meta.targetNode = buildCallNodeDefault(path, calleeVar, argsVar, argNodes);
+  traceCfg.meta.targetNode = buildCallNodeDefault(path, calleeVar, args);
 
   return t.sequenceExpression([
     // (i) callee assignment - `f = ...`
     t.assignmentExpression('=', calleeVar, calleePath.node),
 
     // (ii) args assignment - `args = [...]`
-    t.assignmentExpression('=', argsVar, args),
+    ...argAssignment,
 
     // (iii) BCE - `bce(tid, argTids, spreadArgs)`
     buildBCE(state, bceTrace, calleeNode, spreadArgs),
@@ -216,7 +217,7 @@ export function buildTraceCallDefault(state, traceCfg) {
 
 
 // ###########################################################################
-// buildTraceCallFixCallee
+// buildTraceCallUntraceableCallee
 // ###########################################################################
 
 
@@ -233,24 +234,37 @@ export function buildTraceCallUntraceableCallee(state, traceCfg) {
     path: { scope },
     data: {
       bceTrace,
+      shouldTraceArgs
       // calleeNode
     }
   } = traceCfg;
 
   const calleePath = path.get('callee');
-  const argPaths = path.get('arguments');
-  const argsVar = generateVar(scope, 'args');
 
-  const args = buildSpreadableArgArrayNoSpread(argPaths);
+
+  const argPaths = path.get('arguments');
   const argNodes = argPaths?.map(a => a.node) || EmptyArray;
-  const spreadArgs = buildSpreadArgs(argsVar, argNodes);
+
+  let argAssignment, args, spreadArgs;
+  if (shouldTraceArgs) {
+    const argsVar = generateVar(scope, 'args');
+    const argsArray = buildSpreadableArgArrayNoSpread(argPaths);
+    args = buildCallArgs(argsVar, argNodes);
+    argAssignment = [t.assignmentExpression('=', argsVar, argsArray)];
+    spreadArgs = buildSpreadArgs(argsVar, argNodes);
+  }
+  else {
+    args = argNodes;
+    argAssignment = EmptyArray;
+    spreadArgs = t.arrayExpression();
+  }
 
   // hackfix: override targetNode during instrumentation
-  traceCfg.meta.targetNode = buildCallNodeDefault(path, calleePath.node, argsVar, argNodes);
+  traceCfg.meta.targetNode = buildCallNodeDefault(path, calleePath.node, args);
 
   return t.sequenceExpression([
     // (i) args assignment - `args = [...]`
-    t.assignmentExpression('=', argsVar, args),
+    ...argAssignment,
 
     // (ii) BCE - `bce(tid, argTids, spreadArgs)`
     buildBCE(state, bceTrace, null, spreadArgs),
@@ -292,7 +306,7 @@ export function buildTraceCallME(state, traceCfg) {
     path,
     path: { scope },
     data: {
-      bceTrace, 
+      bceTrace,
       calleeNode,
       calleeVar,
       objectVar,
@@ -306,10 +320,9 @@ export function buildTraceCallME(state, traceCfg) {
 
   const calleePath = path.get('callee');
   const objectPath = calleePath.get('object');
+
   const argPaths = path.get('arguments');
-
   const argsVar = generateVar(scope, 'args');
-
   const args = buildSpreadableArgArrayNoSpread(argPaths);
   const argNodes = argPaths?.map(a => a.node) || EmptyArray;
   const spreadArgs = buildSpreadArgs(argsVar, argNodes);

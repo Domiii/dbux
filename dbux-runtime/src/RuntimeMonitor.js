@@ -836,6 +836,8 @@ export default class RuntimeMonitor {
     });
 
     const trace = traceCollection.getById(tid);
+
+    // [edit-after-send]
     trace.callId = tid;
     trace.data = {
       calleeTid,
