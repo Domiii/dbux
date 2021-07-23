@@ -15,27 +15,34 @@ export class ThreadSelection {
   constructor() {
     this._emitter = new NanoEvents();
     this.selected = new Set();
-    this.isActive = false;
+    this._isActive = false;
   }
 
   /**
    * @param {[Thread]} threads 
    * @param {string} [sender] 
    */
-  selectThreads(threads, sender = null) {
+  select(threads, sender = null) {
     if (threads) {
-      this.isActive = true;
-      this.selected.clear();
+      this._isActive = true;
       threads.forEach((thread) => this._addOne(thread));
     }
     else {
-      this.isActive = false;
+      this._isActive = false;
     }
     this._emitSelectionChangedEvent(sender);
   }
 
+  disable() {
+    this.selected.clear();
+    this._isActive = false;
+  }
+
+  isActive() {
+    return this._isActive;
+  }
+
   /**
-   * 
    * @param {Thread} thread 
    */
   isSelected(thread) {
