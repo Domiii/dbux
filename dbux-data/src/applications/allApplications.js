@@ -4,6 +4,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 
 import Application from './Application';
 import ApplicationSelection from './ApplicationSelection';
+import { initTraceLabels } from 'src/helpers/traceLabels';
 
 // eslint-disable-next-line no-unused-vars
 // eslint-disable-next-line no-unused-vars
@@ -207,9 +208,11 @@ export class AllApplications {
 /**
  * @type {AllApplications}
  */
+// eslint-disable-next-line import/no-mutable-exports
 let allApplications;
 try {
   allApplications = new AllApplications();
+  initTraceLabels(allApplications); // hackfix!
 }
 catch (err) {
   logError(err);

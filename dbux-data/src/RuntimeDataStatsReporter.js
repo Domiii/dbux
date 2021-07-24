@@ -2,6 +2,7 @@ import difference from 'lodash/difference';
 import minBy from 'lodash/minBy';
 import maxBy from 'lodash/maxBy';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import { makeTraceLabel } from './helpers/traceLabels';
 
 /** @typedef { import("./RuntimeDataProvider").default } RuntimeDataProvider */
 
@@ -89,32 +90,26 @@ class ModuleStats extends StatsBase {
 
 class FunctionStats extends StatsBase {
   preData() {
-    // this.oldRequireModuleNames = util.getAllRequireModuleNames();
+    this.oldUntracedFunctionCallsByRefId = this.dpUtil.getAllUntracedFunctionCallsByRefId();
   }
 
   collectNewStats() {
     const { dpUtil: util } = this;
 
-    // const { oldRequireModuleNames, reporter: { collectionStats } } = this;
+    const { oldUntracedFunctionCallsByRefId } = this;
+    const oldUntracedRefIds = Object.keys(oldUntracedFunctionCallsByRefId);
 
-    // required modules
-    const allRequireModuleNames = util.getAllRequireModuleNames();
-    const newRequireModuleNames = difference(allRequireModuleNames, oldRequireModuleNames);
-
-    // traced modules
-    const programData = collectionStats.staticProgramContexts;
-    const minProgramId = programData?.min;
-    const allModuleNames = util.getAllExternalProgramModuleNames();
-    const newModuleNames = minProgramId && util.getAllExternalProgramModuleNames(minProgramId);
-
-    // untraced modules
-    const allUntracedModules = difference(allRequireModuleNames, allModuleNames);
-    const newUntracedModules = difference(newRequireModuleNames, allModuleNames);
+    // untraced functions
+    const allUntracedFunctionCallTracesByRefId = util.getAllUntracedFunctionCallsByRefId();
+    const allUntracedRefIds = Object.keys(allUntracedFunctionCallTracesByRefId);
+    const newUntracedRefIds = difference(allUntracedRefIds, oldUntracedRefIds);
+    const newUntracedNames = newUntracedRefIds
+      .map(refId => allUntracedFunctionCallTracesByRefId[refId][0])       // first BCE of refId
+      .map(trace => util.getTrace(util.getCalleeTraceId(trace.traceId)))  // -> callee
+      .map(makeTraceLabel);                                               // -> label
 
     return [
-      this.makeNewMessage('Newly required external modules', allRequireModuleNames, newRequireModuleNames),
-      this.makeNewMessage('Newly traced external modules', allModuleNames, newModuleNames),
-      this.makeNewMessage('Required but untraced external modules', allUntracedModules, newUntracedModules)
+      this.makeNewMessage('Untraced functions', allUntracedRefIds, newUntracedNames)
     ];
   }
 }

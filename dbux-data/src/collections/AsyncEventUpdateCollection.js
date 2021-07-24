@@ -170,7 +170,7 @@ export default class AsyncEventUpdateCollection extends Collection {
   // ###########################################################################
 
   preThen = update => {
-    
+
   }
 
   postThen = postEventUpdate => {
@@ -293,12 +293,18 @@ export default class AsyncEventUpdateCollection extends Collection {
   // callbacks
   // ###########################################################################
 
-  preCallback = () => {
+  preCallback = (update) => {
 
   }
 
   postCallback = (update) => {
 
+    // TODO: assume FORK by default
+    // TODO: check for CHAIN if resolve/reject was called within the callback root
+    // TODO: what if resolve/reject was called in a nested setTimeout call?
+    //    -> consider CHAIN by default for nested async callbacks?
+    //    -> offer UI button to toggle
+    //    -> render (lack of) error propagation in async graph
   }
 
   // ###########################################################################

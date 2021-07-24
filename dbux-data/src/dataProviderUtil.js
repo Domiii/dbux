@@ -866,7 +866,7 @@ export default {
   },
 
   /**
-   * Set of staticTraceIds of all BCEs of functions whose execution was not recorded/traced (e.g. native functions).
+   * Map of `calleeRefId` -> `BCEs` of functions whose execution was not recorded/traced (e.g. native functions).
    * @param {DataProvider} dp
    */
   getAllUntracedFunctionCallsByRefId(dp) {
@@ -875,15 +875,13 @@ export default {
       .mapFlat(staticTrace => dp.indexes.traces.byStaticTrace.get(staticTrace.staticTraceId) || EmptyArray)
       .filter(trace => !dp.util.isCalleeTraced(trace.traceId));
 
-    // NOTE: the same untraced function might have been called in different places -> make unique set by callee refId
+    // NOTE: the same untraced function might have been called in different places
+    //    -> make unique set by callee refId
     const byRefId = groupBy(untracedBces, trace => {
       const calleeTraceId = dp.util.getCalleeTraceId(trace.traceId);
-      if (!calleeTraceId) {
-        return null;
-      }
-      return dp.util.getTraceRefId(calleeTraceId) || 0;
+      return calleeTraceId && dp.util.getTraceRefId(calleeTraceId) || 0;
     });
-    delete byRefId[0];
+    delete byRefId[0];  // remove those whose `refId` could not be recovered (e.g. due to disabled tracing)
     return byRefId;
   },
 

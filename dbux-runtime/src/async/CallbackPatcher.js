@@ -3,8 +3,9 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import { isFunction } from 'lodash';
 import valueCollection from '../data/valueCollection';
-import { peekBCEMatchCallee, peekContextCheckCallee } from '../data/dataUtil';
+import { peekBCEMatchCallee } from '../data/dataUtil';
 import { monkeyPatchGlobalRaw } from '../util/monkeyPatchUtil';
+import executionContextCollection from '../data/executionContextCollection';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError } = newLogger('patchPromise');
@@ -17,11 +18,15 @@ export default class CallbackPatcher {
    */
   _runtimeMonitorInstance;
 
+  get runtime() {
+    return this._runtimeMonitorInstance.runtime;
+  }
+
   // ###########################################################################
-  // init
+  // ctor
   // ###########################################################################
 
-  init(_runtimeMonitorInstance) {
+  constructor(_runtimeMonitorInstance) {
     this._runtimeMonitorInstance = _runtimeMonitorInstance;
 
     this.patchSetTimeout();
@@ -31,7 +36,7 @@ export default class CallbackPatcher {
   // cb
   // ###########################################################################
 
-  patchSetTimeoutCallback(cb, bceTrace) {
+  patchSetTimeoutCallback(cb, schedulerTraceId) {
     if (!isFunction(cb)) {
       // not a cb
       return cb;
@@ -43,7 +48,7 @@ export default class CallbackPatcher {
 
     const originalCb = cb;
 
-    // TODO
+    const { runtime } = this;
 
     return function patchedPromiseCb(...args) {
       let returnValue;
@@ -52,19 +57,15 @@ export default class CallbackPatcher {
         returnValue = originalCb(...args);
       }
       finally {
-        // set async function's returnValue promise (used to set AsyncEventUpdate.promiseId)
-        const cbContext = peekContextCheckCallee(originalCb);
-        // console.trace('thenCb', cbContext?.contextId, getPromiseId(returnValue));
-        cbContext && this._runtimeMonitorInstance._runtime.async.setAsyncContextPromise(cbContext.contextId, returnValue);
+        // const cbContext = peekContextCheckCallee(originalCb);
+        const runId = runtime.getCurrentRunId();
+        const rootId = runtime.getCurrentVirtualRootContextId();
+        const context = executionContextCollection.getLastRealContext();
 
-        // TODO: assume FORK by default
-        // TODO: check for CHAIN if resolve/reject was called within the callback root
-        // TODO: what if resolve/reject was called in a nested setTimeout call?
-        //    -> consider CHAIN by default for nested async callbacks?
-        //    -> offer UI button to toggle
-        //    -> render (lack of) error propagation in async graph
-
-        this._runtimeMonitorInstance.runtime.async.postCallback(thenRef, previousResult, returnValue);
+        if (context?.contextId === rootId) {
+          // the CB was called asynchronously
+          runtime.async.postCallback(schedulerTraceId, runId, rootId);
+        }
       }
       return returnValue;
     };
@@ -83,11 +84,11 @@ export default class CallbackPatcher {
           return originalSetTimeout(cb, delayMs);
         }
 
-        cb = this.patchSetTimeoutCallback(cb, bceTrace);
+        const schedulerTraceId = bceTrace.traceId;
+        cb = this.patchSetTimeoutCallback(cb, schedulerTraceId);
         const timer = originalSetTimeout.call(cb, delayMs, ...args);
         
-        const schedulerTraceId = bceTrace.traceId;
-        this._runtimeMonitorInstance.runtime.async.preCallback(TODO);
+        this.runtime.async.preCallback(schedulerTraceId);
 
         return timer;
       }

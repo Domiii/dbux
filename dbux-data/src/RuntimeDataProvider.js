@@ -10,7 +10,8 @@ import ValueRefCollection from './collections/ValueRefCollection';
 import AsyncNodeCollection from './collections/AsyncNodeCollection';
 import AsyncEventCollection from './collections/AsyncEventCollection';
 import AsyncEventUpdateCollection from './collections/AsyncEventUpdateCollection';
-import RuntimeDataStatsReporter from './RuntimeDataStatsReporter';
+
+/** @typedef { import("./RuntimeDataStatsReporter").default } RuntimeDataStatsReporter */
 
 // ###########################################################################
 // RDP
@@ -22,7 +23,12 @@ export default class RuntimeDataProvider extends DataProviderBase {
    */
   util;
 
-  reporter = new RuntimeDataStatsReporter();
+  callGraph;
+
+  /**
+   * @type {RuntimeDataStatsReporter}
+   */
+  reporter;
 
   constructor(application) {
     super('RuntimeDataProvider');

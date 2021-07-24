@@ -13,7 +13,9 @@ import Runtime from './Runtime';
 import ProgramMonitor from './ProgramMonitor';
 import dataNodeCollection, { ShallowValueRefMeta } from './data/dataNodeCollection';
 import valueCollection from './data/valueCollection';
-import registerBuiltins from './builtIns/index';
+import initPatchBuiltins from './builtIns/index';
+import CallbackPatcher from './async/CallbackPatcher';
+import initPatchPromise from './async/patchPromise';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError } = newLogger('RuntimeMonitor');
@@ -51,12 +53,20 @@ export default class RuntimeMonitor {
   _programMonitors = new Map();
   _runtime = new Runtime();
 
+  /**
+   * @type {Runtime}
+   */
   get runtime() {
     return this._runtime;
   }
 
   _init() {
-    registerBuiltins();
+    // monkey patching for asynchronous events
+    initPatchPromise(this);
+    this.callbackPatcher = new CallbackPatcher(this);
+
+    // more monkey-patching
+    initPatchBuiltins();
 
     return this;
   }

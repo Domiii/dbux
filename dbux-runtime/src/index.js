@@ -2,7 +2,6 @@ import getGlobal from '@dbux/common/src/getGlobal';
 // import { enableLogRecording, playbackLogRecords } from '@dbux/common/src/log/logger';
 import RuntimeMonitor from './RuntimeMonitor';
 import { initClient } from './client/index';
-import initPatchPromise from './async/patchPromise';
 
 
 const dbux = {
@@ -85,8 +84,6 @@ function handleShutdown() {
   //     process.on(eventType, _onBeforeShutdown);
   //   });
   // }
-
-  initPatchPromise(RuntimeMonitor.instance);
 })();
 
 export default dbux;

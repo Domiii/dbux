@@ -1,7 +1,17 @@
 import TraceType, { isCallbackRelatedTrace } from '@dbux/common/src/types/constants/TraceType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { makeContextLabel } from './contextLabels';
-import allApplications from '../applications/allApplications';
+
+
+/**
+ * hackfix: break dependency cycle
+ * NOTE: this terrible, non-modular design needs fixing in the long run.
+ */
+let _allApplications;
+
+export function initTraceLabels(allApplications) {
+  _allApplications = allApplications;
+}
 
 function makeTraceContextLabel(trace, application) {
   const context = application.dataProvider.collections.executionContexts.getById(trace.contextId);
@@ -87,7 +97,7 @@ export function makeTraceLabel(trace) {
     traceId
   } = trace;
 
-  const application = allApplications.getById(trace.applicationId);
+  const application = _allApplications.getById(trace.applicationId);
 
   let label;
 
@@ -112,7 +122,7 @@ export function makeTraceLabel(trace) {
  *      ideally: starting time of first application in set.
  */
 export function getTraceCreatedAt(trace) {
-  const application = allApplications.getById(trace.applicationId);
+  const application = _allApplications.getById(trace.applicationId);
   const { createdAt, dataProvider } = application;
   const context = dataProvider.util.getTraceContext(trace.traceId);
   return (context.createdAt - createdAt) / 1000;
@@ -120,7 +130,7 @@ export function getTraceCreatedAt(trace) {
 
 export function makeRootTraceLabel(trace) {
   const { traceId, applicationId } = trace;
-  const dp = allApplications.getById(applicationId).dataProvider;
+  const dp = _allApplications.getById(applicationId).dataProvider;
   const traceType = dp.util.getTraceType(traceId);
   let label;
   if (isCallbackRelatedTrace(traceType)) {
@@ -142,7 +152,7 @@ export function makeRootTraceLabel(trace) {
  */
 export function makeTraceValueLabel(trace) {
   const { applicationId, traceId } = trace;
-  const dp = allApplications.getById(applicationId).dataProvider;
+  const dp = _allApplications.getById(applicationId).dataProvider;
   // const callTrace = dp.util.getCallerTraceOfTrace(traceId);
 
   if (dp.util.isBCETrace(traceId)) {
@@ -170,7 +180,7 @@ export function makeTraceValueLabel(trace) {
  */
 export function makeCallValueLabel(bceTrace) {
   const { applicationId, traceId, resultId } = bceTrace;
-  const dp = allApplications.getById(applicationId).dataProvider;
+  const dp = _allApplications.getById(applicationId).dataProvider;
 
   const args = dp.indexes.traces.byCall.get(traceId) || EmptyArray;
   const argValues = args.slice(1).map(arg => dp.util.getTraceValueStringShort(arg.traceId));
@@ -191,7 +201,7 @@ export function makeContextLocLabel(applicationId, context) {
 }
 
 export function makeStaticContextLocLabel(applicationId, staticContextId) {
-  const dp = allApplications.getById(applicationId).dataProvider;
+  const dp = _allApplications.getById(applicationId).dataProvider;
   const { programId, loc } = dp.collections.staticContexts.getById(staticContextId);
   const fileName = programId && dp.collections.staticProgramContexts.getById(programId).fileName || null;
 
@@ -207,7 +217,7 @@ export function makeTraceLocLabel(trace) {
     applicationId
   } = trace;
 
-  const dp = allApplications.getById(applicationId).dataProvider;
+  const dp = _allApplications.getById(applicationId).dataProvider;
   const fileName = dp.util.getTraceFileName(traceId);
   const loc = dp.util.getTraceLoc(traceId);
 

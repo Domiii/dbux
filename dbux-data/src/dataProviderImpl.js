@@ -52,7 +52,7 @@ import AsyncEventUpdatesByTraceIndex from './impl/indexes/AsyncEventUpdatesByTra
 import PostAsyncEventUpdateByPromiseIndex from './impl/indexes/PostAsyncEventUpdateByPromiseIndex';
 import AsyncEventUpdatesByRootIndex from './impl/indexes/AsyncEventUpdatesByRootIndex';
 import AsyncEventUpdatesByNestedPromiseIndex from './impl/indexes/AsyncEventUpdatesByNestedPromiseIndex';
-
+import RuntimeDataStatsReporter from './RuntimeDataStatsReporter';
 
 export function newDataProvider(application) {
   const dataProvider = new RuntimeDataProvider(application);
@@ -62,6 +62,9 @@ export function newDataProvider(application) {
   dataProvider.util = Object.fromEntries(
     utilNames.map(name => [name, dataProviderUtil[name].bind(null, dataProvider)])
   );
+
+  // reporter
+  dataProvider.reporter = new RuntimeDataStatsReporter();
 
   // call graph
   dataProvider.callGraph = new CallGraph(dataProvider);

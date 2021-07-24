@@ -443,11 +443,60 @@ export default class RuntimeAsync {
       // NOTE: the last active root is also the `context` of the `then` callback
       contextId: postEventRootId,
 
-      schedulerTraceId, // preAwaitTid
+      schedulerTraceId,
       promiseId: getPromiseId(postEventPromise),
       nestedPromiseId: isThenable(returnValue) ? getPromiseId(returnValue) : 0
     });
   }
+
+  // ###########################################################################
+  // preCallback
+  // ###########################################################################
+
+  /**
+   * Event: New callback (`postEventPromise`) has been scheduled.
+   */
+  preCallback(schedulerTraceId) {
+    const runId = this._runtime.getCurrentRunId();
+    const preEventRootId = this.getCurrentVirtualRootContextId();
+    const contextId = this._runtime.peekCurrentContextId();
+
+    // store update
+    asyncEventUpdateCollection.addPreCallbackUpdate({
+      runId,
+      rootId: preEventRootId,
+      contextId: contextId,
+      schedulerTraceId
+    });
+
+    // const rootId = this.getCurrentVirtualRootContextId();
+    // this.logger.debug(`[preCallback] #${rootId} ${getPromiseId(preEventPromise)} -> ${getPromiseId(postEventPromise)} (tid=${schedulerTraceId})`);
+  }
+
+  // ###########################################################################
+  // postCallback
+  // ###########################################################################
+
+  /**
+   * Event: Asynchronously scheduled callback is executed.
+   * 
+   * @param {CallbackRef} thenRef
+   */
+  postCallback(schedulerTraceId, runId, postEventRootId) {
+    // console.trace(`postCallback`, getPromiseId(postEventPromise), '->', getPromiseId(returnValue));
+
+    // store update
+    asyncEventUpdateCollection.addPostCallbackUpdate({
+      runId,
+      rootId: postEventRootId,
+
+      // NOTE: the last active root is also the `context` of the callback
+      contextId: postEventRootId,
+      schedulerTraceId
+    });
+  }
+
+
 
 
   // ###########################################################################
