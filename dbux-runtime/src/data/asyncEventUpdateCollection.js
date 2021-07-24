@@ -2,7 +2,6 @@
 import { PreAwaitUpdate, PostAwaitUpdate, PreThenUpdate, PostThenUpdate } from '@dbux/common/src/types/AsyncEventUpdate';
 import AsyncEventUpdateType from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import Collection from './Collection';
-import pools from './pools';
 
 /** @typedef { import("@dbux/common/src/types/AsyncEventUpdate").AsyncEventUpdate } AsyncEventUpdate */
 
@@ -50,6 +49,24 @@ export class AsyncEventUpdateCollection extends Collection {
    */
   addPostThenUpdate(upd) {
     upd.type = AsyncEventUpdateType.PostThen;
+    this._addUpdate(upd);
+    return upd;
+  }
+
+  /**
+   * @return {PreCallbackUpdate}
+   */
+  addPreCallbackUpdate(upd) {
+    upd.type = AsyncEventUpdateType.PreCallback;
+    this._addUpdate(upd);
+    return upd;
+  }
+
+  /**
+   * @return {PostCallbackUpdate}
+   */
+  addPostCallbackUpdate(upd) {
+    upd.type = AsyncEventUpdateType.PostCallback;
     this._addUpdate(upd);
     return upd;
   }

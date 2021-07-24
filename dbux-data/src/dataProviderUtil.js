@@ -813,11 +813,11 @@ export default {
    * @param {DataProvider} dp
   */
   getCalleeTraceId(dp, callId) {
-    return dp.util.collections.traces.getById(callId)?.data?.calleeTid;
+    return dp.collections.traces.getById(callId)?.data?.calleeTid;
   },
 
   // getTracesOfCalledContext(dp, callId) {
-  //   return this.dp.indexes.traces.byCalleeTrace.get(callId) || EmptyArray;
+  //   return dp.indexes.traces.byCalleeTrace.get(callId) || EmptyArray;
   // },
 
   /**
@@ -826,7 +826,7 @@ export default {
    *    -> e.g. `array.map(f)` might have recorded f's context, but `f` is not `array.map` (the actual callee).
    */
   isCalleeTraced(dp, callId) {
-    const context = this.dp.indexes.executionContexts.byCalleeTrace.getUnique(callId);
+    const context = dp.indexes.executionContexts.byCalleeTrace.getUnique(callId);
     return context && !!dp.util.getOwnCallerTraceOfContext(context.contextId);
   },
 
@@ -872,7 +872,7 @@ export default {
   getAllUntracedFunctionCallsByRefId(dp) {
     const untracedBces = dp.collections.staticTraces.all
       .filter(staticTrace => staticTrace && TraceType.is.BeforeCallExpression(staticTrace.type))
-      .mapFlat(staticTrace => dp.indexes.traces.byStaticTrace.get(staticTrace.staticTraceId) || EmptyArray)
+      .flatMap(staticTrace => dp.indexes.traces.byStaticTrace.get(staticTrace.staticTraceId) || EmptyArray)
       .filter(trace => !dp.util.isCalleeTraced(trace.traceId));
 
     // NOTE: the same untraced function might have been called in different places
@@ -1187,7 +1187,7 @@ export default {
    */
   makeTraceInfo(dp, traceId) {
     // const { traceId } = trace;
-    // const trace = this.dp.collections.traces.getById(traceId);
+    // const trace = dp.collections.traces.getById(traceId);
     const traceType = dp.util.getTraceType(traceId);
     const typeName = TraceType.nameFrom(traceType);
     return `[${typeName}] #${traceId} ${dp.util.makeStaticTraceInfo(traceId)}`;

@@ -178,17 +178,15 @@ export default class AsyncEventUpdateCollection extends Collection {
     const {
       // runId: postEventRunId,
       rootId: postEventRootId,
-
       // NOTE: the last active root is also the `context` of the `then` callback
       // contextId,
-
       schedulerTraceId,
       promiseId: postPromiseId,
       nestedPromiseId
     } = postEventUpdate;
 
-    const scheduleEventUpdate = dp.util.getAsyncPreEventUpdateOfTrace(schedulerTraceId);
-    if (!scheduleEventUpdate) {
+    const preEventUpdate = dp.util.getAsyncPreEventUpdateOfTrace(schedulerTraceId);
+    if (!preEventUpdate) {
       // should never happen!
       this.logger.warn(`[postThen] "getAsyncPreEventUpdateOfTrace" failed:`, postEventUpdate);
       return;
@@ -199,7 +197,7 @@ export default class AsyncEventUpdateCollection extends Collection {
       rootId: preEventRootId,
       promiseId: prePromiseId,
       // contextId: preEventContextId
-    } = scheduleEventUpdate;
+    } = preEventUpdate;
 
     const preEventThreadId = this.getOrAssignRootThreadId(preEventRootId, schedulerTraceId);
 
@@ -297,14 +295,59 @@ export default class AsyncEventUpdateCollection extends Collection {
 
   }
 
-  postCallback = (update) => {
-
+  postCallback = (postEventUpdate) => {
     // TODO: assume FORK by default
     // TODO: check for CHAIN if resolve/reject was called within the callback root
     // TODO: what if resolve/reject was called in a nested setTimeout call?
     //    -> consider CHAIN by default for nested async callbacks?
     //    -> offer UI button to toggle
     //    -> render (lack of) error propagation in async graph
+
+    const { dp } = this;
+    const {
+      // runId: postEventRunId,
+      rootId: postEventRootId,
+      // NOTE: the last active root is also the `context` of the `then` callback
+      // contextId,
+      schedulerTraceId
+    } = postEventUpdate;
+
+    const preEventUpdate = dp.util.getAsyncPreEventUpdateOfTrace(schedulerTraceId);
+    if (!preEventUpdate) {
+      // should never happen!
+      this.logger.warn(`[postCallback] "getAsyncPreEventUpdateOfTrace" failed:`, postEventUpdate);
+      return;
+    }
+
+    const {
+      // runId: preEventRunId,
+      rootId: preEventRootId,
+      // contextId: preEventContextId
+    } = preEventUpdate;
+
+    const preEventThreadId = this.getOrAssignRootThreadId(preEventRootId, schedulerTraceId);
+
+    // const isNestedChain = this.isNestedChain(nestedPromiseId, schedulerTraceId);
+    // const nestedUpdate = nestedPromiseId && dp.util.getPreviousPostAsyncEventOfPromise(nestedPromiseId, postEventRootId);
+    // const { rootId: nestedRootId } = nestedUpdate ?? EmptyObject;
+
+    let fromRootId = preEventRootId;
+    let fromThreadId = preEventThreadId;
+    const toRootId = postEventRootId;
+    let toThreadId = fromThreadId;
+
+    // Case 1: FORK
+    toThreadId = 0;
+
+    // if (!isNestedChain && nestedRootId) {
+    //   // nested, but not chained -> add SYNC edge
+    //   this.addSyncEdge(nestedRootId, toRootId, AsyncEdgeType.SyncIn);
+    // }
+
+    // add edge
+    /* const newEdge =  */
+    const isNested = false;
+    this.addEventEdge(fromRootId, toRootId, fromThreadId, toThreadId, schedulerTraceId, isNested);
   }
 
   // ###########################################################################

@@ -78,6 +78,7 @@ export default class CallbackPatcher {
   patchSetTimeout() {
     monkeyPatchGlobalRaw('setTimeout',
       (_ /* global */, [cb, delayMs, ...args], originalSetTimeout, patchedSetTimeout) => {
+        // TODO: fix `bind` et al
         const bceTrace = peekBCEMatchCallee(patchedSetTimeout);
         if (!bceTrace) {
           // call was not instrumented
@@ -86,7 +87,7 @@ export default class CallbackPatcher {
 
         const schedulerTraceId = bceTrace.traceId;
         cb = this.patchSetTimeoutCallback(cb, schedulerTraceId);
-        const timer = originalSetTimeout.call(cb, delayMs, ...args);
+        const timer = originalSetTimeout(cb, delayMs, ...args);
         
         this.runtime.async.preCallback(schedulerTraceId);
 

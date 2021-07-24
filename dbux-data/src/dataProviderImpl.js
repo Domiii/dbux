@@ -55,85 +55,85 @@ import AsyncEventUpdatesByNestedPromiseIndex from './impl/indexes/AsyncEventUpda
 import RuntimeDataStatsReporter from './RuntimeDataStatsReporter';
 
 export function newDataProvider(application) {
-  const dataProvider = new RuntimeDataProvider(application);
+  const dp = new RuntimeDataProvider(application);
 
   // util
   const utilNames = Object.keys(dataProviderUtil);
-  dataProvider.util = Object.fromEntries(
-    utilNames.map(name => [name, dataProviderUtil[name].bind(null, dataProvider)])
+  dp.util = Object.fromEntries(
+    utilNames.map(name => [name, dataProviderUtil[name].bind(null, dp)])
   );
 
   // reporter
-  dataProvider.reporter = new RuntimeDataStatsReporter();
+  dp.reporter = new RuntimeDataStatsReporter(dp);
 
   // call graph
-  dataProvider.callGraph = new CallGraph(dataProvider);
+  dp.callGraph = new CallGraph(dp);
 
   // indexes
-  dataProvider.addIndex(new StaticContextsByFileIndex());
-  dataProvider.addIndex(new StaticContextsByParentIndex());
-  dataProvider.addIndex(new StaticTracesByContextIndex());
+  dp.addIndex(new StaticContextsByFileIndex());
+  dp.addIndex(new StaticContextsByParentIndex());
+  dp.addIndex(new StaticTracesByContextIndex());
 
-  dataProvider.addIndex(new ContextsByStaticContextIndex());
-  dataProvider.addIndex(new ContextsByRunIndex());
-  dataProvider.addIndex(new ContextsByTypeIndex());
-  dataProvider.addIndex(new ContextsByCalleeTraceIndex());
-  dataProvider.addIndex(new ContextChildrenIndex());
-  dataProvider.addIndex(new RootContextsByRunIndex());
-  dataProvider.addIndex(new RootContextsIndex());
-  dataProvider.addIndex(new FirstContextsInRunsIndex());
-  dataProvider.addIndex(new FirstContextsInRunsByThreadIndex());
+  dp.addIndex(new ContextsByStaticContextIndex());
+  dp.addIndex(new ContextsByRunIndex());
+  dp.addIndex(new ContextsByTypeIndex());
+  dp.addIndex(new ContextsByCalleeTraceIndex());
+  dp.addIndex(new ContextChildrenIndex());
+  dp.addIndex(new RootContextsByRunIndex());
+  dp.addIndex(new RootContextsIndex());
+  dp.addIndex(new FirstContextsInRunsIndex());
+  dp.addIndex(new FirstContextsInRunsByThreadIndex());
 
-  dataProvider.addIndex(new FirstTracesIndex());
-  dataProvider.addIndex(new TracesByFileIndex());
-  dataProvider.addIndex(new TracesByContextIndex());
-  dataProvider.addIndex(new TracesByParentContextIndex());
-  dataProvider.addIndex(new TracesByCalleeTraceIndex());
-  dataProvider.addIndex(new TracesByStaticTraceIndex());
-  dataProvider.addIndex(new TracesByStaticContextIndex());
-  dataProvider.addIndex(new TracesByParentStaticContextIndex());
-  dataProvider.addIndex(new TracesByRunIndex());
-  dataProvider.addIndex(new TracesByCallIndex());
-  dataProvider.addIndex(new ErrorTracesIndex());
-  dataProvider.addIndex(new ErrorTracesByContextIndex());
-  dataProvider.addIndex(new ErrorTracesByRunIndex());
+  dp.addIndex(new FirstTracesIndex());
+  dp.addIndex(new TracesByFileIndex());
+  dp.addIndex(new TracesByContextIndex());
+  dp.addIndex(new TracesByParentContextIndex());
+  dp.addIndex(new TracesByCalleeTraceIndex());
+  dp.addIndex(new TracesByStaticTraceIndex());
+  dp.addIndex(new TracesByStaticContextIndex());
+  dp.addIndex(new TracesByParentStaticContextIndex());
+  dp.addIndex(new TracesByRunIndex());
+  dp.addIndex(new TracesByCallIndex());
+  dp.addIndex(new ErrorTracesIndex());
+  dp.addIndex(new ErrorTracesByContextIndex());
+  dp.addIndex(new ErrorTracesByRunIndex());
 
-  dataProvider.addIndex(new TracesByRealContextIndex());
-  dataProvider.addIndex(new TracesBySpecialIdentifierTypeIndex());
+  dp.addIndex(new TracesByRealContextIndex());
+  dp.addIndex(new TracesBySpecialIdentifierTypeIndex());
 
   // data + values
-  dataProvider.addIndex(new TracesByRefIdIndex());
-  dataProvider.addIndex(new DataNodesByTraceIndex());
-  dataProvider.addIndex(new DataNodesByAccessIdIndex());
-  dataProvider.addIndex(new DataNodesByValueIdIndex());
-  dataProvider.addIndex(new DataNodesByRefIdIndex());
-  dataProvider.addIndex(new DataNodesByObjectRefIdIndex());
+  dp.addIndex(new TracesByRefIdIndex());
+  dp.addIndex(new DataNodesByTraceIndex());
+  dp.addIndex(new DataNodesByAccessIdIndex());
+  dp.addIndex(new DataNodesByValueIdIndex());
+  dp.addIndex(new DataNodesByRefIdIndex());
+  dp.addIndex(new DataNodesByObjectRefIdIndex());
 
   // complex indexes (that have dependencies)
   // NOTE: we are currently solving index dependencies by simply adding depdendents after dependees
-  dataProvider.addIndex(new ExecutedStaticTracesByFileIndex());
-  dataProvider.addIndex(new ParentTracesInRealContextIndex());
+  dp.addIndex(new ExecutedStaticTracesByFileIndex());
+  dp.addIndex(new ParentTracesInRealContextIndex());
 
   // ########################################
   // async
   // ########################################
 
-  dataProvider.addIndex(new AsyncEventsFromIndex());
-  dataProvider.addIndex(new AsyncEventsToIndex());
-  dataProvider.addIndex(new AsyncNodesByRootIndex());
-  dataProvider.addIndex(new AsyncNodesByThreadIndex());
+  dp.addIndex(new AsyncEventsFromIndex());
+  dp.addIndex(new AsyncEventsToIndex());
+  dp.addIndex(new AsyncNodesByRootIndex());
+  dp.addIndex(new AsyncNodesByThreadIndex());
 
-  dataProvider.addIndex(new AsyncEventUpdatesByNestedPromiseIndex());
-  dataProvider.addIndex(new AsyncEventUpdatesByNestedPromiseAndRunIndex());
-  dataProvider.addIndex(new AsyncEventUpdatesByTraceIndex());
-  dataProvider.addIndex(new AsyncEventUpdatesByRootIndex());
-  dataProvider.addIndex(new PostAsyncEventUpdateByPromiseIndex());
+  dp.addIndex(new AsyncEventUpdatesByNestedPromiseIndex());
+  dp.addIndex(new AsyncEventUpdatesByNestedPromiseAndRunIndex());
+  dp.addIndex(new AsyncEventUpdatesByTraceIndex());
+  dp.addIndex(new AsyncEventUpdatesByRootIndex());
+  dp.addIndex(new PostAsyncEventUpdateByPromiseIndex());
 
 
   // queries
-  dataProvider.addQuery(new ProgramIdByFilePathQuery());
-  dataProvider.addQuery(new ProgramFilePathByTraceIdQuery());
-  dataProvider.addQuery(new StatsByContextQuery());
+  dp.addQuery(new ProgramIdByFilePathQuery());
+  dp.addQuery(new ProgramFilePathByTraceIdQuery());
+  dp.addQuery(new StatsByContextQuery());
 
-  return dataProvider;
+  return dp;
 }

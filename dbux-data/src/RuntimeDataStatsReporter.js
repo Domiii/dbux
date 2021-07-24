@@ -31,7 +31,7 @@ class StatsBase {
   collectNewStats() { }
 
   makeNewMessage(txt, allArr, newArr) {
-    return `${txt} (${newArr.length}/${allArr.length})${newArr.length && `:\n  ${newArr.join(',')}` || ''}`;
+    return `${txt} (${newArr?.length || 0}/${allArr?.length || 0})${newArr?.length && `:\n  ${newArr?.join(',')}` || ''}`;
   }
 }
 
@@ -129,6 +129,9 @@ export default class RuntimeDataStatsReporter {
     FunctionStats
   ];
 
+  /**
+   * @type {Array.<StatsBase>}
+   */
   statsInstances;
 
   constructor(dp) {
@@ -164,11 +167,12 @@ export default class RuntimeDataStatsReporter {
 
     // final messages
     const msgs = [
-      `##### Data received #####\nCollection Data:\n ${collectionInfo}`,
+      `##### Data received #####\nCollection Data:\n  ${collectionInfo}`,
       '',
-      ...this.statsInstances.map(stats => stats.collectNewStats(newData))
+      ...this.statsInstances.map(stats => stats.collectNewStats(newData)?.join('\n  '))
     ];
-    this.logger.debug(msgs.join('\n'));
+
+    this.dp.logger.debug(msgs.join('\n'));
   }
 
   reportAllData() {

@@ -1,18 +1,13 @@
-function main() {
-  f();
+function f(x) {
+  console.log('f', x);
 }
 
-function f() {
-  console.log('f');
-  g();
-}
-
-function g() {
-  console.log('g');
-}
-
-setTimeout(main, 1000);
-setTimeout(main, 2000);
+(async function main() {
+  await 0;
+  await 1;
+  setTimeout(f.bind(null, 1), 100);
+  setTimeout(f.bind(null, 2), 200);
+})();
 
 // function f1() {
 //   console.log('done');
