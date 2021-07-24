@@ -3,8 +3,6 @@ import isThenable from '@dbux/common/src/util/isThenable';
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { some } from 'lodash';
-import asyncEventCollection from '../data/asyncEventCollection';
-import asyncNodeCollection from '../data/asyncNodeCollection';
 // import executionContextCollection from './data/executionContextCollection';
 // import traceCollection from './data/traceCollection';
 // import valueCollection from './data/valueCollection';
@@ -12,8 +10,6 @@ import { peekBCEContextCheckCallee, isFirstContextInParent, isRootContext, getFu
 import ThenRef from '../data/ThenRef';
 // eslint-disable-next-line max-len
 import { getPromiseAnyRootId, getPromiseData, getPromiseFirstEventRootId, getPromiseId, getPromiseLastRootId, getPromiseOwnAsyncFunctionContextId, getPromiseRootId, isNewPromise, maybeSetPromiseFirstEventRootId, pushPromisePendingRootId, setPromiseData } from './patchPromise';
-import traceCollection from '../data/traceCollection';
-import executionContextCollection from '../data/executionContextCollection';
 import asyncEventUpdateCollection from '../data/asyncEventUpdateCollection';
 
 /** @typedef { import("./Runtime").default } Runtime */

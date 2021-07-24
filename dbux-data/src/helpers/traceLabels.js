@@ -18,7 +18,7 @@ function makeCalleeTraceLabel(trace, application) {
   const dp = application.dataProvider;
   const { traceId } = trace;
   if (dp.util.isTraceArgument(traceId)) {
-    const callerTrace = dp.util.getCalleeStaticTrace(traceId);
+    const callerTrace = dp.util.getRelatedBCEStaticTrace(traceId);
     if (callerTrace) {
       return `   (arg of ${callerTrace.displayName})`;
     }

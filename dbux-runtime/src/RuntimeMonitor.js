@@ -839,11 +839,11 @@ export default class RuntimeMonitor {
       return a && Array.from(a);
     });
 
-    const trace = traceCollection.getById(tid);
+    const bceTrace = traceCollection.getById(tid);
 
     // [edit-after-send]
-    trace.callId = tid;
-    trace.data = {
+    bceTrace.callId = tid;
+    bceTrace.data = {
       calleeTid,
       argTids,
       spreadLengths: spreadArgs.map(a => a && a.length || null)

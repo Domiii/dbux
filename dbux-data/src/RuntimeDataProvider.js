@@ -1,7 +1,3 @@
-import difference from 'lodash/difference';
-import minBy from 'lodash/minBy';
-import maxBy from 'lodash/maxBy';
-
 import DataProviderBase from './DataProviderBase';
 import DataProviderUtil from './dataProviderUtil';
 import StaticProgramContextCollection from './collections/StaticProgramContextCollection';
@@ -14,8 +10,7 @@ import ValueRefCollection from './collections/ValueRefCollection';
 import AsyncNodeCollection from './collections/AsyncNodeCollection';
 import AsyncEventCollection from './collections/AsyncEventCollection';
 import AsyncEventUpdateCollection from './collections/AsyncEventUpdateCollection';
-
-
+import RuntimeDataStatsReporter from './RuntimeDataStatsReporter';
 
 // ###########################################################################
 // RDP
@@ -26,6 +21,8 @@ export default class RuntimeDataProvider extends DataProviderBase {
    * @type {typeof DataProviderUtil}
    */
   util;
+
+  reporter = new RuntimeDataStatsReporter();
 
   constructor(application) {
     super('RuntimeDataProvider');
@@ -62,56 +59,14 @@ export default class RuntimeDataProvider extends DataProviderBase {
     // }));
   }
 
-  addData(data, isRaw = true) {
-    const oldRequireModuleNames = this.util.getAllRequireModuleNames();
-    const result = super.addData(data, isRaw);
+  addData(newData, isRaw = true) {
+    this.reporter.preData(newData);
 
-    this._reportNewDataStats(data, oldRequireModuleNames);
+    // actually add data
+    const result = super.addData(newData, isRaw);
+
+    this.reporter.reportNewData(newData);
 
     return result;
-  }
-
-  _reportNewDataStats(data, oldRequireModuleNames) {
-    const collectionStats = Object.fromEntries(
-      Object.entries(data)
-        .map(([key, arr]) => ([key, {
-          len: arr.length,
-          min: minBy(arr, entry => entry._id)?._id,
-          max: maxBy(arr, entry => entry._id)?._id
-        }]))
-    );
-
-    // collection stats
-    const collectionInfo = Object.entries(collectionStats)
-      .map(([key, { len, min, max }]) => `${len} ${key} (${min}~${max})`)
-      .join('\n ');
-
-    // require stats
-    // TODO: import + dynamic `import``
-    const allRequireModuleNames = this.util.getAllRequireModuleNames();
-    const newRequireModuleNames = difference(allRequireModuleNames, oldRequireModuleNames);
-    const requireInfo = `Newly required external modules (${newRequireModuleNames.length}/${allRequireModuleNames.length}):\n  ${newRequireModuleNames.join(',')}`;
-
-    // program stats
-    const programData = collectionStats.staticProgramContexts;
-    const minProgramId = programData?.min;
-    const allModuleNames = this.util.getAllExternalProgramModuleNames();
-    const newModuleNames = minProgramId && this.util.getAllExternalProgramModuleNames(minProgramId);
-    const moduleInfo = `Newly traced external modules (${newModuleNames?.length || 0}/${allModuleNames.length}):\n  ${newModuleNames?.join(',') || ''}`;
-
-    const allMissingModules = difference(allRequireModuleNames, allModuleNames);
-    const newMissingModules = difference(newRequireModuleNames, allModuleNames);
-    const missingModuleInfo = newMissingModules.length &&
-      `Required but untraced external modules (${newMissingModules.length}/${allMissingModules.length}):\n  ${newMissingModules.join(',')}`;
-
-    // final message
-    const msgs = [
-      `##### Data received #####\nCollection Data:\n ${collectionInfo}`,
-      '',
-      requireInfo,
-      moduleInfo,
-      missingModuleInfo
-    ];
-    this.logger.debug(msgs.join('\n'));
   }
 }

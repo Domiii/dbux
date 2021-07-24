@@ -17,9 +17,19 @@ export default class CallbackPatcher {
    */
   _runtimeMonitorInstance;
 
-  constructor(_runtimeMonitorInstance) {
+  // ###########################################################################
+  // init
+  // ###########################################################################
+
+  init(_runtimeMonitorInstance) {
     this._runtimeMonitorInstance = _runtimeMonitorInstance;
+
+    this.patchSetTimeout();
   }
+
+  // ###########################################################################
+  // cb
+  // ###########################################################################
 
   patchSetTimeoutCallback(cb, bceTrace) {
     if (!isFunction(cb)) {
@@ -59,6 +69,10 @@ export default class CallbackPatcher {
       return returnValue;
     };
   }
+
+  // ###########################################################################
+  // setTimeout
+  // ###########################################################################
 
   patchSetTimeout() {
     monkeyPatchGlobalRaw('setTimeout',
