@@ -9,8 +9,8 @@ import executionContextCollection from '../data/executionContextCollection';
 
 
 
-// TODO: fix `bind` et al
-// TODO: fix promise<->callback bindings
+// TODO: fix `bind` et al -> need a new identity for functions that goes beyond `refId`
+// TODO: add promise<->callback bindings
 // TODO: experiment with different types of event<->thread bindings
 
 
@@ -60,6 +60,7 @@ export default class CallbackPatcher {
 
     return function patchedPromiseCb(...args) {
       let returnValue;
+      // TODO: peekBCEMatchCallee(patchedCb)
       try {
         // actually call `then` callback
         returnValue = originalCb(...args);
@@ -86,17 +87,17 @@ export default class CallbackPatcher {
   patchSetTimeout() {
     monkeyPatchGlobalRaw('setTimeout',
       (_ /* global */, [cb, delayMs, ...args], originalSetTimeout, patchedSetTimeout) => {
-        const bceTrace = peekBCEMatchCallee(patchedSetTimeout);
-        if (!bceTrace) {
-          // call was not instrumented
-          return originalSetTimeout(cb, delayMs);
+        const isInstrumented = !!peekBCEMatchCallee(patchedSetTimeout);
+        const schedulerTraceId = isInstrumented?.traceId;
+        if (isInstrumented) {
+          cb = this.patchSetTimeoutCallback(cb, schedulerTraceId);
         }
 
-        const schedulerTraceId = bceTrace.traceId;
-        cb = this.patchSetTimeoutCallback(cb, schedulerTraceId);
         const timer = originalSetTimeout(cb, delayMs, ...args);
 
-        this.runtime.async.preCallback(schedulerTraceId);
+        if (isInstrumented) {
+          this.runtime.async.preCallback(schedulerTraceId);
+        }
 
         return timer;
       }

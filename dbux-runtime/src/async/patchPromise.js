@@ -123,29 +123,32 @@ export function patchPromise(promise) {
 // ###########################################################################
 
 let activeThenCbCount = 0;
-function patchThenCallback(thenCb, thenRef) {
-  if (!isFunction(thenCb)) {
+function patchThenCallback(cb, thenRef) {
+  if (!isFunction(cb)) {
     // not a cb
-    return thenCb;
+    return cb;
   }
-  if (!valueCollection.getRefByValue(thenCb)) {
+  if (!valueCollection.getRefByValue(cb)) {
     // not instrumented
-    return thenCb;
+    return cb;
   }
 
-  const originalThenCb = thenCb;
-  return function patchedPromiseCb(previousResult) {
+  const originalCb = cb;
+  return function patchedCb(previousResult) {
     if (activeThenCbCount) {
       // NOTE: then callbacks should not observe nested calls
       warn(`a "then" callback was called before a previous "then" callback has finished, schedulerTraceId=${thenRef.schedulerTraceId}`);
     }
+
+    // TODO: peekBCEMatchCallee(patchedCb)
+
     ++activeThenCbCount;
 
     let returnValue;
     try {
       try {
         // actually call `then` callback
-        returnValue = originalThenCb(previousResult);
+        returnValue = originalCb(previousResult);
       }
       finally {
         if (isThenable(returnValue)) {
@@ -157,7 +160,7 @@ function patchThenCallback(thenCb, thenRef) {
           dataNodeCollection.createDataNode(returnValue, thenRef.schedulerTraceId, DataNodeType.Read, null);
 
           // set async function's returnValue promise (used to set AsyncEventUpdate.promiseId)
-          const cbContext = peekContextCheckCallee(originalThenCb);
+          const cbContext = peekContextCheckCallee(originalCb);
           // console.trace('thenCb', cbContext?.contextId, getPromiseId(returnValue));
           cbContext && RuntimeMonitorInstance._runtime.async.setAsyncContextPromise(cbContext.contextId, returnValue);
 
