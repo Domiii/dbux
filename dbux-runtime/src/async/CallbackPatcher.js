@@ -7,6 +7,14 @@ import { peekBCEMatchCallee } from '../data/dataUtil';
 import { monkeyPatchGlobalRaw } from '../util/monkeyPatchUtil';
 import executionContextCollection from '../data/executionContextCollection';
 
+
+
+// TODO: fix `bind` et al
+// TODO: fix promise<->callback bindings
+// TODO: experiment with different types of event<->thread bindings
+
+
+
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError } = newLogger('patchPromise');
 
@@ -78,7 +86,6 @@ export default class CallbackPatcher {
   patchSetTimeout() {
     monkeyPatchGlobalRaw('setTimeout',
       (_ /* global */, [cb, delayMs, ...args], originalSetTimeout, patchedSetTimeout) => {
-        // TODO: fix `bind` et al
         const bceTrace = peekBCEMatchCallee(patchedSetTimeout);
         if (!bceTrace) {
           // call was not instrumented
@@ -88,7 +95,7 @@ export default class CallbackPatcher {
         const schedulerTraceId = bceTrace.traceId;
         cb = this.patchSetTimeoutCallback(cb, schedulerTraceId);
         const timer = originalSetTimeout(cb, delayMs, ...args);
-        
+
         this.runtime.async.preCallback(schedulerTraceId);
 
         return timer;
