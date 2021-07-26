@@ -1074,6 +1074,9 @@ export default {
   getAllRequirePaths(dp, startId = 1) {
     // NOTE: these should be BCE traces, meaning traceId === callId
     const traces = dp.util.getAllRequireTraces(startId);
+
+    // get all first arguments of `require`
+    // TODO: currently first arguments are not traced in case of constant expression -> store in `staticTrace` instead!
     return traces.map(t => dp.util.getCallArgPrimitiveValues(t.traceId)?.[0]);
   },
 

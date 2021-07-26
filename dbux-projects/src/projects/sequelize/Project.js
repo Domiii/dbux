@@ -17,6 +17,7 @@ export default class ExpressProject extends Project {
   loadBugs() {
     return [
       {
+        // DIALECT=sqlite; node --inspect-brk --expose-gc --stack-trace-limit=100     "C:\\Users\\domin\\code\\dbux\\node_modules\\@dbux\\cli\\bin\\dbux.js" run --verbose=1 --pw=.* "sscce.js" --
         label: 'sscce1-sqlite',
         // testRe: 'OPTIONS should only include each method once',
         testFilePaths: ['sscce.js'],
