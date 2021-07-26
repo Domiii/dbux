@@ -15,6 +15,6 @@ export default class ForStatement extends BaseNode {
     // TODO: merge decl + write, of `init` variables, if they are not `var`
     
 
-    this.Traces.addDefaultTraces([test, update]);
+    this.Traces.addDefaultTraces([test, update].filter(p => !!p.node));
   }
 }

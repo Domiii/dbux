@@ -136,6 +136,8 @@ function injectTraceClass(classVar, state, traceCfg) {
   // dbux.traceClass
   const traceClassCall = buildTraceClass(classVar, state, traceCfg);
 
+  const isComputed = false;
+  const isStatic = true;
   bodyPath.unshiftContainer('body', t.classProperty(
     dbuxClass,
     t.functionExpression(null, [],
@@ -145,8 +147,8 @@ function injectTraceClass(classVar, state, traceCfg) {
     ),
     t.noop(),
     EmptyArray,
-    false,
-    true
+    isComputed,
+    isStatic
   ));
 }
 
@@ -176,7 +178,11 @@ function buildConstructor(classPath) {
 
   // addSuperIfHasSuperClass
   if (classPath.node.superClass) {
-    body.push(t.callExpression(t.super(), EmptyArray));
+    body.push(
+      t.expressionStatement(
+        t.callExpression(t.super(), EmptyArray)
+      )
+    );
   }
 
   // return new ctor

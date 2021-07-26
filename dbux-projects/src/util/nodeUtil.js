@@ -4,12 +4,13 @@ export function buildNodeCommand(cfg) {
   let {
     // cwd,
     nodeArgs = '',
-    debugPort,
     require: req = EmptyArray,
+    program,
+    programArgs = '',
+    
+    debugPort,
     dbuxJs,
     dbuxArgs,
-    program,
-    programArgs,
   } = cfg;
 
   if (dbuxJs) {

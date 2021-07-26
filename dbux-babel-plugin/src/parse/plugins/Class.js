@@ -33,6 +33,8 @@ export default class Class extends BasePlugin {
     const [, , bodyPath] = node.getChildPaths();
     const memberPaths = bodyPath.get('body');
 
+    // TODO: `['get', 'set'].includes(kind)`
+
     // add all class member traces
     // also, get all types of ClassMethods
     const staticMethods = [], publicMethods = [], privateMethods = [];
@@ -47,7 +49,7 @@ export default class Class extends BasePlugin {
       // memberTrace
       // ################################################################################
 
-      const isMethod = memberNode instanceof ClassMethod;
+      const isMethod = memberNode instanceof ClassMethod && memberNode.kind === 'method';
 
       const memberTraceCfg = memberNode.addTrace();   // addTrace
 

@@ -5,14 +5,16 @@ import TodomvcEs6 from './projects/todomvc-es6/Project';
 import ChartJs from './projects/Chart.js/Project';
 import RealworldWebComponentsProject from './projects/realworld-web-components/Project';
 import JavascriptAlgorithmProject from './projects/javascript-algorithms/Project';
+import SequelizeProject from './projects/sequelize/Project';
 import Project2048 from './projects/2048/Project';
 import EditorMdProject from './projects/Editor.md/Project';
 import WebpackProject from './projects/webpack/Project';
 
 // eslint-disable-next-line import/no-mutable-exports
 let registry = {
-  express: Express,
   'todomvc-es6': TodomvcEs6,
+  2048: Project2048,
+  express: Express,
   eslint: Eslint,
 };
 
@@ -22,7 +24,7 @@ if (process.env.NODE_ENV === 'development') {
   registry = {
     ...registry,
 
-    2048: Project2048,
+    sequelize: SequelizeProject,
     'Editor.md': EditorMdProject,
     webpack: WebpackProject,
     'javascript-algorithms': JavascriptAlgorithmProject,

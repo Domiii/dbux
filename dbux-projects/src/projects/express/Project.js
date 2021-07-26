@@ -10,7 +10,7 @@ export default class ExpressProject extends Project {
   packageManager = 'npm';
 
   loadBugs() {
-    // TODO: load automatically from BugsJs bug database
+    // future-work: load automatically from BugsJs bug database
     // NOTE: some bugs have multiple test files, or no test file at all
     // see: https://github.com/BugsJS/express/releases?after=Bug-4-test
     const bugs = [

@@ -254,11 +254,12 @@ export default class BugRunner {
       if (isObject(commandOrCommandCfg)) {
         ([command, commandOptions] = commandOrCommandCfg);
       }
-      else if (commandOrCommandCfg && !isString(commandOrCommandCfg)) {
-        throw new Error(`testBugCommand must return string or object or falsy, but instead returned: ${toString(commandOrCommandCfg)}`);
-      }
       else {
         command = commandOrCommandCfg;
+      }
+      
+      if (command && !isString(command)) {
+        throw new Error(`testBugCommand must return string or object or falsy, but instead returned: ${toString(commandOrCommandCfg)}`);
       }
       command = command?.trim().replace(/\s+/, ' ');  // get rid of unnecessary line-breaks and multiple spaces
 
