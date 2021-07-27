@@ -10,7 +10,7 @@ class A {
   [this.a] = 5;
 
   // NOTE: `this` cannot be used in computed methods since they are added to prototype, not instance
-  // [this.b]() { return this.aa; }
+  [1+2]() { return this.aa; }
 }
 
 console.log(new A().a);
