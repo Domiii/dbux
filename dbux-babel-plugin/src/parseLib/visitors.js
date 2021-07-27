@@ -146,6 +146,8 @@ function checkDisabled(path) {
 export function buildVisitors() {
   const visitors = {};
   const { ParseNodeClassesByName } = ParseRegistry;
+  let disabled = 0;
+  let level = 0;
   for (const name in ParseNodeClassesByName) {
     const ParserNodeClazz = ParseNodeClassesByName[name];
 
@@ -156,24 +158,42 @@ export function buildVisitors() {
     const names = ParserNodeClazz.visitors || [name];
     for (const visitorName of names) {
       visitors[visitorName] = {
+        // eslint-disable-next-line no-loop-func
         enter(path, state) {
           // if (path.getData()) {
           //   visit(state.onTrace.bind(state), enterInstrumentors, path, state, visitorCfg)
           // }
           // builtInVisitors[name]?.enter?.(path, state);
           // path.node && debug(`[${path.node.type}] ${pathToString(path, true)} ${path.node.leadingComments}`);
+          // ++level;
+          // debug(`${' '.repeat(level)}[Enter] ${level} ${pathToString(path)}`);
+          if (disabled) {
+            // debug(` (skipped path: ${pathToString(path, true)})`);
+            return;
+          }
           if (checkDisabled(path)) {
-            debug(` (skipped path: ${pathToString(path, true)})`);
-            // path.skip(); // `skip()` will also skip it for all other plugins
+            ++disabled;
+            debug(` (skipped path++: ${pathToString(path, true)})`);
+            // path.skip(); // NOTE: `skip()` will also skip it for all other plugins
           }
           else {
             visitEnter(ParserNodeClazz, path, state);
           }
         },
 
+        // eslint-disable-next-line no-loop-func
         exit(path, state) {
-          visitExit(ParserNodeClazz, path, state);
-          // builtInVisitors[name]?.exit?.(path, state);
+          // debug(`${' '.repeat(level)}[Exit] ${pathToString(path)}`);
+          // --level;
+          if (disabled) {
+            if (checkDisabled(path)) {
+              --disabled;
+              // debug(` (skipped path--: ${pathToString(path, true)})`);
+            }
+          }
+          else {
+            visitExit(ParserNodeClazz, path, state);
+          }
         }
       };
     }

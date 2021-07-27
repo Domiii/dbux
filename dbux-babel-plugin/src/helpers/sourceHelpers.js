@@ -25,11 +25,13 @@ function getSourceCodeLines(state) {
   let { lines, file: oldFile } = linesByProgram.get(filePath) || EmptyObject;
   // console.warn('[DBUX getSourceCodeLines]', JSON.stringify(state));
   const { file } = state;
-  if (/* !lines ||  */oldFile !== file) {
-    // NOTE: when using a bundler (e.g. Webpack), incremental builds can cause trouble. That's why we check `oldFile !== file`.
+  // if (oldFile !== file) {
+  if (!lines) {
+    // TODO: when using a bundler (e.g. Webpack), incremental builds can cause trouble. That's why we need to check `oldFile !== file` for proper identity identification. However, storing a reference to the actual file object causes a memory leak.
+    // TODO: use WeakRef?
     const { code } = file;
     lines = code.split(NEWLINE);
-    linesByProgram.set(filePath, { lines, file });
+    linesByProgram.set(filePath, { lines/* , file */ });
   }
   return lines;
 }
