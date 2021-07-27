@@ -7,7 +7,7 @@ set -e # cancel on error
 
 # fname="__samplesInput__/async/promise2"
 # fname="__samplesInput__/setTimeout0"
-fname="__samplesInput__/class7-method-super"
+fname="__samplesInput__/super4"
 # fname="case-studies/async/producer_consumer/producer_consumer_async"
 
 

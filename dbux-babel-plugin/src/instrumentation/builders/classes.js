@@ -177,10 +177,13 @@ function buildConstructor(classPath) {
   const body = [];
 
   // addSuperIfHasSuperClass
-  if (classPath.node.superClass) {
+  const { superClass } = classPath.node;
+  if (superClass) {
+    // future-work: get rid of this combination of `spread` and `arguments`?
+    const superArgs = [t.spreadElement(t.identifier('arguments'))];
     body.push(
       t.expressionStatement(
-        t.callExpression(t.super(), EmptyArray)
+        t.callExpression(t.super(), superArgs)
       )
     );
   }
@@ -219,23 +222,21 @@ function injectTraceInstance(state, traceCfg) {
   // delete __dbux_instance property after ctor
   const traceInstanceCleanup = buildDelete(thisNode, dbuxInstance);
   let constructorPath = findConstructorMethod(classPath);
-  let superPath;
+  let superCallPath;
   if (!constructorPath) {
     // inject new ctor
     const constructorNode = buildConstructor(classPath);
     classPath.get('body').unshiftContainer('body', constructorNode);
     constructorPath = findConstructorMethod(classPath);
   }
-  else {
-    superPath = findSuperCallPath(constructorPath);
-  }
+  superCallPath = findSuperCallPath(constructorPath);
 
   // insert `traceInstance` after `super` call, or at top of ctor
-  if (!superPath) {
-    constructorPath.get('body').unshiftContainer('body', traceInstanceCleanup);
+  if (superCallPath) {
+    superCallPath.insertAfter(traceInstanceCleanup);
   }
   else {
-    superPath.insertAfter(traceInstanceCleanup);
+    constructorPath.get('body').unshiftContainer('body', traceInstanceCleanup);
   }
 }
 

@@ -69,6 +69,7 @@ export default class CallExpression extends BaseNode {
   ];
   static children = ['callee', 'arguments'];
 
+
   get calleeNode() {
     const [calleeNode] = this.getChildNodes();
     return calleeNode;
@@ -106,13 +107,18 @@ export default class CallExpression extends BaseNode {
   }
 
   exit1() {
-    // NOTE: we do this here, since `CalleeME` will not always get initialized
     const { calleeNode } = this;
-    calleeNode.handlerDeep = this;
+    this.isCalleeTraceable = !isNotCalleeTraceableNode(calleeNode);
+
+    if (!this.isCalleeTraceable) {
+      // NOTE: we do this here, since `CalleeME` will not always get initialized
+      calleeNode.handlerDeep = this;
+    }
   }
 
   exit() {
     const {
+      isCalleeTraceable,
       path,
       // path: { scope },
       plugins: {
@@ -134,7 +140,6 @@ export default class CallExpression extends BaseNode {
 
     // 1. make sure, callee is traced (if is traceable)
     let calleeVar = null;
-    const isCalleeTraceable = !isNotCalleeTraceableNode(calleeNode);
     if (isCalleeTraceable) {
       this.Traces.addDefaultTrace(calleePath);
       calleeVar = this.generateCalleeVar(calleePath);
