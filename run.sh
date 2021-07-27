@@ -15,8 +15,8 @@ fname="__samplesInput__/class6"
 
 nodeArgs=""
 
-dbuxArgs="--esnext"
-# dbuxArgs=""
+# dbuxArgs="--esnext"
+dbuxArgs=""
 dbuxCmd="$1"
 if [[ $dbuxCmd = "" ]]
 then

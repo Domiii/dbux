@@ -217,7 +217,7 @@ function injectTraceInstance(state, traceCfg) {
   classPath.get('body').unshiftContainer('body', traceInstanceProperty);
 
   // delete __dbux_instance property after ctor
-  const traceInstanceCleanup = buildDelete(thisNode, traceInstance);
+  const traceInstanceCleanup = buildDelete(thisNode, dbuxInstance);
   let constructorPath = findConstructorMethod(classPath);
   let superPath;
   if (!constructorPath) {

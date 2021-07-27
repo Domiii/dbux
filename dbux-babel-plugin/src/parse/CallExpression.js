@@ -94,7 +94,9 @@ export default class CallExpression extends BaseNode {
    * NOTE: the name chosen here will show up in error messages
    */
   generateCalleeVar(calleePath) {
-    this._calleeVar = calleePath.scope.generateUidIdentifierBasedOnNode(calleePath.node);
+    let { scope } = calleePath;
+    scope = scope.getFunctionParent() || scope.getProgramParent();
+    this._calleeVar = scope.generateUidIdentifierBasedOnNode(calleePath.node);
     return this._calleeVar;
     // return calleePath.node.name || 'func';
   }
@@ -142,7 +144,7 @@ export default class CallExpression extends BaseNode {
     // ###########################################################################
 
     // only trace args if (1) not require or import, OR (2) it has non-constant arguments
-    const shouldTraceArgs = !isNotArgsTraceableIfConstantNode(calleeNode) || 
+    const shouldTraceArgs = !isNotArgsTraceableIfConstantNode(calleeNode) ||
       argumentPaths.some(argPath => !argPath.isConstantExpression());
 
     const bceTraceData = {

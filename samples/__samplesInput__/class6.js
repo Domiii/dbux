@@ -1,17 +1,16 @@
 /**
  * class: computed properties/methods
  */
-'use strict';
 
+var X = 0;
+var b = null;
+class B { constructor() { console.log('new B()'); } x = ++X; }
 class A {
-  a = 'aa';
-  b = 'bb';
+  x = ++X;
 
-  [this.a] = 5;
-
-  // NOTE: `this` cannot be used in computed methods since they are added to prototype, not instance
-  [1+2]() { return this.aa; }
+  // IMPORTANT: computed class keys are evaluated at **class creation time** (not instance creation time)
+  [(console.log('new B().x'), new B().x)] = 123;
+  [++X] = 456;
 }
 
-console.log(new A().a);
-
+console.log(new A(), new A())
