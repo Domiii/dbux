@@ -58,7 +58,7 @@ export default class Traces extends BasePlugin {
     //   debugger;
     // }
     contextNode.Traces.declaredIdentifiers.push(id);
-    console.debug('generateDeclaredUidIdentifier', id.name, `[${scope.path.node?.type}]`, pathToString(scope.path));
+    // console.debug('generateDeclaredUidIdentifier', id.name, `[${scope.path.node?.type}]`, pathToString(scope.path));
     return id;
   }
 

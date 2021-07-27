@@ -3,9 +3,16 @@ import { getClassAncestryString } from './traversalHelpers';
 import { extractSourceStringWithoutComments } from './sourceHelpers';
 
 
-// export function getLeftMostIdOfMember(memberPath) {
-//   return memberPath.object.object...object;
-// }
+/**
+ * Gets `o` in `o.a.b.c.d...`
+ */
+export function getLeftMostPathOfME(memberPath) {
+  let next;
+  while ((next = memberPath.get('object')).node) {
+    memberPath = next;
+  }
+  return memberPath;
+}
 
 export function getRightMostIdOfMember(memberPath) {
   return memberPath.property;

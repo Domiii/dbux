@@ -2,6 +2,7 @@
 import { isNotArgsTraceableIfConstantType, isNotCalleeTraceableType } from '@dbux/common/src/types/constants/SpecialIdentifierType';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import { getLeftMostPathOfME } from 'src/helpers/objectHelpers';
 import { makeSpreadableArgumentArrayCfg } from '../helpers/argsUtil';
 import { traceCallExpressionDefault } from '../instrumentation/callExpressions';
 import BaseNode from './BaseNode';
@@ -9,8 +10,10 @@ import BaseNode from './BaseNode';
 
 function getCalleePlugin(node) {
   const [calleePath] = node.getChildPaths();
-  if (calleePath.isMemberExpression() && !isNotCalleeTraceableNodeME(calleePath)) {
-    return 'CalleeME';
+  if (calleePath.isMemberExpression()) {
+    if (!isNotCalleeTraceableNodeME(calleePath)) {
+      return 'CalleeME';
+    }
   }
   // if (!pluginName) {
   //   // node.logger.error(`unknown callee type: "${type}" at "${pathToString(calleePath)}"`);
@@ -23,7 +26,8 @@ function getCalleePlugin(node) {
  * `super.f()` cannot be traced
  */
 function isNotCalleeTraceableNodeME(calleePath) {
-  return calleePath.get('object').isSuper();
+  const leftMostPath = getLeftMostPathOfME(calleePath);
+  return leftMostPath?.isSuper() || false;
 }
 
 
@@ -108,9 +112,6 @@ export default class CallExpression extends BaseNode {
   }
 
   exit() {
-    // TODO: more special cases - super, import, require
-    //    -> cannot separate callee for `super` or `import`
-    //    -> cannot modify args for `import` or `require`, if they are constants
     const {
       path,
       // path: { scope },
@@ -137,6 +138,10 @@ export default class CallExpression extends BaseNode {
     if (isCalleeTraceable) {
       this.Traces.addDefaultTrace(calleePath);
       calleeVar = this.generateCalleeVar(calleePath);
+    }
+    else {
+      // TODO:  disable default ME tracing recursively, if necessary
+      calleeNode.handlerDeep = this;
     }
 
     // ###########################################################################
