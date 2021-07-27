@@ -342,7 +342,7 @@ export function buildTraceWriteClassProperty(state, traceCfg) {
     tid,
     objectTid,
     inputs: makeInputs(traceCfg)
-  });
+  }).expression;
 
   // build final result
   const resultNode = t.cloneNode(classProperty, false, true); // shallow copy

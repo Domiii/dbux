@@ -7,7 +7,7 @@ set -e # cancel on error
 
 # fname="__samplesInput__/async/promise2"
 # fname="__samplesInput__/setTimeout0"
-fname="__samplesInput__/mix3"
+fname="__samplesInput__/class6"
 # fname="case-studies/async/producer_consumer/producer_consumer_async"
 
 
@@ -15,6 +15,8 @@ fname="__samplesInput__/mix3"
 
 nodeArgs=""
 
+dbuxArgs="--esnext"
+# dbuxArgs=""
 dbuxCmd="$1"
 if [[ $dbuxCmd = "" ]]
 then
@@ -67,7 +69,7 @@ else
   if [[ "$dbuxCmd" != "rr" ]]
   then
     # instrument
-    node $nodeArgsI --enable-source-maps --stack-trace-limit=100 "./node_modules/@dbux/cli/bin/dbux.js" i --esnext $inPath $outPath
+    node $nodeArgsI --enable-source-maps --stack-trace-limit=100 "./node_modules/@dbux/cli/bin/dbux.js" i $dbuxArgs $inPath $outPath
   fi
 
   if [[ "$dbuxCmd" = "r" ]] || [[ "$dbuxCmd" = "rr" ]]
