@@ -108,7 +108,7 @@ export default class CallExpression extends BaseNode {
   exit1() {
     // NOTE: we do this here, since `CalleeME` will not always get initialized
     const { calleeNode } = this;
-    calleeNode.handler = this;
+    calleeNode.handlerDeep = this;
   }
 
   exit() {
@@ -138,10 +138,6 @@ export default class CallExpression extends BaseNode {
     if (isCalleeTraceable) {
       this.Traces.addDefaultTrace(calleePath);
       calleeVar = this.generateCalleeVar(calleePath);
-    }
-    else {
-      // TODO:  disable default ME tracing recursively, if necessary
-      calleeNode.handlerDeep = this;
     }
 
     // ###########################################################################
