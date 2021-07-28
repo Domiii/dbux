@@ -1,8 +1,5 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 exports.saveFile = saveFile;
 exports.loadFile = loadFile;
 exports.makeCacheFilename = makeCacheFilename;
@@ -12,25 +9,25 @@ exports.get = get;
 exports.clear = clear;
 
 var path = require("path");
-
 var fs = require("fs");
-
-var _os = require("os");
-
+var os = require("os");
 var babel = require("@babel/core");
+var findCacheDir = require("find-cache-dir");
 
-var _findCacheDir = require("find-cache-dir");
-
-const DEFAULT_CACHE_DIR = _findCacheDir({
+const CACHE_DIR = process.env.BABEL_CACHE_PATH || findCacheDir({
   name: "@babel/register"
-}) || _os.homedir() || _os.tmpdir();
+}) || os.homedir() || os.tmpdir();
 
-const DEFAULT_FILENAME = path.join(DEFAULT_CACHE_DIR, `.babel.${babel.version}.${babel.getEnv()}.json`);
+// const DEFAULT_FILENAME = path.join(DEFAULT_CACHE_DIR, `.babel.${babel.version}.${babel.getEnv()}.json`);
+// const FILENAME = process.env.BABEL_CACHE_PATH || DEFAULT_FILENAME;
 
-const FILENAME = process.env.BABEL_CACHEpath || DEFAULT_FILENAME;
-let data = {};
+// let data = {};
 // let cacheDirty = false;
 let cacheDisabled = false;
+
+function mtime(filename) {
+  return +fs.statSync(filename).mtime;
+}
 
 function isCacheDisabled() {
   var _process$env$BABEL_DI;
@@ -38,25 +35,33 @@ function isCacheDisabled() {
   return (_process$env$BABEL_DI = process.env.BABEL_DISABLE_CACHE) != null ? _process$env$BABEL_DI : cacheDisabled;
 }
 
-function makeCacheFilename(srcFilename) {
+function getEnvName() {
+  // NOTE: `getEnv` is not documented
+  //    see https://github.com/babel/babel/blob/master/packages/babel-core/src/config/helpers/environment.js
+  return babel.getEnv(false) || 'default';
+}
 
+function makeCacheFilename(srcFilename, opts) {
+  const { sourceRoot } = opts;
+  const relativePath = path.relative(sourceRoot, srcFilename);
+  return path.resolve(CACHE_DIR, getEnvName(), relativePath);
 }
 
 function makeCacheKey(opts) {
-  let cacheKey = `${JSON.stringify(opts)}:${babel.version}`;
-  const env = babel.getEnv(false);
-  if (env) cacheKey += `:${env}`;
-  return cacheKey;
+  // NOTE: we don't need `getEnvName` here because the filename already has it
+  // TODO: replace JSON.stringify because it is not able to get plugin versions etc.
+  return `${babel.version}:${JSON.stringify(opts)}`;
 }
 
-function saveFile(filename, cacheKey, value) {
-  let serialised = '';
+function saveFile(srcFilename, cacheFilename, cacheKey, cached) {
+  let serialised;
   try {
-    value.cacheKey = cacheKey;
-    serialised = JSON.stringify(value);
+    cached.cacheKey = cacheKey;
+    cached.mtime = mtime(srcFilename);
+    serialised = JSON.stringify(cached);
   } catch (err) {
     if (err.message === "Invalid string length") {
-      err.message = `Cache too large, cannot save: ${filename}`;
+      err.message = `Cache too large, cannot save: ${cacheFilename}`;
       console.error(err.stack);
       return;
     } else {
@@ -65,20 +70,20 @@ function saveFile(filename, cacheKey, value) {
   }
 
   try {
-    fs.mkdirSync(path.dirname(FILENAME), { recursive: true });
-    fs.writeFileSync(FILENAME, serialised);
+    fs.mkdirSync(path.dirname(cacheFilename), { recursive: true });
+    fs.writeFileSync(cacheFilename, serialised);
   } catch (e) {
     switch (e.code) {
       case "ENOENT":
       case "EACCES":
       case "EPERM":
-        console.warn(`Babel could not write cache to file: ${FILENAME}
+        console.warn(`Babel could not write cache to file: ${cacheFilename}
 due to a permission issue. Cache is disabled.`);
         cacheDisabled = true;
         break;
 
       case "EROFS":
-        console.warn(`Babel could not write cache to file: ${FILENAME}
+        console.warn(`Babel could not write cache to file: ${cacheFilename}
 because it resides in a readonly filesystem. Cache is disabled.`);
         cacheDisabled = true;
         break;
@@ -89,30 +94,43 @@ because it resides in a readonly filesystem. Cache is disabled.`);
   }
 }
 
-function loadFile(filename, cacheKey) {
+function loadFile(srcFilename, cacheFilename, cacheKey) {
   let serialized;
   try {
-    serialized = fs.readFileSync(filename);
+    serialized = fs.readFileSync(cacheFilename);
   } catch (err) {
     switch (err.code) {
+      case "ENOENT":
+        // file does not exist -> nothing to do
+        return null;
       case "EACCES":
-        console.warn(`Babel could not read cache file: ${filename}
+        console.warn(`Babel could not read cache file: ${cacheFilename}
 due to a permission issue. Cache is disabled.`);
         cacheDisabled = true;
         break;
       default:
-        console.warn(`Babel could not read cache file: ${filename} - ${err.stack || err}`);
+        console.warn(`Babel could not read cache file: ${cacheFilename} - ${err.stack || err}`);
         return null;
     }
   }
 
   try {
-    const value = JSON.parse(serialized);
-    const { code, map, cacheKey } = value;
-    // TODO: validate cacheKey
+    const cached = JSON.parse(serialized);
+
+    // validate cacheKey
+    if (cacheKey !== cached.cacheKey) {
+      return null;
+    }
+
+    // validate mtime
+    if (cached.mtime !== mtime(srcFilename)) {
+      return null;
+    }
+
+    const { code, map } = cached;
     return { code, map };
   } catch (err) {
-    console.warn(`Babel could not read cache file: ${filename} - ${err.stack || err}`);
+    console.warn(`Babel could not read cache file: ${cacheFilename} - ${err.stack || err}`);
   }
   return null;
 }
@@ -195,7 +213,7 @@ due to a permission issue. Cache is disabled.`);
 // }
 
 function get() {
-  return data;
+  return !isCacheDisabled();
 }
 
 // function setDirty() {
@@ -203,6 +221,7 @@ function get() {
 // }
 
 function clear() {
-  // TODO: delete all cached files?
-  data = {};
+  // delete cache directory
+  fs.rmdirSync(CACHE_DIR, { recursive: true });
+  // data = {};
 }

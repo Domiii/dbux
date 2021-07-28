@@ -1,86 +1,76 @@
-"use strict";
+const cloneDeep = require("clone-deep");
+const sourceMapSupport = require("source-map-support");
+const registerCache = require("./cache");
+const babel = require("@babel/core");
+const { OptionManager, DEFAULT_EXTENSIONS } = require("@babel/core");
+const { addHook } = require("pirates");
+const path = require("path");
+const Module = require("module");
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 exports.revert = revert;
 exports.default = register;
-
-var _cloneDeep = require("clone-deep");
-
-var _sourceMapSupport = require("source-map-support");
-
-var registerCache = require("./cache");
-
-var babel = require("@babel/core");
-
-var _pirates = require("pirates");
-
-var _fs = require("fs");
-
-var _path = require("path");
-
-var _module = require("module");
 
 const maps = {};
 let transformOpts = {};
 let piratesRevert = null;
 
 function installSourceMapSupport() {
-  _sourceMapSupport.install({
+  sourceMapSupport.install({
     handleUncaughtExceptions: false,
     environment: "node",
-
     retrieveSourceMap(source) {
       const map = maps && maps[source];
-
       if (map) {
         return {
           url: null,
-          map: map
+          map: map,
         };
       } else {
         return null;
       }
-    }
-
+    },
   });
 }
 
-let cache;
 
-function mtime(filename) {
-  return +_fs.statSync(filename).mtime;
-}
+let cacheEnabled;
 
-function compile(code, filename) {
-  const opts = new babel.OptionManager().init(Object.assign({
-    sourceRoot: _path.dirname(filename) + _path.sep
-  }, _cloneDeep(transformOpts), {
-    filename
-  }));
+function compile(code, srcFilename) {
+  // merge in base options and resolve all the plugins and presets relative to this file
+  const opts = new OptionManager().init(
+    // sourceRoot can be overwritten
+    {
+      sourceRoot: path.dirname(srcFilename) + path.sep,
+      ...cloneDeep(transformOpts),
+      filename: srcFilename,
+    },
+  );
+
+  // Bail out ASAP if the file has been ignored.
   if (opts === null) return code;
 
   let cacheFilename, cacheKey, cached;
-  if (cache) {
+  if (cacheEnabled) {
     // load cache
-    cacheFilename = registerCache.makeCacheFilename();
+    cacheFilename = registerCache.makeCacheFilename(srcFilename, opts);
     cacheKey = registerCache.makeCacheKey(opts);
-    cached = registerCache.loadFile(cacheFilename, cacheKey);
+
+    // console.warn(`[@babel/register] loading file ${cacheFilename}`);
+    cached = registerCache.loadFile(srcFilename, cacheFilename, cacheKey);
   }
   
-  if (!cached || cached.mtime !== mtime(filename)) {
+  if (!cached) {
     // transform
-    cached = babel.transform(code, Object.assign({}, opts, {
+    cached = babel.transform(code, {
+      ...opts,
       sourceMaps: opts.sourceMaps === undefined ? "both" : opts.sourceMaps,
       ast: false
-    }));
+    });
 
-    if (cache) {
+    if (cacheEnabled) {
       // save cache
-      cache[cacheKey] = cached;
-      cached.mtime = mtime(filename);
-      registerCache.setDirty();
+      // console.warn(`[@babel/register] caching file ${cacheFilename}`);
+      registerCache.saveFile(srcFilename, cacheFilename, cacheKey, cached);
     }
   }
 
@@ -88,36 +78,33 @@ function compile(code, filename) {
     if (Object.keys(maps).length === 0) {
       installSourceMapSupport();
     }
-
-    maps[filename] = cached.map;
+    maps[srcFilename] = cached.map;
   }
 
   return cached.code;
 }
 
+
 let compiling = false;
-const internalModuleCache = _module._cache;
+const internalModuleCache = Module._cache;
 
 function compileHook(code, filename) {
   if (compiling) return code;
-  const globalModuleCache = _module._cache;
 
+  const globalModuleCache = Module._cache;
   try {
     compiling = true;
-    _module._cache = internalModuleCache;
+    Module._cache = internalModuleCache;
     return compile(code, filename);
   } finally {
     compiling = false;
-    _module._cache = globalModuleCache;
+    Module._cache = globalModuleCache;
   }
 }
 
 function hookExtensions(exts) {
   if (piratesRevert) piratesRevert();
-  piratesRevert = (0, _pirates.addHook)(compileHook, {
-    exts,
-    ignoreNodeModules: false
-  });
+  piratesRevert = addHook(compileHook, { exts, ignoreNodeModules: false });
 }
 
 function revert() {
@@ -128,32 +115,58 @@ function escapeRegExp(string) {
   return string.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&");
 }
 
-function register(opts = {}) {
-  opts = Object.assign({}, opts);
-  hookExtensions(opts.extensions || babel.DEFAULT_EXTENSIONS);
+function register(opts) {
+  // Clone to avoid mutating the arguments object with the 'delete's below.
+  opts = {
+    ...opts,
+  };
+  hookExtensions(opts.extensions || DEFAULT_EXTENSIONS);
 
-  if (opts.cache === false && cache) {
+  if (opts.cache === false && cacheEnabled) {
     registerCache.clear();
-    cache = null;
-  } else if (opts.cache !== false && !cache) {
+    cacheEnabled = false;
+  } else if (opts.cache !== false && !cacheEnabled) {
     // registerCache.load();
-    cache = registerCache.get();
+    cacheEnabled = registerCache.get();
   }
+  // console.warn(`[@babel/register] cacheEnabled=${cacheEnabled}`);
 
   delete opts.extensions;
   delete opts.cache;
-  transformOpts = Object.assign({}, opts, {
-    caller: Object.assign({
-      name: "@babel/register"
-    }, opts.caller || {})
-  });
-  let {
-    cwd = "."
-  } = transformOpts;
-  cwd = transformOpts.cwd = _path.resolve(cwd);
+
+  transformOpts = {
+    ...opts,
+    caller: {
+      name: "@babel/register",
+      ...(opts.caller || {}),
+    },
+  };
+
+  let { cwd = "." } = transformOpts;
+
+  // Ensure that the working directory is resolved up front so that
+  // things don't break if it changes later.
+  cwd = transformOpts.cwd = path.resolve(cwd);
 
   if (transformOpts.ignore === undefined && transformOpts.only === undefined) {
-    transformOpts.only = [new RegExp("^" + escapeRegExp(cwd), "i")];
-    transformOpts.ignore = [new RegExp("^" + escapeRegExp(cwd) + "(?:" + _path.sep + ".*)?" + escapeRegExp(_path.sep + "node_modules" + _path.sep), "i")];
+    transformOpts.only = [
+      // Only compile things inside the current working directory.
+      // $FlowIgnore
+      new RegExp("^" + escapeRegExp(cwd), "i"),
+    ];
+    transformOpts.ignore = [
+      // Ignore any node_modules inside the current working directory.
+      new RegExp(
+        "^" +
+        // $FlowIgnore
+        escapeRegExp(cwd) +
+        "(?:" +
+        path.sep +
+        ".*)?" +
+        // $FlowIgnore
+        escapeRegExp(path.sep + "node_modules" + path.sep),
+        "i",
+      ),
+    ];
   }
 }
