@@ -34,6 +34,7 @@ function installSourceMapSupport() {
 
 
 let cacheEnabled;
+let firstSourceRoot;
 
 function compile(code, srcFilename) {
   // merge in base options and resolve all the plugins and presets relative to this file
@@ -49,16 +50,22 @@ function compile(code, srcFilename) {
   // Bail out ASAP if the file has been ignored.
   if (opts === null) return code;
 
+  if (!firstSourceRoot) {
+    // future-work: be smarter about this - take config value -> look for `package.json` -> take first srcFilename
+    firstSourceRoot = opts.sourceRoot;
+  }
+
+
   let cacheFilename, cacheKey, cached;
   if (cacheEnabled) {
     // load cache
-    cacheFilename = registerCache.makeCacheFilename(srcFilename, opts);
+    cacheFilename = registerCache.makeCacheFilename(srcFilename, firstSourceRoot);
     cacheKey = registerCache.makeCacheKey(opts);
 
     // console.warn(`[@babel/register] loading file ${cacheFilename}`);
     cached = registerCache.loadFile(srcFilename, cacheFilename, cacheKey);
   }
-  
+
   if (!cached) {
     // transform
     cached = babel.transform(code, {

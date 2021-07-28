@@ -41,9 +41,30 @@ function getEnvName() {
   return babel.getEnv(false) || 'default';
 }
 
-function makeCacheFilename(srcFilename, opts) {
-  const { sourceRoot } = opts;
-  const relativePath = path.relative(sourceRoot, srcFilename);
+
+/**
+ * @see https://stackoverflow.com/a/61640119/2228771
+ */
+function isSubPathOf(subPath, parentPath) {
+  parentPath = normalize(parentPath);
+  subPath = normalize(subPath);
+  return subPath.startsWith(parentPath);
+}
+function normalize(p) {
+  p = path.normalize(p);
+  if (!p.endsWith(path.sep)) {
+    p += path.sep;
+  }
+  return p;
+}
+
+function makeCacheFilename(srcFilename, root) {
+  if (!isSubPathOf(srcFilename, root)) {
+    // eslint-disable-next-line max-len
+    console.warn(`[@babel/register] Could not cache results for file "${srcFilename}" because it is outside of sourceRoot ${root}. Please set accurate "sourceRoot" in your babel config manually.`);
+    return null;
+  }
+  const relativePath = path.relative(root, srcFilename);
   return path.resolve(CACHE_DIR, getEnvName(), relativePath);
 }
 
