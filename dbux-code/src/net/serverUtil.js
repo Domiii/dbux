@@ -43,7 +43,7 @@ export async function makeListenSocket(port) {
      * NOTE: 100MB was the default in v2
      * @see https://socket.io/docs/v4/server-initialization/#maxHttpBufferSize
      */
-    maxHttpBufferSize: 1e8,
+    maxHttpBufferSize: 5e8,
 
     // NOTE: `wsEngine` is 'ws' by default since 4.0
     // wsEngine: 'ws' // in case uws is not supported

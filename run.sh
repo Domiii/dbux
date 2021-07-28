@@ -10,7 +10,8 @@ set -e # cancel on error
 fname="__samplesInput__/super4"
 # fname="case-studies/async/producer_consumer/producer_consumer_async"
 
-
+thisDirRelative=$(dirname "$0")
+rootDir=$(node -e "console.log(require('path').resolve('$thisDirRelative'))") # get absolute path using node
 
 
 nodeArgs=""
@@ -46,7 +47,7 @@ fi
 
 # echo "i $nodeArgsI r $nodeArgsR ($nodeArgs, $2)"
 
-inPath="./samples/$fname.js"
+inPath="$rootDir/samples/$fname.js"
 # if [[ $dbuxCmd = "i" ]]
 # then
 # else
@@ -61,20 +62,20 @@ then
   # babel
   # babelTarget="es5"
   babelTarget="node"
-  outPath="./samples/$fname.$babelTarget.js"
-  node $nodeArgs --enable-source-maps --stack-trace-limit=100 "./node_modules/@babel/cli/bin/babel.js" --config-file="./config/babel-presets-$babelTarget.js" $inPath --out-file="$outPath"
+  outPath="$rootDir/samples/$fname.$babelTarget.js"
+  node $nodeArgs --enable-source-maps --stack-trace-limit=100 "$rootDir/node_modules/@babel/cli/bin/babel.js" --config-file="$rootDir/config/babel-presets-$babelTarget.js" $inPath --out-file="$outPath"
   echo "Babeled ($babelTarget): $outPath"
 else
-  outPath="./samples/$fname.inst.js"
+  outPath="$rootDir/samples/$fname.inst.js"
   if [[ "$dbuxCmd" != "rr" ]] && [[ "$dbuxCmd" != "rrr" ]]
   then
     # instrument
-    node $nodeArgsI --enable-source-maps --stack-trace-limit=100 "./node_modules/@dbux/cli/bin/dbux.js" i $dbuxArgs $inPath $outPath
+    node $nodeArgsI --enable-source-maps --stack-trace-limit=100 "$rootDir/node_modules/@dbux/cli/bin/dbux.js" i $dbuxArgs $inPath $outPath
   fi
 
   if [[ "$dbuxCmd" = "rrr" ]]
   then
-    node $nodeArgsI --enable-source-maps --stack-trace-limit=100 "./node_modules/@dbux/cli/bin/dbux.js" r $dbuxArgs $inPath
+    node $nodeArgsI --enable-source-maps --stack-trace-limit=100 "$rootDir/node_modules/@dbux/cli/bin/dbux.js" r $dbuxArgs $inPath
     # run with @babel/register
   elif [[ "$dbuxCmd" = "r" ]] || [[ "$dbuxCmd" = "rr" ]]
   then
