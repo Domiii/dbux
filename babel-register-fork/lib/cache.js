@@ -18,6 +18,9 @@ const CACHE_DIR = process.env.BABEL_CACHE_PATH || findCacheDir({
   name: "@babel/register"
 }) || os.homedir() || os.tmpdir();
 
+const CACHE_VERBOSE = true;
+// const CACHE_VERBOSE = false;
+
 // const DEFAULT_FILENAME = path.join(DEFAULT_CACHE_DIR, `.babel.${babel.version}.${babel.getEnv()}.json`);
 // const FILENAME = process.env.BABEL_CACHE_PATH || DEFAULT_FILENAME;
 
@@ -64,7 +67,7 @@ function makeCacheFilename(srcFilename, root) {
     console.warn(`[@babel/register] Could not cache results for file "${srcFilename}" because it is outside of sourceRoot ${root}. Please set accurate "sourceRoot" in your babel config manually.`);
     return null;
   }
-  const relativePath = path.relative(root, srcFilename);
+  const relativePath = path.relative(root, srcFilename) + '.json';
   return path.resolve(CACHE_DIR, getEnvName(), relativePath);
 }
 
@@ -79,8 +82,9 @@ function saveFile(srcFilename, cacheFilename, cacheKey, cached) {
   try {
     cached.cacheKey = cacheKey;
     cached.mtime = mtime(srcFilename);
-    serialised = JSON.stringify(cached);
+    serialised = JSON.stringify(cached, null, 2);
   } catch (err) {
+    // NOTE: this should not happen anymore
     if (err.message === "Invalid string length") {
       err.message = `Cache too large, cannot save: ${cacheFilename}`;
       console.error(err.stack);
@@ -115,7 +119,60 @@ because it resides in a readonly filesystem. Cache is disabled.`);
   }
 }
 
+const CacheMissReason = {
+  /**
+   * Cache file path was configured incorrectly.
+   */
+  FilePath: 1,
+  /**
+   * 
+   */
+  DoesNotExist: 2,
+  FileAccess: 3,
+  LoadError: 4,
+  ParseError: 5,
+  DifferentOptions: 6,
+  FileModified: 7
+};
+
+function getCacheMissReasonString(reason) {
+  const str = Object.entries(CacheMissReason).find(([, value]) => value === reason);
+  if (!str) {
+    throw new TypeError(`Invalid CacheMissReason does not exist: ${reason}`);
+  }
+  return str[0];
+}
+
+function reportCacheMiss(reason, srcFilename, cacheFilename, message) {
+  if (!CACHE_VERBOSE) {
+    return;
+  }
+  console.warn(`[@babel/register] Cache miss [${getCacheMissReasonString(reason)}] for "${srcFilename}"${message && ` - ${message}` || ''}`);
+}
+
+function diffString(msg, aStr, bStr) {
+  const leftChrs = 30;
+  const rightChrs = 30;
+  const a = [...aStr];
+  const b = [...bStr];
+  let start = a.findIndex((chr, i) => chr !== b[i]);
+  if (start < 0) {
+    return null;
+  }
+
+  const end = Math.min(start + rightChrs, aStr.length, bStr.length);
+  // let ellipse = end === start + rightChrs ? '...' : '';
+  
+  start = Math.max(0, start - leftChrs);
+  return `${msg}, starting at #${start}: >>>${aStr.substring(start, end)}<<< !== >>>${bStr.substring(start, end)}<<<`;
+}
+
 function loadFile(srcFilename, cacheFilename, cacheKey) {
+  if (!cacheFilename) {
+    reportCacheMiss(CacheMissReason.FilePath, srcFilename, cacheFilename);
+    return null;
+  }
+
   let serialized;
   try {
     serialized = fs.readFileSync(cacheFilename);
@@ -123,16 +180,19 @@ function loadFile(srcFilename, cacheFilename, cacheKey) {
     switch (err.code) {
       case "ENOENT":
         // file does not exist -> nothing to do
-        return null;
+        reportCacheMiss(CacheMissReason.DoesNotExist, srcFilename, cacheFilename, err.message);
+        break;
       case "EACCES":
-        console.warn(`Babel could not read cache file: ${cacheFilename}
-due to a permission issue. Cache is disabled.`);
+        console.warn(`Babel could not read cache file: ${cacheFilename} due to a permission issue. Cache is disabled: ${err.message}`);
+        reportCacheMiss(CacheMissReason.FileAccess, srcFilename, cacheFilename, err.message);
         cacheDisabled = true;
         break;
       default:
-        console.warn(`Babel could not read cache file: ${cacheFilename} - ${err.stack || err}`);
-        return null;
+        // console.warn(`Babel could not read cache file: ${cacheFilename} - ${err && err.message || err}`);
+        reportCacheMiss(CacheMissReason.LoadError, srcFilename, cacheFilename, err && err.message || err);
+        break;
     }
+    return null;
   }
 
   try {
@@ -140,18 +200,22 @@ due to a permission issue. Cache is disabled.`);
 
     // validate cacheKey
     if (cacheKey !== cached.cacheKey) {
+      // eslint-disable-next-line max-len
+      reportCacheMiss(CacheMissReason.DifferentOptions, srcFilename, cacheFilename, diffString('cacheKeys are different', cacheKey, cached.cacheKey));
       return null;
     }
 
     // validate mtime
     if (cached.mtime !== mtime(srcFilename)) {
+      reportCacheMiss(CacheMissReason.FileModified, srcFilename, cacheFilename);
       return null;
     }
 
     const { code, map } = cached;
     return { code, map };
   } catch (err) {
-    console.warn(`Babel could not read cache file: ${cacheFilename} - ${err.stack || err}`);
+    // console.warn(`Babel could not read cache file: ${cacheFilename}`);
+    reportCacheMiss(CacheMissReason.ParseError, srcFilename, cacheFilename, err && err.message || err);
   }
   return null;
 }

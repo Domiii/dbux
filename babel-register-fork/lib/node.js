@@ -60,12 +60,10 @@ function compile(code, srcFilename) {
   if (cacheEnabled) {
     // load cache
     cacheFilename = registerCache.makeCacheFilename(srcFilename, firstSourceRoot);
-    if (cacheFilename) {
-      cacheKey = registerCache.makeCacheKey(opts);
+    cacheKey = registerCache.makeCacheKey(opts);
 
-      // console.warn(`[@babel/register] loading file ${cacheFilename}`);
-      cached = registerCache.loadFile(srcFilename, cacheFilename, cacheKey);
-    }
+    // console.warn(`[@babel/register] loading file ${cacheFilename}`);
+    cached = registerCache.loadFile(srcFilename, cacheFilename, cacheKey);
   }
 
   if (!cached) {
