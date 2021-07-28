@@ -6,7 +6,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { pathNormalized, whichNormalized } from '@dbux/common-node/src/util/pathUtil';
 import Process from '@dbux/projects/src/util/Process';
 // import sleep from '@dbux/common/src/util/sleep';
-import { closeDefaultTerminal, runInTerminal, runInTerminalInteractive } from '../codeUtil/terminalUtil';
+import { closeDefaultTerminal, fixTerminalPath, runInTerminal, runInTerminalInteractive } from '../codeUtil/terminalUtil';
 import { getResourcePath } from '../codeUtil/codePath';
 
 // const Verbose = true;
@@ -68,9 +68,12 @@ export default class TerminalWrapper {
 
   async _run(cwd, command, options, isInteractive = false) {
     // NOTE: fix paths on Windows
+    cwd = fixTerminalPath(cwd);
     let tmpFolder = pathNormalized(fs.mkdtempSync(path.join(os.tmpdir(), 'dbux-')));
-    const pathToNode = await getPathToNode();
-    const pathToDbuxRun = getResourcePath('../dist/_dbux_run.js');
+    tmpFolder = fixTerminalPath(tmpFolder);
+
+    const pathToNode = fixTerminalPath(await getPathToNode());
+    const pathToDbuxRun = fixTerminalPath(getResourcePath('../dist/_dbux_run.js'));
 
     // serialize everything
     const runJsargs = { cwd, command, options, tmpFolder };

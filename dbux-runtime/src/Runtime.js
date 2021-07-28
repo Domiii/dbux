@@ -1,5 +1,5 @@
 
-import { newLogger } from '@dbux/common/src/log/logger';
+import { logWarn, newLogger } from '@dbux/common/src/log/logger';
 import Stack from './Stack';
 import traceCollection from './data/traceCollection';
 import scheduleNextPossibleRun from './scheduleNextPossibleRun';
@@ -440,7 +440,8 @@ export default class Runtime {
 
     if (oldStack !== waitingStack) {
       if (this.isExecuting()) {
-        logError('`resume` received while already executing not handled properly yet. Discarding executing stack.');
+        // eslint-disable-next-line no-console
+        console.trace('`resume` received while already executing - not handled properly yet. Discarding executing stack.');
         this.interrupt();
       }
 

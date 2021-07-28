@@ -33,7 +33,7 @@ class SendQueue {
 
   _flushLater() {
     if (!this.timer) {
-      this.timer = setTimeout(() => this.flush());
+      this.timer = Promise.resolve().then(() => this.flush());
     }
   }
 

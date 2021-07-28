@@ -102,7 +102,7 @@ export default class RuntimeMonitor {
     staticContextCollection.addEntries(programId, staticContexts);
 
 
-    Verbose && debug(`addProgram ${programId}: ${programData.fileName} (tracesDisabled=${runtimeCfg.tracesDisabled})`);
+    Verbose && debug(`addProgram ${programId}: ${programData.fileName}`);
 
     // change program-local _staticContextId to globally unique staticContextId
     for (let i = 0; i < staticTraces.length; ++i) {
@@ -153,7 +153,8 @@ export default class RuntimeMonitor {
       const staticContext = staticContextCollection.getContext(programId, inProgramStaticContextId);
       debug(
         // ${JSON.stringify(staticContext)}
-        `-> Immediate ${contextId} ${staticContext?.displayName} (pid=${programId}, runId=${runId}, cid=${contextId}, pcid=${parentContextId})`
+        // eslint-disable-next-line max-len
+        `-> Immediate ${contextId} ${staticProgramContextCollection.getById(programId).filePath} ${staticContext?.displayName} (pid=${programId}, runId=${runId}, cid=${contextId}, pcid=${parentContextId})`
       );
     }
 
@@ -179,16 +180,16 @@ export default class RuntimeMonitor {
   }
 
 
-  popFunction(contextId, inProgramStaticTraceId) {
+  popFunction(programId, contextId, inProgramStaticTraceId) {
     // this.checkErrorOnFunctionExit(contextId, inProgramStaticTraceId);
-    return this.popImmediate(contextId, inProgramStaticTraceId);
+    return this.popImmediate(programId, contextId, inProgramStaticTraceId);
   }
 
   popTry() {
     // TODO
   }
 
-  popImmediate(contextId, traceId) {
+  popImmediate(programId, contextId, traceId) {
     // sanity checks
     const context = executionContextCollection.getById(contextId);
     if (!context) {
@@ -210,7 +211,7 @@ export default class RuntimeMonitor {
       const staticContext = staticContextCollection.getById(staticContextId);
       debug(
         // ${JSON.stringify(staticContext)}
-        `<- Immediate ${staticContext?.displayName}`
+        `<- Immediate ${staticProgramContextCollection.getById(programId).fileName} ${staticContext?.displayName}`
       );
     }
 
@@ -506,7 +507,8 @@ export default class RuntimeMonitor {
 
   _ensureExecuting() {
     if (!this._runtime._executingStack) {
-      logError('Encountered trace when stack is empty');
+      // eslint-disable-next-line no-console
+      console.trace('Encountered trace when stack is empty');
       return false;
     }
     return true;

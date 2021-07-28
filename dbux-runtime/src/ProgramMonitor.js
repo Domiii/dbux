@@ -136,7 +136,7 @@ export default class ProgramMonitor {
       return undefined;
     }
 
-    return this._runtimeMonitor.popImmediate(contextId, traceId);
+    return this._runtimeMonitor.popImmediate(this.getProgramId(), contextId, traceId);
   }
 
   popFunction = (contextId, traceId) => {
@@ -144,7 +144,7 @@ export default class ProgramMonitor {
       return undefined;
     }
 
-    return this._runtimeMonitor.popFunction(contextId, traceId);
+    return this._runtimeMonitor.popFunction(this.getProgramId(), contextId, traceId);
   }
 
   popProgram = () => {
