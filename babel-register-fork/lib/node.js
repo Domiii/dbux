@@ -60,10 +60,12 @@ function compile(code, srcFilename) {
   if (cacheEnabled) {
     // load cache
     cacheFilename = registerCache.makeCacheFilename(srcFilename, firstSourceRoot);
-    cacheKey = registerCache.makeCacheKey(opts);
+    if (cacheFilename) {
+      cacheKey = registerCache.makeCacheKey(opts);
 
-    // console.warn(`[@babel/register] loading file ${cacheFilename}`);
-    cached = registerCache.loadFile(srcFilename, cacheFilename, cacheKey);
+      // console.warn(`[@babel/register] loading file ${cacheFilename}`);
+      cached = registerCache.loadFile(srcFilename, cacheFilename, cacheKey);
+    }
   }
 
   if (!cached) {
@@ -74,7 +76,7 @@ function compile(code, srcFilename) {
       ast: false
     });
 
-    if (cacheEnabled) {
+    if (cacheFilename) {
       // save cache
       // console.warn(`[@babel/register] caching file ${cacheFilename}`);
       registerCache.saveFile(srcFilename, cacheFilename, cacheKey, cached);
