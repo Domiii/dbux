@@ -66,13 +66,17 @@ then
   echo "Babeled ($babelTarget): $outPath"
 else
   outPath="./samples/$fname.inst.js"
-  if [[ "$dbuxCmd" != "rr" ]]
+  if [[ "$dbuxCmd" != "rr" ]] && [[ "$dbuxCmd" != "rrr" ]]
   then
     # instrument
     node $nodeArgsI --enable-source-maps --stack-trace-limit=100 "./node_modules/@dbux/cli/bin/dbux.js" i $dbuxArgs $inPath $outPath
   fi
 
-  if [[ "$dbuxCmd" = "r" ]] || [[ "$dbuxCmd" = "rr" ]]
+  if [[ "$dbuxCmd" = "rrr" ]]
+  then
+    node $nodeArgsI --enable-source-maps --stack-trace-limit=100 "./node_modules/@dbux/cli/bin/dbux.js" r $dbuxArgs $inPath
+    # run with @babel/register
+  elif [[ "$dbuxCmd" = "r" ]] || [[ "$dbuxCmd" = "rr" ]]
   then
     # run
     node $nodeArgsR --stack-trace-limit=100 -r "@dbux/runtime" $outPath
