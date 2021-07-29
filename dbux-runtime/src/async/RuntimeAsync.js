@@ -3,8 +3,6 @@ import isThenable from '@dbux/common/src/util/isThenable';
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { some } from 'lodash';
-import asyncEventCollection from '../data/asyncEventCollection';
-import asyncNodeCollection from '../data/asyncNodeCollection';
 // import executionContextCollection from './data/executionContextCollection';
 // import traceCollection from './data/traceCollection';
 // import valueCollection from './data/valueCollection';
@@ -12,8 +10,6 @@ import { peekBCEContextCheckCallee, isFirstContextInParent, isRootContext, getFu
 import ThenRef from '../data/ThenRef';
 // eslint-disable-next-line max-len
 import { getPromiseAnyRootId, getPromiseData, getPromiseFirstEventRootId, getPromiseId, getPromiseLastRootId, getPromiseOwnAsyncFunctionContextId, getPromiseRootId, isNewPromise, maybeSetPromiseFirstEventRootId, pushPromisePendingRootId, setPromiseData } from './patchPromise';
-import traceCollection from '../data/traceCollection';
-import executionContextCollection from '../data/executionContextCollection';
 import asyncEventUpdateCollection from '../data/asyncEventUpdateCollection';
 
 /** @typedef { import("./Runtime").default } Runtime */
@@ -447,11 +443,60 @@ export default class RuntimeAsync {
       // NOTE: the last active root is also the `context` of the `then` callback
       contextId: postEventRootId,
 
-      schedulerTraceId, // preAwaitTid
+      schedulerTraceId,
       promiseId: getPromiseId(postEventPromise),
       nestedPromiseId: isThenable(returnValue) ? getPromiseId(returnValue) : 0
     });
   }
+
+  // ###########################################################################
+  // preCallback
+  // ###########################################################################
+
+  /**
+   * Event: New callback (`postEventPromise`) has been scheduled.
+   */
+  preCallback(schedulerTraceId) {
+    const runId = this._runtime.getCurrentRunId();
+    const preEventRootId = this.getCurrentVirtualRootContextId();
+    const contextId = this._runtime.peekCurrentContextId();
+
+    // store update
+    asyncEventUpdateCollection.addPreCallbackUpdate({
+      runId,
+      rootId: preEventRootId,
+      contextId: contextId,
+      schedulerTraceId
+    });
+
+    // const rootId = this.getCurrentVirtualRootContextId();
+    // this.logger.debug(`[preCallback] #${rootId} ${getPromiseId(preEventPromise)} -> ${getPromiseId(postEventPromise)} (tid=${schedulerTraceId})`);
+  }
+
+  // ###########################################################################
+  // postCallback
+  // ###########################################################################
+
+  /**
+   * Event: Asynchronously scheduled callback is executed.
+   * 
+   * @param {CallbackRef} thenRef
+   */
+  postCallback(schedulerTraceId, runId, postEventRootId) {
+    // console.trace(`postCallback`, getPromiseId(postEventPromise), '->', getPromiseId(returnValue));
+
+    // store update
+    asyncEventUpdateCollection.addPostCallbackUpdate({
+      runId,
+      rootId: postEventRootId,
+
+      // NOTE: the last active root is also the `context` of the callback
+      contextId: postEventRootId,
+      schedulerTraceId
+    });
+  }
+
+
 
 
   // ###########################################################################
@@ -477,55 +522,6 @@ export default class RuntimeAsync {
       return null;
     }
     return nestedAsyncData;
-  }
-
-  /**
-   * Traverse nested awaits, to find out, if outer-most await is in root.
-   * @return {boolean}
-   */
-  isAsyncFunctionChainedToRoot(realContextId) {
-    // NOTE: asyncData should always exist, since we are calling this `postAwait`
-    const asyncData = this.lastAwaitByRealContext.get(realContextId);
-
-    const {
-      // asyncFunctionContextId,
-      // threadId,
-      // asyncFunctionPromise,
-      isFirstAwait,
-      firstAwaitingAsyncFunctionContextId
-    } = asyncData;
-
-    // NOTE: `this.getAsyncFunctionChainedToRoot` uses firstAwaitingAsyncFunctionContextId
-    //    -> what if await, but its not first?
-    //    -> TODO: add synchronization links (out and back in)
-
-    if (!isFirstAwait) {
-      // chained to ResumeContext
-      return true;
-    }
-
-    if (!firstAwaitingAsyncFunctionContextId) {
-      return isRootContext(realContextId);
-    }
-    else {
-      // first await in first await -> keep going up
-      return this.isAsyncFunctionChainedToRoot(firstAwaitingAsyncFunctionContextId);
-    }
-
-    // const parentContextId = getPromiseOwnAsyncFunctionContextId(asyncFunctionPromise);
-
-
-    // const chainedToRoot = getPromiseOwnChainedToRoot(promise);
-    // if (chainedToRoot !== undefined) {
-    //   return chainedToRoot;
-    // }
-
-    // const callerPromise = this.getAsyncCallerPromise(promise);
-    // if (callerPromise) {
-    //   return this.getAsyncCallerPromiseChainedToRoot(callerPromise);
-    // }
-
-    // return false;
   }
 
   /**

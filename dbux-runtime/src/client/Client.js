@@ -2,7 +2,7 @@
 import io, { Socket } from 'socket.io-client';
 import minBy from 'lodash/minBy';
 import maxBy from 'lodash/maxBy';
-import { newLogger } from '@dbux/common/src/log/logger';
+import { logWarn, newLogger } from '@dbux/common/src/log/logger';
 // import universalLibs from '@dbux/common/src/util/universalLibs';
 import SendQueue from './SendQueue';
 
@@ -82,7 +82,21 @@ export default class Client {
 
   _connectFailed = false;
 
-  _handleConnect = () => {
+  _handleConnect = (socket) => {
+    if (!this._socket) {
+      /**
+       * WARNING: if sending data is followed by an unknown disconnect,
+       *      it is likely due to error #1009: Max payload size exceeded.
+       *      socket.io does not seem to convey that message from the underlying WS implementation.
+       *      The issue is usually accompanied by a follow-up (re-)connect, despite being disconnected.
+       *      -> sln: adjust `maxHttpBufferSize` on server side.
+       *
+       * @see https://github.com/websockets/ws/blob/abde9cfc21ce0f1cb7e2556aea70b423359364c7/lib/receiver.js#L371
+       */
+      // eslint-disable-next-line max-len
+      logWarn(`Connection incoming while disconnected. This might (or might not) be an unintended sign that sent data exceeds the configured server maximum. Consider increasing the maximum via socket.io's maxHttpBufferSize.`);
+      this._socket = socket;
+    }
     Verbose > 1 && debug('-> connected');
     this._connected = true;
     this._connectFailed = false;
@@ -184,7 +198,7 @@ export default class Client {
       this._connect();
     }
     else if (this.isReady()) {
-      Verbose && debug(`<- data: ` +
+      Verbose && debug(`<- data (${Math.round(JSON.stringify(data).length / 1000)} kb):` +
         Object.entries(data)
           .map(([key, arr]) => {
             try {
@@ -198,7 +212,9 @@ export default class Client {
           })
           .join(', ')
       );
+
       this._socket.emit('data', data);
+
       this._refreshInactivityTimer();
       this._waitingCb?.();
       return true;
@@ -242,7 +258,7 @@ export default class Client {
       // socket.io.opts.transports = ['websocket'];
     });
 
-    socket.on('connect', this._handleConnect);
+    socket.on('connect', this._handleConnect.bind(this, socket));
     socket.on('connect_error', this._handleConnectFailed);
     socket.on('disconnect', this._handleDisconnect);
     socket.on('error', this._handleError);
@@ -253,7 +269,7 @@ export default class Client {
   // ###########################################################################
 
   _refreshInactivityTimer() {
-    if (StayAwake) {
+    if (StayAwake || !this._ready) {
       // stay awake
       return;
     }

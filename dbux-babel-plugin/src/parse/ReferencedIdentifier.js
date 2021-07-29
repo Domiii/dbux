@@ -1,5 +1,5 @@
 import TraceType from '@dbux/common/src/types/constants/TraceType';
-import SpecialIdentifierType, { isNotTraceable, lookupSpecialIdentifierType } from '@dbux/common/src/types/constants/SpecialIdentifierType';
+import SpecialIdentifierType, { isNotCalleeTraceableType, lookupSpecialIdentifierType } from '@dbux/common/src/types/constants/SpecialIdentifierType';
 import { buildTraceExpressionVar } from '../instrumentation/builders/misc';
 import BaseId from './BaseId';
 import { ZeroNode } from '../instrumentation/builders/buildUtil';
@@ -31,7 +31,7 @@ export default class ReferencedIdentifier extends BaseId {
   getTidIdentifier() {
     const { specialType } = this;
 
-    if (specialType && isNotTraceable(specialType)) {
+    if (specialType && isNotCalleeTraceableType(specialType)) {
       // NOTE: this identifier cannot be traced, and thus does not have a traceId
       return ZeroNode;
     }

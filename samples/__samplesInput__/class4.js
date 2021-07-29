@@ -1,3 +1,7 @@
+/**
+ * class: private properties
+ */
+
 class A {
   #x = 0;
   constructor(x) {

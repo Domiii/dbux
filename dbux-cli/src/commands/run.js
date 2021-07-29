@@ -10,6 +10,8 @@ export const aliases = ['r'];
 export const describe = 'Run the given file with DBUX injected and reporting. Needs a receiving runtime server (such as the DBUX VSCode extension) running.';
 export const builder = buildCommonCommandOptions();
 
+// process.env.BABEL_DISABLE_CACHE = 1;
+
 /**
  * Run file with dbux instrumentations (using babel-register to add dbux-babel-plugin into the mix)
  */
@@ -19,7 +21,7 @@ export const handler = wrapCommand(({ file, _, ...moreOptions }) => {
   // patch up file path
   const targetPath = resolveCommandTargetPath(file);
 
-  // hackfix: get some weird libraries out of the way, so that @babel/register will not instrument them
+  // hackfix: get some libraries out of the way, so that @babel/register will not instrument them
   require('cliui');
   require('socket.io-client');
   require('lodash');

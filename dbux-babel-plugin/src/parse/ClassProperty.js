@@ -49,7 +49,7 @@ export default class ClassProperty extends BaseNode {
   addTrace() {
     const { path, Traces } = this;
 
-    const [keyNode] = this.getChildPaths();
+    const [keyNode] = this.getChildNodes();
     const [, valuePath] = this.getChildPaths();
 
     const { computed } = path.node;

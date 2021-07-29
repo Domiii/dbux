@@ -43,8 +43,12 @@ export function monkeyPatchFunctionRaw(holder, name, cb) {
   });
 }
 
-export function monkeyPatchMethodRaw(Clazz, methodName, post, pre) {
-  return monkeyPatchFunctionRaw(Clazz.prototype, methodName, post, pre);
+export function monkeyPatchMethodRaw(Clazz, methodName, cb) {
+  return monkeyPatchFunctionRaw(Clazz.prototype, methodName, cb);
+}
+
+export function monkeyPatchGlobalRaw(functionName, cb) {
+  return monkeyPatchFunctionRaw(globalThis, functionName, cb);
 }
 
 

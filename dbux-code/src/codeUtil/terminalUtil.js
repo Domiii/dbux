@@ -8,16 +8,30 @@ const { log, debug, warn, error: logError } = newLogger('terminalUtil');
 
 const DefaultTerminalName = 'dbux-run';
 
+export function fixTerminalPath(cwd) {
+  /**
+   * @see https://github.com/microsoft/vscode/issues/9448
+   * @see https://github.com/microsoft/vscode/commit/a6c845baf7fed4a186e3b744c5c14c0be53494fe
+   */
+  if (cwd && cwd[1] === ':') {
+    cwd = cwd[0].toUpperCase() + cwd.substr(1);
+  }
+  return cwd;
+}
+
 export function createDefaultTerminal(cwd) {
-  return createTerminal(DefaultTerminalName, cwd);
+  return createTerminal(DefaultTerminalName, fixTerminalPath(cwd));
 }
 
 export function recreateTerminal(terminalOptions) {
+  terminalOptions.cwd = fixTerminalPath(terminalOptions.cwd);
   closeTerminal(terminalOptions.name);
   return window.createTerminal(terminalOptions);
 }
 
 export function createTerminal(name, cwd) {
+  cwd = fixTerminalPath(cwd);
+
   closeTerminal(name);
 
   const terminalOptions = {
@@ -54,6 +68,8 @@ export function closeTerminal(name) {
 // }
 
 export function runInTerminal(cwd, command) {
+  cwd = fixTerminalPath(cwd);
+
   const name = DefaultTerminalName;
   closeTerminal(name);
 

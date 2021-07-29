@@ -36,11 +36,33 @@ export default class Traces extends BasePlugin {
   // ###########################################################################
 
   generateDeclaredUidIdentifier(name) {
-    const context = this.node.peekContextNode();
-    const id = context.path.scope.generateUidIdentifier(name);
-    context.Traces.declaredIdentifiers.push(id);
+    let contextNode = this.node.peekContextNode();
+    const contextBodyPath = contextNode.path.get('body');
+    let { scope } = contextNode.path;
+
+    // make sure that `this.node` is actually in `body` of the scope where we want to create the variable
+    if ((!contextBodyPath ||
+      (contextBodyPath.isAncestor && !contextBodyPath.isAncestor(this.node.path))) &&
+      scope.parent) {
+      // TODO: maybe there might be bugs here, e.g. in computed class property keys:
+      //      -> e.g. var X = 0; function otherA() { return otherA || (otherA = new A()); }; class A { x = ++X; [otherA().x]() {} }; new A();
+
+      // scope = scope.parent;
+      // scope = scope.getFunctionParent() || scope.getProgramParent();
+      contextNode = contextNode.getExistingParent().peekContextNode();
+      ({ scope } = contextNode.path);
+    }
+
+    const id = scope.generateUidIdentifier(name);
+    // if (id.name === '_o23') {
+    //   debugger;
+    // }
+    contextNode.Traces.declaredIdentifiers.push(id);
+    // console.debug('generateDeclaredUidIdentifier', id.name, `[${scope.path.node?.type}]`, pathToString(scope.path));
     return id;
   }
+
+
 
   // ###########################################################################
   // trace inputs

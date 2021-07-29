@@ -6,9 +6,14 @@
     "lib": [
       "es6"
     ],
-    "baseUrl": "./",
+    "baseUrl": ".",
     "paths": {
-      "@dbux/common/*": ["../dbux-common/*"],
+      "@dbux/common/*": [
+        "../dbux-common/*"
+      ],
+      "@dbux/runtime/src/*": [
+        "../dbux-runtime/src/*"
+      ]
     }
   },
   "exclude": [

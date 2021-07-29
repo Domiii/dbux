@@ -13,7 +13,7 @@ class TraceCollection extends Collection {
   }
 
   getDataNodeIdByTraceId(traceId) {
-    return this.getById(traceId).nodeId;
+    return this.getById(traceId)?.nodeId || 0;
   }
 
   getDataNodeIdsByTraceIds(tid, traceIds) {

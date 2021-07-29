@@ -49,7 +49,7 @@ export default class VariableDeclarator extends BaseNode {
     if (!this.plugins.lval) {
       // TODO - remove hackfix (when Patterns are implemented)
       const [, rval] = this.getChildNodes();
-      rval.addDefaultTrace();
+      rval?.addDefaultTrace();
     }
   }
 }

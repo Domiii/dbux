@@ -218,7 +218,7 @@ const decoNamesByType = {
 
     const previousTrace = dataProvider.collections.traces.getById(trace.traceId - 1);
     if (previousTrace?.contextId > trace.contextId) {
-      // call expression of a function that we also instrumented (stepped into)
+      // call expression of an instrumented/traced function
       return 'CallExpressionStep';
     }
     // unknown function call

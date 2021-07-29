@@ -136,7 +136,7 @@ export default class ProgramMonitor {
       return undefined;
     }
 
-    return this._runtimeMonitor.popImmediate(contextId, traceId);
+    return this._runtimeMonitor.popImmediate(this.getProgramId(), contextId, traceId);
   }
 
   popFunction = (contextId, traceId) => {
@@ -144,7 +144,7 @@ export default class ProgramMonitor {
       return undefined;
     }
 
-    return this._runtimeMonitor.popFunction(contextId, traceId);
+    return this._runtimeMonitor.popFunction(this.getProgramId(), contextId, traceId);
   }
 
   popProgram = () => {
@@ -294,12 +294,12 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceUpdateExpressionME(this.getProgramId(), obj, prop, updateValue, returnValue, readTid, tid, objectTid);
   }
 
-  traceBCE = (tid, calleeTid, argTids, spreadArgs) => {
+  traceBCE = (tid, callee, calleeTid, argTids, spreadArgs) => {
     if (this.areTracesDisabled) {
-      return;
+      return callee;
     }
 
-    this._runtimeMonitor.traceBCE(this.getProgramId(), tid, calleeTid, argTids, spreadArgs);
+    return this._runtimeMonitor.traceBCE(this.getProgramId(), tid, callee, calleeTid, argTids, spreadArgs);
   }
 
   // traceSpreadArg = () => {

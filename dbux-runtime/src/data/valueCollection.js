@@ -32,6 +32,14 @@ const builtInTypeSerializers = new Map([
   // TODO: thenables and many other built-ins
 ]);
 
+function getBuiltInSerializer(value) {
+  if (!value.constructor || value === value.constructor.prototype) {
+    // don't try to default-serialize a built-in prototype
+    return null;
+  }
+  return builtInTypeSerializers.get(value.constructor) || null;
+}
+
 /**
  * Keeps track of `StaticTrace` objects that contain static code information
  */
@@ -450,7 +458,7 @@ class ValueCollection extends Collection {
             // start serializing
             serialized = {};
 
-            const builtInSerializer = value.constructor ? builtInTypeSerializers.get(value.constructor) : null;
+            const builtInSerializer = getBuiltInSerializer(value);
             if (builtInSerializer) {
               // serialize built-in types - especially: RegExp, Map, Set
               const entries = builtInSerializer(value);

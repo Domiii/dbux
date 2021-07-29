@@ -1,5 +1,5 @@
 import patchArray from './patchArray';
 
-export default function registerBuiltins() {
+export default function initPatchBuiltins() {
   patchArray();
 }

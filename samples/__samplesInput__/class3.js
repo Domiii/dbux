@@ -1,3 +1,8 @@
+/**
+ * class: private properties + methods
+ */
+
+
 class A {
   constructor() { }
   p = 1;

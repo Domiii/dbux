@@ -48,7 +48,22 @@ export default class MemberExpression extends BaseNode {
    * A `handler`, if assigned, takes care of this ME.
    * Disables default (rval) behavior.
    */
-  handler;
+  _handler;
+
+  set handler(handler) {
+    this._handler = handler;
+  }
+
+  /**
+   * Set `handler` recursively
+   */
+  set handlerDeep(handler) {
+    this._handler = handler;
+    const [objectNode] = this.getChildNodes();
+    if (objectNode instanceof MemberExpression) {
+      objectNode.handlerDeep = handler;
+    }
+  }
 
   buildDefaultTrace() {
     // No need for a default trace.
@@ -62,7 +77,7 @@ export default class MemberExpression extends BaseNode {
   // ###########################################################################
 
   exit() {
-    if (this.handler) {
+    if (this._handler) {
       // disable default behavior
       return;
     }

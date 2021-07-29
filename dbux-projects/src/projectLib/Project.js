@@ -128,6 +128,19 @@ export default class Project {
   async initBug(bug) {
     await this.decorateBug?.(bug);
     await this.builder?.decorateBug(bug);
+
+    // future-work: generalize test regexes
+    // let { testRe } = bug;
+    // if (isArray(testRe)) {
+    //   testRe = testRe.map(re => `(?:${re})`).join('|');
+    // }
+    // testRe = testRe.replace(/"/g, '\\"');
+    // description: testRe,
+    // runArgs: [
+    //   '--grep',
+    //   `"${testRe}"`,
+    //  ...
+    // ]
   }
 
   // ###########################################################################

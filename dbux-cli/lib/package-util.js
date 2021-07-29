@@ -5,8 +5,6 @@ const process = require('process');
 // eslint-disable-next-line
 const fromEntries = require('object.fromentries');    // NOTE: Object.fromEntries was only added in Node v12
 
-process.env.BABEL_DISABLE_CACHE = 1;
-
 // ###########################################################################
 // makeAbsolutePaths
 // ###########################################################################

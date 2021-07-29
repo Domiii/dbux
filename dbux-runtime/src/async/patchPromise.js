@@ -28,9 +28,39 @@ const PromiseInstrumentationDisabled = false;
 let RuntimeMonitorInstance;
 
 export const NativePromiseClass = (async function () { })().constructor/* globalThis.Promise */;
+
+/**
+ * NOTE: library might be using non-native promises.
+ *    This is only (a very crude, desperate) attempt at getting that patched up early.
+ *    -> In all likelihood will not work too well.
+ */
 export const OriginalPromiseClass = Promise;
 
+/**
+ * hackfix: prevent circular dependency
+ */
 valueCollection.maybePatchPromise = maybePatchPromise;
+
+
+// ###########################################################################
+// init
+// ###########################################################################
+
+export default function initPatchPromise(_runtimeMonitorInstance) {
+  RuntimeMonitorInstance = _runtimeMonitorInstance;
+
+  if (PromiseInstrumentationDisabled) {
+    return;
+  }
+
+  // NOTE: `OriginalPromiseClass` might not be native Promise class.
+  globalThis.Promise = patchPromiseClass(OriginalPromiseClass);
+
+  if (OriginalPromiseClass !== NativePromiseClass) {
+    // NOTE: NativePromiseClass ctor is unaffected from this call
+    patchPromiseClass(NativePromiseClass);
+  }
+}
 
 
 // ###########################################################################
@@ -93,29 +123,32 @@ export function patchPromise(promise) {
 // ###########################################################################
 
 let activeThenCbCount = 0;
-function patchThenCallback(thenCb, thenRef) {
-  if (!isFunction(thenCb)) {
+function patchThenCallback(cb, thenRef) {
+  if (!isFunction(cb)) {
     // not a cb
-    return thenCb;
+    return cb;
   }
-  if (!valueCollection.getRefByValue(thenCb)) {
+  if (!valueCollection.getRefByValue(cb)) {
     // not instrumented
-    return thenCb;
+    return cb;
   }
 
-  const originalThenCb = thenCb;
-  return function patchedPromiseCb(previousResult) {
+  const originalCb = cb;
+  return function patchedCb(previousResult) {
     if (activeThenCbCount) {
       // NOTE: then callbacks should not observe nested calls
       warn(`a "then" callback was called before a previous "then" callback has finished, schedulerTraceId=${thenRef.schedulerTraceId}`);
     }
+
+    // TODO: peekBCEMatchCallee(patchedCb)
+
     ++activeThenCbCount;
 
     let returnValue;
     try {
       try {
         // actually call `then` callback
-        returnValue = originalThenCb(previousResult);
+        returnValue = originalCb(previousResult);
       }
       finally {
         if (isThenable(returnValue)) {
@@ -127,7 +160,7 @@ function patchThenCallback(thenCb, thenRef) {
           dataNodeCollection.createDataNode(returnValue, thenRef.schedulerTraceId, DataNodeType.Read, null);
 
           // set async function's returnValue promise (used to set AsyncEventUpdate.promiseId)
-          const cbContext = peekContextCheckCallee(originalThenCb);
+          const cbContext = peekContextCheckCallee(originalCb);
           // console.trace('thenCb', cbContext?.contextId, getPromiseId(returnValue));
           cbContext && RuntimeMonitorInstance._runtime.async.setAsyncContextPromise(cbContext.contextId, returnValue);
 
@@ -167,6 +200,7 @@ function _makeThenRef(preEventPromise, patchedThen) {
     return null;
   }
   if (!schedulerTraceId) {
+    // eslint-disable-next-line no-console
     console.trace(`schedulerTraceId not found in PreThen for promise, ref=`, ref);
   }
   return {
@@ -186,7 +220,6 @@ function patchThen(holder) {
       }
 
       const postEventPromise = originalThen.call(preEventPromise, successCb, failCb);
-
       _onThen(thenRef, preEventPromise, postEventPromise);
       return postEventPromise;
     }
@@ -291,26 +324,6 @@ function patchPromiseClass(BasePromiseClass) {
   return PatchedPromise;
 }
 
-// ###########################################################################
-// init
-// ###########################################################################
-
-export default function initPatchPromise(_runtimeMonitorInstance) {
-  RuntimeMonitorInstance = _runtimeMonitorInstance;
-
-  if (PromiseInstrumentationDisabled) {
-    return;
-  }
-
-  // NOTE: `OriginalPromiseClass` might not be native Promise class.
-  globalThis.Promise = patchPromiseClass(OriginalPromiseClass);
-
-  if (OriginalPromiseClass !== NativePromiseClass) {
-    // NOTE: NativePromiseClass ctor is unaffected from this call
-    patchPromiseClass(NativePromiseClass);
-  }
-}
-
 
 // ###########################################################################
 // promise data
@@ -394,10 +407,6 @@ export function getPromiseAnyRootId(promise) {
 export function getPromiseId(promise) {
   return valueCollection.getRefByValue(promise)?.refId;
   // return promise._dbux_?.id;
-}
-
-export function getPromiseOwnThreadId(promise) {
-  return promise?._dbux_?.threadId;
 }
 
 export function getPromiseOwnAsyncFunctionContextId(promise) {

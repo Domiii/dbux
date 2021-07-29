@@ -1,4 +1,5 @@
 import findLast from 'lodash/findLast';
+import groupBy from 'lodash/groupBy';
 import TraceType, { hasDynamicTypes, isTracePop, isBeforeCallExpression } from '@dbux/common/src/types/constants/TraceType';
 import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
 import { pushArrayOfArray } from '@dbux/common/src/util/arrayUtil';
@@ -712,48 +713,12 @@ export default {
     return parentTrace;
   },
 
-  getReturnValueRefOfContext(dp, contextId) {
-    const bceTrace = dp.util.getOwnCallerTraceOfContext(contextId);
-    return bceTrace && dp.util.getTraceValueRef(bceTrace.traceId) || null;
-  },
-
-  /**
-   * like `util.getCallerTraceOfContext` but returns null if its callee's `staticContextId` matches the context's.
-   * @param {DataProvider} dp 
-   * @param {number} contextId
+  /** 
+   * Given some trace with a `callId`: find its `BCE` -> then get the `BCE`'s staticTrace.
+   * 
+   * @param {DataProvider} dp
    */
-  getOwnCallerTraceOfContext(dp, contextId) {
-    const context = dp.collections.executionContexts.getById(contextId);
-    const bceTrace = dp.util.getCallerTraceOfContext(contextId);
-    if (!bceTrace?.data) {
-      return null;
-    }
-
-    // check if it is the actual bce
-    const calleeTrace = dp.collections.traces.getById(bceTrace.data.calleeTid);
-    if (!calleeTrace) {
-      return null;
-    }
-
-    const calleeDataNode = dp.collections.dataNodes.getById(calleeTrace.nodeId);
-    const functionRef = dp.collections.values.getById(calleeDataNode.refId);
-    if (!functionRef) {
-      return null;
-    }
-
-    const { traceId } = dp.collections.dataNodes.getById(functionRef.nodeId);
-    if (context.definitionTid === traceId) {
-      // Accept: definitionTid are matched
-      return bceTrace;
-    }
-    else {
-      // Reject
-      return null;
-    }
-  },
-
-  /** @param {DataProvider} dp */
-  getCalleeStaticTrace(dp, traceId) {
+  getRelatedBCEStaticTrace(dp, traceId) {
     const argTrace = dp.collections.traces.getById(traceId);
     const { staticTraceId } = argTrace;
     const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
@@ -802,6 +767,9 @@ export default {
     return staticTrace.resultCallId || staticTrace.callId;
   },
 
+  /**
+   * @param {DataProvider} dp
+  */
   getCallArgTraces(dp, callId) {
     const bceTrace = dp.collections.traces.getById(callId);
     return bceTrace.data?.argTids.map(tid => dp.collections.traces.getById(tid));
@@ -833,6 +801,88 @@ export default {
   getCallArgPrimitiveValues(dp, callId) {
     const dataNodes = dp.util.getCallArgDataNodes(callId);
     return dataNodes?.map(node => node.value);
+  },
+
+
+  getReturnValueRefOfContext(dp, contextId) {
+    const bceTrace = dp.util.getOwnCallerTraceOfContext(contextId);
+    return bceTrace && dp.util.getTraceValueRef(bceTrace.traceId) || null;
+  },
+
+  /**
+   * @param {DataProvider} dp
+  */
+  getCalleeTraceId(dp, callId) {
+    return dp.collections.traces.getById(callId)?.data?.calleeTid;
+  },
+
+  // getTracesOfCalledContext(dp, callId) {
+  //   return dp.indexes.traces.byCalleeTrace.get(callId) || EmptyArray;
+  // },
+
+  /**
+   * Given a `callId` (traceId of a CallExpression), returns whether its callee was recorded (i.e. instrumented/traced).
+   * NOTE: Some calls have an underlying context, but that is not the context of the function was called.
+   *    -> e.g. `array.map(f)` might have recorded f's context, but `f` is not `array.map` (the actual callee).
+   */
+  isCalleeTraced(dp, callId) {
+    const context = dp.indexes.executionContexts.byCalleeTrace.getUnique(callId);
+    return context && !!dp.util.getOwnCallerTraceOfContext(context.contextId);
+  },
+
+  /**
+   * like `util.getCallerTraceOfContext` but returns null if its context's `definitionTid` does not match the callee.
+   * @param {DataProvider} dp 
+   * @param {number} contextId
+   */
+  getOwnCallerTraceOfContext(dp, contextId) {
+    const context = dp.collections.executionContexts.getById(contextId);
+    const bceTrace = dp.util.getCallerTraceOfContext(contextId);
+    if (!bceTrace?.data) {
+      return null;
+    }
+
+    // check if it is the actual bce
+    const calleeTrace = dp.collections.traces.getById(bceTrace.data.calleeTid);
+    if (!calleeTrace) {
+      return null;
+    }
+
+    const calleeDataNode = dp.collections.dataNodes.getById(calleeTrace.nodeId);
+    const functionRef = dp.collections.values.getById(calleeDataNode.refId);
+    if (!functionRef) {
+      return null;
+    }
+
+    const { traceId } = dp.collections.dataNodes.getById(functionRef.nodeId);
+    if (context.definitionTid === traceId) {
+      // Accept: definitionTid are matched
+      return bceTrace;
+    }
+    else {
+      // Reject
+      return null;
+    }
+  },
+
+  /**
+   * Map of `calleeRefId` -> `BCEs` of functions whose execution was not recorded/traced (e.g. native functions).
+   * @param {DataProvider} dp
+   */
+  getAllUntracedFunctionCallsByRefId(dp) {
+    const untracedBces = dp.collections.staticTraces.all
+      .filter(staticTrace => staticTrace && TraceType.is.BeforeCallExpression(staticTrace.type))
+      .flatMap(staticTrace => dp.indexes.traces.byStaticTrace.get(staticTrace.staticTraceId) || EmptyArray)
+      .filter(trace => !dp.util.isCalleeTraced(trace.traceId));
+
+    // NOTE: the same untraced function might have been called in different places
+    //    -> make unique set by callee refId
+    const byRefId = groupBy(untracedBces, trace => {
+      const calleeTraceId = dp.util.getCalleeTraceId(trace.traceId);
+      return calleeTraceId && dp.util.getTraceRefId(calleeTraceId) || 0;
+    });
+    delete byRefId[0];  // remove those whose `refId` could not be recovered (e.g. due to disabled tracing)
+    return byRefId;
   },
 
   // ###########################################################################
@@ -1024,6 +1074,9 @@ export default {
   getAllRequirePaths(dp, startId = 1) {
     // NOTE: these should be BCE traces, meaning traceId === callId
     const traces = dp.util.getAllRequireTraces(startId);
+
+    // get all first arguments of `require`
+    // TODO: currently first arguments are not traced in case of constant expression -> store in `staticTrace` instead!
     return traces.map(t => dp.util.getCallArgPrimitiveValues(t.traceId)?.[0]);
   },
 
@@ -1038,8 +1091,9 @@ export default {
   },
 
   // ###########################################################################
-  // traces of interruptable functions
+  // trace grouping
   // ###########################################################################
+
   /**
    * @param {DataProvider} dp 
   */
@@ -1075,11 +1129,6 @@ export default {
     // const parentStaticContext = dp.collections.staticContexts.getById(parentStaticContextId);
     return dp.indexes.traces.byParentStaticContext.get(parentStaticContextId) || EmptyArray;
   },
-
-
-  // ###########################################################################
-  // trace grouping
-  // ###########################################################################
 
   /**
    * Groups traces by TraceType, as well as staticTraceId.
@@ -1141,7 +1190,7 @@ export default {
    */
   makeTraceInfo(dp, traceId) {
     // const { traceId } = trace;
-    // const trace = this.dp.collections.traces.getById(traceId);
+    // const trace = dp.collections.traces.getById(traceId);
     const traceType = dp.util.getTraceType(traceId);
     const typeName = TraceType.nameFrom(traceType);
     return `[${typeName}] #${traceId} ${dp.util.makeStaticTraceInfo(traceId)}`;
@@ -1359,7 +1408,7 @@ export default {
   // ###########################################################################
   // async
   // ###########################################################################
-  
+
   getAsyncRootThreadId(dp, rootId) {
     return dp.indexes.asyncNodes.byRoot.getUnique(rootId)?.threadId;
   },

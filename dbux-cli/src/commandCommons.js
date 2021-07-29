@@ -41,7 +41,7 @@ export function buildCommonCommandOptions() {
     runtime: {
       alias: ['rt'],
       describe: 'Runtime config (JSON format)',
-      // example: "{\"tracesDisabled\":1}"
+      // example: "{\"tracesDisabled\":1}", "{\"valuesDisabled\":1}"
       default: null
     },
     require: {

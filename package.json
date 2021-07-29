@@ -3,6 +3,7 @@
   "displayName": "DBUX Monoroot",
   "private": true,
   "workspaces": [
+    "babel-register-fork",
     "dbux-*",
     "panzoom"
   ],

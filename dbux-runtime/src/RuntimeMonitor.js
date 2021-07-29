@@ -13,7 +13,9 @@ import Runtime from './Runtime';
 import ProgramMonitor from './ProgramMonitor';
 import dataNodeCollection, { ShallowValueRefMeta } from './data/dataNodeCollection';
 import valueCollection from './data/valueCollection';
-import registerBuiltins from './builtIns/index';
+import initPatchBuiltins from './builtIns/index';
+import CallbackPatcher from './async/CallbackPatcher';
+import initPatchPromise from './async/patchPromise';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError } = newLogger('RuntimeMonitor');
@@ -51,12 +53,20 @@ export default class RuntimeMonitor {
   _programMonitors = new Map();
   _runtime = new Runtime();
 
+  /**
+   * @type {Runtime}
+   */
   get runtime() {
     return this._runtime;
   }
 
   _init() {
-    registerBuiltins();
+    // monkey patching for asynchronous events
+    initPatchPromise(this);
+    this.callbackPatcher = new CallbackPatcher(this);
+
+    // more monkey-patching
+    initPatchBuiltins();
 
     return this;
   }
@@ -92,7 +102,7 @@ export default class RuntimeMonitor {
     staticContextCollection.addEntries(programId, staticContexts);
 
 
-    Verbose && debug(`addProgram ${programId}: ${programData.fileName} (tracesDisabled=${runtimeCfg.tracesDisabled})`);
+    Verbose && debug(`addProgram ${programId}: ${programData.fileName}`);
 
     // change program-local _staticContextId to globally unique staticContextId
     for (let i = 0; i < staticTraces.length; ++i) {
@@ -143,7 +153,8 @@ export default class RuntimeMonitor {
       const staticContext = staticContextCollection.getContext(programId, inProgramStaticContextId);
       debug(
         // ${JSON.stringify(staticContext)}
-        `-> Immediate ${contextId} ${staticContext?.displayName} (pid=${programId}, runId=${runId}, cid=${contextId}, pcid=${parentContextId})`
+        // eslint-disable-next-line max-len
+        `-> Immediate ${contextId} ${staticProgramContextCollection.getById(programId).filePath} ${staticContext?.displayName} (pid=${programId}, runId=${runId}, cid=${contextId}, pcid=${parentContextId})`
       );
     }
 
@@ -169,16 +180,16 @@ export default class RuntimeMonitor {
   }
 
 
-  popFunction(contextId, inProgramStaticTraceId) {
+  popFunction(programId, contextId, inProgramStaticTraceId) {
     // this.checkErrorOnFunctionExit(contextId, inProgramStaticTraceId);
-    return this.popImmediate(contextId, inProgramStaticTraceId);
+    return this.popImmediate(programId, contextId, inProgramStaticTraceId);
   }
 
   popTry() {
     // TODO
   }
 
-  popImmediate(contextId, traceId) {
+  popImmediate(programId, contextId, traceId) {
     // sanity checks
     const context = executionContextCollection.getById(contextId);
     if (!context) {
@@ -200,7 +211,7 @@ export default class RuntimeMonitor {
       const staticContext = staticContextCollection.getById(staticContextId);
       debug(
         // ${JSON.stringify(staticContext)}
-        `<- Immediate ${staticContext?.displayName}`
+        `<- Immediate ${staticProgramContextCollection.getById(programId).fileName} ${staticContext?.displayName}`
       );
     }
 
@@ -496,7 +507,8 @@ export default class RuntimeMonitor {
 
   _ensureExecuting() {
     if (!this._runtime._executingStack) {
-      logError('Encountered trace when stack is empty');
+      // eslint-disable-next-line no-console
+      console.trace('Encountered trace when stack is empty');
       return false;
     }
     return true;
@@ -817,14 +829,18 @@ export default class RuntimeMonitor {
   // CallExpression
   // ###########################################################################
 
+  instrumentCallee(callee, calleeTid) {
+    return callee;
+  }
+
   // traceCallee(programId, value, tid, declarationTid) {
   //   this.traceExpression(programId, value, tid, declarationTid);
   //   return value;
   // }
 
-  traceBCE(programId, tid, calleeTid, argTids, spreadArgs) {
+  traceBCE(programId, tid, callee, calleeTid, argTids, spreadArgs) {
     if (!this._ensureExecuting()) {
-      return;
+      return callee;
     }
 
     spreadArgs = spreadArgs.map(a => {
@@ -835,9 +851,11 @@ export default class RuntimeMonitor {
       return a && Array.from(a);
     });
 
-    const trace = traceCollection.getById(tid);
-    trace.callId = tid;
-    trace.data = {
+    const bceTrace = traceCollection.getById(tid);
+
+    // [edit-after-send]
+    bceTrace.callId = tid;
+    bceTrace.data = {
       calleeTid,
       argTids,
       spreadLengths: spreadArgs.map(a => a && a.length || null)
@@ -863,6 +881,8 @@ export default class RuntimeMonitor {
         dataNodeCollection.createDataNode(arg, argTid, DataNodeType.Read, varAccess);
       }
     }
+
+    return this.instrumentCallee(callee, calleeTid);
   }
 
   traceCallResult(programId, value, tid, callTid) {

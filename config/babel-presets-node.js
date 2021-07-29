@@ -8,7 +8,7 @@ module.exports = {
       loadBabel('@babel/preset-env'),
       {
         targets: {
-          node: '12'
+          node: '14'
         },
         useBuiltIns: 'usage',
         corejs: 3.15,

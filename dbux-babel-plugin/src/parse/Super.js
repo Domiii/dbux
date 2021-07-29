@@ -2,7 +2,7 @@ import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdent
 import { ZeroNode } from '../instrumentation/builders/buildUtil';
 import BaseId from './BaseId';
 
-export default class ThisExpression extends BaseId {
+export default class SuperExpression extends BaseId {
   get specialType() {
     return SpecialIdentifierType.Super;
   }
@@ -14,7 +14,7 @@ export default class ThisExpression extends BaseId {
 
   getDeclarationTidIdentifier() {
     // hackfix: for now, just don't care about declarationTid
-    //    NOTE: can use `refId` to trace access, since they 100% coincide)
+    //    NOTE: can use `refId` to trace access, since they 100% coincide
     return ZeroNode;
   }
 

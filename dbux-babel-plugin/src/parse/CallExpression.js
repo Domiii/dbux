@@ -1,7 +1,8 @@
 // import { instrumentCallExpressionEnter } from '../zz_archive/traceHelpers.old';
-import { isNotTraceable } from '@dbux/common/src/types/constants/SpecialIdentifierType';
+import { isNotArgsTraceableIfConstantType, isNotCalleeTraceableType } from '@dbux/common/src/types/constants/SpecialIdentifierType';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import { getLeftMostPathOfME } from 'src/helpers/objectHelpers';
 import { makeSpreadableArgumentArrayCfg } from '../helpers/argsUtil';
 import { traceCallExpressionDefault } from '../instrumentation/callExpressions';
 import BaseNode from './BaseNode';
@@ -9,8 +10,10 @@ import BaseNode from './BaseNode';
 
 function getCalleePlugin(node) {
   const [calleePath] = node.getChildPaths();
-  if (calleePath.isMemberExpression() && canTraceMECalleePath(calleePath)) {
-    return 'CalleeME';
+  if (calleePath.isMemberExpression()) {
+    if (!isNotCalleeTraceableNodeME(calleePath)) {
+      return 'CalleeME';
+    }
   }
   // if (!pluginName) {
   //   // node.logger.error(`unknown callee type: "${type}" at "${pathToString(calleePath)}"`);
@@ -19,17 +22,32 @@ function getCalleePlugin(node) {
   return null;
 }
 
-function canTraceMECalleePath(calleePath) {
-  return !calleePath.get('object').isSuper();
+/**
+ * `super.f()` cannot be traced
+ */
+function isNotCalleeTraceableNodeME(calleePath) {
+  const leftMostPath = getLeftMostPathOfME(calleePath);
+  return leftMostPath?.isSuper() || false;
 }
 
 
-function canTraceCallee(calleeNode) {
+/**
+ * Check for traceability of potential special functions. 
+ */
+function isNotCalleeTraceableNode(calleeNode) {
   if (calleeNode.path.isMemberExpression()) {
-    return canTraceMECalleePath(calleeNode.path);
+    return isNotCalleeTraceableNodeME(calleeNode.path);
   }
   const { specialType } = calleeNode;
-  return !specialType || !isNotTraceable(specialType);
+  return specialType && isNotCalleeTraceableType(specialType);
+}
+
+function isNotArgsTraceableIfConstantNode(calleeNode) {
+  if (calleeNode.path.isMemberExpression()) {
+    return true;
+  }
+  const { specialType } = calleeNode;
+  return specialType && isNotArgsTraceableIfConstantType(specialType);
 }
 
 // ###########################################################################
@@ -50,6 +68,7 @@ export default class CallExpression extends BaseNode {
     }
   ];
   static children = ['callee', 'arguments'];
+
 
   get calleeNode() {
     const [calleeNode] = this.getChildNodes();
@@ -80,22 +99,26 @@ export default class CallExpression extends BaseNode {
    * NOTE: the name chosen here will show up in error messages
    */
   generateCalleeVar(calleePath) {
-    this._calleeVar = calleePath.scope.generateUidIdentifierBasedOnNode(calleePath.node);
+    let { scope } = calleePath;
+    scope = scope.getFunctionParent() || scope.getProgramParent();
+    this._calleeVar = scope.generateUidIdentifierBasedOnNode(calleePath.node);
     return this._calleeVar;
     // return calleePath.node.name || 'func';
   }
 
   exit1() {
-    // NOTE: we do this here, since `CalleeME` will not always get initialized
     const { calleeNode } = this;
-    calleeNode.handler = this;
+    this.isCalleeTraceable = !isNotCalleeTraceableNode(calleeNode);
+
+    if (!this.isCalleeTraceable) {
+      // NOTE: we do this here, since `CalleeME` will not always get initialized
+      calleeNode.handlerDeep = this;
+    }
   }
 
   exit() {
-    // TODO: more special cases - super, import, require
-    //    -> cannot separate callee for `super` or `import`
-    //    -> cannot modify args for `import` or `require`, if they are constants
     const {
+      isCalleeTraceable,
       path,
       // path: { scope },
       plugins: {
@@ -117,13 +140,19 @@ export default class CallExpression extends BaseNode {
 
     // 1. make sure, callee is traced (if is traceable)
     let calleeVar = null;
-    const isCalleeTraced = canTraceCallee(calleeNode);
-    if (isCalleeTraced) {
+    if (isCalleeTraceable) {
       this.Traces.addDefaultTrace(calleePath);
       calleeVar = this.generateCalleeVar(calleePath);
     }
 
+    // ###########################################################################
     // 2. trace args + 3. BCE
+    // ###########################################################################
+
+    // only trace args if (1) not require or import, OR (2) it has non-constant arguments
+    const shouldTraceArgs = !isNotArgsTraceableIfConstantNode(calleeNode) ||
+      argumentPaths.some(argPath => !argPath.isConstantExpression());
+
     const bceTraceData = {
       path,
       // node: this,
@@ -141,7 +170,7 @@ export default class CallExpression extends BaseNode {
 
     bceTraceData.staticTraceData.data.specialType = calleeNode.specialType;
 
-    const bceInputPaths = argumentPaths || EmptyArray;
+    const bceInputPaths = shouldTraceArgs && argumentPaths || EmptyArray;
     const bceTrace = this.Traces.addTraceWithInputs(bceTraceData, bceInputPaths);
 
     /**
@@ -150,7 +179,10 @@ export default class CallExpression extends BaseNode {
     const instrument = calleePlugin?.instrumentCallExpression || traceCallExpressionDefault;
     const bceTidIdentifier = bceTrace.tidIdentifier;
 
+    // ###########################################################################
     // 4. wrap `CallExpression` (as `CallExpressionResult`)
+    // ###########################################################################
+
     const trace = this.Traces.addTrace({
       path,
       node: this,
@@ -160,7 +192,8 @@ export default class CallExpression extends BaseNode {
       data: {
         bceTrace,
         calleeNode,
-        calleeVar
+        calleeVar,
+        shouldTraceArgs
       },
       meta: {
         traceCall: 'traceCallResult',
