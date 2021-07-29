@@ -53,7 +53,12 @@ class AsyncGraph extends ClientComponentEndpoint {
   setUpAsyncNodes() {
     const { children } = this.state;
     if (children?.length) {
-      this.els.children.innerHTML = children.map(child => this.makeAsyncNodeEl(child)).join('');
+      let html = '';
+      html += children.map(child => this.makeAsyncNodeEl(child)).join('');
+      html += this.makeParentThreadDecoration();
+      html += this.makeLineInThreadDecoration();
+
+      this.els.children.innerHTML = html;
     }
     else {
       this.els.children.textContent = '(no async event recorded)';
@@ -77,7 +82,7 @@ class AsyncGraph extends ClientComponentEndpoint {
       'application-id': applicationId
     };
     const dataAttrs = Object.entries(asyncNodeData).map(([key, val]) => `data-${key}="${val || ''}"`).join(' ');
-    const positionProps = `grid-column-start: ${colId};grid-row-start: ${rowId};`;
+    const positionProps = makeGridPositionProp(rowId, colId);
 
     return /*html*/`
         <div class="async-node full-width flex-row align-center" style="${positionProps}" ${dataAttrs}>
@@ -109,6 +114,29 @@ class AsyncGraph extends ClientComponentEndpoint {
     }).filter(x => !!x).join('');
   }
 
+  makeParentThreadDecoration() {
+    const { children } = this.state;
+    const visitedColId = new Set();
+    const decorations = [];
+    for (const nodeData of children) {
+      const { colId, parentRowId } = nodeData;
+      if (!visitedColId.has(nodeData.colId) && parentRowId) {
+        visitedColId.add(nodeData.colId);
+        const positionProp = makeGridPositionProp(parentRowId, colId);
+        decorations.push(/*html*/`
+        <div class="async-node full-width flex-row align-center" style="${positionProp}">
+          <div class="async-detail flex-column cross-axis-align-center">⬤</div>
+        </div>
+        `);
+      }
+    }
+    return decorations.join('');
+  }
+
+  makeLineInThreadDecoration() {
+    return '';
+  }
+
   handleClickAsyncNode(asyncNodeEl) {
     const { asyncNodeId, applicationId } = asyncNodeEl.dataset;
     if (asyncNodeId) {
@@ -122,3 +150,11 @@ class AsyncGraph extends ClientComponentEndpoint {
   }
 }
 export default AsyncGraph;
+
+// ###########################################################################
+// util
+// ###########################################################################
+
+function makeGridPositionProp(row, col) {
+  return `grid-column-start: ${col};grid-row-start: ${row};`;
+}

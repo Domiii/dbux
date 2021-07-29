@@ -67,12 +67,14 @@ class AsyncGraph extends HostComponentEndpoint {
       const syncInCount = dp.indexes.asyncEvents.syncInByRoot.getSize(rootContextId);
       const syncOutCount = dp.indexes.asyncEvents.syncOutByRoot.getSize(rootContextId);
 
-      let parentAsyncNodeId;
+      let parentAsyncNodeId, parentRowId;
       const firstNode = dp.indexes.asyncNodes.byThread.getFirst(threadId);
       if (firstNode.asyncNodeId === asyncNode.asyncNodeId) {
         const parentEdge = dp.indexes.asyncEvents.to.getFirst(firstNode.rootContextId);
         const parentRootContextId = parentEdge?.fromRootContextId;
-        parentAsyncNodeId = dp.indexes.asyncNodes.byRoot.getUnique(parentRootContextId)?.asyncNodeId;
+        const parentAsyncNode = dp.indexes.asyncNodes.byRoot.getUnique(parentRootContextId);
+        parentAsyncNodeId = parentAsyncNode?.asyncNodeId;
+        parentRowId = parentAsyncNode && (appData.asyncNodesInOrder.getIndex(parentAsyncNode) + 1);
       }
 
       return {
@@ -84,6 +86,7 @@ class AsyncGraph extends HostComponentEndpoint {
         syncInCount,
         syncOutCount,
         parentAsyncNodeId,
+        parentRowId,
       };
     });
   }
