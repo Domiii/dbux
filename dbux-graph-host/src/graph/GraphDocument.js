@@ -40,7 +40,14 @@ class GraphDocument extends HostComponentEndpoint {
     // this.minimap = this.children.createComponent(MiniMap);
   }
 
-  getIconUri(modeName, fileName) {
+  getIconUri(fileName, modeName) {
+    if (!fileName) {
+      return null;
+    }
+    if (!modeName) {
+      const themeMode = this.componentManager.externals.getThemeMode();
+      modeName = ThemeMode.getName(themeMode).toLowerCase();
+    }
     return this.componentManager.externals.getClientResourceUri(`${modeName}/${fileName}`);
   }
 
@@ -69,11 +76,10 @@ class GraphDocument extends HostComponentEndpoint {
 
   makeInitialState() {
     const themeMode = this.componentManager.externals.getThemeMode();
-    const themeModeName = ThemeMode.getName(themeMode).toLowerCase();
     const contextNodeIconUris = {
-      [GraphNodeMode.Collapsed]: this.getIconUri(themeModeName, 'minus.svg'),
-      [GraphNodeMode.ExpandChildren]: this.getIconUri(themeModeName, 'stack.svg'),
-      [GraphNodeMode.ExpandSubgraph]: this.getIconUri(themeModeName, 'listItem.svg'),
+      [GraphNodeMode.Collapsed]: this.getIconUri('minus.svg'),
+      [GraphNodeMode.ExpandChildren]: this.getIconUri('stack.svg'),
+      [GraphNodeMode.ExpandSubgraph]: this.getIconUri('listItem.svg'),
     };
     return {
       themeMode,

@@ -12,6 +12,7 @@ class Toolbar extends HostComponentEndpoint {
     this.state.hideNewMode = this.hiddenNodeManager.hideNewMode;
     this.state.asyncGraphMode = this.context.graphDocument.asyncGraphMode;
     this.state.asyncDetailMode = true;
+    this.state.theradSelectionIconUri = this.context.graphDocument.getIconUri('filter.svg');
 
     // listen on mode changed event
     this.hiddenNodeManager.onStateChanged(({ hideBefore, hideAfter }) => {
@@ -28,6 +29,12 @@ class Toolbar extends HostComponentEndpoint {
     this.focusController.on('modeChanged', (mode) => {
       this.setState({ followMode: mode });
     });
+
+    const { threadSelection } = allApplications.selection.data;
+    threadSelection.onSelectionChanged(() => {
+      this.setState({ isThreadSelectionActive: threadSelection.isActive() });
+    });
+    this.state.isThreadSelectionActive = threadSelection.isActive();
   }
 
   get focusController() {
