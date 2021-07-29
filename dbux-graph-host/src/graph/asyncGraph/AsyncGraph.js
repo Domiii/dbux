@@ -30,6 +30,11 @@ class AsyncGraph extends HostComponentEndpoint {
         this.refresh();
       })
     );
+    this.addDisposable(
+      allApplications.selection.data.threadSelection.onSelectionChanged(() => {
+        this.refresh();
+      })
+    );
 
     this.refresh();
   }
@@ -139,7 +144,27 @@ class AsyncGraph extends HostComponentEndpoint {
       if (firstTrace) {
         traceSelection.selectTrace(firstTrace);
       }
-    }
+    },
+    selectSyncInThreads(applicationId, asyncNodeId) {
+      const dp = allApplications.getById(applicationId).dataProvider;
+      const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
+      const syncInThreads = dp.indexes.asyncEvents.syncInByRoot.get(asyncNode.rootContextId);
+      const syncInThreadIds = syncInThreads.map(event => {
+        return dp.indexes.asyncNodes.byRoot.getUniqueNotNull(event.fromRootContextId).threadId;
+      });
+      syncInThreadIds.push(asyncNode.threadId);
+      allApplications.selection.data.threadSelection.select(applicationId, syncInThreadIds);
+    },
+    selectSyncOutThreads(applicationId, asyncNodeId) {
+      const dp = allApplications.getById(applicationId).dataProvider;
+      const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
+      const syncOutThreads = dp.indexes.asyncEvents.syncOutByRoot.get(asyncNode.rootContextId);
+      const syncOutThreadIds = syncOutThreads.map(event => {
+        return dp.indexes.asyncNodes.byRoot.getUniqueNotNull(event.toRootContextId).threadId;
+      });
+      syncOutThreadIds.push(asyncNode.threadId);
+      allApplications.selection.data.threadSelection.select(applicationId, syncOutThreadIds);
+    },
   }
 }
 

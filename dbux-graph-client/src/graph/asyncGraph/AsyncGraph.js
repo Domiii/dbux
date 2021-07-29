@@ -1,5 +1,6 @@
 import { compileHtmlElement, getMatchParent } from '../../util/domUtil';
 import ClientComponentEndpoint from '../../componentLib/ClientComponentEndpoint';
+import { AsyncButtonClasses } from './asyncButtons';
 
 class AsyncGraph extends ClientComponentEndpoint {
   createEl() {
@@ -15,14 +16,13 @@ class AsyncGraph extends ClientComponentEndpoint {
   setupEl() {
     // delegate click events
     this.el.addEventListener('click', event => {
-      const asyncNode = getMatchParent('div.async-node', event.target, this.el);
-      if (asyncNode) {
+      const asyncNodeEl = getMatchParent('div.async-node', event.target, this.el);
+      if (asyncNodeEl) {
         if (event.target.matches('button.async-node-button')) {
-          // TODO: handle different buttons(blocked: thread selection)
-          this.handleClickForkButton(asyncNode);
+          this.handleClickAsyncButton(asyncNodeEl, event.target);
         }
         else {
-          this.handleClickAsyncNode(asyncNode);
+          this.handleClickAsyncNode(asyncNodeEl);
         }
       }
     });
@@ -60,37 +60,23 @@ class AsyncGraph extends ClientComponentEndpoint {
     }
   }
 
-  makeAsyncNodeEl(child) {
+  makeAsyncNodeEl(nodeData) {
     const {
       asyncNode,
       rowId,
       colId,
       displayName,
       locLabel,
-      syncInCount,
-      syncOutCount,
-      parentAsyncNodeId,
-    } = child;
+    } = nodeData;
 
     const dotLabel = '⬤';
     const { asyncNodeId, applicationId } = asyncNode;
-
-    const forkButton = parentAsyncNodeId ? /*html*/`
-        <button class="async-node-button">🢄</button>
-      ` : '';
-    const syncInButton = syncInCount ? /*html*/`
-        <button class="async-node-button">🡅</button>
-      ` : '';
-    const syncOutButton = syncOutCount ? /*html*/`
-        <button class="async-node-button">🡇</button>
-      ` : '';
-    const buttons = [forkButton, syncInButton, syncOutButton].join('');
-    const data = {
+    const buttons = this.makeAsyncButtons(nodeData);
+    const asyncNodeData = {
       'async-node-id': asyncNodeId,
-      'parent-async-node-id': parentAsyncNodeId,
       'application-id': applicationId
     };
-    const dataAttrs = Object.entries(data).map(([key, val]) => `data-${key}="${val || ''}"`).join(' ');
+    const dataAttrs = Object.entries(asyncNodeData).map(([key, val]) => `data-${key}="${val || ''}"`).join(' ');
     const positionProps = `grid-column-start: ${colId};grid-row-start: ${rowId};`;
 
     return /*html*/`
@@ -111,18 +97,28 @@ class AsyncGraph extends ClientComponentEndpoint {
       `;
   }
 
-  handleClickAsyncNode(asyncNode) {
-    const { asyncNodeId, applicationId } = asyncNode.dataset;
+  makeAsyncButtons(nodeData) {
+    return Object.entries(AsyncButtonClasses).map(([name, clazz]) => {
+      const buttonData = clazz.makeButtonData(nodeData);
+      if (buttonData) {
+        const dataAttr = Object.entries(buttonData).map(([key, val]) => `data-${key}="${val || ''}"`).join(' ');
+        const { label } = clazz;
+        return /*html*/`<button class="async-node-button" data-button-type="${name}" ${dataAttr}>${label}</button>`;
+      }
+      return null;
+    }).filter(x => !!x).join('');
+  }
+
+  handleClickAsyncNode(asyncNodeEl) {
+    const { asyncNodeId, applicationId } = asyncNodeEl.dataset;
     if (asyncNodeId) {
       this.remote.gotoAsyncNode(applicationId, asyncNodeId);
     }
   }
 
-  handleClickForkButton(asyncNode) {
-    const { parentAsyncNodeId, applicationId } = asyncNode.dataset;
-    if (parentAsyncNodeId) {
-      this.remote.gotoAsyncNode(applicationId, parentAsyncNodeId);
-    }
+  handleClickAsyncButton(asyncNodeEl, buttonEl) {
+    const { buttonType } = buttonEl.dataset;
+    AsyncButtonClasses[buttonType].handleClick(this, asyncNodeEl.dataset, buttonEl.dataset);
   }
 }
 export default AsyncGraph;

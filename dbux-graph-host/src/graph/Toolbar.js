@@ -1,3 +1,4 @@
+import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
@@ -77,6 +78,9 @@ class Toolbar extends HostComponentEndpoint {
       const contextNodeManager = this.context.graphDocument.graphRoot.controllers.getComponent('ContextNodeManager');
       contextNodeManager.highlightBySearchTermTraces(searchTermTraces);
     },
+    clearThreadSelection() {
+      allApplications.selection.data.threadSelection.clear();
+    }
   }
 }
 

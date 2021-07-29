@@ -2,6 +2,7 @@
 
 import AsyncNodesInOrder from './AsyncNodesInOrder';
 import AsyncThreadsInOrder from './AsyncThreadsInOrder';
+import { ThreadSelection } from './ThreadSelection';
 
 /**
  * Encapsulates all data that is related to the set of selected applications;
@@ -15,14 +16,15 @@ export default class ApplicationSetData {
    */
   constructor(applicationSet) {
     this.applicationSet = applicationSet;
-    // // TODO
-    // this.threadSelection; // { _all: [threadId] }
+    this.threadSelection = new ThreadSelection();
     this.asyncNodesInOrder = new AsyncNodesInOrder(this);
     this.asyncThreadsInOrder = new AsyncThreadsInOrder(this);
     // this.firstTracesInOrder = new FirstTracesInOrder(this);
 
     // this.applicationSet._emitter.on('_applicationsChanged0', this._handleApplicationsChanged);
     this.applicationSet.onApplicationsChanged(this._handleApplicationsChanged);
+    this.threadSelection.onSelectionChanged(this.asyncNodesInOrder._handleThreadSelectionChanged);
+    this.threadSelection.onSelectionChanged(this.asyncThreadsInOrder._handleThreadSelectionChanged);
   }
 
   get set() {

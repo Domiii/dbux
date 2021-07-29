@@ -25,9 +25,15 @@ export default class AsyncNodesInOrder {
 
   refresh() {
     const applications = this.applicationSet.getAll();
-    const allAsyncNodes = applications.map((app) => app.dataProvider.collections.asyncNodes.getAllActual());
+    let allNodesByApp = applications.map((app) => app.dataProvider.collections.asyncNodes.getAllActual());
 
-    this._all = mergeSortedArray(allAsyncNodes, (node) => {
+    // filter seleted threads
+    const { threadSelection } = this.applicationSetData;
+    if (threadSelection.isActive()) {
+      allNodesByApp = allNodesByApp.map(nodes => nodes.filter(node => threadSelection.isNodeSelected(node)));
+    }
+
+    this._all = mergeSortedArray(allNodesByApp, (node) => {
       const dp = this.applicationSet.getById(node.applicationId).dataProvider;
       const rootContext = dp.collections.executionContexts.getById(node.rootContextId);
       return rootContext.createdAt;
@@ -50,6 +56,10 @@ export default class AsyncNodesInOrder {
         app.dataProvider.onData('asyncEventUpdates', this._handleNewAsyncNode)
       );
     }
+  }
+
+  _handleThreadSelectionChanged = () => {
+    this.refresh();
   }
 
   _handleNewAsyncNode = (/* app, contexts */) => {

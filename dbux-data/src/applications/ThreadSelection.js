@@ -19,13 +19,15 @@ export class ThreadSelection {
   }
 
   /**
-   * @param {[Thread]} threads 
+   * @param {number} applicationId 
+   * @param {number[]} threadIds 
    * @param {string} [sender] 
    */
-  select(threads, sender = null) {
-    if (threads) {
+  select(applicationId, threadIds, sender = null) {
+    if (applicationId && threadIds) {
       this._isActive = true;
-      threads.forEach((thread) => this._addOne(thread));
+      this.selected.clear();
+      threadIds.forEach((threadId) => this._addOne({ applicationId, threadId }));
     }
     else {
       this._isActive = false;
@@ -33,9 +35,10 @@ export class ThreadSelection {
     this._emitSelectionChangedEvent(sender);
   }
 
-  disable() {
+  clear(sender = null) {
     this.selected.clear();
     this._isActive = false;
+    this._emitSelectionChangedEvent(sender);
   }
 
   isActive() {
@@ -43,10 +46,17 @@ export class ThreadSelection {
   }
 
   /**
-   * @param {Thread} thread 
+   * @param {number} applicationId 
+   * @param {number} threadId 
+   * @returns {boolean}
    */
-  isSelected(thread) {
-    return this.selected.has(this._makeKey(thread));
+  isSelected(applicationId, threadId) {
+    return this.selected.has(this._makeKey({ applicationId, threadId }));
+  }
+
+  isNodeSelected(node) {
+    const { applicationId, threadId } = node;
+    return this.isSelected(applicationId, threadId);
   }
 
   _addOne(thread) {
