@@ -18,8 +18,9 @@ export default class ExpressProject extends Project {
     return [
       {
         // cd dbux_projects/sequelize
+        // bash
         // --inspect-brk --expose-gc
-        // DIALECT=sqlite; node --stack-trace-limit=100  "../../node_modules/@dbux/cli/bin/dbux.js" run --runtime="{\"valuesDisabled\":1}" --verbose=1 --pw=.* "sscce.js" --
+        // node --stack-trace-limit=100  "../../node_modules/@dbux/cli/bin/dbux.js" run --verbose=1 --pw=.* "sscce.js"
         
         label: 'sscce1-sqlite',
         // testRe: 'OPTIONS should only include each method once',
