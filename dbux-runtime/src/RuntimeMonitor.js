@@ -18,7 +18,7 @@ import CallbackPatcher from './async/CallbackPatcher';
 import initPatchPromise from './async/patchPromise';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug: _debug, warn, error: logError } = newLogger('RuntimeMonitor');
+const { log, debug: _debug, warn, error: logError, trace: logTrace } = newLogger('RuntimeMonitor');
 
 // const Verbose = 2;
 // const Verbose = 1;
@@ -111,7 +111,7 @@ export default class RuntimeMonitor {
       if (!staticContext?.staticId) {
         // set to random default, to avoid more errors down the line?
         staticContext = staticContextCollection.getContext(programId, 1);
-        logError('trace had invalid `_staticContextId`', staticTrace);
+        logTrace('trace had invalid `_staticContextId`', staticTrace);
       }
       delete staticTrace._staticContextId;
       staticTrace.staticContextId = staticContext.staticId;
@@ -179,7 +179,11 @@ export default class RuntimeMonitor {
     return this.traceExpression(programId, value, tid, inputs);
   }
 
-
+  /**
+   * Case 1: normal pop function.
+   * Case 2: pop function during `PostAwait` event, but after error was thrown in inner `async` callee
+   *        -> need to handle `postAwait` here
+   */
   popFunction(programId, contextId, inProgramStaticTraceId) {
     // this.checkErrorOnFunctionExit(contextId, inProgramStaticTraceId);
     return this.popImmediate(programId, contextId, inProgramStaticTraceId);
@@ -193,7 +197,7 @@ export default class RuntimeMonitor {
     // sanity checks
     const context = executionContextCollection.getById(contextId);
     if (!context) {
-      logError('Tried to popImmediate, but context was not registered:', contextId);
+      logTrace('Tried to popImmediate, but context was not registered:', contextId);
       return;
     }
 
@@ -303,7 +307,7 @@ export default class RuntimeMonitor {
   //   // sanity checks
   //   const context = executionContextCollection.getById(callbackContextId);
   //   if (!context) {
-  //     logError('Tried to popCallback, but context was not registered:',
+  //     logTrace('Tried to popCallback, but context was not registered:',
   //       callbackContextId);
   //     return;
   //   }
@@ -371,7 +375,7 @@ export default class RuntimeMonitor {
     // console.trace('postAwait', awaitArgument);
     const context = executionContextCollection.getById(awaitContextId);
     if (!context) {
-      logError('Tried to postAwait, but context was not registered:', awaitContextId);
+      logTrace('Tried to postAwait, but context was not registered:', awaitContextId);
     }
     else {
       // resume after await
@@ -445,10 +449,13 @@ export default class RuntimeMonitor {
     return resumeContextId;
   }
 
-  popResume(resumeContextId = null) {
+  popResume(resumeContextId = 0) {
     // sanity checks
-    if (resumeContextId === 0) {
-      logError('Tried to popResume, but cid was 0. Is this an async function that started in an object getter?');
+    if (!resumeContextId) {
+      // Case 1: an error was thrown in a nested `async` function call
+      //    -> as a result the calling `async` function would not have had a chance to `pushResume` before hitting `finally` -> `popResume`
+      // Case 2: async function called from object getter?
+      // logTrace('Tried to popResume, but cid was 0. Is this an async function that started in an object getter?');
       return;
     }
 
@@ -464,11 +471,11 @@ export default class RuntimeMonitor {
 
     // more sanity checks
     if (!context) {
-      logError(`Tried to popResume, but context was not registered - resumeContextId=${resumeContextId}`);
+      logTrace(`Tried to popResume, but context was not registered - resumeContextId=${resumeContextId}`);
       return;
     }
     if (context.contextType !== ExecutionContextType.Resume) {
-      logError('Tried to popResume, but stack top is not of type `Resume`:', context);
+      logTrace('Tried to popResume, but stack top is not of type `Resume`:', context);
       return;
     }
 
@@ -533,6 +540,8 @@ export default class RuntimeMonitor {
 
   newTraceId = (programId, inProgramStaticTraceId) => {
     if (!this._ensureExecuting()) {
+      const staticTraceId = staticTraceCollection.getStaticTraceId(programId, inProgramStaticTraceId);
+      logTrace('  ', traceCollection.makeStaticTraceInfo(staticTraceId, true));
       return -1;
     }
 

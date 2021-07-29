@@ -77,7 +77,6 @@ export class DataNodeCollection extends Collection {
 
     this.push(dataNode);
 
-
     // valueRef
     const valueRef = valueCollection.registerValueMaybe(value, dataNode, meta);
 
@@ -88,6 +87,11 @@ export class DataNodeCollection extends Collection {
       const valueStr = dataNode.refId ? `refId=${dataNode.refId}` : `value=${value}`;
       this.logger.debug(`createDataNode #${dataNode.nodeId}, ${DataNodeType.nameFromForce(type)}, tid=${traceId}, varAccess=${JSON.stringify(varAccess)}, ${valueStr}`);
     }
+
+    // if (traceId === 324908) {
+    // if (dataNode.nodeId === 302071) {
+    //   console.trace('createDataNode', traceCollection.makeTraceInfo(traceId), dataNode);
+    // }
 
     this._send(dataNode);
 

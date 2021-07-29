@@ -69,7 +69,8 @@ export default class RuntimeClient extends SocketClient {
     this.socket.emit('init_ack', this.application.applicationId);
   }
 
-  _handleData = (data) => {
+  _handleData = (data, ack) => {
     this.application.addData(data);
+    ack('data'); // send ack
   }
 }

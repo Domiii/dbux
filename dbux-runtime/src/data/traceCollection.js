@@ -77,15 +77,15 @@ class TraceCollection extends Collection {
   // util
   // ###########################################################################
 
-  makeStaticTraceInfo(staticTraceId) {
-    const { displayName, loc, staticContextId } = staticTraceCollection.getById(staticTraceId);
+  makeStaticTraceInfo(staticTraceId, addType = false) {
+    const { displayName, loc, staticContextId, type } = staticTraceCollection.getById(staticTraceId);
     const staticContext = staticContextCollection.getById(staticContextId);
     const { programId } = staticContext;
 
     const fpath = staticProgramContextCollection.getById(programId)?.filePath || null;
     const where = `${fpath}:${locToString(loc)}`;
 
-    return `at ${where}: "${displayName}"`;
+    return `${addType ? `[${TraceType.nameFrom(type)}]` : ''}at ${where}: "${displayName}"`;
   }
 
   /**

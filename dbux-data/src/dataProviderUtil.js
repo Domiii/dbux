@@ -1077,7 +1077,7 @@ export default {
 
     // get all first arguments of `require`
     // TODO: currently first arguments are not traced in case of constant expression -> store in `staticTrace` instead!
-    return traces.map(t => dp.util.getCallArgPrimitiveValues(t.traceId)?.[0]);
+    return traces.map(t => dp.util.getCallArgPrimitiveValues(t.traceId)?.[0]).filter(t => !!t);
   },
 
   getAllRequireModuleNames(dp, startId = 1) {

@@ -81,7 +81,13 @@ export default class Collection {
 
   addEntry(entry) {
     this.handleAdd(entry);
-    this._all.push(entry);
+    if (!entry._id) {
+      console.warn(`entry._id missing:`, entry);
+      this._all.push(entry);
+    }
+    else {
+      this._all[entry._id] = entry;
+    }
   }
 
   /**
@@ -140,13 +146,38 @@ export default class Collection {
   getAll() {
     return this._all;
   }
+  
+  _invalidId = false;
 
   /**
    * @param {number} id
    * @return {T}
    */
   getById(id) {
-    return this._all[id];
+    let entry = this._all[id];
+    if (entry?._id && entry._id !== id && !this._invalidId) {
+      const idx = this._all.findIndex((e, i) => e && e._id !== i);
+      const faultyEntry = this._all[idx];
+      let recoverable = idx === faultyEntry._id - 1;
+
+      if (recoverable) {
+        this._all.splice(idx, 0, null); // pad with a single `null`
+        entry = this._all[id];
+        recoverable = entry._id && entry._id === id;
+      }
+      
+      this._reportInvalidId(idx, faultyEntry, recoverable);
+
+      if (!recoverable) {
+        this._invalidId = true;
+        return null;
+      }
+    }
+    return entry;
+  }
+
+  _reportInvalidId(idx, faultyEntry, recoverable) {
+    this.logger.error(`entry._id !== id (recoverable=${recoverable}) - First invalid entry is at #${idx}: ${JSON.stringify(faultyEntry)}`);
   }
 
   getAllActual(startId = 1) {
