@@ -121,9 +121,9 @@ because it resides in a readonly filesystem. Cache is disabled.`);
 
 const CacheMissReason = {
   /**
-   * Cache file path was configured incorrectly.
+   * sourceRoot not configured correctly, leading to files not being found in root.
    */
-  FilePath: 1,
+  FileNotInRoot: 1,
   /**
    * 
    */
@@ -169,7 +169,7 @@ function diffString(msg, aStr, bStr) {
 
 function loadFile(srcFilename, cacheFilename, cacheKey) {
   if (!cacheFilename) {
-    reportCacheMiss(CacheMissReason.FilePath, srcFilename, cacheFilename);
+    reportCacheMiss(CacheMissReason.FileNotInRoot, srcFilename, cacheFilename);
     return null;
   }
 

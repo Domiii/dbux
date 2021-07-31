@@ -1,4 +1,3 @@
-import babelRegister from '@babel/register';
 import buildBabelOptions from './buildBabelOptions';
 
 import './linkOwnDependencies';
@@ -21,6 +20,7 @@ export default function dbuxRegister(options) {
   if (babelOptions) {
     console.error('babelRegister', JSON.stringify(options));
     purgeModuleCache();
+    const babelRegister = require('@babel/register').default;
     babelRegister(babelOptions);
   }
 }
