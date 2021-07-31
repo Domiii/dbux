@@ -891,6 +891,8 @@ export default class RuntimeMonitor {
       }
     }
 
+    // console.trace(`BCE`, callee.toString(), callee);
+
     return this.instrumentCallee(callee, calleeTid);
   }
 
