@@ -127,7 +127,7 @@ html, body {
   /* font-size: 1.2rem; */
 }
 
-.graph-cont {
+[data-el=panzoomCanvas] {
   /* width: 200px;
   height: 200px; */
   width: 100vw;

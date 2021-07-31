@@ -51,6 +51,7 @@ class AsyncGraph extends HostComponentEndpoint {
       this._resubscribeOnData();
     }
     else {
+      this.forceUpdate(); // re-render self
       this.threadColumns.update([]);
     }
     this._setApplicationState();
