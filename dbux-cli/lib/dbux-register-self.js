@@ -1,9 +1,8 @@
 #!/usr/bin/env node
 const path = require('path');
-const process = require('process');
 
-// TODO: enable cache in production mode
-process.env.BABEL_DISABLE_CACHE = 1;
+// TODO: make cache configurable
+// process.env.BABEL_DISABLE_CACHE = 1;
 
 const defaultBabelOptions = require('../babel.config');
 

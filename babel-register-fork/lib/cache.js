@@ -33,9 +33,7 @@ function mtime(filename) {
 }
 
 function isCacheDisabled() {
-  var _process$env$BABEL_DI;
-
-  return (_process$env$BABEL_DI = process.env.BABEL_DISABLE_CACHE) != null ? _process$env$BABEL_DI : cacheDisabled;
+  return process.env.BABEL_DISABLE_CACHE ?? cacheDisabled;
 }
 
 function getEnvName() {
@@ -67,7 +65,8 @@ function makeCacheFilename(srcFilename, root) {
     console.warn(`[@babel/register] Could not cache results for file "${srcFilename}" because it is outside of sourceRoot ${root}. Please set accurate "sourceRoot" in your babel config manually.`);
     return null;
   }
-  const relativePath = path.relative(root, srcFilename) + '.json';
+  srcFilename += '.babel.js';
+  const relativePath = path.relative(root, srcFilename);
   return path.resolve(CACHE_DIR, getEnvName(), relativePath);
 }
 
@@ -77,12 +76,34 @@ function makeCacheKey(opts) {
   return `${babel.version}:${JSON.stringify(opts)}`;
 }
 
+/**
+ * Serialize, but so that the code is still readable.
+ * future-work: add an option for performance optimization.
+ */
+function serialize(data) {
+  // return JSON.stringify(data);
+  const { code, ...otherData } = data;
+  return `// ${JSON.stringify(otherData)}\n${code}`;
+}
+
+function deserialize(serializedBuffer) {
+  if (!serializedBuffer) {
+    return null;
+  }
+  const serialized = serializedBuffer.toString();
+  // return JSON.parse(serialized);
+  const idx = serialized.indexOf('\n');
+  const otherData = JSON.parse(serialized.substring(3, idx));
+  const code = serialized.substring(idx + 1);
+  return { code, ...otherData };
+}
+
 function saveFile(srcFilename, cacheFilename, cacheKey, cached) {
   let serialised;
   try {
     cached.cacheKey = cacheKey;
     cached.mtime = mtime(srcFilename);
-    serialised = JSON.stringify(cached, null, 2);
+    serialised = serialize(cached);
   } catch (err) {
     // NOTE: this should not happen anymore
     if (err.message === "Invalid string length") {
@@ -147,7 +168,7 @@ function reportCacheMiss(reason, srcFilename, cacheFilename, message) {
   if (!CACHE_VERBOSE) {
     return;
   }
-  console.warn(`[@babel/register] Cache miss [${getCacheMissReasonString(reason)}] for "${srcFilename}"${message && ` - ${message}` || ''}`);
+  console.warn(`[@babel/register] Cache miss [${getCacheMissReasonString(reason)}] for "${srcFilename}" (cached at "${cacheFilename}")${message && ` - ${message}` || ''}`);
 }
 
 function diffString(msg, aStr, bStr) {
@@ -162,7 +183,7 @@ function diffString(msg, aStr, bStr) {
 
   const end = Math.min(start + rightChrs, aStr.length, bStr.length);
   // let ellipse = end === start + rightChrs ? '...' : '';
-  
+
   start = Math.max(0, start - leftChrs);
   return `${msg}, starting at #${start}: >>>${aStr.substring(start, end)}<<< !== >>>${bStr.substring(start, end)}<<<`;
 }
@@ -173,9 +194,9 @@ function loadFile(srcFilename, cacheFilename, cacheKey) {
     return null;
   }
 
-  let serialized;
+  let serializedBuffer;
   try {
-    serialized = fs.readFileSync(cacheFilename);
+    serializedBuffer = fs.readFileSync(cacheFilename);
   } catch (err) {
     switch (err.code) {
       case "ENOENT":
@@ -183,12 +204,11 @@ function loadFile(srcFilename, cacheFilename, cacheKey) {
         reportCacheMiss(CacheMissReason.DoesNotExist, srcFilename, cacheFilename, err.message);
         break;
       case "EACCES":
-        console.warn(`Babel could not read cache file: ${cacheFilename} due to a permission issue. Cache is disabled: ${err.message}`);
+        console.warn(`Babel could not read cache file due to a permission issue. Cache is disabled: ${err.message}`);
         reportCacheMiss(CacheMissReason.FileAccess, srcFilename, cacheFilename, err.message);
         cacheDisabled = true;
         break;
       default:
-        // console.warn(`Babel could not read cache file: ${cacheFilename} - ${err && err.message || err}`);
         reportCacheMiss(CacheMissReason.LoadError, srcFilename, cacheFilename, err && err.message || err);
         break;
     }
@@ -196,7 +216,7 @@ function loadFile(srcFilename, cacheFilename, cacheKey) {
   }
 
   try {
-    const cached = JSON.parse(serialized);
+    const cached = deserialize(serializedBuffer);
 
     // validate cacheKey
     if (cacheKey !== cached.cacheKey) {
@@ -216,6 +236,9 @@ function loadFile(srcFilename, cacheFilename, cacheKey) {
   } catch (err) {
     // console.warn(`Babel could not read cache file: ${cacheFilename}`);
     reportCacheMiss(CacheMissReason.ParseError, srcFilename, cacheFilename, err && err.message || err);
+    
+    // could not parse cache contents -> delete cache file
+    fs.rmSync(cacheFilename);
   }
   return null;
 }
@@ -306,7 +329,7 @@ function get() {
 // }
 
 function clear() {
-  // delete cache directory
-  fs.rmdirSync(CACHE_DIR, { recursive: true });
+  // delete cache directory?
+  // fs.rmdirSync(CACHE_DIR, { recursive: true });
   // data = {};
 }
