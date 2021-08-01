@@ -86,8 +86,12 @@ class AsyncGraph extends HostComponentEndpoint {
   makeThreadColumnNodes(app, threadId) {
     const { dataProvider: dp, applicationId } = app;
     return dp.indexes.asyncNodes.byThread.get(threadId).map(asyncNode => {
-      const trace = dp.collections.traces.getById(asyncNode.traceId);
+      // const trace = dp.collections.traces.getById(asyncNode.traceId);
       const context = dp.collections.executionContexts.getById(asyncNode.rootContextId);
+      if (!context) {
+        this.logger.warn(`Invalid asyncNode had invalid rootContextId ${asyncNode.rootContextId} -`, asyncNode);
+        return null;
+      }
       // const displayName = trace ? makeTraceLabel(trace) : makeContextLabel(context, app);
       const displayName = makeContextLabel(context, app);
       return {
@@ -96,7 +100,7 @@ class AsyncGraph extends HostComponentEndpoint {
         asyncNode,
         context
       };
-    });
+    }).filter(n => !!n);
   }
 
   _resubscribeOnData() {

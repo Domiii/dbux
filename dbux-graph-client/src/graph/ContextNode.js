@@ -102,16 +102,15 @@ class ContextNode extends ClientComponentEndpoint {
       this.els.stats.textContent = '';
     }
 
-    if (ThemeMode.is.Dark(themeMode)) {
-      decorateClasses(this.els.title, {
-        'selected-trace-dark': isSelected
-      });
-    }
-    else {
-      decorateClasses(this.els.title, {
-        'selected-trace': isSelected
-      });
-    }
+    // if (ThemeMode.is.Dark(themeMode)) {
+    //   decorateClasses(this.els.title, {
+    //     'selected-trace': isSelected
+    //   });
+    // }
+    // else {
+    decorateClasses(this.els.title, {
+      'selected-trace': isSelected
+    });
 
     // set indicator
     this.setIndicator(traceId, this.children.getComponents('ContextNode'), isSelectedTraceCallRelated, contextIdOfSelectedCallTrace, isSelected);

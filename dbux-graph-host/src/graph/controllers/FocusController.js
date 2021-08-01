@@ -7,6 +7,7 @@ import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('FocusController');
 
+/** @typedef {import('../ContextNode').default} ContextNode */
 /** @typedef {import('./Highlighter').default} Highlighter */
 
 export default class FocusController extends HostComponentEndpoint {
@@ -41,6 +42,13 @@ export default class FocusController extends HostComponentEndpoint {
     this.handleTraceSelected(true);
   }
 
+  /**
+   * @returns {ContextNode}
+   */
+  async getContextNodeById(applicationId, contextId) {
+    return this.owner.getContextNodeById(applicationId, contextId);
+  }
+
   handleTraceSelected = async (ignoreFailed = false) => {
     const trace = traceSelection.selected;
     try {
@@ -72,7 +80,7 @@ export default class FocusController extends HostComponentEndpoint {
         let contextNode;
         if (trace) {
           const { applicationId, contextId } = trace;
-          contextNode = await this.owner.getContextNodeById(applicationId, contextId);
+          contextNode = await this.getContextNodeById(applicationId, contextId);
           if (this.followMode && contextNode) {
             // NOTE: since we do this right after init, need to check if contextNode have been built
             await this.focus(contextNode);
@@ -127,6 +135,9 @@ export default class FocusController extends HostComponentEndpoint {
     this._emitter.emit('modeChanged', this.followMode);
   }
 
+  /**
+   * @param {ContextNode} node 
+   */
   async focus(node) {
     // if node is hidden, we focus on the hiddenNode
     const hiddenNode = node.isHiddenBy();
