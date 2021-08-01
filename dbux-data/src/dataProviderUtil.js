@@ -1449,6 +1449,68 @@ export default {
 
   getFirstPostAsyncEventOfPromise(dp, promiseId) {
     return dp.indexes.asyncEventUpdates.byPromise.getFirst(promiseId);
+  },
+
+
+  // TODO: fix this!
+
+
+  isNestedChain(dp, nestedPromiseId, schedulerTraceId) {
+    const nestingPromiseRunId = nestedPromiseId && dp.util.getFirstTraceByRefId(nestedPromiseId)?.runId;
+    const firstNestingAsyncUpdate = nestingPromiseRunId && this.getFirstNestingAsyncUpdate(nestingPromiseRunId, nestedPromiseId);
+    const firstNestingTraceId = firstNestingAsyncUpdate?.schedulerTraceId;
+    return firstNestingTraceId && firstNestingTraceId === schedulerTraceId;
+  },
+
+  getNestingAsyncUpdates(dp, runId, promiseId) {
+    const eventKey = [runId, promiseId];
+    return dp.indexes.asyncEventUpdates.byNestedPromiseAndRun.get(eventKey);
+  },
+
+  getFirstNestingAsyncUpdate(dp, runId, promiseId) {
+    return dp.getNestingAsyncUpdates(runId, promiseId)?.[0] || null;
+  },
+
+  /**
+   * Only checks for *first* nesting update of given `runId`.
+   *  -> Because: all following updates are SYNC, not CHAIN.
+   */
+  isPromiseChainedToRoot(dp, runId, promiseId) {
+    // TODO: won't work when chaining promises that don't have their own Post* AsyncEvent (e.g. `Promise.resolve().then`)
+
+    const firstNestingAsyncUpdate = dp.getFirstNestingAsyncUpdate(runId, promiseId);
+    if (!firstNestingAsyncUpdate) {
+      return false;
+    }
+
+    const { contextId, rootId, promiseId: returnPromiseId } = firstNestingAsyncUpdate;
+
+    if (contextId === rootId) {
+      // root
+      return true;
+    }
+
+    if (returnPromiseId) {
+      // contextId !== rootId -> (most likely?) a first await
+      return dp.isPromiseChainedToRoot(runId, returnPromiseId);
+    }
+
+    return false;
+
+    // const parentContextId = getPromiseOwnAsyncFunctionContextId(asyncFunctionPromise);
+
+
+    // const chainedToRoot = getPromiseOwnChainedToRoot(promise);
+    // if (chainedToRoot !== undefined) {
+    //   return chainedToRoot;
+    // }
+
+    // const callerPromise = this.getAsyncCallerPromise(promise);
+    // if (callerPromise) {
+    //   return this.getAsyncCallerPromiseChainedToRoot(callerPromise);
+    // }
+
+    // return false;
   }
 };
 

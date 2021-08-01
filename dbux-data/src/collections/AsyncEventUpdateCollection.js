@@ -86,9 +86,9 @@ export default class AsyncEventUpdateCollection extends Collection {
   }
 
   /**
-   * @param {PostAwaitUpdate} update 
+   * @param {PostAwaitUpdate} postEventUpdate 
    */
-  postAwait = update => {
+  postAwait = postEventUpdate => {
     const { dp } = this;
 
     const {
@@ -97,13 +97,13 @@ export default class AsyncEventUpdateCollection extends Collection {
       // realContextId,
       schedulerTraceId,
       promiseId
-    } = update;
+    } = postEventUpdate;
 
     const preEventUpdate = dp.util.getAsyncPreEventUpdateOfTrace(schedulerTraceId);
 
     if (!preEventUpdate) {
       // should never happen!
-      this.logger.warn(`[postAwait] "getAsyncPreEventUpdateOfTrace" failed:`, update);
+      this.logger.warn(`[postAwait] "getAsyncPreEventUpdateOfTrace" failed:`, postEventUpdate);
       return;
     }
 
@@ -381,71 +381,6 @@ export default class AsyncEventUpdateCollection extends Collection {
     }
     return threadId;
   }
-
-  // ###########################################################################
-  // more utilities
-  // ###########################################################################
-
-  isNestedChain(nestedPromiseId, schedulerTraceId) {
-    const { dp } = this;
-    const nestingPromiseRunId = nestedPromiseId && dp.util.getFirstTraceByRefId(nestedPromiseId)?.runId;
-    const firstNestingAsyncUpdate = nestingPromiseRunId && this.getFirstNestingAsyncUpdate(nestingPromiseRunId, nestedPromiseId);
-    const firstNestingTraceId = firstNestingAsyncUpdate?.schedulerTraceId;
-    return firstNestingTraceId && firstNestingTraceId === schedulerTraceId;
-  }
-
-  getNestingAsyncUpdates(runId, promiseId) {
-    const { dp } = this;
-    const eventKey = [runId, promiseId];
-    return dp.indexes.asyncEventUpdates.byNestedPromiseAndRun.get(eventKey);
-  }
-
-  getFirstNestingAsyncUpdate(runId, promiseId) {
-    return this.getNestingAsyncUpdates(runId, promiseId)?.[0] || null;
-  }
-
-  /**
-   * Only checks for *first* nesting update of given `runId`.
-   *  -> Because: all following updates are SYNC, not CHAIN.
-   */
-  isPromiseChainedToRoot(runId, promiseId) {
-    // TODO: won't work when chaining promises that don't have their own Post* AsyncEvent (e.g. `Promise.resolve().then`)
-
-    const firstNestingAsyncUpdate = this.getFirstNestingAsyncUpdate(runId, promiseId);
-    if (!firstNestingAsyncUpdate) {
-      return false;
-    }
-
-    const { contextId, rootId, promiseId: returnPromiseId } = firstNestingAsyncUpdate;
-
-    if (contextId === rootId) {
-      // root
-      return true;
-    }
-
-    if (returnPromiseId) {
-      // contextId !== rootId -> (most likely?) a first await
-      return this.isPromiseChainedToRoot(runId, returnPromiseId);
-    }
-
-    return false;
-
-    // const parentContextId = getPromiseOwnAsyncFunctionContextId(asyncFunctionPromise);
-
-
-    // const chainedToRoot = getPromiseOwnChainedToRoot(promise);
-    // if (chainedToRoot !== undefined) {
-    //   return chainedToRoot;
-    // }
-
-    // const callerPromise = this.getAsyncCallerPromise(promise);
-    // if (callerPromise) {
-    //   return this.getAsyncCallerPromiseChainedToRoot(callerPromise);
-    // }
-
-    // return false;
-  }
-
 
   // ###########################################################################
   // addEdge

@@ -4,10 +4,11 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
-import { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
+import AsyncEventUpdateType, { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import { makeTreeItems } from '../../helpers/treeViewHelpers';
 import { ContextTDNode, TraceTypeTDNode } from './traceInfoNodes';
 import TraceDetailNode from './traceDetailNode';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
@@ -37,12 +38,57 @@ export class DebugTDNode extends TraceDetailNode {
     this.description = `id: ${this.trace.traceId}`;
   }
 
+  get dp() {
+    const {
+      applicationId
+    } = this.trace;
+    const application = allApplications.getApplication(applicationId);
+    const { dataProvider: dp } = application;
+    return dp;
+  }
+
+
+  mapPostAsyncEvent(postEventUpdate) {
+    const {
+      // runId: postEventRunId,
+      rootId: postEventRootId,
+      // realContextId,
+      schedulerTraceId,
+      // promiseId
+    } = postEventUpdate;
+
+    const { dp } = this;
+
+    // if (AsyncEventUpdateType.is.PostAwait) {
+    const preEventUpdate = dp.util.getAsyncPreEventUpdateOfTrace(schedulerTraceId);
+
+    if (!preEventUpdate) {
+      // should never happen!
+      // warn(`[postAwait] "getAsyncPreEventUpdateOfTrace" failed:`, postEventUpdate);
+      return {};
+    }
+
+    const {
+      // runId: preEventRunId,
+      // rootId: preEventRootId,
+      // contextId: preEventContextId,
+      nestedPromiseId
+    } = preEventUpdate;
+
+    const nestedUpdate = nestedPromiseId && dp.util.getPreviousPostAsyncEventOfPromise(nestedPromiseId, postEventRootId);
+    const { rootId: nestedRootId } = nestedUpdate ?? EmptyObject;
+
+    return {
+      nestedRootId
+    };
+  }
+
   // makeIconPath(traceDetail) {
   //   return 'string.svg';
   // }
 
   buildChildren() {
-    const { trace } = this;
+    const { trace, dp } = this;
 
     const {
       traceId,
@@ -51,14 +97,9 @@ export class DebugTDNode extends TraceDetailNode {
       rootContextId,
       // runId,
       staticTraceId,
-      applicationId,
       ...otherTraceProps
     } = trace;
-    
-    
-    const application = allApplications.getApplication(applicationId);
-    const { dataProvider: dp } = application;
-    
+
     const context = dp.collections.executionContexts.getById(contextId);
     const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
     const { staticContextId } = context;
@@ -124,14 +165,14 @@ export class DebugTDNode extends TraceDetailNode {
       return `${evt.asyncEventId}: [${AsyncEdgeType.nameFromForce(evt.edgeType)}]`;
     }
     const inEvents = dp.indexes.asyncEvents.to.get(rootContextId)
-      ?.map(evt => new TreeItem(`${evtPrefix(evt)} <- ${evt.fromRootContextId}`));
+      ?.map(evt => [`${evtPrefix(evt)} <- ${evt.fromRootContextId}`, evt]);
     const outEvents = dp.indexes.asyncEvents.from.get(rootContextId)
-      ?.map(evt => new TreeItem(`${evtPrefix(evt)} -> ${evt.toRootContextId}`));
+      ?.map(evt => [`${evtPrefix(evt)} <- ${evt.toRootContextId}`, evt]);
     const asyncContainerNode = [
       'async',
       {
         AsyncNode: asyncNode,
-        PostUpdate: postEventUpdates?.length === 1 ? postEventUpdates[0] : (postEventUpdates || {}),
+        PostUpdate: postEventUpdates?.length === 1 ? this.mapPostAsyncEvent(postEventUpdates[0]) : (postEventUpdates || {}),
         ...makeArrayNodes({
           PreUpdates: preEventUpdates,
           InEvents: inEvents,
@@ -143,7 +184,7 @@ export class DebugTDNode extends TraceDetailNode {
       }
     ];
 
-    
+
     // ###########################################################################
     // final result
     // ###########################################################################
