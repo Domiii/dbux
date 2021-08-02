@@ -175,7 +175,7 @@ export default class AsyncEventUpdateCollection extends Collection {
       schedulerTraceId
     } = postEventUpdate;
 
-    const postUpdateData = util.getPostAwaitData(postEventUpdate);
+    const postUpdateData = util.getPostThenData(postEventUpdate);
     if (!postUpdateData) {
       // NOTE: should not happen
       return;
