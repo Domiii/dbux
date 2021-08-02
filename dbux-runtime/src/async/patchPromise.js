@@ -290,33 +290,32 @@ function patchPromiseClass(BasePromiseClass) {
   class PatchedPromise extends BasePromiseClass {
     constructor(executor) {
       const executorRef = valueCollection.getRefByValue(executor);
-      const wrapCallbacks = !!executorRef && typeof executor === 'function';
+      const isCallbackInstrumented = !!executorRef && typeof executor === 'function';
       let wrapExecutor;
-      if (!wrapCallbacks) {
+      if (!isCallbackInstrumented) {
         wrapExecutor = executor;
       }
       else {
-        // TODO
-        wrapExecutor = executor;
-        // wrapExecutor = (resolve, reject) => {
-        //   if () {
-        //     return;
-        //   }
+        // wrapExecutor = executor;
+        wrapExecutor = (resolve, reject) => {
+          // TODO: 
+          //  -> do not instantly resolve POST event, if it contains an r/j call
+          //  -> when r/j is called, store resolverVirtualContextRootId with promise
+          //  -> in next POST event, handle `resolverVirtualContextRootId` and lingering (unhandled) POST event
+          const wrapResolve = (result) => {
+            resolve(result);
+          };
+          const wrapReject = (err) => {
+            reject(err);
+          };
   
-        //   const wrapResolve = (result) => {
-        //     resolve(result);
-        //   };
-        //   const wrapReject = (err) => {
-        //     reject(err);
-        //   };
-  
-        //   executor(wrapResolve, wrapReject);
-        // };
+          executor(wrapResolve, wrapReject);
+        };
       }
 
       super(wrapExecutor);
 
-      if (wrapCallbacks) {
+      if (isCallbackInstrumented) {
         maybePatchPromise(this);
       }
     }

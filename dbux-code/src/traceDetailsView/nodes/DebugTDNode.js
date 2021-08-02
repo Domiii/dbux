@@ -38,7 +38,7 @@ export class DebugTDNode extends TraceDetailNode {
   mapPostAsyncEvent = (postEventUpdate) => {
     return {
       ...postEventUpdate,
-      ...this.dp.util.getPostAwaitData(postEventUpdate)
+      ...this.dp.util.getPostEventUpdateData(postEventUpdate)
     };
   }
 

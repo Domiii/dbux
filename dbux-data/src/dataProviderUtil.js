@@ -1637,13 +1637,13 @@ export default {
 
   /** @param {DataProvider} dp */
   getPostEventUpdateData(dp, postEventUpdate) {
-    if (AsyncEventUpdateType.PostAwait.is(postEventUpdate.type)) {
+    if (AsyncEventUpdateType.is.PostAwait(postEventUpdate.type)) {
       return dp.util.getPostAwaitData(postEventUpdate);
     }
-    if (AsyncEventUpdateType.PostThen.is(postEventUpdate.type)) {
-      return dp.util.getPostAwaitData(postEventUpdate);
+    if (AsyncEventUpdateType.is.PostThen(postEventUpdate.type)) {
+      return dp.util.getPostThenData(postEventUpdate);
     }
-    if (AsyncEventUpdateType.PostCallback.is(postEventUpdate.type)) {
+    if (AsyncEventUpdateType.is.PostCallback(postEventUpdate.type)) {
       return dp.util.getPostCallbackData(postEventUpdate);
     }
     throw new Error(`Invalid AsyncEventUpdateType for postEventUpdate: ${JSON.stringify(postEventUpdate)}`);
