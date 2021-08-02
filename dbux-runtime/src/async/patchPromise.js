@@ -289,26 +289,36 @@ function patchPromiseMethods(holder) {
 function patchPromiseClass(BasePromiseClass) {
   class PatchedPromise extends BasePromiseClass {
     constructor(executor) {
-      // TODO: this will also be used for dbux-runtime internal promises. Need to fix that.
-      // const wrapExecutor = (resolve, reject) => {
-      //   if (typeof executor !== 'function') {
-      //     return;
-      //   }
-
-      //   const wrapResolve = (result) => {
-      //     resolve(result);
-      //   };
-      //   const wrapReject = (err) => {
-      //     reject(err);
-      //   };
-
-      //   executor(wrapResolve, wrapReject);
-      // };
-      const wrapExecutor = executor;
+      const executorRef = valueCollection.getRefByValue(executor);
+      const wrapCallbacks = !!executorRef && typeof executor === 'function';
+      let wrapExecutor;
+      if (!wrapCallbacks) {
+        wrapExecutor = executor;
+      }
+      else {
+        // TODO
+        wrapExecutor = executor;
+        // wrapExecutor = (resolve, reject) => {
+        //   if () {
+        //     return;
+        //   }
+  
+        //   const wrapResolve = (result) => {
+        //     resolve(result);
+        //   };
+        //   const wrapReject = (err) => {
+        //     reject(err);
+        //   };
+  
+        //   executor(wrapResolve, wrapReject);
+        // };
+      }
 
       super(wrapExecutor);
 
-      maybePatchPromise(this);
+      if (wrapCallbacks) {
+        maybePatchPromise(this);
+      }
     }
 
     toJSON() {

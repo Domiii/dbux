@@ -9,7 +9,6 @@ import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('ValueTDNode');
 
-export const NoValueMessage = '(no value or undefined)';
 export const ValueLabel = 'Value';
 
 export default class ValueNode extends BaseTreeViewNode {
@@ -36,7 +35,7 @@ export default class ValueNode extends BaseTreeViewNode {
 
   valueRender() {
     // needs `dp.util.constructValueObjectFull`
-    log(`Temporarily disabled.`);
+    // log(`Clicking ValueNode is temporarily disabled.`);
     // const { valueRef, value, hasValue } = this;
     // if (hasValue) {
     //   valueRender(valueRef, value);
