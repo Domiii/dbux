@@ -1,4 +1,4 @@
-import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
+import { AsyncTDNode } from './AsyncTDNodes';
 import { DebugTDNode } from './DebugTDNode';
 import ExecutionsTDNode from './ExecutionsTDNodes';
 // import StaticContextTDNode from './StaticContextTDNodes';
@@ -22,5 +22,6 @@ export const DetailNodeClasses = [
   // NearbyValuesTDNode,
   // StaticContextTDNode,
   // InfoTDNode,
+  AsyncTDNode,
   DebugTDNode
 ];

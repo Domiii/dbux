@@ -1409,24 +1409,29 @@ export default {
   // async
   // ###########################################################################
 
+  /** @param {DataProvider} dp */
   getAsyncRootThreadId(dp, rootId) {
     return dp.indexes.asyncNodes.byRoot.getUnique(rootId)?.threadId;
   },
 
-  doesRootHaveChainFrom(dp, fromRootId) {
+  /** @param {DataProvider} dp */
+  getChainFrom(dp, fromRootId) {
     const fromEdges = dp.indexes.asyncEvents.from.get(fromRootId);
-    return fromEdges?.some(edge => edge.edgeType === AsyncEdgeType.Chain) || false;
+    return fromEdges?.find(edge => edge.edgeType === AsyncEdgeType.Chain) || null;
   },
 
-  doesRootHaveAsyncEdgeFromTo(dp, fromRootId, toRootId) {
+  /** @param {DataProvider} dp */
+  getAsyncEdgeFromTo(dp, fromRootId, toRootId) {
     const toEdges = dp.indexes.asyncEvents.to.get(toRootId);
-    return toEdges?.some(edge => edge.fromRootContextId === fromRootId) || false;
+    return toEdges?.find(edge => edge.fromRootContextId === fromRootId) || null;
   },
 
+  /** @param {DataProvider} dp */
   getAsyncPreEventUpdateOfTrace(dp, traceId) {
     return dp.indexes.asyncEventUpdates.byTrace.get(traceId)?.[0];
   },
 
+  /** @param {DataProvider} dp */
   getAsyncPostEventUpdateOfTrace(dp, traceId) {
     return dp.indexes.asyncEventUpdates.byTrace.get(traceId)?.[1];
   },
@@ -1434,7 +1439,8 @@ export default {
   /**
    * Find the last "Post" asyncEvent (also an "edge trigger event") of a given promise.
    * That update must have `rootId` < `beforeRootId`
-   * 
+   *
+   * @param {DataProvider} dp
    * @return {AsyncEventUpdate}
    */
   getPreviousPostAsyncEventOfPromise(dp, promiseId, beforeRootId) {
@@ -1447,6 +1453,7 @@ export default {
     return postUpdate;
   },
 
+  /** @param {DataProvider} dp */
   getFirstPostAsyncEventOfPromise(dp, promiseId) {
     return dp.indexes.asyncEventUpdates.byPromise.getFirst(promiseId);
   },
@@ -1455,30 +1462,35 @@ export default {
   // TODO: fix this!
 
 
+  /** @param {DataProvider} dp */
   isNestedChain(dp, nestedPromiseId, schedulerTraceId) {
     const nestingPromiseRunId = nestedPromiseId && dp.util.getFirstTraceByRefId(nestedPromiseId)?.runId;
-    const firstNestingAsyncUpdate = nestingPromiseRunId && this.getFirstNestingAsyncUpdate(nestingPromiseRunId, nestedPromiseId);
+    const firstNestingAsyncUpdate = nestingPromiseRunId && dp.util.getFirstNestingAsyncUpdate(nestingPromiseRunId, nestedPromiseId);
     const firstNestingTraceId = firstNestingAsyncUpdate?.schedulerTraceId;
-    return firstNestingTraceId && firstNestingTraceId === schedulerTraceId;
+    return firstNestingTraceId && firstNestingTraceId === schedulerTraceId || false;
   },
 
+  /** @param {DataProvider} dp */
   getNestingAsyncUpdates(dp, runId, promiseId) {
     const eventKey = [runId, promiseId];
     return dp.indexes.asyncEventUpdates.byNestedPromiseAndRun.get(eventKey);
   },
 
+  /** @param {DataProvider} dp */
   getFirstNestingAsyncUpdate(dp, runId, promiseId) {
-    return dp.getNestingAsyncUpdates(runId, promiseId)?.[0] || null;
+    return dp.util.getNestingAsyncUpdates(runId, promiseId)?.[0] || null;
   },
 
   /**
    * Only checks for *first* nesting update of given `runId`.
    *  -> Because: all following updates are SYNC, not CHAIN.
+   * 
+   * @param {DataProvider} dp
    */
   isPromiseChainedToRoot(dp, runId, promiseId) {
     // TODO: won't work when chaining promises that don't have their own Post* AsyncEvent (e.g. `Promise.resolve().then`)
 
-    const firstNestingAsyncUpdate = dp.getFirstNestingAsyncUpdate(runId, promiseId);
+    const firstNestingAsyncUpdate = dp.util.getFirstNestingAsyncUpdate(runId, promiseId);
     if (!firstNestingAsyncUpdate) {
       return false;
     }
@@ -1492,7 +1504,7 @@ export default {
 
     if (returnPromiseId) {
       // contextId !== rootId -> (most likely?) a first await
-      return dp.isPromiseChainedToRoot(runId, returnPromiseId);
+      return dp.util.isPromiseChainedToRoot(runId, returnPromiseId);
     }
 
     return false;
@@ -1511,6 +1523,130 @@ export default {
     // }
 
     // return false;
+  },
+
+  /** @param {DataProvider} dp */
+  getPostAwaitData(dp, postEventUpdate) {
+    const { util } = dp;
+    const {
+      // runId: postEventRunId,
+      // realContextId,
+      rootId: postEventRootId,
+      schedulerTraceId
+    } = postEventUpdate;
+
+    const preEventUpdate = util.getAsyncPreEventUpdateOfTrace(schedulerTraceId);
+
+    if (!preEventUpdate) {
+      // should never happen!
+      this.logger.warn(`[postAwait] "getAsyncPreEventUpdateOfTrace" failed:`, postEventUpdate);
+      return null;
+    }
+
+    const {
+      contextId: preEventContextId,
+      nestedPromiseId
+    } = preEventUpdate;
+
+    const isFirstAwait = util.isFirstContextInParent(preEventContextId);
+    // const previousPostUpdate = dp.util.getPreviousPostAsyncEventOfPromise(promiseId, preEventRootId);
+    // const realContext = dp.collections.executionContexts.getById(realContextId);
+    // const firstNestingUpdate = this.getFirstNestingAsyncUpdate(realContext.runId, promiseId);
+
+    const isNested = !!nestedPromiseId;
+    const isNestedChain = util.isNestedChain(nestedPromiseId, schedulerTraceId);
+    const nestedUpdate = nestedPromiseId && util.getPreviousPostAsyncEventOfPromise(nestedPromiseId, postEventRootId) || null;
+    const { rootId: nestedRootId = 0 } = nestedUpdate ?? EmptyObject;
+
+    return {
+      preEventUpdate,
+      isFirstAwait,
+      isNested,
+      isNestedChain,
+      nestedUpdate,
+      nestedRootId
+    };
+  },
+
+  /** @param {DataProvider} dp */
+  getPostThenData(dp, postEventUpdate) {
+    const { util } = dp;
+    const {
+      // runId: postEventRunId,
+      rootId: postEventRootId,
+      // NOTE: the last active root is also the `context` of the `then` callback
+      // contextId,
+      schedulerTraceId,
+      promiseId: postPromiseId,
+      nestedPromiseId
+    } = postEventUpdate;
+
+    const preEventUpdate = util.getAsyncPreEventUpdateOfTrace(schedulerTraceId);
+
+    if (!preEventUpdate) {
+      // should never happen!
+      this.logger.warn(`[postAwait] "getAsyncPreEventUpdateOfTrace" failed:`, postEventUpdate);
+      return null;
+    }
+
+    const {
+      runId: preEventRunId,
+      // rootId: preEventRootId,
+      promiseId: prePromiseId,
+    } = preEventUpdate;
+
+    const previousPostUpdate = util.getPreviousPostAsyncEventOfPromise(prePromiseId, postEventRootId);
+    const isNested = !!nestedPromiseId;
+    const isChainedToRoot = util.isPromiseChainedToRoot(preEventRunId, postPromiseId);
+    // const isNestedChain = this.isNestedChain(nestedPromiseId, schedulerTraceId);
+    // const nestedUpdate = nestedPromiseId && dp.util.getPreviousPostAsyncEventOfPromise(nestedPromiseId, postEventRootId);
+    // const { rootId: nestedRootId } = nestedUpdate ?? EmptyObject;
+
+    return {
+      preEventUpdate,
+      previousPostUpdate,
+      isNested,
+      isChainedToRoot
+    };
+  },
+
+  /** @param {DataProvider} dp */
+  getPostCallbackData(dp, postEventUpdate) {
+    const { util } = dp;
+    const {
+      // runId: postEventRunId,
+      // realContextId,
+      schedulerTraceId
+    } = postEventUpdate;
+
+    const preEventUpdate = util.getAsyncPreEventUpdateOfTrace(schedulerTraceId);
+
+    if (!preEventUpdate) {
+      // should never happen!
+      this.logger.warn(`[postAwait] "getAsyncPreEventUpdateOfTrace" failed:`, postEventUpdate);
+      return null;
+    }
+
+    const isNested = false;
+
+    return {
+      preEventUpdate,
+      isNested
+    };
+  },
+
+  /** @param {DataProvider} dp */
+  getPostEventUpdateData(dp, postEventUpdate) {
+    if (AsyncEventUpdateType.PostAwait.is(postEventUpdate.type)) {
+      return dp.util.getPostAwaitData(postEventUpdate);
+    }
+    if (AsyncEventUpdateType.PostThen.is(postEventUpdate.type)) {
+      return dp.util.getPostAwaitData(postEventUpdate);
+    }
+    if (AsyncEventUpdateType.PostCallback.is(postEventUpdate.type)) {
+      return dp.util.getPostCallbackData(postEventUpdate);
+    }
+    throw new Error(`Invalid AsyncEventUpdateType for postEventUpdate: ${JSON.stringify(postEventUpdate)}`);
   }
 };
 

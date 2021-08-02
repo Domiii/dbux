@@ -1,14 +1,10 @@
-import { TreeItem } from 'vscode';
 import omit from 'lodash/omit';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import AsyncEventUpdateType, { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
-import { makeTreeItems } from '../../helpers/treeViewHelpers';
+import { makeTreeItem, makeTreeItems } from '../../helpers/treeViewHelpers';
 import { ContextTDNode, TraceTypeTDNode } from './traceInfoNodes';
 import TraceDetailNode from './traceDetailNode';
-import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
@@ -18,7 +14,7 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 // Debug
 // ###########################################################################
 
-function makeArrayNodes(obj) {
+function makeObjectArrayNodes(obj) {
   return Object.fromEntries(
     Object.entries(obj)
       .map(([name, arr]) => [`${name} (${arr?.length || 0})`, arr || {}])
@@ -38,48 +34,11 @@ export class DebugTDNode extends TraceDetailNode {
     this.description = `id: ${this.trace.traceId}`;
   }
 
-  get dp() {
-    const {
-      applicationId
-    } = this.trace;
-    const application = allApplications.getApplication(applicationId);
-    const { dataProvider: dp } = application;
-    return dp;
-  }
 
-
-  mapPostAsyncEvent(postEventUpdate) {
-    const {
-      // runId: postEventRunId,
-      rootId: postEventRootId,
-      // realContextId,
-      schedulerTraceId,
-      // promiseId
-    } = postEventUpdate;
-
-    const { dp } = this;
-
-    // if (AsyncEventUpdateType.is.PostAwait) {
-    const preEventUpdate = dp.util.getAsyncPreEventUpdateOfTrace(schedulerTraceId);
-
-    if (!preEventUpdate) {
-      // should never happen!
-      // warn(`[postAwait] "getAsyncPreEventUpdateOfTrace" failed:`, postEventUpdate);
-      return {};
-    }
-
-    const {
-      // runId: preEventRunId,
-      // rootId: preEventRootId,
-      // contextId: preEventContextId,
-      nestedPromiseId
-    } = preEventUpdate;
-
-    const nestedUpdate = nestedPromiseId && dp.util.getPreviousPostAsyncEventOfPromise(nestedPromiseId, postEventRootId);
-    const { rootId: nestedRootId } = nestedUpdate ?? EmptyObject;
-
+  mapPostAsyncEvent = (postEventUpdate) => {
     return {
-      nestedRootId
+      ...postEventUpdate,
+      ...this.dp.util.getPostAwaitData(postEventUpdate)
     };
   }
 
@@ -157,30 +116,27 @@ export class DebugTDNode extends TraceDetailNode {
 
     // one POST event per `rootId`
     const postEventUpdates = asyncEventUpdates?.filter(({ type }) => isPostEventUpdate(type));
+    const postEventUpdateData = postEventUpdates?.map(this.mapPostAsyncEvent);
 
     // many PRE events per `rootId`
     const preEventUpdates = asyncEventUpdates?.filter(({ type }) => !isPostEventUpdate(type));
 
-    function evtPrefix(evt) {
-      return `${evt.asyncEventId}: [${AsyncEdgeType.nameFromForce(evt.edgeType)}]`;
-    }
-    const inEvents = dp.indexes.asyncEvents.to.get(rootContextId)
-      ?.map(evt => [`${evtPrefix(evt)} <- ${evt.fromRootContextId}`, evt]);
-    const outEvents = dp.indexes.asyncEvents.from.get(rootContextId)
-      ?.map(evt => [`${evtPrefix(evt)} <- ${evt.toRootContextId}`, evt]);
     const asyncContainerNode = [
-      'async',
+      'Async',
       {
         AsyncNode: asyncNode,
-        PostUpdate: postEventUpdates?.length === 1 ? this.mapPostAsyncEvent(postEventUpdates[0]) : (postEventUpdates || {}),
-        ...makeArrayNodes({
-          PreUpdates: preEventUpdates,
-          InEvents: inEvents,
-          OutEvents: outEvents
-        })
+        PostEventUpdateData: makeTreeItem(
+          'PostEventUpdateData',
+          postEventUpdateData?.length === 1 ? postEventUpdateData[0] : (postEventUpdateData || {}),
+          { description: `${postEventUpdateData?.map(upd => AsyncEventUpdateType.nameFrom(upd.type)) || ''}` }
+        ),
+        ...makeObjectArrayNodes({
+          PreUpdates: preEventUpdates
+        }),
       },
       {
-        description: `thread=${asyncNode?.threadId}, rootId=${rootContextId}`
+        // eslint-disable-next-line max-len
+        description: `thread=${asyncNode?.threadId}, root=${rootContextId}${postEventUpdateData?.map(upd => ` (${AsyncEventUpdateType.nameFrom(upd.type)})`) || ''}`
       }
     ];
 

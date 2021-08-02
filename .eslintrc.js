@@ -114,17 +114,12 @@ module.exports = {
 
   overrides: [
     {
-      files: ['**/src/testing/*.js'],
-      rules: {
-        "import/no-extraneous-dependencies": ["error", { devDependencies: true }],
-        "no-console": 0
-      },
-      env: {
-        node: true
-      }
-    },
-    {
-      files: ['./scripts/**/*'],
+      files: [
+        '**/src/testing/*.js',
+        './*.js',
+        './scripts/**/*.js',
+        './config/**/*.js'
+      ],
       rules: {
         "import/no-extraneous-dependencies": ["error", { devDependencies: true }],
         "no-console": 0

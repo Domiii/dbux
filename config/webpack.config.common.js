@@ -1,5 +1,3 @@
-/* eslint no-console: 0 */
-
 const process = require('process');
 const path = require('path');
 
@@ -19,8 +17,6 @@ const {
 } = require('../dbux-cli/lib/package-util');
 
 const MonoRoot = path.resolve(__dirname, '..');
-
-process.env.BABEL_DISABLE_CACHE = 1;
 
 module.exports = function webpackCommon(name, mode) {
   const DBUX_VERSION = getDbuxVersion(mode);

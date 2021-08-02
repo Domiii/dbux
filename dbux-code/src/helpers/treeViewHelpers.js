@@ -29,6 +29,13 @@ makeTreeItem('Debug', [
  * ```
  */
 
+// class TreeChildNode {
+//   constructor(value, cfg) {
+//     this.value = value;
+//     this.cfg = cfg;
+//   }
+// }
+
 function arrayToTreeItems(arr) {
   return arr.map((value, i) => makeChildNode(i, value)); //makeTreeItem(child));
 }
@@ -46,6 +53,9 @@ function makeChildNode(key, value) {
   if (value instanceof TreeItem) {
     return makeTreeItem(value);
   }
+  // if (value instanceof TreeChildNode) {
+
+  // }
   if (isFunction(value)) {
     return makeTreeItem(value(key));
   }
@@ -60,12 +70,19 @@ export function makeTreeChildren(obj) {
     objectToTreeItems(obj);    // object
 }
 
-export function makeTreeItem(labelOrArrOrItem, children, props) {
+// /**
+//  * NOTE: use `{ myLabel: makeTreeItem('myLabel', ...) }` instead.
+//  * future-work: use this, so as to not repeat `label`. 
+//  */
+// export function makeTreeChild(value, itemProps) {
+// }
+
+export function makeTreeItem(labelOrArrOrItem, children, itemProps) {
   let label;
   let item;
 
   if (Array.isArray(labelOrArrOrItem)) {
-    [label, children, props] = labelOrArrOrItem;
+    [label, children, itemProps] = labelOrArrOrItem;
   }
   else {
     label = labelOrArrOrItem;
@@ -95,8 +112,8 @@ export function makeTreeItem(labelOrArrOrItem, children, props) {
   if (hasChildren) {
     item.children = makeTreeChildren(children);
   }
-  if (props) {
-    Object.assign(item, props);
+  if (itemProps) {
+    Object.assign(item, itemProps);
   }
   return item;
 }

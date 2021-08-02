@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 const path = require('path');
 
-// TODO: make cache configurable
-// process.env.BABEL_DISABLE_CACHE = 1;
+// don't cache this
+process.env.BABEL_DISABLE_CACHE = 1;
 
 const defaultBabelOptions = require('../babel.config');
 
@@ -28,5 +28,9 @@ const babelRegisterOptions = {
     }
   ]
 };
+
+
+// eslint-disable-next-line import/newline-after-import,import/order
 const babelRegister = require('@babel/register');
+
 babelRegister(babelRegisterOptions);
