@@ -363,7 +363,7 @@ export default class AsyncEventUpdateCollection extends Collection {
       // return 0;
       threadId = this.newThreadId();
       if (!asyncNode) {
-        this.dp.collections.asyncNodes.addAsyncNode(rootId, threadId, schedulerTraceId);
+        asyncNode = this.dp.collections.asyncNodes.addAsyncNode(rootId, threadId, schedulerTraceId);
       }
       else {
         // [edit-after-add] make a change to `threadId` in post, leading to stale rendered data

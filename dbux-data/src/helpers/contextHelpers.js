@@ -1,4 +1,4 @@
 
-export function isContextRoot(context) {
-  return !context.parentContextId;
-}
+// export function isRootContext(context) {
+//   return !context.parentContextId;
+// }

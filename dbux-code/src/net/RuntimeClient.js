@@ -70,7 +70,11 @@ export default class RuntimeClient extends SocketClient {
   }
 
   _handleData = (data, ack) => {
-    this.application.addData(data);
-    ack('data'); // send ack
+    try {
+      this.application.addData(data);
+    }
+    finally {
+      ack('data'); // send ack
+    }
   }
 }

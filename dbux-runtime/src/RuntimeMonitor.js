@@ -145,7 +145,7 @@ export default class RuntimeMonitor {
     const { contextId } = context;
 
     if (!parentContextId) {
-      this.updateVirtualContextRoot(contextId);
+      this._runtime._updateVirtualRootContext(contextId);
     }
     this._runtime.push(contextId, isInterruptable);
 
@@ -402,7 +402,7 @@ export default class RuntimeMonitor {
       const resumeInProgramStaticTraceId = 0;
       const resumeContextId = this.pushResume(programId, resumeStaticContextId, resumeInProgramStaticTraceId);
 
-      this.updateVirtualContextRoot(resumeContextId);
+      this._runtime._updateVirtualRootContext(resumeContextId);
 
       // debug(awaitArgument, 'is awaited at context', awaitContextId);
 

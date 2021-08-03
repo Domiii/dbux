@@ -118,7 +118,7 @@ export class DebugTDNode extends TraceDetailNode {
     const postEventUpdateData = postEventUpdates?.map(this.mapPostAsyncEvent);
 
     // many PRE events per `rootId`
-    const preEventUpdates = asyncEventUpdates?.filter(({ type }) => isPreEventUpdate(type));
+    const otherEventUpdates = asyncEventUpdates?.filter(({ type }) => !isPostEventUpdate(type));
 
     const asyncContainerNode = [
       'Async',
@@ -130,7 +130,7 @@ export class DebugTDNode extends TraceDetailNode {
           { description: `${postEventUpdateData?.map(upd => AsyncEventUpdateType.nameFrom(upd.type)) || ''}` }
         ),
         ...makeObjectArrayNodes({
-          PreUpdates: preEventUpdates
+          OtherUpdates: otherEventUpdates
         }),
       },
       {

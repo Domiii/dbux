@@ -487,22 +487,22 @@ export default class Runtime {
    * * during `pushImmediate`, if there is no parent on the stack
    * * during `postAwait`, after `pushResume`
    */
-  _updateVirtualContextRoot(contextId) {
-    debug(`[updateVirtualContextRoot] ${contextId}`);
-    this._virtualContextRootFinished(contextId);
+  _updateVirtualRootContext(contextId) {
+    debug(`[updateVirtualRootContext] ${contextId}`);
+    this._virtualRootContextFinished(contextId);
   }
 
-  _virtualContextRootFinished(newRootId) {
+  _virtualRootContextFinished(newRootId) {
     // if (this._virtualRootContextId) {
     //   const previousRootId = this._virtualRootContextId;
     //   // if ()
     // }
-    this._virtualContextRootFinished = newRootId;
+    this._virtualRootContextId = newRootId;
   }
 
   _runFinished() {
     this._executingStack = null;
-    this._virtualContextRootFinished(0);
+    this._virtualRootContextFinished(0);
 
     // TODO: change to post-process all `virtualRootContexts` of run
 
