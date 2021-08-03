@@ -205,7 +205,6 @@ export default class DataProviderBase {
       this.logger.error('invalid data must be (but is not) object -', JSON.stringify(allData).substring(0, 500));
     }
 
-    // debug('received', JSON.stringify(allData).substring(0, 500));
     const collectionNames = this._getSortedCollectionNames(allData);
     this._addData(collectionNames, allData);
     this._postAdd(collectionNames, allData, isRaw);

@@ -6,7 +6,8 @@ const asyncEventUpdate = {
   PreThen: 3,
   PostThen: 4,
   PreCallback: 5,
-  PostCallback: 6
+  PostCallback: 6,
+  Resolve: 7
 };
 
 /**
@@ -20,13 +21,33 @@ postEventUpdateTypes[AsyncEventUpdateType.PostThen] = true;
 postEventUpdateTypes[AsyncEventUpdateType.PostCallback] = true;
 
 /**
- * PRE updates initialize scheduling of an asynchronous event. They just collect relevant information for later.
  * POST updates happen *after* the event. POST updates insert an event edge.
  */
 export function isPostEventUpdate(type) {
   return postEventUpdateTypes[type];
 }
 
+const postOrResolveEventUpdateTypes = [...postEventUpdateTypes];
+postOrResolveEventUpdateTypes[AsyncEventUpdateType.Resolve] = true;
+
+/**
+ * POST or `Resolve`
+ */
+export function isPostOrResolveEventUpdate(type) {
+  return postOrResolveEventUpdateTypes[type];
+}
+
+const preEventUpdateTypes = new Array(AsyncEventUpdateType.getValueMaxIndex()).map(() => false);
+preEventUpdateTypes[AsyncEventUpdateType.PreAwait] = true;
+preEventUpdateTypes[AsyncEventUpdateType.PreThen] = true;
+preEventUpdateTypes[AsyncEventUpdateType.PreCallback] = true;
+
+/**
+ * PRE updates initialize scheduling of an asynchronous event. They just collect relevant information for later.
+ */
+export function isPreEventUpdate(type) {
+  return preEventUpdateTypes[type];
+}
 
 const awaitEventTypes = new Array(AsyncEventUpdateType.getValueMaxIndex()).map(() => false);
 awaitEventTypes[AsyncEventUpdateType.PreAwait] = true;

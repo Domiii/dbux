@@ -1,7 +1,6 @@
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import AsyncEventUpdateType, { isAwaitEvent } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import AsyncEventUpdate, { PostAwaitUpdate } from '@dbux/common/src/types/AsyncEventUpdate';
-import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import Collection from '../Collection';
 
 /** @typedef { import("@dbux/common/src/types/AsyncEventUpdate").AsyncEventUpdate } AsyncEventUpdate */
@@ -23,6 +22,7 @@ export default class AsyncEventUpdateCollection extends Collection {
     this.handlersByType[AsyncEventUpdateType.PostAwait] = this.postAwait;
     this.handlersByType[AsyncEventUpdateType.PreThen] = this.preThen;
     this.handlersByType[AsyncEventUpdateType.PostThen] = this.postThen;
+    this.handlersByType[AsyncEventUpdateType.Resolve] = this.resolve;
     this.handlersByType[AsyncEventUpdateType.PreCallback] = this.preCallback;
     this.handlersByType[AsyncEventUpdateType.PostCallback] = this.postCallback;
   }
@@ -78,7 +78,7 @@ export default class AsyncEventUpdateCollection extends Collection {
       nestedPromiseId
     } = update;
 
-    const nestedUpdate = nestedPromiseId && dp.util.getFirstPostAsyncEventOfPromise(nestedPromiseId, preEventRootId);
+    const nestedUpdate = nestedPromiseId && dp.util.getFirstPostOrResolveAsyncEventOfPromise(nestedPromiseId, preEventRootId);
     if (nestedUpdate?.rootId <= preEventRootId) {
       // console.trace(`preAwait ${preEventRootId}, nestedUpdate=`, nestedUpdate);
       this.addSyncEdge(preEventRootId, nestedUpdate.rootId, AsyncEdgeType.SyncOut);
@@ -276,6 +276,10 @@ export default class AsyncEventUpdateCollection extends Collection {
     // }
   }
 
+  resolve = update => {
+
+  }
+
   // ###########################################################################
   // callbacks
   // ###########################################################################
@@ -350,15 +354,25 @@ export default class AsyncEventUpdateCollection extends Collection {
    * If not, we assume a FORK, and assign a new threadId.
    */
   getOrAssignRootThreadId(rootId, schedulerTraceId) {
-    let threadId = this.dp.util.getAsyncRootThreadId(rootId);
+    let asyncNode = this.dp.indexes.asyncNodes.byRoot.getUnique(rootId);
+    let threadId = asyncNode?.threadId;
     if (!threadId) {
       // NOTE: this can happen, if a root executed that was not connected to any previous asynchronous events
       //    (e.g. initial root, or caused by unrecorded asynchronous events)
       // this.logger.warn(`Tried to add edge from root ${fromRootId} but it did not have a threadId`);
       // return 0;
-      this.dp.collections.asyncNodes.addAsyncNode(rootId, threadId = this.newThreadId(), schedulerTraceId);
+      threadId = this.newThreadId();
+      if (!asyncNode) {
+        this.dp.collections.asyncNodes.addAsyncNode(rootId, threadId, schedulerTraceId);
+      }
+      else {
+        // [edit-after-add] make a change to `threadId` in post, leading to stale rendered data
+        // should not happen
+        this.logger.warn(`rootId=${rootId} did not have threadId; reassigned: ${asyncNode.threadId} -> ${threadId}`);
+        asyncNode.threadId = threadId;
+      }
     }
-    return threadId;
+    return asyncNode.threadId;
   }
 
   // ###########################################################################

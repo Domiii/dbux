@@ -188,7 +188,7 @@ export default class Runtime {
   // ###########################################################################
   // Traces
   // ###########################################################################
-  
+
   setLastContextTrace(contextId, traceId) {
     this._lastTraceByContextId[contextId] = traceId;
   }
@@ -482,9 +482,27 @@ export default class Runtime {
     // console.time('[RunEnd] ' + this._currentRunId);
   }
 
+  /**
+   * Called:
+   * * during `pushImmediate`, if there is no parent on the stack
+   * * during `postAwait`, after `pushResume`
+   */
+  _updateVirtualContextRoot(contextId) {
+    debug(`[updateVirtualContextRoot] ${contextId}`);
+    this._virtualContextRootFinished(contextId);
+  }
+
+  _virtualContextRootFinished(newRootId) {
+    // if (this._virtualRootContextId) {
+    //   const previousRootId = this._virtualRootContextId;
+    //   // if ()
+    // }
+    this._virtualContextRootFinished = newRootId;
+  }
+
   _runFinished() {
     this._executingStack = null;
-    this._virtualRootContextId = 0;
+    this._virtualContextRootFinished(0);
 
     // TODO: change to post-process all `virtualRootContexts` of run
 

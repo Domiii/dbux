@@ -497,16 +497,6 @@ export default class RuntimeMonitor {
   isValidContext() {
     return this._runtime._executingStack?.length?.();
   }
-  
-  /**
-   * Called:
-   * * during `pushImmediate`, if there is no parent on the stack
-   * * during `postAwait`, after `pushResume`
-   */
-  updateVirtualContextRoot(contextId) {
-    debug(`[updateVirtualContextRoot] ${contextId}`);
-    this._runtime._virtualRootContextId = contextId;
-  }
 
   // ###########################################################################
   // traces

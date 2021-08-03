@@ -228,5 +228,8 @@ export default class Collection {
     // populate indexes, trigger data dependencies etc.
     const allData = { [this.name]: [entry] };
     this.dp._postAdd(this._collectionNames, allData, true);
+
+    // future-work: this could happen during another post-add event. Make sure, this won't bug out.
+    this.dp._notifyData(this._collectionNames, allData);
   }
 }

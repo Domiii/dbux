@@ -1,13 +1,11 @@
 import AsyncEventUpdateType from './constants/AsyncEventUpdateType';
+import ResolveType from './constants/ResolveType';
 
 export class AsyncUpdateBase {
   updateId;
 
   /**
    * @type {AsyncEventUpdateType[keyof AsyncEventUpdateType]}
-   *
-   * NOTE: ValueOf typing
-   * @see https://stackoverflow.com/questions/49285864/is-there-a-valueof-similar-to-keyof-in-typescript
    */
   type;
 
@@ -15,6 +13,13 @@ export class AsyncUpdateBase {
 
   rootId;
 
+  /**
+   * For PreAwait: Resume context during which `await` was called.
+   * For PostAwait: Resume context that was pushed as result of this `await`.
+   * For PreThen: Context during which `then` was called.
+   * For PostThen: Context of the `then` callback.
+   */
+  contextId;
 
   /**
    * For PreAwait + PostAwait: the return value of the async function (collected in `postAddRaw`).
@@ -32,20 +37,19 @@ export class AsyncUpdateBase {
   nestedPromiseId;
 
   /**
-   * For PreAwait: Resume context during which `await` was called.
-   * For PostAwait: Resume context that was pushed as result of this `await`.
-   * For PreThen: Context during which `then` was called.
-   * For PostThen: Context of the `then` callback.
-   */
-  contextId;
-
-  /**
    * Uniquely identifies the event.
    * 
    * For PreAwait + PostAwait: trace of the AwaitExpression.
    * For PreThen + PostThen: callId of the `then` CallExpression's.
    */
   schedulerTraceId;
+
+  /**
+   * For Post*: records all instances of `resolve`/`reject` being called in the same root.
+   * 
+   * @type {Array.<ResolveEvent>}
+   */
+  resolveEvents;
 }
 
 // ###########################################################################
@@ -77,6 +81,13 @@ export class PreThenUpdate extends PromiseUpdate {
 export class PostThenUpdate extends PromiseUpdate {
 }
 
+export class ResolveUpdate extends PromiseUpdate {
+  /**
+   * @type {ResolveType}
+   */
+  resolveType;
+}
+
 
 
 /**
@@ -84,5 +95,5 @@ export class PostThenUpdate extends PromiseUpdate {
  *    Consider asyncEventUpdateCollection for usage example.
  * @see https://github.com/jsdoc/jsdoc/issues/1537
  * 
- * @typedef {(PreAwaitUpdate | PostAwaitUpdate | PreThenUpdate | PostThenUpdate)} AsyncEventUpdate
+ * @typedef {(PreAwaitUpdate | PostAwaitUpdate | PreThenUpdate | PostThenUpdate | ResolveUpdate)} AsyncEventUpdate
  */

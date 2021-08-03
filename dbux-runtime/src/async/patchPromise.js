@@ -1,5 +1,6 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
+import ResolveType from '@dbux/common/src/types/constants/ResolveType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import isThenable from '@dbux/common/src/util/isThenable';
 import { isFunction } from 'lodash';
@@ -62,26 +63,6 @@ export default function initPatchPromise(_runtimeMonitorInstance) {
   }
 }
 
-
-// ###########################################################################
-// runtime events
-// ###########################################################################
-
-/**
- * Event: New promise (`postEventPromise`) has been scheduled.
- */
-function thenScheduled(thenRef) {
-  RuntimeMonitorInstance._runtime.async.preThen(thenRef);
-}
-
-/**
- * Event: Promise has been settled.
- */
-function thenExecuted(thenRef, previousResult, returnValue) {
-  // TODO: add `previousResult` into data flow graph
-
-  RuntimeMonitorInstance._runtime.async.postThen(thenRef, returnValue);
-}
 
 // ###########################################################################
 // patchPromise
@@ -167,7 +148,10 @@ function patchThenCallback(cb, thenRef) {
           // set nestingPromiseId
           setNestingPromise(returnValue, thenRef.postEventPromise);
         }
-        thenExecuted(thenRef, previousResult, returnValue);
+        // thenExecuted(thenRef, previousResult, returnValue);
+
+        // event: PostThen
+        RuntimeMonitorInstance._runtime.async.postThen(thenRef, returnValue);
       }
     }
     finally {
@@ -179,32 +163,37 @@ function patchThenCallback(cb, thenRef) {
 
 /**
  * 
- * @param {*} preEventPromise 
+ * @param {*} promise 
  * @param {*} originalThen 
  * @returns 
  */
-function _makeThenRef(preEventPromise, patchedThen) {
-  const ref = valueCollection.getRefByValue(preEventPromise);
+function _makeThenRef(promise, cb) {
+  const ref = valueCollection.getRefByValue(promise);
   if (!ref) {
     // not traced!
     return null;
   }
 
-  const bceTrace = peekBCEMatchCallee(patchedThen);
+  return _makeThenRefUnchecked(promise, cb);
+}
+
+function _makeThenRefUnchecked(promise, cb) {
+  const bceTrace = peekBCEMatchCallee(cb);
   const schedulerTraceId = bceTrace?.traceId;
 
-  if (preEventPromise instanceof NativePromiseClass && !schedulerTraceId) {
+  if (promise instanceof NativePromiseClass && !schedulerTraceId) {
     // NOTE: when `then`ing async functions, patched `then` will be called internally
     //    -> called on an unpatched promise instance
     //    -> seemingly happens right after the async function is called (possibly in a new run)
     return null;
   }
   if (!schedulerTraceId) {
+    const ref = valueCollection.getRefByValue(promise);
     // eslint-disable-next-line no-console
     console.trace(`schedulerTraceId not found in PreThen for promise, ref=`, ref);
   }
   return {
-    preEventPromise,
+    preEventPromise: promise,
     schedulerTraceId
   };
 }
@@ -255,7 +244,9 @@ function _onThen(thenRef, preEventPromise, postEventPromise) {
   maybePatchPromise(postEventPromise);
   setPreThenPromise(postEventPromise, preEventPromise);
   thenRef.postEventPromise = postEventPromise;
-  thenScheduled(thenRef);
+
+  // Event: PreThen
+  RuntimeMonitorInstance._runtime.async.preThen(thenRef);
 }
 
 function patchCatch(holder) {
@@ -292,32 +283,61 @@ function patchPromiseClass(BasePromiseClass) {
       const executorRef = valueCollection.getRefByValue(executor);
       const isCallbackInstrumented = !!executorRef && typeof executor === 'function';
       let wrapExecutor;
+      /**
+       * NOTE: In case, `resolve` or `reject` is called synchronously from the ctor, `this` cannot be accessed because `super` has not finished yet.
+       * That is why, we need to defer such call to after `super` call completed.
+       */
+      let deferredCall;
+      let superCalled = false;
+
       if (!isCallbackInstrumented) {
         wrapExecutor = executor;
       }
       else {
         // wrapExecutor = executor;
         wrapExecutor = (resolve, reject) => {
-          // TODO: 
-          //  -> do not instantly resolve POST event, if it contains an r/j call
-          //  -> when r/j is called, store resolverVirtualContextRootId with promise
-          //  -> in next POST event, handle `resolverVirtualContextRootId` and lingering (unhandled) POST event
           const wrapResolve = (result) => {
-            resolve(result);
+            // Event: Resolve
+            if (!superCalled) {
+              deferredCall = wrapResolve.bind(null, result);
+            }
+            else {
+              // TODO: track `result` data flow
+              const thenRef = _makeThenRef(this, wrapResolve);
+              if (thenRef) {
+                RuntimeMonitorInstance._runtime.async.resolve(thenRef, result, ResolveType.Resolve);
+              }
+              resolve(result);
+            }
           };
           const wrapReject = (err) => {
-            reject(err);
+            // Event: Resolve
+            if (!superCalled) {
+              deferredCall = wrapReject.bind(null, err);
+            }
+            else {
+              // TODO: track `err` data flow
+              const thenRef = _makeThenRef(this, wrapReject);
+              if (thenRef) {
+                RuntimeMonitorInstance._runtime.async.resolve(thenRef, err, ResolveType.Reject);
+              }
+              reject(err);
+            }
           };
-  
+
           executor(wrapResolve, wrapReject);
         };
       }
 
       super(wrapExecutor);
+      superCalled = true;
 
       if (isCallbackInstrumented) {
         maybePatchPromise(this);
       }
+
+      // deferred until after `super` was called
+      deferredCall?.();
     }
 
     toJSON() {
