@@ -15,7 +15,7 @@ export default class AsyncNodeCollection extends Collection {
   addAsyncNode(rootId, threadId, schedulerTraceId) {
     const entry = new AsyncNode();
 
-    entry.asyncNodeId = this._all.length;
+    entry.asyncNodeId = entry._id = this._all.length;
     entry.rootContextId = rootId;
     entry.threadId = threadId;
     entry.schedulerTraceId = schedulerTraceId;

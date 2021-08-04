@@ -160,6 +160,8 @@ export default class RuntimeDataStatsReporter {
   reportNewData(newData) {
     const { collectionStats } = this;
 
+    // TODO: compress this message (takes up too much space)
+
     // collection stats
     const collectionInfo = Object.entries(collectionStats)
       .map(([key, { len, min, max }]) => `${len} ${key} (${min}~${max})`)

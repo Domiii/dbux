@@ -16,7 +16,7 @@ import ValueTDSimpleNode from './ValueTDSimpleNode';
 export const DetailNodeClasses = [
   ValueTDRefNode,
   ValueTDSimpleNode,
-  TrackObjectTDNode,
+  // TrackObjectTDNode,
   ExecutionsTDNode,
   // DataNodeTDNode,
   // NearbyValuesTDNode,

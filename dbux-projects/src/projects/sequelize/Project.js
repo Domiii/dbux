@@ -2,7 +2,7 @@ import { buildNodeCommand } from '../../util/nodeUtil';
 import Project from '../../projectLib/Project';
 
 
-export default class ExpressProject extends Project {
+export default class SequelizeProject extends Project {
   gitRemote = 'sequelize/sequelize.git';
 
   packageManager = 'yarn';

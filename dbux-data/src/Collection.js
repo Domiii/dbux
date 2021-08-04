@@ -155,7 +155,7 @@ export default class Collection {
    */
   getById(id) {
     let entry = this._all[id];
-    if (entry?._id && entry._id !== id && !this._invalidId) {
+    if (entry && entry._id && entry._id !== id && !this._invalidId) {
       const idx = this._all.findIndex((e, i) => e && e._id !== i);
       const faultyEntry = this._all[idx];
       let recoverable = idx === faultyEntry._id - 1;
@@ -228,5 +228,8 @@ export default class Collection {
     // populate indexes, trigger data dependencies etc.
     const allData = { [this.name]: [entry] };
     this.dp._postAdd(this._collectionNames, allData, true);
+
+    // future-work: this could happen during another post-add event. Make sure, this won't bug out.
+    this.dp._notifyData(this._collectionNames, allData);
   }
 }

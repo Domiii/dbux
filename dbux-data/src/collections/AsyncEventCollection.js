@@ -15,7 +15,7 @@ export default class AsyncEventCollection extends Collection {
   addEdge(fromRootContextId, toRootContextId, edgeType) {
     const entry = new AsyncEvent();
 
-    entry.asyncEventId = this._all.length;
+    entry.asyncEventId = entry._id = this._all.length;
     entry.fromRootContextId = fromRootContextId;
     entry.toRootContextId = toRootContextId;
     entry.edgeType = edgeType;

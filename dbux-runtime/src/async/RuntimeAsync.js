@@ -6,10 +6,10 @@ import { some } from 'lodash';
 // import executionContextCollection from './data/executionContextCollection';
 // import traceCollection from './data/traceCollection';
 // import valueCollection from './data/valueCollection';
-import { peekBCEContextCheckCallee, isFirstContextInParent, isRootContext, getFunctionRefByContext } from '../data/dataUtil';
+import { isFirstContextInParent, isRootContext } from '../data/dataUtil';
 import ThenRef from '../data/ThenRef';
 // eslint-disable-next-line max-len
-import { getPromiseAnyRootId, getPromiseData, getPromiseFirstEventRootId, getPromiseId, getPromiseLastRootId, getPromiseOwnAsyncFunctionContextId, getPromiseRootId, isNewPromise, maybeSetPromiseFirstEventRootId, pushPromisePendingRootId, setPromiseData } from './patchPromise';
+import { getPromiseData, getPromiseId, getPromiseOwnAsyncFunctionContextId, pushPromisePendingRootId, setPromiseData } from './patchPromise';
 import asyncEventUpdateCollection from '../data/asyncEventUpdateCollection';
 
 /** @typedef { import("./Runtime").default } Runtime */
@@ -416,7 +416,7 @@ export default class RuntimeAsync {
   }
 
   // ###########################################################################
-  // Promises: thenExecuted
+  // Promises: postThen
   // ###########################################################################
 
   /**
@@ -433,7 +433,9 @@ export default class RuntimeAsync {
     const runId = this._runtime.getCurrentRunId();
     const postEventRootId = this.getCurrentVirtualRootContextId();
 
-    // console.trace(`postThen`, getPromiseId(postEventPromise), '->', getPromiseId(returnValue));
+    if (!postEventRootId) {
+      console.trace(`postThen`, getPromiseId(postEventPromise), thenRef, { runId, postEventRootId });
+    }
 
     // store update
     asyncEventUpdateCollection.addPostThenUpdate({
@@ -446,6 +448,36 @@ export default class RuntimeAsync {
       schedulerTraceId,
       promiseId: getPromiseId(postEventPromise),
       nestedPromiseId: isThenable(returnValue) ? getPromiseId(returnValue) : 0
+    });
+  }
+
+  // ###########################################################################
+  // Promises: resolve
+  // ###########################################################################
+
+  /**
+   * Event: `resolve` or `reject` was called from a promise ctor's executor.
+   * @param {ThenRef} thenRef
+   */
+  resolve(thenRef, result, resolveType) {
+    const {
+      preEventPromise,
+      // postEventPromise,
+      schedulerTraceId
+    } = thenRef;
+
+    const runId = this._runtime.getCurrentRunId();
+    const preEventRootId = this.getCurrentVirtualRootContextId();
+    const contextId = this._runtime.peekCurrentContextId();
+
+    // store update
+    asyncEventUpdateCollection.addResolveUpdate({
+      runId,
+      rootId: preEventRootId,
+      contextId: contextId,
+      schedulerTraceId,
+      promiseId: getPromiseId(preEventPromise),
+      resolveType
     });
   }
 

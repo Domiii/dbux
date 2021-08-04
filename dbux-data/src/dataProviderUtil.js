@@ -1438,28 +1438,28 @@ export default {
 
   /**
    * Find the last "Post" asyncEvent (also an "edge trigger event") of a given promise.
-   * That update must have `rootId` < `beforeRootId`
+   * That update must have `rootId` < `beforeRootId`.
    *
    * @param {DataProvider} dp
    * @return {AsyncEventUpdate}
    */
-  getPreviousPostAsyncEventOfPromise(dp, promiseId, beforeRootId) {
+  getPreviousPostOrResolveAsyncEventOfPromise(dp, promiseId, beforeRootId) {
+    // NOTE: the index only references `POST` + `Resolve` updates
     const updates = dp.indexes.asyncEventUpdates.byPromise.get(promiseId);
     let postUpdate = updates && findLast(updates, update => update.rootId < beforeRootId);
     if (postUpdate && AsyncEventUpdateType.is.PostThen(postUpdate.type) && postUpdate.nestedPromiseId) {
       // recurse on nested promises
-      postUpdate = dp.util.getPreviousPostAsyncEventOfPromise(postUpdate.nestedPromiseId, beforeRootId);
+      postUpdate = dp.util.getPreviousPostOrResolveAsyncEventOfPromise(postUpdate.nestedPromiseId, beforeRootId);
     }
+
     return postUpdate;
   },
 
+  
   /** @param {DataProvider} dp */
-  getFirstPostAsyncEventOfPromise(dp, promiseId) {
+  getFirstPostOrResolveAsyncEventOfPromise(dp, promiseId) {
     return dp.indexes.asyncEventUpdates.byPromise.getFirst(promiseId);
   },
-
-
-  // TODO: fix this!
 
 
   /** @param {DataProvider} dp */
@@ -1555,7 +1555,7 @@ export default {
 
     const isNested = !!nestedPromiseId;
     const isNestedChain = util.isNestedChain(nestedPromiseId, schedulerTraceId);
-    const nestedUpdate = nestedPromiseId && util.getPreviousPostAsyncEventOfPromise(nestedPromiseId, postEventRootId) || null;
+    const nestedUpdate = nestedPromiseId && util.getPreviousPostOrResolveAsyncEventOfPromise(nestedPromiseId, postEventRootId) || null;
     const { rootId: nestedRootId = 0 } = nestedUpdate ?? EmptyObject;
 
     return {
@@ -1595,7 +1595,7 @@ export default {
       promiseId: prePromiseId,
     } = preEventUpdate;
 
-    const previousPostUpdate = util.getPreviousPostAsyncEventOfPromise(prePromiseId, postEventRootId);
+    const previousPostUpdate = util.getPreviousPostOrResolveAsyncEventOfPromise(prePromiseId, postEventRootId);
     const isNested = !!nestedPromiseId;
     const isChainedToRoot = util.isPromiseChainedToRoot(preEventRunId, postPromiseId);
     // const isNestedChain = this.isNestedChain(nestedPromiseId, schedulerTraceId);
@@ -1637,13 +1637,13 @@ export default {
 
   /** @param {DataProvider} dp */
   getPostEventUpdateData(dp, postEventUpdate) {
-    if (AsyncEventUpdateType.PostAwait.is(postEventUpdate.type)) {
+    if (AsyncEventUpdateType.is.PostAwait(postEventUpdate.type)) {
       return dp.util.getPostAwaitData(postEventUpdate);
     }
-    if (AsyncEventUpdateType.PostThen.is(postEventUpdate.type)) {
-      return dp.util.getPostAwaitData(postEventUpdate);
+    if (AsyncEventUpdateType.is.PostThen(postEventUpdate.type)) {
+      return dp.util.getPostThenData(postEventUpdate);
     }
-    if (AsyncEventUpdateType.PostCallback.is(postEventUpdate.type)) {
+    if (AsyncEventUpdateType.is.PostCallback(postEventUpdate.type)) {
       return dp.util.getPostCallbackData(postEventUpdate);
     }
     throw new Error(`Invalid AsyncEventUpdateType for postEventUpdate: ${JSON.stringify(postEventUpdate)}`);

@@ -21,68 +21,49 @@ export default class ExecutionContext {
    * @type {number}
    */
   stackDepth;
-  
+
   /**
    * @type {number}
    */
   runId;
-  
+
   /**
    * @type {number}
    */
-  parentContextId ;
-  
+  parentContextId;
+
   /**
    * @type {number}
    */
   parentTraceId;
-  
+
   /**
    * @type {number}
    */
-  contextId ;
-  
+  contextId;
+
   /**
    * @type {number}
    */
-  staticContextId ;
-  
+  staticContextId;
+
   /**
    * @type {number}
    */
-  orderId ;
-  
+  orderId;
+
   /**
    * @type {number}
    */
-  schedulerTraceId ;
-  
+  schedulerTraceId;
+
   /**
    * @type {number}
    */
   createdAt;
-  
+
   /**
    * @type {number}
    */
   lastTraceId;
-
-  /**
-   * This is probably not necessary.
-   * We can also find all children by searching for all contexts whose `schedulerId` equals this' `contextId`.
-   */
-  // addScheduledChild(scheduledContextId) {
-  //   // this.scheduledChildren = this.scheduledChildren || [];
-  //   // this.scheduledChildren.push(scheduledContextId);
-  // }
-
-  /**
-   * @type {Number}
-   */
-  promiseId;
-
-  /**
-   * @type {Number}
-   */
-  threadId;
 }

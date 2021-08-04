@@ -1,7 +1,6 @@
 import omit from 'lodash/omit';
-import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
-import AsyncEventUpdateType, { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
+import AsyncEventUpdateType, { isPostEventUpdate, isPreEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import { makeTreeItem, makeTreeItems } from '../../helpers/treeViewHelpers';
 import { ContextTDNode, TraceTypeTDNode } from './traceInfoNodes';
 import TraceDetailNode from './traceDetailNode';
@@ -38,7 +37,7 @@ export class DebugTDNode extends TraceDetailNode {
   mapPostAsyncEvent = (postEventUpdate) => {
     return {
       ...postEventUpdate,
-      ...this.dp.util.getPostAwaitData(postEventUpdate)
+      ...this.dp.util.getPostEventUpdateData(postEventUpdate)
     };
   }
 
@@ -119,7 +118,7 @@ export class DebugTDNode extends TraceDetailNode {
     const postEventUpdateData = postEventUpdates?.map(this.mapPostAsyncEvent);
 
     // many PRE events per `rootId`
-    const preEventUpdates = asyncEventUpdates?.filter(({ type }) => !isPostEventUpdate(type));
+    const otherEventUpdates = asyncEventUpdates?.filter(({ type }) => !isPostEventUpdate(type));
 
     const asyncContainerNode = [
       'Async',
@@ -131,7 +130,7 @@ export class DebugTDNode extends TraceDetailNode {
           { description: `${postEventUpdateData?.map(upd => AsyncEventUpdateType.nameFrom(upd.type)) || ''}` }
         ),
         ...makeObjectArrayNodes({
-          PreUpdates: preEventUpdates
+          OtherUpdates: otherEventUpdates
         }),
       },
       {

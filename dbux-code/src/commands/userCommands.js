@@ -38,7 +38,7 @@ export function initUserCommands(extensionContext) {
 
   const defaultImportFolder = path.join(__dirname, '../../samples/data');
   const applicationRelativeRoot = getCodeDirectory();
-  
+
   async function doExport(application) {
     const exportFolder = path.join(__dirname, '../../analysis/__data__/');
     const applicationName = application.getSafeFileName();
@@ -169,12 +169,35 @@ export function initUserCommands(extensionContext) {
 
     // input traceId
     // TOTRANSLATE
-    const userInput = await window.showInputBox({ placeHolder: 'input a traceId' });
+    let userInput = await window.showInputBox({ placeHolder: 'please input a traceId' });
     if (!userInput) {
       // user canceled selection
       return;
     }
-    const traceId = parseInt(userInput, 10);
+
+    const dp = allApplications.getById(applicationId).dataProvider;
+
+    let traceId;
+    if (userInput.startsWith('c')) {
+      // get context
+      const contextId = parseInt(userInput.substring(1), 10);
+      traceId = dp.util.getFirstTraceOfContext(contextId)?.traceId;
+      if (!traceId) {
+        await showErrorMessage(`Invalid contextId: ${userInput.substring(1)}`);
+        return;
+      }
+    }
+    else if (userInput.startsWith('r')) {
+      // get run
+      const runId = parseInt(userInput.substring(1), 10);
+      traceId = dp.util.getFirstTraceOfRun(runId);
+    }
+    else {
+      if (userInput.startsWith('t')) {
+        userInput = userInput.substring(1);
+      }
+      traceId = parseInt(userInput, 10);
+    }
     if (isNaN(traceId)) {
       // TOTRANSLATE
       await showErrorMessage(`Can't convert ${userInput} into integer`);
@@ -182,7 +205,6 @@ export function initUserCommands(extensionContext) {
     }
 
     // select trace
-    const dp = allApplications.getById(applicationId).dataProvider;
     const trace = dp.collections.traces.getById(traceId);
     if (!trace) {
       // TOTRANSLATE

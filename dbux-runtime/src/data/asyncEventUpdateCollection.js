@@ -7,6 +7,8 @@ import Collection from './Collection';
 
 
 export class AsyncEventUpdateCollection extends Collection {
+  lastPostUpdate;
+
   constructor() {
     super('asyncEventUpdates');
   }
@@ -32,6 +34,7 @@ export class AsyncEventUpdateCollection extends Collection {
   addPostAwaitUpdate(upd) {
     upd.type = AsyncEventUpdateType.PostAwait;
     this._addUpdate(upd);
+    this.lastPostUpdate = upd;
     return upd;
   }
 
@@ -50,6 +53,7 @@ export class AsyncEventUpdateCollection extends Collection {
   addPostThenUpdate(upd) {
     upd.type = AsyncEventUpdateType.PostThen;
     this._addUpdate(upd);
+    this.lastPostUpdate = upd;
     return upd;
   }
 
@@ -68,7 +72,18 @@ export class AsyncEventUpdateCollection extends Collection {
   addPostCallbackUpdate(upd) {
     upd.type = AsyncEventUpdateType.PostCallback;
     this._addUpdate(upd);
+    this.lastPostUpdate = upd;
     return upd;
+  }
+
+  addResolveUpdate(upd) {
+    upd.type = AsyncEventUpdateType.Resolve;
+    this._addUpdate(upd);
+    return upd;
+  }
+
+  getLastPostUpdate() {
+    return this.lastPostUpdate;
   }
 }
 

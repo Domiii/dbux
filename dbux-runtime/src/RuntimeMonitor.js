@@ -1,6 +1,6 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import ExecutionContextType from '@dbux/common/src/types/constants/ExecutionContextType';
-import TraceType, { isBeforeCallExpression, isPopTrace } from '@dbux/common/src/types/constants/TraceType';
+import TraceType, { isBeforeCallExpression, isClassDefinitionTrace, isFunctionDefinitionTrace, isPopTrace } from '@dbux/common/src/types/constants/TraceType';
 // import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import isThenable from '@dbux/common/src/util/isThenable';
@@ -145,7 +145,7 @@ export default class RuntimeMonitor {
     const { contextId } = context;
 
     if (!parentContextId) {
-      this.updateVirtualContextRoot(contextId);
+      this._runtime._updateVirtualRootContext(contextId);
     }
     this._runtime.push(contextId, isInterruptable);
 
@@ -402,7 +402,7 @@ export default class RuntimeMonitor {
       const resumeInProgramStaticTraceId = 0;
       const resumeContextId = this.pushResume(programId, resumeStaticContextId, resumeInProgramStaticTraceId);
 
-      this.updateVirtualContextRoot(resumeContextId);
+      this._runtime._updateVirtualRootContext(resumeContextId);
 
       // debug(awaitArgument, 'is awaited at context', awaitContextId);
 
@@ -461,7 +461,7 @@ export default class RuntimeMonitor {
 
     resumeContextId = resumeContextId || this._runtime.peekCurrentContextId();
     const context = executionContextCollection.getById(resumeContextId);
-    
+
     if (Verbose) {
       debug(
         // ${JSON.stringify(staticContext)}
@@ -489,23 +489,13 @@ export default class RuntimeMonitor {
 
   updateExecutionContextPromiseId(contextId, promiseId) {
     debug('update execution context promise id', contextId, promiseId);
-    
+
     // [edit-after-send]
     executionContextCollection.getById(contextId).promiseId = promiseId;
   }
 
   isValidContext() {
     return this._runtime._executingStack?.length?.();
-  }
-  
-  /**
-   * Called:
-   * * during `pushImmediate`, if there is no parent on the stack
-   * * during `postAwait`, after `pushResume`
-   */
-  updateVirtualContextRoot(contextId) {
-    debug(`[updateVirtualContextRoot] ${contextId}`);
-    this._runtime._virtualRootContextId = contextId;
   }
 
   // ###########################################################################
@@ -732,6 +722,8 @@ export default class RuntimeMonitor {
         publicMethods: publicMethodNames
       } } = staticTraceCollection.getById(staticTraceId);
 
+      // console.warn('traceClass', publicMethodNames, value.prototype[publicMethodNames[0]]);
+
       // add staticMethod nodes
       for (let i = 0; i < staticMethodNames.length; ++i) {
         // NOTE: we cannot access private static methods dynamically, that is why we do this
@@ -838,10 +830,6 @@ export default class RuntimeMonitor {
   // CallExpression
   // ###########################################################################
 
-  instrumentCallee(callee, calleeTid) {
-    return callee;
-  }
-
   // traceCallee(programId, value, tid, declarationTid) {
   //   this.traceExpression(programId, value, tid, declarationTid);
   //   return value;
@@ -893,7 +881,7 @@ export default class RuntimeMonitor {
 
     // console.trace(`BCE`, callee.toString(), callee);
 
-    return this.instrumentCallee(callee, calleeTid);
+    return this.callbackPatcher.monkeyPatchCallee(callee, calleeTid);
   }
 
   traceCallResult(programId, value, tid, callTid) {

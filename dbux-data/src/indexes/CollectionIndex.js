@@ -324,7 +324,7 @@ export default class CollectionIndex {
   getUniqueNotNull(key) {
     const entry = this.getUnique(key);
     if (key && !entry) {
-      this.logger.error(`Cannot getUnique entry for key: ${key}`);
+      this.logger.error(`getUniqueNotNull returned null for key: ${key}`);
     }
     return entry;
   }

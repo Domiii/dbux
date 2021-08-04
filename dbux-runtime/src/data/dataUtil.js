@@ -1,3 +1,4 @@
+import { isFunctionDefinitionTrace } from '@dbux/common/src/types/constants/TraceType';
 import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import dataNodeCollection from './dataNodeCollection';
@@ -68,9 +69,9 @@ export function getBCECalleeFunctionRef(bceTrace) {
  */
 export function peekBCEContextCheckCallee(callId) {
   const bceTrace = traceCollection.getById(callId);
-  const context = executionContextCollection.getLastRealContext();
-
   const calleeRef = bceTrace && getBCECalleeFunctionRef(bceTrace);
+
+  const context = executionContextCollection.getLastRealContext();
   const contextFunctionRef = getFunctionRefByContext(context);
   return calleeRef && calleeRef === contextFunctionRef && context || null;
 }
@@ -97,14 +98,17 @@ export function peekBCEMatchCallee(func) {
 }
 
 
+/**
+ * @returns The last opened context, if it is the execution of given `func`.
+ */
 export function peekContextCheckCallee(func) {
   const functionRef = valueCollection.getRefByValue(func);
   if (!functionRef) {
     return null;
   }
   const context = executionContextCollection.getLastRealContext();
-  const lastFunctionRef = context && getFunctionRefByContext(context);
-  return functionRef && lastFunctionRef && context || null;
+  const contextFunctionRef = context && getFunctionRefByContext(context);
+  return functionRef === contextFunctionRef ? context : null;
 }
 
 // ###########################################################################
@@ -117,4 +121,29 @@ export function isFirstContextInParent(contextId) {
 
 export function isRootContext(contextId) {
   return !executionContextCollection.getById(contextId).parentContextId;
+}
+
+// ###########################################################################
+//
+// ###########################################################################
+
+export function getFirstTraceOfRefValue(value) {
+  const ref = valueCollection.getRefByValue(value);
+  if (!ref) { return null; }
+
+  const { nodeId } = ref;
+  const dataNode = dataNodeCollection.getById(nodeId);
+  if (!dataNode) { return null; }
+
+  const { traceId } = dataNode;
+  return traceCollection.getById(traceId);
+}
+
+export function isInstrumentedFunction(func) {
+  const trace = getFirstTraceOfRefValue(func);
+  if (!trace) { return false; }
+  const staticTrace = staticTraceCollection.getById(trace.staticTraceId);
+  if (!staticTrace) { return false; }
+
+  return isFunctionDefinitionTrace(staticTrace.type);
 }

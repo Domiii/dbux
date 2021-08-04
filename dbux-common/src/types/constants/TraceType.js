@@ -123,7 +123,7 @@ export function isTraceFunctionExit(traceType) {
 
 const dynamicTypeTypes = new Array(TraceType.getValueMaxIndex()).map(() => false);
 // shared w/ PushCallback + PopCallback
-dynamicTypeTypes[TraceType.CallbackArgument] = true;  
+// dynamicTypeTypes[TraceType.CallbackArgument] = true;  
 // might be shared w/ CallbackArgument, PushCallback + PopCallback
 
 export function hasDynamicTypes(traceType) {
@@ -135,7 +135,6 @@ const expressionTypes = new Array(TraceType.getValueMaxIndex()).map(() => false)
 expressionTypes[TraceType.BeforeCallExpression] = true;
 expressionTypes[TraceType.ExpressionResult] = true;
 expressionTypes[TraceType.ExpressionValue] = true;
-expressionTypes[TraceType.CallbackArgument] = true;
 expressionTypes[TraceType.CallExpressionResult] = true;
 expressionTypes[TraceType.UpdateExpression] = true;
 expressionTypes[TraceType.Identifier] = true;
@@ -196,6 +195,24 @@ declarationTypes[TraceType.CatchParam] = true;
 
 export function isDeclarationTrace(traceType) {
   return declarationTypes[traceType];
+}
+
+const classTypes = new Array(TraceType.getValueMaxIndex()).map(() => false);
+classTypes[TraceType.ClassDeclaration] = true;
+classTypes[TraceType.ClassDefinition] = true;
+classTypes[TraceType.ClassInstance] = true;
+
+export function isClassDefinitionTrace(traceType) {
+  return classTypes[traceType];
+}
+
+// NOTE: classes are also functions
+const functionTypes = [...classTypes];
+functionTypes[TraceType.FunctionDeclaration] = true;
+functionTypes[TraceType.FunctionDefinition] = true;
+
+export function isFunctionDefinitionTrace(traceType) {
+  return functionTypes[traceType];
 }
 
 export default TraceType;

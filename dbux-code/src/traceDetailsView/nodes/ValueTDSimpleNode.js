@@ -14,7 +14,10 @@ export default class ValueTDSimpleNode extends ValueNode {
     if (dataNode && !dataNode.refId) {
       return dataNode;
     }
-
+    if (!dataNode) {
+      // render empty value
+      return {};
+    }
     return null;
   }
 
@@ -30,6 +33,12 @@ export default class ValueTDSimpleNode extends ValueNode {
 
   static makeLabel(dataNode, parent, { key, value }) {
     return `${key}: ${value}`;
+  }
+
+  init() {
+    if (this.entry?.value === undefined) {
+      this.description = '(no value or undefined)';
+    }
   }
 
   canHaveChildren() {
