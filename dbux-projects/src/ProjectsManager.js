@@ -284,7 +284,7 @@ export default class ProjectsManager {
 
     // notify event listeners
     !load && emitPracticeSessionEvent('started', this.practiceSession);
-    this._emitter.emit('practiceSessionStateChanged');
+    this._notifyPracticeSessionStateChanged();
   }
 
   // ########################################
@@ -299,7 +299,7 @@ export default class ProjectsManager {
 
     const bugProgress = this.bdp.getBugProgressByBug(bug);
     if (!bugProgress) {
-      warn(`Can't find bugProgress when starting existing PracticeSession for bug ${bug.id}`);
+      warn(`Can't find bugProgress when recovering PracticeSession of bug "${bug.id}"`);
       return;
     }
 
@@ -333,12 +333,20 @@ export default class ProjectsManager {
   }
 
   // ########################################
-  // PracticeSession: util
+  // PrcaticeSession: events
   // ########################################
-
+  
   onPracticeSessionStateChanged(cb) {
     return this._emitter.on('practiceSessionStateChanged', cb);
   }
+
+  _notifyPracticeSessionStateChanged() {
+    this._emitter.emit('practiceSessionStateChanged');
+  }
+
+  // ########################################
+  // PracticeSession: util
+  // ########################################
 
   /**
    * @return {Promise<boolean>}

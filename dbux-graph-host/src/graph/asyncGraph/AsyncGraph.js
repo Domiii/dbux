@@ -60,6 +60,13 @@ class AsyncGraph extends HostComponentEndpoint {
     const asyncNodes = appData.asyncNodesInOrder.getAll();
     return asyncNodes.map((asyncNode, index) => {
       const { applicationId, rootContextId, threadId } = asyncNode;
+
+      if (!rootContextId) {
+        // sanity check
+        this.logger.warn(`Invalid asyncNode had invalid rootContextId ${asyncNode.rootContextId} -`, asyncNode);
+        return null;
+      }
+
       const app = allApplications.getById(applicationId);
       const dp = app.dataProvider;
       const context = dp.collections.executionContexts.getById(rootContextId);
