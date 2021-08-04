@@ -8,6 +8,10 @@ class A {
   1 = 1;
   2 = 2;
   [++X] = 123;
+
+  static [Symbol.for('nodejs.util.inspect.custom')]() {
+    return this.name;
+  }
 }
 
 console.log(new A()[2] + new A()[2]);

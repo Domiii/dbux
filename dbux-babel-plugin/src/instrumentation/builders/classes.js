@@ -107,6 +107,9 @@ function buildTraceClassCall(classVar, state, traceCfg) {
     }
   } = traceCfg;
 
+  // TODO: fix buildMethodsArray(state, classVar, staticMethods)
+  // TODO: trace static + public method computed properties
+
   const { ids: { aliases: { traceClass } } } = state;
 
   return t.expressionStatement(

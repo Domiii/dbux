@@ -6,11 +6,12 @@ import { some } from 'lodash';
 // import executionContextCollection from './data/executionContextCollection';
 // import traceCollection from './data/traceCollection';
 // import valueCollection from './data/valueCollection';
-import { isFirstContextInParent, isRootContext } from '../data/dataUtil';
+import { isFirstContextInParent, isRootContext, peekBCEContextCheckCallee } from '../data/dataUtil';
 import ThenRef from '../data/ThenRef';
 // eslint-disable-next-line max-len
 import { getPromiseData, getPromiseId, getPromiseOwnAsyncFunctionContextId, pushPromisePendingRootId, setPromiseData } from './patchPromise';
 import asyncEventUpdateCollection from '../data/asyncEventUpdateCollection';
+import executionContextCollection from '../data/executionContextCollection';
 
 /** @typedef { import("./Runtime").default } Runtime */
 
@@ -98,16 +99,23 @@ export default class RuntimeAsync {
     //     return;
     //   }
 
-    //   const callId = trace.resultCallId;
-    //   const calledContext = peekBCEContextCheckCallee(callId);
+    const callId = trace.resultCallId;
+    const calledContext = peekBCEContextCheckCallee(callId);
 
-    //   let calledContextId;
-    //   let lastAwaitData;
+    if (callId === 515173) {
+      const promiseId = getPromiseId(promise);
+      const lastContext = executionContextCollection.getLastRealContext();
+      const lastAwaitData = this.lastAwaitByRealContext.get(contextId);
+      console.trace('traceCallPromiseResult',
+        { callId, contextId, calledContext: !!calledContext, promiseId, trace, lastContext, lastAwaitData });
+    }
 
-    //   if (calledContext) {
-    //     calledContextId = calledContext?.contextId;
-    //     lastAwaitData = this.setAsyncContextPromise(calledContextId, promise);
-    //   }
+    let calledContextId;
+
+    if (calledContext) {
+      calledContextId = calledContext?.contextId;
+      this.setAsyncContextPromise(calledContextId, promise);
+    }
     //   // else if (!getFunctionRefByContext(executionContextCollection.getLastRealContext())) {
     //   //   // eslint-disable-next-line max-len
     //   //   this.logger.warn(`[traceCallPromiseResult] function is not instrumented, trace=${traceCollection.makeTraceInfo(trace.traceId)}, lastContextId=${executionContextCollection.getLastRealContext()?.contextId}`);
@@ -541,7 +549,9 @@ export default class RuntimeAsync {
       ...previousData,
       ...data
     };
-    // this.logger.debug(`updateLastAwaitByRealContext`, realContextId, data);
+    if (!previousData) {
+      this.logger.debug(`updateLastAwaitByRealContext (first await)`, realContextId, data);
+    }
     this.lastAwaitByRealContext.set(realContextId, data);
     return data;
   }

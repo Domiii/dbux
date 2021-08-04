@@ -130,7 +130,7 @@ export default class Class extends BasePlugin {
       meta: {
       }
     };
-    console.warn('classTraceData', classTraceData.staticTraceData);
+    // console.warn('classTraceData', classTraceData.staticTraceData);
     return Traces.addTrace(merge(classTraceData, moreTraceData));
   }
 }

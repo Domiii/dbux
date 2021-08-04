@@ -65,7 +65,7 @@ export function getBCECalleeFunctionRef(bceTrace) {
 }
 
 /**
- * @return {ExecutionContext} the context of the call of given `callId`, if it matches the BCE.
+ * @return {ExecutionContext} The context of the call of given `callId`, if it is the last executed context.
  */
 export function peekBCEContextCheckCallee(callId) {
   const bceTrace = traceCollection.getById(callId);

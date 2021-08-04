@@ -889,7 +889,10 @@ export default class RuntimeMonitor {
       return value;
     }
     const trace = traceCollection.getById(tid);
+    
+    // [edit-after-send]
     trace.resultCallId = callTid;
+    
     this.traceExpression(programId, value, tid, 0);
 
     const contextId = this._runtime.peekCurrentContextId();

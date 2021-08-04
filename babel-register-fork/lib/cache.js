@@ -333,3 +333,7 @@ function clear() {
   // fs.rmdirSync(CACHE_DIR, { recursive: true });
   // data = {};
 }
+
+// function deleteCache() {
+//   fs.rmdirSync(CACHE_DIR, { recursive: true });
+// }
