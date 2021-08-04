@@ -218,15 +218,17 @@ html, body {
 
 .async-node {
   border: 1px solid transparent;
-  min-height: 1.6em;
-  min-width: 1.2em;
+  min-height: 1.6rem;
+  min-width: 1.2rem;
   line-height: 1.1;
   padding: 1.5px;
 }
 
 [data-async-detail-mode="1"] .async-node {
-  min-height: 2.8em;
-  min-width: 5em;
+  min-height: 2.8rem;
+  min-width: 5rem;
+  max-width: 10rem;
+  width: fit-content;
 }
 
 .async-node:hover:not([data-async-node-id=""]) {

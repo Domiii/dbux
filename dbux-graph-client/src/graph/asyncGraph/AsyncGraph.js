@@ -91,7 +91,7 @@ class AsyncGraph extends ClientComponentEndpoint {
           </div>
           <div class="async-detail flex-column cross-axis-align-center">
             <div class="flex-row">
-              <div>${displayName}</div>
+              <div class="ellipsis-10">${displayName}</div>
               ${buttons}
             </div>
             <div class="async-loc-label gray">
@@ -138,14 +138,16 @@ class AsyncGraph extends ClientComponentEndpoint {
   }
 
   handleClickAsyncNode(asyncNodeEl) {
-    const { asyncNodeId, applicationId } = asyncNodeEl.dataset;
+    const asyncNodeId = Number(asyncNodeEl.dataset.asyncNodeId);
+    const applicationId = Number(asyncNodeEl.dataset.asyncNodeId);
+
     if (asyncNodeId) {
       this.remote.gotoAsyncNode(applicationId, asyncNodeId);
     }
   }
 
   handleClickAsyncButton(asyncNodeEl, buttonEl) {
-    const { buttonType } = buttonEl.dataset;
+    const buttonType = Number(buttonEl.dataset.buttonType);
     AsyncButtonClasses[buttonType].handleClick(this, asyncNodeEl.dataset, buttonEl.dataset);
   }
 }
