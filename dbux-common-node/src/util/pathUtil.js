@@ -9,7 +9,7 @@ import path from 'path';
  */
 export function whichNormalized(command) {
   const fpath = sh.which(command);
-  return fpath ?? pathNormalized(fpath.toString());
+  return fpath ? pathNormalized(fpath.toString()) : null;
 }
 
 export function realPathSyncNormalized(fpath, options) {
