@@ -128,7 +128,7 @@ export default class AsyncEventUpdateCollection extends Collection {
       // Case 2: nested promise is chained into the same thread: CHAIN
       // CHAIN with nested promise: get `fromRootId` of latest `PostThen` or `PostAwait` (before this one) of promise.
       fromRootId = nestedRootId;
-      fromThreadId = toThreadId = util.getAsyncRootThreadId(nestedRootId);
+      fromThreadId = toThreadId = this.getOrAssignRootThreadId(nestedRootId, schedulerTraceId);
       // }
     }
     else if (!promiseId || util.isPromiseChainedToRoot(preEventRunId, promiseId)) {
@@ -204,7 +204,7 @@ export default class AsyncEventUpdateCollection extends Collection {
     if (previousPostUpdate) { // NOTE: similar to `!isFirstAwait`
       // Case 1: pre-then promise has its own async updates (has already encountered PostAwait or PostThen)
       fromRootId = previousPostUpdate.rootId;
-      fromThreadId = toThreadId = util.getAsyncRootThreadId(fromRootId);
+      fromThreadId = toThreadId = this.getOrAssignRootThreadId(fromRootId, schedulerTraceId);
     }
     else if (isChainedToRoot) {
       // Case 2: no previous Post update but chained to root -> CHAIN
