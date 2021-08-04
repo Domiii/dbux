@@ -502,7 +502,9 @@ export default class Runtime {
 
   _runFinished() {
     this._executingStack = null;
-    this._virtualRootContextFinished(0);
+
+    // NOTE: don't unset this, so `postThen` always gets access to it
+    // this._virtualRootContextFinished(0);
 
     // TODO: change to post-process all `virtualRootContexts` of run
 

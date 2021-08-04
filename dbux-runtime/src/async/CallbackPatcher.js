@@ -3,15 +3,17 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import { isFunction } from 'lodash';
 import valueCollection from '../data/valueCollection';
-import { peekBCEMatchCallee } from '../data/dataUtil';
+import { peekBCEMatchCallee, getFirstTraceOfRefValue, isInstrumentedFunction } from '../data/dataUtil';
 import { monkeyPatchGlobalRaw } from '../util/monkeyPatchUtil';
 import executionContextCollection from '../data/executionContextCollection';
 
 
-
-// TODO: fix `bind` et al -> need a new identity for functions that goes beyond `refId`
-// TODO: add promise<->callback bindings
-// TODO: experiment with different types of event<->thread bindings
+/**
+ * @see https://stackoverflow.com/a/30760236
+ */
+function isClass(value) {
+  return typeof value === 'function' && /^\s*class\s+/.test(value.toString());
+}
 
 
 
@@ -102,5 +104,35 @@ export default class CallbackPatcher {
         return timer;
       }
     );
+  }
+
+  // ###########################################################################
+  // monkeyPatchCallee
+  // ###########################################################################
+
+  monkeyPatchCallee(callee, calleeTid) {
+    if (!isClass(callee)) {
+      // callee is (probably) function, not es6 ctor
+
+      // const trace = getFirstTraceOfRefValue(callee);
+      // const staticTrace = trace && staticTraceCollection.getById(trace.staticTraceId);
+      // const traceType = staticTrace?.type;
+      // const isInstrumentedFunction = traceType && isFunctionDefinitionTrace(traceType);
+
+      if (!isInstrumentedFunction(callee)) {
+        // TODO: fix for `bind`, `apply`, `call` -> need a new identity for functions that goes beyond `refId`
+        //    What about ramda etc?
+        //    -> no-op if not asynchronously called
+
+        // not instrumented -> monkey patch it
+        // TODO: patch -> auto-instrument all function arguments
+      }
+    }
+    else {
+      // ignore un-instrumented ctors for now
+      // future-work: make this work
+    }
+
+    return callee;
   }
 }

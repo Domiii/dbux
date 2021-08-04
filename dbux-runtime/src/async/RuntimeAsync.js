@@ -433,7 +433,9 @@ export default class RuntimeAsync {
     const runId = this._runtime.getCurrentRunId();
     const postEventRootId = this.getCurrentVirtualRootContextId();
 
-    // console.trace(`postThen`, getPromiseId(postEventPromise), '->', getPromiseId(returnValue));
+    if (!postEventRootId) {
+      console.trace(`postThen`, getPromiseId(postEventPromise), thenRef, { runId, postEventRootId });
+    }
 
     // store update
     asyncEventUpdateCollection.addPostThenUpdate({

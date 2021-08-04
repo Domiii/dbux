@@ -280,8 +280,8 @@ function patchPromiseMethods(holder) {
 function patchPromiseClass(BasePromiseClass) {
   class PatchedPromise extends BasePromiseClass {
     constructor(executor) {
-      const executorRef = valueCollection.getRefByValue(executor);
-      const isCallbackInstrumented = !!executorRef && typeof executor === 'function';
+      const bceTrace = peekBCEMatchCallee(PatchedPromise);
+      const isCallbackInstrumented = !!bceTrace && typeof executor === 'function'; // check if its a function, too
       let wrapExecutor;
       /**
        * NOTE: In case, `resolve` or `reject` is called synchronously from the ctor, `this` cannot be accessed because `super` has not finished yet.

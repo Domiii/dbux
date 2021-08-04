@@ -11,3 +11,4 @@ class A {
 var a = new A();
 
 console.log(a.x);
+console.log(A.prototype.f);

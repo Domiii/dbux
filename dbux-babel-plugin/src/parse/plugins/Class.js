@@ -49,14 +49,17 @@ export default class Class extends BasePlugin {
       // memberTrace
       // ################################################################################
 
-      const isMethod = memberNode instanceof ClassMethod && memberNode.kind === 'method';
+      const astNode = memberNode.path.node;
+      const isMethod = memberNode instanceof ClassMethod && astNode.kind === 'method';
+
+      // console.warn(memberNode.path.toString(), isMethod);
 
       const memberTraceCfg = memberNode.addTrace();   // addTrace
 
       // register all method names
       if (isMethod) {
-        const { static: isStatic } = memberNode.path.node;
-        const { isPublic } = memberNode;
+        const { static: isStatic } = astNode;
+        const { isPublic, name } = memberNode;
         
         let methods;
         if (isStatic) {
@@ -66,7 +69,7 @@ export default class Class extends BasePlugin {
           methods = isPublic ? publicMethods : privateMethods;
         }
         methods.push({
-          name: memberNode.name,
+          name,
           trace: memberTraceCfg
         });
       }
@@ -127,6 +130,7 @@ export default class Class extends BasePlugin {
       meta: {
       }
     };
+    console.warn('classTraceData', classTraceData.staticTraceData);
     return Traces.addTrace(merge(classTraceData, moreTraceData));
   }
 }

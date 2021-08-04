@@ -99,7 +99,7 @@ export function instrumentClassDeclaration(state, traceCfg) {
 // injectTraceClass
 // ###########################################################################
 
-function buildTraceClass(classVar, state, traceCfg) {
+function buildTraceClassCall(classVar, state, traceCfg) {
   const {
     data: {
       staticMethods,
@@ -134,7 +134,7 @@ function injectTraceClass(classVar, state, traceCfg) {
   const bodyPath = path.get('body');
 
   // dbux.traceClass
-  const traceClassCall = buildTraceClass(classVar, state, traceCfg);
+  const traceClassCall = buildTraceClassCall(classVar, state, traceCfg);
 
   const isComputed = false;
   const isStatic = true;
