@@ -65,26 +65,6 @@ export class DebugTDNode extends TraceDetailNode {
     const dataTraceId = dp.util.getValueTrace(traceId)?.traceId || traceId;
 
     // ###########################################################################
-    // dataNodes
-    // ###########################################################################
-    const dataNodes = dp.util.getDataNodesOfTrace(dataTraceId);
-
-    let dataNode;
-    if (nodeId) {
-      dataNode = dp.collections.dataNodes.getById(nodeId);
-    }
-    else {
-      dataNode = dataNodes?.[0];
-    }
-
-    const dataNodeLabel = dataNode ? `dataNodes[${dataNodes?.indexOf(dataNode)}]` : `dataNodes: []`;
-    const dataNodeCount = dataNodes?.length || 0;
-
-    const allDataNodes = [];
-    dataNodeCount > 0 && allDataNodes.push([dataNodeLabel, dataNode, { description: `nodeId=${dataNode.nodeId}, valueId=${dataNode.valueId}, accessId=${dataNode.accessId}` }]);
-    dataNodeCount > 1 && allDataNodes.push([`all dataNodes (${dataNodeCount})`, dataNodes]);
-
-    // ###########################################################################
     // valueRef
     // ###########################################################################
 
@@ -139,6 +119,26 @@ export class DebugTDNode extends TraceDetailNode {
       }
     ];
 
+    // ###########################################################################
+    // dataNodes
+    // ###########################################################################
+    const dataNodes = dp.util.getDataNodesOfTrace(dataTraceId);
+
+    let dataNode;
+    if (nodeId) {
+      dataNode = dp.collections.dataNodes.getById(nodeId);
+    }
+    else {
+      dataNode = dataNodes?.[0];
+    }
+
+    const dataNodeLabel = dataNode ? `dataNodes[${dataNodes?.indexOf(dataNode)}]` : `dataNodes: []`;
+    const dataNodeCount = dataNodes?.length || 0;
+
+    const allDataNodes = [];
+    dataNodeCount > 0 && allDataNodes.push([dataNodeLabel, dataNode, { description: `nodeId=${dataNode.nodeId}, valueId=${dataNode.valueId}, accessId=${dataNode.accessId}` }]);
+    dataNodeCount > 1 && allDataNodes.push([`all dataNodes (${dataNodeCount})`, dataNodes]);
+
 
     // ###########################################################################
     // final result
@@ -152,10 +152,10 @@ export class DebugTDNode extends TraceDetailNode {
       ...makeTreeItems(
         ['trace', otherTraceProps],
         valueNode,
-        ...allDataNodes,
         [`context`, context],
         asyncContainerNode,
         // ['staticTrace', omit(staticTrace, 'loc')],
+        ...allDataNodes,
         ['staticTrace', staticTrace],
         ['staticContext', omit(staticContext, 'loc')],
         // promiseNode

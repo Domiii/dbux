@@ -158,7 +158,7 @@ export default class Collection {
     if (entry && entry._id && entry._id !== id && !this._invalidId) {
       const idx = this._all.findIndex((e, i) => e && e._id !== i);
       const faultyEntry = this._all[idx];
-      let recoverable = idx === faultyEntry._id - 1;
+      let recoverable = faultyEntry ? idx === faultyEntry?._id - 1 : false;
 
       if (recoverable) {
         this._all.splice(idx, 0, null); // pad with a single `null`
@@ -166,7 +166,7 @@ export default class Collection {
         recoverable = entry._id && entry._id === id;
       }
       
-      this._reportInvalidId(idx, faultyEntry, recoverable);
+      this._reportInvalidId(entry._id, id, idx, faultyEntry, recoverable);
 
       if (!recoverable) {
         this._invalidId = true;
@@ -176,8 +176,9 @@ export default class Collection {
     return entry;
   }
 
-  _reportInvalidId(idx, faultyEntry, recoverable) {
-    this.logger.error(`entry._id !== id (recoverable=${recoverable}) - First invalid entry is at #${idx}: ${JSON.stringify(faultyEntry)}`);
+  _reportInvalidId(entryId, id, idx, faultyEntry, recoverable) {
+    // eslint-disable-next-line max-len
+    this.logger.error(`entry._id (${JSON.stringify(entryId)}) !== id (${JSON.stringify(id)}) (recoverable=${recoverable}) - First invalid entry is at #${idx}: ${JSON.stringify(faultyEntry)}`);
   }
 
   getAllActual(startId = 1) {
