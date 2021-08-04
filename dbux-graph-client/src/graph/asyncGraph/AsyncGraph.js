@@ -138,8 +138,8 @@ class AsyncGraph extends ClientComponentEndpoint {
   }
 
   handleClickAsyncNode(asyncNodeEl) {
+    const applicationId = Number(asyncNodeEl.dataset.applicationId);
     const asyncNodeId = Number(asyncNodeEl.dataset.asyncNodeId);
-    const applicationId = Number(asyncNodeEl.dataset.asyncNodeId);
 
     if (asyncNodeId) {
       this.remote.gotoAsyncNode(applicationId, asyncNodeId);
@@ -147,7 +147,7 @@ class AsyncGraph extends ClientComponentEndpoint {
   }
 
   handleClickAsyncButton(asyncNodeEl, buttonEl) {
-    const buttonType = Number(buttonEl.dataset.buttonType);
+    const { buttonType } = buttonEl.dataset;
     AsyncButtonClasses[buttonType].handleClick(this, asyncNodeEl.dataset, buttonEl.dataset);
   }
 }

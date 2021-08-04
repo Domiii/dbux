@@ -62,6 +62,8 @@ class GraphDocument extends HostComponentEndpoint {
   setAsyncGraphMode(mode) {
     if (this.asyncGraphMode !== mode) {
       this.setState({ asyncGraphMode: mode });
+      this.asyncGraph.refresh();
+      this.graphRoot.updateRunNodes();
       this._emitter.emit('asyncGraphModeChanged', mode);
     }
   }

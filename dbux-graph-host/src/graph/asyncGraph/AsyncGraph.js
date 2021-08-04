@@ -26,11 +26,6 @@ class AsyncGraph extends HostComponentEndpoint {
       })
     );
     this.addDisposable(
-      this.context.graphDocument.onAsyncGraphModeChanged(() => {
-        this.refresh();
-      })
-    );
-    this.addDisposable(
       allApplications.selection.data.threadSelection.onSelectionChanged(() => {
         this.refresh();
       })

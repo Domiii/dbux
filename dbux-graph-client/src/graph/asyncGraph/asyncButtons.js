@@ -21,8 +21,8 @@ class ForkButton extends AsyncButton {
   }
 
   static handleClick(asyncGraph, asyncNodeData, buttonData) {
-    const { applicationId } = asyncNodeData;
-    const { parentAsyncNodeId } = buttonData;
+    const applicationId = Number(asyncNodeData.applicationId);
+    const parentAsyncNodeId = Number(buttonData.parentAsyncNodeId);
     if (parentAsyncNodeId) {
       asyncGraph.remote.gotoAsyncNode(applicationId, parentAsyncNodeId);
     }
