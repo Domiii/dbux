@@ -181,7 +181,11 @@ export function initUserCommands(extensionContext) {
     if (userInput.startsWith('c')) {
       // get context
       const contextId = parseInt(userInput.substring(1), 10);
-      traceId = dp.util.getFirstTraceOfContext(contextId);
+      traceId = dp.util.getFirstTraceOfContext(contextId)?.traceId;
+      if (!traceId) {
+        await showErrorMessage(`Invalid contextId: ${userInput.substring(1)}`);
+        return;
+      }
     }
     else if (userInput.startsWith('r')) {
       // get run

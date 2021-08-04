@@ -70,7 +70,7 @@ export default class TraceCollection extends Collection {
       const staticTrace = this.dp.collections.staticTraces.getById(staticTraceId);
       if (staticTrace.data?.specialType === SpecialIdentifierType.Arguments) {
         const dataNode = this.dp.collections.dataNodes.getById(nodeId);
-        const valueRef = this.dp.collections.values.getById(dataNode.refId);
+        const valueRef = dataNode && this.dp.collections.values.getById(dataNode.refId);
         if (valueRef) {
           valueRef.specialObjectType = SpecialObjectType.Arguments;
         }

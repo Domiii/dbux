@@ -155,7 +155,7 @@ export default class Collection {
    */
   getById(id) {
     let entry = this._all[id];
-    if (entry?._id && entry._id !== id && !this._invalidId) {
+    if (entry && entry._id && entry._id !== id && !this._invalidId) {
       const idx = this._all.findIndex((e, i) => e && e._id !== i);
       const faultyEntry = this._all[idx];
       let recoverable = idx === faultyEntry._id - 1;
