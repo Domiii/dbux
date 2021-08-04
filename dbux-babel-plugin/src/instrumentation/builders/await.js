@@ -36,10 +36,12 @@ export const buildWrapAwait = buildTraceCall(
 );
 
 export const buildPostAwait = buildTraceCall(
+  // future-work: I forgot why `tid` was not part of the `postAwait` call?
   `(
   %%resultVar%% = %%awaitNode%%,
   %%postAwait%%(%%resultVar%%, %%argumentVar%%, %%awaitContextIdVar%%),
-  %%tid%%
+  %%tid%%,
+  %%resultVar%%
 )`,
   function buildPostAwait(state, traceCfg) {
     const { ids: { aliases: { 

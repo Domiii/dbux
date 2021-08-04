@@ -289,18 +289,22 @@ function patchPromiseMethods(holder) {
 function patchPromiseClass(BasePromiseClass) {
   class PatchedPromise extends BasePromiseClass {
     constructor(executor) {
-      const wrapExecutor = (resolve, reject) => {
-        const wrapResolve = (result) => {
-          resolve(result);
-        };
-        const wrapReject = (err) => {
-          reject(err);
-        };
+      // TODO: this will also be used for dbux-runtime internal promises. Need to fix that.
+      // const wrapExecutor = (resolve, reject) => {
+      //   if (typeof executor !== 'function') {
+      //     return;
+      //   }
 
-        if (typeof executor === 'function') {
-          executor(wrapResolve, wrapReject);
-        }
-      };
+      //   const wrapResolve = (result) => {
+      //     resolve(result);
+      //   };
+      //   const wrapReject = (err) => {
+      //     reject(err);
+      //   };
+
+      //   executor(wrapResolve, wrapReject);
+      // };
+      const wrapExecutor = executor;
 
       super(wrapExecutor);
 

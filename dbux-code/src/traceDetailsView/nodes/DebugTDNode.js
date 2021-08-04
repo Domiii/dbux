@@ -1,11 +1,8 @@
-import { TreeItem } from 'vscode';
 import omit from 'lodash/omit';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
-import { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
-import { makeTreeItems } from '../../helpers/treeViewHelpers';
+import AsyncEventUpdateType, { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
+import { makeTreeItem, makeTreeItems } from '../../helpers/treeViewHelpers';
 import { ContextTDNode, TraceTypeTDNode } from './traceInfoNodes';
 import TraceDetailNode from './traceDetailNode';
 
@@ -17,7 +14,7 @@ import TraceDetailNode from './traceDetailNode';
 // Debug
 // ###########################################################################
 
-function makeArrayNodes(obj) {
+function makeObjectArrayNodes(obj) {
   return Object.fromEntries(
     Object.entries(obj)
       .map(([name, arr]) => [`${name} (${arr?.length || 0})`, arr || {}])
@@ -37,12 +34,20 @@ export class DebugTDNode extends TraceDetailNode {
     this.description = `id: ${this.trace.traceId}`;
   }
 
+
+  mapPostAsyncEvent = (postEventUpdate) => {
+    return {
+      ...postEventUpdate,
+      ...this.dp.util.getPostAwaitData(postEventUpdate)
+    };
+  }
+
   // makeIconPath(traceDetail) {
   //   return 'string.svg';
   // }
 
   buildChildren() {
-    const { trace } = this;
+    const { trace, dp } = this;
 
     const {
       traceId,
@@ -51,14 +56,9 @@ export class DebugTDNode extends TraceDetailNode {
       rootContextId,
       // runId,
       staticTraceId,
-      applicationId,
       ...otherTraceProps
     } = trace;
-    
-    
-    const application = allApplications.getApplication(applicationId);
-    const { dataProvider: dp } = application;
-    
+
     const context = dp.collections.executionContexts.getById(contextId);
     const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
     const { staticContextId } = context;
@@ -116,34 +116,31 @@ export class DebugTDNode extends TraceDetailNode {
 
     // one POST event per `rootId`
     const postEventUpdates = asyncEventUpdates?.filter(({ type }) => isPostEventUpdate(type));
+    const postEventUpdateData = postEventUpdates?.map(this.mapPostAsyncEvent);
 
     // many PRE events per `rootId`
     const preEventUpdates = asyncEventUpdates?.filter(({ type }) => !isPostEventUpdate(type));
 
-    function evtPrefix(evt) {
-      return `${evt.asyncEventId}: [${AsyncEdgeType.nameFromForce(evt.edgeType)}]`;
-    }
-    const inEvents = dp.indexes.asyncEvents.to.get(rootContextId)
-      ?.map(evt => new TreeItem(`${evtPrefix(evt)} <- ${evt.fromRootContextId}`));
-    const outEvents = dp.indexes.asyncEvents.from.get(rootContextId)
-      ?.map(evt => new TreeItem(`${evtPrefix(evt)} -> ${evt.toRootContextId}`));
     const asyncContainerNode = [
-      'async',
+      'Async',
       {
         AsyncNode: asyncNode,
-        PostUpdate: postEventUpdates?.length === 1 ? postEventUpdates[0] : (postEventUpdates || {}),
-        ...makeArrayNodes({
-          PreUpdates: preEventUpdates,
-          InEvents: inEvents,
-          OutEvents: outEvents
-        })
+        PostEventUpdateData: makeTreeItem(
+          'PostEventUpdateData',
+          postEventUpdateData?.length === 1 ? postEventUpdateData[0] : (postEventUpdateData || {}),
+          { description: `${postEventUpdateData?.map(upd => AsyncEventUpdateType.nameFrom(upd.type)) || ''}` }
+        ),
+        ...makeObjectArrayNodes({
+          PreUpdates: preEventUpdates
+        }),
       },
       {
-        description: `thread=${asyncNode?.threadId}, rootId=${rootContextId}`
+        // eslint-disable-next-line max-len
+        description: `thread=${asyncNode?.threadId}, root=${rootContextId}${postEventUpdateData?.map(upd => ` (${AsyncEventUpdateType.nameFrom(upd.type)})`) || ''}`
       }
     ];
 
-    
+
     // ###########################################################################
     // final result
     // ###########################################################################

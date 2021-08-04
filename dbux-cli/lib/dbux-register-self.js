@@ -1,17 +1,18 @@
 #!/usr/bin/env node
-const process = require('process');
-const babelRegister = require('@babel/register');
+const path = require('path');
 
-// TODO: enable cache in production mode
+// don't cache this
 process.env.BABEL_DISABLE_CACHE = 1;
 
 const defaultBabelOptions = require('../babel.config');
 
+const DbuxRoot = path.resolve(__dirname, '../..');
 
 // babel-register (makes sure that src/* files get babeled upon require)
 const babelRegisterOptions = {
   ...defaultBabelOptions,
   sourceMaps: 'inline',
+  sourceRoot: DbuxRoot,
   ignore: [
     // '**/node_modules/**',
     function shouldIgnore(modulePath) {
@@ -27,4 +28,9 @@ const babelRegisterOptions = {
     }
   ]
 };
+
+
+// eslint-disable-next-line import/newline-after-import,import/order
+const babelRegister = require('@babel/register');
+
 babelRegister(babelRegisterOptions);

@@ -87,15 +87,15 @@ export default class CallbackPatcher {
   patchSetTimeout() {
     monkeyPatchGlobalRaw('setTimeout',
       (_ /* global */, [cb, delayMs, ...args], originalSetTimeout, patchedSetTimeout) => {
-        const isInstrumented = !!peekBCEMatchCallee(patchedSetTimeout);
-        const schedulerTraceId = isInstrumented?.traceId;
-        if (isInstrumented) {
+        const bceTrace = peekBCEMatchCallee(patchedSetTimeout);
+        const schedulerTraceId = bceTrace?.traceId;
+        if (schedulerTraceId) {
           cb = this.patchSetTimeoutCallback(cb, schedulerTraceId);
         }
 
         const timer = originalSetTimeout(cb, delayMs, ...args);
 
-        if (isInstrumented) {
+        if (schedulerTraceId) {
           this.runtime.async.preCallback(schedulerTraceId);
         }
 

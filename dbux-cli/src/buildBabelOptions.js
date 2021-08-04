@@ -58,8 +58,6 @@ function otherArgsToString(otherArgs) {
 }
 
 export default function buildBabelOptions(options) {
-  process.env.BABEL_DISABLE_CACHE = 1;
-
   let {
     esnext,
     dontInjectDbux,

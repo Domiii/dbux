@@ -51,8 +51,9 @@ function compile(code, srcFilename) {
   if (opts === null) return code;
 
   if (!firstSourceRoot) {
-    // future-work: be smarter about this - take config value -> look for `package.json` -> take first srcFilename
-    firstSourceRoot = opts.sourceRoot;
+    // future-work: be smarter about this -> also try looking for `package.json` if no `sourceRoot` provided
+    firstSourceRoot = transformOpts.sourceRoot || opts.sourceRoot;
+    // console.trace(`firstSourceRoot`, firstSourceRoot);
   }
 
 
@@ -60,6 +61,7 @@ function compile(code, srcFilename) {
   if (cacheEnabled) {
     // load cache
     cacheFilename = registerCache.makeCacheFilename(srcFilename, firstSourceRoot);
+    // console.trace(`cacheFilename`, cacheFilename);
     cacheKey = registerCache.makeCacheKey(opts);
 
     // console.warn(`[@babel/register] loading file ${cacheFilename}`);
@@ -136,7 +138,7 @@ function register(opts) {
     // registerCache.load();
     cacheEnabled = registerCache.get();
   }
-  // console.warn(`[@babel/register] cacheEnabled=${cacheEnabled}`);
+  // console.trace(`[@babel/register] cacheEnabled=${cacheEnabled}, process.env.BABEL_DISABLE_CACHE=${process.env.BABEL_DISABLE_CACHE});
 
   delete opts.extensions;
   delete opts.cache;
@@ -148,6 +150,8 @@ function register(opts) {
       ...(opts.caller || {}),
     },
   };
+
+  // console.trace(JSON.stringify(transformOpts));
 
   let { cwd = "." } = transformOpts;
 

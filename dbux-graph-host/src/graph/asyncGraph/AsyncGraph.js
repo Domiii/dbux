@@ -44,6 +44,9 @@ class AsyncGraph extends HostComponentEndpoint {
     if (this.context.graphDocument.asyncGraphMode) {
       children = this.makeChildNodes();
     }
+    else {
+      this.forceUpdate();
+    }
 
     const applications = this.makeApplicationState(allApplications.selection.getAll());
     this.setState({ children, applications });
@@ -88,7 +91,7 @@ class AsyncGraph extends HostComponentEndpoint {
         parentAsyncNodeId,
         parentRowId,
       };
-    });
+    }).filter(n => !!n);
   }
 
   makeApplicationState(apps = EmptyArray) {

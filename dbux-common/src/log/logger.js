@@ -140,7 +140,8 @@ export class Logger {
       log: loglog,
       debug: logDebug,
       warn: logWarn,
-      error: logError
+      error: logError,
+      trace: logTrace
     };
     this._addLoggers(logFunctions, logWrapper);
   }
@@ -176,8 +177,9 @@ export function newFileLogger(fpath) {
 const consoleOutputStreams = {
   log: console.log.bind(console),
   warn: console.warn.bind(console),
+  debug: console.debug.bind(console),
   error: console.error.bind(console),
-  debug: console.debug.bind(console)
+  trace: console.trace.bind(console),
 };
 
 let outputStreams = consoleOutputStreams;
@@ -222,6 +224,12 @@ export function logWarn(ns, ...args) {
 export function logError(ns, ...args) {
   ns = wrapNs(ns);
   outputStreams.error(ns, ...args);
+  report('error', ns, ...args);
+}
+
+export function logTrace(ns, ...args) {
+  ns = wrapNs(ns);
+  outputStreams.trace(ns, ...args);
   report('error', ns, ...args);
 }
 

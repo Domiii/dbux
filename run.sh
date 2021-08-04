@@ -5,9 +5,8 @@
 set -e # cancel on error
 # set -x # verbose echo mode
 
-# fname="__samplesInput__/async/promise2"
+fname="__samplesInput__/async/promiseResolve1"
 # fname="__samplesInput__/setTimeout0"
-fname="__samplesInput__/super4"
 # fname="case-studies/async/producer_consumer/producer_consumer_async"
 
 thisDirRelative=$(dirname "$0")

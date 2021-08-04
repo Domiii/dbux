@@ -8,7 +8,8 @@ import path from 'path';
  * @return {string} the actual path where `command` is
  */
 export function whichNormalized(command) {
-  return pathNormalized(sh.which(command)?.toString());
+  const fpath = sh.which(command);
+  return fpath ?? pathNormalized(fpath.toString());
 }
 
 export function realPathSyncNormalized(fpath, options) {

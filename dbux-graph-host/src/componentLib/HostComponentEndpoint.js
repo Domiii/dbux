@@ -337,6 +337,9 @@ class HostComponentEndpoint extends ComponentEndpoint {
     catch (err) {
       this.logger.error(`Refresh failed: ${err.stack}`);
     }
+    finally {
+      this._refreshPromise = null;
+    }
   }
 
   // ###########################################################################

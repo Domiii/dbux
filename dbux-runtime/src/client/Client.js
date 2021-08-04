@@ -213,10 +213,12 @@ export default class Client {
           .join(', ')
       );
 
-      this._socket.emit('data', data);
+      this._socket.emit('data', data, (/* returnData */) => {
+        // data finished sending
+        this._refreshInactivityTimer();
+        this._waitingCb?.();
+      });
 
-      this._refreshInactivityTimer();
-      this._waitingCb?.();
       return true;
     }
     return false;

@@ -11,7 +11,6 @@ const webpack = require('webpack');
 // eslint-disable-next-line import/no-extraneous-dependencies
 // const t = require('@babel/types');
 // const nodeExternals = require('webpack-node-externals');
-const nodeExternals = require('webpack-node-externals');
 const webpackCommon = require('./config/webpack.config.common');
 
 const Process = require('./dbux-projects/src/util/Process').default;

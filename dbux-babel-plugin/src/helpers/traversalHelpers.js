@@ -39,7 +39,7 @@ export function getAllClassParents(path) {
 export function getClassAncestryString(path) {
   const classParents = getAllClassParents(path);
   if (classParents.length) {
-    return classParents.map(p => p.node.id.name).join('.');
+    return classParents.map(p => p.node.id?.name || 'anonymous').join('.');
   }
   return '';
 }

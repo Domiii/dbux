@@ -126,4 +126,10 @@ export default class DataNodeCollection extends Collection {
       this.dp.indexes.dataNodes.byValueId.addEntry(dataNode);
     }
   }
+
+  _reportInvalidId(idx, faultyEntry, recoverable) {
+    const { traceId } = faultyEntry || EmptyObject;
+    const traceInfo = traceId && this.dp.util.makeTraceInfo(traceId) || '(no trace)';
+    this.logger.error(`entry._id !== id (recoverable=${recoverable}) - First invalid entry is at #${idx}: ${traceInfo} ${JSON.stringify(faultyEntry)}`);
+  }
 }

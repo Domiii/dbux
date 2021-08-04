@@ -86,44 +86,35 @@ export default class AsyncEventUpdateCollection extends Collection {
   }
 
   /**
-   * @param {PostAwaitUpdate} update 
+   * @param {PostAwaitUpdate} postEventUpdate 
    */
-  postAwait = update => {
-    const { dp } = this;
+  postAwait = postEventUpdate => {
+    const { /* dp,  */dp: { util } } = this;
 
     const {
-      // runId: postEventRunId,
       rootId: postEventRootId,
-      // realContextId,
       schedulerTraceId,
       promiseId
-    } = update;
+    } = postEventUpdate;
 
-    const preEventUpdate = dp.util.getAsyncPreEventUpdateOfTrace(schedulerTraceId);
-
-    if (!preEventUpdate) {
-      // should never happen!
-      this.logger.warn(`[postAwait] "getAsyncPreEventUpdateOfTrace" failed:`, update);
+    const postUpdateData = util.getPostAwaitData(postEventUpdate);
+    if (!postUpdateData) {
+      // NOTE: should not happen
       return;
     }
 
     const {
-      runId: preEventRunId,
-      rootId: preEventRootId,
-      contextId: preEventContextId,
-      nestedPromiseId
-    } = preEventUpdate;
+      preEventUpdate: {
+        runId: preEventRunId,
+        rootId: preEventRootId
+      },
+      isFirstAwait,
+      isNested,
+      isNestedChain,
+      nestedRootId
+    } = postUpdateData;
 
     const preEventThreadId = this.getOrAssignRootThreadId(preEventRootId, schedulerTraceId);
-    const isFirstAwait = dp.util.isFirstContextInParent(preEventContextId);
-    // const previousPostUpdate = dp.util.getPreviousPostAsyncEventOfPromise(promiseId, preEventRootId);
-    // const realContext = dp.collections.executionContexts.getById(realContextId);
-    // const firstNestingUpdate = this.getFirstNestingAsyncUpdate(realContext.runId, promiseId);
-
-    const isNested = !!nestedPromiseId;
-    const isNestedChain = this.isNestedChain(nestedPromiseId, schedulerTraceId);
-    const nestedUpdate = nestedPromiseId && dp.util.getPreviousPostAsyncEventOfPromise(nestedPromiseId, postEventRootId);
-    const { rootId: nestedRootId } = nestedUpdate ?? EmptyObject;
 
     let fromRootId = preEventRootId;
     let fromThreadId = preEventThreadId;
@@ -137,10 +128,10 @@ export default class AsyncEventUpdateCollection extends Collection {
       // Case 2: nested promise is chained into the same thread: CHAIN
       // CHAIN with nested promise: get `fromRootId` of latest `PostThen` or `PostAwait` (before this one) of promise.
       fromRootId = nestedRootId;
-      fromThreadId = toThreadId = this.dp.util.getAsyncRootThreadId(nestedRootId);
+      fromThreadId = toThreadId = util.getAsyncRootThreadId(nestedRootId);
       // }
     }
-    else if (!promiseId || this.isPromiseChainedToRoot(preEventRunId, promiseId)) {
+    else if (!promiseId || util.isPromiseChainedToRoot(preEventRunId, promiseId)) {
       // Case 3: chained to root -> CHAIN
       // NOTE: implies firstNestingUpdate
     }
@@ -174,38 +165,36 @@ export default class AsyncEventUpdateCollection extends Collection {
   }
 
   postThen = postEventUpdate => {
-    const { dp } = this;
+    const { /* dp,  */dp: { util } } = this;
+
     const {
       // runId: postEventRunId,
       rootId: postEventRootId,
       // NOTE: the last active root is also the `context` of the `then` callback
       // contextId,
-      schedulerTraceId,
-      promiseId: postPromiseId,
-      nestedPromiseId
+      schedulerTraceId
     } = postEventUpdate;
 
-    const preEventUpdate = dp.util.getAsyncPreEventUpdateOfTrace(schedulerTraceId);
-    if (!preEventUpdate) {
-      // should never happen!
-      this.logger.warn(`[postThen] "getAsyncPreEventUpdateOfTrace" failed:`, postEventUpdate);
+    const postUpdateData = util.getPostAwaitData(postEventUpdate);
+    if (!postUpdateData) {
+      // NOTE: should not happen
       return;
     }
 
     const {
-      runId: preEventRunId,
-      rootId: preEventRootId,
-      promiseId: prePromiseId,
-      // contextId: preEventContextId
-    } = preEventUpdate;
+      preEventUpdate: {
+        rootId: preEventRootId
+      },
+      previousPostUpdate,
+      isNested,
+      isChainedToRoot
+      // isFirstAwait,
+      // isNested,
+      // isNestedChain,
+      // nestedRootId
+    } = postUpdateData;
 
     const preEventThreadId = this.getOrAssignRootThreadId(preEventRootId, schedulerTraceId);
-
-    const previousPostUpdate = dp.util.getPreviousPostAsyncEventOfPromise(prePromiseId, postEventRootId);
-    const isNested = !!nestedPromiseId;
-    // const isNestedChain = this.isNestedChain(nestedPromiseId, schedulerTraceId);
-    // const nestedUpdate = nestedPromiseId && dp.util.getPreviousPostAsyncEventOfPromise(nestedPromiseId, postEventRootId);
-    // const { rootId: nestedRootId } = nestedUpdate ?? EmptyObject;
 
     let fromRootId = preEventRootId;
     let fromThreadId = preEventThreadId;
@@ -215,9 +204,9 @@ export default class AsyncEventUpdateCollection extends Collection {
     if (previousPostUpdate) { // NOTE: similar to `!isFirstAwait`
       // Case 1: pre-then promise has its own async updates (has already encountered PostAwait or PostThen)
       fromRootId = previousPostUpdate.rootId;
-      fromThreadId = toThreadId = this.dp.util.getAsyncRootThreadId(fromRootId);
+      fromThreadId = toThreadId = util.getAsyncRootThreadId(fromRootId);
     }
-    else if (this.isPromiseChainedToRoot(preEventRunId, postPromiseId)) {
+    else if (isChainedToRoot) {
       // Case 2: no previous Post update but chained to root -> CHAIN
     }
     // else if (isNestedChain) { // NOTE: this case is handled by the nested promise events
@@ -303,7 +292,7 @@ export default class AsyncEventUpdateCollection extends Collection {
     //    -> offer UI button to toggle
     //    -> render (lack of) error propagation in async graph
 
-    const { dp } = this;
+    const { dp: { util } } = this;
     const {
       // runId: postEventRunId,
       rootId: postEventRootId,
@@ -312,24 +301,20 @@ export default class AsyncEventUpdateCollection extends Collection {
       schedulerTraceId
     } = postEventUpdate;
 
-    const preEventUpdate = dp.util.getAsyncPreEventUpdateOfTrace(schedulerTraceId);
-    if (!preEventUpdate) {
-      // should never happen!
-      this.logger.warn(`[postCallback] "getAsyncPreEventUpdateOfTrace" failed:`, postEventUpdate);
+    const postUpdateData = util.getPostCallbackData(postEventUpdate);
+    if (!postUpdateData) {
+      // NOTE: should not happen
       return;
     }
 
     const {
-      // runId: preEventRunId,
-      rootId: preEventRootId,
-      // contextId: preEventContextId
-    } = preEventUpdate;
+      preEventUpdate: {
+        rootId: preEventRootId
+      },
+      isNested,
+    } = postUpdateData;
 
     const preEventThreadId = this.getOrAssignRootThreadId(preEventRootId, schedulerTraceId);
-
-    // const isNestedChain = this.isNestedChain(nestedPromiseId, schedulerTraceId);
-    // const nestedUpdate = nestedPromiseId && dp.util.getPreviousPostAsyncEventOfPromise(nestedPromiseId, postEventRootId);
-    // const { rootId: nestedRootId } = nestedUpdate ?? EmptyObject;
 
     let fromRootId = preEventRootId;
     let fromThreadId = preEventThreadId;
@@ -339,14 +324,8 @@ export default class AsyncEventUpdateCollection extends Collection {
     // Case 1: FORK
     toThreadId = 0;
 
-    // if (!isNestedChain && nestedRootId) {
-    //   // nested, but not chained -> add SYNC edge
-    //   this.addSyncEdge(nestedRootId, toRootId, AsyncEdgeType.SyncIn);
-    // }
-
     // add edge
     /* const newEdge =  */
-    const isNested = false;
     this.addEventEdge(fromRootId, toRootId, fromThreadId, toThreadId, schedulerTraceId, isNested);
   }
 
@@ -383,71 +362,6 @@ export default class AsyncEventUpdateCollection extends Collection {
   }
 
   // ###########################################################################
-  // more utilities
-  // ###########################################################################
-
-  isNestedChain(nestedPromiseId, schedulerTraceId) {
-    const { dp } = this;
-    const nestingPromiseRunId = nestedPromiseId && dp.util.getFirstTraceByRefId(nestedPromiseId)?.runId;
-    const firstNestingAsyncUpdate = nestingPromiseRunId && this.getFirstNestingAsyncUpdate(nestingPromiseRunId, nestedPromiseId);
-    const firstNestingTraceId = firstNestingAsyncUpdate?.schedulerTraceId;
-    return firstNestingTraceId && firstNestingTraceId === schedulerTraceId;
-  }
-
-  getNestingAsyncUpdates(runId, promiseId) {
-    const { dp } = this;
-    const eventKey = [runId, promiseId];
-    return dp.indexes.asyncEventUpdates.byNestedPromiseAndRun.get(eventKey);
-  }
-
-  getFirstNestingAsyncUpdate(runId, promiseId) {
-    return this.getNestingAsyncUpdates(runId, promiseId)?.[0] || null;
-  }
-
-  /**
-   * Only checks for *first* nesting update of given `runId`.
-   *  -> Because: all following updates are SYNC, not CHAIN.
-   */
-  isPromiseChainedToRoot(runId, promiseId) {
-    // TODO: won't work when chaining promises that don't have their own Post* AsyncEvent (e.g. `Promise.resolve().then`)
-
-    const firstNestingAsyncUpdate = this.getFirstNestingAsyncUpdate(runId, promiseId);
-    if (!firstNestingAsyncUpdate) {
-      return false;
-    }
-
-    const { contextId, rootId, promiseId: returnPromiseId } = firstNestingAsyncUpdate;
-
-    if (contextId === rootId) {
-      // root
-      return true;
-    }
-
-    if (returnPromiseId) {
-      // contextId !== rootId -> (most likely?) a first await
-      return this.isPromiseChainedToRoot(runId, returnPromiseId);
-    }
-
-    return false;
-
-    // const parentContextId = getPromiseOwnAsyncFunctionContextId(asyncFunctionPromise);
-
-
-    // const chainedToRoot = getPromiseOwnChainedToRoot(promise);
-    // if (chainedToRoot !== undefined) {
-    //   return chainedToRoot;
-    // }
-
-    // const callerPromise = this.getAsyncCallerPromise(promise);
-    // if (callerPromise) {
-    //   return this.getAsyncCallerPromiseChainedToRoot(callerPromise);
-    // }
-
-    // return false;
-  }
-
-
-  // ###########################################################################
   // addEdge
   // ###########################################################################
 
@@ -470,9 +384,9 @@ export default class AsyncEventUpdateCollection extends Collection {
     const isFork = !toThreadId ||
       // check if this is CHAIN and fromRoot already has an out-going CHAIN
       // NOTE: this can happen, e.g. when the same promise's `then` was called multiple times.
-      (fromThreadId === toThreadId && dp.util.doesRootHaveChainFrom(fromRootId));
+      (fromThreadId === toThreadId && dp.util.getChainFrom(fromRootId));
 
-    // this.logger.debug(`addEventEdge`, fromRootId, dp.util.doesRootHaveChainFrom(fromRootId));
+    // this.logger.debug(`addEventEdge`, fromRootId, dp.util.getChainFrom(fromRootId));
 
     if (isFork) {
       // fork!
@@ -506,10 +420,14 @@ export default class AsyncEventUpdateCollection extends Collection {
       return null;
     }
 
-    if (dp.util.doesRootHaveAsyncEdgeFromTo(fromRootId, toRootId)) {
-      this.logger.error(new Error(
-        `Tried to add ${AsyncEdgeType.nameFromForce(edgeType)} edge, but there already was one, from ${fromRootId} to ${toRootId}`
-      ).stack); // (t = ${previousFromThreadId} => ${fromThreadId}) to ${toRootId} (t = ${previousToThreadId} => ${toThreadId})`);
+    const previousEdge = dp.util.getAsyncEdgeFromTo(fromRootId, toRootId);
+    if (previousEdge) {
+      if (previousEdge.edgeType !== edgeType) {
+        // NOTE: the same sync edge might be added repeatedly due to different events(?)
+        this.logger.error(new Error(
+          `Tried to add ${AsyncEdgeType.nameFromForce(edgeType)} edge, but there already was one, from ${fromRootId} to ${toRootId} - ${JSON.stringify(previousEdge)}`
+        ).stack); // (t = ${previousFromThreadId} => ${fromThreadId}) to ${toRootId} (t = ${previousToThreadId} => ${toThreadId})`);
+      }
       return null;
     }
 
