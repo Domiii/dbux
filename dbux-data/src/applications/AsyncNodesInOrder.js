@@ -33,15 +33,15 @@ export default class AsyncNodesInOrder {
       allNodesByApp = allNodesByApp.map(nodes => nodes.filter(node => threadSelection.isNodeSelected(node)));
     }
 
-    this._all = mergeSortedArray(allNodesByApp, (node) => {
+    this._all = [null, ...mergeSortedArray(allNodesByApp, (node) => {
       const dp = this.applicationSet.getById(node.applicationId).dataProvider;
       const rootContext = dp.collections.executionContexts.getById(node.rootContextId);
       return rootContext.createdAt;
-    });
+    })];
 
     this._nodeIndexByKey.clear();
 
-    for (let i = 0; i < this._all.length; ++i) {
+    for (let i = 1; i < this._all.length; ++i) {
       const node = this._all[i];
       this._nodeIndexByKey.set(this._makeKey(node), i);
     }
@@ -79,10 +79,19 @@ export default class AsyncNodesInOrder {
     return this._all;
   }
 
-  getIndex(node) {
-    const key = this._makeKey(node);
+  getAllActual(startId = 1) {
+    return this._all.slice(startId);
+  }
+
+  getIndex(asyncNode) {
+    const key = this._makeKey(asyncNode);
     const index = this._nodeIndexByKey.get(key);
-    if (index === undefined) {
+    return index || null;
+  }
+
+  getIndexNotNull(node) {
+    const index = this.getIndex(node);
+    if (!index) {
       throw new Error(`AsyncNode not included. asyncNode: ${JSON.stringify(node)}`);
     }
     return index;

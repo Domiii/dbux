@@ -135,6 +135,24 @@ class AsyncGraph extends ClientComponentEndpoint {
 
   makeLineInThreadDecoration() {
     return '';
+    // const { children } = this.state;
+    // const minRowIdByCol = new Map();
+    // const maxRowIdByCol = new Map();
+    // const asyncNodePositions = new Set();
+    // const decorations = [];
+
+    // for (const nodeData of children) {
+    //   const { colId, rowId } = nodeData;
+    //   !minRowIdByCol.get(colId) && minRowIdByCol.set(colId, rowId);
+    //   maxRowIdByCol.set(colId, rowId);
+    //   asyncNodePositions.add(`${colId}_${rowId}`);
+    // }
+
+    // for (const colId of minRowIdByCol.keys()) {
+
+    // }
+
+    // return decorations.join('');
   }
 
   handleClickAsyncNode(asyncNodeEl) {

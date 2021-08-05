@@ -47,12 +47,9 @@ class AsyncGraph extends HostComponentEndpoint {
     this.setState({ children, applications });
   }
 
-  /**
-   * @param {Application} app 
-   */
   makeChildNodes() {
     const appData = allApplications.selection.data;
-    const asyncNodes = appData.asyncNodesInOrder.getAll();
+    const asyncNodes = appData.asyncNodesInOrder.getAllActual();
     return asyncNodes.map((asyncNode, index) => {
       const { applicationId, rootContextId, threadId } = asyncNode;
 
@@ -66,7 +63,7 @@ class AsyncGraph extends HostComponentEndpoint {
       const dp = app.dataProvider;
       const context = dp.collections.executionContexts.getById(rootContextId);
       const rowId = index + 1;
-      const colId = appData.asyncThreadsInOrder.getIndex(asyncNode) + 1;
+      const colId = appData.asyncThreadsInOrder.getIndexNotNull(asyncNode);
       const displayName = makeContextLabel(context, app);
       const locLabel = makeContextLocLabel(applicationId, context);
       const syncInCount = dp.indexes.asyncEvents.syncInByRoot.getSize(rootContextId);
@@ -79,7 +76,7 @@ class AsyncGraph extends HostComponentEndpoint {
         const parentRootContextId = parentEdge?.fromRootContextId;
         const parentAsyncNode = dp.indexes.asyncNodes.byRoot.getUnique(parentRootContextId);
         parentAsyncNodeId = parentAsyncNode?.asyncNodeId;
-        parentRowId = parentAsyncNode && (appData.asyncNodesInOrder.getIndex(parentAsyncNode) + 1);
+        parentRowId = parentAsyncNode && appData.asyncNodesInOrder.getIndex(parentAsyncNode);
       }
 
       return {

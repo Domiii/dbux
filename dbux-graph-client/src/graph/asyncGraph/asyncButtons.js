@@ -39,7 +39,8 @@ class SyncInButton extends AsyncButton {
   }
 
   static handleClick(asyncGraph, asyncNodeData, buttonData) {
-    const { applicationId, asyncNodeId } = asyncNodeData;
+    const applicationId = Number(asyncNodeData.applicationId);
+    const asyncNodeId = Number(asyncNodeData.asyncNodeId);
     asyncGraph.remote.selectSyncInThreads(applicationId, asyncNodeId);
   }
 }
@@ -54,7 +55,8 @@ class SyncOutButton extends AsyncButton {
   }
 
   static handleClick(asyncGraph, asyncNodeData, buttonData) {
-    const { applicationId, asyncNodeId } = asyncNodeData;
+    const applicationId = Number(asyncNodeData.applicationId);
+    const asyncNodeId = Number(asyncNodeData.asyncNodeId);
     asyncGraph.remote.selectSyncOutThreads(applicationId, asyncNodeId);
   }
 }

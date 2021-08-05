@@ -46,11 +46,11 @@ export default class AsyncThreadsInOrder {
       });
     });
 
-    this._all = mergeSortedArray(allThreads, node => node.createdAt);
+    this._all = [null, ...mergeSortedArray(allThreads, node => node.createdAt)];
 
     this.threadIndexByKey.clear();
 
-    for (let i = 0; i < this._all.length; ++i) {
+    for (let i = 1; i < this._all.length; ++i) {
       const node = this._all[i];
       this.threadIndexByKey.set(this._makeKey(node), i);
     }
@@ -91,8 +91,13 @@ export default class AsyncThreadsInOrder {
   getIndex(asyncNode) {
     const key = this._makeKey(asyncNode);
     const index = this.threadIndexByKey.get(key);
-    if (index === undefined) {
-      throw new Error(`AsyncNode not included. asyncNode: ${JSON.stringify(asyncNode)}`);
+    return index || null;
+  }
+
+  getIndexNotNull(node) {
+    const index = this.getIndex(node);
+    if (!index) {
+      throw new Error(`AsyncNode not included. asyncNode: ${JSON.stringify(node)}`);
     }
     return index;
   }
