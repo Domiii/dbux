@@ -33,6 +33,8 @@ export function convertNonComputedPropToStringLiteral(keyAstNode, computed) {
 // const { log, debug, warn, error: logError } = newLogger('builders/objects');
 
 /**
+ * Convert object properties to entry array (e.g. [['key', value], [computedKey2, value2]])
+ * 
  * @param {NodePath[]} propPaths 
  */
 function buildObjectEntries(propPaths) {

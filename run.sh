@@ -6,9 +6,12 @@ set -e # cancel on error
 # set -x # verbose echo mode
 
 # fname="__samplesInput__/async/promiseResolve1"
-fname="__samplesInput__/destructuring0"
+fname="__samplesInput__/objectExpressions2"
 # fname="__samplesInput__/setTimeout0"
 # fname="case-studies/async/producer_consumer/producer_consumer_async"
+
+
+
 
 thisDirRelative=$(dirname "$0")
 rootDir=$(node -e "console.log(require('path').resolve('$thisDirRelative'))") # get absolute path using node

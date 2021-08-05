@@ -76,7 +76,7 @@ export default function buildBabelOptions(options) {
   // if (!cache) {
   //   process.env.BABEL_DISABLE_CACHE = '1';
   // }
-  console.debug('cache =', cache, ', process.env.BABEL_DISABLE_CACHE =', process.env.BABEL_DISABLE_CACHE, JSON.stringify(cache));
+  // console.debug('cache =', cache, ', process.env.BABEL_DISABLE_CACHE =', process.env.BABEL_DISABLE_CACHE, JSON.stringify(cache));
 
   if (dontInjectDbux && !esnext && !verbose) {
     // nothing to babel
@@ -109,7 +109,6 @@ export default function buildBabelOptions(options) {
     sourceType: 'unambiguous',
     sourceMaps: 'inline',
     retainLines: true,
-    cache,
     // see https://babeljs.io/docs/en/options#parseropts
     parserOpts: { allowReturnOutsideFunction: true },
     ignore: [
@@ -133,12 +132,16 @@ export default function buildBabelOptions(options) {
 
         // modulePath = modulePath.toLowerCase();
 
-        const ignore = dontInjectDbux;
+        const ignore = false;
         verbose && debugLog(`REGISTER`, modulePath);
         return ignore;
       }
     ]
   };
+
+  if ('cache' in options) {
+    babelOptions.cache = cache;
+  }
 
   if (!dontInjectDbux) {
     // add @dbux/babel-plugin

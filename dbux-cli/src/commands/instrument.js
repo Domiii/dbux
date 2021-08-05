@@ -42,6 +42,12 @@ export const handler = wrapCommand(async ({ file, outputFile, ...options }) => {
   let {
     dbuxOptions: babelPluginOptions
   } = options;
+
+  if ('cache' in options) {
+    console.warn(`([@dbux/cli] "cache" option ignored for "instrument" command)`);
+    delete options.cache;
+  }
+
   if (!babelPluginOptions || isString(babelPluginOptions)) {
     babelPluginOptions = babelPluginOptions && JSON.parse(babelPluginOptions) || {};
   }

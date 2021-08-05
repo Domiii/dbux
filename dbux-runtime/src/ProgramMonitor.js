@@ -353,7 +353,8 @@ export default class ProgramMonitor {
     const value = {};
     const spreadLengths = new Array(entries.length);
     for (let i = 0; i < entries.length; ++i) {
-      if (argConfigs[i].isSpread) {
+      const cfg = argConfigs[i];
+      if (cfg.isSpread) {
         // Get all arg spread keys.
         // The spread operator observes `Object.assign` semantics.
         // Explained in: https://babeljs.io/docs/en/babel-plugin-proposal-object-rest-spread
@@ -381,7 +382,17 @@ export default class ProgramMonitor {
       }
       else {
         const [key, entryVal] = entries[i];
-        value[key] = entryVal;
+
+        if (cfg.kind) {
+          Object.defineProperty(value, key, {
+            configurable: true,
+            enumerable: true,
+            [cfg.kind]: entryVal
+          });
+        }
+        else {
+          value[key] = entryVal;
+        }
         spreadLengths[i] = -1; // not spread
       }
     }

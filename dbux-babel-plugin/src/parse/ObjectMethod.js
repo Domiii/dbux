@@ -1,5 +1,4 @@
 import * as t from '@babel/types';
-import TraceType from '@dbux/common/src/types/constants/TraceType';
 import { buildTraceExpression } from '../instrumentation/builders/misc';
 import BaseNode from './BaseNode';
 
@@ -20,7 +19,7 @@ export default class ObjectMethod extends BaseNode {
   buildDefaultTrace() {
     const { path } = this;
     const [keyPath] = this.getChildPaths();
-    
+
     return {
       path,
       node: this,
@@ -46,7 +45,7 @@ export default class ObjectMethod extends BaseNode {
         a: 0,
         get b() { return this.a + 1; }
       };
-      Object.getOwnPropertyDescriptor(o, 'b')
+      Object.getOwnPropertyDescriptor(o, 'b').get
       ```
      */
 
@@ -69,7 +68,15 @@ export default class ObjectMethod extends BaseNode {
 
     const { key, params, body, generator, async, computed, shorthand, decorators } = path.node;
 
-    traceCfg.meta.targetNode = t.functionExpression(t.isIdentifier(key) ? key : null, params, body, generator, async);
+    // convert `ObjectMethod` to `FunctionExpression`
+    traceCfg.meta.targetNode = t.functionExpression(
+      // TODO: don't use `key` as-is -> avoid collisions
+      t.isIdentifier(key) ?  key : null,
+      params,
+      body,
+      generator,
+      async
+    );
     const value = buildTraceExpression(state, traceCfg);
 
     path.replaceWith(t.objectProperty(

@@ -1,7 +1,8 @@
 import TraceType from '@dbux/common/src/types/constants/TraceType';
-import { makeSpreadableArgumentObjectCfg } from '../helpers/argsUtil';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { buildObjectExpression } from '../instrumentation/builders/objects';
 import BaseNode from './BaseNode';
+
 
 /**
  * Convert: `{ a, b: 3, ...spread1, [c]() {}, [d]: f(), ...spread2 }`
@@ -22,6 +23,19 @@ export default class ObjectExpression extends BaseNode {
   //   );
   // }
 
+  /**
+   * Takes a an array of arguments to indicate which are `SpreadElement` and which not.
+   * 
+   * NOTE: This is used by `ObjectExpression`.
+   */
+  makeArgsCfg(propertyPaths) {
+    return propertyPaths?.map((propPath) => ({
+      key: propPath.node.key,
+      isSpread: propPath.isSpreadElement(),
+      kind: propPath.node.kind
+    })) || EmptyArray;
+  }
+
   exit() {
     // if (!this.isES5()) {
     //   this.warn(`Cannot properly instrument non-es5 ObjectExpression syntax yet: ${this}`);
@@ -40,7 +54,7 @@ export default class ObjectExpression extends BaseNode {
           isNew: true
         },
         data: {
-          argConfigs: makeSpreadableArgumentObjectCfg(propertyPaths)
+          argConfigs: this.makeArgsCfg(propertyPaths)
         }
       },
       meta: {
