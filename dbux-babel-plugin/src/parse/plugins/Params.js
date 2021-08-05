@@ -34,7 +34,7 @@ export default class Params extends BasePlugin {
       return null;
     }
 
-    console.wawrn('addParamTrace', paramPath.isAssignmentPattern(), paramPath.get('left').isIdentifier());
+    // console.warn('addParamTrace', paramPath.isAssignmentPattern(), paramPath.get('left').isIdentifier());
 
     const idPaths = getBindingIdentifierPaths(paramPath);
     if (idPaths.length !== 1) {

@@ -42,7 +42,7 @@ export function getDeclarationTid(traceCfg) {
     declarationTid = traceCfg.node?.getDeclarationTidIdentifier();
   }
   if (!declarationTid) {
-    logError(`getDeclarationTid returned nothing for traceCfg at "${traceCfg.node || pathToString(traceCfg.path)}"${isDeclaration ? ' (Declaration)' : ''}`);
+    warn(`getDeclarationTid returned nothing for traceCfg at "${traceCfg.node || pathToString(traceCfg.path)}"${isDeclaration ? ' (Declaration)' : ''}`);
   }
   return declarationTid || ZeroNode;
 }
