@@ -14,9 +14,6 @@ var os = require("os");
 var babel = require("@babel/core");
 var findCacheDir = require("find-cache-dir");
 
-const CACHE_DIR = process.env.BABEL_CACHE_PATH || findCacheDir({
-  name: "@babel/register"
-}) || os.homedir() || os.tmpdir();
 
 const CACHE_VERBOSE = true;
 // const CACHE_VERBOSE = false;
@@ -67,8 +64,22 @@ function makeCacheFilename(srcFilename, root) {
     return null;
   }
   srcFilename += '.babel.js';
+  
+  // const CACHE_DIR = process.env.BABEL_CACHE_PATH || findCacheDir({
+  //   name: "@babel/register"
+  // }) || os.homedir() || os.tmpdir();
+  const cacheFolderName = '@babel/register';
+  let cacheDir = process.env.BABEL_CACHE_PATH || findCacheDir({
+    cwd: root,
+    name: cacheFolderName
+  });
+  if (!cacheDir) {
+    cacheDir = path.join(os.homedir() || os.tmpdir(), `.cache/${cacheFolderName}`);
+  }
+
   const relativePath = path.relative(root, srcFilename);
-  return path.resolve(CACHE_DIR, getEnvName(), relativePath);
+
+  return path.resolve(cacheDir, getEnvName(), relativePath);
 }
 
 function makeCacheKey(opts) {
@@ -237,7 +248,7 @@ function loadFile(srcFilename, cacheFilename, cacheKey) {
   } catch (err) {
     // console.warn(`Babel could not read cache file: ${cacheFilename}`);
     reportCacheMiss(CacheMissReason.ParseError, srcFilename, cacheFilename, err && err.message || err);
-    
+
     // could not parse cache contents -> delete cache file
     fs.rmSync(cacheFilename);
   }
