@@ -130,6 +130,10 @@ class RunNode extends SessionNode {
   makeIconPath() {
     return 'play.svg';
   }
+
+  async flushCache() {
+    return await this.manager.flushCache(this.bug.project);
+  }
 }
 
 class RunWithoutDbuxNode extends SessionNode {

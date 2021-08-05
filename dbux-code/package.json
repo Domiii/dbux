@@ -618,6 +618,14 @@
         }
       },
       {
+        "command": "dbuxSessionView.flushCache",
+        "title": "Dbux Project: Flush cache",
+        "icon": {
+          "light": "resources/light/clear.svg",
+          "dark": "resources/dark/clear.svg"
+        }
+      },
+      {
         "command": "dbuxSessionView.node.annotateTraceQ",
         "title": "Ask question of this trace",
         "icon": {
@@ -813,6 +821,11 @@
         },
         {
           "command": "dbuxSessionView.run#debug#dbux",
+          "when": "viewItem == dbuxSessionView.runNode#dbux",
+          "group": "inline"
+        },
+        {
+          "command": "dbuxSessionView.flushCache",
           "when": "viewItem == dbuxSessionView.runNode#dbux",
           "group": "inline"
         },
@@ -1147,6 +1160,10 @@
         },
         {
           "command": "dbuxSessionView.run#debug#dbux",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbuxSessionView.flushCache",
           "when": "dbux.context.activated"
         },
         {
