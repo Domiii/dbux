@@ -1,9 +1,10 @@
 import fs from 'fs';
 import path from 'path';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import UserActionType, { isCodeActionTypes } from '@dbux/data/src/pathways/UserActionType';
+import { isCodeActionTypes } from '@dbux/data/src/pathways/UserActionType';
 import DataProviderBase from '@dbux/data/src/DataProviderBase';
 import Collection from '@dbux/data/src/Collection';
 import Indexes from '@dbux/data/src/indexes/Indexes';
@@ -23,13 +24,13 @@ import StepsByGroupIndex from './indexes/StepsByGroupIndex';
 import TestRun from './TestRun';
 import LogFileLoader from './LogFileLoader';
 import VisitedStaticTracesByFile from './indexes/VisitedStaticTracesByFileIndex';
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PathwaysDataProvider');
 
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
 /** @typedef {import('./TestRun').default} TestRun */
+/** @typedef {import('@dbux/data/src/pathways/UserAction').default} UserAction */
 /** @typedef {import('@dbux/data/src/applications/Application').default} Application */
 
 class PathwaysCollection extends Collection {
@@ -136,6 +137,11 @@ class UserActionCollection extends PathwaysCollection {
     this.resolveVisitedStaticTracesIndex(userActions);
   }
 
+  /**
+   * NOTE: This is used in `decorateVisitedTraces` in `pathwaysDecorations.js`
+   * @param {UserAction[]} userActions 
+   * @returns 
+   */
   resolveVisitedStaticTracesIndex(userActions) {
     for (const action of userActions) {
       const { trace } = action;
@@ -146,7 +152,7 @@ class UserActionCollection extends PathwaysCollection {
       const { applicationId, staticTraceId } = trace;
       const app = allApplications.getById(applicationId);
       if (!app) {
-        throw new Error(`Unable to process PDP.collections.userActions: could not find application of trace (applicationId=${applicationId}). allApplications=${allApplications}`);
+        this.logger.warn(`Could not find application of trace (applicationId=${applicationId}).`);
       }
       const dp = app.dataProvider;
 
