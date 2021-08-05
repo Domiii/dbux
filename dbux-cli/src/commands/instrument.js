@@ -1,6 +1,7 @@
 // import path from 'path';
 
 import fs from 'fs';
+import path from 'path';
 import prettier from 'prettier';
 import isString from 'lodash/isString';
 import { transformSync } from '@babel/core';
@@ -73,11 +74,17 @@ export const handler = wrapCommand(async ({ file, outputFile, ...options }) => {
   // sh.exec(`echo output | code -`);
 
   if (!outputFile) {
-    process.stdout.write(finalCode);
+    const ext = path.extname(file);
+    const fnameBase = file.substring(0, file.length - ext.length);
+    outputFile = `${fnameBase}.inst${ext}`;
   }
-  else {
-    fs.writeFileSync(outputFile, finalCode);
-    console.debug(`Wrote outputFile: ${outputFile}`);
-  }
+
+  // if (!outputFile) {
+  //   process.stdout.write(finalCode);
+  // }
+  // else {
+  fs.writeFileSync(outputFile, finalCode);
+  console.debug(`Wrote outputFile: ${outputFile}`);
+  // }
 });
 

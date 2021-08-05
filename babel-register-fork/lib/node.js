@@ -105,6 +105,10 @@ function compileHook(code, filename) {
     compiling = true;
     Module._cache = internalModuleCache;
     return compile(code, filename);
+  }
+  catch (err) {
+    err.message = `Failed to compile "${filename}" - ${err.message}`;
+    throw err;
   } finally {
     compiling = false;
     Module._cache = globalModuleCache;
@@ -138,7 +142,11 @@ function register(opts) {
     // registerCache.load();
     cacheEnabled = registerCache.get();
   }
-  // console.trace(`[@babel/register] cacheEnabled=${cacheEnabled}, process.env.BABEL_DISABLE_CACHE=${process.env.BABEL_DISABLE_CACHE});
+
+  if (arguments.length) {
+    // NOTE: `register` is called once by its own `nodeWrapper` with no `opts`; which will be overwritten by the user call to `register` later.
+    // console.trace('[@babel/register] cacheEnabled=', cacheEnabled, opts.cache, 'process.env.BABEL_DISABLE_CACHE=', process.env.BABEL_DISABLE_CACHE);
+  }
 
   delete opts.extensions;
   delete opts.cache;

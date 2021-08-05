@@ -1,4 +1,3 @@
-import process from 'process';
 import dbuxBabelPlugin from '@dbux/babel-plugin';
 import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
@@ -11,6 +10,11 @@ import isString from 'lodash/isString';
 // import injectDependencies from './injectDependencies';
 
 // import buildDefaultBabelOptions from './defaultBabelOptions';
+
+// disable before requiring -> then re-enable dynamically
+// console.debug('process.env.BABEL_DISABLE_CACHE =', process.env.BABEL_DISABLE_CACHE);
+// process.env.BABEL_DISABLE_CACHE = 1;
+
 const baseBabelOptions = require('../.babelrc');
 
 function debugLog(...args) {
@@ -53,20 +57,26 @@ function batchTestRegExp(regexps, target) {
     ].map((s, i) => ${ i }.${ s } ${ re.test(s) }).join('\n'));
  */
 
-function otherArgsToString(otherArgs) {
-  return JSON.stringify(otherArgs);
-}
+// function otherArgsToString(otherArgs) {
+//   return JSON.stringify(otherArgs);
+// }
 
 export default function buildBabelOptions(options) {
   let {
     esnext,
+    cache,
     dontInjectDbux,
     dontAddPresets,
     dbuxOptions: babelPluginOptions,
     packageWhitelist,
     verbose = 0,
-    runtime = null
+    runtime = null,
   } = options;
+
+  // if (!cache) {
+  //   process.env.BABEL_DISABLE_CACHE = '1';
+  // }
+  console.debug('cache =', cache, ', process.env.BABEL_DISABLE_CACHE =', process.env.BABEL_DISABLE_CACHE, JSON.stringify(cache));
 
   if (dontInjectDbux && !esnext && !verbose) {
     // nothing to babel
@@ -86,7 +96,7 @@ export default function buildBabelOptions(options) {
     .map(generateFullMatchRegExp);
 
   verbose > 1 && debugLog(`packageWhitelist`, packageWhitelistRegExps.join(','));
-  
+
   // TODO: use Webpack5 magic comments instead
   const requireFunc = typeof __non_webpack_require__ === "function" ? __non_webpack_require__ : require;
   verbose > 1 && debugLog(`[@dbux/babel-plugin]`,
@@ -99,6 +109,7 @@ export default function buildBabelOptions(options) {
     sourceType: 'unambiguous',
     sourceMaps: 'inline',
     retainLines: true,
+    cache,
     // see https://babeljs.io/docs/en/options#parseropts
     parserOpts: { allowReturnOutsideFunction: true },
     ignore: [

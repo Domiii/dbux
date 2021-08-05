@@ -8,6 +8,12 @@ export function buildCommonCommandOptions() {
       default: false,
       type: 'boolean'
     },
+    cache: {
+      describe: 'Use babel cache.',
+      // disable by default for development + testing
+      default: process.env.NODE_ENV === 'production',
+      type: 'boolean'
+    },
     dontInjectDbux: {
       alias: ['d'],
       describe: 'Do NOT inject Dbux. Allows for running the same code while easily switching between dbux and non-dbux runs.',

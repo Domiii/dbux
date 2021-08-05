@@ -25,12 +25,16 @@ export default class Params extends BasePlugin {
   }
 
   addParamTrace = (paramPath, traceType = TraceType.Param) => {
-    if (!paramPath.isIdentifier() && !paramPath.isAssignmentPattern()) {
+    if (!paramPath.isIdentifier() && !(paramPath.isAssignmentPattern() && paramPath.get('left').isIdentifier())) {
+      // we currently only support simple identifiers, optionally with default parameter (AssignmentPattern)
+
       // TODO: `RestElement`
       // TODO: `{Object,Array}Pattern
       this.warn(`NYI - unsupported param type: [${paramPath.node?.type}] "${pathToString(paramPath)}" in "${this.node}"`);
       return null;
     }
+
+    console.wawrn('addParamTrace', paramPath.isAssignmentPattern(), paramPath.get('left').isIdentifier());
 
     const idPaths = getBindingIdentifierPaths(paramPath);
     if (idPaths.length !== 1) {

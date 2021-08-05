@@ -61,7 +61,8 @@ export default class BaseNode extends ParseNode {
 
   getTidIdentifier() {
     if (!this._traceCfg) {
-      throw new Error(`Tried to "getTidIdentifier" before node trace was added: ${this}`);
+      this.warn(`Tried to "getTidIdentifier" before node trace was added (maybe the node is disabled or its syntax not yet supported?): ${this}`);
+      return null;
     }
     return this._traceCfg.tidIdentifier;
   }

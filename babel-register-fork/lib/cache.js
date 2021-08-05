@@ -33,6 +33,7 @@ function mtime(filename) {
 }
 
 function isCacheDisabled() {
+  // console.debug('isCacheDisabled()', process.env.BABEL_DISABLE_CACHE, cacheDisabled, process.env.BABEL_DISABLE_CACHE ?? cacheDisabled);
   return process.env.BABEL_DISABLE_CACHE ?? cacheDisabled;
 }
 

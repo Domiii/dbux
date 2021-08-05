@@ -6,7 +6,7 @@ set -e # cancel on error
 # set -x # verbose echo mode
 
 # fname="__samplesInput__/async/promiseResolve1"
-fname="__samplesInput__/class6"
+fname="__samplesInput__/destructuring0"
 # fname="__samplesInput__/setTimeout0"
 # fname="case-studies/async/producer_consumer/producer_consumer_async"
 
@@ -75,7 +75,7 @@ else
 
   if [[ "$dbuxCmd" = "rrr" ]]
   then
-    node $nodeArgsI --enable-source-maps --stack-trace-limit=100 "$rootDir/node_modules/@dbux/cli/bin/dbux.js" r $dbuxArgs $inPath
+    node $nodeArgsR --enable-source-maps --stack-trace-limit=100 "$rootDir/node_modules/@dbux/cli/bin/dbux.js" r $dbuxArgs $inPath
     # run with @babel/register
   elif [[ "$dbuxCmd" = "r" ]] || [[ "$dbuxCmd" = "rr" ]]
   then
