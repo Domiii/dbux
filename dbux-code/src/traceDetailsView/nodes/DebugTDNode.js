@@ -62,6 +62,8 @@ export class DebugTDNode extends TraceDetailNode {
     const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
     const { staticContextId } = context;
     const staticContext = dp.collections.staticContexts.getById(staticContextId);
+    const { programId } = staticContext;
+    const staticProgramContext = dp.collections.staticProgramContexts.getById(programId);
     const dataTraceId = dp.util.getValueTrace(traceId)?.traceId || traceId;
 
     // ###########################################################################
@@ -154,10 +156,10 @@ export class DebugTDNode extends TraceDetailNode {
         valueNode,
         [`context`, context],
         asyncContainerNode,
-        // ['staticTrace', omit(staticTrace, 'loc')],
         ...allDataNodes,
         ['staticTrace', staticTrace],
-        ['staticContext', omit(staticContext, 'loc')],
+        ['staticContext', staticContext],
+        ['staticProgramContext', staticProgramContext],
         // promiseNode
       )
     ];

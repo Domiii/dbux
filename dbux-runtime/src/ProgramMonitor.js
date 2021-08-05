@@ -383,7 +383,8 @@ export default class ProgramMonitor {
       else {
         const [key, entryVal] = entries[i];
 
-        if (cfg.kind) {
+        if (cfg.kind && cfg.kind !== 'method') {
+          // see https://babeljs.io/docs/en/babel-types#objectmethod
           Object.defineProperty(value, key, {
             configurable: true,
             enumerable: true,

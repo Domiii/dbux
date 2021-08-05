@@ -7,10 +7,13 @@ const a = 11, b = 12;
 const o = {
   get a() { return a; },
 
-  get ['bb'[0]]() { return b; }
+  set ['bb'[0]](val) { b = val; },
+
+  f() { return 4; }
 };
 
-f([o, o.a, o.b]);
+o.b = 3;
+f([o, o.a, b, o.f()]);
 
 function f(arr) {
   console.log(...arr);
