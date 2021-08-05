@@ -72,14 +72,20 @@ export default {
   },
 
   /** @param {DataProvider} dp */
-  getRootContextIdByContextId(dp, contextId) {
+  getRootContextOfContext(dp, contextId) {
     const { executionContexts } = dp.collections;
     let lastContextId = contextId;
     let parentContextId;
     while ((parentContextId = executionContexts.getById(lastContextId).parentContextId)) {
       lastContextId = parentContextId;
     }
-    return lastContextId;
+    return executionContexts.getById(lastContextId);
+  },
+
+  /** @param {DataProvider} dp */
+  getRootContextOfTrace(dp, traceId) {
+    const trace = dp.collections.traces.getById(traceId);
+    return dp.util.getRootContextOfContext(trace.contextId);
   },
 
   /** @param {DataProvider} dp */

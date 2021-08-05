@@ -2,7 +2,7 @@ import { TreeItemCollapsibleState } from 'vscode';
 import Enum from '@dbux/common/src/util/Enum';
 import traceSelection from '@dbux/data/src/traceSelection';
 import { makeContextLabel } from '@dbux/data/src/helpers/contextLabels';
-import { makeRootTraceLabel, makeTraceLabel, makeTraceValueLabel, makeCallValueLabel } from '@dbux/data/src/helpers/traceLabels';
+import { makeTraceLabel, makeTraceValueLabel, makeCallValueLabel } from '@dbux/data/src/helpers/traceLabels';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import { isCallbackRelatedTrace } from '@dbux/common/src/types/constants/TraceType';
@@ -97,20 +97,20 @@ class UngroupedNode extends BaseGroupNode {
   }
 }
 
-class GroupByRunNode extends BaseGroupNode {
-  static labelSuffix = 'by Run';
+class GroupByRootNode extends BaseGroupNode {
+  static labelSuffix = 'by Root Context';
 
   static makeKey(application, trace) {
-    return trace.runId;
+    return application.dataProvider.util.getRootContextOfTrace(trace.traceId).contextId;
   }
 
-  static makeLabel(application, runId) {
-    const firstTraceOfRun = application.dataProvider.util.getFirstTraceOfRun(runId);
-    return makeRootTraceLabel(firstTraceOfRun);
+  static makeLabel(application, rootContextId) {
+    const context = application.dataProvider.collections.executionContexts.getById(rootContextId);
+    return makeContextLabel(context, application);
   }
 
-  static makeDescription(runId) {
-    return `Run: ${runId}`;
+  static makeDescription(rootContextId) {
+    return `Root Context: ${rootContextId}`;
   }
 }
 
@@ -212,7 +212,7 @@ class GroupByCallbackNode extends BaseGroupNode {
 // eslint-disable-next-line import/no-mutable-exports
 let GroupingMode = {
   Ungrouped: 1,
-  ByRunId: 2,
+  ByRootContextId: 2,
   ByContextId: 3,
   ByCallerTraceId: 4,
   ByParentContextId: 5,
@@ -225,7 +225,7 @@ let groupingMode = GroupingMode.Ungrouped;
 
 const GroupNodeRegistry = {
   [GroupingMode.Ungrouped]: UngroupedNode,
-  [GroupingMode.ByRunId]: GroupByRunNode,
+  [GroupingMode.ByRootContextId]: GroupByRootNode,
   [GroupingMode.ByContextId]: GroupByContextNode,
   [GroupingMode.ByCallerTraceId]: GroupByCallerNode,
   [GroupingMode.ByParentContextId]: GroupByParentContextNode,
