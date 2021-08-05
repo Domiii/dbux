@@ -112,6 +112,10 @@ class GroupByRootNode extends BaseGroupNode {
   static makeDescription(rootContextId) {
     return `Root Context: ${rootContextId}`;
   }
+
+  static makeRelevantTrace(application, rootContextId) {
+    return application.dataProvider.util.getFirstTraceOfContext(rootContextId);
+  }
 }
 
 class GroupByContextNode extends BaseGroupNode {
