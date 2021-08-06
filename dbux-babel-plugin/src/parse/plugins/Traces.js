@@ -158,7 +158,7 @@ export default class Traces extends BasePlugin {
       }
 
       // eslint-disable-next-line max-len
-      console.warn(`addTrace (Declaration): [${declarationNode.path.parentPath.node.type}] ${pathToString(path, true)}, addTo: ${this.node.path.node.type} (scope=${scope.path.node.type}, decl=${declarationNode})`, JSON.stringify(declarationNode.path.node));
+      // console.warn(`addTrace (Declaration): [${declarationNode.path.parentPath.node.type}] ${pathToString(path, true)}, addTo: ${this.node.path.node.type} (scope=${scope.path.node.type}, decl=${declarationNode})`, JSON.stringify(declarationNode.path.node));
 
       if (declarationNode.bindingTrace) {
         // NOTE: this happens if parameter has same name as hoisted `var` local.

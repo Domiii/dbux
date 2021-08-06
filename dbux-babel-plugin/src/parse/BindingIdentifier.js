@@ -97,7 +97,7 @@ export default class BindingIdentifier extends BaseId {
      */
     const bindingScopeNode = this.getNodeOfPath(scopePath);
 
-    console.warn(`getDefaultBindingScopeNode(), [${this.path.parentPath.node.type}] ${this.path.toString()}, scope=${scopePath.node.type}`);
+    // console.warn(`getDefaultBindingScopeNode(), [${this.path.parentPath.node.type}] ${this.path.toString()}, scope=${scopePath.node.type}`);
 
     if (!bindingScopeNode?.Traces) {
       throw new Error(`BindingIdentifier's binding scope did not have a valid BaseNode: "${pathToString(scopePath)}" in "${this.getParentString()}"`);
