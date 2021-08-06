@@ -68,7 +68,7 @@ export default class ObjectMethod extends BaseNode {
 
     const { key, params, body, generator, async, computed, shorthand, decorators } = path.node;
 
-    // TODO: don't use `key` as-is -> avoid collisions
+    // don't use `key` as-is -> avoid collisions
     const id = (t.isIdentifier(key) && key.name) ?
       path.scope.generateUidIdentifier(key.name) :
       null;

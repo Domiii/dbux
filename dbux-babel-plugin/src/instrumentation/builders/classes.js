@@ -16,12 +16,22 @@ import { findConstructorMethod, findSuperCallPath } from '../../visitors/classUt
 const thisNode = t.thisExpression();
 
 function buildMethodsArray(state, methodOwner, methods) {
-  return t.arrayExpression(methods.map(({ name, trace }) =>
-    t.arrayExpression([
-      t.memberExpression(methodOwner, t.identifier(name)),
+  return t.arrayExpression(methods.map(({ trace }) => {
+    const {
+      path,
+      data: {
+        propertyVar
+      }
+    } = trace;
+    const { computed } = path.node;
+    // const key = convertNonComputedPropToStringLiteral(trace.path.node.key, computed);
+
+    const key = propertyVar || convertNonComputedPropToStringLiteral(path.node.key, computed);
+    return t.arrayExpression([
+      t.memberExpression(methodOwner, key, computed),
       buildTraceId(state, trace)
-    ])
-  ));
+    ]);
+  }));
 }
 
 function buildMethodTidsArray(state, methods) {
@@ -322,7 +332,7 @@ export function buildTraceWriteClassProperty(state, traceCfg) {
     data: {
       objectTid,
       objectTraceCfg,
-      propertyAstNode: propertyVar // NOTE: this is `undefined`, if `!computed`
+      propertyVar // NOTE: this is `undefined`, if `!computed`
     }
   } = traceCfg;
 
@@ -354,4 +364,32 @@ export function buildTraceWriteClassProperty(state, traceCfg) {
   resultNode.key = keyNode;
   resultNode.value = valueNode;
   return resultNode;
+}
+
+
+// ###########################################################################
+// instrumentMethodKey
+// ###########################################################################
+
+export function instrumentMethodKey(state, traceCfg) {
+  const classMethod = getInstrumentTargetAstNode(state, traceCfg);
+  let {
+    key: keyNode,
+    computed
+  } = classMethod;
+  const {
+    data: {
+      propertyVar // NOTE: this is `undefined`, if `!computed`
+    }
+  } = traceCfg;
+
+  const p = convertNonComputedPropToStringLiteral(keyNode, computed);
+
+  // fix `key`, if `computed`
+  if (computed) {
+    keyNode = t.assignmentExpression('=',
+      propertyVar,
+      p
+    );
+  }
 }

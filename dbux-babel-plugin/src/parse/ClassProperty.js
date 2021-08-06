@@ -21,7 +21,9 @@ export default class ClassProperty extends BaseNode {
   }
 
   /**
-   * When encountering this property, 
+   * When encountering this property, we assign it to class or instance variable.
+   * For that, we trace access to class or instance here.
+   * The result is used by `writePropertyTemplate`.
    */
   addObjectTrace() {
     const { path, Traces } = this;
@@ -54,13 +56,13 @@ export default class ClassProperty extends BaseNode {
 
     const { computed } = path.node;
 
-    let propertyAstNode;
+    let propertyVar;
     if (computed) {
-      // only assign `propertyAstNode` if computed
-      // NOTE: this is because private properties do not support dynamic access
+      // only assign `propertyVar` if computed
+      // NOTE: this can work because private properties do not support dynamic access.
       // see: https://github.com/tc39/proposal-private-fields/issues/94
       keyNode?.addDefaultTrace();
-      propertyAstNode = Traces.generateDeclaredUidIdentifier('p');
+      propertyVar = Traces.generateDeclaredUidIdentifier('p');
     }
 
     // add trace for `this` or `className`
@@ -76,7 +78,7 @@ export default class ClassProperty extends BaseNode {
       data: {
         objectTraceCfg,
         objectTid,
-        propertyAstNode
+        propertyVar
       },
       meta: {
         build: buildTraceWriteClassProperty,

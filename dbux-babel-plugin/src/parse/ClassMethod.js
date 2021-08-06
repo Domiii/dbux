@@ -1,3 +1,4 @@
+import { instrumentMethodKey } from 'src/instrumentation/builders/classes';
 import BaseNode from './BaseNode';
 
 /**
@@ -23,8 +24,20 @@ export default class ClassMethod extends BaseNode {
   }
 
   addTrace() {
-    const { path } = this;
+    const { path, Traces } = this;
     const [keyPath] = this.getChildPaths();
+    const [keyNode] = this.getChildNodes();
+
+    const { computed } = path.node;
+
+    let propertyVar;
+    if (computed) {
+      // only assign `propertyVar` if computed
+      // NOTE: this can work because private properties do not support dynamic access.
+      // see: https://github.com/tc39/proposal-private-fields/issues/94
+      keyNode?.addDefaultTrace();
+      propertyVar = Traces.generateDeclaredUidIdentifier('m');
+    }
 
     const Function = this.getPlugin('Function');
     const traceCfg = this.Traces.addTrace({
@@ -32,7 +45,12 @@ export default class ClassMethod extends BaseNode {
       node: this,
       scope: this.getExistingParent().peekContextNode().path.scope, // prevent adding `tid` variable to own body
       staticTraceData: Function.createStaticTraceData(keyPath),
-      meta: { instrument: null }
+      data: {
+        propertyVar
+      },
+      meta: { 
+        instrument: instrumentMethodKey
+      }
     });
     
     Function.setFunctionTraceCfg(traceCfg);
