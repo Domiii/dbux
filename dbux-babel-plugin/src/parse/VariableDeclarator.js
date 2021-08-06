@@ -41,7 +41,7 @@ export default class VariableDeclarator extends BaseNode {
     // NOTE: This adds the hoisted declaration trace, while `plugins.lval` adds the write trace (after calling `decorateWriteTraceData`).
     if (this.hasSeparateDeclarationTrace) {
       // add declaration trace
-      this.getDeclarationNode().addOwnDeclarationTrace();
+      this.getOwnDeclarationNode().addOwnDeclarationTrace();
     }
   }
 

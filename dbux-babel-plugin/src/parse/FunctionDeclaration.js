@@ -1,4 +1,5 @@
 import TraceType from '@dbux/common/src/types/constants/TraceType';
+import { pathToString } from 'src/helpers/pathHelpers';
 import BaseNode from './BaseNode';
 import BindingIdentifier from './BindingIdentifier';
 
@@ -20,14 +21,18 @@ export default class FunctionDeclaration extends BaseNode {
   }
 
   exit1() {
-    const [idNode] = this.getChildNodes();
+    const idNode = this.getOwnDeclarationNode();
     const Function = this.getPlugin('Function');
+
+    const scope = idNode.path.scope.parent;
+    // console.warn('func', pathToString(idNode.path), scope.path.node.type, pathToString(scope.path));
+    
     const moreTraceData = {
+      scope,
       staticTraceData: Function.createStaticTraceData(idNode.path, TraceType.FunctionDeclaration)
     };
-
-    const declarationNode = this.getOwnDeclarationNode();
-    const functionTraceCfg = declarationNode.addOwnDeclarationTrace(declarationNode.path, moreTraceData);
+    
+    const functionTraceCfg = idNode.addOwnDeclarationTrace(idNode.path, moreTraceData);
     Function.setFunctionTraceCfg(functionTraceCfg);
   }
 

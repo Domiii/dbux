@@ -155,6 +155,9 @@ export default class Traces extends BasePlugin {
         throw new Error(`Assertion failed - node.getDeclarationNode() returned nothing ` +
           `for Declaration "${node}" in "${node.getParentString()}`);
       }
+
+      console.warn(`addTrace (Declaration): ${pathToString(path, true)}, ${declarationNode}`);
+
       if (declarationNode.bindingTrace) {
         // NOTE: this happens if parameter has same name as hoisted `var` local.
         const msg = `Tried to add declaration trace multiple times for "${declarationNode}" in "${declarationNode.getParentString()}"`;

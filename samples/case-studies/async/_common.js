@@ -12,7 +12,7 @@ export async function sleep(ms) {
   return new Promise(r => setTimeout(r, ms));
 }
 
-export async function sleepN(n) {
+export async function waitTicks(n) {
   let p = Promise.resolve();
   while (n--) {
     p = p.then(() => { });
@@ -22,7 +22,7 @@ export async function sleepN(n) {
 
 export async function f(x) {
   console.log(`f(${x}) START`);
-  await sleepN(x);
+  await waitTicks(x);
   console.log(`f(${x}) END`);
 }
 

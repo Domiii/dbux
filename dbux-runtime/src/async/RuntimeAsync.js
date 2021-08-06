@@ -467,7 +467,7 @@ export default class RuntimeAsync {
    * Event: `resolve` or `reject` was called from a promise ctor's executor.
    * @param {ThenRef} thenRef
    */
-  resolve(thenRef, result, resolveType) {
+  resolve(thenRef, resolveArg, resolveType) {
     const {
       preEventPromise,
       // postEventPromise,
@@ -485,6 +485,8 @@ export default class RuntimeAsync {
       contextId: contextId,
       schedulerTraceId,
       promiseId: getPromiseId(preEventPromise),
+
+      argPromiseId: isThenable(resolveArg) && getPromiseId(resolveArg) || 0,
       resolveType
     });
   }
@@ -549,9 +551,9 @@ export default class RuntimeAsync {
       ...previousData,
       ...data
     };
-    if (!previousData) {
-      this.logger.debug(`updateLastAwaitByRealContext (first await)`, realContextId, data);
-    }
+    // if (!previousData) {
+    //   this.logger.debug(`updateLastAwaitByRealContext (first await)`, realContextId, data);
+    // }
     this.lastAwaitByRealContext.set(realContextId, data);
     return data;
   }

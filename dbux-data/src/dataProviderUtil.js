@@ -1532,7 +1532,8 @@ export default {
       // runId: postEventRunId,
       // realContextId,
       rootId: postEventRootId,
-      schedulerTraceId
+      schedulerTraceId,
+      promiseId
     } = postEventUpdate;
 
     const preEventUpdate = util.getAsyncPreEventUpdateOfTrace(schedulerTraceId);
@@ -1545,6 +1546,7 @@ export default {
 
     const {
       contextId: preEventContextId,
+      runId: preEventRunId,
       nestedPromiseId
     } = preEventUpdate;
 
@@ -1557,6 +1559,7 @@ export default {
     const isNestedChain = util.isNestedChain(nestedPromiseId, schedulerTraceId);
     const nestedUpdate = nestedPromiseId && util.getPreviousPostOrResolveAsyncEventOfPromise(nestedPromiseId, postEventRootId) || null;
     const { rootId: nestedRootId = 0 } = nestedUpdate ?? EmptyObject;
+    const isChainedToRoot = dp.util.isPromiseChainedToRoot(preEventRunId, promiseId);
 
     return {
       preEventUpdate,
@@ -1564,7 +1567,8 @@ export default {
       isNested,
       isNestedChain,
       nestedUpdate,
-      nestedRootId
+      nestedRootId,
+      isChainedToRoot
     };
   },
 

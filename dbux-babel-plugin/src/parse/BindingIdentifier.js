@@ -19,11 +19,10 @@ export default class BindingIdentifier extends BaseId {
     }
     return this.bindingTrace.tidIdentifier;
   }
-
-
-  // ###########################################################################
-  // exit1
-  // ###########################################################################
+  
+  getOwnDeclarationNode() {
+    return this;
+  }
 
   getBindingScope() {
     const { path, scope } = this.binding;
@@ -100,6 +99,9 @@ export default class BindingIdentifier extends BaseId {
     if (declarationNode !== this) {
       // TODO: if `definitionPath`, convert to `write` trace?
     }
+
+    // this.warn(`addOwnDeclarationTrace(), [${this.path.parentPath.node.type}] ${this.path.toString()}, ${declarationNode}`);
+
     return bindingScopeNode.Traces.addDefaultDeclarationTrace(this, definitionPathOrNode, moreTraceData);
   }
 }

@@ -19,6 +19,7 @@
     console.debug('await tick (nested)', n);
   } while (--n);
 })();
+
 (async function a2(n = 3) {
   do {
     await 0;

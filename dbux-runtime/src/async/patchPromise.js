@@ -296,18 +296,18 @@ function patchPromiseClass(BasePromiseClass) {
       else {
         // wrapExecutor = executor;
         wrapExecutor = (resolve, reject) => {
-          const wrapResolve = (result) => {
+          const wrapResolve = (resolveArg) => {
             // Event: Resolve
             if (!superCalled) {
-              deferredCall = wrapResolve.bind(null, result);
+              deferredCall = wrapResolve.bind(null, resolveArg);
             }
             else {
               // TODO: track `result` data flow
               const thenRef = _makeThenRef(this, wrapResolve);
               if (thenRef) {
-                RuntimeMonitorInstance._runtime.async.resolve(thenRef, result, ResolveType.Resolve);
+                RuntimeMonitorInstance._runtime.async.resolve(thenRef, resolveArg, ResolveType.Resolve);
               }
-              resolve(result);
+              resolve(resolveArg);
             }
           };
           const wrapReject = (err) => {

@@ -105,13 +105,13 @@ export default class AsyncEventUpdateCollection extends Collection {
 
     const {
       preEventUpdate: {
-        runId: preEventRunId,
         rootId: preEventRootId
       },
       isFirstAwait,
       // isNested,
       isNestedChain,
-      nestedRootId
+      nestedRootId,
+      isChainedToRoot
     } = postUpdateData;
 
     const preEventThreadId = this.getOrAssignRootThreadId(preEventRootId, schedulerTraceId);
@@ -138,7 +138,7 @@ export default class AsyncEventUpdateCollection extends Collection {
       fromThreadId = toThreadId = this.getOrAssignRootThreadId(nestedRootId, schedulerTraceId);
       // }
     }
-    else if (!promiseId || util.isPromiseChainedToRoot(preEventRunId, promiseId)) {
+    else if (!promiseId || isChainedToRoot) {
       // Case 3: chained to root -> CHAIN
       // NOTE: implies firstNestingUpdate
     }
@@ -146,12 +146,6 @@ export default class AsyncEventUpdateCollection extends Collection {
       // Case 4: first await and NOT chained to root and NOT nested -> FORK
       toThreadId = 0;
     }
-
-    // else if (firstNestingUpdate) {
-    //   // NOTE: implied by Case 2, insufficient CHAIN condition - returned promise was chained on a single level
-    //   fromRootId = firstNestingUpdate.rootId;
-    //   fromThreadId = toThreadId = this.dp.util.getAsyncRootThreadId(fromRootId);
-    // }
 
     if (!isNestedChain && nestedRootId) {
       // nested, but not chained -> add SYNC edge

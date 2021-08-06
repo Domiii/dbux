@@ -1,4 +1,4 @@
-async function sleepN(times) {
+async function waitTicks(times) {
   while (--times >= 0) {
     await 0;
   }
@@ -6,6 +6,6 @@ async function sleepN(times) {
 
 (async function main() {
   for (let i = 0; i < 2; ++i) {
-    await sleepN(1);
+    await waitTicks(1);
   }
 })();
