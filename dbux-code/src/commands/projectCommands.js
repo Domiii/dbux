@@ -115,6 +115,17 @@ export function initProjectCommands(extensionContext, projectViewController) {
     return await projectViewController.testBug({ debugMode: true, dbuxEnabled: true });
   });
 
+  registerCommand(extensionContext, 'dbuxSessionView.flushCache', async () => {
+    const session = projectViewController.manager.practiceSession;
+    if (!session) {
+      await showInformationMessage(`No practice session activated.`);
+    }
+    else {
+      const { project } = session;
+      await projectViewController.manager.flushCache(project);
+    }
+  });
+
   registerCommand(extensionContext, 'dbuxSessionView.node.annotateTraceQ', async (node) => {
     if (!traceSelection.selected) {
       await showWarningMessage('You have not selected any trace yet.');

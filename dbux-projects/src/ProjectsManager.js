@@ -5,7 +5,7 @@ import NanoEvents from 'nanoevents';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { realPathSyncNormalized } from '@dbux/common-node/src/util/pathUtil';
+import { pathJoin, realPathSyncNormalized } from '@dbux/common-node/src/util/pathUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { readPackageJson } from '@dbux/cli/lib/package-util';
 import projectRegistry from './_projectRegistry';
@@ -883,6 +883,22 @@ export default class ProjectsManager {
    */
   getResultStatus(result) {
     return (!result || result.code) ? BugStatus.Attempted : BugStatus.Solved;
+  }
+
+  /**
+   * @param {Project} project 
+   */
+  async flushCache(project) {
+    const cacheFolder = pathJoin(project.projectPath, 'node_modules', '.cache', '@babel', 'register');
+    if (fs.existsSync(cacheFolder)) {
+      if (await this.externals.confirm(`This will flush the cache at "${cacheFolder}", are you sure?`)) {
+        fs.rmSync(cacheFolder, { recursive: true });
+        await this.externals.alert(`Successfully deleted cache folder for project "${project.name}"`, true);
+      }
+    }
+    else {
+      await this.externals.alert(`Cache not found for project "${project.name}"`, false);
+    }
   }
 
   // ###########################################################################
