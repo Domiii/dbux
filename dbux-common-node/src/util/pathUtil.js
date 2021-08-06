@@ -24,6 +24,15 @@ export function pathJoin(...paths) {
   return pathNormalized(path.join(...paths));
 }
 
+export function pathRelative(from, to) {
+  from = pathNormalized(from);
+  to = pathNormalized(to);
+  const sep = '/';
+  if (!from.endsWith(sep)) { from += '/'; }
+  if (!to.endsWith(sep)) { to += '/'; }
+  return pathNormalized(path.relative(from, to));
+}
+
 export function pathNormalized(fpath) {
   return fpath.replace(/\\/g, '/');
 }
