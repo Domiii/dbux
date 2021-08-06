@@ -27,11 +27,12 @@ function buildMethodsArray(state, methodOwner, methods) {
     // const key = convertNonComputedPropToStringLiteral(trace.path.node.key, computed);
 
     const key = propertyVar || convertNonComputedPropToStringLiteral(path.node.key, computed);
+    const keyAccessor = propertyVar || path.node.key;
     return t.arrayExpression([
       key,
 
       // we add this because private methods cannot be accessed dynamically
-      t.memberExpression(methodOwner, key, computed),
+      t.memberExpression(methodOwner, keyAccessor, computed),
 
       buildTraceId(state, trace)
     ]);
@@ -64,10 +65,10 @@ function buildPrivateMethodArray(state, methodOwner, methods) {
     } = trace;
 
     const computed = false;
-    const key = convertNonComputedPropToStringLiteral(path.node.key, computed);
+    const keyAccessor = path.node.key;
     return t.arrayExpression([
       // we add this because private methods cannot be accessed dynamically
-      t.memberExpression(methodOwner, key, computed),
+      t.memberExpression(methodOwner, keyAccessor, computed),
       buildTraceId(state, trace)
     ]);
   }));

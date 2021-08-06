@@ -6,6 +6,7 @@ process.env.BABEL_DISABLE_CACHE = 1;
 
 const defaultBabelOptions = require('../babel.config');
 
+// TODO: fix this
 const DbuxRoot = path.resolve(__dirname, '../..');
 
 // babel-register (makes sure that src/* files get babeled upon require)

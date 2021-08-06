@@ -65,6 +65,7 @@ export default function buildBabelOptions(options) {
   let {
     esnext,
     cache,
+    sourceRoot,
     dontInjectDbux,
     dontAddPresets,
     dbuxOptions: babelPluginOptions,
@@ -108,6 +109,7 @@ export default function buildBabelOptions(options) {
     ...baseOptions,
     sourceType: 'unambiguous',
     sourceMaps: 'inline',
+    sourceRoot,
     retainLines: true,
     // see https://babeljs.io/docs/en/options#parseropts
     parserOpts: { allowReturnOutsideFunction: true },

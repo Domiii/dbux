@@ -9,10 +9,16 @@ export function buildCommonCommandOptions() {
       type: 'boolean'
     },
     cache: {
-      describe: 'Use babel cache.',
+      describe: 'Whether to cache instrumented results.',
       // disable by default for development + testing
       default: process.env.NODE_ENV === 'production',
       type: 'boolean'
+    },
+    sourceRoot: {
+      // eslint-disable-next-line max-len
+      describe: 'If cache is enabled, this is used to determine the relative file path of cached files. If not provided, will use heuristics to find appropriate folder automatically.',
+      default: undefined,
+      type: 'String'
     },
     dontInjectDbux: {
       alias: ['d'],

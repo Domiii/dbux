@@ -513,14 +513,14 @@ export default class ProjectsManager {
     ) ? '--enable-source-maps' : '';
 
     const nodeArgs = `--stack-trace-limit=100 ${debugMode ? '--nolazy' : ''} ${sourceMapsFlag}`;
+    const sourceRoot = this.getDbuxRoot();
     const cfg = {
       debugMode,
       nodeArgs,
       dbuxEnabled,
 
       // NOTE: if !dbuxEnabled -> we don't actually run dbux at all anymore.
-      // dbuxArgs: dbuxEnabled ? '--verbose=1 --runtime={\\"tracesDisabled\\":1}' : '--dontInjectDbux',
-      dbuxArgs: dbuxEnabled ? '--verbose=1' : '--dontInjectDbux',
+      dbuxArgs: dbuxEnabled ? `--verbose=1 --cache --sourceRoot=${sourceRoot}` : '--dontInjectDbux',
     };
 
     const result = await this.runner.testBug(bug, cfg);

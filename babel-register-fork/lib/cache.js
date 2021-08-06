@@ -2,6 +2,7 @@
 
 exports.saveFile = saveFile;
 exports.loadFile = loadFile;
+exports.prepareCache = prepareCache;
 exports.makeCacheFilename = makeCacheFilename;
 exports.makeCacheKey = makeCacheKey;
 exports.get = get;
@@ -24,6 +25,16 @@ const CACHE_VERBOSE = true;
 // let data = {};
 // let cacheDirty = false;
 let cacheDisabled = false;
+
+/**
+ * File paths are computed relative to `cacheRoot`
+ */
+let cacheRoot;
+
+/**
+ * The `cacheDir` contains all cache files.
+ */
+let cacheDir;
 
 function mtime(filename) {
   return +fs.statSync(filename).mtime;
@@ -57,28 +68,41 @@ function normalize(p) {
   return p;
 }
 
-function makeCacheFilename(srcFilename, root) {
-  if (!isSubPathOf(srcFilename, root)) {
+function prepareCache(sourceRoot, firstFileName) {
+  if (cacheRoot) {
+    return;
+  }
+
+  const cacheFolderName = '@babel/register';
+
+  // NOTE: `findCacheDir` uses several heuristics to find the nearest folder containing a `package.json` file
+  //      We use that to determine the `cacheRoot`.
+  cacheDir = process.env.BABEL_CACHE_PATH || findCacheDir({
+    // if provided explicitely, start searching from `sourceRoot`, else from first file location
+    cwd: sourceRoot || path.dirname(firstFileName),
+    name: cacheFolderName
+  });
+
+  // guess a good cacheRoot from cacheDir, else sourceRoot, else firstFileName's directory.
+  cacheRoot = (cacheDir ? path.resolve(cacheDir, '../../../..') : sourceRoot) || path.dirname(firstFileName);
+
+  if (!cacheDir) {
+    // place cache in home or temp directories
+    cacheDir = path.resolve(os.homedir() || os.tmpdir(), `.babelcache/${cacheFolderName}`);
+  }
+
+  CACHE_VERBOSE && console.debug(`[@babel/register] cacheRoot=${cacheRoot}, cacheDir=${cacheDir}`);
+}
+
+function makeCacheFilename(srcFilename) {
+  if (!isSubPathOf(srcFilename, cacheRoot)) {
     // eslint-disable-next-line max-len
-    console.warn(`[@babel/register] Could not cache results for file "${srcFilename}" because it is outside of sourceRoot ${root}. Please set accurate "sourceRoot" in your babel config manually.`);
+    console.warn(`[@babel/register] Could not cache results for file "${srcFilename}" because it is outside of sourceRoot ${cacheRoot}. Please set accurate "sourceRoot" in your babel config manually.`);
     return null;
   }
   srcFilename += '.babel.js';
-  
-  // const CACHE_DIR = process.env.BABEL_CACHE_PATH || findCacheDir({
-  //   name: "@babel/register"
-  // }) || os.homedir() || os.tmpdir();
-  const cacheFolderName = '@babel/register';
-  let cacheDir = process.env.BABEL_CACHE_PATH || findCacheDir({
-    cwd: root,
-    name: cacheFolderName
-  });
-  if (!cacheDir) {
-    cacheDir = path.join(os.homedir() || os.tmpdir(), `.cache/${cacheFolderName}`);
-  }
 
-  const relativePath = path.relative(root, srcFilename);
-
+  const relativePath = path.relative(cacheRoot, srcFilename);
   return path.resolve(cacheDir, getEnvName(), relativePath);
 }
 
@@ -180,7 +204,7 @@ function reportCacheMiss(reason, srcFilename, cacheFilename, message) {
   if (!CACHE_VERBOSE) {
     return;
   }
-  console.warn(`[@babel/register] Cache miss [${getCacheMissReasonString(reason)}] for "${srcFilename}" (cached at "${cacheFilename}")${message && ` - ${message}` || ''}`);
+  console.debug(`[@babel/register] Cache miss [${getCacheMissReasonString(reason)}] for "${srcFilename}" (cached at "${cacheFilename}")${message && ` - ${message}` || ''}`);
 }
 
 function diffString(msg, aStr, bStr) {

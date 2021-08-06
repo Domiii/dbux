@@ -1,5 +1,5 @@
 /**
- * class: private properties + methods
+ * class: private properties + methods + static methods
  */
 
 
@@ -13,9 +13,17 @@ class A {
   #m2() {
     return this.p + this.#q;
   }
+
+  static s() {
+    return A.#t();
+  }
+
+  static #t() {
+    return 123;
+  }
 }
 
 
 var a = new A();
 
-console.log(a.p, a.m());
+console.log(a.p, a.m(), A.s());
