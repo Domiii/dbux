@@ -8,8 +8,8 @@ function p() {
   const p = new Promise((resolve) =>
     Promise
       .resolve(123)
-      .then(resolve)
-    // .then(() => resolve(123))
+      // .then(resolve)
+    .then(() => resolve(123))
   )
   p.then(async (a) => {
     console.log(2, a, a === 123);

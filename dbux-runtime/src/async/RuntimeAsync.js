@@ -402,7 +402,7 @@ export default class RuntimeAsync {
   preThen(thenRef) {
     const {
       preEventPromise,
-      // postEventPromise,
+      postEventPromise,
       schedulerTraceId
     } = thenRef;
 
@@ -416,7 +416,8 @@ export default class RuntimeAsync {
       rootId: preEventRootId,
       contextId: contextId,
       schedulerTraceId,
-      promiseId: getPromiseId(preEventPromise)
+      promiseId: getPromiseId(preEventPromise),
+      postEventPromiseId: getPromiseId(postEventPromise)
     });
 
     // const rootId = this.getCurrentVirtualRootContextId();

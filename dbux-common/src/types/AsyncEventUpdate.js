@@ -76,12 +76,15 @@ export class PromiseUpdate extends AsyncUpdateBase {
 }
 
 export class PreThenUpdate extends PromiseUpdate {
+  postEventPromiseId;
 }
 
 export class PostThenUpdate extends PromiseUpdate {
 }
 
 export class ResolveUpdate extends PromiseUpdate {
+  argPromiseId;
+
   /**
    * @type {ResolveType}
    */
