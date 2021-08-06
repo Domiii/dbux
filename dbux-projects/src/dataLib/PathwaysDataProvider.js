@@ -143,16 +143,21 @@ class UserActionCollection extends PathwaysCollection {
    * @returns 
    */
   resolveVisitedStaticTracesIndex(userActions) {
+    const warnedApplications = new Set();
     for (const action of userActions) {
       const { trace } = action;
       if (!trace) {
-        return;
+        continue;
       }
 
       const { applicationId, staticTraceId } = trace;
       const app = allApplications.getById(applicationId);
       if (!app) {
-        this.logger.warn(`Could not find application of trace (applicationId=${applicationId}).`);
+        if (!warnedApplications.has(applicationId)) {
+          this.logger.warn(`Could not find application of trace #${trace.traceId}: applicationId=${applicationId}`);
+          warnedApplications.add(applicationId);
+        }
+        continue;
       }
       const dp = app.dataProvider;
 
