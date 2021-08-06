@@ -17,14 +17,22 @@ export default class BindingIdentifier extends BaseId {
       let binding;
 
       let { scope } = path;
+      let lastScope;
+
+      // TODO: the condition `binding.identifier !== path.node` is also insufficient, since a scope can have
+      //    one binding for multiple overriding declarations.
+      // TODO: maybe we have to re-implement scope.registerBinding after all.
 
       // eslint-disable-next-line no-empty
       while (path.node && scope &&
         (binding = scope.getBinding(path.node.name)) &&
         binding.identifier !== path.node
       ) {
+        lastScope = scope;
         scope = scope.parent;
       }
+
+      binding = binding || lastScope.getBinding(path.node.name);
       // console.warn('binding', path.node.name, scope.path.node.type, astNodeToString(binding.identifier), astNodeToString(path.node));
 
       this._binding = binding;
