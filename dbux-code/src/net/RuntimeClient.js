@@ -2,6 +2,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 // eslint-disable-next-line no-unused-vars
 import Application from '@dbux/data/src/applications/Application';
+import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import SocketClient from './SocketClient';
 
 const Verbose = 1;
@@ -71,7 +72,10 @@ export default class RuntimeClient extends SocketClient {
 
   _handleData = (data, ack) => {
     try {
-      this.application.addData(data);
+      runTaskWithProgressBar(async (progress) => {
+        progress.report({ message: 'Processing...' });
+        this.application.addData(data);
+      }, { cancellable: false, title: 'Received runtime data' });
     }
     finally {
       ack('data'); // send ack
