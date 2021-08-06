@@ -109,7 +109,7 @@ export default class Traces extends BasePlugin {
     }
 
 
-    const {
+    let {
       path,
       node,
       scope,
@@ -134,7 +134,8 @@ export default class Traces extends BasePlugin {
     const inProgramStaticTraceId = state.traces.addTrace(path, staticTraceData);
 
     // NOTE: `scope.push` happens during `instrument`
-    const tidIdentifier = (scope || path.scope).generateUidIdentifier(`t${inProgramStaticTraceId}_`);
+    scope = scope || path.scope;
+    const tidIdentifier = scope.generateUidIdentifier(`t${inProgramStaticTraceId}_`);
 
     const traceCfg = {
       path,
@@ -156,7 +157,8 @@ export default class Traces extends BasePlugin {
           `for Declaration "${node}" in "${node.getParentString()}`);
       }
 
-      console.warn(`addTrace (Declaration): ${pathToString(path, true)}, ${declarationNode}`);
+      // eslint-disable-next-line max-len
+      console.warn(`addTrace (Declaration): [${declarationNode.path.parentPath.node.type}] ${pathToString(path, true)}, addTo: ${this.node.path.node.type} (scope=${scope.path.node.type}, decl=${declarationNode})`, JSON.stringify(declarationNode.path.node));
 
       if (declarationNode.bindingTrace) {
         // NOTE: this happens if parameter has same name as hoisted `var` local.
@@ -308,7 +310,7 @@ export default class Traces extends BasePlugin {
           instrument = instrumentExpression
         } = EmptyObject
       } = traceCfg;
-      (scope || path.scope).push({
+      scope.push({
         id: tidIdentifier
       });
 

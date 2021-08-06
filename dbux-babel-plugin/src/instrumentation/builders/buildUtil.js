@@ -37,12 +37,13 @@ export function getDeclarationTid(traceCfg) {
   let declarationTid;
   if (isDeclaration) {
     declarationTid = traceCfg.tidIdentifier;
-    console.warn(`getDeclarationTid (${pathToString(traceCfg.path, true)}, ${declarationTid.name}, ${traceCfg.node?.getDeclarationNode().path.parentPath.node.type})`);
   }
   else {
     declarationTid = traceCfg.node?.getDeclarationTidIdentifier();
-    console.warn(`getDeclarationTid (${pathToString(traceCfg.path, true)}, ${declarationTid.name}, ${traceCfg.node?.getDeclarationNode().path.parentPath.node.type})`);
   }
+
+  // console.warn(`getDeclarationTid (${pathToString(traceCfg.path, true)}, ${declarationTid.name}, ${traceCfg.node?.getDeclarationNode().path.parentPath.node.type})`);
+
   if (!declarationTid) {
     warn(`getDeclarationTid returned nothing for traceCfg at "${traceCfg.node || pathToString(traceCfg.path)}"${isDeclaration ? ' (Declaration)' : ''}`);
   }

@@ -1,5 +1,5 @@
 import { isDeclarationTrace } from '@dbux/common/src/types/constants/TraceType';
-import { pathToString } from '../helpers/pathHelpers';
+import { astNodeToString, pathToString } from '../helpers/pathHelpers';
 import { ZeroNode } from '../instrumentation/builders/buildUtil';
 import BaseId from './BaseId';
 import BaseNode from './BaseNode';
@@ -10,6 +10,28 @@ import BaseNode from './BaseNode';
 export default class BindingIdentifier extends BaseId {
   bindingTrace;
 
+  get binding() {
+    if (!this._binding) {
+      let { path } = this;
+      // for reference: https://github.com/babel/babel/blob/672a58660f0b15691c44582f1f3fdcdac0fa0d2f/packages/babel-traverse/src/scope/index.ts#L215
+      let binding;
+
+      let { scope } = path;
+
+      // eslint-disable-next-line no-empty
+      while (path.node && scope &&
+        (binding = scope.getBinding(path.node.name)) &&
+        binding.identifier !== path.node
+      ) {
+        scope = scope.parent;
+      }
+      // console.warn('binding', path.node.name, scope.path.node.type, astNodeToString(binding.identifier), astNodeToString(path.node));
+
+      this._binding = binding;
+    }
+    return this._binding;
+  }
+
   getTidIdentifier() {
     if (!this.bindingTrace) {
       // NOTE: this can mean its a global (or just plain undeclared)
@@ -19,14 +41,22 @@ export default class BindingIdentifier extends BaseId {
     }
     return this.bindingTrace.tidIdentifier;
   }
-  
+
   getOwnDeclarationNode() {
     return this;
   }
 
   getBindingScope() {
-    const { path, scope } = this.binding;
+    let { /* path, */ scope } = this.binding;
 
+    // if (scope.parent) {
+    //   // hackfix: just make sure the tid variable is hoisted correctly
+    //   // wont-work: because declaration traces might initialize in-place; so we cannot move them
+    //   scope = scope.parent;
+    //   if (scope.parent) {
+    //     scope = scope.parent;
+    //   }
+    // }
 
     // /**
     //  * Based on `@babel/traverse/lib/scope/index.js` -> `collectorVisitor`
@@ -61,11 +91,14 @@ export default class BindingIdentifier extends BaseId {
     //   // hackfix: just make sure, the declared variable is not hoisted to nested scope
     //   scopePath = scopePath.parentPath;
     // }
-    
+
     /**
      * @type {BaseNode}
      */
     const bindingScopeNode = this.getNodeOfPath(scopePath);
+
+    console.warn(`getDefaultBindingScopeNode(), [${this.path.parentPath.node.type}] ${this.path.toString()}, scope=${scopePath.node.type}`);
+
     if (!bindingScopeNode?.Traces) {
       throw new Error(`BindingIdentifier's binding scope did not have a valid BaseNode: "${pathToString(scopePath)}" in "${this.getParentString()}"`);
     }
@@ -97,6 +130,7 @@ export default class BindingIdentifier extends BaseId {
     const bindingScopeNode = this.getDefaultBindingScopeNode();
     const declarationNode = this.getDeclarationNode();
     if (declarationNode !== this) {
+      // re-definition of var, function, class etc.
       // TODO: if `definitionPath`, convert to `write` trace?
     }
 

@@ -24,11 +24,11 @@ export default class FunctionDeclaration extends BaseNode {
     const idNode = this.getOwnDeclarationNode();
     const Function = this.getPlugin('Function');
 
-    const scope = idNode.path.scope.parent;
+    // const scope = this.path.scope.parent;
     // console.warn('func', pathToString(idNode.path), scope.path.node.type, pathToString(scope.path));
     
     const moreTraceData = {
-      scope,
+      // scope,
       staticTraceData: Function.createStaticTraceData(idNode.path, TraceType.FunctionDeclaration)
     };
     
