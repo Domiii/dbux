@@ -692,7 +692,7 @@ export default class RuntimeMonitor {
   // Class
   // ###########################################################################
 
-  traceClass(programId, value, tid, staticMethods, publicMethodTids) {
+  traceClass(programId, value, tid, staticMethods, publicMethods) {
     if (!this._ensureExecuting()) {
       return value;
     }
@@ -716,36 +716,33 @@ export default class RuntimeMonitor {
 
     const trace = traceCollection.getById(tid);
     if (trace) {
-      const { staticTraceId } = trace;
-      const { data: {
-        staticMethods: staticMethodNames,
-        publicMethods: publicMethodNames
-      } } = staticTraceCollection.getById(staticTraceId);
+      // const { staticTraceId } = trace;
+      // const { data: {
+      //   staticMethods: staticMethodNames,
+      //   publicMethods: publicMethodNames
+      // } } = staticTraceCollection.getById(staticTraceId);
 
       // console.warn('traceClass', publicMethodNames, value.prototype[publicMethodNames[0]]);
 
       // add staticMethod nodes
-      for (let i = 0; i < staticMethodNames.length; ++i) {
-        // NOTE: we cannot access private static methods dynamically, that is why we do this
-        const methodName = staticMethodNames[i];
-        const [method, methodTid] = staticMethods[i];
+      for (let i = 0; i < staticMethods.length; ++i) {
+        const [methodName, method, methodTid] = staticMethods[i];
         const methodAccess = {
           objectNodeId: classNode.nodeId,
           prop: methodName
         };
-        dataNodeCollection.createDataNode(method, methodTid, DataNodeType.Read, methodAccess);
+        dataNodeCollection.createOwnDataNode(method, methodTid, DataNodeType.Read, methodAccess);
       }
 
       // add publicMethods nodes to prototype
-      for (let i = 0; i < publicMethodNames.length; i++) {
-        const methodTid = publicMethodTids[i];
-        const methodName = publicMethodNames[i];
-        const method = value.prototype[methodName];
+      for (let i = 0; i < publicMethods.length; i++) {
+        const [methodName, methodTid] = publicMethods[i];
+        const method = value.prototype[methodName];   // NOTE: public methods can be accessed dynamically
         const methodAccess = {
           objectNodeId: prototypeNode.nodeId,
           prop: methodName
         };
-        dataNodeCollection.createDataNode(method, methodTid, DataNodeType.Read, methodAccess);
+        dataNodeCollection.createOwnDataNode(method, methodTid, DataNodeType.Read, methodAccess);
       }
     }
 
@@ -767,14 +764,13 @@ export default class RuntimeMonitor {
       } } = staticTraceCollection.getById(staticTraceId);
 
       for (let i = 0; i < privateMethodNames.length; ++i) {
-        // NOTE: we cannot access private methods dynamically, that is why we do this
         const methodName = privateMethodNames[i];
         const [method, methodTid] = privateMethods[i];
         const methodAccess = {
           objectNodeId: instanceNode.nodeId,
           prop: methodName
         };
-        dataNodeCollection.createDataNode(method, methodTid, DataNodeType.Read, methodAccess);
+        dataNodeCollection.createOwnDataNode(method, methodTid, DataNodeType.Read, methodAccess);
       }
     }
 

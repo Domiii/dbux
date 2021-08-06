@@ -8,7 +8,8 @@ import BasePlugin from './BasePlugin';
 /** @typedef { import("../MemberExpression").default } MemberExpression */
 
 function methodNames(methods) {
-  return methods.map(m => m.name);
+  /** {@link ClassMethod#name} */
+  return methods.map(m => m.trace.node.name);
 }
 
 /**
@@ -59,7 +60,7 @@ export default class Class extends BasePlugin {
       // register all method names
       if (isMethod) {
         const { static: isStatic } = astNode;
-        const { isPublic, name } = memberNode;
+        const { isPublic } = memberNode;
         
         let methods;
         if (isStatic) {
@@ -69,7 +70,6 @@ export default class Class extends BasePlugin {
           methods = isPublic ? publicMethods : privateMethods;
         }
         methods.push({
-          name,
           trace: memberTraceCfg
         });
       }

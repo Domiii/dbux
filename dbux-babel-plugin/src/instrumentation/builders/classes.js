@@ -28,16 +28,49 @@ function buildMethodsArray(state, methodOwner, methods) {
 
     const key = propertyVar || convertNonComputedPropToStringLiteral(path.node.key, computed);
     return t.arrayExpression([
+      key,
+
+      // we add this because private methods cannot be accessed dynamically
       t.memberExpression(methodOwner, key, computed),
+
       buildTraceId(state, trace)
     ]);
   }));
 }
 
-function buildMethodTidsArray(state, methods) {
-  return t.arrayExpression(methods.map(({ trace }) =>
-    buildTraceId(state, trace)
-  ));
+function buildPublicMethodArray(state, methods) {
+  return t.arrayExpression(methods.map(({ trace }) => {
+    const {
+      path,
+      data: {
+        propertyVar
+      }
+    } = trace;
+    const { computed } = path.node;
+    // const key = convertNonComputedPropToStringLiteral(trace.path.node.key, computed);
+
+    const key = propertyVar || convertNonComputedPropToStringLiteral(path.node.key, computed);
+    return t.arrayExpression([
+      key,
+      buildTraceId(state, trace)
+    ]);
+  }));
+}
+
+function buildPrivateMethodArray(state, methodOwner, methods) {
+  return t.arrayExpression(methods.map(({ trace }) => {
+    const {
+      path
+    } = trace;
+
+    const computed = false;
+    const key = convertNonComputedPropToStringLiteral(path.node.key, computed);
+    return t.arrayExpression([
+      // we add this because private methods cannot be accessed dynamically
+      t.memberExpression(methodOwner, key, computed),
+      buildTraceId(state, trace)
+    ]);
+  }));
 }
 
 function buildDelete(obj, prop) {
@@ -62,6 +95,20 @@ function buildDelete(obj, prop) {
 function instrumentClassDefault(classVar, state, traceCfg) {
   injectTraceClass(classVar, state, traceCfg);
   injectTraceInstance(state, traceCfg);
+
+  const {
+    data: {
+      staticMethods,
+      publicMethods
+    }
+  } = traceCfg;
+
+  for (const { trace } of staticMethods) {
+    instrumentMethodKey(state, trace);
+  }
+  for (const { trace } of publicMethods) {
+    instrumentMethodKey(state, trace);
+  }
 }
 
 // ###########################################################################
@@ -127,7 +174,7 @@ function buildTraceClassCall(classVar, state, traceCfg) {
       classVar,
       buildTraceId(state, traceCfg),
       buildMethodsArray(state, classVar, staticMethods),
-      buildMethodTidsArray(state, publicMethods)
+      buildPublicMethodArray(state, publicMethods)
     ])
   );
 }
@@ -181,7 +228,7 @@ function buildTraceInstanceExpression(state, instanceTraceCfg) {
   return t.callExpression(traceInstance, [
     thisNode,
     buildTraceId(state, instanceTraceCfg),
-    buildMethodsArray(state, thisNode, privateMethods)
+    buildPrivateMethodArray(state, thisNode, privateMethods)
   ]);
 }
 
@@ -373,6 +420,8 @@ export function buildTraceWriteClassProperty(state, traceCfg) {
 
 export function instrumentMethodKey(state, traceCfg) {
   const classMethod = getInstrumentTargetAstNode(state, traceCfg);
+  const keyPath = traceCfg.path.get('key');
+
   let {
     key: keyNode,
     computed
@@ -385,11 +434,12 @@ export function instrumentMethodKey(state, traceCfg) {
 
   const p = convertNonComputedPropToStringLiteral(keyNode, computed);
 
-  // fix `key`, if `computed`
   if (computed) {
     keyNode = t.assignmentExpression('=',
       propertyVar,
       p
     );
   }
+
+  keyPath.replaceWith(keyNode);
 }

@@ -8,10 +8,10 @@ class A {
   static ['a' + ++X]() {
     return 'a1';
   }
-  static ['a' + ++X]() {
+  ['a' + ++X]() {
     return 'a2';
   }
 }
 
 var o = new A();
-console.log(o, o.a1, o.a2);
+console.log(A.a1(), o.a2());

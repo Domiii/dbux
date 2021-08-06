@@ -49,7 +49,7 @@ export default class ClassMethod extends BaseNode {
         propertyVar
       },
       meta: { 
-        instrument: instrumentMethodKey
+        instrument: null
       }
     });
     

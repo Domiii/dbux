@@ -114,7 +114,7 @@ export function guessFunctionName(functionPath, state) {
        * 5. Object property: `({ f: () => {} })`
        * 6. Class member: `class A { f = () => {} }`
        */
-      name = parent.key.name;
+      name = parentPath.get('key').toString();
     }
     else if (parent.left) {
       const leftPath = parentPath.get('left');
