@@ -6,6 +6,7 @@ __samplesOutput__
 /samples/**/*.inst.js
 /samples/**/*.es5.js
 /samples/**/*.node.js
+/samples/**/test-data*
 project_sandbox/projects
 project_sandbox/bug-dataset
 _testOut
