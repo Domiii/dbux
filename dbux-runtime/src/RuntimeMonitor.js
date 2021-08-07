@@ -651,7 +651,7 @@ export default class RuntimeMonitor {
     if (!declarationTid) {
       declarationTid = tid;
     }
-    console.warn('twv', tid, declarationTid);
+    // console.warn('twv', tid, declarationTid);
     const varAccess = declarationTid && { declarationTid };
     dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess, traceCollection.getDataNodeIdsByTraceIds(tid, inputs));
     return value;

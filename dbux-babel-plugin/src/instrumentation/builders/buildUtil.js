@@ -42,13 +42,14 @@ export function getDeclarationTid(traceCfg) {
     declarationTid = traceCfg.tidIdentifier;
   }
 
-  const declNode = traceCfg.node?.getDeclarationNode();
-  const { path } = traceCfg;
-  // eslint-disable-next-line max-len
-  console.warn(`getDeclarationTid: ${pathToString(traceCfg.path, true)}, ${declarationTid.name}, ${path.listKey || path.parentPath.node.type}, decl=${pathToString(declNode.path, true)}`);
+  // const declNode = traceCfg.node?.getDeclarationNode();
+  // const { path } = traceCfg;
+  // // eslint-disable-next-line max-len
+  // console.warn(`getDeclarationTid: ${pathToString(traceCfg.path, true)}, ${declarationTid.name}, ${path.listKey || path.parentPath.node.type}, decl=${pathToString(declNode.path, true)}`);
 
   if (!declarationTid) {
-    warn(`getDeclarationTid returned nothing for traceCfg at "${traceCfg.node || pathToString(traceCfg.path)}"${isDeclaration ? ' (Declaration)' : ''}`);
+    const declNode = traceCfg.node?.getDeclarationNode();
+    warn(`getDeclarationTid returned nothing for traceCfg at "${traceCfg.node || pathToString(traceCfg.path)}", declNode="${declNode}"`);
   }
   return declarationTid || ZeroNode;
 }
