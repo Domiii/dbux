@@ -1433,17 +1433,28 @@ export default {
   },
 
   /** @param {DataProvider} dp */
-  getAsyncPreEventUpdateOfTrace(dp, traceId) {
-    return dp.indexes.asyncEventUpdates.byTrace.get(traceId)?.[0];
+  getAsyncPreEventUpdateOfTrace(dp, schedulerTraceId) {
+    return dp.indexes.asyncEventUpdates.byTrace.get(schedulerTraceId)?.[0];
   },
 
   /** @param {DataProvider} dp */
-  getFirstAsyncPostEventUpdateOfTrace(dp, traceId) {
-    return dp.indexes.asyncEventUpdates.byTrace.get(traceId)?.[1];
+  getFirstAsyncPostEventUpdateOfTrace(dp, schedulerTraceId) {
+    return dp.indexes.asyncEventUpdates.byTrace.get(schedulerTraceId)?.[1];
+  },
+
+  /** 
+   * Get the last "Post" asyncEvent of given `schedulerTraceId`.
+   * That update must have `rootId` < `beforeRootId`.
+   * 
+   * @param {DataProvider} dp
+   */
+  getPreviousAsyncPostEventUpdateOfTrace(dp, schedulerTraceId, beforeRootId) {
+    const updates = dp.indexes.asyncEventUpdates.byTrace.get(schedulerTraceId);
+    return updates && findLast(updates, update => update.rootId < beforeRootId);
   },
 
   /**
-   * Find the last "Post" asyncEvent (also an "edge trigger event") of a given promise.
+   * Get the last "Post" asyncEvent (also an "edge trigger event") of a given promise.
    * That update must have `rootId` < `beforeRootId`.
    *
    * @param {DataProvider} dp
@@ -1625,7 +1636,7 @@ export default {
     const { util } = dp;
     const {
       // runId: postEventRunId,
-      // realContextId,
+      rootId,
       schedulerTraceId
     } = postEventUpdate;
 
@@ -1640,19 +1651,37 @@ export default {
     const { isEventListener } = preEventUpdate;
 
     const isNested = false;
-    let firstEventHandlerUpdate;
     let eventHandlerThreadId;
+    let recursiveThreadId;
+    let firstPostEventHandlerUpdate;
+    let lastPostUpdate;
     if (isEventListener) {
-      firstEventHandlerUpdate = util.getFirstAsyncPostEventUpdateOfTrace(schedulerTraceId);
-      const firstEventRootId = firstEventHandlerUpdate?.rootId;
-      eventHandlerThreadId = firstEventRootId && util.getAsyncRootThreadId(firstEventRootId);
+      // event listener
+      firstPostEventHandlerUpdate = util.getFirstAsyncPostEventUpdateOfTrace(schedulerTraceId);
+      if (firstPostEventHandlerUpdate) {
+        eventHandlerThreadId = util.getAsyncRootThreadId(firstPostEventHandlerUpdate.rootId);
+      }
+    }
+    else {
+      // recursive callbacks
+      lastPostUpdate = util.getPreviousAsyncPostEventUpdateOfTrace(schedulerTraceId, rootId);
+      if (lastPostUpdate) {
+        // the same callback was called multiple times -> check if the same function is called
+        const thisStaticContextId = util.getContextStaticContext(rootId);
+        const lastStaticContextId = util.getContextStaticContext(lastPostUpdate.rootId);
+        if (thisStaticContextId === lastStaticContextId) {
+          recursiveThreadId = util.getAsyncRootThreadId(lastPostUpdate.rootId);
+        }
+      }
     }
 
     return {
       preEventUpdate,
       isNested,
-      firstEventHandlerUpdate,
-      eventHandlerThreadId
+      firstEventHandlerUpdate: firstPostEventHandlerUpdate,
+      eventHandlerThreadId,
+      lastEventHandlerUpdate: lastPostUpdate,
+      recursiveThreadId
     };
   },
 

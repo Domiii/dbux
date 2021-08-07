@@ -1,7 +1,5 @@
 const fs = require('fs');
 
-async function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-
 /**
  * @see https://nodejs.org/api/stream.html#stream_writable_streams
  */
@@ -12,16 +10,14 @@ function writeData(callback = () => { }) {
   const encoding = 'utf8';
   _writeChunk();
   function _writeChunk() {
-    let noDrainNeeded = true;
     i--;
     if (i === 0) {
+      // done!
       writer.write(data, encoding, callback);
     } else {
+      // more to come
       /** @see https://nodejs.org/api/stream.html#stream_writable_write_chunk_encoding_callback */
-      noDrainNeeded = writer.write(data, encoding, _writeChunk);
-    }
-    if (!noDrainNeeded) {
-      writer.once('drain', _writeChunk);
+      writer.write(data, encoding, _writeChunk);
     }
   }
 }
