@@ -2,7 +2,7 @@ import { env, Uri } from 'vscode';
 import path from 'path';
 import { newLogger } from '@dbux/common/src/log/logger';
 import sleep from '@dbux/common/src/util/sleep';
-import { pathJoin, pathNormalized } from '@dbux/common-node/src/util/pathUtil';
+import { pathJoin, pathNormalized, pathNormalizedForce } from '@dbux/common-node/src/util/pathUtil';
 import { initDbuxProjects } from '@dbux/projects/src';
 import Process from '@dbux/projects/src/util/Process';
 import { showWarningMessage, showInformationMessage, confirm } from '../codeUtil/codeModals';
@@ -48,9 +48,8 @@ export function createProjectManager(extensionContext) {
   if (pathMatch) {
     if (process.env.NODE_ENV === 'development') {
       // eslint-disable-next-line prefer-destructuring
-      dependencyRoot = pathMatch[1];                                          // same as DBUX_ROOT
-      // TODO: normalize DBUX_ROOT elsewhere?
-      if (dependencyRoot.toLowerCase() !== pathNormalized(process.env.DBUX_ROOT?.toLowerCase())) { // weird drive letter inconsistencies in Windows force us to do case-insensitive comparison
+      dependencyRoot = pathNormalizedForce(pathMatch[1]);
+      if (dependencyRoot !== process.env.DBUX_ROOT) {
         throw new Error(`Path problems: ${dependencyRoot} !== DBUX_ROOT (${process.env.DBUX_ROOT})`);
       }
     }

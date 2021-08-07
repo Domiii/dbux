@@ -1,4 +1,4 @@
-import { pathNormalized, pathJoin } from '@dbux/common-node/src/util/pathUtil';
+import { pathJoin, pathNormalizedForce } from '@dbux/common-node/src/util/pathUtil';
 import {
   ExtensionContext,
   Uri
@@ -36,11 +36,11 @@ export function getThemeResourcePathUri(...relativePathSegments) {
 }
 
 export function asAbsolutePath(fpath) {
-  return pathNormalized(context.asAbsolutePath(fpath));
+  return pathNormalizedForce(context.asAbsolutePath(fpath));
 }
 
 export function getExtensionPath() {
-  return pathNormalized(context.extensionPath);
+  return pathNormalizedForce(context.extensionPath);
 }
 
 export function initCodePath(_context) {

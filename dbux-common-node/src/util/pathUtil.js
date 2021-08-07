@@ -33,8 +33,27 @@ export function pathRelative(from, to) {
   return pathNormalized(path.relative(from, to));
 }
 
+
+/**
+ * @see https://github.com/microsoft/vscode/issues/9448
+ * @see https://github.com/microsoft/vscode/commit/a6c845baf7fed4a186e3b744c5c14c0be53494fe
+ */
+export function normalizeDriveLetter(fpath) {
+  if (fpath && fpath[1] === ':') {
+    fpath = fpath[0].toUpperCase() + fpath.substr(1);
+  }
+  return fpath;
+}
+
 export function pathNormalized(fpath) {
   return fpath.replace(/\\/g, '/');
+}
+
+/**
+ * In addition to standard normalization, also enforces upper-case drive letter.
+ */
+export function pathNormalizedForce(fpath) {
+  return normalizeDriveLetter(pathNormalized(fpath));
 }
 
 export function parseNodeModuleName(fpath) {

@@ -3,10 +3,10 @@ import os from 'os';
 import path from 'path';
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { pathNormalized, whichNormalized } from '@dbux/common-node/src/util/pathUtil';
+import { pathNormalized, pathNormalizedForce, whichNormalized } from '@dbux/common-node/src/util/pathUtil';
 import Process from '@dbux/projects/src/util/Process';
 // import sleep from '@dbux/common/src/util/sleep';
-import { closeDefaultTerminal, fixTerminalPath, runInTerminal, runInTerminalInteractive } from '../codeUtil/terminalUtil';
+import { closeDefaultTerminal, runInTerminal, runInTerminalInteractive } from '../codeUtil/terminalUtil';
 import { getResourcePath } from '../codeUtil/codePath';
 
 // const Verbose = true;
@@ -68,12 +68,12 @@ export default class TerminalWrapper {
 
   async _run(cwd, command, options, isInteractive = false) {
     // NOTE: fix paths on Windows
-    cwd = fixTerminalPath(cwd);
+    cwd = pathNormalizedForce(cwd);
     let tmpFolder = pathNormalized(fs.mkdtempSync(path.join(os.tmpdir(), 'dbux-')));
-    tmpFolder = fixTerminalPath(tmpFolder);
+    tmpFolder = pathNormalizedForce(tmpFolder);
 
-    const pathToNode = fixTerminalPath(await getPathToNode());
-    const pathToDbuxRun = fixTerminalPath(getResourcePath('../dist/_dbux_run.js'));
+    const pathToNode = pathNormalizedForce(await getPathToNode());
+    const pathToDbuxRun = pathNormalizedForce(getResourcePath('../dist/_dbux_run.js'));
 
     // serialize everything
     const runJsargs = { cwd, command, options, tmpFolder };

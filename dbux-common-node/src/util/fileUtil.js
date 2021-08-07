@@ -111,3 +111,4 @@ export async function assertFileLinkTarget(linkPath, expectedTarget, error = tru
   }
   return true;
 }
+

@@ -11,6 +11,7 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import Process from '../util/Process';
 import BugRunnerStatus, { isStatusRunningType } from './RunStatus';
+import { pathNormalizedForce } from '@dbux/common-node/src/util/pathUtil';
 
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
 /** @typedef {import('./Bug').default} Bug */
@@ -238,7 +239,7 @@ export default class BugRunner {
       await project.initBug(bug);
 
       // after initBug, produce final cfg
-      const cwd = path.resolve(project.projectPath, bug.cwd || '');
+      const cwd = pathNormalizedForce(path.resolve(project.projectPath, bug.cwd || ''));
 
       cfg = {
         ...cfg,

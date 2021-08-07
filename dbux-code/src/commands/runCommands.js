@@ -1,7 +1,7 @@
 import path from 'path';
 import { window, workspace } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { realPathSyncNormalized } from '@dbux/common-node/src/util/pathUtil';
+import { pathNormalizedForce, realPathSyncNormalized } from '@dbux/common-node/src/util/pathUtil';
 import { checkSystem } from '@dbux/projects/src/checkSystem';
 import { getOrCreateProjectManager } from '../projectViews/projectControl';
 import { runInTerminalInteractive } from '../codeUtil/terminalUtil';
@@ -77,14 +77,14 @@ export async function runFile(extensionContext, debugMode = false) {
   let file;
   let cwd;
   try {
-    file = realPathSyncNormalized(activePath);
+    file = pathNormalizedForce(realPathSyncNormalized(activePath));
     cwd = path.dirname(file);
   }
   catch (err) {
     logError(`Could not find file "${activePath}": ${err.message}`);
     return;
   }
-  
+
   // // color query test (not relevant)
   // // const { uri } = activeEditor.document;
   // const colorInfos = await commands.executeCommand('vscode.executeDocumentColorProvider', 

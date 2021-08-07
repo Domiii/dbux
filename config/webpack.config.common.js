@@ -12,15 +12,16 @@ const path = require('path');
 require('../dbux-cli/lib/dbux-register-self');
 require('../dbux-common/src/util/prettyLogs');
 
-const {
-  getDbuxVersion
-} = require('../dbux-cli/lib/package-util');
+// const {pathNormalizedForce}  = require('');
+
+const { getDbuxVersion } = require('@dbux/cli/lib/package-util');
+const { pathNormalizedForce } = require('@dbux/common-node/src/util/pathUtil');
 
 const MonoRoot = path.resolve(__dirname, '..');
 
 module.exports = function webpackCommon(name, mode) {
   const DBUX_VERSION = getDbuxVersion(mode);
-  const DBUX_ROOT = mode === 'development' ? MonoRoot : '';
+  const DBUX_ROOT = mode === 'development' ? pathNormalizedForce(MonoRoot) : '';
   process.env.NODE_ENV = mode; // set these, so babel configs also have it
   process.env.DBUX_ROOT = DBUX_ROOT;
 

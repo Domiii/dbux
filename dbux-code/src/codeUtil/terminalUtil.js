@@ -1,6 +1,6 @@
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { whichNormalized } from '@dbux/common-node/src/util/pathUtil';
+import { normalizeDriveLetter, whichNormalized } from '@dbux/common-node/src/util/pathUtil';
 import sleep from '@dbux/common/src/util/sleep';
 
 // eslint-disable-next-line no-unused-vars
@@ -8,29 +8,18 @@ const { log, debug, warn, error: logError } = newLogger('terminalUtil');
 
 const DefaultTerminalName = 'dbux-run';
 
-export function fixTerminalPath(cwd) {
-  /**
-   * @see https://github.com/microsoft/vscode/issues/9448
-   * @see https://github.com/microsoft/vscode/commit/a6c845baf7fed4a186e3b744c5c14c0be53494fe
-   */
-  if (cwd && cwd[1] === ':') {
-    cwd = cwd[0].toUpperCase() + cwd.substr(1);
-  }
-  return cwd;
-}
-
 export function createDefaultTerminal(cwd) {
-  return createTerminal(DefaultTerminalName, fixTerminalPath(cwd));
+  return createTerminal(DefaultTerminalName, cwd);
 }
 
 export function recreateTerminal(terminalOptions) {
-  terminalOptions.cwd = fixTerminalPath(terminalOptions.cwd);
+  terminalOptions.cwd = normalizeDriveLetter(terminalOptions.cwd);
   closeTerminal(terminalOptions.name);
   return window.createTerminal(terminalOptions);
 }
 
 export function createTerminal(name, cwd) {
-  cwd = fixTerminalPath(cwd);
+  cwd = normalizeDriveLetter(cwd);
 
   closeTerminal(name);
 
@@ -68,7 +57,7 @@ export function closeTerminal(name) {
 // }
 
 export function runInTerminal(cwd, command) {
-  cwd = fixTerminalPath(cwd);
+  cwd = normalizeDriveLetter(cwd);
 
   const name = DefaultTerminalName;
   closeTerminal(name);

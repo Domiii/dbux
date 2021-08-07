@@ -7,6 +7,7 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { execSync } from 'child_process';
 import spawn from 'cross-spawn';
+import { pathNormalizedForce } from '@dbux/common-node/src/util/pathUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Process');
@@ -81,6 +82,7 @@ export default class Process {
       // stdio: 'inherit'
       // stdio: [0, 1, 2]
     };
+    processOptions.cwd = pathNormalizedForce(processOptions.cwd);
 
     // if (!sync) {
     //   // NOTE: shell = true exists only for spawn, not for exec
