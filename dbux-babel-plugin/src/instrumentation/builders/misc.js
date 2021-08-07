@@ -70,28 +70,48 @@ export const buildTraceExpressionNoInput = buildTraceCall(
 // traceDeclaration
 // ###########################################################################
 
-export function buildTraceDeclarationVar(state, traceCfg, value) {
-  const { tidIdentifier, inProgramStaticTraceId } = traceCfg;
+export function buildTraceDeclarationVar(state, traceCfg) {
+  const { inProgramStaticTraceId } = traceCfg;
   const trace = getTraceCall(state, traceCfg, 'traceDeclaration');
+  const declarationTid = getDeclarationTid(traceCfg);
+
+  // build args
   const args = [t.numericLiteral(inProgramStaticTraceId)];
-  value && args.push(value);
+  let valueNode = traceCfg.data?.valueNode;
+  if (isFunction(valueNode)) {
+    valueNode = valueNode(state, traceCfg);
+  }
+  valueNode && args.push(valueNode);
   addMoreTraceCallArgs(args, traceCfg);
 
+  // call
+  const callAstNode = applyPreconditionToExpression(traceCfg, t.callExpression(trace, args));
+
+  // final statement
+  if (traceCfg.data?.isRedeclaration) {
+    return t.expressionStatement(callAstNode);
+  }
   return t.variableDeclarator(
-    tidIdentifier,
-    applyPreconditionToExpression(traceCfg, t.callExpression(trace, args))
+    declarationTid,
+    callAstNode
   );
 }
 
 export function buildTraceDeclarations(state, traceCfgs) {
-  const decls = traceCfgs.map((traceCfg) => {
-    let valueNode = traceCfg.data?.valueNode;
-    if (isFunction(valueNode)) {
-      valueNode = valueNode(state, traceCfg);
-    }
-    return buildTraceDeclarationVar(state, traceCfg, valueNode);
+  const declarationCfgs = traceCfgs.filter(traceCfg => !traceCfg.data?.isRedeclaration);
+  const decls = declarationCfgs.map((traceCfg) => {
+    return buildTraceDeclarationVar(state, traceCfg);
   });
-  return t.variableDeclaration('var', decls);
+
+  const redeclarationCfgs = traceCfgs.filter(traceCfg => traceCfg.data?.isRedeclaration);
+  const redeclarations = redeclarationCfgs.map(traceCfg => {
+    return buildTraceDeclarationVar(state, traceCfg);
+  });
+
+  return [
+    t.variableDeclaration('var', decls),
+    ...redeclarations
+  ];
 }
 
 // ###########################################################################

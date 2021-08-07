@@ -10,36 +10,6 @@ import BaseNode from './BaseNode';
 export default class BindingIdentifier extends BaseId {
   bindingTrace;
 
-  get binding() {
-    if (!this._binding) {
-      let { path } = this;
-      // for reference: https://github.com/babel/babel/blob/672a58660f0b15691c44582f1f3fdcdac0fa0d2f/packages/babel-traverse/src/scope/index.ts#L215
-      let binding;
-
-      let { scope } = path;
-      let lastScope;
-
-      // TODO: the condition `binding.identifier !== path.node` is also insufficient, since a scope can have
-      //    one binding for multiple overriding declarations.
-      // TODO: maybe we have to re-implement scope.registerBinding after all.
-
-      // eslint-disable-next-line no-empty
-      while (path.node && scope &&
-        (binding = scope.getBinding(path.node.name)) &&
-        binding.identifier !== path.node
-      ) {
-        lastScope = scope;
-        scope = scope.parent;
-      }
-
-      binding = binding || lastScope.getBinding(path.node.name);
-      // console.warn('binding', path.node.name, scope.path.node.type, astNodeToString(binding.identifier), astNodeToString(path.node));
-
-      this._binding = binding;
-    }
-    return this._binding;
-  }
-
   getTidIdentifier() {
     if (!this.bindingTrace) {
       // NOTE: this can mean its a global (or just plain undeclared)
@@ -50,9 +20,9 @@ export default class BindingIdentifier extends BaseId {
     return this.bindingTrace.tidIdentifier;
   }
 
-  getOwnDeclarationNode() {
-    return this;
-  }
+  // getOwnDeclarationNode() {
+  //   return this;
+  // }
 
   getBindingScope() {
     let { /* path, */ scope } = this.binding;
@@ -136,10 +106,10 @@ export default class BindingIdentifier extends BaseId {
     }
 
     const bindingScopeNode = this.getDefaultBindingScopeNode();
-    const declarationNode = this.getDeclarationNode();
-    if (declarationNode !== this) {
-      // re-definition of var, function, class etc.
-      // TODO: if `definitionPath`, convert to `write` trace?
+
+    if (!moreTraceData?.scope) {
+      moreTraceData = moreTraceData || {};
+      moreTraceData.scope = bindingScopeNode.path.scope;
     }
 
     // this.warn(`addOwnDeclarationTrace(), [${this.path.parentPath.node.type}] ${this.path.toString()}, ${declarationNode}`);

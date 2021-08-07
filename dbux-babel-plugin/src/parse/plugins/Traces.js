@@ -126,6 +126,10 @@ export default class Traces extends BasePlugin {
     }
 
     const isDeclaration = isDeclarationTrace(staticTraceData.type);
+    const declarationNode = isDeclaration && node.getOwnDeclarationNode();
+    const isRedeclaration = !!declarationNode?.bindingTrace;
+    data = data || {};
+    data.isRedeclaration = isRedeclaration;
 
     // set default static DataNode
     staticTraceData.dataNode = staticTraceData.dataNode || { isNew: false };
@@ -151,7 +155,6 @@ export default class Traces extends BasePlugin {
     };
 
     if (isDeclaration) {
-      const declarationNode = node.getOwnDeclarationNode();
       if (!declarationNode) {
         throw new Error(`Assertion failed - node.getDeclarationNode() returned nothing ` +
           `for Declaration "${node}" in "${node.getParentString()}`);
@@ -160,16 +163,15 @@ export default class Traces extends BasePlugin {
       // eslint-disable-next-line max-len
       // console.warn(`addTrace (Declaration): [${declarationNode.path.parentPath.node.type}] ${pathToString(path, true)}, addTo: ${this.node.path.node.type} (scope=${scope.path.node.type}, decl=${declarationNode})`, JSON.stringify(declarationNode.path.node));
 
-      if (declarationNode.bindingTrace) {
-        // NOTE: this happens if parameter has same name as hoisted `var` local.
-        const msg = `Tried to add declaration trace multiple times for "${declarationNode}" in "${declarationNode.getParentString()}"`;
-        this.warn(msg);
-        // throw new Error(msg);
+      if (isRedeclaration) {
+        // this is a re-definition of var, function, class etc.
+        //    -> make sure not to create a separate declarationTid
       }
       else {
         declarationNode.bindingTrace = traceCfg;
       }
 
+      // if (meta?.hoisted && !isRedeclaration) {
       if (meta?.hoisted) {
         this.hoistedDeclarationTraces.push(traceCfg);
       }

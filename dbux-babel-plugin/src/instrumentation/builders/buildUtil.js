@@ -34,15 +34,18 @@ export function getDeclarationTid(traceCfg) {
     isDeclaration
   } = traceCfg;
 
-  let declarationTid;
-  if (isDeclaration) {
+  // look-up declaration tid
+  // NOTE: in case this is a declaration, it might not have a `bindingTrace`
+  let declarationTid = traceCfg.node?.getDeclarationTidIdentifier();
+
+  if (!declarationTid && isDeclaration) {
     declarationTid = traceCfg.tidIdentifier;
   }
-  else {
-    declarationTid = traceCfg.node?.getDeclarationTidIdentifier();
-  }
 
-  // console.warn(`getDeclarationTid (${pathToString(traceCfg.path, true)}, ${declarationTid.name}, ${traceCfg.node?.getDeclarationNode().path.parentPath.node.type})`);
+  const declNode = traceCfg.node?.getDeclarationNode();
+  const { path } = traceCfg;
+  // eslint-disable-next-line max-len
+  console.warn(`getDeclarationTid: ${pathToString(traceCfg.path, true)}, ${declarationTid.name}, ${path.listKey || path.parentPath.node.type}, decl=${pathToString(declNode.path, true)}`);
 
   if (!declarationTid) {
     warn(`getDeclarationTid returned nothing for traceCfg at "${traceCfg.node || pathToString(traceCfg.path)}"${isDeclaration ? ' (Declaration)' : ''}`);

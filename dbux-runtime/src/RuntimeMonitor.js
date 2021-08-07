@@ -555,6 +555,7 @@ export default class RuntimeMonitor {
 
     // this.registerTrace(value, tid);
     const varAccess = {
+      // TODO: fix this!
       declarationTid: traceId
     };
     dataNodeCollection.createOwnDataNode(value, traceId, DataNodeType.Write, varAccess, inputs);
@@ -651,6 +652,7 @@ export default class RuntimeMonitor {
     if (!declarationTid) {
       declarationTid = tid;
     }
+    console.warn('twv', tid, declarationTid);
     const varAccess = declarationTid && { declarationTid };
     dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess, traceCollection.getDataNodeIdsByTraceIds(tid, inputs));
     return value;

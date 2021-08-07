@@ -14,6 +14,8 @@
  * @see https://github.com/babel/babel/blob/672a58660f0b15691c44582f1f3fdcdac0fa0d2f/packages/babel-traverse/src/scope/index.ts#L515
  */
 
+import { astNodeToString, pathToString, pathToStringAnnotated } from './pathHelpers';
+
 // import EmptyObject from '@dbux/common/src/util/EmptyObject';
 // import { isInLoc1D } from './locHelpers';
 // import { isNodeInstrumented } from './astUtil';
@@ -112,30 +114,30 @@
 //   return names;
 // }
 
-/**
- * @return {Binding} The binding that creates/declares the given identifier (if it can be found).
- */
-export function getBinding(idPath) {
-  crawl(idPath);
-  // NOTE: there is also `getAllBindings`
-  return idPath.scope.getBinding((idPath.node).name);
-}
+// /**
+//  * @return {Binding} The binding that creates/declares the given identifier (if it can be found).
+//  */
+// export function getBinding(idPath) {
+//   crawl(idPath);
+//   // NOTE: there is also `getAllBindings`
+//   return idPath.scope.getBinding((idPath.node).name);
+// }
 
-/**
- * Crawl: "Manually reprocess this scope to ensure that the moved params are updated."
- * @see https://github.com/babel/babel/blob/672a58660f0b15691c44582f1f3fdcdac0fa0d2f/packages/babel-traverse/src/scope/index.ts#L863
- */
-function crawl(path) {
-  // NOTE: only need to crawl after bindings have changed, so probably not necessary
-  // path.scope.crawl();
-}
+// /**
+//  * Crawl: "Manually reprocess this scope to ensure that the moved params are updated."
+//  * @see https://github.com/babel/babel/blob/672a58660f0b15691c44582f1f3fdcdac0fa0d2f/packages/babel-traverse/src/scope/index.ts#L863
+//  */
+// function crawl(path) {
+//   // NOTE: only need to crawl after bindings have changed, so probably not necessary
+//   // path.scope.crawl();
+// }
 
 /**
  * 
  * @returns {Path} The path that creates/declares the given identifier.
  */
 export function getBindingPath(idPath) {
-  return getBinding(idPath)?.path;
+  return getPathBinding(idPath)?.path;
 }
 
 
@@ -150,4 +152,36 @@ export function getBindingIdentifierPaths(path) {
    */
   const pathsByName = path.getBindingIdentifierPaths();
   return Object.values(pathsByName);
+}
+
+/**
+ * Returns whether the given binding is the binding of the given path.
+ */
+export function isPathBinding(binding, path) {
+  return binding.identifier === path.node || binding.referencePaths.includes(path);
+}
+
+/**
+ * Get the binding of the given path.
+ */
+export function getPathBinding(path) {
+  // for reference: https://github.com/babel/babel/blob/672a58660f0b15691c44582f1f3fdcdac0fa0d2f/packages/babel-traverse/src/scope/index.ts#L215
+  let binding;
+
+  let { scope } = path;
+  let lastScope = scope;
+
+  // eslint-disable-next-line no-empty
+  while (path.node && scope &&
+    (binding = scope.getBinding(path.node.name)) &&
+    !isPathBinding(binding, path)
+  ) {
+    // console.warn('binding', path.node.name, `scope=${scope.path.node.type}`, astNodeToString(binding.identifier), pathToStringAnnotated(path));
+    lastScope = scope;
+    scope = scope.parent;
+  }
+
+  binding = binding || lastScope.getBinding(path.node.name);
+
+  return binding;
 }

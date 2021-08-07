@@ -1,5 +1,6 @@
 // import { Binding } from '@babel/traverse';
 // import TraceType from '@dbux/common/src/types/constants/TraceType';
+import { getPathBinding } from 'src/helpers/bindingsUtil';
 import { pathToString } from '../helpers/pathHelpers';
 import BaseNode from './BaseNode';
 
@@ -16,9 +17,7 @@ export default class BaseId extends BaseNode {
 
   get binding() {
     if (!this._binding) {
-      const { path } = this;
-      // for reference: https://github.com/babel/babel/blob/672a58660f0b15691c44582f1f3fdcdac0fa0d2f/packages/babel-traverse/src/scope/index.ts#L215
-      this._binding = path.scope.getBinding(path.node.name);
+      this._binding = getPathBinding(this.path);
     }
     return this._binding;
   }
