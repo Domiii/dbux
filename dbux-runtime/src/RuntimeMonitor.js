@@ -555,7 +555,6 @@ export default class RuntimeMonitor {
 
     // this.registerTrace(value, tid);
     const varAccess = {
-      // TODO: fix this!
       declarationTid: traceId
     };
     dataNodeCollection.createOwnDataNode(value, traceId, DataNodeType.Write, varAccess, inputs);

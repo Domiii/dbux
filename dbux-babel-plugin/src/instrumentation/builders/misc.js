@@ -4,6 +4,7 @@ import { buildTraceCall, bindTemplate, bindExpressionTemplate } from './template
 import { addMoreTraceCallArgs, getDeclarationTid, getTraceCall, makeInputs } from './buildUtil';
 import { applyPreconditionToExpression, getInstrumentTargetAstNode } from './common';
 import { buildTraceId } from './traceId';
+import { pathToString, pathToStringAnnotated } from 'src/helpers/pathHelpers';
 
 const Verbose = 2;
 
@@ -70,48 +71,54 @@ export const buildTraceExpressionNoInput = buildTraceCall(
 // traceDeclaration
 // ###########################################################################
 
+const keepStatementCfg = {
+  meta: {
+    keepStatement: true
+  }
+};
+
 export function buildTraceDeclarationVar(state, traceCfg) {
   const { inProgramStaticTraceId } = traceCfg;
   const trace = getTraceCall(state, traceCfg, 'traceDeclaration');
   const declarationTid = getDeclarationTid(traceCfg);
+  let targetNode = traceCfg.meta?.targetNode;
+
+  // final statement
+  if (traceCfg.meta?.isRedeclaration) {
+    // if (valueNode) {
+    //   // re-declaring param? -> this is probably not possible
+    //   console.warn(`redeclaration of hoisted variable with write: "${pathToStringAnnotated(traceCfg.path, true)}" in "${traceCfg.node}"`);
+    // }
+    // else {
+    return buildTraceExpressionVar(state, traceCfg, keepStatementCfg);
+  }
 
   // build args
   const args = [t.numericLiteral(inProgramStaticTraceId)];
-  let valueNode = traceCfg.data?.valueNode;
-  if (isFunction(valueNode)) {
-    valueNode = valueNode(state, traceCfg);
+  if (isFunction(targetNode)) {
+    targetNode = targetNode(state, traceCfg);
   }
-  valueNode && args.push(valueNode);
+  targetNode && args.push(targetNode);
   addMoreTraceCallArgs(args, traceCfg);
 
   // call
   const callAstNode = applyPreconditionToExpression(traceCfg, t.callExpression(trace, args));
 
-  // final statement
-  if (traceCfg.data?.isRedeclaration) {
-    return t.expressionStatement(callAstNode);
-  }
-  return t.variableDeclarator(
-    declarationTid,
-    callAstNode
-  );
+  // NOTE: we cannot group them into a single `variableDeclaration` because of order
+  return t.variableDeclaration('var', [
+    t.variableDeclarator(
+      declarationTid,
+      callAstNode
+    )
+  ]);
 }
 
 export function buildTraceDeclarations(state, traceCfgs) {
-  const declarationCfgs = traceCfgs.filter(traceCfg => !traceCfg.data?.isRedeclaration);
-  const decls = declarationCfgs.map((traceCfg) => {
+  const decls = traceCfgs.map((traceCfg) => {
     return buildTraceDeclarationVar(state, traceCfg);
   });
 
-  const redeclarationCfgs = traceCfgs.filter(traceCfg => traceCfg.data?.isRedeclaration);
-  const redeclarations = redeclarationCfgs.map(traceCfg => {
-    return buildTraceDeclarationVar(state, traceCfg);
-  });
-
-  return [
-    t.variableDeclaration('var', decls),
-    ...redeclarations
-  ];
+  return decls;
 }
 
 // ###########################################################################

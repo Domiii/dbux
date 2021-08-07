@@ -128,8 +128,10 @@ export default class Traces extends BasePlugin {
     const isDeclaration = isDeclarationTrace(staticTraceData.type);
     const declarationNode = isDeclaration && node.getOwnDeclarationNode();
     const isRedeclaration = !!declarationNode?.bindingTrace;
-    data = data || {};
-    data.isRedeclaration = isRedeclaration;
+    if (isRedeclaration) {
+      meta = meta || {};
+      meta.isRedeclaration = true;
+    }
 
     // set default static DataNode
     staticTraceData.dataNode = staticTraceData.dataNode || { isNew: false };
@@ -222,14 +224,13 @@ export default class Traces extends BasePlugin {
   }
 
   addDeclarationTrace(traceData, valuePathOrNode) {
+    traceData.meta = traceData.meta || {};
+
     if (valuePathOrNode) {
-      // `data.valueNode`
-      traceData.data = traceData.data || {};
-      traceData.data.valueNode = valuePathOrNode.node || valuePathOrNode;
+      traceData.meta.targetNode = valuePathOrNode.node || valuePathOrNode;
     }
 
     // `meta.hoisted`
-    traceData.meta = traceData.meta || {};
     if (!('hoisted' in traceData.meta)) {
       traceData.meta.hoisted = true;
     }
