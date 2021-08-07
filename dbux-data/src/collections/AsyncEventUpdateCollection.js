@@ -315,8 +315,7 @@ export default class AsyncEventUpdateCollection extends Collection {
       preEventUpdate: {
         rootId: preEventRootId
       },
-      eventHandlerThreadId,
-      recursiveThreadId
+      callbackChainThreadId
     } = postUpdateData;
 
     const preEventThreadId = this.getOrAssignRootThreadId(preEventRootId, schedulerTraceId);
@@ -324,20 +323,7 @@ export default class AsyncEventUpdateCollection extends Collection {
     let fromRootId = preEventRootId;
     let fromThreadId = preEventThreadId;
     const toRootId = postEventRootId;
-    let toThreadId;
-
-    if (eventHandlerThreadId) {
-      // Case 1: CHAIN event listener calls together
-      toThreadId = eventHandlerThreadId;
-    }
-    else if (recursiveThreadId) {
-      // Case 2: CHAIN recursive event listeners (e.g. `streams1.js`)
-      toThreadId = recursiveThreadId;
-    }
-    else {
-      // Case 3: FORK
-      toThreadId = 0;
-    }
+    const toThreadId = callbackChainThreadId || 0;
 
     // add edge
     /* const newEdge =  */

@@ -12,7 +12,7 @@ import valueCollection from '../data/valueCollection';
 import { isMonkeyPatched, monkeyPatchFunctionHolder } from '../util/monkeyPatchUtil';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug: _debug, warn, error: logError } = newLogger('patchPromise');
+const { log, debug: _debug, warn, error: logError } = newLogger('PromisePatcher');
 
 /** @typedef {import('../RuntimeMonitor').default} RuntimeMonitor */
 

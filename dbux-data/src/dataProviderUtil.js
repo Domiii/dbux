@@ -14,7 +14,7 @@ import { isCallResult, hasCallId } from '@dbux/common/src/types/constants/traceC
 import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory, ValuePruneState } from '@dbux/common/src/types/constants/ValueTypeCategory';
 import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
-import AsyncEventUpdateType from '@dbux/common/src/types/constants/AsyncEventUpdateType';
+import AsyncEventUpdateType, { isPreEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import { locToString } from './util/misc';
 
 /**
@@ -1448,10 +1448,27 @@ export default {
    * 
    * @param {DataProvider} dp
    */
-  getPreviousAsyncPostEventUpdateOfTrace(dp, schedulerTraceId, beforeRootId) {
+  getPreviousAsyncEventUpdateOfTrace(dp, schedulerTraceId, beforeRootId) {
     const updates = dp.indexes.asyncEventUpdates.byTrace.get(schedulerTraceId);
-    return updates && findLast(updates, update => update.rootId < beforeRootId);
+    return updates && findLast(updates, update => update.rootId < beforeRootId) || null;
   },
+
+  getAsyncPreEventUpdatesOfRoot(dp, rootId) {
+    const updates = dp.indexes.asyncEventUpdates.byRoot.get(rootId);
+    return updates?.filter(upd => isPreEventUpdate(upd.type)) || null;
+  },
+
+  // TODO!
+  // /** 
+  //  * Get the last "Post" asyncEvent of given `schedulerTraceId`.
+  //  * That update must have `rootId` < `beforeRootId`.
+  //  * 
+  //  * @param {DataProvider} dp
+  //  */
+  // getAsyncPreEventUpdatesOfRoot(dp, schedulerTraceId, rootId) {
+  //   const updates = dp.indexes.asyncEventUpdates.byTrace.get(schedulerTraceId);
+  //   return updates && findLast(updates, update => update.rootId < beforeRootId);
+  // },
 
   /**
    * Get the last "Post" asyncEvent (also an "edge trigger event") of a given promise.
@@ -1648,29 +1665,43 @@ export default {
       return null;
     }
 
-    const { isEventListener } = preEventUpdate;
+    const {
+      rootId: preEventRootId,
+      isEventListener
+    } = preEventUpdate;
 
     const isNested = false;
-    let eventHandlerThreadId;
-    let recursiveThreadId;
+    let callbackChainThreadId;
     let firstPostEventHandlerUpdate;
-    let lastPostUpdate;
+    let previousUpdate;
+
+    // if (preEventRootId === 1) {
+    //   // Case 0: don't CHAIN from first root?
+    //   //   NOTE: top-level `await` would also CHAIN from first root.
+    // }
+    // else
     if (isEventListener) {
-      // event listener
+      // Case 1: event listener
       firstPostEventHandlerUpdate = util.getFirstAsyncPostEventUpdateOfTrace(schedulerTraceId);
       if (firstPostEventHandlerUpdate) {
-        eventHandlerThreadId = util.getAsyncRootThreadId(firstPostEventHandlerUpdate.rootId);
+        callbackChainThreadId = util.getAsyncRootThreadId(firstPostEventHandlerUpdate.rootId);
       }
     }
     else {
-      // recursive callbacks
-      lastPostUpdate = util.getPreviousAsyncPostEventUpdateOfTrace(schedulerTraceId, rootId);
-      if (lastPostUpdate) {
-        // the same callback was called multiple times -> check if the same function is called
+      previousUpdate = util.getPreviousAsyncEventUpdateOfTrace(schedulerTraceId, rootId);
+      const preEventUpdates = util.getAsyncPreEventUpdatesOfRoot(preEventRootId);
+      if (preEventUpdates.length === 1) {
+        // Case 2: this is the only pre-event in the pre-event's root -> CHAIN
+        //    (meaning its the only async event scheduled from the same root)
+        callbackChainThreadId = util.getAsyncRootThreadId(previousUpdate.rootId);
+      }
+      if (!callbackChainThreadId) {
         const thisStaticContextId = util.getContextStaticContext(rootId);
-        const lastStaticContextId = util.getContextStaticContext(lastPostUpdate.rootId);
+        const lastStaticContextId = util.getContextStaticContext(previousUpdate.rootId);
+
         if (thisStaticContextId === lastStaticContextId) {
-          recursiveThreadId = util.getAsyncRootThreadId(lastPostUpdate.rootId);
+          // Case 3: recursive or repeating same function (e.g. `streams1.js`)
+          callbackChainThreadId = util.getAsyncRootThreadId(previousUpdate.rootId);
         }
       }
     }
@@ -1678,10 +1709,9 @@ export default {
     return {
       preEventUpdate,
       isNested,
-      firstEventHandlerUpdate: firstPostEventHandlerUpdate,
-      eventHandlerThreadId,
-      lastEventHandlerUpdate: lastPostUpdate,
-      recursiveThreadId
+      firstPostEventHandlerUpdate,
+      previousUpdate,
+      callbackChainThreadId
     };
   },
 

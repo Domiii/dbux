@@ -49,11 +49,6 @@ export function getFunctionRefByContext(context) {
   return functionTid && getRefByTraceId(functionTid);
 }
 
-export function getBCECalleeStaticContextId(bceTrace) {
-  const functionRef = getBCECalleeFunctionRef(bceTrace);
-  return functionRef && getFunctionStaticContextId(functionRef);
-}
-
 export function getBCECalleeFunctionRef(bceTrace) {
   // lookup callee
   const { calleeTid } = bceTrace?.data || EmptyObject;
@@ -62,18 +57,6 @@ export function getBCECalleeFunctionRef(bceTrace) {
 
   // lookup function data
   return calleeNode?.refId && valueCollection.getById(calleeNode.refId);
-}
-
-/**
- * @return {ExecutionContext} The context of the call of given `callId`, if it is the last executed context.
- */
-export function peekBCEContextCheckCallee(callId) {
-  const bceTrace = traceCollection.getById(callId);
-  const calleeRef = bceTrace && getBCECalleeFunctionRef(bceTrace);
-
-  const context = executionContextCollection.getLastRealContext();
-  const contextFunctionRef = getFunctionRefByContext(context);
-  return calleeRef && calleeRef === contextFunctionRef && context || null;
 }
 
 // /**
@@ -99,6 +82,43 @@ export function peekBCEMatchCallee(func) {
 }
 
 
+// ###########################################################################
+// ExecutionContexts
+// ###########################################################################
+
+
+/**
+ * Returns the trace that immediately followed the given `traceId`.
+ * This can be used as a trick to get the first trace of a function call, if 
+ * one knows the last trace before that function call.
+ */
+export function getFirstTraceAfter(traceId) {
+  return traceCollection.getById(traceId + 1);
+}
+
+export function getFirstContextAfterTrace(traceId) {
+  const trace = getFirstTraceAfter(traceId);
+  return trace && executionContextCollection.getById(trace.contextId) || null;
+}
+
+
+export function getBCECalleeStaticContextId(bceTrace) {
+  const functionRef = getBCECalleeFunctionRef(bceTrace);
+  return functionRef && getFunctionStaticContextId(functionRef);
+}
+
+/**
+ * @return {ExecutionContext} The context of the call of given `callId`, if it is the last executed context.
+ */
+export function peekBCEContextCheckCallee(callId) {
+  const bceTrace = traceCollection.getById(callId);
+  const calleeRef = bceTrace && getBCECalleeFunctionRef(bceTrace);
+
+  const context = executionContextCollection.getLastRealContext();
+  const contextFunctionRef = getFunctionRefByContext(context);
+  return calleeRef && calleeRef === contextFunctionRef && context || null;
+}
+
 /**
  * @returns The last opened context, if it is the execution of given `func`.
  */
@@ -112,9 +132,6 @@ export function peekContextCheckCallee(func) {
   return functionRef === contextFunctionRef ? context : null;
 }
 
-// ###########################################################################
-// ExecutionContexts
-// ###########################################################################
 
 export function isFirstContextInParent(contextId) {
   return executionContextCollection.isFirstContextInParent(contextId);

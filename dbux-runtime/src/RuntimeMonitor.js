@@ -15,7 +15,7 @@ import dataNodeCollection, { ShallowValueRefMeta } from './data/dataNodeCollecti
 import valueCollection from './data/valueCollection';
 import initPatchBuiltins from './builtIns/index';
 import CallbackPatcher from './async/CallbackPatcher';
-import initPatchPromise from './async/patchPromise';
+import initPatchPromise from './async/promisePatcher';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError, trace: logTrace } = newLogger('RuntimeMonitor');

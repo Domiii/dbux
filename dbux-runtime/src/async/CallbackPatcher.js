@@ -2,10 +2,10 @@
 // import isThenable from '@dbux/common/src/util/isThenable';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { isFunction } from 'lodash';
-import valueCollection from '../data/valueCollection';
-import { peekBCEMatchCallee, getFirstTraceOfRefValue, isInstrumentedFunction } from '../data/dataUtil';
+import { peekBCEMatchCallee, getFirstTraceOfRefValue, isInstrumentedFunction, getBCECalleeFunctionRef, getFirstContextAfterTrace } from '../data/dataUtil';
 import { getOrPatchFunction, getPatchedFunction, monkeyPatchFunctionHolder, monkeyPatchFunctionOverride, monkeyPatchGlobalRaw } from '../util/monkeyPatchUtil';
 import executionContextCollection from '../data/executionContextCollection';
+import traceCollection from '../data/traceCollection';
 
 
 /**
@@ -15,10 +15,8 @@ function isClass(value) {
   return typeof value === 'function' && /^\s*class\s+/.test(value.toString());
 }
 
-
-
 // eslint-disable-next-line no-unused-vars
-const { log, debug: _debug, warn, error: logError } = newLogger('patchPromise');
+const { log, debug: _debug, warn, error: logError, trace } = newLogger('CallbackPatcher');
 
 /** @typedef {import('../RuntimeMonitor').default} RuntimeMonitor */
 
@@ -119,26 +117,36 @@ export default class CallbackPatcher {
 
     return function patchedCallback(...args) {
       let returnValue;
+      const lastTraceId = traceCollection.getLast().traceId;
       try {
         // actually call callback
         returnValue = originalCb.call(this, ...args);
       }
       finally {
-        const context = executionContextCollection.getLastRealContext();
-        const rootId = runtime.getCurrentVirtualRootContextId();
-        if (context?.contextId === rootId) {
-          // the CB was called asynchronously
-
-          // const cbContext = peekContextCheckCallee(originalCb);
-          const runId = runtime.getCurrentRunId();
-          // const trace = getFirstTraceOfRefValue(callee);
-          // const staticTrace = trace && staticTraceCollection.getById(trace.staticTraceId);
-          // const traceType = staticTrace?.type;
-          // const isInstrumentedFunction = traceType && isFunctionDefinitionTrace(traceType);
-          runtime.async.postCallback(schedulerTraceId, runId, rootId);
+        // NOTE: there is no BCE, since the callback (in all likelihood) was invoked by the JS runtime
+        const context = getFirstContextAfterTrace(lastTraceId);
+        if (!context) {
+          trace(`Instrumentation failed. No context was created after executing callback "${originalCb.name} (${originalCb})".`);
         }
         else {
-          // CB was called synchronously -> we are not interested
+          const rootId = runtime.getCurrentVirtualRootContextId();
+
+          warn(`[patchedCallback] lastTrace=${lastTraceId}, cid=${context.contextId}, rootId=${rootId}, schedulerTraceId=${schedulerTraceId}`);
+
+          if (context.contextId !== rootId) {
+            // CB was called synchronously -> we are not interested
+          }
+          else {
+            // the CB was called asynchronously
+
+            // const cbContext = peekContextCheckCallee(originalCb);
+            const runId = runtime.getCurrentRunId();
+            // const trace = getFirstTraceOfRefValue(callee);
+            // const staticTrace = trace && staticTraceCollection.getById(trace.staticTraceId);
+            // const traceType = staticTrace?.type;
+            // const isInstrumentedFunction = traceType && isFunctionDefinitionTrace(traceType);
+            runtime.async.postCallback(schedulerTraceId, runId, rootId);
+          }
         }
       }
       return returnValue;
