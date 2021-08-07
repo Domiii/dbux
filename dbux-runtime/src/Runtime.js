@@ -390,7 +390,7 @@ export default class Runtime {
    */
   newRun() {
     this._currentRunId = ++this._maxRunId;
-    debug(`newRun`, this._currentRunId);
+    // debug(`newRun`, this._currentRunId);
     return this._currentRunId;
   }
 
@@ -488,7 +488,7 @@ export default class Runtime {
    * * during `postAwait`, after `pushResume`
    */
   _updateVirtualRootContext(contextId) {
-    debug(`[updateVirtualRootContext] ${contextId}`);
+    // debug(`[updateVirtualRootContext] ${contextId}`);
     this._virtualRootContextFinished(contextId);
   }
 

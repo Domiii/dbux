@@ -154,7 +154,8 @@ export default class CallbackPatcher {
     const self = this; // NOTE: `this` will be the callee's `this`
 
     return function patchedCallee(...args) {
-      const bceTrace = peekBCEMatchCallee(patchedCallee);
+      // NOTE: the registered value for callee is `originalFunction`, not `patchedFunction`
+      const bceTrace = peekBCEMatchCallee(originalFunction);
       const schedulerTraceId = bceTrace?.traceId;
       let patchedArgs = args.map(arg => {
         // add an extra layer on instrumented functions

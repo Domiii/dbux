@@ -1633,7 +1633,7 @@ export default {
 
     if (!preEventUpdate) {
       // should never happen!
-      this.logger.warn(`[postAwait] "getAsyncPreEventUpdateOfTrace" failed:`, postEventUpdate);
+      dp.logger.warn(`[postAwait] "getAsyncPreEventUpdateOfTrace" could not find anything for schedulerTraceId=${schedulerTraceId}:`, postEventUpdate);
       return null;
     }
 
