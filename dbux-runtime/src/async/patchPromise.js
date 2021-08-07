@@ -9,7 +9,7 @@ import { peekBCEMatchCallee, peekContextCheckCallee } from '../data/dataUtil';
 import PromiseRuntimeData from '../data/PromiseRuntimeData';
 // import traceCollection from '../data/traceCollection';
 import valueCollection from '../data/valueCollection';
-import { isMonkeyPatched, monkeyPatchFunctionRaw } from '../util/monkeyPatchUtil';
+import { isMonkeyPatched, monkeyPatchFunctionHolder } from '../util/monkeyPatchUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError } = newLogger('patchPromise');
@@ -199,7 +199,7 @@ function _makeThenRefUnchecked(promise, cb) {
 }
 
 function patchThen(holder) {
-  monkeyPatchFunctionRaw(holder, 'then',
+  monkeyPatchFunctionHolder(holder, 'then',
     (preEventPromise, [successCb, failCb], originalThen, patchedThen) => {
       const thenRef = _makeThenRef(preEventPromise, patchedThen);
       if (thenRef) { // NOTE: !!thenRef implies that this is instrumented
@@ -220,7 +220,7 @@ function patchFinally(holder) {
     return;
   }
 
-  monkeyPatchFunctionRaw(holder, 'finally',
+  monkeyPatchFunctionHolder(holder, 'finally',
     (preEventPromise, [cb], originalFinally) => {
       const thenRef = _makeThenRef(preEventPromise, originalFinally);
       if (thenRef) {

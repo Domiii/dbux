@@ -3,25 +3,51 @@ import { logError } from '@dbux/common/src/log/logger';
 const monkeyPatchedFunctionsByOriginalFunction = new WeakMap();
 const monkeyPatchedFunctionSet = new WeakMap();
 
+
+export function monkeyPatchFunctionOverride(originalFunction, patcher) {
+  const patchedFunction = patcher();
+  _registerMonkeyPatchedFunction(originalFunction, patchedFunction);
+  return patchedFunction;
+}
+
+// ###########################################################################
+// book-keeping
+// ###########################################################################
+
 export function isMonkeyPatched(f) {
   return monkeyPatchedFunctionSet.has(f);
 }
 
-export function getOrPatchFunction(originalFunction) {
+export function getPatchedFunction(originalFunction) {
+  let patchedFunction;
+  if (isMonkeyPatched(originalFunction)) {
+    // NOTE: this is actually a patched (not original) function
+    patchedFunction = originalFunction;
+  }
+  else {
+    patchedFunction = monkeyPatchedFunctionsByOriginalFunction.get(originalFunction);
+  }
+  return patchedFunction;
+}
+
+export function getOrPatchFunction(originalFunction, patcher) {
   if (!(originalFunction instanceof Function)) {
     throw new Error(`Monkey-patching failed - argument is not a function: ${originalFunction}`);
   }
-  if (isMonkeyPatched(originalFunction)) {
-    // don't patch already patched function
-    logError(`Monkey-patching failed - function ${originalFunction.name} is already patched.`);
-    return;
+  let patchedFunction = getPatchedFunction(originalFunction);
+  if (!patchedFunction) {
+    patchedFunction = monkeyPatchFunctionOverride(originalFunction, patcher);
   }
-  holder[name] = patchedFunction;
+  return patchedFunction;
+}
+
+function _registerMonkeyPatchedFunction(originalFunction, patchedFunction) {
   monkeyPatchedFunctionsByOriginalFunction.set(originalFunction, patchedFunction);
   monkeyPatchedFunctionSet.add(patchedFunction);
 }
 
-function _registerMonkeyPatchedFunction(holder, name, patchedFunction) {
+
+function tryRegisterMonkeyPatchedFunction(holder, name, patchedFunction) {
   const originalFunction = holder[name];
   if (!(originalFunction instanceof Function)) {
     throw new Error(`Monkey-patching failed - ${holder}.${name} is not a function: ${originalFunction}`);
@@ -32,38 +58,32 @@ function _registerMonkeyPatchedFunction(holder, name, patchedFunction) {
     return;
   }
   holder[name] = patchedFunction;
-  monkeyPatchedFunctionsByOriginalFunction.set(originalFunction, patchedFunction);
-  monkeyPatchedFunctionSet.add(patchedFunction);
+  _registerMonkeyPatchedFunction(originalFunction, patchedFunction);
 }
 
-export function monkeyPatchFunction(holder, name, post, pre) {
+
+// ###########################################################################
+// patching with `holder`
+// ###########################################################################
+
+export function monkeyPatchMethod(Clazz, methodName, handler) {
+  return monkeyPatchFunctionHolder(Clazz.prototype, methodName, handler);
+}
+
+
+export function monkeyPatchFunctionHolder(holder, name, handler) {
   const originalFunction = holder[name];
-  _registerMonkeyPatchedFunction(holder, name, function patchedFunction(...args) {
-    pre?.(this, args, patchedFunction);
-    const result = originalFunction.apply(this, args);
-    post?.(this, args, result, patchedFunction);
-    return result;
+  tryRegisterMonkeyPatchedFunction(holder, name, function patchedFunction(...args) {
+    return handler(this, args, originalFunction, patchedFunction);
   });
 }
 
-export function monkeyPatchMethod(Clazz, methodName, post, pre) {
-  return monkeyPatchFunction(Clazz.prototype, methodName, post, pre);
+export function monkeyPatchMethodRaw(Clazz, methodName, handler) {
+  return monkeyPatchFunctionHolder(Clazz.prototype, methodName, handler);
 }
 
-
-export function monkeyPatchFunctionRaw(holder, name, cb) {
-  const originalFunction = holder[name];
-  _registerMonkeyPatchedFunction(holder, name, function patchedFunction(...args) {
-    return cb(this, args, originalFunction, patchedFunction);
-  });
-}
-
-export function monkeyPatchMethodRaw(Clazz, methodName, cb) {
-  return monkeyPatchFunctionRaw(Clazz.prototype, methodName, cb);
-}
-
-export function monkeyPatchGlobalRaw(functionName, cb) {
-  return monkeyPatchFunctionRaw(globalThis, functionName, cb);
+export function monkeyPatchGlobalRaw(functionName, handler) {
+  return monkeyPatchFunctionHolder(globalThis, functionName, handler);
 }
 
 

@@ -28,11 +28,13 @@ export default function patchArray(rm) {
   // push
   // ###########################################################################
 
-  monkeyPatchMethod(Array, 'push', null,
-    (arr, args, actualCallee) => {
+  monkeyPatchMethod(Array, 'push',
+    (arr, args, originalFunction, patchedFunction) => {
       const ref = valueCollection.getRefByValue(arr);
-      const bceTrace = ref && peekBCEMatchCallee(actualCallee);
-      if (!bceTrace) { return; }
+      const bceTrace = ref && peekBCEMatchCallee(patchedFunction);
+      if (!bceTrace) {
+        return originalFunction.apply(arr, args);
+      }
 
       const { traceId: callId } = bceTrace;
       const objectNodeId = getObjectNodeIdFromRef(ref);
@@ -51,6 +53,7 @@ export default function patchArray(rm) {
           wireInputs: true
         };
       }
+      return originalFunction.apply(arr, args);
     }
   );
 
@@ -60,10 +63,14 @@ export default function patchArray(rm) {
   // ###########################################################################
 
   monkeyPatchMethod(Array, 'slice',
-    (arr, [start, end], newArray, actualCallee) => {
+    (arr, args, newArray, originalFunction, patchedFunction) => {
+      let [start, end] = args;
       const ref = valueCollection.getRefByValue(arr);
-      const bceTrace = ref && peekBCEMatchCallee(actualCallee);
-      if (!bceTrace) { return; }
+      const bceTrace = ref && peekBCEMatchCallee(patchedFunction);
+      const result = originalFunction.apply(arr, args);
+      if (!bceTrace) {
+        return result;
+      }
 
       const { traceId: callId } = bceTrace;
       const arrNodeId = getObjectNodeIdFromRef(ref);
@@ -88,6 +95,7 @@ export default function patchArray(rm) {
         };
         dataNodeCollection.createWriteNodeFromReadNode(callId, readNode, varAccessWrite);
       }
+      return result;
     }
   );
 }
