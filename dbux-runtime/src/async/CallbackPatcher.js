@@ -150,7 +150,7 @@ export default class CallbackPatcher {
   // monkeyPatchCallee
   // ###########################################################################
 
-  calleePatcher = (originalFunction) => {
+  calleePatcher = (calleeTid, callId, originalFunction) => {
     const self = this; // NOTE: `this` will be the callee's `this`
 
     return function patchedCallee(...args) {
@@ -172,27 +172,31 @@ export default class CallbackPatcher {
   };
 
   monkeyPatchCallee(originalFunction, calleeTid, callId) {
-    if (!isFunction(originalFunction)) {
-      return originalFunction;
-    }
-    if (!isClass(originalFunction)) {
-      // callee is (probably) function, not es6 ctor
+    if (isFunction(originalFunction)) {
+      if (!isClass(originalFunction)) {
+        // callee is (probably) function, not es6 ctor
 
-      if (!isInstrumentedFunction(originalFunction)) {
-        // NOTE: `@dbux/runtime` calls should not be hit by this
-        // TODO: fix for `bind`, `apply`, `call` -> need a new identity for functions that goes beyond `refId`
+        if (!isInstrumentedFunction(originalFunction)) {
+          // NOTE: `@dbux/runtime` calls should not be hit by this
+          // TODO: fix for `bind`, `apply`, `call` -> need a new identity for functions that goes beyond `refId`
 
-        // not instrumented -> monkey patch it
-        let f = getPatchedFunction(originalFunction);
-        if (!f) {
-          f = monkeyPatchFunctionOverride(originalFunction, this.calleePatcher.bind(this, calleeTid, callId));
+          // not instrumented -> monkey patch it
+          let f = getPatchedFunction(originalFunction);
+          if (!f) {
+            f = monkeyPatchFunctionOverride(originalFunction, this.calleePatcher.bind(this, calleeTid, callId));
+          }
+          return f;
         }
-        return f;
+        else {
+          // -> uninstrumented function
+          // -> ignore
+        }
       }
-    }
-    else {
-      // ignore un-instrumented ctors for now
-      // future-work: make this work
+      else {
+        // -> es6 class
+        // -> ignore
+        // future-work: also patch es6 classes?
+      }
     }
 
     return originalFunction;

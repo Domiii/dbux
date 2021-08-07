@@ -1,11 +1,11 @@
 import { logError } from '@dbux/common/src/log/logger';
 
 const monkeyPatchedFunctionsByOriginalFunction = new WeakMap();
-const monkeyPatchedFunctionSet = new WeakMap();
+const monkeyPatchedFunctionSet = new WeakSet();
 
 
 export function monkeyPatchFunctionOverride(originalFunction, patcher) {
-  const patchedFunction = patcher();
+  const patchedFunction = patcher(originalFunction);
   _registerMonkeyPatchedFunction(originalFunction, patchedFunction);
   return patchedFunction;
 }
@@ -13,6 +13,11 @@ export function monkeyPatchFunctionOverride(originalFunction, patcher) {
 // ###########################################################################
 // book-keeping
 // ###########################################################################
+
+function _registerMonkeyPatchedFunction(originalFunction, patchedFunction) {
+  monkeyPatchedFunctionsByOriginalFunction.set(originalFunction, patchedFunction);
+  monkeyPatchedFunctionSet.add(patchedFunction);
+}
 
 export function isMonkeyPatched(f) {
   return monkeyPatchedFunctionSet.has(f);
@@ -39,11 +44,6 @@ export function getOrPatchFunction(originalFunction, patcher) {
     patchedFunction = monkeyPatchFunctionOverride(originalFunction, patcher);
   }
   return patchedFunction;
-}
-
-function _registerMonkeyPatchedFunction(originalFunction, patchedFunction) {
-  monkeyPatchedFunctionsByOriginalFunction.set(originalFunction, patchedFunction);
-  monkeyPatchedFunctionSet.add(patchedFunction);
 }
 
 

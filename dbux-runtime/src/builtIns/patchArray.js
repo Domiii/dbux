@@ -63,13 +63,13 @@ export default function patchArray(rm) {
   // ###########################################################################
 
   monkeyPatchMethod(Array, 'slice',
-    (arr, args, newArray, originalFunction, patchedFunction) => {
+    (arr, args, originalFunction, patchedFunction) => {
       let [start, end] = args;
       const ref = valueCollection.getRefByValue(arr);
       const bceTrace = ref && peekBCEMatchCallee(patchedFunction);
-      const result = originalFunction.apply(arr, args);
+      const newArray = originalFunction.apply(arr, args);
       if (!bceTrace) {
-        return result;
+        return newArray;
       }
 
       const { traceId: callId } = bceTrace;
@@ -95,7 +95,7 @@ export default function patchArray(rm) {
         };
         dataNodeCollection.createWriteNodeFromReadNode(callId, readNode, varAccessWrite);
       }
-      return result;
+      return newArray;
     }
   );
 }
