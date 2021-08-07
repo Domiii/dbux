@@ -162,7 +162,6 @@ export default class EslintProject extends Project {
       ...cfg
     };
 
-    // TODO: actual location - `dist/tests/lib/rules/no-obj-calls.js`
     delete mochaCfg.dbuxJs; // dbux has already been infused -> run test without another dbux layer
 
 

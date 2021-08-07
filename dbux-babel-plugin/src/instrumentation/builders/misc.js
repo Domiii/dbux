@@ -4,7 +4,7 @@ import { buildTraceCall, bindTemplate, bindExpressionTemplate } from './template
 import { addMoreTraceCallArgs, getDeclarationTid, getTraceCall, makeInputs } from './buildUtil';
 import { applyPreconditionToExpression, getInstrumentTargetAstNode } from './common';
 import { buildTraceId } from './traceId';
-import { pathToString, pathToStringAnnotated } from 'src/helpers/pathHelpers';
+import { pathToString, pathToStringAnnotated } from '../../helpers/pathHelpers';
 
 const Verbose = 2;
 

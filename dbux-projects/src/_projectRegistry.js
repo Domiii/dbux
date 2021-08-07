@@ -9,6 +9,7 @@ import SequelizeProject from './projects/sequelize/Project';
 import Project2048 from './projects/2048/Project';
 import EditorMdProject from './projects/Editor.md/Project';
 import WebpackProject from './projects/webpack/Project';
+import NodeFetchProject from './projects/node-fetch/Project';
 
 // eslint-disable-next-line import/no-mutable-exports
 let registry = {
@@ -24,7 +25,9 @@ if (process.env.NODE_ENV === 'development') {
   registry = {
     ...registry,
 
+    'node-fetch': NodeFetchProject,
     sequelize: SequelizeProject,
+
     'Editor.md': EditorMdProject,
     webpack: WebpackProject,
     'javascript-algorithms': JavascriptAlgorithmProject,

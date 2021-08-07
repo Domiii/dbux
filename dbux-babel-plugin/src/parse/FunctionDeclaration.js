@@ -1,5 +1,5 @@
 import TraceType from '@dbux/common/src/types/constants/TraceType';
-import { pathToString } from 'src/helpers/pathHelpers';
+// import { pathToString } from '../helpers/pathHelpers';
 import BaseNode from './BaseNode';
 import BindingIdentifier from './BindingIdentifier';
 
