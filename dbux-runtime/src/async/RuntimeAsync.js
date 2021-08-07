@@ -499,7 +499,7 @@ export default class RuntimeAsync {
   /**
    * Event: New callback (`postEventPromise`) has been scheduled.
    */
-  preCallback(schedulerTraceId) {
+  preCallback(schedulerTraceId, isEventListener) {
     const runId = this._runtime.getCurrentRunId();
     const preEventRootId = this.getCurrentVirtualRootContextId();
     const contextId = this._runtime.peekCurrentContextId();
@@ -509,7 +509,9 @@ export default class RuntimeAsync {
       runId,
       rootId: preEventRootId,
       contextId: contextId,
-      schedulerTraceId
+      schedulerTraceId,
+
+      isEventListener
     });
 
     // const rootId = this.getCurrentVirtualRootContextId();

@@ -1438,7 +1438,7 @@ export default {
   },
 
   /** @param {DataProvider} dp */
-  getAsyncPostEventUpdateOfTrace(dp, traceId) {
+  getFirstAsyncPostEventUpdateOfTrace(dp, traceId) {
     return dp.indexes.asyncEventUpdates.byTrace.get(traceId)?.[1];
   },
 
@@ -1461,7 +1461,7 @@ export default {
     return postUpdate;
   },
 
-  
+
   /** @param {DataProvider} dp */
   getFirstPostOrResolveAsyncEventOfPromise(dp, promiseId) {
     return dp.indexes.asyncEventUpdates.byPromise.getFirst(promiseId);
@@ -1637,11 +1637,22 @@ export default {
       return null;
     }
 
+    const { isEventListener } = preEventUpdate;
+
     const isNested = false;
+    let firstEventHandlerUpdate;
+    let eventHandlerThreadId;
+    if (isEventListener) {
+      firstEventHandlerUpdate = util.getFirstAsyncPostEventUpdateOfTrace(schedulerTraceId);
+      const firstEventRootId = firstEventHandlerUpdate?.rootId;
+      eventHandlerThreadId = firstEventRootId && util.getAsyncRootThreadId(firstEventRootId);
+    }
 
     return {
       preEventUpdate,
-      isNested
+      isNested,
+      firstEventHandlerUpdate,
+      eventHandlerThreadId
     };
   },
 

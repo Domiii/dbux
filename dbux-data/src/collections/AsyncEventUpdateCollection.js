@@ -302,7 +302,8 @@ export default class AsyncEventUpdateCollection extends Collection {
       rootId: postEventRootId,
       // NOTE: the last active root is also the `context` of the `then` callback
       // contextId,
-      schedulerTraceId
+      schedulerTraceId,
+      isEventListener
     } = postEventUpdate;
 
     const postUpdateData = util.getPostCallbackData(postEventUpdate);
@@ -315,6 +316,8 @@ export default class AsyncEventUpdateCollection extends Collection {
       preEventUpdate: {
         rootId: preEventRootId
       },
+      // firstEventHandlerUpdate,
+      eventHandlerThreadId
       // isNested,
     } = postUpdateData;
 
@@ -323,10 +326,16 @@ export default class AsyncEventUpdateCollection extends Collection {
     let fromRootId = preEventRootId;
     let fromThreadId = preEventThreadId;
     const toRootId = postEventRootId;
-    let toThreadId = fromThreadId;
+    let toThreadId;
 
-    // Case 1: FORK
-    toThreadId = 0;
+    if (!isEventListener) {
+      // Case 1: FORK
+      toThreadId = 0;
+    }
+    else {
+      // Case 2: CHAIN event listener calls together
+      toThreadId = eventHandlerThreadId;
+    }
 
     // add edge
     /* const newEdge =  */

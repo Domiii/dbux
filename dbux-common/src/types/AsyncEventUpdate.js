@@ -91,6 +91,18 @@ export class ResolveUpdate extends PromiseUpdate {
   resolveType;
 }
 
+// ###########################################################################
+// Callbacks
+// ###########################################################################
+
+export class PreCallbackUpdate extends AsyncUpdateBase {
+  isEventListener;
+}
+
+export class PostCallbackUpdate extends AsyncUpdateBase {
+  
+}
+
 
 
 /**
@@ -98,5 +110,5 @@ export class ResolveUpdate extends PromiseUpdate {
  *    Consider asyncEventUpdateCollection for usage example.
  * @see https://github.com/jsdoc/jsdoc/issues/1537
  * 
- * @typedef {(PreAwaitUpdate | PostAwaitUpdate | PreThenUpdate | PostThenUpdate | ResolveUpdate)} AsyncEventUpdate
+ * @typedef {(PreAwaitUpdate | PostAwaitUpdate | PreThenUpdate | PostThenUpdate | ResolveUpdate | PreCallbackUpdate | PostCallbackUpdate)} AsyncEventUpdate
  */
