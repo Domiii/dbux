@@ -1,12 +1,27 @@
-import { logError, logWarn } from '@dbux/common/src/log/logger';
+import { logError } from '@dbux/common/src/log/logger';
 
-const monkeyPatchedFunctionSet = new Set();
+const monkeyPatchedFunctionsByOriginalFunction = new WeakMap();
+const monkeyPatchedFunctionSet = new WeakMap();
 
 export function isMonkeyPatched(f) {
   return monkeyPatchedFunctionSet.has(f);
 }
 
-function _monkeyPatchFunction(holder, name, patchedFunction) {
+export function getOrPatchFunction(originalFunction) {
+  if (!(originalFunction instanceof Function)) {
+    throw new Error(`Monkey-patching failed - argument is not a function: ${originalFunction}`);
+  }
+  if (isMonkeyPatched(originalFunction)) {
+    // don't patch already patched function
+    logError(`Monkey-patching failed - function ${originalFunction.name} is already patched.`);
+    return;
+  }
+  holder[name] = patchedFunction;
+  monkeyPatchedFunctionsByOriginalFunction.set(originalFunction, patchedFunction);
+  monkeyPatchedFunctionSet.add(patchedFunction);
+}
+
+function _registerMonkeyPatchedFunction(holder, name, patchedFunction) {
   const originalFunction = holder[name];
   if (!(originalFunction instanceof Function)) {
     throw new Error(`Monkey-patching failed - ${holder}.${name} is not a function: ${originalFunction}`);
@@ -17,13 +32,13 @@ function _monkeyPatchFunction(holder, name, patchedFunction) {
     return;
   }
   holder[name] = patchedFunction;
-  monkeyPatchedFunctionSet.add(originalFunction);
+  monkeyPatchedFunctionsByOriginalFunction.set(originalFunction, patchedFunction);
   monkeyPatchedFunctionSet.add(patchedFunction);
 }
 
 export function monkeyPatchFunction(holder, name, post, pre) {
   const originalFunction = holder[name];
-  _monkeyPatchFunction(holder, name, function patchedFunction(...args) {
+  _registerMonkeyPatchedFunction(holder, name, function patchedFunction(...args) {
     pre?.(this, args, patchedFunction);
     const result = originalFunction.apply(this, args);
     post?.(this, args, result, patchedFunction);
@@ -38,7 +53,7 @@ export function monkeyPatchMethod(Clazz, methodName, post, pre) {
 
 export function monkeyPatchFunctionRaw(holder, name, cb) {
   const originalFunction = holder[name];
-  _monkeyPatchFunction(holder, name, function patchedFunction(...args) {
+  _registerMonkeyPatchedFunction(holder, name, function patchedFunction(...args) {
     return cb(this, args, originalFunction, patchedFunction);
   });
 }

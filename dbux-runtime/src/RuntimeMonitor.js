@@ -832,7 +832,7 @@ export default class RuntimeMonitor {
   //   return value;
   // }
 
-  traceBCE(programId, tid, callee, calleeTid, argTids, spreadArgs) {
+  traceBCE(programId, callId, callee, calleeTid, argTids, spreadArgs) {
     if (!this._ensureExecuting()) {
       return callee;
     }
@@ -845,10 +845,10 @@ export default class RuntimeMonitor {
       return a && Array.from(a);
     });
 
-    const bceTrace = traceCollection.getById(tid);
+    const bceTrace = traceCollection.getById(callId);
 
     // [edit-after-send]
-    bceTrace.callId = tid;
+    bceTrace.callId = callId;
     bceTrace.data = {
       calleeTid,
       argTids,
@@ -878,7 +878,7 @@ export default class RuntimeMonitor {
 
     // console.trace(`BCE`, callee.toString(), callee);
 
-    return this.callbackPatcher.monkeyPatchCallee(callee, calleeTid);
+    return this.callbackPatcher.monkeyPatchCallee(callee, calleeTid, callId);
   }
 
   traceCallResult(programId, value, tid, callTid) {
@@ -893,7 +893,7 @@ export default class RuntimeMonitor {
     this.traceExpression(programId, value, tid, 0);
 
     const contextId = this._runtime.peekCurrentContextId();
-    const runId = this._runtime.getCurrentRunId();
+    // const runId = this._runtime.getCurrentRunId();
     this._onTrace(contextId, trace);
 
     if (!(isThenable(value))) {

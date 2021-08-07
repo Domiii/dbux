@@ -4,7 +4,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { isFunction } from 'lodash';
 import valueCollection from '../data/valueCollection';
 import { peekBCEMatchCallee, getFirstTraceOfRefValue, isInstrumentedFunction } from '../data/dataUtil';
-import { monkeyPatchGlobalRaw } from '../util/monkeyPatchUtil';
+import { monkeyPatchFunctionRaw, monkeyPatchGlobalRaw } from '../util/monkeyPatchUtil';
 import executionContextCollection from '../data/executionContextCollection';
 
 
@@ -43,7 +43,31 @@ export default class CallbackPatcher {
   }
 
   // ###########################################################################
-  // cb
+  // setTimeout
+  // ###########################################################################
+
+  patchSetTimeout() {
+    monkeyPatchGlobalRaw('setTimeout',
+      (_ /* global */, [cb, delayMs, ...args], originalSetTimeout, patchedSetTimeout) => {
+        const bceTrace = peekBCEMatchCallee(patchedSetTimeout);
+        const schedulerTraceId = bceTrace?.traceId;
+        if (schedulerTraceId) {
+          cb = this.patchSetTimeoutCallback(cb, schedulerTraceId);
+        }
+
+        const timer = originalSetTimeout(cb, delayMs, ...args);
+
+        if (schedulerTraceId) {
+          this.runtime.async.preCallback(schedulerTraceId);
+        }
+
+        return timer;
+      }
+    );
+  }
+
+  // ###########################################################################
+  // patchCallback
   // ###########################################################################
 
   patchSetTimeoutCallback(cb, schedulerTraceId) {
@@ -82,36 +106,73 @@ export default class CallbackPatcher {
     };
   }
 
-  // ###########################################################################
-  // setTimeout
-  // ###########################################################################
+  patchCallback(cb, schedulerTraceId) {
+    if (!isFunction(cb)) {
+      // not a cb
+      return cb;
+    }
+    if (!valueCollection.getRefByValue(cb)) {
+      // not instrumented
+      return cb;
+    }
 
-  patchSetTimeout() {
-    monkeyPatchGlobalRaw('setTimeout',
-      (_ /* global */, [cb, delayMs, ...args], originalSetTimeout, patchedSetTimeout) => {
-        const bceTrace = peekBCEMatchCallee(patchedSetTimeout);
-        const schedulerTraceId = bceTrace?.traceId;
-        if (schedulerTraceId) {
-          cb = this.patchSetTimeoutCallback(cb, schedulerTraceId);
-        }
+    const originalCb = cb;
 
-        const timer = originalSetTimeout(cb, delayMs, ...args);
+    const { runtime } = this;
 
-        if (schedulerTraceId) {
-          this.runtime.async.preCallback(schedulerTraceId);
-        }
-
-        return timer;
+    return function patchedPromiseCb(...args) {
+      let returnValue;
+      // TODO: peekBCEMatchCallee(patchedCb)
+      try {
+        // actually call `then` callback
+        returnValue = originalCb(...args);
       }
-    );
+      finally {
+        // const cbContext = peekContextCheckCallee(originalCb);
+        const runId = runtime.getCurrentRunId();
+        const rootId = runtime.getCurrentVirtualRootContextId();
+        const context = executionContextCollection.getLastRealContext();
+
+        if (context?.contextId === rootId) {
+          // the CB was called asynchronously
+          runtime.async.postCallback(schedulerTraceId, runId, rootId);
+        }
+      }
+      return returnValue;
+    };
   }
 
   // ###########################################################################
   // monkeyPatchCallee
   // ###########################################################################
 
-  monkeyPatchCallee(callee, calleeTid) {
-    if (!isClass(callee)) {
+  patchedCallee = (args, originalFunction, patchedFunction) => {
+    const bceTrace = peekBCEMatchCallee(patchedFunction);
+    const schedulerTraceId = bceTrace?.traceId;
+    let patchedArgs;
+    if (schedulerTraceId) {
+      patchedArgs = args.map(arg => {
+        if (isFunction(arg) && !isClass(arg)) {
+          return this.patchCallback(arg, schedulerTraceId);
+        }
+        return arg;
+      });
+    }
+    else {
+      patchedArgs = args;
+    }
+
+    const result = originalFunction(...patchedArgs);
+
+    if (schedulerTraceId) {
+      this.runtime.async.preCallback(schedulerTraceId);
+    }
+
+    return result;
+  };
+
+  monkeyPatchCallee(originalFunction, calleeTid, callId) {
+    if (!isClass(originalFunction)) {
       // callee is (probably) function, not es6 ctor
 
       // const trace = getFirstTraceOfRefValue(callee);
@@ -119,13 +180,16 @@ export default class CallbackPatcher {
       // const traceType = staticTrace?.type;
       // const isInstrumentedFunction = traceType && isFunctionDefinitionTrace(traceType);
 
-      if (!isInstrumentedFunction(callee)) {
+      if (!isInstrumentedFunction(originalFunction)) {
         // TODO: fix for `bind`, `apply`, `call` -> need a new identity for functions that goes beyond `refId`
         //    What about ramda etc?
-        //    -> no-op if not asynchronously called
+        //    -> no-op if cb is not called asynchronously
 
         // not instrumented -> monkey patch it
         // TODO: patch -> auto-instrument all function arguments
+
+        const patchedFunction = monkeyPatchFunctionRaw;
+        this.patchedFunctions.set(originalFunction, patchedFunction);
       }
     }
     else {
@@ -133,6 +197,6 @@ export default class CallbackPatcher {
       // future-work: make this work
     }
 
-    return callee;
+    return originalFunction;
   }
 }
