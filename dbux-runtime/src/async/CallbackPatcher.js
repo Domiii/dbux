@@ -105,10 +105,6 @@ export default class CallbackPatcher {
   // patchCallback
   // ###########################################################################
   patchCallback(arg, schedulerTraceId) {
-    if (!isInstrumentedFunction(arg)) {
-      return arg;
-    }
-
     const originalCb = arg;
 
     const { runtime } = this;
@@ -164,14 +160,21 @@ export default class CallbackPatcher {
       // NOTE: the registered value for callee is `originalFunction`, not `patchedFunction`
       const bceTrace = peekBCEMatchCallee(originalFunction);
       const schedulerTraceId = bceTrace?.traceId;
-      let patchedArgs = args.map(arg => {
-        // add an extra layer on instrumented functions
-        return self.patchCallback(arg, schedulerTraceId);
-      });
-
-      const result = originalFunction.call(this, ...patchedArgs);
-
+      let hasInstrumentedCallback = false;
       if (schedulerTraceId) {
+        args = args.map(arg => {
+          // add an extra layer on instrumented functions
+          if (!isInstrumentedFunction(arg)) {
+            return arg;
+          }
+          hasInstrumentedCallback = true;
+          return self.patchCallback(arg, schedulerTraceId);
+        });
+      }
+
+      const result = originalFunction.call(this, ...args);
+
+      if (hasInstrumentedCallback) {
         self.runtime.async.preCallback(schedulerTraceId, isEventListener);
       }
 
@@ -186,7 +189,6 @@ export default class CallbackPatcher {
 
         if (!isInstrumentedFunction(originalFunction)) {
           // NOTE: `@dbux/runtime` calls should not be hit by this
-          // TODO: fix for `bind`, `apply`, `call` -> need a new identity for functions that goes beyond `refId`
 
           // not instrumented -> monkey patch it
           let f = getPatchedFunction(originalFunction);
