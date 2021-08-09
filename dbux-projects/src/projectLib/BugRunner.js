@@ -9,9 +9,9 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import allApplications from '@dbux/data/src/applications/allApplications';
+import { pathNormalizedForce } from '@dbux/common-node/src/util/pathUtil';
 import Process from '../util/Process';
 import BugRunnerStatus, { isStatusRunningType } from './RunStatus';
-import { pathNormalizedForce } from '@dbux/common-node/src/util/pathUtil';
 
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
 /** @typedef {import('./Bug').default} Bug */
@@ -251,13 +251,19 @@ export default class BugRunner {
 
       // build the run command
       let commandOrCommandCfg = await project.testBugCommand(bug, cfg);
-      let command, commandOptions;
+      let command, runCfg;
       if (isObject(commandOrCommandCfg)) {
-        ([command, commandOptions] = commandOrCommandCfg);
+        ([command, runCfg] = commandOrCommandCfg);
       }
       else {
         command = commandOrCommandCfg;
       }
+
+      runCfg = runCfg || {};
+      if (runCfg.env.NODE_ENV && runCfg.env.NODE_ENV !== project.envName) {
+        this.logger.warn(`runCfg.env.NODE_ENV !== project.envName:`, runCfg.env.NODE_ENV, project.envName);
+      }
+      runCfg.env.NODE_ENV = project.envName;
       
       if (command && !isString(command)) {
         throw new Error(`testBugCommand must return string or object or falsy, but instead returned: ${toString(commandOrCommandCfg)}`);
@@ -271,7 +277,7 @@ export default class BugRunner {
       await project.startWatchModeIfNotRunning(bug);
 
       if (command) {
-        const result = await this.manager.execInTerminal(cwd, command, commandOptions || EmptyObject);
+        const result = await this.manager.execInTerminal(cwd, command, runCfg || EmptyObject);
         this._emitter.emit('testFinished', bug, result);
         return result;
       }

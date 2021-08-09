@@ -42,7 +42,7 @@ function getArgs(debugMode) {
   //          In addition to being slow, sourcemaps can sometimes be inaccurate and make debugging more difficult as a result.
 
   let nodeArgs = config.get(`dbux.${runMode}.nodeArgs`) + ' --stack-trace-limit=1000';
-  // nodeArgs += ' --enable-source-maps';
+  nodeArgs += ' --enable-source-maps';
   nodeArgs += debugMode ? ' --inspect-brk' : '';
 
   let dbuxArgs = config.get(`dbux.${runMode}.dbuxArgs`) || '--esnext --verbose=1';

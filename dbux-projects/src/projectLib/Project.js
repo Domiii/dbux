@@ -90,6 +90,10 @@ export default class Project {
     return !this.builder || this.builder.needsDbuxCli;
   }
 
+  get envName() {
+    return 'development';
+  }
+
 
   // ###########################################################################
   // constructor + init

@@ -112,16 +112,26 @@ const callTemplatesDefault = {
 function buildCallNodeDefault(path, callee, args) {
   const { type } = path.node;
   const callTempl = callTemplatesDefault[type];
-  return callTempl({
+  const astNode = callTempl({
     callee,
     args
   }).expression;
+
+  // NOTE: not sure if this can improve call trace accuracy
+  astNode.loc = path.node.loc;
+  astNode.callee.loc = path.node.callee.loc;
+
+  return astNode;
 }
 
 
 // ###########################################################################
 // CallExpression templates (ME)
 // ###########################################################################
+
+// future-work: consider replacing the call templates with 3 different runtime calls instead
+//    -> this way we could produce additional information regarding the invalid call (such as the `staticTrace.displayName`)
+//    -> this is needed, since the stacktrace tends to get very inaccurate (the containing function's name tends to be correct)
 
 /**
  * Call templates if callee is MemberExpression.
@@ -157,12 +167,18 @@ function buildCallNodeME(path, objectVar, calleeVar, argsVar, argNodes) {
     args: buildCallArgs(argsVar, argNodes)
   };
 
-  // future-work: no need to trace `o` separately for `NewExpression`
+  // NOTE: no need to trace `o` separately for `NewExpression`
   if (type !== 'NewExpression') {
     templateArgs.o = objectVar;
   }
 
-  return callTemplate(templateArgs).expression;
+  const astNode = callTemplate(templateArgs).expression;
+
+  // NOTE: not sure if this can improve call trace accuracy
+  astNode.loc = path.node.loc;
+  astNode.callee.loc = path.node.callee.loc;
+  
+  return astNode;
 }
 
 
@@ -195,7 +211,7 @@ export function buildTraceCallDefault(state, traceCfg) {
   const args = buildCallArgs(argsVar, argNodes);
   const argAssignment = [t.assignmentExpression('=', argsVar, argsArray)];
 
-  // hackfix: override targetNode during instrumentation
+  // hackfix: override targetNode during instrumentation - `f(args[0], ...args[1], args[2])`
   traceCfg.meta.targetNode = buildCallNodeDefault(path, calleeVar, args);
 
   return t.sequenceExpression([
@@ -208,7 +224,7 @@ export function buildTraceCallDefault(state, traceCfg) {
     // (iii) BCE - `f = bce(tid, f, calleeTid, argTids, spreadArgs)`
     t.assignmentExpression('=', calleeVar, buildBCE(state, bceTrace, calleeVar, calleeNode, spreadArgs)),
 
-    // (iv) wrap actual call - `tcr(f(args[0], ...args[1], args[2]))`
+    // (iv) wrap actual call - `tcr(targetNode)`
     buildTraceExpressionNoInput(
       // NOTE: targets `traceCfg.meta.targetNode`
       state,
@@ -261,7 +277,7 @@ export function buildTraceCallUntraceableCallee(state, traceCfg) {
     spreadArgs = t.arrayExpression();
   }
 
-  // hackfix: override targetNode during instrumentation
+  // hackfix: override targetNode during instrumentation - `f(args[0], ...args[1], args[2])`
   traceCfg.meta.targetNode = buildCallNodeDefault(path, calleePath.node, args);
 
   return t.sequenceExpression([
@@ -329,7 +345,7 @@ export function buildTraceCallME(state, traceCfg) {
   const argNodes = argPaths?.map(a => a.node) || EmptyArray;
   const spreadArgs = buildSpreadArgs(argsVar, argNodes);
 
-  // hackfix: override targetNode during instrumentation
+  // hackfix: override targetNode during instrumentation - `f(args[0], ...args[1], args[2])`
   traceCfg.meta.targetNode = buildCallNodeME(path, objectVar, calleeVar, argsVar, argNodes);
   // debug(`tcr target: ${astNodeToString(getInstrumentTargetNode(traceCfg))}`);
 
