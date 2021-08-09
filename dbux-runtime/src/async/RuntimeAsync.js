@@ -12,6 +12,7 @@ import ThenRef from '../data/ThenRef';
 import { getPromiseData, getPromiseId, getPromiseOwnAsyncFunctionContextId, pushPromisePendingRootId, setPromiseData } from './promisePatcher';
 import asyncEventUpdateCollection from '../data/asyncEventUpdateCollection';
 import executionContextCollection from '../data/executionContextCollection';
+import { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 // import { isPostEventUpdate, isPreEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 
 /** @typedef { import("./Runtime").default } Runtime */
