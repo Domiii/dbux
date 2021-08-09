@@ -166,6 +166,7 @@ module.exports = (env, argv) => {
           path.join(MonoRoot, 'node_modules')
         ],
         allowlist: [
+          /^lodash\/.*/,
           ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/src/.*`))
           // (...args) => {
           //   console.error(...args);

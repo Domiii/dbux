@@ -11,7 +11,7 @@ export function wrapCommand(commandCallback) {
       // }
     }
     catch (err) {
-      console.error('@dbux/cli command failed:', err);
+      console.error('[@dbux/cli] command failed:', err);
       exitProcess(-1);
     }
   };
@@ -19,7 +19,15 @@ export function wrapCommand(commandCallback) {
 
 
 export async function exitProcess(code = 0) {
-  await sleep(10000);    // give it some time to send out all data
+  const dbux = globalThis.__dbux__;
+  do {
+    // give it some time to send out all data
+    const ms = 20000;
+    const details = dbux && ` (finished=${dbux.client.hasFinished()})` || '';
+    console.debug(`[@dbux/cli] waiting ${Math.round(ms / 1000)}s for process to finish...${details}`);
+    await sleep(ms);
+  }
+  while (!dbux?.client.hasFinished());
   console.debug('exiting...');
   process.exit(code);
 }

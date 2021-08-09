@@ -878,6 +878,10 @@ export default class RuntimeMonitor {
 
     // console.trace(`BCE`, callee.toString(), callee);
 
+    if (!argTids.length) {
+      // monkey patching is only necessary for instrumenting callback arguments -> nothing to do
+      return callee;
+    }
     return this.callbackPatcher.monkeyPatchCallee(callee, calleeTid, callId);
   }
 
@@ -886,10 +890,10 @@ export default class RuntimeMonitor {
       return value;
     }
     const trace = traceCollection.getById(tid);
-    
+
     // [edit-after-send]
     trace.resultCallId = callTid;
-    
+
     this.traceExpression(programId, value, tid, 0);
 
     const contextId = this._runtime.peekCurrentContextId();

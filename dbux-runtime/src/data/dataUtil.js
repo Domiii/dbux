@@ -145,7 +145,10 @@ export function isRootContext(contextId) {
 //
 // ###########################################################################
 
-export function getFirstTraceOfRefValue(value) {
+/**
+ * NOTE: returns `null` if its first trace is not its own (e.g. if value was first recorded as a child value on another object)
+ */
+export function getFirstOwnTraceOfRefValue(value) {
   const ref = valueCollection.getRefByValue(value);
   if (!ref) { return null; }
 
@@ -153,12 +156,18 @@ export function getFirstTraceOfRefValue(value) {
   const dataNode = dataNodeCollection.getById(nodeId);
   if (!dataNode) { return null; }
 
-  const { traceId } = dataNode;
-  return traceCollection.getById(traceId);
+  const { traceId, refId } = dataNode;
+  const isOwn = refId === ref.refId;      // make sure its its own trace
+  return isOwn && traceCollection.getById(traceId);
 }
 
-export function isInstrumentedFunction(func) {
-  const trace = getFirstTraceOfRefValue(func);
+export function isInstrumentedFunction(value) {
+  // if (!isFunction(value)) {
+  //   // NOTE: the trace below might actually be the function definition trace, if the value is the prototype, or something else that was recorded during that trace.
+  //   return false;
+  // }
+
+  const trace = getFirstOwnTraceOfRefValue(value);
   if (!trace) { return false; }
   const staticTrace = staticTraceCollection.getById(trace.staticTraceId);
   if (!staticTrace) { return false; }

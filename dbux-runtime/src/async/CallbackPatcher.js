@@ -2,7 +2,7 @@
 // import isThenable from '@dbux/common/src/util/isThenable';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { isFunction } from 'lodash';
-import { peekBCEMatchCallee, getFirstTraceOfRefValue, isInstrumentedFunction, getBCECalleeFunctionRef, getFirstContextAfterTrace } from '../data/dataUtil';
+import { peekBCEMatchCallee, getFirstOwnTraceOfRefValue, isInstrumentedFunction, getBCECalleeFunctionRef, getFirstContextAfterTrace } from '../data/dataUtil';
 import { getOrPatchFunction, getPatchedFunction, monkeyPatchFunctionHolder, monkeyPatchFunctionOverride, monkeyPatchGlobalRaw } from '../util/monkeyPatchUtil';
 import executionContextCollection from '../data/executionContextCollection';
 import traceCollection from '../data/traceCollection';
@@ -163,6 +163,11 @@ export default class CallbackPatcher {
     const self = this; // NOTE: `this` will be the callee's `this`
 
     return function patchedCallee(...args) {
+      if (this instanceof patchedCallee) {
+        // sanity check: we screwed up -> instrumented a `new` call
+        trace(`patched constructor call (new ${originalFunction.name})`);
+      }
+
       // NOTE: the registered value for callee is `originalFunction`, not `patchedFunction`
       const bceTrace = peekBCEMatchCallee(originalFunction);
       const schedulerTraceId = bceTrace?.traceId;

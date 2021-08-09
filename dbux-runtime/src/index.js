@@ -45,7 +45,7 @@ function handleShutdown() {
 
   client.tryFlush();
 
-  if (!client.hasFlushed()) {
+  if (!client.hasFinished()) {
     // eslint-disable-next-line no-console
     console.error('[dbux-runtime] Process exiting but not all data has been sent out. Analysis will be incomplete. ' +
       'This is probably because of a crash or `process.exit` was called manually.');

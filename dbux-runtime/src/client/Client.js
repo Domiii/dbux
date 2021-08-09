@@ -3,6 +3,7 @@ import io, { Socket } from 'socket.io-client';
 import minBy from 'lodash/minBy';
 import maxBy from 'lodash/maxBy';
 import { logWarn, newLogger } from '@dbux/common/src/log/logger';
+import sleep from '@dbux/common/src/util/sleep';
 // import universalLibs from '@dbux/common/src/util/universalLibs';
 import SendQueue from './SendQueue';
 
@@ -72,8 +73,8 @@ export default class Client {
     return this._ready;
   }
 
-  hasFlushed() {
-    return this._sendQueue.empty;
+  hasFinished() {
+    return !this._sending && this._sendQueue.empty;
   }
 
   // ###########################################################################
@@ -187,6 +188,8 @@ export default class Client {
     this._sendQueue.sendAll(dataName, data);
   }
 
+  _sending = 0;
+
   /**
    * Send data to remote end.
    * 
@@ -198,6 +201,7 @@ export default class Client {
       this._connect();
     }
     else if (this.isReady()) {
+      ++this._sending;
       Verbose && debug(`<- data (${Math.round(JSON.stringify(data).length / 1000)} kb):` +
         Object.entries(data)
           .map(([key, arr]) => {
@@ -213,10 +217,14 @@ export default class Client {
           .join(', ')
       );
 
-      this._socket.emit('data', data, (/* returnData */) => {
-        // data finished sending
-        this._refreshInactivityTimer();
-        this._waitingCb?.();
+      this._socket.emit('data', data, async (/* returnData */) => {
+        --this._sending;
+        await sleep(SleepDelay);
+        if (this.hasFinished()) {
+          // finished sending data
+          this._refreshInactivityTimer();
+          this._waitingCb?.();
+        }
       });
 
       return true;
