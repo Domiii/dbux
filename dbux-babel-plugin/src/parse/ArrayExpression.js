@@ -29,8 +29,9 @@ export default class ArrayExpression extends BaseNode {
         build: buildArrayExpression
       }
     };
-    
-    const inputs = elements;
+
+    // NOTE: arrays can contain empty elements, e.g.: `[,2,3,4,,5,,,6]`
+    const inputs = elements.filter(el => el.node);
 
     this.Traces.addTraceWithInputs(traceData, inputs);
   }

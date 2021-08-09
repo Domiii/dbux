@@ -1,10 +1,8 @@
 import buildBabelOptions from './buildBabelOptions';
 
-import './linkOwnDependencies';
+// import './linkOwnDependencies';
 import { purgeModuleCache } from './util/moduleCacheUtil';
 
-// TODO: add caching
-//    see: https://github.com/babel/babel/blob/master/packages/babel-register/src/cache.js
 
 // babelRegister
 export default function dbuxRegister(options) {

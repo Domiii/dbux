@@ -1,7 +1,6 @@
 import dbuxBabelPlugin from '@dbux/babel-plugin';
 import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
-import defaultsDeep from 'lodash/defaultsDeep';
 import colors from 'colors/safe';
 import isString from 'lodash/isString';
 
@@ -150,10 +149,11 @@ export default function buildBabelOptions(options) {
     if (!babelPluginOptions || isString(babelPluginOptions)) {
       babelPluginOptions = babelPluginOptions && JSON.parse(babelPluginOptions) || {};
     }
-    defaultsDeep(babelPluginOptions, {
-      verbose,
-      runtime
-    });
+
+    // default plugin options
+    babelPluginOptions.verbose = babelPluginOptions.verbose || verbose;
+    babelPluginOptions.runtime = babelPluginOptions.runtime || runtime;
+
     babelOptions.plugins = babelOptions.plugins || [];
     babelOptions.plugins.push([dbuxBabelPlugin, babelPluginOptions]);
   }

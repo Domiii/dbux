@@ -1,4 +1,5 @@
 const process = require('process');
+const sleep = require('@dbux/common/src/util/sleep').default;
 
 export function wrapCommand(commandCallback) {
   return async argv => {
@@ -17,7 +18,8 @@ export function wrapCommand(commandCallback) {
 }
 
 
-export function exitProcess(code = 0) {
+export async function exitProcess(code = 0) {
+  await sleep(10000);    // give it some time to send out all data
   console.debug('exiting...');
   process.exit(code);
 }

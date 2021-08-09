@@ -21,10 +21,11 @@ export const handler = wrapCommand(({ file, _, ...moreOptions }) => {
   // patch up file path
   const targetPath = resolveCommandTargetPath(file);
 
-  // hackfix: get some libraries out of the way, so that @babel/register will not instrument them
+  // hackfix: get some cli + runtime dependencies out of the way, so that @babel/register will not instrument them
+  //      NOTE: this is a terrible solution
   require('cliui');
-  require('socket.io-client');
-  require('lodash');
+  // require('socket.io-client');
+  // require('lodash');
 
   // dbuxRegister (injects babel + dbux)
   dbuxRegister(moreOptions);

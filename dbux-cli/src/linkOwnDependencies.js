@@ -41,10 +41,10 @@ function linkOwnDependencies() {
 
   // register all dependencies
   
-  const msg = `[Dbux] linkOwnDependencies ${JSON.stringify({
-    targetFolder, dependencyRoot
-  })}`;
-  console.debug(colors.gray(msg));
+  // const msg = `[Dbux] linkOwnDependencies ${JSON.stringify({
+  //   targetFolder, dependencyRoot
+  // })}`;
+  // console.debug(colors.gray(msg));
 
   // check if linkage works
   // console.warn('###########\n\n', dependencyRoot, process.env.NODE_ENV);
