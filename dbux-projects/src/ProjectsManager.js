@@ -216,7 +216,9 @@ export default class ProjectsManager {
     this.practiceSession.setupStopwatch();
     await this.savePracticeSession();
     await this.bdp.save();
-    this.maybeAskForTestBug(bug);
+
+    await this.switchAndTestBug(bug);
+    // this.maybeAskForTestBug(bug);
   }
 
   /**
@@ -308,7 +310,7 @@ export default class ProjectsManager {
       const sessionData = this.externals.storage.get(savedPracticeSessionDataKeyName) || EmptyObject;
       this._resetPracticeSession(bug, sessionData, true);
       this.practiceSession.setupStopwatch();
-      this.maybeAskForTestBug(bug);
+      await this.maybeAskForTestBug(bug);
     }
     catch (err) {
       logError(`Unable to load PracticeSession: ${err.stack}`);

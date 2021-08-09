@@ -38,14 +38,14 @@ let cachePrepared = false;
 
 function compile(code, srcFilename) {
   // merge in base options and resolve all the plugins and presets relative to this file
-  const opts = new OptionManager().init(
-    // sourceRoot can be overwritten
-    {
-      sourceRoot: path.dirname(srcFilename) + path.sep,
-      ...cloneDeep(transformOpts),
-      filename: srcFilename,
-    },
-  );
+  // sourceRoot can be overwritten
+  const sourceRootOverride = path.dirname(srcFilename) + path.sep;
+  const options = {
+    ...cloneDeep(transformOpts),
+    sourceRoot: sourceRootOverride,
+    filename: srcFilename,
+  };
+  const opts = new OptionManager().init(options);
 
   // Bail out ASAP if the file has been ignored.
   if (opts === null) return code;
