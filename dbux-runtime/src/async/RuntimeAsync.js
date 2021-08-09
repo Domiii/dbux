@@ -12,6 +12,7 @@ import ThenRef from '../data/ThenRef';
 import { getPromiseData, getPromiseId, getPromiseOwnAsyncFunctionContextId, pushPromisePendingRootId, setPromiseData } from './promisePatcher';
 import asyncEventUpdateCollection from '../data/asyncEventUpdateCollection';
 import executionContextCollection from '../data/executionContextCollection';
+// import { isPostEventUpdate, isPreEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 
 /** @typedef { import("./Runtime").default } Runtime */
 
@@ -102,13 +103,13 @@ export default class RuntimeAsync {
     const callId = trace.resultCallId;
     const calledContext = peekBCEContextCheckCallee(callId);
 
-    if (callId === 515173) {
-      const promiseId = getPromiseId(promise);
-      const lastContext = executionContextCollection.getLastRealContext();
-      const lastAwaitData = this.lastAwaitByRealContext.get(contextId);
-      console.trace('traceCallPromiseResult',
-        { callId, contextId, calledContext: !!calledContext, promiseId, trace, lastContext, lastAwaitData });
-    }
+    // if (callId === ) {
+    //   const promiseId = getPromiseId(promise);
+    //   const lastContext = executionContextCollection.getLastRealContext();
+    //   const lastAwaitData = this.lastAwaitByRealContext.get(contextId);
+    //   console.trace('traceCallPromiseResult',
+    //     { callId, contextId, calledContext: !!calledContext, promiseId, trace, lastContext, lastAwaitData });
+    // }
 
     let calledContextId;
 
@@ -458,6 +459,27 @@ export default class RuntimeAsync {
       promiseId: getPromiseId(postEventPromise),
       nestedPromiseId: isThenable(returnValue) ? getPromiseId(returnValue) : 0
     });
+  }
+
+  // ###########################################################################
+  // Promises: promiseConstructorCalled
+  // ###########################################################################
+
+  promiseCtorCalled(promiseId, previousLastUpdateId) {
+    const lastUpdateId = asyncEventUpdateCollection.getLastId();
+
+
+    for (let i = previousLastUpdateId + 1; i < lastUpdateId; ++i) {
+      const update = asyncEventUpdateCollection.getById(i);
+
+      if (!isPostEventUpdate(update.type)) {
+        // [edit-after-send]
+        update.promiseCtorId = promiseId;
+      }
+      else {
+        // NOTE: Post events should not happen during promise ctor anyway
+      }
+    }
   }
 
   // ###########################################################################

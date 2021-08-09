@@ -30,7 +30,11 @@ export default class Collection {
   }
 
   getLast() {
-    return this._all[this._all.length - 1];
+    return this._all[this.getLastId()];
+  }
+
+  getLastId() {
+    return this._all.length - 1;
   }
 
   getById(id) {

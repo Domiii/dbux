@@ -9,10 +9,16 @@ import traceCollection from '../data/traceCollection';
 
 
 /**
- * @see https://stackoverflow.com/a/30760236
+ * @see https://stackoverflow.com/a/68708710/2228771
  */
 function isClass(value) {
-  return typeof value === 'function' && /^\s*class\s+/.test(value.toString());
+  return typeof value === 'function' && (
+    /^\s*class[^\w]+/.test(value.toString()) ||
+
+    // 1. native classes don't have `class` in their name
+    // 2. However, they are globals and start with a capital letter.
+    (globalThis[value.name] === value && /^[A-Z]/.test(value.name))
+  );
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -127,7 +133,7 @@ export default class CallbackPatcher {
         else {
           const rootId = runtime.getCurrentVirtualRootContextId();
 
-          warn(`[patchedCallback] lastTrace=${lastTraceId}, cid=${context.contextId}, rootId=${rootId}, schedulerTraceId=${schedulerTraceId}`);
+          // warn(`[patchedCallback] lastTrace=${lastTraceId}, cid=${context.contextId}, rootId=${rootId}, schedulerTraceId=${schedulerTraceId}`);
 
           if (context.contextId !== rootId) {
             // CB was called synchronously -> we are not interested
@@ -172,6 +178,7 @@ export default class CallbackPatcher {
         });
       }
 
+      // console.trace(`calleePatcher ${originalFunction.name}`);
       const result = originalFunction.call(this, ...args);
 
       if (hasInstrumentedCallback) {

@@ -896,6 +896,7 @@ export default class ProjectsManager {
     // future-work: this might be the wrong cache folder, if `findCacheDir` resolves it differently
     //    -> offer an API to get (and/or flush) cache folder in babel-register (see `prepareCache`)
     const relativeProjectPath = pathRelative(this.getDefaultSourceRoot(), project.projectPath);
+    // TODO: fix for env name
     const cacheFolder = pathJoin(
       this.getDefaultSourceRoot(), 'node_modules', '.cache', '@babel', 'register', relativeProjectPath
     );

@@ -50,6 +50,11 @@ export class AsyncUpdateBase {
    * @type {Array.<ResolveEvent>}
    */
   resolveEvents;
+
+  /**
+   * Generally for Pre* and resolve updates only.
+   */
+  promiseCtorId;
 }
 
 // ###########################################################################

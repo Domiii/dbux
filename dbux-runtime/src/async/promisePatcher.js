@@ -4,6 +4,7 @@ import ResolveType from '@dbux/common/src/types/constants/ResolveType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import isThenable from '@dbux/common/src/util/isThenable';
 import { isFunction } from 'lodash';
+import asyncEventUpdateCollection from '../data/asyncEventUpdateCollection';
 import dataNodeCollection from '../data/dataNodeCollection';
 import { peekBCEMatchCallee, peekContextCheckCallee } from '../data/dataUtil';
 import PromiseRuntimeData from '../data/PromiseRuntimeData';
@@ -268,6 +269,8 @@ function patchCatch(holder) {
 // patchPromiseClass + prototype
 // ###########################################################################
 
+const promiseCtorStack = [];
+
 function patchPromiseMethods(holder) {
   // NOTE: we do this to tag promise prototypes -> so we don't accidentally re-register those
   getOrCreatePromiseDbuxData(holder);
@@ -329,7 +332,12 @@ function patchPromiseClass(BasePromiseClass) {
         };
       }
 
+      // call actual ctor
+      const lastUpdateId = asyncEventUpdateCollection.getLastId();
+      // try 
       super(wrapExecutor);
+
+      // finally // NOTE: if an exception was thrown during `super`, `this` must not be accessed.
       superCalled = true;
 
       if (isCallbackInstrumented) {
@@ -338,6 +346,9 @@ function patchPromiseClass(BasePromiseClass) {
 
       // deferred until after `super` was called
       deferredCall?.();
+
+      const promiseId = getPromiseId(this);
+      RuntimeMonitorInstance._runtime.async.promiseCtorCalled(promiseId, lastUpdateId);
     }
 
     toJSON() {
