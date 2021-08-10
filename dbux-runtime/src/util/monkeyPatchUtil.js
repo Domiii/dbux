@@ -23,7 +23,7 @@ export function isMonkeyPatched(f) {
   return monkeyPatchedFunctionSet.has(f);
 }
 
-export function getPatchedFunction(originalFunction) {
+export function getOrCreatePatchedFunction(originalFunction) {
   let patchedFunction;
   if (isMonkeyPatched(originalFunction)) {
     // NOTE: this is actually a patched (not original) function
@@ -39,7 +39,7 @@ export function getOrPatchFunction(originalFunction, patcher) {
   if (!(originalFunction instanceof Function)) {
     throw new Error(`Monkey-patching failed - argument is not a function: ${originalFunction}`);
   }
-  let patchedFunction = getPatchedFunction(originalFunction);
+  let patchedFunction = getOrCreatePatchedFunction(originalFunction);
   if (!patchedFunction) {
     patchedFunction = monkeyPatchFunctionOverride(originalFunction, patcher);
   }

@@ -46,13 +46,14 @@ export default function patchArray() {
         };
         // console.debug(`[Array.push] #${traceId} ref ${ref.refId}, node ${nodeId}, objectNodeId ${objectNodeId}`);
         dataNodeCollection.createDataNode(args[i], callId, DataNodeType.Write, varAccess);
-
-        // NOTE: trace was marked for sending, but will be actually sent with all traces of run, so changes **should** still be possible.
-        bceTrace.data = bceTrace.data || {};
-        bceTrace.data.monkey = {
-          wireInputs: true
-        };
       }
+
+      // [edit-after-send]
+      bceTrace.data = bceTrace.data || {};
+      bceTrace.data.monkey = {
+        wireInputs: true
+      };
+      
       return originalFunction.apply(arr, args);
     }
   );
