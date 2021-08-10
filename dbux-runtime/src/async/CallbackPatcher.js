@@ -2,7 +2,7 @@
 // import isThenable from '@dbux/common/src/util/isThenable';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { isFunction } from 'lodash';
-import { peekBCEMatchCallee, getFirstOwnTraceOfRefValue, isInstrumentedFunction, getBCECalleeFunctionRef, getFirstContextAfterTrace } from '../data/dataUtil';
+import { peekBCEMatchCallee, getFirstOwnTraceOfRefValue, isInstrumentedFunction, getBCECalleeFunctionRef, getFirstContextAfterTrace, getTraceStaticTrace } from '../data/dataUtil';
 import { getOrPatchFunction, getPatchedFunction, monkeyPatchFunctionHolder, monkeyPatchFunctionOverride, monkeyPatchGlobalRaw } from '../util/monkeyPatchUtil';
 import executionContextCollection from '../data/executionContextCollection';
 import traceCollection from '../data/traceCollection';
@@ -160,11 +160,11 @@ export default class CallbackPatcher {
   // ###########################################################################
 
   calleePatcher = (isEventListener, calleeTid, callId, originalFunction) => {
-    const self = this; // NOTE: `this` will be the callee's `this`
+    const self = this; // NOTE: inside `patchedCallee` `this` will be the callee's `this`
 
     return function patchedCallee(...args) {
       if (this instanceof patchedCallee) {
-        // sanity check: we screwed up -> instrumented a `new` call
+        // -> `originalFunction` is a ctor
         trace(`patched constructor call (new ${originalFunction.name})`);
       }
 
@@ -194,9 +194,15 @@ export default class CallbackPatcher {
     };
   };
 
-  monkeyPatchCallee(originalFunction, calleeTid, callId) {
+  monkeyPatchCallee(originalFunction, calleeTid, callId/* , argTids */) {
+    // if (!argTids.length) {
+    //   // monkey patching is only necessary for instrumenting callback arguments -> nothing to do
+    //   return originalFunction;
+    // }
+    const bceStaticTrace = getTraceStaticTrace(callId);
+
     if (isFunction(originalFunction)) {
-      if (!isClass(originalFunction)) {
+      if (!bceStaticTrace.data?.isNew && !isClass(originalFunction)) {
         // callee is (probably) function, not es6 ctor
 
         if (!isInstrumentedFunction(originalFunction)) {

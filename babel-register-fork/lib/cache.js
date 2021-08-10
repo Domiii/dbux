@@ -257,13 +257,15 @@ function loadFile(srcFilename, cacheFilename, cacheKey) {
     // validate cacheKey
     if (cacheKey !== cached.cacheKey) {
       // eslint-disable-next-line max-len
-      reportCacheMiss(CacheMissReason.DifferentOptions, srcFilename, cacheFilename, diffString('cacheKeys are different', cacheKey, cached.cacheKey));
+      reportCacheMiss(CacheMissReason.DifferentOptions, srcFilename, cacheFilename, 
+        diffString('cacheKeys are different', cacheKey, cached.cacheKey)
+      );
       return null;
     }
 
     // validate mtime
     if (cached.mtime !== mtime(srcFilename)) {
-      reportCacheMiss(CacheMissReason.FileModified, srcFilename, cacheFilename);
+      reportCacheMiss(CacheMissReason.FileModified, srcFilename, cacheFilename, 'mtime');
       return null;
     }
 

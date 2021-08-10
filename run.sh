@@ -5,7 +5,7 @@
 set -e # cancel on error
 # set -x # verbose echo mode
 
-fname="__samplesInput__/node_events"
+fname="__samplesInput__/native_classes"
 # fname="__samplesInput__/setTimeout0"
 # fname="case-studies/async/producer_consumer/producer_consumer_async"
 

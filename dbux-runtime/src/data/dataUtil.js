@@ -162,15 +162,20 @@ export function getFirstOwnTraceOfRefValue(value) {
 }
 
 export function isInstrumentedFunction(value) {
-  // if (!isFunction(value)) {
-  //   // NOTE: the trace below might actually be the function definition trace, if the value is the prototype, or something else that was recorded during that trace.
-  //   return false;
-  // }
-
   const trace = getFirstOwnTraceOfRefValue(value);
   if (!trace) { return false; }
   const staticTrace = staticTraceCollection.getById(trace.staticTraceId);
   if (!staticTrace) { return false; }
 
   return isFunctionDefinitionTrace(staticTrace.type);
+}
+
+// ###########################################################################
+// traces
+// ###########################################################################
+
+export function getTraceStaticTrace(traceId) {
+  const trace = traceCollection.getById(traceId);
+  const { staticTraceId } = trace;
+  return staticTraceCollection.getById(staticTraceId);
 }

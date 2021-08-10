@@ -159,6 +159,7 @@ export default class CallExpression extends BaseNode {
       staticTraceData: {
         type: TraceType.BeforeCallExpression,
         data: {
+          isNew: path.isNewExpression(),
           argConfigs: makeSpreadableArgumentArrayCfg(argumentPaths),
         }
       },

@@ -16,6 +16,7 @@ import valueCollection from './data/valueCollection';
 import initPatchBuiltins from './builtIns/index';
 import CallbackPatcher from './async/CallbackPatcher';
 import initPatchPromise from './async/promisePatcher';
+import { getTraceStaticTrace } from './data/dataUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError, trace: logTrace } = newLogger('RuntimeMonitor');
@@ -605,9 +606,7 @@ export default class RuntimeMonitor {
     }
 
     const varAccess = declarationTid && { declarationTid } || null;
-    const trace = traceCollection.getById(tid);
-    const { staticTraceId } = trace;
-    const { dataNode } = staticTraceCollection.getById(staticTraceId);
+    const { dataNode } = getTraceStaticTrace(tid);
 
     dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess, null, dataNode);
 
@@ -878,11 +877,7 @@ export default class RuntimeMonitor {
 
     // console.trace(`BCE`, callee.toString(), callee);
 
-    if (!argTids.length) {
-      // monkey patching is only necessary for instrumenting callback arguments -> nothing to do
-      return callee;
-    }
-    return this.callbackPatcher.monkeyPatchCallee(callee, calleeTid, callId);
+    return this.callbackPatcher.monkeyPatchCallee(callee, calleeTid, callId, argTids);
   }
 
   traceCallResult(programId, value, tid, callTid) {
