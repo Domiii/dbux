@@ -1,6 +1,6 @@
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import dataNodeCollection from '../data/dataNodeCollection';
-import { peekBCECheckCallee, peekBCEMatchCallee } from '../data/dataUtil';
+import { peekBCEMatchCallee } from '../data/dataUtil';
 import valueCollection from '../data/valueCollection';
 import { monkeyPatchMethod } from '../util/monkeyPatchUtil';
 
@@ -23,7 +23,7 @@ function wrapIndex(i, arr) {
   }
 }
 
-export default function patchArray(rm) {
+export default function patchArray() {
   // ###########################################################################
   // push
   // ###########################################################################

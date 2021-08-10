@@ -328,7 +328,8 @@ export default {
 
   /** @param {DataProvider} dp */
   getDataNodesOfTrace(dp, traceId) {
-    return dp.indexes.dataNodes.byTrace.get(traceId);
+    const valueTrace = dp.util.getValueTrace(traceId);
+    return dp.indexes.dataNodes.byTrace.get(valueTrace.traceId);
   },
 
   // ###########################################################################

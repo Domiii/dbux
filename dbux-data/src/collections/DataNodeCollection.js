@@ -73,6 +73,8 @@ export default class DataNodeCollection extends Collection {
       return dataNode.accessId;
     }
 
+    // TODO: this does not seem to link b[1] etc. to b for Array.slice?
+
     const { varAccess } = dataNode;
     if (!varAccess) {
       return null;

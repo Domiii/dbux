@@ -124,6 +124,7 @@ export class DebugTDNode extends TraceDetailNode {
     // ###########################################################################
     // dataNodes
     // ###########################################################################
+    const ownDataNodes = dp.indexes.dataNodes.byTrace.get(traceId);
     const dataNodes = dp.util.getDataNodesOfTrace(dataTraceId);
 
     let dataNode;
@@ -134,12 +135,29 @@ export class DebugTDNode extends TraceDetailNode {
       dataNode = dataNodes?.[0];
     }
 
-    const dataNodeLabel = dataNode ? `dataNodes[${dataNodes?.indexOf(dataNode)}]` : `dataNodes: []`;
+    let dataNodeIndex = dataNodes?.indexOf(dataNode);
+    const isInDataNodes = dataNodeIndex >= 0;
+    dataNodeIndex = isInDataNodes ? dataNodeIndex : ownDataNodes?.indexOf(dataNode);
+
+    // eslint-disable-next-line no-nested-ternary
+    const ownDataNodeContainer = isInDataNodes ? 'dataNodes' : 'ownDataNodes';
+    const ownDataNodeLabel = dataNode ? `${ownDataNodeContainer}[${dataNodeIndex}]` : `dataNodes: []`;
     const dataNodeCount = dataNodes?.length || 0;
 
     const allDataNodes = [];
-    dataNodeCount > 0 && allDataNodes.push([dataNodeLabel, dataNode, { description: `nodeId=${dataNode.nodeId}, valueId=${dataNode.valueId}, accessId=${dataNode.accessId}` }]);
-    dataNodeCount > 1 && allDataNodes.push([`all dataNodes (${dataNodeCount})`, dataNodes]);
+    !!dataNode && allDataNodes.push([
+      ownDataNodeLabel,
+      dataNode,
+      { description: `nodeId=${dataNode.nodeId}, valueId=${dataNode.valueId}, accessId=${dataNode.accessId}` }
+    ]);
+    dataNodeCount > 1 && allDataNodes.push([
+      `all dataNodes (${dataNodeCount})`,
+      dataNodes
+    ]);
+    ownDataNodes && ownDataNodes !== dataNodes && allDataNodes.push([
+      `ownDataNodes (${ownDataNodes.length})`,
+      ownDataNodes
+    ]);
 
 
     // ###########################################################################

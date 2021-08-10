@@ -1,4 +1,4 @@
-import patchArray from './patchArray';
+import patchArray from './arrays';
 
 export default function initPatchBuiltins() {
   patchArray();

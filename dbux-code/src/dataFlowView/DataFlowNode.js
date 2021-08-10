@@ -27,8 +27,7 @@ export default class DataFlowNode extends TraceNode {
   }
 
   getTraceDataNodes() {
-    const { applicationId, traceId } = this.trace;
-    const dp = allApplications.getById(applicationId).dataProvider;
-    return dp.indexes.dataNodes.byTrace.get(traceId) || EmptyArray;
+    const { dp, trace: { traceId } } = this;
+    return dp.util.getDataNodesOfTrace(traceId) || EmptyArray;
   }
 }
