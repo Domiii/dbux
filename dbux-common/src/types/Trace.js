@@ -1,6 +1,5 @@
-import HasValue from './HasValue';
 
-export default class Trace extends HasValue {
+export default class Trace {
   /**
    * @type {number}
    */

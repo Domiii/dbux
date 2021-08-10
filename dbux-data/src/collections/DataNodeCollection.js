@@ -22,14 +22,14 @@ export default class DataNodeCollection extends Collection {
 
     if (dataNode.refId) {
       const firstRef = this.dp.indexes.dataNodes.byRefId.getFirst(dataNode.refId);
-      return firstRef.traceId;
+      return firstRef.nodeId;
     }
     else {
-      const { traceId, accessId } = dataNode;
-      const trace = this.dp.collections.traces.getById(traceId);
-      const staticTrace = this.dp.collections.staticTraces.getById(trace.staticTraceId);
+      const { nodeId, traceId, accessId } = dataNode;
+      const { contextId, staticTraceId, nodeId: traceNodeId } = this.dp.collections.traces.getById(traceId);
+      const staticTrace = traceNodeId === nodeId && this.dp.collections.staticTraces.getById(staticTraceId);
 
-      if (dataNode.inputs?.length && staticTrace.dataNode && !staticTrace.dataNode.isNew) {
+      if (dataNode.inputs?.length && (!staticTrace || (staticTrace?.dataNode && !staticTrace.dataNode.isNew))) {
         const inputDataNode = this.dp.collections.dataNodes.getById(dataNode.inputs[0]);
         return inputDataNode.valueId;
       }
@@ -41,7 +41,6 @@ export default class DataNodeCollection extends Collection {
         return lastNode.valueId;
       }
 
-      const { contextId } = trace;
       const { specialObjectType } = this.dp.util.getDataNodeValueRef(dataNode.varAccess?.objectNodeId) || EmptyObject;
       if (specialObjectType) {
         // NOTE: specialObjectType is looked up by `valueId`
@@ -64,7 +63,7 @@ export default class DataNodeCollection extends Collection {
       // eslint-disable-next-line max-len
       // this.logger.warn(`[getValueId] Cannot find valueId for dataNode.\n    trace: ${this.dp.util.makeTraceInfo(traceId)}\n    dataNode: ${JSON.stringify(dataNode)}`);
 
-      return traceId;
+      return nodeId;
     }
   }
 
@@ -72,8 +71,6 @@ export default class DataNodeCollection extends Collection {
     if ('accessId' in dataNode) {
       return dataNode.accessId;
     }
-
-    // TODO: this does not seem to link b[1] etc. to b for Array.slice?
 
     const { varAccess } = dataNode;
     if (!varAccess) {

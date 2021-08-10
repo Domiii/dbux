@@ -91,7 +91,7 @@ export default function patchArray() {
 
         const varAccessWrite = {
           objectNodeId: newArrayNode.nodeId,
-          prop: i
+          prop: i - start
         };
         dataNodeCollection.createWriteNodeFromReadNode(callId, readNode, varAccessWrite);
       }
