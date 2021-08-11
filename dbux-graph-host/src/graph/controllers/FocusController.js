@@ -35,15 +35,16 @@ export default class FocusController extends HostComponentEndpoint {
     });
 
     this.hiddenNodeManager.onStateChanged(this.handleHiddenNodeChanged);
+    this.context.graphDocument.onAsyncGraphModeChanged(this.handleTraceSelected);
 
     const unbindSubscription = traceSelection.onTraceSelectionChanged(this.handleTraceSelected);
     this.addDisposable(unbindSubscription);
     // if already selected, show things right away
-    this.handleTraceSelected(true);
+    this.handleTraceSelected();
   }
 
   /**
-   * @returns {ContextNode}
+   * @returns {Promise<ContextNode>}
    */
   async getContextNodeById(applicationId, contextId) {
     return this.owner.getContextNodeById(applicationId, contextId);
@@ -62,6 +63,7 @@ export default class FocusController extends HostComponentEndpoint {
           const { rootContextId } = trace;
           asyncNode = dp.indexes.asyncNodes.byRoot.getFirst(rootContextId);
           if (this.followMode && asyncNode) {
+            await this.waitForAsyncGraph();
             await this.remote.focusAsyncNode(asyncNode, ignoreFailed);
           }
         }
@@ -70,7 +72,8 @@ export default class FocusController extends HostComponentEndpoint {
         }
 
         if (asyncNode) {
-          this.remote.selectAsyncNode(asyncNode, ignoreFailed);
+          await this.waitForAsyncGraph();
+          await this.remote.selectAsyncNode(asyncNode, ignoreFailed);
         }
         else {
           this.remote.selectAsyncNode(null);
@@ -164,6 +167,12 @@ export default class FocusController extends HostComponentEndpoint {
   //   this.lastHighlighter = node.controllers.getComponent('Highlighter');
   //   this.lastHighlighter.inc();
   // }
+
+  async waitForAsyncGraph() {
+    const { asyncGraph } = this.context.graphDocument;
+    await asyncGraph.waitForRefresh();
+    await asyncGraph.waitForUpdate();
+  }
 
   // ###########################################################################
   // own event

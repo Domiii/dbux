@@ -1,3 +1,4 @@
+import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
@@ -11,6 +12,7 @@ class Toolbar extends HostComponentEndpoint {
     this.state.hideNewMode = this.hiddenNodeManager.hideNewMode;
     this.state.asyncGraphMode = this.context.graphDocument.asyncGraphMode;
     this.state.asyncDetailMode = true;
+    this.state.theradSelectionIconUri = this.context.graphDocument.getIconUri('filter.svg');
 
     // listen on mode changed event
     this.hiddenNodeManager.onStateChanged(({ hideBefore, hideAfter }) => {
@@ -27,6 +29,12 @@ class Toolbar extends HostComponentEndpoint {
     this.focusController.on('modeChanged', (mode) => {
       this.setState({ followMode: mode });
     });
+
+    const { threadSelection } = allApplications.selection.data;
+    threadSelection.onSelectionChanged(() => {
+      this.setState({ isThreadSelectionActive: threadSelection.isActive() });
+    });
+    this.state.isThreadSelectionActive = threadSelection.isActive();
   }
 
   get focusController() {
@@ -77,6 +85,9 @@ class Toolbar extends HostComponentEndpoint {
       const contextNodeManager = this.context.graphDocument.graphRoot.controllers.getComponent('ContextNodeManager');
       contextNodeManager.highlightBySearchTermTraces(searchTermTraces);
     },
+    clearThreadSelection() {
+      allApplications.selection.data.threadSelection.clear();
+    }
   }
 }
 

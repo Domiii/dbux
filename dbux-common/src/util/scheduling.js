@@ -1,4 +1,4 @@
-import { newLogger } from '@dbux/common/src/log/logger';
+import { newLogger } from '../log/logger';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('makeDebounce');

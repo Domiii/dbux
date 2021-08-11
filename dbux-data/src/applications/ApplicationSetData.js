@@ -1,127 +1,8 @@
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import Trace from '@dbux/common/src/types/Trace';
+/** @typedef {import('./ApplicationSet').default} ApplicationSet */
 
-// ###########################################################################
-// FirstTracesInOrder
-// ###########################################################################
-
-class FirstTracesInOrder {
-  /**
-   * @type {Array<Trace>}
-   */
-  _firstTracesArray;
-  _firstTraceIndexById = new Map();
-
-  /**
-   * @param {ApplicationSetData} applicationSetData 
-   */
-  constructor(applicationSetData) {
-    this.applicationSetData = applicationSetData;
-    this.applicationSet = applicationSetData.set;
-    this._firstTracesArray = [];
-  }
-
-  _mergeAll() {
-    this._firstTracesArray = [];
-    const applications = this.applicationSetData.set.getAll();
-    const allFirstTraces = applications.map((app) => app.dataProvider.util.getFirstTracesInRuns() || EmptyArray);
-
-    // sort traces by trace.createdAt
-    const indexPointers = Array(applications.length).fill(0);
-    const tracesCount = allFirstTraces.reduce((sum, arr) => sum + arr.length, 0);
-
-    for (let i = 0; i < tracesCount; i++) {
-      let earliestTrace = null;
-      let earliestApplicationIndex = null;
-      for (let j = 0; j < applications.length; j++) {
-        const trace = allFirstTraces[j][indexPointers[j]];
-        if (!trace) continue;
-        if (!earliestTrace || trace.createdAt < earliestTrace.createdAt) {
-          earliestTrace = trace;
-          earliestApplicationIndex = j;
-        }
-      }
-      indexPointers[earliestApplicationIndex] += 1;
-      this._addOne(earliestTrace);
-    }
-  }
-
-  _handleApplicationsChanged = () => {
-    const applications = this.applicationSet.getAll();
-    this._mergeAll();
-
-    for (const app of applications) {
-      this.applicationSet.subscribe(
-        app.dataProvider.onData('executionContexts', this._addExecutionContexts.bind(this, app))
-      );
-    }
-  }
-
-  _addExecutionContexts(/* app, contexts */) {
-    // TODO: [performance] can we incrementally add new contexts only?
-    this._mergeAll();
-  }
-
-  _makeKey(firstTrace) {
-    const { applicationId } = firstTrace;
-    return `${applicationId}_${firstTrace.traceId}`;
-  }
-
-  _addOne = (firstTrace) => {
-    this._firstTracesArray.push(firstTrace);
-
-    const key = this._makeKey(firstTrace);
-    this._firstTraceIndexById.set(key, this._firstTracesArray.length - 1);
-  }
-
-  // ###########################################################################
-  // getters
-  // ###########################################################################
-
-  getAll() {
-    return this._firstTracesArray;
-  }
-
-  getIndex(firstTrace) {
-    const key = this._makeKey(firstTrace);
-    const index = this._firstTraceIndexById.get(key);
-    if (index === undefined) {
-      throw new Error('invalid query - given trace is not a root trace', firstTrace);
-    }
-    return index;
-  }
-
-  getFirstTraceInOrder() {
-    return this._firstTracesArray[0] || null;
-  }
-
-  /**
-   * @param {Trace} firstTrace 
-   */
-  getNextFirstTrace(firstTrace) {
-    const order = this.getIndex(firstTrace);
-    return this._firstTracesArray[order + 1] || null;
-  }
-
-  /**
-   * @param {Trace} firstTrace 
-   */
-  getPreviousFirstTrace(firstTrace) {
-    const order = this.getIndex(firstTrace);
-    return this._firstTracesArray[order - 1] || null;
-  }
-}
-
-
-// ###########################################################################
-// ApplicationSetData
-// ###########################################################################
-
-/**
- * @callback fileSelectedApplicationCallback
- * @param {Application} application
- * @param {number} programId
- */
+import AsyncNodesInOrder from './AsyncNodesInOrder';
+import AsyncThreadsInOrder from './AsyncThreadsInOrder';
+import { ThreadSelection } from './ThreadSelection';
 
 /**
  * Encapsulates all data that is related to the set of selected applications;
@@ -130,12 +11,20 @@ class FirstTracesInOrder {
  * Also provides muliti-casted utility methods that work with the dataProviders of all selected applications.
  */
 export default class ApplicationSetData {
+  /**
+   * @param {ApplicationSet} applicationSet 
+   */
   constructor(applicationSet) {
     this.applicationSet = applicationSet;
-    this.firstTracesInOrder = new FirstTracesInOrder(this);
+    this.threadSelection = new ThreadSelection();
+    this.asyncNodesInOrder = new AsyncNodesInOrder(this);
+    this.asyncThreadsInOrder = new AsyncThreadsInOrder(this);
+    // this.firstTracesInOrder = new FirstTracesInOrder(this);
 
     // this.applicationSet._emitter.on('_applicationsChanged0', this._handleApplicationsChanged);
     this.applicationSet.onApplicationsChanged(this._handleApplicationsChanged);
+    this.threadSelection.onSelectionChanged(this.asyncNodesInOrder._handleThreadSelectionChanged);
+    this.threadSelection.onSelectionChanged(this.asyncThreadsInOrder._handleThreadSelectionChanged);
   }
 
   get set() {
@@ -143,7 +32,9 @@ export default class ApplicationSetData {
   }
 
   _handleApplicationsChanged = () => {
-    this.firstTracesInOrder._handleApplicationsChanged();
+    // this.firstTracesInOrder._handleApplicationsChanged();
+    this.asyncNodesInOrder._handleApplicationsChanged();
+    this.asyncThreadsInOrder._handleApplicationsChanged();    
   }
 
   getTrace(applicationId, traceId) {
@@ -161,6 +52,12 @@ export default class ApplicationSetData {
       return sum + !!programId;
     }, 0);
   }
+
+  /**
+   * @callback fileSelectedApplicationCallback
+   * @param {Application} application
+   * @param {number} programId
+   */
 
   /**
    * @param {fileSelectedApplicationCallback} cb

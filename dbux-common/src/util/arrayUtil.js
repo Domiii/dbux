@@ -49,6 +49,35 @@ export function mergeConcatArray(...inputs) {
   );
 }
 
+/**
+ * TODO: [performance] Use proirity queue for array index
+ * @see https://stackoverflow.com/a/26935688/11309695
+ * @param  {any[][]} inputs 
+ */
+export function mergeSortedArray(inputs, makeKey = (e) => e) {
+  const result = [];
+  const indexPointers = Array(inputs.length).fill(0);
+  const totalLength = inputs.reduce((sum, arr) => sum + arr.length, 0);
+
+  for (let i = 0; i < totalLength; ++i) {
+    let nextEntry = null;
+    let chosenArrayIndex = null;
+    for (let j = 0; j < inputs.length; ++j) {
+      const possibleNextEntry = inputs[j][indexPointers[j]];
+      if (!possibleNextEntry) continue;
+      if (!nextEntry || makeKey(possibleNextEntry) < makeKey(nextEntry)) {
+        nextEntry = possibleNextEntry;
+        chosenArrayIndex = j;
+      }
+    }
+
+    indexPointers[chosenArrayIndex]++;
+    result.push(nextEntry);
+  }
+
+  return result;
+}
+
 // ###########################################################################
 // binary search
 // ###########################################################################

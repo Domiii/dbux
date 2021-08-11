@@ -82,7 +82,7 @@ export default class Collection {
   addEntry(entry) {
     this.handleAdd(entry);
     if (!entry._id) {
-      console.warn(`entry._id missing:`, entry);
+      this.logger.warn(`entry._id missing:`, entry);
       this._all.push(entry);
     }
     else {

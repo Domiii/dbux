@@ -2,10 +2,10 @@ import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { initCodeDeco } from './codeDeco';
 
-import { initCallGraphView } from './callGraphView/callGraphViewController';
+// import { initCallGraphView } from './callGraphView/callGraphViewController';
 import { initCommands } from './commands/index';
 import { initToolBar } from './toolbar';
-import { initPlayback } from './playback/index';
+// import { initPlayback } from './playback/index';
 
 import { initCodeApplications } from './codeUtil/CodeApplication';
 import { initTraceDetailsView } from './traceDetailsView/traceDetailsController';
@@ -41,7 +41,7 @@ async function activate(context) {
     initCodeDeco(context);
     initToolBar(context);
     initTraceSelection(context);
-    initPlayback();
+    // initPlayback();
 
     initWebviewWrapper(context);
 
@@ -64,14 +64,14 @@ async function activate(context) {
     //   "name": "Call Stack"
     // },
 
-    const callGraphViewController = initCallGraphView(context);
+    // const callGraphViewController = initCallGraphView(context);
     // const callStackViewController = initCallStackView();
     // initEditorTracesView(context);
 
     initCommands(
       context,
       traceDetailsController,
-      callGraphViewController,
+      // callGraphViewController,
       dataFlowController
     );
 

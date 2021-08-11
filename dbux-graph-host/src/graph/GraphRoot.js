@@ -83,11 +83,6 @@ class GraphRoot extends HostComponentEndpoint {
         this.updateRunNodes();
       })
     );
-    this.addDisposable(
-      this.context.graphDocument.onAsyncGraphModeChanged(() => {
-        this.updateRunNodes();
-      })
-    );
 
     this.updateRunNodes();
   }
@@ -124,7 +119,6 @@ class GraphRoot extends HostComponentEndpoint {
       }
     }
   }
-
 
   _resubscribeOnData() {
     // unsubscribe old

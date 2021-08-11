@@ -24,6 +24,9 @@ class Toolbar extends ClientComponentEndpoint {
           <button title="Search for traces by name" data-el="searchTracesBtn" class="btn btn-info" href="#">🔍+</button>
           <button title="Toggle Async Graph Mode" data-el="asyncGraphModeBtn" class="btn btn-info" href="#">async</button>
           <button title="Toggle Async Detail" data-el="asyncDetailModeBtn" class="btn btn-info" href="#">detail</button>
+          <button title="Clear Thread Selection" data-el="clearThreadSelectionBtn" class="btn btn-info" href="#">
+            <img width="12px" src="${this.state.theradSelectionIconUri}" />
+          </button>
         </div>
         <div data-el="moreMenu" class="dropdown">
           <button data-el="moreMenuBtn" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -83,6 +86,7 @@ class Toolbar extends ClientComponentEndpoint {
       searchTermTraces,
       asyncGraphMode,
       asyncDetailMode,
+      isThreadSelectionActive
     } = this.state;
 
     const themeModeName = ThemeMode.getName(this.context.themeMode).toLowerCase();
@@ -120,6 +124,9 @@ class Toolbar extends ClientComponentEndpoint {
     });
     decorateClasses(this.els.searchTracesBtn, {
       active: !!searchTermTraces
+    });
+    decorateClasses(this.els.clearThreadSelectionBtn, {
+      hidden: !isThreadSelectionActive
     });
     [`navbar-${themeModeName}`, `bg-${themeModeName}`].forEach(mode => this.el.classList.add(mode));
     this.els.thinModeBtn.innerHTML = `${!!thinMode && '||&nbsp;' || '|&nbsp;|'}`;
@@ -251,6 +258,13 @@ class Toolbar extends ClientComponentEndpoint {
         this.setState({
           asyncDetailMode: !this.state.asyncDetailMode
         });
+      },
+      focus(evt) { evt.target.blur(); }
+    },
+    clearThreadSelectionBtn: {
+      click(evt) {
+        evt.preventDefault();
+        this.remote.clearThreadSelection();
       },
       focus(evt) { evt.target.blur(); }
     },
