@@ -1,45 +1,59 @@
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import dataNodeCollection from '../data/dataNodeCollection';
-import { isInstrumentedFunction, peekBCEMatchCallee } from '../data/dataUtil';
-import valueCollection from '../data/valueCollection';
+import { getTraceOwnDataNode, peekBCEMatchCallee } from '../data/dataUtil';
 import { monkeyPatchMethod } from '../util/monkeyPatchUtil';
 
+
+// var c = Function.prototype.call;
+// function f(a, b) { console.log(this, a, b); }
+// Function.prototype.call = function (...args) {
+//   console.log('call', this, args);
+//   return c.bind(this)(...args);
+// }
+// f.call(1, 2, 3);
 
 export default function patchFunction() {
   // ###########################################################################
   // call
   // ###########################################################################
 
-  // monkeyPatchMethod(Function, 'call',
-  //   (thisArg, args, originalFunction, patchedFunction) => {
-  //     // TODO: get function on which `call` was called -> requires instrumentation?
+  monkeyPatchMethod(Function, 'call',
+    (actualFunction, args, originalCall, patchedCall) => {
+      // console.debug(`Function.prototype.call`, actualFunction);
+      // const bceTrace = peekBCEMatchCallee(patchedCall);
+      // if (bceTrace?.data) {
+      //   // get actual function actualFunctionDataNode
+      //   const { traceId: callId, data: { calleeTid } } = bceTrace;
+      //   const calleeDataNode = getTraceOwnDataNode(calleeTid); // stored in {@link RuntimeMonitor#traceExpressionME}
+      //   const { objectNodeId } = calleeDataNode?.varAccess || EmptyObject;
+      //   const actualFunctionDataNode = objectNodeId && dataNodeCollection.getById(objectNodeId);
+        
+      //   if (actualFunctionDataNode) {
+      //     // [edit-after-send]
+      //     bceTrace.data.calledFunctionTid = actualFunctionDataNode.traceId;
+          
+      //     for (let i = 0; i < args.length; ++i) {
+      //       const varAccess = {
+      //         objectNodeId,
+      //         prop: arr.length + i
+      //       };
+      //       dataNodeCollection.createDataNode(args[i], callId, DataNodeType.Write, varAccess);
 
-  //     // if (isInstrumentedFunction(originalFunction)) 
-  //     {
-  //       const bceTrace = peekBCEMatchCallee(patchedFunction);
-  //       if (!bceTrace) {
-  //         return originalFunction.apply(arr, args);
-  //       }
+      //     }
+      //   }
+      // }
+      return originalCall.bind(actualFunction)(...args);
+    }
+  );
 
-  //       const { traceId: callId } = bceTrace;
-  //       const objectNodeId = getObjectNodeIdFromRef(ref);
+  // ###########################################################################
+  // apply
+  // ###########################################################################
 
-  //       for (let i = 0; i < args.length; ++i) {
-  //         const varAccess = {
-  //           objectNodeId,
-  //           prop: arr.length + i
-  //         };
-  //         // console.debug(`[Array.push] #${traceId} ref ${ref.refId}, node ${nodeId}, objectNodeId ${objectNodeId}`);
-  //         dataNodeCollection.createDataNode(args[i], callId, DataNodeType.Write, varAccess);
-
-  //         // NOTE: trace was marked for sending, but will be actually sent with all traces of run, so changes **should** still be possible.
-  //         bceTrace.data = bceTrace.data || {};
-  //         bceTrace.data.monkey = {
-  //           wireInputs: true
-  //         };
-  //       }
-  //       return originalFunction.apply(arr, args);
-  //     }
-  //   }
-  // );
+  monkeyPatchMethod(Function, 'apply',
+    (actualFunction, args, originalCall, patchedCall) => {
+      return originalCall.bind(actualFunction)(...args);
+    }
+  );
 }

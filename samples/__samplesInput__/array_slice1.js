@@ -3,11 +3,3 @@ console.log(a[1]);
 
 var b = a.slice(1, 3); // [2, 3]
 console.log(a[1], b[0], b, '=== 2 [2, 3]');
-
-var o = {
-  f(a) {
-    console.log(a);
-  }
-}
-
-o.f(123);

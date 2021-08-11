@@ -9,7 +9,7 @@ import { monkeyPatchMethod } from '../util/monkeyPatchUtil';
 // utility
 // ###########################################################################
 
-function getObjectNodeIdFromRef(ref) {
+function getNodeIdFromRef(ref) {
   const { nodeId } = ref;
   return nodeId;
 }
@@ -37,7 +37,7 @@ export default function patchArray() {
       }
 
       const { traceId: callId } = bceTrace;
-      const objectNodeId = getObjectNodeIdFromRef(ref);
+      const objectNodeId = getNodeIdFromRef(ref);
 
       for (let i = 0; i < args.length; ++i) {
         const varAccess = {
@@ -74,7 +74,7 @@ export default function patchArray() {
       }
 
       const { traceId: callId } = bceTrace;
-      const arrNodeId = getObjectNodeIdFromRef(ref);
+      const arrNodeId = getNodeIdFromRef(ref);
 
       // let BCE hold DataNode of newArray
       const newArrayNode = dataNodeCollection.createOwnDataNode(newArray, callId, DataNodeType.Write);
