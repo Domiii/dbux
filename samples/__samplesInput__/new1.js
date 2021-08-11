@@ -10,7 +10,10 @@ function main() {
 }
 
 class A {
-  constructor() { console.log('new A'); }
+  constructor() { 
+    this.str = 'MY STRING';
+    console.log('new A');
+  }
 }
 
 class B {

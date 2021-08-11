@@ -8,8 +8,10 @@ import ValueNode, { ValueLabel } from './ValueNode';
  */
 export default class ValueTDSimpleNode extends ValueNode {
   static makeEntry(trace, parent, props) {
-    const { nodeId, applicationId } = trace;
+    const { traceId, applicationId } = trace;
     const dp = allApplications.getById(applicationId).dataProvider;
+    const dataTrace = dp.util.getValueTrace(traceId);
+    const { nodeId } = dataTrace;
     const dataNode = dp.collections.dataNodes.getById(nodeId);
     if (dataNode && !dataNode.refId) {
       return dataNode;
