@@ -58,7 +58,7 @@ export default class PracticeSession {
   setState(state) {
     if (this.state !== state) {
       this.state = state;
-      this.manager._emitter.emit('practiceSessionStateChanged');
+      this.manager._notifyPracticeSessionStateChanged();
     }
   }
 
@@ -179,7 +179,7 @@ export default class PracticeSession {
     return true;
   }
 
-  async confirmExit(dontRefreshView) {
+  async confirmExit() {
     if (!await this.manager.externals.confirm(`Do you want to exit the practice session?`)) {
       return false;
     }
@@ -201,7 +201,7 @@ export default class PracticeSession {
 
     // emitPracticeSessionEvent('stopped', practiceSession);
     this.manager.pdp.reset();
-    this.manager._emitter.emit('practiceSessionStateChanged'/*, dontRefreshView */);
+    this.manager._notifyPracticeSessionStateChanged();
     return true;
   }
 

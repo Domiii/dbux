@@ -18,7 +18,8 @@ class ThreadColumn extends ClientComponentEndpoint {
     this.el.addEventListener('click', event => {
       const asyncNode = getMatchParent('div.async-node', event.target, this.el);
       if (asyncNode) {
-        if (event.target.matches('div.async-fork-button')) {
+        if (event.target.matches('div.async-node-button')) {
+          // TODO: handle different buttons(blocked: thread selection)
           this.handleClickForkButton(asyncNode);
         }
         else {
@@ -43,26 +44,31 @@ class ThreadColumn extends ClientComponentEndpoint {
     const nodesById = new Map(nodes.map(node => [node.asyncNode.rootContextId, node]));
     for (let rootContextId of rootContextIds) {
       const node = nodesById.get(rootContextId);
-      let dotLabel, displayName, locLabel;
+      let dotLabel, displayName, locLabel = '', syncInCount, syncOutCount;
       if (node) {
         dotLabel = '⬤';
-        ({ displayName, locLabel } = node);
+        ({ displayName, locLabel, syncInCount, syncOutCount } = node);
       }
       else if (parentRootContextId === rootContextId) {
         dotLabel = '&nbsp;';
         displayName = '⬤';
-        locLabel = '';
       }
       else {
         const shouldAddLine = (firstRootInThread < rootContextId) && (rootContextId < lastRootInThread);
         dotLabel = shouldAddLine ? '|' : '&nbsp;';
         displayName = shouldAddLine ? '|' : '&nbsp;';
-        locLabel = '';
       }
 
       const forkButton = (firstRootInThread === rootContextId && parentRootContextId) ? /*html*/`
-        <div style="width:0px"><div class="async-fork-button">${parentRootContextId}</div></div>
+        <button class="async-node-button">${parentRootContextId}</button>
       ` : '';
+      const syncInButton = (syncInCount) ? /*html*/`
+        <button class="async-node-button">🡅</button>
+      ` : '';
+      const syncOutButton = (syncOutCount) ? /*html*/`
+        <button class="async-node-button">🡇</button>
+      ` : '';
+      const buttons = [forkButton, syncInButton, syncOutButton].join('');
       const data = {
         'async-node-id': node?.asyncNode.asyncNodeId,
         'parent-async-node-id': parentAsyncNodeId,
@@ -74,12 +80,11 @@ class ThreadColumn extends ClientComponentEndpoint {
         <div class="async-node full-width flex-row align-center" ${dataTag}>
           <div class="async-brief flex-row main-axie-align-center">
             ${dotLabel}
-            ${forkButton}
           </div>
           <div class="async-detail flex-column cross-axis-align-center">
             <div class="flex-row">
               <div>${displayName}</div>
-              ${forkButton}
+              ${buttons}
             </div>
             <div class="async-loc-label gray">
               <span>${locLabel}</span>

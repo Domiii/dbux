@@ -307,16 +307,17 @@ class HostComponentEndpoint extends ComponentEndpoint {
     return this._refreshPromise;
   }
 
-  refresh = makeDebounce(() => {
+  refresh = () => {
     ++this._refreshRequests;
     if (this._refreshPromise) {
       return;
     }
     this._refreshPromise = this.doRefresh();
-  }, 50);
+  };
 
   async doRefresh() {
     try {
+      await sleep(50);
       while (this._refreshRequests) {
         this._refreshRequests = 0;
 

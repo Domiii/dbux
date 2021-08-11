@@ -56,6 +56,12 @@
   align-self: center;
 }
 
+.grid {
+  display: grid;
+  justify-items: center;
+  align-items: center;
+}
+
 .space-between {
   justify-content: space-between;
 }
@@ -81,15 +87,26 @@
   padding-right: 0;
 }
 
+.ellipsis-10 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 10rem;
+}
+
 .ellipsis-20 {
   white-space: nowrap;
-  overflow-x: hidden;
+  overflow: hidden;
   text-overflow: ellipsis;
   max-width: 20rem;
 }
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+.display-only-child:not(:only-child) {
+  display: none;
 }
 
 /** ###########################################################################

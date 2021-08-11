@@ -98,9 +98,13 @@ class PathwaysView extends HostComponentEndpoint {
   // getters
   // ###########################################################################
 
-  getIconUri(modeName, fileName) {
+  getIconUri(fileName, modeName = null) {
     if (!fileName) {
       return null;
+    }
+    if (!modeName) {
+      const themeMode = this.componentManager.externals.getThemeMode();
+      modeName = ThemeMode.getName(themeMode).toLowerCase();
     }
     return this.componentManager.externals.getClientResourceUri(`${modeName}/${fileName}`);
   }

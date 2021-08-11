@@ -13,15 +13,19 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
   }
 
   update() {
+    let changedFlag = false;
     for (const runNode of this.getAllRunNode()) {
       const visible = this.shouldBeVisible(runNode);
-      this._setVisible(runNode, visible);
+      const changed = this._setVisible(runNode, visible);
+      changedFlag |= changed;
     }
     this._notifyHiddenCountChanged();
 
-    this.waitForUpdate()
-      .then(() => this._notifyStateChanged())
-      .catch(err => this.logger.error(err));
+    if (changedFlag) {
+      this.waitForUpdate()
+        .then(() => this._notifyStateChanged())
+        .catch(err => this.logger.error(err));
+    }
   }
 
   get hiddenBeforeNode() {
@@ -84,6 +88,10 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
   _setVisible(runNode, visible) {
     if (runNode.state.visible !== visible) {
       runNode.setState({ visible });
+      return true;
+    }
+    else {
+      return false;
     }
   }
 

@@ -24,7 +24,7 @@ export class TracePlayback {
   constructor(applicationSetData) {
     this.applicationSetData = applicationSetData;
     this.applicationSet = applicationSetData.set;
-    this.firstTracesInOrder = applicationSetData.firstTracesInOrder;
+    // this.firstTracesInOrder = applicationSetData.firstTracesInOrder;
 
     this.applicationSet.onApplicationsChanged(this._handleApplicationsChanged);
     traceSelection.onTraceSelectionChanged(this._handleTraceSelectionChanged);
@@ -36,7 +36,7 @@ export class TracePlayback {
 
   play() {
     if (this._isPlaying) return;
-    if (!this.currentTrace) this.currentTrace = this._getFirstTraceInOrder();
+    // if (!this.currentTrace) this.currentTrace = this._getFirstTraceInOrder();
     this.timer = setInterval(this._onPlay, this.timerInterval);
     this._isPlaying = true;
   }
@@ -96,20 +96,22 @@ export class TracePlayback {
 
   getPreviousTrace(trace = this.currentTrace) {
     const prevTrace = this._getPreviousTraceInApplication(trace);
-    if (prevTrace?.runId !== trace.runId) {
-      // if it is the first trace in application, find the previous run
-      return this._getLastTraceInPreviousRun(trace) || trace;
-    }
-    else return prevTrace || trace;
+    return prevTrace;
+    // if (prevTrace?.runId !== trace.runId) {
+    //   // if it is the first trace in application, find the previous run
+    //   return this._getLastTraceInPreviousRun(trace) || trace;
+    // }
+    // else return prevTrace || trace;
   }
 
   getNextTrace(trace = this.currentTrace) {
     const nextTrace = this._getNextTraceInApplication(trace);
-    if (nextTrace?.runId !== trace.runId) {
-      // if it is the last trace in application, find the next run
-      return this._getFirstTraceInNextRun(trace) || trace;
-    }
-    else return nextTrace || trace;
+    return nextTrace;
+    // if (nextTrace?.runId !== trace.runId) {
+    //   // if it is the last trace in application, find the next run
+    //   return this._getFirstTraceInNextRun(trace) || trace;
+    // }
+    // else return nextTrace || trace;
   }
 
   getPreviousInContext(trace = this.currentTrace) {
@@ -185,29 +187,29 @@ export class TracePlayback {
   //  Traces (Returning null if not found)
   // ########################################
 
-  _getFirstTraceInOrder() {
-    return this.firstTracesInOrder.getFirstTraceInOrder();
-  }
+  // _getFirstTraceInOrder() {
+  //   return this.firstTracesInOrder.getFirstTraceInOrder();
+  // }
 
-  /**
-   * @param {Trace} trace 
-   */
-  _getLastTraceInPreviousRun(trace) {
-    const firstTrace = this._getFirstTraceInSameRun(trace);
-    const prevFirstTrace = this.firstTracesInOrder.getPreviousFirstTrace(firstTrace);
-    if (!prevFirstTrace) return null;
-    const prevDataProvider = this._getDataProviderOfTrace(prevFirstTrace);
-    return prevDataProvider.util.getLastTraceOfRun(prevFirstTrace.runId);
-  }
+  // /**
+  //  * @param {Trace} trace 
+  //  */
+  // _getLastTraceInPreviousRun(trace) {
+  //   const firstTrace = this._getFirstTraceInSameRun(trace);
+  //   const prevFirstTrace = this.firstTracesInOrder.getPreviousFirstTrace(firstTrace);
+  //   if (!prevFirstTrace) return null;
+  //   const prevDataProvider = this._getDataProviderOfTrace(prevFirstTrace);
+  //   return prevDataProvider.util.getLastTraceOfRun(prevFirstTrace.runId);
+  // }
 
-  /**
-   * @param {Trace} trace 
-   */
-  _getFirstTraceInNextRun(trace) {
-    const firstTrace = this._getFirstTraceInSameRun(trace);
-    const nextFirstTrace = this.firstTracesInOrder.getNextFirstTrace(firstTrace);
-    return nextFirstTrace;
-  }
+  // /**
+  //  * @param {Trace} trace 
+  //  */
+  // _getFirstTraceInNextRun(trace) {
+  //   const firstTrace = this._getFirstTraceInSameRun(trace);
+  //   const nextFirstTrace = this.firstTracesInOrder.getNextFirstTrace(firstTrace);
+  //   return nextFirstTrace;
+  // }
 
   /**
    * @param {Trace} trace 

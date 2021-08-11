@@ -1,18 +1,12 @@
 import NanoEvents from 'nanoevents';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { makeContextLabel } from '@dbux/data/src/helpers/contextLabels';
-import { makeContextLocLabel, makeTraceLabel } from '@dbux/data/src/helpers/traceLabels';
-import KeyedComponentSet from '@dbux/graph-common/src/componentLib/KeyedComponentSet';
+import traceSelection from '@dbux/data/src/traceSelection/index';
+import { makeContextLocLabel } from '@dbux/data/src/helpers/traceLabels';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
-import ThreadColumn from './ThreadColumn';
 
 /** @typedef {import('@dbux/data/src/applications/Application').default} Application */
-
-class ThreadColumnSet extends KeyedComponentSet {
-  makeKey(entry) {
-    return `${entry.applicationId}_${entry.threadId}`;
-  }
-}
 
 class AsyncGraph extends HostComponentEndpoint {
   init() {
@@ -21,7 +15,6 @@ class AsyncGraph extends HostComponentEndpoint {
     this.state.ascendingMode = true;
     this._emitter = new NanoEvents();
     this._unsubscribeOnNewData = [];
-    this.threadColumns = new ThreadColumnSet(this, ThreadColumn, { forceUpdate: true });
 
     this.controllers.createComponent('PopperController');
 
@@ -29,10 +22,11 @@ class AsyncGraph extends HostComponentEndpoint {
     this.addDisposable(
       allApplications.selection.onApplicationsChanged(() => {
         this.refresh();
+        this._resubscribeOnData();
       })
     );
     this.addDisposable(
-      this.context.graphDocument.onAsyncGraphModeChanged(() => {
+      allApplications.selection.data.threadSelection.onSelectionChanged(() => {
         this.refresh();
       })
     );
@@ -41,97 +35,90 @@ class AsyncGraph extends HostComponentEndpoint {
   }
 
   handleRefresh() {
+    let children = EmptyArray;
     if (this.context.graphDocument.asyncGraphMode) {
-      const app = allApplications.selection.getAll()?.[0];
-
-      if (app) {
-        this.buildChildrenColumns(app);
-      }
-
-      this._resubscribeOnData();
+      children = this.makeChildNodes();
     }
     else {
-      this.forceUpdate(); // re-render self
-      this.threadColumns.update([]);
+      this.forceUpdate();
     }
-    this._setApplicationState();
+
+    const applications = this.makeApplicationState(allApplications.selection.getAll());
+    this.setState({ children, applications });
   }
 
-  /**
-   * @param {Application} app 
-   */
-  buildChildrenColumns(app) {
-    const { dataProvider: dp, applicationId } = app;
-    const threadIds = dp.indexes.asyncNodes.byThread.getAllKeys();
-    const rootContextIds = dp.indexes.asyncNodes.byRoot.getAllKeys();
-    const lastRootContextId = dp.collections.asyncNodes.getLast()?.rootContextId;
+  makeChildNodes() {
+    const appData = allApplications.selection.data;
+    const asyncNodes = appData.asyncNodesInOrder.getAllActual();
+    return asyncNodes.map((asyncNode, index) => {
+      const { applicationId, rootContextId, threadId } = asyncNode;
 
-    this.threadColumns.update(threadIds.map((threadId) => {
-      const firstNode = dp.indexes.asyncNodes.byThread.getFirst(threadId);
-      const parentEdge = dp.indexes.asyncEvents.to.getFirst(firstNode.rootContextId);
-      const parentRootContextId = parentEdge?.fromRootContextId;
-      const parentAsyncNodeId = parentRootContextId && dp.indexes.asyncNodes.byRoot.getUniqueNotNull(parentRootContextId)?.asyncNodeId;
-      return {
-        applicationId,
-        threadId,
-        parentRootContextId,
-        parentAsyncNodeId,
-        lastRootContextId,
-        rootContextIds,
-        nodes: this.makeThreadColumnNodes(app, threadId),
-      };
-    }));
-  }
-
-  makeThreadColumnNodes(app, threadId) {
-    const { dataProvider: dp, applicationId } = app;
-    return dp.indexes.asyncNodes.byThread.get(threadId).map(asyncNode => {
-      // const trace = dp.collections.traces.getById(asyncNode.traceId);
-      const context = dp.collections.executionContexts.getById(asyncNode.rootContextId);
-      if (!context) {
+      if (!rootContextId) {
+        // sanity check
         this.logger.warn(`Invalid asyncNode had invalid rootContextId ${asyncNode.rootContextId} -`, asyncNode);
         return null;
       }
-      // const displayName = trace ? makeTraceLabel(trace) : makeContextLabel(context, app);
+
+      const app = allApplications.getById(applicationId);
+      const dp = app.dataProvider;
+      const context = dp.collections.executionContexts.getById(rootContextId);
+      const rowId = index + 1;
+      const colId = appData.asyncThreadsInOrder.getIndexNotNull(asyncNode);
       const displayName = makeContextLabel(context, app);
+      const locLabel = makeContextLocLabel(applicationId, context);
+      const syncInCount = dp.indexes.asyncEvents.syncInByRoot.getSize(rootContextId);
+      const syncOutCount = dp.indexes.asyncEvents.syncOutByRoot.getSize(rootContextId);
+
+      let parentAsyncNodeId, parentRowId;
+      const firstNode = dp.indexes.asyncNodes.byThread.getFirst(threadId);
+      if (firstNode.asyncNodeId === asyncNode.asyncNodeId) {
+        const parentEdge = dp.indexes.asyncEvents.to.getFirst(firstNode.rootContextId);
+        const parentRootContextId = parentEdge?.fromRootContextId;
+        const parentAsyncNode = dp.indexes.asyncNodes.byRoot.getUnique(parentRootContextId);
+        parentAsyncNodeId = parentAsyncNode?.asyncNodeId;
+        parentRowId = parentAsyncNode && appData.asyncNodesInOrder.getIndex(parentAsyncNode);
+      }
+
       return {
-        displayName,
-        locLabel: makeContextLocLabel(applicationId, context),
         asyncNode,
-        context
+        rowId,
+        colId,
+        displayName,
+        locLabel,
+        syncInCount,
+        syncOutCount,
+        parentAsyncNodeId,
+        parentRowId,
       };
     }).filter(n => !!n);
   }
 
-  _resubscribeOnData() {
-    // unsubscribe old
-    this._unsubscribeOnNewData?.forEach(f => f());
-    this._unsubscribeOnNewData = [];
+  makeApplicationState(apps = EmptyArray) {
+    const applications = apps.map(app => ({
+      applicationId: app.applicationId,
+      entryPointPath: app.entryPointPath,
+      name: app.getPreferredName()
+    }));
+    return { applications };
+  }
 
+  /**
+   * @param {Application[]} apps 
+   */
+  _resubscribeOnData() {
     // subscribe new
     for (const app of allApplications.selection.getAll()) {
       const { dataProvider } = app;
-      const unsubscribe = dataProvider.onData('executionContexts',
+      const unsubscribe = dataProvider.onData('asyncEventUpdates',
         () => {
           this.refresh();
-          this._setApplicationState();
         }
       );
-      this._unsubscribeOnNewData.push(unsubscribe);
+
+      // future-work: avoid potential memory leak
       allApplications.selection.subscribe(unsubscribe);
       this.addDisposable(unsubscribe);
     }
-  }
-
-  _setApplicationState() {
-    const update = {
-      applications: allApplications.selection.getAll().map(app => ({
-        applicationId: app.applicationId,
-        entryPointPath: app.entryPointPath,
-        name: app.getPreferredName()
-      }))
-    };
-    this.setState(update);
   }
 
   // ###########################################################################
@@ -152,6 +139,37 @@ class AsyncGraph extends HostComponentEndpoint {
         asyncGraph: this
       }
     };
+  }
+
+  public = {
+    gotoAsyncNode(applicationId, asyncNodeId) {
+      const dp = allApplications.getById(applicationId).dataProvider;
+      const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
+      const firstTrace = dp.indexes.traces.byContext.getFirst(asyncNode.rootContextId);
+      if (firstTrace) {
+        traceSelection.selectTrace(firstTrace);
+      }
+    },
+    selectSyncInThreads(applicationId, asyncNodeId) {
+      const dp = allApplications.getById(applicationId).dataProvider;
+      const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
+      const syncInThreads = dp.indexes.asyncEvents.syncInByRoot.get(asyncNode.rootContextId);
+      const syncInThreadIds = syncInThreads.map(event => {
+        return dp.indexes.asyncNodes.byRoot.getUniqueNotNull(event.fromRootContextId).threadId;
+      });
+      syncInThreadIds.push(asyncNode.threadId);
+      allApplications.selection.data.threadSelection.select(applicationId, syncInThreadIds);
+    },
+    selectSyncOutThreads(applicationId, asyncNodeId) {
+      const dp = allApplications.getById(applicationId).dataProvider;
+      const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
+      const syncOutThreads = dp.indexes.asyncEvents.syncOutByRoot.get(asyncNode.rootContextId);
+      const syncOutThreadIds = syncOutThreads.map(event => {
+        return dp.indexes.asyncNodes.byRoot.getUniqueNotNull(event.toRootContextId).threadId;
+      });
+      syncOutThreadIds.push(asyncNode.threadId);
+      allApplications.selection.data.threadSelection.select(applicationId, syncOutThreadIds);
+    },
   }
 }
 

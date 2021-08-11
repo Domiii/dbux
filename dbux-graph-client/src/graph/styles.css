@@ -212,17 +212,23 @@ html, body {
  * Async Graph
  * ############################################################################ */
 
+.async-grid {
+  gap: 0px 1px;
+}
+
 .async-node {
   border: 1px solid transparent;
-  min-height: 1.6em;
-  min-width: 1.2em;
+  min-height: 1.6rem;
+  min-width: 1.2rem;
   line-height: 1.1;
   padding: 1.5px;
 }
 
 [data-async-detail-mode="1"] .async-node {
-  min-height: 2.8em;
-  min-width: 5em;
+  min-height: 2.8rem;
+  min-width: 5rem;
+  max-width: 10rem;
+  width: fit-content;
 }
 
 .async-node:hover:not([data-async-node-id=""]) {
@@ -240,25 +246,26 @@ html, body {
   border: 1px solid yellow;
 }
 
-.async-fork-button {
+.async-node-button {
   border: 1px solid white;
   border-radius: 2px;
   text-align: center;
   line-height: normal;
   height: 15px;
   width: 15px;
-  font-size: 8px;
+  padding: 0px;
+  font-size: 10px;
   margin-left: 3px;
 }
 
-.async-node-selected .async-fork-button {
+/* .async-node-selected .async-node-button {
   border: 1px solid yellow;
 }
 
-.async-fork-button:hover {
+.async-node-button:hover {
   border: 1px solid yellow;
   color: yellow;
-}
+} */
 
 .async-loc-label {
   font-size: 0.7em;
@@ -277,10 +284,6 @@ html, body {
   padding: 0px !important;
   min-height: 6px !important;
   font-size: 6px !important;
-}
-
-[data-async-detail-mode="0"] .async-fork-button {
-  display: none !important;
 }
 
 [data-async-detail-mode="0"] .async-thread-title {
