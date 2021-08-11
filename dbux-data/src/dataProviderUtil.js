@@ -12,8 +12,9 @@ import { isVirtualContextType } from '@dbux/common/src/types/constants/StaticCon
 import { isRealContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
 import { isCallResult, hasCallId } from '@dbux/common/src/types/constants/traceCategorization';
 import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory, ValuePruneState } from '@dbux/common/src/types/constants/ValueTypeCategory';
-import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
+import SpecialCallType from '@dbux/common/src/types/constants/SpecialCallType';
+import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
 import AsyncEventUpdateType, { isPreEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import { locToString } from './util/misc';
 
@@ -204,7 +205,7 @@ export default {
   },
 
   // getAllExecutedStaticTraces(dp) {
-  //  // TODO: NIY
+  //  // NIY
   // },
 
   getExecutedStaticTracesInStaticContext(dp, staticContextId) {
@@ -484,8 +485,6 @@ export default {
         logError(`valueRef does not exist for dataNode - ${JSON.stringify(dataNode)}`);
         return undefined;
       }
-      // TODO: this is not the correct value for objects or arrays, needs reconstruct
-      // TODO: some shallow reconstruct?
       return valueRef.value;
     }
 
@@ -516,7 +515,6 @@ export default {
       return trace._valueString;
     }
 
-    // TODO: separate "message" from valueString
     // A message is generated if there is an issue with the value or it was omitted.
     const valueMessage = dp.util.getTraceValueMessage(traceId);
     if (valueMessage) {
@@ -534,7 +532,6 @@ export default {
       valueString = 'undefined';
     }
     else {
-      // TODO: fix this
       // valueString = JSON.stringify(value);
       valueString = value?.toString?.() || String(value);
     }
@@ -562,7 +559,7 @@ export default {
         valueString = ValueTypeCategory.nameFrom(valueRef.category);
       }
       else {
-        // TODO: do this recursively, so array-of-object does not display object itself
+        // future-work: do this recursively, so array-of-object does not display object itself
         valueString = valueString.substring(0, ShortLength - 3) + '...';
       }
     }
@@ -650,19 +647,13 @@ export default {
 
   /**
    * Get callerTrace (BCE) of a call related trace, returns itself if it is not a call related trace.
-   * Note: if a trace is both `CallArgument` and `CallExpressionResult`, returns the argument trace.
-   * Note: we use this to find the parent trace of a given context.
+   * NOTE: we use this to find the parent trace of a given context.
+   * NOTE: if a trace is both `CallArgument` and `CallExpressionResult`, returns the argument trace.
    * @param {DataProvider} dp
    * @param {number} traceId
   */
   getPreviousCallerTraceOfTrace(dp, traceId) {
     const trace = dp.collections.traces.getById(traceId);
-    // TODO: deal with callback traces after context.schedulerTraceId is back
-    // const context = dp.collections.executionContexts.getById(trace.contextId);
-    // if (context.schedulerTraceId) {
-    //   // trace is push/pop callback
-    //   return dp.util.getCallerTraceOfTrace(context.schedulerTraceId);
-    // }
     if (hasCallId(trace)) {
       // trace is call/callback argument or BCE
       return dp.collections.traces.getById(trace.callId);
@@ -682,12 +673,6 @@ export default {
   */
   getCallerTraceOfTrace(dp, traceId) {
     const trace = dp.collections.traces.getById(traceId);
-    // TODO: deal with callback traces after context.schedulerTraceId is back
-    // const context = dp.collections.executionContexts.getById(trace.contextId);
-    // if (context.schedulerTraceId) {
-    //   // trace is push/pop callback
-    //   return dp.util.getCallerTraceOfTrace(context.schedulerTraceId);
-    // }
     if (isCallResult(trace)) {
       // trace is call expression result
       return dp.collections.traces.getById(trace.resultCallId);
@@ -776,21 +761,27 @@ export default {
 
   /**
    * @param {DataProvider} dp
-  */
+   */
   getCallArgTraces(dp, callId) {
     const bceTrace = dp.collections.traces.getById(callId);
     return bceTrace.data?.argTids.map(tid => dp.collections.traces.getById(tid));
   },
 
   /**
+   * @param {DataProvider} dp
+   */
+  getArrayDataNodes(dp, traceId) {
+    // TODO: given the `traceId` of an array
+  },
+
+  /**
    * NOTE: This works automatically for spread operator.
-   * 
+   *
+   * @param {DataProvider} dp
    * @return Flattened version of DataNodes of `CallExpression` arguments.
    */
   getCallArgDataNodes(dp, callId) {
-    // TODO: `bind`, `call` and `apply` change the arg <-> param mapping
-    //    -> probably don't need to touch bceTrace.data?.argTids
-
+    // TODO: for `bind`, `call` and `apply` change the arg <-> param mapping
     const argTraces = dp.util.getCallArgTraces(callId);
     const { argConfigs } = dp.util.getStaticTrace(callId).data;
     return argTraces.flatMap((t, i) => {
@@ -841,6 +832,31 @@ export default {
   },
 
   /**
+   * Accounts for `call`, `apply`, `bind`.
+   * @param {DataProvider} dp
+   */
+  getRealCalleeTrace(dp, callId) {
+    const bceTrace = dp.util.getTrace(callId);
+    if (!bceTrace?.data) {
+      return null;
+    }
+    let realCalleeTid;
+    switch (bceTrace.data.calledFunctionTid) {
+      case SpecialCallType.Call:
+      case SpecialCallType.Apply:
+        realCalleeTid = bceTrace.data.calledFunctionTid;
+        break;
+      case SpecialCallType.Bind:
+        realCalleeTid = TODO;
+        break;
+      default:
+        realCalleeTid = bceTrace.data.calleeTid;
+        break;
+    }
+    return dp.collections.traces.getById(realCalleeTid);
+  },
+
+  /**
    * like `util.getCallerTraceOfContext` but returns null if its context's `definitionTid` does not match the callee.
    * @param {DataProvider} dp 
    * @param {number} contextId
@@ -853,7 +869,8 @@ export default {
     }
 
     // check if it is the actual bce
-    const calleeTrace = dp.collections.traces.getById(bceTrace.data.calleeTid);
+    const callId = bceTrace.traceId;
+    const calleeTrace = dp.util.getRealCalleeTrace(callId);
     if (!calleeTrace) {
       return null;
     }
@@ -1143,7 +1160,7 @@ export default {
   /**
    * Groups traces by TraceType, as well as staticTraceId.
    * 
-   * TODO: improve performance, use MultiKeyIndex instead
+   * future-work: improve performance, use MultiKeyIndex instead
    * @param {DataProvider} dp 
    * @param {StaticTrace[]} staticTraces
   */

@@ -70,11 +70,12 @@ export default class TraceCollection extends Collection {
     for (const trace of traces) {
       const { staticTraceId, nodeId } = trace;
       const staticTrace = this.dp.collections.staticTraces.getById(staticTraceId);
-      if (staticTrace.data?.specialType === SpecialIdentifierType.Arguments) {
+      const specialType = staticTrace.data?.specialType;
+      if (SpecialObjectType.hasValue(specialType)) {
         const dataNode = this.dp.collections.dataNodes.getById(nodeId);
         const valueRef = dataNode && this.dp.collections.values.getById(dataNode.refId);
         if (valueRef) {
-          valueRef.specialObjectType = SpecialObjectType.Arguments;
+          valueRef.specialObjectType = specialType;
         }
         else {
           this.logger.warn(`Cannot register SpecialObjectType for Argument trace, valueRef not found. trace: ${trace}, dataNode: ${dataNode}`);

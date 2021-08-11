@@ -1,14 +1,16 @@
 import Enum from '../../util/Enum';
 
-// eslint-disable-next-line import/no-mutable-exports
-let SpecialObjectType = {
+/**
+ * Warning: some of these are mapped from `SpecialIdentifierType`
+ * {@link TraceCollection#registerValueRefSpecialObjectType}
+ */
+let specialObjectType = {
   Arguments: 2,
 };
 
-// @type {(Enum|typeof SpecialObjectType)}
 /**
- * @type {(Enum)}
+ * @type {(Enum|typeof specialObjectType)}
  */
-SpecialObjectType = new Enum(SpecialObjectType);
+const SpecialObjectType = new Enum(specialObjectType);
 
 export default SpecialObjectType;
