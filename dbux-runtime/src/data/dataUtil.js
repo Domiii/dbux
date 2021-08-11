@@ -73,6 +73,8 @@ export function getBCECalleeFunctionRef(bceTrace) {
 // }
 
 /**
+ * TODO: fix for `call`, `apply`, `bind`
+ * 
  * @returns {*} top bceTrace on stack, if its callee is `func`
  */
 export function peekBCEMatchCallee(func) {

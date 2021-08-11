@@ -768,10 +768,13 @@ export default {
   },
 
   /**
+   * TODO: given the `nodeId` of (what should be) an array, return its element DataNodes.
+   * 
    * @param {DataProvider} dp
    */
-  getArrayDataNodes(dp, traceId) {
-    // TODO: given the `traceId` of an array
+  getArrayDataNodes(dp, nodeId) {
+    // TODO
+    return [];
   },
 
   /**
@@ -784,7 +787,7 @@ export default {
     // TODO: for `bind`, `call` and `apply` change the arg <-> param mapping
     const argTraces = dp.util.getCallArgTraces(callId);
     const { argConfigs } = dp.util.getStaticTrace(callId).data;
-    return argTraces.flatMap((t, i) => {
+    let argDataNodes = argTraces.flatMap((t, i) => {
       const dataNodes = dp.util.getDataNodesOfTrace(t.traceId);
       if (!argConfigs[i]?.isSpread) {
         // not spread -> take the argument's own `DataNode`
@@ -793,6 +796,32 @@ export default {
       // spread -> take all of the spread argument's additional `DataNode`s (which are the argument DataNodes)
       return dataNodes.slice(1);
     });
+
+    const bceTrace = dp.util.getTrace(callId);
+    switch (dp.util.getSpecialCallType(callId)) {
+      case SpecialCallType.Call:
+        argDataNodes = argDataNodes.slice(1);
+        break;
+      case SpecialCallType.Apply:
+        argDataNodes = dp.util.getArrayDataNodes(argDataNodes[1]);
+        break;
+      case SpecialCallType.Bind:
+        // return as-is -> handle in `Bound` handler
+        // argDataNodes = ;
+        break;
+      case SpecialCallType.Bound: {
+        const { calleeTid } = bceTrace.data;
+        const bindTrace = dp.util.getBindCallTrace(calleeTid);
+        const boundArgNodes = bindTrace && dp.util.getCallArgDataNodes(bindTrace.traceId);
+        argDataNodes = [
+          ...boundArgNodes || EmptyArray,
+          ...argDataNodes
+        ];
+        break;
+      }
+    }
+
+    return argDataNodes;
   },
 
   /**
@@ -825,10 +854,47 @@ export default {
    * Given a `callId` (traceId of a CallExpression), returns whether its callee was recorded (i.e. instrumented/traced).
    * NOTE: Some calls have an underlying context, but that is not the context of the function was called.
    *    -> e.g. `array.map(f)` might have recorded f's context, but `f` is not `array.map` (the actual callee).
+   * @param {DataProvider} dp
    */
   isCalleeTraced(dp, callId) {
     const context = dp.indexes.executionContexts.byCalleeTrace.getUnique(callId);
     return context && !!dp.util.getOwnCallerTraceOfContext(context.contextId);
+  },
+
+  /**
+   * @param {DataProvider} dp
+   */
+  getBindCallTrace(dp, functionTraceId) {
+    const calleeRef = dp.util.getTraceValueRef(functionTraceId);
+    const originalTrace = calleeRef && dp.util.getFirstTraceByRefId(calleeRef.refId);
+    return originalTrace && dp.util.getCallerTraceOfTrace(originalTrace.traceId);
+  },
+
+  /**
+   * @param {DataProvider} dp
+   */
+  getSpecialCallType(dp, callId) {
+    const bceTrace = dp.util.getTrace(callId);
+    if (!bceTrace?.data) {
+      return null;
+    }
+
+    switch (bceTrace.data.specialCallType) {
+      case SpecialCallType.Call:
+      case SpecialCallType.Apply:
+      case SpecialCallType.Bind:
+        return bceTrace.data.calledFunctionTid;
+    }
+
+    // check for `Bound`
+    const { calleeTid } = bceTrace.data;
+    // const calleeTrace = dp.collections.traces.getById(calleeTid);
+    const bindTrace = dp.util.getBindCallTrace(calleeTid);
+    if (bindTrace?.data?.specialCallType === SpecialCallType.Bind) {
+      return SpecialCallType.Bound;
+    }
+
+    return null;
   },
 
   /**
@@ -840,15 +906,24 @@ export default {
     if (!bceTrace?.data) {
       return null;
     }
+
     let realCalleeTid;
-    switch (bceTrace.data.calledFunctionTid) {
+    switch (dp.util.getSpecialCallType(callId)) {
       case SpecialCallType.Call:
       case SpecialCallType.Apply:
         realCalleeTid = bceTrace.data.calledFunctionTid;
         break;
-      case SpecialCallType.Bind:
-        realCalleeTid = TODO;
+      case SpecialCallType.Bind: {
+        // nothing to do here -> handle in `Bound`
         break;
+      }
+      case SpecialCallType.Bound: {
+        const { calleeTid } = bceTrace.data;
+        // const calleeTrace = dp.collections.traces.getById(calleeTid);
+        const bindTrace = dp.util.getBindCallTrace(calleeTid);
+        realCalleeTid = bindTrace.data.calledFunctionTid;
+        break;
+      }
       default:
         realCalleeTid = bceTrace.data.calleeTid;
         break;

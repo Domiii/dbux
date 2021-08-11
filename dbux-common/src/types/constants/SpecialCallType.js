@@ -6,7 +6,11 @@ import Enum from '../../util/Enum';
 let specialCallType = {
   Call: 1,
   Apply: 2,
-  Bind: 3
+  Bind: 3,
+  /**
+   * Result value of a `bind` call.
+   */
+  Bound: 4
 };
 
 /**
