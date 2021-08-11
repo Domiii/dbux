@@ -32,4 +32,4 @@ console.log(`${res4} === 14`, res4 === 14);
  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_objects/Function/bind
  */
 var res5 = (() => this).call(null);
-console.log(`${res5} === globalThis`, res5 === this);
+console.log(`${res5} === globalThis`, res5 === globalThis);

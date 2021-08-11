@@ -44,6 +44,7 @@ export default class DataNodeCollection extends Collection {
       const { specialObjectType } = this.dp.util.getDataNodeValueRef(dataNode.varAccess?.objectNodeId) || EmptyObject;
       if (specialObjectType) {
         // NOTE: specialObjectType is looked up by `valueId`
+        // future-work: don't create functions dynamically, unless absolutely necessary -> Move to class instead.
         const SpecialObjectTypeHandlers = {
           [SpecialObjectType.Arguments]: ({ varAccess: { prop } }) => {
             const callerTrace = this.dp.util.getOwnCallerTraceOfContext(contextId);

@@ -4,6 +4,8 @@ import { isTraceFunctionExit, isTracePop, isTraceThrow } from '@dbux/common/src/
 import Trace from '@dbux/common/src/types/Trace';
 import Collection from '../Collection';
 
+/** @typedef { import("./ExecutionContextCollection").default } ExecutionContextCollection */
+
 /**
  * @extends {Collection<Trace>}
  */
@@ -125,16 +127,21 @@ export default class TraceCollection extends Collection {
     }
   }
 
+  /**
+   * Link arg <-> param DataNodes of monkey-patched builtin functions.
+   * For normal functions, consider {@link ExecutionContextCollection#setParamInputs}
+   */
   resolveMonkeyCalls(traces) {
     for (const trace of traces) {
       const { traceId: callId, data } = trace;
       const monkey = data?.monkey;
       if (monkey?.wireInputs) {
-        // NOTE: BCE was monkey patched, and generated it's own set of `DataNode`s, one per argument
-        // Link BCE's new DataNode to argument input node
+        // NOTE: function is monkey patched, and generated it's own set of ("monkey") `DataNode`s, one per argument
+
+        // monkeyDataNodes are attached to `BCE` (because result trace is not available while monkey'ing)
+        const monkeyDataNodes = this.dp.util.getDataNodesOfTrace(callId);
 
         // get `argDataNodes` (flattened, in case of spread)
-        const monkeyDataNodes = this.dp.util.getDataNodesOfTrace(callId);
         const argDataNodes = this.dp.util.getCallArgDataNodes(callId);
 
         if (!monkeyDataNodes || !argDataNodes) {
@@ -146,6 +153,7 @@ export default class TraceCollection extends Collection {
           const monkeyDataNode = monkeyDataNodes[i];
           const argDataNode = argDataNodes[i];
 
+          // set argument nodes as input nodes for monkey result nodes
           // NOTE: argDataNode might be missing (e.g. because it had a "dbux disable" instruction)
           argDataNode && (monkeyDataNode.inputs = [argDataNode.nodeId]);
         }

@@ -9,7 +9,7 @@ import { monkeyPatchMethod } from '../util/monkeyPatchUtil';
 // utility
 // ###########################################################################
 
-function getObjectNodeIdFromRef(ref) {
+function getNodeIdFromRef(ref) {
   const { nodeId } = ref;
   return nodeId;
 }
@@ -37,7 +37,7 @@ export default function patchArray() {
       }
 
       const { traceId: callId } = bceTrace;
-      const objectNodeId = getObjectNodeIdFromRef(ref);
+      const objectNodeId = getNodeIdFromRef(ref);
 
       for (let i = 0; i < args.length; ++i) {
         const varAccess = {
@@ -46,13 +46,14 @@ export default function patchArray() {
         };
         // console.debug(`[Array.push] #${traceId} ref ${ref.refId}, node ${nodeId}, objectNodeId ${objectNodeId}`);
         dataNodeCollection.createDataNode(args[i], callId, DataNodeType.Write, varAccess);
-
-        // NOTE: trace was marked for sending, but will be actually sent with all traces of run, so changes **should** still be possible.
-        bceTrace.data = bceTrace.data || {};
-        bceTrace.data.monkey = {
-          wireInputs: true
-        };
       }
+
+      // [edit-after-send]
+      bceTrace.data = bceTrace.data || {};
+      bceTrace.data.monkey = {
+        wireInputs: true
+      };
+      
       return originalFunction.apply(arr, args);
     }
   );
@@ -73,7 +74,7 @@ export default function patchArray() {
       }
 
       const { traceId: callId } = bceTrace;
-      const arrNodeId = getObjectNodeIdFromRef(ref);
+      const arrNodeId = getNodeIdFromRef(ref);
 
       // let BCE hold DataNode of newArray
       const newArrayNode = dataNodeCollection.createOwnDataNode(newArray, callId, DataNodeType.Write);

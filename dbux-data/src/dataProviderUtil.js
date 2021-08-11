@@ -788,6 +788,9 @@ export default {
    * @return Flattened version of DataNodes of `CallExpression` arguments.
    */
   getCallArgDataNodes(dp, callId) {
+    // TODO: `bind`, `call` and `apply` change the arg <-> param mapping
+    //    -> probably don't need to touch bceTrace.data?.argTids
+
     const argTraces = dp.util.getCallArgTraces(callId);
     const { argConfigs } = dp.util.getStaticTrace(callId).data;
     return argTraces.flatMap((t, i) => {

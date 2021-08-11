@@ -1,6 +1,7 @@
 import { isFunctionDefinitionTrace } from '@dbux/common/src/types/constants/TraceType';
 import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import { isFunction } from 'lodash';
 import dataNodeCollection from './dataNodeCollection';
 import executionContextCollection from './executionContextCollection';
 import staticTraceCollection from './staticTraceCollection';
@@ -162,6 +163,10 @@ export function getFirstOwnTraceOfRefValue(value) {
 }
 
 export function isInstrumentedFunction(value) {
+  if (!isFunction(value)) {
+    return false;
+  }
+
   const trace = getFirstOwnTraceOfRefValue(value);
   if (!trace) { return false; }
   const staticTrace = staticTraceCollection.getById(trace.staticTraceId);
@@ -179,3 +184,13 @@ export function getTraceStaticTrace(traceId) {
   const { staticTraceId } = trace;
   return staticTraceCollection.getById(staticTraceId);
 }
+
+export function getTraceOwnDataNode(traceId) {
+  const { nodeId } = traceCollection.getById(traceId);
+  return dataNodeCollection.getById(nodeId);
+}
+
+// ###########################################################################
+// DataNode
+// ###########################################################################
+

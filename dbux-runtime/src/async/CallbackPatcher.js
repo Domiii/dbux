@@ -3,7 +3,7 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import { isFunction } from 'lodash';
 import { peekBCEMatchCallee, getFirstOwnTraceOfRefValue, isInstrumentedFunction, getBCECalleeFunctionRef, getFirstContextAfterTrace, getTraceStaticTrace } from '../data/dataUtil';
-import { getOrPatchFunction, getPatchedFunction, monkeyPatchFunctionHolder, monkeyPatchFunctionOverride, monkeyPatchGlobalRaw } from '../util/monkeyPatchUtil';
+import { getOrPatchFunction, getOrCreatePatchedFunction, monkeyPatchFunctionHolder, monkeyPatchFunctionOverride, monkeyPatchGlobalRaw } from '../util/monkeyPatchUtil';
 import executionContextCollection from '../data/executionContextCollection';
 import traceCollection from '../data/traceCollection';
 
@@ -209,7 +209,7 @@ export default class CallbackPatcher {
           // NOTE: `@dbux/runtime` calls should not be hit by this
 
           // not instrumented -> monkey patch it
-          let f = getPatchedFunction(originalFunction);
+          let f = getOrCreatePatchedFunction(originalFunction);
           if (!f) {
             const eventListenerRegex = /^on[A-Z]|event/;
             const isEventListener = !!(originalFunction.name || '').match(eventListenerRegex);

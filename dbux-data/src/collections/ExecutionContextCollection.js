@@ -2,6 +2,8 @@ import TraceType from '@dbux/common/src/types/constants/TraceType';
 import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
 import Collection from '../Collection';
 
+/** @typedef { import("./TraceCollection").default } TraceCollection */
+
 /**
  * @extends {Collection<ExecutionContext>}
  */
@@ -33,6 +35,7 @@ export default class ExecutionContextCollection extends Collection {
 
   /**
    * Set Param trace `inputs` to `[argNodeId]`.
+   * NOTE: for linking input of monkey-patched builtin calls, consider {@link TraceCollection#resolveMonkeyCalls}.
    */
   setParamInputs(contexts) {
     const { dp: { util } } = this;

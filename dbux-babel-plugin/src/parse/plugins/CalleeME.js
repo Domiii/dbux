@@ -32,8 +32,13 @@ export default class CalleeME extends BasePlugin {
 
     // const [objectPath/* , propertyPath */] = calleeNode.getChildPaths();
 
+    // we want to store
+    
+
+
     // NOTE: o.#x is valid, if inside of o's class
     const objectVar = Traces.generateDeclaredUidIdentifier('o');
+
 
     // NOTE: for the final CallExpression, the callee is chopped into pieces -
     //  1. store object (`o`) in both, callee node (as `objectAstNode`) and call node (as `objectVar`)
