@@ -1,7 +1,7 @@
 import Enum from '../../util/Enum';
 
 /**
- * 
+ * Allows discerning
  */
 let specialCallType = {
   Call: 1,
@@ -9,6 +9,7 @@ let specialCallType = {
   Bind: 3,
   /**
    * Result value of a `bind` call.
+   * Implies that the caller is a bound function (which is also an "exotic function object").
    */
   Bound: 4
 };

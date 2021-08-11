@@ -64,15 +64,15 @@ export default function patchFunction() {
   // bind
   // ###########################################################################
 
-  monkeyPatchMethod(Function, 'bind',
-    (actualFunction, args, originalCall, patchedCall) => {
-      const bceTrace = peekBCEMatchCallee(patchedCall);
-      if (bceTrace?.data) {
-        setCalledFunctionTid(bceTrace, SpecialCallType.Bind);
-      }
+  // monkeyPatchMethod(Function, 'bind',
+  //   (actualFunction, args, originalCall, patchedCall) => {
+  //     const bceTrace = peekBCEMatchCallee(patchedCall);
+  //     if (bceTrace?.data) {
+  //       setCalledFunctionTid(bceTrace, SpecialCallType.Bind);
+  //     }
 
-      const result = originalCall.bind(actualFunction)(...args);
-      return result;
-    }
-  );
+  //     const result = originalCall.bind(actualFunction)(...args);
+  //     return result;
+  //   }
+  // );
 }
