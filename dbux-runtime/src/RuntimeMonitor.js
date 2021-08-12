@@ -65,6 +65,7 @@ export default class RuntimeMonitor {
     // monkey patching for asynchronous events
     initPatchPromise(this);
     this.callbackPatcher = new CallbackPatcher(this);
+    this.callbackPatcher.init();
 
     // more monkey-patching
     initPatchBuiltins();
@@ -877,7 +878,7 @@ export default class RuntimeMonitor {
 
     // console.trace(`BCE`, callee.toString(), callee);
 
-    return this.callbackPatcher.monkeyPatchCallee(callee, calleeTid, callId, argTids);
+    return this.callbackPatcher.monkeyPatchCallee(callee, callId);
   }
 
   traceCallResult(programId, value, tid, callTid) {

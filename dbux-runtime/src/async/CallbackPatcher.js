@@ -2,9 +2,9 @@
 // import isThenable from '@dbux/common/src/util/isThenable';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { isFunction } from 'lodash';
-import { peekBCEMatchCallee, getFirstOwnTraceOfRefValue, isInstrumentedFunction, getBCECalleeFunctionRef, getFirstContextAfterTrace, getTraceStaticTrace } from '../data/dataUtil';
-import { getOrPatchFunction, getOrCreatePatchedFunction, monkeyPatchFunctionHolder, monkeyPatchFunctionOverride, monkeyPatchGlobalRaw } from '../util/monkeyPatchUtil';
-import executionContextCollection from '../data/executionContextCollection';
+import { peekBCEMatchCallee, isInstrumentedFunction, getFirstContextAfterTrace, getTraceStaticTrace } from '../data/dataUtil';
+import { getPatchedFunction, monkeyPatchFunctionOverride } from '../util/monkeyPatchUtil';
+// import executionContextCollection from '../data/executionContextCollection';
 import traceCollection from '../data/traceCollection';
 
 
@@ -32,6 +32,8 @@ export default class CallbackPatcher {
    */
   _runtimeMonitorInstance;
 
+  patchersByFunction = new Map();
+
   get runtime() {
     return this._runtimeMonitorInstance.runtime;
   }
@@ -45,6 +47,8 @@ export default class CallbackPatcher {
 
     // this.patchSetTimeout();
   }
+
+  init() { }
 
   // // ###########################################################################
   // // setTimeout
@@ -159,8 +163,10 @@ export default class CallbackPatcher {
   // monkeyPatchCallee
   // ###########################################################################
 
-  calleePatcher = (isEventListener, calleeTid, callId, originalFunction) => {
+  defaultCalleePatcher = (callId, originalFunction) => {
     const self = this; // NOTE: inside `patchedCallee` `this` will be the callee's `this`
+    const eventListenerRegex = /^on[A-Z]|event/;
+    const isEventListener = !!(originalFunction.name || '').match(eventListenerRegex);
 
     return function patchedCallee(...args) {
       if (this instanceof patchedCallee) {
@@ -194,7 +200,11 @@ export default class CallbackPatcher {
     };
   };
 
-  monkeyPatchCallee(originalFunction, calleeTid, callId/* , argTids */) {
+  /**
+   * Dynamically "monkey-patch-override" a function (if needed).
+   * @return the function that will end up getting called instead of originalFunction.
+   */
+  monkeyPatchCallee(originalFunction, callId) {
     // if (!argTids.length) {
     //   // monkey patching is only necessary for instrumenting callback arguments -> nothing to do
     //   return originalFunction;
@@ -209,19 +219,19 @@ export default class CallbackPatcher {
           // NOTE: `@dbux/runtime` calls should not be hit by this
 
           // not instrumented -> monkey patch it
-          let f = getOrCreatePatchedFunction(originalFunction);
+          let f = getPatchedFunction(originalFunction);
           if (!f) {
-            const eventListenerRegex = /^on[A-Z]|event/;
-            const isEventListener = !!(originalFunction.name || '').match(eventListenerRegex);
+            const calleePatcher = this.defaultCalleePatcher;
+
             f = monkeyPatchFunctionOverride(
               originalFunction,
-              this.calleePatcher.bind(this, isEventListener, calleeTid, callId)
+              calleePatcher.bind(this, callId)
             );
           }
           return f;
         }
         else {
-          // -> uninstrumented function
+          // -> uninstrumented function or class
           // -> ignore
         }
       }

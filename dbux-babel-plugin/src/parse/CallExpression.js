@@ -44,7 +44,7 @@ function isNotCalleeTraceableNode(calleeNode) {
 
 function isNotArgsTraceableIfConstantNode(calleeNode) {
   if (calleeNode.path.isMemberExpression()) {
-    return true;
+    return false;
   }
   const { specialType } = calleeNode;
   return specialType && isNotArgsTraceableIfConstantType(specialType);
@@ -152,6 +152,7 @@ export default class CallExpression extends BaseNode {
     // only trace args if (1) not require or import, OR (2) it has non-constant arguments
     const shouldTraceArgs = !isNotArgsTraceableIfConstantNode(calleeNode) ||
       argumentPaths.some(argPath => !argPath.isConstantExpression());
+    // warn(`[CE] ${calleePath.toString()}, shouldTraceArgs=${shouldTraceArgs}`);
 
     const bceTraceData = {
       path,

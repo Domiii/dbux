@@ -14,6 +14,8 @@ import { monkeyPatchMethod } from '../util/monkeyPatchUtil';
 // }
 // f.call(1, 2, 3);
 
+// TODO: use CallbackPatcher for this instead
+
 function getCalledFunctionTid(bceTrace) {
   // get actual function actualFunctionDataNode
   const { /* traceId: callId, */ data: { calleeTid } } = bceTrace;
@@ -50,13 +52,13 @@ export default function patchFunction() {
   // ###########################################################################
 
   monkeyPatchMethod(Function, 'apply',
-    (actualFunction, args, originalCall, patchedCall) => {
-      const bceTrace = peekBCEMatchCallee(patchedCall);
+    (actualFunction, args, originalApply, patchedApply) => {
+      const bceTrace = peekBCEMatchCallee(patchedApply);
       if (bceTrace?.data) {
         setCalledFunctionTid(bceTrace, SpecialCallType.Apply);
       }
 
-      return originalCall.bind(actualFunction)(...args);
+      return originalApply.bind(actualFunction)(...args);
     }
   );
 
@@ -64,15 +66,15 @@ export default function patchFunction() {
   // bind
   // ###########################################################################
 
-  // monkeyPatchMethod(Function, 'bind',
-  //   (actualFunction, args, originalCall, patchedCall) => {
-  //     const bceTrace = peekBCEMatchCallee(patchedCall);
-  //     if (bceTrace?.data) {
-  //       setCalledFunctionTid(bceTrace, SpecialCallType.Bind);
-  //     }
+  monkeyPatchMethod(Function, 'bind',
+    (actualFunction, args, originalBind, patchedBind) => {
+      const bceTrace = peekBCEMatchCallee(patchedBind);
+      if (bceTrace?.data) {
+        setCalledFunctionTid(bceTrace, SpecialCallType.Bind);
+      }
 
-  //     const result = originalCall.bind(actualFunction)(...args);
-  //     return result;
-  //   }
-  // );
+      const result = originalBind.bind(actualFunction)(...args);
+      return result;
+    }
+  );
 }
