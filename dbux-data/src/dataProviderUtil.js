@@ -883,7 +883,7 @@ export default {
       case SpecialCallType.Call:
       case SpecialCallType.Apply:
       case SpecialCallType.Bind:
-        return bceTrace.data.calledFunctionTid;
+        return bceTrace.data.specialCallType;
     }
 
     // check for `Bound`
@@ -908,7 +908,8 @@ export default {
     }
 
     let realCalleeTid;
-    switch (dp.util.getSpecialCallType(callId)) {
+    const callType = dp.util.getSpecialCallType(callId);
+    switch (callType) {
       case SpecialCallType.Call:
       case SpecialCallType.Apply:
         realCalleeTid = bceTrace.data.calledFunctionTid;
