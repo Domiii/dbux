@@ -773,7 +773,6 @@ export default {
    * @param {DataProvider} dp
    */
   getArrayDataNodes(dp, nodeId) {
-    // TODO
     return [];
   },
 
@@ -867,7 +866,11 @@ export default {
   getBindCallTrace(dp, functionTraceId) {
     const calleeRef = dp.util.getTraceValueRef(functionTraceId);
     const originalTrace = calleeRef && dp.util.getFirstTraceByRefId(calleeRef.refId);
-    return originalTrace && dp.util.getCallerTraceOfTrace(originalTrace.traceId);
+    const bindTrace = originalTrace && dp.util.getCallerTraceOfTrace(originalTrace.traceId);
+    if (bindTrace?.data?.specialCallType === SpecialCallType.Bind) {
+      return bindTrace;
+    }
+    return null;
   },
 
   /**
@@ -890,7 +893,7 @@ export default {
     const { calleeTid } = bceTrace.data;
     // const calleeTrace = dp.collections.traces.getById(calleeTid);
     const bindTrace = dp.util.getBindCallTrace(calleeTid);
-    if (bindTrace?.data?.specialCallType === SpecialCallType.Bind) {
+    if (bindTrace) {
       return SpecialCallType.Bound;
     }
 

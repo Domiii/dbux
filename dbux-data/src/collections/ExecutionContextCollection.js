@@ -89,7 +89,7 @@ export default class ExecutionContextCollection extends Collection {
         continue;
       }
       else if (returnTraces.length > 1) {
-        this.logger.error(`Found context containing more than one ReturnArgument. contextId: ${contextId}, ReturnArgument ids: [${returnTraces}]`);
+        this.logger.warn(`Found context containing more than one ReturnArgument. contextId: ${contextId}, ReturnArgument ids: [${returnTraces}]`);
         continue;
       }
 

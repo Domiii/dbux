@@ -7,8 +7,9 @@
  * @file 
  */
 
-function f(a, b, c, d = 0) {
+function f(a, b, c, d) {
   console.log('f():', this, a, b);
+  d = d || 0;
   return c + d;
 }
 
@@ -16,7 +17,7 @@ var f2 = f.bind(0, 1, 2, 3);
 var res1 = f2();
 console.log(`${res1} === 3`, res1 === 3);
 
-var res1b = f2.call(1000, 27); // 3 + 27 === 30
+var res1b = f2(27); // 3 + 27 === 30
 console.log(`${res1b} === 30`, res1b === 30);
 
 var res2 = f.call(4, 5, 6, 7);
