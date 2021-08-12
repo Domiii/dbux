@@ -50,7 +50,10 @@ export default class DataNodeCollection extends Collection {
             const callerTrace = this.dp.util.getOwnCallerTraceOfContext(contextId);
             if (callerTrace) {
               // NOTE: sometimes, (e.g. in root contexts) we might not have an "own" caller trace
-              return this.dp.util.getCallArgDataNodes(callerTrace.traceId)[prop].valueId;
+              const obj = this.dp.util.getCallArgDataNodes(callerTrace.traceId);
+              const arg = obj[prop];
+              // TODO: `arg` might not exist!
+              return arg.valueId;
             }
             return null;
           }
