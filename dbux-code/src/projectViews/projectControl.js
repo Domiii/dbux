@@ -130,8 +130,9 @@ export function createProjectManager(extensionContext) {
 
 export async function initProjectManager() {
   await runTaskWithProgressBar(async (progress) => {
-    progress.report({ message: 'Initializing dbux-project' });
-    await sleep();
+    progress.report({ message: 'Initializing dbux-project...' });
     await projectManager.init();
+    progress.report({ message: 'Recovering practice session...' });
+    await projectManager.recoverPracticeSession();
   }, { cancellable: false });
 }
