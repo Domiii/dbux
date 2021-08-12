@@ -96,9 +96,9 @@ export default class Client {
        */
       // eslint-disable-next-line max-len
       logWarn(`Connection incoming while disconnected. If you were connected before, This might (or might not) be an unintended sign that sent data exceeds the configured server maximum. In that case, consider increasing the maximum via socket.io's maxHttpBufferSize.`);
-      this._socket = socket;
     }
-    Verbose > 1 && debug('-> connected');
+    this._socket = socket;
+    Verbose > 1 && debug('-> connected', !!socket);
     this._connected = true;
     this._connectFailed = false;
 
