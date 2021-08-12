@@ -868,11 +868,15 @@ export default {
    * @param {DataProvider} dp
    */
   getBindCallTrace(dp, functionTraceId) {
-    const trace = dp.util.getTrace(functionTraceId);
-    if (!trace) {
-      dp.logger.warn(`invalid functionTraceId does not have a trace:`, functionTraceId, dp.collections.traces._all);
+    if (!functionTraceId) {
+      // callee was not recorded
       return null;
     }
+    // const trace = dp.util.getTrace(functionTraceId);
+    // if (!trace) {
+    //   dp.logger.warn(`invalid functionTraceId does not have a trace:`, functionTraceId/* , dp.collections.traces._all */);
+    //   return null;
+    // }
     const calleeRef = dp.util.getTraceValueRef(functionTraceId);
     const originalTrace = calleeRef && dp.util.getFirstTraceByRefId(calleeRef.refId);
     const bindTrace = originalTrace && dp.util.getCallerTraceOfTrace(originalTrace.traceId);

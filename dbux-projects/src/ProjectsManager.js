@@ -338,7 +338,6 @@ export default class ProjectsManager {
     }, getFileSizeSync(logFilePath));
     const sizeInMB = size / 1024 / 1024;
     const FileSizeThresholdInMB = 10;
-    debugger;
     if (sizeInMB > FileSizeThresholdInMB) {
       return await this.externals.confirm(`The log files are about ${sizeInMB.toFixed(2)}MB, do you want to recover the practice session?`, true);
     }
