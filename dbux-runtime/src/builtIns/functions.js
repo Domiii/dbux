@@ -43,7 +43,7 @@ export default function patchFunction() {
         setCalledFunctionTid(bceTrace, SpecialCallType.Call);
       }
 
-      console.warn(`call()`, actualFunction.name, bceTrace.traceId);
+      // console.warn(`call()`, actualFunction.name, bceTrace.traceId);
 
       return originalCall.bind(actualFunction)(...args);
     }

@@ -344,6 +344,10 @@ export default {
   */
   getValueTrace(dp, traceId) {
     let trace = dp.collections.traces.getById(traceId);
+    if (!trace) {
+      dp.logger.warn(`invalid traceId does not have a trace:`, traceId, dp.collections.traces._all);
+      return trace;
+    }
     const traceType = dp.util.getTraceType(traceId);
     if (isBeforeCallExpression(traceType) && trace.resultId) {
       // trace is `BeforeCallExpression` and has a matching result trace
@@ -864,6 +868,11 @@ export default {
    * @param {DataProvider} dp
    */
   getBindCallTrace(dp, functionTraceId) {
+    const trace = dp.util.getTrace(functionTraceId);
+    if (!trace) {
+      dp.logger.warn(`invalid functionTraceId does not have a trace:`, functionTraceId, dp.collections.traces._all);
+      return null;
+    }
     const calleeRef = dp.util.getTraceValueRef(functionTraceId);
     const originalTrace = calleeRef && dp.util.getFirstTraceByRefId(calleeRef.refId);
     const bindTrace = originalTrace && dp.util.getCallerTraceOfTrace(originalTrace.traceId);
