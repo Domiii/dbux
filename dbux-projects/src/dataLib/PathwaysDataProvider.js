@@ -56,16 +56,12 @@ class ApplicationCollection extends PathwaysCollection {
     super('applications', pdp);
   }
 
-  getApplicationFilePath(app) {
-    return path.join(this.dp.manager.externals.resources.getLogsDirectory(), `${app.uuid}.dbuxapp`);
-  }
-
   /**
    * @param {Array<Application>} applications 
    */
   postAddRaw(applications) {
     for (const app of applications) {
-      const filePath = this.getApplicationFilePath(app);
+      const filePath = this.dp.manager.getApplicationFilePath(app.uuid);
       const { version, collections } = app.dataProvider.serializeJson();
       const header = JSON.stringify({ headerTag: true, version });
       if (!fs.existsSync(filePath)) {
@@ -106,7 +102,7 @@ class ApplicationCollection extends PathwaysCollection {
   deserialize({ relativeEntryPointPath, createdAt, uuid }) {
     const entryPointPath = path.join(this.dp.manager.config.projectsRoot, relativeEntryPointPath);
     const app = allApplications.addApplication({ entryPointPath, createdAt, uuid });
-    const filePath = this.getApplicationFilePath(app);
+    const filePath = this.dp.manager.getApplicationFilePath(app.uuid);
     try {
       const fileString = fs.readFileSync(filePath, 'utf8');
       const [header, ...lines] = fileString.split(/\r?\n/);

@@ -6,6 +6,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { pathJoin, pathRelative, realPathSyncNormalized } from '@dbux/common-node/src/util/pathUtil';
+import { getFileSizeSync } from '@dbux/common-node/src/util/fileUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { readPackageJson } from '@dbux/cli/lib/package-util';
 import projectRegistry from './_projectRegistry';
@@ -27,15 +28,12 @@ const logger = newLogger('PracticeManager');
 const { debug, log, warn, error: logError } = logger;
 
 const depsStorageKey = 'PracticeManager.deps';
-const savedPracticeSessionKeyName = 'dbux.dbux-projects.currentlyPracticingBug';
-const savedPracticeSessionDataKeyName = 'dbux.dbux-projects.practiceSessionCreatedAt';
+const savedPracticeSessionKey = 'dbux.dbux-projects.savedPracticeSession';
 
 /** @typedef {import('./projectLib/Project').default} Project */
 /** @typedef {import('./projectLib/Bug').default} Bug */
 /** @typedef {import('./externals/Storage').default} ExternalStorage */
-/** @typedef {import('dbux-code/src/terminal/TerminalWrapper').default.constructor} TerminalWrapperClass */
 /** @typedef {import('dbux-code/src/terminal/TerminalWrapper').default} TerminalWrapper */
-
 
 function canIgnoreDependency(name) {
   if (process.env.NODE_ENV === 'development' && name.startsWith('@dbux/')) {
@@ -83,14 +81,6 @@ export default class ProjectsManager {
     node: {},
   };
 
-  /**
-   * // NOTE: does not work - https://github.com/jsdoc/jsdoc/issues/1349
-   * @type {{
-   *   TerminalWrapper: TerminalWrapperClass
-   * }}
-   */
-  externals;
-
   // ###########################################################################
   // ctor, init, load
   // ###########################################################################
@@ -133,7 +123,6 @@ export default class ProjectsManager {
   }
 
   async init() {
-    await this.recoverPracticeSession();
     await initLang(this.config.dbuxLanguage);
   }
 
@@ -217,7 +206,7 @@ export default class ProjectsManager {
     await this.savePracticeSession();
     await this.bdp.save();
 
-    await this.switchAndTestBug(bug);
+    await this.practiceSession.testBug(bug);
     // this.maybeAskForTestBug(bug);
   }
 
@@ -294,21 +283,27 @@ export default class ProjectsManager {
   // ########################################
 
   async recoverPracticeSession() {
-    const bug = this.getBugByKey(savedPracticeSessionKeyName);
-    if (!bug) {
+    const savedPracticeSession = this.externals.storage.get(savedPracticeSessionKey);
+    if (!savedPracticeSession) {
       return;
     }
 
+    const { bugId } = savedPracticeSession;
+    const bug = this.getOrCreateDefaultProjectList().getBugById(bugId);
     const bugProgress = this.bdp.getBugProgressByBug(bug);
     if (!bugProgress) {
-      warn(`Can't find bugProgress when recovering PracticeSession of bug "${bug.id}"`);
+      // sanity check
+      warn(`Can't find bugProgress when recovering PracticeSession of bug "${bug?.id}"`);
+      return;
+    }
+
+    if (!await this.askForRecoverPracticeSession(savedPracticeSession)) {
       return;
     }
 
     try {
       bug.project.initProject();
-      const sessionData = this.externals.storage.get(savedPracticeSessionDataKeyName) || EmptyObject;
-      this._resetPracticeSession(bug, sessionData, true);
+      this._resetPracticeSession(bug, savedPracticeSession, true);
       this.practiceSession.setupStopwatch();
       await this.maybeAskForTestBug(bug);
     }
@@ -320,24 +315,46 @@ export default class ProjectsManager {
   async savePracticeSession() {
     if (this.practiceSession) {
       const { bug } = this.practiceSession;
-      await this.setKeyToBug(savedPracticeSessionKeyName, bug);
-      await this.externals.storage.set(savedPracticeSessionDataKeyName, {
+      const applicationUUIDs = this.pdp.collections.applications.getAllActual().map(app => app.uuid);
+      await this.externals.storage.set(savedPracticeSessionKey, {
+        bugId: bug.id,
         createdAt: this.practiceSession.createdAt,
         sessionId: this.practiceSession.sessionId,
         logFilePath: this.practiceSession.logFilePath,
-        state: this.practiceSession.state
+        state: this.practiceSession.state,
+        applicationUUIDs,
       });
     }
     else {
-      await this.setKeyToBug(savedPracticeSessionKeyName, undefined);
-      await this.externals.storage.set(savedPracticeSessionDataKeyName, undefined);
+      await this.externals.storage.set(savedPracticeSessionKey, undefined);
     }
+  }
+
+  async askForRecoverPracticeSession(savedPracticeSession) {
+    const { logFilePath, applicationUUIDs } = savedPracticeSession;
+    const size = applicationUUIDs.reduce((currentSize, uuid) => {
+      const appFilePath = this.getApplicationFilePath(uuid);
+      return currentSize + getFileSizeSync(appFilePath);
+    }, getFileSizeSync(logFilePath));
+    const sizeInMB = size / 1024 / 1024;
+    const FileSizeThresholdInMB = 10;
+    debugger;
+    if (sizeInMB > FileSizeThresholdInMB) {
+      return await this.externals.confirm(`The log files are about ${sizeInMB.toFixed(2)}MB, do you want to recover the practice session?`, true);
+    }
+    else {
+      return true;
+    }
+  }
+
+  getApplicationFilePath(uuid) {
+    return pathJoin(this.externals.resources.getLogsDirectory(), `${uuid}.dbuxapp`);
   }
 
   // ########################################
   // PrcaticeSession: events
   // ########################################
-  
+
   onPracticeSessionStateChanged(cb) {
     return this._emitter.on('practiceSessionStateChanged', cb);
   }
@@ -383,7 +400,7 @@ export default class ProjectsManager {
         const confirmMessage = 'You have not run any test yet, do you want to run it?';
         const result = await this.externals.confirm(confirmMessage, false);
         if (result) {
-          await this.switchAndTestBug(bug);
+          await this.practiceSession.testBug();
           return true;
         }
       }

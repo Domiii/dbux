@@ -112,3 +112,12 @@ export async function assertFileLinkTarget(linkPath, expectedTarget, error = tru
   return true;
 }
 
+/**
+ * Get file size in bytes.
+ * @param {string} filePath 
+ * @returns 
+ */
+export function getFileSizeSync(filePath) {
+  const stat = fs.statSync(filePath);
+  return stat.size;
+}
