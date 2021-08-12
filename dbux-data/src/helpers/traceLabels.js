@@ -153,7 +153,7 @@ export function makeRootTraceLabel(trace) {
 export function makeTraceValueLabel(trace) {
   const { applicationId, traceId } = trace;
   const dp = _allApplications.getById(applicationId).dataProvider;
-  // const callTrace = dp.util.getCallerTraceOfTrace(traceId);
+  // const callTrace = dp.util.getBCETraceOfTrace(traceId);
 
   if (dp.util.isBCETrace(traceId)) {
     // BCE
@@ -161,7 +161,7 @@ export function makeTraceValueLabel(trace) {
   }
   else if (dp.util.isCallResultTrace(traceId)) {
     //call result
-    const bceTrace = dp.util.getCallerTraceOfTrace(traceId);
+    const bceTrace = dp.util.getBCETraceOfTrace(traceId);
     return makeCallValueLabel(bceTrace);
   }
   else if (dp.util.doesTraceHaveValue(traceId)) {

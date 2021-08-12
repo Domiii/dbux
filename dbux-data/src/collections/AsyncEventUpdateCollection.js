@@ -36,15 +36,15 @@ export default class AsyncEventUpdateCollection extends Collection {
     for (const update of updates) {
       // const bceTrace = dp.util.getOwnCallerTraceOfContext(realContextId);
       if (isAwaitEvent(update.type)) {
-        // async function
+        // set async function's `promiseId`
         const { realContextId } = update;
 
-        // NOTE: `getReturnValueRefOfContext` might not return anything for `f`'s contextId in case of `then(f)`
+        // NOTE: `getCallValueRefOfContext` might not return anything for `f`'s contextId in case of `then(f)`
         //    -> we handle that case in `patchedPromiseCb`
-        update.promiseId = update.promiseId || dp.util.getReturnValueRefOfContext(realContextId)?.refId;   // returnPromiseId
+        update.promiseId = update.promiseId || dp.util.getCallValueRefOfContext(realContextId)?.refId;   // returnPromiseId
         // if (!update.promiseId) {
         //   // should never happen!
-        //   this.logger.warn(`postAddRaw [${AsyncEventUpdateType.nameFromForce(update.type)}] "getReturnValueRefOfContext" failed:`, update);
+        //   this.logger.warn(`postAddRaw [${AsyncEventUpdateType.nameFromForce(update.type)}] "getCallValueRefOfContext" failed:`, update);
         // }
       }
     }

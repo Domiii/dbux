@@ -573,6 +573,12 @@ export default {
   },
 
   /** @param {DataProvider} dp */
+  getTraceRefId(dp, traceId) {
+    const valueRef = dp.util.getTraceValueRef(traceId);
+    return valueRef?.refId;
+  },
+
+  /** @param {DataProvider} dp */
   getTraceValueRef(dp, traceId) {
     const dataNode = dp.util.getDataNodeOfTrace(traceId);
     return dataNode ? dp.util.getDataNodeValueRef(dataNode.nodeId) : null;
@@ -588,11 +594,6 @@ export default {
       }
     }
     return null;
-  },
-
-  getTraceRefId(dp, traceId) {
-    const valueRef = dp.util.getTraceValueRef(traceId);
-    return valueRef?.refId;
   },
 
   /** @param {DataProvider} dp */
@@ -675,7 +676,7 @@ export default {
    * @param {DataProvider} dp
    * @param {number} traceId
   */
-  getCallerTraceOfTrace(dp, traceId) {
+  getBCETraceOfTrace(dp, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     if (isCallResult(trace)) {
       // trace is call expression result
@@ -690,6 +691,13 @@ export default {
       return trace;
       // return null;
     }
+  },
+
+  /**
+   * @param {DataProvider} dp
+   */
+  getCallIdOfTrace(dp, traceId) {
+    return dp.util.getBCETraceOfTrace(traceId)?.traceId || null;
   },
 
   /**
@@ -836,15 +844,40 @@ export default {
     return dataNodes?.map(node => node.value);
   },
 
-
-  getReturnValueRefOfContext(dp, contextId) {
+  /**
+   * @param {DataProvider} dp
+   * @return the ValueRef of given `context`'s BCE. We use it to get an `async` function call's own promise.
+   */
+  getCallValueRefOfContext(dp, contextId) {
     const bceTrace = dp.util.getOwnCallerTraceOfContext(contextId);
     return bceTrace && dp.util.getTraceValueRef(bceTrace.traceId) || null;
   },
 
   /**
    * @param {DataProvider} dp
-  */
+   */
+  getReturnValueRefOfRealContext(dp, realContextId) {
+    const resumeContext = dp.util.getLastChildContextOfContext(realContextId);
+    const returnTrace = resumeContext && dp.util.getReturnValueTraceOfContext(resumeContext.contextId);
+    return returnTrace && dp.util.getTraceValueRef(returnTrace.traceId);
+  },
+
+  /**
+   * NOTE: does not work for `realContextId` of `async` functions (need virtual `Resume` contextId instead).
+   * @param {DataProvider} dp
+   */
+  getReturnValueTraceOfContext(dp, contextId) {
+    const returnTraces = dp.util.getTracesOfContextAndType(contextId, TraceType.ReturnArgument);
+
+    if (returnTraces.length > 1) {
+      this.logger.warn(`Found context containing more than one ReturnArgument. contextId: ${contextId}, ReturnArgument traces: [${returnTraces}]`);
+    }
+    return returnTraces[0] || null;
+  },
+
+  /**
+   * @param {DataProvider} dp
+   */
   getCalleeTraceId(dp, callId) {
     return dp.collections.traces.getById(callId)?.data?.calleeTid;
   },
@@ -879,7 +912,7 @@ export default {
     // }
     const calleeRef = dp.util.getTraceValueRef(functionTraceId);
     const originalTrace = calleeRef && dp.util.getFirstTraceByRefId(calleeRef.refId);
-    const bindTrace = originalTrace && dp.util.getCallerTraceOfTrace(originalTrace.traceId);
+    const bindTrace = originalTrace && dp.util.getBCETraceOfTrace(originalTrace.traceId);
     if (bindTrace?.data?.specialCallType === SpecialCallType.Bind) {
       return bindTrace;
     }
@@ -1024,20 +1057,33 @@ export default {
   },
 
   /** @param {DataProvider} dp */
-  getRealContextId(dp, traceId) {
+  getRealContextIdOfTrace(dp, traceId) {
     const { contextId } = dp.collections.traces.getById(traceId);
+    return dp.util.getRealContextIdOfContext(contextId);
+  },
+
+  /** @param {DataProvider} dp */
+  getLastChildContextOfContext(dp, realContextId) {
+    return dp.indexes.executionContexts.children.getLast(realContextId);
+  },
+
+  /** @param {DataProvider} dp */
+  getRealContextIdOfContext(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
     const { parentContextId } = context;
-    const parentContext = dp.collections.executionContexts.getById(parentContextId);
+    let parentContext;
 
     if (isRealContextType(context.contextType)) {
       return contextId;
     }
-    else if (parentContext && isRealContextType(parentContext.contextType)) {
+    else if (
+      (parentContext = dp.collections.executionContexts.getById(parentContextId)) &&
+      isRealContextType(parentContext.contextType)
+    ) {
       return parentContextId;
     }
     else {
-      logError('Could not find realContext.');
+      dp.logger.trace('Could not find realContext for contextId', contextId);
       return null;
     }
   },
@@ -1095,6 +1141,7 @@ export default {
     return firstContextId === contextId;
   },
 
+  /** @param {DataProvider} dp */
   isFirstContextInParent(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
     const { parentContextId } = context;
@@ -1102,6 +1149,13 @@ export default {
       return dp.indexes.executionContexts.children.getFirst(parentContextId) === context;
     }
     return false;
+  },
+
+  /** @param {DataProvider} dp */
+  getRealContextOfBCE(dp, callId) {
+    const firstChildTrace = dp.indexes.traces.byCalleeTrace.getFirst(callId);
+    const contextId = firstChildTrace && dp.util.getRealContextIdOfTrace(firstChildTrace.traceId);
+    return contextId && dp.collections.executionContexts.getById(contextId);
   },
 
   // ###########################################################################
@@ -1410,9 +1464,9 @@ export default {
   //   console.log('errorTrace', !isReturnTrace(traceType),
 
   //     traceId, staticTraceId,
-  //     dp.util.getRealContextId(traceId),
+  //     dp.util.getRealContextIdOfTrace(traceId),
 
-  //     dp.util.getLastTraceInRealContext(dp.util.getRealContextId(traceId))?.traceId,
+  //     dp.util.getLastTraceInRealContext(dp.util.getRealContextIdOfTrace(traceId))?.traceId,
   //     dp.util.getLastStaticTraceInContext(dp.collections.staticTraces.getById(staticTraceId).staticContextId)?.staticTraceId,
 
   //     // is last trace we have recorded in context
@@ -1422,7 +1476,7 @@ export default {
   //     !dp.util.isLastStaticTraceInContext(staticTraceId),
 
   //     // the context must have popped (finished), or else there was no error (yet)
-  //     dp.util.hasRealContextPopped(dp.util.getRealContextId(traceId)));
+  //     dp.util.hasRealContextPopped(dp.util.getRealContextIdOfTrace(traceId)));
 
   //   // is not a return trace (because return traces indicate function succeeded)
   //   return !isReturnTrace(traceType) &&
@@ -1434,7 +1488,7 @@ export default {
   //     !dp.util.isLastStaticTraceInContext(staticTraceId) &&
 
   //     // the context must have popped (finished), or else there was no error (yet)
-  //     dp.util.hasRealContextPopped(dp.util.getRealContextId(traceId));
+  //     dp.util.hasRealContextPopped(dp.util.getRealContextIdOfTrace(traceId));
   // },
 
   // hasContextError(dp, realContextId) {
@@ -1586,6 +1640,7 @@ export default {
   /**
    * Get the last "Post" asyncEvent (also an "edge trigger event") of a given promise.
    * That update must have `rootId` < `beforeRootId`.
+   * Recurse if nested.
    *
    * @param {DataProvider} dp
    * @return {AsyncEventUpdate}
@@ -1594,10 +1649,40 @@ export default {
     // NOTE: the index only references `POST` + `Resolve` updates
     const updates = dp.indexes.asyncEventUpdates.byPromise.get(promiseId);
     let postUpdate = updates && findLast(updates, update => update.rootId < beforeRootId);
+    let nestedPromiseId;
+
+    // recurse on nested promises:
+
     if (postUpdate && AsyncEventUpdateType.is.PostThen(postUpdate.type) && postUpdate.nestedPromiseId) {
-      // recurse on nested promises
-      postUpdate = dp.util.getPreviousPostOrResolveAsyncEventOfPromise(postUpdate.nestedPromiseId, beforeRootId);
+      // Case 1: returned promise from `then` callback
+      postUpdate = postUpdate.nestedPromiseId;
     }
+    else {
+      let realContextId;
+      if (postUpdate) {
+        // async function had an `await`
+        realContextId = postUpdate.realContextId;
+      }
+      else {
+        // async function had no `await`: find call trace -> context -> return value
+        const resultTrace = dp.util.getFirstTraceByRefId(promiseId);
+        const callId = resultTrace && dp.util.getCallIdOfTrace(resultTrace.traceId);
+        const context = callId && dp.util.getRealContextOfBCE(callId);
+        realContextId = context?.contextId;
+      }
+
+      if (realContextId) {
+        // Case 2: returned (but did not await) promise from `async` function
+        const returnValueRef = dp.util.getReturnValueRefOfRealContext(realContextId);
+
+        // NOTE: returned value might not always be a promise
+        //    (but that's taken care of in the terminal condition)
+        nestedPromiseId = returnValueRef?.refId;
+      }
+    }
+    postUpdate = nestedPromiseId &&
+      dp.util.getPreviousPostOrResolveAsyncEventOfPromise(nestedPromiseId, beforeRootId) ||
+      postUpdate;
 
     return postUpdate;
   },

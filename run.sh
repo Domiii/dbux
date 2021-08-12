@@ -5,8 +5,8 @@
 set -e # cancel on error
 # set -x # verbose echo mode
 
-fname="__samplesInput__/bind1"
-# fname="__samplesInput__/setTimeout0"
+# fname="__samplesInput__/arguments1"
+fname="__samplesInput__/async/await5"
 # fname="case-studies/async/producer_consumer/producer_consumer_async"
 
 

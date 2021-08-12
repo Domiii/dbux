@@ -83,19 +83,14 @@ export default class ExecutionContextCollection extends Collection {
   setCallExpressionResultInputs(contexts) {
     const { dp, dp: { util } } = this;
     for (const { contextId } of contexts) {
-      const returnTraces = util.getTracesOfContextAndType(contextId, TraceType.ReturnArgument);
-      if (!returnTraces.length) {
+      const returnTrace = util.getReturnValueTraceOfContext(contextId);
+      if (!returnTrace) {
         // function has no return value -> nothing to do
         continue;
       }
-      else if (returnTraces.length > 1) {
-        this.logger.warn(`Found context containing more than one ReturnArgument. contextId: ${contextId}, ReturnArgument ids: [${returnTraces}]`);
-        continue;
-      }
 
-      const returnTrace = returnTraces[0];
-
-      const bceTrace = util.getOwnCallerTraceOfContext(contextId); // BCE
+      const realContextId = util.getRealContextIdOfContext(contextId);
+      const bceTrace = util.getOwnCallerTraceOfContext(realContextId); // BCE
       if (!bceTrace) {
         // no BCE -> must be root context (not called by us) -> nothing to do
         continue;

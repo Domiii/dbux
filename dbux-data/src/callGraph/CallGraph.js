@@ -253,7 +253,7 @@ export default class CallGraph {
 
   _getPreviousChildTrace(traceId) {
     const trace = this.dp.collections.traces.getById(traceId);
-    const realContextId = this.dp.util.getRealContextId(traceId);
+    const realContextId = this.dp.util.getRealContextIdOfTrace(traceId);
     const parentTraces = this.dp.indexes.traces.parentsByRealContext.get(realContextId) || EmptyArray;
 
     const lowerIndex = this._binarySearchLowerIndexByKey(parentTraces, trace, (t) => t.traceId);
@@ -262,12 +262,12 @@ export default class CallGraph {
       return null;
     }
     else {
-      return this.dp.util.getCallerTraceOfTrace(parentTraces[lowerIndex].traceId);
+      return this.dp.util.getBCETraceOfTrace(parentTraces[lowerIndex].traceId);
     }
   }
 
   _getNextChildTrace(traceId) {
-    const realContextId = this.dp.util.getRealContextId(traceId);
+    const realContextId = this.dp.util.getRealContextIdOfTrace(traceId);
     const trace = this.dp.collections.traces.getById(traceId);
     const parentTraces = this.dp.indexes.traces.parentsByRealContext.get(realContextId) || EmptyArray;
     const callerTraces = parentTraces.map(t => this.dp.util.getPreviousCallerTraceOfTrace(t.traceId))
@@ -279,7 +279,7 @@ export default class CallGraph {
       return null;
     }
     else {
-      return this.dp.util.getCallerTraceOfTrace(callerTraces[upperIndex].traceId);
+      return this.dp.util.getBCETraceOfTrace(callerTraces[upperIndex].traceId);
     }
   }
 

@@ -194,7 +194,7 @@ export default class ProjectsManager {
 
     const bugProgress = this.bdp.getBugProgressByBug(bug);
     if (!bugProgress) {
-      const stopwatchEnabled = await this.askForStopwatch();
+      const stopwatchEnabled = await this.askForStopwatch(bug);
       this.bdp.addBugProgress(bug, BugStatus.Solving, stopwatchEnabled);
       this.bdp.updateBugProgress(bug, { startedAt: Date.now() });
     }
@@ -339,7 +339,8 @@ export default class ProjectsManager {
     const sizeInMB = size / 1024 / 1024;
     const FileSizeThresholdInMB = 10;
     if (sizeInMB > FileSizeThresholdInMB) {
-      return await this.externals.confirm(`The log files are about ${sizeInMB.toFixed(2)}MB, do you want to recover the practice session?`, true);
+      // eslint-disable-next-line max-len
+      return await this.externals.confirm(`Dbux is trying to recover your previous practice session.\nThe log files are ${sizeInMB.toFixed(2)}MB, do you want to recover the practice session?`, true);
     }
     else {
       return true;
@@ -369,8 +370,11 @@ export default class ProjectsManager {
   /**
    * @return {Promise<boolean>}
    */
-  async askForStopwatch() {
+  async askForStopwatch(bug) {
     // TOTRANSLATE
+    if (!bug.bugLocations) {
+      return false;
+    }
     const confirmMsg = `This is your first time activate this bug, do you want to start a timer?\n`
       + `[WARN] You will not be able to time this bug once you activate it.`;
     return await this.externals.confirm(confirmMsg);
