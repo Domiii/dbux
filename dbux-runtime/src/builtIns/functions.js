@@ -6,16 +6,6 @@ import { getTraceOwnDataNode, peekBCEMatchCallee } from '../data/dataUtil';
 import { monkeyPatchMethod } from '../util/monkeyPatchUtil';
 
 
-// var c = Function.prototype.call;
-// function f(a, b) { console.log(this, a, b); }
-// Function.prototype.call = function (...args) {
-//   console.log('call', this, args);
-//   return c.bind(this)(...args);
-// }
-// f.call(1, 2, 3);
-
-// TODO: use CallbackPatcher for this instead
-
 function getCalledFunctionTid(bceTrace) {
   // get actual function actualFunctionDataNode
   const { /* traceId: callId, */ data: { calleeTid } } = bceTrace;

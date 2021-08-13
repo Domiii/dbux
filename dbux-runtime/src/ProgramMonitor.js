@@ -195,6 +195,8 @@ export default class ProgramMonitor {
 
   wrapValue(value) {
     if (value instanceof Function) {
+      // TODO: fix for dynamically patched functions in BCE callee
+      //    -> we probably have to patch in callee trace already to make this work
       value = getPatchedFunction(value) || value;
     }
     return value;

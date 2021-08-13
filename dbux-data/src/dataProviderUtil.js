@@ -689,20 +689,22 @@ export default {
   },
 
   /**
+   * [sync]
    * Get callerTrace (BCE) of a call related trace, returns itself if it is not a call related trace.
    * Note: if a trace is both `CallArgument` and `CallExpressionResult`, returns the result trace.
    * @param {DataProvider} dp
    * @param {number} traceId
   */
   getBCETraceOfTrace(dp, traceId) {
-    const trace = dp.collections.traces.getById(traceId);
+    const { traces } = dp.collections;
+    const trace = traces.getById(traceId);
     if (isCallResult(trace)) {
       // trace is call expression result
-      return dp.collections.traces.getById(trace.resultCallId);
+      return traces.getById(trace.resultCallId);
     }
     else if (hasCallId(trace)) {
       // trace is call/callback argument or BCE
-      return dp.collections.traces.getById(trace.callId);
+      return traces.getById(trace.callId);
     }
     else {
       // not a call related trace
@@ -827,7 +829,8 @@ export default {
     });
 
     const bceTrace = dp.util.getTrace(callId);
-    switch (dp.util.getSpecialCallType(callId)) {
+    const callType = dp.util.getSpecialCallType(callId);
+    switch (callType) {
       case SpecialCallType.Call:
         argDataNodes = argDataNodes.slice(1);
         break;
@@ -835,18 +838,20 @@ export default {
         argDataNodes = dp.util.getArrayDataNodes(argDataNodes[1]);
         break;
       case SpecialCallType.Bind:
-        // return as-is -> handle in `Bound` handler
+        // return as-is -> handle below in `Bound` case
         // argDataNodes = ;
         break;
-      case SpecialCallType.Bound: {
-        const { calleeTid } = bceTrace.data;
-        const bindTrace = dp.util.getBindCallTrace(calleeTid);
-        const boundArgNodes = bindTrace && dp.util.getCallArgDataNodes(bindTrace.traceId);
+    }
+
+    if (bceTrace?.data.calleeTid) {
+      // check for `Bound`
+      const bindTrace = dp.util.getBindCallTrace(bceTrace.data.calleeTid);
+      const boundArgNodes = bindTrace && dp.util.getCallArgDataNodes(bindTrace.traceId);
+      if (boundArgNodes) {
         argDataNodes = [
           ...boundArgNodes || EmptyArray,
           ...argDataNodes
         ];
-        break;
       }
     }
 
@@ -937,6 +942,7 @@ export default {
    * @param {DataProvider} dp
    */
   getBindCallTrace(dp, functionTraceId) {
+    const { getTraceValueRef, getFirstTraceByRefId, getBCETraceOfTrace } = dp.util;
     if (!functionTraceId) {
       // callee was not recorded
       return null;
@@ -946,9 +952,9 @@ export default {
     //   dp.logger.warn(`invalid functionTraceId does not have a trace:`, functionTraceId/* , dp.collections.traces._all */);
     //   return null;
     // }
-    const calleeRef = dp.util.getTraceValueRef(functionTraceId);
-    const originalTrace = calleeRef && dp.util.getFirstTraceByRefId(calleeRef.refId);
-    const bindTrace = originalTrace && dp.util.getBCETraceOfTrace(originalTrace.traceId);
+    const calleeRef = getTraceValueRef(functionTraceId);
+    const originalTrace = calleeRef && getFirstTraceByRefId(calleeRef.refId);
+    const bindTrace = originalTrace && getBCETraceOfTrace(originalTrace.traceId);
     if (bindTrace?.data?.specialCallType === SpecialCallType.Bind) {
       return bindTrace;
     }
@@ -969,14 +975,6 @@ export default {
       case SpecialCallType.Apply:
       case SpecialCallType.Bind:
         return bceTrace.data.specialCallType;
-    }
-
-    // check for `Bound`
-    const { calleeTid } = bceTrace.data;
-    // const calleeTrace = dp.collections.traces.getById(calleeTid);
-    const bindTrace = dp.util.getBindCallTrace(calleeTid);
-    if (bindTrace) {
-      return SpecialCallType.Bound;
     }
 
     return null;
@@ -1000,20 +998,26 @@ export default {
         realCalleeTid = bceTrace.data.calledFunctionTid;
         break;
       case SpecialCallType.Bind: {
-        // nothing to do here -> handle in `Bound`
+        // nothing to do here -> handle `Bound` case below
         break;
       }
-      case SpecialCallType.Bound: {
-        const { calleeTid } = bceTrace.data;
-        // const calleeTrace = dp.collections.traces.getById(calleeTid);
-        const bindTrace = dp.util.getBindCallTrace(calleeTid);
-        realCalleeTid = bindTrace.data.calledFunctionTid;
-        break;
-      }
-      default:
-        realCalleeTid = bceTrace.data.calleeTid;
-        break;
     }
+
+    // no match -> check for Bound
+    const { calleeTid } = bceTrace.data;
+    const bindTrace = dp.util.getBindCallTrace(calleeTid);
+    if (bindTrace) {
+      realCalleeTid = bindTrace.data.calledFunctionTid;
+    }
+
+    if (!realCalleeTid) {
+      // default
+      realCalleeTid = bceTrace.data.calleeTid;
+    }
+    else {
+      // TODO: keep recursing in order to support arbitrary `bind` chains, e.g.: `f.bind.bind()`
+    }
+
     return dp.collections.traces.getById(realCalleeTid);
   },
 
