@@ -1,4 +1,5 @@
 import truncate from 'lodash/truncate';
+import isFunction from 'lodash/isFunction';
 import ValueTypeCategory, { determineValueTypeCategory, ValuePruneState, isTrackableCategory } from '@dbux/common/src/types/constants/ValueTypeCategory';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
@@ -6,7 +7,6 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Collection from './Collection';
 import pools from './pools';
-import isThenable from '@dbux/common/src/util/isThenable';
 
 /** @typedef {import('@dbux/common/src/types/ValueRef').default} ValueRef */
 
@@ -129,6 +129,9 @@ class ValueCollection extends Collection {
 
     valueRef.nodeId = nodeId;
     valueRef.category = category;
+
+    const thenRepresentation = value && this._readProperty(value, 'then');
+    valueRef.isThenable = thenRepresentation && isFunction(thenRepresentation);
 
     // mark for sending
     this._send(valueRef);
@@ -366,7 +369,7 @@ class ValueCollection extends Collection {
     }
 
     // this is a new object
-    if (isThenable(value)) {
+    if (value.isThenable) {
       this.maybePatchPromise(value);
     }
 
@@ -420,9 +423,14 @@ class ValueCollection extends Collection {
         // build array
         serialized = [];
         for (let i = 0; i < n; ++i) {
-          const childValue = value[i];
-
-          const childRef = this._serialize(childValue, nodeId, depth + 1);
+          let childRef, childValue;
+          if (!this._canAccess(value)) {
+            childRef = this.addOmitted();
+          }
+          else {
+            childValue = this._readProperty(value, i);
+            childRef = this._serialize(childValue, nodeId, depth + 1);
+          }
           Verbose > 1 && this._logValue(`${' '.repeat(depth)}[${i}]`, childRef, childValue);
 
           serialized.push([childRef?.refId, !childRef && childValue]);

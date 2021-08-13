@@ -2,9 +2,9 @@
 
 export default class StaticContext {
   /**
-   * @type {number}
+   * @type {StaticContextType}
    */
-  staticContextType; // {StaticContextType}
+  type;
   /**
    * @type {string}
    */

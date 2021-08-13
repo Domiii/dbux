@@ -333,6 +333,24 @@ export default {
     return dp.indexes.dataNodes.byTrace.get(valueTrace.traceId);
   },
 
+  /** @param {DataProvider} dp */
+  getOwnDataNodeOfTrace(dp, traceId) {
+    const trace = dp.util.getTrace(traceId);
+    return dp.collections.dataNodes.getById(trace.nodeId);
+  },
+
+  /** @param {DataProvider} dp */
+  getInputIdsOfTrace(dp, traceId) {
+    const dataNode = dp.util.getOwnDataNodeOfTrace(traceId);
+    return dataNode?.inputs;
+  },
+
+  /** @param {DataProvider} dp */
+  getFirstInputDataNodeOfTrace(dp, traceId) {
+    const inputIds = dp.util.getInputIdsOfTrace(traceId);
+    return inputIds?.length ? dp.collections.dataNodes.getById(inputIds[0]) : null;
+  },
+
   // ###########################################################################
   // trace values
   // ###########################################################################
@@ -856,18 +874,32 @@ export default {
   /**
    * @param {DataProvider} dp
    */
-  getReturnValueRefOfRealContext(dp, realContextId) {
-    const returnTrace = dp.util.getReturnValueTraceOfRealContext(realContextId);
+  getReturnValueRefOfInterruptableContext(dp, realContextId) {
+    const returnTrace = dp.util.getReturnValueTraceOfInterruptableContext(realContextId);
     return returnTrace && dp.util.getTraceValueRef(returnTrace.traceId);
   },
 
-  getReturnValueTraceOfRealContext(dp, realContextId) {
-    const resumeContext = dp.util.getLastChildContextOfContext(realContextId);
-    return resumeContext && dp.util.getReturnValueTraceOfContext(resumeContext.contextId);
+  /**
+   * @param {DataProvider} dp
+   */
+  getReturnValueRefOfContext(dp, contextId) {
+    const returnTrace = dp.util.getReturnValueTraceOfContext(contextId);
+    return returnTrace && dp.util.getTraceValueRef(returnTrace.traceId);
   },
 
   /**
-   * NOTE: does not work for `realContextId` of `async` functions (need virtual `Resume` contextId instead).
+   * Requires the given context to have (virtual) child contexts.
+   * WARNING: does not work for non-interruptable functions.
+   * @param {DataProvider} dp
+   */
+  getReturnValueTraceOfInterruptableContext(dp, realContextId) {
+    const resumeContext = dp.util.getLastChildContextOfContext(realContextId);
+    return resumeContext &&
+      dp.util.getReturnValueTraceOfContext(resumeContext.contextId);
+  },
+
+  /**
+   * WARNING: does not work for `realContextId` of interruptable functions (need virtual `Resume` contextId instead).
    * @param {DataProvider} dp
    */
   getReturnValueTraceOfContext(dp, contextId) {
@@ -1677,7 +1709,7 @@ export default {
       }
 
       if (realContextId) {
-        const returnValueRef = dp.util.getReturnValueRefOfRealContext(realContextId);
+        const returnValueRef = dp.util.getReturnValueRefOfInterruptableContext(realContextId);
 
         // NOTE: returned value might not always be a promise
         //    (but that's taken care of in the terminal condition)
@@ -1718,32 +1750,108 @@ export default {
   },
 
   /**
-   * Only checks for *first* nesting update of given `runId`.
-   *  -> Because: all following updates are SYNC, not CHAIN.
+   * Returns `0` if `ref` is not thenable.
+   * Otherwise returns `refId`.
+   * 
+   * @param {DataProvider} dp
+   */
+  getPromiseIdOfValueRef(dp, refId) {
+    return dp.util.getPromiseValueRef(refId)?.refId || 0;
+  },
+
+  getPromiseValueRef(dp, refId) {
+    let ref = dp.collections.values.getById(refId);
+    if (ref?.isThenable) {
+      return ref;
+    }
+    return 0;
+  },
+
+
+  // /**
+  //  * If not an async function, returns `0` .
+  //  * If the function returned a promise, returns its `promiseId`.
+  //  * Otherwise, returns the `promiseId` of the function's CallExpressionResult.
+  //  * 
+  //  * @param {DataProvider} dp
+  //  */
+  // getAsyncFunctionPromiseId(dp, contextId) {
+  //   const realContextId = dp.util.getRealContextIdOfContext(contextId);
+  //   const staticContext = realContextId && dp.util.getContextStaticContext(realContextId);
+  //   if (!staticContext?.isInterruptable) {
+  //     return 0;
+  //   }
+
+  //   // first: get returned `promiseId`
+  //   const returnTrace = dp.util.getReturnValueTraceOfInterruptableContext(realContextId);
+  //   const returnedDataNode = returnTrace && dp.util.getFirstInputDataNodeOfTrace(returnTrace.traceId);
+  //   let promiseId = returnedDataNode?.refId && dp.util.getPromiseIdOfValueRef(returnedDataNode.refId);
+
+  //   if (!promiseId) {
+  //     // else: get `promiseId` of the call result value.
+
+  //     // TODO: this might work correctly for async getters
+  //     //  -> test with `await2b-async-getters.js`
+  //     const callTrace = dp.util.getCallerTraceOfContext(contextId);
+  //     const callResultTrace = callTrace && dp.util.getValueTrace(callTrace.traaceId);
+  //     const refId = callResultTrace && dp.util.getTraceRefId(callResultTrace.traceId);
+  //     promiseId = refId && dp.util.getPromiseIdOfValueRef(refId);
+  //   }
+
+  //   return promiseId;
+  // },
+
+
+  /**
+   * @param {DataProvider} dp
+   */
+  getNestingPromiseId(dp, innerPromiseId) {
+
+  },
+
+  /**
+   * @param {DataProvider} dp
+   */
+  getNestedPromiseId(dp, outerPromiseId) {
+
+  },
+
+  /**
+   * @param {DataProvider} dp
+   */
+  getAsyncRealContextIdOfOwnPromise(dp, promiseId) {
+
+  },
+
+  /**
+   * Walks up the stack to find out whether the given promise was `await`-chained to the (shared pre-event) root.
+   * NOTE: given promise is either result of a first `then`, or the context's `promiseId` of a first `await`.
    * 
    * @param {DataProvider} dp
    */
   isPromiseChainedToRoot(dp, runId, contextId, promiseId) {
-    // TODO: replace this whole thing with a stack walk (PostAwait)
-    //      -> just check if `promiseId` was returned or awaited, and keep going up
-    //      -> (probably don't need `contextId` for input)
+    //  -> check if `promiseId` was returned or awaited, and keep going up
+
+    // TODO: link `promiseId`s in post processing (maybe such that `getFirstNestingAsyncUpdate` can work?)
     // TODO: double check the logic for PostThen (should be equivalent)
     // TODO: fix for promises that don't have their own Post* AsyncEvent (e.g. `Promise.resolve().then`)
 
+
     const firstNestingAsyncUpdate = dp.util.getFirstNestingAsyncUpdate(runId, promiseId);
     if (!firstNestingAsyncUpdate) {
-      // check for `return f()` instead of `await f()`
-      //  -> caller of -> context of -> return value ref of parent function (function that called f)
-      const parentCallResultTrace = dp.util.getFirstTraceByRefId(promiseId);
-      const parentCallId = parentCallResultTrace && dp.util.getCallIdOfTrace(parentCallResultTrace.traceId);
-      const parentContext = parentCallId && dp.util.getRealContextOfBCE(parentCallId);
-      const parentRealContextId = parentContext?.contextId;
-      const parentReturnTrace = parentRealContextId && dp.util.getReturnValueTraceOfRealContext(parentRealContextId);
-      const parentReturnCallId = parentReturnTrace && dp.util.getCallIdOfTrace(parentReturnTrace.traceId);
-      const context = parentReturnCallId && dp.util.getRealContextOfBCE(parentReturnCallId);
-      if (context?.contextId && context.contextId === dp.util.getRealContextIdOfContext(contextId)) {
-        return true;
-      }
+      // const  getAsyncFunctionPromiseId
+      //   // check for `return f()` instead of `await f()`
+      //   //  -> caller of -> context of -> return value ref of parent function (function that called f)
+      //   const parentCallResultTrace = dp.util.getFirstTraceByRefId(promiseId);
+      //   const parentCallId = parentCallResultTrace && dp.util.getCallIdOfTrace(parentCallResultTrace.traceId);
+      //   const parentContext = parentCallId && dp.util.getRealContextOfBCE(parentCallId);
+      //   const parentRealContextId = parentContext?.contextId;
+      //   const parentReturnTrace = parentRealContextId && dp.util.getReturnValueTraceOfInterruptableContext(parentRealContextId);
+      //   const parentReturnCallId = parentReturnTrace && dp.util.getCallIdOfTrace(parentReturnTrace.traceId);
+      //   const context = parentReturnCallId && dp.util.getRealContextOfBCE(parentReturnCallId);
+      //   if (context?.contextId && context.contextId === dp.util.getRealContextIdOfContext(contextId)) {
+      //     return true;
+      //   }
       return false;
     }
 
@@ -1760,21 +1868,6 @@ export default {
     }
 
     return false;
-
-    // const parentContextId = getPromiseOwnAsyncFunctionContextId(asyncFunctionPromise);
-
-
-    // const chainedToRoot = getPromiseOwnChainedToRoot(promise);
-    // if (chainedToRoot !== undefined) {
-    //   return chainedToRoot;
-    // }
-
-    // const callerPromise = this.getAsyncCallerPromise(promise);
-    // if (callerPromise) {
-    //   return this.getAsyncCallerPromiseChainedToRoot(callerPromise);
-    // }
-
-    // return false;
   },
 
   /** @param {DataProvider} dp */

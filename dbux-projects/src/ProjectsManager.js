@@ -305,7 +305,7 @@ export default class ProjectsManager {
       bug.project.initProject();
       this._resetPracticeSession(bug, savedPracticeSession, true);
       this.practiceSession.setupStopwatch();
-      await this.maybeAskForTestBug(bug);
+      this.maybeAskForTestBug(bug);
     }
     catch (err) {
       logError(`Unable to load PracticeSession: ${err.stack}`);

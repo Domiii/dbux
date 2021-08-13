@@ -1,3 +1,4 @@
+import StaticContextType from '@dbux/common/src/types/constants/StaticContextType';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
 import Collection from '../Collection';
@@ -30,6 +31,7 @@ export default class ExecutionContextCollection extends Collection {
    */
   postIndexRaw(entries) {
     this.errorWrapMethod('setParamInputs', entries);
+    this.errorWrapMethod('setAsyncPromiseIds', entries);
     this.errorWrapMethod('setCallExpressionResultInputs', entries);
   }
 
@@ -74,6 +76,38 @@ export default class ExecutionContextCollection extends Collection {
       }
 
       // TODO: `RestElement`
+    }
+  }
+
+  /**
+   * 
+   */
+  setAsyncPromiseIds(contexts) {
+    const { dp, dp: { util } } = this;
+    for (const context of contexts) {
+      const { contextId } = context;
+      const { type, isInterruptable } = util.getContextStaticContext(contextId);
+      // future-work: make sure, this is not called on generator functions
+      
+      if (StaticContextType.is.Resume(type)) {
+        const returnRef = util.getReturnValueRefOfContext(contextId);
+        const returnedPromiseRef = returnRef?.refId && util.getPromiseValueRef(returnRef.refId);
+        // returnedPromiseRef.
+        // TODO: store `nestedByPromiseId` with `DataNode`
+        //    -> add `nestedByPromiseId` index for promise `DataNode`
+        //    -> implement `getNestingPromiseId` + `getNestedPromiseId`
+        //        -> what if multiple promises are nesting or nested?
+        //    -> also add support for Request.resolve(promise)
+        //    -> use `getNestedPromiseId` to get return value promise of `async` function's `context.asyncPromiseId`
+        //    -> seperately add "same root" constraint
+      }
+      else if (isInterruptable) {
+        const callTrace = dp.util.getCallerTraceOfContext(contextId);
+        const callResultTrace = callTrace && dp.util.getValueTrace(callTrace.traaceId);
+        const refId = callResultTrace && dp.util.getTraceRefId(callResultTrace.traceId);
+        const promiseId = refId && dp.util.getPromiseIdOfValueRef(refId);
+        context.asyncPromiseId = promiseId || 0;
+      }
     }
   }
 
