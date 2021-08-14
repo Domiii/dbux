@@ -3,7 +3,7 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import { isFunction } from 'lodash';
 import { peekBCEMatchCallee, isInstrumentedFunction, getFirstContextAfterTrace, getTraceStaticTrace } from '../data/dataUtil';
-import { getPatchedFunction, monkeyPatchFunctionOverride } from '../util/monkeyPatchUtil';
+import { getPatchedFunction, getPatchedFunctionOrNull, monkeyPatchFunctionOverride } from '../util/monkeyPatchUtil';
 // import executionContextCollection from '../data/executionContextCollection';
 import traceCollection from '../data/traceCollection';
 
@@ -219,7 +219,7 @@ export default class CallbackPatcher {
           // NOTE: `@dbux/runtime` calls should not be hit by this
 
           // not instrumented -> monkey patch it
-          let f = getPatchedFunction(originalFunction);
+          let f = getPatchedFunctionOrNull(originalFunction);
           if (!f) {
             const calleePatcher = this.defaultCalleePatcher;
 

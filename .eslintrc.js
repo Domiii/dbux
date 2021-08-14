@@ -17,6 +17,7 @@ module.exports = {
      * not finalized yet - https://github.com/eslint/eslint/issues/11553
      */
     globalThis: false,
+    BigInt: true,
 
     /**
      * @see https://webpack.js.org/api/module-variables/#__non_webpack_require__-webpack-specific

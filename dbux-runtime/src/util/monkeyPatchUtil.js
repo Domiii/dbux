@@ -1,7 +1,7 @@
 import { logError } from '@dbux/common/src/log/logger';
 
-const monkeyPatchedFunctionsByOriginalFunction = new WeakMap();
-const monkeyPatchedFunctionSet = new WeakSet();
+const patchedFunctionsByOriginalFunction = new WeakMap();
+const originalFunctionsByPatchedFunctions = new WeakMap();
 
 
 export function monkeyPatchFunctionOverride(originalFunction, patcher) {
@@ -15,22 +15,30 @@ export function monkeyPatchFunctionOverride(originalFunction, patcher) {
 // ###########################################################################
 
 function _registerMonkeyPatchedFunction(originalFunction, patchedFunction) {
-  monkeyPatchedFunctionsByOriginalFunction.set(originalFunction, patchedFunction);
-  monkeyPatchedFunctionSet.add(patchedFunction);
+  patchedFunctionsByOriginalFunction.set(originalFunction, patchedFunction);
+  originalFunctionsByPatchedFunctions.set(patchedFunction, originalFunction);
 }
 
 export function isMonkeyPatched(f) {
-  return monkeyPatchedFunctionSet.has(f);
+  return originalFunctionsByPatchedFunctions.has(f);
+}
+
+export function getOriginalFunction(patchedFunction) {
+  return originalFunctionsByPatchedFunctions.get(patchedFunction);
 }
 
 export function getPatchedFunction(originalFunction) {
+  return patchedFunctionsByOriginalFunction.get(originalFunction) || originalFunction;
+}
+
+export function getPatchedFunctionOrNull(originalFunction) {
   let patchedFunction;
   if (isMonkeyPatched(originalFunction)) {
     // NOTE: this is actually a patched (not original) function
     patchedFunction = originalFunction;
   }
   else {
-    patchedFunction = monkeyPatchedFunctionsByOriginalFunction.get(originalFunction);
+    patchedFunction = patchedFunctionsByOriginalFunction.get(originalFunction);
   }
   return patchedFunction;
 }
@@ -39,7 +47,7 @@ export function getOrPatchFunction(originalFunction, patcher) {
   if (!(originalFunction instanceof Function)) {
     throw new Error(`Monkey-patching failed - argument is not a function: ${originalFunction}`);
   }
-  let patchedFunction = getPatchedFunction(originalFunction);
+  let patchedFunction = getPatchedFunctionOrNull(originalFunction);
   if (!patchedFunction) {
     patchedFunction = monkeyPatchFunctionOverride(originalFunction, patcher);
   }

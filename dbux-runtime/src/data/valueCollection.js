@@ -5,8 +5,10 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 // import serialize from '@dbux/common/src/serialization/serialize';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { getOriginalFunction, getPatchedFunction } from '../util/monkeyPatchUtil';
 import Collection from './Collection';
 import pools from './pools';
+
 
 /** @typedef {import('@dbux/common/src/types/ValueRef').default} ValueRef */
 
@@ -23,6 +25,29 @@ const SerializationConfig = {
   maxObjectSize: 50,    // applies to arrays and object
   maxStringLength: 1000
 };
+
+// ###########################################################################
+// values
+// ###########################################################################
+
+export function wrapValue(value) {
+  if (value instanceof Function) {
+    value = getPatchedFunction(value) || value;
+  }
+  return value;
+}
+
+export function unwrapValue(value) {
+  if (value instanceof Function) {
+    value = getOriginalFunction(value) || value;
+  }
+  return value;
+}
+
+
+// ###########################################################################
+// utils
+// ###########################################################################
 
 const builtInTypeSerializers = new Map([
   [Map, obj => [['entries', obj.entries()]]],
@@ -73,6 +98,11 @@ class ValueCollection extends Collection {
   // ###########################################################################
 
   getRefByValue(value) {
+    value = unwrapValue(value);
+    return this.valueRefsByObject.get(value);
+  }
+
+  _getRefByValueUnwrapped(value) {
     return this.valueRefsByObject.get(value);
   }
 
@@ -353,12 +383,15 @@ class ValueCollection extends Collection {
       return this.addOmitted();
     }
 
+    // unwrap
+    value = unwrapValue(value);
+
     // look-up existing value
     category = category || determineValueTypeCategory(value);
     if (!isTrackableCategory(category)) {
       return null;
     }
-    valueRef = this.getRefByValue(value);
+    valueRef = this._getRefByValueUnwrapped(value);
     if (!valueRef) {
       isNewObject = true;
       valueRef = this._addValueRef(category, nodeId, value);

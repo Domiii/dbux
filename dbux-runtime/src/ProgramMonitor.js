@@ -1,7 +1,7 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 // import staticTraceCollection from './data/staticTraceCollection';
 import traceCollection from './data/traceCollection';
-import { getPatchedFunction } from './util/monkeyPatchUtil';
+import { wrapValue } from './data/valueCollection';
 
 
 /**
@@ -190,19 +190,6 @@ export default class ProgramMonitor {
   }
 
   // ###########################################################################
-  // values
-  // ###########################################################################
-
-  wrapValue(value) {
-    if (value instanceof Function) {
-      // TODO: fix for dynamically patched functions in BCE callee
-      //    -> we probably have to patch in callee trace already to make this work
-      value = getPatchedFunction(value) || value;
-    }
-    return value;
-  }
-
-  // ###########################################################################
   // traces
   // ###########################################################################
 
@@ -217,7 +204,7 @@ export default class ProgramMonitor {
    * 
    */
   traceDeclaration = (inProgramStaticTraceId, value = undefined, inputs = undefined) => {
-    value = this.wrapValue(value);
+    value = wrapValue(value);
     if (this.areTracesDisabled) {
       return -1;
     }
@@ -242,7 +229,7 @@ export default class ProgramMonitor {
   }
 
   traceExpression = (value, tid, inputs) => {
-    value = this.wrapValue(value);
+    value = wrapValue(value);
     if (this.areTracesDisabled) {
       return value;
     }
@@ -251,7 +238,7 @@ export default class ProgramMonitor {
   }
 
   traceExpressionVar = (value, tid, declarationTid) => {
-    value = this.wrapValue(value);
+    value = wrapValue(value);
     if (this.areTracesDisabled) {
       return value;
     }
@@ -260,7 +247,7 @@ export default class ProgramMonitor {
   }
 
   traceExpressionME = (objValue, propValue, value, tid, objectTid) => {
-    value = this.wrapValue(value);
+    value = wrapValue(value);
     if (this.areTracesDisabled) {
       return value;
     }
@@ -269,7 +256,7 @@ export default class ProgramMonitor {
   }
 
   traceWriteVar = (value, tid, declarationTid, inputs) => {
-    value = this.wrapValue(value);
+    value = wrapValue(value);
     if (this.areTracesDisabled) {
       return value;
     }
@@ -278,7 +265,7 @@ export default class ProgramMonitor {
   }
 
   traceWriteME = (objValue, propValue, value, tid, objectTid, inputs) => {
-    value = this.wrapValue(value);
+    value = wrapValue(value);
 
     // [runtime-error] potential run-time error
     objValue[propValue] = value;
@@ -316,7 +303,7 @@ export default class ProgramMonitor {
   }
 
   traceBCE = (tid, callee, calleeTid, argTids, spreadArgs) => {
-    callee = this.wrapValue(callee);
+    callee = wrapValue(callee);
     if (this.areTracesDisabled) {
       return callee;
     }
@@ -329,7 +316,7 @@ export default class ProgramMonitor {
   // }
 
   traceCallResult = (value, tid, callTid) => {
-    value = this.wrapValue(value);
+    value = wrapValue(value);
     if (this.areTracesDisabled) {
       return value;
     }
@@ -429,7 +416,7 @@ export default class ProgramMonitor {
   }
 
   traceForIn = (value, tid, declarationTid, inputs) => {
-    value = this.wrapValue(value);
+    value = wrapValue(value);
     if (this.areTracesDisabled) {
       return value;
     }
@@ -455,7 +442,7 @@ export default class ProgramMonitor {
    * 
    */
   traceExpr(inProgramStaticTraceId, value) {
-    value = this.wrapValue(value);
+    value = wrapValue(value);
     // this._logger.debug('trace expr', { inProgramStaticTraceId, value });
     if (this.areTracesDisabled) {
       return value;
@@ -464,7 +451,7 @@ export default class ProgramMonitor {
   }
 
   traceArg(inProgramStaticTraceId, value) {
-    value = this.wrapValue(value);
+    value = wrapValue(value);
     if (this.areTracesDisabled) {
       return value;
     }

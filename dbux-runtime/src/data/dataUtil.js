@@ -2,13 +2,13 @@ import { isFunctionDefinitionTrace } from '@dbux/common/src/types/constants/Trac
 import { hasCallId, isCallResult } from '@dbux/common/src/types/constants/traceCategorization';
 import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import SpecialCallType from '@dbux/common/src/types/constants/SpecialCallType';
 import { isFunction } from 'lodash';
 import dataNodeCollection from './dataNodeCollection';
 import executionContextCollection from './executionContextCollection';
 import staticTraceCollection from './staticTraceCollection';
 import traceCollection from './traceCollection';
 import valueCollection from './valueCollection';
-import SpecialCallType from '@dbux/common/src/types/constants/SpecialCallType';
 
 
 // ###########################################################################
@@ -218,6 +218,9 @@ export function getFunctionDefinitionTraceOfValue(value) {
   }
 
   let trace = getFirstOwnTraceOfRefValue(value);
+  if (!trace) {
+    return null;
+  }
   return getFunctionDefinitionTraceOfTrace(trace);
 }
 
