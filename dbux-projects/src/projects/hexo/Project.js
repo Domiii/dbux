@@ -7,12 +7,12 @@ import { buildMochaRunCommand } from '../../util/mochaUtil';
 export default class HexoProject extends Project {
   gitRemote = 'BugsJS/hexo.git';
 
-  packageManager = 'npm';
+  packageManager = 'yarn';
 
   loadBugs() {
     const bugs = [
       {
-        // not suitable (not a challenge to find the bug)
+        // not a challenge to find the bug
         // https://github.com/BugsJS/hexo/releases/tag/Bug-1-test
         // https://github.com/BugsJS/hexo/commit/257794e187864a18cefec5f83e03f1cf2d48331e
         id: 1,
@@ -20,21 +20,21 @@ export default class HexoProject extends Project {
         testFilePaths: ['test/scripts/console/generate.js']
       },
       // {
-      //   // not suitable (not a challenge to find the bug, multiple lines, change in dependency, very much about domain knowledge)
+      //   // not a challenge to find the bug, multiple lines, change in dependency, very much about domain knowledge
       //   // https://github.com/BugsJS/hexo/commit/efa4aa39b437f708d4238903bf928dcbca3373ff
       //   id: 2,
       //   testRe: 'read.*() - escape BOM',
       //   testFilePaths: ['test/scripts/box/file.js']
       // }
       // {
-      //   // not suitable (not a challenge to find the bug)
+      //   // not a challenge to find the bug
       //   id: 3,
       //   testRe: 'is_home',
       //   testFilePaths: ['test/scripts/helpers/is.js']
       // }
       
       {
-        // not suitable (not a challenge to find the bug)
+        // not a challenge to find the bug
         id: 4,
         testRe: 'asset_img (with_space)',
         // testRe: '',

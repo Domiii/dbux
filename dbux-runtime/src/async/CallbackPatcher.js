@@ -3,7 +3,7 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import { isFunction } from 'lodash';
 import { peekBCEMatchCallee, isInstrumentedFunction, getFirstContextAfterTrace, getTraceStaticTrace } from '../data/dataUtil';
-import { getPatchedFunction, getPatchedFunctionOrNull, monkeyPatchFunctionOverride } from '../util/monkeyPatchUtil';
+import { getPatchedFunction, getPatchedFunctionOrNull, monkeyPatchFunctionOverride, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
 // import executionContextCollection from '../data/executionContextCollection';
 import traceCollection from '../data/traceCollection';
 
@@ -115,24 +115,24 @@ export default class CallbackPatcher {
   // patchCallback
   // ###########################################################################
   patchCallback(arg, schedulerTraceId) {
-    const originalCb = arg;
+    const originalCallback = arg;
 
     const { runtime } = this;
 
     // const self = this; // NOTE: `this` will be the callback's `this`
 
-    return function patchedCallback(...args) {
+    function patchedCallback(...args) {
       let returnValue;
       const lastTraceId = traceCollection.getLast().traceId;
       try {
         // actually call callback
-        returnValue = originalCb.call(this, ...args);
+        returnValue = originalCallback.call(this, ...args);
       }
       finally {
         // NOTE: there is no BCE, since the callback (in all likelihood) was invoked by the JS runtime
         const context = getFirstContextAfterTrace(lastTraceId);
         if (!context) {
-          trace(`Instrumentation failed. No context was created after executing callback "${originalCb.name} (${originalCb})".`);
+          trace(`Instrumentation failed. No context was created after executing callback "${originalCallback.name} (${originalCallback})".`);
         }
         else {
           const rootId = runtime.getCurrentVirtualRootContextId();
@@ -156,7 +156,11 @@ export default class CallbackPatcher {
         }
       }
       return returnValue;
-    };
+    }
+
+    _registerMonkeyPatchedFunction(originalCallback, patchedCallback);
+
+    return patchedCallback;
   }
 
   // ###########################################################################

@@ -14,7 +14,7 @@ export function monkeyPatchFunctionOverride(originalFunction, patcher) {
 // book-keeping
 // ###########################################################################
 
-function _registerMonkeyPatchedFunction(originalFunction, patchedFunction) {
+export function _registerMonkeyPatchedFunction(originalFunction, patchedFunction) {
   patchedFunctionsByOriginalFunction.set(originalFunction, patchedFunction);
   originalFunctionsByPatchedFunctions.set(patchedFunction, originalFunction);
 }
@@ -84,6 +84,22 @@ export function monkeyPatchFunctionHolder(holder, name, handler) {
   tryRegisterMonkeyPatchedFunction(holder, name, function patchedFunction(...args) {
     return handler(this, args, originalFunction, patchedFunction);
   });
+}
+
+export function monkeyPatchFunctionHolderDefault(holder, name) {
+  const handler = (thisArg, args, originalFunction, patchedFunction) => {
+    // const bceTrace = peekBCEMatchCallee(patchedFunction);
+    return originalFunction(...args);
+  };
+  monkeyPatchFunctionHolder(holder, name, handler);
+}
+
+export function monkeyPatchMethodDefault(Clazz, name) {
+  const handler = (thisArg, args, originalFunction, patchedFunction) => {
+    // const bceTrace = peekBCEMatchCallee(patchedFunction);
+    return originalFunction.call(thisArg, ...args);
+  };
+  monkeyPatchMethod(Clazz, name, handler);
 }
 
 export function monkeyPatchMethodRaw(Clazz, methodName, handler) {
