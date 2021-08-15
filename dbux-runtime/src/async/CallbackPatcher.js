@@ -1,12 +1,25 @@
 // import EmptyObject from '@dbux/common/src/util/EmptyObject';
 // import isThenable from '@dbux/common/src/util/isThenable';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { isFunction } from 'lodash';
 import { peekBCEMatchCallee, isInstrumentedFunction, getFirstContextAfterTrace, getTraceStaticTrace } from '../data/dataUtil';
-import { getPatchedFunction, getPatchedFunctionOrNull, monkeyPatchFunctionOverride, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
+import { getPatchedFunctionOrNull, monkeyPatchFunctionOverride, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
 // import executionContextCollection from '../data/executionContextCollection';
 import traceCollection from '../data/traceCollection';
 
+
+function containsInstrumentedCallbacks(args, spreadArgs) {
+  spreadArgs = spreadArgs || EmptyArray;
+  return args?.some((arg, i) => {
+    if (spreadArgs[i]) {
+      // check all spread args
+      return spreadArgs[i].some(isInstrumentedFunction);
+    }
+    // check regular arg
+    return isInstrumentedFunction(arg);
+  }) || false;
+}
 
 /**
  * @see https://stackoverflow.com/a/68708710/2228771
@@ -208,42 +221,36 @@ export default class CallbackPatcher {
    * Dynamically "monkey-patch-override" a function (if needed).
    * @return the function that will end up getting called instead of originalFunction.
    */
-  monkeyPatchCallee(originalFunction, callId) {
+  monkeyPatchCallee(originalFunction, callId, args, spreadArgs) {
     // if (!argTids.length) {
     //   // monkey patching is only necessary for instrumenting callback arguments -> nothing to do
     //   return originalFunction;
     // }
     const bceStaticTrace = getTraceStaticTrace(callId);
 
-    if (isFunction(originalFunction)) {
-      if (!bceStaticTrace.data?.isNew && !isClass(originalFunction)) {
-        // callee is (probably) function, not es6 ctor
+    if (
+      isFunction(originalFunction) &&
 
-        if (!isInstrumentedFunction(originalFunction)) {
-          // NOTE: `@dbux/runtime` calls should not be hit by this
+      // do not auto-patch classes/ctors (for now)
+      (!bceStaticTrace.data?.isNew && !isClass(originalFunction)) &&
 
-          // not instrumented -> monkey patch it
-          let f = getPatchedFunctionOrNull(originalFunction);
-          if (!f) {
-            const calleePatcher = this.defaultCalleePatcher;
+      // only instrument functions if they themselves are not instrumented (recorded)
+      !isInstrumentedFunction(originalFunction) &&
 
-            f = monkeyPatchFunctionOverride(
-              originalFunction,
-              calleePatcher.bind(this, callId)
-            );
-          }
-          return f;
-        }
-        else {
-          // -> uninstrumented function or class
-          // -> ignore
-        }
+      // only patch if it passes on callbacks of instrumented functions
+      containsInstrumentedCallbacks(args, spreadArgs)
+    ) {
+      // should instrument -> monkey patch it
+      let f = getPatchedFunctionOrNull(originalFunction);
+      if (!f) {
+        const calleePatcher = this.defaultCalleePatcher;
+
+        f = monkeyPatchFunctionOverride(
+          originalFunction,
+          calleePatcher.bind(this, callId)
+        );
       }
-      else {
-        // -> es6 class
-        // -> ignore
-        // future-work: also patch es6 classes?
-      }
+      return f;
     }
 
     return originalFunction;
