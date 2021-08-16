@@ -55,6 +55,7 @@ import PostAsyncEventUpdateByPromiseIndex from './impl/indexes/PostAsyncEventUpd
 import AsyncEventUpdatesByRootIndex from './impl/indexes/AsyncEventUpdatesByRootIndex';
 import AsyncEventUpdatesByNestedPromiseIndex from './impl/indexes/AsyncEventUpdatesByNestedPromiseIndex';
 import RuntimeDataStatsReporter from './RuntimeDataStatsReporter';
+import AsyncEventUpdatesByPreThenPromise from './impl/indexes/AsyncEventUpdatesByPreThenPromise';
 
 export function newDataProvider(application) {
   const dp = new RuntimeDataProvider(application);
@@ -131,6 +132,7 @@ export function newDataProvider(application) {
   dp.addIndex(new AsyncEventUpdatesByNestedPromiseAndRunIndex());
   dp.addIndex(new AsyncEventUpdatesByTraceIndex());
   dp.addIndex(new AsyncEventUpdatesByRootIndex());
+  dp.addIndex(new AsyncEventUpdatesByPreThenPromise());
   dp.addIndex(new PostAsyncEventUpdateByPromiseIndex());
 
 

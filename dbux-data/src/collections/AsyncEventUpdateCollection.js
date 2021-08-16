@@ -97,6 +97,11 @@ export default class AsyncEventUpdateCollection extends Collection {
       promiseId
     } = postEventUpdate;
 
+    /**
+     * Implies that function was called by the system or some other caller that was not recorded
+     */
+    const isCallNotRecorded = !promiseId;
+
     const postUpdateData = util.getPostAwaitData(postEventUpdate);
     if (!postUpdateData) {
       // NOTE: should not happen
@@ -138,9 +143,8 @@ export default class AsyncEventUpdateCollection extends Collection {
       fromThreadId = toThreadId = this.getOrAssignRootThreadId(nestedRootId, schedulerTraceId);
       // }
     }
-    else if (!promiseId || isChainedToRoot) {
+    else if (isCallNotRecorded || isChainedToRoot) {
       // Case 3: chained to root -> CHAIN
-      // NOTE: implies firstNestingUpdate
     }
     else {
       // Case 4: first await and NOT chained to root and NOT nested -> FORK

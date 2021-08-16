@@ -1665,6 +1665,14 @@ export default {
     return updates?.filter(upd => isPreEventUpdate(upd.type)) || null;
   },
 
+  getPromiseTreeChildren(dp, promiseId) {
+    return dp.indexes.asyncEventUpdates.byPreThenPromise.get(promiseId);
+  },
+
+  getFirstPromiseTreeChild(dp, promiseId) {
+    return dp.util.getPromiseTreeChildren(promiseId)?.[0];
+  },
+
   // TODO!
   // /** 
   //  * Get the last "Post" asyncEvent of given `schedulerTraceId`.
@@ -1688,32 +1696,38 @@ export default {
   getPreviousPostOrResolveAsyncEventOfPromise(dp, promiseId, beforeRootId) {
     // NOTE: the index only references `POST` + `Resolve` updates
     const updates = dp.indexes.asyncEventUpdates.byPromise.get(promiseId);
+
+    // TODO: prefer pre-chained event (post event that was first scheduled, rather than last executed)
     let postUpdate = updates && findLast(updates, update => update.rootId < beforeRootId);
     let nestedPromiseId;
 
     // recurse on nested promises:
-
-    if (postUpdate && AsyncEventUpdateType.is.PostThen(postUpdate.type) && postUpdate.nestedPromiseId) {
-      // Case 1: returned promise from `then` callback
-      postUpdate = postUpdate.nestedPromiseId;
+    if (postUpdate && AsyncEventUpdateType.is.PostThen(postUpdate.type)) {
+      if (postUpdate.nestedPromiseId) {
+        // Case 1: promise returned a nested promise from `then` callback -> go down the tree
+        nestedPromiseId = postUpdate.nestedPromiseId;
+      }
     }
     else {
       // (maybe) Case 2: returned (but did not await) promise from `async` function
-      let realContextId;
-      if (postUpdate) {
-        // async function had an `await`
-        realContextId = postUpdate.realContextId;
+      // NOTE: we are making sure, this is the "returning" postUpdate
+      let resumeContextId;
+      if (postUpdate && AsyncEventUpdateType.is.PostAwait(postUpdate.type)) {
+        // async function has at least one `await`
+        resumeContextId = postUpdate.contextid;
       }
       else {
         // async function had no `await`: find call trace -> context -> return value
         const resultTrace = dp.util.getFirstTraceByRefId(promiseId);
         const callId = resultTrace && dp.util.getCallIdOfTrace(resultTrace.traceId);
-        const context = callId && dp.util.getRealContextOfBCE(callId);
-        realContextId = context?.contextId;
+        // const context = callId && dp.util.getRealContextOfBCE(callId);
+        const context = callId && dp.util.getTraceContext(callId);
+        resumeContextId = context?.contextId;
       }
 
-      if (realContextId) {
-        const returnValueRef = dp.util.getReturnValueRefOfInterruptableContext(realContextId);
+      if (resumeContextId) {
+        const returnValueRef = dp.util.getReturnValueRefOfContext(resumeContextId);
+        // const returnValueRef = dp.util.getReturnValueRefOfInterruptableContext(resumeContextId);
 
         // NOTE: returned value might not always be a promise
         //    (but that's taken care of in the terminal condition)
@@ -1742,7 +1756,13 @@ export default {
     return firstNestingTraceId && firstNestingTraceId === schedulerTraceId || false;
   },
 
-  /** @param {DataProvider} dp */
+  /** 
+   * Return all updates that are nesting the given promise `p` (of given `promiseId`), in run of given `runId`.
+   * For {Pre,Post}Await: any updates of type `await p`.
+   * For PostThen: updates that `return p`.
+   * 
+   * @param {DataProvider} dp
+   */
   getNestingAsyncUpdates(dp, runId, promiseId) {
     const eventKey = [runId, promiseId];
     return dp.indexes.asyncEventUpdates.byNestedPromiseAndRun.get(eventKey);
@@ -1750,6 +1770,7 @@ export default {
 
   /** @param {DataProvider} dp */
   getFirstNestingAsyncUpdate(dp, runId, promiseId) {
+    // TODO: this currently accounts for PreAwait, PostAwait, PostThen. Probably need to change to `PreAwait` + `PreThen`
     return dp.util.getNestingAsyncUpdates(runId, promiseId)?.[0] || null;
   },
 
@@ -1805,27 +1826,49 @@ export default {
   //   return promiseId;
   // },
 
+  // ###########################################################################
+  // promise tree
+  // ###########################################################################
 
   /**
+   * Get the first promise that nests the first descendant promise of given promise that is nested.
+   * Of that promise, return `getPreviousPostOrResolveAsyncEventOfPromise`.
+   * E.g.: given `b` of `t(a, t(b, c, d), t(b, e, f))`, return `a`.
    * @param {DataProvider} dp
    */
-  getNestingPromiseId(dp, innerPromiseId) {
-
+  getFirstNestedDescendantsNestingAncestor(dp, promiseId, runId, beforeRootId) {
+    let child;
+    while ((child = dp.util.getFirstPromiseTreeChild(promiseId))) {
+      const { runId, promiseId: preEventPromise, postEventPromiseId } = child;
+      const nesting = dp.util.getFirstNestingAsyncUpdate(child.runId, child.promiseId);
+      const result = dp.util.getPreviousPostOrResolveAsyncEventOfPromise(child.postEventPromiseId, beforeRootId);
+      if (result) {
+        return result;
+      }
+    }
+    return null;
   },
 
-  /**
-   * @param {DataProvider} dp
-   */
-  getNestedPromiseId(dp, outerPromiseId) {
+  // /**
+  //  * @param {DataProvider} dp
+  //  */
+  // getNestingPromiseId(dp, innerPromiseId) {
 
-  },
+  // },
 
-  /**
-   * @param {DataProvider} dp
-   */
-  getAsyncRealContextIdOfOwnPromise(dp, promiseId) {
+  // /**
+  //  * @param {DataProvider} dp
+  //  */
+  // getNestedPromiseId(dp, outerPromiseId) {
 
-  },
+  // },
+
+  // /**
+  //  * @param {DataProvider} dp
+  //  */
+  // getAsyncRealContextIdOfOwnPromise(dp, promiseId) {
+
+  // },
 
   /**
    * Walks up the stack to find out whether the given promise was `await`-chained to the (shared pre-event) root.
@@ -1836,9 +1879,9 @@ export default {
   isPromiseChainedToRoot(dp, runId, contextId, promiseId) {
     //  -> check if `promiseId` was returned or awaited, and keep going up
 
-    // TODO: link `promiseId`s in post processing (maybe such that `getFirstNestingAsyncUpdate` can work?)
-    // TODO: double check the logic for PostThen (should be equivalent)
-    // TODO: fix for promises that don't have their own Post* AsyncEvent (e.g. `Promise.resolve().then`)
+    // TODO: link `promiseId`s in post processing
+    //    fix for promises that don't have their own Post* AsyncEvent (e.g. `Promise.resolve().then`)
+    //    maybe such that `getFirstNestingAsyncUpdate` can work when returning a promise from async function?
 
 
     const firstNestingAsyncUpdate = dp.util.getFirstNestingAsyncUpdate(runId, promiseId);
@@ -1873,6 +1916,10 @@ export default {
 
     return false;
   },
+
+  // ###########################################################################
+  // getPost*Data
+  // ###########################################################################
 
   /** @param {DataProvider} dp */
   getPostAwaitData(dp, postEventUpdate) {
@@ -1931,7 +1978,7 @@ export default {
       // NOTE: the last active root is also the `context` of the `then` callback
       contextId: preEventContextId,
       schedulerTraceId,
-      promiseId: postPromiseId,
+      promiseId: postEventPromiseId,
       nestedPromiseId
     } = postEventUpdate;
 
@@ -1949,9 +1996,12 @@ export default {
       promiseId: prePromiseId,
     } = preEventUpdate;
 
+    // try to chain to last event of previous promise
     const previousPostUpdate = util.getPreviousPostOrResolveAsyncEventOfPromise(prePromiseId, postEventRootId);
+    // if (!previousPostUpdate) {
+    // }
     const isNested = !!nestedPromiseId;
-    const isChainedToRoot = util.isPromiseChainedToRoot(preEventRunId, preEventContextId, postPromiseId);
+    const isChainedToRoot = util.isPromiseChainedToRoot(preEventRunId, preEventContextId, postEventPromiseId);
     // const isNestedChain = this.isNestedChain(nestedPromiseId, schedulerTraceId);
     // const nestedUpdate = nestedPromiseId && dp.util.getPreviousPostAsyncEventOfPromise(nestedPromiseId, postEventRootId);
     // const { rootId: nestedRootId } = nestedUpdate ?? EmptyObject;
