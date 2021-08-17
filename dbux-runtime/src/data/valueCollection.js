@@ -399,14 +399,9 @@ class ValueCollection extends Collection {
     }
 
     if (meta?.shallow) {
-      this._finishValue(valueRef, typeName, Array.isArray(value) ? EmptyArray : EmptyObject, pruneState);
-      return valueRef;
-    }
-
-    if (meta?.omit) {
       // shortcut -> don't serialize children
       typeName = value.constructor?.name || '';
-      this._finishValue(valueRef, typeName, EmptyArray, ValuePruneState.Omitted);
+      this._finishValue(valueRef, typeName, Array.isArray(value) ? EmptyArray : EmptyObject, pruneState);
       return valueRef;
     }
 

@@ -30,13 +30,6 @@ const Verbose = 0;
 const debug = (...args) => Verbose && _debug(...args);
 
 const DataNodeMetaBySpecialIdentifierType = {
-  /**
-   * NOTE: we don't want to trace proxy initial properties, since that tends to cause unwanted side-effects.
-   * E.g. `chai/lib/chai/utils/proxify.js`
-   */
-  [SpecialIdentifierType.Proxy]: {
-    omit: true
-  }
 };
 
 // TODO: we can properly use Proxy to wrap callbacks
@@ -901,16 +894,17 @@ export default class RuntimeMonitor {
     }
     const trace = traceCollection.getById(tid);
 
-    const bceStaticTrace = traceCollection.getStaticTraceByTraceId(callId);
-    let valueMeta;
-    if (bceStaticTrace.data.specialType) {
-      valueMeta = DataNodeMetaBySpecialIdentifierType[bceStaticTrace.data.specialType];
-    }
+    // const bceStaticTrace = traceCollection.getStaticTraceByTraceId(callId);
+    // let valueMeta;
+    // if (bceStaticTrace.data.specialType) {
+    //   // NOTE: taken care of in `ReferencedIdIdentifier`
+    //   valueMeta = DataNodeMetaBySpecialIdentifierType[bceStaticTrace.data.specialType];
+    // }
 
     // [edit-after-send]
     trace.resultCallId = callId;
 
-    this.traceExpression(programId, value, tid, null, valueMeta);
+    this.traceExpression(programId, value, tid, null);
 
     const contextId = this._runtime.peekCurrentContextId();
     // const runId = this._runtime.getCurrentRunId();

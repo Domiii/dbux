@@ -159,7 +159,12 @@ export default class CallExpression extends BaseNode {
       // node: this,
       staticTraceData: {
         type: TraceType.BeforeCallExpression,
+        dataNode: {
+          // TODO: move related stuff to result expression
+          ...calleeNode.getDataNodeMeta?.()
+        },
         data: {
+          // whether this is a `NewExpression`
           isNew: path.isNewExpression(),
           argConfigs: makeSpreadableArgumentArrayCfg(argumentPaths),
           specialType: calleeNode.specialType
