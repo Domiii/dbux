@@ -86,7 +86,7 @@ class ModuleStats extends StatsBase {
 
     newRequireModuleNames.length && 
       this.addMessage('Newly required external modules', allRequireModuleNames, newRequireModuleNames);
-    newModuleNames.length && 
+    newModuleNames?.length && 
       this.addMessage('Newly traced external modules', allModuleNames, newModuleNames);
     newUntracedModules.length &&
       this.addMessage('Required but untraced external modules', allUntracedModules, newUntracedModules);
