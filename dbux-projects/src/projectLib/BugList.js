@@ -22,10 +22,17 @@ export default class BugList {
     const hasIds = arr.some(bug => !!bug.id);
 
     for (const cfg of arr) {
+      // cleanup
       if (!cfg.number) {
         // ensure cfg.number exists(type number)
         cfg.number = hasIds ? cfg.id : ++lastBugNumber;
       }
+      if (cfg.bugLocations && !cfg.bugLocations.length) {
+        // we use `!!bug.bugLocations` to determine whether this bug is "solvable"
+        cfg.bugLocations = null;
+      }
+
+
       // convert number typed id to string type(thus it's globally unique)
       const id = cfg.id = `${project.name}#${cfg.number}`;
       const bug = new Bug(project, cfg);

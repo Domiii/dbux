@@ -315,13 +315,13 @@ export default class ProgramMonitor {
 
   // }
 
-  traceCallResult = (value, tid, callTid) => {
+  traceCallResult = (value, tid, callId) => {
     value = wrapValue(value);
     if (this.areTracesDisabled) {
       return value;
     }
 
-    return this._runtimeMonitor.traceCallResult(this.getProgramId(), value, tid, callTid);
+    return this._runtimeMonitor.traceCallResult(this.getProgramId(), value, tid, callId);
   }
 
   traceArrayExpression = (args, tid, argTids) => {

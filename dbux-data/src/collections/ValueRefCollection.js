@@ -23,6 +23,10 @@ export default class ValueRefCollection extends Collection {
 
   deserializeShallow(valueRefs) {
     for (let valueRef of valueRefs) {
+      if (!valueRef) {
+        this.logger.warn(`invalid ValueCollection: contains empty values`);
+        continue;
+      }
       if (!('value' in valueRef)) {
         const {
           nodeId,
@@ -31,9 +35,12 @@ export default class ValueRefCollection extends Collection {
           pruneState
         } = valueRef;
 
-        if (pruneState !== ValuePruneState.Omitted && isObjectCategory(category)) {
+        if (pruneState !== ValuePruneState.Omitted && isObjectCategory(category) && serialized) {
           // map: [childRefId, childValue] => [(creation)nodeId, childRefId, childValue]
-          valueRef.value = Object.fromEntries(Object.entries(serialized).map(([key, childEntry]) => [key, [nodeId, ...childEntry]]));
+          valueRef.value = Object.fromEntries(
+            Object.entries(serialized)
+              .map(([key, childEntry]) => [key, [nodeId, ...childEntry]])
+          );
         }
         else {
           valueRef.value = serialized;

@@ -1,6 +1,7 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import ExecutionContextType from '@dbux/common/src/types/constants/ExecutionContextType';
-import TraceType, { isBeforeCallExpression, isClassDefinitionTrace, isFunctionDefinitionTrace, isPopTrace } from '@dbux/common/src/types/constants/TraceType';
+import { isBeforeCallExpression, isPopTrace } from '@dbux/common/src/types/constants/TraceType';
+import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
 // import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import isThenable from '@dbux/common/src/util/isThenable';
@@ -27,6 +28,16 @@ const { log, debug: _debug, warn, error: logError, trace: logTrace } = newLogger
 const Verbose = 0;
 
 const debug = (...args) => Verbose && _debug(...args);
+
+const DataNodeMetaBySpecialIdentifierType = {
+  /**
+   * NOTE: we don't want to trace proxy initial properties, since that tends to cause unwanted side-effects.
+   * E.g. `chai/lib/chai/utils/proxify.js`
+   */
+  [SpecialIdentifierType.Proxy]: {
+    omit: true
+  }
+};
 
 // TODO: we can properly use Proxy to wrap callbacks
 // function _inheritsLoose(subClass, superClass) {
@@ -569,7 +580,7 @@ export default class RuntimeMonitor {
   // Basics
   // ###########################################################################
 
-  traceExpression(programId, value, tid, inputs) {
+  traceExpression(programId, value, tid, inputs, valueMeta = null) {
     if (!this._ensureExecuting()) {
       return value;
     }
@@ -593,7 +604,7 @@ export default class RuntimeMonitor {
 
       const varAccess = null;
       inputs = traceCollection.getDataNodeIdsByTraceIds(tid, inputs);
-      dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess, inputs);
+      dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess, inputs, valueMeta);
       return value;
     }
   }
@@ -884,16 +895,22 @@ export default class RuntimeMonitor {
     return this.callbackPatcher.monkeyPatchCallee(callee, callId, args, spreadArgs);
   }
 
-  traceCallResult(programId, value, tid, callTid) {
+  traceCallResult(programId, value, tid, callId) {
     if (!this._ensureExecuting()) {
       return value;
     }
     const trace = traceCollection.getById(tid);
 
-    // [edit-after-send]
-    trace.resultCallId = callTid;
+    const bceStaticTrace = traceCollection.getStaticTraceByTraceId(callId);
+    let valueMeta;
+    if (bceStaticTrace.data.specialType) {
+      valueMeta = DataNodeMetaBySpecialIdentifierType[bceStaticTrace.data.specialType];
+    }
 
-    this.traceExpression(programId, value, tid, 0);
+    // [edit-after-send]
+    trace.resultCallId = callId;
+
+    this.traceExpression(programId, value, tid, null, valueMeta);
 
     const contextId = this._runtime.peekCurrentContextId();
     // const runId = this._runtime.getCurrentRunId();

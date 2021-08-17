@@ -162,6 +162,7 @@ export default class CallExpression extends BaseNode {
         data: {
           isNew: path.isNewExpression(),
           argConfigs: makeSpreadableArgumentArrayCfg(argumentPaths),
+          specialType: calleeNode.specialType
         }
       },
       meta: {
@@ -169,8 +170,6 @@ export default class CallExpression extends BaseNode {
         instrument: null
       }
     };
-
-    bceTraceData.staticTraceData.data.specialType = calleeNode.specialType;
 
     const bceInputPaths = shouldTraceArgs && argumentPaths || EmptyArray;
     const bceTrace = this.Traces.addTraceWithInputs(bceTraceData, bceInputPaths);

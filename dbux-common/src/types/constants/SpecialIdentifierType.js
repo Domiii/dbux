@@ -16,7 +16,8 @@ let SpecialIdentifierType = {
 
   // NOTE: types past NaN are named as-is
   NaN: 100,
-  Infinity: 101
+  Infinity: 101,
+  Proxy: 102
 };
 
 // @type {(Enum|typeof SpecialIdentifierType)}
@@ -32,7 +33,7 @@ const TypesByIdentifierName = Object.fromEntries(
     .map(val => {
       let name = SpecialIdentifierType.nameFromForce(val);
       if (val < SpecialIdentifierType.NaN) {
-        // NOTE: types before NaN are lower-case versions of the type name
+        // hackfix: types before NaN are lower-case versions of the type name
         name = name[0].toLowerCase() + name.substring(1);
       }
       return [name, val];
@@ -48,6 +49,8 @@ const notTraceable = new Array(SpecialIdentifierType.getValueMaxIndex()).map(() 
 notTraceable[SpecialIdentifierType.Eval] = true;
 notTraceable[SpecialIdentifierType.Require] = true;
 notTraceable[SpecialIdentifierType.Super] = true;
+// NOTE: Proxy is traceable, but the proxy object's value should not be iterated over.
+// notTraceable[SpecialIdentifierType.Proxy] = true;
 
 export function isNotCalleeTraceableType(type) {
   return notTraceable[type];

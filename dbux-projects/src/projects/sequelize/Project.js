@@ -17,20 +17,14 @@ export default class SequelizeProject extends Project {
   loadBugs() {
     return [
       {
-        // cd dbux_projects/sequelize
-        // bash
-        // --inspect-brk --expose-gc
-        // node --stack-trace-limit=100  "../../node_modules/@dbux/cli/bin/dbux.js" run --verbose=1 --pw=.* "sscce.js"
-        
         label: 'sscce1-sqlite',
         // testRe: 'OPTIONS should only include each method once',
-        testFilePaths: ['sscce.js'],
-        bugLocations: [
-          // {
-          //   fileName: 'lib/router/index.js',
-          //   line: 156
-          // }
-        ]
+        testFilePaths: ['sscce1.js']
+      },
+      {
+        label: 'error1-sqlite',
+        // testRe: 'OPTIONS should only include each method once',
+        testFilePaths: ['error1.js']
       }
     ];
   }
@@ -59,7 +53,7 @@ export default class SequelizeProject extends Project {
     return [
       buildNodeCommand({
         ...cfg,
-        program: `sscce.js`
+        program: bug.testFilePaths[0]
       }),
       runCfg
     ];

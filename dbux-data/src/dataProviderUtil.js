@@ -363,7 +363,7 @@ export default {
   getValueTrace(dp, traceId) {
     let trace = dp.collections.traces.getById(traceId);
     if (!trace) {
-      dp.logger.warn(`invalid traceId does not have a trace:`, traceId, dp.collections.traces._all);
+      dp.logger.trace(`invalid traceId does not have a trace:`, traceId);
       return trace;
     }
     const traceType = dp.util.getTraceType(traceId);
@@ -1728,10 +1728,9 @@ export default {
       if (resumeContextId) {
         const returnValueRef = dp.util.getReturnValueRefOfContext(resumeContextId);
         // const returnValueRef = dp.util.getReturnValueRefOfInterruptableContext(resumeContextId);
-
-        // NOTE: returned value might not always be a promise
-        //    (but that's taken care of in the terminal condition)
-        nestedPromiseId = returnValueRef?.refId;
+        if (returnValueRef?.isThenable) {
+          nestedPromiseId = returnValueRef.refId;
+        }
       }
     }
     postUpdate = nestedPromiseId &&
@@ -1818,7 +1817,7 @@ export default {
   //     // TODO: this might work correctly for async getters
   //     //  -> test with `await2b-async-getters.js`
   //     const callTrace = dp.util.getCallerTraceOfContext(contextId);
-  //     const callResultTrace = callTrace && dp.util.getValueTrace(callTrace.traaceId);
+  //     const callResultTrace = callTrace && dp.util.getValueTrace(callTrace.traceId);
   //     const refId = callResultTrace && dp.util.getTraceRefId(callResultTrace.traceId);
   //     promiseId = refId && dp.util.getPromiseIdOfValueRef(refId);
   //   }
@@ -1842,6 +1841,7 @@ export default {
       const { runId, promiseId: preEventPromise, postEventPromiseId } = child;
       const nesting = dp.util.getFirstNestingAsyncUpdate(child.runId, child.promiseId);
       const result = dp.util.getPreviousPostOrResolveAsyncEventOfPromise(child.postEventPromiseId, beforeRootId);
+      TODO
       if (result) {
         return result;
       }

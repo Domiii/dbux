@@ -368,11 +368,12 @@ export default class ProjectsManager {
   // ########################################
 
   /**
+   * @param {Bug} bug
    * @return {Promise<boolean>}
    */
   async askForStopwatch(bug) {
     // TOTRANSLATE
-    if (!bug.bugLocations) {
+    if (!bug.isSolvable) {
       return false;
     }
     const confirmMsg = `This is your first time activate this bug, do you want to start a timer?\n`

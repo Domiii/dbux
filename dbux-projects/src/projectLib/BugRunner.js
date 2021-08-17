@@ -174,6 +174,7 @@ export default class BugRunner {
     }
   }
 
+  /** @param {Project} project */
   getOrLoadBugs(project) {
     return project.getOrLoadBugs();
   }

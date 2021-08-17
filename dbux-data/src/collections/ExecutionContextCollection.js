@@ -103,7 +103,7 @@ export default class ExecutionContextCollection extends Collection {
       }
       else if (isInterruptable) {
         const callTrace = dp.util.getCallerTraceOfContext(contextId);
-        const callResultTrace = callTrace && dp.util.getValueTrace(callTrace.traaceId);
+        const callResultTrace = callTrace && dp.util.getValueTrace(callTrace.traceId);
         const refId = callResultTrace && dp.util.getTraceRefId(callResultTrace.traceId);
         const promiseId = refId && dp.util.getPromiseIdOfValueRef(refId);
         context.asyncPromiseId = promiseId || 0;

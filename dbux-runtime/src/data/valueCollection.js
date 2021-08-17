@@ -160,9 +160,6 @@ class ValueCollection extends Collection {
     valueRef.nodeId = nodeId;
     valueRef.category = category;
 
-    const thenRepresentation = value && this._readProperty(value, 'then');
-    valueRef.isThenable = thenRepresentation && isFunction(thenRepresentation);
-
     // mark for sending
     this._send(valueRef);
 
@@ -374,7 +371,7 @@ class ValueCollection extends Collection {
     let pruneState = ValuePruneState.Normal;
     let typeName = '';
     let valueRef;
-    let isNewObject = false;
+    let isNewValue = false;
 
     if (this.valuesDisabled) {
       return this._addValueDisabled();
@@ -393,17 +390,12 @@ class ValueCollection extends Collection {
     }
     valueRef = this._getRefByValueUnwrapped(value);
     if (!valueRef) {
-      isNewObject = true;
+      isNewValue = true;
       valueRef = this._addValueRef(category, nodeId, value);
     }
 
-    if (!isNewObject) {
+    if (!isNewValue) {
       return valueRef;
-    }
-
-    // this is a new object
-    if (value.isThenable) {
-      this.maybePatchPromise(value);
     }
 
     if (meta?.shallow) {
@@ -478,6 +470,13 @@ class ValueCollection extends Collection {
         else {
           // iterate over all object properties
           let props = this._getProperties(value);
+
+          // check for promise
+          const thenRepresentation = value && this._readProperty(value, 'then');
+          valueRef.isThenable = thenRepresentation && isFunction(thenRepresentation);
+          if (value.isThenable) {
+            this.maybePatchPromise(value);
+          }
 
           if (!props) {
             // error

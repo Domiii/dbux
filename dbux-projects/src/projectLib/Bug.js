@@ -64,6 +64,10 @@ export default class Bug {
     this.project = project;
   }
 
+  get isSolvable() {
+    return !!this.bugLocations;
+  }
+
   get debugTag() {
     return `${this.project} (bug #${this.id})`;
   }
@@ -113,7 +117,7 @@ export default class Bug {
   isCorrectBugLocation(loc) {
     const { projectPath } = this.project;
 
-    if (!this.bugLocations) {
+    if (!this.isSolvable) {
       return null;
     }
 
