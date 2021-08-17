@@ -1,5 +1,6 @@
 import truncate from 'lodash/truncate';
 import isFunction from 'lodash/isFunction';
+import isString from 'lodash/isString';
 import ValueTypeCategory, { determineValueTypeCategory, ValuePruneState, isTrackableCategory } from '@dbux/common/src/types/constants/ValueTypeCategory';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
@@ -46,24 +47,8 @@ export function unwrapValue(value) {
 
 
 // ###########################################################################
-// utils
+// ValueCollection
 // ###########################################################################
-
-const builtInTypeSerializers = new Map([
-  [Map, obj => [['entries', obj.entries()]]],
-  [Set, obj => [['entries', obj.entries()]]],
-  [RegExp, obj => [['regex', obj.toString()]]]
-
-  // TODO: thenables and many other built-ins
-]);
-
-function getBuiltInSerializer(value) {
-  if (!value.constructor || value === value.constructor.prototype) {
-    // don't try to default-serialize a built-in prototype
-    return null;
-  }
-  return builtInTypeSerializers.get(value.constructor) || null;
-}
 
 /**
  * Keeps track of `StaticTrace` objects that contain static code information
@@ -94,6 +79,51 @@ class ValueCollection extends Collection {
 
 
   // ###########################################################################
+  // Serializers
+  // ###########################################################################
+
+  builtInTypeSerializers = new Map([
+    [Map, this.makeDefaultSerializer(obj => [['entries', obj.entries()]])],
+    [Set, this.makeDefaultSerializer(obj => [['entries', obj.entries()]])],
+    [RegExp, this.makeDefaultSerializer(obj => [['regex', obj.toString()]])],
+    [Error, this.makeDefaultSerializer((err, valueRef) => {
+      // [edit-after-send]
+      valueRef.isError = true;
+      return [['name'], ['stack'], ['message']];
+    })]
+
+    // TODO: thenables and many other built-ins
+  ]);
+
+  makeDefaultSerializer(f) {
+    return (value, nodeId, depth, serialized, valueRef) => {
+      const children = f(value, valueRef);
+      for (const entry of children) {
+        let [key] = entry;
+        let childValue;
+        if (entry.length > 1) {
+          [, childValue] = entry;
+        }
+        else {
+          childValue = this._readProperty(value, key);
+        }
+        const childRef = this._serialize(childValue, nodeId, depth + 1);
+        this._pushObjectProp(depth, key, childRef, childValue, serialized);
+      }
+    };
+  }
+
+  getBuiltInSerializer(value) {
+    if (!value.constructor || value === value.constructor.prototype) {
+      // don't try to default-serialize a built-in prototype
+      return null;
+    }
+    return this.builtInTypeSerializers.get(value.constructor) || null;
+  }
+
+
+
+  // ###########################################################################
   // public methods
   // ###########################################################################
 
@@ -121,13 +151,7 @@ class ValueCollection extends Collection {
     Verbose > 1 && this._log(`[val] dataNode #${nodeId}`);
     if (!isTrackableCategory(category)) {
       valueRef = null;
-
-      // hackfix: coerce to string
-      // NOTE: workaround for https://github.com/Domiii/dbux/issues/533
-      if (typeof value === 'bigint') {
-        value = value + 'n';
-      }
-      dataNode.value = value;
+      dataNode.value = this._serializeNonTrackable(value, category);
     }
     else {
       valueRef = this._serialize(value, nodeId, 1, category, meta);
@@ -355,10 +379,43 @@ class ValueCollection extends Collection {
   // serialize
   // ###########################################################################
 
-  _pushObjectProp(depth, prop, valueRef, value, serialized) {
-    Verbose > 1 && this._logValue(`${' '.repeat(depth)}[${prop}]`, valueRef, value);
+  _pushObjectProp(depth, key, childValueRef, childValue, serialized) {
+    Verbose > 1 && this._logValue(`${' '.repeat(depth)}[${key}]`, childValueRef, childValue);
 
-    serialized[prop] = [valueRef && valueRef.refId, !valueRef && value];
+    serialized[key] = [
+      childValueRef && childValueRef.refId,
+      !childValueRef && this._serializeNonTrackable(childValue)
+    ];
+  }
+
+  _serializeNonTrackable(value, category) {
+    // category = value || determineValueTypeCategory(value);
+
+    let serialized;
+    // switch (category) {
+    //   case ValueTypeCategory.String:
+    if (isString(value)) {
+      if (value.length > SerializationConfig.maxStringLength) {
+        serialized = value.substring(0, SerializationConfig.maxStringLength) + '...';
+        // pruneState = ValuePruneState.Shortened;
+      }
+      else {
+        serialized = value;
+      }
+      // serialized = JSON.stringify(value);
+    }
+    else {
+      if (typeof value === 'bigint') {
+        // hackfix: coerce to string
+        // NOTE: workaround for https://github.com/Domiii/dbux/issues/533
+        serialized = value + 'n';
+      }
+      else {
+        serialized = value;
+      }
+    }
+    this.logger.warn('_serializeNonTrackable', value, serialized);
+    return serialized;
   }
 
   /**
@@ -412,19 +469,10 @@ class ValueCollection extends Collection {
 
 
     // process by category
-    switch (category) {
-      case ValueTypeCategory.String:
-        if (value.length > SerializationConfig.maxStringLength) {
-          serialized = value.substring(0, SerializationConfig.maxStringLength);
-          pruneState = ValuePruneState.Shortened;
-        }
-        else {
-          serialized = value;
-        }
-        break;
 
+    switch (category) {
       case ValueTypeCategory.Function: {
-        // TODO: look up staticContext information by function instead
+        // TODO: look up staticContext information by function for `name` instead?
         // TODO: functions can have custom properties too
         serialized = {};
         this._pushObjectProp(depth, 'name', null, 'ƒ ' + (value.name || ''), serialized);
@@ -453,7 +501,7 @@ class ValueCollection extends Collection {
           }
           Verbose > 1 && this._logValue(`${' '.repeat(depth)}[${i}]`, childRef, childValue);
 
-          serialized.push([childRef?.refId, !childRef && childValue]);
+          serialized.push([childRef?.refId, !childRef && this._serializeNonTrackable(childValue)]);
         }
         break;
       }
@@ -493,14 +541,10 @@ class ValueCollection extends Collection {
             // start serializing
             serialized = {};
 
-            const builtInSerializer = getBuiltInSerializer(value);
+            const builtInSerializer = this.getBuiltInSerializer(value);
             if (builtInSerializer) {
               // serialize built-in types - especially: RegExp, Map, Set
-              const entries = builtInSerializer(value);
-              for (const [prop, childValue] of entries) {
-                const childRef = this._serialize(value, nodeId, depth + 1);
-                this._pushObjectProp(depth, prop, childRef, childValue, serialized);
-              }
+              builtInSerializer(value, nodeId, depth, serialized, valueRef);
             }
             else {
               // serialize object (default)

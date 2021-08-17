@@ -430,29 +430,58 @@ export default {
   },
 
   /** 
-   * NOTE: Call `isTracePlainObjectOrArrayValue` to make sure it is reconstructable
    * @param {DataProvider} dp
    */
-  constructValueObjectFull(dp, nodeId) {
-    // TODO
+  constructValueFull(dp, nodeId, _refId, _value, _visited, _rootNodeId) {
+    const isRoot = !_visited;
+    const dataNode = dp.collections.dataNodes.getById(nodeId);
+    if (isRoot) {
+      _visited = new Set();
+      ({ refId: _refId } = dataNode);
+      _rootNodeId = nodeId;
+    }
+
+    let valueRef;
+    if (_refId) {
+      valueRef = dp.collections.values.getById(_refId);
+      if (_visited.has(_refId)) {
+        return '(circular dependency)';
+      }
+      _visited.add(_refId);
+    }
+
+    let finalValue;
+    if (!_refId) {
+      finalValue = _value;
+    }
+    else {
+      const entries = Object.entries(dp.util.constructValueObjectShallow(_refId, _rootNodeId));
+
+      finalValue = Object.fromEntries(
+        entries.map(([key, [childNodeId, childRefId, childValue]]) => {
+          return [key, dp.util.constructValueFull(childNodeId, childRefId, childValue, _visited, _rootNodeId)];
+        })
+      );
+    }
+
+    return finalValue;
   },
 
   /**
-   * NOTE: Call `isTracePlainObjectOrArrayValue` to make sure it is reconstructable
-   * 
    * @param {DataProvider} dp
    * @return {{prop: number}} returns the `prop`, `nodeId` key-value pairs
    */
-  constructValueObjectShallow(dp, refId, terminateNodeId) {
+  constructValueObjectShallow(dp, refId, terminateNodeId = Infinity) {
     const valueRef = dp.collections.values.getById(refId);
 
     // initial values
+    // NOTE: valueRef.value is an array of the same format as the one below, produced by {@link ValueRefCollection.deserializeShallow}
     const entries = { ...valueRef.value };
 
-    if (!entries) {
-      // sanity check
-      dp.logger.error(`Cannot construct non-object valueRef: ${JSON.stringify(valueRef)}`);
-    }
+    // if (!entries) {
+    //   // sanity check
+    //   dp.logger.error(`Cannot construct non-object valueRef: ${JSON.stringify(valueRef)}`);
+    // }
 
     // + writes - delete
     const modifyNodes = dp.indexes.dataNodes.byObjectRefId.get(refId)?.filter(node => isDataNodeModifyType(node.type)) || EmptyArray;

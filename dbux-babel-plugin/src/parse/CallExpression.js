@@ -159,10 +159,6 @@ export default class CallExpression extends BaseNode {
       // node: this,
       staticTraceData: {
         type: TraceType.BeforeCallExpression,
-        dataNode: {
-          // TODO: move related stuff to result expression
-          ...calleeNode.getDataNodeMeta?.()
-        },
         data: {
           // whether this is a `NewExpression`
           isNew: path.isNewExpression(),
@@ -193,13 +189,17 @@ export default class CallExpression extends BaseNode {
       path,
       node: this,
       staticTraceData: {
-        type: TraceType.CallExpressionResult
+        type: TraceType.CallExpressionResult,
+        dataNode: {
+          ...calleeNode.getDataNodeMeta?.()
+        }
       },
       data: {
         bceTrace,
         calleeNode,
         calleeVar,
-        shouldTraceArgs
+        shouldTraceArgs,
+        specialType: calleeNode.specialType
       },
       meta: {
         traceCall: 'traceCallResult',

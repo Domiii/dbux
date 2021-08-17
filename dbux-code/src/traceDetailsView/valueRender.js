@@ -8,20 +8,26 @@ export function valueRender(valueRef, value) {
   if (valueRef && isPlainObjectOrArrayCategory(valueRef.category)) {
     modalString = JSON.stringify(value);
   }
-  else {
-    modalString = `${value}`;
-  }
 
-  showInformationMessage(modalString, {
+  showInformationMessage(`${modalString}`, {
     async 'Open In Editor'() {
-      return renderValueAsJsonInEditor(value);
+      return renderValueAsJsonInEditor(value, null, valueRef);
     }
   }, { modal: true });
 }
 
-export async function renderValueAsJsonInEditor(value, comment = null) {
+export async function renderValueAsJsonInEditor(value, comment = null, valueRef = null) {
+  let content = JSON.stringify(value, null, 2);
+  // if (valueRef && isPlainObjectOrArrayCategory(valueRef.category)) {
+  //   content = JSON.stringify(value);
+  // }
+  // else {
+  //   content = `${value}`;
+  // }
+
   comment = comment ? `// ${comment}\n` : '';
-  const content = comment + JSON.stringify(value, null, 2);
+  content = comment + content;
+
   const doc = await workspace.openTextDocument({ 
     language: 'jsonc',
     content

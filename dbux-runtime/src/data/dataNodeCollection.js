@@ -37,9 +37,8 @@ export class DataNodeCollection extends Collection {
     const trace = traceCollection.getById(traceId);
     if (!meta) {
       const staticTrace = staticTraceCollection.getById(trace.staticTraceId);
-      const { dataNode: staticDataNode } = staticTrace;
-      meta = staticDataNode?.meta;
-      console.warn(traceId, meta);
+      ({ dataNode: meta } = staticTrace);
+      // console.warn(traceId, meta);
     }
     const dataNode = this.createDataNode(value, traceId, type, varAccess, inputs, meta);
     trace.nodeId = dataNode.nodeId;

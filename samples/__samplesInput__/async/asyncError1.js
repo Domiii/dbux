@@ -15,9 +15,11 @@ async function f2() {
 }
 
 async function g() {
+  console.log(new Error('err'));
   await sleep(100);
   throw new Error('err');
 }
 
-f();
+sleep(1000);
 f2();
+f();
