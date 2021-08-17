@@ -82,15 +82,16 @@ class ValueCollection extends Collection {
   // Serializers
   // ###########################################################################
 
+  errorSerializer = this.makeDefaultSerializer((err, valueRef) => {
+    // [edit-after-send]
+    valueRef.isError = true;
+    return [['name'], ['stack'], ['message']];
+  });
+
   builtInTypeSerializers = new Map([
     [Map, this.makeDefaultSerializer(obj => [['entries', obj.entries()]])],
     [Set, this.makeDefaultSerializer(obj => [['entries', obj.entries()]])],
-    [RegExp, this.makeDefaultSerializer(obj => [['regex', obj.toString()]])],
-    [Error, this.makeDefaultSerializer((err, valueRef) => {
-      // [edit-after-send]
-      valueRef.isError = true;
-      return [['name'], ['stack'], ['message']];
-    })]
+    [RegExp, this.makeDefaultSerializer(obj => [['regex', obj.toString()]])]
 
     // TODO: thenables and many other built-ins
   ]);
@@ -117,6 +118,10 @@ class ValueCollection extends Collection {
     if (!value.constructor || value === value.constructor.prototype) {
       // don't try to default-serialize a built-in prototype
       return null;
+    }
+    if (value instanceof Error) {
+      // NOTE: should also work on Error sub-classes
+      return this.errorSerializer;
     }
     return this.builtInTypeSerializers.get(value.constructor) || null;
   }
