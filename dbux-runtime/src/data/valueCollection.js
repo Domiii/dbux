@@ -414,7 +414,7 @@ class ValueCollection extends Collection {
         serialized = value;
       }
     }
-    this.logger.warn('_serializeNonTrackable', value, serialized);
+    // this.logger.warn('_serializeNonTrackable', value, serialized);
     return serialized;
   }
 

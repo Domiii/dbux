@@ -18,6 +18,10 @@ export function valueRender(valueRef, value) {
 
 export async function renderValueAsJsonInEditor(value, comment = null, valueRef = null) {
   let content = JSON.stringify(value, null, 2);
+
+  // hackfix: render multi-line strings a bit better
+  // console.log(JSON.stringify('hi\nqwer\\node_modules').replace(/(?<!\\)\\n/g, '" +\n"'))
+  content = content.replace(/(?<!\\)\\n/g, '" +\n"');
   // if (valueRef && isPlainObjectOrArrayCategory(valueRef.category)) {
   //   content = JSON.stringify(value);
   // }
@@ -29,7 +33,7 @@ export async function renderValueAsJsonInEditor(value, comment = null, valueRef 
   content = comment + content;
 
   const doc = await workspace.openTextDocument({ 
-    language: 'jsonc',
+    language: 'javascript',
     content
   });
   await window.showTextDocument(doc.uri);

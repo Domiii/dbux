@@ -1,3 +1,4 @@
+import isString from 'lodash/isString';
 import findLast from 'lodash/findLast';
 import groupBy from 'lodash/groupBy';
 import TraceType, { hasDynamicTypes, isTracePop, isBeforeCallExpression } from '@dbux/common/src/types/constants/TraceType';
@@ -465,6 +466,13 @@ export default {
     }
 
     return finalValue;
+  },
+
+  _fixNonTrackableValue(value) {
+    // if (isString(value)) {
+    //   return value.replace('\n');//
+    // }
+    return value;
   },
 
   /**
