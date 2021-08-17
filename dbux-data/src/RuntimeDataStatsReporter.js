@@ -28,10 +28,22 @@ class StatsBase {
 
   preData() { }
 
+  collect() {
+    this.result = [];
+    this.collectNewStats();
+    return this.result;
+  }
+
   collectNewStats() { }
 
-  makeNewMessage(txt, allArr, newArr) {
-    return `${txt} (${newArr?.length || 0}/${allArr?.length || 0})${newArr?.length && `:\n  ${newArr?.join(',')}` || ''}`;
+  add(x) {
+    this.result.push(x);
+  }
+
+  addMessage(txt, allArr, newArr) {
+    this.add(
+      `${txt} (${newArr?.length || 0}/${allArr?.length || 0})${newArr?.length && `:\n  ${newArr?.join(',')}` || ''}`
+    );
   }
 }
 
@@ -72,11 +84,12 @@ class ModuleStats extends StatsBase {
     const allUntracedModules = difference(allRequireModuleNames, allModuleNames);
     const newUntracedModules = difference(newRequireModuleNames, allModuleNames);
 
-    return [
-      this.makeNewMessage('Newly required external modules', allRequireModuleNames, newRequireModuleNames),
-      this.makeNewMessage('Newly traced external modules', allModuleNames, newModuleNames),
-      this.makeNewMessage('Required but untraced external modules', allUntracedModules, newUntracedModules)
-    ];
+    newRequireModuleNames.length && 
+      this.addMessage('Newly required external modules', allRequireModuleNames, newRequireModuleNames);
+    newModuleNames.length && 
+      this.addMessage('Newly traced external modules', allModuleNames, newModuleNames);
+    newUntracedModules.length &&
+      this.addMessage('Required but untraced external modules', allUntracedModules, newUntracedModules);
   }
 
   collectAllMessages() {
@@ -108,9 +121,8 @@ class FunctionStats extends StatsBase {
       .map(trace => util.getTrace(util.getCalleeTraceId(trace.traceId)))  // -> callee
       .map(makeTraceLabel);                                               // -> label
 
-    return [
-      this.makeNewMessage('Untraced functions', allUntracedRefIds, newUntracedNames)
-    ];
+    newUntracedNames.length && 
+      this.addMessage('Untraced functions', allUntracedRefIds, newUntracedNames);
   }
 }
 
@@ -165,19 +177,18 @@ export default class RuntimeDataStatsReporter {
     // collection stats
     const collectionInfo = Object.entries(collectionStats)
       .map(([key, { len, min, max }]) => `${len} ${key} (${min}~${max})`)
-      .join('\n ');
+      .join(', ');
 
     // final messages
     const msgs = [
       `##### Data received #####\nCollection Data:\n  ${collectionInfo}`,
-      '',
-      ...this.statsInstances.map(stats => stats.collectNewStats(newData)?.join('\n  '))
+      ...this.statsInstances.map(stats => stats.collect(newData)?.join(''))
     ];
 
     this.dp.logger.debug(msgs.join('\n'));
   }
 
   reportAllData() {
-    
+
   }
 }
