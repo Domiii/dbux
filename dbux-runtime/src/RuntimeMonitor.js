@@ -502,7 +502,7 @@ export default class RuntimeMonitor {
   }
 
   isValidContext() {
-    return this._runtime._executingStack?.length?.();
+    return !!this._runtime._executingStack?.length;
   }
 
   // ###########################################################################

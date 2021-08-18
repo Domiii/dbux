@@ -146,7 +146,7 @@ export default class Stack {
     --this._waitCount;
   }
 
-  length() {
+  get length() {
     return this._stack.length;
   }
 }
