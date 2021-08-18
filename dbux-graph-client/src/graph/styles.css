@@ -26,6 +26,11 @@ html, body {
   overflow: hidden;
 }
 
+/* hackfix: this way async-header can have same background-color as body */
+div {
+  background-color: inherit;
+}
+
 /** ###########################################################################
  * graph nodes
  * ############################################################################ */
@@ -216,7 +221,7 @@ html, body {
   gap: 0px 1px;
 }
 
-.async-node {
+.async-cell {
   border: 1px solid transparent;
   min-height: 1.6rem;
   min-width: 1.2rem;
@@ -224,29 +229,29 @@ html, body {
   padding: 1.5px;
 }
 
-[data-async-detail-mode="1"] .async-node {
+[data-async-detail-mode="1"] .async-cell {
   min-height: 2.8rem;
   min-width: 5rem;
   max-width: 10rem;
   width: fit-content;
 }
 
-.async-node:hover:not([data-async-node-id=""]) {
+.async-cell:hover {
   border: 1px solid white;
   cursor: pointer;
 }
 
-.async-node-selected {
+.async-cell-selected {
   color: darkred;
   border: 1px solid darkred;
 }
 
-.theme-mode-dark .async-node-selected {
+.theme-mode-dark .async-cell-selected {
   color: yellow;
   border: 1px solid yellow;
 }
 
-.async-node-button {
+.async-button {
   border: 1px solid white;
   border-radius: 2px;
   text-align: center;
@@ -257,15 +262,6 @@ html, body {
   font-size: 10px;
   margin-left: 3px;
 }
-
-/* .async-node-selected .async-node-button {
-  border: 1px solid yellow;
-}
-
-.async-node-button:hover {
-  border: 1px solid yellow;
-  color: yellow;
-} */
 
 .async-loc-label {
   font-size: 0.7em;
@@ -279,7 +275,7 @@ html, body {
   display: none !important;
 }
 
-[data-async-detail-mode="0"] .async-node {
+[data-async-detail-mode="0"] .async-cell {
   height: 6px !important;
   padding: 0px !important;
   min-height: 6px !important;
@@ -288,6 +284,12 @@ html, body {
 
 [data-async-detail-mode="0"] .async-thread-title {
   display: none !important;
+}
+
+.async-header {
+  position: sticky;
+  top: 0;
+  width: 100% !important;
 }
 
 .async-thread {

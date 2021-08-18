@@ -1,28 +1,30 @@
 class AsyncButton {
   static label = '';
+  static title = '';
   // eslint-disable-next-line no-unused-vars
-  static makeButtonData(nodeData) {
+  static isAvailable(nodeData) {
     throw new Error('abstract method not implemented');
   }
 
   // eslint-disable-next-line no-unused-vars
-  static handleClick(asyncGraph, asyncNodeData, buttonData) {
+  static handleClick(asyncGraph, asyncNodeData) {
     throw new Error('abstract method not implemented');
   }
 }
 
 class ForkButton extends AsyncButton {
   static label = '🢄';
-  static makeButtonData({ parentAsyncNodeId }) {
+  static title = 'Go to fork parent';
+  static isAvailable({ parentAsyncNodeId }) {
     if (parentAsyncNodeId) {
-      return { 'parent-async-node-id': parentAsyncNodeId };
+      return true;
     }
-    return null;
+    return false;
   }
 
-  static handleClick(asyncGraph, asyncNodeData, buttonData) {
-    const applicationId = Number(asyncNodeData.applicationId);
-    const parentAsyncNodeId = Number(buttonData.parentAsyncNodeId);
+  static handleClick(asyncGraph, asyncNodeData) {
+    const { applicationId } = asyncNodeData.asyncNode;
+    const { parentAsyncNodeId } = asyncNodeData;
     if (parentAsyncNodeId) {
       asyncGraph.remote.gotoAsyncNode(applicationId, parentAsyncNodeId);
     }
@@ -31,32 +33,32 @@ class ForkButton extends AsyncButton {
 
 class SyncInButton extends AsyncButton {
   static label = '🡅';
-  static makeButtonData({ syncInCount }) {
+  static title = 'Select sync in threads';
+  static isAvailable({ syncInCount }) {
     if (syncInCount) {
-      return { 'sync-in-count': syncInCount };
+      return true;
     }
-    return null;
+    return false;
   }
 
-  static handleClick(asyncGraph, asyncNodeData, buttonData) {
-    const applicationId = Number(asyncNodeData.applicationId);
-    const asyncNodeId = Number(asyncNodeData.asyncNodeId);
+  static handleClick(asyncGraph, asyncNodeData) {
+    const { applicationId, asyncNodeId } = asyncNodeData.asyncNode;
     asyncGraph.remote.selectSyncInThreads(applicationId, asyncNodeId);
   }
 }
 
 class SyncOutButton extends AsyncButton {
   static label = '🡇';
-  static makeButtonData({ syncOutCount }) {
+  static title = 'Select sync out threads';
+  static isAvailable({ syncOutCount }) {
     if (syncOutCount) {
-      return { 'sync-out-count': syncOutCount };
+      return true;
     }
-    return null;
+    return false;
   }
 
-  static handleClick(asyncGraph, asyncNodeData, buttonData) {
-    const applicationId = Number(asyncNodeData.applicationId);
-    const asyncNodeId = Number(asyncNodeData.asyncNodeId);
+  static handleClick(asyncGraph, asyncNodeData) {
+    const { applicationId, asyncNodeId } = asyncNodeData.asyncNode;
     asyncGraph.remote.selectSyncOutThreads(applicationId, asyncNodeId);
   }
 }

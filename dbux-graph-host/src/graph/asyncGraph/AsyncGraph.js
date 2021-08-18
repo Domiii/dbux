@@ -44,12 +44,21 @@ class AsyncGraph extends HostComponentEndpoint {
     }
 
     const applications = this.makeApplicationState(allApplications.selection.getAll());
-    this.setState({ children, applications });
+    const { selectedApplicationId, selected } = allApplications.selection.data.threadSelection;
+    this.setState({ children, applications, selectedApplicationId, selectedThreadIds: Array.from(selected) });
   }
 
   makeChildNodes() {
     const appData = allApplications.selection.data;
     const asyncNodes = appData.asyncNodesInOrder.getAllActual();
+
+    // // future-work: allow select threads cross different application
+    // let relevantRootContextId;
+    // if (appData.threadSelection.isActive()) {
+    //   const selectedApp = allApplications.getById(appData.threadSelection.selectedApplicationId);
+    //   relevantRootContextId = selectedApp.dp.util.getReleventRootContextIds();
+    // }
+
     return asyncNodes.map((asyncNode, index) => {
       const { applicationId, rootContextId, threadId } = asyncNode;
 
@@ -57,6 +66,12 @@ class AsyncGraph extends HostComponentEndpoint {
         // sanity check
         this.logger.warn(`Invalid asyncNode had invalid rootContextId ${asyncNode.rootContextId} -`, asyncNode);
         return null;
+      }
+
+      if (appData.threadSelection.isActive()) {
+        if (!this.isRelevantAsyncNode(asyncNode)) {
+          return null;
+        }
       }
 
       const app = allApplications.getById(applicationId);
@@ -122,6 +137,34 @@ class AsyncGraph extends HostComponentEndpoint {
   }
 
   // ###########################################################################
+  // util
+  // ###########################################################################
+
+  isRelevantAsyncNode(asyncNode) {
+    const { threadSelection } = allApplications.selection.data;
+    if (threadSelection.isNodeSelected(asyncNode)) {
+      return true;
+    }
+    const { applicationId, rootContextId } = asyncNode;
+    const dp = allApplications.getById(applicationId).dataProvider;
+    const toEdges = dp.indexes.asyncEvents.from.get(rootContextId) || EmptyArray;
+    for (const edge of toEdges) {
+      const threadId = dp.util.getAsyncRootThreadId(edge.toRootContextId);
+      if (threadSelection.isSelected(applicationId, threadId)) {
+        return true;
+      }
+    }
+    const fromEdges = dp.indexes.asyncEvents.to.get(rootContextId) || EmptyArray;
+    for (const edge of fromEdges) {
+      const threadId = dp.util.getAsyncRootThreadId(edge.fromRootContextId);
+      if (threadSelection.isSelected(applicationId, threadId)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // ###########################################################################
   // own event listener
   // ###########################################################################
 
@@ -170,6 +213,9 @@ class AsyncGraph extends HostComponentEndpoint {
       syncOutThreadIds.push(asyncNode.threadId);
       allApplications.selection.data.threadSelection.select(applicationId, syncOutThreadIds);
     },
+    selectRelevantThread(applicationId, threadId) {
+      allApplications.selection.data.threadSelection.select(applicationId, [threadId]);
+    }
   }
 }
 

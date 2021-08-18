@@ -1,7 +1,8 @@
-import AsyncEvent from '@dbux/common/src/types/AsyncEvent';
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import CollectionIndex from '../../indexes/CollectionIndex';
-import RuntimeDataProvider from '../../RuntimeDataProvider';
+
+/** @typedef {import('@dbux/common/src/types/AsyncEvent').default} AsyncEvent */
+/** @typedef {import('../../RuntimeDataProvider').default} RuntimeDataProvider */
 
 /** @extends {CollectionIndex<AsyncEvent>} */
 export default class SyncInAsyncEventsByRootIndex extends CollectionIndex {

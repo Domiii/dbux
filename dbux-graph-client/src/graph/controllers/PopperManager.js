@@ -16,13 +16,13 @@ export default class PopperManager extends ClientComponentEndpoint {
    */
   init() {
     this.popper = null;
-    this.tooltip = compileHtmlElement(`
+    this.tooltipContainer = compileHtmlElement(`
       <div data-el="toolTip" id="tooltip" role="tooltip">
         <span></span>
-        <div id="arrow" data-popper-arrow></div>
+        <!--<div id="arrow" data-popper-arrow></div>-->
       </div>`
     );
-    this.owner.el.appendChild(this.tooltip);
+    this.owner.el.appendChild(this.tooltipContainer);
 
     // regist update function if owner controls panzoom
     const { panzoom } = this.context.graphDocument;
@@ -46,10 +46,10 @@ export default class PopperManager extends ClientComponentEndpoint {
   // ###########################################################################
 
   /**
-   * @param {string} str
+   * @param {string|HTMLElement} tooltip
    */
-  show = (target, str) => {
-    this._create(target, str);
+  show = (target, tooltip) => {
+    this._create(target, tooltip);
     this._show();
   }
 
@@ -65,33 +65,30 @@ export default class PopperManager extends ClientComponentEndpoint {
   // Note: We set [data-show] attr of `popper template`(not popper instance itself) in order to show/hide it
   // see: https://popper.js.org/docs/v2/tutorial/#functionality
   _show = () => {
-    this.tooltip.setAttribute('data-show', '');
+    this.tooltipContainer.setAttribute('data-show', '');
   }
 
   _hide = () => {
-    this.tooltip.removeAttribute('data-show');
+    this.tooltipContainer.removeAttribute('data-show');
   }
 
   /**
-   * @param {string} tooltip
+   * @param {string|HTMLElement} tooltip
    */
   _create = (target, tooltip) => {
-    if (!isString(tooltip)) {
-      logError('TypeError: param `tooltip` must be a string, received', tooltip);
-      return;
-    }
     this._destroy();
-    this.tooltip.firstChild.textContent = tooltip;
-    this.popper = createPopper(target, this.tooltip, {
-      modifiers: [
-        {
-          name: 'offset',
-          options: {
-            offset: [0, 8],
-          },
-        },
-      ],
-    });
+    if (tooltip instanceof HTMLElement) {
+      this.tooltipContainer.innerHTML = '';
+      this.tooltipContainer.appendChild(tooltip);
+      this.popper = createPopper(target, this.tooltipContainer);
+    }
+    else if (isString(tooltip)) {
+      this.tooltipContainer.innerHTML = `<span>${tooltip}</span>`;
+      this.popper = createPopper(target, this.tooltipContainer);
+    }
+    else {
+      logError('TypeError: param `tooltip` must be a string, received', tooltip);
+    }
   }
 
   _destroy = () => {
