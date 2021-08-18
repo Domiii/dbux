@@ -79,7 +79,7 @@ export default class Runtime {
   }
 
   _executeEmptyStackBarrier = () => {
-    if (this._executingStack) {
+    if (this.isExecuting()) {
       // we had an unhandled interrupt (should never happen?)
       // console.warn('interrupt');
       this.interrupt();
@@ -233,7 +233,7 @@ export default class Runtime {
   // ###########################################################################
 
   isExecuting() {
-    return !!this._executingStack;
+    return !!this._executingStack?.length;
   }
 
   getStackDepth() {
@@ -441,7 +441,7 @@ export default class Runtime {
     if (oldStack !== waitingStack) {
       if (this.isExecuting()) {
         // eslint-disable-next-line max-len,no-console
-        trace(`resume received while already executing - not handled properly yet. Discarding executing stack.\noldStack =`, oldStack, '\nwaitingStack =', waitingStack);
+        trace(`resume received while already executing (${this._executingStack?.length}) - not handled properly yet. Discarding executing stack.\noldStack (${oldStack.length}) = ${oldStack._stack?.join(',')}\nwaitingStack (${waitingStack.length}) = ${waitingStack._stack?.join(',')}`);
         this.interrupt();
       }
 
@@ -461,7 +461,7 @@ export default class Runtime {
    * Put current stack into "wait queue"
    */
   interrupt() {
-    if (!this._executingStack) {
+    if (!this.isExecuting()) {
       logError('Tried to interrupt but there is no executing stack');
       return;
     }

@@ -7,11 +7,13 @@
 
 Promise.resolve()
   .then(() => { })
-  .then(() =>
-    Promise.resolve().then(() => {
-      throw new Error(123);
-    })
-  );
+  .then(() => f());
+
+function f() {
+  return Promise.resolve().then(() => {
+    throw new Error(123);
+  });
+}
 
 setTimeout(() =>
   Promise.resolve()

@@ -15,7 +15,11 @@ async function g1() {
   g2();
 }
 
-async function g2() {
+function g2() {
+  g3();
+}
+
+async function g3() {
   await 0;
 
   await h();
@@ -24,7 +28,7 @@ async function g2() {
 async function h() {
   await 0;
 
-  throw new Error('errr');
+  console.error(new Error('errr'));
 }
 
 f();
