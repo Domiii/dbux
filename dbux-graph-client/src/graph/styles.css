@@ -26,6 +26,11 @@ html, body {
   overflow: hidden;
 }
 
+/* hackfix: this way async-header can have same background-color as body */
+div {
+  background-color: inherit;
+}
+
 /** ###########################################################################
  * graph nodes
  * ############################################################################ */
@@ -279,6 +284,12 @@ html, body {
 
 [data-async-detail-mode="0"] .async-thread-title {
   display: none !important;
+}
+
+.async-header {
+  position: sticky;
+  top: 0;
+  width: 100% !important;
 }
 
 .async-thread {
