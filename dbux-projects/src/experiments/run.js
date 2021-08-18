@@ -22,7 +22,7 @@ class ConfigProject extends Project {
 
 export default function run() {
   const runCfg = {
-    
+
   };
   const defaultProjectCfg = {
 
@@ -35,7 +35,22 @@ export default function run() {
   const projectConfigs = [
     {
       name: 'sequelize',
-      // gitCommit
+
+      // /**
+      //  * Provided for each individual project.
+      //  */
+      // gitRemote;
+      // /**
+      //  * A specific commit hash or tag name to refer to (if wanted)
+      //  */
+      // gitCommit;
+      // nodeVersion;
+      // packageManager;
+
+      // loadBugs() {}
+      // decorateBug() {}
+      // makeBuilder() {}
+      // afterInstall() {}
     }
   ];
 
