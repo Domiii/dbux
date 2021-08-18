@@ -23,8 +23,6 @@ export default class ApplicationSetData {
 
     // this.applicationSet._emitter.on('_applicationsChanged0', this._handleApplicationsChanged);
     this.applicationSet.onApplicationsChanged(this._handleApplicationsChanged);
-    this.threadSelection.onSelectionChanged(this.asyncNodesInOrder._handleThreadSelectionChanged);
-    this.threadSelection.onSelectionChanged(this.asyncThreadsInOrder._handleThreadSelectionChanged);
   }
 
   get set() {
@@ -34,7 +32,7 @@ export default class ApplicationSetData {
   _handleApplicationsChanged = () => {
     // this.firstTracesInOrder._handleApplicationsChanged();
     this.asyncNodesInOrder._handleApplicationsChanged();
-    this.asyncThreadsInOrder._handleApplicationsChanged();    
+    this.asyncThreadsInOrder._handleApplicationsChanged();
   }
 
   getTrace(applicationId, traceId) {

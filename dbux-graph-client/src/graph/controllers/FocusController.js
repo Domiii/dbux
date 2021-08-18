@@ -187,13 +187,13 @@ export default class FocusController extends ClientComponentEndpoint {
      * @param {boolean} ignoreFailed 
      */
     selectAsyncNode: (asyncNode, ignoreFailed = false) => {
-      document.querySelectorAll('.async-node-selected').forEach(node => {
-        node.classList.remove('async-node-selected');
+      document.querySelectorAll('.async-node.async-cell-selected').forEach(node => {
+        node.classList.remove('async-cell-selected');
       });
       if (asyncNode) {
         const asyncNodeEl = this.getAsyncNodeEl(asyncNode);
         if (asyncNodeEl) {
-          asyncNodeEl.classList.add('async-node-selected');
+          asyncNodeEl.classList.add('async-cell-selected');
         }
         else if (!ignoreFailed) {
           this.logger.error(`Cannot find DOM of asyncNode: ${JSON.stringify(asyncNode)} when trying to select`);

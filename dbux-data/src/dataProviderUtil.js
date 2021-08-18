@@ -1884,7 +1884,7 @@ export default {
       const { runId, promiseId: preEventPromise, postEventPromiseId } = child;
       const nesting = dp.util.getFirstNestingAsyncUpdate(child.runId, child.promiseId);
       const result = dp.util.getPreviousPostOrResolveAsyncEventOfPromise(child.postEventPromiseId, beforeRootId);
-      TODO
+      // TODO
       if (result) {
         return result;
       }
@@ -2138,4 +2138,3 @@ export default {
     throw new Error(`Invalid AsyncEventUpdateType for postEventUpdate: ${JSON.stringify(postEventUpdate)}`);
   }
 };
-
