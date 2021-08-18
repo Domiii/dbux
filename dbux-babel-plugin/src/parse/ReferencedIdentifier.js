@@ -11,9 +11,17 @@ const ConstantIds = new Set([
 ]);
 
 
-const DataNodeMetaBySpecialIdentifierType = {
+export const DataNodeMetaBySpecialIdentifierType = {
   [SpecialIdentifierType.Module]: {
-    omit: true
+    shallow: true
+  },
+
+  /**
+   * NOTE: we don't want to trace proxy initial properties, since that tends to cause unwanted side-effects.
+   * E.g. `chai/lib/chai/utils/proxify.js`
+   */
+  [SpecialIdentifierType.Proxy]: {
+    shallow: true
   }
 };
 
@@ -49,11 +57,18 @@ export default class ReferencedIdentifier extends BaseId {
     return super.getDeclarationTidIdentifier();
   }
 
+  getDataNodeMeta() {
+    const { specialType } = this;
+    return specialType && DataNodeMetaBySpecialIdentifierType[specialType];
+  }
+
   /**
    * 
    */
   buildDefaultTrace() {
     const { path, isConstant, specialType } = this;
+
+    // specialType && console.warn(specialType, this.toString());
 
     const traceData = {
       path,
@@ -61,10 +76,13 @@ export default class ReferencedIdentifier extends BaseId {
       staticTraceData: {
         type: !isConstant ? TraceType.Identifier : TraceType.Literal,
         dataNode: {
+          // whether the value is ensured to not have been previously recorded.
           isNew: isConstant,
-          ...(specialType && DataNodeMetaBySpecialIdentifierType[specialType])
+          ...this.getDataNodeMeta()
         },
-        data: {}
+        data: {
+          specialType
+        }
       },
       meta: {}
     };

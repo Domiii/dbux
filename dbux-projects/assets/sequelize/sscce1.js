@@ -1,3 +1,4 @@
+
 'use strict';
 
 // See https://github.com/papb/sequelize-sscce as another option for running SSCCEs.

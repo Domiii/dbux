@@ -85,6 +85,10 @@ export default class Enum {
     return this.namesByValues[value];
   }
 
+  hasValue = (value) => {
+    return value in this.namesByValues;
+  }
+
   getValue = (name) => {
     return this.valuesByNames[name];
   }

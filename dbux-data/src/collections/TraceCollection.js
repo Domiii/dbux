@@ -68,16 +68,20 @@ export default class TraceCollection extends Collection {
 
   registerValueRefSpecialObjectType(traces) {
     for (const trace of traces) {
-      const { staticTraceId, nodeId } = trace;
+      const { traceId, staticTraceId, nodeId } = trace;
       const staticTrace = this.dp.collections.staticTraces.getById(staticTraceId);
-      if (staticTrace.data?.specialType === SpecialIdentifierType.Arguments) {
+      const specialType = staticTrace.data?.specialType;
+      if (SpecialObjectType.hasValue(specialType)) {
         const dataNode = this.dp.collections.dataNodes.getById(nodeId);
         const valueRef = dataNode && this.dp.collections.values.getById(dataNode.refId);
         if (valueRef) {
-          valueRef.specialObjectType = SpecialObjectType.Arguments;
+          // hackfix: edit-after-store (usually we try to avoid changes to data that was stored earlier)
+          valueRef.specialObjectType = specialType;
         }
         else {
-          this.logger.warn(`Cannot register SpecialObjectType for Argument trace, valueRef not found. trace: ${trace}, dataNode: ${dataNode}`);
+          const traceInfo = this.dp.util.makeTraceInfo(traceId);
+          // eslint-disable-next-line max-len
+          this.logger.warn(`Cannot register SpecialObjectType.${SpecialObjectType.nameFrom(specialType)} (${specialType}) for Argument trace: valueRef not found. trace: ${traceInfo}, dataNode: ${dataNode}`);
         }
       }
     }

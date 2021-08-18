@@ -26,6 +26,11 @@ export default class ValueRef {
   typeName;
 
   /**
+   * @type {boolean}
+   */
+  isThenable;
+
+  /**
    * NOTE: when stored in DataProvider, `serialized` is deleted
    */
   serialized;

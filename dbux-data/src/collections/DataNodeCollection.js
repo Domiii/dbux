@@ -31,6 +31,11 @@ export default class DataNodeCollection extends Collection {
 
       if (dataNode.inputs?.length && (!staticTrace || (staticTrace?.dataNode && !staticTrace.dataNode.isNew))) {
         const inputDataNode = this.dp.collections.dataNodes.getById(dataNode.inputs[0]);
+        if (!inputDataNode) {
+          const traceInfo = this.dp.util.makeTraceInfo(traceId);
+          this.logger.warn(`[getValueId] Cannot lookup dataNode.inputs[0] (inputs=${JSON.stringify(dataNode.inputs)}) at trace: ${traceInfo}`);
+          return nodeId;
+        }
         return inputDataNode.valueId;
       }
 
@@ -50,7 +55,10 @@ export default class DataNodeCollection extends Collection {
             const callerTrace = this.dp.util.getOwnCallerTraceOfContext(contextId);
             if (callerTrace) {
               // NOTE: sometimes, (e.g. in root contexts) we might not have an "own" caller trace
-              return this.dp.util.getCallArgDataNodes(callerTrace.traceId)[prop].valueId;
+              const obj = this.dp.util.getCallArgDataNodes(callerTrace.traceId);
+              const arg = obj[prop];
+              // NOTE: `arg` might not be recorded
+              return arg?.valueId || null;
             }
             return null;
           }
@@ -88,7 +96,9 @@ export default class DataNodeCollection extends Collection {
         const objectValueId = objectDataNode.valueId;
         if (!objectValueId) {
           // sanity check
-          this.logger.warn(`[getAccessId] Cannot find objectValueId of dataNode: ${JSON.stringify(dataNode)}`);
+          const { traceId } = dataNode;
+          const traceInfo = this.dp.util.makeTraceInfo(traceId);
+          this.logger.warn(`[getAccessId] Cannot find objectValueId of DataNode for trace: ${traceInfo}`);
           key = null;
         }
         else {
@@ -98,7 +108,7 @@ export default class DataNodeCollection extends Collection {
       else {
         const { traceId } = dataNode;
         const traceInfo = this.dp.util.makeTraceInfo(traceId);
-        this.logger.error(`Trying to generate accessId with illegal dataNode: ${JSON.stringify(dataNode)}\n  at trace: ${traceInfo}`);
+        this.logger.warn(`[getAccessId] DataNode has neither objectNodeId nor declarationTid for trace: ${traceInfo}`);
         return null;
       }
 

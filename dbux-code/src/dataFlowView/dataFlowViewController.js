@@ -16,7 +16,7 @@ export class DataFlowViewController {
   constructor() {
     this.treeDataProvider = new DataFlowNodeProvider(this);
     
-    this.setSearchMode(DataFlowSearchModeType.ByAccessId, false);
+    this.setSearchMode(DataFlowSearchModeType.ByValueId, false);
     this.setFilterMode(DataFlowFilterModeType.None, false);
   }
 

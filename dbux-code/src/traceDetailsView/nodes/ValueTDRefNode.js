@@ -36,29 +36,30 @@ export default class ValueTDRefNode extends ValueNode {
     return `${key}:`;
   }
 
-  get dataNode() {
+  get rootDataNode() {
     return this.entry;
   }
 
   get valueRef() {
-    const { treeNodeProvider: { trace: { applicationId } }, refId } = this;
-    const dp = allApplications.getById(applicationId).dataProvider;
+    const { refId, dp } = this;
     return dp.collections.values.getById(refId);
   }
 
   buildChildren() {
-    const { dataNode, treeNodeProvider: { trace: { applicationId } }, refId } = this;
-
-    const dp = allApplications.getById(applicationId).dataProvider;
-    const entries = Object.entries(dp.util.constructValueObjectShallow(refId, dataNode.nodeId));
+    const { rootDataNode, dp, refId } = this;
+    const entries = Object.entries(dp.util.constructValueObjectShallow(refId, rootDataNode.nodeId));
 
     if (entries.length) {
       return entries.map(([key, [childNodeId, childRefId, childValue]]) => {
         if (childRefId) {
-          return this.treeNodeProvider.buildNode(ValueTDRefNode, dataNode, this, { key, refId: childRefId, nodeId: childNodeId });
+          return this.treeNodeProvider.buildNode(
+            ValueTDRefNode, rootDataNode, this, { key, refId: childRefId, nodeId: childNodeId }
+          );
         }
         else {
-          return this.treeNodeProvider.buildNode(ValueTDSimpleNode, dataNode, this, { key, value: childValue, nodeId: childNodeId });
+          return this.treeNodeProvider.buildNode(
+            ValueTDSimpleNode, rootDataNode, this, { key, value: childValue, nodeId: childNodeId }
+          );
         }
       });
     }

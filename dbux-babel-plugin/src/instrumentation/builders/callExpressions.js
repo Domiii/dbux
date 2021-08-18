@@ -65,7 +65,7 @@ function buildCallArgs(argsVar, argNodes) {
  * @param {TraceCfg} traceCfg 
  * @param {BaseNode} calleeNode The callee BaseNode (used to get `calleeTid`).
  */
-function buildBCE(state, traceCfg, calleeVar, calleeNode, spreadArgs) {
+function buildBCE(state, traceCfg, calleeVar, calleeNode, args) {
   const { ids: { aliases: {
     traceBCE
   } } } = state;
@@ -79,7 +79,7 @@ function buildBCE(state, traceCfg, calleeVar, calleeNode, spreadArgs) {
     calleeVar || NullNode,
     calleeTid,
     argTids,
-    spreadArgs
+    args
   ]);
 }
 
@@ -177,7 +177,7 @@ function buildCallNodeME(path, objectVar, calleeVar, argsVar, argNodes) {
   // NOTE: not sure if this can improve call trace accuracy
   astNode.loc = path.node.loc;
   astNode.callee.loc = path.node.callee.loc;
-  
+
   return astNode;
 }
 
@@ -207,22 +207,22 @@ export function buildTraceCallDefault(state, traceCfg) {
   const argsVar = generateVar(scope, 'args');
   const argsArray = buildSpreadableArgArrayNoSpread(argPaths);
   const argNodes = argPaths?.map(a => a.node) || EmptyArray;
-  const spreadArgs = buildSpreadArgs(argsVar, argNodes);
-  const args = buildCallArgs(argsVar, argNodes);
-  const argAssignment = [t.assignmentExpression('=', argsVar, argsArray)];
+  // const spreadArgs = buildSpreadArgs(argsVar, argNodes);
+  const callArgs = buildCallArgs(argsVar, argNodes);
+  const argsAssignment = [t.assignmentExpression('=', argsVar, argsArray)];
 
   // hackfix: override targetNode during instrumentation - `f(args[0], ...args[1], args[2])`
-  traceCfg.meta.targetNode = buildCallNodeDefault(path, calleeVar, args);
+  traceCfg.meta.targetNode = buildCallNodeDefault(path, calleeVar, callArgs);
 
   return t.sequenceExpression([
     // (i) callee assignment - `f = ...`
     t.assignmentExpression('=', calleeVar, calleePath.node),
 
     // (ii) args assignment - `args = [...]`
-    ...argAssignment,
+    ...argsAssignment,
 
-    // (iii) BCE - `f = bce(tid, f, calleeTid, argTids, spreadArgs)`
-    t.assignmentExpression('=', calleeVar, buildBCE(state, bceTrace, calleeVar, calleeNode, spreadArgs)),
+    // (iii) BCE - `f = bce(tid, f, calleeTid, argTids, args)`
+    t.assignmentExpression('=', calleeVar, buildBCE(state, bceTrace, calleeVar, calleeNode, argsVar)),
 
     // (iv) wrap actual call - `tcr(targetNode)`
     buildTraceExpressionNoInput(
@@ -263,29 +263,31 @@ export function buildTraceCallUntraceableCallee(state, traceCfg) {
   const argPaths = path.get('arguments');
   const argNodes = argPaths?.map(a => a.node) || EmptyArray;
 
-  let argAssignment, args, spreadArgs;
+  let argsAssignment, callArgs;
+  const args = generateVar(scope, 'args');
   if (shouldTraceArgs) {
-    const argsVar = generateVar(scope, 'args');
-    const argsArray = buildSpreadableArgArrayNoSpread(argPaths);
-    args = buildCallArgs(argsVar, argNodes);
-    argAssignment = [t.assignmentExpression('=', argsVar, argsArray)];
-    spreadArgs = buildSpreadArgs(argsVar, argNodes);
+    callArgs = buildCallArgs(args, argNodes);
+    argsAssignment = [t.assignmentExpression('=',
+      args, 
+      buildSpreadableArgArrayNoSpread(argPaths)
+    )];
+    // spreadArgs = buildSpreadArgs(argsNoSpread, argNodes);
   }
   else {
-    args = argNodes;
-    argAssignment = EmptyArray;
-    spreadArgs = t.arrayExpression();
+    callArgs = argNodes;
+    argsAssignment = EmptyArray;
+    // spreadArgs = t.arrayExpression();
   }
 
   // hackfix: override targetNode during instrumentation - `f(args[0], ...args[1], args[2])`
-  traceCfg.meta.targetNode = buildCallNodeDefault(path, calleePath.node, args);
+  traceCfg.meta.targetNode = buildCallNodeDefault(path, calleePath.node, callArgs);
 
   return t.sequenceExpression([
     // (i) args assignment - `args = [...]`
-    ...argAssignment,
+    ...argsAssignment,
 
     // (ii) BCE - `bce(tid, argTids, spreadArgs)`
-    buildBCE(state, bceTrace, null, null, spreadArgs),
+    buildBCE(state, bceTrace, null, null, args),
 
     // (iii) wrap actual call - `tcr(f(args[0], ...args[1], args[2]))`
     buildTraceExpressionNoInput(
@@ -343,7 +345,7 @@ export function buildTraceCallME(state, traceCfg) {
   const argsVar = generateVar(scope, 'args');
   const args = buildSpreadableArgArrayNoSpread(argPaths);
   const argNodes = argPaths?.map(a => a.node) || EmptyArray;
-  const spreadArgs = buildSpreadArgs(argsVar, argNodes);
+  // const spreadArgs = buildSpreadArgs(argsVar, argNodes);
 
   // hackfix: override targetNode during instrumentation - `f(args[0], ...args[1], args[2])`
   traceCfg.meta.targetNode = buildCallNodeME(path, objectVar, calleeVar, argsVar, argNodes);
@@ -362,7 +364,7 @@ export function buildTraceCallME(state, traceCfg) {
     t.assignmentExpression('=', argsVar, args),
 
     // (iv) BCE - `bce(tid, f, calleeTid, argTids, spreadArgs)`
-    t.assignmentExpression('=', calleeVar, buildBCE(state, bceTrace, calleeVar, calleeNode, spreadArgs)),
+    t.assignmentExpression('=', calleeVar, buildBCE(state, bceTrace, calleeVar, calleeNode, argsVar)),
 
     // (v) wrap actual call - `tcr(f.call(o, args[0], ...args[1], args[2]))`
     buildTraceExpressionNoInput(

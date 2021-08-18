@@ -11,7 +11,7 @@ import RuntimeAsync from './async/RuntimeAsync';
 
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('Runtime');
+const { log, debug, warn, error: logError, trace } = newLogger('Runtime');
 
 // function mergeStacks(dst, src) {
 //   if ((src?.getDepth() || 0) > 0) {
@@ -440,8 +440,8 @@ export default class Runtime {
 
     if (oldStack !== waitingStack) {
       if (this.isExecuting()) {
-        // eslint-disable-next-line no-console
-        console.trace('`resume` received while already executing - not handled properly yet. Discarding executing stack.');
+        // eslint-disable-next-line max-len,no-console
+        trace(`resume received while already executing - not handled properly yet. Discarding executing stack.\noldStack =`, oldStack, '\nwaitingStack =', waitingStack);
         this.interrupt();
       }
 

@@ -1,16 +1,18 @@
-var res1 = (() => this).call(null);
-console.log(`${res1} === globalThis`, res1 === globalThis);
-
-
-var res2 = f.call(1, 2, 3);
-console.log(`${res2} === 1,2,3`, res2 === [1, 2, 3].toString());
+var res1 = f.call(1, 2, 3);
+console.log(`${res1} === 1,2,3`, res1 === [1, 2, 3].toString());
 
 function f(a, b) {
   return [this.toString(), a, b].toString();
 }
 
-var res3 = g.call(null, f);
+// var res2 = (() => this).call(null);
+// const fileLevelThis = this;
+// console.log(`${res2} === fileLevelThis`, res2 === fileLevelThis);
 
-function g(cb) {
-  return console.log(cb === f);
-}
+
+
+// var res3 = g.call(null, f);
+
+// function g(cb) {
+//   return console.log(cb === f);
+// }

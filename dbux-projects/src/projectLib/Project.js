@@ -843,7 +843,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       if (process.env.NODE_ENV === 'production') {
         // NOTE: this is an immature feature
         //      for now, only provide one bug for demonstration purposes and to allow us gather feedback
-        arr = arr.filter(bug => bug.label && bug.bugLocations?.length);
+        arr = arr.filter(bug => bug.label && bug.isSolvable);
       }
 
       this._bugs = new BugList(this, arr);

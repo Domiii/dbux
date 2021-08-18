@@ -1,9 +1,11 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import ExecutionContextType from '@dbux/common/src/types/constants/ExecutionContextType';
-import TraceType, { isBeforeCallExpression, isClassDefinitionTrace, isFunctionDefinitionTrace, isPopTrace } from '@dbux/common/src/types/constants/TraceType';
+import { isBeforeCallExpression, isPopTrace } from '@dbux/common/src/types/constants/TraceType';
+import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
 // import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import isThenable from '@dbux/common/src/util/isThenable';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import staticProgramContextCollection from './data/staticProgramContextCollection';
 import executionContextCollection from './data/executionContextCollection';
 import staticContextCollection from './data/staticContextCollection';
@@ -26,6 +28,9 @@ const { log, debug: _debug, warn, error: logError, trace: logTrace } = newLogger
 const Verbose = 0;
 
 const debug = (...args) => Verbose && _debug(...args);
+
+const DataNodeMetaBySpecialIdentifierType = {
+};
 
 // TODO: we can properly use Proxy to wrap callbacks
 // function _inheritsLoose(subClass, superClass) {
@@ -65,6 +70,7 @@ export default class RuntimeMonitor {
     // monkey patching for asynchronous events
     initPatchPromise(this);
     this.callbackPatcher = new CallbackPatcher(this);
+    this.callbackPatcher.init();
 
     // more monkey-patching
     initPatchBuiltins();
@@ -567,7 +573,7 @@ export default class RuntimeMonitor {
   // Basics
   // ###########################################################################
 
-  traceExpression(programId, value, tid, inputs) {
+  traceExpression(programId, value, tid, inputs, valueMeta = null) {
     if (!this._ensureExecuting()) {
       return value;
     }
@@ -591,7 +597,7 @@ export default class RuntimeMonitor {
 
       const varAccess = null;
       inputs = traceCollection.getDataNodeIdsByTraceIds(tid, inputs);
-      dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess, inputs);
+      dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess, inputs, valueMeta);
       return value;
     }
   }
@@ -623,7 +629,7 @@ export default class RuntimeMonitor {
     }
 
     const varAccess = {
-      objectNodeId: traceCollection.getDataNodeIdByTraceId(objectTid),
+      objectNodeId: traceCollection.getOwnDataNodeIdByTraceId(objectTid),
       prop: propValue
     };
 
@@ -667,7 +673,7 @@ export default class RuntimeMonitor {
 
     // this.registerTrace(value, tid);
     const varAccess = {
-      objectNodeId: traceCollection.getDataNodeIdByTraceId(objectTid),
+      objectNodeId: traceCollection.getOwnDataNodeIdByTraceId(objectTid),
       prop: propValue
     };
     dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess, traceCollection.getDataNodeIdsByTraceIds(tid, inputs));
@@ -681,7 +687,7 @@ export default class RuntimeMonitor {
 
     // this.registerTrace(value, tid);
     const varAccess = {
-      objectNodeId: traceCollection.getDataNodeIdByTraceId(objectTid),
+      objectNodeId: traceCollection.getOwnDataNodeIdByTraceId(objectTid),
       prop: propValue
     };
     dataNodeCollection.createOwnDataNode(undefined, tid, DataNodeType.Delete, varAccess);
@@ -786,7 +792,7 @@ export default class RuntimeMonitor {
     const trace = traceCollection.getById(tid);
 
     // add write node
-    const inputs = [traceCollection.getDataNodeIdByTraceId(readTid)];
+    const inputs = [traceCollection.getOwnDataNodeIdByTraceId(readTid)];
     const writeNode = dataNodeCollection.createDataNode(updateValue, tid, DataNodeType.Write, varAccess, inputs);
 
     if (updateValue !== returnValue) {
@@ -816,7 +822,7 @@ export default class RuntimeMonitor {
     }
 
     const varAccess = {
-      objectNodeId: traceCollection.getDataNodeIdByTraceId(objectTid),
+      objectNodeId: traceCollection.getOwnDataNodeIdByTraceId(objectTid),
       prop: prop
     };
     return this._traceUpdateExpression(updateValue, returnValue, readTid, tid, varAccess);
@@ -831,18 +837,20 @@ export default class RuntimeMonitor {
   //   return value;
   // }
 
-  traceBCE(programId, callId, callee, calleeTid, argTids, spreadArgs) {
+  traceBCE(programId, callId, callee, calleeTid, argTids, args) {
     if (!this._ensureExecuting()) {
       return callee;
     }
+    const staticTrace = traceCollection.getStaticTraceByTraceId(callId);
+    const argConfigs = staticTrace?.data?.argConfigs;
 
-    spreadArgs = spreadArgs.map(a => {
+    const spreadArgs = args?.map((a, i) => {
       // [runtime-error] potential runtime error
       // NOTE: trying to spread a non-iterator results in Error anyway; e.g.:
       //      "Found non-callable @@iterator"
       //      "XX is not iterable"
-      return a && Array.from(a);
-    });
+      return argConfigs?.[i]?.isSpread && Array.from(a);
+    }) || EmptyArray;
 
     const bceTrace = traceCollection.getById(callId);
 
@@ -851,7 +859,7 @@ export default class RuntimeMonitor {
     bceTrace.data = {
       calleeTid,
       argTids,
-      spreadLengths: spreadArgs.map(a => a && a.length || null)
+      spreadLengths: spreadArgs.map((a) => a ? a.length : null)
     };
 
     // [spread]
@@ -868,7 +876,7 @@ export default class RuntimeMonitor {
         const arg = spreadArg[j];
 
         const varAccess = {
-          objectNodeId: traceCollection.getDataNodeIdByTraceId(argTid),
+          objectNodeId: traceCollection.getOwnDataNodeIdByTraceId(argTid),
           prop: j
         };
         dataNodeCollection.createDataNode(arg, argTid, DataNodeType.Read, varAccess);
@@ -877,19 +885,26 @@ export default class RuntimeMonitor {
 
     // console.trace(`BCE`, callee.toString(), callee);
 
-    return this.callbackPatcher.monkeyPatchCallee(callee, calleeTid, callId, argTids);
+    return this.callbackPatcher.monkeyPatchCallee(callee, callId, args, spreadArgs);
   }
 
-  traceCallResult(programId, value, tid, callTid) {
+  traceCallResult(programId, value, tid, callId) {
     if (!this._ensureExecuting()) {
       return value;
     }
     const trace = traceCollection.getById(tid);
 
-    // [edit-after-send]
-    trace.resultCallId = callTid;
+    // const bceStaticTrace = traceCollection.getStaticTraceByTraceId(callId);
+    // let valueMeta;
+    // if (bceStaticTrace.data.specialType) {
+    //   // NOTE: taken care of in `ReferencedIdIdentifier`
+    //   valueMeta = DataNodeMetaBySpecialIdentifierType[bceStaticTrace.data.specialType];
+    // }
 
-    this.traceExpression(programId, value, tid, 0);
+    // [edit-after-send]
+    trace.resultCallId = callId;
+
+    this.traceExpression(programId, value, tid, null);
 
     const contextId = this._runtime.peekCurrentContextId();
     // const runId = this._runtime.getCurrentRunId();
@@ -926,12 +941,12 @@ export default class RuntimeMonitor {
         // [spread]
         for (let j = 0; j < len; j++) {
           const readAccess = {
-            objectNodeId: traceCollection.getDataNodeIdByTraceId(argTid),
+            objectNodeId: traceCollection.getOwnDataNodeIdByTraceId(argTid),
             prop: j
           };
           const readNode = dataNodeCollection.createDataNode(value[idx], argTid, DataNodeType.Read, readAccess);
           const writeAccess = {
-            objectNodeId: traceCollection.getDataNodeIdByTraceId(arrTid),
+            objectNodeId: traceCollection.getOwnDataNodeIdByTraceId(arrTid),
             prop: idx
           };
           dataNodeCollection.createWriteNodeFromReadNode(argTid, readNode, writeAccess);
@@ -941,7 +956,7 @@ export default class RuntimeMonitor {
       else {
         // not spread
         const varAccess = {
-          objectNodeId: traceCollection.getDataNodeIdByTraceId(arrTid),
+          objectNodeId: traceCollection.getOwnDataNodeIdByTraceId(arrTid),
           prop: i
         };
         dataNodeCollection.createWriteNodeFromTrace(arrTid, argTid, varAccess);
@@ -974,7 +989,7 @@ export default class RuntimeMonitor {
         // NOTE: we can use `for in` here, because this is the "spread copy" of the object
         for (const key in nested) {
           const readAccess = {
-            objectNodeId: traceCollection.getDataNodeIdByTraceId(propTid),
+            objectNodeId: traceCollection.getOwnDataNodeIdByTraceId(propTid),
             prop: key
           };
           const readNode = dataNodeCollection.createDataNode(value[key], propTid, DataNodeType.Read, readAccess);

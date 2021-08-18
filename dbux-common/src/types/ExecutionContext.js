@@ -33,6 +33,9 @@ export default class ExecutionContext {
   parentContextId;
 
   /**
+   * If context was created by a CallExpression: BCE trace.
+   * Otherwise: the last trace before the context was pushed.
+   * 
    * @type {number}
    */
   parentTraceId;
@@ -66,4 +69,11 @@ export default class ExecutionContext {
    * @type {number}
    */
   lastTraceId;
+
+  /**
+   * If the context is an async function, this is its returned `promiseId`.
+   * 
+   * @type {number}
+   */
+  asyncPromiseId;
 }

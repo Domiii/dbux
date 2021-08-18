@@ -1,12 +1,15 @@
 import truncate from 'lodash/truncate';
+import isFunction from 'lodash/isFunction';
+import isString from 'lodash/isString';
 import ValueTypeCategory, { determineValueTypeCategory, ValuePruneState, isTrackableCategory } from '@dbux/common/src/types/constants/ValueTypeCategory';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 // import serialize from '@dbux/common/src/serialization/serialize';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { getOriginalFunction, getPatchedFunction } from '../util/monkeyPatchUtil';
 import Collection from './Collection';
 import pools from './pools';
-import isThenable from '@dbux/common/src/util/isThenable';
+
 
 /** @typedef {import('@dbux/common/src/types/ValueRef').default} ValueRef */
 
@@ -24,21 +27,28 @@ const SerializationConfig = {
   maxStringLength: 1000
 };
 
-const builtInTypeSerializers = new Map([
-  [Map, obj => [['entries', obj.entries()]]],
-  [Set, obj => [['entries', obj.entries()]]],
-  [RegExp, obj => [['regex', obj.toString()]]]
+// ###########################################################################
+// values
+// ###########################################################################
 
-  // TODO: thenables and many other built-ins
-]);
-
-function getBuiltInSerializer(value) {
-  if (!value.constructor || value === value.constructor.prototype) {
-    // don't try to default-serialize a built-in prototype
-    return null;
+export function wrapValue(value) {
+  if (value instanceof Function) {
+    value = getPatchedFunction(value) || value;
   }
-  return builtInTypeSerializers.get(value.constructor) || null;
+  return value;
 }
+
+export function unwrapValue(value) {
+  if (value instanceof Function) {
+    value = getOriginalFunction(value) || value;
+  }
+  return value;
+}
+
+
+// ###########################################################################
+// ValueCollection
+// ###########################################################################
 
 /**
  * Keeps track of `StaticTrace` objects that contain static code information
@@ -69,10 +79,60 @@ class ValueCollection extends Collection {
 
 
   // ###########################################################################
+  // Serializers
+  // ###########################################################################
+
+  builtInTypeSerializers = new Map([
+    [Map, this.makeDefaultSerializer(obj => [['entries', obj.entries()]])],
+    [Set, this.makeDefaultSerializer(obj => [['entries', obj.entries()]])],
+    [RegExp, this.makeDefaultSerializer(obj => [['regex', obj.toString()]])],
+    [Error, this.makeDefaultSerializer((err, valueRef) => {
+      // [edit-after-send]
+      valueRef.isError = true;
+      return [['name'], ['stack'], ['message']];
+    })]
+
+    // TODO: thenables and many other built-ins
+  ]);
+
+  makeDefaultSerializer(f) {
+    return (value, nodeId, depth, serialized, valueRef) => {
+      const children = f(value, valueRef);
+      for (const entry of children) {
+        let [key] = entry;
+        let childValue;
+        if (entry.length > 1) {
+          [, childValue] = entry;
+        }
+        else {
+          childValue = this._readProperty(value, key);
+        }
+        const childRef = this._serialize(childValue, nodeId, depth + 1);
+        this._pushObjectProp(depth, key, childRef, childValue, serialized);
+      }
+    };
+  }
+
+  getBuiltInSerializer(value) {
+    if (!value.constructor || value === value.constructor.prototype) {
+      // don't try to default-serialize a built-in prototype
+      return null;
+    }
+    return this.builtInTypeSerializers.get(value.constructor) || null;
+  }
+
+
+
+  // ###########################################################################
   // public methods
   // ###########################################################################
 
   getRefByValue(value) {
+    value = unwrapValue(value);
+    return this.valueRefsByObject.get(value);
+  }
+
+  _getRefByValueUnwrapped(value) {
     return this.valueRefsByObject.get(value);
   }
 
@@ -91,13 +151,7 @@ class ValueCollection extends Collection {
     Verbose > 1 && this._log(`[val] dataNode #${nodeId}`);
     if (!isTrackableCategory(category)) {
       valueRef = null;
-
-      // hackfix: coerce to string
-      // NOTE: workaround for https://github.com/Domiii/dbux/issues/533
-      if (typeof value === 'bigint') {
-        value = value + 'n';
-      }
-      dataNode.value = value;
+      dataNode.value = this._serializeNonTrackable(value, category);
     }
     else {
       valueRef = this._serialize(value, nodeId, 1, category, meta);
@@ -325,10 +379,43 @@ class ValueCollection extends Collection {
   // serialize
   // ###########################################################################
 
-  _pushObjectProp(depth, prop, valueRef, value, serialized) {
-    Verbose > 1 && this._logValue(`${' '.repeat(depth)}[${prop}]`, valueRef, value);
+  _pushObjectProp(depth, key, childValueRef, childValue, serialized) {
+    Verbose > 1 && this._logValue(`${' '.repeat(depth)}[${key}]`, childValueRef, childValue);
 
-    serialized[prop] = [valueRef && valueRef.refId, !valueRef && value];
+    serialized[key] = [
+      childValueRef && childValueRef.refId,
+      !childValueRef && this._serializeNonTrackable(childValue)
+    ];
+  }
+
+  _serializeNonTrackable(value, category) {
+    // category = value || determineValueTypeCategory(value);
+
+    let serialized;
+    // switch (category) {
+    //   case ValueTypeCategory.String:
+    if (isString(value)) {
+      if (value.length > SerializationConfig.maxStringLength) {
+        serialized = value.substring(0, SerializationConfig.maxStringLength) + '...';
+        // pruneState = ValuePruneState.Shortened;
+      }
+      else {
+        serialized = value;
+      }
+      // serialized = JSON.stringify(value);
+    }
+    else {
+      if (typeof value === 'bigint') {
+        // hackfix: coerce to string
+        // NOTE: workaround for https://github.com/Domiii/dbux/issues/533
+        serialized = value + 'n';
+      }
+      else {
+        serialized = value;
+      }
+    }
+    // this.logger.warn('_serializeNonTrackable', value, serialized);
+    return serialized;
   }
 
   /**
@@ -341,7 +428,7 @@ class ValueCollection extends Collection {
     let pruneState = ValuePruneState.Normal;
     let typeName = '';
     let valueRef;
-    let isNewObject = false;
+    let isNewValue = false;
 
     if (this.valuesDisabled) {
       return this._addValueDisabled();
@@ -350,35 +437,28 @@ class ValueCollection extends Collection {
       return this.addOmitted();
     }
 
+    // unwrap
+    value = unwrapValue(value);
+
     // look-up existing value
     category = category || determineValueTypeCategory(value);
     if (!isTrackableCategory(category)) {
       return null;
     }
-    valueRef = this.getRefByValue(value);
+    valueRef = this._getRefByValueUnwrapped(value);
     if (!valueRef) {
-      isNewObject = true;
+      isNewValue = true;
       valueRef = this._addValueRef(category, nodeId, value);
     }
 
-    if (!isNewObject) {
+    if (!isNewValue) {
       return valueRef;
-    }
-
-    // this is a new object
-    if (isThenable(value)) {
-      this.maybePatchPromise(value);
     }
 
     if (meta?.shallow) {
-      this._finishValue(valueRef, typeName, Array.isArray(value) ? EmptyArray : EmptyObject, pruneState);
-      return valueRef;
-    }
-
-    if (meta?.omit) {
       // shortcut -> don't serialize children
       typeName = value.constructor?.name || '';
-      this._finishValue(valueRef, typeName, EmptyArray, ValuePruneState.Omitted);
+      this._finishValue(valueRef, typeName, Array.isArray(value) ? EmptyArray : EmptyObject, pruneState);
       return valueRef;
     }
 
@@ -389,19 +469,10 @@ class ValueCollection extends Collection {
 
 
     // process by category
-    switch (category) {
-      case ValueTypeCategory.String:
-        if (value.length > SerializationConfig.maxStringLength) {
-          serialized = value.substring(0, SerializationConfig.maxStringLength);
-          pruneState = ValuePruneState.Shortened;
-        }
-        else {
-          serialized = value;
-        }
-        break;
 
+    switch (category) {
       case ValueTypeCategory.Function: {
-        // TODO: look up staticContext information by function instead
+        // TODO: look up staticContext information by function for `name` instead?
         // TODO: functions can have custom properties too
         serialized = {};
         this._pushObjectProp(depth, 'name', null, 'ƒ ' + (value.name || ''), serialized);
@@ -420,12 +491,17 @@ class ValueCollection extends Collection {
         // build array
         serialized = [];
         for (let i = 0; i < n; ++i) {
-          const childValue = value[i];
-
-          const childRef = this._serialize(childValue, nodeId, depth + 1);
+          let childRef, childValue;
+          if (!this._canAccess(value)) {
+            childRef = this.addOmitted();
+          }
+          else {
+            childValue = this._readProperty(value, i);
+            childRef = this._serialize(childValue, nodeId, depth + 1);
+          }
           Verbose > 1 && this._logValue(`${' '.repeat(depth)}[${i}]`, childRef, childValue);
 
-          serialized.push([childRef?.refId, !childRef && childValue]);
+          serialized.push([childRef?.refId, !childRef && this._serializeNonTrackable(childValue)]);
         }
         break;
       }
@@ -437,6 +513,13 @@ class ValueCollection extends Collection {
         else {
           // iterate over all object properties
           let props = this._getProperties(value);
+
+          // check for promise
+          const thenRepresentation = value && this._readProperty(value, 'then');
+          valueRef.isThenable = thenRepresentation && isFunction(thenRepresentation);
+          if (value.isThenable) {
+            this.maybePatchPromise(value);
+          }
 
           if (!props) {
             // error
@@ -458,14 +541,10 @@ class ValueCollection extends Collection {
             // start serializing
             serialized = {};
 
-            const builtInSerializer = getBuiltInSerializer(value);
+            const builtInSerializer = this.getBuiltInSerializer(value);
             if (builtInSerializer) {
               // serialize built-in types - especially: RegExp, Map, Set
-              const entries = builtInSerializer(value);
-              for (const [prop, childValue] of entries) {
-                const childRef = this._serialize(value, nodeId, depth + 1);
-                this._pushObjectProp(depth, prop, childRef, childValue, serialized);
-              }
+              builtInSerializer(value, nodeId, depth, serialized, valueRef);
             }
             else {
               // serialize object (default)

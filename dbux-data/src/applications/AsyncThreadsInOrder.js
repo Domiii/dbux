@@ -1,5 +1,11 @@
 import AsyncNode from '@dbux/common/src/types/AsyncNode';
 import { mergeSortedArray } from '@dbux/common/src/util/arrayUtil';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import { newLogger } from '@dbux/common/src/log/logger';
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('AsyncThreadsInOrder');
+
 
 /** @typedef {import('./ApplicationSetData').default} ApplicationSetData */
 
@@ -37,7 +43,11 @@ export default class AsyncThreadsInOrder {
 
       return threadIds.map(threadId => {
         const firstNode = dp.indexes.asyncNodes.byThread.getFirst(threadId);
-        const { createdAt } = dp.collections.executionContexts.getById(firstNode.rootContextId);
+        const context = dp.collections.executionContexts.getById(firstNode.rootContextId);
+        if (!context) {
+          warn(`Could not find context with cid=${firstNode.rootContextId} of firstNode=${JSON.stringify(firstNode)} of trace="${dp.util.makeTraceInfo(firstNode.traceId)}"`);
+        }
+        const { createdAt } = context || EmptyObject;
         return {
           applicationId,
           threadId,

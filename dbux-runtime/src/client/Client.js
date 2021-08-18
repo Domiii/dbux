@@ -84,7 +84,7 @@ export default class Client {
   _connectFailed = false;
 
   _handleConnect = (socket) => {
-    if (!this._socket) {
+    if (socket && !this._socket && !this._connectFailed) {
       /**
        * WARNING: if sending data is followed by an unknown disconnect,
        *      it is likely due to error #1009: Max payload size exceeded.
@@ -95,10 +95,10 @@ export default class Client {
        * @see https://github.com/websockets/ws/blob/abde9cfc21ce0f1cb7e2556aea70b423359364c7/lib/receiver.js#L371
        */
       // eslint-disable-next-line max-len
-      logWarn(`Connection incoming while disconnected. This might (or might not) be an unintended sign that sent data exceeds the configured server maximum. Consider increasing the maximum via socket.io's maxHttpBufferSize.`);
-      this._socket = socket;
+      logWarn(`Connection incoming while disconnected. If you were connected before, This might (or might not) be an unintended sign that sent data exceeds the configured server maximum. In that case, consider increasing the maximum via socket.io's maxHttpBufferSize.`);
     }
-    Verbose > 1 && debug('-> connected');
+    this._socket = socket;
+    Verbose > 1 && debug('-> connected', !!socket);
     this._connected = true;
     this._connectFailed = false;
 

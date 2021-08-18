@@ -4,6 +4,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
+import { valueRender } from '../valueRender';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 
 // eslint-disable-next-line no-unused-vars
@@ -20,6 +21,16 @@ export default class ValueNode extends BaseTreeViewNode {
     return UserActionType.TDValueCollapseChange;
   }
 
+  get trace() {
+    const { treeNodeProvider: { trace } } = this;
+    return trace;
+  }
+
+  get dp() {
+    const { applicationId } = this.trace;
+    return allApplications.getById(applicationId).dataProvider;
+  }
+
   init() {
     // hackfix: to show valueRender button in simple logic
     this.contextValue = 'dbuxTraceDetailsView.node.traceValueNode';
@@ -34,20 +45,22 @@ export default class ValueNode extends BaseTreeViewNode {
   }
 
   valueRender() {
-    // needs `dp.util.constructValueObjectFull`
     // log(`Clicking ValueNode is temporarily disabled.`);
-    // const { valueRef, value, hasValue } = this;
-    // if (hasValue) {
-    //   valueRender(valueRef, value);
-    // }
-    // else {
-    //   valueRender(null, NoValueMessage);
-    // }
+    const { dp, entry } = this;
+
+    const nodeId = entry?.nodeId;
+    if (!nodeId) {
+      return;
+    }
+
+    const valueRef = entry.refId && dp.collections.values.getById(entry.refId);
+    const value = dp.util.constructValueFull(nodeId);
+
+    valueRender(valueRef, value);
   }
 
   selectWriteTrace() {
-    const { treeNodeProvider: { trace: { applicationId } } } = this;
-    const dp = allApplications.getById(applicationId).dataProvider;
+    const { dp } = this;
     const writeNode = dp.collections.dataNodes.getById(this.nodeId);
     const writeTrace = dp.collections.traces.getById(writeNode.traceId);
 
@@ -55,8 +68,7 @@ export default class ValueNode extends BaseTreeViewNode {
   }
 
   selectValueCreationTrace() {
-    const { treeNodeProvider: { trace: { applicationId } } } = this;
-    const dp = allApplications.getById(applicationId).dataProvider;
+    const { dp } = this;
     const { valueId } = dp.collections.dataNodes.getById(this.nodeId);
     const firstNodeByValue = dp.indexes.dataNodes.byValueId.getFirst(valueId) || EmptyArray;
     if (firstNodeByValue) {

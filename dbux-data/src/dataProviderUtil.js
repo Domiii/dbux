@@ -1,3 +1,4 @@
+import isString from 'lodash/isString';
 import findLast from 'lodash/findLast';
 import groupBy from 'lodash/groupBy';
 import TraceType, { hasDynamicTypes, isTracePop, isBeforeCallExpression } from '@dbux/common/src/types/constants/TraceType';
@@ -12,8 +13,9 @@ import { isVirtualContextType } from '@dbux/common/src/types/constants/StaticCon
 import { isRealContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
 import { isCallResult, hasCallId } from '@dbux/common/src/types/constants/traceCategorization';
 import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory, ValuePruneState } from '@dbux/common/src/types/constants/ValueTypeCategory';
-import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
+import SpecialCallType from '@dbux/common/src/types/constants/SpecialCallType';
+import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
 import AsyncEventUpdateType, { isPreEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import { locToString } from './util/misc';
 
@@ -204,7 +206,7 @@ export default {
   },
 
   // getAllExecutedStaticTraces(dp) {
-  //  // TODO: NIY
+  //  // NIY
   // },
 
   getExecutedStaticTracesInStaticContext(dp, staticContextId) {
@@ -332,6 +334,24 @@ export default {
     return dp.indexes.dataNodes.byTrace.get(valueTrace.traceId);
   },
 
+  /** @param {DataProvider} dp */
+  getOwnDataNodeOfTrace(dp, traceId) {
+    const trace = dp.util.getTrace(traceId);
+    return dp.collections.dataNodes.getById(trace.nodeId);
+  },
+
+  /** @param {DataProvider} dp */
+  getInputIdsOfTrace(dp, traceId) {
+    const dataNode = dp.util.getOwnDataNodeOfTrace(traceId);
+    return dataNode?.inputs;
+  },
+
+  /** @param {DataProvider} dp */
+  getFirstInputDataNodeOfTrace(dp, traceId) {
+    const inputIds = dp.util.getInputIdsOfTrace(traceId);
+    return inputIds?.length ? dp.collections.dataNodes.getById(inputIds[0]) : null;
+  },
+
   // ###########################################################################
   // trace values
   // ###########################################################################
@@ -343,6 +363,10 @@ export default {
   */
   getValueTrace(dp, traceId) {
     let trace = dp.collections.traces.getById(traceId);
+    if (!trace) {
+      dp.logger.trace(`invalid traceId does not have a trace:`, traceId);
+      return trace;
+    }
     const traceType = dp.util.getTraceType(traceId);
     if (isBeforeCallExpression(traceType) && trace.resultId) {
       // trace is `BeforeCallExpression` and has a matching result trace
@@ -407,29 +431,65 @@ export default {
   },
 
   /** 
-   * NOTE: Call `isTracePlainObjectOrArrayValue` to make sure it is reconstructable
    * @param {DataProvider} dp
    */
-  constructValueObjectFull(dp, nodeId) {
-    // TODO
+  constructValueFull(dp, nodeId, _refId, _value, _visited, _rootNodeId) {
+    const isRoot = !_visited;
+    const dataNode = dp.collections.dataNodes.getById(nodeId);
+    if (isRoot) {
+      _visited = new Set();
+      ({ refId: _refId } = dataNode);
+      _rootNodeId = nodeId;
+    }
+
+    let valueRef;
+    if (_refId) {
+      valueRef = dp.collections.values.getById(_refId);
+      if (_visited.has(_refId)) {
+        return '(circular dependency)';
+      }
+      _visited.add(_refId);
+    }
+
+    let finalValue;
+    if (!_refId) {
+      finalValue = _value;
+    }
+    else {
+      const entries = Object.entries(dp.util.constructValueObjectShallow(_refId, _rootNodeId));
+
+      finalValue = Object.fromEntries(
+        entries.map(([key, [childNodeId, childRefId, childValue]]) => {
+          return [key, dp.util.constructValueFull(childNodeId, childRefId, childValue, _visited, _rootNodeId)];
+        })
+      );
+    }
+
+    return finalValue;
+  },
+
+  _fixNonTrackableValue(value) {
+    // if (isString(value)) {
+    //   return value.replace('\n');//
+    // }
+    return value;
   },
 
   /**
-   * NOTE: Call `isTracePlainObjectOrArrayValue` to make sure it is reconstructable
-   * 
    * @param {DataProvider} dp
    * @return {{prop: number}} returns the `prop`, `nodeId` key-value pairs
    */
-  constructValueObjectShallow(dp, refId, terminateNodeId) {
+  constructValueObjectShallow(dp, refId, terminateNodeId = Infinity) {
     const valueRef = dp.collections.values.getById(refId);
 
     // initial values
+    // NOTE: valueRef.value is an array of the same format as the one below, produced by {@link ValueRefCollection.deserializeShallow}
     const entries = { ...valueRef.value };
 
-    if (!entries) {
-      // sanity check
-      dp.logger.error(`Cannot construct non-object valueRef: ${JSON.stringify(valueRef)}`);
-    }
+    // if (!entries) {
+    //   // sanity check
+    //   dp.logger.error(`Cannot construct non-object valueRef: ${JSON.stringify(valueRef)}`);
+    // }
 
     // + writes - delete
     const modifyNodes = dp.indexes.dataNodes.byObjectRefId.get(refId)?.filter(node => isDataNodeModifyType(node.type)) || EmptyArray;
@@ -484,8 +544,6 @@ export default {
         logError(`valueRef does not exist for dataNode - ${JSON.stringify(dataNode)}`);
         return undefined;
       }
-      // TODO: this is not the correct value for objects or arrays, needs reconstruct
-      // TODO: some shallow reconstruct?
       return valueRef.value;
     }
 
@@ -516,7 +574,6 @@ export default {
       return trace._valueString;
     }
 
-    // TODO: separate "message" from valueString
     // A message is generated if there is an issue with the value or it was omitted.
     const valueMessage = dp.util.getTraceValueMessage(traceId);
     if (valueMessage) {
@@ -534,7 +591,6 @@ export default {
       valueString = 'undefined';
     }
     else {
-      // TODO: fix this
       // valueString = JSON.stringify(value);
       valueString = value?.toString?.() || String(value);
     }
@@ -562,13 +618,19 @@ export default {
         valueString = ValueTypeCategory.nameFrom(valueRef.category);
       }
       else {
-        // TODO: do this recursively, so array-of-object does not display object itself
+        // future-work: do this recursively, so array-of-object does not display object itself
         valueString = valueString.substring(0, ShortLength - 3) + '...';
       }
     }
 
     // hackfix: we cache this thing
     return trace._valueStringShort = valueString;
+  },
+
+  /** @param {DataProvider} dp */
+  getTraceRefId(dp, traceId) {
+    const valueRef = dp.util.getTraceValueRef(traceId);
+    return valueRef?.refId;
   },
 
   /** @param {DataProvider} dp */
@@ -587,11 +649,6 @@ export default {
       }
     }
     return null;
-  },
-
-  getTraceRefId(dp, traceId) {
-    const valueRef = dp.util.getTraceValueRef(traceId);
-    return valueRef?.refId;
   },
 
   /** @param {DataProvider} dp */
@@ -650,19 +707,13 @@ export default {
 
   /**
    * Get callerTrace (BCE) of a call related trace, returns itself if it is not a call related trace.
-   * Note: if a trace is both `CallArgument` and `CallExpressionResult`, returns the argument trace.
-   * Note: we use this to find the parent trace of a given context.
+   * NOTE: we use this to find the parent trace of a given context.
+   * NOTE: if a trace is both `CallArgument` and `CallExpressionResult`, returns the argument trace.
    * @param {DataProvider} dp
    * @param {number} traceId
   */
   getPreviousCallerTraceOfTrace(dp, traceId) {
     const trace = dp.collections.traces.getById(traceId);
-    // TODO: deal with callback traces after context.schedulerTraceId is back
-    // const context = dp.collections.executionContexts.getById(trace.contextId);
-    // if (context.schedulerTraceId) {
-    //   // trace is push/pop callback
-    //   return dp.util.getCallerTraceOfTrace(context.schedulerTraceId);
-    // }
     if (hasCallId(trace)) {
       // trace is call/callback argument or BCE
       return dp.collections.traces.getById(trace.callId);
@@ -675,32 +726,35 @@ export default {
   },
 
   /**
+   * [sync]
    * Get callerTrace (BCE) of a call related trace, returns itself if it is not a call related trace.
    * Note: if a trace is both `CallArgument` and `CallExpressionResult`, returns the result trace.
    * @param {DataProvider} dp
    * @param {number} traceId
   */
-  getCallerTraceOfTrace(dp, traceId) {
-    const trace = dp.collections.traces.getById(traceId);
-    // TODO: deal with callback traces after context.schedulerTraceId is back
-    // const context = dp.collections.executionContexts.getById(trace.contextId);
-    // if (context.schedulerTraceId) {
-    //   // trace is push/pop callback
-    //   return dp.util.getCallerTraceOfTrace(context.schedulerTraceId);
-    // }
+  getBCETraceOfTrace(dp, traceId) {
+    const { traces } = dp.collections;
+    const trace = traces.getById(traceId);
     if (isCallResult(trace)) {
       // trace is call expression result
-      return dp.collections.traces.getById(trace.resultCallId);
+      return traces.getById(trace.resultCallId);
     }
     else if (hasCallId(trace)) {
       // trace is call/callback argument or BCE
-      return dp.collections.traces.getById(trace.callId);
+      return traces.getById(trace.callId);
     }
     else {
       // not a call related trace
       return trace;
       // return null;
     }
+  },
+
+  /**
+   * @param {DataProvider} dp
+   */
+  getCallIdOfTrace(dp, traceId) {
+    return dp.util.getBCETraceOfTrace(traceId)?.traceId || null;
   },
 
   /**
@@ -776,24 +830,32 @@ export default {
 
   /**
    * @param {DataProvider} dp
-  */
+   */
   getCallArgTraces(dp, callId) {
     const bceTrace = dp.collections.traces.getById(callId);
     return bceTrace.data?.argTids.map(tid => dp.collections.traces.getById(tid));
   },
 
   /**
-   * NOTE: This works automatically for spread operator.
+   * TODO: given the `nodeId` of (what should be) an array, return its element DataNodes.
    * 
+   * @param {DataProvider} dp
+   */
+  getArrayDataNodes(dp, nodeId) {
+    return [];
+  },
+
+  /**
+   * NOTE: This works automatically for spread operator.
+   *
+   * @param {DataProvider} dp
    * @return Flattened version of DataNodes of `CallExpression` arguments.
    */
   getCallArgDataNodes(dp, callId) {
-    // TODO: `bind`, `call` and `apply` change the arg <-> param mapping
-    //    -> probably don't need to touch bceTrace.data?.argTids
-
+    // TODO: for `bind`, `call` and `apply` change the arg <-> param mapping
     const argTraces = dp.util.getCallArgTraces(callId);
     const { argConfigs } = dp.util.getStaticTrace(callId).data;
-    return argTraces.flatMap((t, i) => {
+    let argDataNodes = argTraces.flatMap((t, i) => {
       const dataNodes = dp.util.getDataNodesOfTrace(t.traceId);
       if (!argConfigs[i]?.isSpread) {
         // not spread -> take the argument's own `DataNode`
@@ -802,6 +864,35 @@ export default {
       // spread -> take all of the spread argument's additional `DataNode`s (which are the argument DataNodes)
       return dataNodes.slice(1);
     });
+
+    const bceTrace = dp.util.getTrace(callId);
+    const callType = dp.util.getSpecialCallType(callId);
+    switch (callType) {
+      case SpecialCallType.Call:
+        argDataNodes = argDataNodes.slice(1);
+        break;
+      case SpecialCallType.Apply:
+        argDataNodes = dp.util.getArrayDataNodes(argDataNodes[1]);
+        break;
+      case SpecialCallType.Bind:
+        // return as-is -> handle below in `Bound` case
+        // argDataNodes = ;
+        break;
+    }
+
+    if (bceTrace?.data.calleeTid) {
+      // check for `Bound`
+      const bindTrace = dp.util.getBindCallTrace(bceTrace.data.calleeTid);
+      const boundArgNodes = bindTrace && dp.util.getCallArgDataNodes(bindTrace.traceId);
+      if (boundArgNodes) {
+        argDataNodes = [
+          ...boundArgNodes || EmptyArray,
+          ...argDataNodes
+        ];
+      }
+    }
+
+    return argDataNodes;
   },
 
   /**
@@ -813,15 +904,58 @@ export default {
     return dataNodes?.map(node => node.value);
   },
 
-
-  getReturnValueRefOfContext(dp, contextId) {
+  /**
+   * @param {DataProvider} dp
+   * @return the ValueRef of given `context`'s BCE. We use it to get an `async` function call's own promise.
+   */
+  getCallValueRefOfContext(dp, contextId) {
     const bceTrace = dp.util.getOwnCallerTraceOfContext(contextId);
     return bceTrace && dp.util.getTraceValueRef(bceTrace.traceId) || null;
   },
 
   /**
    * @param {DataProvider} dp
-  */
+   */
+  getReturnValueRefOfInterruptableContext(dp, realContextId) {
+    const returnTrace = dp.util.getReturnValueTraceOfInterruptableContext(realContextId);
+    return returnTrace && dp.util.getTraceValueRef(returnTrace.traceId);
+  },
+
+  /**
+   * @param {DataProvider} dp
+   */
+  getReturnValueRefOfContext(dp, contextId) {
+    const returnTrace = dp.util.getReturnValueTraceOfContext(contextId);
+    return returnTrace && dp.util.getTraceValueRef(returnTrace.traceId);
+  },
+
+  /**
+   * Requires the given context to have (virtual) child contexts.
+   * WARNING: does not work for non-interruptable functions.
+   * @param {DataProvider} dp
+   */
+  getReturnValueTraceOfInterruptableContext(dp, realContextId) {
+    const resumeContext = dp.util.getLastChildContextOfContext(realContextId);
+    return resumeContext &&
+      dp.util.getReturnValueTraceOfContext(resumeContext.contextId);
+  },
+
+  /**
+   * WARNING: does not work for `realContextId` of interruptable functions (need virtual `Resume` contextId instead).
+   * @param {DataProvider} dp
+   */
+  getReturnValueTraceOfContext(dp, contextId) {
+    const returnTraces = dp.util.getTracesOfContextAndType(contextId, TraceType.ReturnArgument);
+
+    if (returnTraces.length > 1) {
+      dp.logger.warn(`Found context containing more than one ReturnArgument. contextId: ${contextId}, ReturnArgument traces: [${returnTraces}]`);
+    }
+    return returnTraces[0] || null;
+  },
+
+  /**
+   * @param {DataProvider} dp
+   */
   getCalleeTraceId(dp, callId) {
     return dp.collections.traces.getById(callId)?.data?.calleeTid;
   },
@@ -834,10 +968,94 @@ export default {
    * Given a `callId` (traceId of a CallExpression), returns whether its callee was recorded (i.e. instrumented/traced).
    * NOTE: Some calls have an underlying context, but that is not the context of the function was called.
    *    -> e.g. `array.map(f)` might have recorded f's context, but `f` is not `array.map` (the actual callee).
+   * @param {DataProvider} dp
    */
   isCalleeTraced(dp, callId) {
     const context = dp.indexes.executionContexts.byCalleeTrace.getUnique(callId);
     return context && !!dp.util.getOwnCallerTraceOfContext(context.contextId);
+  },
+
+  /**
+   * @param {DataProvider} dp
+   */
+  getBindCallTrace(dp, functionTraceId) {
+    const { getTraceValueRef, getFirstTraceByRefId, getBCETraceOfTrace } = dp.util;
+    if (!functionTraceId) {
+      // callee was not recorded
+      return null;
+    }
+    // const trace = dp.util.getTrace(functionTraceId);
+    // if (!trace) {
+    //   dp.logger.warn(`invalid functionTraceId does not have a trace:`, functionTraceId/* , dp.collections.traces._all */);
+    //   return null;
+    // }
+    const calleeRef = getTraceValueRef(functionTraceId);
+    const originalTrace = calleeRef && getFirstTraceByRefId(calleeRef.refId);
+    const bindTrace = originalTrace && getBCETraceOfTrace(originalTrace.traceId);
+    if (bindTrace?.data?.specialCallType === SpecialCallType.Bind) {
+      return bindTrace;
+    }
+    return null;
+  },
+
+  /**
+   * @param {DataProvider} dp
+   */
+  getSpecialCallType(dp, callId) {
+    const bceTrace = dp.util.getTrace(callId);
+    if (!bceTrace?.data) {
+      return null;
+    }
+
+    switch (bceTrace.data.specialCallType) {
+      case SpecialCallType.Call:
+      case SpecialCallType.Apply:
+      case SpecialCallType.Bind:
+        return bceTrace.data.specialCallType;
+    }
+
+    return null;
+  },
+
+  /**
+   * Accounts for `call`, `apply`, `bind`.
+   * @param {DataProvider} dp
+   */
+  getRealCalleeTrace(dp, callId) {
+    const bceTrace = dp.util.getTrace(callId);
+    if (!bceTrace?.data) {
+      return null;
+    }
+
+    let realCalleeTid;
+    const callType = dp.util.getSpecialCallType(callId);
+    switch (callType) {
+      case SpecialCallType.Call:
+      case SpecialCallType.Apply:
+        realCalleeTid = bceTrace.data.calledFunctionTid;
+        break;
+      case SpecialCallType.Bind: {
+        // nothing to do here -> handle `Bound` case below
+        break;
+      }
+    }
+
+    // no match -> check for Bound
+    const { calleeTid } = bceTrace.data;
+    const bindTrace = dp.util.getBindCallTrace(calleeTid);
+    if (bindTrace) {
+      realCalleeTid = bindTrace.data.calledFunctionTid;
+    }
+
+    if (!realCalleeTid) {
+      // default
+      realCalleeTid = bceTrace.data.calleeTid;
+    }
+    else {
+      // TODO: keep recursing in order to support arbitrary `bind` chains, e.g.: `f.bind.bind()`
+    }
+
+    return dp.collections.traces.getById(realCalleeTid);
   },
 
   /**
@@ -853,7 +1071,8 @@ export default {
     }
 
     // check if it is the actual bce
-    const calleeTrace = dp.collections.traces.getById(bceTrace.data.calleeTid);
+    const callId = bceTrace.traceId;
+    const calleeTrace = dp.util.getRealCalleeTrace(callId);
     if (!calleeTrace) {
       return null;
     }
@@ -915,20 +1134,33 @@ export default {
   },
 
   /** @param {DataProvider} dp */
-  getRealContextId(dp, traceId) {
+  getRealContextIdOfTrace(dp, traceId) {
     const { contextId } = dp.collections.traces.getById(traceId);
+    return dp.util.getRealContextIdOfContext(contextId);
+  },
+
+  /** @param {DataProvider} dp */
+  getLastChildContextOfContext(dp, realContextId) {
+    return dp.indexes.executionContexts.children.getLast(realContextId);
+  },
+
+  /** @param {DataProvider} dp */
+  getRealContextIdOfContext(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
     const { parentContextId } = context;
-    const parentContext = dp.collections.executionContexts.getById(parentContextId);
+    let parentContext;
 
     if (isRealContextType(context.contextType)) {
       return contextId;
     }
-    else if (parentContext && isRealContextType(parentContext.contextType)) {
+    else if (
+      (parentContext = dp.collections.executionContexts.getById(parentContextId)) &&
+      isRealContextType(parentContext.contextType)
+    ) {
       return parentContextId;
     }
     else {
-      logError('Could not find realContext.');
+      dp.logger.trace('Could not find realContext for contextId', contextId);
       return null;
     }
   },
@@ -986,6 +1218,7 @@ export default {
     return firstContextId === contextId;
   },
 
+  /** @param {DataProvider} dp */
   isFirstContextInParent(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
     const { parentContextId } = context;
@@ -993,6 +1226,13 @@ export default {
       return dp.indexes.executionContexts.children.getFirst(parentContextId) === context;
     }
     return false;
+  },
+
+  /** @param {DataProvider} dp */
+  getRealContextOfBCE(dp, callId) {
+    const firstChildTrace = dp.indexes.traces.byCalleeTrace.getFirst(callId);
+    const contextId = firstChildTrace && dp.util.getRealContextIdOfTrace(firstChildTrace.traceId);
+    return contextId && dp.collections.executionContexts.getById(contextId);
   },
 
   // ###########################################################################
@@ -1143,7 +1383,7 @@ export default {
   /**
    * Groups traces by TraceType, as well as staticTraceId.
    * 
-   * TODO: improve performance, use MultiKeyIndex instead
+   * future-work: improve performance, use MultiKeyIndex instead
    * @param {DataProvider} dp 
    * @param {StaticTrace[]} staticTraces
   */
@@ -1301,9 +1541,9 @@ export default {
   //   console.log('errorTrace', !isReturnTrace(traceType),
 
   //     traceId, staticTraceId,
-  //     dp.util.getRealContextId(traceId),
+  //     dp.util.getRealContextIdOfTrace(traceId),
 
-  //     dp.util.getLastTraceInRealContext(dp.util.getRealContextId(traceId))?.traceId,
+  //     dp.util.getLastTraceInRealContext(dp.util.getRealContextIdOfTrace(traceId))?.traceId,
   //     dp.util.getLastStaticTraceInContext(dp.collections.staticTraces.getById(staticTraceId).staticContextId)?.staticTraceId,
 
   //     // is last trace we have recorded in context
@@ -1313,7 +1553,7 @@ export default {
   //     !dp.util.isLastStaticTraceInContext(staticTraceId),
 
   //     // the context must have popped (finished), or else there was no error (yet)
-  //     dp.util.hasRealContextPopped(dp.util.getRealContextId(traceId)));
+  //     dp.util.hasRealContextPopped(dp.util.getRealContextIdOfTrace(traceId)));
 
   //   // is not a return trace (because return traces indicate function succeeded)
   //   return !isReturnTrace(traceType) &&
@@ -1325,7 +1565,7 @@ export default {
   //     !dp.util.isLastStaticTraceInContext(staticTraceId) &&
 
   //     // the context must have popped (finished), or else there was no error (yet)
-  //     dp.util.hasRealContextPopped(dp.util.getRealContextId(traceId));
+  //     dp.util.hasRealContextPopped(dp.util.getRealContextIdOfTrace(traceId));
   // },
 
   // hasContextError(dp, realContextId) {
@@ -1462,6 +1702,14 @@ export default {
     return updates?.filter(upd => isPreEventUpdate(upd.type)) || null;
   },
 
+  getPromiseTreeChildren(dp, promiseId) {
+    return dp.indexes.asyncEventUpdates.byPreThenPromise.get(promiseId);
+  },
+
+  getFirstPromiseTreeChild(dp, promiseId) {
+    return dp.util.getPromiseTreeChildren(promiseId)?.[0];
+  },
+
   // TODO!
   // /** 
   //  * Get the last "Post" asyncEvent of given `schedulerTraceId`.
@@ -1477,6 +1725,7 @@ export default {
   /**
    * Get the last "Post" asyncEvent (also an "edge trigger event") of a given promise.
    * That update must have `rootId` < `beforeRootId`.
+   * Recurse if nested.
    *
    * @param {DataProvider} dp
    * @return {AsyncEventUpdate}
@@ -1484,11 +1733,46 @@ export default {
   getPreviousPostOrResolveAsyncEventOfPromise(dp, promiseId, beforeRootId) {
     // NOTE: the index only references `POST` + `Resolve` updates
     const updates = dp.indexes.asyncEventUpdates.byPromise.get(promiseId);
+
+    // TODO: prefer pre-chained event (post event that was first scheduled, rather than last executed)
     let postUpdate = updates && findLast(updates, update => update.rootId < beforeRootId);
-    if (postUpdate && AsyncEventUpdateType.is.PostThen(postUpdate.type) && postUpdate.nestedPromiseId) {
-      // recurse on nested promises
-      postUpdate = dp.util.getPreviousPostOrResolveAsyncEventOfPromise(postUpdate.nestedPromiseId, beforeRootId);
+    let nestedPromiseId;
+
+    // recurse on nested promises:
+    if (postUpdate && AsyncEventUpdateType.is.PostThen(postUpdate.type)) {
+      if (postUpdate.nestedPromiseId) {
+        // Case 1: promise returned a nested promise from `then` callback -> go down the tree
+        nestedPromiseId = postUpdate.nestedPromiseId;
+      }
     }
+    else {
+      // (maybe) Case 2: returned (but did not await) promise from `async` function
+      // NOTE: we are making sure, this is the "returning" postUpdate
+      let resumeContextId;
+      if (postUpdate && AsyncEventUpdateType.is.PostAwait(postUpdate.type)) {
+        // async function has at least one `await`
+        resumeContextId = postUpdate.contextid;
+      }
+      else {
+        // async function had no `await`: find call trace -> context -> return value
+        const resultTrace = dp.util.getFirstTraceByRefId(promiseId);
+        const callId = resultTrace && dp.util.getCallIdOfTrace(resultTrace.traceId);
+        // const context = callId && dp.util.getRealContextOfBCE(callId);
+        const context = callId && dp.util.getTraceContext(callId);
+        resumeContextId = context?.contextId;
+      }
+
+      if (resumeContextId) {
+        const returnValueRef = dp.util.getReturnValueRefOfContext(resumeContextId);
+        // const returnValueRef = dp.util.getReturnValueRefOfInterruptableContext(resumeContextId);
+        if (returnValueRef?.isThenable) {
+          nestedPromiseId = returnValueRef.refId;
+        }
+      }
+    }
+    postUpdate = nestedPromiseId &&
+      dp.util.getPreviousPostOrResolveAsyncEventOfPromise(nestedPromiseId, beforeRootId) ||
+      postUpdate;
 
     return postUpdate;
   },
@@ -1508,7 +1792,13 @@ export default {
     return firstNestingTraceId && firstNestingTraceId === schedulerTraceId || false;
   },
 
-  /** @param {DataProvider} dp */
+  /** 
+   * Return all updates that are nesting the given promise `p` (of given `promiseId`), in run of given `runId`.
+   * For {Pre,Post}Await: any updates of type `await p`.
+   * For PostThen: updates that `return p`.
+   * 
+   * @param {DataProvider} dp
+   */
   getNestingAsyncUpdates(dp, runId, promiseId) {
     const eventKey = [runId, promiseId];
     return dp.indexes.asyncEventUpdates.byNestedPromiseAndRun.get(eventKey);
@@ -1516,52 +1806,157 @@ export default {
 
   /** @param {DataProvider} dp */
   getFirstNestingAsyncUpdate(dp, runId, promiseId) {
+    // TODO: this currently accounts for PreAwait, PostAwait, PostThen. Probably need to change to `PreAwait` + `PreThen`
     return dp.util.getNestingAsyncUpdates(runId, promiseId)?.[0] || null;
   },
 
   /**
-   * Only checks for *first* nesting update of given `runId`.
-   *  -> Because: all following updates are SYNC, not CHAIN.
+   * Returns `0` if `ref` is not thenable.
+   * Otherwise returns `refId`.
    * 
    * @param {DataProvider} dp
    */
-  isPromiseChainedToRoot(dp, runId, promiseId) {
-    // TODO: won't work when chaining promises that don't have their own Post* AsyncEvent (e.g. `Promise.resolve().then`)
+  getPromiseIdOfValueRef(dp, refId) {
+    return dp.util.getPromiseValueRef(refId)?.refId || 0;
+  },
+
+  getPromiseValueRef(dp, refId) {
+    let ref = dp.collections.values.getById(refId);
+    if (ref?.isThenable) {
+      return ref;
+    }
+    return 0;
+  },
+
+
+  // /**
+  //  * If not an async function, returns `0` .
+  //  * If the function returned a promise, returns its `promiseId`.
+  //  * Otherwise, returns the `promiseId` of the function's CallExpressionResult.
+  //  * 
+  //  * @param {DataProvider} dp
+  //  */
+  // getAsyncFunctionPromiseId(dp, contextId) {
+  //   const realContextId = dp.util.getRealContextIdOfContext(contextId);
+  //   const staticContext = realContextId && dp.util.getContextStaticContext(realContextId);
+  //   if (!staticContext?.isInterruptable) {
+  //     return 0;
+  //   }
+
+  //   // first: get returned `promiseId`
+  //   const returnTrace = dp.util.getReturnValueTraceOfInterruptableContext(realContextId);
+  //   const returnedDataNode = returnTrace && dp.util.getFirstInputDataNodeOfTrace(returnTrace.traceId);
+  //   let promiseId = returnedDataNode?.refId && dp.util.getPromiseIdOfValueRef(returnedDataNode.refId);
+
+  //   if (!promiseId) {
+  //     // else: get `promiseId` of the call result value.
+
+  //     // TODO: this might work correctly for async getters
+  //     //  -> test with `await2b-async-getters.js`
+  //     const callTrace = dp.util.getCallerTraceOfContext(contextId);
+  //     const callResultTrace = callTrace && dp.util.getValueTrace(callTrace.traceId);
+  //     const refId = callResultTrace && dp.util.getTraceRefId(callResultTrace.traceId);
+  //     promiseId = refId && dp.util.getPromiseIdOfValueRef(refId);
+  //   }
+
+  //   return promiseId;
+  // },
+
+  // ###########################################################################
+  // promise tree
+  // ###########################################################################
+
+  /**
+   * Get the first promise that nests the first descendant promise of given promise that is nested.
+   * Of that promise, return `getPreviousPostOrResolveAsyncEventOfPromise`.
+   * E.g.: given `b` of `t(a, t(b, c, d), t(b, e, f))`, return `a`.
+   * @param {DataProvider} dp
+   */
+  getFirstNestedDescendantsNestingAncestor(dp, promiseId, runId, beforeRootId) {
+    let child;
+    while ((child = dp.util.getFirstPromiseTreeChild(promiseId))) {
+      const { runId, promiseId: preEventPromise, postEventPromiseId } = child;
+      const nesting = dp.util.getFirstNestingAsyncUpdate(child.runId, child.promiseId);
+      const result = dp.util.getPreviousPostOrResolveAsyncEventOfPromise(child.postEventPromiseId, beforeRootId);
+      TODO
+      if (result) {
+        return result;
+      }
+    }
+    return null;
+  },
+
+  // /**
+  //  * @param {DataProvider} dp
+  //  */
+  // getNestingPromiseId(dp, innerPromiseId) {
+
+  // },
+
+  // /**
+  //  * @param {DataProvider} dp
+  //  */
+  // getNestedPromiseId(dp, outerPromiseId) {
+
+  // },
+
+  // /**
+  //  * @param {DataProvider} dp
+  //  */
+  // getAsyncRealContextIdOfOwnPromise(dp, promiseId) {
+
+  // },
+
+  /**
+   * Walks up the stack to find out whether the given promise was `await`-chained to the (shared pre-event) root.
+   * NOTE: given promise is either result of a first `then`, or the context's `promiseId` of a first `await`.
+   * 
+   * @param {DataProvider} dp
+   */
+  isPromiseChainedToRoot(dp, runId, contextId, promiseId) {
+    //  -> check if `promiseId` was returned or awaited, and keep going up
+
+    // TODO: link `promiseId`s in post processing
+    //    fix for promises that don't have their own Post* AsyncEvent (e.g. `Promise.resolve().then`)
+    //    maybe such that `getFirstNestingAsyncUpdate` can work when returning a promise from async function?
+
 
     const firstNestingAsyncUpdate = dp.util.getFirstNestingAsyncUpdate(runId, promiseId);
     if (!firstNestingAsyncUpdate) {
+      // const  getAsyncFunctionPromiseId
+      //   // check for `return f()` instead of `await f()`
+      //   //  -> caller of -> context of -> return value ref of parent function (function that called f)
+      //   const parentCallResultTrace = dp.util.getFirstTraceByRefId(promiseId);
+      //   const parentCallId = parentCallResultTrace && dp.util.getCallIdOfTrace(parentCallResultTrace.traceId);
+      //   const parentContext = parentCallId && dp.util.getRealContextOfBCE(parentCallId);
+      //   const parentRealContextId = parentContext?.contextId;
+      //   const parentReturnTrace = parentRealContextId && dp.util.getReturnValueTraceOfInterruptableContext(parentRealContextId);
+      //   const parentReturnCallId = parentReturnTrace && dp.util.getCallIdOfTrace(parentReturnTrace.traceId);
+      //   const context = parentReturnCallId && dp.util.getRealContextOfBCE(parentReturnCallId);
+      //   if (context?.contextId && context.contextId === dp.util.getRealContextIdOfContext(contextId)) {
+      //     return true;
+      //   }
       return false;
     }
 
-    const { contextId, rootId, promiseId: returnPromiseId } = firstNestingAsyncUpdate;
+    const { contextId: parentContextId, rootId, promiseId: parentPromiseId } = firstNestingAsyncUpdate;
 
-    if (contextId === rootId) {
+    if (parentContextId === rootId) {
       // root
       return true;
     }
 
-    if (returnPromiseId) {
+    if (parentPromiseId) {
       // contextId !== rootId -> (most likely?) a first await
-      return dp.util.isPromiseChainedToRoot(runId, returnPromiseId);
+      return dp.util.isPromiseChainedToRoot(runId, parentContextId, parentPromiseId);
     }
 
     return false;
-
-    // const parentContextId = getPromiseOwnAsyncFunctionContextId(asyncFunctionPromise);
-
-
-    // const chainedToRoot = getPromiseOwnChainedToRoot(promise);
-    // if (chainedToRoot !== undefined) {
-    //   return chainedToRoot;
-    // }
-
-    // const callerPromise = this.getAsyncCallerPromise(promise);
-    // if (callerPromise) {
-    //   return this.getAsyncCallerPromiseChainedToRoot(callerPromise);
-    // }
-
-    // return false;
   },
+
+  // ###########################################################################
+  // getPost*Data
+  // ###########################################################################
 
   /** @param {DataProvider} dp */
   getPostAwaitData(dp, postEventUpdate) {
@@ -1569,6 +1964,7 @@ export default {
     const {
       // runId: postEventRunId,
       // realContextId,
+      contextId: postEventContextId,
       rootId: postEventRootId,
       schedulerTraceId,
       promiseId
@@ -1578,7 +1974,7 @@ export default {
 
     if (!preEventUpdate) {
       // should never happen!
-      this.logger.warn(`[postAwait] "getAsyncPreEventUpdateOfTrace" failed:`, postEventUpdate);
+      dp.logger.warn(`[postAwait] "getAsyncPreEventUpdateOfTrace" failed:`, postEventUpdate);
       return null;
     }
 
@@ -1597,7 +1993,7 @@ export default {
     const isNestedChain = util.isNestedChain(nestedPromiseId, schedulerTraceId);
     const nestedUpdate = nestedPromiseId && util.getPreviousPostOrResolveAsyncEventOfPromise(nestedPromiseId, postEventRootId) || null;
     const { rootId: nestedRootId = 0 } = nestedUpdate ?? EmptyObject;
-    const isChainedToRoot = dp.util.isPromiseChainedToRoot(preEventRunId, promiseId);
+    const isChainedToRoot = isFirstAwait && dp.util.isPromiseChainedToRoot(preEventRunId, postEventContextId, promiseId);
 
     return {
       preEventUpdate,
@@ -1617,9 +2013,9 @@ export default {
       // runId: postEventRunId,
       rootId: postEventRootId,
       // NOTE: the last active root is also the `context` of the `then` callback
-      // contextId,
+      contextId: preEventContextId,
       schedulerTraceId,
-      promiseId: postPromiseId,
+      promiseId: postEventPromiseId,
       nestedPromiseId
     } = postEventUpdate;
 
@@ -1627,7 +2023,7 @@ export default {
 
     if (!preEventUpdate) {
       // should never happen!
-      this.logger.warn(`[postAwait] "getAsyncPreEventUpdateOfTrace" failed:`, postEventUpdate);
+      dp.logger.warn(`[postAwait] "getAsyncPreEventUpdateOfTrace" failed:`, postEventUpdate);
       return null;
     }
 
@@ -1637,9 +2033,12 @@ export default {
       promiseId: prePromiseId,
     } = preEventUpdate;
 
+    // try to chain to last event of previous promise
     const previousPostUpdate = util.getPreviousPostOrResolveAsyncEventOfPromise(prePromiseId, postEventRootId);
+    // if (!previousPostUpdate) {
+    // }
     const isNested = !!nestedPromiseId;
-    const isChainedToRoot = util.isPromiseChainedToRoot(preEventRunId, postPromiseId);
+    const isChainedToRoot = util.isPromiseChainedToRoot(preEventRunId, preEventContextId, postEventPromiseId);
     // const isNestedChain = this.isNestedChain(nestedPromiseId, schedulerTraceId);
     // const nestedUpdate = nestedPromiseId && dp.util.getPreviousPostAsyncEventOfPromise(nestedPromiseId, postEventRootId);
     // const { rootId: nestedRootId } = nestedUpdate ?? EmptyObject;

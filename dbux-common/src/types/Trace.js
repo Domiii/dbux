@@ -25,10 +25,15 @@ export default class Trace {
    * @type {number}
    */
   contextId;
+
   /**
    * @type {number}
    */
-  loopId;
+  nodeId;
+  // /**
+  //  * @type {number}
+  //  */
+  // loopId;
 
   /**
    * This is currently only set for `Pop` traces (to enable error tracking).

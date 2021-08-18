@@ -347,8 +347,10 @@ function patchPromiseClass(BasePromiseClass) {
       // deferred until after `super` was called
       deferredCall?.();
 
-      const promiseId = getPromiseId(this);
-      RuntimeMonitorInstance._runtime.async.promiseCtorCalled(promiseId, lastUpdateId);
+      if (isCallbackInstrumented) {
+        const promiseId = getPromiseId(this);
+        RuntimeMonitorInstance._runtime.async.promiseCtorCalled(promiseId, lastUpdateId);
+      }
     }
 
     toJSON() {

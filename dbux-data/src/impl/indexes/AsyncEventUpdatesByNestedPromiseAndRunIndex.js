@@ -1,6 +1,5 @@
 import AsyncEventUpdate from '@dbux/common/src/types/AsyncEventUpdate';
 import CollectionIndex from '../../indexes/CollectionIndex';
-import RuntimeDataProvider from '../../RuntimeDataProvider';
 
 
 
@@ -10,14 +9,17 @@ export default class AsyncEventUpdatesByNestedPromiseAndRunIndex extends Collect
     super('asyncEventUpdates', 'byNestedPromiseAndRun', { isMap: true, containerCfg: { serializeKey: true } });
   }
 
-  /** 
-   * @param {RuntimeDataProvider} dp
+  /**
+   * @override
    * @param {AsyncEventUpdate} asyncEventUpdate
    */
-  makeKey(dp, { runId, nestedPromiseId }) {
+  addEntry(asyncEventUpdate) {
+    const { runId, nestedPromiseId } = asyncEventUpdate;
     if (!nestedPromiseId) {
-      return false;
+      return;
     }
-    return [runId, nestedPromiseId];
+
+    const key = [runId, nestedPromiseId];
+    this.addEntryToKey(key, asyncEventUpdate);
   }
 }

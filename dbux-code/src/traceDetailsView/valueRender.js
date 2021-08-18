@@ -8,22 +8,32 @@ export function valueRender(valueRef, value) {
   if (valueRef && isPlainObjectOrArrayCategory(valueRef.category)) {
     modalString = JSON.stringify(value);
   }
-  else {
-    modalString = `${value}`;
-  }
 
-  showInformationMessage(modalString, {
+  showInformationMessage(`${modalString}`, {
     async 'Open In Editor'() {
-      return renderValueAsJsonInEditor(value);
+      return renderValueAsJsonInEditor(value, null, valueRef);
     }
   }, { modal: true });
 }
 
-export async function renderValueAsJsonInEditor(value, comment = null) {
+export async function renderValueAsJsonInEditor(value, comment = null, valueRef = null) {
+  let content = JSON.stringify(value, null, 2);
+
+  // hackfix: render multi-line strings a bit better
+  // console.log(JSON.stringify('hi\nqwer\\node_modules').replace(/(?<!\\)\\n/g, '" +\n"'))
+  content = content.replace(/(?<!\\)\\n/g, '" +\n"');
+  // if (valueRef && isPlainObjectOrArrayCategory(valueRef.category)) {
+  //   content = JSON.stringify(value);
+  // }
+  // else {
+  //   content = `${value}`;
+  // }
+
   comment = comment ? `// ${comment}\n` : '';
-  const content = comment + JSON.stringify(value, null, 2);
+  content = comment + content;
+
   const doc = await workspace.openTextDocument({ 
-    language: 'jsonc',
+    language: 'javascript',
     content
   });
   await window.showTextDocument(doc.uri);

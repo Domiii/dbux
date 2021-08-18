@@ -174,6 +174,7 @@ export default class BugRunner {
     }
   }
 
+  /** @param {Project} project */
   getOrLoadBugs(project) {
     return project.getOrLoadBugs();
   }
@@ -260,6 +261,7 @@ export default class BugRunner {
       }
 
       runCfg = runCfg || {};
+      runCfg.env = runCfg.env || {};
       if (runCfg.env.NODE_ENV && runCfg.env.NODE_ENV !== project.envName) {
         this.logger.warn(`runCfg.env.NODE_ENV !== project.envName:`, runCfg.env.NODE_ENV, project.envName);
       }

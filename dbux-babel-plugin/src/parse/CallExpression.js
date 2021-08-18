@@ -44,7 +44,7 @@ function isNotCalleeTraceableNode(calleeNode) {
 
 function isNotArgsTraceableIfConstantNode(calleeNode) {
   if (calleeNode.path.isMemberExpression()) {
-    return true;
+    return false;
   }
   const { specialType } = calleeNode;
   return specialType && isNotArgsTraceableIfConstantType(specialType);
@@ -152,6 +152,7 @@ export default class CallExpression extends BaseNode {
     // only trace args if (1) not require or import, OR (2) it has non-constant arguments
     const shouldTraceArgs = !isNotArgsTraceableIfConstantNode(calleeNode) ||
       argumentPaths.some(argPath => !argPath.isConstantExpression());
+    // warn(`[CE] ${calleePath.toString()}, shouldTraceArgs=${shouldTraceArgs}`);
 
     const bceTraceData = {
       path,
@@ -159,8 +160,10 @@ export default class CallExpression extends BaseNode {
       staticTraceData: {
         type: TraceType.BeforeCallExpression,
         data: {
+          // whether this is a `NewExpression`
           isNew: path.isNewExpression(),
           argConfigs: makeSpreadableArgumentArrayCfg(argumentPaths),
+          specialType: calleeNode.specialType
         }
       },
       meta: {
@@ -168,8 +171,6 @@ export default class CallExpression extends BaseNode {
         instrument: null
       }
     };
-
-    bceTraceData.staticTraceData.data.specialType = calleeNode.specialType;
 
     const bceInputPaths = shouldTraceArgs && argumentPaths || EmptyArray;
     const bceTrace = this.Traces.addTraceWithInputs(bceTraceData, bceInputPaths);
@@ -188,13 +189,17 @@ export default class CallExpression extends BaseNode {
       path,
       node: this,
       staticTraceData: {
-        type: TraceType.CallExpressionResult
+        type: TraceType.CallExpressionResult,
+        dataNode: {
+          ...calleeNode.getDataNodeMeta?.()
+        }
       },
       data: {
         bceTrace,
         calleeNode,
         calleeVar,
-        shouldTraceArgs
+        shouldTraceArgs,
+        specialType: calleeNode.specialType
       },
       meta: {
         traceCall: 'traceCallResult',

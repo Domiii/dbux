@@ -50,6 +50,6 @@ export default class ParentTracesInRealContextIndex extends CollectionIndex {
    * @param {Trace} { traceId }
    */
   makeKey(dp, { traceId }) {
-    return dp.util.getRealContextId(traceId);
+    return dp.util.getRealContextIdOfTrace(traceId);
   }
 }
