@@ -34,7 +34,7 @@ export class ExecutionContextCollection extends Collection {
     const {
       programId
     } = staticContext;
-    
+
     return programId;
   }
 
@@ -76,7 +76,7 @@ export class ExecutionContextCollection extends Collection {
   //   this._push(context);
   //   return context;
   // }
-  
+
   await(stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId) {
     const schedulerTraceId = null;
     const definitionTid = null;
@@ -84,7 +84,7 @@ export class ExecutionContextCollection extends Collection {
     return this._create(ExecutionContextType.Await,
       stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId, schedulerTraceId, definitionTid, tracesDisabled);
   }
-  
+
   /**
    * resumedChildren are used in interrupted functions.
    * When coming back after an interruption, a "resume child context" is added.
@@ -144,7 +144,7 @@ export class ExecutionContextCollection extends Collection {
     context.schedulerTraceId = schedulerTraceId;
     context.tracesDisabled = tracesDisabled;
     context.createdAt = Date.now();  // { createdAt }
-    
+
     return context;
   }
 
@@ -167,9 +167,15 @@ export class ExecutionContextCollection extends Collection {
   }
 
   isFirstContextInParent(contextId) {
-    const { parentContextId } = this.getById(contextId);
-    if (parentContextId) {
-      return this._firstContextChild.get(parentContextId) === contextId;
+    const context = this.getById(contextId);
+    if (context) {
+      const { parentContextId } = context;
+      if (parentContextId) {
+        return this._firstContextChild.get(parentContextId) === contextId;
+      }
+    }
+    else {
+      this.logger.trace(`[isFirstContextInParent] context does not exist - contextId=${contextId}`);
     }
     return false;
   }

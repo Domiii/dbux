@@ -1730,7 +1730,13 @@ export default {
    * @param {DataProvider} dp
    * @return {AsyncEventUpdate}
    */
-  getPreviousPostOrResolveAsyncEventOfPromise(dp, promiseId, beforeRootId) {
+  getPreviousPostOrResolveAsyncEventOfPromise(dp, promiseId, beforeRootId, _visited = new Set()) {
+    if (_visited.has(promiseId)) {
+      // TODO: what does this mean?
+      dp.logger.trace(`[getPreviousPostOrResolveAsyncEventOfPromise] circular promiseId: ${promiseId} (visited=[${Array.from(_visited).join(', ')}])`);
+      return null;
+    }
+    _visited.add(promiseId);
     // NOTE: the index only references `POST` + `Resolve` updates
     const updates = dp.indexes.asyncEventUpdates.byPromise.get(promiseId);
 
@@ -1771,7 +1777,7 @@ export default {
       }
     }
     postUpdate = nestedPromiseId &&
-      dp.util.getPreviousPostOrResolveAsyncEventOfPromise(nestedPromiseId, beforeRootId) ||
+      dp.util.getPreviousPostOrResolveAsyncEventOfPromise(nestedPromiseId, beforeRootId, _visited) ||
       postUpdate;
 
     return postUpdate;

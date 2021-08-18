@@ -80,7 +80,7 @@ export default class AsyncEventUpdateCollection extends Collection {
 
     const nestedUpdate = nestedPromiseId && dp.util.getFirstPostOrResolveAsyncEventOfPromise(nestedPromiseId, preEventRootId);
     if (nestedUpdate?.rootId <= preEventRootId) {
-      // console.trace(`preAwait ${preEventRootId}, nestedUpdate=`, nestedUpdate);
+      console.trace(`[preAwait] addSyncEdge ${preEventRootId}, nestedUpdate=`, nestedUpdate);
       this.addSyncEdge(preEventRootId, nestedUpdate.rootId, AsyncEdgeType.SyncOut);
     }
   }
@@ -120,6 +120,7 @@ export default class AsyncEventUpdateCollection extends Collection {
     } = postUpdateData;
 
     const preEventThreadId = this.getOrAssignRootThreadId(preEventRootId, schedulerTraceId);
+    const nestedThreadId = nestedRootId && this.getOrAssignRootThreadId(nestedRootId, schedulerTraceId);
 
     let fromRootId = preEventRootId;
     let fromThreadId = preEventThreadId;
@@ -130,7 +131,6 @@ export default class AsyncEventUpdateCollection extends Collection {
       // Case 1: CHAIN
       if (isNestedChain && nestedRootId) {
         // chain with nested root
-        const nestedThreadId = util.getAsyncRootThreadId(nestedRootId);
         if (nestedThreadId === preEventThreadId) {
           fromRootId = nestedRootId;
         }
@@ -140,7 +140,7 @@ export default class AsyncEventUpdateCollection extends Collection {
       // Case 2: nested promise is chained into the same thread: CHAIN
       // CHAIN with nested promise: get `fromRootId` of latest `PostThen` or `PostAwait` (before this one) of promise.
       fromRootId = nestedRootId;
-      fromThreadId = toThreadId = this.getOrAssignRootThreadId(nestedRootId, schedulerTraceId);
+      fromThreadId = nestedThreadId;
       // }
     }
     else if (isCallNotRecorded || isChainedToRoot) {

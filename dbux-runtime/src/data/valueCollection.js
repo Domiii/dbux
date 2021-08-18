@@ -522,7 +522,7 @@ class ValueCollection extends Collection {
           // check for promise
           const thenRepresentation = value && this._readProperty(value, 'then');
           valueRef.isThenable = thenRepresentation && isFunction(thenRepresentation);
-          if (value.isThenable) {
+          if (valueRef.isThenable) {
             this.maybePatchPromise(value);
           }
 
