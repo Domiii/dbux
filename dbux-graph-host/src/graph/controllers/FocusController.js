@@ -76,7 +76,7 @@ export default class FocusController extends HostComponentEndpoint {
           await this.remote.selectAsyncNode(asyncNode, ignoreFailed);
         }
         else {
-          this.remote.selectAsyncNode(null);
+          await this.remote.selectAsyncNode(null);
         }
       }
       else {

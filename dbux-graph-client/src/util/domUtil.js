@@ -47,7 +47,7 @@ export function repaintEl(el) {
 /**
  * @example `var td = htmlToElement('<td>foo</td>');`
  * @param {String} HTML representing a single element
- * @return {Element}
+ * @return {HTMLElement}
  * @see https://stackoverflow.com/a/35385518
  */
 export function compileHtmlElement(html) {
@@ -196,7 +196,7 @@ export function setElementStyle(styles, element) {
  * @param {HTMLElement} from start search from this element
  * @param {HTMLElement} [root] stop search for parent after this element
  */
-export function getMatchParent(pattern, from, root) {
+export function getMatchParent(pattern, from, root = document) {
   if (!from) {
     return null;
   }

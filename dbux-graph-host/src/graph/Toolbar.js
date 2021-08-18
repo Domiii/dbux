@@ -31,9 +31,10 @@ class Toolbar extends HostComponentEndpoint {
     });
 
     const { threadSelection } = allApplications.selection.data;
-    threadSelection.onSelectionChanged(() => {
+    const threadSelectionSubscription = threadSelection.onSelectionChanged(() => {
       this.setState({ isThreadSelectionActive: threadSelection.isActive() });
     });
+    this.addDisposable(threadSelectionSubscription);
     this.state.isThreadSelectionActive = threadSelection.isActive();
   }
 

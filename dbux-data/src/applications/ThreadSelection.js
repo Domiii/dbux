@@ -15,6 +15,7 @@ export class ThreadSelection {
   constructor() {
     this._emitter = new NanoEvents();
     this.selected = new Set();
+    this.selectedApplicationId = null;
     this._isActive = false;
   }
 
@@ -27,7 +28,8 @@ export class ThreadSelection {
     if (applicationId && threadIds) {
       this._isActive = true;
       this.selected.clear();
-      threadIds.forEach((threadId) => this._addOne({ applicationId, threadId }));
+      this.selectedApplicationId = applicationId;
+      threadIds.forEach((threadId) => this._addOne(threadId));
     }
     else {
       this._isActive = false;
@@ -37,6 +39,7 @@ export class ThreadSelection {
 
   clear(sender = null) {
     this.selected.clear();
+    this.selectedApplicationId = null;
     this._isActive = false;
     this._emitSelectionChangedEvent(sender);
   }
@@ -51,7 +54,8 @@ export class ThreadSelection {
    * @returns {boolean}
    */
   isSelected(applicationId, threadId) {
-    return this.selected.has(this._makeKey({ applicationId, threadId }));
+    // return this.selected.has(this._makeKey({ applicationId, threadId }));
+    return this.selectedApplicationId === applicationId && this.selected.has(threadId);
   }
 
   isNodeSelected(node) {
@@ -59,13 +63,14 @@ export class ThreadSelection {
     return this.isSelected(applicationId, threadId);
   }
 
-  _addOne(thread) {
-    this.selected.add(this._makeKey(thread));
+  _addOne(threadId) {
+    // this.selected.add(this._makeKey(thread));
+    this.selected.add(threadId);
   }
 
-  _makeKey({ applicationId, threadId }) {
-    return `${applicationId}_${threadId}`;
-  }
+  // _makeKey({ applicationId, threadId }) {
+  //   return `${applicationId}_${threadId}`;
+  // }
 
   _emitSelectionChangedEvent(sender = null) {
     this._emitter.emit('selectionChanged', sender);
@@ -75,6 +80,3 @@ export class ThreadSelection {
     return this._emitter.on('selectionChanged', cb);
   }
 }
-
-const threadSelection = new ThreadSelection();
-export default threadSelection;
