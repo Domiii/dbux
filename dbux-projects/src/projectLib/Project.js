@@ -13,6 +13,7 @@ import Process from '../util/Process';
 import { checkSystemWithRequirement } from '../checkSystem';
 import { MultipleFileWatcher } from '../util/multipleFileWatcher';
 import RunStatus, { isStatusRunningType } from './RunStatus';
+import ProjectBase from './ProjectBase';
 
 const Verbose = false;
 const SharedAssetFolder = '_shared_assets_';
@@ -27,8 +28,9 @@ const GitInstalledTag = '__dbux_project_installed';
  * @file
  */
 
-export default class Project {
+export default class Project extends ProjectBase {
   /**
+   * Created from `loadBugs` method.
    * @type {BugList}
    */
   _bugs;
@@ -48,21 +50,10 @@ export default class Project {
    */
   folderName;
 
+  /**
+   * Automatically assigned if `makeBuilder` method is present.
+   */
   builder;
-
-  // ###########################################################################
-  // config
-  // ###########################################################################
-
-  /**
-   * Provided for each individual project.
-   */
-  gitRemote;
-
-  /**
-   * A specific commit hash or tag name to refer to (if wanted)
-   */
-  gitCommit;
 
   /**
    * Use github by default.
@@ -71,7 +62,9 @@ export default class Project {
     return 'https://github.com/' + this.gitRemote;
   }
 
-  nodeVersion;
+  get envName() {
+    return 'development';
+  }
 
   get systemRequirements() {
     if (this.nodeVersion) {
@@ -90,20 +83,18 @@ export default class Project {
     return !this.builder || this.builder.needsDbuxCli;
   }
 
-  get envName() {
-    return 'development';
-  }
-
 
   // ###########################################################################
   // constructor + init
   // ###########################################################################
 
-  constructor(manager) {
+  constructor(manager, name) {
+    super();
+
     this.manager = manager;
 
     // NOTE: we get `constructorName` from the registry
-    this.name = this.folderName = this.constructor.constructorName;
+    this.name = this.folderName = name || this.constructor.constructorName;
 
     this.logger = newLogger(this.debugTag);
   }

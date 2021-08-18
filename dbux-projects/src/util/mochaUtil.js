@@ -1,7 +1,4 @@
-import path from 'path';
-import fs from 'fs';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import { getDbuxModulePath } from '@dbux/common/src/dbuxPaths';
 import { buildNodeCommand } from './nodeUtil';
 
 export async function buildMochaRunCommand(cfg) {
