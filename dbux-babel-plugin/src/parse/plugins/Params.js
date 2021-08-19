@@ -104,10 +104,11 @@ export default class Params extends BasePlugin {
     let value;
     if (defaultValueNode) {
       value = () => {
-        // 1. move (conditional) default value to hoisted parameter declaration
-        const valueAstNode = t.assignmentExpression('=', idPath.node, paramNode.buildParam());
-        // 2. remove original default value
-        paramNode.path.replaceWith(idPath.node);
+        // move (conditional) default value to hoisted parameter declaration
+        const valueAstNode = t.assignmentExpression('=',
+          idPath.node,
+          paramNode.buildAndReplaceParam(this.node.state)
+        );
         return valueAstNode;
       };
 

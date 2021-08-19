@@ -14,6 +14,8 @@ const ProgramStartTraceId = 1;
  */
 const ProgramEndTraceId = 2;
 
+const DefaultValueIndicator = {};
+
 /**
  * In Babel-lingo, a "Program" is one *.js file.
  * Thus the ProgramMonitor monitors a single file, 
@@ -84,6 +86,15 @@ export default class ProgramMonitor {
   unitOfType = (n) => {
     return n?.constructor === BigInt ? 1n : 1;
   }
+
+  /**
+   * NOTE: We use this to dynamically determine whether a parameter was not provided,
+   * and thus should be assigned its default value.
+   */
+  get DefaultValueIndicator() {
+    return DefaultValueIndicator;
+  }
+
 
   // ###########################################################################
   // context management

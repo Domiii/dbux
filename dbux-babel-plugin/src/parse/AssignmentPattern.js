@@ -16,7 +16,8 @@ import BaseNode from './BaseNode';
  * However, in order to assure correct order of execution, we cannot just instrument in place...?
  */
 const buildDefaultValueAccessor = template(
-  `(arguments.length < %%i%% || arguments[%%i%%] === undefined) ? %%defaultValue%% : arguments[%%i%%]`
+  // `(arguments.length < %%i%% || arguments[%%i%%] === undefined) ? %%defaultValue%% : arguments[%%i%%]`
+  `%%var%% === %%DefaultValueIndicator%% ? %%defaultValue%% : %%var%%`
 );
 
 /**
@@ -33,19 +34,31 @@ export default class AssignmentPattern extends BaseNode {
     return leftNode;
   }
 
+  exit1() {
+    const [leftNode, rightNode] = this.getChildNodes();
+    this.varId = leftNode.path.node;
+    this.defaultValuePath = rightNode.path;
+  }
+
   /**
    * NOTE: called by {@link ./plugins/Params}
    */
-  buildParam() {
-    const { path: paramPath } = this;
+  buildAndReplaceParam(state) {
+    // const { path: paramPath } = this;
     // if (paramPath.parentKey === 'params') {
-    const [, rightNode] = this.getChildNodes();
+    const { ids: { aliases: { DefaultValueIndicator } } } = state;
+    const [, rightPath] = this.getChildPaths();
 
-    const rPath = rightNode.path;
-    return buildDefaultValueAccessor({
-      i: t.numericLiteral(paramPath.key),
-      defaultValue: rPath.node
-    }).expression;
-    // }
+    const args = {
+      // i: t.numericLiteral(paramPath.key),
+      var: this.varId,
+      DefaultValueIndicator,
+      defaultValue: this.defaultValuePath.node
+    };
+    const repl = buildDefaultValueAccessor(args).expression;
+
+    rightPath.replaceWith(DefaultValueIndicator);
+
+    return repl;
   }
 }
