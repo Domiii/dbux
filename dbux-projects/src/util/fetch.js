@@ -53,7 +53,7 @@ export function buildUrl(url, queryString) {
   if (queryString !== null && queryString !== undefined) {
     if (typeof queryString === 'object') {
       // queryString = $.param(queryString); // parse querystring object
-      throw new Error('TODO: queryString support NYI');
+      throw new Error('queryString support NYI');
     }
     else {
       // already a string - nothing to do

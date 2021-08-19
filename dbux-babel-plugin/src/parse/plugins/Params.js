@@ -30,7 +30,7 @@ export default class Params extends BasePlugin {
 
       // TODO: `RestElement`
       // TODO: `{Object,Array}Pattern
-      this.warn(`NYI - unsupported param type: [${paramPath.node?.type}] "${pathToString(paramPath)}" in "${this.node}"`);
+      this.warn(`[NYI] - unsupported param type: [${paramPath.node?.type}] "${pathToString(paramPath)}" in "${this.node}"`);
       return null;
     }
 
@@ -38,7 +38,7 @@ export default class Params extends BasePlugin {
 
     const idPaths = getBindingIdentifierPaths(paramPath);
     if (idPaths.length !== 1) {
-      this.warn(`NYI - param is destructured into less or more than 1 variable: "${pathToString(paramPath)}" in "${this.node}"`);
+      this.warn(`[NYI] - param is destructured into less or more than 1 variable: "${pathToString(paramPath)}" in "${this.node}"`);
     }
     const idPath = idPaths[0];
     /**

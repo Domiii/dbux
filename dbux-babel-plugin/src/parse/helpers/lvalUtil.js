@@ -13,7 +13,7 @@ export function getLValPlugin(node, types) {
   const lvalType = lvalPath.node.type;
   const pluginName = types[lvalType];
   if (!pluginName) {
-    node.logger.warn(`unknown lval type: "${lvalType}" at "${pathToString(lvalPath, true)}"`);
+    node.logger.warn(`[NYI] lval type: "${lvalType}" at "${pathToString(lvalPath, true)}"`);
     //  in "${pathToString(lvalPath.parentPath)}"
   }
   // console.debug(`[LVAL] lvalType = ${lvalType} - ${pathToString(node.path)}`);
