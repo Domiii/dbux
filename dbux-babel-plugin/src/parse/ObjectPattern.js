@@ -8,4 +8,9 @@ import BaseNode from './BaseNode';
  */
 export default class ObjectPattern extends BaseNode {
   static children = ['properties'];
+
+  enter() {
+    // TODO!
+    this.path.skip();
+  }
 }

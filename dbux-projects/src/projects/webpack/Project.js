@@ -187,6 +187,8 @@ export default class WebpackProject extends Project {
       buildNodeCommand({
         ...cfg,
 
+        nodeArgs: '--max-old-space-size=4096',
+
         // NOTE: when changing paths, make sure that `alias.runtime` refers to the correct paths as well
         program: p(this.cliBin),
         require: p('_dbux_/alias.runtime.js'),

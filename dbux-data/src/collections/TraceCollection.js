@@ -48,7 +48,7 @@ export default class TraceCollection extends Collection {
     // build dynamic call expression tree
     this.errorWrapMethod('registerResultId', traces);
     this.errorWrapMethod('registerValueRefSpecialObjectType', traces);
-    this.errorWrapMethod('resolveCodeChunks', traces);
+    // this.errorWrapMethod('resolveCodeChunks', traces);
     this.errorWrapMethod('resolveCallIds', traces);
     this.errorWrapMethod('resolveErrorTraces', traces);
   }
@@ -87,28 +87,28 @@ export default class TraceCollection extends Collection {
     }
   }
 
-  resolveCodeChunks(traces) {
-    for (const trace of traces) {
-      const {
-        contextId
-      } = trace;
+  // resolveCodeChunks(traces) {
+  //   for (const trace of traces) {
+  //     const {
+  //       contextId
+  //     } = trace;
 
-      const context = this.dp.collections.executionContexts.getById(contextId);
-      const { staticContextId } = context;
+  //     const context = this.dp.collections.executionContexts.getById(contextId);
+  //     const { staticContextId } = context;
 
-      // codeChunkId
-      // if (contextId !== this.dp.lastContextId) {
-      //   // new code chunk
-      //   ++this.lastCodeChunkId;
-      //   this.lastContextId = contextId;
-      // }
-      // trace.codeChunkId = this.lastCodeChunkId;
+  //     // codeChunkId
+  //     // if (contextId !== this.dp.lastContextId) {
+  //     //   // new code chunk
+  //     //   ++this.lastCodeChunkId;
+  //     //   this.lastContextId = contextId;
+  //     // }
+  //     // trace.codeChunkId = this.lastCodeChunkId;
 
-      // TODO: split + organize code chunks along "deep splits"?
-      // TODO: how to re-split an already established chunk?
-      trace.codeChunkId = staticContextId;
-    }
-  }
+  //     // TODO: split + organize code chunks along "deep splits"?
+  //     // TODO: how to re-split an already established chunk?
+  //     trace.codeChunkId = staticContextId;
+  //   }
+  // }
 
   logCallResolveError(traceId, staticTrace, beforeCall, beforeCalls) {
     const stackInfo = beforeCalls.map(t => t &&

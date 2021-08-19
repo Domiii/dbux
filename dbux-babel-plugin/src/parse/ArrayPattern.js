@@ -16,4 +16,9 @@ export default class ArrayPattern extends BaseNode {
   //   const args = [targetNode];
   //   t.callExpression(this.hub.addHelper('slicedToArray'), args);
   // }
+
+  enter() {
+    // TODO!
+    this.path.skip();
+  }
 }
