@@ -200,14 +200,14 @@ export function isDeclarationTrace(traceType) {
 const classTypes = new Array(TraceType.getValueMaxIndex()).map(() => false);
 classTypes[TraceType.ClassDeclaration] = true;
 classTypes[TraceType.ClassDefinition] = true;
-classTypes[TraceType.ClassInstance] = true;
+// classTypes[TraceType.ClassInstance] = true;
 
 export function isClassDefinitionTrace(traceType) {
   return classTypes[traceType];
 }
 
-// NOTE: classes are also functions
-const functionTypes = [...classTypes];
+// NOTE: classes are also functions (but not for our intents and purposes)
+const functionTypes = [];
 functionTypes[TraceType.FunctionDeclaration] = true;
 functionTypes[TraceType.FunctionDefinition] = true;
 

@@ -259,8 +259,25 @@ export function getFunctionDefinitionTraceOfTrace(trace) {
   return null;
 }
 
+/**
+ * hackfix: there is no really reliable way of detecting whether something is a class.
+ * But this works for es6 classes (if not babeled to es5).
+ * 
+ * @see https://stackoverflow.com/a/68708710/2228771
+ */
+function isClass(value) {
+  return typeof value === 'function' && (
+    /^\s*class[^\w]+/.test(value.toString()) ||
+
+    // 1. native classes don't have `class` in their name
+    // 2. However, they are globals and start with a capital letter.
+    (globalThis[value.name] === value && /^[A-Z]/.test(value.name))
+  );
+}
+
 export function isInstrumentedFunction(value) {
-  return !!getFunctionDefinitionTraceOfValue(value);
+  return isFunction(value) && !isClass(value) &&
+    !!getFunctionDefinitionTraceOfValue(value);
 }
 
 // ###########################################################################

@@ -852,9 +852,11 @@ export default {
    * @return Flattened version of DataNodes of `CallExpression` arguments.
    */
   getCallArgDataNodes(dp, callId) {
-    // TODO: for `bind`, `call` and `apply` change the arg <-> param mapping
     const argTraces = dp.util.getCallArgTraces(callId);
     const { argConfigs } = dp.util.getStaticTrace(callId).data;
+    if (!argTraces) {
+      return EmptyArray;
+    }
     let argDataNodes = argTraces.flatMap((t, i) => {
       const dataNodes = dp.util.getDataNodesOfTrace(t.traceId);
       if (!argConfigs[i]?.isSpread) {

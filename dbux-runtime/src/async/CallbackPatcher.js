@@ -2,7 +2,6 @@
 // import isThenable from '@dbux/common/src/util/isThenable';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { isFunction } from 'lodash';
 import { peekBCEMatchCallee, isInstrumentedFunction, getFirstContextAfterTrace, getTraceStaticTrace } from '../data/dataUtil';
 import { getPatchedFunctionOrNull, monkeyPatchFunctionOverride, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
 // import executionContextCollection from '../data/executionContextCollection';
@@ -19,19 +18,6 @@ function containsInstrumentedCallbacks(args, spreadArgs) {
     // check regular arg
     return isInstrumentedFunction(arg);
   }) || false;
-}
-
-/**
- * @see https://stackoverflow.com/a/68708710/2228771
- */
-function isClass(value) {
-  return typeof value === 'function' && (
-    /^\s*class[^\w]+/.test(value.toString()) ||
-
-    // 1. native classes don't have `class` in their name
-    // 2. However, they are globals and start with a capital letter.
-    (globalThis[value.name] === value && /^[A-Z]/.test(value.name))
-  );
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -229,10 +215,8 @@ export default class CallbackPatcher {
     const bceStaticTrace = getTraceStaticTrace(callId);
 
     if (
-      isFunction(originalFunction) &&
-
       // do not auto-patch classes/ctors (for now)
-      (!bceStaticTrace.data?.isNew && !isClass(originalFunction)) &&
+      !bceStaticTrace.data?.isNew &&
 
       // only instrument functions if they themselves are not instrumented (recorded)
       !isInstrumentedFunction(originalFunction) &&
