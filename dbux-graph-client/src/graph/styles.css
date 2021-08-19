@@ -326,7 +326,7 @@ div {
   /* display: none !important; */
 }
 
-[data-call-mode="0"] [data-el="parentLabel"] {
+[data-call-mode="0"] [data-el="callLabel"] {
   display: none !important;
 }
 
@@ -337,14 +337,14 @@ div {
   display: none !important;
 } */
 
-[data-el="parentLabel"] {
+[data-el="callLabel"] {
   /* color: #222; */
   background: rgba(0, 0, 0, 0.03);
   font-size: 1rem;
   margin-right: 0.3rem !important;
 }
 
-.theme-mode-dark [data-el="parentLabel"] {
+.theme-mode-dark [data-el="callLabel"] {
   background: rgba(0, 0, 0, 0.25);
 }
 

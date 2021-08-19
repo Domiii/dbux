@@ -1,9 +1,8 @@
 import NanoEvents from 'nanoevents';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import { makeContextLabel } from '@dbux/data/src/helpers/contextLabels';
 import traceSelection from '@dbux/data/src/traceSelection/index';
-import { makeContextLocLabel } from '@dbux/data/src/helpers/traceLabels';
+import { makeContextLocLabel, makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
 /** @typedef {import('@dbux/data/src/applications/Application').default} Application */

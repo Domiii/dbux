@@ -1,4 +1,3 @@
-import isString from 'lodash/isString';
 import findLast from 'lodash/findLast';
 import groupBy from 'lodash/groupBy';
 import TraceType, { hasDynamicTypes, isTracePop, isBeforeCallExpression } from '@dbux/common/src/types/constants/TraceType';
@@ -18,6 +17,7 @@ import SpecialCallType from '@dbux/common/src/types/constants/SpecialCallType';
 import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
 import AsyncEventUpdateType, { isPreEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import { locToString } from './util/misc';
+import { makeContextSchedulerLabel, makeTraceLabel } from './helpers/makeLabels';
 
 /**
  * @typedef {import('./RuntimeDataProvider').default} DataProvider
@@ -1091,6 +1091,35 @@ export default {
     else {
       // Reject
       return null;
+    }
+  },
+
+  /**
+   * Return scheduler trace of a `root context` and return caller trace otherwise.
+   * @param {DataProvider} dp
+   */
+  getCallerOrSchedulerTraceOfContext(dp, contextId) {
+    if (dp.util.isRootContextInRun(contextId)) {
+      const asyncNode = dp.indexes.asyncNodes.byRoot.get(contextId);
+      return dp.collections.traces.getById(asyncNode?.schedulerTraceId);
+    }
+    else {
+      return dp.util.getOwnCallerTraceOfContext(contextId);
+    }
+  },
+
+  /**
+   * NOTE: Used together with `util.getCallerOrSchedulerTraceOfContext`. Same logic but can't be simplify.
+   * @param {DataProvider} dp
+   */
+  makeContextCallerOrSchedulerLabel(dp, contextId) {
+    if (dp.util.isRootContextInRun(contextId)) {
+      const context = dp.collections.executionContexts.getById(contextId);
+      return makeContextSchedulerLabel(context, dp);
+    }
+    else {
+      const callerTrace = dp.util.getOwnCallerTraceOfContext(contextId);
+      return makeTraceLabel(callerTrace);
     }
   },
 
