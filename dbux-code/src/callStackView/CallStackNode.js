@@ -1,10 +1,7 @@
 import { TreeItemCollapsibleState } from 'vscode';
-import path from 'path';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import traceSelection from '@dbux/data/src/traceSelection';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import { makeTraceLabel } from '@dbux/data/src/helpers/traceLabels';
-import { makeContextLabel } from '@dbux/data/src/helpers/contextLabels';
+import { makeTraceLabel, makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
 
 export default class CallStackNode {
   constructor(
@@ -29,7 +26,7 @@ export default class CallStackNode {
     this.command = {
       command: 'dbuxCallStackView.itemClick',
       arguments: [this]
-    };    
+    };
 
     // TODO: fix icon paths (this.makeNodeIconPath)
     // if (traceSelection.isSelected(trace)) {

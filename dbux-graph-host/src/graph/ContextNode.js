@@ -1,11 +1,9 @@
 import ExecutionContextType from '@dbux/common/src/types/constants/ExecutionContextType';
-import { binarySearchByKey } from '@dbux/common/src/util/arrayUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import { makeTraceValueLabel, makeTraceLabel, makeContextLocLabel, makeTraceLocLabel } from '@dbux/data/src/helpers/traceLabels';
-import { makeContextLabel } from '@dbux/data/src/helpers/contextLabels';
+import { makeTraceValueLabel, makeTraceLabel, makeContextLocLabel, makeTraceLocLabel, makeContextLabel, makeContextCallerLabel } from '@dbux/data/src/helpers/makeLabels';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
@@ -20,18 +18,21 @@ class ContextNode extends HostComponentEndpoint {
       statsEnabled
     } = this.state;
 
+    const { contextId } = context;
+
     // get name (and other needed data)
     const app = allApplications.getById(applicationId);
     const dp = app.dataProvider;
-    const errorTag = (dp.indexes.traces.errorByContext.get(context.contextId)?.length) ? '🔥' : '';
-    this.parentTrace = dp.util.getCallerTraceOfContext(context.contextId);
+    const errorTag = (dp.indexes.traces.errorByContext.get(contextId)?.length) ? '🔥' : '';
 
-    this.state.contextNameLabel = makeContextLabel(context, app) + errorTag;
+    this.state.contextLabel = makeContextLabel(context, app) + errorTag;
     this.state.contextLocLabel = makeContextLocLabel(applicationId, context);
-    this.state.valueLabel = this.parentTrace && makeTraceValueLabel(this.parentTrace) || '';
-    this.state.parentTraceNameLabel = this.parentTrace && makeTraceLabel(this.parentTrace) || '';
-    this.state.parentTraceLocLabel = this.parentTrace && makeTraceLocLabel(this.parentTrace);
-    this.state.moduleName = dp.util.getContextModuleName(context.contextId);
+    const { callTrace } = this;
+    this.state.callerTracelabel = dp.util.makeContextCallerOrSchedulerLabel(contextId);
+    if (callTrace) {
+      this.state.valueLabel = makeTraceValueLabel(callTrace);
+    }
+    this.state.moduleName = dp.util.getContextModuleName(contextId);
 
     if (statsEnabled) {
       this._addStats(this.state);
@@ -43,6 +44,10 @@ class ContextNode extends HostComponentEndpoint {
     this.controllers.createComponent('PopperController');
     this.controllers.createComponent('Highlighter');
   }
+
+  // ########################################
+  // getters
+  // ########################################
 
   get dp() {
     const { applicationId } = this.state;
@@ -59,6 +64,10 @@ class ContextNode extends HostComponentEndpoint {
     return this.dp.util.getFirstTraceOfContext(this.contextId);
   }
 
+  get callTrace() {
+    return this.dp.util.getCallerOrSchedulerTraceOfContext(this.contextId);
+  }
+
   get nTreeContexts() {
     const stats = this.dp.queries.statsByContext(this.contextId);
     return stats?.nTreeContexts || 0;
@@ -68,11 +77,16 @@ class ContextNode extends HostComponentEndpoint {
     const stats = this.dp.queries.statsByContext(this.contextId);
     return stats?.nTreeStaticContexts || 0;
   }
+
   //get amount of file call
   get nTreeFileCalled() {
     const state = this.dp.queries.statsByContext(this.contextId);
     return state?.nTreeFileCalled || 0;
   }
+
+  // ########################################
+  // stats
+  // ########################################
 
   setStatsEnabled(enabled) {
     const upd = {
@@ -91,6 +105,10 @@ class ContextNode extends HostComponentEndpoint {
     _update.nTreeFileCalled = this.nTreeFileCalled;
   }
 
+  // ########################################
+  // children
+  // ########################################
+
   getValidChildContexts() {
     const { applicationId, context: { contextId } } = this.state;
     const dp = allApplications.getById(applicationId).dataProvider;
@@ -107,6 +125,10 @@ class ContextNode extends HostComponentEndpoint {
       return true;
     });
   }
+
+  // ########################################
+  // focus
+  // ########################################
 
   async reveal(expandItself = false) {
     await this.controllers.getComponent('GraphNode').reveal(expandItself);
@@ -142,55 +164,51 @@ class ContextNode extends HostComponentEndpoint {
   }
 
   public = {
-    async goToFirstTrace() {
-      await this.componentManager.externals.goToTrace(this.firstTrace);
-    },
-    async goToParentTrace() {
-      if (this.parentTrace) {
-        await this.componentManager.externals.goToTrace(this.parentTrace);
-      }
-    },
     selectFirstTrace() {
-      this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphTrace, { trace: this.firstTrace });
-      traceSelection.selectTrace(this.firstTrace);
-    },
-    selectParentTrace() {
-      if (this.parentTrace) {
-        this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphCallTrace, { trace: this.parentTrace });
-        traceSelection.selectTrace(this.parentTrace);
+      const { firstTrace } = this;
+      if (firstTrace) {
+        this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphTrace, { trace: firstTrace });
+        traceSelection.selectTrace(firstTrace);
       }
     },
-    toggleStaticContextHighlight() {
-      const { applicationId, context: { staticContextId } } = this.state;
-      const contextNodeManager = this.context.graphRoot.controllers.getComponent('ContextNodeManager');
-      contextNodeManager.toggleStaticContextHighlight(applicationId, staticContextId);
-    },
-    async selectPreviousContextByStaticContext() {
-      const { applicationId, context } = this.state;
-      const dp = allApplications.getById(applicationId).dataProvider;
-      const contexts = dp.indexes.executionContexts.byStaticContext.get(context.staticContextId) || EmptyArray;
-      const index = binarySearchByKey(contexts, context, (x) => x.contextId);
-      if (index !== 0) {
-        const { contextId } = contexts[index - 1];
-        await this.context.graphRoot.focusContext(applicationId, contextId);
-      }
-      else {
-        this.componentManager.externals.alert('This is the first context of staticContext', false);
+    selectCallTrace() {
+      const { callTrace } = this;
+      if (callTrace) {
+        this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphCallTrace, { trace: callTrace });
+        traceSelection.selectTrace(callTrace);
       }
     },
-    async selectNextContextByStaticContext() {
-      const { applicationId, context } = this.state;
-      const dp = allApplications.getById(applicationId).dataProvider;
-      const contexts = dp.indexes.executionContexts.byStaticContext.get(context.staticContextId) || EmptyArray;
-      const index = binarySearchByKey(contexts, context, (x) => x.contextId);
-      if (index !== contexts.length - 1) {
-        const { contextId } = contexts[index + 1];
-        await this.context.graphRoot.focusContext(applicationId, contextId);
-      }
-      else {
-        this.componentManager.externals.alert('This is the last context of staticContext', false);
-      }
-    }
+    // toggleStaticContextHighlight() {
+    //   const { applicationId, context: { staticContextId } } = this.state;
+    //   const contextNodeManager = this.context.graphRoot.controllers.getComponent('ContextNodeManager');
+    //   contextNodeManager.toggleStaticContextHighlight(applicationId, staticContextId);
+    // },
+    // async selectPreviousContextByStaticContext() {
+    //   const { applicationId, context } = this.state;
+    //   const dp = allApplications.getById(applicationId).dataProvider;
+    //   const contexts = dp.indexes.executionContexts.byStaticContext.get(context.staticContextId) || EmptyArray;
+    //   const index = binarySearchByKey(contexts, context, (x) => x.contextId);
+    //   if (index !== 0) {
+    //     const { contextId } = contexts[index - 1];
+    //     await this.context.graphRoot.focusContext(applicationId, contextId);
+    //   }
+    //   else {
+    //     this.componentManager.externals.alert('This is the first context of staticContext', false);
+    //   }
+    // },
+    // async selectNextContextByStaticContext() {
+    //   const { applicationId, context } = this.state;
+    //   const dp = allApplications.getById(applicationId).dataProvider;
+    //   const contexts = dp.indexes.executionContexts.byStaticContext.get(context.staticContextId) || EmptyArray;
+    //   const index = binarySearchByKey(contexts, context, (x) => x.contextId);
+    //   if (index !== contexts.length - 1) {
+    //     const { contextId } = contexts[index + 1];
+    //     await this.context.graphRoot.focusContext(applicationId, contextId);
+    //   }
+    //   else {
+    //     this.componentManager.externals.alert('This is the last context of staticContext', false);
+    //   }
+    // }
   }
 }
 

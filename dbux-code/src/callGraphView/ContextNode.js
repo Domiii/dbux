@@ -1,4 +1,4 @@
-import { makeContextLabel } from '@dbux/data/src/helpers/contextLabels';
+import { makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
 import traceSelection from '@dbux/data/src/traceSelection';

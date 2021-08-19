@@ -4,8 +4,7 @@ import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import { getStaticContextColor } from '@dbux/graph-common/src/shared/contextUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
-// import { makeContextLabel } from '@dbux/data/src/helpers/contextLabels';
-import { makeStaticContextLocLabel } from '@dbux/data/src/helpers/traceLabels';
+import { makeStaticContextLocLabel } from '@dbux/data/src/helpers/makeLabels';
 
 import KeyedComponentSet from '@dbux/graph-common/src/componentLib/KeyedComponentSet';
 // import UserActionType from '@dbux/data/src/pathways/UserActionType';

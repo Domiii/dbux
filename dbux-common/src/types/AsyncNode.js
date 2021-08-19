@@ -13,11 +13,15 @@ export default class AsyncNode {
   threadId;
 
   /**
-   * Aka "schedulerThreadId".
-   * The `threadId` of the trace that lead to the scheduling that ultimately lead to creation of this node.
    * @type {number}
    */
   traceId;
+  
+  /**
+   * The `threadId` of the trace that lead to the scheduling that ultimately lead to creation of this node.
+   * @type {number}
+   */
+  schedulerTraceId;
 
   /**
    * @type {number}

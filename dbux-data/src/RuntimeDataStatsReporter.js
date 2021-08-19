@@ -2,7 +2,7 @@ import difference from 'lodash/difference';
 import minBy from 'lodash/minBy';
 import maxBy from 'lodash/maxBy';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import { makeTraceLabel } from './helpers/traceLabels';
+import { makeTraceLabel } from './helpers/makeLabels';
 
 /** @typedef { import("./RuntimeDataProvider").default } RuntimeDataProvider */
 
