@@ -1,5 +1,5 @@
-import { pathToString } from '../helpers/pathHelpers';
 import BaseNode from './BaseNode';
+import { getLValPlugin } from './helpers/lvalUtil';
 
 // ###########################################################################
 // util
@@ -10,15 +10,8 @@ const LValPluginsByType = {
   MemberExpression: 'UpdateLValME'
 };
 
-function getLValPlugin(node) {
-  const [lvalPath] = node.getChildPaths();
-  const lvalType = lvalPath.node.type;
-  const pluginName = LValPluginsByType[lvalType];
-  if (!pluginName) {
-    node.logger.warn(`unknown lval type: "${lvalType}" at "${pathToString(lvalPath)}" in "${pathToString(lvalPath.parentPath)}"`);
-  }
-  // console.debug(`[LVAL] lvalType = ${lvalType} - ${pathToString(node.path)}`);
-  return pluginName;
+function getUpdateLValPlugin(node) {
+  return getLValPlugin(node, LValPluginsByType);
 }
 
 
@@ -32,7 +25,7 @@ function getLValPlugin(node) {
 export default class UpdateExpression extends BaseNode {
   static children = ['argument'];
   static plugins = [
-    getLValPlugin
+    getUpdateLValPlugin
   ];
 
   /**

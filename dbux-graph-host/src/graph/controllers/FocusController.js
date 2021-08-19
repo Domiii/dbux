@@ -5,7 +5,7 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('FocusController');
+const { log, debug, warn, error: logError, trace: logTrace } = newLogger('FocusController');
 
 /** @typedef {import('../ContextNode').default} ContextNode */
 /** @typedef {import('./Highlighter').default} Highlighter */
@@ -95,7 +95,7 @@ export default class FocusController extends HostComponentEndpoint {
       }
     }
     catch (err) {
-      logError(`Cannot focus on selected trace #${trace?.traceId}`, trace, err);
+      logTrace(`Cannot focus on selected trace #${trace?.traceId}`, trace, err);
     }
   }
 

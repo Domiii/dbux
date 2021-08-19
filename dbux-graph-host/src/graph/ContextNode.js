@@ -131,7 +131,13 @@ class ContextNode extends HostComponentEndpoint {
   // ########################################
 
   async reveal(expandItself = false) {
-    await this.controllers.getComponent('GraphNode').reveal(expandItself);
+    const graphNode = this.controllers.getComponent('GraphNode');
+    if (!graphNode) {
+      this.logger.trace(`reveal failed because ContextNode is missing GraphNode: cid=${this.contextId} (${this.state.contextLabel})`);
+    }
+    else {
+      await graphNode.reveal(expandItself);
+    }
   }
 
   expand() {

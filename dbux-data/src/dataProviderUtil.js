@@ -1115,11 +1115,11 @@ export default {
   makeContextCallerOrSchedulerLabel(dp, contextId) {
     if (dp.util.isRootContextInRun(contextId)) {
       const context = dp.collections.executionContexts.getById(contextId);
-      return makeContextSchedulerLabel(context, dp);
+      return context && makeContextSchedulerLabel(context, dp) || '';
     }
     else {
       const callerTrace = dp.util.getOwnCallerTraceOfContext(contextId);
-      return makeTraceLabel(callerTrace);
+      return callerTrace && makeTraceLabel(callerTrace) || '';
     }
   },
 

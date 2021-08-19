@@ -8,12 +8,13 @@ const AssignmentLValPluginsByType = {
   MemberExpression: 'AssignmentLValME'
 };
 
-function getLValPlugin(node, types) {
+export function getLValPlugin(node, types) {
   const [lvalPath] = node.getChildPaths();
   const lvalType = lvalPath.node.type;
   const pluginName = types[lvalType];
   if (!pluginName) {
-    node.logger.warn(`unknown lval type: "${lvalType}" at "${pathToString(lvalPath)}" in "${pathToString(lvalPath.parentPath)}"`);
+    node.logger.warn(`unknown lval type: "${lvalType}" at "${pathToString(lvalPath, true)}"`);
+    //  in "${pathToString(lvalPath.parentPath)}"
   }
   // console.debug(`[LVAL] lvalType = ${lvalType} - ${pathToString(node.path)}`);
   return pluginName;
