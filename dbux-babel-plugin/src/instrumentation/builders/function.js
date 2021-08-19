@@ -3,7 +3,8 @@
  * future-work: move remaining `build` functions from `Function.js` to here
  */
 
-import { getDeclarationTid, ZeroNode } from './buildUtil';
+import { getDeclarationTid } from '../../helpers/traceUtil';
+import { ZeroNode } from './buildUtil';
 import { bindTemplate } from './templateUtil';
 
 // ###########################################################################

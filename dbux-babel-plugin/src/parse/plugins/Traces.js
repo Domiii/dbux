@@ -131,6 +131,7 @@ export default class Traces extends BasePlugin {
     if (isRedeclaration) {
       meta = meta || {};
       meta.isRedeclaration = true;
+      // meta.redeclarationTid = declarationNode.bindingTrace;
     }
 
     // set default static DataNode
@@ -313,6 +314,8 @@ export default class Traces extends BasePlugin {
           instrument = instrumentExpression
         } = EmptyObject
       } = traceCfg;
+
+      // push `tidIdentifier`
       scope.push({
         id: tidIdentifier
       });

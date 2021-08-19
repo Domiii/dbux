@@ -1,7 +1,8 @@
 import { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
 import TraceCfg from '../../definitions/TraceCfg';
-import { generateDeclaredIdentifier, getDeclarationTid, ZeroNode } from './buildUtil';
+import { generateDeclaredIdentifier, ZeroNode } from './buildUtil';
+import { getDeclarationTid } from '../../helpers/traceUtil';
 import { buildTraceId } from './traceId';
 import { convertNonComputedPropToStringLiteral } from './objects';
 import { buildTraceExpressionVar } from './misc';

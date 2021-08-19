@@ -1,10 +1,10 @@
 import * as t from '@babel/types';
 import isFunction from 'lodash/isFunction';
 import { buildTraceCall, bindTemplate, bindExpressionTemplate } from './templateUtil';
-import { addMoreTraceCallArgs, getDeclarationTid, getTraceCall, makeInputs } from './buildUtil';
+import { addMoreTraceCallArgs, getTraceCall, makeInputs } from './buildUtil';
 import { applyPreconditionToExpression, getInstrumentTargetAstNode } from './common';
 import { buildTraceId } from './traceId';
-import { pathToString, pathToStringAnnotated } from '../../helpers/pathHelpers';
+import { getDeclarationTid } from '../../helpers/traceUtil';
 
 const Verbose = 2;
 
@@ -83,13 +83,12 @@ export function buildTraceDeclarationVar(state, traceCfg) {
   const declarationTid = getDeclarationTid(traceCfg);
   let targetNode = traceCfg.meta?.targetNode;
 
-  // final statement
   if (traceCfg.meta?.isRedeclaration) {
-    // if (valueNode) {
-    //   // re-declaring param? -> this is probably not possible
-    //   console.warn(`redeclaration of hoisted variable with write: "${pathToStringAnnotated(traceCfg.path, true)}" in "${traceCfg.node}"`);
-    // }
-    // else {
+    // trace redeclaration
+    // make sure, `tidIdentifier` is declared
+    traceCfg.scope.push({
+      id: traceCfg.tidIdentifier
+    });
     return buildTraceExpressionVar(state, traceCfg, keepStatementCfg);
   }
 

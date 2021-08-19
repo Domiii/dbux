@@ -29,6 +29,12 @@ export default class VariableDeclarator extends BaseNode {
     return this.hasSeparateDeclarationTrace ? TraceType.WriteVar : TraceType.DeclareAndWriteVar;
   }
 
+  addDefaultTrace() {
+    // -> don't do anything
+    // NOTE: this is to prevent BaseNode.addDefaultTrace from adding a trace in follow-up
+    //    VariableDeclarator node of same binding.
+  }
+
   /**
    * @returns {BindingIdentifier}
    */
