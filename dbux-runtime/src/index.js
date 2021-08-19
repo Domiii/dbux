@@ -67,12 +67,31 @@ function handleShutdown() {
   // NOTE: we want to improve our chances that all data gets sent out before the process closes down.
   //    `process.exit` can disrupt that (kills without allowing us to perform another async handshake + `send`)
   // register `exit` handler that sends out a warning if there is unsent stuff
-  __global__.process && __global__.process.on('exit', handleShutdown);
+  if (__global__.process) {
+    process.on('exit', handleShutdown);
 
-  // __global__.process && __global__.process.on('uncaughtException', async (err) => {
-  //   console.error('uncaughtException', err);
-  //   return new Promise(r => setTimeout(r, 500)).then(() => console.warn('hbgiiasd'));
-  // });
+    const ex = process.exit;
+    process.exit = (...args) => {
+      console.trace(`[Dbux Runtime] process.exit(${args}) was called. Delaying exit...`);
+      setTimeout(() => {
+        ex.call(process, ...args);
+      }, 2000);
+      throw new Error('exit delayed');
+    };
+
+    process.on('uncaughtException', async (err) => {
+      console.error('[Dbux Runtime] uncaughtException detected. reason -', err);
+      setInterval(() => {
+        console.warn(`[Dbux Runtime] shutdown delayed...`);
+      }, 1000);
+    });
+    process.on('unhandledRejection', (err, promise) => {
+      console.error(`[Dbux Runtime] unhandledRejection detected. reason - ${err?.stack || err}, promise: ${promise}`);
+      setInterval(() => {
+        console.warn(`[Dbux Runtime] shutdown delayed...`);
+      }, 1000);
+    });
+  }
 
   // if (__global__.process) {
   //   // handle `beforeExit`, `SIGTERM` and `SIGINT` separately

@@ -1,5 +1,6 @@
 /* global __non_webpack_require__ */
 // import path from 'path';
+import sleep from '@dbux/common/src/util/sleep';
 import { wrapCommand } from '../util/commandUtil';
 import dbuxRegister from '../dbuxRegister';
 import { processEnv } from '../util/processEnv';
@@ -15,7 +16,7 @@ export const builder = buildCommonCommandOptions();
 /**
  * Run file with dbux instrumentations (using babel-register to add dbux-babel-plugin into the mix)
  */
-export const handler = wrapCommand(({ file, _, ...moreOptions }) => {
+export const handler = wrapCommand(async ({ file, _, ...moreOptions }) => {
   processEnv(moreOptions.env);
 
   // patch up file path
@@ -42,5 +43,15 @@ export const handler = wrapCommand(({ file, _, ...moreOptions }) => {
   // see: https://stackoverflow.com/questions/42797313/webpack-dynamic-module-loader-by-requir
   // eslint-disable-next-line camelcase
   const requireFunc = typeof __non_webpack_require__ === "function" ? __non_webpack_require__ : require;
-  requireFunc(targetPath);
+
+  // TODO: if esm -> call `import` instead
+
+  try {
+    requireFunc(targetPath);
+  }
+  catch (err) {
+    // delay shutdown
+    await sleep(2000);
+    throw err;
+  }
 });

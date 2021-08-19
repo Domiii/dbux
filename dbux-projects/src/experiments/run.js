@@ -36,16 +36,18 @@ export default function run() {
     {
       name: 'sequelize',
 
-      // /**
-      //  * Provided for each individual project.
-      //  */
-      // gitRemote;
+      /**
+       * Provided for each individual project.
+       */
+      gitRemote: 'sequelize/sequelize.git',
       // /**
       //  * A specific commit hash or tag name to refer to (if wanted)
       //  */
       // gitCommit;
       // nodeVersion;
-      // packageManager;
+
+      // NOTE: pick the test command that is most likely to yield useful results?
+      testRunCommand: 'yarn test-integration',
 
       // loadBugs() {}
       // decorateBug() {}
@@ -56,10 +58,10 @@ export default function run() {
 
   const projects = projectConfigs.map(projectCfg => new ConfigProject(manager, projectCfg));
 
-  for (const folder of projects) {
+  for (const project of projects) {
     // readPackageJson
     try {
-      runRandomTests(folder, runCfg);
+      runRandomTests(project, runCfg);
     }
     catch (err) {
       logError(err);

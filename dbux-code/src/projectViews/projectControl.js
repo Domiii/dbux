@@ -75,7 +75,7 @@ export function createProjectManager(extensionContext) {
   const externals = {
     editor: {
       async openFile(fpath) {
-        return showTextDocument(fpath);
+        return await showTextDocument(fpath);
       },
       async openFolder(fpath) {
         // TODO: use vscode API to add to workspace instead?

@@ -14,7 +14,7 @@ class AsyncNodeCollection extends Collection {
 
     asyncNode.rootContextId = rootContextId;
     asyncNode.threadId = threadId;
-    asyncNode.traceId = traceId;
+    asyncNode.schedulerTraceId = traceId;
 
     this._send(asyncNode);
 

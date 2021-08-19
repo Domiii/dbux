@@ -1,16 +1,15 @@
-/**
- * @file Workaround (conversion script) to address lack of proper mocha JSON output.
- *
- * @see https://gist.github.com/Domiii/ff89e1427ee51193721abdbb08842e58
- * @see https://stackoverflow.com/questions/41380137/list-all-mocha-tests-without-executing-them/68829700#68829700
- */
-
 import fs from 'fs';
 import path from 'path';
 
 // const inFile = process.argv[2];
 // const outFile = process.argv[3];
 
+/**
+ * @file Workaround (conversion script) to address lack of proper mocha JSON output.
+ *
+ * @see https://gist.github.com/Domiii/ff89e1427ee51193721abdbb08842e58
+ * @see https://stackoverflow.com/questions/41380137/list-all-mocha-tests-without-executing-them/68829700#68829700
+ */
 export default function convertTestList(inFile, outFile) {
   inFile = path.resolve(inFile);
   outFile ||= path.resolve(path.dirname(inFile), 'testList.json');

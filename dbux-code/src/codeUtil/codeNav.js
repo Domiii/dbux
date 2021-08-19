@@ -12,7 +12,7 @@ import { babelLocToCodeRange } from '../helpers/codeLocHelpers';
 /** @typedef {import('@dbux/common/src/types/Loc').default} Loc */
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('codeNav');
+const { log, debug, warn, error: logError, trace: logTrace } = newLogger('codeNav');
 
 /**
  * @param {string} fpath
@@ -65,7 +65,7 @@ export async function showTextDocument(fpath, column) {
     return editor;
   }
   catch (err) {
-    logError('window.showTextDocument failed:', fpath, ' - ', err);
+    logTrace('window.showTextDocument failed:', fpath, ' - ', err);
   }
   finally {
     // reset everything

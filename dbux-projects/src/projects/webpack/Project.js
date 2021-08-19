@@ -1,10 +1,10 @@
-import path from 'path';
 import sh from 'shelljs';
 import { gitCloneCmd } from '@dbux/common-node/src/util/gitUtil';
 import { assertFileLinkTarget } from '@dbux/common-node/src/util/fileUtil';
+import { pathJoin, pathResolve } from '@dbux/common-node/src/util/pathUtil';
 
 import Project from '../../projectLib/Project';
-import WebpackBuilder from '../../buildTools/WebpackBuilder';
+// import WebpackBuilder from '../../buildTools/WebpackBuilder';
 import { buildNodeCommand } from '../../util/nodeUtil';
 
 
@@ -17,27 +17,27 @@ export default class WebpackProject extends Project {
   // we don't want any commit hooks to get in the way
   rmFiles = ['.husky'];
 
-  makeBuilder() {
-    // "node" "-r" "./dbux_projects/webpack/_dbux_/alias.build.js" "--stack-trace-limit=100" "./node_modules/webpack/bin/webpack.js" "--config" "./dbux_projects/webpack/dbux.webpack.config.js" "--env" "entry={\"bin/webpack\":\"bin//webpack.js\"}"
-    // node --stack-trace-limit=100 ../../node_modules/@dbux/cli/bin/dbux.js run --pw=webpack,webpack-cli --verbose=1 --runtime="{\"tracesDisabled\":1}" -d -r=./_dbux_/alias.build.js ../../node_modules/webpack/bin/webpack.js -- --config ./dbux.webpack.config.js --env entry={"bin/webpack":"bin\\\\webpack.js"}
-    // node --stack-trace-limit=100 -r ./_dbux_/alias.build.js ../../node_modules/webpack/bin/webpack.js -- --config ./dbux.webpack.config.js --env entry={"bin/webpack":"bin\\\\webpack.js"}
+  // makeBuilder() {
+  //   // "node" "-r" "./dbux_projects/webpack/_dbux_/alias.build.js" "--stack-trace-limit=100" "./node_modules/webpack/bin/webpack.js" "--config" "./dbux_projects/webpack/dbux.webpack.config.js" "--env" "entry={\"bin/webpack\":\"bin//webpack.js\"}"
+  //   // node --stack-trace-limit=100 ../../node_modules/@dbux/cli/bin/dbux.js run --pw=webpack,webpack-cli --verbose=1 --runtime="{\"tracesDisabled\":1}" -d -r=./_dbux_/alias.build.js ../../node_modules/webpack/bin/webpack.js -- --config ./dbux.webpack.config.js --env entry={"bin/webpack":"bin\\\\webpack.js"}
+  //   // node --stack-trace-limit=100 -r ./_dbux_/alias.build.js ../../node_modules/webpack/bin/webpack.js -- --config ./dbux.webpack.config.js --env entry={"bin/webpack":"bin\\\\webpack.js"}
     
-    return new WebpackBuilder({
-      inputPattern: [
-        'webpack/lib/index.js',
-        'webpack-cli/packages/webpack-cli/bin/cli.js',
-      ],
+  //   return new WebpackBuilder({
+  //     inputPattern: [
+  //       'webpack/lib/index.js',
+  //       'webpack-cli/packages/webpack-cli/bin/cli.js',
+  //     ],
 
-      nodeArgs: `-r "${path.join(this.projectPath, './_dbux_/alias.build.js')}"`,
-      webpackCliBin: this.getSharedDependencyPath('webpack-cli/bin/cli.js'),
-      processOptions: {
-        cwd: this.getSharedDependencyPath('.')
-      },
-      env: {
-        WEBPACK_CLI_SKIP_IMPORT_LOCAL: 1
-      }
-    });
-  }
+  //     nodeArgs: `-r "${pathJoin(this.projectPath, './_dbux_/alias.build.js')}"`,
+  //     webpackCliBin: this.getSharedDependencyPath('webpack-cli/bin/cli.js'),
+  //     processOptions: {
+  //       cwd: this.getSharedDependencyPath('.')
+  //     },
+  //     env: {
+  //       WEBPACK_CLI_SKIP_IMPORT_LOCAL: 1
+  //     }
+  //   });
+  // }
 
   // ###########################################################################
   // install cli
@@ -50,22 +50,30 @@ export default class WebpackProject extends Project {
   // }
 
   get cliFolder() {
-    return path.resolve(this.projectPath, 'webpack-cli');
+    return pathResolve(this.projectPath, 'webpack-cli');
   }
 
   get cliPackageFolder() {
-    return path.resolve(this.projectPath, 'webpack-cli/packages/webpack-cli');
+    return pathResolve(this.cliFolder, 'packages/webpack-cli');
+  }
+
+  get cliBin() {
+    return pathResolve(this.cliPackageFolder, 'bin/cli.js');
+  }
+
+  get cliMain() {
+    return pathResolve(this.cliPackageFolder, 'lib/index.js');
   }
 
   get cliLinkedTarget() {
-    return path.join(this.projectPath, 'node_modules/webpack-cli');
+    return pathJoin(this.projectPath, 'node_modules/webpack-cli');
   }
 
   async checkCliInstallation(shouldError = true) {
     const { cliLinkedTarget, cliPackageFolder, projectPath } = this;
     return (
       await assertFileLinkTarget(
-        path.join(this.projectPath, 'node_modules/webpack'),
+        pathJoin(this.projectPath, 'node_modules/webpack'),
         projectPath,
         shouldError
       ) &&
@@ -95,7 +103,7 @@ export default class WebpackProject extends Project {
 
     // NOTE: global folder on Windows is ~/AppData/Local/Yarn/Data/link, other: /.config/yarn/link/${packageName} (see https://github.com/dominicfallows/manage-linked-packages/blob/master/src/helpers/getPath.ts)
 
-    const linkFolder = path.resolve(projectPath, '../_links_');
+    const linkFolder = pathResolve(projectPath, '../_links_');
     sh.mkdir('-p', linkFolder);
     await this.execInTerminal(
       `yarn install`,
@@ -123,7 +131,7 @@ export default class WebpackProject extends Project {
     await this.installWebpackCli();
 
     // see https://github.com/webpack/webpack-cli/releases/tag/webpack-cli%404.6.0
-    // NOTE: path.resolve(await this.execCaptureOut('readlink -f node_modules/webpack')) === path.resolve(this.projectPath)
+    // NOTE: pathResolve(await this.execCaptureOut('readlink -f node_modules/webpack')) === pathResolve(this.projectPath)
     // await this.applyPatch('baseline');
     // await this.installWebpack4();
   }
@@ -162,7 +170,7 @@ export default class WebpackProject extends Project {
   // ###########################################################################
 
   decorateBug(bug) {
-    bug.mainEntryPoint = ['webpack-cli/packages/webpack-cli/bin/cli.js'];
+    bug.mainEntryPoint = [this.cliBin];
   }
 
   async testBugCommand(bug, cfg) {
@@ -171,22 +179,26 @@ export default class WebpackProject extends Project {
     /**
      * getProjectPath
      */
-    function p(f) {
-      return path.resolve(projectPath, f);
+    function p(...f) {
+      return pathResolve(projectPath, ...f);
     }
 
     return [
       buildNodeCommand({
         ...cfg,
-        program: p('dist/webpack-cli/packages/webpack-cli/bin/cli.js'),
+
+        // NOTE: when changing paths, make sure that `alias.runtime` refers to the correct paths as well
+        program: p(this.cliBin),
         require: p('_dbux_/alias.runtime.js'),
+        dbuxArgs: '--verbose=1 --pw=.*',
         // dbuxArgs: '--pw=webpack,webpack-cli --verbose=1 --runtime="{\\"tracesDisabled\\":1}"',
 
         /**
-         * 
+         * TODO: --stats-reasons --stats-used-exports --stats-provided-exports --stats-chunks --stats-modules-space 99999 --stats-chunk-origins
+         * @see https://webpack.js.org/configuration/stats/#statsreasons
          */
         // eslint-disable-next-line max-len
-        programArgs: '--mode none --env none --stats-reasons --stats-used-exports --stats-provided-exports --no-stats-colors --stats-chunks  --stats-modules-space 99999 --stats-chunk-origins --output-public-path "dist/"  --entry ./example.js --output-filename output.js'
+        programArgs: '--mode none --env none --no-stats-colors --output-public-path "dist/"  --entry ./example.js --output-filename output.js'
       }),
       {
         env: {

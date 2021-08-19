@@ -842,6 +842,10 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     return this._bugs;
   }
 
+  // ###########################################################################
+  // testing
+  // ###########################################################################
+
   getMochaCfg(bug, moreMochaArgs) {
     return {
       require: bug.require,
@@ -888,6 +892,8 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     }
     return argArray.join(' ');      //.map(s => `"${s}"`).join(' ');
   }
+
+  
 
   // ###########################################################################
   // logging

@@ -1,3 +1,4 @@
+import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import isEqual from 'lodash/isEqual';
 import path from 'path';
 import RunStatus from './RunStatus';
@@ -99,12 +100,12 @@ export default class Bug {
       [targetFile] = targetFile;
     }
     if (targetFile) {
-      const fpath = path.join(this.project.projectPath, targetFile);
+      const fpath = pathResolve(this.project.projectPath, targetFile);
       try {
         await this.manager.externals.editor.openFile(fpath);
       }
       catch (err) {
-        this.project.logger.error(`Cannot open file for bug ${this.id}, ${err}`);
+        this.project.logger.error(`Cannot open file for bug ${this.id}:`, err);
         return false;
       }
       return true;
