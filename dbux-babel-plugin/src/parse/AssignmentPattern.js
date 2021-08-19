@@ -11,6 +11,9 @@ import BaseNode from './BaseNode';
 
 /**
  * NOTE: this is also Babel's translation of a default parameter to es5.
+ * 
+ * TODO: `arguments` does not work for lambda expressions.
+ * However, in order to assure correct order of execution, we cannot just instrument in place...?
  */
 const buildDefaultValueAccessor = template(
   `(arguments.length < %%i%% || arguments[%%i%%] === undefined) ? %%defaultValue%% : arguments[%%i%%]`

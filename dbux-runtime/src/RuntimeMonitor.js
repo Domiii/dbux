@@ -538,7 +538,7 @@ export default class RuntimeMonitor {
   newTraceId = (programId, inProgramStaticTraceId) => {
     if (!this._ensureExecuting()) {
       const staticTraceId = staticTraceCollection.getStaticTraceId(programId, inProgramStaticTraceId);
-      logTrace('  ', traceCollection.makeStaticTraceInfo(staticTraceId, true));
+      logTrace('  (not executing)', traceCollection.makeStaticTraceInfo(staticTraceId, true));
       return -1;
     }
 

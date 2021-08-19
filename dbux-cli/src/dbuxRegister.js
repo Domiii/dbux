@@ -16,7 +16,7 @@ export default function dbuxRegister(options) {
   babelOptions.extensions = ['.es6', '.es', '.jsx', '.mjs', '.js', ''];
 
   console.debug('babelRegister', JSON.stringify(options));
-  purgeModuleCache();
   const babelRegister = require('@babel/register').default;
   babelRegister(babelOptions);
+  purgeModuleCache();
 }

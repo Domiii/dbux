@@ -45,10 +45,10 @@ class BaseGroupNode extends BaseTreeViewNode {
   // eslint-disable-next-line no-unused-vars
   static makeRootlabel(executedTraces, groupedTraces) {
     if (this.labelSuffix) {
-      return `Executions: ${executedTraces.length}x (${groupedTraces.length} groups ${this.labelSuffix})`;
+      return `Executions: ${executedTraces?.length || 0}x (${groupedTraces?.length || 0} groups ${this.labelSuffix})`;
     }
     else {
-      return `Executions: ${executedTraces.length}x`;
+      return `Executions: ${executedTraces?.length || 0}x`;
     }
   }
 

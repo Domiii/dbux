@@ -190,7 +190,7 @@ export default class WebpackProject extends Project {
         // NOTE: when changing paths, make sure that `alias.runtime` refers to the correct paths as well
         program: p(this.cliBin),
         require: p('_dbux_/alias.runtime.js'),
-        dbuxArgs: '--verbose=1 --pw=.*',
+        dbuxArgs: `--pw=.* --verbose=1 --cache --sourceRoot=${this.manager.getDefaultSourceRoot()}`,
         // dbuxArgs: '--pw=webpack,webpack-cli --verbose=1 --runtime="{\\"tracesDisabled\\":1}"',
 
         /**
@@ -198,7 +198,8 @@ export default class WebpackProject extends Project {
          * @see https://webpack.js.org/configuration/stats/#statsreasons
          */
         // eslint-disable-next-line max-len
-        programArgs: '--mode none --env none --no-stats-colors --output-public-path "dist/"  --entry ./example.js --output-filename output.js'
+        // programArgs: '--mode none --env none --no-stats-colors --output-public-path "dist/"  --entry ./example.js --output-path output.js'
+        programArgs: '--mode none --env none --entry ./example.js --output-path output.js'
       }),
       {
         env: {

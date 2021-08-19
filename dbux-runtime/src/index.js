@@ -74,9 +74,10 @@ function handleShutdown() {
     process.exit = (...args) => {
       console.trace(`[Dbux Runtime] process.exit(${args}) was called. Delaying exit...`);
       setTimeout(() => {
+        console.error('[Dbux Runtime] exiting now.');
         ex.call(process, ...args);
-      }, 2000);
-      throw new Error('exit delayed');
+      }, 5000);
+      throw new Error('[Dbux Runtime] exit delayed');
     };
 
     process.on('uncaughtException', async (err) => {

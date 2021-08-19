@@ -7,9 +7,9 @@ import RuntimeDataProvider from '../../RuntimeDataProvider';
  * @param {Trace} trace
  */
 function makeKey(dp, trace) {
-  const { parentContextId } = dp.collections.executionContexts.getById(trace.contextId);
+  const context = dp.collections.executionContexts.getById(trace.contextId);
 
-  return parentContextId || 0;
+  return context?.parentContextId || 0;
 }
 
 

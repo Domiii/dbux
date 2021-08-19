@@ -1,12 +1,11 @@
-let x = 1;
-const y = 2;
-// const y = x + 3;
+/**
+ * @file Default parameters cannot use `arguments` (since they are not captured by lambdas)
+ */
 
-function f(/* x */) {
-  let y;
-  y = 'yy';
-  x = 111;
-  return y + x + 5;
-}
+var path = require('path');
 
-console.log(x, y, f(x));
+const f = (a, b = "", c = []) => {
+  console.log(a,b,c);
+};
+
+f(123);
