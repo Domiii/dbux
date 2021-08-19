@@ -1,6 +1,6 @@
 import traceSelection from '@dbux/data/src/traceSelection';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import { makeTraceValueLabel } from '@dbux/data/src/helpers/traceLabels';
+import { makeTraceValueLabel } from '@dbux/data/src/helpers/makeLabels';
 import { valueRender } from '../valueRender';
 import TraceNode from './TraceNode';
 

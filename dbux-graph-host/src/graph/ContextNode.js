@@ -1,11 +1,9 @@
 import ExecutionContextType from '@dbux/common/src/types/constants/ExecutionContextType';
-import { binarySearchByKey } from '@dbux/common/src/util/arrayUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import { makeTraceValueLabel, makeTraceLabel, makeContextLocLabel, makeTraceLocLabel } from '@dbux/data/src/helpers/traceLabels';
-import { makeContextLabel } from '@dbux/data/src/helpers/contextLabels';
+import { makeTraceValueLabel, makeTraceLabel, makeContextLocLabel, makeTraceLocLabel, makeContextLabel, makeContextCallerLabel } from '@dbux/data/src/helpers/makeLabels';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
@@ -20,19 +18,21 @@ class ContextNode extends HostComponentEndpoint {
       statsEnabled
     } = this.state;
 
+    const { contextId } = context;
+
     // get name (and other needed data)
     const app = allApplications.getById(applicationId);
     const dp = app.dataProvider;
-    const errorTag = (dp.indexes.traces.errorByContext.get(context.contextId)?.length) ? '🔥' : '';
+    const errorTag = (dp.indexes.traces.errorByContext.get(contextId)?.length) ? '🔥' : '';
 
-    this.state.contextNameLabel = makeContextLabel(context, app) + errorTag;
+    this.state.contextLabel = makeContextLabel(context, app) + errorTag;
     this.state.contextLocLabel = makeContextLocLabel(applicationId, context);
     const { callTrace } = this;
+    this.state.callerTracelabel = dp.util.makeContextCallerOrSchedulerLabel(contextId);
     if (callTrace) {
       this.state.valueLabel = makeTraceValueLabel(callTrace);
-      this.state.callTraceNameLabel = makeTraceLabel(callTrace);
     }
-    this.state.moduleName = dp.util.getContextModuleName(context.contextId);
+    this.state.moduleName = dp.util.getContextModuleName(contextId);
 
     if (statsEnabled) {
       this._addStats(this.state);
@@ -65,7 +65,7 @@ class ContextNode extends HostComponentEndpoint {
   }
 
   get callTrace() {
-    return this.dp.util.getCallerTraceOfContext(this.contextId);
+    return this.dp.util.getCallerOrSchedulerTraceOfContext(this.contextId);
   }
 
   get nTreeContexts() {

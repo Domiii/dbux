@@ -4,7 +4,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 
 import Application from './Application';
 import ApplicationSelection from './ApplicationSelection';
-import { initTraceLabels } from '../helpers/traceLabels';
+import { initTraceLabels } from '../helpers/makeLabels';
 
 // eslint-disable-next-line no-unused-vars
 // eslint-disable-next-line no-unused-vars
