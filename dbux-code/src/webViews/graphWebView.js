@@ -2,7 +2,6 @@ import {
   ViewColumn
 } from 'vscode';
 import GraphHost from '@dbux/graph-host/src/GraphHost';
-import { goToTrace } from '../codeUtil/codeNav';
 import { getThemeResourcePathUri } from '../codeUtil/codePath';
 import RichWebView from './RichWebView';
 import { emitCallGraphAction } from '../userEvents';
@@ -28,9 +27,6 @@ export default class GraphWebView extends RichWebView {
   // ###########################################################################
 
   externals = {
-    async goToTrace(trace) {
-      await goToTrace(trace);
-    },
     emitCallGraphAction
   }
 }

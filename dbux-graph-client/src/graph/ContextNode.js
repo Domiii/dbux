@@ -1,4 +1,3 @@
-import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import { getStaticContextColor } from '@dbux/graph-common/src/shared/contextUtil';
 import { compileHtmlElement, decorateClasses } from '../util/domUtil';
 // import { isMouseEventPlatformModifierKey } from '../util/keyUtil';
@@ -11,7 +10,7 @@ class ContextNode extends ClientComponentEndpoint {
     return compileHtmlElement(/*html*/`
       <div class="context-node flex-row">
         <div class = "indicator-cont">
-          <div data-el="indicator" class='indicator'></div>
+          <div data-el="indicator" class="indicator"></div>
         </div>
         <div class="full-width flex-column">
           <div class="content">
@@ -25,7 +24,7 @@ class ContextNode extends ClientComponentEndpoint {
                     <img data-el="nextModeButtonImg">
                   </button>
                 </div>
-                <div data-el="parentLabel" class="ellipsis-20 dbux-link"></div>
+                <div data-el="callLabel" class="ellipsis-20 dbux-link"></div>
                 <div data-el="title" class="flex-row cross-axis-align-center">
                   <div data-el="contextLabel" class="ellipsis-20 dbux-link"></div>
                 </div>
@@ -34,8 +33,8 @@ class ContextNode extends ClientComponentEndpoint {
                 </div-->
                 &nbsp;&nbsp;
                 <!--button class="highlight-btn emoji" data-el="staticContextHighlightBtn"><span>💡</span></button-->
-                <button data-el="prevContextBtn" class="hidden">⇦</button>
-                <button data-el="nextContextBtn" class="hidden">⇨</button>
+                <!--<button data-el="prevContextBtn" class="hidden">⇦</button>-->
+                <!--<button data-el="nextContextBtn" class="hidden">⇨</button>-->
                 <div class="loc-label">
                   <span data-el="locLabel"></span>
                   <!--span data-el="parentLocLabel" class="dbux-link"></span-->
@@ -50,8 +49,7 @@ class ContextNode extends ClientComponentEndpoint {
             </div>
           </div>
           <div class="full-width flex-row">
-            <div class="node-left-padding">
-            </div>
+            <div class="node-left-padding"></div>
             <div data-mount="ContextNode" data-el="nodeChildren" class="node-children"></div>
           </div>
         </div>
@@ -65,8 +63,7 @@ class ContextNode extends ClientComponentEndpoint {
       context: { contextId, staticContextId },
       contextNameLabel,
       contextLocLabel,
-      parentTraceNameLabel,
-      // parentTraceLocLabel,
+      callTraceNameLabel,
       valueLabel,
       isSelected,
       traceId,
@@ -86,8 +83,7 @@ class ContextNode extends ClientComponentEndpoint {
     this.el.style.background = getStaticContextColor(themeMode, staticContextId, !!moduleName);
     this.els.contextLabel.textContent = contextNameLabel;
     this.els.locLabel.textContent = contextLocLabel && ` @ ${moduleLabel}${contextLocLabel}` || '';
-    this.els.parentLabel.textContent = parentTraceNameLabel || '';
-    // this.els.parentLocLabel.textContent = parentTraceLocLabel || '';
+    this.els.callLabel.textContent = callTraceNameLabel || '';
     this.els.valueLabel.textContent = valueLabel;
 
     if (statsEnabled) {
@@ -118,9 +114,9 @@ class ContextNode extends ClientComponentEndpoint {
     // set popper
     const modKey = getPlatformModifierKeyString();
     this.els.contextLabel.setAttribute('data-tooltip', `${this.els.contextLabel.textContent} (${modKey} + click to select trace)`);
-    this.els.parentLabel.setAttribute('data-tooltip', `${this.els.parentLabel.textContent} (${modKey} + click to select trace)`);
-    this.els.prevContextBtn.setAttribute('data-tooltip', 'Go to previous function execution');
-    this.els.nextContextBtn.setAttribute('data-tooltip', 'Go to next function execution');
+    this.els.callLabel.setAttribute('data-tooltip', `${this.els.callLabel.textContent} (${modKey} + click to select trace)`);
+    // this.els.prevContextBtn.setAttribute('data-tooltip', 'Go to previous function execution');
+    // this.els.nextContextBtn.setAttribute('data-tooltip', 'Go to next function execution');
   }
 
   get hiddenNodeManager() {
@@ -150,7 +146,7 @@ class ContextNode extends ClientComponentEndpoint {
     // }
   }
 
-  handleClickOnParentTrace(evt) {
+  handleClickOnCallTrace(evt) {
     if (evt.altKey) {
       // panning
       return;
@@ -158,7 +154,7 @@ class ContextNode extends ClientComponentEndpoint {
     // if (isMouseEventPlatformModifierKey(evt)) {
     // if (evt.shiftKey) {
     // ctrl(meta) + click: select trace
-    this.remote.selectParentTrace();
+    this.remote.selectCallTrace();
     document.getSelection().removeAllRanges();
     // }
     // else {
@@ -214,14 +210,14 @@ class ContextNode extends ClientComponentEndpoint {
     //     this.handleClickOnContext(evt);
     //   }
     // },
-    parentLabel: {
+    callLabel: {
       click(evt) {
-        this.handleClickOnParentTrace(evt);
+        this.handleClickOnCallTrace(evt);
       }
     },
     // parentLocLabel: {
     //   click(evt) {
-    //     this.handleClickOnParentTrace(evt);
+    //     this.handleClickOnCallTrace(evt);
     //   }
     // },
     // staticContextHighlightBtn: {
@@ -229,16 +225,16 @@ class ContextNode extends ClientComponentEndpoint {
     //     this.remote.toggleStaticContextHighlight();
     //   }
     // },
-    prevContextBtn: {
-      async click(/* evt */) {
-        await this.remote.selectPreviousContextByStaticContext();
-      }
-    },
-    nextContextBtn: {
-      async click(/* evt */) {
-        await this.remote.selectNextContextByStaticContext();
-      }
-    }
+    // prevContextBtn: {
+    //   async click(/* evt */) {
+    //     await this.remote.selectPreviousContextByStaticContext();
+    //   }
+    // },
+    // nextContextBtn: {
+    //   async click(/* evt */) {
+    //     await this.remote.selectNextContextByStaticContext();
+    //   }
+    // }
   }
 }
 export default ContextNode;
