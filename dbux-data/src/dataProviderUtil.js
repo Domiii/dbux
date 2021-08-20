@@ -973,8 +973,12 @@ export default {
    * @param {DataProvider} dp
    */
   isCalleeTraced(dp, callId) {
-    const context = dp.indexes.executionContexts.byCalleeTrace.getUnique(callId);
+    const context = dp.util.getCalledContext(callId);
     return context && !!dp.util.getOwnCallerTraceOfContext(context.contextId);
+  },
+
+  getCalledContext(dp, callId) {
+    return dp.indexes.executionContexts.byCalleeTrace.getUnique(callId);
   },
 
   /**
@@ -1165,14 +1169,14 @@ export default {
   },
 
   /** @param {DataProvider} dp */
-  getRealContextIdOfTrace(dp, traceId) {
-    const { contextId } = dp.collections.traces.getById(traceId);
-    return dp.util.getRealContextIdOfContext(contextId);
+  getLastChildContextOfContext(dp, realContextId) {
+    return dp.indexes.executionContexts.children.getLast(realContextId);
   },
 
   /** @param {DataProvider} dp */
-  getLastChildContextOfContext(dp, realContextId) {
-    return dp.indexes.executionContexts.children.getLast(realContextId);
+  getRealContextIdOfTrace(dp, traceId) {
+    const { contextId } = dp.collections.traces.getById(traceId);
+    return dp.util.getRealContextIdOfContext(contextId);
   },
 
   /** @param {DataProvider} dp */
@@ -1260,9 +1264,9 @@ export default {
   },
 
   /** @param {DataProvider} dp */
-  getRealContextOfBCE(dp, callId) {
-    const firstChildTrace = dp.indexes.traces.byCalleeTrace.getFirst(callId);
-    const contextId = firstChildTrace && dp.util.getRealContextIdOfTrace(firstChildTrace.traceId);
+  getRealCalledContext(dp, callId) {
+    const calledContext = dp.util.getCalledContext(callId);
+    const contextId = calledContext && dp.util.getRealContextIdOfContext(calledContext.contextId);
     return contextId && dp.collections.executionContexts.getById(contextId);
   },
 
@@ -1783,20 +1787,19 @@ export default {
       }
     }
     else {
-      // (maybe) Case 2: returned (but did not await) promise from `async` function
+      // (maybe) Case 2: returned promise from `async` function
       // NOTE: we are making sure, this is the "returning" postUpdate
       let resumeContextId;
       if (postUpdate && AsyncEventUpdateType.is.PostAwait(postUpdate.type)) {
         // async function has at least one `await`
-        resumeContextId = postUpdate.contextid;
+        resumeContextId = postUpdate.contextId;
       }
       else {
-        // async function had no `await`: find call trace -> context -> return value
-        const resultTrace = dp.util.getFirstTraceByRefId(promiseId);
-        const callId = resultTrace && dp.util.getCallIdOfTrace(resultTrace.traceId);
-        // const context = callId && dp.util.getRealContextOfBCE(callId);
-        const context = callId && dp.util.getTraceContext(callId);
-        resumeContextId = context?.contextId;
+        // async function had no `await`: find call trace -> called context
+        const asyncCallResultTrace = dp.util.getFirstTraceByRefId(promiseId);
+        const callId = asyncCallResultTrace && dp.util.getCallIdOfTrace(asyncCallResultTrace.traceId);
+        const resumeContext = callId && dp.util.getCalledContext(callId);
+        resumeContextId = resumeContext?.contextId;
       }
 
       if (resumeContextId) {
@@ -1965,11 +1968,11 @@ export default {
       //   //  -> caller of -> context of -> return value ref of parent function (function that called f)
       //   const parentCallResultTrace = dp.util.getFirstTraceByRefId(promiseId);
       //   const parentCallId = parentCallResultTrace && dp.util.getCallIdOfTrace(parentCallResultTrace.traceId);
-      //   const parentContext = parentCallId && dp.util.getRealContextOfBCE(parentCallId);
+      //   const parentContext = parentCallId && dp.util.getRealCalledContext(parentCallId);
       //   const parentRealContextId = parentContext?.contextId;
       //   const parentReturnTrace = parentRealContextId && dp.util.getReturnValueTraceOfInterruptableContext(parentRealContextId);
       //   const parentReturnCallId = parentReturnTrace && dp.util.getCallIdOfTrace(parentReturnTrace.traceId);
-      //   const context = parentReturnCallId && dp.util.getRealContextOfBCE(parentReturnCallId);
+      //   const context = parentReturnCallId && dp.util.getRealCalledContext(parentReturnCallId);
       //   if (context?.contextId && context.contextId === dp.util.getRealContextIdOfContext(contextId)) {
       //     return true;
       //   }

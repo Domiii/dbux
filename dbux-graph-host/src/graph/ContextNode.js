@@ -155,9 +155,9 @@ class ContextNode extends HostComponentEndpoint {
       const { applicationId } = selectedTrace;
       const dp = allApplications.getById(applicationId).dataProvider;
       const callId = dp.util.getBCETraceOfTrace(traceId)?.traceId;
-      const child = callId && dp.indexes.executionContexts.byCalleeTrace.get(callId) || null;
+      const calledContext = callId && dp.util.getCalledContext(callId) || null;
       isSelectedTraceCallRelated = !!callId;
-      contextIdOfSelectedCallTrace = child && child[0].contextId;
+      contextIdOfSelectedCallTrace = calledContext?.contextId;
     }
     if (isSelected) {
       this.expand();

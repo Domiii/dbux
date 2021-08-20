@@ -300,7 +300,7 @@ export function initTraceDecorators() {
   configSanityCheck();
 }
 
-export function getTraceDecoName(dataProvider, staticTrace, trace) {
+export function getTraceDecoName(dp, staticTrace, trace) {
   const { traceId, error, callId } = trace;
 
   // special decorations
@@ -310,19 +310,19 @@ export function getTraceDecoName(dataProvider, staticTrace, trace) {
 
   // handle getters + setters (not by type)
   if (!callId) {
-    const calledContext = dataProvider.indexes.executionContexts.byCalleeTrace.get(traceId);
+    const calledContext = dp.util.getCalledContext(traceId);
     if (calledContext) {
       return 'OtherCall';
     }
   }
 
   // default: check by type name
-  const traceType = dataProvider.util.getTraceType(traceId);
+  const traceType = dp.util.getTraceType(traceId);
   const typeName = TraceType.nameFrom(traceType);
 
   const f = decoNamesByType[typeName];
   if (f) {
-    const name = f(dataProvider, staticTrace, trace);
+    const name = f(dp, staticTrace, trace);
     if (name) {
       return name;
     }
