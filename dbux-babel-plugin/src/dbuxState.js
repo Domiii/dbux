@@ -80,7 +80,7 @@ export default function injectDbuxState(programPath, programState) {
         getArgLength: makeProgramId('al'),
         arrayFrom: makeProgramId('af'),
         unitOfType: makeProgramId('uot'),
-        DefaultValueIndicator: makeProgramId('dfi'),
+        DefaultInitializerIndicator: makeProgramId('dfi'),
 
         // Function
         pushImmediate: makeProgramId('pI'),

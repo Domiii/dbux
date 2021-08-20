@@ -8,7 +8,8 @@ import ParseDirection from './ParseDirection';
 import ParseRegistry from './ParseRegistry';
 
 import { isPathInstrumented } from '../helpers/astUtil';
-import { pathToString } from '../helpers/pathHelpers';
+import { pathToString, pathToStringAnnotated } from '../helpers/pathHelpers';
+import { isPathSkipped } from 'src/helpers/traversalHelpers';
 
 /**
  * @typedef {import('./ParseStack').default} ParseStack
@@ -60,7 +61,7 @@ function visit(direction, ParserNodeClazz, path, state) {
     );
   }
 
-  state.stack.checkGen();
+  state.stack.checkBeforeGen();
   // if (state.stack.isGen) {
   //   // we are already in `gen` -> stop the whole shazam
   //   path.stop();
@@ -173,10 +174,13 @@ export function buildVisitors() {
           }
           if (checkDisabled(path)) {
             ++disabled;
-            debug(` (skipped path++: ${pathToString(path, true)})`);
+            debug(` (disabled path++: ${pathToString(path, true)})`);
             // path.skip(); // NOTE: `skip()` will also skip it for all other plugins
           }
           else {
+            if (isPathSkipped(path)) {
+              return;
+            }
             visitEnter(ParserNodeClazz, path, state);
           }
         },
@@ -192,6 +196,9 @@ export function buildVisitors() {
             }
           }
           else {
+            if (isPathSkipped(path)) {
+              return;
+            }
             visitExit(ParserNodeClazz, path, state);
           }
         }

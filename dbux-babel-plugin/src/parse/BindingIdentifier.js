@@ -27,13 +27,10 @@ export default class BindingIdentifier extends BaseId {
   getBindingScope() {
     let { /* path, */ scope } = this.binding;
 
-    // if (scope.parent) {
-    //   // hackfix: just make sure the tid variable is hoisted correctly
-    //   // wont-work: because declaration traces might initialize in-place; so we cannot move them
-    //   scope = scope.parent;
-    //   if (scope.parent) {
-    //     scope = scope.parent;
-    //   }
+    // if (!scopePath.isFunction() && !scopePath.isProgram()) {
+    //   // hackfix: just make sure, the declared variable is not hoisted to nested scope
+    //   // wont-work: some bindings (such as class static/instance prop/method bindings) don't work like this
+    //   scopePath = scopePath.parentPath;
     // }
 
     // /**
@@ -65,10 +62,6 @@ export default class BindingIdentifier extends BaseId {
   getDefaultBindingScopeNode() {
     // const scopePath = this.binding.path.scope.path;
     let scopePath = this.getBindingScope().path;
-    // if (!scopePath.isFunction() && !scopePath.isProgram()) {
-    //   // hackfix: just make sure, the declared variable is not hoisted to nested scope
-    //   scopePath = scopePath.parentPath;
-    // }
 
     /**
      * @type {BaseNode}

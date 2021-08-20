@@ -1,8 +1,8 @@
 // import truncate from 'lodash/truncate';
 import generator from '@babel/generator';
 
-export function pathToStringAnnotated(path) {
-  return `[${path.node.type}] "${pathToString(path)}"`;
+export function pathToStringAnnotated(path, ...args) {
+  return `[${path.node.type}] "${pathToString(path, ...args)}"`;
 }
 
 export function locToString(loc) {

@@ -1,5 +1,4 @@
 import * as t from "@babel/types";
-import TraceType from '@dbux/common/src/types/constants/TraceType';
 import BaseNode from './BaseNode';
 
 export default class ArrowFunctionExpression extends BaseNode {

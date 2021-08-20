@@ -10,7 +10,6 @@ import { getVariableDeclaratorLValPlugin } from './helpers/lvalUtil';
 export default class VariableDeclarator extends BaseNode {
   static children = ['id', 'init'];
   static plugins = [
-    'BindingNode',
     {
       plugin: getVariableDeclaratorLValPlugin,
       alias: 'lval'

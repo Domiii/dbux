@@ -8,6 +8,25 @@
 
 import * as t from '@babel/types';
 
+// ###########################################################################
+// fix skipping
+// ###########################################################################
+
+/**
+ * hackfix: workaround Babel bug
+ * @see https://github.com/babel/babel/issues/11147
+ */
+export function skipPath(path) {
+  return path.setData('___skipped', 1);
+}
+
+export function isPathSkipped(path) {
+  return !!path.getData('___skipped');
+}
+
+/** ###########################################################################
+ * 
+ *  ###########################################################################/
 
 /**
  * Might return null if given node has no ids (e.g. anonymous function declaration)

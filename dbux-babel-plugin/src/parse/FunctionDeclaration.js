@@ -8,8 +8,7 @@ export default class FunctionDeclaration extends BaseNode {
 
   static plugins = [
     'Function',
-    'StaticContext',
-    'BindingNode'
+    'StaticContext'
   ];
 
   /**

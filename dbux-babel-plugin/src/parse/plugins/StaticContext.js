@@ -1,10 +1,6 @@
-import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
-import TraceType from '@dbux/common/src/types/constants/TraceType';
-import { pathToString } from '../../helpers/pathHelpers';
 import BasePlugin from './BasePlugin';
 
 /** @typedef { import("../BindingIdentifier").default } BindingIdentifier */
-/** @typedef { import("./BindingNode").default } BindingNode */
 /** @typedef { import("./Traces").default } Traces */
 
 /**

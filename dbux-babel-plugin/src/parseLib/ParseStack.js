@@ -157,7 +157,11 @@ export default class ParseStack {
   // ###########################################################################
 
   enter(path, ParseNodeClazz) {
-    this.checkGen();
+    // if (path.shouldSkip) {
+    //   console.error(`!!path.shouldSkip: "${pathToStringAnnotated(path, true)}"`);
+    //   return;
+    // }
+
     ++this.recordedDepth;
 
     const { state } = this;
@@ -196,8 +200,6 @@ export default class ParseStack {
   // ###########################################################################
 
   exit1(path, ParseNodeClazz) {
-    this.checkGen();
-
     const parseNode = this._peekNode(ParseNodeClazz);
     if (!parseNode) {
       // eslint-disable-next-line max-len
@@ -225,7 +227,7 @@ export default class ParseStack {
   // gen
   // ###########################################################################
 
-  checkGen() {
+  checkBeforeGen() {
     if (this.isGen) {
       // stop parsing after `gen` started
       throw new Error(`Stack still visited, after parsing completed.`);

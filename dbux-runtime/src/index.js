@@ -77,19 +77,19 @@ function handleShutdown() {
         console.error('[Dbux Runtime] exiting now.');
         ex.call(process, ...args);
       }, 5000);
-      throw new Error('[Dbux Runtime] exit delayed');
+      throw new Error('[Dbux Runtime] process.exit delayed');
     };
 
     process.on('uncaughtException', async (err) => {
       console.error('[Dbux Runtime] uncaughtException detected. reason -', err);
       setInterval(() => {
-        console.warn(`[Dbux Runtime] shutdown delayed...`);
+        console.warn(`[Dbux Runtime] shutdown delayed (uncaughtException)...`);
       }, 1000);
     });
     process.on('unhandledRejection', (err, promise) => {
       console.error(`[Dbux Runtime] unhandledRejection detected. reason - ${err?.stack || err}, promise: ${promise}`);
       setInterval(() => {
-        console.warn(`[Dbux Runtime] shutdown delayed...`);
+        console.warn(`[Dbux Runtime] shutdown delayed (unhandledRejection)...`);
       }, 1000);
     });
   }

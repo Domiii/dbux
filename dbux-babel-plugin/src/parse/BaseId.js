@@ -7,7 +7,7 @@ import BaseNode from './BaseNode';
 /**
  * BaseId provides binding-related utilities.
  * 
- * NOTE: The `bindingPath` (and thus `bindingNode`) is often the parent of the `BindingIdentifier`.
+ * NOTE: The `bindingPath` is often the parent of the `BindingIdentifier`.
  */
 export default class BaseId extends BaseNode {
   /**

@@ -269,7 +269,7 @@ export default class Function extends BasePlugin {
       }
     } = this;
 
-    // TODO: warn of eval
+    // future-work: warn of eval
     //      -> maybe try instrumenting it if it is a simple string?
     //      -> consider bundling `@dbux/babel-plugin` and `@babel/register` with runtime in case of eval?
     const bodyPath = path.get('body');

@@ -272,7 +272,7 @@ export default class BugRunner {
       }
       command = command?.trim().replace(/\s+/, ' ');  // get rid of unnecessary line-breaks and multiple spaces
 
-      // ensure RuntimeServer is ready to receive the result
+      // ensure RuntimeServer is ready to receive results
       await this.manager.externals.initRuntimeServer();
 
       // start watch mode (if necessary)

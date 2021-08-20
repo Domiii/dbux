@@ -36,6 +36,10 @@ export default class ObjectExpression extends BaseNode {
     })) || EmptyArray;
   }
 
+  // enter() {
+  //   console.error('OE disabled', this.path.getData('disabled'), this.path._traverseFlags);
+  // }
+
   exit() {
     // if (!this.isES5()) {
     //   this.warn(`Cannot properly instrument non-es5 ObjectExpression syntax yet: ${this}`);

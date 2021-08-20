@@ -1,5 +1,5 @@
-var f = function f() {
-
+function f({ x } = {}) {
+  console.log(x);
 }
 
-f();
+f({ x: 3 });

@@ -2,34 +2,59 @@ import * as t from "@babel/types";
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import BasePlugin from './BasePlugin';
 import { getBindingIdentifierPaths } from '../../helpers/bindingsUtil';
-import { pathToString } from '../../helpers/pathHelpers';
+import { pathToString, pathToStringAnnotated } from '../../helpers/pathHelpers';
 import BindingIdentifier from '../BindingIdentifier';
 
 
-function getParamDefaultValuePath(paramPath) {
-  // TODO: support destructuring
+function getParamDefaultInitializerPath(paramPath) {
   if (paramPath.isAssignmentPattern()) {
-    // e.g. get `3` from `a` in `function f(a = 3) {}`
+    // e.g. returns `3` in `function f(a = 3) {}`
     return paramPath.get('right');
   }
   return null;
 }
 
+function isSupported(paramPath) {
+  // TODO: `RestElement` (good news: never has default initializer)
+  // TODO: `{Object,Array}Pattern
+
+  return paramPath.isIdentifier() ||
+    (paramPath.isAssignmentPattern() && paramPath.get('left').isIdentifier());
+}
+
 export default class Params extends BasePlugin {
+  get paramsPath() {
+    return this.node.path.get('params');
+  }
+
+  // enter() {
+  //   const { paramsPath } = this;
+
+  //   paramsPath.forEach(paramPath => {
+  //     if (!isSupported(paramPath)) {
+  //       // TODO: tracing the rhs would introduce new variables whose declaration would be moved into function body,
+  //       //      resulting in a TypeError
+  //       //    -> skip
+  //       //  e.g.: function f({ x } = {}) {}
+  //       const init = getParamDefaultInitializerPath(paramPath);
+  //       if (init) {
+  //         paramPath.get('left').skip();
+  //         init.skip();
+  //         this.warn(`skipped default initializer "${pathToStringAnnotated(init, true)}"`, !!init.shouldSkip);
+  //       }
+  //     }
+  //   });
+  // }
+
   addParamTraces = () => {
-    const { path } = this.node;
-    const paramsPath = path.get('params');
+    const { paramsPath } = this;
 
     // -> `registerParams([traceDeclaration(tid0, p0), traceDeclaration(tid1, p1), ...])`
     return paramsPath.map(paramPath => this.addParamTrace(paramPath));
   }
 
   addParamTrace = (paramPath, traceType = TraceType.Param) => {
-    if (!paramPath.isIdentifier() && !(paramPath.isAssignmentPattern() && paramPath.get('left').isIdentifier())) {
-      // we currently only support simple identifiers, optionally with default parameter (AssignmentPattern)
-
-      // TODO: `RestElement`
-      // TODO: `{Object,Array}Pattern
+    if (!isSupported(paramPath)) {
       this.warn(`[NYI] - unsupported param type: [${paramPath.node?.type}] "${pathToString(paramPath)}" in "${this.node}"`);
       return null;
     }
@@ -38,7 +63,7 @@ export default class Params extends BasePlugin {
 
     const idPaths = getBindingIdentifierPaths(paramPath);
     if (idPaths.length !== 1) {
-      this.warn(`[NYI] - param is destructured into less or more than 1 variable: "${pathToString(paramPath)}" in "${this.node}"`);
+      this.warn(`[NYI] - param has more or less than 1 variable: "${pathToString(paramPath)}" in "${this.node}"`);
     }
     const idPath = idPaths[0];
     /**
@@ -47,19 +72,19 @@ export default class Params extends BasePlugin {
     const idNode = this.node.getNodeOfPath(idPath);
 
     const paramNode = this.node.getNodeOfPath(paramPath);
-    const defaultValuePath = getParamDefaultValuePath(paramPath);
-    const defaultValueNode = defaultValuePath && this.node.getNodeOfPath(defaultValuePath);
+    const defaultInitializerPath = getParamDefaultInitializerPath(paramPath);
+    const defaultInitializerNode = defaultInitializerPath && this.node.getNodeOfPath(defaultInitializerPath);
 
     // ########################################
-    // parameter declaration (with defaultValue) [v1]
+    // parameter declaration (with defaultInitializer) [v1]
     // ########################################
 
-    // let defaultValueTrace;
-    // if (defaultValuePath) {
-    //   // NOTE: defaultValueTrace will not be triggered if the parameter has matching argument (no default value)
+    // let defaultInitializerTrace;
+    // if (defaultInitializerPath) {
+    //   // NOTE: defaultInitializerTrace will not be triggered if the parameter has matching argument (no default value)
 
     //   // const paramNode = paramPath.node;
-    //   const defaultValueTraceData = {
+    //   const defaultInitializerTraceData = {
     //     path: paramPath,
     //     scope: this.node.path.scope.parent,  // important: declare in Function's (or CatchClause's) parent scope
     //     node: paramNode,
@@ -69,7 +94,7 @@ export default class Params extends BasePlugin {
     //     },
     //     meta: {
     //       build: buildTraceWriteVar,
-    //       targetPath: defaultValuePath,
+    //       targetPath: defaultInitializerPath,
     //       hoisted: false
     //       // moreTraceCallArgs: () => {
     //       //   return [
@@ -80,14 +105,14 @@ export default class Params extends BasePlugin {
     //     }
     //   };
 
-    //   const inputs = [defaultValuePath];
-    //   defaultValueTrace = paramNode.Traces.addTraceWithInputs(defaultValueTraceData, inputs);
+    //   const inputs = [defaultInitializerPath];
+    //   defaultInitializerTrace = paramNode.Traces.addTraceWithInputs(defaultInitializerTraceData, inputs);
     // }
     // else {
     //   // no default value
     // }
 
-    // parameter declaration (without defaultValue)
+    // parameter declaration (without defaultInitializer)
     const paramTraceData = {
       path: paramNode.path,
       node: paramNode,
@@ -99,10 +124,10 @@ export default class Params extends BasePlugin {
     };
 
     // ########################################
-    // parameter declaration (with defaultValue) [v2]
+    // parameter declaration (with defaultInitializer) [v2]
     // ########################################
     let value;
-    if (defaultValueNode) {
+    if (defaultInitializerNode) {
       value = () => {
         // move (conditional) default value to hoisted parameter declaration
         const valueAstNode = t.assignmentExpression('=',
@@ -114,8 +139,8 @@ export default class Params extends BasePlugin {
 
       // add default value as input to param trace
       // NOTE: will be overwritten by `ExecutionContextCollection.setParamInputs`, if not default
-      paramTraceData.inputTraces = defaultValueNode.Traces.addDefaultTraces([
-        defaultValuePath
+      paramTraceData.inputTraces = defaultInitializerNode.Traces.addDefaultTraces([
+        defaultInitializerPath
       ]);
     }
     else {
