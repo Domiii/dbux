@@ -5,17 +5,17 @@
  * @see https://raw.githubusercontent.com/mdlavin/nested-error-stacks/master/index.js
  */
 class NestedError extends Error {
-  constructor(message, nestedErr) {
+  constructor(message, cause) {
     super(message);
 
     if (message instanceof Error) {
-      nestedErr = message;
+      cause = message;
     }
     
     this.message = message;
 
     this.name = 'NestedError';
-    this.nestedErr = nestedErr;
+    this.cause = cause;
 
     // TODO: fix combined stack, to be less confusing (should not include messages multiple times)
     // const outer = this.outer = {};
@@ -23,7 +23,7 @@ class NestedError extends Error {
     // var oldStackDescriptor = Object.getOwnPropertyDescriptor(this, 'stack');
     // var stackDescriptor = buildStackDescriptor(oldStackDescriptor, nestedErr);
     Object.defineProperty(this, 'stack', {
-      value: `${message || ''}\n  [Caused By] ${nestedErr.stack || nestedErr}`
+      value: `${message || ''}\n  [Caused By] ${cause.stack || cause}`
     });
   }
 }

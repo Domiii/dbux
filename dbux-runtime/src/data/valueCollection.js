@@ -85,7 +85,13 @@ class ValueCollection extends Collection {
   errorSerializer = this.makeDefaultSerializer((err, valueRef) => {
     // [edit-after-send]
     valueRef.isError = true;
-    return [['name'], ['stack'], ['message']];
+    return [
+      ['name'], ['message'], ['stack'],
+      /**
+       * @see https://github.com/tc39/proposal-error-cause
+       */
+      ['cause']
+    ];
   });
 
   builtInTypeSerializers = new Map([
