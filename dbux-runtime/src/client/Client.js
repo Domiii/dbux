@@ -2,6 +2,7 @@
 import io, { Socket } from 'socket.io-client';
 import minBy from 'lodash/minBy';
 import maxBy from 'lodash/maxBy';
+import sumBy from 'lodash/sumBy';
 import { logWarn, newLogger } from '@dbux/common/src/log/logger';
 import sleep from '@dbux/common/src/util/sleep';
 // import universalLibs from '@dbux/common/src/util/universalLibs';
@@ -110,7 +111,7 @@ export default class Client {
     // Verbose && 
     if (!this._connectFailed) {
       this._connectFailed = true;
-      debug(`failed to connect (${err.message || err}). Reconnecting...`);
+      debug(`failed to connect (${err.message || err}). Will keep trying to reconnect...`);
     }
   }
 
@@ -202,20 +203,24 @@ export default class Client {
     }
     else if (this.isReady()) {
       ++this._sending;
-      Verbose && debug(`<- data (${Math.round(JSON.stringify(data).length / 1000)} kb):` +
-        Object.entries(data)
-          .map(([key, arr]) => {
-            try {
-              return `${arr.length} ${key} (${minBy(arr, entry => entry._id)?._id}~${maxBy(arr, entry => entry._id)?._id})`;
-            }
-            catch (err) {
-              const idx = arr?.findIndex?.(x => x === null || x === undefined);
-              logError(`Invalid "${key}" data received: "${err.message}". Index #${idx} is ${arr?.[idx]} (${arr})`);
-              return '(err)';
-            }
-          })
-          .join(', ')
-      );
+      // (${Math.round(JSON.stringify(data).length / 1000)} kb)
+      if (Verbose) {
+        const nEntries = sumBy(Object.values(data), arr => arr?.length || 0);
+        debug(`<- data (n = ${nEntries.toLocaleString('en-us')}): ` +
+          Object.entries(data)
+            .map(([key, arr]) => {
+              try {
+                return `${arr.length} ${key} (${minBy(arr, entry => entry._id)?._id}~${maxBy(arr, entry => entry._id)?._id})`;
+              }
+              catch (err) {
+                const idx = arr?.findIndex?.(x => x === null || x === undefined);
+                logError(`invalid data key "${key}": "${err.message}". Index #${idx} is ${arr?.[idx]} (${arr})`);
+                return `(invalid data key "${key}")`;
+              }
+            })
+            .join(', ')
+        );
+      }
 
       this._socket.emit('data', data, async (/* returnData */) => {
         --this._sending;
