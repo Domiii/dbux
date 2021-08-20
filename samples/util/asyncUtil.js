@@ -1,17 +1,19 @@
 export function R(x) {
-  x && console.log('[Resolve]', x);
   return Promise.resolve(x).then(() => x);
 }
 
 
-function thenCb(x) {
+function nest(x, F) {
   if (Array.isArray(x)) {
-    return () => P(...x);
+    return () => F(...x);
   }
 
-  return nested = x instanceof Function ?
+  return x instanceof Function ?
     x :
-    () => x;
+    () => {
+      x && console.log('[]', x);
+      return x;
+    };
 }
 
 /**
@@ -21,7 +23,7 @@ export function P(previousPromise, ...xs/* , n */) {
   let p = previousPromise instanceof Promise ? previousPromise : R(previousPromise);
   for (let x of xs) {
     // nested = (previousResult) => P(nested(previousResult), xs.slice(1));
-    p = p.then(thenCb(x));
+    p = p.then(nest(x, P));
   }
   return p;
 }
@@ -30,4 +32,21 @@ export async function waitTicks(n) {
   while (--n >= 0) {
     await 0;
   }
+}
+
+export function A(...xs) {
+  return (async function () {
+    for (const x of xs) {
+      await nest(x, A)();
+    }
+  })();
+}
+
+export function Ar(...xs) {
+  return (async function () {
+    for (const x of xs.slice(0, -1)) {
+      await nest(x, A)();
+    }
+    return xs[xs.length - 1];
+  })();
 }

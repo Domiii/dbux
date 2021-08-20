@@ -1,27 +1,20 @@
-import { R, P, waitTicks } from '../../../util/asyncUtil';
+import { A, P, waitTicks } from '../../../util/asyncUtil';
 
-async function f(x) {
-  console.log(x, 'fA');
-  await P(
-    x + ' fAA',
+A(
+  'A',
+  () => P(
+    'AA',
     [
       [
-        x + ' fAAAA',
-        x + ' fAAAB',
-        x + ' fAAAC',
+        'AAAA',
+        'AAAB',
+        'AAAC',
       ],
-      x + ' fAAB',
-      x + ' fAAC'
+      'AAB',
+      'AAC'
     ],
-    x + ' fAB',
-    x + ' fAC'
-  );
-  console.log(x, 'fB');
-  await P(x + ' fB');
-  console.log(x, 'fC');
-}
-
-(async function main() {
-  await f(1);
-  await f(2);
-})();
+    'AB',
+    'AC'
+  ),
+  'B'
+);
