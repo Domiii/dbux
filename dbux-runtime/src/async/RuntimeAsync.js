@@ -9,7 +9,7 @@ import { some } from 'lodash';
 import { isFirstContextInParent, isRootContext, peekBCEContextCheckCallee } from '../data/dataUtil';
 import ThenRef from '../data/ThenRef';
 // eslint-disable-next-line max-len
-import { getPromiseData, getPromiseId, getPromiseOwnAsyncFunctionContextId, pushPromisePendingRootId, setPromiseData } from './promisePatcher';
+import { getPromiseData, getPromiseId, getPromiseOwnAsyncFunctionContextId, setPromiseData } from './promisePatcher';
 import asyncEventUpdateCollection from '../data/asyncEventUpdateCollection';
 import executionContextCollection from '../data/executionContextCollection';
 import { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
@@ -214,7 +214,7 @@ export default class RuntimeAsync {
     // later callers add SYNC edges to first root of `awaitArgument`
     if (!firstEventRootId) {
       // promise has not resolved its first event yet, so we add this context as pending
-      pushPromisePendingRootId(promise, currentRootId);
+      // pushPromisePendingRootId(promise, currentRootId);
     }
     else {
       // this.addSyncEdge(currentRootId, firstEventRootId, AsyncEdgeType.SyncOut);

@@ -28,6 +28,16 @@ export default class SocketServer {
     this._listenSocket.on('connect', this._handleAccept.bind(this));
     this._listenSocket.on('error', this._handleError.bind(this));
     this._listenSocket.on('connect_error', this._handleConnectError.bind(this));
+    this._listenSocket.engine.on("connection_error", (err) => {
+      const { req } = err;
+      /** @see https://stackoverflow.com/a/19524949 */
+      const ip = req.headers['x-forwarded-for'] ||
+        req.socket.remoteAddress ||
+        null;
+      logError(`[connection_error] code=${err.code}, ip=${ip}, message="${err.message}"`,
+        err.context && `context="${err.context}"`
+      );
+    });
   }
 
   /**
@@ -35,7 +45,7 @@ export default class SocketServer {
    */
   _handleAccept(socket) {
     const client = new this.ClientClass(this, socket);
-    this._clients.push(client);
+    this._clients.push();
 
     // handle disconnects
     socket.on('disconnect', () => {

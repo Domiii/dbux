@@ -353,15 +353,15 @@ function patchPromiseClass(BasePromiseClass) {
       }
     }
 
-    toJSON() {
-      return {
-        _: 'PatchedPromise',
-        ...getPromiseData(this)
-      };
-    }
+    // toJSON() {
+    //   return {
+    //     _: 'PatchedPromise',
+    //     ...getPromiseData(this)
+    //   };
+    // }
 
     toString() {
-      return `[PatchedPromise (${JSON.stringify(getPromiseData(this))})]`;
+      return `[PatchedPromise (#${getPromiseId(this)})]`;
     }
   }
 
@@ -413,41 +413,25 @@ export function setPromiseData(promise, data) {
   Object.assign(promiseData, data);
 }
 
+const promiseDataMap = new WeakMap();
+
 function getOrCreatePromiseDbuxData(promise) {
-  let { _dbux_: promiseData } = promise;
+  let promiseData = promiseDataMap.get(promise);
   if (!promiseData) {
-    Object.defineProperty(promise, '_dbux_', {
-      value: promiseData = {}
-    });
+    promiseDataMap.set(promise, promiseData = {});
   }
   return promiseData;
 }
 
 export function hasRecordedPromiseData(promise) {
-  return !!promise._dbux_;
+  return !!promiseDataMap.get(promise);
 }
 
 /**
  * @returns {PromiseRuntimeData}
  */
 export function getPromiseData(promise) {
-  return promise._dbux_ || EmptyObject;
-}
-
-export function getPromiseRootId(promise) {
-  return promise._dbux_?.rootId;
-}
-
-export function getPromiseFirstEventRootId(promise) {
-  return promise._dbux_?.firstEventRootId;
-}
-
-export function getPromiseLastRootId(promise) {
-  return promise._dbux_?.lastRootId;
-}
-
-export function getPromiseAnyRootId(promise) {
-  return promise._dbux_?.lastRootId || promise._dbux_?.rootId;
+  return promiseDataMap.get(promise) || EmptyObject;
 }
 
 export function getPromiseId(promise) {
@@ -456,33 +440,28 @@ export function getPromiseId(promise) {
 }
 
 export function getPromiseOwnAsyncFunctionContextId(promise) {
-  return promise?._dbux_?.asyncFunctionContextId;
+  return getPromiseData(promise).asyncFunctionContextId;
 }
 
-export function isNewPromise(promise, currentRootId) {
-  const rootId = getPromiseRootId(promise);
-  return !rootId || rootId === currentRootId;
-}
+// export function maybeSetPromiseFirstEventRootId(promise, lastRootId) {
+//   if (!getPromiseFirstEventRootId(promise)) {
+//     setPromiseData(promise, {
+//       lastRootId,
+//       firstEventRootId: lastRootId
+//     });
+//   }
+//   else {
+//     setPromiseData(promise, {
+//       lastRootId
+//     });
+//   }
+// }
 
-export function maybeSetPromiseFirstEventRootId(promise, lastRootId) {
-  if (!getPromiseFirstEventRootId(promise)) {
-    setPromiseData(promise, {
-      lastRootId,
-      firstEventRootId: lastRootId
-    });
-  }
-  else {
-    setPromiseData(promise, {
-      lastRootId
-    });
-  }
-}
-
-export function pushPromisePendingRootId(promise, pendingRootId) {
-  const _dbux_ = getOrCreatePromiseDbuxData(promise);
-  let { pendingRootIds } = _dbux_;
-  if (!pendingRootIds) {
-    pendingRootIds = _dbux_.pendingRootIds = [];
-  }
-  pendingRootIds.push(pendingRootId);
-}
+// export function pushPromisePendingRootId(promise, pendingRootId) {
+//   const _dbux_ = getOrCreatePromiseDbuxData(promise);
+//   let { pendingRootIds } = _dbux_;
+//   if (!pendingRootIds) {
+//     pendingRootIds = _dbux_.pendingRootIds = [];
+//   }
+//   pendingRootIds.push(pendingRootId);
+// }

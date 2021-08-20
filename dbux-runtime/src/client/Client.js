@@ -12,7 +12,7 @@ const Verbose = 1;
 // const Verbose = 0;
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('Runtime Client');
+const { log, debug, warn, error: logError, trace: logTrace } = newLogger('Runtime Client');
 
 // ###########################################################################
 // config
@@ -111,7 +111,7 @@ export default class Client {
     // Verbose && 
     if (!this._connectFailed) {
       this._connectFailed = true;
-      debug(`failed to connect (${err.message || err}). Will keep trying to reconnect...`);
+      /* debug */logTrace(`failed to connect (${err.message || err}). Will keep trying to reconnect...`);
     }
   }
 

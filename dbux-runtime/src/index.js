@@ -2,6 +2,7 @@ import getGlobal from '@dbux/common/src/getGlobal';
 // import { enableLogRecording, playbackLogRecords } from '@dbux/common/src/log/logger';
 import RuntimeMonitor from './RuntimeMonitor';
 import { initClient } from './client/index';
+import { getPromiseId } from './async/promisePatcher';
 
 
 const dbux = {
@@ -87,7 +88,7 @@ function handleShutdown() {
       }, 1000);
     });
     process.on('unhandledRejection', (err, promise) => {
-      console.error(`[Dbux Runtime] unhandledRejection detected. reason - ${err?.stack || err}, promise: ${promise}`);
+      console.error(`[Dbux Runtime] unhandledRejection detected. reason - ${err?.stack || err}, promise: #${getPromiseId(promise)}`);
       setInterval(() => {
         console.warn(`[Dbux Runtime] shutdown delayed (unhandledRejection)...`);
       }, 1000);
