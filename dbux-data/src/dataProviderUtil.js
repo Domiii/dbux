@@ -1767,7 +1767,7 @@ export default {
    */
   getPreviousPostOrResolveAsyncEventOfPromise(dp, promiseId, beforeRootId, _visited = new Set()) {
     if (_visited.has(promiseId)) {
-      // TODO: what does this mean?
+      // TODO: observe this. can happen if a promise returns itself etc.
       dp.logger.trace(`[getPreviousPostOrResolveAsyncEventOfPromise] circular promiseId: ${promiseId} (visited=[${Array.from(_visited).join(', ')}])`);
       return null;
     }
