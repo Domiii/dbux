@@ -31,6 +31,27 @@ class ForkButton extends AsyncButton {
   }
 }
 
+class SchedulerButton extends AsyncButton {
+  static label = '↳';
+  static title = 'Go to scheduler call';
+  static isAvailable({ asyncNode: { schedulerTraceId } }) {
+    if (schedulerTraceId) {
+      return true;
+    }
+    return false;
+  }
+
+  static handleClick(asyncGraph, asyncNodeData) {
+    const { applicationId } = asyncNodeData.asyncNode;
+    const { asyncNode: { schedulerTraceId } } = asyncNodeData;
+    if (schedulerTraceId) {
+      asyncGraph.remote.selectTrace(applicationId, schedulerTraceId);
+    }
+  }
+}
+
+
+
 class SyncInButton extends AsyncButton {
   static label = '🡅';
   static title = 'Select sync in threads';
@@ -68,6 +89,7 @@ class SyncOutButton extends AsyncButton {
  */
 export const AsyncButtonClasses = {
   ForkButton,
+  SchedulerButton,
   SyncInButton,
   SyncOutButton,
 };

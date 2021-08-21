@@ -102,7 +102,7 @@ class AsyncGraph extends HostComponentEndpoint {
         syncInCount,
         syncOutCount,
         parentAsyncNodeId,
-        parentRowId,
+        parentRowId
       };
     }).filter(n => !!n);
   }
@@ -184,6 +184,13 @@ class AsyncGraph extends HostComponentEndpoint {
   }
 
   public = {
+    selectTrace(applicationId, traceId) {
+      const dp = allApplications.getById(applicationId).dataProvider;
+      const trace = dp.util.getTrace(traceId);
+      if (trace) {
+        traceSelection.selectTrace(trace);
+      }
+    },
     gotoAsyncNode(applicationId, asyncNodeId) {
       const dp = allApplications.getById(applicationId).dataProvider;
       const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);

@@ -1699,6 +1699,10 @@ export default {
     return dp.indexes.asyncNodes.byRoot.getUnique(rootId)?.threadId;
   },
 
+  getStaticContextCallbackThreadId(dp, rootId) {
+    return dp.indexes.asyncNodes.byRoot.getUnique(rootId)?.threadId;
+  },
+
   /** @param {DataProvider} dp */
   getChainFrom(dp, fromRootId) {
     const fromEdges = dp.indexes.asyncEvents.from.get(fromRootId);
@@ -2143,7 +2147,7 @@ export default {
         const lastStaticContextId = util.getContextStaticContext(previousUpdate.rootId);
 
         if (thisStaticContextId === lastStaticContextId) {
-          // Case 3: recursive or repeating same function (e.g. `streams1.js`)
+          // Case 3: recursive or repeating same function
           callbackChainThreadId = util.getAsyncRootThreadId(previousUpdate.rootId);
         }
       }

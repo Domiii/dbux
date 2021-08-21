@@ -5,6 +5,11 @@ import { AsyncButtonClasses } from './asyncButtons';
 /** @typedef {import('../controllers/PopperManager').default} PopperManager */
 
 class AsyncNodeDataMap {
+  /**
+   * @type {Map.<String, >}
+   */
+  _nodes;
+
   constructor() {
     this._nodes = new Map();
   }
