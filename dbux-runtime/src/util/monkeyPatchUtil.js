@@ -1,22 +1,21 @@
 import { logError } from '@dbux/common/src/log/logger';
+import NestedError from '@dbux/common/src/NestedError';
 
 const patchedFunctionsByOriginalFunction = new WeakMap();
 const originalFunctionsByPatchedFunctions = new WeakMap();
-
-
-export function monkeyPatchFunctionOverride(originalFunction, patcher) {
-  const patchedFunction = patcher(originalFunction);
-  _registerMonkeyPatchedFunction(originalFunction, patchedFunction);
-  return patchedFunction;
-}
 
 // ###########################################################################
 // book-keeping
 // ###########################################################################
 
 export function _registerMonkeyPatchedFunction(originalFunction, patchedFunction) {
-  patchedFunctionsByOriginalFunction.set(originalFunction, patchedFunction);
-  originalFunctionsByPatchedFunctions.set(patchedFunction, originalFunction);
+  try {
+    patchedFunctionsByOriginalFunction.set(originalFunction, patchedFunction);
+    originalFunctionsByPatchedFunctions.set(patchedFunction, originalFunction);
+  }
+  catch (err) {
+    throw new NestedError(`could not store monkey patch function ${originalFunction}`, err);
+  }
 }
 
 export function isMonkeyPatched(f) {
@@ -67,6 +66,37 @@ function tryRegisterMonkeyPatchedFunction(holder, name, patchedFunction) {
   }
   // holder[name] = patchedFunction;  // NOTE: we do not override the actual function
   _registerMonkeyPatchedFunction(originalFunction, patchedFunction);
+}
+
+/** ###########################################################################
+ * {@link monkeyPatchFunctionOverride}
+ * ##########################################################################*/
+
+export function monkeyPatchFunctionOverride(originalFunction, patcher) {
+  const patchedFunction = patcher(originalFunction);
+  _registerMonkeyPatchedFunction(originalFunction, patchedFunction);
+  return patchedFunction;
+}
+
+/**
+ * NOTE: we use this, so it won't be considered as "patchable"
+ */
+export function monkeyPatchFunctionOverrideDefault(fn) {
+  return monkeyPatchFunctionOverride(fn, (orig) => function _map(...args) {
+    return orig.call(this, ...args);
+  });
+}
+export function monkeyPatchMethodOverrideDefault(holder, fnName) {
+  try {
+    return monkeyPatchFunctionOverrideDefault(holder.prototype[fnName]);
+  }
+  catch (err) {
+    console.error(new NestedError(
+      `monkeyPatchMethodOverrideDefault failed for ${holder}.prototype.${fnName}`,
+      err
+    ));
+    return null;
+  }
 }
 
 

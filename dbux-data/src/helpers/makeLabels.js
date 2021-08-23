@@ -282,7 +282,7 @@ export function makeContextSchedulerLabel(rootContext, dp) {
   const { contextId } = rootContext;
   const asyncEventUpdates = dp.indexes.asyncEventUpdates.byRoot.get(contextId);
   // one POST event per `rootId`
-  const postEventUpdates = asyncEventUpdates?.filter(({ type }) => isPostEventUpdate(type));
+  const postEventUpdates = asyncEventUpdates?.filter(({ type }) => isPostEventUpdate(type)) || EmptyArray;
   if (postEventUpdates.length === 1) {
     return ContextCallerLabelByEventUpdateType[postEventUpdates[0].type](rootContext, dp);
   }

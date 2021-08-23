@@ -293,13 +293,6 @@ export default class AsyncEventUpdateCollection extends Collection {
   }
 
   postCallback = (postEventUpdate) => {
-    // TODO: assume FORK by default
-    // TODO: check for CHAIN if resolve/reject was called within the callback root
-    // TODO: what if resolve/reject was called in a nested setTimeout call?
-    //    -> consider CHAIN by default for nested async callbacks?
-    //    -> offer UI button to toggle
-    //    -> render (lack of) error propagation in async graph
-
     const { dp: { util } } = this;
     const {
       // runId: postEventRunId,
@@ -406,6 +399,10 @@ export default class AsyncEventUpdateCollection extends Collection {
     if (isFork) {
       // fork!
       toThreadId = this.newThreadId();
+    }
+
+    if (fromRootId >= toRootId) {
+      this.logger.warn(`addEventEdge with fromRootId (${fromRootId}) >= toRootId (${toRootId})`);
     }
 
     if (!previousToThreadId) {

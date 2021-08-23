@@ -2,7 +2,7 @@ import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import dataNodeCollection from '../data/dataNodeCollection';
 import { peekBCEMatchCallee } from '../data/dataUtil';
 import valueCollection from '../data/valueCollection';
-import { monkeyPatchMethod } from '../util/monkeyPatchUtil';
+import { monkeyPatchFunctionOverride, monkeyPatchMethod, monkeyPatchMethodOverrideDefault } from '../util/monkeyPatchUtil';
 
 
 // ###########################################################################
@@ -53,7 +53,7 @@ export default function patchArray() {
       bceTrace.data.monkey = {
         wireInputs: true
       };
-      
+
       return originalFunction.apply(arr, args);
     }
   );
@@ -99,4 +99,45 @@ export default function patchArray() {
       return newArray;
     }
   );
+
+  /** ###########################################################################
+   * other (make non-patchable for now)
+   * ###########################################################################*/
+
+  // var ign = new Set(['constructor', 'at']);
+  // copy(Object.getOwnPropertyNames(Array.prototype).filter(f => Array.prototype[f] instanceof Function && 
+  //  !ign.has(f)))
+  [
+    "concat",
+    "copyWithin",
+    "fill",
+    "find",
+    "findIndex",
+    "lastIndexOf",
+    "pop",
+    "push",
+    "reverse",
+    "shift",
+    "unshift",
+    "slice",
+    "sort",
+    "splice",
+    "includes",
+    "indexOf",
+    "join",
+    "keys",
+    "entries",
+    "values",
+    "forEach",
+    "filter",
+    "flat",
+    "flatMap",
+    "map",
+    "every",
+    "some",
+    "reduce",
+    "reduceRight",
+    "toLocaleString",
+    "toString"
+  ].forEach(key => monkeyPatchMethodOverrideDefault(Array, key));
 }

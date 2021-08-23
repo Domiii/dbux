@@ -113,10 +113,22 @@ export default class CallbackPatcher {
   // ###########################################################################
   // patchCallback
   // ###########################################################################
-  patchCallback(arg, schedulerTraceId) {
-    const originalCallback = arg;
 
+
+  callbackPatcher(arg, schedulerTraceId) {
+    const originalCallback = arg;
     const { runtime } = this;
+
+
+    // let f = getPatchedFunctionOrNull(originalFunction);
+    // if (!f) {
+    //   const calleePatcher = this.defaultCalleePatcher;
+
+    //   f = monkeyPatchFunctionOverride(
+    //     originalFunction,
+    //     calleePatcher.bind(this, callId)
+    //   );
+    // }
 
     // const self = this; // NOTE: `this` will be the callback's `this`
 
@@ -177,9 +189,10 @@ export default class CallbackPatcher {
         trace(`patched constructor call (new ${originalFunction.name})`);
       }
 
-      // NOTE: the registered value for callee is `originalFunction`, not `patchedFunction`
-      const bceTrace = peekBCEMatchCallee(originalFunction);
-      const schedulerTraceId = bceTrace?.traceId;
+      // // NOTE: the registered value for callee is `originalFunction`, not `patchedFunction`
+      // const bceTrace = peekBCEMatchCallee(originalFunction);
+      // const schedulerTraceId = bceTrace?.traceId;
+      const schedulerTraceId = callId;
       let hasInstrumentedCallback = false;
       if (schedulerTraceId) {
         args = args.map(arg => {
@@ -188,7 +201,7 @@ export default class CallbackPatcher {
             return arg;
           }
           hasInstrumentedCallback = true;
-          return self.patchCallback(arg, schedulerTraceId);
+          return self.callbackPatcher(arg, schedulerTraceId);
         });
       }
 
