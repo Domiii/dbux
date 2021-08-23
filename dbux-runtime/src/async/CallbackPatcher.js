@@ -3,7 +3,7 @@
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { peekBCEMatchCallee, isInstrumentedFunction, getFirstContextAfterTrace, getTraceStaticTrace } from '../data/dataUtil';
-import { getPatchedFunctionOrNull, monkeyPatchFunctionOverride, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
+import { getOriginalFunction, getPatchedFunctionOrNull, isMonkeyPatched, monkeyPatchFunctionOverride, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
 // import executionContextCollection from '../data/executionContextCollection';
 import traceCollection from '../data/traceCollection';
 
@@ -115,10 +115,16 @@ export default class CallbackPatcher {
   // ###########################################################################
 
 
-  callbackPatcher(arg, schedulerTraceId) {
-    const originalCallback = arg;
+  patchCallback(originalCallback, schedulerTraceId) {
     const { runtime } = this;
 
+    // TODO: distinguish between "patched function (general)" and "patched cb"
+    if (isMonkeyPatched(originalCallback)) {
+      const argOrig = getOriginalFunction(originalCallback);
+      trace(`callback argument already patched - ${argOrig.name} (${argOrig.toString().replace(/\s+/g, ' ').substring(0, 30)}) -\n  scheduler=`,
+        traceCollection.makeTraceInfo(schedulerTraceId));
+      return originalCallback;
+    }
 
     // let f = getPatchedFunctionOrNull(originalFunction);
     // if (!f) {
@@ -178,7 +184,7 @@ export default class CallbackPatcher {
   // monkeyPatchCallee
   // ###########################################################################
 
-  defaultCalleePatcher = (callId, originalFunction) => {
+  defaultCalleePatcher = (firstCallId, originalFunction) => {
     const self = this; // NOTE: inside `patchedCallee` `this` will be the callee's `this`
     const eventListenerRegex = /^on[A-Z]|event/;
     const isEventListener = !!(originalFunction.name || '').match(eventListenerRegex);
@@ -186,22 +192,24 @@ export default class CallbackPatcher {
     return function patchedCallee(...args) {
       if (this instanceof patchedCallee) {
         // -> `originalFunction` is a ctor
-        trace(`patched constructor call (new ${originalFunction.name})`);
+        trace(`patched constructor call - new ${originalFunction.name} -`, originalFunction);
       }
 
       // // NOTE: the registered value for callee is `originalFunction`, not `patchedFunction`
-      // const bceTrace = peekBCEMatchCallee(originalFunction);
-      // const schedulerTraceId = bceTrace?.traceId;
-      const schedulerTraceId = callId;
+      const bceTrace = peekBCEMatchCallee(originalFunction);
+      const schedulerTraceId = bceTrace?.traceId;
+      // const schedulerTraceId = firstCallId;
       let hasInstrumentedCallback = false;
       if (schedulerTraceId) {
         args = args.map(arg => {
-          // add an extra layer on instrumented functions
           if (!isInstrumentedFunction(arg)) {
             return arg;
           }
-          hasInstrumentedCallback = true;
-          return self.callbackPatcher(arg, schedulerTraceId);
+
+          // wrap callbacks
+          const result = self.patchCallback(arg, schedulerTraceId);
+          hasInstrumentedCallback = !!hasInstrumentedCallback;
+          return result || arg;
         });
       }
 

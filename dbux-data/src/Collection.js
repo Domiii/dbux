@@ -222,13 +222,13 @@ export default class Collection {
     return this._collectionNames;
   }
 
-  addEntryPostAdd(entry) {
+  addEntryPostAdd(entry, raw = true) {
     this.addEntry(entry);
 
     // TODO: can we postpone `_postAdd` to run once per run instead?
     // populate indexes, trigger data dependencies etc.
     const allData = { [this.name]: [entry] };
-    this.dp._postAdd(this._collectionNames, allData, true);
+    this.dp._postAdd(this._collectionNames, allData, raw);
 
     // future-work: this could happen during another post-add event. Make sure, this won't bug out.
     this.dp._notifyData(this._collectionNames, allData);
