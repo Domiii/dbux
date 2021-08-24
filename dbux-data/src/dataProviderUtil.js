@@ -1695,6 +1695,12 @@ export default {
   // ###########################################################################
 
   /** @param {DataProvider} dp */
+  getAsyncNode(dp, rootId) {
+    return dp.indexes.asyncNodes.byRoot.getUnique(rootId);
+  },
+
+
+  /** @param {DataProvider} dp */
   getAsyncRootThreadId(dp, rootId) {
     return dp.indexes.asyncNodes.byRoot.getUnique(rootId)?.threadId;
   },
@@ -2122,11 +2128,6 @@ export default {
     let firstPostEventHandlerUpdate;
     let previousUpdate;
 
-    // if (preEventRootId === 1) {
-    //   // Case 0: don't CHAIN from first root?
-    //   //   NOTE: top-level `await` would also CHAIN from first root.
-    // }
-    // else
     if (isEventListener) {
       // Case 1: event listener
       firstPostEventHandlerUpdate = util.getFirstAsyncPostEventUpdateOfTrace(schedulerTraceId);
@@ -2138,6 +2139,10 @@ export default {
       previousUpdate = util.getPreviousAsyncEventUpdateOfTrace(schedulerTraceId, rootId);
       if (!previousUpdate) {
         warn(`getPreviousAsyncEventUpdateOfTrace failed schedulerTraceId=${schedulerTraceId}, rootId=${rootId}`);
+      }
+      else if (preEventRootId === 1) {
+        // Case 0: don't CHAIN cb from first root
+        //      (NOTE: top-level `await` would CHAIN from first root.)
       }
       else {
         const preEventUpdates = util.getAsyncPreEventUpdatesOfRoot(preEventRootId);

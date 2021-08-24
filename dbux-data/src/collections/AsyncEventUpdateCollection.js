@@ -9,6 +9,7 @@ import Collection from '../Collection';
  * @extends {Collection<AsyncEventUpdate>}
  */
 export default class AsyncEventUpdateCollection extends Collection {
+  _maxThreadId = 1;
   handlersByType = [];
 
   // ###########################################################################
@@ -336,7 +337,7 @@ export default class AsyncEventUpdateCollection extends Collection {
    */
   newThreadId() {
     // this.logger.debug("assign run new thread id", runId);
-    this._maxThreadId = (this._maxThreadId || 0) + 1;
+    ++this._maxThreadId;
     // eslint-disable-next-line no-console
     // this.logger.debug('[newThreadId]', this._maxThreadId);
     // console.trace('[newThreadId]', this._maxThreadId);
@@ -387,7 +388,7 @@ export default class AsyncEventUpdateCollection extends Collection {
   addEventEdge(fromRootId, toRootId, fromThreadId, toThreadId, schedulerTraceId) {
     const { dp } = this;
     // const previousFromThreadId = this.getOrAssignRootThreadId(fromRootId);
-    const previousToThreadId = dp.util.getAsyncRootThreadId(toRootId);
+    // const previousToThreadId = dp.util.getAsyncRootThreadId(toRootId);
 
     const isFork = !toThreadId ||
       // check if this is CHAIN and fromRoot already has an out-going CHAIN
@@ -405,10 +406,8 @@ export default class AsyncEventUpdateCollection extends Collection {
       this.logger.warn(`addEventEdge with fromRootId (${fromRootId}) >= toRootId (${toRootId})`);
     }
 
-    if (!previousToThreadId) {
-      // toRootId was not assigned to any thread yet
-      dp.collections.asyncNodes.addAsyncNode(toRootId, toThreadId, schedulerTraceId);
-    }
+    // toRootId was not assigned to any thread yet
+    dp.collections.asyncNodes.setNodeThreadId(toRootId, toThreadId, schedulerTraceId);
 
     // add edge
     const edgeType = fromThreadId !== toThreadId ? AsyncEdgeType.Fork : AsyncEdgeType.Chain;

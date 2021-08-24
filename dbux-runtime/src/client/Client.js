@@ -8,8 +8,8 @@ import { getDataCount } from '@dbux/common/src/util/dataUtil';
 // import universalLibs from '@dbux/common/src/util/universalLibs';
 import SendQueue from './SendQueue';
 
-// const Verbose = 1;
-const Verbose = 2;
+const Verbose = 1;
+// const Verbose = 2;
 // const Verbose = 0;
 
 // eslint-disable-next-line no-unused-vars
@@ -120,7 +120,7 @@ export default class Client {
          */
         msg += ` (possibly due to timeout)`;
       }
-      /* debug */logTrace(`failed to connect - "${msg}". Will keep trying to reconnect...`);
+      debug(`failed to connect - "${msg}". Will keep trying to reconnect...`);
     }
   }
 

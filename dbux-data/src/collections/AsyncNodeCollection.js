@@ -2,6 +2,12 @@ import AsyncNode from '@dbux/common/src/types/AsyncNode';
 import Collection from '../Collection';
 
 /**
+ * TODO: should not add to `thread#1` since it could also contain valid CHAINs (e.g. top-level await)
+ * NOTE: sync this with `AsyncEventUpdateCollection#_maxThreadId`
+ */
+const UnassignedThreadId = 1;
+
+/**
  * @extends {Collection<AsyncNode>}
  */
 export default class AsyncNodeCollection extends Collection {
@@ -24,11 +30,11 @@ export default class AsyncNodeCollection extends Collection {
 
   _makeMissingEntries(entries, maxRootId) {
     const previous = this.getLast();
-    // add all missing roots to thread#1 (for now)
     for (let contextId = (previous?.rootContextId || 0) + 1; contextId < maxRootId; ++contextId) {
       const context = this.dp.collections.executionContexts.getById(contextId);
       if (context?.isVirtualRoot) {
-        entries.push(this._makeEntry(entries, contextId, 1, 0));
+        // add all missing roots to "unassigned thread" (for now)
+        entries.push(this._makeEntry(entries, contextId, UnassignedThreadId, 0));
       }
     }
   }
@@ -49,5 +55,22 @@ export default class AsyncNodeCollection extends Collection {
     this.addEntriesPostAdd(entries);
 
     return newNode;
+  }
+
+  setNodeThreadId(rootId, threadId, schedulerTraceId) {
+    // [edit-after-send]
+    const node = this.dp.util.getAsyncNode(rootId);
+    if (!node) {
+      return this.addAsyncNode(rootId, threadId, schedulerTraceId);
+    }
+
+    if (node.threadId === UnassignedThreadId) {
+      node.threadId = threadId;
+    }
+    else {
+      this.logger.warn(`node was assigned threadId more than once old=${node.threadId}, ` +
+        `new=${threadId}, trace=${this.dp.util.makeTraceInfo(schedulerTraceId)}, node=`, node);
+    }
+    return node;
   }
 }

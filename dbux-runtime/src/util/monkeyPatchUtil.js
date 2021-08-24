@@ -6,8 +6,8 @@ import NestedError from '@dbux/common/src/NestedError';
  */
 const patchedFunctionsByOriginalFunction = new Map();
 const originalFunctionsByPatchedFunctions = new WeakMap();
-const patchedCallBacksByOriginal = new Map();
-const originalCallBacksByPatched = new WeakMap();
+const patchedCallbacksByOriginal = new Map();
+const originalCallbacksByPatched = new WeakMap();
 
 // ###########################################################################
 // book-keeping (other)
@@ -57,8 +57,8 @@ export function getPatchedFunctionOrNull(originalFunction) {
 
 export function _registerMonkeyPatchedCallback(originalFunction, patchedFunction) {
   try {
-    patchedCallBacksByOriginal.set(originalFunction, patchedFunction);
-    originalCallBacksByPatched.set(patchedFunction, originalFunction);
+    patchedCallbacksByOriginal.set(originalFunction, patchedFunction);
+    originalCallbacksByPatched.set(patchedFunction, originalFunction);
   }
   catch (err) {
     throw new NestedError(`could not store monkey patch function ${originalFunction}`, err);
@@ -66,7 +66,11 @@ export function _registerMonkeyPatchedCallback(originalFunction, patchedFunction
 }
 
 export function isMonkeyPatchedCallback(f) {
-  return originalCallBacksByPatched.has(f);
+  return originalCallbacksByPatched.has(f);
+}
+
+export function getOriginalCallback(patchedFunction) {
+  return originalCallbacksByPatched.get(patchedFunction);
 }
 
 export function getPatchedCallbackOrNull(originalFunction) {

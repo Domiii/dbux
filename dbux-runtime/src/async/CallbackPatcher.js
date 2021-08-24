@@ -4,7 +4,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { peekBCEMatchCallee, isInstrumentedFunction, getFirstContextAfterTrace, getTraceStaticTrace } from '../data/dataUtil';
 // eslint-disable-next-line max-len
-import { getOriginalFunction, getPatchedFunctionOrNull, isMonkeyPatchedCallback, isMonkeyPatchedOther, monkeyPatchFunctionOverride, _registerMonkeyPatchedCallback, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
+import { getOriginalCallback, getOriginalFunction, getPatchedFunctionOrNull, isMonkeyPatchedCallback, isMonkeyPatchedOther, monkeyPatchFunctionOverride, _registerMonkeyPatchedCallback, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
 // import executionContextCollection from '../data/executionContextCollection';
 import traceCollection from '../data/traceCollection';
 
@@ -120,7 +120,7 @@ export default class CallbackPatcher {
     const { runtime } = this;
 
     if (isMonkeyPatchedCallback(originalCallback)) {
-      const argOrig = getOriginalFunction(originalCallback);
+      const argOrig = getOriginalCallback(originalCallback);
       trace(`callback argument already patched - ${argOrig.name} (${argOrig.toString().replace(/\s+/g, ' ').substring(0, 30)}) -\n  scheduler=`,
         traceCollection.makeTraceInfo(schedulerTraceId));
       return originalCallback;
@@ -207,9 +207,9 @@ export default class CallbackPatcher {
           }
 
           // wrap callbacks
-          const result = self.patchCallback(arg, schedulerTraceId);
-          hasInstrumentedCallback = !!hasInstrumentedCallback;
-          return result || arg;
+          const newArg = self.patchCallback(arg, schedulerTraceId);
+          hasInstrumentedCallback = !!newArg;
+          return newArg || arg;
         });
       }
 
