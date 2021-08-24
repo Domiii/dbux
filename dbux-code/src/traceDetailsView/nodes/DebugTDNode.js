@@ -4,6 +4,7 @@ import AsyncEventUpdateType, { isPostEventUpdate, isPreEventUpdate } from '@dbux
 import { makeTreeItem, makeTreeItems } from '../../helpers/treeViewHelpers';
 import { ContextTDNode, TraceTypeTDNode } from './traceInfoNodes';
 import TraceDetailNode from './traceDetailNode';
+import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
@@ -18,6 +19,26 @@ function makeObjectArrayNodes(obj) {
     Object.entries(obj)
       .map(([name, arr]) => [`${name} (${arr?.length || 0})`, arr || {}])
   );
+}
+
+function parseStackTrace(stackTrace) {
+  if (stackTrace.startsWith('"')) {
+    stackTrace = JSON.parse(stackTrace);
+  }
+  const packages = Array.from(new Set(
+    stackTrace.split('\n')
+      .filter(s => s.includes('node_modules'))
+      .map((s) => {
+        // s = s.trim();
+        return parseNodeModuleName(s);
+      })
+      .filter(s => !!s)
+  ));
+
+  return {
+    packages,
+    raw: stackTrace
+  };
 }
 
 export class DebugTDNode extends TraceDetailNode {
@@ -58,7 +79,12 @@ export class DebugTDNode extends TraceDetailNode {
       ...otherTraceProps
     } = trace;
 
-    const context = dp.collections.executionContexts.getById(contextId);
+    let context = dp.collections.executionContexts.getById(contextId);
+    context = {
+      ...context,
+      stackTrace: parseStackTrace(context.stackTrace)
+    };
+
     const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
     const { staticContextId } = context;
     const staticContext = dp.collections.staticContexts.getById(staticContextId);

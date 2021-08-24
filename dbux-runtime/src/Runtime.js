@@ -494,11 +494,11 @@ export default class Runtime {
   }
 
   _virtualRootContextFinished(newRootId) {
-    if (this._virtualRootContextId) {
-      const previousRootId = this._virtualRootContextId;
-      this.async.virtualRootEnded(previousRootId);
-    }
+    // if (this._virtualRootContextId) {
+    //   const previousRootId = this._virtualRootContextId;
+    // }
     this._virtualRootContextId = newRootId;
+    this.async.virtualRootStarted(newRootId);
   }
 
   _runFinished() {

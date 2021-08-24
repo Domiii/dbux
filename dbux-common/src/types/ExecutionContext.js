@@ -76,6 +76,13 @@ export default class ExecutionContext {
   isVirtualRoot;
 
   /**
+   * NOTE: only set if `isVirtualRoot`
+   * 
+   * @type {string}
+   */
+  stackTrace;
+
+  /**
    * If the context is an async function, this is its returned `promiseId`.
    * 
    * @type {number}

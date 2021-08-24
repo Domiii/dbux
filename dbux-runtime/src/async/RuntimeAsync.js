@@ -236,9 +236,13 @@ export default class RuntimeAsync {
    * runtime basics
    *  #########################################################################*/
 
-  virtualRootEnded(rootId) {
+  virtualRootStarted(rootId) {
     // [edit-after-send]
-    executionContextCollection.getById(rootId).isVirtualRoot = true;
+    const context = executionContextCollection.getById(rootId);
+    if (context) {
+      context.isVirtualRoot = true;
+      context.stackTrace = new Error().stack;
+    }
 
     // // NOTE: add all unassigned roots to thread#1
     // this.setRootThreadId(rootId, 1);
