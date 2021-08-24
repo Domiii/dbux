@@ -10,7 +10,7 @@ import { peekBCEMatchCallee, peekContextCheckCallee } from '../data/dataUtil';
 import PromiseRuntimeData from '../data/PromiseRuntimeData';
 // import traceCollection from '../data/traceCollection';
 import valueCollection from '../data/valueCollection';
-import { isMonkeyPatched, monkeyPatchFunctionHolder } from '../util/monkeyPatchUtil';
+import { isMonkeyPatchedOther, monkeyPatchFunctionHolder } from '../util/monkeyPatchUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError } = newLogger('PromisePatcher');
@@ -79,7 +79,7 @@ export function maybePatchPromise(promise) {
   }
   recordUnseenPromise(promise);
 
-  if (isMonkeyPatched(promise.then)) {
+  if (isMonkeyPatchedOther(promise.then)) {
     return;
   }
 

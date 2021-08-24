@@ -44,7 +44,7 @@ function handleShutdown() {
   }
   _didShutdown = true;
 
-  client.tryFlush();
+  // client.tryFlush();
 
   if (!client.hasFinished()) {
     // eslint-disable-next-line no-console

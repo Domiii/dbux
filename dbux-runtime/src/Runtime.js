@@ -479,7 +479,7 @@ export default class Runtime {
     this.newRun();
     this._executingStack = stack;
     // console.warn('[RunStart] ' + this._currentRunId, new Error().stack); //, this.getLingeringStackCount());
-    // console.time('[RunEnd] ' + this._currentRunId);
+    debug('[new run]', this._currentRunId);
   }
 
   /**

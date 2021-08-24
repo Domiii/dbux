@@ -52,8 +52,8 @@ export default class Collection {
   /**
    * 
    */
-  _sendAll(newEntry) {
+  _sendAll(newEntries) {
     const client = getDefaultClient();
-    client.sendAll(this._name, newEntry);
+    client.sendAll(this._name, newEntries);
   }
 }

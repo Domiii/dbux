@@ -3,7 +3,8 @@
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { peekBCEMatchCallee, isInstrumentedFunction, getFirstContextAfterTrace, getTraceStaticTrace } from '../data/dataUtil';
-import { getOriginalFunction, getPatchedFunctionOrNull, isMonkeyPatched, monkeyPatchFunctionOverride, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
+// eslint-disable-next-line max-len
+import { getOriginalFunction, getPatchedFunctionOrNull, isMonkeyPatchedCallback, isMonkeyPatchedOther, monkeyPatchFunctionOverride, _registerMonkeyPatchedCallback, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
 // import executionContextCollection from '../data/executionContextCollection';
 import traceCollection from '../data/traceCollection';
 
@@ -118,8 +119,7 @@ export default class CallbackPatcher {
   patchCallback(originalCallback, schedulerTraceId) {
     const { runtime } = this;
 
-    // TODO: distinguish between "patched function (general)" and "patched cb"
-    if (isMonkeyPatched(originalCallback)) {
+    if (isMonkeyPatchedCallback(originalCallback)) {
       const argOrig = getOriginalFunction(originalCallback);
       trace(`callback argument already patched - ${argOrig.name} (${argOrig.toString().replace(/\s+/g, ' ').substring(0, 30)}) -\n  scheduler=`,
         traceCollection.makeTraceInfo(schedulerTraceId));
@@ -175,7 +175,7 @@ export default class CallbackPatcher {
       return returnValue;
     }
 
-    _registerMonkeyPatchedFunction(originalCallback, patchedCallback);
+    _registerMonkeyPatchedCallback(originalCallback, patchedCallback);
 
     return patchedCallback;
   }

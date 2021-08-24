@@ -2,13 +2,14 @@
 import io, { Socket } from 'socket.io-client';
 import minBy from 'lodash/minBy';
 import maxBy from 'lodash/maxBy';
-import sumBy from 'lodash/sumBy';
 import { logWarn, newLogger } from '@dbux/common/src/log/logger';
 import sleep from '@dbux/common/src/util/sleep';
+import { getDataCount } from '@dbux/common/src/util/dataUtil';
 // import universalLibs from '@dbux/common/src/util/universalLibs';
 import SendQueue from './SendQueue';
 
-const Verbose = 1;
+// const Verbose = 1;
+const Verbose = 2;
 // const Verbose = 0;
 
 // eslint-disable-next-line no-unused-vars
@@ -75,7 +76,7 @@ export default class Client {
   }
 
   hasFinished() {
-    return !this._sending && this._sendQueue.empty;
+    return !this._sending && this._sendQueue.isEmpty;
   }
 
   // ###########################################################################
@@ -111,7 +112,15 @@ export default class Client {
     // Verbose && 
     if (!this._connectFailed) {
       this._connectFailed = true;
-      /* debug */logTrace(`failed to connect (${err.message || err}). Will keep trying to reconnect...`);
+      let msg = err.message || err;
+      if (Date.now() - this._connectStart > 20 * 1000) {
+        /**
+         * NOTE: Timeout during handshake not reported correctly.
+         * @see https://github.com/socketio/socket.io/issues/4062
+         */
+        msg += ` (possibly due to timeout)`;
+      }
+      /* debug */logTrace(`failed to connect - "${msg}". Will keep trying to reconnect...`);
     }
   }
 
@@ -140,9 +149,9 @@ export default class Client {
       initPacket = { applicationId: this._applicationId };
     }
     else {
-      // NOTE: we don't start using the client, 
-      //    unless some code has already executed, so `initialData` should be there
-      const initialData = this._sendQueue.buffers;
+      // hackfix: we don't start using the client, unless some code has already executed, 
+      //  -> so `initialData` should have the data we need
+      const initialData = this._sendQueue.firstBuffer;
       const entryPointPath = extractEntryPointPathFromInitialData(initialData);
 
       if (!entryPointPath) {
@@ -192,49 +201,64 @@ export default class Client {
   _sending = 0;
 
   /**
+   * @see https://stackoverflow.com/a/68903628/2228771
+   */
+  sendWithAck(msg, data) {
+    return new Promise((resolve, reject) => {
+      this._socket.once('error', reject);
+      this._socket.emit(msg, data, resolve);
+    });
+  }
+
+  /**
    * Send data to remote end.
    * 
    * NOTE: This uses `engine.io`'s serialization, followed by processing in `ws`.
    * @see https://github.com/socketio/engine.io-parser/blob/master/lib/index.js#L55
    */
-  sendNow(data) {
+  async sendOne(data) {
     if (!this._socket) {
       this._connect();
     }
     else if (this.isReady()) {
       ++this._sending;
-      // (${Math.round(JSON.stringify(data).length / 1000)} kb)
-      if (Verbose) {
-        const nEntries = sumBy(Object.values(data), arr => arr?.length || 0);
-        debug(`<- data (n = ${nEntries.toLocaleString('en-us')}): ` +
-          Object.entries(data)
-            .map(([key, arr]) => {
-              try {
-                return `${arr.length} ${key} (${minBy(arr, entry => entry._id)?._id}~${maxBy(arr, entry => entry._id)?._id})`;
-              }
-              catch (err) {
-                const idx = arr?.findIndex?.(x => x === null || x === undefined);
-                logError(`invalid data key "${key}": "${err.message}". Index #${idx} is ${arr?.[idx]} (${arr})`);
-                return `(invalid data key "${key}")`;
-              }
-            })
-            .join(', ')
-        );
-      }
-
-      this._socket.emit('data', data, async (/* returnData */) => {
-        --this._sending;
-        await sleep(SleepDelay);
-        if (this.hasFinished()) {
-          // finished sending data
-          this._refreshInactivityTimer();
-          this._waitingCb?.();
+      try {
+        // (${Math.round(JSON.stringify(data).length / 1000)} kb)
+        if (Verbose) {
+          debug(`<- data (n = ${getDataCount(data).toLocaleString('en-us')}): ` +
+            Object.entries(data)
+              .map(([key, arr]) => {
+                try {
+                  return `${arr.length} ${key} (${minBy(arr, entry => entry._id)?._id}~${maxBy(arr, entry => entry._id)?._id})`;
+                }
+                catch (err) {
+                  const idx = arr?.findIndex?.(x => x === null || x === undefined);
+                  logError(`invalid data key "${key}": "${err.message}". Index #${idx} is ${arr?.[idx]} (${arr})`);
+                  return `(invalid data key "${key}")`;
+                }
+              })
+              .join(', ')
+          );
         }
-      });
+
+        await this.sendWithAck('data', data);
+      }
+      finally {
+        --this._sending;
+      }
 
       return true;
     }
     return false;
+  }
+
+  async _onSendFinish() {
+    await sleep(SleepDelay);
+    if (this.hasFinished()) {
+      // finished sending data
+      this._refreshInactivityTimer();
+      this._waitingCb?.();
+    }
   }
 
   /**
@@ -242,7 +266,8 @@ export default class Client {
    * If it is not connected, will try to send data as early as possible.
    */
   tryFlush() {
-    this._sendQueue.flush();
+    // NOTE: trying to send immediately can never work and messes with the order of things.
+    // this._sendQueue.flush();
   }
 
   // ###########################################################################
@@ -250,7 +275,8 @@ export default class Client {
   // ###########################################################################
 
   _connect() {
-    // TODO: add config port
+    // future-work: make port configurable
+    this._connectStart = Date.now();
     const port = DefaultPort;
     const Remote = `ws://localhost:${port}`;
     const socket = this._socket = io.connect(Remote, {

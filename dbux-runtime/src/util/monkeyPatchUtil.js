@@ -1,11 +1,16 @@
 import { logError } from '@dbux/common/src/log/logger';
 import NestedError from '@dbux/common/src/NestedError';
 
-const patchedFunctionsByOriginalFunction = new WeakMap();
+/**
+ * future-work: `WeakMap` won't work here. Use `WeakRef` + finalizer instead
+ */
+const patchedFunctionsByOriginalFunction = new Map();
 const originalFunctionsByPatchedFunctions = new WeakMap();
+const patchedCallBacksByOriginal = new Map();
+const originalCallBacksByPatched = new WeakMap();
 
 // ###########################################################################
-// book-keeping
+// book-keeping (other)
 // ###########################################################################
 
 export function _registerMonkeyPatchedFunction(originalFunction, patchedFunction) {
@@ -18,7 +23,10 @@ export function _registerMonkeyPatchedFunction(originalFunction, patchedFunction
   }
 }
 
-export function isMonkeyPatched(f) {
+/**
+ * NOTE: does not work for patched callbacks
+ */
+export function isMonkeyPatchedOther(f) {
   return originalFunctionsByPatchedFunctions.has(f);
 }
 
@@ -32,7 +40,7 @@ export function getPatchedFunction(originalFunction) {
 
 export function getPatchedFunctionOrNull(originalFunction) {
   let patchedFunction;
-  if (isMonkeyPatched(originalFunction)) {
+  if (isMonkeyPatchedOther(originalFunction)) {
     // NOTE: this is actually a patched (not original) function
     patchedFunction = originalFunction;
   }
@@ -41,6 +49,42 @@ export function getPatchedFunctionOrNull(originalFunction) {
   }
   return patchedFunction;
 }
+
+
+/** ###########################################################################
+ * book-keeping (callbacks)
+ * ##########################################################################*/
+
+export function _registerMonkeyPatchedCallback(originalFunction, patchedFunction) {
+  try {
+    patchedCallBacksByOriginal.set(originalFunction, patchedFunction);
+    originalCallBacksByPatched.set(patchedFunction, originalFunction);
+  }
+  catch (err) {
+    throw new NestedError(`could not store monkey patch function ${originalFunction}`, err);
+  }
+}
+
+export function isMonkeyPatchedCallback(f) {
+  return originalCallBacksByPatched.has(f);
+}
+
+export function getPatchedCallbackOrNull(originalFunction) {
+  let patchedFunction;
+  if (isMonkeyPatchedOther(originalFunction)) {
+    // NOTE: this is actually a patched (not original) function
+    patchedFunction = originalFunction;
+  }
+  else {
+    patchedFunction = patchedFunctionsByOriginalFunction.get(originalFunction);
+  }
+  return patchedFunction;
+}
+
+
+/** ###########################################################################
+ * monkey patching
+ * ##########################################################################*/
 
 export function getOrPatchFunction(originalFunction, patcher) {
   if (!(originalFunction instanceof Function)) {
@@ -59,7 +103,7 @@ function tryRegisterMonkeyPatchedFunction(holder, name, patchedFunction) {
   if (!(originalFunction instanceof Function)) {
     throw new Error(`Monkey-patching failed - ${holder}.${name} is not a function: ${originalFunction}`);
   }
-  if (isMonkeyPatched(originalFunction)) {
+  if (isMonkeyPatchedOther(originalFunction)) {
     // don't patch already patched function
     logError(`Monkey-patching failed - ${holder}.${name} is already patched.`);
     return;

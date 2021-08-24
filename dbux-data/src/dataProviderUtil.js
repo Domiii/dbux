@@ -2136,19 +2136,24 @@ export default {
     }
     else {
       previousUpdate = util.getPreviousAsyncEventUpdateOfTrace(schedulerTraceId, rootId);
-      const preEventUpdates = util.getAsyncPreEventUpdatesOfRoot(preEventRootId);
-      if (preEventUpdates.length === 1) {
-        // Case 2: this is the only pre-event in the pre-event's root -> CHAIN
-        //    (meaning its the only async event scheduled from the same root)
-        callbackChainThreadId = util.getAsyncRootThreadId(previousUpdate.rootId);
+      if (!previousUpdate) {
+        warn(`getPreviousAsyncEventUpdateOfTrace failed schedulerTraceId=${schedulerTraceId}, rootId=${rootId}`);
       }
-      if (!callbackChainThreadId) {
-        const thisStaticContextId = util.getContextStaticContext(rootId);
-        const lastStaticContextId = util.getContextStaticContext(previousUpdate.rootId);
-
-        if (thisStaticContextId === lastStaticContextId) {
-          // Case 3: recursive or repeating same function
+      else {
+        const preEventUpdates = util.getAsyncPreEventUpdatesOfRoot(preEventRootId);
+        if (preEventUpdates.length === 1) {
+          // Case 2: this is the only pre-event in the pre-event's root -> CHAIN
+          //    (meaning its the only async event scheduled from the same root)
           callbackChainThreadId = util.getAsyncRootThreadId(previousUpdate.rootId);
+        }
+        if (!callbackChainThreadId) {
+          const thisStaticContextId = util.getContextStaticContext(rootId);
+          const lastStaticContextId = util.getContextStaticContext(previousUpdate.rootId);
+
+          if (thisStaticContextId === lastStaticContextId) {
+            // Case 3: recursive or repeating same function
+            callbackChainThreadId = util.getAsyncRootThreadId(previousUpdate.rootId);
+          }
         }
       }
     }
