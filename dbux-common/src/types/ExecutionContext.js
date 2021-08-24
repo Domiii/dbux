@@ -71,6 +71,11 @@ export default class ExecutionContext {
   lastTraceId;
 
   /**
+   * @type {boolean}
+   */
+  isVirtualRoot;
+
+  /**
    * If the context is an async function, this is its returned `promiseId`.
    * 
    * @type {number}

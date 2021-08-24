@@ -189,7 +189,11 @@ export default class Collection {
     if (!this._all.length) {
       return null;
     }
-    return this._all[this._all.length - 1];
+    return this._all[this.getLastId()];
+  }
+
+  getLastId() {
+    return this._all.length - 1;
   }
 
   find(cb) {
@@ -230,7 +234,20 @@ export default class Collection {
     const allData = { [this.name]: [entry] };
     this.dp._postAdd(this._collectionNames, allData, raw);
 
-    // future-work: this could happen during another post-add event. Make sure, this won't bug out.
+    // future-work: this could happen while another post-add event is still on-going. Make sure, this won't bug out.
+    this.dp._notifyData(this._collectionNames, allData);
+  }
+
+  addEntriesPostAdd(entries, raw = true) {
+    for (const entry of entries) {
+      this.addEntry(entry);
+    }
+
+    // populate indexes, trigger data dependencies etc.
+    const allData = { [this.name]: entries };
+    this.dp._postAdd(this._collectionNames, allData, raw);
+
+    // future-work: this could happen while another post-add event is still on-going. Make sure, this won't bug out.
     this.dp._notifyData(this._collectionNames, allData);
   }
 }

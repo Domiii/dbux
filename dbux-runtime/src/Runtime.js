@@ -4,6 +4,7 @@ import Stack from './Stack';
 import traceCollection from './data/traceCollection';
 import scheduleNextPossibleRun from './scheduleNextPossibleRun';
 import RuntimeAsync from './async/RuntimeAsync';
+import executionContextCollection from './data/executionContextCollection';
 
 // import ExecutionContextType from '@dbux/common/src/types/constants/ExecutionContextType';
 // import executionContextCollection from './data/executionContextCollection';
@@ -493,10 +494,10 @@ export default class Runtime {
   }
 
   _virtualRootContextFinished(newRootId) {
-    // if (this._virtualRootContextId) {
-    //   const previousRootId = this._virtualRootContextId;
-    //   // if ()
-    // }
+    if (this._virtualRootContextId) {
+      const previousRootId = this._virtualRootContextId;
+      this.async.virtualRootEnded(previousRootId);
+    }
     this._virtualRootContextId = newRootId;
   }
 

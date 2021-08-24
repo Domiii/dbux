@@ -232,6 +232,18 @@ export default class RuntimeAsync {
     this.floatingPromises.push(promise);
   }
 
+  /** ###########################################################################
+   * runtime basics
+   *  #########################################################################*/
+
+  virtualRootEnded(rootId) {
+    // [edit-after-send]
+    executionContextCollection.getById(rootId).isVirtualRoot = true;
+
+    // // NOTE: add all unassigned roots to thread#1
+    // this.setRootThreadId(rootId, 1);
+  }
+
 
   // ###########################################################################
   // postAwait
