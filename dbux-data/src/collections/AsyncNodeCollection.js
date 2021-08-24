@@ -65,11 +65,15 @@ export default class AsyncNodeCollection extends Collection {
       return this.addAsyncNode(rootId, threadId, schedulerTraceId);
     }
 
-    this.logger.warn(`node was assigned threadId more than once - old=${node.threadId}, ` +
+    // TODO: if this happens, it probably means that the node was already added to wrong indexes etc.
+    this.logger.trace(`[setNodeThreadId] node was assigned threadId more than once - old=${node.threadId}, ` +
       `new=${threadId}, trace=${this.dp.util.makeTraceInfo(schedulerTraceId)}, node=`, node);
     if (node.threadId === UnassignedThreadId) {
       node.threadId = threadId;
     }
+    
+    // this.notifyChanged([node]);
+
     // else {
     // }
     return node;

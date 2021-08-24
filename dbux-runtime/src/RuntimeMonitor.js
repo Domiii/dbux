@@ -19,6 +19,7 @@ import initPatchBuiltins from './builtIns/index';
 import CallbackPatcher from './async/CallbackPatcher';
 import initPatchPromise from './async/promisePatcher';
 import { getTraceStaticTrace } from './data/dataUtil';
+import { getDefaultClient } from './client/index';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError, trace: logTrace } = newLogger('RuntimeMonitor');
@@ -145,6 +146,11 @@ export default class RuntimeMonitor {
     const runId = this._runtime.getCurrentRunId();
     const parentContextId = this._runtime.peekCurrentContextId();
     const parentTraceId = this._runtime.getParentTraceId();
+
+    // if (!parentContextId) {
+    //   // NOTE: does not make a difference in terms of performance
+    //   getDefaultClient().bufferBreakpoint();
+    // }
 
     const context = executionContextCollection.executeImmediate(
       stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId, definitionTid, tracesDisabled

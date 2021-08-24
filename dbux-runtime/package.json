@@ -28,6 +28,7 @@
     "nanoevents": "^2.0.0",
     "serialize-javascript": "^5.0.1",
     "socket.io-client": "^4",
+    "socket.io-msgpack-parser": "^3.0.1",
     "ws": "^7.4.6"
   },
   "_moduleAliases": {}

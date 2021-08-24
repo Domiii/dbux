@@ -20,32 +20,10 @@ export default class RuntimeAsync {
   logger = newLogger('Async');
 
   /**
-   * @type {number} Maintain thread count
-   */
-  _maxThreadId = 0;
-
-  floatingPromises = [];
-
-  /**
-   * @type {Array.<Map.<number, number>>}
-   */
-  outEdges = [];
-  /**
-   * @type {Array.<Map.<number, number>>}
-   */
-  inEdges = [];
-  /**
    * Stores key = realContextId, value = { resumeContextId, rootId } for
    * connecting `preAwait` and `postAwait` events.
    */
   lastAwaitByRealContext = new Map();
-
-  /**
-   * TODO: move to `AsyncNodeCollection`
-   */
-  threadsByRoot = new Map();
-  threadFirstRun = new Map();
-  lastRootContextByThread = new Map([[1, 1]]);
 
   /**
    * @type {Runtime}
@@ -154,12 +132,12 @@ export default class RuntimeAsync {
     //      -> add an edge from `preEvent` `AsyncNode` to promise's `lastAsyncNode`
     const isFirstAwait = isFirstContextInParent(resumeContextId);
 
-    if (isRootContext(resumeContextId)) {
-      // NOTE: this check is only necessary in case of a top-level `await`.
-      //    -> since else: `!isFirstAwait` and `postAwait` just occured.
-      // make sure that we have a valid threadId
-      this.getOrAssignRootThreadId(resumeContextId);
-    }
+    // if (isRootContext(resumeContextId)) {
+    //   // NOTE: this check is only necessary in case of a top-level `await`.
+    //   //    -> since else: `!isFirstAwait` and `postAwait` just occured.
+    //   // make sure that we have a valid threadId
+    //   this.getOrAssignRootThreadId(resumeContextId);
+    // }
 
     this.updateLastAwaitByRealContext(realContextId, {
       resumeContextId,
@@ -220,17 +198,6 @@ export default class RuntimeAsync {
     }
   }
 
-
-  recordFloatingPromise(promise, currentRootId, asyncFunctionContextId) {
-    setPromiseData(promise, {
-      // NOTE: rootId should already be set by recordPromise
-      // rootId: currentRootId,
-      // lastRootId: currentRootId,
-      asyncFunctionContextId
-    });
-    this.floatingPromises.push(promise);
-  }
-
   /** ###########################################################################
    * runtime basics
    *  #########################################################################*/
@@ -260,14 +227,14 @@ export default class RuntimeAsync {
     let {
       resumeContextId: preEventContextId,
       preAwaitRootId: preEventRootId,
-      preEventThreadId,
+      // preEventThreadId,
       schedulerTraceId,
       asyncFunctionPromiseId
     } = asyncData;
 
     const postEventRootId = this.getCurrentVirtualRootContextId();
     const postEventRunId = this._runtime.getCurrentRunId();
-    preEventThreadId = preEventThreadId || this.getOrAssignRootThreadId(preEventRootId);
+    // preEventThreadId = preEventThreadId || this.getOrAssignRootThreadId(preEventRootId);
 
     // store update
     asyncEventUpdateCollection.addPostAwaitUpdate({
@@ -279,134 +246,8 @@ export default class RuntimeAsync {
       promiseId: asyncFunctionPromiseId,
       nestedPromiseId: isThenable(awaitArgument) ? getPromiseId(awaitArgument) : 0
     });
-
-    // // update `rootId` for the next guy
-    // asyncData.rootId = postEventRootId;
-
-    // let fromRootId;
-    // let fromThreadId;
-    // let toThreadId;
-
-    // const isFirstAwait = isFirstContextInParent(preEventContextId);
-    // const isNested = isThenable(awaitArgument);
-    // // const nestedAwaitData = isNested && this.getPromiseLastAwait(awaitArgument);
-    // const nestedPromiseData = isNested && getPromiseData(awaitArgument);
-    // const isNestedChain = nestedPromiseData?.firstNestingTraceId === schedulerTraceId;
-
-    // if (!asyncFunctionPromise) {
-    //   /* this.logger.error */
-    //   // return;
-    //   /* throw new Error */
-    //   // eslint-disable-next-line max-len
-    //   this.logger.error(`postAwait did not have "asyncFunctionPromise" at trace="${traceCollection.makeTraceInfo(schedulerTraceId)}", realContextId=${realContextId}, postEventRootId=${postEventRootId}, asyncData=${JSON.stringify(asyncData, null, 2)}`);
-    //   return;
-    // }
-
-    // if (!isFirstAwait || this.isAsyncFunctionChainedToRoot(realContextId)) {
-    //   // (1) not first await or (2) chained to root -> CHAIN
-    //   toThreadId = preEventThreadId;
-    // }
-    // else if (isNestedChain) {
-    //   // CHAIN with nested promise
-    //   toThreadId = nestedPromiseData.threadId;
-    // }
-    // else {
-    //   // first await, and NOT chained by caller and NOT chained to root -> FORK
-    //   toThreadId = 0;
-    // }
-
-    // if (isNested) {
-    //   /**
-    //    * nested promise: 2 cases
-    //    * 
-    //    * Case 1: nested promise is chained into the same thread: add single edge
-    //    * Case 2: nested promise is not chained: add a second SYNC edge
-    //    */
-    //   const {
-    //     lastRootId: nestedRootId,
-    //     threadId: nestedThreadId,
-    //   } = nestedPromiseData;
-    //   if (isNestedChain) {
-    //     // Case 1
-    //     fromRootId = nestedRootId;
-    //     fromThreadId = nestedThreadId;
-    //   }
-    //   else {
-    //     // Case 2: add SYNC edge
-    //     this.addSyncEdge(nestedRootId, postEventRootId, AsyncEdgeType.SyncIn);
-
-    //     // add edge from previous event, as usual
-    //     fromRootId = preEventRootId;
-    //     fromThreadId = preEventThreadId;
-    //   }
-
-    //   // TODO: complex nested syncs
-
-    //   // // add SYNC edge for more waiting callers
-    //   // const { pendingRootIds } = nestedPromiseData;
-    //   // if (pendingRootIds && isFirstAwait) {
-    //   //   for (const pendingRootId of pendingRootIds) {
-    //   //     this.addSyncEdge(pendingRootId, postEventRootId, AsyncEdgeType.SyncIn);
-    //   //   }
-    //   // }
-    // }
-    // else {
-    //   // not nested
-    //   fromRootId = preEventRootId;
-    //   fromThreadId = preEventThreadId;
-
-    //   // // assign run <-> threadId
-    //   // NOTE: this should probably not happen
-    //   // let fromRootIdThreadId = getRunThreadId(fromRootId);
-    //   // if (!fromRootIdThreadId) {
-    //   //   // this.logger.debug("From run", fromRootId, "is a new run, assign thread id");
-    //   //   fromRootIdThreadId = this.assignRunNewThreadId(fromRootId);
-    //   // }
-    // }
-
-    // // add edge
-    // const actualToThreadId = this.addEventEdge(fromRootId, postEventRootId, fromThreadId, toThreadId, schedulerTraceId, isNested);
-
-    // // update promise data
-    // if (isFirstAwait) {
-    //   setPromiseData(asyncFunctionPromise, { threadId: actualToThreadId });
-    // }
-
-    // maybeSetPromiseFirstEventRootId(asyncFunctionPromise, postEventRootId);
   }
 
-  /**
-   * This is called `postRun` to process promises that are return values of `async` functions.
-   */
-  processFloatingPromises() {
-    // // this.logger.debug('clean flating promise');
-    // const maintainPromiseThreadIdDfs = promise => {
-    //   // this.logger.debug('do promise', promise);
-
-    //   console.warn(`floatingPromise`, promise, this.getAsyncCallerPromise(promise));
-
-    //   if (getPromiseOwnThreadId(promise)) {
-    //     // this.logger.debug('get own thread id', getPromiseOwnThreadId(promise));
-    //     return getPromiseOwnThreadId(promise);
-    //   }
-    //   const callerPromise = this.getAsyncCallerPromise(promise);
-
-    //   if (callerPromise) {
-    //     // this promise participates in an await chain. Does not have "own" threadId.
-    //     maintainPromiseThreadIdDfs(callerPromise);
-    //   } else {
-    //     // floating promise is not bound to root context, and has no further caller
-    //     this.setupPromise(promise, rootId, 0, false);
-    //   }
-    //   // this.logger.debug('promise become', promise);
-    //   return getPromiseOwnThreadId(promise);
-    // };
-    // for (let promise of this.floatingPromises) {
-    //   maintainPromiseThreadIdDfs(promise);
-    // }
-    // this.floatingPromises = [];
-    // // this.logger.debug("end clean");
-  }
 
   // ###########################################################################
   // Promises: preThen
@@ -611,80 +452,62 @@ export default class RuntimeAsync {
     return nestedAsyncData;
   }
 
-  /**
-   * Used for debugging purposes.
-   */
-  debugGetAllRootIdsOfThread(threadId) {
-    return Array.from(this.threadsByRoot.entries())
-      .filter(([, t]) => t === threadId)
-      .map(([r]) => r);
-  }
+  // /**
+  //  * Used for debugging purposes.
+  //  */
+  // debugGetAllRootIdsOfThread(threadId) {
+  //   return Array.from(this.threadsByRoot.entries())
+  //     .filter(([, t]) => t === threadId)
+  //     .map(([r]) => r);
+  // }
 
-  /**
-   * Called when a run is finished.
-   * @param {number} runId 
-   */
-  postRun(/* runId, rootContextIds */) {
-    // NOTE: note currently necessary
-    // for (const rootContextId of rootContextIds) {
-    //   if (!this.getRootThreadId(rootContextId)) {
-    //     // NOTE: rootContexts without any async event
-    //     this.setRootThreadId(rootContextId, this.newThreadId());
-    //   }
-    // }
-    this.processFloatingPromises();
-  }
+  // /**
+  //  * Maintain `threadsByRoot` map.
+  //  * Called by `addEdge`.
+  //  * 
+  //  * @param {number} runId 
+  //  * @param {number} threadId 
+  //  */
+  // setRootThreadId(rootId, threadId, schedulerTraceId) {
+  //   // const threadLastRun = Math.max(runId, this.lastRootContextByThread.get(threadId) || 0);
+  //   // this.logger.debug(`[${threadId}] set runId=${runId}, threadLastRun=${threadLastRun}`);
 
-  /**
-   * Maintain `threadsByRoot` map.
-   * Called by `addEdge`.
-   * 
-   * @param {number} runId 
-   * @param {number} threadId 
-   */
-  setRootThreadId(rootId, threadId, schedulerTraceId) {
-    // const threadLastRun = Math.max(runId, this.lastRootContextByThread.get(threadId) || 0);
-    // this.logger.debug(`[${threadId}] set runId=${runId}, threadLastRun=${threadLastRun}`);
+  //   this.threadsByRoot.set(rootId, threadId);
 
-    this.threadsByRoot.set(rootId, threadId);
+  //   // TODO: remove all this
+  //   // asyncNodeCollection.addAsyncNode(rootId, threadId, schedulerTraceId);
+  //   // this.lastRootContextByThread.set(threadId, threadLastRun);
+  // }
 
-    // TODO: remove all this
-    // asyncNodeCollection.addAsyncNode(rootId, threadId, schedulerTraceId);
-    // this.lastRootContextByThread.set(threadId, threadLastRun);
-  }
+  // getRootThreadId(rootId) {
+  //   return this.threadsByRoot.get(rootId);
+  // }
 
-  /**
-   * 
-   */
-  getRootThreadId(rootId) {
-    return this.threadsByRoot.get(rootId);
-  }
+  // hasEdgesFrom(fromRootId) {
+  //   return !!this.outEdges[fromRootId];
+  // }
 
-  hasEdgesFrom(fromRootId) {
-    return !!this.outEdges[fromRootId];
-  }
+  // hasChainFrom(fromRootId) {
+  //   const edges = this.outEdges[fromRootId];
+  //   const fromThreadId = this.getRootThreadId(fromRootId);
+  //   return edges && some(edges.values(), (toRootId) => fromThreadId === this.getRootThreadId(toRootId)) || false;
+  // }
 
-  hasChainFrom(fromRootId) {
-    const edges = this.outEdges[fromRootId];
-    const fromThreadId = this.getRootThreadId(fromRootId);
-    return edges && some(edges.values(), (toRootId) => fromThreadId === this.getRootThreadId(toRootId)) || false;
-  }
+  // hasEdgeFromTo(fromRootId, firstEventRootId) {
+  //   return !!this.outEdges[fromRootId]?.get(firstEventRootId);
+  // }
 
-  hasEdgeFromTo(fromRootId, firstEventRootId) {
-    return !!this.outEdges[fromRootId]?.get(firstEventRootId);
-  }
-
-  /**
-   * @return The new thread id
-   */
-  newThreadId() {
-    // this.logger.debug("assign run new thread id", runId);
-    ++this._maxThreadId;
-    // eslint-disable-next-line no-console
-    // this.logger.debug('[newThreadId]', this._maxThreadId);
-    // console.trace('[newThreadId]', this._maxThreadId);
-    return this._maxThreadId;
-  }
+  // /**
+  //  * @return The new thread id
+  //  */
+  // newThreadId() {
+  //   // this.logger.debug("assign run new thread id", runId);
+  //   ++this._maxThreadId;
+  //   // eslint-disable-next-line no-console
+  //   // this.logger.debug('[newThreadId]', this._maxThreadId);
+  //   // console.trace('[newThreadId]', this._maxThreadId);
+  //   return this._maxThreadId;
+  // }
 
   /**
    * If given root was started by a recorded async event, threadId is already assigned.
@@ -692,17 +515,17 @@ export default class RuntimeAsync {
    * 
    * TODO: move to `postRun` or `postRoot`?
    */
-  getOrAssignRootThreadId(rootId) {
-    let threadId = this.getRootThreadId(rootId);
-    if (!threadId) {
-      // NOTE: this can happen, if a root executed that was not connected to any previous asynchronous events
-      //    (e.g. initial root, or caused by unrecorded asynchronous events)
-      // this.logger.warn(`Tried to add edge from root ${fromRootId} but it did not have a threadId`);
-      // return 0;
-      this.setRootThreadId(rootId, threadId = this.newThreadId());
-    }
-    return threadId;
-  }
+  // getOrAssignRootThreadId(rootId) {
+  //   let threadId = this.getRootThreadId(rootId);
+  //   if (!threadId) {
+  //     // NOTE: this can happen, if a root executed that was not connected to any previous asynchronous events
+  //     //    (e.g. initial root, or caused by unrecorded asynchronous events)
+  //     // this.logger.warn(`Tried to add edge from root ${fromRootId} but it did not have a threadId`);
+  //     // return 0;
+  //     this.setRootThreadId(rootId, threadId = this.newThreadId());
+  //   }
+  //   return threadId;
+  // }
 
   // ###########################################################################
   // addEdge
@@ -778,13 +601,13 @@ export default class RuntimeAsync {
   //   return true;
   // }
 
-  /**
-   * Get last run of the thread, by `threadLastRun` map
-   * @param {number} threadId 
-   * @return {number} The last run id of the thread
-   */
-  getLastRootContextOfThread(threadId) {
-    // this.logger.debug("get last run of thread", threadId, "returns", this.threadLastRun.get(threadId));
-    return this.lastRootContextByThread.get(threadId);
-  }
+  // /**
+  //  * Get last run of the thread, by `threadLastRun` map
+  //  * @param {number} threadId 
+  //  * @return {number} The last run id of the thread
+  //  */
+  // getLastRootContextOfThread(threadId) {
+  //   // this.logger.debug("get last run of thread", threadId, "returns", this.threadLastRun.get(threadId));
+  //   return this.lastRootContextByThread.get(threadId);
+  // }
 }

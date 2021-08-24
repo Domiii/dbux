@@ -1414,6 +1414,7 @@
     "nanoevents": "^2.0.0",
     "open": "^7.1.0",
     "socket.io": "^4",
+    "socket.io-msgpack-parser": "^3.0.1",
     "strip-color": "^0.1.0",
     "typescript": "^3.6.4",
     "uuid": "^8.3.0",

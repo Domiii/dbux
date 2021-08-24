@@ -1,5 +1,6 @@
 // import 'ws'; // this must work on Node!
 import io, { Socket } from 'socket.io-client';
+import msgpackParser from 'socket.io-msgpack-parser';
 import minBy from 'lodash/minBy';
 import maxBy from 'lodash/maxBy';
 import { logWarn, newLogger } from '@dbux/common/src/log/logger';
@@ -205,8 +206,13 @@ export default class Client {
    */
   sendWithAck(msg, data) {
     return new Promise((resolve, reject) => {
-      this._socket.once('error', reject);
-      this._socket.emit(msg, data, resolve);
+      try {
+        this._socket.emit(msg, data, resolve);
+        this._socket.once('error', reject);
+      }
+      catch (err) {
+        reject(err);
+      }
     });
   }
 
@@ -262,12 +268,10 @@ export default class Client {
   }
 
   /**
-   * NOTE: will send out data right away, if it is already connected.
-   * If it is not connected, will try to send data as early as possible.
+   * Tell SendQueue to start a new buffer.
    */
-  tryFlush() {
-    // NOTE: trying to send immediately can never work and messes with the order of things.
-    // this._sendQueue.flush();
+  bufferBreakpoint() {
+    this._sendQueue.bufferBreakpoint();
   }
 
   // ###########################################################################
@@ -287,7 +291,12 @@ export default class Client {
 
       // fixes seemingly immediate disconnects - see https://stackoverflow.com/a/40993490
       //  longer explanations: https://stackoverflow.com/questions/28238628/socket-io-1-x-use-websockets-only/28240802#28240802
-      upgrade: false
+      upgrade: false,
+
+      /**
+       * @see https://socket.io/docs/v4/custom-parser#The-msgpack-parser
+       */
+      parser: msgpackParser
     });
     Verbose && debug('<- connecting...');
 

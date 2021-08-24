@@ -77,7 +77,11 @@ class AsyncGraph extends HostComponentEndpoint {
       const dp = app.dataProvider;
       const context = dp.collections.executionContexts.getById(rootContextId);
       const rowId = index + 1;
-      const colId = appData.asyncThreadsInOrder.getIndexNotNull(asyncNode);
+      let colId = appData.asyncThreadsInOrder.getIndex(asyncNode);
+      if (!colId) {
+        this.logger.warn(`asyncNode not found in asyncThreadsInOrder:`, asyncNode);
+        return null;
+      }
       const displayName = makeContextLabel(context, app);
       const locLabel = makeContextLocLabel(applicationId, context);
       const syncInCount = dp.indexes.asyncEvents.syncInByRoot.getSize(rootContextId);

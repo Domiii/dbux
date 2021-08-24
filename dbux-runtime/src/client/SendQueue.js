@@ -1,6 +1,7 @@
 /** @typedef { import("./Client").default } Client */
 
 import isEmpty from 'lodash/isEmpty';
+import sumBy from 'lodash/sumBy';
 import { getDataCount } from '@dbux/common/src/util/dataUtil';
 import { newLogger } from '@dbux/common/src/log/logger';
 
@@ -87,14 +88,31 @@ class SendQueue {
     }
   }
 
+  _nextBuffer() {
+    if (!isBufferEmpty(this.currentBuffer)) {
+      // add new empty buffer to store new incoming data
+      const sum = sumBy(Object.values(this.currentBuffer),
+        arr => arr.reduce((a, v) => a + JSON.stringify(v).length, 0) || 0);
+      // this.currentBuffer?.values?.reduce((a, v) => a + JSON.stringify(v.serialized).length, 0);
+      debug(`previous buffer total length: ${Math.round(sum / 1000).toLocaleString('en-us')}k`);
+      this.buffers.push(newBuffer());
+    }
+  }
+
+  /**
+   * Called to indicate that the current buffer can be sent
+   *    -> use this to create new buffer, and store future data separately.
+   */
+  bufferBreakpoint() {
+    this._nextBuffer();
+    // this._flushLater();
+  }
+
   /**
    * Send all buffered data in a loop
    */
   flush = async () => {
-    if (!isBufferEmpty(this.currentBuffer)) {
-      // add new empty buffer to store new incoming data
-      this.buffers.push(newBuffer());
-    }
+    this._nextBuffer();
 
     Verbose && debug(`[SQ] flush STA`, this.buffers.length);
 

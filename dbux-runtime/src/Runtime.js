@@ -5,6 +5,7 @@ import traceCollection from './data/traceCollection';
 import scheduleNextPossibleRun from './scheduleNextPossibleRun';
 import RuntimeAsync from './async/RuntimeAsync';
 import executionContextCollection from './data/executionContextCollection';
+import { getDefaultClient } from './client/index';
 
 // import ExecutionContextType from '@dbux/common/src/types/constants/ExecutionContextType';
 // import executionContextCollection from './data/executionContextCollection';
@@ -480,7 +481,8 @@ export default class Runtime {
     this.newRun();
     this._executingStack = stack;
     // console.warn('[RunStart] ' + this._currentRunId, new Error().stack); //, this.getLingeringStackCount());
-    debug('[new run]', this._currentRunId);
+    // getDefaultClient().bufferBreakpoint();
+    // debug('[new run]', this._currentRunId);
   }
 
   /**
@@ -499,6 +501,8 @@ export default class Runtime {
     // }
     this._virtualRootContextId = newRootId;
     this.async.virtualRootStarted(newRootId);
+
+    debug('[new root]', newRootId);
   }
 
   _runFinished() {
@@ -509,7 +513,6 @@ export default class Runtime {
 
     // TODO: change to post-process all `virtualRootContexts` of run
 
-    this.async.postRun(this._virtualRootContextIdsThisRun);
     // this.thread2.postRun();
     // console.warn('[RunEnd]', this._currentRootId, this.getLingeringStackCount(), new Error().stack);
     // console.timeEnd('[RunEnd] ' + this._currentRunId);

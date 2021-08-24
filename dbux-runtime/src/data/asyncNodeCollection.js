@@ -6,22 +6,22 @@ class AsyncNodeCollection extends Collection {
     super('asyncNodes');
   }
 
-  addAsyncNode(rootContextId, threadId, traceId) {
-    const asyncNode = pools.asyncNodes.allocate();
+  // addAsyncNode(rootContextId, threadId, traceId) {
+  //   const asyncNode = pools.asyncNodes.allocate();
 
-    asyncNode.asyncNodeId = this._all.length;
-    this.push(asyncNode);
+  //   asyncNode.asyncNodeId = this._all.length;
+  //   this.push(asyncNode);
 
-    asyncNode.rootContextId = rootContextId;
-    asyncNode.threadId = threadId;
-    asyncNode.schedulerTraceId = traceId;
+  //   asyncNode.rootContextId = rootContextId;
+  //   asyncNode.threadId = threadId;
+  //   asyncNode.schedulerTraceId = traceId;
 
-    this._send(asyncNode);
+  //   this._send(asyncNode);
 
-    return asyncNode;
-  }
+  //   return asyncNode;
+  // }
 }
 
-const runCollection = new AsyncNodeCollection();
+const asyncNodeCollection = new AsyncNodeCollection();
 
-export default runCollection;
+export default asyncNodeCollection;

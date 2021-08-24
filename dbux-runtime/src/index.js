@@ -44,8 +44,6 @@ function handleShutdown() {
   }
   _didShutdown = true;
 
-  // client.tryFlush();
-
   if (!client.hasFinished()) {
     // eslint-disable-next-line no-console
     console.error('[dbux-runtime] Process exiting but not all data has been sent out. Analysis will be incomplete. ' +

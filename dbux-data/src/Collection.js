@@ -1,4 +1,5 @@
 import { newLogger } from '@dbux/common/src/log/logger';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 
 /**
  * @typedef {import('./DataProviderBase').default} DataProviderBase
@@ -248,6 +249,12 @@ export default class Collection {
     this.dp._postAdd(this._collectionNames, allData, raw);
 
     // future-work: this could happen while another post-add event is still on-going. Make sure, this won't bug out.
+    this.dp._notifyData(this._collectionNames, allData);
+  }
+
+  notifyChanged(entries = EmptyArray) {
+    // future-work: this could happen while another post-add event is still on-going. Make sure, this won't bug out.
+    const allData = { [this.name]: entries };
     this.dp._notifyData(this._collectionNames, allData);
   }
 }

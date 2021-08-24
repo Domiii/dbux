@@ -416,10 +416,22 @@ class ValueCollection extends Collection {
       // serialized = JSON.stringify(value);
     }
     else {
-      if (typeof value === 'bigint') {
-        // hackfix: coerce to string
-        // NOTE: workaround for https://github.com/Domiii/dbux/issues/533
+      const t = typeof value;
+      if (t === 'bigint') {
+        /**
+         * hackfix: coerce to string
+         * NOTE: JSON + msgpack both don't support bigint
+         * @see https://github.com/Domiii/dbux/issues/533
+         */
         serialized = value + 'n';
+      }
+      else if (t === 'symbol') {
+        /**
+         * hackfix: coerce to string
+         * NOTE: msgpack (notepack) does not support symbols
+         * @see https://github.com/darrachequesne/notepack/issues
+         */
+        serialized = value.toString();
       }
       else {
         serialized = value;

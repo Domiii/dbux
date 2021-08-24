@@ -1,5 +1,7 @@
 import http from 'http';
 import { Server } from 'socket.io';  // socket.io@3+
+import msgpackParser from 'socket.io-msgpack-parser';
+
 // import Server from 'socket.io';       // socket.io@2
 import { newLogger } from '@dbux/common/src/log/logger';
 
@@ -47,6 +49,11 @@ export async function makeListenSocket(port) {
 
     // NOTE: `wsEngine` is 'ws' by default since 4.0
     // wsEngine: 'ws' // in case uws is not supported
+
+    /**
+     * @see https://socket.io/docs/v4/custom-parser#The-msgpack-parser
+     */
+    parser: msgpackParser
   });
 
   listenSocket.on('error', err => {
