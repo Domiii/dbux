@@ -187,12 +187,12 @@ export default class WebpackProject extends Project {
       buildNodeCommand({
         ...cfg,
 
-        nodeArgs: `${cfg.nodeArgs} --max-old-space-size=4096`,
+        nodeArgs: `${cfg.nodeArgs} --max-old-space-size=8192`,
 
         // NOTE: when changing paths, make sure that `alias.runtime` refers to the correct paths as well
         program: p(this.cliBin),
         require: p('_dbux_/alias.runtime.js'),
-        dbuxArgs: `${cfg.dbuxArgs} --pw=.*`, // --pw=tapable`, // --pw=.*`,
+        dbuxArgs: `${cfg.dbuxArgs} --pw=tapable`, // --pw=tapable`, // --pw=.*`,
         // dbuxArgs: '--pw=webpack,webpack-cli --verbose=1 --runtime="{\\"tracesDisabled\\":1}"',
 
         /**
