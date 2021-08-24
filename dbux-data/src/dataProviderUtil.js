@@ -2063,7 +2063,7 @@ export default {
       // runId: postEventRunId,
       rootId: postEventRootId,
       // NOTE: the last active root is also the `context` of the `then` callback
-      contextId: preEventContextId,
+      contextId: thenCbContextId,
       schedulerTraceId,
       promiseId: postEventPromiseId,
       nestedPromiseId
@@ -2088,7 +2088,7 @@ export default {
     // if (!previousPostUpdate) {
     // }
     const isNested = !!nestedPromiseId;
-    const isChainedToRoot = util.isPromiseChainedToRoot(preEventRunId, preEventContextId, postEventPromiseId);
+    const isChainedToRoot = util.isPromiseChainedToRoot(preEventRunId, thenCbContextId, postEventPromiseId);
     // const isNestedChain = this.isNestedChain(nestedPromiseId, schedulerTraceId);
     // const nestedUpdate = nestedPromiseId && dp.util.getPreviousPostAsyncEventOfPromise(nestedPromiseId, postEventRootId);
     // const { rootId: nestedRootId } = nestedUpdate ?? EmptyObject;

@@ -1,5 +1,5 @@
 Promise.resolve()
-  .then(f(1))
+  .then(ff(1))
   .then(g);
 
 // Promise.resolve().
@@ -8,8 +8,8 @@ Promise.resolve()
 
 function g() { }
 
-function f(x) {
-  return async () => {
+function ff(x) {
+  return async function f() {
     console.log(`fA`, x);
     await 0;
     console.log(`fB`, x);

@@ -6,7 +6,7 @@ import isThenable from '@dbux/common/src/util/isThenable';
 import { isFunction } from 'lodash';
 import asyncEventUpdateCollection from '../data/asyncEventUpdateCollection';
 import dataNodeCollection from '../data/dataNodeCollection';
-import { peekBCEMatchCallee, peekContextCheckCallee } from '../data/dataUtil';
+import { peekBCEMatchCallee, getLastContextCheckCallee } from '../data/dataUtil';
 import PromiseRuntimeData from '../data/PromiseRuntimeData';
 // import traceCollection from '../data/traceCollection';
 import valueCollection from '../data/valueCollection';
@@ -133,6 +133,7 @@ function patchThenCallback(cb, thenRef) {
         returnValue = originalCb(previousResult);
       }
       finally {
+        const cbContext = getLastContextCheckCallee(originalCb);
         if (isThenable(returnValue)) {
           // NOTE: we must make sure, that we have the promise's `ValueRef`.
           //  We might not have seen this promise for several reasons:
@@ -141,9 +142,8 @@ function patchThenCallback(cb, thenRef) {
           // maybePatchPromise(returnValue);
           dataNodeCollection.createDataNode(returnValue, thenRef.schedulerTraceId, DataNodeType.Read, null);
 
-          // set async function's returnValue promise (used to set AsyncEventUpdate.promiseId)
-          const cbContext = peekContextCheckCallee(originalCb);
           // console.trace('thenCb', cbContext?.contextId, getPromiseId(returnValue));
+          // set async function's returnValue promise (used to set AsyncEventUpdate.promiseId)
           cbContext && RuntimeMonitorInstance._runtime.async.setAsyncContextPromise(cbContext.contextId, returnValue);
 
           // set nestingPromiseId
@@ -152,7 +152,7 @@ function patchThenCallback(cb, thenRef) {
         // thenExecuted(thenRef, previousResult, returnValue);
 
         // event: PostThen
-        RuntimeMonitorInstance._runtime.async.postThen(thenRef, returnValue);
+        RuntimeMonitorInstance._runtime.async.postThen(thenRef, returnValue, cbContext);
       }
     }
     finally {

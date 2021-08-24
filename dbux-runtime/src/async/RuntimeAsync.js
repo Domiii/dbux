@@ -1,6 +1,6 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import isThenable from '@dbux/common/src/util/isThenable';
-import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
+import { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { some } from 'lodash';
 // import executionContextCollection from './data/executionContextCollection';
@@ -12,7 +12,6 @@ import ThenRef from '../data/ThenRef';
 import { getPromiseData, getPromiseId, getPromiseOwnAsyncFunctionContextId, setPromiseData } from './promisePatcher';
 import asyncEventUpdateCollection from '../data/asyncEventUpdateCollection';
 import executionContextCollection from '../data/executionContextCollection';
-import { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 // import { isPostEventUpdate, isPreEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 
 /** @typedef { import("./Runtime").default } Runtime */
@@ -451,7 +450,7 @@ export default class RuntimeAsync {
    * 
    * @param {ThenRef} thenRef
    */
-  postThen(thenRef, returnValue) {
+  postThen(thenRef, returnValue, cbContext) {
     const {
       postEventPromise,
       schedulerTraceId
@@ -459,10 +458,11 @@ export default class RuntimeAsync {
 
     const runId = this._runtime.getCurrentRunId();
     const postEventRootId = this.getCurrentVirtualRootContextId();
-    const contextId = this._runtime.peekCurrentContextId();
+    // const contextId = this._runtime.peekCurrentContextId();
+    const contextId = cbContext?.contextId;
 
     if (!postEventRootId) {
-      console.trace(`postThen`, getPromiseId(postEventPromise), thenRef, { runId, postEventRootId });
+      this.logger.trace(`postThen`, getPromiseId(postEventPromise), thenRef, { runId, postEventRootId });
     }
 
     // store update

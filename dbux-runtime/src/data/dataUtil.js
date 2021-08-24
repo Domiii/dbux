@@ -138,7 +138,7 @@ export function peekBCEContextCheckCallee(callId) {
 /**
  * @returns The last opened context, if it is the execution of given `func`.
  */
-export function peekContextCheckCallee(func) {
+export function getLastContextCheckCallee(func) {
   const functionRef = valueCollection.getRefByValue(func);
   if (!functionRef) {
     return null;

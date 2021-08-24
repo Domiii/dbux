@@ -96,7 +96,7 @@ export default class CallbackPatcher {
   //       returnValue = originalCb(...args);
   //     }
   //     finally {
-  //       // const cbContext = peekContextCheckCallee(originalCb);
+  //       // const cbContext = getLastContextCheckCallee(originalCb);
   //       const runId = runtime.getCurrentRunId();
   //       const rootId = runtime.getCurrentVirtualRootContextId();
   //       const context = executionContextCollection.getLastRealContext();
@@ -162,7 +162,7 @@ export default class CallbackPatcher {
           else {
             // the CB was called asynchronously
 
-            // const cbContext = peekContextCheckCallee(originalCb);
+            // const cbContext = getLastContextCheckCallee(originalCb);
             const runId = runtime.getCurrentRunId();
             // const trace = getFirstTraceOfRefValue(callee);
             // const staticTrace = trace && staticTraceCollection.getById(trace.staticTraceId);
