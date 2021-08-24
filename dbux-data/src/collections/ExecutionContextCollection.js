@@ -33,9 +33,6 @@ export default class ExecutionContextCollection extends Collection {
     this.errorWrapMethod('setParamInputs', entries);
     this.errorWrapMethod('setAsyncPromiseIds', entries);
     this.errorWrapMethod('setCallExpressionResultInputs', entries);
-
-    // every time new contexts are added, make sure that root contexts are accounted for in AsyncGraph
-    this.dp.collections.asyncNodes.addMissingEntries();
   }
 
   /**

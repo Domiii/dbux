@@ -28,9 +28,9 @@ export default class AsyncNodeCollection extends Collection {
     return entry;
   }
 
-  _makeMissingEntries(entries, maxRootId) {
-    const previous = this.getLast();
-    for (let contextId = (previous?.rootContextId || 0) + 1; contextId < maxRootId; ++contextId) {
+  _makeUnassignedNodes(entries, maxRootId/* , minRootId = this.getLast()?.rootContextId || 0 */) {
+    const minRootId = this.getLast()?.rootContextId || 0;
+    for (let contextId = minRootId + 1; contextId < maxRootId; ++contextId) {
       const context = this.dp.collections.executionContexts.getById(contextId);
       if (context?.isVirtualRoot) {
         // add all missing roots to "unassigned thread" (for now)
@@ -39,15 +39,16 @@ export default class AsyncNodeCollection extends Collection {
     }
   }
 
-  addMissingEntries() {
+  addUnassignedNodes(/* minRootId */) {
     const entries = [];
-    this._makeMissingEntries(entries, this.dp.collections.executionContexts.getLastId() + 1);
+    const maxRootId = this.dp.collections.executionContexts.getLastId() + 1;
+    this._makeUnassignedNodes(entries, maxRootId/* , minRootId */);
     this.addEntriesPostAdd(entries);
   }
 
   addAsyncNode(rootId, threadId, schedulerTraceId) {
     const entries = [];
-    this._makeMissingEntries(entries, rootId);
+    this._makeUnassignedNodes(entries, rootId);
 
     const newNode = this._makeEntry(entries, rootId, threadId, schedulerTraceId);
     entries.push(newNode);
@@ -64,13 +65,13 @@ export default class AsyncNodeCollection extends Collection {
       return this.addAsyncNode(rootId, threadId, schedulerTraceId);
     }
 
+    this.logger.warn(`node was assigned threadId more than once - old=${node.threadId}, ` +
+      `new=${threadId}, trace=${this.dp.util.makeTraceInfo(schedulerTraceId)}, node=`, node);
     if (node.threadId === UnassignedThreadId) {
       node.threadId = threadId;
     }
-    else {
-      this.logger.warn(`node was assigned threadId more than once old=${node.threadId}, ` +
-        `new=${threadId}, trace=${this.dp.util.makeTraceInfo(schedulerTraceId)}, node=`, node);
-    }
+    // else {
+    // }
     return node;
   }
 }

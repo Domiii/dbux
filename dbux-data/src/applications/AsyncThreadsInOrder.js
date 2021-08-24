@@ -107,7 +107,7 @@ export default class AsyncThreadsInOrder {
   getIndexNotNull(node) {
     const index = this.getIndex(node);
     if (!index) {
-      throw new Error(`AsyncNode not included. asyncNode: ${JSON.stringify(node)}`);
+      throw new Error(`AsyncNode has no thread. asyncNode: ${JSON.stringify(node)}`);
     }
     return index;
   }
