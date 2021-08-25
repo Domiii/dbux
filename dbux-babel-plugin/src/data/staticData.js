@@ -1,4 +1,4 @@
-import { isPlainObject } from 'lodash';
+import isPlainObject from 'lodash/isPlainObject';
 import isString from 'lodash/isString';
 import { buildSource } from '../instrumentation/builders/common';
 

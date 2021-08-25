@@ -1,5 +1,6 @@
 import findLast from 'lodash/findLast';
 import groupBy from 'lodash/groupBy';
+import isNumber from 'lodash/isNumber';
 import TraceType, { hasDynamicTypes, isTracePop, isBeforeCallExpression } from '@dbux/common/src/types/constants/TraceType';
 import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
 import { pushArrayOfArray } from '@dbux/common/src/util/arrayUtil';
@@ -1498,12 +1499,21 @@ export default {
   /**
    * 
    */
-  makeTraceInfo(dp, traceId) {
+  makeTraceInfo(dp, traceOrTraceOrTraceId) {
     // const { traceId } = trace;
-    // const trace = dp.collections.traces.getById(traceId);
-    const traceType = dp.util.getTraceType(traceId);
+    let trace;
+    if (isNumber(traceOrTraceOrTraceId)) {
+      trace = dp.collections.traces.getById(traceOrTraceOrTraceId);
+    }
+    else {
+      trace = traceOrTraceOrTraceId;
+    }
+    if (!trace) {
+      return `#${traceOrTraceOrTraceId} (null)`;
+    }
+    const traceType = dp.util.getTraceType(traceOrTraceOrTraceId);
     const typeName = TraceType.nameFrom(traceType);
-    return `[${typeName}] #${traceId} ${dp.util.makeStaticTraceInfo(traceId)}`;
+    return `[${typeName}] #${traceOrTraceOrTraceId} ${dp.util.makeStaticTraceInfo(traceOrTraceOrTraceId)}`;
   },
 
   // ###########################################################################

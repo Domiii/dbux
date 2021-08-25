@@ -66,10 +66,12 @@ class ApplicationCollection extends PathwaysCollection {
       const header = JSON.stringify({ headerTag: true, version });
       if (!fs.existsSync(filePath)) {
         try {
-          fs.appendFileSync(filePath, `${header}\n${JSON.stringify(collections)}\n`, { flag: 'ax' });
+          const s = JSON.stringify(collections);
+          // const s = Object.entries(collections || EmptyObject).map(([key, value]) => ).join(',');
+          fs.appendFileSync(filePath, `${header}\n{${s}}\n`, { flag: 'ax' });
         }
         catch (err) {
-          logTrace(`Cannot write header of application log file at ${filePath}. Error: ${err}`);
+          logError(`Cannot write header of application log file at ${filePath}. Error:`, err);
         }
         app.dataProvider.onAnyData(data => {
           const { collections: serializedNewData } = app.dataProvider.serializeJson(Object.entries(data));

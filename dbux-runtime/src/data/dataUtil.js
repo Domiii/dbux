@@ -3,7 +3,7 @@ import { hasCallId, isCallResult } from '@dbux/common/src/types/constants/traceC
 import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import SpecialCallType from '@dbux/common/src/types/constants/SpecialCallType';
-import { isFunction } from 'lodash';
+import isFunction from 'lodash/isFunction';
 import dataNodeCollection from './dataNodeCollection';
 import executionContextCollection from './executionContextCollection';
 import staticTraceCollection from './staticTraceCollection';

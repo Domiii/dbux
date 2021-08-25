@@ -5,7 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const mergeWith = require('lodash/mergeWith');
 const isArray = require('lodash/isArray');
-const { isFunction } = require('lodash');
+const isFunction = require('lodash/isFunction');
 
 const webpack = require('webpack');
 // eslint-disable-next-line import/no-extraneous-dependencies

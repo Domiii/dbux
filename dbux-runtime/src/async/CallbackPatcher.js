@@ -149,7 +149,8 @@ export default class CallbackPatcher {
         // NOTE: there is no BCE, since the callback (in all likelihood) was invoked by the JS runtime
         const context = getFirstContextAfterTrace(lastTraceId);
         if (!context) {
-          trace(`Instrumentation failed. No context was created after executing callback "${originalCallback.name} (${originalCallback})".`);
+          // NOTE: this can happen if a patched cb is executed via {@link valueCollection#_readProperty), where recording is disabled
+          // trace(`Instrumentation failed. No context was created after executing callback "${originalCallback.name} (${originalCallback})".`);
         }
         else {
           const rootId = runtime.getCurrentVirtualRootContextId();

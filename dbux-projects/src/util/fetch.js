@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 import merge from 'lodash/merge';
-import { isString } from 'lodash';
+import isString from 'lodash/isString';
 
 let BaseUrl = '';
 
