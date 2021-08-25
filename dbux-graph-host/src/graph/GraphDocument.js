@@ -31,6 +31,7 @@ class GraphDocument extends HostComponentEndpoint {
   }
 
   createOwnComponents() {
+    // TODO: changed ti toolbar + graph containers
     this.controllers.createComponent(PopperManager);
     this.controllers.createComponent(HighlightManager);
     this.controllers.createComponent('ZoomBar');

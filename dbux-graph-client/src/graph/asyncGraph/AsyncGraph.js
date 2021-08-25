@@ -42,10 +42,13 @@ class AsyncGraph extends ClientComponentEndpoint {
 
   createEl() {
     return compileHtmlElement(/*html*/`
-      <div class="graph-root">
-        <h4>Applications:</h4>
-        <pre data-el="applications"></pre>
-        <div data-el="main" class="grid async-grid"></div>
+      <div class="graph-root grid async-graph">
+        <div style="grid-area:header;">
+          <h4>Applications:</h4>
+          <pre data-el="applications"></pre>
+        </div>
+        <div data-el="main" style="grid-area:main;" class="grid grid-center async-grid"></div>
+        <div data-mount="AsyncStack" style="grid-area:stack;" class="async-stack"></div>
       </div>
     `);
   }
@@ -122,6 +125,10 @@ class AsyncGraph extends ClientComponentEndpoint {
       this.els.applications.textContent = '(no applications selected)';
     }
   }
+
+  // ###########################################################################
+  // render
+  // ###########################################################################
 
   setUpAsyncNodes() {
     const { children } = this.state;
@@ -253,6 +260,10 @@ class AsyncGraph extends ClientComponentEndpoint {
     }
     return decorations.join('');
   }
+
+  // ###########################################################################
+  // event handlers
+  // ###########################################################################
 
   handleClickAsyncNode(asyncNodeData) {
     const { asyncNode: { applicationId, asyncNodeId } } = asyncNodeData;

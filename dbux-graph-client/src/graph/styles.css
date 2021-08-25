@@ -217,6 +217,14 @@ div {
  * Async Graph
  * ############################################################################ */
 
+.async-graph {
+  /* grid-template-rows: minmax(2ch, 10ch) 1fr 1fr; */
+  grid-template-columns: 2fr minmax(200px, 1fr);
+  grid-template-areas: 
+    "header header"
+    "main stack";
+}
+
 .async-grid {
   gap: 0px 1px;
 }
@@ -294,6 +302,19 @@ div {
 
 .async-thread {
   overflow: visible;
+}
+
+/** ###########################################################################
+ * async call stack
+ * ############################################################################ */
+
+.async-stack {
+  position: sticky;
+  top: 0;
+  right: 0;
+  height: calc(100vh - 100px);
+  border: 2px solid white;
+  overflow-y: scroll;
 }
 
 /** ###########################################################################

@@ -62,6 +62,9 @@ class GraphRoot extends HostComponentEndpoint {
     this.runNodesById = new RunNodeMap();
     this.contextNodesByContext = new Map();
     this.state.applications = [];
+    if (!('preferAsyncMode' in this.state)) {
+      this.state.preferAsyncMode = false;
+    }
     this._emitter = new NanoEvents();
     this._unsubscribeOnNewData = [];
 
@@ -77,30 +80,26 @@ class GraphRoot extends HostComponentEndpoint {
     this.children.createComponent('HiddenBeforeNode');
     this.children.createComponent('HiddenAfterNode');
 
-    // register event listeners
-    this.addDisposable(
-      allApplications.selection.onApplicationsChanged(() => {
-        this.updateRunNodes();
-      })
-    );
+    // // register event listeners
+    // this.addDisposable(
+    //   allApplications.selection.onApplicationsChanged(() => {
+    //     this.updateRunNodes();
+    //   })
+    // );
 
     this.updateRunNodes();
   }
 
   updateRunNodes() {
-    if (this.context.graphDocument.asyncGraphMode) {
-      this.removeAllRunNode();
-      this._setApplicationState();
-    }
-    else {
+    if (this.context.graphDocument.asyncGraphMode === this.state.preferAsyncMode) {
       // oldApps
       const oldAppIds = new Set(this.runNodesById.getApplicationIds());
       const newAppIds = new Set(allApplications.selection.getAll().map(app => app.applicationId));
-
+      
       // always re-subscribe since applicationSet clears subscribtion everytime it changes
       this._resubscribeOnData();
       this._setApplicationState();
-
+      
       // remove old runNodes
       for (const runNode of this.runNodesById.getAll()) {
         const { applicationId, runId } = runNode.state;
@@ -108,7 +107,7 @@ class GraphRoot extends HostComponentEndpoint {
           this.removeRunNode(applicationId, runId);
         }
       }
-
+      
       // add new runNodes
       for (const appId of newAppIds) {
         if (!oldAppIds.has(appId)) {
@@ -117,6 +116,10 @@ class GraphRoot extends HostComponentEndpoint {
           this.addRunNodeByContexts(appId, allContexts);
         }
       }
+    }
+    else {
+      this.removeAllRunNode();
+      this._setApplicationState();
     }
   }
 

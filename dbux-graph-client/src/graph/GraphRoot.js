@@ -30,10 +30,8 @@ class GraphRoot extends ClientComponentEndpoint {
 
   update() {
     const { asyncGraphMode } = this.context.graphDocument.state;
-    if (asyncGraphMode) {
-      this.el.classList.add('hidden');
-    }
-    else {
+    const { preferAsyncMode } = this.state;
+    if (preferAsyncMode === asyncGraphMode) {
       this.el.classList.remove('hidden');
       const { applications } = this.state;
       if (applications?.length) {
@@ -42,6 +40,9 @@ class GraphRoot extends ClientComponentEndpoint {
       else {
         this.els.applications.textContent = '(no applications selected)';
       }
+    }
+    else {
+      this.el.classList.add('hidden');
     }
   }
 }
