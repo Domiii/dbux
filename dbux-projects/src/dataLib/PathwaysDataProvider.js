@@ -68,7 +68,7 @@ class ApplicationCollection extends PathwaysCollection {
         try {
           const s = JSON.stringify(collections);
           // const s = Object.entries(collections || EmptyObject).map(([key, value]) => ).join(',');
-          fs.appendFileSync(filePath, `${header}\n{${s}}\n`, { flag: 'ax' });
+          fs.appendFileSync(filePath, `${header}\n${s}\n`, { flag: 'ax' });
         }
         catch (err) {
           logError(`Cannot write header of application log file at ${filePath}. Error:`, err);
