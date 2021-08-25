@@ -30,19 +30,33 @@ export default class AsyncNodeCollection extends Collection {
 
   _makeUnassignedNodes(entries, maxRootId/* , minRootId = this.getLast()?.rootContextId || 0 */) {
     const minRootId = this.getLast()?.rootContextId || 0;
+    const roots = [];
     for (let contextId = minRootId + 1; contextId < maxRootId; ++contextId) {
       const context = this.dp.collections.executionContexts.getById(contextId);
       if (context?.isVirtualRoot) {
-        // add all missing roots to "unassigned thread" (for now)
-        entries.push(this._makeEntry(entries, contextId, UnassignedThreadId, 0));
+        roots.push(contextId);
       }
     }
+
+    // add all missing roots to "unassigned thread" (for now)
+    roots.forEach(contextId =>
+      entries.push(
+        this._makeEntry(entries, contextId, UnassignedThreadId, 0)
+      )
+    );
+    // return roots;
   }
 
   addUnassignedNodes(/* minRootId */) {
     const entries = [];
     const maxRootId = this.dp.collections.executionContexts.getLastId() + 1;
     this._makeUnassignedNodes(entries, maxRootId/* , minRootId */);
+
+    if (entries.length) {
+      this.logger.debug(`addUnassignedNodes (${entries.length}):`, 
+        entries.map(asyncNode => asyncNode.rootContextId).join(','));
+    }
+
     this.addEntriesPostAdd(entries);
   }
 
