@@ -241,7 +241,8 @@ module.exports = (env, argv) => {
       let cfg = {
         watchOptions: {
           poll: true,
-          ignored: /node_modules/
+          // keep watching notepack, but ignore everything else
+          ignored: /node_modules[\\/](?!notepack\.io)/
         },
         mode,
 

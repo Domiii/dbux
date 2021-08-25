@@ -4,7 +4,7 @@ import sh from 'shelljs';
 import NanoEvents from 'nanoevents';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
-import { newLogger } from '@dbux/common/src/log/logger';
+import { logTrace, newLogger } from '@dbux/common/src/log/logger';
 import { pathJoin, pathRelative, realPathSyncNormalized } from '@dbux/common-node/src/util/pathUtil';
 import { getFileSizeSync } from '@dbux/common-node/src/util/fileUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
@@ -331,19 +331,25 @@ export default class ProjectsManager {
   }
 
   async askForRecoverPracticeSession(savedPracticeSession) {
-    const { logFilePath, applicationUUIDs } = savedPracticeSession;
-    const size = applicationUUIDs.reduce((currentSize, uuid) => {
-      const appFilePath = this.getApplicationFilePath(uuid);
-      return currentSize + getFileSizeSync(appFilePath);
-    }, getFileSizeSync(logFilePath));
-    const sizeInMB = size / 1024 / 1024;
-    const FileSizeThresholdInMB = 10;
-    if (sizeInMB > FileSizeThresholdInMB) {
-      // eslint-disable-next-line max-len
-      return await this.externals.confirm(`Dbux is trying to recover your previous practice session.\nThe log files are ${sizeInMB.toFixed(2)}MB, do you want to recover the practice session?`, true);
+    try {
+      const { logFilePath, applicationUUIDs } = savedPracticeSession;
+      const size = applicationUUIDs.reduce((currentSize, uuid) => {
+        const appFilePath = this.getApplicationFilePath(uuid);
+        return currentSize + getFileSizeSync(appFilePath);
+      }, getFileSizeSync(logFilePath));
+      const sizeInMB = size / 1024 / 1024;
+      const FileSizeThresholdInMB = 10;
+      if (sizeInMB > FileSizeThresholdInMB) {
+        // eslint-disable-next-line max-len
+        return await this.externals.confirm(`Dbux is trying to recover your previous practice session.\nThe log files are ${sizeInMB.toFixed(2)}MB, do you want to recover the practice session?`, true);
+      }
+      else {
+        return true;
+      }
     }
-    else {
-      return true;
+    catch (err) {
+      logTrace(`Could not recover practice session`, err);
+      return false;
     }
   }
 

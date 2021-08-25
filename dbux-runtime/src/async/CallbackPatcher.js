@@ -4,7 +4,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { peekBCEMatchCallee, isInstrumentedFunction, getFirstContextAfterTrace, getTraceStaticTrace } from '../data/dataUtil';
 // eslint-disable-next-line max-len
-import { getOriginalCallback, getOriginalFunction, getPatchedFunctionOrNull, isMonkeyPatchedCallback, isMonkeyPatchedOther, monkeyPatchFunctionOverride, _registerMonkeyPatchedCallback, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
+import { getOriginalCallback, getOriginalFunction, getPatchedFunctionOrNull, isMonkeyPatchedCallback, isMonkeyPatchedFunction, isOrHasMonkeyPatchedFunction, monkeyPatchFunctionOverride, _registerMonkeyPatchedCallback, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
 // import executionContextCollection from '../data/executionContextCollection';
 import traceCollection from '../data/traceCollection';
 
@@ -242,10 +242,14 @@ export default class CallbackPatcher {
       // only instrument functions if they themselves are not instrumented (recorded)
       !isInstrumentedFunction(originalFunction) &&
 
+      // don't apply dynamic callback patching to already monkey-patched built-ins
+      !isOrHasMonkeyPatchedFunction(originalFunction) &&
+
       // only patch if it passes on callbacks of instrumented functions
       containsInstrumentedCallbacks(args, spreadArgs)
     ) {
       // should instrument -> monkey patch it
+      // warn(`calleePatcher:`, originalFunction.name);
       let f = getPatchedFunctionOrNull(originalFunction);
       if (!f) {
         const calleePatcher = this.defaultCalleePatcher;

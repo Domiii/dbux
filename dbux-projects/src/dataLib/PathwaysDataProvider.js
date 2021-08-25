@@ -26,7 +26,7 @@ import LogFileLoader from './LogFileLoader';
 import VisitedStaticTracesByFile from './indexes/VisitedStaticTracesByFileIndex';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('PathwaysDataProvider');
+const { log, debug, warn, error: logError, trace: logTrace } = newLogger('PathwaysDataProvider');
 
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
 /** @typedef {import('./TestRun').default} TestRun */
@@ -69,7 +69,7 @@ class ApplicationCollection extends PathwaysCollection {
           fs.appendFileSync(filePath, `${header}\n${JSON.stringify(collections)}\n`, { flag: 'ax' });
         }
         catch (err) {
-          logError(`Cannot write header of application log file at ${filePath}. Error: ${err}`);
+          logTrace(`Cannot write header of application log file at ${filePath}. Error: ${err}`);
         }
         app.dataProvider.onAnyData(data => {
           const { collections: serializedNewData } = app.dataProvider.serializeJson(Object.entries(data));

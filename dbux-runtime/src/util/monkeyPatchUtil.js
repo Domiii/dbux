@@ -26,12 +26,25 @@ export function _registerMonkeyPatchedFunction(originalFunction, patchedFunction
 /**
  * NOTE: does not work for patched callbacks
  */
-export function isMonkeyPatchedOther(f) {
+export function isMonkeyPatchedFunction(f) {
   return originalFunctionsByPatchedFunctions.has(f);
+}
+export function hasMonkeyPatchedFunction(f) {
+  return patchedFunctionsByOriginalFunction.has(f);
+}
+
+export function isOrHasMonkeyPatchedFunction(f) {
+  return isMonkeyPatchedFunction(f) || hasMonkeyPatchedFunction(f);
 }
 
 export function getOriginalFunction(patchedFunction) {
   return originalFunctionsByPatchedFunctions.get(patchedFunction);
+}
+
+export function getUnpatchedCallbackOrPatchedFunction(fn) {
+  return originalCallbacksByPatched.get(fn) ||
+    patchedFunctionsByOriginalFunction.get(fn) || 
+    fn;
 }
 
 export function getPatchedFunction(originalFunction) {
@@ -40,7 +53,7 @@ export function getPatchedFunction(originalFunction) {
 
 export function getPatchedFunctionOrNull(originalFunction) {
   let patchedFunction;
-  if (isMonkeyPatchedOther(originalFunction)) {
+  if (isMonkeyPatchedFunction(originalFunction)) {
     // NOTE: this is actually a patched (not original) function
     patchedFunction = originalFunction;
   }
@@ -75,7 +88,7 @@ export function getOriginalCallback(patchedFunction) {
 
 export function getPatchedCallbackOrNull(originalFunction) {
   let patchedFunction;
-  if (isMonkeyPatchedOther(originalFunction)) {
+  if (isMonkeyPatchedFunction(originalFunction)) {
     // NOTE: this is actually a patched (not original) function
     patchedFunction = originalFunction;
   }
@@ -107,7 +120,7 @@ function tryRegisterMonkeyPatchedFunction(holder, name, patchedFunction) {
   if (!(originalFunction instanceof Function)) {
     throw new Error(`Monkey-patching failed - ${holder}.${name} is not a function: ${originalFunction}`);
   }
-  if (isMonkeyPatchedOther(originalFunction)) {
+  if (isMonkeyPatchedFunction(originalFunction)) {
     // don't patch already patched function
     logError(`Monkey-patching failed - ${holder}.${name} is already patched.`);
     return;
@@ -130,7 +143,7 @@ export function monkeyPatchFunctionOverride(originalFunction, patcher) {
  * NOTE: we use this, so it won't be considered as "patchable"
  */
 export function monkeyPatchFunctionOverrideDefault(fn) {
-  return monkeyPatchFunctionOverride(fn, (orig) => function _map(...args) {
+  return monkeyPatchFunctionOverride(fn, (orig) => function patchedFunction(...args) {
     return orig.call(this, ...args);
   });
 }
@@ -141,6 +154,18 @@ export function monkeyPatchMethodOverrideDefault(holder, fnName) {
   catch (err) {
     console.error(new NestedError(
       `monkeyPatchMethodOverrideDefault failed for ${holder}.prototype.${fnName}`,
+      err
+    ));
+    return null;
+  }
+}
+export function monkeyPatchHolderOverrideDefault(holder, fnName) {
+  try {
+    return monkeyPatchFunctionOverrideDefault(holder[fnName]);
+  }
+  catch (err) {
+    console.error(new NestedError(
+      `monkeyPatchMethodOverrideDefault failed for ${holder}.${fnName}`,
       err
     ));
     return null;

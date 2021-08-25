@@ -119,7 +119,6 @@ export default function patchArray() {
     "reverse",
     "shift",
     "unshift",
-    "slice",
     "sort",
     "splice",
     "includes",

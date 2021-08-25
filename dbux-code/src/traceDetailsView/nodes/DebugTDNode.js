@@ -22,6 +22,9 @@ function makeObjectArrayNodes(obj) {
 }
 
 function parseStackTrace(stackTrace) {
+  if (!stackTrace) {
+    return [];
+  }
   if (stackTrace.startsWith('"')) {
     stackTrace = JSON.parse(stackTrace);
   }

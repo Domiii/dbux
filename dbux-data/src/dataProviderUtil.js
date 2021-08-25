@@ -352,6 +352,27 @@ export default {
     return inputIds?.length ? dp.collections.dataNodes.getById(inputIds[0]) : null;
   },
 
+  /**
+   * @param {DataProvider} dp
+   * @return {DataNode} DataNode of value trace
+   */
+  getDataNode(dp, nodeId) {
+    return dp.collections.dataNodes.getById(nodeId);
+  },
+
+  /**
+   * @param {DataProvider} dp
+   * @return {DataNode} DataNode of value trace
+   */
+  getTraceOfDataNode(dp, nodeId) {
+    const dataNode = dp.collections.dataNodes.getById(nodeId);
+    if (!dataNode) {
+      return undefined;
+    }
+    const { traceId } = dataNode;
+    return dp.util.getTrace(traceId);
+  },
+
   // ###########################################################################
   // trace values
   // ###########################################################################
@@ -524,6 +545,9 @@ export default {
    */
   getTraceValuePrimitive(dp, traceId) {
     const dataNode = dp.util.getDataNodeOfTrace(traceId);
+    if (!dataNode) {
+      return undefined;
+    }
     return dp.util.getDataNodeValuePrimitive(dataNode.nodeId);
   },
 
@@ -950,7 +974,8 @@ export default {
     const returnTraces = dp.util.getTracesOfContextAndType(contextId, TraceType.ReturnArgument);
 
     if (returnTraces.length > 1) {
-      dp.logger.warn(`Found context containing more than one ReturnArgument. contextId: ${contextId}, ReturnArgument traces: [${returnTraces}]`);
+      // eslint-disable-next-line max-len
+      dp.logger.warn(`Found context containing more than one ReturnArgument. contextId: ${contextId}, ReturnArgument traces at ${dp.util.makeTraceInfo(returnTraces[0])}: [${returnTraces.map(t => t.traceId)}]`);
     }
     return returnTraces[0] || null;
   },

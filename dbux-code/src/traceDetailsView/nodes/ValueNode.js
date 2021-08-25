@@ -70,7 +70,7 @@ export default class ValueNode extends BaseTreeViewNode {
   selectValueCreationTrace() {
     const { dp } = this;
     const { valueId } = dp.collections.dataNodes.getById(this.nodeId);
-    const firstNodeByValue = dp.indexes.dataNodes.byValueId.getFirst(valueId) || EmptyArray;
+    const firstNodeByValue = dp.indexes.dataNodes.byValueId.getFirst(valueId);
     if (firstNodeByValue) {
       const firstTraceByValue = dp.collections.traces.getById(firstNodeByValue.traceId);
       traceSelection.selectTrace(firstTraceByValue);
