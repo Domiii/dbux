@@ -479,12 +479,17 @@ export default {
     }
     else {
       const entries = Object.entries(dp.util.constructValueObjectShallow(_refId, _rootNodeId));
+      const constructedEntries = entries.map(([key, [childNodeId, childRefId, childValue]]) => {
+        return [key, dp.util.constructValueFull(childNodeId, childRefId, childValue, _visited, _rootNodeId)];
+      });
 
-      finalValue = Object.fromEntries(
-        entries.map(([key, [childNodeId, childRefId, childValue]]) => {
-          return [key, dp.util.constructValueFull(childNodeId, childRefId, childValue, _visited, _rootNodeId)];
-        })
-      );
+      if (ValueTypeCategory.is.Array(valueRef.category)) {
+        finalValue = [];
+        constructedEntries.forEach(([key, value]) => finalValue[key] = value);
+      }
+      else {
+        finalValue = Object.fromEntries(constructedEntries);
+      }
     }
 
     return finalValue;
@@ -511,13 +516,11 @@ export default {
     let entries;
     const { category } = valueRef;
     if (ValueTypeCategory.is.Array(category)) {
-      entries = [...valueRef.value];
-    }
-    else if (ValueTypeCategory.is.Object(category)) {
-      entries = { ...valueRef.value };
+      entries = [];
+      Object.entries(valueRef.value).forEach(([prop, val]) => entries[prop] = val);
     }
     else {
-      entries = valueRef.value;
+      entries = { ...valueRef.value };
     }
 
     // if (!entries) {

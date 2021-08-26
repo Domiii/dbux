@@ -36,22 +36,11 @@ export default class ValueRefCollection extends Collection {
         } = valueRef;
 
         if (pruneState !== ValuePruneState.Omitted && isObjectCategory(category) && serialized) {
-          if (ValueTypeCategory.is.Object(category)) {
-            // map: [childRefId, childValue] => [(creation)nodeId, childRefId, childValue]
-            valueRef.value = Object.fromEntries(
-              Object.entries(serialized)
-                .map(([key, childEntry]) => [key, [nodeId, ...childEntry]])
-            );
-          }
-          else if (ValueTypeCategory.is.Array(category)) {
-            const value = [];
+          // map: [childRefId, childValue] => [(creation)nodeId, childRefId, childValue]
+          valueRef.value = Object.fromEntries(
             Object.entries(serialized)
-              .forEach(([key, childEntry]) => value[key] = [nodeId, ...childEntry]);
-            valueRef.value = value;
-          }
-          else {
-            valueRef.value = serialized.name;
-          }
+              .map(([key, childEntry]) => [key, [nodeId, ...childEntry]])
+          );
         }
         else {
           valueRef.value = serialized;
