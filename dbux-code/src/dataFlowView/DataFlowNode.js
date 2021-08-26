@@ -14,6 +14,10 @@ export default class DataFlowNode extends TraceNode {
     return null;
   }
 
+  get nodeId() {
+    return this.dataNode.nodeId;
+  }
+
   init() {
     this.contextValue = 'dbuxDataFlowView.node.data';
   }

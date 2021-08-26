@@ -1,6 +1,6 @@
 const u = undefined;
 const o = { a: 'a', o: { b: 'b' } };
-const a = [1, 2, {}, [], () => { }]
+const a = [1, 2, {}, [], () => { }];
 const n = null;
 const N = NaN;
 const s = 'string';
@@ -11,4 +11,4 @@ const second_one = 1;
 
 a[10] = 10;
 
-console.log(u, o, a, n, N, s, one)
+console.log(u, o, a, n, N, s, one, a[0])
