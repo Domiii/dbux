@@ -1,7 +1,7 @@
 import * as t from '@babel/types';
 import { buildTraceCall } from './templateUtil';
 import { makeInputs } from './buildUtil';
-import { buildTraceId } from './traceId';
+import { buildTraceId, forceTraceId } from './traceId';
 
 // ###########################################################################
 // arrays
@@ -40,6 +40,7 @@ export const buildArrayExpression = buildTraceCall(
   function buildArrayExpression(state, traceCfg) {
     const { ids: { aliases: { traceArrayExpression } } } = state;
     const tid = buildTraceId(state, traceCfg);
+    forceTraceId(tid); // NOTE: `ArrayExpression` needs a trace for value reconstruction
 
     const {
       path

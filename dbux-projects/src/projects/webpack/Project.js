@@ -193,7 +193,10 @@ export default class WebpackProject extends Project {
         // NOTE: when changing paths, make sure that `alias.runtime` refers to the correct paths as well
         program: p(this.cliBin),
         require: p('_dbux_/alias.runtime.js'),
-        dbuxArgs: `${cfg.dbuxArgs} --pw=tapable,graceful-fs,enhanced-resolve`, // --pw=tapable`, // --pw=.*`,
+        // dbuxArgs: `${cfg.dbuxArgs} --pw=tapable,graceful-fs,enhanced-resolve`, // --pw=tapable`, // --pw=.*`,
+        // dbuxArgs: `${cfg.dbuxArgs} --pw=.* --runtime="{\\"tracesDisabled\\":1}"`,
+        // dbuxArgs: `${cfg.dbuxArgs} --pb=ajv.*,commander --runtime="{\\"tracesDisabled\\":1}"`,
+        dbuxArgs: `${cfg.dbuxArgs} --pb=ajv.*,commander`,
         // dbuxArgs: `${cfg.dbuxArgs} --pw=tapable`,
         // dbuxArgs: '--pw=webpack,webpack-cli --verbose=1 --runtime="{\\"tracesDisabled\\":1}"',
 

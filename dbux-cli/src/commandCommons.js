@@ -45,7 +45,14 @@ export function buildCommonCommandOptions() {
     },
     packageWhitelist: {
       alias: ['pw'],
-      describe: "Specify which packages will be instrumented.",
+      describe: "Specify which packages are allowed to be instrumented.",
+      default: '',
+      type: 'string',
+      // type: 'array',
+    },
+    packageBlacklist: {
+      alias: ['pb'],
+      describe: "Specify which packages are not allowed to be instrumented.",
       default: '',
       type: 'string',
       // type: 'array',

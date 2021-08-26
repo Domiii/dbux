@@ -21,9 +21,11 @@ export default class PostAsyncEventUpdateByPromiseIndex extends CollectionIndex 
     }
 
     // NOTE: POST or Resolve events do not have a `promiseId` 
-    //      when an async function is called by the system, e.g.:
-    //  1. type === PostAwait && the function itself is a then callback.
-    //  2. type === PostThen && its callback is an async function.
+    //      when an async function because it is a then callback, leading to two situations:
+    //      where the promiseId is missing
+    //  1. type === PostAwait inside the then callback.
+    //  2. type === PostThen and its prePromise is a then callback.
+    //  TODO: link up in PromisePatcher?
     return false;
   }
 }

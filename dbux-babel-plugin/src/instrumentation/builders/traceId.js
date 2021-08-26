@@ -6,6 +6,10 @@ import { bindExpressionTemplate } from './templateUtil';
 // newTraceId
 // ###########################################################################
 
+export function forceTraceId(tid) {
+  // add `force = true` to the arg list
+  tid.right.arguments.push(t.booleanLiteral(true));
+}
 
 export const buildTraceId = bindExpressionTemplate(
   '%%traceId%% = %%newTraceId%%(%%staticTraceId%%)',

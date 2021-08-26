@@ -209,8 +209,8 @@ export default class RuntimeAsync {
     if (context) {
       context.isVirtualRoot = true;
       
-      // WARNING: `new Error().stack` might internally call functions that are instrumented by the user code
-      context.stackTrace = valueCollection._readProperty(new Error(), 'stack');
+      // // WARNING: `new Error().stack` might internally call functions that are instrumented by user code
+      // context.stackTrace = valueCollection._readProperty(new Error(), 'stack');
     }
 
     // // NOTE: add all unassigned roots to thread#1

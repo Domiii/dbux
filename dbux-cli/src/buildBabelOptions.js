@@ -38,8 +38,12 @@ function generateFullMatchRegExp(s) {
   return new RegExp(`${s[0] === '^' ? '' : '^'}${s}${s[s.length - 1] === '$' ? '' : '$'}`);
 }
 
-function batchTestRegExp(regexps, target) {
-  return regexps.some(regexp => regexp.test(target));
+function shouldInstrumentPackage(packageName, whitelist, blacklist) {
+  if (!whitelist && !blacklist) {
+    return true;
+  }
+  return (whitelist?.some(regexp => regexp.test(packageName)) || true) && 
+    !(blacklist?.some(regexp => regexp.test(packageName)) || false);
 }
 
 /**
@@ -69,6 +73,7 @@ export default function buildBabelOptions(options) {
     dontAddPresets,
     dbuxOptions: babelPluginOptions,
     packageWhitelist,
+    packageBlacklist,
     verbose = 0,
     runtime = null,
   } = options;
@@ -91,11 +96,14 @@ export default function buildBabelOptions(options) {
     // console.debug(JSON.stringify(packageWhitelist), typeof packageWhitelist);
     packageWhitelist = Array.from(packageWhitelist).join(',');
   }
-  const packageWhitelistRegExps = packageWhitelist?.split(',')
+  let packageWhitelistRegExps = packageWhitelist?.split(',')
+    .map(s => s.trim())
+    .map(generateFullMatchRegExp);
+  let packageBlacklistRegExps = packageBlacklist?.split(',')
     .map(s => s.trim())
     .map(generateFullMatchRegExp);
 
-  verbose > 1 && debugLog(`packageWhitelist`, packageWhitelistRegExps.join(','));
+  verbose > 1 && debugLog(`pw`, packageWhitelistRegExps?.join(','), 'pb', packageBlacklistRegExps?.join(','));
 
   // TODO: use Webpack5 magic comments instead
   const requireFunc = typeof __non_webpack_require__ === "function" ? __non_webpack_require__ : require;
@@ -126,7 +134,9 @@ export default function buildBabelOptions(options) {
         const matchSkipFileResult = modulePath.match(/([/\\]dist[/\\])|(\.mjs$)/);
         const packageName = parseNodeModuleName(modulePath);
 
-        if (matchSkipFileResult || (packageName && packageWhitelistRegExps && !batchTestRegExp(packageWhitelistRegExps, packageName))) {
+        if (matchSkipFileResult || 
+            (packageName && 
+          !shouldInstrumentPackage(packageName, packageWhitelistRegExps, packageBlacklistRegExps))) {
           verbose > 1 && debugLog(`no-register`, modulePath);
           return true;
         }
