@@ -1,4 +1,4 @@
-import { isObjectCategory, ValuePruneState } from '@dbux/common/src/types/constants/ValueTypeCategory';
+import ValueTypeCategory, { isObjectCategory, ValuePruneState } from '@dbux/common/src/types/constants/ValueTypeCategory';
 import ValueRef from '@dbux/common/src/types/ValueRef';
 import Collection from '../Collection';
 
@@ -36,11 +36,22 @@ export default class ValueRefCollection extends Collection {
         } = valueRef;
 
         if (pruneState !== ValuePruneState.Omitted && isObjectCategory(category) && serialized) {
-          // map: [childRefId, childValue] => [(creation)nodeId, childRefId, childValue]
-          valueRef.value = Object.fromEntries(
+          if (ValueTypeCategory.is.Object(category)) {
+            // map: [childRefId, childValue] => [(creation)nodeId, childRefId, childValue]
+            valueRef.value = Object.fromEntries(
+              Object.entries(serialized)
+                .map(([key, childEntry]) => [key, [nodeId, ...childEntry]])
+            );
+          }
+          else if (ValueTypeCategory.is.Array(category)) {
+            const value = [];
             Object.entries(serialized)
-              .map(([key, childEntry]) => [key, [nodeId, ...childEntry]])
-          );
+              .forEach(([key, childEntry]) => value[key] = [nodeId, ...childEntry]);
+            valueRef.value = value;
+          }
+          else {
+            valueRef.value = serialized.name;
+          }
         }
         else {
           valueRef.value = serialized;

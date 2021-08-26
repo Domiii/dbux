@@ -1,9 +1,14 @@
 const u = undefined;
-const o = {};
+const o = { a: 'a', o: { b: 'b' } };
+const a = [1, 2, {}, [], () => { }]
 const n = null;
 const N = NaN;
+const s = 'string';
+const f = () => { };
 
 const one = 1;
 const second_one = 1;
 
-console.log(u, o, n, N, one)
+a[10] = 10;
+
+console.log(u, o, a, n, N, s, one)

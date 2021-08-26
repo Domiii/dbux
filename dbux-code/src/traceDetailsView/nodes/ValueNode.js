@@ -1,4 +1,4 @@
-import ValueTypeCategory from '@dbux/common/src/types/constants/ValueTypeCategory';
+import { getSimpleTypeString } from '@dbux/common/src/types/constants/ValueTypeCategory';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
@@ -36,7 +36,7 @@ export default class ValueNode extends BaseTreeViewNode {
     this.contextValue = 'dbuxTraceDetailsView.node.traceValueNode';
     if (this.valueRef) {
       const { category, typeName } = this.valueRef;
-      this.description = `${ValueTypeCategory.nameFrom(category)}${typeName && ` (${typeName})`}`;
+      this.description = `${getSimpleTypeString(category)}${typeName && ` (${typeName})`}`;
     }
   }
 

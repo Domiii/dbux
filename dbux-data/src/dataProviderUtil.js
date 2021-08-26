@@ -12,7 +12,7 @@ import StaticTrace from '@dbux/common/src/types/StaticTrace';
 import { isVirtualContextType } from '@dbux/common/src/types/constants/StaticContextType';
 import { isRealContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
 import { isCallResult, hasCallId } from '@dbux/common/src/types/constants/traceCategorization';
-import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory, ValuePruneState } from '@dbux/common/src/types/constants/ValueTypeCategory';
+import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory, ValuePruneState, getSimpleTypeString } from '@dbux/common/src/types/constants/ValueTypeCategory';
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import SpecialCallType from '@dbux/common/src/types/constants/SpecialCallType';
 import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
@@ -504,9 +504,21 @@ export default {
   constructValueObjectShallow(dp, refId, terminateNodeId = Infinity) {
     const valueRef = dp.collections.values.getById(refId);
 
-    // initial values
-    // NOTE: valueRef.value is an array of the same format as the one below, produced by {@link ValueRefCollection.deserializeShallow}
-    const entries = { ...valueRef.value };
+    /**
+     * initial values
+     * NOTE: valueRef.value is an array of the same format as the one below, produced by {@link ValueRefCollection.deserializeShallow}
+     */
+    let entries;
+    const { category } = valueRef;
+    if (ValueTypeCategory.is.Array(category)) {
+      entries = [...valueRef.value];
+    }
+    else if (ValueTypeCategory.is.Object(category)) {
+      entries = { ...valueRef.value };
+    }
+    else {
+      entries = valueRef.value;
+    }
 
     // if (!entries) {
     //   // sanity check
@@ -541,43 +553,6 @@ export default {
   },
 
   /**
-   * WARNING: Call `doesTraceHaveValue` to make sure, the trace has a value.
-   * 
-   * @param {DataProvider} dp
-   * @return Value of given trace. If value is `undefined`, it could mean that the `value` is actually `undefined`, or, in case of traces that are not expressions, that there is no value.
-   */
-  getTraceValuePrimitive(dp, traceId) {
-    const dataNode = dp.util.getDataNodeOfTrace(traceId);
-    if (!dataNode) {
-      return undefined;
-    }
-    return dp.util.getDataNodeValuePrimitive(dataNode.nodeId);
-  },
-
-  /** @param {DataProvider} dp */
-  getDataNodeValuePrimitive(dp, nodeId) {
-    const dataNode = dp.collections.dataNodes.getById(nodeId);
-    if (!dataNode) {
-      return undefined;
-    }
-
-    if (dataNode.value !== undefined) {
-      return dataNode.value;
-    }
-
-    if (dataNode.refId) {
-      const valueRef = dp.collections.values.getById(dataNode.refId);
-      if (!valueRef) {
-        logError(`valueRef does not exist for dataNode - ${JSON.stringify(dataNode)}`);
-        return undefined;
-      }
-      return valueRef.value;
-    }
-
-    return undefined;
-  },
-
-  /**
    * Handle special circumstances.
    */
   getTraceValueMessage(dp, traceId) {
@@ -589,12 +564,33 @@ export default {
   },
 
   /** 
+   * internal helper
+   * @param {DataProvider} dp
+   */
+  _simplifyValue(dp, [nodeId, refId, value]) {
+    if (refId) {
+      const valueRef = dp.collections.values.getById(refId);
+      const { category } = valueRef;
+      if (isObjectCategory(category)) {
+        return getSimpleTypeString(category);
+      }
+      else {
+        return String(valueRef.value);
+      }
+    }
+    else {
+      return String(value);
+    }
+  },
+
+  /** 
    * WARNING: Call `doesTraceHaveValue` to make sure, the trace has a value.
    * 
    * @param {DataProvider} dp
    */
   getTraceValueString(dp, traceId) {
     const trace = dp.util.getValueTrace(traceId);
+    const dataNode = dp.util.getDataNodeOfTrace(traceId);
 
     if (trace._valueString) {
       // already cached
@@ -608,21 +604,25 @@ export default {
     }
 
     // get value
-    const value = dp.util.getTraceValuePrimitive(traceId);
-
     let valueString;
-    if (dp.util.isTraceFunctionValue(traceId)) {
-      valueString = value;
-    }
-    else if (value === undefined) {
-      valueString = 'undefined';
+    if (dataNode.refId) {
+      const entries = dp.util.constructValueObjectShallow(dataNode.refId);
+      const valueRef = dp.collections.values.getById(dataNode.refId);
+      const { category } = valueRef;
+      if (ValueTypeCategory.is.Array(category)) {
+        valueString = `[${entries.map(x => dp.util._simplifyValue(x))}]`;
+      }
+      else if (ValueTypeCategory.is.Object(category)) {
+        valueString = `{${Object.keys(entries)}}`;
+      }
+      else {
+        valueString = valueRef.value?.toString?.() || String(valueRef.value);
+      }
     }
     else {
-      // valueString = JSON.stringify(value);
-      valueString = value?.toString?.() || String(value);
+      valueString = dataNode.value?.toString?.() || String(dataNode.value);
     }
 
-    // hackfix: we cache this thing
     return trace._valueString = valueString;
   },
 
