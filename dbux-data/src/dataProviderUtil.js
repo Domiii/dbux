@@ -526,7 +526,9 @@ export default {
           entries[prop] = [modifyNode.nodeId, modifyNode.refId, null];
         }
         else {
-          entries[prop] = [modifyNode.nodeId, null, modifyNode.value];
+          const inputNodeId = modifyNode.inputs[0];
+          const inputNode = dp.collections.dataNodes.getById(inputNodeId);
+          entries[prop] = [modifyNode.nodeId, null, inputNode.value];
         }
       }
       else if (modifyNode.type === DataNodeType.Delete) {
