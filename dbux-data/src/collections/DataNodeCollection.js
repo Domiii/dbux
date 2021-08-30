@@ -77,7 +77,7 @@ export default class DataNodeCollection extends Collection {
   }
 
   getAccessId(dataNode) {
-    if ('accessId' in dataNode) {
+    if (dataNode.accessId > 0) {
       return dataNode.accessId;
     }
 

@@ -1,4 +1,4 @@
-import { isObjectCategory, ValuePruneState } from '@dbux/common/src/types/constants/ValueTypeCategory';
+import ValueTypeCategory, { isObjectCategory, ValuePruneState } from '@dbux/common/src/types/constants/ValueTypeCategory';
 import ValueRef from '@dbux/common/src/types/ValueRef';
 import Collection from '../Collection';
 
