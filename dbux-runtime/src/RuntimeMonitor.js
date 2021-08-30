@@ -536,9 +536,10 @@ export default class RuntimeMonitor {
     if (!this._ensureExecuting()) {
       return;
     }
-    const contextId = this._runtime.peekCurrentContextId();
-    const runId = this._runtime.getCurrentRunId();
-    this._trace(programId, contextId, runId, inProgramStaticTraceId);
+    // const contextId = this._runtime.peekCurrentContextId();
+    // const runId = this._runtime.getCurrentRunId();
+    // this._trace(programId, contextId, runId, inProgramStaticTraceId);
+    this.newTraceId(programId, inProgramStaticTraceId);
   }
 
   newTraceId = (programId, inProgramStaticTraceId) => {
@@ -832,6 +833,14 @@ export default class RuntimeMonitor {
       prop: prop
     };
     return this._traceUpdateExpression(updateValue, returnValue, readTid, tid, varAccess);
+  }
+
+  traceFinally(programId, tid) {
+    if (!this._ensureExecuting()) {
+      return;
+    }
+
+    TODO
   }
 
   // ###########################################################################

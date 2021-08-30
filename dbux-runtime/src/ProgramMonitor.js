@@ -313,6 +313,18 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceUpdateExpressionME(this.getProgramId(), obj, prop, updateValue, returnValue, readTid, tid, objectTid);
   }
 
+  traceFinally = (tid) => {
+    if (this.areTracesDisabled) {
+      return;
+    }
+
+    this._runtimeMonitor.traceFinally(this.getProgramId(), tid);
+  }
+
+  /** ###########################################################################
+   * calls
+   * ##########################################################################*/
+
   traceBCE = (tid, callee, calleeTid, argTids, args) => {
     callee = wrapValue(callee);
     if (this.areTracesDisabled) {
@@ -334,6 +346,10 @@ export default class ProgramMonitor {
 
     return this._runtimeMonitor.traceCallResult(this.getProgramId(), value, tid, callId);
   }
+
+  /** ###########################################################################
+   * ArrayExpression
+   * ##########################################################################*/
 
   traceArrayExpression = (args, tid, argTids) => {
     // console.debug(`[Dbux traceArrayExpression] tid=${tid}, strace=${JSON.stringify(traceCollection.getStaticTraceByTraceId(tid))}`);
@@ -362,6 +378,10 @@ export default class ProgramMonitor {
 
     return this._runtimeMonitor.traceArrayExpression(this.getProgramId(), value, spreadLengths, tid, argTids);
   }
+
+  /** ###########################################################################
+   * ObjectExpression
+   * ##########################################################################*/
 
   /**
    * 
@@ -425,6 +445,10 @@ export default class ProgramMonitor {
 
     return this._runtimeMonitor.traceObjectExpression(this.getProgramId(), value, entries, argConfigs, objectTid, propTids);
   }
+
+  /** ###########################################################################
+   * loops et al
+   * ##########################################################################*/
 
   traceForIn = (value, tid, declarationTid, inputs) => {
     value = wrapValue(value);

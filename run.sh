@@ -5,10 +5,7 @@
 set -e # cancel on error
 # set -x # verbose echo mode
 
-# fname="__samplesInput__/async/promise-tree1"
-fname="__samplesInput__/error3"
-# fname="__samplesInput__/async/await5-b"
-# fname="case-studies/async/producer_consumer/producer_consumer_async"
+fname="__samplesInput__/async/error-async3-finally"
 
 
 

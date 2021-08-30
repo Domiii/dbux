@@ -67,6 +67,45 @@ export const buildTraceExpressionNoInput = buildTraceCall(
   }
 );
 
+/**
+ * Custom trace call that nests `newTraceId`
+ */
+export const buildTraceNoValue = buildTraceCall(
+  '%%trace%%(%%tid%%)',
+  function buildTraceNoValue(state, traceCfg) {
+    const trace = getTraceCall(state, traceCfg);
+    const tid = buildTraceId(state, traceCfg);
+
+    return {
+      trace,
+      // expr: getInstrumentTargetAstNode(state, traceCfg),
+      tid
+    };
+  }
+);
+
+// ###########################################################################
+// traceNoValue
+// ###########################################################################
+
+/**
+ * @deprecated Use {@link buildTraceId} or {@link buildTraceNoValue} instead.
+ */
+// eslint-disable-next-line camelcase
+export const buildTraceNoValue_OLD = bindTemplate(
+  '%%dbux%%.t(%%traceId%%)',
+  // eslint-disable-next-line camelcase
+  function buildTraceNoValue_OLD(path, state, staticTraceData) {
+    const { ids: { dbux } } = state;
+    const traceId = state.traces.addTrace(path, staticTraceData);
+    // console.warn(`traces`, state.traces);
+    return {
+      dbux,
+      traceId: t.numericLiteral(traceId)
+    };
+  }
+);
+
 // ###########################################################################
 // traceDeclaration
 // ###########################################################################
@@ -137,27 +176,6 @@ export const buildTraceWriteVar = buildTraceCall(
       tid,
       declarationTid,
       inputs: makeInputs(traceCfg)
-    };
-  }
-);
-
-// ###########################################################################
-// traceNoValue
-// ###########################################################################
-
-/**
- * TODO: rewrite using `traceCfg`
- * @deprecated
- */
-export const buildTraceNoValue = bindTemplate(
-  '%%dbux%%.t(%%traceId%%)',
-  function buildTraceNoValue(path, state, staticTraceData) {
-    const { ids: { dbux } } = state;
-    const traceId = state.traces.addTrace(path, staticTraceData);
-    // console.warn(`traces`, state.traces);
-    return {
-      dbux,
-      traceId: t.numericLiteral(traceId)
     };
   }
 );
