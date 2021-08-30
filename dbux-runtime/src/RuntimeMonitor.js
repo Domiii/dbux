@@ -1112,7 +1112,8 @@ export default class RuntimeMonitor {
     }
 
     if (isPopTrace(staticTraceType)) {
-      // NOTE: we do not want to consider `pop`s as "last trace of a context"
+      // NOTE: `Pop` cannot be "last trace of a context" (i.e. "last trace" is the one before `Pop`)
+      trace.previousTrace = this._runtime.getLastTraceInContext(contextId);
       return;
     }
 

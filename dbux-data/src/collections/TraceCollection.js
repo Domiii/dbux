@@ -54,7 +54,7 @@ export default class TraceCollection extends Collection {
   }
 
   postIndexRaw(traces) {
-    this.errorWrapMethod('resolveMonkeyCalls', traces);
+    this.errorWrapMethod('resolveMonkeyParams', traces);
   }
 
   registerResultId(traces) {
@@ -135,7 +135,7 @@ export default class TraceCollection extends Collection {
    * Link arg <-> param DataNodes of monkey-patched builtin functions.
    * For normal functions, consider {@link ExecutionContextCollection#setParamInputs}
    */
-  resolveMonkeyCalls(traces) {
+  resolveMonkeyParams(traces) {
     for (const trace of traces) {
       const { traceId: callId, data } = trace;
       const monkey = data?.monkey;
@@ -166,68 +166,82 @@ export default class TraceCollection extends Collection {
   }
 
   resolveErrorTraces(traces) {
-    for (const trace of traces) {
-      const {
-        traceId,
-        contextId,
-        previousTrace: previousTraceId
-      } = trace;
+    let errorTraces;
+    try {
+      for (const trace of traces) {
+        const {
+          traceId,
+          contextId,
+          previousTrace: previousTraceId
+        } = trace;
 
-      // if traces were disabled, there is nothing to do here
-      if (!this.dp.util.isContextTraced(contextId)) {
-        continue;
-      }
-
-      const traceType = this.dp.util.getTraceType(traceId);
-      if (!isTracePop(traceType) || !previousTraceId) {
-        // only (certain) pop traces can generate errors
-        continue;
-      }
-
-      const staticContext = this.dp.util.getTraceStaticContext(traceId);
-      if (staticContext.isInterruptable) {
-        // NOTE: interruptable contexts only have `Push` and `Pop` traces.
-        //    Everything else (including error handling!) is in `Resume` children.
-        continue;
-      }
-
-      const previousTraceType = this.dp.util.getTraceType(previousTraceId);
-      if (!isTraceFunctionExit(previousTraceType)) {
-        // before pop must be a function exit trace, else -> error!
-        trace.error = true;
-
-        this.logger.debug(`ERROR trace: ${this.dp.util.makeTraceInfo(trace)}`);
-
-        // guess error trace
-        const previousTrace = this.dp.collections.traces.getById(previousTraceId);
-        const { staticTraceId, callId, resultCallId } = previousTrace;
-        if (isTraceThrow(previousTraceType)) {
-          // trace is error trace
-          trace.staticTraceId = staticTraceId;
+        // if traces were disabled, there is nothing to do here
+        if (!this.dp.util.isContextTraced(contextId)) {
+          continue;
         }
-        else if (callId) {
-          // participates in a call but call did not finish -> set expected error trace to BCE
-          const callTrace = this.dp.collections.traces.getById(callId);
-          if (callTrace.resultId) {
-            // strange...
-            this.logger.error('last (non-result) call trace in error context has `resultId`', callTrace.resultId, callTrace);
+
+        const traceType = this.dp.util.getTraceType(traceId);
+        if (!isTracePop(traceType) || !previousTraceId) {
+          // only (certain) pop traces can generate errors
+          continue;
+        }
+
+        const staticContext = this.dp.util.getTraceStaticContext(traceId);
+        if (staticContext.isInterruptable) {
+          // NOTE: interruptable contexts only have `Push` and `Pop` traces.
+          //    Everything else (including error handling!) is in `Resume` children.
+          continue;
+        }
+
+        const previousTraceType = this.dp.util.getTraceType(previousTraceId);
+        if (!isTraceFunctionExit(previousTraceType)) {
+          // before pop must be a function exit trace, else -> error!
+          trace.error = true;
+
+          errorTraces = errorTraces || [];
+          errorTraces.push(trace);
+
+          // guess error trace
+          const previousTrace = this.dp.collections.traces.getById(previousTraceId);
+          const { staticTraceId, callId, resultCallId } = previousTrace;
+          if (isTraceThrow(previousTraceType)) {
+            // trace is `throw`
+            trace.staticTraceId = staticTraceId;
+          }
+          else if (callId) {
+            // participates in a call but call did not finish -> set expected error trace to BCE
+            const callTrace = this.dp.collections.traces.getById(callId);
+            if (callTrace.resultId) {
+              // strange...
+              this.logger.error('last (non-result) call trace in error context has `resultId`', callTrace.resultId, callTrace);
+            }
+            else {
+              // the call trace caused the error
+              trace.staticTraceId = callTrace.staticTraceId;
+            }
           }
           else {
-            // the call trace caused the error
-            trace.staticTraceId = callTrace.staticTraceId;
+            // WARNING: the "+1" heuristic easily fails. E.g. in case of `IfStatement`, where `test` is visited after the blocks.
+            if (resultCallId) {
+              // the last trace we saw was a successful function call. 
+              //    -> error was caused by next trace after that function call.
+              const resultTrace = this.dp.collections.traces.getById(resultCallId);
+              trace.staticTraceId = resultTrace.staticTraceId + 1;
+              // trace.staticTraceId = resultTrace.staticTraceId;
+            }
+            else {
+              // trace.staticTraceId = staticTraceId + 1;
+
+              trace.staticTraceId = staticTraceId;
+            }
           }
         }
-        else if (resultCallId) {
-          // the last trace we saw was a successful function call. error was caused by next trace of that function call
-          const resultTrace = this.dp.collections.traces.getById(resultCallId);
-          trace.staticTraceId = resultTrace.staticTraceId + 1;
-        }
-        else {
-          // // WARNING: the "+1" heuristic easily fails. E.g. in case of `IfStatement`, where `test` is visited after the blocks.
-          // trace.staticTraceId = staticTraceId + 1;
-
-          trace.staticTraceId = staticTraceId;
-        }
+      }
+    }
+    finally {
+      if (errorTraces) {
+        let msg = errorTraces.map(t => `\n ${this.dp.util.makeTraceInfo(t)}`).join('\n ');
+        this.logger.debug(`#### ${errorTraces.length} ERROR traces ####${msg}`);
       }
     }
   }

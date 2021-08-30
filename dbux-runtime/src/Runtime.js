@@ -223,8 +223,8 @@ export default class Runtime {
   }
 
   /**
-   * Determine whether an error happened, by checking whether this dynamic last trace is an actual exit trace for a function.
-   * NOTE: `Pop`s are not recorded here! (as that would mess with that goal)
+   * Get the last trace (before/excluding `Pop`!).
+   * We use this in `TraceCollection#resolveErrorTraces` to determine whether a trace is an `error` trace.
    */
   getLastTraceInContext(contextId) {
     return this._lastTraceByContextId[contextId];

@@ -1502,7 +1502,7 @@ export default {
   },
 
   /**
-   * 
+   * @param {DataProvider} dp
    */
   makeTraceInfo(dp, traceOrTraceOrTraceId) {
     // const { traceId } = trace;
@@ -1516,9 +1516,10 @@ export default {
     if (!trace) {
       return `#${traceOrTraceOrTraceId} (null)`;
     }
-    const traceType = dp.util.getTraceType(traceOrTraceOrTraceId);
+    const { traceId } = trace;
+    const traceType = dp.util.getTraceType(traceId);
     const typeName = TraceType.nameFrom(traceType);
-    return `[${typeName}] #${traceOrTraceOrTraceId} ${dp.util.makeStaticTraceInfo(traceOrTraceOrTraceId)}`;
+    return `[${typeName}] #${traceId} ${dp.util.makeStaticTraceInfo(traceId)}`;
   },
 
   // ###########################################################################
