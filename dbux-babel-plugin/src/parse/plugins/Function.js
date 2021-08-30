@@ -112,10 +112,17 @@ export default class Function extends BasePlugin {
       displayName,
       isInterruptable
     };
+    
+    // this.node.getPlugin('StaticContext')
 
-    // TODO: use `const pushTrace = Traces.addTrace` instead
+    /** ########################################
+     * TODO: move this whole part to `StaticContext`
+     * #######################################*/
+
     const staticContextId = state.contexts.addStaticContext(path, staticContextData);
     // const pushTraceCfg = addContextTrace(bodyPath, state, TraceType.PushImmediate);
+    
+    // TODO: use `const pushTrace = Traces.addTrace` instead
     const staticPushTid = state.traces.addTrace(
       bodyPath,
       {
@@ -123,16 +130,13 @@ export default class Function extends BasePlugin {
       }
     );
 
-    // contextIdIdentifier
-    const {
-      contexts: { genContextId }
-    } = state;
-    const contextIdIdentifier = genContextId(bodyPath);
+    const contextIdIdentifier = this.node.getPlugin('StaticContext').genContext();
 
 
     // staticResumeContextId
     let staticResumeContextId;
     if (isInterruptable) {
+      // TODO: also add to top-level context, if it contains `await`
       staticResumeContextId = addResumeContext(bodyPath, state, staticContextId);
     }
 

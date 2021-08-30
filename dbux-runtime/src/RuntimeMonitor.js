@@ -423,7 +423,7 @@ export default class RuntimeMonitor {
       const postEventContextId = resumeContextId;
 
       // register thread logic
-      this._runtime.async.postAwait(awaitContextId, realContextId, postEventContextId, awaitArgument);
+      this._runtime.async.postAwait(/* awaitContextId, */ realContextId, postEventContextId, awaitArgument);
     }
   }
 
@@ -446,7 +446,7 @@ export default class RuntimeMonitor {
     this._runtime.push(resumeContextId);
 
     if (Verbose) {
-      const staticContext = staticContextCollection.getContext(programId, resumeStaticContextId);
+      // const staticContext = staticContextCollection.getContext(programId, resumeStaticContextId);
       debug(
         // ${JSON.stringify(staticContext)}
         `-> Resume ${resumeContextId} (pid=${programId}, runId=${runId}, cid=${resumeContextId}, pcid=${parentContextId})`
@@ -465,7 +465,7 @@ export default class RuntimeMonitor {
   popResume(resumeContextId = 0) {
     // sanity checks
     if (!resumeContextId) {
-      // Case 1: an error was thrown in a nested `async` function call
+      // Case 1: an error was thrown in a nested `async` function call (should be fixed)
       //    -> as a result the calling `async` function would not have had a chance to `pushResume` before hitting `finally` -> `popResume`
       // Case 2: async function called from object getter?
       // logTrace('Tried to popResume, but cid was 0. Is this an async function that started in an object getter?');
@@ -835,12 +835,73 @@ export default class RuntimeMonitor {
     return this._traceUpdateExpression(updateValue, returnValue, readTid, tid, varAccess);
   }
 
-  traceFinally(programId, tid) {
+  traceFinally(programId, tid, realContextId) {
     if (!this._ensureExecuting()) {
       return;
     }
 
-    TODO
+    this._fixContext(realContextId);
+  }
+
+  traceCatch(programId, tid, realContextId) {
+    if (!this._ensureExecuting()) {
+      return;
+    }
+
+    this._fixContext(realContextId);
+  }
+
+  _fixContext(programId, realContextId) {
+    const realContext = executionContextCollection.getById(realContextId);
+    if (!realContext) {
+      // sanity check
+      logTrace('Tried to fixContext, but context was not registered:', realContextId);
+      return;
+    }
+
+    const parentContextId = this._runtime.peekCurrentContextId();
+    const parentContext = parentContextId && executionContextCollection.getById(parentContextId);
+    const realStaticContext = parentContext && staticContextCollection.getById(realContext.staticContextId);
+    if (parentContext && (
+      !realStaticContext.isInterruptable ||
+      ExecutionContextType.is.Resume(parentContext.contextType)
+    )
+    ) {
+      // NOTE: only if we are in interruptable function and there is no `Resume` context on the current stack
+      //    -> patch it up
+      return;
+    }
+
+    if (Verbose) {
+      debug(`<- FixContext ${realContextId}`);
+    }
+
+    // resume after await failure
+    this._runtime.resumeWaitingStack(realContextId);
+
+    // TODO: make sure this._markWaiting is called correctly for `realContextId`!!
+
+    // future-work: also get rid of `Await` context?
+    // this._pop(awaitContextId);
+
+    // add resume context
+    // NOTE: staticContext is the same for resume and await
+    const { staticContextId } = realContext;
+    const staticContext = staticContextCollection.getById(staticContextId);
+    const { resumeId: resumeStaticContextId } = staticContext;
+
+    // pushResume
+    // NOTE: `tid` is a separate instruction, following `postAwait`
+    const resumeInProgramStaticTraceId = 0;
+    const resumeContextId = this.pushResume(programId, resumeStaticContextId, resumeInProgramStaticTraceId);
+
+    this._runtime._updateVirtualRootContext(resumeContextId);
+
+    const postEventContextId = resumeContextId;
+
+    // register thread logic
+    const awaitArgument = null;
+    this._runtime.async.postAwait(/* awaitContextId, */ realContextId, postEventContextId, awaitArgument);
   }
 
   // ###########################################################################

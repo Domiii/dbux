@@ -41,6 +41,19 @@ export default class StaticContext extends BasePlugin {
     }
   }
 
+  /**
+   * future-work: move all context creation code here (from `Function` and `Program`)
+   */
+  genContext() {
+    const { node: { state, path } } = this;
+    const {
+      contexts: { genContextId }
+    } = state;
+
+    const bodyPath = path.get('body');
+    return this.contextIdVar = genContextId(bodyPath);
+  }
+
 
   // ###########################################################################
   // enter + exit

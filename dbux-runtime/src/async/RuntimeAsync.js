@@ -226,7 +226,7 @@ export default class RuntimeAsync {
   /**
    * TODO: also add a similar (but not the same) logic to `return` value of `async` functions.
    */
-  postAwait(awaitContextId, realContextId, postEventContextId, awaitArgument) {
+  postAwait(/* awaitContextId, */ realContextId, postEventContextId, awaitArgument) {
     const asyncData = this.lastAwaitByRealContext.get(realContextId);
     let {
       resumeContextId: preEventContextId,

@@ -5,8 +5,6 @@ import { unshiftScopeBlock } from './scope';
 
 export function instrumentExpression(state, traceCfg) {
   const path = getInstrumentPath(traceCfg);
-
-  // build
   const resultNode = buildDefault(state, traceCfg);
 
   if (getReplacePath(traceCfg) !== false) {
@@ -23,14 +21,25 @@ export function instrumentExpression(state, traceCfg) {
  */
 export function instrumentBehind(state, traceCfg) {
   const path = getInstrumentPath(traceCfg);
-
-  // build
   const resultNode = buildDefault(state, traceCfg);
 
   // const s = pathToString(path);
   // const { type } = path.node;
 
   path.insertAfter(resultNode);
+  // console.debug(`tWE`, type, s, '->', astNodeToString(resultNode));
+
+  postInstrument(traceCfg, resultNode);
+}
+
+export function instrumentUnshiftBody(state, traceCfg) {
+  const path = getInstrumentPath(traceCfg);
+  const resultNode = buildDefault(state, traceCfg);
+
+  // const s = pathToString(path);
+  // const { type } = path.node;
+
+  path.unshiftContainer('body', resultNode);
   // console.debug(`tWE`, type, s, '->', astNodeToString(resultNode));
 
   postInstrument(traceCfg, resultNode);

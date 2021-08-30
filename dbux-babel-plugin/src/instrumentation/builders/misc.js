@@ -68,21 +68,20 @@ export const buildTraceExpressionNoInput = buildTraceCall(
 );
 
 /**
- * Custom trace call that nests `newTraceId`
+ * Custom trace call that nests `newTraceId`.
+ * @return {t.Statement}
  */
-export const buildTraceNoValue = buildTraceCall(
-  '%%trace%%(%%tid%%)',
-  function buildTraceNoValue(state, traceCfg) {
-    const trace = getTraceCall(state, traceCfg);
-    const tid = buildTraceId(state, traceCfg);
+export function buildTraceNoValue(state, traceCfg) {
+  const trace = getTraceCall(state, traceCfg);
+  const tid = buildTraceId(state, traceCfg);
+  
+  const args = [tid];
+  addMoreTraceCallArgs(args, traceCfg);
 
-    return {
-      trace,
-      // expr: getInstrumentTargetAstNode(state, traceCfg),
-      tid
-    };
-  }
-);
+  return t.expressionStatement(
+    t.callExpression(trace, args)
+  );
+}
 
 // ###########################################################################
 // traceNoValue

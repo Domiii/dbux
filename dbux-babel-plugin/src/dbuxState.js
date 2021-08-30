@@ -66,6 +66,7 @@ export default function injectDbuxState(programPath, programState) {
     contexts: new StaticContextCollection(programState),
     traces: new StaticTraceCollection(programState),
     loops: new StaticLoopCollection(programState),
+    // currentContextIdentifier: null,
 
     ids: {
       dbuxInit: scope.generateUidIdentifier('dbux_init'),
