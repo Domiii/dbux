@@ -29,7 +29,7 @@ export async function exitProcess(code = 0) {
     console.debug(`[@dbux/cli] waiting ${Math.round(ms / 1000)}s for process to finish...${details}`);
     await sleep(ms);
   }
-  while (!dbux?.client.hasFinished());
+  while (dbux?.client && !dbux.client.hasFinished());
   console.debug('exiting...');
   process.exit(code);
 }

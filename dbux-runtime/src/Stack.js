@@ -4,12 +4,20 @@ import { newLogger } from '@dbux/common/src/log/logger';
 const { log, debug, warn, error: logError } = newLogger('Stack');
 
 
+/**
+ * A stack with rudimentary async support:
+ * At any point, it maintains the set of all unpopped contexts, including the deepest context ("top"), 
+ * as well as the "peek" position, the position that we last visited.
+ * NOTE: The fact that "top" is different from "peek" comes from the fact that
+ * async functions (and their virtual children) might not get popped immediately, while other functions
+ * up the stack might.
+ */
 export default class Stack {
   /**
    * @returns {Stack}
    */
   static allocate() {
-    // TODO: use pool
+    // future-work: use pool
     return new Stack();
   }
 
@@ -54,10 +62,16 @@ export default class Stack {
     return this.top() === contextId;
   }
 
+  /**
+   * Deepest `contextId` on the stack.
+   */
   top() {
     return this._stack[this._stack.length - 1] || null;
   }
 
+  /**
+   * `contextId` at current `peek` position.
+   */
   peek() {
     return this._stack[this._peekIdx] || null;
   }

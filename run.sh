@@ -5,7 +5,7 @@
 set -e # cancel on error
 # set -x # verbose echo mode
 
-fname="__samplesInput__/async/error-async3-finally"
+fname="__samplesInput__/error-async3-finally"
 
 
 

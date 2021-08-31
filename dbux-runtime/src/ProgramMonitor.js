@@ -313,12 +313,12 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceUpdateExpressionME(this.getProgramId(), obj, prop, updateValue, returnValue, readTid, tid, objectTid);
   }
 
-  traceFinally = (tid, contextId) => {
+  traceFinally = (inProgramStaticTraceId, contextId) => {
     if (this.areTracesDisabled) {
       return;
     }
 
-    this._runtimeMonitor.traceFinally(this.getProgramId(), tid, contextId);
+    this._runtimeMonitor.traceFinally(this.getProgramId(), inProgramStaticTraceId, contextId);
   }
 
   /** ###########################################################################

@@ -1,6 +1,6 @@
 // import TraceType from '@dbux/common/src/types/constants/TraceType';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
-import { buildTraceNoValue } from 'src/instrumentation/builders/misc';
+import { buildTraceStatic } from 'src/instrumentation/builders/misc';
 import { instrumentUnshiftBody } from 'src/instrumentation/instrumentMisc';
 import BaseNode from './BaseNode';
 
@@ -12,7 +12,6 @@ export default class TryStatement extends BaseNode {
    * 
    */
   exit1() {
-    const { path } = this;
     const [, , finalizerNode] = this.getChildNodes();
 
     if (finalizerNode) {
@@ -20,14 +19,15 @@ export default class TryStatement extends BaseNode {
       const { contextIdVar } = staticContext;
 
       const traceData = {
-        path,
-        node: this,
+        path: finalizerNode.path,
+        node: finalizerNode,
         staticTraceData: {
           type: TraceType.Finally
         },
         meta: {
+          noTidIdentifier: true,
           instrument: instrumentUnshiftBody,
-          build: buildTraceNoValue,
+          build: buildTraceStatic,
           traceCall: 'traceFinally',
           moreTraceCallArgs: [contextIdVar]
         }

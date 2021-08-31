@@ -68,14 +68,17 @@ export const buildTraceExpressionNoInput = buildTraceCall(
 );
 
 /**
- * Custom trace call that nests `newTraceId`.
+ * Custom trace call that does not nest `newTraceId`.
+ * Instead, it only passes in the `inProgramStaticTraceId`.
  * @return {t.Statement}
  */
-export function buildTraceNoValue(state, traceCfg) {
+export function buildTraceStatic(state, traceCfg) {
   const trace = getTraceCall(state, traceCfg);
-  const tid = buildTraceId(state, traceCfg);
-  
-  const args = [tid];
+  // const tid = buildTraceId(state, traceCfg);
+
+  // const args = [tid];
+  const { inProgramStaticTraceId } = traceCfg;
+  const args = [t.numericLiteral(inProgramStaticTraceId)];
   addMoreTraceCallArgs(args, traceCfg);
 
   return t.expressionStatement(
@@ -88,7 +91,7 @@ export function buildTraceNoValue(state, traceCfg) {
 // ###########################################################################
 
 /**
- * @deprecated Use {@link buildTraceId} or {@link buildTraceNoValue} instead.
+ * @deprecated Use {@link buildTraceId} or {@link buildTraceStatic} instead.
  */
 // eslint-disable-next-line camelcase
 export const buildTraceNoValue_OLD = bindTemplate(

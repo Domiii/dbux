@@ -24,9 +24,9 @@ import { getDefaultClient } from './client/index';
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError, trace: logTrace } = newLogger('RuntimeMonitor');
 
-// const Verbose = 2;
+const Verbose = 2;
 // const Verbose = 1;
-const Verbose = 0;
+// const Verbose = 0;
 
 const debug = (...args) => Verbose && _debug(...args);
 
@@ -200,10 +200,6 @@ export default class RuntimeMonitor {
   popFunction(programId, contextId, inProgramStaticTraceId) {
     // this.checkErrorOnFunctionExit(contextId, inProgramStaticTraceId);
     return this.popImmediate(programId, contextId, inProgramStaticTraceId);
-  }
-
-  popTry() {
-    // TODO
   }
 
   popImmediate(programId, contextId, traceId) {
@@ -386,12 +382,12 @@ export default class RuntimeMonitor {
   postAwait(programId, awaitResult, awaitArgument, awaitContextId) {
     // sanity checks
     // console.trace('postAwait', awaitArgument);
-    const context = executionContextCollection.getById(awaitContextId);
-    if (!context) {
+    const awaitContext = executionContextCollection.getById(awaitContextId);
+    if (!awaitContext) {
       logTrace('Tried to postAwait, but context was not registered:', awaitContextId);
     }
     else {
-      // resume after await
+      // resume after await -> pop Await context
       this._runtime.resumeWaitingStack(awaitContextId);
 
       if (Verbose) {
@@ -401,14 +397,11 @@ export default class RuntimeMonitor {
         );
       }
 
-      // traceCollection.trace(awaitContextId, runId, inProgramStaticTraceId, TraceType.Await);
-      // this._pop(awaitContextId);
-
       // add resume context
       // NOTE: staticContext is the same for resume and await
-      const { staticContextId } = context;
-      const staticContext = staticContextCollection.getById(staticContextId);
-      const { resumeId: resumeStaticContextId } = staticContext;
+      const { staticContextId: awaitStaticContextId } = awaitContext;
+      const awaitStaticContext = staticContextCollection.getById(awaitStaticContextId);
+      const { resumeId: resumeStaticContextId } = awaitStaticContext;
 
       // pushResume
       // NOTE: `tid` is a separate instruction, following `postAwait`
@@ -835,23 +828,17 @@ export default class RuntimeMonitor {
     return this._traceUpdateExpression(updateValue, returnValue, readTid, tid, varAccess);
   }
 
-  traceFinally(programId, tid, realContextId) {
-    if (!this._ensureExecuting()) {
-      return;
-    }
-
-    this._fixContext(realContextId);
+  traceFinally(programId, inProgramStaticTraceId, realContextId) {
+    this._fixContext(programId, realContextId);
+    this.newTraceId(programId, inProgramStaticTraceId);
   }
 
-  traceCatch(programId, tid, realContextId) {
-    if (!this._ensureExecuting()) {
-      return;
-    }
-
-    this._fixContext(realContextId);
+  traceCatch(programId, inProgramStaticTraceId, realContextId) {
+    this._fixContext(programId, realContextId);
+    this.newTraceId(programId, inProgramStaticTraceId);
   }
 
-  _fixContext(programId, realContextId) {
+  _fixContext(programId, realContextId, resumeInProgramStaticTraceId = 0) {
     const realContext = executionContextCollection.getById(realContextId);
     if (!realContext) {
       // sanity check
@@ -867,32 +854,26 @@ export default class RuntimeMonitor {
       ExecutionContextType.is.Resume(parentContext.contextType)
     )
     ) {
-      // NOTE: only if we are in interruptable function and there is no `Resume` context on the current stack
-      //    -> patch it up
       return;
     }
 
-    if (Verbose) {
-      debug(`<- FixContext ${realContextId}`);
-    }
+    // NOTE: only if we are in interruptable function and there is no `Resume` context on the current stack
+    //    -> patch it up
 
     // resume after await failure
-    this._runtime.resumeWaitingStack(realContextId);
+    this._runtime.resumeWaitingStackReal(realContextId);
 
-    // TODO: make sure this._markWaiting is called correctly for `realContextId`!!
+    if (Verbose) {
+      debug(`<- FixContext ${realContextId} [${this._runtime._executingStack._stack.join(',')}]`);
+    }
 
-    // future-work: also get rid of `Await` context?
-    // this._pop(awaitContextId);
-
-    // add resume context
-    // NOTE: staticContext is the same for resume and await
-    const { staticContextId } = realContext;
-    const staticContext = staticContextCollection.getById(staticContextId);
-    const { resumeId: resumeStaticContextId } = staticContext;
+    const awaitContextId = this._runtime.popTop();
+    const awaitContext = executionContextCollection.getById(awaitContextId);
+    const { staticContextId: awaitStaticContextId } = awaitContext;
+    const awaitStaticContext = staticContextCollection.getById(awaitStaticContextId);
+    const { resumeId: resumeStaticContextId } = awaitStaticContext;
 
     // pushResume
-    // NOTE: `tid` is a separate instruction, following `postAwait`
-    const resumeInProgramStaticTraceId = 0;
     const resumeContextId = this.pushResume(programId, resumeStaticContextId, resumeInProgramStaticTraceId);
 
     this._runtime._updateVirtualRootContext(resumeContextId);

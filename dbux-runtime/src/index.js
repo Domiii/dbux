@@ -53,6 +53,11 @@ function handleShutdown() {
   // playbackLogRecords();
 }
 
+
+/** ###########################################################################
+ * main
+ * ##########################################################################*/
+
 (function main() {
   // enableLogRecording();
 
@@ -67,29 +72,47 @@ function handleShutdown() {
   //    `process.exit` can disrupt that (kills without allowing us to perform another async handshake + `send`)
   // register `exit` handler that sends out a warning if there is unsent stuff
   if (__global__.process) {
+    /** ###########################################################################
+     * shutdown, process.exit + shutdown delay logic
+     * ##########################################################################*/
+
+    const shutdownDelayMs = 10000;
+    let errorTime;
+    let shutdownDelayTimer;
+
+    const processExit = process.exit;
+
+    // eslint-disable-next-line no-inner-declarations
+    function delayShutdown(reason, ...args) {
+      errorTime = Date.now();
+      if (processExit) {
+        console.warn(`[Dbux Runtime] shutdown delayed (${reason})...`);
+      }
+      shutdownDelayTimer = setTimeout(() => {
+        if (processExit) {
+          console.warn('[Dbux Runtime] exiting now.');
+          processExit.call(process, ...args);
+        }
+        else {
+          // can't do much
+        }
+      }, shutdownDelayMs);
+    }
+
     process.on('exit', handleShutdown);
 
-    const ex = process.exit;
     process.exit = (...args) => {
-      console.trace(`[Dbux Runtime] process.exit(${args}) was called. Delaying exit...`);
-      setTimeout(() => {
-        console.error('[Dbux Runtime] exiting now.');
-        ex.call(process, ...args);
-      }, 5000);
-      throw new Error('[Dbux Runtime] process.exit delayed');
+      console.trace(`[Dbux Runtime] process.exit(${args}) was called.`);
+      delayShutdown('process.exit', ...args);
     };
 
     process.on('uncaughtException', async (err) => {
       console.error('[Dbux Runtime] uncaughtException detected. reason -', err);
-      setInterval(() => {
-        console.warn(`[Dbux Runtime] shutdown delayed (uncaughtException)...`);
-      }, 1000);
+      delayShutdown('uncaughtException');
     });
     process.on('unhandledRejection', (err, promise) => {
       console.error(`[Dbux Runtime] unhandledRejection detected. reason - ${err?.stack || err}, promise: #${getPromiseId(promise)}`);
-      setInterval(() => {
-        console.warn(`[Dbux Runtime] shutdown delayed (unhandledRejection)...`);
-      }, 1000);
+      delayShutdown('unhandledRejection');
     });
   }
 

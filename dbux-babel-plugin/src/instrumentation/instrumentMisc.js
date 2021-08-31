@@ -1,4 +1,5 @@
 // import * as t from '@babel/types';
+import { pathToString, pathToStringAnnotated } from 'src/helpers/pathHelpers';
 import { applyPreconditionToExpression, getInstrumentPath, getReplacePath } from './builders/common';
 import { buildDefault, buildTraceDeclarations, buildTraceExpression } from './builders/misc';
 import { unshiftScopeBlock } from './scope';
@@ -33,14 +34,15 @@ export function instrumentBehind(state, traceCfg) {
 }
 
 export function instrumentUnshiftBody(state, traceCfg) {
-  const path = getInstrumentPath(traceCfg);
+  // const path = getInstrumentPath(traceCfg);
+  const { path } = traceCfg;
   const resultNode = buildDefault(state, traceCfg);
 
   // const s = pathToString(path);
   // const { type } = path.node;
 
+  console.debug(`instrumentUnshitBody`, pathToStringAnnotated(path));
   path.unshiftContainer('body', resultNode);
-  // console.debug(`tWE`, type, s, '->', astNodeToString(resultNode));
 
   postInstrument(traceCfg, resultNode);
 }

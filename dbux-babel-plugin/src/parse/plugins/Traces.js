@@ -142,7 +142,11 @@ export default class Traces extends BasePlugin {
 
     // NOTE: `scope.push` happens during `instrument`
     scope = scope || path.scope;
-    const tidIdentifier = scope.generateUidIdentifier(`t${inProgramStaticTraceId}_`);
+    let tidIdentifier;
+
+    if (!meta?.noTidIdentifier) {
+      tidIdentifier = scope.generateUidIdentifier(`t${inProgramStaticTraceId}_`);
+    }
 
     const traceCfg = {
       path,
@@ -193,7 +197,7 @@ export default class Traces extends BasePlugin {
       node._setTraceCfg(traceCfg);
     }
 
-    this.Verbose >= 2 && this.debug('[addTrace]', tidIdentifier.name, `([${inputTraces?.map(tid => tid.name).join(',') || ''}])`, `@"${this.node}"`);
+    this.Verbose >= 2 && this.debug('[addTrace]', tidIdentifier?.name, `([${inputTraces?.map(tid => tid.name).join(',') || ''}])`, `@"${this.node}"`);
 
     return traceCfg;
   }
@@ -315,10 +319,12 @@ export default class Traces extends BasePlugin {
         } = EmptyObject
       } = traceCfg;
 
-      // push `tidIdentifier`
-      scope.push({
-        id: tidIdentifier
-      });
+      // make sure, tidIdentifier gets declared
+      if (tidIdentifier) {
+        scope.push({
+          id: tidIdentifier
+        });
+      }
 
       // instrument?.(traceCfg);
       const { state } = node;

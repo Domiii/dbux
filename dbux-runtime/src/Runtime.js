@@ -378,6 +378,12 @@ export default class Runtime {
     return stackPos;
   }
 
+  popTop() {
+    const contextId = this._executingStack.top();
+    this._executingStack.popTop();
+    return contextId;
+  }
+
   _lastPoppedContextId = null;
   getLastPoppedContextId() {
     return this._lastPoppedContextId;
@@ -428,7 +434,39 @@ export default class Runtime {
     this._runStart(newStack);
   }
 
-  resumeWaitingStack(contextId) {
+  /**
+   * Finds the stack containing the given realContext, resumes the stack
+   * and then calls `resumeWaitingStack` on its top context.
+   */
+  resumeWaitingStackReal(realContextId) {
+    const waitingStack = this._switchStack(realContextId);
+    if (!waitingStack) { return null; }
+
+    const resumeContextId = this._executingStack.top();
+
+    // pop the await/yield context
+    this._markResume(resumeContextId);
+    this.pop(resumeContextId);
+
+    return waitingStack;
+  }
+
+  /**
+   * Finds the stack containing the given `Resume` context, resumes the stack
+   * and pops the `Resume` context.
+   */
+  resumeWaitingStack(resumeContextId) {
+    const waitingStack = this._switchStack(resumeContextId);
+    if (!waitingStack) { return null; }
+
+    // pop the await/yield context
+    this._markResume(resumeContextId);
+    this.pop(resumeContextId);
+
+    return waitingStack;
+  }
+
+  _switchStack(contextId) {
     const waitingStack = this._waitingStacks.get(contextId);
     if (!waitingStack) {
       logError('Could not resume waiting stack (is not registered):', contextId);
@@ -449,11 +487,6 @@ export default class Runtime {
 
       this._runStart(waitingStack);
     }
-
-    this._markResume(contextId);
-
-    // pop the await/yield context
-    this.pop(contextId);
 
     return waitingStack;
   }
