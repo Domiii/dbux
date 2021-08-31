@@ -11,12 +11,11 @@ export default class TryStatement extends BaseNode {
    * @param {BaseNode} node
    */
   addConsequentTrace(node, traceType, traceCall) {
-    const staticContext = this.peekPluginForce('StaticContext');
-    const { contextIdVar: realContextIdVar } = staticContext;
+    const contextPlugin = this.peekPluginForce('StaticContext');
+    const { contextIdVar: realContextIdVar } = contextPlugin;
     // awaitContextIdVar
 
     const moreTraceCallArgs = [realContextIdVar];
-    const contextPlugin = this('StaticContext');
     contextPlugin.addAwaitContextIdVarArg(moreTraceCallArgs);
 
     const traceData = {

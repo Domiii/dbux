@@ -34,6 +34,15 @@ export default class AwaitExpression extends BaseNode {
     return state.contexts.addResumeContext(path, locStart);
   }
 
+  enter() {
+    const {
+      Traces
+    } = this;
+
+    // future-work: don't use unnamed constants (awCid)
+    this.awaitContextIdVar = Traces.getOrGenerateUniqueIdentifier('awCid');
+  }
+
   /**
    * Assumption: `path` has already been instrumented with `wrapAwait`.
    */
@@ -41,6 +50,7 @@ export default class AwaitExpression extends BaseNode {
     const {
       path,
       state,
+      awaitContextIdVar,
       Traces
     } = this;
 
@@ -54,8 +64,6 @@ export default class AwaitExpression extends BaseNode {
       resumeId
     });
 
-    // future-work: don't use unnamed constants (awCid)
-    const awaitContextIdVar = Traces.getOrGenerateUniqueIdentifier('awCid');
     const argumentVar = Traces.generateDeclaredUidIdentifier('arg');
     const resultVar = Traces.generateDeclaredUidIdentifier('res');
     const argumentPath = argumentNode.path;
