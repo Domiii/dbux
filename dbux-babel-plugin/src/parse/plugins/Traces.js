@@ -2,13 +2,13 @@
 // import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 // import TraceType from '@dbux/common/src/types/constants/TraceType';
 // import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import omit from 'lodash/omit';
+// import omit from 'lodash/omit';
 import TraceType, { isDeclarationTrace } from '@dbux/common/src/types/constants/TraceType';
 import NestedError from '@dbux/common/src/NestedError';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import TraceCfg from '../../definitions/TraceCfg';
-import { pathToString } from '../../helpers/pathHelpers';
+import { pathToString, pathToStringAnnotated } from '../../helpers/pathHelpers';
 import { instrumentExpression, traceHoisted } from '../../instrumentation/instrumentMisc';
 // import { pathToString } from '../../helpers/pathHelpers';
 import BasePlugin from './BasePlugin';
@@ -354,7 +354,14 @@ export default class Traces extends BasePlugin {
         this.Verbose > 1 && this.debug(` ins [${TraceType.nameFromForce(traceType)}] -> ${pathToString(path)}`);
       }
       catch (err) {
-        throw new NestedError(`Failed to instrument node="${node.debugTag}", path="${pathToString(path)}"`, err);
+        let msg = '';
+        if (err.message === 'Container is falsy') {
+          // NOTE: this usually means that `getInstrumentPath(traceCfg)` has been instrumented already
+          // (similar fix for bug in other project https://github.com/ember-cli/babel-plugin-ember-modules-api-polyfill/pull/156/files)
+          msg = ' (possible incompatability with other plugins/presets)';
+        }
+        // eslint-disable-next-line max-len
+        throw new NestedError(`Failed to instrument node="${node.debugTag}", path="${pathToStringAnnotated(path, true)}", trace=${TraceType.nameFromForce(traceType)}${msg}`, err);
       }
     }
   }

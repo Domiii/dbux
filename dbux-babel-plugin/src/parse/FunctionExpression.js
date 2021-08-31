@@ -21,6 +21,7 @@ export default class FunctionExpression extends BaseNode {
     const Function = this.getPlugin('Function');
     const staticTraceData = Function.createStaticTraceData(
       idNode?.path,
+      // NOTE: while this is technically not a `FunctionDeclaration`, we still treat it as such, since it still declares its own variable name accessible from within the function itself.
       idNode ? TraceType.FunctionDeclaration : TraceType.FunctionDefinition
     );
 
