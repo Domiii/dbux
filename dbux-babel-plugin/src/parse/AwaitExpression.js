@@ -54,7 +54,8 @@ export default class AwaitExpression extends BaseNode {
       resumeId
     });
 
-    const awaitContextIdVar = Traces.generateDeclaredUidIdentifier('resumeCid');
+    // future-work: don't use unnamed constants (awCid)
+    const awaitContextIdVar = Traces.getOrGenerateUniqueIdentifier('awCid');
     const argumentVar = Traces.generateDeclaredUidIdentifier('arg');
     const resultVar = Traces.generateDeclaredUidIdentifier('res');
     const argumentPath = argumentNode.path;

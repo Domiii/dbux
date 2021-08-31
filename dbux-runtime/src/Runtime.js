@@ -91,6 +91,10 @@ export default class Runtime {
     // this.thread1.processAsyncPromises();
   }
 
+  isContextWaiting(contextId) {
+    return this._waitingStacks.has(contextId);
+  }
+
   /**
    * We currently have no good heuristics for checking whether we want to resume
    * an interrupted stack when pushing to an empty stack.

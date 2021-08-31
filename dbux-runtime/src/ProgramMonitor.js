@@ -151,12 +151,12 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.popImmediate(this.getProgramId(), contextId, traceId);
   }
 
-  popFunction = (contextId, traceId) => {
+  popFunction = (contextId, inProgramStaticTraceId, awaitContextId = 0) => {
     if (this.disabled) {
       return undefined;
     }
 
-    return this._runtimeMonitor.popFunction(this.getProgramId(), contextId, traceId);
+    return this._runtimeMonitor.popFunction(this.getProgramId(), contextId, inProgramStaticTraceId, awaitContextId);
   }
 
   popProgram = () => {
@@ -313,12 +313,20 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceUpdateExpressionME(this.getProgramId(), obj, prop, updateValue, returnValue, readTid, tid, objectTid);
   }
 
-  traceFinally = (inProgramStaticTraceId, contextId) => {
+  traceCatch = (inProgramStaticTraceId, realContextId, awaitContextId = 0) => {
     if (this.areTracesDisabled) {
       return;
     }
 
-    this._runtimeMonitor.traceFinally(this.getProgramId(), inProgramStaticTraceId, contextId);
+    this._runtimeMonitor.traceCatch(this.getProgramId(), inProgramStaticTraceId, realContextId, awaitContextId);
+  }
+
+  traceFinally = (inProgramStaticTraceId, realContextId, awaitContextId = 0) => {
+    if (this.areTracesDisabled) {
+      return;
+    }
+
+    this._runtimeMonitor.traceFinally(this.getProgramId(), inProgramStaticTraceId, realContextId, awaitContextId);
   }
 
   /** ###########################################################################
@@ -509,7 +517,7 @@ export default class ProgramMonitor {
   }
 
   get areTracesDisabled() {
-    return this.disabled || !!this._runtimeMonitor.tracesDisabled;
+    return this._runtimeMonitor.areTracesDisabled;
   }
 
   warnDisabled(...args) {

@@ -21,12 +21,21 @@ export default class CatchClause extends BaseNode {
   exit1() {
     const [paramNode] = this.getChildNodes();
 
+    const tryNode = this.peekNodeForce('TryStatement');
+    tryNode.addConsequentTrace(this, TraceType.Catch, 'traceCatch');
+
     if (paramNode) {
+      const moreTraceData = {
+        meta: {
+          hoisted: true
+        }
+      };
+
       // -> `catch (err) { ... }`
       /**
        * NOTE: this must be in `exit1`, because it must happen before `body` nodes exit.
        */
-      this.getPlugin('Params').addParamTrace(paramNode.path, TraceType.CatchParam);
+      this.getPlugin('Params').addParamTrace(paramNode.path, TraceType.CatchParam, moreTraceData);
     }
     else {
       // -> `catch { ... }`

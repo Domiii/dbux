@@ -42,6 +42,9 @@ const traceTypeObj = {
 
   EndOfContext: 22,
 
+  Finally: 23,
+  Catch: 24,
+
 
   Declaration: 30,
   /**
@@ -70,7 +73,6 @@ const traceTypeObj = {
 
   Param: 38,
   CatchParam: 39,
-  Finally: 40,
 
   FunctionDeclaration: 41,
   FunctionDefinition: 42,

@@ -59,9 +59,10 @@ export default class BindingIdentifier extends BaseId {
     return scope;
   }
 
-  getDefaultBindingScopeNode() {
+  getBindingScopeNode(scope) {
     // const scopePath = this.binding.path.scope.path;
-    let scopePath = this.getBindingScope().path;
+    scope = scope || this.getBindingScope();
+    let scopePath = scope.path;
 
     /**
      * @type {BaseNode}
@@ -98,7 +99,7 @@ export default class BindingIdentifier extends BaseId {
       this.warn(`staticTraceData.type is not declaration type. You might prefer "addTrace" over "addOwnDeclarationTrace" in this case.`);
     }
 
-    const bindingScopeNode = this.getDefaultBindingScopeNode();
+    const bindingScopeNode = this.getBindingScopeNode(moreTraceData?.scope);
 
     if (!moreTraceData?.scope) {
       moreTraceData = moreTraceData || {};

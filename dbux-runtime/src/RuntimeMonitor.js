@@ -197,9 +197,13 @@ export default class RuntimeMonitor {
    * Case 2: pop function during `PostAwait` event, but after error was thrown in inner `async` callee
    *        -> need to handle `postAwait` here
    */
-  popFunction(programId, contextId, inProgramStaticTraceId) {
+  popFunction(programId, realContextId, inProgramStaticTraceId, awaitContextId) {
     // this.checkErrorOnFunctionExit(contextId, inProgramStaticTraceId);
-    return this.popImmediate(programId, contextId, inProgramStaticTraceId);
+    this._fixContext(programId, realContextId, awaitContextId);
+    if (!this.areTracesDisabled) {
+      this.newTraceId(programId, inProgramStaticTraceId);
+    }
+    return this.popImmediate(programId, realContextId);
   }
 
   popImmediate(programId, contextId, traceId) {
@@ -828,62 +832,72 @@ export default class RuntimeMonitor {
     return this._traceUpdateExpression(updateValue, returnValue, readTid, tid, varAccess);
   }
 
-  traceFinally(programId, inProgramStaticTraceId, realContextId) {
-    this._fixContext(programId, realContextId);
-    this.newTraceId(programId, inProgramStaticTraceId);
+  traceFinally(programId, inProgramStaticTraceId, realContextId, awaitContextId) {
+    this._fixContext(programId, realContextId, awaitContextId);
+    if (!this.areTracesDisabled) {
+      this.newTraceId(programId, inProgramStaticTraceId);
+    }
   }
 
-  traceCatch(programId, inProgramStaticTraceId, realContextId) {
-    this._fixContext(programId, realContextId);
-    this.newTraceId(programId, inProgramStaticTraceId);
+  traceCatch(programId, inProgramStaticTraceId, realContextId, awaitContextId) {
+    this._fixContext(programId, realContextId, awaitContextId);
+    if (!this.areTracesDisabled) {
+      this.newTraceId(programId, inProgramStaticTraceId);
+    }
   }
 
-  _fixContext(programId, realContextId, resumeInProgramStaticTraceId = 0) {
-    const realContext = executionContextCollection.getById(realContextId);
-    if (!realContext) {
-      // sanity check
-      logTrace('Tried to fixContext, but context was not registered:', realContextId);
-      return;
+  _fixContext(programId, realContextId, awaitContextId) {
+    if (awaitContextId && this.runtime.isContextWaiting(awaitContextId)) {
+      this.postAwait(programId, undefined, undefined, awaitContextId);
     }
-
-    const parentContextId = this._runtime.peekCurrentContextId();
-    const parentContext = parentContextId && executionContextCollection.getById(parentContextId);
-    const realStaticContext = parentContext && staticContextCollection.getById(realContext.staticContextId);
-    if (parentContext && (
-      !realStaticContext.isInterruptable ||
-      ExecutionContextType.is.Resume(parentContext.contextType)
-    )
-    ) {
-      return;
-    }
-
-    // NOTE: only if we are in interruptable function and there is no `Resume` context on the current stack
-    //    -> patch it up
-
-    // resume after await failure
-    this._runtime.resumeWaitingStackReal(realContextId);
-
-    if (Verbose) {
-      debug(`<- FixContext ${realContextId} [${this._runtime._executingStack._stack.join(',')}]`);
-    }
-
-    const awaitContextId = this._runtime.popTop();
-    const awaitContext = executionContextCollection.getById(awaitContextId);
-    const { staticContextId: awaitStaticContextId } = awaitContext;
-    const awaitStaticContext = staticContextCollection.getById(awaitStaticContextId);
-    const { resumeId: resumeStaticContextId } = awaitStaticContext;
-
-    // pushResume
-    const resumeContextId = this.pushResume(programId, resumeStaticContextId, resumeInProgramStaticTraceId);
-
-    this._runtime._updateVirtualRootContext(resumeContextId);
-
-    const postEventContextId = resumeContextId;
-
-    // register thread logic
-    const awaitArgument = null;
-    this._runtime.async.postAwait(/* awaitContextId, */ realContextId, postEventContextId, awaitArgument);
   }
+
+  // _fixContext(programId, realContextId, resumeInProgramStaticTraceId = 0) {
+  //   const realContext = executionContextCollection.getById(realContextId);
+  //   if (!realContext) {
+  //     // sanity check
+  //     logTrace('Tried to fixContext, but context was not registered:', realContextId);
+  //     return;
+  //   }
+
+  //   const parentContextId = this._runtime.peekCurrentContextId();
+  //   const parentContext = parentContextId && executionContextCollection.getById(parentContextId);
+  //   const realStaticContext = parentContext && staticContextCollection.getById(realContext.staticContextId);
+  //   if (parentContext && (
+  //     !realStaticContext.isInterruptable ||
+  //     ExecutionContextType.is.Resume(parentContext.contextType)
+  //   )
+  //   ) {
+  //     return;
+  //   }
+
+  //   // NOTE: only if we are in interruptable function and there is no `Resume` context on the current stack
+  //   //    -> patch it up
+
+  //   // resume after await failure
+  //   this._runtime.resumeWaitingStackReal(realContextId);
+
+  //   if (Verbose) {
+  //     debug(`<- FixContext ${realContextId} [${this._runtime._executingStack._stack.join(',')}]`);
+  //   }
+
+  //   const awaitContextId = this._runtime.popTop();
+  //   const awaitContext = executionContextCollection.getById(awaitContextId);
+  //   const { staticContextId: awaitStaticContextId } = awaitContext;
+  //   const awaitStaticContext = staticContextCollection.getById(awaitStaticContextId);
+  //   const { resumeId: resumeStaticContextId } = awaitStaticContext;
+
+  //   // pushResume
+  //   const resumeContextId = this.pushResume(programId, resumeStaticContextId, resumeInProgramStaticTraceId);
+
+  //   this._runtime._updateVirtualRootContext(resumeContextId);
+
+  //   const postEventContextId = resumeContextId;
+
+  //   // register thread logic
+  //   const awaitArgument = null;
+  //   this._runtime.async.postAwait(/* awaitContextId, */ realContextId, postEventContextId, awaitArgument);
+  // }
 
   // ###########################################################################
   // CallExpression
@@ -1268,6 +1282,10 @@ export default class RuntimeMonitor {
 
   get valuesDisabled() {
     return this._valuesDisabled;
+  }
+
+  get areTracesDisabled() {
+    return !!this.disabled || !!this.tracesDisabled;
   }
 
   set valuesDisabled(val) {

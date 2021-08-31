@@ -31,21 +31,21 @@ function addContextTrace(bodyPath, state, type) {
 
 // TODO: `isInterruptable` should be in `staticContext`, not dynamically recorded
 const pushImmediateTemplate = template(
-  'var %%contextIdIdentifier%% = %%pushImmediate%%(%%staticContextId%%, %%inProgramStaticTraceId%%, %%definitionTid%%, %%isInterruptable%%);'
+  'var %%contextIdVar%% = %%pushImmediate%%(%%staticContextId%%, %%inProgramStaticTraceId%%, %%definitionTid%%, %%isInterruptable%%);'
 );
 
-const popFunctionTemplate = template(
-  '%%popFunction%%(%%contextIdIdentifier%%, %%tid%%);'
-);
+// const popFunctionTemplate = template(
+//   '%%popFunction%%(%%contextIdVar%%, %%tid%%);'
+// );
 
 const pushResumeTemplate = template(
   /*var %%resumeContextId%% =*/
   `%%dbux%%.pushResume(%%resumeStaticContextId%%, %%inProgramStaticTraceId%%);`);
 
-const popResumeTemplate = template(
-  // `%%dbux%%.popResume(%%resumeContextId%%);`
-  `%%dbux%%.popResume();`
-);
+// const popResumeTemplate = template(
+//   // `%%dbux%%.popResume(%%resumeContextId%%);`
+//   `%%dbux%%.popResume();`
+// );
 
 
 // ###########################################################################
@@ -130,7 +130,8 @@ export default class Function extends BasePlugin {
       }
     );
 
-    const contextIdIdentifier = this.node.getPlugin('StaticContext').genContext();
+    const contextPlugin = this.node.getPlugin('StaticContext');
+    const contextIdVar = contextPlugin.genContext();
 
 
     // staticResumeContextId
@@ -141,7 +142,7 @@ export default class Function extends BasePlugin {
     }
 
     this.data = {
-      contextIdIdentifier,
+      contextIdVar,
       staticContextId,
       staticPushTid,
       // pushTraceCfg,
@@ -198,7 +199,7 @@ export default class Function extends BasePlugin {
     // TODO: capture closure variables, to get their correct `declarationTid`
 
     const {
-      contextIdIdentifier, staticContextId, staticPushTid, staticResumeContextId
+      contextIdVar, staticContextId, staticPushTid, staticResumeContextId
     } = this.data;
     const { state } = this.node;
     const {
@@ -213,7 +214,7 @@ export default class Function extends BasePlugin {
 
     return [
       pushImmediateTemplate({
-        contextIdIdentifier,
+        contextIdVar,
         pushImmediate,
         staticContextId: t.numericLiteral(staticContextId),
         inProgramStaticTraceId: t.numericLiteral(staticPushTid),
@@ -229,7 +230,7 @@ export default class Function extends BasePlugin {
 
   buildPop = () => {
     const {
-      contextIdIdentifier, popTraceCfg
+      contextIdVar, popTraceCfg
     } = this.data;
     const { state } = this.node;
     const {
@@ -240,13 +241,17 @@ export default class Function extends BasePlugin {
       }
     } = state;
 
-    const tid = buildTraceId(state, popTraceCfg);
+    const contextPlugin = this.node.getPlugin('StaticContext');
 
-    return popFunctionTemplate({
-      popFunction,
-      contextIdIdentifier,
-      tid
-    });
+    // NOTE: this is based on `buildTraceStatic`
+    // future-work: use `buildTraceStatic` instead
+    const { inProgramStaticTraceId } = popTraceCfg;
+    const args = [contextIdVar, t.numericLiteral(inProgramStaticTraceId)];
+    contextPlugin.addAwaitContextIdVarArg(args);
+
+    return t.expressionStatement(
+      t.callExpression(popFunction, args)
+    );
   }
 
   instrument1() {
@@ -268,7 +273,7 @@ export default class Function extends BasePlugin {
         returnTraceCfg,
         staticPushTid,
         staticResumeContextId,
-        contextIdIdentifier,
+        contextIdVar,
         popTraceCfg
       }
     } = this;
@@ -301,12 +306,12 @@ export default class Function extends BasePlugin {
       ];
 
       pops = [
-        popResumeTemplate({
-          dbux,
-          // resumeContextId,
-          // traceId: t.numericLiteral(popTraceCfg.tidIdentifier),
-          // contextId: contextIdIdentifier
-        }),
+        // popResumeTemplate({
+        //   dbux,
+        //   // resumeContextId,
+        //   // traceId: t.numericLiteral(popTraceCfg.tidIdentifier),
+        //   // contextId: contextIdVar
+        // }),
         ...pops
       ];
     }

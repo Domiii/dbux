@@ -9,7 +9,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import TraceCfg from '../../definitions/TraceCfg';
 import { pathToString } from '../../helpers/pathHelpers';
-import { instrumentExpression, traceDeclarations } from '../../instrumentation/instrumentMisc';
+import { instrumentExpression, traceHoisted } from '../../instrumentation/instrumentMisc';
 // import { pathToString } from '../../helpers/pathHelpers';
 import BasePlugin from './BasePlugin';
 
@@ -22,7 +22,7 @@ export default class Traces extends BasePlugin {
   /**
    * Special declaration traces that will be hoisted to scope of this.node.
    */
-  hoistedDeclarationTraces = [];
+  hoistedTraces = [];
 
   /**
    * Traces that will be instrumented in order.
@@ -35,7 +35,7 @@ export default class Traces extends BasePlugin {
   // simplified declarations
   // ###########################################################################
 
-  generateDeclaredUidIdentifier(name) {
+  getAncestorContextNode() {
     let contextNode = this.node.peekContextNode();
     const contextBodyPath = contextNode.path.get('body');
     let { scope } = contextNode.path;
@@ -50,18 +50,36 @@ export default class Traces extends BasePlugin {
       // scope = scope.parent;
       // scope = scope.getFunctionParent() || scope.getProgramParent();
       contextNode = contextNode.getExistingParent().peekContextNode();
-      ({ scope } = contextNode.path);
     }
+    return contextNode;
+  }
+
+  generateDeclaredUidIdentifier(name) {
+    const contextNode = this.getAncestorContextNode();
+    const { scope } = contextNode.path;
 
     const id = scope.generateUidIdentifier(name);
-    // if (id.name === '_o23') {
-    //   debugger;
-    // }
+    
     contextNode.Traces.declaredIdentifiers.push(id);
     // console.debug('generateDeclaredUidIdentifier', id.name, `[${scope.path.node?.type}]`, pathToString(scope.path));
     return id;
   }
 
+  getOrGenerateUniqueIdentifier(name) {
+    const contextNode = this.getAncestorContextNode();
+    const contextPlugin = contextNode.getPlugin('StaticContext');
+    const id = contextPlugin.getOrGenerateUniqueIdentifier(name);
+
+    contextNode.Traces.declaredIdentifiers.push(id);
+    // console.debug('generateDeclaredUidIdentifier', id.name, `[${scope.path.node?.type}]`, pathToString(scope.path));
+    return id;
+  }
+
+  getUniqueIdentifier(name) {
+    const contextNode = this.getAncestorContextNode();
+    const contextPlugin = contextNode.getPlugin('StaticContext');
+    return contextPlugin.getUniqueIdentifier(name);
+  }
 
 
   // ###########################################################################
@@ -179,15 +197,16 @@ export default class Traces extends BasePlugin {
       }
 
       // if (meta?.hoisted && !isRedeclaration) {
-      if (meta?.hoisted) {
-        this.hoistedDeclarationTraces.push(traceCfg);
-      }
-      else {
-        this.traces.push(traceCfg);
-      }
 
       // eslint-disable-next-line max-len
       this.Verbose && this.debug(`DECL "${declarationNode}" in "${declarationNode.getParentString()}" by "${node}" in "${node.getParentString()}" (${traceCfg.tidIdentifier.name})`);
+    }
+    else {
+      // not a declaration
+    }
+
+    if (meta?.hoisted) {
+      this.hoistedTraces.push(traceCfg);
     }
     else {
       this.traces.push(traceCfg);
@@ -286,24 +305,24 @@ export default class Traces extends BasePlugin {
   // instrument
   // ###########################################################################
 
-  instrumentHoistedTraceDeclarations = (traceCfgs) => {
+  instrumentHoisted = (traceCfgs) => {
     const { node } = this;
     const { state } = node;
 
     if (traceCfgs.length) {
-      traceDeclarations(node.path, state, traceCfgs);
+      traceHoisted(node.path, state, traceCfgs);
     }
   }
 
   instrument() {
-    const { node, traces, hoistedDeclarationTraces } = this;
+    const { node, traces, hoistedTraces } = this;
 
     for (const id of this.declaredIdentifiers) {
       this.node.path.scope.push({ id });
     }
 
     // this.debug(`traces`, traces.map(t => t.tidIdentifier));
-    this.instrumentHoistedTraceDeclarations(hoistedDeclarationTraces);
+    this.instrumentHoisted(hoistedTraces);
 
     for (const traceCfg of traces) {
       // add variable to scope

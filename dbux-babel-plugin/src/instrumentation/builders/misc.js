@@ -153,14 +153,6 @@ export function buildTraceDeclarationVar(state, traceCfg) {
   ]);
 }
 
-export function buildTraceDeclarations(state, traceCfgs) {
-  const decls = traceCfgs.map((traceCfg) => {
-    return buildTraceDeclarationVar(state, traceCfg);
-  });
-
-  return decls;
-}
-
 // ###########################################################################
 // traceWriteVar
 // ###########################################################################
@@ -184,12 +176,19 @@ export const buildTraceWriteVar = buildTraceCall(
 
 
 
-// ###########################################################################
-// buildDefault
-// ###########################################################################
+/** ###########################################################################
+ * {@link doBuild}, {@link buildAll}
+ * ##########################################################################*/
 
-export function buildDefault(state, traceCfg) {
-  const build = traceCfg.meta?.build || buildTraceExpression;// getDefaultBuild(traceCfg);
+export function doBuild(state, traceCfg, buildDefault = buildTraceExpression) {
+  const build = traceCfg.meta?.build || buildDefault;// getDefaultBuild(traceCfg);
   const result = build(state, traceCfg);
   return applyPreconditionToExpression(traceCfg, result);
+}
+
+
+export function buildAll(state, traceCfgs, defaultBuild) {
+  return traceCfgs.map((traceCfg) => {
+    return doBuild(state, traceCfg, defaultBuild);
+  });
 }
