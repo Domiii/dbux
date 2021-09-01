@@ -126,22 +126,23 @@ div {
 } */
 
 .graph-root {
-  /* offset fixed toolbar height */
-  margin-top: 8px;
   padding-left: 2px;
-  /* font-size: 1.2rem; */
+}
+
+.graph-container {
+  overflow: hidden;
 }
 
 [data-el=panzoomCanvas] {
   /* width: 200px;
   height: 200px; */
-  width: 100vw;
+  /* width: 100vw; */
   /* height: 100vh; */
   height: calc(100vh - 30px);
   overflow: auto;
 }
 
-.graph-cont>.body {
+.graph-content>.body {
   width: fit-content;
   height: fit-content;
   transform-origin: 0 0;
@@ -309,12 +310,13 @@ div {
 .async-stack {
   position: fixed;
   top: 30px;
-  right: 2px;
+  right: 12px;
   height: calc(100vh - 100px);
-  width: 33vw;
+  width: 40vw;
   min-width: 200px;
   border: 2px solid white;
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
+  z-index: 2;
 }
 
 /** ###########################################################################

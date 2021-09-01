@@ -5,8 +5,8 @@ import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 class GraphContainer extends ClientComponentEndpoint {
   createEl() {
     return compileHtmlElement(/*html*/`
-      <div>
-        <div data-el="panzoomCanvas" class="graph-cont">
+      <div class="graph-container">
+        <div data-el="panzoomCanvas" class="graph-content">
           <div data-el="body" class="body flex-column">
             <div data-mount="SyncGraph"></div>
             <div data-mount="AsyncGraph"></div>
