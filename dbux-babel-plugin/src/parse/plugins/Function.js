@@ -5,10 +5,11 @@ import BasePlugin from './BasePlugin';
 import { getNodeNames } from '../../visitors/nameVisitors';
 import { doesNodeEndScope } from '../../helpers/astUtil';
 import { buildWrapTryFinally, buildBlock } from '../../instrumentation/builders/common';
-import { injectContextEndTrace } from '../../instrumentation/context';
+import { buildContextEndTrace, injectContextEndTrace } from '../../instrumentation/context';
 import { buildTraceId } from '../../instrumentation/builders/traceId';
 import { buildRegisterParams } from '../../instrumentation/builders/function';
-
+import { locToString } from 'src/helpers/locHelpers';
+import { astNodeToString, pathToStringAnnotated } from 'src/helpers/pathHelpers';
 
 function addContextTrace(bodyPath, state, type) {
   const { scope } = bodyPath;
@@ -112,7 +113,7 @@ export default class Function extends BasePlugin {
       displayName,
       isInterruptable
     };
-    
+
     // this.node.getPlugin('StaticContext')
 
     /** ########################################
@@ -121,7 +122,7 @@ export default class Function extends BasePlugin {
 
     const staticContextId = state.contexts.addStaticContext(path, staticContextData);
     // const pushTraceCfg = addContextTrace(bodyPath, state, TraceType.PushImmediate);
-    
+
     // TODO: use `const pushTrace = Traces.addTrace` instead
     const staticPushTid = state.traces.addTrace(
       bodyPath,
@@ -175,6 +176,17 @@ export default class Function extends BasePlugin {
         instrument: this.doInstrument
       }
     });
+
+    // Verbose
+    // const { popTraceCfg: pop, staticContextId } = this.data;
+    // const { inProgramStaticTraceId } = pop;
+    // // const staticTrace = this.node.state.traces.getById(inProgramStaticTraceId);
+    // // const { displayName, loc } = staticTrace;
+    // const staticContext = this.node.state.contexts.getById(staticContextId);
+    // const { displayName, loc } = staticContext;
+    // const { filePath } = this.node.peekNodeForce('Program').staticProgramContext;
+    // const where = `${filePath}:${locToString(loc)}`;
+    // this.node.logger.debug(`[popFunction] #${inProgramStaticTraceId} @${where} "${displayName.replace(/\s+/g, ' ')}"`);
   }
 
 
@@ -187,9 +199,6 @@ export default class Function extends BasePlugin {
     const { paramTraces } = this.data;
 
     const p = buildRegisterParams(state, paramTraces);
-
-    // convert lambda expression to block with return statement
-    path.ensureBlock();
 
     // insert parameter traces at the top
     path.get('body').unshiftContainer("body", p);
@@ -255,6 +264,8 @@ export default class Function extends BasePlugin {
   }
 
   instrument1() {
+    // convert lambda expression to block with return statement
+    this.node.path.ensureBlock();
     this.injectParamsTrace();
   }
 
@@ -322,7 +333,19 @@ export default class Function extends BasePlugin {
       if (!lastNode || !doesNodeEndScope(lastNode)) {
         // add ContextEnd trace
         // console.debug(`injecting EndOfContext for: ${bodyPath.toString()}`);
-        injectContextEndTrace(path, state);
+        // path.scope.crawl();
+        const contextEndTrace = buildContextEndTrace(path, state);
+        if (Array.isArray(bodyNode)) {
+          bodyNode.push(contextEndTrace);
+        }
+        else {
+          if (!t.isBlockStatement(bodyNode)) {
+            // NOTE: we called `ensureBlock` above
+            throw new Error(`Function body is neither array nor block statement: "${pathToStringAnnotated(path, true)}"`);
+          }
+          bodyPath.pushContainer("body", contextEndTrace);
+        }
+        // injectContextEndTrace(path, state);
       }
     }
 

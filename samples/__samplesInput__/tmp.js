@@ -1,467 +1,305 @@
-/*
-  MIT License http://www.opensource.org/licenses/mit-license.php
-  Author Tobias Koppers @sokra
-*/
 "use strict";
 
-class HookCodeFactory {
-  constructor(config) {
-    this.config = config;
-    this.options = undefined;
-    this._args = undefined;
-  }
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-  create(options) {
-    this.init(options);
-    let fn;
-    switch (this.options.type) {
-      case "sync":
-        fn = new Function(
-          this.args(),
-          '"use strict";\n' +
-          this.header() +
-          this.contentWithInterceptors({
-            onError: err => `throw ${err};\n`,
-            onResult: result => `return ${result};\n`,
-            resultReturns: true,
-            onDone: () => "",
-            rethrowIfPossible: true
-          })
-        );
-        break;
-      case "async":
-        fn = new Function(
-          this.args({
-            after: "_callback"
-          }),
-          '"use strict";\n' +
-          this.header() +
-          this.contentWithInterceptors({
-            onError: err => `_callback(${err});\n`,
-            onResult: result => `_callback(null, ${result});\n`,
-            onDone: () => "_callback();\n"
-          })
-        );
-        break;
-      case "promise":
-        let errorHelperUsed = false;
-        const content = this.contentWithInterceptors({
-          onError: err => {
-            errorHelperUsed = true;
-            return `_error(${err});\n`;
-          },
-          onResult: result => `_resolve(${result});\n`,
-          onDone: () => "_resolve();\n"
-        });
-        let code = "";
-        code += '"use strict";\n';
-        code += this.header();
-        code += "return new Promise((function(_resolve, _reject) {\n";
-        if (errorHelperUsed) {
-          code += "var _sync = true;\n";
-          code += "function _error(_err) {\n";
-          code += "if(_sync)\n";
-          code +=
-            "_resolve(Promise.resolve().then((function() { throw _err; })));\n";
-          code += "else\n";
-          code += "_reject(_err);\n";
-          code += "};\n";
-        }
-        code += content;
-        if (errorHelperUsed) {
-          code += "_sync = false;\n";
-        }
-        code += "}));\n";
-        fn = new Function(this.args(), code);
-        break;
-    }
-    this.deinit();
-    return fn;
-  }
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
 
-  setup(instance, options) {
-    instance._x = options.taps.map(t => t.fn);
-  }
+var _toDate = _interopRequireDefault(require("./lib/toDate"));
 
-  /**
-   * @param {{ type: "sync" | "promise" | "async", taps: Array<Tap>, interceptors: Array<Interceptor> }} options
-   */
-  init(options) {
-    this.options = options;
-    this._args = options.args.slice();
-  }
+var _toFloat = _interopRequireDefault(require("./lib/toFloat"));
 
-  deinit() {
-    this.options = undefined;
-    this._args = undefined;
-  }
+var _toInt = _interopRequireDefault(require("./lib/toInt"));
 
-  contentWithInterceptors(options) {
-    if (this.options.interceptors.length > 0) {
-      const onError = options.onError;
-      const onResult = options.onResult;
-      const onDone = options.onDone;
-      let code = "";
-      for (let i = 0; i < this.options.interceptors.length; i++) {
-        const interceptor = this.options.interceptors[i];
-        if (interceptor.call) {
-          code += `${this.getInterceptor(i)}.call(${this.args({
-            before: interceptor.context ? "_context" : undefined
-          })});\n`;
-        }
-      }
-      code += this.content(
-        Object.assign(options, {
-          onError:
-            onError &&
-            (err => {
-              let code = "";
-              for (let i = 0; i < this.options.interceptors.length; i++) {
-                const interceptor = this.options.interceptors[i];
-                if (interceptor.error) {
-                  code += `${this.getInterceptor(i)}.error(${err});\n`;
-                }
-              }
-              code += onError(err);
-              return code;
-            }),
-          onResult:
-            onResult &&
-            (result => {
-              let code = "";
-              for (let i = 0; i < this.options.interceptors.length; i++) {
-                const interceptor = this.options.interceptors[i];
-                if (interceptor.result) {
-                  code += `${this.getInterceptor(i)}.result(${result});\n`;
-                }
-              }
-              code += onResult(result);
-              return code;
-            }),
-          onDone:
-            onDone &&
-            (() => {
-              let code = "";
-              for (let i = 0; i < this.options.interceptors.length; i++) {
-                const interceptor = this.options.interceptors[i];
-                if (interceptor.done) {
-                  code += `${this.getInterceptor(i)}.done();\n`;
-                }
-              }
-              code += onDone();
-              return code;
-            })
-        })
-      );
-      return code;
-    } else {
-      return this.content(options);
-    }
-  }
+var _toBoolean = _interopRequireDefault(require("./lib/toBoolean"));
 
-  header() {
-    let code = "";
-    if (this.needContext()) {
-      code += "var _context = {};\n";
-    } else {
-      code += "var _context;\n";
-    }
-    code += "var _x = this._x;\n";
-    if (this.options.interceptors.length > 0) {
-      code += "var _taps = this.taps;\n";
-      code += "var _interceptors = this.interceptors;\n";
-    }
-    return code;
-  }
+var _equals = _interopRequireDefault(require("./lib/equals"));
 
-  needContext() {
-    for (const tap of this.options.taps) if (tap.context) return true;
-    return false;
-  }
+var _contains = _interopRequireDefault(require("./lib/contains"));
 
-  callTap(tapIndex, { onError, onResult, onDone, rethrowIfPossible }) {
-    let code = "";
-    let hasTapCached = false;
-    for (let i = 0; i < this.options.interceptors.length; i++) {
-      const interceptor = this.options.interceptors[i];
-      if (interceptor.tap) {
-        if (!hasTapCached) {
-          code += `var _tap${tapIndex} = ${this.getTap(tapIndex)};\n`;
-          hasTapCached = true;
-        }
-        code += `${this.getInterceptor(i)}.tap(${interceptor.context ? "_context, " : ""
-          }_tap${tapIndex});\n`;
-      }
-    }
-    code += `var _fn${tapIndex} = ${this.getTapFn(tapIndex)};\n`;
-    const tap = this.options.taps[tapIndex];
-    switch (tap.type) {
-      case "sync":
-        if (!rethrowIfPossible) {
-          code += `var _hasError${tapIndex} = false;\n`;
-          code += "try {\n";
-        }
-        if (onResult) {
-          code += `var _result${tapIndex} = _fn${tapIndex}(${this.args({
-            before: tap.context ? "_context" : undefined
-          })});\n`;
-        } else {
-          code += `_fn${tapIndex}(${this.args({
-            before: tap.context ? "_context" : undefined
-          })});\n`;
-        }
-        if (!rethrowIfPossible) {
-          code += "} catch(_err) {\n";
-          code += `_hasError${tapIndex} = true;\n`;
-          code += onError("_err");
-          code += "}\n";
-          code += `if(!_hasError${tapIndex}) {\n`;
-        }
-        if (onResult) {
-          code += onResult(`_result${tapIndex}`);
-        }
-        if (onDone) {
-          code += onDone();
-        }
-        if (!rethrowIfPossible) {
-          code += "}\n";
-        }
-        break;
-      case "async":
-        let cbCode = "";
-        if (onResult)
-          cbCode += `(function(_err${tapIndex}, _result${tapIndex}) {\n`;
-        else cbCode += `(function(_err${tapIndex}) {\n`;
-        cbCode += `if(_err${tapIndex}) {\n`;
-        cbCode += onError(`_err${tapIndex}`);
-        cbCode += "} else {\n";
-        if (onResult) {
-          cbCode += onResult(`_result${tapIndex}`);
-        }
-        if (onDone) {
-          cbCode += onDone();
-        }
-        cbCode += "}\n";
-        cbCode += "})";
-        code += `_fn${tapIndex}(${this.args({
-          before: tap.context ? "_context" : undefined,
-          after: cbCode
-        })});\n`;
-        break;
-      case "promise":
-        code += `var _hasResult${tapIndex} = false;\n`;
-        code += `var _promise${tapIndex} = _fn${tapIndex}(${this.args({
-          before: tap.context ? "_context" : undefined
-        })});\n`;
-        code += `if (!_promise${tapIndex} || !_promise${tapIndex}.then)\n`;
-        code += `  throw new Error('Tap function (tapPromise) did not return promise (returned ' + _promise${tapIndex} + ')');\n`;
-        code += `_promise${tapIndex}.then((function(_result${tapIndex}) {\n`;
-        code += `_hasResult${tapIndex} = true;\n`;
-        if (onResult) {
-          code += onResult(`_result${tapIndex}`);
-        }
-        if (onDone) {
-          code += onDone();
-        }
-        code += `}), function(_err${tapIndex}) {\n`;
-        code += `if(_hasResult${tapIndex}) throw _err${tapIndex};\n`;
-        code += onError(`_err${tapIndex}`);
-        code += "});\n";
-        break;
-    }
-    return code;
-  }
+var _matches = _interopRequireDefault(require("./lib/matches"));
 
-  callTapsSeries({
-    onError,
-    onResult,
-    resultReturns,
-    onDone,
-    doneReturns,
-    rethrowIfPossible
-  }) {
-    if (this.options.taps.length === 0) return onDone();
-    const firstAsync = this.options.taps.findIndex(t => t.type !== "sync");
-    const somethingReturns = resultReturns || doneReturns;
-    let code = "";
-    let current = onDone;
-    let unrollCounter = 0;
-    for (let j = this.options.taps.length - 1; j >= 0; j--) {
-      const i = j;
-      const unroll =
-        current !== onDone &&
-        (this.options.taps[i].type !== "sync" || unrollCounter++ > 20);
-      if (unroll) {
-        unrollCounter = 0;
-        code += `function _next${i}() {\n`;
-        code += current();
-        code += `}\n`;
-        current = () => `${somethingReturns ? "return " : ""}_next${i}();\n`;
-      }
-      const done = current;
-      const doneBreak = skipDone => {
-        if (skipDone) return "";
-        return onDone();
-      };
-      const content = this.callTap(i, {
-        onError: error => onError(i, error, done, doneBreak),
-        onResult:
-          onResult &&
-          (result => {
-            return onResult(i, result, done, doneBreak);
-          }),
-        onDone: !onResult && done,
-        rethrowIfPossible:
-          rethrowIfPossible && (firstAsync < 0 || i < firstAsync)
-      });
-      current = () => content;
-    }
-    code += current();
-    return code;
-  }
+var _isEmail = _interopRequireDefault(require("./lib/isEmail"));
 
-  callTapsLooping({ onError, onDone, rethrowIfPossible }) {
-    if (this.options.taps.length === 0) return onDone();
-    const syncOnly = this.options.taps.every(t => t.type === "sync");
-    let code = "";
-    if (!syncOnly) {
-      code += "var _looper = (function() {\n";
-      code += "var _loopAsync = false;\n";
-    }
-    code += "var _loop;\n";
-    code += "do {\n";
-    code += "_loop = false;\n";
-    for (let i = 0; i < this.options.interceptors.length; i++) {
-      const interceptor = this.options.interceptors[i];
-      if (interceptor.loop) {
-        code += `${this.getInterceptor(i)}.loop(${this.args({
-          before: interceptor.context ? "_context" : undefined
-        })});\n`;
-      }
-    }
-    code += this.callTapsSeries({
-      onError,
-      onResult: (i, result, next, doneBreak) => {
-        let code = "";
-        code += `if(${result} !== undefined) {\n`;
-        code += "_loop = true;\n";
-        if (!syncOnly) code += "if(_loopAsync) _looper();\n";
-        code += doneBreak(true);
-        code += `} else {\n`;
-        code += next();
-        code += `}\n`;
-        return code;
-      },
-      onDone:
-        onDone &&
-        (() => {
-          let code = "";
-          code += "if(!_loop) {\n";
-          code += onDone();
-          code += "}\n";
-          return code;
-        }),
-      rethrowIfPossible: rethrowIfPossible && syncOnly
-    });
-    code += "} while(_loop);\n";
-    if (!syncOnly) {
-      code += "_loopAsync = true;\n";
-      code += "});\n";
-      code += "_looper();\n";
-    }
-    return code;
-  }
+var _isURL = _interopRequireDefault(require("./lib/isURL"));
 
-  callTapsParallel({
-    onError,
-    onResult,
-    onDone,
-    rethrowIfPossible,
-    onTap = (i, run) => run()
-  }) {
-    if (this.options.taps.length <= 1) {
-      return this.callTapsSeries({
-        onError,
-        onResult,
-        onDone,
-        rethrowIfPossible
-      });
-    }
-    let code = "";
-    code += "do {\n";
-    code += `var _counter = ${this.options.taps.length};\n`;
-    if (onDone) {
-      code += "var _done = (function() {\n";
-      code += onDone();
-      code += "});\n";
-    }
-    for (let i = 0; i < this.options.taps.length; i++) {
-      const done = () => {
-        if (onDone) return "if(--_counter === 0) _done();\n";
-        else return "--_counter;";
-      };
-      const doneBreak = skipDone => {
-        if (skipDone || !onDone) return "_counter = 0;\n";
-        else return "_counter = 0;\n_done();\n";
-      };
-      code += "if(_counter <= 0) break;\n";
-      code += onTap(
-        i,
-        () =>
-          this.callTap(i, {
-            onError: error => {
-              let code = "";
-              code += "if(_counter > 0) {\n";
-              code += onError(i, error, done, doneBreak);
-              code += "}\n";
-              return code;
-            },
-            onResult:
-              onResult &&
-              (result => {
-                let code = "";
-                code += "if(_counter > 0) {\n";
-                code += onResult(i, result, done, doneBreak);
-                code += "}\n";
-                return code;
-              }),
-            onDone:
-              !onResult &&
-              (() => {
-                return done();
-              }),
-            rethrowIfPossible
-          }),
-        done,
-        doneBreak
-      );
-    }
-    code += "} while(false);\n";
-    return code;
-  }
+var _isMACAddress = _interopRequireDefault(require("./lib/isMACAddress"));
 
-  args({ before, after } = {}) {
-    let allArgs = this._args;
-    if (before) allArgs = [before].concat(allArgs);
-    if (after) allArgs = allArgs.concat(after);
-    if (allArgs.length === 0) {
-      return "";
-    } else {
-      return allArgs.join(", ");
-    }
-  }
+var _isIP = _interopRequireDefault(require("./lib/isIP"));
 
-  getTapFn(idx) {
-    return `_x[${idx}]`;
-  }
+var _isIPRange = _interopRequireDefault(require("./lib/isIPRange"));
 
-  getTap(idx) {
-    return `_taps[${idx}]`;
-  }
+var _isFQDN = _interopRequireDefault(require("./lib/isFQDN"));
 
-  getInterceptor(idx) {
-    return `_interceptors[${idx}]`;
-  }
-}
+var _isDate = _interopRequireDefault(require("./lib/isDate"));
 
-module.exports = HookCodeFactory;
+var _isBoolean = _interopRequireDefault(require("./lib/isBoolean"));
+
+var _isLocale = _interopRequireDefault(require("./lib/isLocale"));
+
+var _isAlpha = _interopRequireWildcard(require("./lib/isAlpha"));
+
+var _isAlphanumeric = _interopRequireWildcard(require("./lib/isAlphanumeric"));
+
+var _isNumeric = _interopRequireDefault(require("./lib/isNumeric"));
+
+var _isPassportNumber = _interopRequireDefault(require("./lib/isPassportNumber"));
+
+var _isPort = _interopRequireDefault(require("./lib/isPort"));
+
+var _isLowercase = _interopRequireDefault(require("./lib/isLowercase"));
+
+var _isUppercase = _interopRequireDefault(require("./lib/isUppercase"));
+
+var _isIMEI = _interopRequireDefault(require("./lib/isIMEI"));
+
+var _isAscii = _interopRequireDefault(require("./lib/isAscii"));
+
+var _isFullWidth = _interopRequireDefault(require("./lib/isFullWidth"));
+
+var _isHalfWidth = _interopRequireDefault(require("./lib/isHalfWidth"));
+
+var _isVariableWidth = _interopRequireDefault(require("./lib/isVariableWidth"));
+
+var _isMultibyte = _interopRequireDefault(require("./lib/isMultibyte"));
+
+var _isSemVer = _interopRequireDefault(require("./lib/isSemVer"));
+
+var _isSurrogatePair = _interopRequireDefault(require("./lib/isSurrogatePair"));
+
+var _isInt = _interopRequireDefault(require("./lib/isInt"));
+
+var _isFloat = _interopRequireWildcard(require("./lib/isFloat"));
+
+var _isDecimal = _interopRequireDefault(require("./lib/isDecimal"));
+
+var _isHexadecimal = _interopRequireDefault(require("./lib/isHexadecimal"));
+
+var _isOctal = _interopRequireDefault(require("./lib/isOctal"));
+
+var _isDivisibleBy = _interopRequireDefault(require("./lib/isDivisibleBy"));
+
+var _isHexColor = _interopRequireDefault(require("./lib/isHexColor"));
+
+var _isRgbColor = _interopRequireDefault(require("./lib/isRgbColor"));
+
+var _isHSL = _interopRequireDefault(require("./lib/isHSL"));
+
+var _isISRC = _interopRequireDefault(require("./lib/isISRC"));
+
+var _isIBAN = _interopRequireDefault(require("./lib/isIBAN"));
+
+var _isBIC = _interopRequireDefault(require("./lib/isBIC"));
+
+var _isMD = _interopRequireDefault(require("./lib/isMD5"));
+
+var _isHash = _interopRequireDefault(require("./lib/isHash"));
+
+var _isJWT = _interopRequireDefault(require("./lib/isJWT"));
+
+var _isJSON = _interopRequireDefault(require("./lib/isJSON"));
+
+var _isEmpty = _interopRequireDefault(require("./lib/isEmpty"));
+
+var _isLength = _interopRequireDefault(require("./lib/isLength"));
+
+var _isByteLength = _interopRequireDefault(require("./lib/isByteLength"));
+
+var _isUUID = _interopRequireDefault(require("./lib/isUUID"));
+
+var _isMongoId = _interopRequireDefault(require("./lib/isMongoId"));
+
+var _isAfter = _interopRequireDefault(require("./lib/isAfter"));
+
+var _isBefore = _interopRequireDefault(require("./lib/isBefore"));
+
+var _isIn = _interopRequireDefault(require("./lib/isIn"));
+
+var _isCreditCard = _interopRequireDefault(require("./lib/isCreditCard"));
+
+var _isIdentityCard = _interopRequireDefault(require("./lib/isIdentityCard"));
+
+var _isEAN = _interopRequireDefault(require("./lib/isEAN"));
+
+var _isISIN = _interopRequireDefault(require("./lib/isISIN"));
+
+var _isISBN = _interopRequireDefault(require("./lib/isISBN"));
+
+var _isISSN = _interopRequireDefault(require("./lib/isISSN"));
+
+var _isTaxID = _interopRequireDefault(require("./lib/isTaxID"));
+
+var _isMobilePhone = _interopRequireWildcard(require("./lib/isMobilePhone"));
+
+var _isEthereumAddress = _interopRequireDefault(require("./lib/isEthereumAddress"));
+
+var _isCurrency = _interopRequireDefault(require("./lib/isCurrency"));
+
+var _isBtcAddress = _interopRequireDefault(require("./lib/isBtcAddress"));
+
+var _isISO = _interopRequireDefault(require("./lib/isISO8601"));
+
+var _isRFC = _interopRequireDefault(require("./lib/isRFC3339"));
+
+var _isISO31661Alpha = _interopRequireDefault(require("./lib/isISO31661Alpha2"));
+
+var _isISO31661Alpha2 = _interopRequireDefault(require("./lib/isISO31661Alpha3"));
+
+var _isBase = _interopRequireDefault(require("./lib/isBase32"));
+
+var _isBase2 = _interopRequireDefault(require("./lib/isBase58"));
+
+var _isBase3 = _interopRequireDefault(require("./lib/isBase64"));
+
+var _isDataURI = _interopRequireDefault(require("./lib/isDataURI"));
+
+var _isMagnetURI = _interopRequireDefault(require("./lib/isMagnetURI"));
+
+var _isMimeType = _interopRequireDefault(require("./lib/isMimeType"));
+
+var _isLatLong = _interopRequireDefault(require("./lib/isLatLong"));
+
+var _isPostalCode = _interopRequireWildcard(require("./lib/isPostalCode"));
+
+var _ltrim = _interopRequireDefault(require("./lib/ltrim"));
+
+var _rtrim = _interopRequireDefault(require("./lib/rtrim"));
+
+var _trim = _interopRequireDefault(require("./lib/trim"));
+
+var _escape = _interopRequireDefault(require("./lib/escape"));
+
+var _unescape = _interopRequireDefault(require("./lib/unescape"));
+
+var _stripLow = _interopRequireDefault(require("./lib/stripLow"));
+
+var _whitelist = _interopRequireDefault(require("./lib/whitelist"));
+
+var _blacklist = _interopRequireDefault(require("./lib/blacklist"));
+
+var _isWhitelisted = _interopRequireDefault(require("./lib/isWhitelisted"));
+
+var _normalizeEmail = _interopRequireDefault(require("./lib/normalizeEmail"));
+
+var _isSlug = _interopRequireDefault(require("./lib/isSlug"));
+
+var _isLicensePlate = _interopRequireDefault(require("./lib/isLicensePlate"));
+
+var _isStrongPassword = _interopRequireDefault(require("./lib/isStrongPassword"));
+
+var _isVAT = _interopRequireDefault(require("./lib/isVAT"));
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var version = '13.6.0';
+var validator = {
+  version: version,
+  toDate: _toDate.default,
+  toFloat: _toFloat.default,
+  toInt: _toInt.default,
+  toBoolean: _toBoolean.default,
+  equals: _equals.default,
+  contains: _contains.default,
+  matches: _matches.default,
+  isEmail: _isEmail.default,
+  isURL: _isURL.default,
+  isMACAddress: _isMACAddress.default,
+  isIP: _isIP.default,
+  isIPRange: _isIPRange.default,
+  isFQDN: _isFQDN.default,
+  isBoolean: _isBoolean.default,
+  isIBAN: _isIBAN.default,
+  isBIC: _isBIC.default,
+  isAlpha: _isAlpha.default,
+  isAlphaLocales: _isAlpha.locales,
+  isAlphanumeric: _isAlphanumeric.default,
+  isAlphanumericLocales: _isAlphanumeric.locales,
+  isNumeric: _isNumeric.default,
+  isPassportNumber: _isPassportNumber.default,
+  isPort: _isPort.default,
+  isLowercase: _isLowercase.default,
+  isUppercase: _isUppercase.default,
+  isAscii: _isAscii.default,
+  isFullWidth: _isFullWidth.default,
+  isHalfWidth: _isHalfWidth.default,
+  isVariableWidth: _isVariableWidth.default,
+  isMultibyte: _isMultibyte.default,
+  isSemVer: _isSemVer.default,
+  isSurrogatePair: _isSurrogatePair.default,
+  isInt: _isInt.default,
+  isIMEI: _isIMEI.default,
+  isFloat: _isFloat.default,
+  isFloatLocales: _isFloat.locales,
+  isDecimal: _isDecimal.default,
+  isHexadecimal: _isHexadecimal.default,
+  isOctal: _isOctal.default,
+  isDivisibleBy: _isDivisibleBy.default,
+  isHexColor: _isHexColor.default,
+  isRgbColor: _isRgbColor.default,
+  isHSL: _isHSL.default,
+  isISRC: _isISRC.default,
+  isMD5: _isMD.default,
+  isHash: _isHash.default,
+  isJWT: _isJWT.default,
+  isJSON: _isJSON.default,
+  isEmpty: _isEmpty.default,
+  isLength: _isLength.default,
+  isLocale: _isLocale.default,
+  isByteLength: _isByteLength.default,
+  isUUID: _isUUID.default,
+  isMongoId: _isMongoId.default,
+  isAfter: _isAfter.default,
+  isBefore: _isBefore.default,
+  isIn: _isIn.default,
+  isCreditCard: _isCreditCard.default,
+  isIdentityCard: _isIdentityCard.default,
+  isEAN: _isEAN.default,
+  isISIN: _isISIN.default,
+  isISBN: _isISBN.default,
+  isISSN: _isISSN.default,
+  isMobilePhone: _isMobilePhone.default,
+  isMobilePhoneLocales: _isMobilePhone.locales,
+  isPostalCode: _isPostalCode.default,
+  isPostalCodeLocales: _isPostalCode.locales,
+  isEthereumAddress: _isEthereumAddress.default,
+  isCurrency: _isCurrency.default,
+  isBtcAddress: _isBtcAddress.default,
+  isISO8601: _isISO.default,
+  isRFC3339: _isRFC.default,
+  isISO31661Alpha2: _isISO31661Alpha.default,
+  isISO31661Alpha3: _isISO31661Alpha2.default,
+  isBase32: _isBase.default,
+  isBase58: _isBase2.default,
+  isBase64: _isBase3.default,
+  isDataURI: _isDataURI.default,
+  isMagnetURI: _isMagnetURI.default,
+  isMimeType: _isMimeType.default,
+  isLatLong: _isLatLong.default,
+  ltrim: _ltrim.default,
+  rtrim: _rtrim.default,
+  trim: _trim.default,
+  escape: _escape.default,
+  unescape: _unescape.default,
+  stripLow: _stripLow.default,
+  whitelist: _whitelist.default,
+  blacklist: _blacklist.default,
+  isWhitelisted: _isWhitelisted.default,
+  normalizeEmail: _normalizeEmail.default,
+  toString: toString,
+  isSlug: _isSlug.default,
+  isStrongPassword: _isStrongPassword.default,
+  isTaxID: _isTaxID.default,
+  isDate: _isDate.default,
+  isLicensePlate: _isLicensePlate.default,
+  isVAT: _isVAT.default
+};
+var _default = validator;
+exports.default = _default;
+module.exports = exports.default;
+module.exports.default = exports.default;

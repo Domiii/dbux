@@ -161,7 +161,7 @@ export default class ProgramMonitor {
 
   popProgram = () => {
     // finished initializing the program
-    return this.popImmediate(this.getProgramId(), this._programContextId, ProgramEndTraceId);
+    return this.popImmediate(this._programContextId, ProgramEndTraceId);
   }
 
   // ###########################################################################

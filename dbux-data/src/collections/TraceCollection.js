@@ -217,7 +217,7 @@ export default class TraceCollection extends Collection {
             }
             else {
               // the call trace caused the error
-              trace.staticTraceId = callTrace.staticTraceId;
+              // trace.staticTraceId = callTrace.staticTraceId;
             }
           }
           else {
@@ -226,13 +226,13 @@ export default class TraceCollection extends Collection {
               // the last trace we saw was a successful function call. 
               //    -> error was caused by next trace after that function call.
               const resultTrace = this.dp.collections.traces.getById(resultCallId);
-              trace.staticTraceId = resultTrace.staticTraceId + 1;
+              // trace.staticTraceId = resultTrace.staticTraceId + 1;
               // trace.staticTraceId = resultTrace.staticTraceId;
             }
             else {
               // trace.staticTraceId = staticTraceId + 1;
 
-              trace.staticTraceId = staticTraceId;
+              // trace.staticTraceId = staticTraceId;
             }
           }
         }
@@ -240,8 +240,8 @@ export default class TraceCollection extends Collection {
     }
     finally {
       if (errorTraces) {
-        let msg = errorTraces.map(t => `\n ${this.dp.util.makeTraceInfo(t)}`).join('\n ');
-        this.logger.debug(`#### ${errorTraces.length} ERROR traces ####${msg}`);
+        let msg = errorTraces.map(t => `${this.dp.util.makeTraceInfo(t)}`).join('\n ');
+        this.logger.debug(`#### ${errorTraces.length} ERROR traces ####\n ${msg}`);
       }
     }
   }
