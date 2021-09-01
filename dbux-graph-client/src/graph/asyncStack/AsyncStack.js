@@ -6,7 +6,7 @@ import ClientComponentEndpoint from '../../componentLib/ClientComponentEndpoint'
 class AsyncStack extends ClientComponentEndpoint {
   createEl() {
     return compileHtmlElement(/*html*/`
-      <div>
+      <div class="graph-root">
         <div data-mount="GraphRoot"></div>
       </div
     `);

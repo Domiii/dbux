@@ -1,45 +1,36 @@
 import NanoEvents from 'nanoevents';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
+import GraphType from '@dbux/graph-common/src/shared/GraphType';
+import GraphMode, { getEnabledGraphTypesByMode } from '@dbux/graph-common/src/shared/GraphMode';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
-import HighlightManager from './controllers/HighlightManager';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
-import GraphRoot from './GraphRoot';
-import Toolbar from './Toolbar';
-import AsyncGraph from './asyncGraph/AsyncGraph';
-import PopperManager from './controllers/PopperManager';
 
 class GraphDocument extends HostComponentEndpoint {
-  toolbar;
-  // minimap;
-
   // ###########################################################################
   // init
   // ###########################################################################
-
   init() {
     this._emitter = new NanoEvents();
-    this.state.asyncGraphMode = true;
+    this.state.graphMode = GraphMode.SyncGraph;
 
     this.createOwnComponents();
-    // register event listeners
-    this.addDisposable(
-      allApplications.selection.onApplicationsChanged(() => {
-        this.graphRoot.updateRunNodes();
-      })
-    );
+
+    // TODO-M refresh graphs when `allApplications.selection.onApplicationsChanged`
   }
 
   createOwnComponents() {
-    // TODO: changed ti toolbar + graph containers
-    this.controllers.createComponent(PopperManager);
-    this.controllers.createComponent(HighlightManager);
-    this.controllers.createComponent('ZoomBar');
-    this.asyncGraph = this.children.createComponent(AsyncGraph);
-    this.graphRoot = this.children.createComponent(GraphRoot);
-    this.toolbar = this.children.createComponent(Toolbar);
-    // this.minimap = this.children.createComponent(MiniMap);
+    // TODO-M: add toolbar register system
+    this.controllers.createComponent('PopperManager');
+    this.syncGraph = this.children.createComponent('GraphContainer', { graphType: GraphType.SyncGraph }).graph;
+    this.asyncGraph = this.children.createComponent('GraphContainer', { graphType: GraphType.AsyncGraph }).graph;
+    this.asyncStack = this.children.createComponent('GraphContainer', { graphType: GraphType.AsyncStack }).graph;
+    this.toolbar = this.children.createComponent('Toolbar');
   }
+
+  /** ########################################
+   * util
+   *  ######################################*/
 
   getIconUri(fileName, modeName) {
     if (!fileName) {
@@ -53,24 +44,39 @@ class GraphDocument extends HostComponentEndpoint {
   }
 
   // ###########################################################################
-  // async graph mode
+  // graph management
   // ###########################################################################
 
-  get asyncGraphMode() {
-    return this.state.asyncGraphMode;
+  nextGraphMode() {
+    this.setGraphMode(GraphMode.nextValue(this.state.graphMode));
   }
 
-  setAsyncGraphMode(mode) {
-    if (this.asyncGraphMode !== mode) {
-      this.setState({ asyncGraphMode: mode });
-      this.asyncGraph.refresh();
-      this.graphRoot.updateRunNodes();
-      this._emitter.emit('asyncGraphModeChanged', mode);
+  setGraphMode(mode) {
+    if (this.state.graphMode !== mode) {
+      this.setState({ graphMode: mode });
+      const enabledGraphTypes = getEnabledGraphTypesByMode(mode);
+      this.refreshGraphs(enabledGraphTypes);
+      this._emitter.emit('graphModeChanged', mode);
     }
   }
 
-  onAsyncGraphModeChanged(cb) {
-    return this._emitter.on('asyncGraphModeChanged', cb);
+  refreshGraphs(enabledGraphTypes) {
+    enabledGraphTypes = new Set(enabledGraphTypes);
+    const graphContainers = this.children.getComponents('GraphContainer');
+    graphContainers.forEach((container) => {
+      if (enabledGraphTypes.has(container.state.graphType)) {
+        container.setState({ enabled: true });
+        container.graph.refresh();
+      }
+      else {
+        container.setState({ enabled: false });
+        container.graph.clear();
+      }
+    });
+  }
+
+  onGraphModeChanged(cb) {
+    return this._emitter.on('graphModeChanged', cb);
   }
 
   // ###########################################################################

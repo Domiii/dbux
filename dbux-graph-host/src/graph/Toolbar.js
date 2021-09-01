@@ -4,13 +4,14 @@ import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
 class Toolbar extends HostComponentEndpoint {
   init() {
-    this.state.followMode = this.focusController.followMode;
+    // TODO-M: use toolbar configuration in focus controller
+    this.state.followMode = true;
     this.state.locMode = true;
     this.state.callMode = false;
     this.state.valueMode = false;
     this.state.thinMode = false;
     this.state.hideNewMode = this.hiddenNodeManager.hideNewMode;
-    this.state.asyncGraphMode = this.context.graphDocument.asyncGraphMode;
+    this.state.graphMode = this.context.graphDocument.graphMode;
     this.state.asyncDetailMode = true;
     this.state.theradSelectionIconUri = this.context.graphDocument.getIconUri('filter.svg');
 
@@ -22,8 +23,8 @@ class Toolbar extends HostComponentEndpoint {
       });
     });
 
-    this.context.graphDocument.onAsyncGraphModeChanged(mode => {
-      this.setState({ asyncGraphMode: mode });
+    this.context.graphDocument.onGraphModeChanged(mode => {
+      this.setState({ graphMode: mode });
     });
 
     this.focusController.on('modeChanged', (mode) => {
@@ -39,13 +40,13 @@ class Toolbar extends HostComponentEndpoint {
   }
 
   get focusController() {
-    const graphRoot = this.parent.children.getComponent('GraphRoot');
-    return graphRoot.controllers.getComponent('FocusController');
+    const { syncGraph } = this.parent;
+    return syncGraph.controllers.getComponent('FocusController');
   }
 
   get hiddenNodeManager() {
-    const graphRoot = this.parent.children.getComponent('GraphRoot');
-    return graphRoot.controllers.getComponent('HiddenNodeManager');
+    const { syncGraph } = this.parent;
+    return syncGraph.controllers.getComponent('HiddenNodeManager');
   }
 
   public = {
@@ -61,8 +62,8 @@ class Toolbar extends HostComponentEndpoint {
       this.hiddenNodeManager.hideAfter(time);
     },
 
-    setAsyncGraphMode(mode) {
-      this.context.graphDocument.setAsyncGraphMode(mode);
+    nextGraphMode() {
+      this.context.graphDocument.nextGraphMode();
     },
 
     searchContexts(searchTermContexts) {

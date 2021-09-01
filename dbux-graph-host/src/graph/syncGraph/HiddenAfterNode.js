@@ -1,4 +1,4 @@
-import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
+import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
 export default class HiddenAfterNode extends HostComponentEndpoint {
   init() {

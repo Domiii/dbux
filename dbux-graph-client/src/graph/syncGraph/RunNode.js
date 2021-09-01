@@ -1,5 +1,5 @@
-import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
-import { compileHtmlElement } from '../util/domUtil';
+import ClientComponentEndpoint from '../../componentLib/ClientComponentEndpoint';
+import { compileHtmlElement } from '../../util/domUtil';
 
 class RunNode extends ClientComponentEndpoint {
   createEl() {

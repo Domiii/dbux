@@ -1,12 +1,13 @@
-
-const ContextNode = require('./ContextNode').default;
-const RootContextNode = require('./RootContextNode').default;
 const GraphDocument = require('./GraphDocument').default;
-const GraphRoot = require('./GraphRoot').default;
+const GraphContainer = require('./GraphContainer').default;
+const SyncGraph = require('./SyncGraphBase').default;
+const RunNode = require('./syncGraph/RunNode').default;
+const RootContextNode = require('./syncGraph/RootContextNode').default;
+const ContextNode = require('./syncGraph/ContextNode').default;
+const HiddenAfterNode = require('./syncGraph/HiddenAfterNode').default;
+const HiddenBeforeNode = require('./syncGraph/HiddenBeforeNode').default;
 const AsyncGraph = require('./asyncGraph/AsyncGraph').default;
-const AsyncStack = require('./asyncGraph/AsyncStack').default;
-const HiddenAfterNode = require('./HiddenAfterNode').default;
-const HiddenBeforeNode = require('./HiddenBeforeNode').default;
+const AsyncStack = require('./asyncStack/AsyncStack').default;
 const ContextNodeManager = require('./controllers/ContextNodeManager').default;
 const FocusController = require('./controllers/FocusController').default;
 const PopperController = require('./controllers/PopperController').default;
@@ -15,16 +16,16 @@ const GraphNode = require('./controllers/GraphNode').default;
 const HiddenNodeManager = require('./controllers/HiddenNodeManager').default;
 const Highlighter = require('./controllers/Highlighter').default;
 const HighlightManager = require('./controllers/HighlightManager').default;
-const RunNode = require('./RunNode').default;
 const Toolbar = require('./Toolbar').default;
-const MiniMap = require('./MiniMap').default;
 const ZoomBar = require('./ZoomBar').default;
+// const MiniMap = require('./MiniMap').default;
 
 export default {
   ContextNode,
   RootContextNode,
   GraphDocument,
-  GraphRoot,
+  GraphContainer,
+  SyncGraph,
   AsyncGraph,
   AsyncStack,
   HiddenAfterNode,
@@ -32,7 +33,7 @@ export default {
   GraphNode,
   RunNode,
   Toolbar,
-  MiniMap,
+  // MiniMap,
   ZoomBar,
   ContextNodeManager,
   FocusController,

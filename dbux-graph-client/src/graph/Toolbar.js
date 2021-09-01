@@ -1,4 +1,5 @@
 import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
+import GraphMode from '@dbux/graph-common/src/shared/GraphMode';
 import { compileHtmlElement, decorateClasses, decorateAttr } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
@@ -22,7 +23,7 @@ class Toolbar extends ClientComponentEndpoint {
           <button title="Thin mode" data-el="thinModeBtn" class="no-horizontal-padding btn btn-info" href="#"></button>
           <button title="Search for contexts by name" data-el="searchContextsBtn" class="btn btn-info" href="#">🔍</button>
           <button title="Search for traces by name" data-el="searchTracesBtn" class="btn btn-info" href="#">🔍+</button>
-          <button title="Toggle Async Graph Mode" data-el="asyncGraphModeBtn" class="btn btn-info" href="#">async</button>
+          <button title="Toggle Async Graph Mode" data-el="graphModeBtn" class="btn btn-info" href="#">async</button>
           <button title="Toggle Async Detail" data-el="asyncDetailModeBtn" class="btn btn-info" href="#">detail</button>
           <button title="Clear Thread Selection" data-el="clearThreadSelectionBtn" class="btn btn-info" href="#">
             <img width="12px" src="${this.state.theradSelectionIconUri}" />
@@ -84,7 +85,7 @@ class Toolbar extends ClientComponentEndpoint {
       hideNewMode,
       searchTermContexts,
       searchTermTraces,
-      asyncGraphMode,
+      graphMode,
       asyncDetailMode,
       isThreadSelectionActive
     } = this.state;
@@ -113,8 +114,8 @@ class Toolbar extends ClientComponentEndpoint {
     decorateClasses(this.els.hideNewRunBtn, {
       active: !hideNewMode
     });
-    decorateClasses(this.els.asyncGraphModeBtn, {
-      active: !!asyncGraphMode
+    decorateClasses(this.els.graphModeBtn, {
+      active: graphMode === GraphMode.AsyncGraph
     });
     decorateClasses(this.els.asyncDetailModeBtn, {
       active: !!asyncDetailMode
@@ -244,11 +245,10 @@ class Toolbar extends ClientComponentEndpoint {
       focus(evt) { evt.target.blur(); }
     },
 
-    asyncGraphModeBtn: {
+    graphModeBtn: {
       click(evt) {
         evt.preventDefault();
-        const mode = !this.state.asyncGraphMode;
-        this.remote.setAsyncGraphMode(mode);
+        this.remote.nextGraphMode();
       },
       focus(evt) { evt.target.blur(); }
     },

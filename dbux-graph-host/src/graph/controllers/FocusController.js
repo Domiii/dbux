@@ -17,7 +17,7 @@ export default class FocusController extends HostComponentEndpoint {
   lastHighlighter;
 
   get highlightManager() {
-    return this.context.graphDocument.controllers.getComponent('HighlightManager');
+    return this.context.graphContainer.controllers.getComponent('HighlightManager');
   }
 
   get hiddenNodeManager() {
@@ -34,8 +34,9 @@ export default class FocusController extends HostComponentEndpoint {
       this.lastHighlighter = null;
     });
 
-    this.hiddenNodeManager.onStateChanged(this.handleHiddenNodeChanged);
-    this.context.graphDocument.onAsyncGraphModeChanged(this.handleTraceSelected);
+    // TODO-M: bring this back
+    // this.hiddenNodeManager.onStateChanged(this.handleHiddenNodeChanged);
+    this.context.graphDocument.onGraphModeChanged(this.handleTraceSelected);
 
     const unbindSubscription = traceSelection.onTraceSelectionChanged(this.handleTraceSelected);
     this.addDisposable(unbindSubscription);
@@ -54,7 +55,7 @@ export default class FocusController extends HostComponentEndpoint {
     const trace = traceSelection.selected;
     try {
       await this.waitForInit();
-      if (this.context.graphDocument.asyncGraphMode) {
+      if (this.context.graphDocument.graphMode) {
         // goto async node of trace
         let asyncNode;
         if (trace) {

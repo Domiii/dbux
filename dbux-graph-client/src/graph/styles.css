@@ -218,11 +218,9 @@ div {
  * ############################################################################ */
 
 .async-graph {
-  /* grid-template-rows: minmax(2ch, 10ch) 1fr 1fr; */
-  grid-template-columns: 2fr minmax(200px, 1fr);
   grid-template-areas: 
-    "header header"
-    "main stack";
+    "header"
+    "main";
 }
 
 .async-grid {
@@ -445,14 +443,14 @@ div {
  * minimap
  * ############################################################################ */
 
-#minimap {
+/* #minimap {
   position: fixed;
   display: block;
   right: 10px;
   top: 60px;
   border: 2px solid black;
   background: black;
-}
+} */
 
 /** ###########################################################################
  * highlighter
@@ -512,7 +510,7 @@ body:not(.theme-mode-dark) .highlight {
 }
 
 /** ###########################################################################
- * tooltips
+ * popper.js
  * ############################################################################ */
 
 #tooltip {
@@ -524,22 +522,22 @@ body:not(.theme-mode-dark) .highlight {
   border-radius: 4px;
 }
 
-#arrow, #arrow::before {
+/* #arrow, #arrow::before {
   position: absolute;
   width: 8px;
   height: 8px;
   z-index: -1;
-}
+} */
 
-#arrow::before {
+/* #arrow::before {
   content: '';
   transform: rotate(45deg);
   background: #333;
-}
+} */
 
-#tooltip[data-popper-placement^='bottom']>#arrow {
+/* #tooltip[data-popper-placement^='bottom']>#arrow {
   top: -4px;
-}
+} */
 
 #tooltip {
   /* ... */

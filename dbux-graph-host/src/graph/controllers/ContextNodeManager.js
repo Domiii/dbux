@@ -24,7 +24,7 @@ export default class ContextNodeManager extends HostComponentEndpoint {
     this.selectorType = null;
     this.contextNodes = null;
 
-    const highlightManager = this.context.graphDocument.controllers.getComponent('HighlightManager');
+    const highlightManager = this.context.graphContainer.controllers.getComponent('HighlightManager');
     highlightManager.on('clear', () => {
       this.selector = null;
       this.selectorType = null;

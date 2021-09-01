@@ -5,7 +5,7 @@ import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { makeTraceValueLabel, makeTraceLabel, makeContextLocLabel, makeTraceLocLabel, makeContextLabel, makeContextCallerLabel } from '@dbux/data/src/helpers/makeLabels';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
-import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
+import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
 class ContextNode extends HostComponentEndpoint {
   init() {

@@ -1,7 +1,7 @@
 import { compileHtmlElement } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
-class GraphRoot extends ClientComponentEndpoint {
+class SyncGraphBase extends ClientComponentEndpoint {
   createEl() {
     return compileHtmlElement(/*html*/`
       <div class="graph-root">
@@ -29,21 +29,13 @@ class GraphRoot extends ClientComponentEndpoint {
   }
 
   update() {
-    const { asyncGraphMode } = this.context.graphDocument.state;
-    const { preferAsyncMode } = this.state;
-    if (preferAsyncMode === asyncGraphMode) {
-      this.el.classList.remove('hidden');
-      const { applications } = this.state;
-      if (applications?.length) {
-        this.els.applications.textContent = ` ${applications.map(app => app.name).join('\n ')}`;
-      }
-      else {
-        this.els.applications.textContent = '(no applications selected)';
-      }
+    const { applications } = this.state;
+    if (applications?.length) {
+      this.els.applications.textContent = ` ${applications.map(app => app.name).join('\n ')}`;
     }
     else {
-      this.el.classList.add('hidden');
+      this.els.applications.textContent = '(no applications selected)';
     }
   }
 }
-export default GraphRoot;
+export default SyncGraphBase;

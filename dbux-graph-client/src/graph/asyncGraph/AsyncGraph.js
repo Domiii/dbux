@@ -48,7 +48,6 @@ class AsyncGraph extends ClientComponentEndpoint {
           <pre data-el="applications"></pre>
         </div>
         <div data-el="main" style="grid-area:main;" class="grid grid-center async-grid"></div>
-        <div data-mount="AsyncStack" style="grid-area:stack;" class="async-stack"></div>
       </div>
     `);
   }
@@ -99,16 +98,9 @@ class AsyncGraph extends ClientComponentEndpoint {
   }
 
   update() {
-    const { asyncGraphMode } = this.context.graphDocument.state;
-    if (!asyncGraphMode) {
-      this.el.classList.add('hidden');
-    }
-    else {
-      this.el.classList.remove('hidden');
-      this.updateNodeDataMap();
-      this.setUpApplications();
-      this.setUpAsyncNodes();
-    }
+    this.updateNodeDataMap();
+    this.setUpApplications();
+    this.setUpAsyncNodes();
   }
 
   updateNodeDataMap() {

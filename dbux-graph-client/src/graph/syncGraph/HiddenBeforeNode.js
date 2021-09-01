@@ -1,7 +1,7 @@
-import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
-import { compileHtmlElement } from '../util/domUtil';
+import ClientComponentEndpoint from '../../componentLib/ClientComponentEndpoint';
+import { compileHtmlElement } from '../../util/domUtil';
 
-export default class HiddenAfterNode extends ClientComponentEndpoint {
+export default class HiddenBeforeNode extends ClientComponentEndpoint {
   createEl() {
     const el = compileHtmlElement(/*html*/`
       <div class="run-node hidden-run-node width-fit graph-node">
@@ -33,7 +33,7 @@ export default class HiddenAfterNode extends ClientComponentEndpoint {
   on = {
     label: {
       click() {
-        this.remote.hideAfter(false);
+        this.remote.hideBefore(false);
       }
     }
   }

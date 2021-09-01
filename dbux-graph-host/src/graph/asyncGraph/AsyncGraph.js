@@ -15,7 +15,6 @@ class AsyncGraph extends HostComponentEndpoint {
     this._emitter = new NanoEvents();
     this._unsubscribeOnNewData = [];
 
-    this.asyncStack = this.children.createComponent('AsyncStack');
     this.controllers.createComponent('PopperController');
 
     // register event listeners
@@ -36,7 +35,7 @@ class AsyncGraph extends HostComponentEndpoint {
 
   handleRefresh() {
     let children = EmptyArray;
-    if (this.context.graphDocument.asyncGraphMode) {
+    if (this.context.graphDocument.graphMode) {
       children = this.makeChildNodes();
     }
     else {
@@ -46,7 +45,14 @@ class AsyncGraph extends HostComponentEndpoint {
     const applications = this.makeApplicationState(allApplications.selection.getAll());
     const { selectedApplicationId, selected } = allApplications.selection.data.threadSelection;
     this.setState({ children, applications, selectedApplicationId, selectedThreadIds: Array.from(selected) });
-    this.asyncStack.setState({});
+  }
+
+  clear() {
+    const children = EmptyArray;
+    const applications = EmptyArray;
+    const selectedApplicationId = null;
+    const selectedThreadIds = EmptyArray;
+    this.setState({ children, applications, selectedApplicationId, selectedThreadIds });
   }
 
   makeChildNodes() {

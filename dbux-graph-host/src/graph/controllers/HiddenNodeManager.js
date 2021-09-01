@@ -1,6 +1,6 @@
 import NanoEvents from 'nanoevents';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
-import RunNode from '../RunNode';
+import RunNode from '../syncGraph/RunNode';
 
 export default class HiddenNodeManager extends HostComponentEndpoint {
   init() {

@@ -17,7 +17,7 @@ export default class PopperManager extends ClientComponentEndpoint {
   init() {
     this.popper = null;
     this.tooltipContainer = compileHtmlElement(`
-      <div data-el="toolTip" id="tooltip" role="tooltip">
+      <div id="tooltip" role="tooltip">
         <span></span>
         <!--<div id="arrow" data-popper-arrow></div>-->
       </div>`

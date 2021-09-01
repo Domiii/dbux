@@ -4,53 +4,11 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
-import RunNode from './RunNode';
-import ContextNode from './ContextNode';
+import RunNode from './syncGraph/RunNode';
+import ContextNode from './syncGraph/ContextNode';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('GraphRoot');
-
-export class RunNodeMap {
-  constructor() {
-    this._all = new Map();
-  }
-
-  set(applicationId, runId, node) {
-    this._all.set(this.makeKey(applicationId, runId), node);
-  }
-
-  delete(applicationId, runId) {
-    this._all.delete(this.makeKey(applicationId, runId));
-  }
-
-  /**
-   * @return {RunNode}
-   */
-  get(applicationId, runId) {
-    return this._all.get(this.makeKey(applicationId, runId));
-  }
-
-  has(applicationId, runId) {
-    return !!this.get(applicationId, runId);
-  }
-
-  *getApplicationIds() {
-    for (const runNode of this.getAll()) {
-      yield runNode.state.applicationId;
-    }
-  }
-
-  /**
-   * @return {RunNode[]}
-   */
-  getAll() {
-    return this._all.values();
-  }
-
-  makeKey(appId, runId) {
-    return `${appId}_${runId}`;
-  }
-}
 
 class GraphRoot extends HostComponentEndpoint {
   /**
@@ -59,12 +17,8 @@ class GraphRoot extends HostComponentEndpoint {
   contextNodesByContext;
 
   init() {
-    this.runNodesById = new RunNodeMap();
     this.contextNodesByContext = new Map();
     this.state.applications = [];
-    if (!('preferAsyncMode' in this.state)) {
-      this.state.preferAsyncMode = false;
-    }
     this._emitter = new NanoEvents();
     this._unsubscribeOnNewData = [];
 
@@ -73,25 +27,26 @@ class GraphRoot extends HostComponentEndpoint {
       hasChildren: true
     });
     this.controllers.createComponent('ContextNodeManager');
-    this.controllers.createComponent('HiddenNodeManager');
     this.controllers.createComponent('PopperController');
     this.controllers.createComponent('FocusController');
 
-    this.children.createComponent('HiddenBeforeNode');
-    this.children.createComponent('HiddenAfterNode');
+    // this.updateRunNodes();
+  }
 
-    // // register event listeners
-    // this.addDisposable(
-    //   allApplications.selection.onApplicationsChanged(() => {
-    //     this.updateRunNodes();
-    //   })
-    // );
+  /** ###########################################################################
+   * public interface
+   *  #########################################################################*/
 
+  handleRefresh() {
     this.updateRunNodes();
   }
 
+  clear() {
+    this.removeAllRunNode();
+  }
+
   updateRunNodes() {
-    if (this.context.graphDocument.asyncGraphMode === this.state.preferAsyncMode) {
+    if (this.context.graphDocument.graphMode === this.state.preferAsyncMode) {
       // oldApps
       const oldAppIds = new Set(this.runNodesById.getApplicationIds());
       const newAppIds = new Set(allApplications.selection.getAll().map(app => app.applicationId));
