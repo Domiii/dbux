@@ -1,11 +1,8 @@
-
-import { logWarn, newLogger } from '@dbux/common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 import Stack from './Stack';
 import traceCollection from './data/traceCollection';
 import scheduleNextPossibleRun from './scheduleNextPossibleRun';
 import RuntimeAsync from './async/RuntimeAsync';
-import executionContextCollection from './data/executionContextCollection';
-import { getDefaultClient } from './client/index';
 
 // import ExecutionContextType from '@dbux/common/src/types/constants/ExecutionContextType';
 // import executionContextCollection from './data/executionContextCollection';
@@ -13,7 +10,7 @@ import { getDefaultClient } from './client/index';
 
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError, trace } = newLogger('Runtime');
+const { log, debug, warn, error: logError, trace: logTrace } = newLogger('Runtime');
 
 // function mergeStacks(dst, src) {
 //   if ((src?.getDepth() || 0) > 0) {
@@ -357,7 +354,7 @@ export default class Runtime {
         // it's not on this stack -> probably coming back from an unhandled interrupt (probably should never happen?)
         stack = this.resumeWaitingStack(contextId);
         if (!stack) {
-          logError(`Could not pop contextId off stack`, contextId);
+          logError(`Could not pop contextId ${contextId} off stack: ${this._executingStack?._stack}`);
           return -1;
         }
         stackPos = this._popAnywhere(contextId);
@@ -461,7 +458,10 @@ export default class Runtime {
    */
   resumeWaitingStack(resumeContextId) {
     const waitingStack = this._switchStack(resumeContextId);
-    if (!waitingStack) { return null; }
+    if (!waitingStack) {
+      logTrace('resumeWaitingStack called on unregistered `resumeContextId`:', resumeContextId);
+      return null;
+    }
 
     // pop the await/yield context
     this._markResume(resumeContextId);
@@ -473,7 +473,6 @@ export default class Runtime {
   _switchStack(contextId) {
     const waitingStack = this._waitingStacks.get(contextId);
     if (!waitingStack) {
-      logError('Could not resume waiting stack (is not registered):', contextId);
       return null;
     }
 
@@ -485,7 +484,7 @@ export default class Runtime {
     if (oldStack !== waitingStack) {
       if (this.isExecuting()) {
         // eslint-disable-next-line max-len,no-console
-        trace(`resume received while already executing (${this._executingStack?.length}) - not handled properly yet. Discarding executing stack.\noldStack (${oldStack.length}) = ${oldStack._stack?.join(',')}\nwaitingStack (${waitingStack.length}) = ${waitingStack._stack?.join(',')}`);
+        logTrace(`resume received while already executing (${this._executingStack?.length}) - not handled properly yet. Discarding executing stack.\noldStack (${oldStack.length}) = ${oldStack._stack?.join(',')}\nwaitingStack (${waitingStack.length}) = ${waitingStack._stack?.join(',')}`);
         this.interrupt();
       }
 

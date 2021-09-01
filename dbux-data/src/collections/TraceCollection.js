@@ -240,8 +240,8 @@ export default class TraceCollection extends Collection {
     }
     finally {
       if (errorTraces) {
-        let msg = errorTraces.map(t => `\n ${this.dp.util.makeTraceInfo(t)}`).join('\n ');
-        this.logger.debug(`#### ${errorTraces.length} ERROR traces ####${msg}`);
+        let msg = errorTraces.map(t => `${this.dp.util.makeTraceInfo(t)}`).join('\n ');
+        this.logger.debug(`#### ${errorTraces.length} ERROR traces ####\n ${msg}`);
       }
     }
   }

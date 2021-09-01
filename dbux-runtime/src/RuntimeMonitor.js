@@ -1,11 +1,11 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import ExecutionContextType from '@dbux/common/src/types/constants/ExecutionContextType';
 import { isBeforeCallExpression, isPopTrace } from '@dbux/common/src/types/constants/TraceType';
-import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
 // import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import isThenable from '@dbux/common/src/util/isThenable';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import NestedError from '@dbux/common/src/NestedError';
 import staticProgramContextCollection from './data/staticProgramContextCollection';
 import executionContextCollection from './data/executionContextCollection';
 import staticContextCollection from './data/staticContextCollection';
@@ -19,14 +19,13 @@ import initPatchBuiltins from './builtIns/index';
 import CallbackPatcher from './async/CallbackPatcher';
 import initPatchPromise from './async/promisePatcher';
 import { getTraceStaticTrace } from './data/dataUtil';
-import { getDefaultClient } from './client/index';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError, trace: logTrace } = newLogger('RuntimeMonitor');
 
-const Verbose = 2;
+// const Verbose = 2;
 // const Verbose = 1;
-// const Verbose = 0;
+const Verbose = 0;
 
 const debug = (...args) => Verbose && _debug(...args);
 
@@ -167,7 +166,7 @@ export default class RuntimeMonitor {
       debug(
         // ${JSON.stringify(staticContext)}
         // eslint-disable-next-line max-len
-        `-> Immediate ${contextId} ${staticProgramContextCollection.getById(programId).filePath} ${staticContext?.displayName} (pid=${programId}, runId=${runId}, cid=${contextId}, pcid=${parentContextId})`
+        `-> Immediate ${contextId} ${staticProgramContextCollection.getById(programId).fileName} ${staticContext?.displayName} (pid=${programId}, runId=${runId}, cid=${contextId}, pcid=${parentContextId})`
       );
     }
 
@@ -201,7 +200,12 @@ export default class RuntimeMonitor {
     // this.checkErrorOnFunctionExit(contextId, inProgramStaticTraceId);
     this._fixContext(programId, realContextId, awaitContextId);
     if (!this.areTracesDisabled) {
-      this.newTraceId(programId, inProgramStaticTraceId);
+      try {
+        this.newTraceId(programId, inProgramStaticTraceId);
+      }
+      catch (err) {
+        throw new NestedError(`"popFunction" failed at context "${executionContextCollection.makeContextInfo(realContextId)}"`, err);
+      }
     }
     return this.popImmediate(programId, realContextId);
   }
@@ -228,7 +232,7 @@ export default class RuntimeMonitor {
       const staticContext = staticContextCollection.getById(staticContextId);
       debug(
         // ${JSON.stringify(staticContext)}
-        `<- Immediate ${staticProgramContextCollection.getById(programId).fileName} ${staticContext?.displayName}`
+        `<- Immediate ${contextId} ${staticContext?.displayName} @${staticProgramContextCollection.getById(programId).fileName}`
       );
     }
 
@@ -848,6 +852,7 @@ export default class RuntimeMonitor {
 
   _fixContext(programId, realContextId, awaitContextId) {
     if (awaitContextId && this.runtime.isContextWaiting(awaitContextId)) {
+      debug(`fixContext(${[programId, realContextId, awaitContextId]})`);
       this.postAwait(programId, undefined, undefined, awaitContextId);
     }
   }

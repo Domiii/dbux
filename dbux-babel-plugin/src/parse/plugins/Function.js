@@ -8,7 +8,7 @@ import { buildWrapTryFinally, buildBlock } from '../../instrumentation/builders/
 import { injectContextEndTrace } from '../../instrumentation/context';
 import { buildTraceId } from '../../instrumentation/builders/traceId';
 import { buildRegisterParams } from '../../instrumentation/builders/function';
-
+import { locToString } from 'src/helpers/locHelpers';
 
 function addContextTrace(bodyPath, state, type) {
   const { scope } = bodyPath;
@@ -112,7 +112,7 @@ export default class Function extends BasePlugin {
       displayName,
       isInterruptable
     };
-    
+
     // this.node.getPlugin('StaticContext')
 
     /** ########################################
@@ -121,7 +121,7 @@ export default class Function extends BasePlugin {
 
     const staticContextId = state.contexts.addStaticContext(path, staticContextData);
     // const pushTraceCfg = addContextTrace(bodyPath, state, TraceType.PushImmediate);
-    
+
     // TODO: use `const pushTrace = Traces.addTrace` instead
     const staticPushTid = state.traces.addTrace(
       bodyPath,
@@ -175,6 +175,17 @@ export default class Function extends BasePlugin {
         instrument: this.doInstrument
       }
     });
+
+    // Verbose
+    // const { popTraceCfg: pop, staticContextId } = this.data;
+    // const { inProgramStaticTraceId } = pop;
+    // // const staticTrace = this.node.state.traces.getById(inProgramStaticTraceId);
+    // // const { displayName, loc } = staticTrace;
+    // const staticContext = this.node.state.contexts.getById(staticContextId);
+    // const { displayName, loc } = staticContext;
+    // const { filePath } = this.node.peekNodeForce('Program').staticProgramContext;
+    // const where = `${filePath}:${locToString(loc)}`;
+    // this.node.logger.debug(`[popFunction] #${inProgramStaticTraceId} @${where} "${displayName.replace(/\s+/g, ' ')}"`);
   }
 
 

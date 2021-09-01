@@ -3,6 +3,11 @@ import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
 import staticContextCollection from './staticContextCollection';
 import Collection from './Collection';
 import pools from './pools';
+import staticProgramContextCollection from './staticProgramContextCollection';
+
+export function locToString(loc) {
+  return `${loc.start.line}:${loc.start.column}`;
+}
 
 
 export class ExecutionContextCollection extends Collection {
@@ -47,6 +52,19 @@ export class ExecutionContextCollection extends Collection {
       lastContext = this.getById(lastContext.parentContextId);
     }
     return lastContext;
+  }
+
+  makeContextInfo(contextId) {
+    const context = this.getById(contextId);
+    if (!context) {
+      return `null (#${contextId})`;
+    }
+    const { contextType, staticContextId } = context;
+    const staticContext = staticContextCollection.getById(staticContextId);
+    const { displayName, loc, programId } = staticContext;
+    const program = staticProgramContextCollection.getById(programId);
+    const { filePath } = program;
+    return `[${ExecutionContextType.nameFrom(contextType)}] "${displayName}" (#${contextId}) @ ${filePath}:${locToString(loc)}`;
   }
 
   // ###########################################################################

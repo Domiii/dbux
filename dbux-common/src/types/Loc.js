@@ -1,4 +1,8 @@
 /**
+ * @file future-work: use Babel's own types instead.
+ */
+
+/**
  * NOTE: Babel does not name their `position`, so we name it `LocPos`
  */
 export class LocPos {

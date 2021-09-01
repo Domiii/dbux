@@ -6,7 +6,7 @@ set -e # cancel on error
 # set -x # verbose echo mode
 
 # fname="__samplesInput__/error-async4-catch"
-fname="__samplesInput__/functionExpression2"
+fname="__samplesInput__/tmp"
 
 
 
@@ -17,8 +17,8 @@ rootDir=$(node -e "console.log(require('path').resolve('$thisDirRelative'))") # 
 nodeArgsAlways="--stack-trace-limit=100"
 nodeArgs=""
 
-# dbuxArgs="--esnext"
-dbuxArgs=""
+dbuxArgs="--esnext"
+# dbuxArgs=""
 dbuxArgsI=""
 
 dbuxCmd="$1"

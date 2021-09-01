@@ -1,4 +1,4 @@
-/** @typedef {import('../Loc').default} Loc */
+/** @typedef {import('./Loc').default} Loc */
 
 export default class StaticContext {
   /**

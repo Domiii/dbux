@@ -90,7 +90,7 @@ export default class Program extends BaseNode {
     // debug(`babel-plugin: ${filePath}`);
 
     // staticProgramContext
-    const staticProgramContext = {
+    const staticProgramContext = this.staticProgramContext = {
       type: 1, // {StaticContextType}
       name: fileName,
       displayName: fileName,

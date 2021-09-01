@@ -28,6 +28,6 @@ async function f(i) {
   console.log(i, 'd');
 }
 
-for (let i = 0; i < 20; ++i) {
+for (let i = 0; i < 2; ++i) {
   f(i);
 }
