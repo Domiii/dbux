@@ -16,11 +16,21 @@ class GraphContainer extends HostComponentEndpoint {
     this.graph = this.children.createComponent(GraphClass);
   }
 
+  refreshGraph() {
+    if (this.graph.shouldBeEnabled()) {
+      this.setState({ enabled: true });
+      this.graph.refresh();
+    }
+    else {
+      this.setState({ enabled: false });
+      this.graph.clear();
+    }
+  }
+
   shared() {
     return {
       context: {
         graphContainer: this,
-        graphRoot: this.graph,
       }
     };
   }

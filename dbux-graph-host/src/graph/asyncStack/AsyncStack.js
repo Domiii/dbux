@@ -4,19 +4,18 @@ import SyncGraphBase from '../SyncGraphBase';
 
 class AsyncStack extends SyncGraphBase {
   init() {
-    // TODO-M: new methods to create children
+    super.init();
+
+    this.refresh();
   }
 
-  update() {
-    // this.graphRoot.updateRunNodes();
-  }
-
-  handleRefresh() {
-    this.logger.log('refreshed');
-  }
-
-  clear() {
-    this.logger.log('cleared');
+  shouldBeEnabled() {
+    if (this.context.graphDocument.toolbar.state.stackEnabled) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 }
 

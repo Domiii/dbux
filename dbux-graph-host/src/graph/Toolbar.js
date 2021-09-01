@@ -12,6 +12,7 @@ class Toolbar extends HostComponentEndpoint {
     this.state.thinMode = false;
     this.state.hideNewMode = this.hiddenNodeManager.hideNewMode;
     this.state.graphMode = this.context.graphDocument.graphMode;
+    this.state.stackEnabled = false;
     this.state.asyncDetailMode = true;
     this.state.theradSelectionIconUri = this.context.graphDocument.getIconUri('filter.svg');
 
@@ -40,13 +41,14 @@ class Toolbar extends HostComponentEndpoint {
   }
 
   get focusController() {
-    const { syncGraph } = this.parent;
-    return syncGraph.controllers.getComponent('FocusController');
+    // TODO-M: focusController
+    const { syncGraphContainer } = this.parent;
+    return syncGraphContainer.graph.controllers.getComponent('FocusController');
   }
 
   get hiddenNodeManager() {
-    const { syncGraph } = this.parent;
-    return syncGraph.controllers.getComponent('HiddenNodeManager');
+    const { syncGraphContainer } = this.parent;
+    return syncGraphContainer.graph.controllers.getComponent('HiddenNodeManager');
   }
 
   public = {
@@ -63,7 +65,12 @@ class Toolbar extends HostComponentEndpoint {
     },
 
     nextGraphMode() {
-      this.context.graphDocument.nextGraphMode();
+      this.parent.nextGraphMode();
+    },
+
+    toggleStackEnabled() {
+      this.setState({ stackEnabled: !this.state.stackEnabled });
+      this.parent.asyncStackContainer.refreshGraph();
     },
 
     searchContexts(searchTermContexts) {

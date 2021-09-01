@@ -1,29 +1,28 @@
-import NanoEvents from 'nanoevents';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection/index';
 import { makeContextLocLabel, makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
-import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
+import GraphMode from '@dbux/graph-common/src/shared/GraphMode';
+import GraphBase from '../GraphBase';
 
 /** @typedef {import('@dbux/data/src/applications/Application').default} Application */
 
-class AsyncGraph extends HostComponentEndpoint {
+class AsyncGraph extends GraphBase {
   init() {
     this.state.applications = [];
     // this.state.ascendingMode = false;
     this.state.ascendingMode = true;
-    this._emitter = new NanoEvents();
     this._unsubscribeOnNewData = [];
 
     this.controllers.createComponent('PopperController');
 
-    // register event listeners
-    this.addDisposable(
-      allApplications.selection.onApplicationsChanged(() => {
-        this.refresh();
-        this._resubscribeOnData();
-      })
-    );
+    // // register event listeners
+    // this.addDisposable(
+    //   allApplications.selection.onApplicationsChanged(() => {
+    //     this.refresh();
+    //     this._resubscribeOnData();
+    //   })
+    // );
     this.addDisposable(
       allApplications.selection.data.threadSelection.onSelectionChanged(() => {
         this.refresh();
@@ -33,18 +32,21 @@ class AsyncGraph extends HostComponentEndpoint {
     this.refresh();
   }
 
-  handleRefresh() {
-    let children = EmptyArray;
-    if (this.context.graphDocument.graphMode) {
-      children = this.makeChildNodes();
+  shouldBeEnabled() {
+    if (this.context.graphDocument.state.graphMode === GraphMode.AsyncGraph) {
+      return true;
     }
     else {
-      this.forceUpdate();
+      return false;
     }
+  }
 
+  handleRefresh() {
+    const children = this.makeChildNodes();
     const applications = this.makeApplicationState(allApplications.selection.getAll());
     const { selectedApplicationId, selected } = allApplications.selection.data.threadSelection;
     this.setState({ children, applications, selectedApplicationId, selectedThreadIds: Array.from(selected) });
+    this._resubscribeOnData();
   }
 
   clear() {
@@ -175,22 +177,10 @@ class AsyncGraph extends HostComponentEndpoint {
     return false;
   }
 
-  // ###########################################################################
-  // own event listener
-  // ###########################################################################
-
-  on(eventName, cb) {
-    this._emitter.on(eventName, cb);
-  }
-
-  // ###########################################################################
-  // shared
-  // ###########################################################################
-
   shared() {
     return {
       context: {
-        asyncGraph: this
+        graphRoot: this,
       }
     };
   }

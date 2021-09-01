@@ -307,10 +307,12 @@ div {
  * ############################################################################ */
 
 .async-stack {
-  position: sticky;
-  top: 0;
-  right: 0;
+  position: fixed;
+  top: 30px;
+  right: 2px;
   height: calc(100vh - 100px);
+  width: 33vw;
+  min-width: 200px;
   border: 2px solid white;
   overflow-y: scroll;
 }

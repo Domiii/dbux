@@ -24,6 +24,7 @@ class Toolbar extends ClientComponentEndpoint {
           <button title="Search for contexts by name" data-el="searchContextsBtn" class="btn btn-info" href="#">🔍</button>
           <button title="Search for traces by name" data-el="searchTracesBtn" class="btn btn-info" href="#">🔍+</button>
           <button title="Toggle Async Graph Mode" data-el="graphModeBtn" class="btn btn-info" href="#">async</button>
+          <button title="Toggle Async Stack" data-el="asyncStackBtn" class="btn btn-info" href="#">stack</button>
           <button title="Toggle Async Detail" data-el="asyncDetailModeBtn" class="btn btn-info" href="#">detail</button>
           <button title="Clear Thread Selection" data-el="clearThreadSelectionBtn" class="btn btn-info" href="#">
             <img width="12px" src="${this.state.theradSelectionIconUri}" />
@@ -86,6 +87,7 @@ class Toolbar extends ClientComponentEndpoint {
       searchTermContexts,
       searchTermTraces,
       graphMode,
+      stackEnabled,
       asyncDetailMode,
       isThreadSelectionActive
     } = this.state;
@@ -116,6 +118,9 @@ class Toolbar extends ClientComponentEndpoint {
     });
     decorateClasses(this.els.graphModeBtn, {
       active: graphMode === GraphMode.AsyncGraph
+    });
+    decorateClasses(this.els.asyncStackBtn, {
+      active: !!stackEnabled
     });
     decorateClasses(this.els.asyncDetailModeBtn, {
       active: !!asyncDetailMode
@@ -249,6 +254,13 @@ class Toolbar extends ClientComponentEndpoint {
       click(evt) {
         evt.preventDefault();
         this.remote.nextGraphMode();
+      },
+      focus(evt) { evt.target.blur(); }
+    },
+    asyncStackBtn: {
+      click(evt) {
+        evt.preventDefault();
+        this.remote.toggleStackEnabled();
       },
       focus(evt) { evt.target.blur(); }
     },

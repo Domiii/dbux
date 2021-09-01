@@ -2,7 +2,7 @@ import NanoEvents from 'nanoevents';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import GraphType from '@dbux/graph-common/src/shared/GraphType';
-import GraphMode, { getEnabledGraphTypesByMode } from '@dbux/graph-common/src/shared/GraphMode';
+import GraphMode from '@dbux/graph-common/src/shared/GraphMode';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
@@ -16,15 +16,17 @@ class GraphDocument extends HostComponentEndpoint {
 
     this.createOwnComponents();
 
-    // TODO-M refresh graphs when `allApplications.selection.onApplicationsChanged`
+    allApplications.selection.onApplicationsChanged(() => {
+      this.refreshGraphs();
+    });
   }
 
   createOwnComponents() {
     // TODO-M: add toolbar register system
     this.controllers.createComponent('PopperManager');
-    this.syncGraph = this.children.createComponent('GraphContainer', { graphType: GraphType.SyncGraph }).graph;
-    this.asyncGraph = this.children.createComponent('GraphContainer', { graphType: GraphType.AsyncGraph }).graph;
-    this.asyncStack = this.children.createComponent('GraphContainer', { graphType: GraphType.AsyncStack }).graph;
+    this.syncGraphContainer = this.children.createComponent('GraphContainer', { graphType: GraphType.SyncGraph });
+    this.asyncGraphContainer = this.children.createComponent('GraphContainer', { graphType: GraphType.AsyncGraph });
+    this.asyncStackContainer = this.children.createComponent('GraphContainer', { graphType: GraphType.AsyncStack });
     this.toolbar = this.children.createComponent('Toolbar');
   }
 
@@ -54,25 +56,19 @@ class GraphDocument extends HostComponentEndpoint {
   setGraphMode(mode) {
     if (this.state.graphMode !== mode) {
       this.setState({ graphMode: mode });
-      const enabledGraphTypes = getEnabledGraphTypesByMode(mode);
-      this.refreshGraphs(enabledGraphTypes);
-      this._emitter.emit('graphModeChanged', mode);
+      this.refreshGraphs();
+      this._notifyGraphModeChanged(mode);
     }
   }
 
-  refreshGraphs(enabledGraphTypes) {
-    enabledGraphTypes = new Set(enabledGraphTypes);
-    const graphContainers = this.children.getComponents('GraphContainer');
-    graphContainers.forEach((container) => {
-      if (enabledGraphTypes.has(container.state.graphType)) {
-        container.setState({ enabled: true });
-        container.graph.refresh();
-      }
-      else {
-        container.setState({ enabled: false });
-        container.graph.clear();
-      }
+  refreshGraphs() {
+    this.children.getComponents('GraphContainer').forEach((container) => {
+      container.refreshGraph();
     });
+  }
+
+  _notifyGraphModeChanged(mode) {
+    this._emitter.emit('graphModeChanged', mode);
   }
 
   onGraphModeChanged(cb) {

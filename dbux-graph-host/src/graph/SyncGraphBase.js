@@ -3,14 +3,57 @@ import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
-import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
+import GraphBase from './GraphBase';
 import RunNode from './syncGraph/RunNode';
 import ContextNode from './syncGraph/ContextNode';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('GraphRoot');
 
-class GraphRoot extends HostComponentEndpoint {
+
+export class RunNodeMap {
+  constructor() {
+    this._all = new Map();
+  }
+
+  set(applicationId, runId, node) {
+    this._all.set(this.makeKey(applicationId, runId), node);
+  }
+
+  delete(applicationId, runId) {
+    this._all.delete(this.makeKey(applicationId, runId));
+  }
+
+  /**
+   * @return {RunNode}
+   */
+  get(applicationId, runId) {
+    return this._all.get(this.makeKey(applicationId, runId));
+  }
+
+  has(applicationId, runId) {
+    return !!this.get(applicationId, runId);
+  }
+
+  *getApplicationIds() {
+    for (const runNode of this.getAll()) {
+      yield runNode.state.applicationId;
+    }
+  }
+
+  /**
+   * @return {RunNode[]}
+   */
+  getAll() {
+    return this._all.values();
+  }
+
+  makeKey(appId, runId) {
+    return `${appId}_${runId}`;
+  }
+}
+
+class SyncGraphBase extends GraphBase {
   /**
    * @type {Map<ExecutionContext, ContextNode>}
    */
@@ -18,6 +61,7 @@ class GraphRoot extends HostComponentEndpoint {
 
   init() {
     this.contextNodesByContext = new Map();
+    this.runNodesById = new RunNodeMap();
     this.state.applications = [];
     this._emitter = new NanoEvents();
     this._unsubscribeOnNewData = [];
@@ -29,8 +73,6 @@ class GraphRoot extends HostComponentEndpoint {
     this.controllers.createComponent('ContextNodeManager');
     this.controllers.createComponent('PopperController');
     this.controllers.createComponent('FocusController');
-
-    // this.updateRunNodes();
   }
 
   /** ###########################################################################
@@ -46,35 +88,29 @@ class GraphRoot extends HostComponentEndpoint {
   }
 
   updateRunNodes() {
-    if (this.context.graphDocument.graphMode === this.state.preferAsyncMode) {
-      // oldApps
-      const oldAppIds = new Set(this.runNodesById.getApplicationIds());
-      const newAppIds = new Set(allApplications.selection.getAll().map(app => app.applicationId));
-      
-      // always re-subscribe since applicationSet clears subscribtion everytime it changes
-      this._resubscribeOnData();
-      this._setApplicationState();
-      
-      // remove old runNodes
-      for (const runNode of this.runNodesById.getAll()) {
-        const { applicationId, runId } = runNode.state;
-        if (!newAppIds.has(applicationId)) {
-          this.removeRunNode(applicationId, runId);
-        }
-      }
-      
-      // add new runNodes
-      for (const appId of newAppIds) {
-        if (!oldAppIds.has(appId)) {
-          const app = allApplications.getById(appId);
-          const allContexts = app.dataProvider.collections.executionContexts.getAll();
-          this.addRunNodeByContexts(appId, allContexts);
-        }
+    // oldApps
+    const oldAppIds = new Set(this.runNodesById.getApplicationIds());
+    const newAppIds = new Set(allApplications.selection.getAll().map(app => app.applicationId));
+
+    // always re-subscribe since applicationSet clears subscribtion everytime it changes
+    this._resubscribeOnData();
+    this._setApplicationState();
+
+    // remove old runNodes
+    for (const runNode of this.runNodesById.getAll()) {
+      const { applicationId, runId } = runNode.state;
+      if (!newAppIds.has(applicationId)) {
+        this.removeRunNode(applicationId, runId);
       }
     }
-    else {
-      this.removeAllRunNode();
-      this._setApplicationState();
+
+    // add new runNodes
+    for (const appId of newAppIds) {
+      if (!oldAppIds.has(appId)) {
+        const app = allApplications.getById(appId);
+        const allRunIds = app.dataProvider.indexes.executionContexts.byRun.getAllKeys();
+        this.addRunNodeByIds(appId, allRunIds);
+      }
     }
   }
 
@@ -107,7 +143,8 @@ class GraphRoot extends HostComponentEndpoint {
 
   _handleAddExecutionContexts = (app, newContexts) => {
     const { applicationId } = app;
-    const newNodes = this.addRunNodeByContexts(applicationId, newContexts);
+    const newRunIds = [...new Set(newContexts.map(c => c.runId))];
+    const newNodes = this.addRunNodeByIds(applicationId, newRunIds);
     this._setApplicationState();
     this._emitter.emit('newNode', newNodes);
   }
@@ -123,18 +160,10 @@ class GraphRoot extends HostComponentEndpoint {
     this.setState(update);
   }
 
-  addRunNodeByContexts(applicationId, contexts) {
-    const runIds = new Set(contexts.map(context => context?.runId || 0));
-    const newNodes = [];
-
-    runIds.forEach(runId => {
-      if (runId) {
-        const newNode = this.addRunNode(applicationId, runId);
-        newNodes.push(newNode);
-      }
+  addRunNodeByIds(applicationId, runIds) {
+    return runIds.map(runId => {
+      return this.addRunNode(applicationId, runId);
     });
-
-    return newNodes;
   }
 
   async focusContext(applicationId, contextId) {
@@ -164,7 +193,6 @@ class GraphRoot extends HostComponentEndpoint {
   addRunNode(applicationId, runId) {
     const newNode = this.children.createComponent(RunNode, { applicationId, runId });
     this.runNodesById.set(applicationId, runId, newNode);
-    // log(`Added RunNode of applicationId ${applicationId}, runId ${runId}`);
     return newNode;
   }
 
@@ -185,10 +213,6 @@ class GraphRoot extends HostComponentEndpoint {
    */
   getAllRunNode() {
     return this.runNodesById.getAll();
-  }
-
-  getRunNodeById(applicationId, runId) {
-    return this.runNodesById.get(applicationId, runId);
   }
 
   // ###########################################################################
@@ -278,25 +302,13 @@ class GraphRoot extends HostComponentEndpoint {
     return node;
   }
 
-  // ###########################################################################
-  // shared
-  // ###########################################################################
-
   shared() {
     return {
       context: {
-        graphRoot: this
+        graphRoot: this,
       }
     };
   }
-
-  // ###########################################################################
-  // public
-  // ###########################################################################
-
-  public = {
-
-  }
 }
 
-export default GraphRoot;
+export default SyncGraphBase;

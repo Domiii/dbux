@@ -1,6 +1,6 @@
 const GraphDocument = require('./GraphDocument').default;
 const GraphContainer = require('./GraphContainer').default;
-const SyncGraph = require('./SyncGraphBase').default;
+const SyncGraph = require('./syncGraph/SyncGraph').default;
 const RunNode = require('./syncGraph/RunNode').default;
 const RootContextNode = require('./syncGraph/RootContextNode').default;
 const ContextNode = require('./syncGraph/ContextNode').default;
