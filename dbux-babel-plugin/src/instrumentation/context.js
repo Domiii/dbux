@@ -1,4 +1,5 @@
 import TraceType from '@dbux/common/src/types/constants/TraceType';
+import { astNodeToString } from 'src/helpers/pathHelpers';
 // import { buildTraceNoValue } from './traceHelpers.old';
 import { buildTraceNoValue_OLD } from './builders/misc';
 
@@ -9,17 +10,21 @@ export function buildContextEndTrace(path, state) {
 /**
  * We inject `EndOfContext` at the end of any `function` and `program`
  * to allow us more accurately guess whether and where errors have.
+ * @deprecated Does not work as intended. Tends to fail silently for `async` functions.
  */
 export function injectContextEndTrace(path, state) {
   // trace `EndOfContext` at the end of program or function body
   const bodyPath = path.get('body');
   const endOfContext = buildContextEndTrace(path, state);
 
-  // hackfix: babel-traverse seems to force us to handle array and non-array separately
+  // console.debug('[injectContextEndTrace]', astNodeToString(endOfContext));
+
+  // hackfix: babel seems to force us to handle array and non-array separately
   if (bodyPath.node) {
     bodyPath.insertAfter(endOfContext);
   }
-  else {
+  else
+  {
     path.pushContainer('body', endOfContext);
   }
 }

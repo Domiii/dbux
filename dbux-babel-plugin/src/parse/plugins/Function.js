@@ -5,10 +5,11 @@ import BasePlugin from './BasePlugin';
 import { getNodeNames } from '../../visitors/nameVisitors';
 import { doesNodeEndScope } from '../../helpers/astUtil';
 import { buildWrapTryFinally, buildBlock } from '../../instrumentation/builders/common';
-import { injectContextEndTrace } from '../../instrumentation/context';
+import { buildContextEndTrace, injectContextEndTrace } from '../../instrumentation/context';
 import { buildTraceId } from '../../instrumentation/builders/traceId';
 import { buildRegisterParams } from '../../instrumentation/builders/function';
 import { locToString } from 'src/helpers/locHelpers';
+import { astNodeToString, pathToStringAnnotated } from 'src/helpers/pathHelpers';
 
 function addContextTrace(bodyPath, state, type) {
   const { scope } = bodyPath;
@@ -199,9 +200,6 @@ export default class Function extends BasePlugin {
 
     const p = buildRegisterParams(state, paramTraces);
 
-    // convert lambda expression to block with return statement
-    path.ensureBlock();
-
     // insert parameter traces at the top
     path.get('body').unshiftContainer("body", p);
   }
@@ -266,6 +264,8 @@ export default class Function extends BasePlugin {
   }
 
   instrument1() {
+    // convert lambda expression to block with return statement
+    this.node.path.ensureBlock();
     this.injectParamsTrace();
   }
 
@@ -333,7 +333,19 @@ export default class Function extends BasePlugin {
       if (!lastNode || !doesNodeEndScope(lastNode)) {
         // add ContextEnd trace
         // console.debug(`injecting EndOfContext for: ${bodyPath.toString()}`);
-        injectContextEndTrace(path, state);
+        // path.scope.crawl();
+        const contextEndTrace = buildContextEndTrace(path, state);
+        if (Array.isArray(bodyNode)) {
+          bodyNode.push(contextEndTrace);
+        }
+        else {
+          if (!t.isBlockStatement(bodyNode)) {
+            // NOTE: we called `ensureBlock` above
+            throw new Error(`Function body is neither array nor block statement: "${pathToStringAnnotated(path, true)}"`);
+          }
+          bodyPath.pushContainer("body", contextEndTrace);
+        }
+        // injectContextEndTrace(path, state);
       }
     }
 
