@@ -16,7 +16,7 @@ export default class DataNodeCollection extends Collection {
    * @param {DataNode} dataNode
    */
   getValueId(dataNode) {
-    if ('valueId' in dataNode) {
+    if (dataNode.valueId > 0) {
       return dataNode.valueId;
     }
 
@@ -77,7 +77,7 @@ export default class DataNodeCollection extends Collection {
   }
 
   getAccessId(dataNode) {
-    if ('accessId' in dataNode) {
+    if (dataNode.accessId > 0) {
       return dataNode.accessId;
     }
 

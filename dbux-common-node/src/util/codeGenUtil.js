@@ -4,7 +4,7 @@
 
 import fs from 'fs';
 import glob from 'glob';
-import { isString } from 'lodash';
+import isString from 'lodash/isString';
 import path from 'path';
 
 const IndentUnit = '  ';

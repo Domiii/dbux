@@ -2,14 +2,14 @@
 // import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 // import TraceType from '@dbux/common/src/types/constants/TraceType';
 // import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import omit from 'lodash/omit';
+// import omit from 'lodash/omit';
 import TraceType, { isDeclarationTrace } from '@dbux/common/src/types/constants/TraceType';
 import NestedError from '@dbux/common/src/NestedError';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import TraceCfg from '../../definitions/TraceCfg';
-import { pathToString } from '../../helpers/pathHelpers';
-import { instrumentExpression, traceDeclarations } from '../../instrumentation/instrumentMisc';
+import { pathToString, pathToStringAnnotated } from '../../helpers/pathHelpers';
+import { instrumentExpression, traceHoisted } from '../../instrumentation/instrumentMisc';
 // import { pathToString } from '../../helpers/pathHelpers';
 import BasePlugin from './BasePlugin';
 
@@ -22,7 +22,7 @@ export default class Traces extends BasePlugin {
   /**
    * Special declaration traces that will be hoisted to scope of this.node.
    */
-  hoistedDeclarationTraces = [];
+  hoistedTraces = [];
 
   /**
    * Traces that will be instrumented in order.
@@ -35,7 +35,7 @@ export default class Traces extends BasePlugin {
   // simplified declarations
   // ###########################################################################
 
-  generateDeclaredUidIdentifier(name) {
+  getAncestorContextNode() {
     let contextNode = this.node.peekContextNode();
     const contextBodyPath = contextNode.path.get('body');
     let { scope } = contextNode.path;
@@ -50,18 +50,36 @@ export default class Traces extends BasePlugin {
       // scope = scope.parent;
       // scope = scope.getFunctionParent() || scope.getProgramParent();
       contextNode = contextNode.getExistingParent().peekContextNode();
-      ({ scope } = contextNode.path);
     }
+    return contextNode;
+  }
+
+  generateDeclaredUidIdentifier(name) {
+    const contextNode = this.getAncestorContextNode();
+    const { scope } = contextNode.path;
 
     const id = scope.generateUidIdentifier(name);
-    // if (id.name === '_o23') {
-    //   debugger;
-    // }
+    
     contextNode.Traces.declaredIdentifiers.push(id);
     // console.debug('generateDeclaredUidIdentifier', id.name, `[${scope.path.node?.type}]`, pathToString(scope.path));
     return id;
   }
 
+  getOrGenerateUniqueIdentifier(name) {
+    const contextNode = this.getAncestorContextNode();
+    const contextPlugin = contextNode.getPlugin('StaticContext');
+    const id = contextPlugin.getOrGenerateUniqueIdentifier(name);
+
+    contextNode.Traces.declaredIdentifiers.push(id);
+    // console.debug('generateDeclaredUidIdentifier', id.name, `[${scope.path.node?.type}]`, pathToString(scope.path));
+    return id;
+  }
+
+  getUniqueIdentifier(name) {
+    const contextNode = this.getAncestorContextNode();
+    const contextPlugin = contextNode.getPlugin('StaticContext');
+    return contextPlugin.getUniqueIdentifier(name);
+  }
 
 
   // ###########################################################################
@@ -142,7 +160,11 @@ export default class Traces extends BasePlugin {
 
     // NOTE: `scope.push` happens during `instrument`
     scope = scope || path.scope;
-    const tidIdentifier = scope.generateUidIdentifier(`t${inProgramStaticTraceId}_`);
+    let tidIdentifier;
+
+    if (!meta?.noTidIdentifier) {
+      tidIdentifier = scope.generateUidIdentifier(`t${inProgramStaticTraceId}_`);
+    }
 
     const traceCfg = {
       path,
@@ -175,15 +197,16 @@ export default class Traces extends BasePlugin {
       }
 
       // if (meta?.hoisted && !isRedeclaration) {
-      if (meta?.hoisted) {
-        this.hoistedDeclarationTraces.push(traceCfg);
-      }
-      else {
-        this.traces.push(traceCfg);
-      }
 
       // eslint-disable-next-line max-len
       this.Verbose && this.debug(`DECL "${declarationNode}" in "${declarationNode.getParentString()}" by "${node}" in "${node.getParentString()}" (${traceCfg.tidIdentifier.name})`);
+    }
+    else {
+      // not a declaration
+    }
+
+    if (meta?.hoisted) {
+      this.hoistedTraces.push(traceCfg);
     }
     else {
       this.traces.push(traceCfg);
@@ -193,7 +216,7 @@ export default class Traces extends BasePlugin {
       node._setTraceCfg(traceCfg);
     }
 
-    this.Verbose >= 2 && this.debug('[addTrace]', tidIdentifier.name, `([${inputTraces?.map(tid => tid.name).join(',') || ''}])`, `@"${this.node}"`);
+    this.Verbose >= 2 && this.debug('[addTrace]', tidIdentifier?.name, `([${inputTraces?.map(tid => tid.name).join(',') || ''}])`, `@"${this.node}"`);
 
     return traceCfg;
   }
@@ -282,24 +305,24 @@ export default class Traces extends BasePlugin {
   // instrument
   // ###########################################################################
 
-  instrumentHoistedTraceDeclarations = (traceCfgs) => {
+  instrumentHoisted = (traceCfgs) => {
     const { node } = this;
     const { state } = node;
 
     if (traceCfgs.length) {
-      traceDeclarations(node.path, state, traceCfgs);
+      traceHoisted(node.path, state, traceCfgs);
     }
   }
 
   instrument() {
-    const { node, traces, hoistedDeclarationTraces } = this;
+    const { node, traces, hoistedTraces } = this;
 
     for (const id of this.declaredIdentifiers) {
       this.node.path.scope.push({ id });
     }
 
     // this.debug(`traces`, traces.map(t => t.tidIdentifier));
-    this.instrumentHoistedTraceDeclarations(hoistedDeclarationTraces);
+    this.instrumentHoisted(hoistedTraces);
 
     for (const traceCfg of traces) {
       // add variable to scope
@@ -315,10 +338,12 @@ export default class Traces extends BasePlugin {
         } = EmptyObject
       } = traceCfg;
 
-      // push `tidIdentifier`
-      scope.push({
-        id: tidIdentifier
-      });
+      // make sure, tidIdentifier gets declared
+      if (tidIdentifier) {
+        scope.push({
+          id: tidIdentifier
+        });
+      }
 
       // instrument?.(traceCfg);
       const { state } = node;
@@ -329,7 +354,14 @@ export default class Traces extends BasePlugin {
         this.Verbose > 1 && this.debug(` ins [${TraceType.nameFromForce(traceType)}] -> ${pathToString(path)}`);
       }
       catch (err) {
-        throw new NestedError(`Failed to instrument node="${node.debugTag}", path="${pathToString(path)}"`, err);
+        let msg = '';
+        if (err.message === 'Container is falsy') {
+          // NOTE: this usually means that `getInstrumentPath(traceCfg)` has been instrumented already
+          // (similar fix for bug in other project https://github.com/ember-cli/babel-plugin-ember-modules-api-polyfill/pull/156/files)
+          msg = ' (possible incompatability with other plugins/presets)';
+        }
+        // eslint-disable-next-line max-len
+        throw new NestedError(`Failed to instrument node="${node.debugTag}", path="${pathToStringAnnotated(path, true)}", trace=${TraceType.nameFromForce(traceType)}${msg}`, err);
       }
     }
   }

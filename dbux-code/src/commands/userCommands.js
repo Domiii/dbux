@@ -192,6 +192,11 @@ export function initUserCommands(extensionContext) {
       const runId = parseInt(userInput.substring(1), 10);
       traceId = dp.util.getFirstTraceOfRun(runId);
     }
+    else if (userInput.startsWith('n')) {
+      // get node
+      const nodeId = parseInt(userInput.substring(1), 10);
+      traceId = dp.util.getDataNode(nodeId)?.traceId;
+    }
     else {
       if (userInput.startsWith('t')) {
         userInput = userInput.substring(1);

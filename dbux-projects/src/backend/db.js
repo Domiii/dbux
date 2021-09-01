@@ -5,7 +5,9 @@
 /* eslint-disable import/first */
 /* eslint-disable global-require,import/first,import/no-extraneous-dependencies */
 
-import { isPlainObject, isArray, isDate } from 'lodash';
+import isPlainObject from 'lodash/isPlainObject';
+import isArray from 'lodash/isArray';
+import isDate from 'lodash/isDate';
 import sleep from '@dbux/common/src/util/sleep';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Backlog from './Backlog';

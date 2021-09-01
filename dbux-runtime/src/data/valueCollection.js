@@ -6,7 +6,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 // import serialize from '@dbux/common/src/serialization/serialize';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { getOriginalFunction, getPatchedFunction } from '../util/monkeyPatchUtil';
+import { getOriginalFunction, getPatchedFunction, getUnpatchedCallbackOrPatchedFunction } from '../util/monkeyPatchUtil';
 import Collection from './Collection';
 import pools from './pools';
 
@@ -33,13 +33,15 @@ const SerializationConfig = {
 
 export function wrapValue(value) {
   if (value instanceof Function) {
-    value = getPatchedFunction(value) || value;
+    // value = getUnpatchedCallbackOrPatchedFunction(value);
+    value = getPatchedFunction(value);
   }
   return value;
 }
 
 export function unwrapValue(value) {
   if (value instanceof Function) {
+    // TODO: handle callback identity?
     value = getOriginalFunction(value) || value;
   }
   return value;
@@ -304,7 +306,6 @@ class ValueCollection extends Collection {
     // TODO: `getPrototypeOf` can trigger a proxy trap
     return !this._getKeysErrorsByType.has(Object.getPrototypeOf(obj));
   }
-
 
   /**
    * Read a property of an object to copy + track it.

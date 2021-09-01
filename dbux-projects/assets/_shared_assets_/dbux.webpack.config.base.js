@@ -48,13 +48,13 @@ const defaultBabelOptions = {
   // see https://babeljs.io/docs/en/options#parseropts
   parserOpts: { allowReturnOutsideFunction: true },
   presets: [
-    [
-      '@babel/preset-env',
-      {
-        useBuiltIns: 'usage',
-        corejs: 3
-      }
-    ]
+    // [
+    //   '@babel/preset-env',
+    //   {
+    //     useBuiltIns: 'usage',
+    //     corejs: 3
+    //   }
+    // ]
   ],
   plugins: [
     // "@babel/plugin-proposal-optional-chaining",
@@ -219,7 +219,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     }
     if (!(babelOptionsOverrides && babelOptionsOverrides.presets) && target !== 'node') {
       // remove custom options of preset-env
-      babelOptions.presets[0].splice(1, 1);
+      // babelOptions.presets[0].splice(1, 1);
     }
     // console.warn('babelOptions', JSON.stringify(babelOptions, null, 2));
 

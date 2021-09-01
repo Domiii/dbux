@@ -1,6 +1,5 @@
 import Enum from '../../util/Enum';
 
-// eslint-disable-next-line import/no-mutable-exports
 const traceTypeObj = {
   PushImmediate: 1,
   PopImmediate: 2,
@@ -42,6 +41,9 @@ const traceTypeObj = {
   // ReturnAwaitCallExpression: 1,
 
   EndOfContext: 22,
+
+  Finally: 23,
+  Catch: 24,
 
 
   Declaration: 30,

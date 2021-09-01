@@ -1,5 +1,6 @@
-const process = require('process');
-const sleep = require('@dbux/common/src/util/sleep').default;
+import process from 'process';
+import NestedError from '@dbux/common/src/NestedError';
+import sleep from '@dbux/common/src/util/sleep';
 
 export function wrapCommand(commandCallback) {
   return async argv => {
@@ -11,7 +12,8 @@ export function wrapCommand(commandCallback) {
       // }
     }
     catch (err) {
-      console.error('[@dbux/cli] command failed:', err);
+      // throw ;
+      console.error(new NestedError('[@dbux/cli] command failed', err));
       exitProcess(-1);
     }
   };
@@ -27,7 +29,7 @@ export async function exitProcess(code = 0) {
     console.debug(`[@dbux/cli] waiting ${Math.round(ms / 1000)}s for process to finish...${details}`);
     await sleep(ms);
   }
-  while (!dbux?.client.hasFinished());
+  while (dbux?.client && !dbux.client.hasFinished());
   console.debug('exiting...');
   process.exit(code);
 }

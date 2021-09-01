@@ -34,6 +34,12 @@ export class TraceCfgMeta {
    * @type {Array.<AstNode>}
    */
   moreTraceCallArgs;
+
+  /**
+   * If `true`, move to top of scope, else place in order of instrumentation.
+   * @type {boolean}
+   */
+  hoisted;
 }
 
 export class TraceCfgData {

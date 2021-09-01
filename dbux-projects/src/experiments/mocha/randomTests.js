@@ -6,6 +6,6 @@ export function extractTests() {
   
 }
 
-export function runRandomTests(folder, cfg = EmptyObject) {
+export async function runRandomTests(folder, cfg = EmptyObject) {
 
 }

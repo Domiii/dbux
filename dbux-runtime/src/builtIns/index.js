@@ -3,6 +3,7 @@ import { monkeyPatchFunctionHolderDefault } from '../util/monkeyPatchUtil';
 import patchArray from './arrays';
 import patchFunction from './functions';
 import patchNode from './node';
+import patchObject from './objects';
 
 export default function initPatchBuiltins() {
   if (globalThis.console) {
@@ -13,6 +14,7 @@ export default function initPatchBuiltins() {
     }
   }
 
+  patchObject();
   patchArray();
   patchFunction();
   patchNode();

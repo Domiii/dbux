@@ -3,14 +3,14 @@ import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import ResolveType from '@dbux/common/src/types/constants/ResolveType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import isThenable from '@dbux/common/src/util/isThenable';
-import { isFunction } from 'lodash';
+import isFunction from 'lodash/isString';
 import asyncEventUpdateCollection from '../data/asyncEventUpdateCollection';
 import dataNodeCollection from '../data/dataNodeCollection';
 import { peekBCEMatchCallee, getLastContextCheckCallee } from '../data/dataUtil';
 import PromiseRuntimeData from '../data/PromiseRuntimeData';
 // import traceCollection from '../data/traceCollection';
 import valueCollection from '../data/valueCollection';
-import { isMonkeyPatchedOther, monkeyPatchFunctionHolder } from '../util/monkeyPatchUtil';
+import { isMonkeyPatchedFunction, monkeyPatchFunctionHolder } from '../util/monkeyPatchUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError } = newLogger('PromisePatcher');
@@ -79,7 +79,7 @@ export function maybePatchPromise(promise) {
   }
   recordUnseenPromise(promise);
 
-  if (isMonkeyPatchedOther(promise.then)) {
+  if (isMonkeyPatchedFunction(promise.then)) {
     return;
   }
 

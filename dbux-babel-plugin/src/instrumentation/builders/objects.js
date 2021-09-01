@@ -3,7 +3,7 @@ import * as t from '@babel/types';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { astNodeToString, pathToString } from '../../helpers/pathHelpers';
 import { makeInputs } from './buildUtil';
-import { buildTraceId } from './traceId';
+import { buildTraceId, forceTraceId } from './traceId';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('builders/objects');
@@ -61,6 +61,8 @@ function buildObjectEntries(propPaths) {
 export function buildObjectExpression(state, traceCfg) {
   const { ids: { aliases: { traceObjectExpression } } } = state;
   const tid = buildTraceId(state, traceCfg);
+  
+  forceTraceId(tid); // NOTE: `ObjectExpression` needs a trace for value reconstruction
 
   const {
     path

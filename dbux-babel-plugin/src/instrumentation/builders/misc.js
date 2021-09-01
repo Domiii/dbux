@@ -67,6 +67,47 @@ export const buildTraceExpressionNoInput = buildTraceCall(
   }
 );
 
+/**
+ * Custom trace call that does not nest `newTraceId`.
+ * Instead, it only passes in the `inProgramStaticTraceId`.
+ * @return {t.Statement}
+ */
+export function buildTraceStatic(state, traceCfg) {
+  const trace = getTraceCall(state, traceCfg);
+  // const tid = buildTraceId(state, traceCfg);
+
+  // const args = [tid];
+  const { inProgramStaticTraceId } = traceCfg;
+  const args = [t.numericLiteral(inProgramStaticTraceId)];
+  addMoreTraceCallArgs(args, traceCfg);
+
+  return t.expressionStatement(
+    t.callExpression(trace, args)
+  );
+}
+
+// ###########################################################################
+// traceNoValue
+// ###########################################################################
+
+/**
+ * @deprecated Use {@link buildTraceId} or {@link buildTraceStatic} instead.
+ */
+// eslint-disable-next-line camelcase
+export const buildTraceNoValue_OLD = bindTemplate(
+  '%%dbux%%.t(%%traceId%%)',
+  // eslint-disable-next-line camelcase
+  function buildTraceNoValue_OLD(path, state, staticTraceData) {
+    const { ids: { dbux } } = state;
+    const traceId = state.traces.addTrace(path, staticTraceData);
+    // console.warn(`traces`, state.traces);
+    return {
+      dbux,
+      traceId: t.numericLiteral(traceId)
+    };
+  }
+);
+
 // ###########################################################################
 // traceDeclaration
 // ###########################################################################
@@ -112,14 +153,6 @@ export function buildTraceDeclarationVar(state, traceCfg) {
   ]);
 }
 
-export function buildTraceDeclarations(state, traceCfgs) {
-  const decls = traceCfgs.map((traceCfg) => {
-    return buildTraceDeclarationVar(state, traceCfg);
-  });
-
-  return decls;
-}
-
 // ###########################################################################
 // traceWriteVar
 // ###########################################################################
@@ -141,35 +174,21 @@ export const buildTraceWriteVar = buildTraceCall(
   }
 );
 
-// ###########################################################################
-// traceNoValue
-// ###########################################################################
-
-/**
- * TODO: rewrite using `traceCfg`
- * @deprecated
- */
-export const buildTraceNoValue = bindTemplate(
-  '%%dbux%%.t(%%traceId%%)',
-  function buildTraceNoValue(path, state, staticTraceData) {
-    const { ids: { dbux } } = state;
-    const traceId = state.traces.addTrace(path, staticTraceData);
-    // console.warn(`traces`, state.traces);
-    return {
-      dbux,
-      traceId: t.numericLiteral(traceId)
-    };
-  }
-);
 
 
+/** ###########################################################################
+ * {@link doBuild}, {@link buildAll}
+ * ##########################################################################*/
 
-// ###########################################################################
-// buildDefault
-// ###########################################################################
-
-export function buildDefault(state, traceCfg) {
-  const build = traceCfg.meta?.build || buildTraceExpression;// getDefaultBuild(traceCfg);
+export function doBuild(state, traceCfg, buildDefault = buildTraceExpression) {
+  const build = traceCfg.meta?.build || buildDefault;// getDefaultBuild(traceCfg);
   const result = build(state, traceCfg);
   return applyPreconditionToExpression(traceCfg, result);
+}
+
+
+export function buildAll(state, traceCfgs, defaultBuild) {
+  return traceCfgs.map((traceCfg) => {
+    return doBuild(state, traceCfg, defaultBuild);
+  });
 }

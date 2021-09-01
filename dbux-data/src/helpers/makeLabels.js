@@ -244,22 +244,23 @@ export function makeContextLabel(context, app) {
     const { contextId, parentContextId } = context;
     const parentContext = dp.collections.executionContexts.getById(parentContextId);
     const firstTrace = dp.indexes.traces.byContext.getFirst(contextId);
-    const staticTrace = dp.collections.staticTraces.getById(firstTrace.staticTraceId);
-    let displayName;
-    if (staticTrace.displayName?.match(/^await /)) {
-      // displayName = staticTrace.displayName.replace('await ', '').replace(/\([^(]*\)$/, '');
-      displayName = staticTrace.displayName.replace('await ', '').replace(/;$/, '');
+    if (firstTrace) {
+      const staticTrace = firstTrace && dp.collections.staticTraces.getById(firstTrace.staticTraceId);
+      let displayName;
+      if (staticTrace.displayName?.match(/^await /)) {
+        // displayName = staticTrace.displayName.replace('await ', '').replace(/\([^(]*\)$/, '');
+        displayName = staticTrace.displayName.replace('await ', '').replace(/;$/, '');
+      }
+      else {
+        displayName = '(async start)';
+      }
+      return `${makeContextLabel(parentContext, app)} | ${displayName}`;
     }
-    else {
-      displayName = '(async start)';
-    }
-    return `${makeContextLabel(parentContext, app)} | ${displayName}`;
   }
-  else {
-    const { staticContextId } = context;
-    const staticContext = dp.collections.staticContexts.getById(staticContextId);
-    return `${staticContext.displayName}`;
-  }
+
+  const { staticContextId } = context;
+  const staticContext = dp.collections.staticContexts.getById(staticContextId);
+  return `${staticContext.displayName}`;
 }
 
 const ContextCallerLabelByEventUpdateType = {

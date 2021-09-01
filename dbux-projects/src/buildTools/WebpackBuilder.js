@@ -73,8 +73,9 @@ export default class WebpackBuilder {
   async getValue(bug, name) {
     const { project } = this;
 
-    let value = project[name];
+    let value = bug[name] || project[name];
     if (isFunction(value)) {
+      // this === project, first arg = bug
       value = await value.call(project, bug);
     }
     return value;
@@ -97,7 +98,8 @@ export default class WebpackBuilder {
     bug.inputFiles = bug.inputFiles || inputFiles;
 
     // bug.runFilePaths = bug.testFilePaths;
-    bug.watchFilePaths = bug.watchFilePaths || await this.getValue(bug, 'watch') || inputFiles.map(file => path.resolve(projectPath, 'dist', file));
+    bug.watchFilePaths = await this.getValue(bug, 'watchFilePaths') ||
+      inputFiles.map(file => path.resolve(projectPath, 'dist', file));
 
     if (websitePort) {
       // website settings

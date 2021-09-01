@@ -20,48 +20,50 @@ class ConfigProject extends Project {
   }
 }
 
-export default function run() {
-  const runCfg = {
+// const defaultProjectCfg = {};
 
-  };
-  const defaultProjectCfg = {
 
-  };
-  const manager = TODO;
+/**
+ * @type {Array.<ProjectBase>}
+ */
+const projectConfigs = [
+  {
+    name: 'sequelize',
+    packageManager: 'yarn',
 
-  /**
-   * @type {Array.<ProjectBase>}
-   */
-  const projectConfigs = [
-    {
-      name: 'sequelize',
+    /**
+     * Provided for each individual project.
+     */
+    gitRemote: 'sequelize/sequelize.git',
+    // /**
+    //  * A specific commit hash or tag name
+    //  */
+    // gitCommit: '',
+    // nodeVersion;
 
-      /**
-       * Provided for each individual project.
-       */
-      gitRemote: 'sequelize/sequelize.git',
-      // /**
-      //  * A specific commit hash or tag name to refer to (if wanted)
-      //  */
-      // gitCommit;
-      // nodeVersion;
+    // NOTE: pick the test command that is most likely to yield useful results?
+    testRunCommand: 'yarn test-integration',
 
-      // NOTE: pick the test command that is most likely to yield useful results?
-      testRunCommand: 'yarn test-integration',
-
-      // loadBugs() {}
-      // decorateBug() {}
-      // makeBuilder() {}
-      // afterInstall() {}
+    runCfg: {
+      
     }
-  ];
+
+    // loadBugs() {}
+    // decorateBug() {}
+    // makeBuilder() {}
+    // afterInstall() {}
+  }
+];
+
+export default async function run() {
+  const manager = TODO;
 
   const projects = projectConfigs.map(projectCfg => new ConfigProject(manager, projectCfg));
 
   for (const project of projects) {
     // readPackageJson
     try {
-      runRandomTests(project, runCfg);
+      await runRandomTests(project, runCfg);
     }
     catch (err) {
       logError(err);

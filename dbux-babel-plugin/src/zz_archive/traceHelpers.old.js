@@ -46,16 +46,6 @@ function replaceWithTemplate(templ, path, cfg) {
   path.replaceWith(newNode);
 }
 
-export const buildTraceNoValue = function buildTraceNoValue(templ, path, state, traceType) {
-  const { ids: { dbux } } = state;
-  const traceId = state.traces.addTrace(path, traceType);
-  // console.warn(`traces`, state.traces);
-  return templ({
-    dbux,
-    traceId: t.numericLiteral(traceId)
-  });
-}.bind(null, template('%%dbux%%.t(%%traceId%%)'));
-
 
 /**
  * NOTE: We cannot reliably use templates for this, because 

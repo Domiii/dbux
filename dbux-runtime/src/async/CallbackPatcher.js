@@ -4,7 +4,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { peekBCEMatchCallee, isInstrumentedFunction, getFirstContextAfterTrace, getTraceStaticTrace } from '../data/dataUtil';
 // eslint-disable-next-line max-len
-import { getOriginalCallback, getOriginalFunction, getPatchedFunctionOrNull, isMonkeyPatchedCallback, isMonkeyPatchedOther, monkeyPatchFunctionOverride, _registerMonkeyPatchedCallback, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
+import { getOriginalCallback, getOriginalFunction, getPatchedFunctionOrNull, isMonkeyPatchedCallback, isMonkeyPatchedFunction, isOrHasMonkeyPatchedFunction, monkeyPatchFunctionOverride, _registerMonkeyPatchedCallback, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
 // import executionContextCollection from '../data/executionContextCollection';
 import traceCollection from '../data/traceCollection';
 
@@ -149,7 +149,8 @@ export default class CallbackPatcher {
         // NOTE: there is no BCE, since the callback (in all likelihood) was invoked by the JS runtime
         const context = getFirstContextAfterTrace(lastTraceId);
         if (!context) {
-          trace(`Instrumentation failed. No context was created after executing callback "${originalCallback.name} (${originalCallback})".`);
+          // NOTE: this can happen if a patched cb is executed via {@link valueCollection#_readProperty), where recording is disabled
+          // trace(`Instrumentation failed. No context was created after executing callback "${originalCallback.name} (${originalCallback})".`);
         }
         else {
           const rootId = runtime.getCurrentVirtualRootContextId();
@@ -242,10 +243,14 @@ export default class CallbackPatcher {
       // only instrument functions if they themselves are not instrumented (recorded)
       !isInstrumentedFunction(originalFunction) &&
 
+      // don't apply dynamic callback patching to already monkey-patched built-ins
+      !isOrHasMonkeyPatchedFunction(originalFunction) &&
+
       // only patch if it passes on callbacks of instrumented functions
       containsInstrumentedCallbacks(args, spreadArgs)
     ) {
       // should instrument -> monkey patch it
+      // warn(`calleePatcher:`, originalFunction.name);
       let f = getPatchedFunctionOrNull(originalFunction);
       if (!f) {
         const calleePatcher = this.defaultCalleePatcher;

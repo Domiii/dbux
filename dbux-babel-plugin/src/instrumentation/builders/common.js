@@ -9,6 +9,7 @@ import * as t from "@babel/types";
 import isFunction from 'lodash/isFunction';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { UndefinedNode } from './buildUtil';
+import { astNodeToString } from 'src/helpers/pathHelpers';
 // import { template } from '@babel/core';
 
 export function buildNamedExport(ids) {
@@ -146,9 +147,13 @@ export function applyPreconditionToExpression(traceCfg, expr) {
   const preCondition = meta?.preCondition;
 
   if (preCondition) {
-    const isStatement = t.isExpressionStatement(expr);
+    const orig = expr;
+    const isStatement = t.isExpressionStatement(orig);
     if (isStatement) {
-      expr = expr.expression;
+      expr = orig.expression;
+    }
+    if (!expr || !t.isExpression(expr)) {
+      throw new Error(`Cannot apply 'preCondition' because build result is not an Expression or ExpressionStatement: ${astNodeToString(orig)}`);
     }
     expr = t.logicalExpression('&&', preCondition, expr);
     if (isStatement) {

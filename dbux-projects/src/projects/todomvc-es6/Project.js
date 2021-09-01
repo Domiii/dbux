@@ -18,7 +18,7 @@ export default class TodomvcEs6Project extends Project {
     vendor: ['todomvc-app-css/index.css'],
   };
 
-  watch = ['app.js'];
+  watchFilePaths = ['app.js'];
 
   makeBuilder() {
     return new WebpackBuilder({

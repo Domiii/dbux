@@ -140,12 +140,14 @@ export async function runInTerminalInteractive(cwd, command, createNew = false) 
     shellPath: pathToBash
   };
 
+  // hackfix: when running multiple commands in serial, subsequent terminal access might fail, if too fast
   await sleep(300);
 
   const terminal = createNew ?
     recreateTerminal(terminalOptions) :
     getOrCreateTerminal(terminalOptions);
 
+  // hackfix: sometimes, the terminal needs a tick before it can receive text
   await sleep(1);
 
   terminal.sendText(command, true);

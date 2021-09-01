@@ -41,6 +41,15 @@ export function isObjectCategory(category) {
   return category >= ValueTypeCategory.Function;
 }
 
+const SimpoleStringByType = {
+  [ValueTypeCategory.Array]: '[]',
+  [ValueTypeCategory.Object]: '{}',
+  [ValueTypeCategory.Function]: 'ƒ',
+};
+export function getSimpleTypeString(category) {
+  return SimpoleStringByType[category];
+}
+
 /**
  * NOTE: strings are not trackable because `WeakMap` cannot index them.
  *    (That is because we can construct two strings that are equal according to `===` but are not referencing the same string.)

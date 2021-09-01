@@ -26,6 +26,11 @@ export default class StaticContext extends BasePlugin {
   bindingTraces = [];
 
   /**
+   * @type {Map | null}
+   */
+  uniqueIdentifiers = null;
+
+  /**
    * @param {BaseId} id
    */
   addReferencedBinding(id) {
@@ -38,6 +43,55 @@ export default class StaticContext extends BasePlugin {
       //      -> `Scope.contextVariables = ["arguments", "undefined", "Infinity", "NaN"]`
       //      -> `module` and other special variables (e.g. `commonjs` introduces https://nodejs.org/docs/latest/api/modules.html#modules_the_module_scope)
       this.referencedGlobals.add(id.astNode.name);
+    }
+  }
+
+  /**
+   * future-work: move all context creation code here (from `Function` and `Program`)
+   */
+  genContext() {
+    const { node: { state, path } } = this;
+    const {
+      contexts: { genContextId }
+    } = state;
+
+    const bodyPath = path.get('body');
+    return this.contextIdVar = genContextId(bodyPath);
+  }
+
+  getAwaitContextIdVar() {
+    // future-work: don't use unnamed constants (awCid)
+    return this.getUniqueIdentifier('awCid');
+  }
+
+  getUniqueIdentifier(name) {
+    if (!this.uniqueIdentifiers) {
+      return null;
+    }
+
+    return this.uniqueIdentifiers.get(name) || null;
+  }
+
+  /**
+   * Generate (if not already generated) a variable that might be shared by multiple children.
+   */
+  getOrGenerateUniqueIdentifier(name) {
+    if (!this.uniqueIdentifiers) {
+      this.uniqueIdentifiers = new Map();
+    }
+
+    let id = this.uniqueIdentifiers.get(name);
+    if (!id) {
+      const { scope } = this.node.path;
+      this.uniqueIdentifiers.set(name, id = scope.generateUidIdentifier(name));
+    }
+    return id;
+  }
+
+  addAwaitContextIdVarArg(args) {
+    const awaitContextIdVar = this.getAwaitContextIdVar();
+    if (awaitContextIdVar) {
+      args.push(awaitContextIdVar);
     }
   }
 

@@ -2,7 +2,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import isThenable from '@dbux/common/src/util/isThenable';
 import { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
-import { some } from 'lodash';
+// import some from 'lodash/some';
 // import executionContextCollection from './data/executionContextCollection';
 // import traceCollection from './data/traceCollection';
 // import valueCollection from './data/valueCollection';
@@ -12,6 +12,7 @@ import ThenRef from '../data/ThenRef';
 import { getPromiseData, getPromiseId, getPromiseOwnAsyncFunctionContextId, setPromiseData } from './promisePatcher';
 import asyncEventUpdateCollection from '../data/asyncEventUpdateCollection';
 import executionContextCollection from '../data/executionContextCollection';
+import valueCollection from '../data/valueCollection';
 // import { isPostEventUpdate, isPreEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 
 /** @typedef { import("./Runtime").default } Runtime */
@@ -207,7 +208,10 @@ export default class RuntimeAsync {
     const context = executionContextCollection.getById(rootId);
     if (context) {
       context.isVirtualRoot = true;
-      context.stackTrace = new Error().stack;
+      
+      // WARNING: `new Error().stack` might internally call functions that are instrumented by user code
+      // future-work: make this configurable, as it can mess with performance
+      context.stackTrace = valueCollection._readProperty(new Error(), 'stack');
     }
 
     // // NOTE: add all unassigned roots to thread#1
@@ -222,7 +226,7 @@ export default class RuntimeAsync {
   /**
    * TODO: also add a similar (but not the same) logic to `return` value of `async` functions.
    */
-  postAwait(awaitContextId, realContextId, postEventContextId, awaitArgument) {
+  postAwait(/* awaitContextId, */ realContextId, postEventContextId, awaitArgument) {
     const asyncData = this.lastAwaitByRealContext.get(realContextId);
     let {
       resumeContextId: preEventContextId,

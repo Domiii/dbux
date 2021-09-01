@@ -4,7 +4,7 @@ import enTranslation from './en';
 import zhTranslation from './zh';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('Lang@Code');
+const { log, debug, warn, error: logError } = newLogger('lang');
 
 let i18nextInstance;
 async function _init(lng) {

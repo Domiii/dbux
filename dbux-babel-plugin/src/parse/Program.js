@@ -107,6 +107,11 @@ export default class Program extends BaseNode {
 
     state.traces.addTrace(path, { type: TraceType.PushImmediate });      // === 1
     state.traces.addTrace(path, { type: TraceType.PopImmediate });       // === 2
+
+    // TODO: must also call _fixContext with correct arguments (see Function#buildPop)!!
+
+    // const contextPlugin = this('StaticContext');
+    // contextPlugin.addAwaitContextIdVarArg(moreTraceCallArgs);
   }
 
   instrument() {

@@ -1,13 +1,12 @@
 // import * as t from '@babel/types';
-import { applyPreconditionToExpression, getInstrumentPath, getReplacePath } from './builders/common';
-import { buildDefault, buildTraceDeclarations, buildTraceExpression } from './builders/misc';
+// import { pathToString, pathToStringAnnotated } from 'src/helpers/pathHelpers';
+import { getInstrumentPath, getReplacePath } from './builders/common';
+import { doBuild, buildAll, buildTraceDeclarationVar } from './builders/misc';
 import { unshiftScopeBlock } from './scope';
 
 export function instrumentExpression(state, traceCfg) {
   const path = getInstrumentPath(traceCfg);
-
-  // build
-  const resultNode = buildDefault(state, traceCfg);
+  const resultNode = doBuild(state, traceCfg);
 
   if (getReplacePath(traceCfg) !== false) {
     // we don't always want ad hoc replacement.
@@ -23,9 +22,7 @@ export function instrumentExpression(state, traceCfg) {
  */
 export function instrumentBehind(state, traceCfg) {
   const path = getInstrumentPath(traceCfg);
-
-  // build
-  const resultNode = buildDefault(state, traceCfg);
+  const resultNode = doBuild(state, traceCfg);
 
   // const s = pathToString(path);
   // const { type } = path.node;
@@ -36,11 +33,25 @@ export function instrumentBehind(state, traceCfg) {
   postInstrument(traceCfg, resultNode);
 }
 
+export function instrumentUnshiftBody(state, traceCfg) {
+  // const path = getInstrumentPath(traceCfg);
+  const { path } = traceCfg;
+  const resultNode = doBuild(state, traceCfg);
+
+  // const s = pathToString(path);
+  // const { type } = path.node;
+
+  // console.debug(`instrumentUnshitBody`, pathToStringAnnotated(path));
+  path.unshiftContainer('body', resultNode);
+
+  postInstrument(traceCfg, resultNode);
+}
+
 export function postInstrument(traceCfg, resultNode) {
   traceCfg.resultNode = resultNode;
 }
 
-export function traceDeclarations(targetPath, state, traceCfgs) {
-  const resultNodes = buildTraceDeclarations(state, traceCfgs);
+export function traceHoisted(targetPath, state, traceCfgs) {
+  const resultNodes = buildAll(state, traceCfgs, buildTraceDeclarationVar);
   unshiftScopeBlock(targetPath, resultNodes)[0];
 }

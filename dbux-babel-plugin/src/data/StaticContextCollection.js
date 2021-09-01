@@ -7,7 +7,7 @@ export default class StaticContextCollection extends StaticCollection {
    * NOTE: This does NOT generate the contextId itself, nor put it anywhere into the program.
    */
   genContextId(path) {
-    const contextId = path.scope.generateUidIdentifier('contextId');
+    const contextId = path.scope.generateUidIdentifier('cid');
     // path.setData('contextIdName', contextId);
     return contextId;
   }

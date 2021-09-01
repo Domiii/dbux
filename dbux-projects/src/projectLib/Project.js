@@ -59,7 +59,16 @@ export default class Project extends ProjectBase {
    * Use github by default.
    */
   get gitUrl() {
-    return 'https://github.com/' + this.gitRemote;
+    let { gitRemote } = this;
+    if (!gitRemote.startsWith('http')) {
+      // assume github by default
+      gitRemote = 'https://github.com/' + gitRemote;
+      if (!gitRemote.endsWith('.git')) {
+        gitRemote += '.git';
+      }
+    }
+
+    return gitRemote;
   }
 
   get envName() {
@@ -893,7 +902,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     return argArray.join(' ');      //.map(s => `"${s}"`).join(' ');
   }
 
-  
+
 
   // ###########################################################################
   // logging

@@ -1,5 +1,6 @@
 import findLast from 'lodash/findLast';
 import groupBy from 'lodash/groupBy';
+import isNumber from 'lodash/isNumber';
 import TraceType, { hasDynamicTypes, isTracePop, isBeforeCallExpression } from '@dbux/common/src/types/constants/TraceType';
 import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
 import { pushArrayOfArray } from '@dbux/common/src/util/arrayUtil';
@@ -11,7 +12,7 @@ import StaticTrace from '@dbux/common/src/types/StaticTrace';
 import { isVirtualContextType } from '@dbux/common/src/types/constants/StaticContextType';
 import { isRealContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
 import { isCallResult, hasCallId } from '@dbux/common/src/types/constants/traceCategorization';
-import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory, ValuePruneState } from '@dbux/common/src/types/constants/ValueTypeCategory';
+import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory, ValuePruneState, getSimpleTypeString } from '@dbux/common/src/types/constants/ValueTypeCategory';
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import SpecialCallType from '@dbux/common/src/types/constants/SpecialCallType';
 import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
@@ -352,6 +353,27 @@ export default {
     return inputIds?.length ? dp.collections.dataNodes.getById(inputIds[0]) : null;
   },
 
+  /**
+   * @param {DataProvider} dp
+   * @return {DataNode} DataNode of value trace
+   */
+  getDataNode(dp, nodeId) {
+    return dp.collections.dataNodes.getById(nodeId);
+  },
+
+  /**
+   * @param {DataProvider} dp
+   * @return {DataNode} DataNode of value trace
+   */
+  getTraceOfDataNode(dp, nodeId) {
+    const dataNode = dp.collections.dataNodes.getById(nodeId);
+    if (!dataNode) {
+      return undefined;
+    }
+    const { traceId } = dataNode;
+    return dp.util.getTrace(traceId);
+  },
+
   // ###########################################################################
   // trace values
   // ###########################################################################
@@ -457,12 +479,17 @@ export default {
     }
     else {
       const entries = Object.entries(dp.util.constructValueObjectShallow(_refId, _rootNodeId));
+      const constructedEntries = entries.map(([key, [childNodeId, childRefId, childValue]]) => {
+        return [key, dp.util.constructValueFull(childNodeId, childRefId, childValue, _visited, _rootNodeId)];
+      });
 
-      finalValue = Object.fromEntries(
-        entries.map(([key, [childNodeId, childRefId, childValue]]) => {
-          return [key, dp.util.constructValueFull(childNodeId, childRefId, childValue, _visited, _rootNodeId)];
-        })
-      );
+      if (ValueTypeCategory.is.Array(valueRef.category)) {
+        finalValue = [];
+        constructedEntries.forEach(([key, value]) => finalValue[key] = value);
+      }
+      else {
+        finalValue = Object.fromEntries(constructedEntries);
+      }
     }
 
     return finalValue;
@@ -482,9 +509,19 @@ export default {
   constructValueObjectShallow(dp, refId, terminateNodeId = Infinity) {
     const valueRef = dp.collections.values.getById(refId);
 
-    // initial values
-    // NOTE: valueRef.value is an array of the same format as the one below, produced by {@link ValueRefCollection.deserializeShallow}
-    const entries = { ...valueRef.value };
+    /**
+     * initial values
+     * NOTE: valueRef.value is an array of the same format as the one below, produced by {@link ValueRefCollection.deserializeShallow}
+     */
+    let entries;
+    const { category } = valueRef;
+    if (ValueTypeCategory.is.Array(category)) {
+      entries = [];
+      Object.entries(valueRef.value).forEach(([prop, val]) => entries[prop] = val);
+    }
+    else {
+      entries = { ...valueRef.value };
+    }
 
     // if (!entries) {
     //   // sanity check
@@ -504,7 +541,9 @@ export default {
           entries[prop] = [modifyNode.nodeId, modifyNode.refId, null];
         }
         else {
-          entries[prop] = [modifyNode.nodeId, null, modifyNode.value];
+          const inputNodeId = modifyNode.inputs[0];
+          const inputNode = dp.collections.dataNodes.getById(inputNodeId);
+          entries[prop] = [modifyNode.nodeId, null, inputNode.value];
         }
       }
       else if (modifyNode.type === DataNodeType.Delete) {
@@ -514,40 +553,6 @@ export default {
     }
 
     return entries;
-  },
-
-  /**
-   * WARNING: Call `doesTraceHaveValue` to make sure, the trace has a value.
-   * 
-   * @param {DataProvider} dp
-   * @return Value of given trace. If value is `undefined`, it could mean that the `value` is actually `undefined`, or, in case of traces that are not expressions, that there is no value.
-   */
-  getTraceValuePrimitive(dp, traceId) {
-    const dataNode = dp.util.getDataNodeOfTrace(traceId);
-    return dp.util.getDataNodeValuePrimitive(dataNode.nodeId);
-  },
-
-  /** @param {DataProvider} dp */
-  getDataNodeValuePrimitive(dp, nodeId) {
-    const dataNode = dp.collections.dataNodes.getById(nodeId);
-    if (!dataNode) {
-      return undefined;
-    }
-
-    if (dataNode.value !== undefined) {
-      return dataNode.value;
-    }
-
-    if (dataNode.refId) {
-      const valueRef = dp.collections.values.getById(dataNode.refId);
-      if (!valueRef) {
-        logError(`valueRef does not exist for dataNode - ${JSON.stringify(dataNode)}`);
-        return undefined;
-      }
-      return valueRef.value;
-    }
-
-    return undefined;
   },
 
   /**
@@ -562,12 +567,33 @@ export default {
   },
 
   /** 
+   * internal helper
+   * @param {DataProvider} dp
+   */
+  _simplifyValue(dp, [nodeId, refId, value]) {
+    if (refId) {
+      const valueRef = dp.collections.values.getById(refId);
+      const { category } = valueRef;
+      if (isObjectCategory(category)) {
+        return getSimpleTypeString(category);
+      }
+      else {
+        return String(valueRef.value);
+      }
+    }
+    else {
+      return String(value);
+    }
+  },
+
+  /** 
    * WARNING: Call `doesTraceHaveValue` to make sure, the trace has a value.
    * 
    * @param {DataProvider} dp
    */
   getTraceValueString(dp, traceId) {
     const trace = dp.util.getValueTrace(traceId);
+    const dataNode = dp.util.getDataNodeOfTrace(traceId);
 
     if (trace._valueString) {
       // already cached
@@ -581,21 +607,25 @@ export default {
     }
 
     // get value
-    const value = dp.util.getTraceValuePrimitive(traceId);
-
     let valueString;
-    if (dp.util.isTraceFunctionValue(traceId)) {
-      valueString = value;
-    }
-    else if (value === undefined) {
-      valueString = 'undefined';
+    if (dataNode.refId) {
+      const entries = dp.util.constructValueObjectShallow(dataNode.refId);
+      const valueRef = dp.collections.values.getById(dataNode.refId);
+      const { category } = valueRef;
+      if (ValueTypeCategory.is.Array(category)) {
+        valueString = `[${entries.map(x => dp.util._simplifyValue(x))}]`;
+      }
+      else if (ValueTypeCategory.is.Object(category)) {
+        valueString = `{${Object.keys(entries)}}`;
+      }
+      else {
+        valueString = valueRef.value?.toString?.() || String(valueRef.value);
+      }
     }
     else {
-      // valueString = JSON.stringify(value);
-      valueString = value?.toString?.() || String(value);
+      valueString = dataNode.value?.toString?.() || String(dataNode.value);
     }
 
-    // hackfix: we cache this thing
     return trace._valueString = valueString;
   },
 
@@ -950,7 +980,8 @@ export default {
     const returnTraces = dp.util.getTracesOfContextAndType(contextId, TraceType.ReturnArgument);
 
     if (returnTraces.length > 1) {
-      dp.logger.warn(`Found context containing more than one ReturnArgument. contextId: ${contextId}, ReturnArgument traces: [${returnTraces}]`);
+      // eslint-disable-next-line max-len
+      dp.logger.warn(`Found context containing more than one ReturnArgument. contextId: ${contextId}, ReturnArgument traces at ${dp.util.makeTraceInfo(returnTraces[0])}: [${returnTraces.map(t => t.traceId)}]`);
     }
     return returnTraces[0] || null;
   },
@@ -1471,11 +1502,21 @@ export default {
   },
 
   /**
-   * 
+   * @param {DataProvider} dp
    */
-  makeTraceInfo(dp, traceId) {
+  makeTraceInfo(dp, traceOrTraceOrTraceId) {
     // const { traceId } = trace;
-    // const trace = dp.collections.traces.getById(traceId);
+    let trace;
+    if (isNumber(traceOrTraceOrTraceId)) {
+      trace = dp.collections.traces.getById(traceOrTraceOrTraceId);
+    }
+    else {
+      trace = traceOrTraceOrTraceId;
+    }
+    if (!trace) {
+      return `#${traceOrTraceOrTraceId} (null)`;
+    }
+    const { traceId } = trace;
     const traceType = dp.util.getTraceType(traceId);
     const typeName = TraceType.nameFrom(traceType);
     return `[${typeName}] #${traceId} ${dp.util.makeStaticTraceInfo(traceId)}`;
