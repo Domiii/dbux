@@ -16,13 +16,6 @@ class AsyncGraph extends GraphBase {
 
     this.controllers.createComponent('PopperController');
 
-    // // register event listeners
-    // this.addDisposable(
-    //   allApplications.selection.onApplicationsChanged(() => {
-    //     this.refresh();
-    //     this._resubscribeOnData();
-    //   })
-    // );
     this.addDisposable(
       allApplications.selection.data.threadSelection.onSelectionChanged(() => {
         this.refresh();
@@ -134,6 +127,10 @@ class AsyncGraph extends GraphBase {
    * @param {Application[]} apps 
    */
   _resubscribeOnData() {
+    // unsubscribe old
+    this._unsubscribeOnNewData.forEach(f => f());
+    this._unsubscribeOnNewData = [];
+
     // subscribe new
     for (const app of allApplications.selection.getAll()) {
       const { dataProvider } = app;
@@ -146,6 +143,7 @@ class AsyncGraph extends GraphBase {
       // future-work: avoid potential memory leak
       allApplications.selection.subscribe(unsubscribe);
       this.addDisposable(unsubscribe);
+      this._unsubscribeOnNewData.push(unsubscribe);
     }
   }
 

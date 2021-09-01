@@ -80,7 +80,7 @@ class Toolbar extends HostComponentEndpoint {
         this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphSearchContexts, { searchTerm: searchTermContexts });
       }
 
-      const contextNodeManager = this.context.graphDocument.graphRoot.controllers.getComponent('ContextNodeManager');
+      const contextNodeManager = this.context.graphDocument.syncGraphContainer.graph.controllers.getComponent('ContextNodeManager');
       contextNodeManager.highlightBySearchTermContexts(searchTermContexts);
     },
 
@@ -91,7 +91,7 @@ class Toolbar extends HostComponentEndpoint {
         this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphSearchTraces, { searchTerm: searchTermTraces });
       }
 
-      const contextNodeManager = this.context.graphDocument.graphRoot.controllers.getComponent('ContextNodeManager');
+      const contextNodeManager = this.context.graphDocument.syncGraphContainer.graph.controllers.getComponent('ContextNodeManager');
       contextNodeManager.highlightBySearchTermTraces(searchTermTraces);
     },
     clearThreadSelection() {

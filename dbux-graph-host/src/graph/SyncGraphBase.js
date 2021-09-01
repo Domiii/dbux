@@ -8,7 +8,7 @@ import RunNode from './syncGraph/RunNode';
 import ContextNode from './syncGraph/ContextNode';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('GraphRoot');
+const { log, debug, warn, error: logError } = newLogger('SyncGraphBase');
 
 
 export class RunNodeMap {

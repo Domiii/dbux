@@ -1,7 +1,6 @@
 import PathwaysMode from '@dbux/data/src/pathways/PathwaysMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import PathwaysView from './PathwaysView';
-// import GraphRoot from './GraphRoot';
 import Toolbar from './Toolbar';
 
 /** @typedef {import('@dbux/projects/src/dataLib/PathwaysDataProvider').default} PathwaysDataProvider */

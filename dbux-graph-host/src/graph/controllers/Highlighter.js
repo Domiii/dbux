@@ -1,9 +1,8 @@
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
 export default class Highlighter extends HostComponentEndpoint {
-  // TODO-M: use GraphRoot's manager instead
   get manager() {
-    return this.context.graphDocument.controllers.getComponent('HighlightManager');
+    return this.context.graphContainer.controllers.getComponent('HighlightManager');
   }
 
   init() {
