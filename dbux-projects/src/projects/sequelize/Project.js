@@ -36,7 +36,7 @@ export default class SequelizeProject extends Project {
     }
 
     Object.assign(bug, {
-      dbuxArgs: '--pw=.*'
+      dbuxArgs: '--pw=.* --pb=lodash'
       // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
     });
   }

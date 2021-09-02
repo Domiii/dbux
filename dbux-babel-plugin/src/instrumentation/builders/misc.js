@@ -5,6 +5,9 @@ import { addMoreTraceCallArgs, getTraceCall, makeInputs } from './buildUtil';
 import { applyPreconditionToExpression, getInstrumentTargetAstNode } from './common';
 import { buildTraceId } from './traceId';
 import { getDeclarationTid } from '../../helpers/traceUtil';
+import NestedError from '@dbux/common/src/NestedError';
+import { pathToStringAnnotated } from 'src/helpers/pathHelpers';
+import TraceType from '@dbux/common/src/types/constants/TraceType';
 
 const Verbose = 2;
 
@@ -189,6 +192,13 @@ export function doBuild(state, traceCfg, buildDefault = buildTraceExpression) {
 
 export function buildAll(state, traceCfgs, defaultBuild) {
   return traceCfgs.map((traceCfg) => {
-    return doBuild(state, traceCfg, defaultBuild);
+    try {
+      return doBuild(state, traceCfg, defaultBuild);
+    }
+    catch (err) {
+      // eslint-disable-next-line max-len
+      const { node, path, staticTraceData: { type } } = traceCfg;
+      throw new NestedError(`Failed to instrument node="${node}", path="${pathToStringAnnotated(path, true)}", trace=${TraceType.nameFrom(type)}`, err);
+    }
   });
 }

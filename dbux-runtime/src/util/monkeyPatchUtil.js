@@ -22,7 +22,7 @@ export function _registerMonkeyPatchedFunction(originalFunction, patchedFunction
     }
   }
   catch (err) {
-    throw new NestedError(`could not store monkey patch function ${originalFunction}`, err);
+    throw new NestedError(`could not store mapping for monkey patched function "${originalFunction}" <-> "${patchedFunction}"`, err);
   }
 }
 
@@ -149,7 +149,8 @@ export function monkeyPatchFunctionOverrideDefault(fn) {
   // return monkeyPatchFunctionOverride(fn, (orig) => function patchedFunction(...args) {
   //   return orig.call(this, ...args);
   // });
-  return monkeyPatchFunctionOverride(fn, fn);
+  _registerMonkeyPatchedFunction(fn, fn);
+  return fn;
 }
 export function monkeyPatchMethodOverrideDefault(holder, fnName) {
   try {
