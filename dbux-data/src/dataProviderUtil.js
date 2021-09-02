@@ -142,7 +142,7 @@ export default {
 
     return dp.util.getAllExecutedStaticContexts().
       filter(staticContext => {
-        return staticContext.displayName.toLowerCase().includes(searchTerm);
+        return staticContext.displayName?.toLowerCase().includes(searchTerm);
       }).
       map(staticContext =>
         dp.indexes.executionContexts.byStaticContext.get(staticContext.staticContextId)
@@ -155,7 +155,7 @@ export default {
 
     return dp.util.getAllExecutedStaticContexts().
       filter(staticContext => {
-        const staticTraces = dp.util.getExecutedStaticTracesInStaticContext(staticContext.staticContextId);
+        const staticTraces = dp.util.getExecutedStaticTracesInStaticContext(staticContext.staticContextId) || EmptyArray;
         return staticTraces.some(staticTrace =>
           staticTrace.displayName?.toLowerCase().includes(searchTerm)
         );
@@ -187,16 +187,11 @@ export default {
   getAllExecutedStaticContextIds(dp) {
     // NOTE: needs improved performance, if used a lot
     const staticContextIds = new Set(
-      dp.collections.executionContexts.getAll().map(context => {
-        if (!context) {
-          return 0;
-        }
-
+      dp.collections.executionContexts.getAllActual().map(context => {
         const { staticContextId } = context;
         return staticContextId;
       })
     );
-    staticContextIds.delete(0);
     return Array.from(staticContextIds);
   },
 

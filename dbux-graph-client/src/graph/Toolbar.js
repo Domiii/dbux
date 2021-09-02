@@ -193,7 +193,7 @@ class Toolbar extends ClientComponentEndpoint {
     locModeBtn: {
       click(evt) {
         evt.preventDefault();
-        this.setState({
+        this.parent.setState({
           locMode: !this.parent.state.locMode
         });
       },
@@ -205,7 +205,7 @@ class Toolbar extends ClientComponentEndpoint {
         evt.preventDefault();
         evt.target.blur();
 
-        this.setState({
+        this.parent.setState({
           callMode: !this.parent.state.callMode
         });
       },
@@ -215,7 +215,7 @@ class Toolbar extends ClientComponentEndpoint {
     valueModeBtn: {
       click(evt) {
         evt.preventDefault();
-        this.setState({
+        this.parent.setState({
           valueMode: !this.parent.state.valueMode
         });
       },
@@ -225,7 +225,7 @@ class Toolbar extends ClientComponentEndpoint {
     thinModeBtn: {
       click(evt) {
         evt.preventDefault();
-        this.setState({
+        this.parent.setState({
           thinMode: !this.parent.state.thinMode
         });
       },
@@ -267,7 +267,7 @@ class Toolbar extends ClientComponentEndpoint {
     asyncDetailModeBtn: {
       click(evt) {
         evt.preventDefault();
-        this.setState({
+        this.parent.setState({
           asyncDetailMode: !this.parent.state.asyncDetailMode
         });
       },

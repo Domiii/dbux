@@ -53,7 +53,7 @@ class Toolbar extends HostComponentEndpoint {
     },
 
     searchContexts(searchTermContexts) {
-      this.setState({ searchTermContexts });
+      this.parent.setState({ searchTermContexts });
 
       if (searchTermContexts) {
         this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphSearchContexts, { searchTerm: searchTermContexts });
@@ -64,7 +64,7 @@ class Toolbar extends HostComponentEndpoint {
     },
 
     searchTraces(searchTermTraces) {
-      this.setState({ searchTermTraces });
+      this.parent.setState({ searchTermTraces });
 
       if (searchTermTraces) {
         this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphSearchTraces, { searchTerm: searchTermTraces });
