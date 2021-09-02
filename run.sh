@@ -6,7 +6,7 @@ set -e # cancel on error
 # set -x # verbose echo mode
 
 # fname="__samplesInput__/error-async4-catch"
-fname="__samplesInput__/async/await0"
+fname="__samplesInput__/call2"
 
 
 

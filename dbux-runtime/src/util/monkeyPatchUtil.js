@@ -16,7 +16,10 @@ const originalCallbacksByPatched = new WeakMap();
 export function _registerMonkeyPatchedFunction(originalFunction, patchedFunction) {
   try {
     patchedFunctionsByOriginalFunction.set(originalFunction, patchedFunction);
-    originalFunctionsByPatchedFunctions.set(patchedFunction, originalFunction);
+    if (originalFunction !== patchedFunction) {
+      // NOTE: for some reason, native functions cannot be WeakMap keys
+      originalFunctionsByPatchedFunctions.set(patchedFunction, originalFunction);
+    }
   }
   catch (err) {
     throw new NestedError(`could not store monkey patch function ${originalFunction}`, err);
@@ -143,9 +146,10 @@ export function monkeyPatchFunctionOverride(originalFunction, patcher) {
  * NOTE: we use this, so it won't be considered as "patchable"
  */
 export function monkeyPatchFunctionOverrideDefault(fn) {
-  return monkeyPatchFunctionOverride(fn, (orig) => function patchedFunction(...args) {
-    return orig.call(this, ...args);
-  });
+  // return monkeyPatchFunctionOverride(fn, (orig) => function patchedFunction(...args) {
+  //   return orig.call(this, ...args);
+  // });
+  return monkeyPatchFunctionOverride(fn, fn);
 }
 export function monkeyPatchMethodOverrideDefault(holder, fnName) {
   try {
