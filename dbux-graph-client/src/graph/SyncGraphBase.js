@@ -1,6 +1,6 @@
-import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
+import GraphBase from './GraphBase';
 
-class SyncGraphBase extends ClientComponentEndpoint {
+class SyncGraphBase extends GraphBase {
 
 }
 export default SyncGraphBase;

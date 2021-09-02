@@ -7,15 +7,22 @@ import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
 class GraphDocument extends HostComponentEndpoint {
-  // ###########################################################################
-  // init
-  // ###########################################################################
   init() {
     this._emitter = new NanoEvents();
+
+    // default mode settings
     this.state.graphMode = GraphMode.SyncGraph;
+    this.state.followMode = true;
+    this.state.locMode = true;
+    this.state.callMode = false;
+    this.state.valueMode = false;
+    this.state.thinMode = false;
+    this.state.stackEnabled = false;
+    this.state.asyncDetailMode = true;
 
     this.createOwnComponents();
 
+    // NOTE: this will be called immediately
     allApplications.selection.onApplicationsChanged(() => {
       this.refreshGraphs();
     });
@@ -28,6 +35,10 @@ class GraphDocument extends HostComponentEndpoint {
     this.asyncGraphContainer = this.children.createComponent('GraphContainer', { graphType: GraphType.AsyncGraph });
     this.asyncStackContainer = this.children.createComponent('GraphContainer', { graphType: GraphType.AsyncStack });
     this.toolbar = this.children.createComponent('Toolbar');
+  }
+
+  update() {
+    this.toolbar.forceUpdate();
   }
 
   /** ########################################
@@ -46,8 +57,12 @@ class GraphDocument extends HostComponentEndpoint {
   }
 
   // ###########################################################################
-  // graph management
+  // modes/events management
   // ###########################################################################
+
+  /** ########################################
+   * graph mode
+   *  ######################################*/
 
   nextGraphMode() {
     this.setGraphMode(GraphMode.nextValue(this.state.graphMode));
@@ -61,18 +76,43 @@ class GraphDocument extends HostComponentEndpoint {
     }
   }
 
-  refreshGraphs() {
-    this.children.getComponents('GraphContainer').forEach((container) => {
-      container.refreshGraph();
-    });
-  }
-
   _notifyGraphModeChanged(mode) {
     this._emitter.emit('graphModeChanged', mode);
   }
 
   onGraphModeChanged(cb) {
     return this._emitter.on('graphModeChanged', cb);
+  }
+
+  refreshGraphs() {
+    this.children.getComponents('GraphContainer').forEach((container) => {
+      container.refreshGraph();
+    });
+  }
+
+  /** ########################################
+   * follow mode
+   *  ######################################*/
+
+  toggleFollowMode() {
+    const mode = !this.state.followMode;
+    this.setFollowMode(mode);
+    return mode;
+  }
+
+  setFollowMode(mode) {
+    if (this.state.followMode !== mode) {
+      this.setState({ followMode: mode });
+      this._notifyFollowModeChanged(mode);
+    }
+  }
+
+  _notifyFollowModeChanged(mode) {
+    this._emitter.emit('followModeChanged', mode);
+  }
+
+  onFollowModeChanged(cb) {
+    return this._emitter.on('followModeChanged', cb);
   }
 
   // ###########################################################################

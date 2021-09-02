@@ -72,7 +72,6 @@ class SyncGraphBase extends GraphBase {
     });
     this.controllers.createComponent('ContextNodeManager');
     this.controllers.createComponent('PopperController');
-    this.controllers.createComponent('FocusController');
   }
 
   /** ###########################################################################
@@ -176,14 +175,6 @@ class SyncGraphBase extends GraphBase {
 
   on(eventName, cb) {
     this._emitter.on(eventName, cb);
-  }
-
-  // ###########################################################################
-  // getters
-  // ###########################################################################
-
-  get focusController() {
-    return this.controllers.getComponent('FocusController');
   }
 
   // ###########################################################################
@@ -300,6 +291,20 @@ class SyncGraphBase extends GraphBase {
     await node?.waitForInit();
 
     return node;
+  }
+
+  _selectContextNode(contextNode) {
+    if (this._selectedContextNode && !this._selectedContextNode.isDisposed) {
+      // deselect old
+      this._selectedContextNode.setSelected(false);
+    }
+
+    if (contextNode) {
+      // select new
+      contextNode.setSelected(true);
+    }
+
+    this._selectedContextNode = contextNode;
   }
 
   shared() {

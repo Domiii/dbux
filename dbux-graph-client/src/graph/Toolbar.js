@@ -6,11 +6,7 @@ import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 let documentClickHandler;
 
 class Toolbar extends ClientComponentEndpoint {
-  // ###########################################################################
-  // createEl
-  // ###########################################################################
   createEl() {
-    // return compileHtmlElement(/*html*/`<div></div>`);
     return compileHtmlElement(/*html*/`
       <nav class="navbar sticky-top navbar-expand-lg no-padding" id="toolbar">
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
@@ -76,25 +72,32 @@ class Toolbar extends ClientComponentEndpoint {
   // ###########################################################################
 
   update = () => {
+    this.decorateButtons();
+    this.renderModes();
+  }
+
+  decorateButtons() {
     const {
       followMode,
       locMode,
       callMode,
       valueMode,
       thinMode,
-      hideOldMode,
-      hideNewMode,
+      hideBefore,
+      hideAfter,
       searchTermContexts,
       searchTermTraces,
       graphMode,
       stackEnabled,
       asyncDetailMode,
+    } = this.parent.state;
+
+    const {
       isThreadSelectionActive
     } = this.state;
 
     const themeModeName = ThemeMode.getName(this.context.themeMode).toLowerCase();
 
-    // render buttons
     decorateClasses(this.els.followModeBtn, {
       active: followMode
     });
@@ -111,10 +114,10 @@ class Toolbar extends ClientComponentEndpoint {
       active: thinMode
     });
     decorateClasses(this.els.hideOldRunBtn, {
-      active: hideOldMode
+      active: !!hideBefore
     });
     decorateClasses(this.els.hideNewRunBtn, {
-      active: !hideNewMode
+      active: !hideAfter
     });
     decorateClasses(this.els.graphModeBtn, {
       active: graphMode === GraphMode.AsyncGraph
@@ -136,10 +139,7 @@ class Toolbar extends ClientComponentEndpoint {
     });
     [`navbar-${themeModeName}`, `bg-${themeModeName}`].forEach(mode => this.el.classList.add(mode));
     this.els.thinModeBtn.innerHTML = `${!!thinMode && '||&nbsp;' || '|&nbsp;|'}`;
-    this.els.hideNewRunBtn.innerHTML = `${hideNewMode ? '⚪' : '🔴'}`;
-
-
-    this.renderModes();
+    this.els.hideNewRunBtn.innerHTML = `${hideAfter ? '⚪' : '🔴'}`;
   }
 
   renderModes() {
@@ -149,9 +149,9 @@ class Toolbar extends ClientComponentEndpoint {
       valueMode,
       thinMode,
       asyncDetailMode,
-    } = this.state;
+    } = this.parent.state;
 
-    const docEl = this.context.graphDocument.el;
+    const docEl = this.parent.el;
     decorateClasses(docEl, {
       'hide-locs': !locMode,
       'hide-values': !valueMode,
@@ -194,7 +194,7 @@ class Toolbar extends ClientComponentEndpoint {
       click(evt) {
         evt.preventDefault();
         this.setState({
-          locMode: !this.state.locMode
+          locMode: !this.parent.state.locMode
         });
       },
       focus(evt) { evt.target.blur(); }
@@ -206,7 +206,7 @@ class Toolbar extends ClientComponentEndpoint {
         evt.target.blur();
 
         this.setState({
-          callMode: !this.state.callMode
+          callMode: !this.parent.state.callMode
         });
       },
       // focus(evt) { evt.target.blur(); }
@@ -216,7 +216,7 @@ class Toolbar extends ClientComponentEndpoint {
       click(evt) {
         evt.preventDefault();
         this.setState({
-          valueMode: !this.state.valueMode
+          valueMode: !this.parent.state.valueMode
         });
       },
       focus(evt) { evt.target.blur(); }
@@ -226,7 +226,7 @@ class Toolbar extends ClientComponentEndpoint {
       click(evt) {
         evt.preventDefault();
         this.setState({
-          thinMode: !this.state.thinMode
+          thinMode: !this.parent.state.thinMode
         });
       },
       focus(evt) { evt.target.blur(); }
@@ -235,7 +235,7 @@ class Toolbar extends ClientComponentEndpoint {
     hideOldRunBtn: {
       click(evt) {
         evt.preventDefault();
-        const mode = !this.state.hideOldMode;
+        const mode = !this.parent.state.hideBefore;
         this.remote.hideOldRun(mode && Date.now());
       },
       focus(evt) { evt.target.blur(); }
@@ -244,7 +244,7 @@ class Toolbar extends ClientComponentEndpoint {
     hideNewRunBtn: {
       click(evt) {
         evt.preventDefault();
-        const mode = !this.state.hideNewMode;
+        const mode = !this.parent.state.hideAfter;
         this.remote.hideNewRun(mode && Date.now());
       },
       focus(evt) { evt.target.blur(); }
@@ -268,7 +268,7 @@ class Toolbar extends ClientComponentEndpoint {
       click(evt) {
         evt.preventDefault();
         this.setState({
-          asyncDetailMode: !this.state.asyncDetailMode
+          asyncDetailMode: !this.parent.state.asyncDetailMode
         });
       },
       focus(evt) { evt.target.blur(); }
@@ -284,7 +284,7 @@ class Toolbar extends ClientComponentEndpoint {
     searchContextsBtn: {
       async click(evt) {
         evt.preventDefault();
-        if (this.state.searchTermContexts) {
+        if (this.parent.state.searchTermContexts) {
           // stop searching
           await this.remote.searchContexts(null);
         }
@@ -302,7 +302,7 @@ class Toolbar extends ClientComponentEndpoint {
     searchTracesBtn: {
       async click(evt) {
         evt.preventDefault();
-        if (this.state.searchTermTraces) {
+        if (this.parent.state.searchTermTraces) {
           // stop searching
           await this.remote.searchTraces(null);
         }

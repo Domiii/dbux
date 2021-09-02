@@ -4,40 +4,19 @@ import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
 class Toolbar extends HostComponentEndpoint {
   init() {
-    // TODO-M: use toolbar configuration in focus controller
-    this.state.followMode = true;
-    this.state.locMode = true;
-    this.state.callMode = false;
-    this.state.valueMode = false;
-    this.state.thinMode = false;
-    this.state.hideNewMode = this.hiddenNodeManager.hideNewMode;
-    this.state.graphMode = this.context.graphDocument.graphMode;
-    this.state.stackEnabled = false;
-    this.state.asyncDetailMode = true;
+    const { threadSelection } = allApplications.selection.data;
     this.state.theradSelectionIconUri = this.context.graphDocument.getIconUri('filter.svg');
+    this.state.isThreadSelectionActive = threadSelection.isActive();
 
     // listen on mode changed event
-    this.hiddenNodeManager.onStateChanged(({ hideBefore, hideAfter }) => {
-      this.setState({
-        hideOldMode: !!hideBefore,
-        hideNewMode: !!hideAfter
-      });
+    this.hiddenNodeManager.onStateChanged(() => {
+      this.forceUpdate();
     });
 
-    this.context.graphDocument.onGraphModeChanged(mode => {
-      this.setState({ graphMode: mode });
-    });
-
-    this.focusController.on('modeChanged', (mode) => {
-      this.setState({ followMode: mode });
-    });
-
-    const { threadSelection } = allApplications.selection.data;
     const threadSelectionSubscription = threadSelection.onSelectionChanged(() => {
       this.setState({ isThreadSelectionActive: threadSelection.isActive() });
     });
     this.addDisposable(threadSelectionSubscription);
-    this.state.isThreadSelectionActive = threadSelection.isActive();
   }
 
   get focusController() {
@@ -53,7 +32,7 @@ class Toolbar extends HostComponentEndpoint {
 
   public = {
     toggleFollowMode() {
-      this.focusController.toggleFollowMode();
+      this.parent.toggleFollowMode();
     },
 
     hideOldRun(time) {
@@ -69,7 +48,7 @@ class Toolbar extends HostComponentEndpoint {
     },
 
     toggleStackEnabled() {
-      this.setState({ stackEnabled: !this.state.stackEnabled });
+      this.parent.setState({ stackEnabled: !this.parent.state.stackEnabled });
       this.parent.asyncStackContainer.refreshGraph();
     },
 

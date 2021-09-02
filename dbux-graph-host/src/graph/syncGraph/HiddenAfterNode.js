@@ -14,7 +14,7 @@ export default class HiddenAfterNode extends HostComponentEndpoint {
 
   public = {
     hideAfter(time) {
-      this.hiddenNodeManager.setState({ hideAfter: time });
+      this.hiddenNodeManager.hideAfter(time);
     }
   }
 }

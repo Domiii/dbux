@@ -18,11 +18,9 @@ class AsyncGraph extends GraphBase {
 
     this.addDisposable(
       allApplications.selection.data.threadSelection.onSelectionChanged(() => {
-        this.refresh();
+        this.owner.refreshGraph();
       })
     );
-
-    this.refresh();
   }
 
   shouldBeEnabled() {
@@ -147,9 +145,30 @@ class AsyncGraph extends GraphBase {
     }
   }
 
+  handleTraceSelected = async (trace) => {
+    // goto async node of trace
+    await this.waitForRender();
+    let asyncNode;
+    if (trace) {
+      const { applicationId, rootContextId } = trace;
+      const dp = allApplications.getById(applicationId).dataProvider;
+      asyncNode = dp.indexes.asyncNodes.byRoot.getFirst(rootContextId);
+      if (this.context.graphDocument.state.followMode && asyncNode) {
+        await this.remote.focusAsyncNode(asyncNode);
+      }
+    }
+    await this.remote.selectAsyncNode(asyncNode);
+  }
+
   // ###########################################################################
   // util
   // ###########################################################################
+
+  async waitForRender() {
+    const { asyncGraphContainer } = this.context.graphDocument;
+    await asyncGraphContainer.graph.waitForRefresh();
+    await asyncGraphContainer.graph.waitForUpdate();
+  }
 
   isRelevantAsyncNode(asyncNode) {
     const { threadSelection } = allApplications.selection.data;

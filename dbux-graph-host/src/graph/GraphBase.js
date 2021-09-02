@@ -21,7 +21,11 @@ class GraphBase extends HostComponentEndpoint {
   // ###########################################################################
 
   get highlightManager() {
-    return this.parent.getComponent('HighlightManager');
+    return this.parent.controllers.getComponent('HighlightManager');
+  }
+
+  get focusController() {
+    return this.parent.controllers.getComponent('FocusController');
   }
 }
 

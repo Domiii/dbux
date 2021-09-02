@@ -176,6 +176,9 @@ class ContextNode extends HostComponentEndpoint {
         this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphTrace, { trace: firstTrace });
         traceSelection.selectTrace(firstTrace);
       }
+      else {
+        this.componentManager.externals.alert('Cannot find any trace of this context.', false);
+      }
     },
     selectCallTrace() {
       const { callTrace } = this;

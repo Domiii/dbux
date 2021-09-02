@@ -12,7 +12,7 @@ class GraphDocument extends ClientComponentEndpoint {
   }
 
   update() {
-    const { themeMode } = this.state; 
+    const { themeMode } = this.state;
     if (ThemeMode.is.Dark(themeMode)) {
       document.body.classList.add('theme-mode-dark');
     }
