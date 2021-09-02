@@ -18,6 +18,7 @@ export default class Survey1Container extends FirestoreContainer {
   }
 
   storeSurveyResult = async (data) => {
+    // TODO: consider using external survey instead (e.g. Google Form)
     data = {
       ...data,
       DBUX_VERSION: process.env.DBUX_VERSION,

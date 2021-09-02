@@ -133,6 +133,27 @@ function buildCallNodeDefault(path, callee, args) {
 //    -> this way we could produce additional information regarding the invalid call (such as the `staticTrace.displayName`)
 //    -> this is needed, since the stacktrace tends to get very inaccurate (the containing function's name tends to be correct)
 
+// /**
+//  * Current Babel generates incorrect AST information,
+//  * resulting in `args` array being rejected and causing `Error("Cannot replace single expression with an array...")`
+//  * in `template/lib/populate.js`.
+//  * (analysis: because it's internal `placeholder` object has `type = 'other'`, even though it should be`'param'`.)*/
+
+const callIdAstNode = t.identifier('call');
+
+/** 
+ * We can't use `template` because we need to spread the args array.
+ */
+function buildOptionalCallExpressionME({ callee, o, args }) {
+  return t.callExpression(
+    t.optionalMemberExpression(callee, callIdAstNode, false, true),
+    [
+      o,
+      ...args
+    ]
+  );
+}
+
 /**
  * Call templates if callee is MemberExpression.
  * NOTE: the call templates do not have arguments. We will put them in manually, so as to avoid loss of path data.
@@ -146,12 +167,18 @@ const callTemplatesME = {
     %%callee%%.call(%%o%%, %%args%%)
   `),
 
+  // OptionalCallExpression: () => buildOptionalCallExpressionME,
+
   /**
-   * @see https://github.com/babel/babel/blob/master/packages/babel-plugin-proposal-optional-chaining/src/index.js
+   * @see https://babeljs.io/docs/en/babel-plugin-proposal-optional-chaining#example-1
+   * @see https://github.com/babel/babel/blob/master/packages/babel-plugin-proposal-optional-chaining/src/index.js#L111
    */
-  OptionalCallExpression: () => template(`
-    %%callee%%?.call(%%o%%, %%args%%)
-  `),
+  OptionalCallExpression: () => template(
+    // `%%callee%%?.apply(%%o%%, %%args%%)`
+    `%%callee%% == null ? void 0 : %%callee%%.call(%%o%%, %%args%%)`
+  ),
+
+  // NewExpression: 
 
   NewExpression: () => template(`
     new %%callee%%(%%args%%)
@@ -172,11 +199,17 @@ function buildCallNodeME(path, objectVar, calleeVar, argsVar, argNodes) {
     templateArgs.o = objectVar;
   }
 
-  const astNode = callTemplate(templateArgs).expression;
+  let astNode = callTemplate(templateArgs);
+  if (astNode.expression) {
+    // NOTE: `template` generates `ExpressionStatement`
+    astNode = astNode.expression;
+  }
 
   // NOTE: not sure if this can improve call trace accuracy
   astNode.loc = path.node.loc;
-  astNode.callee.loc = path.node.callee.loc;
+
+  // future-work: requires a bit more work in case of optional chaining
+  astNode.callee && (astNode.callee.loc = path.node.callee.loc);
 
   return astNode;
 }
@@ -268,7 +301,7 @@ export function buildTraceCallUntraceableCallee(state, traceCfg) {
   if (shouldTraceArgs) {
     callArgs = buildCallArgs(args, argNodes);
     argsAssignment = [t.assignmentExpression('=',
-      args, 
+      args,
       buildSpreadableArgArrayNoSpread(argPaths)
     )];
     // spreadArgs = buildSpreadArgs(argsNoSpread, argNodes);
