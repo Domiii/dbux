@@ -1,11 +1,11 @@
-import { Abind, P, waitTicks } from '../../../util/asyncUtil';
+import { Abind, Pbind, waitTicks } from '../../../util/asyncUtil';
 
 function f(x) {
   return () => Abind(x,
     'A',
-    () => P('AA', 'AB'),
+    () => Pbind(x, 'AA', 'AB'),
     'B',
-    () => P('BA', 'BB'),
+    () => Pbind(x, 'BA', 'BB'),
     'C'
   )
 };
