@@ -6,6 +6,7 @@ import isThenable from '@dbux/common/src/util/isThenable';
 import isFunction from 'lodash/isString';
 import asyncEventUpdateCollection from '../data/asyncEventUpdateCollection';
 import dataNodeCollection from '../data/dataNodeCollection';
+import nestedPromiseCollection from '../data/nestedPromiseCollection';
 import { peekBCEMatchCallee, getLastContextCheckCallee } from '../data/dataUtil';
 import PromiseRuntimeData from '../data/PromiseRuntimeData';
 // import traceCollection from '../data/traceCollection';
@@ -183,9 +184,10 @@ function _makeThenRefUnchecked(promise, cb) {
   const schedulerTraceId = bceTrace?.traceId;
 
   if (promise instanceof NativePromiseClass && !schedulerTraceId) {
-    // NOTE: when `then`ing async functions, patched `then` will be called internally
-    //    -> called on an unpatched promise instance
+    // NOTE: when `then`ing on async function return value, patched `then` will be called internally
+    //    -> `then` called on an unpatched promise instance
     //    -> seemingly happens right after the async function is called (possibly in a new run)
+    //    -> this will never be true for Promise ctor call
     return null;
   }
   if (!schedulerTraceId) {
@@ -292,6 +294,7 @@ function patchPromiseClass(BasePromiseClass) {
        */
       let deferredCall;
       let superCalled = false;
+      let thisPromise;
 
       if (!isCallbackInstrumented) {
         wrapExecutor = executor;
@@ -308,7 +311,9 @@ function patchPromiseClass(BasePromiseClass) {
               // TODO: track `result` data flow
               const thenRef = _makeThenRef(this, wrapResolve);
               if (thenRef) {
-                RuntimeMonitorInstance._runtime.async.resolve(thenRef, resolveArg, ResolveType.Resolve);
+                RuntimeMonitorInstance._runtime.async.resolve(
+                  resolveArg, thisPromise, ResolveType.Resolve
+                );
               }
               resolve(resolveArg);
             }
@@ -322,7 +327,9 @@ function patchPromiseClass(BasePromiseClass) {
               // TODO: track `err` data flow
               const thenRef = _makeThenRef(this, wrapReject);
               if (thenRef) {
-                RuntimeMonitorInstance._runtime.async.resolve(thenRef, err, ResolveType.Reject);
+                RuntimeMonitorInstance._runtime.async.resolve(
+                  err, thisPromise, ResolveType.Reject
+                );
               }
               reject(err);
             }
@@ -343,6 +350,8 @@ function patchPromiseClass(BasePromiseClass) {
       if (isCallbackInstrumented) {
         maybePatchPromise(this);
       }
+
+      thisPromise = this;
 
       // deferred until after `super` was called
       deferredCall?.();
@@ -465,3 +474,43 @@ export function getPromiseOwnAsyncFunctionContextId(promise) {
 //   }
 //   pendingRootIds.push(pendingRootId);
 // }
+
+/** ###########################################################################
+ * built-ins
+ * ##########################################################################*/
+
+monkeyPatchFunctionHolder(Promise, 'resolve',
+  (thisArg, args, originalFunction/* , patchedFunction */) => {
+    const value = args[0];
+    const result = originalFunction.apply(thisArg, args);
+
+    if (value !== result && isThenable(value)) {
+      maybePatchPromise(value);
+      maybePatchPromise(result);
+
+      RuntimeMonitorInstance._runtime.async.resolve(value, result, ResolveType.Resolve);
+    }
+
+    maybePatchPromise(result);
+
+    return result;
+  }
+);
+
+monkeyPatchFunctionHolder(Promise, 'reject',
+  (thisArg, args, originalFunction/* , patchedFunction */) => {
+    const value = args[0];
+    const result = originalFunction.apply(thisArg, args);
+
+    if (value !== result && isThenable(value)) {
+      maybePatchPromise(value);
+      maybePatchPromise(result);
+
+      RuntimeMonitorInstance._runtime.async.resolve(value, result, ResolveType.Reject);
+    }
+
+    maybePatchPromise(result);
+
+    return result;
+  }
+);

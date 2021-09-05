@@ -1,12 +1,14 @@
 /**
  * A link between two promises.
  * A link implies: settling `from` also settles `to` (possibly off by one tick due to A+).
+ * Also: `from` is nested, `to` is nesting (or "nester").
+ * Also: `from` is "inner", `to` is "outer".
  * 
- * Examples of links:
+ * Examples:
  * 
  * `to = Promise.resolve(from)`
  * `to = new Promise(r => ... r(from))`
- * `to = ...then(() => { return from; })`
+ * `to = ...then(() => from)`
  * `to = (async () => from)()`
  */
 export default class PromiseLink {

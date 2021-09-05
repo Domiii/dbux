@@ -10,7 +10,7 @@ class PromiseLinkCollection extends Collection {
     super('promiseLinks');
   }
 
-  addLink(fromPromiseId, toPromiseId, edgeType) {
+  addLink(fromPromiseId, toPromiseId) {
     const entry = pools.promiseLinks.allocate();
 
     entry.linkId = entry._id = this._all.length;
@@ -18,7 +18,6 @@ class PromiseLinkCollection extends Collection {
 
     entry.from = fromPromiseId;
     entry.to = toPromiseId;
-    entry.edgeType = edgeType;
 
     this._send(entry);
 

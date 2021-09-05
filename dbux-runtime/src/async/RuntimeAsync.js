@@ -12,7 +12,9 @@ import ThenRef from '../data/ThenRef';
 import { getPromiseData, getPromiseId, getPromiseOwnAsyncFunctionContextId, setPromiseData } from './promisePatcher';
 import asyncEventUpdateCollection from '../data/asyncEventUpdateCollection';
 import executionContextCollection from '../data/executionContextCollection';
+import nestedPromiseCollection from '../data/nestedPromiseCollection';
 import valueCollection from '../data/valueCollection';
+import ResolveType from '@dbux/common/src/types/constants/ResolveType';
 // import { isPostEventUpdate, isPreEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 
 /** @typedef { import("./Runtime").default } Runtime */
@@ -353,28 +355,32 @@ export default class RuntimeAsync {
    * Event: `resolve` or `reject` was called from a promise ctor's executor.
    * @param {ThenRef} thenRef
    */
-  resolve(thenRef, resolveArg, resolveType) {
-    const {
-      preEventPromise,
-      // postEventPromise,
-      schedulerTraceId
-    } = thenRef;
+  resolve(inner, outer, resolveType) {
+    if (ResolveType.is.Resolve(resolveType)) {
+      // NOTE: `reject` does not settle nested promises!
+      nestedPromiseCollection.addLink(getPromiseId(inner), getPromiseId(outer));
+    }
+    // const {
+    //   preEventPromise,
+    //   // postEventPromise,
+    //   schedulerTraceId
+    // } = thenRef;
 
-    const runId = this._runtime.getCurrentRunId();
-    const preEventRootId = this.getCurrentVirtualRootContextId();
-    const contextId = this._runtime.peekCurrentContextId();
+    // const runId = this._runtime.getCurrentRunId();
+    // const preEventRootId = this.getCurrentVirtualRootContextId();
+    // const contextId = this._runtime.peekCurrentContextId();
 
-    // store update
-    asyncEventUpdateCollection.addResolveUpdate({
-      runId,
-      rootId: preEventRootId,
-      contextId: contextId,
-      schedulerTraceId,
-      promiseId: getPromiseId(preEventPromise),
+    // // store update
+    // asyncEventUpdateCollection.addResolveUpdate({
+    //   runId,
+    //   rootId: preEventRootId,
+    //   contextId: contextId,
+    //   schedulerTraceId,
+    //   promiseId: getPromiseId(preEventPromise),
 
-      argPromiseId: isThenable(resolveArg) && getPromiseId(resolveArg) || 0,
-      resolveType
-    });
+    //   argPromiseId: isThenable(resolveArg) && getPromiseId(resolveArg) || 0,
+    //   resolveType
+    // });
   }
 
   // ###########################################################################
