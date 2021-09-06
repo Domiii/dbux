@@ -138,7 +138,7 @@ export default class Function extends BasePlugin {
     // staticResumeContextId
     let staticResumeContextId;
     if (isInterruptable) {
-      // TODO: also add to top-level context, if it contains `await`
+      // TODO: also add this to top-level context, if it contains `await`
       staticResumeContextId = addResumeContext(bodyPath, state, staticContextId);
     }
 
@@ -147,6 +147,7 @@ export default class Function extends BasePlugin {
       staticContextId,
       staticPushTid,
       // pushTraceCfg,
+      isInterruptable,
       staticResumeContextId
     };
   }
@@ -279,10 +280,10 @@ export default class Function extends BasePlugin {
    */
   doInstrument = (state /*, traceCfg */) => {
     const {
-      node: { path },
+      node: { path, dontInstrumentContextEnd },
       data: {
-        returnTraceCfg,
         staticPushTid,
+        isInterruptable,
         staticResumeContextId,
         contextIdVar,
         popTraceCfg
@@ -302,7 +303,37 @@ export default class Function extends BasePlugin {
       this.buildPop()
     ];
 
-    if (staticResumeContextId) {
+    /** ########################################
+     * ContextEnd
+     * #######################################*/
+
+    let bodyNode = bodyPath.node;
+    if (!dontInstrumentContextEnd) {
+      const lastNode = getLastNodeOfBody(bodyNode);
+      if (!lastNode || !doesNodeEndScope(lastNode)) {
+        // add ContextEnd trace
+        // console.debug(`injecting EndOfContext for: ${bodyPath.toString()}`);
+        // path.scope.crawl();
+        const contextEndTrace = buildContextEndTrace(path, state);
+        if (Array.isArray(bodyNode)) {
+          bodyNode.push(contextEndTrace);
+        }
+        else {
+          if (!t.isBlockStatement(bodyNode)) {
+            // NOTE: we called `ensureBlock` above
+            throw new Error(`Function body is neither array nor block statement: "${pathToStringAnnotated(path, true)}"`);
+          }
+          bodyPath.pushContainer("body", contextEndTrace);
+        }
+        // injectContextEndTrace(path, state);
+      }
+    }
+
+    /** ########################################
+     * interruptable functions
+     * #######################################*/
+
+    if (isInterruptable) {
       // this is an interruptable function -> push + pop "resume contexts"
       const { ids: { dbux } } = state;
       // const resumeContextId = bodyPath.scope.generateUid('resumeCid');
@@ -325,28 +356,6 @@ export default class Function extends BasePlugin {
         // }),
         ...pops
       ];
-    }
-
-    let bodyNode = bodyPath.node;
-    if (!returnTraceCfg) {
-      const lastNode = getLastNodeOfBody(bodyNode);
-      if (!lastNode || !doesNodeEndScope(lastNode)) {
-        // add ContextEnd trace
-        // console.debug(`injecting EndOfContext for: ${bodyPath.toString()}`);
-        // path.scope.crawl();
-        const contextEndTrace = buildContextEndTrace(path, state);
-        if (Array.isArray(bodyNode)) {
-          bodyNode.push(contextEndTrace);
-        }
-        else {
-          if (!t.isBlockStatement(bodyNode)) {
-            // NOTE: we called `ensureBlock` above
-            throw new Error(`Function body is neither array nor block statement: "${pathToStringAnnotated(path, true)}"`);
-          }
-          bodyPath.pushContainer("body", contextEndTrace);
-        }
-        // injectContextEndTrace(path, state);
-      }
     }
 
     // wrap the function in a try/finally statement
