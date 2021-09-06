@@ -6,7 +6,7 @@ import isThenable from '@dbux/common/src/util/isThenable';
 import isFunction from 'lodash/isString';
 import asyncEventUpdateCollection from '../data/asyncEventUpdateCollection';
 import dataNodeCollection from '../data/dataNodeCollection';
-import nestedPromiseCollection from '../data/nestedPromiseCollection';
+import nestedPromiseCollection from '../data/promiseLinkCollection';
 import { peekBCEMatchCallee, getLastContextCheckCallee } from '../data/dataUtil';
 import PromiseRuntimeData from '../data/PromiseRuntimeData';
 // import traceCollection from '../data/traceCollection';
@@ -312,7 +312,7 @@ function patchPromiseClass(BasePromiseClass) {
               const thenRef = _makeThenRef(this, wrapResolve);
               if (thenRef) {
                 RuntimeMonitorInstance._runtime.async.resolve(
-                  resolveArg, thisPromise, ResolveType.Resolve
+                  resolveArg, thisPromise, ResolveType.Resolve, thenRef.schedulerTraceId
                 );
               }
               resolve(resolveArg);
@@ -328,7 +328,7 @@ function patchPromiseClass(BasePromiseClass) {
               const thenRef = _makeThenRef(this, wrapReject);
               if (thenRef) {
                 RuntimeMonitorInstance._runtime.async.resolve(
-                  err, thisPromise, ResolveType.Reject
+                  err, thisPromise, ResolveType.Reject, thenRef.schedulerTraceId
                 );
               }
               reject(err);
@@ -480,15 +480,16 @@ export function getPromiseOwnAsyncFunctionContextId(promise) {
  * ##########################################################################*/
 
 monkeyPatchFunctionHolder(Promise, 'resolve',
-  (thisArg, args, originalFunction/* , patchedFunction */) => {
+  (thisArg, args, originalFunction, patchedFunction) => {
     const value = args[0];
     const result = originalFunction.apply(thisArg, args);
-
+    
     if (value !== result && isThenable(value)) {
       maybePatchPromise(value);
       maybePatchPromise(result);
-
-      RuntimeMonitorInstance._runtime.async.resolve(value, result, ResolveType.Resolve);
+      
+      const bceTrace = peekBCEMatchCallee(patchedFunction);
+      RuntimeMonitorInstance._runtime.async.resolve(value, result, ResolveType.Resolve, bceTrace?.traceId);
     }
 
     maybePatchPromise(result);
@@ -498,7 +499,7 @@ monkeyPatchFunctionHolder(Promise, 'resolve',
 );
 
 monkeyPatchFunctionHolder(Promise, 'reject',
-  (thisArg, args, originalFunction/* , patchedFunction */) => {
+  (thisArg, args, originalFunction, patchedFunction) => {
     const value = args[0];
     const result = originalFunction.apply(thisArg, args);
 
@@ -506,7 +507,8 @@ monkeyPatchFunctionHolder(Promise, 'reject',
       maybePatchPromise(value);
       maybePatchPromise(result);
 
-      RuntimeMonitorInstance._runtime.async.resolve(value, result, ResolveType.Reject);
+      const bceTrace = peekBCEMatchCallee(patchedFunction);
+      RuntimeMonitorInstance._runtime.async.resolve(value, result, ResolveType.Reject, bceTrace?.traceId);
     }
 
     maybePatchPromise(result);

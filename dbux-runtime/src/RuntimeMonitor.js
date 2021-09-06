@@ -183,7 +183,14 @@ export default class RuntimeMonitor {
 
   traceReturn(programId, value, tid, inputs) {
     // for now: same as `te`
-    return this.traceExpression(programId, value, tid, inputs);
+    this.traceExpression(programId, value, tid, inputs);
+  }
+
+  traceReturnAsync(programId, value, tid, inputs) {
+    this.traceExpression(programId, value, tid, inputs);
+    if (isThenable(value)) {
+      this.runtime.async.returnAsync(value, tid);
+    }
   }
 
   traceThrow(programId, value, tid, inputs) {

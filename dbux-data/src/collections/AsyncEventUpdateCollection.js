@@ -79,6 +79,7 @@ export default class AsyncEventUpdateCollection extends Collection {
       nestedPromiseId
     } = update;
 
+    
     const nestedUpdate = nestedPromiseId && dp.util.getFirstPostOrResolveAsyncEventOfPromise(nestedPromiseId, preEventRootId);
     if (nestedUpdate?.rootId <= preEventRootId) {
       console.trace(`[preAwait] addSyncEdge ${preEventRootId}, nestedUpdate=`, nestedUpdate);

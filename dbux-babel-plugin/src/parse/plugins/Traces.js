@@ -13,6 +13,8 @@ import { instrumentExpression, instrumentHoisted } from '../../instrumentation/i
 // import { pathToString } from '../../helpers/pathHelpers';
 import BasePlugin from './BasePlugin';
 
+/** @typedef { import("../BaseNode").default } BaseNode */
+
 const makeDefaultTrace = {
   // Literal(path) {
   // }
@@ -36,7 +38,7 @@ export default class Traces extends BasePlugin {
   // ###########################################################################
 
   getAncestorContextNode() {
-    let contextNode = this.node.peekContextNode();
+    let contextNode = this.node.peekStaticContext();
     const contextBodyPath = contextNode.path.get('body');
     let { scope } = contextNode.path;
 
@@ -49,7 +51,7 @@ export default class Traces extends BasePlugin {
 
       // scope = scope.parent;
       // scope = scope.getFunctionParent() || scope.getProgramParent();
-      contextNode = contextNode.getExistingParent().peekContextNode();
+      contextNode = contextNode.getExistingParent().peekStaticContext();
     }
     return contextNode;
   }
@@ -268,8 +270,13 @@ export default class Traces extends BasePlugin {
   // addReturnTrace, addThrowTrace
   // ###########################################################################
 
+  /**
+   * @param {BaseNode} node 
+   */
   addReturnTrace(node, path, argPath) {
     const hasArgument = !!argPath.node;
+    const func = node.peekPluginForce('Function');
+    const traceCall = func.isAsync ? 'traceReturnAsync' : 'traceReturn';
 
     const traceData = {
       node,
@@ -278,7 +285,7 @@ export default class Traces extends BasePlugin {
         type: hasArgument ? TraceType.ReturnArgument : TraceType.ReturnNoArgument,
       },
       meta: {
-        traceCall: 'traceReturn',
+        traceCall,
         targetPath: argPath
       }
     };

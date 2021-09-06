@@ -12,7 +12,7 @@ import ThenRef from '../data/ThenRef';
 import { getPromiseData, getPromiseId, getPromiseOwnAsyncFunctionContextId, setPromiseData } from './promisePatcher';
 import asyncEventUpdateCollection from '../data/asyncEventUpdateCollection';
 import executionContextCollection from '../data/executionContextCollection';
-import nestedPromiseCollection from '../data/nestedPromiseCollection';
+import nestedPromiseCollection from '../data/promiseLinkCollection';
 import valueCollection from '../data/valueCollection';
 import ResolveType from '@dbux/common/src/types/constants/ResolveType';
 // import { isPostEventUpdate, isPreEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
@@ -348,17 +348,17 @@ export default class RuntimeAsync {
   }
 
   // ###########################################################################
-  // Promises: resolve
+  // non-events
   // ###########################################################################
 
   /**
-   * Event: `resolve` or `reject` was called from a promise ctor's executor.
-   * @param {ThenRef} thenRef
+   * `resolve` or `reject` was called from a promise ctor's executor.
+   * NOTE: Only called if resolved value is thenable.
    */
-  resolve(inner, outer, resolveType) {
+  resolve(inner, outer, resolveType, traceId) {
     if (ResolveType.is.Resolve(resolveType)) {
       // NOTE: `reject` does not settle nested promises!
-      nestedPromiseCollection.addLink(getPromiseId(inner), getPromiseId(outer));
+      nestedPromiseCollection.addLink(getPromiseId(inner), getPromiseId(outer), traceId);
     }
     // const {
     //   preEventPromise,
@@ -381,6 +381,15 @@ export default class RuntimeAsync {
     //   argPromiseId: isThenable(resolveArg) && getPromiseId(resolveArg) || 0,
     //   resolveType
     // });
+  }
+
+  /**
+   * Async function returning given `promise`.
+   * NOTE: Only called if returned value is thenable.
+   */
+  returnAsync(promise, traceId) {
+    // NOTE: this is just a placeholder, since we don't necessarily know the `to` promiseId yet (if async function did not `await` yet)
+    nestedPromiseCollection.addLink(getPromiseId(promise), 0, traceId);
   }
 
   // ###########################################################################

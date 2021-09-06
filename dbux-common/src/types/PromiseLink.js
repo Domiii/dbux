@@ -25,4 +25,9 @@ export default class PromiseLink {
    * @type {number}
    */
   to;
+
+  /**
+   * The trace that created the link
+   */
+  traceId;
 }

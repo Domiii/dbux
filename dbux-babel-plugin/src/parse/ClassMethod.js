@@ -43,7 +43,7 @@ export default class ClassMethod extends BaseNode {
     const traceCfg = this.Traces.addTrace({
       path,
       node: this,
-      scope: this.getExistingParent().peekContextNode().path.scope, // prevent adding `tid` variable to own body
+      scope: this.getExistingParent().peekStaticContext().path.scope, // prevent adding `tid` variable to own body
       staticTraceData: Function.createStaticTraceData(keyPath),
       data: {
         propertyVar

@@ -88,17 +88,25 @@ export default class Function extends BasePlugin {
     this.functionTraceCfg = traceCfg;
   }
 
+  get isInterruptable() {
+    const { path } = this;
+    const isGenerator = path.node.generator;
+    const isAsync = path.node.async;
+    return isGenerator || isAsync;
+  }
+
+  get isAsync() {
+    const { path } = this;
+    return path.node.async;
+  }
+
   // ###########################################################################
   // enter
   // ###########################################################################
 
   enter() {
     // TODO: move `push` and `pop`s to their corresponding correct phases
-    const { path, state } = this.node;
-
-    const isGenerator = path.node.generator;
-    const isAsync = path.node.async;
-    const isInterruptable = isGenerator || isAsync;
+    const { isInterruptable, node: { path, state } } = this.node;
     const bodyPath = path.get('body');
 
     const names = getNodeNames(path.node);
@@ -147,7 +155,6 @@ export default class Function extends BasePlugin {
       staticContextId,
       staticPushTid,
       // pushTraceCfg,
-      isInterruptable,
       staticResumeContextId
     };
   }
@@ -280,10 +287,10 @@ export default class Function extends BasePlugin {
    */
   doInstrument = (state /*, traceCfg */) => {
     const {
+      isInterruptable,
       node: { path, dontInstrumentContextEnd },
       data: {
         staticPushTid,
-        isInterruptable,
         staticResumeContextId,
         contextIdVar,
         popTraceCfg
