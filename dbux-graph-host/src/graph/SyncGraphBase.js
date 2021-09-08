@@ -82,86 +82,25 @@ class SyncGraphBase extends GraphBase {
     this.updateRunNodes();
   }
 
+  updateRunNodes() {
+    throw new Error('abstract method not implemented');
+  }
+
   clear() {
     this.removeAllRunNode();
-  }
-
-  updateRunNodes() {
-    // oldApps
-    const oldAppIds = new Set(this.runNodesById.getApplicationIds());
-    const newAppIds = new Set(allApplications.selection.getAll().map(app => app.applicationId));
-
-    // always re-subscribe since applicationSet clears subscribtion everytime it changes
-    this._resubscribeOnData();
-    this._setApplicationState();
-
-    // remove old runNodes
-    for (const runNode of this.runNodesById.getAll()) {
-      const { applicationId, runId } = runNode.state;
-      if (!newAppIds.has(applicationId)) {
-        this.removeRunNode(applicationId, runId);
-      }
-    }
-
-    // add new runNodes
-    for (const appId of newAppIds) {
-      if (!oldAppIds.has(appId)) {
-        const app = allApplications.getById(appId);
-        const allRunIds = app.dataProvider.indexes.executionContexts.byRun.getAllKeys();
-        this.addRunNodeByIds(appId, allRunIds);
-      }
-    }
-  }
-
-  _resubscribeOnData() {
-    // unsubscribe old
-    this._unsubscribeOnNewData.forEach(f => f());
-    this._unsubscribeOnNewData = [];
-
-    // subscribe new
-    for (const app of allApplications.selection.getAll()) {
-      const { dataProvider: dp } = app;
-      const unsubscribes = [
-        dp.onData('executionContexts',
-          this._handleAddExecutionContexts.bind(this, app)
-        ),
-        // [future-work]: only subscribe when stats are enabled
-        dp.queryImpl.statsByContext.subscribe()
-      ];
-
-      // unsubscribe on refresh
-      this._unsubscribeOnNewData.push(...unsubscribes);
-
-      // also when application is deselected
-      allApplications.selection.subscribe(...unsubscribes);
-
-      // also when node is disposed
-      this.addDisposable(...unsubscribes);
-    }
-  }
-
-  _handleAddExecutionContexts = (app, newContexts) => {
-    const { applicationId } = app;
-    const newRunIds = [...new Set(newContexts.map(c => c.runId))];
-    const newNodes = this.addRunNodeByIds(applicationId, newRunIds);
-    this._setApplicationState();
-    this._emitter.emit('newNode', newNodes);
-  }
-
-  _setApplicationState() {
-    const update = {
-      applications: allApplications.selection.getAll().map(app => ({
-        applicationId: app.applicationId,
-        entryPointPath: app.entryPointPath,
-        name: app.getPreferredName()
-      }))
-    };
-    this.setState(update);
   }
 
   addRunNodeByIds(applicationId, runIds) {
     return runIds.map(runId => {
       return this.addRunNode(applicationId, runId);
+    });
+  }
+
+  addRunNodeByRootIds(applicationId, rootIds) {
+    const dp = allApplications.getById(applicationId).dataProvider;
+    return rootIds.map(rootId => {
+      const { runId } = dp.collections.executionContexts.getById(rootId);
+      return this.addRunNode(applicationId, runId, rootId);
     });
   }
 
@@ -181,8 +120,8 @@ class SyncGraphBase extends GraphBase {
   // run node management
   // ###########################################################################
 
-  addRunNode(applicationId, runId) {
-    const newNode = this.children.createComponent(RunNode, { applicationId, runId });
+  addRunNode(applicationId, runId, rootContextId) {
+    const newNode = this.children.createComponent(RunNode, { applicationId, runId, rootContextId });
     this.runNodesById.set(applicationId, runId, newNode);
     return newNode;
   }
@@ -253,7 +192,8 @@ class SyncGraphBase extends GraphBase {
 
     while (!(currentNode = this.contextNodesByContext.get(currentContext))) {
       if (!currentContext) {
-        this.logger.error(`Cannot build context node: RootContextNode does not exist. contextQueue=[${contextQueue.map(x => x?.contextId)}]`);
+        // NOTE: RunNode/RootContextNode is not present
+        // this.logger.error(`Cannot build context node: RootContextNode does not exist. contextQueue=[${contextQueue.map(x => x?.contextId)}]`);
         return null;
       }
       contextQueue.push(currentContext);
@@ -278,19 +218,27 @@ class SyncGraphBase extends GraphBase {
   }
 
   /**
+   * Find or create a ContextNode.
    *  @return {ContextNode}
    */
   getContextNodeByContext = (context) => {
     let node = this.contextNodesByContext.get(context);
-    if (!context) {
-      logError(`Cannot find ContextNode of context ${context}`);
-      return null;
-    }
-    else if (!node) {
-      // node not created
+    if (!node) {
+      // node is not created yet
       node = this.buildContextNode(context);
     }
 
+    return node;
+  }
+
+  /**
+   *  @return {ContextNode}
+   */
+  getContextNodeByContextForce = (context) => {
+    const node = this.getContextNodeByContext(context);
+    if (!node) {
+      this.logger.error(`Can neither find ContextNode for context ${context} nor create one.`);
+    }
     return node;
   }
 
@@ -306,6 +254,21 @@ class SyncGraphBase extends GraphBase {
     }
 
     this._selectedContextNode = contextNode;
+  }
+
+  handleTraceSelected = async (trace) => {
+    await this.waitForRefresh();
+    let contextNode;
+    if (trace) {
+      const { applicationId, contextId } = trace;
+      contextNode = this.getContextNodeById(applicationId, contextId);
+      if (this.context.graphDocument.state.followMode && contextNode) {
+        // NOTE: since we do this right after init, need to check if contextNode have been built
+        await contextNode.waitForInit();
+        await this.focusController.focus(contextNode);
+      }
+    }
+    this._selectContextNode(contextNode);
   }
 
   shared() {

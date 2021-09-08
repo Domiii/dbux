@@ -1948,6 +1948,20 @@ export default {
   //   return promiseId;
   // },
 
+  /** @param {DataProvider} dp */
+  getAsyncStackRootIds(dp, traceId) {
+    const rootIds = [];
+    let currentTrace = dp.util.getTrace(traceId);
+    let currentAsyncNode;
+    while (currentTrace?.rootContextId) {
+      rootIds.push(currentTrace.rootContextId);
+      currentAsyncNode = dp.util.getAsyncNode(currentTrace.rootContextId);
+      currentTrace = dp.util.getTrace(currentAsyncNode.schedulerTraceId);
+    }
+    rootIds.reverse();
+    return rootIds;
+  },
+
   // ###########################################################################
   // promise tree
   // ###########################################################################

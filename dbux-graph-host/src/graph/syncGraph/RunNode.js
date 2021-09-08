@@ -10,6 +10,7 @@ class RunNode extends HostComponentEndpoint {
     const {
       applicationId,
       runId,
+      rootContextId,
     } = this.state;
 
     const dp = allApplications.getById(applicationId).dataProvider;
@@ -20,9 +21,18 @@ class RunNode extends HostComponentEndpoint {
       buttonDisabled: true
     });
 
-    // add root context
-    const rootContexts = dp.indexes.executionContexts.rootsByRun.get(runId);
-    if (rootContexts?.length) {
+    // find root contexts
+    let rootContexts;
+    const allRootContexts = dp.indexes.executionContexts.rootsByRun.get(runId);
+    if (rootContextId) {
+      rootContexts = [dp.collections.executionContexts.getById(rootContextId)];
+    }
+    else if (allRootContexts?.length) {
+      rootContexts = allRootContexts;
+    }
+
+    // build
+    if (rootContexts) {
       this.rootContextNodes = rootContexts.map(context => this.context.graphRoot._buildContextNode(this, applicationId, context, true));
       this.state.createdAt = dp.util.getRunCreatedAt(runId);
     }
@@ -52,7 +62,7 @@ class RunNode extends HostComponentEndpoint {
   }
 
   isHiddenBy() {
-    return this.hiddenNodeManager.getHiddenNodeHidingThis(this);
+    return this.hiddenNodeManager?.getHiddenNodeHidingThis(this);
   }
 
   get hiddenNodeManager() {

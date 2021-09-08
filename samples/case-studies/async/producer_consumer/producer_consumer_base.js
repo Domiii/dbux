@@ -1,55 +1,48 @@
+import { randomInt } from 'asyncUtil';
+
 // const seedrandom = require('seedrandom');
 // seedrandom('dbux', { global: true });
-
-const { sleepN, randomInt } = require('./asyncUtil');
-
 
 // ###########################################################################
 //  States & Constants
 // ###########################################################################
 
-const N = 3;
-
 const ProducerTime = 2;
 const ProducerTimeVar = 1;
 const ConsumerTime = 2;
 const ConsumerTimeVar = 1;
-const IdleTime = 1;
-
 const MaxItems = 5;
 const buffer = [];
-
 let nItems = 0;
-
 let consuming = 0;
 let producing = 0;
-
 let lastItem = 0;
 
-exports.N = N;
+export const IdleTime = 1;
+export const N = 3;
 
 // ###########################################################################
-//  Common
+//  Public
 // ###########################################################################
 
-exports.idle = function idle() {
-  return sleepN(IdleTime);
-}
-
-// ###########################################################################
-//  Producer
-// ###########################################################################
-
-exports.hasSpace = function hasSpace() {
+export function hasSpace() {
   return (producing + nItems) < MaxItems;
 }
 
-exports.produce = async function produce() {
+export function hasItems() {
+  return nItems - consuming > 0;
+}
+
+export function getProduceTime() {
+  return (ProducerTime - ProducerTimeVar) + randomInt(ProducerTimeVar * 2 + 1)
+}
+
+export function startProduce() {
   ++producing;
   console.log(`producing item ${lastItem + producing}...`);
+}
 
-  await sleepN((ProducerTime - ProducerTimeVar) + randomInt(ProducerTimeVar * 2 + 1));
-
+export function finishProduce() {
   const item = ++lastItem;
   buffer.push(item);
   ++nItems;
@@ -58,19 +51,16 @@ exports.produce = async function produce() {
   console.log(`produced item ${item}, ${nItems} (-${consuming}) left`);
 }
 
-// ###########################################################################
-//  Consumer
-// ###########################################################################
-
-exports.hasItems = function hasItems() {
-  return nItems - consuming > 0;
+export function getConsumeTime() {
+  return (ConsumerTime - ConsumerTimeVar) + randomInt(2 * ConsumerTimeVar + 1)
 }
 
-exports.consume = async function consume() {
+export function startConsume() {
   ++consuming;
   console.log(`consuming item ${buffer[consuming - 1]}...`);
-  await sleepN((ConsumerTime - ConsumerTimeVar) + randomInt(2 * ConsumerTimeVar + 1));
+}
 
+export function finishConsume() {
   const item = buffer.shift();
   --nItems;
   --consuming;
