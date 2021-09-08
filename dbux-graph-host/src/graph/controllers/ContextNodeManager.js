@@ -70,10 +70,11 @@ export default class ContextNodeManager extends HostComponentEndpoint {
 
   async highlightContexts(contexts) {
     try {
-      this.contextNodes = await Promise.all(contexts.map(this.owner.getContextNodeByContext));
-      this.contextNodes.forEach((contextNode) => {
+      this.contextNodes = contexts.map(this.owner.getContextNodeByContext);
+      await Promise.all(this.contextNodes.map(async (contextNode) => {
+        await contextNode?.waitForInit();
         contextNode?.controllers.getComponent('Highlighter').inc();
-      });
+      }));
       this.contextNodes.forEach((contextNode) => contextNode?.reveal());
     }
     catch (err) {

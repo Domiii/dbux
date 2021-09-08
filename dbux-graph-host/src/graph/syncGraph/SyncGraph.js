@@ -24,9 +24,10 @@ class SyncGraph extends SyncGraphBase {
     let contextNode;
     if (trace) {
       const { applicationId, contextId } = trace;
-      contextNode = await this.getContextNodeById(applicationId, contextId);
+      contextNode = this.getContextNodeById(applicationId, contextId);
       if (this.context.graphDocument.state.followMode && contextNode) {
         // NOTE: since we do this right after init, need to check if contextNode have been built
+        await contextNode.waitForInit();
         await this.focusController.focus(contextNode);
       }
     }

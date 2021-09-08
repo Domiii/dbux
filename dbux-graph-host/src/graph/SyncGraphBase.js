@@ -268,16 +268,19 @@ class SyncGraphBase extends GraphBase {
     return currentNode;
   }
 
-  async getContextNodeById(applicationId, contextId) {
+  /**
+   *  @return {ContextNode}
+   */
+  getContextNodeById(applicationId, contextId) {
     const dp = allApplications.getById(applicationId).dataProvider;
     const context = dp.collections.executionContexts.getById(contextId);
-    return await this.getContextNodeByContext(context);
+    return this.getContextNodeByContext(context);
   }
 
   /**
-   *  @return {Promise<ContextNode>}
+   *  @return {ContextNode}
    */
-  getContextNodeByContext = async (context) => {
+  getContextNodeByContext = (context) => {
     let node = this.contextNodesByContext.get(context);
     if (!context) {
       logError(`Cannot find ContextNode of context ${context}`);
@@ -287,8 +290,6 @@ class SyncGraphBase extends GraphBase {
       // node not created
       node = this.buildContextNode(context);
     }
-
-    await node?.waitForInit();
 
     return node;
   }
