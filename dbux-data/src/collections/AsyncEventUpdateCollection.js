@@ -116,7 +116,7 @@ export default class AsyncEventUpdateCollection extends Collection {
       },
       isFirstAwait,
       // isNested,
-      isNestedChain,
+      // isNestedChain,
       nestedRootId,
       isChainedToRoot
     } = postUpdateData;
@@ -131,7 +131,7 @@ export default class AsyncEventUpdateCollection extends Collection {
 
     if (!isFirstAwait) {
       // Case 1: CHAIN
-      if (isNestedChain && nestedRootId) {
+      if (nestedRootId) {
         // chain with nested root
         if (nestedThreadId === preEventThreadId) {
           fromRootId = nestedRootId;
@@ -141,7 +141,7 @@ export default class AsyncEventUpdateCollection extends Collection {
       }
       toThreadId = fromThreadId;
     }
-    else if (isNestedChain && nestedRootId) {
+    else if (nestedRootId) {
       // Case 2: nested promise is chained into the same thread: CHAIN
       // CHAIN with nested promise: get `fromRootId` of latest `PostThen` or `PostAwait` (before this one) of promise.
       fromRootId = nestedRootId;

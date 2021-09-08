@@ -3,10 +3,9 @@ import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import ResolveType from '@dbux/common/src/types/constants/ResolveType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import isThenable from '@dbux/common/src/util/isThenable';
-import isFunction from 'lodash/isString';
+import isFunction from 'lodash/isFunction';
 import asyncEventUpdateCollection from '../data/asyncEventUpdateCollection';
 import dataNodeCollection from '../data/dataNodeCollection';
-import nestedPromiseCollection from '../data/promiseLinkCollection';
 import { peekBCEMatchCallee, getLastContextCheckCallee } from '../data/dataUtil';
 import PromiseRuntimeData from '../data/PromiseRuntimeData';
 // import traceCollection from '../data/traceCollection';
@@ -119,7 +118,7 @@ function patchThenCallback(cb, thenRef) {
   const originalCb = cb;
   return function patchedCb(previousResult) {
     if (activeThenCbCount) {
-      // NOTE: then callbacks should not observe nested calls
+      // NOTE: then callbacks should never be nested (might hint at a Dbux bug)
       warn(`a "then" callback was called before a previous "then" callback has finished, schedulerTraceId=${thenRef.schedulerTraceId}`);
     }
 

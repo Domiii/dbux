@@ -2,6 +2,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import isThenable from '@dbux/common/src/util/isThenable';
 import { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import ResolveType from '@dbux/common/src/types/constants/ResolveType';
 // import some from 'lodash/some';
 // import executionContextCollection from './data/executionContextCollection';
 // import traceCollection from './data/traceCollection';
@@ -14,7 +15,6 @@ import asyncEventUpdateCollection from '../data/asyncEventUpdateCollection';
 import executionContextCollection from '../data/executionContextCollection';
 import nestedPromiseCollection from '../data/promiseLinkCollection';
 import valueCollection from '../data/valueCollection';
-import ResolveType from '@dbux/common/src/types/constants/ResolveType';
 // import { isPostEventUpdate, isPreEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 
 /** @typedef { import("./Runtime").default } Runtime */
@@ -312,6 +312,13 @@ export default class RuntimeAsync {
       this.logger.trace(`postThen`, getPromiseId(postEventPromise), thenRef, { runId, postEventRootId });
     }
 
+    const nestedPromiseId = isThenable(returnValue) ? getPromiseId(returnValue) : 0;
+    const postEventPromiseId = getPromiseId(postEventPromise);
+
+    if (nestedPromiseId) {
+      nestedPromiseCollection.addLink(nestedPromiseId, postEventPromiseId, schedulerTraceId);
+    }
+
     // store update
     asyncEventUpdateCollection.addPostThenUpdate({
       runId,
@@ -322,7 +329,7 @@ export default class RuntimeAsync {
 
       schedulerTraceId,
       promiseId: getPromiseId(postEventPromise),
-      nestedPromiseId: isThenable(returnValue) ? getPromiseId(returnValue) : 0
+      nestedPromiseId
     });
   }
 

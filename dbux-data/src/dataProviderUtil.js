@@ -2081,8 +2081,8 @@ export default {
     // const firstNestingUpdate = this.getFirstNestingAsyncUpdate(realContext.runId, promiseId);
 
     const isNested = !!nestedPromiseId;
-    const isNestedChain = util.isNestedChain(nestedPromiseId, schedulerTraceId);
-    const nestedUpdate = nestedPromiseId && util.getPreviousPostOrResolveAsyncEventOfPromise(nestedPromiseId, postEventRootId) || null;
+    const isNestedChain = nestedPromiseId && util.isNestedChain(nestedPromiseId, schedulerTraceId);
+    const nestedUpdate = isNestedChain && util.getPreviousPostOrResolveAsyncEventOfPromise(nestedPromiseId, postEventRootId) || null;
     const { rootId: nestedRootId = 0 } = nestedUpdate ?? EmptyObject;
     const isChainedToRoot = isFirstAwait && dp.util.isPromiseChainedToRoot(preEventRunId, postEventContextId, promiseId);
 
@@ -2090,7 +2090,7 @@ export default {
       preEventUpdate,
       isFirstAwait,
       isNested,
-      isNestedChain,
+      // isNestedChain,
       nestedUpdate,
       nestedRootId,
       isChainedToRoot
@@ -2183,7 +2183,7 @@ export default {
       }
       else if (preEventRootId === 1) {
         // Case 0: don't CHAIN cb from first root
-        //      (NOTE: top-level `await` would CHAIN from first root.)
+        //      (TODO: top-level `await` would CHAIN from first root.)
       }
       else {
         const preEventUpdates = util.getAsyncPreEventUpdatesOfRoot(preEventRootId);

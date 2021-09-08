@@ -9,7 +9,7 @@ P(
   'A',
   [
     'AA',
-    () => Promise.resolve('AAA'),
+    () => P('AAA'),
     'AB'
   ],
   'B'
