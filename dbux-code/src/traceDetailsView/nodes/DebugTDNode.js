@@ -1,10 +1,9 @@
-import omit from 'lodash/omit';
+import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
-import AsyncEventUpdateType, { isPostEventUpdate, isPreEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
+import AsyncEventUpdateType, { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import { makeTreeItem, makeTreeItems } from '../../helpers/treeViewHelpers';
 import { ContextTDNode, TraceTypeTDNode } from './traceInfoNodes';
 import TraceDetailNode from './traceDetailNode';
-import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
