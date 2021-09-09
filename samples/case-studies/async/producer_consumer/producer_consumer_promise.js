@@ -38,7 +38,6 @@ function consumer(n) {
       return consume();
     }
     else {
-      debugger;
       return idle();
     }
   })

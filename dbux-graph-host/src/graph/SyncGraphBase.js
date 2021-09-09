@@ -90,9 +90,16 @@ class SyncGraphBase extends GraphBase {
     this.removeAllRunNode();
   }
 
-  addRunNodeByIds(applicationId, runIds) {
+  updateRunNodeByIds(applicationId, runIds) {
     return runIds.map(runId => {
-      return this.addRunNode(applicationId, runId);
+      const runNode = this.runNodesById.get(applicationId, runId);
+      if (runNode) {
+        runNode.updateChildren();
+        return runNode;
+      }
+      else {
+        return this.addRunNode(applicationId, runId);
+      }
     });
   }
 
@@ -149,12 +156,19 @@ class SyncGraphBase extends GraphBase {
   // context node management
   // ###########################################################################
 
+  _maybeBuildContextNode(parentNode, applicationId, context, isRoot = false) {
+    if (this.contextNodesByContext.get(context)) {
+      // skip if ContextNode aleady exist
+      return null;
+    }
+    return this._buildContextNode(parentNode, applicationId, context, isRoot);
+  }
+
   _buildContextNode(parentNode, applicationId, context, isRoot = false) {
     if (this.contextNodesByContext.get(context)) {
       this.logger.warn(`ContextNode with id=${context.contextId} already exist`);
       return null;
     }
-
     const nodeClass = isRoot ? 'RootContextNode' : 'ContextNode';
 
     const contextNode = parentNode.children.createComponent(nodeClass, {

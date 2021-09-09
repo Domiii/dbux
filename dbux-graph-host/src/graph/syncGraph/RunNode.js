@@ -7,38 +7,13 @@ const { log, debug, warn, error: logError } = newLogger('RunNode');
 
 class RunNode extends HostComponentEndpoint {
   init() {
-    const {
-      applicationId,
-      runId,
-      rootContextId,
-    } = this.state;
-
-    const dp = allApplications.getById(applicationId).dataProvider;
-
     // Add GraphNode to pass the `setChildMode` from graphRoot to ContextNode
     this.controllers.createComponent('GraphNode', {
       hasChildren: true,
       buttonDisabled: true
     });
 
-    // find root contexts
-    let rootContexts;
-    const allRootContexts = dp.indexes.executionContexts.rootsByRun.get(runId);
-    if (rootContextId) {
-      rootContexts = [dp.collections.executionContexts.getById(rootContextId)];
-    }
-    else if (allRootContexts?.length) {
-      rootContexts = allRootContexts;
-    }
-
-    // build
-    if (rootContexts) {
-      this.rootContextNodes = rootContexts.map(context => this.context.graphRoot._buildContextNode(this, applicationId, context, true));
-      this.state.createdAt = dp.util.getRunCreatedAt(runId);
-    }
-    else {
-      logError(`Creating RunNode with no context - runId=${runId}`);
-    }
+    this.updateChildren();
 
     const hiddenNodeManager = this.parent.controllers.getComponent('HiddenNodeManager');
     this.state.visible = hiddenNodeManager ? hiddenNodeManager.shouldBeVisible(this) : true;
@@ -106,6 +81,39 @@ class RunNode extends HostComponentEndpoint {
   //   });
   //   return prev.size;
   // }
+
+  /** ###########################################################################
+   * Children
+   *  #########################################################################*/
+
+  updateChildren() {
+    const {
+      applicationId,
+      runId,
+      rootContextId,
+    } = this.state;
+
+    const dp = allApplications.getById(applicationId).dataProvider;
+
+    // find root contexts
+    let rootContexts;
+    const allRootContexts = dp.indexes.executionContexts.rootsByRun.get(runId);
+    if (rootContextId) {
+      rootContexts = [dp.collections.executionContexts.getById(rootContextId)];
+    }
+    else if (allRootContexts?.length) {
+      rootContexts = allRootContexts;
+    }
+
+    // build
+    if (rootContexts) {
+      this.rootContextNodes = rootContexts.map(context => this.context.graphRoot._maybeBuildContextNode(this, applicationId, context, true));
+      this.state.createdAt = dp.util.getRunCreatedAt(runId);
+    }
+    else {
+      logError(`Creating RunNode with no context - runId=${runId}`);
+    }
+  }
 
   // ###########################################################################
   // shared

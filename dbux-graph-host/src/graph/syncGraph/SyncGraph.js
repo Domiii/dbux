@@ -41,7 +41,7 @@ class SyncGraph extends SyncGraphBase {
       if (!oldAppIds.has(appId)) {
         const app = allApplications.getById(appId);
         const allRunIds = app.dataProvider.indexes.executionContexts.byRun.getAllKeys();
-        this.addRunNodeByIds(appId, allRunIds);
+        this.updateRunNodeByIds(appId, allRunIds);
       }
     }
   }
@@ -76,7 +76,14 @@ class SyncGraph extends SyncGraphBase {
   _handleAddExecutionContexts = (app, newContexts) => {
     const { applicationId } = app;
     const newRunIds = [...new Set(newContexts.map(c => c.runId))];
-    const newNodes = this.addRunNodeByIds(applicationId, newRunIds);
+    const duplicatedRunIds = newRunIds.filter(runId => {
+      return !!this.runNodesById.get(applicationId, runId);
+    });
+    if (duplicatedRunIds.length) {
+      // sanity check: assuming newly incoming data always have a new runId
+      this.logger.error(`Received new context(s) of old runIds: [${duplicatedRunIds}]`);
+    }
+    const newNodes = this.updateRunNodeByIds(applicationId, newRunIds);
     this._setApplicationState();
     this._emitter.emit('newNode', newNodes);
   }

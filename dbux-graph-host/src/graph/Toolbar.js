@@ -19,12 +19,9 @@ class Toolbar extends HostComponentEndpoint {
     this.addDisposable(threadSelectionSubscription);
   }
 
-  get focusController() {
-    // TODO-M: focusController
-    const { syncGraphContainer } = this.parent;
-    return syncGraphContainer.graph.controllers.getComponent('FocusController');
-  }
-
+  /**
+   * NOTE: `SyncGraph` only
+   */
   get hiddenNodeManager() {
     const { syncGraphContainer } = this.parent;
     return syncGraphContainer.graph.controllers.getComponent('HiddenNodeManager');

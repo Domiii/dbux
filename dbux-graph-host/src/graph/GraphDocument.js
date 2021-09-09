@@ -29,7 +29,6 @@ class GraphDocument extends HostComponentEndpoint {
   }
 
   createOwnComponents() {
-    // TODO-M: add toolbar register system
     this.controllers.createComponent('PopperManager');
     this.syncGraphContainer = this.children.createComponent('GraphContainer', { graphType: GraphType.SyncGraph });
     this.asyncGraphContainer = this.children.createComponent('GraphContainer', { graphType: GraphType.AsyncGraph });
