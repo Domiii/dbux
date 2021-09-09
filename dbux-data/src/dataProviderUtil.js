@@ -1,6 +1,7 @@
 import findLast from 'lodash/findLast';
 import groupBy from 'lodash/groupBy';
 import isNumber from 'lodash/isNumber';
+import truncate from 'lodash/truncate';
 import TraceType, { hasDynamicTypes, isTracePop, isBeforeCallExpression } from '@dbux/common/src/types/constants/TraceType';
 import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
 import { pushArrayOfArray } from '@dbux/common/src/util/arrayUtil';
@@ -558,8 +559,8 @@ export default {
   /**
    * Handle special circumstances.
    */
-  getTraceValueMessage(dp, traceId) {
-    const valueRef = dp.util.getTraceValueRef(traceId);
+  getDataNodeValueMessage(dp, nodeId) {
+    const valueRef = dp.util.getDataNodeValueRef(nodeId);
     if (valueRef?.pruneState === ValuePruneState.Omitted) {
       return `(omitted value)`;
     }
@@ -587,36 +588,44 @@ export default {
   },
 
   /** 
-   * WARNING: Call `doesTraceHaveValue` to make sure, the trace has a value.
-   * 
    * @param {DataProvider} dp
    */
-  getTraceValueString(dp, traceId) {
-    const trace = dp.util.getValueTrace(traceId);
-    const dataNode = dp.util.getDataNodeOfTrace(traceId);
+  getDataNodeValueString(dp, nodeId, shorten = false) {
+    const dataNode = dp.collections.dataNodes.getById(nodeId);
+    const ShortenMaxLength = 20;
 
-    if (trace._valueString) {
-      // already cached
-      return trace._valueString;
+    // check cached string
+    if (shorten) {
+      if (dataNode._valueStringShort) {
+        return dataNode._valueStringShort;
+      }
+    }
+    else if (dataNode._valueString) {
+      return dataNode._valueString;
     }
 
     // A message is generated if there is an issue with the value or it was omitted.
-    const valueMessage = dp.util.getTraceValueMessage(traceId);
+    const valueMessage = dp.util.getDataNodeValueMessage(nodeId);
     if (valueMessage) {
       return valueMessage;
     }
 
     // get value
     let valueString;
-    if (dataNode.refId) {
-      const entries = dp.util.constructValueObjectShallow(dataNode.refId);
-      const valueRef = dp.collections.values.getById(dataNode.refId);
+    const { refId } = dataNode;
+    if (refId) {
+      const entries = dp.util.constructValueObjectShallow(refId);
+      const valueRef = dp.collections.values.getById(refId);
       const { category } = valueRef;
       if (ValueTypeCategory.is.Array(category)) {
-        valueString = `[${entries.map(x => dp.util._simplifyValue(x))}]`;
+        let content = `${entries.map(x => dp.util._simplifyValue(x))}`;
+        shorten && (content = truncate(content, { length: ShortenMaxLength - 2 }));
+        valueString = `[${content}]`;
       }
       else if (ValueTypeCategory.is.Object(category)) {
-        valueString = `{${Object.keys(entries)}}`;
+        let content = `${Object.keys(entries)}`;
+        shorten && (content = truncate(content, { length: ShortenMaxLength - 2 }));
+        valueString = `{${content}}`;
       }
       else {
         valueString = valueRef.value?.toString?.() || String(valueRef.value);
@@ -626,41 +635,38 @@ export default {
       valueString = dataNode.value?.toString?.() || String(dataNode.value);
     }
 
-    return trace._valueString = valueString;
+    if (shorten) {
+      valueString = truncate(valueString, { length: ShortenMaxLength });
+      dataNode._valueStringShort = valueString;
+    }
+    else {
+      dataNode._valueString = valueString;
+    }
+
+    return valueString;
+  },
+
+  /** @param {DataProvider} dp */
+  getDataNodeValueStringShort(dp, nodeId) {
+    return dp.util.getDataNodeValueString(nodeId, true);
+  },
+
+  /** @param {DataProvider} dp */
+  getTraceValueString(dp, traceId) {
+    const { nodeId } = dp.util.getDataNodeOfTrace(traceId);
+    return dp.util.getDataNodeValueString(nodeId);
   },
 
   /** @param {DataProvider} dp */
   getTraceValueStringShort(dp, traceId) {
-    const trace = dp.util.getValueTrace(traceId);
-
-    if (trace._valueStringShort) {
-      // already cached
-      return trace._valueStringShort;
-    }
-
-    // get value
-    let valueString = dp.util.getTraceValueString(traceId);
-    const ShortLength = 30;
-    if (valueString && valueString.length > (ShortLength - 3)) {
-      if (dp.util.isTracePlainObject(traceId)) {
-        // object -> just use category
-        const valueRef = dp.util.getTraceValueRef(traceId);
-        valueString = ValueTypeCategory.nameFrom(valueRef.category);
-      }
-      else {
-        // future-work: do this recursively, so array-of-object does not display object itself
-        valueString = valueString.substring(0, ShortLength - 3) + '...';
-      }
-    }
-
-    // hackfix: we cache this thing
-    return trace._valueStringShort = valueString;
+    const { nodeId } = dp.util.getDataNodeOfTrace(traceId);
+    return dp.util.getDataNodeValueStringShort(nodeId);
   },
 
   /** @param {DataProvider} dp */
   getTraceRefId(dp, traceId) {
-    const valueRef = dp.util.getTraceValueRef(traceId);
-    return valueRef?.refId;
+    const dataNode = dp.util.getDataNodeOfTrace(traceId);
+    return dataNode?.refId || null;
   },
 
   /** @param {DataProvider} dp */
@@ -672,11 +678,8 @@ export default {
   /** @param {DataProvider} dp */
   getDataNodeValueRef(dp, nodeId) {
     const dataNode = dp.collections.dataNodes.getById(nodeId);
-    if (dataNode) {
-      const { refId } = dataNode;
-      if (refId) {
-        return dp.collections.values.getById(refId);
-      }
+    if (dataNode && dataNode.refId) {
+      return dp.collections.values.getById(dataNode.refId);
     }
     return null;
   },
