@@ -2050,33 +2050,48 @@ export default {
    *  #########################################################################*/
 
   /** @param {DataProvider} dp */
-  GPLPU(dp, link) {
-    return dp.util.getPromiseLastPostUpdate();
+  getPromiseRootId(dp, promiseId) {
+    const traceId = dp.util.getFirstTraceIdByRefId(promiseId);
+    return traceId && dp.util.getRootContextOfTrace(traceId);
+  },
+
+  /** @param {DataProvider} dp */
+  getPromiseLastPostUpdate(dp, promiseId, beforeRootId) {
+    TODO
   },
 
   /** 
-   * `getNestedPromise`.
+   * `getNestedPromiseUpdate`.
    * Returns the inner most nested promise that has a Post* update.
    * Constraint: `fromPromiseId` is already settled.
    * 
    * @param {DataProvider} dp
    */
-  GNP(dp, fromPromiseId, syncPromiseIds) {
+  GNPU(dp, fromPromiseId, syncPromiseIds, beforeRootId, visited = new Set()) {
+    if (visited.has(fromPromiseId)) {
+      return null;
+    }
+    visited.add(fromPromiseId);
     const link = dp.util.indexes.promiseLinks.from.get(fromPromiseId);
     if (!link) {
       return null;
     }
-    const nestedUpdate = dp.util.getPromiseLastPostUpdate(link.to);
-    if (nestedUpdate) {
-      // NOTE: nested promise has a Post* update
-      // Case 1: link is AsyncReturn, nestedUpdate is PostAwait
-      // Case 2: link is AsyncReturn, nestedUpdate is PostThen
-      // Case 3: link is ThenNested, nestedUpdate is PostAwait
-      // Case 4: link is ThenNested, nestedUpdate is PostThen
-      if (rootId(p) < nestedUpdate.rootId) {
-        syncPromiseIds.push();
-      }
+    const nestedPromiseId = link.to;
+    let nestedUpdate = dp.util.getPromiseLastPostUpdate(nestedPromiseId, beforeRootId);
+
+    // Case 1: link is AsyncReturn, nestedUpdate is PostAwait
+    // Case 2: link is AsyncReturn, nestedUpdate is PostThen
+    // Case 3: link is ThenNested, nestedUpdate is PostAwait
+    // Case 4: link is ThenNested, nestedUpdate is PostThen
+
+    if (nestedUpdate && dp.util.getPromiseRootId(nestedPromiseId) < nestedUpdate.rootId) {
+      // nesting for synchrmoization -> stop recursion
+      syncPromiseIds.push(nestedPromiseId);
     }
+    else {
+      nestedUpdate = dp.util.GNPU(nestedPromiseId, syncPromiseIds, visited) || nestedUpdate;
+    }
+    return nestedUpdate;
   },
 
   /** @param {DataProvider} dp */
@@ -2085,18 +2100,24 @@ export default {
   },
 
   /** @param {DataProvider} dp */
-  DOWN(dp, promiseIds, syncPromiseIds, beforeRootId) {
-    return dp.util.DOWN(promiseIds, syncPromiseIds, beforeRootId);
+  DOWN(dp, promiseId, syncPromiseIds, beforeRootId) {
+    return dp.util._DOWN(promiseId, syncPromiseIds, beforeRootId)?.rootId;
   },
 
   /** @param {DataProvider} dp */
-  _DOWN(dp, promiseIds, syncPromiseIds, beforeRootId) {
+  _DOWN(dp, promiseId, syncPromiseIds, beforeRootId, visited = new Set()) {
+    const nestedUpdate = dp.util.GNPU(promiseId, syncPromiseIds, beforeRootId, visited);
+    if (!nestedUpdate) {
+      return null;
+    }
 
+    // NOTE: nestedUpdate is ensured to be settled because promiseId is settled
+    return dp.util._DOWN(nestedUpdate.promiseId, syncPromiseIds, beforeRootId, visited);
   },
 
   /** @param {DataProvider} dp */
   SYNC(dp, targetPromiseId, syncPromiseId, syncPromiseIds) {
-
+    TODO
   },
 
   // ###########################################################################
@@ -2141,6 +2162,8 @@ export default {
     const preEventThreadId = getOrAssignRootThreadId(preEventRootId, schedulerTraceId);
 
     const s = [];
+    const beforeRootId = TODO;
+
     let fromRootId;
     const toRootId = postEventRootId;
     let rootIdUp;
@@ -2148,14 +2171,14 @@ export default {
 
     if (!isFirstAwait || isCallNotRecorded) {
       fromRootId = preEventRootId;
-      SYNC(fromRootId, nestedPromiseId, s, beforeRootId);
+      util.SYNC(fromRootId, nestedPromiseId, s, beforeRootId);
     }
     else {
       rootIdUp = util.UP(promiseId, s, beforeRootId);
       rootIdNested = util.DOWN(nestedPromiseId, s, beforeRootId);
       if (rootIdUp && rootIdNested) {
         getOrAssignRootThreadId(rootIdNested, schedulerTraceId);
-        util.SYNC(TODO, rootIdNested, nestedPromiseId, s);
+        util.SYNC(rootIdUp, rootIdNested, nestedPromiseId, s);
       }
       fromRootId = rootIdUp || rootIdNested;
     }
@@ -2271,8 +2294,11 @@ export default {
       promiseId: preEventPromiseId,
     } = preEventUpdate;
 
-    const rootIdDown = DOWN(preEventPromiseId, s, beforeRootId);
-    const rootIdUp = UP(postEventPromiseId, s, beforeRootId);
+    const s = [];
+    const beforeRootId = TODO;
+
+    const rootIdDown = util.DOWN(preEventPromiseId, s, beforeRootId);
+    const rootIdUp = util.UP(postEventPromiseId, s, beforeRootId);
 
     let fromRootId = rootIdDown || rootIdUp;
     const toRootId = postEventRootId;
