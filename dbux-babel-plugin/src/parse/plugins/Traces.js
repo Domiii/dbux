@@ -9,7 +9,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import TraceCfg from '../../definitions/TraceCfg';
 import { pathToString, pathToStringAnnotated } from '../../helpers/pathHelpers';
-import { instrumentExpression, traceHoisted } from '../../instrumentation/instrumentMisc';
+import { instrumentExpression, instrumentHoisted } from '../../instrumentation/instrumentMisc';
 // import { pathToString } from '../../helpers/pathHelpers';
 import BasePlugin from './BasePlugin';
 
@@ -59,7 +59,7 @@ export default class Traces extends BasePlugin {
     const { scope } = contextNode.path;
 
     const id = scope.generateUidIdentifier(name);
-    
+
     contextNode.Traces.declaredIdentifiers.push(id);
     // console.debug('generateDeclaredUidIdentifier', id.name, `[${scope.path.node?.type}]`, pathToString(scope.path));
     return id;
@@ -310,7 +310,7 @@ export default class Traces extends BasePlugin {
     const { state } = node;
 
     if (traceCfgs.length) {
-      traceHoisted(node.path, state, traceCfgs);
+      instrumentHoisted(node.path, state, traceCfgs);
     }
   }
 

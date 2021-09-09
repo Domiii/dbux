@@ -851,7 +851,8 @@ export default class RuntimeMonitor {
   }
 
   _fixContext(programId, realContextId, awaitContextId) {
-    if (awaitContextId && this.runtime.isContextWaiting(awaitContextId)) {
+    // TODO: make sure that `Program` also gets a `realContextId` (contextIdVar)
+    if (realContextId && awaitContextId && this.runtime.isContextWaiting(awaitContextId)) {
       debug(`fixContext(${[programId, realContextId, awaitContextId]})`);
       this.postAwait(programId, undefined, undefined, awaitContextId);
     }

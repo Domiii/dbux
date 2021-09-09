@@ -1,5 +1,6 @@
 // import TraceType from '@dbux/common/src/types/constants/TraceType';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
+import { ZeroNode } from 'src/helpers/traceUtil';
 import { buildTraceStatic } from 'src/instrumentation/builders/misc';
 import BaseNode from './BaseNode';
 
@@ -15,7 +16,14 @@ export default class TryStatement extends BaseNode {
     const { contextIdVar: realContextIdVar } = contextPlugin;
     // awaitContextIdVar
 
-    const moreTraceCallArgs = [realContextIdVar];
+    const moreTraceCallArgs = [];
+    if (realContextIdVar) {
+      moreTraceCallArgs.push(realContextIdVar);
+    }
+    else {
+      // TODO: make sure that `Program` also gets a `realContextId` (contextIdVar)
+      moreTraceCallArgs.push(ZeroNode);
+    }
     contextPlugin.addAwaitContextIdVarArg(moreTraceCallArgs);
 
     const traceData = {

@@ -51,7 +51,7 @@ export function postInstrument(traceCfg, resultNode) {
   traceCfg.resultNode = resultNode;
 }
 
-export function traceHoisted(targetPath, state, traceCfgs) {
+export function instrumentHoisted(targetPath, state, traceCfgs) {
   const resultNodes = buildAll(state, traceCfgs, buildTraceDeclarationVar);
   unshiftScopeBlock(targetPath, resultNodes)[0];
 }
