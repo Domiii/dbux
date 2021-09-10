@@ -15,6 +15,7 @@ import asyncEventUpdateCollection from '../data/asyncEventUpdateCollection';
 import executionContextCollection from '../data/executionContextCollection';
 import nestedPromiseCollection from '../data/promiseLinkCollection';
 import valueCollection from '../data/valueCollection';
+import PromiseLinkType from '@dbux/common/src/types/constants/PromiseLinkType';
 // import { isPostEventUpdate, isPreEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 
 /** @typedef { import("./Runtime").default } Runtime */
@@ -316,7 +317,7 @@ export default class RuntimeAsync {
     const postEventPromiseId = getPromiseId(postEventPromise);
 
     if (nestedPromiseId) {
-      nestedPromiseCollection.addLink(nestedPromiseId, postEventPromiseId, schedulerTraceId);
+      nestedPromiseCollection.addLink(PromiseLinkType.ThenNested, nestedPromiseId, postEventPromiseId, schedulerTraceId, postEventRootId);
     }
 
     // store update
@@ -365,7 +366,8 @@ export default class RuntimeAsync {
   resolve(inner, outer, resolveType, traceId) {
     if (ResolveType.is.Resolve(resolveType)) {
       // NOTE: `reject` does not settle nested promises!
-      nestedPromiseCollection.addLink(getPromiseId(inner), getPromiseId(outer), traceId);
+      const rootId = this.getCurrentVirtualRootContextId();
+      nestedPromiseCollection.addLink(PromiseLinkType.Resolve, getPromiseId(inner), getPromiseId(outer), traceId, rootId);
     }
     // const {
     //   preEventPromise,
@@ -396,7 +398,8 @@ export default class RuntimeAsync {
    */
   returnAsync(promise, traceId) {
     // NOTE: this is just a placeholder, since we don't necessarily know the `to` promiseId yet (if async function did not `await` yet)
-    nestedPromiseCollection.addLink(getPromiseId(promise), 0, traceId);
+    const rootId = this.getCurrentVirtualRootContextId();
+    nestedPromiseCollection.addLink(PromiseLinkType.AsyncReturn, getPromiseId(promise), 0, traceId, rootId);
   }
 
   // ###########################################################################

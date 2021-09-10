@@ -80,11 +80,11 @@ export default class AsyncEventUpdateCollection extends Collection {
     } = update;
 
 
-    const nestedUpdate = nestedPromiseId && dp.util.getFirstPostOrResolveAsyncEventOfPromise(nestedPromiseId, preEventRootId);
-    if (nestedUpdate?.rootId <= preEventRootId) {
-      console.trace(`[preAwait] addSyncEdge ${preEventRootId}, nestedUpdate=`, nestedUpdate);
-      this.addSyncEdge(preEventRootId, nestedUpdate.rootId, AsyncEdgeType.SyncOut);
-    }
+    // const nestedUpdate = nestedPromiseId && dp.util.getFirstPostOrResolveAsyncEventOfPromise(nestedPromiseId, preEventRootId);
+    // if (nestedUpdate?.rootId <= preEventRootId) {
+    //   console.trace(`[preAwait] addSyncEdge ${preEventRootId}, nestedUpdate=`, nestedUpdate);
+    //   this.addSyncEdge(preEventRootId, nestedUpdate.rootId, AsyncEdgeType.SyncOut);
+    // }
   }
 
   /**

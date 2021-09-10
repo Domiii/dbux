@@ -1,3 +1,5 @@
+import PromiseLinkType from './constants/PromiseLinkType';
+
 /**
  * A link between two promises.
  * A link implies: settling `from` also settles `to` (possibly off by one tick due to A+).
@@ -12,6 +14,11 @@
  * `to = (async () => from)()`
  */
 export default class PromiseLink {
+  /**
+   * @type {PromiseLinkType[keyof PromiseLinkType]}
+   */
+  type;
+
   /**
    * Promise id of the `nestingPromise`
    * 
@@ -30,4 +37,6 @@ export default class PromiseLink {
    * The trace that created the link
    */
   traceId;
+
+  rootId;
 }
