@@ -20,7 +20,7 @@ export default class ArrowFunctionExpression extends BaseNode {
     const Function = this.getPlugin('Function');
     if (!bodyPath.isBlockStatement()) {
       // body is lambda expression -> wrap body with "return trace"
-      this.data.returnTraceCfg = this.Traces.addReturnTrace(null, bodyPath, bodyPath);
+      this.data.returnTraceCfg = this.Traces.addReturnTrace(this, null, bodyPath, bodyPath);
     }
 
     const traceData = {

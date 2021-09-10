@@ -89,14 +89,14 @@ export default class Function extends BasePlugin {
   }
 
   get isInterruptable() {
-    const { path } = this;
+    const { path } = this.node;
     const isGenerator = path.node.generator;
     const isAsync = path.node.async;
     return isGenerator || isAsync;
   }
 
   get isAsync() {
-    const { path } = this;
+    const { path } = this.node;
     return path.node.async;
   }
 
@@ -106,7 +106,7 @@ export default class Function extends BasePlugin {
 
   enter() {
     // TODO: move `push` and `pop`s to their corresponding correct phases
-    const { isInterruptable, node: { path, state } } = this.node;
+    const { isInterruptable, node: { path, state } } = this;
     const bodyPath = path.get('body');
 
     const names = getNodeNames(path.node);

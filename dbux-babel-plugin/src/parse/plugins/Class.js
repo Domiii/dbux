@@ -84,7 +84,7 @@ export default class Class extends BasePlugin {
     const instanceTraceCfg = Traces.addTrace({
       path: findConstructorMethod(classPath) || classPath.get('body'),
       node: null,
-      scope: node.peekStaticContext().path.scope, // prevent adding `tid` variable to own body
+      scope: node.peekContextNode().path.scope, // prevent adding `tid` variable to own body
       staticTraceData: {
         type: TraceType.ClassInstance,
         dataNode: {

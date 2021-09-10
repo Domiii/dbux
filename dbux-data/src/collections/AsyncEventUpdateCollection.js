@@ -104,6 +104,16 @@ export default class AsyncEventUpdateCollection extends Collection {
       // NOTE: should not happen
       return;
     }
+
+    const {
+      preEventUpdate: {
+        rootId: preEventRootId
+      },
+      rootIdNested
+    } = postUpdateData;
+    this.getOrAssignRootThreadId(preEventRootId, schedulerTraceId);
+    this.getOrAssignRootThreadId(rootIdNested, schedulerTraceId);
+
     // add edge
     /* const newEdge =  */
     this.addEventEdge(postUpdateData, schedulerTraceId);
@@ -133,6 +143,16 @@ export default class AsyncEventUpdateCollection extends Collection {
       // NOTE: should not happen
       return;
     }
+
+    const {
+      preEventUpdate: {
+        rootId: preEventRootId
+      },
+      rootIdNested
+    } = postUpdateData;
+
+    this.getOrAssignRootThreadId(preEventRootId, schedulerTraceId);
+    this.getOrAssignRootThreadId(rootIdNested, schedulerTraceId);
 
     // add edge
     /* const newEdge =  */
@@ -278,22 +298,34 @@ export default class AsyncEventUpdateCollection extends Collection {
    * @param {number} fromRootId 
    * @param {number} toRootId 
    */
-  addEventEdge({ fromRootId, toRootId, fromThreadId, toThreadId }, schedulerTraceId) {
+  addEventEdge(postUpdateData, schedulerTraceId) {
     const { dp } = this;
+    const {
+      chainFromRootId,
+      toRootId,
+      preEventUpdate: { rootId: preEventRootId }
+    } = postUpdateData;
+
+    let edgeType, fromRootId;
+    const isChain = !!chainFromRootId;
+    if (isChain) {
+      // CHAIN
+      fromRootId = chainFromRootId;
+      edgeType = AsyncEdgeType.Chain;
+    }
+    else {
+      // FORK
+      fromRootId = preEventRootId;
+      edgeType = AsyncEdgeType.Fork;
+    }
+
     // const previousFromThreadId = this.getOrAssignRootThreadId(fromRootId);
     // const previousToThreadId = dp.util.getAsyncRootThreadId(toRootId);
-
-    const isFork = !toThreadId ||
-      // check if this is CHAIN and fromRoot already has an out-going CHAIN
-      // NOTE: this can happen, e.g. when the same promise's `then` was called multiple times.
-      (fromThreadId === toThreadId && dp.util.getChainFrom(fromRootId));
+    const fromThreadId = this.getOrAssignRootThreadId(fromRootId, schedulerTraceId);
+    const toThreadId = isChain ? fromThreadId : this.newThreadId();
+    // let toThreadId = toRootId && this.getOrAssignRootThreadId(toRootId, schedulerTraceId) || 0;
 
     // this.logger.debug(`addEventEdge`, fromRootId, dp.util.getChainFrom(fromRootId));
-
-    if (isFork) {
-      // fork!
-      toThreadId = this.newThreadId();
-    }
 
     if (fromRootId >= toRootId) {
       this.logger.warn(`addEventEdge with fromRootId (${fromRootId}) >= toRootId (${toRootId})`);
@@ -303,7 +335,6 @@ export default class AsyncEventUpdateCollection extends Collection {
     dp.collections.asyncNodes.setNodeThreadId(toRootId, toThreadId, schedulerTraceId);
 
     // add edge
-    const edgeType = fromThreadId !== toThreadId ? AsyncEdgeType.Fork : AsyncEdgeType.Chain;
     const newEdge = this.addEdge(fromRootId, toRootId, edgeType);
     if (!newEdge) {
       return null;

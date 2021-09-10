@@ -121,6 +121,10 @@ export default class BaseNode extends ParseNode {
     return this.peekPluginForce('StaticContext');
   }
 
+  peekContextNode() {
+    return this.peekPlugin('StaticContext').node;
+  }
+
 
   // ###########################################################################
   // static

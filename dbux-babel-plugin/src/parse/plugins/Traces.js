@@ -38,7 +38,7 @@ export default class Traces extends BasePlugin {
   // ###########################################################################
 
   getAncestorContextNode() {
-    let contextNode = this.node.peekStaticContext();
+    let contextNode = this.node.peekContextNode();
     const contextBodyPath = contextNode.path.get('body');
     let { scope } = contextNode.path;
 
@@ -273,9 +273,8 @@ export default class Traces extends BasePlugin {
   /**
    * @param {BaseNode} node 
    */
-  addReturnTrace(node, path, argPath) {
+  addReturnTrace(func, node, path, argPath) {
     const hasArgument = !!argPath.node;
-    const func = node.peekPluginForce('Function');
     const traceCall = func.isAsync ? 'traceReturnAsync' : 'traceReturn';
 
     const traceData = {
