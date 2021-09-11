@@ -722,7 +722,8 @@ export default class RuntimeMonitor {
     const varAccess = {
       declarationTid: tid
     };
-    const classNode = dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess);
+    // DataNodeType.Create
+    const classNode = dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess);
 
     // [runtime-error] potential runtime error (but should actually never happen)
     const proto = value.prototype;
@@ -732,7 +733,8 @@ export default class RuntimeMonitor {
       objectNodeId: classNode.nodeId,
       prop: 'prototype'
     };
-    const prototypeNode = dataNodeCollection.createDataNode(proto, tid, DataNodeType.Read, prototypeVarAccess);
+    // DataNodeType.Create
+    const prototypeNode = dataNodeCollection.createDataNode(proto, tid, DataNodeType.Write, prototypeVarAccess);
 
 
     const trace = traceCollection.getById(tid);
@@ -752,7 +754,8 @@ export default class RuntimeMonitor {
           objectNodeId: classNode.nodeId,
           prop: methodName
         };
-        dataNodeCollection.createOwnDataNode(method, methodTid, DataNodeType.Read, methodAccess);
+        // DataNodeType.Create
+        dataNodeCollection.createOwnDataNode(method, methodTid, DataNodeType.Write, methodAccess);
       }
 
       // add publicMethods nodes to prototype
@@ -763,7 +766,8 @@ export default class RuntimeMonitor {
           objectNodeId: prototypeNode.nodeId,
           prop: methodName
         };
-        dataNodeCollection.createOwnDataNode(method, methodTid, DataNodeType.Read, methodAccess);
+        // DataNodeType.Create
+        dataNodeCollection.createOwnDataNode(method, methodTid, DataNodeType.Write, methodAccess);
       }
     }
 
@@ -775,7 +779,8 @@ export default class RuntimeMonitor {
       return value;
     }
 
-    const instanceNode = dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read);
+    // DataNodeType.Create
+    const instanceNode = dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write);
 
     const trace = traceCollection.getById(tid);
     if (trace) {
@@ -791,7 +796,9 @@ export default class RuntimeMonitor {
           objectNodeId: instanceNode.nodeId,
           prop: methodName
         };
-        dataNodeCollection.createOwnDataNode(method, methodTid, DataNodeType.Read, methodAccess);
+
+        // DataNodeType.Create
+        dataNodeCollection.createOwnDataNode(method, methodTid, DataNodeType.Write, methodAccess);
       }
     }
 
@@ -1013,7 +1020,9 @@ export default class RuntimeMonitor {
     if (!this._ensureExecuting()) {
       return value;
     }
-    dataNodeCollection.createOwnDataNode(value, arrTid, DataNodeType.Read, null, null, ShallowValueRefMeta);
+
+    // DataNodeType.Create
+    dataNodeCollection.createOwnDataNode(value, arrTid, DataNodeType.Write, null, null, ShallowValueRefMeta);
 
     // for each element: add (new) write node which has (original) read node as input
     let idx = 0;
@@ -1055,7 +1064,9 @@ export default class RuntimeMonitor {
     if (!this._ensureExecuting()) {
       return value;
     }
-    const objectNode = dataNodeCollection.createOwnDataNode(value, objectTid, DataNodeType.Read, null, null, ShallowValueRefMeta);
+    
+    // DataNodeType.Create
+    const objectNode = dataNodeCollection.createOwnDataNode(value, objectTid, DataNodeType.Write, null, null, ShallowValueRefMeta);
     const objectNodeId = objectNode.nodeId;
 
     // for each prop: add (new) write node which has (original) read node as input

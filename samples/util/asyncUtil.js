@@ -46,7 +46,8 @@ export function P(previousPromise, ...xs/* , n */) {
     p = R(previousPromise);
   }
   else {
-    p = R(nest(previousPromise, P));
+    p = R().then(nest(previousPromise, P));
+    // p = R(nest(previousPromise, P)());
   }
   for (let x of xs) {
     // nested = (previousResult) => P(nested(previousResult), xs.slice(1));

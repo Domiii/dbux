@@ -157,55 +157,6 @@ export default class AsyncEventUpdateCollection extends Collection {
     // add edge
     /* const newEdge =  */
     this.addEventEdge(postUpdateData, schedulerTraceId);
-
-    // const parent = firstNestedBy || preThenPromise;
-    // const parentRootId = parent && 
-    // const preEventRootId = Math.max(
-    //   firstNestedBy && getPromiseAnyRootId(firstNestedBy) || -1,
-    //   preThenPromise && getPromiseAnyRootId(preThenPromise) || -1,
-    //   lastRootId || -1,
-    //   createdRootId
-    // );
-    // console.debug(preEventRootId, schedulerTraceId,
-    //   getPromiseData(preThenPromise),
-    //   getPromiseData(preThenPromise) && getPromiseData(getPromiseData(preThenPromise).preThenPromise),
-    //   [
-    //     firstNestedBy && getPromiseAnyRootId(firstNestedBy) || -1,
-    //     preThenPromise && getPromiseAnyRootId(preThenPromise) || -1,
-    //     lastRootId || -1,
-    //     createdRootId
-    //   ]);
-
-    // maybeSetPromiseFirstEventRootId(preEventPromise, this.getCurrentVirtualRootContextId());
-    // maybeSetPromiseFirstEventRootId(postEventPromise, this.getCurrentVirtualRootContextId());
-
-    // resolve `fromThreadId`
-
-    // resolve `toThreadId`
-    // let toThreadId;
-    // const isFirstPromise = !lastRootId;
-    // // don't chain if is first promise and not chained to root
-    // if (!isFirstPromise || this.isPromiseChainedToRoot(preEventRunId, promiseId)) {
-    //   // CHAIN
-    //   toThreadId = preEventThreadId;
-    // }
-    // else {
-    //   // FORK
-    //   toThreadId = 0;
-    // }
-
-    // const actualToThreadId = this.addEventEdge(preEventRootId, postEventRootId, fromThreadId, toThreadId, schedulerTraceId);
-
-    // TODO: also don't set `threadId` on async result promises?
-    // TODO: keep set of all "promise dependencies" and resolve on next promise event
-
-    // if (!getPromiseData(postEventPromise).threadId) {
-    //   // don't override previous `threadId`
-    //   setPromiseData(postEventPromise, {
-    //     threadId: actualToThreadId
-    //     // lastRootId: postEventRootId
-    //   });
-    // }
   }
 
   resolve = update => {

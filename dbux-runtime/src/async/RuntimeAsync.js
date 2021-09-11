@@ -340,22 +340,20 @@ export default class RuntimeAsync {
   // Promises: promiseConstructorCalled
   // ###########################################################################
 
-  promiseCtorCalled(promiseId, previousLastUpdateId) {
-    const lastUpdateId = asyncEventUpdateCollection.getLastId();
-
-
-    for (let i = previousLastUpdateId + 1; i < lastUpdateId; ++i) {
-      const update = asyncEventUpdateCollection.getById(i);
-
-      if (!isPostEventUpdate(update.type)) {
-        // [edit-after-send]
-        update.promiseCtorId = promiseId;
-      }
-      else {
-        // NOTE: Post events should not happen during promise ctor anyway
-      }
-    }
-  }
+  // // NOTE: this hackfix should not be necessary anymore
+  // promiseCtorCalled(promiseId, previousLastUpdateId) {
+  //   const lastUpdateId = asyncEventUpdateCollection.getLastId();
+  //   for (let i = previousLastUpdateId + 1; i < lastUpdateId; ++i) {
+  //     const update = asyncEventUpdateCollection.getById(i);
+  //     if (!isPostEventUpdate(update.type)) {
+  //       // [edit-after-send]
+  //       update.promiseCtorId = promiseId;
+  //     }
+  //     else {
+  //       // NOTE: Post events should not happen during promise ctor anyway
+  //     }
+  //   }
+  // }
 
   // ###########################################################################
   // non-events

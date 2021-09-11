@@ -1789,9 +1789,8 @@ export default {
 
   /** @param {DataProvider} dp */
   getLastAsyncPostEventUpdateOfPromise(dp, promiseId, beforeRootId) {
-    // NOTE: `byPromise` index only contains `postUpdates`
     const updates = dp.indexes.asyncEventUpdates.byPromise.get(promiseId);
-    return findLast(updates, upd => upd.rootId < beforeRootId);
+    return findLast(updates, upd => isPostEventUpdate(upd.type) && upd.rootId < beforeRootId);
   },
 
   /** @param {DataProvider} dp */
@@ -2078,26 +2077,26 @@ export default {
     }
     visited.add(nestingPromiseId);
     const link = dp.indexes.promiseLinks.to.getUnique(nestingPromiseId);
-    if (!link) {
-      return null;
-    }
+    const isNesting = !!link;
+    const promiseId = isNesting ? link.from : nestingPromiseId;
 
     // TODO: check beforeRootId vs. link.rootId?
 
-    const nestedPromiseId = link.from;
-    let nestedUpdate = dp.util.getLastAsyncPostEventUpdateOfPromise(nestedPromiseId, beforeRootId);
+    let nestedUpdate = dp.util.getLastAsyncPostEventUpdateOfPromise(promiseId, beforeRootId);
 
     // Case 1: link is AsyncReturn, nestedUpdate is PostAwait
     // Case 2: link is AsyncReturn, nestedUpdate is PostThen
     // Case 3: link is ThenNested, nestedUpdate is PostAwait
     // Case 4: link is ThenNested, nestedUpdate is PostThen
 
-    if (nestedUpdate && dp.util.getPromiseRootId(nestedPromiseId) < nestedUpdate.rootId) {
-      // nested for synchronization -> stop recursion
-      syncPromiseIds.push(nestedPromiseId);
+    if (nestedUpdate && dp.util.getPromiseRootId(promiseId) < nestedUpdate.rootId) {
+      // nested for synchronization -> do not go deeper
+      // TODO: probably should only sync in some cases (sync here for PostAwait, don't sync here for PostThen?)
+      syncPromiseIds.push(promiseId);
     }
-    else {
-      nestedUpdate = dp.util.GNPU(nestedPromiseId, beforeRootId, syncPromiseIds, visited) || nestedUpdate;
+    else if (isNesting) {
+      // go deeper
+      nestedUpdate = dp.util.GNPU(promiseId, beforeRootId, syncPromiseIds, visited) || nestedUpdate;
     }
     return nestedUpdate;
   },

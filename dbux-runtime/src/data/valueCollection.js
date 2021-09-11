@@ -452,7 +452,6 @@ class ValueCollection extends Collection {
     let pruneState = ValuePruneState.Normal;
     let typeName = '';
     let valueRef;
-    let isNewValue = false;
 
     if (this.valuesDisabled) {
       return this._addValueDisabled();
@@ -470,14 +469,19 @@ class ValueCollection extends Collection {
       return null;
     }
     valueRef = this._getRefByValueUnwrapped(value);
-    if (!valueRef) {
-      isNewValue = true;
-      valueRef = this._addValueRef(category, nodeId, value);
-    }
+    if (valueRef) {
+      // object already referenced
 
-    if (!isNewValue) {
+      // [edit-after-send]
+      // hackfix: sometimes, objects are referenced before their DataNode was created (e.g. promises returned from `then`)
+      // also see: DataNodeCollection#createBCEDataNode
+      valueRef.nodeId = valueRef.nodeId || nodeId;
+      
       return valueRef;
     }
+
+    // new ref
+    valueRef = this._addValueRef(category, nodeId, value);
 
     if (meta?.shallow) {
       // shortcut -> don't serialize children
