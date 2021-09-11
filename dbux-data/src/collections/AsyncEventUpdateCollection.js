@@ -73,11 +73,11 @@ export default class AsyncEventUpdateCollection extends Collection {
    * @param {PreAwaitUpdate} update
    */
   preAwait = update => {
-    const { dp } = this;
-    const {
-      rootId: preEventRootId,
-      nestedPromiseId
-    } = update;
+    // const { dp } = this;
+    // const {
+    //   rootId: preEventRootId,
+    //   nestedPromiseId
+    // } = update;
 
 
     // const nestedUpdate = nestedPromiseId && dp.util.getFirstPostOrResolveAsyncEventOfPromise(nestedPromiseId, preEventRootId);

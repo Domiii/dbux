@@ -1795,8 +1795,9 @@ export default {
   },
 
   /** @param {DataProvider} dp */
-  getFirstNestingPreAwaitUpdate(dp, promiseId, beforeRootId) {
+  getFirstNestingPreAwaitUpdate(dp, promiseId) {
     const updates = dp.indexes.asyncEventUpdates.byNestedPromise.get(promiseId);
+    return updates?.[0];
   },
 
   /** @param {DataProvider} dp */
@@ -2109,7 +2110,7 @@ export default {
     let u;
     const link = dp.indexes.promiseLinks.from.getFirst(nestedPromiseId);
     if (link) {
-      // TODO: define + assure correct timing via rootId!!
+      // TODO: define + assure correct timing via rootId
       const { to: outerPromiseId/* , rootId */ } = link;
       // “Nested PostThen” or “async return” or “resolve”
       if ((u = dp.util.getLastAsyncPostEventUpdateOfPromise(outerPromiseId, rootId))) {
@@ -2118,13 +2119,22 @@ export default {
       }
       return dp.util.UP(outerPromiseId, rootId, syncPromiseIds); // “async return” (of function where no `await` executed) or “resolve”
     }
-    else if ((u = dp.util.getFirstNestingPreAwaitUpdate(nestedPromiseId, rootId))) {
+    else if ((u = dp.util.getFirstNestingPreAwaitUpdate(nestedPromiseId))) {
       // p was AWAIT’ed && PostAwait has not happened yet
-      const isFirstAwait = dp.util.isFirstContextInParent(u.contextId);
-      if (!isFirstAwait || u.contextId === u.rootId) {
-        return u.rootId;  // already at root (can't go higher up)
+      if (u.rootId > rootId) {
+        // SYNC edge => already added in u's own Post* event handler
+        // NOTE: u.rootId < rootId is impossible (because if `u` nests `p`, `u` cannot occur before `p`)
+        // syncPromiseIds.push(u.promiseId);
+        return 0;
       }
-      return dp.util.UP(u.promiseId, rootId, syncPromiseIds) || u.rootId;
+      else {
+        // u.rootId === rootId
+        const isFirstAwait = dp.util.isFirstContextInParent(u.contextId);
+        if (!isFirstAwait || u.contextId === u.rootId) {
+          return u.rootId;  // already at root (can't go higher up)
+        }
+        return dp.util.UP(u.promiseId, rootId, syncPromiseIds) || u.rootId;
+      }
     }
     else if ((u = dp.util.getAsyncPreEventUpdateOfPromise(nestedPromiseId, rootId)) && AsyncEventUpdateType.is.PreThen(u.type)) {
       // promise is not nested but was THEN’ed -> follow down the THEN chain (until we find a promise that is nested)
