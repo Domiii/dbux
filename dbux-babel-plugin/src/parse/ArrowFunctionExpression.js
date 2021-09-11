@@ -17,21 +17,21 @@ export default class ArrowFunctionExpression extends BaseNode {
     const { path } = this;
     const [, bodyPath] = this.getChildPaths();
 
-    const Function = this.getPlugin('Function');
+    const func = this.getPlugin('Function');
     if (!bodyPath.isBlockStatement()) {
       // body is lambda expression -> wrap body with "return trace"
-      this.data.returnTraceCfg = this.Traces.addReturnTrace(this, null, bodyPath, bodyPath);
+      this.data.returnTraceCfg = this.Traces.addReturnTrace(func, null, bodyPath, bodyPath);
     }
 
     const traceData = {
       node: this,
       path,
       scope: path.parentPath.scope, // prevent adding `tid` variable to own body
-      staticTraceData: Function.createStaticTraceData()
+      staticTraceData: func.createStaticTraceData()
     };
 
     const traceCfg = this.Traces.addTrace(traceData);
-    Function.setFunctionTraceCfg(traceCfg);
+    func.setFunctionTraceCfg(traceCfg);
   }
 
   instrument1() {

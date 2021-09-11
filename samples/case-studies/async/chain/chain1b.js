@@ -1,13 +1,13 @@
 import { A, Ar } from '../../../util/asyncUtil';
 
-// A(
-//   'A',
-//   () => Ar(
-//     'BA',
-//     async () => A('BBA', 'BBB'),
-//   ),
-//   'C'
-// );
+A(
+  'A',
+  () => Ar(
+    'BA',
+    async () => A('BBA', 'BBB'),
+  ),
+  'C'
+);
 
 
 async function f() {
@@ -18,7 +18,7 @@ async function f() {
 
 async function g() {
   await 'BA';
-  return h();
+  return (() => h())();
 }
 
 async function h() {
@@ -26,4 +26,4 @@ async function h() {
   await 'BBB';
 }
 
-f();
+// f();

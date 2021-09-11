@@ -51,7 +51,7 @@ export default class Traces extends BasePlugin {
 
       // scope = scope.parent;
       // scope = scope.getFunctionParent() || scope.getProgramParent();
-      contextNode = contextNode.getExistingParent().peekStaticContext();
+      contextNode = contextNode.getExistingParent().peekContextNode();
     }
     return contextNode;
   }
