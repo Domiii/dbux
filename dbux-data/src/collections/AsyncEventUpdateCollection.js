@@ -112,7 +112,7 @@ export default class AsyncEventUpdateCollection extends Collection {
       rootIdNested
     } = postUpdateData;
     this.getOrAssignRootThreadId(preEventRootId, schedulerTraceId);
-    this.getOrAssignRootThreadId(rootIdNested, schedulerTraceId);
+    rootIdNested && this.getOrAssignRootThreadId(rootIdNested, schedulerTraceId);
 
     // add edge
     /* const newEdge =  */
@@ -152,7 +152,7 @@ export default class AsyncEventUpdateCollection extends Collection {
     } = postUpdateData;
 
     this.getOrAssignRootThreadId(preEventRootId, schedulerTraceId);
-    this.getOrAssignRootThreadId(rootIdNested, schedulerTraceId);
+    rootIdNested && this.getOrAssignRootThreadId(rootIdNested, schedulerTraceId);
 
     // add edge
     /* const newEdge =  */
@@ -262,6 +262,10 @@ export default class AsyncEventUpdateCollection extends Collection {
    * If not, we assume a FORK, and assign a new threadId.
    */
   getOrAssignRootThreadId(rootId, schedulerTraceId) {
+    if (!rootId) {
+      this.logger.trace(`[getOrAssignRootThreadId] no rootId given, trace: ${this.dp.util.makeTraceInfo(schedulerTraceId)}`);
+      return 0;
+    }
     let asyncNode = this.dp.indexes.asyncNodes.byRoot.getUnique(rootId);
     let threadId = asyncNode?.threadId;
     if (!threadId) {
