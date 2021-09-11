@@ -1,8 +1,9 @@
-import { A, P, waitTicks } from '../../../util/asyncUtil';
+import { A, P } from '../../../util/asyncUtil';
 
-A(
-  'A',
-  () => P(
+// A(
+//   'A',
+//   () => 
+  P(
     'AA',
     [
       [
@@ -14,6 +15,6 @@ A(
     ],
     'AB',
     'AC'
-  ),
-  'B'
-);
+  );
+//   'B'
+// );

@@ -11,8 +11,8 @@ function nest(x, F) {
   return x instanceof Function ?
     x :
     () => {
-      x && console.log('[]', x);
-      return x;
+      // x && console.log('[]', x);
+      return unwrapValue(x);
     };
 }
 
@@ -23,23 +23,30 @@ function unwrapValue(val) {
   return val;
 }
 
-function unwrapPromise(val) {
-  // if (val instanceof Promise) {
-  //   return val;
-  // }
-  return R(unwrapValue(val));
+function unwrapBoundValue(val, x) {
+  if (x instanceof Function) {
+    return () => {
+      const xVal = unwrapValue(x);
+      if (xVal instanceof Promise) {
+        return xVal;
+      }
+      return `${val} ${xVal}`;
+    };
+  }
+  return `${val} ${unwrapValue(x)}`;
 }
+
 
 /**
  * Promise chain
  */
 export function P(previousPromise, ...xs/* , n */) {
   let p;
-  if (previousPromise instanceof Function) {
-    p = R().then(previousPromise);
+  if (previousPromise instanceof Promise) {
+    p = R(previousPromise);
   }
   else {
-    p = R(previousPromise);
+    p = R(nest(previousPromise, P));
   }
   for (let x of xs) {
     // nested = (previousResult) => P(nested(previousResult), xs.slice(1));
@@ -50,18 +57,7 @@ export function P(previousPromise, ...xs/* , n */) {
 
 export function Pbind(val, ...xs) {
   val = unwrapValue(val);
-  xs = xs.map(x => {
-    if (x instanceof Function) {
-      return () => {
-        const xVal = unwrapValue(x);
-        if (xVal instanceof Promise) {
-          return xVal;
-        }
-        return `${val} ${xVal}`;
-      };
-    }
-    return `${val} ${unwrapValue(x)}`;
-  });
+  xs = xs.map(x => unwrapBoundValue(val, x));
   return P(...xs);
 }
 
@@ -80,8 +76,9 @@ export function A(...xs) {
 }
 
 export function Abind(val, ...xs) {
-  xs = xs.map(x => `${val} ${x}`);
-  return A(xs);
+  val = unwrapValue(val);
+  xs = xs.map(x => unwrapBoundValue(val, x));
+  return A(...xs);
 }
 
 export function Ar(...xs) {
