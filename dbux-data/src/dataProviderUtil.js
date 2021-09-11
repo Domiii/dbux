@@ -2067,22 +2067,24 @@ export default {
 
   /** 
    * `getNestedPromiseUpdate`.
-   * Returns the inner most nested promise that has a Post* update.
-   * Constraint: `fromPromiseId` is already settled.
+   * Returns the inner most nested promise that has a Post* update, nested by `toPromiseId`.
+   * NOTE: `fromPromiseId` is already settled.
    * 
    * @param {DataProvider} dp
    */
-  GNPU(dp, fromPromiseId, beforeRootId, syncPromiseIds, visited = new Set()) {
-    if (visited.has(fromPromiseId)) {
+  GNPU(dp, nestingPromiseId, beforeRootId, syncPromiseIds, visited = new Set()) {
+    if (visited.has(nestingPromiseId)) {
       return null;
     }
-    visited.add(fromPromiseId);
-    const link = dp.indexes.promiseLinks.from.get(fromPromiseId);
+    visited.add(nestingPromiseId);
+    const link = dp.indexes.promiseLinks.to.getUnique(nestingPromiseId);
     if (!link) {
       return null;
     }
-    // TODO: link -> beforeRootId
-    const nestedPromiseId = link.to;
+
+    // TODO: check beforeRootId vs. link.rootId?
+
+    const nestedPromiseId = link.from;
     let nestedUpdate = dp.util.getLastAsyncPostEventUpdateOfPromise(nestedPromiseId, beforeRootId);
 
     // Case 1: link is AsyncReturn, nestedUpdate is PostAwait
@@ -2147,18 +2149,18 @@ export default {
 
   /** @param {DataProvider} dp */
   DOWN(dp, promiseId, beforeRootId, syncPromiseIds) {
-    return dp.util._DOWN(promiseId, beforeRootId, syncPromiseIds)?.rootId;
+    return dp.util._DOWN(promiseId, beforeRootId, syncPromiseIds)?.rootId || 0;
   },
 
   /** @param {DataProvider} dp */
   _DOWN(dp, promiseId, beforeRootId, syncPromiseIds, visited = new Set()) {
     const nestedUpdate = dp.util.GNPU(promiseId, beforeRootId, syncPromiseIds, visited);
     if (!nestedUpdate) {
-      return 0;
+      return null;
     }
 
     // NOTE: nestedUpdate is ensured to be settled because promiseId is settled
-    return dp.util._DOWN(nestedUpdate.promiseId, beforeRootId, syncPromiseIds, visited);
+    return dp.util._DOWN(nestedUpdate.promiseId, beforeRootId, syncPromiseIds, visited) || nestedUpdate;
   },
 
   /** @param {DataProvider} dp */
@@ -2205,23 +2207,19 @@ export default {
     const isCallRecorded = !!promiseId;
 
     const s = [];
-    const beforeRootId = postEventRootId;
-
     let chainFromRootId = 0;
+    const beforeRootId = postEventRootId;
     const toRootId = postEventRootId;
-    let rootIdUp = 0;
-    let rootIdNested = 0;
-
-    // TODO: nested PostAwaits have two nodes - the nested node gets FORKed, but should be CHAINed
 
     // consider all CHAIN scenarios
+    const rootIdUp = util.UP(promiseId, beforeRootId, s);
+    const rootIdNested = nestedPromiseId && util.DOWN(nestedPromiseId, beforeRootId, s);
+
     if (!isFirstAwait || !isCallRecorded) {
       chainFromRootId = preEventRootId;
-      util.SYNC(chainFromRootId, nestedPromiseId, beforeRootId, s);
+      nestedPromiseId && util.SYNC(chainFromRootId, nestedPromiseId, beforeRootId, s);
     }
     else {
-      rootIdUp = util.UP(promiseId, beforeRootId, s);
-      rootIdNested = nestedPromiseId && util.DOWN(nestedPromiseId, beforeRootId, s);
       if (rootIdUp && rootIdNested) {
         util.SYNC(rootIdUp, nestedPromiseId, beforeRootId, s);
       }

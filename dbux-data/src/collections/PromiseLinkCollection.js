@@ -11,7 +11,7 @@ export default class PromiseLinkCollection extends Collection {
     this._all.push(null);
   }
 
-  postIndexRaw(entries) {
+  postAddRaw(entries) {
     const { util } = this.dp;
     for (const entry of entries) {
       if (!PromiseLinkType.is.AsyncReturn(entry.type) || !entry.traceId || !!entry.to) {

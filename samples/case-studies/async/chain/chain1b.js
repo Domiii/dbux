@@ -11,7 +11,7 @@ import { A, Ar } from '../../../util/asyncUtil';
 
 
 async function f() {
-  await 'A';
+  // await 'A';
   await g();
   await 'C';
 }
