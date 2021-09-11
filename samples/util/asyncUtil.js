@@ -89,6 +89,6 @@ export function Ar(...xs) {
     for (const x of xs.slice(0, -1)) {
       await nest(x, A)();
     }
-    return xs[xs.length - 1];
+    return unwrapValue(xs[xs.length - 1]);
   })();
 }

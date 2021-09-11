@@ -2202,7 +2202,7 @@ export default {
     /**
      * Implies that function was called by the system or some other caller that was not recorded
      */
-    const isCallNotRecorded = !promiseId;
+    const isCallRecorded = !!promiseId;
 
     const s = [];
     const beforeRootId = postEventRootId;
@@ -2215,7 +2215,7 @@ export default {
     // TODO: nested PostAwaits have two nodes - the nested node gets FORKed, but should be CHAINed
 
     // consider all CHAIN scenarios
-    if (!isFirstAwait || isCallNotRecorded) {
+    if (!isFirstAwait || !isCallRecorded) {
       chainFromRootId = preEventRootId;
       util.SYNC(chainFromRootId, nestedPromiseId, beforeRootId, s);
     }
@@ -2239,6 +2239,9 @@ export default {
       // preEventThreadId,
       rootIdUp,
       rootIdNested,
+      isFirstAwait,
+      isCallRecorded,
+      s
     };
 
     // const previousPostUpdate = dp.util.getPreviousPostAsyncEventOfPromise(promiseId, preEventRootId);

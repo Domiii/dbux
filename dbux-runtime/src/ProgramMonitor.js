@@ -463,18 +463,18 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceObjectExpression(this.getProgramId(), value, entries, argConfigs, objectTid, propTids);
   }
 
-  /** ###########################################################################
-   * loops et al
-   * ##########################################################################*/
+  // /** ###########################################################################
+  //  * loops
+  //  * ##########################################################################*/
 
-  traceForIn = (value, tid, declarationTid, inputs) => {
-    value = wrapValue(value);
-    if (this.areTracesDisabled) {
-      return value;
-    }
+  // traceForIn = (value, tid, declarationTid, inputs) => {
+  //   value = wrapValue(value);
+  //   if (this.areTracesDisabled) {
+  //     return value;
+  //   }
 
-    return this._runtimeMonitor.traceForIn(this.getProgramId(), value, tid, declarationTid, inputs);
-  }
+  //   return this._runtimeMonitor.traceForIn(this.getProgramId(), value, tid, declarationTid, inputs);
+  // }
 
   // ###########################################################################
   // old traces

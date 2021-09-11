@@ -1098,41 +1098,74 @@ export default class RuntimeMonitor {
     return value;
   }
 
-  // ###########################################################################
-  // Loops (unfinished)
-  // ###########################################################################
+  // // ###########################################################################
+  // // Loops (unfinished)
+  // // ###########################################################################
 
-  traceForIn(programId, value, tid, declarationTid, inProgramStaticTraceId) {
-    if (!this._ensureExecuting()) {
-      return value;
-    }
-    if (!tid) {
-      this.logFail(`traceForIn failed to capture tid`);
-      return value;
-    }
+  // traceForIn(programId, value, tid, declarationTid, inProgramStaticTraceId) {
+  //   if (!this._ensureExecuting()) {
+  //     return value;
+  //   }
+  //   if (!tid) {
+  //     this.logFail(`traceForIn failed to capture tid`);
+  //     return value;
+  //   }
 
-    if (!declarationTid) {
-      declarationTid = tid;
-    }
+  //   if (!declarationTid) {
+  //     declarationTid = tid;
+  //   }
 
-    const varAccess = declarationTid && { declarationTid };
+  //   // TODO: varAccess is not always have `declarationTid` (might also be object accessor etc.)
+  //   const varAccess = declarationTid && { declarationTid };
 
-    // create iterator which logs `DataNode` on key access
-    const pd = { enumerable: true, configurable: true };
-    return new Proxy(value, {
-      /**
-       * NOTE: `getOwnPropertyDescriptor` is called every iteration, while
-       *   the entire array returned from `ownKeys` is read at the beginning of the loop.
-       */
-      getOwnPropertyDescriptor: function (target, key) {
-        debug('gpd', key, target[key]);
+  //   // create iterator which logs `DataNode` on key access
+  //   const pd = { enumerable: true, configurable: true };
+  //   return new Proxy(value, {
+  //     /**
+  //      * NOTE: `getOwnPropertyDescriptor` is called every iteration, while
+  //      *   the entire array returned from `ownKeys` is read at the beginning of the loop.
+  //      */
+  //     getOwnPropertyDescriptor: function (target, key) {
+  //       debug('gpd', key, target[key]);
 
-        const iterationTraceId = this.newTraceId(programId, inProgramStaticTraceId);
-        dataNodeCollection.createOwnDataNode(key, iterationTraceId, DataNodeType.Write, varAccess);
-        return pd;
-      }
-    });
-  }
+  //       const iterationTraceId = this.newTraceId(programId, inProgramStaticTraceId);
+  //       dataNodeCollection.createOwnDataNode(key, iterationTraceId, DataNodeType.Write, varAccess);
+  //       return pd;
+  //     }
+  //   });
+  // }
+
+  // traceForOf(programId, value, tid, declarationTid, inProgramStaticTraceId) {
+  //   if (!this._ensureExecuting()) {
+  //     return value;
+  //   }
+  //   if (!tid) {
+  //     this.logFail(`traceForOf failed to capture tid`);
+  //     return value;
+  //   }
+
+  //   if (!declarationTid) {
+  //     declarationTid = tid;
+  //   }
+
+  //   const varAccess = declarationTid && { declarationTid };
+
+  //   // create iterator which logs `DataNode` on key access
+  //   const pd = { enumerable: true, configurable: true };
+  //   return new Proxy(value, {
+  //     /**
+  //      * NOTE: `getOwnPropertyDescriptor` is called every iteration, while
+  //      *   the entire array returned from `ownKeys` is read at the beginning of the loop.
+  //      */
+  //     getOwnPropertyDescriptor: function (target, key) {
+  //       debug('gpd', key, target[key]);
+
+  //       const iterationTraceId = this.newTraceId(programId, inProgramStaticTraceId);
+  //       dataNodeCollection.createOwnDataNode(key, iterationTraceId, DataNodeType.Write, varAccess);
+  //       return pd;
+  //     }
+  //   });
+  // }
 
   // ###########################################################################
   // traces (OLD)

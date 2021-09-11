@@ -7,8 +7,7 @@ A(
     [
       [
         'AAAA',
-        'AAAB',
-        'AAAC',
+        'AAAB'
       ],
       'AAB',
       'AAC'
