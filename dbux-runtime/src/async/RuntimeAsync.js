@@ -1,6 +1,5 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import isThenable from '@dbux/common/src/util/isThenable';
-import { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import ResolveType from '@dbux/common/src/types/constants/ResolveType';
 import PromiseLinkType from '@dbux/common/src/types/constants/PromiseLinkType';
@@ -16,6 +15,7 @@ import asyncEventUpdateCollection from '../data/asyncEventUpdateCollection';
 import executionContextCollection from '../data/executionContextCollection';
 import nestedPromiseCollection from '../data/promiseLinkCollection';
 import valueCollection from '../data/valueCollection';
+import traceCollection from '../data/traceCollection';
 // import { isPostEventUpdate, isPreEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 
 /** @typedef { import("./Runtime").default } Runtime */
@@ -367,7 +367,14 @@ export default class RuntimeAsync {
     if (ResolveType.is.Resolve(resolveType)) {
       // NOTE: `reject` does not settle nested promises!
       const rootId = this.getCurrentVirtualRootContextId();
-      nestedPromiseCollection.addLink(PromiseLinkType.Resolve, getPromiseId(inner), getPromiseId(outer), traceId, rootId);
+      const from = getPromiseId(inner);
+      const to = getPromiseId(outer);
+      if (!from || !to) {
+        this.logger.error(`resolve link failed: promise did not have an id, from=${from}, to=${to}, trace=${traceCollection.makeTraceInfo(traceId)}`);
+      }
+      else {
+        nestedPromiseCollection.addLink(PromiseLinkType.Resolve, from, to, traceId, rootId);
+      }
     }
     // const {
     //   preEventPromise,

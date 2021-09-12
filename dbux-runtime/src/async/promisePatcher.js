@@ -198,7 +198,7 @@ function _makeThenRef(promise, patchedFunction) {
     ref = valueCollection.getById(dataNode.refId);
     maybePatchPromise(promise);
   }
-  
+
 
 
   if (promise instanceof NativePromiseClass && !schedulerTraceId) {
@@ -317,36 +317,42 @@ function patchPromiseClass(BasePromiseClass) {
       else {
         // wrapExecutor = executor;
         wrapExecutor = (resolve, reject) => {
-          const wrapResolve = (resolveArg) => {
-            // Event: Resolve
+          const wrapResolve = (...args) => {
+            // Event: resolve
+            // TODO: track `result` data flow
+            const resolveArg = args[0];
             if (!superCalled) {
               deferredCall = wrapResolve.bind(null, resolveArg);
             }
             else {
-              // TODO: track `result` data flow
-              const thenRef = _makeThenRef(this, wrapResolve);
-              if (thenRef) {
-                RuntimeMonitorInstance._runtime.async.resolve(
-                  resolveArg, this, ResolveType.Resolve, thenRef.schedulerTraceId
-                );
+              if (isThenable(resolveArg)) {
+                const thenRef = _makeThenRef(this, wrapResolve);
+                if (thenRef) {
+                  RuntimeMonitorInstance._runtime.async.resolve(
+                    resolveArg, this, ResolveType.Resolve, thenRef.schedulerTraceId
+                  );
+                }
               }
-              resolve(resolveArg);
+              resolve(...args);
             }
           };
-          const wrapReject = (err) => {
-            // Event: Resolve
+          const wrapReject = (...args) => {
+            // Event: reject
+            // TODO: track `err` data flow
+            const err = args[0];
             if (!superCalled) {
               deferredCall = wrapReject.bind(null, err);
             }
             else {
-              // TODO: track `err` data flow
-              const thenRef = _makeThenRef(this, wrapReject);
-              if (thenRef) {
-                RuntimeMonitorInstance._runtime.async.resolve(
-                  err, this, ResolveType.Reject, thenRef.schedulerTraceId
-                );
-              }
-              reject(err);
+              // NOTE: promise linkage not possible for `reject`
+
+              // const thenRef = _makeThenRef(this, wrapReject);
+              // if (thenRef) {
+              //   RuntimeMonitorInstance._runtime.async.resolve(
+              //     err, this, ResolveType.Reject, thenRef.schedulerTraceId
+              //   );
+              // }
+              reject(...args);
             }
           };
 
