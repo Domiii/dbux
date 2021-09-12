@@ -275,7 +275,7 @@ export default class Traces extends BasePlugin {
    */
   addReturnTrace(func, node, path, argPath) {
     const hasArgument = !!argPath.node;
-    const traceCall = func.isAsync ? 'traceReturnAsync' : 'traceReturn';
+    const traceCall = func?.isAsync ? 'traceReturnAsync' : 'traceReturn';
 
     const traceData = {
       node,

@@ -10,7 +10,7 @@ export default class ReturnStatement extends BaseNode {
     const childPaths = this.getChildPaths();
     const [returnArgPath] = childPaths;
 
-    const func = this.peekPluginForce('Function');
+    const func = this.peekPlugin('Function');
     return this.Traces.addReturnTrace(func, this, path, returnArgPath);
   }
 }
