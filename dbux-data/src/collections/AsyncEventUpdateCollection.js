@@ -187,6 +187,14 @@ export default class AsyncEventUpdateCollection extends Collection {
       return;
     }
 
+    const {
+      preEventUpdate: {
+        rootId: preEventRootId
+      }
+    } = postUpdateData;
+
+    this.getOrAssignRootThreadId(preEventRootId, schedulerTraceId);
+
     // add edge
     /* const newEdge =  */
     this.addEventEdge(postUpdateData, schedulerTraceId);

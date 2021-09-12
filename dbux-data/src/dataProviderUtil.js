@@ -2406,68 +2406,53 @@ export default {
 
     const {
       rootId: preEventRootId,
-      isEventListener
+      // isEventListener
     } = preEventUpdate;
 
     const isNested = false;
-    let callbackChainThreadId;
-    let firstPostEventHandlerUpdate;
-    let previousUpdate;
+    let chainFromRootId;
+
+    const beforeRootId = postEventRootId;
 
     // if (isEventListener) {
     // Case 1: event listener -> repeated calls of same trace
-    firstPostEventHandlerUpdate = util.getFirstAsyncPostEventUpdateOfTrace(schedulerTraceId);
-    if (firstPostEventHandlerUpdate) {
-      callbackChainThreadId = util.getAsyncRootThreadId(firstPostEventHandlerUpdate.rootId);
+    const firstPostEventHandlerUpdate = util.getFirstAsyncPostEventUpdateOfTrace(schedulerTraceId);
+    if (firstPostEventHandlerUpdate && firstPostEventHandlerUpdate.rootId < beforeRootId) {
+      chainFromRootId = firstPostEventHandlerUpdate.rootId;
     }
     // }
+    else if (preEventRootId === 1) {
+      // Case 0: don't CHAIN cb from first root
+      //      (TODO: top-level `await` would CHAIN from first root.)
+    }
     else {
-      previousUpdate = util.getPreviousAsyncEventUpdateOfTrace(schedulerTraceId, postEventRootId);
-      if (!previousUpdate) {
-        warn(`getPreviousAsyncEventUpdateOfTrace failed schedulerTraceId=${schedulerTraceId}, rootId=${postEventRootId}`);
+      const preEventUpdates = util.getAsyncPreEventUpdatesOfRoot(preEventRootId);
+      if (preEventUpdates.length === 1) {
+        // Case 2: this is the only pre-event in the pre-event's root -> CHAIN
+        //    (meaning its the only async event scheduled from the same root)
+        chainFromRootId = preEventRootId;
       }
-      else if (preEventRootId === 1) {
-        // Case 0: don't CHAIN cb from first root
-        //      (TODO: top-level `await` would CHAIN from first root.)
-      }
-      else {
-        const preEventUpdates = util.getAsyncPreEventUpdatesOfRoot(preEventRootId);
-        if (preEventUpdates.length === 1) {
-          // Case 2: this is the only pre-event in the pre-event's root -> CHAIN
-          //    (meaning its the only async event scheduled from the same root)
-          callbackChainThreadId = util.getAsyncRootThreadId(previousUpdate.rootId);
-        }
-        if (!callbackChainThreadId) {
-          const thisStaticContextId = util.getContextStaticContext(postEventRootId);
-          const lastStaticContextId = util.getContextStaticContext(previousUpdate.rootId);
+      if (!chainFromRootId) {
+        const thisStaticContextId = util.getContextStaticContext(postEventRootId);
+        const lastStaticContextId = util.getContextStaticContext(preEventRootId);
 
-          if (thisStaticContextId === lastStaticContextId) {
-            // Case 3: recursive or repeating same function
-            callbackChainThreadId = util.getAsyncRootThreadId(previousUpdate.rootId);
-          }
+        if (thisStaticContextId === lastStaticContextId) {
+          // Case 3: recursive or repeating same function
+          chainFromRootId = preEventRootId;
         }
       }
     }
 
-    const preEventThreadId = this.getOrAssignRootThreadId(preEventRootId, schedulerTraceId);
 
-    let fromRootId = preEventRootId;
     const toRootId = postEventRootId;
 
-    let fromThreadId = preEventThreadId;
-    const toThreadId = callbackChainThreadId || 0;
-
     return {
-      fromRootId,
+      chainFromRootId,
       toRootId,
-      fromThreadId,
-      toThreadId,
 
       preEventUpdate,
       isNested,
-      firstPostEventHandlerUpdate,
-      previousUpdate,
-      callbackChainThreadId
+      firstPostEventHandlerUpdate
     };
   },
 

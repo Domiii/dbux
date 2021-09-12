@@ -1,16 +1,21 @@
-/**
- * @file Test for `NestedPromiseCollection`.
- * NOTE: inner-most nested update does not have a Post* event?
- */
+import { A, P } from '../../../util/asyncUtil';
 
-import { A, P, waitTicks } from '../../../util/asyncUtil';
-
-P(
+// P('A', 'B', 'C');
+A(
   'A',
-  [
-    'AA',
-    () => P('AAA'),
-    'AB'
-  ],
+  () => 
+  P(
+    'BA',
+    [
+      [
+        'BAAA',
+        'BAAB'
+      ],
+      'BAB',
+      'BAC'
+    ],
+    'BB',
+    'BC'
+  ),
   'B'
 );

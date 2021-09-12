@@ -70,12 +70,15 @@ export default class RuntimeClient extends SocketClient {
     this.socket.emit('init_ack', this.application.applicationId);
   }
 
-  _handleData = (data, ack) => {
+  _handleData = async (data, ack) => {
     try {
-      runTaskWithProgressBar(async (progress) => {
+      await runTaskWithProgressBar(async (progress) => {
         progress.report({ message: 'Processing incoming runtime data...' });
         this.application.addData(data);
       }, { cancellable: false, title: `Application "${this.application.getPreferredName()}": new data` });
+    }
+    catch (err) {
+      logError(`error while adding data:`, err);
     }
     finally {
       ack('data'); // send ack
