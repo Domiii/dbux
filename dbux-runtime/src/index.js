@@ -74,7 +74,7 @@ function handleShutdown() {
   // NOTE: we want to improve our chances that all data gets sent out before the process closes down.
   //    `process.exit` can disrupt that (kills without allowing us to perform another async handshake + `send`)
   // register `exit` handler that sends out a warning if there is unsent stuff
-  if (__global__.process) {
+  if (__global__.process?.exit) {
     /** ###########################################################################
      * shutdown, process.exit + shutdown delay logic
      * ##########################################################################*/
@@ -92,17 +92,11 @@ function handleShutdown() {
       }
 
       errorTime = Date.now();
-      // if (processExit) {
       console.warn(`[Dbux Runtime] shutdown delayed (${reason})...`);
-      // }
+
       shutdownDelayTimer = setInterval(() => {
-        if (processExit) {
-          console.warn('[Dbux Runtime] exiting now.');
-          processExit.call(process, ...args);
-        }
-        else {
-          // can't do much
-        }
+        console.warn('[Dbux Runtime] exiting now.');
+        processExit.call(process, ...args);
       }, shutdownDelayMs);
     }
 

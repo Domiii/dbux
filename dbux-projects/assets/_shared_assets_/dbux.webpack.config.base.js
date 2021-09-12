@@ -68,7 +68,6 @@ const defaultBabelOptions = {
     // "@babel/plugin-syntax-export-default-from",
     // "@babel/plugin-syntax-dynamic-import",
     // "@babel/plugin-transform-runtime",
-
     '@dbux/babel-plugin'
   ]
 };
@@ -180,7 +179,14 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     plugins.push(
       new webpack.EnvironmentPlugin({
         NODE_ENV: 'development'
-      })
+      }),
+      // /**
+      //  * @see https://stackoverflow.com/questions/65018431/webpack-5-uncaught-referenceerror-process-is-not-defined
+      //  * @see https://webpack.js.org/guides/shimming/
+      //  */
+      // new webpack.ProvidePlugin({
+      //   process: '(globalThis.process || { env: {} })'
+      // })
     );
     
     // see https://stackoverflow.com/questions/40755149/how-to-keep-my-shebang-in-place-using-webpack
