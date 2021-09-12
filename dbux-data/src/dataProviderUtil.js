@@ -2134,7 +2134,7 @@ export default {
         if (!isFirstAwait || u.contextId === u.rootId) {
           return u.rootId;  // already at root (can't go higher up)
         }
-        return dp.util.UP(u.promiseId, rootId, syncPromiseIds) || u.rootId;
+        return dp.util.UP(u.promiseId, rootId, syncPromiseIds) || 0;
       }
     }
     else if ((u = dp.util.getAsyncPreEventUpdateOfPromise(nestedPromiseId, rootId)) && AsyncEventUpdateType.is.PreThen(u.type)) {

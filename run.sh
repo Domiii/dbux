@@ -7,7 +7,7 @@ set -e # cancel on error
 
 # fname="__samplesInput__/tmp"
 # fname="__samplesInput__/async/"
-fname="case-studies/async/chain/chain6"
+fname="case-studies/async/chain/chain1b"
 
 
 

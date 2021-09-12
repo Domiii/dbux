@@ -10,20 +10,20 @@ A(
 );
 
 
-async function f() {
-  // await 'A';
-  await g();
-  await 'C';
-}
+// async function f() {
+//   // await 'A';
+//   await g();
+//   await 'C';
+// }
 
-async function g() {
-  await 'BA';
-  return (() => h())();
-}
+// async function g() {
+//   await 'BA';
+//   return (() => h())();
+// }
 
-async function h() {
-  await 'BBA';
-  await 'BBB';
-}
+// async function h() {
+//   await 'BBA';
+//   await 'BBB';
+// }
 
 // f();
