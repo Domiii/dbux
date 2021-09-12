@@ -269,23 +269,36 @@ export default class AsyncEventUpdateCollection extends Collection {
       preEventUpdate: { rootId: preEventRootId }
     } = postUpdateData;
 
-    let edgeType, fromRootId;
-    const isChain = !!chainFromRootId;
+    let fromRootId;
+    let isChain = !!chainFromRootId;
     if (isChain) {
       // CHAIN
       fromRootId = chainFromRootId;
-      edgeType = AsyncEdgeType.Chain;
     }
     else {
       // FORK
       fromRootId = preEventRootId;
-      edgeType = AsyncEdgeType.Fork;
     }
 
     // const previousFromThreadId = this.getOrAssignRootThreadId(fromRootId);
     // const previousToThreadId = dp.util.getAsyncRootThreadId(toRootId);
     const fromThreadId = this.getOrAssignRootThreadId(fromRootId, schedulerTraceId);
-    const toThreadId = isChain ? fromThreadId : this.newThreadId();
+    const oldToThreadId = dp.util.getAsyncRootThreadId(toRootId);
+    let toThreadId;
+    if (oldToThreadId) {
+      // if (!isChain || oldToThreadId !== fromThreadId) 
+      {
+        this.logger.trace(`Tried to overwrite toThreadId, from=${fromThreadId}, old to=${oldToThreadId}, postUpdateData=${JSON.stringify(postUpdateData)}`);
+      }
+      isChain = oldToThreadId === fromThreadId;
+      toThreadId = oldToThreadId;
+    }
+    else {
+      // toRootId was not assigned to any thread yet
+      toThreadId = isChain ? fromThreadId : this.newThreadId();
+      dp.collections.asyncNodes.setNodeThreadId(toRootId, toThreadId, schedulerTraceId);
+    }
+
     // let toThreadId = toRootId && this.getOrAssignRootThreadId(toRootId, schedulerTraceId) || 0;
 
     // this.logger.debug(`addEventEdge`, fromRootId, dp.util.getChainFrom(fromRootId));
@@ -294,10 +307,8 @@ export default class AsyncEventUpdateCollection extends Collection {
       this.logger.warn(`addEventEdge with fromRootId (${fromRootId}) >= toRootId (${toRootId})`);
     }
 
-    // toRootId was not assigned to any thread yet
-    dp.collections.asyncNodes.setNodeThreadId(toRootId, toThreadId, schedulerTraceId);
-
     // add edge
+    const edgeType = isChain ? AsyncEdgeType.Chain : AsyncEdgeType.Fork;
     const newEdge = this.addEdge(fromRootId, toRootId, edgeType);
     if (!newEdge) {
       return null;

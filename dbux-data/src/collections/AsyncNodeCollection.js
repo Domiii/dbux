@@ -53,7 +53,7 @@ export default class AsyncNodeCollection extends Collection {
     this._makeUnassignedNodes(entries, maxRootId/* , minRootId */);
 
     if (entries.length) {
-      this.logger.debug(`addUnassignedNodes (${entries.length}):`, 
+      this.logger.debug(`addUnassignedNodes (${entries.length}):`,
         entries.map(asyncNode => asyncNode.rootContextId).join(','));
     }
 
@@ -67,13 +67,14 @@ export default class AsyncNodeCollection extends Collection {
     const newNode = this._makeEntry(entries, rootId, threadId, schedulerTraceId);
     entries.push(newNode);
 
+    this._onNewThreadId(newNode);
+
     this.addEntriesPostAdd(entries);
 
     return newNode;
   }
 
   setNodeThreadId(rootId, threadId, schedulerTraceId) {
-    // [edit-after-send]
     const node = this.dp.util.getAsyncNode(rootId);
     if (!node) {
       return this.addAsyncNode(rootId, threadId, schedulerTraceId);
@@ -83,13 +84,20 @@ export default class AsyncNodeCollection extends Collection {
     this.logger.trace(`[setNodeThreadId] node was assigned threadId more than once - old=${node.threadId}, ` +
       `new=${threadId}, trace=${this.dp.util.makeTraceInfo(schedulerTraceId)}, node=`, node);
     if (node.threadId === UnassignedThreadId) {
+      // [edit-after-send]
+      const old = node.threadId;
       node.threadId = threadId;
+      this._onNewThreadId(node, old);
     }
-    
+
     // this.notifyChanged([node]);
 
     // else {
     // }
     return node;
+  }
+
+  _onNewThreadId(node, old) {
+    // this.logger.trace(`new thread id: old=${old}, new=${JSON.stringify(node)}, trace=${this.dp.util.makeTraceInfo(node.schedulerTraceId)}`);
   }
 }

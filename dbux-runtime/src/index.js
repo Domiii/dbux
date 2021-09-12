@@ -49,6 +49,9 @@ function handleShutdown() {
     console.error('[dbux-runtime] Process exiting but not all data has been sent out. Analysis will be incomplete. ' +
       'This is probably because of a crash or `process.exit` was called manually.');
   }
+  // else {
+  //   console.trace('[Dbux Runtime] shutdown detected...');
+  // }
   // console.log('playbackLogRecords');
   // playbackLogRecords();
 }
@@ -84,11 +87,15 @@ function handleShutdown() {
 
     // eslint-disable-next-line no-inner-declarations
     function delayShutdown(reason, ...args) {
-      errorTime = Date.now();
-      if (processExit) {
-        console.warn(`[Dbux Runtime] shutdown delayed (${reason})...`);
+      if (shutdownDelayTimer) {
+        return;
       }
-      shutdownDelayTimer = setTimeout(() => {
+
+      errorTime = Date.now();
+      // if (processExit) {
+      console.warn(`[Dbux Runtime] shutdown delayed (${reason})...`);
+      // }
+      shutdownDelayTimer = setInterval(() => {
         if (processExit) {
           console.warn('[Dbux Runtime] exiting now.');
           processExit.call(process, ...args);

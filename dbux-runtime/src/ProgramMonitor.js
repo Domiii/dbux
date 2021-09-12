@@ -141,7 +141,8 @@ export default class ProgramMonitor {
       return value;
     }
 
-    return this._runtimeMonitor.traceReturnAsync(this.getProgramId(), value, tid, inputs);
+    this._runtimeMonitor.traceReturnAsync(this.getProgramId(), value, tid, inputs);
+    return value;
   }
 
   traceThrow = (value, tid, inputs) => {

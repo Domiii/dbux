@@ -101,8 +101,8 @@ export function patchPromise(promise) {
 
 let activeThenCbCount = 0;
 function patchThenCallback(cb, thenRef) {
-  if (!isFunction(cb)) {
-    // not a cb
+  if (!isInstrumentedFunction(cb)) {
+    // not an instrumented function
     return cb;
   }
   if (!valueCollection.getRefByValue(cb)) {
@@ -129,6 +129,8 @@ function patchThenCallback(cb, thenRef) {
       }
       finally {
         const cbContext = getLastContextCheckCallee(originalCb);
+        // TODO: cbContext exists, even if `originalCb` was not instrumented for some reason?! (need to remove `!isInstrumentedFunction(cb)` check to test)
+
         if (isThenable(returnValue)) {
           // Promise#resolve(Promise) was called: nested promise
 

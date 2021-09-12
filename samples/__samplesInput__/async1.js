@@ -11,11 +11,10 @@ function g(input) {
 async function a(x) {
   const y = await g(x);
   const z = await g(y);
-  console.log(z);
+  console.log(x, y, z);
 }
 a(1);
-console.log('a2');
-a(2);
+// a(2);
 
 // function p(x) {
 //   return g(x).

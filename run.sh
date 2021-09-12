@@ -5,8 +5,9 @@
 set -e # cancel on error
 # set -x # verbose echo mode
 
-# fname="__samplesInput__/error-async4-catch"
-fname="case-studies/async/chain/chain0-p"
+# fname="__samplesInput__/tmp"
+# fname="__samplesInput__/async/"
+fname="case-studies/async/chain/chain6"
 
 
 
