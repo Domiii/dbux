@@ -116,7 +116,7 @@ export default class ExecutionContextCollection extends Collection {
   setCallExpressionResultInputs(contexts) {
     const { dp, dp: { util } } = this;
     for (const { contextId } of contexts) {
-      const returnTrace = util.getReturnValueTraceOfContext(contextId);
+      const returnTrace = util.getReturnTraceOfContext(contextId);
       if (!returnTrace) {
         // function has no return value -> nothing to do
         continue;

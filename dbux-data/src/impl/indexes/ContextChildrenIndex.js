@@ -17,6 +17,7 @@ export default class ContextChildrenIndex extends CollectionIndex {
    * @param {ExecutionContext} context
    */
   makeKey(dp, context) {
+    // this.logger.debug(`context`, context.contextId, context.parentContextId);
     return context.parentContextId || 0;
   }
 }

@@ -958,7 +958,7 @@ export default {
    * @param {DataProvider} dp
    */
   getReturnValueRefOfInterruptableContext(dp, realContextId) {
-    const returnTrace = dp.util.getReturnValueTraceOfInterruptableContext(realContextId);
+    const returnTrace = dp.util.getReturnTraceOfInterruptableContext(realContextId);
     return returnTrace && dp.util.getTraceValueRef(returnTrace.traceId);
   },
 
@@ -966,8 +966,21 @@ export default {
    * @param {DataProvider} dp
    */
   getReturnValueRefOfContext(dp, contextId) {
-    const returnTrace = dp.util.getReturnValueTraceOfContext(contextId);
+    const returnTrace = dp.util.getReturnTraceOfContext(contextId);
     return returnTrace && dp.util.getTraceValueRef(returnTrace.traceId);
+  },
+
+  /**
+   * @param {DataProvider} dp
+   */
+  getReturnTraceOfRealContext(dp, contextId) {
+    if (dp.util.isContextVirtual(contextId)) {
+      const realContextId = dp.util.getRealContextIdOfContext(contextId);
+      return realContextId && dp.util.getReturnTraceOfInterruptableContext(realContextId);
+    }
+    else {
+      return dp.util.getReturnTraceOfContext(contextId);
+    }
   },
 
   /**
@@ -975,18 +988,28 @@ export default {
    * WARNING: does not work for non-interruptable functions.
    * @param {DataProvider} dp
    */
-  getReturnValueTraceOfInterruptableContext(dp, realContextId) {
-    const resumeContext = dp.util.getLastChildContextOfContext(realContextId);
-    return resumeContext &&
-      dp.util.getReturnValueTraceOfContext(resumeContext.contextId);
+  getReturnTraceOfInterruptableContext(dp, realContextId) {
+    const contexts = dp.indexes.executionContexts.children.get(realContextId);
+    if (contexts) {
+      for (let i = contexts.length - 1; i >= 0; --i) {
+        const returnTrace = dp.util.getReturnTraceOfContext(contexts[i].contextId);
+        if (returnTrace) {
+          return returnTrace;
+        }
+      }
+    }
+    return null;
   },
 
   /**
    * WARNING: does not work for `realContextId` of interruptable functions (need virtual `Resume` contextId instead).
    * @param {DataProvider} dp
    */
-  getReturnValueTraceOfContext(dp, contextId) {
-    const returnTraces = dp.util.getTracesOfContextAndType(contextId, TraceType.ReturnArgument);
+  getReturnTraceOfContext(dp, contextId) {
+    let returnTraces = dp.util.getTracesOfContextAndType(contextId, TraceType.ReturnArgument);
+    if (!returnTraces.length) {
+      returnTraces = dp.util.getTracesOfContextAndType(contextId, TraceType.ReturnNoArgument);
+    }
 
     if (returnTraces.length > 1) {
       // eslint-disable-next-line max-len
@@ -1420,8 +1443,19 @@ export default {
   // ###########################################################################
 
   /**
+   * @param {DataProvider} dp
+   */
+  isContextVirtual(dp, contextId) {
+    const staticContext = dp.util.getContextStaticContext(contextId);
+    const {
+      type: staticContextType
+    } = staticContext;
+    return isVirtualContextType(staticContextType);
+  },
+
+  /**
    * @param {DataProvider} dp 
-  */
+   */
   getAllTracesOfStaticContext(dp, staticContextId) {
     const staticContext = dp.collections.staticContexts.getById(staticContextId);
     if (!staticContext) {
@@ -1964,7 +1998,7 @@ export default {
   //   }
 
   //   // first: get returned `promiseId`
-  //   const returnTrace = dp.util.getReturnValueTraceOfInterruptableContext(realContextId);
+  //   const returnTrace = dp.util.getReturnTraceOfInterruptableContext(realContextId);
   //   const returnedDataNode = returnTrace && dp.util.getFirstInputDataNodeOfTrace(returnTrace.traceId);
   //   let promiseId = returnedDataNode?.refId && dp.util.getPromiseIdOfValueRef(returnedDataNode.refId);
 
@@ -2030,7 +2064,7 @@ export default {
       //   const parentCallId = parentCallResultTrace && dp.util.getCallIdOfTrace(parentCallResultTrace.traceId);
       //   const parentContext = parentCallId && dp.util.getRealCalledContext(parentCallId);
       //   const parentRealContextId = parentContext?.contextId;
-      //   const parentReturnTrace = parentRealContextId && dp.util.getReturnValueTraceOfInterruptableContext(parentRealContextId);
+      //   const parentReturnTrace = parentRealContextId && dp.util.getReturnTraceOfInterruptableContext(parentRealContextId);
       //   const parentReturnCallId = parentReturnTrace && dp.util.getCallIdOfTrace(parentReturnTrace.traceId);
       //   const context = parentReturnCallId && dp.util.getRealCalledContext(parentReturnCallId);
       //   if (context?.contextId && context.contextId === dp.util.getRealContextIdOfContext(contextId)) {
