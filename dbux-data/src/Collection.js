@@ -27,7 +27,9 @@ export default class Collection {
   name;
 
   /**
-   * @type {DataProviderBase & RuntimeDataProvider}
+   * hackfix: hardcode (not always correct) DataProvider type
+   * @type {RuntimeDataProvider}
+   * @ttype DataProviderBase & RuntimeDataProvider
    */
   dp;
 

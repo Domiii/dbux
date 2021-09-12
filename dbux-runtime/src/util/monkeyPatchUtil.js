@@ -89,17 +89,17 @@ export function getOriginalCallback(patchedFunction) {
   return originalCallbacksByPatched.get(patchedFunction);
 }
 
-export function getPatchedCallbackOrNull(originalFunction) {
-  let patchedFunction;
-  if (isMonkeyPatchedFunction(originalFunction)) {
-    // NOTE: this is actually a patched (not original) function
-    patchedFunction = originalFunction;
-  }
-  else {
-    patchedFunction = patchedFunctionsByOriginalFunction.get(originalFunction);
-  }
-  return patchedFunction;
-}
+// export function getPatchedCallbackOrNull(originalFunction) {
+//   let patchedFunction;
+//   if (isMonkeyPatchedCallback(originalFunction)) {
+//     // NOTE: this is actually a patched (not original) function
+//     patchedFunction = originalFunction;
+//   }
+//   else {
+//     patchedFunction = patchedCallbacksByOriginal.get(originalFunction);
+//   }
+//   return patchedFunction;
+// }
 
 
 /** ###########################################################################
@@ -123,9 +123,9 @@ function tryRegisterMonkeyPatchedFunction(holder, name, patchedFunction) {
   if (!(originalFunction instanceof Function)) {
     throw new Error(`Monkey-patching failed - ${holder}.${name} is not a function: ${originalFunction}`);
   }
-  if (isMonkeyPatchedFunction(originalFunction)) {
+  if (isMonkeyPatchedFunction(originalFunction) || isMonkeyPatchedCallback(originalFunction)) {
     // don't patch already patched function
-    logError(`Monkey-patching failed - ${holder}.${name} is already patched.`);
+    logError(`Monkey-patching failed - ${holder}.${name} is already patched:`, originalFunction);
     return;
   }
   // holder[name] = patchedFunction;  // NOTE: we do not override the actual function
@@ -190,6 +190,7 @@ export function monkeyPatchMethod(Clazz, methodName, handler) {
 export function monkeyPatchFunctionHolder(holder, name, handler) {
   const originalFunction = holder[name];
   tryRegisterMonkeyPatchedFunction(holder, name, function patchedFunction(...args) {
+    // console.debug(`patchedFunction called:`, name, originalFunction);
     return handler(this, args, originalFunction, patchedFunction);
   });
 }

@@ -3,10 +3,10 @@ import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import ResolveType from '@dbux/common/src/types/constants/ResolveType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import isThenable from '@dbux/common/src/util/isThenable';
-import isFunction from 'lodash/isString';
-import asyncEventUpdateCollection from '../data/asyncEventUpdateCollection';
+import isFunction from 'lodash/isFunction';
+import traceCollection from '../data/traceCollection';
 import dataNodeCollection from '../data/dataNodeCollection';
-import { peekBCEMatchCallee, getLastContextCheckCallee } from '../data/dataUtil';
+import { peekBCEMatchCallee, getLastContextCheckCallee, isInstrumentedFunction } from '../data/dataUtil';
 import PromiseRuntimeData from '../data/PromiseRuntimeData';
 // import traceCollection from '../data/traceCollection';
 import valueCollection from '../data/valueCollection';
@@ -73,11 +73,6 @@ export function maybePatchPromise(promise) {
   if (PromiseInstrumentationDisabled) {
     return;
   }
-  // console.trace(`maybePatchPromise`, getPromiseId(promise));
-  if (hasRecordedPromiseData(promise)) {
-    return;
-  }
-  recordUnseenPromise(promise);
 
   if (isMonkeyPatchedFunction(promise.then)) {
     return;
@@ -106,8 +101,8 @@ export function patchPromise(promise) {
 
 let activeThenCbCount = 0;
 function patchThenCallback(cb, thenRef) {
-  if (!isFunction(cb)) {
-    // not a cb
+  if (!isInstrumentedFunction(cb)) {
+    // not an instrumented function
     return cb;
   }
   if (!valueCollection.getRefByValue(cb)) {
@@ -118,7 +113,7 @@ function patchThenCallback(cb, thenRef) {
   const originalCb = cb;
   return function patchedCb(previousResult) {
     if (activeThenCbCount) {
-      // NOTE: then callbacks should not observe nested calls
+      // NOTE: then callbacks should never be nested (might hint at a Dbux bug)
       warn(`a "then" callback was called before a previous "then" callback has finished, schedulerTraceId=${thenRef.schedulerTraceId}`);
     }
 
@@ -134,20 +129,38 @@ function patchThenCallback(cb, thenRef) {
       }
       finally {
         const cbContext = getLastContextCheckCallee(originalCb);
+        // TODO: cbContext exists, even if `originalCb` was not instrumented for some reason?! (need to remove `!isInstrumentedFunction(cb)` check to test)
+
         if (isThenable(returnValue)) {
-          // NOTE: we must make sure, that we have the promise's `ValueRef`.
-          //  We might not have seen this promise for several reasons:
-          //  1. Then callback is an async function.
-          //  2. (other reasons?)
-          // maybePatchPromise(returnValue);
-          dataNodeCollection.createDataNode(returnValue, thenRef.schedulerTraceId, DataNodeType.Read, null);
+          // Promise#resolve(Promise) was called: nested promise
+
+          if (!getPromiseId(returnValue)) {
+            /**
+             * [hackfix-datanode]
+             * hackfix: we must make sure, that we have the promise's `ValueRef`.
+             * We might not have seen this promise for several reasons:
+             *  1. Then callback is an async function.
+             *  2. (other reasons?)
+             * WARNING: this might cause some trouble down the line, since:
+             *  1. either this DataNode is not in a meaningful place (lastTraceOfContext).
+             *  2. or it is entirely out of order (schedulerTraceId)
+             */
+            const lastTrace = traceCollection.getLast();
+            let dataNodeTraceId;
+            if (lastTrace && lastTrace.contextId === cbContext?.contextId) {
+              dataNodeTraceId = lastTrace.traceId;
+            }
+            else {
+              dataNodeTraceId = thenRef.schedulerTraceId;
+            }
+            dataNodeCollection.createDataNode(returnValue, dataNodeTraceId, DataNodeType.Write, null);
+
+            maybePatchPromise(returnValue);
+          }
 
           // console.trace('thenCb', cbContext?.contextId, getPromiseId(returnValue));
           // set async function's returnValue promise (used to set AsyncEventUpdate.promiseId)
           cbContext && RuntimeMonitorInstance._runtime.async.setAsyncContextPromise(cbContext.contextId, returnValue);
-
-          // set nestingPromiseId
-          setNestingPromise(returnValue, thenRef.postEventPromise);
         }
         // thenExecuted(thenRef, previousResult, returnValue);
 
@@ -168,28 +181,34 @@ function patchThenCallback(cb, thenRef) {
  * @param {*} originalThen 
  * @returns 
  */
-function _makeThenRef(promise, cb) {
-  const ref = valueCollection.getRefByValue(promise);
-  if (!ref) {
-    // not traced!
-    return null;
-  }
-
-  return _makeThenRefUnchecked(promise, cb);
-}
-
-function _makeThenRefUnchecked(promise, cb) {
-  const bceTrace = peekBCEMatchCallee(cb);
+function _makeThenRef(promise, patchedFunction) {
+  let ref = valueCollection.getRefByValue(promise);
+  const bceTrace = peekBCEMatchCallee(patchedFunction);
   const schedulerTraceId = bceTrace?.traceId;
 
+  if (!ref) {
+    // not traced!
+    if (!schedulerTraceId) {
+      // don't know what to do
+      return null;
+    }
+
+    // hackfix: attach promise DataNode to schedulerTrace
+    const dataNode = dataNodeCollection.createBCEOwnDataNode(promise, schedulerTraceId, DataNodeType.Write);
+    ref = valueCollection.getById(dataNode.refId);
+    maybePatchPromise(promise);
+  }
+  
+
+
   if (promise instanceof NativePromiseClass && !schedulerTraceId) {
-    // NOTE: when `then`ing async functions, patched `then` will be called internally
-    //    -> called on an unpatched promise instance
+    // NOTE: when `then`ing on async function return value, patched `then` will be called internally
+    //    -> `then` called on an unpatched promise instance
     //    -> seemingly happens right after the async function is called (possibly in a new run)
+    //    -> this will never be true for Promise ctor call
     return null;
   }
   if (!schedulerTraceId) {
-    const ref = valueCollection.getRefByValue(promise);
     // eslint-disable-next-line no-console
     console.trace(`schedulerTraceId not found in PreThen for promise, ref=`, ref);
   }
@@ -204,7 +223,6 @@ function patchThen(holder) {
     (preEventPromise, [successCb, failCb], originalThen, patchedThen) => {
       const thenRef = _makeThenRef(preEventPromise, patchedThen);
       if (thenRef) { // NOTE: !!thenRef implies that this is instrumented
-        maybePatchPromise(preEventPromise);
         successCb = patchThenCallback(successCb, thenRef);
         failCb = patchThenCallback(failCb, thenRef);
       }
@@ -222,15 +240,13 @@ function patchFinally(holder) {
   }
 
   monkeyPatchFunctionHolder(holder, 'finally',
-    (preEventPromise, [cb], originalFinally) => {
-      const thenRef = _makeThenRef(preEventPromise, originalFinally);
+    (preEventPromise, [cb], originalFinally, patchedFinally) => {
+      const thenRef = _makeThenRef(preEventPromise, patchedFinally);
       if (thenRef) {
-        maybePatchPromise(preEventPromise);
         cb = patchThenCallback(cb, thenRef);
       }
 
       const postEventPromise = originalFinally.call(preEventPromise, cb);
-
       _onThen(thenRef, preEventPromise, postEventPromise);
       return postEventPromise;
     }
@@ -242,8 +258,9 @@ function _onThen(thenRef, preEventPromise, postEventPromise) {
     return;
   }
 
+  dataNodeCollection.createBCEOwnDataNode(postEventPromise, thenRef.schedulerTraceId, DataNodeType.Write);
+
   maybePatchPromise(postEventPromise);
-  setPreThenPromise(postEventPromise, preEventPromise);
   thenRef.postEventPromise = postEventPromise;
 
   // Event: PreThen
@@ -273,7 +290,7 @@ const promiseCtorStack = [];
 
 function patchPromiseMethods(holder) {
   // NOTE: we do this to tag promise prototypes -> so we don't accidentally re-register those
-  getOrCreatePromiseDbuxData(holder);
+  // getOrCreatePromiseDbuxData(holder);
 
   patchThen(holder);
   patchCatch(holder);
@@ -283,8 +300,9 @@ function patchPromiseMethods(holder) {
 function patchPromiseClass(BasePromiseClass) {
   class PatchedPromise extends BasePromiseClass {
     constructor(executor) {
-      const bceTrace = peekBCEMatchCallee(PatchedPromise);
-      const isCallbackInstrumented = !!bceTrace && typeof executor === 'function'; // check if its a function, too
+      // const bceTrace = peekBCEMatchCallee(PatchedPromise);
+      // const isCallbackInstrumented = !!bceTrace && typeof executor === 'function'; // check if its a function, too
+      const isCallbackInstrumented = isInstrumentedFunction(executor);
       let wrapExecutor;
       /**
        * NOTE: In case, `resolve` or `reject` is called synchronously from the ctor, `this` cannot be accessed because `super` has not finished yet.
@@ -308,7 +326,9 @@ function patchPromiseClass(BasePromiseClass) {
               // TODO: track `result` data flow
               const thenRef = _makeThenRef(this, wrapResolve);
               if (thenRef) {
-                RuntimeMonitorInstance._runtime.async.resolve(thenRef, resolveArg, ResolveType.Resolve);
+                RuntimeMonitorInstance._runtime.async.resolve(
+                  resolveArg, this, ResolveType.Resolve, thenRef.schedulerTraceId
+                );
               }
               resolve(resolveArg);
             }
@@ -322,7 +342,9 @@ function patchPromiseClass(BasePromiseClass) {
               // TODO: track `err` data flow
               const thenRef = _makeThenRef(this, wrapReject);
               if (thenRef) {
-                RuntimeMonitorInstance._runtime.async.resolve(thenRef, err, ResolveType.Reject);
+                RuntimeMonitorInstance._runtime.async.resolve(
+                  err, this, ResolveType.Reject, thenRef.schedulerTraceId
+                );
               }
               reject(err);
             }
@@ -332,25 +354,23 @@ function patchPromiseClass(BasePromiseClass) {
         };
       }
 
+      // const lastUpdateId = asyncEventUpdateCollection.getLastId();
+
       // call actual ctor
-      const lastUpdateId = asyncEventUpdateCollection.getLastId();
-      // try 
       super(wrapExecutor);
 
       // finally // NOTE: if an exception was thrown during `super`, `this` must not be accessed.
       superCalled = true;
 
-      if (isCallbackInstrumented) {
-        maybePatchPromise(this);
+      if (deferredCall) {
+        // deferred until after `super` was called
+        deferredCall();
       }
 
-      // deferred until after `super` was called
-      deferredCall?.();
-
-      if (isCallbackInstrumented) {
-        const promiseId = getPromiseId(this);
-        RuntimeMonitorInstance._runtime.async.promiseCtorCalled(promiseId, lastUpdateId);
-      }
+      // if (isCallbackInstrumented) {
+      //   const promiseId = getPromiseId(this);
+      //   RuntimeMonitorInstance._runtime.async.promiseCtorCalled(promiseId, lastUpdateId);
+      // }
     }
 
     // toJSON() {
@@ -375,6 +395,12 @@ function patchPromiseClass(BasePromiseClass) {
 // promise data
 // ###########################################################################
 
+
+export function getPromiseId(promise) {
+  return valueCollection.getRefByValue(promise)?.refId;
+  // return promise._dbux_?.id;
+}
+
 let lastPromiseId = 0;
 
 function newPromiseId() {
@@ -389,21 +415,6 @@ function recordUnseenPromise(promise) {
   });
 }
 
-function setPreThenPromise(promise, preThenPromise) {
-  setPromiseData(promise, {
-    preThenPromise
-  });
-}
-
-function setNestingPromise(promise, nestedBy) {
-  const promiseData = getOrCreatePromiseDbuxData(promise);
-  if (!promiseData.firstNestedBy) {
-    Object.assign(promiseData, {
-      firstNestedBy: nestedBy
-    });
-  }
-}
-
 /**
  * @param {*} promise 
  * @param {PromiseRuntimeData} data
@@ -413,8 +424,14 @@ export function setPromiseData(promise, data) {
   Object.assign(promiseData, data);
 }
 
+/**
+ * @deprecated
+ */
 const promiseDataMap = new WeakMap();
 
+/**
+ * @deprecated
+ */
 function getOrCreatePromiseDbuxData(promise) {
   let promiseData = promiseDataMap.get(promise);
   if (!promiseData) {
@@ -423,20 +440,19 @@ function getOrCreatePromiseDbuxData(promise) {
   return promiseData;
 }
 
+/**
+ * @deprecated
+ */
 export function hasRecordedPromiseData(promise) {
   return !!promiseDataMap.get(promise);
 }
 
 /**
+ * @deprecated
  * @returns {PromiseRuntimeData}
  */
 export function getPromiseData(promise) {
   return promiseDataMap.get(promise) || EmptyObject;
-}
-
-export function getPromiseId(promise) {
-  return valueCollection.getRefByValue(promise)?.refId;
-  // return promise._dbux_?.id;
 }
 
 export function getPromiseOwnAsyncFunctionContextId(promise) {
@@ -465,3 +481,37 @@ export function getPromiseOwnAsyncFunctionContextId(promise) {
 //   }
 //   pendingRootIds.push(pendingRootId);
 // }
+
+/** ###########################################################################
+ * built-ins
+ * ##########################################################################*/
+
+monkeyPatchFunctionHolder(Promise, 'resolve',
+  (thisArg, args, originalFunction, patchedFunction) => {
+    const value = args[0];
+    const result = originalFunction.apply(thisArg, args);
+
+    if (value !== result && isThenable(value) && getPromiseId(value)) {
+      const thenRef = _makeThenRef(result, patchedFunction);
+
+      RuntimeMonitorInstance._runtime.async.resolve(value, result, ResolveType.Resolve, thenRef?.schedulerTraceId);
+    }
+
+    return result;
+  }
+);
+
+monkeyPatchFunctionHolder(Promise, 'reject',
+  (thisArg, args, originalFunction, patchedFunction) => {
+    const value = args[0];
+    const result = originalFunction.apply(thisArg, args);
+
+    if (value !== result && isThenable(value) && getPromiseId(value)) {
+      const thenRef = _makeThenRef(result, patchedFunction);
+
+      RuntimeMonitorInstance._runtime.async.resolve(value, result, ResolveType.Reject, thenRef?.schedulerTraceId);
+    }
+
+    return result;
+  }
+);

@@ -1,5 +1,5 @@
 export function R(x) {
-  return Promise.resolve(x).then(() => x);
+  return Promise.resolve(x);
 }
 
 
@@ -11,16 +11,44 @@ function nest(x, F) {
   return x instanceof Function ?
     x :
     () => {
-      x && console.log('[]', x);
-      return x;
+      // x && console.log('[]', x);
+      return unwrapValue(x);
     };
 }
+
+function unwrapValue(val) {
+  if (val instanceof Function) {
+    val = val();
+  }
+  return val;
+}
+
+function unwrapBoundValue(val, x) {
+  if (x instanceof Function) {
+    return () => {
+      const xVal = unwrapValue(x);
+      if (xVal instanceof Promise) {
+        return xVal;
+      }
+      return `${val} ${xVal}`;
+    };
+  }
+  return `${val} ${unwrapValue(x)}`;
+}
+
 
 /**
  * Promise chain
  */
 export function P(previousPromise, ...xs/* , n */) {
-  let p = previousPromise instanceof Promise ? previousPromise : R(previousPromise);
+  let p;
+  if (previousPromise instanceof Promise) {
+    p = R(previousPromise);
+  }
+  else {
+    p = R().then(nest(previousPromise, P));
+    // p = R(nest(previousPromise, P)());
+  }
   for (let x of xs) {
     // nested = (previousResult) => P(nested(previousResult), xs.slice(1));
     p = p.then(nest(x, P));
@@ -28,10 +56,10 @@ export function P(previousPromise, ...xs/* , n */) {
   return p;
 }
 
-export function Pbind(val, previousPromise, ...xs) {
-  previousPromise = previousPromise instanceof Promise ? previousPromise : R(`${val} ${previousPromise}`);
-  xs = xs.map(x => `${val} ${x}`);
-  return P(previousPromise, ...xs);
+export function Pbind(val, ...xs) {
+  val = unwrapValue(val);
+  xs = xs.map(x => unwrapBoundValue(val, x));
+  return P(...xs);
 }
 
 export async function waitTicks(n) {
@@ -49,8 +77,9 @@ export function A(...xs) {
 }
 
 export function Abind(val, ...xs) {
-  xs = xs.map(x => `${val} ${x}`);
-  return A(xs);
+  val = unwrapValue(val);
+  xs = xs.map(x => unwrapBoundValue(val, x));
+  return A(...xs);
 }
 
 export function Ar(...xs) {
@@ -58,6 +87,6 @@ export function Ar(...xs) {
     for (const x of xs.slice(0, -1)) {
       await nest(x, A)();
     }
-    return xs[xs.length - 1];
+    return unwrapValue(xs[xs.length - 1]);
   })();
 }

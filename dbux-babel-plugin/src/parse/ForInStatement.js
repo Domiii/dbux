@@ -13,5 +13,7 @@ export default class ForInStatement extends BaseNode {
 
   exit() {
     // TODO: insert trace in `body` to track write to `left` variable(s); similar to `Params`
+    const [, rightNode] = this.getChildNodes();
+    rightNode.addDefaultTrace();
   }
 }

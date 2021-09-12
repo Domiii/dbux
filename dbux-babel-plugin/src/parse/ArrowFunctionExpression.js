@@ -8,46 +8,51 @@ export default class ArrowFunctionExpression extends BaseNode {
     'StaticContext'
   ];
 
+  get dontInstrumentContextEnd() {
+    // -> does not have a block if it has a custom created return statement
+    return !!this.data.returnTraceCfg;
+  }
+
   exit() {
     const { path } = this;
     const [, bodyPath] = this.getChildPaths();
 
+    const func = this.getPlugin('Function');
     if (!bodyPath.isBlockStatement()) {
       // body is lambda expression -> wrap body with "return trace"
-      // NOTE: this is executed before `Function.exit`
-      this.data.returnTraceCfg = this.Traces.addReturnTrace(null, bodyPath, bodyPath);
+      this.data.returnTraceCfg = this.Traces.addReturnTrace(func, null, bodyPath, bodyPath);
     }
 
-    const Function = this.getPlugin('Function');
     const traceData = {
       node: this,
       path,
       scope: path.parentPath.scope, // prevent adding `tid` variable to own body
-      staticTraceData: Function.createStaticTraceData()
+      staticTraceData: func.createStaticTraceData()
     };
 
     const traceCfg = this.Traces.addTrace(traceData);
-    Function.setFunctionTraceCfg(traceCfg);
+    func.setFunctionTraceCfg(traceCfg);
   }
 
-  instrument() {
+  instrument1() {
     const {
-      plugins: {
-        Function: {
-          data: {
-            returnTraceCfg
-          }
-        }
+      data: {
+        returnTraceCfg
       }
     } = this;
 
     if (returnTraceCfg) {
       const [, bodyPath] = this.getChildPaths();
-      let bodyNode = bodyPath.node;
-      
+      // let bodyNode = bodyPath.node;
+
       // NOTE: This enables us to add `try/finally`
       // NOTE2: `return` implies `ContextEnd`.
-      bodyPath.replaceWith(t.blockStatement([t.returnStatement(bodyNode)]));
+
+      // bodyPath.replaceWith(  // <- this (for some reason) injects an iife
+      //   t.blockStatement([t.returnStatement(bodyNode)])
+      // );
+
+      this.path.ensureBlock();
     }
   }
 }

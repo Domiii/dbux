@@ -77,7 +77,8 @@ export default function patchArray() {
       const arrNodeId = getNodeIdFromRef(ref);
 
       // let BCE hold DataNode of newArray
-      const newArrayNode = dataNodeCollection.createOwnDataNode(newArray, callId, DataNodeType.Write);
+      // DataNodeType.Create
+      const newArrayNode = dataNodeCollection.createBCEOwnDataNode(newArray, callId, DataNodeType.Write);
 
       start = !Number.isNaN(start) ? wrapIndex(start, arr) : 0;
       end = !Number.isNaN(end) ? wrapIndex(end, arr) : arr.length - 1;

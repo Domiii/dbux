@@ -35,6 +35,12 @@ export function pathRelative(from, to) {
 
 
 /**
+ * It appears, VSCode is now not normalizing or normalizing to lower-case drive letter (e.g. in Uri.fspath!!!):
+ * @see https://code.visualstudio.com/api/references/vscode-api#Uri 
+ * @see https://github.com/microsoft/vscode/issues/45760#issuecomment-373417966
+ * @see https://github.com/microsoft/vscode/blob/94c9ea46838a9a619aeafb7e8afd1170c967bb55/test/unit/coverage.js#L81
+ * 
+ * Before that (in 2016), they decided for upper-case drive letters:
  * @see https://github.com/microsoft/vscode/issues/9448
  * @see https://github.com/microsoft/vscode/commit/a6c845baf7fed4a186e3b744c5c14c0be53494fe
  */

@@ -27,16 +27,6 @@ export function isPostEventUpdate(type) {
   return postEventUpdateTypes[type];
 }
 
-const postOrResolveEventUpdateTypes = [...postEventUpdateTypes];
-postOrResolveEventUpdateTypes[AsyncEventUpdateType.Resolve] = true;
-
-/**
- * POST or `Resolve`
- */
-export function isPostOrResolveEventUpdate(type) {
-  return postOrResolveEventUpdateTypes[type];
-}
-
 const preEventUpdateTypes = new Array(AsyncEventUpdateType.getValueMaxIndex()).map(() => false);
 preEventUpdateTypes[AsyncEventUpdateType.PreAwait] = true;
 preEventUpdateTypes[AsyncEventUpdateType.PreThen] = true;

@@ -1,3 +1,6 @@
+/**
+ * @deprecated
+ */
 export default class PromiseRuntimeData {
   /**
    * Unique identifier.

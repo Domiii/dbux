@@ -117,11 +117,11 @@ class GroupByRootNode extends BaseGroupNode {
   }
 }
 
-class GroupByContextNode extends BaseGroupNode {
-  static labelSuffix = 'by Context';
+class GroupByRealContextNode extends BaseGroupNode {
+  static labelSuffix = 'by Real Context';
 
   static makeKey(application, trace) {
-    return trace.contextId;
+    return application.dataProvider.util.getRealContextIdOfContext(trace.contextId);
   }
 
   static makeLabel(application, contextId) {
@@ -165,7 +165,8 @@ class GroupByParentContextNode extends BaseGroupNode {
   static labelSuffix = 'by Parent Context';
 
   static makeKey(application, trace) {
-    const { contextId } = trace;
+    let { contextId } = trace;
+    contextId = application.dataProvider.util.getRealContextIdOfContext(trace.contextId);
     return application.dataProvider.collections.executionContexts.getById(contextId)?.parentContextId || 0;
   }
 
@@ -216,10 +217,10 @@ class GroupByCallbackNode extends BaseGroupNode {
 let GroupingMode = {
   Ungrouped: 1,
   ByRootContextId: 2,
-  ByContextId: 3,
+  ByRealContextId: 3,
   ByCallerTraceId: 4,
-  ByParentContextId: 5,
-  ByCallback: 6
+  ByParentContextId: 5
+  // ByCallback: 6
 };
 GroupingMode = new Enum(GroupingMode);
 
@@ -229,17 +230,17 @@ let groupingMode = GroupingMode.Ungrouped;
 const GroupNodeRegistry = {
   [GroupingMode.Ungrouped]: UngroupedNode,
   [GroupingMode.ByRootContextId]: GroupByRootNode,
-  [GroupingMode.ByContextId]: GroupByContextNode,
+  [GroupingMode.ByRealContextId]: GroupByRealContextNode,
   [GroupingMode.ByCallerTraceId]: GroupByCallerNode,
   [GroupingMode.ByParentContextId]: GroupByParentContextNode,
-  [GroupingMode.ByCallback]: GroupByCallbackNode,
+  // [GroupingMode.ByCallback]: GroupByCallbackNode,
 };
 
 export function nextMode() {
   groupingMode = GroupingMode.nextValue(groupingMode);
-  if (groupingMode === GroupingMode.ByCallback && !isTraceCallbackRelated(traceSelection.selected)) {
-    groupingMode = GroupingMode.nextValue(groupingMode);
-  }
+  // if (groupingMode === GroupingMode.ByCallback && !isTraceCallbackRelated(traceSelection.selected)) {
+  //   groupingMode = GroupingMode.nextValue(groupingMode);
+  // }
   return groupingMode;
 }
 

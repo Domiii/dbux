@@ -2,7 +2,7 @@
 import { monkeyPatchFunctionHolderDefault } from '../util/monkeyPatchUtil';
 import patchArray from './arrays';
 import patchFunction from './functions';
-import patchNode from './node';
+import tryPatchNode from './node';
 import patchObject from './objects';
 
 export default function initPatchBuiltins() {
@@ -17,5 +17,5 @@ export default function initPatchBuiltins() {
   patchObject();
   patchArray();
   patchFunction();
-  patchNode();
+  tryPatchNode();
 }

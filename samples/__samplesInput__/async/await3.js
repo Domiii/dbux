@@ -4,7 +4,13 @@ async function waitTicks(times) {
   }
 }
 
+async function f() {
+  return '123';
+}
+
 (async function main() {
-  await waitTicks(2);
-  await waitTicks(2);
+  for (let i = 0; i < 2; ++i) {
+    await waitTicks(1);
+    console.log(await f());
+  }
 })();

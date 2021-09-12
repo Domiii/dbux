@@ -132,7 +132,17 @@ export default class ProgramMonitor {
       return value;
     }
 
-    return this._runtimeMonitor.traceReturn(this.getProgramId(), value, tid, inputs);
+    this._runtimeMonitor.traceReturn(this.getProgramId(), value, tid, inputs);
+    return value;
+  }
+
+  traceReturnAsync = (value, tid, inputs) => {
+    if (this.areTracesDisabled) {
+      return value;
+    }
+
+    this._runtimeMonitor.traceReturnAsync(this.getProgramId(), value, tid, inputs);
+    return value;
   }
 
   traceThrow = (value, tid, inputs) => {
@@ -454,18 +464,18 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceObjectExpression(this.getProgramId(), value, entries, argConfigs, objectTid, propTids);
   }
 
-  /** ###########################################################################
-   * loops et al
-   * ##########################################################################*/
+  // /** ###########################################################################
+  //  * loops
+  //  * ##########################################################################*/
 
-  traceForIn = (value, tid, declarationTid, inputs) => {
-    value = wrapValue(value);
-    if (this.areTracesDisabled) {
-      return value;
-    }
+  // traceForIn = (value, tid, declarationTid, inputs) => {
+  //   value = wrapValue(value);
+  //   if (this.areTracesDisabled) {
+  //     return value;
+  //   }
 
-    return this._runtimeMonitor.traceForIn(this.getProgramId(), value, tid, declarationTid, inputs);
-  }
+  //   return this._runtimeMonitor.traceForIn(this.getProgramId(), value, tid, declarationTid, inputs);
+  // }
 
   // ###########################################################################
   // old traces

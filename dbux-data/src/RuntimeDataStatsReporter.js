@@ -180,7 +180,9 @@ export default class RuntimeDataStatsReporter {
     // final messages
     const msgs = [
       `##### Data received ##### ${collectionInfo}`,
-      ...this.statsInstances.map(stats => stats.collect(newData)?.join(''))
+      ...this.statsInstances
+        .map(stats => stats.collect(newData)?.join(''))
+        .filter(s => !!s)
     ];
 
     this.dp.logger.debug(msgs.join('\n '));

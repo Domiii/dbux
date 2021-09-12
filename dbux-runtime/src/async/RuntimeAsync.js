@@ -2,6 +2,8 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import isThenable from '@dbux/common/src/util/isThenable';
 import { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import ResolveType from '@dbux/common/src/types/constants/ResolveType';
+import PromiseLinkType from '@dbux/common/src/types/constants/PromiseLinkType';
 // import some from 'lodash/some';
 // import executionContextCollection from './data/executionContextCollection';
 // import traceCollection from './data/traceCollection';
@@ -12,6 +14,7 @@ import ThenRef from '../data/ThenRef';
 import { getPromiseData, getPromiseId, getPromiseOwnAsyncFunctionContextId, setPromiseData } from './promisePatcher';
 import asyncEventUpdateCollection from '../data/asyncEventUpdateCollection';
 import executionContextCollection from '../data/executionContextCollection';
+import nestedPromiseCollection from '../data/promiseLinkCollection';
 import valueCollection from '../data/valueCollection';
 // import { isPostEventUpdate, isPreEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 
@@ -271,6 +274,8 @@ export default class RuntimeAsync {
     const runId = this._runtime.getCurrentRunId();
     const preEventRootId = this.getCurrentVirtualRootContextId();
     const contextId = this._runtime.peekCurrentContextId();
+    const promiseId = getPromiseId(preEventPromise);
+    const postEventPromiseId = getPromiseId(postEventPromise);
 
     // store update
     asyncEventUpdateCollection.addPreThenUpdate({
@@ -278,8 +283,8 @@ export default class RuntimeAsync {
       rootId: preEventRootId,
       contextId: contextId,
       schedulerTraceId,
-      promiseId: getPromiseId(preEventPromise),
-      postEventPromiseId: getPromiseId(postEventPromise)
+      promiseId,
+      postEventPromiseId
     });
 
     // const rootId = this.getCurrentVirtualRootContextId();
@@ -310,6 +315,13 @@ export default class RuntimeAsync {
       this.logger.trace(`postThen`, getPromiseId(postEventPromise), thenRef, { runId, postEventRootId });
     }
 
+    const nestedPromiseId = isThenable(returnValue) ? getPromiseId(returnValue) : 0;
+    const postEventPromiseId = getPromiseId(postEventPromise);
+
+    if (nestedPromiseId) {
+      nestedPromiseCollection.addLink(PromiseLinkType.ThenNested, nestedPromiseId, postEventPromiseId, schedulerTraceId, postEventRootId);
+    }
+
     // store update
     asyncEventUpdateCollection.addPostThenUpdate({
       runId,
@@ -320,7 +332,7 @@ export default class RuntimeAsync {
 
       schedulerTraceId,
       promiseId: getPromiseId(postEventPromise),
-      nestedPromiseId: isThenable(returnValue) ? getPromiseId(returnValue) : 0
+      nestedPromiseId
     });
   }
 
@@ -328,53 +340,66 @@ export default class RuntimeAsync {
   // Promises: promiseConstructorCalled
   // ###########################################################################
 
-  promiseCtorCalled(promiseId, previousLastUpdateId) {
-    const lastUpdateId = asyncEventUpdateCollection.getLastId();
-
-
-    for (let i = previousLastUpdateId + 1; i < lastUpdateId; ++i) {
-      const update = asyncEventUpdateCollection.getById(i);
-
-      if (!isPostEventUpdate(update.type)) {
-        // [edit-after-send]
-        update.promiseCtorId = promiseId;
-      }
-      else {
-        // NOTE: Post events should not happen during promise ctor anyway
-      }
-    }
-  }
+  // // NOTE: this hackfix should not be necessary anymore
+  // promiseCtorCalled(promiseId, previousLastUpdateId) {
+  //   const lastUpdateId = asyncEventUpdateCollection.getLastId();
+  //   for (let i = previousLastUpdateId + 1; i < lastUpdateId; ++i) {
+  //     const update = asyncEventUpdateCollection.getById(i);
+  //     if (!isPostEventUpdate(update.type)) {
+  //       // [edit-after-send]
+  //       update.promiseCtorId = promiseId;
+  //     }
+  //     else {
+  //       // NOTE: Post events should not happen during promise ctor anyway
+  //     }
+  //   }
+  // }
 
   // ###########################################################################
-  // Promises: resolve
+  // non-events
   // ###########################################################################
 
   /**
-   * Event: `resolve` or `reject` was called from a promise ctor's executor.
-   * @param {ThenRef} thenRef
+   * `resolve` or `reject` was called from a promise ctor's executor.
+   * NOTE: Only called if resolved value is thenable.
    */
-  resolve(thenRef, resolveArg, resolveType) {
-    const {
-      preEventPromise,
-      // postEventPromise,
-      schedulerTraceId
-    } = thenRef;
+  resolve(inner, outer, resolveType, traceId) {
+    if (ResolveType.is.Resolve(resolveType)) {
+      // NOTE: `reject` does not settle nested promises!
+      const rootId = this.getCurrentVirtualRootContextId();
+      nestedPromiseCollection.addLink(PromiseLinkType.Resolve, getPromiseId(inner), getPromiseId(outer), traceId, rootId);
+    }
+    // const {
+    //   preEventPromise,
+    //   // postEventPromise,
+    //   schedulerTraceId
+    // } = thenRef;
 
-    const runId = this._runtime.getCurrentRunId();
-    const preEventRootId = this.getCurrentVirtualRootContextId();
-    const contextId = this._runtime.peekCurrentContextId();
+    // const runId = this._runtime.getCurrentRunId();
+    // const preEventRootId = this.getCurrentVirtualRootContextId();
+    // const contextId = this._runtime.peekCurrentContextId();
 
-    // store update
-    asyncEventUpdateCollection.addResolveUpdate({
-      runId,
-      rootId: preEventRootId,
-      contextId: contextId,
-      schedulerTraceId,
-      promiseId: getPromiseId(preEventPromise),
+    // // store update
+    // asyncEventUpdateCollection.addResolveUpdate({
+    //   runId,
+    //   rootId: preEventRootId,
+    //   contextId: contextId,
+    //   schedulerTraceId,
+    //   promiseId: getPromiseId(preEventPromise),
 
-      argPromiseId: isThenable(resolveArg) && getPromiseId(resolveArg) || 0,
-      resolveType
-    });
+    //   argPromiseId: isThenable(resolveArg) && getPromiseId(resolveArg) || 0,
+    //   resolveType
+    // });
+  }
+
+  /**
+   * Async function returning given `promise`.
+   * NOTE: Only called if returned value is thenable.
+   */
+  returnAsync(promise, traceId) {
+    // NOTE: this is just a placeholder, since we don't necessarily know the `to` promiseId yet (if async function did not `await` yet)
+    const rootId = this.getCurrentVirtualRootContextId();
+    nestedPromiseCollection.addLink(PromiseLinkType.AsyncReturn, getPromiseId(promise), 0, traceId, rootId);
   }
 
   // ###########################################################################
