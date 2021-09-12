@@ -5,6 +5,15 @@ import dataNodeCollection from '../data/dataNodeCollection';
 import { getTraceOwnDataNode, peekBCEMatchCallee } from '../data/dataUtil';
 import { monkeyPatchMethod } from '../util/monkeyPatchUtil';
 
+/**
+ * hackfix: make sure, we get to use the built-in bind, even if user-code overwrites it.
+ * NOTE: if user-code overwrites a function, we might patch it first, leading to inf loops.
+ * 
+ * future-work: what if user code overwrites bind -> does apply etc. still work?
+ */
+const _originalBind = (() => { }).bind;
+_originalBind.bind = _originalBind;
+
 
 function getCalledFunctionTid(bceTrace) {
   // get actual function actualFunctionDataNode
@@ -65,7 +74,7 @@ export default function patchFunction() {
         setCalledFunctionTid(bceTrace, SpecialCallType.Bind);
       }
 
-      const result = originalBind.bind(actualFunction)(...args);
+      const result = _originalBind.bind(actualFunction)(...args);
       return result;
     }
   );

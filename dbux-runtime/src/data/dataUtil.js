@@ -95,6 +95,7 @@ export function getRealBCECalleeFunctionRef(bceTrace) {
  * @returns {*} top bceTrace on stack, if its callee is `func`
  */
 export function peekBCEMatchCallee(func) {
+  // console.trace('peekBCEMatchCallee', func);
   const bceTrace = traceCollection.getLast();
   const calleeRef = bceTrace && getBCECalleeFunctionRef(bceTrace);
   const functionRef = calleeRef && valueCollection.getRefByValue(func);
