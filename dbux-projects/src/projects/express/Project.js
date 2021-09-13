@@ -9,6 +9,10 @@ export default class ExpressProject extends Project {
 
   packageManager = 'npm';
 
+  get envName() {
+    return 'test';
+  }
+
   loadBugs() {
     // future-work: load automatically from BugsJs bug database
     // NOTE: some bugs have multiple test files, or no test file at all

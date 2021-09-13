@@ -938,7 +938,7 @@ export default class ProjectsManager {
       cacheRoot,
       relativeProjectPath
     );
-    const cacheFolderStr = `${cacheRoot}\n${relativeProjectPath}`;  // path too long for modal
+    const cacheFolderStr = `${cacheRoot}/\n${relativeProjectPath}`;  // NOTE: path too long for modal
     if (fs.existsSync(cacheFolder)) {
       if (await this.externals.confirm(`This will flush the cache at "${cacheFolderStr}", are you sure?`)) {
         fs.rmSync(cacheFolder, { recursive: true });
