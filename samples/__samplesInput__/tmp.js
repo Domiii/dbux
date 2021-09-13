@@ -1,305 +1,437 @@
-"use strict";
-
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _toDate = _interopRequireDefault(require("./lib/toDate"));
-
-var _toFloat = _interopRequireDefault(require("./lib/toFloat"));
-
-var _toInt = _interopRequireDefault(require("./lib/toInt"));
-
-var _toBoolean = _interopRequireDefault(require("./lib/toBoolean"));
-
-var _equals = _interopRequireDefault(require("./lib/equals"));
-
-var _contains = _interopRequireDefault(require("./lib/contains"));
-
-var _matches = _interopRequireDefault(require("./lib/matches"));
-
-var _isEmail = _interopRequireDefault(require("./lib/isEmail"));
-
-var _isURL = _interopRequireDefault(require("./lib/isURL"));
-
-var _isMACAddress = _interopRequireDefault(require("./lib/isMACAddress"));
-
-var _isIP = _interopRequireDefault(require("./lib/isIP"));
-
-var _isIPRange = _interopRequireDefault(require("./lib/isIPRange"));
-
-var _isFQDN = _interopRequireDefault(require("./lib/isFQDN"));
-
-var _isDate = _interopRequireDefault(require("./lib/isDate"));
-
-var _isBoolean = _interopRequireDefault(require("./lib/isBoolean"));
-
-var _isLocale = _interopRequireDefault(require("./lib/isLocale"));
-
-var _isAlpha = _interopRequireWildcard(require("./lib/isAlpha"));
-
-var _isAlphanumeric = _interopRequireWildcard(require("./lib/isAlphanumeric"));
-
-var _isNumeric = _interopRequireDefault(require("./lib/isNumeric"));
-
-var _isPassportNumber = _interopRequireDefault(require("./lib/isPassportNumber"));
-
-var _isPort = _interopRequireDefault(require("./lib/isPort"));
-
-var _isLowercase = _interopRequireDefault(require("./lib/isLowercase"));
-
-var _isUppercase = _interopRequireDefault(require("./lib/isUppercase"));
-
-var _isIMEI = _interopRequireDefault(require("./lib/isIMEI"));
-
-var _isAscii = _interopRequireDefault(require("./lib/isAscii"));
-
-var _isFullWidth = _interopRequireDefault(require("./lib/isFullWidth"));
-
-var _isHalfWidth = _interopRequireDefault(require("./lib/isHalfWidth"));
-
-var _isVariableWidth = _interopRequireDefault(require("./lib/isVariableWidth"));
-
-var _isMultibyte = _interopRequireDefault(require("./lib/isMultibyte"));
-
-var _isSemVer = _interopRequireDefault(require("./lib/isSemVer"));
-
-var _isSurrogatePair = _interopRequireDefault(require("./lib/isSurrogatePair"));
-
-var _isInt = _interopRequireDefault(require("./lib/isInt"));
-
-var _isFloat = _interopRequireWildcard(require("./lib/isFloat"));
-
-var _isDecimal = _interopRequireDefault(require("./lib/isDecimal"));
-
-var _isHexadecimal = _interopRequireDefault(require("./lib/isHexadecimal"));
-
-var _isOctal = _interopRequireDefault(require("./lib/isOctal"));
-
-var _isDivisibleBy = _interopRequireDefault(require("./lib/isDivisibleBy"));
-
-var _isHexColor = _interopRequireDefault(require("./lib/isHexColor"));
-
-var _isRgbColor = _interopRequireDefault(require("./lib/isRgbColor"));
-
-var _isHSL = _interopRequireDefault(require("./lib/isHSL"));
-
-var _isISRC = _interopRequireDefault(require("./lib/isISRC"));
-
-var _isIBAN = _interopRequireDefault(require("./lib/isIBAN"));
-
-var _isBIC = _interopRequireDefault(require("./lib/isBIC"));
-
-var _isMD = _interopRequireDefault(require("./lib/isMD5"));
-
-var _isHash = _interopRequireDefault(require("./lib/isHash"));
-
-var _isJWT = _interopRequireDefault(require("./lib/isJWT"));
-
-var _isJSON = _interopRequireDefault(require("./lib/isJSON"));
-
-var _isEmpty = _interopRequireDefault(require("./lib/isEmpty"));
-
-var _isLength = _interopRequireDefault(require("./lib/isLength"));
-
-var _isByteLength = _interopRequireDefault(require("./lib/isByteLength"));
-
-var _isUUID = _interopRequireDefault(require("./lib/isUUID"));
-
-var _isMongoId = _interopRequireDefault(require("./lib/isMongoId"));
-
-var _isAfter = _interopRequireDefault(require("./lib/isAfter"));
-
-var _isBefore = _interopRequireDefault(require("./lib/isBefore"));
-
-var _isIn = _interopRequireDefault(require("./lib/isIn"));
-
-var _isCreditCard = _interopRequireDefault(require("./lib/isCreditCard"));
-
-var _isIdentityCard = _interopRequireDefault(require("./lib/isIdentityCard"));
-
-var _isEAN = _interopRequireDefault(require("./lib/isEAN"));
-
-var _isISIN = _interopRequireDefault(require("./lib/isISIN"));
-
-var _isISBN = _interopRequireDefault(require("./lib/isISBN"));
-
-var _isISSN = _interopRequireDefault(require("./lib/isISSN"));
-
-var _isTaxID = _interopRequireDefault(require("./lib/isTaxID"));
-
-var _isMobilePhone = _interopRequireWildcard(require("./lib/isMobilePhone"));
-
-var _isEthereumAddress = _interopRequireDefault(require("./lib/isEthereumAddress"));
-
-var _isCurrency = _interopRequireDefault(require("./lib/isCurrency"));
-
-var _isBtcAddress = _interopRequireDefault(require("./lib/isBtcAddress"));
-
-var _isISO = _interopRequireDefault(require("./lib/isISO8601"));
-
-var _isRFC = _interopRequireDefault(require("./lib/isRFC3339"));
-
-var _isISO31661Alpha = _interopRequireDefault(require("./lib/isISO31661Alpha2"));
-
-var _isISO31661Alpha2 = _interopRequireDefault(require("./lib/isISO31661Alpha3"));
-
-var _isBase = _interopRequireDefault(require("./lib/isBase32"));
-
-var _isBase2 = _interopRequireDefault(require("./lib/isBase58"));
-
-var _isBase3 = _interopRequireDefault(require("./lib/isBase64"));
-
-var _isDataURI = _interopRequireDefault(require("./lib/isDataURI"));
-
-var _isMagnetURI = _interopRequireDefault(require("./lib/isMagnetURI"));
-
-var _isMimeType = _interopRequireDefault(require("./lib/isMimeType"));
-
-var _isLatLong = _interopRequireDefault(require("./lib/isLatLong"));
-
-var _isPostalCode = _interopRequireWildcard(require("./lib/isPostalCode"));
-
-var _ltrim = _interopRequireDefault(require("./lib/ltrim"));
-
-var _rtrim = _interopRequireDefault(require("./lib/rtrim"));
-
-var _trim = _interopRequireDefault(require("./lib/trim"));
-
-var _escape = _interopRequireDefault(require("./lib/escape"));
-
-var _unescape = _interopRequireDefault(require("./lib/unescape"));
-
-var _stripLow = _interopRequireDefault(require("./lib/stripLow"));
-
-var _whitelist = _interopRequireDefault(require("./lib/whitelist"));
-
-var _blacklist = _interopRequireDefault(require("./lib/blacklist"));
-
-var _isWhitelisted = _interopRequireDefault(require("./lib/isWhitelisted"));
-
-var _normalizeEmail = _interopRequireDefault(require("./lib/normalizeEmail"));
-
-var _isSlug = _interopRequireDefault(require("./lib/isSlug"));
-
-var _isLicensePlate = _interopRequireDefault(require("./lib/isLicensePlate"));
-
-var _isStrongPassword = _interopRequireDefault(require("./lib/isStrongPassword"));
-
-var _isVAT = _interopRequireDefault(require("./lib/isVAT"));
-
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var version = '13.6.0';
-var validator = {
-  version: version,
-  toDate: _toDate.default,
-  toFloat: _toFloat.default,
-  toInt: _toInt.default,
-  toBoolean: _toBoolean.default,
-  equals: _equals.default,
-  contains: _contains.default,
-  matches: _matches.default,
-  isEmail: _isEmail.default,
-  isURL: _isURL.default,
-  isMACAddress: _isMACAddress.default,
-  isIP: _isIP.default,
-  isIPRange: _isIPRange.default,
-  isFQDN: _isFQDN.default,
-  isBoolean: _isBoolean.default,
-  isIBAN: _isIBAN.default,
-  isBIC: _isBIC.default,
-  isAlpha: _isAlpha.default,
-  isAlphaLocales: _isAlpha.locales,
-  isAlphanumeric: _isAlphanumeric.default,
-  isAlphanumericLocales: _isAlphanumeric.locales,
-  isNumeric: _isNumeric.default,
-  isPassportNumber: _isPassportNumber.default,
-  isPort: _isPort.default,
-  isLowercase: _isLowercase.default,
-  isUppercase: _isUppercase.default,
-  isAscii: _isAscii.default,
-  isFullWidth: _isFullWidth.default,
-  isHalfWidth: _isHalfWidth.default,
-  isVariableWidth: _isVariableWidth.default,
-  isMultibyte: _isMultibyte.default,
-  isSemVer: _isSemVer.default,
-  isSurrogatePair: _isSurrogatePair.default,
-  isInt: _isInt.default,
-  isIMEI: _isIMEI.default,
-  isFloat: _isFloat.default,
-  isFloatLocales: _isFloat.locales,
-  isDecimal: _isDecimal.default,
-  isHexadecimal: _isHexadecimal.default,
-  isOctal: _isOctal.default,
-  isDivisibleBy: _isDivisibleBy.default,
-  isHexColor: _isHexColor.default,
-  isRgbColor: _isRgbColor.default,
-  isHSL: _isHSL.default,
-  isISRC: _isISRC.default,
-  isMD5: _isMD.default,
-  isHash: _isHash.default,
-  isJWT: _isJWT.default,
-  isJSON: _isJSON.default,
-  isEmpty: _isEmpty.default,
-  isLength: _isLength.default,
-  isLocale: _isLocale.default,
-  isByteLength: _isByteLength.default,
-  isUUID: _isUUID.default,
-  isMongoId: _isMongoId.default,
-  isAfter: _isAfter.default,
-  isBefore: _isBefore.default,
-  isIn: _isIn.default,
-  isCreditCard: _isCreditCard.default,
-  isIdentityCard: _isIdentityCard.default,
-  isEAN: _isEAN.default,
-  isISIN: _isISIN.default,
-  isISBN: _isISBN.default,
-  isISSN: _isISSN.default,
-  isMobilePhone: _isMobilePhone.default,
-  isMobilePhoneLocales: _isMobilePhone.locales,
-  isPostalCode: _isPostalCode.default,
-  isPostalCodeLocales: _isPostalCode.locales,
-  isEthereumAddress: _isEthereumAddress.default,
-  isCurrency: _isCurrency.default,
-  isBtcAddress: _isBtcAddress.default,
-  isISO8601: _isISO.default,
-  isRFC3339: _isRFC.default,
-  isISO31661Alpha2: _isISO31661Alpha.default,
-  isISO31661Alpha3: _isISO31661Alpha2.default,
-  isBase32: _isBase.default,
-  isBase58: _isBase2.default,
-  isBase64: _isBase3.default,
-  isDataURI: _isDataURI.default,
-  isMagnetURI: _isMagnetURI.default,
-  isMimeType: _isMimeType.default,
-  isLatLong: _isLatLong.default,
-  ltrim: _ltrim.default,
-  rtrim: _rtrim.default,
-  trim: _trim.default,
-  escape: _escape.default,
-  unescape: _unescape.default,
-  stripLow: _stripLow.default,
-  whitelist: _whitelist.default,
-  blacklist: _blacklist.default,
-  isWhitelisted: _isWhitelisted.default,
-  normalizeEmail: _normalizeEmail.default,
-  toString: toString,
-  isSlug: _isSlug.default,
-  isStrongPassword: _isStrongPassword.default,
-  isTaxID: _isTaxID.default,
-  isDate: _isDate.default,
-  isLicensePlate: _isLicensePlate.default,
-  isVAT: _isVAT.default
-};
-var _default = validator;
-exports.default = _default;
-module.exports = exports.default;
-module.exports.default = exports.default;
+'use strict';
+
+const _ = require('lodash');
+const Utils = require('../../utils');
+const AbstractQuery = require('../abstract/query');
+const QueryTypes = require('../../query-types');
+const sequelizeErrors = require('../../errors');
+const parserStore = require('../parserStore')('sqlite');
+const { logger } = require('../../utils/logger');
+
+const debug = logger.debugContext('sql:sqlite');
+
+
+class Query extends AbstractQuery {
+  getInsertIdField() {
+    return 'lastID';
+  }
+
+  /**
+   * rewrite query with parameters.
+   *
+   * @param {string} sql
+   * @param {Array|object} values
+   * @param {string} dialect
+   * @private
+   */
+  static formatBindParameters(sql, values, dialect) {
+    let bindParam;
+    if (Array.isArray(values)) {
+      bindParam = {};
+      values.forEach((v, i) => {
+        bindParam[`$${i + 1}`] = v;
+      });
+      sql = AbstractQuery.formatBindParameters(sql, values, dialect, { skipValueReplace: true })[0];
+    } else {
+      bindParam = {};
+      if (typeof values === 'object') {
+        for (const k of Object.keys(values)) {
+          bindParam[`$${k}`] = values[k];
+        }
+      }
+      sql = AbstractQuery.formatBindParameters(sql, values, dialect, { skipValueReplace: true })[0];
+    }
+    return [sql, bindParam];
+  }
+
+  _collectModels(include, prefix) {
+    const ret = {};
+
+    if (include) {
+      for (const _include of include) {
+        let key;
+        if (!prefix) {
+          key = _include.as;
+        } else {
+          key = `${prefix}.${_include.as}`;
+        }
+        ret[key] = _include.model;
+
+        if (_include.include) {
+          _.merge(ret, this._collectModels(_include.include, key));
+        }
+      }
+    }
+
+    return ret;
+  }
+
+  _handleQueryResponse(metaData, columnTypes, err, results) {
+    if (err) {
+      err.sql = this.sql;
+      throw this.formatError(err);
+    }
+    let result = this.instance;
+
+    // add the inserted row id to the instance
+    if (this.isInsertQuery(results, metaData) || this.isUpsertQuery()) {
+      this.handleInsertQuery(results, metaData);
+      if (!this.instance) {
+        // handle bulkCreate AI primary key
+        if (
+          metaData.constructor.name === 'Statement'
+          && this.model
+          && this.model.autoIncrementAttribute
+          && this.model.autoIncrementAttribute === this.model.primaryKeyAttribute
+          && this.model.rawAttributes[this.model.primaryKeyAttribute]
+        ) {
+          const startId = metaData[this.getInsertIdField()] - metaData.changes + 1;
+          result = [];
+          for (let i = startId; i < startId + metaData.changes; i++) {
+            result.push({ [this.model.rawAttributes[this.model.primaryKeyAttribute].field]: i });
+          }
+        } else {
+          result = metaData[this.getInsertIdField()];
+        }
+      }
+    }
+
+    if (this.isShowTablesQuery()) {
+      return results.map(row => row.name);
+    }
+    if (this.isShowConstraintsQuery()) {
+      result = results;
+      if (results && results[0] && results[0].sql) {
+        result = this.parseConstraintsFromSql(results[0].sql);
+      }
+      return result;
+    }
+    if (this.isSelectQuery()) {
+      if (this.options.raw) {
+        return this.handleSelectQuery(results);
+      }
+      // This is a map of prefix strings to models, e.g. user.projects -> Project model
+      const prefixes = this._collectModels(this.options.include);
+
+      results = results.map(result => {
+        return _.mapValues(result, (value, name) => {
+          let model;
+          if (name.includes('.')) {
+            const lastind = name.lastIndexOf('.');
+
+            model = prefixes[name.substr(0, lastind)];
+
+            name = name.substr(lastind + 1);
+          } else {
+            model = this.options.model;
+          }
+
+          const tableName = model.getTableName().toString().replace(/`/g, '');
+          const tableTypes = columnTypes[tableName] || {};
+
+          if (tableTypes && !(name in tableTypes)) {
+            // The column is aliased
+            _.forOwn(model.rawAttributes, (attribute, key) => {
+              if (name === key && attribute.field) {
+                name = attribute.field;
+                return false;
+              }
+            });
+          }
+
+          return Object.prototype.hasOwnProperty.call(tableTypes, name)
+            ? this.applyParsers(tableTypes[name], value)
+            : value;
+        });
+      });
+
+      return this.handleSelectQuery(results);
+    }
+    if (this.isShowOrDescribeQuery()) {
+      return results;
+    }
+    if (this.sql.includes('PRAGMA INDEX_LIST')) {
+      return this.handleShowIndexesQuery(results);
+    }
+    if (this.sql.includes('PRAGMA INDEX_INFO')) {
+      return results;
+    }
+    if (this.sql.includes('PRAGMA TABLE_INFO')) {
+      // this is the sqlite way of getting the metadata of a table
+      result = {};
+
+      let defaultValue;
+      for (const _result of results) {
+        if (_result.dflt_value === null) {
+          // Column schema omits any "DEFAULT ..."
+          defaultValue = undefined;
+        } else if (_result.dflt_value === 'NULL') {
+          // Column schema is a "DEFAULT NULL"
+          defaultValue = null;
+        } else {
+          defaultValue = _result.dflt_value;
+        }
+
+        result[_result.name] = {
+          type: _result.type,
+          allowNull: _result.notnull === 0,
+          defaultValue,
+          primaryKey: _result.pk !== 0
+        };
+
+        if (result[_result.name].type === 'TINYINT(1)') {
+          result[_result.name].defaultValue = { '0': false, '1': true }[result[_result.name].defaultValue];
+        }
+
+        if (typeof result[_result.name].defaultValue === 'string') {
+          result[_result.name].defaultValue = result[_result.name].defaultValue.replace(/'/g, '');
+        }
+      }
+      return result;
+    }
+    if (this.sql.includes('PRAGMA foreign_keys;')) {
+      return results[0];
+    }
+    if (this.sql.includes('PRAGMA foreign_keys')) {
+      return results;
+    }
+    if (this.sql.includes('PRAGMA foreign_key_list')) {
+      return results;
+    }
+    if ([QueryTypes.BULKUPDATE, QueryTypes.BULKDELETE].includes(this.options.type)) {
+      return metaData.changes;
+    }
+    if (this.options.type === QueryTypes.VERSION) {
+      return results[0].version;
+    }
+    if (this.options.type === QueryTypes.RAW) {
+      return [results, metaData];
+    }
+    if (this.isUpsertQuery()) {
+      return [result, null];
+    }
+    if (this.isUpdateQuery() || this.isInsertQuery()) {
+      return [result, metaData.changes];
+    }
+    return result;
+  }
+
+  async run(sql, parameters) {
+    const conn = this.connection;
+    this.sql = sql;
+    const method = this.getDatabaseMethod();
+    const complete = this._logQuery(sql, debug, parameters);
+
+    return new Promise((resolve, reject) => conn.serialize(async () => {
+      const columnTypes = {};
+      const executeSql = () => {
+        if (sql.startsWith('-- ')) {
+          return resolve();
+        }
+        const query = this;
+        // cannot use arrow function here because the function is bound to the statement
+        function afterExecute(executionError, results) {
+          try {
+            complete();
+            // `this` is passed from sqlite, we have no control over this.
+            // eslint-disable-next-line no-invalid-this
+            resolve(query._handleQueryResponse(this, columnTypes, executionError, results));
+            return;
+          } catch (error) {
+            reject(error);
+          }
+        }
+
+        if (!parameters) parameters = [];
+        conn[method](sql, parameters, afterExecute);
+
+        return null;
+      };
+
+      if (this.getDatabaseMethod() === 'all') {
+        let tableNames = [];
+        if (this.options && this.options.tableNames) {
+          tableNames = this.options.tableNames;
+        } else if (/FROM `(.*?)`/i.exec(this.sql)) {
+          tableNames.push(/FROM `(.*?)`/i.exec(this.sql)[1]);
+        }
+
+        // If we already have the metadata for the table, there's no need to ask for it again
+        tableNames = tableNames.filter(tableName => !(tableName in columnTypes) && tableName !== 'sqlite_master');
+
+        if (!tableNames.length) {
+          return executeSql();
+        }
+        await Promise.all(tableNames.map(tableName =>
+          new Promise(resolve => {
+            tableName = tableName.replace(/`/g, '');
+            columnTypes[tableName] = {};
+
+            conn.all(`PRAGMA table_info(\`${tableName}\`)`, (err, results) => {
+              if (!err) {
+                for (const result of results) {
+                  columnTypes[tableName][result.name] = result.type;
+                }
+              }
+              resolve();
+            });
+          })));
+      }
+      return executeSql();
+    }));
+  }
+
+  parseConstraintsFromSql(sql) {
+    let constraints = sql.split('CONSTRAINT ');
+    let referenceTableName, referenceTableKeys, updateAction, deleteAction;
+    constraints.splice(0, 1);
+    constraints = constraints.map(constraintSql => {
+      //Parse foreign key snippets
+      if (constraintSql.includes('REFERENCES')) {
+        //Parse out the constraint condition form sql string
+        updateAction = constraintSql.match(/ON UPDATE (CASCADE|SET NULL|RESTRICT|NO ACTION|SET DEFAULT){1}/);
+        deleteAction = constraintSql.match(/ON DELETE (CASCADE|SET NULL|RESTRICT|NO ACTION|SET DEFAULT){1}/);
+
+        if (updateAction) {
+          updateAction = updateAction[1];
+        }
+
+        if (deleteAction) {
+          deleteAction = deleteAction[1];
+        }
+
+        const referencesRegex = /REFERENCES.+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)/;
+        const referenceConditions = constraintSql.match(referencesRegex)[0].split(' ');
+        referenceTableName = Utils.removeTicks(referenceConditions[1]);
+        let columnNames = referenceConditions[2];
+        columnNames = columnNames.replace(/\(|\)/g, '').split(', ');
+        referenceTableKeys = columnNames.map(column => Utils.removeTicks(column));
+      }
+
+      const constraintCondition = constraintSql.match(/\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)/)[0];
+      constraintSql = constraintSql.replace(/\(.+\)/, '');
+      const constraint = constraintSql.split(' ');
+
+      if (constraint[1] === 'PRIMARY' || constraint[1] === 'FOREIGN') {
+        constraint[1] += ' KEY';
+      }
+
+      return {
+        constraintName: Utils.removeTicks(constraint[0]),
+        constraintType: constraint[1],
+        updateAction,
+        deleteAction,
+        sql: sql.replace(/"/g, '`'), //Sqlite returns double quotes for table name
+        constraintCondition,
+        referenceTableName,
+        referenceTableKeys
+      };
+    });
+
+    return constraints;
+  }
+
+  applyParsers(type, value) {
+    if (type.includes('(')) {
+      // Remove the length part
+      type = type.substr(0, type.indexOf('('));
+    }
+    type = type.replace('UNSIGNED', '').replace('ZEROFILL', '');
+    type = type.trim().toUpperCase();
+    const parse = parserStore.get(type);
+
+    if (value !== null && parse) {
+      return parse(value, { timezone: this.sequelize.options.timezone });
+    }
+    return value;
+  }
+
+  formatError(err) {
+
+    switch (err.code) {
+      case 'SQLITE_CONSTRAINT': {
+        if (err.message.includes('FOREIGN KEY constraint failed')) {
+          return new sequelizeErrors.ForeignKeyConstraintError({
+            parent: err
+          });
+        }
+
+        let fields = [];
+
+        // Sqlite pre 2.2 behavior - Error: SQLITE_CONSTRAINT: columns x, y are not unique
+        let match = err.message.match(/columns (.*?) are/);
+        if (match !== null && match.length >= 2) {
+          fields = match[1].split(', ');
+        } else {
+
+          // Sqlite post 2.2 behavior - Error: SQLITE_CONSTRAINT: UNIQUE constraint failed: table.x, table.y
+          match = err.message.match(/UNIQUE constraint failed: (.*)/);
+          if (match !== null && match.length >= 2) {
+            fields = match[1].split(', ').map(columnWithTable => columnWithTable.split('.')[1]);
+          }
+        }
+
+        const errors = [];
+        let message = 'Validation error';
+
+        for (const field of fields) {
+          errors.push(new sequelizeErrors.ValidationErrorItem(
+            this.getUniqueConstraintErrorMessage(field),
+            'unique violation', // sequelizeErrors.ValidationErrorItem.Origins.DB,
+            field,
+            this.instance && this.instance[field],
+            this.instance,
+            'not_unique'
+          ));
+        }
+
+        if (this.model) {
+          _.forOwn(this.model.uniqueKeys, constraint => {
+            if (_.isEqual(constraint.fields, fields) && !!constraint.msg) {
+              message = constraint.msg;
+              return false;
+            }
+          });
+        }
+
+        return new sequelizeErrors.UniqueConstraintError({ message, errors, parent: err, fields });
+      }
+      case 'SQLITE_BUSY':
+        return new sequelizeErrors.TimeoutError(err);
+
+      default:
+        return new sequelizeErrors.DatabaseError(err);
+    }
+  }
+
+  async handleShowIndexesQuery(data) {
+    // Sqlite returns indexes so the one that was defined last is returned first. Lets reverse that!
+    return Promise.all(data.reverse().map(async item => {
+      item.fields = [];
+      item.primary = false;
+      item.unique = !!item.unique;
+      item.constraintName = item.name;
+      const columns = await this.run(`PRAGMA INDEX_INFO(\`${item.name}\`)`);
+      for (const column of columns) {
+        item.fields[column.seqno] = {
+          attribute: column.name,
+          length: undefined,
+          order: undefined
+        };
+      }
+
+      return item;
+    }));
+  }
+
+  getDatabaseMethod() {
+    if (this.isInsertQuery() || this.isUpdateQuery() || this.isUpsertQuery() || this.isBulkUpdateQuery() || this.sql.toLowerCase().includes('CREATE TEMPORARY TABLE'.toLowerCase()) || this.options.type === QueryTypes.BULKDELETE) {
+      return 'run';
+    }
+    return 'all';
+  }
+}
+
+module.exports = Query;
+module.exports.Query = Query;
+module.exports.default = Query;

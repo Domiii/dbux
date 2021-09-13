@@ -268,9 +268,9 @@ const ContextCallerLabelByEventUpdateType = {
   [AsyncEventUpdateType.PostThen]: () => 'then',
   [AsyncEventUpdateType.PostCallback]: (context, dp) => {
     const asyncNode = dp.indexes.asyncNodes.byRoot.getUnique(context.contextId);
-    const calleeTraceId = dp.util.getCalleeTraceId(asyncNode.schedulerTraceId);
-    const calleeTrace = dp.collections.traces.getById(calleeTraceId);
-    return makeTraceLabel(calleeTrace);
+    const calleeTraceId = asyncNode && dp.util.getCalleeTraceId(asyncNode.schedulerTraceId);
+    const calleeTrace = calleeTraceId && dp.collections.traces.getById(calleeTraceId);
+    return calleeTraceId && makeTraceLabel(calleeTrace) || '(unknown callback)';
   }
 };
 

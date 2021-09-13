@@ -50,10 +50,10 @@ export default class TraceCollection extends Collection {
     this.errorWrapMethod('registerValueRefSpecialObjectType', traces);
     // this.errorWrapMethod('resolveCodeChunks', traces);
     this.errorWrapMethod('resolveCallIds', traces);
-    this.errorWrapMethod('resolveErrorTraces', traces);
   }
 
   postIndexRaw(traces) {
+    this.errorWrapMethod('resolveErrorTraces', traces);
     this.errorWrapMethod('resolveMonkeyParams', traces);
   }
 
@@ -167,6 +167,7 @@ export default class TraceCollection extends Collection {
 
   resolveErrorTraces(traces) {
     let errorTraces;
+    const { dp: { util } } = this;
     try {
       for (const trace of traces) {
         const {
@@ -176,26 +177,29 @@ export default class TraceCollection extends Collection {
         } = trace;
 
         // if traces were disabled, there is nothing to do here
-        if (!this.dp.util.isContextTraced(contextId)) {
+        if (!util.isContextTraced(contextId)) {
           continue;
         }
 
-        const traceType = this.dp.util.getTraceType(traceId);
+        const traceType = util.getTraceType(traceId);
         if (!isTracePop(traceType) || !previousTraceId) {
           // only (certain) pop traces can generate errors
           continue;
         }
 
-        const staticContext = this.dp.util.getTraceStaticContext(traceId);
+        const staticContext = util.getTraceStaticContext(traceId);
         if (staticContext.isInterruptable) {
           // NOTE: interruptable contexts only have `Push` and `Pop` traces.
           //    Everything else (including error handling!) is in `Resume` children.
           continue;
         }
 
-        const previousTraceType = this.dp.util.getTraceType(previousTraceId);
-        if (!isTraceFunctionExit(previousTraceType)) {
-          // before pop must be a function exit trace, else -> error!
+        const previousTraceType = util.getTraceType(previousTraceId);
+        if (!isTraceFunctionExit(previousTraceType) && 
+          !util.getReturnTraceOfRealContext(contextId)) {
+          // before pop must be `EndOfContext` or `Return*` trace, else -> we detect an error!
+          // NOTE: we check for any `Return*` type of trace anywhere, since, in case of `finally`, the last trace might not be `return` trace
+          util.getReturnTraceOfRealContext(contextId);
           trace.error = true;
 
           errorTraces = errorTraces || [];
@@ -240,7 +244,7 @@ export default class TraceCollection extends Collection {
     }
     finally {
       if (errorTraces) {
-        let msg = errorTraces.map(t => `${this.dp.util.makeTraceInfo(t)}`).join('\n ');
+        let msg = errorTraces.map(t => `${util.makeTraceInfo(t)}`).join('\n ');
         this.logger.debug(`#### ${errorTraces.length} ERROR traces ####\n ${msg}`);
       }
     }

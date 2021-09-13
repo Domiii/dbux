@@ -7,6 +7,7 @@ import ExecutionContextCollection from './collections/ExecutionContextCollection
 import TraceCollection from './collections/TraceCollection';
 import DataNodeCollection from './collections/DataNodeCollection';
 import ValueRefCollection from './collections/ValueRefCollection';
+import PromiseLinkCollection from './collections/PromiseLinkCollection';
 import AsyncNodeCollection from './collections/AsyncNodeCollection';
 import AsyncEventCollection from './collections/AsyncEventCollection';
 import AsyncEventUpdateCollection from './collections/AsyncEventUpdateCollection';
@@ -45,6 +46,7 @@ export default class RuntimeDataProvider extends DataProviderBase {
       traces: new TraceCollection(this),
       dataNodes: new DataNodeCollection(this),
       values: new ValueRefCollection(this),
+      promiseLinks: new PromiseLinkCollection(this),
       asyncEventUpdates: new AsyncEventUpdateCollection(this),
       asyncNodes: new AsyncNodeCollection(this),
       asyncEvents: new AsyncEventCollection(this)

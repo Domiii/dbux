@@ -88,17 +88,25 @@ export default class Function extends BasePlugin {
     this.functionTraceCfg = traceCfg;
   }
 
+  get isInterruptable() {
+    const { path } = this.node;
+    const isGenerator = path.node.generator;
+    const isAsync = path.node.async;
+    return isGenerator || isAsync;
+  }
+
+  get isAsync() {
+    const { path } = this.node;
+    return path.node.async;
+  }
+
   // ###########################################################################
   // enter
   // ###########################################################################
 
   enter() {
     // TODO: move `push` and `pop`s to their corresponding correct phases
-    const { path, state } = this.node;
-
-    const isGenerator = path.node.generator;
-    const isAsync = path.node.async;
-    const isInterruptable = isGenerator || isAsync;
+    const { isInterruptable, node: { path, state } } = this;
     const bodyPath = path.get('body');
 
     const names = getNodeNames(path.node);
@@ -138,7 +146,7 @@ export default class Function extends BasePlugin {
     // staticResumeContextId
     let staticResumeContextId;
     if (isInterruptable) {
-      // TODO: also add to top-level context, if it contains `await`
+      // TODO: also add this to top-level context, if it contains `await`
       staticResumeContextId = addResumeContext(bodyPath, state, staticContextId);
     }
 
@@ -279,9 +287,9 @@ export default class Function extends BasePlugin {
    */
   doInstrument = (state /*, traceCfg */) => {
     const {
-      node: { path },
+      isInterruptable,
+      node: { path, dontInstrumentContextEnd },
       data: {
-        returnTraceCfg,
         staticPushTid,
         staticResumeContextId,
         contextIdVar,
@@ -302,7 +310,37 @@ export default class Function extends BasePlugin {
       this.buildPop()
     ];
 
-    if (staticResumeContextId) {
+    /** ########################################
+     * ContextEnd
+     * #######################################*/
+
+    let bodyNode = bodyPath.node;
+    if (!dontInstrumentContextEnd) {
+      const lastNode = getLastNodeOfBody(bodyNode);
+      if (!lastNode || !doesNodeEndScope(lastNode)) {
+        // add ContextEnd trace
+        // console.debug(`injecting EndOfContext for: ${bodyPath.toString()}`);
+        // path.scope.crawl();
+        const contextEndTrace = buildContextEndTrace(path, state);
+        if (Array.isArray(bodyNode)) {
+          bodyNode.push(contextEndTrace);
+        }
+        else {
+          if (!t.isBlockStatement(bodyNode)) {
+            // NOTE: we called `ensureBlock` above
+            throw new Error(`Function body is neither array nor block statement: "${pathToStringAnnotated(path, true)}"`);
+          }
+          bodyPath.pushContainer("body", contextEndTrace);
+        }
+        // injectContextEndTrace(path, state);
+      }
+    }
+
+    /** ########################################
+     * interruptable functions
+     * #######################################*/
+
+    if (isInterruptable) {
       // this is an interruptable function -> push + pop "resume contexts"
       const { ids: { dbux } } = state;
       // const resumeContextId = bodyPath.scope.generateUid('resumeCid');
@@ -325,28 +363,6 @@ export default class Function extends BasePlugin {
         // }),
         ...pops
       ];
-    }
-
-    let bodyNode = bodyPath.node;
-    if (!returnTraceCfg) {
-      const lastNode = getLastNodeOfBody(bodyNode);
-      if (!lastNode || !doesNodeEndScope(lastNode)) {
-        // add ContextEnd trace
-        // console.debug(`injecting EndOfContext for: ${bodyPath.toString()}`);
-        // path.scope.crawl();
-        const contextEndTrace = buildContextEndTrace(path, state);
-        if (Array.isArray(bodyNode)) {
-          bodyNode.push(contextEndTrace);
-        }
-        else {
-          if (!t.isBlockStatement(bodyNode)) {
-            // NOTE: we called `ensureBlock` above
-            throw new Error(`Function body is neither array nor block statement: "${pathToStringAnnotated(path, true)}"`);
-          }
-          bodyPath.pushContainer("body", contextEndTrace);
-        }
-        // injectContextEndTrace(path, state);
-      }
     }
 
     // wrap the function in a try/finally statement

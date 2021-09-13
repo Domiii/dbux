@@ -95,13 +95,12 @@ export default class ExecutionContextCollection extends Collection {
         // returnedPromiseRef.
         // TODO: store `nestedByPromiseId` with `DataNode`
         //    -> add `nestedByPromiseId` index for promise `DataNode`
-        //    -> implement `getNestingPromiseId` + `getNestedPromiseId`
-        //        -> what if multiple promises are nesting or nested?
         //    -> also add support for Request.resolve(promise)
         //    -> use `getNestedPromiseId` to get return value promise of `async` function's `context.asyncPromiseId`
         //    -> seperately add "same root" constraint
       }
       else if (isInterruptable) {
+        // TODO: differentiate between async vs. generator
         const callTrace = dp.util.getCallerTraceOfContext(contextId);
         const callResultTrace = callTrace && dp.util.getValueTrace(callTrace.traceId);
         const refId = callResultTrace && dp.util.getTraceRefId(callResultTrace.traceId);
@@ -117,7 +116,7 @@ export default class ExecutionContextCollection extends Collection {
   setCallExpressionResultInputs(contexts) {
     const { dp, dp: { util } } = this;
     for (const { contextId } of contexts) {
-      const returnTrace = util.getReturnValueTraceOfContext(contextId);
+      const returnTrace = util.getReturnTraceOfContext(contextId);
       if (!returnTrace) {
         // function has no return value -> nothing to do
         continue;

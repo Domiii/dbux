@@ -32,8 +32,9 @@ export default class WebpackBuilder {
   }
 
   async afterInstall() {
-    const shared = true;
+    const shared = false; // <- don't share for now (since it messes with Dbux's own dependencies)
     const deps = {
+      // future-work: yarn IGNORES carret versioning. Does not add carret to `package.json`
       // eslint-disable-next-line quote-props
       'webpack': '^5',
       'webpack-cli': '^4',

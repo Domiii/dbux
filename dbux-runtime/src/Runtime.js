@@ -518,7 +518,7 @@ export default class Runtime {
     this._executingStack = stack;
     // console.warn('[RunStart] ' + this._currentRunId, new Error().stack); //, this.getLingeringStackCount());
     // getDefaultClient().bufferBreakpoint();
-    // debug('[new run]', this._currentRunId);
+    debug('[new run]', this._currentRunId);
   }
 
   /**

@@ -41,6 +41,6 @@ export default class FunctionDeclaration extends BaseNode {
 
   //   const [idNode] = this.getChildNodes();
 
-  //   this.peekStaticContext().addDeclaration(idNode);
+  //   this.peekContextNode().addDeclaration(idNode);
   // }
 }

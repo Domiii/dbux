@@ -33,6 +33,20 @@ export class DataNodeCollection extends Collection {
     return dataNode;
   }
 
+  /**
+   * [hackfix-datanode]
+   * 
+   * This is a hackfix for dealing with values returned from monkey-patched functions.
+   * The return value (and its child DataNodes) should be attached to the CER.
+   * However, since the function has not returned yet, we can only attach it to the BCE (for now).
+   * NOTE: this might be followed by more create*DataNode calls, all targeting `callId`.
+   * 
+   * future-work: consider patching this up in post by moving it from BCE to CER trace?
+   */
+  createBCEOwnDataNode(value, callId, type, varAccess = null, inputs = null, meta = null) {
+    return this.createOwnDataNode(value, callId, type, varAccess, inputs, meta);
+  }
+
   createOwnDataNode(value, traceId, type, varAccess = null, inputs = null, meta = null) {
     const trace = traceCollection.getById(traceId);
     if (!meta) {

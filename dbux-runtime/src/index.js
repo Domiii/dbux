@@ -49,6 +49,9 @@ function handleShutdown() {
     console.error('[dbux-runtime] Process exiting but not all data has been sent out. Analysis will be incomplete. ' +
       'This is probably because of a crash or `process.exit` was called manually.');
   }
+  // else {
+  //   console.trace('[Dbux Runtime] shutdown detected...');
+  // }
   // console.log('playbackLogRecords');
   // playbackLogRecords();
 }
@@ -71,7 +74,7 @@ function handleShutdown() {
   // NOTE: we want to improve our chances that all data gets sent out before the process closes down.
   //    `process.exit` can disrupt that (kills without allowing us to perform another async handshake + `send`)
   // register `exit` handler that sends out a warning if there is unsent stuff
-  if (__global__.process) {
+  if (__global__.process?.exit) {
     /** ###########################################################################
      * shutdown, process.exit + shutdown delay logic
      * ##########################################################################*/
@@ -84,18 +87,16 @@ function handleShutdown() {
 
     // eslint-disable-next-line no-inner-declarations
     function delayShutdown(reason, ...args) {
-      errorTime = Date.now();
-      if (processExit) {
-        console.warn(`[Dbux Runtime] shutdown delayed (${reason})...`);
+      if (shutdownDelayTimer) {
+        return;
       }
-      shutdownDelayTimer = setTimeout(() => {
-        if (processExit) {
-          console.warn('[Dbux Runtime] exiting now.');
-          processExit.call(process, ...args);
-        }
-        else {
-          // can't do much
-        }
+
+      errorTime = Date.now();
+      console.warn(`[Dbux Runtime] shutdown delayed (${reason})...`);
+
+      shutdownDelayTimer = setInterval(() => {
+        console.warn('[Dbux Runtime] exiting now.');
+        processExit.call(process, ...args);
       }, shutdownDelayMs);
     }
 

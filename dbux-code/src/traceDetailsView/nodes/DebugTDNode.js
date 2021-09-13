@@ -117,6 +117,12 @@ export class DebugTDNode extends TraceDetailNode {
     //   }
     // ];
 
+    /** ###########################################################################
+     * context
+     *  #########################################################################*/
+
+    const contextNode = [`context`, context, { description: `${context?.contextId}` }];
+
     // ###########################################################################
     // async
     // ###########################################################################
@@ -155,6 +161,7 @@ export class DebugTDNode extends TraceDetailNode {
         description: `thread=${asyncNode?.threadId}, root=${rootContextId}${postEventUpdateData?.map(upd => ` (${AsyncEventUpdateType.nameFrom(upd.type)})`) || ''}`
       }
     ];
+
 
     // ###########################################################################
     // dataNodes
@@ -207,7 +214,7 @@ export class DebugTDNode extends TraceDetailNode {
       ...makeTreeItems(
         ['trace', otherTraceProps],
         valueNode,
-        [`context`, context],
+        contextNode,
         asyncContainerNode,
         ...allDataNodes,
         ['staticTrace', staticTrace],

@@ -13,6 +13,8 @@ import { instrumentExpression, instrumentHoisted } from '../../instrumentation/i
 // import { pathToString } from '../../helpers/pathHelpers';
 import BasePlugin from './BasePlugin';
 
+/** @typedef { import("../BaseNode").default } BaseNode */
+
 const makeDefaultTrace = {
   // Literal(path) {
   // }
@@ -268,8 +270,12 @@ export default class Traces extends BasePlugin {
   // addReturnTrace, addThrowTrace
   // ###########################################################################
 
-  addReturnTrace(node, path, argPath) {
+  /**
+   * @param {BaseNode} node 
+   */
+  addReturnTrace(func, node, path, argPath) {
     const hasArgument = !!argPath.node;
+    const traceCall = func?.isAsync ? 'traceReturnAsync' : 'traceReturn';
 
     const traceData = {
       node,
@@ -278,7 +284,7 @@ export default class Traces extends BasePlugin {
         type: hasArgument ? TraceType.ReturnArgument : TraceType.ReturnNoArgument,
       },
       meta: {
-        traceCall: 'traceReturn',
+        traceCall,
         targetPath: argPath
       }
     };

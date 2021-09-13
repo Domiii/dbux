@@ -183,7 +183,14 @@ export default class RuntimeMonitor {
 
   traceReturn(programId, value, tid, inputs) {
     // for now: same as `te`
-    return this.traceExpression(programId, value, tid, inputs);
+    this.traceExpression(programId, value, tid, inputs);
+  }
+
+  traceReturnAsync(programId, value, tid, inputs) {
+    this.traceExpression(programId, value, tid, inputs);
+    if (isThenable(value)) {
+      this.runtime.async.returnAsync(value, tid);
+    }
   }
 
   traceThrow(programId, value, tid, inputs) {
@@ -715,7 +722,8 @@ export default class RuntimeMonitor {
     const varAccess = {
       declarationTid: tid
     };
-    const classNode = dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read, varAccess);
+    // DataNodeType.Create
+    const classNode = dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write, varAccess);
 
     // [runtime-error] potential runtime error (but should actually never happen)
     const proto = value.prototype;
@@ -725,7 +733,8 @@ export default class RuntimeMonitor {
       objectNodeId: classNode.nodeId,
       prop: 'prototype'
     };
-    const prototypeNode = dataNodeCollection.createDataNode(proto, tid, DataNodeType.Read, prototypeVarAccess);
+    // DataNodeType.Create
+    const prototypeNode = dataNodeCollection.createDataNode(proto, tid, DataNodeType.Write, prototypeVarAccess);
 
 
     const trace = traceCollection.getById(tid);
@@ -745,7 +754,8 @@ export default class RuntimeMonitor {
           objectNodeId: classNode.nodeId,
           prop: methodName
         };
-        dataNodeCollection.createOwnDataNode(method, methodTid, DataNodeType.Read, methodAccess);
+        // DataNodeType.Create
+        dataNodeCollection.createOwnDataNode(method, methodTid, DataNodeType.Write, methodAccess);
       }
 
       // add publicMethods nodes to prototype
@@ -756,7 +766,8 @@ export default class RuntimeMonitor {
           objectNodeId: prototypeNode.nodeId,
           prop: methodName
         };
-        dataNodeCollection.createOwnDataNode(method, methodTid, DataNodeType.Read, methodAccess);
+        // DataNodeType.Create
+        dataNodeCollection.createOwnDataNode(method, methodTid, DataNodeType.Write, methodAccess);
       }
     }
 
@@ -768,7 +779,8 @@ export default class RuntimeMonitor {
       return value;
     }
 
-    const instanceNode = dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Read);
+    // DataNodeType.Create
+    const instanceNode = dataNodeCollection.createOwnDataNode(value, tid, DataNodeType.Write);
 
     const trace = traceCollection.getById(tid);
     if (trace) {
@@ -784,7 +796,9 @@ export default class RuntimeMonitor {
           objectNodeId: instanceNode.nodeId,
           prop: methodName
         };
-        dataNodeCollection.createOwnDataNode(method, methodTid, DataNodeType.Read, methodAccess);
+
+        // DataNodeType.Create
+        dataNodeCollection.createOwnDataNode(method, methodTid, DataNodeType.Write, methodAccess);
       }
     }
 
@@ -1006,7 +1020,9 @@ export default class RuntimeMonitor {
     if (!this._ensureExecuting()) {
       return value;
     }
-    dataNodeCollection.createOwnDataNode(value, arrTid, DataNodeType.Read, null, null, ShallowValueRefMeta);
+
+    // DataNodeType.Create
+    dataNodeCollection.createOwnDataNode(value, arrTid, DataNodeType.Write, null, null, ShallowValueRefMeta);
 
     // for each element: add (new) write node which has (original) read node as input
     let idx = 0;
@@ -1048,7 +1064,9 @@ export default class RuntimeMonitor {
     if (!this._ensureExecuting()) {
       return value;
     }
-    const objectNode = dataNodeCollection.createOwnDataNode(value, objectTid, DataNodeType.Read, null, null, ShallowValueRefMeta);
+    
+    // DataNodeType.Create
+    const objectNode = dataNodeCollection.createOwnDataNode(value, objectTid, DataNodeType.Write, null, null, ShallowValueRefMeta);
     const objectNodeId = objectNode.nodeId;
 
     // for each prop: add (new) write node which has (original) read node as input
@@ -1091,41 +1109,74 @@ export default class RuntimeMonitor {
     return value;
   }
 
-  // ###########################################################################
-  // Loops (unfinished)
-  // ###########################################################################
+  // // ###########################################################################
+  // // Loops (unfinished)
+  // // ###########################################################################
 
-  traceForIn(programId, value, tid, declarationTid, inProgramStaticTraceId) {
-    if (!this._ensureExecuting()) {
-      return value;
-    }
-    if (!tid) {
-      this.logFail(`traceForIn failed to capture tid`);
-      return value;
-    }
+  // traceForIn(programId, value, tid, declarationTid, inProgramStaticTraceId) {
+  //   if (!this._ensureExecuting()) {
+  //     return value;
+  //   }
+  //   if (!tid) {
+  //     this.logFail(`traceForIn failed to capture tid`);
+  //     return value;
+  //   }
 
-    if (!declarationTid) {
-      declarationTid = tid;
-    }
+  //   if (!declarationTid) {
+  //     declarationTid = tid;
+  //   }
 
-    const varAccess = declarationTid && { declarationTid };
+  //   // TODO: varAccess is not always have `declarationTid` (might also be object accessor etc.)
+  //   const varAccess = declarationTid && { declarationTid };
 
-    // create iterator which logs `DataNode` on key access
-    const pd = { enumerable: true, configurable: true };
-    return new Proxy(value, {
-      /**
-       * NOTE: `getOwnPropertyDescriptor` is called every iteration, while
-       *   the entire array returned from `ownKeys` is read at the beginning of the loop.
-       */
-      getOwnPropertyDescriptor: function (target, key) {
-        debug('gpd', key, target[key]);
+  //   // create iterator which logs `DataNode` on key access
+  //   const pd = { enumerable: true, configurable: true };
+  //   return new Proxy(value, {
+  //     /**
+  //      * NOTE: `getOwnPropertyDescriptor` is called every iteration, while
+  //      *   the entire array returned from `ownKeys` is read at the beginning of the loop.
+  //      */
+  //     getOwnPropertyDescriptor: function (target, key) {
+  //       debug('gpd', key, target[key]);
 
-        const iterationTraceId = this.newTraceId(programId, inProgramStaticTraceId);
-        dataNodeCollection.createOwnDataNode(key, iterationTraceId, DataNodeType.Write, varAccess);
-        return pd;
-      }
-    });
-  }
+  //       const iterationTraceId = this.newTraceId(programId, inProgramStaticTraceId);
+  //       dataNodeCollection.createOwnDataNode(key, iterationTraceId, DataNodeType.Write, varAccess);
+  //       return pd;
+  //     }
+  //   });
+  // }
+
+  // traceForOf(programId, value, tid, declarationTid, inProgramStaticTraceId) {
+  //   if (!this._ensureExecuting()) {
+  //     return value;
+  //   }
+  //   if (!tid) {
+  //     this.logFail(`traceForOf failed to capture tid`);
+  //     return value;
+  //   }
+
+  //   if (!declarationTid) {
+  //     declarationTid = tid;
+  //   }
+
+  //   const varAccess = declarationTid && { declarationTid };
+
+  //   // create iterator which logs `DataNode` on key access
+  //   const pd = { enumerable: true, configurable: true };
+  //   return new Proxy(value, {
+  //     /**
+  //      * NOTE: `getOwnPropertyDescriptor` is called every iteration, while
+  //      *   the entire array returned from `ownKeys` is read at the beginning of the loop.
+  //      */
+  //     getOwnPropertyDescriptor: function (target, key) {
+  //       debug('gpd', key, target[key]);
+
+  //       const iterationTraceId = this.newTraceId(programId, inProgramStaticTraceId);
+  //       dataNodeCollection.createOwnDataNode(key, iterationTraceId, DataNodeType.Write, varAccess);
+  //       return pd;
+  //     }
+  //   });
+  // }
 
   // ###########################################################################
   // traces (OLD)

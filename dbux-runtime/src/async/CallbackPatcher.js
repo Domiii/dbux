@@ -186,6 +186,11 @@ export default class CallbackPatcher {
   // ###########################################################################
 
   defaultCalleePatcher = (firstCallId, originalFunction) => {
+    if (!originalFunction) {
+      trace(`tried to patch non-existing callback (at ${traceCollection.makeTraceInfo(firstCallId)})`);
+      return originalFunction;
+    }
+
     const self = this; // NOTE: inside `patchedCallee` `this` will be the callee's `this`
     const eventListenerRegex = /^on[A-Z]|event/;
     const isEventListener = !!(originalFunction.name || '').match(eventListenerRegex);

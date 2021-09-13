@@ -7,6 +7,7 @@ import PromiseData from '@dbux/common/src/types/PromiseData';
 import AsyncEvent from '@dbux/common/src/types/AsyncEvent';
 import AsyncNode from '@dbux/common/src/types/AsyncNode';
 import { PreAwaitUpdate, PostAwaitUpdate, PreThenUpdate, PostThenUpdate } from '@dbux/common/src/types/AsyncEventUpdate';
+import PromiseLink from '@dbux/common/src/types/PromiseLink';
 
 /**
  * TODO: proper object pooling
@@ -85,6 +86,11 @@ const pools = {
   postThenUpdates: {
     allocate() {
       return new PostThenUpdate();
+    }
+  },
+  promiseLinks: {
+    allocate() {
+      return new PromiseLink();
     }
   }
 };

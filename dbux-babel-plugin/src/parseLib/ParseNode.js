@@ -172,13 +172,10 @@ export default class ParseNode {
     return parent?.toString();
   }
 
-  // ###########################################################################
-  // more ancestry logic (NOTE: cannot use ParseStack, since stack structure disappears after `exit1`)
-  // ###########################################################################
 
-  peekContextNode() {
-    return this.peekPlugin('StaticContext').node;
-  }
+  // ###########################################################################
+  // stack
+  // ###########################################################################
 
   getParseNodeStack() {
     const arr = [];
@@ -195,6 +192,11 @@ export default class ParseNode {
     return ` - current stack (${stack.length}):\n  ` +
       stack.map(([path, node]) => `${node}${!node ? ` ${path?.node && pathToString(path) || '(null)'}` : ''}`).join('\n  ');
   }
+
+
+  // ###########################################################################
+  // more ancestry logic (NOTE: cannot use ParseStack, since stack structure disappears after `exit1`)
+  // ###########################################################################
 
   /**
    * @return {ParseNode} The first ancestor of given type.

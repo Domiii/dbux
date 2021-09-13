@@ -5,8 +5,8 @@
 set -e # cancel on error
 # set -x # verbose echo mode
 
-# fname="__samplesInput__/error-async4-catch"
-fname="__samplesInput__/optionalCalls1"
+fname="__samplesInput__/finally1"
+# fname="case-studies/async/chain/chain1b"
 
 
 
@@ -17,8 +17,8 @@ rootDir=$(node -e "console.log(require('path').resolve('$thisDirRelative'))") # 
 nodeArgsAlways="--stack-trace-limit=100"
 nodeArgs=""
 
-# dbuxArgs="--esnext"
-dbuxArgs=""
+dbuxArgs="--esnext"
+# dbuxArgs=""
 dbuxArgsI=""
 
 dbuxCmd="$1"
