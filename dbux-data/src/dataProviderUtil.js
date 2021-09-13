@@ -1172,7 +1172,7 @@ export default {
    */
   getCallerOrSchedulerTraceOfContext(dp, contextId) {
     if (dp.util.isRootContextInRun(contextId)) {
-      const asyncNode = dp.indexes.asyncNodes.byRoot.get(contextId);
+      const asyncNode = dp.indexes.asyncNodes.byRoot.getFirst(contextId);
       return dp.collections.traces.getById(asyncNode?.schedulerTraceId);
     }
     else {
