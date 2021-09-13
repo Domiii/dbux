@@ -11,5 +11,6 @@ console.log(a, a[0], a[3]);
 
 // empty array slots
 const b = [, 3, 4, , 5];
+const c = [...b];
 
-console.log(b);
+console.log(b, b[4]);
