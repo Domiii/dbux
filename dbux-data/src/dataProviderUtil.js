@@ -622,6 +622,11 @@ export default {
         shorten && (content = truncate(content, { length: ShortenMaxLength - 2 }));
         valueString = `{${content}}`;
       }
+      else if (ValueTypeCategory.is.Function(category)) {
+        let content = entries.name[2] || '(anonymous)';
+        shorten && (content = truncate(content, { length: ShortenMaxLength - 2 }));
+        valueString = `ƒ ${content}`;
+      }
       else {
         valueString = valueRef.value?.toString?.() || String(valueRef.value);
       }
