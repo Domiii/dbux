@@ -1,11 +1,9 @@
 import NanoEvents from 'nanoevents';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
-import RunNode from '../RunNode';
+import RunNode from '../syncGraph/RunNode';
 
 export default class HiddenNodeManager extends HostComponentEndpoint {
   init() {
-    this.state.hideBefore = false;
-    this.state.hideAfter = false;
     this._emitter = new NanoEvents();
 
     this.owner.on('newNode', this._notifyHiddenCountChanged);
@@ -23,6 +21,7 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
 
     if (changedFlag) {
       this.waitForUpdate()
+        .then(() => this._notifyFocusController())
         .then(() => this._notifyStateChanged())
         .catch(err => this.logger.error(err));
     }
@@ -36,31 +35,39 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
     return this.owner.children.getComponent('HiddenAfterNode');
   }
 
+  get graphDocument() {
+    return this.context.graphDocument;
+  }
+
 
   // ###########################################################################
   // public
   // ###########################################################################
 
   showAll() {
-    this.setState({ hideBefore: false, hideAfter: false });
+    this.graphDocument.setState({ hideBefore: false, hideAfter: false });
+    this.forceUpdate();
   }
 
   hideBefore(time) {
-    this.setState({ hideBefore: time });
+    this.graphDocument.setState({ hideBefore: time });
+    this.forceUpdate();
   }
 
   hideAfter(time) {
-    this.setState({ hideAfter: time });
+    this.graphDocument.setState({ hideAfter: time });
+    this.forceUpdate();
   }
 
   shouldBeVisible(runNode) {
-    if (this.state.hideBefore) {
-      if (runNode.state.createdAt < this.state.hideBefore) {
+    const { hideBefore, hideAfter } = this.graphDocument.state;
+    if (hideBefore) {
+      if (runNode.state.createdAt < hideBefore) {
         return false;
       }
     }
-    if (this.state.hideAfter) {
-      if (runNode.state.createdAt > this.state.hideAfter) {
+    if (hideAfter) {
+      if (runNode.state.createdAt > hideAfter) {
         return false;
       }
     }
@@ -71,7 +78,7 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
    * @param {RunNode} runNode 
    */
   getHiddenNodeHidingThis(runNode) {
-    const { hideBefore, hideAfter } = this.state;
+    const { hideBefore, hideAfter } = this.graphDocument.state;
     if (hideBefore && runNode.state.createdAt < hideBefore) {
       return this.hiddenBeforeNode;
     }
@@ -99,10 +106,15 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
   // own event
   // ###########################################################################
 
+  _notifyFocusController = async () => {
+    await this.context.graphContainer.focusController.handleTraceSelected();
+  }
+
   _notifyStateChanged = () => {
+    const { hideBefore, hideAfter } = this.graphDocument.state;
     this._emitter.emit('stateChanged', {
-      hideBefore: this.state.hideBefore,
-      hideAfter: this.state.hideAfter
+      hideBefore,
+      hideAfter,
     });
   }
 
@@ -111,7 +123,7 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
   }
 
   _notifyHiddenCountChanged = () => {
-    const { hideBefore, hideAfter } = this.state;
+    const { hideBefore, hideAfter } = this.graphDocument.state;
     let hideBeforeCount = 0;
     let hideAfterCount = 0;
     for (const runNode of this.getAllRunNode()) {
@@ -123,12 +135,6 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
         hideAfterCount += 1;
       }
     }
-
-    // remove hideBefore state if nothing is hidden e.g. while deselect hiddenNode
-    // NOTE: temporarily removed since this may calls setState in during update
-    // if (hideBefore && !hideBeforeCount) {
-    //   this.hideBefore(false);
-    // }
 
     this._emitter.emit('countChanged', {
       hideBeforeCount,

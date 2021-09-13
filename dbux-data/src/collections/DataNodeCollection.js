@@ -142,4 +142,11 @@ export default class DataNodeCollection extends Collection {
     const traceInfo = traceId && this.dp.util.makeTraceInfo(traceId) || '(no trace)';
     this.logger.error(`entry._id !== id (recoverable=${recoverable}) - First invalid entry is at #${idx}: ${traceInfo} ${JSON.stringify(faultyEntry)}`);
   }
+
+  serialize(dataNode) {
+    const dataNodeObj = { ...dataNode };
+    delete dataNodeObj._valueString;
+    delete dataNodeObj._valueStringShort;
+    return dataNodeObj;
+  }
 }

@@ -24,7 +24,7 @@ export default class ContextNodeManager extends HostComponentEndpoint {
     this.selectorType = null;
     this.contextNodes = null;
 
-    const highlightManager = this.context.graphDocument.controllers.getComponent('HighlightManager');
+    const highlightManager = this.context.graphContainer.controllers.getComponent('HighlightManager');
     highlightManager.on('clear', () => {
       this.selector = null;
       this.selectorType = null;
@@ -70,10 +70,11 @@ export default class ContextNodeManager extends HostComponentEndpoint {
 
   async highlightContexts(contexts) {
     try {
-      this.contextNodes = await Promise.all(contexts.map(this.owner.getContextNodeByContext));
-      this.contextNodes.forEach((contextNode) => {
+      this.contextNodes = contexts.map(this.owner.getContextNodeByContext);
+      await Promise.all(this.contextNodes.map(async (contextNode) => {
+        await contextNode?.waitForInit();
         contextNode?.controllers.getComponent('Highlighter').inc();
-      });
+      }));
       this.contextNodes.forEach((contextNode) => contextNode?.reveal());
     }
     catch (err) {
@@ -99,7 +100,7 @@ export default class ContextNodeManager extends HostComponentEndpoint {
   highlightByStaticContext = (applicationId, staticContextId) => {
     if (this.selector) this.clear();
 
-    this.context.graphRoot.controllers.getComponent('FocusController').setFollowMode(false);
+    this.context.graphDocument.setFollowMode(false);
 
     const dp = allApplications.getById(applicationId).dataProvider;
     const contexts = dp.indexes.executionContexts.byStaticContext.get(staticContextId);
@@ -127,7 +128,7 @@ export default class ContextNodeManager extends HostComponentEndpoint {
     if (this.selector) this.clear();
 
     this.context.graphRoot.controllers.getComponent('GraphNode').setMode(GraphNodeMode.Collapsed);
-    this.context.graphRoot.controllers.getComponent('FocusController').setFollowMode(false);
+    this.context.graphDocument.setFollowMode(false);
 
     const { applicationId, traceId: originTraceId } = traceSelector;
     const dp = allApplications.getById(applicationId).dataProvider;
@@ -162,7 +163,7 @@ export default class ContextNodeManager extends HostComponentEndpoint {
     }
 
     this.context.graphRoot.controllers.getComponent('GraphNode').setMode(GraphNodeMode.Collapsed);
-    this.context.graphRoot.controllers.getComponent('FocusController').setFollowMode(false);
+    this.context.graphDocument.setFollowMode(false);
 
     const contexts = allApplications.selection.getAll().
       map(({ dataProvider: dp }) => dp.util.searchContexts(searchTerm)).
@@ -180,7 +181,7 @@ export default class ContextNodeManager extends HostComponentEndpoint {
     }
 
     this.context.graphRoot.controllers.getComponent('GraphNode').setMode(GraphNodeMode.Collapsed);
-    this.context.graphRoot.controllers.getComponent('FocusController').setFollowMode(false);
+    this.context.graphDocument.setFollowMode(false);
 
     const contexts = allApplications.selection.getAll().
       map(({ dataProvider: dp }) => dp.util.findContextsByTraceSearchTerm(searchTerm)).

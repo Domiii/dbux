@@ -14,13 +14,14 @@ export default class HiddenNodeManager extends ClientComponentEndpoint {
    * @param {RunNode} runNode 
    */
   getHiddenNodeHidingThis(runNode) {
-    if (this.state.hideBefore) {
-      if (runNode.state.createdAt < this.state.hideBefore) {
+    const { hideBefore, hideAfter } = this.context.graphDocument.state;
+    if (hideBefore) {
+      if (runNode.state.createdAt < hideBefore) {
         return this.hiddenBeforeNode;
       }
     }
-    if (this.state.hideAfter) {
-      if (runNode.state.createdAt > this.state.hideAfter) {
+    if (hideAfter) {
+      if (runNode.state.createdAt > hideAfter) {
         return this.hiddenAfterNode;
       }
     }

@@ -850,7 +850,7 @@ function createPanZoom(domElement, options) {
     offsetX = e.clientX - ownerRect.left;
     offsetY = e.clientY - ownerRect.top;
     
-    // var graphCont = owner.querySelector('.graph-cont');
+    // var graphCont = owner.querySelector('.graph-content');
     // offsetX = e.clientX - graphCont.scrollLeft;
     // offsetY = e.clientY - graphCont.scrollTop;
     return { x: offsetX, y: offsetY };

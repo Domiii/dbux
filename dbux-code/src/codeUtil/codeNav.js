@@ -6,6 +6,7 @@ import {
   TextEditorRevealType
 } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { normalizeDriveLetter } from '@dbux/common-node/src/util/pathUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { babelLocToCodeRange } from '../helpers/codeLocHelpers';
 
@@ -77,7 +78,7 @@ export async function showTextDocument(fpath, column) {
 
 
 export async function getEditorByFilePath(fpath) {
-  
+
 }
 
 // /**
@@ -86,7 +87,6 @@ export async function getEditorByFilePath(fpath) {
 // export async function getTraceEditor(trace) {
 //   const dp = allApplications.getApplication(trace.applicationId).dataProvider;
 //   const filePath = dp.queries.programFilePathByTraceId(trace.traceId);
-  
 // }
 
 export async function getOrOpenTraceEditor(trace) {
@@ -111,7 +111,7 @@ export function getCursorLocation() {
     // see: https://code.visualstudio.com/api/references/vscode-api#Selection
     const { selection } = textEditor;
     if (selection) {
-      const fpath = textEditor.document.uri.fsPath;
+      const fpath = normalizeDriveLetter(textEditor.document.uri.fsPath);
       const { active } = selection;
 
       const where = {

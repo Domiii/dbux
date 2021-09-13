@@ -70,4 +70,18 @@ export function initTraceDetailsViewCommands(context, traceDetailsViewController
       node.selectValueCreationTrace();
     }
   );
+
+  registerCommand(context,
+    'dbuxTraceDetailsView.node.selectForkParent',
+    (node) => {
+      node.selectForkParent();
+    }
+  );
+
+  registerCommand(context,
+    'dbuxTraceDetailsView.node.selectScheduler',
+    (node) => {
+      node.selectScheduler();
+    }
+  );
 }

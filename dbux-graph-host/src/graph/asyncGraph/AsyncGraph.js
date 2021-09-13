@@ -1,50 +1,51 @@
-import NanoEvents from 'nanoevents';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection/index';
 import { makeContextLocLabel, makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
-import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
+import GraphMode from '@dbux/graph-common/src/shared/GraphMode';
+import GraphBase from '../GraphBase';
 
 /** @typedef {import('@dbux/data/src/applications/Application').default} Application */
 
-class AsyncGraph extends HostComponentEndpoint {
+class AsyncGraph extends GraphBase {
   init() {
     this.state.applications = [];
     // this.state.ascendingMode = false;
     this.state.ascendingMode = true;
-    this._emitter = new NanoEvents();
     this._unsubscribeOnNewData = [];
 
     this.controllers.createComponent('PopperController');
 
-    // register event listeners
-    this.addDisposable(
-      allApplications.selection.onApplicationsChanged(() => {
-        this.refresh();
-        this._resubscribeOnData();
-      })
-    );
     this.addDisposable(
       allApplications.selection.data.threadSelection.onSelectionChanged(() => {
-        this.refresh();
+        this.owner.refreshGraph();
       })
     );
+  }
 
-    this.refresh();
+  shouldBeEnabled() {
+    if (this.context.graphDocument.state.graphMode === GraphMode.AsyncGraph) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 
   handleRefresh() {
-    let children = EmptyArray;
-    if (this.context.graphDocument.asyncGraphMode) {
-      children = this.makeChildNodes();
-    }
-    else {
-      this.forceUpdate();
-    }
-
+    const children = this.makeChildNodes();
     const applications = this.makeApplicationState(allApplications.selection.getAll());
     const { selectedApplicationId, selected } = allApplications.selection.data.threadSelection;
     this.setState({ children, applications, selectedApplicationId, selectedThreadIds: Array.from(selected) });
+    this._resubscribeOnData();
+  }
+
+  clear() {
+    const children = EmptyArray;
+    const applications = EmptyArray;
+    const selectedApplicationId = null;
+    const selectedThreadIds = EmptyArray;
+    this.setState({ children, applications, selectedApplicationId, selectedThreadIds });
   }
 
   makeChildNodes() {
@@ -59,7 +60,7 @@ class AsyncGraph extends HostComponentEndpoint {
     // }
 
     return asyncNodes.map((asyncNode, index) => {
-      const { applicationId, rootContextId, threadId } = asyncNode;
+      const { applicationId, rootContextId, threadId, asyncNodeId } = asyncNode;
 
       if (!rootContextId) {
         // sanity check
@@ -89,10 +90,8 @@ class AsyncGraph extends HostComponentEndpoint {
 
       let parentAsyncNodeId, parentRowId;
       const firstNode = dp.indexes.asyncNodes.byThread.getFirst(threadId);
-      if (firstNode.asyncNodeId === asyncNode.asyncNodeId) {
-        const parentEdge = dp.indexes.asyncEvents.to.getFirst(firstNode.rootContextId);
-        const parentRootContextId = parentEdge?.fromRootContextId;
-        const parentAsyncNode = parentRootContextId && dp.indexes.asyncNodes.byRoot.getUnique(parentRootContextId);
+      if (firstNode.asyncNodeId === asyncNodeId) {
+        const parentAsyncNode = dp.util.getAsyncForkParent(asyncNodeId);
         parentAsyncNodeId = parentAsyncNode?.asyncNodeId;
         parentRowId = parentAsyncNode && appData.asyncNodesInOrder.getIndex(parentAsyncNode);
       }
@@ -124,6 +123,10 @@ class AsyncGraph extends HostComponentEndpoint {
    * @param {Application[]} apps 
    */
   _resubscribeOnData() {
+    // unsubscribe old
+    this._unsubscribeOnNewData.forEach(f => f());
+    this._unsubscribeOnNewData = [];
+
     // subscribe new
     for (const app of allApplications.selection.getAll()) {
       const { dataProvider } = app;
@@ -136,12 +139,34 @@ class AsyncGraph extends HostComponentEndpoint {
       // future-work: avoid potential memory leak
       allApplications.selection.subscribe(unsubscribe);
       this.addDisposable(unsubscribe);
+      this._unsubscribeOnNewData.push(unsubscribe);
     }
+  }
+
+  handleTraceSelected = async (trace) => {
+    // goto async node of trace
+    await this.waitForRender();
+    let asyncNode;
+    if (trace) {
+      const { applicationId, rootContextId } = trace;
+      const dp = allApplications.getById(applicationId).dataProvider;
+      asyncNode = dp.indexes.asyncNodes.byRoot.getFirst(rootContextId);
+      if (this.context.graphDocument.state.followMode && asyncNode) {
+        await this.remote.focusAsyncNode(asyncNode);
+      }
+    }
+    await this.remote.selectAsyncNode(asyncNode);
   }
 
   // ###########################################################################
   // util
   // ###########################################################################
+
+  async waitForRender() {
+    const { asyncGraphContainer } = this.context.graphDocument;
+    await asyncGraphContainer.graph.waitForRefresh();
+    await asyncGraphContainer.graph.waitForUpdate();
+  }
 
   isRelevantAsyncNode(asyncNode) {
     const { threadSelection } = allApplications.selection.data;
@@ -167,22 +192,10 @@ class AsyncGraph extends HostComponentEndpoint {
     return false;
   }
 
-  // ###########################################################################
-  // own event listener
-  // ###########################################################################
-
-  on(eventName, cb) {
-    this._emitter.on(eventName, cb);
-  }
-
-  // ###########################################################################
-  // shared
-  // ###########################################################################
-
   shared() {
     return {
       context: {
-        asyncGraph: this
+        graphRoot: this,
       }
     };
   }
@@ -197,10 +210,9 @@ class AsyncGraph extends HostComponentEndpoint {
     },
     gotoAsyncNode(applicationId, asyncNodeId) {
       const dp = allApplications.getById(applicationId).dataProvider;
-      const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
-      const firstTrace = dp.indexes.traces.byContext.getFirst(asyncNode.rootContextId);
-      if (firstTrace) {
-        traceSelection.selectTrace(firstTrace);
+      const trace = dp.util.getTraceOfAsyncNode(asyncNodeId);
+      if (trace) {
+        traceSelection.selectTrace(trace);
       }
     },
     selectSyncInThreads(applicationId, asyncNodeId) {

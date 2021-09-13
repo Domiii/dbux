@@ -1,4 +1,4 @@
-import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
+import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
 export default class HiddenBeforeNode extends HostComponentEndpoint {
   init() {
@@ -14,7 +14,7 @@ export default class HiddenBeforeNode extends HostComponentEndpoint {
 
   public = {
     hideBefore(time) {
-      this.hiddenNodeManager.setState({ hideBefore: time });
+      this.hiddenNodeManager.hideBefore(time);
     }
   }
 }

@@ -200,8 +200,8 @@ export function makeCallValueLabel(bceTrace) {
   const { applicationId, traceId, resultId } = bceTrace;
   const dp = _allApplications.getById(applicationId).dataProvider;
 
-  const args = dp.indexes.traces.byCall.get(traceId) || EmptyArray;
-  const argValues = args.slice(1).map(arg => dp.util.getTraceValueStringShort(arg.traceId));
+  const argsTraces = dp.util.getCallArgTraces(traceId) || EmptyArray;
+  const argValues = argsTraces.map(arg => dp.util.getTraceValueStringShort(arg.traceId));
   const resultValue = resultId && dp.util.getTraceValueStringShort(resultId);
   const result = resultValue && ` -> ${resultValue}` || '';
   const str = `(${argValues.join(', ')})${result}`;

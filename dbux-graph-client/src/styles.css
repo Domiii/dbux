@@ -58,6 +58,9 @@
 
 .grid {
   display: grid;
+}
+
+.grid-center {
   justify-items: center;
   align-items: center;
 }

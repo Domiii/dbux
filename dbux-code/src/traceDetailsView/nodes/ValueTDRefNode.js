@@ -45,6 +45,14 @@ export default class ValueTDRefNode extends ValueNode {
     return dp.collections.values.getById(refId);
   }
 
+  init() {
+    super.init();
+
+    const { typeName } = this.valueRef;
+    const { nodeId } = this.rootDataNode;
+    this.description = `${this.dp.util.getDataNodeValueStringShort(nodeId)}${typeName && ` (${typeName})`}`;
+  }
+
   buildChildren() {
     const { rootDataNode, dp, refId } = this;
     const entries = Object.entries(dp.util.constructValueObjectShallow(refId, rootDataNode.nodeId));

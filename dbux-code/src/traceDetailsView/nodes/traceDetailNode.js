@@ -11,10 +11,12 @@ export default class TraceDetailNode extends BaseTreeViewNode {
     return this.entry;
   }
 
-  get dp() {
+  get app() {
     const { applicationId } = this.trace;
-    const application = allApplications.getById(applicationId);
-    const { dataProvider: dp } = application;
-    return dp;
+    return allApplications.getById(applicationId);
+  }
+
+  get dp() {
+    return this.app.dataProvider;
   }
 }

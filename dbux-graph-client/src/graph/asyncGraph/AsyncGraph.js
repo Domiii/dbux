@@ -1,6 +1,6 @@
 import { compileHtmlElement, getMatchParent } from '../../util/domUtil';
-import ClientComponentEndpoint from '../../componentLib/ClientComponentEndpoint';
 import { AsyncButtonClasses } from './asyncButtons';
+import GraphBase from '../GraphBase';
 
 /** @typedef {import('../controllers/PopperManager').default} PopperManager */
 
@@ -32,7 +32,7 @@ class AsyncNodeDataMap {
   }
 }
 
-class AsyncGraph extends ClientComponentEndpoint {
+class AsyncGraph extends GraphBase {
   /**
    * @return {PopperManager}
    */
@@ -42,10 +42,12 @@ class AsyncGraph extends ClientComponentEndpoint {
 
   createEl() {
     return compileHtmlElement(/*html*/`
-      <div class="graph-root">
-        <h4>Applications:</h4>
-        <pre data-el="applications"></pre>
-        <div data-el="main" class="grid async-grid"></div>
+      <div class="graph-root grid async-graph">
+        <div style="grid-area:header;">
+          <h4>Applications:</h4>
+          <pre data-el="applications"></pre>
+        </div>
+        <div data-el="main" style="grid-area:main;" class="grid grid-center async-grid"></div>
       </div>
     `);
   }
@@ -96,16 +98,9 @@ class AsyncGraph extends ClientComponentEndpoint {
   }
 
   update() {
-    const { asyncGraphMode } = this.context.graphDocument.state;
-    if (!asyncGraphMode) {
-      this.el.classList.add('hidden');
-    }
-    else {
-      this.el.classList.remove('hidden');
-      this.updateNodeDataMap();
-      this.setUpApplications();
-      this.setUpAsyncNodes();
-    }
+    this.updateNodeDataMap();
+    this.setUpApplications();
+    this.setUpAsyncNodes();
   }
 
   updateNodeDataMap() {
@@ -122,6 +117,10 @@ class AsyncGraph extends ClientComponentEndpoint {
       this.els.applications.textContent = '(no applications selected)';
     }
   }
+
+  // ###########################################################################
+  // render
+  // ###########################################################################
 
   setUpAsyncNodes() {
     const { children } = this.state;
@@ -254,6 +253,10 @@ class AsyncGraph extends ClientComponentEndpoint {
     return decorations.join('');
   }
 
+  // ###########################################################################
+  // event handlers
+  // ###########################################################################
+
   handleClickAsyncNode(asyncNodeData) {
     const { asyncNode: { applicationId, asyncNodeId } } = asyncNodeData;
 
@@ -272,6 +275,55 @@ class AsyncGraph extends ClientComponentEndpoint {
 
     if (applicationId && threadId) {
       this.remote.selectRelevantThread(applicationId, threadId);
+    }
+  }
+
+  /**
+   * @param {{applicationId: number, asyncNodeId: number}} asyncNode 
+   * @return {HTMLElement}
+   */
+  getAsyncNodeEl({ applicationId, asyncNodeId }) {
+    const data = {
+      'application-id': applicationId,
+      'async-node-id': asyncNodeId,
+    };
+    const dataSelector = Object.entries(data).map(([key, val]) => `[data-${key}="${val || ''}"]`).join('');
+    const selector = `.async-node${dataSelector}`;
+    return document.querySelector(selector);
+  }
+
+  public = {
+    /**
+     * @param {{applicationId: number, asyncNodeId: number}} asyncNode 
+     * @param {boolean} ignoreFailed 
+     */
+    focusAsyncNode: (asyncNode, ignoreFailed = false) => {
+      const asyncNodeEl = this.getAsyncNodeEl(asyncNode);
+      if (asyncNodeEl) {
+        this.focusController.slide(asyncNodeEl);
+      }
+      else if (!ignoreFailed) {
+        this.logger.error(`Cannot find DOM of asyncNode: ${JSON.stringify(asyncNode)} when trying to focus`);
+      }
+    },
+
+    /**
+     * @param {{applicationId: number, asyncNodeId: number}} asyncNode 
+     * @param {boolean} ignoreFailed 
+     */
+    selectAsyncNode: (asyncNode, ignoreFailed = false) => {
+      document.querySelectorAll('.async-node.async-cell-selected').forEach(node => {
+        node.classList.remove('async-cell-selected');
+      });
+      if (asyncNode) {
+        const asyncNodeEl = this.getAsyncNodeEl(asyncNode);
+        if (asyncNodeEl) {
+          asyncNodeEl.classList.add('async-cell-selected');
+        }
+        else if (!ignoreFailed) {
+          this.logger.error(`Cannot find DOM of asyncNode: ${JSON.stringify(asyncNode)} when trying to select`);
+        }
+      }
     }
   }
 }

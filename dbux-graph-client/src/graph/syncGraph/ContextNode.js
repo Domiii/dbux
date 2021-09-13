@@ -1,8 +1,8 @@
 import { getStaticContextColor } from '@dbux/graph-common/src/shared/contextUtil';
-import { compileHtmlElement, decorateClasses } from '../util/domUtil';
+import { compileHtmlElement, decorateClasses } from '../../util/domUtil';
 // import { isMouseEventPlatformModifierKey } from '../util/keyUtil';
-import { getPlatformModifierKeyString } from '../util/platformUtil';
-import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
+import { getPlatformModifierKeyString } from '../../util/platformUtil';
+import ClientComponentEndpoint from '../../componentLib/ClientComponentEndpoint';
 
 let choicingIndicator;
 class ContextNode extends ClientComponentEndpoint {
@@ -98,12 +98,6 @@ class ContextNode extends ClientComponentEndpoint {
       this.els.stats.textContent = '';
     }
 
-    // if (ThemeMode.is.Dark(themeMode)) {
-    //   decorateClasses(this.els.title, {
-    //     'selected-trace': isSelected
-    //   });
-    // }
-    // else {
     decorateClasses(this.els.title, {
       'selected-trace': isSelected
     });

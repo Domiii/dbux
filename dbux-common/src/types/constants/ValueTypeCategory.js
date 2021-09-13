@@ -41,13 +41,13 @@ export function isObjectCategory(category) {
   return category >= ValueTypeCategory.Function;
 }
 
-const SimpoleStringByType = {
+const SimpleStringByType = {
   [ValueTypeCategory.Array]: '[]',
   [ValueTypeCategory.Object]: '{}',
   [ValueTypeCategory.Function]: 'ƒ',
 };
 export function getSimpleTypeString(category) {
-  return SimpoleStringByType[category];
+  return SimpleStringByType[category];
 }
 
 /**
