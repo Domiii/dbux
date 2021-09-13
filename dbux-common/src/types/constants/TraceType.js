@@ -116,6 +116,7 @@ export function isTraceReturn(traceType) {
 
 
 const functionExitTypes = [...returnTraceTypes];
+// functionExitTypes[TraceType.ThrowArgument] = true;
 functionExitTypes[TraceType.EndOfContext] = true;
 
 export function isTraceFunctionExit(traceType) {

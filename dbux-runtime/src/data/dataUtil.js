@@ -268,7 +268,7 @@ export function getFunctionDefinitionTraceOfTrace(trace) {
  */
 function isClass(value) {
   return typeof value === 'function' && (
-    /^\s*class[^\w]+/.test(value.toString()) ||
+    /^\s*class[^\w]+/.test(Function.prototype.toString.call(value)) ||
 
     // 1. native classes don't have `class` in their name
     // 2. However, they are globals and start with a capital letter.

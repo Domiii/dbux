@@ -280,8 +280,8 @@ export default class AsyncEventUpdateCollection extends Collection {
       fromRootId = preEventRootId;
     }
 
-    // only one out-going CHAIN per root
-    isChain = isChain && !dp.indexes.asyncEvents.from.hasAny(chainFromRootId);
+    // // only one out-going CHAIN per root
+    // isChain = isChain && !dp.indexes.asyncEvents.from.hasAny(chainFromRootId);
 
     // const previousFromThreadId = this.getOrAssignRootThreadId(fromRootId);
     // const previousToThreadId = dp.util.getAsyncRootThreadId(toRootId);

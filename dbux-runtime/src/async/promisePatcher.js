@@ -111,7 +111,7 @@ function patchThenCallback(cb, thenRef) {
   }
 
   const originalCb = cb;
-  return function patchedCb(previousResult) {
+  return function patchedCb(...args) {
     if (activeThenCbCount) {
       // NOTE: then callbacks should never be nested (might hint at a Dbux bug)
       warn(`a "then" callback was called before a previous "then" callback has finished, schedulerTraceId=${thenRef.schedulerTraceId}`);
@@ -125,7 +125,7 @@ function patchThenCallback(cb, thenRef) {
     try {
       try {
         // actually call `then` callback
-        returnValue = originalCb(previousResult);
+        returnValue = originalCb(...args);
       }
       finally {
         const cbContext = getLastContextCheckCallee(originalCb);
@@ -253,6 +253,35 @@ function patchFinally(holder) {
   );
 }
 
+function patchCatch(holder) {
+  if (!holder.catch) {
+    return;
+  }
+
+  monkeyPatchFunctionHolder(holder, 'catch',
+    (preEventPromise, [cb], originalCatch, patchedCatch) => {
+      const thenRef = _makeThenRef(preEventPromise, patchedCatch);
+      if (thenRef) {
+        cb = patchThenCallback(cb, thenRef);
+      }
+
+      const postEventPromise = originalCatch.call(preEventPromise, cb);
+      _onThen(thenRef, preEventPromise, postEventPromise);
+      return postEventPromise;
+    }
+  );
+
+  // /**
+  //  * Same as `then(undefined, failCb)`
+  //  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/catch
+  //  */
+  // tryRegisterMonkeyPatchedFunction(holder, 'catch', function patchedCatch(failCb) {
+  //   RuntimeMonitorInstance.callbackPatcher.monkeyPatchCallee()
+  //   const then = getPatchedThen(...);
+  //   return then(undefined, failCb);
+  // });
+}
+
 function _onThen(thenRef, preEventPromise, postEventPromise) {
   if (!thenRef) {
     return;
@@ -265,20 +294,6 @@ function _onThen(thenRef, preEventPromise, postEventPromise) {
 
   // Event: PreThen
   RuntimeMonitorInstance._runtime.async.preThen(thenRef);
-}
-
-function patchCatch(holder) {
-  if (!holder.catch) {
-    return;
-  }
-
-  /**
-   * Same as `then(undefined, failCb)`
-   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/catch
-   */
-  tryRegisterMonkeyPatchedFunction(holder, 'catch', function patchedCatch(failCb) {
-    return this.then(undefined, failCb);
-  });
 }
 
 
