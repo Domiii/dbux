@@ -2,9 +2,16 @@ import isFunction from 'lodash/isFunction';
 import * as t from "@babel/types";
 import { newLogger } from '@dbux/common/src/log/logger';
 
+/** @typedef {import('../../definitions/TraceCfg').InputTrace} InputTrace  */
+
 export const ZeroNode = t.numericLiteral(0);
 export const NullNode = t.nullLiteral();
 export const UndefinedNode = t.identifier('undefined');
+
+/**
+ * @type {InputTrace}
+ */
+export const ZeroInputTrace = { tidIdentifier: ZeroNode };
 
 
 // eslint-disable-next-line no-unused-vars

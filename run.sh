@@ -5,8 +5,8 @@
 set -e # cancel on error
 # set -x # verbose echo mode
 
-# fname="__samplesInput__/finally1"
-fname="case-studies/async/chain/chain2b"
+fname="__samplesInput__/arrays2"
+# fname="case-studies/async/chain/chain3"
 
 
 

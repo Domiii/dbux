@@ -1030,7 +1030,11 @@ export default class RuntimeMonitor {
       const argTid = argTids[i];
       const len = spreadLengths[i];
 
-      if (len >= 0) {
+      if (!argTid) {
+        // empty (omitted) array element (e.g.: [1, , 2])
+        continue;
+      }
+      else if (len >= 0) {
         // [spread]
         for (let j = 0; j < len; j++) {
           const readAccess = {

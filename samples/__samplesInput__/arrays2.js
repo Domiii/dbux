@@ -10,6 +10,6 @@ const a = [1,2];
 console.log(a, a[0], a[3]);
 
 // empty array slots
-const b = [, 3, 4, , 5];
+const b = [, , 3, 4, , 6];
 
-console.log(b);
+console.log(b, b[5]);
