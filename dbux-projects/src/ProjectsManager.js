@@ -312,16 +312,16 @@ export default class ProjectsManager {
     }
   }
 
-  async savePracticeSession() {
-    if (this.practiceSession) {
-      const { bug } = this.practiceSession;
+  async savePracticeSession(practiceSession = this.practiceSession) {
+    if (practiceSession) {
+      const { bug, createdAt, sessionId, logFilePath, state } = practiceSession;
       const applicationUUIDs = this.pdp.collections.applications.getAllActual().map(app => app.uuid);
       await this.externals.storage.set(savedPracticeSessionKey, {
         bugId: bug.id,
-        createdAt: this.practiceSession.createdAt,
-        sessionId: this.practiceSession.sessionId,
-        logFilePath: this.practiceSession.logFilePath,
-        state: this.practiceSession.state,
+        createdAt,
+        sessionId,
+        logFilePath,
+        state,
         applicationUUIDs,
       });
     }
@@ -338,14 +338,18 @@ export default class ProjectsManager {
         return currentSize + getFileSizeSync(appFilePath);
       }, getFileSizeSync(logFilePath));
       const sizeInMB = size / 1024 / 1024;
-      const FileSizeThresholdInMB = 10;
-      if (sizeInMB > FileSizeThresholdInMB) {
-        // eslint-disable-next-line max-len
-        return await this.externals.confirm(`Dbux is trying to recover your previous practice session.\nThe log files are ${sizeInMB.toFixed(2)}MB, do you want to recover the practice session?`, true);
-      }
-      else {
-        return true;
-      }
+      // eslint-disable-next-line max-len
+      const confirmMessage = `Dbux is trying to recover your previous practice session.\nThe log files are ${sizeInMB.toFixed(2)}MB, do you want to recover the practice session?`;
+      const buttons = {
+        [`Yes`]: () => true,
+        [`Delete practice session`]: async () => {
+          // log should be discarded and the user should not be asked again
+          await this.savePracticeSession(null);
+          return false;
+        }
+      };
+      const cancelCallback = () => false;
+      return await this.externals.showMessage.info(confirmMessage, buttons, { modal: true }, cancelCallback);
     }
     catch (err) {
       logTrace(`Could not recover practice session`, err);
