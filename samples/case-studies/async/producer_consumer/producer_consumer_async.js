@@ -1,5 +1,5 @@
 import { IdleTime, N, startProduce, finishProduce, startConsume, finishConsume, hasSpace, hasItems, getProduceTime, getConsumeTime, } from './producer_consumer_base';
-import { waitTicksAsync, repeatAsync } from 'asyncUtil';
+import { waitTicksAsync, repeatAsync, sleep } from 'asyncUtil';
 
 /** ###########################################################################
  * Basic functions
@@ -33,15 +33,19 @@ async function producer(n) {
 }
 
 async function consumer(n) {
-  await repeatAsync(n, async () => {
-    if (hasItems()) {
-      await consume();
-      n--;
-    }
-    else {
-      await idle();
-    }
-  });
+  await repeatAsync(
+    () => !!n,
+    async function consumerTick() {
+      // await sleep();
+      if (hasItems()) {
+        --n;
+        console.log('cons', n);
+        await consume();
+      }
+      else {
+        await idle();
+      }
+    });
 }
 
 /** ###########################################################################

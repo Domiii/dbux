@@ -22,7 +22,7 @@ function produce() {
 }
 
 function producer(n) {
-  return repeatPromise(n, () => {
+  return repeatPromise(n, function producerTick() {
     if (hasSpace()) {
       return produce();
     }
@@ -33,14 +33,20 @@ function producer(n) {
 }
 
 function consumer(n) {
-  return repeatPromise(n, () => {
-    if (hasItems()) {
-      return consume();
+  return repeatPromise(
+    () => !!n,
+    function consumerTick() {
+      if (hasItems()) {
+        --n;
+        // console.log('cons', n);
+        return consume();
+      }
+      else {
+        // console.log('cons idle', n);
+        return idle();
+      }
     }
-    else {
-      return idle();
-    }
-  })
+  );
 }
 
 /** ###########################################################################
@@ -48,6 +54,6 @@ function consumer(n) {
  *  #########################################################################*/
 
 producer(N);
-// producer(N);
-// consumer(N);
-consumer(2*N);
+producer(N);
+consumer(N);
+consumer(N);

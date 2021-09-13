@@ -8,9 +8,9 @@ import { randomInt } from 'asyncUtil';
 // ###########################################################################
 
 const ProducerTime = 2;
-const ProducerTimeVar = 1;
-const ConsumerTime = 2;
-const ConsumerTimeVar = 1;
+const ProducerTimeVar = 3;
+const ConsumerTime = 3;
+const ConsumerTimeVar = 3;
 const MaxItems = 5;
 const buffer = [];
 let nItems = 0;
@@ -34,7 +34,10 @@ export function hasItems() {
 }
 
 export function getProduceTime() {
-  return (ProducerTime - ProducerTimeVar) + randomInt(ProducerTimeVar * 2 + 1)
+  return Math.max(
+    1,
+    (ProducerTime - ProducerTimeVar) + randomInt(ProducerTimeVar * 2 + 1)
+  );
 }
 
 export function startProduce() {
@@ -48,11 +51,14 @@ export function finishProduce() {
   ++nItems;
   --producing;
 
-  console.log(`produced item ${item}, ${nItems} (-${consuming}) left`);
+  console.log(`produced item ${item}, remaining: ${nItems}, producing: ${producing}, buffer: [${buffer}]`);
 }
 
 export function getConsumeTime() {
-  return (ConsumerTime - ConsumerTimeVar) + randomInt(2 * ConsumerTimeVar + 1)
+  return Math.max(
+    1,
+    (ConsumerTime - ConsumerTimeVar) + randomInt(2 * ConsumerTimeVar + 1)
+  );
 }
 
 export function startConsume() {
@@ -65,5 +71,5 @@ export function finishConsume() {
   --nItems;
   --consuming;
 
-  console.log(`consumed item ${item}, ${nItems} (-${consuming}) left`);
+  console.log(`consumed item ${item}, remaining: ${nItems}, consuming: ${consuming}, buffer: [${buffer}]`);
 }
