@@ -1,5 +1,6 @@
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import { buildArrayExpression } from '../instrumentation/builders/arrays';
+import { ZeroInputTrace } from '../instrumentation/builders/buildUtil';
 import BaseNode from './BaseNode';
 import { makeSpreadableArgumentArrayCfg } from '../helpers/argsUtil';
 
@@ -11,7 +12,8 @@ export default class ArrayExpression extends BaseNode {
 
   exit() {
     const { path } = this;
-    const [elements] = this.getChildPaths();
+    const [elementPaths] = this.getChildPaths();
+    const [elementNodes] = this.getChildNodes();
 
     const traceData = {
       path,
@@ -22,7 +24,7 @@ export default class ArrayExpression extends BaseNode {
           isNew: true
         },
         data: {
-          argConfigs: makeSpreadableArgumentArrayCfg(elements)
+          argConfigs: makeSpreadableArgumentArrayCfg(elementPaths)
         }
       },
       meta: {
@@ -30,9 +32,11 @@ export default class ArrayExpression extends BaseNode {
       }
     };
 
-    // NOTE: arrays can contain empty elements, e.g.: `[,2,3,4,,5,,,6]`
-    const inputs = elements.filter(el => el.node);
-
-    this.Traces.addTraceWithInputs(traceData, inputs);
+    /**
+     * NOTE: arrays can contain empty elements, e.g.: `[,2,3,4,,5,,,6]`
+     * Based on Traces#addDefaultTraces.
+     */
+    const inputs = elementNodes.map(el => el?.addDefaultTrace() || ZeroInputTrace);
+    this.Traces.addTraceWithInputTraceCfgs(traceData, inputs);
   }
 }

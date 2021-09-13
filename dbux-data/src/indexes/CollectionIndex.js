@@ -298,6 +298,10 @@ export default class CollectionIndex {
   //  public(usage)
   // ###########################################################################
 
+  hasAny(key) {
+    return !!(this.getFirst(key) !== null);
+  }
+
   /**
    * @param {number} key 
    * @return {T[]}

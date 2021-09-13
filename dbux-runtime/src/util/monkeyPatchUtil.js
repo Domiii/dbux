@@ -118,7 +118,7 @@ export function getOrPatchFunction(originalFunction, patcher) {
 }
 
 
-function tryRegisterMonkeyPatchedFunction(holder, name, patchedFunction) {
+export function tryRegisterMonkeyPatchedFunction(holder, name, patchedFunction) {
   const originalFunction = holder[name];
   if (!(originalFunction instanceof Function)) {
     throw new Error(`Monkey-patching failed - ${holder}.${name} is not a function: ${originalFunction}`);

@@ -10,7 +10,7 @@ import { peekBCEMatchCallee, getLastContextCheckCallee, isInstrumentedFunction }
 import PromiseRuntimeData from '../data/PromiseRuntimeData';
 // import traceCollection from '../data/traceCollection';
 import valueCollection from '../data/valueCollection';
-import { isMonkeyPatchedFunction, monkeyPatchFunctionHolder } from '../util/monkeyPatchUtil';
+import { isMonkeyPatchedFunction, monkeyPatchFunctionHolder, tryRegisterMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError } = newLogger('PromisePatcher');
@@ -276,9 +276,9 @@ function patchCatch(holder) {
    * Same as `then(undefined, failCb)`
    * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/catch
    */
-  holder.catch = function (failCb) {
+  tryRegisterMonkeyPatchedFunction(holder, 'catch', function patchedCatch(failCb) {
     return this.then(undefined, failCb);
-  };
+  });
 }
 
 

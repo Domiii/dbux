@@ -112,7 +112,8 @@ export default class Runtime {
         this._runStart(mysteriousStack);
         return true;
       }
-      else if (!this._executingStack) {
+      else if (!this.isExecuting()) {
+        // normal beginning of new run
         this.newStack();
         return true;
       }
@@ -129,6 +130,7 @@ export default class Runtime {
    * `setImmediate` beforehand, causing the current stack to be resumed in the wrong context.
    */
   _ensureEmptyStackBarrier() {
+    // debug('_ensureEmptyStackBarrier', !!this._emptyStackBarrier);
     if (!this._emptyStackBarrier) {
       this._emptyStackBarrier = scheduleNextPossibleRun(this._executeEmptyStackBarrier);
     }
@@ -399,7 +401,7 @@ export default class Runtime {
    */
   newRun() {
     this._currentRunId = ++this._maxRunId;
-    // debug(`newRun`, this._currentRunId);
+    debug(`newRun`, this._currentRunId);
     return this._currentRunId;
   }
 
@@ -440,7 +442,7 @@ export default class Runtime {
    * and then calls `resumeWaitingStack` on its top context.
    */
   resumeWaitingStackReal(realContextId) {
-    const waitingStack = this._switchStack(realContextId);
+    const waitingStack = this._switchStackOnResume(realContextId);
     if (!waitingStack) { return null; }
 
     const resumeContextId = this._executingStack.top();
@@ -457,7 +459,7 @@ export default class Runtime {
    * and pops the `Resume` context.
    */
   resumeWaitingStack(resumeContextId) {
-    const waitingStack = this._switchStack(resumeContextId);
+    const waitingStack = this._switchStackOnResume(resumeContextId);
     if (!waitingStack) {
       logTrace('resumeWaitingStack called on unregistered `resumeContextId`:', resumeContextId);
       return null;
@@ -470,7 +472,7 @@ export default class Runtime {
     return waitingStack;
   }
 
-  _switchStack(contextId) {
+  _switchStackOnResume(contextId) {
     const waitingStack = this._waitingStacks.get(contextId);
     if (!waitingStack) {
       return null;
@@ -518,7 +520,7 @@ export default class Runtime {
     this._executingStack = stack;
     // console.warn('[RunStart] ' + this._currentRunId, new Error().stack); //, this.getLingeringStackCount());
     // getDefaultClient().bufferBreakpoint();
-    debug('[new run]', this._currentRunId);
+    // debug('[new run]', this._currentRunId);
   }
 
   /**

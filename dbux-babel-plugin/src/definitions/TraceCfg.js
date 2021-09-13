@@ -89,3 +89,13 @@ export default class TraceCfg {
    */
   data;
 }
+
+/**
+ * NOTE: input traces only need a tidIdentifier which is then added to the final `inputs` array which parttakes in a trace call.
+ */
+export class InputTrace {
+  /**
+   * @type {number}
+   */
+  tidIdentifier;
+}

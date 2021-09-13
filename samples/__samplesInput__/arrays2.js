@@ -1,4 +1,4 @@
-const a = [1,2];
+const a = [1, 2];
 
 // a.push(3);
 
@@ -10,7 +10,6 @@ const a = [1,2];
 console.log(a, a[0], a[3]);
 
 // empty array slots
-const b = [, 3, 4, , 5];
-const c = [...b];
+const b = [, , 3, 4, , 6];
 
-console.log(b, b[4]);
+console.log(b, b[5]);

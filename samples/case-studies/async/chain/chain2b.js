@@ -10,5 +10,13 @@ function f(x) {
   )
 };
 
-f(1)();
-f(2)();
+A(
+  'A',
+  () => {
+    var p = Promise.resolve();
+    p.then(f(1));
+    p.then(f(2));
+    
+    return p;
+  }
+);

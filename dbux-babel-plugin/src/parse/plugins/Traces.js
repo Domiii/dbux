@@ -299,8 +299,12 @@ export default class Traces extends BasePlugin {
   addTraceWithInputs(traceData, inputPaths) {
     // add trace for inputTraces if they don't have any yet
     // NOTE: especially for `Literal` or `ReferencedIdentifier`
-    traceData.inputTraces = this.addDefaultTraces(inputPaths);
+    const inputTraces = this.addDefaultTraces(inputPaths);
+    return this.addTraceWithInputTraceCfgs(traceData, inputTraces);
+  }
 
+  addTraceWithInputTraceCfgs(traceData, inputTraceCfgs) {
+    traceData.inputTraces = inputTraceCfgs;
     return this.addTrace(traceData);
   }
 

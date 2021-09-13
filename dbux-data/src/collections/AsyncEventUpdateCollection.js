@@ -280,24 +280,25 @@ export default class AsyncEventUpdateCollection extends Collection {
       fromRootId = preEventRootId;
     }
 
+    // only one out-going CHAIN per root
+    isChain = isChain && !dp.indexes.asyncEvents.from.hasAny(chainFromRootId);
+
     // const previousFromThreadId = this.getOrAssignRootThreadId(fromRootId);
     // const previousToThreadId = dp.util.getAsyncRootThreadId(toRootId);
     const fromThreadId = this.getOrAssignRootThreadId(fromRootId, schedulerTraceId);
     const oldToThreadId = dp.util.getAsyncRootThreadId(toRootId);
     let toThreadId;
     if (oldToThreadId) {
-      // if (!isChain || oldToThreadId !== fromThreadId) 
-      {
-        this.logger.trace(`Tried to overwrite toThreadId, from=${fromThreadId}, old to=${oldToThreadId}, postUpdateData=${JSON.stringify(postUpdateData)}`);
-      }
-      isChain = oldToThreadId === fromThreadId;
-      toThreadId = oldToThreadId;
+      // toRootId was previously assigned a thread id already -> should not happen
+      // if (!isChain || oldToThreadId !== fromThreadId) {
+      this.logger.trace(`Tried to overwrite toThreadId, from=${fromThreadId}, oldTo=${oldToThreadId}, chain=${isChain}, postUpdateData=${JSON.stringify(postUpdateData)}`);
+      // }
+      // isChain = oldToThreadId === fromThreadId;
+      // toThreadId = oldToThreadId;
     }
-    else {
-      // toRootId was not assigned to any thread yet
-      toThreadId = isChain ? fromThreadId : this.newThreadId();
-      dp.collections.asyncNodes.setNodeThreadId(toRootId, toThreadId, schedulerTraceId);
-    }
+
+    toThreadId = isChain ? fromThreadId : this.newThreadId();
+    dp.collections.asyncNodes.setNodeThreadId(toRootId, toThreadId, schedulerTraceId);
 
     // let toThreadId = toRootId && this.getOrAssignRootThreadId(toRootId, schedulerTraceId) || 0;
 
