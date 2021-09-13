@@ -4,6 +4,7 @@ import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import AsyncEventUpdateType, { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import { makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
 import traceSelection from '@dbux/data/src/traceSelection';
+import { showInformationMessage } from '../../codeUtil/codeModals';
 import { makeTreeItem } from '../../helpers/treeViewHelpers';
 import TraceDetailNode from './traceDetailNode';
 
@@ -31,7 +32,12 @@ class RootEdgesTDNode extends TraceDetailNode {
     ];
   }
 
+  get asyncNode() {
+    return this.dp.indexes.asyncNodes.byRoot.getUnique(this.trace.rootContextId);
+  }
+
   init() {
+    this.contextValue = 'dbuxTraceDetailsView.node.asyncRootEdgesTDNode';
     this.description = `(${this.allEdges.length || 0})`;
   }
 
@@ -78,6 +84,31 @@ class RootEdgesTDNode extends TraceDetailNode {
       ...inEvents,
       ...outEvents
     ];
+  }
+
+  selectForkParent() {
+    const { dp, asyncNode: { asyncNodeId } } = this;
+    const forkParent = dp.util.getAsyncForkParent(asyncNodeId);
+    if (forkParent) {
+      const trace = dp.util.getTraceOfAsyncNode(forkParent.asyncNodeId);
+      if (trace) {
+        traceSelection.selectTrace(trace);
+        return;
+      }
+    }
+    showInformationMessage(`Can't find "forkParent" of current trace`);
+  }
+
+  selectScheduler() {
+    const { schedulerTraceId } = this.asyncNode;
+    if (schedulerTraceId) {
+      const schedulerTrace = this.dp.collections.traces.getById(schedulerTraceId);
+      if (schedulerTrace) {
+        traceSelection.selectTrace(schedulerTrace);
+        return;
+      }
+    }
+    showInformationMessage(`Can't find "scheduler" of current trace`);
   }
 }
 

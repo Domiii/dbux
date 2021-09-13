@@ -60,7 +60,7 @@ class AsyncGraph extends GraphBase {
     // }
 
     return asyncNodes.map((asyncNode, index) => {
-      const { applicationId, rootContextId, threadId } = asyncNode;
+      const { applicationId, rootContextId, threadId, asyncNodeId } = asyncNode;
 
       if (!rootContextId) {
         // sanity check
@@ -90,10 +90,8 @@ class AsyncGraph extends GraphBase {
 
       let parentAsyncNodeId, parentRowId;
       const firstNode = dp.indexes.asyncNodes.byThread.getFirst(threadId);
-      if (firstNode.asyncNodeId === asyncNode.asyncNodeId) {
-        const parentEdge = dp.indexes.asyncEvents.to.getFirst(firstNode.rootContextId);
-        const parentRootContextId = parentEdge?.fromRootContextId;
-        const parentAsyncNode = parentRootContextId && dp.indexes.asyncNodes.byRoot.getUnique(parentRootContextId);
+      if (firstNode.asyncNodeId === asyncNodeId) {
+        const parentAsyncNode = dp.util.getAsyncForkParent(asyncNodeId);
         parentAsyncNodeId = parentAsyncNode?.asyncNodeId;
         parentRowId = parentAsyncNode && appData.asyncNodesInOrder.getIndex(parentAsyncNode);
       }
@@ -212,10 +210,9 @@ class AsyncGraph extends GraphBase {
     },
     gotoAsyncNode(applicationId, asyncNodeId) {
       const dp = allApplications.getById(applicationId).dataProvider;
-      const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
-      const firstTrace = dp.indexes.traces.byContext.getFirst(asyncNode.rootContextId);
-      if (firstTrace) {
-        traceSelection.selectTrace(firstTrace);
+      const trace = dp.util.getTraceOfAsyncNode(asyncNodeId);
+      if (trace) {
+        traceSelection.selectTrace(trace);
       }
     },
     selectSyncInThreads(applicationId, asyncNodeId) {

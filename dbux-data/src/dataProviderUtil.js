@@ -2519,5 +2519,21 @@ export default {
       return dp.util.getPostCallbackData(postEventUpdate);
     }
     throw new Error(`Invalid AsyncEventUpdateType for postEventUpdate: ${JSON.stringify(postEventUpdate)}`);
+  },
+
+  /** @param {DataProvider} dp */
+  getTraceOfAsyncNode(dp, asyncNodeId) {
+    const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
+    const firstTrace = dp.indexes.traces.byContext.getFirst(asyncNode.rootContextId);
+    return firstTrace;
+  },
+
+  /** @param {DataProvider} dp */
+  getAsyncForkParent(dp, asyncNodeId) {
+    const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
+    const parentEdge = dp.indexes.asyncEvents.to.getFirst(asyncNode.rootContextId);
+    const parentRootContextId = parentEdge?.fromRootContextId;
+    const parentAsyncNode = dp.indexes.asyncNodes.byRoot.getUnique(parentRootContextId);
+    return parentAsyncNode;
   }
 };
