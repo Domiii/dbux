@@ -24,9 +24,10 @@ async function producer(n) {
 }
 
 async function consumer(n) {
-  while (n--) {
+  while (n) {
     if (hasItems()) {
       await consume();
+      n--;
     }
     else {
       await idle();
