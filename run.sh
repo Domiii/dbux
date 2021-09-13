@@ -5,7 +5,7 @@
 set -e # cancel on error
 # set -x # verbose echo mode
 
-fname="__samplesInput__/arrays2"
+fname="__samplesInput__/async/catch1"
 # fname="case-studies/async/chain/chain3"
 
 

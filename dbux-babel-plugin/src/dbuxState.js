@@ -112,7 +112,8 @@ export default function injectDbuxState(programPath, programState) {
 
         // calls
         traceBCE: makeProgramId('bce'),
-        // traceSpreadArg: makeProgramId('tsa'),
+        traceArg: makeProgramId('a'),
+        traceSpreadArg: makeProgramId('tsa'),
         traceCallResult: makeProgramId('tcr'),
 
         // {Array,Object}Expression

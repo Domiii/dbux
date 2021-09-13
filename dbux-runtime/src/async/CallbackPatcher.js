@@ -2,23 +2,24 @@
 // import isThenable from '@dbux/common/src/util/isThenable';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { peekBCEMatchCallee, isInstrumentedFunction, getFirstContextAfterTrace, getTraceStaticTrace } from '../data/dataUtil';
+import { isInstrumentedFunction, getFirstContextAfterTrace } from '../data/dataUtil';
 // eslint-disable-next-line max-len
-import { getOriginalCallback, getOriginalFunction, getPatchedFunctionOrNull, isMonkeyPatchedCallback, isMonkeyPatchedFunction, isOrHasMonkeyPatchedFunction, monkeyPatchFunctionOverride, _registerMonkeyPatchedCallback, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
+import { getOriginalCallback, isMonkeyPatchedCallback, isOrHasMonkeyPatchedFunction, _registerMonkeyPatchedCallback, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
 // import executionContextCollection from '../data/executionContextCollection';
 import traceCollection from '../data/traceCollection';
+import valueCollection from '../data/valueCollection';
 
 
 function containsInstrumentedCallbacks(args, spreadArgs) {
   spreadArgs = spreadArgs || EmptyArray;
-  return args?.some((arg, i) => {
+  return args.some((arg, i) => {
     if (spreadArgs[i]) {
       // check all spread args
       return spreadArgs[i].some(isInstrumentedFunction);
     }
     // check regular arg
     return isInstrumentedFunction(arg);
-  }) || false;
+  });
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -185,66 +186,54 @@ export default class CallbackPatcher {
   // monkeyPatchCallee
   // ###########################################################################
 
-  defaultCalleePatcher = (firstCallId, originalFunction) => {
-    if (!originalFunction) {
-      trace(`tried to patch non-existing callback (at ${traceCollection.makeTraceInfo(firstCallId)})`);
-      return originalFunction;
-    }
+  // defaultCalleePatcher = (firstCallId, originalFunction) => {
+  //   if (!originalFunction) {
+  //     trace(`tried to patch non-existing callback (at ${traceCollection.makeTraceInfo(firstCallId)})`);
+  //     return originalFunction;
+  //   }
 
-    const self = this; // NOTE: inside `patchedCallee` `this` will be the callee's `this`
-    const eventListenerRegex = /^on[A-Z]|event/;
-    const isEventListener = !!(originalFunction.name || '').match(eventListenerRegex);
+  //   const self = this; // NOTE: inside `patchedCallee` `this` will be the callee's `this`
+  //   const eventListenerRegex = /^on[A-Z]|event/;
+  //   const isEventListener = !!(originalFunction.name || '').match(eventListenerRegex);
+  //   // const schedulerTraceId = firstCallId;
 
-    return function patchedCallee(...args) {
-      if (this instanceof patchedCallee) {
-        // -> `originalFunction` is a ctor
-        trace(`patched constructor call - new ${originalFunction.name} -`, originalFunction);
-      }
+  //   return function patchedCallee(...args) {
+  //     if (this instanceof patchedCallee) {
+  //       // -> `originalFunction` is a ctor
+  //       trace(`patched constructor call - new ${originalFunction.name} -`, originalFunction);
+  //     }
 
-      // // NOTE: the registered value for callee is `originalFunction`, not `patchedFunction`
-      const bceTrace = peekBCEMatchCallee(originalFunction);
-      const schedulerTraceId = bceTrace?.traceId;
-      // const schedulerTraceId = firstCallId;
-      let hasInstrumentedCallback = false;
-      if (schedulerTraceId) {
-        args = args.map(arg => {
-          if (!isInstrumentedFunction(arg)) {
-            return arg;
-          }
+  //     // // NOTE: the registered value for callee is `originalFunction`, not `patchedFunction`
+  //     const bceTrace = peekBCEMatchCallee(originalFunction);
+  //     const schedulerTraceId = bceTrace?.traceId;
 
-          // wrap callbacks
-          const newArg = self.patchCallback(arg, schedulerTraceId);
-          hasInstrumentedCallback = !!newArg;
-          return newArg || arg;
-        });
-      }
+  //     let hasInstrumentedCallback = false;
+  //     if (schedulerTraceId) {
+  //       args = args.map(arg => {
+  //         if (!isInstrumentedFunction(arg)) {
+  //           return arg;
+  //         }
 
-      // console.trace(`calleePatcher ${originalFunction.name}`);
-      const result = originalFunction.call(this, ...args);
+  //         // wrap callbacks
+  //         const newArg = self.patchCallback(arg, schedulerTraceId);
+  //         hasInstrumentedCallback = !!newArg;
+  //         return newArg || arg;
+  //       });
+  //     }
 
-      if (hasInstrumentedCallback) {
-        self.runtime.async.preCallback(schedulerTraceId, isEventListener);
-      }
+  //     // console.trace(`calleePatcher ${originalFunction.name}`);
+  //     const result = originalFunction.call(this, ...args);
 
-      return result;
-    };
-  };
+  //     if (hasInstrumentedCallback) {
+  //       self.runtime.async.preCallback(schedulerTraceId, isEventListener);
+  //     }
 
-  /**
-   * Dynamically "monkey-patch-override" a function (if needed).
-   * @return the function that will end up getting called instead of originalFunction.
-   */
-  monkeyPatchCallee(originalFunction, callId, args, spreadArgs) {
-    // if (!argTids.length) {
-    //   // monkey patching is only necessary for instrumenting callback arguments -> nothing to do
-    //   return originalFunction;
-    // }
-    const bceStaticTrace = getTraceStaticTrace(callId);
+  //     return result;
+  //   };
+  // };
 
-    if (
-      // do not auto-patch classes/ctors (for now)
-      !bceStaticTrace.data?.isNew &&
-
+  shouldPatchArgs(originalFunction, args, spreadArgs) {
+    return (
       // only instrument functions if they themselves are not instrumented (recorded)
       !isInstrumentedFunction(originalFunction) &&
 
@@ -253,21 +242,66 @@ export default class CallbackPatcher {
 
       // only patch if it passes on callbacks of instrumented functions
       containsInstrumentedCallbacks(args, spreadArgs)
-    ) {
-      // should instrument -> monkey patch it
-      // warn(`calleePatcher:`, originalFunction.name);
-      let f = getPatchedFunctionOrNull(originalFunction);
-      if (!f) {
-        const calleePatcher = this.defaultCalleePatcher;
+    );
+  }
 
-        f = monkeyPatchFunctionOverride(
-          originalFunction,
-          calleePatcher.bind(this, callId)
-        );
-      }
-      return f;
+  maybeMonkeyPatchCallback(arg, argTid) {
+    if (!isInstrumentedFunction(arg)) {
+      return arg;
     }
 
-    return originalFunction;
+    // pre callback
+    const eventListenerRegex = /^on[A-Z]|event/;
+    const name = valueCollection._readProperty(arg, 'name');
+    const isEventListener = !!(name || '').match(eventListenerRegex);
+    this.runtime.async.preCallback(argTid, isEventListener);
+
+    // patch callback
+    const newArg = this.patchCallback(arg, argTid);
+    return newArg || arg;
+  }
+
+  /**
+   * Dynamically "monkey-patch-override" a function (if needed).
+   * @return the function that will end up getting called instead of originalFunction.
+   */
+  monkeyPatchArgs(originalFunction, callId, args, spreadArgs, argTids) {
+    // if (!argTids.length) {
+    //   // monkey patching is only necessary for instrumenting callback arguments -> nothing to do
+    //   return originalFunction;
+    // }
+    if (!args) {
+      return;
+    }
+
+    if (/* !bceStaticTrace.data?.isNew && */
+      this.shouldPatchArgs(originalFunction, args, spreadArgs)) {
+      // -> monkey patch arguments
+      for (let i = 0; i < args.length; i++) {
+        // const arg = args[i];
+        const argTid = argTids[i];
+        if (spreadArgs[i]) {
+          // patch spread args
+          for (let j = 0; j < spreadArgs[i].length; j++) {
+            // TODO: unique traceId per callback (but spreadArgs[i] all share the same trace)
+            args[i][j] = this.maybeMonkeyPatchCallback(args[i][j], argTid);
+          }
+        }
+        // patch regular arg
+        args[i] = this.maybeMonkeyPatchCallback(args[i], argTid);
+      }
+      // let f = getPatchedFunctionOrNull(originalFunction);
+      // if (!f) {
+      //   const calleePatcher = this.defaultCalleePatcher;
+
+      //   f = monkeyPatchFunctionOverride(
+      //     originalFunction,
+      //     calleePatcher.bind(this, callId)
+      //   );
+      // }
+      // return f;
+    }
+
+    // return originalFunction;
   }
 }

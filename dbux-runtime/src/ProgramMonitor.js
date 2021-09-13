@@ -150,7 +150,7 @@ export default class ProgramMonitor {
       return value;
     }
 
-    return this._runtimeMonitor.traceReturn(this.getProgramId(), value, tid, inputs);
+    return this._runtimeMonitor.traceThrow(this.getProgramId(), value, tid, inputs);
   }
 
   popImmediate = (contextId, traceId) => {
@@ -352,9 +352,13 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceBCE(this.getProgramId(), tid, callee, calleeTid, argTids, args);
   }
 
-  // traceSpreadArg = () => {
+  traceArg = (arg) => {
+    
+  }
 
-  // }
+  traceSpreadArg = () => {
+
+  }
 
   traceCallResult = (value, tid, callId) => {
     value = wrapValue(value);

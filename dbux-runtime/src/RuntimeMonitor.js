@@ -976,7 +976,8 @@ export default class RuntimeMonitor {
 
     // console.trace(`BCE`, callee.toString(), callee);
 
-    return this.callbackPatcher.monkeyPatchCallee(callee, callId, args, spreadArgs);
+    this.callbackPatcher.monkeyPatchArgs(callee, callId, args, spreadArgs, argTids);
+    return callee;
   }
 
   traceCallResult(programId, value, tid, callId) {

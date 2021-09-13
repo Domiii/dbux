@@ -27,32 +27,38 @@ function generateVar(scope, name) {
 // arguments
 // ###########################################################################
 
-function buildSpreadArgs(argsVar, argNodes) {
-  // const { ids: { aliases: {
-  //   getArgLength
-  // } } } = state;
-  return t.arrayExpression(argNodes
-    .map((argNode, i) => t.isSpreadElement(argNode) ?
-      // t.callExpression(
-      //   getArgLength,
-      buildGetI(argsVar, i) :
-      // ) :
-      NullNode
-    )
-    .filter(n => !!n)
-  );
-}
+// function buildSpreadArgs(argsVar, argNodes) {
+//   // const { ids: { aliases: {
+//   //   getArgLength
+//   // } } } = state;
+//   return t.arrayExpression(argNodes
+//     .map((argNode, i) => t.isSpreadElement(argNode) ?
+//       // t.callExpression(
+//       //   getArgLength,
+//       buildGetI(argsVar, i) :
+//       // ) :
+//       NullNode
+//     )
+//     .filter(n => !!n)
+//   );
+// }
+
+
 
 /**
- * Build call arguments as array of Nodes, spread elements as necessary.
+ * Build call arguments as array of Nodes; spread elements as necessary.
  * @example `[argsVar[0], ...argsVar[1], ...argsVar[2], argsVar[3]]`
  */
-function buildCallArgs(argsVar, argNodes) {
+function buildCallArgs(state, argsVar, argNodes) {
+  // const { ids: { aliases: { traceArg, traceSpreadArg } } } = state;
+
   return argNodes.map((argNode, i) => {
-    const arg = buildGetI(argsVar, i);
+    const argI = buildGetI(argsVar, i);
     return t.isSpreadElement(argNode) ?
-      t.spreadElement(arg) :
-      arg;
+      // t.spreadElement(t.callExpression(traceSpreadArg, [argI])) :
+      // t.callExpression(traceArg, [argI]);
+      t.spreadElement(argI) :
+      argI;
   });
 }
 
@@ -139,20 +145,19 @@ function buildCallNodeDefault(path, callee, args) {
 //  * in `template/lib/populate.js`.
 //  * (analysis: because it's internal `placeholder` object has `type = 'other'`, even though it should be`'param'`.)*/
 
-const callIdAstNode = t.identifier('call');
-
-/** 
- * We can't use `template` because we need to spread the args array.
- */
-function buildOptionalCallExpressionME({ callee, o, args }) {
-  return t.callExpression(
-    t.optionalMemberExpression(callee, callIdAstNode, false, true),
-    [
-      o,
-      ...args
-    ]
-  );
-}
+// const callIdAstNode = t.identifier('call');
+// /** 
+//  * NOTE: We can't use `template` because we need to spread the args array.
+//  */
+// function buildOptionalCallExpressionME({ callee, o, args }) {
+//   return t.callExpression(
+//     t.optionalMemberExpression(callee, callIdAstNode, false, true),
+//     [
+//       o,
+//       ...args
+//     ]
+//   );
+// }
 
 /**
  * Call templates if callee is MemberExpression.
@@ -185,13 +190,13 @@ const callTemplatesME = {
 `)
 };
 
-function buildCallNodeME(path, objectVar, calleeVar, argsVar, argNodes) {
+function buildCallNodeME(path, objectVar, calleeVar, args) {
   const { type } = path.node;
   const callTemplate = callTemplatesME[type]();
 
   const templateArgs = {
     callee: calleeVar,
-    args: buildCallArgs(argsVar, argNodes)
+    args
   };
 
   // NOTE: no need to trace `o` separately for `NewExpression`
@@ -241,7 +246,7 @@ export function buildTraceCallDefault(state, traceCfg) {
   const argsArray = buildSpreadableArgArrayNoSpread(argPaths);
   const argNodes = argPaths?.map(a => a.node) || EmptyArray;
   // const spreadArgs = buildSpreadArgs(argsVar, argNodes);
-  const callArgs = buildCallArgs(argsVar, argNodes);
+  const callArgs = buildCallArgs(state, argsVar, argNodes);
   const argsAssignment = [t.assignmentExpression('=', argsVar, argsArray)];
 
   // hackfix: override targetNode during instrumentation - `f(args[0], ...args[1], args[2])`
@@ -297,11 +302,11 @@ export function buildTraceCallUntraceableCallee(state, traceCfg) {
   const argNodes = argPaths?.map(a => a.node) || EmptyArray;
 
   let argsAssignment, callArgs;
-  const args = generateVar(scope, 'args');
+  const argsVar = generateVar(scope, 'args');
   if (shouldTraceArgs) {
-    callArgs = buildCallArgs(args, argNodes);
+    callArgs = buildCallArgs(state, argsVar, argNodes);
     argsAssignment = [t.assignmentExpression('=',
-      args,
+      argsVar,
       buildSpreadableArgArrayNoSpread(argPaths)
     )];
     // spreadArgs = buildSpreadArgs(argsNoSpread, argNodes);
@@ -320,7 +325,7 @@ export function buildTraceCallUntraceableCallee(state, traceCfg) {
     ...argsAssignment,
 
     // (ii) BCE - `bce(tid, argTids, spreadArgs)`
-    buildBCE(state, bceTrace, null, null, args),
+    buildBCE(state, bceTrace, null, null, argsVar),
 
     // (iii) wrap actual call - `tcr(f(args[0], ...args[1], args[2]))`
     buildTraceExpressionNoInput(
@@ -381,7 +386,7 @@ export function buildTraceCallME(state, traceCfg) {
   // const spreadArgs = buildSpreadArgs(argsVar, argNodes);
 
   // hackfix: override targetNode during instrumentation - `f(args[0], ...args[1], args[2])`
-  traceCfg.meta.targetNode = buildCallNodeME(path, objectVar, calleeVar, argsVar, argNodes);
+  traceCfg.meta.targetNode = buildCallNodeME(path, objectVar, calleeVar, buildCallArgs(state, argsVar, argNodes));
   // debug(`tcr target: ${astNodeToString(getInstrumentTargetNode(traceCfg))}`);
 
   const expressions = [];
