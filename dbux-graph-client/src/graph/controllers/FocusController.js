@@ -64,12 +64,15 @@ function computeDelta(node) {
 
 export default class FocusController extends ClientComponentEndpoint {
   get panzoom() {
-    return this.context.graphDocument.panzoom;
+    return this.context.graphContainer.panzoom;
   }
 
   init() {
-    // this can be used to verigfy if it is animating
     this.targetDOM = null;
+  }
+
+  isSliding() {
+    return !!this.targetDOM;
   }
 
   /**
@@ -158,47 +161,7 @@ export default class FocusController extends ClientComponentEndpoint {
     }
   }
 
-  getAsyncNodeEl(asyncNode) {
-    const data = {
-      'async-node-id': asyncNode.asyncNodeId,
-    };
-    const dataSelector = Object.entries(data).map(([key, val]) => `[data-${key}="${val || ''}"]`).join('');
-    const selector = `.async-node${dataSelector}`;
-    return document.querySelector(selector);
-  }
-
   public = {
     slideToNode: this.slideToNode,
-    /**
-     * @param {{applicationId: number, runId: number, threadId: number}} selector 
-     * @param {boolean} ignoreFailed 
-     */
-    focusAsyncNode: (asyncNode, ignoreFailed = false) => {
-      const asyncNodeEl = this.getAsyncNodeEl(asyncNode);
-      if (asyncNodeEl) {
-        this.slide(asyncNodeEl);
-      }
-      else if (!ignoreFailed) {
-        this.logger.error(`Cannot find DOM of asyncNode: ${JSON.stringify(asyncNode)} when trying to focus`);
-      }
-    },
-    /**
-     * @param {{applicationId: number, runId: number, threadId: number}} selector 
-     * @param {boolean} ignoreFailed 
-     */
-    selectAsyncNode: (asyncNode, ignoreFailed = false) => {
-      document.querySelectorAll('.async-node.async-cell-selected').forEach(node => {
-        node.classList.remove('async-cell-selected');
-      });
-      if (asyncNode) {
-        const asyncNodeEl = this.getAsyncNodeEl(asyncNode);
-        if (asyncNodeEl) {
-          asyncNodeEl.classList.add('async-cell-selected');
-        }
-        else if (!ignoreFailed) {
-          this.logger.error(`Cannot find DOM of asyncNode: ${JSON.stringify(asyncNode)} when trying to select`);
-        }
-      }
-    }
   }
 }

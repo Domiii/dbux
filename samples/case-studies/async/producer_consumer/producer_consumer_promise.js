@@ -1,46 +1,46 @@
 import { IdleTime, N, startProduce, finishProduce, startConsume, finishConsume, hasSpace, hasItems, getProduceTime, getConsumeTime, } from './producer_consumer_base';
-import { waitTicksAsync, repeatAsync } from 'asyncUtil';
+import { waitTicksPromise, repeatPromise } from 'asyncUtil';
 
 /** ###########################################################################
  * Basic functions
  *  #########################################################################*/
 
-async function idle() {
-  await waitTicksAsync(IdleTime);
+function idle() {
+  return waitTicksPromise(IdleTime);
 }
 
-async function produce() {
-  startProduce();
-  await waitTicksAsync(getProduceTime());
-  finishProduce();
-}
-
-async function consume() {
+function consume() {
   startConsume();
-  await waitTicksAsync(getConsumeTime());
-  finishConsume();
+  return waitTicksPromise(getConsumeTime())
+    .then(finishConsume);
 }
 
-async function producer(n) {
-  await repeatAsync(n, async () => {
+function produce() {
+  startProduce();
+  return waitTicksPromise(getProduceTime())
+    .then(finishProduce);
+}
+
+function producer(n) {
+  return repeatPromise(n, () => {
     if (hasSpace()) {
-      await produce();
+      return produce();
     }
     else {
-      await idle();
+      return idle();
     }
   });
 }
 
-async function consumer(n) {
-  await repeatAsync(n, async () => {
+function consumer(n) {
+  return repeatPromise(n, () => {
     if (hasItems()) {
-      await consume();
+      return consume();
     }
     else {
-      await idle();
+      return idle();
     }
-  });
+  })
 }
 
 /** ###########################################################################
@@ -50,4 +50,4 @@ async function consumer(n) {
 producer(N);
 // producer(N);
 // consumer(N);
-consumer(N);
+consumer(2*N);

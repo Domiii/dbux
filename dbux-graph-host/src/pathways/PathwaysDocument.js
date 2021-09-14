@@ -1,14 +1,12 @@
 import PathwaysMode from '@dbux/data/src/pathways/PathwaysMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import PathwaysView from './PathwaysView';
-// import GraphRoot from './GraphRoot';
 import Toolbar from './Toolbar';
 
 /** @typedef {import('@dbux/projects/src/dataLib/PathwaysDataProvider').default} PathwaysDataProvider */
 
 class PathwaysDocument extends HostComponentEndpoint {
   toolbar;
-  // minimap;
 
   isAnalyzing = () => {
     return PathwaysMode.is.Analyze(this.state.pathwaysMode);
@@ -69,7 +67,6 @@ class PathwaysDocument extends HostComponentEndpoint {
   createOwnComponents() {
     this.toolbar = this.children.createComponent(Toolbar);
     this.view = this.children.createComponent(PathwaysView);
-    // this.minimap = this.children.createComponent(MiniMap);
   }
 
   // ###########################################################################

@@ -3,12 +3,13 @@ import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
-import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
-import RunNode from './RunNode';
-import ContextNode from './ContextNode';
+import GraphBase from './GraphBase';
+import RunNode from './syncGraph/RunNode';
+import ContextNode from './syncGraph/ContextNode';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('GraphRoot');
+const { log, debug, warn, error: logError } = newLogger('SyncGraphBase');
+
 
 export class RunNodeMap {
   constructor() {
@@ -52,15 +53,15 @@ export class RunNodeMap {
   }
 }
 
-class GraphRoot extends HostComponentEndpoint {
+class SyncGraphBase extends GraphBase {
   /**
    * @type {Map<ExecutionContext, ContextNode>}
    */
   contextNodesByContext;
 
   init() {
-    this.runNodesById = new RunNodeMap();
     this.contextNodesByContext = new Map();
+    this.runNodesById = new RunNodeMap();
     this.state.applications = [];
     this._emitter = new NanoEvents();
     this._unsubscribeOnNewData = [];
@@ -70,113 +71,44 @@ class GraphRoot extends HostComponentEndpoint {
       hasChildren: true
     });
     this.controllers.createComponent('ContextNodeManager');
-    this.controllers.createComponent('HiddenNodeManager');
     this.controllers.createComponent('PopperController');
-    this.controllers.createComponent('FocusController');
+  }
 
-    this.children.createComponent('HiddenBeforeNode');
-    this.children.createComponent('HiddenAfterNode');
+  /** ###########################################################################
+   * public interface
+   *  #########################################################################*/
 
-    // register event listeners
-    this.addDisposable(
-      allApplications.selection.onApplicationsChanged(() => {
-        this.updateRunNodes();
-      })
-    );
-
+  handleRefresh() {
     this.updateRunNodes();
   }
 
   updateRunNodes() {
-    if (this.context.graphDocument.asyncGraphMode) {
-      this.removeAllRunNode();
-      this._setApplicationState();
-    }
-    else {
-      // oldApps
-      const oldAppIds = new Set(this.runNodesById.getApplicationIds());
-      const newAppIds = new Set(allApplications.selection.getAll().map(app => app.applicationId));
+    throw new Error('abstract method not implemented');
+  }
 
-      // always re-subscribe since applicationSet clears subscribtion everytime it changes
-      this._resubscribeOnData();
-      this._setApplicationState();
+  clear() {
+    this.removeAllRunNode();
+  }
 
-      // remove old runNodes
-      for (const runNode of this.runNodesById.getAll()) {
-        const { applicationId, runId } = runNode.state;
-        if (!newAppIds.has(applicationId)) {
-          this.removeRunNode(applicationId, runId);
-        }
+  updateRunNodeByIds(applicationId, runIds) {
+    return runIds.map(runId => {
+      const runNode = this.runNodesById.get(applicationId, runId);
+      if (runNode) {
+        runNode.updateChildren();
+        return runNode;
       }
-
-      // add new runNodes
-      for (const appId of newAppIds) {
-        if (!oldAppIds.has(appId)) {
-          const app = allApplications.getById(appId);
-          const allContexts = app.dataProvider.collections.executionContexts.getAll();
-          this.addRunNodeByContexts(appId, allContexts);
-        }
-      }
-    }
-  }
-
-  _resubscribeOnData() {
-    // unsubscribe old
-    this._unsubscribeOnNewData.forEach(f => f());
-    this._unsubscribeOnNewData = [];
-
-    // subscribe new
-    for (const app of allApplications.selection.getAll()) {
-      const { dataProvider: dp } = app;
-      const unsubscribes = [
-        dp.onData('executionContexts',
-          this._handleAddExecutionContexts.bind(this, app)
-        ),
-        // [future-work]: only subscribe when stats are enabled
-        dp.queryImpl.statsByContext.subscribe()
-      ];
-
-      // unsubscribe on refresh
-      this._unsubscribeOnNewData.push(...unsubscribes);
-
-      // also when application is deselected
-      allApplications.selection.subscribe(...unsubscribes);
-
-      // also when node is disposed
-      this.addDisposable(...unsubscribes);
-    }
-  }
-
-  _handleAddExecutionContexts = (app, newContexts) => {
-    const { applicationId } = app;
-    const newNodes = this.addRunNodeByContexts(applicationId, newContexts);
-    this._setApplicationState();
-    this._emitter.emit('newNode', newNodes);
-  }
-
-  _setApplicationState() {
-    const update = {
-      applications: allApplications.selection.getAll().map(app => ({
-        applicationId: app.applicationId,
-        entryPointPath: app.entryPointPath,
-        name: app.getPreferredName()
-      }))
-    };
-    this.setState(update);
-  }
-
-  addRunNodeByContexts(applicationId, contexts) {
-    const runIds = new Set(contexts.map(context => context?.runId || 0));
-    const newNodes = [];
-
-    runIds.forEach(runId => {
-      if (runId) {
-        const newNode = this.addRunNode(applicationId, runId);
-        newNodes.push(newNode);
+      else {
+        return this.addRunNode(applicationId, runId);
       }
     });
+  }
 
-    return newNodes;
+  addRunNodeByRootIds(applicationId, rootIds) {
+    const dp = allApplications.getById(applicationId).dataProvider;
+    return rootIds.map(rootId => {
+      const { runId } = dp.collections.executionContexts.getById(rootId);
+      return this.addRunNode(applicationId, runId, rootId);
+    });
   }
 
   async focusContext(applicationId, contextId) {
@@ -192,21 +124,12 @@ class GraphRoot extends HostComponentEndpoint {
   }
 
   // ###########################################################################
-  // getters
-  // ###########################################################################
-
-  get focusController() {
-    return this.controllers.getComponent('FocusController');
-  }
-
-  // ###########################################################################
   // run node management
   // ###########################################################################
 
-  addRunNode(applicationId, runId) {
-    const newNode = this.children.createComponent(RunNode, { applicationId, runId });
+  addRunNode(applicationId, runId, rootContextId) {
+    const newNode = this.children.createComponent(RunNode, { applicationId, runId, rootContextId });
     this.runNodesById.set(applicationId, runId, newNode);
-    // log(`Added RunNode of applicationId ${applicationId}, runId ${runId}`);
     return newNode;
   }
 
@@ -229,20 +152,23 @@ class GraphRoot extends HostComponentEndpoint {
     return this.runNodesById.getAll();
   }
 
-  getRunNodeById(applicationId, runId) {
-    return this.runNodesById.get(applicationId, runId);
-  }
-
   // ###########################################################################
   // context node management
   // ###########################################################################
+
+  _maybeBuildContextNode(parentNode, applicationId, context, isRoot = false) {
+    if (this.contextNodesByContext.get(context)) {
+      // skip if ContextNode aleady exist
+      return null;
+    }
+    return this._buildContextNode(parentNode, applicationId, context, isRoot);
+  }
 
   _buildContextNode(parentNode, applicationId, context, isRoot = false) {
     if (this.contextNodesByContext.get(context)) {
       this.logger.warn(`ContextNode with id=${context.contextId} already exist`);
       return null;
     }
-
     const nodeClass = isRoot ? 'RootContextNode' : 'ContextNode';
 
     const contextNode = parentNode.children.createComponent(nodeClass, {
@@ -280,7 +206,8 @@ class GraphRoot extends HostComponentEndpoint {
 
     while (!(currentNode = this.contextNodesByContext.get(currentContext))) {
       if (!currentContext) {
-        this.logger.error(`Cannot build context node: RootContextNode does not exist. contextQueue=[${contextQueue.map(x => x?.contextId)}]`);
+        // NOTE: RunNode/RootContextNode is not present
+        // this.logger.error(`Cannot build context node: RootContextNode does not exist. contextQueue=[${contextQueue.map(x => x?.contextId)}]`);
         return null;
       }
       contextQueue.push(currentContext);
@@ -295,50 +222,76 @@ class GraphRoot extends HostComponentEndpoint {
     return currentNode;
   }
 
-  async getContextNodeById(applicationId, contextId) {
+  /**
+   *  @return {ContextNode}
+   */
+  getContextNodeById(applicationId, contextId) {
     const dp = allApplications.getById(applicationId).dataProvider;
     const context = dp.collections.executionContexts.getById(contextId);
-    return await this.getContextNodeByContext(context);
+    return this.getContextNodeByContext(context);
   }
 
   /**
-   *  @return {Promise<ContextNode>}
+   * Find or create a ContextNode.
+   *  @return {ContextNode}
    */
-  getContextNodeByContext = async (context) => {
+  getContextNodeByContext = (context) => {
     let node = this.contextNodesByContext.get(context);
-    if (!context) {
-      logError(`Cannot find ContextNode of context ${context}`);
-      return null;
-    }
-    else if (!node) {
-      // node not created
+    if (!node) {
+      // node is not created yet
       node = this.buildContextNode(context);
     }
-
-    await node?.waitForInit();
 
     return node;
   }
 
-  // ###########################################################################
-  // shared
-  // ###########################################################################
+  /**
+   *  @return {ContextNode}
+   */
+  getContextNodeByContextForce = (context) => {
+    const node = this.getContextNodeByContext(context);
+    if (!node) {
+      this.logger.error(`Can neither find ContextNode for context ${context} nor create one.`);
+    }
+    return node;
+  }
+
+  _selectContextNode(contextNode) {
+    if (this._selectedContextNode && !this._selectedContextNode.isDisposed) {
+      // deselect old
+      this._selectedContextNode.setSelected(false);
+    }
+
+    if (contextNode) {
+      // select new
+      contextNode.setSelected(true);
+    }
+
+    this._selectedContextNode = contextNode;
+  }
+
+  handleTraceSelected = async (trace) => {
+    await this.waitForRefresh();
+    let contextNode;
+    if (trace) {
+      const { applicationId, contextId } = trace;
+      contextNode = this.getContextNodeById(applicationId, contextId);
+      if (this.context.graphDocument.state.followMode && contextNode) {
+        // NOTE: since we do this right after init, need to check if contextNode have been built
+        await contextNode.waitForInit();
+        await this.focusController.focus(contextNode);
+      }
+    }
+    this._selectContextNode(contextNode);
+  }
 
   shared() {
     return {
       context: {
-        graphRoot: this
+        graphRoot: this,
       }
     };
   }
-
-  // ###########################################################################
-  // public
-  // ###########################################################################
-
-  public = {
-
-  }
 }
 
-export default GraphRoot;
+export default SyncGraphBase;

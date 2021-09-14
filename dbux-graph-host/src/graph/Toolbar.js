@@ -4,53 +4,32 @@ import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
 class Toolbar extends HostComponentEndpoint {
   init() {
-    this.state.followMode = this.focusController.followMode;
-    this.state.locMode = true;
-    this.state.callMode = false;
-    this.state.valueMode = false;
-    this.state.thinMode = false;
-    this.state.hideNewMode = this.hiddenNodeManager.hideNewMode;
-    this.state.asyncGraphMode = this.context.graphDocument.asyncGraphMode;
-    this.state.asyncDetailMode = true;
+    const { threadSelection } = allApplications.selection.data;
     this.state.theradSelectionIconUri = this.context.graphDocument.getIconUri('filter.svg');
+    this.state.isThreadSelectionActive = threadSelection.isActive();
 
     // listen on mode changed event
-    this.hiddenNodeManager.onStateChanged(({ hideBefore, hideAfter }) => {
-      this.setState({
-        hideOldMode: !!hideBefore,
-        hideNewMode: !!hideAfter
-      });
+    this.hiddenNodeManager.onStateChanged(() => {
+      this.forceUpdate();
     });
 
-    this.context.graphDocument.onAsyncGraphModeChanged(mode => {
-      this.setState({ asyncGraphMode: mode });
-    });
-
-    this.focusController.on('modeChanged', (mode) => {
-      this.setState({ followMode: mode });
-    });
-
-    const { threadSelection } = allApplications.selection.data;
     const threadSelectionSubscription = threadSelection.onSelectionChanged(() => {
       this.setState({ isThreadSelectionActive: threadSelection.isActive() });
     });
     this.addDisposable(threadSelectionSubscription);
-    this.state.isThreadSelectionActive = threadSelection.isActive();
   }
 
-  get focusController() {
-    const graphRoot = this.parent.children.getComponent('GraphRoot');
-    return graphRoot.controllers.getComponent('FocusController');
-  }
-
+  /**
+   * NOTE: `SyncGraph` only
+   */
   get hiddenNodeManager() {
-    const graphRoot = this.parent.children.getComponent('GraphRoot');
-    return graphRoot.controllers.getComponent('HiddenNodeManager');
+    const { syncGraphContainer } = this.parent;
+    return syncGraphContainer.graph.controllers.getComponent('HiddenNodeManager');
   }
 
   public = {
     toggleFollowMode() {
-      this.focusController.toggleFollowMode();
+      this.parent.toggleFollowMode();
     },
 
     hideOldRun(time) {
@@ -61,29 +40,34 @@ class Toolbar extends HostComponentEndpoint {
       this.hiddenNodeManager.hideAfter(time);
     },
 
-    setAsyncGraphMode(mode) {
-      this.context.graphDocument.setAsyncGraphMode(mode);
+    nextGraphMode() {
+      this.parent.nextGraphMode();
+    },
+
+    toggleStackEnabled() {
+      this.parent.setState({ stackEnabled: !this.parent.state.stackEnabled });
+      this.parent.asyncStackContainer.refreshGraph();
     },
 
     searchContexts(searchTermContexts) {
-      this.setState({ searchTermContexts });
+      this.parent.setState({ searchTermContexts });
 
       if (searchTermContexts) {
         this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphSearchContexts, { searchTerm: searchTermContexts });
       }
 
-      const contextNodeManager = this.context.graphDocument.graphRoot.controllers.getComponent('ContextNodeManager');
+      const contextNodeManager = this.context.graphDocument.syncGraphContainer.graph.controllers.getComponent('ContextNodeManager');
       contextNodeManager.highlightBySearchTermContexts(searchTermContexts);
     },
 
     searchTraces(searchTermTraces) {
-      this.setState({ searchTermTraces });
+      this.parent.setState({ searchTermTraces });
 
       if (searchTermTraces) {
         this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphSearchTraces, { searchTerm: searchTermTraces });
       }
 
-      const contextNodeManager = this.context.graphDocument.graphRoot.controllers.getComponent('ContextNodeManager');
+      const contextNodeManager = this.context.graphDocument.syncGraphContainer.graph.controllers.getComponent('ContextNodeManager');
       contextNodeManager.highlightBySearchTermTraces(searchTermTraces);
     },
     clearThreadSelection() {

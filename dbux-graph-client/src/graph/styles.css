@@ -126,22 +126,23 @@ div {
 } */
 
 .graph-root {
-  /* offset fixed toolbar height */
-  margin-top: 8px;
   padding-left: 2px;
-  /* font-size: 1.2rem; */
+}
+
+.graph-container {
+  overflow: hidden;
 }
 
 [data-el=panzoomCanvas] {
   /* width: 200px;
   height: 200px; */
-  width: 100vw;
+  /* width: 100vw; */
   /* height: 100vh; */
   height: calc(100vh - 30px);
   overflow: auto;
 }
 
-.graph-cont>.body {
+.graph-content>.body {
   width: fit-content;
   height: fit-content;
   transform-origin: 0 0;
@@ -217,6 +218,12 @@ div {
  * Async Graph
  * ############################################################################ */
 
+.async-graph {
+  grid-template-areas: 
+    "header"
+    "main";
+}
+
 .async-grid {
   gap: 0px 1px;
 }
@@ -290,10 +297,27 @@ div {
   position: sticky;
   top: 0;
   width: 100% !important;
+  z-index: 2
 }
 
 .async-thread {
   overflow: visible;
+}
+
+/** ###########################################################################
+ * async call stack
+ * ############################################################################ */
+
+.async-stack {
+  position: fixed;
+  top: 30px;
+  right: 12px;
+  height: calc(100vh - 100px);
+  width: 40vw;
+  min-width: 200px;
+  border: 2px solid white;
+  /* overflow-y: scroll; */
+  z-index: 2;
 }
 
 /** ###########################################################################
@@ -424,14 +448,14 @@ div {
  * minimap
  * ############################################################################ */
 
-#minimap {
+/* #minimap {
   position: fixed;
   display: block;
   right: 10px;
   top: 60px;
   border: 2px solid black;
   background: black;
-}
+} */
 
 /** ###########################################################################
  * highlighter
@@ -491,7 +515,7 @@ body:not(.theme-mode-dark) .highlight {
 }
 
 /** ###########################################################################
- * tooltips
+ * popper.js
  * ############################################################################ */
 
 #tooltip {
@@ -503,22 +527,22 @@ body:not(.theme-mode-dark) .highlight {
   border-radius: 4px;
 }
 
-#arrow, #arrow::before {
+/* #arrow, #arrow::before {
   position: absolute;
   width: 8px;
   height: 8px;
   z-index: -1;
-}
+} */
 
-#arrow::before {
+/* #arrow::before {
   content: '';
   transform: rotate(45deg);
   background: #333;
-}
+} */
 
-#tooltip[data-popper-placement^='bottom']>#arrow {
+/* #tooltip[data-popper-placement^='bottom']>#arrow {
   top: -4px;
-}
+} */
 
 #tooltip {
   /* ... */

@@ -1,44 +1,48 @@
 import NanoEvents from 'nanoevents';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
+import GraphType from '@dbux/graph-common/src/shared/GraphType';
+import GraphMode from '@dbux/graph-common/src/shared/GraphMode';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
-import HighlightManager from './controllers/HighlightManager';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
-import GraphRoot from './GraphRoot';
-import Toolbar from './Toolbar';
-import AsyncGraph from './asyncGraph/AsyncGraph';
-import PopperManager from './controllers/PopperManager';
 
 class GraphDocument extends HostComponentEndpoint {
-  toolbar;
-  // minimap;
-
-  // ###########################################################################
-  // init
-  // ###########################################################################
-
   init() {
     this._emitter = new NanoEvents();
-    this.state.asyncGraphMode = true;
+
+    // default mode settings
+    this.state.graphMode = GraphMode.SyncGraph;
+    this.state.followMode = true;
+    this.state.locMode = true;
+    this.state.callMode = false;
+    this.state.valueMode = false;
+    this.state.thinMode = false;
+    this.state.stackEnabled = false;
+    this.state.asyncDetailMode = true;
 
     this.createOwnComponents();
-    // register event listeners
-    this.addDisposable(
-      allApplications.selection.onApplicationsChanged(() => {
-        this.graphRoot.updateRunNodes();
-      })
-    );
+
+    // NOTE: this will be called immediately
+    allApplications.selection.onApplicationsChanged(() => {
+      this.refreshGraphs();
+    });
   }
 
   createOwnComponents() {
-    this.controllers.createComponent(PopperManager);
-    this.controllers.createComponent(HighlightManager);
-    this.controllers.createComponent('ZoomBar');
-    this.asyncGraph = this.children.createComponent(AsyncGraph);
-    this.graphRoot = this.children.createComponent(GraphRoot);
-    this.toolbar = this.children.createComponent(Toolbar);
-    // this.minimap = this.children.createComponent(MiniMap);
+    this.controllers.createComponent('PopperManager');
+    this.syncGraphContainer = this.children.createComponent('GraphContainer', { graphType: GraphType.SyncGraph });
+    this.asyncGraphContainer = this.children.createComponent('GraphContainer', { graphType: GraphType.AsyncGraph });
+    this.asyncStackContainer = this.children.createComponent('GraphContainer', { graphType: GraphType.AsyncStack });
+    this.toolbar = this.children.createComponent('Toolbar');
   }
+
+  update() {
+    this.toolbar.forceUpdate();
+  }
+
+  /** ########################################
+   * util
+   *  ######################################*/
 
   getIconUri(fileName, modeName) {
     if (!fileName) {
@@ -52,24 +56,62 @@ class GraphDocument extends HostComponentEndpoint {
   }
 
   // ###########################################################################
-  // async graph mode
+  // modes/events management
   // ###########################################################################
 
-  get asyncGraphMode() {
-    return this.state.asyncGraphMode;
+  /** ########################################
+   * graph mode
+   *  ######################################*/
+
+  nextGraphMode() {
+    this.setGraphMode(GraphMode.nextValue(this.state.graphMode));
   }
 
-  setAsyncGraphMode(mode) {
-    if (this.asyncGraphMode !== mode) {
-      this.setState({ asyncGraphMode: mode });
-      this.asyncGraph.refresh();
-      this.graphRoot.updateRunNodes();
-      this._emitter.emit('asyncGraphModeChanged', mode);
+  setGraphMode(mode) {
+    if (this.state.graphMode !== mode) {
+      this.setState({ graphMode: mode });
+      this.refreshGraphs();
+      this._notifyGraphModeChanged(mode);
     }
   }
 
-  onAsyncGraphModeChanged(cb) {
-    return this._emitter.on('asyncGraphModeChanged', cb);
+  _notifyGraphModeChanged(mode) {
+    this._emitter.emit('graphModeChanged', mode);
+  }
+
+  onGraphModeChanged(cb) {
+    return this._emitter.on('graphModeChanged', cb);
+  }
+
+  refreshGraphs() {
+    this.children.getComponents('GraphContainer').forEach((container) => {
+      container.refreshGraph();
+    });
+  }
+
+  /** ########################################
+   * follow mode
+   *  ######################################*/
+
+  toggleFollowMode() {
+    const mode = !this.state.followMode;
+    this.setFollowMode(mode);
+    return mode;
+  }
+
+  setFollowMode(mode) {
+    if (this.state.followMode !== mode) {
+      this.setState({ followMode: mode });
+      this._notifyFollowModeChanged(mode);
+    }
+  }
+
+  _notifyFollowModeChanged(mode) {
+    this._emitter.emit('followModeChanged', mode);
+  }
+
+  onFollowModeChanged(cb) {
+    return this._emitter.on('followModeChanged', cb);
   }
 
   // ###########################################################################
