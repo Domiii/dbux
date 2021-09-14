@@ -39,11 +39,8 @@ function generateFullMatchRegExp(s) {
 }
 
 function shouldInstrumentPackage(packageName, whitelist, blacklist) {
-  if (!whitelist && !blacklist) {
-    return true;
-  }
-  return (whitelist?.some(regexp => regexp.test(packageName)) || true) && 
-    !(blacklist?.some(regexp => regexp.test(packageName)) || false);
+  return (!whitelist || whitelist.some(regexp => regexp.test(packageName))) && 
+    (!blacklist || !blacklist?.some(regexp => regexp.test(packageName)));
 }
 
 /**
@@ -105,7 +102,7 @@ export default function buildBabelOptions(options) {
 
   verbose > 1 && debugLog(`pw`, packageWhitelistRegExps?.join(','), 'pb', packageBlacklistRegExps?.join(','));
 
-  // TODO: use Webpack5 magic comments instead
+  // future-work: use Webpack5 magic comments instead
   const requireFunc = typeof __non_webpack_require__ === "function" ? __non_webpack_require__ : require;
   verbose > 1 && debugLog(`[@dbux/babel-plugin]`,
     requireFunc.resolve/* ._resolveFilename */('@dbux/babel-plugin/package.json'));

@@ -105,10 +105,10 @@ function patchThenCallback(cb, thenRef) {
     // not an instrumented function
     return cb;
   }
-  if (!valueCollection.getRefByValue(cb)) {
-    // not instrumented
-    return cb;
-  }
+  // if (!valueCollection.getRefByValue(cb)) {
+  //   // not instrumented
+  //   return cb;
+  // }
 
   const originalCb = cb;
   return function patchedCb(...args) {
@@ -129,7 +129,8 @@ function patchThenCallback(cb, thenRef) {
       }
       finally {
         const cbContext = getLastContextCheckCallee(originalCb);
-        // TODO: cbContext exists, even if `originalCb` was not instrumented for some reason?! (need to remove `!isInstrumentedFunction(cb)` check to test)
+        // TODO: cbContext exists, even if `originalCb` was not instrumented for some reason?!
+        //    -> need to remove `!isInstrumentedFunction(cb)` check to test
 
         if (isThenable(returnValue)) {
           // Promise#resolve(Promise) was called: nested promise
@@ -140,7 +141,6 @@ function patchThenCallback(cb, thenRef) {
              * hackfix: we must make sure, that we have the promise's `ValueRef`.
              * We might not have seen this promise for several reasons:
              *  1. Then callback is an async function.
-             *  2. (other reasons?)
              * WARNING: this might cause some trouble down the line, since:
              *  1. either this DataNode is not in a meaningful place (lastTraceOfContext).
              *  2. or it is entirely out of order (schedulerTraceId)
@@ -159,7 +159,7 @@ function patchThenCallback(cb, thenRef) {
           }
 
           // console.trace('thenCb', cbContext?.contextId, getPromiseId(returnValue));
-          // set async function's returnValue promise (used to set AsyncEventUpdate.promiseId)
+          // set async function call's `AsyncEventUpdate.promiseId`
           cbContext && RuntimeMonitorInstance._runtime.async.setAsyncContextPromise(cbContext.contextId, returnValue);
         }
         // thenExecuted(thenRef, previousResult, returnValue);
@@ -314,11 +314,11 @@ function patchPromiseMethods(holder) {
 
 function patchPromiseClass(BasePromiseClass) {
   class PatchedPromise extends BasePromiseClass {
-    constructor(executor) {
+    constructor(originalExecutor) {
       // const bceTrace = peekBCEMatchCallee(PatchedPromise);
       // const isCallbackInstrumented = !!bceTrace && typeof executor === 'function'; // check if its a function, too
-      const isCallbackInstrumented = isInstrumentedFunction(executor);
-      let wrapExecutor;
+      const isExecutorInstrumented = isInstrumentedFunction(originalExecutor);
+      let patchedExecutor;
       /**
        * NOTE: In case, `resolve` or `reject` is called synchronously from the ctor, `this` cannot be accessed because `super` has not finished yet.
        * That is why, we need to defer such call to after `super` call completed.
@@ -326,12 +326,12 @@ function patchPromiseClass(BasePromiseClass) {
       let deferredCall;
       let superCalled = false;
 
-      if (!isCallbackInstrumented) {
-        wrapExecutor = executor;
+      if (!isExecutorInstrumented) {
+        patchedExecutor = originalExecutor;
       }
       else {
         // wrapExecutor = executor;
-        wrapExecutor = (resolve, reject) => {
+        patchedExecutor = (resolve, reject) => {
           const wrapResolve = (...args) => {
             // Event: resolve
             // TODO: track `result` data flow
@@ -359,7 +359,7 @@ function patchPromiseClass(BasePromiseClass) {
               deferredCall = wrapReject.bind(null, err);
             }
             else {
-              // NOTE: promise linkage not possible for `reject`
+              // NOTE: reject cannot nest promises
 
               // const thenRef = _makeThenRef(this, wrapReject);
               // if (thenRef) {
@@ -371,14 +371,15 @@ function patchPromiseClass(BasePromiseClass) {
             }
           };
 
-          executor(wrapResolve, wrapReject);
+          // call actual executor
+          originalExecutor(wrapResolve, wrapReject);
         };
       }
 
       // const lastUpdateId = asyncEventUpdateCollection.getLastId();
 
       // call actual ctor
-      super(wrapExecutor);
+      super(patchedExecutor);
 
       // finally // NOTE: if an exception was thrown during `super`, `this` must not be accessed.
       superCalled = true;
