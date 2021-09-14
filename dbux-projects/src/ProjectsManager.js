@@ -352,7 +352,7 @@ export default class ProjectsManager {
           await this.savePracticeSession(null);
           // fs.rmSync(appFilePath);
           // TODO: move all application files of a single session into a single session folder, then delete that folder here
-          this.externals.showMessage.warn(`File deletion is not implemented yet :(`);
+          this.externals.showMessage.warning(`File deletion is not implemented yet :(`);
           return false;
         }
       };

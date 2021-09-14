@@ -12,7 +12,9 @@ function nest(x, F) {
     x :
     () => {
       // x && console.log('[]', x);
-      return unwrapValue(x);
+      x = unwrapValue(x);
+      console.log(x);
+      return x;
     };
 }
 

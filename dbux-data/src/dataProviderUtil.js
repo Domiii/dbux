@@ -2149,6 +2149,23 @@ export default {
         nestedUpdate = dp.util.GNPU(link.from, beforeRootId, syncPromiseIds, visited) || nestedUpdate;
       }
     }
+    if (!nestedUpdate) {
+      // maybe the given promise did not have a recorded Post* update, but it's predecessor might have
+      // -> could be because (i) the update happened inside an untraced module, or (ii) a reject/throw skipped it
+      // const u = dp.util.getAsyncPreEventUpdateOfPromise(nestingPromiseId, beforeRootId);
+      const u = dp.indexes.asyncEventUpdates.preUpdatesByPostEventPromise.getUnique(nestingPromiseId);
+      if (u) {
+        if (AsyncEventUpdateType.is.PreThen(u.type)) {
+          // go to previous promise in promise tree
+          const preThenPromiseId = u.promiseId;
+          return dp.util.GNPU(preThenPromiseId, beforeRootId, syncPromiseIds, visited);
+        }
+        else if (AsyncEventUpdateType.is.PreAwait(u.type)) {
+          // go to nested promise of first await
+          return dp.util.GNPU(u.nestedPromiseId, beforeRootId, syncPromiseIds, visited);
+        }
+      }
+    }
     return nestedUpdate;
   },
 
@@ -2202,14 +2219,17 @@ export default {
     return dp.util._DOWN(promiseId, beforeRootId, syncPromiseIds)?.rootId || 0;
   },
 
-  /** @param {DataProvider} dp */
+  /**
+   *  @param {DataProvider} dp
+   * NOTE: promiseId is ensured to be settled because promiseId is settled
+   */
   _DOWN(dp, promiseId, beforeRootId, syncPromiseIds, visited = new Set()) {
     const nestedUpdate = dp.util.GNPU(promiseId, beforeRootId, syncPromiseIds, visited);
     if (!nestedUpdate) {
       return null;
     }
 
-    // NOTE: nestedUpdate is ensured to be settled because promiseId is settled
+    // 
     return dp.util._DOWN(nestedUpdate.promiseId, beforeRootId, syncPromiseIds, visited) || nestedUpdate;
   },
 
@@ -2266,7 +2286,7 @@ export default {
     const rootIdNested = nestedPromiseId && util.DOWN(nestedPromiseId, beforeRootId, s);
 
     if (!isFirstAwait || !isCallRecorded) {
-      chainFromRootId = preEventRootId;
+      chainFromRootId = rootIdNested || preEventRootId;
       nestedPromiseId && util.SYNC(chainFromRootId, nestedPromiseId, beforeRootId, s);
     }
     else {
