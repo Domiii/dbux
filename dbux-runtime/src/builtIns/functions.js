@@ -1,9 +1,12 @@
 // import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import SpecialCallType from '@dbux/common/src/types/constants/SpecialCallType';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import dataNodeCollection from '../data/dataNodeCollection';
 import { getTraceOwnDataNode, peekBCEMatchCallee } from '../data/dataUtil';
 import { monkeyPatchMethod } from '../util/monkeyPatchUtil';
+
+/** @typedef {import('../RuntimeMonitor').default} RuntimeMonitor */
 
 /**
  * hackfix: make sure, we get to use the built-in bind, even if user-code overwrites it.
@@ -21,7 +24,7 @@ function getCalledFunctionTid(bceTrace) {
   const calleeDataNode = getTraceOwnDataNode(calleeTid); // stored in {@link RuntimeMonitor#traceExpressionME}
   const { objectNodeId } = calleeDataNode?.varAccess || EmptyObject;
   const actualFunctionDataNode = objectNodeId && dataNodeCollection.getById(objectNodeId);
-  return actualFunctionDataNode?.traceId;
+  return actualFunctionDataNode?.traceId || 0;
 }
 
 function setCalledFunctionTid(bceTrace, specialCallType) {
@@ -30,7 +33,10 @@ function setCalledFunctionTid(bceTrace, specialCallType) {
   bceTrace.data.specialCallType = specialCallType;
 }
 
-export default function patchFunction() {
+/**
+ * @param {RuntimeMonitor} runtimeMonitor
+ */
+export default function patchFunction(runtimeMonitor) {
   // ###########################################################################
   // call
   // ###########################################################################
@@ -53,13 +59,25 @@ export default function patchFunction() {
   // ###########################################################################
 
   monkeyPatchMethod(Function, 'apply',
-    (actualFunction, args, originalApply, patchedApply) => {
+    (actualFunction, applyArgs, originalApply, patchedApply) => {
       const bceTrace = peekBCEMatchCallee(patchedApply);
+      let argTids;
       if (bceTrace?.data) {
         setCalledFunctionTid(bceTrace, SpecialCallType.Apply);
+        argTids = bceTrace.data.argTids;
+      }
+      else {
+        argTids = EmptyArray;
       }
 
-      return originalApply.bind(actualFunction)(...args);
+      const args = applyArgs[1];
+
+      if (Array.isArray(args)) {
+        runtimeMonitor.callbackPatcher.monkeyPatchArgs(actualFunction, bceTrace?.traceId || 0, args, EmptyArray, argTids);
+      }
+
+
+      return originalApply.bind(actualFunction)(...applyArgs);
     }
   );
 

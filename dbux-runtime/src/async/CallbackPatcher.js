@@ -245,7 +245,7 @@ export default class CallbackPatcher {
     );
   }
 
-  maybeMonkeyPatchCallback(arg, argTid) {
+  maybeMonkeyPatchCallback(arg, traceId) {
     if (!isInstrumentedFunction(arg)) {
       return arg;
     }
@@ -254,10 +254,12 @@ export default class CallbackPatcher {
     const eventListenerRegex = /^on[A-Z]|event/;
     const name = valueCollection._readProperty(arg, 'name');
     const isEventListener = !!(name || '').match(eventListenerRegex);
-    this.runtime.async.preCallback(argTid, isEventListener);
+
+    // TODO: make sure each `traceId` does not have more than PreCallback update
+    this.runtime.async.preCallback(traceId, isEventListener);
 
     // patch callback
-    const newArg = this.patchCallback(arg, argTid);
+    const newArg = this.patchCallback(arg, traceId);
     return newArg || arg;
   }
 
@@ -265,7 +267,7 @@ export default class CallbackPatcher {
    * Dynamically "monkey-patch-override" a function (if needed).
    * @return the function that will end up getting called instead of originalFunction.
    */
-  monkeyPatchArgs(originalFunction, callId, args, spreadArgs, argTids) {
+  monkeyPatchArgs(originalFunction, callId, args, spreadArgs = EmptyArray, argTids = EmptyArray) {
     // if (!argTids.length) {
     //   // monkey patching is only necessary for instrumenting callback arguments -> nothing to do
     //   return originalFunction;
@@ -284,11 +286,11 @@ export default class CallbackPatcher {
           // patch spread args
           for (let j = 0; j < spreadArgs[i].length; j++) {
             // TODO: unique traceId per callback (but spreadArgs[i] all share the same trace)
-            args[i][j] = this.maybeMonkeyPatchCallback(args[i][j], argTid);
+            args[i][j] = this.maybeMonkeyPatchCallback(args[i][j], argTid || callId);
           }
         }
         // patch regular arg
-        args[i] = this.maybeMonkeyPatchCallback(args[i], argTid);
+        args[i] = this.maybeMonkeyPatchCallback(args[i], argTid || callId);
       }
       // let f = getPatchedFunctionOrNull(originalFunction);
       // if (!f) {

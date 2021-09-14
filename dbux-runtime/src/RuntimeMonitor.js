@@ -73,7 +73,7 @@ export default class RuntimeMonitor {
     this.callbackPatcher.init();
 
     // more monkey-patching
-    initPatchBuiltins();
+    initPatchBuiltins(this);
 
     return this;
   }
