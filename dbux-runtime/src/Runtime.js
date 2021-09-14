@@ -401,7 +401,7 @@ export default class Runtime {
    */
   newRun() {
     this._currentRunId = ++this._maxRunId;
-    debug(`newRun`, this._currentRunId);
+    // debug(`newRun`, this._currentRunId);
     return this._currentRunId;
   }
 

@@ -342,9 +342,17 @@ export default class ProjectsManager {
       const confirmMessage = `Dbux is trying to recover your previous practice session.\nThe log files are ${sizeInMB.toFixed(2)}MB, do you want to recover the practice session?`;
       const buttons = {
         [`Yes`]: () => true,
+        [`Ignore practice session`]: async () => {
+          // log should be discarded and the user should not be asked again
+          await this.savePracticeSession(null);
+          return false;
+        },
         [`Delete practice session`]: async () => {
           // log should be discarded and the user should not be asked again
           await this.savePracticeSession(null);
+          // fs.rmSync(appFilePath);
+          // TODO: move all application files of a single session into a single session folder, then delete that folder here
+          this.externals.showMessage.warn(`File deletion is not implemented yet :(`);
           return false;
         }
       };

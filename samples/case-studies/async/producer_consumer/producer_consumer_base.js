@@ -7,8 +7,8 @@ import { randomInt } from 'asyncUtil';
 //  States & Constants
 // ###########################################################################
 
-const ProducerTime = 2;
-const ProducerTimeVar = 3;
+const ProducerTime = 8;
+const ProducerTimeVar = 5;
 const ConsumerTime = 3;
 const ConsumerTimeVar = 3;
 const MaxItems = 5;

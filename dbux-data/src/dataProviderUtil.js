@@ -2127,27 +2127,27 @@ export default {
       return null;
     }
     visited.add(nestingPromiseId);
-    const link = dp.indexes.promiseLinks.to.getUnique(nestingPromiseId);
-    const isNesting = !!link;
-    const promiseId = isNesting ? link.from : nestingPromiseId;
 
     // TODO: check beforeRootId vs. link.rootId?
 
-    let nestedUpdate = dp.util.getLastAsyncPostEventUpdateOfPromise(promiseId, beforeRootId);
+    let nestedUpdate = dp.util.getLastAsyncPostEventUpdateOfPromise(nestingPromiseId, beforeRootId);
 
     // Case 1: link is AsyncReturn, nestedUpdate is PostAwait
     // Case 2: link is AsyncReturn, nestedUpdate is PostThen
     // Case 3: link is ThenNested, nestedUpdate is PostAwait
     // Case 4: link is ThenNested, nestedUpdate is PostThen
 
-    if (nestedUpdate && dp.util.getPromiseRootId(promiseId) < nestedUpdate.rootId) {
+    if (nestedUpdate && dp.util.getPromiseRootId(nestingPromiseId) < nestedUpdate.rootId) {
       // nested for synchronization -> do not go deeper
       // TODO: probably should only sync in some cases (sync here for PostAwait, don't sync here for PostThen?)
-      syncPromiseIds.push(promiseId);
+      syncPromiseIds.push(nestingPromiseId);
     }
-    else if (isNesting) {
-      // go deeper
-      nestedUpdate = dp.util.GNPU(promiseId, beforeRootId, syncPromiseIds, visited) || nestedUpdate;
+    else {
+      const link = dp.indexes.promiseLinks.to.getUnique(nestingPromiseId);
+      if (link) {
+        // try to go deeper
+        nestedUpdate = dp.util.GNPU(link.from, beforeRootId, syncPromiseIds, visited) || nestedUpdate;
+      }
     }
     return nestedUpdate;
   },

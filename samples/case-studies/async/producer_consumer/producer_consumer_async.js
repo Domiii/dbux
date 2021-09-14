@@ -39,7 +39,7 @@ async function consumer(n) {
       // await sleep();
       if (hasItems()) {
         --n;
-        console.log('cons', n);
+        // console.log('cons', n);
         await consume();
       }
       else {
@@ -52,7 +52,8 @@ async function consumer(n) {
  * Main
  *  #########################################################################*/
 
+producer(2*N);
+consumer(N);
 producer(N);
-// producer(N);
-// consumer(N);
+consumer(N);
 consumer(N);
