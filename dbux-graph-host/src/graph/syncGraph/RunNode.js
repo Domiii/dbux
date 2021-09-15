@@ -97,7 +97,7 @@ class RunNode extends HostComponentEndpoint {
 
     // find root contexts
     let rootContexts;
-    const allRootContexts = dp.indexes.executionContexts.rootsByRun.get(runId);
+    const allRootContexts = dp.indexes.executionContexts.roots.get(runId);
     if (rootContextId) {
       rootContexts = [dp.collections.executionContexts.getById(rootContextId)];
     }

@@ -114,7 +114,8 @@ class ContextNode extends HostComponentEndpoint {
     const dp = allApplications.getById(applicationId).dataProvider;
     const childContexts = dp.indexes.executionContexts.children.get(contextId) || EmptyArray;
     return childContexts.filter(childContext => {
-      if (dp.util.isRootContextInRun(childContext.contextId)) {
+      if (dp.util.isRootContext(childContext.contextId)) {
+        // TODO-m: check in graph root instead
         return false;
       }
 

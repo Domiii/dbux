@@ -97,23 +97,13 @@ export default {
     return dp.indexes.executionContexts.firstInRuns.get(1);
   },
 
-  /**
-   * @param {DataProvider} dp 
-   */
-  getRootContextsByRun(dp, runId) {
-    return dp.indexes.executionContexts.rootsByRun.get(runId);
-  },
-
   /** @param {DataProvider} dp */
-  isRootContextInRun(dp, contextId) {
-    const { parentContextId, runId } = dp.collections.executionContexts.getById(contextId);
-    if (parentContextId) {
-      const parentContext = dp.collections.executionContexts.getById(parentContextId);
-      if (runId === parentContext.runId) {
-        return false;
-      }
+  isRootContext(dp, contextId) {
+    const context = dp.collections.executionContexts.getById(contextId);
+    if (!context.parentContextId || context.isVirtualRoot) {
+      return true;
     }
-    return true;
+    return false;
   },
 
   /** @param {DataProvider} dp */
@@ -1171,7 +1161,7 @@ export default {
    * @param {DataProvider} dp
    */
   getCallerOrSchedulerTraceOfContext(dp, contextId) {
-    if (dp.util.isRootContextInRun(contextId)) {
+    if (dp.util.isRootContext(contextId)) {
       const asyncNode = dp.indexes.asyncNodes.byRoot.getFirst(contextId);
       return dp.collections.traces.getById(asyncNode?.schedulerTraceId);
     }
@@ -1185,7 +1175,7 @@ export default {
    * @param {DataProvider} dp
    */
   makeContextCallerOrSchedulerLabel(dp, contextId) {
-    if (dp.util.isRootContextInRun(contextId)) {
+    if (dp.util.isRootContext(contextId)) {
       const context = dp.collections.executionContexts.getById(contextId);
       return context && makeContextSchedulerLabel(context, dp) || '';
     }
