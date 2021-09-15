@@ -2,7 +2,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection/index';
 import { makeContextLocLabel, makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
-import GraphMode from '@dbux/graph-common/src/shared/GraphMode';
+import GraphType from '@dbux/graph-common/src/shared/GraphType';
 import GraphBase from '../GraphBase';
 
 /** @typedef {import('@dbux/data/src/applications/Application').default} Application */
@@ -24,7 +24,7 @@ class AsyncGraph extends GraphBase {
   }
 
   shouldBeEnabled() {
-    if (this.context.graphDocument.state.graphMode === GraphMode.AsyncGraph) {
+    if (this.context.graphDocument.state.graphMode === GraphType.AsyncGraph) {
       return true;
     }
     else {

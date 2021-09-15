@@ -1,8 +1,7 @@
 import NanoEvents from 'nanoevents';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
-import GraphType from '@dbux/graph-common/src/shared/GraphType';
-import GraphMode from '@dbux/graph-common/src/shared/GraphMode';
+import GraphType, { nextGraphType } from '@dbux/graph-common/src/shared/GraphType';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
@@ -11,7 +10,7 @@ class GraphDocument extends HostComponentEndpoint {
     this._emitter = new NanoEvents();
 
     // default mode settings
-    this.state.graphMode = GraphMode.SyncGraph;
+    this.state.graphMode = GraphType.SyncGraph;
     this.state.followMode = true;
     this.state.locMode = true;
     this.state.callMode = false;
@@ -64,7 +63,7 @@ class GraphDocument extends HostComponentEndpoint {
    *  ######################################*/
 
   nextGraphMode() {
-    this.setGraphMode(GraphMode.nextValue(this.state.graphMode));
+    this.setGraphMode(nextGraphType(this.state.graphMode));
   }
 
   setGraphMode(mode) {

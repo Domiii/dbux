@@ -117,7 +117,7 @@ class ContextNode extends ClientComponentEndpoint {
     return this.context.graphRoot.controllers.getComponent('HiddenNodeManager');
   }
 
-  isHiddenBy() {
+  hiddenByNode() {
     return this.hiddenNodeManager.getHiddenNodeHidingThis(this.context.runNode);
   }
 

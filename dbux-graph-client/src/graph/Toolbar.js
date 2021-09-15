@@ -1,5 +1,5 @@
 import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
-import GraphMode from '@dbux/graph-common/src/shared/GraphMode';
+import GraphType from '@dbux/graph-common/src/shared/GraphType';
 import { compileHtmlElement, decorateClasses, decorateAttr } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
@@ -120,7 +120,7 @@ class Toolbar extends ClientComponentEndpoint {
       active: !hideAfter
     });
     decorateClasses(this.els.graphModeBtn, {
-      active: graphMode === GraphMode.AsyncGraph
+      active: graphMode === GraphType.AsyncGraph
     });
     decorateClasses(this.els.asyncStackBtn, {
       active: !!stackEnabled

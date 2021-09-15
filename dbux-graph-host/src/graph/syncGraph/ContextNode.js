@@ -165,8 +165,8 @@ class ContextNode extends HostComponentEndpoint {
     this.setState({ isSelected, traceId, isSelectedTraceCallRelated, contextIdOfSelectedCallTrace });
   }
 
-  isHiddenBy() {
-    return this.context.runNode.isHiddenBy();
+  hiddenByNode() {
+    return this.context.runNode.hiddenByNode();
   }
 
   public = {

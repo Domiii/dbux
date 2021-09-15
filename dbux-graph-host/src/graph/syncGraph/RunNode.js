@@ -36,7 +36,7 @@ class RunNode extends HostComponentEndpoint {
     return this.rootContext.contextId;
   }
 
-  isHiddenBy() {
+  hiddenByNode() {
     return this.hiddenNodeManager?.getHiddenNodeHidingThis(this);
   }
 

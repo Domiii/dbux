@@ -1,5 +1,5 @@
 import allApplications from '@dbux/data/src/applications/allApplications';
-import GraphMode from '@dbux/graph-common/src/shared/GraphMode';
+import GraphType from '@dbux/graph-common/src/shared/GraphType';
 import SyncGraphBase from '../SyncGraphBase';
 
 class SyncGraph extends SyncGraphBase {
@@ -12,7 +12,7 @@ class SyncGraph extends SyncGraphBase {
   }
 
   shouldBeEnabled() {
-    if (this.context.graphDocument.state.graphMode === GraphMode.SyncGraph) {
+    if (this.context.graphDocument.state.graphMode === GraphType.SyncGraph) {
       return true;
     }
     else {

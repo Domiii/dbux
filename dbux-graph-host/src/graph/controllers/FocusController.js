@@ -41,7 +41,7 @@ export default class FocusController extends HostComponentEndpoint {
   async focus(node) {
     // if node is hidden, focus on the hiddenNode instead
     let targetNode = node;
-    const hiddenNode = node.isHiddenBy?.();
+    const hiddenNode = node.hiddenByNode?.();
     if (hiddenNode) {
       targetNode = hiddenNode;
     }
