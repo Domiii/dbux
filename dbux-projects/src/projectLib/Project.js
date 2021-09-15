@@ -1,4 +1,5 @@
 import path from 'path';
+import fs from 'fs';
 import pull from 'lodash/pull';
 import defaultsDeep from 'lodash/defaultsDeep';
 import sh from 'shelljs';
@@ -10,8 +11,9 @@ import { pathJoin, pathResolve, realPathSyncNormalized } from '@dbux/common-node
 import isObject from 'lodash/isObject';
 import BugList from './BugList';
 import Process from '../util/Process';
-import { checkSystemWithRequirement } from '../checkSystem';
 import { MultipleFileWatcher } from '../util/multipleFileWatcher';
+import { buildNodeCommand } from '../util/nodeUtil';
+import { checkSystemWithRequirement } from '../checkSystem';
 import RunStatus, { isStatusRunningType } from './RunStatus';
 import ProjectBase from './ProjectBase';
 
@@ -550,7 +552,8 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       // add assest files to git
       // NOTE: && is not supported in all shells (e.g. Powershell)
       const files = this.getAllAssetFiles();
-      await this.exec(`${this.gitCommand} add ${files.map(name => `"${name}"`).join(' ')}`);
+      // this.logger.debug(files.map(f => `${f}: ${fs.existsSync(f)}`));
+      await this.exec(`${this.gitCommand} add ${files.map(name => `'${name}'`).join(' ')}`);
 
       message && (message = ' ' + message);
       // TODO: should not need '--allow-empty', if `checkFilesChanged` is correct (but somehow still bugs out)
@@ -722,7 +725,12 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     return this
       .getAllAssetFolderNames()
       .map(folderName => this.getAssetDir(folderName))
-      .flatMap(f => globRelative(f, '**/*'));
+      .flatMap(folder => {
+        const files = globRelative(folder, '**/*');
+        // hackfix: for some reason, `globRelative` sometimes picks up deleted files
+        // add project dir for existsSync to work
+        return files.filter(f => fs.existsSync(pathJoin(folder, f)));
+      });
   }
 
   copyAssetFolder(assetFolderName) {
@@ -938,6 +946,32 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     return argArray.join(' ');      //.map(s => `"${s}"`).join(' ');
   }
 
+  /** ###########################################################################
+   * {@link testBugCommand}
+   * ##########################################################################*/
+
+  /**
+   * Default implementation: run a node sample file.
+   */
+  async testBugCommand(bug, cfg) {
+    const runCfg = {
+      env: {
+      }
+    };
+
+    return [
+      buildNodeCommand({
+        ...cfg,
+        program: bug.testFilePaths[0]
+      }),
+      runCfg
+    ];
+
+    // // Debug shortcut:
+    // // DEBUG=http node --inspect-brk --stack-trace-limit=100    --require "./test/support/env.js" "C:\\Users\\domin\\code\\dbux\\node_modules\\@dbux\\cli\\bin\\dbux.js" run  --verbose=1 --pw=superagent "c:\\Users\\domin\\code\\dbux\\dbux_projects\\express/node_modules/mocha/bin/_mocha" -- --no-exit -c -t 10000 --grep "OPTIONS should only include each method once" -- test/app.options.js
+
+    // return buildMochaRunCommand(mochaCfg);
+  }
 
 
   // ###########################################################################
