@@ -16,9 +16,7 @@ export default class SyncGraph extends SyncGraphBase {
           </button>
         </div>
         <div data-mount="HiddenBeforeNode"></div>
-        <div data-el="nodeChildren" data-mount="ContextNode" class="node-children flex-column">
-          <div class="before-run-node"></div>
-        </div>
+        <div data-el="nodeChildren" data-mount="ContextNode" class="node-children flex-column"></div>
         <div data-mount="HiddenAfterNode"></div>
       </div>
     `);
