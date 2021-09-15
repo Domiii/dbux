@@ -130,8 +130,8 @@ export default class Project extends ProjectBase {
   }
 
   async initBug(bug) {
-    await this.decorateBug?.(bug);
-    await this.builder?.decorateBug(bug);
+    await this.decorateBugForRun?.(bug);
+    await this.builder?.decorateBugForRun(bug);
 
     // future-work: generalize test regexes
     // let { testRe } = bug;
@@ -834,12 +834,28 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   // ###########################################################################
 
   /**
+   * @virtual
+   */
+  setupBug(bug) { }
+
+  /**
    * Get all bugs for this project
    * @return {BugList}
    */
   getOrLoadBugs() {
     if (!this._bugs) {
       let arr = this.loadBugs();
+      arr.forEach(bug => {
+        let {
+          description,
+          testRe,
+          testFilePaths
+        } = bug;
+        bug.description = description || testRe || testFilePaths[0] || '';
+
+        this.setupBug(bug);
+      });
+
       if (process.env.NODE_ENV === 'production') {
         // NOTE: this is an immature feature
         //      for now, only provide one bug for demonstration purposes and to allow us gather feedback
@@ -875,11 +891,31 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
    * @see https://mochajs.org/#command-line-usage
    */
   getMochaRunArgs(bug, moreArgs = EmptyArray) {
+    let {
+      testRe,
+      runArgs,
+      testFilePaths
+    } = bug;
+
+    let testReArgs;
+    if (testRe) {
+      // fix up testRe
+      if (Array.isArray(testRe)) {
+        testRe = testRe.map(re => `(?:${re})`).join('|');
+      }
+      testRe = testRe.replace(/"/g, '\\"');
+      testReArgs = testRe && ['--grep', `"${testRe}"`];
+    }
+
     // bugArgs
     const argArray = [
       '-c', // colors
       ...moreArgs,
-      ...(bug.runArgs || EmptyArray)
+      ...(testReArgs || EmptyArray),
+      ...(runArgs || EmptyArray),
+      // '--',
+      // // 'test/index.js',
+      ...testFilePaths
     ];
     if (argArray.includes(undefined)) {
       throw new Error(bug.debugTag + ' - invalid `Project bug`. Arguments must not include `undefined`: ' + JSON.stringify(argArray));

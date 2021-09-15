@@ -82,37 +82,20 @@ export default class HexoProject extends Project {
     return bugs;
   }
 
-  decorateBug(bug) {
+  decorateBugForRun(bug) {
     if (!bug.testFilePaths) {
       // bug not ready yet
       return;
     }
 
-    let {
-      description,
-      testRe,
-      testFilePaths
-    } = bug;
-    if (isArray(testRe)) {
-      testRe = testRe.map(re => `(?:${re})`).join('|');
-    }
-
-    testRe = testRe.replace(/"/g, '\\"');
-
     Object.assign(bug, {
-      name: `bug #${bug.id}`,
-      description: description || testRe || testFilePaths[0] || '',
-      runArgs: [
-        '--grep', `"${testRe}"`,
-        '-t', '20000',    // timeout = 20s
-        '--',
-        // 'test/index.js',
-        ...testFilePaths
-      ],
+      // name: `bug #${bug.id}`,
       // require: ['./test/support/env.js'],
       // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
-
+      // runArgs: ['-t', '20000'],    // timeout = 20s
+      runArgs: ['-t', '0'],    // disable timeout (https://mochajs.org/#timeouts)
       // dbuxArgs: '--pw=.*',
+      dbuxArgs: '--pw=warehouse',
     });
   }
 

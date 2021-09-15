@@ -29,7 +29,7 @@ export default class SequelizeProject extends Project {
     ];
   }
 
-  decorateBug(bug) {
+  decorateBugForRun(bug) {
     if (!bug.testFilePaths) {
       // bug not fully configured yet
       return;

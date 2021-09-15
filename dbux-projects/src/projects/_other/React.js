@@ -49,7 +49,7 @@ export default class ReactProject extends Project {
     ];
   }
 
-  decorateBug(bug) {
+  decorateBugForRun(bug) {
     bug.testFilePaths = ['app.js'];
     // bug.runFilePaths = bug.testFilePaths;
     bug.watchFilePaths = bug.testFilePaths.map(file => path.join(this.projectPath, 'dist', file));

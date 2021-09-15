@@ -85,7 +85,7 @@ export default class _2048Project extends Project {
     ];
   }
 
-  decorateBug(bug) {
+  decorateBugForRun(bug) {
     bug.mainEntryPoint = ['js/application.js'];
   }
 

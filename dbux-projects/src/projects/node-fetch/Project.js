@@ -26,7 +26,7 @@ export default class NodeFetchProject extends Project {
     ];
   }
 
-  decorateBug(bug) {
+  decorateBugForRun(bug) {
     if (!bug.testFilePaths) {
       // bug not fully configured yet
       return;
