@@ -36,11 +36,10 @@ const createdAt = Date.now();
 
 function extractEntryPointPathFromInitialData(initialData) {
   const { staticProgramContexts } = initialData;
-  const entryPoint = staticProgramContexts && staticProgramContexts[0];
-  if (entryPoint && entryPoint.programId === 1) {
-    return entryPoint.filePath;
-  }
-  return '';
+  const entryPoint = staticProgramContexts &&
+    minBy(staticProgramContexts, program => program.programIndex) || staticProgramContexts[0];
+  // debug('extractEntryPointPathFromInitialData', staticProgramContexts);
+  return entryPoint?.filePath || '';
 }
 
 // ###########################################################################

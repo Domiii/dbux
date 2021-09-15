@@ -9,13 +9,15 @@ export class StaticProgramContextCollection extends Collection {
     super('staticProgramContexts');
   }
 
-  addProgram(programData) {
+  addProgram(allProgramData) {
     const programId = this._all.length;
-    const { fileName, filePath } = programData;
+    const { program } = allProgramData;
+    const { fileName, filePath, programIndex } = program;
     const staticProgramContext = {
       programId,
       fileName,
-      filePath
+      filePath,
+      programIndex
     };
     
     this.push(staticProgramContext);

@@ -6,7 +6,8 @@ set -e # cancel on error
 # set -x # verbose echo mode
 
 # fname="__samplesInput__/async/catch1"
-fname="case-studies/async/chain/chain-error1"
+# fname="case-studies/async/chain/chain-error1"
+fname="case-studies/async/producer_consumer/producer_consumer_promise"
 
 
 
