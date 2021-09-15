@@ -2,8 +2,10 @@ import Project from '../../projectLib/Project';
 
 
 /**
- * TODO:
- * * `js` folder is ignored, so search leads you to the "incorrect" (i.e. unused) `src` folder
+ * NOTE: this is not a good project to play around with
+ * * `js` folder is search-ignored, so search leads you to the (not executed) `src` folder
+ * * what's worse is: changes to the `js` folder will be overwritten on next `install`; have to commit all changes to `src` before use...
+ * 
  */
 export default class BluebirdProject extends Project {
   gitRemote = 'petkaantonov/bluebird.git';
