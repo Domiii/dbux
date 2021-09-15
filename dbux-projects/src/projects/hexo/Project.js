@@ -79,40 +79,41 @@ export default class HexoProject extends Project {
       }
     ];
 
-    return bugs.
-      map((bug) => {
-        if (!bug.testFilePaths) {
-          // bug not fully configured yet
-          return null;
-        }
+    return bugs;
+  }
 
-        let { 
-          description,
-          testRe,
-          testFilePaths
-        } = bug;
-        if (isArray(testRe)) {
-          testRe = testRe.map(re => `(?:${re})`).join('|');
-        }
+  decorateBug(bug) {
+    if (!bug.testFilePaths) {
+      // bug not ready yet
+      return;
+    }
 
-        testRe = testRe.replace(/"/g, '\\"');
+    let {
+      description,
+      testRe,
+      testFilePaths
+    } = bug;
+    if (isArray(testRe)) {
+      testRe = testRe.map(re => `(?:${re})`).join('|');
+    }
 
-        return {
-          name: `bug #${bug.id}`,
-          description: description || testRe || testFilePaths?.[0] || '',
-          runArgs: [
-            '--grep', `"${testRe}"`,
-            '-t', '20000',    // timeout = 20s
-            '--',
-            // 'test/index.js',
-            ...testFilePaths
-          ],
-          // require: ['./test/support/env.js'],
-          ...bug,
-          // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
-        };
-      }).
-      filter(bug => !!bug);
+    testRe = testRe.replace(/"/g, '\\"');
+
+    Object.assign(bug, {
+      name: `bug #${bug.id}`,
+      description: description || testRe || testFilePaths[0] || '',
+      runArgs: [
+        '--grep', `"${testRe}"`,
+        '-t', '20000',    // timeout = 20s
+        '--',
+        // 'test/index.js',
+        ...testFilePaths
+      ],
+      // require: ['./test/support/env.js'],
+      // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
+
+      // dbuxArgs: '--pw=.*',
+    });
   }
 
   getBugGitTag(bugNumber, tagCategory) {

@@ -286,18 +286,25 @@ export default class AsyncEventUpdateCollection extends Collection {
     // const previousFromThreadId = this.getOrAssignRootThreadId(fromRootId);
     // const previousToThreadId = dp.util.getAsyncRootThreadId(toRootId);
     const fromThreadId = this.getOrAssignRootThreadId(fromRootId, schedulerTraceId);
-    const oldToThreadId = dp.util.getAsyncRootThreadId(toRootId);
     let toThreadId;
+
+    toThreadId = isChain ? fromThreadId : this.newThreadId();
+
+    const oldToThreadId = dp.util.getAsyncRootThreadId(toRootId);
     if (oldToThreadId) {
       // toRootId was previously assigned a thread id already -> should not happen
       // if (!isChain || oldToThreadId !== fromThreadId) {
-      this.logger.trace(`Tried to overwrite toThreadId, from=${fromThreadId}, oldTo=${oldToThreadId}, chain=${isChain}, postUpdateData=${JSON.stringify(postUpdateData)}`);
+      // TODO: if this happens, it usually means, a node has multiple `Post*` updates
+      //    -> previous analysis: caused by `PostCallback`, where multiple callbacks were triggered in the same root
+      //        -> should be fixed (by not adding `AsyncNode` if callback is not root)
+      //    -> maybe was already added to wrong indexes
+      // eslint-disable-next-line max-len
+      this.logger.trace(`Tried to overwrite toThreadId - schedulerTraceId=${schedulerTraceId}, newTo=${toThreadId}, oldTo=${oldToThreadId}, from=${fromThreadId}, fromRoot=${fromRootId}, toRoot=${toRootId}, chain=${isChain}, postUpdateData=${JSON.stringify(postUpdateData)}`);
       // }
       // isChain = oldToThreadId === fromThreadId;
       // toThreadId = oldToThreadId;
     }
 
-    toThreadId = isChain ? fromThreadId : this.newThreadId();
     dp.collections.asyncNodes.setNodeThreadId(toRootId, toThreadId, schedulerTraceId);
 
     // let toThreadId = toRootId && this.getOrAssignRootThreadId(toRootId, schedulerTraceId) || 0;

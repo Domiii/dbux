@@ -6,6 +6,7 @@ import { isInstrumentedFunction, getFirstContextAfterTrace } from '../data/dataU
 // eslint-disable-next-line max-len
 import { getOriginalCallback, isMonkeyPatchedCallback, isOrHasMonkeyPatchedFunction, _registerMonkeyPatchedCallback, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
 // import executionContextCollection from '../data/executionContextCollection';
+import executionContextCollection from '../data/executionContextCollection';
 import traceCollection from '../data/traceCollection';
 import valueCollection from '../data/valueCollection';
 
@@ -141,36 +142,50 @@ export default class CallbackPatcher {
 
     function patchedCallback(...args) {
       let returnValue;
-      const lastTraceId = traceCollection.getLast().traceId;
+      const lastTraceId = traceCollection.getLast()?.traceId;
+      const lastContextId = executionContextCollection.getLast()?.contextId;
+
+      const realRootId = runtime.getCurrentRealRootContextId();
       try {
         // actually call callback
         returnValue = originalCallback.call(this, ...args);
       }
       finally {
-        // NOTE: there is no BCE, since the callback (in all likelihood) was invoked by the JS runtime
-        const context = getFirstContextAfterTrace(lastTraceId);
-        if (!context) {
-          // NOTE: this can happen if a patched cb is executed via {@link valueCollection#_readProperty), where recording is disabled
-          // trace(`Instrumentation failed. No context was created after executing callback "${originalCallback.name} (${originalCallback})".`);
+        if (!lastContextId) {
+          // NOTE: should never happen, since we have already patched the callback?
+        }
+        else if (realRootId) {
+          // callback was called synchronously -> ignore
+          // TODO: this might still go wrong if certain asynchronous callback mechanisms, such as `nextTick` inside of async functions are used
         }
         else {
-          const rootId = runtime.getCurrentVirtualRootContextId();
-
-          // warn(`[patchedCallback] lastTrace=${lastTraceId}, cid=${context.contextId}, rootId=${rootId}, schedulerTraceId=${schedulerTraceId}`);
-
-          if (context.contextId !== rootId) {
-            // CB was called synchronously -> we are not interested
+          // hackfix: this is a very naive way to get the context
+          //    <- it also can easily bug out, especially, if we are not at the root (e.g. in hexo#4)
+          //    NOTE: there is no BCE, since the callback (in all likelihood) was invoked by the JS runtime
+          // const context = getFirstContextAfterTrace(lastTraceId);
+          const context = executionContextCollection.getById(lastContextId + 1);
+          if (!context) {
+            // NOTE: this can happen if a patched cb is executed via {@link valueCollection#_readProperty), where recording is disabled
+            // trace(`Instrumentation failed. No context was created after executing callback "${originalCallback.name} (${originalCallback})".`);
           }
           else {
-            // the CB was called asynchronously
+            const rootId = runtime.getCurrentVirtualRootContextId();
 
-            // const cbContext = getLastContextCheckCallee(originalCb);
-            const runId = runtime.getCurrentRunId();
-            // const trace = getFirstTraceOfRefValue(callee);
-            // const staticTrace = trace && staticTraceCollection.getById(trace.staticTraceId);
-            // const traceType = staticTrace?.type;
-            // const isInstrumentedFunction = traceType && isFunctionDefinitionTrace(traceType);
-            runtime.async.postCallback(schedulerTraceId, runId, rootId);
+            if (context.contextId !== rootId) {
+              // CB was called synchronously -> we are not interested
+            }
+            else {
+              warn(`[patchedCallback] lastTrace=${lastTraceId}, cid=${context.contextId}, rootId=${rootId}, schedulerTraceId=${schedulerTraceId}`);
+              // the CB was called asynchronously
+
+              // const cbContext = getLastContextCheckCallee(originalCb);
+              const runId = runtime.getCurrentRunId();
+              // const trace = getFirstTraceOfRefValue(callee);
+              // const staticTrace = trace && staticTraceCollection.getById(trace.staticTraceId);
+              // const traceType = staticTrace?.type;
+              // const isInstrumentedFunction = traceType && isFunctionDefinitionTrace(traceType);
+              runtime.async.postCallback(schedulerTraceId, runId, rootId, context.contextId);
+            }
           }
         }
       }
