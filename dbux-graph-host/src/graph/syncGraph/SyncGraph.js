@@ -58,19 +58,7 @@ class SyncGraph extends SyncGraphBase {
   }
 
   _handleAddExecutionContexts = (app, newContexts) => {
-    // TODO-M: use new context node system
-    const { applicationId } = app;
-    const newRunIds = [...new Set(newContexts.map(c => c.runId))];
-    const duplicatedRunIds = newRunIds.filter(runId => {
-      return !!this.runNodesById.get(applicationId, runId);
-    });
-    if (duplicatedRunIds.length) {
-      // sanity check: assuming newly incoming data always have a new runId
-      this.logger.error(`Received new context(s) of old runIds: [${duplicatedRunIds}]`);
-    }
-    const newNodes = this.updateRunNodeByIds(applicationId, newRunIds);
-    this._setApplicationState();
-    this._emitter.emit('newNode', newNodes);
+    this.refresh();
   }
 
   _setApplicationState() {

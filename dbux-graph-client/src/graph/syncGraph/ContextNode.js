@@ -126,7 +126,7 @@ class ContextNode extends ClientComponentEndpoint {
   }
 
   hiddenByNode() {
-    return this.hiddenNodeManager.getHiddenNodeHidingThis(this.context.runNode);
+    return this.hiddenNodeManager.getHiddenNodeHidingThis(this);
   }
 
   // ########################################

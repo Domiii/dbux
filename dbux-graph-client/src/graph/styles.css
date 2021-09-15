@@ -27,6 +27,7 @@ html, body {
 }
 
 /* hackfix: this way async-header can have same background-color as body */
+
 div {
   background-color: inherit;
 }
@@ -76,7 +77,11 @@ div {
   margin: -1px;
 }
 
-.node-children > .context-node {
+/** ###########################################################################
+ * context node
+ * ############################################################################*/
+
+.node-children>.context-node {
   margin: 2px;
 }
 
@@ -118,16 +123,13 @@ div {
   bottom: 0;
 }
 
-/* 
-.trace{
-  display:flex;
-  justify-content:flex-start;
-  height:auto;
-  width:auto;
-  margin:5px;
-  border: 1px solid black;
-  white-space: nowrap;
-} */
+/** #######################################
+ * hidden node
+ * ########################################*/
+
+.hidden-context-node>div {
+  background-color: rgba(206, 206, 206, 0.815);
+}
 
 .graph-root {
   padding-left: 2px;
@@ -175,57 +177,11 @@ div {
 }
 
 /** ###########################################################################
- * RunNode
- * ############################################################################ */
-/* 
-.run-node {
-  padding: 1px;
-}
-
-.run-node>div {
-  border: 1px solid black;
-} */
-
-.hidden-run-node>div {
-  background-color: rgba(206, 206, 206, 0.815);
-}
-
-/* @keyframes new-run-node {
-  from {
-    padding: 1px;
-  }
-  to {
-    padding: 10px;
-  }
-} */
-
-/* @keyframes new-run-node-content {
-  from {
-    border: 10px solid yellow;
-  }
-  to {
-    border: 1px solid orange;
-  }
-} */
-
-/* .new {
-  animation: new-run-node 10s linear;
-  animation-fill-mode: forwards;
-} */
-
-/* .new > div {
-  animation: new-run-node-content 10s linear;
-  animation-fill-mode: forwards;
-} */
-
-/** ###########################################################################
  * Async Graph
  * ############################################################################ */
 
 .async-graph {
-  grid-template-areas: 
-    "header"
-    "main";
+  grid-template-areas: "header" "main";
 }
 
 .async-grid {

@@ -3,56 +3,12 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import GraphBase from './GraphBase';
-import RunNode from './syncGraph/RunNode';
 import ContextNode from './syncGraph/ContextNode';
 
 /** @typedef {import('@dbux/common/src/types/ExecutionContext').default} ExecutionContext */
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('SyncGraphBase');
-
-
-// export class RunNodeMap {
-//   constructor() {
-//     this._all = new Map();
-//   }
-
-//   set(applicationId, runId, node) {
-//     this._all.set(this.makeKey(applicationId, runId), node);
-//   }
-
-//   delete(applicationId, runId) {
-//     this._all.delete(this.makeKey(applicationId, runId));
-//   }
-
-//   /**
-//    * @return {RunNode}
-//    */
-//   get(applicationId, runId) {
-//     return this._all.get(this.makeKey(applicationId, runId));
-//   }
-
-//   has(applicationId, runId) {
-//     return !!this.get(applicationId, runId);
-//   }
-
-//   *getApplicationIds() {
-//     for (const runNode of this.getAll()) {
-//       yield runNode.state.applicationId;
-//     }
-//   }
-
-//   /**
-//    * @return {RunNode[]}
-//    */
-//   getAll() {
-//     return this._all.values();
-//   }
-
-//   makeKey(appId, runId) {
-//     return `${appId}_${runId}`;
-//   }
-// }
 
 class SyncGraphBase extends GraphBase {
   /**
@@ -63,7 +19,6 @@ class SyncGraphBase extends GraphBase {
   init() {
     this.roots = new Set();
     this.contextNodesByContext = new Map();
-    // this.runNodesById = new RunNodeMap();
     this.state.applications = [];
     this._emitter = new NanoEvents();
     this._unsubscribeOnNewData = [];
@@ -95,56 +50,6 @@ class SyncGraphBase extends GraphBase {
   clear() {
     this.removeAllContextNode();
   }
-
-  // updateRunNodeByIds(applicationId, runIds) {
-  //   return runIds.map(runId => {
-  //     const runNode = this.runNodesById.get(applicationId, runId);
-  //     if (runNode) {
-  //       runNode.updateChildren();
-  //       return runNode;
-  //     }
-  //     else {
-  //       return this.addRunNode(applicationId, runId);
-  //     }
-  //   });
-  // }
-
-  // addRunNodeByRootIds(applicationId, rootIds) {
-  //   const dp = allApplications.getById(applicationId).dataProvider;
-  //   return rootIds.map(rootId => {
-  //     const { runId } = dp.collections.executionContexts.getById(rootId);
-  //     return this.addRunNode(applicationId, runId, rootId);
-  //   });
-  // }
-
-  // // ###########################################################################
-  // // run node management
-  // // ###########################################################################
-
-  // addRunNode(applicationId, runId, rootContextId) {
-  //   const newNode = this.children.createComponent(RunNode, { applicationId, runId, rootContextId });
-  //   this.runNodesById.set(applicationId, runId, newNode);
-  //   return newNode;
-  // }
-
-  // removeRunNode(applicationId, runId) {
-  //   const runNode = this.runNodesById.get(applicationId, runId);
-  //   runNode.dispose();
-  //   this.runNodesById.delete(applicationId, runId);
-  // }
-
-  // removeAllRunNode() {
-  //   for (const { state: { applicationId, runId } } of this.getAllRunNode()) {
-  //     this.removeRunNode(applicationId, runId);
-  //   }
-  // }
-
-  // /**
-  //  * @return {RunNode[]}
-  //  */
-  // getAllRunNode() {
-  //   return this.runNodesById.getAll();
-  // }
 
   // ###########################################################################
   // Context Node management
@@ -218,14 +123,6 @@ class SyncGraphBase extends GraphBase {
     contextNode.dispose();
     this.contextNodesByContext.delete(context);
   }
-
-  // _maybeBuildContextNode(parentNode, context, isRoot = false) {
-  //   if (this.contextNodesByContext.get(context)) {
-  //     // skip if ContextNode aleady exist
-  //     return null;
-  //   }
-  //   return this._addContextNode(parentNode, context, isRoot);
-  // }
 
   buildContextNodeChildren(contextNode) {
     if (contextNode.childrenBuilt) {
@@ -328,6 +225,14 @@ class SyncGraphBase extends GraphBase {
       }
     }
     this._selectContextNode(contextNode);
+  }
+
+  // ###########################################################################
+  // own event listener
+  // ###########################################################################
+
+  on(eventName, cb) {
+    this._emitter.on(eventName, cb);
   }
 
   shared() {
