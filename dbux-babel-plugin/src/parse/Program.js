@@ -7,6 +7,11 @@ import { buildDbuxInit } from '../data/staticData';
 import BaseNode from './BaseNode';
 
 
+/**
+ * hackfix
+ */
+let lastProgramIndex = 0;
+
 // ###########################################################################
 // Builders
 // ###########################################################################
@@ -87,7 +92,7 @@ export default class Program extends BaseNode {
       filePath,
     } = state;
 
-    // debug(`babel-plugin: ${filePath}`);
+    // this.logger.debug(`ENTER ${filePath}`);
 
     // staticProgramContext
     const staticProgramContext = this.staticProgramContext = {
@@ -96,6 +101,7 @@ export default class Program extends BaseNode {
       displayName: fileName,
       fileName,
       filePath,
+      programIndex: ++lastProgramIndex
     };
 
     /**

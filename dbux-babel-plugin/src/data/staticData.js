@@ -21,15 +21,19 @@ export function buildDbuxInit(state) {
   } = ids;
 
   const staticData = {
-    fileName,
-    filePath,
+    // fileName,
+    // filePath,
+    /**
+     * Move the Program (first) context out of the `contexts` array to top-level.
+     */
+    program: contexts._all[0] || null,
 
     contexts: contexts._all,
     traces: traces._all,
     loops: loops._all
   };
 
-  // // const staticDataString = JSON.stringify(staticData, null, 4);
+  // // const staticDataString = JSON.stringify(staticData, null, 2);
   // Verbose && console.time(`[Dbux] babel write 1 (stringify) "${filePath}"`);
   const staticDataString = JSON.stringify(staticData);
   let runtimeCfgString = '{}';

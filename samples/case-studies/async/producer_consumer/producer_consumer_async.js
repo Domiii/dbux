@@ -54,6 +54,6 @@ async function consumer(n) {
 
 producer(2*N);
 consumer(N);
+consumer(N);
+consumer(N);
 producer(N);
-consumer(N);
-consumer(N);
