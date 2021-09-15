@@ -76,6 +76,10 @@ div {
   margin: -1px;
 }
 
+.node-children > .context-node {
+  margin: 2px;
+}
+
 .context-node .node-children {
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
@@ -173,14 +177,14 @@ div {
 /** ###########################################################################
  * RunNode
  * ############################################################################ */
-
+/* 
 .run-node {
   padding: 1px;
 }
 
 .run-node>div {
   border: 1px solid black;
-}
+} */
 
 .hidden-run-node>div {
   background-color: rgba(206, 206, 206, 0.815);

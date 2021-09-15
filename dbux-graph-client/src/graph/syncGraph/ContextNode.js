@@ -70,7 +70,8 @@ class ContextNode extends ClientComponentEndpoint {
       isSelectedTraceCallRelated,
       contextIdOfSelectedCallTrace,
       statsEnabled,
-      moduleName
+      moduleName,
+      visible
     } = this.state;
 
     const {
@@ -111,6 +112,13 @@ class ContextNode extends ClientComponentEndpoint {
     this.els.callLabel.setAttribute('data-tooltip', `${this.els.callLabel.textContent} (${modKey} + click to select trace)`);
     // this.els.prevContextBtn.setAttribute('data-tooltip', 'Go to previous function execution');
     // this.els.nextContextBtn.setAttribute('data-tooltip', 'Go to next function execution');
+
+    if (visible) {
+      this.el.classList.remove('hidden');
+    }
+    else {
+      this.el.classList.add('hidden');
+    }
   }
 
   get hiddenNodeManager() {

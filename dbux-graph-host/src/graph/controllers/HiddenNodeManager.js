@@ -1,6 +1,5 @@
 import NanoEvents from 'nanoevents';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
-import RunNode from '../syncGraph/RunNode';
 
 export default class HiddenNodeManager extends HostComponentEndpoint {
   init() {
@@ -12,9 +11,9 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
 
   update() {
     let changedFlag = false;
-    for (const runNode of this.getAllRunNode()) {
-      const visible = this.shouldBeVisible(runNode);
-      const changed = this._setVisible(runNode, visible);
+    for (const contextNode of this.getAllContextNode()) {
+      const visible = this.shouldBeVisible(contextNode);
+      const changed = this._setVisible(contextNode, visible);
       changedFlag |= changed;
     }
     this._notifyHiddenCountChanged();
@@ -59,30 +58,20 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
     this.forceUpdate();
   }
 
-  shouldBeVisible(runNode) {
-    const { hideBefore, hideAfter } = this.graphDocument.state;
-    if (hideBefore) {
-      if (runNode.state.createdAt < hideBefore) {
-        return false;
-      }
-    }
-    if (hideAfter) {
-      if (runNode.state.createdAt > hideAfter) {
-        return false;
-      }
-    }
-    return true;
+  shouldBeVisible(contextNode) {
+    return !this.getHiddenNodeHidingThis(contextNode);
   }
 
   /**
-   * @param {RunNode} runNode 
+   * @param {ContextNode} contextNode 
    */
-  getHiddenNodeHidingThis(runNode) {
+  getHiddenNodeHidingThis(contextNode) {
     const { hideBefore, hideAfter } = this.graphDocument.state;
-    if (hideBefore && runNode.state.createdAt < hideBefore) {
+    const { createdAt } = contextNode.state.context;
+    if (hideBefore && createdAt < hideBefore) {
       return this.hiddenBeforeNode;
     }
-    if (hideAfter && runNode.state.createdAt > hideAfter) {
+    if (hideAfter && createdAt > hideAfter) {
       return this.hiddenAfterNode;
     }
     return null;
@@ -92,9 +81,9 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
   // private
   // ###########################################################################
 
-  _setVisible(runNode, visible) {
-    if (runNode.state.visible !== visible) {
-      runNode.setState({ visible });
+  _setVisible(contextNode, visible) {
+    if (contextNode.state.visible !== visible) {
+      contextNode.setState({ visible });
       return true;
     }
     else {
@@ -123,15 +112,15 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
   }
 
   _notifyHiddenCountChanged = () => {
-    const { hideBefore, hideAfter } = this.graphDocument.state;
     let hideBeforeCount = 0;
     let hideAfterCount = 0;
-    for (const runNode of this.getAllRunNode()) {
+    for (const contextNode of this.getAllContextNode()) {
       // NOTE: if a node is hiddenBefore/After in the same time, only count as hiddenBefore
-      if (hideBefore && runNode.state.createdAt < hideBefore) {
+      const hiddenNode = this.getHiddenNodeHidingThis(contextNode);
+      if (hiddenNode === this.hiddenBeforeNode) {
         hideBeforeCount += 1;
       }
-      else if (hideAfter && runNode.state.createdAt > hideAfter) {
+      else if (hiddenNode === this.hiddenAfterNode) {
         hideAfterCount += 1;
       }
     }
@@ -146,14 +135,7 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
     this._emitter.on('countChanged', cb);
   }
 
-  // ###########################################################################
-  // util
-  // ###########################################################################
-
-  /**
-   * @return {RunNode[]}
-   */
-  getAllRunNode() {
-    return this.owner.getAllRunNode();
+  getAllContextNode() {
+    return this.owner.getAllContextNode();
   }
 }

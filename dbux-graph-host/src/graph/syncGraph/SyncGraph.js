@@ -20,30 +20,14 @@ class SyncGraph extends SyncGraphBase {
     }
   }
 
-  updateRunNodes() {
-    const oldAppIds = new Set(this.runNodesById.getApplicationIds());
-    const newAppIds = new Set(allApplications.selection.getAll().map(app => app.applicationId));
+  updateContextNodes() {
+    const roots = allApplications.selection.getAll().map(app => {
+      return app.dataProvider.util.getAllRootContexts();
+    }).flat();
 
-    // always re-subscribe since applicationSet clears subscribtion everytime it changes
-    this._resubscribeOnData();
+    this.updateByContexts(roots);
+    
     this._setApplicationState();
-
-    // remove old runNodes
-    for (const runNode of this.runNodesById.getAll()) {
-      const { applicationId, runId } = runNode.state;
-      if (!newAppIds.has(applicationId)) {
-        this.removeRunNode(applicationId, runId);
-      }
-    }
-
-    // add new runNodes
-    for (const appId of newAppIds) {
-      if (!oldAppIds.has(appId)) {
-        const app = allApplications.getById(appId);
-        const allRunIds = app.dataProvider.indexes.executionContexts.byRun.getAllKeys();
-        this.updateRunNodeByIds(appId, allRunIds);
-      }
-    }
   }
 
   _resubscribeOnData() {
@@ -74,6 +58,7 @@ class SyncGraph extends SyncGraphBase {
   }
 
   _handleAddExecutionContexts = (app, newContexts) => {
+    // TODO-M: use new context node system
     const { applicationId } = app;
     const newRunIds = [...new Set(newContexts.map(c => c.runId))];
     const duplicatedRunIds = newRunIds.filter(runId => {

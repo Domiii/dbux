@@ -43,6 +43,11 @@ export default class ExecutionContext {
   /**
    * @type {number}
    */
+  applicationId;
+
+  /**
+   * @type {number}
+   */
   contextId;
 
   /**

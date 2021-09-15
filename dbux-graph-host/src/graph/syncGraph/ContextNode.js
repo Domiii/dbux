@@ -11,14 +11,14 @@ class ContextNode extends HostComponentEndpoint {
   init() {
     this.childrenBuilt = false;
     this.state.statsEnabled = true;
+    this.state.visible = this.hiddenNodeManager ? this.hiddenNodeManager.shouldBeVisible(this) : true;
 
     const {
-      applicationId,
       context,
       statsEnabled
     } = this.state;
 
-    const { contextId } = context;
+    const { applicationId, contextId } = context;
 
     // get name (and other needed data)
     const app = allApplications.getById(applicationId);
@@ -50,9 +50,8 @@ class ContextNode extends HostComponentEndpoint {
   // ########################################
 
   get dp() {
-    const { applicationId } = this.state;
-    const { dataProvider } = allApplications.getById(applicationId);
-    return dataProvider;
+    const { applicationId } = this.state.context;
+    return allApplications.getById(applicationId).dataProvider;
   }
 
   get contextId() {
@@ -84,6 +83,10 @@ class ContextNode extends HostComponentEndpoint {
     return state?.nTreeFileCalled || 0;
   }
 
+  get hiddenNodeManager() {
+    return this.context.graphRoot.controllers.getComponent('HiddenNodeManager');
+  }
+
   // ########################################
   // stats
   // ########################################
@@ -110,7 +113,7 @@ class ContextNode extends HostComponentEndpoint {
   // ########################################
 
   getValidChildContexts() {
-    const { applicationId, context: { contextId } } = this.state;
+    const { applicationId, contextId } = this.state.context;
     const dp = allApplications.getById(applicationId).dataProvider;
     const childContexts = dp.indexes.executionContexts.children.get(contextId) || EmptyArray;
     return childContexts.filter(childContext => {
@@ -167,7 +170,7 @@ class ContextNode extends HostComponentEndpoint {
   }
 
   hiddenByNode() {
-    return this.context.runNode.hiddenByNode();
+    return this.hiddenNodeManager?.getHiddenNodeHidingThis(this);
   }
 
   public = {

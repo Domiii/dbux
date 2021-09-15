@@ -107,7 +107,7 @@ class RunNode extends HostComponentEndpoint {
 
     // build
     if (rootContexts) {
-      this.rootContextNodes = rootContexts.map(context => this.context.graphRoot._maybeBuildContextNode(this, applicationId, context, true));
+      this.rootContextNodes = rootContexts.map(context => this.context.graphRoot._maybeBuildContextNode(this, context, true));
       this.state.createdAt = dp.util.getRunCreatedAt(runId);
     }
     else {
