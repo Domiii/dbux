@@ -22,3 +22,15 @@ export function getGraphClassByType(graphType) {
   return ClassByType[graphType];
 }
 
+const EnabledGraphTypes = new Set([
+  GraphType.SyncGraph,
+  GraphType.AsyncGraph,
+]);
+
+export function nextGraphType(type) {
+  do {
+    type = GraphType.nextValue(type);
+  }
+  while (!EnabledGraphTypes.has(type));
+  return type;
+}

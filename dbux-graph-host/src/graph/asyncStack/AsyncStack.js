@@ -1,3 +1,4 @@
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection/index';
 import SyncGraphBase from '../SyncGraphBase';
@@ -23,19 +24,20 @@ class AsyncStack extends SyncGraphBase {
     }
   }
 
-  updateRunNodes() {
-    this._resubscribeOnData();
-    this.removeAllRunNode();
+  updateContextNodes() {
+    let roots;
 
     const trace = traceSelection.selected;
     if (trace) {
       const { applicationId, traceId } = trace;
       const dp = allApplications.getById(applicationId).dataProvider;
-      const rootIds = dp.util.getAsyncStackRootIds(traceId);
-
-      // add new runNodes
-      this.addRunNodeByRootIds(applicationId, rootIds);
+      roots = dp.util.getAsyncStackRoots(traceId);
     }
+    else {
+      roots = EmptyArray;
+    }
+
+    this.updateByContexts(roots);
   }
 
   _resubscribeOnData() {

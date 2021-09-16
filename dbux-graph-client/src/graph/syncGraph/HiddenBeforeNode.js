@@ -4,7 +4,7 @@ import { compileHtmlElement } from '../../util/domUtil';
 export default class HiddenBeforeNode extends ClientComponentEndpoint {
   createEl() {
     const el = compileHtmlElement(/*html*/`
-      <div class="run-node hidden-run-node width-fit graph-node">
+      <div class="context-node hidden-context-node width-fit graph-node">
         <div>
           <div data-el="label" class="node-children flex-column"></div>
         </div>

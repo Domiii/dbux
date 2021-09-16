@@ -60,7 +60,8 @@ class ContextNode extends ClientComponentEndpoint {
   update() {
     const {
       applicationId,
-      context: { contextId, staticContextId },
+      context: { contextId },
+      realStaticContextid,
       contextLabel,
       contextLocLabel,
       callerTracelabel,
@@ -70,7 +71,8 @@ class ContextNode extends ClientComponentEndpoint {
       isSelectedTraceCallRelated,
       contextIdOfSelectedCallTrace,
       statsEnabled,
-      moduleName
+      moduleName,
+      visible
     } = this.state;
 
     const {
@@ -80,7 +82,7 @@ class ContextNode extends ClientComponentEndpoint {
     const moduleLabel = moduleName ? `${moduleName} | ` : '';
 
     this.el.id = `application_${applicationId}-context_${contextId}`;
-    this.el.style.background = getStaticContextColor(themeMode, staticContextId, !!moduleName);
+    this.el.style.background = getStaticContextColor(themeMode, realStaticContextid, !!moduleName);
     this.els.contextLabel.textContent = contextLabel;
     this.els.locLabel.textContent = contextLocLabel && ` @ ${moduleLabel}${contextLocLabel}` || '';
     this.els.callLabel.textContent = callerTracelabel || '';
@@ -111,14 +113,21 @@ class ContextNode extends ClientComponentEndpoint {
     this.els.callLabel.setAttribute('data-tooltip', `${this.els.callLabel.textContent} (${modKey} + click to select trace)`);
     // this.els.prevContextBtn.setAttribute('data-tooltip', 'Go to previous function execution');
     // this.els.nextContextBtn.setAttribute('data-tooltip', 'Go to next function execution');
+
+    if (visible) {
+      this.el.classList.remove('hidden');
+    }
+    else {
+      this.el.classList.add('hidden');
+    }
   }
 
   get hiddenNodeManager() {
     return this.context.graphRoot.controllers.getComponent('HiddenNodeManager');
   }
 
-  isHiddenBy() {
-    return this.hiddenNodeManager.getHiddenNodeHidingThis(this.context.runNode);
+  hiddenByNode() {
+    return this.hiddenNodeManager.getHiddenNodeHidingThis(this);
   }
 
   // ########################################

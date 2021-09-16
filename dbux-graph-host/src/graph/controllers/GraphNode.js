@@ -4,7 +4,7 @@ import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
 export default class GraphNode extends HostComponentEndpoint {
   /**
-   * Owner requirement:
+   * Owner requirements:
    *  property `childrenBuilt`
    *  method `buildChildNodes`
    */

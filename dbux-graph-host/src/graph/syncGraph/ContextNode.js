@@ -11,14 +11,14 @@ class ContextNode extends HostComponentEndpoint {
   init() {
     this.childrenBuilt = false;
     this.state.statsEnabled = true;
+    this.state.visible = this.hiddenNodeManager ? this.hiddenNodeManager.shouldBeVisible(this) : true;
 
     const {
-      applicationId,
       context,
       statsEnabled
     } = this.state;
 
-    const { contextId } = context;
+    const { applicationId, contextId } = context;
 
     // get name (and other needed data)
     const app = allApplications.getById(applicationId);
@@ -27,6 +27,7 @@ class ContextNode extends HostComponentEndpoint {
 
     this.state.contextLabel = makeContextLabel(context, app) + errorTag;
     this.state.contextLocLabel = makeContextLocLabel(applicationId, context);
+    this.state.realStaticContextid = dp.util.getRealContextOfContext(contextId).staticContextId;
     const { callTrace } = this;
     this.state.callerTracelabel = dp.util.makeContextCallerOrSchedulerLabel(contextId);
     if (callTrace) {
@@ -50,9 +51,8 @@ class ContextNode extends HostComponentEndpoint {
   // ########################################
 
   get dp() {
-    const { applicationId } = this.state;
-    const { dataProvider } = allApplications.getById(applicationId);
-    return dataProvider;
+    const { applicationId } = this.state.context;
+    return allApplications.getById(applicationId).dataProvider;
   }
 
   get contextId() {
@@ -84,6 +84,10 @@ class ContextNode extends HostComponentEndpoint {
     return state?.nTreeFileCalled || 0;
   }
 
+  get hiddenNodeManager() {
+    return this.context.graphRoot.controllers.getComponent('HiddenNodeManager');
+  }
+
   // ########################################
   // stats
   // ########################################
@@ -110,11 +114,11 @@ class ContextNode extends HostComponentEndpoint {
   // ########################################
 
   getValidChildContexts() {
-    const { applicationId, context: { contextId } } = this.state;
+    const { applicationId, contextId } = this.state.context;
     const dp = allApplications.getById(applicationId).dataProvider;
     const childContexts = dp.indexes.executionContexts.children.get(contextId) || EmptyArray;
     return childContexts.filter(childContext => {
-      if (dp.util.isRootContextInRun(childContext.contextId)) {
+      if (this.context.graphRoot.roots.has(childContext)) {
         return false;
       }
 
@@ -165,8 +169,8 @@ class ContextNode extends HostComponentEndpoint {
     this.setState({ isSelected, traceId, isSelectedTraceCallRelated, contextIdOfSelectedCallTrace });
   }
 
-  isHiddenBy() {
-    return this.context.runNode.isHiddenBy();
+  hiddenByNode() {
+    return this.hiddenNodeManager?.getHiddenNodeHidingThis(this);
   }
 
   public = {

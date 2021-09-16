@@ -1,7 +1,6 @@
 import GraphDocument from './GraphDocument';
 import GraphContainer from './GraphContainer';
 import SyncGraph from './syncGraph/SyncGraph';
-import RunNode from './syncGraph/RunNode';
 import RootContextNode from './syncGraph/RootContextNode';
 import ContextNode from './syncGraph/ContextNode';
 import HiddenAfterNode from './syncGraph/HiddenAfterNode';
@@ -32,7 +31,6 @@ export default {
   AsyncStack,
   HiddenAfterNode,
   HiddenBeforeNode,
-  RunNode,
   Toolbar,
   // MiniMap,
   ZoomBar,

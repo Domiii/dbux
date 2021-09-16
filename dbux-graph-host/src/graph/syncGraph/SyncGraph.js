@@ -1,5 +1,5 @@
 import allApplications from '@dbux/data/src/applications/allApplications';
-import GraphMode from '@dbux/graph-common/src/shared/GraphMode';
+import GraphType from '@dbux/graph-common/src/shared/GraphType';
 import SyncGraphBase from '../SyncGraphBase';
 
 class SyncGraph extends SyncGraphBase {
@@ -12,7 +12,7 @@ class SyncGraph extends SyncGraphBase {
   }
 
   shouldBeEnabled() {
-    if (this.context.graphDocument.state.graphMode === GraphMode.SyncGraph) {
+    if (this.context.graphDocument.state.graphMode === GraphType.SyncGraph) {
       return true;
     }
     else {
@@ -20,30 +20,14 @@ class SyncGraph extends SyncGraphBase {
     }
   }
 
-  updateRunNodes() {
-    const oldAppIds = new Set(this.runNodesById.getApplicationIds());
-    const newAppIds = new Set(allApplications.selection.getAll().map(app => app.applicationId));
+  updateContextNodes() {
+    const roots = allApplications.selection.getAll().map(app => {
+      return app.dataProvider.util.getAllRootContexts();
+    }).flat();
 
-    // always re-subscribe since applicationSet clears subscribtion everytime it changes
-    this._resubscribeOnData();
+    this.updateByContexts(roots);
+    
     this._setApplicationState();
-
-    // remove old runNodes
-    for (const runNode of this.runNodesById.getAll()) {
-      const { applicationId, runId } = runNode.state;
-      if (!newAppIds.has(applicationId)) {
-        this.removeRunNode(applicationId, runId);
-      }
-    }
-
-    // add new runNodes
-    for (const appId of newAppIds) {
-      if (!oldAppIds.has(appId)) {
-        const app = allApplications.getById(appId);
-        const allRunIds = app.dataProvider.indexes.executionContexts.byRun.getAllKeys();
-        this.updateRunNodeByIds(appId, allRunIds);
-      }
-    }
   }
 
   _resubscribeOnData() {
@@ -74,18 +58,7 @@ class SyncGraph extends SyncGraphBase {
   }
 
   _handleAddExecutionContexts = (app, newContexts) => {
-    const { applicationId } = app;
-    const newRunIds = [...new Set(newContexts.map(c => c.runId))];
-    const duplicatedRunIds = newRunIds.filter(runId => {
-      return !!this.runNodesById.get(applicationId, runId);
-    });
-    if (duplicatedRunIds.length) {
-      // sanity check: assuming newly incoming data always have a new runId
-      this.logger.error(`Received new context(s) of old runIds: [${duplicatedRunIds}]`);
-    }
-    const newNodes = this.updateRunNodeByIds(applicationId, newRunIds);
-    this._setApplicationState();
-    this._emitter.emit('newNode', newNodes);
+    this.refresh();
   }
 
   _setApplicationState() {

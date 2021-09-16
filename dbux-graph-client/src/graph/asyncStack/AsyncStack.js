@@ -7,7 +7,7 @@ class AsyncStack extends SyncGraphBase {
   createEl() {
     return compileHtmlElement(/*html*/`
       <div class="graph-root">
-        <div class="async-header">
+        <div>
           <h4>Async Stack</h4>
           <div>
             <button data-el="previousModeButton" class="root-graph-mode-button">
@@ -18,9 +18,7 @@ class AsyncStack extends SyncGraphBase {
             </button>
           </div>
         </div>
-        <div data-el="nodeChildren" data-mount="RunNode" class="node-children flex-column">
-          <div class="before-run-node"></div>
-        </div>
+        <div data-el="nodeChildren" data-mount="ContextNode" class="node-children flex-column"></div>
       </div>
     `);
   }

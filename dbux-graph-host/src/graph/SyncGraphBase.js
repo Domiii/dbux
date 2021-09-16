@@ -1,57 +1,14 @@
 import NanoEvents from 'nanoevents';
-import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import GraphBase from './GraphBase';
-import RunNode from './syncGraph/RunNode';
 import ContextNode from './syncGraph/ContextNode';
+
+/** @typedef {import('@dbux/common/src/types/ExecutionContext').default} ExecutionContext */
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('SyncGraphBase');
-
-
-export class RunNodeMap {
-  constructor() {
-    this._all = new Map();
-  }
-
-  set(applicationId, runId, node) {
-    this._all.set(this.makeKey(applicationId, runId), node);
-  }
-
-  delete(applicationId, runId) {
-    this._all.delete(this.makeKey(applicationId, runId));
-  }
-
-  /**
-   * @return {RunNode}
-   */
-  get(applicationId, runId) {
-    return this._all.get(this.makeKey(applicationId, runId));
-  }
-
-  has(applicationId, runId) {
-    return !!this.get(applicationId, runId);
-  }
-
-  *getApplicationIds() {
-    for (const runNode of this.getAll()) {
-      yield runNode.state.applicationId;
-    }
-  }
-
-  /**
-   * @return {RunNode[]}
-   */
-  getAll() {
-    return this._all.values();
-  }
-
-  makeKey(appId, runId) {
-    return `${appId}_${runId}`;
-  }
-}
 
 class SyncGraphBase extends GraphBase {
   /**
@@ -60,8 +17,8 @@ class SyncGraphBase extends GraphBase {
   contextNodesByContext;
 
   init() {
+    this.roots = new Set();
     this.contextNodesByContext = new Map();
-    this.runNodesById = new RunNodeMap();
     this.state.applications = [];
     this._emitter = new NanoEvents();
     this._unsubscribeOnNewData = [];
@@ -79,101 +36,78 @@ class SyncGraphBase extends GraphBase {
    *  #########################################################################*/
 
   handleRefresh() {
-    this.updateRunNodes();
+    this.updateContextNodes();
   }
 
-  updateRunNodes() {
+  updateContextNodes() {
+    throw new Error('abstract method not implemented');
+  }
+
+  _resubscribeOnData() {
     throw new Error('abstract method not implemented');
   }
 
   clear() {
-    this.removeAllRunNode();
+    this.removeAllContextNode();
   }
 
-  updateRunNodeByIds(applicationId, runIds) {
-    return runIds.map(runId => {
-      const runNode = this.runNodesById.get(applicationId, runId);
-      if (runNode) {
-        runNode.updateChildren();
-        return runNode;
+  // ###########################################################################
+  // Context Node management
+  // ###########################################################################
+
+  updateByContexts(contexts) {
+    const newRoots = new Set(contexts);
+    const oldRoots = new Set(this.roots);
+
+    // always re-subscribe since applicationSet clears subscribtion everytime it changes
+    this._resubscribeOnData();
+
+    // remove old roots
+    for (const root of oldRoots) {
+      if (!newRoots.has(root)) {
+        this._removeContextNode(root);
       }
-      else {
-        return this.addRunNode(applicationId, runId);
+    }
+
+    // remove new roots if exists as an old children, then add
+    for (const root of newRoots) {
+      const node = this.contextNodesByContext.get(root);
+      if (node) {
+        if (oldRoots.has(root)) {
+          continue;
+        }
+        else {
+          this._removeContextNode(root);
+        }
       }
-    });
+      this._addRoot(root);
+    }
+
+    this.roots = newRoots;
   }
 
-  addRunNodeByRootIds(applicationId, rootIds) {
-    const dp = allApplications.getById(applicationId).dataProvider;
-    return rootIds.map(rootId => {
-      const { runId } = dp.collections.executionContexts.getById(rootId);
-      return this.addRunNode(applicationId, runId, rootId);
-    });
-  }
-
-  async focusContext(applicationId, contextId) {
-    await this.focusController.focus(applicationId, contextId);
-  }
-
-  // ###########################################################################
-  // own event listener
-  // ###########################################################################
-
-  on(eventName, cb) {
-    this._emitter.on(eventName, cb);
-  }
-
-  // ###########################################################################
-  // run node management
-  // ###########################################################################
-
-  addRunNode(applicationId, runId, rootContextId) {
-    const newNode = this.children.createComponent(RunNode, { applicationId, runId, rootContextId });
-    this.runNodesById.set(applicationId, runId, newNode);
-    return newNode;
-  }
-
-  removeRunNode(applicationId, runId) {
-    const runNode = this.runNodesById.get(applicationId, runId);
-    runNode.dispose();
-    this.runNodesById.delete(applicationId, runId);
-  }
-
-  removeAllRunNode() {
-    for (const { state: { applicationId, runId } } of this.getAllRunNode()) {
-      this.removeRunNode(applicationId, runId);
+  removeAllContextNode() {
+    for (const { state: { context } } of this.contextNodesByContext.values()) {
+      this._removeContextNode(context);
     }
   }
 
-  /**
-   * @return {RunNode[]}
-   */
-  getAllRunNode() {
-    return this.runNodesById.getAll();
+  getAllContextNode() {
+    return this.contextNodesByContext.values();
   }
 
-  // ###########################################################################
-  // context node management
-  // ###########################################################################
-
-  _maybeBuildContextNode(parentNode, applicationId, context, isRoot = false) {
-    if (this.contextNodesByContext.get(context)) {
-      // skip if ContextNode aleady exist
-      return null;
-    }
-    return this._buildContextNode(parentNode, applicationId, context, isRoot);
+  _addRoot(context) {
+    return this._addContextNode(this, context);
   }
 
-  _buildContextNode(parentNode, applicationId, context, isRoot = false) {
+  _addContextNode(parentNode, context) {
     if (this.contextNodesByContext.get(context)) {
       this.logger.warn(`ContextNode with id=${context.contextId} already exist`);
       return null;
     }
-    const nodeClass = isRoot ? 'RootContextNode' : 'ContextNode';
 
-    const contextNode = parentNode.children.createComponent(nodeClass, {
-      applicationId,
-      context
+    const contextNode = parentNode.children.createComponent('ContextNode', {
+      context,
     });
 
     this.contextNodesByContext.set(context, contextNode);
@@ -181,8 +115,13 @@ class SyncGraphBase extends GraphBase {
       this.contextNodesByContext.delete(context);
     });
 
-    // this.logger.log(`ContextNode created id=${context.contextId}`);
     return contextNode;
+  }
+
+  _removeContextNode(context) {
+    const contextNode = this.contextNodesByContext.get(context);
+    contextNode.dispose();
+    this.contextNodesByContext.delete(context);
   }
 
   buildContextNodeChildren(contextNode) {
@@ -191,12 +130,15 @@ class SyncGraphBase extends GraphBase {
     }
 
     contextNode.childrenBuilt = true;
-    const { applicationId } = contextNode.state;
     return contextNode.getValidChildContexts().map(context => {
-      return this._buildContextNode(contextNode, applicationId, context);
+      return this._addContextNode(contextNode, context);
     });
   }
 
+  /**
+   * @param {ExecutionContext} context 
+   * @returns 
+   */
   buildContextNode(context) {
     const { applicationId } = context;
     const dp = allApplications.getById(applicationId).dataProvider;
@@ -206,8 +148,8 @@ class SyncGraphBase extends GraphBase {
 
     while (!(currentNode = this.contextNodesByContext.get(currentContext))) {
       if (!currentContext) {
-        // NOTE: RunNode/RootContextNode is not present
-        // this.logger.error(`Cannot build context node: RootContextNode does not exist. contextQueue=[${contextQueue.map(x => x?.contextId)}]`);
+        // all of its ascendents are not presented
+        // this.logger.error(`Cannot build context node: No parent context of context ${context} exists. contextQueue=[${contextQueue.map(x => x?.contextId)}]`);
         return null;
       }
       contextQueue.push(currentContext);
@@ -283,6 +225,14 @@ class SyncGraphBase extends GraphBase {
       }
     }
     this._selectContextNode(contextNode);
+  }
+
+  // ###########################################################################
+  // own event listener
+  // ###########################################################################
+
+  on(eventName, cb) {
+    this._emitter.on(eventName, cb);
   }
 
   shared() {

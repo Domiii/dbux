@@ -40,31 +40,22 @@ function computeDelta1D(p, s, wp, ws) {
   return 0;
 }
 
-/**
- * Computes amount of pixels by which a node is outisde the viewport.
- */
-
-// [scroll fix]
-function computeDelta(node) {
-  const nodeBounds = node.getBoundingClientRect();
-
-  // start underneath the toolbar
-  let toolbar = document.querySelector("#toolbar");
-  let barY = toolbar.getBoundingClientRect().bottom;
-
-  return {
-    x: computeDelta1D(nodeBounds.x, nodeBounds.width, 0, window.innerWidth - scrollPadding),
-    y: computeDelta1D(nodeBounds.y, nodeBounds.height, barY, window.innerHeight - barY - scrollPadding)
-  };
-}
-
 // ###########################################################################
 // FocusController
 // ###########################################################################
 
 export default class FocusController extends ClientComponentEndpoint {
+  /**
+   * Owner requirements:
+   *  els `panzoomCanvas`
+   *  property `panzoom`
+   */
   get panzoom() {
     return this.context.graphContainer.panzoom;
+  }
+
+  get canvas() {
+    return this.context.graphContainer.els.panzoomCanvas;
   }
 
   init() {
@@ -107,11 +98,7 @@ export default class FocusController extends ClientComponentEndpoint {
       return;
     }
 
-    // [scroll fix]
-    const delta = computeDelta(target);
-    // console.log('\n');
-    // console.log('scroll position:', 'Top:', this.panzoom.getTransform().y, 'Left:', this.panzoom.getTransform().x);
-    // console.log('delta:', 'x', delta.x, 'y:', delta.y);
+    const delta = this.computeDelta(target);
 
     if (!(Math.abs(delta.x) + Math.abs(delta.y))) {
       // nothing to do here
@@ -159,6 +146,23 @@ export default class FocusController extends ClientComponentEndpoint {
     else {
       this.targetDOM = null;
     }
+  }
+
+  /** ###########################################################################
+   * slide distance calculation
+   *  #########################################################################*/
+
+  /**
+   * Computes amount of pixels by which a node is outisde the viewport.
+   */
+  computeDelta(node) {
+    const nodeBounds = node.getBoundingClientRect();
+    const canvasBounds = this.canvas.getBoundingClientRect();
+
+    return {
+      x: computeDelta1D(nodeBounds.x, nodeBounds.width, canvasBounds.x, canvasBounds.width - scrollPadding),
+      y: computeDelta1D(nodeBounds.y, nodeBounds.height, canvasBounds.y, canvasBounds.height - scrollPadding)
+    };
   }
 
   public = {

@@ -7,7 +7,7 @@ import RuntimeDataProvider from '../../RuntimeDataProvider';
  * @param {ExecutionContext} context
  */
 function makeKey(dp, context) {
-  if (context.parentContextId) return false;
+  if (!dp.util.isRootContext(context.contextId)) return false;
   return 1;
 }
 

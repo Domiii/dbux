@@ -97,29 +97,20 @@ export default {
     return dp.indexes.executionContexts.firstInRuns.get(1);
   },
 
-  /**
-   * @param {DataProvider} dp 
-   */
-  getRootContextsByRun(dp, runId) {
-    return dp.indexes.executionContexts.rootsByRun.get(runId);
-  },
-
   /** @param {DataProvider} dp */
-  isRootContextInRun(dp, contextId) {
-    const { parentContextId, runId } = dp.collections.executionContexts.getById(contextId);
-    if (parentContextId) {
-      const parentContext = dp.collections.executionContexts.getById(parentContextId);
-      if (runId === parentContext.runId) {
-        return false;
-      }
+  isRootContext(dp, contextId) {
+    const context = dp.collections.executionContexts.getById(contextId);
+    if (!context.parentContextId || context.isVirtualRoot) {
+      return true;
     }
-    return true;
+    return false;
   },
 
   /** @param {DataProvider} dp */
   getFirstTracesInRuns(dp) {
     return dp.indexes.traces.firsts.get(1);
   },
+
   /**
    * Get all contexts in which an object of given `refId` has been recorded.
    * 
@@ -135,6 +126,38 @@ export default {
       contextsSet.add(dp.collections.executionContexts.getById(trace.contextId));
     });
     return Array.from(contextsSet);
+  },
+
+  /**
+   * Find a context's parent in call stack, skips virtual contexts and looking for async parent if it is a root context.
+   * NOTE: used in `AsyncCallStack`, `RootEdgesTDNode` and `ParentContext navigation` for consistency
+   * @param {DataProvider} dp 
+   * @param {number} contextId 
+   */
+  getContextAsyncStackParent(dp, contextId) {
+    const { parentContextId, type } = dp.collections.executionContexts.getById(contextId);
+    if (!dp.util.isRootContext(contextId)) {
+      // not a root, get real parent
+      return dp.util.getRealContextOfContext(parentContextId);
+    }
+    else {
+      // is root, looking for async parent
+      // go to "real parent"
+      if (isRealContextType(type)) {
+        // if not virtual: go to async node's schedulerTrace
+        const { schedulerTraceId } = dp.util.getAsyncNode(contextId);
+        if (schedulerTraceId) {
+          const schedulerTrace = dp.collections.traces.getById(schedulerTraceId);
+          return dp.util.getRealContextOfContext(schedulerTrace.contextId);
+        }
+        return null;
+      }
+      else {
+        // if virtual: skip to realContext's parent and call trace (skip all virtual contexts, in general)
+        const realContext = dp.util.getRealContextOfContext(contextId);
+        return dp.util.getRealContextOfContext(realContext.parentContextId);
+      }
+    }
   },
 
   /** @param {DataProvider} dp */
@@ -623,7 +646,7 @@ export default {
         valueString = `{${content}}`;
       }
       else if (ValueTypeCategory.is.Function(category)) {
-        let content = entries.name[2] || '(anonymous)';
+        let content = entries.name?.[2] || '(anonymous)';
         shorten && (content = truncate(content, { length: ShortenMaxLength - 2 }));
         valueString = `ƒ ${content}`;
       }
@@ -1171,12 +1194,12 @@ export default {
    * @param {DataProvider} dp
    */
   getCallerOrSchedulerTraceOfContext(dp, contextId) {
-    if (dp.util.isRootContextInRun(contextId)) {
-      const asyncNode = dp.indexes.asyncNodes.byRoot.getFirst(contextId);
+    if (dp.util.isRootContext(contextId)) {
+      const asyncNode = dp.util.getAsyncNode(contextId);
       return dp.collections.traces.getById(asyncNode?.schedulerTraceId);
     }
     else {
-      return dp.util.getOwnCallerTraceOfContext(contextId);
+      return dp.util.getCallerTraceOfContext(contextId);
     }
   },
 
@@ -1185,12 +1208,12 @@ export default {
    * @param {DataProvider} dp
    */
   makeContextCallerOrSchedulerLabel(dp, contextId) {
-    if (dp.util.isRootContextInRun(contextId)) {
+    if (dp.util.isRootContext(contextId)) {
       const context = dp.collections.executionContexts.getById(contextId);
       return context && makeContextSchedulerLabel(context, dp) || '';
     }
     else {
-      const callerTrace = dp.util.getOwnCallerTraceOfContext(contextId);
+      const callerTrace = dp.util.getCallerTraceOfContext(contextId);
       return callerTrace && makeTraceLabel(callerTrace) || '';
     }
   },
@@ -1264,6 +1287,11 @@ export default {
       dp.logger.trace('Could not find realContext for contextId', contextId);
       return null;
     }
+  },
+
+  /** @param {DataProvider} dp */
+  getRealContextOfContext(dp, contextId) {
+    return dp.collections.executionContexts.getById(dp.util.getRealContextIdOfContext(contextId));
   },
 
   /** @param {DataProvider} dp */
@@ -2020,17 +2048,17 @@ export default {
   // },
 
   /** @param {DataProvider} dp */
-  getAsyncStackRootIds(dp, traceId) {
-    const rootIds = [];
-    let currentTrace = dp.util.getTrace(traceId);
-    let currentAsyncNode;
-    while (currentTrace?.rootContextId) {
-      rootIds.push(currentTrace.rootContextId);
-      currentAsyncNode = dp.util.getAsyncNode(currentTrace.rootContextId);
-      currentTrace = dp.util.getTrace(currentAsyncNode.schedulerTraceId);
+  getAsyncStackRoots(dp, traceId) {
+    const roots = [];
+    // skip first virtual context
+    const realContextId = dp.util.getRealContextIdOfTrace(traceId);
+    let currentContext = dp.collections.executionContexts.getById(realContextId);
+    while (currentContext) {
+      roots.push(currentContext);
+      currentContext = dp.util.getContextAsyncStackParent(currentContext.contextId);
     }
-    rootIds.reverse();
-    return rootIds;
+    roots.reverse();
+    return roots;
   },
 
   // ###########################################################################
@@ -2555,5 +2583,5 @@ export default {
     const parentRootContextId = parentEdge?.fromRootContextId;
     const parentAsyncNode = dp.indexes.asyncNodes.byRoot.getUnique(parentRootContextId);
     return parentAsyncNode;
-  }
+  },
 };
