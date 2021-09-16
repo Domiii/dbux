@@ -83,7 +83,8 @@ class SendQueue {
 
   _flushLater() {
     if (!this.timer) {
-      this.timer = Promise.resolve().then(this.flush);
+      // this.timer = Promise.resolve().then(this.flush);
+      this.timer = (process.nextTick(this.flush), 1);
       Verbose && debug(`[SQ] flushLater!`);
     }
   }
