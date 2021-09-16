@@ -27,6 +27,7 @@ class ContextNode extends HostComponentEndpoint {
 
     this.state.contextLabel = makeContextLabel(context, app) + errorTag;
     this.state.contextLocLabel = makeContextLocLabel(applicationId, context);
+    this.state.realStaticContextid = dp.util.getRealContextOfContext(contextId).staticContextId;
     const { callTrace } = this;
     this.state.callerTracelabel = dp.util.makeContextCallerOrSchedulerLabel(contextId);
     if (callTrace) {
