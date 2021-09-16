@@ -1,6 +1,7 @@
 import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import AsyncEventUpdateType, { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
+import traceSelection from '@dbux/data/src/traceSelection';
 import { makeTreeItem, makeTreeItems } from '../../helpers/treeViewHelpers';
 import { ContextTDNode, TraceTypeTDNode } from './traceInfoNodes';
 import TraceDetailNode from './traceDetailNode';
@@ -139,7 +140,15 @@ export class DebugTDNode extends TraceDetailNode {
       map((upd, i) => makeTreeItem(
         `${i}) ${upd.rootId}`,
         upd,
-        { description: `${AsyncEventUpdateType.nameFrom(upd.type)} ${upd.schedulerTraceId}` }
+        { 
+          description: `${AsyncEventUpdateType.nameFrom(upd.type)} ${upd.schedulerTraceId}`,
+          handleClick() {
+            const schedulerTrace = dp.util.getTrace(upd.schedulerTraceId);
+            if (schedulerTrace) {
+              traceSelection.selectTrace(schedulerTrace);
+            }
+          }
+        }
       ));
 
     const asyncContainerNode = [

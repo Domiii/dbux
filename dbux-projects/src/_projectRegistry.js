@@ -10,23 +10,26 @@ import Project2048 from './projects/2048/Project';
 import EditorMdProject from './projects/Editor.md/Project';
 import WebpackProject from './projects/webpack/Project';
 import NodeFetchProject from './projects/node-fetch/Project';
+import BluebirdProject from './projects/bluebird/Project';
 
 // eslint-disable-next-line import/no-mutable-exports
 let registry = {
   'todomvc-es6': TodomvcEs6,
   2048: Project2048,
   express: Express,
-  eslint: Eslint,
+  'node-fetch': NodeFetchProject,
+  sequelize: SequelizeProject,
 };
 
 if (process.env.NODE_ENV === 'development') {
   // for now, only expose our well tested Express project
-  
+
   registry = {
     ...registry,
+    
+    eslint: Eslint,
 
-    'node-fetch': NodeFetchProject,
-    sequelize: SequelizeProject,
+    bluebird: BluebirdProject,
 
     'Editor.md': EditorMdProject,
     webpack: WebpackProject,

@@ -29,13 +29,14 @@ export default class SequelizeProject extends Project {
     ];
   }
 
-  decorateBug(bug) {
+  decorateBugForRun(bug) {
     if (!bug.testFilePaths) {
       // bug not fully configured yet
       return;
     }
 
     Object.assign(bug, {
+      // future-work: lodash introduced some weird issues with `Object.defineProperties` being polyfilled or proxied or otherwise replaced and ending up being `undefined` (or somesuch)?
       dbuxArgs: '--pw=.* --pb=lodash'
       // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
     });

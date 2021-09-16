@@ -38,7 +38,7 @@ export default class EditorMdProject extends Project {
     ];
   }
 
-  decorateBug(bug) {
+  decorateBugForRun(bug) {
     bug.mainEntryPoint = ['src/editormd.js'];
   }
 

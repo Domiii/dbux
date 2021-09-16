@@ -86,7 +86,7 @@ export default class WebpackBuilder {
    * NOTE: this is separate from `loadBugs` because `loadBugs` might be called before the project has been downloaded.
    * This function however is called after download, so we can make sure that `getInputFiles` actually gets the files.
    */
-  async decorateBug(bug) {
+  async decorateBugForRun(bug) {
     if (!this.inputFiles) {
       this.inputFiles = this.getInputFiles();
     }

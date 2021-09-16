@@ -1,4 +1,5 @@
 import path from 'path';
+import fs from 'fs';
 import pull from 'lodash/pull';
 import defaultsDeep from 'lodash/defaultsDeep';
 import sh from 'shelljs';
@@ -10,8 +11,9 @@ import { pathJoin, pathResolve, realPathSyncNormalized } from '@dbux/common-node
 import isObject from 'lodash/isObject';
 import BugList from './BugList';
 import Process from '../util/Process';
-import { checkSystemWithRequirement } from '../checkSystem';
 import { MultipleFileWatcher } from '../util/multipleFileWatcher';
+import { buildNodeCommand } from '../util/nodeUtil';
+import { checkSystemWithRequirement } from '../checkSystem';
 import RunStatus, { isStatusRunningType } from './RunStatus';
 import ProjectBase from './ProjectBase';
 
@@ -130,8 +132,8 @@ export default class Project extends ProjectBase {
   }
 
   async initBug(bug) {
-    await this.decorateBug?.(bug);
-    await this.builder?.decorateBug(bug);
+    await this.decorateBugForRun?.(bug);
+    await this.builder?.decorateBugForRun(bug);
 
     // future-work: generalize test regexes
     // let { testRe } = bug;
@@ -550,7 +552,8 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       // add assest files to git
       // NOTE: && is not supported in all shells (e.g. Powershell)
       const files = this.getAllAssetFiles();
-      await this.exec(`${this.gitCommand} add ${files.map(name => `"${name}"`).join(' ')}`);
+      // this.logger.debug(files.map(f => `${f}: ${fs.existsSync(f)}`));
+      await this.exec(`${this.gitCommand} add ${files.map(name => `'${name}'`).join(' ')}`);
 
       message && (message = ' ' + message);
       // TODO: should not need '--allow-empty', if `checkFilesChanged` is correct (but somehow still bugs out)
@@ -722,7 +725,12 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     return this
       .getAllAssetFolderNames()
       .map(folderName => this.getAssetDir(folderName))
-      .flatMap(f => globRelative(f, '**/*'));
+      .flatMap(folder => {
+        const files = globRelative(folder, '**/*');
+        // hackfix: for some reason, `globRelative` sometimes picks up deleted files
+        // add project dir for existsSync to work
+        return files.filter(f => fs.existsSync(pathJoin(folder, f)));
+      });
   }
 
   copyAssetFolder(assetFolderName) {
@@ -834,12 +842,28 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   // ###########################################################################
 
   /**
+   * @virtual
+   */
+  setupBug(bug) { }
+
+  /**
    * Get all bugs for this project
    * @return {BugList}
    */
   getOrLoadBugs() {
     if (!this._bugs) {
       let arr = this.loadBugs();
+      arr.forEach(bug => {
+        let {
+          description,
+          testRe,
+          testFilePaths
+        } = bug;
+        bug.description = description || testRe || testFilePaths[0] || '';
+
+        this.setupBug(bug);
+      });
+
       if (process.env.NODE_ENV === 'production') {
         // NOTE: this is an immature feature
         //      for now, only provide one bug for demonstration purposes and to allow us gather feedback
@@ -875,11 +899,31 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
    * @see https://mochajs.org/#command-line-usage
    */
   getMochaRunArgs(bug, moreArgs = EmptyArray) {
+    let {
+      testRe,
+      runArgs,
+      testFilePaths
+    } = bug;
+
+    let testReArgs;
+    if (testRe) {
+      // fix up testRe
+      if (Array.isArray(testRe)) {
+        testRe = testRe.map(re => `(?:${re})`).join('|');
+      }
+      testRe = testRe.replace(/"/g, '\\"');
+      testReArgs = testRe && ['--grep', `"${testRe}"`];
+    }
+
     // bugArgs
     const argArray = [
       '-c', // colors
       ...moreArgs,
-      ...(bug.runArgs || EmptyArray)
+      ...(testReArgs || EmptyArray),
+      ...(runArgs || EmptyArray),
+      // '--',
+      // // 'test/index.js',
+      ...testFilePaths
     ];
     if (argArray.includes(undefined)) {
       throw new Error(bug.debugTag + ' - invalid `Project bug`. Arguments must not include `undefined`: ' + JSON.stringify(argArray));
@@ -902,6 +946,32 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     return argArray.join(' ');      //.map(s => `"${s}"`).join(' ');
   }
 
+  /** ###########################################################################
+   * {@link testBugCommand}
+   * ##########################################################################*/
+
+  /**
+   * Default implementation: run a node sample file.
+   */
+  async testBugCommand(bug, cfg) {
+    const runCfg = {
+      env: {
+      }
+    };
+
+    return [
+      buildNodeCommand({
+        ...cfg,
+        program: bug.testFilePaths[0]
+      }),
+      runCfg
+    ];
+
+    // // Debug shortcut:
+    // // DEBUG=http node --inspect-brk --stack-trace-limit=100    --require "./test/support/env.js" "C:\\Users\\domin\\code\\dbux\\node_modules\\@dbux\\cli\\bin\\dbux.js" run  --verbose=1 --pw=superagent "c:\\Users\\domin\\code\\dbux\\dbux_projects\\express/node_modules/mocha/bin/_mocha" -- --no-exit -c -t 10000 --grep "OPTIONS should only include each method once" -- test/app.options.js
+
+    // return buildMochaRunCommand(mochaCfg);
+  }
 
 
   // ###########################################################################

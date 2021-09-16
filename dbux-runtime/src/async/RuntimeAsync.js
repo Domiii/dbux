@@ -444,7 +444,7 @@ export default class RuntimeAsync {
    * 
    * @param {CallbackRef} thenRef
    */
-  postCallback(schedulerTraceId, runId, postEventRootId) {
+  postCallback(schedulerTraceId, runId, postEventRootId, contextId) {
     // console.trace(`postCallback`, getPromiseId(postEventPromise), '->', getPromiseId(returnValue));
 
     // store update
@@ -452,8 +452,8 @@ export default class RuntimeAsync {
       runId,
       rootId: postEventRootId,
 
-      // NOTE: the last active root is also the `context` of the callback
-      contextId: postEventRootId,
+      // NOTE: the last active root SHOULD also be the `context` of the callback
+      contextId,
       schedulerTraceId
     });
   }

@@ -49,7 +49,7 @@ const projectConfigs = [
     }
 
     // loadBugs() {}
-    // decorateBug() {}
+    // decorateBugForRun() {}
     // makeBuilder() {}
     // afterInstall() {}
   }

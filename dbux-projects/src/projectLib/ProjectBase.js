@@ -16,7 +16,7 @@ export default class ProjectBase {
   packageManager;
 
   // loadBugs() {}
-  // decorateBug() {}
+  // decorateBugForRun() {}
   // makeBuilder() {}
   // afterInstall() {}
 }

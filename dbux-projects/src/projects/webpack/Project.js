@@ -169,7 +169,7 @@ export default class WebpackProject extends Project {
   // testing
   // ###########################################################################
 
-  decorateBug(bug) {
+  decorateBugForRun(bug) {
     bug.mainEntryPoint = [this.cliBin];
   }
 
