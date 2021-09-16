@@ -2,7 +2,7 @@ import ClientComponentEndpoint from '../../componentLib/ClientComponentEndpoint'
 
 export default class HiddenNodeManager extends ClientComponentEndpoint {
   /**
-   * Owner requirement:
+   * Owner requirements:
    *  children `HiddenBeforeNode`
    *  children `HiddenAfterNode`
    */

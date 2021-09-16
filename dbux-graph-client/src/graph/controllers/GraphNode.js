@@ -3,7 +3,7 @@ import ClientComponentEndpoint from '../../componentLib/ClientComponentEndpoint'
 
 export default class GraphNode extends ClientComponentEndpoint {
   /**
-   * Owner requirement:
+   * Owner requirements:
    *  els `previousModeButton`
    *  els `previousModeButtonImg`
    *  els `nextModeButton`

@@ -148,7 +148,7 @@ class SyncGraphBase extends GraphBase {
 
     while (!(currentNode = this.contextNodesByContext.get(currentContext))) {
       if (!currentContext) {
-        // NOTE: all of its ascendents are not presented
+        // all of its ascendents are not presented
         // this.logger.error(`Cannot build context node: No parent context of context ${context} exists. contextQueue=[${contextQueue.map(x => x?.contextId)}]`);
         return null;
       }

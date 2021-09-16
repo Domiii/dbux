@@ -646,7 +646,7 @@ export default {
         valueString = `{${content}}`;
       }
       else if (ValueTypeCategory.is.Function(category)) {
-        let content = entries.name[2] || '(anonymous)';
+        let content = entries.name?.[2] || '(anonymous)';
         shorten && (content = truncate(content, { length: ShortenMaxLength - 2 }));
         valueString = `ƒ ${content}`;
       }
@@ -1213,7 +1213,7 @@ export default {
       return context && makeContextSchedulerLabel(context, dp) || '';
     }
     else {
-      const callerTrace = dp.util.getOwnCallerTraceOfContext(contextId);
+      const callerTrace = dp.util.getCallerTraceOfContext(contextId);
       return callerTrace && makeTraceLabel(callerTrace) || '';
     }
   },
@@ -2050,7 +2050,9 @@ export default {
   /** @param {DataProvider} dp */
   getAsyncStackRoots(dp, traceId) {
     const roots = [];
-    let currentContext = dp.util.getTraceContext(traceId);
+    // skip first virtual context
+    const realContextId = dp.util.getRealContextIdOfTrace(traceId);
+    let currentContext = dp.collections.executionContexts.getById(realContextId);
     while (currentContext) {
       roots.push(currentContext);
       currentContext = dp.util.getContextAsyncStackParent(currentContext.contextId);

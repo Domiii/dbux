@@ -6,7 +6,7 @@ export default class PopperController extends ClientComponentEndpoint {
   }
 
   /**
-   * Owner requirement:
+   * Owner requirements:
    *  DOM elements with attribute [data-tooltip]
    */
   init() {

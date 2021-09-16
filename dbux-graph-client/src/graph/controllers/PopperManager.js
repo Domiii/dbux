@@ -9,10 +9,10 @@ const { log, debug, warn, error: logError } = newLogger('PopperController');
 
 export default class PopperManager extends ClientComponentEndpoint {
   /**
-   * Owner requirement:
+   * Owner requirements:
    * #onlyUseOnce
    *  el `tooltip`: with attribute [id='tooltip', role='tooltip']
-   *  ?property `panzoom`
+   *  context.graphDocument.panzoom
    */
   init() {
     this.popper = null;
@@ -23,18 +23,6 @@ export default class PopperManager extends ClientComponentEndpoint {
       </div>`
     );
     this.owner.el.appendChild(this.tooltipContainer);
-
-    // regist update function if owner controls panzoom
-    const { panzoom } = this.context.graphDocument;
-    if (panzoom) {
-      panzoom.on('zoom', (/* e */) => {
-        this.update();
-      });
-
-      panzoom.on('transform', (/* e */) => {
-        this.update();
-      });
-    }
   }
 
   update = () => {

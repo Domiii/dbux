@@ -10,14 +10,14 @@ class GraphDocument extends HostComponentEndpoint {
     this._emitter = new NanoEvents();
 
     // default mode settings
-    this.state.graphMode = GraphType.SyncGraph;
+    this.state.graphMode = GraphType.AsyncGraph;
     this.state.followMode = true;
     this.state.locMode = true;
-    this.state.callMode = false;
+    this.state.callMode = true;
     this.state.valueMode = false;
     this.state.thinMode = false;
-    this.state.stackEnabled = false;
-    this.state.asyncDetailMode = true;
+    this.state.stackEnabled = true;
+    this.state.asyncDetailMode = false;
 
     this.createOwnComponents();
 
