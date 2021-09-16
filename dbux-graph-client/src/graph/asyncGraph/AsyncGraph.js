@@ -148,16 +148,21 @@ class AsyncGraph extends GraphBase {
     } = nodeData;
 
     const dotLabel = '⬤';
-    const { asyncNodeId, applicationId } = asyncNode;
+    const { asyncNodeId, applicationId, isTerminalNode } = asyncNode;
     const asyncNodeData = {
       'async-node-id': asyncNodeId,
       'application-id': applicationId
     };
     const dataAttrs = Object.entries(asyncNodeData).map(([key, val]) => `data-${key}="${val || ''}"`).join(' ');
+    const classes = [];
+    if (isTerminalNode) {
+      classes.push('terminal-node');
+    }
+    const classAttrs = classes.join(' ');
     const positionProps = makeGridPositionProp(rowId, colId);
 
     return /*html*/`
-        <div class="async-cell async-node full-width flex-row align-center" style="${positionProps}" ${dataAttrs}>
+        <div class="async-cell async-node full-width flex-row align-center ${classAttrs}" style="${positionProps}" ${dataAttrs}>
           <div class="async-brief flex-row main-axie-align-center">
             ${dotLabel}
           </div>
@@ -234,12 +239,12 @@ class AsyncGraph extends GraphBase {
   makeHeaderEl() {
     const { children, selectedApplicationId } = this.state;
     const selectedThreadIds = new Set(this.state.selectedThreadIds);
-    const threadByColId = new Set();
+    const visitedColId = new Set();
     const decorations = [];
     for (const nodeData of children) {
       const { colId, asyncNode: { applicationId, threadId, asyncNodeId } } = nodeData;
-      if (!threadByColId.has(colId)) {
-        threadByColId.add(colId);
+      if (!visitedColId.has(colId)) {
+        visitedColId.add(colId);
         const positionProp = makeGridPositionProp(1, colId, 0);
         const dataLabel = `data-application-id="${applicationId}" data-thread-id="${threadId}" data-async-node-id="${asyncNodeId}"`;
         const selectedClass = (applicationId === selectedApplicationId && selectedThreadIds.has(threadId)) ? 'async-cell-selected' : '';

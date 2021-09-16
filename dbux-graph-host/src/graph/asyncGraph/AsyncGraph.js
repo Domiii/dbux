@@ -78,7 +78,8 @@ class AsyncGraph extends GraphBase {
       const dp = app.dataProvider;
       const context = dp.collections.executionContexts.getById(rootContextId);
       const rowId = index + 1;
-      let colId = appData.asyncThreadsInOrder.getIndex(asyncNode);
+      // let colId = appData.asyncThreadsInOrder.getIndex(asyncNode);
+      let colId = asyncNode.threadLaneId;
       if (!colId) {
         this.logger.warn(`asyncNode not found in asyncThreadsInOrder:`, asyncNode);
         return null;

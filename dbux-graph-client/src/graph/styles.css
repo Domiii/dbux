@@ -213,6 +213,10 @@ div {
   border: 1px solid darkred;
 }
 
+.terminal-node {
+  border-bottom: white solid 1px;
+}
+
 .theme-mode-dark .async-cell-selected {
   color: yellow;
   border: 1px solid yellow;

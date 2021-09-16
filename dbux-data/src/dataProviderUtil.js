@@ -1878,12 +1878,12 @@ export default {
    */
   getPreviousAsyncEventUpdateOfTrace(dp, schedulerTraceId, beforeRootId) {
     const updates = dp.indexes.asyncEventUpdates.byTrace.get(schedulerTraceId);
-    return updates && findLast(updates, update => update.rootId < beforeRootId) || null;
+    return updates && findLast(updates, update => update.rootId < beforeRootId) || EmptyArray;
   },
 
   getAsyncPreEventUpdatesOfRoot(dp, rootId) {
     const updates = dp.indexes.asyncEventUpdates.byRoot.get(rootId);
-    return updates?.filter(upd => isPreEventUpdate(upd.type)) || null;
+    return updates?.filter(upd => isPreEventUpdate(upd.type)) || EmptyArray;
   },
 
   // TODO!
@@ -2059,6 +2059,13 @@ export default {
     }
     roots.reverse();
     return roots;
+  },
+
+  /** @param {DataProvider} dp */
+  isAsyncNodeTerminalNode(dp, asyncNodeId) {
+    const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
+    const preEventUpdates = dp.util.getAsyncPreEventUpdatesOfRoot(asyncNode.rootContextId);
+    return !preEventUpdates.length;
   },
 
   // ###########################################################################

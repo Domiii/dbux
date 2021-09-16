@@ -11,6 +11,7 @@
   "author": "Domi",
   "license": "Apache-2.0",
   "dependencies": {
+    "@datastructures-js/priority-queue": "^5.2.0",
     "@dbux/common": "^0.4.4-dev.0",
     "@dbux/common-node": "^0.4.4-dev.0",
     "i18next": "^19.8.2",
