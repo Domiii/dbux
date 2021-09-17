@@ -4,23 +4,29 @@ const process = require('process');
 
 // eslint-disable-next-line
 const fromEntries = require('object.fromentries');    // NOTE: Object.fromEntries was only added in Node v12
+const merge = require('lodash/merge');
 
 // ###########################################################################
-// makeAbsolutePaths
+// misc
 // ###########################################################################
 
 function makeAbsolutePaths(root, relativePaths) {
   return relativePaths.map(f => path.resolve(path.join(root, f)));
 }
 
-// ###########################################################################
-// package.json
-// ###########################################################################
-
 function readJsonFile(fpath) {
   const content = fs.readFileSync(fpath);
   return JSON.parse(content);
 }
+
+function writeJsonFile(fpath, obj) {
+  const s = JSON.stringify(obj);
+  fs.writeFileSync(fpath, s);
+}
+
+// ###########################################################################
+// reading package.json
+// ###########################################################################
 
 function readPackageJson(folder) {
   const packageJsonPath = path.join(folder, 'package.json');
@@ -58,6 +64,30 @@ function readPackageJsonDependencies(folder, pattern) {
 }
 
 
+/** ###########################################################################
+ * write package.json
+ *  #########################################################################*/
+
+
+function writePackageJson(folder, pkg) {
+  const packageJsonPath = path.join(folder, 'package.json');
+  return writeJsonFile(packageJsonPath, pkg);
+}
+
+async function writeMergePackageJson(folder, obj) {
+  const pkg = readPackageJson(folder);
+  merge(pkg, obj);
+  writePackageJson(folder, pkg);
+}
+
+
+
+// ###########################################################################
+// makeResolve
+// ###########################################################################
+
+
+
 /**
  * Build webpack `resolve` entry for dependencies from `package.json`.
  * WARNING: Assumes matching dependencies to be direct children of `root` path.
@@ -66,10 +96,6 @@ function makeResolvePackageJson(root, entryName, dependencyPattern) {
   const deps = readPackageJsonDependencies(root, entryName, dependencyPattern);
   return makeResolve(root, deps);
 }
-
-// ###########################################################################
-// makeResolve
-// ###########################################################################
 
 /**
  * Resolve dependencies:
@@ -156,12 +182,15 @@ function getDbuxVersion(mode) {
 
 module.exports = {
   makeAbsolutePaths,
-  makeResolve,
-
+  
   readPackageJson,
   readPackageJsonVersion,
+  getDependenciesPackageJson: readPackageJsonDependencies,
+
+  writeMergePackageJson,
+  
+  makeResolve,
   makeResolvePackageJson,
   readLernaJson,
-  getDependenciesPackageJson: readPackageJsonDependencies,
   getDbuxVersion
 };

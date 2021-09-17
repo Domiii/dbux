@@ -233,7 +233,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     }
   }
 
-  async gitCheckoutCommit(args) {
+  async _gitResetAndCheckout(args) {
     await this.checkCorrectGitRepository();
 
     await this.exec(`${this.gitCommand} reset --hard ${args || ''}`);
@@ -274,19 +274,31 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   }
 
   /**
-   * NOTE: A bug should either have a patch or overwrite the project.selectBug method
    * @param {Bug} bug 
    */
   async selectBug(bug) {
+    const { tag, commit } = bug;
+    if (tag || commit) {
+      // checkout bug tag/commit
+      const target = bug.tag ? `tags/${tag}` : commit;
+      const targetName = tag || commit;
+      await this.gitCheckout(target, targetName);
+    }
+    else {
+      // NOTE: selectDefaultCommit should not be necessary, since we rollback to install tag before calling this function
+      // await this.selectDefaultCommit();
+    }
+
+
     if ('patch' in bug) {
       if (bug.patch) {
         // NOTE: this way we may set `bug.patch = null` to avoid applying any patch
         await this.applyPatch(bug.patch);
       }
     }
-    else {
-      throw new Error(this + ' abstract method not implemented');
-    }
+    // else {
+    //   throw new Error(this + ' abstract method not implemented');
+    // }
   }
 
   async openInEditor() {
@@ -622,11 +634,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
       await this.maybeHideGitFolder();
 
-      // if given, switch to specific commit hash, branch or tag name
-      // see: https://stackoverflow.com/questions/3489173/how-to-clone-git-repository-with-specific-revision-changeset
-      if (this.gitCommit) {
-        await this.gitCheckoutCommit(this.gitCommit);
-      }
+      await this.selectDefaultCommit();
 
       this.log(`Cloned.`);
     }
@@ -647,6 +655,14 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       return 'yarn';
     }
     return 'npm';
+  }
+
+  async selectDefaultCommit() {
+    // if given, switch to specific commit hash, branch or tag name
+    // see: https://stackoverflow.com/questions/3489173/how-to-clone-git-repository-with-specific-revision-changeset
+    if (this.gitCommit) {
+      await this._gitResetAndCheckout(this.gitCommit);
+    }
   }
 
   async npmInstall() {
@@ -797,12 +813,26 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     return this.execCaptureOut(`${this.gitCommand} diff --color=never`);
   }
 
+  async gitCheckout(target, targetName) {
+    targetName = targetName || target;
+
+    if ((await this.gitGetCurrentTagName()).startsWith(targetName)) {
+      // do not checkout bug, if we already on the right tag
+      return;
+    }
+
+    // see: https://git-scm.com/docs/git-checkout#Documentation/git-checkout.txt-emgitcheckoutem-b-Bltnewbranchgtltstartpointgt
+    await this._gitCheckout(`-B ${targetName} ${target}`);
+  }
+
   /**
-   * Checkout to some distination
-   * @param {String} checkoutTo 
+   * Checkout some target
+   * @param {String} checkoutArgs
    */
-  async gitCheckout(checkoutTo) {
-    return this.exec(`${this.gitCommand} checkout "${checkoutTo}"`);
+  async _gitCheckout(checkoutArgs) {
+    await this.checkCorrectGitRepository();
+
+    return this.exec(`${this.gitCommand} checkout ${checkoutArgs}`);
   }
 
   // ###########################################################################
@@ -833,7 +863,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     return GitInstalledTag;
   }
 
-  getBugSelectedTagName(bug) {
+  getBugCachedTagName(bug) {
     return `__dbux_bug_${bug.id}_selected`;
   }
 

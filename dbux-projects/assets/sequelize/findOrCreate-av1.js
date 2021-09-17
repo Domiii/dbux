@@ -1,8 +1,7 @@
+/* eslint-disable no-console */
 'use strict';
 
-// See https://github.com/papb/sequelize-sscce as another option for running SSCCEs.
-
-const { expect } = require('chai'); // You can use `expect` on your SSCCE!
+const { expect } = require('chai');
 const { createSequelizeInstance } = require('./dev/sscce-helpers');
 const { Model, DataTypes } = require('.');
 
@@ -10,24 +9,25 @@ const sequelize = createSequelizeInstance({ benchmark: true });
 
 class User extends Model { }
 User.init({
-  username: DataTypes.STRING,
-  birthday: DataTypes.DATE
+  name: DataTypes.STRING,
+  age: DataTypes.INTEGER,
 }, { sequelize, modelName: 'user' });
 
 (async () => {
   try {
     await sequelize.sync({ force: true });
 
-    const jane = await User.create({
-      username: 'janedoe',
-      birthday: new Date(1980, 6, 20)
-    });
-
-    console.log('\nJane:', jane.toJSON());
+    await Promise.all([
+      User.findOrCreate({ name: "John" }, { age: 47 }),
+      User.findOrCreate({ name: "John" }, { age: 49 })
+    ])
+      .then(function ([john1, john2]) {
+        console.log("Result: ", john1, john2);
+      });
 
     await sequelize.close();
 
-    expect(jane.username).to.equal('janedoe');
+    // expect(jane.username).to.equal('janedoe');
   }
   catch (err) {
     console.error('####### FAIL\n\n', err);

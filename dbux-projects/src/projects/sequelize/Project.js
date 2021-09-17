@@ -18,14 +18,17 @@ export default class SequelizeProject extends Project {
     return [
       {
         label: 'sscce1-sqlite',
-        // testRe: 'OPTIONS should only include each method once',
         testFilePaths: ['sscce1.js']
       },
       {
         label: 'error1-sqlite',
-        // testRe: 'OPTIONS should only include each method once',
         testFilePaths: ['error1.js']
-      }
+      },
+      {
+        label: 'atomic-violation1',
+        tag: '3.5.1',
+        testFilePaths: ['findOrCreate-av1.js']
+      },
     ];
   }
 

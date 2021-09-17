@@ -158,19 +158,22 @@ export default class BugRunner {
 
     const { project } = bug;
     const installedTag = project.getProjectInstalledTagName();
-    const bugSelectedTag = project.getBugSelectedTagName(bug);
+    const bugCachedTag = project.getBugCachedTagName(bug);
 
-    if (await project.gitDoesTagExist(bugSelectedTag)) {
-      await project.gitCheckout(bugSelectedTag);
+    if (await project.gitDoesTagExist(bugCachedTag)) {
+      // get back to bug's original state
+      await project._gitCheckout(bugCachedTag);
     }
     else {
-      await project.gitCheckout(installedTag);
+      await project._gitCheckout(installedTag);
+      
       // apply bug patch or checkout to tag
       await project.selectBug(bug);
 
       // Add selected tag
-      await project.autoCommit(`Select bug ${bug.id}`);
-      await project.gitSetTag(bugSelectedTag);
+      await project.gitSetTag(bugCachedTag);
+
+      await project.autoCommit(`Selected bug ${bug.id}.`);
     }
   }
 
