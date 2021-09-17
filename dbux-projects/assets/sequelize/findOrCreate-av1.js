@@ -16,26 +16,37 @@ const { Model, DataTypes } = Sequelize;
       storage: path.join(__dirname, 'test', 'db.sqlite')
     });
 
-    await sequelize.sync({ force: true });
-
     const User = sequelize.define('user', {
       name: Sequelize.STRING,
       age: Sequelize.INTEGER
     });
 
-    await Promise.all([
+    await sequelize.sync({ force: true });
+
+    // this works
+    const [a1] = await User.finfindOrCreate({
+      where: { name: "a" },
+      defaults: { age: 1 }
+    });
+    const [a2] = await User.findOrCreate({
+      where: { name: "a" },
+      defaults: { age: 2 }
+    });
+    console.log(`Result A: ${[a1?.dataValues?.age, a2?.dataValues?.age]} === 1, 2, `, a1, a2);
+
+    // this does NOT work
+    const [[b1], [b2]] = await Promise.all([
       User.findOrCreate({
-        where: { name: "John" }, 
-        defaults: { age: 47 }
+        where: { name: "b" },
+        defaults: { age: 1 }
       }),
       User.findOrCreate({
-        where: { name: "John" },
-        defaults: { age: 111 }
+        where: { name: "b" },
+        defaults: { age: 2 }
       })
-    ])
-      .then(function ([john1, john2]) {
-        console.log("Result: ", john1, john2);
-      });
+    ]);
+    console.log(`Result B: ${[b1?.dataValues?.age, b2?.dataValues?.age]} === 1, 2, `, b1, b2);
+
 
     await sequelize.close();
 

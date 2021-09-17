@@ -175,7 +175,7 @@ export default class CallbackPatcher {
               // CB was called synchronously -> we are not interested
             }
             else {
-              warn(`[patchedCallback] lastTrace=${lastTraceId}, cid=${context.contextId}, rootId=${rootId}, schedulerTraceId=${schedulerTraceId}`);
+              // warn(`[patchedCallback] lastTrace=${lastTraceId}, cid=${context.contextId}, rootId=${rootId}, schedulerTraceId=${schedulerTraceId}`);
               // the CB was called asynchronously
 
               // const cbContext = getLastContextCheckCallee(originalCb);

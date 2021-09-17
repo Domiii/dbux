@@ -25,10 +25,10 @@ function getMEPropertyNode(meNode, traceCfg) {
 /**
  * [ME]
  */
-export const buildtraceExpressionME = bindExpressionTemplate(
+
+const buildtraceExpressionMEDefault = bindExpressionTemplate(
   '%%tme%%(%%object%%, %%property%%, %%value%%, %%tid%%, %%objectTid%%)',
-  function buildtraceExpressionME(state, traceCfg) {
-    // const { scope } = path;
+  function buildtraceExpressionMEDefault(/* meNode, */ state, traceCfg) {
     const meNode = getInstrumentTargetAstNode(state, traceCfg);
     const trace = getTraceCall(state, traceCfg, 'traceExpressionME');
     const tid = buildTraceId(state, traceCfg);
@@ -36,8 +36,7 @@ export const buildtraceExpressionME = bindExpressionTemplate(
     const {
       object: objectNode,
       property: propertyNode,
-      computed,
-      optional
+      computed
     } = meNode;
 
     const {
@@ -45,7 +44,8 @@ export const buildtraceExpressionME = bindExpressionTemplate(
         objectTid,
         isObjectTracedAlready,
         objectAstNode: objectVar,
-        propertyAstNode: propertyVar // NOTE: this is `undefined`, if `!computed`
+        propertyAstNode: propertyVar, // NOTE: this is `undefined`, if `!computed`
+        optional
       }
     } = traceCfg;
 
@@ -65,7 +65,8 @@ export const buildtraceExpressionME = bindExpressionTemplate(
     const newMemberExpression = (optional ? t.optionalMemberExpression : t.memberExpression)(
       objectVar,
       propertyVar || propertyNode,
-      computed, false
+      computed,
+      optional
     );
 
     return {
@@ -78,6 +79,14 @@ export const buildtraceExpressionME = bindExpressionTemplate(
     };
   }
 );
+
+export function buildtraceExpressionME(state, traceCfg) {
+  // const meNode = getInstrumentTargetAstNode(state, traceCfg);
+  // if (meNode.optional) {
+
+  // }
+  return buildtraceExpressionMEDefault(state, traceCfg);
+}
 
 
 // ###########################################################################
