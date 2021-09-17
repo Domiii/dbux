@@ -1,17 +1,58 @@
+import { readPackageJson, writeMergePackageJson, writePackageJson } from '@dbux/cli/lib/package-util';
 import { buildNodeCommand } from '../../util/nodeUtil';
 import Project from '../../projectLib/Project';
 
 
 export default class SequelizeProject extends Project {
   gitRemote = 'sequelize/sequelize.git';
-
+  /**
+   * @see https://github.com/sequelize/sequelize/tags
+   * @see https://github.com/sequelize/sequelize/releases/tag/v6.6.5
+   */
+  gitCommit = 'tags/v6.6.5';
   packageManager = 'yarn';
 
-  async afterInstall() {
+  _fixSqlite() {
     /**
-     * TODO: fix `sqlite3` version to `^5` to avoid node-pre-gyp build errors
+     * NOTE: `yarn add` won't work as expected here
+     * @see https://github.com/yarnpkg/yarn/issues/3270
+     */
+    const pkg = readPackageJson(this.projectPath);
+
+    // remove `husky`
+    delete pkg.husky;
+
+    // remove unnecessary(and easily failing) database packages.
+    const unwanted = [
+      'sqlite3',
+      'pg',
+      'pg-hstore',
+      'pg-native',
+      'mysql',
+      'mysql2',
+      'mariadb',
+      'tedious'   // used for mssql
+    ];
+    for (const dep of unwanted) {
+      delete pkg.dependencies[dep];
+      delete pkg.devDependencies[dep];
+    }
+
+    /**
+     * Also: fix `sqlite3` version to `^5` to avoid node-pre-gyp build errors
      * @see https://stackoverflow.com/a/68526977/2228771
      */
+    pkg.dependencies.sqlite3 = '^5';
+
+    // write `package.json`
+    writePackageJson(this.projectPath, pkg);
+  }
+
+  /**
+   * 
+   */
+  async beforeInstall() {
+    this._fixSqlite();
   }
 
   loadBugs() {
@@ -26,7 +67,7 @@ export default class SequelizeProject extends Project {
       },
       {
         label: 'atomic-violation1',
-        tag: '3.5.1',
+        tag: 'v3.5.1',
         testFilePaths: ['findOrCreate-av1.js']
       },
     ];
@@ -45,9 +86,16 @@ export default class SequelizeProject extends Project {
     });
   }
 
+  /**
+   * NOTE: this runs before bug's {@link Project#npmInstall}
+   */
+  afterSelectBug(bug) {
+    this._fixSqlite();
+  }
+
   async testBugCommand(bug, cfg) {
     // TODO: generalize
-    
+
     const runCfg = {
       env: {
         DIALECT: 'sqlite'

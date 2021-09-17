@@ -5,17 +5,17 @@ const { Model, DataTypes } = require('.');
 
 const { expect, assert } = require('chai');
 
-const sequelize = createSequelizeInstance({ benchmark: true });
 
 class User extends Model { }
-User.init({
-  username: DataTypes.STRING,
-  birthday: DataTypes.DATE
-}, { sequelize, modelName: 'user' });
 
 (async () => {
   try {
+    const sequelize = createSequelizeInstance({ benchmark: true });
     try {
+      User.init({
+        username: DataTypes.STRING,
+        birthday: DataTypes.DATE
+      }, { sequelize, modelName: 'user' });
       await sequelize.sync({ force: true });
 
       const result = await User.findAll({ where: { colDoesNotExist: 1 } });

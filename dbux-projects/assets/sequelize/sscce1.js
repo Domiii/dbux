@@ -6,16 +6,16 @@ const { expect } = require('chai'); // You can use `expect` on your SSCCE!
 const { createSequelizeInstance } = require('./dev/sscce-helpers');
 const { Model, DataTypes } = require('.');
 
-const sequelize = createSequelizeInstance({ benchmark: true });
 
 class User extends Model { }
-User.init({
-  username: DataTypes.STRING,
-  birthday: DataTypes.DATE
-}, { sequelize, modelName: 'user' });
 
 (async () => {
   try {
+    const sequelize = createSequelizeInstance({ benchmark: true });
+    User.init({
+      username: DataTypes.STRING,
+      birthday: DataTypes.DATE
+    }, { sequelize, modelName: 'user' });
     await sequelize.sync({ force: true });
 
     const jane = await User.create({

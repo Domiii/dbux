@@ -110,8 +110,15 @@ export default class Project extends ProjectBase {
     this.logger = newLogger(this.debugTag);
   }
 
+  get originalGitFolderPath() {
+    return pathResolve(this.projectPath, '.git');
+  }
+
   get hiddenGitFolderPath() {
-    return pathJoin(this.projectsRoot, this.GitFolderName);
+    // return pathResolve(this.projectsRoot, this.GitFolderName);
+    // -> for now, don't hide the git folder
+    // TODO: hide git folder again
+    return this.originalGitFolderPath;
   }
 
   initProject() {
@@ -199,13 +206,13 @@ export default class Project extends ProjectBase {
   }
 
   // ###########################################################################
-  // git stuff
+  // git utilities
   // ###########################################################################
 
   async maybeHideGitFolder() {
     if (!sh.test('-d', this.hiddenGitFolderPath)) {
       try {
-        sh.mv('.git', this.hiddenGitFolderPath);
+        sh.mv(this.originalGitFolderPath, this.hiddenGitFolderPath);
         // here we init a new .git folder, no need to use `this.gitCommand`
         await this.exec(`git init`);
       }
@@ -246,6 +253,74 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       await this.exec(`${this.gitCommand} reset --hard`);
     }
   }
+
+  async gitClone() {
+    const {
+      projectsRoot,
+      projectPath,
+      gitUrl: githubUrl
+    } = this;
+
+    // TODO: read git + editor commands from config
+
+    // clone (will do nothing if already cloned)
+    if (!this.doesProjectFolderExist()) {
+      try {
+        this.runner.createMainFolder();
+        await this.execInTerminal(`git clone "${githubUrl}" "${projectPath}"`, {
+          cwd: projectsRoot
+        });
+      }
+      catch (err) {
+        const errMsg = `Failed to clone git repository. Sometimes a reset (by using the \`Delete project folder\` button) can help fix this - ${err.stack}`;
+        throw new Error(errMsg);
+      }
+
+      sh.cd(projectPath);
+
+      await this.maybeHideGitFolder();
+
+      await this.selectDefaultCommit();
+
+      this.log(`Cloned.`);
+    }
+    else {
+      sh.cd(projectPath);
+      this.log('(skipped cloning)');
+    }
+  }
+
+  async gitCheckout(target, targetName) {
+    targetName = targetName || target;
+
+    if ((await this.gitGetCurrentTagName()).startsWith(targetName)) {
+      // do not checkout bug, if we already on the right tag
+      return;
+    }
+
+    // see: https://git-scm.com/docs/git-checkout#Documentation/git-checkout.txt-emgitcheckoutem-b-Bltnewbranchgtltstartpointgt
+    await this._gitCheckout(`-B ${targetName} ${target}`);
+  }
+
+  /**
+   * Checkout some target
+   * @param {String} checkoutArgs
+   */
+  async _gitCheckout(checkoutArgs) {
+    await this.checkCorrectGitRepository();
+
+    /**
+     * hackfix: git checkout is FRUSTATINGLY inconsistent -
+     *   1. for some reason, git checkout does not return a code, if it errors out
+     *   2. info messages are also sent to stderr
+     *  -> so we need to use heuristics on stderr instead
+     */
+    const err = await this.execCaptureErr(`${this.gitCommand} checkout ${checkoutArgs}`);
+    if (err.startsWith('error:')) {
+      throw new Error(`"git checkout ${checkoutArgs}" failed - message: ${err}`);
+    }
+  }
+
 
   // ###########################################################################
   // project methods
@@ -416,6 +491,14 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     return Process.execCaptureOut(command, { processOptions });
   }
 
+  execCaptureErr = async (command, processOptions) => {
+    processOptions = {
+      cwd: this.projectPath,
+      ...(processOptions || EmptyObject)
+    };
+    return Process.execCaptureErr(command, { processOptions });
+  }
+
   execBackground(cmd, options) {
     const {
       projectPath
@@ -508,7 +591,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   // }
 
   // ###########################################################################
-  // install helpers
+  // actual install implementation
   // ###########################################################################
 
   /**
@@ -519,22 +602,25 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     if (!await this.gitDoesTagExist(installedTag)) {
       this.log(`Installing...`);
 
-      // remove and copy assets
-      await this.installAssets();
-
       // install dbux dependencies
       await this.manager.installDependencies();
 
-      // install project dependencies
-      await this.npmInstall();
+      // copy assets
+      await this.installAssets();
 
-      // custom dependencies
+      // -> `beforeInstall` hook
+      await this.beforeInstall?.();
+      await this.builder?.beforeInstall?.();
+
+      // install default + custom dependencies
+      await this.npmInstall();
       await this.installDependencies();
 
-      // custom `afterInstall` hook
+      // -> `afterInstall` hook
       await this.afterInstall();
       await this.builder?.afterInstall?.();
 
+      // autoCommit + set tag
       await this.autoCommit(`Project installed`);
       await this.gitSetTag(installedTag);
 
@@ -543,6 +629,47 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     else {
       this.log(`(skipped installing)`);
     }
+  }
+
+
+  /**
+   * @param {Bug} bug 
+   */
+  async installBug(bug) {
+    const { project } = bug;
+    const installedTag = project.getProjectInstalledTagName();
+    const bugCachedTag = project.getBugCachedTagName(bug);
+
+    if (await project.gitDoesTagExist(bugCachedTag)) {
+      // get back to bug's original state
+      await project._gitCheckout(bugCachedTag);
+      const currentTag = await project.gitGetCurrentTagName();
+      if (currentTag === bugCachedTag) {
+        // hackfix: there is some bug here where `bugCachedTag` appears to exist, but we never stored it, and after checkout, it ends up in `installedTag` instead
+        // -> $ git tag -l *dbux*
+        return;
+      }
+      this.logger.warn(`installBug failed - tried to checkout bug tag "${bugCachedTag}", but instead at "${currentTag}" - re-installing bug`);
+    }
+
+    // fresh start
+    await project._gitCheckout(installedTag);
+
+    // checkout bug commit, apply patch, etc.
+    await project.beforeSelectBug?.(bug);
+    await project.selectBug(bug);
+    await project.afterSelectBug?.(bug);
+
+    // copy assets
+    await this.installAssets();
+
+    // install default + custom dependencies
+    await project.npmInstall();
+    await project.installBugDependencies?.(bug);
+
+    // autoCommit + set tag
+    await project.autoCommit(`Selected bug ${bug.id}.`);
+    await project.gitSetTag(bugCachedTag);
   }
 
   /**
@@ -569,9 +696,14 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
       message && (message = ' ' + message);
       // TODO: should not need '--allow-empty', if `checkFilesChanged` is correct (but somehow still bugs out)
-      await this.exec(`${this.gitCommand} commit -am '"[dbux auto commit]${message}"' --allow-empty`);
+      const errResult = await this.execCaptureErr(`${this.gitCommand} commit -am '"[dbux auto commit]${message}"'`);
+      this.logger.debug(`commit errResult:###\n${errResult}\n###\n`);
     }
   }
+
+  /** ###########################################################################
+   * deactivate, reset, delete
+   * ##########################################################################*/
 
   async tryDeactivate() {
     // ensure project is not running
@@ -608,41 +740,32 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     return sh.test('-d', this.hiddenGitFolderPath);
   }
 
-  async gitClone() {
-    const {
-      projectsRoot,
-      projectPath,
-      gitUrl: githubUrl
-    } = this;
+  /**
+   * 1. select bug tag, 2. reset hard, 3. remove bug tag
+   *    -> this should be the inverse of {@link Project#installBug}
+   * TODO: make sure, individual overrides of {@link Project#selectBug} don't do anything that is not undoable (or provide some sort of `uninstallBug` function)
+   */
+  async resetBug(bug) {
+    const installedTag = this.getProjectInstalledTagName();
+    const bugCachedTag = this.getBugCachedTagName(bug);
 
-    // TODO: read git + editor commands from config
-
-    // clone (will do nothing if already cloned)
-    if (!this.doesProjectFolderExist()) {
-      try {
-        this.runner.createMainFolder();
-        await this.execInTerminal(`git clone "${githubUrl}" "${projectPath}"`, {
-          cwd: projectsRoot
-        });
-      }
-      catch (err) {
-        const errMsg = `Failed to clone git repository. Sometimes a reset (by using the \`Delete project folder\` button) can help fix this - ${err.stack}`;
-        throw new Error(errMsg);
-      }
-
-      sh.cd(projectPath);
-
-      await this.maybeHideGitFolder();
-
-      await this.selectDefaultCommit();
-
-      this.log(`Cloned.`);
+    const currentTag = await this.gitGetCurrentTagName();
+    if (currentTag === bugCachedTag) {
+      // if (await this.gitDoesTagExist(installedTag)) {
+      // get back to project's original state
+      await this._gitResetAndCheckout(installedTag);
+      await this.npmInstall(); // NOTE: node_modules are not affected by git reset or checkout
+      
+      // make sure, there are no unwanted changes kicking around
+      await this._gitResetAndCheckout(installedTag);
     }
-    else {
-      sh.cd(projectPath);
-      this.log('(skipped cloning)');
-    }
+
+    await this.gitDeleteTag(bugCachedTag);
   }
+
+  /** ###########################################################################
+   * unsorted
+   * ##########################################################################*/
 
   get preferredPackageManager() {
     if (this.packageManager) {
@@ -813,28 +936,6 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     return this.execCaptureOut(`${this.gitCommand} diff --color=never`);
   }
 
-  async gitCheckout(target, targetName) {
-    targetName = targetName || target;
-
-    if ((await this.gitGetCurrentTagName()).startsWith(targetName)) {
-      // do not checkout bug, if we already on the right tag
-      return;
-    }
-
-    // see: https://git-scm.com/docs/git-checkout#Documentation/git-checkout.txt-emgitcheckoutem-b-Bltnewbranchgtltstartpointgt
-    await this._gitCheckout(`-B ${targetName} ${target}`);
-  }
-
-  /**
-   * Checkout some target
-   * @param {String} checkoutArgs
-   */
-  async _gitCheckout(checkoutArgs) {
-    await this.checkCorrectGitRepository();
-
-    return this.exec(`${this.gitCommand} checkout ${checkoutArgs}`);
-  }
-
   // ###########################################################################
   // tags
   // ###########################################################################
@@ -851,6 +952,10 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   async gitSetTag(tagName) {
     await this.checkCorrectGitRepository();
     return this.exec(`${this.gitCommand} tag -f "${tagName}"`);
+  }
+
+  async gitDeleteTag(tagName) {
+    return this.exec(`${this.gitCommand} tag -d ${tagName}`);
   }
 
   async gitDoesTagExist(tag) {

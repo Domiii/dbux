@@ -20,7 +20,7 @@ function readJsonFile(fpath) {
 }
 
 function writeJsonFile(fpath, obj) {
-  const s = JSON.stringify(obj);
+  const s = JSON.stringify(obj, null, 2);
   fs.writeFileSync(fpath, s);
 }
 
@@ -187,6 +187,7 @@ module.exports = {
   readPackageJsonVersion,
   getDependenciesPackageJson: readPackageJsonDependencies,
 
+  writePackageJson,
   writeMergePackageJson,
   
   makeResolve,

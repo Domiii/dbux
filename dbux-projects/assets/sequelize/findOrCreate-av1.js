@@ -1,20 +1,27 @@
 /* eslint-disable no-console */
 'use strict';
 
+const path = require('path');
 const { expect } = require('chai');
-const { createSequelizeInstance } = require('./dev/sscce-helpers');
-const { Model, DataTypes } = require('.');
 
-const sequelize = createSequelizeInstance({ benchmark: true });
+const Sequelize = require('.');
+
+const { Model, DataTypes } = Sequelize;
+
 
 class User extends Model { }
-User.init({
-  name: DataTypes.STRING,
-  age: DataTypes.INTEGER,
-}, { sequelize, modelName: 'user' });
 
 (async () => {
   try {
+    const sequelize = new Sequelize({
+      dialect: 'sqlite',
+      storage: path.join(__dirname, 'tmp', 'db.sqlite')
+    });
+    User.init({
+      name: DataTypes.STRING,
+      age: DataTypes.INTEGER,
+    }, { sequelize, modelName: 'user' });
+
     await sequelize.sync({ force: true });
 
     await Promise.all([

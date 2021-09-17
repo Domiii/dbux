@@ -449,13 +449,10 @@ export default class ProjectsManager {
       throw err;
     }
 
-    /**
-     * TODO: 1. select bug tag, 2. reset hard, 3. remove bug tag
-     *    -> this should be the inverse of {@link Project#installBug}
-     *    -> make sure, individual overrides of {@link Project#selectBug} don't do anything that is not undoable (or provide some sort of `uninstallBug` function)
-     */
-    
-    // await bug.project.gitResetHard();
+    const { project } = bug;
+    await project.resetBug(bug);
+
+    // await project.gitResetHard();
 
     if (this.bdp.getBugProgressByBug(bug)) {
       this.bdp.updateBugProgress(bug, { patch: '' });
