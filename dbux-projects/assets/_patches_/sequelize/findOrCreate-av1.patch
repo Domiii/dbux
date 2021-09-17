@@ -1,0 +1,165 @@
+From 95903e2ddc91a163d7202b076a7e9bfdeac16682 Mon Sep 17 00:00:00 2001
+From: Domiii <Domiii@users.noreply.github.com>
+Date: Fri, 17 Sep 2021 23:45:32 +0800
+Subject: [PATCH] fix-sequelize-findOrCreate-av1
+
+---
+ lib/dialects/sqlite/connection-manager.js |  2 +-
+ lib/hooks.js                              |  2 +
+ lib/promise.js                            | 98 +++++++++++------------
+ lib/transaction.js                        |  4 +-
+ 4 files changed, 54 insertions(+), 52 deletions(-)
+
+diff --git a/lib/dialects/sqlite/connection-manager.js b/lib/dialects/sqlite/connection-manager.js
+index 18be1b11..11729435 100644
+--- a/lib/dialects/sqlite/connection-manager.js
++++ b/lib/dialects/sqlite/connection-manager.js
+@@ -16,7 +16,7 @@ ConnectionManager = function(dialect, sequelize) {
+   if (this.sequelize.options.host === 'localhost') delete this.sequelize.options.host;
+ 
+   try {
+-    this.lib = require(sequelize.config.dialectModulePath || 'sqlite3').verbose();
++    this.lib = require(sequelize.config.dialectModulePath || 'sqlite3');
+   } catch (err) {
+     throw new Error('Please install sqlite3 package manually');
+   }
+diff --git a/lib/hooks.js b/lib/hooks.js
+index 3a9814fc..3c7f04a8 100644
+--- a/lib/hooks.js
++++ b/lib/hooks.js
+@@ -368,7 +368,9 @@ module.exports = {
+   hookAliases: hookAliases,
+ 
+   applyTo: function(Model) {
++    /* dbux disable */
+     Utils._.mixin(Model, Hooks);
++    /* dbux disable */
+     Utils._.mixin(Model.prototype, Hooks);
+ 
+     var allHooks = Object.keys(hookTypes).concat(Object.keys(hookAliases));
+diff --git a/lib/promise.js b/lib/promise.js
+index 7ced5ff7..c7d414b2 100644
+--- a/lib/promise.js
++++ b/lib/promise.js
+@@ -1,53 +1,53 @@
+-'use strict';
++// 'use strict';
+ 
+ var Promise = require('bluebird')
+-  , shimmer = require('shimmer');
+-
+-// functionName: The Promise function that should be shimmed
+-// fnArgs: The arguments index that should be CLS enabled (typically all callbacks). Offset from last if negative
+-function shimCLS(object, functionName, fnArgs){
+-  shimmer.wrap(object, functionName, function(fn) {
+-    return function () {
+-      if (Promise.Sequelize && Promise.Sequelize.cls) {
+-        var ns = Promise.Sequelize.cls;
+-        for(var x=0; x<fnArgs.length; x++) {
+-          var argIndex = fnArgs[x] < 0 ? arguments.length + fnArgs[x] : fnArgs[x];
+-          if ( argIndex < arguments.length && typeof arguments[argIndex] === 'function' ) {
+-            arguments[argIndex] = ns.bind( arguments[argIndex] );
+-          }
+-        }
+-      }
+-
+-      return fn.apply(this, arguments);
+-    };
+-  });
+-}
+-
+-// Core
+-shimCLS(Promise, 'join', [-1]);
+-shimCLS(Promise.prototype, 'then', [0, 1, 2]);
+-shimCLS(Promise.prototype, 'spread', [0, 1]);
+-shimCLS(Promise.prototype, 'catch', [-1]);
+-shimCLS(Promise.prototype, 'error', [0]);
+-shimCLS(Promise.prototype, 'finally', [0]);
+-
+-// Collections
+-shimCLS(Promise, 'map', [1]);
+-shimCLS(Promise, 'reduce', [1]);
+-shimCLS(Promise, 'filter', [1]);
+-shimCLS(Promise, 'each', [1]);
+-shimCLS(Promise.prototype, 'map', [0]);
+-shimCLS(Promise.prototype, 'reduce', [0]);
+-shimCLS(Promise.prototype, 'filter', [0]);
+-shimCLS(Promise.prototype, 'each', [0]);
+-
+-// Promisification
+-shimCLS(Promise.prototype, 'nodeify', [0]);
+-
+-// Utility
+-shimCLS(Promise.prototype, 'tap', [0]);
+-
+-// Error management configuration
+-shimCLS(Promise.prototype, 'done', [0, 1]);
++//   , shimmer = require('shimmer');
++
++// // functionName: The Promise function that should be shimmed
++// // fnArgs: The arguments index that should be CLS enabled (typically all callbacks). Offset from last if negative
++// function shimCLS(object, functionName, fnArgs){
++//   shimmer.wrap(object, functionName, function(fn) {
++//     return function () {
++//       if (Promise.Sequelize && Promise.Sequelize.cls) {
++//         var ns = Promise.Sequelize.cls;
++//         for(var x=0; x<fnArgs.length; x++) {
++//           var argIndex = fnArgs[x] < 0 ? arguments.length + fnArgs[x] : fnArgs[x];
++//           if ( argIndex < arguments.length && typeof arguments[argIndex] === 'function' ) {
++//             arguments[argIndex] = ns.bind( arguments[argIndex] );
++//           }
++//         }
++//       }
++
++//       return fn.apply(this, arguments);
++//     };
++//   });
++// }
++
++// // Core
++// shimCLS(Promise, 'join', [-1]);
++// shimCLS(Promise.prototype, 'then', [0, 1, 2]);
++// shimCLS(Promise.prototype, 'spread', [0, 1]);
++// shimCLS(Promise.prototype, 'catch', [-1]);
++// shimCLS(Promise.prototype, 'error', [0]);
++// shimCLS(Promise.prototype, 'finally', [0]);
++
++// // Collections
++// shimCLS(Promise, 'map', [1]);
++// shimCLS(Promise, 'reduce', [1]);
++// shimCLS(Promise, 'filter', [1]);
++// shimCLS(Promise, 'each', [1]);
++// shimCLS(Promise.prototype, 'map', [0]);
++// shimCLS(Promise.prototype, 'reduce', [0]);
++// shimCLS(Promise.prototype, 'filter', [0]);
++// shimCLS(Promise.prototype, 'each', [0]);
++
++// // Promisification
++// shimCLS(Promise.prototype, 'nodeify', [0]);
++
++// // Utility
++// shimCLS(Promise.prototype, 'tap', [0]);
++
++// // Error management configuration
++// shimCLS(Promise.prototype, 'done', [0, 1]);
+ 
+ module.exports = Promise;
+diff --git a/lib/transaction.js b/lib/transaction.js
+index 626e7c07..0d192530 100644
+--- a/lib/transaction.js
++++ b/lib/transaction.js
+@@ -177,9 +177,9 @@ Transaction.prototype.prepareEnvironment = function() {
+   }).then(function () {
+     return self.setDeferrable();
+   }).then(function () {
+-    return self.setIsolationLevel();
++    // return self.setIsolationLevel();
+   }).then(function () {
+-    return self.setAutocommit();
++    // return self.setAutocommit();
+   }).tap(function () {
+     if (self.sequelize.constructor.cls) {
+       self.sequelize.constructor.cls.set('transaction', self);
+-- 
+2.29.2.windows.3
+

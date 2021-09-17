@@ -348,34 +348,6 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     throw new Error(this + ' abstract method not implemented');
   }
 
-  /**
-   * @param {Bug} bug 
-   */
-  async selectBug(bug) {
-    const { tag, commit } = bug;
-    if (tag || commit) {
-      // checkout bug tag/commit
-      const target = bug.tag ? `tags/${tag}` : commit;
-      const targetName = tag || commit;
-      await this.gitCheckout(target, targetName);
-    }
-    else {
-      // NOTE: selectDefaultCommit should not be necessary, since we rollback to install tag before calling this function
-      // await this.selectDefaultCommit();
-    }
-
-
-    if ('patch' in bug) {
-      if (bug.patch) {
-        // NOTE: this way we may set `bug.patch = null` to avoid applying any patch
-        await this.applyPatch(bug.patch);
-      }
-    }
-    // else {
-    //   throw new Error(this + ' abstract method not implemented');
-    // }
-  }
-
   async openInEditor() {
     await this.manager.externals.editor.openFolder(this.project.projectPath);
   }
@@ -631,12 +603,25 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     }
   }
 
+  async deactivateBug(bug) {
+    const project = this;
+    const bugCachedTag = project.getBugCachedTagName(bug);
+
+    // commit and set tag to latest commit
+    await project.autoCommit(`Deactivated bug ${bug.id}.`);
+    await project.gitSetTag(bugCachedTag);
+  }
 
   /**
    * @param {Bug} bug 
    */
   async installBug(bug) {
-    const { project } = bug;
+    const oldBug = this.manager.runner.bug;
+    if (oldBug && oldBug !== bug) {
+      await this.deactivateBug(oldBug);
+    }
+
+    const project = this;
     const installedTag = project.getProjectInstalledTagName();
     const bugCachedTag = project.getBugCachedTagName(bug);
 
@@ -673,6 +658,35 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   }
 
   /**
+   * @param {Bug} bug 
+   */
+  async selectBug(bug) {
+    const { tag, commit } = bug;
+    if (tag || commit) {
+      // checkout bug tag/commit
+      const target = bug.tag ? `tags/${tag}` : commit;
+      const targetName = tag || commit;
+      await this.gitCheckout(target, targetName);
+    }
+    else {
+      // NOTE: selectDefaultCommit should not be necessary, since we rollback to install tag before calling this function
+      // await this.selectDefaultCommit();
+    }
+
+
+    if ('patch' in bug) {
+      if (bug.patch) {
+        // NOTE: this way we may set `bug.patch = null` to avoid applying any patch
+        await this.applyPatch(bug.patch);
+      }
+    }
+    // else {
+    //   throw new Error(this + ' abstract method not implemented');
+    // }
+  }
+
+
+  /**
    * NOTE: this method is called by `install` by default.
    * If already cloned, this will do nothing.
    * @virtual
@@ -692,7 +706,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       // NOTE: && is not supported in all shells (e.g. Powershell)
       const files = this.getAllAssetFiles();
       // this.logger.debug(files.map(f => `${f}: ${fs.existsSync(f)}`));
-      await this.exec(`${this.gitCommand} add ${files.map(name => `'${name}'`).join(' ')}`);
+      await this.exec(`${this.gitCommand} add ${files.map(name => `"${name}"`).join(' ')}`);
 
       message && (message = ' ' + message);
       // TODO: should not need '--allow-empty', if `checkFilesChanged` is correct (but somehow still bugs out)

@@ -1758,8 +1758,6 @@ export default {
   // ###########################################################################
 
   traverseDfs(dp, contexts, dfsRecurse, preOrderCb, postOrderCb) {
-    const runIds = new Set(contexts.map(c => c.runId));
-
     dfsRecurse = dfsRecurse || ((dfs, context, children, prev) => {
       for (const child of children) {
         dfs(child, prev);
@@ -1784,10 +1782,9 @@ export default {
 
     // find all roots
     // let lastResult = null;
-    for (const runId of runIds) {
-      for (const root of dp.indexes.executionContexts.byRun.get(runId)) {
-        dfs(root);
-      }
+    const rootIds = new Set(contexts.filter(c => !c.parentContextId || c.isVirtualRoot).map(c => c.contextId));
+    for (const rootId of rootIds) {
+      dfs(rootId);
     }
   },
 

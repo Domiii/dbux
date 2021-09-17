@@ -19,6 +19,10 @@ export default class SequelizeProject extends Project {
      */
     const pkg = readPackageJson(this.projectPath);
 
+    /** ########################################
+     * for old sequelize only
+     * #######################################*/
+
     // remove `husky`
     delete pkg.husky;
 
@@ -37,6 +41,10 @@ export default class SequelizeProject extends Project {
       delete pkg.dependencies[dep];
       delete pkg.devDependencies[dep];
     }
+    
+    /** ########################################
+     * all versions of sequelize
+     * #######################################*/
 
     /**
      * Also: fix `sqlite3` version to `^5` to avoid node-pre-gyp build errors
@@ -66,9 +74,14 @@ export default class SequelizeProject extends Project {
         testFilePaths: ['error1.js']
       },
       {
-        label: 'atomic-violation1',
+        label: 'findOrCreate-atomic-violation',
         tag: 'v3.5.1',
+        patch: 'findOrCreate-av1',
         testFilePaths: ['findOrCreate-av1.js']
+      },
+      {
+        label: 'findOrCreate-working',
+        testFilePaths: ['findOrCreate-working1.js']
       },
     ];
   }

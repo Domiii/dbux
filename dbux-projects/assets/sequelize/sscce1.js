@@ -6,7 +6,6 @@ const { expect } = require('chai'); // You can use `expect` on your SSCCE!
 const { createSequelizeInstance } = require('./dev/sscce-helpers');
 const { Model, DataTypes } = require('.');
 
-
 class User extends Model { }
 
 (async () => {

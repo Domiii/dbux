@@ -540,7 +540,7 @@ export default class Runtime {
     this._virtualRootContextId = newRootId;
     this.async.virtualRootStarted(newRootId);
 
-    debug('[new root]', newRootId);
+    // debug('[new root]', newRootId);
   }
 
   _runFinished() {

@@ -3,22 +3,18 @@
 
 const path = require('path');
 const { expect } = require('chai');
+const { createSequelizeInstance } = require('./dev/sscce-helpers');
+const { Model, DataTypes } = require('.');
 
-const Sequelize = require('.');
-
+class User extends Model { }
 
 (async () => {
   try {
-    const sequelize = new Sequelize('test_db', null, null, {
-      dialect: 'sqlite',
-      storage: path.join(__dirname, 'test', 'db.sqlite')
-    });
-
-    const User = sequelize.define('user', {
-      name: Sequelize.STRING,
-      age: Sequelize.INTEGER
-    });
-
+    const sequelize = createSequelizeInstance({ benchmark: true });
+    User.init({
+      name: DataTypes.STRING,
+      age: DataTypes.INTEGER
+    }, { sequelize, modelName: 'user' });
     await sequelize.sync({ force: true });
 
     // this works
@@ -32,7 +28,7 @@ const Sequelize = require('.');
     });
     console.log(`Result A: ${[a1?.dataValues?.age, a2?.dataValues?.age]} === 1, 1`);
 
-    // this does NOT work: b2 is undefined
+    // this also works
     const [b1, b2] = await Promise.all([
       User.findOrCreate({
         where: { name: "b" },

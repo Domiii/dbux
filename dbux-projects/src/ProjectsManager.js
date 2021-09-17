@@ -298,11 +298,12 @@ export default class ProjectsManager {
     }
 
     if (!await this.askForRecoverPracticeSession(savedPracticeSession)) {
+      await bug.project.deactivateBug(bug);
       return;
     }
 
     try {
-      bug.project.initProject();
+      await bug.project.initProject();
       this._resetPracticeSession(bug, savedPracticeSession, true);
       this.practiceSession.setupStopwatch();
       this.maybeAskForTestBug(bug);
