@@ -9,24 +9,29 @@ const Sequelize = require('.');
 const { Model, DataTypes } = Sequelize;
 
 
-class User extends Model { }
-
 (async () => {
   try {
-    const sequelize = new Sequelize({
+    const sequelize = new Sequelize('test_db', null, null, {
       dialect: 'sqlite',
-      storage: path.join(__dirname, 'tmp', 'db.sqlite')
+      storage: path.join(__dirname, 'test', 'db.sqlite')
     });
-    User.init({
-      name: DataTypes.STRING,
-      age: DataTypes.INTEGER,
-    }, { sequelize, modelName: 'user' });
 
     await sequelize.sync({ force: true });
 
+    const User = sequelize.define('user', {
+      name: Sequelize.STRING,
+      age: Sequelize.INTEGER
+    });
+
     await Promise.all([
-      User.findOrCreate({ name: "John" }, { age: 47 }),
-      User.findOrCreate({ name: "John" }, { age: 49 })
+      User.findOrCreate({
+        where: { name: "John" }, 
+        defaults: { age: 47 }
+      }),
+      User.findOrCreate({
+        where: { name: "John" },
+        defaults: { age: 111 }
+      })
     ])
       .then(function ([john1, john2]) {
         console.log("Result: ", john1, john2);
