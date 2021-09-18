@@ -38,6 +38,14 @@ export default class Stack {
   //   return this._poppedButStillAround && this._poppedButStillAround.has(contextId) || false;
   // }
 
+  /**
+   * Considers whether `peekIndex` is pointing to anything.
+   * If not, the "synchronous stack" is empty.
+   */
+  isEmptySync() {
+    return this._peekIdx < 0;
+  }
+
   hasWaiting() {
     return !!this._waitCount;
   }
@@ -91,7 +99,7 @@ export default class Stack {
   }
 
   popTop() {
-    const contextId = this.top();
+    // const contextId = this.top();
     this._stack.pop();
     this._peekIdx = this._stack.length - 1;
 

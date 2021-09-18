@@ -306,7 +306,7 @@ function _onThen(thenRef, preEventPromise, postEventPromise) {
 // patchPromiseClass + prototype
 // ###########################################################################
 
-const promiseCtorStack = [];
+// const promiseCtorStack = [];
 
 function patchPromiseMethods(holder) {
   // NOTE: we do this to tag promise prototypes -> so we don't accidentally re-register those
@@ -345,13 +345,12 @@ function patchPromiseClass(BasePromiseClass) {
               deferredCall = wrapResolve.bind(null, resolveArg);
             }
             else {
-              if (isThenable(resolveArg)) {
-                const thenRef = _makeThenRef(this, wrapResolve);
-                if (thenRef) {
-                  RuntimeMonitorInstance._runtime.async.resolve(
-                    resolveArg, this, ResolveType.Resolve, thenRef.schedulerTraceId
-                  );
-                }
+              const thenRef = _makeThenRef(this, wrapResolve);
+              if (thenRef) {
+                const inner = resolveArg;
+                RuntimeMonitorInstance._runtime.async.resolve(
+                  inner, this, ResolveType.Resolve, thenRef.schedulerTraceId, true
+                );
               }
               resolve(...args);
             }
@@ -364,14 +363,14 @@ function patchPromiseClass(BasePromiseClass) {
               deferredCall = wrapReject.bind(null, err);
             }
             else {
-              // NOTE: reject cannot nest promises
-
-              // const thenRef = _makeThenRef(this, wrapReject);
-              // if (thenRef) {
-              //   RuntimeMonitorInstance._runtime.async.resolve(
-              //     err, this, ResolveType.Reject, thenRef.schedulerTraceId
-              //   );
-              // }
+              const thenRef = _makeThenRef(this, wrapReject);
+              if (thenRef) {
+                // NOTE: reject can also nest promise (but will pass the promise (not its resolved value) to `catch`)
+                const inner = err;
+                RuntimeMonitorInstance._runtime.async.resolve(
+                  inner, this, ResolveType.Reject, thenRef.schedulerTraceId, true
+                );
+              }
               reject(...args);
             }
           };

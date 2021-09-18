@@ -39,4 +39,13 @@ export default class PromiseLink {
   traceId;
 
   rootId;
+
+  /**
+   * @type {boolean}
+   *
+   * This generally indicates that the given promise is CHAINed to the current root.
+   * However, there might be no recorded root when this function is called.
+   * 
+   */
+  isPromisify;
 }

@@ -1750,6 +1750,7 @@ export default {
 
   /**
    * Whether or not traces for this context were enabled.
+   * @param {DataProvider} dp
    */
   isContextTraced(dp, contextId) {
     const { tracesDisabled } = dp.util.getExecutionContext(contextId);
@@ -1760,6 +1761,7 @@ export default {
   // graph traversal
   // ###########################################################################
 
+  /** @param {DataProvider} dp */
   traverseDfs(dp, contexts, dfsRecurse, preOrderCb, postOrderCb) {
     dfsRecurse = dfsRecurse || ((dfs, context, children, prev) => {
       for (const child of children) {
@@ -1785,12 +1787,16 @@ export default {
 
     // find all roots
     // let lastResult = null;
-    const rootIds = new Set(contexts.filter(c => !c.parentContextId || c.isVirtualRoot).map(c => c.contextId));
-    for (const rootId of rootIds) {
-      dfs(rootId);
+    const rootIds = new Set(
+      contexts.filter(c => !c.parentContextId || c.isVirtualRoot)
+      // .map(c => );
+    );
+    for (const roots of rootIds) {
+      dfs(roots);
     }
   },
 
+  /** @param {DataProvider} dp */
   getChildrenOfContext(dp, contextId) {
     return dp.indexes.executionContexts.children.get(contextId) || EmptyArray;
   },
@@ -1799,6 +1805,7 @@ export default {
   // labels
   // ###########################################################################
 
+  /** @param {DataProvider} dp */
   makeTypeNameLabel(dp, traceId) {
     const traceType = dp.util.getTraceType(traceId);
     const typeName = TraceType.nameFrom(traceType);
