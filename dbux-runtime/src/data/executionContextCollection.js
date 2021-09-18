@@ -54,8 +54,9 @@ export class ExecutionContextCollection extends Collection {
     return lastContext;
   }
 
-  makeContextInfo(contextId) {
-    const context = this.getById(contextId);
+  makeContextInfo(contextOrContextId) {
+    const context = this.asContext(contextOrContextId);
+    const { contextId } = context;
     if (!context) {
       return `null (#${contextId})`;
     }
@@ -64,7 +65,7 @@ export class ExecutionContextCollection extends Collection {
     const { displayName, loc, programId } = staticContext;
     const program = staticProgramContextCollection.getById(programId);
     const { filePath } = program;
-    return `[${ExecutionContextType.nameFrom(contextType)}] "${displayName}" (#${contextId}) @ ${filePath}:${locToString(loc)}`;
+    return `[${ExecutionContextType.nameFrom(contextType)}] #${contextId} "${displayName}" @ ${filePath}:${locToString(loc)}`;
   }
 
   // ###########################################################################
@@ -74,7 +75,7 @@ export class ExecutionContextCollection extends Collection {
   /**
    * @return {ExecutionContext}
    */
-  executeImmediate(stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId, definitionTid, tracesDisabled) {
+  pushImmediate(stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId, definitionTid, tracesDisabled) {
     return this._create(ExecutionContextType.Immediate,
       stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId, null, definitionTid, tracesDisabled);
   }
@@ -95,7 +96,7 @@ export class ExecutionContextCollection extends Collection {
   //   return context;
   // }
 
-  await(stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId) {
+  pushAwait(stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId) {
     const schedulerTraceId = null;
     const definitionTid = null;
     const tracesDisabled = false; // tracing must be enabled if we traced an `await`
@@ -110,7 +111,7 @@ export class ExecutionContextCollection extends Collection {
    * (1) either when the function pops,
    * (2) or when another interrupt occurs.
    */
-  resume(stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId, schedulerTraceId) {
+  pushResume(stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId, schedulerTraceId) {
     // const parentContext = this.getById(parentContextId);
     // const { staticContextId: parenStaticContextId } = parentContext;
     // const { programId } = staticContextCollection.getById(inProgramStaticContextId);
@@ -119,6 +120,24 @@ export class ExecutionContextCollection extends Collection {
       stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId, schedulerTraceId, definitionTid);
 
     return context;
+  }
+
+  asContext(contextOrContextId) {
+    let context;
+    if (contextOrContextId.contextId) {
+      context = contextOrContextId;
+    }
+    else {
+      context = this.getById(contextOrContextId);
+    }
+    return context;
+  }
+
+  debugAddContextDebugData(contextOrContextId, data) {
+    const context = this.asContext(contextOrContextId);
+
+    // [edit-after-send]
+    Object.assign(context, data);
   }
 
 

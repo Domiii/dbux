@@ -1316,6 +1316,9 @@ export default {
 
   getContextStaticContextId(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
+    if (!context) {
+      throw new Error(`getContextStaticContextId failed - invalid contextId: ${contextId}`);
+    }
     const { staticContextId } = context;
     return staticContextId;
   },

@@ -5,8 +5,8 @@
 set -e # cancel on error
 # set -x # verbose echo mode
 
-fname="__samplesInput__/optionalCalls2"
-# fname="case-studies/async/chain/chain-error1"
+fname="__samplesInput__/async/await3"
+# fname="case-studies/async/chain/chains_promise_vs_async"
 # fname="case-studies/async/producer_consumer/producer_consumer_promise"
 
 
@@ -18,8 +18,8 @@ rootDir=$(node -e "console.log(require('path').resolve('$thisDirRelative'))") # 
 nodeArgsAlways="--stack-trace-limit=100"
 nodeArgs=""
 
-# dbuxArgs="--esnext"
-dbuxArgs=""
+dbuxArgs="--esnext"
+# dbuxArgs=""
 dbuxArgsI=""
 
 dbuxCmd="$1"
