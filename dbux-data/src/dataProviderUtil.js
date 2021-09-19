@@ -2214,28 +2214,29 @@ export default {
     let u;
     const link = dp.indexes.promiseLinks.from.getFirst(nestedPromiseId);
     if (link) {
+      // “Nested PostThen” or “async return” or “resolve”
       // TODO: define + assure correct timing via rootId
       const { to: outerPromiseId/* , rootId */ } = link;
-      // “Nested PostThen” or “async return” or “resolve”
       if ((u = dp.util.getLastAsyncPostEventUpdateOfPromise(outerPromiseId, rootId))) {
         // “Nested PostThen” or “async return”
         return u.rootId;
       }
-      return dp.util.UP(outerPromiseId, rootId, syncPromiseIds); // “async return” (of function where no `await` executed) or “resolve”
+      // “async return” (of function where no `await` executed) or “resolve”
+      return dp.util.UP(outerPromiseId, rootId, syncPromiseIds);
     }
     else if ((u = dp.util.getFirstNestingPreAwaitUpdate(nestedPromiseId))) {
       // p was AWAIT’ed && PostAwait has not happened yet
       if (u.rootId > rootId) {
         // SYNC edge => already added in u's own Post* event handler
-        // NOTE: u.rootId < rootId is impossible (because if `u` nests `p`, `u` cannot occur before `p`)
         // syncPromiseIds.push(u.promiseId);
         return 0;
       }
       else {
         // u.rootId === rootId
+        //  (u.rootId < rootId is impossible because if `u` nests `p`, `u` cannot occur before `p`)
         const isFirstAwait = dp.util.isFirstContextInParent(u.contextId);
         if (!isFirstAwait || u.contextId === u.rootId) {
-          return u.rootId;  // already at root (can't go higher up)
+          return u.rootId;  // already at root (can't go up any further)
         }
         return dp.util.UP(u.promiseId, rootId, syncPromiseIds) || 0;
       }
