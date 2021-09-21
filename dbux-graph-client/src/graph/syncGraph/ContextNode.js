@@ -75,10 +75,7 @@ class ContextNode extends ClientComponentEndpoint {
       visible
     } = this.state;
 
-    const {
-      themeMode,
-    } = this.context;
-
+    const { themeMode } = this.context;
     const moduleLabel = moduleName ? `${moduleName} | ` : '';
 
     this.el.id = `application_${applicationId}-context_${contextId}`;

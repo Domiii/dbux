@@ -276,10 +276,10 @@ export default class Runtime {
    * In `async` functions, this returns the root context of the real context.
    */
   peekRealRootContextId() {
-    if (this._executingStack.isEmptySync()) {
+    if (!this._executingStack || this._executingStack.isEmptySync()) {
       return 0;
     }
-    return this._executingStack?.[0];
+    return this._executingStack.peek();
   }
 
   /**

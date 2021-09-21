@@ -369,7 +369,7 @@ export default class RuntimeAsync {
     // else {
 
     // TODO: `isPromiseCtor` does not matter if callback was called synchronously -> only if `rootId` is not the same as the promise ctor's `rootId`.
-    TODO;
+    // TODO;
     nestedPromiseCollection.addLink(resolveType, from, to, traceId, rootId, isPromiseCtor);
 
     // const {

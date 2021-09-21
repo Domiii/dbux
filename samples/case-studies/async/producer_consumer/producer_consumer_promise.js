@@ -1,5 +1,5 @@
 import { IdleTime, N, startProduce, finishProduce, startConsume, finishConsume, hasSpace, hasItems, getProduceTime, getConsumeTime, } from './producer_consumer_base';
-import { waitTicksPromise, repeatPromise/* , sleep */ } from 'asyncUtil';
+import { waitTicksPromise, repeatPromise, pt } from 'asyncUtil';
 
 /** ###########################################################################
  * Basic functions
@@ -10,44 +10,47 @@ function idle() {
   //   .then(() =>
   //     waitTicksPromise(IdleTime)
   //   );
-  return waitTicksPromise(IdleTime);
+  return waitTicksPromise(IdleTime).then(function _doneIdle() { });
 }
 
 function consume() {
-  startConsume();
   return waitTicksPromise(getConsumeTime())
     .then(finishConsume);
 }
 
 function produce() {
-  startProduce();
   return waitTicksPromise(getProduceTime())
     .then(finishProduce);
 }
 
 function producer(n) {
-  return repeatPromise(n, function producerTick() {
-    if (hasSpace()) {
-      return produce();
+  return repeatPromise(n,
+    function tryProduce() {
+      if (hasSpace()) {
+        startProduce();
+        return pt(produce);
+      }
+      else {
+        // return idle();
+        return pt(idle);
+      }
     }
-    else {
-      return idle();
-    }
-  });
+  );
 }
 
 function consumer(n) {
   return repeatPromise(
     () => !!n,
-    function consumerTick() {
+    function tryConsume() {
       if (hasItems()) {
         --n;
-        console.log('cons', n);
-        return consume();
+        startConsume();
+        return pt(consume);
       }
       else {
-        console.log('cons idle', n);
-        return idle();
+        // console.log('cons idle', n);
+        // return idle();
+        return pt(idle);
       }
     }
   );
@@ -57,7 +60,7 @@ function consumer(n) {
  * Main
  *  #########################################################################*/
 
-producer(2*N);
+producer(2 * N);
 consumer(N);
 consumer(N);
 consumer(N);
