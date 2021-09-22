@@ -21,7 +21,7 @@ class PromiseLinkCollection extends Collection {
     entry.to = toPromiseId;
     entry.traceId = traceId;
     entry.rootId = rootId;
-    entry.isPromisify = isPromisify;
+    entry.asyncPromisifyPromiseId = asyncPromisifyPromiseId;
 
     this._send(entry);
 
