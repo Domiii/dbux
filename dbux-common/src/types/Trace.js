@@ -42,6 +42,12 @@ export default class Trace {
   previousTrace;
 
   /**
+   * Set in post, on `Pop` traces which were not preceded by a context-ending trace.
+   * @type {boolean}
+   */
+  error;
+
+  /**
    * NOTE: this is the dynamic type only.
    *       Use DataProvider.util.getTraceType to get actual TraceType.
    * @type {number}

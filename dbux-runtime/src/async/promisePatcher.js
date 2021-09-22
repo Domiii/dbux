@@ -6,7 +6,7 @@ import isThenable from '@dbux/common/src/util/isThenable';
 import isFunction from 'lodash/isFunction';
 import traceCollection from '../data/traceCollection';
 import dataNodeCollection from '../data/dataNodeCollection';
-import { peekBCEMatchCallee, getLastContextCheckCallee, isInstrumentedFunction } from '../data/dataUtil';
+import { peekBCEMatchCallee, getLastContextCheckCallee, isInstrumentedFunction, peekBCEMatchCalleeUnchecked } from '../data/dataUtil';
 import PromiseRuntimeData from '../data/PromiseRuntimeData';
 // import traceCollection from '../data/traceCollection';
 import valueCollection from '../data/valueCollection';
@@ -111,7 +111,7 @@ function patchThenCallback(cb, thenRef) {
   // }
 
   const originalCb = cb;
-  return function patchedCb(...args) {
+  return function patchedThenCb(...args) {
     if (activeThenCbCount) {
       // NOTE: then callbacks should never be nested (might hint at a Dbux bug)
       warn(`a "then" callback was called before a previous "then" callback has finished, schedulerTraceId=${thenRef.schedulerTraceId}`);
@@ -125,7 +125,7 @@ function patchThenCallback(cb, thenRef) {
     try {
       try {
         // actually call `then` callback
-        returnValue = originalCb(...args);
+        returnValue = originalCb.call(this, ...args);
       }
       finally {
         const cbContext = getLastContextCheckCallee(originalCb);
@@ -183,11 +183,13 @@ function patchThenCallback(cb, thenRef) {
  */
 function _makeThenRef(promise, patchedFunction) {
   let ref = valueCollection.getRefByValue(promise);
-  const bceTrace = peekBCEMatchCallee(patchedFunction);
+
+  // NOTE: `patchedFunction` might be called by an uninstrumented library (e.g. bluebird)
+  const bceTrace = peekBCEMatchCalleeUnchecked(patchedFunction);
   const schedulerTraceId = bceTrace?.traceId;
 
   if (!ref) {
-    // not traced!
+    // promise not traced yet!
     if (!schedulerTraceId) {
       // don't know what to do
       return null;
@@ -287,7 +289,10 @@ function _onThen(thenRef, preEventPromise, postEventPromise) {
     return;
   }
 
-  dataNodeCollection.createBCEOwnDataNode(postEventPromise, thenRef.schedulerTraceId, DataNodeType.Write);
+  if (thenRef.schedulerTraceId) {
+    // add DataNode for newly created promise
+    dataNodeCollection.createBCEOwnDataNode(postEventPromise, thenRef.schedulerTraceId, DataNodeType.Write);
+  }
 
   maybePatchPromise(postEventPromise);
   thenRef.postEventPromise = postEventPromise;
@@ -301,7 +306,7 @@ function _onThen(thenRef, preEventPromise, postEventPromise) {
 // patchPromiseClass + prototype
 // ###########################################################################
 
-const promiseCtorStack = [];
+// const promiseCtorStack = [];
 
 function patchPromiseMethods(holder) {
   // NOTE: we do this to tag promise prototypes -> so we don't accidentally re-register those
@@ -340,13 +345,12 @@ function patchPromiseClass(BasePromiseClass) {
               deferredCall = wrapResolve.bind(null, resolveArg);
             }
             else {
-              if (isThenable(resolveArg)) {
-                const thenRef = _makeThenRef(this, wrapResolve);
-                if (thenRef) {
-                  RuntimeMonitorInstance._runtime.async.resolve(
-                    resolveArg, this, ResolveType.Resolve, thenRef.schedulerTraceId
-                  );
-                }
+              const thenRef = _makeThenRef(this, wrapResolve);
+              if (thenRef) {
+                const inner = resolveArg;
+                RuntimeMonitorInstance._runtime.async.resolve(
+                  inner, this, ResolveType.Resolve, thenRef.schedulerTraceId, true
+                );
               }
               resolve(...args);
             }
@@ -359,14 +363,14 @@ function patchPromiseClass(BasePromiseClass) {
               deferredCall = wrapReject.bind(null, err);
             }
             else {
-              // NOTE: reject cannot nest promises
-
-              // const thenRef = _makeThenRef(this, wrapReject);
-              // if (thenRef) {
-              //   RuntimeMonitorInstance._runtime.async.resolve(
-              //     err, this, ResolveType.Reject, thenRef.schedulerTraceId
-              //   );
-              // }
+              const thenRef = _makeThenRef(this, wrapReject);
+              if (thenRef) {
+                // NOTE: reject can also nest promise (but will pass the promise (not its resolved value) to `catch`)
+                const inner = err;
+                RuntimeMonitorInstance._runtime.async.resolve(
+                  inner, this, ResolveType.Reject, thenRef.schedulerTraceId, true
+                );
+              }
               reject(...args);
             }
           };

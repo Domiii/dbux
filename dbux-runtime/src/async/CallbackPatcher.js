@@ -142,10 +142,12 @@ export default class CallbackPatcher {
 
     function patchedCallback(...args) {
       let returnValue;
-      const lastTraceId = traceCollection.getLast()?.traceId;
+      // const lastTraceId = traceCollection.getLast()?.traceId;
       const lastContextId = executionContextCollection.getLast()?.contextId;
+      
+      // TODO: test this with calling `nextTick` from inside nested async functions
 
-      const realRootId = runtime.getCurrentRealRootContextId();
+      const realRootId = runtime.peekRealRootContextId();
       try {
         // actually call callback
         returnValue = originalCallback.call(this, ...args);
@@ -155,8 +157,7 @@ export default class CallbackPatcher {
           // NOTE: should never happen, since we have already patched the callback?
         }
         else if (realRootId) {
-          // callback was called synchronously -> ignore
-          // TODO: this might still go wrong if certain asynchronous callback mechanisms, such as `nextTick` inside of async functions are used
+          // CB was called synchronously -> ignore
         }
         else {
           // hackfix: this is a very naive way to get the context
@@ -175,7 +176,7 @@ export default class CallbackPatcher {
               // CB was called synchronously -> we are not interested
             }
             else {
-              warn(`[patchedCallback] lastTrace=${lastTraceId}, cid=${context.contextId}, rootId=${rootId}, schedulerTraceId=${schedulerTraceId}`);
+              // warn(`[patchedCallback] lastTrace=${lastTraceId}, cid=${context.contextId}, rootId=${rootId}, schedulerTraceId=${schedulerTraceId}`);
               // the CB was called asynchronously
 
               // const cbContext = getLastContextCheckCallee(originalCb);

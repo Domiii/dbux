@@ -1,31 +1,88 @@
+import { readPackageJson, writeMergePackageJson, writePackageJson } from '@dbux/cli/lib/package-util';
 import { buildNodeCommand } from '../../util/nodeUtil';
 import Project from '../../projectLib/Project';
 
 
 export default class SequelizeProject extends Project {
   gitRemote = 'sequelize/sequelize.git';
-
+  /**
+   * @see https://github.com/sequelize/sequelize/tags
+   * @see https://github.com/sequelize/sequelize/releases/tag/v6.6.5
+   */
+  gitCommit = 'tags/v6.6.5';
   packageManager = 'yarn';
 
-  async afterInstall() {
+  _fixSqlite() {
     /**
-     * TODO: fix `sqlite3` version to `^5` to avoid node-pre-gyp build errors
+     * NOTE: `yarn add` won't work as expected here
+     * @see https://github.com/yarnpkg/yarn/issues/3270
+     */
+    const pkg = readPackageJson(this.projectPath);
+
+    /** ########################################
+     * for old sequelize only
+     * #######################################*/
+
+    // remove `husky`
+    delete pkg.husky;
+
+    // remove unnecessary(and easily failing) database packages.
+    const unwanted = [
+      'sqlite3',
+      'pg',
+      'pg-hstore',
+      'pg-native',
+      'mysql',
+      'mysql2',
+      'mariadb',
+      'tedious'   // used for mssql
+    ];
+    for (const dep of unwanted) {
+      delete pkg.dependencies[dep];
+      delete pkg.devDependencies[dep];
+    }
+    
+    /** ########################################
+     * all versions of sequelize
+     * #######################################*/
+
+    /**
+     * Also: fix `sqlite3` version to `^5` to avoid node-pre-gyp build errors
      * @see https://stackoverflow.com/a/68526977/2228771
      */
+    pkg.dependencies.sqlite3 = '^5';
+
+    // write `package.json`
+    writePackageJson(this.projectPath, pkg);
+  }
+
+  /**
+   * 
+   */
+  async beforeInstall() {
+    this._fixSqlite();
   }
 
   loadBugs() {
     return [
       {
         label: 'sscce1-sqlite',
-        // testRe: 'OPTIONS should only include each method once',
         testFilePaths: ['sscce1.js']
       },
       {
         label: 'error1-sqlite',
-        // testRe: 'OPTIONS should only include each method once',
         testFilePaths: ['error1.js']
-      }
+      },
+      {
+        label: 'findOrCreate-atomic-violation',
+        tag: 'v3.5.1',
+        patch: 'findOrCreate-av1',
+        testFilePaths: ['findOrCreate-av1.js']
+      },
+      {
+        label: 'findOrCreate-working',
+        testFilePaths: ['findOrCreate-working1.js']
+      },
     ];
   }
 
@@ -36,15 +93,23 @@ export default class SequelizeProject extends Project {
     }
 
     Object.assign(bug, {
-      // future-work: lodash introduced some weird issues with `Object.defineProperties` being polyfilled or proxied or otherwise replaced and ending up being `undefined` (or somesuch)?
-      dbuxArgs: '--pw=.* --pb=lodash'
+      // -> lodash - future-work: it has issues w/ `Object.defineProperties` being polyfilled or proxied or otherwise replaced and ending up being `undefined` (or somesuch)?
+      // -> bluebird
+      dbuxArgs: '--pw=.* --pb=lodash,bluebird'
       // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
     });
   }
 
+  /**
+   * NOTE: this runs before bug's {@link Project#npmInstall}
+   */
+  afterSelectBug(bug) {
+    this._fixSqlite();
+  }
+
   async testBugCommand(bug, cfg) {
     // TODO: generalize
-    
+
     const runCfg = {
       env: {
         DIALECT: 'sqlite'

@@ -1,6 +1,6 @@
 import sh from 'shelljs';
-import isArray from 'lodash/isArray';
 import Project from '../../projectLib/Project';
+import Bug from '../../projectLib/Bug';
 import { buildMochaRunCommand } from '../../util/mochaUtil';
 
 
@@ -9,6 +9,9 @@ export default class HexoProject extends Project {
 
   packageManager = 'yarn';
 
+  /**
+   * @type {Array.<Bug>}
+   */
   loadBugs() {
     const bugs = [
       {
@@ -32,13 +35,18 @@ export default class HexoProject extends Project {
       //   testRe: 'is_home',
       //   testFilePaths: ['test/scripts/helpers/is.js']
       // }
-      
+
       {
-        // not a challenge to find the bug
+        // 
         id: 4,
         testRe: 'asset_img.*with space',
-        // testRe: '',
-        testFilePaths: ['test/scripts/tags/asset_img.js']
+        testFilePaths: ['test/scripts/tags/asset_img.js'],
+        bugLocations: [
+          {
+            file: 'lib/models/post_asset.js',
+            line: 21
+          }
+        ]
       },
       // 5: stale.yml (not js)
       // 6: url_for helper: Don't prepend root if url is started with #
@@ -92,10 +100,11 @@ export default class HexoProject extends Project {
       // name: `bug #${bug.id}`,
       // require: ['./test/support/env.js'],
       // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
-      // runArgs: ['-t', '20000'],    // timeout = 20s
-      runArgs: ['-t', '0'],    // disable timeout (https://mochajs.org/#timeouts)
+      runArgs: ['-t', 200000],    // timeout = 200s
+      // NOTE: timeout cannot be disabled (maybe because it's an old version) - https://mochajs.org/#timeouts
+      // runArgs: ['-t', '0'],
       // dbuxArgs: '--pw=.*',
-      dbuxArgs: '--pw=warehouse',
+      dbuxArgs: '--pw=.* --pb=lodash,bluebird',
     });
   }
 

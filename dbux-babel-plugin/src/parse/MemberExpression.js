@@ -124,7 +124,8 @@ export default class MemberExpression extends BaseNode {
 
     const [objectNode, propertyNode] = this.getChildNodes();
     const {
-      computed
+      computed,
+      optional
     } = path.node;
 
     // prepare object
@@ -159,7 +160,8 @@ export default class MemberExpression extends BaseNode {
         objectTid,
         isObjectTracedAlready,
         objectAstNode,
-        propertyAstNode
+        propertyAstNode,
+        optional  // NOTE: add build time, the original ME node might have already been replaced
       }
     };
 

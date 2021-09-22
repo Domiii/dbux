@@ -1316,6 +1316,9 @@ export default {
 
   getContextStaticContextId(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
+    if (!context) {
+      throw new Error(`getContextStaticContextId failed - invalid contextId: ${contextId}`);
+    }
     const { staticContextId } = context;
     return staticContextId;
   },
@@ -1747,6 +1750,7 @@ export default {
 
   /**
    * Whether or not traces for this context were enabled.
+   * @param {DataProvider} dp
    */
   isContextTraced(dp, contextId) {
     const { tracesDisabled } = dp.util.getExecutionContext(contextId);
@@ -1757,9 +1761,8 @@ export default {
   // graph traversal
   // ###########################################################################
 
+  /** @param {DataProvider} dp */
   traverseDfs(dp, contexts, dfsRecurse, preOrderCb, postOrderCb) {
-    const runIds = new Set(contexts.map(c => c.runId));
-
     dfsRecurse = dfsRecurse || ((dfs, context, children, prev) => {
       for (const child of children) {
         dfs(child, prev);
@@ -1784,13 +1787,16 @@ export default {
 
     // find all roots
     // let lastResult = null;
-    for (const runId of runIds) {
-      for (const root of dp.indexes.executionContexts.byRun.get(runId)) {
-        dfs(root);
-      }
+    const rootIds = new Set(
+      contexts.filter(c => !c.parentContextId || c.isVirtualRoot)
+      // .map(c => );
+    );
+    for (const roots of rootIds) {
+      dfs(roots);
     }
   },
 
+  /** @param {DataProvider} dp */
   getChildrenOfContext(dp, contextId) {
     return dp.indexes.executionContexts.children.get(contextId) || EmptyArray;
   },
@@ -1799,6 +1805,7 @@ export default {
   // labels
   // ###########################################################################
 
+  /** @param {DataProvider} dp */
   makeTypeNameLabel(dp, traceId) {
     const traceType = dp.util.getTraceType(traceId);
     const typeName = TraceType.nameFrom(traceType);
@@ -2214,28 +2221,29 @@ export default {
     let u;
     const link = dp.indexes.promiseLinks.from.getFirst(nestedPromiseId);
     if (link) {
+      // “Nested PostThen” or “async return” or “resolve”
       // TODO: define + assure correct timing via rootId
       const { to: outerPromiseId/* , rootId */ } = link;
-      // “Nested PostThen” or “async return” or “resolve”
       if ((u = dp.util.getLastAsyncPostEventUpdateOfPromise(outerPromiseId, rootId))) {
         // “Nested PostThen” or “async return”
         return u.rootId;
       }
-      return dp.util.UP(outerPromiseId, rootId, syncPromiseIds); // “async return” (of function where no `await` executed) or “resolve”
+      // “async return” (of function where no `await` executed) or “resolve”
+      return dp.util.UP(outerPromiseId, rootId, syncPromiseIds);
     }
     else if ((u = dp.util.getFirstNestingPreAwaitUpdate(nestedPromiseId))) {
       // p was AWAIT’ed && PostAwait has not happened yet
       if (u.rootId > rootId) {
         // SYNC edge => already added in u's own Post* event handler
-        // NOTE: u.rootId < rootId is impossible (because if `u` nests `p`, `u` cannot occur before `p`)
         // syncPromiseIds.push(u.promiseId);
         return 0;
       }
       else {
         // u.rootId === rootId
+        //  (u.rootId < rootId is impossible because if `u` nests `p`, `u` cannot occur before `p`)
         const isFirstAwait = dp.util.isFirstContextInParent(u.contextId);
         if (!isFirstAwait || u.contextId === u.rootId) {
-          return u.rootId;  // already at root (can't go higher up)
+          return u.rootId;  // already at root (can't go up any further)
         }
         return dp.util.UP(u.promiseId, rootId, syncPromiseIds) || 0;
       }

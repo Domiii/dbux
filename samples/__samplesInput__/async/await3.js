@@ -4,7 +4,7 @@ async function waitTicks(times) {
   }
 }
 
-async function f() {
+function f() {
   return '123';
 }
 

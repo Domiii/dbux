@@ -1,13 +1,9 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import isThenable from '@dbux/common/src/util/isThenable';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
-import ResolveType from '@dbux/common/src/types/constants/ResolveType';
+// import ResolveType from '@dbux/common/src/types/constants/ResolveType';
 import PromiseLinkType from '@dbux/common/src/types/constants/PromiseLinkType';
-// import some from 'lodash/some';
-// import executionContextCollection from './data/executionContextCollection';
-// import traceCollection from './data/traceCollection';
-// import valueCollection from './data/valueCollection';
-import { isFirstContextInParent, isRootContext, peekBCEContextCheckCallee } from '../data/dataUtil';
+import { isFirstContextInParent, peekBCEContextCheckCallee } from '../data/dataUtil';
 import ThenRef from '../data/ThenRef';
 // eslint-disable-next-line max-len
 import { getPromiseData, getPromiseId, getPromiseOwnAsyncFunctionContextId, setPromiseData } from './promisePatcher';
@@ -15,7 +11,6 @@ import asyncEventUpdateCollection from '../data/asyncEventUpdateCollection';
 import executionContextCollection from '../data/executionContextCollection';
 import nestedPromiseCollection from '../data/promiseLinkCollection';
 import valueCollection from '../data/valueCollection';
-import traceCollection from '../data/traceCollection';
 // import { isPostEventUpdate, isPreEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 
 /** @typedef { import("./Runtime").default } Runtime */
@@ -211,7 +206,7 @@ export default class RuntimeAsync {
     const context = executionContextCollection.getById(rootId);
     if (context) {
       context.isVirtualRoot = true;
-      
+
       // WARNING: `new Error().stack` might internally call functions that are instrumented by user code
       // future-work: make this configurable, as it can mess with performance
       context.stackTrace = valueCollection._readProperty(new Error(), 'stack');
@@ -363,19 +358,20 @@ export default class RuntimeAsync {
    * `resolve` or `reject` was called from a promise ctor's executor.
    * NOTE: Only called if resolved value is thenable.
    */
-  resolve(inner, outer, resolveType, traceId) {
-    if (ResolveType.is.Resolve(resolveType)) {
-      // NOTE: `reject` does not settle nested promises!
-      const rootId = this.getCurrentVirtualRootContextId();
-      const from = getPromiseId(inner);
-      const to = getPromiseId(outer);
-      if (!from || !to) {
-        this.logger.error(`resolve link failed: promise did not have an id, from=${from}, to=${to}, trace=${traceCollection.makeTraceInfo(traceId)}`);
-      }
-      else {
-        nestedPromiseCollection.addLink(PromiseLinkType.Resolve, from, to, traceId, rootId);
-      }
-    }
+  resolve(inner, outer, resolveType, traceId, isPromiseCtor) {
+    // NOTE: `reject` does not settle nested promises!
+    const rootId = this.getCurrentVirtualRootContextId();
+    const from = getPromiseId(inner);
+    const to = getPromiseId(outer);
+    // if (!from || !to) {
+    //   this.logger.error(`resolve link failed: promise did not have an id, from=${from}, to=${to}, trace=${traceCollection.makeTraceInfo(traceId)}`);
+    // }
+    // else {
+
+    // TODO: `isPromiseCtor` does not matter if callback was called synchronously -> only if `rootId` is not the same as the promise ctor's `rootId`.
+    // TODO;
+    nestedPromiseCollection.addLink(resolveType, from, to, traceId, rootId, isPromiseCtor);
+
     // const {
     //   preEventPromise,
     //   // postEventPromise,

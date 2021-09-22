@@ -298,11 +298,12 @@ export default class ProjectsManager {
     }
 
     if (!await this.askForRecoverPracticeSession(savedPracticeSession)) {
+      await bug.project.deactivateBug(bug);
       return;
     }
 
     try {
-      bug.project.initProject();
+      await bug.project.initProject();
       this._resetPracticeSession(bug, savedPracticeSession, true);
       this.practiceSession.setupStopwatch();
       this.maybeAskForTestBug(bug);
@@ -449,8 +450,10 @@ export default class ProjectsManager {
       throw err;
     }
 
-    // TODO: this reset the project, but the bug might not be the activated bug
-    await bug.project.gitResetHard();
+    const { project } = bug;
+    await project.resetBug(bug);
+
+    // await project.gitResetHard();
 
     if (this.bdp.getBugProgressByBug(bug)) {
       this.bdp.updateBugProgress(bug, { patch: '' });

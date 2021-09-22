@@ -13,6 +13,6 @@ export default class NestedPromiseFromIndex extends CollectionIndex {
    * @param {PromiseLink} promiseLink
    */
   makeKey(dp, promiseLink) {
-    return promiseLink.from;
+    return promiseLink.from || false;
   }
 }

@@ -71,9 +71,11 @@ export default class EslintProject extends Project {
         const runFilePaths = bug.testFilePaths;
         let watchFilePaths = bug.testFilePaths.map(file => path.join(this.projectPath, 'dist', file));
 
+        const tagCategory = "test"; // "test", "fix" or "full"
+
         return {
           // id: i + 1,
-          name: `bug #${bug.id}`,
+          // name: `bug #${bug.id}`,
           description: bug.testRe,
           runArgs: [
             '--grep',
@@ -85,6 +87,7 @@ export default class EslintProject extends Project {
           ],
           runFilePaths,
           watchFilePaths,
+          tag: this._getBugGitTag(bug.id, tagCategory),
           // require: ['test/support/env'],
           ...bug,
           // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
@@ -93,28 +96,11 @@ export default class EslintProject extends Project {
       filter(bug => !!bug);
   }
 
-  getBugGitTag(bugNumber, tagCategory) {
+  _getBugGitTag(bugNumber, tagCategory) {
     return `Bug-${bugNumber}-${tagCategory}`;
   }
 
   async selectBug(bug) {
-    const {
-      number, name
-    } = bug;
-    const tagCategory = "test"; // "test", "fix" or "full"
-    const tag = this.getBugGitTag(number, tagCategory);
-
-    if ((await this.gitGetCurrentTagName()).startsWith(tag)) {
-      // do not checkout bug, if we already on the right tag
-      return;
-    }
-
-    // checkout the bug branch
-    sh.cd(this.projectPath);
-    this.log(`Checking out bug ${name || number}...`);
-
-    // see: https://git-scm.com/docs/git-checkout#Documentation/git-checkout.txt-emgitcheckoutem-b-Bltnewbranchgtltstartpointgt
-    await this.exec(`${this.gitCommand} checkout -B ${tag} tags/${tag}`);
   }
 
 

@@ -1,3 +1,4 @@
+import { ZeroNode } from 'src/helpers/traceUtil';
 import BasePlugin from './BasePlugin';
 
 /** @typedef { import("../BindingIdentifier").default } BindingIdentifier */
@@ -91,7 +92,7 @@ export default class StaticContext extends BasePlugin {
   addAwaitContextIdVarArg(args) {
     const awaitContextIdVar = this.getAwaitContextIdVar();
     if (awaitContextIdVar) {
-      args.push(awaitContextIdVar);
+      args.push(awaitContextIdVar || ZeroNode);
     }
   }
 

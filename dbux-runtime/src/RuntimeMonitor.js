@@ -143,7 +143,7 @@ export default class RuntimeMonitor {
 
     const stackDepth = this._runtime.getStackDepth();
     const runId = this._runtime.getCurrentRunId();
-    const parentContextId = this._runtime.peekCurrentContextId();
+    const parentContextId = this._runtime.fixPeekParentContextId();
     const parentTraceId = this._runtime.getParentTraceId();
 
     // if (!parentContextId) {
@@ -151,7 +151,7 @@ export default class RuntimeMonitor {
     //   getDefaultClient().bufferBreakpoint();
     // }
 
-    const context = executionContextCollection.executeImmediate(
+    const context = executionContextCollection.pushImmediate(
       stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId, definitionTid, tracesDisabled
     );
     const { contextId } = context;
@@ -162,15 +162,17 @@ export default class RuntimeMonitor {
     this._runtime.push(contextId, isInterruptable);
 
     if (Verbose) {
-      const staticContext = staticContextCollection.getContext(programId, inProgramStaticContextId);
+      // const staticContext = staticContextCollection.getContext(programId, inProgramStaticContextId);
       debug(
         // ${JSON.stringify(staticContext)}
         // eslint-disable-next-line max-len
-        `-> Immediate ${contextId} ${staticProgramContextCollection.getById(programId).fileName} ${staticContext?.displayName} (pid=${programId}, runId=${runId}, cid=${contextId}, pcid=${parentContextId})`
+        `>${' '.repeat(this.runtime._executingStack._stack?.length || 0)} ${executionContextCollection.makeContextInfo(contextId)} (pid=${programId}, pcid=${parentContextId})`
       );
+      this.debugOnContextAdd(context);
     }
 
     this.newTraceId(programId, inProgramStaticTraceId);
+
 
     // this._trace(programId, contextId, runId, inProgramStaticTraceId);
 
@@ -206,18 +208,19 @@ export default class RuntimeMonitor {
   popFunction(programId, realContextId, inProgramStaticTraceId, awaitContextId) {
     // this.checkErrorOnFunctionExit(contextId, inProgramStaticTraceId);
     this._fixContext(programId, realContextId, awaitContextId);
+    let traceId;
     if (!this.areTracesDisabled) {
       try {
-        this.newTraceId(programId, inProgramStaticTraceId);
+        traceId = this.newTraceId(programId, inProgramStaticTraceId);
       }
       catch (err) {
         throw new NestedError(`"popFunction" failed at context "${executionContextCollection.makeContextInfo(realContextId)}"`, err);
       }
     }
-    return this.popImmediate(programId, realContextId);
+    return this.popImmediate(programId, realContextId, traceId, awaitContextId);
   }
 
-  popImmediate(programId, contextId, traceId) {
+  popImmediate(programId, contextId, traceId, awaitContextId) {
     // sanity checks
     const context = executionContextCollection.getById(contextId);
     if (!context) {
@@ -225,23 +228,26 @@ export default class RuntimeMonitor {
       return;
     }
 
+    if (Verbose) {
+      // const { staticContextId } = context;
+      // const staticContext = staticContextCollection.getById(staticContextId);
+      debug(
+        // ${JSON.stringify(staticContext)}
+        `<${' '.repeat(this.runtime._executingStack._stack?.length || 0)} ${executionContextCollection.makeContextInfo(contextId)} (pid=${programId})`
+      );
+    }
+
+    if (awaitContextId !== undefined) { // NOTE: awaitContextIdVar might be 0
+      // interruptable function -> pop resume
+      this.popResume(this._runtime.peekCurrentContextId());
+    }
+
     // pop from stack
     this._pop(contextId);
-
-    // debug('pop immediate, stack size', this._runtime?._executingStack?.length?.() || 0);
 
     // trace
     // const runId = this._runtime.getCurrentRunId();
     // const programId = executionContextCollection.getProgramId(contextId);
-
-    if (Verbose) {
-      const { staticContextId } = context;
-      const staticContext = staticContextCollection.getById(staticContextId);
-      debug(
-        // ${JSON.stringify(staticContext)}
-        `<- Immediate ${contextId} ${staticContext?.displayName} @${staticProgramContextCollection.getById(programId).fileName}`
-      );
-    }
 
     // finishTrace (already done...)
     // const trace = traceCollection.getById(traceId);
@@ -310,7 +316,6 @@ export default class RuntimeMonitor {
 
   //   const stackDepth = this._runtime.getStackDepth();
   //   const runId = this._runtime.getCurrentRunId();
-  //   const parentContextId = this._runtime.peekCurrentContextId();
   //   const parentTraceId = this._runtime.getParentTraceId();
 
   //   // register context
@@ -368,7 +373,7 @@ export default class RuntimeMonitor {
 
     // register Await context
     const parentContextId = this._runtime.peekCurrentContextId(); // Real context
-    const context = executionContextCollection.await(
+    const context = executionContextCollection.pushAwait(
       stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId
     );
     const { contextId: awaitContextId } = context;
@@ -377,8 +382,9 @@ export default class RuntimeMonitor {
     if (Verbose) {
       debug(
         // ${JSON.stringify(staticContext)}
-        `-> Await ${awaitContextId}`
+        `>${' '.repeat(this.runtime._executingStack._stack?.length || 0)} ${executionContextCollection.makeContextInfo(awaitContextId)} (pid=${programId}, pcid=${parentContextId})`
       );
+      this.debugOnContextAdd(context);
     }
 
 
@@ -387,6 +393,7 @@ export default class RuntimeMonitor {
 
     // await part
     this._runtime.async.preAwait(awaitArgument, resumeContextId, parentContextId, preAwaitTid);
+
 
     return awaitContextId;
   }
@@ -403,12 +410,12 @@ export default class RuntimeMonitor {
     }
     else {
       // resume after await -> pop Await context
-      this._runtime.resumeWaitingStack(awaitContextId);
+      this._runtime.resumeWaitingStackAndPopAwait(awaitContextId);
 
       if (Verbose) {
         debug(
           // ${JSON.stringify(staticContext)}
-          `<- Await ${awaitContextId}`
+          `<${' '.repeat(this.runtime._executingStack._stack?.length || 0)} Await ${awaitContextId}`
         );
       }
 
@@ -441,31 +448,34 @@ export default class RuntimeMonitor {
 
     const stackDepth = this._runtime.getStackDepth();
     const runId = this._runtime.getCurrentRunId();
-    const parentContextId = this._runtime.peekCurrentContextId();
+    const realContextId = this._runtime.peekCurrentContextId();
     const parentTraceId = this._runtime.getParentTraceId();
 
     // add resumeContext
     const schedulerTraceId = null;
-    const resumeContext = executionContextCollection.resume(
-      stackDepth, runId, parentContextId, parentTraceId, programId, resumeStaticContextId, schedulerTraceId
+    const resumeContext = executionContextCollection.pushResume(
+      stackDepth, runId, realContextId, parentTraceId, programId, resumeStaticContextId, schedulerTraceId
     );
 
     const { contextId: resumeContextId } = resumeContext;
     this._runtime.push(resumeContextId);
-
-    if (Verbose) {
-      // const staticContext = staticContextCollection.getContext(programId, resumeStaticContextId);
-      debug(
-        // ${JSON.stringify(staticContext)}
-        `-> Resume ${resumeContextId} (pid=${programId}, runId=${runId}, cid=${resumeContextId}, pcid=${parentContextId})`
-      );
-    }
 
     if (resumeInProgramStaticTraceId) {
       // add "push" trace after context!
       this.newTraceId(programId, resumeInProgramStaticTraceId);
       // this._trace(programId, resumeContextId, runId, inProgramStaticTraceId, TraceType.Resume);
     }
+
+    if (Verbose) {
+      // const staticContext = staticContextCollection.getContext(programId, resumeStaticContextId);
+      debug(
+        // ${JSON.stringify(staticContext)}
+        // eslint-disable-next-line max-len
+        `>${' '.repeat(this.runtime._executingStack._stack?.length || 0)} ${executionContextCollection.makeContextInfo(resumeContextId)} (pid=${programId}, pcid=${realContextId})`
+      );
+      this.debugOnContextAdd(resumeContext);
+    }
+
 
     return resumeContextId;
   }
@@ -480,22 +490,21 @@ export default class RuntimeMonitor {
       return;
     }
 
-    resumeContextId = resumeContextId || this._runtime.peekCurrentContextId();
-    const context = executionContextCollection.getById(resumeContextId);
-
     if (Verbose) {
       debug(
         // ${JSON.stringify(staticContext)}
-        `<- Resume ${resumeContextId}`
+        `<${' '.repeat(this.runtime._executingStack._stack?.length || 0)} Resume ${resumeContextId}`
       );
     }
 
-    // more sanity checks
+    // sanity checks
+    resumeContextId = resumeContextId || this._runtime.peekCurrentContextId();
+    const context = executionContextCollection.getById(resumeContextId);
     if (!context) {
       logTrace(`Tried to popResume, but context was not registered - resumeContextId=${resumeContextId}`);
       return;
     }
-    if (context.contextType !== ExecutionContextType.Resume) {
+    if (!ExecutionContextType.is.Resume(context.contextType)) {
       logTrace('Tried to popResume, but stack top is not of type `Resume`:', context);
       return;
     }
@@ -509,7 +518,7 @@ export default class RuntimeMonitor {
   }
 
   updateExecutionContextPromiseId(contextId, promiseId) {
-    debug('update execution context promise id', contextId, promiseId);
+    // debug('update execution context promise id', contextId, promiseId);
 
     // [edit-after-send]
     executionContextCollection.getById(contextId).promiseId = promiseId;
@@ -517,6 +526,17 @@ export default class RuntimeMonitor {
 
   isValidContext() {
     return !!this._runtime._executingStack?.length;
+  }
+
+  /** ###########################################################################
+   * debugging
+   *  #########################################################################*/
+
+  debugOnContextAdd(context) {
+    // warn('[PUSH]', ' '.repeat(this.runtime._executingStack._stack?.length || 0), executionContextCollection.makeContextInfo(context));
+    executionContextCollection.debugAddContextDebugData(context, {
+      stack: this.runtime._executingStack?.humanReadable()
+    });
   }
 
   // ###########################################################################
