@@ -1,4 +1,3 @@
-import findLast from 'lodash/findLast';
 import StaticContext from '@dbux/common/src/types/StaticContext';
 import Trace from '@dbux/common/src/types/Trace';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
@@ -32,19 +31,25 @@ export function getStaticContextAt(application, programId, pos) {
    * @type {StaticContext[]}
    */
   const staticContexts = dataProvider.indexes.staticContexts.byFile.get(programId);
-  const staticContext = findLast(staticContexts, entry => {
-    const range = babelLocToCodeRange(entry.loc);
-    return range.contains(pos);
+  const mostInnerStaticContext = staticContexts.reduce((prevStaticContext, currentStaticContext) => {
+    const prevRange = babelLocToCodeRange(prevStaticContext.loc);
+    const currentRange = babelLocToCodeRange(currentStaticContext.loc);
+    if (currentRange.contains(pos) && prevRange.contains(currentRange)) {
+      return currentStaticContext;
+    }
+    else {
+      return prevStaticContext;
+    }
   });
 
-  if (!staticContext) {
+  if (!mostInnerStaticContext) {
     return null;
   }
 
 
   // if (!staticContext.isInterruptable) {
   // just a normal function
-  return staticContext;
+  return mostInnerStaticContext;
   // }
   // else {
   //   // interruptable function => return parent (the function itself), as well as all children of parent
