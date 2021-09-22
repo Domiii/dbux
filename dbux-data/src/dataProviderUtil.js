@@ -2329,7 +2329,7 @@ export default {
       if (rootIdUp && rootIdNested) {
         util.SYNC(rootIdUp, nestedPromiseId, beforeRootId, s);
       }
-      chainFromRootId = rootIdUp || rootIdNested;
+      chainFromRootId = rootIdNested || rootIdUp;
     }
 
 
