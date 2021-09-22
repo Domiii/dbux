@@ -479,7 +479,7 @@ export default {
     const dataNode = dp.collections.dataNodes.getById(nodeId);
     if (isRoot) {
       _visited = new Set();
-      ({ refId: _refId } = dataNode);
+      ({ refId: _refId, value: _value } = dataNode);
       _rootNodeId = nodeId;
     }
 

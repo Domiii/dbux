@@ -92,10 +92,11 @@ class SendQueue {
   _nextBuffer() {
     if (!isBufferEmpty(this.currentBuffer)) {
       // add new empty buffer to store new incoming data
-      const sum = sumBy(Object.values(this.currentBuffer),
-        arr => arr.reduce((a, v) => a + JSON.stringify(v).length, 0) || 0);
+      
+      // const sum = sumBy(Object.values(this.currentBuffer),
+      //   arr => arr.reduce((a, v) => a + JSON.stringify(v).length, 0) || 0);
       // this.currentBuffer?.values?.reduce((a, v) => a + JSON.stringify(v.serialized).length, 0);
-      debug(`previous buffer total length: ${Math.round(sum / 1000).toLocaleString('en-us')}k`);
+      // debug(`previous buffer total length: ${Math.round(sum / 1000).toLocaleString('en-us')}k`);
       this.buffers.push(newBuffer());
     }
   }

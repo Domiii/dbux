@@ -1,13 +1,13 @@
 import { window, workspace } from 'vscode';
-import { isPlainObjectOrArrayCategory } from '@dbux/common/src/types/constants/ValueTypeCategory';
+// import { isPlainObjectOrArrayCategory } from '@dbux/common/src/types/constants/ValueTypeCategory';
 import { showInformationMessage } from '../codeUtil/codeModals';
 
 export function valueRender(valueRef, value) {
   let modalString = '';
 
-  if (valueRef && isPlainObjectOrArrayCategory(valueRef.category)) {
-    modalString = JSON.stringify(value);
-  }
+  // if (valueRef && isPlainObjectOrArrayCategory(valueRef.category)) {
+  modalString = JSON.stringify(value);
+  // }
 
   showInformationMessage(`${modalString}`, {
     async 'Open In Editor'() {

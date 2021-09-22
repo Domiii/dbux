@@ -38,6 +38,8 @@ export default class ValueTDSimpleNode extends ValueNode {
   }
 
   init() {
+    super.init();
+    
     if (this.value === undefined) {
       this.description = '(no value or undefined)';
     }

@@ -562,7 +562,9 @@ export default class ProjectsManager {
     // NOTE: only supported in Node 12.12+
     const sourceMapsFlag = (enableSourceMaps &&
       (!bug.project.nodeVersion || parseFloat(bug.project.nodeVersion) > 12.12)
-    ) ? '--enable-source-maps' : '';
+    ) ?
+      '' : // '--enable-source-maps' : // NOTE: `enable-source-maps` can also severely slow things down
+      '';
 
     const nodeArgs = `--stack-trace-limit=100 ${debugMode ? '--nolazy' : ''} ${sourceMapsFlag}`;
     const cfg = {
