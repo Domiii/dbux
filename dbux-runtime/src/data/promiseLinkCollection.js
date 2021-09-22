@@ -10,7 +10,7 @@ class PromiseLinkCollection extends Collection {
     super('promiseLinks');
   }
 
-  addLink(type, fromPromiseId, toPromiseId, traceId, rootId, isPromisify = false) {
+  addLink(type, fromPromiseId, toPromiseId, traceId, rootId, asyncPromisifyPromiseId = 0) {
     const entry = pools.promiseLinks.allocate();
 
     entry.linkId = entry._id = this._all.length;

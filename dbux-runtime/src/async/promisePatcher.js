@@ -216,7 +216,8 @@ function _makeThenRef(promise, patchedFunction) {
   }
   return {
     preEventPromise: promise,
-    schedulerTraceId
+    schedulerTraceId,
+    rootId: RuntimeMonitorInstance.runtime.getCurrentVirtualRootContextId()
   };
 }
 
@@ -336,7 +337,15 @@ function patchPromiseClass(BasePromiseClass) {
       }
       else {
         // wrapExecutor = executor;
+        
         patchedExecutor = (resolve, reject) => {
+          const executorRootId = RuntimeMonitorInstance.runtime.getCurrentVirtualRootContextId();
+
+          // register promise
+          const bce = peekBCEMatchCalleeUnchecked(PatchedPromise);
+          bce && dataNodeCollection.createBCEOwnDataNode(this, bce.traceId, DataNodeType.Write);
+          const thisPromiseId = bce && getPromiseId(this) || 0;
+
           const wrapResolve = (...args) => {
             // Event: resolve
             // TODO: track `result` data flow
@@ -348,8 +357,9 @@ function patchPromiseClass(BasePromiseClass) {
               const thenRef = _makeThenRef(this, wrapResolve);
               if (thenRef) {
                 const inner = resolveArg;
+                const asyncPromisifyPromiseId = executorRootId !== thenRef.rootId ? thisPromiseId : 0; // we only care about promisify, if async
                 RuntimeMonitorInstance._runtime.async.resolve(
-                  inner, this, ResolveType.Resolve, thenRef.schedulerTraceId, true
+                  inner, this, ResolveType.Resolve, thenRef.schedulerTraceId, asyncPromisifyPromiseId
                 );
               }
               resolve(...args);
@@ -365,18 +375,27 @@ function patchPromiseClass(BasePromiseClass) {
             else {
               const thenRef = _makeThenRef(this, wrapReject);
               if (thenRef) {
-                // NOTE: reject can also nest promise (but will pass the promise (not its resolved value) to `catch`)
+                // NOTE: reject can also nest a promise (but will pass the promise (not its resolved value) to `catch`)
+                const asyncPromisifyPromiseId = executorRootId !== thenRef.rootId ? thisPromiseId : 0; // we only care about promisify, if async
                 const inner = err;
                 RuntimeMonitorInstance._runtime.async.resolve(
-                  inner, this, ResolveType.Reject, thenRef.schedulerTraceId, true
+                  inner, this, ResolveType.Reject, thenRef.schedulerTraceId, asyncPromisifyPromiseId
                 );
               }
               reject(...args);
             }
           };
 
-          // call actual executor
-          originalExecutor(wrapResolve, wrapReject);
+          try {
+            // maintain promisify stack
+            RuntimeMonitorInstance.runtime.promisifyStart(thisPromiseId);
+
+            // call actual executor
+            originalExecutor(wrapResolve, wrapReject);
+          }
+          finally {
+            RuntimeMonitorInstance.runtime.promisifyEnd(thisPromiseId);
+          }
         };
       }
 

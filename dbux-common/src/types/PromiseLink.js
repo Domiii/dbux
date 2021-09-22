@@ -41,11 +41,12 @@ export default class PromiseLink {
   rootId;
 
   /**
-   * @type {boolean}
+   * @type {number}
    *
-   * This generally indicates that the given promise is CHAINed to the current root.
+   * The promiseId that the `resolve` call is "tethered" to.
+   * NOTE: This is only set if `resolve` was called asynchronously.
    * However, there might be no recorded root when this function is called.
    * 
    */
-  isPromisify;
+  asyncPromisifyPromiseId;
 }
