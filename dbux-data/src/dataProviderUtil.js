@@ -1924,6 +1924,11 @@ export default {
     return updates?.filter(upd => isPreEventUpdate(upd.type)) || null;
   },
 
+  getAsyncPostEventUpdateOfRoot(dp, rootId) {
+    const updates = dp.indexes.asyncEventUpdates.byRoot.get(rootId);
+    return updates?.find(upd => isPostEventUpdate(upd.type)) || null;
+  },
+
   // TODO!
   // /** 
   //  * Get the last "Post" asyncEvent of given `schedulerTraceId`.
