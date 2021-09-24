@@ -1834,7 +1834,7 @@ export default {
   /** @param {DataProvider} dp */
   getChainFrom(dp, fromRootId) {
     const fromEdges = dp.indexes.asyncEvents.from.get(fromRootId);
-    return fromEdges?.find(edge => edge.edgeType === AsyncEdgeType.Chain) || null;
+    return fromEdges?.filter(edge => edge.edgeType === AsyncEdgeType.Chain) || EmptyArray;
   },
 
   /** @param {DataProvider} dp */
@@ -2592,7 +2592,7 @@ export default {
   },
 
   /** @param {DataProvider} dp */
-  getAsyncForkParent(dp, asyncNodeId) {
+  getAsyncParent(dp, asyncNodeId) {
     const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
     const parentEdge = dp.indexes.asyncEvents.to.getFirst(asyncNode.rootContextId);
     const parentRootContextId = parentEdge?.fromRootContextId;

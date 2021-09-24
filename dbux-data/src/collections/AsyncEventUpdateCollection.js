@@ -309,8 +309,6 @@ export default class AsyncEventUpdateCollection extends Collection {
 
     // let toThreadId = toRootId && this.getOrAssignRootThreadId(toRootId, schedulerTraceId) || 0;
 
-    // this.logger.debug(`addEventEdge`, fromRootId, dp.util.getChainFrom(fromRootId));
-
     if (fromRootId >= toRootId) {
       this.logger.warn(`addEventEdge with fromRootId (${fromRootId}) >= toRootId (${toRootId})`);
     }

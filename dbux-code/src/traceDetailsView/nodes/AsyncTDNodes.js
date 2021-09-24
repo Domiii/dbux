@@ -98,7 +98,7 @@ class RootEdgesTDNode extends TraceDetailNode {
 
   selectForkParent() {
     const { dp, asyncNode: { asyncNodeId } } = this;
-    const forkParent = dp.util.getAsyncForkParent(asyncNodeId);
+    const forkParent = dp.util.getAsyncParent(asyncNodeId);
     if (forkParent) {
       const trace = dp.util.getTraceOfAsyncNode(forkParent.asyncNodeId);
       if (trace) {
