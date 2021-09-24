@@ -2,6 +2,7 @@ import findLast from 'lodash/findLast';
 import groupBy from 'lodash/groupBy';
 import isNumber from 'lodash/isNumber';
 import truncate from 'lodash/truncate';
+import isPlainObject from 'lodash/isPlainObject';
 import TraceType, { hasDynamicTypes, isTracePop, isBeforeCallExpression } from '@dbux/common/src/types/constants/TraceType';
 import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
 import { pushArrayOfArray } from '@dbux/common/src/util/arrayUtil';
@@ -19,10 +20,9 @@ import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import SpecialCallType from '@dbux/common/src/types/constants/SpecialCallType';
 import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
 import AsyncEventUpdateType, { isPostEventUpdate, isPreEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
+import { AsyncUpdateBase, PreCallbackUpdate } from '@dbux/common/src/types/AsyncEventUpdate';
 import { locToString } from './util/misc';
 import { makeContextSchedulerLabel, makeTraceLabel } from './helpers/makeLabels';
-import { AsyncUpdateBase, PreCallbackUpdate } from '@dbux/common/src/types/AsyncEventUpdate';
-import { isPlainObject } from 'lodash';
 
 /**
  * @typedef {import('./RuntimeDataProvider').default} DataProvider
