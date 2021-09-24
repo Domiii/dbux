@@ -315,6 +315,27 @@ class AsyncGraph extends GraphBase {
           this.logger.error(`Cannot find DOM of asyncNode: ${JSON.stringify(asyncNode)} when trying to select`);
         }
       }
+    },
+
+    /**
+     * @param {{applicationId: number, asyncNodeId: number}[]} asyncNodes 
+     * @param {boolean} ignoreFailed 
+     */
+    highlightStack: (asyncNodes, ignoreFailed = false) => {
+      document.querySelectorAll('.async-node.async-cell-stack-highlight').forEach(node => {
+        node.classList.remove('async-cell-stack-highlight');
+      });
+      if (asyncNodes) {
+        asyncNodes.forEach((asyncNode) => {
+          const asyncNodeEl = this.getAsyncNodeEl(asyncNode);
+          if (asyncNodeEl) {
+            asyncNodeEl.classList.add('async-cell-stack-highlight');
+          }
+          else if (!ignoreFailed) {
+            this.logger.error(`Cannot find DOM of asyncNode: ${JSON.stringify(asyncNodes)} when trying to select`);
+          }
+        });
+      }
     }
   }
 }

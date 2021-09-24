@@ -31,7 +31,7 @@ export default class FocusController extends HostComponentEndpoint {
       await this.owner.graph.handleTraceSelected?.(trace);
     }
     catch (err) {
-      logTrace(`Cannot focus on selected trace #${trace?.traceId}`, trace, err);
+      logTrace(`GraphBase.handleTraceSelected failed, selected trace #${trace?.traceId}`, err);
     }
   }
 

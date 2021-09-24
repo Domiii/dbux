@@ -226,6 +226,18 @@ class AsyncGraph extends GraphBase {
     }
   }
 
+  updateStackHighlight = async (trace) => {
+    let nodes = [];
+    if (trace) {
+      const { applicationId, traceId } = trace;
+      const dp = allApplications.getById(applicationId).dataProvider;
+      nodes = dp.util.getAsyncStackRoots(traceId)
+        .map(context => dp.util.getAsyncNode(context.contextId))
+        .filter(x => !!x);
+    }
+    await this.remote.highlightStack(nodes);
+  }
+
   handleTraceSelected = async (trace) => {
     // goto async node of trace
     await this.waitForRender();
@@ -239,6 +251,7 @@ class AsyncGraph extends GraphBase {
       }
     }
     await this.remote.selectAsyncNode(asyncNode);
+    await this.updateStackHighlight(trace);
   }
 
   // ###########################################################################
