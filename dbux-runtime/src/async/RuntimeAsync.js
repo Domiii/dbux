@@ -424,7 +424,8 @@ export default class RuntimeAsync {
       isEventListener
     });
 
-    promisifyPromiseVirtualRef.add(upd, 'promiseId');
+    // link to promise (if promisified)
+    promisifyPromiseVirtualRef?.add(upd, 'promiseId');
 
     // const rootId = this.getCurrentVirtualRootContextId();
     // this.logger.debug(`[preCallback] #${rootId} ${getPromiseId(preEventPromise)} -> ${getPromiseId(postEventPromise)} (tid=${schedulerTraceId})`);
@@ -444,7 +445,7 @@ export default class RuntimeAsync {
     asyncEventUpdateCollection.addPostCallbackUpdate({
       runId,
       rootId: postEventRootId,
-      promiseId: promisifyPromiseVirtualRef.refId,
+      promiseId: promisifyPromiseVirtualRef?.refId || 0,
 
       // NOTE: the last active root SHOULD also be the `context` of the callback
       contextId,

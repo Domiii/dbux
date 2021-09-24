@@ -22,6 +22,7 @@ import AsyncEventUpdateType, { isPostEventUpdate, isPreEventUpdate } from '@dbux
 import { locToString } from './util/misc';
 import { makeContextSchedulerLabel, makeTraceLabel } from './helpers/makeLabels';
 import { AsyncUpdateBase, PreCallbackUpdate } from '@dbux/common/src/types/AsyncEventUpdate';
+import { isPlainObject } from 'lodash';
 
 /**
  * @typedef {import('./RuntimeDataProvider').default} DataProvider
@@ -524,6 +525,19 @@ export default {
 
   /**
    * @param {DataProvider} dp
+   * @return {[number, number, number][]} childNodeId, childRefId, childValue
+   */
+  getDataNodeArrayChildren(dp, refId) {
+    const valueRef = dp.collections.values.getById(refId);
+    const { category } = valueRef;
+    if (isPlainObject(valueRef.value) && ValueTypeCategory.is.Array(category)) {
+      return Object.values(valueRef.value);
+    }
+    return null;
+  },
+
+  /**
+   * @param {DataProvider} dp
    * @return {{prop: number}} returns the `prop`, `nodeId` key-value pairs
    */
   constructValueObjectShallow(dp, refId, terminateNodeId = Infinity) {
@@ -535,9 +549,11 @@ export default {
      */
     let entries;
     const { category } = valueRef;
+    if (!isPlainObject(valueRef.value)) {
+      return null;
+    }
     if (ValueTypeCategory.is.Array(category)) {
-      entries = [];
-      Object.entries(valueRef.value).forEach(([prop, val]) => entries[prop] = val);
+      entries = dp.util.getDataNodeArrayChildren(refId);
     }
     else {
       entries = { ...valueRef.value };
@@ -550,8 +566,10 @@ export default {
 
     // + writes - delete
     const modifyNodes = dp.indexes.dataNodes.byObjectRefId.get(refId)?.filter(node => isDataNodeModifyType(node.type)) || EmptyArray;
+    const terminateNode = terminateNodeId && dp.util.getDataNode(terminateNodeId);
+    const terminateTraceId = terminateNode?.traceId;
     for (const modifyNode of modifyNodes) {
-      if (modifyNode.nodeId > terminateNodeId) {
+      if (modifyNode.nodeId > terminateNodeId && modifyNode.traceId > terminateTraceId) {
         // only apply write operations `before` the terminateNodeId
         break;
       }
@@ -633,7 +651,7 @@ export default {
     let valueString;
     const { refId } = dataNode;
     if (refId) {
-      const entries = dp.util.constructValueObjectShallow(refId);
+      const entries = dp.util.constructValueObjectShallow(refId, nodeId);
       const valueRef = dp.collections.values.getById(refId);
       const { category } = valueRef;
       if (ValueTypeCategory.is.Array(category)) {
@@ -903,12 +921,20 @@ export default {
   },
 
   /**
-   * TODO: given the `nodeId` of (what should be) an array, return its element DataNodes.
+   * TODO: given the `dataNode` of (what should be) an array, return its element DataNodes.
    * 
    * @param {DataProvider} dp
    */
-  getArrayDataNodes(dp, nodeId) {
-    return [];
+  getArrayDataNodes(dp, dataNode) {
+    if (!dataNode) {
+      return EmptyArray;
+    }
+    const children = dp.util.constructValueObjectShallow(dataNode.refId, dataNode.nodeId);
+    if (!Array.isArray(children)) {
+      return EmptyArray;
+    }
+    
+    return children.map(([childNodeId/* , childRefId, childValue */]) => dp.util.getDataNode(childNodeId));
   },
 
   /**
@@ -954,7 +980,8 @@ export default {
       const boundArgNodes = bindTrace && dp.util.getCallArgDataNodes(bindTrace.traceId);
       if (boundArgNodes) {
         argDataNodes = [
-          ...boundArgNodes || EmptyArray,
+          // NOTE: first argument to `bind` is `thisArg` -> don't map to parameter
+          ...(boundArgNodes?.slice(1) || EmptyArray),
           ...argDataNodes
         ];
       }

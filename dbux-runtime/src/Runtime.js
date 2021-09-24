@@ -482,7 +482,7 @@ export default class Runtime {
    */
   getPromisifyPromiseVirtualRef() {
     if (!this._promisifyStack.length) {
-      return 0;
+      return null;
     }
     // const contextIdIndex = last(this._promisifyStack);
     // return this._executingStack?._stack[contextIdIndex];

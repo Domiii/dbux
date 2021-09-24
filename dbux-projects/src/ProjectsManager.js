@@ -942,31 +942,6 @@ export default class ProjectsManager {
     return this.getDbuxRoot();
   }
 
-  /**
-   * @param {Project} project 
-   */
-  async flushCache(project) {
-    // future-work: this might be the wrong cache folder, if `findCacheDir` resolves it differently
-    //    -> offer an API to get (and/or flush) cache folder in babel-register (see `prepareCache`)
-    const relativeProjectPath = pathRelative(this.getDefaultSourceRoot(), project.projectPath);
-    const { envName } = project;
-    const cacheRoot = pathJoin(this.getDefaultSourceRoot(), 'node_modules', '.cache', '@babel', 'register', envName);
-    const cacheFolder = pathJoin(
-      cacheRoot,
-      relativeProjectPath
-    );
-    const cacheFolderStr = `${cacheRoot}/\n${relativeProjectPath}`;  // NOTE: path too long for modal
-    if (fs.existsSync(cacheFolder)) {
-      if (await this.externals.confirm(`This will flush the cache at "${cacheFolderStr}", are you sure?`)) {
-        fs.rmSync(cacheFolder, { recursive: true });
-        await this.externals.alert(`Successfully deleted cache folder for project "${project.name}"`, true);
-      }
-    }
-    else {
-      await this.externals.alert(`Cache for project "${project.name}" is empty (${cacheFolderStr})`, false);
-    }
-  }
-
   // ###########################################################################
   // Temporary backend stuff
   // ###########################################################################

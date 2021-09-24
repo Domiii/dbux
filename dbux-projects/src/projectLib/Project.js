@@ -7,7 +7,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { getAllFilesInFolders, globRelative } from '@dbux/common-node/src/util/fileUtil';
-import { pathJoin, pathResolve, realPathSyncNormalized } from '@dbux/common-node/src/util/pathUtil';
+import { pathJoin, pathRelative, pathResolve, realPathSyncNormalized } from '@dbux/common-node/src/util/pathUtil';
 import isObject from 'lodash/isObject';
 import BugList from './BugList';
 import Process from '../util/Process';
@@ -73,6 +73,9 @@ export default class Project extends ProjectBase {
     return gitRemote;
   }
 
+  /**
+   * TODO: `envName` might depend on bug!
+   */
   get envName() {
     return 'development';
   }
@@ -743,6 +746,10 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     if (!await this.tryDeactivate()) {
       return false;
     }
+    if (this.doesCacheFolderExist()) {
+      // also flush cache
+      this.deleteCacheFolder();
+    }
 
     sh.rm('-rf', this.projectPath);
     sh.rm('-rf', this.hiddenGitFolderPath);
@@ -750,8 +757,58 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     return true;
   }
 
+
+  /**
+   * @param {Project} project 
+   */
+  async flushCacheConfirm() {
+    // future-work: this might be the wrong cache folder, if `findCacheDir` resolves it differently
+    //    -> offer an API to get (and/or flush) cache folder in babel-register (see `prepareCache`)
+    const cacheRoot = this.getCacheRoot();
+    const relativeProjectPath = this.getRelativeProjectPath();
+    const cacheFolderStr = `${cacheRoot}/\n  ${relativeProjectPath}`;  // NOTE: path too long for modal
+    if (this.doesCacheFolderExist()) {
+      if (await this.externals.confirm(`This will flush the cache at "${cacheFolderStr}", are you sure?`)) {
+        this.deleteCacheFolder();
+        await this.externals.alert(`Successfully deleted cache folder for project "${this.name}"`, true);
+      }
+    }
+    else {
+      await this.externals.alert(`Cache for project "${this.name}" is empty (${cacheFolderStr})`, false);
+    }
+  }
+
+  getRelativeProjectPath() {
+    return pathRelative(this.manager.getDefaultSourceRoot(), this.projectPath);
+  }
+
+  getCacheRoot() {
+    const { envName } = this;
+    return pathJoin(this.manager.getDefaultSourceRoot(), 'node_modules', '.cache', '@babel', 'register', envName);
+  }
+
+  getCacheFolder() {
+    const cacheRoot = this.getCacheRoot();
+    const relativeProjectPath = this.getRelativeProjectPath();
+
+    return pathJoin(
+      cacheRoot,
+      relativeProjectPath
+    );
+  }
+
   doesProjectFolderExist() {
     return sh.test('-d', this.hiddenGitFolderPath);
+  }
+
+  doesCacheFolderExist() {
+    const cacheFolder = this.getCacheFolder();
+    return fs.existsSync(cacheFolder);
+  }
+
+  deleteCacheFolder() {
+    const cacheFolder = this.getCacheFolder();
+    fs.rmSync(cacheFolder, { recursive: true });
   }
 
   /**
@@ -769,7 +826,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       // get back to project's original state
       await this._gitResetAndCheckout(installedTag);
       await this.npmInstall(); // NOTE: node_modules are not affected by git reset or checkout
-      
+
       // make sure, there are no unwanted changes kicking around
       await this._gitResetAndCheckout(installedTag);
     }
