@@ -10,7 +10,7 @@
 function f(x, cb, cb2) {
   console.log(`f() , x=${x}`);
 
-  setTimeout(cb);
+  setTimeout.call(null, cb);
 
   cb2?.();
 }
