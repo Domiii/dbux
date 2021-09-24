@@ -47,6 +47,26 @@ export function unwrapValue(value) {
   return value;
 }
 
+/**
+ * WARNING: use carefully.
+ */
+export class _VirtualRef {
+  refId;
+  participants = [];
+
+  add(participant, prop) {
+    this.participants.push({ participant, prop });
+  }
+
+  resolve(refId) {
+    this.refId = refId;
+    for (const { participant, prop } of this.participants) {
+      participant[prop] = refId;
+    }
+    this.participants = null;
+  }
+}
+
 
 // ###########################################################################
 // ValueCollection
@@ -135,6 +155,33 @@ class ValueCollection extends Collection {
   }
 
 
+  /** ###########################################################################
+   * placholders
+   *  #########################################################################*/
+
+  // lastPlaceholderId = 0;
+
+  /**
+   * hackfix: Placeholders are generic objects that are currently assumed to be fully resolved
+   * before value actually gets sent out.
+   * [edit-after-send]
+   */
+  generatePlaceholder() {
+    return new _VirtualRef();
+  }
+
+  /**
+   * WARNING: use carefully.
+   * @param {_VirtualRef} placeholder
+   */
+  resolvePlaceholderId(refId, placeholder) {
+    // const ref = this.getRefByValue(value);
+    const ref = this.getById(refId);
+
+    // [edit-after-send]
+    // ref.placeholderId = placeholder._placeholderId;
+    placeholder.resolve(ref.refId);
+  }
 
   // ###########################################################################
   // public methods
@@ -476,7 +523,7 @@ class ValueCollection extends Collection {
       // hackfix: sometimes, objects are referenced before their DataNode was created (e.g. promises returned from `then`)
       // also see: DataNodeCollection#createBCEDataNode
       valueRef.nodeId = valueRef.nodeId || nodeId;
-      
+
       return valueRef;
     }
 

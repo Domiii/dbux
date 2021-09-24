@@ -21,6 +21,7 @@ import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
 import AsyncEventUpdateType, { isPostEventUpdate, isPreEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import { locToString } from './util/misc';
 import { makeContextSchedulerLabel, makeTraceLabel } from './helpers/makeLabels';
+import { AsyncUpdateBase, PreCallbackUpdate } from '@dbux/common/src/types/AsyncEventUpdate';
 
 /**
  * @typedef {import('./RuntimeDataProvider').default} DataProvider
@@ -1843,7 +1844,10 @@ export default {
     return toEdges?.find(edge => edge.fromRootContextId === fromRootId) || null;
   },
 
-  /** @param {DataProvider} dp */
+  /**
+   * @param {DataProvider} dp
+   * @return {AsyncEventUpdate}
+   */
   getAsyncPreEventUpdateOfTrace(dp, schedulerTraceId) {
     return dp.indexes.asyncEventUpdates.byTrace.get(schedulerTraceId)?.[0];
   },
@@ -1952,6 +1956,7 @@ export default {
         const returnValueRef = dp.util.getReturnValueRefOfContext(resumeContextId);
         // const returnValueRef = dp.util.getReturnValueRefOfInterruptableContext(resumeContextId);
         if (returnValueRef?.isThenable) {
+          // getPromiseId
           nestedPromiseId = returnValueRef.refId;
         }
       }
@@ -2020,39 +2025,6 @@ export default {
     return 0;
   },
 
-
-  // /**
-  //  * If not an async function, returns `0` .
-  //  * If the function returned a promise, returns its `promiseId`.
-  //  * Otherwise, returns the `promiseId` of the function's CallExpressionResult.
-  //  * 
-  //  * @param {DataProvider} dp
-  //  */
-  // getAsyncFunctionPromiseId(dp, contextId) {
-  //   const realContextId = dp.util.getRealContextIdOfContext(contextId);
-  //   const staticContext = realContextId && dp.util.getContextStaticContext(realContextId);
-  //   if (!staticContext?.isInterruptable) {
-  //     return 0;
-  //   }
-
-  //   // first: get returned `promiseId`
-  //   const returnTrace = dp.util.getReturnTraceOfInterruptableContext(realContextId);
-  //   const returnedDataNode = returnTrace && dp.util.getFirstInputDataNodeOfTrace(returnTrace.traceId);
-  //   let promiseId = returnedDataNode?.refId && dp.util.getPromiseIdOfValueRef(returnedDataNode.refId);
-
-  //   if (!promiseId) {
-  //     // else: get `promiseId` of the call result value.
-
-  //     // TODO: this might work correctly for async getters
-  //     //  -> test with `await2b-async-getters.js`
-  //     const callTrace = dp.util.getCallerTraceOfContext(contextId);
-  //     const callResultTrace = callTrace && dp.util.getValueTrace(callTrace.traceId);
-  //     const refId = callResultTrace && dp.util.getTraceRefId(callResultTrace.traceId);
-  //     promiseId = refId && dp.util.getPromiseIdOfValueRef(refId);
-  //   }
-
-  //   return promiseId;
-  // },
 
   /** @param {DataProvider} dp */
   getAsyncStackRoots(dp, traceId) {
@@ -2503,6 +2475,9 @@ export default {
       schedulerTraceId
     } = postEventUpdate;
 
+    /**
+     * @type {PreCallbackUpdate}
+     */
     const preEventUpdate = util.getAsyncPreEventUpdateOfTrace(schedulerTraceId);
 
     if (!preEventUpdate) {
@@ -2514,38 +2489,48 @@ export default {
     const {
       rootId: preEventRootId,
       // isEventListener
+      promiseId
     } = preEventUpdate;
 
     const isNested = false;
-    let chainFromRootId;
-
     const beforeRootId = postEventRootId;
 
+    let chainFromRootId, rootIdUp;
+
     // if (isEventListener) {
-    // Case 1: event listener -> repeated calls of same trace
     const firstPostEventHandlerUpdate = util.getFirstAsyncPostEventUpdateOfTrace(schedulerTraceId);
-    if (firstPostEventHandlerUpdate && firstPostEventHandlerUpdate.rootId < beforeRootId) {
-      chainFromRootId = firstPostEventHandlerUpdate.rootId;
-    }
-    // }
-    else if (preEventRootId === 1) {
-      // Case 0: don't CHAIN cb from first root
+    if (preEventRootId === 1) {
+      // Case 1: don't CHAIN cb from first root
       //      (TODO: top-level `await` would CHAIN from first root.)
     }
+    else if (promiseId) {
+      // Case 2: Promisification
+      const s = [];
+      // const rootIdDown = util.DOWN(preEventPromiseId, beforeRootId, s);
+      rootIdUp = util.UP(promiseId, beforeRootId, s);
+      chainFromRootId = rootIdUp;
+    }
     else {
-      const preEventUpdates = util.getAsyncPreEventUpdatesOfRoot(preEventRootId);
-      if (preEventUpdates.length === 1) {
-        // Case 2: this is the only pre-event in the pre-event's root -> CHAIN
-        //    (meaning its the only async event scheduled from the same root)
-        chainFromRootId = preEventRootId;
+      // [heuristics]
+      if (firstPostEventHandlerUpdate && firstPostEventHandlerUpdate.rootId < beforeRootId) {
+        // Case 3: event listener -> repeated calls of same trace
+        chainFromRootId = firstPostEventHandlerUpdate.rootId;
       }
-      if (!chainFromRootId) {
-        const thisStaticContextId = util.getContextStaticContext(postEventRootId);
-        const lastStaticContextId = util.getContextStaticContext(preEventRootId);
-
-        if (thisStaticContextId === lastStaticContextId) {
-          // Case 3: recursive or repeating same function
+      else {
+        const preEventUpdates = util.getAsyncPreEventUpdatesOfRoot(preEventRootId);
+        if (preEventUpdates.length === 1) {
+          // Case 4: this is the only pre-event in the pre-event's root -> CHAIN
+          //    (meaning its the only async event scheduled from the same root)
           chainFromRootId = preEventRootId;
+        }
+        if (!chainFromRootId) {
+          const thisStaticContextId = util.getContextStaticContext(postEventRootId);
+          const lastStaticContextId = util.getContextStaticContext(preEventRootId);
+
+          if (thisStaticContextId === lastStaticContextId) {
+            // Case 5: recursive or repeating same function
+            chainFromRootId = preEventRootId;
+          }
         }
       }
     }
@@ -2559,6 +2544,7 @@ export default {
 
       preEventUpdate,
       isNested,
+      rootIdUp,
       firstPostEventHandlerUpdate
     };
   },

@@ -118,7 +118,7 @@ export default class CallbackPatcher {
   // ###########################################################################
 
 
-  patchCallback(originalCallback, schedulerTraceId) {
+  patchCallback(originalCallback, schedulerTraceId, promisifyPromiseVirtualRef) {
     const { runtime } = this;
 
     if (isMonkeyPatchedCallback(originalCallback)) {
@@ -145,7 +145,7 @@ export default class CallbackPatcher {
       // const lastTraceId = traceCollection.getLast()?.traceId;
       const lastContextId = executionContextCollection.getLast()?.contextId;
       
-      // TODO: test this with calling `nextTick` from inside nested async functions
+      // TODO: test this `process.nextTick` used from inside nested async functions
 
       const realRootId = runtime.peekRealRootContextId();
       try {
@@ -185,7 +185,7 @@ export default class CallbackPatcher {
               // const staticTrace = trace && staticTraceCollection.getById(trace.staticTraceId);
               // const traceType = staticTrace?.type;
               // const isInstrumentedFunction = traceType && isFunctionDefinitionTrace(traceType);
-              runtime.async.postCallback(schedulerTraceId, runId, rootId, context.contextId);
+              runtime.async.postCallback(schedulerTraceId, runId, rootId, context.contextId, promisifyPromiseVirtualRef);
             }
           }
         }
@@ -250,7 +250,7 @@ export default class CallbackPatcher {
 
   shouldPatchArgs(originalFunction, args, spreadArgs) {
     return (
-      // only instrument functions if they themselves are not instrumented (recorded)
+      // only instrument callbacks of functions that themselves are not instrumented (recorded)
       !isInstrumentedFunction(originalFunction) &&
 
       // don't apply dynamic callback patching to already monkey-patched built-ins
@@ -272,10 +272,12 @@ export default class CallbackPatcher {
     const isEventListener = !!(name || '').match(eventListenerRegex);
 
     // TODO: make sure each `traceId` does not have more than PreCallback update
-    this.runtime.async.preCallback(traceId, isEventListener);
+
+    const promisifyPromiseVirtualRef = this.runtime.getPromisifyPromiseVirtualRef();
+    this.runtime.async.preCallback(traceId, isEventListener, promisifyPromiseVirtualRef);
 
     // patch callback
-    const newArg = this.patchCallback(arg, traceId);
+    const newArg = this.patchCallback(arg, traceId, promisifyPromiseVirtualRef);
     return newArg || arg;
   }
 
