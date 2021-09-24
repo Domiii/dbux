@@ -1,4 +1,5 @@
 import { newLogger } from '@dbux/common/src/log/logger';
+import executionContextCollection from './data/executionContextCollection';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Stack');
@@ -25,20 +26,24 @@ export default class Stack {
    * @type {number[]}
    */
   _stack = [];
-  /**
-   * @type {Set}
-   */
-  _poppedButStillAround;
   _waitCount = 0;
   _peekIdx = -1;
 
-  getUnpoppedCount() {
-    const poppedCount = this._poppedButStillAround && this._poppedButStillAround.size || 0;
-    return this._stack.length - poppedCount;
-  }
+  // getUnpoppedCount() {
+  //   const poppedCount = this._poppedButStillAround && this._poppedButStillAround.size || 0;
+  //   return this._stack.length - poppedCount;
+  // }
 
-  isPoppedButStillAround(contextId) {
-    return this._poppedButStillAround && this._poppedButStillAround.has(contextId) || false;
+  // isPoppedButStillAround(contextId) {
+  //   return this._poppedButStillAround && this._poppedButStillAround.has(contextId) || false;
+  // }
+
+  /**
+   * Considers whether `peekIndex` is pointing to anything.
+   * If not, the "synchronous stack" is empty.
+   */
+  isEmptySync() {
+    return this._peekIdx < 0;
   }
 
   hasWaiting() {
@@ -94,32 +99,25 @@ export default class Stack {
   }
 
   popTop() {
-    const contextId = this.top();
+    // const contextId = this.top();
     this._stack.pop();
     this._peekIdx = this._stack.length - 1;
 
-    if (this._poppedButStillAround) {
-      this._poppedButStillAround.delete(contextId);
-
-      // remove anything lingering at the top that has been popped before
-      if (this._poppedButStillAround.has(this.peek())) {
-        return this.popTop();
-      }
-    }
-    return this._stack.length;
+    return this._stack.length - 1;
   }
 
   popPeekNotTop() {
-    const peekContextId = this.peek();
+    // const peekContextId = this.peek();
+    this._stack.splice(this._peekIdx, 1);
     --this._peekIdx;
 
-    // we cannot actually remove this because it is technically still around
-    //    (even though, it technically was "popped")
-    if (!this._poppedButStillAround) {
-      this._poppedButStillAround = new Set();
-    }
-    this._poppedButStillAround.add(peekContextId);
-    return this._peekIdx + 1;
+    // // we cannot actually remove this because it is technically still around
+    // //    (even though, it technically was "popped")
+    // if (!this._poppedButStillAround) {
+    //   this._poppedButStillAround = new Set();
+    // }
+    // this._poppedButStillAround.add(peekContextId);
+    return this._peekIdx;
   }
 
   /**
@@ -137,7 +135,7 @@ export default class Stack {
   }
 
   skipPopAtPeek() {
-    
+
   }
 
   trySetPeek(contextId) {
@@ -162,5 +160,12 @@ export default class Stack {
 
   get length() {
     return this._stack.length;
+  }
+
+  humanReadable() {
+    const peekIdx = this._peekIdx;
+    return this._stack.map((contextId, i) =>
+      `${i === peekIdx ? '> ' : ''}${executionContextCollection.makeContextInfo(contextId)}`
+    );
   }
 }

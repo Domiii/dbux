@@ -15,7 +15,7 @@ showInformationMessage(value, {
 ```
  */
 export async function showInformationMessage(message, btnConfig = EmptyObject, messageCfg = EmptyObject, cancelCallback) {
-  const buttons = Object.keys(btnConfig);
+  const buttons = Object.keys(btnConfig || EmptyObject);
   if (messageCfg?.modal && process.platform === 'darwin') {
     // for some reason, on MAC, modal buttons are reversed :(
     buttons.reverse();
@@ -29,7 +29,7 @@ export async function showInformationMessage(message, btnConfig = EmptyObject, m
 }
 
 export async function showWarningMessage(message, btnConfig = EmptyObject, messageCfg = EmptyObject, cancelCallback) {
-  const result = await window.showWarningMessage(`[Dbux] ${message}`, messageCfg, ...Object.keys(btnConfig));
+  const result = await window.showWarningMessage(`[Dbux] ${message}`, messageCfg, ...Object.keys(btnConfig || EmptyObject));
   if (result === undefined) {
     await cancelCallback?.();
     return null;
@@ -40,7 +40,7 @@ export async function showWarningMessage(message, btnConfig = EmptyObject, messa
 
 export async function showErrorMessage(message, btnConfig, messageCfg = EmptyObject, moreConfig = EmptyObject) {
   const prefix = moreConfig.noPrefix ? '' : '[Dbux] ';
-  const result = await window.showErrorMessage(`${prefix}${message}`, messageCfg, ...Object.keys(btnConfig));
+  const result = await window.showErrorMessage(`${prefix}${message}`, messageCfg, ...Object.keys(btnConfig || EmptyObject));
   const cbResult = await btnConfig[result]?.();
   return cbResult === undefined ? null : cbResult;
 }

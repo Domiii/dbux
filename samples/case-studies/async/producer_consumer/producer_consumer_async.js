@@ -22,20 +22,22 @@ async function consume() {
 }
 
 async function producer(n) {
-  await repeatAsync(n, async () => {
-    if (hasSpace()) {
-      await produce();
+  await repeatAsync(n,
+    async function tryProduce() {
+      if (hasSpace()) {
+        await produce();
+      }
+      else {
+        await idle();
+      }
     }
-    else {
-      await idle();
-    }
-  });
+  );
 }
 
 async function consumer(n) {
   await repeatAsync(
     () => !!n,
-    async function consumerTick() {
+    async function tryConsume() {
       // await sleep();
       if (hasItems()) {
         --n;
@@ -45,14 +47,15 @@ async function consumer(n) {
       else {
         await idle();
       }
-    });
+    }
+  );
 }
 
 /** ###########################################################################
  * Main
  *  #########################################################################*/
 
-producer(2*N);
+producer(2 * N);
 consumer(N);
 consumer(N);
 consumer(N);

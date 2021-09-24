@@ -153,15 +153,7 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceThrow(this.getProgramId(), value, tid, inputs);
   }
 
-  popImmediate = (contextId, traceId) => {
-    if (this.disabled) {
-      return undefined;
-    }
-
-    return this._runtimeMonitor.popImmediate(this.getProgramId(), contextId, traceId);
-  }
-
-  popFunction = (contextId, inProgramStaticTraceId, awaitContextId = 0) => {
+  popFunction = (contextId, inProgramStaticTraceId, awaitContextId) => {
     if (this.disabled) {
       return undefined;
     }
@@ -171,7 +163,11 @@ export default class ProgramMonitor {
 
   popProgram = () => {
     // finished initializing the program
-    return this.popImmediate(this._programContextId, ProgramEndTraceId);
+    if (this.disabled) {
+      return undefined;
+    }
+
+    return this._runtimeMonitor.popImmediate(this.getProgramId(), this._programContextId, ProgramEndTraceId);
   }
 
   // ###########################################################################

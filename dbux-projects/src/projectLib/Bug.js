@@ -6,6 +6,17 @@ import RunStatus from './RunStatus';
 /** @typedef {import('./Project').default} Project */
 /** @typedef {import('../ProjectsManager').default} PracticeManager */
 
+export class BugLocation {
+  /**
+   * @type {string}
+   */
+  file;
+  /**
+   * @type {number}
+   */
+  line;
+}
+
 export default class Bug {
   /**
    * @type {Project}

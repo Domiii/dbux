@@ -89,6 +89,11 @@ export function getRealBCECalleeFunctionRef(bceTrace) {
 //   return calleeRef && calleeRef === functionRef && bceTrace || null;
 // }
 
+export function peekBCEMatchCalleeUnchecked(func) {
+  const bceTrace = traceCollection.getLast();
+  return bceTrace;
+}
+
 /**
  * TODO: fix for `call`, `apply`, `bind`
  * 

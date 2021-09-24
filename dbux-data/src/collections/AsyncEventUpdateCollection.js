@@ -299,7 +299,7 @@ export default class AsyncEventUpdateCollection extends Collection {
       //        -> should be fixed (by not adding `AsyncNode` if callback is not root)
       //    -> maybe was already added to wrong indexes
       // eslint-disable-next-line max-len
-      this.logger.trace(`Tried to overwrite toThreadId - schedulerTraceId=${schedulerTraceId}, newTo=${toThreadId}, oldTo=${oldToThreadId}, from=${fromThreadId}, fromRoot=${fromRootId}, toRoot=${toRootId}, chain=${isChain}, postUpdateData=${JSON.stringify(postUpdateData)}`);
+      this.logger.warn(`Tried to overwrite toThreadId - schedulerTraceId=${schedulerTraceId}, newTo=${toThreadId}, oldTo=${oldToThreadId}, from=${fromThreadId}, fromRoot=${fromRootId}, toRoot=${toRootId}, chain=${isChain}, postUpdateData=${JSON.stringify(postUpdateData)}, stack=${new Error().stack}`);
       // }
       // isChain = oldToThreadId === fromThreadId;
       // toThreadId = oldToThreadId;

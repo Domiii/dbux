@@ -120,7 +120,9 @@ class SyncGraphBase extends GraphBase {
 
   _removeContextNode(context) {
     const contextNode = this.contextNodesByContext.get(context);
-    contextNode.dispose();
+    // NOTE: sometimes, `contextNode` does not exist, for some reason
+    //    -> might be because `this.roots` contains roots that are not actually displayed
+    contextNode?.dispose();
     this.contextNodesByContext.delete(context);
   }
 

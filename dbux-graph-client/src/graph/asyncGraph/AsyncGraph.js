@@ -1,3 +1,4 @@
+import { getStaticContextColor } from '@dbux/graph-common/src/shared/contextUtil';
 import { compileHtmlElement, getMatchParent } from '../../util/domUtil';
 import { AsyncButtonClasses } from './asyncButtons';
 import GraphBase from '../GraphBase';
@@ -145,7 +146,14 @@ class AsyncGraph extends GraphBase {
       colId,
       displayName,
       locLabel,
+      realStaticContextid,
+      moduleName
     } = nodeData;
+
+    const { themeMode } = this.context;
+    // const moduleLabel = moduleName ? `${moduleName} | ` : '';
+
+    const backgroundColor = getStaticContextColor(themeMode, realStaticContextid, !!moduleName);
 
     const dotLabel = '⬤';
     const { asyncNodeId, applicationId, isTerminalNode } = asyncNode;
@@ -159,7 +167,10 @@ class AsyncGraph extends GraphBase {
       classes.push('terminal-node');
     }
     const classAttrs = classes.join(' ');
-    const positionProps = makeGridPositionProp(rowId, colId);
+    const positionProps = `
+      background-color: ${backgroundColor};
+      ${makeGridPositionProp(rowId, colId)}
+    `;
 
     return /*html*/`
         <div class="async-cell async-node full-width flex-row align-center ${classAttrs}" style="${positionProps}" ${dataAttrs}>

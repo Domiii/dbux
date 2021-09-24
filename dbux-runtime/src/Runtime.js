@@ -1,13 +1,20 @@
 import { newLogger } from '@dbux/common/src/log/logger';
+import ExecutionContextType from '@dbux/common/src/types/constants/ExecutionContextType';
+import pull from 'lodash/pull';
+import last from 'lodash/last';
 import Stack from './Stack';
 import traceCollection from './data/traceCollection';
 import scheduleNextPossibleRun from './scheduleNextPossibleRun';
 import RuntimeAsync from './async/RuntimeAsync';
+import executionContextCollection from './data/executionContextCollection';
 
 // import ExecutionContextType from '@dbux/common/src/types/constants/ExecutionContextType';
 // import executionContextCollection from './data/executionContextCollection';
 // import staticContextCollection from './data/staticContextCollection';
 
+// class PromisifyData {
+  
+// }
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError, trace: logTrace } = newLogger('Runtime');
@@ -66,6 +73,8 @@ export default class Runtime {
    */
   async = new RuntimeAsync(this);
 
+  _promisifyStack = [];
+
   // ###########################################################################
   // Stack management
   // ###########################################################################
@@ -102,7 +111,7 @@ export default class Runtime {
   _maybeResumeInterruptedStackOnPushEmpty(contextId) {
     if (this._waitingStacks.has(contextId)) {
       // resume previous stack
-      this.resumeWaitingStack(contextId);
+      this.resumeWaitingStackAndPopAwait(contextId);
       return true;
     }
     else {
@@ -181,10 +190,10 @@ export default class Runtime {
       // all contexts between the one that got popped, and the old peek are now considered "in waiting"
       for (let i = stackPos; i < oldPeekIdx; ++i) {
         const intermediateContextId = stack._stack[i];
-        if (!stack.isPoppedButStillAround(intermediateContextId)) {
-          // mark as waiting, if it wasn't already popped
-          this._markWaiting(intermediateContextId);
-        }
+        // if (!stack.isPoppedButStillAround(intermediateContextId)) {
+        // mark as waiting, if it wasn't already popped
+        this._markWaiting(intermediateContextId);
+        // }
       }
     }
     return stackPos;
@@ -207,12 +216,32 @@ export default class Runtime {
   }
 
   /**
+   * Might auto-adjust stack pointer, if it sees an AWAIT at the top.
+   * Returns stack peek context.
+   */
+  fixPeekParentContextId() {
+    let contextId = this.peekCurrentContextId();
+    if (contextId) {
+      const context = executionContextCollection.getById(contextId);
+      if (!context) { // NOTE: should never happen
+        logTrace(`Tried to peekCurrentContextId, but context was not registered - stack=${this._executingStack?.humanReadable()}`);
+        return 0;
+      }
+      if (ExecutionContextType.is.Await(context.contextType)) {
+        this.skipPopPostAwait();
+        return this.fixPeekParentContextId();
+      }
+    }
+    return contextId;
+  }
+
+  /**
    * Determine `parentTraceId` (which trace pushed which context).
    */
   getParentTraceId() {
     const parentContextId = this.peekCurrentContextId();
-    const lastTraceId = this.getLastTraceInContext(parentContextId);
-    const lastTrace = traceCollection.getById(lastTraceId);
+    const lastTraceId = parentContextId && this.getLastTraceInContext(parentContextId);
+    const lastTrace = lastTraceId && traceCollection.getById(lastTraceId);
     if (lastTrace?.callId) {
       // last trace was a parameter or a BCE -> return BCE
       // return this._bcesInByContextId[parentContextId];
@@ -253,8 +282,11 @@ export default class Runtime {
    * Same as `getVirtualRootContext()`, except when in async functions.
    * In `async` functions, this returns the root context of the real context.
    */
-  getCurrentRealRootContextId() {
-    return this._executingStack?.[0];
+  peekRealRootContextId() {
+    if (!this._executingStack || this._executingStack.isEmptySync()) {
+      return 0;
+    }
+    return this._executingStack.peek();
   }
 
   /**
@@ -342,7 +374,7 @@ export default class Runtime {
 
     if (!stack) {
       // we probably had an unhandled interrupt that is now resumed
-      stack = this.resumeWaitingStack(contextId);
+      stack = this.resumeWaitingStackAndPopAwait(contextId);
       if (!stack) {
         logError(`Could not pop contextId off stack because there is stack active, and no waiting stack registered with this contextId`, contextId);
         return -1;
@@ -352,32 +384,18 @@ export default class Runtime {
     else {
       // first check, if its on this stack, then check for waiting stacks
       stackPos = this._popAnywhere(contextId);
-      if (stackPos === -1) {
-        // it's not on this stack -> probably coming back from an unhandled interrupt (probably should never happen?)
-        stack = this.resumeWaitingStack(contextId);
-        if (!stack) {
-          logError(`Could not pop contextId ${contextId} off stack: ${this._executingStack?._stack}`);
-          return -1;
-        }
-        stackPos = this._popAnywhere(contextId);
-      }
     }
 
-    if (stackPos === -1) {
-      logError(`Could not pop contextId off stack`, contextId);
-      return -1;
-    }
+    // if (stackPos === -1) {
+    //   // popped root off stack
+    //   if (stack.getUnpoppedCount() && !stack.hasWaiting()) {
+    //     // there is stuff left to do on this stack, but we don't know why and how
+    //     this._interruptedStacksOfUnknownCircumstances.push(stack);
+    //   }
 
-    if (stackPos === 0) {
-      // popped root off stack
-      if (stack.getUnpoppedCount() && !stack.hasWaiting()) {
-        // there is stuff left to do on this stack, but we don't know why and how
-        this._interruptedStacksOfUnknownCircumstances.push(stack);
-      }
-
-      // TODO: our shadow stack is not accurate enough for this to work correctly
-      // this._runFinished();
-    }
+    //   // TODO: our shadow stack is not accurate enough for this to work correctly
+    //   // this._runFinished();
+    // }
     return stackPos;
   }
 
@@ -392,41 +410,6 @@ export default class Runtime {
     return this._lastPoppedContextId;
   }
 
-  // ###########################################################################
-  // Complex scheduling
-  // ###########################################################################
-
-  /**
-   * NOTE: we use this to make sure that every `postAwait` event has its own `run`.
-   */
-  newRun() {
-    this._currentRunId = ++this._maxRunId;
-    // debug(`newRun`, this._currentRunId);
-    return this._currentRunId;
-  }
-
-  registerAwait(awaitContextId, parentContext, awaitArgument) {
-    if (!this.isExecuting()) {
-      logError('Encountered `await`, but there was no active stack ', awaitContextId);
-      return;
-    }
-
-    this.push(awaitContextId, true);
-    // this._markWaiting(awaitContextId);
-    // NOTE: stack might keep popping before it actually pauses, so we don't unset executingStack quite yet.
-  }
-
-  /**
-   * Manually climb up the stack.
-   * NOTE: We are waiting now, and see on the stack:
-   *    1. Await (top)
-   *    2. async function (top-1)
-   * -> However, next trace will be outside of the function, so we want to skip both.
-   */
-  skipPopPostAwait() {
-    this._executingStack._peekIdx -= 2;
-  }
-
   /**
    * no previous executing stack to resume
    *  -> this invocation has been called from system scheduler (possibly traversing blackboxed code)
@@ -438,38 +421,12 @@ export default class Runtime {
   }
 
   /**
-   * Finds the stack containing the given realContext, resumes the stack
-   * and then calls `resumeWaitingStack` on its top context.
+   * NOTE: we use this to make sure that every `postAwait` event has its own `run`.
    */
-  resumeWaitingStackReal(realContextId) {
-    const waitingStack = this._switchStackOnResume(realContextId);
-    if (!waitingStack) { return null; }
-
-    const resumeContextId = this._executingStack.top();
-
-    // pop the await/yield context
-    this._markResume(resumeContextId);
-    this.pop(resumeContextId);
-
-    return waitingStack;
-  }
-
-  /**
-   * Finds the stack containing the given `Resume` context, resumes the stack
-   * and pops the `Resume` context.
-   */
-  resumeWaitingStack(resumeContextId) {
-    const waitingStack = this._switchStackOnResume(resumeContextId);
-    if (!waitingStack) {
-      logTrace('resumeWaitingStack called on unregistered `resumeContextId`:', resumeContextId);
-      return null;
-    }
-
-    // pop the await/yield context
-    this._markResume(resumeContextId);
-    this.pop(resumeContextId);
-
-    return waitingStack;
+  newRun() {
+    this._currentRunId = ++this._maxRunId;
+    // debug(`newRun`, this._currentRunId);
+    return this._currentRunId;
   }
 
   _switchStackOnResume(contextId) {
@@ -511,6 +468,96 @@ export default class Runtime {
     // this._previousPoppedContextId = null;
   }
 
+  /** ###########################################################################
+   * promisify
+   *  #########################################################################*/
+
+  getPromisifyPromiseId() {
+    if (!this._promisifyStack.length) {
+      return 0;
+    }
+    // const contextIdIndex = last(this._promisifyStack);
+    // return this._executingStack?._stack[contextIdIndex];
+    return last(this._promisifyStack);
+  }
+
+  /**
+   * Keep track of (purely synchronous) promisify (promise ctor) stack.
+   */
+  promisifyStart(promiseId) {
+    // const peek = this._executingStack?._peekIdx || 0;
+    this._promisifyStack.push(promiseId);
+  }
+
+  promisifyEnd(promiseId) {
+    // this._promisifyStack.pop();
+    // NOTE: should always be last
+    pull(this._promisifyStack, promiseId);
+  }
+
+  // ###########################################################################
+  // async stuff
+  // ###########################################################################
+
+  registerAwait(awaitContextId, parentContext, awaitArgument) {
+    if (!this.isExecuting()) {
+      logError('Encountered `await`, but there was no active stack ', awaitContextId);
+      return;
+    }
+
+    this.push(awaitContextId, true);
+
+    // NOTE: we already marked it as waiting when we pushed the real context
+    // NOTE: stack might keep popping before it actually pauses, so we don't unset executingStack quite yet.
+    this._markWaiting(awaitContextId);
+  }
+
+  /**
+   * Manually climb up the stack.
+   * NOTE: We are waiting now, and see on the stack:
+   *    1. Await (top)
+   *    2. async function (top-1)
+   * -> However, next trace will be outside of the function, so we want to skip both.
+   */
+  skipPopPostAwait() {
+    this._executingStack._peekIdx -= 2;
+  }
+
+  /**
+   * Finds the stack containing the given realContext, resumes the stack
+   * and then calls `resumeWaitingStack` on its top context.
+   */
+  resumeWaitingStackReal(realContextId) {
+    const waitingStack = this._switchStackOnResume(realContextId);
+    if (!waitingStack) { return null; }
+
+    const resumeContextId = this._executingStack.top();
+
+    // pop the await/yield context
+    this._markResume(resumeContextId);
+    this.pop(resumeContextId);
+
+    return waitingStack;
+  }
+
+  /**
+   * Finds the stack containing the given `Resume` context, resumes the stack
+   * and pops the `Resume` context.
+   */
+  resumeWaitingStackAndPopAwait(awaitContextId) {
+    const waitingStack = this._switchStackOnResume(awaitContextId);
+    if (!waitingStack) {
+      logTrace('resumeWaitingStack called on unregistered `resumeContextId`:', awaitContextId);
+      return null;
+    }
+
+    // pop the await/yield context
+    this._markResume(awaitContextId);
+    this.pop(awaitContextId);
+
+    return waitingStack;
+  }
+
   // ###########################################################################
   // Manage "execution roots"
   // ###########################################################################
@@ -540,7 +587,7 @@ export default class Runtime {
     this._virtualRootContextId = newRootId;
     this.async.virtualRootStarted(newRootId);
 
-    debug('[new root]', newRootId);
+    // debug('[new root]', newRootId);
   }
 
   _runFinished() {

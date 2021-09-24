@@ -148,32 +148,6 @@ export default class BugRunner {
     await project.installProject();
   }
 
-  /**
-   * @param {Bug} bug 
-   */
-  async installBug(bug) {
-    if (this.isBugActive(bug)) {
-      return;
-    }
-
-    const { project } = bug;
-    const installedTag = project.getProjectInstalledTagName();
-    const bugSelectedTag = project.getBugSelectedTagName(bug);
-
-    if (await project.gitDoesTagExist(bugSelectedTag)) {
-      await project.gitCheckout(bugSelectedTag);
-    }
-    else {
-      await project.gitCheckout(installedTag);
-      // apply bug patch or checkout to tag
-      await project.selectBug(bug);
-
-      // Add selected tag
-      await project.autoCommit(`Select bug ${bug.id}`);
-      await project.gitSetTag(bugSelectedTag);
-    }
-  }
-
   /** @param {Project} project */
   getOrLoadBugs(project) {
     return project.getOrLoadBugs();
@@ -203,15 +177,10 @@ export default class BugRunner {
         // Step 1: Clone, install the project
         this.installProject.bind(this, project),
 
-        // Step 2: Apply patch or checkout to specific commit
-        this.installBug.bind(this, bug),
-
-        // Step 3: Do these again to get the latest update
-        project.installAssets.bind(project),
-        project.npmInstall.bind(project),
-
-        // Step 4: Auto commit in the end to avoid `uncommit changes` error for any further git operation
-        project.autoCommit.bind(project),
+        // Step 2: Do all the bug-related install work
+        project.installBug.bind(project, bug),
+        
+        // Step 3: Set as active bug
         this.setActivatedBug.bind(this, bug)
       );
     }
@@ -266,7 +235,7 @@ export default class BugRunner {
         this.logger.warn(`runCfg.env.NODE_ENV !== project.envName:`, runCfg.env.NODE_ENV, project.envName);
       }
       runCfg.env.NODE_ENV = project.envName;
-      
+
       if (command && !isString(command)) {
         throw new Error(`testBugCommand must return string or object or falsy, but instead returned: ${toString(commandOrCommandCfg)}`);
       }

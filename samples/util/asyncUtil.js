@@ -1,17 +1,17 @@
-export function R(x) {
-  return Promise.resolve(x);
-}
+
+/** ###########################################################################
+ * util
+ * ##########################################################################*/
 
 
 function nest(x, F) {
   if (Array.isArray(x)) {
-    return () => F(...x);
+    return function nested() { return F(...x); };
   }
 
   return x instanceof Function ?
     x :
-    () => {
-      // x && console.log('[]', x);
+    function nodeRepresentation() {
       x = unwrapValue(x);
       console.log(x);
       return x;
@@ -26,6 +26,9 @@ function unwrapValue(val) {
 }
 
 function unwrapBoundValue(val, x) {
+  if (Array.isArray(x)) {
+    return x.map(unwrapBoundValue.bind(null, val))
+  }
   if (x instanceof Function) {
     return () => {
       const xVal = unwrapValue(x);
@@ -38,6 +41,20 @@ function unwrapBoundValue(val, x) {
   return `${val} ${unwrapValue(x)}`;
 }
 
+export async function waitTicks(n) {
+  while (--n >= 0) {
+    await 0;
+  }
+}
+
+
+/** ###########################################################################
+ * Promise
+ * ##########################################################################*/
+
+export function R(x) {
+  return Promise.resolve(x);
+}
 
 /**
  * Promise chain
@@ -64,18 +81,15 @@ export function Pbind(val, ...xs) {
   return P(...xs);
 }
 
-export async function waitTicks(n) {
-  while (--n >= 0) {
-    await 0;
-  }
-}
+/** ###########################################################################
+ * async
+ * ##########################################################################*/
 
-export function A(...xs) {
-  return (async function () {
-    for (const x of xs) {
-      await nest(x, A)();
-    }
-  })();
+
+export async function A(...xs) {
+  for (const x of xs) {
+    await nest(x, A)();
+  }
 }
 
 export function Abind(val, ...xs) {

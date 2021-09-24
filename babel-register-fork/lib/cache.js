@@ -84,7 +84,9 @@ function prepareCache(sourceRoot, firstFileName) {
   });
 
   // guess a good cacheRoot from cacheDir, else sourceRoot, else firstFileName's directory.
-  cacheRoot = (cacheDir ? path.resolve(cacheDir, '../../../..') : sourceRoot) || path.dirname(firstFileName);
+  cacheRoot = path.resolve(
+    (cacheDir ? path.resolve(cacheDir, '../../../..') : sourceRoot) || path.dirname(firstFileName)
+  );
 
   if (!cacheDir) {
     // place cache in home or temp directories
@@ -257,7 +259,7 @@ function loadFile(srcFilename, cacheFilename, cacheKey) {
     // validate cacheKey
     if (cacheKey !== cached.cacheKey) {
       // eslint-disable-next-line max-len
-      reportCacheMiss(CacheMissReason.DifferentOptions, srcFilename, cacheFilename, 
+      reportCacheMiss(CacheMissReason.DifferentOptions, srcFilename, cacheFilename,
         diffString('cacheKeys are different', cacheKey, cached.cacheKey)
       );
       return null;

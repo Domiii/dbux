@@ -108,7 +108,7 @@ export default class Process {
     const [commandName, ...commandArgs] = stringArgv(command);
     this.commandName = commandName;
 
-    const processExecMsg = `${cwd}$ "${commandName}" ${commandArgs.map(s => `"${s}"`).join(' ')}`;
+    const processExecMsg = `${cwd}$ "${commandName}" ${commandArgs.map(s => `${s}`).join(' ')}`;
     logger.debug('>', processExecMsg); //, `(pwd = ${sh.pwd().toString()})`);
 
     if (sync) {
@@ -295,6 +295,20 @@ export default class Process {
     return (newProcess.out || '').trim();
   }
 
+  static async execCaptureErr(cmd, options, logger, input) {
+    const newProcess = new Process();
+
+    options = {
+      captureErr: true,
+      logStderr: false,
+      ...options
+    };
+
+    await newProcess.start(cmd, logger || newLogger('exec'), options, input);
+
+    return (newProcess.err || '').trim();
+  }
+
   static async execCaptureAll(cmd, options, logger, input) {
     const newProcess = new Process();
 
@@ -306,10 +320,10 @@ export default class Process {
       ...options
     };
 
-    let result = await newProcess.start(cmd, logger || newLogger('exec'), options, input);
+    let code = await newProcess.start(cmd, logger || newLogger('exec'), options, input);
 
     return {
-      code: result,
+      code,
       out: (newProcess.out || '').trim(),
       err: (newProcess.err || '').trim(),
     };
