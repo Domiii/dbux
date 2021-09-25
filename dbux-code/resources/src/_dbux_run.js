@@ -33,10 +33,10 @@ function main() {
     env: moreEnv
   } = options;
 
-  logDebug('run.js command received:', {
+  logDebug('run.js command received:', inspect({
     node: _node,
-    ...inspect(args)    // NOTE: spread fully supported since Node v8.3 -- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
-  });
+    ...args    // NOTE: spread fully supported since Node v8.3 -- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
+  }));
 
   const processOptions = {
     cwd,

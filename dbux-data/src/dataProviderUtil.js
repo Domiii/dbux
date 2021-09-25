@@ -653,24 +653,32 @@ export default {
     if (refId) {
       const entries = dp.util.constructValueObjectShallow(refId, nodeId);
       const valueRef = dp.collections.values.getById(refId);
-      const { category } = valueRef;
-      if (ValueTypeCategory.is.Array(category)) {
-        let content = `${entries.map(x => dp.util._simplifyValue(x))}`;
-        shorten && (content = truncate(content, { length: ShortenMaxLength - 2 }));
-        valueString = `[${content}]`;
-      }
-      else if (ValueTypeCategory.is.Object(category)) {
-        let content = `${Object.keys(entries)}`;
-        shorten && (content = truncate(content, { length: ShortenMaxLength - 2 }));
-        valueString = `{${content}}`;
-      }
-      else if (ValueTypeCategory.is.Function(category)) {
-        let content = entries.name?.[2] || '(anonymous)';
-        shorten && (content = truncate(content, { length: ShortenMaxLength - 2 }));
-        valueString = `ƒ ${content}`;
+      if (!entries) {
+        // node was omitted or did not have children for other reasons
+        // default
+        valueString = valueRef.value?.toString?.() || String(valueRef.value);
       }
       else {
-        valueString = valueRef.value?.toString?.() || String(valueRef.value);
+        const { category } = valueRef;
+        if (ValueTypeCategory.is.Array(category)) {
+          let content = `${entries.map(x => dp.util._simplifyValue(x))}`;
+          shorten && (content = truncate(content, { length: ShortenMaxLength - 2 }));
+          valueString = `[${content}]`;
+        }
+        else if (ValueTypeCategory.is.Object(category)) {
+          let content = `${Object.keys(entries)}`;
+          shorten && (content = truncate(content, { length: ShortenMaxLength - 2 }));
+          valueString = `{${content}}`;
+        }
+        else if (ValueTypeCategory.is.Function(category)) {
+          let content = entries.name?.[2] || '(anonymous)';
+          shorten && (content = truncate(content, { length: ShortenMaxLength - 2 }));
+          valueString = `ƒ ${content}`;
+        }
+        else {
+          // default
+          valueString = valueRef.value?.toString?.() || String(valueRef.value);
+        }
       }
     }
     else {
@@ -933,7 +941,7 @@ export default {
     if (!Array.isArray(children)) {
       return EmptyArray;
     }
-    
+
     return children.map(([childNodeId/* , childRefId, childValue */]) => dp.util.getDataNode(childNodeId));
   },
 
