@@ -1,4 +1,5 @@
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
+import traceCollection from '../data/traceCollection';
 import dataNodeCollection from '../data/dataNodeCollection';
 import { peekBCEMatchCallee } from '../data/dataUtil';
 import valueCollection from '../data/valueCollection';
@@ -32,11 +33,11 @@ export default function patchArray() {
     (arr, args, originalFunction, patchedFunction) => {
       const ref = valueCollection.getRefByValue(arr);
       const bceTrace = ref && peekBCEMatchCallee(patchedFunction);
-      if (!bceTrace) {
+      if (!bceTrace?.data?.argTids) {
         return originalFunction.apply(arr, args);
       }
 
-      const { traceId: callId } = bceTrace;
+      const { traceId: callId, data: { argTids } } = bceTrace;
       const objectNodeId = getNodeIdFromRef(ref);
 
       for (let i = 0; i < args.length; ++i) {
@@ -45,7 +46,9 @@ export default function patchArray() {
           prop: arr.length + i
         };
         // console.debug(`[Array.push] #${traceId} ref ${ref.refId}, node ${nodeId}, objectNodeId ${objectNodeId}`);
-        dataNodeCollection.createDataNode(args[i], callId, DataNodeType.Write, varAccess);
+        const argTid = argTids[i];
+        const inputs = [traceCollection.getOwnDataNodeIdByTraceId(argTid)];
+        dataNodeCollection.createDataNode(args[i], callId, DataNodeType.Write, varAccess, inputs);
       }
 
       // [edit-after-send]
@@ -116,7 +119,6 @@ export default function patchArray() {
     "findIndex",
     "lastIndexOf",
     "pop",
-    "push",
     "reverse",
     "shift",
     "unshift",

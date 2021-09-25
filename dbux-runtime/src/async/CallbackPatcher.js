@@ -4,7 +4,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { isInstrumentedFunction, getFirstContextAfterTrace } from '../data/dataUtil';
 // eslint-disable-next-line max-len
-import { getOriginalCallback, isMonkeyPatchedCallback, isOrHasMonkeyPatchedFunction, _registerMonkeyPatchedCallback, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
+import { getOriginalCallback, getPatchedFunctionOrNull, isMonkeyPatchedCallback, isOrHasMonkeyPatchedFunction, _registerMonkeyPatchedCallback, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
 // import executionContextCollection from '../data/executionContextCollection';
 import executionContextCollection from '../data/executionContextCollection';
 import traceCollection from '../data/traceCollection';
@@ -279,6 +279,10 @@ export default class CallbackPatcher {
     // patch callback
     const newArg = this.patchCallback(arg, traceId, promisifyPromiseVirtualRef);
     return newArg || arg;
+  }
+
+  monkeyPatchCallee(originalFunction) {
+    return getPatchedFunctionOrNull(originalFunction);
   }
 
   /**

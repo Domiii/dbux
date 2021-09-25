@@ -1,4 +1,4 @@
-import { logError } from '@dbux/common/src/log/logger';
+import { logError, logWarn } from '@dbux/common/src/log/logger';
 import NestedError from '@dbux/common/src/NestedError';
 
 /**
@@ -15,6 +15,9 @@ const originalCallbacksByPatched = new WeakMap();
 
 export function _registerMonkeyPatchedFunction(originalFunction, patchedFunction) {
   try {
+    if (originalFunction === Array.prototype.push) {
+      console.log();
+    }
     patchedFunctionsByOriginalFunction.set(originalFunction, patchedFunction);
     if (originalFunction !== patchedFunction) {
       // NOTE: for some reason, native functions cannot be WeakMap keys
@@ -149,7 +152,12 @@ export function monkeyPatchFunctionOverrideDefault(fn) {
   // return monkeyPatchFunctionOverride(fn, (orig) => function patchedFunction(...args) {
   //   return orig.call(this, ...args);
   // });
-  _registerMonkeyPatchedFunction(fn, fn);
+  if (patchedFunctionsByOriginalFunction.has(fn)) {
+    logWarn(`Tried to re-register original function: ${fn.name} (${fn})`);
+  }
+  else {
+    _registerMonkeyPatchedFunction(fn, fn);
+  }
   return fn;
 }
 export function monkeyPatchMethodOverrideDefault(holder, fnName) {
