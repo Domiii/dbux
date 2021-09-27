@@ -22,4 +22,4 @@ const nodes = [
 ];
 
 Abind('A', ...nodes);
-// Pbind('P', ...nodes);
+Pbind('P', ...nodes);

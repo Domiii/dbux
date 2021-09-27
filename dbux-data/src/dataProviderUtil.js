@@ -2181,7 +2181,13 @@ export default {
 
   /** @param {DataProvider} dp */
   DOWN(dp, promiseId, beforeRootId, syncPromiseIds) {
-    return dp.util._DOWN(promiseId, beforeRootId, syncPromiseIds)?.rootId || 0;
+    const result = dp.util._DOWN(promiseId, beforeRootId, syncPromiseIds) || 0;
+    if (Array.isArray(result)) {
+      return result.map(u => u.rootId);
+    }
+    else {
+      return result?.rootId || 0;
+    }
   },
 
   /**
@@ -2189,17 +2195,23 @@ export default {
    * NOTE: promiseId is ensured to be settled because promiseId is settled
    */
   _DOWN(dp, promiseId, beforeRootId, syncPromiseIds, visited = new Set()) {
-    const nestedUpdate = dp.util.GNPU(promiseId, beforeRootId, syncPromiseIds, visited);
+    let nestedUpdate = dp.util.GNPU(promiseId, beforeRootId, syncPromiseIds, visited);
     if (!nestedUpdate) {
       return null;
     }
 
-    if (Array.isArray(nestedUpdate)) {
-      return nestedUpdate.flatMap(u => 
-        dp.util._DOWN(u.promiseId, beforeRootId, syncPromiseIds, visited)
-      ).filter(u => !!u);
-    }
-    return dp.util._DOWN(nestedUpdate.promiseId, beforeRootId, syncPromiseIds, visited) || nestedUpdate;
+    // if (Array.isArray(nestedUpdate)) {
+    //   const nestedUpdateArr = nestedUpdate.flatMap(u =>
+    //     dp.util._DOWN(u.promiseId, beforeRootId, syncPromiseIds, visited)
+    //   ).filter(u => !!u);
+    //   if (nestedUpdateArr.length) {
+    //     nestedUpdate = nestedUpdateArr;
+    //   }
+    // }
+    // else {
+    //   nestedUpdate = dp.util._DOWN(nestedUpdate.promiseId, beforeRootId, syncPromiseIds, visited) || nestedUpdate;
+    // }
+    return nestedUpdate;
   },
 
   /** @param {DataProvider} dp */
@@ -2250,24 +2262,24 @@ export default {
     const beforeRootId = postEventRootId;
     const toRootId = postEventRootId;
 
-    // Case 1: CHAIN via async function's own promise (in case of firstAwait)
+    // Case 1a: CHAIN via async function's own promise (in case of firstAwait)
     const rootIdUp = isFirstAwait && util.UP(promiseId, beforeRootId, s);
 
-    // Case 2: CHAIN to previous await root
-    const rootIdPrevious = !isFirstAwait && util.DOWN(TODO);
+    // Case 1b: CHAIN to "previous await root" (NOTE: that root will always come *after* any of its own nested updates)
+    const rootIdPrevious = !isFirstAwait && preEventRootId;
 
-    // Case 3: nested
+    // Case 2: nested
     const rootIdNested = nestedPromiseId && util.DOWN(nestedPromiseId, beforeRootId, s);
 
     if (!isFirstAwait || !isCallRecorded) {
-      chainFromRootId = rootIdNested || preEventRootId;
+      chainFromRootId = rootIdNested || rootIdPrevious;
       nestedPromiseId && util.SYNC(chainFromRootId, nestedPromiseId, beforeRootId, s);
     }
     else {
       if (rootIdPrevious && rootIdNested) {
         util.SYNC(rootIdPrevious, nestedPromiseId, beforeRootId, s);
       }
-      chainFromRootId = rootIdPrevious || rootIdNested || rootIdUp;
+      chainFromRootId = rootIdNested || rootIdUp;
     }
 
 

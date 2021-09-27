@@ -179,7 +179,7 @@ export default class AsyncTDNode extends TraceDetailNode {
     } } = this;
 
     const fromRootId = dp.indexes.asyncEvents.to.get(rootContextId)
-      ?.map(evt => evt.fromRootContextId) || EmptyArray;
+      ?.flatMap(evt => evt.fromRootContextId) || EmptyArray;
 
     this.description = `(root=${rootContextId}, from=${fromRootId.join(',') || '?'})`;
   }

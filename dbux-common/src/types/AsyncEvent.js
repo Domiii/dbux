@@ -4,7 +4,7 @@ export default class AsyncEvent {
    */
   asyncEventId;
   /**
-   * @type {number}
+   * @type {number | number[]}
    */
   fromRootContextId;
   /**

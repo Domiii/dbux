@@ -320,21 +320,29 @@ export default class AsyncEventUpdateCollection extends Collection {
 
     // this.logger.debug(`addEventEdge`, fromRootId, dp.util.getChainFrom(fromRootId));
 
-    if (fromRootId >= toRootId) {
-      this.logger.warn(`addEventEdge with fromRootId (${fromRootId}) >= toRootId (${toRootId})`);
-    }
-
     // add edge
     const edgeType = isChain ? AsyncEdgeType.Chain : AsyncEdgeType.Fork;
-    const newEdge = this.addEdge(fromRootId, toRootId, edgeType);
-    if (!newEdge) {
-      return null;
+    /* const newEdge =  */this._addEventEdges(fromRootId, toRootId, edgeType);
+    // if (!newEdge) {
+    //   return null;
+    // }
+
+    // // eslint-disable-next-line max-len
+    // // this.logger.debug(`[add${AsyncEdgeType.nameFromForce(edgeType)}] [${fromThreadId !== toThreadId ? `${fromThreadId}->` : ''}${toThreadId}] ${fromRootId}->${toRootId} (tid=${schedulerTraceId}${isNested ? `, nested` : ''})`);
+
+    // return newEdge;
+  }
+  
+  _addEventEdges(fromRootId, toRootId, edgeType) {
+    if (Array.isArray(fromRootId)) {
+      return fromRootId.map(from => this._addEventEdges(from, toRootId, edgeType));
     }
-
-    // eslint-disable-next-line max-len
-    // this.logger.debug(`[add${AsyncEdgeType.nameFromForce(edgeType)}] [${fromThreadId !== toThreadId ? `${fromThreadId}->` : ''}${toThreadId}] ${fromRootId}->${toRootId} (tid=${schedulerTraceId}${isNested ? `, nested` : ''})`);
-
-    return newEdge;
+    else {
+      if (fromRootId >= toRootId) {
+        this.logger.warn(`addEventEdge with fromRootId (${fromRootId}) >= toRootId (${toRootId})`);
+      }
+      return this.addEdge(fromRootId, toRootId, edgeType);
+    }
   }
 
   addEdge(fromRootId, toRootId, edgeType) {
