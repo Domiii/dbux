@@ -15,4 +15,19 @@ export default class NestedPromiseFromIndex extends CollectionIndex {
   makeKey(dp, promiseLink) {
     return promiseLink.from || false;
   }
+
+  /** 
+   * @override
+   * @param {RuntimeDataProvider} dp
+   * @param {PromiseLink} entry
+   */
+  addEntryToKey(key, entry) {
+    if (Array.isArray(key)) {
+      // add once per key
+      key.forEach(k => super.addEntryToKey(k, entry));
+    }
+    else {
+      super.addEntryToKey(key, entry);
+    }
+  }
 }

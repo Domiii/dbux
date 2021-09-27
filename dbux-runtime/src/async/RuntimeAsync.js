@@ -366,7 +366,7 @@ export default class RuntimeAsync {
     //   this.logger.error(`resolve link failed: promise did not have an id, from=${from}, to=${to}, trace=${traceCollection.makeTraceInfo(traceId)}`);
     // }
     // else {
-    nestedPromiseCollection.addLink(promiseLinkType, from, to, traceId, rootId, asyncPromisifyPromiseId);
+    return nestedPromiseCollection.addLink(promiseLinkType, from, to, traceId, rootId, asyncPromisifyPromiseId);
 
     // const {
     //   preEventPromise,
@@ -400,7 +400,7 @@ export default class RuntimeAsync {
     //   this.logger.error(`resolve link failed: promise did not have an id, from=${from}, to=${to}, trace=${traceCollection.makeTraceInfo(traceId)}`);
     // }
     // else {
-    nestedPromiseCollection.addLink(promiseLinkType, from, to, traceId, rootId);
+    return nestedPromiseCollection.addLink(promiseLinkType, from, to, traceId, rootId);
   }
 
   /**
@@ -410,7 +410,7 @@ export default class RuntimeAsync {
   returnAsync(promise, traceId) {
     // NOTE: this is just a placeholder, since we don't necessarily know the `to` promiseId yet (if async function did not `await` yet)
     const rootId = this.getCurrentVirtualRootContextId();
-    nestedPromiseCollection.addLink(PromiseLinkType.AsyncReturn, getPromiseId(promise), 0, traceId, rootId);
+    return nestedPromiseCollection.addLink(PromiseLinkType.AsyncReturn, getPromiseId(promise), 0, traceId, rootId);
   }
 
   // ###########################################################################
