@@ -1,5 +1,4 @@
 import AsyncEventUpdateType from './constants/AsyncEventUpdateType';
-import ResolveType from './constants/ResolveType';
 
 export class AsyncUpdateBase {
   updateId;
@@ -86,15 +85,6 @@ export class PreThenUpdate extends PromiseUpdate {
 }
 
 export class PostThenUpdate extends PromiseUpdate {
-}
-
-export class ResolveUpdate extends PromiseUpdate {
-  argPromiseId;
-
-  /**
-   * @type {ResolveType}
-   */
-  resolveType;
 }
 
 // ###########################################################################

@@ -50,11 +50,9 @@ import SyncInAsyncEventsByRootIndex from './impl/indexes/SyncInAsyncEventsByRoot
 import SyncOutAsyncEventsByRootIndex from './impl/indexes/SyncOutAsyncEventsByRootIndex';
 import AsyncNodesByRootIndex from './impl/indexes/AsyncNodesByRootIndex';
 import AsyncNodesByThreadIndex from './impl/indexes/AsyncNodesByThreadIndex';
-import AsyncEventUpdatesByNestedPromiseAndRunIndex from './impl/indexes/AsyncEventUpdatesByNestedPromiseAndRunIndex';
 import AsyncEventUpdatesByTraceIndex from './impl/indexes/AsyncEventUpdatesByTraceIndex';
 import AsyncEventUpdatesByPromiseIndex from './impl/indexes/PostAsyncEventUpdateByPromiseIndex';
 import AsyncEventUpdatesByRootIndex from './impl/indexes/AsyncEventUpdatesByRootIndex';
-import AsyncEventUpdatesByNestedPromiseIndex from './impl/indexes/AsyncEventUpdatesByNestedPromiseIndex';
 import RuntimeDataStatsReporter from './RuntimeDataStatsReporter';
 // import AsyncEventUpdatesByPreThenPromise from './impl/indexes/AsyncEventUpdatesByPreThenPromise';
 import NestedPromiseFromIndex from './impl/indexes/NestedPromiseFromIndex';
@@ -133,8 +131,6 @@ export function newDataProvider(application) {
   dp.addIndex(new AsyncNodesByRootIndex());
   dp.addIndex(new AsyncNodesByThreadIndex());
 
-  dp.addIndex(new AsyncEventUpdatesByNestedPromiseIndex());
-  dp.addIndex(new AsyncEventUpdatesByNestedPromiseAndRunIndex());
   dp.addIndex(new AsyncEventUpdatesByTraceIndex());
   dp.addIndex(new AsyncEventUpdatesByRootIndex());
   // dp.addIndex(new AsyncEventUpdatesByPreThenPromise());

@@ -2,7 +2,8 @@ import Enum from '../../util/Enum';
 
 const resolveType = {
   Resolve: 1,
-  Reject: 2
+  Reject: 2,
+  All: 3
 };
 
 /**

@@ -1,6 +1,6 @@
-// ########################################
-// This sample illustrates why we only check the first `nestingAsyncUpdate` for `isPromiseChainedToRoot`.
-// ########################################
+/**
+ * 
+ */
 
 
 (async function main() {

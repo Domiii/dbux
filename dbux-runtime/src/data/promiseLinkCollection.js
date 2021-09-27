@@ -10,6 +10,15 @@ class PromiseLinkCollection extends Collection {
     super('promiseLinks');
   }
 
+  /**
+   * @param {PromiseLinkType[keyof PromiseLinkType]} type
+   * @param {*} fromPromiseId 
+   * @param {*} toPromiseId 
+   * @param {*} traceId 
+   * @param {*} rootId 
+   * @param {*} asyncPromisifyPromiseId 
+   * @returns 
+   */
   addLink(type, fromPromiseId, toPromiseId, traceId, rootId, asyncPromisifyPromiseId = 0) {
     const entry = pools.promiseLinks.allocate();
 

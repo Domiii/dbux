@@ -1,7 +1,6 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import isThenable from '@dbux/common/src/util/isThenable';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
-// import ResolveType from '@dbux/common/src/types/constants/ResolveType';
 import PromiseLinkType from '@dbux/common/src/types/constants/PromiseLinkType';
 import { isFirstContextInParent, peekBCEContextCheckCallee } from '../data/dataUtil';
 import ThenRef from '../data/ThenRef';
@@ -10,7 +9,6 @@ import { getPromiseData, getPromiseId, getPromiseOwnAsyncFunctionContextId, setP
 import asyncEventUpdateCollection from '../data/asyncEventUpdateCollection';
 import executionContextCollection from '../data/executionContextCollection';
 import nestedPromiseCollection from '../data/promiseLinkCollection';
-import valueCollection from '../data/valueCollection';
 // import { isPostEventUpdate, isPreEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 
 /** @typedef { import("../Runtime").default } Runtime */
@@ -359,7 +357,7 @@ export default class RuntimeAsync {
    * `resolve` or `reject` was called from a promise ctor's executor.
    * NOTE: Only called if resolved value is thenable.
    */
-  resolve(inner, outer, resolveType, traceId, asyncPromisifyPromiseId) {
+  resolve(inner, outer, promiseLinkType, traceId, asyncPromisifyPromiseId) {
     // NOTE: `reject` does not settle nested promises!
     const rootId = this.getCurrentVirtualRootContextId();
     const from = getPromiseId(inner);
@@ -368,7 +366,7 @@ export default class RuntimeAsync {
     //   this.logger.error(`resolve link failed: promise did not have an id, from=${from}, to=${to}, trace=${traceCollection.makeTraceInfo(traceId)}`);
     // }
     // else {
-    nestedPromiseCollection.addLink(resolveType, from, to, traceId, rootId, asyncPromisifyPromiseId);
+    nestedPromiseCollection.addLink(promiseLinkType, from, to, traceId, rootId, asyncPromisifyPromiseId);
 
     // const {
     //   preEventPromise,
@@ -391,6 +389,18 @@ export default class RuntimeAsync {
     //   argPromiseId: isThenable(resolveArg) && getPromiseId(resolveArg) || 0,
     //   resolveType
     // });
+  }
+
+  all(inner, outer, promiseLinkType, traceId) {
+    // NOTE: `reject` does not settle nested promises!
+    const rootId = this.getCurrentVirtualRootContextId();
+    const from = inner.map(p => getPromiseId(p));
+    const to = getPromiseId(outer);
+    // if (!from || !to) {
+    //   this.logger.error(`resolve link failed: promise did not have an id, from=${from}, to=${to}, trace=${traceCollection.makeTraceInfo(traceId)}`);
+    // }
+    // else {
+    nestedPromiseCollection.addLink(promiseLinkType, from, to, traceId, rootId);
   }
 
   /**

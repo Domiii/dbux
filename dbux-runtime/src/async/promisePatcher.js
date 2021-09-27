@@ -12,6 +12,7 @@ import PromiseRuntimeData from '../data/PromiseRuntimeData';
 import valueCollection from '../data/valueCollection';
 // eslint-disable-next-line max-len
 import { isMonkeyPatchedFunction, monkeyPatchFunctionHolder, tryRegisterMonkeyPatchedFunction, _registerMonkeyPatchedCallback, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
+import PromiseLinkType from '@dbux/common/src/types/constants/PromiseLinkType';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError } = newLogger('PromisePatcher');
@@ -479,6 +480,7 @@ let lastPromiseId = 0;
 // }
 
 /**
+ * @deprecated
  * @param {*} promise 
  * @param {PromiseRuntimeData} data
  */
@@ -557,7 +559,7 @@ monkeyPatchFunctionHolder(Promise, 'resolve',
     if (value !== result && isThenable(value) && getPromiseId(value)) {
       const thenRef = _makeThenRef(result, patchedFunction);
 
-      RuntimeMonitorInstance._runtime.async.resolve(value, result, ResolveType.Resolve, thenRef?.schedulerTraceId);
+      RuntimeMonitorInstance._runtime.async.resolve(value, result, PromiseLinkType.Resolve, thenRef?.schedulerTraceId);
     }
 
     return result;
@@ -572,9 +574,39 @@ monkeyPatchFunctionHolder(Promise, 'reject',
     if (value !== result && isThenable(value) && getPromiseId(value)) {
       const thenRef = _makeThenRef(result, patchedFunction);
 
-      RuntimeMonitorInstance._runtime.async.resolve(value, result, ResolveType.Reject, thenRef?.schedulerTraceId);
+      RuntimeMonitorInstance._runtime.async.resolve(value, result, PromiseLinkType.Reject, thenRef?.schedulerTraceId);
     }
 
     return result;
   }
 );
+
+function allHandler(thisArg, args, originalFunction, patchedFunction) {
+  const nestedPromises = args[0];
+
+  // NOTE: This function accepts an iterable and fails if it is not an iterable.
+  // hackfix: We convert to array before passing it in, to make sure that the iterable does not iterate more than once.
+  const nestedArr = Array.from(nestedPromises);
+
+  // call originalFunction
+  const result = originalFunction.call(thisArg, nestedArr);
+
+  if (nestedArr.length > 1) {
+    const thenRef = _makeThenRef(result, patchedFunction);
+
+    RuntimeMonitorInstance._runtime.async.all(nestedPromises, result, PromiseLinkType.All, thenRef?.schedulerTraceId);
+  }
+
+  return result;
+}
+
+monkeyPatchFunctionHolder(Promise, 'all', allHandler);
+monkeyPatchFunctionHolder(Promise, 'allSettled', allHandler);
+
+// TODO: race resolves or rejects as soon as the first of its argument promises does.
+//  -> CHAIN against the promise that won the race; ignore all others
+// monkeyPatchFunctionHolder(Promise, 'race', allHandler);
+
+// TODO: any resolves as soon as any of its argument promises resolves. If all reject, it rejects.
+//  -> CHAIN against the resolved, and all previously rejected promises; ignore all others
+// monkeyPatchFunctionHolder(Promise, 'any', allHandler);
