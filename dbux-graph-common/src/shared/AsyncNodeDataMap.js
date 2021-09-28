@@ -9,7 +9,7 @@ export default class AsyncNodeDataMap {
   }
 
   add(asyncNodeData) {
-    const { asyncNode: { applicationId, asyncNodeId } } = asyncNodeData;
+    const { applicationId, asyncNodeId } = asyncNodeData.asyncNode;
     this._nodes.set(this._makeKey(applicationId, asyncNodeId), asyncNodeData);
   }
 
