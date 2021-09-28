@@ -342,19 +342,19 @@ export default {
     const allErrorTraces = new Set();
 
     // valueRef.isError -> first occurrence of that error
-    const errValueRefs = dp.indexes.values.error.get(1) || EmptyArray;
-    errValueRefs.forEach(({ nodeId }) => {
+    const errValueRefs = dp.indexes.values.error.get(1);
+    errValueRefs?.forEach(({ nodeId }) => {
       const errorTrace = dp.util.getTraceOfDataNode(nodeId);
       allErrorTraces.add(errorTrace);
     });
 
     // trace.type === TraceType.ThrowArgument
     const throwTraces = dp.indexes.traces.byType.get(TraceType.ThrowArgument);
-    throwTraces.forEach(t => allErrorTraces.add(t));
+    throwTraces?.forEach(t => allErrorTraces.add(t));
 
     // trace.error === true;
     const popErrorTraces = dp.indexes.traces.error.get(1);
-    popErrorTraces.forEach(t => allErrorTraces.add(t));
+    popErrorTraces?.forEach(t => allErrorTraces.add(t));
 
     return Array.from(allErrorTraces).sort((a, b) => a.traceId - b.traceId);
   },
