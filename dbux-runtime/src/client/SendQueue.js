@@ -1,14 +1,14 @@
 /** @typedef { import("./Client").default } Client */
 
 import isEmpty from 'lodash/isEmpty';
-import sumBy from 'lodash/sumBy';
 import { getDataCount } from '@dbux/common/src/util/dataUtil';
 import { newLogger } from '@dbux/common/src/log/logger';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Client/queue');
 
-const Verbose = 0;
+// const Verbose = 0;
+const Verbose = 1;
 const MAX_BLOCK_SIZE = 65535; // max parameter array size for use in Webkit
 
 /**
@@ -83,8 +83,8 @@ class SendQueue {
 
   _flushLater() {
     if (!this.timer) {
-      // this.timer = Promise.resolve().then(this.flush);
-      this.timer = (process.nextTick(this.flush), 1);
+      this.timer = Promise.resolve().then(this.flush);
+      // this.timer = (process.nextTick(this.flush), 1);
       Verbose && debug(`[SQ] flushLater!`);
     }
   }
@@ -116,9 +116,9 @@ class SendQueue {
   flush = async () => {
     this._nextBuffer();
 
+    // start sending old buffers
     Verbose && debug(`[SQ] flush STA`, this.buffers.length);
 
-    // start sending old buffers
     try {
       let buf;
       while (

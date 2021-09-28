@@ -206,7 +206,11 @@ export default class Client {
   sendWithAck(msg, data) {
     return new Promise((resolve, reject) => {
       try {
-        this._socket.emit(msg, data, resolve);
+        debug(`SEND`, this._sending, msg);
+        this._socket.emit(msg, data, () => {
+          debug(`ACK`, this._sending, msg);
+          resolve();
+        });
         this._socket.once('error', reject);
       }
       catch (err) {
@@ -339,7 +343,11 @@ export default class Client {
     if (this._killTimer) {
       clearTimeout(this._killTimer);
     }
-    this._killTimer = setTimeout(this._disconnect, SleepDelay);
+    this._killTimer = setTimeout(() => {
+      if (this.hasFinished()) {
+        this._disconnect();
+      }
+    }, SleepDelay);
   }
 
   _disconnect = () => {

@@ -29,7 +29,7 @@ if (process.env.NODE_ENV === 'development') {
     
     eslint: Eslint,
 
-    bluebird: BluebirdProject,
+    zzBluebird: BluebirdProject,
 
     'Editor.md': EditorMdProject,
     webpack: WebpackProject,
