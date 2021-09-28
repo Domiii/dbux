@@ -213,7 +213,7 @@ class AsyncGraph extends GraphBase {
     // subscribe new
     for (const app of allApplications.selection.getAll()) {
       const { dataProvider } = app;
-      const unsubscribe = dataProvider.onData('asyncEventUpdates',
+      const unsubscribe = dataProvider.onData('asyncNodes',
         () => {
           this.refresh();
         }

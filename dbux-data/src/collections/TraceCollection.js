@@ -199,6 +199,9 @@ export default class TraceCollection extends Collection {
           // NOTE: we check for any `Return*` type of trace anywhere, since, in case of `finally`, the last trace might not be `return` trace
           util.getReturnTraceOfRealContext(contextId);
           trace.error = true;
+          // add to index manully, since trace.error is resolved in `postIndex`
+          this.dp.indexes.traces.error.addEntry(trace);
+          this.dp.indexes.traces.errorByContext.addEntry(trace);
 
           errorTraces = errorTraces || [];
           errorTraces.push(trace);

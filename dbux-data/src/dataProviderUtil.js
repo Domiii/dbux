@@ -328,9 +328,33 @@ export default {
     return firstTraceId === traceId;
   },
 
-  /** @param {DataProvider} dp */
+  /**
+   * Collects error traces from three sources:
+   *  1. valueRef.isError
+   *  2. trace.type === TraceType.ThrowArgument
+   *  3. trace.error === true
+   * @see https://github.com/Domiii/dbux/issues/561 for more details
+   * @param {DataProvider} dp
+   */
   getAllErrorTraces(dp) {
-    return dp.indexes.traces.error.get(1) || EmptyArray;
+    const allErrorTraces = new Set();
+
+    // valueRef.isError -> first occurrence of that error
+    const errValueRefs = dp.indexes.values.error.get(1) || EmptyArray;
+    errValueRefs.forEach(({ nodeId }) => {
+      const errorTrace = dp.util.getTraceOfDataNode(nodeId);
+      allErrorTraces.add(errorTrace);
+    });
+
+    // trace.type === TraceType.ThrowArgument
+    const throwTraces = dp.indexes.traces.byType.get(TraceType.ThrowArgument);
+    throwTraces.forEach(t => allErrorTraces.add(t));
+
+    // trace.error === true;
+    const popErrorTraces = dp.indexes.traces.error.get(1);
+    popErrorTraces.forEach(t => allErrorTraces.add(t));
+
+    return Array.from(allErrorTraces).sort((a, b) => a.traceId - b.traceId);
   },
 
   // ###########################################################################

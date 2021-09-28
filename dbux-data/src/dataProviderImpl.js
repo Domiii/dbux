@@ -17,10 +17,11 @@ import TracesByCalleeTraceIndex from './impl/indexes/TracesByCalleeTraceIndex';
 import TracesByParentStaticContextIndex from './impl/indexes/TracesByParentStaticContextIndex';
 import TracesByRealContextIndex from './impl/indexes/TracesByRealContextIndex';
 import TracesByCallIndex from './impl/indexes/TracesByCallIndex';
+import TracesByTypeIndex from './impl/indexes/TracesByTypeIndex';
 import TracesBySpecialIdentifierTypeIndex from './impl/indexes/TracesBySpecialIdentifierTypeIndex';
 import ErrorTracesIndex from './impl/indexes/ErrorTracesIndex';
 import ErrorTracesByContextIndex from './impl/indexes/ErrorTracesByContextIndex';
-import ErrorTracesByRunIndex from './impl/indexes/ErrorTracesByRunIndex';
+// import ErrorTracesByRunIndex from './impl/indexes/ErrorTracesByRunIndex';
 
 import ContextChildrenIndex from './impl/indexes/ContextChildrenIndex';
 import ContextsByStaticContextIndex from './impl/indexes/ContextsByStaticContextIndex';
@@ -60,6 +61,7 @@ import RuntimeDataStatsReporter from './RuntimeDataStatsReporter';
 import NestedPromiseFromIndex from './impl/indexes/NestedPromiseFromIndex';
 import NestedPromiseToIndex from './impl/indexes/NestedPromiseToIndex';
 import PreAsyncEventUpdatesByPostEventPromiseIndex from './impl/indexes/PreAsyncEventUpdatesByPostEventPromiseIndex';
+import ValueRefByErrorIndex from './impl/indexes/ValueRefByErrorIndex';
 
 export function newDataProvider(application) {
   const dp = new RuntimeDataProvider(application);
@@ -100,13 +102,15 @@ export function newDataProvider(application) {
   dp.addIndex(new TracesByParentStaticContextIndex());
   dp.addIndex(new TracesByRunIndex());
   dp.addIndex(new TracesByCallIndex());
+  dp.addIndex(new TracesByTypeIndex());
+  
   dp.addIndex(new ErrorTracesIndex());
   dp.addIndex(new ErrorTracesByContextIndex());
-  dp.addIndex(new ErrorTracesByRunIndex());
-
+  // dp.addIndex(new ErrorTracesByRunIndex());
+  
   dp.addIndex(new TracesByRealContextIndex());
   dp.addIndex(new TracesBySpecialIdentifierTypeIndex());
-
+  
   // data + values
   dp.addIndex(new TracesByRefIdIndex());
   dp.addIndex(new DataNodesByTraceIndex());
@@ -114,7 +118,8 @@ export function newDataProvider(application) {
   dp.addIndex(new DataNodesByValueIdIndex());
   dp.addIndex(new DataNodesByRefIdIndex());
   dp.addIndex(new DataNodesByObjectRefIdIndex());
-
+  dp.addIndex(new ValueRefByErrorIndex());
+  
   // complex indexes (that have dependencies)
   // NOTE: we are currently solving index dependencies by simply adding depdendents after dependees
   dp.addIndex(new ExecutedStaticTracesByFileIndex());

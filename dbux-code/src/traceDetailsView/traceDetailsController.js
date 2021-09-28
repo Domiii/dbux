@@ -1,4 +1,4 @@
-import { ExtensionContext } from 'vscode';
+import { commands, ExtensionContext } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
@@ -40,6 +40,7 @@ class TraceDetailsController {
     this.refresh();
     this.tracesAtCursor.needRefresh = true;
     this.tracesAtCursor.updateSelectTraceAtCursorButton();
+    this.updateErrorButton();
   }, 20);
 
   selectTraceAtCursor = () => {
@@ -93,6 +94,30 @@ class TraceDetailsController {
       this.refresh();
       this.tryReveal();
     });
+  }
+
+  /** ###########################################################################
+   * error
+   *  #########################################################################*/
+
+  getFirstError() {
+    for (const app of allApplications.selection.getAll()) {
+      const errorTraces = app.dataProvider.util.getAllErrorTraces();
+      if (errorTraces.length) {
+        return errorTraces[0];
+      }
+    }
+    return null;
+  }
+
+  updateErrorButton() {
+    const hasError = !!this.getFirstError();
+    commands.executeCommand('setContext', 'dbux.context.hasError', hasError);
+  }
+
+  showError() {
+    const firstError = this.getFirstError();
+    traceSelection.selectTrace(firstError);
   }
 }
 

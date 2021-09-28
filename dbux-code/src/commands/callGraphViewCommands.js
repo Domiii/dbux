@@ -25,19 +25,4 @@ export function initCallGraphViewCommands(context, callGraphViewController) {
     'dbuxCallGraphView.showContext',
     () => callGraphViewController.showContext()
   );
-
-  registerCommand(context,
-    'dbuxCallGraphView.showError',
-    () => callGraphViewController.showError()
-  );
-
-  registerCommand(context,
-    'dbuxCallGraphView.showError.disabled',
-    () => showInformationMessage('No error occurred.')
-  );
-
-  registerCommand(context,
-    'dbuxCallGraphView.selectError',
-    () => callGraphViewController.selectError()
-  );
 }
