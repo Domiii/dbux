@@ -206,9 +206,9 @@ export default class Client {
   sendWithAck(msg, data) {
     return new Promise((resolve, reject) => {
       try {
-        debug(`SEND`, this._sending, msg);
+        // debug(`SEND`, this._sending, msg);
         this._socket.emit(msg, data, () => {
-          debug(`ACK`, this._sending, msg);
+          // debug(`ACK`, this._sending, msg);
           resolve();
         });
         this._socket.once('error', reject);

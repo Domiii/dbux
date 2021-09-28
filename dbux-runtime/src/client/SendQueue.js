@@ -7,8 +7,8 @@ import { newLogger } from '@dbux/common/src/log/logger';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Client/queue');
 
-// const Verbose = 0;
-const Verbose = 1;
+const Verbose = 0;
+// const Verbose = 1;
 const MAX_BLOCK_SIZE = 65535; // max parameter array size for use in Webkit
 
 /**
