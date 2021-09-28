@@ -101,6 +101,11 @@ export class ResolveUpdate extends PromiseUpdate {
 // ###########################################################################
 
 export class PreCallbackUpdate extends AsyncUpdateBase {
+  /**
+   * If event was scheduled from within a promise ctor executor function (or its descendants),
+   * then this is that promise's `promiseId`.
+   */
+  promisifyPromiseId;
   isEventListener;
 }
 

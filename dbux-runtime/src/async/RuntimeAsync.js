@@ -13,7 +13,7 @@ import nestedPromiseCollection from '../data/promiseLinkCollection';
 import valueCollection from '../data/valueCollection';
 // import { isPostEventUpdate, isPreEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 
-/** @typedef { import("./Runtime").default } Runtime */
+/** @typedef { import("../Runtime").default } Runtime */
 
 export default class RuntimeAsync {
   logger = newLogger('Async');
@@ -208,8 +208,9 @@ export default class RuntimeAsync {
       context.isVirtualRoot = true;
 
       // WARNING: `new Error().stack` might internally call functions that are instrumented by user code
-      // future-work: make this configurable, as it can mess with performance
-      context.stackTrace = valueCollection._readProperty(new Error(), 'stack');
+      
+      // future-work: make this configurable, as it is extremely bad for performance, especially if source maps are enabled
+      // context.stackTrace = valueCollection._readProperty(new Error(), 'stack');
     }
 
     // // NOTE: add all unassigned roots to thread#1
@@ -358,7 +359,7 @@ export default class RuntimeAsync {
    * `resolve` or `reject` was called from a promise ctor's executor.
    * NOTE: Only called if resolved value is thenable.
    */
-  resolve(inner, outer, resolveType, traceId, isPromiseCtor) {
+  resolve(inner, outer, resolveType, traceId, asyncPromisifyPromiseId) {
     // NOTE: `reject` does not settle nested promises!
     const rootId = this.getCurrentVirtualRootContextId();
     const from = getPromiseId(inner);
@@ -367,10 +368,7 @@ export default class RuntimeAsync {
     //   this.logger.error(`resolve link failed: promise did not have an id, from=${from}, to=${to}, trace=${traceCollection.makeTraceInfo(traceId)}`);
     // }
     // else {
-
-    // TODO: `isPromiseCtor` does not matter if callback was called synchronously -> only if `rootId` is not the same as the promise ctor's `rootId`.
-    // TODO;
-    nestedPromiseCollection.addLink(resolveType, from, to, traceId, rootId, isPromiseCtor);
+    nestedPromiseCollection.addLink(resolveType, from, to, traceId, rootId, asyncPromisifyPromiseId);
 
     // const {
     //   preEventPromise,
@@ -416,6 +414,7 @@ export default class RuntimeAsync {
     const runId = this._runtime.getCurrentRunId();
     const preEventRootId = this.getCurrentVirtualRootContextId();
     const contextId = this._runtime.peekCurrentContextId();
+    const promisifyPromiseId = this._runtime.getPromisifyPromiseId();
 
     // store update
     asyncEventUpdateCollection.addPreCallbackUpdate({
@@ -424,6 +423,7 @@ export default class RuntimeAsync {
       contextId: contextId,
       schedulerTraceId,
 
+      promisifyPromiseId,
       isEventListener
     });
 

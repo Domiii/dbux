@@ -56,26 +56,35 @@ class RootEdgesTDNode extends TraceDetailNode {
     // async
     // ###########################################################################
 
-    function makeEventNode(evt, dir) {
-      const rootId = evt[`${dir}RootContextId`];
+    function makeEventNode(evt, isFrom) {
+      const dirLabel = isFrom ? 'from' : 'to';
+      const rootId = evt[`${dirLabel}RootContextId`];
       return makeTreeItem(
-        `${`${AsyncEdgeType.nameFromForce(evt.edgeType).toUpperCase()}`} ${dir} ${rootId}`,
+        `${`${AsyncEdgeType.nameFromForce(evt.edgeType).toUpperCase()}`} ${dirLabel} ${rootId}`,
         evt,
         {
           handleClick() {
-            const asyncNode = dp.util.getAsyncNode(evt.toRootContextId);
-            const schedulerTrace = dp.collections.traces.getById(asyncNode?.schedulerTraceId);
-            if (schedulerTrace) {
-              traceSelection.selectTrace(schedulerTrace);
+            let targetTrace;
+            if (isFrom) {
+              // FROM -> go to scheduler
+              const asyncNode = dp.util.getAsyncNode(evt.toRootContextId);
+              targetTrace = dp.collections.traces.getById(asyncNode?.schedulerTraceId);
+            }
+            else {
+              // TO -> go to first trace in root
+              targetTrace = dp.util.getFirstTraceOfContext(rootId);
+            }
+            if (targetTrace) {
+              traceSelection.selectTrace(targetTrace);
             }
           }
         }
       );
     }
     const inEvents = dp.indexes.asyncEvents.to.get(rootContextId)
-      ?.map(evt => makeEventNode(evt, 'from')) || EmptyArray;
+      ?.map(evt => makeEventNode(evt, true)) || EmptyArray;
     const outEvents = dp.indexes.asyncEvents.from.get(rootContextId)
-      ?.map(evt => makeEventNode(evt, 'to')) || EmptyArray;
+      ?.map(evt => makeEventNode(evt, false)) || EmptyArray;
 
     // ###########################################################################
     // final result
@@ -89,7 +98,7 @@ class RootEdgesTDNode extends TraceDetailNode {
 
   selectForkParent() {
     const { dp, asyncNode: { asyncNodeId } } = this;
-    const forkParent = dp.util.getAsyncForkParent(asyncNodeId);
+    const forkParent = dp.util.getAsyncParent(asyncNodeId);
     if (forkParent) {
       const trace = dp.util.getTraceOfAsyncNode(forkParent.asyncNodeId);
       if (trace) {

@@ -81,7 +81,11 @@ export default class CallGraph {
         const callerTrace = this.dp.util.getPreviousCallerTraceOfTrace(parentTrace.traceId);
         return callerTrace || null;
       }
-      return null;
+      else {
+        const fromAsyncEvent = this.dp.indexes.asyncEvents.to.getFirst(contextId);
+        const fromRootContext = this.dp.collections.executionContexts.getById(fromAsyncEvent?.fromRootContextId);
+        return this.dp.util.getFirstTraceOfContext(fromRootContext?.contextId) || null;
+      }
     }
   }
 

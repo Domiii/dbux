@@ -81,8 +81,8 @@ div {
  * context node
  * ############################################################################*/
 
-.node-children>.context-node {
-  margin: 2px;
+.node-children>.root-context-node {
+  margin-top: 4px;
 }
 
 .context-node .node-children {
@@ -210,16 +210,24 @@ div {
 
 .async-cell-selected {
   color: darkred;
-  border: 1px solid darkred;
-}
-
-.terminal-node {
-  border-bottom: white solid 1px;
+  border: 1px solid darkred !important;   
 }
 
 .theme-mode-dark .async-cell-selected {
   color: yellow;
-  border: 1px solid yellow;
+  border: 1px solid yellow !important;
+}
+
+.async-cell-stack-highlight {
+  border: 2px dashed rgba(0, 0, 0, 0.5);
+}
+
+.theme-mode-dark .async-cell-stack-highlight {
+  border: 2px dashed rgba(255, 255, 255, 0.5);
+}
+
+.terminal-node {
+  border-bottom: white solid 1px;
 }
 
 .async-button {
