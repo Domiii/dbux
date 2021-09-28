@@ -1,38 +1,12 @@
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { getStaticContextColor } from '@dbux/graph-common/src/shared/contextUtil';
+import AsyncNodeDataMap from '@dbux/graph-common/src/shared/AsyncNodeDataMap';
 import AsyncEventUpdateType from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import { compileHtmlElement, getMatchParent } from '../../util/domUtil';
 import { AsyncButtonClasses } from './asyncButtons';
 import GraphBase from '../GraphBase';
 
 /** @typedef {import('../controllers/PopperManager').default} PopperManager */
-
-class AsyncNodeDataMap {
-  /**
-   * @type {Map.<String, >}
-   */
-  _nodes;
-
-  constructor() {
-    this._nodes = new Map();
-  }
-
-  add(asyncNodeData) {
-    const { asyncNode: { applicationId, asyncNodeId } } = asyncNodeData;
-    this._nodes.set(this._makeKey(applicationId, asyncNodeId), asyncNodeData);
-  }
-
-  get(applicationId, asyncNodeId) {
-    return this._nodes.get(this._makeKey(applicationId, asyncNodeId));
-  }
-
-  clear() {
-    this._nodes.clear();
-  }
-
-  _makeKey(applicationId, asyncNodeId) {
-    return `${applicationId}_${asyncNodeId}`;
-  }
-}
 
 class AsyncGraph extends GraphBase {
   /**
@@ -44,7 +18,7 @@ class AsyncGraph extends GraphBase {
 
   createEl() {
     return compileHtmlElement(/*html*/`
-      <div class="graph-root grid async-graph">
+      <div class="grid async-graph">
         <div style="grid-area:header;">
           <h4>Applications:</h4>
           <pre data-el="applications"></pre>
@@ -145,12 +119,14 @@ class AsyncGraph extends GraphBase {
       asyncNode,
       rowId,
       colId,
+      width,
       displayName,
       locLabel,
 
       realStaticContextid,
       moduleName,
-      postAsyncEventUpdateType
+      postAsyncEventUpdateType,
+      hasError,
     } = nodeData;
 
     const { themeMode } = this.context;
@@ -173,19 +149,27 @@ class AsyncGraph extends GraphBase {
         shortLabel = '⬤';
         break;
     }
-    const { asyncNodeId, applicationId } = asyncNode;
+    if (hasError) {
+      shortLabel += '🔥';
+    }
+    const { asyncNodeId, applicationId, isTerminalNode } = asyncNode;
     const asyncNodeData = {
       'async-node-id': asyncNodeId,
       'application-id': applicationId
     };
     const dataAttrs = Object.entries(asyncNodeData).map(([key, val]) => `data-${key}="${val || ''}"`).join(' ');
-    const positionProps = `
+    const classes = [];
+    if (isTerminalNode) {
+      classes.push('terminal-node');
+    }
+    const classAttrs = classes.join(' ');
+    const styleProps = `
       background-color: ${backgroundColor};
-      ${makeGridPositionProp(rowId, colId)}
+      ${makeGridPositionProp(rowId, colId, { colSpan: width })}
     `;
 
     return /*html*/`
-        <div class="async-cell async-node full-width flex-row align-center" style="${positionProps}" ${dataAttrs}>
+        <div class="async-cell async-node full-width flex-row align-center ${classAttrs}" style="${styleProps}" ${dataAttrs}>
           <div class="async-brief flex-row main-axie-align-center">
             ${shortLabel}
           </div>
@@ -262,13 +246,13 @@ class AsyncGraph extends GraphBase {
   makeHeaderEl() {
     const { children, selectedApplicationId } = this.state;
     const selectedThreadIds = new Set(this.state.selectedThreadIds);
-    const threadByColId = new Set();
+    const visitedColId = new Set();
     const decorations = [];
     for (const nodeData of children) {
       const { colId, asyncNode: { applicationId, threadId, asyncNodeId } } = nodeData;
-      if (!threadByColId.has(colId)) {
-        threadByColId.add(colId);
-        const positionProp = makeGridPositionProp(1, colId, 0);
+      if (!visitedColId.has(colId)) {
+        visitedColId.add(colId);
+        const positionProp = makeGridPositionProp(1, colId, { noHeaderPadding: true });
         const dataLabel = `data-application-id="${applicationId}" data-thread-id="${threadId}" data-async-node-id="${asyncNodeId}"`;
         const selectedClass = (applicationId === selectedApplicationId && selectedThreadIds.has(threadId)) ? 'async-cell-selected' : '';
         decorations.push(/*html*/`
@@ -352,6 +336,27 @@ class AsyncGraph extends GraphBase {
           this.logger.error(`Cannot find DOM of asyncNode: ${JSON.stringify(asyncNode)} when trying to select`);
         }
       }
+    },
+
+    /**
+     * @param {{applicationId: number, asyncNodeId: number}[]} asyncNodes 
+     * @param {boolean} ignoreFailed 
+     */
+    highlightStack: (asyncNodes, ignoreFailed = false) => {
+      document.querySelectorAll('.async-node.async-cell-stack-highlight').forEach(node => {
+        node.classList.remove('async-cell-stack-highlight');
+      });
+      if (asyncNodes) {
+        asyncNodes.forEach((asyncNode) => {
+          const asyncNodeEl = this.getAsyncNodeEl(asyncNode);
+          if (asyncNodeEl) {
+            asyncNodeEl.classList.add('async-cell-stack-highlight');
+          }
+          else if (!ignoreFailed) {
+            this.logger.error(`Cannot find DOM of asyncNode: ${JSON.stringify(asyncNodes)} when trying to select`);
+          }
+        });
+      }
     }
   }
 }
@@ -361,6 +366,7 @@ export default AsyncGraph;
 // util
 // ###########################################################################
 
-function makeGridPositionProp(row, col, headerPadding = 1) {
-  return `grid-row-start: ${row + headerPadding};grid-column-start: ${col};`;
+function makeGridPositionProp(row, col, { colSpan = 1, noHeaderPadding = false } = EmptyObject) {
+  const headerPadding = noHeaderPadding ? 0 : 1;
+  return `grid-row-start: ${row + headerPadding};grid-column: ${col} / span ${colSpan};`;
 }

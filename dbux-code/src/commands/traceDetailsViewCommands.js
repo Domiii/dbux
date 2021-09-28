@@ -84,4 +84,14 @@ export function initTraceDetailsViewCommands(context, traceDetailsViewController
       node.selectScheduler();
     }
   );
+
+  registerCommand(context,
+    'dbuxTraceDetailsView.context.showError',
+    () => traceDetailsViewController.showError()
+  );
+
+  registerCommand(context,
+    'dbuxTraceDetailsView.context.showError.disabled',
+    () => showInformationMessage('No error occurred.')
+  );
 }

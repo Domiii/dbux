@@ -7,7 +7,7 @@ import RuntimeDataProvider from '../../RuntimeDataProvider';
  */
 export default class ErrorTracesIndex extends CollectionIndex {
   constructor() {
-    super('traces', 'error');
+    super('traces', 'error', { addOnNewData: false });
   }
 
   /**

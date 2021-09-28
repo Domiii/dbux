@@ -6,7 +6,7 @@ class GraphDocument extends ClientComponentEndpoint {
     const el = document.getElementById('root');
     el.innerHTML = /*html*/`<div>
       <div data-mount="Toolbar"></div>
-      <div data-mount="GraphContainer"></div>
+      <div data-mount="GraphContainer" class="grid graph-containers"></div>
     </div>`;
     return el;
   }

@@ -6,7 +6,7 @@ import RuntimeDataProvider from '../../RuntimeDataProvider';
 /** @extends {CollectionIndex<Trace>} */
 export default class ErrorTracesByContextIndex extends CollectionIndex {
   constructor() {
-    super('traces', 'errorByContext');
+    super('traces', 'errorByContext', { addOnNewData: false });
   }
 
   /** 

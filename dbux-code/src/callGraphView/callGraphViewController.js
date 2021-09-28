@@ -28,21 +28,24 @@ export class CallGraphViewController {
     this.refresh();
   }, 100);
 
+  /**
+   * @deprecated Moved to "TraceDetailsView"
+   */
   refreshIcon = () => {
-    let hasError = false;
-    for (const app of allApplications.selection.getAll()) {
-      if (app.dataProvider.util.getAllErrorTraces().length) {
-        hasError = true;
-        break;
-      }
-    }
-    commands.executeCommand('setContext', 'dbuxCallGraphView.context.mode', this._mode);
-    commands.executeCommand('setContext', 'dbuxCallGraphView.context.hasError', hasError);
+    // let hasError = false;
+    // for (const app of allApplications.selection.getAll()) {
+    //   if (app.dataProvider.util.getAllErrorTraces().length) {
+    //     hasError = true;
+    //     break;
+    //   }
+    // }
+    // commands.executeCommand('setContext', 'dbuxCallGraphView.context.mode', this._mode);
+    // commands.executeCommand('setContext', 'dbux.context.hasError', hasError);
   }
 
   initOnActivate(context) {
     commands.executeCommand('setContext', 'dbuxCallGraphView.context.filtering', false);
-    commands.executeCommand('setContext', 'dbuxCallGraphView.context.hasError', false);
+    commands.executeCommand('setContext', 'dbux.context.hasError', false);
     commands.executeCommand('setContext', 'dbuxCallGraphView.context.mode', 'context');
 
     // ########################################

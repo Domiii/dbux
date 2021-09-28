@@ -4,7 +4,7 @@ import SyncGraphBase from '../SyncGraphBase';
 export default class SyncGraph extends SyncGraphBase {
   createEl() {
     return compileHtmlElement(/*html*/`
-      <div class="graph-root">
+      <div>
         <h4>Applications:</h4>
         <pre data-el="applications"></pre>
         <div>

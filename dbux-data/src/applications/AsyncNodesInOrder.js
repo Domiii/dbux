@@ -53,7 +53,7 @@ export default class AsyncNodesInOrder {
 
     for (const app of applications) {
       this.applicationSet.subscribe(
-        app.dataProvider.onData('asyncEventUpdates', this._handleNewAsyncNode)
+        app.dataProvider.onData('asyncNodes', this._handleNewAsyncNode)
       );
     }
   }

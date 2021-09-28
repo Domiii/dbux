@@ -147,12 +147,10 @@ export default {
       // go to "real parent"
       if (isRealContextType(type)) {
         // if not virtual: go to async node's schedulerTrace
-        const { schedulerTraceId } = dp.util.getAsyncNode(contextId);
-        if (schedulerTraceId) {
-          const schedulerTrace = dp.collections.traces.getById(schedulerTraceId);
-          return dp.util.getRealContextOfContext(schedulerTrace.contextId);
-        }
-        return null;
+        // 1. get from node via asyncEdges
+        // 2. get AsyncNode n of rootId = from
+        const fromAsyncEvent = dp.indexes.asyncEvents.to.getFirst(contextId);
+        return dp.collections.executionContexts.getById(fromAsyncEvent?.fromRootContextId);
       }
       else {
         // if virtual: skip to realContext's parent and call trace (skip all virtual contexts, in general)
@@ -332,7 +330,10 @@ export default {
     return firstTraceId === traceId;
   },
 
-  /** @param {DataProvider} dp */
+  /**
+   * @see https://github.com/Domiii/dbux/issues/561
+   * @param {DataProvider} dp
+   */
   getAllErrorTraces(dp) {
     return dp.indexes.traces.error.get(1) || EmptyArray;
   },
@@ -1870,7 +1871,7 @@ export default {
   /** @param {DataProvider} dp */
   getChainFrom(dp, fromRootId) {
     const fromEdges = dp.indexes.asyncEvents.from.get(fromRootId);
-    return fromEdges?.find(edge => edge.edgeType === AsyncEdgeType.Chain) || null;
+    return fromEdges?.filter(edge => edge.edgeType === AsyncEdgeType.Chain) || EmptyArray;
   },
 
   /** @param {DataProvider} dp */
@@ -1924,12 +1925,12 @@ export default {
    */
   getPreviousAsyncEventUpdateOfTrace(dp, schedulerTraceId, beforeRootId) {
     const updates = dp.indexes.asyncEventUpdates.byTrace.get(schedulerTraceId);
-    return updates && findLast(updates, update => update.rootId < beforeRootId) || null;
+    return updates && findLast(updates, update => update.rootId < beforeRootId) || EmptyArray;
   },
 
   getAsyncPreEventUpdatesOfRoot(dp, rootId) {
     const updates = dp.indexes.asyncEventUpdates.byRoot.get(rootId);
-    return updates?.filter(upd => isPreEventUpdate(upd.type)) || null;
+    return updates?.filter(upd => isPreEventUpdate(upd.type)) || EmptyArray;
   },
 
   getAsyncPostEventUpdateOfRoot(dp, rootId) {
@@ -2030,15 +2031,23 @@ export default {
   /** @param {DataProvider} dp */
   getAsyncStackRoots(dp, traceId) {
     const roots = [];
-    // skip first virtual context
-    const realContextId = dp.util.getRealContextIdOfTrace(traceId);
-    let currentContext = dp.collections.executionContexts.getById(realContextId);
+    // // skip first virtual context
+    // const realContextId = dp.util.getRealContextIdOfTrace(traceId);
+    // let currentContext = dp.collections.executionContexts.getById(realContextId);
+    let currentContext = dp.util.getTraceContext(traceId);
     while (currentContext) {
       roots.push(currentContext);
       currentContext = dp.util.getContextAsyncStackParent(currentContext.contextId);
     }
     roots.reverse();
     return roots;
+  },
+
+  /** @param {DataProvider} dp */
+  isAsyncNodeTerminalNode(dp, asyncNodeId) {
+    const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
+    const preEventUpdates = dp.util.getAsyncPreEventUpdatesOfRoot(asyncNode.rootContextId);
+    return !preEventUpdates.length;
   },
 
   /** ###########################################################################
@@ -2549,7 +2558,7 @@ export default {
   },
 
   /** @param {DataProvider} dp */
-  getAsyncForkParent(dp, asyncNodeId) {
+  getAsyncParent(dp, asyncNodeId) {
     const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
     const parentEdge = dp.indexes.asyncEvents.to.getFirst(asyncNode.rootContextId);
     const parentRootContextId = parentEdge?.fromRootContextId;

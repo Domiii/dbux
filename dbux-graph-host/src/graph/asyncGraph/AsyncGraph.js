@@ -1,7 +1,9 @@
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection/index';
 import { makeContextLocLabel, makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
+import AsyncNodeDataMap from '@dbux/graph-common/src/shared/AsyncNodeDataMap';
 import GraphType from '@dbux/graph-common/src/shared/GraphType';
 import GraphBase from '../GraphBase';
 
@@ -33,7 +35,7 @@ class AsyncGraph extends GraphBase {
   }
 
   handleRefresh() {
-    const children = this.makeChildNodes();
+    const children = this.makeChildrenData();
     const applications = this.makeApplicationState(allApplications.selection.getAll());
     const { selectedApplicationId, selected } = allApplications.selection.data.threadSelection;
     this.setState({ children, applications, selectedApplicationId, selectedThreadIds: Array.from(selected) });
@@ -48,25 +50,12 @@ class AsyncGraph extends GraphBase {
     this.setState({ children, applications, selectedApplicationId, selectedThreadIds });
   }
 
-  makeChildNodes() {
+  makeChildrenData() {
     const appData = allApplications.selection.data;
     const asyncNodes = appData.asyncNodesInOrder.getAllActual();
 
-    // // future-work: allow select threads cross different application
-    // let relevantRootContextId;
-    // if (appData.threadSelection.isActive()) {
-    //   const selectedApp = allApplications.getById(appData.threadSelection.selectedApplicationId);
-    //   relevantRootContextId = selectedApp.dp.util.getReleventRootContextIds();
-    // }
-
-    return asyncNodes.map((asyncNode, index) => {
+    const childrenData = asyncNodes.map((asyncNode) => {
       const { applicationId, rootContextId, threadId, asyncNodeId } = asyncNode;
-
-      if (!rootContextId) {
-        // sanity check
-        this.logger.warn(`Invalid asyncNode had invalid rootContextId ${asyncNode.rootContextId} -`, asyncNode);
-        return null;
-      }
 
       if (appData.threadSelection.isActive()) {
         if (!this.isRelevantAsyncNode(asyncNode)) {
@@ -77,12 +66,6 @@ class AsyncGraph extends GraphBase {
       const app = allApplications.getById(applicationId);
       const dp = app.dataProvider;
       const context = dp.collections.executionContexts.getById(rootContextId);
-      const rowId = index + 1;
-      let colId = appData.asyncThreadsInOrder.getIndex(asyncNode);
-      if (!colId) {
-        this.logger.warn(`asyncNode not found in asyncThreadsInOrder:`, asyncNode);
-        return null;
-      }
       const displayName = makeContextLabel(context, app);
       const locLabel = makeContextLocLabel(applicationId, context);
       const syncInCount = dp.indexes.asyncEvents.syncInByRoot.getSize(rootContextId);
@@ -93,30 +76,127 @@ class AsyncGraph extends GraphBase {
       const postAsyncEventUpdate = dp.util.getAsyncPostEventUpdateOfRoot(rootContextId);
       const postAsyncEventUpdateType = postAsyncEventUpdate?.type;
 
-      let parentAsyncNodeId, parentRowId;
       const firstNode = dp.indexes.asyncNodes.byThread.getFirst(threadId);
+      const parentEdge = dp.indexes.asyncEvents.to.getFirst(rootContextId);
+      const parentEdgeType = parentEdge?.edgeType;
+      const parentAsyncNode = dp.util.getAsyncNode(parentEdge?.fromRootContextId);
+      const parentAsyncNodeId = parentAsyncNode?.asyncNodeId;
+      let parentRowId;
       if (firstNode.asyncNodeId === asyncNodeId) {
-        const parentAsyncNode = dp.util.getAsyncForkParent(asyncNodeId);
-        parentAsyncNodeId = parentAsyncNode?.asyncNodeId;
         parentRowId = parentAsyncNode && appData.asyncNodesInOrder.getIndex(parentAsyncNode);
       }
+      const hasError = !!dp.indexes.traces.errorByRoot.get(rootContextId);
 
       return {
         asyncNode,
-        rowId,
-        colId,
         displayName,
         locLabel,
         syncInCount,
         syncOutCount,
+        parentEdgeType,
         parentAsyncNodeId,
         parentRowId,
 
         realStaticContextid,
         moduleName,
-        postAsyncEventUpdateType
+        postAsyncEventUpdateType,
+        hasError,
       };
     }).filter(n => !!n);
+
+    return this.resolvePositionData(childrenData);
+  }
+
+  /**
+   * Resolve `rowId`, `colId` and `width`.
+   */
+  resolvePositionData(asyncNodeData) {
+    const dataByNodeMap = new AsyncNodeDataMap();
+    asyncNodeData.forEach(childData => dataByNodeMap.add(childData));
+
+    // rowId
+    asyncNodeData.forEach((childData, index) => {
+      childData.rowId = index + 1;
+    });
+
+    // width
+    asyncNodeData.forEach((childData) => {
+      childData.width = this.getAsyncNodeWidth(childData, dataByNodeMap);
+    });
+
+    // colId
+    /**
+     * First, find `inBlockOffset`, `blockRootId(use root asyncNodeId)`:
+     *  if fork: return 0; and record as root
+     *  if chain: return parent.inBlockOffset + parent.childOffset
+     */
+    const blockRoots = [];
+    asyncNodeData.forEach((childData) => {
+      const { parentEdgeType, parentAsyncNodeId, asyncNode: { applicationId, asyncNodeId } } = childData;
+      childData.childOffset = 0;
+      if (!parentEdgeType) {
+        childData.inBlockOffset = 0;
+        childData.blockRootId = asyncNodeId;
+        blockRoots.push(childData);
+      }
+      else if (AsyncEdgeType.is.Chain(parentEdgeType)) {
+        const parentAsyncData = dataByNodeMap.get(applicationId, parentAsyncNodeId);
+        childData.inBlockOffset = parentAsyncData.inBlockOffset + parentAsyncData.childOffset;
+        childData.blockRootId = parentAsyncData.blockRootId;
+        parentAsyncData.childOffset += childData.width;
+      }
+      else if (AsyncEdgeType.is.Fork(parentEdgeType)) {
+        childData.inBlockOffset = 0;
+        childData.blockRootId = asyncNodeId;
+        blockRoots.push(childData);
+      }
+      else {
+        this.logger.error(`ParentEdge of type "${AsyncEdgeType.nameFrom(parentEdgeType)}" not supported.`);
+        childData.inBlockOffset = 0;
+        childData.blockRootId = asyncNodeId;
+      }
+    });
+
+    /**
+     * Second, find `blockOffset` using `root.width`
+     */
+    let currentBlockOffset = 0;
+    blockRoots.forEach((root) => {
+      root.blockOffset = currentBlockOffset;
+      currentBlockOffset += root.width;
+    });
+
+    /**
+     * Finally, find `colId` by the above:
+     */
+    asyncNodeData.forEach(childData => {
+      const { blockRootId, asyncNode: { applicationId } } = childData;
+      const parentAsyncData = dataByNodeMap.get(applicationId, blockRootId);
+      if (!parentAsyncData) {
+        debugger;
+      }
+      childData.colId = parentAsyncData.blockOffset + childData.inBlockOffset;
+    });
+
+    return asyncNodeData;
+  }
+
+  getAsyncNodeWidth(nodeData, dataByNodeMap) {
+    if (!nodeData.width) {
+      const { applicationId, rootContextId } = nodeData.asyncNode;
+      const dp = allApplications.getById(applicationId).dataProvider;
+      const outChain = dp.util.getChainFrom(rootContextId);
+      const childWidth = outChain
+        .map(chain => {
+          const toAsyncNode = dp.util.getAsyncNode(chain.toRootContextId);
+          return dataByNodeMap.getByNode(toAsyncNode);
+        })
+        .reduce((sum, childNodeData) => {
+          return sum + this.getAsyncNodeWidth(childNodeData, dataByNodeMap);
+        }, 0);
+      nodeData.width = Math.max(childWidth, 1);
+    }
+    return nodeData.width;
   }
 
   makeApplicationState(apps = EmptyArray) {
@@ -139,7 +219,7 @@ class AsyncGraph extends GraphBase {
     // subscribe new
     for (const app of allApplications.selection.getAll()) {
       const { dataProvider } = app;
-      const unsubscribe = dataProvider.onData('asyncEventUpdates',
+      const unsubscribe = dataProvider.onData('asyncNodes',
         () => {
           this.refresh();
         }
@@ -150,6 +230,18 @@ class AsyncGraph extends GraphBase {
       this.addDisposable(unsubscribe);
       this._unsubscribeOnNewData.push(unsubscribe);
     }
+  }
+
+  updateStackHighlight = async (trace) => {
+    let nodes = [];
+    if (trace) {
+      const { applicationId, traceId } = trace;
+      const dp = allApplications.getById(applicationId).dataProvider;
+      nodes = dp.util.getAsyncStackRoots(traceId)
+        .map(context => dp.util.getAsyncNode(context.contextId))
+        .filter(x => !!x);
+    }
+    await this.remote.highlightStack(nodes);
   }
 
   handleTraceSelected = async (trace) => {
@@ -165,6 +257,7 @@ class AsyncGraph extends GraphBase {
       }
     }
     await this.remote.selectAsyncNode(asyncNode);
+    await this.updateStackHighlight(trace);
   }
 
   // ###########################################################################
@@ -245,7 +338,8 @@ class AsyncGraph extends GraphBase {
       allApplications.selection.data.threadSelection.select(applicationId, syncOutThreadIds);
     },
     selectRelevantThread(applicationId, threadId) {
-      allApplications.selection.data.threadSelection.select(applicationId, [threadId]);
+      this.componentManager.externals.alert('Thread selection is currently disabled.', false);
+      // allApplications.selection.data.threadSelection.select(applicationId, [threadId]);
     }
   }
 }

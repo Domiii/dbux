@@ -72,7 +72,8 @@ class ContextNode extends ClientComponentEndpoint {
       contextIdOfSelectedCallTrace,
       statsEnabled,
       moduleName,
-      visible
+      visible,
+      isRoot,
     } = this.state;
 
     const { themeMode } = this.context;
@@ -96,6 +97,10 @@ class ContextNode extends ClientComponentEndpoint {
     else {
       this.els.stats.textContent = '';
     }
+
+    decorateClasses(this.el, {
+      'root-context-node': isRoot
+    });
 
     decorateClasses(this.els.title, {
       'selected-trace': isSelected

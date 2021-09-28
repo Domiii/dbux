@@ -238,7 +238,7 @@
         }
       },
       {
-        "command": "dbuxCallGraphView.showError",
+        "command": "dbuxTraceDetailsView.context.showError",
         "title": "Show all errors",
         "icon": {
           "light": "resources/light/fire.svg",
@@ -246,19 +246,11 @@
         }
       },
       {
-        "command": "dbuxCallGraphView.showError.disabled",
+        "command": "dbuxTraceDetailsView.context.showError.disabled",
         "title": "No error occurred",
         "icon": {
           "light": "resources/light/fire_disabled.svg",
           "dark": "resources/dark/fire_disabled.svg"
-        }
-      },
-      {
-        "command": "dbuxCallGraphView.selectError",
-        "title": "Select first error trace",
-        "icon": {
-          "light": "resources/light/fire.svg",
-          "dark": "resources/dark/fire.svg"
         }
       },
       {
@@ -674,11 +666,6 @@
           "group": "navigation@5"
         },
         {
-          "command": "dbuxCallGraphView.selectError",
-          "when": "dbux.context.activated && dbuxCallGraphView.context.hasError && dbux.context.showNavButton",
-          "group": "navigation@32"
-        },
-        {
           "command": "dbuxTraceDetailsView.selectTraceAtCursor",
           "when": "dbux.context.activated && dbuxTraceDetailsView.context.hasTracesAtCursor && dbux.context.showNavButton",
           "group": "navigation@11"
@@ -884,23 +871,18 @@
         },
         {
           "command": "dbuxCallGraphView.showContext",
-          "when": "view == dbuxCallGraphView && dbuxCallGraphView.context.mode != context && dbuxCallGraphView.context.hasError",
+          "when": "view == dbuxCallGraphView && dbuxCallGraphView.context.mode != context && dbux.context.hasError",
           "group": "navigation"
         },
         {
-          "command": "dbuxCallGraphView.showError",
-          "when": "view == dbuxCallGraphView && dbuxCallGraphView.context.mode != error && dbuxCallGraphView.context.hasError",
+          "command": "dbuxTraceDetailsView.context.showError",
+          "when": "view == dbuxTraceDetailsView && dbux.context.hasError",
           "group": "navigation"
         },
         {
-          "command": "dbuxCallGraphView.showError.disabled",
-          "when": "view == dbuxCallGraphView && !dbuxCallGraphView.context.hasError",
+          "command": "dbuxTraceDetailsView.context.showError.disabled",
+          "when": "view == dbuxTraceDetailsView && !dbux.context.hasError",
           "group": "navigation"
-        },
-        {
-          "command": "dbuxCallGraphView.selectError",
-          "when": "view == dbuxTraceDetailsView && dbuxCallGraphView.context.hasError",
-          "group": "navigation@25"
         },
         {
           "command": "dbuxTraceDetailsView.selectTraceAtCursor",
@@ -1201,15 +1183,11 @@
           "when": "false"
         },
         {
-          "command": "dbuxCallGraphView.showError",
+          "command": "dbuxTraceDetailsView.context.showError",
           "when": "false"
         },
         {
-          "command": "dbuxCallGraphView.showError.disabled",
-          "when": "false"
-        },
-        {
-          "command": "dbuxCallGraphView.selectError",
+          "command": "dbuxTraceDetailsView.context.showError.disabled",
           "when": "false"
         },
         {

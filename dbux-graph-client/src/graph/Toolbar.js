@@ -1,5 +1,5 @@
 import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
-import GraphType from '@dbux/graph-common/src/shared/GraphType';
+import GraphType, { getGraphTypeDisplayName } from '@dbux/graph-common/src/shared/GraphType';
 import { compileHtmlElement, decorateClasses, decorateAttr } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
@@ -120,7 +120,7 @@ class Toolbar extends ClientComponentEndpoint {
       active: !hideAfter
     });
     decorateClasses(this.els.graphModeBtn, {
-      active: graphMode === GraphType.AsyncGraph
+      active: graphMode !== GraphType.None
     });
     decorateClasses(this.els.asyncStackBtn, {
       active: !!stackEnabled
@@ -140,6 +140,8 @@ class Toolbar extends ClientComponentEndpoint {
     [`navbar-${themeModeName}`, `bg-${themeModeName}`].forEach(mode => this.el.classList.add(mode));
     this.els.thinModeBtn.innerHTML = `${!!thinMode && '||&nbsp;' || '|&nbsp;|'}`;
     this.els.hideNewRunBtn.innerHTML = `${hideAfter ? '⚪' : '🔴'}`;
+
+    this.els.graphModeBtn.innerHTML = getGraphTypeDisplayName(graphMode);
   }
 
   renderModes() {

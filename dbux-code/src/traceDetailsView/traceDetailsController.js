@@ -6,6 +6,7 @@ import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import TraceDetailsDataProvider from './TraceDetailsNodeProvider';
 import { getOrCreateTracesAtCursor } from './TracesAtCursor';
 import { emitSelectTraceAction } from '../userEvents';
+import ErrorTraceManager from './ErrorTraceManager';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('traceDetailsController');
@@ -17,6 +18,7 @@ class TraceDetailsController {
     this.treeDataProvider = new TraceDetailsDataProvider();
     this.treeDataProvider.controller = this;
     this.tracesAtCursor = getOrCreateTracesAtCursor(context);
+    this.errorTraceManager = new ErrorTraceManager();
   }
 
   get treeView() {
@@ -40,6 +42,7 @@ class TraceDetailsController {
     this.refresh();
     this.tracesAtCursor.needRefresh = true;
     this.tracesAtCursor.updateSelectTraceAtCursorButton();
+    this.errorTraceManager.refresh();
   }, 20);
 
   selectTraceAtCursor = () => {
@@ -93,6 +96,14 @@ class TraceDetailsController {
       this.refresh();
       this.tryReveal();
     });
+  }
+
+  /** ###########################################################################
+   * error
+   *  #########################################################################*/
+
+  showError() {
+    this.errorTraceManager.showError();
   }
 }
 

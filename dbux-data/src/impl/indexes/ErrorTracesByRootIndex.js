@@ -4,9 +4,9 @@ import RuntimeDataProvider from '../../RuntimeDataProvider';
 
 
 /** @extends {CollectionIndex<Trace>} */
-export default class ErrorTracesByRunIndex extends CollectionIndex {
+export default class ErrorTracesByRootIndex extends CollectionIndex {
   constructor() {
-    super('traces', 'errorByRun');
+    super('traces', 'errorByRoot');
   }
 
   /** 
@@ -15,7 +15,7 @@ export default class ErrorTracesByRunIndex extends CollectionIndex {
    */
   makeKey(dp, trace) {
     if (trace.error) {
-      return trace.runId;
+      return trace.rootContextId;
     }
     return false;
   }

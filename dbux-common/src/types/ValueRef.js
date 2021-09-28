@@ -34,4 +34,9 @@ export default class ValueRef {
    * NOTE: when stored in DataProvider, `serialized` is deleted
    */
   serialized;
+
+  /**
+   * @type {boolean}
+   */
+  isError;
 }
