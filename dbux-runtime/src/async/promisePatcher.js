@@ -3,7 +3,7 @@ import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import ResolveType from '@dbux/common/src/types/constants/ResolveType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import isThenable from '@dbux/common/src/util/isThenable';
-import isFunction from 'lodash/isFunction';
+import PromiseLinkType from '@dbux/common/src/types/constants/PromiseLinkType';
 import traceCollection from '../data/traceCollection';
 import dataNodeCollection from '../data/dataNodeCollection';
 import { peekBCEMatchCallee, getLastContextCheckCallee, isInstrumentedFunction, peekBCEMatchCalleeUnchecked } from '../data/dataUtil';
@@ -12,7 +12,6 @@ import PromiseRuntimeData from '../data/PromiseRuntimeData';
 import valueCollection from '../data/valueCollection';
 // eslint-disable-next-line max-len
 import { isMonkeyPatchedFunction, monkeyPatchFunctionHolder, tryRegisterMonkeyPatchedFunction, _registerMonkeyPatchedCallback, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
-import PromiseLinkType from '@dbux/common/src/types/constants/PromiseLinkType';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError } = newLogger('PromisePatcher');

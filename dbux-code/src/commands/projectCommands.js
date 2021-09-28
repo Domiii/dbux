@@ -122,7 +122,7 @@ export function initProjectCommands(extensionContext, projectViewController) {
     }
     else {
       const { project } = session;
-      await projectViewController.manager.flushCache(project);
+      await project.flushCacheConfirm();
     }
   });
 
