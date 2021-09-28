@@ -1,9 +1,9 @@
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { getStaticContextColor } from '@dbux/graph-common/src/shared/contextUtil';
 import AsyncNodeDataMap from '@dbux/graph-common/src/shared/AsyncNodeDataMap';
 import { compileHtmlElement, getMatchParent } from '../../util/domUtil';
 import { AsyncButtonClasses } from './asyncButtons';
 import GraphBase from '../GraphBase';
-import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 /** @typedef {import('../controllers/PopperManager').default} PopperManager */
 
@@ -17,7 +17,7 @@ class AsyncGraph extends GraphBase {
 
   createEl() {
     return compileHtmlElement(/*html*/`
-      <div class="graph-root grid async-graph">
+      <div class="grid async-graph">
         <div style="grid-area:header;">
           <h4>Applications:</h4>
           <pre data-el="applications"></pre>

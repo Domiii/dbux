@@ -332,7 +332,8 @@ class AsyncGraph extends GraphBase {
       allApplications.selection.data.threadSelection.select(applicationId, syncOutThreadIds);
     },
     selectRelevantThread(applicationId, threadId) {
-      allApplications.selection.data.threadSelection.select(applicationId, [threadId]);
+      this.componentManager.externals.alert('Thread selection is currently disabled.', false);
+      // allApplications.selection.data.threadSelection.select(applicationId, [threadId]);
     }
   }
 }

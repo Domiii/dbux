@@ -33,6 +33,14 @@ div {
 }
 
 /** ###########################################################################
+ * Graphs
+ * ############################################################################*/
+
+.graph-containers {
+  grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+}
+
+/** ###########################################################################
  * graph nodes
  * ############################################################################ */
 
@@ -131,10 +139,6 @@ div {
   background-color: rgba(206, 206, 206, 0.815);
 }
 
-.graph-root {
-  padding-left: 2px;
-}
-
 .graph-container {
   overflow: hidden;
 }
@@ -210,7 +214,7 @@ div {
 
 .async-cell-selected {
   color: darkred;
-  border: 1px solid darkred !important;   
+  border: 1px solid darkred !important;
 }
 
 .theme-mode-dark .async-cell-selected {
@@ -274,22 +278,6 @@ div {
 
 .async-thread {
   overflow: visible;
-}
-
-/** ###########################################################################
- * async call stack
- * ############################################################################ */
-
-.async-stack {
-  position: fixed;
-  top: 30px;
-  right: 12px;
-  height: calc(100vh - 100px);
-  width: 40vw;
-  min-width: 200px;
-  border: 2px solid white;
-  /* overflow-y: scroll; */
-  z-index: 2;
 }
 
 /** ###########################################################################

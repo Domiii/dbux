@@ -6,7 +6,7 @@ import SyncGraphBase from '../SyncGraphBase';
 class AsyncStack extends SyncGraphBase {
   createEl() {
     return compileHtmlElement(/*html*/`
-      <div class="graph-root">
+      <div>
         <div>
           <h4>Async Stack</h4>
           <div>
@@ -21,11 +21,6 @@ class AsyncStack extends SyncGraphBase {
         <div data-el="nodeChildren" data-mount="ContextNode" class="node-children flex-column"></div>
       </div>
     `);
-  }
-
-  setupEl() {
-    // set graph fixed position
-    this.parent.el.classList.add('async-stack');
   }
 }
 export default AsyncStack;

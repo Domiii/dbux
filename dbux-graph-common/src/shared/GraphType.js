@@ -1,9 +1,10 @@
 import Enum from '@dbux/common/src/util/Enum';
 
 const GraphTypeObj = {
-  SyncGraph: 1,
-  AsyncGraph: 2,
-  AsyncStack: 3
+  None: 1,
+  SyncGraph: 2,
+  AsyncGraph: 3,
+  AsyncStack: 4
 };
 
 /**
@@ -23,6 +24,7 @@ export function getGraphClassByType(graphType) {
 }
 
 const EnabledGraphTypes = new Set([
+  GraphType.None,
   GraphType.SyncGraph,
   GraphType.AsyncGraph,
 ]);
@@ -33,4 +35,14 @@ export function nextGraphType(type) {
   }
   while (!EnabledGraphTypes.has(type));
   return type;
+}
+
+const DisplayNameByType = {
+  [GraphType.None]: 'Off',
+  [GraphType.SyncGraph]: 'Sync',
+  [GraphType.AsyncGraph]: 'Async',
+};
+
+export function getGraphTypeDisplayName(type) {
+  return DisplayNameByType[type];
 }

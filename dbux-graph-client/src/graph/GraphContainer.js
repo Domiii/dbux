@@ -20,6 +20,8 @@ class GraphContainer extends ClientComponentEndpoint {
 
   setupEl() {
     this.panzoom = this.initPanZoom(this.els.panzoomCanvas);
+    this.el.style.gridColumnStart = this.state.graphType;
+    this.el.style.gridRowStart = 1;
   }
 
   update() {
