@@ -55,6 +55,10 @@ export default class TraceCollection extends Collection {
     this.errorWrapMethod('resolveMonkeyParams', traces);
   }
 
+  postIndexProcessed(traces) {
+    this.errorWrapMethod('recordErrorTraces', traces);
+  }
+
   registerResultId(traces) {
     for (const { traceId, resultCallId } of traces) {
       if (resultCallId) {
@@ -167,13 +171,13 @@ export default class TraceCollection extends Collection {
    * Util used to add error trace to indexes. Since trace.error is resolved in `postIndex`, we have to add these manually.
    * @param {Trace} trace 
    */
-  recordErrorTrace(trace) {
-    if (!trace.error) {
-      // skip if already added
-      trace.error = true;
-      this.dp.indexes.traces.error.addEntry(trace);
-      this.dp.indexes.traces.errorByContext.addEntry(trace);
-      this.dp.indexes.traces.errorByRoot.addEntry(trace);
+  recordErrorTraces(traces) {
+    for (const trace of traces) {
+      if (trace.error) {
+        this.dp.indexes.traces.error.addEntry(trace);
+        this.dp.indexes.traces.errorByContext.addEntry(trace);
+        this.dp.indexes.traces.errorByRoot.addEntry(trace);
+      }
     }
   }
 
@@ -190,7 +194,7 @@ export default class TraceCollection extends Collection {
 
         const traceType = util.getTraceType(traceId);
         if (TraceType.is.ThrowArgument(traceType)) {
-          this.recordErrorTrace(trace);
+          trace.error = true;
         }
 
         // if traces were disabled, there is nothing to do here
@@ -217,7 +221,7 @@ export default class TraceCollection extends Collection {
           // NOTE: we check for any `Return*` type of trace anywhere, since, in case of `finally`, the last trace might not be `return` trace
           util.getReturnTraceOfRealContext(contextId);
 
-          this.recordErrorTrace(trace);
+          trace.error = true;
 
           errorTraces = errorTraces || [];
           errorTraces.push(trace);

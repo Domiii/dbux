@@ -1,4 +1,4 @@
-import { commands, ExtensionContext } from 'vscode';
+import { ExtensionContext } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
@@ -6,6 +6,7 @@ import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import TraceDetailsDataProvider from './TraceDetailsNodeProvider';
 import { getOrCreateTracesAtCursor } from './TracesAtCursor';
 import { emitSelectTraceAction } from '../userEvents';
+import ErrorTraceManager from './ErrorTraceManager';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('traceDetailsController');
@@ -17,6 +18,7 @@ class TraceDetailsController {
     this.treeDataProvider = new TraceDetailsDataProvider();
     this.treeDataProvider.controller = this;
     this.tracesAtCursor = getOrCreateTracesAtCursor(context);
+    this.errorTraceManager = new ErrorTraceManager();
   }
 
   get treeView() {
@@ -40,7 +42,7 @@ class TraceDetailsController {
     this.refresh();
     this.tracesAtCursor.needRefresh = true;
     this.tracesAtCursor.updateSelectTraceAtCursorButton();
-    this.updateErrorButton();
+    this.errorTraceManager.refresh();
   }, 20);
 
   selectTraceAtCursor = () => {
@@ -100,24 +102,8 @@ class TraceDetailsController {
    * error
    *  #########################################################################*/
 
-  getFirstError() {
-    for (const app of allApplications.selection.getAll()) {
-      const errorTraces = app.dataProvider.util.getAllErrorTraces();
-      if (errorTraces.length) {
-        return errorTraces[0];
-      }
-    }
-    return null;
-  }
-
-  updateErrorButton() {
-    const hasError = !!this.getFirstError();
-    commands.executeCommand('setContext', 'dbux.context.hasError', hasError);
-  }
-
   showError() {
-    const firstError = this.getFirstError();
-    traceSelection.selectTrace(firstError);
+    this.errorTraceManager.showError();
   }
 }
 
