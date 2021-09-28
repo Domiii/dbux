@@ -85,6 +85,7 @@ class AsyncGraph extends GraphBase {
       if (firstNode.asyncNodeId === asyncNodeId) {
         parentRowId = parentAsyncNode && appData.asyncNodesInOrder.getIndex(parentAsyncNode);
       }
+      const hasError = !!dp.indexes.traces.errorByRoot.get(rootContextId);
 
       return {
         asyncNode,
@@ -98,7 +99,8 @@ class AsyncGraph extends GraphBase {
 
         realStaticContextid,
         moduleName,
-        postAsyncEventUpdateType
+        postAsyncEventUpdateType,
+        hasError,
       };
     }).filter(n => !!n);
 

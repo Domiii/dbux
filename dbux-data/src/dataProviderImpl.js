@@ -17,11 +17,11 @@ import TracesByCalleeTraceIndex from './impl/indexes/TracesByCalleeTraceIndex';
 import TracesByParentStaticContextIndex from './impl/indexes/TracesByParentStaticContextIndex';
 import TracesByRealContextIndex from './impl/indexes/TracesByRealContextIndex';
 import TracesByCallIndex from './impl/indexes/TracesByCallIndex';
-import TracesByTypeIndex from './impl/indexes/TracesByTypeIndex';
+// import TracesByTypeIndex from './impl/indexes/TracesByTypeIndex';
 import TracesBySpecialIdentifierTypeIndex from './impl/indexes/TracesBySpecialIdentifierTypeIndex';
 import ErrorTracesIndex from './impl/indexes/ErrorTracesIndex';
 import ErrorTracesByContextIndex from './impl/indexes/ErrorTracesByContextIndex';
-// import ErrorTracesByRunIndex from './impl/indexes/ErrorTracesByRunIndex';
+import ErrorTracesByRootIndex from './impl/indexes/ErrorTracesByRootIndex';
 
 import ContextChildrenIndex from './impl/indexes/ContextChildrenIndex';
 import ContextsByStaticContextIndex from './impl/indexes/ContextsByStaticContextIndex';
@@ -101,11 +101,11 @@ export function newDataProvider(application) {
   dp.addIndex(new TracesByParentStaticContextIndex());
   dp.addIndex(new TracesByRunIndex());
   dp.addIndex(new TracesByCallIndex());
-  dp.addIndex(new TracesByTypeIndex());
+  // dp.addIndex(new TracesByTypeIndex());
   
   dp.addIndex(new ErrorTracesIndex());
   dp.addIndex(new ErrorTracesByContextIndex());
-  // dp.addIndex(new ErrorTracesByRunIndex());
+  dp.addIndex(new ErrorTracesByRootIndex());
   
   dp.addIndex(new TracesByRealContextIndex());
   dp.addIndex(new TracesBySpecialIdentifierTypeIndex());

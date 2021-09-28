@@ -1,6 +1,6 @@
 import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
 import SpecialObjectType from '@dbux/common/src/types/constants/SpecialObjectType';
-import { isTraceFunctionExit, isTracePop, isTraceThrow } from '@dbux/common/src/types/constants/TraceType';
+import TraceType, { isTraceFunctionExit, isTracePop, isTraceThrow } from '@dbux/common/src/types/constants/TraceType';
 import Trace from '@dbux/common/src/types/Trace';
 import Collection from '../Collection';
 
@@ -163,6 +163,20 @@ export default class TraceCollection extends Collection {
     }
   }
 
+  /**
+   * Util used to add error trace to indexes. Since trace.error is resolved in `postIndex`, we have to add these manually.
+   * @param {Trace} trace 
+   */
+  recordErrorTrace(trace) {
+    if (!trace.error) {
+      // skip if already added
+      trace.error = true;
+      this.dp.indexes.traces.error.addEntry(trace);
+      this.dp.indexes.traces.errorByContext.addEntry(trace);
+      this.dp.indexes.traces.errorByRoot.addEntry(trace);
+    }
+  }
+
   resolveErrorTraces(traces) {
     let errorTraces;
     const { dp: { util } } = this;
@@ -174,12 +188,16 @@ export default class TraceCollection extends Collection {
           previousTrace: previousTraceId
         } = trace;
 
+        const traceType = util.getTraceType(traceId);
+        if (TraceType.is.ThrowArgument(traceType)) {
+          this.recordErrorTrace(trace);
+        }
+
         // if traces were disabled, there is nothing to do here
         if (!util.isContextTraced(contextId)) {
           continue;
         }
 
-        const traceType = util.getTraceType(traceId);
         if (!isTracePop(traceType) || !previousTraceId) {
           // only (certain) pop traces can generate errors
           continue;
@@ -193,15 +211,13 @@ export default class TraceCollection extends Collection {
         }
 
         const previousTraceType = util.getTraceType(previousTraceId);
-        if (!isTraceFunctionExit(previousTraceType) && 
+        if (!isTraceFunctionExit(previousTraceType) &&
           !util.getReturnTraceOfRealContext(contextId)) {
           // before pop must be `EndOfContext` or `Return*` trace, else -> we detect an error!
           // NOTE: we check for any `Return*` type of trace anywhere, since, in case of `finally`, the last trace might not be `return` trace
           util.getReturnTraceOfRealContext(contextId);
-          trace.error = true;
-          // add to index manully, since trace.error is resolved in `postIndex`
-          this.dp.indexes.traces.error.addEntry(trace);
-          this.dp.indexes.traces.errorByContext.addEntry(trace);
+
+          this.recordErrorTrace(trace);
 
           errorTraces = errorTraces || [];
           errorTraces.push(trace);

@@ -125,7 +125,8 @@ class AsyncGraph extends GraphBase {
 
       realStaticContextid,
       moduleName,
-      postAsyncEventUpdateType
+      postAsyncEventUpdateType,
+      hasError,
     } = nodeData;
 
     const { themeMode } = this.context;
@@ -147,6 +148,9 @@ class AsyncGraph extends GraphBase {
       default:
         shortLabel = '⬤';
         break;
+    }
+    if (hasError) {
+      shortLabel += '🔥';
     }
     const { asyncNodeId, applicationId, isTerminalNode } = asyncNode;
     const asyncNodeData = {
