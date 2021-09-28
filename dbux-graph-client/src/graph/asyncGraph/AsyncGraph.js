@@ -1,6 +1,7 @@
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { getStaticContextColor } from '@dbux/graph-common/src/shared/contextUtil';
 import AsyncNodeDataMap from '@dbux/graph-common/src/shared/AsyncNodeDataMap';
+import AsyncEventUpdateType from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import { compileHtmlElement, getMatchParent } from '../../util/domUtil';
 import { AsyncButtonClasses } from './asyncButtons';
 import GraphBase from '../GraphBase';
@@ -121,8 +122,10 @@ class AsyncGraph extends GraphBase {
       width,
       displayName,
       locLabel,
+
       realStaticContextid,
-      moduleName
+      moduleName,
+      postAsyncEventUpdateType
     } = nodeData;
 
     const { themeMode } = this.context;
@@ -130,7 +133,21 @@ class AsyncGraph extends GraphBase {
 
     const backgroundColor = getStaticContextColor(themeMode, realStaticContextid, !!moduleName);
 
-    const dotLabel = '⬤';
+    let shortLabel;
+    switch (postAsyncEventUpdateType) {
+      case AsyncEventUpdateType.PostAwait:
+        shortLabel = 'A';
+        break;
+      case AsyncEventUpdateType.PostThen:
+        shortLabel = 'T';
+        break;
+      case AsyncEventUpdateType.PostCallback:
+        shortLabel = 'C';
+        break;
+      default:
+        shortLabel = '⬤';
+        break;
+    }
     const { asyncNodeId, applicationId, isTerminalNode } = asyncNode;
     const asyncNodeData = {
       'async-node-id': asyncNodeId,
@@ -150,7 +167,7 @@ class AsyncGraph extends GraphBase {
     return /*html*/`
         <div class="async-cell async-node full-width flex-row align-center ${classAttrs}" style="${styleProps}" ${dataAttrs}>
           <div class="async-brief flex-row main-axie-align-center">
-            ${dotLabel}
+            ${shortLabel}
           </div>
           <div class="async-detail flex-column cross-axis-align-center">
             <div class="ellipsis-10">${displayName}</div>

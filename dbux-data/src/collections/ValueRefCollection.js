@@ -29,7 +29,7 @@ export default class ValueRefCollection extends Collection {
       }
       if (!('value' in valueRef)) {
         const {
-          nodeId,
+          nodeId: childNodeId,
           category,
           serialized,
           pruneState
@@ -39,7 +39,7 @@ export default class ValueRefCollection extends Collection {
           // map: [childRefId, childValue] => [(creation)nodeId, childRefId, childValue]
           valueRef.value = Object.fromEntries(
             Object.entries(serialized)
-              .map(([key, childEntry]) => [key, [nodeId, ...childEntry]])
+              .map(([key, [childRefId, childValue]]) => [key, [childNodeId, childRefId, childValue]])
           );
         }
         else {

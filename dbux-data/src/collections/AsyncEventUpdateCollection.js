@@ -225,6 +225,9 @@ export default class AsyncEventUpdateCollection extends Collection {
       this.logger.trace(`[getOrAssignRootThreadId] no rootId given, trace: ${this.dp.util.makeTraceInfo(schedulerTraceId)}`);
       return 0;
     }
+    if (Array.isArray(rootId)) {
+      return rootId.map(r => this.getOrAssignRootThreadId(r, schedulerTraceId));
+    }
     let asyncNode = this.dp.indexes.asyncNodes.byRoot.getUnique(rootId);
     let threadId = asyncNode?.threadId;
     if (!threadId) {
@@ -290,6 +293,12 @@ export default class AsyncEventUpdateCollection extends Collection {
 
     toThreadId = isChain ? fromThreadId : this.newThreadId();
 
+    if (Array.isArray(toThreadId)) {
+      // NOTE: `toThreadId` should only be a singular threadId, even if `from` is multiple?
+      // eslint-disable-next-line prefer-destructuring
+      toThreadId = toThreadId[0];
+    }
+
     const oldToThreadId = dp.util.getAsyncRootThreadId(toRootId);
     if (oldToThreadId) {
       // toRootId was previously assigned a thread id already -> should not happen
@@ -309,21 +318,31 @@ export default class AsyncEventUpdateCollection extends Collection {
 
     // let toThreadId = toRootId && this.getOrAssignRootThreadId(toRootId, schedulerTraceId) || 0;
 
-    if (fromRootId >= toRootId) {
-      this.logger.warn(`addEventEdge with fromRootId (${fromRootId}) >= toRootId (${toRootId})`);
-    }
+    // this.logger.debug(`addEventEdge`, fromRootId, dp.util.getChainFrom(fromRootId));
 
     // add edge
     const edgeType = isChain ? AsyncEdgeType.Chain : AsyncEdgeType.Fork;
-    const newEdge = this.addEdge(fromRootId, toRootId, edgeType);
-    if (!newEdge) {
-      return null;
+    /* const newEdge =  */this._addEventEdges(fromRootId, toRootId, edgeType);
+    // if (!newEdge) {
+    //   return null;
+    // }
+
+    // // eslint-disable-next-line max-len
+    // // this.logger.debug(`[add${AsyncEdgeType.nameFromForce(edgeType)}] [${fromThreadId !== toThreadId ? `${fromThreadId}->` : ''}${toThreadId}] ${fromRootId}->${toRootId} (tid=${schedulerTraceId}${isNested ? `, nested` : ''})`);
+
+    // return newEdge;
+  }
+  
+  _addEventEdges(fromRootId, toRootId, edgeType) {
+    if (Array.isArray(fromRootId)) {
+      return fromRootId.map(from => this._addEventEdges(from, toRootId, edgeType));
     }
-
-    // eslint-disable-next-line max-len
-    // this.logger.debug(`[add${AsyncEdgeType.nameFromForce(edgeType)}] [${fromThreadId !== toThreadId ? `${fromThreadId}->` : ''}${toThreadId}] ${fromRootId}->${toRootId} (tid=${schedulerTraceId}${isNested ? `, nested` : ''})`);
-
-    return newEdge;
+    else {
+      if (fromRootId >= toRootId) {
+        this.logger.warn(`addEventEdge with fromRootId (${fromRootId}) >= toRootId (${toRootId})`);
+      }
+      return this.addEdge(fromRootId, toRootId, edgeType);
+    }
   }
 
   addEdge(fromRootId, toRootId, edgeType) {

@@ -44,11 +44,16 @@ export default function patchFunction(runtimeMonitor) {
   monkeyPatchMethod(Function, 'call',
     (actualFunction, args, originalCall, patchedCall) => {
       const bceTrace = peekBCEMatchCallee(patchedCall);
+      let argTids;
       if (bceTrace?.data) {
         setCalledFunctionTid(bceTrace, SpecialCallType.Call);
+        argTids = bceTrace.data.argTids;
       }
-
-      // console.warn(`call()`, actualFunction.name, bceTrace.traceId);
+      else {
+        argTids = EmptyArray;
+      }
+      
+      runtimeMonitor.callbackPatcher.monkeyPatchArgs(actualFunction, bceTrace?.traceId || 0, args, EmptyArray, argTids);
 
       return originalCall.bind(actualFunction)(...args);
     }

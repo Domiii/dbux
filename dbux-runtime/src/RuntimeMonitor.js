@@ -996,8 +996,11 @@ export default class RuntimeMonitor {
 
     // console.trace(`BCE`, callee.toString(), callee);
 
-    this.callbackPatcher.monkeyPatchArgs(callee, callId, args, spreadArgs, argTids);
-    return callee;
+    const overrideCallee = this.callbackPatcher.monkeyPatchCallee(callee);
+    if (!overrideCallee) {
+      this.callbackPatcher.monkeyPatchArgs(callee, callId, args, spreadArgs, argTids);
+    }
+    return overrideCallee || callee;
   }
 
   traceCallResult(programId, value, tid, callId) {
@@ -1089,7 +1092,7 @@ export default class RuntimeMonitor {
     if (!this._ensureExecuting()) {
       return value;
     }
-    
+
     // DataNodeType.Create
     const objectNode = dataNodeCollection.createOwnDataNode(value, objectTid, DataNodeType.Write, null, null, ShallowValueRefMeta);
     const objectNodeId = objectNode.nodeId;

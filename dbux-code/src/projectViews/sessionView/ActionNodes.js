@@ -132,7 +132,7 @@ class RunNode extends SessionNode {
   }
 
   async flushCache() {
-    return await this.manager.flushCache(this.bug.project);
+    return await this.bug.project.flushCacheConfirm();
   }
 }
 

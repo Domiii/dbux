@@ -10,7 +10,9 @@ import { peekBCEMatchCallee, getLastContextCheckCallee, isInstrumentedFunction, 
 import PromiseRuntimeData from '../data/PromiseRuntimeData';
 // import traceCollection from '../data/traceCollection';
 import valueCollection from '../data/valueCollection';
-import { isMonkeyPatchedFunction, monkeyPatchFunctionHolder, tryRegisterMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
+// eslint-disable-next-line max-len
+import { isMonkeyPatchedFunction, monkeyPatchFunctionHolder, tryRegisterMonkeyPatchedFunction, _registerMonkeyPatchedCallback, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
+import PromiseLinkType from '@dbux/common/src/types/constants/PromiseLinkType';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError } = newLogger('PromisePatcher');
@@ -111,7 +113,7 @@ function patchThenCallback(cb, thenRef) {
   // }
 
   const originalCb = cb;
-  return function patchedThenCb(...args) {
+  function patchedThenCb(...args) {
     if (activeThenCbCount) {
       // NOTE: then callbacks should never be nested (might hint at a Dbux bug)
       warn(`a "then" callback was called before a previous "then" callback has finished, schedulerTraceId=${thenRef.schedulerTraceId}`);
@@ -172,7 +174,11 @@ function patchThenCallback(cb, thenRef) {
       --activeThenCbCount;
     }
     return returnValue;
-  };
+  }
+
+  _registerMonkeyPatchedCallback(cb, patchedThenCb);
+
+  return patchedThenCb;
 }
 
 /**
@@ -321,8 +327,6 @@ function patchPromiseMethods(holder) {
 function patchPromiseClass(BasePromiseClass) {
   class PatchedPromise extends BasePromiseClass {
     constructor(originalExecutor) {
-      // const bceTrace = peekBCEMatchCallee(PatchedPromise);
-      // const isCallbackInstrumented = !!bceTrace && typeof executor === 'function'; // check if its a function, too
       const isExecutorInstrumented = isInstrumentedFunction(originalExecutor);
       let patchedExecutor;
       /**
@@ -332,19 +336,19 @@ function patchPromiseClass(BasePromiseClass) {
       let deferredCall;
       let superCalled = false;
 
+      /**
+       * hackfix: use a placeholder (since we cannot get a promiseId, before promise actually exists)
+       */
+      const promiseIdPlaceholder = valueCollection.generatePlaceholder();
+
       if (!isExecutorInstrumented) {
         patchedExecutor = originalExecutor;
       }
       else {
         // wrapExecutor = executor;
-        
+
         patchedExecutor = (resolve, reject) => {
           const executorRootId = RuntimeMonitorInstance.runtime.getCurrentVirtualRootContextId();
-
-          // register promise
-          const bce = peekBCEMatchCalleeUnchecked(PatchedPromise);
-          bce && dataNodeCollection.createBCEOwnDataNode(this, bce.traceId, DataNodeType.Write);
-          const thisPromiseId = bce && getPromiseId(this) || 0;
 
           const wrapResolve = (...args) => {
             // Event: resolve
@@ -357,6 +361,7 @@ function patchPromiseClass(BasePromiseClass) {
               const thenRef = _makeThenRef(this, wrapResolve);
               if (thenRef) {
                 const inner = resolveArg;
+                const thisPromiseId = getPromiseId(this) || 0;
                 const asyncPromisifyPromiseId = executorRootId !== thenRef.rootId ? thisPromiseId : 0; // we only care about promisify, if async
                 RuntimeMonitorInstance._runtime.async.resolve(
                   inner, this, ResolveType.Resolve, thenRef.schedulerTraceId, asyncPromisifyPromiseId
@@ -376,8 +381,9 @@ function patchPromiseClass(BasePromiseClass) {
               const thenRef = _makeThenRef(this, wrapReject);
               if (thenRef) {
                 // NOTE: reject can also nest a promise (but will pass the promise (not its resolved value) to `catch`)
-                const asyncPromisifyPromiseId = executorRootId !== thenRef.rootId ? thisPromiseId : 0; // we only care about promisify, if async
                 const inner = err;
+                const thisPromiseId = getPromiseId(this) || 0;
+                const asyncPromisifyPromiseId = executorRootId !== thenRef.rootId ? thisPromiseId : 0; // we only care about promisify, if async
                 RuntimeMonitorInstance._runtime.async.resolve(
                   inner, this, ResolveType.Reject, thenRef.schedulerTraceId, asyncPromisifyPromiseId
                 );
@@ -388,13 +394,13 @@ function patchPromiseClass(BasePromiseClass) {
 
           try {
             // maintain promisify stack
-            RuntimeMonitorInstance.runtime.promisifyStart(thisPromiseId);
+            RuntimeMonitorInstance.runtime.promisifyStart(promiseIdPlaceholder);
 
             // call actual executor
             originalExecutor(wrapResolve, wrapReject);
           }
           finally {
-            RuntimeMonitorInstance.runtime.promisifyEnd(thisPromiseId);
+            RuntimeMonitorInstance.runtime.promisifyEnd(promiseIdPlaceholder);
           }
         };
       }
@@ -404,11 +410,21 @@ function patchPromiseClass(BasePromiseClass) {
       // call actual ctor
       super(patchedExecutor);
 
+      if (isExecutorInstrumented) {
+        // -> make sure `promiseId` is registered (exception: add to BCE for now)
+        const bce = peekBCEMatchCalleeUnchecked(PatchedPromise);
+        const dataNode = bce && dataNodeCollection.createBCEOwnDataNode(this, bce.traceId, DataNodeType.Write);
+
+        // resolve placeholder
+        promiseIdPlaceholder.resolve(dataNode?.refId || 0);
+      }
+
       // finally // NOTE: if an exception was thrown during `super`, `this` must not be accessed.
       superCalled = true;
 
       if (deferredCall) {
         // deferred until after `super` was called
+
         deferredCall();
       }
 
@@ -430,6 +446,9 @@ function patchPromiseClass(BasePromiseClass) {
     }
   }
 
+  // register this, so we don't accidentally patch its arguments
+  _registerMonkeyPatchedFunction(Promise, PatchedPromise);
+
   patchPromiseMethods(BasePromiseClass.prototype);
 
   return PatchedPromise;
@@ -448,19 +467,20 @@ export function getPromiseId(promise) {
 
 let lastPromiseId = 0;
 
-function newPromiseId() {
-  return ++lastPromiseId;
-}
+// function newPromiseId() {
+//   return ++lastPromiseId;
+// }
 
-function recordUnseenPromise(promise) {
-  const currentRootId = RuntimeMonitorInstance.getCurrentVirtualRootContextId();
-  setPromiseData(promise, {
-    rootId: currentRootId,
-    id: newPromiseId()
-  });
-}
+// function recordUnseenPromise(promise) {
+//   const currentRootId = RuntimeMonitorInstance.getCurrentVirtualRootContextId();
+//   setPromiseData(promise, {
+//     rootId: currentRootId,
+//     id: newPromiseId()
+//   });
+// }
 
 /**
+ * @deprecated
  * @param {*} promise 
  * @param {PromiseRuntimeData} data
  */
@@ -539,7 +559,7 @@ monkeyPatchFunctionHolder(Promise, 'resolve',
     if (value !== result && isThenable(value) && getPromiseId(value)) {
       const thenRef = _makeThenRef(result, patchedFunction);
 
-      RuntimeMonitorInstance._runtime.async.resolve(value, result, ResolveType.Resolve, thenRef?.schedulerTraceId);
+      RuntimeMonitorInstance._runtime.async.resolve(value, result, PromiseLinkType.Resolve, thenRef?.schedulerTraceId);
     }
 
     return result;
@@ -554,9 +574,39 @@ monkeyPatchFunctionHolder(Promise, 'reject',
     if (value !== result && isThenable(value) && getPromiseId(value)) {
       const thenRef = _makeThenRef(result, patchedFunction);
 
-      RuntimeMonitorInstance._runtime.async.resolve(value, result, ResolveType.Reject, thenRef?.schedulerTraceId);
+      RuntimeMonitorInstance._runtime.async.resolve(value, result, PromiseLinkType.Reject, thenRef?.schedulerTraceId);
     }
 
     return result;
   }
 );
+
+function allHandler(thisArg, args, originalFunction, patchedFunction) {
+  const nestedPromises = args[0];
+
+  // NOTE: This function accepts an iterable and fails if it is not an iterable.
+  // hackfix: We convert to array before passing it in, to make sure that the iterable does not iterate more than once.
+  const nestedArr = Array.from(nestedPromises);
+
+  // call originalFunction
+  const result = originalFunction.call(thisArg, nestedArr);
+
+  if (nestedArr.length > 1) {
+    const thenRef = _makeThenRef(result, patchedFunction);
+
+    RuntimeMonitorInstance._runtime.async.all(nestedPromises, result, PromiseLinkType.All, thenRef?.schedulerTraceId);
+  }
+
+  return result;
+}
+
+monkeyPatchFunctionHolder(Promise, 'all', allHandler);
+monkeyPatchFunctionHolder(Promise, 'allSettled', allHandler);
+
+// TODO: race resolves or rejects as soon as the first of its argument promises does.
+//  -> CHAIN against the promise that won the race; ignore all others
+// monkeyPatchFunctionHolder(Promise, 'race', allHandler);
+
+// TODO: any resolves as soon as any of its argument promises resolves. If all reject, it rejects.
+//  -> CHAIN against the resolved, and all previously rejected promises; ignore all others
+// monkeyPatchFunctionHolder(Promise, 'any', allHandler);

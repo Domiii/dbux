@@ -65,15 +65,16 @@ class RootEdgesTDNode extends TraceDetailNode {
         {
           handleClick() {
             let targetTrace;
-            if (isFrom) {
-              // FROM -> go to scheduler
-              const asyncNode = dp.util.getAsyncNode(evt.toRootContextId);
-              targetTrace = dp.collections.traces.getById(asyncNode?.schedulerTraceId);
-            }
-            else {
-              // TO -> go to first trace in root
-              targetTrace = dp.util.getFirstTraceOfContext(rootId);
-            }
+            // if (isFrom) {
+            //   // FROM -> go to scheduler
+            //   const asyncNode = dp.util.getAsyncNode(rootId);
+            //   targetTrace = dp.collections.traces.getById(asyncNode?.schedulerTraceId);
+            // }
+            // else {
+
+            // -> go to first trace in root
+            targetTrace = dp.util.getFirstTraceOfContext(rootId);
+            // }
             if (targetTrace) {
               traceSelection.selectTrace(targetTrace);
             }
@@ -81,9 +82,9 @@ class RootEdgesTDNode extends TraceDetailNode {
         }
       );
     }
-    const inEvents = dp.indexes.asyncEvents.to.get(rootContextId)
+    const fromEvents = dp.indexes.asyncEvents.to.get(rootContextId)
       ?.map(evt => makeEventNode(evt, true)) || EmptyArray;
-    const outEvents = dp.indexes.asyncEvents.from.get(rootContextId)
+    const toEvents = dp.indexes.asyncEvents.from.get(rootContextId)
       ?.map(evt => makeEventNode(evt, false)) || EmptyArray;
 
     // ###########################################################################
@@ -91,8 +92,8 @@ class RootEdgesTDNode extends TraceDetailNode {
     // ###########################################################################
 
     return [
-      ...inEvents,
-      ...outEvents
+      ...fromEvents,
+      ...toEvents
     ];
   }
 
@@ -170,6 +171,17 @@ export default class AsyncTDNode extends TraceDetailNode {
 
   get collapseChangeUserActionType() {
     return UserActionType.TDAsyncUse;
+  }
+
+  init() {
+    const { dp, trace: {
+      rootContextId
+    } } = this;
+
+    const fromRootId = dp.indexes.asyncEvents.to.get(rootContextId)
+      ?.flatMap(evt => evt.fromRootContextId) || EmptyArray;
+
+    this.description = `(root=${rootContextId}, from=${fromRootId.join(',') || '?'})`;
   }
 
   buildChildren() {

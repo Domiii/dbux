@@ -104,11 +104,22 @@ const callTemplatesDefault = {
   `),
 
   /**
-   * @see https://github.com/babel/babel/blob/master/packages/babel-plugin-proposal-optional-chaining/src/index.js
+   * NOTE: optional chaining, for some reason, does not accept `args` like the others do...
+   * 
+   * @see https://babeljs.io/docs/en/babel-plugin-proposal-optional-chaining#example-1
+   * @see https://github.com/babel/babel/blob/master/packages/babel-plugin-proposal-optional-chaining/src/index.js#L111
    */
-  OptionalCallExpression: template(`
-    %%callee%%?.(%%args%%)
-  `),
+  OptionalCallExpression: template(
+    // `%%callee%%?.apply(%%o%%, %%args%%)`
+    `%%callee%% == null ? void 0 : %%callee%%(%%args%%)`
+  ),
+
+  // /**
+  //  * @see https://github.com/babel/babel/blob/master/packages/babel-plugin-proposal-optional-chaining/src/index.js
+  //  */
+  // OptionalCallExpression: template(`
+  //   %%callee%%?.(%%args%%)
+  // `),
 
   NewExpression: template(`
     new %%callee%%(%%args%%)
@@ -117,15 +128,23 @@ const callTemplatesDefault = {
 
 function buildCallNodeDefault(path, callee, args) {
   const { type } = path.node;
-  const callTempl = callTemplatesDefault[type];
-  const astNode = callTempl({
+  const callTemplate = callTemplatesDefault[type];
+  const templateArgs = {
     callee,
     args
-  }).expression;
+  };
+
+  let astNode = callTemplate(templateArgs);
+  if (astNode.expression) {
+    // NOTE: `template` generates `ExpressionStatement`
+    astNode = astNode.expression;
+  }
 
   // NOTE: not sure if this can improve call trace accuracy
   astNode.loc = path.node.loc;
-  astNode.callee.loc = path.node.callee.loc;
+
+  // future-work: requires a bit more work in case of optional chaining
+  astNode.callee && (astNode.callee.loc = path.node.callee.loc);
 
   return astNode;
 }
@@ -175,6 +194,8 @@ const callTemplatesME = {
   // OptionalCallExpression: () => buildOptionalCallExpressionME,
 
   /**
+   * NOTE: optional chaining, for some reason, does not accept `args` like the others do...
+   * 
    * @see https://babeljs.io/docs/en/babel-plugin-proposal-optional-chaining#example-1
    * @see https://github.com/babel/babel/blob/master/packages/babel-plugin-proposal-optional-chaining/src/index.js#L111
    */

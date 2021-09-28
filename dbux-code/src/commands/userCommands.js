@@ -197,6 +197,11 @@ export function initUserCommands(extensionContext) {
       const nodeId = parseInt(userInput.substring(1), 10);
       traceId = dp.util.getDataNode(nodeId)?.traceId;
     }
+    else if (userInput.startsWith('v')) {
+      // get valueRef
+      const refId = parseInt(userInput.substring(1), 10);
+      traceId = dp.util.getFirstTraceByRefId(refId)?.traceId;
+    }
     else {
       if (userInput.startsWith('t')) {
         userInput = userInput.substring(1);

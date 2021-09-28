@@ -5,9 +5,10 @@
 set -e # cancel on error
 # set -x # verbose echo mode
 
-# fname="__samplesInput__/async/await3"
-# fname="case-studies/async/chain/chains_promise_vs_async"
-fname="case-studies/async/producer_consumer/producer_consumer_promise"
+fname="__samplesInput__/arrays-push"
+# fname="__samplesInput__/async/callbacks_bind_apply_call"
+# fname="case-studies/async/"
+# fname="case-studies/async/producer_consumer/producer_consumer_promise"
 
 
 

@@ -71,6 +71,7 @@ export default class RuntimeClient extends SocketClient {
   }
 
   _handleData = async (data, ack) => {
+    debug(`handleData START`, data);
     try {
       await runTaskWithProgressBar(async (progress) => {
         progress.report({ message: 'Processing incoming runtime data...' });
@@ -81,6 +82,7 @@ export default class RuntimeClient extends SocketClient {
       logError(`error while adding data:`, err);
     }
     finally {
+      debug(`handleData ACK`);
       ack('data'); // send ack
     }
   }

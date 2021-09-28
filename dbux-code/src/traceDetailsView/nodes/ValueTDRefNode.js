@@ -55,9 +55,10 @@ export default class ValueTDRefNode extends ValueNode {
 
   buildChildren() {
     const { rootDataNode, dp, refId } = this;
-    const entries = Object.entries(dp.util.constructValueObjectShallow(refId, rootDataNode.nodeId));
+    const valueObj = dp.util.constructValueObjectShallow(refId, rootDataNode.nodeId);
+    const entries = valueObj && Object.entries(valueObj);
 
-    if (entries.length) {
+    if (entries?.length) {
       return entries.map(([key, [childNodeId, childRefId, childValue]]) => {
         if (childRefId) {
           return this.treeNodeProvider.buildNode(
@@ -72,6 +73,11 @@ export default class ValueTDRefNode extends ValueNode {
       });
     }
     else {
+      // node was omitted, or in trouble for other reasons
+      const simpleValue = this.dp.collections.values.getById(refId)?.value;
+      if (simpleValue !== undefined) {
+        return [];
+      }
       return [EmptyValueNode.instance];
     }
   }

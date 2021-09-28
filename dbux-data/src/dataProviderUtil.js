@@ -2,6 +2,7 @@ import findLast from 'lodash/findLast';
 import groupBy from 'lodash/groupBy';
 import isNumber from 'lodash/isNumber';
 import truncate from 'lodash/truncate';
+import isPlainObject from 'lodash/isPlainObject';
 import TraceType, { hasDynamicTypes, isTracePop, isBeforeCallExpression } from '@dbux/common/src/types/constants/TraceType';
 import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
 import { pushArrayOfArray } from '@dbux/common/src/util/arrayUtil';
@@ -19,6 +20,7 @@ import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import SpecialCallType from '@dbux/common/src/types/constants/SpecialCallType';
 import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
 import AsyncEventUpdateType, { isPostEventUpdate, isPreEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
+import { AsyncUpdateBase, PreCallbackUpdate } from '@dbux/common/src/types/AsyncEventUpdate';
 import { locToString } from './util/misc';
 import { makeContextSchedulerLabel, makeTraceLabel } from './helpers/makeLabels';
 
@@ -501,7 +503,7 @@ export default {
     const dataNode = dp.collections.dataNodes.getById(nodeId);
     if (isRoot) {
       _visited = new Set();
-      ({ refId: _refId } = dataNode);
+      ({ refId: _refId, value: _value } = dataNode);
       _rootNodeId = nodeId;
     }
 
@@ -545,6 +547,19 @@ export default {
 
   /**
    * @param {DataProvider} dp
+   * @return {[number, number, number][]} childNodeId, childRefId, childValue
+   */
+  getDataNodeArrayChildren(dp, refId) {
+    const valueRef = dp.collections.values.getById(refId);
+    const { category } = valueRef;
+    if (isPlainObject(valueRef.value) && ValueTypeCategory.is.Array(category)) {
+      return Object.values(valueRef.value);
+    }
+    return null;
+  },
+
+  /**
+   * @param {DataProvider} dp
    * @return {{prop: number}} returns the `prop`, `nodeId` key-value pairs
    */
   constructValueObjectShallow(dp, refId, terminateNodeId = Infinity) {
@@ -556,9 +571,11 @@ export default {
      */
     let entries;
     const { category } = valueRef;
+    if (!isPlainObject(valueRef.value)) {
+      return null;
+    }
     if (ValueTypeCategory.is.Array(category)) {
-      entries = [];
-      Object.entries(valueRef.value).forEach(([prop, val]) => entries[prop] = val);
+      entries = dp.util.getDataNodeArrayChildren(refId);
     }
     else {
       entries = { ...valueRef.value };
@@ -571,8 +588,10 @@ export default {
 
     // + writes - delete
     const modifyNodes = dp.indexes.dataNodes.byObjectRefId.get(refId)?.filter(node => isDataNodeModifyType(node.type)) || EmptyArray;
+    const terminateNode = terminateNodeId && dp.util.getDataNode(terminateNodeId);
+    const terminateTraceId = terminateNode?.traceId;
     for (const modifyNode of modifyNodes) {
-      if (modifyNode.nodeId > terminateNodeId) {
+      if (modifyNode.nodeId > terminateNodeId && modifyNode.traceId > terminateTraceId) {
         // only apply write operations `before` the terminateNodeId
         break;
       }
@@ -654,26 +673,34 @@ export default {
     let valueString;
     const { refId } = dataNode;
     if (refId) {
-      const entries = dp.util.constructValueObjectShallow(refId);
+      const entries = dp.util.constructValueObjectShallow(refId, nodeId);
       const valueRef = dp.collections.values.getById(refId);
-      const { category } = valueRef;
-      if (ValueTypeCategory.is.Array(category)) {
-        let content = `${entries.map(x => dp.util._simplifyValue(x))}`;
-        shorten && (content = truncate(content, { length: ShortenMaxLength - 2 }));
-        valueString = `[${content}]`;
-      }
-      else if (ValueTypeCategory.is.Object(category)) {
-        let content = `${Object.keys(entries)}`;
-        shorten && (content = truncate(content, { length: ShortenMaxLength - 2 }));
-        valueString = `{${content}}`;
-      }
-      else if (ValueTypeCategory.is.Function(category)) {
-        let content = entries.name?.[2] || '(anonymous)';
-        shorten && (content = truncate(content, { length: ShortenMaxLength - 2 }));
-        valueString = `ƒ ${content}`;
+      if (!entries) {
+        // node was omitted or did not have children for other reasons
+        // default
+        valueString = valueRef.value?.toString?.() || String(valueRef.value);
       }
       else {
-        valueString = valueRef.value?.toString?.() || String(valueRef.value);
+        const { category } = valueRef;
+        if (ValueTypeCategory.is.Array(category)) {
+          let content = `${entries.map(x => dp.util._simplifyValue(x))}`;
+          shorten && (content = truncate(content, { length: ShortenMaxLength - 2 }));
+          valueString = `[${content}]`;
+        }
+        else if (ValueTypeCategory.is.Object(category)) {
+          let content = `${Object.keys(entries)}`;
+          shorten && (content = truncate(content, { length: ShortenMaxLength - 2 }));
+          valueString = `{${content}}`;
+        }
+        else if (ValueTypeCategory.is.Function(category)) {
+          let content = entries.name?.[2] || '(anonymous)';
+          shorten && (content = truncate(content, { length: ShortenMaxLength - 2 }));
+          valueString = `ƒ ${content}`;
+        }
+        else {
+          // default
+          valueString = valueRef.value?.toString?.() || String(valueRef.value);
+        }
       }
     }
     else {
@@ -924,12 +951,20 @@ export default {
   },
 
   /**
-   * TODO: given the `nodeId` of (what should be) an array, return its element DataNodes.
+   * TODO: given the `dataNode` of (what should be) an array, return its element DataNodes.
    * 
    * @param {DataProvider} dp
    */
-  getArrayDataNodes(dp, nodeId) {
-    return [];
+  getArrayDataNodes(dp, dataNode) {
+    if (!dataNode) {
+      return EmptyArray;
+    }
+    const children = dp.util.constructValueObjectShallow(dataNode.refId, dataNode.nodeId);
+    if (!Array.isArray(children)) {
+      return EmptyArray;
+    }
+
+    return children.map(([childNodeId/* , childRefId, childValue */]) => dp.util.getDataNode(childNodeId));
   },
 
   /**
@@ -975,7 +1010,8 @@ export default {
       const boundArgNodes = bindTrace && dp.util.getCallArgDataNodes(bindTrace.traceId);
       if (boundArgNodes) {
         argDataNodes = [
-          ...boundArgNodes || EmptyArray,
+          // NOTE: first argument to `bind` is `thisArg` -> don't map to parameter
+          ...(boundArgNodes?.slice(1) || EmptyArray),
           ...argDataNodes
         ];
       }
@@ -1865,7 +1901,10 @@ export default {
     return toEdges?.find(edge => edge.fromRootContextId === fromRootId) || null;
   },
 
-  /** @param {DataProvider} dp */
+  /**
+   * @param {DataProvider} dp
+   * @return {AsyncEventUpdate}
+   */
   getAsyncPreEventUpdateOfTrace(dp, schedulerTraceId) {
     return dp.indexes.asyncEventUpdates.byTrace.get(schedulerTraceId)?.[0];
   },
@@ -1888,13 +1927,13 @@ export default {
   },
 
   /** @param {DataProvider} dp */
-  getFirstNestingPreAwaitUpdate(dp, promiseId) {
+  getPreUpdateOfNestedPromise(dp, promiseId) {
     const updates = dp.indexes.asyncEventUpdates.byNestedPromise.get(promiseId);
     return updates?.[0];
   },
 
   /** @param {DataProvider} dp */
-  getAsyncPreEventUpdateOfPromise(dp, promiseId) {
+  getPreUpdateOfPromise(dp, promiseId) {
     const updates = dp.indexes.asyncEventUpdates.byPromise.get(promiseId);
     return updates?.[0];
   },
@@ -1913,6 +1952,11 @@ export default {
   getAsyncPreEventUpdatesOfRoot(dp, rootId) {
     const updates = dp.indexes.asyncEventUpdates.byRoot.get(rootId);
     return updates?.filter(upd => isPreEventUpdate(upd.type)) || EmptyArray;
+  },
+
+  getAsyncPostEventUpdateOfRoot(dp, rootId) {
+    const updates = dp.indexes.asyncEventUpdates.byRoot.get(rootId);
+    return updates?.find(upd => isPostEventUpdate(upd.type)) || null;
   },
 
   // TODO!
@@ -1974,6 +2018,7 @@ export default {
         const returnValueRef = dp.util.getReturnValueRefOfContext(resumeContextId);
         // const returnValueRef = dp.util.getReturnValueRefOfInterruptableContext(resumeContextId);
         if (returnValueRef?.isThenable) {
+          // getPromiseId
           nestedPromiseId = returnValueRef.refId;
         }
       }
@@ -1983,45 +2028,6 @@ export default {
       postUpdate;
 
     return postUpdate;
-  },
-
-  // /** @param {DataProvider} dp */
-  // getFirstPostOrResolveAsyncEventOfPromise(dp, promiseId) {
-  //   return dp.indexes.asyncEventUpdates.byPromise.getFirst(promiseId);
-  // },
-
-
-  /**
-   * @deprecated
-   * @param {DataProvider} dp 
-   */
-  isNestedChain(dp, nestedPromiseId, schedulerTraceId) {
-    const nestingPromiseRunId = nestedPromiseId && dp.util.getFirstTraceByRefId(nestedPromiseId)?.runId;
-    const firstNestingAsyncUpdate = nestingPromiseRunId && dp.util.getFirstNestingAsyncUpdate(nestingPromiseRunId, nestedPromiseId);
-    const firstNestingTraceId = firstNestingAsyncUpdate?.schedulerTraceId;
-    return firstNestingTraceId && firstNestingTraceId === schedulerTraceId || false;
-  },
-
-  /** 
-   * Return all updates that are nesting the given promise `p` (of given `promiseId`), in run of given `runId`.
-   * For {Pre,Post}Await: any updates of type `await p`.
-   * For PostThen: updates that `return p`.
-   *
-   * @deprecated
-   * @param {DataProvider} dp
-   */
-  getNestingAsyncUpdates(dp, runId, promiseId) {
-    const eventKey = [runId, promiseId];
-    return dp.indexes.asyncEventUpdates.byNestedPromiseAndRun.get(eventKey);
-  },
-
-  /** 
-   * @deprecated
-   * @param {DataProvider} dp 
-   */
-  getFirstNestingAsyncUpdate(dp, runId, promiseId) {
-    // TODO: this currently accounts for PreAwait, PostAwait, PostThen. Probably need to change to `PreAwait` + `PreThen`
-    return dp.util.getNestingAsyncUpdates(runId, promiseId)?.[0] || null;
   },
 
   /**
@@ -2043,39 +2049,6 @@ export default {
   },
 
 
-  // /**
-  //  * If not an async function, returns `0` .
-  //  * If the function returned a promise, returns its `promiseId`.
-  //  * Otherwise, returns the `promiseId` of the function's CallExpressionResult.
-  //  * 
-  //  * @param {DataProvider} dp
-  //  */
-  // getAsyncFunctionPromiseId(dp, contextId) {
-  //   const realContextId = dp.util.getRealContextIdOfContext(contextId);
-  //   const staticContext = realContextId && dp.util.getContextStaticContext(realContextId);
-  //   if (!staticContext?.isInterruptable) {
-  //     return 0;
-  //   }
-
-  //   // first: get returned `promiseId`
-  //   const returnTrace = dp.util.getReturnTraceOfInterruptableContext(realContextId);
-  //   const returnedDataNode = returnTrace && dp.util.getFirstInputDataNodeOfTrace(returnTrace.traceId);
-  //   let promiseId = returnedDataNode?.refId && dp.util.getPromiseIdOfValueRef(returnedDataNode.refId);
-
-  //   if (!promiseId) {
-  //     // else: get `promiseId` of the call result value.
-
-  //     // TODO: this might work correctly for async getters
-  //     //  -> test with `await2b-async-getters.js`
-  //     const callTrace = dp.util.getCallerTraceOfContext(contextId);
-  //     const callResultTrace = callTrace && dp.util.getValueTrace(callTrace.traceId);
-  //     const refId = callResultTrace && dp.util.getTraceRefId(callResultTrace.traceId);
-  //     promiseId = refId && dp.util.getPromiseIdOfValueRef(refId);
-  //   }
-
-  //   return promiseId;
-  // },
-
   /** @param {DataProvider} dp */
   getAsyncStackRoots(dp, traceId) {
     const roots = [];
@@ -2096,78 +2069,6 @@ export default {
     const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
     const preEventUpdates = dp.util.getAsyncPreEventUpdatesOfRoot(asyncNode.rootContextId);
     return !preEventUpdates.length;
-  },
-
-  // ###########################################################################
-  // promise tree
-  // ###########################################################################
-
-  // /**
-  //  * @param {DataProvider} dp
-  //  */
-  // getNestingPromiseId(dp, innerPromiseId) {
-
-  // },
-
-  // /**
-  //  * @param {DataProvider} dp
-  //  */
-  // getNestedPromiseId(dp, outerPromiseId) {
-
-  // },
-
-  // /**
-  //  * @param {DataProvider} dp
-  //  */
-  // getAsyncRealContextIdOfOwnPromise(dp, promiseId) {
-
-  // },
-
-  /**
-   * Walks up the stack to find out whether the given promise was `await`-chained to the (shared pre-event) root.
-   * NOTE: given promise is either result of a first `then`, or the context's `promiseId` of a first `await`.
-   * 
-   * @param {DataProvider} dp
-   */
-  isPromiseChainedToRoot(dp, runId, contextId, promiseId) {
-    //  -> check if `promiseId` was returned or awaited, and keep going up
-
-    // TODO: link `promiseId`s in post processing
-    //    fix for promises that don't have their own Post* AsyncEvent (e.g. `Promise.resolve().then`)
-    //    maybe such that `getFirstNestingAsyncUpdate` can work when returning a promise from async function?
-
-
-    const firstNestingAsyncUpdate = dp.util.getFirstNestingAsyncUpdate(runId, promiseId);
-    if (!firstNestingAsyncUpdate) {
-      // const  getAsyncFunctionPromiseId
-      //   // check for `return f()` instead of `await f()`
-      //   //  -> caller of -> context of -> return value ref of parent function (function that called f)
-      //   const parentCallResultTrace = dp.util.getFirstTraceByRefId(promiseId);
-      //   const parentCallId = parentCallResultTrace && dp.util.getCallIdOfTrace(parentCallResultTrace.traceId);
-      //   const parentContext = parentCallId && dp.util.getRealCalledContext(parentCallId);
-      //   const parentRealContextId = parentContext?.contextId;
-      //   const parentReturnTrace = parentRealContextId && dp.util.getReturnTraceOfInterruptableContext(parentRealContextId);
-      //   const parentReturnCallId = parentReturnTrace && dp.util.getCallIdOfTrace(parentReturnTrace.traceId);
-      //   const context = parentReturnCallId && dp.util.getRealCalledContext(parentReturnCallId);
-      //   if (context?.contextId && context.contextId === dp.util.getRealContextIdOfContext(contextId)) {
-      //     return true;
-      //   }
-      return false;
-    }
-
-    const { contextId: parentContextId, rootId, promiseId: parentPromiseId } = firstNestingAsyncUpdate;
-
-    if (parentContextId === rootId) {
-      // root
-      return true;
-    }
-
-    if (parentPromiseId) {
-      // contextId !== rootId -> (most likely?) a first await
-      return dp.util.isPromiseChainedToRoot(runId, parentContextId, parentPromiseId);
-    }
-
-    return false;
   },
 
   /** ###########################################################################
@@ -2193,14 +2094,14 @@ export default {
     }
     visited.add(nestingPromiseId);
 
-    // TODO: check beforeRootId vs. link.rootId?
-
-    let nestedUpdate = dp.util.getLastAsyncPostEventUpdateOfPromise(nestingPromiseId, beforeRootId);
-
     // Case 1: link is AsyncReturn, nestedUpdate is PostAwait
     // Case 2: link is AsyncReturn, nestedUpdate is PostThen
     // Case 3: link is ThenNested, nestedUpdate is PostAwait
     // Case 4: link is ThenNested, nestedUpdate is PostThen
+
+    // TODO: fix for SYNC (check beforeRootId vs. link.rootId?)
+
+    let nestedUpdate = dp.util.getLastAsyncPostEventUpdateOfPromise(nestingPromiseId, beforeRootId);
 
     if (nestedUpdate && dp.util.getPromiseRootId(nestingPromiseId) < nestedUpdate.rootId) {
       // nested for synchronization -> do not go deeper
@@ -2211,27 +2112,52 @@ export default {
       const link = dp.indexes.promiseLinks.to.getUnique(nestingPromiseId);
       if (link) {
         // try to go deeper
-        nestedUpdate = dp.util.GNPU(link.from, beforeRootId, syncPromiseIds, visited) || nestedUpdate;
-      }
-    }
-    if (!nestedUpdate) {
-      // maybe the given promise did not have a recorded Post* update, but it's predecessor might have
-      // -> could be because (i) the update happened inside an untraced module, or (ii) a reject/throw skipped it
-      // const u = dp.util.getAsyncPreEventUpdateOfPromise(nestingPromiseId, beforeRootId);
-      const u = dp.indexes.asyncEventUpdates.preUpdatesByPostEventPromise.getUnique(nestingPromiseId);
-      if (u) {
-        if (AsyncEventUpdateType.is.PreThen(u.type)) {
-          // go to previous promise in promise tree
-          const preThenPromiseId = u.promiseId;
-          return dp.util.GNPU(preThenPromiseId, beforeRootId, syncPromiseIds, visited);
+        if (Array.isArray(link.from)) {
+          const nestedUpdates = link.from.flatMap(nestedPromiseId =>
+            dp.util.GNPU(nestedPromiseId, beforeRootId, syncPromiseIds, visited)
+          ).filter(u => !!u);
+          if (nestedUpdates.length) {
+            nestedUpdate = nestedUpdates;
+          }
         }
-        else if (AsyncEventUpdateType.is.PreAwait(u.type)) {
-          // go to nested promise of first await
-          return dp.util.GNPU(u.nestedPromiseId, beforeRootId, syncPromiseIds, visited);
+        else {
+          nestedUpdate = dp.util.GNPU(link.from, beforeRootId, syncPromiseIds, visited) || nestedUpdate;
+        }
+      }
+      if (!nestedUpdate) {
+        // no nested update found -> go to previous promise and repeat
+        // maybe the given promise did not have a recorded Post* update, but it's predecessor might have
+        // -> could be because (i) the update happened inside an untraced module, or (ii) a reject/throw skipped it
+        // const u = dp.util.getAsyncPreEventUpdateOfPromise(nestingPromiseId, beforeRootId);
+        const u = dp.indexes.asyncEventUpdates.preUpdatesByPostEventPromise.getUnique(nestingPromiseId);
+        if (u) {
+          if (AsyncEventUpdateType.is.PreThen(u.type)) {
+            // go to previous promise in promise tree
+            const preThenPromiseId = u.promiseId;
+            return dp.util.GNPU(preThenPromiseId, beforeRootId, syncPromiseIds, visited);
+          }
+          else if (AsyncEventUpdateType.is.PreAwait(u.type)) {
+            // go to nested promise of first await
+            return dp.util.GNPU(u.nestedPromiseId, beforeRootId, syncPromiseIds, visited);
+          }
         }
       }
     }
     return nestedUpdate;
+  },
+
+  /**
+   * 
+   * @param {DataProvider} dp
+   */
+  UP_LINK(dp, outerPromiseId, rootId, syncPromiseIds) {
+    let u;
+    if ((u = dp.util.getLastAsyncPostEventUpdateOfPromise(outerPromiseId, rootId))) {
+      // “Nested PostThen” or “async return” (of function with `PostAwait`, i.e. `await` executed)
+      return u.rootId;
+    }
+    // “resolve” or “async return” (of function where no `await` executed)
+    return dp.util.UP(outerPromiseId, rootId, syncPromiseIds);
   },
 
   /** 
@@ -2245,16 +2171,19 @@ export default {
     const link = dp.indexes.promiseLinks.from.getFirst(nestedPromiseId);
     if (link) {
       // “Nested PostThen” or “async return” or “resolve”
-      // TODO: define + assure correct timing via rootId
+      // TODO: fix for SYNC
       const { to: outerPromiseId/* , rootId */ } = link;
-      if ((u = dp.util.getLastAsyncPostEventUpdateOfPromise(outerPromiseId, rootId))) {
-        // “Nested PostThen” or “async return”
-        return u.rootId;
-      }
-      // “async return” (of function where no `await` executed) or “resolve”
-      return dp.util.UP(outerPromiseId, rootId, syncPromiseIds);
+
+      // if (Array.isArray(outerPromiseId)) {
+      //   // NOTE: in case of `Promise.all{,Settled}`, multiple `to`s map to the same `from`.
+      //   // (NOTE: `promiseLinks.to` can be an array in case of `Promise.all{,Settled}`)
+      //   return outerPromiseId.flatMap(promiseId => dp.util.UP_LINK(promiseId, rootId));
+      // }
+      return dp.util.UP_LINK(outerPromiseId, rootId);
     }
-    else if ((u = dp.util.getFirstNestingPreAwaitUpdate(nestedPromiseId))) {
+    else if ((u = dp.util.getPreUpdateOfNestedPromise(nestedPromiseId))) {
+      // TODO: why is this guaranteed to be PreAwait, not PreThen?
+      //    -> because `nestedPromise` and `nestingPromise` have already happened and both were recorded, so the corresponding PostThen `link` would have been picked up
       // p was AWAIT’ed && PostAwait has not happened yet
       if (u.rootId > rootId) {
         // SYNC edge => already added in u's own Post* event handler
@@ -2271,7 +2200,7 @@ export default {
         return dp.util.UP(u.promiseId, rootId, syncPromiseIds) || 0;
       }
     }
-    else if ((u = dp.util.getAsyncPreEventUpdateOfPromise(nestedPromiseId, rootId)) && AsyncEventUpdateType.is.PreThen(u.type)) {
+    else if ((u = dp.util.getPreUpdateOfPromise(nestedPromiseId, rootId)) && AsyncEventUpdateType.is.PreThen(u.type)) {
       // promise is not nested but was THEN’ed -> follow down the THEN chain (until we find a promise that is nested)
       return dp.util.UP(u.postEventPromiseId, rootId, syncPromiseIds);
     }
@@ -2282,7 +2211,13 @@ export default {
 
   /** @param {DataProvider} dp */
   DOWN(dp, promiseId, beforeRootId, syncPromiseIds) {
-    return dp.util._DOWN(promiseId, beforeRootId, syncPromiseIds)?.rootId || 0;
+    const result = dp.util._DOWN(promiseId, beforeRootId, syncPromiseIds) || 0;
+    if (Array.isArray(result)) {
+      return result.map(u => u.rootId);
+    }
+    else {
+      return result?.rootId || 0;
+    }
   },
 
   /**
@@ -2290,13 +2225,23 @@ export default {
    * NOTE: promiseId is ensured to be settled because promiseId is settled
    */
   _DOWN(dp, promiseId, beforeRootId, syncPromiseIds, visited = new Set()) {
-    const nestedUpdate = dp.util.GNPU(promiseId, beforeRootId, syncPromiseIds, visited);
+    let nestedUpdate = dp.util.GNPU(promiseId, beforeRootId, syncPromiseIds, visited);
     if (!nestedUpdate) {
       return null;
     }
 
-    // 
-    return dp.util._DOWN(nestedUpdate.promiseId, beforeRootId, syncPromiseIds, visited) || nestedUpdate;
+    // if (Array.isArray(nestedUpdate)) {
+    //   const nestedUpdateArr = nestedUpdate.flatMap(u =>
+    //     dp.util._DOWN(u.promiseId, beforeRootId, syncPromiseIds, visited)
+    //   ).filter(u => !!u);
+    //   if (nestedUpdateArr.length) {
+    //     nestedUpdate = nestedUpdateArr;
+    //   }
+    // }
+    // else {
+    //   nestedUpdate = dp.util._DOWN(nestedUpdate.promiseId, beforeRootId, syncPromiseIds, visited) || nestedUpdate;
+    // }
+    return nestedUpdate;
   },
 
   /** @param {DataProvider} dp */
@@ -2347,17 +2292,22 @@ export default {
     const beforeRootId = postEventRootId;
     const toRootId = postEventRootId;
 
-    // consider all CHAIN scenarios
-    const rootIdUp = util.UP(promiseId, beforeRootId, s);
+    // Case 1a: CHAIN via async function's own promise (in case of firstAwait)
+    const rootIdUp = isFirstAwait && util.UP(promiseId, beforeRootId, s);
+
+    // Case 1b: CHAIN to "previous await root" (NOTE: that root will always come *after* any of its own nested updates)
+    const rootIdPrevious = !isFirstAwait && preEventRootId;
+
+    // Case 2: nested
     const rootIdNested = nestedPromiseId && util.DOWN(nestedPromiseId, beforeRootId, s);
 
     if (!isFirstAwait || !isCallRecorded) {
-      chainFromRootId = rootIdNested || preEventRootId;
+      chainFromRootId = rootIdNested || rootIdPrevious;
       nestedPromiseId && util.SYNC(chainFromRootId, nestedPromiseId, beforeRootId, s);
     }
     else {
-      if (rootIdUp && rootIdNested) {
-        util.SYNC(rootIdUp, nestedPromiseId, beforeRootId, s);
+      if (rootIdPrevious && rootIdNested) {
+        util.SYNC(rootIdPrevious, nestedPromiseId, beforeRootId, s);
       }
       chainFromRootId = rootIdNested || rootIdUp;
     }
@@ -2533,6 +2483,9 @@ export default {
       schedulerTraceId
     } = postEventUpdate;
 
+    /**
+     * @type {PreCallbackUpdate}
+     */
     const preEventUpdate = util.getAsyncPreEventUpdateOfTrace(schedulerTraceId);
 
     if (!preEventUpdate) {
@@ -2544,38 +2497,48 @@ export default {
     const {
       rootId: preEventRootId,
       // isEventListener
+      promiseId
     } = preEventUpdate;
 
     const isNested = false;
-    let chainFromRootId;
-
     const beforeRootId = postEventRootId;
 
+    let chainFromRootId, rootIdUp;
+
     // if (isEventListener) {
-    // Case 1: event listener -> repeated calls of same trace
     const firstPostEventHandlerUpdate = util.getFirstAsyncPostEventUpdateOfTrace(schedulerTraceId);
-    if (firstPostEventHandlerUpdate && firstPostEventHandlerUpdate.rootId < beforeRootId) {
-      chainFromRootId = firstPostEventHandlerUpdate.rootId;
-    }
-    // }
-    else if (preEventRootId === 1) {
-      // Case 0: don't CHAIN cb from first root
+    if (preEventRootId === 1) {
+      // Case 1: don't CHAIN cb from first root
       //      (TODO: top-level `await` would CHAIN from first root.)
     }
+    else if (promiseId) {
+      // Case 2: Promisification
+      const s = [];
+      // const rootIdDown = util.DOWN(preEventPromiseId, beforeRootId, s);
+      rootIdUp = util.UP(promiseId, beforeRootId, s);
+      chainFromRootId = rootIdUp;
+    }
     else {
-      const preEventUpdates = util.getAsyncPreEventUpdatesOfRoot(preEventRootId);
-      if (preEventUpdates.length === 1) {
-        // Case 2: this is the only pre-event in the pre-event's root -> CHAIN
-        //    (meaning its the only async event scheduled from the same root)
-        chainFromRootId = preEventRootId;
+      // [heuristics]
+      if (firstPostEventHandlerUpdate && firstPostEventHandlerUpdate.rootId < beforeRootId) {
+        // Case 3: event listener -> repeated calls of same trace
+        chainFromRootId = firstPostEventHandlerUpdate.rootId;
       }
-      if (!chainFromRootId) {
-        const thisStaticContextId = util.getContextStaticContext(postEventRootId);
-        const lastStaticContextId = util.getContextStaticContext(preEventRootId);
-
-        if (thisStaticContextId === lastStaticContextId) {
-          // Case 3: recursive or repeating same function
+      else {
+        const preEventUpdates = util.getAsyncPreEventUpdatesOfRoot(preEventRootId);
+        if (preEventUpdates.length === 1) {
+          // Case 4: this is the only pre-event in the pre-event's root -> CHAIN
+          //    (meaning its the only async event scheduled from the same root)
           chainFromRootId = preEventRootId;
+        }
+        if (!chainFromRootId) {
+          const thisStaticContextId = util.getContextStaticContext(postEventRootId);
+          const lastStaticContextId = util.getContextStaticContext(preEventRootId);
+
+          if (thisStaticContextId === lastStaticContextId) {
+            // Case 5: recursive or repeating same function
+            chainFromRootId = preEventRootId;
+          }
         }
       }
     }
@@ -2589,6 +2552,7 @@ export default {
 
       preEventUpdate,
       isNested,
+      rootIdUp,
       firstPostEventHandlerUpdate
     };
   },

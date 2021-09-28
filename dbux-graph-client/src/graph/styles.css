@@ -258,6 +258,11 @@ div {
   display: none !important;
 }
 
+.async-brief {
+  font-weight: bold;
+  font-family: system-ui;
+}
+
 [data-async-detail-mode="0"] .async-cell {
   height: 6px !important;
   padding: 0px !important;

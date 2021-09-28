@@ -1,7 +1,6 @@
 /** @typedef { import("./Client").default } Client */
 
 import isEmpty from 'lodash/isEmpty';
-import sumBy from 'lodash/sumBy';
 import { getDataCount } from '@dbux/common/src/util/dataUtil';
 import { newLogger } from '@dbux/common/src/log/logger';
 
@@ -9,6 +8,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 const { log, debug, warn, error: logError } = newLogger('Client/queue');
 
 const Verbose = 0;
+// const Verbose = 1;
 const MAX_BLOCK_SIZE = 65535; // max parameter array size for use in Webkit
 
 /**
@@ -83,8 +83,8 @@ class SendQueue {
 
   _flushLater() {
     if (!this.timer) {
-      // this.timer = Promise.resolve().then(this.flush);
-      this.timer = (process.nextTick(this.flush), 1);
+      this.timer = Promise.resolve().then(this.flush);
+      // this.timer = (process.nextTick(this.flush), 1);
       Verbose && debug(`[SQ] flushLater!`);
     }
   }
@@ -92,10 +92,11 @@ class SendQueue {
   _nextBuffer() {
     if (!isBufferEmpty(this.currentBuffer)) {
       // add new empty buffer to store new incoming data
-      const sum = sumBy(Object.values(this.currentBuffer),
-        arr => arr.reduce((a, v) => a + JSON.stringify(v).length, 0) || 0);
+      
+      // const sum = sumBy(Object.values(this.currentBuffer),
+      //   arr => arr.reduce((a, v) => a + JSON.stringify(v).length, 0) || 0);
       // this.currentBuffer?.values?.reduce((a, v) => a + JSON.stringify(v.serialized).length, 0);
-      debug(`previous buffer total length: ${Math.round(sum / 1000).toLocaleString('en-us')}k`);
+      // debug(`previous buffer total length: ${Math.round(sum / 1000).toLocaleString('en-us')}k`);
       this.buffers.push(newBuffer());
     }
   }
@@ -115,9 +116,9 @@ class SendQueue {
   flush = async () => {
     this._nextBuffer();
 
+    // start sending old buffers
     Verbose && debug(`[SQ] flush STA`, this.buffers.length);
 
-    // start sending old buffers
     try {
       let buf;
       while (

@@ -70,8 +70,11 @@ class AsyncGraph extends GraphBase {
       const locLabel = makeContextLocLabel(applicationId, context);
       const syncInCount = dp.indexes.asyncEvents.syncInByRoot.getSize(rootContextId);
       const syncOutCount = dp.indexes.asyncEvents.syncOutByRoot.getSize(rootContextId);
+
       const realStaticContextid = dp.util.getRealContextOfContext(rootContextId).staticContextId;
       const moduleName = dp.util.getContextModuleName(rootContextId);
+      const postAsyncEventUpdate = dp.util.getAsyncPostEventUpdateOfRoot(rootContextId);
+      const postAsyncEventUpdateType = postAsyncEventUpdate?.type;
 
       const firstNode = dp.indexes.asyncNodes.byThread.getFirst(threadId);
       const parentEdge = dp.indexes.asyncEvents.to.getFirst(rootContextId);
@@ -94,7 +97,8 @@ class AsyncGraph extends GraphBase {
         parentRowId,
 
         realStaticContextid,
-        moduleName
+        moduleName,
+        postAsyncEventUpdateType
       };
     }).filter(n => !!n);
 

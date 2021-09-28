@@ -92,7 +92,7 @@ export default class Client {
        *      it is likely due to error #1009: Max payload size exceeded.
        *      socket.io does not seem to convey that message from the underlying WS implementation.
        *      The issue is usually accompanied by a follow-up (re-)connect, despite being disconnected.
-       *      -> sln: adjust `maxHttpBufferSize` on server side.
+       *      -> sln: adjust `maxHttpBufferSize` on server side or make pw smaller.
        *
        * @see https://github.com/websockets/ws/blob/abde9cfc21ce0f1cb7e2556aea70b423359364c7/lib/receiver.js#L371
        */
@@ -206,13 +206,45 @@ export default class Client {
   sendWithAck(msg, data) {
     return new Promise((resolve, reject) => {
       try {
-        this._socket.emit(msg, data, resolve);
+        // debug(`SEND`, this._sending, msg);
+        this._socket.emit(msg, data, () => {
+          // debug(`ACK`, this._sending, msg);
+          resolve();
+        });
         this._socket.once('error', reject);
       }
       catch (err) {
         reject(err);
       }
     });
+  }
+
+  /**
+   * Compute rough estimate of data size
+   */
+  _computeDataSize(data) {
+    return `${Math.round(JSON.stringify(data).length / 1000).toLocaleString('en-us')} kb, `;
+  }
+
+  _dataDebugMessage(data) {
+    if (!Verbose) {
+      return;
+    }
+
+    debug(`<- data (n = ${getDataCount(data).toLocaleString('en-us')}): ` +
+      Object.entries(data)
+        .map(([key, arr]) => {
+          try {
+            return `${arr.length} ${key} (${this._computeDataSize(arr)}${minBy(arr, entry => entry._id)?._id}~${maxBy(arr, entry => entry._id)?._id})`;
+          }
+          catch (err) {
+            const idx = arr?.findIndex?.(x => x === null || x === undefined);
+            logError(`invalid data key "${key}": "${err.message}". Index #${idx} is ${arr?.[idx]} (${arr})`);
+            return `(invalid data key "${key}")`;
+          }
+        })
+        .join(', ')
+    );
   }
 
   /**
@@ -228,23 +260,7 @@ export default class Client {
     else if (this.isReady()) {
       ++this._sending;
       try {
-        // (${Math.round(JSON.stringify(data).length / 1000)} kb)
-        if (Verbose) {
-          debug(`<- data (n = ${getDataCount(data).toLocaleString('en-us')}): ` +
-            Object.entries(data)
-              .map(([key, arr]) => {
-                try {
-                  return `${arr.length} ${key} (${minBy(arr, entry => entry._id)?._id}~${maxBy(arr, entry => entry._id)?._id})`;
-                }
-                catch (err) {
-                  const idx = arr?.findIndex?.(x => x === null || x === undefined);
-                  logError(`invalid data key "${key}": "${err.message}". Index #${idx} is ${arr?.[idx]} (${arr})`);
-                  return `(invalid data key "${key}")`;
-                }
-              })
-              .join(', ')
-          );
-        }
+        this._dataDebugMessage(data);
 
         await this.sendWithAck('data', data);
       }
@@ -327,7 +343,11 @@ export default class Client {
     if (this._killTimer) {
       clearTimeout(this._killTimer);
     }
-    this._killTimer = setTimeout(this._disconnect, SleepDelay);
+    this._killTimer = setTimeout(() => {
+      if (this.hasFinished()) {
+        this._disconnect();
+      }
+    }, SleepDelay);
   }
 
   _disconnect = () => {

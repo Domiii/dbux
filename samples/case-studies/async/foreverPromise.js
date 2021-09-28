@@ -1,3 +1,10 @@
+/**
+ * @file
+ * This will cause an infinite loop, and we cannot observe it either because socket.io won't send out the data.
+ * 
+ * @see https://github.com/caolan/async/blob/master/lib/forever.js#L37
+ */
+
 // import { sleep } from './asyncUtil';
 
 
@@ -5,9 +12,6 @@
 //   console.log(...args);
 // }
 
-/**
- * @see https://github.com/caolan/async/blob/master/lib/forever.js#L37
- */
 export default function foreverPromise(task) {
   function next() {
     return Promise.resolve(task()).

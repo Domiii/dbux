@@ -9,7 +9,7 @@ import * as t from "@babel/types";
 import isFunction from 'lodash/isFunction';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { UndefinedNode } from './buildUtil';
-import { astNodeToString } from 'src/helpers/pathHelpers';
+import { astNodeToString } from '../../helpers/pathHelpers';
 // import { template } from '@babel/core';
 
 export function buildNamedExport(ids) {
