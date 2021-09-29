@@ -223,11 +223,11 @@ div {
 }
 
 .async-cell-stack-highlight {
-  border: 2px dashed rgba(0, 0, 0, 0.5);
+  border: 1px dotted rgba(0, 0, 0, 0.5);
 }
 
 .theme-mode-dark .async-cell-stack-highlight {
-  border: 2px dashed rgba(255, 255, 255, 0.5);
+  border: 1px dotted rgba(255, 255, 255, 0.5);
 }
 
 .terminal-node {
