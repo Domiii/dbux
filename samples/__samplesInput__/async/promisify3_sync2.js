@@ -25,10 +25,10 @@ P(
   'B1',
   'B2',
   'B3',
-  () => setImmediate(cb),
-  // () => new Promise((r) => setImmediate(() => {
-  //   cb();
-  //   r();
-  // })),
+  // () => setImmediate(cb),
+  () => new Promise((r) => setImmediate(() => {
+    cb();
+    r();
+  })),
   'B5'
 );
