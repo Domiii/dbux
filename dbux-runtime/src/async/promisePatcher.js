@@ -349,6 +349,7 @@ function patchPromiseClass(BasePromiseClass) {
 
         patchedExecutor = (resolve, reject) => {
           const executorRootId = RuntimeMonitorInstance.runtime.getCurrentVirtualRootContextId();
+          const executorRealRootId = RuntimeMonitorInstance.runtime.peekRealRootContextId();
 
           const wrapResolve = (...args) => {
             // Event: resolve
@@ -358,11 +359,18 @@ function patchPromiseClass(BasePromiseClass) {
               deferredCall = wrapResolve.bind(null, resolveArg);
             }
             else {
+              // TODO: `thenRef` is wrong if there is no recorded root
               const thenRef = _makeThenRef(this, wrapResolve);
+              const resolveRealRootId = RuntimeMonitorInstance.runtime.peekRealRootContextId();
               if (thenRef) {
                 const inner = resolveArg;
                 const thisPromiseId = getPromiseId(this) || 0;
-                const asyncPromisifyPromiseId = executorRootId !== thenRef.rootId ? thisPromiseId : 0; // we only care about promisify, if async
+                const asyncPromisifyPromiseId =
+                  // NOTE: we only care about promisify, if async
+                  // NOTE2: this is extra messy because we keep the virtual root around in `_runFinished` for `PostThen`, and RealRoot is not as reliable
+                  (executorRealRootId !== resolveRealRootId ||
+                    executorRootId !== thenRef.rootId)
+                    ? thisPromiseId : 0; // we only care about promisify, if async
                 RuntimeMonitorInstance._runtime.async.resolve(
                   inner, this, PromiseLinkType.Promisify, thenRef.schedulerTraceId, asyncPromisifyPromiseId
                 );
@@ -379,11 +387,17 @@ function patchPromiseClass(BasePromiseClass) {
             }
             else {
               const thenRef = _makeThenRef(this, wrapReject);
+              const resolveRealRootId = RuntimeMonitorInstance.runtime.peekRealRootContextId();
               if (thenRef) {
                 // NOTE: reject can also nest a promise (but will pass the promise (not its resolved value) to `catch`)
                 const inner = err;
                 const thisPromiseId = getPromiseId(this) || 0;
-                const asyncPromisifyPromiseId = executorRootId !== thenRef.rootId ? thisPromiseId : 0; // we only care about promisify, if async
+                const asyncPromisifyPromiseId =
+                  // NOTE: we only care about promisify, if async
+                  // NOTE2: this is extra messy because we keep the virtual root around in `_runFinished` for `PostThen`, and RealRoot is not as reliable
+                  (executorRealRootId !== resolveRealRootId ||
+                    executorRootId !== thenRef.rootId)
+                    ? thisPromiseId : 0; // we only care about promisify, if async
                 RuntimeMonitorInstance._runtime.async.resolve(
                   inner, this, PromiseLinkType.Promisify, thenRef.schedulerTraceId, asyncPromisifyPromiseId
                 );

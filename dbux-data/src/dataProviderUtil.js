@@ -2067,7 +2067,7 @@ export default {
    * 
    * @param {DataProvider} dp
    */
-  GNPU(dp, nestingPromiseId, beforeRootId, syncPromiseIds, links, visited = new Set(), depth = 0) {
+  GNPU(dp, nestingPromiseId, beforeRootId, syncPromiseIds, links, depth = 0, visited = new Set()) {
     if (visited.has(nestingPromiseId)) {
       return null;
     }
@@ -2078,51 +2078,50 @@ export default {
     // Case 3: link is ThenNested, nestedUpdate is PostAwait
     // Case 4: link is ThenNested, nestedUpdate is PostThen
 
-    // TODO: fix for SYNC (check beforeRootId vs. link.rootId?)
-
     let nestedUpdate = dp.util.getLastAsyncPostEventUpdateOfPromise(nestingPromiseId, beforeRootId);
     const promiseRootId = dp.util.getPromiseRootId(nestingPromiseId);
+    const link = dp.indexes.promiseLinks.to.getUnique(nestingPromiseId);
 
-    if (depth > 0 && nestedUpdate && promiseRootId < nestedUpdate.rootId) {
+    if (depth > 0 && (
+      (nestedUpdate && promiseRootId < nestedUpdate.rootId) /* ||
+      (!nestedUpdate && link && link.rootId &&  */)
+    ) {
       // nested for synchronization -> do not go deeper
       // TODO: probably should only sync in some cases (sync here for PostAwait, don't sync here for PostThen?)
       syncPromiseIds.push(nestingPromiseId);
     }
-    else {
-      // -> look up nested links
-      const link = dp.indexes.promiseLinks.to.getUnique(nestingPromiseId);
-      if (link) {
-        links.push(link);
+    else if (link) {
+      // -> go deep on nested link
+      links.push(link);
 
-        // try to go deeper
-        if (Array.isArray(link.from)) {
-          // multi CHAIN
-          const nestedUpdates = link.from.flatMap(nestedPromiseId =>
-            dp.util.GNPU(nestedPromiseId, beforeRootId, syncPromiseIds, links, visited, depth + 1)
-          ).filter(u => !!u);
-          if (nestedUpdates.length) {
-            nestedUpdate = nestedUpdates;
+      // try to go deeper
+      if (Array.isArray(link.from)) {
+        // multi CHAIN
+        const nestedUpdates = link.from.flatMap(nestedPromiseId =>
+          dp.util.GNPU(nestedPromiseId, beforeRootId, syncPromiseIds, links, depth + 1, visited)
+        ).filter(u => !!u);
+        if (nestedUpdates.length) {
+          nestedUpdate = nestedUpdates;
+        }
+      }
+      else if (link.from) {
+        // single CHAIN
+        nestedUpdate = dp.util.GNPU(link.from, beforeRootId, syncPromiseIds, links, depth + 1, visited) || nestedUpdate;
+      }
+      else if (link.asyncPromisifyPromiseId) {
+        // promisify linkage
+        if (link.rootId) {
+          // -> the link's root is the actual nested root
+          if (promiseRootId < link.rootId) {
+            syncPromiseIds.push(nestingPromiseId);
+          }
+          else {
+            nestedUpdate = dp.util.getAsyncPostEventUpdateOfRoot(link.rootId) || nestedUpdate;
           }
         }
-        else if (link.from) {
-          // single CHAIN
-          nestedUpdate = dp.util.GNPU(link.from, beforeRootId, syncPromiseIds, links, visited, depth + 1) || nestedUpdate;
-        }
-        else if (link.asyncPromisifyPromiseId) {
-          // promisify linkage
-          if (link.rootId) {
-            // -> the link's root is the actual nested root
-            if (promiseRootId < link.rootId) {
-              syncPromiseIds.push(nestingPromiseId);
-            }
-            else {
-              nestedUpdate = dp.util.getAsyncPostEventUpdateOfRoot(link.rootId) || nestedUpdate;
-            }
-          }
-        }
-        else {
-          warn(`invalid PromiseLink for nestingPromiseId=${nestingPromiseId} has no 'from' nor 'asyncPromisifyPromiseId':`, link);
-        }
+      }
+      else {
+        warn(`invalid PromiseLink for nestingPromiseId=${nestingPromiseId} has no 'from' nor 'asyncPromisifyPromiseId':`, link);
       }
       if (!nestedUpdate) {
         // no nested update found -> go to previous promise and repeat
@@ -2137,11 +2136,11 @@ export default {
           if (AsyncEventUpdateType.is.PreThen(u.type)) {
             // go to previous promise in promise tree
             const preThenPromiseId = u.promiseId;
-            return dp.util.GNPU(preThenPromiseId, beforeRootId, syncPromiseIds, links, visited);
+            return dp.util.GNPU(preThenPromiseId, beforeRootId, syncPromiseIds, links, 1, visited);
           }
           else if (AsyncEventUpdateType.is.PreAwait(u.type)) {
             // go to nested promise of first await
-            return dp.util.GNPU(u.nestedPromiseId, beforeRootId, syncPromiseIds, links, visited);
+            return dp.util.GNPU(u.nestedPromiseId, beforeRootId, syncPromiseIds, links, 1, visited);
           }
         }
       }
@@ -2213,8 +2212,8 @@ export default {
   },
 
   /** @param {DataProvider} dp */
-  DOWN(dp, promiseId, beforeRootId, syncPromiseIds, links) {
-    const result = dp.util._DOWN(promiseId, beforeRootId, syncPromiseIds, links) || 0;
+  DOWN(dp, promiseId, beforeRootId, syncPromiseIds, links, depth = 0) {
+    const result = dp.util._DOWN(promiseId, beforeRootId, syncPromiseIds, links, depth) || 0;
     if (Array.isArray(result)) {
       return result.map(u => u.rootId);
     }
@@ -2229,8 +2228,8 @@ export default {
    *  @param {DataProvider} dp
    * NOTE: promiseId is ensured to be settled because promiseId is settled
    */
-  _DOWN(dp, promiseId, beforeRootId, syncPromiseIds, links, visited = new Set()) {
-    let nestedUpdate = dp.util.GNPU(promiseId, beforeRootId, syncPromiseIds, links, visited);
+  _DOWN(dp, promiseId, beforeRootId, syncPromiseIds, links, depth, visited = new Set()) {
+    let nestedUpdate = dp.util.GNPU(promiseId, beforeRootId, syncPromiseIds, links, depth, visited);
     if (!nestedUpdate) {
       return null;
     }
@@ -2305,7 +2304,7 @@ export default {
     const rootIdPrevious = !isFirstAwait && preEventRootId;
 
     // Case 2: nested
-    const rootIdNested = nestedPromiseId && util.DOWN(nestedPromiseId, beforeRootId, s, links);
+    const rootIdNested = nestedPromiseId && util.DOWN(nestedPromiseId, beforeRootId, s, links, 1);
 
     if (!isFirstAwait || !isCallRecorded) {
       chainFromRootId = rootIdNested || rootIdPrevious;
