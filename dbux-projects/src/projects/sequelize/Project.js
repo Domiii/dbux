@@ -12,7 +12,7 @@ export default class SequelizeProject extends Project {
   gitCommit = 'tags/v6.6.5';
   packageManager = 'yarn';
 
-  _fixSqlite() {
+  _fixPackageJson() {
     /**
      * NOTE: `yarn add` won't work as expected here
      * @see https://github.com/yarnpkg/yarn/issues/3270
@@ -26,7 +26,7 @@ export default class SequelizeProject extends Project {
     // remove `husky`
     delete pkg.husky;
 
-    // remove unnecessary(and easily failing) database packages.
+    // remove unnecessary (and easily failing) database packages.
     const unwanted = [
       'sqlite3',
       'pg',
@@ -60,7 +60,7 @@ export default class SequelizeProject extends Project {
    * 
    */
   async beforeInstall() {
-    this._fixSqlite();
+    this._fixPackageJson();
   }
 
   loadBugs() {
@@ -80,8 +80,12 @@ export default class SequelizeProject extends Project {
         testFilePaths: ['findOrCreate-av1.js']
       },
       {
-        label: 'findOrCreate-working',
-        testFilePaths: ['findOrCreate-working1.js']
+        label: 'findOrCreate-serial',
+        testFilePaths: ['findOrCreate-serial.js']
+      },
+      {
+        label: 'findOrCreate-parallel',
+        testFilePaths: ['findOrCreate-parallel.js']
       },
     ];
   }
@@ -104,7 +108,7 @@ export default class SequelizeProject extends Project {
    * NOTE: this runs before bug's {@link Project#npmInstall}
    */
   afterSelectBug(bug) {
-    this._fixSqlite();
+    this._fixPackageJson();
   }
 
   async testBugCommand(bug, cfg) {
