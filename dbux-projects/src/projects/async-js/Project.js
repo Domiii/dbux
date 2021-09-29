@@ -3,7 +3,7 @@ import Project from '../../projectLib/Project';
 
 export default class AsyncJsProject extends Project {
   gitRemote = 'caolan/async.git';
-  gitCommit = 'tags/v3.2.1'
+  gitCommit = 'tags/v3.2.0'
   packageManager = 'yarn';
 
   loadBugs() {
@@ -22,7 +22,7 @@ export default class AsyncJsProject extends Project {
     }
 
     Object.assign(bug, {
-      dbuxArgs: '--pw=.* --esnext'
+      dbuxArgs: '--pw=.* --pb=@babel.* --esnext'
     });
   }
 }

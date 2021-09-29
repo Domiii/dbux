@@ -7,7 +7,7 @@ import traceCollection from './data/traceCollection';
 import scheduleNextPossibleRun from './scheduleNextPossibleRun';
 import RuntimeAsync from './async/RuntimeAsync';
 import executionContextCollection from './data/executionContextCollection';
-import { _VirtualRef } from './data/valueCollection';
+import { VirtualRef } from './data/valueCollection';
 
 // import ExecutionContextType from '@dbux/common/src/types/constants/ExecutionContextType';
 // import executionContextCollection from './data/executionContextCollection';
@@ -75,7 +75,7 @@ export default class Runtime {
   async = new RuntimeAsync(this);
 
   /**
-   * @type {_VirtualRef[]}
+   * @type {VirtualRef[]}
    */
   _promisifyStack = [];
 
@@ -478,7 +478,7 @@ export default class Runtime {
 
   /**
    * hackfix: this is currently a placeholder object that will ultimately represent the promise's `promiseId`.
-   * @returns {object}
+   * @returns {VirtualRef}
    */
   getPromisifyPromiseVirtualRef() {
     if (!this._promisifyStack.length) {

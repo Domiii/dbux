@@ -50,16 +50,22 @@ export function unwrapValue(value) {
 /**
  * WARNING: use carefully.
  */
-export class _VirtualRef {
+export class VirtualRef {
   refId;
   participants = [];
 
   add(participant, prop) {
-    this.participants.push({ participant, prop });
+    if (this.refId) {
+      participant[prop] = this.refId;
+    }
+    else {
+      this.participants.push({ participant, prop });
+    }
   }
 
   resolve(refId) {
     this.refId = refId;
+    // [edit-after-send]
     for (const { participant, prop } of this.participants) {
       participant[prop] = refId;
     }
@@ -167,12 +173,12 @@ class ValueCollection extends Collection {
    * [edit-after-send]
    */
   generatePlaceholder() {
-    return new _VirtualRef();
+    return new VirtualRef();
   }
 
   /**
    * WARNING: use carefully.
-   * @param {_VirtualRef} placeholder
+   * @param {VirtualRef} placeholder
    */
   resolvePlaceholderId(refId, placeholder) {
     // const ref = this.getRefByValue(value);

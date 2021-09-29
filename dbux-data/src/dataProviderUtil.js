@@ -2057,7 +2057,7 @@ export default {
   /** @param {DataProvider} dp */
   getPromiseRootId(dp, promiseId) {
     const traceId = dp.util.getFirstTraceIdByRefId(promiseId);
-    return traceId && dp.util.getRootContextOfTrace(traceId);
+    return traceId && dp.util.getRootContextOfTrace(traceId)?.contextId || 0;
   },
 
   /** 
@@ -2067,7 +2067,7 @@ export default {
    * 
    * @param {DataProvider} dp
    */
-  GNPU(dp, nestingPromiseId, beforeRootId, syncPromiseIds, visited = new Set()) {
+  GNPU(dp, nestingPromiseId, beforeRootId, syncPromiseIds, links, visited = new Set(), depth = 0) {
     if (visited.has(nestingPromiseId)) {
       return null;
     }
@@ -2081,43 +2081,67 @@ export default {
     // TODO: fix for SYNC (check beforeRootId vs. link.rootId?)
 
     let nestedUpdate = dp.util.getLastAsyncPostEventUpdateOfPromise(nestingPromiseId, beforeRootId);
+    const promiseRootId = dp.util.getPromiseRootId(nestingPromiseId);
 
-    if (nestedUpdate && dp.util.getPromiseRootId(nestingPromiseId) < nestedUpdate.rootId) {
+    if (depth > 0 && nestedUpdate && promiseRootId < nestedUpdate.rootId) {
       // nested for synchronization -> do not go deeper
       // TODO: probably should only sync in some cases (sync here for PostAwait, don't sync here for PostThen?)
       syncPromiseIds.push(nestingPromiseId);
     }
     else {
+      // -> look up nested links
       const link = dp.indexes.promiseLinks.to.getUnique(nestingPromiseId);
       if (link) {
+        links.push(link);
+
         // try to go deeper
         if (Array.isArray(link.from)) {
+          // multi CHAIN
           const nestedUpdates = link.from.flatMap(nestedPromiseId =>
-            dp.util.GNPU(nestedPromiseId, beforeRootId, syncPromiseIds, visited)
+            dp.util.GNPU(nestedPromiseId, beforeRootId, syncPromiseIds, links, visited, depth + 1)
           ).filter(u => !!u);
           if (nestedUpdates.length) {
             nestedUpdate = nestedUpdates;
           }
         }
+        else if (link.from) {
+          // single CHAIN
+          nestedUpdate = dp.util.GNPU(link.from, beforeRootId, syncPromiseIds, links, visited, depth + 1) || nestedUpdate;
+        }
+        else if (link.asyncPromisifyPromiseId) {
+          // promisify linkage
+          if (link.rootId) {
+            // -> the link's root is the actual nested root
+            if (promiseRootId < link.rootId) {
+              syncPromiseIds.push(nestingPromiseId);
+            }
+            else {
+              nestedUpdate = dp.util.getAsyncPostEventUpdateOfRoot(link.rootId) || nestedUpdate;
+            }
+          }
+        }
         else {
-          nestedUpdate = dp.util.GNPU(link.from, beforeRootId, syncPromiseIds, visited) || nestedUpdate;
+          warn(`invalid PromiseLink for nestingPromiseId=${nestingPromiseId} has no 'from' nor 'asyncPromisifyPromiseId':`, link);
         }
       }
       if (!nestedUpdate) {
         // no nested update found -> go to previous promise and repeat
         // maybe the given promise did not have a recorded Post* update, but it's predecessor might have
-        // -> could be because (i) the update happened inside an untraced module, or (ii) a reject/throw skipped it
+        // -> could be because 
+        //    (i) the update happened inside an untraced module, or 
+        //    (ii) promisify callback chain
+        //    (iii) a reject/throw skipped it
         // const u = dp.util.getAsyncPreEventUpdateOfPromise(nestingPromiseId, beforeRootId);
         const u = dp.indexes.asyncEventUpdates.preUpdatesByPostEventPromise.getUnique(nestingPromiseId);
         if (u) {
           if (AsyncEventUpdateType.is.PreThen(u.type)) {
             // go to previous promise in promise tree
             const preThenPromiseId = u.promiseId;
-            return dp.util.GNPU(preThenPromiseId, beforeRootId, syncPromiseIds, visited);
+            return dp.util.GNPU(preThenPromiseId, beforeRootId, syncPromiseIds, links, visited);
           }
           else if (AsyncEventUpdateType.is.PreAwait(u.type)) {
             // go to nested promise of first await
-            return dp.util.GNPU(u.nestedPromiseId, beforeRootId, syncPromiseIds, visited);
+            return dp.util.GNPU(u.nestedPromiseId, beforeRootId, syncPromiseIds, links, visited);
           }
         }
       }
@@ -2189,13 +2213,15 @@ export default {
   },
 
   /** @param {DataProvider} dp */
-  DOWN(dp, promiseId, beforeRootId, syncPromiseIds) {
-    const result = dp.util._DOWN(promiseId, beforeRootId, syncPromiseIds) || 0;
+  DOWN(dp, promiseId, beforeRootId, syncPromiseIds, links) {
+    const result = dp.util._DOWN(promiseId, beforeRootId, syncPromiseIds, links) || 0;
     if (Array.isArray(result)) {
       return result.map(u => u.rootId);
     }
     else {
-      return result?.rootId || 0;
+      return result?.rootId ||
+        // result /* hackfix: GNPU might return `rootId` */ ||
+        0;
     }
   },
 
@@ -2203,8 +2229,8 @@ export default {
    *  @param {DataProvider} dp
    * NOTE: promiseId is ensured to be settled because promiseId is settled
    */
-  _DOWN(dp, promiseId, beforeRootId, syncPromiseIds, visited = new Set()) {
-    let nestedUpdate = dp.util.GNPU(promiseId, beforeRootId, syncPromiseIds, visited);
+  _DOWN(dp, promiseId, beforeRootId, syncPromiseIds, links, visited = new Set()) {
+    let nestedUpdate = dp.util.GNPU(promiseId, beforeRootId, syncPromiseIds, links, visited);
     if (!nestedUpdate) {
       return null;
     }
@@ -2267,6 +2293,7 @@ export default {
     const isCallRecorded = !!promiseId;
 
     const s = [];
+    const links = [];
     let chainFromRootId = 0;
     const beforeRootId = postEventRootId;
     const toRootId = postEventRootId;
@@ -2278,7 +2305,7 @@ export default {
     const rootIdPrevious = !isFirstAwait && preEventRootId;
 
     // Case 2: nested
-    const rootIdNested = nestedPromiseId && util.DOWN(nestedPromiseId, beforeRootId, s);
+    const rootIdNested = nestedPromiseId && util.DOWN(nestedPromiseId, beforeRootId, s, links);
 
     if (!isFirstAwait || !isCallRecorded) {
       chainFromRootId = rootIdNested || rootIdPrevious;
@@ -2304,6 +2331,7 @@ export default {
       rootIdNested,
       isFirstAwait,
       isCallRecorded,
+      links,
       s
     };
 
@@ -2403,9 +2431,10 @@ export default {
     } = preEventUpdate;
 
     const s = [];
+    const links = [];
     const beforeRootId = postEventRootId;
 
-    const rootIdDown = util.DOWN(preEventPromiseId, beforeRootId, s);
+    const rootIdDown = util.DOWN(preEventPromiseId, beforeRootId, s, links);
     const rootIdUp = util.UP(postEventPromiseId, beforeRootId, s);
 
     // TODO: add sync edges
@@ -2445,8 +2474,15 @@ export default {
       toRootId,
 
       preEventUpdate,
+      // /**
+      //  * NOTE: `rootIdNested` is (generally) not available at this point, since the nested promise might not have done work yet.
+      //  * In case of nesting, the edge is established via nestedPromise's `rootIdUp`.
+      //  */
+      // rootIdNested,
       rootIdUp,
       rootIdDown,
+      links,
+      s
       // previousPostUpdate,
       // isNested,
       // isChainedToRoot
@@ -2476,26 +2512,33 @@ export default {
     const {
       rootId: preEventRootId,
       // isEventListener
-      promiseId
+      promiseId: preEventPromiseId
     } = preEventUpdate;
 
     const isNested = false;
     const beforeRootId = postEventRootId;
 
-    let chainFromRootId, rootIdUp;
+    let chainToPromiseId, chainFromRootId, rootIdDown, rootIdUp;
 
-    // if (isEventListener) {
+    // the PostEventUpdate of preEventUpdate
+    const postPreEventUpdate = util.getAsyncPostEventUpdateOfRoot(preEventRootId);
     const firstPostEventHandlerUpdate = util.getFirstAsyncPostEventUpdateOfTrace(schedulerTraceId);
+
     if (preEventRootId === 1) {
       // Case 1: don't CHAIN cb from first root
       //      (TODO: top-level `await` would CHAIN from first root.)
     }
-    else if (promiseId) {
+    else if (preEventPromiseId/*  || postPreEventUpdate?.promiseId */) {
       // Case 2: Promisification
+      chainToPromiseId = preEventPromiseId || postPreEventUpdate.promiseId;
       const s = [];
-      // const rootIdDown = util.DOWN(preEventPromiseId, beforeRootId, s);
-      rootIdUp = util.UP(promiseId, beforeRootId, s);
-      chainFromRootId = rootIdUp;
+      const links = [];
+
+      rootIdDown = postPreEventUpdate?.promiseId && util.DOWN(postPreEventUpdate?.promiseId, beforeRootId, s, links) || 0;
+      rootIdUp = util.UP(chainToPromiseId, beforeRootId, s);
+
+      // go up the promise chain
+      chainFromRootId = rootIdDown || rootIdUp;
     }
     else {
       // [heuristics]
@@ -2528,9 +2571,11 @@ export default {
     return {
       chainFromRootId,
       toRootId,
-
+      chainToPromiseId,
       preEventUpdate,
+
       isNested,
+      rootIdDown,
       rootIdUp,
       firstPostEventHandlerUpdate
     };

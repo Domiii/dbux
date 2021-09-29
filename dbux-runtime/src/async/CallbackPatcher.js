@@ -23,6 +23,18 @@ function containsInstrumentedCallbacks(args, spreadArgs) {
   });
 }
 
+function countInstrumentedCallbacks(args, spreadArgs) {
+  spreadArgs = spreadArgs || EmptyArray;
+  return args.reduce((acc, arg, i) => {
+    if (spreadArgs[i]) {
+      // check all spread args
+      return acc + spreadArgs[i].reduce((nestedAcc, nestedArg) => nestedAcc + !!isInstrumentedFunction(nestedArg), 0);
+    }
+    // check regular arg
+    return acc + !!isInstrumentedFunction(arg);
+  }, 0);
+}
+
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError, trace } = newLogger('CallbackPatcher');
 
@@ -144,15 +156,20 @@ export default class CallbackPatcher {
       let returnValue;
       // const lastTraceId = traceCollection.getLast()?.traceId;
       const lastContextId = executionContextCollection.getLast()?.contextId;
-      
+
       // TODO: test this `process.nextTick` used from inside nested async functions
 
       const realRootId = runtime.peekRealRootContextId();
+
+      // keep maintaining promisify stack
+      runtime.promisifyStart(promisifyPromiseVirtualRef);
       try {
         // actually call callback
         returnValue = originalCallback.call(this, ...args);
       }
       finally {
+        runtime.promisifyEnd(promisifyPromiseVirtualRef);
+        
         if (!lastContextId) {
           // NOTE: should never happen, since we have already patched the callback?
         }
@@ -248,7 +265,7 @@ export default class CallbackPatcher {
   //   };
   // };
 
-  shouldPatchArgs(originalFunction, args, spreadArgs) {
+  checkAndCountInstrumentedCallbacks(originalFunction, args, spreadArgs) {
     return (
       // only instrument callbacks of functions that themselves are not instrumented (recorded)
       !isInstrumentedFunction(originalFunction) &&
@@ -257,8 +274,8 @@ export default class CallbackPatcher {
       !isOrHasMonkeyPatchedFunction(originalFunction) &&
 
       // only patch if it passes on callbacks of instrumented functions
-      containsInstrumentedCallbacks(args, spreadArgs)
-    );
+      countInstrumentedCallbacks(args, spreadArgs)
+    ) || 0;
   }
 
   maybeMonkeyPatchCallback(arg, traceId) {
@@ -298,8 +315,10 @@ export default class CallbackPatcher {
       return;
     }
 
+    // NOTE: if callback count is 1, use BCE for scheduler trace
+    const instCount = this.checkAndCountInstrumentedCallbacks(originalFunction, args, spreadArgs);
     if (/* !bceStaticTrace.data?.isNew && */
-      this.shouldPatchArgs(originalFunction, args, spreadArgs)) {
+      instCount) {
       // -> monkey patch arguments
       for (let i = 0; i < args.length; i++) {
         // const arg = args[i];
@@ -308,11 +327,11 @@ export default class CallbackPatcher {
           // patch spread args
           for (let j = 0; j < spreadArgs[i].length; j++) {
             // TODO: unique traceId per callback (but spreadArgs[i] all share the same trace)
-            args[i][j] = this.maybeMonkeyPatchCallback(args[i][j], argTid || callId);
+            args[i][j] = this.maybeMonkeyPatchCallback(args[i][j], instCount === 1 ? callId : argTid || callId);
           }
         }
         // patch regular arg
-        args[i] = this.maybeMonkeyPatchCallback(args[i], argTid || callId);
+        args[i] = this.maybeMonkeyPatchCallback(args[i], instCount === 1 ? callId : argTid || callId);
       }
       // let f = getPatchedFunctionOrNull(originalFunction);
       // if (!f) {

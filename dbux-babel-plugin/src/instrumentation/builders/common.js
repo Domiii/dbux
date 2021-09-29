@@ -110,7 +110,7 @@ export function buildSource(source) {
 // utilities
 // ###########################################################################
 
-export function getReplacePath(traceCfg) {
+export function getBuildTargetPath(traceCfg) {
   const {
     meta: {
       targetPath
@@ -121,7 +121,7 @@ export function getReplacePath(traceCfg) {
 
 
 export function getInstrumentPath(traceCfg) {
-  return getReplacePath(traceCfg) || traceCfg.path;
+  return getBuildTargetPath(traceCfg) || traceCfg.path;
 }
 
 /**

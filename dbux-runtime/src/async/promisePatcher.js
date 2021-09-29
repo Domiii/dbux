@@ -12,6 +12,7 @@ import PromiseRuntimeData from '../data/PromiseRuntimeData';
 import valueCollection from '../data/valueCollection';
 // eslint-disable-next-line max-len
 import { isMonkeyPatchedFunction, monkeyPatchFunctionHolder, tryRegisterMonkeyPatchedFunction, _registerMonkeyPatchedCallback, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
+import PromiseLink from '@dbux/common/src/types/PromiseLink';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError } = newLogger('PromisePatcher');
@@ -363,7 +364,7 @@ function patchPromiseClass(BasePromiseClass) {
                 const thisPromiseId = getPromiseId(this) || 0;
                 const asyncPromisifyPromiseId = executorRootId !== thenRef.rootId ? thisPromiseId : 0; // we only care about promisify, if async
                 RuntimeMonitorInstance._runtime.async.resolve(
-                  inner, this, ResolveType.Resolve, thenRef.schedulerTraceId, asyncPromisifyPromiseId
+                  inner, this, PromiseLinkType.Promisify, thenRef.schedulerTraceId, asyncPromisifyPromiseId
                 );
               }
               resolve(...args);
@@ -384,7 +385,7 @@ function patchPromiseClass(BasePromiseClass) {
                 const thisPromiseId = getPromiseId(this) || 0;
                 const asyncPromisifyPromiseId = executorRootId !== thenRef.rootId ? thisPromiseId : 0; // we only care about promisify, if async
                 RuntimeMonitorInstance._runtime.async.resolve(
-                  inner, this, ResolveType.Reject, thenRef.schedulerTraceId, asyncPromisifyPromiseId
+                  inner, this, PromiseLinkType.Promisify, thenRef.schedulerTraceId, asyncPromisifyPromiseId
                 );
               }
               reject(...args);
