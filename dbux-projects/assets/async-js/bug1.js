@@ -1,3 +1,8 @@
+/**
+ * @file
+ * @see https://github.com/caolan/async/issues/1729
+ */
+
 const { queue } = require('./lib');
 
 const createTask = () => {
@@ -9,9 +14,8 @@ const createTask = () => {
 };
 
 const createQueueAndProcess = async () => {
-  const q = queue(async (task, callback) => {
+  const q = queue(async (task) => {
     await task.doIt();
-    callback();
     console.log("task done");
   });
 
