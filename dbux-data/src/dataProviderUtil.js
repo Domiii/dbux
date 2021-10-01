@@ -2173,7 +2173,7 @@ export default {
       // “Nested PostThen” or “AsyncReturn” (of function with `PostAwait`, i.e. `await` executed)
       return u.rootId;
     }
-    // “resolve” or “AsyncReturn” (of function where no `await` executed)
+    // “resolve” or “all” or “AsyncReturn” (of function where no `await` executed)
     return dp.util.UP(outerPromiseId, rootId, syncPromiseIds);
   },
 
