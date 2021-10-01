@@ -52,13 +52,17 @@ export default class Application {
   }
 
   addData(allData, isRaw) {
-    const start = performance();
-    this.dataProvider.addData(allData, isRaw);
-    const end = performance();
-    
-    this.lastAddTimeSpent = end - start;
-    this.totalTimeSpent = (this.totalTimeSpent || 0) + this.lastAddTimeSpent;
-    this.updatedAt = Date.now();
+    const start = performance.now();
+    try {
+      this.dataProvider.addData(allData, isRaw);
+    }
+    finally {
+      const end = performance.now();
+
+      this.lastAddTimeSpent = end - start;
+      this.totalTimeSpent = (this.totalTimeSpent || 0) + this.lastAddTimeSpent;
+      this.updatedAt = Date.now();
+    }
 
     // if (this.allApplications.getSelectedApplication() === this) {
     //   this.allApplications._emitter.emit('selectedApplicationData', this);

@@ -82,7 +82,7 @@ export default class RuntimeClient extends SocketClient {
       logError(`error while adding data:`, err);
     }
     finally {
-      debug(`handleData ACK, app time: ${this.application.totalTimeSpent}, ${this.application.lastAddTimeSpent}`);
+      debug(`handleData ACK, app time: ${Math.round(this.application.totalTimeSpent)}, ${Math.round(this.application.lastAddTimeSpent)}`);
       ack('data'); // send ack
     }
   }
