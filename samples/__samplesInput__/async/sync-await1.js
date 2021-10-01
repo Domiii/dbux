@@ -1,14 +1,15 @@
 /**
- * 3 FORKs: main, f, g
+ * 
  */
+import { P } from '../../util/asyncUtil';
 
 const p = f();
 
 (async function main() {
   await 0;
   console.log('mainA');
-  await p;
-  console.log('mainB');
+  await P('mainB1', () => (console.log('mainB2'), p));
+  console.log('mainC');
   // await 0;
   // console.log('mainD');
 })();

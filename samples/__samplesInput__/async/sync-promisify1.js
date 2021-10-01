@@ -5,17 +5,18 @@ import { P } from '../../util/asyncUtil';
 
 let cb;
 
-const p = new Promise((r, j) => {
+const p = P('S1', () => new Promise((r) => {
+  'S2';
   cb = () => {
     r();
-  }
-});
+  };
+}));
 
 
 // queue user
 P(
   'A1',
-  () => p,
+  () => ('A2', p),
   () => 'A3',
 );
 
@@ -25,10 +26,10 @@ P(
   'B1',
   'B2',
   'B3',
-  // () => setImmediate(cb),
-  () => new Promise((r) => setImmediate(() => {
-    cb();
-    r();
-  })),
+  () => ('B4', setImmediate(cb)),
+  // () => new Promise((r) => setImmediate(() => {
+  //   cb();
+  //   r();
+  // })),
   'B5'
 );

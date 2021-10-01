@@ -1,6 +1,5 @@
 /**
- * 3 FORKs: main, f, g
- * 2 SYNCs: f -> main, g -> main
+ * 
  */
 
 const p = f();

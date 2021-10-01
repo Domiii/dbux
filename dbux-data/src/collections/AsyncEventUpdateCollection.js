@@ -111,6 +111,7 @@ export default class AsyncEventUpdateCollection extends Collection {
       },
       rootIdNested
     } = postUpdateData;
+    
     this.getOrAssignRootThreadId(preEventRootId, schedulerTraceId);
     rootIdNested && this.getOrAssignRootThreadId(rootIdNested, schedulerTraceId);
 
