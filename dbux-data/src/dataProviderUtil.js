@@ -2077,6 +2077,76 @@ export default {
     return traceId && dp.util.getRootContextOfTrace(traceId)?.contextId || 0;
   },
 
+  /**
+   * 
+   * @param {DataProvider} dp
+   */
+  UP_LINK(dp, outerPromiseId, rootId, syncPromiseIds) {
+    let u;
+    if ((u = dp.util.getLastAsyncPostEventUpdateOfPromise(outerPromiseId, rootId))) {
+      // “Nested PostThen” or “AsyncReturn” (of function with `PostAwait`, i.e. `await` executed)
+      return u.rootId;
+    }
+    // “resolve” or “all” or “AsyncReturn” (of function where no `await` executed)
+    return dp.util.UP(outerPromiseId, rootId, syncPromiseIds);
+  },
+
+  /** 
+   * Find rootId of last Post* update of top-most promise that nests promise of given `promiseId`.
+   * The result is:
+   *    * either a root-level `await q*`'s PreAwait update
+   *    * or the PostUpdate of a nesting promise `q3` [nesting q2 (never q1); “Nested PostThen” or “AsyncReturn”]
+   * 
+   * @param {DataProvider} dp
+   */
+  UP(dp, nestedPromiseId, rootId, syncPromiseIds) {
+    // -- 4 caller cases (CC), operating on `q* = nestedPromise` --
+    // CC1: PostAwait: `q1 = f()` (firstAwait inside f) [always new]
+    // CC2: PostThen: `q2 = p.then(h)` (PostUpdate inside h) [always old]
+    // CC3: an outer linked promise `q3`, nesting either `q1`, `q2` or `q4`
+    // CC4: a chained promise `q4 = q.then(i)` [has not settled yet]
+
+    // NOTE: None of the promises q* have settled yet (since `q` only now settled).
+
+    let u;
+
+    // future-work: fix in case the promises was nested multiple times?
+    const nestingLink = dp.indexes.promiseLinks.from.getFirst(nestedPromiseId);
+    if (nestingLink) {
+      // “Nested PostThen” or “AsyncReturn” or “resolve” or “all”
+      const { to: outerPromiseId/* , rootId */ } = nestingLink;
+      return dp.util.UP_LINK(outerPromiseId, rootId);
+    }
+    else if ((u = dp.util.getPreUpdateOfNestedPromise(nestedPromiseId))) {
+      // u is PreAwait && PostAwait has not happened yet: `await nestedPromise`
+      // NOTE: This is guaranteed to be PreAwait, not PreThen (because "Nested PostThen" has a `nestingLink`)
+      const promiseRootId = dp.util.getPromiseRootId(nestedPromiseId);
+      if (promiseRootId < u.rootId) {
+        // NOTE: this implies `await q2` (because `q1` is always new).
+        // NOTE: SYNC edge will be added in u's own Post* event handler
+        return 0;
+      }
+      else {
+        // implies: promiseRootId === u.rootId.
+        // implies: `await q*` where `q*` was created in PreAwait rootId.
+        // NOTE: promiseRootId > u.rootId is impossible because if `u` nests `p`, `u` cannot occur before `p`
+
+        const isFirstAwait = dp.util.isFirstContextInParent(u.contextId);
+        if (!isFirstAwait || u.contextId === u.rootId) {
+          return u.rootId;  // already at root (can't go up any further)
+        }
+        return dp.util.UP(u.promiseId, rootId, syncPromiseIds) || 0;
+      }
+    }
+    else if ((u = dp.util.getPreUpdateOfPromise(nestedPromiseId, rootId)) && AsyncEventUpdateType.is.PreThen(u.type)) {
+      // promise is not nested but was THEN’ed -> follow down the THEN chain (until we find a promise that is nested)
+      return dp.util.UP(u.postEventPromiseId, rootId, syncPromiseIds);
+    }
+
+    // -> nestedPromiseId is nested but there is no relevant Post event to CHAIN from, return 0
+    return 0;
+  },
+
   /** 
    * `getNestedPromiseUpdate`.
    * Returns the inner most nested promise that has a Post* update, nested by `toPromiseId`.
@@ -2161,76 +2231,6 @@ export default {
       }
     }
     return nestedUpdate;
-  },
-
-  /**
-   * 
-   * @param {DataProvider} dp
-   */
-  UP_LINK(dp, outerPromiseId, rootId, syncPromiseIds) {
-    let u;
-    if ((u = dp.util.getLastAsyncPostEventUpdateOfPromise(outerPromiseId, rootId))) {
-      // “Nested PostThen” or “AsyncReturn” (of function with `PostAwait`, i.e. `await` executed)
-      return u.rootId;
-    }
-    // “resolve” or “all” or “AsyncReturn” (of function where no `await` executed)
-    return dp.util.UP(outerPromiseId, rootId, syncPromiseIds);
-  },
-
-  /** 
-   * Find rootId of last Post* update of top-most promise that nests promise of given `promiseId`.
-   * The result is:
-   *    * either a root-level `await q*`'s PreAwait update
-   *    * or the PostUpdate of a nesting promise `q3` [nesting q2 (never q1); “Nested PostThen” or “AsyncReturn”]
-   * 
-   * @param {DataProvider} dp
-   */
-  UP(dp, nestedPromiseId, rootId, syncPromiseIds) {
-    // -- 4 caller cases (CC), operating on `q* = nestedPromise` --
-    // CC1: PostAwait: `q1 = f()` (firstAwait inside f) [always new]
-    // CC2: PostThen: `q2 = p.then(h)` (PostUpdate inside h) [always old]
-    // CC3: an outer linked promise `q3`, nesting either `q1`, `q2` or `q4`
-    // CC4: a chained promise `q4 = q.then(i)` [has not settled yet]
-
-    // NOTE: None of the promises q* have settled yet (since `q` only now settled).
-
-    let u;
-
-    // future-work: fix in case the promises was nested multiple times?
-    const nestingLink = dp.indexes.promiseLinks.from.getFirst(nestedPromiseId);
-    if (nestingLink) {
-      // “Nested PostThen” or “AsyncReturn” or “resolve” or “all”
-      const { to: outerPromiseId/* , rootId */ } = nestingLink;
-      return dp.util.UP_LINK(outerPromiseId, rootId);
-    }
-    else if ((u = dp.util.getPreUpdateOfNestedPromise(nestedPromiseId))) {
-      // u is PreAwait && PostAwait has not happened yet: `await nestedPromise`
-      // NOTE: This is guaranteed to be PreAwait, not PreThen (because "Nested PostThen" has a `nestingLink`)
-      const promiseRootId = dp.util.getPromiseRootId(nestedPromiseId);
-      if (promiseRootId < u.rootId) {
-        // NOTE: this implies `await q2` (because `q1` is always new).
-        // NOTE: SYNC edge will be added in u's own Post* event handler
-        return 0;
-      }
-      else {
-        // implies: promiseRootId === u.rootId.
-        // implies: `await q*` where `q*` was created in PreAwait rootId.
-        // NOTE: promiseRootId > u.rootId is impossible because if `u` nests `p`, `u` cannot occur before `p`
-
-        const isFirstAwait = dp.util.isFirstContextInParent(u.contextId);
-        if (!isFirstAwait || u.contextId === u.rootId) {
-          return u.rootId;  // already at root (can't go up any further)
-        }
-        return dp.util.UP(u.promiseId, rootId, syncPromiseIds) || 0;
-      }
-    }
-    else if ((u = dp.util.getPreUpdateOfPromise(nestedPromiseId, rootId)) && AsyncEventUpdateType.is.PreThen(u.type)) {
-      // promise is not nested but was THEN’ed -> follow down the THEN chain (until we find a promise that is nested)
-      return dp.util.UP(u.postEventPromiseId, rootId, syncPromiseIds);
-    }
-
-    // -> nestedPromiseId is nested but there is no relevant Post event to CHAIN from, return 0
-    return 0;
   },
 
   /** @param {DataProvider} dp */
