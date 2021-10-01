@@ -19,4 +19,6 @@ async function f() {
   console.log('fB');
   await 1;
   console.log('fC');
+  await 2;
+  console.log('fD');
 }
