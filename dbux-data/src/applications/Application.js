@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import { performance } from '@dbux/common/src/util/universalLibs';
 import { pathGetParent } from '@dbux/common/src/util/pathUtil';
 import RuntimeDataProvider from '../RuntimeDataProvider';
 import { newDataProvider } from '../dataProviderImpl';
@@ -51,7 +52,12 @@ export default class Application {
   }
 
   addData(allData, isRaw) {
+    const start = performance();
     this.dataProvider.addData(allData, isRaw);
+    const end = performance();
+    
+    this.lastAddTimeSpent = end - start;
+    this.totalTimeSpent = (this.totalTimeSpent || 0) + this.lastAddTimeSpent;
     this.updatedAt = Date.now();
 
     // if (this.allApplications.getSelectedApplication() === this) {
