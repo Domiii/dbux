@@ -2176,11 +2176,11 @@ export default {
 
     // Case 1:  p nests shallow link     -> !u && link (Resolve,All)
     // Case 2a: p nests u (PostAwait)    -> u && !link
-    // Case 2b: p nests u (PostAwait)    -> u && link (AsyncReturn)
+    // Case 2b: p nests u (PostAwait)    -> u && link (AsyncReturn) [can be BOTH]
     // Case 3a: p nests u (PostThen)     -> u && !link
-    // Case 3b: p nests u (PostThen)     -> u && link (ThenNested)
+    // Case 3b: p nests u (PostThen)     -> u && link (ThenNested) [can be BOTH]
     // Case 4a: p nests u (PostCallback) -> u && !link 
-    // Case 4a: p nests u (PostCallback) -> u && link (Promisify)
+    // Case 4a: p nests u (PostCallback) -> u && link (Promisify) [can only be either SYNC or CHAIN]
 
     if (promiseRootId < postUpdateData.preEventUpdate.rootId) /* ||
       (!nestedUpdate && link && link.rootId &&  */ {
@@ -2205,24 +2205,25 @@ export default {
         // single CHAIN
         nestedUpdate = dp.util.GNPU(nestedLink.from, beforeRootId, postUpdateData, depth + 1, visited) || nestedUpdate;
       }
-      else if (nestedLink.asyncPromisifyPromiseId) {
-        // promisify linkage, encountering `p` in `C()` in:
-        //  `A(); p.then(() => (B(), p)).then(C)`
-
-        // NOTE: nestedLink is created when `resolve`/`reject` is called
-        if (nestedLink.rootId) {
-          // -> the link's root is the actual nested root
-          if (promiseRootId < nestedLink.rootId) {
-            // resolve function was called 
-            // see `sync-promisify*` samples
-            syncPromiseIds.push(nestingPromiseId);
-          }
-          else {
-            // no nesting possible -> stop recursion here
-            nestedUpdate = dp.util.getAsyncPostEventUpdateOfRoot(nestedLink.rootId) || nestedUpdate;
-          }
-        }
-      }
+      // else if (nestedLink.asyncPromisifyPromiseId) {
+      //   // promisify linkage, encountering `p` in `C()` in:
+      //   //  `A(); p.then(() => (B(), p)).then(C)`
+      //   // NOTE: nestedLink is created when `resolve`/`reject` is called
+      //   if (nestedLink.rootId) {
+      //     // -> the link's root is the actual nested root
+      //     if (promiseRootId < /*nestedLink.rootId*/ postUpdateData.preEventUpdate.rootId) {
+      //       // resolve function was called 
+      //       // see `sync-promisify*` samples
+      //       // UNNECESARY: already caught above
+      //       syncPromiseIds.push(nestingPromiseId);
+      //     }
+      //     else {
+      //       // no nesting possible -> stop recursion here
+      //       // UNNECESARY since getAsyncPostEventUpdateOfRoot(nestedLink.rootId) ===== nestedUpdate.
+      //       nestedUpdate = dp.util.getAsyncPostEventUpdateOfRoot(nestedLink.rootId) || nestedUpdate;
+      //     }
+      //   }
+      // }
       else {
         warn(`invalid PromiseLink for nestingPromiseId=${nestingPromiseId} has no 'from' nor 'asyncPromisifyPromiseId':`, nestedLink);
       }
