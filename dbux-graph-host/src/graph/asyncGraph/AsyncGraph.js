@@ -175,7 +175,7 @@ class AsyncGraph extends GraphBase {
       if (!parentAsyncData) {
         this.logger.error(`parentAsyncData not found in AsyncGraph.resolvePositionData: ${JSON.stringify({ applicationId, blockRootId })}`);
       }
-      childData.colId = (parentAsyncData?.blockOffset || 0) + childData.inBlockOffset;
+      childData.colId = (parentAsyncData?.blockOffset || 0) + childData.inBlockOffset + 1;
     });
 
     return asyncNodeData;
@@ -232,6 +232,35 @@ class AsyncGraph extends GraphBase {
     }
   }
 
+  updateRootValueLabel = async () => {
+    const trace = traceSelection.selected;
+    if (trace) {
+      const { applicationId, staticTraceId } = trace;
+      const dp = allApplications.getById(applicationId).dataProvider;
+      const firstTraces = new Map();
+      const allTraces = dp.indexes.traces.byStaticTrace.get(staticTraceId);
+      allTraces.forEach((t) => {
+        if (!firstTraces.has(t.rootContextId)) {
+          firstTraces.set(t.rootContextId, t);
+        }
+      });
+      const values = Array.from(firstTraces.values()).map(t => {
+        const { asyncNodeId } = dp.util.getAsyncNode(t.rootContextId);
+        const label = dp.util.getTraceValueStringShort(t.traceId);
+
+        return {
+          applicationId,
+          asyncNodeId,
+          label
+        };
+      });
+      await this.remote.updateRootValueLabel(values);
+    }
+    else {
+      await this.remote.updateRootValueLabel();
+    }
+  }
+
   updateStackHighlight = async (trace) => {
     let nodes = [];
     if (trace) {
@@ -258,6 +287,7 @@ class AsyncGraph extends GraphBase {
     }
     await this.remote.selectAsyncNode(asyncNode);
     await this.updateStackHighlight(trace);
+    await this.updateRootValueLabel();
   }
 
   // ###########################################################################

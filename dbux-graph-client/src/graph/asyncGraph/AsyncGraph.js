@@ -174,7 +174,10 @@ class AsyncGraph extends GraphBase {
             ${shortLabel}
           </div>
           <div class="async-detail flex-column cross-axis-align-center">
-            <div class="ellipsis-10">${displayName}</div>
+            <div>
+              <div class="ellipsis-10 async-context-label">${displayName}</div>
+              <div class="ellipsis-10 value-label"></div>
+            </div>
             <div class="async-loc-label gray">
               <span>${locLabel}</span>
             </div>
@@ -265,6 +268,13 @@ class AsyncGraph extends GraphBase {
     return decorations.join('');
   }
 
+  renderRootValueLabel() {
+    this.allNodeData.forEach((nodeData) => {
+      const valueLabelEl = this.getAsyncNodeEl(nodeData.asyncNode, '.value-label');
+      valueLabelEl.innerHTML = nodeData.valueLabel;
+    });
+  }
+
   // ###########################################################################
   // event handlers
   // ###########################################################################
@@ -294,13 +304,16 @@ class AsyncGraph extends GraphBase {
    * @param {{applicationId: number, asyncNodeId: number}} asyncNode 
    * @return {HTMLElement}
    */
-  getAsyncNodeEl({ applicationId, asyncNodeId }) {
+  getAsyncNodeEl({ applicationId, asyncNodeId }, childSelector = null) {
     const data = {
       'application-id': applicationId,
       'async-node-id': asyncNodeId,
     };
     const dataSelector = Object.entries(data).map(([key, val]) => `[data-${key}="${val || ''}"]`).join('');
-    const selector = `.async-node${dataSelector}`;
+    let selector = `.async-node${dataSelector}`;
+    if (childSelector) {
+      selector = `${selector} ${childSelector}`;
+    }
     return document.querySelector(selector);
   }
 
@@ -357,6 +370,17 @@ class AsyncGraph extends GraphBase {
           }
         });
       }
+    },
+    updateRootValueLabel(values) {
+      this.allNodeData.forEach((node) => {
+        node.valueLabel = '';
+      });
+      if (values) {
+        values.forEach(({ applicationId, asyncNodeId, label }) => {
+          this.allNodeData.get(applicationId, asyncNodeId).valueLabel = label;
+        });
+      }
+      this.renderRootValueLabel();
     }
   }
 }

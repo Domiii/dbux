@@ -157,6 +157,7 @@ class Toolbar extends ClientComponentEndpoint {
     decorateClasses(docEl, {
       'hide-locs': !locMode,
       'hide-values': !valueMode,
+      'show-values': valueMode,
       'thin-mode': thinMode
     });
 

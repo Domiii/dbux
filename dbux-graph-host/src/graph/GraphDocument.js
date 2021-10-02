@@ -16,7 +16,7 @@ class GraphDocument extends HostComponentEndpoint {
     this.state.callMode = true;
     this.state.valueMode = false;
     this.state.thinMode = false;
-    this.state.stackEnabled = true;
+    this.state.stackEnabled = false;
     this.state.asyncDetailMode = false;
 
     this.createOwnComponents();

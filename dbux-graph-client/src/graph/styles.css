@@ -201,10 +201,9 @@ div {
 }
 
 [data-async-detail-mode="1"] .async-cell {
-  /* min-height: 2.8rem;
-  min-width: 5rem;
-  max-width: 10rem; */
-  width: fit-content;
+  /* fix size for detail mode */
+  height: 2rem;
+  width: 10rem;
 }
 
 .async-cell:hover {
@@ -244,6 +243,10 @@ div {
   padding: 0px;
   font-size: 10px;
   margin-left: 3px;
+}
+
+.show-values .async-context-label {
+  display: none !important;
 }
 
 .async-loc-label {
