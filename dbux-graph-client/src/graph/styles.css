@@ -202,8 +202,9 @@ div {
 
 [data-async-detail-mode="1"] .async-cell {
   /* fix size for detail mode */
-  height: 2rem;
-  width: 10rem;
+  min-height: 1rem;
+  min-width: 4rem;
+  width: fit-content;
 }
 
 .async-cell:hover {
@@ -247,10 +248,6 @@ div {
 
 .show-values .async-context-label {
   display: none !important;
-}
-
-.async-loc-label {
-  font-size: 0.7em;
 }
 
 [data-async-detail-mode="0"] div.async-detail {
@@ -525,17 +522,17 @@ body:not(.theme-mode-dark) .highlight {
  * zoombar
  * ############################################################################ */
 
-#zoombar {
-  position: fixed;
+.zoombar {
+  position: absolute;
   bottom: 10px;
   right: 10px;
 }
 
-#zoombar .button {
+.zoombar .button {
   margin: 2.5px;
 }
 
-.theme-mode-dark #zoombar .button {
+.theme-mode-dark .zoombar .button {
   background: #292929;
   border: solid 2px #484848;
   color: white;

@@ -178,7 +178,7 @@ class AsyncGraph extends GraphBase {
               <div class="ellipsis-10 async-context-label">${displayName}</div>
               <div class="ellipsis-10 value-label"></div>
             </div>
-            <div class="async-loc-label gray">
+            <div class="loc-label">
               <span>${locLabel}</span>
             </div>
           </div>
