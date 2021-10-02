@@ -2237,25 +2237,25 @@ export default {
         else {
           warn(`invalid PromiseLink for nestingPromiseId=${nestingPromiseId} has no 'from' nor 'asyncPromisifyPromiseId':`, nestedLink);
         }
-        if (!nestedUpdate) {
-          // no nested update found -> go to previous promise and repeat
-          // maybe the given promise did not have a recorded Post* update, but it's predecessor might have
-          // -> could be because 
-          //    (i) the update happened inside an untraced module, or 
-          //    (ii) a reject/throw skipped it
-          //    (iii) promisify callback chain(???)
-          // const u = dp.util.getAsyncPreEventUpdateOfPromise(nestingPromiseId, beforeRootId);
-          const u = dp.indexes.asyncEventUpdates.preUpdatesByPostEventPromise.getUnique(nestingPromiseId);
-          if (u) {
-            if (AsyncEventUpdateType.is.PreThen(u.type)) {
-              // go to previous promise in promise tree
-              const preThenPromiseId = u.promiseId;
-              return dp.util.GNPU(preThenPromiseId, beforeRootId, syncBeforeRootId, postUpdateData, 1, visited);
-            }
-            else if (AsyncEventUpdateType.is.PreAwait(u.type)) {
-              // go to nested promise of first await
-              return dp.util.GNPU(u.nestedPromiseId, beforeRootId, syncBeforeRootId, postUpdateData, 1, visited);
-            }
+      }
+      if (!nestedUpdate) {
+        // no nested update found -> go to previous promise and repeat
+        // maybe the given promise did not have a recorded Post* update, but it's predecessor might have
+        // -> could be because 
+        //    (i) the update happened inside an untraced module, or 
+        //    (ii) a reject/throw skipped it
+        //    (iii) promisify callback chain(???)
+        // const u = dp.util.getAsyncPreEventUpdateOfPromise(nestingPromiseId, beforeRootId);
+        const u = dp.indexes.asyncEventUpdates.preUpdatesByPostEventPromise.getUnique(nestingPromiseId);
+        if (u) {
+          if (AsyncEventUpdateType.is.PreThen(u.type)) {
+            // go to previous promise in promise tree
+            const preThenPromiseId = u.promiseId;
+            return dp.util.GNPU(preThenPromiseId, beforeRootId, syncBeforeRootId, postUpdateData, 1, visited);
+          }
+          else if (AsyncEventUpdateType.is.PreAwait(u.type)) {
+            // go to nested promise of first await
+            return dp.util.GNPU(u.nestedPromiseId, beforeRootId, syncBeforeRootId, postUpdateData, 1, visited);
           }
         }
       }
