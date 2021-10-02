@@ -723,14 +723,20 @@ export default {
 
   /** @param {DataProvider} dp */
   getTraceValueString(dp, traceId) {
-    const { nodeId } = dp.util.getDataNodeOfTrace(traceId);
-    return dp.util.getDataNodeValueString(nodeId);
+    const dataNode = dp.util.getDataNodeOfTrace(traceId);
+    if (dataNode) {
+      return dp.util.getDataNodeValueString(dataNode.nodeId);
+    }
+    return '(no value or undefined)';
   },
 
   /** @param {DataProvider} dp */
   getTraceValueStringShort(dp, traceId) {
-    const { nodeId } = dp.util.getDataNodeOfTrace(traceId);
-    return dp.util.getDataNodeValueStringShort(nodeId);
+    const dataNode = dp.util.getDataNodeOfTrace(traceId);
+    if (dataNode) {
+      return dp.util.getDataNodeValueStringShort(dataNode.nodeId);
+    }
+    return '(no value or undefined)';
   },
 
   /** @param {DataProvider} dp */
