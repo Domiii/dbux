@@ -23,7 +23,7 @@ class AsyncGraph extends GraphBase {
           <h4>Applications:</h4>
           <pre data-el="applications"></pre>
         </div>
-        <div data-el="main" style="grid-area:main;" class="grid grid-center async-grid"></div>
+        <div data-el="main" style="grid-area:main;" class="grid async-grid"></div>
       </div>
     `);
   }
@@ -103,8 +103,8 @@ class AsyncGraph extends GraphBase {
     if (children?.length) {
       let mainHTML = '';
       mainHTML += children.map(child => this.makeAsyncNodeEl(child)).join('');
-      mainHTML += this.makeParentThreadDecoration();
-      mainHTML += this.makeLineInThreadDecoration();
+      // mainHTML += this.makeParentThreadDecoration();
+      // mainHTML += this.makeLineInThreadDecoration();
       mainHTML += this.makeHeaderEl();
 
       this.els.main.innerHTML = mainHTML;
@@ -170,7 +170,7 @@ class AsyncGraph extends GraphBase {
 
     return /*html*/`
         <div class="async-cell async-node full-width flex-row align-center ${classAttrs}" style="${styleProps}" ${dataAttrs}>
-          <div class="async-brief flex-row main-axie-align-center">
+          <div class="async-brief">
             ${shortLabel}
           </div>
           <div class="async-detail flex-column cross-axis-align-center">
@@ -178,7 +178,7 @@ class AsyncGraph extends GraphBase {
               <div class="ellipsis-10 async-context-label">${displayName}</div>
               <div class="ellipsis-10 value-label"></div>
             </div>
-            <div class="loc-label">
+            <div class="loc-label ellipsis-10">
               <span>${locLabel}</span>
             </div>
           </div>
@@ -205,46 +205,46 @@ class AsyncGraph extends GraphBase {
     return buttonWrapperEl;
   }
 
-  makeParentThreadDecoration() {
-    const { children } = this.state;
-    const visitedColId = new Set();
-    const decorations = [];
-    for (const nodeData of children) {
-      const { colId, parentRowId } = nodeData;
-      if (!visitedColId.has(colId) && parentRowId) {
-        visitedColId.add(colId);
-        const positionProp = makeGridPositionProp(parentRowId, colId);
-        decorations.push(/*html*/`
-        <div class="async-node full-width flex-row align-center" style="${positionProp}">
-          <div class="async-detail flex-column cross-axis-align-center">⬤</div>
-        </div>
-        `);
-      }
-    }
-    return decorations.join('');
-  }
+  // makeParentThreadDecoration() {
+  //   const { children } = this.state;
+  //   const visitedColId = new Set();
+  //   const decorations = [];
+  //   for (const nodeData of children) {
+  //     const { colId, parentRowId } = nodeData;
+  //     if (!visitedColId.has(colId) && parentRowId) {
+  //       visitedColId.add(colId);
+  //       const positionProp = makeGridPositionProp(parentRowId, colId);
+  //       decorations.push(/*html*/`
+  //       <div class="async-node full-width flex-row align-center" style="${positionProp}">
+  //         <div class="async-detail flex-column cross-axis-align-center">⬤</div>
+  //       </div>
+  //       `);
+  //     }
+  //   }
+  //   return decorations.join('');
+  // }
 
-  makeLineInThreadDecoration() {
-    return '';
-    // const { children } = this.state;
-    // const minRowIdByCol = new Map();
-    // const maxRowIdByCol = new Map();
-    // const asyncNodePositions = new Set();
-    // const decorations = [];
+  // makeLineInThreadDecoration() {
+  //   return '';
+  //   // const { children } = this.state;
+  //   // const minRowIdByCol = new Map();
+  //   // const maxRowIdByCol = new Map();
+  //   // const asyncNodePositions = new Set();
+  //   // const decorations = [];
 
-    // for (const nodeData of children) {
-    //   const { colId, rowId } = nodeData;
-    //   !minRowIdByCol.get(colId) && minRowIdByCol.set(colId, rowId);
-    //   maxRowIdByCol.set(colId, rowId);
-    //   asyncNodePositions.add(`${colId}_${rowId}`);
-    // }
+  //   // for (const nodeData of children) {
+  //   //   const { colId, rowId } = nodeData;
+  //   //   !minRowIdByCol.get(colId) && minRowIdByCol.set(colId, rowId);
+  //   //   maxRowIdByCol.set(colId, rowId);
+  //   //   asyncNodePositions.add(`${colId}_${rowId}`);
+  //   // }
 
-    // for (const colId of minRowIdByCol.keys()) {
+  //   // for (const colId of minRowIdByCol.keys()) {
 
-    // }
+  //   // }
 
-    // return decorations.join('');
-  }
+  //   // return decorations.join('');
+  // }
 
   makeHeaderEl() {
     const { children, selectedApplicationId } = this.state;
@@ -373,7 +373,8 @@ class AsyncGraph extends GraphBase {
     },
     updateRootValueLabel(values) {
       this.allNodeData.forEach((node) => {
-        node.valueLabel = '';
+        // default label if no value
+        node.valueLabel = '⬤';
       });
       if (values) {
         values.forEach(({ applicationId, asyncNodeId, label }) => {

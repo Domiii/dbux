@@ -204,7 +204,7 @@ div {
   /* fix size for detail mode */
   min-height: 1rem;
   min-width: 4rem;
-  width: fit-content;
+  width: -webkit-fill-available;
 }
 
 .async-cell:hover {
@@ -299,8 +299,12 @@ div {
 
 .loc-label {
   /* color: #333; */
-  margin-right: 0.3rem !important;
+  white-space: nowrap;
   color: rgba(0, 0, 0);
+}
+
+.context-loc-label {
+  margin-right: 0.3rem !important;
 }
 
 .theme-mode-dark .loc-label {

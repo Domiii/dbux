@@ -50,6 +50,10 @@ class AsyncGraph extends GraphBase {
     this.setState({ children, applications, selectedApplicationId, selectedThreadIds });
   }
 
+  /** ###########################################################################
+   * data
+   *  #########################################################################*/
+
   makeChildrenData() {
     const appData = allApplications.selection.data;
     const asyncNodes = appData.asyncNodesInOrder.getAllActual();
@@ -76,15 +80,10 @@ class AsyncGraph extends GraphBase {
       const postAsyncEventUpdate = dp.util.getAsyncPostEventUpdateOfRoot(rootContextId);
       const postAsyncEventUpdateType = postAsyncEventUpdate?.type;
 
-      const firstNode = dp.indexes.asyncNodes.byThread.getFirst(threadId);
       const parentEdge = dp.indexes.asyncEvents.to.getFirst(rootContextId);
       const parentEdgeType = parentEdge?.edgeType;
       const parentAsyncNode = dp.util.getAsyncNode(parentEdge?.fromRootContextId);
       const parentAsyncNodeId = parentAsyncNode?.asyncNodeId;
-      let parentRowId;
-      if (firstNode.asyncNodeId === asyncNodeId) {
-        parentRowId = parentAsyncNode && appData.asyncNodesInOrder.getIndex(parentAsyncNode);
-      }
       const hasError = !!dp.indexes.traces.errorByRoot.get(rootContextId);
 
       return {
@@ -95,7 +94,6 @@ class AsyncGraph extends GraphBase {
         syncOutCount,
         parentEdgeType,
         parentAsyncNodeId,
-        parentRowId,
 
         realStaticContextid,
         moduleName,
@@ -231,6 +229,10 @@ class AsyncGraph extends GraphBase {
       this._unsubscribeOnNewData.push(unsubscribe);
     }
   }
+
+  /** ###########################################################################
+   * `onSelectionChanged` handlers
+   *  #########################################################################*/
 
   updateRootValueLabel = async () => {
     const trace = traceSelection.selected;
