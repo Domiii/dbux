@@ -26,7 +26,7 @@ export class AsyncUpdateBase {
    * For PostThen: the promise returned by `then`.
    * For {Pre,Post}Callback: used in case of promisification.
    */
-  promiseId;
+  preEventPromiseId;
 
 
   /**

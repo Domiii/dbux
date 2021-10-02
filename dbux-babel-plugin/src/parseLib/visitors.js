@@ -56,9 +56,11 @@ function visit(direction, ParserNodeClazz, path, state) {
     // eslint-disable-next-line max-len
     const dirName = ParseDirection.nameFromForce(direction);
     throw new Error(
+    // warn(
       `Visiting [${dirName}] already instrumented path: [${ParserNodeClazz.name}] "${pathToString(path)}".` +
       ` Make sure not to instrument before instrumentation phase; this includes calls to scope.generateDeclared* etc.`
     );
+    // return;
   }
 
   state.stack.checkBeforeGen();

@@ -23,7 +23,6 @@ export default class AsyncEventUpdateCollection extends Collection {
     this.handlersByType[AsyncEventUpdateType.PostAwait] = this.postAwait;
     this.handlersByType[AsyncEventUpdateType.PreThen] = this.preThen;
     this.handlersByType[AsyncEventUpdateType.PostThen] = this.postThen;
-    this.handlersByType[AsyncEventUpdateType.Resolve] = this.resolve;
     this.handlersByType[AsyncEventUpdateType.PreCallback] = this.preCallback;
     this.handlersByType[AsyncEventUpdateType.PostCallback] = this.postCallback;
   }
@@ -111,6 +110,7 @@ export default class AsyncEventUpdateCollection extends Collection {
       },
       rootIdNested
     } = postUpdateData;
+    
     this.getOrAssignRootThreadId(preEventRootId, schedulerTraceId);
     rootIdNested && this.getOrAssignRootThreadId(rootIdNested, schedulerTraceId);
 
@@ -132,7 +132,7 @@ export default class AsyncEventUpdateCollection extends Collection {
 
     const {
       // runId: postEventRunId,
-      rootId: postEventRootId,
+      // rootId: postEventRootId,
       // NOTE: the last active root is also the `context` of the `then` callback
       // contextId,
       schedulerTraceId
@@ -148,19 +148,17 @@ export default class AsyncEventUpdateCollection extends Collection {
       preEventUpdate: {
         rootId: preEventRootId
       },
-      rootIdNested
+      rootIdUp,
+      rootIdDown
     } = postUpdateData;
 
     this.getOrAssignRootThreadId(preEventRootId, schedulerTraceId);
-    rootIdNested && this.getOrAssignRootThreadId(rootIdNested, schedulerTraceId);
+    rootIdUp && this.getOrAssignRootThreadId(rootIdUp, schedulerTraceId);
+    rootIdDown && this.getOrAssignRootThreadId(rootIdDown, schedulerTraceId);
 
     // add edge
     /* const newEdge =  */
     this.addEventEdge(postUpdateData, schedulerTraceId);
-  }
-
-  resolve = update => {
-
   }
 
   // ###########################################################################

@@ -11,6 +11,17 @@ const ablauf = [
   'D'
 ];
 
-Abind('[A]', ...ablauf);
+Abind('[A1]', ...ablauf);
 
-Pbind('[P]', ...ablauf);
+Pbind('[P1]', ...ablauf);
+
+Pbind('[P2]', [
+  'A',
+  'B',
+  () => Promise.resolve().then(() => Pbind('[P2]',[
+    'CA',
+    'CB',
+    'CC',
+  ])),
+  'D'
+]);

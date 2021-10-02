@@ -62,6 +62,9 @@ function addResumeContext(bodyPath, state/* , staticId */) {
 }
 
 function getLastNodeOfBody(bodyNode) {
+  if (!bodyNode) {
+    return null;
+  }
   const nodes = Array.isArray(bodyNode) ? bodyNode : bodyNode.body;
   return nodes[nodes.length - 1];
 }

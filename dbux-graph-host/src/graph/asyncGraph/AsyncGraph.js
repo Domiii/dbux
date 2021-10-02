@@ -173,9 +173,9 @@ class AsyncGraph extends GraphBase {
       const { blockRootId, asyncNode: { applicationId } } = childData;
       const parentAsyncData = dataByNodeMap.get(applicationId, blockRootId);
       if (!parentAsyncData) {
-        debugger;
+        this.logger.error(`parentAsyncData not found in AsyncGraph.resolvePositionData: ${JSON.stringify({ applicationId, blockRootId })}`);
       }
-      childData.colId = parentAsyncData.blockOffset + childData.inBlockOffset;
+      childData.colId = (parentAsyncData?.blockOffset || 0) + childData.inBlockOffset;
     });
 
     return asyncNodeData;

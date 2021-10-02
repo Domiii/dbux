@@ -6,8 +6,7 @@ const asyncEventUpdate = {
   PreThen: 3,
   PostThen: 4,
   PreCallback: 5,
-  PostCallback: 6,
-  Resolve: 7
+  PostCallback: 6
 };
 
 /**

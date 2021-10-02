@@ -11,6 +11,8 @@
   g(1, p);
   g(2, p);
   g(3, p);
+  await 1;
+  console.log('mainC');
 })();
 
 async function f() {
@@ -19,6 +21,12 @@ async function f() {
   console.log('fB');
   await 0;
   console.log('fC');
+  await 0;
+  console.log('fD');
+  await 0;
+  console.log('fE');
+  await 0;
+  console.log('fF');
 }
 
 async function g(x, p) {

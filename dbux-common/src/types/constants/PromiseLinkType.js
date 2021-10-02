@@ -6,6 +6,7 @@ const promiseLinkType = {
   Resolve: 3,
   Reject: 4,
   All: 5,
+  Promisify: 6
 };
 
 /**

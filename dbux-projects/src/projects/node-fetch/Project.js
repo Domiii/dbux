@@ -36,36 +36,4 @@ export default class NodeFetchProject extends Project {
       dbuxArgs: '--pw=.* --esnext'
     });
   }
-
-  async testBugCommand(bug, cfg) {
-    // TODO: generalize
-    // const bugArgs = this.getMochaRunArgs(bug);
-    // const bugConfig = this.getMochaCfg(bug, [
-    //   '-t 10000' // timeout
-    // ]);
-
-    // const mochaCfg = {
-    //   ...cfg,
-    //   ...bugConfig
-    // };
-
-
-    const runCfg = {
-      env: {
-      }
-    };
-
-    return [
-      buildNodeCommand({
-        ...cfg,
-        program: bug.testFilePaths[0]
-      }),
-      runCfg
-    ];
-
-    // // Debug shortcut:
-    // // DEBUG=http node --inspect-brk --stack-trace-limit=100    --require "./test/support/env.js" "C:\\Users\\domin\\code\\dbux\\node_modules\\@dbux\\cli\\bin\\dbux.js" run  --verbose=1 --pw=superagent "c:\\Users\\domin\\code\\dbux\\dbux_projects\\express/node_modules/mocha/bin/_mocha" -- --no-exit -c -t 10000 --grep "OPTIONS should only include each method once" -- test/app.options.js
-
-    // return buildMochaRunCommand(mochaCfg);
-  }
 }
