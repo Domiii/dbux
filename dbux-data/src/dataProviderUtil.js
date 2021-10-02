@@ -2104,7 +2104,7 @@ export default {
    * 
    * @param {DataProvider} dp
    */
-  UP(dp, nestedPromiseId, rootId, syncPromiseIds) {
+  UP(dp, nestedPromiseId, beforeRootId, syncPromiseIds) {
     // -- 4 caller cases (CC), operating on `q* = nestedPromise` --
     // CC1: PostAwait: `q1 = f()` (firstAwait inside f) [always new]
     // CC2: PostThen: `q2 = p.then(h)` (PostUpdate inside h) [always old]
@@ -2120,9 +2120,9 @@ export default {
     if (nestingLink) {
       // “Nested PostThen” or “AsyncReturn” or “resolve” or “all”
       const { to: outerPromiseId/* , rootId */ } = nestingLink;
-      return dp.util.UP_LINK(outerPromiseId, rootId);
+      return dp.util.UP_LINK(outerPromiseId, beforeRootId);
     }
-    else if ((u = dp.util.getPreUpdateOfNestedPromise(nestedPromiseId))) {
+    else if ((u = dp.util.getPreUpdateOfNestedPromise(nestedPromiseId)) && u.rootId < beforeRootId) {
       // u is PreAwait && PostAwait has not happened yet: `await nestedPromise`
       // NOTE: This is guaranteed to be PreAwait, not PreThen (because "Nested PostThen" has a `nestingLink`)
       const promiseRootId = dp.util.getPromiseRootId(nestedPromiseId);
@@ -2140,12 +2140,15 @@ export default {
         if (!isFirstAwait || u.contextId === u.rootId) {
           return u.rootId;  // already at root (can't go up any further)
         }
-        return dp.util.UP(u.promiseId, rootId, syncPromiseIds) || 0;
+        return dp.util.UP(u.promiseId, beforeRootId, syncPromiseIds) || 0;
       }
     }
-    else if ((u = dp.util.getPreUpdateOfPromise(nestedPromiseId, rootId)) && AsyncEventUpdateType.is.PreThen(u.type)) {
+    else if ((u = dp.util.getPreUpdateOfPromise(nestedPromiseId)) &&
+      AsyncEventUpdateType.is.PreThen(u.type) &&
+      u.rootId < beforeRootId
+    ) {
       // promise is not nested but was THEN’ed -> follow down the THEN chain (until we find a promise that is nested)
-      return dp.util.UP(u.postEventPromiseId, rootId, syncPromiseIds);
+      return dp.util.UP(u.postEventPromiseId, beforeRootId, syncPromiseIds);
     }
 
     // -> nestedPromiseId is nested but there is no relevant Post event to CHAIN from, return 0
