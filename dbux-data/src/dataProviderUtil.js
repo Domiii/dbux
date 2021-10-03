@@ -2086,14 +2086,14 @@ export default {
    * 
    * @param {DataProvider} dp
    */
-  UP_LINK(dp, outerPromiseId, rootId, syncPromiseIds) {
+  UP_LINK(dp, outerPromiseId, rootId) {
     let u;
     if ((u = dp.util.getLastAsyncPostEventUpdateOfPromise(outerPromiseId, rootId))) {
       // “Nested PostThen” or “AsyncReturn” (of function with `PostAwait`, i.e. `await` executed)
       return u.rootId;
     }
     // “resolve” or “all” or “AsyncReturn” (of function where no `await` executed)
-    return dp.util.UP(outerPromiseId, rootId, syncPromiseIds);
+    return dp.util.UP(outerPromiseId, rootId);
   },
 
   /** 
@@ -2104,7 +2104,7 @@ export default {
    * 
    * @param {DataProvider} dp
    */
-  UP(dp, nestedPromiseId, beforeRootId, syncPromiseIds) {
+  UP(dp, nestedPromiseId, beforeRootId) {
     // -- 4 caller cases (CC), operating on `q* = nestedPromise` --
     // CC1: PostAwait: `q1 = f()` (firstAwait inside f) [always new]
     // CC2: PostThen: `q2 = p.then(h)` (PostUpdate inside h) [always old]
@@ -2137,11 +2137,11 @@ export default {
         // implies: `await q*` where `q*` was created in PreAwait rootId.
         // NOTE: promiseRootId > u.rootId is impossible because if `u` nests `p`, `u` cannot occur before `p`
 
-        const isFirstAwait = dp.util.isFirstContextInParent(u.contextId);
-        if (!isFirstAwait || u.contextId === u.rootId) {
+        // const isFirstAwait = dp.util.isFirstContextInParent(u.contextId);
+        if (/* !isFirstAwait || */ u.contextId === u.rootId) {
           return u.rootId;  // already at root (can't go up any further)
         }
-        return dp.util.UP(u.promiseId, beforeRootId, syncPromiseIds) || 0;
+        return dp.util.UP(u.promiseId, beforeRootId) || 0;
       }
     }
     else if ((u = dp.util.getPreUpdateOfPromise(nestedPromiseId)) &&
@@ -2149,7 +2149,7 @@ export default {
       u.rootId < beforeRootId
     ) {
       // promise is not nested but was THEN’ed -> follow down the THEN chain (until we find a promise that is nested)
-      return dp.util.UP(u.postEventPromiseId, beforeRootId, syncPromiseIds);
+      return dp.util.UP(u.postEventPromiseId, beforeRootId);
     }
 
     // -> nestedPromiseId is nested but there is no relevant Post event to CHAIN from, return 0
@@ -2360,7 +2360,7 @@ export default {
     const beforeRootId = postEventRootId;
 
     // Case 1a: CHAIN via async function's own promise (in case of firstAwait)
-    const rootIdUp = isFirstAwait && util.UP(promiseId, beforeRootId, syncPromiseIds);
+    const rootIdUp = isFirstAwait && util.UP(promiseId, beforeRootId);
 
     // Case 1b: CHAIN to "previous await root" (NOTE: that root will always come *after* any of its own nested updates)
     const rootIdPrevious = !isFirstAwait && preEventRootId;
@@ -2369,25 +2369,28 @@ export default {
     const syncBeforeRootId = preEventRootId;
     const rootIdNested = nestedPromiseId && util.DOWN(nestedPromiseId, beforeRootId, syncBeforeRootId, postUpdateData);
 
-    if (!isFirstAwait || !isCallRecorded) {
+    if (rootIdNested) {
+      chainFromRootId = rootIdNested;
+    }
+    else if (!isFirstAwait || !isCallRecorded) {
       chainFromRootId = rootIdPrevious;
     }
     else {
       chainFromRootId = rootIdUp;
     }
 
-    // let chainFromThreadId, nestedThreadId;
-    if (rootIdNested) {
-      // if (chainFromRootId && (chainFromThreadId = util.getAsyncRootThreadId(chainFromRootId)) &&
-      //   (nestedThreadId = util.getAsyncRootThreadId(rootIdNested) && chainFromThreadId === nestedThreadId)) {
-      // Nested is also on PreEventThreadId -> CHAIN against nested (assured by `DOWN`)
-      chainFromRootId = rootIdNested;
-      // }
-      // else {
-      //   // different threads -> SYNC
-      //   // util.SYNC(chainFromRootId, nestedPromiseId, beforeRootId, syncPromiseIds);
-      // }
-    }
+    // // let chainFromThreadId, nestedThreadId;
+    // if (rootIdNested) {
+    //   // if (chainFromRootId && (chainFromThreadId = util.getAsyncRootThreadId(chainFromRootId)) &&
+    //   //   (nestedThreadId = util.getAsyncRootThreadId(rootIdNested) && chainFromThreadId === nestedThreadId)) {
+    //   // Nested is also on PreEventThreadId -> CHAIN against nested (assured by `DOWN`)
+    //   chainFromRootId = rootIdNested;
+    //   // }
+    //   // else {
+    //   //   // different threads -> SYNC
+    //   //   // util.SYNC(chainFromRootId, nestedPromiseId, beforeRootId, syncPromiseIds);
+    //   // }
+    // }
 
     postUpdateData.chainFromRootId = chainFromRootId;
 
@@ -2444,7 +2447,7 @@ export default {
 
     const syncBeforeRootId = preEventRootId;
     const rootIdDown = util.DOWN(preEventPromiseId, beforeRootId, syncBeforeRootId, postUpdateData);
-    const rootIdUp = util.UP(postEventPromiseId, beforeRootId, syncPromiseIds);
+    const rootIdUp = util.UP(postEventPromiseId, beforeRootId);
 
     let chainFromRootId = rootIdDown || rootIdUp;
 
@@ -2500,12 +2503,13 @@ export default {
 
     let promisePostUpdateData;
 
-    if (preEventRootId === 1) {
-      // Case 1: don't CHAIN cb from first root
-      //      (TODO: top-level `await` would CHAIN from first root.)
-    }
-    else if (preEventPromiseId/*  || postPreEventUpdate?.promiseId */) {
-      // Case 2: Promisification
+    // if (preEventRootId === 1) {
+    //   // Case 1: don't CHAIN cb from first root
+    //   //      (TODO: top-level `await` would CHAIN from first root.)
+    // }
+    // else 
+    if (preEventPromiseId/*  || postPreEventUpdate?.promiseId */) {
+      // Case 1: Promisification
       chainToPromiseId = preEventPromiseId || postPreEventUpdate.promiseId;
       const toRootId = postEventRootId;
 
@@ -2520,21 +2524,21 @@ export default {
       const syncBeforeRootId = preEventRootId;
       rootIdDown = postPreEventUpdate?.promiseId &&
         util.DOWN(postPreEventUpdate?.promiseId, beforeRootId, syncBeforeRootId, promisePostUpdateData) || 0;
-      rootIdUp = util.UP(chainToPromiseId, beforeRootId, syncPromiseIds);
+      rootIdUp = util.UP(chainToPromiseId, beforeRootId);
 
       // go up the promise chain
       chainFromRootId = rootIdDown || rootIdUp;
     }
     else {
-      // [heuristics]
+      // Case 2: heuristics
       if (firstPostEventHandlerUpdate && firstPostEventHandlerUpdate.rootId < beforeRootId) {
-        // Case 3: event listener -> repeated calls of same trace
+        // Heuristic 1: event listener -> repeated calls of same trace
         chainFromRootId = firstPostEventHandlerUpdate.rootId;
       }
       else {
         const preEventUpdates = util.getAsyncPreEventUpdatesOfRoot(preEventRootId);
         if (preEventUpdates.length === 1) {
-          // Case 4: this is the only pre-event in the pre-event's root -> CHAIN
+          // Heuristic 2: this is the only pre-event in the pre-event's root -> CHAIN
           //    (meaning its the only Pre async event scheduled from the same root)
           chainFromRootId = preEventRootId;
         }
@@ -2543,7 +2547,7 @@ export default {
           const lastStaticContextId = util.getContextStaticContext(preEventRootId);
 
           if (thisStaticContextId === lastStaticContextId) {
-            // Case 5: recursive or repeating same function
+            // Heuristic 3: recursive or repeating same function
             chainFromRootId = preEventRootId;
           }
         }
