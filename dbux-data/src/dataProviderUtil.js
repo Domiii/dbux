@@ -2203,8 +2203,7 @@ export default {
 
     // SYNC if: (i) promise was created in a root BEFORE the NESTING happened, or
     //          (ii) someone else already CHAINED against it.
-    if (promiseRootId < syncBeforeRootId ||
-      (nestedUpdate && dp.util.getChainFrom(nestedUpdate.rootId).length)) {
+    if (promiseRootId < syncBeforeRootId) {
       // nested for synchronization -> do not go deeper
       // const chainFrom = dp.util.getChainFrom(nestedUpdate.rootId); // store for debugging
       syncPromiseIds.push(nestingPromiseId);
@@ -2280,7 +2279,7 @@ export default {
           if (AsyncEventUpdateType.is.PreThen(u.type)) {
             // go to previous promise in promise tree
             const preThenPromiseId = u.promiseId;
-            return dp.util.GNPU(preThenPromiseId, beforeRootId, syncBeforeRootId, postUpdateData, 1, visited);
+            nestedUpdate = dp.util.GNPU(preThenPromiseId, beforeRootId, syncBeforeRootId, postUpdateData, 1, visited);
           }
           else if (AsyncEventUpdateType.is.PreAwait(u.type)) {
             // NOTE: this should never happen, since a `PostAwait` can never be "swallowed"
@@ -2293,18 +2292,24 @@ export default {
     }
   },
 
+  WrapDownResult(dp, nestedUpdate, postUpdateData) {
+    if (nestedUpdate && dp.util.getChainFrom(nestedUpdate.rootId).length) {
+      nestedUpdate.promiseId && postUpdateData.syncPromiseIds(nestedUpdate.promiseId);
+      return null;
+    }
+    return nestedUpdate?.rootId || 0;
+  },
+
   /** @param {DataProvider} dp */
   DOWN(dp, promiseId, beforeRootId, syncBeforeRootId, postUpdateData, depth = 0) {
     const visited = new Set();
     // const result = dp.util._DOWN(promiseId, beforeRootId, syncBeforeRootId, postUpdateData, depth) || 0;
     const nestedUpdate = dp.util.GNPU(promiseId, beforeRootId, syncBeforeRootId, postUpdateData, depth, visited);
     if (Array.isArray(nestedUpdate)) {
-      return nestedUpdate.map(u => u.rootId);
+      return nestedUpdate.map(u => dp.util.WrapDownResult(u, postUpdateData));
     }
     else {
-      return nestedUpdate?.rootId ||
-        // result /* hackfix: GNPU might return `rootId` */ ||
-        0;
+      return dp.util.WrapDownResult(nestedUpdate, postUpdateData);
     }
   },
 
