@@ -2294,7 +2294,7 @@ export default {
 
   WrapDownResult(dp, nestedUpdate, postUpdateData) {
     if (nestedUpdate && dp.util.getChainFrom(nestedUpdate.rootId).length) {
-      nestedUpdate.promiseId && postUpdateData.syncPromiseIds(nestedUpdate.promiseId);
+      nestedUpdate.promiseId && postUpdateData.syncPromiseIds.push(nestedUpdate.promiseId);
       return null;
     }
     return nestedUpdate?.rootId || 0;
