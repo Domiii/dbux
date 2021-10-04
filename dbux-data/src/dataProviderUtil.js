@@ -1894,6 +1894,12 @@ export default {
   },
 
   /** @param {DataProvider} dp */
+  getChainTo(dp, toRootId) {
+    const fromEdges = dp.indexes.asyncEvents.to.get(toRootId);
+    return fromEdges?.filter(edge => edge.edgeType === AsyncEdgeType.Chain) || EmptyArray;
+  },
+
+  /** @param {DataProvider} dp */
   getAsyncEdgeFromTo(dp, fromRootId, toRootId) {
     const toEdges = dp.indexes.asyncEvents.to.get(toRootId);
     return toEdges?.find(edge => edge.fromRootContextId === fromRootId) || null;
@@ -2172,11 +2178,14 @@ export default {
     const { links, syncPromiseIds } = postUpdateData;
 
     const promiseRootId = dp.util.getPromiseRootId(nestingPromiseId);
+    let nestedUpdate = dp.util.getLastAsyncPostEventUpdateOfPromise(nestingPromiseId, beforeRootId);
 
-    // TODO: this logic makes sense for `PostAwait`, but not for `PostThen`
-    if (promiseRootId < syncBeforeRootId) /* ||
-      (!nestedUpdate && link && link.rootId &&  */ {
+    // SYNC if: (i) promise was created in a root BEFORE the NESTING happened, or
+    //          (ii) someone else already CHAINED against it.
+    if (promiseRootId < syncBeforeRootId || 
+      (nestedUpdate && dp.util.getChainFrom(nestedUpdate.rootId).length)) {
       // nested for synchronization -> do not go deeper
+      // const chainFrom = dp.util.getChainFrom(nestedUpdate.rootId); // store for debugging
       syncPromiseIds.push(nestingPromiseId);
       return null;
     }
@@ -2194,7 +2203,6 @@ export default {
       // Case 4a: p nests u (PostCallback) -> u && !link 
       // Case 4a: p nests u (PostCallback) -> u && link (Promisify) [can only be either SYNC or CHAIN]
 
-      let nestedUpdate = dp.util.getLastAsyncPostEventUpdateOfPromise(nestingPromiseId, beforeRootId);
       const nestedLink = dp.indexes.promiseLinks.to.getUnique(nestingPromiseId);
       if (nestedLink) {
         // -> go deep on nested link
