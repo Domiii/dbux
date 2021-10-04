@@ -248,7 +248,7 @@ export default class RuntimeAsync {
       schedulerTraceId,
       realContextId,
       promiseId: asyncFunctionPromiseId,
-      nestedPromiseId: isThenable(awaitArgument) ? getPromiseId(awaitArgument) : 0
+      // nestedPromiseId: isThenable(awaitArgument) ? getPromiseId(awaitArgument) : 0
     });
   }
 

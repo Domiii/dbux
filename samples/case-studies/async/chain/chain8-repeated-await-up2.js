@@ -1,6 +1,5 @@
 /**
- * @file Edge case of `getPreUpdateOfNestedPromise` in `UP`:
- * Since it is not unique, getting the "first" awaiting AE, can lead to confusion.
+ * @file Edge case of `getFirstUpdateOfNestedPromise` in `UP`.
  */
 
 import { A, P } from '../../../util/asyncUtil';

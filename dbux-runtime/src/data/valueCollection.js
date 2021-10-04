@@ -31,22 +31,6 @@ const SerializationConfig = {
 // values
 // ###########################################################################
 
-export function wrapValue(value) {
-  if (value instanceof Function) {
-    // value = getUnpatchedCallbackOrPatchedFunction(value);
-    value = getPatchedFunction(value);
-  }
-  return value;
-}
-
-export function unwrapValue(value) {
-  if (value instanceof Function) {
-    // TODO: handle callback identity?
-    value = getOriginalFunction(value) || value;
-  }
-  return value;
-}
-
 /**
  * WARNING: use carefully.
  */
@@ -149,6 +133,7 @@ class ValueCollection extends Collection {
   }
 
   getBuiltInSerializer(value) {
+
     if (!value.constructor || value === value.constructor.prototype) {
       // don't try to default-serialize a built-in prototype
       return null;
@@ -361,6 +346,26 @@ class ValueCollection extends Collection {
   }
 
   /**
+   * Also needs to be error wrapped since instanceof can also be hi-jacked by user code.
+   * This happens in Chart.js.
+   */
+  _getIsInstanceOf(obj, Clazz) {
+    try {
+      this._startAccess(obj);
+      return obj instanceof Clazz;
+    }
+    catch (err) {
+      this._onAccessError(obj, this._readErrorsByType);
+      const msg = `ERROR: reading "${Object.getPrototypeOf(obj)} instanceof ${Clazz?.name}" caused exception`;
+      VerboseErrors && this.logger.debug(msg, err.message);
+      return `(${msg})`;
+    }
+    finally {
+      this._endAccess(obj);
+    }
+  }
+
+  /**
    * Read a property of an object to copy + track it.
    * WARNING: This might invoke a getter function, thereby tempering with semantics (something that we genreally never want to do).
    */
@@ -378,6 +383,11 @@ class ValueCollection extends Collection {
     finally {
       this._endAccess(obj);
     }
+  }
+
+  _startReadProp(obj, key) {
+    this._startAccess(obj);
+    return obj[key];
   }
 
   /**
@@ -660,5 +670,25 @@ class ValueCollection extends Collection {
 }
 
 const valueCollection = new ValueCollection();
+
+/** ###########################################################################
+ * wrapping of values
+ * ##########################################################################*/
+
+export function wrapValue(value) {
+  if (valueCollection._getIsInstanceOf(value, Function)) {
+    // value = getUnpatchedCallbackOrPatchedFunction(value);
+    value = getPatchedFunction(value);
+  }
+  return value;
+}
+
+export function unwrapValue(value) {
+  if (valueCollection._getIsInstanceOf(value, Function)) {
+    // TODO: handle callback identity?
+    value = getOriginalFunction(value) || value;
+  }
+  return value;
+}
 
 export default valueCollection;

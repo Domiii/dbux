@@ -12,13 +12,14 @@ export default class AsyncEventCollection extends Collection {
     this._all.push(null);
   }
 
-  addEdge(fromRootContextId, toRootContextId, edgeType) {
+  addEdge(fromRootContextId, toRootContextId, edgeType, syncPromiseIds) {
     const entry = new AsyncEvent();
 
     entry.asyncEventId = entry._id = this._all.length;
     entry.fromRootContextId = fromRootContextId;
     entry.toRootContextId = toRootContextId;
     entry.edgeType = edgeType;
+    entry.syncPromiseIds = syncPromiseIds;
 
     this.addEntryPostAdd(entry);
 

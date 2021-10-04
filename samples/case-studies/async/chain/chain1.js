@@ -1,10 +1,11 @@
 import { A, P, waitTicks } from '../../../util/asyncUtil';
 
 A(
-  'A',
+  () => 'A',
+  () => 'B',
   [
-    'BA',
-    async () => 'BB',
+    () => 'CA',
+    async () => 'CB',
   ],
-  'C'
+  () => 'D'
 );

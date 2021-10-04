@@ -1,4 +1,4 @@
-import path from 'path';
+import { pathJoin } from '@dbux/common-node/src/util/pathUtil';
 import WebpackBuilder from '../../buildTools/WebpackBuilder';
 import Project from '../../projectLib/Project';
 
@@ -222,7 +222,7 @@ export default class TodomvcEs6Project extends Project {
   decorateBugForRun(bug) {
     bug.testFilePaths = ['app.js'];
     // bug.runFilePaths = bug.testFilePaths;
-    bug.watchFilePaths = bug.testFilePaths.map(file => path.join(this.projectPath, 'dist', file));
+    bug.watchFilePaths = bug.testFilePaths.map(file => pathJoin(this.projectPath, 'dist', file));
     bug.website = 'http://localhost:3842/';
   }
 

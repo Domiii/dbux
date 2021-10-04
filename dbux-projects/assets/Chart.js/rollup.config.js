@@ -46,9 +46,9 @@ module.exports = [
         skipPreflightCheck: true, // WARNING: if not skipped, causes serious memory leak
         plugins: [
           ['@dbux/babel-plugin', {
-            runtime: {
-              tracesDisabled: 1
-            }
+            // runtime: {
+            //   tracesDisabled: 1
+            // }
           }]
           // 'D:/code/dbux/dbux-babel-plugin'
         ],

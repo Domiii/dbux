@@ -320,7 +320,7 @@ export default class AsyncEventUpdateCollection extends Collection {
 
     // add edge
     const edgeType = isChain ? AsyncEdgeType.Chain : AsyncEdgeType.Fork;
-    /* const newEdge =  */this._addEventEdges(fromRootId, toRootId, edgeType);
+    /* const newEdge =  */this._addEventEdges(fromRootId, toRootId, edgeType, postUpdateData.syncPromiseIds);
     // if (!newEdge) {
     //   return null;
     // }
@@ -331,7 +331,7 @@ export default class AsyncEventUpdateCollection extends Collection {
     // return newEdge;
   }
   
-  _addEventEdges(fromRootId, toRootId, edgeType) {
+  _addEventEdges(fromRootId, toRootId, edgeType, syncPromiseIds) {
     if (Array.isArray(fromRootId)) {
       return fromRootId.map(from => this._addEventEdges(from, toRootId, edgeType));
     }
@@ -339,11 +339,11 @@ export default class AsyncEventUpdateCollection extends Collection {
       if (fromRootId >= toRootId) {
         this.logger.warn(`addEventEdge with fromRootId (${fromRootId}) >= toRootId (${toRootId})`);
       }
-      return this.addEdge(fromRootId, toRootId, edgeType);
+      return this.addEdge(fromRootId, toRootId, edgeType, syncPromiseIds);
     }
   }
 
-  addEdge(fromRootId, toRootId, edgeType) {
+  addEdge(fromRootId, toRootId, edgeType, syncPromiseIds) {
     const { dp } = this;
     if (!fromRootId || !toRootId) {
       this.logger.error(new Error(
@@ -368,6 +368,6 @@ export default class AsyncEventUpdateCollection extends Collection {
     // }
     // outEdges[fromRootId].set(toRootId, 1);
 
-    return dp.collections.asyncEvents.addEdge(fromRootId, toRootId, edgeType);
+    return dp.collections.asyncEvents.addEdge(fromRootId, toRootId, edgeType, syncPromiseIds);
   }
 }

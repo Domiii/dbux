@@ -15,4 +15,9 @@ export default class AsyncEvent {
    * @type {number}
    */
   edgeType;
+
+  /**
+   * @type {number | number[]}
+   */
+  syncPromiseIds;
 }
