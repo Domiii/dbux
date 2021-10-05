@@ -59,13 +59,13 @@ class AsyncGraph extends GraphBase {
     const asyncNodes = appData.asyncNodesInOrder.getAllActual();
 
     const childrenData = asyncNodes.map((asyncNode) => {
-      const { applicationId, rootContextId, threadId, asyncNodeId } = asyncNode;
+      const { applicationId, rootContextId } = asyncNode;
 
-      if (appData.threadSelection.isActive()) {
-        if (!this.isRelevantAsyncNode(asyncNode)) {
-          return null;
-        }
-      }
+      // if (appData.threadSelection.isActive()) {
+      //   if (!this.isRelevantAsyncNode(asyncNode)) {
+      //     return null;
+      //   }
+      // }
 
       const app = allApplications.getById(applicationId);
       const dp = app.dataProvider;
@@ -144,9 +144,12 @@ class AsyncGraph extends GraphBase {
         parentAsyncData.childOffset += childData.width;
       }
       else if (AsyncEdgeType.is.Fork(parentEdgeType)) {
+        const parentAsyncData = dataByNodeMap.get(applicationId, parentAsyncNodeId);
         childData.inBlockOffset = 0;
         childData.blockRootId = asyncNodeId;
         blockRoots.push(childData);
+        childData.lastForkSiblingNodeId = parentAsyncData.lastForkChildNodeId;
+        parentAsyncData.lastForkChildNodeId = asyncNodeId;
       }
       else {
         this.logger.error(`ParentEdge of type "${AsyncEdgeType.nameFrom(parentEdgeType)}" not supported.`);
