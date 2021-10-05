@@ -150,19 +150,19 @@ export default class RuntimeAsync {
       return;
     }
 
-    /**
-     * If `awaitArgument` is return value of `async` function, `nestedPromiseAsyncData` is its lastAwaitData
-     */
-    const nestedPromiseAsyncData = this.getPromiseLastAwait(awaitArgument);
-    if (!nestedPromiseAsyncData) {
-      // invalid data
-      return;
-    }
+    // /**
+    //  * If `awaitArgument` is return value of `async` function, `nestedPromiseAsyncData` is its lastAwaitData
+    //  */
+    // const nestedPromiseAsyncData = this.getPromiseLastAwait(awaitArgument);
+    // if (!nestedPromiseAsyncData) {
+    //   // invalid data
+    //   return;
+    // }
 
-    if (!nestedPromiseAsyncData.firstAwaitingAsyncFunctionContextId) {
-      // first nesting caller is part of the CHAIN
-      nestedPromiseAsyncData.firstAwaitingAsyncFunctionContextId = realContextId;
-    }
+    // if (!nestedPromiseAsyncData.firstAwaitingAsyncFunctionContextId) {
+    //   // first nesting caller is part of the CHAIN
+    //   nestedPromiseAsyncData.firstAwaitingAsyncFunctionContextId = realContextId;
+    // }
 
     this._preNestPromise(awaitArgument, currentRootId, schedulerTraceId);
 
@@ -173,6 +173,9 @@ export default class RuntimeAsync {
     // }
   }
 
+  /**
+   * @deprecated
+   */
   _preNestPromise(promise, currentRootId, tid) {
     const {
       rootId: nestedRootId,
@@ -245,7 +248,7 @@ export default class RuntimeAsync {
       schedulerTraceId,
       realContextId,
       promiseId: asyncFunctionPromiseId,
-      nestedPromiseId: isThenable(awaitArgument) ? getPromiseId(awaitArgument) : 0
+      // nestedPromiseId: isThenable(awaitArgument) ? getPromiseId(awaitArgument) : 0
     });
   }
 
@@ -483,6 +486,10 @@ export default class RuntimeAsync {
     return data;
   }
 
+  /**
+   * TODO: remove from use in `preAwait`
+   * @deprecated 
+   */
   getPromiseLastAwait(promise) {
     const nestedAsyncContextId = getPromiseOwnAsyncFunctionContextId(promise);
     const nestedAsyncData = nestedAsyncContextId && this.lastAwaitByRealContext.get(nestedAsyncContextId);

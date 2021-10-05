@@ -392,12 +392,13 @@ function patchPromiseClass(BasePromiseClass) {
                 // NOTE: reject can also nest a promise (but will pass the promise (not its resolved value) to `catch`)
                 const inner = err;
                 const thisPromiseId = getPromiseId(this) || 0;
-                const asyncPromisifyPromiseId =
-                  // NOTE: we only care about promisify, if async
-                  // NOTE2: this is extra messy because we keep the virtual root around in `_runFinished` for `PostThen`, and RealRoot is not as reliable
-                  (executorRealRootId !== resolveRealRootId ||
-                    executorRootId !== thenRef.rootId)
-                    ? thisPromiseId : 0; // we only care about promisify, if async
+
+                // NOTE: we only care about promisify, if async
+                // NOTE2: this is extra messy because we keep the virtual root around in `_runFinished` for `PostThen`, and RealRoot is not as reliable
+                const isAsync = (executorRealRootId !== resolveRealRootId ||
+                  executorRootId !== thenRef.rootId);
+                  
+                const asyncPromisifyPromiseId = isAsync ? thisPromiseId : 0;
                 RuntimeMonitorInstance._runtime.async.resolve(
                   inner, this, PromiseLinkType.Promisify, thenRef.schedulerTraceId, asyncPromisifyPromiseId
                 );
@@ -534,6 +535,10 @@ export function getPromiseData(promise) {
   return promiseDataMap.get(promise) || EmptyObject;
 }
 
+/**
+ * TODO: remove from use in `preAwait`
+ * @deprecated
+ */
 export function getPromiseOwnAsyncFunctionContextId(promise) {
   return getPromiseData(promise).asyncFunctionContextId;
 }

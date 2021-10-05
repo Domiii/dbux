@@ -14,6 +14,8 @@ import PromiseLinkType from './constants/PromiseLinkType';
  * `to = (async () => from)()`
  */
 export default class PromiseLink {
+  linkId;
+  
   /**
    * @type {PromiseLinkType[keyof PromiseLinkType]}
    */

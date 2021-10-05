@@ -1,4 +1,6 @@
-import Project from '@dbux/projects/src/projectLib/Project';
+import { pathJoin } from '@dbux/common-node/src/util/pathUtil';
+import Project from '../../projectLib/Project';
+import WebpackBuilder from '../../buildTools/WebpackBuilder';
 
 
 export default class RealworldWebComponentsProject extends Project {
@@ -29,6 +31,13 @@ export default class RealworldWebComponentsProject extends Project {
   async selectBug(bug) {
     // start webpack and webpack-dev-server
     this.runWebpack();
+  }
+
+  decorateBugForRun(bug) {
+    bug.testFilePaths = ['app.js'];
+    // bug.runFilePaths = bug.testFilePaths;
+    bug.watchFilePaths = bug.testFilePaths.map(file => pathJoin(this.projectPath, 'dist', file));
+    bug.website = 'http://localhost:3842/';
   }
 
   async testBugCommand(bug, cfg) {
