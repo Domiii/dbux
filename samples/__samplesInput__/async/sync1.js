@@ -3,14 +3,15 @@
  * 2 SYNCs: f -> main, g -> main
  */
 
+const p = f();
+const q = g();
+
 (async function main() {
-  const p = f();
-  const q = g();
   await 0;
   console.log('mainA');
-  await p;
-  console.log('mainB');
   await q;
+  console.log('mainB');
+  await p;
   console.log('mainC');
   // await 0;
   // console.log('mainD');
