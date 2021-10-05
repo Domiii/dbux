@@ -86,6 +86,9 @@ class AsyncGraph extends GraphBase {
       const parentAsyncNodeId = parentAsyncNode?.asyncNodeId;
       const hasError = !!dp.indexes.traces.errorByRoot.get(rootContextId);
 
+      // TODO: [performance] use cache instead of query it everytime
+      const nestingDepth = dp.util.getNestedDepth(rootContextId);
+
       return {
         asyncNode,
         displayName,
@@ -94,6 +97,7 @@ class AsyncGraph extends GraphBase {
         syncOutCount,
         parentEdgeType,
         parentAsyncNodeId,
+        nestingDepth,
 
         realStaticContextid,
         moduleName,

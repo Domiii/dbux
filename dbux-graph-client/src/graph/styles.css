@@ -356,6 +356,11 @@ div {
   display: none !important;
 }
 
+.depth-label {
+  background-color: rgb(93, 93, 93);
+  padding: 0 2px;
+}
+
 /** #######################################
  * async line decorations
  * ########################################*/
