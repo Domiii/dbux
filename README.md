@@ -4,6 +4,8 @@
 [![Discord](https://img.shields.io/discord/743765518116454432.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/QKgq9ZE)
 [![David](https://flat.badgen.net/david/dev/Domiii/dbux)](https://david-dm.org/Domiii/dbux?type=dev)
 
+# TODO: This documentation has not been updated with changes since May 2021. Will update soon!
+
 # Introduction
 
 Dbux aims at helping analyze the execution of JavaScript programs by recording (almost) all runtime data, visualizationg it and making it interactive, thereby (hopefully) helping developers (i) improve program comprehension and (ii) reduce time spent on finding bugs.
@@ -22,6 +24,7 @@ We recommend getting started with Dbux by playing around with the [Dbux VSCode e
 
 This page covers more broad topics related to the Dbux project:
 
+- [TODO: This documentation has not been updated with changes since May 2021. Will update soon!](#todo-this-documentation-has-not-been-updated-with-changes-since-may-2021-will-update-soon)
 - [Introduction](#introduction)
 - [Getting Started](#getting-started)
 - [Adding Dbux to your build pipeline](#adding-dbux-to-your-build-pipeline)
