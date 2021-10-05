@@ -140,7 +140,7 @@ export class DebugTDNode extends TraceDetailNode {
       map((upd, i) => makeTreeItem(
         `${i}) ${upd.rootId}`,
         upd,
-        { 
+        {
           description: `${AsyncEventUpdateType.nameFrom(upd.type)} ${upd.schedulerTraceId}`,
           handleClick() {
             const schedulerTrace = dp.util.getTrace(upd.schedulerTraceId);
@@ -209,6 +209,21 @@ export class DebugTDNode extends TraceDetailNode {
       ownDataNodes
     ]);
 
+    /** ###########################################################################
+     * Async Ancestor
+     *  #########################################################################*/
+
+    const nestingTraces = dp.util.getNestedAncestors(trace.rootContextId)
+      .map((_traceId, i) => {
+        const _trace = dp.collections.traces.getById(_traceId);
+        return makeTreeItem(dp.util.makeTraceInfo(_trace), _trace, {
+          description: `(traceId: ${_traceId})`,
+          handleClick() {
+            traceSelection.selectTrace(_trace);
+          }
+        });
+      });
+
 
     // ###########################################################################
     // final result
@@ -220,6 +235,7 @@ export class DebugTDNode extends TraceDetailNode {
         ContextTDNode,
       ]),
       ...makeTreeItems(
+        [`Ancestors(${nestingTraces.length}x)`, nestingTraces],
         ['trace', otherTraceProps],
         valueNode,
         contextNode,

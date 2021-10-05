@@ -50,18 +50,22 @@ class AsyncGraph extends GraphBase {
     this.setState({ children, applications, selectedApplicationId, selectedThreadIds });
   }
 
+  /** ###########################################################################
+   * data
+   *  #########################################################################*/
+
   makeChildrenData() {
     const appData = allApplications.selection.data;
     const asyncNodes = appData.asyncNodesInOrder.getAllActual();
 
     const childrenData = asyncNodes.map((asyncNode) => {
-      const { applicationId, rootContextId, threadId, asyncNodeId } = asyncNode;
+      const { applicationId, rootContextId } = asyncNode;
 
-      if (appData.threadSelection.isActive()) {
-        if (!this.isRelevantAsyncNode(asyncNode)) {
-          return null;
-        }
-      }
+      // if (appData.threadSelection.isActive()) {
+      //   if (!this.isRelevantAsyncNode(asyncNode)) {
+      //     return null;
+      //   }
+      // }
 
       const app = allApplications.getById(applicationId);
       const dp = app.dataProvider;
@@ -76,16 +80,14 @@ class AsyncGraph extends GraphBase {
       const postAsyncEventUpdate = dp.util.getAsyncPostEventUpdateOfRoot(rootContextId);
       const postAsyncEventUpdateType = postAsyncEventUpdate?.type;
 
-      const firstNode = dp.indexes.asyncNodes.byThread.getFirst(threadId);
       const parentEdge = dp.indexes.asyncEvents.to.getFirst(rootContextId);
       const parentEdgeType = parentEdge?.edgeType;
       const parentAsyncNode = dp.util.getAsyncNode(parentEdge?.fromRootContextId);
       const parentAsyncNodeId = parentAsyncNode?.asyncNodeId;
-      let parentRowId;
-      if (firstNode.asyncNodeId === asyncNodeId) {
-        parentRowId = parentAsyncNode && appData.asyncNodesInOrder.getIndex(parentAsyncNode);
-      }
       const hasError = !!dp.indexes.traces.errorByRoot.get(rootContextId);
+
+      // TODO: [performance] use cache instead of query it everytime
+      const nestingDepth = dp.util.getNestedDepth(rootContextId);
 
       return {
         asyncNode,
@@ -95,7 +97,7 @@ class AsyncGraph extends GraphBase {
         syncOutCount,
         parentEdgeType,
         parentAsyncNodeId,
-        parentRowId,
+        nestingDepth,
 
         realStaticContextid,
         moduleName,
@@ -146,9 +148,12 @@ class AsyncGraph extends GraphBase {
         parentAsyncData.childOffset += childData.width;
       }
       else if (AsyncEdgeType.is.Fork(parentEdgeType)) {
+        const parentAsyncData = dataByNodeMap.get(applicationId, parentAsyncNodeId);
         childData.inBlockOffset = 0;
         childData.blockRootId = asyncNodeId;
         blockRoots.push(childData);
+        childData.lastForkSiblingNodeId = parentAsyncData.lastForkChildNodeId;
+        parentAsyncData.lastForkChildNodeId = asyncNodeId;
       }
       else {
         this.logger.error(`ParentEdge of type "${AsyncEdgeType.nameFrom(parentEdgeType)}" not supported.`);
@@ -175,7 +180,7 @@ class AsyncGraph extends GraphBase {
       if (!parentAsyncData) {
         this.logger.error(`parentAsyncData not found in AsyncGraph.resolvePositionData: ${JSON.stringify({ applicationId, blockRootId })}`);
       }
-      childData.colId = (parentAsyncData?.blockOffset || 0) + childData.inBlockOffset;
+      childData.colId = (parentAsyncData?.blockOffset || 0) + childData.inBlockOffset + 1;
     });
 
     return asyncNodeData;
@@ -232,6 +237,39 @@ class AsyncGraph extends GraphBase {
     }
   }
 
+  /** ###########################################################################
+   * `onSelectionChanged` handlers
+   *  #########################################################################*/
+
+  updateRootValueLabel = async () => {
+    const trace = traceSelection.selected;
+    if (trace) {
+      const { applicationId, staticTraceId } = trace;
+      const dp = allApplications.getById(applicationId).dataProvider;
+      const firstTraces = new Map();
+      const allTraces = dp.indexes.traces.byStaticTrace.get(staticTraceId);
+      allTraces.forEach((t) => {
+        if (!firstTraces.has(t.rootContextId)) {
+          firstTraces.set(t.rootContextId, t);
+        }
+      });
+      const values = Array.from(firstTraces.values()).map(t => {
+        const { asyncNodeId } = dp.util.getAsyncNode(t.rootContextId);
+        const label = dp.util.getTraceValueStringShort(t.traceId);
+
+        return {
+          applicationId,
+          asyncNodeId,
+          label
+        };
+      });
+      await this.remote.updateRootValueLabel(values);
+    }
+    else {
+      await this.remote.updateRootValueLabel();
+    }
+  }
+
   updateStackHighlight = async (trace) => {
     let nodes = [];
     if (trace) {
@@ -258,6 +296,7 @@ class AsyncGraph extends GraphBase {
     }
     await this.remote.selectAsyncNode(asyncNode);
     await this.updateStackHighlight(trace);
+    await this.updateRootValueLabel();
   }
 
   // ###########################################################################

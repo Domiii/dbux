@@ -723,14 +723,20 @@ export default {
 
   /** @param {DataProvider} dp */
   getTraceValueString(dp, traceId) {
-    const { nodeId } = dp.util.getDataNodeOfTrace(traceId);
-    return dp.util.getDataNodeValueString(nodeId);
+    const dataNode = dp.util.getDataNodeOfTrace(traceId);
+    if (dataNode) {
+      return dp.util.getDataNodeValueString(dataNode.nodeId);
+    }
+    return '(no value or undefined)';
   },
 
   /** @param {DataProvider} dp */
   getTraceValueStringShort(dp, traceId) {
-    const { nodeId } = dp.util.getDataNodeOfTrace(traceId);
-    return dp.util.getDataNodeValueStringShort(nodeId);
+    const dataNode = dp.util.getDataNodeOfTrace(traceId);
+    if (dataNode) {
+      return dp.util.getDataNodeValueStringShort(dataNode.nodeId);
+    }
+    return '(no value or undefined)';
   },
 
   /** @param {DataProvider} dp */
@@ -2181,6 +2187,81 @@ export default {
 
     // -> nestedPromiseId is nested but there is no relevant Post event to CHAIN from, return 0
     return 0;
+  },
+
+  /** 
+   * NOTE: The algorithm is shared with `util.UP`, but with different teminate condition
+   * @param {DataProvider} dp
+   */
+  getNestedAncestorsOfPromise(dp, nestedPromiseId, beforeRootId, nestingTraces) {
+    let u;
+    const nestingLink = dp.indexes.promiseLinks.from.getFirst(nestedPromiseId);
+    if (nestingLink) {
+      const { to: outerPromiseId } = nestingLink;
+      if ((u = dp.util.getLastAsyncPostEventUpdateOfPromise(outerPromiseId, beforeRootId))) {
+        nestingTraces.push(u.schedulerTraceId);
+        // return u.rootId;
+      }
+      return dp.util.getNestedAncestorsOfPromise(outerPromiseId, beforeRootId, nestingTraces);
+    }
+    else if ((u = dp.util.getFirstUpdateOfNestedPromise(nestedPromiseId)) && u.rootId < beforeRootId) {
+      const promiseRootId = dp.util.getPromiseRootId(nestedPromiseId);
+      if (promiseRootId < u.rootId) {
+        return nestedPromiseId;
+      }
+      else {
+        nestingTraces.push(u.schedulerTraceId);
+        // if (/* !isFirstAwait || */ u.contextId === u.rootId) {
+        //   return u.rootId;
+        // }
+        return dp.util.getNestedAncestorsOfPromise(u.promiseId, beforeRootId, nestingTraces);
+      }
+    }
+    else if ((u = dp.util.getPreUpdateOfPromise(nestedPromiseId)) &&
+      AsyncEventUpdateType.is.PreThen(u.type) &&
+      u.rootId < beforeRootId
+    ) {
+      return dp.util.getNestedAncestorsOfPromise(u.postEventPromiseId, beforeRootId, nestingTraces);
+    }
+    return nestedPromiseId;
+  },
+
+  /** 
+   * NOTE: Wrapper of `util.getNestedAncestorsOfPromise` for context version
+   * @param {DataProvider} dp
+   */
+  getNestedAncestors(dp, rootId, nestingTraces = []) {
+    const u = dp.util.getAsyncPostEventUpdateOfRoot(rootId);
+    if (!u) {
+      return nestingTraces;
+    }
+
+    let nextPromiseId = u.promiseId, nextRootId, nextTraceId;
+    if (nextPromiseId) {
+      nextPromiseId = dp.util.getNestedAncestorsOfPromise(nextPromiseId, rootId, nestingTraces);
+      const nextTrace = dp.util.getFirstTraceByRefId(nextPromiseId);
+      nextTraceId = nextTrace?.traceId;
+      nextRootId = nextTrace?.rootContextId;
+    }
+    else {
+      const fromEdge = dp.indexes.asyncEdges.to.getUnique(u.rootId);
+      nextTraceId = u.schedulerTraceId;
+      nextRootId = fromEdge?.fromRootContextId;
+    }
+
+    if (nextTraceId && nextRootId) {
+      nestingTraces.push(nextTraceId);
+      dp.util.getNestedAncestors(nextRootId, nestingTraces);
+    }
+
+    return nestingTraces;
+  },
+
+  /** 
+   * @param {DataProvider} dp
+   */
+  getNestedDepth(dp, rootId) {
+    return dp.util.getNestedAncestors(rootId).length;
   },
 
   /** 

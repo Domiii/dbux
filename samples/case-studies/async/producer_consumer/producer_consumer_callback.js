@@ -1,56 +1,71 @@
 import { IdleTime, N, startProduce, finishProduce, startConsume, finishConsume, hasSpace, hasItems, getProduceTime, getConsumeTime, } from './producer_consumer_base';
-import { waitTicksPromise, repeatPromise/* , sleep */ } from 'asyncUtil';
+import { waitTicksCallback, repeatCallback } from 'asyncUtil';
 
 /** ###########################################################################
  * Basic functions
  *  #########################################################################*/
 
-function idle() {
-  // return sleep() // for debugging purposes
-  //   .then(() =>
-  //     waitTicksPromise(IdleTime)
-  //   );
-  return waitTicksPromise(IdleTime);
+function idle(next) {
+  return waitTicksCallback(IdleTime, next);
 }
 
-function consume() {
-  startConsume();
-  return waitTicksPromise(getConsumeTime())
-    .then(finishConsume);
-}
-
-function produce() {
-  startProduce();
-  return waitTicksPromise(getProduceTime())
-    .then(finishProduce);
-}
-
-function producer(n) {
-  return repeatPromise(n, function producerTick() {
-    if (hasSpace()) {
-      return produce();
-    }
-    else {
-      return idle();
-    }
+function consume(next) {
+  return waitTicksCallback(getConsumeTime(), function _finishConsume() {
+    finishConsume();
+    next();
   });
 }
 
-function consumer(n) {
-  return repeatPromise(
-    () => !!n,
-    function consumerTick() {
-      if (hasItems()) {
+function produce(next) {
+  return waitTicksCallback(getProduceTime(), function _finishProduce() {
+    finishProduce();
+    next();
+  });
+}
+
+function producer(n) {
+  const next = () => {
+    // setImmediate(tryProduce);
+    tryProduce();
+  }
+  function tryProduce() {
+    if (n) {
+      if (hasSpace()) {
         --n;
-        console.log('cons', n);
-        return consume();
+        startProduce();
+        // produce(next);
+        setImmediate(produce.bind(null, next));
       }
       else {
-        console.log('cons idle', n);
-        return idle();
+        // idle(next);
+        setImmediate(idle.bind(null,next));
       }
     }
-  );
+  }
+
+  next();
+}
+
+function consumer(n) {
+  const next = () => {
+    // setImmediate(tryConsume);
+    tryConsume();
+  }
+  function tryConsume() {
+    if (n) {
+      if (hasItems()) {
+        --n;
+        startConsume();
+        // consume(next);
+        setImmediate(consume.bind(null, next));
+      }
+      else {
+        // idle(next);
+        setImmediate(idle.bind(null, next));
+      }
+    }
+  }
+  next();
 }
 
 /** ###########################################################################

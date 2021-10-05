@@ -37,7 +37,7 @@ import { f, g, f1, f2, f3, g1, g2 } from './_common';
 
 // Ex. 6: equivalent to Ex. 2, 3, 4, 5
 //        (but with an additional function call)
-(function () {
+(async function () {
   async function ff() {
     await f();
     await g();

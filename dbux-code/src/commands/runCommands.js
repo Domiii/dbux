@@ -2,6 +2,7 @@ import path from 'path';
 import { window, workspace } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { pathNormalizedForce, realPathSyncNormalized } from '@dbux/common-node/src/util/pathUtil';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import { checkSystem } from '@dbux/projects/src/checkSystem';
 import { getOrCreateProjectManager } from '../projectViews/projectControl';
 import { runInTerminalInteractive } from '../codeUtil/terminalUtil';
@@ -105,6 +106,7 @@ export async function runFile(extensionContext, debugMode = false) {
   // go!
   const dbuxBin = projectManager.getDbuxCliBinPath();
   const command = `node ${nodeArgs} "${dbuxBin}" run ${dbuxArgs} "${file}" -- ${programArgs}`;
+  allApplications.selection.clear();
   await runInTerminalInteractive(cwd, command);
   // runInTerminal(cwd, `node /Users/domi/code/dbux/scripts/time-test.js spawn-child && sleep 30`);
   // runInTerminalInteractive('dbux-run', cwd, `node /Users/domi/code/dbux/scripts/time-test.js spawn-child`);

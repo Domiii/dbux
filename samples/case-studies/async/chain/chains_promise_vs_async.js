@@ -4,9 +4,19 @@ const ablauf = [
   'A',
   'B',
   [
-    'CA',
-    'CB',
-    'CC',
+    [
+      [
+        [
+          [
+            [
+              () => 'CA',
+              'CB',
+              'CC'
+            ]
+          ]
+        ]
+      ]
+    ]
   ],
   'D'
 ];
@@ -18,7 +28,7 @@ Pbind('[P1]', ...ablauf);
 Pbind('[P2]', [
   'A',
   'B',
-  () => Promise.resolve().then(() => Pbind('[P2]',[
+  () => Promise.resolve().then(() => Pbind('[P2]', [
     'CA',
     'CB',
     'CC',
