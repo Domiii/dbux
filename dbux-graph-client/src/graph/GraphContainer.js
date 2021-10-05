@@ -13,7 +13,7 @@ class GraphContainer extends ClientComponentEndpoint {
             <div data-mount="AsyncStack"></div>
           </div>
         </div>
-        <div data-mount="ZoomBar"></div> 
+        <div data-mount="ZoomBar" style="position: relative;"></div> 
       </div>
     `);
   }

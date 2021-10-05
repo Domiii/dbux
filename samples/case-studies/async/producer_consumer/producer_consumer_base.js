@@ -1,8 +1,5 @@
 import { randomInt } from 'asyncUtil';
 
-// const seedrandom = require('seedrandom');
-// seedrandom('dbux', { global: true });
-
 // ###########################################################################
 //  States & Constants
 // ###########################################################################
@@ -24,6 +21,10 @@ export const N = 3;
 // ###########################################################################
 //  Public
 // ###########################################################################
+
+function useItem(item) {
+  // noop
+}
 
 export function hasSpace() {
   return (producing + nItems) < MaxItems;
@@ -52,6 +53,7 @@ export function finishProduce() {
   --producing;
 
   console.log(`produced item ${item}, remaining: ${nItems}, producing: ${producing}, buffer: [${buffer}]`);
+  useItem(item);
 }
 
 export function getConsumeTime() {
@@ -72,4 +74,5 @@ export function finishConsume() {
   --consuming;
 
   console.log(`consumed item ${item}, remaining: ${nItems}, consuming: ${consuming}, buffer: [${buffer}]`);
+  useItem(item);
 }

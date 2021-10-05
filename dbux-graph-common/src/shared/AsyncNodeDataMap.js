@@ -25,6 +25,10 @@ export default class AsyncNodeDataMap {
     this._nodes.clear();
   }
 
+  forEach(cb) {
+    return this._nodes.forEach(cb);
+  }
+
   _makeKey(applicationId, asyncNodeId) {
     return `${applicationId}_${asyncNodeId}`;
   }

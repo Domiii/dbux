@@ -201,10 +201,10 @@ div {
 }
 
 [data-async-detail-mode="1"] .async-cell {
-  /* min-height: 2.8rem;
-  min-width: 5rem;
-  max-width: 10rem; */
-  width: fit-content;
+  /* fix size for detail mode */
+  min-height: 1rem;
+  min-width: 4rem;
+  width: -webkit-fill-available;
 }
 
 .async-cell:hover {
@@ -246,8 +246,8 @@ div {
   margin-left: 3px;
 }
 
-.async-loc-label {
-  font-size: 0.7em;
+.show-values .async-context-label {
+  display: none !important;
 }
 
 [data-async-detail-mode="0"] div.async-detail {
@@ -299,8 +299,12 @@ div {
 
 .loc-label {
   /* color: #333; */
-  margin-right: 0.3rem !important;
+  white-space: nowrap;
   color: rgba(0, 0, 0);
+}
+
+.context-loc-label {
+  margin-right: 0.3rem !important;
 }
 
 .theme-mode-dark .loc-label {
@@ -352,7 +356,91 @@ div {
   display: none !important;
 }
 
-/* ContextNode link style */
+.depth-label {
+  background-color: rgb(93, 93, 93);
+  padding: 0 2px;
+}
+
+/** #######################################
+ * async line decorations
+ * ########################################*/
+
+/* horizontal dashed */
+.hz-d {
+  display: flex;
+  align-items: center;
+}
+
+.hz-d::before {
+  content: "";
+  width: 100%;
+  height: 0;
+  border-top: 1px dashed white;
+}
+
+/* vertical solid */
+.vt {
+  display: flex;
+  justify-content: center;
+}
+
+.vt::before {
+  content: "";
+  height: 100%;
+  width: 0;
+  border-left: 1px solid white;
+}
+
+/* vertical dashed */
+.vt-d {
+  display: flex;
+  justify-content: center;
+}
+
+.vt-d::before {
+  content: "";
+  height: 100%;
+  width: 0;
+  border-left: 1px dashed white;
+}
+
+/* corner dashed */
+.cn-d {
+  display: flex;
+  justify-content: start;
+  align-items: flex-end;
+}
+
+.cn-d::before {
+  content: "";
+  width: 50%;
+  height: 50%;
+  border-top: 1px dashed white;
+  border-right: 1px dashed white;
+}
+
+/* T-shape dashed */
+.t-d {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.t-d::before {
+  content: "";
+  width: 100%;
+  height: 0;
+  border-top: 1px dashed white;
+}
+
+.t-d::after {
+  content: "";
+  width: 0;
+  height: 50%;
+  border-top: 1px dashed white;
+  border-left: 1px dashed white;
+}
 
 /** ###########################################################################
  * general purpose highlight animation
@@ -522,17 +610,17 @@ body:not(.theme-mode-dark) .highlight {
  * zoombar
  * ############################################################################ */
 
-#zoombar {
-  position: fixed;
+.zoombar {
+  position: absolute;
   bottom: 10px;
   right: 10px;
 }
 
-#zoombar .button {
+.zoombar .button {
   margin: 2.5px;
 }
 
-.theme-mode-dark #zoombar .button {
+.theme-mode-dark .zoombar .button {
   background: #292929;
   border: solid 2px #484848;
   color: white;

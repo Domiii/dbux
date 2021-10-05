@@ -1,7 +1,8 @@
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import AsyncEventUpdateType from '@dbux/common/src/types/constants/AsyncEventUpdateType';
+import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import { getStaticContextColor } from '@dbux/graph-common/src/shared/contextUtil';
 import AsyncNodeDataMap from '@dbux/graph-common/src/shared/AsyncNodeDataMap';
-import AsyncEventUpdateType from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import { compileHtmlElement, getMatchParent } from '../../util/domUtil';
 import { AsyncButtonClasses } from './asyncButtons';
 import GraphBase from '../GraphBase';
@@ -23,7 +24,7 @@ class AsyncGraph extends GraphBase {
           <h4>Applications:</h4>
           <pre data-el="applications"></pre>
         </div>
-        <div data-el="main" style="grid-area:main;" class="grid grid-center async-grid"></div>
+        <div data-el="main" style="grid-area:main;" class="grid async-grid"></div>
       </div>
     `);
   }
@@ -103,8 +104,8 @@ class AsyncGraph extends GraphBase {
     if (children?.length) {
       let mainHTML = '';
       mainHTML += children.map(child => this.makeAsyncNodeEl(child)).join('');
-      mainHTML += this.makeParentThreadDecoration();
-      mainHTML += this.makeLineInThreadDecoration();
+      // mainHTML += this.makeParentThreadDecoration();
+      mainHTML += children.map(child => this.makeAsyncEdgeDecoration(child)).join('');
       mainHTML += this.makeHeaderEl();
 
       this.els.main.innerHTML = mainHTML;
@@ -127,6 +128,7 @@ class AsyncGraph extends GraphBase {
       moduleName,
       postAsyncEventUpdateType,
       hasError,
+      nestingDepth,
     } = nodeData;
 
     const { themeMode } = this.context;
@@ -134,7 +136,7 @@ class AsyncGraph extends GraphBase {
 
     const backgroundColor = getStaticContextColor(themeMode, realStaticContextid, !!moduleName);
 
-    let shortLabel;
+    let shortLabel, fullLabel = displayName;
     switch (postAsyncEventUpdateType) {
       case AsyncEventUpdateType.PostAwait:
         shortLabel = 'A';
@@ -151,6 +153,12 @@ class AsyncGraph extends GraphBase {
     }
     if (hasError) {
       shortLabel += '🔥';
+      fullLabel += '🔥';
+    }
+    if (nestingDepth) {
+      const depthLabel = /*html*/`<span class="depth-label">${nestingDepth}</span>`;
+      shortLabel = `${depthLabel}${shortLabel}`;
+      fullLabel = `${depthLabel}${fullLabel}`;
     }
     const { asyncNodeId, applicationId, isTerminalNode } = asyncNode;
     const asyncNodeData = {
@@ -169,13 +177,16 @@ class AsyncGraph extends GraphBase {
     `;
 
     return /*html*/`
-        <div class="async-cell async-node full-width flex-row align-center ${classAttrs}" style="${styleProps}" ${dataAttrs}>
-          <div class="async-brief flex-row main-axie-align-center">
+        <div class="async-cell async-node flex-row align-center ${classAttrs}" style="${styleProps}" ${dataAttrs}>
+          <div class="async-brief">
             ${shortLabel}
           </div>
           <div class="async-detail flex-column cross-axis-align-center">
-            <div class="ellipsis-10">${displayName}</div>
-            <div class="async-loc-label gray">
+            <div>
+              <div class="ellipsis-10 async-context-label">${fullLabel}</div>
+              <div class="ellipsis-10 value-label"></div>
+            </div>
+            <div class="loc-label ellipsis-10">
               <span>${locLabel}</span>
             </div>
           </div>
@@ -202,45 +213,91 @@ class AsyncGraph extends GraphBase {
     return buttonWrapperEl;
   }
 
-  makeParentThreadDecoration() {
-    const { children } = this.state;
-    const visitedColId = new Set();
-    const decorations = [];
-    for (const nodeData of children) {
-      const { colId, parentRowId } = nodeData;
-      if (!visitedColId.has(colId) && parentRowId) {
-        visitedColId.add(colId);
-        const positionProp = makeGridPositionProp(parentRowId, colId);
-        decorations.push(/*html*/`
-        <div class="async-node full-width flex-row align-center" style="${positionProp}">
-          <div class="async-detail flex-column cross-axis-align-center">⬤</div>
-        </div>
-        `);
+  // makeParentThreadDecoration() {
+  //   const { children } = this.state;
+  //   const visitedColId = new Set();
+  //   const decorations = [];
+  //   for (const nodeData of children) {
+  //     const { colId, parentRowId } = nodeData;
+  //     if (!visitedColId.has(colId) && parentRowId) {
+  //       visitedColId.add(colId);
+  //       const positionProp = makeGridPositionProp(parentRowId, colId);
+  //       decorations.push(/*html*/`
+  //       <div class="async-node full-width flex-row align-center" style="${positionProp}">
+  //         <div class="async-detail flex-column cross-axis-align-center">⬤</div>
+  //       </div>
+  //       `);
+  //     }
+  //   }
+  //   return decorations.join('');
+  // }
+
+  makeAsyncEdgeDecoration(nodeData) {
+    const {
+      asyncNode,
+      rowId,
+      colId,
+      parentEdgeType,
+      parentAsyncNodeId,
+      lastForkSiblingNodeId,
+    } = nodeData;
+
+    const {
+      applicationId,
+    } = asyncNode;
+
+    if (AsyncEdgeType.is.Chain(parentEdgeType)) {
+      let html = '';
+      const parentAsyncNode = this.allNodeData.get(applicationId, parentAsyncNodeId);
+      {
+        const _row = parentAsyncNode.rowId + 1;
+        const _height = rowId - _row;
+        if (_height) {
+          const positionProp = makeGridPositionProp(_row, colId, { rowSpan: _height });
+          html += /*html*/ `
+              <div style="${positionProp}" class="vt"></div>
+            `;
+        }
       }
+      return html;
     }
-    return decorations.join('');
-  }
+    else if (AsyncEdgeType.is.Fork(parentEdgeType)) {
+      let html = '';
+      const parentAsyncNode = this.allNodeData.get(applicationId, parentAsyncNodeId);
+      {
+        // horizontal line
+        let _col = parentAsyncNode.colId + parentAsyncNode.width;
+        if (lastForkSiblingNodeId) {
+          const lastForkSibling = this.allNodeData.get(applicationId, lastForkSiblingNodeId);
+          _col = lastForkSibling.colId + 1;
+        }
+        const _width = colId - _col;
+        if (_width) {
+          const positionProp = makeGridPositionProp(parentAsyncNode.rowId, _col, { colSpan: _width });
+          html += /*html*/ `
+            <div style="${positionProp}" class="hz-d"></div>
+            `;
+        }
+      }
+      {
+        // vertical line
+        const _height = rowId - parentAsyncNode.rowId - 1;
+        const positionProp = makeGridPositionProp(parentAsyncNode.rowId + 1, colId, { rowSpan: _height });
+        html += /*html*/ `
+            <div style="${positionProp}" class="vt-d"></div>
+          `;
+      }
+      {
+        // corner
+        const positionProp = makeGridPositionProp(parentAsyncNode.rowId, colId);
+        html += /*html*/ `
+            <div style="${positionProp}" class="t-d"></div>
+          `;
+      }
+      return html;
+    }
 
-  makeLineInThreadDecoration() {
     return '';
-    // const { children } = this.state;
-    // const minRowIdByCol = new Map();
-    // const maxRowIdByCol = new Map();
-    // const asyncNodePositions = new Set();
-    // const decorations = [];
-
-    // for (const nodeData of children) {
-    //   const { colId, rowId } = nodeData;
-    //   !minRowIdByCol.get(colId) && minRowIdByCol.set(colId, rowId);
-    //   maxRowIdByCol.set(colId, rowId);
-    //   asyncNodePositions.add(`${colId}_${rowId}`);
-    // }
-
-    // for (const colId of minRowIdByCol.keys()) {
-
-    // }
-
-    // return decorations.join('');
   }
 
   makeHeaderEl() {
@@ -263,6 +320,13 @@ class AsyncGraph extends GraphBase {
       }
     }
     return decorations.join('');
+  }
+
+  renderRootValueLabel() {
+    this.allNodeData.forEach((nodeData) => {
+      const valueLabelEl = this.getAsyncNodeEl(nodeData.asyncNode, '.value-label');
+      valueLabelEl.innerHTML = nodeData.valueLabel;
+    });
   }
 
   // ###########################################################################
@@ -294,13 +358,16 @@ class AsyncGraph extends GraphBase {
    * @param {{applicationId: number, asyncNodeId: number}} asyncNode 
    * @return {HTMLElement}
    */
-  getAsyncNodeEl({ applicationId, asyncNodeId }) {
+  getAsyncNodeEl({ applicationId, asyncNodeId }, childSelector = null) {
     const data = {
       'application-id': applicationId,
       'async-node-id': asyncNodeId,
     };
     const dataSelector = Object.entries(data).map(([key, val]) => `[data-${key}="${val || ''}"]`).join('');
-    const selector = `.async-node${dataSelector}`;
+    let selector = `.async-node${dataSelector}`;
+    if (childSelector) {
+      selector = `${selector} ${childSelector}`;
+    }
     return document.querySelector(selector);
   }
 
@@ -357,6 +424,18 @@ class AsyncGraph extends GraphBase {
           }
         });
       }
+    },
+    updateRootValueLabel(values) {
+      this.allNodeData.forEach((node) => {
+        // default label if no value
+        node.valueLabel = '⬤';
+      });
+      if (values) {
+        values.forEach(({ applicationId, asyncNodeId, label }) => {
+          this.allNodeData.get(applicationId, asyncNodeId).valueLabel = label;
+        });
+      }
+      this.renderRootValueLabel();
     }
   }
 }
@@ -366,7 +445,7 @@ export default AsyncGraph;
 // util
 // ###########################################################################
 
-function makeGridPositionProp(row, col, { colSpan = 1, noHeaderPadding = false } = EmptyObject) {
+function makeGridPositionProp(row, col, { rowSpan = 1, colSpan = 1, noHeaderPadding = false } = EmptyObject) {
   const headerPadding = noHeaderPadding ? 0 : 1;
-  return `grid-row-start: ${row + headerPadding};grid-column: ${col} / span ${colSpan};`;
+  return `grid-row: ${row + headerPadding} / span ${rowSpan};grid-column: ${col} / span ${colSpan};`;
 }
