@@ -2249,8 +2249,11 @@ export default {
       nextRootId = fromEdge?.fromRootContextId;
     }
 
-    if (nextTraceId && nextRootId) {
+    if (nextTraceId) {
       nestingTraces.push(nextTraceId);
+    }
+
+    if (nextRootId) {
       dp.util.getNestedAncestors(nextRootId, nestingTraces);
     }
 
@@ -2263,6 +2266,10 @@ export default {
   getNestedDepth(dp, rootId) {
     return dp.util.getNestedAncestors(rootId).length;
   },
+
+  /** ###########################################################################
+   * DOWN
+   * ##########################################################################*/
 
   /** 
    * `getNestedPromiseUpdate`.
@@ -2285,7 +2292,7 @@ export default {
     // SYNC if: (i) promise was created in a root BEFORE the NESTING happened, or
     //          (ii) someone else already CHAINED against it.
     if (promiseRootId < syncBeforeRootId) {
-      // nested for synchronization -> do not go deeper
+      // potentially nested for synchronization -> do not go deeper
       // const chainFrom = dp.util.getChainFrom(nestedUpdate.rootId); // store for debugging
       syncPromiseIds.push(nestingPromiseId);
       return null;
@@ -2326,6 +2333,10 @@ export default {
           nestedUpdate = dp.util.GNPU(nestedLink.from, beforeRootId, syncBeforeRootId, postUpdateData, depth + 1, visited) || nestedUpdate;
         }
         else if (nestedLink.asyncPromisifyPromiseId) {
+          if (!nestedUpdate) {
+            syncPromiseIds.push(nestingPromiseId);
+            return null;
+          }
           //   // promisify linkage, encountering `p` in `C()` in:
           //   //  `A(); p.then(() => (B(), p)).then(C)`
           //   // NOTE: nestedLink is created when `resolve`/`reject` is called

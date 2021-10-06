@@ -4,19 +4,22 @@ import { randomInt } from 'asyncUtil';
 //  States & Constants
 // ###########################################################################
 
+// config
+// export const IdleTime = 1;
+export const N = 3;
 const ProducerTime = 3;
 const ProducerTimeVar = 5;
 const ConsumerTime = 3;
-const ConsumerTimeVar = 3;
-const MaxItems = 5;
+const ConsumerTimeVar = 5;
+const MaxItems = 2;
+
+// global queue
 const buffer = [];
 let nItems = 0;
 let consuming = 0;
 let producing = 0;
 let lastItem = 0;
 
-export const IdleTime = 1;
-export const N = 3;
 
 // ###########################################################################
 //  Public
@@ -47,6 +50,10 @@ export function startProduce() {
 }
 
 export function finishProduce() {
+  if (buffer.length >= MaxItems) {
+    throw new Error(`tried to produce when full`);
+  }
+
   const item = ++lastItem;
   buffer.push(item);
   ++nItems;
@@ -64,6 +71,9 @@ export function getConsumeTime() {
 }
 
 export function startConsume() {
+  if (buffer.length < 1) {
+    throw new Error(`tried to consume when empty`);
+  }
   ++consuming;
   console.log(`consuming item ${buffer[consuming - 1]}...`);
 }

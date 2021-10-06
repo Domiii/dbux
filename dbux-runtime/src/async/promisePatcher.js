@@ -365,12 +365,12 @@ function patchPromiseClass(BasePromiseClass) {
               if (thenRef) {
                 const inner = resolveArg;
                 const thisPromiseId = getPromiseId(this) || 0;
-                const asyncPromisifyPromiseId =
-                  // NOTE: we only care about promisify, if async
-                  // NOTE2: this is extra messy because we keep the virtual root around in `_runFinished` for `PostThen`, and RealRoot is not as reliable
-                  (executorRealRootId !== resolveRealRootId ||
-                    executorRootId !== thenRef.rootId)
-                    ? thisPromiseId : 0; // we only care about promisify, if async
+
+                // NOTE: we only care about promisify, if async
+                // NOTE2: this is extra messy because we keep the virtual root around in `_runFinished` for `PostThen`, and RealRoot is not as reliable
+                const isAsync = (executorRealRootId !== resolveRealRootId ||
+                  executorRootId !== thenRef.rootId);
+                const asyncPromisifyPromiseId = isAsync ? thisPromiseId : 0;
                 RuntimeMonitorInstance._runtime.async.resolve(
                   inner, this, PromiseLinkType.Promisify, thenRef.schedulerTraceId, asyncPromisifyPromiseId
                 );
@@ -397,7 +397,6 @@ function patchPromiseClass(BasePromiseClass) {
                 // NOTE2: this is extra messy because we keep the virtual root around in `_runFinished` for `PostThen`, and RealRoot is not as reliable
                 const isAsync = (executorRealRootId !== resolveRealRootId ||
                   executorRootId !== thenRef.rootId);
-                  
                 const asyncPromisifyPromiseId = isAsync ? thisPromiseId : 0;
                 RuntimeMonitorInstance._runtime.async.resolve(
                   inner, this, PromiseLinkType.Promisify, thenRef.schedulerTraceId, asyncPromisifyPromiseId

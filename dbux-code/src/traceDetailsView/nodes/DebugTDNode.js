@@ -14,10 +14,14 @@ import TraceDetailNode from './traceDetailNode';
 // Debug
 // ###########################################################################
 
+function makeArrayLengthLabel(label, arr) {
+  return `${label} (${arr?.length || 0})`;
+}
+
 function makeObjectArrayNodes(obj) {
   return Object.fromEntries(
     Object.entries(obj)
-      .map(([name, arr]) => [`${name} (${arr?.length || 0})`, arr || {}])
+      .map(([name, arr]) => [makeArrayLengthLabel(name, arr), arr || {}])
   );
 }
 
@@ -99,13 +103,14 @@ export class DebugTDNode extends TraceDetailNode {
     // valueRef
     // ###########################################################################
 
-    // const refId = dataNode?.refId;
     const valueRef = dp.util.getTraceValueRef(dataTraceId);
+    const refId = valueRef?.refId || 0;
+    const promiseId = valueRef?.isThenable && refId || 0;
     const valueNode = [
       'valueRef',
       valueRef,
       {
-        description: `refId=${valueRef?.refId || 0}`
+        description: `refId=${refId}`
       }
     ];
     // const promiseData = dataProvider.collections.promises.getById(context.promiseId);
@@ -151,6 +156,10 @@ export class DebugTDNode extends TraceDetailNode {
         }
       ));
 
+    const promiseLinksFrom = promiseId && dp.indexes.promiseLinks.from.get(promiseId);
+    const promiseLinksTo = promiseId && dp.indexes.promiseLinks.to.get(promiseId);
+    const promisePostUpdates = promiseId && dp.indexes.asyncEventUpdates.byPromise.get(promiseId);
+
     const asyncContainerNode = [
       'Async',
       {
@@ -161,8 +170,23 @@ export class DebugTDNode extends TraceDetailNode {
           { description: `${postEventUpdateData?.map(upd => AsyncEventUpdateType.nameFrom(upd.type)) || ''}` }
         ),
         ...makeObjectArrayNodes({
-          OtherUpdates: otherEventUpdates
+          OtherUpdates: otherEventUpdates,
         }),
+        promiseLinksFrom: makeTreeItem(
+          'PromiseLinks From',
+          promiseLinksFrom,
+          { description: makeArrayLengthLabel(`promiseId=${promiseId}`, promiseLinksFrom) }
+        ),
+        promiseLinksTo: makeTreeItem(
+          'PromiseLinks To',
+          promiseLinksTo,
+          { description: makeArrayLengthLabel('', promiseLinksTo) }
+        ),
+        promiseUpdates: makeTreeItem(
+          'Promise Roots',
+          promisePostUpdates,
+          { description: makeArrayLengthLabel('', promisePostUpdates) }
+        )
       },
       {
         // eslint-disable-next-line max-len

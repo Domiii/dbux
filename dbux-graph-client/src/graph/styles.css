@@ -357,8 +357,13 @@ div {
 }
 
 .depth-label {
-  background-color: rgb(93, 93, 93);
+  /* background-color: rgb(93, 93, 93); */
+  background-color: rgb(200, 200, 200);
   padding: 0 2px;
+}
+
+.theme-mode-dark .depth-label {
+  background: rgba(32, 32, 32);
 }
 
 /** #######################################

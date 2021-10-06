@@ -136,7 +136,9 @@ class AsyncGraph extends GraphBase {
 
     const backgroundColor = getStaticContextColor(themeMode, realStaticContextid, !!moduleName);
 
+    let leftLabel = '', rightLabel = '';
     let shortLabel, fullLabel = displayName;
+
     switch (postAsyncEventUpdateType) {
       case AsyncEventUpdateType.PostAwait:
         shortLabel = 'A';
@@ -157,8 +159,9 @@ class AsyncGraph extends GraphBase {
     }
     if (nestingDepth) {
       const depthLabel = /*html*/`<span class="depth-label">${nestingDepth}</span>`;
-      shortLabel = `${depthLabel}${shortLabel}`;
-      fullLabel = `${depthLabel}${fullLabel}`;
+      leftLabel = depthLabel;
+      // shortLabel = `${depthLabel}${shortLabel}`;
+      // fullLabel = `${depthLabel}${fullLabel}`;
     }
     const { asyncNodeId, applicationId, isTerminalNode } = asyncNode;
     const asyncNodeData = {
@@ -178,11 +181,12 @@ class AsyncGraph extends GraphBase {
 
     return /*html*/`
         <div class="async-cell async-node flex-row align-center ${classAttrs}" style="${styleProps}" ${dataAttrs}>
-          <div class="async-brief">
+          <div class="left-label">${leftLabel}</div>
+          <div class="async-brief full-width">
             ${shortLabel}
           </div>
-          <div class="async-detail flex-column cross-axis-align-center">
-            <div>
+          <div class="async-detail full-width flex-column cross-axis-align-center">
+            <div class="full-width flex-row align-center">
               <div class="ellipsis-10 async-context-label">${fullLabel}</div>
               <div class="ellipsis-10 value-label"></div>
             </div>
@@ -190,6 +194,7 @@ class AsyncGraph extends GraphBase {
               <span>${locLabel}</span>
             </div>
           </div>
+          <div class="right-label">${rightLabel}</div>
         </div>
       `;
   }
