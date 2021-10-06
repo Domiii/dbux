@@ -347,7 +347,7 @@ class ValueCollection extends Collection {
 
   /**
    * Also needs to be error wrapped since instanceof can also be hi-jacked by user code.
-   * This happens in Chart.js.
+   * This happens (for example) in Chart.js.
    */
   _getIsInstanceOf(obj, Clazz) {
     try {
@@ -385,11 +385,6 @@ class ValueCollection extends Collection {
     }
   }
 
-  _startReadProp(obj, key) {
-    this._startAccess(obj);
-    return obj[key];
-  }
-
   /**
    * 
    */
@@ -421,11 +416,12 @@ class ValueCollection extends Collection {
   }
 
   _startAccess(/* obj */) {
-    // eslint-disable-next-line no-undef
-    if (__dbux__._r.disabled) {
-      this.logger.error(`Tried to start accessing object while already accessing another object - ${new Error().stack}`);
-      return;
-    }
+    // NOTE: don't error out. We have nested access when traces disabled to get instanceof for wrapValue before the trace disabled check.
+    // // eslint-disable-next-line no-undef
+    // if (__dbux__._r.disabled) {
+    //   this.logger.error(`Tried to start accessing object while already accessing another object - ${new Error().stack}`);
+    //   return;
+    // }
 
     // NOTE: disable tracing while reading the property
 

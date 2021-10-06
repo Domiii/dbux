@@ -12,6 +12,7 @@ import WebpackProject from './projects/webpack/Project';
 import NodeFetchProject from './projects/node-fetch/Project';
 import BluebirdProject from './projects/bluebird/Project';
 import AsyncJsProject from './projects/async-js/Project';
+import SocketIOProject from './projects/socket.io/Project';
 
 // eslint-disable-next-line import/no-mutable-exports
 let registry = {
@@ -19,6 +20,7 @@ let registry = {
   2048: Project2048,
   express: Express,
   'node-fetch': NodeFetchProject,
+  'async-js': AsyncJsProject,
 };
 
 if (process.env.NODE_ENV === 'development') {
@@ -27,21 +29,20 @@ if (process.env.NODE_ENV === 'development') {
   registry = {
     ...registry,
 
-    'async-js': AsyncJsProject,
-    
-    eslint: Eslint,
-
     // NOTE: sequelize not a good public candidate due to the sqlite dependency losing binaries over time
     sequelize: SequelizeProject,
+    'socket.io': SocketIOProject,
+    webpack: WebpackProject,
+
+    'Editor.md': EditorMdProject,
+    'Chart.Js': ChartJs,
+    hexo: Hexo,
+    'realworld-web-components': RealworldWebComponentsProject,
 
     zzBluebird: BluebirdProject,
 
-    'Editor.md': EditorMdProject,
-    webpack: WebpackProject,
     'javascript-algorithms': JavascriptAlgorithmProject,
-    'Chart.Js': ChartJs,
-    hexo: Hexo,
-    'realworld-web-components': RealworldWebComponentsProject
+    eslint: Eslint
   };
 }
 

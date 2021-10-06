@@ -518,7 +518,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   // more file + package utilities
   // ###########################################################################
 
-  async installPackages(s, shared = true/* , force = true */) {
+  async installPackages(s, shared = false/* , force = true */) {
     // TODO: let user choose, or just prefer yarn by default?
 
     if (isObject(s)) {
@@ -768,13 +768,13 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     const relativeProjectPath = this.getRelativeProjectPath();
     const cacheFolderStr = `${cacheRoot}/\n  ${relativeProjectPath}`;  // NOTE: path too long for modal
     if (this.doesCacheFolderExist()) {
-      if (await this.externals.confirm(`This will flush the cache at "${cacheFolderStr}", are you sure?`)) {
+      if (await this.manager.externals.confirm(`This will flush the cache at "${cacheFolderStr}", are you sure?`)) {
         this.deleteCacheFolder();
-        await this.externals.alert(`Successfully deleted cache folder for project "${this.name}"`, true);
+        await this.manager.externals.alert(`Successfully deleted cache folder for project "${this.name}"`, true);
       }
     }
     else {
-      await this.externals.alert(`Cache for project "${this.name}" is empty (${cacheFolderStr})`, false);
+      await this.manager.externals.alert(`Cache for project "${this.name}" is empty (${cacheFolderStr})`, false);
     }
   }
 

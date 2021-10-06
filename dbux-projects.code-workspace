@@ -21,6 +21,9 @@
 		},
 		{
 			"path": "dbux_projects/Editor.md"
+		},
+		{
+			"path": "dbux_projects/socket.io"
 		}
 	],
 	"settings": {

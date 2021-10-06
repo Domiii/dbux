@@ -2244,7 +2244,7 @@ export default {
       nextRootId = nextTrace?.rootContextId;
     }
     else {
-      const fromEdge = dp.indexes.asyncEdges.to.getUnique(u.rootId);
+      const fromEdge = dp.indexes.asyncEvents.to.getUnique(u.rootId);
       nextTraceId = u.schedulerTraceId;
       nextRootId = fromEdge?.fromRootContextId;
     }
