@@ -30,10 +30,10 @@ async function wait(queue) {
  * produce
  * ##########################################################################*/
 
-async function work(x) {
-  x;
-  // console.log(`working on: ${x}`);
-}
+// async function work(x) {
+//   x;
+//   // console.log(`working on: ${x}`);
+// }
 
 async function produce() {
   startProduce();  // WARNING: must start before first await to avoid race condition
@@ -48,7 +48,8 @@ async function produce() {
   await end;
 }
 
-function waitForSpace() {
+async function waitForSpace() {
+  await start;
   return wait(producerQueue);
 }
 
@@ -82,7 +83,8 @@ async function consume() {
   await end;
 }
 
-function waitForItems() {
+async function waitForItems() {
+  await start;
   return wait(consumerQueue);
 }
 
