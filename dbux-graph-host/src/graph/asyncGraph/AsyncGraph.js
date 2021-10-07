@@ -122,8 +122,10 @@ class AsyncGraph extends GraphBase {
     });
 
     // width
-    asyncNodeData.forEach((childData) => {
-      childData.width = this.getAsyncNodeWidth(childData, dataByNodeMap);
+    asyncNodeData.forEach((nodeData) => {
+      this.getAsyncNodeWidthDown(nodeData, dataByNodeMap);
+      this.getAsyncNodeWidthUp(nodeData, dataByNodeMap);
+      nodeData.width = Math.max(nodeData.widthDown, nodeData.widthUp, 1);
     });
 
     // colId
@@ -186,22 +188,41 @@ class AsyncGraph extends GraphBase {
     return asyncNodeData;
   }
 
-  getAsyncNodeWidth(nodeData, dataByNodeMap) {
-    if (!nodeData.width) {
+  getAsyncNodeWidthDown(nodeData, dataByNodeMap) {
+    if (!nodeData.widthDown) {
       const { applicationId, rootContextId } = nodeData.asyncNode;
       const dp = allApplications.getById(applicationId).dataProvider;
-      const outChain = dp.util.getChainFrom(rootContextId);
-      const childWidth = outChain
+      const outChains = dp.util.getChainFrom(rootContextId);
+      const widthDown = outChains
         .map(chain => {
-          const toAsyncNode = dp.util.getAsyncNode(chain.toRootContextId);
-          return dataByNodeMap.getByNode(toAsyncNode);
+          const toNode = dp.util.getAsyncNode(chain.toRootContextId);
+          return dataByNodeMap.getByNode(toNode);
         })
-        .reduce((sum, childNodeData) => {
-          return sum + this.getAsyncNodeWidth(childNodeData, dataByNodeMap);
+        .reduce((sum, nextNodeData) => {
+          return sum + this.getAsyncNodeWidthDown(nextNodeData, dataByNodeMap);
         }, 0);
-      nodeData.width = Math.max(childWidth, 1);
+
+      nodeData.widthDown = Math.max(widthDown, 1);
     }
-    return nodeData.width;
+    return nodeData.widthDown;
+  }
+
+  getAsyncNodeWidthUp(nodeData, dataByNodeMap) {
+    if (!nodeData.widthUp) {
+      const { applicationId, rootContextId } = nodeData.asyncNode;
+      const dp = allApplications.getById(applicationId).dataProvider;
+      const inChains = dp.util.getChainTo(rootContextId);
+      const widthUp = inChains
+        .map(chain => {
+          const fromNode = dp.util.getAsyncNode(chain.fromRootContextId);
+          return dataByNodeMap.getByNode(fromNode);
+        })
+        .reduce((sum, nextNodeData) => {
+          return sum + this.getAsyncNodeWidthUp(nextNodeData, dataByNodeMap);
+        }, 0);
+      nodeData.widthUp = Math.max(widthUp, 1);
+    }
+    return nodeData.widthUp;
   }
 
   makeApplicationState(apps = EmptyArray) {

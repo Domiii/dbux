@@ -5,13 +5,7 @@
 			"path": "dbux_projects\\todomvc-es6"
 		},
 		{
-			"path": "samples/case-studies"
-		},
-		{
 			"path": "dbux_projects/express"
-		},
-		{
-			"path": "samples/__samplesInput__"
 		},
 		{
 			"path": "dbux_projects/Chart.js"
@@ -24,6 +18,9 @@
 		},
 		{
 			"path": "dbux_projects/socket.io"
+		},
+		{
+			"path": "samples"
 		}
 	],
 	"settings": {
