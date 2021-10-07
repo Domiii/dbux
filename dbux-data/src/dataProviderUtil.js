@@ -2125,6 +2125,10 @@ export default {
    *    * either a root-level `await q*`'s PreAwait update
    *    * or the PostUpdate of a nesting promise `q3` [nesting q2 (never q1); “Nested PostThen” or “AsyncReturn”]
    * 
+   * NOTE: UP only returns one matching root. Multiple matches for CHAIN are not possible, because:
+   *    (1) the promise must be created in the same root as the nester (else its SYNC).
+   *    (2) and that root is the only possible candidate for chaining.
+   * 
    * @param {DataProvider} dp
    */
   UP(dp, nestedPromiseId, beforeRootId, nestingUpdates) {
