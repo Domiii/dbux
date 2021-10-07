@@ -1,12 +1,21 @@
-import { P } from '../../util/asyncUtil';
+import { P, sleep } from '../../util/asyncUtil';
 
-async function f() {
-  await P();
-  await 1;
-  await Promise.all([
-    P('A1', 'A2', 'A3'),
-    P('B1', 'B2', 'B3')
-  ]);
-  await 2;
+function f(x) {
+  return function identity() { 
+    return x;
+  };
 }
-f();
+
+async function main() {
+  f('create p')();
+  const p = P(sleep(1000), f('WAIT'));
+  await 0;
+  f('START')();
+  await Promise.all([
+    P(f('A1'), f('A2'), f('A3')),
+    P(f('B1'), f('B2'), f('B3')),
+    p
+  ]);
+  f('END')();
+}
+main();

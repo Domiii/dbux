@@ -4,11 +4,11 @@
  * ##########################################################################*/
 
 export function sleep(ms) {
-  return new Promise(r =>
-    setTimeout(() => {
-      r();
-    }, ms)
-  );
+  return new Promise(r => {
+    // function cb() { r(); };
+    const cb = r;
+    setTimeout(cb, ms)
+  });
 }
 
 export function F(x) {
