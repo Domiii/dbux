@@ -2334,10 +2334,12 @@ export default {
           nestedUpdate = dp.util.GNPU(nestedLink.from, beforeRootId, syncBeforeRootId, postUpdateData, depth + 1, visited) || nestedUpdate;
         }
         else if (nestedLink.asyncPromisifyPromiseId) {
-          if (!nestedUpdate) {
-            syncPromiseIds.push(nestingPromiseId);
-            return null;
-          }
+          // if (!nestedUpdate) {
+          // Promise ctor's resolve was called while this AE was waiting for it.
+          //    -> means it was called by a root outside this AE's own thread.
+          syncPromiseIds.push(nestingPromiseId);
+          return null;
+          // }
           //   // promisify linkage, encountering `p` in `C()` in:
           //   //  `A(); p.then(() => (B(), p)).then(C)`
           //   // NOTE: nestedLink is created when `resolve`/`reject` is called

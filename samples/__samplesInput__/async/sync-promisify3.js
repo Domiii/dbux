@@ -1,7 +1,5 @@
 /**
  * @file similar to semantics of `queue._maybeDrain` in async-js
- * A3 syncs against future event
- * which is scheduled in B4.
  */
 import { P } from '../../util/asyncUtil';
 
@@ -28,10 +26,11 @@ P(
   'B1',
   'B2',
   'B3',
-  () => ('B4', setImmediate(cb)),
-  // () => new Promise((r) => setImmediate(() => {
-  //   cb();
-  //   r();
-  // })),
+  // () => ('B4', setImmediate(cb)),
+  () => new Promise((r) => setImmediate(() => {
+    'B4';
+    cb();
+    r();
+  })),
   'B5'
 );
