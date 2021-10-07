@@ -19,13 +19,13 @@ async function f() {
   console.log('fA');
   await 0;
   console.log('fB');
-  await 0;
+  await 1;
   console.log('fC');
-  await 0;
+  await 2;
   console.log('fD');
-  await 0;
+  await 3;
   console.log('fE');
-  await 0;
+  await 4;
   console.log('fF');
 }
 

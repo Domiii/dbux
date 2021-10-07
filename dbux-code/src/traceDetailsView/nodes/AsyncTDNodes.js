@@ -65,16 +65,15 @@ class RootEdgesTDNode extends TraceDetailNode {
         {
           handleClick() {
             let targetTrace;
-            // if (isFrom) {
-            //   // FROM -> go to scheduler
-            //   const asyncNode = dp.util.getAsyncNode(rootId);
-            //   targetTrace = dp.collections.traces.getById(asyncNode?.schedulerTraceId);
-            // }
-            // else {
-
-            // -> go to first trace in root
-            targetTrace = dp.util.getFirstTraceOfContext(rootId);
-            // }
+            if (isFrom) {
+              // FROM -> go to scheduler
+              const asyncNode = dp.util.getAsyncNode(rootId);
+              targetTrace = dp.collections.traces.getById(asyncNode?.schedulerTraceId);
+            }
+            else {
+              // -> go to first trace in root
+              targetTrace = dp.util.getFirstTraceOfContext(rootId);
+            }
             if (targetTrace) {
               traceSelection.selectTrace(targetTrace);
             }

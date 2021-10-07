@@ -3,7 +3,13 @@
  * util
  * ##########################################################################*/
 
-export function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+export function sleep(ms) {
+  return new Promise(r =>
+    setTimeout(() => {
+      r();
+    }, ms)
+  );
+}
 
 export function F(x) {
   return function _F() {

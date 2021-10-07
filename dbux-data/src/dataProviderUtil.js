@@ -1937,7 +1937,7 @@ export default {
   },
 
   /** 
-   * Two possible scenarios:
+   * Two possible scenarios for updates with `nestedPromiseId`:
    * 1. PreAwait or
    * 2. PostThen
    * 
@@ -1945,15 +1945,13 @@ export default {
    */
   getFirstUpdateOfNestedPromise(dp, nestedPromiseId) {
     const updates = dp.indexes.asyncEventUpdates.byNestedPromise.get(nestedPromiseId);
-    // NOTE: the first update here can be either PreAwait or PostThen.
     return updates?.[0];
   },
 
   /** @param {DataProvider} dp */
-  getPreUpdateOfPromise(dp, promiseId) {
+  getFirstPreThenUpdateOfPromise(dp, promiseId) {
     const updates = dp.indexes.asyncEventUpdates.byPromise.get(promiseId);
-    // NOTE: the first update is always the Pre update.
-    return updates?.[0];
+    return updates?.find(upd => AsyncEventUpdateType.is.PreThen(upd.type)) || null;
   },
 
   /** 
@@ -2177,8 +2175,7 @@ export default {
         return dp.util.UP(u.promiseId, beforeRootId, nestingUpdates) || 0;
       }
     }
-    else if ((u = dp.util.getPreUpdateOfPromise(nestedPromiseId)) &&
-      AsyncEventUpdateType.is.PreThen(u.type) &&
+    else if ((u = dp.util.getFirstPreThenUpdateOfPromise(nestedPromiseId)) &&
       u.rootId < beforeRootId
     ) {
       // promise is not nested but was THEN’ed -> follow down the THEN chain (until we find a promise that is nested)
@@ -2217,7 +2214,7 @@ export default {
         return dp.util.getNestedAncestorsOfPromise(u.promiseId, beforeRootId, nestingTraces);
       }
     }
-    else if ((u = dp.util.getPreUpdateOfPromise(nestedPromiseId)) &&
+    else if ((u = dp.util.getFirstPreThenUpdateOfPromise(nestedPromiseId)) &&
       AsyncEventUpdateType.is.PreThen(u.type) &&
       u.rootId < beforeRootId
     ) {
@@ -2385,10 +2382,10 @@ export default {
   },
 
   WrapDownResult(dp, nestedUpdate, postUpdateData) {
-    if (nestedUpdate && dp.util.getChainFrom(nestedUpdate.rootId).length) {
-      nestedUpdate.promiseId && postUpdateData.syncPromiseIds.push(nestedUpdate.promiseId);
-      return null;
-    }
+    // if (nestedUpdate && dp.util.getChainFrom(nestedUpdate.rootId).length) {
+    //   nestedUpdate.promiseId && postUpdateData.syncPromiseIds.push(nestedUpdate.promiseId);
+    //   return null;
+    // }
     return nestedUpdate?.rootId || 0;
   },
 

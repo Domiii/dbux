@@ -3,7 +3,7 @@ import traceCollection from '../data/traceCollection';
 import dataNodeCollection from '../data/dataNodeCollection';
 import { peekBCEMatchCallee } from '../data/dataUtil';
 import valueCollection from '../data/valueCollection';
-import { monkeyPatchFunctionOverride, monkeyPatchMethod, monkeyPatchMethodOverrideDefault } from '../util/monkeyPatchUtil';
+import { monkeyPatchFunctionOverride, monkeyPatchHolderOverrideDefault, monkeyPatchMethod, monkeyPatchMethodOverrideDefault } from '../util/monkeyPatchUtil';
 
 
 // ###########################################################################
@@ -143,3 +143,7 @@ export default function patchArray() {
     "toString"
   ].forEach(key => monkeyPatchMethodOverrideDefault(Array, key));
 }
+
+[
+  'isArray',
+].forEach(key => monkeyPatchHolderOverrideDefault(Array, key));

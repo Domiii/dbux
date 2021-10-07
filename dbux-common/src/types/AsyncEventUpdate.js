@@ -30,8 +30,7 @@ export class AsyncUpdateBase {
 
 
   /**
-   * For PreAwait + PostAwait: promiseId of the await argument (if it is a promise).
-   * For PreThen: undefined
+   * For PreAwait: promiseId of the await argument (if it is a promise).
    * For PostThen: promiseId of the value returned from `then` callback (if it is a promise).
    */
   nestedPromiseId;

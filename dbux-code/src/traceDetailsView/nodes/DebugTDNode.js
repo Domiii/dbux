@@ -8,11 +8,9 @@ import TraceDetailNode from './traceDetailNode';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
-
-
-// ###########################################################################
-// Debug
-// ###########################################################################
+/** ###########################################################################
+ * util
+ *  #########################################################################*/
 
 function makeArrayLengthLabel(label, arr) {
   return `${label} (${arr?.length || 0})`;
@@ -48,6 +46,11 @@ function parseStackTrace(stackTrace) {
   };
 }
 
+// ###########################################################################
+// Debug
+// ###########################################################################
+
+
 export class DebugTDNode extends TraceDetailNode {
   static makeLabel(/* trace, parent */) {
     return 'Debug';
@@ -61,6 +64,9 @@ export class DebugTDNode extends TraceDetailNode {
     this.description = `id: ${this.trace.traceId}`;
   }
 
+  /** ###########################################################################
+   * more util
+   *  #########################################################################*/
 
   mapPostAsyncEvent = (postEventUpdate) => {
     return {
@@ -68,6 +74,27 @@ export class DebugTDNode extends TraceDetailNode {
       ...this.dp.util.getPostEventUpdateData(postEventUpdate)
     };
   }
+
+  makeAsyncUpdateItem = (upd) => {
+    const { dp } = this;
+    return makeTreeItem(
+      `${upd.rootId}`,
+      upd,
+      {
+        description: `${AsyncEventUpdateType.nameFrom(upd.type)} ${upd.schedulerTraceId}`,
+        handleClick: () => {
+          const schedulerTrace = dp.util.getTrace(upd.schedulerTraceId);
+          if (schedulerTrace) {
+            traceSelection.selectTrace(schedulerTrace);
+          }
+        }
+      }
+    );
+  }
+
+  /** ###########################################################################
+   * {@link buildChildren}
+   *  #########################################################################*/
 
   // makeIconPath(traceDetail) {
   //   return 'string.svg';
@@ -142,23 +169,11 @@ export class DebugTDNode extends TraceDetailNode {
     // many PRE events per `rootId`
     const otherEventUpdates = asyncEventUpdates?.
       filter(({ type }) => !isPostEventUpdate(type))?.
-      map((upd, i) => makeTreeItem(
-        `${i}) ${upd.rootId}`,
-        upd,
-        {
-          description: `${AsyncEventUpdateType.nameFrom(upd.type)} ${upd.schedulerTraceId}`,
-          handleClick() {
-            const schedulerTrace = dp.util.getTrace(upd.schedulerTraceId);
-            if (schedulerTrace) {
-              traceSelection.selectTrace(schedulerTrace);
-            }
-          }
-        }
-      ));
+      map(this.makeAsyncUpdateItem);
 
-    const promiseLinksFrom = promiseId && dp.indexes.promiseLinks.from.get(promiseId);
-    const promiseLinksTo = promiseId && dp.indexes.promiseLinks.to.get(promiseId);
-    const promisePostUpdates = promiseId && dp.indexes.asyncEventUpdates.byPromise.get(promiseId);
+    const promiseLinksFrom = promiseId && dp.indexes.promiseLinks.from.get(promiseId) || null;
+    const promiseLinksTo = promiseId && dp.indexes.promiseLinks.to.get(promiseId) || null;
+    const promiseUpdates = promiseId && dp.indexes.asyncEventUpdates.byPromise.get(promiseId) || null;
 
     const asyncContainerNode = [
       'Async',
@@ -183,9 +198,9 @@ export class DebugTDNode extends TraceDetailNode {
           { description: makeArrayLengthLabel('', promiseLinksTo) }
         ),
         promiseUpdates: makeTreeItem(
-          'Promise Roots',
-          promisePostUpdates,
-          { description: makeArrayLengthLabel('', promisePostUpdates) }
+          'Promise Updates',
+          promiseUpdates?.map(this.makeAsyncUpdateItem),
+          { description: makeArrayLengthLabel('', promiseUpdates) }
         )
       },
       {
