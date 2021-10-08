@@ -2150,7 +2150,6 @@ export default {
       }
 
       return roots.flatMap(_rootId => {
-        // all i starting at i = r, going up all AsyncEdges from i while i >= getFirstTraceByRefId(promiseId)
         const result = [];
         let fromAsyncEvent, contextId = _rootId, context;
         do {
