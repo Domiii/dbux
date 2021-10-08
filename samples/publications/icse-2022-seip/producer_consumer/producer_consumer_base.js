@@ -1,4 +1,12 @@
-import { randomInt } from 'asyncUtil';
+import noop from 'lodash/noop';
+
+/** ###########################################################################
+ * util (copied from asyncUtil)
+ * ##########################################################################*/
+
+export function randomInt(n) {
+  return Math.floor(Math.random() * n);
+}
 
 // ###########################################################################
 //  States & Constants
@@ -27,6 +35,7 @@ let lastItem = 0;
 
 function useItem(item) {
   // noop
+  noop(item);
 }
 
 export function hasSpace() {
@@ -46,7 +55,9 @@ export function getProduceTime() {
 
 export function startProduce() {
   ++producing;
-  console.log(`producing item ${lastItem + producing}...`);
+  const newItem = lastItem + producing;
+  console.log(`producing item ${newItem}...`);
+  useItem(newItem);
 }
 
 export function finishProduce() {
@@ -75,7 +86,9 @@ export function startConsume() {
     throw new Error(`tried to consume when empty`);
   }
   ++consuming;
-  console.log(`consuming item ${buffer[consuming - 1]}...`);
+  const item = buffer[consuming - 1];
+  useItem(item);
+  console.log(`consuming item ${item}...`);
 }
 
 export function finishConsume() {

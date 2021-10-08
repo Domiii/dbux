@@ -76,7 +76,7 @@ async function consume() {
   const n = getConsumeTime();
   for (let i = 0; i < n; ++i) {
     // await work(i);
-    await work;
+    await work; // keep this
   }
   finishConsume();
   notify(producerQueue);
