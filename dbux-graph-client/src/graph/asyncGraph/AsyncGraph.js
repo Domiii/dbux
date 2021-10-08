@@ -287,10 +287,12 @@ class AsyncGraph extends GraphBase {
       {
         // vertical line
         const _height = rowId - parentAsyncNode.rowId - 1;
-        const positionProp = makeGridPositionProp(parentAsyncNode.rowId + 1, colId, { rowSpan: _height });
-        html += /*html*/ `
-            <div style="${positionProp}" class="vt-d"></div>
-          `;
+        if (_height) {
+          const positionProp = makeGridPositionProp(parentAsyncNode.rowId + 1, colId, { rowSpan: _height });
+          html += /*html*/ `
+              <div style="${positionProp}" class="vt-d"></div>
+            `;
+        }
       }
       {
         // corner
