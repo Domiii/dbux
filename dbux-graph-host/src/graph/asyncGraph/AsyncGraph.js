@@ -306,8 +306,7 @@ class AsyncGraph extends GraphBase {
     if (trace) {
       const { applicationId, rootContextId } = trace;
       const dp = allApplications.getById(applicationId).dataProvider;
-      const fromEdge = dp.indexes.asyncEvents.to.getUnique(rootContextId);
-      nodes = Array.from(dp.util.getAllSyncRoots(fromEdge.fromRootContextId))
+      nodes = Array.from(dp.util.getAllSyncRoots(rootContextId))
         .map(context => dp.util.getAsyncNode(context.contextId))
         .filter(x => !!x);
     }

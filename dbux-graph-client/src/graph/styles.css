@@ -193,7 +193,7 @@ div {
 }
 
 .async-grid {
-  gap: 0px 1px;
+  gap: 0.5px 1px;
 }
 
 .async-cell {
@@ -286,10 +286,10 @@ div {
 }
 
 [data-async-detail-mode="0"] .async-cell {
-  height: 6px !important;
+  height: calc(1rem + 2px) !important;
   padding: 0px !important;
-  min-height: 6px !important;
-  font-size: 6px !important;
+  font-size: 9pt !important;
+  min-width: 20px !important;
 }
 
 [data-async-detail-mode="0"] .async-thread-title {

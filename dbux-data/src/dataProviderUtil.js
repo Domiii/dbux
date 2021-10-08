@@ -2154,11 +2154,11 @@ export default {
         const result = [];
         let fromAsyncEvent, contextId = _rootId, context;
         do {
-          context = dp.collections.executionContexts.getById(rootId);
+          context = dp.collections.executionContexts.getById(contextId);
           result.push(context);
           fromAsyncEvent = dp.indexes.asyncEvents.to.getFirst(contextId);
           contextId = dp.collections.executionContexts.getById(fromAsyncEvent?.fromRootContextId)?.contextId;
-        } while (contextId && contextId >= creationRoot.contextId);
+        } while (contextId && contextId > creationRoot.contextId);
         return result;
       }
       );
@@ -2364,6 +2364,7 @@ export default {
       // potentially nested for synchronization -> do not go deeper
       // const chainFrom = dp.util.getChainFrom(nestedUpdate.rootId); // store for debugging
       syncPromiseIds.push(nestingPromiseId);
+      log(`SYNC`, postUpdateData, nestingPromiseId);
       return null;
     }
     else {
