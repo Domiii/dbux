@@ -160,4 +160,10 @@ export default class AsyncNodeCollection extends Collection {
   postIndexProcessed(asyncNodes) {
     this.errorWrapMethod('resolveThreadLaneIds', asyncNodes);
   }
+
+  serialize(asyncNode) {
+    const nodeData = { ...asyncNode };
+    delete nodeData._nestedAncestors;
+    return nodeData;
+  }
 }

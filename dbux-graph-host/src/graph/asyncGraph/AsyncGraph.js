@@ -86,7 +86,6 @@ class AsyncGraph extends GraphBase {
       const parentAsyncNodeId = parentAsyncNode?.asyncNodeId;
       const hasError = !!dp.indexes.traces.errorByRoot.get(rootContextId);
 
-      // TODO: [performance] use cache instead of query it everytime
       const nestingDepth = dp.util.getNestedDepth(rootContextId);
 
       return {
@@ -262,8 +261,7 @@ class AsyncGraph extends GraphBase {
    * `onSelectionChanged` handlers
    *  #########################################################################*/
 
-  updateRootValueLabel = async () => {
-    const trace = traceSelection.selected;
+  updateRootValueLabel = async (trace) => {
     if (trace) {
       const { applicationId, staticTraceId } = trace;
       const dp = allApplications.getById(applicationId).dataProvider;
@@ -303,6 +301,19 @@ class AsyncGraph extends GraphBase {
     await this.remote.highlightStack(nodes);
   }
 
+  updateSyncRootsHighlight = async (trace) => {
+    let nodes = EmptyArray;
+    if (trace) {
+      const { applicationId, rootContextId } = trace;
+      const dp = allApplications.getById(applicationId).dataProvider;
+      const fromEdge = dp.indexes.asyncEvents.to.getUnique(rootContextId);
+      nodes = Array.from(dp.util.getAllSyncRoots(fromEdge.fromRootContextId))
+        .map(context => dp.util.getAsyncNode(context.contextId))
+        .filter(x => !!x);
+    }
+    await this.remote.highlightSyncRoots(nodes);
+  }
+
   handleTraceSelected = async (trace) => {
     // goto async node of trace
     await this.waitForRender();
@@ -316,8 +327,11 @@ class AsyncGraph extends GraphBase {
       }
     }
     await this.remote.selectAsyncNode(asyncNode);
-    await this.updateStackHighlight(trace);
-    await this.updateRootValueLabel();
+    await Promise.all([
+      this.updateStackHighlight(trace),
+      this.updateSyncRootsHighlight(trace),
+      this.updateRootValueLabel(trace),
+    ]);
   }
 
   // ###########################################################################

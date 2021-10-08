@@ -214,7 +214,7 @@ div {
 }
 
 .async-cell:hover {
-  border: 1px solid white;
+  border: 1px solid white !important;
   cursor: pointer;
   overflow: hidden;
 }
@@ -222,19 +222,33 @@ div {
 .async-cell-selected {
   color: darkred;
   border: 1px solid darkred !important;
+  overflow: hidden;
 }
 
 .theme-mode-dark .async-cell-selected {
   color: yellow;
   border: 1px solid yellow !important;
+  overflow: hidden;
 }
 
 .async-cell-stack-highlight {
   border: 1px dotted rgba(0, 0, 0, 0.5);
+  overflow: hidden;
 }
 
 .theme-mode-dark .async-cell-stack-highlight {
   border: 1px dotted rgba(255, 255, 255, 0.5);
+  overflow: hidden;
+}
+
+.async-cell-sync-root-highlight {
+  border: 1px dotted red;
+  overflow: hidden;
+}
+
+.theme-mode-dark .async-cell-sync-root-highlight {
+  border: 1px dotted red;
+  overflow: hidden;
 }
 
 .terminal-node {
