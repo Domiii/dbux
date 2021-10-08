@@ -312,7 +312,7 @@ export default class AsyncEventUpdateCollection extends Collection {
       // toThreadId = oldToThreadId;
     }
 
-    dp.collections.asyncNodes.setNodeThreadId(toRootId, toThreadId, schedulerTraceId);
+    dp.collections.asyncNodes.setNodeThreadId(toRootId, toThreadId, schedulerTraceId, postUpdateData.syncPromiseIds);
 
     // let toThreadId = toRootId && this.getOrAssignRootThreadId(toRootId, schedulerTraceId) || 0;
 
@@ -320,7 +320,8 @@ export default class AsyncEventUpdateCollection extends Collection {
 
     // add edge
     const edgeType = isChain ? AsyncEdgeType.Chain : AsyncEdgeType.Fork;
-    /* const newEdge =  */this._addEventEdges(fromRootId, toRootId, edgeType, postUpdateData.syncPromiseIds);
+    /* const newEdge =  */
+    this._addEventEdges(fromRootId, toRootId, edgeType);
     // if (!newEdge) {
     //   return null;
     // }

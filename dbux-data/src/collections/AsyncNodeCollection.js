@@ -57,12 +57,13 @@ export default class AsyncNodeCollection extends Collection {
     this.threadLaneManager = new ThreadLaneManager();
   }
 
-  _makeEntry(entries, rootId, threadId, schedulerTraceId) {
+  _makeEntry(entries, rootId, threadId, schedulerTraceId, syncPromiseIds) {
     const entry = new AsyncNode();
     entry.asyncNodeId = entry._id = this._all.length + entries.length;
     entry.rootContextId = rootId;
     entry.threadId = threadId;
     entry.schedulerTraceId = schedulerTraceId;
+    entry.syncPromiseIds = syncPromiseIds;
     entry.applicationId = this.dp.application.applicationId;
     return entry;
   }
@@ -99,11 +100,11 @@ export default class AsyncNodeCollection extends Collection {
     this.addEntriesPostAdd(entries);
   }
 
-  addAsyncNode(rootId, threadId, schedulerTraceId) {
+  addAsyncNode(rootId, threadId, schedulerTraceId, syncPromiseIds) {
     const entries = [];
     this._makeUnassignedNodes(entries, rootId);
 
-    const newNode = this._makeEntry(entries, rootId, threadId, schedulerTraceId);
+    const newNode = this._makeEntry(entries, rootId, threadId, schedulerTraceId, syncPromiseIds);
     entries.push(newNode);
 
     this._onNewThreadId(newNode);
@@ -113,10 +114,10 @@ export default class AsyncNodeCollection extends Collection {
     return newNode;
   }
 
-  setNodeThreadId(rootId, threadId, schedulerTraceId) {
+  setNodeThreadId(rootId, threadId, schedulerTraceId, syncPromiseIds = null) {
     const node = this.dp.util.getAsyncNode(rootId);
     if (!node) {
-      return this.addAsyncNode(rootId, threadId, schedulerTraceId);
+      return this.addAsyncNode(rootId, threadId, schedulerTraceId, syncPromiseIds);
     }
 
     // const report = node.threadId !== threadId ? this.logger.trace : this.logger.warn;
