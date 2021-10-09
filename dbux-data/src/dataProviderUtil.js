@@ -2738,25 +2738,25 @@ export default {
     else {
       // Case 2: heuristics
       if (firstPostEventHandlerUpdate && firstPostEventHandlerUpdate.rootId < beforeRootId) {
-        // Heuristic 1: event listener -> repeated calls of same trace
+        // Heuristic 1: event listener -> repeated calls of same scheduler trace
         chainFromRootId = firstPostEventHandlerUpdate.rootId;
       }
       else {
-        const preEventUpdates = util.getAsyncPreEventUpdatesOfRoot(preEventRootId);
-        if (preEventUpdates.length === 1) {
-          // Heuristic 2: this is the only pre-event in the pre-event's root -> CHAIN
-          //    (meaning its the only Pre async event scheduled from the same root)
+        // const preEventUpdates = util.getAsyncPreEventUpdatesOfRoot(preEventRootId);
+        // if (preEventUpdates.length === 1) {
+        //   // Heuristic 2: this is the only pre-event in the pre-event's root -> CHAIN
+        //   //    (meaning its the only Pre async event scheduled from the same root)
+        //   chainFromRootId = preEventRootId;
+        // }
+        // else {
+        const thisStaticContextId = util.getContextStaticContext(postEventRootId);
+        const lastStaticContextId = util.getContextStaticContext(preEventRootId);
+
+        if (thisStaticContextId === lastStaticContextId) {
+          // Heuristic 2: recursive or repeating same function
           chainFromRootId = preEventRootId;
         }
-        if (!chainFromRootId) {
-          const thisStaticContextId = util.getContextStaticContext(postEventRootId);
-          const lastStaticContextId = util.getContextStaticContext(preEventRootId);
-
-          if (thisStaticContextId === lastStaticContextId) {
-            // Heuristic 3: recursive or repeating same function
-            chainFromRootId = preEventRootId;
-          }
-        }
+        // }
       }
     }
 
