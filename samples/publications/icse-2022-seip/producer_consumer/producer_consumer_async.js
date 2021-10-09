@@ -3,7 +3,7 @@
  */
 
 import { N, startProduce, finishProduce, startConsume, finishConsume, hasSpace, hasItems, getProduceTime, getConsumeTime, } from './producer_consumer_base';
-// import { waitTicksAsync, repeatAsync, sleep } from 'asyncUtil';
+// import { waitTicksAsync, repeatAsync, sleep } from '../../../util/asyncUtil';
 
 const start = 0, end = 0, work = 0;
 
@@ -85,7 +85,7 @@ async function consume() {
 
 async function waitForItems() {
   await start;
-  return wait(consumerQueue);
+  return await wait(consumerQueue);
 }
 
 async function C(n) {
@@ -112,4 +112,8 @@ async function C(n) {
   C(N);
   C(N);
   P(N);
+  // tick counter
+  for (let i = 0; i < 50; ++i) {
+    await 0;
+  }
 })();
