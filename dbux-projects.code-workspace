@@ -21,6 +21,9 @@
 		},
 		{
 			"path": "samples"
+		},
+		{
+			"path": "dbux_projects/sequelize"
 		}
 	],
 	"settings": {

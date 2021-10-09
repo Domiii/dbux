@@ -6,6 +6,7 @@ import Project from '../../projectLib/Project';
 export default class SequelizeProject extends Project {
   gitRemote = 'sequelize/sequelize.git';
   /**
+   * @see https://github.com/sequelize/sequelize/tree/v6.6.5
    * @see https://github.com/sequelize/sequelize/tags
    * @see https://github.com/sequelize/sequelize/releases/tag/v6.6.5
    */
