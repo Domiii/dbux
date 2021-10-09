@@ -109,4 +109,8 @@ export default class ForkAnalysisNode extends TraceDetailNode {
       this.controller = null;
     }
   }
+
+  buildChildren() {
+    const { dp/* , app, trace */ } = this;
+  }
 }

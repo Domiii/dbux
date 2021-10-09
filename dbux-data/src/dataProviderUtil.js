@@ -2233,7 +2233,7 @@ export default {
         if (/* !isFirstAwait || */ u.contextId === u.rootId) {
           return u.rootId;  // already at root (can't go up any further)
         }
-        return dp.util.UP(u.promiseId, beforeRootId, nestingUpdates) || 0;
+        return u.promiseId && dp.util.UP(u.promiseId, beforeRootId, nestingUpdates) || 0;
       }
     }
     else if ((u = dp.util.getFirstPreThenUpdateOfPromise(nestedPromiseId)) &&

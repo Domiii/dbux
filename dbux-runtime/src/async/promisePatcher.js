@@ -609,7 +609,7 @@ function allHandler(thisArg, args, originalFunction, patchedFunction) {
   // call originalFunction
   const result = originalFunction.call(thisArg, nestedArr);
 
-  if (nestedArr.length > 1) {
+  if (nestedArr.length) {
     const thenRef = _makeThenRef(result, patchedFunction);
 
     RuntimeMonitorInstance._runtime.async.all(nestedPromises, result, PromiseLinkType.All, thenRef?.schedulerTraceId);
