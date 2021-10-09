@@ -1,38 +1,56 @@
-import { IdleTime, N, startProduce, finishProduce, startConsume, finishConsume, hasSpace, hasItems, getProduceTime, getConsumeTime, } from './producer_consumer_base';
-import { waitTicksPromise, repeatPromise, pt } from 'asyncUtil';
+import { IdleTime, N, startProduce, finishProduce, startConsume, finishConsume, hasSpace, hasItems } from './producer_consumer_base';
+import { waitTicksPromise, repeatPromise } from '../../../util/asyncUtil';
+
+/** ###########################################################################
+ * wait/notify
+ *  #########################################################################*/
+
+const consumerQueue = [];
+const producerQueue = [];
+
+function notify(queue) {
+  const next = queue.shift();
+  if (next) {
+    next();
+  }
+}
+
+function wait(queue) {
+  const p = new Promise(r => queue.push(r));
+  return p;
+}
 
 /** ###########################################################################
  * Basic functions
  *  #########################################################################*/
 
-function idle() {
-  // return sleep() // for debugging purposes
-  //   .then(() =>
-  //     waitTicksPromise(IdleTime)
-  //   );
-  return waitTicksPromise(IdleTime).then(function _doneIdle() { });
+function consume(index, ticks) {
+  return waitTicksPromise(ticks)
+    .then(function _finishConsume() {
+      finishConsume(index);
+      notify(producerQueue);
+    });
 }
 
-function consume() {
-  return waitTicksPromise(getConsumeTime())
-    .then(finishConsume);
-}
-
-function produce() {
-  return waitTicksPromise(getProduceTime())
-    .then(finishProduce);
+function produce(index, ticks) {
+  return waitTicksPromise(ticks)
+    .then(function _finishProduce() {
+      finishProduce(index);
+      notify(consumerQueue);
+    });
 }
 
 function producer(n) {
-  return repeatPromise(n,
+  return repeatPromise(
+    () => !!n,
     function tryProduce() {
       if (hasSpace()) {
-        startProduce();
-        return pt(produce);
+        --n
+        const [index, item, ticks] = startProduce();
+        return produce(index, ticks);
       }
       else {
-        // return idle();
-        return pt(idle);
+        return wait(producerQueue);
       }
     }
   );
@@ -44,13 +62,11 @@ function consumer(n) {
     function tryConsume() {
       if (hasItems()) {
         --n;
-        startConsume();
-        return pt(consume);
+        const [index, item, ticks] = startConsume();
+        return consume(index, ticks);
       }
       else {
-        // console.log('cons idle', n);
-        // return idle();
-        return pt(idle);
+        return wait(consumerQueue);
       }
     }
   );
@@ -60,8 +76,20 @@ function consumer(n) {
  * Main
  *  #########################################################################*/
 
-producer(2 * N);
-consumer(N);
-consumer(N);
-consumer(N);
-producer(N);
+async function main() {
+  producer(2 * N);
+  consumer(N);
+  consumer(N);
+  consumer(N);
+  producer(N);
+
+  // tick counter
+  for (let counter = 0; counter < 50; ++counter) {
+    // console.log(`==================`);
+    // console.log(``);
+    // console.log(`===== tick#${counter} =====`);
+    await counter;
+  }
+}
+
+main();
