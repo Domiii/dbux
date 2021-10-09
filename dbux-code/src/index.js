@@ -18,6 +18,7 @@ import { initPathwaysView } from './webViews/pathwaysWebView';
 import { initWebviewWrapper } from './codeUtil/WebviewWrapper';
 import { installDbuxDependencies } from './codeUtil/installUtil';
 import { initDataFlowView } from './dataFlowView/dataFlowViewController';
+// import { initPlugins } from './PluginMgr';
 // import { maybeStartSurvey1ForTheFirstTime } from './dialogs/dialogController';
 
 // eslint-disable-next-line no-unused-vars
@@ -81,8 +82,10 @@ async function activate(context) {
 
     await initProjectManager();
 
-    // Disabled for the first experiment
+    // Survey disabled for now
     // await maybeStartSurvey1ForTheFirstTime();
+
+    // await initPlugins();
   } catch (e) {
     logError('error in \'activate\'', e.stack);
     debugger;

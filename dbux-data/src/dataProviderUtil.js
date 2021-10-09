@@ -2363,7 +2363,7 @@ export default {
       // potentially nested for synchronization -> do not go deeper
       // const chainFrom = dp.util.getChainFrom(nestedUpdate.rootId); // store for debugging
       syncPromiseIds.push(nestingPromiseId);
-      log(`SYNC`, postUpdateData, nestingPromiseId);
+      // log(`SYNC`, postUpdateData, nestingPromiseId);
       return null;
     }
     else {

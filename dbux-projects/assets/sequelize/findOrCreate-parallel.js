@@ -8,9 +8,14 @@ const { Model, DataTypes } = require('.');
 
 class User extends Model { }
 
-(async () => {
+async function main() {
   try {
-    const sequelize = createSequelizeInstance({ benchmark: true });
+    const sequelize = createSequelizeInstance({
+      benchmark: true,
+      retry: {
+        max: 0
+      }
+    });
     User.init({
       name: DataTypes.STRING,
       age: DataTypes.INTEGER
@@ -38,4 +43,6 @@ class User extends Model { }
   catch (err) {
     console.error('####### FAIL\n\n', err);
   }
-})();
+}
+
+main();

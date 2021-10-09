@@ -34,7 +34,8 @@ module.exports = (env, argv) => {
     new webpack.EnvironmentPlugin({
       NODE_ENV: mode,
       DBUX_VERSION,
-      DBUX_ROOT
+      DBUX_ROOT,
+      RESEARCH: '1' // NOTE: all env vars must be strings
     }),
     new CopyPlugin({
       patterns: [
