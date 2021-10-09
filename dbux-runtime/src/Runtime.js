@@ -447,7 +447,7 @@ export default class Runtime {
     if (oldStack !== waitingStack) {
       if (this.isExecuting()) {
         // eslint-disable-next-line max-len,no-console
-        logTrace(`resume received while already executing (${this._executingStack?.length}) - not handled properly yet. Discarding executing stack.\noldStack (${oldStack.length}) = ${oldStack._stack?.join(',')}\nwaitingStack (${waitingStack.length}) = ${waitingStack._stack?.join(',')}`);
+        logTrace(`resume received for contextId=${contextId} while already executing (${this._executingStack?.length}) - not handled properly yet. Discarding executing stack.\noldStack (${oldStack.length}) = ${oldStack._stack?.join(',')}\nwaitingStack (${waitingStack.length}) = ${waitingStack._stack?.join(',')}`);
         this.interrupt();
       }
 
