@@ -287,10 +287,12 @@ class AsyncGraph extends GraphBase {
       {
         // vertical line
         const _height = rowId - parentAsyncNode.rowId - 1;
-        const positionProp = makeGridPositionProp(parentAsyncNode.rowId + 1, colId, { rowSpan: _height });
-        html += /*html*/ `
-            <div style="${positionProp}" class="vt-d"></div>
-          `;
+        if (_height) {
+          const positionProp = makeGridPositionProp(parentAsyncNode.rowId + 1, colId, { rowSpan: _height });
+          html += /*html*/ `
+              <div style="${positionProp}" class="vt-d"></div>
+            `;
+        }
       }
       {
         // corner
@@ -414,7 +416,7 @@ class AsyncGraph extends GraphBase {
      * @param {{applicationId: number, asyncNodeId: number}[]} asyncNodes 
      * @param {boolean} ignoreFailed 
      */
-    highlightStack: (asyncNodes, ignoreFailed = false) => {
+    highlightStack: (asyncNodes) => {
       document.querySelectorAll('.async-node.async-cell-stack-highlight').forEach(node => {
         node.classList.remove('async-cell-stack-highlight');
       });
@@ -424,8 +426,24 @@ class AsyncGraph extends GraphBase {
           if (asyncNodeEl) {
             asyncNodeEl.classList.add('async-cell-stack-highlight');
           }
-          else if (!ignoreFailed) {
-            this.logger.error(`Cannot find DOM of asyncNode: ${JSON.stringify(asyncNodes)} when trying to select`);
+          else {
+            this.logger.error(`[public.highlightStack] Cannot find DOM of asyncNode: ${JSON.stringify(asyncNodes)}.`);
+          }
+        });
+      }
+    },
+    highlightSyncRoots: (asyncNodes) => {
+      document.querySelectorAll('.async-node.async-cell-sync-root-highlight').forEach(node => {
+        node.classList.remove('async-cell-sync-root-highlight');
+      });
+      if (asyncNodes) {
+        asyncNodes.forEach((asyncNode) => {
+          const asyncNodeEl = this.getAsyncNodeEl(asyncNode);
+          if (asyncNodeEl) {
+            asyncNodeEl.classList.add('async-cell-sync-root-highlight');
+          }
+          else {
+            this.logger.error(`[public.highlightSyncRoots] Cannot find DOM of asyncNode: ${JSON.stringify(asyncNodes)}.`);
           }
         });
       }

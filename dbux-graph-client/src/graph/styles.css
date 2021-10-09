@@ -11,6 +11,10 @@ canvas{
   display:block;
 } */
 
+:root {
+  --async-line-color: gray;
+}
+
 /** ###########################################################################
  * global setup
  * ############################################################################ */
@@ -189,7 +193,7 @@ div {
 }
 
 .async-grid {
-  gap: 0px 1px;
+  gap: 0.5px 1px;
 }
 
 .async-cell {
@@ -204,34 +208,52 @@ div {
   /* fix size for detail mode */
   min-height: 1rem;
   min-width: 4rem;
+  width: -moz-available;
   width: -webkit-fill-available;
+  width: fill-available;
 }
 
 .async-cell:hover {
-  border: 1px solid white;
+  border: 1px solid white !important;
   cursor: pointer;
+  overflow: hidden;
 }
 
 .async-cell-selected {
   color: darkred;
   border: 1px solid darkred !important;
+  overflow: hidden;
 }
 
 .theme-mode-dark .async-cell-selected {
   color: yellow;
   border: 1px solid yellow !important;
+  overflow: hidden;
 }
 
 .async-cell-stack-highlight {
   border: 1px dotted rgba(0, 0, 0, 0.5);
+  overflow: hidden;
 }
 
 .theme-mode-dark .async-cell-stack-highlight {
   border: 1px dotted rgba(255, 255, 255, 0.5);
+  overflow: hidden;
+}
+
+.async-cell-sync-root-highlight {
+  border: 1px dotted red;
+  overflow: hidden;
+}
+
+.theme-mode-dark .async-cell-sync-root-highlight {
+  border: 1px dotted red;
+  overflow: hidden;
 }
 
 .terminal-node {
-  border-bottom: white solid 1px;
+  /* TODO: new design */
+  /* border-bottom: white solid 1px; */
 }
 
 .async-button {
@@ -264,10 +286,10 @@ div {
 }
 
 [data-async-detail-mode="0"] .async-cell {
-  height: 6px !important;
+  height: calc(1rem + 2px) !important;
   padding: 0px !important;
-  min-height: 6px !important;
-  font-size: 6px !important;
+  font-size: 9pt !important;
+  min-width: 20px !important;
 }
 
 [data-async-detail-mode="0"] .async-thread-title {
@@ -380,7 +402,7 @@ div {
   content: "";
   width: 100%;
   height: 0;
-  border-top: 1px dashed white;
+  border-top: 1px dashed var(--async-line-color);
 }
 
 /* vertical solid */
@@ -393,7 +415,7 @@ div {
   content: "";
   height: 100%;
   width: 0;
-  border-left: 1px solid white;
+  border-left: 1px solid var(--async-line-color);
 }
 
 /* vertical dashed */
@@ -406,7 +428,7 @@ div {
   content: "";
   height: 100%;
   width: 0;
-  border-left: 1px dashed white;
+  border-left: 1px dashed var(--async-line-color);
 }
 
 /* corner dashed */
@@ -420,8 +442,8 @@ div {
   content: "";
   width: 50%;
   height: 50%;
-  border-top: 1px dashed white;
-  border-right: 1px dashed white;
+  border-top: 1px dashed var(--async-line-color);
+  border-right: 1px dashed var(--async-line-color);
 }
 
 /* T-shape dashed */
@@ -436,15 +458,15 @@ div {
   content: "";
   width: 100%;
   height: 0;
-  border-top: 1px dashed white;
+  border-top: 1px dashed var(--async-line-color);
 }
 
 .t-d::after {
   content: "";
   width: 0;
-  height: 50%;
-  border-top: 1px dashed white;
-  border-left: 1px dashed white;
+  height: calc(50% - 0.5px);
+  border-top: 1px dashed var(--async-line-color);
+  border-left: 1px dashed var(--async-line-color);
 }
 
 /** ###########################################################################

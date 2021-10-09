@@ -18,15 +18,15 @@ import { isCallResult, hasCallId } from '@dbux/common/src/types/constants/traceC
 import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory, ValuePruneState, getSimpleTypeString } from '@dbux/common/src/types/constants/ValueTypeCategory';
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import SpecialCallType from '@dbux/common/src/types/constants/SpecialCallType';
+import PromiseLinkType from '@dbux/common/src/types/constants/PromiseLinkType';
 import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
 import AsyncEventUpdateType, { isPostEventUpdate, isPreEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import { AsyncUpdateBase, PreCallbackUpdate } from '@dbux/common/src/types/AsyncEventUpdate';
 import { locToString } from './util/misc';
 import { makeContextSchedulerLabel, makeTraceLabel } from './helpers/makeLabels';
 
-/**
- * @typedef {import('./RuntimeDataProvider').default} DataProvider
- */
+/** @typedef {import('./RuntimeDataProvider').default} DataProvider */
+/** @typedef {import('@dbux/common/src/types/ExecutionContext').default} ExecutionContext */
 
 export class PostUpdateData {
   /**
@@ -168,8 +168,15 @@ export default {
         // if not virtual: go to async node's schedulerTrace
         // 1. get from node via asyncEdges
         // 2. get AsyncNode n of rootId = from
-        const fromAsyncEvent = dp.indexes.asyncEvents.to.getFirst(contextId);
-        return dp.collections.executionContexts.getById(fromAsyncEvent?.fromRootContextId);
+        // 3. do 1. recursively to skip all deeper parent
+        let fromAsyncEvent, fromContext = { contextId }, fromContextDepth;
+        const depth = dp.util.getNestedDepth(contextId);
+        do {
+          fromAsyncEvent = dp.indexes.asyncEvents.to.getFirst(fromContext.contextId);
+          fromContext = dp.collections.executionContexts.getById(fromAsyncEvent?.fromRootContextId);
+          fromContextDepth = fromContext && dp.util.getNestedDepth(fromContext.contextId);
+        } while (fromContext && (depth < fromContextDepth));
+        return fromContext;
       }
       else {
         // if virtual: skip to realContext's parent and call trace (skip all virtual contexts, in general)
@@ -1936,6 +1943,12 @@ export default {
     return findLast(updates, upd => isPostEventUpdate(upd.type) && upd.rootId < beforeRootId);
   },
 
+  /** @param {DataProvider} dp */
+  getPromiseCreationRoot(dp, promiseId) {
+    const firstTraceOfPromise = dp.util.getFirstTraceByRefId(promiseId);
+    return dp.collections.executionContexts.getById(firstTraceOfPromise.rootContextId);
+  },
+
   /** 
    * Two possible scenarios for updates with `nestedPromiseId`:
    * 1. PreAwait or
@@ -2109,6 +2122,50 @@ export default {
     return !preEventUpdates.length;
   },
 
+  /** 
+   * @param {DataProvider} dp
+   * @return {Set<ExecutionContext>}
+   */
+  getAllSyncRoots(dp, rootId) {
+    const { syncPromiseIds } = dp.util.getAsyncNode(rootId);
+    const allSyncRoots = syncPromiseIds?.flatMap(promiseId => {
+      let roots = [];
+      const creationRoot = dp.util.getPromiseCreationRoot(promiseId);
+      const postUpdateData = { links: [], syncPromiseIds: [] }; // ignore for now
+      const downRoots = dp.util.DOWN(promiseId, Infinity, creationRoot.contextId, postUpdateData);
+      /* handle: `dp.util.DOWN` either returns 0, a rootId or maybe an array (in case of Promise.all) */
+      if (Array.isArray(downRoots)) {
+        roots = downRoots;
+      }
+      else if (downRoots) {
+        roots.push(downRoots);
+      }
+
+      // handle special Promisify synchronization -> test w/ new producer_consumer_async
+      for (const p of postUpdateData.syncPromiseIds) {
+        const link = dp.indexes.promiseLinks.to.getUnique(p);
+        if (link && link.type === PromiseLinkType.Promisify && !roots.includes(link.rootId)) {
+          roots.push(link.rootId);
+        }
+      }
+
+      return roots.flatMap(_rootId => {
+        const result = [];
+        let fromAsyncEvent, contextId = _rootId, context;
+        do {
+          context = dp.collections.executionContexts.getById(contextId);
+          result.push(context);
+          fromAsyncEvent = dp.indexes.asyncEvents.to.getFirst(contextId);
+          contextId = dp.collections.executionContexts.getById(fromAsyncEvent?.fromRootContextId)?.contextId;
+        } while (contextId && contextId > creationRoot.contextId);
+        return result;
+      }
+      );
+    });
+
+    return new Set(allSyncRoots);
+  },
+
   /** ###########################################################################
    * new async promise linkage
    *  #########################################################################*/
@@ -2227,11 +2284,21 @@ export default {
     return nestedPromiseId;
   },
 
+  /** @param {DataProvider} dp */
+  getNestedAncestors(dp, rootId) {
+    const asyncNode = dp.util.getAsyncNode(rootId);
+    if (!asyncNode._nestedAncestors) {
+      asyncNode._nestedAncestors = dp.util._getNestedAncestors(rootId);
+    }
+    return asyncNode._nestedAncestors;
+  },
+
   /** 
+   * TODO: [performance] cache this recursive result
    * NOTE: Wrapper of `util.getNestedAncestorsOfPromise` for context version
    * @param {DataProvider} dp
    */
-  getNestedAncestors(dp, rootId, nestingTraces = []) {
+  _getNestedAncestors(dp, rootId, nestingTraces = []) {
     const u = dp.util.getAsyncPostEventUpdateOfRoot(rootId);
     if (!u) {
       return nestingTraces;
@@ -2255,7 +2322,7 @@ export default {
     }
 
     if (nextRootId) {
-      dp.util.getNestedAncestors(nextRootId, nestingTraces);
+      dp.util._getNestedAncestors(nextRootId, nestingTraces);
     }
 
     return nestingTraces;
@@ -2296,6 +2363,7 @@ export default {
       // potentially nested for synchronization -> do not go deeper
       // const chainFrom = dp.util.getChainFrom(nestedUpdate.rootId); // store for debugging
       syncPromiseIds.push(nestingPromiseId);
+      log(`SYNC`, postUpdateData, nestingPromiseId);
       return null;
     }
     else {
