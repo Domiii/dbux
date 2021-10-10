@@ -1347,13 +1347,17 @@ export default {
       return contextId;
     }
     else if (
+      parentContextId &&
       (parentContext = dp.collections.executionContexts.getById(parentContextId)) &&
       isRealContextType(parentContext.contextType)
     ) {
       return parentContextId;
     }
     else {
-      dp.logger.trace('Could not find realContext for contextId', contextId);
+      // if (parentContextId && !dp.collections.executionContexts.getById(parentContextId))
+      
+      // eslint-disable-next-line max-len
+      dp.logger.trace(`Could not find realContext for contextId=${contextId}, parentContextId=${parentContextId}, parentContext=`, dp.collections.executionContexts.getById(parentContextId));
       return null;
     }
   },

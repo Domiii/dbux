@@ -8,7 +8,7 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { mtime } from '@dbux/common-node/src/util/fileUtil';
 import { zipFile } from '@dbux/common-node/src/util/zipUtil';
-import { TreeItemCollapsibleState } from 'vscode';
+import { TreeItemCollapsibleState, window } from 'vscode';
 import { existsSync, readFileSync, realpathSync, writeFileSync } from 'fs';
 import isFunction from 'lodash/isFunction';
 import merge from 'lodash/merge';
@@ -444,10 +444,51 @@ class EdgeAnalysisController {
    * user interactions
    * ##########################################################################*/
 
+  _statusLabel(annotation, status) {
+    const s = EdgeStatus.nameFrom(status);
+    return annotation.status === status ? `(${s})` : `${s}`;
+  }
+
   handleClickDefault = async (rootId) => {
     if (rootId === this.currentEdgeRootId) {
       // -> show annotation UI
-      // TODO
+
+      const annotation = { ...(this.getEdgeAnnotation(rootId) || EmptyObject) };
+      let repeat = true;
+      let changed = false;
+      do {
+        const msg = `Categorize edge for toRoot=${rootId}`;
+        const btnConfig = {
+          // eslint-disable-next-line no-loop-func
+          ...Object.fromEntries(EdgeStatus.values.map(status => ([
+            this._statusLabel(annotation, status),
+            // eslint-disable-next-line no-loop-func
+            async () => {
+              annotation.status = status;
+              changed = true;
+              return false;
+            }
+          ]))),
+
+          // eslint-disable-next-line no-loop-func
+          Comment: async () => {
+            let { comment } = annotation;
+            comment = await window.showInputBox({
+              title: 'Edit the edge\'s comment',
+              placeHolder: '',
+              value: comment || ''
+            });
+            annotation.comment = comment;
+            changed = true;
+            return true;
+          }
+        };
+        repeat = await showInformationMessage(msg, btnConfig, { modal: true });
+      } while (repeat);
+
+      if (changed) {
+        this.setEdgeAnnotation(rootId, annotation);
+      }
     }
     else {
       // -> go to first trace in edge's toRoot
