@@ -10,6 +10,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@dbux/common": "^0.4.4-dev.0",
+    "adm-zip": "^0.5.9",
     "colors": "^1.4.0",
     "cross-spawn": "^7.0.3",
     "glob": "^7.1.6",

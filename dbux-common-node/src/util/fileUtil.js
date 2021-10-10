@@ -121,3 +121,7 @@ export function getFileSizeSync(filePath) {
   const stat = fs.statSync(filePath);
   return stat.size;
 }
+
+export function mtime(fpath) {
+  return +fs.statSync(fpath).mtime;
+}

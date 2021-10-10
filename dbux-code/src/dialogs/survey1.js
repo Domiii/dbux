@@ -4,7 +4,7 @@ import BugStatus from '@dbux/projects/src/dataLib/BugStatus';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { showHelp } from '../help';
 import DialogNodeKind from './DialogNodeKind';
-import { getOrCreateProjectManager } from '../projectViews/projectControl';
+import { getProjectManager } from '../projectViews/projectControl';
 import { showInformationMessage } from '../codeUtil/codeModals';
 import { renderValueAsJsonInEditor } from '../traceDetailsView/valueRender';
 
@@ -34,7 +34,7 @@ function getPreviousNodeName(stack) {
 // ###########################################################################
 
 async function waitForBugSolved(bug) {
-  const projectManager = getOrCreateProjectManager();
+  const projectManager = getProjectManager();
   return new Promise((r) => {
     const bugstatus = projectManager.bdp.getBugProgressByBug(bug)?.status;
     if (BugStatus.is.Solved(bugstatus)) {
@@ -53,7 +53,7 @@ async function waitForBugSolved(bug) {
 
 async function waitForPracticeSessionStop() {
   return new Promise((r) => {
-    const manager = getOrCreateProjectManager();
+    const manager = getProjectManager();
     const unbind = manager.onPracticeSessionStateChanged(() => {
       if (!manager.practiceSession) {
         r();
@@ -155,7 +155,7 @@ const survey1 = {
       kind: DialogNodeKind.Message,
       async enter(graphState, stack, { waitAtMost, goTo }) {
         const waitDelay = 1 * 60 * 60;
-        const projectManager = getOrCreateProjectManager();
+        const projectManager = getProjectManager();
         const firstBug = projectManager.projects.getByName('express').getOrLoadBugs().getAt(0);
         await Promise.race([
           waitForBugSolved(firstBug),
@@ -457,7 +457,7 @@ ${data.email || ''}`;
         log('survey result', data);
 
         // store to backend
-        const backend = await getOrCreateProjectManager().getAndInitBackend();
+        const backend = await getProjectManager().getAndInitBackend();
         return backend.containers.survey1.storeSurveyResult(data);
       },
       edges: [

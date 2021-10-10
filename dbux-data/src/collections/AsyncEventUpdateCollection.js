@@ -289,6 +289,11 @@ export default class AsyncEventUpdateCollection extends Collection {
     const fromThreadId = this.getOrAssignRootThreadId(fromRootId, schedulerTraceId);
     let toThreadId;
 
+    if (fromRootId === toRootId) {
+      this.logger.warn(`Prevented loop edge from = to = ${fromRootId}`);
+      return;
+    }
+
     toThreadId = isChain ? fromThreadId : this.newThreadId();
 
     if (Array.isArray(toThreadId)) {

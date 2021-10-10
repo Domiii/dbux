@@ -1,7 +1,7 @@
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { TreeItemCollapsibleState } from 'vscode';
 import TraceDetailNode from '../traceDetailNode';
-import ForkAnalysisNode from './ForkAnalysisNode';
+import EdgeAnalysisNode from './EdgeAnalysisNode';
 
 class ResearchNode extends TraceDetailNode {
   static makeLabel(/* trace, parent */) {
@@ -15,7 +15,7 @@ class ResearchNode extends TraceDetailNode {
   }
   
   childClasses = [
-    ForkAnalysisNode
+    EdgeAnalysisNode
   ];
 }
 

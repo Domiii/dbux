@@ -1,7 +1,7 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import dialogGraphs from './_dialogRegistry';
 import { Dialog } from './Dialog';
-import { getOrCreateProjectManager } from '../projectViews/projectControl';
+import { getProjectManager } from '../projectViews/projectControl';
 import { getInstallId } from '../installId';
 import { setDialogControllerForDefaultHelp } from '../help';
 
@@ -55,7 +55,7 @@ export class DialogController {
     const tutorialResult = this.getDialog('tutorial').getRecordedData();
 
     // get first bug result
-    const projectsManager = getOrCreateProjectManager();
+    const projectsManager = getProjectManager();
     const firstBug = projectsManager.projects.getByName('express').getOrLoadBugs().getAt(0);
     const bug1Status = projectsManager.bugDataProvider.getBugProgressByBug(firstBug);
     const bug1Tries = projectsManager.pathwayDataProvider.util.getTestRunsByBug(firstBug);

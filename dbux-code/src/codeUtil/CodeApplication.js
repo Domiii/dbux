@@ -5,6 +5,7 @@ import {
 } from 'vscode';
 import Application from '@dbux/data/src/applications/Application';
 import allApplications from '@dbux/data/src/applications/allApplications';
+import { getProjectManager } from '../projectViews/projectControl';
 
 /**
  * Add some cool stuff to `dbux-data/src/applications/Application`s for
@@ -13,6 +14,12 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 export class CodeApplication extends Application {
   getRelativeFolder() {
     return workspace.asRelativePath(super.getRelativeFolder());
+  }
+
+  init() {
+    // register with dbux-projects
+    const projectManager = getProjectManager();
+    projectManager._handleNewApplication(this);
   }
 }
 

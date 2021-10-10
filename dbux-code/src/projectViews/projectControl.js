@@ -32,7 +32,7 @@ let projectManager = null;
 /**
  * @return {ProjectsManager}
  */
-export function getOrCreateProjectManager() {
+export function getProjectManager() {
   return projectManager;
 }
 

@@ -18,6 +18,9 @@ lerna.debug.log
 dbux-babel-plugin/src/parse/_registry.js
 dbux-babel-plugin/src/parse/plugins/_registry.js
 
+# research stuff
+dataFolder.lnk
+
 
 # yarn
 # see https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored

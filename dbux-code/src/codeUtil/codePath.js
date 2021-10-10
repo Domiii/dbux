@@ -17,8 +17,11 @@ export function getLogsDirectory() {
   return asAbsolutePath('logs');
 }
 
+/**
+ * @returns normalized, absolute path to the dbux-code extension directory.
+ */
 export function getCodeDirectory() {
-  return context.asAbsolutePath('.');
+  return asAbsolutePath('.');
 }
 
 export function getThemeResourcePath(...relativePathSegments) {

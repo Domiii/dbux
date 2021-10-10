@@ -30,6 +30,13 @@ export default class Application {
    * @readonly
    */
   dataProvider;
+
+  /**
+   * Set only if an application is associated with a "project".
+   * @type {string}
+   */
+  projectName;
+
   /**
    * time of creation in milliseconds since vscode started
    * @type {number}

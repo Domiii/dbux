@@ -254,7 +254,7 @@ export function makeContextLabel(context, app) {
       else {
         displayName = '(async start)';
       }
-      return `${makeContextLabel(parentContext, app)} | ${displayName}`;
+      return `${parentContext && makeContextLabel(parentContext, app)} | ${displayName}`;
     }
   }
 

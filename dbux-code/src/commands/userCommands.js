@@ -17,7 +17,7 @@ import { setShowDeco } from '../codeDeco';
 import { toggleNavButton } from '../toolbar';
 import { toggleErrorLog } from '../logging';
 import { runFile } from './runCommands';
-import { getOrCreateProjectManager } from '../projectViews/projectControl';
+import { getProjectManager } from '../projectViews/projectControl';
 import { showHelp } from '../help';
 // import { installDbuxDependencies } from '../codeUtil/installUtil';
 import { showOutputChannel } from '../projectViews/projectViewsController';
@@ -243,7 +243,7 @@ export function initUserCommands(extensionContext) {
     // if (process.env.NODE_ENV === 'production') {
     //   throw new Error('This command is currently disabled in Production mode.');
     // }
-    const backend = await getOrCreateProjectManager().getAndInitBackend();
+    const backend = await getProjectManager().getAndInitBackend();
     await backend.login();
     // await installDbuxDependencies();
     // const backend = await getOrCreateProjectManager().getAndInitBackend();
@@ -256,7 +256,7 @@ export function initUserCommands(extensionContext) {
     if (process.env.NODE_ENV === 'production') {
       throw new Error('This command is currently disabled in Production mode.');
     }
-    await getOrCreateProjectManager().deleteUserEvents();
+    await getProjectManager().deleteUserEvents();
   });
 
   // ###########################################################################
@@ -264,7 +264,7 @@ export function initUserCommands(extensionContext) {
   // ###########################################################################
 
   registerCommand(extensionContext, 'dbux.systemCheck', async () => {
-    let projectManager = getOrCreateProjectManager(extensionContext);
+    let projectManager = getProjectManager(extensionContext);
     await checkSystem(projectManager, true, true);
   });
 

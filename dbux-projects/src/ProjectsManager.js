@@ -7,6 +7,7 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { logTrace, newLogger } from '@dbux/common/src/log/logger';
 import { pathJoin, pathRelative, realPathSyncNormalized } from '@dbux/common-node/src/util/pathUtil';
 import { getFileSizeSync } from '@dbux/common-node/src/util/fileUtil';
+import Application from '@dbux/data/src/applications/Application';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { readPackageJson } from '@dbux/cli/lib/package-util';
 import projectRegistry from './_projectRegistry';
@@ -160,13 +161,25 @@ export default class ProjectsManager {
     return this.projects;
   }
 
-  addProject() {
-
+  /**
+   * Called internally when a new Application was just created.
+   * 
+   * @param {Application} app 
+   */
+  _handleNewApplication(app) {
+    const { activeProject } = this;
+    if (activeProject && app.entryPointPath?.startsWith(activeProject.projectPath)) {
+      app.projectName = activeProject.name;
+    }
   }
 
   // ###########################################################################
   // getters
   // ###########################################################################
+
+  get activeProject() {
+    return this.runner.project;
+  }
 
   get pdp() {
     return this.pathwayDataProvider;
@@ -278,9 +291,9 @@ export default class ProjectsManager {
     this._notifyPracticeSessionStateChanged();
   }
 
-  // ########################################
-  // PracticeSession: save/load
-  // ########################################
+  /** ###########################################################################
+   * PracticeSession: save/load
+   * ##########################################################################*/
 
   async recoverPracticeSession() {
     const savedPracticeSession = this.externals.storage.get(savedPracticeSessionKey);
@@ -309,7 +322,7 @@ export default class ProjectsManager {
       this.maybeAskForTestBug(bug);
     }
     catch (err) {
-      logError(`Unable to load PracticeSession: ${err.stack}`);
+      logError(`Unable to load PracticeSession:`, err);
     }
   }
 
@@ -366,13 +379,16 @@ export default class ProjectsManager {
     }
   }
 
+  /**
+   * TODO: move all project-related files to a project-related directory
+   */
   getApplicationFilePath(uuid) {
     return pathJoin(this.externals.resources.getLogsDirectory(), `${uuid}.dbuxapp`);
   }
 
-  // ########################################
-  // PrcaticeSession: events
-  // ########################################
+  /** ###########################################################################
+   * PrcaticeSession: events
+   * ##########################################################################*/
 
   onPracticeSessionStateChanged(cb) {
     return this._emitter.on('practiceSessionStateChanged', cb);

@@ -106,12 +106,19 @@ export class AllApplications {
       uuid
     } = initialData;
 
+    // create application
     const applicationId = this._all.length;
     const application = new this.DefaultApplicationClass(applicationId, entryPointPath, createdAt, this, uuid);
-    const previousApplication = this.getActiveApplicationByEntryPoint(entryPointPath);
 
+    // update application selection
+    const previousApplication = this.getActiveApplicationByEntryPoint(entryPointPath);
     this._activeApplicationsByPath.set(entryPointPath, application);
     this._all[applicationId] = application;
+
+    // optional init
+    application.init?.();
+
+
 
     // if (previousApplication) {
     //   this._emitter.emit('restarted', application, previousApplication);

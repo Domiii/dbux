@@ -11,6 +11,12 @@ export default class BaseTreeViewNode extends TreeItem {
   children = null;
 
   /**
+   * Classes of child nodes to be generated (one per class).
+   * Is only used if `buildChildren` is not implemented.
+   */
+  childClasses = null;
+
+  /**
    * @type {BaseTreeViewNodeProvider}
    */
   treeNodeProvider;

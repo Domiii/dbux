@@ -22,6 +22,8 @@ export default class ApplicationSetData {
     // this.firstTracesInOrder = new FirstTracesInOrder(this);
 
     // this.applicationSet._emitter.on('_applicationsChanged0', this._handleApplicationsChanged);
+
+    // future-work: never trigger events from a ctor!
     this.applicationSet.onApplicationsChanged(this._handleApplicationsChanged);
   }
 
