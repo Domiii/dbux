@@ -9,7 +9,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { mtime } from '@dbux/common-node/src/util/fileUtil';
 import { zipFile } from '@dbux/common-node/src/util/zipUtil';
 import { TreeItemCollapsibleState, window } from 'vscode';
-import { existsSync, readFileSync, realpathSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from 'fs';
 import isFunction from 'lodash/isFunction';
 import merge from 'lodash/merge';
 import TraceDetailNode from '../traceDetailNode';
@@ -242,20 +242,33 @@ class EdgeAnalysisController {
    * serialization
    * ##########################################################################*/
 
-  makeFilePath() {
+  get allFolders() {
+    return [this.projectDataFolder, this.projectDataFolderLfs];
+  }
+
+  get projectDataFolder() {
     const { dataFolder, appProjectName } = this;
+    return pathResolve(dataFolder, appProjectName);
+  }
+
+  get projectDataFolderLfs() {
+    return pathResolve(this.dataFolder, 'lfs');
+  }
+
+  makeFilePath() {
+    const { appProjectName } = this;
     if (!appProjectName) {
       return null;
     }
-    return pathResolve(dataFolder, appProjectName, EdgeDataFileName);
+    return pathResolve(this.projectDataFolder, EdgeDataFileName);
   }
 
   makeAppZipFilePath() {
-    const { dataFolder, appProjectName } = this;
+    const { appProjectName } = this;
     if (!appProjectName) {
       return null;
     }
-    return pathResolve(dataFolder, 'lfs', appProjectName + AppDataZipFileNameSuffix);
+    return pathResolve(this.projectDataFolderLfs, appProjectName + AppDataZipFileNameSuffix);
   }
 
   getAppMeta() {
@@ -297,11 +310,13 @@ class EdgeAnalysisController {
     if (this._data) {
       return this._data;
     }
+
     const fpath = this.makeFilePath();
     if (!fpath) { return null; }
 
     if (!existsSync(fpath)) {
-      // create empty file
+      // create empty file, and make sure, directories are present
+      this.allFolders.forEach(f => mkdirSync(f, { recursive: true }));
       this.writeDataFile({});
     }
 
@@ -334,10 +349,9 @@ class EdgeAnalysisController {
   //   this.refresh();
   // }, 100);
 
-  initOnActivate() {
+  initOnExpand() {
     // reset + lookup data root folder again
     this._data = null;
-    lookupDataRootFolder();
 
     if (this._lastAppUuid !== this.app.uuid) {
       this._lastAppUuid = this.app.uuid;
@@ -546,7 +560,7 @@ class CurrentEdgeNode extends TraceDetailNode {
   }
 
   init() {
-    if (!this.controller.hasProjectAppData) {
+    if (!this.controller?.hasProjectAppData) {
       this.description = `(no data)`;
     }
     else {
@@ -579,11 +593,11 @@ class EdgeListNode extends TraceDetailNode {
 
   _updateDescription(count) {
     const countLabel = count === undefined ? '' : ` (${count})`;
-    this.description = `${this.controller.appProjectName || ''}${countLabel}`;
+    this.description = `${this.controller?.appProjectName || ''}${countLabel}`;
   }
 
   canHaveChildren() {
-    return this.controller.hasProjectAppData;
+    return this.controller?.hasProjectAppData;
   }
 
   buildChildren() {
@@ -624,18 +638,17 @@ export default class EdgeAnalysisNode extends TraceDetailNode {
     EdgeListNode
   ];
 
-  init() {
-    if (this.collapsibleState === TreeItemCollapsibleState.Expanded) {
-      this._doInit();
-      if (!this.controller?.dataFolder) {
-        showWarningMessage(`dataFolder at "${getDataFolderLink()}" is not configured. Unable to load or write data.`);
-      }
-    }
-  }
-
   _doInit() {
-    const controller = this.controller = new EdgeAnalysisController(this.treeNodeProvider);
-    controller.initOnActivate();
+    if (!this.controller) {
+      this.controller = new EdgeAnalysisController(this);
+    }
+
+    if (!lookupDataRootFolder()) {
+      logError(`dataFolder at "${getDataFolderLink()}" is not configured. Unable to load or write data.`);
+    }
+    else {
+      this.controller.initOnExpand();
+    }
   }
 
   handleCollapsibleStateChanged() {
@@ -648,5 +661,11 @@ export default class EdgeAnalysisNode extends TraceDetailNode {
       this.controller?.dispose();
       this.controller = null;
     }
+  }
+
+  buildChildren() {
+    this._doInit();
+
+    return this.buildChildrenDefault();
   }
 }

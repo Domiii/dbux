@@ -183,7 +183,7 @@ export default class BaseTreeViewNodeProvider {
   }
 
   buildChildren(node) {
-    node.children = node.buildChildren() || node.buildChildrenDefault();
+    node.children = node.buildChildren && node.buildChildren() || node.buildChildrenDefault();
     this.decorateChildren(node);
     return node.children;
   }

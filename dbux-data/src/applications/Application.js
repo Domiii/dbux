@@ -4,6 +4,7 @@ import { pathGetParent } from '@dbux/common/src/util/pathUtil';
 import RuntimeDataProvider from '../RuntimeDataProvider';
 import { newDataProvider } from '../dataProviderImpl';
 import { getFileName } from '../util/nodeUtil';
+import { pathNormalizedForce } from '@dbux/common-node/src/util/pathUtil';
 
 
 /**
@@ -51,7 +52,7 @@ export default class Application {
   constructor(applicationId, entryPointPath, createdAt, allApplications, uuid = uuidv4()) {
     this.uuid = uuid;
     this.applicationId = applicationId;
-    this.entryPointPath = entryPointPath;
+    this.entryPointPath = pathNormalizedForce(entryPointPath);
     // this.relativeEntryPointPath = path.relative(entryPointPath, process.cwd()); // path relative to cwd
     this.allApplications = allApplications;
     this.dataProvider = newDataProvider(this);
