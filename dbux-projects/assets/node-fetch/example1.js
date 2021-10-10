@@ -15,7 +15,7 @@ async function download(url) {
 }
 
 async function main() {
-  // Plain text or HTML
+  await 0;
   await download('https://www.npmjs.com/package/node-fetch');
   await download('https://en.wikipedia.org/wiki/JavaScript');
 }

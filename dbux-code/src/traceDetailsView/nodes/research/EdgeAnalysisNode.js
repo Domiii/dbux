@@ -6,7 +6,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import traceSelection from '@dbux/data/src/traceSelection';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { mtime } from '@dbux/common-node/src/util/fileUtil';
+import { getFileSizeSync, mtime } from '@dbux/common-node/src/util/fileUtil';
 import { zipFile } from '@dbux/common-node/src/util/zipUtil';
 import { TreeItemCollapsibleState, window } from 'vscode';
 import { existsSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from 'fs';
@@ -16,8 +16,9 @@ import TraceDetailNode from '../traceDetailNode';
 import { makeTreeItem } from '../../../helpers/treeViewHelpers';
 import { getDataFolder, getDataFolderLink, lookupDataRootFolder } from '../../../research/researchUtil';
 import { getProjectManager } from '../../../projectViews/projectControl';
-import { showInformationMessage, showWarningMessage } from '../../../codeUtil/codeModals';
+import { confirm, showInformationMessage, showWarningMessage } from '../../../codeUtil/codeModals';
 import { runTaskWithProgressBar } from '../../../codeUtil/runTaskWithProgressBar';
+import { performance } from 'firebase';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -299,7 +300,7 @@ class EdgeAnalysisController {
     if (!this._data) {
       this._data = {};
     }
-    this._data.annotations = appMeta;
+    this._data.appMeta = appMeta;
     this.writeDataFile(this._data);
   }
 
@@ -387,10 +388,6 @@ class EdgeAnalysisController {
     const zipFpath = this.makeAppZipFilePath();
     const appFilePath = getProjectManager().getApplicationFilePath(app.uuid);
 
-    const msg = `[Dbux Research] Application data zipping ("${zipFpath}")...`;
-    // eslint-disable-next-line no-console
-    console.time(msg);
-
     // write zipped backup
     zipFile(appFilePath, zipFpath);
 
@@ -402,8 +399,10 @@ class EdgeAnalysisController {
 
     this.writeAppMeta(appMeta);
 
-    // eslint-disable-next-line no-console
-    console.timeEnd(msg);
+    const origSize = getFileSizeSync(appFilePath) / 1024 / 1024;
+    const zipSize = getFileSizeSync(zipFpath) / 1024 / 1024;
+    const msg = `[Dbux Research] Application data zipped: ${zipSize.toFixed(2)}MB (from ${origSize.toFixed(2)}MB) at "${zipFpath}".`;
+    log(msg);
   }
 
   handleApplicationChanged = async () => {
@@ -417,19 +416,24 @@ class EdgeAnalysisController {
     const { app } = this;
     const zipFpath = this.makeAppZipFilePath();
     const appFilePath = getProjectManager().getApplicationFilePath(app.uuid);
+    const newMTime = mtime(appFilePath);
 
-    if (!previousAppMeta || !existsSync(zipFpath) ||
-      mtime(appFilePath) !== previousAppMeta.zipFpath) {
+
+    // TODO: only get app's data, not .dbuxapp file
+    //    -> use userCommands do{Import,Export} for that
+    // TODO: don't use mtime. Instead, check if contents have different length or md5 checksum (https://www.npmjs.com/package/md5)
+    // TODO: when new app data arrives, don't ask for update right away
+    //    -> add a debounce of some 10 seconds to the checker
+    //    -> defer asking until bug runner has finished running (NOTE: not accurate for frontend projects)
+
+
+
+    if (!previousAppMeta || !existsSync(zipFpath) || newMTime !== previousAppMeta.appDataMtime) {
       // if app data did not exist or has changed since last time, show modal
 
-      // show modal: offer to save a backup of app data to separate lfs folder
-      const btnConfig = {
-        Ok: async () => {
-
-        }
-      };
-      const askMsg = `App data of "${this.appProjectName}" has changed - Do you want to override it?`;
-      if (!await showInformationMessage(askMsg, btnConfig, { modal: true })) {
+      // ask whether to save a backup of app data to separate lfs folder
+      const askMsg = `App data of "${this.appProjectName}" has changed - Do you want to create new backup?`;
+      if (!await confirm(askMsg)) {
         return;
       }
 
