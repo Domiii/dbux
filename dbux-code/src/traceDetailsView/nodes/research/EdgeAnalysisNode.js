@@ -1,3 +1,4 @@
+import sleep from '@dbux/common/src/util/sleep';
 import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import Enum from '@dbux/common/src/util/Enum';
@@ -6,14 +7,17 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import traceSelection from '@dbux/data/src/traceSelection';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { mtime } from '@dbux/common-node/src/util/fileUtil';
-import { zipToFile } from '@dbux/common-node/src/util/zipUtil';
+import { zipFile } from '@dbux/common-node/src/util/zipUtil';
 import { TreeItemCollapsibleState } from 'vscode';
 import { existsSync, readFileSync, realpathSync, writeFileSync } from 'fs';
 import isFunction from 'lodash/isFunction';
 import merge from 'lodash/merge';
 import TraceDetailNode from '../traceDetailNode';
 import { makeTreeItem } from '../../../helpers/treeViewHelpers';
-import { getDataFolder, lookupDataRootFolder } from '../../../research/researchUtil';
+import { getDataFolder, getDataFolderLink, lookupDataRootFolder } from '../../../research/researchUtil';
+import { getProjectManager } from '../../../projectViews/projectControl';
+import { showInformationMessage, showWarningMessage } from '../../../codeUtil/codeModals';
+import { runTaskWithProgressBar } from '../../../codeUtil/runTaskWithProgressBar';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -25,7 +29,9 @@ const { log, debug, warn, error: logError } = newLogger('EdgeAnalysis');
  * config
  * ##########################################################################*/
 
-const AnnotationFileName = 'edgeAnnotations.json';
+const ResearchProjectName = 'async-js';
+const EdgeDataFileName = 'edgeAnnotations.json';
+const AppDataZipFileNameSuffix = '.dbuxapp.zip';
 
 /** ###########################################################################
  * EdgeStatus
@@ -106,6 +112,13 @@ class EdgeAnalysisController {
    */
   _data = null;
 
+  _lastAppUuid;
+
+  /**
+   * Used for synchronization
+   */
+  _applicationUpdateVersion = 0;
+
   /**
    * @type {TraceDetailNode}
    */
@@ -136,7 +149,7 @@ class EdgeAnalysisController {
   }
 
   get dataFolder() {
-    return getDataFolder();
+    return getDataFolder(ResearchProjectName);
   }
 
 
@@ -149,8 +162,8 @@ class EdgeAnalysisController {
     return rootId && this.getEdge(rootId) || null;
   }
 
-  get hasData() {
-    return !!this.appProjectName;
+  get hasProjectAppData() {
+    return !!this.appProjectName && !!this.dataFolder;
   }
 
   get appProjectName() {
@@ -215,7 +228,7 @@ class EdgeAnalysisController {
   }
 
   setEdgeAnnotation(rootId, annotation) {
-    if (!this.hasData) {
+    if (!this.hasProjectAppData) {
       // can't do anything right now
       throw new Error(`cannot setEdgeAnnotation if !hasData`);
     }
@@ -234,35 +247,56 @@ class EdgeAnalysisController {
     if (!appProjectName) {
       return null;
     }
-    return pathResolve(dataFolder, appProjectName, AnnotationFileName);
+    return pathResolve(dataFolder, appProjectName, EdgeDataFileName);
+  }
+
+  makeAppZipFilePath() {
+    const { dataFolder, appProjectName } = this;
+    if (!appProjectName) {
+      return null;
+    }
+    return pathResolve(dataFolder, 'lfs', appProjectName + AppDataZipFileNameSuffix);
+  }
+
+  getAppMeta() {
+    const data = this.getOrReadDataFile();
+    return data?.appMeta;
   }
 
   /**
    * @return {Object.<string, EdgeAnnotationData>}
    */
   getAllAnnotations() {
-    if (this._data) {
-      return this._data;
-    }
-    this._data = this.readDataFile();
-    
-    return this._data?.annotations;
+    const data = this.getOrReadDataFile();
+    return data?.annotations;
   }
 
   /**
    * @param {Object.<string, EdgeAnnotationData>} annotations
    */
   writeAnnotationsToFile(annotations) {
-    if (this._data) {
-      this._data.annotations = annotations;
+    if (!this._data) {
+      this._data = {};
     }
+    this._data.annotations = annotations;
+    this.writeDataFile(this._data);
+  }
+
+  writeAppMeta(appMeta) {
+    if (!this._data) {
+      this._data = {};
+    }
+    this._data.annotations = appMeta;
     this.writeDataFile(this._data);
   }
 
   /**
    * @return {EdgeDataFile}
    */
-  readDataFile() {
+  getOrReadDataFile() {
+    if (this._data) {
+      return this._data;
+    }
     const fpath = this.makeFilePath();
     if (!fpath) { return null; }
 
@@ -272,7 +306,7 @@ class EdgeAnalysisController {
     }
 
     const serialized = readFileSync(fpath, 'utf8');
-    return JSON.parse(serialized);
+    return this._data = JSON.parse(serialized);
   }
 
   /**
@@ -305,13 +339,19 @@ class EdgeAnalysisController {
     this._data = null;
     lookupDataRootFolder();
 
+    if (this._lastAppUuid !== this.app.uuid) {
+      this._lastAppUuid = this.app.uuid;
+
+      this.handleApplicationChanged();
+    }
+
 
     // // add data event handlers
     // this.addDisposable(
     //   allApplications.selection.onApplicationsChanged((selectedApps) => {
     //     this.refreshOnData();
     //     for (const app of selectedApps) {
-    //       const unsub = app.dataProvider.onData('asyncEdges', this.refreshOnData);
+    //       const unsub = app.dataProvider.onData('asyncEdges', this.onApplicationChanged);
 
     //       allApplications.selection.subscribe(unsub);
     //       this.addDisposable(unsub);
@@ -326,25 +366,79 @@ class EdgeAnalysisController {
     // this.refresh();
   }
 
-  onApplicationChanged() {
-    // TODO: hook this event up
-    
-    if (!existsSync(zipFpath) || mtime(zipFpath) !== origMtime) {
-      // if app data did not exist or has changed since last time, show modal
+  writeApplicationDataBackup() {
+    const { app } = this;
 
-      // TODO: show modal: offer to also save a copy of app data to separate lfs folder
+    // WARNING: if any of these functions are changed to async, make sure to properly handle all possible race conditions.
+    const zipFpath = this.makeAppZipFilePath();
+    const appFilePath = getProjectManager().getApplicationFilePath(app.uuid);
 
-      // 2. write zipped backup
-      zipToFile(inputFpath, zipFpath);
+    const msg = `[Dbux Research] Application data zipping ("${zipFpath}")...`;
+    // eslint-disable-next-line no-console
+    console.time(msg);
 
-      // TODO: update app meta
-      origMtime = mtime(zipFpath);
+    // write zipped backup
+    zipFile(appFilePath, zipFpath);
 
-      // TODO:    -> manage zipped backup of lfs files manually
-    }
+    // write new mtime
+    const appMeta = {
+      appDataMtime: mtime(zipFpath),
+      appDataUuid: app.uuid
+    };
+
+    this.writeAppMeta(appMeta);
+
+    // eslint-disable-next-line no-console
+    console.timeEnd(msg);
   }
 
-  // TODO: move dispose logic to BaseTreeItem
+  handleApplicationChanged = async () => {
+    if (!this.hasProjectAppData) {
+      this._data = null;
+      return;
+    }
+    const applicationUpdateVersion = ++this._applicationUpdateVersion;
+
+    let previousAppMeta = this.getAppMeta();
+    const { app } = this;
+    const zipFpath = this.makeAppZipFilePath();
+    const appFilePath = getProjectManager().getApplicationFilePath(app.uuid);
+
+    if (!previousAppMeta || !existsSync(zipFpath) ||
+      mtime(appFilePath) !== previousAppMeta.zipFpath) {
+      // if app data did not exist or has changed since last time, show modal
+
+      // show modal: offer to save a backup of app data to separate lfs folder
+      const btnConfig = {
+        Ok: async () => {
+
+        }
+      };
+      const askMsg = `App data of "${this.appProjectName}" has changed - Do you want to override it?`;
+      if (!await showInformationMessage(askMsg, btnConfig, { modal: true })) {
+        return;
+      }
+
+      if (applicationUpdateVersion !== this._applicationUpdateVersion) {
+        // application has changed during modal
+        showWarningMessage('Application data changed during modal - result ignored.');
+        return;
+      }
+
+      await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
+        progress.report({ message: 'writing backup file...' });
+
+        // NOTE: we need this sleep because:
+        //     (1) the operation is synchronous, and
+        //     (2) progress bar does not get to start rendering if we don't give it a few extra ticks
+        await sleep();
+
+        this.writeApplicationDataBackup();
+      });
+
+      // TODO:    -> manage zipped backup of lfs files manually!
+    }
+  }
 
   /** ###########################################################################
    * user interactions
@@ -411,7 +505,7 @@ class CurrentEdgeNode extends TraceDetailNode {
   }
 
   init() {
-    if (!this.controller.hasData) {
+    if (!this.controller.hasProjectAppData) {
       this.description = `(no data)`;
     }
     else {
@@ -448,7 +542,7 @@ class EdgeListNode extends TraceDetailNode {
   }
 
   canHaveChildren() {
-    return this.controller.hasData;
+    return this.controller.hasProjectAppData;
   }
 
   buildChildren() {
@@ -489,11 +583,24 @@ export default class EdgeAnalysisNode extends TraceDetailNode {
     EdgeListNode
   ];
 
+  init() {
+    if (this.collapsibleState === TreeItemCollapsibleState.Expanded) {
+      this._doInit();
+      if (!this.controller?.dataFolder) {
+        showWarningMessage(`dataFolder at "${getDataFolderLink()}" is not configured. Unable to load or write data.`);
+      }
+    }
+  }
+
+  _doInit() {
+    const controller = this.controller = new EdgeAnalysisController(this.treeNodeProvider);
+    controller.initOnActivate();
+  }
+
   handleCollapsibleStateChanged() {
     if (this.collapsibleState === TreeItemCollapsibleState.Expanded) {
       // expanded
-      const controller = this.controller = new EdgeAnalysisController(this.treeNodeProvider);
-      controller.initOnActivate();
+      this._doInit();
     }
     else {
       // collapsed

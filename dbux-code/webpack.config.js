@@ -153,6 +153,10 @@ module.exports = (env, argv) => {
     externals: {
       uws: "uws",
       vscode: "commonjs vscode",
+      /**
+       * @see https://github.com/cthackers/adm-zip/issues/242
+       */
+      'original-fs': 'original-fs',
       firebase: 'commonjs firebase'
     },
     node: {

@@ -4,7 +4,7 @@ import {
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 /**
- * Example to render a modal with one button "Open Editor":
+ * @example Render a modal with one button "Open Editor":
 ```
 showInformationMessage(value, {
   async 'Open Editor'() {

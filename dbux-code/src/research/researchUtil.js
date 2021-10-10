@@ -18,14 +18,19 @@ const DataFolderLinkName = 'dataFolder.lnk';
 
 let dataFolder;
 
+export function getDataFolderLink() {
+  return pathResolve(getCodeDirectory(), DataFolderLinkName);
+}
+
 export function lookupDataRootFolder() {
-  const linkPath = pathResolve(getCodeDirectory(), DataFolderLinkName);
+  const linkPath = getDataFolderLink();
   if (existsSync(linkPath)) {
     dataFolder = realpathSync(linkPath);
     debug(`Data folder link found: ${dataFolder}`);
   }
   else {
-    dataFolder = getLogsDirectory();
+    // dataFolder = getLogsDirectory();
+    dataFolder = null;
     debug(`No data folder link found.`);
   }
   return dataFolder;

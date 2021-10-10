@@ -34,7 +34,7 @@ export function isEnvNode() {
  * Custom require function to make webpack "happy".
  */
 let _r;
-function _require(name) {
+export function _require(name) {
   // eslint-disable-next-line no-eval
   const r = _r || (_r = eval(`
     (typeof __non_webpack_require__ !== 'undefined' && __non_webpack_require__ || require)
