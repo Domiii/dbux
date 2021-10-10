@@ -39,7 +39,7 @@ if (process.env.NODE_ENV === 'development') {
     hexo: Hexo,
     'realworld-web-components': RealworldWebComponentsProject,
 
-    zzBluebird: BluebirdProject,
+    bluebird: BluebirdProject,
 
     'javascript-algorithms': JavascriptAlgorithmProject,
     eslint: Eslint

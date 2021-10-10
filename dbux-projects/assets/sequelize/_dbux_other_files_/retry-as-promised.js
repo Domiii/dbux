@@ -1,4 +1,8 @@
-// cp ./_dbux_other_files/retry-as-promised-index.js ./node_modules/retry-as-promised/index.js
+/*
+code .\node_modules\retry-as-promised
+https://raw.githubusercontent.com/mickhansen/retry-as-promised/v3.2.0/index.js
+*/
+
 'use strict';
 
 var Promise = require('any-promise');
