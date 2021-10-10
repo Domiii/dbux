@@ -66,6 +66,14 @@ const edgeStatusObj = {
 const EdgeStatus = new Enum(edgeStatusObj);
 
 /** ###########################################################################
+ * utilities
+ * ##########################################################################*/
+
+function selectedModalBtn(selected, text) {
+  return selected ? `(${text})` : `${text}`;
+}
+
+/** ###########################################################################
  * {@link EdgeAnnotationData}
  * ##########################################################################*/
 
@@ -322,7 +330,7 @@ class EdgeAnalysisController {
     }
 
     const serialized = readFileSync(fpath, 'utf8');
-    return this._data = JSON.parse(serialized);
+    return this._data = serialized && JSON.parse(serialized) || {};
   }
 
   /**
@@ -464,7 +472,7 @@ class EdgeAnalysisController {
 
   _statusLabel(annotation, status) {
     const s = EdgeStatus.nameFrom(status);
-    return annotation.status === status ? `(${s})` : `${s}`;
+    return selectedModalBtn(annotation.status === status, s);
   }
 
   handleClickDefault = async (rootId) => {
@@ -487,6 +495,13 @@ class EdgeAnalysisController {
               return false;
             }
           ]))),
+
+          // eslint-disable-next-line no-loop-func
+          [selectedModalBtn('Tricky', !!annotation.tricky)]: async () => {
+            annotation.tricky = !annotation.tricky;
+            changed = true;
+            return true;
+          },
 
           // eslint-disable-next-line no-loop-func
           Comment: async () => {
