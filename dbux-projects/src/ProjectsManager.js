@@ -212,7 +212,6 @@ export default class ProjectsManager {
       this.bdp.updateBugProgress(bug, { startedAt: Date.now() });
     }
 
-    bug.project.initProject();
     await this.switchToBug(bug);
     this._resetPracticeSession(bug);
     this.practiceSession.setupStopwatch();
@@ -261,8 +260,8 @@ export default class ProjectsManager {
         this.bdp.addBugProgress(bug, BugStatus.Solving, false);
       }
 
-      bug.project.initProject();
       await this.switchToBug(bug);
+
       this._resetPracticeSession(bug, { createdAt, sessionId, state: PracticeSessionState.Stopped }, true, filePath);
       await this.savePracticeSession();
       await this.bdp.save();
@@ -316,7 +315,8 @@ export default class ProjectsManager {
     }
 
     try {
-      await bug.project.initProject();
+      await this.switchToBug(bug);
+      
       this._resetPracticeSession(bug, savedPracticeSession, true);
       this.practiceSession.setupStopwatch();
       this.maybeAskForTestBug(bug);
