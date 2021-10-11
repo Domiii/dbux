@@ -1355,7 +1355,7 @@ export default {
     }
     else {
       // if (parentContextId && !dp.collections.executionContexts.getById(parentContextId))
-      
+
       // eslint-disable-next-line max-len
       dp.logger.trace(`Could not find realContext for contextId=${contextId}, parentContextId=${parentContextId}, parentContext=`, dp.collections.executionContexts.getById(parentContextId));
       return null;
@@ -2406,14 +2406,6 @@ export default {
           nestedUpdate = dp.util.GNPU(nestedLink.from, beforeRootId, syncBeforeRootId, postUpdateData, depth + 1, visited) || nestedUpdate;
         }
         else if (nestedLink.asyncPromisifyPromiseId) {
-          if (!nestedUpdate) {
-            // Promise ctor's resolve was called while this AE was waiting for it.
-            //    Also, there was no nestedUpdate, meaning resolve was called 
-            //      outside of a promisified callback.
-            //    -> means it was called by a root outside this AE's own thread.
-            syncPromiseIds.push(nestingPromiseId);
-            return null;
-          }
           //   // promisify linkage, encountering `p` in `C()` in:
           //   //  `A(); p.then(() => (B(), p)).then(C)`
           //   // NOTE: nestedLink is created when `resolve`/`reject` is called
@@ -2455,6 +2447,15 @@ export default {
             logError(`Unexpected PreAwait in DOWN: ${nestingPromiseId} -> ${u.nestedPromiseId} (${u.rootId})`);
             // return dp.util.GNPU(u.nestedPromiseId, beforeRootId, syncBeforeRootId, postUpdateData, 1, visited);
           }
+        }
+
+        if (!nestedUpdate && nestedLink?.asyncPromisifyPromiseId) {
+          // Promise ctor's resolve was called while this AE was waiting for it.
+          //    Also, there was no nestedUpdate, meaning resolve was called 
+          //      outside of a promisified callback.
+          //    -> means it was called by a root outside this AE's own thread.
+          syncPromiseIds.push(nestingPromiseId);
+          return null;
         }
       }
       return nestedUpdate;

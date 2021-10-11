@@ -1,0 +1,13 @@
+diff --git a/lib/internal/queue.js b/lib/internal/queue.js
+index 2592a93..bb3e16b 100644
+--- a/lib/internal/queue.js
++++ b/lib/internal/queue.js
+@@ -124,7 +124,7 @@ export default function queue(worker, concurrency, payload) {
+     function _maybeDrain(data) {
+         if (data.length === 0 && q.idle()) {
+             // call drain immediately if there are no tasks
+-            setImmediate(() => trigger('drain'));
++            setImmediate(() => q.idle() && trigger('drain'));
+             return true
+         }
+         return false

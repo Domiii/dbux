@@ -85,6 +85,8 @@ export default class SequelizeProject extends Project {
         testFilePaths: ['findOrCreate-serial.js']
       },
       {
+        name: 'findOrCreate-parallel',
+        hasAssets: true,
         label: 'findOrCreate-parallel',
         testFilePaths: ['findOrCreate-parallel.js']
       },

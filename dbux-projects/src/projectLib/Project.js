@@ -1,5 +1,5 @@
 import path from 'path';
-import fs from 'fs';
+import fs, { existsSync } from 'fs';
 import pull from 'lodash/pull';
 import defaultsDeep from 'lodash/defaultsDeep';
 import sh from 'shelljs';
@@ -16,9 +16,11 @@ import { buildNodeCommand } from '../util/nodeUtil';
 import { checkSystemWithRequirement } from '../checkSystem';
 import RunStatus, { isStatusRunningType } from './RunStatus';
 import ProjectBase from './ProjectBase';
+import NestedError from '@dbux/common/src/NestedError';
 
 const Verbose = false;
 const SharedAssetFolder = '_shared_assets_';
+const BugAssetFolder = '_bug_assets_';
 const PatchFolderName = '_patches_';
 const GitInstalledTag = '__dbux_project_installed';
 
@@ -676,13 +678,25 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       // await this.selectDefaultCommit();
     }
 
-
+    // apply bug patch
     if ('patch' in bug) {
       if (bug.patch) {
         // NOTE: this way we may set `bug.patch = null` to avoid applying any patch
         await this.applyPatch(bug.patch);
       }
     }
+
+    // copy per-bug asset files
+    if (bug.hasAssets) {
+      const assetFolder = pathJoin(BugAssetFolder, this.name, bug.name || bug.id);
+      if (!existsSync(this.getAssetDir(assetFolder))) {
+        this.logger.error(`Experiment "${bug.id}" should have assets, but no asset folder at "${this.getAssetDir(assetFolder)}"`);
+      }
+      else {
+        this.copyAssetFolder(assetFolder);
+      }
+    }
+
     // else {
     //   throw new Error(this + ' abstract method not implemented');
     // }
@@ -975,7 +989,9 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   }
 
   /**
-   * Apply (or revert) a patch file
+   * Apply (or revert) a patch file.
+   * See {@link #getPatchString} on how to create patches.
+   * 
    * @param {String} patchFName 
    * @param {Boolean} revert 
    */
@@ -983,7 +999,14 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     await this.checkCorrectGitRepository();
 
     const patchPath = this.getPatchFile(patchFName);
-    return this.exec(`${this.gitCommand} apply ${revert ? '-R' : ''} --ignore-space-change --ignore-whitespace "${patchPath}"`);
+
+    try {
+      return this.exec(`${this.gitCommand} apply ${revert ? '-R' : ''} --ignore-space-change --ignore-whitespace "${patchPath}"`);
+    }
+    catch (err) {
+      // eslint-disable-next-line max-len
+      throw new NestedError(`Could not apply patch. Make sure it is utf8 + LF - see https://stackoverflow.com/questions/37347350/all-git-patches-i-create-throw-fatal-unrecognized-input`, err);
+    }
   }
 
   async revertPatch(patchFName) {
@@ -1001,6 +1024,11 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     return this.exec(`${this.gitCommand} apply --ignore-space-change --ignore-whitespace`, null, patchString);
   }
 
+  /**
+   * Use this to create bug patches:
+   * 
+   * git diff --color=never > patchName.patch
+   */
   async getPatchString() {
     await this.checkCorrectGitRepository();
 
