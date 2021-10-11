@@ -33,7 +33,7 @@ export default class NodeFetchProject extends Project {
     }
 
     Object.assign(bug, {
-      dbuxArgs: '--pw=.* --esnext'
+      dbuxArgs: '--pw=.* --pb=@babel.* --esnext'
     });
   }
 }

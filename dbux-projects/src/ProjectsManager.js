@@ -169,8 +169,8 @@ export default class ProjectsManager {
   _handleNewApplication(app) {
     const { activeExperiment } = this;
     if (activeExperiment && app.entryPointPath?.startsWith(activeExperiment.project.projectPath)) {
-      app.projectName = activeExperiment.project.name;
-      app.experimentId = activeExperiment.id;
+      app.projectName = app.projectName || activeExperiment.project.name;
+      app.experimentId = app.experimentId || activeExperiment.id;
     }
   }
 

@@ -2290,11 +2290,17 @@ export default {
 
   /** @param {DataProvider} dp */
   getNestedAncestors(dp, rootId) {
-    const asyncNode = dp.util.getAsyncNode(rootId);
-    if (!asyncNode._nestedAncestors) {
-      asyncNode._nestedAncestors = dp.util._getNestedAncestors(rootId);
+    try {
+      const asyncNode = dp.util.getAsyncNode(rootId);
+      if (!asyncNode._nestedAncestors) {
+        asyncNode._nestedAncestors = dp.util._getNestedAncestors(rootId);
+      }
+      return asyncNode._nestedAncestors;
     }
-    return asyncNode._nestedAncestors;
+    catch (err) {
+      logError(`Unable to getNestedAncestors for rootId=${rootId}`, err);
+      return [];
+    }
   },
 
   /** 

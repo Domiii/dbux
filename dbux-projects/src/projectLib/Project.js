@@ -663,6 +663,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   }
 
   /**
+   * NOTE: This will only be called when the bug is run the first time.
    * @param {Bug} bug 
    */
   async selectBug(bug) {

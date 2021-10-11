@@ -22,12 +22,14 @@ export function exportApplication(application, exportFpath) {
   exportFpath = pathResolve(exportFpath);
 
   // make data
-  const { uuid, createdAt } = application;
+  const { uuid, createdAt, projectName, experimentId } = application;
   const relativeEntryPointPath = application.getRelativeEntryPoint();
   const data = {
     relativeEntryPointPath,
     createdAt,
     uuid,
+    projectName, 
+    experimentId,
     serializedDpData: application.dataProvider.serializeJson()
   };
   const serialized = JSON.stringify(data);
@@ -56,9 +58,11 @@ export function importApplication(fpath) {
   }
 
   const appData = JSON.parse(serialized);
-  const { relativeEntryPointPath, createdAt, uuid, serializedDpData } = appData;
+  const { relativeEntryPointPath, serializedDpData, ...other } = appData;
   const { appRoot } = allApplications;
   const entryPointPath = pathJoin(appRoot, relativeEntryPointPath);
-  const app = allApplications.addApplication({ entryPointPath, createdAt, uuid });
+  const app = allApplications.addApplication({ 
+    entryPointPath, ...other
+  });
   app.dataProvider.deserializeJson(serializedDpData);
 }

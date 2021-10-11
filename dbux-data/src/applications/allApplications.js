@@ -115,12 +115,14 @@ export class AllApplications {
     const {
       entryPointPath,
       createdAt,
-      uuid
+      uuid,
+      ...other
     } = initialData;
 
     // create application
     const applicationId = this._all.length;
     const application = new this.DefaultApplicationClass(applicationId, entryPointPath, createdAt, this, uuid);
+    Object.assign(application, other);
 
     // update application selection
     const previousApplication = this.getActiveApplicationByEntryPoint(entryPointPath);

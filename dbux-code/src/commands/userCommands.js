@@ -9,6 +9,7 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import { importApplication, exportApplication } from '@dbux/data/src/applications/appUtil';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { checkSystem } from '@dbux/projects/src/checkSystem';
+import sleep from '@dbux/common/src/util/sleep';
 import { registerCommand } from './commandUtil';
 import { showTextDocument } from '../codeUtil/codeNav';
 import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../codeUtil/codeExport';
@@ -27,6 +28,8 @@ import { getAllMemento, clearAll } from '../memento';
 import { confirm, showErrorMessage, showInformationMessage } from '../codeUtil/codeModals';
 import { translate } from '../lang';
 import { getCodeDirectory, getDefaultExportDirectory, getLogsDirectory } from '../codeUtil/codePath';
+import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
+import { getCurrentResearch } from '../research/Research';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('userCommands');
@@ -49,7 +52,12 @@ export function initUserCommands(extensionContext) {
         return;
       }
     }
-    application && await exportApplication(application, exportFpath);
+
+    await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
+      progress.report({ message: 'exporting...' });
+      await sleep();
+      application && await exportApplication(application, exportFpath);
+    });
 
     const msg = translate('savedSuccessfully', { fileName: exportFpath });
     await showInformationMessage(msg, {
@@ -60,6 +68,12 @@ export function initUserCommands(extensionContext) {
   });
 
   registerCommand(extensionContext, 'dbux.importApplicationData', async () => {
+    let defaultImportDir = getDefaultExportDirectory();
+
+    // TODO: research is currently very invasive - fix later
+    const researchDir = getCurrentResearch()?.getDataRootLfs();
+    defaultImportDir = researchDir || defaultImportDir;
+
     const options = {
       title: 'Select a file to read',
       canSelectFolders: false,
@@ -67,12 +81,17 @@ export function initUserCommands(extensionContext) {
       filters: {
         'json or zip': ['json', 'zip']
       },
-      defaultUri: Uri.file(getDefaultExportDirectory())
+      defaultUri: Uri.file(defaultImportDir)
     };
     const file = (await window.showOpenDialog(options))?.[0];
     if (file) {
       allApplications.selection.clear();
-      await importApplication(file.fsPath);
+
+      await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
+        progress.report({ message: 'importing...' });
+        await sleep();
+        await importApplication(file.fsPath);
+      });
     }
   });
 
