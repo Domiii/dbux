@@ -6,18 +6,16 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import traceSelection from '@dbux/data/src/traceSelection';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { getFileSizeSync } from '@dbux/common-node/src/util/fileUtil';
 import { sha256String } from '@dbux/common-node/src/util/hashUtil';
 import { TreeItemCollapsibleState, window } from 'vscode';
 import { existsSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from 'fs';
 import isFunction from 'lodash/isFunction';
 import merge from 'lodash/merge';
-import { exportApplication } from '@dbux/data/src/applications/appUtil';
 import Application from '@dbux/data/src/applications/Application';
 import TraceDetailNode from '../traceDetailNode';
 import { makeTreeItem } from '../../../helpers/treeViewHelpers';
-import { getAllResearchFolders, getDataFolderLink, getProjectDataRoot, getResearchDataRoot, lookupDataRootFolder, getAppZipFilePath, exportResearchAppData } from '../../../research/researchPaths';
-import { getProjectManager } from '../../../projectViews/projectControl';
+// eslint-disable-next-line max-len
+import { getCurrentResearch, getDataFolderLink } from '../../../research/Research';
 import { confirm, showErrorMessage, showInformationMessage, showWarningMessage } from '../../../codeUtil/codeModals';
 import { runTaskWithProgressBar } from '../../../codeUtil/runTaskWithProgressBar';
 
@@ -133,8 +131,11 @@ class EdgeAnalysisController {
    */
   node;
 
+  research;
+
   constructor(node) {
     this.node = node;
+    this.research = getCurrentResearch();
   }
 
   /** ###########################################################################
@@ -168,15 +169,19 @@ class EdgeAnalysisController {
   }
 
   get dataFolder() {
-    return getResearchDataRoot();
+    return this.research.getResearchDataRoot();
   }
 
   get hasProjectAppData() {
-    return !!this.appProjectName && !!this.dataFolder;
+    return !!this.experimentId && !!this.dataFolder;
   }
 
-  get appProjectName() {
+  get projectName() {
     return this.app?.projectName || null;
+  }
+
+  get experimentId() {
+    return this.app?.experimentId || null;
   }
 
   /** ###########################################################################
@@ -189,7 +194,7 @@ class EdgeAnalysisController {
     const { edgeType } = this.getEdge(rootId) || EmptyObject;
 
     const edgeTypeLabel = edgeType && AsyncEdgeType.nameFrom(edgeType);
-    const indicator = annotation ? '✔️' : ' ';
+    const indicator = annotation ? '✔️' : '◯';
     const annoLabel = annotation &&
       `: ${EdgeStatus.nameFrom(status) || ''} ${comment || ''}` ||
       '';
@@ -252,11 +257,12 @@ class EdgeAnalysisController {
    * ##########################################################################*/
 
   getEdgeDataFilePath() {
-    const { appProjectName } = this;
-    if (!appProjectName) {
+    const { experimentId } = this;
+    if (!experimentId) {
       return null;
     }
-    return pathResolve(getProjectDataRoot(), EdgeDataFileName);
+    const root = this.research.getExperimentFolder(experimentId);
+    return pathResolve(root, EdgeDataFileName);
   }
 
   getAppMeta() {
@@ -291,6 +297,10 @@ class EdgeAnalysisController {
     this.writeDataFile(this._data);
   }
 
+  getAllFolders() {
+    return [this.research.getExperimentFolder(this.experimentId), this.research.getDataRootLfs()];
+  }
+
   /**
    * @return {EdgeDataFile}
    */
@@ -304,7 +314,7 @@ class EdgeAnalysisController {
 
     if (!existsSync(fpath)) {
       // create empty file, and make sure, directories are present
-      getAllResearchFolders().forEach(f => mkdirSync(f, { recursive: true }));
+      this.getAllFolders().forEach(f => mkdirSync(f, { recursive: true }));
       this.writeDataFile({});
     }
 
@@ -392,7 +402,7 @@ class EdgeAnalysisController {
     const { app } = this;
 
     // write app data
-    exportResearchAppData(app);
+    this.research.exportResearchAppData(app);
 
     // write new hash
     const appMeta = {
@@ -410,14 +420,14 @@ class EdgeAnalysisController {
 
     let previousAppMeta = this.getAppMeta();
     const { app } = this;
-    const zipFpath = getAppZipFilePath(app);
+    const zipFpath = this.research.getAppZipFilePath(app);
     const newHash = this.makeRelevantAppDataHash(app);
 
     if (!previousAppMeta || !existsSync(zipFpath) || newHash !== previousAppMeta.appDataHash) {
       // if app data did not exist or has changed since last time, show modal
 
       // ask whether to save a backup of app data to separate lfs folder
-      const askMsg = `App data of "${this.appProjectName}" has changed - Do you want to create a new backup?`;
+      const askMsg = `App data of "${this.experimentId}" has changed - Do you want to create a new backup?`;
       if (!await confirm(askMsg, true, true)) {
         return;
       }
@@ -603,7 +613,7 @@ class EdgeListNode extends TraceDetailNode {
 
   _updateDescription(count) {
     const countLabel = count === undefined ? '' : ` (${count})`;
-    this.description = `${this.controller?.appProjectName || ''}${countLabel}`;
+    this.description = `${this.controller?.experimentId || ''}${countLabel}`;
   }
 
   canHaveChildren() {
@@ -672,7 +682,7 @@ export default class EdgeAnalysisNode extends TraceDetailNode {
       this.controller = new EdgeAnalysisController(this);
     }
 
-    if (!lookupDataRootFolder()) {
+    if (!this.controller.research.lookupDataRootFolder()) {
       logError(`dataFolder at "${getDataFolderLink()}" is not configured. Unable to load or write data.`);
     }
     else {

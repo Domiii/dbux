@@ -41,6 +41,12 @@ export default class Application {
   projectName;
 
   /**
+   * Set only if an application is associated with an "experiment" (project -> bug)
+   * @type {string}
+   */
+  experimentId;
+
+  /**
    * time of creation in milliseconds since vscode started
    * @type {number}
    */
@@ -59,6 +65,10 @@ export default class Application {
     this.allApplications = allApplications;
     this.dataProvider = newDataProvider(this);
     this.createdAt = this.updatedAt = createdAt || Date.now();
+  }
+
+  get isExperiment() {
+    return !!this.experimentId;
   }
 
   addData(allData, isRaw) {
@@ -97,6 +107,13 @@ export default class Application {
    * 
    */
   getPreferredName() {
+    if (this.experimentId) {
+      return this.experimentId;
+    }
+    return this.getPreferredFileName();
+  }
+
+  getPreferredFileName() {
     const { staticProgramContexts } = this.dataProvider.collections;
     const fileCount = staticProgramContexts.size;
     if (fileCount !== 1) {
@@ -122,6 +139,6 @@ export default class Application {
   }
 
   toString() {
-    return `App #${this.applicationId} @${this.entryPointPath}`;
+    return `${this.getPreferredName()} #${this.applicationId} @${this.entryPointPath}`;
   }
 }

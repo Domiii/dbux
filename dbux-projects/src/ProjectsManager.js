@@ -167,9 +167,10 @@ export default class ProjectsManager {
    * @param {Application} app 
    */
   _handleNewApplication(app) {
-    const { activeProject } = this;
-    if (activeProject && app.entryPointPath?.startsWith(activeProject.projectPath)) {
-      app.projectName = activeProject.name;
+    const { activeExperiment } = this;
+    if (activeExperiment && app.entryPointPath?.startsWith(activeExperiment.project.projectPath)) {
+      app.projectName = activeExperiment.project.name;
+      app.experimentId = activeExperiment.id;
     }
   }
 
@@ -181,12 +182,24 @@ export default class ProjectsManager {
     return this.runner.project;
   }
 
+  get activeBug() {
+    return this.runner.bug;
+  }
+
+  get activeExperiment() {
+    return this.runner.bug;
+  }
+
   get pdp() {
     return this.pathwayDataProvider;
   }
 
   get bdp() {
     return this.bugDataProvider;
+  }
+
+  get research() {
+    return this.externals.getCurrentResearch();
   }
 
   async getAndInitBackend() {
@@ -214,17 +227,21 @@ export default class ProjectsManager {
 
     await this.switchToBug(bug);
 
-    // TODO: currently this CANNOT load a session, because the sessionId gets re-generated. Need to store and load sessionId by bug somehow.
-    this._loadPracticeSession(bug);
 
-    
+    // TODO: currently loadPracticeSession CANNOT load a session, because the sessionId gets re-generated. Need to store and load sessionId by bug.
+    // TODO: also fix askForRecoverPracticeSession + recoverPracticeSession
+    //  -> ultimately use research data for practice session data, if available (NOTE: the format is slightly different)
+    //  -> if not available, should not store all application data; only that relevant for the practice session.
+    allApplications.clear();    // clear applications
 
-    this.practiceSession.setupStopwatch();
-    await this.savePracticeSession();
-    await this.bdp.save();
-
-    // await this.practiceSession.testBug(bug);
-    await this.maybeAskForTestBug(bug);
+    if (!await this.tryRecoverPracticeSession(bug.id)) {
+      this._loadPracticeSession(bug/* , savedPracticeSession, true */);
+      this.practiceSession.setupStopwatch();
+      await this.savePracticeSession();
+      await this.bdp.save();
+      await this.practiceSession.testBug(bug);
+      // this.maybeAskForTestBug(bug);
+    }
   }
 
   /**
@@ -266,6 +283,7 @@ export default class ProjectsManager {
       }
 
       await this.switchToBug(bug);
+      allApplications.clear();    // clear applications
 
       this._loadPracticeSession(bug, { createdAt, sessionId, state: PracticeSessionState.Stopped }, true, filePath);
       await this.savePracticeSession();
@@ -281,9 +299,6 @@ export default class ProjectsManager {
   }
 
   _loadPracticeSession(bug, sessionData = EmptyObject, load = false, filePath) {
-    // clear applications
-    allApplications.clear();
-
     // create new PracticeSession
     this.practiceSession = new PracticeSession(bug, this, sessionData, filePath);
 
@@ -299,35 +314,46 @@ export default class ProjectsManager {
    * PracticeSession: save/load
    * ##########################################################################*/
 
-  async recoverPracticeSession() {
-    const savedPracticeSession = this.externals.storage.get(savedPracticeSessionKey);
-    if (!savedPracticeSession) {
-      return;
-    }
+  async tryRecoverPracticeSession(experimentId) {
+    if (!experimentId) {
+      const savedPracticeSession = this.externals.storage.get(savedPracticeSessionKey);
+      if (!savedPracticeSession) {
+        return false;
+      }
 
-    const { bugId } = savedPracticeSession;
-    const bug = this.getOrCreateDefaultProjectList().getBugById(bugId);
-    const bugProgress = this.bdp.getBugProgressByBug(bug);
-    if (!bugProgress) {
+      ({ bugId: experimentId } = savedPracticeSession);
+    }
+    const bug = this.getOrCreateDefaultProjectList().getBugById(experimentId);
+    if (!bug) {
       // sanity check
-      warn(`Can't find bugProgress when recovering PracticeSession of bug "${bug?.id}"`);
-      return;
+      warn(`Can't find bug for id "${experimentId}"`);
+      return false;
     }
+    // const bugProgress = this.bdp.getBugProgressByBug(bug);
+    // if (!bugProgress) {
+    //   // sanity check
+    //   warn(`Can't find bugProgress when recovering PracticeSession of bug "${bug.id}"`);
+    //   return false;
+    // }
 
-    if (!await this.askForRecoverPracticeSession(savedPracticeSession)) {
-      await bug.project.deactivateBug(bug);
-      return;
+    allApplications.clear();    // clear applications
+
+    if (!await this.askForRecoverPracticeSession({ experimentId })) {
+      // await bug.project.deactivateBug(bug);
+      return false;
     }
 
     try {
       await this.switchToBug(bug);
-      
-      this._loadPracticeSession(bug, savedPracticeSession, true);
+
+      this.research.importResearchAppData(experimentId);
+      this._loadPracticeSession(bug/* , savedPracticeSession, true */);
       this.practiceSession.setupStopwatch();
-      this.maybeAskForTestBug(bug);
+      return true;
     }
     catch (err) {
       logError(`Unable to load PracticeSession:`, err);
+      return false;
     }
   }
 
@@ -349,16 +375,23 @@ export default class ProjectsManager {
     }
   }
 
-  async askForRecoverPracticeSession(savedPracticeSession) {
+  async askForRecoverPracticeSession({ experimentId }) {
     try {
-      const { logFilePath, applicationUUIDs } = savedPracticeSession;
-      const size = applicationUUIDs.reduce((currentSize, uuid) => {
-        const appFilePath = this.getApplicationFilePath(uuid);
-        return currentSize + getFileSizeSync(appFilePath);
-      }, getFileSizeSync(logFilePath));
-      const sizeInMB = size / 1024 / 1024;
+      const fileSize = this.research.getAppFileSize(experimentId);
+      if (!fileSize) {
+        return false;
+      }
+      // const { logFilePath, applicationUUIDs } = savedPracticeSession || EmptyObject;
+      // const practiceSize = applicationUUIDs?.reduce((currentSize, uuid) => {
+      //   const appFilePath = this.getApplicationFilePath(uuid);
+      //   return currentSize + getFileSizeSync(appFilePath);
+      // }, getFileSizeSync(logFilePath)) || 0;
+
+      const sizeString = fileSize / 1024 / 1024;
       // eslint-disable-next-line max-len
-      const confirmMessage = `Dbux is trying to recover your previous practice session.\nThe log files are ${sizeInMB.toFixed(2)}MB, do you want to recover the practice session?`;
+      const confirmMessage = `Dbux has found previous research session for "${experimentId}".\n` +
+        `Research log file is ${sizeString.toFixed(2)}MB (zipped).\n` +
+        `Do you want to recover the practice session?`;
       const buttons = {
         [`Yes`]: () => true,
         [`Ignore practice session`]: async () => {
@@ -367,10 +400,10 @@ export default class ProjectsManager {
           return false;
         },
         [`Delete practice session`]: async () => {
-          // log should be discarded and the user should not be asked again
+          // TODO: first CONFIRM! then delete research file
           await this.savePracticeSession(null);
           // fs.rmSync(appFilePath);
-          // TODO: move all application files of a single session into a single session folder, then delete that folder here
+          // TODO: delete all application- and session-related files of a single session here
           this.externals.showMessage.warning(`File deletion is not implemented yet :(`);
           return false;
         }
