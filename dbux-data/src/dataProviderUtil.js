@@ -1938,7 +1938,7 @@ export default {
   /** @param {DataProvider} dp */
   getLastAsyncPostEventUpdateOfTrace(dp, schedulerTraceId, beforeRootId) {
     const updates = dp.indexes.asyncEventUpdates.byTrace.get(schedulerTraceId);
-    return findLast(updates, upd => upd.rootId <= beforeRootId && isPostEventUpdate(upd.type));
+    return findLast(updates, upd => upd.rootId < beforeRootId && isPostEventUpdate(upd.type));
   },
 
   /** @param {DataProvider} dp */
@@ -2737,8 +2737,11 @@ export default {
         nestingUpdates
       };
       const syncBeforeRootId = preEventRootId;
-      rootIdDown = postPreEventUpdate?.promiseId &&
-        util.DOWN(postPreEventUpdate?.promiseId, beforeRootId, syncBeforeRootId, promisePostUpdateData) || 0;
+      const lastOfPromise = dp.util.getLastAsyncPostEventUpdateOfPromise(preEventPromiseId, beforeRootId);
+      rootIdDown = lastOfPromise?.rootId ||
+        postPreEventUpdate?.promiseId &&
+        util.DOWN(postPreEventUpdate?.promiseId, beforeRootId, syncBeforeRootId, promisePostUpdateData) || 
+        0;
       rootIdUp = util.UP(chainToPromiseId, beforeRootId, nestingUpdates);
 
       nestingUpdates.push(preEventUpdate.updateId); // PostCallback always adds its own scheduler as a nesting level
@@ -2750,7 +2753,9 @@ export default {
       // Case 2: heuristics
       if (firstPostEventHandlerUpdate && firstPostEventHandlerUpdate.rootId < beforeRootId) {
         // Heuristic 1: event listener -> repeated calls of same scheduler trace
-        chainFromRootId = firstPostEventHandlerUpdate.rootId;
+        // chainFromRootId = firstPostEventHandlerUpdate.rootId;
+        chainFromRootId = dp.util.getLastAsyncPostEventUpdateOfTrace(schedulerTraceId, beforeRootId)?.rootId || 
+          firstPostEventHandlerUpdate.rootId;
       }
       else {
         // const preEventUpdates = util.getAsyncPreEventUpdatesOfRoot(preEventRootId);
