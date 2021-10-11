@@ -1,11 +1,12 @@
 import { Uri, window } from 'vscode';
-import path from 'path';
-import fs from 'fs';
+
 import open from 'open';
+import { existsSync } from 'fs';
 import isNaN from 'lodash/isNaN';
 // import { stringify as jsonStringify } from 'comment-json';
 import traceSelection from '@dbux/data/src/traceSelection';
 import allApplications from '@dbux/data/src/applications/allApplications';
+import { importApplication, exportApplication } from '@dbux/data/src/applications/appUtil';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { checkSystem } from '@dbux/projects/src/checkSystem';
 import { registerCommand } from './commandUtil';
@@ -23,9 +24,9 @@ import { showHelp } from '../help';
 import { showOutputChannel } from '../projectViews/projectViewsController';
 import { renderValueAsJsonInEditor } from '../traceDetailsView/valueRender';
 import { getAllMemento, clearAll } from '../memento';
-import { showErrorMessage, showInformationMessage } from '../codeUtil/codeModals';
+import { confirm, showErrorMessage, showInformationMessage } from '../codeUtil/codeModals';
 import { translate } from '../lang';
-import { getCodeDirectory, getLogsDirectory } from '../codeUtil/codePath';
+import { getCodeDirectory, getDefaultExportDirectory, getLogsDirectory } from '../codeUtil/codePath';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('userCommands');
@@ -36,27 +37,16 @@ export function initUserCommands(extensionContext) {
   // exportApplicationData
   // ###########################################################################
 
-  const defaultImportFolder = path.join(__dirname, '../../samples/data');
-  const applicationRelativeRoot = getCodeDirectory();
+  registerCommand(extensionContext, 'dbux.exportApplicationData', async () => {
+    const application = await getSelectedApplicationInActiveEditorWithUserFeedback();
 
-  async function doExport(application) {
-    const exportFolder = path.join(__dirname, '../../analysis/__data__/');
-    const applicationName = application.getSafeFileName();
-    if (!fs.existsSync(exportFolder)) {
-      fs.mkdirSync(exportFolder);
+    const exportFpath = application.getDefaultApplicationExportPath();
+    if (existsSync(exportFpath)) {
+      if (!await confirm(`File already exists: "${exportFpath}" - Overwrite?`)) {
+        return;
+      }
     }
-    const exportFpath = path.join(exportFolder, `${applicationName || '(unknown)'}_data.json`);
-
-    // make data
-    const { uuid, entryPointPath, createdAt } = application;
-    const relativeEntryPointPath = path.relative(applicationRelativeRoot, entryPointPath).replace(/\\/g, '/');
-    const data = {
-      relativeEntryPointPath,
-      createdAt,
-      uuid,
-      serializedDpData: application.dataProvider.serializeJson()
-    };
-    fs.writeFileSync(exportFpath, JSON.stringify(data));
+    application && await exportApplication(application, exportFpath);
 
     const msg = translate('savedSuccessfully', { fileName: exportFpath });
     await showInformationMessage(msg, {
@@ -64,19 +54,6 @@ export function initUserCommands(extensionContext) {
         await showTextDocument(exportFpath);
       }
     });
-  }
-
-  function doImport(fpath) {
-    const appData = JSON.parse(fs.readFileSync(fpath, 'utf8'));
-    const { relativeEntryPointPath, createdAt, uuid, serializedDpData } = appData;
-    const entryPointPath = path.join(applicationRelativeRoot, relativeEntryPointPath);
-    const app = allApplications.addApplication({ entryPointPath, createdAt, uuid });
-    app.dataProvider.deserializeJson(JSON.parse(serializedDpData));
-  }
-
-  registerCommand(extensionContext, 'dbux.exportApplicationData', async () => {
-    const application = await getSelectedApplicationInActiveEditorWithUserFeedback();
-    application && await doExport(application);
   });
 
   registerCommand(extensionContext, 'dbux.importApplicationData', async () => {
@@ -87,11 +64,12 @@ export function initUserCommands(extensionContext) {
       filters: {
         JSON: ['json']
       },
-      defaultUri: Uri.file(defaultImportFolder)
+      defaultUri: Uri.file(getDefaultExportDirectory())
     };
     const file = (await window.showOpenDialog(options))?.[0];
     if (file) {
-      doImport(file.fsPath);
+      allApplications.selection.clear();
+      await importApplication(file.fsPath);
     }
   });
 

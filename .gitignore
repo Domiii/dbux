@@ -9,10 +9,11 @@ __samplesOutput__
 /samples/**/test-data*
 project_sandbox/projects
 project_sandbox/bug-dataset
-_testOut
-__data__
 lerna.debug.log
 /downloads
+_testOut
+__data__
+userdata
 
 # auto-generated files
 dbux-babel-plugin/src/parse/_registry.js

@@ -20,7 +20,19 @@ const { log, debug, warn, error: logError } = newLogger('applications');
  * ApplicationCollection manages all application throughout the life-time of the dbux-data module.
  */
 export class AllApplications {
+  /** ###########################################################################
+   * these are configuired by the outside
+   * ##########################################################################*/
   DefaultApplicationClass = Application;
+
+  /**
+   * In dbux-code, this is the project folder.
+   */
+  appRoot;
+
+  /** ###########################################################################
+   * variables
+   * ##########################################################################*/
 
   /**
    * @type {Application[]}

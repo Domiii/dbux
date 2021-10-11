@@ -62,6 +62,10 @@ export function pathGetParent(path) {
   return path.substring(0, last);
 }
 
+export function pathSafe(fpath) {
+  return fpath.replace(/[:\\/]+/g, '-');
+}
+
 // tests
 
 // console.table([

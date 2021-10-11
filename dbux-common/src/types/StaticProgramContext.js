@@ -18,6 +18,9 @@ export default class StaticProgramContext {
   programId;
   
   /**
+   * Must be absolute.
+   * Currently, StaticProgramContextCollection.serialize takes care of making it relative.
+   * 
    * @type {string}
    */
   filePath;

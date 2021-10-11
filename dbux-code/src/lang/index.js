@@ -15,6 +15,12 @@ async function _init(lng) {
       debug: true,
       fallbackLng: 'en',
       lng,
+      interpolation: {
+        /**
+         * @see https://stackoverflow.com/a/40866604
+         */
+        escapeValue: false
+      },
       resources: {
         en: {
           translation: enTranslation,

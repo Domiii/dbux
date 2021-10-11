@@ -5,21 +5,26 @@ import {
 } from 'vscode';
 import Application from '@dbux/data/src/applications/Application';
 import allApplications from '@dbux/data/src/applications/allApplications';
+import { pathSafe } from '@dbux/common/src/util/pathUtil';
+import { pathJoin } from '@dbux/common-node/src/util/pathUtil';
 import { getProjectManager } from '../projectViews/projectControl';
+import { getCodeDirectory, getDefaultExportDirectory } from './codePath';
 
 /**
  * Add some cool stuff to `dbux-data/src/applications/Application`s for
  * its lifetime inside of VSCode.
  */
 export class CodeApplication extends Application {
-  getRelativeFolder() {
-    return workspace.asRelativePath(super.getRelativeFolder());
-  }
-
   init() {
     // register with dbux-projects
     const projectManager = getProjectManager();
     projectManager._handleNewApplication(this);
+  }
+
+  getDefaultApplicationExportPath() {
+    const applicationName = this.getSafeFileName();
+    const projectName = this.projectName && pathSafe(this.projectName) || '';
+    return pathJoin(getDefaultExportDirectory(), projectName, `${applicationName || '(unknown)'}_data.json`);
   }
 }
 
@@ -28,6 +33,7 @@ export class CodeApplication extends Application {
  */
 export function initCodeApplications(/* context */) {
   allApplications.DefaultApplicationClass = CodeApplication;
+  allApplications.appRoot = getProjectManager().config.projectsRoot || getCodeDirectory();
 }
 
 export function getSelectedApplicationInActiveEditor() {

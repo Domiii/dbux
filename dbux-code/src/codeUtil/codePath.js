@@ -1,4 +1,4 @@
-import { pathJoin, pathNormalizedForce } from '@dbux/common-node/src/util/pathUtil';
+import { pathJoin, pathNormalizedForce, pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import {
   ExtensionContext,
   Uri
@@ -13,8 +13,16 @@ export function getResourcePath(...relativePathSegments) {
   return asAbsolutePath(pathJoin('resources', ...relativePathSegments));
 }
 
+export function getUserDataDirectory() {
+  return asAbsolutePath('userdata');
+}
+
 export function getLogsDirectory() {
-  return asAbsolutePath('logs');
+  return pathResolve(getUserDataDirectory(), 'logs');
+}
+
+export function getDefaultExportDirectory() {
+  return pathResolve(getUserDataDirectory(), 'exports');
 }
 
 /**

@@ -18,7 +18,6 @@ import { getDataFolder, getDataFolderLink, lookupDataRootFolder } from '../../..
 import { getProjectManager } from '../../../projectViews/projectControl';
 import { confirm, showInformationMessage, showWarningMessage } from '../../../codeUtil/codeModals';
 import { runTaskWithProgressBar } from '../../../codeUtil/runTaskWithProgressBar';
-import { performance } from 'firebase';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -413,12 +412,8 @@ class EdgeAnalysisController {
     log(msg);
   }
 
-  handleApplicationChanged = async () => {
-    if (!this.hasProjectAppData) {
-      this._data = null;
-      return;
-    }
-    const applicationUpdateVersion = ++this._applicationUpdateVersion;
+  checkAppDataUpdate = async () => {
+    const applicationUpdateVersion = this._applicationUpdateVersion;
 
     let previousAppMeta = this.getAppMeta();
     const { app } = this;
@@ -426,15 +421,9 @@ class EdgeAnalysisController {
     const appFilePath = getProjectManager().getApplicationFilePath(app.uuid);
     const newMTime = mtime(appFilePath);
 
-
     // TODO: only get app's data, not .dbuxapp file
     //    -> use userCommands do{Import,Export} for that
-    // TODO: don't use mtime. Instead, check if contents have different length or md5 checksum (https://www.npmjs.com/package/md5)
-    // TODO: when new app data arrives, don't ask for update right away
-    //    -> add a debounce of some 10 seconds to the checker
-    //    -> defer asking until bug runner has finished running (NOTE: not accurate for frontend projects)
-
-
+    // TODO: don't use mtime. Instead, check if asyncEvents have different length or md5 checksum (https://www.npmjs.com/package/md5)
 
     if (!previousAppMeta || !existsSync(zipFpath) || newMTime !== previousAppMeta.appDataMtime) {
       // if app data did not exist or has changed since last time, show modal
@@ -464,6 +453,14 @@ class EdgeAnalysisController {
 
       // TODO:    -> manage zipped backup of lfs files manually!
     }
+  }
+
+  handleApplicationChanged = async () => {
+    if (!this.hasProjectAppData) {
+      this._data = null;
+      return;
+    }
+    ++this._applicationUpdateVersion;
   }
 
   /** ###########################################################################
@@ -637,6 +634,24 @@ class EdgeListNode extends TraceDetailNode {
   }
 }
 
+/** ###########################################################################
+ * button node
+ * ##########################################################################*/
+
+class AppDataUpdateNode extends TraceDetailNode {
+  static makeLabel() { return 'Check for App Data Update'; }
+
+  /**
+   * @type {EdgeAnalysisController}
+   */
+  get controller() {
+    return this.parent.controller;
+  }
+
+  handleClick() {
+    this.controller?.checkAppDataUpdate();
+  }
+}
 
 /** ###########################################################################
  * main node
@@ -654,7 +669,8 @@ export default class EdgeAnalysisNode extends TraceDetailNode {
 
   childClasses = [
     CurrentEdgeNode,
-    EdgeListNode
+    EdgeListNode,
+
   ];
 
   _doInit() {

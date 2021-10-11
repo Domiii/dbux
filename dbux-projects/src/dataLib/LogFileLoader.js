@@ -4,7 +4,7 @@ import UserActionType from '@dbux/data/src/pathways/UserActionType';
  * NOTE: `this` will be refer to pdp
  */
 
-export default {
+const logFileHandlers = {
   1(header, allData) {
     allData.userActions.forEach(action => {
       // set codeEvents
@@ -29,6 +29,8 @@ export default {
     resolvePathwaysData(this, allData);
   }
 };
+
+export default logFileHandlers;
 
 function resolvePathwaysData(pdp, allData) {
   const actions = allData.userActions;

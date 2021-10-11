@@ -26,6 +26,9 @@ export default class StaticProgramContextCollection extends Collection {
     super.add(entries);
   }
 
+  /**
+   * @param {StaticProgramContext} staticProgramContext 
+   */
   serialize(staticProgramContext) {
     const staticProgramContextData = { ...staticProgramContext };
     staticProgramContextData.relativeFilePath = path.relative(this.dp.application.entryPointPath, staticProgramContext.filePath).replace(/\\/g, '/');
