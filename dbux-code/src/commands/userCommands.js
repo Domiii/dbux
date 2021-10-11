@@ -40,9 +40,12 @@ export function initUserCommands(extensionContext) {
   registerCommand(extensionContext, 'dbux.exportApplicationData', async () => {
     const application = await getSelectedApplicationInActiveEditorWithUserFeedback();
 
-    const exportFpath = application.getDefaultApplicationExportPath();
+    let exportFpath = application.getDefaultApplicationExportPath();
+    if (await confirm('Zip?', true, true)) {
+      exportFpath += '.zip';
+    }
     if (existsSync(exportFpath)) {
-      if (!await confirm(`File already exists: "${exportFpath}" - Overwrite?`)) {
+      if (!await confirm(`File already exists: "${exportFpath}" - Overwrite?`, true, true)) {
         return;
       }
     }
@@ -62,7 +65,7 @@ export function initUserCommands(extensionContext) {
       canSelectFolders: false,
       canSelectMany: false,
       filters: {
-        JSON: ['json']
+        'json or zip': ['json', 'zip']
       },
       defaultUri: Uri.file(getDefaultExportDirectory())
     };

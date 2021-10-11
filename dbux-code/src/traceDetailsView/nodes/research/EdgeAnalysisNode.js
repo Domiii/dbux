@@ -408,8 +408,8 @@ class EdgeAnalysisController {
 
     const origSize = getFileSizeSync(appFilePath) / 1024 / 1024;
     const zipSize = getFileSizeSync(zipFpath) / 1024 / 1024;
-    const msg = `[Dbux Research] Application data zipped: ${zipSize.toFixed(2)}MB (from ${origSize.toFixed(2)}MB) at "${zipFpath}".`;
-    log(msg);
+    const msg = `Application data zipped: ${zipSize.toFixed(2)}MB (from ${origSize.toFixed(2)}MB) at "${zipFpath}".`;
+    showInformationMessage(msg);
   }
 
   checkAppDataUpdate = async () => {

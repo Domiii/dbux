@@ -1,8 +1,11 @@
 import { pathJoin, pathNormalized, pathResolve } from '@dbux/common-node/src/util/pathUtil';
+import { readZipFirstEntryText, zipDataToFile } from '@dbux/common-node/src/util/zipUtil';
 import fs from 'fs';
 import path from 'path';
 import allApplications from './allApplications';
 import Application from './Application';
+
+
 
 /**
  * @param {string} exportFpath 
@@ -10,6 +13,7 @@ import Application from './Application';
  */
 export async function exportApplication(application, exportFpath) {
   // exportFpath = safePath(exportFpath);
+  const isZip = exportFpath.endsWith('.zip');
   const exportFolder = path.dirname(exportFpath);
   if (!fs.existsSync(exportFolder)) {
     fs.mkdirSync(exportFolder, { recursive: true });
@@ -26,15 +30,30 @@ export async function exportApplication(application, exportFpath) {
     uuid,
     serializedDpData: application.dataProvider.serializeJson()
   };
-  fs.writeFileSync(exportFpath, JSON.stringify(data));
+  const serialized = JSON.stringify(data);
+
+  if (isZip) {
+    zipDataToFile(exportFpath, serialized);
+  }
+  else {
+    fs.writeFileSync(exportFpath, serialized);
+  }
 }
 
 /**
  * @return {Application}
  */
 export function importApplication(fpath) {
-  const s = fs.readFileSync(fpath, 'utf8');
-  const appData = JSON.parse(s);
+  let serialized;
+  if (fpath.endsWith('.zip')) {
+    // unzipAllTo(zipFpath, targetPath);
+    serialized = readZipFirstEntryText(fpath);
+  }
+  else {
+    serialized = fs.readFileSync(fpath, 'utf8');
+  }
+
+  const appData = JSON.parse(serialized);
   const { relativeEntryPointPath, createdAt, uuid, serializedDpData } = appData;
   const { appRoot } = allApplications;
   const entryPointPath = pathJoin(appRoot, relativeEntryPointPath);

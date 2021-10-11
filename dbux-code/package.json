@@ -87,7 +87,7 @@
       },
       {
         "command": "dbux.importApplicationData",
-        "title": "Dev: Import Application Data"
+        "title": "Dbux: Import Application Data"
       },
       {
         "command": "dbux.showDecorations",

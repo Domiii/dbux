@@ -50,7 +50,7 @@ export async function showErrorMessage(message, btnConfig, messageCfg = EmptyObj
  * @param {boolean} [modal] 
  * @returns {Promise<boolean|null>} A boolean indicates the result of confirmation, or null if it is canceled.
  */
-export async function confirm(msg, modal = true) {
+export async function confirm(msg, modal = true, throwOnCancel = false) {
   // TOTRANSLATE
   const confirmText = 'Yes';
   const refuseText = 'No';
@@ -58,6 +58,9 @@ export async function confirm(msg, modal = true) {
   const btnConfig = Object.fromEntries([confirmText, refuseText].map(t => [t, () => t]));
   const result = await showInformationMessage(msg, btnConfig, { modal });
   if (result === undefined) {
+    if (throwOnCancel) {
+      throw new Error('Modal cancelled.');
+    }
     return null;
   }
   else {

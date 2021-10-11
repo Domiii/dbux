@@ -1,7 +1,9 @@
 import fs, { promises as fsAsync } from 'fs';
 import path from 'path';
 import glob from 'glob';
-import sh from 'shelljs';
+import os from 'os';
+import { pathNormalized, pathNormalizedForce } from './pathUtil';
+// import sh from 'shelljs';
 
 /**
  * @see https://stackoverflow.com/a/53530146
@@ -124,4 +126,8 @@ export function getFileSizeSync(filePath) {
 
 export function mtime(fpath) {
   return +fs.statSync(fpath).mtime;
+}
+
+export function makeTempFolder(dir = os.tmpdir(), prefix = 'dbux-') {
+  return pathNormalizedForce(fs.mkdtempSync(path.join(dir, prefix)));
 }
