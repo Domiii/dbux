@@ -259,4 +259,14 @@ export default class Collection {
     const allData = { [this.name]: entries };
     this.dp._notifyData(this._collectionNames, allData);
   }
+
+  /** ###########################################################################
+   * serialization
+   * ##########################################################################*/
+
+  serializeJson() {
+    return this.dp.serializeJson([
+      [this.name, this._all]
+    ]);
+  }
 }

@@ -11,7 +11,7 @@ import Application from './Application';
  * @param {string} exportFpath 
  * @param {Application} application 
  */
-export async function exportApplication(application, exportFpath) {
+export function exportApplication(application, exportFpath) {
   // exportFpath = safePath(exportFpath);
   const isZip = exportFpath.endsWith('.zip');
   const exportFolder = path.dirname(exportFpath);
@@ -38,6 +38,8 @@ export async function exportApplication(application, exportFpath) {
   else {
     fs.writeFileSync(exportFpath, serialized);
   }
+
+  return serialized;
 }
 
 /**

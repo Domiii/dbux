@@ -14,8 +14,9 @@ showInformationMessage(value, {
 }, { modal: true });
 ```
  */
-export async function showInformationMessage(message, btnConfig = EmptyObject, messageCfg = EmptyObject, cancelCallback) {
-  const buttons = Object.keys(btnConfig || EmptyObject);
+export async function showInformationMessage(message, btnConfig, messageCfg = EmptyObject, cancelCallback) {
+  btnConfig = btnConfig || EmptyObject;
+  const buttons = Object.keys(btnConfig);
   if (messageCfg?.modal && process.platform === 'darwin') {
     // for some reason, on MAC, modal buttons are reversed :(
     buttons.reverse();
@@ -28,7 +29,8 @@ export async function showInformationMessage(message, btnConfig = EmptyObject, m
   return cbResult === undefined ? null : cbResult;
 }
 
-export async function showWarningMessage(message, btnConfig = EmptyObject, messageCfg = EmptyObject, cancelCallback) {
+export async function showWarningMessage(message, btnConfig, messageCfg = EmptyObject, cancelCallback) {
+  btnConfig = btnConfig || EmptyObject;
   const result = await window.showWarningMessage(`[Dbux] ${message}`, messageCfg, ...Object.keys(btnConfig || EmptyObject));
   if (result === undefined) {
     await cancelCallback?.();
@@ -39,8 +41,10 @@ export async function showWarningMessage(message, btnConfig = EmptyObject, messa
 }
 
 export async function showErrorMessage(message, btnConfig, messageCfg = EmptyObject, moreConfig = EmptyObject) {
+  btnConfig = btnConfig || EmptyObject;
   const prefix = moreConfig.noPrefix ? '' : '[Dbux] ';
-  const result = await window.showErrorMessage(`${prefix}${message}`, messageCfg, ...Object.keys(btnConfig || EmptyObject));
+  btnConfig = btnConfig || EmptyObject;
+  const result = await window.showErrorMessage(`${prefix}${message}`, messageCfg, ...Object.keys(btnConfig));
   const cbResult = await btnConfig[result]?.();
   return cbResult === undefined ? null : cbResult;
 }

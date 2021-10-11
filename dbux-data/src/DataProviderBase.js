@@ -369,6 +369,12 @@ export default class DataProviderBase {
     });
   }
 
+  serializeCollectionsJson(names) {
+    return this.serializeJson(names.map(name => (
+      [name, this.collections[name]._all]
+    )));
+  }
+
   /**
    * Serialize collection data into a simple JS object. Including all collection data by default.
    * Usage: `JSON.stringify(dataProvider.serializeJson())`.

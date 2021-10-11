@@ -6,8 +6,8 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import traceSelection from '@dbux/data/src/traceSelection';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { getFileSizeSync, mtime } from '@dbux/common-node/src/util/fileUtil';
-import { zipFile } from '@dbux/common-node/src/util/zipUtil';
+import { getFileSizeSync } from '@dbux/common-node/src/util/fileUtil';
+import { sha256String } from '@dbux/common-node/src/util/hashUtil';
 import { TreeItemCollapsibleState, window } from 'vscode';
 import { existsSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from 'fs';
 import isFunction from 'lodash/isFunction';
@@ -16,8 +16,10 @@ import TraceDetailNode from '../traceDetailNode';
 import { makeTreeItem } from '../../../helpers/treeViewHelpers';
 import { getDataFolder, getDataFolderLink, lookupDataRootFolder } from '../../../research/researchUtil';
 import { getProjectManager } from '../../../projectViews/projectControl';
-import { confirm, showInformationMessage, showWarningMessage } from '../../../codeUtil/codeModals';
+import { confirm, showErrorMessage, showInformationMessage, showWarningMessage } from '../../../codeUtil/codeModals';
 import { runTaskWithProgressBar } from '../../../codeUtil/runTaskWithProgressBar';
+import { exportApplication } from '@dbux/data/src/applications/appUtil';
+import Application from '@dbux/data/src/applications/Application';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -91,8 +93,9 @@ export class EdgeAnnotationData {
 }
 
 class AppMeta {
-  appDataMtime;
+  appDataHash;
   appDataUuid;
+  updatedAt;
 }
 
 class EdgeDataFile {
@@ -241,7 +244,7 @@ class EdgeAnalysisController {
       throw new Error(`cannot setEdgeAnnotation if !hasData`);
     }
 
-    const annotations = this.getAllAnnotations();
+    const annotations = this.getAllAnnotations() || {};
     annotations[rootId] = merge(annotations[rootId] || {}, annotation);
     this.writeAnnotationsToFile(annotations);
   }
@@ -388,7 +391,27 @@ class EdgeAnalysisController {
     // this.refresh();
   }
 
-  writeApplicationDataBackup() {
+  /** ###########################################################################
+   * application data
+   * ##########################################################################*/
+
+  /**
+   * NOTE: Only hashes part of the app data (should be sufficiently accurate for our purposes).
+   * @param {Application} app
+   */
+  makeRelevantAppDataHash(app) {
+    const dp = app.dataProvider;
+    const relevantData = [
+      'asyncEvents',
+      'asyncNodes'
+    ];
+    const serialized = JSON.stringify(
+      dp.serializeCollectionsJson(relevantData)
+    );
+    return sha256String(serialized);
+  }
+
+  async writeApplicationDataBackup() {
     const { app } = this;
 
     // WARNING: if any of these functions are changed to async, make sure to properly handle all possible race conditions.
@@ -396,12 +419,13 @@ class EdgeAnalysisController {
     const appFilePath = getProjectManager().getApplicationFilePath(app.uuid);
 
     // write zipped backup
-    zipFile(appFilePath, zipFpath);
+    exportApplication(app, zipFpath);
 
-    // write new mtime
+    // write new hash
     const appMeta = {
-      appDataMtime: mtime(zipFpath),
-      appDataUuid: app.uuid
+      appDataHash: this.makeRelevantAppDataHash(app),
+      appDataUuid: app.uuid,
+      updatedAt: Date.now()
     };
 
     this.writeAppMeta(appMeta);
@@ -412,32 +436,29 @@ class EdgeAnalysisController {
     showInformationMessage(msg);
   }
 
+
   checkAppDataUpdate = async () => {
     const applicationUpdateVersion = this._applicationUpdateVersion;
 
     let previousAppMeta = this.getAppMeta();
     const { app } = this;
     const zipFpath = this.makeAppZipFilePath();
-    const appFilePath = getProjectManager().getApplicationFilePath(app.uuid);
-    const newMTime = mtime(appFilePath);
+    const newHash = this.makeRelevantAppDataHash(app);
 
-    // TODO: only get app's data, not .dbuxapp file
-    //    -> use userCommands do{Import,Export} for that
-    // TODO: don't use mtime. Instead, check if asyncEvents have different length or md5 checksum (https://www.npmjs.com/package/md5)
-
-    if (!previousAppMeta || !existsSync(zipFpath) || newMTime !== previousAppMeta.appDataMtime) {
+    if (!previousAppMeta || !existsSync(zipFpath) || newHash !== previousAppMeta.appDataHash) {
       // if app data did not exist or has changed since last time, show modal
 
       // ask whether to save a backup of app data to separate lfs folder
-      const askMsg = `App data of "${this.appProjectName}" has changed - Do you want to create new backup?`;
-      if (!await confirm(askMsg)) {
+      const askMsg = `App data of "${this.appProjectName}" has changed - Do you want to create a new backup?`;
+      if (!await confirm(askMsg, true, true)) {
         return;
       }
 
       if (applicationUpdateVersion !== this._applicationUpdateVersion) {
         // application has changed during modal
-        showWarningMessage('Application data changed during modal - result ignored.');
-        return;
+        if (!await confirm('Application data changed during modal. Are you sure you still want to export?', true, true)) {
+          return;
+        }
       }
 
       await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
@@ -448,10 +469,15 @@ class EdgeAnalysisController {
         //     (2) progress bar does not get to start rendering if we don't give it a few extra ticks
         await sleep();
 
-        this.writeApplicationDataBackup();
+        await this.writeApplicationDataBackup();
       });
 
       // TODO:    -> manage zipped backup of lfs files manually!
+    }
+    else {
+      await showInformationMessage(
+        `App data has not changed since last update (${new Date(previousAppMeta.updatedAt)})`
+      );
     }
   }
 
@@ -464,7 +490,7 @@ class EdgeAnalysisController {
   }
 
   /** ###########################################################################
-   * user interactions
+   * data input
    * ##########################################################################*/
 
   _statusLabel(annotation, status) {
@@ -476,7 +502,7 @@ class EdgeAnalysisController {
     if (rootId === this.currentEdgeRootId) {
       // -> show annotation UI
 
-      const annotation = { ...(this.getEdgeAnnotation(rootId) || EmptyObject) };
+      const annotation = { ...(this.getEdgeAnnotation(rootId) || { rootId }) };
       let repeat = true;
       let changed = false;
       do {
@@ -639,7 +665,7 @@ class EdgeListNode extends TraceDetailNode {
  * ##########################################################################*/
 
 class AppDataUpdateNode extends TraceDetailNode {
-  static makeLabel() { return 'Check for App Data Update'; }
+  static makeLabel() { return 'App Data Update'; }
 
   /**
    * @type {EdgeAnalysisController}
@@ -649,7 +675,7 @@ class AppDataUpdateNode extends TraceDetailNode {
   }
 
   handleClick() {
-    this.controller?.checkAppDataUpdate();
+    return this.controller?.checkAppDataUpdate();
   }
 }
 
@@ -668,9 +694,9 @@ export default class EdgeAnalysisNode extends TraceDetailNode {
   controller;
 
   childClasses = [
+    AppDataUpdateNode,
     CurrentEdgeNode,
-    EdgeListNode,
-
+    EdgeListNode
   ];
 
   _doInit() {
