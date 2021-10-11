@@ -42,6 +42,10 @@ async function main() {
   }
   catch (err) {
     console.error('####### FAIL\n\n', err);
+    const result = await User.findAll({
+      where: { name: "b" }
+    });
+    console.log('##### RESULT:', result);
   }
 }
 
