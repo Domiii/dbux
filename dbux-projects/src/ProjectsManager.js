@@ -213,13 +213,18 @@ export default class ProjectsManager {
     }
 
     await this.switchToBug(bug);
-    this._resetPracticeSession(bug);
+
+    // TODO: currently this CANNOT load a session, because the sessionId gets re-generated. Need to store and load sessionId by bug somehow.
+    this._loadPracticeSession(bug);
+
+    
+
     this.practiceSession.setupStopwatch();
     await this.savePracticeSession();
     await this.bdp.save();
 
-    await this.practiceSession.testBug(bug);
-    // this.maybeAskForTestBug(bug);
+    // await this.practiceSession.testBug(bug);
+    await this.maybeAskForTestBug(bug);
   }
 
   /**
@@ -262,7 +267,7 @@ export default class ProjectsManager {
 
       await this.switchToBug(bug);
 
-      this._resetPracticeSession(bug, { createdAt, sessionId, state: PracticeSessionState.Stopped }, true, filePath);
+      this._loadPracticeSession(bug, { createdAt, sessionId, state: PracticeSessionState.Stopped }, true, filePath);
       await this.savePracticeSession();
       await this.bdp.save();
       const lastAction = this.pdp.collections.userActions.getLast();
@@ -275,7 +280,7 @@ export default class ProjectsManager {
     }
   }
 
-  _resetPracticeSession(bug, sessionData = EmptyObject, load = false, filePath) {
+  _loadPracticeSession(bug, sessionData = EmptyObject, load = false, filePath) {
     // clear applications
     allApplications.clear();
 
@@ -317,7 +322,7 @@ export default class ProjectsManager {
     try {
       await this.switchToBug(bug);
       
-      this._resetPracticeSession(bug, savedPracticeSession, true);
+      this._loadPracticeSession(bug, savedPracticeSession, true);
       this.practiceSession.setupStopwatch();
       this.maybeAskForTestBug(bug);
     }

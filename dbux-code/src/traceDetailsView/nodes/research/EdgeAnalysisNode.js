@@ -12,14 +12,14 @@ import { TreeItemCollapsibleState, window } from 'vscode';
 import { existsSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from 'fs';
 import isFunction from 'lodash/isFunction';
 import merge from 'lodash/merge';
+import { exportApplication } from '@dbux/data/src/applications/appUtil';
+import Application from '@dbux/data/src/applications/Application';
 import TraceDetailNode from '../traceDetailNode';
 import { makeTreeItem } from '../../../helpers/treeViewHelpers';
-import { getDataFolder, getDataFolderLink, lookupDataRootFolder } from '../../../research/researchUtil';
+import { getAllResearchFolders, getDataFolderLink, getProjectDataRoot, getResearchDataRoot, lookupDataRootFolder, getAppZipFilePath, exportResearchAppData } from '../../../research/researchPaths';
 import { getProjectManager } from '../../../projectViews/projectControl';
 import { confirm, showErrorMessage, showInformationMessage, showWarningMessage } from '../../../codeUtil/codeModals';
 import { runTaskWithProgressBar } from '../../../codeUtil/runTaskWithProgressBar';
-import { exportApplication } from '@dbux/data/src/applications/appUtil';
-import Application from '@dbux/data/src/applications/Application';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -31,9 +31,7 @@ const { log, debug, warn, error: logError } = newLogger('EdgeAnalysis');
  * config
  * ##########################################################################*/
 
-const ResearchProjectName = 'async-js';
 const EdgeDataFileName = 'edgeAnnotations.json';
-const AppDataZipFileNameSuffix = '.dbuxapp.zip';
 
 /** ###########################################################################
  * EdgeStatus
@@ -159,10 +157,6 @@ class EdgeAnalysisController {
     return this.node.dp;
   }
 
-  get dataFolder() {
-    return getDataFolder(ResearchProjectName);
-  }
-
 
   get currentEdgeRootId() {
     return this.trace.rootContextId;
@@ -171,6 +165,10 @@ class EdgeAnalysisController {
   get currentEdge() {
     const rootId = this.currentEdgeRootId;
     return rootId && this.getEdge(rootId) || null;
+  }
+
+  get dataFolder() {
+    return getResearchDataRoot();
   }
 
   get hasProjectAppData() {
@@ -253,33 +251,12 @@ class EdgeAnalysisController {
    * serialization
    * ##########################################################################*/
 
-  get allFolders() {
-    return [this.projectDataFolder, this.projectDataFolderLfs];
-  }
-
-  get projectDataFolder() {
-    const { dataFolder, appProjectName } = this;
-    return pathResolve(dataFolder, appProjectName);
-  }
-
-  get projectDataFolderLfs() {
-    return pathResolve(this.dataFolder, 'lfs');
-  }
-
-  makeFilePath() {
+  getEdgeDataFilePath() {
     const { appProjectName } = this;
     if (!appProjectName) {
       return null;
     }
-    return pathResolve(this.projectDataFolder, EdgeDataFileName);
-  }
-
-  makeAppZipFilePath() {
-    const { appProjectName } = this;
-    if (!appProjectName) {
-      return null;
-    }
-    return pathResolve(this.projectDataFolderLfs, appProjectName + AppDataZipFileNameSuffix);
+    return pathResolve(getProjectDataRoot(), EdgeDataFileName);
   }
 
   getAppMeta() {
@@ -322,12 +299,12 @@ class EdgeAnalysisController {
       return this._data;
     }
 
-    const fpath = this.makeFilePath();
+    const fpath = this.getEdgeDataFilePath();
     if (!fpath) { return null; }
 
     if (!existsSync(fpath)) {
       // create empty file, and make sure, directories are present
-      this.allFolders.forEach(f => mkdirSync(f, { recursive: true }));
+      getAllResearchFolders().forEach(f => mkdirSync(f, { recursive: true }));
       this.writeDataFile({});
     }
 
@@ -339,7 +316,7 @@ class EdgeAnalysisController {
    * @param {EdgeDataFile} data 
    */
   writeDataFile(data) {
-    const fpath = this.makeFilePath();
+    const fpath = this.getEdgeDataFilePath();
     if (!fpath) { throw new Error(`cannot write before data is ready`); }
 
     const serialized = JSON.stringify(data);
@@ -414,12 +391,8 @@ class EdgeAnalysisController {
   async writeApplicationDataBackup() {
     const { app } = this;
 
-    // WARNING: if any of these functions are changed to async, make sure to properly handle all possible race conditions.
-    const zipFpath = this.makeAppZipFilePath();
-    const appFilePath = getProjectManager().getApplicationFilePath(app.uuid);
-
-    // write zipped backup
-    exportApplication(app, zipFpath);
+    // write app data
+    exportResearchAppData(app);
 
     // write new hash
     const appMeta = {
@@ -429,11 +402,6 @@ class EdgeAnalysisController {
     };
 
     this.writeAppMeta(appMeta);
-
-    const origSize = getFileSizeSync(appFilePath) / 1024 / 1024;
-    const zipSize = getFileSizeSync(zipFpath) / 1024 / 1024;
-    const msg = `Application data zipped: ${zipSize.toFixed(2)}MB (from ${origSize.toFixed(2)}MB) at "${zipFpath}".`;
-    showInformationMessage(msg);
   }
 
 
@@ -442,7 +410,7 @@ class EdgeAnalysisController {
 
     let previousAppMeta = this.getAppMeta();
     const { app } = this;
-    const zipFpath = this.makeAppZipFilePath();
+    const zipFpath = getAppZipFilePath(app);
     const newHash = this.makeRelevantAppDataHash(app);
 
     if (!previousAppMeta || !existsSync(zipFpath) || newHash !== previousAppMeta.appDataHash) {
