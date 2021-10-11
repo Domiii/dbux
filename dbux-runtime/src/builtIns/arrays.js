@@ -42,7 +42,7 @@ export default function patchArray() {
 
       for (let i = 0; i < args.length; ++i) {
         const varAccess = {
-          arrNodeId,
+          objectNodeId: arrNodeId,
           prop: arr.length + i
         };
         // console.debug(`[Array.push] #${traceId} ref ${ref.refId}, node ${nodeId}, arrNodeId ${arrNodeId}`);

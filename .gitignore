@@ -15,6 +15,10 @@ _testOut
 __data__
 userdata
 
+# node_modules in asset folder are allowed
+node_modules/
+!dbux-projects/assets/**/node_modules/
+
 # auto-generated files
 dbux-babel-plugin/src/parse/_registry.js
 dbux-babel-plugin/src/parse/plugins/_registry.js
@@ -79,10 +83,6 @@ bower_components
 
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
-
-# Dependency directories
-node_modules/
-jspm_packages/
 
 # TypeScript v1 declaration files
 typings/
