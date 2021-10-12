@@ -451,7 +451,7 @@ class AsyncGraph extends GraphBase {
     updateRootValueLabel(values) {
       this.allNodeData.forEach((node) => {
         // default label if no value
-        node.valueLabel = '⬤';
+        node.valueLabel = '';
       });
       if (values) {
         values.forEach(({ applicationId, asyncNodeId, label }) => {

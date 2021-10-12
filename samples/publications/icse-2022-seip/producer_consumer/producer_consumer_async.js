@@ -36,20 +36,19 @@ async function wait(queue) {
 // }
 
 async function produce() {
-  startProduce();  // WARNING: must start before first await to avoid race condition
-  await start;
-  const n = getProduceTime();
+  const [index, item, n] = startProduce();  // WARNING: must start before first await to avoid race condition
+  // await start;
   for (let i = 0; i < n; ++i) {
     // await work(i);
     await work;
   }
-  finishProduce();
+  finishProduce(index);
   notify(consumerQueue);
-  await end;
+  // await end;
 }
 
 async function waitForSpace() {
-  await start;
+  // await start;
   return wait(producerQueue);
 }
 
@@ -71,21 +70,20 @@ async function P(n) {
  * ##########################################################################*/
 
 async function consume() {
-  startConsume(); // WARNING: must startConsume before first await to avoid race condition
-  await start;
-  const n = getConsumeTime();
+  const [index, item, n] = startConsume(); // WARNING: must startConsume before first await to avoid race condition
+  // await start;
   for (let i = 0; i < n; ++i) {
     // await work(i);
     await work; // keep this
   }
-  finishConsume();
+  finishConsume(index);
   notify(producerQueue);
-  await end;
+  // await end;
 }
 
 async function waitForItems() {
-  await start;
-  return await wait(consumerQueue);
+  // await start;
+  return wait(consumerQueue);
 }
 
 async function C(n) {
@@ -107,13 +105,18 @@ async function C(n) {
 
 (async function main() {
   await start;
+
   P(2 * N);
   C(N);
   C(N);
   C(N);
   P(N);
-  // tick counter
-  for (let i = 0; i < 50; ++i) {
-    await 0;
-  }
+
+  // // tick counter
+  // for (let counter = 0; counter < 50; ++counter) {
+  //   console.log(`==================`);
+  //   console.log(``);
+  //   console.log(`===== tick#${counter} =====`);
+  //   await counter;
+  // }
 })();
