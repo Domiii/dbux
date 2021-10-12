@@ -1,6 +1,6 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
-import { existsSync, realpathSync } from 'fs';
+import { existsSync, readdirSync, realpathSync } from 'fs';
 import { exportApplication, importApplication } from '@dbux/data/src/applications/appUtil';
 import { getFileSizeSync } from '@dbux/common-node/src/util/fileUtil';
 import { performance } from 'perf_hooks';
@@ -72,6 +72,10 @@ export class Research {
 
   getExperimentFolder(experimentId) {
     return pathResolve(this.getExperimentRoot(), experimentId);
+  }
+
+  getAllExperimentFolders() {
+    return readdirSync(this.getExperimentRoot());
   }
 
   /**

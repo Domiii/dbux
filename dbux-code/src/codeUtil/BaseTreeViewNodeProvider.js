@@ -1,10 +1,11 @@
 import { TreeItemCollapsibleState, EventEmitter, window } from 'vscode';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
+import NestedError from '@dbux/common/src/NestedError';
+import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import { getThemeResourcePath } from './codePath';
 import { registerCommand } from '../commands/commandUtil';
 import { emitTreeViewAction, emitTreeViewCollapseChangeAction } from '../userEvents';
-import NestedError from '@dbux/common/src/NestedError';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('BaseTreeViewNodeProvider');
@@ -87,6 +88,11 @@ export default class BaseTreeViewNodeProvider {
       throw err;
     }
   }
+
+  refreshOnData = makeDebounce(() => {
+    this.refresh();
+  }, 50);
+
 
   repaint() {
     this._onDidChangeTreeData.fire();

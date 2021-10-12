@@ -22,11 +22,9 @@ class ApplicationsViewController {
     });
   }
 
-  refreshOnData = makeDebounce(() => {
-    this.treeNodeProvider.refresh();
-  }, 20);
-
-
+  refreshOnData = () => {
+    this.treeNodeProvider.refreshOnData();
+  };
   initOnActivate(context) {
     // ########################################
     // hook up event handlers

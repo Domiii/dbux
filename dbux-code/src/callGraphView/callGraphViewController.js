@@ -20,13 +20,9 @@ export class CallGraphViewController {
     this._mode = 'context';
   }
 
-  refresh = () => {
-    this.treeDataProvider.refresh();
+  refreshOnData = () => {
+    this.treeDataProvider.refreshOnData();
   }
-
-  refreshOnData = makeDebounce(() => {
-    this.refresh();
-  }, 100);
 
   /**
    * @deprecated Moved to "TraceDetailsView"

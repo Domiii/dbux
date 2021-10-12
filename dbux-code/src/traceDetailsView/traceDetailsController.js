@@ -37,13 +37,19 @@ class TraceDetailsController {
   refresh = () => {
     this.treeDataProvider.refresh();
   }
-
-  refreshOnData = makeDebounce(() => {
+  refreshOnData = () => {
     this.refresh();
     this.tracesAtCursor.needRefresh = true;
     this.tracesAtCursor.updateSelectTraceAtCursorButton();
     this.errorTraceManager.refresh();
-  }, 20);
+  }
+
+  // refreshOnData = makeDebounce(() => {
+  //   this.refresh();
+  //   this.tracesAtCursor.needRefresh = true;
+  //   this.tracesAtCursor.updateSelectTraceAtCursorButton();
+  //   this.errorTraceManager.refresh();
+  // }, 200);
 
   selectTraceAtCursor = () => {
     let trace = this.tracesAtCursor.get();

@@ -21,15 +21,18 @@ class EditorTracesController {
     this.treeView = this.treeDataProvider.treeView;
   }
 
-  refreshOnData = makeDebounce(() => {
-    controller.treeDataProvider.refresh();
-    // if (this.applicationsChanged) {
-    //   // also select node + open view (if not already opened)
-    //   this.applicationsChanged = false;
-    //   const firstNode = controller.treeDataProvider.rootNodes?.[0];
-    //   firstNode && controller.treeView.reveal(firstNode, { focus: true });
-    // }
-  }, 20);
+  refreshOnData = () => {
+    this.treeDataProvider.refreshOnData();
+  }
+  // refreshOnData = makeDebounce(() => {
+  //   controller.treeDataProvider.refresh();
+  //   // if (this.applicationsChanged) {
+  //   //   // also select node + open view (if not already opened)
+  //   //   this.applicationsChanged = false;
+  //   //   const firstNode = controller.treeDataProvider.rootNodes?.[0];
+  //   //   firstNode && controller.treeView.reveal(firstNode, { focus: true });
+  //   // }
+  // }, );
 
 
   initOnActivate(context) {

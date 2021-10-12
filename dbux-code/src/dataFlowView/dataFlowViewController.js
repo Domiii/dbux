@@ -44,9 +44,9 @@ export class DataFlowViewController {
     this.treeDataProvider.refresh();
   }
 
-  refreshOnData = makeDebounce(() => {
-    this.refresh();
-  }, 100);
+  refreshOnData = () => {
+    this.treeDataProvider.refreshOnData();
+  }
 
   initOnActivate(context) {
     // ########################################

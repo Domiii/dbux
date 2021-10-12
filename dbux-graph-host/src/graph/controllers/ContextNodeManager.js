@@ -38,6 +38,7 @@ export default class ContextNodeManager extends HostComponentEndpoint {
     this.addDisposable(unsubscribe);
   }
 
+  // TODO: makeDebounce
   refreshOnData = () => {
     if (this.selector?.applicationId && !allApplications.selection.containsApplication(this.selector.applicationId)) {
       // block highlighting on non-active apps

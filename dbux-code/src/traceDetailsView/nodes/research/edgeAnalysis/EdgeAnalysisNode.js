@@ -1,3 +1,10 @@
+import { TreeItemCollapsibleState, window } from 'vscode';
+import { existsSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from 'fs';
+import isFunction from 'lodash/isFunction';
+import merge from 'lodash/merge';
+import differenceBy from 'lodash/differenceBy';
+import isEqual from 'lodash/isEqual';
+import NanoEvents from 'nanoevents';
 import sleep from '@dbux/common/src/util/sleep';
 import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
@@ -7,17 +14,17 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import traceSelection from '@dbux/data/src/traceSelection';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { sha256String } from '@dbux/common-node/src/util/hashUtil';
-import { TreeItemCollapsibleState, window } from 'vscode';
-import { existsSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from 'fs';
-import isFunction from 'lodash/isFunction';
-import merge from 'lodash/merge';
 import Application from '@dbux/data/src/applications/Application';
-import TraceDetailNode from '../traceDetailNode';
-import { makeTreeItem } from '../../../helpers/treeViewHelpers';
+import allApplications from '@dbux/data/src/applications/allApplications';
+import TraceDetailNode from '../../traceDetailNode';
+import { makeTreeItem } from '../../../../helpers/treeViewHelpers';
 // eslint-disable-next-line max-len
-import { getCurrentResearch, getDataFolderLink } from '../../../research/Research';
-import { confirm, showErrorMessage, showInformationMessage, showWarningMessage } from '../../../codeUtil/codeModals';
-import { runTaskWithProgressBar } from '../../../codeUtil/runTaskWithProgressBar';
+import { getCurrentResearch, getDataFolderLink, Research } from '../../../../research/Research';
+import { confirm, showErrorMessage, showInformationMessage, showWarningMessage } from '../../../../codeUtil/codeModals';
+import { runTaskWithProgressBar } from '../../../../codeUtil/runTaskWithProgressBar';
+import { showTextInNewFile } from '../../../../codeUtil/codeNav';
+import { makeEdgeTable } from './edgeTable';
+import { getExperimentDataFilePath } from './edgeData';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -25,11 +32,6 @@ const { log, debug, warn, error: logError } = newLogger('EdgeAnalysis');
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
-/** ###########################################################################
- * config
- * ##########################################################################*/
-
-const EdgeDataFileName = 'edgeAnnotations.json';
 
 /** ###########################################################################
  * EdgeStatus
@@ -122,20 +124,28 @@ class EdgeAnalysisController {
   _lastAppUuid;
 
   /**
-   * Used for synchronization
-   */
-  _applicationUpdateVersion = 0;
-
-  /**
    * @type {TraceDetailNode}
    */
   node;
 
+  /**
+   * @type {Research}
+   */
   research;
+
+  _dataEvents = new NanoEvents();
+
+  /**
+   * Used for synchronization
+   */
+  _applicationUpdateVersion = 0;
+
+  _disposables = [];
 
   constructor(node) {
     this.node = node;
     this.research = getCurrentResearch();
+    // this._dataEvents.on('events', );
   }
 
   /** ###########################################################################
@@ -194,19 +204,22 @@ class EdgeAnalysisController {
     const { edgeType } = this.getEdge(rootId) || EmptyObject;
 
     const edgeTypeLabel = edgeType && AsyncEdgeType.nameFrom(edgeType);
-    const indicator = annotation ? '✔️' : '◯';
-    const annoLabel = annotation &&
+    const indicator = status ? '✔️' : '◯';
+    const annoLabel = status &&
       `: ${EdgeStatus.nameFrom(status) || ''} ${comment || ''}` ||
       '';
 
     return `${indicator} [${edgeTypeLabel}] ${rootId}${annoLabel}`;
   }
 
+  /**
+   * @returns {AsyncEvent[]}
+   */
   getAllEdgesSorted() {
     const { dp } = this;
     let edges = dp.collections.asyncEvents.getAllActual();
 
-    // copy before sort - see: https://stackoverflow.com/a/9592755
+    // fast copy before sort - see: https://stackoverflow.com/a/9592755
     edges = Array.prototype.slice.call(edges || EmptyArray);
 
     return edges.sort((a, b) => {
@@ -216,8 +229,8 @@ class EdgeAnalysisController {
       const bAnno = this.getEdgeAnnotation(bRoot);
 
       // 1. not annotated before annotated
-      if (!!aAnno !== !!bAnno) {
-        return !!aAnno - !!bAnno;
+      if (!!aAnno?.status !== !!bAnno?.status) {
+        return !!aAnno?.status - !!bAnno?.status;
       }
 
       // 2. FORKs before CHAINs
@@ -250,6 +263,10 @@ class EdgeAnalysisController {
     const annotations = this.getAllAnnotations() || {};
     annotations[rootId] = merge(annotations[rootId] || {}, annotation);
     this.writeAnnotationsToFile(annotations);
+    
+    // notify
+    this.refreshOnData();
+    this._dataEvents.emit('edges', rootId);
   }
 
   /** ###########################################################################
@@ -261,8 +278,7 @@ class EdgeAnalysisController {
     if (!experimentId) {
       return null;
     }
-    const root = this.research.getExperimentFolder(experimentId);
-    return pathResolve(root, EdgeDataFileName);
+    return getExperimentDataFilePath(experimentId);
   }
 
   getAppMeta() {
@@ -275,7 +291,7 @@ class EdgeAnalysisController {
    */
   getAllAnnotations() {
     const data = this.getOrReadDataFile();
-    return data?.annotations;
+    return data.annotations;
   }
 
   /**
@@ -315,11 +331,33 @@ class EdgeAnalysisController {
     if (!existsSync(fpath)) {
       // create empty file, and make sure, directories are present
       this.getAllFolders().forEach(f => mkdirSync(f, { recursive: true }));
-      this.writeDataFile({});
     }
 
     const serialized = readFileSync(fpath, 'utf8');
-    return this._data = serialized && JSON.parse(serialized) || {};
+    const data = this._data = serialized && JSON.parse(serialized) || {};
+
+    // pre-populate
+    const oldAnnotations = data.annotations || EmptyObject;
+    const newAnnotations = data.annotations = Object.fromEntries(
+      this.getAllEdgesSorted().map(e => {
+        const rootId = e.toRootContextId;
+        const annotation = oldAnnotations[rootId] || { rootId };
+        return [rootId, annotation];
+      })
+    );
+
+    // check whether annotations are being discarded
+    const outdatedAnnotations = differenceBy(oldAnnotations, newAnnotations, anno => anno.rootId);
+    if (outdatedAnnotations?.length) {
+      this._data.outdatedAnnotations = outdatedAnnotations;
+      logError(`Discarding ${outdatedAnnotations.length} annotations:`, outdatedAnnotations);
+    }
+    
+    if (!isEqual(oldAnnotations, newAnnotations)) {
+      this.writeDataFile(this._data);
+    }
+
+    return this._data;
   }
 
   /**
@@ -340,12 +378,12 @@ class EdgeAnalysisController {
    * ##########################################################################*/
 
   refresh = () => {
-    //   this.treeNodeProvider.refresh();
+    this.treeNodeProvider.refresh();
   }
 
-  // refreshOnData = makeDebounce(() => {
-  //   this.refresh();
-  // }, 100);
+  refreshOnData = () => {
+    this.treeNodeProvider.refreshOnData();
+  };
 
   initOnExpand() {
     // reset + lookup data root folder again
@@ -353,17 +391,15 @@ class EdgeAnalysisController {
 
     if (this._lastAppUuid !== this.app.uuid) {
       this._lastAppUuid = this.app.uuid;
-
       this.handleApplicationChanged();
     }
 
-
-    // // add data event handlers
+    // add data event handlers
     // this.addDisposable(
     //   allApplications.selection.onApplicationsChanged((selectedApps) => {
-    //     this.refreshOnData();
+    //     // this.refreshOnData();
     //     for (const app of selectedApps) {
-    //       const unsub = app.dataProvider.onData('asyncEdges', this.onApplicationChanged);
+    //       const unsub = app.dataProvider.onData('asyncEvents', this.refreshOnData);
 
     //       allApplications.selection.subscribe(unsub);
     //       this.addDisposable(unsub);
@@ -375,7 +411,7 @@ class EdgeAnalysisController {
     //   //   this.refreshOnData();
     //   // })
     // );
-    // this.refresh();
+    // this.refreshOnData();
   }
 
   /** ###########################################################################
@@ -598,7 +634,7 @@ class CurrentEdgeNode extends TraceDetailNode {
  * ##########################################################################*/
 
 class EdgeListNode extends TraceDetailNode {
-  static makeLabel() { return 'All Edges'; }
+  static makeLabel() { return 'Edge List'; }
 
   /**
    * @type {EdgeAnalysisController}
@@ -624,10 +660,10 @@ class EdgeListNode extends TraceDetailNode {
     const nodes = this.controller.getAllEdgesSorted().map(edge => {
       return makeTreeItem(
         '',
-        EmptyArray,
+        null,
         {
-          description: this.controller.makeEdgeDescription(edge),
-          handleClick: this.controller.handleClickDefault
+          description: this.controller.makeEdgeDescription(edge.toRootContextId),
+          handleClick: this.controller.handleClickDefault.bind(null, edge.toRootContextId)
         }
       );
     });
@@ -699,6 +735,16 @@ export default class EdgeAnalysisNode extends TraceDetailNode {
       // collapsed
       this.controller?.dispose();
       this.controller = null;
+    }
+  }
+
+  handleClick() {
+    if (this.collapsibleState === TreeItemCollapsibleState.Expanded) {
+      // generate table
+      const folder = this.controller.research.getExperimentRoot();
+      const experimentIds = this.controller.research.getAllExperimentFolders();
+      const s = makeEdgeTable(folder, experimentIds);
+      showTextInNewFile('edgeData.tex', s);
     }
   }
 
