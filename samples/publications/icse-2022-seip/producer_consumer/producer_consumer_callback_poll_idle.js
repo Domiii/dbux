@@ -1,33 +1,20 @@
-import { IdleTime, N, startProduce, finishProduce, startConsume, finishConsume, hasSpace, hasItems } from './producer_consumer_base';
-import { waitTicksCallback, schedule } from '../../../util/asyncUtil';
+import { N, startProduce, finishProduce, startConsume, finishConsume, hasSpace, hasItems, getProduceTime, getConsumeTime, } from './producer_consumer_base';
+import { waitTicksCallback } from '../../../util/asyncUtil';
 
-/** ###########################################################################
- * wait/notify
- *  #########################################################################*/
-
-const consumerQueue = [];
-const producerQueue = [];
-
-function notify(queue) {
-  const next = queue.shift();
-  if (next) {
-    next();
-  }
-}
-
-function wait(queue, next) {
-  queue.push(next);
-}
+const IdleTime = 3;
 
 /** ###########################################################################
  * Basic functions
  *  #########################################################################*/
 
+function idle(next) {
+  return waitTicksCallback(IdleTime, next);
+}
+
 function consume(next) {
   const [index, item, ticks] = startConsume();
   return waitTicksCallback(ticks, function _finishConsume() {
     finishConsume(index);
-    notify(producerQueue);
     next();
   });
 }
@@ -36,14 +23,13 @@ function produce(next) {
   const [index, item, ticks] = startProduce();
   return waitTicksCallback(ticks, function _finishProduce() {
     finishProduce(index);
-    notify(consumerQueue);
     next();
   });
 }
 
 function producer(n) {
   const next = () => {
-    schedule(tryProduce);
+    setImmediate(tryProduce);
     // tryProduce();
   }
   function tryProduce() {
@@ -53,7 +39,7 @@ function producer(n) {
         produce(next);
       }
       else {
-        wait(producerQueue, next);
+        idle(next);
       }
     }
   }
@@ -63,7 +49,7 @@ function producer(n) {
 
 function consumer(n) {
   const next = () => {
-    schedule(tryConsume);
+    setImmediate(tryConsume);
     // tryConsume();
   }
   function tryConsume() {
@@ -73,7 +59,7 @@ function consumer(n) {
         consume(next);
       }
       else {
-        wait(consumerQueue, next);
+        idle(next);
       }
     }
   }
