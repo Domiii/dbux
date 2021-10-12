@@ -242,8 +242,7 @@ class AsyncGraph extends GraphBase {
       asyncNode,
       rowId,
       colId,
-      parentEdgeType,
-      parentAsyncNodeId,
+      parentEdges,
       lastForkSiblingNodeId,
     } = nodeData;
 
@@ -251,60 +250,59 @@ class AsyncGraph extends GraphBase {
       applicationId,
     } = asyncNode;
 
-    if (AsyncEdgeType.is.Chain(parentEdgeType)) {
-      let html = '';
-      const parentAsyncNode = this.allNodeData.get(applicationId, parentAsyncNodeId);
-      {
-        const _row = parentAsyncNode.rowId + 1;
-        const _height = rowId - _row;
-        if (_height) {
-          const positionProp = makeGridPositionProp(_row, colId, { rowSpan: _height });
+    let html = '';
+    for (const { edgeType: parentEdgeType, parentAsyncNodeId } of parentEdges) {
+      if (AsyncEdgeType.is.Chain(parentEdgeType)) {
+        const parentAsyncNode = this.allNodeData.get(applicationId, parentAsyncNodeId);
+        {
+          const _row = parentAsyncNode.rowId + 1;
+          const _col = Math.max(parentAsyncNode.colId, colId);
+          const _height = rowId - _row;
+          if (_height) {
+            const positionProp = makeGridPositionProp(_row, _col, { rowSpan: _height });
+            html += /*html*/ `
+                <div style="${positionProp}" class="vt"></div>
+              `;
+          }
+        }
+      }
+      else if (AsyncEdgeType.is.Fork(parentEdgeType)) {
+        const parentAsyncNode = this.allNodeData.get(applicationId, parentAsyncNodeId);
+        {
+          // horizontal line
+          let _col = parentAsyncNode.colId + parentAsyncNode.width;
+          if (lastForkSiblingNodeId) {
+            const lastForkSibling = this.allNodeData.get(applicationId, lastForkSiblingNodeId);
+            _col = lastForkSibling.colId + 1;
+          }
+          const _width = colId - _col;
+          if (_width) {
+            const positionProp = makeGridPositionProp(parentAsyncNode.rowId, _col, { colSpan: _width });
+            html += /*html*/ `
+              <div style="${positionProp}" class="hz-d"></div>
+              `;
+          }
+        }
+        {
+          // vertical line
+          const _height = rowId - parentAsyncNode.rowId - 1;
+          if (_height) {
+            const positionProp = makeGridPositionProp(parentAsyncNode.rowId + 1, colId, { rowSpan: _height });
+            html += /*html*/ `
+                <div style="${positionProp}" class="vt-d"></div>
+              `;
+          }
+        }
+        {
+          // corner
+          const positionProp = makeGridPositionProp(parentAsyncNode.rowId, colId);
           html += /*html*/ `
-              <div style="${positionProp}" class="vt"></div>
+              <div style="${positionProp}" class="t-d"></div>
             `;
         }
       }
-      return html;
     }
-    else if (AsyncEdgeType.is.Fork(parentEdgeType)) {
-      let html = '';
-      const parentAsyncNode = this.allNodeData.get(applicationId, parentAsyncNodeId);
-      {
-        // horizontal line
-        let _col = parentAsyncNode.colId + parentAsyncNode.width;
-        if (lastForkSiblingNodeId) {
-          const lastForkSibling = this.allNodeData.get(applicationId, lastForkSiblingNodeId);
-          _col = lastForkSibling.colId + 1;
-        }
-        const _width = colId - _col;
-        if (_width) {
-          const positionProp = makeGridPositionProp(parentAsyncNode.rowId, _col, { colSpan: _width });
-          html += /*html*/ `
-            <div style="${positionProp}" class="hz-d"></div>
-            `;
-        }
-      }
-      {
-        // vertical line
-        const _height = rowId - parentAsyncNode.rowId - 1;
-        if (_height) {
-          const positionProp = makeGridPositionProp(parentAsyncNode.rowId + 1, colId, { rowSpan: _height });
-          html += /*html*/ `
-              <div style="${positionProp}" class="vt-d"></div>
-            `;
-        }
-      }
-      {
-        // corner
-        const positionProp = makeGridPositionProp(parentAsyncNode.rowId, colId);
-        html += /*html*/ `
-            <div style="${positionProp}" class="t-d"></div>
-          `;
-      }
-      return html;
-    }
-
-    return '';
+    return html;
   }
 
   makeHeaderEl() {

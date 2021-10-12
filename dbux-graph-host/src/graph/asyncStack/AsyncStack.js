@@ -25,19 +25,16 @@ class AsyncStack extends SyncGraphBase {
   }
 
   updateContextNodes() {
-    let roots;
+    let contexts = EmptyArray;
 
     const trace = traceSelection.selected;
     if (trace) {
       const { applicationId, traceId } = trace;
       const dp = allApplications.getById(applicationId).dataProvider;
-      roots = dp.util.getAsyncStackRoots(traceId);
-    }
-    else {
-      roots = EmptyArray;
+      contexts = dp.util.getAsyncStackContexts(traceId);
     }
 
-    this.updateByContexts(roots);
+    this.updateByContexts(contexts);
   }
 
   _resubscribeOnData() {

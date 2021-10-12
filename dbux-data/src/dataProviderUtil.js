@@ -156,7 +156,7 @@ export default {
    * @param {number} contextId 
    */
   getContextAsyncStackParent(dp, contextId) {
-    const { parentContextId, type } = dp.collections.executionContexts.getById(contextId);
+    const { parentContextId, contextType } = dp.collections.executionContexts.getById(contextId);
     if (!dp.util.isRootContext(contextId)) {
       // not a root, get real parent
       return dp.util.getRealContextOfContext(parentContextId);
@@ -164,7 +164,7 @@ export default {
     else {
       // is root, looking for async parent
       // go to "real parent"
-      if (isRealContextType(type)) {
+      if (isRealContextType(contextType)) {
         // if not virtual: go to async node's schedulerTrace
         // 1. get from node via asyncEdges
         // 2. get AsyncNode n of rootId = from
@@ -2086,7 +2086,7 @@ export default {
 
 
   /** @param {DataProvider} dp */
-  getAsyncStackRoots(dp, traceId) {
+  getAsyncStackContexts(dp, traceId) {
     const roots = [];
     // // skip first virtual context
     // const realContextId = dp.util.getRealContextIdOfTrace(traceId);
@@ -2321,7 +2321,8 @@ export default {
       nextTraceId = nextTrace?.traceId;
       nextRootId = nextTrace?.rootContextId;
     }
-    else {
+
+    if (!nextRootId) {
       const fromEdge = dp.indexes.asyncEvents.to.getUnique(u.rootId);
       nextTraceId = u.schedulerTraceId;
       nextRootId = fromEdge?.fromRootContextId;
