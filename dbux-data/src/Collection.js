@@ -149,7 +149,7 @@ export default class Collection {
   getAll() {
     return this._all;
   }
-  
+
   _invalidId = false;
 
   /**
@@ -168,7 +168,7 @@ export default class Collection {
         entry = this._all[id];
         recoverable = entry._id && entry._id === id;
       }
-      
+
       this._reportInvalidId(entry._id, id, idx, faultyEntry, recoverable);
 
       if (!recoverable) {
@@ -182,6 +182,11 @@ export default class Collection {
   _reportInvalidId(entryId, id, idx, faultyEntry, recoverable) {
     // eslint-disable-next-line max-len
     this.logger.error(`entry._id (${JSON.stringify(entryId)}) !== id (${JSON.stringify(id)}) (recoverable=${recoverable}) - First invalid entry is at #${idx}: ${JSON.stringify(faultyEntry)}`);
+  }
+
+  getCount() {
+    const n = this._all.length;
+    return this._all[0] ? n : n - 1;
   }
 
   getAllActual(startId = 1) {
@@ -209,7 +214,7 @@ export default class Collection {
     }
     return undefined;
   }
-  
+
   errorWrapMethod(methodName, ...args) {
     try {
       // build dynamic call expression tree

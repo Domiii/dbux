@@ -152,11 +152,13 @@ export function repeatPromise(condition, _nextTick = noop) {
 function _repeatPromise(condition, tickHandler) {
   let p = Promise.resolve();
   if (condition()) {
-    return p
-      .then(tickHandler)
-      .then(function nextTick() {
-        return _repeatPromise(condition, tickHandler);
-      });
+    if (tickHandler !== noop) {
+      // idle tick
+      p = p.then(tickHandler);
+    }
+    return p.then(function nextTick() {
+      return _repeatPromise(condition, tickHandler);
+    });
   }
   return p;
 }

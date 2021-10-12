@@ -16,6 +16,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { sha256String } from '@dbux/common-node/src/util/hashUtil';
 import Application from '@dbux/data/src/applications/Application';
 import allApplications from '@dbux/data/src/applications/allApplications';
+import AsyncEventType from '@dbux/common/src/types/constants/AsyncEventType';
 import TraceDetailNode from '../../traceDetailNode';
 import { makeTreeItem } from '../../../../helpers/treeViewHelpers';
 // eslint-disable-next-line max-len
@@ -33,36 +34,6 @@ const { log, debug, warn, error: logError } = newLogger('EdgeAnalysis');
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
 
-/** ###########################################################################
- * EdgeStatus
- * ##########################################################################*/
-
-const edgeStatusObj = {
-  Good: 1,
-
-  /** ########################################
-   * false forks
-   * #######################################*/
-
-  PromiseNotNested: 2,
-  CBPromisified: 3,
-  CB: 4,
-
-  /** ########################################
-   * other inaccuracies
-   * #######################################*/
-
-  /**
-   * Chained, but skipped one or more in chain, usually resulting in unwanted multi chain
-   * that should be a single chain.
-   */
-  Skipped: 11
-};
-
-/**
- * @type {Enum | typeof edgeStatusObj}
- */
-const EdgeStatus = new Enum(edgeStatusObj);
 
 /** ###########################################################################
  * utilities
@@ -90,17 +61,24 @@ export class EdgeAnnotationData {
   comment;
 }
 
-class AppMeta {
+export class AppMeta {
   appDataHash;
   appDataUuid;
   updatedAt;
 }
 
-class EdgeDataFile {
+export class AppStats {
+  traceCount;
+  aeCounts;
+}
+
+export class EdgeDataFile {
   /**
    * @type {AppMeta}
    */
   appMeta;
+
+  appStats;
 
   /**
    * @type {Object.<string, EdgeAnnotationData>}
@@ -263,7 +241,7 @@ class EdgeAnalysisController {
     const annotations = this.getAllAnnotations() || {};
     annotations[rootId] = merge(annotations[rootId] || {}, annotation);
     this.writeAnnotationsToFile(annotations);
-    
+
     // notify
     this.refreshOnData();
     this._dataEvents.emit('edges', rootId);
@@ -281,9 +259,34 @@ class EdgeAnalysisController {
     return getExperimentDataFilePath(experimentId);
   }
 
+  /**
+   * @returns {AppMeta}
+   */
   getAppMeta() {
     const data = this.getOrReadDataFile();
     return data?.appMeta;
+  }
+
+  /**
+   * @returns {AppStats}
+   */
+  getAppStats() {
+    const { dp } = this;
+    const edges = dp.collections.asyncEvents.getAllActual();
+    const traceCount = dp.collections.traces.getCount();
+    const edgeTypeIndexes = {
+      [AsyncEventType.Await]: 0,
+      [AsyncEventType.Then]: 1,
+      [AsyncEventType.Callback]: 2,
+      [AsyncEventType.None]: 3
+    };
+    const aeCounts = edges.reduce((counts, edge) => {
+      const type = dp.util.getAsyncRootEventType(edge.toRootContextId);
+      const idx = edgeTypeIndexes[type];
+      ++counts[idx];
+      return counts;
+    }, [0, 0, 0, 0] /* a, t, c, other */);
+    return { traceCount, aeCounts };
   }
 
   /**
@@ -341,7 +344,9 @@ class EdgeAnalysisController {
     const newAnnotations = data.annotations = Object.fromEntries(
       this.getAllEdgesSorted().map(e => {
         const rootId = e.toRootContextId;
-        const annotation = oldAnnotations[rootId] || { rootId };
+        let annotation = oldAnnotations[rootId] || this._makeAnnotation(rootId);
+        annotation = this.decorateAnnotation(rootId, annotation);
+
         return [rootId, annotation];
       })
     );
@@ -352,12 +357,24 @@ class EdgeAnalysisController {
       this._data.outdatedAnnotations = outdatedAnnotations;
       logError(`Discarding ${outdatedAnnotations.length} annotations:`, outdatedAnnotations);
     }
-    
-    if (!isEqual(oldAnnotations, newAnnotations)) {
+
+    // get appStats
+    const oldStats = data.appStats;
+    const newStats = data.appStats = this.getAppStats();
+
+    if (!isEqual(oldAnnotations, newAnnotations) || !isEqual(oldStats, newStats)) {
+      // write to file
       this.writeDataFile(this._data);
     }
 
     return this._data;
+  }
+
+  decorateAnnotation(rootId, annotation) {
+    annotation = { ...annotation };
+    const postUpdate = this.dp.util.getAsyncPostEventUpdateOfRoot(rootId);
+    annotation.edgeType = postUpdate.type;
+    return annotation;
   }
 
   /**
@@ -507,6 +524,12 @@ class EdgeAnalysisController {
    * data input
    * ##########################################################################*/
 
+  _makeAnnotation(rootId) {
+    return {
+      rootId
+    };
+  }
+
   _statusLabel(annotation, status) {
     const s = EdgeStatus.nameFrom(status);
     return selectedModalBtn(annotation.status === status, s);
@@ -516,7 +539,9 @@ class EdgeAnalysisController {
     if (rootId === this.currentEdgeRootId) {
       // -> show annotation UI
 
-      const annotation = { ...(this.getEdgeAnnotation(rootId) || { rootId }) };
+      let annotation = this.getEdgeAnnotation(rootId) || this._makeAnnotation(rootId);
+      annotation = this.decorateAnnotation(rootId, annotation);
+
       let repeat = true;
       let changed = false;
       do {

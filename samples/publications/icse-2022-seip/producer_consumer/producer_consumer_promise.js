@@ -25,6 +25,7 @@ function wait(queue) {
  *  #########################################################################*/
 
 function consume(index, ticks) {
+  // simulate work by waiting
   return waitTicksPromise(ticks)
     .then(function _finishConsume() {
       finishConsume(index);
@@ -33,6 +34,7 @@ function consume(index, ticks) {
 }
 
 function produce(index, ticks) {
+  // simulate work by waiting
   return waitTicksPromise(ticks)
     .then(function _finishProduce() {
       finishProduce(index);

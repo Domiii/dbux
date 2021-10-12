@@ -1,5 +1,5 @@
 import { N, startProduce, finishProduce, startConsume, finishConsume, hasSpace, hasItems, getProduceTime, getConsumeTime, } from './producer_consumer_base';
-import { waitTicksCallback } from '../../../util/asyncUtil';
+import { schedule, waitTicksCallback } from '../../../util/asyncUtil';
 
 const IdleTime = 3;
 
@@ -29,7 +29,7 @@ function produce(next) {
 
 function producer(n) {
   const next = () => {
-    setImmediate(tryProduce);
+    schedule(tryProduce);
     // tryProduce();
   }
   function tryProduce() {
@@ -49,7 +49,7 @@ function producer(n) {
 
 function consumer(n) {
   const next = () => {
-    setImmediate(tryConsume);
+    schedule(tryConsume);
     // tryConsume();
   }
   function tryConsume() {

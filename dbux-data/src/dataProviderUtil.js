@@ -21,6 +21,7 @@ import SpecialCallType from '@dbux/common/src/types/constants/SpecialCallType';
 import PromiseLinkType from '@dbux/common/src/types/constants/PromiseLinkType';
 import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
 import AsyncEventUpdateType, { isPostEventUpdate, isPreEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
+import AsyncEventType, { getAsyncEventTypeOfAsyncEventUpdateType } from '@dbux/common/src/types/constants/AsyncEventType';
 import { AsyncUpdateBase, PreCallbackUpdate } from '@dbux/common/src/types/AsyncEventUpdate';
 import { locToString } from './util/misc';
 import { makeContextSchedulerLabel, makeTraceLabel } from './helpers/makeLabels';
@@ -1924,6 +1925,17 @@ export default {
 
   /**
    * @param {DataProvider} dp
+   */
+  getAsyncRootEventType(dp, toRootId) {
+    const postUpdate = dp.util.getAsyncPostEventUpdateOfRoot(toRootId);
+    if (!postUpdate) {
+      return AsyncEventType.None;
+    }
+    return getAsyncEventTypeOfAsyncEventUpdateType(postUpdate.type);
+  },
+
+  /**
+   * @param {DataProvider} dp
    * @return {AsyncEventUpdate}
    */
   getAsyncPreEventUpdateOfTrace(dp, schedulerTraceId) {
@@ -1989,6 +2001,7 @@ export default {
 
   /**
    * NOTE: Any Post* update should be unique to its root.
+   * @return {AsyncEventUpdate}
    */
   getAsyncPostEventUpdateOfRoot(dp, rootId) {
     const updates = dp.indexes.asyncEventUpdates.byRoot.get(rootId);
