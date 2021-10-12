@@ -1,6 +1,7 @@
 import AsyncTDNode from './AsyncTDNodes';
 import { DebugTDNode } from './DebugTDNode';
 import ExecutionsTDNode from './ExecutionsTDNodes';
+import { makeResearchNodes } from './research';
 // import StaticContextTDNode from './StaticContextTDNodes';
 // import TrackObjectTDNode from './TrackObjectTDNodes';
 import ValueTDRefNode from './ValueTDRefNode';
@@ -23,5 +24,7 @@ export const DetailNodeClasses = [
   // StaticContextTDNode,
   // InfoTDNode,
   AsyncTDNode,
-  DebugTDNode
+  DebugTDNode,
+  
+  ...makeResearchNodes()
 ];

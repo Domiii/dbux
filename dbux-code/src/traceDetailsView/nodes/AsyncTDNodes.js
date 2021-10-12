@@ -67,7 +67,8 @@ class RootEdgesTDNode extends TraceDetailNode {
             let targetTrace;
             if (isFrom) {
               // FROM -> go to scheduler
-              const asyncNode = dp.util.getAsyncNode(rootId);
+              // NOTE: evt.toRootContextId should also be equal to selectedTrace.rootContextId
+              const asyncNode = dp.util.getAsyncNode(evt.toRootContextId);
               targetTrace = dp.collections.traces.getById(asyncNode?.schedulerTraceId);
             }
             else {

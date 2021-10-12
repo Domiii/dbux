@@ -6,6 +6,7 @@ import Project from '../../projectLib/Project';
 export default class SequelizeProject extends Project {
   gitRemote = 'sequelize/sequelize.git';
   /**
+   * @see https://github.com/sequelize/sequelize/tree/v6.6.5
    * @see https://github.com/sequelize/sequelize/tags
    * @see https://github.com/sequelize/sequelize/releases/tag/v6.6.5
    */
@@ -73,18 +74,26 @@ export default class SequelizeProject extends Project {
         label: 'error1-sqlite',
         testFilePaths: ['error1.js']
       },
-      {
-        label: 'findOrCreate-atomic-violation',
-        tag: 'v3.5.1',
-        patch: 'findOrCreate-av1',
-        testFilePaths: ['findOrCreate-av1.js']
-      },
+      // {
+      //   label: 'findOrCreate-atomic-violation',
+      //   tag: 'v3.5.1',
+      //   patch: 'findOrCreate-av1',
+      //   testFilePaths: ['findOrCreate-av1.js']
+      // },
       {
         label: 'findOrCreate-serial',
         testFilePaths: ['findOrCreate-serial.js']
       },
       {
+        name: 'findOrCreate-parallel',
+        hasAssets: true,
         label: 'findOrCreate-parallel',
+        testFilePaths: ['findOrCreate-parallel.js']
+      },
+      {
+        name: 'findOrCreate-parallel-rewrite',
+        hasAssets: true,
+        label: 'findOrCreate-parallel-rewrite',
         testFilePaths: ['findOrCreate-parallel.js']
       },
     ];

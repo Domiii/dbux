@@ -282,8 +282,7 @@ export class DebugTDNode extends TraceDetailNode {
         ...allDataNodes,
         ['staticTrace', staticTrace],
         ['staticContext', staticContext],
-        ['staticProgramContext', staticProgramContext],
-        // promiseNode
+        ['staticProgramContext', staticProgramContext]
       )
     ];
 

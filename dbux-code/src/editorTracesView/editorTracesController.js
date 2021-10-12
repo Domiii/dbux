@@ -68,13 +68,13 @@ class EditorTracesController {
 // init
 // ###########################################################################
 
-/**
- * @param {ExtensionContext} context 
- */
-export function initEditorTracesView(context) {
-  controller = new EditorTracesController();
-  controller.initOnActivate(context);
+// /**
+//  * @param {ExtensionContext} context 
+//  */
+// export function initEditorTracesView(context) {
+//   controller = new EditorTracesController();
+//   controller.initOnActivate(context);
 
-  // refresh right away
-  controller.treeDataProvider.refresh();
-}
+//   // refresh right away
+//   controller.treeDataProvider.refresh();
+// }

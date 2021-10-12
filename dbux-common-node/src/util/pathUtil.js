@@ -1,6 +1,7 @@
 import sh from 'shelljs';
 import fs from 'fs';
 import path from 'path';
+import commonAncestorPath from 'common-ancestor-path';
 
 /**
  * Get command executable path
@@ -65,4 +66,20 @@ export function pathNormalizedForce(fpath) {
 export function parseNodeModuleName(fpath) {
   const matchResult = fpath.match(/(?<=node_modules[/\\])(?!node_modules)(?<packageName>[^/\\]+)(?=[/\\](?!node_modules).*)/);
   return matchResult?.groups.packageName || null;
+}
+
+export function getPathRelativeToCommonAncestor(fpath, ...otherPaths) {
+  const common = getCommonAncestorPath(fpath, ...otherPaths);
+  return pathNormalizedForce(
+    common &&
+    pathRelative(common, fpath) ||
+    fpath
+  );
+}
+
+/**
+ * @see https://github.com/isaacs/common-ancestor-path#readme
+ */
+export function getCommonAncestorPath(...paths) {
+  return commonAncestorPath(...paths);
 }

@@ -1,11 +1,10 @@
-import minBy from 'lodash/minBy';
-import maxBy from 'lodash/maxBy';
 import pull from 'lodash/pull';
 import isPlainObject from 'lodash/isPlainObject';
 // import isString from 'lodash/isString';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Queries from './queries/Queries';
 import Indexes from './indexes/Indexes';
+import CollectionIndex from './indexes/CollectionIndex';
 
 export default class DataProviderBase {
   /**
@@ -48,6 +47,11 @@ export default class DataProviderBase {
    * @type {number[]}
    */
   versions = [];
+
+  /**
+   * @type {Object.<string, Object.<string, CollectionIndex?>>}
+   */
+  indexes;
 
   queryImpl = {};
 
@@ -363,6 +367,12 @@ export default class DataProviderBase {
         this.logger.error('Data event listener failed', err);
       }
     });
+  }
+
+  serializeCollectionsJson(names) {
+    return this.serializeJson(names.map(name => (
+      [name, this.collections[name]._all]
+    )));
   }
 
   /**

@@ -253,7 +253,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
 
     const logFolderPath = manager.externals.resources.getLogsDirectory();
     if (!fs.existsSync(logFolderPath)) {
-      fs.mkdirSync(logFolderPath);
+      fs.mkdirSync(logFolderPath, { recursive: true });
     }
 
     this.reset();

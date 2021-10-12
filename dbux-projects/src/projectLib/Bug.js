@@ -46,7 +46,7 @@ export default class Bug {
   watchFilePaths;
 
   /**
-   * Either all bugs have an assigned an id, or none do (and id will be auto-assigned by project)
+   * Uniquely identifies this bug across projects.
    */
   id;
   title;

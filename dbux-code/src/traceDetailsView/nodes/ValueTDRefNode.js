@@ -15,7 +15,7 @@ export default class ValueTDRefNode extends ValueNode {
     const dataTrace = dp.util.getValueTrace(traceId);
     const { nodeId } = dataTrace;
     const dataNode = dp.collections.dataNodes.getById(nodeId);
-    if (dataNode && dataNode.refId) {
+    if (dataNode && dataNode.refId && dp.collections.values.getById(dataNode.refId)) {
       return dataNode;
     }
 

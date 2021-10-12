@@ -20,7 +20,19 @@ const { log, debug, warn, error: logError } = newLogger('applications');
  * ApplicationCollection manages all application throughout the life-time of the dbux-data module.
  */
 export class AllApplications {
+  /** ###########################################################################
+   * these are configuired by the outside
+   * ##########################################################################*/
   DefaultApplicationClass = Application;
+
+  /**
+   * In dbux-code, this is the project folder.
+   */
+  appRoot;
+
+  /** ###########################################################################
+   * variables
+   * ##########################################################################*/
 
   /**
    * @type {Application[]}
@@ -103,15 +115,24 @@ export class AllApplications {
     const {
       entryPointPath,
       createdAt,
-      uuid
+      uuid,
+      ...other
     } = initialData;
 
+    // create application
     const applicationId = this._all.length;
     const application = new this.DefaultApplicationClass(applicationId, entryPointPath, createdAt, this, uuid);
-    const previousApplication = this.getActiveApplicationByEntryPoint(entryPointPath);
+    Object.assign(application, other);
 
+    // update application selection
+    const previousApplication = this.getActiveApplicationByEntryPoint(entryPointPath);
     this._activeApplicationsByPath.set(entryPointPath, application);
     this._all[applicationId] = application;
+
+    // optional init
+    application.init?.();
+
+
 
     // if (previousApplication) {
     //   this._emitter.emit('restarted', application, previousApplication);

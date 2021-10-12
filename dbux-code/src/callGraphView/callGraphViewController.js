@@ -164,15 +164,15 @@ export class CallGraphViewController {
 // init
 // ###########################################################################
 
-/**
- * @param {ExtensionContext} context 
- */
-export function initCallGraphView(context) {
-  controller = new CallGraphViewController();
-  controller.initOnActivate(context);
+// /**
+//  * @param {ExtensionContext} context 
+//  */
+// export function initCallGraphView(context) {
+//   controller = new CallGraphViewController();
+//   controller.initOnActivate(context);
 
-  // refresh right away
-  controller.refresh();
+//   // refresh right away
+//   controller.refresh();
 
-  return controller;
-}
+//   return controller;
+// }

@@ -1,6 +1,6 @@
 import lockfile from 'lockfile';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { getOrCreateProjectManager } from '../projectViews/projectControl';
+import { getProjectManager } from '../projectViews/projectControl';
 import { runTaskWithProgressBar } from './runTaskWithProgressBar';
 import { showWarningMessage } from './codeModals';
 import { asAbsolutePath } from './codePath';
@@ -9,7 +9,7 @@ import { asAbsolutePath } from './codePath';
 const { log, debug, warn, error: logError } = newLogger('installUtil');
 
 export async function installDbuxDependencies() {
-  const projectManager = getOrCreateProjectManager();
+  const projectManager = getProjectManager();
   const missingDependencies = projectManager.getMissingSharedDependencies();
 
   debug(`Checking library dependencies. Found ${missingDependencies.length} missing: ${missingDependencies.join(', ')}`);

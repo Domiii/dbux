@@ -161,8 +161,8 @@ export default class RuntimeDataStatsReporter {
       Object.entries(data)
         .map(([key, arr]) => ([key, {
           len: arr.length,
-          min: minBy(arr, entry => entry._id)?._id,
-          max: maxBy(arr, entry => entry._id)?._id
+          min: minBy(arr, entry => entry?._id || 0)?._id || 0,
+          max: maxBy(arr, entry => entry?._id || 0)?._id || 0
         }]))
     );
 

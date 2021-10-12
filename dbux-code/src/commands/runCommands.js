@@ -4,7 +4,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { pathNormalizedForce, realPathSyncNormalized } from '@dbux/common-node/src/util/pathUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { checkSystem } from '@dbux/projects/src/checkSystem';
-import { getOrCreateProjectManager } from '../projectViews/projectControl';
+import { getProjectManager } from '../projectViews/projectControl';
 import { runInTerminalInteractive } from '../codeUtil/terminalUtil';
 import { initRuntimeServer } from '../net/SocketServer';
 import { installDbuxDependencies } from '../codeUtil/installUtil';
@@ -65,7 +65,7 @@ export async function runFile(extensionContext, debugMode = false) {
     return;
   }
 
-  const projectManager = getOrCreateProjectManager();
+  const projectManager = getProjectManager();
 
   // resolve path
   const activeEditor = window.activeTextEditor;

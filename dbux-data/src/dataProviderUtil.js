@@ -1347,13 +1347,17 @@ export default {
       return contextId;
     }
     else if (
+      parentContextId &&
       (parentContext = dp.collections.executionContexts.getById(parentContextId)) &&
       isRealContextType(parentContext.contextType)
     ) {
       return parentContextId;
     }
     else {
-      dp.logger.trace('Could not find realContext for contextId', contextId);
+      // if (parentContextId && !dp.collections.executionContexts.getById(parentContextId))
+
+      // eslint-disable-next-line max-len
+      dp.logger.trace(`Could not find realContext for contextId=${contextId}, parentContextId=${parentContextId}, parentContext=`, dp.collections.executionContexts.getById(parentContextId));
       return null;
     }
   },
@@ -1934,7 +1938,7 @@ export default {
   /** @param {DataProvider} dp */
   getLastAsyncPostEventUpdateOfTrace(dp, schedulerTraceId, beforeRootId) {
     const updates = dp.indexes.asyncEventUpdates.byTrace.get(schedulerTraceId);
-    return findLast(updates, upd => upd.rootId <= beforeRootId && isPostEventUpdate(upd.type));
+    return findLast(updates, upd => upd.rootId < beforeRootId && isPostEventUpdate(upd.type));
   },
 
   /** @param {DataProvider} dp */
@@ -2233,7 +2237,7 @@ export default {
         if (/* !isFirstAwait || */ u.contextId === u.rootId) {
           return u.rootId;  // already at root (can't go up any further)
         }
-        return dp.util.UP(u.promiseId, beforeRootId, nestingUpdates) || 0;
+        return u.promiseId && dp.util.UP(u.promiseId, beforeRootId, nestingUpdates) || 0;
       }
     }
     else if ((u = dp.util.getFirstPreThenUpdateOfPromise(nestedPromiseId)) &&
@@ -2286,11 +2290,17 @@ export default {
 
   /** @param {DataProvider} dp */
   getNestedAncestors(dp, rootId) {
-    const asyncNode = dp.util.getAsyncNode(rootId);
-    if (!asyncNode._nestedAncestors) {
-      asyncNode._nestedAncestors = dp.util._getNestedAncestors(rootId);
+    try {
+      const asyncNode = dp.util.getAsyncNode(rootId);
+      if (!asyncNode._nestedAncestors) {
+        asyncNode._nestedAncestors = dp.util._getNestedAncestors(rootId);
+      }
+      return asyncNode._nestedAncestors;
     }
-    return asyncNode._nestedAncestors;
+    catch (err) {
+      logError(`Unable to getNestedAncestors for rootId=${rootId}`, err);
+      return [];
+    }
   },
 
   /** 
@@ -2363,7 +2373,7 @@ export default {
       // potentially nested for synchronization -> do not go deeper
       // const chainFrom = dp.util.getChainFrom(nestedUpdate.rootId); // store for debugging
       syncPromiseIds.push(nestingPromiseId);
-      log(`SYNC`, postUpdateData, nestingPromiseId);
+      // log(`SYNC`, postUpdateData, nestingPromiseId);
       return null;
     }
     else {
@@ -2402,14 +2412,6 @@ export default {
           nestedUpdate = dp.util.GNPU(nestedLink.from, beforeRootId, syncBeforeRootId, postUpdateData, depth + 1, visited) || nestedUpdate;
         }
         else if (nestedLink.asyncPromisifyPromiseId) {
-          if (!nestedUpdate) {
-            // Promise ctor's resolve was called while this AE was waiting for it.
-            //    Also, there was no nestedUpdate, meaning resolve was called 
-            //      outside of a promisified callback.
-            //    -> means it was called by a root outside this AE's own thread.
-            syncPromiseIds.push(nestingPromiseId);
-            return null;
-          }
           //   // promisify linkage, encountering `p` in `C()` in:
           //   //  `A(); p.then(() => (B(), p)).then(C)`
           //   // NOTE: nestedLink is created when `resolve`/`reject` is called
@@ -2451,6 +2453,15 @@ export default {
             logError(`Unexpected PreAwait in DOWN: ${nestingPromiseId} -> ${u.nestedPromiseId} (${u.rootId})`);
             // return dp.util.GNPU(u.nestedPromiseId, beforeRootId, syncBeforeRootId, postUpdateData, 1, visited);
           }
+        }
+
+        if (!nestedUpdate && nestedLink?.asyncPromisifyPromiseId) {
+          // Promise ctor's resolve was called while this AE was waiting for it.
+          //    Also, there was no nestedUpdate, meaning resolve was called 
+          //      outside of a promisified callback.
+          //    -> means it was called by a root outside this AE's own thread.
+          syncPromiseIds.push(nestingPromiseId);
+          return null;
         }
       }
       return nestedUpdate;
@@ -2726,8 +2737,11 @@ export default {
         nestingUpdates
       };
       const syncBeforeRootId = preEventRootId;
-      rootIdDown = postPreEventUpdate?.promiseId &&
-        util.DOWN(postPreEventUpdate?.promiseId, beforeRootId, syncBeforeRootId, promisePostUpdateData) || 0;
+      const lastOfPromise = dp.util.getLastAsyncPostEventUpdateOfPromise(preEventPromiseId, beforeRootId);
+      rootIdDown = lastOfPromise?.rootId ||
+        postPreEventUpdate?.promiseId &&
+        util.DOWN(postPreEventUpdate?.promiseId, beforeRootId, syncBeforeRootId, promisePostUpdateData) || 
+        0;
       rootIdUp = util.UP(chainToPromiseId, beforeRootId, nestingUpdates);
 
       nestingUpdates.push(preEventUpdate.updateId); // PostCallback always adds its own scheduler as a nesting level
@@ -2738,25 +2752,27 @@ export default {
     else {
       // Case 2: heuristics
       if (firstPostEventHandlerUpdate && firstPostEventHandlerUpdate.rootId < beforeRootId) {
-        // Heuristic 1: event listener -> repeated calls of same trace
-        chainFromRootId = firstPostEventHandlerUpdate.rootId;
+        // Heuristic 1: event listener -> repeated calls of same scheduler trace
+        // chainFromRootId = firstPostEventHandlerUpdate.rootId;
+        chainFromRootId = dp.util.getLastAsyncPostEventUpdateOfTrace(schedulerTraceId, beforeRootId)?.rootId || 
+          firstPostEventHandlerUpdate.rootId;
       }
       else {
-        const preEventUpdates = util.getAsyncPreEventUpdatesOfRoot(preEventRootId);
-        if (preEventUpdates.length === 1) {
-          // Heuristic 2: this is the only pre-event in the pre-event's root -> CHAIN
-          //    (meaning its the only Pre async event scheduled from the same root)
+        // const preEventUpdates = util.getAsyncPreEventUpdatesOfRoot(preEventRootId);
+        // if (preEventUpdates.length === 1) {
+        //   // Heuristic 2: this is the only pre-event in the pre-event's root -> CHAIN
+        //   //    (meaning its the only Pre async event scheduled from the same root)
+        //   chainFromRootId = preEventRootId;
+        // }
+        // else {
+        const thisStaticContextId = util.getContextStaticContext(postEventRootId);
+        const lastStaticContextId = util.getContextStaticContext(preEventRootId);
+
+        if (thisStaticContextId === lastStaticContextId) {
+          // Heuristic 2: recursive or repeating same function
           chainFromRootId = preEventRootId;
         }
-        if (!chainFromRootId) {
-          const thisStaticContextId = util.getContextStaticContext(postEventRootId);
-          const lastStaticContextId = util.getContextStaticContext(preEventRootId);
-
-          if (thisStaticContextId === lastStaticContextId) {
-            // Heuristic 3: recursive or repeating same function
-            chainFromRootId = preEventRootId;
-          }
-        }
+        // }
       }
     }
 

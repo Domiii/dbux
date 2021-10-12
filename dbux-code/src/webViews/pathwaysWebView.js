@@ -3,7 +3,7 @@ import {
 } from 'vscode';
 import PathwaysHost from '@dbux/graph-host/src/PathwaysHost';
 import { goToTrace, goToCodeLoc } from '../codeUtil/codeNav';
-import { getOrCreateProjectManager } from '../projectViews/projectControl';
+import { getProjectManager } from '../projectViews/projectControl';
 import RichWebView from './RichWebView';
 import { decorateVisitedTraces, stopDecorating } from './pathwaysDecorations';
 
@@ -16,7 +16,7 @@ export default class PathwaysWebView extends RichWebView {
   }
 
   get pdp() {
-    return getOrCreateProjectManager().pdp;
+    return getProjectManager().pdp;
   }
 
   getIcon() {
@@ -36,7 +36,7 @@ export default class PathwaysWebView extends RichWebView {
     goToTrace,
     goToCodeLoc,
     onPracticeSessionStateChanged(cb) {
-      return getOrCreateProjectManager().onPracticeSessionStateChanged(cb);
+      return getProjectManager().onPracticeSessionStateChanged(cb);
     },
     getPathwaysDataProvider: () => this.pdp,
 

@@ -6,7 +6,7 @@ import SessionNodeProvider from './sessionView/SessionNodeProvider';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import OutputChannel from './OutputChannel';
 import { getStopwatch } from './practiceStopwatch';
-import { getOrCreateProjectManager } from './projectControl';
+import { getProjectManager } from './projectControl';
 import { initProjectCommands } from '../commands/projectCommands';
 import { get as mementoGet, set as mementoSet } from '../memento';
 import { showInformationMessage } from '../codeUtil/codeModals';
@@ -43,7 +43,7 @@ export function showOutputChannel() {
 
 export class ProjectViewController {
   constructor(context) {
-    this.manager = getOrCreateProjectManager(context);
+    this.manager = getProjectManager(context);
 
     // ########################################
     //  init treeView

@@ -1,3 +1,4 @@
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { TreeItem } from 'vscode';
 
 /** @typedef {import('./BaseTreeViewNodeProvider').default} BaseTreeViewNodeProvider */
@@ -10,6 +11,12 @@ export default class BaseTreeViewNode extends TreeItem {
   children = null;
 
   /**
+   * Classes of child nodes to be generated (one per class).
+   * Is only used if `buildChildren` is not implemented.
+   */
+  childClasses = null;
+
+  /**
    * @type {BaseTreeViewNodeProvider}
    */
   treeNodeProvider;
@@ -19,7 +26,7 @@ export default class BaseTreeViewNode extends TreeItem {
   }
 
   constructor(treeNodeProvider, label, entry, parent, moreProps) {
-    super(label);
+    super(label, moreProps?.collapsibleState);
 
     this.entry = entry;
     this.treeNodeProvider = treeNodeProvider;
@@ -40,10 +47,10 @@ export default class BaseTreeViewNode extends TreeItem {
 
   /**
    * @virtual
-   * @return true if it has `children` or a `buildChildren` method
+   * @return true if it has `children` or a `buildChildren` method or childClasses (used by buildChildrenDefault)
    */
   canHaveChildren() {
-    return !!this.children || !!this.buildChildren;
+    return !!this.children || !!this.buildChildren || !!this.childClasses;
   }
 
   /**
@@ -59,6 +66,25 @@ export default class BaseTreeViewNode extends TreeItem {
    */
   handleClick() {
     // default: do nothing
+  }
+
+  /**
+   * future-work: generalize to be used by all buildNode algorithms?
+   */
+  makeChildPropsDefault() {
+    return EmptyObject;
+  }
+
+
+  buildChildrenDefault() {
+    if (!this.childClasses) {
+      return null;
+    }
+
+    return this.childClasses.map(Clazz => {
+      const props = this.makeChildPropsDefault(Clazz);
+      return this.treeNodeProvider.buildNode(Clazz, this.entry, this, props);
+    });
   }
 
   // /**

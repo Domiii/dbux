@@ -1,4 +1,4 @@
-import { pathJoin, pathNormalizedForce } from '@dbux/common-node/src/util/pathUtil';
+import { pathJoin, pathNormalizedForce, pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import {
   ExtensionContext,
   Uri
@@ -13,12 +13,23 @@ export function getResourcePath(...relativePathSegments) {
   return asAbsolutePath(pathJoin('resources', ...relativePathSegments));
 }
 
-export function getLogsDirectory() {
-  return asAbsolutePath('logs');
+export function getUserDataDirectory() {
+  return asAbsolutePath('userdata');
 }
 
+export function getLogsDirectory() {
+  return pathResolve(getUserDataDirectory(), 'logs');
+}
+
+export function getDefaultExportDirectory() {
+  return pathResolve(getUserDataDirectory(), 'exports');
+}
+
+/**
+ * @returns normalized, absolute path to the dbux-code extension directory.
+ */
 export function getCodeDirectory() {
-  return context.asAbsolutePath('.');
+  return asAbsolutePath('.');
 }
 
 export function getThemeResourcePath(...relativePathSegments) {

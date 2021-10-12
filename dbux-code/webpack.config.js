@@ -34,7 +34,8 @@ module.exports = (env, argv) => {
     new webpack.EnvironmentPlugin({
       NODE_ENV: mode,
       DBUX_VERSION,
-      DBUX_ROOT
+      DBUX_ROOT,
+      RESEARCH: '1' // NOTE: all env vars must be strings
     }),
     new CopyPlugin({
       patterns: [
@@ -152,6 +153,10 @@ module.exports = (env, argv) => {
     externals: {
       uws: "uws",
       vscode: "commonjs vscode",
+      /**
+       * @see https://github.com/cthackers/adm-zip/issues/242
+       */
+      'original-fs': 'original-fs',
       firebase: 'commonjs firebase'
     },
     node: {

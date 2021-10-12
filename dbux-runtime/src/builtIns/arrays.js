@@ -38,17 +38,64 @@ export default function patchArray() {
       }
 
       const { traceId: callId, data: { argTids } } = bceTrace;
-      const objectNodeId = getNodeIdFromRef(ref);
+      const arrNodeId = getNodeIdFromRef(ref);
 
       for (let i = 0; i < args.length; ++i) {
         const varAccess = {
-          objectNodeId,
+          objectNodeId: arrNodeId,
           prop: arr.length + i
         };
-        // console.debug(`[Array.push] #${traceId} ref ${ref.refId}, node ${nodeId}, objectNodeId ${objectNodeId}`);
+        // console.debug(`[Array.push] #${traceId} ref ${ref.refId}, node ${nodeId}, arrNodeId ${arrNodeId}`);
         const argTid = argTids[i];
         const inputs = [traceCollection.getOwnDataNodeIdByTraceId(argTid)];
         dataNodeCollection.createDataNode(args[i], callId, DataNodeType.Write, varAccess, inputs);
+      }
+
+      // [edit-after-send]
+      bceTrace.data = bceTrace.data || {};
+      bceTrace.data.monkey = {
+        wireInputs: true
+      };
+
+      return originalFunction.apply(arr, args);
+    }
+  );
+
+  // ###########################################################################
+  // shift
+  // ###########################################################################
+
+  monkeyPatchMethod(Array, 'shift',
+    (arr, args, originalFunction, patchedFunction) => {
+      const ref = valueCollection.getRefByValue(arr);
+      const bceTrace = ref && peekBCEMatchCallee(patchedFunction);
+      if (!bceTrace) {
+        return originalFunction.apply(arr, args);
+      }
+
+      const { traceId: callId } = bceTrace;
+      const arrNodeId = getNodeIdFromRef(ref);
+
+      // delete first
+      const shiftVarAccess = {
+        arrNodeId,
+        prop: 0
+      };
+      dataNodeCollection.createOwnDataNode(undefined, callId, DataNodeType.Delete, shiftVarAccess);
+
+      // move up all other elements
+      for (let i = 1; i < arr.length; ++i) {
+        const varAccessRead = {
+          objectNodeId: arrNodeId,
+          prop: i
+        };
+        const readNode = dataNodeCollection.createDataNode(arr[i], callId, DataNodeType.Read, varAccessRead);
+
+        const varAccessWrite = {
+          objectNodeId: arrNodeId,
+          prop: i - 1
+        };
+        dataNodeCollection.createWriteNodeFromReadNode(callId, readNode, varAccessWrite);
       }
 
       // [edit-after-send]

@@ -4,6 +4,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { getThemeResourcePath } from './codePath';
 import { registerCommand } from '../commands/commandUtil';
 import { emitTreeViewAction, emitTreeViewCollapseChangeAction } from '../userEvents';
+import NestedError from '@dbux/common/src/NestedError';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('BaseTreeViewNodeProvider');
@@ -137,7 +138,7 @@ export default class BaseTreeViewNodeProvider {
   /**
    * @virtual
    */
-  handleClick = (node) => {
+  handleClick = async (node) => {
     const treeViewName = this.viewName;
     const action = ''; // not a button click
     const nodeId = node.id;
@@ -151,7 +152,12 @@ export default class BaseTreeViewNodeProvider {
       emitTreeViewAction(treeViewName, action, nodeId, node.label, clickUserActionType, args);
     }
 
-    node.handleClick?.();
+    try {
+      await node.handleClick?.();
+    }
+    catch (err) {
+      throw new NestedError(`handleClick failed`, err);
+    }
   }
 
   handleNodeCollapsibleStateChanged = (node) => {
@@ -183,7 +189,7 @@ export default class BaseTreeViewNodeProvider {
   }
 
   buildChildren(node) {
-    node.children = node.buildChildren();
+    node.children = node.buildChildren && node.buildChildren() || node.buildChildrenDefault();
     this.decorateChildren(node);
     return node.children;
   }

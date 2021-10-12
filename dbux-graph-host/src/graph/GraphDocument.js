@@ -22,9 +22,9 @@ class GraphDocument extends HostComponentEndpoint {
     this.createOwnComponents();
 
     // NOTE: this will be called immediately
-    allApplications.selection.onApplicationsChanged(() => {
+    this.addDisposable(allApplications.selection.onApplicationsChanged(() => {
       this.refreshGraphs();
-    });
+    }));
   }
 
   createOwnComponents() {

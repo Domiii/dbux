@@ -1,10 +1,12 @@
 import { v4 as uuidv4 } from 'uuid';
 import { performance } from '@dbux/common/src/util/universalLibs';
-import { pathGetParent } from '@dbux/common/src/util/pathUtil';
+import { pathGetParent, pathSafe } from '@dbux/common/src/util/pathUtil';
+import { getPathRelativeToCommonAncestor, pathNormalizedForce, pathRelative } from '@dbux/common-node/src/util/pathUtil';
 import RuntimeDataProvider from '../RuntimeDataProvider';
 import { newDataProvider } from '../dataProviderImpl';
 import { getFileName } from '../util/nodeUtil';
 
+/** @typedef { import("./allApplications").AllApplications } AllApplications */
 
 /**
  * A user-run application, consisting of many `Program`s.
@@ -23,6 +25,7 @@ export default class Application {
   entryPointPath;
   /**
    * @readonly
+   * @type {AllApplications}
    */
   allApplications;
   /**
@@ -30,6 +33,19 @@ export default class Application {
    * @readonly
    */
   dataProvider;
+
+  /**
+   * Set only if an application is associated with a "project".
+   * @type {string}
+   */
+  projectName;
+
+  /**
+   * Set only if an application is associated with an "experiment" (project -> bug)
+   * @type {string}
+   */
+  experimentId;
+
   /**
    * time of creation in milliseconds since vscode started
    * @type {number}
@@ -44,11 +60,15 @@ export default class Application {
   constructor(applicationId, entryPointPath, createdAt, allApplications, uuid = uuidv4()) {
     this.uuid = uuid;
     this.applicationId = applicationId;
-    this.entryPointPath = entryPointPath;
+    this.entryPointPath = pathNormalizedForce(entryPointPath);
     // this.relativeEntryPointPath = path.relative(entryPointPath, process.cwd()); // path relative to cwd
     this.allApplications = allApplications;
     this.dataProvider = newDataProvider(this);
     this.createdAt = this.updatedAt = createdAt || Date.now();
+  }
+
+  get isExperiment() {
+    return !!this.experimentId;
   }
 
   addData(allData, isRaw) {
@@ -69,15 +89,31 @@ export default class Application {
     // }
   }
 
+  /**
+   * Uses global appRoot.
+   */
+  getRelativeEntryPoint() {
+    const { appRoot } = this.allApplications;
+    const entryPoint = this.entryPointPath;
+    // return appRoot && getPathRelativeToCommonAncestor(entryPoint, appRoot) || entryPoint;
+    return appRoot && pathRelative(appRoot, entryPoint) || entryPoint;
+  }
+
   getRelativeFolder() {
-    // Needs external help to do it; e.g. in VSCode, can use workspace-relative path.
-    return pathGetParent(this.entryPointPath);
+    return pathGetParent(this.getRelativeEntryPoint());
   }
 
   /**
-   * TODO: make this cross-platform (might run this where we don't have Node)
+   * 
    */
   getPreferredName() {
+    if (this.experimentId) {
+      return this.experimentId;
+    }
+    return this.getPreferredFileName();
+  }
+
+  getPreferredFileName() {
     const { staticProgramContexts } = this.dataProvider.collections;
     const fileCount = staticProgramContexts.size;
     if (fileCount !== 1) {
@@ -98,10 +134,11 @@ export default class Application {
   }
 
   getSafeFileName() {
-    return (this.getPreferredName())?.replace(/[:\\/]/g, '-');
+    const name = this.getPreferredName();
+    return name && pathSafe(name);
   }
 
   toString() {
-    return `App #${this.applicationId} @${this.entryPointPath}`;
+    return `${this.getPreferredName()} #${this.applicationId} @${this.entryPointPath}`;
   }
 }

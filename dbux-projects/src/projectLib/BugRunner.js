@@ -161,6 +161,8 @@ export default class BugRunner {
   }
 
   /**
+   * WARNING: Should only be called by switchToBug.
+   * 
    * @param {Bug} bug 
    */
   async activateBug(bug) {

@@ -12,10 +12,10 @@ let controller;
 
 class ApplicationsViewController {
   constructor() {
-    this.treeDataProvider = new ApplicationNodeProvider();
-    this.treeView = this.treeDataProvider.treeView;
+    this.treeNodeProvider = new ApplicationNodeProvider();
+    this.treeView = this.treeNodeProvider.treeView;
 
-    // listen on Runtime Server Status
+    // keep the runtime server button updated
     commands.executeCommand('setContext', 'dbux.context.runtimeServerStarted', false);
     onRuntimerServerStatusChanged((status) => {
       commands.executeCommand('setContext', 'dbux.context.runtimeServerStarted', status);
@@ -23,7 +23,7 @@ class ApplicationsViewController {
   }
 
   refreshOnData = makeDebounce(() => {
-    controller.treeDataProvider.refresh();
+    this.treeNodeProvider.refresh();
   }, 20);
 
 
@@ -33,7 +33,7 @@ class ApplicationsViewController {
     // ########################################
 
     // click event listener
-    this.treeDataProvider.initDefaultClickCommand(context);
+    this.treeNodeProvider.initDefaultClickCommand(context);
 
     // data changed
     allApplications.selection.onApplicationsChanged((apps) => {
@@ -62,5 +62,5 @@ export function initApplicationsView(context) {
   controller.initOnActivate(context);
 
   // refresh right away
-  controller.treeDataProvider.refresh();
+  controller.treeNodeProvider.refresh();
 }

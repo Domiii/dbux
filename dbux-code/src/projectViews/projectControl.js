@@ -17,6 +17,7 @@ import { getStopwatch } from './practiceStopwatch';
 import { initUserEvent } from '../userEvents';
 import { initRuntimeServer } from '../net/SocketServer';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
+import { getCurrentResearch } from '../research/Research';
 
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
 
@@ -32,7 +33,7 @@ let projectManager = null;
 /**
  * @return {ProjectsManager}
  */
-export function getOrCreateProjectManager() {
+export function getProjectManager() {
   return projectManager;
 }
 
@@ -115,7 +116,9 @@ export function createProjectManager(extensionContext) {
     },
     async initRuntimeServer() {
       return await initRuntimeServer(extensionContext);
-    }
+    },
+
+    getCurrentResearch
   };
 
   // ########################################
@@ -129,10 +132,14 @@ export function createProjectManager(extensionContext) {
 }
 
 export async function initProjectManager() {
+  // await sleep(3000);    // give debugger time to attach
+
   await runTaskWithProgressBar(async (progress) => {
     progress.report({ message: 'Initializing dbux-project...' });
     await projectManager.init();
     progress.report({ message: 'Recovering practice session...' });
-    await projectManager.recoverPracticeSession();
+    if (await projectManager.tryRecoverPracticeSession()) {
+      // projectManager.maybeAskForTestBug(projectManager.activeBug);
+    }
   }, { cancellable: false });
 }

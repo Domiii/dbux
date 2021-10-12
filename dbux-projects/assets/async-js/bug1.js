@@ -14,6 +14,8 @@ const createTask = () => {
 };
 
 const createQueueAndProcess = async () => {
+  await 0; // if we don't have an await 0, the next await will be a FORK
+  
   const q = queue(async (task) => {
     await task.doIt();
     console.log("task done");

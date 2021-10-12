@@ -5,9 +5,12 @@ import {
 import allApplications from '@dbux/data/src/applications/allApplications';
 // import { showTextDocument } from './codeNav';
 import { showInformationMessage, showWarningMessage } from './codeModals';
-import { getSelectedApplicationInActiveEditor } from './CodeApplication';
+import { CodeApplication, getSelectedApplicationInActiveEditor } from './CodeApplication';
 
 
+/**
+ * @returns {CodeApplication}
+ */
 export async function getSelectedApplicationInActiveEditorWithUserFeedback() {
   if (!allApplications.getAllCount()) {
     showWarningMessage('Failed. You have not run any Dbux-enabled application.');
