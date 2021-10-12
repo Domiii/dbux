@@ -294,7 +294,7 @@ class AsyncGraph extends GraphBase {
     if (trace) {
       const { applicationId, traceId } = trace;
       const dp = allApplications.getById(applicationId).dataProvider;
-      nodes = dp.util.getAsyncStackRoots(traceId)
+      nodes = dp.util.getAsyncStackContexts(traceId)
         .map(context => dp.util.getAsyncNode(context.contextId))
         .filter(x => !!x);
     }
