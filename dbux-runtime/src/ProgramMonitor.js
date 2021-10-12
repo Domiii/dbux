@@ -284,8 +284,8 @@ export default class ProgramMonitor {
   traceWriteME = (objValue, propValue, value, tid, objectTid, inputs) => {
     value = wrapValue(value);
 
-    // [runtime-error] potential run-time error
-    objValue[propValue] = value;
+    // // [runtime-error] potential run-time error
+    // objValue[propValue] = value;
     if (this.areTracesDisabled) {
       return value;
     }

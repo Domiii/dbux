@@ -14,8 +14,7 @@ const createTask = () => {
 };
 
 const createQueueAndProcess = async () => {
-  await 0; // if we don't have an await 0, the next await will be a FORK
-  
+  await 0;
   const q = queue(async (task) => {
     await task.doIt();
     console.log("task done");
@@ -24,7 +23,7 @@ const createQueueAndProcess = async () => {
   //Comment the empty array push line below
   // and see the issue go away
   q.push([]);
-  q.push([createTask()]);
+  q.push([createTask(), createTask(), createTask()]);
 
   await q.drain();
   console.log("all tasks completed");

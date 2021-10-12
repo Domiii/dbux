@@ -4,7 +4,8 @@
 
 const httpServer = require("http").createServer();
 const SocketServer = require("socket.io");
-const SocketClient = require("socket.io-client");
+// const SocketClient = require("socket.io-client");
+const SocketClient = require("./lib");
 
 const port = 30011;
 
@@ -20,9 +21,9 @@ const server = SocketServer(httpServer, {
 async function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 server.on("connection", (socket) => {
-  socket.on('ping', async () => {
-    await sleep(50);
-    socket.emit('pong');
+  socket.on('hi', async (x) => {
+    await sleep(200);
+    socket.emit('hi back', x);
   });
 });
 
@@ -40,7 +41,7 @@ httpServer.listen(port, () => {
 const Remote = `ws://localhost:${port}`;
 
 function startClient() {
-  let n = 3;
+  let n = 5;
   const socket = SocketClient(Remote, {
     /**
      * hackfix
@@ -51,17 +52,23 @@ function startClient() {
   socket.on('error', (err) => {
     console.error('ERR', err);
   });
-  socket.on('connect', async () => {
-    console.log('PING sent!');
-    socket.emit('ping');
+  // socket.on('connect', async () => {
+  //   await sleep(200);
+  // });
+  socket.emit('hi', n);
+  console.log('hi sent!');
+  socket.on('connect_error', async () => {
+    console.error('CONNECT_ERR', err);
   });
-  socket.on('pong', () => {
-    if (!--n) {
+  socket.on('hi back', async (x) => {
+    await sleep(200);
+    if (!n--) {
+      server.close();
       socket.close();
     }
     else {
-      console.log('PONG received!');
-      socket.emit('ping');
+      console.log('hi REPLY received:', x);
+      socket.emit('hi', n);
     }
   });
 }

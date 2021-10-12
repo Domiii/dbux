@@ -167,7 +167,6 @@ export default function patchArray() {
     "lastIndexOf",
     "pop",
     "reverse",
-    "shift",
     "unshift",
     "sort",
     "splice",
