@@ -25,9 +25,9 @@ export default class FocusController extends HostComponentEndpoint {
       return;
     }
 
+    await this.waitForInit();
     const trace = traceSelection.selected;
     try {
-      await this.waitForInit();
       await this.owner.graph.handleTraceSelected?.(trace);
     }
     catch (err) {

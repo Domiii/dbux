@@ -80,10 +80,18 @@ class AsyncGraph extends GraphBase {
       const postAsyncEventUpdate = dp.util.getAsyncPostEventUpdateOfRoot(rootContextId);
       const postAsyncEventUpdateType = postAsyncEventUpdate?.type;
 
-      const parentEdge = dp.indexes.asyncEvents.to.getFirst(rootContextId);
+      const parentEdges = (dp.indexes.asyncEvents.to.get(rootContextId) || EmptyArray)
+        .map(edge => {
+          const parentAsyncNode = dp.util.getAsyncNode(edge.fromRootContextId);
+          return {
+            edgeType: edge.edgeType,
+            parentAsyncNodeId: parentAsyncNode.asyncNodeId
+          };
+        });
+      // assuming all incoming edges of a node have same `edgeType`, so we can just take the first one
+      const parentEdge = parentEdges[0];
       const parentEdgeType = parentEdge?.edgeType;
-      const parentAsyncNode = dp.util.getAsyncNode(parentEdge?.fromRootContextId);
-      const parentAsyncNodeId = parentAsyncNode?.asyncNodeId;
+      const parentAsyncNodeId = parentEdge?.parentAsyncNodeId;
       const hasError = !!dp.indexes.traces.errorByRoot.get(rootContextId);
 
       const nestingDepth = dp.util.getNestedDepth(rootContextId);
@@ -94,6 +102,7 @@ class AsyncGraph extends GraphBase {
         locLabel,
         syncInCount,
         syncOutCount,
+        parentEdges,
         parentEdgeType,
         parentAsyncNodeId,
         nestingDepth,
@@ -294,7 +303,7 @@ class AsyncGraph extends GraphBase {
     if (trace) {
       const { applicationId, traceId } = trace;
       const dp = allApplications.getById(applicationId).dataProvider;
-      nodes = dp.util.getAsyncStackRoots(traceId)
+      nodes = dp.util.getAsyncStackContexts(traceId)
         .map(context => dp.util.getAsyncNode(context.contextId))
         .filter(x => !!x);
     }

@@ -201,6 +201,9 @@ div {
   /* min-height: 1.6rem; */
   min-width: 1.2rem;
   line-height: 1.05;
+  width: -moz-available;
+  width: -webkit-fill-available;
+  width: fill-available;
   /* padding: 1.5px; */
 }
 
@@ -208,9 +211,6 @@ div {
   /* fix size for detail mode */
   min-height: 1rem;
   min-width: 4rem;
-  width: -moz-available;
-  width: -webkit-fill-available;
-  width: fill-available;
 }
 
 .async-cell:hover {
@@ -283,6 +283,7 @@ div {
 .async-brief {
   font-weight: bold;
   font-family: system-ui;
+  white-space: nowrap;
 }
 
 [data-async-detail-mode="0"] .async-cell {

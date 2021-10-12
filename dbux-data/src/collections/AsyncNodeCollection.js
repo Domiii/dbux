@@ -164,6 +164,14 @@ export default class AsyncNodeCollection extends Collection {
   serialize(asyncNode) {
     const nodeData = { ...asyncNode };
     delete nodeData._nestedAncestors;
+    delete nodeData.applicationId;
     return nodeData;
+  }
+
+  add(entries) {
+    for (const entry of entries) {
+      entry.applicationId = this.dp.application.applicationId;
+    }
+    super.add(entries);
   }
 }
