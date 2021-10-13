@@ -73,6 +73,10 @@ export function R(x) {
  * Promise chain
  */
 export function P(previousPromise, ...xs/* , n */) {
+  if (!previousPromise) {
+    return R();
+  }
+  
   let p;
   if (previousPromise instanceof Promise) {
     p = R(previousPromise);
