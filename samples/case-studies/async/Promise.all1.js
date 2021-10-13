@@ -6,10 +6,10 @@ import { A, P, Abind, Pbind } from '../../util/asyncUtil';
 
 const nodes = [
   'A',
-  [
-    'BA',
-    'BB'
-  ],
+  // [
+  //   'BA',
+  //   'BB'
+  // ],
   () => Promise.all(
     [1, 2, 3, 4].map(y => P(
       ...[1, 2].map(x =>
@@ -22,4 +22,4 @@ const nodes = [
 ];
 
 Abind('A', ...nodes);
-Pbind('P', ...nodes);
+// Pbind('P', ...nodes);

@@ -2207,8 +2207,8 @@ export default {
    */
   UP(dp, nestedPromiseId, beforeRootId, nestingUpdates) {
     // -- 4 caller cases (CC), operating on `q* = nestedPromise` --
-    // CC1: PostAwait: `q1 = f()` (firstAwait inside f) [always new]
-    // CC2: PostThen: `q2 = p.then(h)` (PostUpdate inside h) [always old]
+    // CC1: PostAwait: `q1 = f()` (firstAwait inside f) [q1 always new]
+    // CC2: PostThen: `q2 = p.then(h)` (PostUpdate inside h) [q2 always old]
     // CC3: an outer linked promise `q3`, nesting either `q1`, `q2` or `q4`
     // CC4: a chained promise `q4 = q.then(i)` [has not settled yet]
 
@@ -2256,7 +2256,8 @@ export default {
     else if ((u = dp.util.getFirstPreThenUpdateOfPromise(nestedPromiseId)) &&
       u.rootId < beforeRootId
     ) {
-      // promise is not nested but was THEN’ed -> follow down the THEN chain (until we find a promise that is nested)
+      // promise is not nested but was THEN’ed
+      //  -> follow down the THEN chain (until we find a promise that is nested)
       return dp.util.UP(u.postEventPromiseId, beforeRootId, nestingUpdates);
     }
 
