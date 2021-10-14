@@ -78,7 +78,7 @@ export default function patchArray() {
 
       // delete first
       const shiftVarAccess = {
-        arrNodeId,
+        objectNodeId: arrNodeId,
         prop: 0
       };
       dataNodeCollection.createOwnDataNode(undefined, callId, DataNodeType.Delete, shiftVarAccess);
