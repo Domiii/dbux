@@ -2765,7 +2765,7 @@ export default {
       chainFromRootId = rootIdDown || rootIdUp;
     }
     else {
-      // Case 2: heuristics
+      // Case 2: CALLBACK_CHAIN_HEURISTICS
       if (firstPostEventHandlerUpdate && firstPostEventHandlerUpdate.rootId < beforeRootId) {
         // Heuristic 1: event listener -> repeated calls of same scheduler trace
         // chainFromRootId = firstPostEventHandlerUpdate.rootId;

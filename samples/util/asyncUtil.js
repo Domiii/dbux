@@ -73,7 +73,7 @@ export function R(x) {
  * Promise chain
  */
 export function P(previousPromise, ...xs/* , n */) {
-  if (!previousPromise) {
+  if (previousPromise === undefined) {
     return R();
   }
   
