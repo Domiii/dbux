@@ -131,10 +131,10 @@ class AsyncGraph extends GraphBase {
       nestingDepth,
     } = nodeData;
 
-    const { themeMode } = this.context;
+    const { themeMode, researchMode } = this.context;
     // const moduleLabel = moduleName ? `${moduleName} | ` : '';
 
-    const backgroundColor = getStaticContextColor(themeMode, realStaticContextid, !!moduleName);
+    const backgroundColor = getStaticContextColor(themeMode, realStaticContextid, { bland: !!moduleName, researchMode });
 
     let leftLabel = '', rightLabel = '';
     let shortLabel, fullLabel = displayName;
@@ -153,7 +153,13 @@ class AsyncGraph extends GraphBase {
         shortLabel = '⬤';
         break;
     }
+    if (this.context.researchMode) {
+      shortLabel = '';
+      fullLabel = '';
+    }
+    const classes = [];
     if (hasError) {
+      classes.push('async-error');
       shortLabel += '🔥';
       fullLabel += '🔥';
     }
@@ -169,7 +175,6 @@ class AsyncGraph extends GraphBase {
       'application-id': applicationId
     };
     const dataAttrs = Object.entries(asyncNodeData).map(([key, val]) => `data-${key}="${val || ''}"`).join(' ');
-    const classes = [];
     if (isTerminalNode) {
       classes.push('terminal-node');
     }

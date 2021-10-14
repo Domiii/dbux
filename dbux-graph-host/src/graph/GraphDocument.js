@@ -135,7 +135,8 @@ class GraphDocument extends HostComponentEndpoint {
       context: {
         graphDocument: this,
         themeMode: this.state.themeMode,
-        contextNodeIconUris: this.state.contextNodeIconUris
+        contextNodeIconUris: this.state.contextNodeIconUris,
+        researchMode: true, // Manually change this
       }
     };
   }
