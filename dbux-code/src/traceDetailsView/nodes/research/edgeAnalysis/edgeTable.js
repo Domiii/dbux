@@ -47,8 +47,6 @@ function tableRow(folder, experimentId) {
     // const totalTls = trueTls + falseTls;
     // const tlRatio = trueTls / totalTls;
 
-    edgeTypeCounts[4] = edgeTypeCounts[4].toFixed(1);  // avg
-
     return `${name} & ${traceCount} & ${aeEdgeCount} & ${aeCounts.join(' & ')} & ${edgeTypeCounts.join(' & ')} `;
   }
   catch (err) {

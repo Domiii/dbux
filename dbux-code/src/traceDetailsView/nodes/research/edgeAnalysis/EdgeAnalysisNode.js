@@ -307,13 +307,13 @@ class EdgeAnalysisController {
       counts[4] += !!toRoot.syncPromiseIds?.length;
       counts[5] += dp.util.getNestedDepth(to);
       return counts;
-    }, [0, 0, 0, 0, 0]);
+    }, [0, 0, 0, 0, 0, 0]);
 
     // total threads = 1 + multi-chains + forks
-    edgeTypeCounts[3] = 1 + edgeTypeCounts[1] + edgeTypeCounts[2];
+    edgeTypeCounts[3] = edgeTypeCounts[1] + edgeTypeCounts[2];
 
     // take average
-    edgeTypeCounts[4] /= edges.length;
+    edgeTypeCounts[5] = (edgeTypeCounts[5] / edges.length).toFixed(1);
 
     // // for debugging purposes
     // const s = edges
