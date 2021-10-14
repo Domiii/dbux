@@ -291,7 +291,7 @@ class EdgeAnalysisController {
       return counts;
     }, [0, 0, 0, 0] /* a, t, c, other */);
 
-    // 1. CHAIN (not multi), 2. multi-CHAIN, 3. FORK, 4. SYNC, 5. Avg nesting count
+    // 1. CHAIN (not multi), 2. multi-CHAIN, 3. FORK, 4. totalThreads, 5. SYNC, 6. Avg nesting count
     const edgeTypeCounts = edges.reduce((counts, edge) => {
       const from = edge.fromRootContextId;
       const to = edge.toRootContextId;
@@ -304,10 +304,13 @@ class EdgeAnalysisController {
       counts[0] += isChain && !isMulti;
       counts[1] += isChain && isMulti;
       counts[2] += !isChain;
-      counts[3] += !!toRoot.syncPromiseIds?.length;
-      counts[4] += dp.util.getNestedDepth(to);
+      counts[4] += !!toRoot.syncPromiseIds?.length;
+      counts[5] += dp.util.getNestedDepth(to);
       return counts;
     }, [0, 0, 0, 0, 0]);
+
+    // total threads = 1 + multi-chains + forks
+    edgeTypeCounts[3] = 1 + edgeTypeCounts[1] + edgeTypeCounts[2];
 
     // take average
     edgeTypeCounts[4] /= edges.length;
