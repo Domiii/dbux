@@ -8,6 +8,8 @@ export default class AsyncEvent {
    */
   fromRootContextId;
   /**
+   * Use `dp.util.getChainFrom(rootId)` to get all chains from a root.
+   * 
    * @type {number}
    */
   toRootContextId;

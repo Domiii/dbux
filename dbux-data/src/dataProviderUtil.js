@@ -27,6 +27,7 @@ import { locToString } from './util/misc';
 import { makeContextSchedulerLabel, makeTraceLabel } from './helpers/makeLabels';
 
 /** @typedef {import('./RuntimeDataProvider').default} DataProvider */
+/** @typedef {import('@dbux/common/src/types/AsyncNode').default} AsyncNode */
 /** @typedef {import('@dbux/common/src/types/ExecutionContext').default} ExecutionContext */
 
 export class PostUpdateData {
@@ -1890,7 +1891,10 @@ export default {
   // async
   // ###########################################################################
 
-  /** @param {DataProvider} dp */
+  /** 
+   * @param {DataProvider} dp
+   * @return {AsyncNode}
+   */
   getAsyncNode(dp, rootId) {
     return dp.indexes.asyncNodes.byRoot.getUnique(rootId);
   },
@@ -1901,11 +1905,17 @@ export default {
     return dp.indexes.asyncNodes.byRoot.getUnique(rootId)?.threadId;
   },
 
+  /**
+   * @param {DataProvider} dp
+   */
   getStaticContextCallbackThreadId(dp, rootId) {
     return dp.indexes.asyncNodes.byRoot.getUnique(rootId)?.threadId;
   },
 
-  /** @param {DataProvider} dp */
+  /** 
+   * @param {DataProvider} dp
+   * @return {AsyncEvent[]}
+   */
   getChainFrom(dp, fromRootId) {
     const fromEdges = dp.indexes.asyncEvents.from.get(fromRootId);
     return fromEdges?.filter(edge => edge.edgeType === AsyncEdgeType.Chain) || EmptyArray;

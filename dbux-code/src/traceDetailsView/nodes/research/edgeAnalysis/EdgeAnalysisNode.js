@@ -25,7 +25,7 @@ import { confirm, showErrorMessage, showInformationMessage, showWarningMessage }
 import { runTaskWithProgressBar } from '../../../../codeUtil/runTaskWithProgressBar';
 import { showTextInNewFile } from '../../../../codeUtil/codeNav';
 import { makeEdgeTable } from './edgeTable';
-import { getExperimentDataFilePath } from './edgeData';
+import { EdgeStatus, getExperimentDataFilePath } from './edgeData';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -272,7 +272,9 @@ class EdgeAnalysisController {
    */
   getAppStats() {
     const { dp } = this;
-    const edges = dp.collections.asyncEvents.getAllActual();
+    const edges = dp.collections.asyncEvents.getAllActual()
+      .filter(e => !!e.fromRootContextId); // ignore top-level (file) CGRs
+
     const traceCount = dp.collections.traces.getCount();
     const edgeTypeIndexes = {
       [AsyncEventType.Await]: 0,
@@ -280,13 +282,40 @@ class EdgeAnalysisController {
       [AsyncEventType.Callback]: 2,
       [AsyncEventType.None]: 3
     };
+
     const aeCounts = edges.reduce((counts, edge) => {
       const type = dp.util.getAsyncRootEventType(edge.toRootContextId);
       const idx = edgeTypeIndexes[type];
       ++counts[idx];
       return counts;
     }, [0, 0, 0, 0] /* a, t, c, other */);
-    return { traceCount, aeCounts };
+
+    // 1. CHAIN (not multi)
+    // 2. multi-CHAIN
+    // 3. FORK
+    // 4. SYNC
+    // 5. Avg nesting count
+    const edgeStats = edges.reduce((counts, edge) => {
+      const from = edge.fromRootContextId;
+      const to = edge.toRootContextId;
+      const toRoot = dp.util.getAsyncNode(to);
+      const isChain = edge.edgeType === AsyncEdgeType.Chain;
+      const hasMultipleParents = !!Array.isArray(from);
+      const fromChains = isChain && !hasMultipleParents && dp.util.getChainFrom(from);
+      const chainIndex = fromChains ? fromChains.indexOf(to) : -1;
+      const isMulti = !hasMultipleParents && chainIndex > 0;
+      counts[0] += isChain && !isMulti;
+      counts[1] += isChain && isMulti;
+      counts[2] += !isChain;
+      counts[3] += !!toRoot.syncPromiseIds?.length;
+      counts[4] += dp.util.getNestedDepth(to);
+      return counts;
+    }, [0, 0, 0, 0, 0]);
+
+    // take average
+    edgeStats[4] /= edges.length;
+
+    return { traceCount, aeCounts, edgeTypeCounts: edgeStats };
   }
 
   /**

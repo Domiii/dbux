@@ -18,7 +18,7 @@ export function makeEdgeTable(folder, experimentIds) {
 function tableRow(folder, experimentId) {
   const fpath = pathResolve(folder, experimentId);
   const data = readFileSync(fpath) || EmptyObject;
-  const { appStats = {}, annotations = {} } = data;
+  const { appStats = {}/* , annotations = {} */ } = data;
   let { traceCount, aeCounts } = appStats;
 
   aeCounts = [...aeCounts];
@@ -27,14 +27,14 @@ function tableRow(folder, experimentId) {
   const aeEdgeCount = sum(aeCounts);
 
   // compute timeline scenarios
-  const falseTls = sumBy(annotations, anno =>
-    anno.status > EdgeStatus.TimelineStart
-  );
-  const trueTls = sumBy(annotations, anno =>
-    anno.status === EdgeStatus.TimelineStart
-  );
-  const totalTls = trueTls + falseTls;
-  const tlRatio = trueTls / totalTls;
+  // const falseTls = sumBy(annotations, anno =>
+  //   anno.status > EdgeStatus.TimelineStart
+  // );
+  // const trueTls = sumBy(annotations, anno =>
+  //   anno.status === EdgeStatus.TimelineStart
+  // );
+  // const totalTls = trueTls + falseTls;
+  // const tlRatio = trueTls / totalTls;
 
   return `${traceCount} & ${aeEdgeCount} (${aeCounts.join(', ')}) & ${falseTls} & ${tlRatio} \\`;
 }
