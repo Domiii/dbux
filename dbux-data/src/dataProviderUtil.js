@@ -166,18 +166,32 @@ export default {
       // is root, looking for async parent
       // go to "real parent"
       if (isRealContextType(contextType)) {
+        // Method 1: find incoming edge (async edges only provide rootContext information, not the "trace")
+
         // if not virtual: go to async node's schedulerTrace
         // 1. get from node via asyncEdges
         // 2. get AsyncNode n of rootId = from
         // 3. do 1. recursively to skip all deeper parent
-        let fromAsyncEvent, fromContext = { contextId }, fromContextDepth;
-        const depth = dp.util.getNestedDepth(contextId);
-        do {
-          fromAsyncEvent = dp.indexes.asyncEvents.to.getFirst(fromContext.contextId);
-          fromContext = dp.collections.executionContexts.getById(fromAsyncEvent?.fromRootContextId);
-          fromContextDepth = fromContext && dp.util.getNestedDepth(fromContext.contextId);
-        } while (fromContext && (depth < fromContextDepth));
-        return fromContext;
+        // let fromAsyncEvent, fromContext = { contextId }, fromContextDepth;
+        // const depth = dp.util.getNestedDepth(contextId);
+        // do {
+        //   fromAsyncEvent = dp.indexes.asyncEvents.to.getFirst(fromContext.contextId);
+        //   fromContext = dp.collections.executionContexts.getById(fromAsyncEvent?.fromRootContextId);
+        //   fromContextDepth = fromContext && dp.util.getNestedDepth(fromContext.contextId);
+        // } while (fromContext && (depth < fromContextDepth));
+        // return fromContext;
+
+        // Method 2: find `callerOrSchedulerTrace` (this gives us more information, not only the rootContext)
+
+        // hackfix: to stop finding parent for contextId=1, since it still have schedulerTraceId for some reason
+        const fromAsyncEvent = dp.indexes.asyncEvents.to.getFirst(contextId);
+        if (fromAsyncEvent) {
+          const callerTrace = dp.util.getCallerOrSchedulerTraceOfContext(contextId);
+          return dp.collections.executionContexts.getById(callerTrace.contextId);
+        }
+        else {
+          return null;
+        }
       }
       else {
         // if virtual: skip to realContext's parent and call trace (skip all virtual contexts, in general)
