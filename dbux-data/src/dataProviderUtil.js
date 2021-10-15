@@ -11,7 +11,7 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
 import StaticTrace from '@dbux/common/src/types/StaticTrace';
-import { isVirtualContextType } from '@dbux/common/src/types/constants/StaticContextType';
+import StaticContextType, { isVirtualContextType } from '@dbux/common/src/types/constants/StaticContextType';
 import { isRealContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
 import { isCallResult, hasCallId } from '@dbux/common/src/types/constants/traceCategorization';
 // eslint-disable-next-line max-len
@@ -27,6 +27,8 @@ import { locToString } from './util/misc';
 import { makeContextSchedulerLabel, makeTraceLabel } from './helpers/makeLabels';
 
 /** @typedef {import('./RuntimeDataProvider').default} DataProvider */
+/** @typedef {import('@dbux/common/src/types/AsyncNode').default} AsyncNode */
+/** @typedef {import('@dbux/common/src/types/StaticContext').default} StaticContext */
 /** @typedef {import('@dbux/common/src/types/ExecutionContext').default} ExecutionContext */
 
 export class PostUpdateData {
@@ -1475,6 +1477,23 @@ export default {
     return context;
   },
 
+  /**
+   * @param {DataProvider} dp
+   * @return {StaticContext}
+   */
+  getStaticExecutionContextOfContext(dp, contextId) {
+    const context = dp.collections.executionContexts.getById(contextId);
+    const { staticContextId } = context;
+    return dp.collections.staticContexts.getById(staticContextId);
+    // return dp.collections.staticProgramContexts.
+  },
+
+  /** @param {DataProvider} dp */
+  isContextProgramContext(dp, contextId) {
+    const staticContext = dp.util.getStaticExecutionContextOfContext(contextId);
+    return staticContext.type === StaticContextType.Program;
+  },
+
   getStaticTrace(dp, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     const { staticTraceId } = trace;
@@ -1904,7 +1923,10 @@ export default {
   // async
   // ###########################################################################
 
-  /** @param {DataProvider} dp */
+  /** 
+   * @param {DataProvider} dp
+   * @return {AsyncNode}
+   */
   getAsyncNode(dp, rootId) {
     return dp.indexes.asyncNodes.byRoot.getUnique(rootId);
   },
@@ -1915,11 +1937,17 @@ export default {
     return dp.indexes.asyncNodes.byRoot.getUnique(rootId)?.threadId;
   },
 
+  /**
+   * @param {DataProvider} dp
+   */
   getStaticContextCallbackThreadId(dp, rootId) {
     return dp.indexes.asyncNodes.byRoot.getUnique(rootId)?.threadId;
   },
 
-  /** @param {DataProvider} dp */
+  /** 
+   * @param {DataProvider} dp
+   * @return {AsyncEvent[]}
+   */
   getChainFrom(dp, fromRootId) {
     const fromEdges = dp.indexes.asyncEvents.from.get(fromRootId);
     return fromEdges?.filter(edge => edge.edgeType === AsyncEdgeType.Chain) || EmptyArray;
@@ -2769,9 +2797,12 @@ export default {
       const lastOfPromise = dp.util.getLastAsyncPostEventUpdateOfPromise(preEventPromiseId, beforeRootId);
       rootIdDown = lastOfPromise?.rootId ||
         postPreEventUpdate?.promiseId &&
-        util.DOWN(postPreEventUpdate?.promiseId, beforeRootId, syncBeforeRootId, promisePostUpdateData) || 
+        util.DOWN(postPreEventUpdate?.promiseId, beforeRootId, syncBeforeRootId, promisePostUpdateData) ||
         0;
       rootIdUp = util.UP(chainToPromiseId, beforeRootId, nestingUpdates);
+
+      // hackfix: promisified CB's don't sync. fix this properly soon.
+      syncPromiseIds.length = 0;
 
       nestingUpdates.push(preEventUpdate.updateId); // PostCallback always adds its own scheduler as a nesting level
 
@@ -2779,11 +2810,11 @@ export default {
       chainFromRootId = rootIdDown || rootIdUp;
     }
     else {
-      // Case 2: heuristics
+      // Case 2: CALLBACK_CHAIN_HEURISTICS
       if (firstPostEventHandlerUpdate && firstPostEventHandlerUpdate.rootId < beforeRootId) {
         // Heuristic 1: event listener -> repeated calls of same scheduler trace
         // chainFromRootId = firstPostEventHandlerUpdate.rootId;
-        chainFromRootId = dp.util.getLastAsyncPostEventUpdateOfTrace(schedulerTraceId, beforeRootId)?.rootId || 
+        chainFromRootId = dp.util.getLastAsyncPostEventUpdateOfTrace(schedulerTraceId, beforeRootId)?.rootId ||
           firstPostEventHandlerUpdate.rootId;
       }
       else {

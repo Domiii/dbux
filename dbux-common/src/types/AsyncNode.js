@@ -37,4 +37,9 @@ export default class AsyncNode {
    * @type {number}
    */
   applicationId;
+
+  /**
+   * @type {number | number[]}
+   */
+  syncPromiseIds;
 }

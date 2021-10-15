@@ -3,23 +3,25 @@
  */
 import { P } from '../../util/asyncUtil';
 
+function f() { }
+function g() { }
+function h() { }
 
 P(
-  // 'A1',
+  f,
   () => {
     var p = P();
-    
+
     var q1 = P(p,
-      'B1',
-      'B2',
-      'B3'
+      g,
+      h
     );
 
     var q2 = P(p,
-      () => 'C1',
-      'C2',
-      'C3'
+      g,
+      h
     );
+
 
     return q2;
   }

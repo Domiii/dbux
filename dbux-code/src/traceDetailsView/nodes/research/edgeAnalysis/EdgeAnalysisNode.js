@@ -25,7 +25,7 @@ import { confirm, showErrorMessage, showInformationMessage, showWarningMessage }
 import { runTaskWithProgressBar } from '../../../../codeUtil/runTaskWithProgressBar';
 import { showTextInNewFile } from '../../../../codeUtil/codeNav';
 import { makeEdgeTable } from './edgeTable';
-import { getExperimentDataFilePath } from './edgeData';
+import { EdgeStatus, getExperimentDataFilePath } from './edgeData';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -272,7 +272,10 @@ class EdgeAnalysisController {
    */
   getAppStats() {
     const { dp } = this;
-    const edges = dp.collections.asyncEvents.getAllActual();
+    const edges = dp.collections.asyncEvents.getAllActual()
+      // ignore file CGRs
+      .filter(e => !dp.util.isContextProgramContext(e.toRootContextId));
+
     const traceCount = dp.collections.traces.getCount();
     const edgeTypeIndexes = {
       [AsyncEventType.Await]: 0,
@@ -280,13 +283,48 @@ class EdgeAnalysisController {
       [AsyncEventType.Callback]: 2,
       [AsyncEventType.None]: 3
     };
+
     const aeCounts = edges.reduce((counts, edge) => {
       const type = dp.util.getAsyncRootEventType(edge.toRootContextId);
       const idx = edgeTypeIndexes[type];
       ++counts[idx];
       return counts;
     }, [0, 0, 0, 0] /* a, t, c, other */);
-    return { traceCount, aeCounts };
+
+    // 1. CHAIN (not multi), 2. multi-CHAIN, 3. FORK, 4. totalThreads, 5. SYNC, 6. Avg nesting count
+    const edgeTypeCounts = edges.reduce((counts, edge) => {
+      const from = edge.fromRootContextId;
+      const to = edge.toRootContextId;
+      const toRoot = dp.util.getAsyncNode(to);
+      const isChain = edge.edgeType === AsyncEdgeType.Chain;
+      const hasMultipleParents = !!Array.isArray(from);
+      const fromParentChains = isChain && !hasMultipleParents && dp.util.getChainFrom(from);
+      const chainIndex = fromParentChains && fromParentChains.indexOf(edge);
+      const isMulti = !hasMultipleParents && chainIndex > 0;
+      counts[0] += isChain && !isMulti;
+      counts[1] += isChain && isMulti;
+      counts[2] += !isChain;
+      counts[4] += !!toRoot.syncPromiseIds?.length;
+      counts[5] += dp.util.getNestedDepth(to);
+      return counts;
+    }, [0, 0, 0, 0, 0, 0]);
+
+    // total threads = 1 + multi-chains + forks
+    edgeTypeCounts[3] = edgeTypeCounts[1] + edgeTypeCounts[2];
+
+    // take average
+    edgeTypeCounts[5] = (edgeTypeCounts[5] / edges.length).toFixed(1);
+
+    // // for debugging purposes
+    // const s = edges
+    //   .filter(e => !!dp.util.getAsyncNode(e.toRootContextId)?.syncPromiseIds?.length)
+    //   .map(e => ([
+    //     e.toRootContextId,
+    //     // dp.util.getAsyncNode(e.toRootContextId),
+    //     dp.util.getAsyncNode(e.toRootContextId).syncPromiseIds
+    //   ]));
+
+    return { traceCount, aeCounts, edgeTypeCounts };
   }
 
   /**
@@ -331,10 +369,10 @@ class EdgeAnalysisController {
     const fpath = this.getEdgeDataFilePath();
     if (!fpath) { return null; }
 
-    if (!existsSync(fpath)) {
-      // create empty file, and make sure, directories are present
-      this.getAllFolders().forEach(f => mkdirSync(f, { recursive: true }));
-    }
+    // if (!existsSync(fpath)) {
+    // create empty file, and make sure, directories are present
+    this.getAllFolders().forEach(f => mkdirSync(f, { recursive: true }));
+    // }
 
     const serialized = readFileSync(fpath, 'utf8');
     const data = this._data = serialized && JSON.parse(serialized) || {};

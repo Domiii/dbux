@@ -3,17 +3,17 @@
  */
 import { P } from '../../util/asyncUtil';
 
+function f() { }
+function g() { }
 
-var p = P('A1');
+var p = P();
 
 P(p,
-  'B1',
-  'B2',
-  'B3'
+  f,
+  g
 );
 
 P(p,
-  () => 'C1',
-  'C2',
-  'C3'
+  f,
+  g
 );
