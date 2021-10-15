@@ -37,6 +37,10 @@ class GraphDocument extends HostComponentEndpoint {
 
   update() {
     this.toolbar.forceUpdate();
+
+    // TODO: [performance] better mechanic
+    // hackfix: use this to toggle highContract mode with async detail mode(refresh every time we toggle the mode)
+    this.refreshGraphs();
   }
 
   /** ########################################

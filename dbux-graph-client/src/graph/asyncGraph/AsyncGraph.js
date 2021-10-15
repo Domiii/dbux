@@ -131,10 +131,13 @@ class AsyncGraph extends GraphBase {
       nestingDepth,
     } = nodeData;
 
-    const { themeMode, researchMode } = this.context;
+    const { themeMode, researchMode, graphDocument } = this.context;
+    const { asyncDetailMode } = graphDocument.state;
+    const highContractMode = researchMode && !asyncDetailMode;
+
     // const moduleLabel = moduleName ? `${moduleName} | ` : '';
 
-    const backgroundColor = getStaticContextColor(themeMode, realStaticContextid, { bland: !!moduleName, researchMode });
+    const backgroundColor = getStaticContextColor(themeMode, realStaticContextid, { bland: !!moduleName, highContractMode });
 
     let leftLabel = '', rightLabel = '';
     let shortLabel, fullLabel = displayName;

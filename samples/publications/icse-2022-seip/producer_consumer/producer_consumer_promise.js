@@ -43,35 +43,40 @@ function produce(index, ticks) {
 }
 
 function producer(n) {
-  return repeatPromise(
-    () => !!n,
-    function tryProduce() {
-      if (hasSpace()) {
-        --n
-        const [index, item, ticks] = startProduce();
-        return produce(index, ticks);
-      }
-      else {
-        return wait(producerQueue);
-      }
+  function tryProduce() {
+    if (!n) {
+      return;
     }
-  );
+
+    if (hasSpace()) {
+      --n
+      const [index, item, ticks] = startProduce();
+      return produce(index, ticks).then(tryProduce);
+    }
+    else {
+      return wait(producerQueue).then(tryProduce);
+    }
+  }
+
+  return Promise.resolve().then(tryProduce);
 }
 
 function consumer(n) {
-  return repeatPromise(
-    () => !!n,
-    function tryConsume() {
-      if (hasItems()) {
-        --n;
-        const [index, item, ticks] = startConsume();
-        return consume(index, ticks);
-      }
-      else {
-        return wait(consumerQueue);
-      }
+  function tryConsume() {
+    if (!n) {
+      return;
     }
-  );
+
+    if (hasItems()) {
+      --n;
+      const [index, item, ticks] = startConsume();
+      return consume(index, ticks).then(tryConsume);
+    }
+    else {
+      return wait(consumerQueue).then(tryConsume);
+    }
+  }
+  return Promise.resolve().then(tryConsume);
 }
 
 /** ###########################################################################
@@ -85,13 +90,13 @@ async function main() {
   consumer(N);
   producer(N);
 
-  // tick counter
-  for (let counter = 0; counter < 50; ++counter) {
-    // console.log(`==================`);
-    // console.log(``);
-    // console.log(`===== tick#${counter} =====`);
-    await counter;
-  }
+  // // tick counter
+  // for (let counter = 0; counter < 50; ++counter) {
+  //   // console.log(`==================`);
+  //   // console.log(``);
+  //   // console.log(`===== tick#${counter} =====`);
+  //   await counter;
+  // }
 }
 
 main();
