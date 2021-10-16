@@ -305,6 +305,17 @@ class EdgeAnalysisController {
       counts[1] += isChain && isMulti;
       counts[2] += !isChain;
       counts[4] += !!toRoot.syncPromiseIds?.length;
+      if (toRoot.syncPromiseIds?.length) {
+        for (let promiseId of toRoot.syncPromiseIds) {
+          const roots = Array.from(dp.util.getAllSyncRoots(to)).map(c => c.contextId);
+          log(`SYNC PROMISE:`, {
+            promiseId,
+            roots,
+            from,
+            to,
+          });
+        }
+      }
       counts[5] += dp.util.getNestedDepth(to);
       return counts;
     }, [0, 0, 0, 0, 0, 0]);
