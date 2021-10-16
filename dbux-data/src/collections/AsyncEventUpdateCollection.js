@@ -111,7 +111,7 @@ export default class AsyncEventUpdateCollection extends Collection {
       rootIdNested
     } = postUpdateData;
     
-    this.getOrAssignRootThreadId(preEventRootId, schedulerTraceId);
+    this.getOrAssignRootThreadId(preEventRootId);
     rootIdNested && this.getOrAssignRootThreadId(rootIdNested, schedulerTraceId);
 
     // add edge
@@ -152,7 +152,7 @@ export default class AsyncEventUpdateCollection extends Collection {
       rootIdDown
     } = postUpdateData;
 
-    this.getOrAssignRootThreadId(preEventRootId, schedulerTraceId);
+    this.getOrAssignRootThreadId(preEventRootId);
     rootIdUp && this.getOrAssignRootThreadId(rootIdUp, schedulerTraceId);
     rootIdDown && this.getOrAssignRootThreadId(rootIdDown, schedulerTraceId);
 
@@ -191,7 +191,7 @@ export default class AsyncEventUpdateCollection extends Collection {
       }
     } = postUpdateData;
 
-    this.getOrAssignRootThreadId(preEventRootId, schedulerTraceId);
+    this.getOrAssignRootThreadId(preEventRootId);
 
     // add edge
     /* const newEdge =  */

@@ -149,11 +149,18 @@ export class ExecutionContextCollection extends Collection {
     return this._lastOrderIds[staticId] = (this._lastOrderIds[staticId] || 0) + 1;
   }
 
+  _lastCid;
+
   _create(type, stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId, schedulerTraceId, definitionTid, tracesDisabled) {
     const staticContext = staticContextCollection.getContext(programId, inProgramStaticContextId);
     const { staticId: staticContextId } = staticContext;
     const orderId = this._genOrderId(staticContextId);
     const contextId = this._all.length;
+
+    if (contextId > 1 && !this._all[contextId - 1]) {
+      this.logger.warn(`ContextId was skipped (${contextId - 1} does not exist; lastCid=${this._lastCid})`);
+    }
+    this._lastCid = contextId;
 
     const context = this._allocate(
       type, stackDepth, runId, parentContextId, parentTraceId, contextId, definitionTid, staticContextId, orderId, schedulerTraceId, tracesDisabled

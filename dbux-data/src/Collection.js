@@ -83,6 +83,9 @@ export default class Collection {
   }
 
   addEntry(entry) {
+    if (!entry) {
+      return;
+    }
     this.handleAdd(entry);
     if (!entry._id) {
       this.logger.warn(`entry._id missing:`, entry);

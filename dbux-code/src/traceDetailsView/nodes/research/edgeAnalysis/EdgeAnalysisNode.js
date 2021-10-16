@@ -309,11 +309,8 @@ class EdgeAnalysisController {
       return counts;
     }, [0, 0, 0, 0, 0, 0]);
 
-    // total threads = 1 + multi-chains + forks
-    edgeTypeCounts[3] = edgeTypeCounts[1] + edgeTypeCounts[2];
-
     // take average
-    edgeTypeCounts[5] = (edgeTypeCounts[5] / edges.length).toFixed(1);
+    edgeTypeCounts[5] = edgeTypeCounts[5] / edges.length;
 
     // // for debugging purposes
     // const s = edges

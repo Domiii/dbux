@@ -17,15 +17,14 @@ export default class TraceCollection extends Collection {
     super('traces', dp);
   }
 
-  add(traces) {
-    // set applicationId
-    for (const trace of traces) {
-      trace.applicationId = this.dp.application.applicationId;
+  addEntry(trace) {
+    if (!trace) {
+      return;
     }
 
-    // debug(`traces`, JSON.stringify(traces, null, 2));
-
-    super.add(traces);
+    // set applicationId
+    trace.applicationId = this.dp.application.applicationId;
+    super.addEntry(trace);
   }
 
   serialize(trace) {

@@ -14,16 +14,13 @@ export default class ExecutionContextCollection extends Collection {
     this.currentThreadCount = 1;
   }
 
-  add(entries) {
-    for (const entry of entries) {
-      // if (!entry.parentContextId) {
-      //   // set applicationId, so we can trace any data point back to it's application
-      //   entry.applicationId = this.dp.application.applicationId;
-      // }
-
-      entry.applicationId = this.dp.application.applicationId;
+  addEntry(entry) {
+    if (!entry) {
+      // hackfix: some applications have errors preventing them from sending stuff. Problem occurs only when loading from file.
+      return;
     }
-    super.add(entries);
+    entry.applicationId = this.dp.application.applicationId;
+    super.addEntry(entry);
   }
 
   /**

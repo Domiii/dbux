@@ -14,16 +14,17 @@ export default class StaticProgramContextCollection extends Collection {
     super('staticProgramContexts', dp);
   }
 
-  add(entries) {
-    for (const entry of entries) {
-      if (!entry.filePath || !path.isAbsolute(entry.filePath)) {
-        this.logger.error('invalid `staticProgramContext.filePath` is not absolute - don\'t know how to resolve', entry.fileName);
-      }
-
-      // set applicationId, so we can trace any data point back to it's application
-      entry.applicationId = this.dp.application.applicationId;
+  addEntry(entry) {
+    if (!entry) {
+      return;
     }
-    super.add(entries);
+    if (!entry.filePath || !path.isAbsolute(entry.filePath)) {
+      this.logger.error('invalid `staticProgramContext.filePath` is not absolute - don\'t know how to resolve', entry.fileName);
+    }
+
+    // set applicationId, so we can trace any data point back to it's application
+    entry.applicationId = this.dp.application.applicationId;
+    super.addEntry(entry);
   }
 
   /**

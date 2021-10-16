@@ -1,21 +1,47 @@
-import { P, sleep } from '../../util/asyncUtil';
-
-function f(x) {
-  return function work() {
-    return x;
-  };
+ function R(x) {
+  return Promise.resolve(x);
 }
 
 async function main() {
-  f('create p')();
-  const p = P(f('start wait'), sleep(1000), f('end wait'));
-  await 'start';
-  f('START')();
+  const p = R().then(f1)
+    .then(sleep1s)
+    .then(f2);
+  await start();
   await Promise.all([
-    P(f('A1'), f('A2'), f('A3')),
-    P(f('B1'), f('B2'), f('B3')),
+    R().then(g1).then(g2),
+    R().then(h1).then(h2),
     p
   ]);
-  f('END')();
+  await done();
 }
 main();
+
+
+
+
+
+function sleep1s() {
+  return sleep(1000);
+}
+
+function sleep(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
+
+function f1() { }
+function f2() { }
+function f3() { }
+function f4() { }
+function f5() { }
+
+function g1() { }
+function g2() { }
+function g3() { }
+function g4() { }
+function g5() { }
+
+function h1() { }
+function h2() { }
+
+function start() { }
+function done() { return 42; }

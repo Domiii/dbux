@@ -15,11 +15,13 @@ export function makeEdgeTable(folder, experimentIds) {
   // 
   // traces: number of recorded trace events. AEs: recorded AEs by type (await, then, cb). falseTls: false TLs by type (TODO(types)). tlRatio: $\frac{realTls}{totalTls}$
   // const headers = `name & traces & AEs & C & MC & F & S & N \\\\`;
-  const rows = experimentIds.map(experimentId => {
+  const all = experimentIds.map(experimentId => {
     return tableRow(folder, experimentId);
   });
+  const rows = all.map(x => x.row);
+  const allRaw = all.map(x => x.raw);
   // return `${headers}\n${rows.join('\n')}`;
-  return `${rows.join('\\\\\n')} \\\\`;
+  return `${rows.join('\\\\\n')} \\\\\n\n\n ${JSON.stringify(allRaw)}`;
 }
 
 function tableRow(folder, experimentId) {
@@ -31,11 +33,18 @@ function tableRow(folder, experimentId) {
     const { appStats = {}/* , annotations = {} */ } = data;
     let { traceCount, aeCounts, edgeTypeCounts } = appStats;
 
+    traceCount = traceCount.toLocaleString('en-us');
     aeCounts = [...aeCounts];
     edgeTypeCounts = [...edgeTypeCounts];
     /* if (!aeCounts.length)  */aeCounts.splice(3, 1);
 
-    const aeEdgeCount = sum(aeCounts);
+    // total threads = 1 + multi-chains + forks
+    edgeTypeCounts[3] = edgeTypeCounts[1] + edgeTypeCounts[2];
+
+    // take average
+    edgeTypeCounts[5] = Math.round(edgeTypeCounts[5]); // edgeTypeCounts[5].toFixed(1);
+
+    // const aeEdgeCount = sum(aeCounts);
 
     // compute timeline scenarios
     // const falseTls = sumBy(annotations, anno =>
@@ -47,10 +56,17 @@ function tableRow(folder, experimentId) {
     // const totalTls = trueTls + falseTls;
     // const tlRatio = trueTls / totalTls;
 
-    return `${name} & ${traceCount} & ${aeEdgeCount} & ${aeCounts.join(' & ')} & ${edgeTypeCounts.join(' & ')} `;
+    return {
+      raw: { name, traceCount/* , aeEdgeCount */, aeCounts, edgeTypeCounts },
+      /* & ${aeEdgeCount} */
+      row: `${name} & ${traceCount} & ${aeCounts.join(' & ')} & ${edgeTypeCounts.join(' & ')} `
+    };
   }
   catch (err) {
     logError(`Could not get table data for ${experimentId} -`, err);
-    return `${name} & `;
+    return {
+      raw: null,
+      row: `${name} & `
+    };
   }
 }
