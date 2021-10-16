@@ -2200,7 +2200,7 @@ export default {
         roots.push(downRoots);
       }
 
-      // handle special Promisify synchronization -> test w/ new producer_consumer_async
+      // handle special Promisify synchronization
       for (const p of postUpdateData.syncPromiseIds) {
         const link = dp.indexes.promiseLinks.to.getUnique(p);
         if (link && link.type === PromiseLinkType.Promisify && !roots.includes(link.rootId)) {
@@ -2512,7 +2512,7 @@ export default {
           }
         }
 
-        if (!nestedUpdate && nestedLink?.asyncPromisifyPromiseId) {
+        if (!nestedUpdate && nestedLink.type === PromiseLinkType.Promisify && nestedLink?.asyncPromisifyPromiseId) {
           // Promise ctor's resolve was called while this AE was waiting for it.
           //    Also, there was no nestedUpdate, meaning resolve was called 
           //      outside of a promisified callback.
