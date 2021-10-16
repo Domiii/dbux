@@ -295,7 +295,7 @@ class EdgeAnalysisController {
     const edgeTypeCounts = edges.reduce((counts, edge) => {
       const from = edge.fromRootContextId;
       const to = edge.toRootContextId;
-      const toRoot = dp.util.getAsyncNode(to);
+      const toAsyncNode = dp.util.getAsyncNode(to);
       const isChain = edge.edgeType === AsyncEdgeType.Chain;
       const hasMultipleParents = !!Array.isArray(from);
       const fromParentChains = isChain && !hasMultipleParents && dp.util.getChainFrom(from);
@@ -304,7 +304,7 @@ class EdgeAnalysisController {
       counts[0] += isChain && !isMulti;
       counts[1] += isChain && isMulti;
       counts[2] += !isChain;
-      counts[4] += !!toRoot.syncPromiseIds?.length;
+      counts[4] += !!toAsyncNode.syncPromiseIds?.length;
       if (toRoot.syncPromiseIds?.length) {
         for (let promiseId of toRoot.syncPromiseIds) {
           const roots = Array.from(dp.util.getAllSyncRoots(to)).map(c => c.contextId);

@@ -10,9 +10,7 @@ const producerQueue = [];
 
 function notify(queue) {
   const next = queue.shift();
-  if (next) {
-    next();
-  }
+  if (next) { next(); }
 }
 
 function wait(queue) {
