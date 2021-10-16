@@ -118,6 +118,7 @@ export class DebugTDNode extends TraceDetailNode {
       ...context,
       stackTrace: parseStackTrace(context.stackTrace)
     };
+    const rootContext = dp.collections.executionContexts.getById(rootContextId);
 
     const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
     const { staticContextId } = context;
@@ -154,6 +155,8 @@ export class DebugTDNode extends TraceDetailNode {
      *  #########################################################################*/
 
     const contextNode = [`context`, context, { description: `${context?.contextId}` }];
+
+    const rootContextNode = [`rootContext`, rootContext, { description: `${rootContext?.contextId}` }];
 
     // ###########################################################################
     // async
@@ -278,6 +281,7 @@ export class DebugTDNode extends TraceDetailNode {
         ['trace', otherTraceProps],
         valueNode,
         contextNode,
+        rootContextNode,
         asyncContainerNode,
         ...allDataNodes,
         ['staticTrace', staticTrace],

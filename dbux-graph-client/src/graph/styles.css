@@ -13,6 +13,7 @@ canvas{
 
 :root {
   --async-line-color: gray;
+  --async-line-width: 3px;
 }
 
 /** ###########################################################################
@@ -242,13 +243,29 @@ div {
 }
 
 .async-cell-sync-root-highlight {
-  border: 1px dotted red;
+  border: 3px dotted red;
   overflow: hidden;
 }
 
 .theme-mode-dark .async-cell-sync-root-highlight {
-  border: 1px dotted red;
+  border: 3px dotted red;
   overflow: hidden;
+}
+
+/* .research-mode .async-cell .left-label {
+  display: none !important;
+} */
+
+.research-mode .async-cell .async-context-label {
+  display: none !important;
+}
+
+.research-mode .async-cell .loc-label {
+  display: none !important;
+}
+
+.research-mode .async-cell .right-label {
+  display: none !important;
 }
 
 .terminal-node {
@@ -298,7 +315,7 @@ div {
 }
 
 .async-header {
-  position: sticky;
+  /* position: sticky; */
   top: 0;
   width: 100% !important;
   z-index: 2
@@ -403,7 +420,11 @@ div {
   content: "";
   width: 100%;
   height: 0;
-  border-top: 1px dashed var(--async-line-color);
+  border-top: var(--async-line-width) dashed var(--async-line-color);
+}
+
+.research-mode .hz-d {
+  border-color: #fff
 }
 
 /* vertical solid */
@@ -416,7 +437,11 @@ div {
   content: "";
   height: 100%;
   width: 0;
-  border-left: 1px solid var(--async-line-color);
+  border-left: var(--async-line-width) solid var(--async-line-color);
+}
+
+.research-mode .vt {
+  border-color: #fff
 }
 
 /* vertical dashed */
@@ -429,7 +454,11 @@ div {
   content: "";
   height: 100%;
   width: 0;
-  border-left: 1px dashed var(--async-line-color);
+  border-left: var(--async-line-width) dashed var(--async-line-color);
+}
+
+.research-mode .vt-d {
+  border-color: #fff
 }
 
 /* corner dashed */
@@ -443,8 +472,12 @@ div {
   content: "";
   width: 50%;
   height: 50%;
-  border-top: 1px dashed var(--async-line-color);
-  border-right: 1px dashed var(--async-line-color);
+  border-top: var(--async-line-width) dashed var(--async-line-color);
+  border-right: var(--async-line-width) dashed var(--async-line-color);
+}
+
+.research-mode .cn-d {
+  border-color: #fff
 }
 
 /* T-shape dashed */
@@ -459,15 +492,30 @@ div {
   content: "";
   width: 100%;
   height: 0;
-  border-top: 1px dashed var(--async-line-color);
+  border-top: var(--async-line-width) dashed var(--async-line-color);
 }
 
 .t-d::after {
   content: "";
   width: 0;
   height: calc(50% - 0.5px);
-  border-top: 1px dashed var(--async-line-color);
-  border-left: 1px dashed var(--async-line-color);
+  border-top: var(--async-line-width) dashed var(--async-line-color);
+  border-left: var(--async-line-width) dashed var(--async-line-color);
+}
+
+.research-mode .t-d {
+  border-color: #fff
+}
+
+.research-mode .async-error {
+  border-color: red;
+  background-blend-mode: darken;
+  /* background: unset !important; */
+}
+
+.research-mode .async-error .async-brief {
+  background: unset;
+  transform: translateX(100%);
 }
 
 /** ###########################################################################

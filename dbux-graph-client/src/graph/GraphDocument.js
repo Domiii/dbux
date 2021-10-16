@@ -1,4 +1,5 @@
 import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
+import { decorateClasses } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 class GraphDocument extends ClientComponentEndpoint {
@@ -9,6 +10,12 @@ class GraphDocument extends ClientComponentEndpoint {
       <div data-mount="GraphContainer" class="grid graph-containers"></div>
     </div>`;
     return el;
+  }
+
+  setupEl() {
+    decorateClasses(this.el, {
+      'research-mode': !!this.context.researchMode
+    });
   }
 
   update() {

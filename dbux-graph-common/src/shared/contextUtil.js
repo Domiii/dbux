@@ -1,3 +1,4 @@
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import ThemeMode from './ThemeMode';
 
 /**
@@ -14,9 +15,15 @@ function getUniqueAngle(i) {
   return color;
 }
 
-export function getStaticContextColor(themeMode, staticContextId, bland = false) {
+export function getStaticContextColor(themeMode, staticContextId, { bland = false, highContractMode = false } = EmptyObject) {
   const hue = getUniqueAngle(staticContextId);
-  const saturation = bland ? 5 : 35;
-  const lightness = ThemeMode.is.Dark(themeMode) ? 30 : 65;
+  let saturation = bland ? 5 : 35;
+  let lightness = ThemeMode.is.Dark(themeMode) ? 30 : 65;
+
+  if (highContractMode) {
+    saturation = 60;
+    lightness = 65;
+  }
+
   return `hsl(${hue},${saturation}%,${lightness}%)`;
 }

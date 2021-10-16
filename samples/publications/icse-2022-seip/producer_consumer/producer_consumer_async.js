@@ -104,7 +104,7 @@ async function C(n) {
  *  #########################################################################*/
 
 (async function main() {
-  await start;
+  // await start;
 
   P(2 * N);
   C(N);
