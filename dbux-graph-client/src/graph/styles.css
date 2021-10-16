@@ -707,3 +707,7 @@ body:not(.theme-mode-dark) .highlight {
   border-radius: 4px;
   font-size: 0.9rem;
 }
+
+.research-mode .context-stats {
+  display: none !important;
+}
