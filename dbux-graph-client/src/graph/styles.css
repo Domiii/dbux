@@ -515,7 +515,7 @@ div {
 
 .research-mode .async-error .async-brief {
   background: unset;
-  transform: translateX(25px);
+  transform: translateX(100%);
 }
 
 /** ###########################################################################
