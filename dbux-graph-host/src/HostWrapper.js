@@ -5,6 +5,7 @@ import HostComponentManager from './componentLib/HostComponentManager';
 
 /**
  * Wrapper for the host of a web application split into host and client, using components.
+ * future-work: rename `dbux-graph-host` and `dbux-graph-client` to `dbux-web-host` and `dbux-web-client`, respectively.
  */
 export default class HostWrapper {
   _onStart;
