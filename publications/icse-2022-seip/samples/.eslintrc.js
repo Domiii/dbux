@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
 ignorePatterns: ['**/*'],
 
-  extends: [path.join(__dirname, '../.eslintrc.js')],
+  extends: [path.join(__dirname, '../../../.eslintrc.js')],
 
   env: {
     commonjs: true,

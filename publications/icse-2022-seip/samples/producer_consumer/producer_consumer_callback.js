@@ -1,5 +1,4 @@
-import { IdleTime, N, startProduce, finishProduce, startConsume, finishConsume, hasSpace, hasItems } from './producer_consumer_base';
-import { waitTicksCallback, schedule } from '../../../util/asyncUtil';
+import { IdleTime, N, startProduce, finishProduce, startConsume, finishConsume, hasSpace, hasItems, waitTicksCallback, schedule } from './producer_consumer_base';
 
 /** ###########################################################################
  * wait/notify

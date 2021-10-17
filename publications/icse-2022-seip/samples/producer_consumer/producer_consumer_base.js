@@ -159,3 +159,70 @@ export function finishConsume(index) {
   console.log(`consumed item ${item}, remaining: ${nItems}, consuming: ${consuming}, buffer: ${getBufferString()}`);
   useItem(item);
 }
+
+
+/** ###########################################################################
+ * other utilities
+ * ##########################################################################*/
+
+function noop() { }
+
+function normalizeCondition(condition) {
+  if (!(condition instanceof Function)) {
+    var n = condition;
+    // console.trace('normalizeCondition', condition);
+    condition = () => {
+      const oldN = n;
+      n = Math.max(n - 1, 0);
+      // console.log('norm cond', oldN);
+      return !!oldN;
+    };
+  }
+  return condition;
+}
+
+export function waitTicksPromise(t) {
+  return repeatPromise(t);
+}
+
+export function repeatPromise(condition, _nextTick = noop) {
+  condition = normalizeCondition(condition);
+  return _repeatPromise(condition, _nextTick);
+}
+
+function _repeatPromise(condition, tickHandler) {
+  let p = Promise.resolve();
+  if (condition()) {
+    if (tickHandler !== noop) {
+      // idle tick
+      p = p.then(tickHandler);
+    }
+    return p.then(function nextTick() {
+      return _repeatPromise(condition, tickHandler);
+    });
+  }
+  return p;
+}
+
+export function pt(cb) {
+  return Promise.resolve().then(cb);
+}
+
+
+export function schedule(cb) {
+  setImmediate(() => cb());
+}
+
+export function waitTicksCallback(t, task) {
+  repeatCallback(t, task);
+}
+
+export function repeatCallback(condition, task = noop) {
+  condition = normalizeCondition(condition);
+  if (condition()) {
+    schedule(function nestedRepeat() { repeatCallback(condition, task) });
+  }
+  else {
+    task();
+  }
+}

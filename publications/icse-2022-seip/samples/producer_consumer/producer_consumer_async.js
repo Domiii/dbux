@@ -1,8 +1,7 @@
 /**
  * @file Producer/Consumer problem implemented using async/await
  */
-
-import { N, startProduce, finishProduce, startConsume, finishConsume, hasSpace, hasItems, getProduceTime, getConsumeTime, } from './producer_consumer_base';
+import { N, startProduce, finishProduce, startConsume, finishConsume, hasSpace, hasItems, } from './producer_consumer_base';
 // import { waitTicksAsync, repeatAsync, sleep } from '../../../util/asyncUtil';
 
 const start = 0, end = 0, work = 0;
