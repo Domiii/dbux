@@ -2502,7 +2502,7 @@ export default {
           }
         }
 
-        if (!nestedUpdate && nestedLink.type === PromiseLinkType.Promisify && nestedLink?.asyncPromisifyPromiseId) {
+        if (!nestedUpdate /* && nestedLink.type === PromiseLinkType.Promisify */ && nestedLink?.asyncPromisifyPromiseId) {
           // Promise ctor's resolve was called while this AE was waiting for it.
           //    Also, there was no nestedUpdate, meaning resolve was called 
           //      outside of a promisified callback.

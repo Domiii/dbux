@@ -165,7 +165,7 @@ export function finishConsume(index) {
  * other utilities
  * ##########################################################################*/
 
-function noop() { }
+// function noop() { }
 
 function normalizeCondition(condition) {
   if (!(condition instanceof Function)) {

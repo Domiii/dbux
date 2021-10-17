@@ -24,6 +24,9 @@
 		},
 		{
 			"path": "dbux_projects/sequelize"
+		},
+		{
+			"path": "publications/icse-2022-seip"
 		}
 	],
 	"settings": {
