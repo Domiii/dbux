@@ -7,6 +7,7 @@ import Stopwatch from './Stopwatch';
 import PracticeSessionState from './PracticeSessionState';
 import BugStatus from '../dataLib/BugStatus';
 import { emitPracticeSessionEvent, emitSessionFinishedEvent } from '../userEvents';
+import PracticeSessionData from './PracticeSessionData';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PracticeSession');
@@ -20,9 +21,10 @@ export default class PracticeSession {
    * A PracticeSession contains the information that user solving a bug.
    * @param {Bug} bug 
    * @param {ProjectsManager} manager
+   * @param {PracticeSessionData} sessionData
    */
-  constructor(bug, manager, savedState, logFilePath) {
-    const { createdAt, sessionId, state } = savedState;
+  constructor(bug, manager, sessionData, logFilePath) {
+    const { createdAt, sessionId, state } = sessionData;
     this.sessionId = sessionId || uuidv4();
     this.createdAt = createdAt || Date.now();
     this.stopwatch = new Stopwatch(manager.externals.stopwatch);
@@ -31,7 +33,8 @@ export default class PracticeSession {
     this.manager = manager;
     this.lastAnnotation = '';
 
-    this.logFilePath = logFilePath || savedState.logFilePath || this.getDefaultLogFilePath();
+    // TODO: move to `logFilePath` getter
+    this.logFilePath = logFilePath || sessionData.logFilePath || this.getDefaultLogFilePath();
 
     let bugProgress = this.bdp.getBugProgressByBug(bug);
     if (!bugProgress) {

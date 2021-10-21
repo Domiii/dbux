@@ -2298,7 +2298,9 @@ export default {
   },
 
   /** 
-   * NOTE: The algorithm is shared with `util.UP`, but with different teminate condition
+   * Similar to `util.UP`, but collects all, not just the first, nesting AEs.
+   * NOTE: instead of only using `scheduler` information, it also considers promise links
+   * and ignored SYNC conditions.
    * @param {DataProvider} dp
    */
   getNestedAncestorsOfPromise(dp, nestedPromiseId, beforeRootId, nestingTraces) {
@@ -2315,7 +2317,7 @@ export default {
     else if ((u = dp.util.getFirstUpdateOfNestedPromise(nestedPromiseId)) && u.rootId < beforeRootId) {
       const promiseRootId = dp.util.getPromiseRootId(nestedPromiseId);
       if (promiseRootId < u.rootId) {
-        return nestedPromiseId;
+        return nestedPromiseId; // SYNC
       }
       else {
         nestingTraces.push(u.schedulerTraceId);

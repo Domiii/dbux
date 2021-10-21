@@ -315,8 +315,9 @@ export default class ProjectsManager {
    * ##########################################################################*/
 
   async tryRecoverPracticeSession(experimentId) {
+    let savedPracticeSession;
     if (!experimentId) {
-      const savedPracticeSession = this.externals.storage.get(savedPracticeSessionKey);
+      savedPracticeSession = this.externals.storage.get(savedPracticeSessionKey);
       if (!savedPracticeSession) {
         return false;
       }
@@ -338,17 +339,25 @@ export default class ProjectsManager {
 
     allApplications.clear();    // clear applications
 
-    if (!await this.askForRecoverPracticeSession({ experimentId })) {
+    const recoverData = await this.askForRecoverPracticeSession(savedPracticeSession, { experimentId });
+    if (!recoverData) {
       // await bug.project.deactivateBug(bug);
       return false;
     }
 
+    const [/* recoverPracticeData */, recoverResearchData] = recoverData;
+
     try {
       await this.switchToBug(bug);
 
-      this.research.importResearchAppData(experimentId);
-      this._loadPracticeSession(bug/* , savedPracticeSession, true */);
-      this.practiceSession.setupStopwatch();
+      if (recoverResearchData) {
+        this.research.importResearchAppData(experimentId);
+        this._loadPracticeSession(bug/* , savedPracticeSession, true */);
+      }
+      else {
+        this._loadPracticeSession(bug, savedPracticeSession, true);
+        this.practiceSession.setupStopwatch();
+      }
       return true;
     }
     catch (err) {
@@ -375,31 +384,44 @@ export default class ProjectsManager {
     }
   }
 
-  async askForRecoverPracticeSession({ experimentId }) {
+  async askForRecoverPracticeSession(practiceSessionData, researchSessionData) {
+    function sizeMessage(prefix, size) {
+      if (!size) {
+        return '';
+      }
+      size = size / 1024 / 1024;
+      return `${prefix} log file is ${size.toFixed(2)}MB (zipped).\n`;
+    }
     try {
-      const fileSize = this.research.getAppFileSize(experimentId);
-      if (!fileSize) {
+      // research
+      const { experimentId } = researchSessionData || EmptyObject;
+      const researchSize = experimentId && this.research.getAppFileSize(experimentId);
+
+      // Dbux Practice
+      const { logFilePath, applicationUUIDs } = practiceSessionData || EmptyObject;
+      const practiceSize = applicationUUIDs?.reduce((currentSize, uuid) => {
+        const appFilePath = this.getApplicationFilePath(uuid);
+        return currentSize + getFileSizeSync(appFilePath);
+      }, getFileSizeSync(logFilePath)) || 0;
+
+      if (!practiceSize && !researchSize) {
         return false;
       }
-      // const { logFilePath, applicationUUIDs } = savedPracticeSession || EmptyObject;
-      // const practiceSize = applicationUUIDs?.reduce((currentSize, uuid) => {
-      //   const appFilePath = this.getApplicationFilePath(uuid);
-      //   return currentSize + getFileSizeSync(appFilePath);
-      // }, getFileSizeSync(logFilePath)) || 0;
 
-      const sizeString = fileSize / 1024 / 1024;
       // eslint-disable-next-line max-len
-      const confirmMessage = `Dbux has found previous research session for "${experimentId}".\n` +
-        `Research log file is ${sizeString.toFixed(2)}MB (zipped).\n` +
-        `Do you want to recover the practice session?`;
+      const confirmMessage = `Dbux has found previous session(s) for "${experimentId}":\n` +
+        sizeMessage('Practice', practiceSize) +
+        sizeMessage('Research', researchSize) +
+        `\nDo you want to load a previous session?`;
       const buttons = {
-        [`Yes`]: () => true,
-        [`Ignore practice session`]: async () => {
+        ...practiceSize && { [`Load Practice Session`]: () => [practiceSessionData, null] } || EmptyObject,
+        ...researchSize && { [`Load Research Session`]: () => [null, researchSessionData] } || EmptyObject,
+        [`Ignore (don't ask again)`]: async () => {
           // log should be discarded and the user should not be asked again
           await this.savePracticeSession(null);
           return false;
         },
-        [`Delete practice session`]: async () => {
+        [`Delete Practice Session`]: async () => {
           // TODO: first CONFIRM! then delete research file
           await this.savePracticeSession(null);
           // fs.rmSync(appFilePath);
