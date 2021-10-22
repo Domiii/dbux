@@ -209,6 +209,11 @@ export default class DataProviderBase {
       this.logger.error('invalid data must be (but is not) object -', JSON.stringify(allData).substring(0, 500));
     }
 
+    // filter out nulls in entries
+    for (const collectionName in allData) {
+      allData[collectionName] = allData[collectionName].filter(x => !!x);
+    }
+
     const collectionNames = this._getSortedCollectionNames(allData);
     this._addData(collectionNames, allData);
     this._postAdd(collectionNames, allData, isRaw);
