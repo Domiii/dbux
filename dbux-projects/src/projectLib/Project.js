@@ -557,7 +557,8 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
     // NOTE: returns status code 1, if there are any changes, IFF --exit-code or --quiet is provided
     // see: https://stackoverflow.com/questions/28296130/what-does-this-git-diff-index-quiet-head-mean
-    const code = await this.exec(`${this.gitCommand} diff-index --exit-code HEAD --`, { failOnStatusCode: false });
+    await this.exec(`${this.gitCommand} add -A`);
+    const code = await this.exec(`${this.gitCommand} diff-index --quiet HEAD --`, { failOnStatusCode: false });
 
     return !!code;  // code !== 0 means that there are pending changes
   }
@@ -623,7 +624,8 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   async installBug(bug) {
     const oldBug = this.manager.runner.bug;
     if (oldBug && oldBug !== bug) {
-      await this.deactivateBug(oldBug);
+      const oldProject = oldBug.project;
+      await oldProject.deactivateBug(oldBug);
     }
 
     const project = this;
@@ -1060,8 +1062,10 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
   async gitDoesTagExist(tag) {
     await this.checkCorrectGitRepository();
-    const code = (await this.exec(`${this.gitCommand} rev-parse "${tag}" --`, { failOnStatusCode: false }));
-    return !code;
+    // const code = (await this.exec(`${this.gitCommand} rev-parse "${tag}" --`, { failOnStatusCode: false }));
+    // return !code;
+    const result = await this.execCaptureOut(`${this.gitCommand} tag -l "${tag}" --`);
+    return !!result;
   }
 
   getProjectInstalledTagName() {
