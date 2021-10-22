@@ -6,12 +6,35 @@ import { globRelative } from '@dbux/common-node/src/util/fileUtil';
 
 /** @typedef { import("../projectLib/Project").default } Project */
 
-export default class WebpackBuilder {
+export class WebpackOptions {
+  /**
+   * Is used to produce {@link WebpackBuilder#inputFiles}.
+   * Patterns are resolved relative to {@link WebpackBuilder#getJsRoot}.
+   * @type {string}
+   */
+  inputPattern;
+}
+
+class WebpackBuilder {
   /**
    * @type {Project}
    */
   project;
 
+  /**
+   * @type {WebpackOptions}
+   */
+  cfg;
+
+  /**
+   * Depends on {@link WebpackOptions#inputPattern}.
+   * If given, this is used to populate: (i) env.entry and (ii) `bug.watchFilePaths` (if not otherwise overwritten).
+   */
+  inputFiles;
+
+  /**
+   * @param {WebpackOptions} cfg 
+   */
   constructor(cfg) {
     this.cfg = cfg;
   }
@@ -163,3 +186,5 @@ export default class WebpackBuilder {
     return project.execBackground(cmd, processOptions);
   }
 }
+
+export default WebpackBuilder;

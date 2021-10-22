@@ -6,7 +6,7 @@ const ProjectRoot = path.resolve(__dirname);
 
 const customCfg = {
   target: 'web',
-  src: ['src'],
+  src: ['src', 'dbux-examples'],
   devServer: {
     // contentBase: ['dist']
     //   .map(p => path.join(ProjectRoot, p)),
@@ -31,7 +31,7 @@ const customCfg = {
     //   template: './index.html',
     //   inject: 'head',
     // }),
-    copyPlugin(ProjectRoot, ['examples', 'css', 'lib', 'fonts', 'images', 'languages'])
+    copyPlugin(ProjectRoot, ['examples', 'css', 'lib', 'fonts', 'images', 'languages', 'dbux-examples/*.html'])
   ]
 };
 

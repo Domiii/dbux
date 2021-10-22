@@ -14,7 +14,7 @@ export default class EditorMdProject extends Project {
     return new WebpackBuilder({
       websitePort: 3844,
       rootPath: 'src',
-      inputPattern: '*'
+      inputPattern: ['*', '../dbux-examples/*']
     });
   }
 
@@ -27,7 +27,12 @@ export default class EditorMdProject extends Project {
         // patch: 'patch1',
         description: 'Basic example of Editor.md',
         runArgs: [],
-        websitePath: '/examples/full.html'
+        /**
+         * future-work: use `html-loader` to automatically transform the html file instead
+         * @see https://webpack.js.org/loaders/html-loader/
+         */
+        websitePath: '/dbux-examples/full.html',
+        // websitePath: '/examples/full.html'
         // bugLocations: [
         //   {
         //     file: 'src/controller.js',
