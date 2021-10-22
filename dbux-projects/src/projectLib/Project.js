@@ -594,6 +594,9 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       await this.npmInstall();
       await this.installDependencies();
 
+      // copy assets
+      await this.installAssets();
+
       // -> `afterInstall` hook
       await this.afterInstall();
       await this.builder?.afterInstall?.();
@@ -632,36 +635,45 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     const installedTag = project.getProjectInstalledTagName();
     const bugCachedTag = project.getBugCachedTagName(bug);
 
+    let successfulCacheFlag = false;
     if (await project.gitDoesTagExist(bugCachedTag)) {
       // get back to bug's original state
       await project._gitCheckout(bugCachedTag);
-      const currentTag = await project.gitGetCurrentTagName();
-      if (currentTag === bugCachedTag) {
+      const currentTags = await project.gitGetAllCurrentTagName();
+      if (currentTags.includes(bugCachedTag)) {
         // hackfix: there is some bug here where `bugCachedTag` appears to exist, but we never stored it, and after checkout, it ends up in `installedTag` instead
         // -> $ git tag -l *dbux*
-        return;
+        successfulCacheFlag = true;
       }
-      this.logger.warn(`installBug failed - tried to checkout bug tag "${bugCachedTag}", but instead at "${currentTag}" - re-installing bug`);
+      else {
+        this.logger.warn(`installBug failed - tried to checkout bug tag "${bugCachedTag}", but instead at "${currentTags}" - re-installing bug`);
+      }
     }
 
-    // fresh start
-    await project._gitCheckout(installedTag);
+    if (!successfulCacheFlag) {
+      // fresh start
+      await project._gitCheckout(installedTag);
 
-    // checkout bug commit, apply patch, etc.
-    await project.beforeSelectBug?.(bug);
-    await project.selectBug(bug);
-    await project.afterSelectBug?.(bug);
+      // checkout bug commit, apply patch, etc.
+      await project.beforeSelectBug?.(bug);
+      await project.selectBug(bug);
+      await project.afterSelectBug?.(bug);
+
+      // copy assets
+      await this.installAssets(bug);
+
+      // install default + custom dependencies
+      await project.npmInstall();
+      await project.installBugDependencies?.(bug);
+
+      // autoCommit + set tag
+      await project.autoCommit(`Selected bug ${bug.id}.`);
+      await project.gitSetTag(bugCachedTag);
+    }
 
     // copy assets
-    await this.installAssets();
-
-    // install default + custom dependencies
-    await project.npmInstall();
-    await project.installBugDependencies?.(bug);
-
-    // autoCommit + set tag
-    await project.autoCommit(`Selected bug ${bug.id}.`);
-    await project.gitSetTag(bugCachedTag);
+    await this.installAssets(bug);
+    await project.autoCommit(`Installed assests.`);
   }
 
   /**
@@ -688,21 +700,6 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
         await this.applyPatch(bug.patch);
       }
     }
-
-    // copy per-bug asset files
-    if (bug.hasAssets) {
-      const assetFolder = pathJoin(BugAssetFolder, this.name, bug.name || bug.id);
-      if (!existsSync(this.getAssetDir(assetFolder))) {
-        this.logger.error(`Experiment "${bug.id}" should have assets, but no asset folder at "${this.getAssetDir(assetFolder)}"`);
-      }
-      else {
-        this.copyAssetFolder(assetFolder);
-      }
-    }
-
-    // else {
-    //   throw new Error(this + ' abstract method not implemented');
-    // }
   }
 
 
@@ -901,7 +898,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   /**
    * Copy all assets into project folder.
    */
-  async installAssets() {
+  async installAssets(bug = null) {
     // remove unwanted files
     let { projectPath, rmFiles } = this;
     if (rmFiles?.length) {
@@ -915,10 +912,21 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     }
 
     // copy assets
-    const folders = this.getAllAssetFolderNames();
-    folders.forEach(folderName => {
+    const projectAssetsFolders = this.getAllAssetFolderNames();
+    projectAssetsFolders.forEach(folderName => {
       this.copyAssetFolder(folderName);
     });
+
+    // copy bug assets
+    if (bug) {
+      const bugAssetsFolder = this.getBugAssetFolderName(bug);
+      if (!existsSync(this.getAssetDir(bugAssetsFolder))) {
+        this.logger.error(`Experiment "${bug.id}" should have assets, but no asset folder at "${this.getAssetDir(bugAssetsFolder)}"`);
+      }
+      else {
+        this.copyAssetFolder(bugAssetsFolder);
+      }
+    }
 
     // make sure, we have node at given version and node@lts
     if (this.nodeVersion) {
@@ -945,6 +953,15 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     }
     else {
       return [SharedAssetFolder];
+    }
+  }
+
+  getBugAssetFolderName(bug) {
+    if (bug.hasAssets) {
+      return pathJoin(BugAssetFolder, this.name, bug.name || bug.id);
+    }
+    else {
+      return null;
     }
   }
 
@@ -1045,6 +1062,11 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   async gitGetCurrentTagName() {
     await this.checkCorrectGitRepository();
     return (await this.execCaptureOut(`${this.gitCommand} describe --tags`)).trim();
+  }
+
+  async gitGetAllCurrentTagName() {
+    const tags = (await this.execCaptureOut(`git tag --points-at HEAD`)).split(/\r?\n/);
+    return tags;
   }
 
   /**
