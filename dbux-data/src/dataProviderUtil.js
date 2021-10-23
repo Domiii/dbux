@@ -1484,6 +1484,12 @@ export default {
     return staticContext.type === StaticContextType.Program;
   },
 
+  /** @param {DataProvider} dp */
+  getProgramContextFile(dp, contextId) {
+    const staticContext = dp.util.getStaticExecutionContextOfContext(contextId);
+    return dp.util.getFilePathFromProgramId(staticContext.programId);
+  },
+
   getStaticTrace(dp, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     const { staticTraceId } = trace;
@@ -1953,6 +1959,12 @@ export default {
   getAsyncEdgeFromTo(dp, fromRootId, toRootId) {
     const toEdges = dp.indexes.asyncEvents.to.get(toRootId);
     return toEdges?.find(edge => edge.fromRootContextId === fromRootId) || null;
+  },
+
+  /** @param {DataProvider} dp */
+  getAsyncEdgesTo(dp, toRootId) {
+    const toEdges = dp.indexes.asyncEvents.to.get(toRootId);
+    return toEdges || null;
   },
 
   /**

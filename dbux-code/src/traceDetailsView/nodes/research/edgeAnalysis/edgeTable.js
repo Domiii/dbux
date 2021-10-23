@@ -22,7 +22,7 @@ export function makeEdgeTable(folder, experimentIds) {
   const rows = all.map(x => x.row);
   const allRaw = all.map(x => x.raw);
   // return `${headers}\n${rows.join('\n')}`;
-  return `${rows.join('\\\\\n')} \\\\\n\n\n ${JSON.stringify(allRaw)}`;
+  return `${rows.join('\\\\\n')} \\\\\n\n\n% ${JSON.stringify(allRaw)}`;
 }
 
 // real thread counts
@@ -67,9 +67,11 @@ function tableRow(folder, experimentId) {
     // edgeTypeCounts[3] = edgeTypeCounts[1] + edgeTypeCounts[2];
     edgeTypeCounts[ETC.TT] = edgeTypeCounts[ETC.F] + edgeTypeCounts[ETC.O];
     edgeTypeCounts[ETC.RT] = getRt(experimentId);
-    edgeTypeCounts[ETC.Acc] = edgeTypeCounts[ETC.TT] / edgeTypeCounts[ETC.RT];
-
-    // round average
+    edgeTypeCounts[ETC.Acc] = edgeTypeCounts[ETC.RT] / edgeTypeCounts[ETC.TT];
+    
+    // fix formatting
+    edgeTypeCounts[ETC.O] = `\\corr{${edgeTypeCounts[ETC.O]}}`;
+    edgeTypeCounts[ETC.Acc] = edgeTypeCounts[ETC.Acc].toFixed(2);
     edgeTypeCounts[ETC.N] = Math.round(edgeTypeCounts[ETC.N]); // edgeTypeCounts[5].toFixed(1);
 
     // const aeEdgeCount = sum(aeCounts);

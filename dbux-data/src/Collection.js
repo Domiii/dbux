@@ -1,3 +1,4 @@
+import sumBy from 'lodash/sumBy';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 
@@ -188,8 +189,9 @@ export default class Collection {
   }
 
   getCount() {
-    const n = this._all.length;
-    return this._all[0] ? n : n - 1;
+    // const n = this._all.length;
+    return sumBy(this._all, t => !!t);
+    // return this._all[0] ? n : n - 1;
   }
 
   getAllActual(startId = 1) {

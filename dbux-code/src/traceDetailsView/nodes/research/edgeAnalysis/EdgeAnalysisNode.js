@@ -272,9 +272,14 @@ class EdgeAnalysisController {
    */
   getAppStats() {
     const { dp } = this;
-    const edges = dp.collections.asyncEvents.getAllActual()
+    const allEdges = dp.collections.asyncEvents.getAllActual();
+    const edges = allEdges
       // ignore file CGRs
       .filter(e => !dp.util.isContextProgramContext(e.toRootContextId));
+    const files = allEdges
+      .filter(e => dp.util.isContextProgramContext(e.toRootContextId))
+      .map(e => dp.collections.executionContexts.getById(e.toRootContextId))
+      .map(cid => dp.util.getProgramContextFile(cid));
 
     const traceCount = dp.collections.traces.getCount();
     const edgeTypeIndexes = {
@@ -294,8 +299,8 @@ class EdgeAnalysisController {
     const edgeTypeCounts = edges.reduce((counts, edge) => {
       const from = edge.fromRootContextId;
       const to = edge.toRootContextId;
-      const toRoot = dp.collections.executionContexts.getById(to);
-      const toAsyncNode = dp.util.getAsyncNode(to);
+      // const toRoot = dp.collections.executionContexts.getById(to);
+      // const toAsyncNode = dp.util.getAsyncNode(to);
       const isChain = edge.edgeType === AsyncEdgeType.Chain;
       const hasMultipleParents = !!Array.isArray(from);
       const fromParentChains = isChain && !hasMultipleParents && dp.util.getChainFrom(from);
@@ -304,7 +309,8 @@ class EdgeAnalysisController {
       const mc = isChain && isMulti;
       counts[ETC.C] += isChain && !isMulti;
       // counts[1] += ;
-      counts[ETC.F] += !isChain || mc; // FORK + Multi-Chain
+      counts[ETC.F] += !isChain || !!mc; // FORK + Multi-Chain
+      // counts[ETC.O] += !from;
       // counts[4] += !!toAsyncNode.syncPromiseIds?.length;
       // if (toRoot.syncPromiseIds?.length) {
       //   for (let promiseId of toRoot.syncPromiseIds) {
@@ -317,12 +323,18 @@ class EdgeAnalysisController {
       //     });
       //   }
       // }
-      counts[ETC.N] += dp.util.getNestedDepth(to);
+      counts[ETC.N] += dp.util.getNestedDepth(to) || 0;
       return counts;
-    }, [0, 0, 0, 0, 0, 0]);
+    }, [0, 0, 0, 0, 0, 0, 0]);
+
+    const orphans = dp.collections.asyncNodes.getAllActual()
+      .filter(an => !dp.util.isContextProgramContext(an.rootContextId))
+      .filter(an => !dp.util.getAsyncEdgesTo(an.rootContextId)?.length);
+      
+    edgeTypeCounts[ETC.O] = orphans.length;
 
     // take average
-    edgeTypeCounts[ETC.N] = edgeTypeCounts[5] / edges.length;
+    edgeTypeCounts[ETC.N] = edgeTypeCounts[ETC.N] / edges.length;
 
     // // for debugging purposes
     // const s = edges
@@ -333,7 +345,7 @@ class EdgeAnalysisController {
     //     dp.util.getAsyncNode(e.toRootContextId).syncPromiseIds
     //   ]));
 
-    return { traceCount, aeCounts, edgeTypeCounts };
+    return { traceCount, aeCounts, edgeTypeCounts, files };
   }
 
   /**
