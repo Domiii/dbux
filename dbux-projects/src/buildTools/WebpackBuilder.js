@@ -7,12 +7,25 @@ import { globRelative } from '@dbux/common-node/src/util/fileUtil';
 /** @typedef { import("../projectLib/Project").default } Project */
 
 export class WebpackOptions {
+  websitePort;
+
+  /**
+   * Path relative to `projectPath`.
+   * Used only to resolve `inputPattern` (if given).
+   * @type {string}
+   */
+  rootPath;
+
   /**
    * Is used to produce {@link WebpackBuilder#inputFiles}.
    * Patterns are resolved relative to {@link WebpackBuilder#getJsRoot}.
    * @type {string}
    */
   inputPattern;
+
+  entry;
+
+  watchFilePaths;
 }
 
 class WebpackBuilder {
@@ -52,6 +65,14 @@ class WebpackBuilder {
    */
   get needsDbuxCli() {
     return false;
+  }
+
+  get absoluteInputPaths() {
+    const {
+      project: { projectPath }
+    } = this;
+    
+    return this.inputFiles.map(file => path.resolve(projectPath, 'dist', file));
   }
 
   async afterInstall() {
@@ -95,9 +116,9 @@ class WebpackBuilder {
   }
 
   async getValue(bug, name) {
-    const { project } = this;
+    const { project, cfg } = this;
 
-    let value = bug[name] || project[name];
+    let value = bug[name] || cfg[name];
     if (isFunction(value)) {
       // this === project, first arg = bug
       value = await value.call(project, bug);
@@ -114,16 +135,16 @@ class WebpackBuilder {
       this.inputFiles = this.getInputFiles();
     }
     const {
-      project: { projectPath },
       cfg: { websitePort },
-      inputFiles
+      inputFiles,
+      absoluteInputPaths
     } = this;
 
     bug.inputFiles = bug.inputFiles || inputFiles;
 
     // bug.runFilePaths = bug.testFilePaths;
     bug.watchFilePaths = await this.getValue(bug, 'watchFilePaths') ||
-      inputFiles.map(file => path.resolve(projectPath, 'dist', file));
+      absoluteInputPaths;
 
     if (websitePort) {
       // website settings

@@ -13,17 +13,15 @@ export default class TodomvcEs6Project extends Project {
     '.babelrc'
   ];
 
-  entry = {
-    app: './bootstrap.js',
-    vendor: ['todomvc-app-css/index.css'],
-  };
-
-  watchFilePaths = ['app.js'];
-
   makeBuilder() {
     return new WebpackBuilder({
       websitePort: 3842,
       rootPath: 'src',
+      entry: {
+        app: './bootstrap.js',
+        vendor: ['todomvc-app-css/index.css'],
+      },
+      watchFilePaths: ['app.js']
     });
   }
 
