@@ -1,3 +1,4 @@
+/* eslint-disable quote-props */
 import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { existsSync, readFileSync } from 'fs';
@@ -5,7 +6,7 @@ import sumBy from 'lodash/sumBy';
 import sum from 'lodash/sum';
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { EdgeStatus } from './edgeData';
+import { EdgeStatus, ETC } from './edgeData';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -24,6 +25,30 @@ export function makeEdgeTable(folder, experimentIds) {
   return `${rows.join('\\\\\n')} \\\\\n\n\n ${JSON.stringify(allRaw)}`;
 }
 
+// real thread counts
+const rts = {
+  '2048': 5,
+  'async-js': 2,
+  'bluebird': 3,
+  'Editor.md': 21,
+  'express': 1,
+  'hexo': 2,
+  'node-fetch': 1,
+  'sequelize': 2,
+  'socket.io': 1,
+  'todomvc-es6': 6,
+  'webpack': '1-3',
+};
+
+function getRt(experimentId) {
+  const match = Object.entries(rts)
+    .filter(([projectName]) => experimentId.startsWith(projectName));
+  if (match.length !== 1) {
+    throw new Error(`experiment does not have RT: ${experimentId} (${JSON.stringify(match)})`);
+  }
+  return match[0][1];
+}
+
 function tableRow(folder, experimentId) {
   const fpath = pathResolve(folder, experimentId, 'edgeAnnotations.json');
   const name = experimentId.split('#', 1)[0];
@@ -37,12 +62,15 @@ function tableRow(folder, experimentId) {
     aeCounts = [...aeCounts];
     edgeTypeCounts = [...edgeTypeCounts];
     /* if (!aeCounts.length)  */aeCounts.splice(3, 1);
+    
+    // total threads = multi-chains + forks
+    // edgeTypeCounts[3] = edgeTypeCounts[1] + edgeTypeCounts[2];
+    edgeTypeCounts[ETC.TT] = edgeTypeCounts[ETC.F] + edgeTypeCounts[ETC.O];
+    edgeTypeCounts[ETC.RT] = getRt(experimentId);
+    edgeTypeCounts[ETC.Acc] = edgeTypeCounts[ETC.TT] / edgeTypeCounts[ETC.RT];
 
-    // total threads = 1 + multi-chains + forks
-    edgeTypeCounts[3] = edgeTypeCounts[1] + edgeTypeCounts[2];
-
-    // take average
-    edgeTypeCounts[5] = Math.round(edgeTypeCounts[5]); // edgeTypeCounts[5].toFixed(1);
+    // round average
+    edgeTypeCounts[ETC.N] = Math.round(edgeTypeCounts[ETC.N]); // edgeTypeCounts[5].toFixed(1);
 
     // const aeEdgeCount = sum(aeCounts);
 

@@ -25,7 +25,7 @@ import { confirm, showErrorMessage, showInformationMessage, showWarningMessage }
 import { runTaskWithProgressBar } from '../../../../codeUtil/runTaskWithProgressBar';
 import { showTextInNewFile } from '../../../../codeUtil/codeNav';
 import { makeEdgeTable } from './edgeTable';
-import { EdgeStatus, getExperimentDataFilePath } from './edgeData';
+import { EdgeStatus, ETC, getExperimentDataFilePath } from './edgeData';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -291,37 +291,38 @@ class EdgeAnalysisController {
       return counts;
     }, [0, 0, 0, 0] /* a, t, c, other */);
 
-    // 1. CHAIN (not multi), 2. multi-CHAIN, 3. FORK, 4. totalThreads, 5. SYNC, 6. Avg nesting count
     const edgeTypeCounts = edges.reduce((counts, edge) => {
       const from = edge.fromRootContextId;
       const to = edge.toRootContextId;
+      const toRoot = dp.collections.executionContexts.getById(to);
       const toAsyncNode = dp.util.getAsyncNode(to);
       const isChain = edge.edgeType === AsyncEdgeType.Chain;
       const hasMultipleParents = !!Array.isArray(from);
       const fromParentChains = isChain && !hasMultipleParents && dp.util.getChainFrom(from);
       const chainIndex = fromParentChains && fromParentChains.indexOf(edge);
       const isMulti = !hasMultipleParents && chainIndex > 0;
-      counts[0] += isChain && !isMulti;
-      counts[1] += isChain && isMulti;
-      counts[2] += !isChain;
-      counts[4] += !!toAsyncNode.syncPromiseIds?.length;
-      if (toRoot.syncPromiseIds?.length) {
-        for (let promiseId of toRoot.syncPromiseIds) {
-          const roots = Array.from(dp.util.getAllSyncRoots(to)).map(c => c.contextId);
-          log(`SYNC PROMISE:`, {
-            promiseId,
-            roots,
-            from,
-            to,
-          });
-        }
-      }
-      counts[5] += dp.util.getNestedDepth(to);
+      const mc = isChain && isMulti;
+      counts[ETC.C] += isChain && !isMulti;
+      // counts[1] += ;
+      counts[ETC.F] += !isChain || mc; // FORK + Multi-Chain
+      // counts[4] += !!toAsyncNode.syncPromiseIds?.length;
+      // if (toRoot.syncPromiseIds?.length) {
+      //   for (let promiseId of toRoot.syncPromiseIds) {
+      //     const roots = Array.from(dp.util.getAllSyncRoots(to)).map(c => c.contextId);
+      //     log(`SYNC PROMISE:`, {
+      //       promiseId,
+      //       roots,
+      //       from,
+      //       to,
+      //     });
+      //   }
+      // }
+      counts[ETC.N] += dp.util.getNestedDepth(to);
       return counts;
     }, [0, 0, 0, 0, 0, 0]);
 
     // take average
-    edgeTypeCounts[5] = edgeTypeCounts[5] / edges.length;
+    edgeTypeCounts[ETC.N] = edgeTypeCounts[5] / edges.length;
 
     // // for debugging purposes
     // const s = edges
