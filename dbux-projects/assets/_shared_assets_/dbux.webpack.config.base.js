@@ -154,7 +154,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     // context
     // ###########################################################################
 
-    const context = cfgOverrides.context || path.join(ProjectRoot, '.');
+    const context = cfgOverrides.context || env?.context || path.join(ProjectRoot, '.');
 
     // ###########################################################################
     // entry
@@ -175,6 +175,8 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     // plugins
     // ###########################################################################
 
+    const copyFiles = cfgOverrides.copyPlugin || env?.copyPlugin;
+
     plugins = plugins || [];
     plugins.push(
       new webpack.EnvironmentPlugin({
@@ -188,7 +190,11 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
       //   process: '(globalThis.process || { env: {} })'
       // })
     );
-    
+
+    if (copyFiles) {
+      plugins.push(copyPlugin(ProjectRoot, copyFiles));
+    }
+
     // see https://stackoverflow.com/questions/40755149/how-to-keep-my-shebang-in-place-using-webpack
     // plugins.push(new webpack.BannerPlugin({ banner: "#!/usr/bin/env node", raw: true }));
     // console.error('###\n###\n###', inspect(new webpack.BannerPlugin({ banner: "#!/usr/bin/env node", raw: true })));
@@ -359,8 +365,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
 // ###########################################################################
 // copyPlugin
 // ###########################################################################
-
-module.exports.copyPlugin = function copyPlugin(ProjectRoot, files) {
+function copyPlugin(ProjectRoot, files) {
   return new CopyPlugin({
     patterns: files.map(f => ({
       force: true,
@@ -368,4 +373,5 @@ module.exports.copyPlugin = function copyPlugin(ProjectRoot, files) {
       to: path.join(ProjectRoot, 'dist', f)
     }))
   });
-};
+}
+module.exports.copyPlugin = copyPlugin;

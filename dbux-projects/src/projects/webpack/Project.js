@@ -23,7 +23,7 @@ export default class WebpackProject extends Project {
   //   // node --stack-trace-limit=100 -r ./_dbux_/alias.build.js ../../node_modules/webpack/bin/webpack.js -- --config ./dbux.webpack.config.js --env entry={"bin/webpack":"bin\\\\webpack.js"}
     
   //   return new WebpackBuilder({
-  //     inputPattern: [
+  //     entryPattern: [
   //       'webpack/lib/index.js',
   //       'webpack-cli/packages/webpack-cli/bin/cli.js',
   //     ],
@@ -45,7 +45,7 @@ export default class WebpackProject extends Project {
 
   // makeBuilder() {
   //   return new WebpackBuilder({
-  //     inputPattern: 'lib/index.js'
+  //     entryPattern: 'lib/index.js'
   //   });
   // }
 

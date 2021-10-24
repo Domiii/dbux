@@ -25,6 +25,10 @@ export function pathJoin(...paths) {
   return pathNormalized(path.join(...paths));
 }
 
+/**
+ * @param {*} from Usually the shorter (potential parent/folder) path.
+ * @param {*} to The (usually) more concrete file path.
+ */
 export function pathRelative(from, to) {
   from = pathNormalized(from);
   to = pathNormalized(to);

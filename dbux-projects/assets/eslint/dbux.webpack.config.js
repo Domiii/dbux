@@ -1,45 +1,47 @@
 const path = require('path');
 const buildWebpackConfig = require('./dbux.webpack.config.base');
 
-const { makeDynamicRequireRule } = require('./dbux.build-util');
-require('@dbux/cli/lib/dbux-register-self');
-require('@dbux/common/src/util/prettyLogs');
-
+const { copyPlugin } = buildWebpackConfig;
 const ProjectRoot = path.resolve(__dirname);
 
-const customConfig = {
-  target: 'node',
-  src: [
-    'lib',
-    'tests'
-  ],
-  babelOptions: {
-    presets: [
-      [
-        '@babel/preset-env',
-        {
-          targets: {
-            node: '7'
-          },
-          useBuiltIns: 'usage',
-          corejs: 3
-        }
-      ]
-    ]
-  }
+const customCfg = {
+  target: 'web',
+  src: ['src', 'dbux-examples'],
+  devServer: {
+    // contentBase: ['dist']
+    //   .map(p => path.join(ProjectRoot, p)),
+    // ProjectRoot
+    // hot: false,
+    // inline: false{
+    //   historyApiFallback: {
+    //     verbose: true,
+    //     rewrites: [
+    //       {
+    //         from: /^\/(?:examples|css|lib)\/.*$/,
+    //         to: function (context) {
+    //           // console.warn('[WDS]', JSON.stringify(context.parsedUrl));
+    //           return `${context.parsedUrl.pathname.toLowerCase()}`;
+    //         }
+    //       }
+    //     ]
+    //   }
+  },
+  // plugins: [
+  //   // new HtmlWebpackPlugin({
+  //   //   template: './index.html',
+  //   //   inject: 'head',
+  //   // }),
+  //   copyPlugin(ProjectRoot, ['examples', 'css', 'lib', 'fonts', 'images', 'languages', 'dbux-examples/*.html'])
+  // ]
 };
 
-const resultCfg = buildWebpackConfig(ProjectRoot, customConfig,
-  (env, argv) => {
-    return {
-      // externals,
-      module: {
-        rules: [
-          makeDynamicRequireRule()
-        ]
-      }
-    };
-  }
-);
+/*const overrides = (env, arg) => {
+  return {
+    // context: ProjectRoot,
+
+  }; 
+}*/
+
+const resultCfg = buildWebpackConfig(ProjectRoot, customCfg/* , overrides */);
 
 module.exports = resultCfg;

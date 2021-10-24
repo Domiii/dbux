@@ -3,7 +3,7 @@ import path from 'path';
 import glob from 'glob';
 import os from 'os';
 import NestedError from '@dbux/common/src/NestedError';
-import { pathNormalized, pathNormalizedForce } from './pathUtil';
+import { pathNormalized, pathNormalizedForce, pathResolve } from './pathUtil';
 // import sh from 'shelljs';
 
 /**
@@ -78,7 +78,7 @@ export function globRelative(folder, patternOrPatterns) {
   const patterns = Array.isArray(patternOrPatterns) ? patternOrPatterns : [patternOrPatterns];
   return patterns.flatMap(pattern =>
     glob
-      .sync(path.join(folder, pattern))
+      .sync(pathResolve(folder, pattern))
       .map(fpath => fpath.substring(folder.length + 1))
   );
 }

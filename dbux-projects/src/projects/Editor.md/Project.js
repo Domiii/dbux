@@ -13,8 +13,8 @@ export default class EditorMdProject extends Project {
     // node node_modules\webpack\bin\webpack.js --watch=false --config ./dbux.webpack.config.js --env port=3244 --env entry="{ \"editormd\": \"src/editormd.js\" }"
     return new WebpackBuilder({
       websitePort: 3844,
-      rootPath: 'src',
-      inputPattern: ['*', '../dbux-examples/*']
+      entryPattern: [['src', '*'], 'dbux-examples/*.js'],
+      copy: ['examples', 'css', 'lib', 'fonts', 'images', 'languages', 'dbux-examples/*.html']
     });
   }
 

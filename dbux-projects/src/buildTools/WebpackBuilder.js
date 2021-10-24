@@ -1,8 +1,10 @@
 import path from 'path';
-// import glob from 'glob';
+import glob from 'glob';
 import isFunction from 'lodash/isFunction';
-import { filesToEntry, getWebpackJs, getWebpackDevServerJs, serializeEnv } from '@dbux/common-node/src/util/webpackUtil';
+import isEmpty from 'lodash/isEmpty';
+import { filesToEntry, getWebpackJs, getWebpackDevServerJs, serializeEnv, fileWithoutExt } from '@dbux/common-node/src/util/webpackUtil';
 import { globRelative } from '@dbux/common-node/src/util/fileUtil';
+import { pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
 
 /** @typedef { import("../projectLib/Project").default } Project */
 
@@ -11,17 +13,16 @@ export class WebpackOptions {
 
   /**
    * Path relative to `projectPath`.
-   * Used only to resolve `inputPattern` (if given).
+   * Used only to resolve `entryPattern` (if given).
    * @type {string}
    */
   rootPath;
 
   /**
-   * Is used to produce {@link WebpackBuilder#inputFiles}.
-   * Patterns are resolved relative to {@link WebpackBuilder#getJsRoot}.
+   * Is used by {@link WebpackBuilder#getEntry}.
    * @type {string}
    */
-  inputPattern;
+  entryPattern;
 
   entry;
 
@@ -40,10 +41,10 @@ class WebpackBuilder {
   cfg;
 
   /**
-   * Depends on {@link WebpackOptions#inputPattern}.
+   * Depends on {@link WebpackOptions#entryPattern}.
    * If given, this is used to populate: (i) env.entry and (ii) `bug.watchFilePaths` (if not otherwise overwritten).
    */
-  inputFiles;
+  _entry;
 
   /**
    * @param {WebpackOptions} cfg 
@@ -67,14 +68,6 @@ class WebpackBuilder {
     return false;
   }
 
-  get absoluteInputPaths() {
-    const {
-      project: { projectPath }
-    } = this;
-    
-    return this.inputFiles.map(file => path.resolve(projectPath, 'dist', file));
-  }
-
   async afterInstall() {
     const shared = false; // <- don't share for now (since it messes with Dbux's own dependencies)
     const deps = {
@@ -95,27 +88,85 @@ class WebpackBuilder {
     this.project = project;
   }
 
-  getJsRoot() {
-    const { project, cfg } = this;
-    return path.join(project.projectPath, cfg.rootPath || '');
+  async getContext(bug) {
+    const { project } = this;
+    const { projectPath } = project;
+
+    return await this.getCfgValue(bug, 'context') || projectPath;
   }
 
-  getInputFiles() {
-    // return getAllFilesInFolders(path.join(this.projectPath, folder));
-    // return globToEntry(this.projectPath, 'js/*');
-    const { cfg } = this;
-    const root = this.getJsRoot();
-    let inputFiles;
-    if (cfg.inputPattern) {
-      inputFiles = globRelative(root, cfg.inputPattern);
-      if (!inputFiles?.length) {
-        throw new Error(`inputPattern missing or invalid (no input files found): ${cfg.inputPattern}`);
+  async getEntry(bug, force = false) {
+    if (!force && this._entry) {
+      return this._entry;
+    }
+    let entry = await this.getCfgValue(bug, 'entry');
+    if (!entry) {
+      // return getAllFilesInFolders(path.join(this.projectPath, folder));
+      // return globToEntry(this.projectPath, 'js/*');
+      let entryPatterns = await this.getCfgValue(bug, 'entryPattern');
+      if (!entryPatterns) {
+        throw new Error(`"${bug.id}" - WebpackBuilder not configured correctly - must provide entry or entryPattern.`);
+      }
+
+      entryPatterns = Array.isArray(entryPatterns) ? entryPatterns : [entryPatterns];
+      const root = await this.getContext(bug);
+      entry = Object.fromEntries(
+        entryPatterns.flatMap(pattern => {
+          if (!Array.isArray(pattern)) {
+            pattern = ['', pattern];
+            // const startIdx = pattern.indexOf('*');
+            // if (startIdx < 0) {
+            //   throw new Error(`"${bug.id}" - invalid entryPattern is missing wildcard (*)`);
+            // }
+            // const parentIdx = pattern.lastIndexOf('/', startIdx);
+            // if (parentIdx < 0) {
+            //   pattern = ['', pattern];
+            // }
+            // else {
+            //   // split by the last path-separator before the first wildcard
+            //   pattern = [pattern.substring(0, parentIdx), pattern.substring(parentIdx + 1)];
+            // }
+          }
+          const [parent, childPattern] = pattern;
+          const entryRoot = pathResolve(root, parent);
+          return glob
+            .sync(pathResolve(entryRoot, childPattern))
+            .map(fpath => [
+              fileWithoutExt(pathRelative(entryRoot, fpath)),
+              fpath
+            ]);
+        })
+      );
+      if (isEmpty(entry)) {
+        throw new Error(`"${bug.id}" - entryPattern did not match any files: ${entryPatterns}`);
       }
     }
-    return inputFiles;
+    return this._entry = entry;
   }
 
-  async getValue(bug, name) {
+  async getWatchPaths(bug) {
+    const paths = await this.getCfgValue(bug, 'watchFilePaths');
+    if (paths) {
+      return paths;
+    }
+    const {
+      project: { projectPath }
+    } = this;
+
+    const entry = await this.getEntry(bug);
+    return Object.keys(entry)
+      .map(file => path.resolve(projectPath, 'dist', file));
+  }
+
+  async getCopyPlugin(bug) {
+    const copyPatterns = await this.getCfgValue(bug, 'copy');
+    if (copyPatterns) {
+      return globRelative(this.project.projectPath, copyPatterns);
+    }
+    return null;
+  }
+
+  async getCfgValue(bug, name) {
     const { project, cfg } = this;
 
     let value = bug[name] || cfg[name];
@@ -128,23 +179,18 @@ class WebpackBuilder {
 
   /**
    * NOTE: this is separate from `loadBugs` because `loadBugs` might be called before the project has been downloaded.
-   * This function however is called after download, so we can make sure that `getInputFiles` actually gets the files.
+   * This function however is called after download, so that all files are ready and accessible.
    */
   async decorateBugForRun(bug) {
-    if (!this.inputFiles) {
-      this.inputFiles = this.getInputFiles();
-    }
     const {
-      cfg: { websitePort },
-      inputFiles,
-      absoluteInputPaths
+      cfg: { websitePort }
     } = this;
 
-    bug.inputFiles = bug.inputFiles || inputFiles;
+    // prepare entry
+    await this.getEntry(bug, true);
 
     // bug.runFilePaths = bug.testFilePaths;
-    bug.watchFilePaths = await this.getValue(bug, 'watchFilePaths') ||
-      absoluteInputPaths;
+    bug.watchFilePaths = await this.getWatchPaths(bug);
 
     if (websitePort) {
       // website settings
@@ -178,29 +224,33 @@ class WebpackBuilder {
 
     const {
       nodeArgs = '',
-      processOptions,
-      env: moreEnv = {}
+      processOptions
     } = cfg;
 
-    // start webpack
-    let entry = await this.getValue(bug, 'entry');
-    if (!entry) {
-      entry = filesToEntry(bug.inputFiles, cfg.rootPath);
-    }
+    // prepare args
+
+    const moreEnv = await this.getCfgValue(bug, 'env');
+    const context = await this.getContext(bug);
+    const entry = await this.getEntry();
+    const copyPlugin = await this.getCopyPlugin(bug);
+
     const env = serializeEnv({
       // TODO: add dbuxArgs
       ...moreEnv,
+      context,
       entry,
+      copyPlugin,
       port: bug.websitePort || 0
     });
 
+    // start webpack
     const webpackConfig = path.join(projectPath, 'dbux.webpack.config.js');
     const webpackArgs = `--config ${webpackConfig} ${env}`;
 
     const webpackCliBin = this.webpackCliBin();
     const webpackCliCommand = this.webpackCliCommand();
     let cmd = `node ${nodeArgs} --stack-trace-limit=100 ${webpackCliBin} ${webpackCliCommand} ${webpackArgs}`;
-    
+
     // TODO: find better solution for this
     cmd = cmd.replace(/\\/g, '/');
 

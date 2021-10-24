@@ -10,7 +10,7 @@ export default class _2048Project extends Project {
   makeBuilder() {
     return new WebpackBuilder({
       websitePort: 3843,
-      inputPattern: 'js/*'
+      entryPattern: 'js/*'
     });
   }
 
