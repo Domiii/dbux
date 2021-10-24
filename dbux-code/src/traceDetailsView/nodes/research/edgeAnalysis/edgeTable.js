@@ -4,6 +4,7 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { existsSync, readFileSync } from 'fs';
 import sumBy from 'lodash/sumBy';
 import sum from 'lodash/sum';
+import mean from 'lodash/mean';
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { EdgeStatus, ETC, getExperimentDataFilePath } from './edgeData';
@@ -37,7 +38,7 @@ const rts = {
   'sequelize': 2,
   'socket.io': 1,
   'todomvc-es6': 6,
-  'webpack': '1-3',
+  'webpack': [1, 3],
 };
 
 const order = [
@@ -70,8 +71,15 @@ function tableRow(folder, experimentId) {
     // total threads = multi-chains + forks
     // edgeTypeCounts[3] = edgeTypeCounts[1] + edgeTypeCounts[2];
     edgeTypeCounts[ETC.TT] = edgeTypeCounts[ETC.F] + edgeTypeCounts[ETC.O];
-    edgeTypeCounts[ETC.RT] = getRt(experimentId);
-    edgeTypeCounts[ETC.Acc] = edgeTypeCounts[ETC.RT] / edgeTypeCounts[ETC.TT];
+    const rt = getRt(experimentId);
+    if (!Array.isArray(rt)) {
+      edgeTypeCounts[ETC.RT] = rt;
+      edgeTypeCounts[ETC.Acc] = edgeTypeCounts[ETC.RT] / edgeTypeCounts[ETC.TT];
+    }
+    else {
+      edgeTypeCounts[ETC.RT] = rt.join('-');
+      edgeTypeCounts[ETC.Acc] = mean(rt) / edgeTypeCounts[ETC.TT];
+    }
     
     // fix formatting
     edgeTypeCounts[ETC.O] = `\\corr{${edgeTypeCounts[ETC.O]}}`;

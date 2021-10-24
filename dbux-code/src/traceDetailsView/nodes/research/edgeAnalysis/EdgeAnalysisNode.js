@@ -385,19 +385,19 @@ class EdgeAnalysisController {
    * @return {EdgeDataFile}
    */
   getOrReadDataFile(forceWrite = false) {
-    if (this._data) {
+    if (!forceWrite && this._data) {
       return this._data;
     }
 
     const fpath = this.getEdgeDataFilePath();
-    if (!fpath) { return null; }
+    if (!forceWrite && !fpath) { return null; }
 
     // if (!existsSync(fpath)) {
     // create empty file, and make sure, directories are present
     this.getAllFolders().forEach(f => mkdirSync(f, { recursive: true }));
     // }
 
-    const serialized = readFileSync(fpath, 'utf8');
+    const serialized = existsSync(fpath) && readFileSync(fpath, 'utf8') || null;
     const data = this._data = serialized && JSON.parse(serialized) || {};
 
     // pre-populate
@@ -686,37 +686,45 @@ class EdgeAnalysisController {
 
   async makeTable() {
     await sleep(); // give control back to caller, to allow for progress bars to show
+    const { research } = this;
 
-    const folder = this.research.getExperimentRoot();
-    const experimentIds = this.research.getAllExperimentFolders();
-    const experimentFiles = experimentIds.map(getExperimentDataFilePath);
-    const missingExperiments = experimentFiles.map((f, i) => [f, i])
-      .filter(([f]) => !existsSync(f))
-      .map(([, i]) => experimentIds[i]);
+    const folder = research.getExperimentRoot();
+    // const experimentIds = research.getAllExperimentFolders();
+    // const experimentAppFiles = experimentIds.map(experimentId => this.research.getAppZipFilePath({ experimentId }));
+    const experimentIds = research.getAllExperimentAppFiles()
+      .map(f => research.getAppFileExperimentId(f));
+    // const experimentFiles = experimentIds.map();
+    const missingExperiments = experimentIds
+      .filter(experimentId => !existsSync(getExperimentDataFilePath(experimentId)));
 
     if (missingExperiments.length) {
       const msg = `Missing ${missingExperiments.length} experiments - Proceed (will process them first)?\n${missingExperiments.join('\n')}`;
       if (!await confirm(msg)) {
         return;
       }
-    }
 
-    // make sure all experiments are ready
-    const progressIncrement = 1 / missingExperiments.length * 100; // percentage
-    await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
-      for (const experimentId of missingExperiments) {
-        try {
-          progress.report({ 
-            message: `preparing "${experimentId}" data...`,
-            increment: progressIncrement
-          });
-          await this.prepareExperimentData(experimentId);
+      // make sure all experiments are ready
+      const progressIncrement = 1 / missingExperiments.length * 100; // percentage
+      await runTaskWithProgressBar(async (progress, cancelToken) => {
+        for (const experimentId of missingExperiments) {
+          try {
+            progress.report({
+              message: `preparing "${experimentId}" data...`,
+              increment: progressIncrement
+            });
+            await this.prepareExperimentData(experimentId);
+
+            if (cancelToken.isCancellationRequested) {
+              break;
+            }
+          }
+          catch (err) {
+            throw new NestedError(`prepareExperimentData failed for "${experimentId}"`, err);
+            // break;
+          }
         }
-        catch (err) {
-          throw new NestedError(`prepareExperimentData failed for "${experimentId}"`, err);
-        }
-      }
-    });
+      }, { cancellable: true });
+    }
 
     // finally, generate table
     const s = makeEdgeTable(folder, experimentIds);
@@ -726,15 +734,15 @@ class EdgeAnalysisController {
   async prepareExperimentData(experimentId) {
     // unload application data
     allApplications.clear();
-    await sleep();
+    await sleep(100); // wait for trace and application unselection events
 
     // import application
     const app = this.research.importResearchAppData(experimentId);
-    await sleep();
+    await sleep(100); // wait for application events
 
     // select first trace
     traceSelection.selectTrace(app.dataProvider.collections.traces.getFirst());
-    await sleep();
+    await sleep(300); // wait for trace selection events
 
     // generate data
     this.getOrReadDataFile(true);

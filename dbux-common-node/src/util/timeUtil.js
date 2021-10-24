@@ -15,7 +15,7 @@ export class PrettyTimer {
 
   constructor(startNow = true) {
     if (startNow) {
-      this.startTime();
+      this.start();
     }
   }
 

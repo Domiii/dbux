@@ -27,7 +27,7 @@ const { log, debug, warn, error: logError } = newLogger('ProgressBarTask');
  */
 export async function runTaskWithProgressBar(cb, options) {
   options = defaultsDeep(options, {
-    cancellable: true,
+    cancellable: false,
     location: ProgressLocation.Notification,
     title: ''
   });

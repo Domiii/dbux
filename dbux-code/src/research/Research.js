@@ -7,6 +7,7 @@ import { getFileSizeSync } from '@dbux/common-node/src/util/fileUtil';
 import { performance } from 'perf_hooks';
 import { getCodeDirectory } from '../codeUtil/codePath';
 import { showInformationMessage } from '../codeUtil/codeModals';
+import { basename } from 'path';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Research');
@@ -79,6 +80,10 @@ export class Research {
     return readdirSync(this.getExperimentRoot());
   }
 
+  getAllExperimentAppFiles() {
+    return readdirSync(this.getDataRootLfs());
+  }
+
   /**
    * @return The given app's zip file path, stored for the CurrentResearchProject
    */
@@ -88,6 +93,11 @@ export class Research {
       return null;
     }
     return pathResolve(this.getDataRootLfs(), experimentId + AppDataZipFileNameSuffix);
+  }
+
+  getAppFileExperimentId(fpath) {
+    const file = basename(fpath);
+    return file.substring(0, file.length - AppDataZipFileNameSuffix.length);
   }
 
   /** ###########################################################################
