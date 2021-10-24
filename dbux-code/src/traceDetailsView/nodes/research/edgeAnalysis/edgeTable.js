@@ -6,7 +6,7 @@ import sumBy from 'lodash/sumBy';
 import sum from 'lodash/sum';
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { EdgeStatus, ETC } from './edgeData';
+import { EdgeStatus, ETC, getExperimentDataFilePath } from './edgeData';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -40,6 +40,10 @@ const rts = {
   'webpack': '1-3',
 };
 
+const order = [
+  // TODO: enforce order
+];
+
 function getRt(experimentId) {
   const match = Object.entries(rts)
     .filter(([projectName]) => experimentId.startsWith(projectName));
@@ -50,7 +54,7 @@ function getRt(experimentId) {
 }
 
 function tableRow(folder, experimentId) {
-  const fpath = pathResolve(folder, experimentId, 'edgeAnnotations.json');
+  const fpath = getExperimentDataFilePath(experimentId);
   const name = experimentId.split('#', 1)[0];
   try {
     const s = readFileSync(fpath);

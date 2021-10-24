@@ -17,6 +17,8 @@ import { sha256String } from '@dbux/common-node/src/util/hashUtil';
 import Application from '@dbux/data/src/applications/Application';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import AsyncEventType from '@dbux/common/src/types/constants/AsyncEventType';
+import { getPrettyPerformanceDelta, performanceNow, startPrettyTimer } from '@dbux/common-node/src/util/timeUtil';
+import NestedError from '@dbux/common/src/NestedError';
 import TraceDetailNode from '../../traceDetailNode';
 import { makeTreeItem } from '../../../../helpers/treeViewHelpers';
 // eslint-disable-next-line max-len
@@ -330,7 +332,7 @@ class EdgeAnalysisController {
     const orphans = dp.collections.asyncNodes.getAllActual()
       .filter(an => !dp.util.isContextProgramContext(an.rootContextId))
       .filter(an => !dp.util.getAsyncEdgesTo(an.rootContextId)?.length);
-      
+
     edgeTypeCounts[ETC.O] = orphans.length;
 
     // take average
@@ -382,7 +384,7 @@ class EdgeAnalysisController {
   /**
    * @return {EdgeDataFile}
    */
-  getOrReadDataFile() {
+  getOrReadDataFile(forceWrite = false) {
     if (this._data) {
       return this._data;
     }
@@ -417,11 +419,22 @@ class EdgeAnalysisController {
       logError(`Discarding ${outdatedAnnotations.length} annotations:`, outdatedAnnotations);
     }
 
-    // get appStats
+    // appStats
     const oldStats = data.appStats;
     const newStats = data.appStats = this.getAppStats();
 
-    if (!isEqual(oldAnnotations, newAnnotations) || !isEqual(oldStats, newStats)) {
+    // appMeta
+    const oldMeta = data.appMeta;
+    let newMeta;
+    if (!oldMeta) {
+      // NOTE: app meta includes expensive file hash - so we don't want to overdo it.
+      newMeta = data.appMeta = this.makeAppMeta();
+    }
+
+    if (forceWrite ||
+      !isEqual(oldAnnotations, newAnnotations) ||
+      !isEqual(oldStats, newStats) ||
+      newMeta) {
       // write to file
       this.writeDataFile(this._data);
     }
@@ -504,10 +517,30 @@ class EdgeAnalysisController {
       'asyncEvents',
       'asyncNodes'
     ];
+
+    const timer = startPrettyTimer();
+
     const serialized = JSON.stringify(
       dp.serializeCollectionsJson(relevantData)
     );
-    return sha256String(serialized);
+    const hash = sha256String(serialized);
+
+    timer.print(debug, 'makeRelevantAppDataHash');
+
+    return hash;
+  }
+
+  makeAppMeta() {
+    const { app } = this;
+
+    const appDataHash = this.makeRelevantAppDataHash(app);
+
+    return {
+      // compute hash
+      appDataHash,
+      appDataUuid: app.uuid,
+      updatedAt: Date.now()
+    };
   }
 
   async writeApplicationDataBackup() {
@@ -516,13 +549,8 @@ class EdgeAnalysisController {
     // write app data
     this.research.exportResearchAppData(app);
 
-    // write new hash
-    const appMeta = {
-      appDataHash: this.makeRelevantAppDataHash(app),
-      appDataUuid: app.uuid,
-      updatedAt: Date.now()
-    };
-
+    // write new hash et al
+    const appMeta = this.makeAppMeta();
     this.writeAppMeta(appMeta);
   }
 
@@ -561,8 +589,6 @@ class EdgeAnalysisController {
 
         await this.writeApplicationDataBackup();
       });
-
-      // TODO:    -> manage zipped backup of lfs files manually!
     }
     else {
       await showInformationMessage(
@@ -651,6 +677,67 @@ class EdgeAnalysisController {
         traceSelection.selectTrace(targetTrace);
       }
     }
+  }
+
+
+  /** ###########################################################################
+   * {@link EdgeAnalysisController#makeTable}
+   * ##########################################################################*/
+
+  async makeTable() {
+    await sleep(); // give control back to caller, to allow for progress bars to show
+
+    const folder = this.research.getExperimentRoot();
+    const experimentIds = this.research.getAllExperimentFolders();
+    const experimentFiles = experimentIds.map(getExperimentDataFilePath);
+    const missingExperiments = experimentFiles.map((f, i) => [f, i])
+      .filter(([f]) => !existsSync(f))
+      .map(([, i]) => experimentIds[i]);
+
+    if (missingExperiments.length) {
+      const msg = `Missing ${missingExperiments.length} experiments - Proceed (will process them first)?\n${missingExperiments.join('\n')}`;
+      if (!await confirm(msg)) {
+        return;
+      }
+    }
+
+    // make sure all experiments are ready
+    const progressIncrement = 1 / missingExperiments.length * 100; // percentage
+    await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
+      for (const experimentId of missingExperiments) {
+        try {
+          progress.report({ 
+            message: `preparing "${experimentId}" data...`,
+            increment: progressIncrement
+          });
+          await this.prepareExperimentData(experimentId);
+        }
+        catch (err) {
+          throw new NestedError(`prepareExperimentData failed for "${experimentId}"`, err);
+        }
+      }
+    });
+
+    // finally, generate table
+    const s = makeEdgeTable(folder, experimentIds);
+    showTextInNewFile('edgeData.tex', s);
+  }
+
+  async prepareExperimentData(experimentId) {
+    // unload application data
+    allApplications.clear();
+    await sleep();
+
+    // import application
+    const app = this.research.importResearchAppData(experimentId);
+    await sleep();
+
+    // select first trace
+    traceSelection.selectTrace(app.dataProvider.collections.traces.getFirst());
+    await sleep();
+
+    // generate data
+    this.getOrReadDataFile(true);
   }
 
   // ###########################################################################
@@ -822,13 +909,10 @@ export default class EdgeAnalysisNode extends TraceDetailNode {
     }
   }
 
-  handleClick() {
+  async handleClick() {
     if (this.collapsibleState === TreeItemCollapsibleState.Expanded) {
       // generate table
-      const folder = this.controller.research.getExperimentRoot();
-      const experimentIds = this.controller.research.getAllExperimentFolders();
-      const s = makeEdgeTable(folder, experimentIds);
-      showTextInNewFile('edgeData.tex', s);
+      await this.controller.makeTable();
     }
   }
 

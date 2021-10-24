@@ -65,4 +65,5 @@ export function importApplication(fpath) {
     entryPointPath, ...other
   });
   app.dataProvider.deserializeJson(serializedDpData);
+  return app;
 }

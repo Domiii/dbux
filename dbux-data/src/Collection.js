@@ -198,6 +198,10 @@ export default class Collection {
     return this._all.slice(startId);
   }
 
+  getFirst() {
+    return this.getById(1);
+  }
+
   getLast() {
     if (!this._all.length) {
       return null;

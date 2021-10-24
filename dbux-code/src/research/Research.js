@@ -1,5 +1,6 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
+import { getPrettyPerformanceDelta } from '@dbux/common-node/src/util/timeUtil';
 import { existsSync, readdirSync, realpathSync } from 'fs';
 import { exportApplication, importApplication } from '@dbux/data/src/applications/appUtil';
 import { getFileSizeSync } from '@dbux/common-node/src/util/fileUtil';
@@ -128,12 +129,11 @@ export class Research {
     // write zipped backup
     exportApplication(app, zipFpath);
 
-    const end = performance.now();
+    const time = getPrettyPerformanceDelta(start);
 
     // const origSize = getUnzippedSize() / 1024 / 1024;
     //  (from ${origSize.toFixed(2)}MB)
     const zipSize = getFileSizeSync(zipFpath) / 1024 / 1024;
-    const time = ((end - start) / 1000).toFixed(2);
     const msg = `Research application data zipped in ${time}s: ${zipSize.toFixed(2)}MB at "${zipFpath}".`;
     showInformationMessage(msg);
   }
@@ -143,13 +143,14 @@ export class Research {
 
     const start = performance.now();
 
-    importApplication(zipFpath);
+    const app = importApplication(zipFpath);
 
     const end = performance.now();
 
     const time = ((end - start) / 1000).toFixed(2);
     const msg = `Research application data loaded in ${time}s.`;
     showInformationMessage(msg);
+    return app;
   }
 }
 
