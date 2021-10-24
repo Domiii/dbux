@@ -21,6 +21,7 @@ const { log, debug, warn, error: logError, trace: logTrace } = newLogger('Runtim
 // ###########################################################################
 
 const StayAwake = false;
+// const StayAwake = true;
 const SleepDelay = 1000;
 const DefaultPort = 3374;
 
@@ -207,9 +208,14 @@ export default class Client {
     return new Promise((resolve, reject) => {
       try {
         // debug(`SEND`, this._sending, msg);
-        this._socket.emit(msg, data, () => {
-          // debug(`ACK`, this._sending, msg);
-          resolve();
+        this._socket.emit(msg, data, (ackMsg) => {
+          debug(`ACK`, this._sending);
+          if (ackMsg !== msg) {
+            reject(new Error(`Ack not received while sending`));
+          }
+          else {
+            resolve();
+          }
         });
         this._socket.once('error', reject);
       }

@@ -33,10 +33,6 @@ export function appendArrayInPlace(dest, source) {
   return dest;
 }
 
-function newBuffer() {
-  return {};
-}
-
 function isBufferEmpty(buf) {
   return isEmpty(buf);
 }
@@ -46,11 +42,23 @@ class SendQueue {
    * @type {Client}
    */
   client;
-  buffers = [newBuffer()];
+  buffers = [];
   timer;
+
+  bufferMap = new Map();
+  iBufferCreated = 0;
+  iBufferSent = 0;
 
   constructor(client) {
     this.client = client;
+    this.newBuffer();
+  }
+
+  newBuffer() {
+    const buf = {};
+    ++this.iBufferCreated;
+    this.bufferMap.set(buf, this.iBufferCreated);
+    return this.buffers.push(buf);
   }
 
   get firstBuffer() {
@@ -63,6 +71,10 @@ class SendQueue {
 
   get isEmpty() {
     return this.buffers.every(buf => isBufferEmpty(buf));
+  }
+
+  bufferDebug(msg) {
+    debug(`${msg}: ${this.iBufferSent}/${this.iBufferCreated} - ${JSON.stringify(this.bufferMap.entries(), null, 2)}`);
   }
 
   send(dataName, newEntry) {
@@ -82,6 +94,8 @@ class SendQueue {
   }
 
   _flushLater() {
+    // TODO: this causes infinite loop, suggesting that some monkey patcher is too aggressive...
+    // this.bufferDebug(`buffers updated`);
     if (!this.timer) {
       this.timer = Promise.resolve().then(this.flush);
       // this.timer = (process.nextTick(this.flush), 1);
@@ -92,12 +106,12 @@ class SendQueue {
   _nextBuffer() {
     if (!isBufferEmpty(this.currentBuffer)) {
       // add new empty buffer to store new incoming data
-      
+
       // const sum = sumBy(Object.values(this.currentBuffer),
       //   arr => arr.reduce((a, v) => a + JSON.stringify(v).length, 0) || 0);
       // this.currentBuffer?.values?.reduce((a, v) => a + JSON.stringify(v.serialized).length, 0);
       // debug(`previous buffer total length: ${Math.round(sum / 1000).toLocaleString('en-us')}k`);
-      this.buffers.push(newBuffer());
+      this.newBuffer();
     }
   }
 
@@ -127,7 +141,11 @@ class SendQueue {
         (buf = this.buffers[0]) &&
         (isBufferEmpty(buf) || await this.client.sendOne(buf))) {
         // remove buffer after send
+        ++this.iBufferSent;
+        this.bufferMap.delete(buf);
         this.buffers.splice(0, 1);
+
+        this.bufferDebug(`buffer sent`);
 
         if (!isBufferEmpty(buf)) {
           Verbose && debug(`[SQ] flush BUF`, this.buffers.length, getDataCount(buf));
@@ -136,7 +154,7 @@ class SendQueue {
 
       if (this.isEmpty) {
         // everything was sent out
-        this.buffers.push(newBuffer());
+        this.newBuffer();
         this.client._onSendFinish();
       }
     }
