@@ -2,6 +2,13 @@ import Project from '../../projectLib/Project';
 import WebpackBuilder from '../../buildTools/WebpackBuilder';
 
 /**
+ * Editor.md examples need a bit of extra work:
+ * 1. move to from `examples/` to `dbux-examples/`
+ * 2. extract all example JS code from *.html to *.js (since we haven't setup `html-loader` yet)
+ * 3. make changes to html and js file paths: only refer to files in `examples` via absolute path
+ * 
+ * future-work: integrate html-loader with dbux-project webpack build process.
+ * 
  * @see https://github.com/pandao/editor.md/blob/master/examples/full.html
  */
 export default class EditorMdProject extends Project {

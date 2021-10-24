@@ -155,7 +155,7 @@ class WebpackBuilder {
 
     const entry = await this.getEntry(bug);
     return Object.keys(entry)
-      .map(file => path.resolve(projectPath, 'dist', file));
+      .map(file => path.resolve(projectPath, 'dist', file + '.js'));
   }
 
   async getCopyPlugin(bug) {
