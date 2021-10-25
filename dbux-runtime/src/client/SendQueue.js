@@ -1,8 +1,11 @@
 /** @typedef { import("./Client").default } Client */
 
 import isEmpty from 'lodash/isEmpty';
+import minBy from 'lodash/minBy';
+import maxBy from 'lodash/maxBy';
 import { getDataCount } from '@dbux/common/src/util/dataUtil';
 import { newLogger } from '@dbux/common/src/log/logger';
+import sleep from '@dbux/common/src/util/sleep';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Client/queue');
@@ -79,16 +82,18 @@ class SendQueue {
 
   bufferDebug(msg, flush = true) {
     if (DEBUG_ROOTS) {
+      // const bufferStr = JSON.stringify(Array.from(this.bufferMap.entries()), null, 2);
+      const bufferStr = '';
       msg =
         `${msg}: ${this.iBufferSent}/${this.iBufferCreated} - ` +
-        `${JSON.stringify(Array.from(this.bufferMap.entries()), null, 2)}`;
+        `${bufferStr}`;
 
       this._debugMessages = this._debugMessages || [];
       this._debugMessages.push(msg);
 
       if (flush) {
         // flush now
-        this._debugMessages.forEach(debug);
+        this._debugMessages.forEach(m => debug(m));
         this._debugMessages = [];
       }
     }
@@ -101,8 +106,9 @@ class SendQueue {
 
     if (DEBUG_ROOTS) {
       if (dataName === 'executionContexts') {
-        // TODO: _debugLastId
-        this.bufferDebug(``, false);
+        if (!newEntry.parentContextId) {
+          this.bufferDebug(`send root ${newEntry.contextId}`, false);
+        }
       }
     }
 
@@ -123,12 +129,13 @@ class SendQueue {
     if (!this.timer) {
       this.timer = Promise.resolve().then(this.flush);
       // this.timer = (process.nextTick(this.flush), 1);
+      // this.timer = setTimeout(this.flush);
       Verbose && debug(`[SQ] flushLater!`);
     }
   }
 
   _nextBuffer() {
-    if (!isBufferEmpty(this.currentBuffer)) {
+    if (!this.currentBuffer || !isBufferEmpty(this.currentBuffer)) {
       // add new empty buffer to store new incoming data
 
       // const sum = sumBy(Object.values(this.currentBuffer),
@@ -148,30 +155,65 @@ class SendQueue {
     // this._flushLater();
   }
 
+  _flushCount = 0;
+
   /**
    * Send all buffered data in a loop
    */
   flush = async () => {
-    this._nextBuffer();
+    if (this._flushCount) {
+      throw new Error(`[Dbux] SendQueue.flush ignored: tried to flush more than once.`);
+    }
+    ++this._flushCount;
+    // this._nextBuffer();
 
     // start sending old buffers
-    Verbose && debug(`[SQ] flush STA`, this.buffers.length);
+    Verbose && debug(`[SQ] flush STA ${this._flushCount},`, this.buffers.length);
 
+    let buf;
+    const b = this.buffers;
     try {
-      let buf;
       while (
-        this.buffers.length &&
+        (b.length > 1 || (b.length === 1 && !isBufferEmpty(b[0]))) &&
         // eslint-disable-next-line prefer-destructuring
-        (buf = this.buffers[0]) &&
-        (isBufferEmpty(buf) || await this.client.sendOne(buf))) {
-        // remove buffer after send
-        ++this.iBufferSent;
+        (buf = b[0])) {
+        // remove buffer
         this.bufferMap.delete(buf);
-        this.buffers.splice(0, 1);
+        b.splice(0, 1);
+        this._nextBuffer();
 
-        this.bufferDebug(`buffer sent`);
+        let ma;
+        if (DEBUG_ROOTS) {
+          const contexts = buf.executionContexts;
+          if (contexts) {
+            ma = maxBy(contexts, c => c.contextId).contextId;
+          }
+        }
 
         if (!isBufferEmpty(buf)) {
+          // send
+          if (!await this.client.sendOne(buf)) {
+            // send failed
+            return;
+          }
+          ++this.iBufferSent;
+
+          // await sleep(300); // amplify potential race condition
+
+          if (DEBUG_ROOTS) {
+            const contexts = buf.executionContexts;
+            if (contexts) {
+              const mi = minBy(contexts, c => c.contextId).contextId;
+              const ma2 = maxBy(contexts, c => c.contextId).contextId;
+              this.bufferDebug(`buffer sent, min=${mi}, max=${ma}`);
+              const nMissing = ma2 - ma;
+              if (nMissing) {
+                logError(`[DEBUG_ROOTS] ${nMissing} context(s) missing: ${ma + 1} - ${ma2 - 1}`);
+              }
+              this._debugLastId = ma;
+            }
+          }
+          buf = null;
           Verbose && debug(`[SQ] flush BUF`, this.buffers.length, getDataCount(buf));
         }
       }
@@ -184,8 +226,13 @@ class SendQueue {
     }
     finally {
       // console.warn(`[SQ]`, this.buffers.length, !!this.buffers[0], isBufferEmpty(this.buffers[0]));
+      if (buf) {
+        // buffer was dequeued but not sent: send back to queue
+        this.buffers.unshift(buf);
+      }
       Verbose && debug(`[SQ] flush END`, this.buffers.length);
       this.timer = null;
+      --this._flushCount;
     }
   }
 }
