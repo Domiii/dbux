@@ -920,11 +920,13 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     // copy bug assets
     if (bug) {
       const bugAssetsFolder = this.getBugAssetFolderName(bug);
-      if (!existsSync(this.getAssetDir(bugAssetsFolder))) {
-        this.logger.error(`Experiment "${bug.id}" should have assets, but no asset folder at "${this.getAssetDir(bugAssetsFolder)}"`);
-      }
-      else {
-        this.copyAssetFolder(bugAssetsFolder);
+      if (bugAssetsFolder) {
+        if (!existsSync(this.getAssetDir(bugAssetsFolder))) {
+          this.logger.error(`Experiment "${bug.id}" should have assets, but no asset folder at "${this.getAssetDir(bugAssetsFolder)}"`);
+        }
+        else {
+          this.copyAssetFolder(bugAssetsFolder);
+        }
       }
     }
 

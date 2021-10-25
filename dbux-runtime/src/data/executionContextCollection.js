@@ -92,7 +92,7 @@ export class ExecutionContextCollection extends Collection {
   //   const context = this._allocate(
   //     ExecutionContextType.ExecuteCallback, stackDepth, runId, parentContextId, parentTraceId, contextId,
   //     staticContextId, orderId, schedulerTraceId, tracesDisabled);
-  //   this._push(context);
+  //   this._pushAndSend(context);
   //   return context;
   // }
 
@@ -165,7 +165,7 @@ export class ExecutionContextCollection extends Collection {
     const context = this._allocate(
       type, stackDepth, runId, parentContextId, parentTraceId, contextId, definitionTid, staticContextId, orderId, schedulerTraceId, tracesDisabled
     );
-    this._push(context);
+    this._pushAndSend(context);
 
     if (this._firstContextChild.get(parentContextId) === undefined) {
       this._firstContextChild.set(parentContextId, context.contextId);
@@ -205,7 +205,7 @@ export class ExecutionContextCollection extends Collection {
   //   this._commitChange(contextId, ExecutionContextUpdateType.Pop);
   // }
 
-  _push(context) {
+  _pushAndSend(context) {
     this.push(context);
     this._send(context);
   }
