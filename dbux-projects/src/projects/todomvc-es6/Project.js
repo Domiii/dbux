@@ -31,7 +31,7 @@ export default class TodomvcEs6Project extends Project {
   }
 
   loadBugs() {
-    // git diff --ignore-cr-at-eol --color=never > ../../dbux-projects/assets/todomvc-es6/_patches_/error10.patch
+    // git diff --ignore-cr-at-eol --color=never > ../../dbux-projects/assets/_patches_/todomvc-es6/error10.patch
     return [
       {
         // TODO: error stack trace is polluted... can we fix that?

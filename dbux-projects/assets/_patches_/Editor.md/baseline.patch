@@ -1,16 +1,24 @@
-diff --git a/src/editormd.js b/src/editormd.js
-index bf4f7f1..74d9fd6 100644
---- a/src/editormd.js
-+++ b/src/editormd.js
-@@ -19,8 +19,9 @@
- 	} 
- 	else
- 	{ 
--        window.editormd = factory();
--	}
-+    }
-+    // NOTE: this is how editormd is used in examples
-+    window.editormd = factory();
-     
- }(function() {    
+diff --git a/.gitignore b/.gitignore
+index 9a85439..6eaf8e1 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -13,3 +13,5 @@ examples/uploads/**/*
+ .project
+ .url
+ css/*.map
++
++dist
+\ No newline at end of file
+diff --git a/dbux-examples/full.js b/dbux-examples/full.js
+index 3164438..2c299e9 100644
+--- a/dbux-examples/full.js
++++ b/dbux-examples/full.js
+@@ -1,5 +1,8 @@
++const editormd = require('../src/editormd')();
++
+ var testEditor;
  
++
+ $(function () {
+ 
+   $.get('/examples/test.md', function (md) {

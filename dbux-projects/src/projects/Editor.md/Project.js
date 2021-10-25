@@ -2,6 +2,12 @@ import Project from '../../projectLib/Project';
 import WebpackBuilder from '../../buildTools/WebpackBuilder';
 
 /**
+ * Debug
+ * 
+ * console.warn(`cmUnbindScroll ${_dbux2._runtimeMonitor._runtime.peekCurrentContextId()}`);
+ */
+
+/**
  * Editor.md examples need a bit of extra work:
  * 1. move to from `examples/` to `dbux-examples/`
  * 2. extract all example JS code from *.html to *.js (since we haven't setup `html-loader` yet)
@@ -20,13 +26,18 @@ export default class EditorMdProject extends Project {
     // node node_modules\webpack\bin\webpack.js --watch=false --config ./dbux.webpack.config.js --env port=3244 --env entry="{ \"editormd\": \"src/editormd.js\" }"
     return new WebpackBuilder({
       websitePort: 3844,
-      entryPattern: [['src', '*'], 'dbux-examples/*.js'],
+      // entryPattern: [['src', '*'], 'dbux-examples/*.js'],
+      entryPattern: ['dbux-examples/*.js'],
       copy: ['examples', 'css', 'lib', 'fonts', 'images', 'languages', 'dbux-examples/*.html']
     });
   }
 
+  async afterInstall() {
+    await this.applyPatch('baseline');
+  }
+
   loadBugs() {
-    // git diff --color=never --ignore-cr-at-eol > ../../dbux-projects/assets/2048/_patches_/error.patch
+    // git diff --color=never --ignore-cr-at-eol > ../../dbux-projects/assets/_patches_/Editor.md/baseline.patch | unix2dos
 
     return [
       {

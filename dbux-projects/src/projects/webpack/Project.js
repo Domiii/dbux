@@ -142,7 +142,7 @@ export default class WebpackProject extends Project {
   // ###########################################################################
 
   loadBugs() {
-    // git diff --color=never --ignore-cr-at-eol > ../../dbux-projects/assets/webpack/_patches_/error.patch
+    // git diff --color=never --ignore-cr-at-eol > ../../dbux-projects/assets/_patches_/webpack/error.patch
 
     return [
       /**

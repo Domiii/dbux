@@ -23,7 +23,7 @@ export default class _2048Project extends Project {
   }
 
   loadBugs() {
-    // git diff --color=never --ignore-cr-at-eol > ../../dbux-projects/assets/2048/_patches_/error.patch
+    // git diff --color=never --ignore-cr-at-eol > ../../dbux-projects/assets/_patches_/2048/error.patch
 
     return [
       {

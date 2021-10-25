@@ -26,13 +26,13 @@ const customCfg = {
     //     ]
     //   }
   },
-  plugins: [
-    // new HtmlWebpackPlugin({
-    //   template: './index.html',
-    //   inject: 'head',
-    // }),
-    copyPlugin(ProjectRoot, ['examples', 'css', 'lib', 'fonts', 'images', 'languages', 'dbux-examples/*.html'])
-  ]
+  // plugins: [
+  //   // new HtmlWebpackPlugin({
+  //   //   template: './index.html',
+  //   //   inject: 'head',
+  //   // }),
+  //   copyPlugin(ProjectRoot, ['examples', 'css', 'lib', 'fonts', 'images', 'languages', 'dbux-examples/*.html'])
+  // ]
 };
 
 /*const overrides = (env, arg) => {

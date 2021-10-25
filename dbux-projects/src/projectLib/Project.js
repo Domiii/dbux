@@ -1047,14 +1047,15 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   }
 
   /**
-   * Use this to create bug patches:
+   * Use this to create bug patches.
    * 
    * git diff --color=never > patchName.patch
+   * git diff --color=never --ignore-cr-at-eol > ../../dbux-projects/assets/_patches_/X/baseline.patch | unix2dos
    */
   async getPatchString() {
     await this.checkCorrectGitRepository();
 
-    return this.execCaptureOut(`${this.gitCommand} diff --color=never`);
+    return this.execCaptureOut(`${this.gitCommand} diff --color=never --ignore-cr-at-eol`);
   }
 
   // ###########################################################################

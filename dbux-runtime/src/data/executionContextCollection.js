@@ -165,6 +165,9 @@ export class ExecutionContextCollection extends Collection {
     const context = this._allocate(
       type, stackDepth, runId, parentContextId, parentTraceId, contextId, definitionTid, staticContextId, orderId, schedulerTraceId, tracesDisabled
     );
+    if (!parentContextId) {
+      this.logger.warn(`CREATE root: ${context.contextId}`, context);
+    }
     this._pushAndSend(context);
 
     if (this._firstContextChild.get(parentContextId) === undefined) {

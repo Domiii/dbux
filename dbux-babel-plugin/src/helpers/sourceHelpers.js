@@ -62,7 +62,8 @@ function extractSourceAtLoc(srcLines, loc, state) {
     result = [
       srcLines[line0].substring(col0),
       ...srcLines.slice(line0 + 1, line1),
-      srcLines[line1].substring(0, col1)
+      // TODO: apparently webpack keeps this cached, and it will not be updated correctly if file changed?
+      srcLines[line1]?.substring(0, col1) || ''
     ].join('\n');
   }
 
@@ -82,3 +83,8 @@ export function extractSourceStringWithoutCommentsAtLoc(loc, state) {
 // export function extractSourceString(node, state) {
 //   return extractSourceStringWithoutComments(node, state);
 // }
+
+export function clearSourceHelperCache(state) {
+  const { filePath/* , file: { code } */ } = state;
+  linesByProgram.delete(filePath);
+}

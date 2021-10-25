@@ -1,5 +1,6 @@
 import { newLogger, playbackLogRecords } from '@dbux/common/src/log/logger';
 import errorWrapVisitor from '../helpers/errorWrapVisitor';
+import { clearSourceHelperCache } from '../helpers/sourceHelpers';
 import injectDbuxState from '../dbuxState';
 import { buildVisitors as traceVisitors } from '../parseLib/visitors';
 import Program from '../parse/Program';
@@ -85,8 +86,9 @@ function exit(path, state) {
   // actual process of transpilation
   state.stack.genAll();
 
-  // clean up on aisle 4 (prevent memory leaks)
+  // clean up -> prevent memory leaks
   clearNames();
+  clearSourceHelperCache(state);
 
   // done!
   // playbackLogRecords();
