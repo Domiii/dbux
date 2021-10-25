@@ -11,7 +11,7 @@ import sleep from '@dbux/common/src/util/sleep';
 const { log, debug, warn, error: logError } = newLogger('Client/queue');
 
 const Verbose = 0;
-const DEBUG_ROOTS = true;
+const DEBUG_ROOTS = false;
 // const Verbose = 1;
 const MAX_BLOCK_SIZE = 65535; // max parameter array size for use in Webkit
 
