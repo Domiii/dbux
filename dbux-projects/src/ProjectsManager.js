@@ -591,6 +591,7 @@ export default class ProjectsManager {
     }
 
     // if some bug are already activated, save the changes
+    // TODO: previousBug is cleared after reload windows, we don't record activatedBug in memento any more
     const previousBug = this.runner.bug;
     if (previousBug?.project.doesProjectFolderExist()) {
       await this.saveFileChanges(previousBug);
