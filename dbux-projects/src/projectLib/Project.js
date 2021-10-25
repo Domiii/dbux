@@ -726,9 +726,12 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       await this.exec(`${this.gitCommand} add ${files.map(name => `"${name}"`).join(' ')}`);
 
       message && (message = ' ' + message);
+
       // TODO: should not need '--allow-empty', if `checkFilesChanged` is correct (but somehow still bugs out)
       const errResult = await this.execCaptureErr(`${this.gitCommand} commit -am '"[dbux auto commit]${message}"'`);
-      this.logger.debug(`commit errResult:###\n${errResult}\n###\n`);
+      if (errResult.trim()) {
+        this.logger.debug(`commit errResult:###\n${errResult}\n###\n`);
+      }
     }
   }
 

@@ -25,6 +25,11 @@ const dbux = {
 let __global__;
 
 function registerDbuxAsGlobal() {
+  if (__global__.__dbux__) {
+    // TODO: add version checking?
+    // eslint-disable-next-line no-console
+    console.warn(`@dbux/runtime registered more than once - this could be a bundling deoptimization, or a serious conflict.`);
+  }
   /* eslint-disable no-var */
   __global__.__dbux__ = dbux;
 }

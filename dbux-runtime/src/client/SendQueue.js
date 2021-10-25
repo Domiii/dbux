@@ -8,6 +8,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 const { log, debug, warn, error: logError } = newLogger('Client/queue');
 
 const Verbose = 0;
+const DEBUG_ROOTS = true;
 // const Verbose = 1;
 const MAX_BLOCK_SIZE = 65535; // max parameter array size for use in Webkit
 
@@ -73,14 +74,37 @@ class SendQueue {
     return this.buffers.every(buf => isBufferEmpty(buf));
   }
 
-  bufferDebug(msg) {
-    debug(`${msg}: ${this.iBufferSent}/${this.iBufferCreated} - ${JSON.stringify(this.bufferMap.entries(), null, 2)}`);
+  _debugMessages;
+  _debugLastId;
+
+  bufferDebug(msg, flush = true) {
+    if (DEBUG_ROOTS) {
+      msg =
+        `${msg}: ${this.iBufferSent}/${this.iBufferCreated} - ` +
+        `${JSON.stringify(Array.from(this.bufferMap.entries()), null, 2)}`;
+
+      this._debugMessages = this._debugMessages || [];
+      this._debugMessages.push(msg);
+
+      if (flush) {
+        // flush now
+        this._debugMessages.forEach(debug);
+        this._debugMessages = [];
+      }
+    }
   }
 
   send(dataName, newEntry) {
     const buf = this.currentBuffer;
     const entries = (buf[dataName] = buf[dataName] || []);
     entries.push(newEntry);
+
+    if (DEBUG_ROOTS) {
+      if (dataName === 'executionContexts') {
+        // TODO: _debugLastId
+        this.bufferDebug(``, false);
+      }
+    }
 
     this._flushLater();
   }

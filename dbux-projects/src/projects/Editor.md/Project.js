@@ -3,8 +3,9 @@ import WebpackBuilder from '../../buildTools/WebpackBuilder';
 
 /**
  * Debug
- * 
- * console.warn(`cmUnbindScroll ${_dbux2._runtimeMonitor._runtime.peekCurrentContextId()}`);
+ *
+// dbux disable
+console.warn(`cmUnbindScroll ${__dbux__._r._runtime.peekCurrentContextId()}`);
  */
 
 /**

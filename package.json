@@ -23,6 +23,7 @@
     "@babel/preset-env": "^7.10.1",
     "@babel/register": "^7.10.1",
     "babel-loader": "^8.2.2",
+    "clean-webpack-plugin": "^4.0.0",
     "cloc": "^2.5.1",
     "copy-webpack-plugin": "^8",
     "css-loader": "^3.4.2",

@@ -76,7 +76,8 @@ class WebpackBuilder {
       'webpack': '^5',
       'webpack-cli': '^4',
       // 'webpack-config-utils': '???',
-      // 'copy-webpack-plugin': '^8'
+      'copy-webpack-plugin': '^8',
+      'clean-webpack-plugin': '^8'
     };
     if (this.needsDevServer) {
       deps['webpack-dev-server'] = '^3';
