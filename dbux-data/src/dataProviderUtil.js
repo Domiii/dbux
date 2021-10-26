@@ -1485,7 +1485,7 @@ export default {
   },
 
   /** @param {DataProvider} dp */
-  getProgramContextFile(dp, contextId) {
+  getProgramContextFilePath(dp, contextId) {
     const staticContext = dp.util.getStaticExecutionContextOfContext(contextId);
     return dp.util.getFilePathFromProgramId(staticContext.programId);
   },

@@ -9,16 +9,3 @@ index 9a85439..6eaf8e1 100644
 +
 +dist
 \ No newline at end of file
-diff --git a/dbux-examples/full.js b/dbux-examples/full.js
-index 3164438..2c299e9 100644
---- a/dbux-examples/full.js
-+++ b/dbux-examples/full.js
-@@ -1,5 +1,8 @@
-+const editormd = require('../src/editormd')();
-+
- var testEditor;
- 
-+
- $(function () {
- 
-   $.get('/examples/test.md', function (md) {
