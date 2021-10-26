@@ -318,7 +318,11 @@ class EdgeAnalysisController {
     const nonFileOrphans = orphans
       .filter(an => !dp.util.isContextProgramContext(an.rootContextId));
 
-    // keep track of filtered data
+    // orphan count
+    edgeTypeCounts[ETC.O] = nonFileOrphans.length;
+
+
+    // keep track of file-related data
     const fileEdges = allEdges
       .filter(e => dp.util.isContextProgramContext(e.toRootContextId))
       // .map(e => dp.collections.executionContexts.getById(e.toRootContextId))
@@ -326,9 +330,12 @@ class EdgeAnalysisController {
     const fileNodes = allNodes
       .filter(an => dp.util.isContextProgramContext(an.rootContextId))
       .map(an => dp.util.getProgramContextFilePath(an.rootContextId));
-    const filesUnique = Array.from(new Set(fileEdges.concat(fileNodes)));
-
-    edgeTypeCounts[ETC.O] = nonFileOrphans.length;
+    const fileRootsUnique = Array.from(new Set(fileEdges.concat(fileNodes)));
+    // NOTE: files might not always be roots.
+    const allFiles = dp.collections.staticProgramContexts.getAllExisting()
+      .map(program => program.filePath);
+    const fileCount = allFiles.length;
+    const fileRootCount = fileRootsUnique.length;
 
     // take average
     edgeTypeCounts[ETC.N] = edgeTypeCounts[ETC.N] / edges.length;
@@ -342,7 +349,14 @@ class EdgeAnalysisController {
     //     dp.util.getAsyncNode(e.toRootContextId).syncPromiseIds
     //   ]));
 
-    return { traceCount, aeCounts, edgeTypeCounts, files: { fileEdges, fileNodes, unique: filesUnique } };
+    return {
+      traceCount,
+      aeCounts,
+      edgeTypeCounts,
+      files: {
+        fileCount, fileRootCount, fileEdges, fileNodes, allFileRoots: fileRootsUnique, allFiles
+      }
+    };
   }
 
   /** ###########################################################################

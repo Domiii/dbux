@@ -204,6 +204,15 @@ export default class Collection {
     // return this._all[0] ? n : n - 1;
   }
 
+  /**
+   * Usually, getAllActual is good enough, since this is worse for performance.
+   * This is currently only used in data processing scenarios and makes sure to filter all
+   * potential null entries
+   */
+  getAllExisting() {
+    return this._all.filter(x => !!x);
+  }
+
   getAllActual(startId = 1) {
     return this._all.slice(startId);
   }
