@@ -245,10 +245,9 @@ export default class ProjectsManager {
   }
 
   /**
-   * @param {boolean} dontRefreshView 
    * @return {Promise<boolean>} indicates if practice session is stopped
    */
-  async stopPractice(dontRefreshView = false) {
+  async stopPractice() {
     if (!this.practiceSession) {
       return true;
     }
@@ -258,7 +257,7 @@ export default class ProjectsManager {
       return false;
     }
 
-    const exited = await this.practiceSession.confirmExit(dontRefreshView);
+    const exited = await this.practiceSession.confirmExit();
     return exited;
   }
 
@@ -558,7 +557,7 @@ export default class ProjectsManager {
   }
 
   /**
-   * Saves any changes in current active project as patch of bug
+   * Saves any changes of given bug
    * @param {Bug} bug 
    */
   async saveFileChanges(bug) {
@@ -584,18 +583,22 @@ export default class ProjectsManager {
     return result;
   }
 
+  /**
+   * The main function for bug switching. Handling user patches and git tag checkout.
+   * @param {Bug} bug 
+   */
   async switchToBug(bug) {
     if (this.runner.isBugActive(bug)) {
       // skip if bug is already activated
       return;
     }
 
-    // if some bug are already activated, save the changes
-    // TODO: previousBug is cleared after reload windows, we don't record activatedBug in memento any more
-    const previousBug = this.runner.bug;
-    if (previousBug?.project.doesProjectFolderExist()) {
+    // save changes in the project
+    const { project } = bug;
+    const previousBug = await project.getCurrentBugFromTag();
+    if (previousBug) {
       await this.saveFileChanges(previousBug);
-      await previousBug.project.gitResetHard();
+      await project.gitResetHard();
     }
 
     // install things

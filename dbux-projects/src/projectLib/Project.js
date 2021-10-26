@@ -612,6 +612,9 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     }
   }
 
+  /**
+   * @deprecated We are managing bug activated state in `BugRunner.actiavtedBug` and applying patch automaticly in `ProjectManager.switchToBug`. Commit user changes here will break the tag structure assumption.
+   */
   async deactivateBug(bug) {
     const project = this;
     const bugCachedTag = project.getBugCachedTagName(bug);
@@ -625,11 +628,11 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
    * @param {Bug} bug 
    */
   async installBug(bug) {
-    const oldBug = this.manager.runner.bug;
-    if (oldBug && oldBug !== bug) {
-      const oldProject = oldBug.project;
-      await oldProject.deactivateBug(oldBug);
-    }
+    // const oldBug = this.manager.runner.bug;
+    // if (oldBug && oldBug !== bug) {
+    //   const oldProject = oldBug.project;
+    //   await oldProject.deactivateBug(oldBug);
+    // }
 
     const project = this;
     const installedTag = project.getProjectInstalledTagName();
@@ -1065,12 +1068,25 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   // tags
   // ###########################################################################
 
+  async getCurrentBugFromTag() {
+    if (this.doesProjectFolderExist()) {
+      for (const tag of (await this.gitGetAllCurrentTagName())) {
+        const bug = this.parseBugCachedTag(tag);
+        if (bug) {
+          return bug;
+        }
+      }
+    }
+    return null;
+  }
+
   async gitGetCurrentTagName() {
     await this.checkCorrectGitRepository();
     return (await this.execCaptureOut(`${this.gitCommand} describe --tags`)).trim();
   }
 
   async gitGetAllCurrentTagName() {
+    await this.checkCorrectGitRepository();
     const tags = (await this.execCaptureOut(`git tag --points-at HEAD`)).split(/\r?\n/);
     return tags;
   }
@@ -1102,6 +1118,16 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
   getBugCachedTagName(bug) {
     return `__dbux_bug_${bug.id}_selected`;
+  }
+
+  parseBugCachedTag(tagName) {
+    const bugId = tagName.match(/__dbux_bug_([^_]*)_selected/)?.[1];
+    if (bugId) {
+      return this._bugs.getById(bugId);
+    }
+    else {
+      return null;
+    }
   }
 
   // ###########################################################################
