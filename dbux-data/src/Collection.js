@@ -83,13 +83,23 @@ export default class Collection {
     }
   }
 
+  _entryMissingWarned = false;
+  _entryIdMissingWarned = false;
+
   addEntry(entry) {
     if (!entry) {
+      if (!this._entryMissingWarned) {
+        this._entryMissingWarned = true;
+        this.logger.warn(`entry missing (only reports once):`, entry);
+      }
       return;
     }
     this.handleAdd(entry);
     if (!entry._id) {
-      this.logger.warn(`entry._id missing:`, entry);
+      if (!this._entryIdMissingWarned) {
+        this._entryIdMissingWarned = true;
+        this.logger.warn(`entry does not have \`_id\` prop (only reports once):`, entry);
+      }
       this._all.push(entry);
     }
     else {

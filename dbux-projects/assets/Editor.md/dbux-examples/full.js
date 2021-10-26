@@ -1,7 +1,7 @@
+const editormd = require('../src/editormd')();
 var testEditor;
 
 $(function () {
-
   $.get('/examples/test.md', function (md) {
     testEditor = editormd("test-editormd", {
       width: "90%",

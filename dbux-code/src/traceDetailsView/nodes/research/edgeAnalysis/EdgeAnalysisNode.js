@@ -250,38 +250,21 @@ class EdgeAnalysisController {
   }
 
   /** ###########################################################################
-   * serialization
-   * ##########################################################################*/
-
-  getEdgeDataFilePath() {
-    const { experimentId } = this;
-    if (!experimentId) {
-      return null;
-    }
-    return getExperimentDataFilePath(experimentId);
-  }
-
-  /**
-   * @returns {AppMeta}
-   */
-  getAppMeta() {
-    const data = this.getOrReadDataFile();
-    return data?.appMeta;
-  }
+   * {@link EdgeAnalysisNode#makeAppStats}
+   *  #########################################################################*/
 
   /**
    * @returns {AppStats}
    */
-  getAppStats() {
+  makeAppStats() {
     const { dp } = this;
     const allEdges = dp.collections.asyncEvents.getAllActual();
+
+    // TODO: distinguish between initial and non-initial file executions
+
     const edges = allEdges
       // ignore file CGRs
       .filter(e => !dp.util.isContextProgramContext(e.toRootContextId));
-    const files = allEdges
-      .filter(e => dp.util.isContextProgramContext(e.toRootContextId))
-      .map(e => dp.collections.executionContexts.getById(e.toRootContextId))
-      .map(cid => dp.util.getProgramContextFile(cid));
 
     const traceCount = dp.collections.traces.getCount();
     const edgeTypeIndexes = {
@@ -329,11 +312,23 @@ class EdgeAnalysisController {
       return counts;
     }, [0, 0, 0, 0, 0, 0, 0]);
 
-    const orphans = dp.collections.asyncNodes.getAllActual()
-      .filter(an => !dp.util.isContextProgramContext(an.rootContextId))
+    const allNodes = dp.collections.asyncNodes.getAllActual();
+    const orphans = allNodes
       .filter(an => !dp.util.getAsyncEdgesTo(an.rootContextId)?.length);
+    const nonFileOrphans = orphans
+      .filter(an => !dp.util.isContextProgramContext(an.rootContextId));
 
-    edgeTypeCounts[ETC.O] = orphans.length;
+    // keep track of filtered data
+    const fileEdges = allEdges
+      .filter(e => dp.util.isContextProgramContext(e.toRootContextId))
+      // .map(e => dp.collections.executionContexts.getById(e.toRootContextId))
+      .map(e => dp.util.getProgramContextFilePath(e.toRootContextId));
+    const fileNodes = allNodes
+      .filter(an => dp.util.isContextProgramContext(an.rootContextId))
+      .map(an => dp.util.getProgramContextFilePath(an.rootContextId));
+    const filesUnique = Array.from(new Set(fileEdges.concat(fileNodes)));
+
+    edgeTypeCounts[ETC.O] = nonFileOrphans.length;
 
     // take average
     edgeTypeCounts[ETC.N] = edgeTypeCounts[ETC.N] / edges.length;
@@ -347,7 +342,27 @@ class EdgeAnalysisController {
     //     dp.util.getAsyncNode(e.toRootContextId).syncPromiseIds
     //   ]));
 
-    return { traceCount, aeCounts, edgeTypeCounts, files };
+    return { traceCount, aeCounts, edgeTypeCounts, files: { fileEdges, fileNodes, unique: filesUnique } };
+  }
+
+  /** ###########################################################################
+   * more serialization
+   * ##########################################################################*/
+
+  getEdgeDataFilePath() {
+    const { experimentId } = this;
+    if (!experimentId) {
+      return null;
+    }
+    return getExperimentDataFilePath(experimentId);
+  }
+
+  /**
+   * @returns {AppMeta}
+   */
+  getAppMeta() {
+    const data = this.getOrReadDataFile();
+    return data?.appMeta;
   }
 
   /**
@@ -421,7 +436,7 @@ class EdgeAnalysisController {
 
     // appStats
     const oldStats = data.appStats;
-    const newStats = data.appStats = this.getAppStats();
+    const newStats = data.appStats = this.makeAppStats();
 
     // appMeta
     const oldMeta = data.appMeta;
