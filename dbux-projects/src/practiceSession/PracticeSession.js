@@ -256,7 +256,6 @@ export default class PracticeSession {
 
   async save() {
     try {
-      await this.manager.saveFileChanges(this.bug);
       await this.manager.savePracticeSession();
     }
     catch (err) {

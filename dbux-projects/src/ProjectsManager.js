@@ -583,6 +583,10 @@ export default class ProjectsManager {
     return result;
   }
 
+  /**
+   * The main function for bug switching. Handling user patches and git tag checkout.
+   * @param {Bug} bug 
+   */
   async switchToBug(bug) {
     if (this.runner.isBugActive(bug)) {
       // skip if bug is already activated

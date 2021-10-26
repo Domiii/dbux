@@ -612,6 +612,9 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     }
   }
 
+  /**
+   * @deprecated We are managing bug activated state in `BugRunner.actiavtedBug` and applying patch automaticly in `ProjectManager.switchToBug`. Commit user changes here will break the tag structure assumption.
+   */
   async deactivateBug(bug) {
     const project = this;
     const bugCachedTag = project.getBugCachedTagName(bug);
@@ -625,11 +628,11 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
    * @param {Bug} bug 
    */
   async installBug(bug) {
-    const oldBug = this.manager.runner.bug;
-    if (oldBug && oldBug !== bug) {
-      const oldProject = oldBug.project;
-      await oldProject.deactivateBug(oldBug);
-    }
+    // const oldBug = this.manager.runner.bug;
+    // if (oldBug && oldBug !== bug) {
+    //   const oldProject = oldBug.project;
+    //   await oldProject.deactivateBug(oldBug);
+    // }
 
     const project = this;
     const installedTag = project.getProjectInstalledTagName();
