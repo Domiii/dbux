@@ -1056,7 +1056,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
    * Use this to create bug patches.
    * 
    * git diff --color=never > patchName.patch
-   * git diff --color=never --ignore-cr-at-eol > ../../dbux-projects/assets/_patches_/X/baseline.patch | unix2dos
+   * git diff --color=never --ignore-cr-at-eol | unix2dos > ../../dbux-projects/assets/_patches_/X/baseline.patch
    */
   async getPatchString() {
     await this.checkCorrectGitRepository();

@@ -1,0 +1,55 @@
+diff --git a/src/editormd.js b/src/editormd.js
+index bf4f7f1..59474a8 100644
+--- a/src/editormd.js
++++ b/src/editormd.js
+@@ -4092,18 +4092,24 @@
+      * @param {Function} [callback=function()] 加载成功后执行的回调函数
+      * @param {String}   [into="head"]         嵌入页面的位置
+      */
++
++    let iLoad = 0;
++    function onLoad() {
++        console.log(++iLoad);
++    }
+     
+     editormd.loadCSS   = function(fileName, callback, into) {
++        onLoad();
+         into       = into     || "head";        
+         callback   = callback || function() {};
+         
+         var css    = document.createElement("link");
+         css.type   = "text/css";
+         css.rel    = "stylesheet";
+-        css.onload = css.onreadystatechange = function() {
++        css.addEventListener('load', function() {
+             editormd.loadFiles.css.push(fileName);
+             callback();
+-        };
++        });
+ 
+         css.href   = fileName + ".css";
+ 
+@@ -4126,8 +4132,8 @@
+      * @param {String}   [into="head"]         嵌入页面的位置
+      */
+ 
+-    editormd.loadScript = function(fileName, callback, into) {
+-        
++    editormd.loadScript = function (fileName, callback, into) {
++        onLoad();
+         into          = into     || "head";
+         callback      = callback || function() {};
+         
+@@ -4153,10 +4159,10 @@
+         }
+         else
+         {
+-            script.onload = function() {
++            script.addEventListener('load', function() {
+                 editormd.loadFiles.js.push(fileName);
+                 callback();
+-            };
++            });
+         }
+ 
+         if (into === "head") {

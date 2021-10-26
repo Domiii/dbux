@@ -123,7 +123,7 @@ const rts = {
   '2048': 5,
   'async-js': 2,
   'bluebird': 3,
-  'Editor.md': 21,
+  'Editor.md': 31,
   'express': 1,
   'hexo': 2,
   'node-fetch': 1,
