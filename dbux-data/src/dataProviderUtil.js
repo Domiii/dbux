@@ -969,7 +969,7 @@ export default {
   },
 
   /**
-   * TODO: given the `dataNode` of (what should be) an array, return its element DataNodes.
+   * given the `dataNode` of (what should be) an array, return its element DataNodes.
    * 
    * @param {DataProvider} dp
    */
