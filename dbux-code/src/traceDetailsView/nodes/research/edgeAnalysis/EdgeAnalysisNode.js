@@ -452,18 +452,18 @@ class EdgeAnalysisController {
     const oldStats = data.appStats;
     const newStats = data.appStats = this.makeAppStats();
 
-    // appMeta
-    const oldMeta = data.appMeta;
-    let newMeta;
-    if (!oldMeta) {
-      // NOTE: app meta includes expensive file hash - so we don't want to overdo it.
-      newMeta = data.appMeta = this.makeAppMeta();
-    }
+    // // appMeta
+    // const oldMeta = data.appMeta;
+    // let newMeta;
+    // if (!oldMeta) {
+    //   // TODO: if app hash changed, also need to re-export app data.
+    //   newMeta = data.appMeta = this.makeAppMeta();
+    // }
 
     if (forceWrite ||
       !isEqual(oldAnnotations, newAnnotations) ||
-      !isEqual(oldStats, newStats) ||
-      newMeta) {
+      !isEqual(oldStats, newStats) /* ||
+      newMeta */) {
       // write to file
       this.writeDataFile(this._data);
     }
