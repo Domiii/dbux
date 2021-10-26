@@ -124,7 +124,7 @@ export class ProjectViewController {
 
   async toggleTreeView() {
     if (this.isShowingTreeView) {
-      if (!await this.confirmCancelPracticeSession(true)) {
+      if (!await this.confirmCancelPracticeSession()) {
         return;
       }
     }
@@ -138,15 +138,13 @@ export class ProjectViewController {
     this.refresh();
   }
 
-  async handlePracticeSessionStateChanged(dontRefreshView) {
-    if (!dontRefreshView) {
-      try {
-        await commands.executeCommand('setContext', 'dbux.context.hasPracticeSession', !!this.manager.practiceSession);
-        this.refresh();
-      }
-      catch (err) {
-        logError(err);
-      }
+  async handlePracticeSessionStateChanged() {
+    try {
+      await commands.executeCommand('setContext', 'dbux.context.hasPracticeSession', !!this.manager.practiceSession);
+      this.refresh();
+    }
+    catch (err) {
+      logError(err);
     }
   }
 
@@ -226,8 +224,8 @@ export class ProjectViewController {
     }, { title, cancellable });
   }
 
-  async confirmCancelPracticeSession(dontRefreshView = false) {
-    return await this.manager.stopPractice(dontRefreshView);
+  async confirmCancelPracticeSession() {
+    return await this.manager.stopPractice();
   }
 }
 

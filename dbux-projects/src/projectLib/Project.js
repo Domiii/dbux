@@ -1065,12 +1065,25 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   // tags
   // ###########################################################################
 
+  async getCurrentBugFromTag() {
+    if (this.doesProjectFolderExist()) {
+      for (const tag of (await this.gitGetAllCurrentTagName())) {
+        const bug = this.parseBugCachedTag(tag);
+        if (bug) {
+          return bug;
+        }
+      }
+    }
+    return null;
+  }
+
   async gitGetCurrentTagName() {
     await this.checkCorrectGitRepository();
     return (await this.execCaptureOut(`${this.gitCommand} describe --tags`)).trim();
   }
 
   async gitGetAllCurrentTagName() {
+    await this.checkCorrectGitRepository();
     const tags = (await this.execCaptureOut(`git tag --points-at HEAD`)).split(/\r?\n/);
     return tags;
   }
@@ -1102,6 +1115,16 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
   getBugCachedTagName(bug) {
     return `__dbux_bug_${bug.id}_selected`;
+  }
+
+  parseBugCachedTag(tagName) {
+    const bugId = tagName.match(/__dbux_bug_([^_]*)_selected/)?.[1];
+    if (bugId) {
+      return this._bugs.getById(bugId);
+    }
+    else {
+      return null;
+    }
   }
 
   // ###########################################################################

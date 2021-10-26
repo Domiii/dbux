@@ -28,7 +28,6 @@ export default class PracticeSession {
     this.sessionId = sessionId || uuidv4();
     this.createdAt = createdAt || Date.now();
     this.stopwatch = new Stopwatch(manager.externals.stopwatch);
-    this.project = bug.project;
     this.bug = bug;
     this.manager = manager;
     this.lastAnnotation = '';
@@ -44,6 +43,10 @@ export default class PracticeSession {
     // state management
     this.stopwatchEnabled = bugProgress.stopwatchEnabled;
     this.state = state || (BugStatus.is.Solved(bugProgress.status) ? PracticeSessionState.Solved : PracticeSessionState.Solving);
+  }
+
+  get project() {
+    return this.bug.project;
   }
 
   get bdp() {
@@ -179,7 +182,7 @@ export default class PracticeSession {
     this.stopwatch.pause();
     this.setState(PracticeSessionState.Stopped);
     emitSessionFinishedEvent(this.state);
-    this.save();
+    await this.save();
 
     return true;
   }
@@ -253,6 +256,7 @@ export default class PracticeSession {
 
   async save() {
     try {
+      await this.manager.saveFileChanges(this.bug);
       await this.manager.savePracticeSession();
     }
     catch (err) {
