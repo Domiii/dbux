@@ -14,7 +14,7 @@ export function addProjectFolderToWorkspace(project) {
 }
 
 export function getWorkspaceFilePath(project) {
-  return path.join(project.projectPath, `${project.name}.code-workspace`);
+  return path.join(project.projectPath, '..', `${project.name}.code-workspace`);
 }
 
 export function isInCorrectWorkspace(project) {
@@ -41,7 +41,7 @@ export function maybeCreateWorkspaceFile(project) {
       folders: [
         {
           name: project.name,
-          path: "."
+          path: `./${project.name}`
         }
       ]
     };

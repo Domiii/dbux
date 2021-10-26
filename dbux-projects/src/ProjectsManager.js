@@ -445,6 +445,14 @@ export default class ProjectsManager {
     return pathJoin(this.externals.resources.getLogsDirectory(), `${uuid}.dbuxapp`);
   }
 
+  getPathwaysLogFilePath(sessionId) {
+    return pathJoin(this.externals.resources.getLogsDirectory(), `${sessionId}.dbuxlog`);
+  }
+
+  getIndexFilePathByBug(bug) {
+    return pathJoin(this.externals.resources.getLogsDirectory(), `${bug.id}.index`);
+  }
+
   /** ###########################################################################
    * PrcaticeSession: events
    * ##########################################################################*/

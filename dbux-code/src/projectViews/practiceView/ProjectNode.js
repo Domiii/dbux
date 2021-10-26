@@ -81,8 +81,9 @@ export default class ProjectNode extends BaseTreeViewNode {
         this.treeNodeProvider.refresh();
         await showInformationMessage('Cache flushed successfully.');
       },
-      "Reset Progress": async () => {
+      "Clear Log": async () => {
         await this.project.clearLog();
+        await showInformationMessage('Log cleared successfully.');
       },
       "Delete Project": async () => {
         const success = await runTaskWithProgressBar(async (progress/* , cancelToken */) => {

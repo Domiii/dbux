@@ -1290,6 +1290,8 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   }
 
   async clearLog() {
-    await this.manager.externals.alert(`Function not implemented yet.`);
+    for (const bug of this._bugs) {
+      await bug.clearLog();
+    }
   }
 }

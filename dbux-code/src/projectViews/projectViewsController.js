@@ -13,7 +13,7 @@ import { showInformationMessage } from '../codeUtil/codeModals';
 import { initCodeEvents } from '../practice/codeEvents';
 import { translate } from '../lang';
 import { getLogsDirectory } from '../codeUtil/codePath';
-import { openProjectWorkspace, isInCorrectWorkspace } from '../codeUtil/workspaceUtil';
+import { openProjectWorkspace, isInCorrectWorkspace, maybeCreateWorkspaceFile } from '../codeUtil/workspaceUtil';
 
 /** @typedef {import('./practiceView/BugNode').default} BugNode */
 
@@ -165,13 +165,15 @@ export class ProjectViewController {
     const { bug, projectNode: { project } } = bugNode;
     const title = `Bug ${`"${bug.label}"` || ''} (${bug.id})`;
     await this.runProjectTask(title, async (report) => {
-      // TOTRANSLATE
-      report({ message: 'Activating...' });
-      await this.manager.startPractice(bug);
+      maybeCreateWorkspaceFile(project);
 
       if (!isInCorrectWorkspace(project)) {
         await openProjectWorkspace(project);
       }
+
+      // TOTRANSLATE
+      report({ message: 'Activating...' });
+      await this.manager.startPractice(bug);
     });
   }
 
