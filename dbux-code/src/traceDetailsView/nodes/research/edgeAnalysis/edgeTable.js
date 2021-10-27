@@ -2,8 +2,6 @@
 import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { existsSync, readFileSync } from 'fs';
-import sumBy from 'lodash/sumBy';
-import sum from 'lodash/sum';
 import mean from 'lodash/mean';
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import { newLogger } from '@dbux/common/src/log/logger';
@@ -13,34 +11,36 @@ import { EdgeStatus, ETC, getExperimentDataFilePath } from './edgeData';
 const { log, debug, warn, error: logError } = newLogger('edgeTable');
 
 
+function tableString(data) {
+  const rows = data.map(x => x.row);
+  // return `${headers}\n${rows.join('\n')}`;
+  return `${rows.join('\\\\\n')} \\\\\n`;
+}
+
 export function makeEdgeTable(folder, experimentIds) {
   // 
   // traces: number of recorded trace events. AEs: recorded AEs by type (await, then, cb). falseTls: false TLs by type (TODO(types)). tlRatio: $\frac{realTls}{totalTls}$
   // const headers = `name & traces & AEs & C & MC & F & S & N \\\\`;
-  const nameCount = new Map();
-  const all = experimentIds.map(experimentId => {
-    return tableRow(folder, experimentId, nameCount);
+  const nameCounts = new Map();
+  const unsorted = experimentIds.map(experimentId => {
+    return tableRow(folder, experimentId, nameCounts);
   });
+
+  // fix duplicate naming
+  fixNames(unsorted, nameCounts);
 
   // sort
-  sortRows(all);
+  const sorted = [...unsorted];
+  sortRows(sorted);
 
-  // add first column (fix duplicate naming)
-  const duplicateNames = new Set(Array.from(nameCount.entries())
-    .filter(([, i]) => i > 1)
-    .map(([name]) => name)
-  );
-  all.forEach(r => {
-    const { iName, name } = r;
-    let label = duplicateNames.has(name) ? makeRowLabel(name, iName) : name;
-    r.row = label + r.row;
-  });
+  const allRaw = sorted.map(x => x.raw);
 
   // finish up
-  const rows = all.map(x => x.row);
-  const allRaw = all.map(x => x.raw);
-  // return `${headers}\n${rows.join('\n')}`;
-  return `${rows.join('\\\\\n')} \\\\\n\n\n% ${JSON.stringify(allRaw)}`;
+  return [
+    tableString(sorted),
+    tableString(unsorted),
+    `% ${JSON.stringify(allRaw)}`
+  ].join('\n\n\n\n');
 }
 
 
@@ -173,6 +173,19 @@ function sortRows(rows) {
 
   // sort
   rows.sort((a, b) => sorter[a.name] - sorter[b.name]);
+}
+
+function fixNames(rows, nameCounts) {
+  // add first column (fix duplicate naming)
+  const duplicateNames = new Set(Array.from(nameCounts.entries())
+    .filter(([, i]) => i > 1)
+    .map(([name]) => name)
+  );
+  rows.forEach(r => {
+    const { iName, name } = r;
+    let label = duplicateNames.has(name) ? makeRowLabel(name, iName) : name;
+    r.row = label + r.row;
+  });
 }
 
 function makeRowLabel(name, i) {
