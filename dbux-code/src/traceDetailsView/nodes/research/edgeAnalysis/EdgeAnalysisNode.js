@@ -452,18 +452,28 @@ class EdgeAnalysisController {
     const oldStats = data.appStats;
     const newStats = data.appStats = this.makeAppStats();
 
-    // // appMeta
-    // const oldMeta = data.appMeta;
-    // let newMeta;
-    // if (!oldMeta) {
-    //   // TODO: if app hash changed, also need to re-export app data.
-    //   newMeta = data.appMeta = this.makeAppMeta();
-    // }
+    let newMeta;
+    if (forceWrite) {
+      /**
+       * handle appMeta
+       * NOTE: here, app (and thus hash) should already be that of the file.
+       *    If it does not exist, {@link #checkAppDataUpdate} will take care of it.
+       */
+      const oldMeta = data.appMeta;
+      if (oldMeta) {
+        if (!this.makeAndCheckAppHash(oldMeta)) {
+          throw new Error(`stored hash does not match application hash`);
+        }
+      }
+      else {
+        newMeta = data.appMeta = this.makeAppMeta();
+      }
+    }
 
     if (forceWrite ||
       !isEqual(oldAnnotations, newAnnotations) ||
-      !isEqual(oldStats, newStats) /* ||
-      newMeta */) {
+      !isEqual(oldStats, newStats) ||
+      newMeta) {
       // write to file
       this.writeDataFile(this._data);
     }
@@ -506,6 +516,10 @@ class EdgeAnalysisController {
   initOnExpand() {
     // reset + lookup data root folder again
     this._data = null;
+
+    if (!this.app) {
+      return;
+    }
 
     if (this._lastAppUuid !== this.app.uuid) {
       this._lastAppUuid = this.app.uuid;
@@ -559,9 +573,23 @@ class EdgeAnalysisController {
     return hash;
   }
 
+  /**
+   * @param {AppMeta} oldMeta 
+   */
+  makeAndCheckAppHash(oldMeta) {
+    const hash = this.makeRelevantAppDataHash(this.app);
+    const check = oldMeta.appDataHash === hash;
+    return check;
+    // return {
+    //   hash,
+    //   check
+    // };
+  }
+
   makeAppMeta() {
     const { app } = this;
 
+    // future-work: consider not hashing twice (since we usually would check hash before calling this function)
     const appDataHash = this.makeRelevantAppDataHash(app);
 
     return {
@@ -587,17 +615,24 @@ class EdgeAnalysisController {
   checkAppDataUpdate = async () => {
     const applicationUpdateVersion = this._applicationUpdateVersion;
 
-    let previousAppMeta = this.getAppMeta();
+    let oldMeta = this.getAppMeta();
     const { app } = this;
     const zipFpath = this.research.getAppZipFilePath(app);
-    const newHash = this.makeRelevantAppDataHash(app);
+    const hasAppDataFile = existsSync(zipFpath);
 
-    if (!previousAppMeta || !existsSync(zipFpath) || newHash !== previousAppMeta.appDataHash) {
-      // if app data did not exist or has changed since last time, show modal
+    if (!oldMeta || !hasAppDataFile || this.makeAndCheckAppHash(oldMeta)) {
+      // hash might have changed
 
-      // ask whether to save a backup of app data to separate lfs folder
-      const askMsg = `App data of "${this.experimentId}" has changed - Do you want to create a new backup?`;
-      if (!await confirm(askMsg, true, true)) {
+      let question;
+      if (!oldMeta && hasAppDataFile) {
+        // data file gone, but app data file still there
+        question = `App data file of "${this.experimentId}" is not hashed but it already exists. Override old app data file?`;
+      }
+      else {
+        // ask whether to save a backup of app data to separate lfs folder
+        question = `App data of "${this.experimentId}" has changed - Do you want to create a new backup?`;
+      }
+      if (!await confirm(question, true, true)) {
         return;
       }
 
@@ -621,7 +656,7 @@ class EdgeAnalysisController {
     }
     else {
       await showInformationMessage(
-        `App data has not changed since last update (${new Date(previousAppMeta.updatedAt)})`
+        `App data has not changed since last update (${new Date(oldMeta.updatedAt)})`
       );
     }
   }
@@ -737,10 +772,12 @@ class EdgeAnalysisController {
       await runTaskWithProgressBar(async (progress, cancelToken) => {
         for (const experimentId of missingExperiments) {
           try {
+            const message = `preparing "${experimentId}" data...`;
             progress.report({
-              message: `preparing "${experimentId}" data...`,
+              message,
               increment: progressIncrement
             });
+            debug(message);
             await this.prepareExperimentData(experimentId);
 
             if (cancelToken.isCancellationRequested) {
@@ -761,7 +798,7 @@ class EdgeAnalysisController {
   }
 
   async prepareExperimentData(experimentId) {
-    // unload application data
+    // clear/unload all
     allApplications.clear();
     await sleep(100); // wait for trace and application unselection events
 
