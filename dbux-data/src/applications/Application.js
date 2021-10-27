@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { performance } from '@dbux/common/src/util/universalLibs';
 import { pathGetParent, pathSafe } from '@dbux/common/src/util/pathUtil';
-import { getPathRelativeToCommonAncestor, pathNormalizedForce, pathRelative } from '@dbux/common-node/src/util/pathUtil';
+import { getCommonAncestorPath, getPathRelativeToCommonAncestor, pathNormalizedForce, pathRelative } from '@dbux/common-node/src/util/pathUtil';
 import RuntimeDataProvider from '../RuntimeDataProvider';
 import { newDataProvider } from '../dataProviderImpl';
 import { getFileName } from '../util/nodeUtil';
@@ -101,6 +101,11 @@ export default class Application {
 
   getRelativeFolder() {
     return pathGetParent(this.getRelativeEntryPoint());
+  }
+
+  getCommonAncestorPath() {
+    const { staticProgramContexts } = this.dataProvider.collections;
+    return getCommonAncestorPath(...staticProgramContexts.getAllExisting().map(p => p.filePath));
   }
 
   /**

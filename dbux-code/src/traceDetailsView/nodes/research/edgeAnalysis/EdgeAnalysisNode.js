@@ -6,7 +6,7 @@ import differenceBy from 'lodash/differenceBy';
 import isEqual from 'lodash/isEqual';
 import NanoEvents from 'nanoevents';
 import sleep from '@dbux/common/src/util/sleep';
-import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
+import { pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import Enum from '@dbux/common/src/util/Enum';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
@@ -43,6 +43,22 @@ const { log, debug, warn, error: logError } = newLogger('EdgeAnalysis');
 
 function selectedModalBtn(selected, text) {
   return selected ? `(${text})` : `${text}`;
+}
+
+/**
+ * @param {Application} app 
+ * @param {[]} files 
+ */
+function fixFiles(app, files) {
+  const commonFolder = app.getCommonAncestorPath();
+  return Object.fromEntries(Object.entries(files)
+    .map(([key, val]) => {
+      if (!Array.isArray(val)) {
+        return [key, val];
+      }
+      return [key, val.map(f => pathRelative(commonFolder, f))];
+    })
+  );
 }
 
 /** ###########################################################################
@@ -257,7 +273,7 @@ class EdgeAnalysisController {
    * @returns {AppStats}
    */
   makeAppStats() {
-    const { dp } = this;
+    const { app, dp } = this;
     const allEdges = dp.collections.asyncEvents.getAllActual();
 
     // TODO: distinguish between initial and non-initial file executions
@@ -327,15 +343,18 @@ class EdgeAnalysisController {
       .filter(e => dp.util.isContextProgramContext(e.toRootContextId))
       // .map(e => dp.collections.executionContexts.getById(e.toRootContextId))
       .map(e => dp.util.getProgramContextFilePath(e.toRootContextId));
-    const fileNodes = allNodes
+    const fileRoots = allNodes
       .filter(an => dp.util.isContextProgramContext(an.rootContextId))
       .map(an => dp.util.getProgramContextFilePath(an.rootContextId));
-    const fileRootsUnique = Array.from(new Set(fileEdges.concat(fileNodes)));
+    const fileRootsUnique = Array.from(new Set(fileEdges.concat(fileRoots)));
     // NOTE: files might not always be roots.
     const allFiles = dp.collections.staticProgramContexts.getAllExisting()
       .map(program => program.filePath);
     const fileCount = allFiles.length;
     const fileRootCount = fileRootsUnique.length;
+    const files = fixFiles(app, {
+      fileCount, fileRootCount, fileEdges, fileRoots, allFileRoots: fileRootsUnique, allFiles
+    });
 
     // take average
     edgeTypeCounts[ETC.N] = edgeTypeCounts[ETC.N] / edges.length;
@@ -353,9 +372,7 @@ class EdgeAnalysisController {
       traceCount,
       aeCounts,
       edgeTypeCounts,
-      files: {
-        fileCount, fileRootCount, fileEdges, fileNodes, allFileRoots: fileRootsUnique, allFiles
-      }
+      files
     };
   }
 

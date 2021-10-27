@@ -205,7 +205,8 @@ export default class Collection {
   }
 
   /**
-   * Usually, getAllActual is good enough, since this is worse for performance.
+   * Similar to `getAllActual` but more accurate.
+   * Usually `getAllActual` is good enough, since this is worse for performance.
    * This is currently only used in data processing scenarios and makes sure to filter all
    * potential null entries
    */
