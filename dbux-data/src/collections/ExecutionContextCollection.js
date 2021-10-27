@@ -15,12 +15,10 @@ export default class ExecutionContextCollection extends Collection {
   }
 
   addEntry(entry) {
-    if (!entry) {
-      // hackfix: some applications have errors preventing them from sending stuff. Problem occurs only when loading from file.
-      return;
-    }
-    entry.applicationId = this.dp.application.applicationId;
     super.addEntry(entry);
+    if (entry) {
+      entry.applicationId = this.dp.application.applicationId;
+    }
   }
 
   /**
@@ -85,7 +83,7 @@ export default class ExecutionContextCollection extends Collection {
       const { contextId } = context;
       const { type, isInterruptable } = util.getContextStaticContext(contextId);
       // future-work: make sure, this is not called on generator functions
-      
+
       if (StaticContextType.is.Resume(type)) {
         const returnRef = util.getReturnValueRefOfContext(contextId);
         const returnedPromiseRef = returnRef?.refId && util.getPromiseValueRef(returnRef.refId);

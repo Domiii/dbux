@@ -18,13 +18,11 @@ export default class TraceCollection extends Collection {
   }
 
   addEntry(trace) {
-    if (!trace) {
-      return;
-    }
-
-    // set applicationId
-    trace.applicationId = this.dp.application.applicationId;
     super.addEntry(trace);
+    if (trace) {
+      // set applicationId
+      trace.applicationId = this.dp.application.applicationId;
+    }
   }
 
   serialize(trace) {
