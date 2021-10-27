@@ -158,6 +158,10 @@ const projectOrder = [
   'todomvc-es6',
 ];
 
+const nameMap = {
+  'todomvc-es6': 'todomvc'
+};
+
 /**
  * @param {[]} rows 
  */
@@ -188,6 +192,9 @@ function fixNames(rows, nameCounts) {
   });
 }
 
+
+
 function makeRowLabel(name, i) {
+  name = nameMap[name] || name;
   return `${name}(${i + 1})`;
 }
