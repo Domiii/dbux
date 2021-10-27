@@ -26,7 +26,7 @@ export function makeEdgeTable(folder, experimentIds) {
   sortRows(all);
 
   // add first column (fix duplicate naming)
-  const duplicateNames = new Set(nameCount.entries()
+  const duplicateNames = new Set(Array.from(nameCount.entries())
     .filter(([, i]) => i > 1)
     .map(([name]) => name)
   );
@@ -166,7 +166,7 @@ function sortRows(rows) {
 
   // sanity checks
   rows.forEach(r => {
-    if (!sorter[r.name]) {
+    if (!(r.name in sorter)) {
       throw new Error(`projectOrder missing row name: ${r.name}`);
     }
   });

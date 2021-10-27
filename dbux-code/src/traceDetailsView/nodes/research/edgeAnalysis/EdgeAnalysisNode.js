@@ -620,7 +620,7 @@ class EdgeAnalysisController {
     const zipFpath = this.research.getAppZipFilePath(app);
     const hasAppDataFile = existsSync(zipFpath);
 
-    if (!oldMeta || !hasAppDataFile || this.makeAndCheckAppHash(oldMeta)) {
+    if (!oldMeta || !hasAppDataFile || !this.makeAndCheckAppHash(oldMeta)) {
       // hash might have changed
 
       let question;
