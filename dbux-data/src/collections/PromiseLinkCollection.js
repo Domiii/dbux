@@ -25,7 +25,7 @@ export default class PromiseLinkCollection extends Collection {
       // const resultTraceId = bceTrace && util.getBCEResultTraceId(bceTrace.traceId);
       const promiseRef = bceTrace && util.getTraceValueRef(bceTrace.traceId);
     
-      entry.to = promiseRef.refId;
+      entry.to = promiseRef?.refId;
 
       if (!entry.to) {
         // TODO: fix `then(async function() {})` in `promisePatcher`!!!

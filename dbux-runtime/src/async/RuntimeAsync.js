@@ -394,7 +394,7 @@ export default class RuntimeAsync {
     // });
   }
 
-  all(inner, outer, promiseLinkType, traceId) {
+  all(inner, outer, traceId) {
     // NOTE: `reject` does not settle nested promises!
     const rootId = this.getCurrentVirtualRootContextId();
     const from = inner.map(p => getPromiseId(p));
@@ -403,7 +403,19 @@ export default class RuntimeAsync {
     //   this.logger.error(`resolve link failed: promise did not have an id, from=${from}, to=${to}, trace=${traceCollection.makeTraceInfo(traceId)}`);
     // }
     // else {
-    return nestedPromiseCollection.addLink(promiseLinkType, from, to, traceId, rootId);
+    return nestedPromiseCollection.addLink(PromiseLinkType.All, from, to, traceId, rootId);
+  }
+
+  race(inner, outer, traceId) {
+    // NOTE: `reject` does not settle nested promises!
+    const rootId = this.getCurrentVirtualRootContextId();
+    const from = getPromiseId(inner);
+    const to = getPromiseId(outer);
+    // if (!from || !to) {
+    //   this.logger.error(`resolve link failed: promise did not have an id, from=${from}, to=${to}, trace=${traceCollection.makeTraceInfo(traceId)}`);
+    // }
+    // else {
+    return nestedPromiseCollection.addLink(PromiseLinkType.Race, from, to, traceId, rootId);
   }
 
   /**

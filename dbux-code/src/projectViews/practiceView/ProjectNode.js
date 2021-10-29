@@ -1,4 +1,3 @@
-import sleep from '@dbux/common/src/util/sleep';
 import Project from '@dbux/projects/src/projectLib/Project';
 import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
@@ -66,12 +65,6 @@ export default class ProjectNode extends BaseTreeViewNode {
       "Flush Cache": async () => {
         await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
           progress.report({ message: 'deleting project folder...' });
-
-          // NOTE: we need this sleep because:
-          //     (1) the operation is synchronous, and
-          //     (2) progress bar does not get to start rendering if we don't give it a few extra ticks
-          await sleep();
-
           await this.project.deleteCacheFolder();
         }, {
           cancellable: false,
@@ -79,20 +72,15 @@ export default class ProjectNode extends BaseTreeViewNode {
         });
 
         this.treeNodeProvider.refresh();
-        await showInformationMessage('Cache flushed successfully.');
+        showInformationMessage('Cache flushed successfully.');
       },
-      "Clear Log": async () => {
+      "Clear Log Files": async () => {
         await this.project.clearLog();
-        await showInformationMessage('Log cleared successfully.');
+        showInformationMessage('Log files removed successfully.');
       },
       "Delete Project": async () => {
         const success = await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
           progress.report({ message: 'deleting project folder...' });
-
-          // NOTE: we need this sleep because:
-          //     (1) the operation is synchronous, and
-          //     (2) progress bar does not get to start rendering if we don't give it a few extra ticks
-          await sleep();
 
           return await this.project.deleteProjectFolder();
         }, {

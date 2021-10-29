@@ -4,6 +4,7 @@ import ResolveType from '@dbux/common/src/types/constants/ResolveType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import isThenable from '@dbux/common/src/util/isThenable';
 import PromiseLinkType from '@dbux/common/src/types/constants/PromiseLinkType';
+import PromiseLink from '@dbux/common/src/types/PromiseLink';
 import traceCollection from '../data/traceCollection';
 import dataNodeCollection from '../data/dataNodeCollection';
 import { peekBCEMatchCallee, getLastContextCheckCallee, isInstrumentedFunction, peekBCEMatchCalleeUnchecked } from '../data/dataUtil';
@@ -12,7 +13,6 @@ import PromiseRuntimeData from '../data/PromiseRuntimeData';
 import valueCollection from '../data/valueCollection';
 // eslint-disable-next-line max-len
 import { isMonkeyPatchedFunction, monkeyPatchFunctionHolder, tryRegisterMonkeyPatchedFunction, _registerMonkeyPatchedCallback, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
-import PromiseLink from '@dbux/common/src/types/PromiseLink';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError } = newLogger('PromisePatcher');
@@ -612,7 +612,7 @@ function allHandler(thisArg, args, originalFunction, patchedFunction) {
   if (nestedArr.length) {
     const thenRef = _makeThenRef(result, patchedFunction);
 
-    RuntimeMonitorInstance._runtime.async.all(nestedPromises, result, PromiseLinkType.All, thenRef?.schedulerTraceId);
+    RuntimeMonitorInstance._runtime.async.all(nestedPromises, result, thenRef?.schedulerTraceId);
   }
 
   return result;
@@ -620,6 +620,11 @@ function allHandler(thisArg, args, originalFunction, patchedFunction) {
 
 monkeyPatchFunctionHolder(Promise, 'all', allHandler);
 monkeyPatchFunctionHolder(Promise, 'allSettled', allHandler);
+
+function raceHandler(thisArg, args, originalFunction, patchedFunction) {
+  // TODO: create new promise for each nested promise, so we can know the winner
+}
+monkeyPatchFunctionHolder(Promise, 'race', raceHandler);
 
 // TODO: race resolves or rejects as soon as the first of its argument promises does.
 //  -> CHAIN against the promise that won the race; ignore all others

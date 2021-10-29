@@ -167,9 +167,9 @@ export class ExecutionContextCollection extends Collection {
     );
     this._pushAndSend(context);
     
-    if (!parentContextId) {
-      this.logger.warn(`CREATE root: ${context.contextId}`, this.makeContextInfo(contextId));
-    }
+    // if (!parentContextId) {
+    //   this.logger.warn(`CREATE root: ${context.contextId}`, this.makeContextInfo(contextId));
+    // }
 
     if (this._firstContextChild.get(parentContextId) === undefined) {
       this._firstContextChild.set(parentContextId, context.contextId);
