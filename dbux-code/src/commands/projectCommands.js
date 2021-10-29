@@ -31,8 +31,8 @@ export function initProjectCommands(extensionContext, projectViewController) {
     return addProjectFolderToWorkspace(node.project);
   });
 
-  registerCommand(extensionContext, 'dbuxProjectView.node.deleteProject', (node) => {
-    return node.deleteProject();
+  registerCommand(extensionContext, 'dbuxProjectView.node.cleanup', (node) => {
+    return node.cleanUp();
   });
 
   registerCommand(extensionContext, 'dbuxProjectView.node.stopProject', (/* node */) => {

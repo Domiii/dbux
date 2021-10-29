@@ -2,7 +2,7 @@ import { commands, Uri, workspace } from 'vscode';
 import fs from 'fs';
 import path from 'path';
 import { pathGetBasename } from '@dbux/common/src/util/pathUtil';
-import { confirm } from './codeModals';
+import { showInformationMessage } from './codeModals';
 
 export function addProjectFolderToWorkspace(project) {
   const uri = Uri.file(project.projectPath);
@@ -13,25 +13,47 @@ export function addProjectFolderToWorkspace(project) {
   });
 }
 
-export function getWorkspaceFilePath(project) {
-  return path.join(project.projectPath, `${project.name}.code-workspace`);
+export function isProjectFolderInWorkspace(project) {
+  const uri = Uri.file(project.projectPath);
+  return workspace.workspaceFolders && Array.from(workspace.workspaceFolders).some((workspaceFolder) => {
+    if (workspaceFolder.uri.fsPath === uri.fsPath) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  });
 }
 
-export function isInCorrectWorkspace(project) {
-  const uri = Uri.file(getWorkspaceFilePath(project));
-  return workspace.workspaceFile?.fsPath === uri.fsPath;
-}
+/**
+ * NOTE: check `isProjectFolderInWorkspace` before asking
+ * @param {Project} project 
+ * @returns 
+ */
+export async function askForOpenProjectWorkspace(project) {
+  const message = `Project "${project.name}" is currently not in your workspace (which makes it harder to work with it).`;
 
-export async function openProjectWorkspace(project, askFirst = true) {
-  const message = 'You are not in the correct project workspace, do you want to open it?\n' +
-    'NOTE: This will reload the VSCode window';
-  if (askFirst && !await confirm(message)) {
-    return false;
+  const buttons = {};
+  if (workspace.workspaceFolders !== undefined) {
+    buttons["Add to current workspace"] = async () => {
+      addProjectFolderToWorkspace(project);
+      return true;
+    };
   }
-  else {
+  buttons["Create + open new workspace for project"] = async () => {
     maybeCreateWorkspaceFile(project);
-    return await commands.executeCommand('vscode.openFolder', Uri.file(getWorkspaceFilePath(project)));
-  }
+    await commands.executeCommand('vscode.openFolder', Uri.file(getWorkspaceFilePath(project)));
+    return true;
+  };
+  buttons.Continue = () => {
+    return true;
+  };
+  const result = await showInformationMessage(message, buttons, { modal: true });
+  return result;
+}
+
+export function getWorkspaceFilePath(project) {
+  return path.join(project.projectPath, '..', `${project.name}.code-workspace`);
 }
 
 export function maybeCreateWorkspaceFile(project) {
@@ -41,7 +63,7 @@ export function maybeCreateWorkspaceFile(project) {
       folders: [
         {
           name: project.name,
-          path: "."
+          path: `./${project.name}`
         }
       ]
     };

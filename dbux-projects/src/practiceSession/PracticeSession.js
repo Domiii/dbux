@@ -218,7 +218,7 @@ export default class PracticeSession {
   // ###########################################################################
 
   getDefaultLogFilePath() {
-    return path.join(this.manager.externals.resources.getLogsDirectory(), `${this.sessionId}.dbuxlog`);
+    return this.manager.getPathwaysLogFilePath(this.sessionId);
   }
 
   async askToFinish() {

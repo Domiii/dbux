@@ -1,3 +1,4 @@
+import fs from 'fs';
 import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import isEqual from 'lodash/isEqual';
 import path from 'path';
@@ -150,5 +151,26 @@ export default class Bug {
         line: t.line,
       }, loc);
     });
+  }
+
+  async clearLog() {
+    const indexFilePath = this.manager.getIndexFilePathByBug(this);
+    if (fs.existsSync(indexFilePath)) {
+      const index = JSON.parse(fs.readFileSync(indexFilePath, 'utf-8'));
+      for (const sessionId of Object.keys(index)) {
+        const appIds = index[sessionId].applicationIds;
+        for (const appId of appIds) {
+          const appLogPath = this.manager.getApplicationFilePath(appId);
+          if (fs.existsSync(appLogPath)) {
+            fs.rmSync(appLogPath);
+          }
+        }
+        const pathwaysLogPath = this.manager.getPathwaysLogFilePath(sessionId);
+        if (fs.existsSync(pathwaysLogPath)) {
+          fs.rmSync(pathwaysLogPath);
+        }
+      }
+      fs.rmSync(indexFilePath);
+    }
   }
 }

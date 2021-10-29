@@ -518,8 +518,8 @@
         }
       },
       {
-        "command": "dbuxProjectView.node.deleteProject",
-        "title": "Delete Project Folder",
+        "command": "dbuxProjectView.node.cleanup",
+        "title": "Clean Up",
         "icon": {
           "light": "resources/light/clear.svg",
           "dark": "resources/dark/clear.svg"
@@ -783,7 +783,7 @@
           "group": "inline@1"
         },
         {
-          "command": "dbuxProjectView.node.deleteProject",
+          "command": "dbuxProjectView.node.cleanup",
           "when": "viewItem =~ /dbuxProjectView\\.projectNode/ && !dbuxProjectView.context.isBusy",
           "group": "inline@2"
         },
@@ -1267,7 +1267,7 @@
           "when": "false"
         },
         {
-          "command": "dbuxProjectView.node.deleteProject",
+          "command": "dbuxProjectView.node.cleanup",
           "when": "false"
         },
         {

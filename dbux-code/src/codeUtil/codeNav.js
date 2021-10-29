@@ -96,6 +96,12 @@ export async function getOrOpenTraceEditor(trace) {
   return showTextDocument(filePath);
 }
 
+export function getTraceDocumentUri(trace) {
+  const dp = allApplications.getApplication(trace.applicationId).dataProvider;
+  const filePath = dp.queries.programFilePathByTraceId(trace.traceId);
+  return Uri.file(filePath);
+}
+
 export async function goToTrace(trace) {
   const dp = allApplications.getApplication(trace.applicationId).dataProvider;
   const { staticTraceId } = dp.collections.traces.getById(trace.traceId);

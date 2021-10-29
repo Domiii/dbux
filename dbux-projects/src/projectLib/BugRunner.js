@@ -392,9 +392,12 @@ export default class BugRunner {
    */
   async deactivateBug() {
     const { bug } = this;
-    await this.setActivatedBug(null);
-    await this.manager.saveFileChanges(bug);
-    return bug;
+    if (bug) {
+      await this.setActivatedBug(null);
+      await this.manager.saveFileChanges(bug);
+      return bug;
+    }
+    return null;
   }
 
   /**

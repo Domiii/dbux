@@ -6,6 +6,8 @@ import BugNode from './BugNode';
 import { runTaskWithProgressBar } from '../../codeUtil/runTaskWithProgressBar';
 import { showInformationMessage } from '../../codeUtil/codeModals';
 
+/** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
+
 export default class ProjectNode extends BaseTreeViewNode {
   static makeLabel(project) {
     return project.name;
@@ -18,6 +20,9 @@ export default class ProjectNode extends BaseTreeViewNode {
     return this.entry;
   }
 
+  /**
+   * @type {ProjectsManager}
+   */
   get manager() {
     return this.treeNodeProvider.controller.manager;
   }
@@ -55,10 +60,32 @@ export default class ProjectNode extends BaseTreeViewNode {
     return this.treeNodeProvider.buildNode(BugNode, bug, this);
   }
 
-  async deleteProject() {
-    const confirmMessage = `Do you really want to delete the project: ${this.project.name}`;
+  async cleanUp() {
+    const confirmMessage = `How do you want to clean up the project: ${this.project.name}?`;
     const btnConfig = {
-      Ok: async () => {
+      "Flush Cache": async () => {
+        await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
+          progress.report({ message: 'deleting project folder...' });
+
+          // NOTE: we need this sleep because:
+          //     (1) the operation is synchronous, and
+          //     (2) progress bar does not get to start rendering if we don't give it a few extra ticks
+          await sleep();
+
+          await this.project.deleteCacheFolder();
+        }, {
+          cancellable: false,
+          title: this.project.name,
+        });
+
+        this.treeNodeProvider.refresh();
+        await showInformationMessage('Cache flushed successfully.');
+      },
+      "Clear Log": async () => {
+        await this.project.clearLog();
+        await showInformationMessage('Log cleared successfully.');
+      },
+      "Delete Project": async () => {
         const success = await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
           progress.report({ message: 'deleting project folder...' });
 

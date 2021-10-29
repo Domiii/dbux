@@ -828,7 +828,9 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
   deleteCacheFolder() {
     const cacheFolder = this.getCacheFolder();
-    fs.rmSync(cacheFolder, { recursive: true });
+    if (fs.existsSync(cacheFolder)) {
+      fs.rmSync(cacheFolder, { recursive: true });
+    }
   }
 
   /**
@@ -1285,5 +1287,11 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
   toString() {
     return `[${this.debugTag}]`;
+  }
+
+  async clearLog() {
+    for (const bug of this._bugs) {
+      await bug.clearLog();
+    }
   }
 }

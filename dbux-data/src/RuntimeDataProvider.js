@@ -75,8 +75,10 @@ export default class RuntimeDataProvider extends DataProviderBase {
     // actually add data
     const result = super.addData(newData, isRaw);
 
-    // NOTE: every time new contexts are added, make sure that root contexts are accounted for in AsyncGraph
-    this.collections.asyncNodes.addUnassignedNodes(/* minAsyncNodeId */);
+    if (isRaw) {
+      // NOTE: every time new contexts are added, make sure that root contexts are accounted for in AsyncGraph
+      this.collections.asyncNodes.addUnassignedNodes(/* minAsyncNodeId */);
+    }
 
     this.reporter.reportNewData(newData);
 

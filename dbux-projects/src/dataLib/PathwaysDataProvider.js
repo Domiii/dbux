@@ -82,6 +82,8 @@ class ApplicationCollection extends PathwaysCollection {
         warn(`Found existing log file at "${filePath}", added old application without \`isNew=false\``);
       }
     }
+
+    this.dp.updateIndexFile();
   }
 
   /**
@@ -554,6 +556,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
     const { version } = this;
     const { logFilePath, sessionId, createdAt, bug: { id: bugId } } = this.session;
     fs.appendFileSync(logFilePath, `${JSON.stringify({ headerTag: true, version, sessionId, bugId, createdAt })}\n`, { flag: 'ax' });
+    this.updateIndexFile();
   }
 
   static async parseHeader(filePath) {
@@ -563,5 +566,30 @@ export default class PathwaysDataProvider extends DataProviderBase {
       throw new Error('No header information in log file');
     }
     return header;
+  }
+
+  updateIndexFile() {
+    const bug = this.session?.bug;
+    const { sessionId } = this;
+    if (bug) {
+      const indexFilePath = this.manager.getIndexFilePathByBug(bug);
+      let index;
+      if (fs.existsSync(indexFilePath)) {
+        index = JSON.parse(fs.readFileSync(indexFilePath, 'utf-8'));
+      }
+      else {
+        index = {};
+      }
+      index[sessionId] = this.makeSessionIndex();
+      fs.writeFileSync(indexFilePath, JSON.stringify(index, null, 2));
+    }
+  }
+
+  makeSessionIndex() {
+    const { sessionId } = this;
+    return {
+      sessionId,
+      applicationIds: this.collections.applications.getAllActual().map(app => app.uuid)
+    };
   }
 }

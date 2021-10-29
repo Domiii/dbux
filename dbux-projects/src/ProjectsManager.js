@@ -445,6 +445,14 @@ export default class ProjectsManager {
     return pathJoin(this.externals.resources.getLogsDirectory(), `${uuid}.dbuxapp`);
   }
 
+  getPathwaysLogFilePath(sessionId) {
+    return pathJoin(this.externals.resources.getLogsDirectory(), `${sessionId}.dbuxlog`);
+  }
+
+  getIndexFilePathByBug(bug) {
+    return pathJoin(this.externals.resources.getLogsDirectory(), `${bug.id}.index`);
+  }
+
   /** ###########################################################################
    * PrcaticeSession: events
    * ##########################################################################*/
@@ -540,7 +548,7 @@ export default class ProjectsManager {
    * Apply the newest patch from `BugProgress`
    * @param {Bug} bug
    */
-  async applyBugPatch(bug) {
+  async applyUserPatch(bug) {
     const patchString = this.bdp.getBugProgressByBug(bug)?.patch;
 
     if (patchString) {
@@ -606,7 +614,7 @@ export default class ProjectsManager {
 
     // apply stored patch
     try {
-      await this.applyBugPatch(bug);
+      await this.applyUserPatch(bug);
     } catch (err) {
       if (!err.applyFailedFlag) {
         // logError(err);

@@ -5,7 +5,7 @@ import { showInformationMessage, showWarningMessage } from '../../codeUtil/codeM
 import { emitTagTraceAction } from '../../userEvents';
 import { getCursorLocation } from '../../codeUtil/codeNav';
 import { codeLineToBabelLine } from '../../helpers/codeLocHelpers';
-import { isInCorrectWorkspace, openProjectWorkspace } from '../../codeUtil/workspaceUtil';
+import { askForOpenProjectWorkspace, isProjectFolderInWorkspace } from '../../codeUtil/workspaceUtil';
 
 /** @typedef {import('../projectViewsController').default} ProjectViewsController */
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
@@ -105,7 +105,7 @@ class OpenWorkspaceNode extends SessionNode {
 
   async doHandleClick() {
     const { project } = this.entry;
-    await openProjectWorkspace(project);
+    await askForOpenProjectWorkspace(project);
   }
 
   async showEntry() {
@@ -219,7 +219,7 @@ export function getActionNodeClasses(bug) {
   const { project } = bug;
   return [
     DetailNode,
-    isInCorrectWorkspace(project) ? ShowEntryNode : OpenWorkspaceNode,
+    isProjectFolderInWorkspace(project) ? ShowEntryNode : OpenWorkspaceNode,
     RunNode,
     RunWithoutDbuxNode,
     TagNode,
