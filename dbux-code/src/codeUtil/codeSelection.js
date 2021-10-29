@@ -1,6 +1,7 @@
+import { window } from 'vscode';
 import traceSelection from '@dbux/data/src/traceSelection';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import { goToTrace, getCursorLocation, getOrOpenTraceEditor } from './codeNav';
+import { goToTrace, getCursorLocation, getOrOpenTraceEditor, getTraceDocumentUri } from './codeNav';
 import codeDecorations, { CodeDecoRegistration } from '../codeDeco/codeDecorations';
 import { babelLocToCodeRange } from '../helpers/codeLocHelpers';
 
@@ -68,14 +69,23 @@ function handleCursorChanged() {
 // init
 // ###########################################################################
 
-export function initTraceSelection(/* context */) {
+export function initTraceSelection(context) {
   // show + goto trace if selected
   traceSelection.onTraceSelectionChanged((selectedTrace, sender) => {
     highlightTraceInEditor(selectedTrace);
-    // only highlight but not nav if user is using 'selectTraceAtCursor'
+    // do not nav if user is using 'selectTraceAtCursor'
     if (sender === 'selectTraceAtCursor') return;
     selectedTrace && goToTrace(selectedTrace);
   });
+
+
+  // active window changed
+  window.onDidChangeActiveTextEditor(editor => {
+    const trace = traceSelection.selected;
+    if (trace && editor && editor.document.uri.fsPath === getTraceDocumentUri(trace).fsPath) {
+      highlightTraceInEditor(trace);
+    }
+  }, null, context.subscriptions);
 
   // select trace when moving cursor in TextEditor
   // context.subscriptions.push(
