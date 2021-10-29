@@ -6,7 +6,7 @@ import differenceBy from 'lodash/differenceBy';
 import isEqual from 'lodash/isEqual';
 import NanoEvents from 'nanoevents';
 import sleep from '@dbux/common/src/util/sleep';
-import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
+import { pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import Enum from '@dbux/common/src/util/Enum';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
@@ -43,6 +43,22 @@ const { log, debug, warn, error: logError } = newLogger('EdgeAnalysis');
 
 function selectedModalBtn(selected, text) {
   return selected ? `(${text})` : `${text}`;
+}
+
+/**
+ * @param {Application} app 
+ * @param {[]} files 
+ */
+function fixFiles(app, files) {
+  const commonFolder = app.getCommonAncestorPath();
+  return Object.fromEntries(Object.entries(files)
+    .map(([key, val]) => {
+      if (!Array.isArray(val)) {
+        return [key, val];
+      }
+      return [key, val.map(f => pathRelative(commonFolder, f))];
+    })
+  );
 }
 
 /** ###########################################################################
@@ -257,7 +273,7 @@ class EdgeAnalysisController {
    * @returns {AppStats}
    */
   makeAppStats() {
-    const { dp } = this;
+    const { app, dp } = this;
     const allEdges = dp.collections.asyncEvents.getAllActual();
 
     // TODO: distinguish between initial and non-initial file executions
@@ -318,17 +334,27 @@ class EdgeAnalysisController {
     const nonFileOrphans = orphans
       .filter(an => !dp.util.isContextProgramContext(an.rootContextId));
 
-    // keep track of filtered data
+    // orphan count
+    edgeTypeCounts[ETC.O] = nonFileOrphans.length;
+
+
+    // keep track of file-related data
     const fileEdges = allEdges
       .filter(e => dp.util.isContextProgramContext(e.toRootContextId))
       // .map(e => dp.collections.executionContexts.getById(e.toRootContextId))
       .map(e => dp.util.getProgramContextFilePath(e.toRootContextId));
-    const fileNodes = allNodes
+    const fileRoots = allNodes
       .filter(an => dp.util.isContextProgramContext(an.rootContextId))
       .map(an => dp.util.getProgramContextFilePath(an.rootContextId));
-    const filesUnique = Array.from(new Set(fileEdges.concat(fileNodes)));
-
-    edgeTypeCounts[ETC.O] = nonFileOrphans.length;
+    const fileRootsUnique = Array.from(new Set(fileEdges.concat(fileRoots)));
+    // NOTE: files might not always be roots.
+    const allFiles = dp.collections.staticProgramContexts.getAllExisting()
+      .map(program => program.filePath);
+    const fileCount = allFiles.length;
+    const fileRootCount = fileRootsUnique.length;
+    const files = fixFiles(app, {
+      fileCount, fileRootCount, fileEdges, fileRoots, allFileRoots: fileRootsUnique, allFiles
+    });
 
     // take average
     edgeTypeCounts[ETC.N] = edgeTypeCounts[ETC.N] / edges.length;
@@ -342,7 +368,12 @@ class EdgeAnalysisController {
     //     dp.util.getAsyncNode(e.toRootContextId).syncPromiseIds
     //   ]));
 
-    return { traceCount, aeCounts, edgeTypeCounts, files: { fileEdges, fileNodes, unique: filesUnique } };
+    return {
+      traceCount,
+      aeCounts,
+      edgeTypeCounts,
+      files
+    };
   }
 
   /** ###########################################################################
@@ -438,12 +469,22 @@ class EdgeAnalysisController {
     const oldStats = data.appStats;
     const newStats = data.appStats = this.makeAppStats();
 
-    // appMeta
-    const oldMeta = data.appMeta;
     let newMeta;
-    if (!oldMeta) {
-      // NOTE: app meta includes expensive file hash - so we don't want to overdo it.
-      newMeta = data.appMeta = this.makeAppMeta();
+    if (forceWrite) {
+      /**
+       * handle appMeta
+       * NOTE: here, app (and thus hash) should already be that of the file.
+       *    If it does not exist, {@link #checkAppDataUpdate} will take care of it.
+       */
+      const oldMeta = data.appMeta;
+      if (oldMeta) {
+        if (!this.makeAndCheckAppHash(oldMeta)) {
+          throw new Error(`stored hash does not match application hash`);
+        }
+      }
+      else {
+        newMeta = data.appMeta = this.makeAppMeta();
+      }
     }
 
     if (forceWrite ||
@@ -492,6 +533,10 @@ class EdgeAnalysisController {
   initOnExpand() {
     // reset + lookup data root folder again
     this._data = null;
+
+    if (!this.app) {
+      return;
+    }
 
     if (this._lastAppUuid !== this.app.uuid) {
       this._lastAppUuid = this.app.uuid;
@@ -545,9 +590,23 @@ class EdgeAnalysisController {
     return hash;
   }
 
+  /**
+   * @param {AppMeta} oldMeta 
+   */
+  makeAndCheckAppHash(oldMeta) {
+    const hash = this.makeRelevantAppDataHash(this.app);
+    const check = oldMeta.appDataHash === hash;
+    return check;
+    // return {
+    //   hash,
+    //   check
+    // };
+  }
+
   makeAppMeta() {
     const { app } = this;
 
+    // future-work: consider not hashing twice (since we usually would check hash before calling this function)
     const appDataHash = this.makeRelevantAppDataHash(app);
 
     return {
@@ -573,17 +632,24 @@ class EdgeAnalysisController {
   checkAppDataUpdate = async () => {
     const applicationUpdateVersion = this._applicationUpdateVersion;
 
-    let previousAppMeta = this.getAppMeta();
+    let oldMeta = this.getAppMeta();
     const { app } = this;
     const zipFpath = this.research.getAppZipFilePath(app);
-    const newHash = this.makeRelevantAppDataHash(app);
+    const hasAppDataFile = existsSync(zipFpath);
 
-    if (!previousAppMeta || !existsSync(zipFpath) || newHash !== previousAppMeta.appDataHash) {
-      // if app data did not exist or has changed since last time, show modal
+    if (!oldMeta || !hasAppDataFile || !this.makeAndCheckAppHash(oldMeta)) {
+      // hash might have changed
 
-      // ask whether to save a backup of app data to separate lfs folder
-      const askMsg = `App data of "${this.experimentId}" has changed - Do you want to create a new backup?`;
-      if (!await confirm(askMsg, true, true)) {
+      let question;
+      if (!oldMeta && hasAppDataFile) {
+        // data file gone, but app data file still there
+        question = `App data file of "${this.experimentId}" is not hashed but it already exists. Override old app data file?`;
+      }
+      else {
+        // ask whether to save a backup of app data to separate lfs folder
+        question = `App data of "${this.experimentId}" has changed - Do you want to create a new backup?`;
+      }
+      if (!await confirm(question, true, true)) {
         return;
       }
 
@@ -607,7 +673,7 @@ class EdgeAnalysisController {
     }
     else {
       await showInformationMessage(
-        `App data has not changed since last update (${new Date(previousAppMeta.updatedAt)})`
+        `App data has not changed since last update (${new Date(oldMeta.updatedAt)})`
       );
     }
   }
@@ -723,10 +789,12 @@ class EdgeAnalysisController {
       await runTaskWithProgressBar(async (progress, cancelToken) => {
         for (const experimentId of missingExperiments) {
           try {
+            const message = `preparing "${experimentId}" data...`;
             progress.report({
-              message: `preparing "${experimentId}" data...`,
+              message,
               increment: progressIncrement
             });
+            debug(message);
             await this.prepareExperimentData(experimentId);
 
             if (cancelToken.isCancellationRequested) {
@@ -747,7 +815,7 @@ class EdgeAnalysisController {
   }
 
   async prepareExperimentData(experimentId) {
-    // unload application data
+    // clear/unload all
     allApplications.clear();
     await sleep(100); // wait for trace and application unselection events
 

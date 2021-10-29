@@ -2,8 +2,6 @@
 import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { existsSync, readFileSync } from 'fs';
-import sumBy from 'lodash/sumBy';
-import sum from 'lodash/sum';
 import mean from 'lodash/mean';
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import { newLogger } from '@dbux/common/src/log/logger';
@@ -13,34 +11,36 @@ import { EdgeStatus, ETC, getExperimentDataFilePath } from './edgeData';
 const { log, debug, warn, error: logError } = newLogger('edgeTable');
 
 
+function tableString(data) {
+  const rows = data.map(x => x.row);
+  // return `${headers}\n${rows.join('\n')}`;
+  return `${rows.join('\\\\\n')} \\\\\n`;
+}
+
 export function makeEdgeTable(folder, experimentIds) {
   // 
   // traces: number of recorded trace events. AEs: recorded AEs by type (await, then, cb). falseTls: false TLs by type (TODO(types)). tlRatio: $\frac{realTls}{totalTls}$
   // const headers = `name & traces & AEs & C & MC & F & S & N \\\\`;
-  const nameCount = new Map();
-  const all = experimentIds.map(experimentId => {
-    return tableRow(folder, experimentId, nameCount);
+  const nameCounts = new Map();
+  const unsorted = experimentIds.map(experimentId => {
+    return tableRow(folder, experimentId, nameCounts);
   });
+
+  // fix duplicate naming
+  fixNames(unsorted, nameCounts);
 
   // sort
-  sortRows(all);
+  const sorted = [...unsorted];
+  sortRows(sorted);
 
-  // add first column (fix duplicate naming)
-  const duplicateNames = new Set(nameCount.entries()
-    .filter(([, i]) => i > 1)
-    .map(([name]) => name)
-  );
-  all.forEach(r => {
-    const { iName, name } = r;
-    let label = duplicateNames.has(name) ? makeRowLabel(name, iName) : name;
-    r.row = label + r.row;
-  });
+  const allRaw = sorted.map(x => x.raw);
 
   // finish up
-  const rows = all.map(x => x.row);
-  const allRaw = all.map(x => x.raw);
-  // return `${headers}\n${rows.join('\n')}`;
-  return `${rows.join('\\\\\n')} \\\\\n\n\n% ${JSON.stringify(allRaw)}`;
+  return [
+    tableString(sorted),
+    tableString(unsorted),
+    `% ${JSON.stringify(allRaw)}`
+  ].join('\n\n\n\n');
 }
 
 
@@ -55,7 +55,7 @@ function tableRow(folder, experimentId, nameCount) {
     const s = readFileSync(fpath);
     const data = JSON.parse(s);
     const { appStats = {}/* , annotations = {} */ } = data;
-    let { traceCount, aeCounts, edgeTypeCounts } = appStats;
+    let { traceCount, aeCounts, edgeTypeCounts, files } = appStats;
 
     traceCount = traceCount.toLocaleString('en-us');
     aeCounts = [...aeCounts];
@@ -99,7 +99,7 @@ function tableRow(folder, experimentId, nameCount) {
     return {
       name,
       iName,
-      raw: { name, iName, traceCount/* , aeEdgeCount */, aeCounts, edgeTypeCounts },
+      raw: { name, iName, traceCount/* , aeEdgeCount */, aeCounts, edgeTypeCounts, files },
       /* & ${aeEdgeCount} */
       row: ` & ${traceCount} & ${aeCounts.join(' & ')} & ${edgeTypeCounts.join(' & ')} `
     };
@@ -123,7 +123,7 @@ const rts = {
   '2048': 5,
   'async-js': 2,
   'bluebird': 3,
-  'Editor.md': 21,
+  'Editor.md': 32,
   'express': 1,
   'hexo': 2,
   'node-fetch': 1,
@@ -158,6 +158,10 @@ const projectOrder = [
   'todomvc-es6',
 ];
 
+const nameMap = {
+  'todomvc-es6': 'todomvc'
+};
+
 /**
  * @param {[]} rows 
  */
@@ -166,7 +170,7 @@ function sortRows(rows) {
 
   // sanity checks
   rows.forEach(r => {
-    if (!sorter[r.name]) {
+    if (!(r.name in sorter)) {
       throw new Error(`projectOrder missing row name: ${r.name}`);
     }
   });
@@ -175,6 +179,22 @@ function sortRows(rows) {
   rows.sort((a, b) => sorter[a.name] - sorter[b.name]);
 }
 
+function fixNames(rows, nameCounts) {
+  // add first column (fix duplicate naming)
+  const duplicateNames = new Set(Array.from(nameCounts.entries())
+    .filter(([, i]) => i > 1)
+    .map(([name]) => name)
+  );
+  rows.forEach(r => {
+    const { iName, name } = r;
+    let label = duplicateNames.has(name) ? makeRowLabel(name, iName) : name;
+    r.row = label + r.row;
+  });
+}
+
+
+
 function makeRowLabel(name, i) {
+  name = nameMap[name] || name;
   return `${name}(${i + 1})`;
 }
