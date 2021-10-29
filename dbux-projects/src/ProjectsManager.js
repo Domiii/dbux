@@ -548,7 +548,7 @@ export default class ProjectsManager {
    * Apply the newest patch from `BugProgress`
    * @param {Bug} bug
    */
-  async applyBugPatch(bug) {
+  async applyUserPatch(bug) {
     const patchString = this.bdp.getBugProgressByBug(bug)?.patch;
 
     if (patchString) {
@@ -614,7 +614,7 @@ export default class ProjectsManager {
 
     // apply stored patch
     try {
-      await this.applyBugPatch(bug);
+      await this.applyUserPatch(bug);
     } catch (err) {
       if (!err.applyFailedFlag) {
         // logError(err);
