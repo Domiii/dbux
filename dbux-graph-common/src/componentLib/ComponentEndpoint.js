@@ -1,6 +1,7 @@
 import isPlainObject from 'lodash/isPlainObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import NestedError from '@dbux/common/src/NestedError';
 import isFunction from 'lodash/isFunction';
 import RemoteCommandProxy from './RemoteCommandProxy';
 
@@ -55,17 +56,23 @@ class ComponentEndpoint {
     }
 
     // run shared
-    const sharedResult = this.shared?.();
-    if (isPlainObject(sharedResult)) {
-      // store returned object in `this`
-      Object.assign(this, sharedResult);
+    try {
+      const sharedResult = this.shared?.();
+      if (isPlainObject(sharedResult)) {
+        // store returned object in `this`
+        Object.assign(this, sharedResult);
+      }
+
+      // assign context
+      this.context = Object.freeze({
+        ...(this.parent?.context || EmptyObject),
+        ...(this.context || EmptyObject)
+      });
     }
-    
-    // assign context
-    this.context = Object.freeze({
-      ...(this.parent?.context || EmptyObject),
-      ...(this.context || EmptyObject)
-    });
+    catch (err) {
+      throw new NestedError(`${this.debugTag} Failed to initialize shared context. ` +
+      `IMPORTANT: "shared" function is executed on host and client. Make sure to only reference symbols available on both.`, err);
+    }
   }
 
   _getComponentListByRoleName(role) {
@@ -144,7 +151,7 @@ class ComponentEndpoint {
 
   dispose(/* silent = false */) {
     this._isDisposed = true;
-    
+
     this._disposables.forEach((disp) => {
       if (isFunction(disp)) {
         disp();

@@ -1,4 +1,5 @@
 import get from 'lodash/get';
+import NestedError from '@dbux/common/src/NestedError';
 import { newPerfLogger } from '@dbux/common/src/log/PerfLogger';
 // import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import MessageType from './MessageType';
@@ -36,6 +37,10 @@ export default class Ipc {
     this.ipcAdapter = ipcAdapter;
     this.componentManager = componentManager;
     ipcAdapter.onMessage(this._handleMessageBatched);
+  }
+
+  get endpointName() {
+    return this.componentManager.endpointName;
   }
 
   // ###########################################################################
@@ -105,12 +110,13 @@ export default class Ipc {
       args
     } = message;
 
-    const info = 'Error when processing request - ';
+    const msg = new NestedError(`${this.endpointName} failed to process request "${commandName}"`, err).stack;
 
 
     // eslint-disable-next-line no-console
-    this.ipcAdapter.onError(info + commandName, args, err.stack);
-    this._sendReply('reject', callId, componentId, info + err.message);
+    this.ipcAdapter.onError(`[${commandName}]`, args, '\n\n', msg);
+    // this._sendReply('reject', callId, componentId, info + err.message);
+    this._sendReply('reject', callId, componentId, msg);
   }
 
   // ###########################################################################
@@ -198,7 +204,7 @@ export default class Ipc {
       call.resolve(decodedResult);
     }
     else {
-      call.reject(new Error(result));
+      call.reject(new Error(`${result}\n\n[${this.endpointName} handled error reply by remote]`));
     }
   }
 
@@ -234,16 +240,16 @@ export default class Ipc {
   }
 
 
-  _handleMessageBatched = (messageOrMessages) => {
+  _handleMessageBatched = async (messageOrMessages) => {
     if (Array.isArray(messageOrMessages)) {
       Verbose >= 1 && debugPerf('_handleMessageBatched [rcv]', messageOrMessages.length);
       for (const msg of messageOrMessages) {
-        this._handleMessage(msg);
+        await this._handleMessage(msg);
       }
     }
     else {
       Verbose >= 1 && debug('_handleMessageBatched [rcv]', 1, `(type: ${messageOrMessages.messageType})`);
-      this._handleMessage(messageOrMessages);
+      await this._handleMessage(messageOrMessages);
     }
   }
 
@@ -270,7 +276,7 @@ export default class Ipc {
       logError('Could not handle message. Unregistered messageType - ' + messageType);
     }
 
-    handler.call(this, msg);
+    await handler.call(this, msg);
   }
 
   // ###########################################################################
@@ -288,18 +294,18 @@ export default class Ipc {
     //   th
     // },
 
-    async [MessageType.Request](message) {
+    [MessageType.Request](message) {
       // new request from remote
-      this._processRequest(message);
+      return this._processRequest(message);
     },
 
     [MessageType.Reply](message) {
       // received reply to our own request
-      this._processReply(message);
+      return this._processReply(message);
     },
 
     [MessageType.Ping](/* message */) {
-      this.componentManager.handlePing();
+      return this.componentManager.handlePing();
     }
   }
 }

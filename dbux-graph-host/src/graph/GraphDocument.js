@@ -5,6 +5,9 @@ import GraphType, { nextGraphType } from '@dbux/graph-common/src/shared/GraphTyp
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
+// const screenshotMode = true;
+const screenshotMode = false;
+
 class GraphDocument extends HostComponentEndpoint {
   init() {
     this._emitter = new NanoEvents();
@@ -118,7 +121,7 @@ class GraphDocument extends HostComponentEndpoint {
   }
 
   // ###########################################################################
-  // state + context
+  // initial state + context
   // ###########################################################################
 
   makeInitialState() {
@@ -130,7 +133,8 @@ class GraphDocument extends HostComponentEndpoint {
     };
     return {
       themeMode,
-      contextNodeIconUris
+      contextNodeIconUris,
+      screenshotMode
     };
   }
 
@@ -140,7 +144,7 @@ class GraphDocument extends HostComponentEndpoint {
         graphDocument: this,
         themeMode: this.state.themeMode,
         contextNodeIconUris: this.state.contextNodeIconUris,
-        researchMode: true, // Manually change this
+        screenshotMode: this.state.screenshotMode
       }
     };
   }

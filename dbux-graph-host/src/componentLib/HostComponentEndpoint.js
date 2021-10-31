@@ -4,6 +4,7 @@ import sleep from '@dbux/common/src/util/sleep';
 import ComponentEndpoint from '@dbux/graph-common/src/componentLib/ComponentEndpoint';
 import NanoEvents from 'nanoevents';
 import HostComponentList from './HostComponentList';
+import NestedError from '@dbux/common/src/NestedError';
 
 // const Verbose = true;
 const Verbose = false;
@@ -146,7 +147,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
       Promise.resolve().
         then(this._doInitClient.bind(this)).
         catch(err => {
-          this.logger.error('error when initializing client\n  ', err);
+          this.logger.error('Failed to initialize client\n  ', err);
           return null;
         }).
         finally(() => {
@@ -170,7 +171,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
       this.update();                                      // 2. host: update
     }
     catch (err) {
-      this.logger.error('init or initial update failed on host\n  ', err);
+      throw new NestedError(`${this.debugTag} init or initial update failed on host.`, err);
     }
     finally {
       this._waitingForUpdate = false;

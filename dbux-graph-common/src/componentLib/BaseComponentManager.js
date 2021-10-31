@@ -15,10 +15,14 @@ class BaseComponentManager {
   app;
 
   constructor(componentRegistry, ipcAdapter) {
-    this.ipc = new Ipc(ipcAdapter, this);
+    this.ipc = new Ipc(ipcAdapter, this, this.endpointName);
 
     // component registry
     this.initComponentRegistry(componentRegistry);
+  }
+
+  get endpointName() {
+    throw new Error(`Abstract getter not implemented`);
   }
 
   hasStarted() {

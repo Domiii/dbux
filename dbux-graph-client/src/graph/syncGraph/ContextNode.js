@@ -76,11 +76,11 @@ class ContextNode extends ClientComponentEndpoint {
       isRoot,
     } = this.state;
 
-    const { themeMode, researchMode } = this.context;
+    const { themeMode, screenshotMode } = this.context;
     const moduleLabel = moduleName ? `${moduleName} | ` : '';
 
     this.el.id = `application_${applicationId}-context_${contextId}`;
-    this.el.style.background = getStaticContextColor(themeMode, realStaticContextid, { bland: !!moduleName, researchMode });
+    this.el.style.background = getStaticContextColor(themeMode, realStaticContextid, { bland: !!moduleName, screenshotMode });
     this.els.contextLabel.textContent = contextLabel;
     this.els.locLabel.textContent = contextLocLabel && ` @ ${moduleLabel}${contextLocLabel}` || '';
     this.els.callLabel.textContent = callerTracelabel || '';

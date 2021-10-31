@@ -131,9 +131,9 @@ class AsyncGraph extends GraphBase {
       nestingDepth,
     } = nodeData;
 
-    const { themeMode, researchMode, graphDocument } = this.context;
+    const { themeMode, screenshotMode, graphDocument } = this.context;
     const { asyncDetailMode } = graphDocument.state;
-    const highContractMode = researchMode && !asyncDetailMode;
+    const highContractMode = screenshotMode && !asyncDetailMode;
 
     // const moduleLabel = moduleName ? `${moduleName} | ` : '';
 
@@ -156,7 +156,7 @@ class AsyncGraph extends GraphBase {
         shortLabel = '⬤';
         break;
     }
-    if (this.context.researchMode) {
+    if (this.context.screenshotMode) {
       shortLabel = '';
       fullLabel = '';
     }

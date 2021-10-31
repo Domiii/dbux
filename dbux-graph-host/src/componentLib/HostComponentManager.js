@@ -6,6 +6,8 @@ import HostComponentEndpoint from './HostComponentEndpoint';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-graph-host/HostComponentManager');
 
+const EndpointName = 'Host';
+
 class AppComponent extends HostComponentEndpoint {
   _publicInternal = {
     logClientError(args) {
@@ -30,7 +32,7 @@ class AppComponent extends HostComponentEndpoint {
   };
 }
 
-// TODO: create externals proxy?
+// future-work: create externals proxy, to better deal with missing externals
 const usedExternals = [
   'restart', 'logClientError', 'confirm', 'prompt', 'goToTrace'
 ];
@@ -42,6 +44,10 @@ class HostComponentManager extends BaseComponentManager {
     this.externals = externals;
     this._initCount = 0;
     this._emitter = new NanoEvents();
+  }
+
+  get endpointName() {
+    return EndpointName;
   }
 
   start() {

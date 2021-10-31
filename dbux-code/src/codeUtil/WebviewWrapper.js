@@ -145,7 +145,7 @@ export default class WebviewWrapper {
               await cb(...args);
             }
             catch (err) {
-              this.logger.error('Error processing message from Client', err);
+              this.logger.error('Failed when processing Client message.\n\n', err);
             }
           },
           null,

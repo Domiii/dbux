@@ -6,6 +6,8 @@ import initLang from '../lang';
 // import shared styles
 import '../styles.css';
 
+const EndpointName = 'Client';
+
 // ###########################################################################
 // ClientApp
 // ###########################################################################
@@ -89,6 +91,10 @@ class ClientComponentManager extends BaseComponentManager {
     super(componentRegistry, ipcAdapter);
     
     ClientComponentManager.instance = this;
+  }
+
+  get endpointName() {
+    return EndpointName;
   }
 
   getComponentClassByName(name) {

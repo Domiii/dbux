@@ -14,7 +14,7 @@ class GraphDocument extends ClientComponentEndpoint {
 
   setupEl() {
     decorateClasses(this.el, {
-      'research-mode': !!this.context.researchMode
+      'research-mode': !!this.context.screenshotMode
     });
   }
 
