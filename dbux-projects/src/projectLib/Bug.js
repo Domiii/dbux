@@ -26,8 +26,9 @@ export default class Bug {
 
   /**
    * Not used too much.
-   * If given, we used this to opens the first of these files in editor.
+   * If given, we used this to open the first of these files in editor.
    * But that is now replaced by `mainEntryPoint`
+   * @type {[]?}
    */
   testFilePaths;
 
@@ -147,7 +148,7 @@ export default class Bug {
 
     return expandedBugLocations.some(t => {
       return isEqual({
-        fileName: path.join(projectPath, t.fileName || t.file),
+        fileName: pathResolve(projectPath, t.fileName || t.file),
         line: t.line,
       }, loc);
     });

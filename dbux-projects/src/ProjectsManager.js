@@ -338,22 +338,22 @@ export default class ProjectsManager {
 
     allApplications.clear();    // clear applications
 
-    const recoverData = await this.askForRecoverPracticeSession(savedPracticeSession, { experimentId });
+    const recoverData = await this.askForRecoverPracticeSession(experimentId, savedPracticeSession);
     if (!recoverData) {
       // await bug.project.deactivateBug(bug);
       return false;
     }
 
-    const [/* recoverPracticeData */, recoverResearchData] = recoverData;
+    const [shouldImportPracticeSession, shouldImportResearchData] = recoverData;
 
     try {
       await this.switchToBug(bug);
 
-      if (recoverResearchData) {
+      if (shouldImportResearchData) {
         this.research.importResearchAppData(experimentId);
         this._loadPracticeSession(bug/* , savedPracticeSession, true */);
       }
-      else {
+      else if (shouldImportPracticeSession) {
         this._loadPracticeSession(bug, savedPracticeSession, true);
         this.practiceSession.setupStopwatch();
       }
@@ -383,7 +383,7 @@ export default class ProjectsManager {
     }
   }
 
-  async askForRecoverPracticeSession(practiceSessionData, researchSessionData) {
+  async askForRecoverPracticeSession(experimentId, practiceSessionData) {
     function sizeMessage(prefix, size) {
       if (!size) {
         return '';
@@ -393,8 +393,8 @@ export default class ProjectsManager {
     }
     try {
       // research
-      const { experimentId } = researchSessionData || EmptyObject;
-      const researchSize = experimentId && this.research.getAppFileSize(experimentId);
+      const researchEnabled = process.env.RESEARCH;
+      const researchSize = researchEnabled && experimentId && this.research.getAppFileSize(experimentId);
 
       // Dbux Practice
       const { logFilePath, applicationUUIDs } = practiceSessionData || EmptyObject;
@@ -413,8 +413,8 @@ export default class ProjectsManager {
         sizeMessage('Research', researchSize) +
         `\nDo you want to load a previous session?`;
       const buttons = {
-        ...practiceSize && { [`Load Practice Session`]: () => [practiceSessionData, null] } || EmptyObject,
-        ...researchSize && { [`Load Research Session`]: () => [null, researchSessionData] } || EmptyObject,
+        ...practiceSize && { [`Load Practice Session`]: () => [true, false] } || EmptyObject,
+        ...researchSize && { [`Load Research Session`]: () => [false, true] } || EmptyObject,
         [`Ignore (don't ask again)`]: async () => {
           // log should be discarded and the user should not be asked again
           await this.savePracticeSession(null);

@@ -3,27 +3,20 @@ import WebpackBuilder from '../../buildTools/WebpackBuilder';
 import Project from '../../projectLib/Project';
 
 
+// TODO: unfinished
+
 export default class ReactProject extends Project {
   gitRemote = 'facebook/react';
   gitCommit = 'tags/v17.0.2';
 
-  rmFiles = [
-    'webpack.config.js',
-    'package.json',
-    '.babelrc'
-  ];
-
-  entry = {
-    app: './bootstrap.js',
-    vendor: ['todomvc-app-css/index.css'],
-  };
-
-  watchFilePaths = ['app.js'];
 
   makeBuilder() {
     return new WebpackBuilder({
-      websitePort: 3842,
-      rootPath: 'src',
+      entry: {
+        app: './bootstrap.js',
+        vendor: ['todomvc-app-css/index.css'],
+      },
+      websitePort: 3842
     });
   }
 
@@ -50,9 +43,6 @@ export default class ReactProject extends Project {
   }
 
   decorateBugForRun(bug) {
-    bug.testFilePaths = ['app.js'];
-    // bug.runFilePaths = bug.testFilePaths;
-    bug.watchFilePaths = bug.testFilePaths.map(file => path.join(this.projectPath, 'dist', file));
     bug.website = 'http://localhost:3842/';
   }
 

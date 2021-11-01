@@ -12,18 +12,18 @@ export class WebpackOptions {
   websitePort;
 
   /**
-   * Path relative to `projectPath`.
-   * Used only to resolve `entryPattern` (if given).
-   * @type {string}
-   */
-  rootPath;
-
-  /**
+   * NOTE: this can be many things.
+   * 1. a single pattern string, where all matching files will be added to `entry` individually,
+   * 2. an array of pattern strings,
+   * 3. that array can also include [parent, pattern] arrays, where the file is in the `parent` folder,
+   *    but `parent` is excluded from its entry key (which is the output file path).
+   *
    * Is used by {@link WebpackBuilder#getEntry}.
-   * @type {string}
+   * 
+   * @type {Array.<Array.<string> | string> | string}
    */
   entryPattern;
-
+  
   entry;
 
   watchFilePaths;
@@ -68,6 +68,10 @@ class WebpackBuilder {
     return false;
   }
 
+  get mainEntryPoint() {
+    return this.cfg.mainEntryPoint;
+  }
+
   async afterInstall() {
     const shared = false; // <- don't share for now (since it messes with Dbux's own dependencies)
     const deps = {
@@ -110,11 +114,15 @@ class WebpackBuilder {
       }
 
       entryPatterns = Array.isArray(entryPatterns) ? entryPatterns : [entryPatterns];
-      const root = await this.getContext(bug);
+      const contextRoot = await this.getContext(bug);
       entry = Object.fromEntries(
         entryPatterns.flatMap(pattern => {
-          if (!Array.isArray(pattern)) {
-            pattern = ['', pattern];
+          let parent;
+          if (Array.isArray(pattern)) {
+            [parent, pattern] = pattern;
+          }
+          else {
+            parent = '';
             // const startIdx = pattern.indexOf('*');
             // if (startIdx < 0) {
             //   throw new Error(`"${bug.id}" - invalid entryPattern is missing wildcard (*)`);
@@ -128,10 +136,9 @@ class WebpackBuilder {
             //   pattern = [pattern.substring(0, parentIdx), pattern.substring(parentIdx + 1)];
             // }
           }
-          const [parent, childPattern] = pattern;
-          const entryRoot = pathResolve(root, parent);
+          const entryRoot = pathResolve(contextRoot, parent);
           return glob
-            .sync(pathResolve(entryRoot, childPattern))
+            .sync(pathResolve(entryRoot, pattern))
             .map(fpath => [
               fileWithoutExt(pathRelative(entryRoot, fpath)),
               fpath
@@ -154,6 +161,7 @@ class WebpackBuilder {
       project: { projectPath }
     } = this;
 
+    // no explicit watch files -> select all entry keys by default
     const entry = await this.getEntry(bug);
     return Object.keys(entry)
       .map(file => path.resolve(projectPath, 'dist', file + '.js'));
@@ -190,7 +198,6 @@ class WebpackBuilder {
     // prepare entry
     await this.getEntry(bug, true);
 
-    // bug.runFilePaths = bug.testFilePaths;
     bug.watchFilePaths = await this.getWatchPaths(bug);
 
     if (websitePort) {

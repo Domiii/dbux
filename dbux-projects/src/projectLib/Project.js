@@ -1154,7 +1154,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
           testRe,
           testFilePaths
         } = bug;
-        bug.description = description || testRe || testFilePaths[0] || '';
+        bug.description = description || testRe || testFilePaths?.[0] || '';
 
         this.setupBug(bug);
       });
