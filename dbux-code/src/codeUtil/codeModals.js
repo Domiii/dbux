@@ -2,6 +2,10 @@ import {
   window
 } from 'vscode';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import { newLogger } from '@dbux/common/src/log/logger';
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('Notifications');
 
 /**
  * @example Render a modal with one button "Open Editor":
@@ -21,7 +25,9 @@ export async function showInformationMessage(message, btnConfig, messageCfg = Em
     // for some reason, on MAC, modal buttons are reversed :(
     buttons.reverse();
   }
-  const result = await window.showInformationMessage(`[Dbux] ${message}`, messageCfg, ...buttons);
+  message = `[Dbux] ${message}`;
+  debug(message);
+  const result = await window.showInformationMessage(message, messageCfg, ...buttons);
   if (result === undefined) {
     return await cancelCallback?.();
   }
@@ -31,7 +37,9 @@ export async function showInformationMessage(message, btnConfig, messageCfg = Em
 
 export async function showWarningMessage(message, btnConfig, messageCfg = EmptyObject, cancelCallback) {
   btnConfig = btnConfig || EmptyObject;
-  const result = await window.showWarningMessage(`[Dbux] ${message}`, messageCfg, ...Object.keys(btnConfig || EmptyObject));
+  message = `[Dbux] ${message}`;
+  warn(message);
+  const result = await window.showWarningMessage(message, messageCfg, ...Object.keys(btnConfig || EmptyObject));
   if (result === undefined) {
     await cancelCallback?.();
     return null;
@@ -44,6 +52,10 @@ export async function showErrorMessage(message, btnConfig, messageCfg = EmptyObj
   btnConfig = btnConfig || EmptyObject;
   const prefix = moreConfig.noPrefix ? '' : '[Dbux] ';
   btnConfig = btnConfig || EmptyObject;
+
+  // IMPORTANT: don't log explicitely, since that is already hooked up to call this instead!
+  //    -> if we called logError(), we would get an inf loop.
+
   const result = await window.showErrorMessage(`${prefix}${message}`, messageCfg, ...Object.keys(btnConfig));
   const cbResult = await btnConfig[result]?.();
   return cbResult === undefined ? null : cbResult;

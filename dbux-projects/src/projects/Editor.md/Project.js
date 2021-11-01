@@ -16,7 +16,7 @@ console.warn(`cmUnbindScroll ${__dbux__._r._runtime.peekCurrentContextId()}`);
  * 
  * future-work: integrate html-loader with dbux-project webpack build process.
  * 
- * @see https://github.com/pandao/editor.md/blob/master/examples/full.html
+ * @see https://github.com/pandao/editor.md/blob/masterexamples/full.html
  */
 export default class EditorMdProject extends Project {
   gitRemote = 'pandao/editor.md.git';
@@ -50,8 +50,8 @@ export default class EditorMdProject extends Project {
          * future-work: use `html-loader` to automatically transform the html file instead
          * @see https://webpack.js.org/loaders/html-loader/
          */
-        websitePath: '/dbux-examples/full.html',
-        // websitePath: '/examples/full.html'
+        websitePath: 'dbux-examples/full.html',
+        // websitePath: 'examples/full.html'
         // bugLocations: [
         //   {
         //     file: 'src/controller.js',
@@ -68,8 +68,8 @@ export default class EditorMdProject extends Project {
          * future-work: use `html-loader` to automatically transform the html file instead
          * @see https://webpack.js.org/loaders/html-loader/
          */
-        websitePath: '/dbux-examples/full.html',
-        // websitePath: '/examples/full.html'
+        websitePath: 'dbux-examples/full.html',
+        // websitePath: 'examples/full.html'
         // bugLocations: [
         //   {
         //     file: 'src/controller.js',

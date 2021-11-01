@@ -6,7 +6,8 @@ import Project from '../../projectLib/Project';
 
 export default class TodomvcEs6Project extends Project {
   gitRemote = 'real-world-debugging/todomvc-es6';
-  gitCommit = 'fed8e56';
+  gitTargetRef = 'v1';
+  // gitCommit = 'fed8e56';
 
   rmFiles = [
     'package.json'
@@ -21,7 +22,6 @@ export default class TodomvcEs6Project extends Project {
   }
 
   makeBuilder() {
-    // TODO: re-write this
     return new WebpackBuilder({
       websitePort: 3842,
       entry: {
@@ -227,11 +227,11 @@ export default class TodomvcEs6Project extends Project {
    * @param {Bug} bug 
    */
   decorateBugForRun(bug) {
+    // fix relative file paths
     bug.mainEntryPoint = this.getRelativeFilePath('src/app.js');
     if (bug.bugLocations) {
       bug.bugLocations = bug.bugLocations.map(l => this.getRelativeFilePath(l.file));
     }
-    bug.website = 'http://localhost:3842/';
   }
 
   async testBugCommand(bug, cfg) {

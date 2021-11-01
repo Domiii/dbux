@@ -62,7 +62,7 @@ export default class ProjectNode extends BaseTreeViewNode {
   async cleanUp() {
     const confirmMessage = `How do you want to clean up the project: ${this.project.name}?`;
     const btnConfig = {
-      "Flush Cache": async () => {
+      "Flush Cache Only": async () => {
         await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
           progress.report({ message: 'deleting project folder...' });
           await this.project.deleteCacheFolder();
@@ -75,10 +75,11 @@ export default class ProjectNode extends BaseTreeViewNode {
         showInformationMessage('Cache flushed successfully.');
       },
       "Clear Log Files": async () => {
+        // TODO: better explain this
         await this.project.clearLog();
         showInformationMessage('Log files removed successfully.');
       },
-      "Delete Project": async () => {
+      "Delete Project (+ Cache)": async () => {
         const success = await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
           progress.report({ message: 'deleting project folder...' });
 
