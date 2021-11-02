@@ -6,10 +6,8 @@ set -e # cancel on error
 # set -x # verbose echo mode
 
 # fname="__samplesInput__/async/promisify5-no-root"
-fname="__samplesInput__/defineProperty3-setter"
-# fname="case-studies/async/chain/chain7-indirect-promise-nesting"
-# fname="case-studies/async/"
-# fname="case-studies/async/producer_consumer/producer_consumer_promise"
+# fname="__samplesInput__/defineProperty3-setter"
+fname="case-studies/async/Promise.all2-fail1"
 
 
 

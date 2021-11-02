@@ -662,12 +662,6 @@ class EdgeAnalysisController {
 
       await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
         progress.report({ message: 'writing backup file...' });
-
-        // NOTE: we need this sleep because:
-        //     (1) the operation is synchronous, and
-        //     (2) progress bar does not get to start rendering if we don't give it a few extra ticks
-        await sleep();
-
         await this.writeApplicationDataBackup();
       });
     }
@@ -766,7 +760,6 @@ class EdgeAnalysisController {
    * ##########################################################################*/
 
   async makeTable() {
-    await sleep(); // give control back to caller, to allow for progress bars to show
     const { research } = this;
 
     const folder = research.getExperimentRoot();

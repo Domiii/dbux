@@ -55,7 +55,6 @@ export function initUserCommands(extensionContext) {
 
     await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
       progress.report({ message: 'exporting...' });
-      await sleep();
       application && await exportApplication(application, exportFpath);
     });
 
@@ -89,7 +88,6 @@ export function initUserCommands(extensionContext) {
 
       await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
         progress.report({ message: 'importing...' });
-        await sleep();
         await importApplication(file.fsPath);
       });
     }

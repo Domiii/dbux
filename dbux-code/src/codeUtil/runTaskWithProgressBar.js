@@ -4,6 +4,7 @@ import {
 } from 'vscode';
 import defaultsDeep from 'lodash/defaultsDeep';
 import { newLogger } from '@dbux/common/src/log/logger';
+import sleep from '@dbux/common/src/util/sleep';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -33,5 +34,11 @@ export async function runTaskWithProgressBar(cb, options) {
   });
   options.title = `[Dbux] ${options.title}`;
 
-  return await window.withProgress(options, cb);
+  return await window.withProgress(options, async (...args) => {
+    // NOTE: we need this sleep in case `cb` starts off with a long-running synchronous operation:
+    //     progress bar does not start rendering if we don't give control back to it first.
+    await sleep();
+
+    await cb?.(...args);
+  });
 }
