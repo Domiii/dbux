@@ -288,9 +288,9 @@ export class ProjectViewController {
       maybeCreateWorkspaceFile(project);
       await Promise.all([
         mementoSet(ActivatingBugKeyName, bug.id),
-        mementoSet(this.getLastWorkspaceKeyName(bug), workspace.workspaceFile.fsPath)
+        mementoSet(this.getLastWorkspaceKeyName(bug), defaultProjectWorkspacePath)
       ]);
-      await commands.executeCommand('vscode.openFolder', Uri.file(getDefaultWorkspaceFilePath(project)));
+      await commands.executeCommand('vscode.openFolder', Uri.file(defaultProjectWorkspacePath));
       return true;
     };
     const lastWorkspacePath = mementoGet(this.getLastWorkspaceKeyName(bug));
