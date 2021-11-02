@@ -65,7 +65,7 @@ export default class ProjectNode extends BaseTreeViewNode {
       "Flush Cache": async () => {
         await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
           progress.report({ message: 'deleting project folder...' });
-          await this.project.deleteCacheFolder();
+          this.project.deleteCacheFolder();
         }, {
           cancellable: false,
           title: this.project.name,
