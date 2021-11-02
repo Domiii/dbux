@@ -1,4 +1,5 @@
 import { commands, window, Uri, workspace } from 'vscode';
+import fs from 'fs';
 import { newLogger, addOutputStreams } from '@dbux/common/src/log/logger';
 import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
 import ProjectNodeProvider from './practiceView/ProjectNodeProvider';
@@ -8,16 +9,17 @@ import OutputChannel from './OutputChannel';
 import { getStopwatch } from './practiceStopwatch';
 import { getProjectManager } from './projectControl';
 import { initProjectCommands } from '../commands/projectCommands';
-import { get as mementoGet, set as mementoSet } from '../memento';
+import { set as mementoSet, get as mementoGet, remove as mementoRemove } from '../memento';
 import { showInformationMessage } from '../codeUtil/codeModals';
 import { initCodeEvents } from '../practice/codeEvents';
 import { translate } from '../lang';
 import { getLogsDirectory } from '../codeUtil/codePath';
-import { askForOpenProjectWorkspace, isProjectFolderInWorkspace } from '../codeUtil/workspaceUtil';
+import { addProjectFolderToWorkspace, getDefaultWorkspaceFilePath, isProjectFolderInWorkspace, maybeCreateWorkspaceFile } from '../codeUtil/workspaceUtil';
 
 /** @typedef {import('./practiceView/BugNode').default} BugNode */
 
-const showProjectViewKeyName = 'dbux.projectView.showing';
+const ShowProjectViewKeyName = 'dbux.projectView.showing';
+const ActivatingBugKeyName = 'dbux.projectView.activatingBug';
 
 // ########################################
 //  setup logger for project
@@ -48,7 +50,7 @@ export class ProjectViewController {
     // ########################################
     //  init treeView
     // ########################################
-    this.isShowingTreeView = mementoGet(showProjectViewKeyName, true);
+    this.isShowingTreeView = mementoGet(ShowProjectViewKeyName, true);
     commands.executeCommand('setContext', 'dbux.context.showPracticeViews', this.isShowingTreeView);
     commands.executeCommand('setContext', 'dbux.context.hasPracticeSession', !!this.manager.practiceSession);
 
@@ -118,6 +120,24 @@ export class ProjectViewController {
     }
   }
 
+  async initProject() {
+    await runTaskWithProgressBar(async (progress) => {
+      progress.report({ message: 'Initializing dbux-project...' });
+      await this.manager.init();
+
+      progress.report({ message: 'Recovering practice session...' });
+      const previousActivatingBugId = mementoGet(ActivatingBugKeyName);
+      const previousActivatingBug = this.manager.getOrCreateDefaultProjectList().getBugById(previousActivatingBugId);
+      if (previousActivatingBug) {
+        await mementoRemove(ActivatingBugKeyName);
+        await this.startPractice(previousActivatingBug);
+      }
+      else if (await this.manager.tryRecoverPracticeSession()) {
+        // projectManager.maybeAskForTestBug(projectManager.activeBug);
+      }
+    }, { cancellable: false });
+  }
+
   // ###########################################################################
   // toggleTreeView
   // ###########################################################################
@@ -134,7 +154,7 @@ export class ProjectViewController {
       await commands.executeCommand('setContext', 'dbux.context.hasPracticeSession', !!this.manager.practiceSession);
     }
     await commands.executeCommand('setContext', 'dbux.context.showPracticeViews', this.isShowingTreeView);
-    await mementoSet(showProjectViewKeyName, this.isShowingTreeView);
+    await mementoSet(ShowProjectViewKeyName, this.isShowingTreeView);
     this.refresh();
   }
 
@@ -153,22 +173,20 @@ export class ProjectViewController {
   // ###########################################################################
 
   /**
-   * @param {BugNode} bugNode 
+   * @param {Bug} bug 
    */
-  async startPractice(bugNode) {
+  async startPractice(bug) {
     if (this.manager.practiceSession) {
       if (!await this.confirmCancelPracticeSession()) {
         return;
       }
     }
 
-    const { bug, projectNode: { project } } = bugNode;
+    const { project } = bug;
     const title = `Bug ${`"${bug.label}"` || ''} (${bug.id})`;
     await this.runProjectTask(title, async (report) => {
-      if (!isProjectFolderInWorkspace(project)) {
-        if (!await askForOpenProjectWorkspace(project)) {
-          return;
-        }
+      if (!await this.maybeAskForOpenProjectWorkspace(project, bug)) {
+        return;
       }
 
       // TOTRANSLATE
@@ -228,6 +246,65 @@ export class ProjectViewController {
 
   async confirmCancelPracticeSession() {
     return await this.manager.stopPractice();
+  }
+
+  /** ###########################################################################
+   * lastWorkspacePath
+   *  #########################################################################*/
+
+  getLastWorkspaceKeyName(bug) {
+    return `dbux.lastWorkspacePath.${bug.id}`;
+  }
+
+  /** ###########################################################################
+   * util
+   *  #########################################################################*/
+
+  /**
+   * @param {Project} project 
+   * @param {Bug} bug 
+   * @returns {Promise<boolean>}
+   */
+  async maybeAskForOpenProjectWorkspace(project, bug) {
+    if (isProjectFolderInWorkspace(project)) {
+      return true;
+    }
+
+    const message = `Project "${project.name}" is currently not in your workspace (which makes it harder to work with it).`;
+
+    const buttons = {};
+    if (workspace.workspaceFolders !== undefined) {
+      buttons["Add to current workspace"] = async () => {
+        addProjectFolderToWorkspace(project);
+        await mementoSet(this.getLastWorkspaceKeyName(bug), workspace.workspaceFile?.fsPath);
+        return true;
+      };
+    }
+    const defaultProjectWorkspacePath = getDefaultWorkspaceFilePath(project);
+    const openDefaultWorkspaceLabel = fs.existsSync(defaultProjectWorkspacePath) ?
+      "Create + open new workspace for project" :
+      "Open new workspace for project";
+    buttons[openDefaultWorkspaceLabel] = async () => {
+      maybeCreateWorkspaceFile(project);
+      await Promise.all([
+        mementoSet(ActivatingBugKeyName, bug.id),
+        mementoSet(this.getLastWorkspaceKeyName(bug), workspace.workspaceFile.fsPath)
+      ]);
+      await commands.executeCommand('vscode.openFolder', Uri.file(getDefaultWorkspaceFilePath(project)));
+      return true;
+    };
+    const lastWorkspacePath = mementoGet(this.getLastWorkspaceKeyName(bug));
+    if (lastWorkspacePath && fs.existsSync(lastWorkspacePath) && lastWorkspacePath !== workspace.workspaceFile?.fsPath) {
+      buttons["Open last workspace"] = async () => {
+        await mementoSet(ActivatingBugKeyName, bug.id);
+        await commands.executeCommand('vscode.openFolder', Uri.file(lastWorkspacePath));
+      };
+    }
+    buttons.Continue = () => {
+      return true;
+    };
+    const result = await showInformationMessage(message, buttons, { modal: true });
+    return result;
   }
 }
 
