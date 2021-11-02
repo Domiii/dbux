@@ -282,8 +282,8 @@ export class ProjectViewController {
     }
     const defaultProjectWorkspacePath = getDefaultWorkspaceFilePath(project);
     const openDefaultWorkspaceLabel = fs.existsSync(defaultProjectWorkspacePath) ?
-      "Create + open new workspace for project" :
-      "Open new workspace for project";
+      "Open new workspace for project" :
+      "Create + open new workspace for project";
     buttons[openDefaultWorkspaceLabel] = async () => {
       maybeCreateWorkspaceFile(project);
       await Promise.all([
