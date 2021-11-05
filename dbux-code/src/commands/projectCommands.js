@@ -39,8 +39,8 @@ export function initProjectCommands(extensionContext, projectViewController) {
     return projectViewController.manager.runner.cancel();
   });
 
-  registerCommand(extensionContext, 'dbuxProjectView.node.startPractice', (node) => {
-    return projectViewController.startPractice(node);
+  registerCommand(extensionContext, 'dbuxProjectView.node.startPractice', (bugNode) => {
+    return projectViewController.startPractice(bugNode.bug);
   });
 
   registerCommand(extensionContext, 'dbux.loadPracticeLogFile', async () => {

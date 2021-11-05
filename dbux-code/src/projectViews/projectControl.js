@@ -1,8 +1,7 @@
 import { env, Uri } from 'vscode';
 import path from 'path';
 import { newLogger } from '@dbux/common/src/log/logger';
-import sleep from '@dbux/common/src/util/sleep';
-import { pathJoin, pathNormalized, pathNormalizedForce } from '@dbux/common-node/src/util/pathUtil';
+import { pathJoin, pathNormalizedForce } from '@dbux/common-node/src/util/pathUtil';
 import { initDbuxProjects } from '@dbux/projects/src';
 import Process from '@dbux/projects/src/util/Process';
 import { showWarningMessage, showInformationMessage, confirm } from '../codeUtil/codeModals';
@@ -16,7 +15,6 @@ import { showBugIntroduction } from './BugIntroduction';
 import { getStopwatch } from './practiceStopwatch';
 import { initUserEvent } from '../userEvents';
 import { initRuntimeServer } from '../net/SocketServer';
-import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import { getCurrentResearch } from '../research/Research';
 
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
@@ -129,17 +127,4 @@ export function createProjectManager(extensionContext) {
   initUserEvent(projectManager);
 
   return projectManager;
-}
-
-export async function initProjectManager() {
-  // await sleep(3000);    // give debugger time to attach
-
-  await runTaskWithProgressBar(async (progress) => {
-    progress.report({ message: 'Initializing dbux-project...' });
-    await projectManager.init();
-    progress.report({ message: 'Recovering practice session...' });
-    if (await projectManager.tryRecoverPracticeSession()) {
-      // projectManager.maybeAskForTestBug(projectManager.activeBug);
-    }
-  }, { cancellable: false });
 }

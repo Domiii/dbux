@@ -95,7 +95,7 @@ export default {
 
   /** @param {DataProvider} dp */
   getAllRootContexts(dp) {
-    return dp.indexes.executionContexts.roots.get(1);
+    return dp.indexes.executionContexts.roots.get(1) || EmptyArray;
   },
 
   /** @param {DataProvider} dp */
