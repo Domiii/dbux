@@ -75,22 +75,23 @@ export default class PracticeSession {
   async testBug(inputCfg = EmptyObject) {
     const { bug } = this;
     const result = await this.manager.switchAndTestBug(bug, inputCfg);
-    this.maybeUpdateBugStatusByResult(result);
+    // this.maybeUpdateBugStatusByResult(result);
 
-    this.manager._emitter.emit('bugStatusChanged', bug);
-    if (bug.bugLocations) {
-      if (BugStatus.is.Solved(this.manager.getResultStatus(result))) {
-        // user passed all tests
-        this.setState(PracticeSessionState.Solved);
-        emitPracticeSessionEvent('solved', this);
-        this.stopwatch.pause();
-        // await this.manager.askForSubmit();
-        await this.askToFinish();
-      }
-      else if (result?.code) {
-        this.manager.externals.alert(`Test(s) failed (code = ${result?.code}). Keep going! :)`);
-      }
-    }
+    // NOTE: `BugRunner.testBug` returns invalid code, disable the function for now
+    // this.manager._emitter.emit('bugStatusChanged', bug);
+    // if (bug.bugLocations) {
+    //   if (BugStatus.is.Solved(this.manager.getResultStatus(result))) {
+    //     // user passed all tests
+    //     this.setState(PracticeSessionState.Solved);
+    //     emitPracticeSessionEvent('solved', this);
+    //     this.stopwatch.pause();
+    //     // await this.manager.askForSubmit();
+    //     await this.askToFinish();
+    //   }
+    //   else if (result?.code) {
+    //     this.manager.externals.alert(`Test(s) failed (code = ${result?.code}). Keep going! :)`);
+    //   }
+    // }
     // else: errored out + already reported
     await this.save();
     await this.bdp.save();
