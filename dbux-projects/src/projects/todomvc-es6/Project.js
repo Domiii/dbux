@@ -4,6 +4,8 @@ import Bug from '../../projectLib/Bug';
 import Project from '../../projectLib/Project';
 
 
+const RelativeRoot = 'examples/vanilla-es6';
+
 export default class TodomvcEs6Project extends Project {
   gitRemote = 'real-world-debugging/todomvc-es6';
   gitTargetRef = 'v1';
@@ -14,7 +16,7 @@ export default class TodomvcEs6Project extends Project {
   ];
 
   get actualProjectRoot() {
-    return pathResolve(this.projectPath, 'examples/vanilla-es6');
+    return pathResolve(this.projectPath, RelativeRoot);
   }
 
   getRelativeFilePath(fpath) {
@@ -22,19 +24,26 @@ export default class TodomvcEs6Project extends Project {
   }
 
   makeBuilder() {
+    const projectRoot = this.actualProjectRoot;
     return new WebpackBuilder({
       websitePort: 3842,
-      context: this.actualProjectRoot,
+      projectRoot,
+      // websitePath: ,
+      // context: this.actualProjectRoot,
       entry: {
-        app: 'src/app.js',
+        bundle: 'src/app.js',
         // vendor: ['todomvc-app-css/index.css'],
+      },
+      webpackConfig: {
+        devServer: {
+          contentBase: [projectRoot]
+        }
       }
     });
   }
 
   async afterInstall() {
-    // update CSS to correct version (already overwritten in package.json)
-    // await this.installPackages(`todomvc-app-css@2.3.0`);
+    await this.applyPatch('baseline');
   }
 
   loadBugs() {
@@ -45,7 +54,7 @@ export default class TodomvcEs6Project extends Project {
         description: 'Working sample.',
         runArgs: []
       },
-      
+
       // {
       //   // TODO: error stack trace is polluted... can we fix that?
       //   label: 'Empty list with clear error message',
@@ -229,7 +238,7 @@ export default class TodomvcEs6Project extends Project {
    */
   decorateBugForRun(bug) {
     // fix relative file paths
-    bug.mainEntryPoint = this.getRelativeFilePath('src/app.js');
+    bug.mainEntryPoint = this.builder.getEntryOutputPath('bundle', bug);
     if (bug.bugLocations) {
       bug.bugLocations = bug.bugLocations.map(l => this.getRelativeFilePath(l.file));
     }

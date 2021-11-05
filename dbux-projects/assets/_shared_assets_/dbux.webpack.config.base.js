@@ -8,6 +8,7 @@ const webpack = require('webpack');
 const { getDependencyRoot } = require('@dbux/cli/lib/dbux-folders');
 const { parseEnv } = require('@dbux/cli/lib/webpack-basics');
 const mergeWith = require('lodash/mergeWith');
+const merge = require('lodash/merge');
 const isFunction = require('lodash/isFunction');
 // const isArray = require('lodash/isArray');
 const isObject = require('lodash/isObject');
@@ -91,7 +92,6 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     // ###########################################################################
 
     env = parseEnv(env);
-    // console.warn('  env:', JSON.stringify(env, null, 2));
 
     // ###########################################################################
     // customConfig
@@ -100,10 +100,16 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     if (isFunction(customConfig)) {
       customConfig = customConfig(env, argv);
     }
+    if (env?.cfg) {
+      customConfig = merge({}, customConfig, env.cfg);
+      // console.warn('env.cfg', JSON.stringify(customConfig, null, 2));
+    }
 
     let {
       src: srcFolders = ['src'],
       dbuxRoot,
+      projectRoot: projectRootOverride,
+      outputPath,
       entry,
       plugins,
       target = 'node',
@@ -113,6 +119,8 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
       postLoaders = []
     } = customConfig;
 
+    ProjectRoot = projectRootOverride || ProjectRoot;
+
     // ###########################################################################
     // devServer
     // ###########################################################################
@@ -120,18 +128,19 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     let devServer;
     if (devServerCfg) {
       const devServerFn = require('./dbux.webpack-dev-server.config.base.js');
-      devServer = devServerFn(ProjectRoot, env, argv);
+      devServer = devServerFn(ProjectRoot, customConfig, argv);
       let devServerOverrides;
       if (isObject(devServerCfg)) {
         devServerOverrides = devServerCfg;
       }
       else if (isFunction(devServerCfg)) {
-        devServerOverrides = devServerCfg(env, argv);
+        devServerOverrides = devServerCfg(customConfig, argv);
       }
       else if (devServerCfg !== true) {
         throw new Error(`Invalid devServer config (must be true, object or function) - ${JSON.stringify(devServerCfg)}`);
       }
       devServer = mergeConcatArray(devServer, devServerOverrides);
+      // console.warn('devServer', JSON.stringify(devServer, null, 2));
     }
 
     // ###########################################################################
@@ -155,14 +164,15 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     // context
     // ###########################################################################
 
-    const context = cfgOverrides.context || env?.context || path.join(ProjectRoot, '.');
+    const context = customConfig.context || cfgOverrides.context || path.join(ProjectRoot, '.');
 
     // ###########################################################################
     // entry
     // ###########################################################################
 
-    entry = entry || (env && env.entry) || { main: 'src/index.js' };
+    entry = entry || customConfig.entry || { main: 'src/index.js' };
 
+    // TODO: no need for entry customization here -> use `WebpackBuilder` instead
     entry = Object.fromEntries(
       Object.entries(entry)
         .map(([key, value]) => [
@@ -234,7 +244,6 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
       // remove custom options of preset-env
       // babelOptions.presets[0].splice(1, 1);
     }
-    // console.warn('babelOptions', JSON.stringify(babelOptions, null, 2));
 
     const externals = target !== 'node' ?
       [
@@ -287,7 +296,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
       context,
       output: {
         filename: '[name].js',
-        path: path.resolve(ProjectRoot, distFolderName),
+        path: outputPath || path.resolve(ProjectRoot, distFolderName),
         publicPath: distFolderName,
         // library: {
         //   name: '[name]',

@@ -25,7 +25,7 @@ export class WebpackOptions {
    * @type {Array.<Array.<string> | string> | string}
    */
   entryPattern;
-  
+
   entry;
 
   watchFilePaths;
@@ -95,28 +95,35 @@ class WebpackBuilder {
     this.project = project;
   }
 
-  async getContext(bug) {
+  getProjectRoot(bug) {
     const { project } = this;
     const { projectPath } = project;
-
-    return await this.getCfgValue(bug, 'context') || projectPath;
+    return this.getCfgValue(bug, 'projectRoot') || projectPath;
   }
 
-  async getEntry(bug, force = false) {
+  getOutputPath(bug) {
+    return pathResolve(this.getProjectRoot(bug), distFolderName);
+  }
+
+  getContext(bug) {
+    return this.getCfgValue(bug, 'context') || this.getProjectRoot(bug);
+  }
+
+  getEntry(bug, force = false) {
     if (!force && this._entry) {
       return this._entry;
     }
-    let entry = await this.getCfgValue(bug, 'entry');
+    let entry = this.getCfgValue(bug, 'entry');
     if (!entry) {
       // return getAllFilesInFolders(path.join(this.projectPath, folder));
       // return globToEntry(this.projectPath, 'js/*');
-      let entryPatterns = await this.getCfgValue(bug, 'entryPattern');
+      let entryPatterns = this.getCfgValue(bug, 'entryPattern');
       if (!entryPatterns) {
         throw new Error(`"${bug.id}" - WebpackBuilder not configured correctly - must provide entry or entryPattern.`);
       }
 
       entryPatterns = Array.isArray(entryPatterns) ? entryPatterns : [entryPatterns];
-      const contextRoot = await this.getContext(bug);
+      const contextRoot = this.getContext(bug);
       entry = Object.fromEntries(
         entryPatterns.flatMap(pattern => {
           let parent;
@@ -142,7 +149,7 @@ class WebpackBuilder {
           return glob
             .sync(pathResolve(entryRoot, pattern))
             .map(fpath => [
-              fileWithoutExt(pathRelative(entryRoot, fpath)),
+              fileWithoutExt(pathRelative(contextRoot, fpath)),
               fpath
             ]);
         })
@@ -154,53 +161,46 @@ class WebpackBuilder {
     return this._entry = entry;
   }
 
-  async getEntryInputPath(key) {
-    const entry = await this.getEntry();
-    return this.entry?.[key];
+  getEntryInputPath(key, bug) {
+    const contextRoot = this.getContext(bug);
+    const entry = this.getEntry(bug);
+    const value = entry?.[key];
+    return value && pathResolve(contextRoot, value);
   }
 
-  async getEntryOutputPath(key) {
-    const entry = await this.getEntry();
-    return this.entry?.[key];
+  getEntryOutputPath(key, bug) {
+    const outputPath = this.getOutputPath(bug);
+    return pathResolve(outputPath, key + '.js');
   }
 
-  async convertEntryPathToAbsolute(entryValue) {
-    TODO;
-    // TODO: fix getWatchPaths, getEntryInputPath, getEntryOutputPath
-    // TODO: fix ProjectRoot in webpack.config.base
-    // TODO: fix ProjectRoot in webpack.config.base
-  }
-
-  async getWatchPaths(bug) {
-    const paths = await this.getCfgValue(bug, 'watchFilePaths');
+  getWatchPaths(bug) {
+    const paths = this.getCfgValue(bug, 'watchFilePaths');
     if (paths) {
       return paths;
     }
-    const {
-      project: { projectPath }
-    } = this;
 
     // no explicit watch files -> select all entry keys by default
-    const entry = await this.getEntry(bug);
+    const entry = this.getEntry(bug);
     return Object.keys(entry)
-      .map(file => path.resolve(projectPath, distFolderName, file + '.js'));
+      .map(entryKey => this.getEntryOutputPath(entryKey, bug));
   }
 
-  async getCopyPlugin(bug) {
-    const copyPatterns = await this.getCfgValue(bug, 'copy');
+  getCopyPlugin(bug) {
+    const copyPatterns = this.getCfgValue(bug, 'copy');
+    const projectRoot = this.getProjectRoot(bug);
     if (copyPatterns) {
-      return globRelative(this.project.projectPath, copyPatterns);
+      return globRelative(projectRoot, copyPatterns);
     }
     return null;
   }
 
-  async getCfgValue(bug, name) {
+  getCfgValue(bug, name) {
     const { project, cfg } = this;
 
     let value = bug[name] || cfg[name];
     if (isFunction(value)) {
       // this === project, first arg = bug
-      value = await value.call(project, bug);
+      value = value.call(project, bug);
     }
     return value;
   }
@@ -209,15 +209,15 @@ class WebpackBuilder {
    * NOTE: this is separate from `loadBugs` because `loadBugs` might be called before the project has been downloaded.
    * This function however is called after download, so that all files are ready and accessible.
    */
-  async decorateBugForRun(bug) {
+  decorateBugForRun(bug) {
     const {
       cfg: { websitePort }
     } = this;
 
     // prepare entry
-    await this.getEntry(bug, true);
+    this.getEntry(bug, true);
 
-    bug.watchFilePaths = await this.getWatchPaths(bug);
+    bug.watchFilePaths = this.getWatchPaths(bug);
 
     if (websitePort) {
       // website settings
@@ -256,23 +256,32 @@ class WebpackBuilder {
 
     // prepare args
 
-    const moreEnv = await this.getCfgValue(bug, 'env');
-    const context = await this.getContext(bug);
-    const entry = await this.getEntry();
-    const copyPlugin = await this.getCopyPlugin(bug);
+    const moreEnv = this.getCfgValue(bug, 'env');
+    const webpackConfig = this.getCfgValue(bug, 'webpackConfig');
+    const projectRoot = this.getProjectRoot(bug);
+    const outputPath = this.getOutputPath(bug);
+    const context = this.getContext(bug);
+    const entry = this.getEntry();
+    const copyPlugin = this.getCopyPlugin(bug);
 
-    const env = serializeEnv({
-      // TODO: add dbuxArgs
+    let env = {
       ...moreEnv,
-      context,
-      entry,
-      copyPlugin,
-      port: bug.websitePort || 0
-    });
+      cfg: {
+        // TODO: add dbuxArgs
+        ...webpackConfig,
+        projectRoot,
+        outputPath,
+        context,
+        entry,
+        copyPlugin,
+        port: bug.websitePort || 0
+      }
+    };
+    env = serializeEnv(env);
 
     // start webpack
-    const webpackConfig = path.join(projectPath, 'dbux.webpack.config.js');
-    const webpackArgs = `--config ${webpackConfig} ${env}`;
+    const webpackConfigPath = path.join(projectPath, 'dbux.webpack.config.js');
+    const webpackArgs = `--config ${webpackConfigPath} ${env}`;
 
     const webpackCliBin = this.webpackCliBin();
     const webpackCliCommand = this.webpackCliCommand();
