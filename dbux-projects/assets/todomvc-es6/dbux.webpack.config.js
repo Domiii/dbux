@@ -4,7 +4,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const buildWebpackConfig = require('./dbux.webpack.config.base');
 
 
-const ProjectRoot = path.resolve(__dirname, 'examples', 'vanilla-es6');
+// const ProjectRoot = path.resolve(__dirname, 'examples', 'vanilla-es6');
+const ProjectRoot = path.resolve(__dirname);
 
 const customCfg = {
   target: 'web',

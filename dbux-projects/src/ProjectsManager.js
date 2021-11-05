@@ -407,6 +407,8 @@ export default class ProjectsManager {
         return false;
       }
 
+      debug(`practiceSize =`, practiceSize);
+
       // eslint-disable-next-line max-len
       const confirmMessage = `Dbux has found previous session(s) for "${experimentId}":\n` +
         sizeMessage('Practice', practiceSize) +

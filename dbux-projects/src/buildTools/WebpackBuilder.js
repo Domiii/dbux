@@ -8,6 +8,8 @@ import { pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
 
 /** @typedef { import("../projectLib/Project").default } Project */
 
+const distFolderName = 'dist';
+
 export class WebpackOptions {
   websitePort;
 
@@ -152,6 +154,23 @@ class WebpackBuilder {
     return this._entry = entry;
   }
 
+  async getEntryInputPath(key) {
+    const entry = await this.getEntry();
+    return this.entry?.[key];
+  }
+
+  async getEntryOutputPath(key) {
+    const entry = await this.getEntry();
+    return this.entry?.[key];
+  }
+
+  async convertEntryPathToAbsolute(entryValue) {
+    TODO;
+    // TODO: fix getWatchPaths, getEntryInputPath, getEntryOutputPath
+    // TODO: fix ProjectRoot in webpack.config.base
+    // TODO: fix ProjectRoot in webpack.config.base
+  }
+
   async getWatchPaths(bug) {
     const paths = await this.getCfgValue(bug, 'watchFilePaths');
     if (paths) {
@@ -164,7 +183,7 @@ class WebpackBuilder {
     // no explicit watch files -> select all entry keys by default
     const entry = await this.getEntry(bug);
     return Object.keys(entry)
-      .map(file => path.resolve(projectPath, 'dist', file + '.js'));
+      .map(file => path.resolve(projectPath, distFolderName, file + '.js'));
   }
 
   async getCopyPlugin(bug) {

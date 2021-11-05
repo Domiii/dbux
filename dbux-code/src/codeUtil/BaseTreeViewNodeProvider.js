@@ -73,7 +73,8 @@ export default class BaseTreeViewNodeProvider {
    * 
    * TODO: allow refreshing sub tree only
    */
-  refresh = () => {
+  // refresh = () => {
+  refresh = makeDebounce(() => {
     try {
       this.rootNodes = this.buildRoots();
       this._decorateNodes(null, this.rootNodes);
@@ -87,12 +88,18 @@ export default class BaseTreeViewNodeProvider {
       logError(`${this.constructor.name}.refresh() failed`, err);
       throw err;
     }
-  }
-
-  refreshOnData = makeDebounce(() => {
-    this.refresh();
   }, 50);
 
+  refreshOnData() {
+    return this.refresh();
+  }
+  // refreshOnData = makeDebounce(() => {
+  //   this.refresh();
+  // }, 50);
+
+  // repaint = makeDebounce(() => {
+  //   this._onDidChangeTreeData.fire();
+  // }, 10);
 
   repaint() {
     this._onDidChangeTreeData.fire();

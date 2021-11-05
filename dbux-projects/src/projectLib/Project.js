@@ -276,13 +276,13 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
         const target = this.gitTargetRef;
         // if (!target) {
         /**
-         * This is the fastest approach, always.
+         * This is the fastest approach.
          * Test: time bash -cl "git clone --single-branch --depth=1 --branch=v1 git@github.com:real-world-debugging/todomvc-es6.git"
          * -> took 6s
          * @see https://stackoverflow.com/a/69798821/2228771
          */
-        const branchArg = target ? ` --branch=${this.gitTargetRef}` : ''; // NOTE: this does not work as expected
-        const moreArgs = '--single-branch --depth=1';
+        const branchArg = target ? ` --branch=${this.gitTargetRef}` : '';
+        const moreArgs = ' --single-branch --depth=1';
         cmd = `git clone${branchArg}${moreArgs} "${githubUrl}" "${projectPath}"`;
         cwd = projectsRoot;
         // }

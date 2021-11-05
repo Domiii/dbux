@@ -14,7 +14,7 @@ export default class TodomvcEs6Project extends Project {
   ];
 
   get actualProjectRoot() {
-    return pathResolve(this.projectPath, 'examples/todomvc-es6');
+    return pathResolve(this.projectPath, 'examples/vanilla-es6');
   }
 
   getRelativeFilePath(fpath) {
@@ -24,6 +24,7 @@ export default class TodomvcEs6Project extends Project {
   makeBuilder() {
     return new WebpackBuilder({
       websitePort: 3842,
+      context: this.actualProjectRoot,
       entry: {
         app: 'src/app.js',
         // vendor: ['todomvc-app-css/index.css'],

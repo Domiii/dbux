@@ -22,6 +22,7 @@ const nodeExternals = require(path.join(getDependencyRoot(), 'node_modules/webpa
 process.env.BABEL_DISABLE_CACHE = 1;
 
 const buildMode = 'development';
+const distFolderName = 'dist';
 //const buildMode = 'production';
 
 function mergeConcatArray(...inputs) {
@@ -79,7 +80,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     // webpackPlugins.push(
     //   new ExtraWatchWebpackPlugin({
     //     dirs: [
-    //       path.join(dbuxPluginPath, 'dist')
+    //       path.join(dbuxPluginPath, distFolderName)
     //     ]
     //   })
     // );
@@ -140,7 +141,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     // let dbuxRules = [];
     if (dbuxRoot) {
       // // enable dbux debugging
-      // const dbuxRuntimeFolder = path.join(dbuxRoot, 'dbux-runtime', 'dist');
+      // const dbuxRuntimeFolder = path.join(dbuxRoot, 'dbux-runtime', distFolderName);
       // dbuxRules.push({
       //   test: /\.js$/,
       //   // eslint-disable-next-line global-require, import/no-extraneous-dependencies
@@ -180,7 +181,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     plugins = plugins || [];
     plugins.push(
       new webpack.EnvironmentPlugin({
-        NODE_ENV: 'development'
+        NODE_ENV: buildMode
       }),
       // /**
       //  * @see https://stackoverflow.com/questions/65018431/webpack-5-uncaught-referenceerror-process-is-not-defined
@@ -286,8 +287,8 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
       context,
       output: {
         filename: '[name].js',
-        path: path.resolve(ProjectRoot, 'dist'),
-        publicPath: 'dist',
+        path: path.resolve(ProjectRoot, distFolderName),
+        publicPath: distFolderName,
         // library: {
         //   name: '[name]',
         //   type: target === 'node' ? 'commonjs2' : 'var',
@@ -370,7 +371,7 @@ function copyPlugin(ProjectRoot, files) {
     patterns: files.map(f => ({
       force: true,
       from: path.join(ProjectRoot, f),
-      to: path.join(ProjectRoot, 'dist', f)
+      to: path.join(ProjectRoot, distFolderName, f)
     }))
   });
 }

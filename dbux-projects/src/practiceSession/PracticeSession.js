@@ -78,7 +78,7 @@ export default class PracticeSession {
     // this.maybeUpdateBugStatusByResult(result);
 
     // NOTE: `BugRunner.testBug` returns invalid code, disable the function for now
-    // this.manager._emitter.emit('bugStatusChanged', bug);
+    this.manager._emitter.emit('bugStatusChanged', bug);
     // if (bug.bugLocations) {
     //   if (BugStatus.is.Solved(this.manager.getResultStatus(result))) {
     //     // user passed all tests
