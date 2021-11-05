@@ -115,9 +115,9 @@ export default class CallGraph {
 
     // if trace has callId, `step in` to that call right away
     if (hasCallId(trace)) {
-      const children = this.dp.indexes.traces.byCalleeTrace.get(trace.callId) || EmptyArray;
-      if (children.length) {
-        return last(children);
+      const lastChild = this.dp.util.getLastTraceByCalleeTrace(trace.callId);
+      if (lastChild) {
+        return lastChild;
       }
     }
 
@@ -129,9 +129,9 @@ export default class CallGraph {
     }
     else if (prevChild === trace) {
       // nextChild is itself(usually in getter/setter), return the first child inside
-      const children = this.dp.indexes.traces.byCalleeTrace.get(traceId) || EmptyArray;
-      if (children.length) {
-        return children[0];
+      const firstChild = this.dp.util.getFirstTraceByCalleeTrace(traceId);
+      if (firstChild) {
+        return firstChild;
       }
       else {
         logError(`PreviousChildContext of traceId=${traceId} does not have any children`);
@@ -148,9 +148,9 @@ export default class CallGraph {
 
     // if trace has callId, `step in` to that call right away
     if (hasCallId(trace)) {
-      const children = this.dp.indexes.traces.byCalleeTrace.get(trace.callId) || EmptyArray;
-      if (children.length) {
-        return children[0];
+      const firstChild = this.dp.util.getFirstTraceByCalleeTrace(trace.callId);
+      if (firstChild) {
+        return firstChild;
       }
     }
 
@@ -162,9 +162,9 @@ export default class CallGraph {
     }
     else if (nextChild === trace) {
       // nextChild is itself(usually in getter/setter), return the first child inside
-      const children = this.dp.indexes.traces.byCalleeTrace.get(traceId) || EmptyArray;
-      if (children.length) {
-        return children[0];
+      const firstChild = this.dp.util.getFirstTraceByCalleeTrace(traceId);
+      if (firstChild) {
+        return firstChild;
       }
       else {
         logError(`NextChildContext of traceId=${traceId} does not have any children`);

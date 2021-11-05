@@ -1142,8 +1142,29 @@ export default {
     return context && !!dp.util.getOwnCallerTraceOfContext(context.contextId);
   },
 
+  /**
+   * @param {DataProvider} dp
+   */
   getCalledContext(dp, callId) {
-    return dp.indexes.executionContexts.byCalleeTrace.getUnique(callId);
+    return dp.indexes.executionContexts.byCalleeTrace.getFirst(callId);
+  },
+
+  /**
+   * NOTE: Contexts having common callee trace must be siblings.
+   * @param {DataProvider} dp
+   */
+  getFirstTraceByCalleeTrace(dp, callId) {
+    const firstContext = dp.indexes.executionContexts.byCalleeTrace.getFirst(callId);
+    return dp.indexes.traces.byContext.getFirst(firstContext?.contextId);
+  },
+
+  /**
+   * NOTE: Contexts having common callee trace must be siblings.
+   * @param {DataProvider} dp
+   */
+  getLastTraceByCalleeTrace(dp, callId) {
+    const lastContext = dp.indexes.executionContexts.byCalleeTrace.getLast(callId);
+    return dp.indexes.traces.byContext.getLast(lastContext?.contextId);
   },
 
   /**
