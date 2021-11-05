@@ -10,7 +10,8 @@ const { log, debug, warn, error: logError, trace: logTrace } = newLogger('FocusC
 export default class FocusController extends HostComponentEndpoint {
   init() {
     this.addDisposable(
-      this.context.graphDocument.onGraphModeChanged(this.handleTraceSelected),
+      // `setGraphMode` will call `refreshGraph` which `handleTraceSelected`
+      // this.context.graphDocument.onGraphModeChanged(this.handleTraceSelected),
       this.context.graphDocument.onFollowModeChanged(this.handleTraceSelected),
       traceSelection.onTraceSelectionChanged(this.handleTraceSelected),
     );

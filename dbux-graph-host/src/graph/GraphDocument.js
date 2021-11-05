@@ -73,7 +73,8 @@ class GraphDocument extends HostComponentEndpoint {
   setGraphMode(mode) {
     if (this.state.graphMode !== mode) {
       this.setState({ graphMode: mode });
-      this.refreshGraphs();
+      // refresh in update
+      // this.refreshGraphs();
       this._notifyGraphModeChanged(mode);
     }
   }
@@ -140,7 +141,7 @@ class GraphDocument extends HostComponentEndpoint {
         graphDocument: this,
         themeMode: this.state.themeMode,
         contextNodeIconUris: this.state.contextNodeIconUris,
-        researchMode: true, // Manually change this
+        researchMode: false, // Manually change this
       }
     };
   }

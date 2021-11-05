@@ -40,6 +40,10 @@ export default class GraphNode extends HostComponentEndpoint {
   }
 
   setOwnMode(mode) {
+    if (mode !== GraphNodeMode.Collapsed && this.owner.childrenBuilt === false) {
+      this.owner.context.graphRoot.buildContextNodeChildren(this.owner);
+    }
+
     this.setState({ mode });
   }
 
@@ -48,7 +52,7 @@ export default class GraphNode extends HostComponentEndpoint {
    */
   async setModeUser(mode) {
     const newChildrenCount = getNewChildrenCount[mode](this.owner);
-    const confirmMessage = `There are ${newChildrenCount} ContextNode to expand and it might take a while. Are you sure?`;
+    const confirmMessage = `There are ${newChildrenCount} ContextNodes to expand and it might take a while. Are you sure?`;
     if (newChildrenCount > 10000 && !await this.componentManager.externals.confirm(confirmMessage, true)) {
       return;
     }
@@ -56,10 +60,6 @@ export default class GraphNode extends HostComponentEndpoint {
   }
 
   setMode(mode) {
-    if (mode !== GraphNodeMode.Collapsed && this.owner.childrenBuilt === false) {
-      this.owner.context.graphRoot.buildContextNodeChildren(this.owner);
-    }
-
     if (this.state.mode === mode) {
       // nothing left to do
       return;
