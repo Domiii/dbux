@@ -1894,7 +1894,7 @@ export default {
     });
 
     const dfs = ((context) => {
-      const children = dp.util.getChildrenOfContext(context.contextId);
+      const children = dp.util.getChildrenOfContextInRoot(context.contextId);
 
       let subtreeResult;
       if (preOrderCb) {
@@ -1923,6 +1923,10 @@ export default {
   /** @param {DataProvider} dp */
   getChildrenOfContext(dp, contextId) {
     return dp.indexes.executionContexts.children.get(contextId) || EmptyArray;
+  },
+
+  getChildrenOfContextInRoot(dp, contextId) {
+    return dp.util.getChildrenOfContext(contextId).filter(context => !context.isVirtualRoot);
   },
 
   // ###########################################################################

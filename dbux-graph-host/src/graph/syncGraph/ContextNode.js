@@ -149,6 +149,14 @@ class ContextNode extends HostComponentEndpoint {
     this.controllers.getComponent('GraphNode').setMode(GraphNodeMode.ExpandChildren);
   }
 
+  getChildrenCounts() {
+    return this.getValidChildContexts().length;
+  }
+
+  getSubGraphChildrenCounts() {
+    return this.nTreeContexts;
+  }
+
   setSelected(isSelected) {
     const selectedTrace = traceSelection.selected;
     let traceId = null;
