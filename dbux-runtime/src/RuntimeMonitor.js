@@ -19,6 +19,7 @@ import initPatchBuiltins from './builtIns/index';
 import CallbackPatcher from './async/CallbackPatcher';
 import initPatchPromise from './async/promisePatcher';
 import { getTraceStaticTrace } from './data/dataUtil';
+import { getDefaultClient } from './client/index';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError, trace: logTrace } = newLogger('RuntimeMonitor');
@@ -135,6 +136,12 @@ export default class RuntimeMonitor {
   // context + function traces
   // ###########################################################################
 
+  checkCanRecord() {
+    return getDefaultClient().checkCanRecord();
+  }
+
+  _rootDisableCount = 0;
+
   /**
    * Very similar to `pushCallback`
    */
@@ -146,10 +153,30 @@ export default class RuntimeMonitor {
     const parentContextId = this._runtime.fixPeekParentContextId();
     const parentTraceId = this._runtime.getParentTraceId();
 
-    // if (!parentContextId) {
-    //   // NOTE: does not make a difference in terms of performance
-    //   getDefaultClient().bufferBreakpoint();
-    // }
+    if (!parentContextId) {
+      // NOTE: the breakpoint does not make a difference in terms of performance
+      // getDefaultClient().bufferBreakpoint();
+      if (!this.checkCanRecord()) {
+        // hackfix: omit root (safeguard against potential infinite loops)
+        const staticContextId = staticContextCollection.getStaticContextId(programId, inProgramStaticContextId);
+        const contextInfo = staticContextCollection.makeStaticContextInfo(staticContextId);
+        warn(`[Root OMITTED] ${contextInfo}`);
+        ++this._rootDisableCount;
+        this.incDisabled();
+        return 0;
+      }
+      else {
+        // normal root
+        // const staticContextId = staticContextCollection.getStaticContextId(programId, inProgramStaticContextId);
+        // const contextInfo = staticContextCollection.makeStaticContextInfo(staticContextId);
+        // warn(`[Root] ${contextInfo}`);
+      }
+    }
+    else if (this._rootDisableCount) {
+      // if root was disabled, also disable all children
+      ++this._rootDisableCount;
+      return 0;
+    }
 
     const context = executionContextCollection.pushImmediate(
       stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId, definitionTid, tracesDisabled
@@ -221,6 +248,16 @@ export default class RuntimeMonitor {
   }
 
   popImmediate(programId, contextId, traceId, awaitContextId) {
+    if (this._rootDisableCount) {
+      // context and its children were omitted
+      --this._rootDisableCount;
+      if (!this._rootDisableCount) {
+        // this is the root that we first disabled on -> re-enable.
+        this.decDisabled();
+      }
+      return;
+    }
+
     // sanity checks
     const context = executionContextCollection.getById(contextId);
     if (!context) {

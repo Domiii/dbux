@@ -5,10 +5,6 @@ import Collection from './Collection';
 import pools from './pools';
 import staticProgramContextCollection from './staticProgramContextCollection';
 
-export function locToString(loc) {
-  return `${loc.start.line}:${loc.start.column}`;
-}
-
 
 export class ExecutionContextCollection extends Collection {
   _lastContextId = -1;
@@ -61,11 +57,8 @@ export class ExecutionContextCollection extends Collection {
       return `null (#${contextId})`;
     }
     const { contextType, staticContextId } = context;
-    const staticContext = staticContextCollection.getById(staticContextId);
-    const { displayName, loc, programId } = staticContext;
-    const program = staticProgramContextCollection.getById(programId);
-    const { filePath } = program;
-    return `[${ExecutionContextType.nameFrom(contextType)}] #${contextId} "${displayName}" @ ${filePath}:${locToString(loc)}`;
+    const staticInfo = staticContextCollection.makeStaticContextInfo(staticContextId, false);
+    return `[${ExecutionContextType.nameFrom(contextType)}] #${contextId} ${staticInfo}`;
   }
 
   // ###########################################################################

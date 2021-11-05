@@ -7,7 +7,7 @@ set -e # cancel on error
 
 # fname="__samplesInput__/async/promisify5-no-root"
 # fname="__samplesInput__/defineProperty3-setter"
-fname="case-studies/async/Promise.all2-fail1"
+fname="__samplesInput__/builtins1-cwd"
 
 
 

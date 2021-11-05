@@ -10,6 +10,7 @@ var origCwd = process.cwd
 var cwd = null
 
 process.cwd = function () {
+  console.trace();
   if (!cwd)
     cwd = origCwd.call(process)
   return cwd

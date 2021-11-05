@@ -129,6 +129,7 @@ export default class Client {
     Verbose && debug('-> disconnected');
     this._connected = false;
     this._ready = false;
+    this._disconnectedSocket = this._socket.io?.engine?.transport?.ws;
     this._socket = null;
   }
 
@@ -373,5 +374,33 @@ export default class Client {
         resolve();
       };
     });
+  }
+
+  /** ###########################################################################
+   * handle some special situations
+   * ##########################################################################*/
+
+  checkCanRecord() {
+    /**
+     * @see https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/readyState
+     */
+    const ReadyStateClosing = 2;
+
+    /**
+     * @see https://github.com/socketio/engine.io-client/blob/master/lib/transports/websocket.ts
+     */
+    const ws = this._disconnectedSocket;
+    // TODO: consider doing the same check on the active socket (in case it got unexpectedly terminated?)
+    // debug(`checkCanRecord readyState`, ws?.readyState);
+    if (ws?.readyState === ReadyStateClosing) {
+      /**
+       * hackfix: data sent while closing might be caused by calls to polyfills, 
+       * which then might get recorded -> re-opens the socket -> sends out -> closes socket -> new recording etc., causing an infinite loop.
+       * @see https://github.com/Domiii/dbux/issues/593
+       */
+      return false;
+    }
+
+    return true;
   }
 }

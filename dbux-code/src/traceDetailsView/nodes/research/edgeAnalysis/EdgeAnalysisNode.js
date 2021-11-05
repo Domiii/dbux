@@ -8,7 +8,6 @@ import NanoEvents from 'nanoevents';
 import sleep from '@dbux/common/src/util/sleep';
 import { pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
-import Enum from '@dbux/common/src/util/Enum';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import traceSelection from '@dbux/data/src/traceSelection';

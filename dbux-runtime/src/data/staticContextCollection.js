@@ -1,6 +1,12 @@
-import { newLogger } from '@dbux/common/src/log/logger';
+import StaticContext from '@dbux/common/src/types/StaticContext';
+import StaticContextType from '@dbux/common/src/types/constants/StaticContextType';
 import Collection from './Collection';
+import staticProgramContextCollection from './staticProgramContextCollection';
+import { locToString } from '../util/locUtil';
 
+/**
+ * 
+ */
 export class StaticContextCollection extends Collection {
   _staticContextsByProgram = [null];
 
@@ -59,6 +65,22 @@ export class StaticContextCollection extends Collection {
   getStaticContextId(programId, inProgramStaticContextId) {
     const staticContext = this.getContext(programId, inProgramStaticContextId);
     return staticContext.staticId;
+  }
+
+  /** ###########################################################################
+   * util
+   * ##########################################################################*/
+
+  makeStaticContextInfo(staticContextId, addPrefix = true) {
+    /**
+     * @type {StaticContext}
+     */
+    const staticContext = this.getById(staticContextId);
+    const { displayName, loc, programId, type } = staticContext;
+    const program = staticProgramContextCollection.getById(programId);
+    const { filePath } = program;
+    const prefix = addPrefix ? `[${StaticContextType.nameFrom(type)}] ` : '';
+    return `${prefix}"${displayName}" @ ${filePath}:${locToString(loc)}`;
   }
 }
 

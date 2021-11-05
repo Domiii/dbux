@@ -1,17 +1,21 @@
 import Enum from "../../util/Enum";
 
 /**
- * TODO: this and ExecutionContextType are different but don't need to.
+ * future-work: this and ExecutionContextType are different but don't need to.
  * Consider handling this like we do with `TraceType`: optional dynamic type in `ExecutionContext`
  */
-// eslint-disable-next-line import/no-mutable-exports
-let StaticContextType = {
+
+let staticContextTypeObj = {
   Program: 1,
   Function: 2,
   Await: 3,
   Resume: 4
 };
-StaticContextType = new Enum(StaticContextType);
+
+/**
+ * @type {Enum | typeof staticContextTypeObj}
+ */
+const StaticContextType = new Enum(staticContextTypeObj);
 
 
 const interruptableChildTypes = new Array(StaticContextType.getValueMaxIndex()).map((/* _ */) => false);
