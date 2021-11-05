@@ -282,7 +282,7 @@ export class ProjectViewController {
     }
     const defaultProjectWorkspacePath = getDefaultWorkspaceFilePath(project);
     const openDefaultWorkspaceLabel = fs.existsSync(defaultProjectWorkspacePath) ?
-      "Open new workspace for project" :
+      "Open workspace for project" :
       "Create + open new workspace for project";
     buttons[openDefaultWorkspaceLabel] = async () => {
       maybeCreateWorkspaceFile(project);
@@ -291,7 +291,8 @@ export class ProjectViewController {
         mementoSet(this.getLastWorkspaceKeyName(bug), defaultProjectWorkspacePath)
       ]);
       await commands.executeCommand('vscode.openFolder', Uri.file(defaultProjectWorkspacePath));
-      return true;
+      // return false to stop processing, session will be recoverd after workspace is opend
+      return false;
     };
     const lastWorkspacePath = mementoGet(this.getLastWorkspaceKeyName(bug));
     if (lastWorkspacePath && fs.existsSync(lastWorkspacePath) && lastWorkspacePath !== workspace.workspaceFile?.fsPath) {

@@ -39,6 +39,6 @@ export async function runTaskWithProgressBar(cb, options) {
     //     progress bar does not start rendering if we don't give control back to it first.
     await sleep();
 
-    await cb?.(...args);
+    return await cb?.(...args);
   });
 }

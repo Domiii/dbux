@@ -229,6 +229,14 @@ class SyncGraphBase extends GraphBase {
     this._selectContextNode(contextNode);
   }
 
+  getChildrenCounts() {
+    return this.children.getComponents('ContextNode').length;
+  }
+  
+  getSubGraphChildrenCounts() {
+    return this.children.getComponents('ContextNode').reduce((v, node) => v + node.nTreeContexts, 0);
+  }
+
   // ###########################################################################
   // own event listener
   // ###########################################################################

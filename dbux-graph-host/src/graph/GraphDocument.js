@@ -76,7 +76,8 @@ class GraphDocument extends HostComponentEndpoint {
   setGraphMode(mode) {
     if (this.state.graphMode !== mode) {
       this.setState({ graphMode: mode });
-      this.refreshGraphs();
+      // refresh in update
+      // this.refreshGraphs();
       this._notifyGraphModeChanged(mode);
     }
   }

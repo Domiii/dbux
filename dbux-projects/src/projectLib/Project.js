@@ -702,6 +702,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
     // copy assets
     await this.installAssets(bug);
+    await project.npmInstall();
     await project.autoCommit(`Installed assests.`);
   }
 

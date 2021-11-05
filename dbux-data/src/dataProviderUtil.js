@@ -12,7 +12,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
 import StaticTrace from '@dbux/common/src/types/StaticTrace';
 import StaticContextType, { isVirtualContextType } from '@dbux/common/src/types/constants/StaticContextType';
-import { isRealContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
+import ExecutionContextType, { isRealContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
 import { isCallResult, hasCallId } from '@dbux/common/src/types/constants/traceCategorization';
 // eslint-disable-next-line max-len
 import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory, ValuePruneState, getSimpleTypeString } from '@dbux/common/src/types/constants/ValueTypeCategory';
@@ -1142,8 +1142,29 @@ export default {
     return context && !!dp.util.getOwnCallerTraceOfContext(context.contextId);
   },
 
+  /**
+   * @param {DataProvider} dp
+   */
   getCalledContext(dp, callId) {
-    return dp.indexes.executionContexts.byCalleeTrace.getUnique(callId);
+    return dp.indexes.executionContexts.byCalleeTrace.getFirst(callId);
+  },
+
+  /**
+   * NOTE: Contexts having common callee trace must be siblings.
+   * @param {DataProvider} dp
+   */
+  getFirstTraceByCalleeTrace(dp, callId) {
+    const firstContext = dp.indexes.executionContexts.byCalleeTrace.getFirst(callId);
+    return dp.indexes.traces.byContext.getFirst(firstContext?.contextId);
+  },
+
+  /**
+   * NOTE: Contexts having common callee trace must be siblings.
+   * @param {DataProvider} dp
+   */
+  getLastTraceByCalleeTrace(dp, callId) {
+    const lastContext = dp.indexes.executionContexts.byCalleeTrace.getLast(callId);
+    return dp.indexes.traces.byContext.getLast(lastContext?.contextId);
   },
 
   /**
@@ -1873,7 +1894,7 @@ export default {
     });
 
     const dfs = ((context) => {
-      const children = dp.util.getChildrenOfContext(context.contextId);
+      const children = dp.util.getChildrenOfContextInRoot(context.contextId);
 
       let subtreeResult;
       if (preOrderCb) {
@@ -1902,6 +1923,19 @@ export default {
   /** @param {DataProvider} dp */
   getChildrenOfContext(dp, contextId) {
     return dp.indexes.executionContexts.children.get(contextId) || EmptyArray;
+  },
+
+  getChildrenOfContextInRoot(dp, contextId) {
+    return dp.util.getChildrenOfContext(contextId).filter(context => {
+      if (context.isVirtualRoot) {
+        return false;
+      }
+
+      if (ExecutionContextType.is.Await(context.contextType)) {
+        return false;
+      }
+      return true;
+    });
   },
 
   // ###########################################################################

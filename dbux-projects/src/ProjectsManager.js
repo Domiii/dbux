@@ -679,7 +679,9 @@ export default class ProjectsManager {
     const existingApps = new Set(this.pdp.collections.applications.getAll());
     const newApps = allApplications.selection.getAll().filter(app => !existingApps.has(app));
 
-    this.pdp.addTestRun(bug, result?.code, patch, newApps);
+    // TODO: find the correct `nFailedTests`
+    // this.pdp.addTestRun(bug, result?.code, patch, newApps);
+    this.pdp.addTestRun(bug, null, patch, newApps);
     this.pdp.addApplications(newApps);
     this.bdp.updateBugProgress(bug, { patch });
   }

@@ -66,7 +66,7 @@ class MapIndexManager extends IndexManager {
 
   serializeKey(key) {
     if (this.cfg.serializeKey) {
-    // if (isObject(key)) {
+      // if (isObject(key)) {
       key = JSON.stringify(key);
     }
     return key;
@@ -322,6 +322,9 @@ export default class CollectionIndex {
 
   getUnique(key) {
     const container = this.get(key);
+    if (this._containerMethods.getSize(container) > 1) {
+      throw new Error(`[${this.name}.getUnique] found non-unique values: ${container}.`);
+    }
     return this._containerMethods.getUniqueInContainer(container);
   }
 

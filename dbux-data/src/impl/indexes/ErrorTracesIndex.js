@@ -15,9 +15,12 @@ export default class ErrorTracesIndex extends CollectionIndex {
    * @param {Trace} trace 
    */
   makeKey(dp, trace) {
-    if (trace.error) {
-      return 1;
-    }
-    return false;
+    // if (trace.error) {
+    //   return 1;
+    // }
+    // return false;
+
+    // NOTE: always return 1 since we manually add them now
+    return 1;
   }
 }
