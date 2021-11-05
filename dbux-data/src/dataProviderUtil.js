@@ -12,7 +12,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
 import StaticTrace from '@dbux/common/src/types/StaticTrace';
 import StaticContextType, { isVirtualContextType } from '@dbux/common/src/types/constants/StaticContextType';
-import { isRealContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
+import ExecutionContextType, { isRealContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
 import { isCallResult, hasCallId } from '@dbux/common/src/types/constants/traceCategorization';
 // eslint-disable-next-line max-len
 import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory, ValuePruneState, getSimpleTypeString } from '@dbux/common/src/types/constants/ValueTypeCategory';
@@ -1926,7 +1926,16 @@ export default {
   },
 
   getChildrenOfContextInRoot(dp, contextId) {
-    return dp.util.getChildrenOfContext(contextId).filter(context => !context.isVirtualRoot);
+    return dp.util.getChildrenOfContext(contextId).filter(context => {
+      if (context.isVirtualRoot) {
+        return false;
+      }
+
+      if (ExecutionContextType.is.Await(context.contextType)) {
+        return false;
+      }
+      return true;
+    });
   },
 
   // ###########################################################################
