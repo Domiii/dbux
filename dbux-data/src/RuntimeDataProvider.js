@@ -13,6 +13,7 @@ import AsyncEventCollection from './collections/AsyncEventCollection';
 import AsyncEventUpdateCollection from './collections/AsyncEventUpdateCollection';
 
 /** @typedef { import("./RuntimeDataStatsReporter").default } RuntimeDataStatsReporter */
+/** @typedef {import('./callGraph/CallGraph').default} CallGraph */
 
 // ###########################################################################
 // RDP
@@ -24,6 +25,9 @@ export default class RuntimeDataProvider extends DataProviderBase {
    */
   util;
 
+  /**
+   * @type {CallGraph}
+   */
   callGraph;
 
   /**
