@@ -11,7 +11,7 @@ import { initCodeApplications } from './codeUtil/CodeApplication';
 import { initTraceDetailsView } from './traceDetailsView/traceDetailsController';
 import { initTraceSelection } from './codeUtil/codeSelection';
 import { initApplicationsView } from './applicationsView/applicationsViewController';
-import { createProjectManager, initProjectManager } from './projectViews/projectControl';
+import { createProjectManager } from './projectViews/projectControl';
 import { initProjectView } from './projectViews/projectViewsController';
 import { initGraphView } from './webViews/graphWebView';
 import { initPathwaysView } from './webViews/pathwaysWebView';
@@ -49,7 +49,7 @@ async function activate(context) {
     initApplicationsView(context);
     const traceDetailsController = initTraceDetailsView(context);
     const dataFlowController = initDataFlowView(context);
-    initProjectView(context);
+    const projectViewController = initProjectView(context);
 
     //  To bring these three views back, uncomment relevant lines and add this to `package.json` `contributes.views.dbuxViewContainer`:
     //  {
@@ -80,7 +80,7 @@ async function activate(context) {
     await initGraphView();
     await initPathwaysView();
 
-    await initProjectManager();
+    await projectViewController.initProject();
 
     // Survey disabled for now
     // await maybeStartSurvey1ForTheFirstTime();

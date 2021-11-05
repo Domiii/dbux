@@ -5,7 +5,7 @@ import { showInformationMessage, showWarningMessage } from '../../codeUtil/codeM
 import { emitTagTraceAction } from '../../userEvents';
 import { getCursorLocation } from '../../codeUtil/codeNav';
 import { codeLineToBabelLine } from '../../helpers/codeLocHelpers';
-import { askForOpenProjectWorkspace, isProjectFolderInWorkspace } from '../../codeUtil/workspaceUtil';
+import { isProjectFolderInWorkspace } from '../../codeUtil/workspaceUtil';
 
 /** @typedef {import('../projectViewsController').default} ProjectViewsController */
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
@@ -105,7 +105,7 @@ class OpenWorkspaceNode extends SessionNode {
 
   async doHandleClick() {
     const { project } = this.entry;
-    await askForOpenProjectWorkspace(project);
+    await this.controller.askForOpenProjectWorkspace(project);
   }
 
   async showEntry() {

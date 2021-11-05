@@ -16,6 +16,10 @@ export async function set(key, value) {
   await memento.update(key, value);
 }
 
+export async function remove(key) {
+  await memento.update(key, undefined);
+}
+
 export async function clearAll() {
   return Promise.all(getAllMementoKeys().map(key => set(key, undefined)));
 }
