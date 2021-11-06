@@ -1085,7 +1085,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     }
     catch (err) {
       // eslint-disable-next-line max-len
-      throw new NestedError(`Could not apply patch. Make sure it is utf8 + LF - see https://stackoverflow.com/questions/37347350/all-git-patches-i-create-throw-fatal-unrecognized-input`, err);
+      throw new NestedError(`Could not apply patch "${patchFName}". Make sure it is utf8 + LF - see https://stackoverflow.com/questions/37347350/all-git-patches-i-create-throw-fatal-unrecognized-input`, err);
     }
   }
 

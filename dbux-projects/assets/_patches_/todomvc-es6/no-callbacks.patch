@@ -1,10 +1,10 @@
 diff --git a/examples/vanilla-es6/src/controller.js b/examples/vanilla-es6/src/controller.js
-index 36af2ea..a8d5723 100644
+index a8d5723..36af2ea 100644
 --- a/examples/vanilla-es6/src/controller.js
 +++ b/examples/vanilla-es6/src/controller.js
 @@ -1,4 +1,4 @@
--import { emptyItemQuery } from './item';
-+import {emptyItemQuery} from './item';
+-import {emptyItemQuery} from './item';
++import { emptyItemQuery } from './item';
  import Store from './store';
  import View from './view';
  
@@ -12,266 +12,266 @@ index 36af2ea..a8d5723 100644
  			id: Date.now(),
  			title,
  			completed: false
-+		}, () => {
-+			this.view.clearNewTodo();
-+			this._filter(true);
+-		}, () => {
+-			this.view.clearNewTodo();
+-			this._filter(true);
  		});
--		
--		this.view.clearNewTodo();
--		this._filter(true);
++
++		this.view.clearNewTodo();
++		this._filter(true);
  	}
  
  	/**
-@@ -62,8 +62,9 @@ export default class Controller {
+@@ -62,9 +62,8 @@ export default class Controller {
  	 */
  	editItemSave(id, title) {
  		if (title.length) {
--			this.store.update({ id, title });
--			this.view.editItemDone(id, title);
-+			this.store.update({id, title}, () => {
-+				this.view.editItemDone(id, title);
-+			});
+-			this.store.update({id, title}, () => {
+-				this.view.editItemDone(id, title);
+-			});
++			this.store.update({ id, title });
++			this.view.editItemDone(id, title);
  		} else {
  			this.removeItem(id);
  		}
-@@ -75,9 +76,10 @@ export default class Controller {
+@@ -76,10 +75,9 @@ export default class Controller {
  	 * @param {!number} id ID of the Item in edit
  	 */
  	editItemCancel(id) {
--		const data = this.store.find({ id });
--		const title = data[0].title;
--		this.view.editItemDone(id, title);
-+		this.store.find({id}, data => {
-+			const title = data[0].title;
-+			this.view.editItemDone(id, title);
-+		});
+-		this.store.find({id}, data => {
+-			const title = data[0].title;
+-			this.view.editItemDone(id, title);
+-		});
++		const data = this.store.find({ id });
++		const title = data[0].title;
++		this.view.editItemDone(id, title);
  	}
  
  	/**
-@@ -86,18 +88,17 @@ export default class Controller {
+@@ -88,17 +86,18 @@ export default class Controller {
  	 * @param {!number} id Item ID of item to remove
  	 */
  	removeItem(id) {
--		this.store.remove({ id });
--		this._filter();
--		this.view.removeItem(id);
-+		this.store.remove({id}, () => {
-+			this._filter();
-+			this.view.removeItem(id);
-+		});
+-		this.store.remove({id}, () => {
+-			this._filter();
+-			this.view.removeItem(id);
+-		});
++		this.store.remove({ id });
++		this._filter();
++		this.view.removeItem(id);
  	}
  
  	/**
  	 * Remove all completed items.
  	 */
  	removeCompletedItems() {
--		const todos = this.store.remove({ completed: true });
--		// dbux-note: here is a small bug (because `todos` is always passed in and evaluates to truthy)
--		this._filter(todos);
-+		this.store.remove({completed: true}, this._filter.bind(this));
+-		this.store.remove({completed: true}, this._filter.bind(this));
++		const todos = this.store.remove({ completed: true });
++		// dbux-note: here is a small bug (because `todos` is always passed in and evaluates to truthy)
++		this._filter(todos);
  	}
  
  	/**
-@@ -107,8 +108,9 @@ export default class Controller {
+@@ -108,9 +107,8 @@ export default class Controller {
  	 * @param {!boolean} completed Desired completed state
  	 */
  	toggleCompleted(id, completed) {
--		this.store.update({ id, completed });
--		this.view.setItemComplete(id, completed);
-+		this.store.update({id, completed}, () => {
-+			this.view.setItemComplete(id, completed);
-+		});
+-		this.store.update({id, completed}, () => {
+-			this.view.setItemComplete(id, completed);
+-		});
++		this.store.update({ id, completed });
++		this.view.setItemComplete(id, completed);
  	}
  
  	/**
-@@ -117,10 +119,11 @@ export default class Controller {
+@@ -119,11 +117,10 @@ export default class Controller {
  	 * @param {boolean} completed Desired completed state
  	 */
  	toggleAll(completed) {
--		const data = this.store.find({ completed: !completed });
--		for (let { id } of data) {
--			this.toggleCompleted(id, completed);
--		}
-+		this.store.find({completed: !completed}, data => {
-+			for (let {id} of data) {
-+				this.toggleCompleted(id, completed);
-+			}
-+		});
+-		this.store.find({completed: !completed}, data => {
+-			for (let {id} of data) {
+-				this.toggleCompleted(id, completed);
+-			}
+-		});
++		const data = this.store.find({ completed: !completed });
++		for (let { id } of data) {
++			this.toggleCompleted(id, completed);
++		}
  
  		this._filter();
  	}
-@@ -135,21 +138,21 @@ export default class Controller {
+@@ -138,21 +135,21 @@ export default class Controller {
  
  		if (force || this._lastActiveRoute !== '' || this._lastActiveRoute !== route) {
  			/* jscs:disable disallowQuotedKeysInObjects */
--			const data = this.store.find({
-+			this.store.find({
+-			this.store.find({
++			const data = this.store.find({
  				'': emptyItemQuery,
--				'active': { completed: false },
--				'completed': { completed: true }
--			}[route]);
--			this.view.showItems(data);
-+				'active': {completed: false},
-+				'completed': {completed: true}
-+			}[route], this.view.showItems.bind(this.view));
+-				'active': {completed: false},
+-				'completed': {completed: true}
+-			}[route], this.view.showItems.bind(this.view));
++				'active': { completed: false },
++				'completed': { completed: true }
++			}[route]);
++			this.view.showItems(data);
  			/* jscs:enable disallowQuotedKeysInObjects */
  		}
  
--		const [total, active, completed] = this.store.count();
--		this.view.setItemsLeft(active);
--		this.view.setClearCompletedButtonVisibility(completed);
-+		this.store.count((total, active, completed) => {
-+			this.view.setItemsLeft(active);
-+			this.view.setClearCompletedButtonVisibility(completed);
+-		this.store.count((total, active, completed) => {
+-			this.view.setItemsLeft(active);
+-			this.view.setClearCompletedButtonVisibility(completed);
++		const [total, active, completed] = this.store.count();
++		this.view.setItemsLeft(active);
++		this.view.setClearCompletedButtonVisibility(completed);
  
--		this.view.setCompleteAllCheckbox(completed === total);
--		this.view.setMainVisibility(total);
-+			this.view.setCompleteAllCheckbox(completed === total);
-+			this.view.setMainVisibility(total);
-+		});
+-			this.view.setCompleteAllCheckbox(completed === total);
+-			this.view.setMainVisibility(total);
+-		});
++		this.view.setCompleteAllCheckbox(completed === total);
++		this.view.setMainVisibility(total);
  
  		this._lastActiveRoute = route;
  	}
 diff --git a/examples/vanilla-es6/src/store.js b/examples/vanilla-es6/src/store.js
-index 15fd759..d3bd6a8 100644
+index d3bd6a8..15fd759 100644
 --- a/examples/vanilla-es6/src/store.js
 +++ b/examples/vanilla-es6/src/store.js
-@@ -1,10 +1,11 @@
--import { Item, ItemList, ItemQuery, ItemUpdate, emptyItemQuery } from './item';
-+import {Item, ItemList, ItemQuery, ItemUpdate, emptyItemQuery} from './item';
+@@ -1,11 +1,10 @@
+-import {Item, ItemList, ItemQuery, ItemUpdate, emptyItemQuery} from './item';
++import { Item, ItemList, ItemQuery, ItemUpdate, emptyItemQuery } from './item';
  
  export default class Store {
  	/**
  	 * @param {!string} name Database name
-+	 * @param {function()} [callback] Called when the Store is ready
+-	 * @param {function()} [callback] Called when the Store is ready
  	 */
--	constructor(name) {
-+	constructor(name, callback) {
+-	constructor(name, callback) {
++	constructor(name) {
  		/**
  		 * @type {Storage}
  		 */
-@@ -32,38 +33,44 @@ export default class Store {
+@@ -33,44 +32,38 @@ export default class Store {
  		this.setLocalStorage = (todos) => {
  			localStorage.setItem(name, JSON.stringify(liveTodos = todos));
  		};
-+
-+		if (callback) {
-+			callback();
-+		}
+-
+-		if (callback) {
+-			callback();
+-		}
  	}
  
  	/**
  	 * Find items with properties matching those on query.
  	 *
  	 * @param {ItemQuery} query Query to match
-+	 * @param {function(ItemList)} callback Called when the query is done
+-	 * @param {function(ItemList)} callback Called when the query is done
  	 *
  	 * @example
  	 * db.find({completed: true}, data => {
  	 *	 // data shall contain items whose completed properties are true
  	 * })
  	 */
--	find(query) {
-+	find(query, callback) {
+-	find(query, callback) {
++	find(query) {
  		const todos = this.getLocalStorage();
  		let k;
  
--		return todos.filter(todo => {
-+		callback(todos.filter(todo => {
+-		callback(todos.filter(todo => {
++		return todos.filter(todo => {
  			for (k in query) {
  				if (query[k] !== todo[k]) {
  					return false;
  				}
  			}
  			return true;
--		});
-+		}));
+-		}));
++		});
  	}
  
  	/**
  	 * Update an item in the Store.
  	 *
  	 * @param {ItemUpdate} update Record with an id and a property to update
-+	 * @param {function()} [callback] Called when partialRecord is applied
+-	 * @param {function()} [callback] Called when partialRecord is applied
  	 */
--	update(update) {
-+	update(update, callback) {
+-	update(update, callback) {
++	update(update) {
  		const id = update.id;
  		const todos = this.getLocalStorage();
  		let i = todos.length;
-@@ -79,25 +86,35 @@ export default class Store {
+@@ -86,35 +79,25 @@ export default class Store {
  		}
  
  		this.setLocalStorage(todos);
-+
-+		if (callback) {
-+			callback();
-+		}
+-
+-		if (callback) {
+-			callback();
+-		}
  	}
  
  	/**
  	 * Insert an item into the Store.
  	 *
  	 * @param {Item} item Item to insert
-+	 * @param {function()} [callback] Called when item is inserted
+-	 * @param {function()} [callback] Called when item is inserted
  	 */
--	insert(item) {
-+	insert(item, callback) {
+-	insert(item, callback) {
++	insert(item) {
  		const todos = this.getLocalStorage();
  		todos.push(item);
  		this.setLocalStorage(todos);
-+
-+		if (callback) {
-+			callback();
-+		}
+-
+-		if (callback) {
+-			callback();
+-		}
  	}
  
  	/**
  	 * Remove items from the Store based on a query.
  	 *
  	 * @param {ItemQuery} query Query matching the items to remove
-+	 * @param {function(ItemList)|function()} [callback] Called when records matching query are removed
+-	 * @param {function(ItemList)|function()} [callback] Called when records matching query are removed
  	 */
--	remove(query) {
-+	remove(query, callback) {
+-	remove(query, callback) {
++	remove(query) {
  		let k;
  
  		const todos = this.getLocalStorage().filter(todo => {
-@@ -111,22 +128,27 @@ export default class Store {
+@@ -128,27 +111,22 @@ export default class Store {
  
  		this.setLocalStorage(todos);
  
--		return todos;
-+		if (callback) {
-+			callback(todos);
-+		}
+-		if (callback) {
+-			callback(todos);
+-		}
++		return todos;
  	}
  
  	/**
  	 * Count total, active, and completed todos.
-+	 *
-+	 * @param {function(number, number, number)} callback Called when the count is completed
+-	 *
+-	 * @param {function(number, number, number)} callback Called when the count is completed
  	 */
--	count() {
--		const data = this.find(emptyItemQuery);
--		const total = data.length;
-+	count(callback) {
-+		this.find(emptyItemQuery, data => {
-+			const total = data.length;
+-	count(callback) {
+-		this.find(emptyItemQuery, data => {
+-			const total = data.length;
++	count() {
++		const data = this.find(emptyItemQuery);
++		const total = data.length;
  
--		let i = total;
--		let completed = 0;
-+			let i = total;
-+			let completed = 0;
+-			let i = total;
+-			let completed = 0;
++		let i = total;
++		let completed = 0;
  
--		while (i--) {
--			completed += data[i].completed;
--		}
--		return [total, total - completed, completed];
-+			while (i--) {
-+				completed += data[i].completed;
-+			}
-+			callback(total, total - completed, completed);
-+		});
+-			while (i--) {
+-				completed += data[i].completed;
+-			}
+-			callback(total, total - completed, completed);
+-		});
++		while (i--) {
++			completed += data[i].completed;
++		}
++		return [total, total - completed, completed];
  	}
  }
