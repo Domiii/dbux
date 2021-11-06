@@ -47,27 +47,39 @@ export default class TodomvcEs6Project extends Project {
   }
 
   loadBugs() {
-    // git diff --ignore-cr-at-eol --color=never > ../../dbux-projects/assets/_patches_/todomvc-es6/error10.patch
+    // git diff --ignore-cr-at-eol --color=never | unix2dos > ../../dbux-projects/assets/_patches_/todomvc-es6/error2.patch
     return [
       {
         label: 'Baseline',
         description: 'Working sample.',
-        runArgs: []
+        patch: ['no-callbacks']
+      },
+      {
+        label: 'Empty list with clear error message',
+        description: 'TODO items never show up. Luckily there is a clear error message.',
+        patch: ['no-callbacks'],
+        domains: ['init', 'controller'],
+        bugLocations: [
+          {
+            file: 'src/controller.js',
+            line: 147
+          }
+        ]
+      },
+      {
+        // label: 'Empty list with clear error message',
+        // description: 'TODO items never show up. Luckily there is a clear error message.',
+        patch: ['no-callbacks', 'error2'],
+        domains: ['init', 'controller'],
+        bugLocations: [
+          {
+            file: 'src/controller.js',
+            line: 123
+          }
+        ]
       },
 
-      // {
-      //   // TODO: error stack trace is polluted... can we fix that?
-      //   label: 'Empty list with clear error message',
-      //   patch: 'error1',
-      //   description: 'TODO items never show up. Luckily there is a clear error message.',
-      //   runArgs: [],
-      //   bugLocations: [
-      //     {
-      //       file: 'src/controller.js',
-      //       line: 65
-      //     }
-      //   ]
-      // },
+
       // {
       //   label: 'Empty list with silenced exception',
       //   patch: 'error3',

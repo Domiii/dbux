@@ -727,7 +727,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     if ('patch' in bug) {
       if (bug.patch) {
         // NOTE: this way we may set `bug.patch = null` to avoid applying any patch
-        await this.applyPatch(bug.patch);
+        await this.applyPatches(bug.patch);
       }
     }
   }
@@ -1044,6 +1044,15 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       patchFName += '.patch';
     }
     return pathJoin(this.getPatchFolder(), patchFName);
+  }
+
+  async applyPatches(patchFNames, revert = false) {
+    if (!Array.isArray(patchFNames)) {
+      patchFNames = [patchFNames];
+    }
+    for (const fname of patchFNames) {
+      await this.applyPatch(fname, revert);
+    }
   }
 
   /**
