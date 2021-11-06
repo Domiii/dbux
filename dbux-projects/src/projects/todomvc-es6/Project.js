@@ -47,7 +47,7 @@ export default class TodomvcEs6Project extends Project {
   }
 
   loadBugs() {
-    // git diff --ignore-cr-at-eol --color=never | unix2dos > ../../dbux-projects/assets/_patches_/todomvc-es6/error2.patch
+    // git diff --ignore-cr-at-eol --color=never | unix2dos > ../../dbux-projects/assets/_patches_/todomvc-es6/error.patch
     return [
       {
         label: 'Baseline',
@@ -67,14 +67,14 @@ export default class TodomvcEs6Project extends Project {
         ]
       },
       {
-        // label: 'Empty list with clear error message',
+        label: 'Initial rendering of the list shows completed as not completed and vice versa',
         // description: 'TODO items never show up. Luckily there is a clear error message.',
         patch: ['no-callbacks', 'error2'],
-        domains: ['init', 'controller'],
+        domains: ['init', 'render'],
         bugLocations: [
           {
-            file: 'src/controller.js',
-            line: 123
+            file: 'src/template.js',
+            line: 21
           }
         ]
       },

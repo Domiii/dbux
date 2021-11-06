@@ -686,7 +686,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
         successfulCacheFlag = true;
       }
       else {
-        this.logger.warn(`installBug failed - tried to checkout bug tag "${bugCachedTag}", but instead at "${currentTags}" - re-installing bug`);
+        throw new Error(`installBug failed - tried to checkout bug tag "${bugCachedTag}", but could not find tag (found: "${currentTags}"). Please re-install bug.`);
       }
     }
 
