@@ -160,7 +160,7 @@ class TagNode extends SessionNode {
   }
 
   static makeLabel() {
-    return 'I found it! (tag this trace)';
+    return 'The bug is in the selected trace\'s line!';
   }
 
   init() {

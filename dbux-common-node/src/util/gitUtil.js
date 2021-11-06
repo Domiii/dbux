@@ -15,3 +15,4 @@ export function gitCloneCmd(gitRemote, ref, targetFolder) {
     `git reset --hard ${ref}`
   ];
 }
+

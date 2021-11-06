@@ -162,7 +162,7 @@ export default class PracticeSession {
     else if (isCorrect === null) {
       // skip if the result is null or something else, since bug location may not been defined yet
       // TOTRANSLATE
-      const failedMsg = `Sorry, we have not defined the bug location yet.`;
+      const failedMsg = `This exercise has no bugs.`;
       this.manager.externals.alert(failedMsg, false);
     }
   }

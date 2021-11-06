@@ -19,7 +19,7 @@ export default class TodomvcEs6Project extends Project {
     return pathResolve(this.projectPath, RelativeRoot);
   }
 
-  getRelativeFilePath(fpath) {
+  getAbsoluteFilePath(fpath) {
     return pathResolve(this.actualProjectRoot, fpath);
   }
 
@@ -57,7 +57,7 @@ export default class TodomvcEs6Project extends Project {
       {
         label: 'Empty list with clear error message',
         description: 'TODO items never show up. Luckily there is a clear error message.',
-        patch: ['no-callbacks'],
+        patch: ['no-callbacks', 'error1'],
         domains: ['init', 'controller'],
         bugLocations: [
           {
@@ -252,7 +252,10 @@ export default class TodomvcEs6Project extends Project {
     // fix relative file paths
     bug.mainEntryPoint = this.builder.getEntryOutputPath('bundle', bug);
     if (bug.bugLocations) {
-      bug.bugLocations = bug.bugLocations.map(l => this.getRelativeFilePath(l.file));
+      bug.bugLocations = bug.bugLocations.map(loc => (loc && {
+        ...loc,
+        file: this.getAbsoluteFilePath(loc.file)
+      }));
     }
   }
 

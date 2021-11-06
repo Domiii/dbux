@@ -339,17 +339,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
    */
   async _gitCheckout(checkoutArgs) {
     await this.checkCorrectGitRepository();
-
-    /**
-     * hackfix: git checkout is FRUSTATINGLY inconsistent -
-     *   1. for some reason, git checkout does not return a code, if it errors out
-     *   2. info messages are also sent to stderr
-     *  -> so we need to use heuristics on stderr instead
-     */
-    const err = await this.execCaptureErr(`${this.gitCommand} checkout ${checkoutArgs}`);
-    if (err.startsWith('error:')) {
-      throw new Error(`"git checkout ${checkoutArgs}" failed - message: ${err}`);
-    }
+    await this.execGitCaptureErr(`checkout ${checkoutArgs}`);
   }
 
 
@@ -500,6 +490,27 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       ...(processOptions || EmptyObject)
     };
     return Process.execCaptureErr(command, { processOptions });
+  }
+
+  /**
+   * hackfix: Several git commands are FRUSTATINGLY inconsistent -
+   *   1. for some reason, git checkout does not return a code, if it errors out
+   *   2. info messages (not just error messages) are also sent to stderr
+   *      -> so we need to use heuristics on stderr to get the actual error status
+   */
+  execGitCaptureErr = async (cmd, ...moreArgs) => {
+    let errStringResult;
+    try {
+      const actualCommand = `${this.gitCommand} ${cmd}`;
+      errStringResult = (await this.execCaptureErr(actualCommand, ...moreArgs)).trim();
+    }
+    catch (err) {
+      throw new NestedError(`Git command "${cmd}" failed`, err);
+    }
+    if (errStringResult.startsWith('error:')) {
+      throw new Error(`Git command "${cmd}" failed:\n  ${errStringResult}`);
+    }
+    return errStringResult;
   }
 
   execBackground(cmd, options) {
@@ -1068,7 +1079,9 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     const patchPath = this.getPatchFile(patchFName);
 
     try {
-      return this.exec(`${this.gitCommand} apply ${revert ? '-R' : ''} --ignore-space-change --ignore-whitespace "${patchPath}"`);
+      return await this.execGitCaptureErr(
+        `apply ${revert ? '-R' : ''} --ignore-space-change --ignore-whitespace "${patchPath}"`
+      );
     }
     catch (err) {
       // eslint-disable-next-line max-len
