@@ -1,0 +1,13 @@
+diff --git a/examples/vanilla-es6/src/store.js b/examples/vanilla-es6/src/store.js
+index 15fd759..cb5f678 100644
+--- a/examples/vanilla-es6/src/store.js
++++ b/examples/vanilla-es6/src/store.js
+@@ -124,7 +124,7 @@ export default class Store {
+ 		let i = total;
+ 		let completed = 0;
+ 
+-		while (i--) {
++		while (--i) {
+ 			completed += data[i].completed;
+ 		}
+ 		return [total, total - completed, completed];

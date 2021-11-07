@@ -68,7 +68,9 @@ export default class TodomvcEs6Project extends Project {
           }
         ],
         difficulty: {
-          obviousStartingPoint: true
+          error: {
+            closeToCause: true
+          }
         }
       },
       {
@@ -137,18 +139,79 @@ export default class TodomvcEs6Project extends Project {
         ]
       },
       {
-        label: '"',
+        label: '"X items left" not counting first item in list.',
         patch: ['no-callbacks', 'error6'],
-        domains: ['render'],
-        stepsToReproduce: [],
-        bugTags: [''],
+        domains: ['store'],
+        stepsToReproduce: ['Have a non-empty list.', 'Toggle the first item on/off/on/off while looking at the count at the bottom ("X items left").'],
+        // notes: ['There are two hard problems in computer science: ... and off-by-one errors!'],
+        bugTags: ['off-by-one'],
         bugLocations: [
           {
-            file: 'src/template.js',
-            line: -1
+            file: 'src/store.js',
+            line: 128
           }
         ]
       },
+      {
+        label: 'TODO',
+        patch: ['no-callbacks', 'error7'],
+        domains: ['store'],
+        stepsToReproduce: ['Have a non-empty list.', 'Toggle or edit any item.', 'Re-load the page and find that it did not get saved.'],
+        bugTags: ['error', 'data-access-array', 'data-access-object'],
+        bugLocations: [
+          {
+            file: 'src/store.js',
+            line: 75
+          }
+        ],
+        difficulty: {
+          error: {
+            closeToCause: true
+          }
+        }
+      },
+      {
+        label: '',
+        patch: ['no-callbacks', 'error8'],
+        domains: ['store'],
+        stepsToReproduce: ['Have a non-empty list.', 'Toggle or edit any item.', 'Re-load to see that rendering has stopped working.'],
+        // eslint-disable-next-line max-len
+        warnings: ['This exercise may corrupt your `localStorage`. When that happens, you have to clear the `localStorage` manually (or if you don\t know how to: manually reset the exercise) before using the application again.'], // TODO: show at a relevant time? maybe patch into the `store.js` load code?
+        bugTags: ['error', 'data-access-array', 'data-access-object'],
+        sln: ['Merge, instead of override.'],
+        bugLocations: [
+          {
+            file: 'src/store.js',
+            line: 75
+          }
+        ],
+        difficulty: {
+          hard: 1,    // relatively hard, for this project
+          notes: ['More difficult to reproduce, since each retry requires clearing `localStorage`.'],
+          error: {
+            closeToCause: false
+          }
+        }
+      },
+      // {
+      //   label: '',
+      //   patch: ['no-callbacks', 'errorX'],
+      //   domains: [''],
+      //   stepsToReproduce: ['Have a non-empty list.'],
+      //   bugTags: [''],
+      //   bugLocations: [
+      //     {
+      //       file: 'src/.js',
+      //       line: 
+      //     }
+      //   ]
+      // },
+
+
+
+      // TODO: re-arrange `[total, total - completed, completed];`
+      // TODO: Concept(accessing third-party data structures (DOM)) - `const elem = qs(`[data-id="${id}"]`);`
+
       // {
       //   // see: https://github.com/kentcdodds/es6-todomvc/issues/39
       //   label: 'After switching between filters, the old filter still applies.',

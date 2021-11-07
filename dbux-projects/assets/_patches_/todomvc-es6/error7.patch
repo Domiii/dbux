@@ -1,0 +1,13 @@
+diff --git a/examples/vanilla-es6/src/store.js b/examples/vanilla-es6/src/store.js
+index 15fd759..4771505 100644
+--- a/examples/vanilla-es6/src/store.js
++++ b/examples/vanilla-es6/src/store.js
+@@ -72,7 +72,7 @@ export default class Store {
+ 		while (i--) {
+ 			if (todos[i].id === id) {
+ 				for (k in update) {
+-					todos[i][k] = update[k];
++					todos[k][i] = update[k];
+ 				}
+ 				break;
+ 			}
