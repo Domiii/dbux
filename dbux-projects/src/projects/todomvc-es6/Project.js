@@ -59,6 +59,7 @@ export default class TodomvcEs6Project extends Project {
         description: 'TODO items never show up. Luckily there is a clear error message.',
         patch: ['no-callbacks', 'error1'],
         domains: ['init', 'controller'],
+        bugTags: ['typo'],
         bugLocations: [
           {
             file: 'src/controller.js',
@@ -67,14 +68,54 @@ export default class TodomvcEs6Project extends Project {
         ]
       },
       {
-        label: 'Initial rendering of the list shows completed as not completed and vice versa',
+        label: 'Completed TODO items are shown as not completed and vice versa (only during initial rendering)',
         // description: 'TODO items never show up. Luckily there is a clear error message.',
         patch: ['no-callbacks', 'error2'],
         domains: ['init', 'render'],
+        bugTags: ['boolean logic', 'operator'],
         bugLocations: [
           {
             file: 'src/template.js',
             line: 21
+          }
+        ]
+      },
+      {
+        label: 'Only the last TODO item is shown',
+        // description: 'TODO items never show up. Luckily there is a clear error message.',
+        patch: ['no-callbacks', 'error3'],
+        domains: ['init', 'render'],
+        bugTags: ['Array.reduce'],
+        bugLocations: [
+          {
+            file: 'src/template.js',
+            line: 20
+          }
+        ]
+      },
+      {
+        label: 'Empty list, but no error message',
+        // description: 'TODO items never show up. Luckily there is a clear error message.',
+        patch: ['no-callbacks', 'error4'],
+        domains: ['init', 'render'],
+        bugTags: ['typo'],
+        bugLocations: [
+          {
+            file: 'src/view.js',
+            line: 51
+          }
+        ]
+      },
+      {
+        label: 'Empty list, but no error message',
+        // description: 'TODO items never show up. Luckily there is a clear error message.',
+        patch: ['no-callbacks', 'error5'],
+        domains: ['init', 'render'],
+        bugTags: ['typo'],
+        bugLocations: [
+          {
+            file: 'src/template.js',
+            line: 20
           }
         ]
       },
