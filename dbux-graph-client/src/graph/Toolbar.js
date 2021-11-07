@@ -10,32 +10,32 @@ class Toolbar extends ClientComponentEndpoint {
     return compileHtmlElement(/*html*/`
       <nav class="navbar sticky-top navbar-expand-lg no-padding" id="toolbar">
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
-          <button title="Stop recording: Do not add new runs/traces" data-el="hideNewRunBtn" class="btn btn-info" href="#"></button>
-          <button title="Clear: Hide all existing runs/traces" data-el="hideOldRunBtn" class="btn btn-info" href="#">x</button>
-          <button title="Sync and always lock onto selected trace" data-el="followModeBtn" class="btn btn-info" href="#">follow</button>
-          <button title="Show location of context (function declaration or start of file)" data-el="locModeBtn" class="btn btn-info" href="#">loc</button>
-          <button title="Show caller (call trace) of function call" data-el="callModeBtn" class="btn btn-info" href="#">call</button>
-          <button title="Show arguments and return value of function call in the form of: (args) -> returnValue" data-el="valueModeBtn" class="btn btn-info" href="#">val</button>
+          <button title="Stop recording: Do not add new runs/traces" data-el="hideNewRunBtn" class="toolbar-btn btn btn-info" href="#"></button>
+          <button title="Clear: Hide all existing runs/traces" data-el="hideOldRunBtn" class="toolbar-btn btn btn-info" href="#">x</button>
+          <button title="Sync and always lock onto selected trace" data-el="followModeBtn" class="toolbar-btn btn btn-info" href="#">follow</button>
+          <button title="Show location of context (function declaration or start of file)" data-el="locModeBtn" class="toolbar-btn btn btn-info" href="#">loc</button>
+          <button title="Show caller (call trace) of function call" data-el="callModeBtn" class="toolbar-btn btn btn-info" href="#">call</button>
+          <button title="Show arguments and return value of function call in the form of: (args) -> returnValue" data-el="valueModeBtn" class="toolbar-btn btn btn-info" href="#">val</button>
           <button title="Thin mode" data-el="thinModeBtn" class="no-horizontal-padding btn btn-info" href="#"></button>
-          <button title="Search for contexts by name" data-el="searchContextsBtn" class="btn btn-info" href="#">🔍</button>
-          <button title="Search for traces by name" data-el="searchTracesBtn" class="btn btn-info" href="#">🔍+</button>
-          <button title="Toggle Async Graph Mode" data-el="graphModeBtn" class="btn btn-info" href="#">async</button>
-          <button title="Toggle Async Stack" data-el="asyncStackBtn" class="btn btn-info" href="#">stack</button>
-          <button title="Toggle Async Detail" data-el="asyncDetailModeBtn" class="btn btn-info" href="#">detail</button>
-          <button title="Clear Thread Selection" data-el="clearThreadSelectionBtn" class="btn btn-info" href="#">
+          <button title="Search for contexts by name" data-el="searchContextsBtn" class="toolbar-btn btn btn-info" href="#">🔍</button>
+          <button title="Search for traces by name" data-el="searchTracesBtn" class="toolbar-btn btn btn-info" href="#">🔍+</button>
+          <button title="Toggle Async Graph Mode" data-el="graphModeBtn" class="toolbar-btn btn btn-info" href="#">async</button>
+          <button title="Toggle Async Stack" data-el="asyncStackBtn" class="toolbar-btn btn btn-info" href="#">stack</button>
+          <button title="Toggle Async Detail" data-el="asyncDetailModeBtn" class="toolbar-btn btn btn-info" href="#">detail</button>
+          <button title="Clear Thread Selection" data-el="clearThreadSelectionBtn" class="toolbar-btn btn btn-info" href="#">
             <img width="12px" src="${this.state.theradSelectionIconUri}" />
           </button>
         </div>
         <div data-el="moreMenu" class="dropdown">
-          <button data-el="moreMenuBtn" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <button data-el="moreMenuBtn" class="toolbar-btn btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             ☰
           </button>
           <div data-el="moreMenuBody" class="dropdown-menu" 
           style="left: inherit; right: 0; min-width: 0;"
           aria-labelledby="dropdownMenuButton">
-            <!--button data-el="showIdsBtn" class="btn btn-info full-width" href="#">ids</button-->
+            <!--button data-el="showIdsBtn" class="toolbar-btn btn btn-info full-width" href="#">ids</button-->
             <div class="dropdown-divider"></div>
-            <button title="Restart the Webview (can eliviate some bugs)" data-el="restartBtn" class="btn btn-danger full-width" href="#">Restart</button>
+            <button title="Restart the Webview (can eliviate some bugs)" data-el="restartBtn" class="toolbar-btn btn btn-danger full-width" href="#">Restart</button>
           </div>
         </div>
       </nav>

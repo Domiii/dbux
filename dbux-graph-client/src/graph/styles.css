@@ -711,3 +711,11 @@ body:not(.theme-mode-dark) .highlight {
 .research-mode .context-stats {
   display: none !important;
 }
+
+/** ###########################################################################
+ * toolbar
+ * ############################################################################*/
+
+.toolbar-btn {
+  padding: 4px !important;
+}

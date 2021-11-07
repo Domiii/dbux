@@ -51,6 +51,21 @@ export class PostUpdateData {
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dataProviderUtil');
 
+/** ###########################################################################
+ * util used for rendering strings
+ * ##########################################################################*/
+
+const ShortenMaxLength = 20;
+const ShortenCfg = { length: ShortenMaxLength - 2 };
+const ShortenNestedCfg = { length: ShortenMaxLength - 2 };
+
+/**
+ * @param {string} s 
+ */
+function makeShortString(s, cfg) {
+  return truncate(s.replace(/\s+/g, ' '), cfg);
+}
+
 export default {
 
   // ###########################################################################
@@ -663,7 +678,6 @@ export default {
    */
   getDataNodeValueString(dp, nodeId, shorten = false) {
     const dataNode = dp.collections.dataNodes.getById(nodeId);
-    const ShortenMaxLength = 20;
 
     // check cached string
     if (shorten) {
@@ -696,17 +710,17 @@ export default {
         const { category } = valueRef;
         if (ValueTypeCategory.is.Array(category)) {
           let content = `${entries.map(x => dp.util._simplifyValue(x))}`;
-          shorten && (content = truncate(content, { length: ShortenMaxLength - 2 }));
+          shorten && (content = makeShortString(content, ShortenNestedCfg));
           valueString = `[${content}]`;
         }
         else if (ValueTypeCategory.is.Object(category)) {
           let content = `${Object.keys(entries)}`;
-          shorten && (content = truncate(content, { length: ShortenMaxLength - 2 }));
+          shorten && (content = makeShortString(content, ShortenNestedCfg));
           valueString = `{${content}}`;
         }
         else if (ValueTypeCategory.is.Function(category)) {
           let content = entries.name?.[2] || '(anonymous)';
-          shorten && (content = truncate(content, { length: ShortenMaxLength - 2 }));
+          shorten && (content = makeShortString(content, ShortenNestedCfg));
           valueString = `ƒ ${content}`;
         }
         else {
@@ -720,7 +734,7 @@ export default {
     }
 
     if (shorten) {
-      valueString = truncate(valueString, { length: ShortenMaxLength });
+      valueString = makeShortString(valueString, ShortenCfg);
       dataNode._valueStringShort = valueString;
     }
     else {

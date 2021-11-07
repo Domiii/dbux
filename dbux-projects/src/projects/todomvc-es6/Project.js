@@ -65,7 +65,10 @@ export default class TodomvcEs6Project extends Project {
             file: 'src/controller.js',
             line: 147
           }
-        ]
+        ],
+        difficulty: {
+          obviousStartingPoint: true
+        }
       },
       {
         label: 'Completed TODO items are shown as not completed and vice versa (only during initial rendering)',
@@ -78,7 +81,10 @@ export default class TodomvcEs6Project extends Project {
             file: 'src/template.js',
             line: 21
           }
-        ]
+        ],
+        difficulty: {
+          obviousStartingPoint: false
+        }
       },
       {
         label: 'Only the last TODO item is shown',
@@ -91,7 +97,10 @@ export default class TodomvcEs6Project extends Project {
             file: 'src/template.js',
             line: 20
           }
-        ]
+        ],
+        difficulty: {
+          obviousStartingPoint: false
+        }
       },
       {
         label: 'Empty list, but no error message',
@@ -104,14 +113,17 @@ export default class TodomvcEs6Project extends Project {
             file: 'src/view.js',
             line: 51
           }
-        ]
+        ],
+        difficulty: {
+          obviousStartingPoint: false
+        }
       },
       {
-        label: 'Empty list, but no error message',
+        label: '',
         // description: 'TODO items never show up. Luckily there is a clear error message.',
         patch: ['no-callbacks', 'error5'],
         domains: ['init', 'render'],
-        bugTags: ['typo'],
+        bugTags: [''],
         bugLocations: [
           {
             file: 'src/template.js',

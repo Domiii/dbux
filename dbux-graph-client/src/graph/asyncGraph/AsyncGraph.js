@@ -2,7 +2,8 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import AsyncEventUpdateType from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import { getStaticContextColor } from '@dbux/graph-common/src/shared/contextUtil';
-import AsyncNodeDataMap from '@dbux/graph-common/src/shared/AsyncNodeDataMap';
+import AsyncNodeDataMap from '@dbux/graph-common/src/graph/types/AsyncNodeDataMap';
+import AsyncNodeData from '@dbux/graph-common/src/graph/types/AsyncNodeData';
 import { compileHtmlElement, getMatchParent } from '../../util/domUtil';
 import { AsyncButtonClasses } from './asyncButtons';
 import GraphBase from '../GraphBase';
@@ -115,15 +116,20 @@ class AsyncGraph extends GraphBase {
     }
   }
 
+  /**
+   * @param {AsyncNodeData} nodeData 
+   */
   makeAsyncNodeEl(nodeData) {
     const {
       asyncNode,
+
       rowId,
       colId,
       width,
       displayName,
       locLabel,
 
+      isProgramRoot,
       realStaticContextid,
       moduleName,
       postAsyncEventUpdateType,
@@ -153,7 +159,12 @@ class AsyncGraph extends GraphBase {
         shortLabel = 'C';
         break;
       default:
-        shortLabel = '⬤';
+        if (isProgramRoot) {
+          shortLabel = 'F'; // File
+        }
+        else {
+          shortLabel = '⬤';
+        }
         break;
     }
     if (this.context.screenshotMode) {

@@ -3,7 +3,7 @@ import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection/index';
 import { makeContextLocLabel, makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
-import AsyncNodeDataMap from '@dbux/graph-common/src/shared/AsyncNodeDataMap';
+import AsyncNodeDataMap from '@dbux/graph-common/src/graph/types/AsyncNodeDataMap';
 import GraphType from '@dbux/graph-common/src/shared/GraphType';
 import GraphBase from '../GraphBase';
 
@@ -69,12 +69,13 @@ class AsyncGraph extends GraphBase {
 
       const app = allApplications.getById(applicationId);
       const dp = app.dataProvider;
-      const context = dp.collections.executionContexts.getById(rootContextId);
-      const displayName = makeContextLabel(context, app);
-      const locLabel = makeContextLocLabel(applicationId, context);
+      const executionContext = dp.collections.executionContexts.getById(rootContextId);
+      const displayName = makeContextLabel(executionContext, app);
+      const locLabel = makeContextLocLabel(applicationId, executionContext);
       const syncInCount = dp.indexes.asyncEvents.syncInByRoot.getSize(rootContextId);
       const syncOutCount = dp.indexes.asyncEvents.syncOutByRoot.getSize(rootContextId);
 
+      const isProgramRoot = dp.util.isContextProgramContext(rootContextId);
       const realStaticContextid = dp.util.getRealContextOfContext(rootContextId).staticContextId;
       const moduleName = dp.util.getContextModuleName(rootContextId);
       const postAsyncEventUpdate = dp.util.getAsyncPostEventUpdateOfRoot(rootContextId);
@@ -98,6 +99,8 @@ class AsyncGraph extends GraphBase {
 
       return {
         asyncNode,
+        executionContext,
+
         displayName,
         locLabel,
         syncInCount,
@@ -107,6 +110,7 @@ class AsyncGraph extends GraphBase {
         parentAsyncNodeId,
         nestingDepth,
 
+        isProgramRoot,
         realStaticContextid,
         moduleName,
         postAsyncEventUpdateType,
