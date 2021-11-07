@@ -1,0 +1,12 @@
+diff --git a/examples/vanilla-es6/src/template.js b/examples/vanilla-es6/src/template.js
+index 947303b..f20c681 100644
+--- a/examples/vanilla-es6/src/template.js
++++ b/examples/vanilla-es6/src/template.js
+@@ -35,6 +35,6 @@ export default class Template {
+ 	 * @returns {!string} Contents for an "items left" indicator
+ 	 */
+ 	itemCounter(activeTodos) {
+-		return `${activeTodos} item${activeTodos !== 1 ? 's' : ''} left`;
++		return `${activeTodos} item${activeTodos !== 0 ? 's' : ''} left`;
+ 	}
+ }
