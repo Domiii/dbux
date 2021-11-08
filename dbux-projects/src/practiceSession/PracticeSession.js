@@ -13,7 +13,7 @@ import PracticeSessionData from './PracticeSessionData';
 const { log, debug, warn, error: logError } = newLogger('PracticeSession');
 
 /** @typedef {import('../projectLib/Project').default} Project */
-/** @typedef {import('../projectLib/Bug').default} Bug */
+/** @typedef {import('../projectLib/Exercise').default} Bug */
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
 
 export default class PracticeSession {

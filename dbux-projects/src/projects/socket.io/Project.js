@@ -1,9 +1,10 @@
 import Project from '../../projectLib/Project';
 // import { buildNodeCommand } from '../../util/nodeUtil';
 
+/** @typedef {import('../../projectLib/BugConfig').default} BugConfig */
 
 /**
- * TODO: not done. Missing server and example script.
+ * 
  */
 export default class SocketIOProject extends Project {
   gitRemote = 'socketio/socket.io-client.git';
@@ -22,6 +23,9 @@ export default class SocketIOProject extends Project {
     await this.execInTerminal('yarn install --prod');
   }
 
+  /**
+   * @return {BugConfig[]}
+   */
   loadBugs() {
     return [
       {

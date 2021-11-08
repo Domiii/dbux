@@ -32,7 +32,7 @@ const depsStorageKey = 'PracticeManager.deps';
 const savedPracticeSessionKey = 'dbux.dbux-projects.savedPracticeSession';
 
 /** @typedef {import('./projectLib/Project').default} Project */
-/** @typedef {import('./projectLib/Bug').default} Bug */
+/** @typedef {import('./projectLib/Exercise').default} Bug */
 /** @typedef {import('./externals/Storage').default} ExternalStorage */
 /** @typedef {import('dbux-code/src/terminal/TerminalWrapper').default} TerminalWrapper */
 

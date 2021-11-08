@@ -5,7 +5,7 @@ import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import { shouldClumpTogether, getGroupTypeByActionType } from '@dbux/data/src/pathways/ActionGroupType';
 import TestRun from './TestRun';
 
-/** @typedef {import('../projectLib/Bug').default} Bug */
+/** @typedef {import('../projectLib/Exercise').default} Bug */
 /** @typedef {import('./PathwaysDataProvider').default} PathwaysDataProvider */
 
 export default {

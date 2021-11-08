@@ -1,11 +1,17 @@
 import Project from '../../projectLib/Project';
 
 
+/** @typedef {import('../../projectLib/BugConfig').default} BugConfig */
+
+
 export default class AsyncJsProject extends Project {
   gitRemote = 'caolan/async.git';
   gitCommit = 'tags/v3.2.0'
   packageManager = 'yarn';
 
+  /**
+   * @return {BugConfig[]}
+   */
   loadBugs() {
     return [
       {

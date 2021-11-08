@@ -1,8 +1,9 @@
 import sh from 'shelljs';
 import Project from '../../projectLib/Project';
-import Bug from '../../projectLib/Bug';
+import Bug from '../../projectLib/Exercise';
 import { buildMochaRunCommand } from '../../util/mochaUtil';
 
+/** @typedef {import('../../projectLib/BugConfig').default} BugConfig */
 
 export default class HexoProject extends Project {
   gitRemote = 'BugsJS/hexo.git';

@@ -4,7 +4,9 @@ import sh from 'shelljs';
 import Project from '../../projectLib/Project';
 // import { buildMochaRunCommand } from '../../util/mochaUtil';
 
-/** @typedef {import('../../projectLib/Bug').default} Bug */
+/** @typedef {import('../../projectLib/Exercise').default} Bug */
+/** @typedef {import('../../projectLib/BugConfig').default} BugConfig */
+
 
 export default class ChartJsProject extends Project {
   gitRemote = 'chartjs/Chart.js.git';
@@ -17,6 +19,9 @@ export default class ChartJsProject extends Project {
     await this.execInTerminal(`npm i -D @rollup/plugin-babel@5.3.0 rollup-plugin-serve@1.1.0`);
   }
 
+  /**
+   * @return {BugConfig[]}
+   */
   loadBugs() {
     // TODO: load automatically from BugsJs bug database
     // NOTE: some bugs have multiple test files, or no test file at all

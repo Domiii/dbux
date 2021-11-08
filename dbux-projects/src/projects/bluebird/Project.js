@@ -1,5 +1,7 @@
 import Project from '../../projectLib/Project';
 
+/** @typedef {import('../../projectLib/BugConfig').default} BugConfig */
+
 
 /**
  * NOTE: this is not a good project to play around with
@@ -13,6 +15,9 @@ export default class BluebirdProject extends Project {
 
   packageManager = 'yarn';
 
+  /**
+   * @return {BugConfig[]}
+   */
   loadBugs() {
     return [
       {

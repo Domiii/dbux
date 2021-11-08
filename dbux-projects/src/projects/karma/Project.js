@@ -4,6 +4,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import Project from '../../projectLib/Project';
 import { buildMochaRunCommand } from '../../util/mochaUtil';
 
+/** @typedef {import('../../projectLib/BugConfig').default} BugConfig */
 
 export default class KarmaProject extends Project {
   gitRemote = 'BugsJS/karma.git';
@@ -26,6 +27,9 @@ export default class KarmaProject extends Project {
   }
 
 
+  /**
+   * @return {BugConfig[]}
+   */
   loadBugs() {
     // TODO: load automatically from BugsJs bug database
     // NOTE: some bugs have multiple test files, or no test file at all

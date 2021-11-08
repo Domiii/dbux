@@ -12,6 +12,9 @@ export default class RealworldWebComponentsProject extends Project {
   gitCommit = 'e435cf6b57a7214c158d289335d2b867c5d45c92';
   
 
+  /**
+   * @return {BugConfig[]}
+   */
   loadBugs() {
     // TODO: add/generate some bugs?
     return [

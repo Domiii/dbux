@@ -3,6 +3,7 @@ import fs, { existsSync, mkdirSync } from 'fs';
 import pull from 'lodash/pull';
 import defaultsDeep from 'lodash/defaultsDeep';
 import sh from 'shelljs';
+import NestedError from '@dbux/common/src/NestedError';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
@@ -16,7 +17,6 @@ import { buildNodeCommand } from '../util/nodeUtil';
 import { checkSystemWithRequirement } from '../checkSystem';
 import RunStatus, { isStatusRunningType } from './RunStatus';
 import ProjectBase from './ProjectBase';
-import NestedError from '@dbux/common/src/NestedError';
 
 const Verbose = false;
 const SharedAssetFolder = '_shared_assets_';
@@ -25,7 +25,7 @@ const PatchFolderName = '_patches_';
 const GitInstalledTag = '__dbux_project_installed';
 
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
-/** @typedef {import('./Bug').default} Bug */
+/** @typedef {import('./Exercise').default} Bug */
 
 /**
  * Project class file.

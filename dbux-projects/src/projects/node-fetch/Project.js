@@ -16,6 +16,9 @@ export default class NodeFetchProject extends Project {
 
   packageManager = 'yarn';
 
+  /**
+   * @return {BugConfig[]}
+   */
   loadBugs() {
     return [
       {

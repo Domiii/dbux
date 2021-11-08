@@ -4,7 +4,8 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import Project from '../../projectLib/Project';
 import { buildMochaRunCommand } from '../../util/mochaUtil';
 
-/** @typedef {import('../../projectLib/Bug').default} Bug */
+/** @typedef {import('../../projectLib/Exercise').default} Bug */
+/** @typedef {import('../../projectLib/BugConfig').default} BugConfig */
 
 export default class EslintProject extends Project {
   gitRemote = 'BugsJS/eslint.git';
@@ -26,6 +27,9 @@ export default class EslintProject extends Project {
   }
 
 
+  /**
+   * @return {BugConfig[]}
+   */
   loadBugs() {
     // TODO: load automatically from BugsJs bug database
     // NOTE: some bugs have multiple test files, or no test file at all

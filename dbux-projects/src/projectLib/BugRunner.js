@@ -14,7 +14,7 @@ import Process from '../util/Process';
 import BugRunnerStatus, { isStatusRunningType } from './RunStatus';
 
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
-/** @typedef {import('./Bug').default} Bug */
+/** @typedef {import('./Exercise').default} Bug */
 /** @typedef {import('./Project').default} Project */
 
 const activatedBugKeyName = 'dbux.dbux-projects.activatedBug';

@@ -3,6 +3,9 @@ import WebpackBuilder from '../../buildTools/WebpackBuilder';
 // import { getAllFilesInFolders } from '../../util/fileUtil';
 
 
+/** @typedef {import('../../projectLib/BugConfig').default} BugConfig */
+
+
 export default class _2048Project extends Project {
   gitRemote = 'gabrielecirulli/2048.git';
   gitCommit = 'fc1ef4f';
@@ -22,6 +25,9 @@ export default class _2048Project extends Project {
     // await this.autoCommit(); // NOTE: autoCommit is called right after this method
   }
 
+  /**
+   * @return {BugConfig[]}
+   */
   loadBugs() {
     // git diff --color=never --ignore-cr-at-eol > ../../dbux-projects/assets/_patches_/2048/error.patch
 

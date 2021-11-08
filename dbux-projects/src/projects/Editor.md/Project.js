@@ -1,6 +1,8 @@
 import Project from '../../projectLib/Project';
 import WebpackBuilder from '../../buildTools/WebpackBuilder';
 
+/** @typedef {import('../../projectLib/BugConfig').default} BugConfig */
+
 /**
  * Debug
  *
@@ -37,6 +39,9 @@ export default class EditorMdProject extends Project {
     await this.applyPatch('baseline');
   }
 
+  /**
+   * @return {BugConfig[]}
+   */
   loadBugs() {
     // git diff --color=never --ignore-cr-at-eol > ../../dbux-projects/assets/_patches_/Editor.md/baseline.patch | unix2dos
 

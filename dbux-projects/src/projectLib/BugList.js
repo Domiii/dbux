@@ -1,5 +1,5 @@
 import { newLogger } from '@dbux/common/src/log/logger';
-import Bug from './Bug';
+import Bug from './Exercise';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-code');

@@ -1,6 +1,8 @@
 import Project from '../../projectLib/Project';
 import { buildJestRunBugCommand } from '../../util/jestUtil';
 
+/** @typedef {import('../../projectLib/BugConfig').default} BugConfig */
+
 export default class JavascriptAlgorithmProject extends Project {
   gitRemote = 'trekhleb/javascript-algorithms.git';
 
@@ -9,6 +11,9 @@ export default class JavascriptAlgorithmProject extends Project {
     '.huskyrc.json'   // unwanted commit hooks
   ];
 
+  /**
+   * @return {BugConfig[]}
+   */
   loadBugs() {
     // TODO: load automatically from BugsJs bug database
     // NOTE: some bugs have multiple test files, or no test file at all

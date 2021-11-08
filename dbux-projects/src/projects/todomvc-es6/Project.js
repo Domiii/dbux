@@ -1,7 +1,9 @@
 import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import WebpackBuilder from '../../buildTools/WebpackBuilder';
-import Bug from '../../projectLib/Bug';
+import Bug from '../../projectLib/Exercise';
 import Project from '../../projectLib/Project';
+
+/** @typedef {import('../../projectLib/BugConfig').default} BugConfig */
 
 
 const RelativeRoot = 'examples/vanilla-es6';
@@ -46,6 +48,9 @@ export default class TodomvcEs6Project extends Project {
     await this.applyPatch('baseline');
   }
 
+  /**
+   * @return {BugConfig[]}
+   */
   loadBugs() {
     // git diff --ignore-cr-at-eol --color=never | unix2dos > ../../dbux-projects/assets/_patches_/todomvc-es6/error.patch
     return [
@@ -171,7 +176,7 @@ export default class TodomvcEs6Project extends Project {
         }
       },
       {
-        label: '',
+        label: 'TODO',
         patch: ['no-callbacks', 'error8'],
         domains: ['store'],
         stepsToReproduce: ['Have a non-empty list.', 'Toggle or edit any item.', 'Re-load to see that rendering has stopped working.'],
@@ -193,16 +198,30 @@ export default class TodomvcEs6Project extends Project {
           }
         }
       },
+      {
+        label: 'TODO',
+        patch: ['no-callbacks', 'error9'],
+        domains: ['store'],
+        // eslint-disable-next-line max-len
+        stepsToReproduce: ['Start with an empty list.', 'There is an error during initialization. Also items cannot be added.', 'Reminder: there is a bug fix that only affects a single line.'],
+        bugTags: ['serialization'],
+        bugLocations: [
+          {
+            file: 'src/store.js',
+            line: 24
+          }
+        ]
+      },
       // {
-      //   label: '',
-      //   patch: ['no-callbacks', 'errorX'],
-      //   domains: [''],
-      //   stepsToReproduce: ['Have a non-empty list.'],
-      //   bugTags: [''],
+      //   label: 'TODO',
+      //   patch: ['no-callbacks', 'errorTODO'],
+      //   domains: ['TODO'],
+      //   stepsToReproduce: ['Have a non-empty list.', 'TODO'],
+      //   bugTags: ['TODO'],
       //   bugLocations: [
       //     {
-      //       file: 'src/.js',
-      //       line: 
+      //       file: 'src/TODO.js',
+      //       line: TODO
       //     }
       //   ]
       // },

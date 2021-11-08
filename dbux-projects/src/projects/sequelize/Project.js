@@ -2,6 +2,7 @@ import { readPackageJson, writeMergePackageJson, writePackageJson } from '@dbux/
 import { buildNodeCommand } from '../../util/nodeUtil';
 import Project from '../../projectLib/Project';
 
+/** @typedef {import('../../projectLib/BugConfig').default} BugConfig */
 
 export default class SequelizeProject extends Project {
   gitRemote = 'sequelize/sequelize.git';
@@ -64,6 +65,9 @@ export default class SequelizeProject extends Project {
     this._fixPackageJson();
   }
 
+  /**
+   * @return {BugConfig[]}
+   */
   loadBugs() {
     return [
       {

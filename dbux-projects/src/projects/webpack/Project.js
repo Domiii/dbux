@@ -7,6 +7,8 @@ import Project from '../../projectLib/Project';
 // import WebpackBuilder from '../../buildTools/WebpackBuilder';
 import { buildNodeCommand } from '../../util/nodeUtil';
 
+/** @typedef {import('../../projectLib/BugConfig').default} BugConfig */
+
 
 export default class WebpackProject extends Project {
   gitRemote = 'webpack/webpack.git';
@@ -141,6 +143,9 @@ export default class WebpackProject extends Project {
   // loadBugs
   // ###########################################################################
 
+  /**
+   * @return {BugConfig[]}
+   */
   loadBugs() {
     // git diff --color=never --ignore-cr-at-eol > ../../dbux-projects/assets/_patches_/webpack/error.patch
 

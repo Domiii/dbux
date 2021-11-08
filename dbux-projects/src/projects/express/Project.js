@@ -3,6 +3,7 @@ import isArray from 'lodash/isArray';
 import Project from '../../projectLib/Project';
 import { buildMochaRunCommand } from '../../util/mochaUtil';
 
+/** @typedef {import('../../projectLib/BugConfig').default} BugConfig */
 
 export default class ExpressProject extends Project {
   gitRemote = 'BugsJS/express.git';
@@ -397,7 +398,6 @@ export default class ExpressProject extends Project {
         testRe = testRe.replace(/"/g, '\\"');
 
         return {
-          name: `bug #${bug.id}`,
           description: testRe,
           runArgs: [
             '--grep',
