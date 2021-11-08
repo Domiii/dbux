@@ -199,16 +199,38 @@ export default class TodomvcEs6Project extends Project {
         }
       },
       {
+        // TODO: 
         label: 'TODO',
         patch: ['no-callbacks', 'error9'],
         domains: ['store'],
         // eslint-disable-next-line max-len
-        stepsToReproduce: ['Start with an empty list.', 'There is an error during initialization. Also items cannot be added.', 'Reminder: there is a bug fix that only affects a single line.'],
+        stepsToReproduce: ['Start with an empty list.', 'Items cannot be added.', 'Reminder: there is a single-line bug fix.'],
         tags: ['serialization'],
+        hints: ['There is an error during initialization.', 'TODO'],
+        courseNotes: ['Discuss how there are different valid approaches, but only one can fix it in a single line.'],
         bugLocations: [
           {
             file: 'src/store.js',
             line: 24
+          }
+        ]
+      },
+      {
+        label: 'TODO',
+        patch: ['no-callbacks', 'error10'],
+        domains: ['controller', 'store'],
+        stepsToReproduce: ['Have a non-empty list.', 'Toggle items. Observe that the "X items left" count at the bottom is incorrect.'],
+        // eslint-disable-next-line max-len
+        hints: ['Is there a pattern to how many "items left" there are?', 'Can you find the code that does the counting?', 'TODO: If not, propose a way to find the "counting code".'],
+        tags: ['data-access-array'],
+        bugLocations: [
+          {
+            file: 'src/store.js',
+            line: 130
+          },
+          {
+            file: 'src/controller.js',
+            line: 147
           }
         ]
       },
