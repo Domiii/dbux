@@ -1,7 +1,7 @@
 import Project from '../../projectLib/Project';
 import { buildJestRunBugCommand } from '../../util/jestUtil';
 
-/** @typedef {import('../../projectLib/BugConfig').default} BugConfig */
+/** @typedef {import('../../projectLib/ExerciseConfig').ExerciseConfig} ExerciseConfig */
 
 export default class JavascriptAlgorithmProject extends Project {
   gitRemote = 'trekhleb/javascript-algorithms.git';
@@ -12,9 +12,9 @@ export default class JavascriptAlgorithmProject extends Project {
   ];
 
   /**
-   * @return {BugConfig[]}
+   * @return {ExerciseConfig[]}
    */
-  loadBugs() {
+  loadExercises() {
     // TODO: load automatically from BugsJs bug database
     // NOTE: some bugs have multiple test files, or no test file at all
     // see: https://github.com/BugsJS/express/releases?after=Bug-4-test
@@ -52,21 +52,21 @@ export default class JavascriptAlgorithmProject extends Project {
       filter(bug => !!bug);
   }
 
-  async selectBug(bug) {
+  async selectExercise(bug) {
     // nothing to do here
   }
 
-  async testBugCommand(bug, cfg) {
+  async runCommand(bug, cfg) {
     const { projectPath } = this;
     // const bugArgs = this.getMochaRunArgs(bug);
-    const bugConfig = this.getJestCfg(bug, [
+    const testCfg = this.getJestCfg(bug, [
       '--setupFilesAfterEnv ./dbuxJestSetup.js',
       '--testTimeout 30000' // timeout
     ]);
 
     const mochaCfg = {
       ...cfg,
-      ...bugConfig,
+      ...testCfg,
       dbuxJs: null,
       cwd: projectPath,
     };

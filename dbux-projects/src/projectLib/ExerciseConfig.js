@@ -1,8 +1,10 @@
 /** @typedef {import('./Project').default} Project */
+/** @typedef {import('./ExerciseRunner').default} ExerciseRunner */
 /** @typedef {import('../ProjectsManager').default} PracticeManager */
 
 
-export default class BugConfig {
+
+export default class ExerciseConfig {
   /**
      * @type {Project}
      */
@@ -22,7 +24,7 @@ export default class BugConfig {
   mainEntryPoint;
 
   /**
-   * If given, are passed as input files to bug runner.
+   * If given, are passed as input files to {@link ExerciseRunner}.
    */
   runFilePaths;
 
@@ -32,20 +34,20 @@ export default class BugConfig {
   watchFilePaths;
 
   /**
-   * Uniquely identifies this bug across projects.
+   * Uniquely identifies this exercise across projects.
    */
   id;
   title;
   description;
 
   /**
-   * [Optional] file name of patch inside of `_patches_` folder to be applied to activate bug
+   * [Optional] file name of patch inside of `_patches_` folder to be applied to activate exercise
    */
   patch;
 
   /**
-   * Can be used to provide even more information about the bug.
-   * E.g. BugsJs provides discussion logs of developers revolving around the bug.
+   * Can be used to provide even more information about the exercise.
+   * E.g. BugsJs provides discussion logs of developers revolving around the exercise.
    */
   moreDetails;
 

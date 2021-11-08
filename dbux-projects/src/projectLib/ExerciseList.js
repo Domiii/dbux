@@ -1,12 +1,12 @@
 import { newLogger } from '@dbux/common/src/log/logger';
-import Bug from './Exercise';
+import Exercise from './Exercise';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-code');
 
-export default class BugList {
+export default class ExerciseList {
   /**
-   * @type {Bug}
+   * @type {Exercise}
    */
   _list = [];
   _byId = new Map();
@@ -35,7 +35,7 @@ export default class BugList {
 
       // convert number typed id to string type(thus it's globally unique)
       const id = cfg.id = `${project.name}#${cfg.number}`;
-      const bug = new Bug(project, cfg);
+      const bug = new Exercise(project, cfg);
       this._list.push(bug);
 
       if (this._byId.get(id)) {
@@ -58,7 +58,7 @@ export default class BugList {
   }
 
   /**
-   * @return {Bug}
+   * @return {Exercise}
    */
   getById(id) {
     return this._byId.get(id) || null;

@@ -17,9 +17,9 @@ export default class NodeFetchProject extends Project {
   packageManager = 'yarn';
 
   /**
-   * @return {BugConfig[]}
+   * @return {ExerciseConfig[]}
    */
-  loadBugs() {
+  loadExercises() {
     return [
       {
         label: 'basic example1',
@@ -29,7 +29,7 @@ export default class NodeFetchProject extends Project {
     ];
   }
 
-  decorateBugForRun(bug) {
+  decorateExerciseForRun(bug) {
     if (!bug.testFilePaths) {
       // bug not fully configured yet
       return;

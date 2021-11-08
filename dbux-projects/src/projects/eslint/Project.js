@@ -5,7 +5,7 @@ import Project from '../../projectLib/Project';
 import { buildMochaRunCommand } from '../../util/mochaUtil';
 
 /** @typedef {import('../../projectLib/Exercise').default} Bug */
-/** @typedef {import('../../projectLib/BugConfig').default} BugConfig */
+/** @typedef {import('../../projectLib/ExerciseConfig').ExerciseConfig} ExerciseConfig */
 
 export default class EslintProject extends Project {
   gitRemote = 'BugsJS/eslint.git';
@@ -28,9 +28,9 @@ export default class EslintProject extends Project {
 
 
   /**
-   * @return {BugConfig[]}
+   * @return {ExerciseConfig[]}
    */
-  loadBugs() {
+  loadExercises() {
     // TODO: load automatically from BugsJs bug database
     // NOTE: some bugs have multiple test files, or no test file at all
     // see: https://github.com/BugsJS/express/releases?after=Bug-4-test
@@ -104,7 +104,7 @@ export default class EslintProject extends Project {
     return `Bug-${bugNumber}-${tagCategory}`;
   }
 
-  async selectBug(bug) {
+  async selectExercise(bug) {
   }
 
 
@@ -133,20 +133,20 @@ export default class EslintProject extends Project {
     );
   }
 
-  async testBugCommand(bug, cfg) {
+  async runCommand(exercise, cfg) {
     const { projectPath } = this;
-    const bugArgs = this.getMochaRunArgs(bug, [
+    const bugArgs = this.getMochaRunArgs(exercise, [
       '-t 10000' // timeout
     ]);
-    const files = cfg.dbuxEnabled ? bug.watchFilePaths : bug.runFilePaths;
-    const nodeVersion = this.getNodeVersion(bug);
+    const files = cfg.dbuxEnabled ? exercise.watchFilePaths : exercise.runFilePaths;
+    const nodeVersion = this.getNodeVersion(exercise);
 
 
     const mochaCfg = {
       cwd: projectPath,
       testArgs: `${bugArgs} ${files.join(' ')}`,
       require: [
-        ...(bug.require || EmptyArray),
+        ...(exercise.require || EmptyArray),
         this.manager.getDbuxPath(`@dbux/runtime/deps/require.ws.${nodeVersion}.js`)
       ],
       ...cfg

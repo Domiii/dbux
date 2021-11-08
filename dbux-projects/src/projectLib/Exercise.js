@@ -2,12 +2,12 @@ import fs from 'fs';
 import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import isEqual from 'lodash/isEqual';
 import RunStatus from './RunStatus';
-import BugConfig from './BugConfig';
+import ExerciseConfig from './ExerciseConfig';
 
 /** @typedef {import('./Project').default} Project */
 /** @typedef {import('../ProjectsManager').default} PracticeManager */
 
-export class BugLocation {
+export class ExerciseLocation {
   /**
    * @type {string}
    */
@@ -18,7 +18,11 @@ export class BugLocation {
   line;
 }
 
-export default class Bug extends BugConfig {
+export default class Exercise extends ExerciseConfig {
+  /**
+   * @param {Project} project 
+   * @param {ExerciseConfig} cfg 
+   */
   constructor(project, cfg) {
     super();
     Object.assign(this, cfg);
@@ -30,7 +34,7 @@ export default class Bug extends BugConfig {
   }
 
   get debugTag() {
-    return `${this.project} (bug #${this.id})`;
+    return `${this.project} (exercise #${this.id})`;
   }
 
   get runner() {

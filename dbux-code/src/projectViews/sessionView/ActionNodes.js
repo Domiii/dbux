@@ -9,7 +9,7 @@ import { isProjectFolderInWorkspace } from '../../codeUtil/workspaceUtil';
 
 /** @typedef {import('../projectViewsController').default} ProjectViewsController */
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
-/** @typedef {import('@dbux/projects/src/projectLib/Bug').default} Bug */
+/** @typedef {import('@dbux/projects/src/projectLib/Exercise').default} Bug */
 
 class SessionNode extends BaseTreeViewNode {
   /**

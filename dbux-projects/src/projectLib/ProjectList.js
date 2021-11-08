@@ -5,16 +5,24 @@ export default class ProjectList {
    * @type {Project[]}
    */
   _list = [];
+  /**
+   * @type {Map.<string, Project>}
+   */
   _map = new Map();
+
+  _exerciseByIdMap;
 
   constructor(manager) {
     this.manager = manager;
-    this._bugByIdMap = new Map();
+    this._exerciseByIdMap = new Map();
   }
 
+  /**
+   * @param {Project[]} projects
+   */
   add(...projects) {
     projects.forEach((project) => {
-      Array.from(project.getOrLoadBugs()).forEach(bug => this._bugByIdMap.set(bug.id, bug));
+      Array.from(project.getOrLoadExercises()).forEach(exercise => this._exerciseByIdMap.set(exercise.id, exercise));
 
       this._map.set(project.name, project);
       this._list.push(project);
@@ -33,8 +41,8 @@ export default class ProjectList {
     return this._map.get(name);
   }
 
-  getBugById(bugId) {
-    return this._bugByIdMap.get(bugId);
+  getExerciseById(exerciseId) {
+    return this._exerciseByIdMap.get(exerciseId);
   }
 
   * [Symbol.iterator]() {

@@ -5,7 +5,7 @@ import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import { shouldClumpTogether, getGroupTypeByActionType } from '@dbux/data/src/pathways/ActionGroupType';
 import TestRun from './TestRun';
 
-/** @typedef {import('../projectLib/Exercise').default} Bug */
+/** @typedef {import('../projectLib/Exercise').default} Exercise */
 /** @typedef {import('./PathwaysDataProvider').default} PathwaysDataProvider */
 
 export default {
@@ -36,7 +36,7 @@ export default {
 
   /**
    * @param {PathwaysDataProvider} pdp
-   * @param {Bug} bug 
+   * @param {Exercise} bug 
    */
   getTestRunsByBug(pdp, bug) {
     return pdp.indexes.testRuns.byBugId.get(bug.id) || EmptyArray;
@@ -45,7 +45,7 @@ export default {
   /**
    * @param {PathwaysDataProvider} pdp 
    * @param {TestRun} testRun 
-   * @param {Bug} bug 
+   * @param {Exercise} bug 
    */
   isTestRunOfBug(pdp, testRun, bug) {
     return testRun.bugId === bug.id;

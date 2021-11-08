@@ -4,9 +4,8 @@ import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import { showInformationMessage } from '../../codeUtil/codeModals';
 
-/** @typedef {import('@dbux/projects/src/projectLib/Bug').default} Bug */
+/** @typedef {import('@dbux/projects/src/projectLib/Exercise').default} Exercise */
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
-/** @typedef {import('@dbux/projects/src/projectLib/Bug').default} Bug */
 /** @typedef {import('./ProjectNode').default} ProjectNode */
 
 export default class BugNode extends BaseTreeViewNode {

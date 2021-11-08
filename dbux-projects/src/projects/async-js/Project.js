@@ -1,7 +1,7 @@
 import Project from '../../projectLib/Project';
 
 
-/** @typedef {import('../../projectLib/BugConfig').default} BugConfig */
+/** @typedef {import('../../projectLib/ExerciseConfig').ExerciseConfig} ExerciseConfig */
 
 
 export default class AsyncJsProject extends Project {
@@ -10,9 +10,9 @@ export default class AsyncJsProject extends Project {
   packageManager = 'yarn';
 
   /**
-   * @return {BugConfig[]}
+   * @return {ExerciseConfig[]}
    */
-  loadBugs() {
+  loadExercises() {
     return [
       {
         id: 1,
@@ -34,7 +34,7 @@ export default class AsyncJsProject extends Project {
     ];
   }
 
-  decorateBugForRun(bug) {
+  decorateExerciseForRun(bug) {
     if (!bug.testFilePaths) {
       // bug not fully configured yet
       return;

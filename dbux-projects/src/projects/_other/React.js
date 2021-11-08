@@ -25,7 +25,7 @@ export default class ReactProject extends Project {
     // await this.installPackages(`todomvc-app-css@2.3.0`);
   }
 
-  loadBugs() {
+  loadExercises() {
     return [
       {
         label: 'Empty list with clear error message',
@@ -42,11 +42,11 @@ export default class ReactProject extends Project {
     ];
   }
 
-  decorateBugForRun(bug) {
+  decorateExerciseForRun(bug) {
     bug.website = 'http://localhost:3842/';
   }
 
-  async testBugCommand(bug, cfg) {
+  async runCommand(bug, cfg) {
     // nothing to do yet
     // TODO: run tests?
   }

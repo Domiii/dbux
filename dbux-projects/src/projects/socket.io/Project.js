@@ -1,7 +1,7 @@
 import Project from '../../projectLib/Project';
 // import { buildNodeCommand } from '../../util/nodeUtil';
 
-/** @typedef {import('../../projectLib/BugConfig').default} BugConfig */
+/** @typedef {import('../../projectLib/ExerciseConfig').ExerciseConfig} ExerciseConfig */
 
 /**
  * 
@@ -24,9 +24,9 @@ export default class SocketIOProject extends Project {
   }
 
   /**
-   * @return {BugConfig[]}
+   * @return {ExerciseConfig[]}
    */
-  loadBugs() {
+  loadExercises() {
     return [
       {
         label: 'basic example1',
@@ -35,7 +35,7 @@ export default class SocketIOProject extends Project {
     ];
   }
 
-  decorateBugForRun(bug) {
+  decorateExerciseForRun(bug) {
     if (!bug.testFilePaths) {
       // bug not fully configured yet
       return;

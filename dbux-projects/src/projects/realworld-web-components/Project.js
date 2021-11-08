@@ -13,9 +13,9 @@ export default class RealworldWebComponentsProject extends Project {
   
 
   /**
-   * @return {BugConfig[]}
+   * @return {ExerciseConfig[]}
    */
-  loadBugs() {
+  loadExercises() {
     // TODO: add/generate some bugs?
     return [
       {
@@ -31,19 +31,19 @@ export default class RealworldWebComponentsProject extends Project {
     return this.execBackground('npx webpack serve --config ./dbux.webpack.config.js');
   }
 
-  async selectBug(bug) {
+  async selectExercise(bug) {
     // start webpack and webpack-dev-server
     this.runWebpack();
   }
 
-  decorateBugForRun(bug) {
+  decorateExerciseForRun(bug) {
     bug.testFilePaths = ['app.js'];
     // bug.runFilePaths = bug.testFilePaths;
     bug.watchFilePaths = bug.testFilePaths.map(file => pathJoin(this.projectPath, 'dist', file));
     bug.website = 'http://localhost:3842/';
   }
 
-  async testBugCommand(bug, cfg) {
+  async runCommand(bug, cfg) {
     // TODO: no bugs yet
   }
 }

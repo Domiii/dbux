@@ -5,7 +5,7 @@ import Project from '../../projectLib/Project';
 // import { buildMochaRunCommand } from '../../util/mochaUtil';
 
 /** @typedef {import('../../projectLib/Exercise').default} Bug */
-/** @typedef {import('../../projectLib/BugConfig').default} BugConfig */
+/** @typedef {import('../../projectLib/ExerciseConfig').ExerciseConfig} ExerciseConfig */
 
 
 export default class ChartJsProject extends Project {
@@ -20,13 +20,13 @@ export default class ChartJsProject extends Project {
   }
 
   /**
-   * @return {BugConfig[]}
+   * @return {ExerciseConfig[]}
    */
-  loadBugs() {
+  loadExercises() {
     // TODO: load automatically from BugsJs bug database
     // NOTE: some bugs have multiple test files, or no test file at all
     // see: https://github.com/BugsJS/express/releases?after=Bug-4-test
-    const bugs = [
+    const exercises = [
       {
         label: 'baseline',
         description: 'Baseline: select sample page.',
@@ -51,15 +51,15 @@ export default class ChartJsProject extends Project {
       // * only on ipad, iphone; also not reliably reproducible - https://github.com/chartjs/Chart.js/issues/6235
     ];
 
-    return bugs.
-      map((bug) => {
-        bug.website = bug.website || 'http://localhost:10001/samples/index.html';
-        bug.testFilePaths = ['src/index.js'];
+    return exercises.
+      map((exercise) => {
+        exercise.website = exercise.website || 'http://localhost:10001/samples/index.html';
+        exercise.testFilePaths = ['src/index.js'];
 
         const outputFiles = ['chart.min.js'];
-        bug.watchFilePaths = outputFiles.map(file => path.join('dist', file));
+        exercise.watchFilePaths = outputFiles.map(file => path.join('dist', file));
 
-        return bug;
+        return exercise;
       }).
       filter(bug => !!bug);
   }
@@ -76,7 +76,7 @@ export default class ChartJsProject extends Project {
     return this.execBackground('npx rollup -c');
   }
 
-  async testBugCommand(bug, cfg) {
+  async runCommand(bug, cfg) {
     // TODO
   }
 }

@@ -3,7 +3,7 @@ import WebpackBuilder from '../../buildTools/WebpackBuilder';
 // import { getAllFilesInFolders } from '../../util/fileUtil';
 
 
-/** @typedef {import('../../projectLib/BugConfig').default} BugConfig */
+/** @typedef {import('../../projectLib/ExerciseConfig').ExerciseConfig} ExerciseConfig */
 
 
 export default class _2048Project extends Project {
@@ -26,9 +26,9 @@ export default class _2048Project extends Project {
   }
 
   /**
-   * @return {BugConfig[]}
+   * @return {ExerciseConfig[]}
    */
-  loadBugs() {
+  loadExercises() {
     // git diff --color=never --ignore-cr-at-eol > ../../dbux-projects/assets/_patches_/2048/error.patch
 
     return [
@@ -91,11 +91,11 @@ export default class _2048Project extends Project {
     ];
   }
 
-  decorateBugForRun(bug) {
+  decorateExerciseForRun(bug) {
     bug.mainEntryPoint = ['js/application.js'];
   }
 
-  async testBugCommand(bug, cfg) {
+  async runCommand(bug, cfg) {
     // nothing to do
   }
 }

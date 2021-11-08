@@ -64,7 +64,7 @@ class WebpackBuilder {
 
   /**
    * WebpackBuilder already instruments and injects dbux.
-   * `testBugCommand` should not use @dbux/cli.
+   * `runCommand` should not use @dbux/cli.
    */
   get needsDbuxCli() {
     return false;
@@ -209,7 +209,7 @@ class WebpackBuilder {
    * NOTE: this is separate from `loadBugs` because `loadBugs` might be called before the project has been downloaded.
    * This function however is called after download, so that all files are ready and accessible.
    */
-  decorateBugForRun(bug) {
+  decorateExerciseForRun(bug) {
     const {
       cfg: { websitePort }
     } = this;

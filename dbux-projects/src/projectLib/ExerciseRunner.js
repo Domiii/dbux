@@ -14,12 +14,12 @@ import Process from '../util/Process';
 import BugRunnerStatus, { isStatusRunningType } from './RunStatus';
 
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
-/** @typedef {import('./Exercise').default} Bug */
+/** @typedef {import('./Exercise').default} Exercise */
 /** @typedef {import('./Project').default} Project */
 
 const activatedBugKeyName = 'dbux.dbux-projects.activatedBug';
 
-export default class BugRunner {
+export default class ExerciseRunner {
   /**
    * @type {ProjectsManager}
    */
@@ -33,7 +33,7 @@ export default class BugRunner {
    */
   _project;
   /**
-   * @type {Bug}
+   * @type {Exercise}
    */
   _bug;
 
@@ -54,12 +54,12 @@ export default class BugRunner {
     return this.project?.logger || this._ownLogger;
   }
 
-  get bug() {
+  get exercise() {
     return this._bug;
   }
 
   get project() {
-    return this.bug?.project || null;
+    return this.exercise?.project || null;
   }
 
   /**
@@ -113,7 +113,7 @@ export default class BugRunner {
   }
 
   isBugActive(bug) {
-    return this.bug === bug;
+    return this.exercise === bug;
   }
 
   // ###########################################################################
@@ -149,8 +149,8 @@ export default class BugRunner {
   }
 
   /** @param {Project} project */
-  getOrLoadBugs(project) {
-    return project.getOrLoadBugs();
+  getOrLoadExercises(project) {
+    return project.getOrLoadExercises();
   }
 
   /**
@@ -163,14 +163,14 @@ export default class BugRunner {
   /**
    * WARNING: Should only be called by switchToBug.
    * 
-   * @param {Bug} bug 
+   * @param {Exercise} exercise 
    */
-  async activateBug(bug) {
-    if (this.isBugActive(bug)) {
+  async activateExercise(exercise) {
+    if (this.isBugActive(exercise)) {
       return;
     }
 
-    const { project } = bug;
+    const { project } = exercise;
 
     this.setStatus(BugRunnerStatus.Busy);
 
@@ -180,10 +180,10 @@ export default class BugRunner {
         this.installProject.bind(this, project),
 
         // Step 2: Do all the bug-related install work
-        project.installBug.bind(project, bug),
+        project.installBug.bind(project, exercise),
         
         // Step 3: Set as active bug
-        this.setActivatedBug.bind(this, bug)
+        this.setActivatedBug.bind(this, exercise)
       );
     }
     finally {
@@ -198,31 +198,31 @@ export default class BugRunner {
 
   /**
    * Run test bug command (if in debug mode, will wait for debugger to attach)
-   * @param {Bug} bug
+   * @param {Exercise} exercise
    * @returns {Promise<ExecuteResult>}
    */
-  async testBug(bug, cfg) {
-    const { project, website } = bug;
+  async testBug(exercise, cfg) {
+    const { project, website } = exercise;
 
     try {
       this.setStatus(BugRunnerStatus.Busy);
 
       // init bug
-      await project.initBug(bug);
+      await project.initBug(exercise);
 
       // after initBug, produce final cfg
-      const cwd = pathNormalizedForce(path.resolve(project.projectPath, bug.cwd || ''));
+      const cwd = pathNormalizedForce(path.resolve(project.projectPath, exercise.cwd || ''));
 
       cfg = {
         ...cfg,
         cwd,
         debugPort: cfg?.debugMode && this.debugPort || null,
         dbuxJs: (cfg?.dbuxEnabled && project.needsDbuxCli) ? this.manager.getDbuxCliBinPath() : null,
-        dbuxArgs: [cfg?.dbuxArgs, bug.dbuxArgs].filter(a => !!a).join(' ')
+        dbuxArgs: [cfg?.dbuxArgs, exercise.dbuxArgs].filter(a => !!a).join(' ')
       };
 
       // build the run command
-      let commandOrCommandCfg = await project.testBugCommand(bug, cfg);
+      let commandOrCommandCfg = await project.runCommand(exercise, cfg);
       let command, runCfg;
       if (isObject(commandOrCommandCfg)) {
         ([command, runCfg] = commandOrCommandCfg);
@@ -239,7 +239,7 @@ export default class BugRunner {
       runCfg.env.NODE_ENV = project.envName;
 
       if (command && !isString(command)) {
-        throw new Error(`testBugCommand must return string or object or falsy, but instead returned: ${toString(commandOrCommandCfg)}`);
+        throw new Error(`runCommand must return string or object or falsy, but instead returned: ${toString(commandOrCommandCfg)}`);
       }
       command = command?.trim().replace(/\s+/, ' ');  // get rid of unnecessary line-breaks and multiple spaces
 
@@ -247,11 +247,11 @@ export default class BugRunner {
       await this.manager.externals.initRuntimeServer();
 
       // start watch mode (if necessary)
-      await project.startWatchModeIfNotRunning(bug);
+      await project.startWatchModeIfNotRunning(exercise);
 
       if (command) {
         const result = await this.manager.execInTerminal(cwd, command, runCfg || EmptyObject);
-        this._emitter.emit('testFinished', bug, result);
+        this._emitter.emit('testFinished', exercise, result);
         return result;
       }
       else if (website) {
@@ -272,8 +272,8 @@ export default class BugRunner {
       }
       else {
         // nothing to do
-        project.logger.debug('testBugCommand did not return anything. Nothing left to do.');
-        // throw new Error(`Invalid testBugCommand implementation in ${project} - did not return anything.`);
+        project.logger.debug('runCommand did not return anything. Nothing left to do.');
+        // throw new Error(`Invalid runCommand implementation in ${project} - did not return anything.`);
         return null;
       }
     }
@@ -331,7 +331,7 @@ export default class BugRunner {
     const backgroundProcesses = this.project?.backgroundProcesses || EmptyArray;
     await Promise.all(backgroundProcesses.map(p => p.killSilent()));
 
-    await this.deactivateBug();
+    await this.deactivateExercise();
 
     this.setStatus(BugRunnerStatus.None);
   }
@@ -388,22 +388,22 @@ export default class BugRunner {
   }
 
   /**
-   * @returns {Promise<Bug>} The deactivated bug
+   * @returns {Promise<Exercise>} The deactivated exercise
    */
-  async deactivateBug() {
-    const { bug } = this;
-    if (bug) {
+  async deactivateExercise() {
+    const { exercise } = this;
+    if (exercise) {
       await this.setActivatedBug(null);
-      await this.manager.saveFileChanges(bug);
-      return bug;
+      await this.manager.saveFileChanges(exercise);
+      return exercise;
     }
     return null;
   }
 
   /**
-   * @return {Bug}
+   * @return {Exercise}
    */
   getSavedActivatedBug() {
-    return this.manager.getBugByKey(activatedBugKeyName);
+    return this.manager.getExerciseByKey(activatedBugKeyName);
   }
 }

@@ -1,6 +1,6 @@
 import Project from '../../projectLib/Project';
 
-/** @typedef {import('../../projectLib/BugConfig').default} BugConfig */
+/** @typedef {import('../../projectLib/ExerciseConfig').ExerciseConfig} ExerciseConfig */
 
 
 /**
@@ -16,9 +16,9 @@ export default class BluebirdProject extends Project {
   packageManager = 'yarn';
 
   /**
-   * @return {BugConfig[]}
+   * @return {ExerciseConfig[]}
    */
-  loadBugs() {
+  loadExercises() {
     return [
       {
         label: 'basic example1',
@@ -31,7 +31,7 @@ export default class BluebirdProject extends Project {
     ];
   }
 
-  decorateBugForRun(bug) {
+  decorateExerciseForRun(bug) {
     Object.assign(bug, {
       dbuxArgs: '--pw=.*'
     });

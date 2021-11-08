@@ -51,7 +51,7 @@ export default class ProjectNode extends BaseTreeViewNode {
 
   buildChildren() {
     // getOrLoadBugs returns a `BugList`, use Array.from to convert to array
-    const bugs = Array.from(this.project.getOrLoadBugs());
+    const bugs = Array.from(this.project.getOrLoadExercises());
     return bugs.map(this.buildBugNode.bind(this));
   }
 
