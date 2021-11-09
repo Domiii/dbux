@@ -4,32 +4,32 @@ import { ViewColumn } from 'vscode';
 import WebviewWrapper from '../codeUtil/WebviewWrapper';
 
 /**
- * @typedef {import('@dbux/projects/src/projectLib/Bug').default} Bug
+ * @typedef {import('@dbux/projects/src/projectLib/Exercise').default} Exercise
  */
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('BugIntroduction');
+const { log, debug, warn, error: logError } = newLogger('ExerciseIntroduction');
 
 const defaultColumn = ViewColumn.One;
 
 export default class BugIntroduction extends WebviewWrapper {
   /**
    * 
-   * @param {Bug} bug 
+   * @param {Exercise} exercise 
    */
-  constructor(bug) {
-    super('dbux-bugIntroduction', `Introduction: Bug ${bug.id}`, defaultColumn);
+  constructor(exercise) {
+    super('dbux-bugIntroduction', `Introduction: exercise #${exercise.id}`, defaultColumn);
 
-    this.bug = bug;
+    this.exercise = exercise;
   }
 
   async buildClientHtml() {
-    return `Bug ${this.bug.id}<br>`
+    return `Bug ${this.exercise.id}<br>`
       // + `name: ${this.bug.name}<br>`
-      + `label: ${this.bug.label}<br>`
-      + `description: ${this.bug.description}<br>`
-      + (this.bug.testRe && `testRe: ${JSON.stringify(this.bug.testRe)}<br>` || '')
-      + `debugTag: ${this.bug.debugTag}<br>`;
+      + `label: ${this.exercise.label}<br>`
+      + `description: ${this.exercise.description}<br>`
+      + (this.exercise.testRe && `testRe: ${JSON.stringify(this.exercise.testRe)}<br>` || '')
+      + `debugTag: ${this.exercise.debugTag}<br>`;
   }
 
   async startHost() { }
@@ -37,8 +37,8 @@ export default class BugIntroduction extends WebviewWrapper {
   async shutdownHost() { }
 }
 
-export async function showBugIntroduction(bug) {
-  let bugIntroduction = new BugIntroduction(bug);
+export async function showBugIntroduction(exercise) {
+  let bugIntroduction = new BugIntroduction(exercise);
   await bugIntroduction.show();
 
   return bugIntroduction;

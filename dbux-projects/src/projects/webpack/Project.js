@@ -7,6 +7,8 @@ import Project from '../../projectLib/Project';
 // import WebpackBuilder from '../../buildTools/WebpackBuilder';
 import { buildNodeCommand } from '../../util/nodeUtil';
 
+/** @typedef {import('../../projectLib/ExerciseConfig').ExerciseConfig} ExerciseConfig */
+
 
 export default class WebpackProject extends Project {
   gitRemote = 'webpack/webpack.git';
@@ -141,7 +143,10 @@ export default class WebpackProject extends Project {
   // loadBugs
   // ###########################################################################
 
-  loadBugs() {
+  /**
+   * @return {ExerciseConfig[]}
+   */
+  loadExercises() {
     // git diff --color=never --ignore-cr-at-eol > ../../dbux-projects/assets/_patches_/webpack/error.patch
 
     return [
@@ -169,11 +174,11 @@ export default class WebpackProject extends Project {
   // testing
   // ###########################################################################
 
-  decorateBugForRun(bug) {
+  decorateExerciseForRun(bug) {
     bug.mainEntryPoint = [this.cliBin];
   }
 
-  async testBugCommand(bug, cfg) {
+  async runCommand(exercise, cfg) {
     const { projectPath } = this;
 
     /**

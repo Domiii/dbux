@@ -1,8 +1,9 @@
 import sh from 'shelljs';
 import Project from '../../projectLib/Project';
-import Bug from '../../projectLib/Bug';
+import Exercise from '../../projectLib/Exercise';
 import { buildMochaRunCommand } from '../../util/mochaUtil';
 
+/** @typedef {import('../../projectLib/ExerciseConfig').ExerciseConfig} ExerciseConfig */
 
 export default class HexoProject extends Project {
   gitRemote = 'BugsJS/hexo.git';
@@ -10,9 +11,9 @@ export default class HexoProject extends Project {
   packageManager = 'yarn';
 
   /**
-   * @type {Array.<Bug>}
+   * @type {Array.<Exercise>}
    */
-  loadBugs() {
+  loadExercises() {
     const bugs = [
       {
         // not a challenge to find the bug
@@ -90,7 +91,7 @@ export default class HexoProject extends Project {
     return bugs;
   }
 
-  decorateBugForRun(bug) {
+  decorateExerciseForRun(bug) {
     if (!bug.testFilePaths) {
       // bug not ready yet
       return;
@@ -112,7 +113,7 @@ export default class HexoProject extends Project {
     return `Bug-${bugNumber}-${tagCategory}`;
   }
 
-  async selectBug(bug) {
+  async selectExercise(bug) {
     const {
       number, name
     } = bug;
@@ -132,14 +133,14 @@ export default class HexoProject extends Project {
     await this.exec(`${this.gitCommand} checkout -B ${tag} tags/${tag}`);
   }
 
-  async testBugCommand(bug, cfg) {
+  async runCommand(exercise, cfg) {
     const { projectPath } = this;
-    const testArgs = this.getMochaRunArgs(bug);
+    const testArgs = this.getMochaRunArgs(exercise);
 
     const mochaCfg = {
       cwd: projectPath,
       testArgs,
-      require: bug.require,
+      require: exercise.require,
       ...cfg
     };
 

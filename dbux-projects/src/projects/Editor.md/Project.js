@@ -1,6 +1,8 @@
 import Project from '../../projectLib/Project';
 import WebpackBuilder from '../../buildTools/WebpackBuilder';
 
+/** @typedef {import('../../projectLib/ExerciseConfig').ExerciseConfig} ExerciseConfig */
+
 /**
  * Debug
  *
@@ -37,7 +39,10 @@ export default class EditorMdProject extends Project {
     await this.applyPatch('baseline');
   }
 
-  loadBugs() {
+  /**
+   * @return {ExerciseConfig[]}
+   */
+  loadExercises() {
     // git diff --color=never --ignore-cr-at-eol > ../../dbux-projects/assets/_patches_/Editor.md/baseline.patch | unix2dos
 
     return [
@@ -80,11 +85,11 @@ export default class EditorMdProject extends Project {
     ];
   }
 
-  decorateBugForRun(bug) {
+  decorateExerciseForRun(bug) {
     bug.mainEntryPoint = ['src/editormd.js'];
   }
 
-  async testBugCommand(bug, cfg) {
+  async runCommand(bug, cfg) {
     // nothing to do
   }
 }

@@ -1,5 +1,5 @@
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
-import { TreeItem } from 'vscode';
+import { TreeItem, TreeItemCollapsibleState } from 'vscode';
 
 /** @typedef {import('./BaseTreeViewNodeProvider').default} BaseTreeViewNodeProvider */
 

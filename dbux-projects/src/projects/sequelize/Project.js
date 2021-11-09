@@ -2,6 +2,7 @@ import { readPackageJson, writeMergePackageJson, writePackageJson } from '@dbux/
 import { buildNodeCommand } from '../../util/nodeUtil';
 import Project from '../../projectLib/Project';
 
+/** @typedef {import('../../projectLib/ExerciseConfig').ExerciseConfig} ExerciseConfig */
 
 export default class SequelizeProject extends Project {
   gitRemote = 'sequelize/sequelize.git';
@@ -64,7 +65,10 @@ export default class SequelizeProject extends Project {
     this._fixPackageJson();
   }
 
-  loadBugs() {
+  /**
+   * @return {ExerciseConfig[]}
+   */
+  loadExercises() {
     return [
       {
         label: 'sscce1-sqlite',
@@ -99,7 +103,7 @@ export default class SequelizeProject extends Project {
     ];
   }
 
-  decorateBugForRun(bug) {
+  decorateExerciseForRun(bug) {
     if (!bug.testFilePaths) {
       // bug not fully configured yet
       return;
@@ -120,7 +124,7 @@ export default class SequelizeProject extends Project {
     this._fixPackageJson();
   }
 
-  async testBugCommand(bug, cfg) {
+  async runCommand(bug, cfg) {
     // TODO: generalize
 
     const runCfg = {
@@ -138,13 +142,13 @@ export default class SequelizeProject extends Project {
     ];
 
     // // const bugArgs = this.getMochaRunArgs(bug);
-    // const bugConfig = this.getMochaCfg(bug, [
+    // const exerciseConfig = this.getMochaCfg(bug, [
     //   '-t 10000' // timeout
     // ]);
 
     // const mochaCfg = {
     //   ...cfg,
-    //   ...bugConfig
+    //   ...exerciseConfig
     // };
 
     // // Debug shortcut:

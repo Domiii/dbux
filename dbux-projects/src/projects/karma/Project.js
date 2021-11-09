@@ -4,6 +4,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import Project from '../../projectLib/Project';
 import { buildMochaRunCommand } from '../../util/mochaUtil';
 
+/** @typedef {import('../../projectLib/ExerciseConfig').ExerciseConfig} ExerciseConfig */
 
 export default class KarmaProject extends Project {
   gitRemote = 'BugsJS/karma.git';
@@ -26,7 +27,10 @@ export default class KarmaProject extends Project {
   }
 
 
-  loadBugs() {
+  /**
+   * @return {ExerciseConfig[]}
+   */
+  loadExercises() {
     // TODO: load automatically from BugsJs bug database
     // NOTE: some bugs have multiple test files, or no test file at all
     // see: https://github.com/BugsJS/express/releases?after=Bug-4-test
@@ -70,7 +74,7 @@ export default class KarmaProject extends Project {
     return `Bug-${bugId}-${tagCategory}`;
   }
 
-  async selectBug(bug) {
+  async selectExercise(bug) {
     const {
       id, name
     } = bug;
@@ -109,9 +113,9 @@ export default class KarmaProject extends Project {
     );
   }
 
-  async testBugCommand(bug, cfg) {
+  async runCommand(exercise, cfg) {
     const { projectPath } = this;
-    const testArgs = this.getMochaRunArgs(bug, [
+    const testArgs = this.getMochaRunArgs(exercise, [
       '-t 10000' // timeout
     ]);
 
@@ -121,7 +125,7 @@ export default class KarmaProject extends Project {
       cwd: projectPath,
       testArgs,
       require: [
-        ...(bug.require || EmptyArray),
+        ...(exercise.require || EmptyArray),
         this.manager.getDbuxPath(`@dbux/runtime/deps/require.ws.${nodeVersion}.js`)
       ],
       ...cfg

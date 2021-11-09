@@ -1,0 +1,13 @@
+diff --git a/examples/vanilla-es6/src/store.js b/examples/vanilla-es6/src/store.js
+index 15fd759..fa9d534 100644
+--- a/examples/vanilla-es6/src/store.js
++++ b/examples/vanilla-es6/src/store.js
+@@ -21,7 +21,7 @@ export default class Store {
+ 		 * @returns {ItemList} Current array of todos
+ 		 */
+ 		this.getLocalStorage = () => {
+-			return liveTodos || JSON.parse(localStorage.getItem(name) || '[]');
++			return liveTodos || JSON.parse(localStorage.getItem(name));
+ 		};
+ 
+ 		/**

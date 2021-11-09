@@ -3,20 +3,20 @@ import fs, { existsSync, mkdirSync } from 'fs';
 import pull from 'lodash/pull';
 import defaultsDeep from 'lodash/defaultsDeep';
 import sh from 'shelljs';
+import NestedError from '@dbux/common/src/NestedError';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { getAllFilesInFolders, globRelative } from '@dbux/common-node/src/util/fileUtil';
 import { pathJoin, pathRelative, pathResolve, realPathSyncNormalized } from '@dbux/common-node/src/util/pathUtil';
 import isObject from 'lodash/isObject';
-import BugList from './BugList';
+import ExerciseList from './ExerciseList';
 import Process from '../util/Process';
 import { MultipleFileWatcher } from '../util/multipleFileWatcher';
 import { buildNodeCommand } from '../util/nodeUtil';
 import { checkSystemWithRequirement } from '../checkSystem';
 import RunStatus, { isStatusRunningType } from './RunStatus';
 import ProjectBase from './ProjectBase';
-import NestedError from '@dbux/common/src/NestedError';
 
 const Verbose = false;
 const SharedAssetFolder = '_shared_assets_';
@@ -25,7 +25,7 @@ const PatchFolderName = '_patches_';
 const GitInstalledTag = '__dbux_project_installed';
 
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
-/** @typedef {import('./Bug').default} Bug */
+/** @typedef {import('./Exercise').default} Bug */
 
 /**
  * Project class file.
@@ -34,10 +34,10 @@ const GitInstalledTag = '__dbux_project_installed';
 
 export default class Project extends ProjectBase {
   /**
-   * Created from `loadBugs` method.
-   * @type {BugList}
+   * Created by {@link #getOrLoadBugs}.
+   * @type {ExerciseList}
    */
-  _bugs;
+  _exercises;
 
   /**
    * @type {ProjectsManager}
@@ -143,9 +143,9 @@ export default class Project extends ProjectBase {
     }
   }
 
-  async initBug(bug) {
-    await this.decorateBugForRun?.(bug);
-    await this.builder?.decorateBugForRun(bug);
+  async initExercise(bug) {
+    await this.decorateExerciseForRun?.(bug);
+    await this.builder?.decorateExerciseForRun(bug);
 
     // future-work: generalize test regexes
     // let { testRe } = bug;
@@ -365,7 +365,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   /**
    * @abstract
    */
-  loadBugs() {
+  loadExercises() {
     throw new Error(this + ' abstract method not implemented');
   }
 
@@ -696,7 +696,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
       // checkout bug commit, apply patch, etc.
       await project.beforeSelectBug?.(bug);
-      await project.selectBug(bug);
+      await project.selectExercise(bug);
       await project.afterSelectBug?.(bug);
 
       // copy assets
@@ -721,7 +721,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
    * NOTE: This will only be called when the bug is run the first time.
    * @param {Bug} bug 
    */
-  async selectBug(bug) {
+  async selectExercise(bug) {
     const { tag, commit } = bug;
     if (tag || commit) {
       // checkout bug tag/commit
@@ -794,7 +794,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
     // ensure project is not active
     if (this.runner.isProjectActive(this)) {
-      await this.runner.deactivateBug();
+      await this.runner.deactivateExercise();
     }
 
     return true;
@@ -874,7 +874,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   /**
    * 1. select bug tag, 2. reset hard, 3. remove bug tag
    *    -> this should be the inverse of {@link Project#installBug}
-   * TODO: make sure, individual overrides of {@link Project#selectBug} don't do anything that is not undoable (or provide some sort of `uninstallBug` function)
+   * TODO: make sure, individual overrides of {@link Project#selectExercise} don't do anything that is not undoable (or provide some sort of `uninstallBug` function)
    */
   async resetBug(bug) {
     const installedTag = this.getProjectInstalledTagName();
@@ -1175,7 +1175,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   parseBugCachedTag(tagName) {
     const bugId = tagName.match(/__dbux_bug_([^_]*)_selected/)?.[1];
     if (bugId) {
-      return this._bugs.getById(bugId);
+      return this._exercises.getById(bugId);
     }
     else {
       return null;
@@ -1193,11 +1193,11 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
   /**
    * Get all bugs for this project
-   * @return {BugList}
+   * @return {ExerciseList}
    */
-  getOrLoadBugs() {
-    if (!this._bugs) {
-      let arr = this.loadBugs();
+  getOrLoadExercises() {
+    if (!this._exercises) {
+      let arr = this.loadExercises();
       arr.forEach(bug => {
         let {
           description,
@@ -1215,9 +1215,9 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
         arr = arr.filter(bug => bug.label && bug.isSolvable);
       }
 
-      this._bugs = new BugList(this, arr);
+      this._exercises = new ExerciseList(this, arr);
     }
-    return this._bugs;
+    return this._exercises;
   }
 
   // ###########################################################################
@@ -1292,13 +1292,13 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   }
 
   /** ###########################################################################
-   * {@link testBugCommand}
+   * {@link runCommand}
    * ##########################################################################*/
 
   /**
    * Default implementation: run a node sample file.
    */
-  async testBugCommand(bug, cfg) {
+  async runCommand(bug, cfg) {
     const runCfg = {
       env: {
       }
@@ -1340,7 +1340,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   }
 
   async clearLog() {
-    for (const bug of this._bugs) {
+    for (const bug of this._exercises) {
       await bug.clearLog();
     }
   }

@@ -1,7 +1,9 @@
 import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import WebpackBuilder from '../../buildTools/WebpackBuilder';
-import Bug from '../../projectLib/Bug';
+import Exercise from '../../projectLib/Exercise';
 import Project from '../../projectLib/Project';
+
+/** @typedef {import('../../projectLib/ExerciseConfig').ExerciseConfig} ExerciseConfig */
 
 
 const RelativeRoot = 'examples/vanilla-es6';
@@ -46,7 +48,10 @@ export default class TodomvcEs6Project extends Project {
     await this.applyPatch('baseline');
   }
 
-  loadBugs() {
+  /**
+   * @return {ExerciseConfig[]}
+   */
+  loadExercises() {
     // git diff --ignore-cr-at-eol --color=never | unix2dos > ../../dbux-projects/assets/_patches_/todomvc-es6/error.patch
     return [
       {
@@ -60,7 +65,7 @@ export default class TodomvcEs6Project extends Project {
         patch: ['no-callbacks', 'error1'],
         domains: ['init', 'controller'],
         stepsToReproduce: ['Have a non-empty list.'],
-        bugTags: ['typo'],
+        tags: ['typo'],
         bugLocations: [
           {
             file: 'src/controller.js',
@@ -79,7 +84,7 @@ export default class TodomvcEs6Project extends Project {
         patch: ['no-callbacks', 'error2'],
         domains: ['init', 'render'],
         stepsToReproduce: ['Have a non-empty list.', 'Make sure, some items are completed, some not.', 'Check whether they are rendered as "completed" correctly.'],
-        bugTags: ['boolean-logic', 'operator'],
+        tags: ['boolean-logic', 'operator'],
         bugLocations: [
           {
             file: 'src/template.js',
@@ -95,7 +100,7 @@ export default class TodomvcEs6Project extends Project {
         patch: ['no-callbacks', 'error3'],
         domains: ['render'],
         stepsToReproduce: ['Have a list with 2, 3 or more items.'],
-        bugTags: ['Array.reduce'],
+        tags: ['Array.reduce'],
         bugLocations: [
           {
             file: 'src/template.js',
@@ -111,7 +116,7 @@ export default class TodomvcEs6Project extends Project {
         patch: ['no-callbacks', 'error4'],
         domains: ['render'],
         stepsToReproduce: ['Have a non-empty list.'],
-        bugTags: [
+        tags: [
           'typo',
           ['api', 'DOM'] // https://www.google.com/search?hl=en&q=mdn+dom
         ],
@@ -130,7 +135,7 @@ export default class TodomvcEs6Project extends Project {
         patch: ['no-callbacks', 'error5'],
         domains: ['render'],
         stepsToReproduce: ['Have a non-empty list.', 'Make sure, exactly one item is not marked as "done" yet.'],
-        bugTags: ['wrong-condition'],
+        tags: ['wrong-condition'],
         bugLocations: [
           {
             file: 'src/template.js',
@@ -144,7 +149,7 @@ export default class TodomvcEs6Project extends Project {
         domains: ['store'],
         stepsToReproduce: ['Have a non-empty list.', 'Toggle the first item on/off/on/off while looking at the count at the bottom ("X items left").'],
         // notes: ['There are two hard problems in computer science: ... and off-by-one errors!'],
-        bugTags: ['off-by-one'],
+        tags: ['off-by-one'],
         bugLocations: [
           {
             file: 'src/store.js',
@@ -157,7 +162,7 @@ export default class TodomvcEs6Project extends Project {
         patch: ['no-callbacks', 'error7'],
         domains: ['store'],
         stepsToReproduce: ['Have a non-empty list.', 'Toggle or edit any item.', 'Re-load the page and find that it did not get saved.'],
-        bugTags: ['error', 'data-access-array', 'data-access-object'],
+        tags: ['error', 'data-access-array', 'data-access-object'],
         bugLocations: [
           {
             file: 'src/store.js',
@@ -171,13 +176,13 @@ export default class TodomvcEs6Project extends Project {
         }
       },
       {
-        label: '',
+        label: 'TODO',
         patch: ['no-callbacks', 'error8'],
         domains: ['store'],
         stepsToReproduce: ['Have a non-empty list.', 'Toggle or edit any item.', 'Re-load to see that rendering has stopped working.'],
         // eslint-disable-next-line max-len
         warnings: ['This exercise may corrupt your `localStorage`. When that happens, you have to clear the `localStorage` manually (or if you don\t know how to: manually reset the exercise) before using the application again.'], // TODO: show at a relevant time? maybe patch into the `store.js` load code?
-        bugTags: ['error', 'data-access-array', 'data-access-object'],
+        tags: ['error', 'data-access-array', 'data-access-object'],
         sln: ['Merge, instead of override.'],
         bugLocations: [
           {
@@ -193,16 +198,59 @@ export default class TodomvcEs6Project extends Project {
           }
         }
       },
+      {
+        // TODO: 
+        label: 'TODO',
+        patch: ['no-callbacks', 'error9'],
+        domains: ['store'],
+        // eslint-disable-next-line max-len
+        stepsToReproduce: ['Start with an empty list.', 'Items cannot be added.', 'Reminder: there is a single-line bug fix.'],
+        tags: ['serialization'],
+        hints: ['There is an error during initialization.', 'TODO'],
+        courseNotes: ['Discuss how there are different valid approaches, but only one can fix it in a single line.'],
+        bugLocations: [
+          {
+            file: 'src/store.js',
+            line: 24
+          }
+        ]
+      },
+      {
+        label: 'TODO',
+        patch: ['no-callbacks', 'error10'],
+        domains: ['controller', 'store'],
+        stepsToReproduce: [
+          'Have a non-empty list.',
+          'Toggle items. Observe that the "X items left" count at the bottom is incorrect.'
+        ],
+        // eslint-disable-next-line max-len
+        hints: [
+          'Is there a pattern to how many "items left" there are?', 
+          'Can you find the code that does the counting?', 
+          'TODO: If not, propose a way to find the "counting code".'
+        ],
+        tags: ['data-access-array'],
+        bugLocations: [
+          {
+            file: 'src/store.js',
+            line: 130
+          },
+          {
+            file: 'src/controller.js',
+            line: 147
+          }
+        ]
+      },
       // {
-      //   label: '',
-      //   patch: ['no-callbacks', 'errorX'],
-      //   domains: [''],
-      //   stepsToReproduce: ['Have a non-empty list.'],
-      //   bugTags: [''],
+      //   label: 'TODO',
+      //   patch: ['no-callbacks', 'errorTODO'],
+      //   domains: ['TODO'],
+      //   stepsToReproduce: ['Have a non-empty list.', 'TODO'],
+      //   tags: ['TODO'],
       //   bugLocations: [
       //     {
-      //       file: 'src/.js',
-      //       line: 
+      //       file: 'src/TODO.js',
+      //       line: TODO
       //     }
       //   ]
       // },
@@ -225,20 +273,20 @@ export default class TodomvcEs6Project extends Project {
 
   /**
    * 
-   * @param {Bug} bug 
+   * @param {Exercise} exercise 
    */
-  decorateBugForRun(bug) {
+  decorateExerciseForRun(exercise) {
     // fix relative file paths
-    bug.mainEntryPoint = this.builder.getEntryOutputPath('bundle', bug);
-    if (bug.bugLocations) {
-      bug.bugLocations = bug.bugLocations.map(loc => (loc && {
+    exercise.mainEntryPoint = this.builder.getEntryOutputPath('bundle', exercise);
+    if (exercise.bugLocations) {
+      exercise.bugLocations = exercise.bugLocations.map(loc => (loc && {
         ...loc,
         file: this.getAbsoluteFilePath(loc.file)
       }));
     }
   }
 
-  async testBugCommand(bug, cfg) {
+  async runCommand(bug, cfg) {
     // nothing to do yet
   }
 }

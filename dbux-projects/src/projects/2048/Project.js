@@ -3,6 +3,9 @@ import WebpackBuilder from '../../buildTools/WebpackBuilder';
 // import { getAllFilesInFolders } from '../../util/fileUtil';
 
 
+/** @typedef {import('../../projectLib/ExerciseConfig').ExerciseConfig} ExerciseConfig */
+
+
 export default class _2048Project extends Project {
   gitRemote = 'gabrielecirulli/2048.git';
   gitCommit = 'fc1ef4f';
@@ -22,7 +25,10 @@ export default class _2048Project extends Project {
     // await this.autoCommit(); // NOTE: autoCommit is called right after this method
   }
 
-  loadBugs() {
+  /**
+   * @return {ExerciseConfig[]}
+   */
+  loadExercises() {
     // git diff --color=never --ignore-cr-at-eol > ../../dbux-projects/assets/_patches_/2048/error.patch
 
     return [
@@ -85,11 +91,11 @@ export default class _2048Project extends Project {
     ];
   }
 
-  decorateBugForRun(bug) {
+  decorateExerciseForRun(bug) {
     bug.mainEntryPoint = ['js/application.js'];
   }
 
-  async testBugCommand(bug, cfg) {
+  async runCommand(bug, cfg) {
     // nothing to do
   }
 }

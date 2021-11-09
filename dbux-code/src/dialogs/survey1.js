@@ -156,7 +156,7 @@ const survey1 = {
       async enter(graphState, stack, { waitAtMost, goTo }) {
         const waitDelay = 1 * 60 * 60;
         const projectManager = getProjectManager();
-        const firstBug = projectManager.projects.getByName('express').getOrLoadBugs().getAt(0);
+        const firstBug = projectManager.projects.getByName('express').getOrLoadExercises().getAt(0);
         await Promise.race([
           waitForBugSolved(firstBug),
           waitAtMost(waitDelay),

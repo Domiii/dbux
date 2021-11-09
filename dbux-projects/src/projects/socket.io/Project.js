@@ -1,9 +1,10 @@
 import Project from '../../projectLib/Project';
 // import { buildNodeCommand } from '../../util/nodeUtil';
 
+/** @typedef {import('../../projectLib/ExerciseConfig').ExerciseConfig} ExerciseConfig */
 
 /**
- * TODO: not done. Missing server and example script.
+ * 
  */
 export default class SocketIOProject extends Project {
   gitRemote = 'socketio/socket.io-client.git';
@@ -22,7 +23,10 @@ export default class SocketIOProject extends Project {
     await this.execInTerminal('yarn install --prod');
   }
 
-  loadBugs() {
+  /**
+   * @return {ExerciseConfig[]}
+   */
+  loadExercises() {
     return [
       {
         label: 'basic example1',
@@ -31,7 +35,7 @@ export default class SocketIOProject extends Project {
     ];
   }
 
-  decorateBugForRun(bug) {
+  decorateExerciseForRun(bug) {
     if (!bug.testFilePaths) {
       // bug not fully configured yet
       return;

@@ -12,7 +12,7 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import { readPackageJson } from '@dbux/cli/lib/package-util';
 import projectRegistry from './_projectRegistry';
 import ProjectList from './projectLib/ProjectList';
-import BugRunner from './projectLib/BugRunner';
+import ExerciseRunner from './projectLib/ExerciseRunner';
 import PracticeSession from './practiceSession/PracticeSession';
 import BugStatus from './dataLib/BugStatus';
 import BackendController from './backend/BackendController';
@@ -32,7 +32,7 @@ const depsStorageKey = 'PracticeManager.deps';
 const savedPracticeSessionKey = 'dbux.dbux-projects.savedPracticeSession';
 
 /** @typedef {import('./projectLib/Project').default} Project */
-/** @typedef {import('./projectLib/Bug').default} Bug */
+/** @typedef {import('./projectLib/Exercise').default} Exercise */
 /** @typedef {import('./externals/Storage').default} ExternalStorage */
 /** @typedef {import('dbux-code/src/terminal/TerminalWrapper').default} TerminalWrapper */
 
@@ -55,7 +55,7 @@ export default class ProjectsManager {
    */
   projects;
   /**
-   * @type {BugRunner}
+   * @type {ExerciseRunner}
    */
   runner;
   /**
@@ -99,7 +99,7 @@ export default class ProjectsManager {
     this.externals = externals;
     this.editor = externals.editor;
     this.practiceSession = null;
-    this.runner = new BugRunner(this);
+    this.runner = new ExerciseRunner(this);
     this.runner.start();
     this._emitter = new NanoEvents();
 
@@ -183,11 +183,11 @@ export default class ProjectsManager {
   }
 
   get activeBug() {
-    return this.runner.bug;
+    return this.runner.exercise;
   }
 
   get activeExperiment() {
-    return this.runner.bug;
+    return this.runner.exercise;
   }
 
   get pdp() {
@@ -272,7 +272,7 @@ export default class ProjectsManager {
 
     try {
       const { sessionId, createdAt, bugId } = await PathwaysDataProvider.parseHeader(filePath);
-      const bug = this.getOrCreateDefaultProjectList().getBugById(bugId);
+      const bug = this.getOrCreateDefaultProjectList().getExerciseById(bugId);
       if (!bug) {
         throw new Error(`Cannot find bug of bugId: ${bugId} in log file`);
       }
@@ -297,9 +297,9 @@ export default class ProjectsManager {
     }
   }
 
-  _loadPracticeSession(bug, sessionData = EmptyObject, load = false, filePath) {
+  _loadPracticeSession(exercise, sessionData = EmptyObject, load = false, filePath) {
     // create new PracticeSession
-    this.practiceSession = new PracticeSession(bug, this, sessionData, filePath);
+    this.practiceSession = new PracticeSession(exercise, this, sessionData, filePath);
 
     // init (+ maybe load) pdp
     this.pdp.init();
@@ -323,7 +323,7 @@ export default class ProjectsManager {
 
       ({ bugId: experimentId } = savedPracticeSession);
     }
-    const bug = this.getOrCreateDefaultProjectList().getBugById(experimentId);
+    const bug = this.getOrCreateDefaultProjectList().getExerciseById(experimentId);
     if (!bug) {
       // sanity check
       warn(`Can't find bug for id "${experimentId}"`);
@@ -472,7 +472,7 @@ export default class ProjectsManager {
   // ########################################
 
   /**
-   * @param {Bug} bug
+   * @param {Exercise} bug
    * @return {Promise<boolean>}
    */
   async askForStopwatch(bug) {
@@ -525,7 +525,7 @@ export default class ProjectsManager {
   // ###########################################################################
 
   /**
-   * @param {Bug} bug 
+   * @param {Exercise} bug 
    */
   async resetBug(bug) {
     const confirmMessage = 'This will discard all your changes on this bug. Are you sure?';
@@ -548,7 +548,7 @@ export default class ProjectsManager {
 
   /**
    * Apply the newest patch from `BugProgress`
-   * @param {Bug} bug
+   * @param {Exercise} bug
    */
   async applyUserPatch(bug) {
     const patchString = this.bdp.getBugProgressByBug(bug)?.patch;
@@ -568,7 +568,7 @@ export default class ProjectsManager {
 
   /**
    * Saves any changes of given bug
-   * @param {Bug} bug 
+   * @param {Exercise} bug 
    */
   async saveFileChanges(bug) {
     const patch = await bug.project.getPatchString();
@@ -584,7 +584,7 @@ export default class ProjectsManager {
 
   /**
    * Switch to bug and run the test
-   * @param {Bug} bug 
+   * @param {Exercise} bug 
    * @param {Object} inputCfg
    */
   async switchAndTestBug(bug, inputCfg = EmptyObject) {
@@ -595,16 +595,16 @@ export default class ProjectsManager {
 
   /**
    * The main function for bug switching. Handling user patches and git tag checkout.
-   * @param {Bug} bug 
+   * @param {Exercise} exercise 
    */
-  async switchToBug(bug) {
-    if (this.runner.isBugActive(bug)) {
+  async switchToBug(exercise) {
+    if (this.runner.isBugActive(exercise)) {
       // skip if bug is already activated
       return;
     }
 
     // save changes in the project
-    const { project } = bug;
+    const { project } = exercise;
     const previousBug = await project.getCurrentBugFromTag();
     if (previousBug) {
       await this.saveFileChanges(previousBug);
@@ -612,11 +612,11 @@ export default class ProjectsManager {
     }
 
     // install things
-    await this.runner.activateBug(bug);
+    await this.runner.activateExercise(exercise);
 
     // apply stored patch
     try {
-      await this.applyUserPatch(bug);
+      await this.applyUserPatch(exercise);
     } catch (err) {
       if (!err.applyFailedFlag) {
         // logError(err);
@@ -675,17 +675,21 @@ export default class ProjectsManager {
     return result;
   }
 
-  async saveTestRunResult(bug, result) {
+  /**
+   * @param {Exercise} exercise 
+   * @param {*} result 
+   */
+  async saveTestRunResult(exercise, result) {
     // TODO: a better way to find the real application generated by the project
-    const patch = await bug.project.getPatchString();
+    const patch = await exercise.project.getPatchString();
     const existingApps = new Set(this.pdp.collections.applications.getAll());
     const newApps = allApplications.selection.getAll().filter(app => !existingApps.has(app));
 
     // TODO: find the correct `nFailedTests`
     // this.pdp.addTestRun(bug, result?.code, patch, newApps);
-    this.pdp.addTestRun(bug, null, patch, newApps);
+    this.pdp.addTestRun(exercise, null, patch, newApps);
     this.pdp.addApplications(newApps);
-    this.bdp.updateBugProgress(bug, { patch });
+    this.bdp.updateBugProgress(exercise, { patch });
   }
 
   async stopRunner() {
@@ -696,9 +700,9 @@ export default class ProjectsManager {
     return this.runner.isBusy();
   }
 
-  // ########################################
-  // BugRunner: event
-  // ########################################
+  /** ########################################
+   * {@link ExerciseRunner}: event
+   * #######################################*/
 
   onTestFinished(cb) {
     return this.runner._emitter.on('testFinished', cb);
@@ -727,7 +731,7 @@ export default class ProjectsManager {
     if (await this.stopPractice()) {
       await this.savePracticeSession();
       await this.bdp.reset();
-      await this.runner.deactivateBug();
+      await this.runner.deactivateExercise();
     }
   }
 
@@ -813,7 +817,7 @@ export default class ProjectsManager {
 
   /**
    * @param {string} key 
-   * @param {Bug} bug NOTE: set to `undefined` to clear the storage
+   * @param {Exercise} bug NOTE: set to `undefined` to clear the storage
    */
   async setKeyToBug(key, bug) {
     await this.externals.storage.set(key, bug?.id);
@@ -821,12 +825,12 @@ export default class ProjectsManager {
 
   /**
    * @param {string} key 
-   * @return {Bug}
+   * @return {Exercise}
    */
-  getBugByKey(key) {
-    const bugId = this.externals.storage.get(key);
+  getExerciseByKey(key) {
+    const id = this.externals.storage.get(key);
 
-    return this.getOrCreateDefaultProjectList().getBugById(bugId) || null;
+    return this.getOrCreateDefaultProjectList().getExerciseById(id) || null;
   }
 
 

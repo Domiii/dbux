@@ -31,7 +31,7 @@ export default class ProjectBase {
   packageManager;
 
   // loadBugs() {}
-  // decorateBugForRun() {}
+  // decorateExerciseForRun() {}
   // makeBuilder() {}
   // afterInstall() {}
 }

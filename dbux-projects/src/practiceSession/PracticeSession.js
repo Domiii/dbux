@@ -13,31 +13,31 @@ import PracticeSessionData from './PracticeSessionData';
 const { log, debug, warn, error: logError } = newLogger('PracticeSession');
 
 /** @typedef {import('../projectLib/Project').default} Project */
-/** @typedef {import('../projectLib/Bug').default} Bug */
+/** @typedef {import('../projectLib/Exercise').default} Exercise */
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
 
 export default class PracticeSession {
   /**
    * A PracticeSession contains the information that user solving a bug.
-   * @param {Bug} bug 
+   * @param {Exercise} exercise 
    * @param {ProjectsManager} manager
    * @param {PracticeSessionData} sessionData
    */
-  constructor(bug, manager, sessionData, logFilePath) {
+  constructor(exercise, manager, sessionData, logFilePath) {
     const { createdAt, sessionId, state } = sessionData;
     this.sessionId = sessionId || uuidv4();
     this.createdAt = createdAt || Date.now();
     this.stopwatch = new Stopwatch(manager.externals.stopwatch);
-    this.bug = bug;
+    this.bug = exercise;
     this.manager = manager;
     this.lastAnnotation = '';
 
     // TODO: move to `logFilePath` getter
     this.logFilePath = logFilePath || sessionData.logFilePath || this.getDefaultLogFilePath();
 
-    let bugProgress = this.bdp.getBugProgressByBug(bug);
+    let bugProgress = this.bdp.getBugProgressByBug(exercise);
     if (!bugProgress) {
-      throw new Error(`Can't find bugProgress when creating practiceSession of bug ${bug.id}`);
+      throw new Error(`Can't find bugProgress when creating practiceSession of bug ${exercise.id}`);
     }
 
     // state management

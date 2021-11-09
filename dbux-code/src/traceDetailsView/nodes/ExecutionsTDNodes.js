@@ -79,6 +79,14 @@ class BaseGroupNode extends BaseTreeViewNode {
     });
   }
 
+  constructor(treeNodeProvider, label, entry, parent, moreProps) {
+    moreProps = {
+      ...moreProps,
+      collapsibleState: TreeItemCollapsibleState.Expanded
+    };
+    super(treeNodeProvider, label, entry, parent, moreProps);
+  }
+
   handleClick() {
     if (this.relevantTrace) {
       traceSelection.selectTrace(this.relevantTrace);

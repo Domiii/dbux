@@ -3,6 +3,7 @@ import isArray from 'lodash/isArray';
 import Project from '../../projectLib/Project';
 import { buildMochaRunCommand } from '../../util/mochaUtil';
 
+/** @typedef {import('../../projectLib/ExerciseConfig').ExerciseConfig} ExerciseConfig */
 
 export default class ExpressProject extends Project {
   gitRemote = 'BugsJS/express.git';
@@ -13,7 +14,7 @@ export default class ExpressProject extends Project {
     return 'test';
   }
 
-  loadBugs() {
+  loadExercises() {
     // future-work: load automatically from BugsJs bug database
     // NOTE: some bugs have multiple test files, or no test file at all
     // see: https://github.com/BugsJS/express/releases?after=Bug-4-test
@@ -397,7 +398,6 @@ export default class ExpressProject extends Project {
         testRe = testRe.replace(/"/g, '\\"');
 
         return {
-          name: `bug #${bug.id}`,
           description: testRe,
           runArgs: [
             '--grep',
@@ -420,7 +420,7 @@ export default class ExpressProject extends Project {
     return `Bug-${bugNumber}-${tagCategory}`;
   }
 
-  async selectBug(bug) {
+  async selectExercise(bug) {
     const {
       number, name
     } = bug;
@@ -440,15 +440,15 @@ export default class ExpressProject extends Project {
     await this.exec(`${this.gitCommand} checkout -B ${tag} tags/${tag}`);
   }
 
-  async testBugCommand(bug, cfg) {
+  async runCommand(exercise, cfg) {
     // const bugArgs = this.getMochaRunArgs(bug);
-    const bugConfig = this.getMochaCfg(bug, [
+    const testCfg = this.getMochaCfg(exercise, [
       '-t 10000' // timeout
     ]);
 
     const mochaCfg = {
       ...cfg,
-      ...bugConfig
+      ...testCfg
     };
 
     // Debug shortcut:
