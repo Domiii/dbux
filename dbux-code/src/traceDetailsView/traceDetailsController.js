@@ -1,10 +1,11 @@
-import { ExtensionContext, window, workspace } from 'vscode';
+import { commands, ExtensionContext, window, workspace } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
 import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import { emitSelectTraceAction } from '../userEvents';
 import { getRelatedAppIds } from '../codeDeco/editedWarning';
+import { showWarningMessage } from '../codeUtil/codeModals';
 import TraceDetailsDataProvider from './TraceDetailsNodeProvider';
 import { getOrCreateTracesAtCursor } from './TracesAtCursor';
 import ErrorTraceManager from './ErrorTraceManager';
@@ -140,10 +141,17 @@ class TraceDetailsController {
   updateEditedWarning = (activeTextEditor) => {
     if (this.documentChangedList.has(activeTextEditor?.document.fileName)) {
       this.treeDataProvider.setTitle(`${this.treeDataProvider.defaultTitle} ⚠️`);
+      commands.executeCommand('setContext', 'dbuxTraceDetailsView.context.editedWarning', true);
     }
     else {
       this.treeDataProvider.resetTitle();
+      commands.executeCommand('setContext', 'dbuxTraceDetailsView.context.editedWarning', false);
     }
+  }
+
+  async showEditedWarning() {
+    const message = 'Warning: Document changed -> code decorations might be inaccurate';
+    await showWarningMessage(message, null, { modal: true });
   }
 }
 

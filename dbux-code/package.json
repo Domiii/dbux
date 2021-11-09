@@ -238,7 +238,7 @@
         }
       },
       {
-        "command": "dbuxTraceDetailsView.context.showError",
+        "command": "dbuxTraceDetailsView.node.showError",
         "title": "Show all errors",
         "icon": {
           "light": "resources/light/fire.svg",
@@ -246,11 +246,19 @@
         }
       },
       {
-        "command": "dbuxTraceDetailsView.context.showError.disabled",
+        "command": "dbuxTraceDetailsView.node.showError.disabled",
         "title": "No error occurred",
         "icon": {
           "light": "resources/light/fire_disabled.svg",
           "dark": "resources/dark/fire_disabled.svg"
+        }
+      },
+      {
+        "command": "dbuxTraceDetailsView.node.editedWarning",
+        "title": "Document changed -> code decorations might be inaccurate",
+        "icon": {
+          "light": "resources/light/warning.svg",
+          "dark": "resources/dark/warning.svg"
         }
       },
       {
@@ -875,13 +883,18 @@
           "group": "navigation"
         },
         {
-          "command": "dbuxTraceDetailsView.context.showError",
+          "command": "dbuxTraceDetailsView.node.showError",
           "when": "view == dbuxTraceDetailsView && dbux.context.hasError",
           "group": "navigation"
         },
         {
-          "command": "dbuxTraceDetailsView.context.showError.disabled",
+          "command": "dbuxTraceDetailsView.node.showError.disabled",
           "when": "view == dbuxTraceDetailsView && !dbux.context.hasError",
+          "group": "navigation"
+        },
+        {
+          "command": "dbuxTraceDetailsView.node.editedWarning",
+          "when": "view == dbuxTraceDetailsView && dbuxTraceDetailsView.context.editedWarning",
           "group": "navigation"
         },
         {
@@ -1183,11 +1196,16 @@
           "when": "false"
         },
         {
-          "command": "dbuxTraceDetailsView.context.showError",
+          "command": "dbuxTraceDetailsView.node.showError",
           "when": "false"
         },
         {
-          "command": "dbuxTraceDetailsView.context.showError.disabled",
+          "command": "dbuxTraceDetailsView.node.showError.disabled",
+          "when": "false"
+        },
+        
+        {
+          "command": "dbuxTraceDetailsView.node.editedWarning",
           "when": "false"
         },
         {
