@@ -181,7 +181,7 @@ export default class ExerciseRunner {
 
         // Step 2: Do all the bug-related install work
         project.installBug.bind(project, exercise),
-        
+
         // Step 3: Set as active bug
         this.setActivatedBug.bind(this, exercise)
       );
@@ -208,9 +208,9 @@ export default class ExerciseRunner {
       this.setStatus(BugRunnerStatus.Busy);
 
       // init bug
-      await project.initBug(exercise);
+      await project.initExercise(exercise);
 
-      // after initBug, produce final cfg
+      // after Exercise, produce final cfg
       const cwd = pathNormalizedForce(path.resolve(project.projectPath, exercise.cwd || ''));
 
       cfg = {
