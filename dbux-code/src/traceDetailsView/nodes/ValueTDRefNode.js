@@ -5,16 +5,18 @@ import ValueTDSimpleNode from './ValueTDSimpleNode';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
+/**
+ * Node represents an complex value, use `ValueNode.entry.refId` + `ValueNode.rootDataNode.nodeId`(as terminalNodeId) to render.
+ */
 export default class ValueTDRefNode extends ValueNode {
   /**
+   * For root node only.
    * @param {Trace} trace 
    */
   static makeEntry(trace, parent, props) {
     const { traceId, applicationId } = trace;
     const dp = allApplications.getById(applicationId).dataProvider;
-    const dataTrace = dp.util.getValueTrace(traceId);
-    const { nodeId } = dataTrace;
-    const dataNode = dp.collections.dataNodes.getById(nodeId);
+    const dataNode = dp.util.getDataNodeOfTrace(traceId);
     if (dataNode && dataNode.refId && dp.collections.values.getById(dataNode.refId)) {
       return dataNode;
     }
@@ -23,12 +25,12 @@ export default class ValueTDRefNode extends ValueNode {
   }
 
   /**
-   * Make initial props
+   * For root node only.
    */
-  static makeProperties({ refId }/*, parent, props*/) {
+  static makeProperties(dataNode/*, parent, props*/) {
     return {
-      refId,
-      key: ValueLabel
+      key: ValueLabel,
+      rootDataNode: dataNode,
     };
   }
 
@@ -36,45 +38,47 @@ export default class ValueTDRefNode extends ValueNode {
     return `${key}:`;
   }
 
-  get rootDataNode() {
+  get dataNode() {
     return this.entry;
   }
 
   get valueRef() {
-    const { refId, dp } = this;
-    return dp.collections.values.getById(refId);
+    return this.dp.collections.values.getById(this.dataNode.refId);
   }
 
   init() {
     super.init();
 
+    const { rootDataNode } = this;
     const { typeName } = this.valueRef;
-    const { nodeId } = this.rootDataNode;
-    this.description = `${this.dp.util.getDataNodeValueStringShort(nodeId)}${typeName && ` (${typeName})`}`;
+    const { nodeId } = this.dataNode;
+    this.description = `${this.dp.util.getDataNodeValueStringShort(nodeId, rootDataNode.nodeId)}${typeName && ` (${typeName})`}`;
   }
 
   buildChildren() {
-    const { rootDataNode, dp, refId } = this;
+    const { rootDataNode, dp } = this;
+    const { refId, nodeId } = this.dataNode;
     const valueObj = dp.util.constructValueObjectShallow(refId, rootDataNode.nodeId);
     const entries = valueObj && Object.entries(valueObj);
 
     if (entries?.length) {
       return entries.map(([key, [childNodeId, childRefId, childValue]]) => {
+        const childDataNode = dp.collections.dataNodes.getById(childNodeId);
         if (childRefId) {
           return this.treeNodeProvider.buildNode(
-            ValueTDRefNode, rootDataNode, this, { key, refId: childRefId, nodeId: childNodeId }
+            ValueTDRefNode, childDataNode, this, { key, refId: childRefId, rootDataNode }
           );
         }
         else {
           return this.treeNodeProvider.buildNode(
-            ValueTDSimpleNode, rootDataNode, this, { key, value: childValue, nodeId: childNodeId }
+            ValueTDSimpleNode, childDataNode, this, { key, value: childValue, rootDataNode }
           );
         }
       });
     }
     else {
       // node was omitted, or in trouble for other reasons
-      const simpleValue = this.dp.collections.values.getById(refId)?.value;
+      const simpleValue = dp.collections.values.getById(refId)?.value;
       if (simpleValue !== undefined) {
         return [];
       }

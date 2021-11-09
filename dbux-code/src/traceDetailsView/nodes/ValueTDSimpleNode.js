@@ -1,35 +1,40 @@
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import ValueNode, { ValueLabel } from './ValueNode';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
 /**
- * Node contains pure value, no entry(dataNode) available
+ * Node contains pure value, use `V`alueNode.value` to render
  */
 export default class ValueTDSimpleNode extends ValueNode {
+  /**
+   * For root node only.
+   * @param {Trace} trace 
+   */
   static makeEntry(trace, parent, props) {
     const { traceId, applicationId } = trace;
     const dp = allApplications.getById(applicationId).dataProvider;
-    const dataTrace = dp.util.getValueTrace(traceId);
-    const { nodeId } = dataTrace;
-    const dataNode = dp.collections.dataNodes.getById(nodeId);
+    const dataNode = dp.util.getDataNodeOfTrace(traceId);
     if (dataNode && !dataNode.refId) {
       return dataNode;
     }
     if (!dataNode) {
       // render empty value
-      return {};
+      return EmptyObject;
     }
     return null;
   }
 
   /**
-   * Make initial props
+   * For root node only.
    */
-  static makeProperties({ value }/*, parent, props*/) {
+  static makeProperties(dataNode/*, parent, props*/) {
+    const { value } = dataNode;
     return {
+      key: ValueLabel,
       value,
-      key: ValueLabel
+      rootDataNode: dataNode,
     };
   }
 
