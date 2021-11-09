@@ -61,9 +61,11 @@ export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
       .filter(node => !!node);
   }
 
-  maybeBuildTraceDetailNode(NodeClass, entry, parent, props) {
+  maybeBuildTraceDetailNode(NodeClass, trace, parent, props) {
+    let entry = trace;
     if (NodeClass.makeEntry) {
-      entry = NodeClass.makeEntry(entry, parent, props);
+      // Some NodeClasses might depend on non-trace entry
+      entry = NodeClass.makeEntry(trace, parent, props);
       if (!entry) {
         return null;
       }

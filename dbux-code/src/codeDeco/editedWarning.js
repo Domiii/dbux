@@ -6,7 +6,7 @@ import { showWarningMessage } from '../codeUtil/codeModals';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('EditedWarning');
 
-function getRelatedAppIds(fpath) {
+export function getRelatedAppIds(fpath) {
   return allApplications.selection.data.mapApplicationsOfFilePath(fpath, (app) => app.applicationId);
 }
 

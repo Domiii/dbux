@@ -218,10 +218,10 @@ export default class TraceCollection extends Collection {
           // NOTE: we check for any `Return*` type of trace anywhere, since, in case of `finally`, the last trace might not be `return` trace
           util.getReturnTraceOfRealContext(contextId);
 
-          // trace.error = true;
-          // use lastTrace instead of pop trace itself for more accurate location
-          const lastTraceInContext = this.dp.callGraph.getPreviousInContext(traceId);
-          lastTraceInContext.error = true;
+          trace.error = true;
+          // // use lastTrace instead of pop trace itself for more accurate location
+          // const lastTraceInContext = this.dp.callGraph._getPreviousInContext(traceId);
+          // lastTraceInContext.error = true;
 
           errorTraces = errorTraces || [];
           errorTraces.push(trace);
