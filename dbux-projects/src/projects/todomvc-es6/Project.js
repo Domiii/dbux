@@ -79,7 +79,6 @@ export default class TodomvcEs6Project extends Project {
         }
       },
       {
-        // TODO: stepsToReproduce: 
         label: 'Completed TODO items are shown as not completed and vice versa (only during initial rendering)',
         patch: ['no-callbacks', 'error2'],
         domains: ['init', 'render'],
@@ -138,7 +137,11 @@ export default class TodomvcEs6Project extends Project {
         label: '"X items left" is always plural, but should also support singular.',
         patch: ['no-callbacks', 'error5'],
         domains: ['render'],
-        stepsToReproduce: ['Have a non-empty list.', 'Make sure, exactly one item is not marked as "done" yet.'],
+        stepsToReproduce: [
+          'Have a non-empty list.', 
+          'Make sure, exactly one item is not marked as "done" yet.',
+          '-> It says "1 items left", but it should be "1 item left".'
+        ],
         tags: ['wrong-condition'],
         bugLocations: [
           {
@@ -155,7 +158,7 @@ export default class TodomvcEs6Project extends Project {
           'Have a non-empty list.',
           'Toggle the first item on/off/on/off while looking at the count at the bottom ("X items left").',
           'Toggle any other item on/off.',
-          'You see that the count is only wrong for the first item.'
+          '-> The count is only wrong for the first item.'
         ],
         // notes: ['There are two hard problems in computer science: ... and off-by-one errors!'],
         tags: ['off-by-one'],
@@ -189,12 +192,16 @@ export default class TodomvcEs6Project extends Project {
         }
       },
       {
-        label: 'TODO',
+        label: 'Editing corrupts the list.',
         patch: ['no-callbacks', 'error8'],
         domains: ['store'],
-        stepsToReproduce: ['Have a non-empty list.', 'Toggle or edit any item.', 'Re-load to see that rendering has stopped working.'],
+        stepsToReproduce: [
+          'Have a non-empty list.',
+          'Toggle or edit any item.',
+          'Re-load to see that rendering has stopped working.'
+        ],
         // eslint-disable-next-line max-len
-        warnings: ['This exercise may corrupt your `localStorage`. When that happens, you have to clear the `localStorage` manually (or if you don\t know how to: manually reset the exercise) before using the application again.'], // TODO: show at a relevant time? maybe patch into the `store.js` load code?
+        warnings: ['This bug may corrupt your `localStorage`. When that happens, you have to clear the `localStorage` manually (or if you don\t know how to: manually reset the exercise) before using the application again.'], // TODO: show warning at a relevant time. Maybe patch into the `store.js` load code.
         tags: ['error', 'data-access-array', 'data-access-object'],
         sln: ['Merge, instead of override.'],
         bugLocations: [
@@ -217,7 +224,11 @@ export default class TodomvcEs6Project extends Project {
         patch: ['no-callbacks', 'error9'],
         domains: ['store'],
         // eslint-disable-next-line max-len
-        stepsToReproduce: ['Start with an empty list.', 'Items cannot be added.', 'Reminder: there is a single-line bug fix.'],
+        stepsToReproduce: [
+          'Start with an empty list.',
+          'Items cannot be added.', 
+          'Reminder: there is a single-line bug fix.'
+        ],
         tags: ['serialization'],
         hints: ['There is an error during initialization.', 'TODO'],
         courseNotes: ['Discuss how there are different valid approaches, but only one can fix it in a single line.'],

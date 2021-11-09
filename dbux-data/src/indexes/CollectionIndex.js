@@ -116,12 +116,12 @@ class ContainerMethods {
   }
 
   // eslint-disable-next-line no-unused-vars
-  getFirstInContainter(container) {
+  getFirstInContainer(container) {
     throw new Error('abstract method not implemented');
   }
 
   // eslint-disable-next-line no-unused-vars
-  getLastInContainter(container) {
+  getLastInContainer(container) {
     throw new Error('abstract method not implemented');
   }
 
@@ -146,11 +146,11 @@ class ArrayContainerMethods extends ContainerMethods {
     return [];
   }
 
-  getFirstInContainter(container) {
+  getFirstInContainer(container) {
     return container?.[0];
   }
 
-  getLastInContainter(container) {
+  getLastInContainer(container) {
     return container?.[container.length - 1];
   }
 
@@ -177,12 +177,12 @@ class SetContainerMethods extends ContainerMethods {
     return new Set();
   }
 
-  getFirstInContainter(container) {
+  getFirstInContainer(container) {
     this.index.logger.warn(`Trying to get first item in a set container`);
     return container.values().next().value;
   }
 
-  getLastInContainter(container) {
+  getLastInContainer(container) {
     this.index.logger.warn(`Trying to get last item in a set container`);
     return container.values().next().value;
   }
@@ -312,20 +312,20 @@ export default class CollectionIndex {
 
   getFirst(key) {
     const container = this.get(key);
-    return this._containerMethods.getFirstInContainter(container) || null;
+    return this._containerMethods.getFirstInContainer(container) || null;
   }
 
   getLast(key) {
     const container = this.get(key);
-    return this._containerMethods.getLastInContainter(container) || null;
+    return this._containerMethods.getLastInContainer(container) || null;
   }
 
   getUnique(key) {
     const container = this.get(key);
     if (this._containerMethods.getSize(container) > 1) {
-      throw new Error(`[${this.name}.getUnique] found non-unique values: ${container}.`);
+      this.logger.warn(`[${this.name}.getUnique] found non-unique values: ${container}.`);
     }
-    return this._containerMethods.getUniqueInContainer(container);
+    return this._containerMethods.getFirstInContainer(container);
   }
 
   getUniqueNotNull(key) {
