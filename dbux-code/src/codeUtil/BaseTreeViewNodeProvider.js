@@ -41,7 +41,7 @@ export default class BaseTreeViewNodeProvider {
    * @param {boolean} [options.createTreeView]
    */
   constructor(viewName, options = {}) {
-    this.viewName = viewName;
+    this.treeViewName = viewName;
     const { showCollapseAll = false, createTreeView = true } = options;
 
     // NOTE: view creation inside the data provider is not ideal, 
@@ -51,6 +51,7 @@ export default class BaseTreeViewNodeProvider {
         showCollapseAll: showCollapseAll,
         treeDataProvider: this
       });
+      this.defaultTitle = this.treeView.title;
 
       this.treeView.onDidCollapseElement(this.handleCollapsibleStateChanged);
       this.treeView.onDidExpandElement(this.handleCollapsibleStateChanged);
@@ -59,9 +60,23 @@ export default class BaseTreeViewNodeProvider {
 
   initDefaultClickCommand(context) {
     registerCommand(context,
-      this.clickCommandName = `${this.viewName}.click`,
+      this.clickCommandName = `${this.treeViewName}.click`,
       (node) => this.handleClick(node)
     );
+  }
+
+  /** ###########################################################################
+   * treeview controll
+   *  #########################################################################*/
+
+  resetTitle() {
+    this.setTitle(this.defaultTitle);
+  }
+
+  setTitle(title) {
+    if (this.treeView) {
+      this.treeView.title = title;
+    }
   }
 
   // ###########################################################################
@@ -152,7 +167,7 @@ export default class BaseTreeViewNodeProvider {
    * @virtual
    */
   handleClick = async (node) => {
-    const treeViewName = this.viewName;
+    const { treeViewName } = this;
     const action = ''; // not a button click
     const nodeId = node.id;
     const args = {
@@ -174,7 +189,7 @@ export default class BaseTreeViewNodeProvider {
   }
 
   handleNodeCollapsibleStateChanged = (node) => {
-    const treeViewName = this.viewName;
+    const { treeViewName } = this;
     const action = ''; // not a button click
     const nodeId = node.id;
     const args = {

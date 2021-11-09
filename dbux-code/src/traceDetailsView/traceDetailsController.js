@@ -1,11 +1,12 @@
-import { ExtensionContext } from 'vscode';
+import { ExtensionContext, window, workspace } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
 import { makeDebounce } from '@dbux/common/src/util/scheduling';
+import { emitSelectTraceAction } from '../userEvents';
+import { getRelatedAppIds } from '../codeDeco/editedWarning';
 import TraceDetailsDataProvider from './TraceDetailsNodeProvider';
 import { getOrCreateTracesAtCursor } from './TracesAtCursor';
-import { emitSelectTraceAction } from '../userEvents';
 import ErrorTraceManager from './ErrorTraceManager';
 
 // eslint-disable-next-line no-unused-vars
@@ -19,6 +20,10 @@ class TraceDetailsController {
     this.treeDataProvider.controller = this;
     this.tracesAtCursor = getOrCreateTracesAtCursor(context);
     this.errorTraceManager = new ErrorTraceManager();
+
+    this.documentChangedList = new Set();
+    workspace.onDidChangeTextDocument(this.handleDocumentChanged);
+    window.onDidChangeActiveTextEditor(this.updateEditedWarning);
   }
 
   get treeView() {
@@ -110,6 +115,35 @@ class TraceDetailsController {
 
   showError() {
     this.errorTraceManager.showError();
+  }
+
+  /** ###########################################################################
+   * edited warning
+   *  #########################################################################*/
+
+  handleDocumentChanged = async (activeTextEditor) => {
+    if (!activeTextEditor) {
+      return;
+    }
+
+    const changedFileName = activeTextEditor.document.fileName;
+    if (this.documentChangedList.has(changedFileName)) {
+      return;
+    }
+
+    if (getRelatedAppIds(changedFileName).length) {
+      this.documentChangedList.add(changedFileName);
+      this.updateEditedWarning(activeTextEditor);
+    }
+  }
+
+  updateEditedWarning = (activeTextEditor) => {
+    if (this.documentChangedList.has(activeTextEditor?.document.fileName)) {
+      this.treeDataProvider.setTitle(`${this.treeDataProvider.defaultTitle} ⚠️`);
+    }
+    else {
+      this.treeDataProvider.resetTitle();
+    }
   }
 }
 
