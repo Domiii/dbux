@@ -130,6 +130,7 @@ export default class ProjectsManager {
   /**
    * Retrieves all case study objects, 
    * sorted by name (in descending order).
+   * @return {ProjectList}
    */
   getOrCreateDefaultProjectList() {
     if (!this.projects) {

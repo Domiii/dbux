@@ -83,7 +83,11 @@ export default class TodomvcEs6Project extends Project {
         label: 'Completed TODO items are shown as not completed and vice versa (only during initial rendering)',
         patch: ['no-callbacks', 'error2'],
         domains: ['init', 'render'],
-        stepsToReproduce: ['Have a non-empty list.', 'Make sure, some items are completed, some not.', 'Check whether they are rendered as "completed" correctly.'],
+        stepsToReproduce: [
+          'Have a non-empty list.',
+          'Make sure, some items are completed, some not.',
+          'Check whether they are rendered as "completed" correctly.'
+        ],
         tags: ['boolean-logic', 'operator'],
         bugLocations: [
           {
@@ -147,7 +151,12 @@ export default class TodomvcEs6Project extends Project {
         label: '"X items left" not counting first item in list.',
         patch: ['no-callbacks', 'error6'],
         domains: ['store'],
-        stepsToReproduce: ['Have a non-empty list.', 'Toggle the first item on/off/on/off while looking at the count at the bottom ("X items left").'],
+        stepsToReproduce: [
+          'Have a non-empty list.',
+          'Toggle the first item on/off/on/off while looking at the count at the bottom ("X items left").',
+          'Toggle any other item on/off.',
+          'You see that the count is only wrong for the first item.'
+        ],
         // notes: ['There are two hard problems in computer science: ... and off-by-one errors!'],
         tags: ['off-by-one'],
         bugLocations: [
@@ -158,10 +167,14 @@ export default class TodomvcEs6Project extends Project {
         ]
       },
       {
-        label: 'TODO',
+        label: 'Edit changes are not saved anymore.',
         patch: ['no-callbacks', 'error7'],
         domains: ['store'],
-        stepsToReproduce: ['Have a non-empty list.', 'Toggle or edit any item.', 'Re-load the page and find that it did not get saved.'],
+        stepsToReproduce: [
+          'Have a non-empty list.',
+          'Toggle or edit any item.',
+          'Re-load the page and find that it did not get saved.'
+        ],
         tags: ['error', 'data-access-array', 'data-access-object'],
         bugLocations: [
           {
@@ -216,7 +229,7 @@ export default class TodomvcEs6Project extends Project {
         ]
       },
       {
-        label: 'TODO',
+        label: '"X items left" counting the wrong items.',
         patch: ['no-callbacks', 'error10'],
         domains: ['controller', 'store'],
         stepsToReproduce: [
@@ -225,9 +238,11 @@ export default class TodomvcEs6Project extends Project {
         ],
         // eslint-disable-next-line max-len
         hints: [
-          'Is there a pattern to how many "items left" there are?', 
-          'Can you find the code that does the counting?', 
-          'TODO: If not, propose a way to find the "counting code".'
+          'Is there a pattern to how many "items left" there are?',
+          'TODO'
+        ],
+        courseNotes: [
+          ''
         ],
         tags: ['data-access-array'],
         bugLocations: [
