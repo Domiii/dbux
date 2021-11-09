@@ -149,11 +149,11 @@ class ContextNode extends HostComponentEndpoint {
     this.controllers.getComponent('GraphNode').setMode(GraphNodeMode.ExpandChildren);
   }
 
-  getChildrenCounts() {
+  getChildrenCount() {
     return this.getValidChildContexts().length;
   }
 
-  getSubGraphChildrenCounts() {
+  getSubGraphChildrenCount() {
     return this.nTreeContexts;
   }
 

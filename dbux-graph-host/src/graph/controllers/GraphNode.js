@@ -4,8 +4,8 @@ import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
 const getNewChildrenCount = {
   [GraphNodeMode.Collapsed]: () => 0,
-  [GraphNodeMode.ExpandChildren]: (node) => node.getChildrenCounts(),
-  [GraphNodeMode.ExpandSubgraph]: (node) => node.getSubGraphChildrenCounts(),
+  [GraphNodeMode.ExpandChildren]: (node) => node.getChildrenCount(),
+  [GraphNodeMode.ExpandSubgraph]: (node) => node.getSubGraphChildrenCount(),
 };
 
 export default class GraphNode extends HostComponentEndpoint {
