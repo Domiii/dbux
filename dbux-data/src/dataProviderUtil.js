@@ -676,18 +676,22 @@ export default {
   /** 
    * @param {DataProvider} dp
    */
-  getDataNodeValueString(dp, nodeId, shorten = false) {
+  _getDataNodeValueString(dp, nodeId, terminateNodeId = null, shorten = false) {
     const dataNode = dp.collections.dataNodes.getById(nodeId);
+    if (!terminateNodeId) {
+      terminateNodeId = nodeId;
+    }
 
-    // check cached string
-    if (shorten) {
-      if (dataNode._valueStringShort) {
-        return dataNode._valueStringShort;
-      }
-    }
-    else if (dataNode._valueString) {
-      return dataNode._valueString;
-    }
+    // NOTE: cache is currently disabled since we need the value in different timepoints, which cannot be handled with single cache
+    // // check cached string
+    // if (shorten) {
+    //   if (dataNode._valueStringShort) {
+    //     return dataNode._valueStringShort;
+    //   }
+    // }
+    // else if (dataNode._valueString) {
+    //   return dataNode._valueString;
+    // }
 
     // A message is generated if there is an issue with the value or it was omitted.
     const valueMessage = dp.util.getDataNodeValueMessage(nodeId);
@@ -699,7 +703,7 @@ export default {
     let valueString;
     const { refId } = dataNode;
     if (refId) {
-      const entries = dp.util.constructValueObjectShallow(refId, nodeId);
+      const entries = dp.util.constructValueObjectShallow(refId, terminateNodeId);
       const valueRef = dp.collections.values.getById(refId);
       if (!entries) {
         // node was omitted or did not have children for other reasons
@@ -733,20 +737,25 @@ export default {
       valueString = dataNode.value?.toString?.() || String(dataNode.value);
     }
 
-    if (shorten) {
-      valueString = makeShortString(valueString, ShortenCfg);
-      dataNode._valueStringShort = valueString;
-    }
-    else {
-      dataNode._valueString = valueString;
-    }
+    // if (shorten) {
+    //   valueString = makeShortString(valueString, ShortenCfg);
+    //   dataNode._valueStringShort = valueString;
+    // }
+    // else {
+    //   dataNode._valueString = valueString;
+    // }
 
     return valueString;
   },
 
   /** @param {DataProvider} dp */
-  getDataNodeValueStringShort(dp, nodeId) {
-    return dp.util.getDataNodeValueString(nodeId, true);
+  getDataNodeValueString(dp, nodeId, terminateNodeId = null) {
+    return dp.util._getDataNodeValueString(nodeId, terminateNodeId, false);
+  },
+
+  /** @param {DataProvider} dp */
+  getDataNodeValueStringShort(dp, nodeId, terminateNodeId = null) {
+    return dp.util._getDataNodeValueString(nodeId, terminateNodeId, true);
   },
 
   /** @param {DataProvider} dp */
