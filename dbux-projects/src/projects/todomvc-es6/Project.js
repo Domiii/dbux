@@ -219,9 +219,16 @@ export default class TodomvcEs6Project extends Project {
         label: 'TODO',
         patch: ['no-callbacks', 'error10'],
         domains: ['controller', 'store'],
-        stepsToReproduce: ['Have a non-empty list.', 'Toggle items. Observe that the "X items left" count at the bottom is incorrect.'],
+        stepsToReproduce: [
+          'Have a non-empty list.',
+          'Toggle items. Observe that the "X items left" count at the bottom is incorrect.'
+        ],
         // eslint-disable-next-line max-len
-        hints: ['Is there a pattern to how many "items left" there are?', 'Can you find the code that does the counting?', 'TODO: If not, propose a way to find the "counting code".'],
+        hints: [
+          'Is there a pattern to how many "items left" there are?', 
+          'Can you find the code that does the counting?', 
+          'TODO: If not, propose a way to find the "counting code".'
+        ],
         tags: ['data-access-array'],
         bugLocations: [
           {
