@@ -13,7 +13,7 @@ export default class HexoProject extends Project {
   /**
    * @type {Array.<Exercise>}
    */
-  loadExercises() {
+  loadExerciseConfigs() {
     const bugs = [
       {
         // not a challenge to find the bug

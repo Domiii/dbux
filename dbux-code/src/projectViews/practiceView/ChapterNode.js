@@ -7,15 +7,15 @@ import { showInformationMessage } from '../../codeUtil/codeModals';
 
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
 
-export default class ProjectNode extends BaseTreeViewNode {
-  static makeLabel(project) {
-    return project.name;
+export default class ChapterNode extends BaseTreeViewNode {
+  static makeLabel({ id, name }) {
+    return `Chapter ${id}: ${name}`;
   }
 
   /**
    * @type {Project}
    */
-  get project() {
+  get chapter() {
     return this.entry;
   }
 
@@ -50,6 +50,7 @@ export default class ProjectNode extends BaseTreeViewNode {
   }
 
   buildChildren() {
+    // getOrLoadBugs returns a `BugList`, use Array.from to convert to array
     const bugs = Array.from(this.project.getOrLoadExercises());
     return bugs.map(this.buildExerciseNode.bind(this));
   }

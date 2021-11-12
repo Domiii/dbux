@@ -68,7 +68,7 @@ export default class SequelizeProject extends Project {
   /**
    * @return {ExerciseConfig[]}
    */
-  loadExercises() {
+  loadExerciseConfigs() {
     return [
       {
         label: 'sscce1-sqlite',

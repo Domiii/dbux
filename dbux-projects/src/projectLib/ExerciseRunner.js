@@ -148,11 +148,6 @@ export default class ExerciseRunner {
     await project.installProject();
   }
 
-  /** @param {Project} project */
-  getOrLoadExercises(project) {
-    return project.getOrLoadExercises();
-  }
-
   /**
    * Enqueue a bunch of callbacks into the queue.
    */

@@ -23,6 +23,8 @@ import ExerciseDataProvider from './dataLib/ExerciseDataProvider';
 import initLang, { getTranslationScope } from './lang';
 import upload from './fileUpload';
 import { checkSystemWithRequirement } from './checkSystem';
+import Chapter from './projectLib/Chapter';
+import chapterRegistry from './_chapterRegistry';
 
 const logger = newLogger('PracticeManager');
 // eslint-disable-next-line no-unused-vars
@@ -103,6 +105,10 @@ export default class ProjectsManager {
     this.runner.start();
     this._emitter = new NanoEvents();
 
+    // build projects + chapters
+    this.getOrCreateDefaultProjectList();
+    this.loadChapters();
+
     this._backend = new BackendController(this);
 
     this.pathwayDataProvider = new PathwaysDataProvider(this);
@@ -160,6 +166,24 @@ export default class ProjectsManager {
     }
 
     return this.projects;
+  }
+
+  loadChapters() {
+    // TODO: use dynamic require
+    try {
+      this.chapters = [null];
+      for (const chapterConfig of chapterRegistry) {
+        const { name, exercises: exerciseIds } = chapterConfig;
+        const exercises = exerciseIds.map(_id => this.projects.getExerciseById(_id));
+        const chapter = new Chapter(this, this.chapters.length, name, exercises);
+        this.chapters.push(chapter);
+      }
+      return this.chapters;
+    }
+    catch (err) {
+      logError(`Cannot load chapters: ${err.message}`);
+      return null;
+    }
   }
 
   /**

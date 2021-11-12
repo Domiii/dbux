@@ -17,6 +17,7 @@ import { buildNodeCommand } from '../util/nodeUtil';
 import { checkSystemWithRequirement } from '../checkSystem';
 import RunStatus, { isStatusRunningType } from './RunStatus';
 import ProjectBase from './ProjectBase';
+import Exercise from './Exercise';
 
 const Verbose = false;
 const SharedAssetFolder = '_shared_assets_';
@@ -43,6 +44,11 @@ export default class Project extends ProjectBase {
    * @type {ProjectsManager}
    */
   manager;
+
+  /**
+   * @type {string}
+   */
+  name;
 
   /**
    * Hold reference to webpack (watch mode), `http-serve` and other long-running background processes.
@@ -368,10 +374,11 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   }
 
   /**
-   * @abstract
+   * @return {exerciseConfig}
    */
-  loadExercises() {
-    throw new Error(this + ' abstract method not implemented');
+  loadExerciseConfigs() {
+    // TODO: import from data file
+    return EmptyArray;
   }
 
   async openInEditor() {
@@ -1193,35 +1200,50 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   // ###########################################################################
 
   /**
-   * @virtual
-   */
-  setupBug(bug) { }
-
-  /**
    * Get all bugs for this project
    * @return {ExerciseList}
    */
   getOrLoadExercises() {
     if (!this._exercises) {
-      let arr = this.loadExercises();
-      arr.forEach(bug => {
+      let exerciseConfigs = this.loadExerciseConfigs();
+      const hasIds = exerciseConfigs.some(exercise => !!exercise.id);
+      let lastExercise = 0;
+
+      let exercises = exerciseConfigs.map(config => {
+        // exercise.description
         let {
           description,
           testRe,
           testFilePaths
-        } = bug;
-        bug.description = description || testRe || testFilePaths?.[0] || '';
+        } = config;
+        config.description = description || testRe || testFilePaths?.[0] || '';
 
-        this.setupBug(bug);
+        // exercise.number
+        if (!config.number) {
+          // ensure cfg.number exists(type number)
+          config.number = hasIds ? config.id : ++lastExercise;
+        }
+
+        // exercise.bugLocations
+        if (config.bugLocations && !config.bugLocations.length) {
+          // we use `!!bug.bugLocations` to determine whether this bug is "solvable"
+          config.bugLocations = null;
+        }
+
+        // exercise.id
+        // convert number typed id to string type(thus it's globally unique)
+        config.id = `${this.name}#${config.number}`;
+
+        return new Exercise(this, config);
       });
 
       if (process.env.NODE_ENV === 'production') {
         // NOTE: this is an immature feature
         //      for now, only provide one bug for demonstration purposes and to allow us gather feedback
-        arr = arr.filter(bug => bug.label && bug.isSolvable);
+        exercises = exercises.filter(exercise => exercise.label && exercise.isSolvable);
       }
 
-      this._exercises = new ExerciseList(this, arr);
+      this._exercises = new ExerciseList(exercises);
     }
     return this._exercises;
   }

@@ -16,3 +16,10 @@ export function requireAllByName(pattern, propName = 'name') {
     })
   );
 }
+
+export function requireUncached(module) {
+  // eslint-disable-next-line camelcase
+  const requireFunc = typeof __non_webpack_require__ === "function" ? __non_webpack_require__ : require;
+  delete requireFunc.cache[requireFunc.resolve(module)];
+  return requireFunc(module);
+}

@@ -19,7 +19,7 @@ export default class NodeFetchProject extends Project {
   /**
    * @return {ExerciseConfig[]}
    */
-  loadExercises() {
+  loadExerciseConfigs() {
     return [
       {
         label: 'basic example1',
