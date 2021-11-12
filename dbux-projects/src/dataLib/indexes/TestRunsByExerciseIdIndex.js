@@ -3,9 +3,9 @@ import CollectionIndex from '@dbux/data/src/indexes/CollectionIndex';
 /** @typedef {import('../PathwaysDataProvider').default} PathwaysDataProvider */
 
 /** @extends {CollectionIndex<TestRun>} */
-export default class TestRunByBugIdIndex extends CollectionIndex {
+export default class TestRunByExerciseIdIndex extends CollectionIndex {
   constructor() {
-    super('testRuns', 'byBugId', { isMap: true });
+    super('testRuns', 'byExerciseId', { isMap: true });
   }
 
   /** 
@@ -13,6 +13,6 @@ export default class TestRunByBugIdIndex extends CollectionIndex {
    * @param {TestRun} testRun
    */
   makeKey(pdp, testRun) {
-    return testRun.bugId;
+    return testRun.exerciseId;
   }
 }

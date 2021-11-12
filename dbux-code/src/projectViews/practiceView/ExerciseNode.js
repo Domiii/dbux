@@ -1,5 +1,5 @@
 import { env, Uri } from 'vscode';
-import BugStatus from '@dbux/projects/src/dataLib/BugStatus';
+import ExerciseStatus from '@dbux/projects/src/dataLib/ExerciseStatus';
 import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import { showInformationMessage } from '../../codeUtil/codeModals';
@@ -8,19 +8,19 @@ import { showInformationMessage } from '../../codeUtil/codeModals';
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
 /** @typedef {import('./ProjectNode').default} ProjectNode */
 
-export default class BugNode extends BaseTreeViewNode {
-  static makeLabel(bug) {
-    return bug.label;
+export default class ExerciseNode extends BaseTreeViewNode {
+  static makeLabel(exercise) {
+    return exercise.label;
   }
 
   init = () => {
-    this.description = this.bug.description;
+    this.description = this.exercise.description;
   }
 
   /**
-   * @return {Bug}
+   * @return {Exercise}
    */
-  get bug() {
+  get exercise() {
     return this.entry;
   }
 
@@ -39,27 +39,27 @@ export default class BugNode extends BaseTreeViewNode {
   }
 
   get contextValue() {
-    const runStatus = RunStatus.getName(this.bug.runStatus);
-    const hasWebsite = this.bug.website ? 'hasWebsite' : '';
-    return `dbuxProjectView.bugNode.${runStatus}.${hasWebsite}`;
+    const runStatus = RunStatus.getName(this.exercise.runStatus);
+    const hasWebsite = this.exercise.website ? 'hasWebsite' : '';
+    return `dbuxProjectView.exerciseNode.${runStatus}.${hasWebsite}`;
   }
 
   makeIconPath() {
-    switch (this.bug.runStatus) {
+    switch (this.exercise.runStatus) {
       case RunStatus.Busy:
         return 'hourglass.svg';
       case RunStatus.RunningInBackground:
         return 'play.svg';
     }
-    const progress = this.manager.bdp.getBugProgressByBug(this.bug);
+    const progress = this.manager.bdp.getExerciseProgressByExercise(this.exercise);
     switch (progress?.status) {
-      case BugStatus.Solving:
+      case ExerciseStatus.Solving:
         return progress.stopwatchEnabled ? 'edit.svg' : 'edit.svg';
-      case BugStatus.Attempted:
+      case ExerciseStatus.Attempted:
         return progress.stopwatchEnabled ? 'wrong.svg' : 'wrong_bw.svg';
-      case BugStatus.Found:
+      case ExerciseStatus.Found:
         return progress.stopwatchEnabled ? 'correct.svg' : 'correct_bw.svg';
-      case BugStatus.Solved:
+      case ExerciseStatus.Solved:
         return progress.stopwatchEnabled ? 'correct.svg' : 'correct_bw.svg';
     }
     return ' ';
@@ -74,19 +74,19 @@ export default class BugNode extends BaseTreeViewNode {
   }
 
   async showWebsite() {
-    if (this.bug.website) {
-      return env.openExternal(Uri.parse(this.bug.website));
+    if (this.exercise.website) {
+      return env.openExternal(Uri.parse(this.exercise.website));
     }
 
     // return false to indicate that no website has been opened
     return false;
   }
 
-  async tryResetBug() {
+  async tryResetExercise() {
     try {
       if (await this.manager.stopPractice()) {
-        await this.manager.resetBug(this.bug);
-        await showInformationMessage(`Bug ${this.bug.label} has been reset successfully.`);
+        await this.manager.resetExercise(this.exercise);
+        await showInformationMessage(`Exercise ${this.exercise.label} has been reset successfully.`);
       }
     }
     catch (err) {
@@ -99,11 +99,11 @@ export default class BugNode extends BaseTreeViewNode {
     }
   }
 
-  async showBugIntroduction() {
-    await this.bug.manager.externals.showBugIntroduction(this.bug);
+  async showExerciseIntroduction() {
+    await this.exercise.manager.externals.showExerciseIntroduction(this.exercise);
   }
 
-  async showBugLog() {
-    await this.bug.manager.showBugLog(this.bug);
+  async showExerciseLog() {
+    await this.exercise.manager.showExerciseLog(this.exercise);
   }
 }

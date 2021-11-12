@@ -161,7 +161,7 @@ export default class ExerciseRunner {
   }
 
   /**
-   * WARNING: Should only be called by switchToBug.
+   * WARNING: Should only be called by `switchToExercise`.
    * 
    * @param {Exercise} exercise 
    */
@@ -201,7 +201,7 @@ export default class ExerciseRunner {
    * @param {Exercise} exercise
    * @returns {Promise<ExecuteResult>}
    */
-  async testBug(exercise, cfg) {
+  async testExercise(exercise, cfg) {
     const { project, website } = exercise;
 
     try {
@@ -384,7 +384,7 @@ export default class ExerciseRunner {
 
   async setActivatedBug(bug = null) {
     this._bug = bug;
-    await this.manager.setKeyToBug(activatedBugKeyName, bug);
+    await this.manager.setKeyToExercise(activatedBugKeyName, bug);
   }
 
   /**

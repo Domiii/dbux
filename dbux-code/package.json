@@ -558,16 +558,16 @@
         }
       },
       {
-        "command": "dbuxProjectView.node.stopBug",
-        "title": "Stop bug",
+        "command": "dbuxProjectView.node.stopRunner",
+        "title": "Stop Exercise Runner",
         "icon": {
           "light": "resources/light/pause.svg",
           "dark": "resources/dark/pause.svg"
         }
       },
       {
-        "command": "dbuxProjectView.node.resetBug",
-        "title": "Reset this bug",
+        "command": "dbuxProjectView.node.resetExercise",
+        "title": "Reset this exercise",
         "icon": {
           "light": "resources/light/refresh.svg",
           "dark": "resources/dark/refresh.svg"
@@ -582,7 +582,7 @@
         }
       },
       {
-        "command": "dbuxProjectView.node.showBugIntroduction",
+        "command": "dbuxProjectView.node.showExerciseIntroduction",
         "title": "Show introduction",
         "icon": {
           "light": "resources/light/question.svg",
@@ -590,8 +590,8 @@
         }
       },
       {
-        "command": "dbuxProjectView.node.showBugLog",
-        "title": "Show bug log",
+        "command": "dbuxProjectView.node.showExerciseLog",
+        "title": "Show exercise log",
         "icon": {
           "light": "resources/light/document.svg",
           "dark": "resources/dark/document.svg"
@@ -802,37 +802,37 @@
         },
         {
           "command": "dbuxProjectView.node.startPractice",
-          "when": "viewItem =~ /dbuxProjectView\\.bugNode\\.(None|Done)\\..*/ && !dbuxProjectView.context.isBusy",
+          "when": "viewItem =~ /dbuxProjectView\\.exerciseNode\\.(None|Done)\\..*/ && !dbuxProjectView.context.isBusy",
           "group": "inline@20"
         },
         {
           "command": "dbuxProjectView.node.busyIcon",
-          "when": "viewItem =~ /dbuxProjectView\\.bugNode\\.(None|Done)\\..*/ && dbuxProjectView.context.isBusy",
+          "when": "viewItem =~ /dbuxProjectView\\.exerciseNode\\.(None|Done)\\..*/ && dbuxProjectView.context.isBusy",
           "group": "inline@25"
         },
         {
-          "command": "dbuxProjectView.node.stopBug",
-          "when": "viewItem =~ /dbuxProjectView\\.bugNode\\.RunningInBackground\\..*/",
+          "command": "dbuxProjectView.node.stopRunner",
+          "when": "viewItem =~ /dbuxProjectView\\.exerciseNode\\.RunningInBackground\\..*/",
           "group": "inline@26"
         },
         {
-          "command": "dbuxProjectView.node.resetBug",
-          "when": "viewItem =~ /dbuxProjectView\\.bugNode\\..*\\..*/ && !dbuxProjectView.context.isBusy",
+          "command": "dbuxProjectView.node.resetExercise",
+          "when": "viewItem =~ /dbuxProjectView\\.exerciseNode\\..*\\..*/ && !dbuxProjectView.context.isBusy",
           "group": "inline@15"
         },
         {
           "command": "dbuxProjectView.node.showWebsite",
-          "when": "viewItem =~ /dbuxProjectView\\.bugNode\\.RunningInBackground\\.hasWebsite/",
+          "when": "viewItem =~ /dbuxProjectView\\.exerciseNode\\.RunningInBackground\\.hasWebsite/",
           "group": "inline@10"
         },
         {
-          "command": "dbuxProjectView.node.showBugIntroduction",
-          "when": "viewItem =~ /dbuxProjectView\\.bugNode/",
+          "command": "dbuxProjectView.node.showExerciseIntroduction",
+          "when": "viewItem =~ /dbuxProjectView\\.exerciseNode/",
           "group": "inline@9"
         },
         {
-          "command": "dbuxProjectView.node.showBugLog",
-          "when": "viewItem =~ /dbuxProjectView\\.bugNode/",
+          "command": "dbuxProjectView.node.showExerciseLog",
+          "when": "viewItem =~ /dbuxProjectView\\.exerciseNode/",
           "group": "inline@8"
         },
         {
@@ -1301,11 +1301,11 @@
           "when": "false"
         },
         {
-          "command": "dbuxProjectView.node.stopBug",
+          "command": "dbuxProjectView.node.stopRunner",
           "when": "false"
         },
         {
-          "command": "dbuxProjectView.node.resetBug",
+          "command": "dbuxProjectView.node.resetExercise",
           "when": "false"
         },
         {
@@ -1317,11 +1317,11 @@
           "when": "false"
         },
         {
-          "command": "dbuxProjectView.node.showBugIntroduction",
+          "command": "dbuxProjectView.node.showExerciseIntroduction",
           "when": "false"
         },
         {
-          "command": "dbuxProjectView.node.showBugLog",
+          "command": "dbuxProjectView.node.showExerciseLog",
           "when": "false"
         },
         {

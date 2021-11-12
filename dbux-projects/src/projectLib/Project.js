@@ -354,6 +354,11 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     // git clone
     await this.gitClone();
 
+    // fetch all bug tags if needed
+    if (this.getExerciseGitTag) {
+      await this.exec(`${this.gitCommand} fetch --all --tags`);
+    }
+
     // run hook
     await this.install();
   }
@@ -650,15 +655,15 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   }
 
   /**
-   * @deprecated We are managing bug activated state in `BugRunner.actiavtedBug` and applying patch automaticly in `ProjectManager.switchToBug`. Commit user changes here will break the tag structure assumption.
+   * @deprecated We are managing bug activated state in `BugRunner.actiavtedBug` and applying patch automaticly in `ProjectManager.switchToExercise`. Commit user changes here will break the tag structure assumption.
    */
-  async deactivateBug(bug) {
+  async deactivateExercise(exercise) {
     const project = this;
-    const bugCachedTag = project.getBugCachedTagName(bug);
+    const exerciseCachedTag = project.getExerciseCachedTagTagName(exercise);
 
     // commit and set tag to latest commit
-    await project.autoCommit(`Deactivated bug ${bug.id}.`);
-    await project.gitSetTag(bugCachedTag);
+    await project.autoCommit(`Deactivated bug ${exercise.id}.`);
+    await project.gitSetTag(exerciseCachedTag);
   }
 
   /**
@@ -673,20 +678,20 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
     const project = this;
     const installedTag = project.getProjectInstalledTagName();
-    const bugCachedTag = project.getBugCachedTagName(bug);
+    const exerciseCachedTag = project.getExerciseCachedTagTagName(bug);
 
     let successfulCacheFlag = false;
-    if (await project.gitDoesTagExist(bugCachedTag)) {
+    if (await project.gitDoesTagExist(exerciseCachedTag)) {
       // get back to bug's original state
-      await project._gitCheckout(bugCachedTag);
+      await project._gitCheckout(exerciseCachedTag);
       const currentTags = await project.gitGetAllCurrentTagName();
-      if (currentTags.includes(bugCachedTag)) {
-        // hackfix: there is some bug here where `bugCachedTag` appears to exist, but we never stored it, and after checkout, it ends up in `installedTag` instead
+      if (currentTags.includes(exerciseCachedTag)) {
+        // hackfix: there is some bug here where `exerciseCachedTag` appears to exist, but we never stored it, and after checkout, it ends up in `installedTag` instead
         // -> $ git tag -l *dbux*
         successfulCacheFlag = true;
       }
       else {
-        throw new Error(`installBug failed - tried to checkout bug tag "${bugCachedTag}", but could not find tag (found: "${currentTags}"). Please re-install bug.`);
+        throw new Error(`installBug failed - tried to checkout bug tag "${exerciseCachedTag}", but could not find tag (found: "${currentTags}"). Please re-install bug.`);
       }
     }
 
@@ -708,7 +713,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
       // autoCommit + set tag
       await project.autoCommit(`Selected bug ${bug.id}.`);
-      await project.gitSetTag(bugCachedTag);
+      await project.gitSetTag(exerciseCachedTag);
     }
 
     // copy assets
@@ -876,12 +881,12 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
    *    -> this should be the inverse of {@link Project#installBug}
    * TODO: make sure, individual overrides of {@link Project#selectExercise} don't do anything that is not undoable (or provide some sort of `uninstallBug` function)
    */
-  async resetBug(bug) {
+  async resetExercise(bug) {
     const installedTag = this.getProjectInstalledTagName();
-    const bugCachedTag = this.getBugCachedTagName(bug);
+    const exerciseCachedTag = this.getExerciseCachedTagTagName(bug);
 
-    const currentTag = await this.gitGetCurrentTagName();
-    if (currentTag === bugCachedTag) {
+    const currentTags = await this.gitGetAllCurrentTagName();
+    if (currentTags.includes(exerciseCachedTag)) {
       // if (await this.gitDoesTagExist(installedTag)) {
       // get back to project's original state
       await this._gitResetAndCheckout(installedTag);
@@ -891,7 +896,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       await this._gitResetAndCheckout(installedTag);
     }
 
-    await this.gitDeleteTag(bugCachedTag);
+    await this.gitDeleteTag(exerciseCachedTag);
   }
 
   /** ###########################################################################
@@ -1123,7 +1128,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   async getCurrentBugFromTag() {
     if (this.doesProjectFolderExist()) {
       for (const tag of (await this.gitGetAllCurrentTagName())) {
-        const bug = this.parseBugCachedTag(tag);
+        const bug = this.parseExerciseCachedTag(tag);
         if (bug) {
           return bug;
         }
@@ -1153,6 +1158,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   }
 
   async gitDeleteTag(tagName) {
+    await this.checkCorrectGitRepository();
     return this.exec(`${this.gitCommand} tag -d ${tagName}`);
   }
 
@@ -1168,14 +1174,14 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     return GitInstalledTag;
   }
 
-  getBugCachedTagName(bug) {
-    return `__dbux_bug_${bug.id}_selected`;
+  getExerciseCachedTagTagName(bug) {
+    return `__dbux_exercise_${bug.id}_selected`;
   }
 
-  parseBugCachedTag(tagName) {
-    const bugId = tagName.match(/__dbux_bug_([^_]*)_selected/)?.[1];
-    if (bugId) {
-      return this._exercises.getById(bugId);
+  parseExerciseCachedTag(tagName) {
+    const exerciseId = tagName.match(/__dbux_exercise_([^_]*)_selected/)?.[1];
+    if (exerciseId) {
+      return this._exercises.getById(exerciseId);
     }
     else {
       return null;

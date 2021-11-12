@@ -416,8 +416,8 @@ export default class ExpressProject extends Project {
       filter(bug => !!bug);
   }
 
-  getBugGitTag(bugNumber, tagCategory) {
-    return `Bug-${bugNumber}-${tagCategory}`;
+  getExerciseGitTag(exerciseNumber, tagCategory) {
+    return `Bug-${exerciseNumber}-${tagCategory}`;
   }
 
   async selectExercise(bug) {
@@ -425,7 +425,7 @@ export default class ExpressProject extends Project {
       number, name
     } = bug;
     const tagCategory = "test"; // "test", "fix" or "full"
-    const tag = this.getBugGitTag(number, tagCategory);
+    const tag = this.getExerciseGitTag(number, tagCategory);
 
     if ((await this.gitGetCurrentTagName()).startsWith(tag)) {
       // do not checkout bug, if we already on the right tag

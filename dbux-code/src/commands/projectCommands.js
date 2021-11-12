@@ -39,8 +39,8 @@ export function initProjectCommands(extensionContext, projectViewController) {
     return projectViewController.manager.runner.cancel();
   });
 
-  registerCommand(extensionContext, 'dbuxProjectView.node.startPractice', (bugNode) => {
-    return projectViewController.startPractice(bugNode.bug);
+  registerCommand(extensionContext, 'dbuxProjectView.node.startPractice', (exerciseNode) => {
+    return projectViewController.startPractice(exerciseNode.exercise);
   });
 
   registerCommand(extensionContext, 'dbux.loadPracticeLogFile', async () => {
@@ -51,24 +51,24 @@ export function initProjectCommands(extensionContext, projectViewController) {
     return showInformationMessage(translate('busyNow')); // how to triggger this
   });
 
-  registerCommand(extensionContext, 'dbuxProjectView.node.stopBug', (/* node */) => {
+  registerCommand(extensionContext, 'dbuxProjectView.node.stopRunner', (/* node */) => {
     return projectViewController.manager.runner.cancel();
   });
 
-  registerCommand(extensionContext, 'dbuxProjectView.node.resetBug', async (node) => {
-    await node.tryResetBug();
+  registerCommand(extensionContext, 'dbuxProjectView.node.resetExercise', async (node) => {
+    await node.tryResetExercise();
   });
 
   registerCommand(extensionContext, 'dbuxProjectView.node.showWebsite', (node) => {
     return node.showWebsite?.();
   });
 
-  registerCommand(extensionContext, 'dbuxProjectView.node.showBugIntroduction', async (node) => {
-    await node.showBugIntroduction();
+  registerCommand(extensionContext, 'dbuxProjectView.node.showExerciseIntroduction', async (node) => {
+    await node.showExerciseIntroduction();
   });
 
-  registerCommand(extensionContext, 'dbuxProjectView.node.showBugLog', async (node) => {
-    await node.showBugLog();
+  registerCommand(extensionContext, 'dbuxProjectView.node.showExerciseLog', async (node) => {
+    await node.showExerciseLog();
   });
 
   registerCommand(extensionContext, 'dbux.cancelBugRunner', (/* node */) => {
@@ -84,7 +84,7 @@ export function initProjectCommands(extensionContext, projectViewController) {
   registerCommand(extensionContext, 'dbux.resetPracticeProgress', async () => {
     await projectViewController.manager.resetProgress();
     projectViewController.projectViewNodeProvider.refreshIcon();
-    await showInformationMessage('Bug progress cleared');
+    await showInformationMessage('Exercise progress cleared');
   });
 
   registerCommand(extensionContext, 'dbux.togglePracticeView', async () => {

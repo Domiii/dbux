@@ -28,7 +28,7 @@ export default class SessionNodeProvider extends BaseTreeViewNodeProvider {
     const roots = [];
 
     if (this.manager.practiceSession) {
-      const { bug } = this.manager.practiceSession;
+      const { exercise: bug } = this.manager.practiceSession;
       const ActionNodeClasses = getActionNodeClasses(bug);
       roots.push(...ActionNodeClasses.map(nodeClass => this.buildNode(nodeClass, bug, null)));
     }

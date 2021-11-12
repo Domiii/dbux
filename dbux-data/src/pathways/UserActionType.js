@@ -5,8 +5,8 @@ import Enum from '@dbux/common/src/util/Enum';
 let UserActionType = {
   PracticeSessionChanged: 1,
   TestRunFinished: 2,
-  NewBugProgress: 3,
-  BugProgressChanged: 4,
+  NewExerciseProgress: 3,
+  ExerciseProgressChanged: 4,
 
   GoToError: 8,
   EditorSelectionChanged: 9,

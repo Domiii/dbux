@@ -70,16 +70,16 @@ export default class KarmaProject extends Project {
       filter(bug => !!bug);
   }
 
-  getBugGitTag(bugId, tagCategory) {
-    return `Bug-${bugId}-${tagCategory}`;
+  getExerciseGitTag(exerciseId, tagCategory) {
+    return `Bug-${exerciseId}-${tagCategory}`;
   }
 
-  async selectExercise(bug) {
+  async selectExercise(exercise) {
     const {
       id, name
-    } = bug;
+    } = exercise;
     const tagCategory = "test"; // "test", "fix" or "full"
-    const tag = this.getBugGitTag(id, tagCategory);
+    const tag = this.getExerciseGitTag(id, tagCategory);
 
     if ((await this.gitGetCurrentTagName()).startsWith(tag)) {
       // do not checkout bug, if we already on the right tag
