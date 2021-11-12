@@ -114,7 +114,7 @@ export default class TodomvcEs6Project extends Project {
       }
     },
     {
-      label: 'Empty list, but no error message',
+      label: 'List always renders as empty, but no error message',
       patch: ['no-callbacks', 'error4'],
       domains: ['render'],
       stepsToReproduce: ['Have a non-empty list.'],
@@ -270,6 +270,45 @@ export default class TodomvcEs6Project extends Project {
         }
       ]
     },
+    {
+      label: 'N',
+      patch: ['no-callbacks', 'error11'],
+      domains: ['TODO'],
+      stepsToReproduce: ['Have a non-empty list.', 'TODO'],
+      tags: ['TODO'],
+      bugLocations: [
+        {
+          file: 'src/TODO.js',
+          line: TODO
+        }
+      ]
+    },
+    // {
+    //   label: 'TODO',
+    //   patch: ['no-callbacks', 'errorTODO'],
+    //   domains: ['TODO'],
+    //   stepsToReproduce: ['Have a non-empty list.', 'TODO'],
+    //   tags: ['TODO'],
+    //   bugLocations: [
+    //     {
+    //       file: 'src/TODO.js',
+    //       line: TODO
+    //     }
+    //   ]
+    // },
+    // {
+    //   label: 'TODO',
+    //   patch: ['no-callbacks', 'errorTODO'],
+    //   domains: ['TODO'],
+    //   stepsToReproduce: ['Have a non-empty list.', 'TODO'],
+    //   tags: ['TODO'],
+    //   bugLocations: [
+    //     {
+    //       file: 'src/TODO.js',
+    //       line: TODO
+    //     }
+    //   ]
+    // },
     // {
     //   label: 'TODO',
     //   patch: ['no-callbacks', 'errorTODO'],

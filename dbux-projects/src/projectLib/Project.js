@@ -372,7 +372,10 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
    * @abstract
    */
   loadExercises() {
-    throw new Error(this + ' abstract method not implemented');
+    if (!this.exercises) {
+      throw new Error(`${this.debugTag} failed to provide exercises or override loadExercises`);
+    }
+    return cloneDeep(this.exercises);
   }
 
   async openInEditor() {
@@ -1204,7 +1207,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
    */
   getOrLoadExercises() {
     if (!this._exercises) {
-      let arr = this.loadExercises() || cloneDeep(this.exercises);
+      let arr = this.loadExercises();
       arr.forEach(bug => {
         let {
           description,

@@ -1,11 +1,11 @@
-var path = require('path');
+const path = require('path');
 
 module.exports = {
-  extends: [path.join(__dirname, '../.eslintrc.js')],
+  extends: [path.join(__dirname, '../config/.eslintrc.package.js')],
 
   env: {
-    "commonjs": true,
-    "browser": true
+    commonjs: true,
+    browser: true
   },
 
   globals: {
