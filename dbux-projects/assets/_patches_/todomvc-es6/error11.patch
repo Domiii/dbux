@@ -1,0 +1,13 @@
+diff --git a/examples/vanilla-es6/src/store.js b/examples/vanilla-es6/src/store.js
+index 15fd759..f899b49 100644
+--- a/examples/vanilla-es6/src/store.js
++++ b/examples/vanilla-es6/src/store.js
+@@ -54,7 +54,7 @@ export default class Store {
+ 					return false;
+ 				}
+ 			}
+-			return true;
++			return false;
+ 		});
+ 	}
+ 
