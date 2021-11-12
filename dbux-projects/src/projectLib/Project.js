@@ -7,9 +7,10 @@ import NestedError from '@dbux/common/src/NestedError';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import { getAllFilesInFolders, globRelative } from '@dbux/common-node/src/util/fileUtil';
+import { getAllFilesInFolders, globRelative, rm } from '@dbux/common-node/src/util/fileUtil';
 import { pathJoin, pathRelative, pathResolve, realPathSyncNormalized } from '@dbux/common-node/src/util/pathUtil';
 import isObject from 'lodash/isObject';
+import cloneDeep from 'lodash/cloneDeep';
 import ExerciseList from './ExerciseList';
 import Process from '../util/Process';
 import { MultipleFileWatcher } from '../util/multipleFileWatcher';
@@ -58,6 +59,11 @@ export default class Project extends ProjectBase {
    * Automatically assigned if `makeBuilder` method is present.
    */
   builder;
+
+  /**
+   * @type {ExerciseConfig[]?}
+   */
+  exercises;
 
   /**
    * Use github by default.
@@ -809,8 +815,8 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       this.deleteCacheFolder();
     }
 
-    sh.rm('-rf', this.projectPath);
-    sh.rm('-rf', this.hiddenGitFolderPath);
+    rm(this.projectPath, '-rf');
+    rm(this.hiddenGitFolderPath, '-rf');
     this._installed = false;
     return true;
   }
@@ -954,8 +960,9 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       if (iErr >= 0) {
         throw new Error('invalid entry in `rmFiles` is not in `projectPath`: ' + rmFiles[iErr]);
       }
+      
       this.logger.warn('Removing files:', absRmFiles.join(','));
-      sh.rm('-rf', absRmFiles);
+      rm('-rf', absRmFiles);
     }
 
     // copy assets
@@ -1197,7 +1204,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
    */
   getOrLoadExercises() {
     if (!this._exercises) {
-      let arr = this.loadExercises();
+      let arr = this.loadExercises() || cloneDeep(this.exercises);
       arr.forEach(bug => {
         let {
           description,

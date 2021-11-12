@@ -2,6 +2,19 @@
 /** @typedef {import('./ExerciseRunner').default} ExerciseRunner */
 /** @typedef {import('../ProjectsManager').default} PracticeManager */
 
+export class ExerciseDifficultyErrorConfig {
+  /**
+   * @type {boolean}
+   */
+  atCause;
+}
+
+export class ExerciseDifficultyConfig {
+  /**
+   * @type {ExerciseDifficultyErrorConfig?}
+   */
+  error;
+}
 
 
 export default class ExerciseConfig {
@@ -52,10 +65,14 @@ export default class ExerciseConfig {
   moreDetails;
 
   hints; // TODO
-  difficulty; // TODO!
 
   /**
    * @type {[Object]}
    */
   bugLocations;
+
+  /**
+   * @type {ExerciseDifficultyConfig}
+   */
+  difficulty;
 }

@@ -1,6 +1,6 @@
 import sh from 'shelljs';
 import { gitCloneCmd } from '@dbux/common-node/src/util/gitUtil';
-import { assertFileLinkTarget } from '@dbux/common-node/src/util/fileUtil';
+import { assertFileLinkTarget, rm } from '@dbux/common-node/src/util/fileUtil';
 import { pathJoin, pathResolve } from '@dbux/common-node/src/util/pathUtil';
 
 import Project from '../../projectLib/Project';
@@ -89,7 +89,7 @@ export default class WebpackProject extends Project {
     }
 
     // make sure, webpack-cli did not get accidentally installed
-    sh.rm('-rf', this.cliLinkedTarget);
+    rm(this.cliLinkedTarget, '-rf');
 
     const { cliFolder, cliPackageFolder, projectPath } = this;
 
