@@ -59,8 +59,8 @@ export default class TodomvcEs6Project extends Project {
       patch: ['no-callbacks']
     },
     {
-      label: 'Empty list with clear error message',
-      description: 'TODO items never show up. Luckily there is a clear error message.',
+      label: 'ToDo items are not rendered, with clear error message.',
+      // description: 'ToDo items never show up. Luckily there is a clear error message.',
       patch: ['no-callbacks', 'error1'],
       domains: ['init', 'controller'],
       stepsToReproduce: ['Have a non-empty list.'],
@@ -78,7 +78,7 @@ export default class TodomvcEs6Project extends Project {
       }
     },
     {
-      label: 'Completed TODO items are shown as not completed and vice versa (only during initial rendering)',
+      label: 'Completed ToDo items are shown as not completed and vice versa (only during initial rendering)',
       patch: ['no-callbacks', 'error2'],
       domains: ['init', 'render'],
       stepsToReproduce: [
@@ -114,7 +114,7 @@ export default class TodomvcEs6Project extends Project {
       }
     },
     {
-      label: 'List always renders as empty, but no error message',
+      label: 'ToDo items are not rendered, but no error message.',
       patch: ['no-callbacks', 'error4'],
       domains: ['render'],
       stepsToReproduce: ['Have a non-empty list.'],
@@ -270,19 +270,19 @@ export default class TodomvcEs6Project extends Project {
         }
       ]
     },
-    {
-      label: 'N',
-      patch: ['no-callbacks', 'error11'],
-      domains: ['TODO'],
-      stepsToReproduce: ['Have a non-empty list.', 'TODO'],
-      tags: ['TODO'],
-      bugLocations: [
-        {
-          file: 'src/TODO.js',
-          line: TODO
-        }
-      ]
-    },
+    // {
+    //   label: 'ToDo items are not rendered TODO(symptoms same as error4)',
+    //   patch: ['no-callbacks', 'error11'],
+    //   domains: ['TODO'],
+    //   stepsToReproduce: ['Have a non-empty list.', 'TODO'],
+    //   tags: ['TODO'],
+    //   bugLocations: [
+    //     {
+    //       file: 'src/TODO.js',
+    //       line: TODO
+    //     }
+    //   ]
+    // },
     // {
     //   label: 'TODO',
     //   patch: ['no-callbacks', 'errorTODO'],

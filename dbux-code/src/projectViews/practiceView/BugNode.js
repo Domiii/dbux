@@ -14,7 +14,8 @@ export default class BugNode extends BaseTreeViewNode {
   }
 
   init = () => {
-    this.description = this.bug.description;
+    const { bug } = this;
+    this.description = `${bug.description}${bug.number && ` #${bug.number}` || ''}`;
   }
 
   /**
