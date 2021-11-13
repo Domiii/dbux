@@ -1,4 +1,5 @@
 /* eslint no-console: 0 */
+import isString from 'lodash/isString';
 
 /**
  * TODO: use something that works in browser as well as in Node (currently only works properly in Node)
@@ -24,7 +25,7 @@ export function makePrettyLog(origLog, customColor) {
     return origLog(
       ...args.map(
         arg => (arg && (arg.constructor === String || arg instanceof Error)) ? 
-          colorize(arg instanceof Error && arg.stack || arg) :
+          colorize(arg instanceof Error && isString(arg.stack) && arg.stack || arg) :
           // _inspect(arg)
           arg
       )

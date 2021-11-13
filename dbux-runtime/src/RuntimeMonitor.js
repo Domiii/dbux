@@ -59,6 +59,10 @@ export default class RuntimeMonitor {
 
   _programMonitors = new Map();
   _runtime = new Runtime();
+  /**
+   * @type {CallbackPatcher}
+   */
+  callbackPatcher;
 
   /**
    * @type {Runtime}
