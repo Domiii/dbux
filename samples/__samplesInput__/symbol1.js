@@ -1,3 +1,3 @@
-var s = new Symbol('mysym');
+var s = Symbol('mysym');
 
 console.log(s);

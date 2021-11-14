@@ -1,6 +1,7 @@
 // import 'ws'; // this must work on Node!
 import io, { Socket } from 'socket.io-client';
-import msgpackParser from 'socket.io-msgpack-parser';
+// import msgpackParser from 'socket.io-msgpack-parser';
+import msgpackParser from '@dbux/common/src/msgpackParser';
 import minBy from 'lodash/minBy';
 import maxBy from 'lodash/maxBy';
 import { logWarn, newLogger } from '@dbux/common/src/log/logger';

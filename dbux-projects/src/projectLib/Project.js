@@ -818,8 +818,8 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       this.deleteCacheFolder();
     }
 
-    rm(this.projectPath, '-rf');
-    rm(this.hiddenGitFolderPath, '-rf');
+    rm('-rf', this.projectPath);
+    rm('-rf', this.hiddenGitFolderPath);
     this._installed = false;
     return true;
   }

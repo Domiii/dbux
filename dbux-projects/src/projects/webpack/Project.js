@@ -89,7 +89,7 @@ export default class WebpackProject extends Project {
     }
 
     // make sure, webpack-cli did not get accidentally installed
-    rm(this.cliLinkedTarget, '-rf');
+    rm('-rf', this.cliLinkedTarget);
 
     const { cliFolder, cliPackageFolder, projectPath } = this;
 

@@ -1,6 +1,7 @@
 import http from 'http';
 import { Server } from 'socket.io';  // socket.io@3+
-import msgpackParser from 'socket.io-msgpack-parser';
+// import msgpackParser from 'socket.io-msgpack-parser';
+import msgpackParser from '@dbux/common/src/msgpackParser';
 
 // import Server from 'socket.io';       // socket.io@2
 import { newLogger } from '@dbux/common/src/log/logger';
@@ -53,6 +54,9 @@ export async function makeListenSocket(port) {
    * @see https://github.com/socketio/socket.io/blob/master/lib/index.ts#L143
    */
   const listenSocket = new Server(httpServer, {
+    // NOTE: `wsEngine` is 'ws' by default since 4.0
+    // wsEngine: 'ws' // in case uws is not supported
+
     // const server = require('socket.io')(httpServer, {
     serveClient: false,
     allowUpgrades: false,
@@ -61,9 +65,6 @@ export async function makeListenSocket(port) {
      * @see https://socket.io/docs/v4/server-initialization/#maxHttpBufferSize
      */
     maxHttpBufferSize: 5e8,
-
-    // NOTE: `wsEngine` is 'ws' by default since 4.0
-    // wsEngine: 'ws' // in case uws is not supported
 
     /**
      * @see https://socket.io/docs/v4/custom-parser#The-msgpack-parser
