@@ -20,6 +20,7 @@ import {
 } from '@msgpack/msgpack';
 import Emitter from 'component-emitter';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { startPrettyTimer } from '@dbux/common-node/src/util/timeUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('msgpack');
@@ -96,20 +97,38 @@ var isObject = function (value) {
 
 function Encoder() { }
 
+function makeTimerMessage(what, buffer) {
+  return `${what} took very long (${Math.round(buffer.size / 1000).toLocaleString('en-us')} kb)`;
+}
+
 Encoder.prototype.encode = function (packet) {
   // warn(`ENCODE`/* , packet */);
-  return [encoder.encode(packet)];
+
+  const timer = startPrettyTimer();
+  const encoded = [encoder.encode(packet)];
+  // const s = timer.getFinalTimeSeconds();
+  // if (s > 1) {
+  timer.print(debug, makeTimerMessage('ENCODE', encoded[0]));
+  // }
+
+  return encoded;
 };
 
 function Decoder() { }
 
 Emitter(Decoder.prototype);
 
-Decoder.prototype.add = function (obj) {
+Decoder.prototype.add = function (buffer) {
   // warn(`DECODING...`);
   let decoded;
   try {
-    decoded = decoder.decode(obj);
+    const timer = startPrettyTimer();
+    decoded = decoder.decode(buffer);
+    // const s = timer.getFinalTimeSeconds();
+    // if (s > 1) {
+    timer.print(debug, makeTimerMessage('DECODE', buffer));
+    // }
+
     this.checkPacket(decoded);
     this.emit('decoded', decoded);
   }

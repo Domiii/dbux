@@ -247,9 +247,9 @@ export default class Client {
             return `${arr.length} ${key} (${this._computeDataSize(arr)}${minBy(arr, entry => entry._id)?._id}~${maxBy(arr, entry => entry._id)?._id})`;
           }
           catch (err) {
-            const idx = arr?.findIndex?.(x => x === null || x === undefined);
-            logError(`invalid data key "${key}": "${err.message}". Index #${idx} is ${arr?.[idx]} (${arr})`);
-            return `(invalid data key "${key}")`;
+            const hasMissing = arr?.find?.(x => x === null || x === undefined);
+            // logError(`invalid data key "${key}": "${err.message}". Index #${idx} is ${arr?.[idx]} (${arr})`);
+            return `(could not compute data size of "${key}"${hasMissing ? ' (hasMissing)' : ''}: "${err.message}")`;
           }
         })
         .join(', ')
