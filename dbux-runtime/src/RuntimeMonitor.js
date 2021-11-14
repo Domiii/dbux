@@ -171,9 +171,9 @@ export default class RuntimeMonitor {
       }
       else {
         // normal root
-        // const staticContextId = staticContextCollection.getStaticContextId(programId, inProgramStaticContextId);
-        // const contextInfo = staticContextCollection.makeStaticContextInfo(staticContextId);
-        // warn(`[Root] ${contextInfo}`);
+        const staticContextId = staticContextCollection.getStaticContextId(programId, inProgramStaticContextId);
+        const contextInfo = staticContextCollection.makeStaticContextInfo(staticContextId);
+        warn(`[Root] ${contextInfo}`);
       }
     }
     else if (this._rootDisableCount) {

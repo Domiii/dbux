@@ -24,8 +24,20 @@ export function makeHttpServer(port) {
       resolve(httpServer);
     });
 
+    httpServer.on('connect', () => {
+      debug(`client connection incoming...`);
+    });
+
+    httpServer.on('finish', () => {
+      debug(`HTTP finish.`);
+    });
+
+    httpServer.on('clientError', (err, socket) => {
+      logError(`HTTP clientError ${socket?.id}`, err);
+    });
+
     httpServer.on('error', err => {
-      logError('dbux http server failed', err);
+      logError('HTTP server failed', err);
 
       reject(new Error(`makeHttpServer failed`));
     });
@@ -36,7 +48,10 @@ export function makeHttpServer(port) {
 export async function makeListenSocket(port) {
   const httpServer = await makeHttpServer(port);
 
-  // see: https://socket.io/docs/server-api/
+  /**
+   * @see https://socket.io/docs/server-api/
+   * @see https://github.com/socketio/socket.io/blob/master/lib/index.ts#L143
+   */
   const listenSocket = new Server(httpServer, {
     // const server = require('socket.io')(httpServer, {
     serveClient: false,
@@ -54,10 +69,6 @@ export async function makeListenSocket(port) {
      * @see https://socket.io/docs/v4/custom-parser#The-msgpack-parser
      */
     parser: msgpackParser
-  });
-
-  listenSocket.on('error', err => {
-    logError('dbux listen server failed', err);
   });
 
   return listenSocket;

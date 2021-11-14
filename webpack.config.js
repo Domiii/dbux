@@ -1,4 +1,8 @@
-/* eslint no-console: 0 */
+/**
+ * eslint no-console: 0
+ * 
+ * @file `webpack.config` for `@dbux/runtime`
+ */
 
 
 const path = require('path');
@@ -12,6 +16,8 @@ const webpack = require('webpack');
 // const t = require('@babel/types');
 // const nodeExternals = require('webpack-node-externals');
 const webpackCommon = require('./config/webpack.config.common');
+
+const { msgPackPlugin } = webpackCommon;
 
 const Process = require('./dbux-projects/src/util/Process').default;
 
@@ -160,7 +166,9 @@ module.exports = (env, argv) => {
           NODE_ENV: mode,
           DBUX_VERSION,
           DBUX_ROOT
-        })
+        }),
+
+        msgPackPlugin()
       ];
 
 

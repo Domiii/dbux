@@ -127,9 +127,10 @@ export default class Client {
 
   _handleDisconnect = () => {
     Verbose && debug('-> disconnected');
+    console.error('discon', new Error());
     this._connected = false;
     this._ready = false;
-    this._disconnectedSocket = this._socket.io?.engine?.transport?.ws;
+    this._disconnectedSocket = this._socket?.io?.engine?.transport?.ws;
     this._socket = null;
   }
 
@@ -325,8 +326,8 @@ export default class Client {
     // on reconnection, reset the transports option
     // -> because the Websocket
     //  connection may have failed (caused by proxy, firewall, browser, ...)
-    socket.on('reconnect_attempt', () => {
-      Verbose && debug('<- reconnecting...');
+    socket.on('reconnect_attempt', (...args) => {
+      debug('<- reconnecting...', ...args);
       // socket.io.opts.transports = ['websocket'];
     });
 

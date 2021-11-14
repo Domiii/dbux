@@ -13,6 +13,8 @@ const {
 
 const webpackCommon = require('../config/webpack.config.common');
 
+const { msgPackPlugin } = webpackCommon;
+
 const { pathResolve } = require('../dbux-common-node/src/util/pathUtil');
 
 // const _oldLog = console.log; console.log = (...args) => _oldLog(new Error(' ').stack.split('\n')[2], ...args);
@@ -51,7 +53,8 @@ module.exports = (env, argv) => {
           to: path.join(MonoRoot, 'dbux-code', 'resources', 'dist', 'node_modules', 'firebase')
         }
       ]
-    })
+    }),
+    msgPackPlugin()
     // new BundleAnalyzerPlugin()
   ];
 

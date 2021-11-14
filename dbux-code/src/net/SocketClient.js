@@ -14,6 +14,7 @@ export default class SocketClient {
     this.socket = socket;
 
     this.on('error', this._handleError);
+    this.on('connect_error', this._handleConnectError);
   }
 
   isConnected() {
@@ -21,8 +22,12 @@ export default class SocketClient {
   }
 
   _handleError = (err) => {
-    logError(err);
+    logError(`Socket Error`, err);
   };
+
+  _handleConnectError = err => {
+    logError(`Connect Error`, err);
+  }
 
   // ###########################################################################
   // receive data

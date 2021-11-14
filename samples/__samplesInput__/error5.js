@@ -14,9 +14,10 @@ try {
   getStack();
 }
 catch (err) {
-  console.error(err);
+  console.error('err', err);
 }
 
+/* dbux disable */
 function prepareObjectStackTrace(obj, stack) {
   return stack
 }

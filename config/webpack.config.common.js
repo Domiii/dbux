@@ -1,5 +1,6 @@
 const process = require('process');
 const path = require('path');
+const webpack = require('webpack');
 
 // /**
 //  * @see https://stackoverflow.com/a/50432372
@@ -32,3 +33,17 @@ module.exports = function webpackCommon(name, mode) {
     DBUX_ROOT
   };
 };
+
+// module.exports.msgPackPlugin = function msgPackPlugin() {
+Object.assign(module.exports, {
+  msgPackPlugin() {
+    /**
+     * @see https://github.com/Domiii/dbux/issues/570
+     */
+    return new webpack.NormalModuleReplacementPlugin(
+      /notepack\.io/,
+      // '@msgpack/msgpack'
+      '@msgpack/msgpack/dist.es5+umd/msgpack.js'
+    );
+  }
+});

@@ -2295,6 +2295,11 @@
     npmlog "^4.1.2"
     write-file-atomic "^3.0.3"
 
+"@msgpack/msgpack@^2.7.1":
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/@msgpack/msgpack/-/msgpack-2.7.1.tgz#f01954baadc502f3c82e9c3f72c740ce65eae1cc"
+  integrity sha512-ApwiSL2c9ObewdOE/sqt788P1C5lomBOHyO8nUBCr4ofErBCnYQ003NtJ8lS9OQZc11ximkbmgAZJjB8y6cCdA==
+
 "@nicolo-ribaudo/chokidar-2@2.1.8-no-fsevents.2":
   version "2.1.8-no-fsevents.2"
   resolved "https://registry.yarnpkg.com/@nicolo-ribaudo/chokidar-2/-/chokidar-2-2.1.8-no-fsevents.2.tgz#e324c0a247a5567192dd7180647709d7e2faf94b"
