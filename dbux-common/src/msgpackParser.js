@@ -97,8 +97,10 @@ var isObject = function (value) {
 
 function Encoder() { }
 
-function makeTimerMessage(what, buffer) {
-  return `${what} took very long (${Math.round(buffer.size / 1000).toLocaleString('en-us')} kb)`;
+function printTimer(what, timer, buffer) {
+  if (buffer.length > 1e6) {
+    timer.print(debug, `${what} (not small buffer): ${Math.round(buffer.length / 1000).toLocaleString('en-us')} kb`);
+  }
 }
 
 Encoder.prototype.encode = function (packet) {
@@ -107,9 +109,7 @@ Encoder.prototype.encode = function (packet) {
   const timer = startPrettyTimer();
   const encoded = [encoder.encode(packet)];
   // const s = timer.getFinalTimeSeconds();
-  // if (s > 1) {
-  timer.print(debug, makeTimerMessage('ENCODE', encoded[0]));
-  // }
+  printTimer('ENCODE', timer, encoded[0]);
 
   return encoded;
 };
@@ -125,9 +125,7 @@ Decoder.prototype.add = function (buffer) {
     const timer = startPrettyTimer();
     decoded = decoder.decode(buffer);
     // const s = timer.getFinalTimeSeconds();
-    // if (s > 1) {
-    timer.print(debug, makeTimerMessage('DECODE', buffer));
-    // }
+    printTimer('DECODE', timer, buffer);
 
     this.checkPacket(decoded);
     this.emit('decoded', decoded);

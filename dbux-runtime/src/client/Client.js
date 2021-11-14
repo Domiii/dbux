@@ -99,7 +99,7 @@ export default class Client {
        * @see https://github.com/websockets/ws/blob/abde9cfc21ce0f1cb7e2556aea70b423359364c7/lib/receiver.js#L371
        */
       // eslint-disable-next-line max-len
-      logWarn(`Connection incoming while disconnected. If you were connected before, This might (or might not) be an unintended sign that sent data exceeds the configured server maximum. In that case, consider increasing the maximum via socket.io's maxHttpBufferSize.`);
+      logWarn(`New connection established while disconnected. If you were connected before, this might (or might not) be an unintended sign that sent data exceeds the configured server maximum. In that case, consider increasing the maximum via socket.io's maxHttpBufferSize.`);
     }
     this._socket = socket;
     Verbose > 1 && debug('-> connected', !!socket);
@@ -121,6 +121,9 @@ export default class Client {
          * @see https://github.com/socketio/socket.io/issues/4062
          */
         msg += ` (possibly due to timeout)`;
+
+        // in case of timeout, there will be no further reconnect attempts, so we re-try explicitely
+        setTimeout(() => this._connect(), 2000);
       }
       debug(`failed to connect - "${msg}". Will keep trying to reconnect...`);
     }
@@ -244,7 +247,8 @@ export default class Client {
       Object.entries(data)
         .map(([key, arr]) => {
           try {
-            return `${arr.length} ${key} (${this._computeDataSize(arr)}${minBy(arr, entry => entry._id)?._id}~${maxBy(arr, entry => entry._id)?._id})`;
+            // ${this._computeDataSize(arr)} // NOTE: this is very slow
+            return `${arr.length} ${key} (${minBy(arr, entry => entry._id)?._id}~${maxBy(arr, entry => entry._id)?._id})`;
           }
           catch (err) {
             const hasMissing = arr?.find?.(x => x === null || x === undefined);
@@ -304,6 +308,7 @@ export default class Client {
 
   _connect() {
     // future-work: make port configurable
+    this._connectFailed = false;
     this._connectStart = Date.now();
     const port = DefaultPort;
     const Remote = `ws://localhost:${port}`;
@@ -316,6 +321,12 @@ export default class Client {
       // fixes seemingly immediate disconnects - see https://stackoverflow.com/a/40993490
       //  longer explanations: https://stackoverflow.com/questions/28238628/socket-io-1-x-use-websockets-only/28240802#28240802
       upgrade: false,
+
+      /**
+       * Bug hackfix (workaround)
+       * @see https://socket.io/docs/v4/client-options/#timeout
+       */
+      timeout: 1e6,
 
       /**
        * @see https://socket.io/docs/v4/custom-parser#The-msgpack-parser
