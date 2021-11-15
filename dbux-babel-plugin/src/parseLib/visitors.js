@@ -19,9 +19,6 @@ import { isPathSkipped } from 'src/helpers/traversalHelpers';
  * @property {ParseStack} stack
  */
 
-// const Verbose = 0;
-const Verbose = 1;
-// const Verbose = 2;
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('visitors');
@@ -56,7 +53,7 @@ function visit(direction, ParserNodeClazz, path, state) {
     // eslint-disable-next-line max-len
     const dirName = ParseDirection.nameFromForce(direction);
     throw new Error(
-    // warn(
+      // warn(
       `Visiting [${dirName}] already instrumented path: [${ParserNodeClazz.name}] "${pathToString(path)}".` +
       ` Make sure not to instrument before instrumentation phase; this includes calls to scope.generateDeclared* etc.`
     );
@@ -69,9 +66,6 @@ function visit(direction, ParserNodeClazz, path, state) {
   //   path.stop();
   //   return;
   // }
-
-
-  Verbose && logInst('v', path, direction, ParserNodeClazz);
 
   if (direction === ParseDirection.Enter) {
     // -> Enter
@@ -208,4 +202,19 @@ export function buildVisitors() {
     }
   }
   return visitors;
+
+  /**
+   * Test `ReferencedIdentifier`.
+   * @see https://github.com/Domiii/dbux/issues/602
+   */
+  // return {
+  //   ReferencedIdentifier: {
+  //     enter(path, state) {
+  //       console.log('ReferencedIdentifier ENTER', path.parentPath.toString());
+  //     },
+  //     exit(path, state) {
+  //       console.log('ReferencedIdentifier EXIT', path.parentPath.toString());
+  //     }
+  //   }
+  // };
 }
