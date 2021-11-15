@@ -30,9 +30,6 @@ const Verbose = 0;
 
 const debug = (...args) => Verbose && _debug(...args);
 
-const DataNodeMetaBySpecialIdentifierType = {
-};
-
 // TODO: we can properly use Proxy to wrap callbacks
 // function _inheritsLoose(subClass, superClass) {
 //   if (superClass.prototype) {
