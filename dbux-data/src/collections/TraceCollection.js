@@ -178,6 +178,9 @@ export default class TraceCollection extends Collection {
     }
   }
 
+  /**
+   * @param {Trace[]} traces 
+   */
   resolveErrorTraces(traces) {
     let errorTraces;
     const { dp: { util } } = this;
@@ -215,8 +218,9 @@ export default class TraceCollection extends Collection {
         if (!isTraceFunctionExit(previousTraceType) &&
           !util.getReturnTraceOfRealContext(contextId)) {
           // before pop must be `EndOfContext` or `Return*` trace, else -> we detect an error!
-          // NOTE: we check for any `Return*` type of trace anywhere, since, in case of `finally`, the last trace might not be `return` trace
-          util.getReturnTraceOfRealContext(contextId);
+          // NOTE: we check for any `Return*` type of trace anywhere, since, in case of `finally`, 
+          // the last trace might not be `return` trace
+          // util.getReturnTraceOfRealContext(contextId);
 
           trace.error = true;
           // // use lastTrace instead of pop trace itself for more accurate location

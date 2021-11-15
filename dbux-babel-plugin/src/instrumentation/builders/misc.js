@@ -71,12 +71,13 @@ export const buildTraceExpressionNoInput = buildTraceCall(
 );
 
 /**
- * Custom trace call that does not nest `newTraceId`.
- * Instead, it only passes in the `inProgramStaticTraceId`.
+ * Custom trace call that does not call `newTraceId`.
+ * 
+ * @example `programMonitor.traceCall(inProgramStaticTraceId, ...moreTraceCallArgs)`
  * @return {t.Statement}
  */
 export function buildTraceStatic(state, traceCfg) {
-  const trace = getTraceCall(state, traceCfg);
+  const traceCallId = getTraceCall(state, traceCfg);
   // const tid = buildTraceId(state, traceCfg);
 
   // const args = [tid];
@@ -85,7 +86,7 @@ export function buildTraceStatic(state, traceCfg) {
   addMoreTraceCallArgs(args, traceCfg);
 
   return t.expressionStatement(
-    t.callExpression(trace, args)
+    t.callExpression(traceCallId, args)
   );
 }
 

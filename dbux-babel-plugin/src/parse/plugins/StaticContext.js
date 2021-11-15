@@ -89,6 +89,9 @@ export default class StaticContext extends BasePlugin {
     return id;
   }
 
+  /**
+   * Used to add `awaitContextId` to arguments (if context is async) of trace calls.
+   */
   addAwaitContextIdVarArg(args) {
     const awaitContextIdVar = this.getAwaitContextIdVar();
     if (awaitContextIdVar) {

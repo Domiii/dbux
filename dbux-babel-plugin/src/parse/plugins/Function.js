@@ -8,8 +8,8 @@ import { buildWrapTryFinally, buildBlock } from '../../instrumentation/builders/
 import { buildContextEndTrace, injectContextEndTrace } from '../../instrumentation/context';
 import { buildTraceId } from '../../instrumentation/builders/traceId';
 import { buildRegisterParams } from '../../instrumentation/builders/function';
-import { locToString } from 'src/helpers/locHelpers';
-import { astNodeToString, pathToStringAnnotated } from 'src/helpers/pathHelpers';
+// import { locToString } from '../../helpers/locHelpers';
+import { astNodeToString, pathToStringAnnotated } from '../../helpers/pathHelpers';
 
 function addContextTrace(bodyPath, state, type) {
   const { scope } = bodyPath;
