@@ -64,7 +64,7 @@ export async function makeListenSocket(port) {
      * NOTE: 100MB was the default in v2
      * @see https://socket.io/docs/v4/server-initialization/#maxHttpBufferSize
      */
-    maxHttpBufferSize: 10e9,
+    maxHttpBufferSize: 2e9,
 
     /**
      * @see https://github.com/socketio/socket.io/issues/2769
