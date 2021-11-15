@@ -407,7 +407,6 @@ export default class RuntimeAsync {
   }
 
   race(inner, outer, traceId) {
-    // NOTE: `reject` does not settle nested promises!
     const rootId = this.getCurrentVirtualRootContextId();
     const from = getPromiseId(inner);
     const to = getPromiseId(outer);
@@ -416,6 +415,17 @@ export default class RuntimeAsync {
     // }
     // else {
     return nestedPromiseCollection.addLink(PromiseLinkType.Race, from, to, traceId, rootId);
+  }
+
+  any(inner, outer, traceId) {
+    const rootId = this.getCurrentVirtualRootContextId();
+    const from = getPromiseId(inner);
+    const to = getPromiseId(outer);
+    // if (!from || !to) {
+    //   this.logger.error(`resolve link failed: promise did not have an id, from=${from}, to=${to}, trace=${traceCollection.makeTraceInfo(traceId)}`);
+    // }
+    // else {
+    return nestedPromiseCollection.addLink(PromiseLinkType.Any, from, to, traceId, rootId);
   }
 
   /**
