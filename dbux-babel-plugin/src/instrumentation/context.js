@@ -9,7 +9,9 @@ export function buildContextEndTrace(path, state) {
 /**
  * We inject `EndOfContext` at the end of any `function` and `program`
  * to allow us more accurately guess whether and where errors have.
- * @deprecated Does not work as intended. Tends to fail silently for `async` functions.
+ * Buggy: Does not work as intended. Tends to fail silently for `async` functions?
+ * 
+ * @deprecated Use `instrumentBehind` instead.
  */
 export function injectContextEndTrace(path, state) {
   // trace `EndOfContext` at the end of program or function body

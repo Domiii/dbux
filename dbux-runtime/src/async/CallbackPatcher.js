@@ -47,6 +47,7 @@ export default class CallbackPatcher {
   _runtimeMonitorInstance;
 
   patchersByFunction = new Map();
+  ignoreCallbacks = new Set();
 
   get runtime() {
     return this._runtimeMonitorInstance.runtime;
@@ -60,6 +61,10 @@ export default class CallbackPatcher {
     this._runtimeMonitorInstance = _runtimeMonitorInstance;
 
     // this.patchSetTimeout();
+  }
+
+  addCallbackIgnoreFunction(originalFunction) {
+    this.ignoreCallbacks.add(originalFunction);
   }
 
   init() { }
@@ -312,6 +317,9 @@ export default class CallbackPatcher {
     //   return originalFunction;
     // }
     if (!args) {
+      return;
+    }
+    if (this.ignoreCallbacks.has(originalFunction)) {
       return;
     }
 

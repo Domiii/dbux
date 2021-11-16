@@ -1,6 +1,6 @@
 import sh from 'shelljs';
 import { gitCloneCmd } from '@dbux/common-node/src/util/gitUtil';
-import { assertFileLinkTarget } from '@dbux/common-node/src/util/fileUtil';
+import { assertFileLinkTarget, rm } from '@dbux/common-node/src/util/fileUtil';
 import { pathJoin, pathResolve } from '@dbux/common-node/src/util/pathUtil';
 
 import Project from '../../projectLib/Project';
@@ -89,7 +89,7 @@ export default class WebpackProject extends Project {
     }
 
     // make sure, webpack-cli did not get accidentally installed
-    sh.rm('-rf', this.cliLinkedTarget);
+    rm('-rf', this.cliLinkedTarget);
 
     const { cliFolder, cliPackageFolder, projectPath } = this;
 
@@ -155,17 +155,19 @@ export default class WebpackProject extends Project {
       node "../../../../node_modules/@dbux/cli/bin/dbux.js" run --pw=webpack,webpack-cli --verbose=1 --runtime="{\"tracesDisabled\":1}" "../../bin/webpack.js" -- --mode none --env none --stats-reasons --stats-used-exports --stats-provided-exports --no-stats-colors --stats-chunks  --stats-modules-space 99999 --stats-chunk-origins --output-public-path "dist/"  --entry ./example.js --output-filename output.js
        */
       {
-        label: 'examples/commonjs',
+        label: 'examples/commonjs1',
         cwd: 'examples/commonjs',
         // patch: 'patch1',
         description: 'Basic commonjs Webpack example.',
         runArgs: []
-        // bugLocations: [
-        //   {
-        //     file: 'src/controller.js',
-        //     line: 65
-        //   }
-        // ]
+      },
+      {
+        label: 'examples/commonjs1 (--pw=.*)',
+        cwd: 'examples/commonjs',
+        // patch: 'patch1',
+        description: 'Basic commonjs Webpack example (all modules).',
+        runArgs: [],
+        dbuxArgs: `--pw=.* --pb=v8-compile-cache`,
       }
     ];
   }
@@ -174,8 +176,9 @@ export default class WebpackProject extends Project {
   // testing
   // ###########################################################################
 
-  decorateExerciseForRun(bug) {
-    bug.mainEntryPoint = [this.cliBin];
+  decorateExerciseForRun(exercise) {
+    exercise.mainEntryPoint = [this.cliBin];
+    exercise.dbuxArgs = exercise.dbuxArgs || '--pw=tapable,graceful-fs,enhanced-resolve';
   }
 
   async runCommand(exercise, cfg) {
@@ -199,7 +202,7 @@ export default class WebpackProject extends Project {
         program: p(this.cliBin),
         require: p('_dbux_/alias.runtime.js'),
         // dbuxArgs: `${cfg.dbuxArgs} --pw=tapable`,
-        dbuxArgs: `${cfg.dbuxArgs} --pw=tapable,graceful-fs,enhanced-resolve`,
+        dbuxArgs: `${cfg.dbuxArgs}`,
         // dbuxArgs: `${cfg.dbuxArgs} --pb=ajv.*,commander,v8-compile-cache`,
         // dbuxArgs: `${cfg.dbuxArgs} --pb=ajv.*,commander,v8-compile-cache --runtime="{\\"tracesDisabled\\":1}"`,
         // dbuxArgs: `${cfg.dbuxArgs} --pw=.* --runtime="{\\"tracesDisabled\\":1}"`,

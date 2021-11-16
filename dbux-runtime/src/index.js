@@ -1,3 +1,4 @@
+import isString from 'lodash/isString';
 import getGlobal from '@dbux/common/src/getGlobal';
 // import { enableLogRecording, playbackLogRecords } from '@dbux/common/src/log/logger';
 import RuntimeMonitor from './RuntimeMonitor';
@@ -112,12 +113,13 @@ function handleShutdown() {
       delayShutdown('process.exit', ...args);
     };
 
+
     process.on('uncaughtException', async (err) => {
-      console.error('[Dbux Runtime] uncaughtException detected. reason -', err);
+      console.error(`[Dbux Runtime] uncaughtException detected. reason - ${err2String(err)}`);
       delayShutdown('uncaughtException');
     });
     process.on('unhandledRejection', (err, promise) => {
-      console.error(`[Dbux Runtime] unhandledRejection detected. reason - ${err?.stack || err}, promise: #${getPromiseId(promise)}`);
+      console.error(`[Dbux Runtime] unhandledRejection detected. reason - ${err2String(err)}, promise: #${getPromiseId(promise)}`);
       delayShutdown('unhandledRejection');
     });
   }
@@ -135,3 +137,38 @@ function handleShutdown() {
 })();
 
 export default dbux;
+
+
+/** ###########################################################################
+ * util
+ * ##########################################################################*/
+
+// eslint-disable-next-line no-inner-declarations
+function err2String(err) {
+  if (Array.isArray(err?.stack)) {
+    /**
+     * stack is array of `CallSite`
+     */
+    return `${err.message}\n    ${err.stack.map(callSite2String).join('\n    ')}`;
+  }
+  return isString(err?.stack) && err.stack.includes(err.message) ? err.stack : err.toString();
+}
+
+/**
+ * @see https://microsoft.github.io/PowerBI-JavaScript/interfaces/_node_modules__types_node_globals_d_.nodejs.callsite.html
+ * @see https://github.com/dougwilson/nodejs-depd/blob/master/index.js#L267
+ */
+function callSite2String(callSite) {
+  var file = callSite.getFileName() || '<anonymous>';
+  var line = callSite.getLineNumber();
+  var col = callSite.getColumnNumber();
+  
+  if (callSite.isEval()) {
+    file = callSite.getEvalOrigin() + ', ' + file;
+  }
+
+  // site.callSite = callSite;
+  const fname = callSite.getFunctionName();
+
+  return `at ${fname} (${file}:${line}:${col})`;
+}

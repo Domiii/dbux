@@ -86,6 +86,8 @@ export function maybePatchPromise(promise) {
 }
 
 export function patchPromise(promise) {
+  // future-work: use `valueCollection._startAccess` before starting to read promise properties
+  //    (-> only necessary if promise is proxified or there are other shannanigans at play)
   const proto = promise.constructor?.prototype;
   if (proto && promise.then === proto.then) {
     // patch prototype
@@ -210,9 +212,10 @@ function _makeThenRef(promise, patchedFunction) {
 
 
   if (promise instanceof NativePromiseClass && !schedulerTraceId) {
-    // NOTE: when `then`ing on async function return value, patched `then` will be called internally
-    //    -> `then` called on an unpatched promise instance
-    //    -> seemingly happens right after the async function is called (possibly in a new run)
+    // NOTE: we can ignore this
+    //    -> happens when `then`ing on async function return value, patched `then` will be called internally
+    //      -> seemingly happens right after the async function is called (possibly in a new run)
+    //      -> also happens when `then` called on an unpatched promise instance?
     //    -> this will never be true for Promise ctor call
     return null;
   }
@@ -600,31 +603,102 @@ monkeyPatchFunctionHolder(Promise, 'reject',
 );
 
 function allHandler(thisArg, args, originalFunction, patchedFunction) {
-  const nestedPromises = args[0];
-
   // NOTE: This function accepts an iterable and fails if it is not an iterable.
-  // hackfix: We convert to array before passing it in, to make sure that the iterable does not iterate more than once.
+  // hackfix: We force conversion to array before passing it in, to make sure that the iterable does not iterate more than once.
+  const nestedPromises = args[0];
   const nestedArr = Array.from(nestedPromises);
 
   // call originalFunction
-  const result = originalFunction.call(thisArg, nestedArr);
+  const allPromise = originalFunction.call(thisArg, nestedArr);
 
   if (nestedArr.length) {
-    const thenRef = _makeThenRef(result, patchedFunction);
+    const thenRef = _makeThenRef(allPromise, patchedFunction);
 
-    RuntimeMonitorInstance._runtime.async.all(nestedPromises, result, thenRef?.schedulerTraceId);
+    RuntimeMonitorInstance._runtime.async.all(nestedArr, allPromise, thenRef?.schedulerTraceId);
   }
 
-  return result;
+  return allPromise;
 }
 
 monkeyPatchFunctionHolder(Promise, 'all', allHandler);
 monkeyPatchFunctionHolder(Promise, 'allSettled', allHandler);
 
+/**
+ * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/race
+ */
 function raceHandler(thisArg, args, originalFunction, patchedFunction) {
   // TODO: create new promise for each nested promise, so we can know the winner
+  // NOTE: This function accepts an iterable and fails if it is not an iterable.
+  // hackfix: We force conversion to array before passing it in, to make sure that the iterable does not iterate more than once.
+  const nestedPromises = args[0];
+  const nestedArr = Array.from(nestedPromises);
+
+  // call originalFunction
+  const racePromise = originalFunction.call(thisArg, nestedArr);
+
+  if (nestedArr.length) {
+    const thenRef = _makeThenRef(racePromise, patchedFunction);
+
+    let hasFinished = false;
+
+    for (let i = 0; i < nestedArr.length; ++i) {
+      const p = nestedArr[i];
+      // TODO: use `valueCollection._startAccess` before starting to read (potential) promise properties
+      if (isThenable(p) && p.finally) {
+        // eslint-disable-next-line no-loop-func
+        nestedArr[i] = p.finally(() => {
+          if (hasFinished) {
+            return;
+          }
+          hasFinished = true;
+          RuntimeMonitorInstance._runtime.async.race(p, racePromise, thenRef?.schedulerTraceId);
+        });
+      }
+    }
+  }
+
+  return racePromise;
 }
+
+/**
+ * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/any
+ */
+function anyHandler(thisArg, args, originalFunction, patchedFunction) {
+  // TODO: create new promise for each nested promise, so we can know the winner
+  // NOTE: This function accepts an iterable and fails if it is not an iterable.
+  // hackfix: We force conversion to array before passing it in, to make sure that the iterable does not iterate more than once.
+  const nestedPromises = args[0];
+  const nestedArr = Array.from(nestedPromises);
+
+  // call originalFunction
+  const anyPromise = originalFunction.call(thisArg, nestedArr);
+
+  if (nestedArr.length) {
+    const thenRef = _makeThenRef(anyPromise, patchedFunction);
+
+    let hasFinished = false;
+
+    for (let i = 0; i < nestedArr.length; ++i) {
+      const p = nestedArr[i];
+      // TODO: use `valueCollection._startAccess` before starting to read (potential) promise properties
+      if (isThenable(p)) {
+        // eslint-disable-next-line no-loop-func
+        nestedArr[i] = p.then(() => {
+          if (hasFinished) {
+            return;
+          }
+          hasFinished = true;
+          RuntimeMonitorInstance._runtime.async.any(p, anyPromise, thenRef?.schedulerTraceId);
+        });
+      }
+    }
+  }
+
+  return anyPromise;
+}
+
 monkeyPatchFunctionHolder(Promise, 'race', raceHandler);
+monkeyPatchFunctionHolder(Promise, 'any', anyHandler);
 
 // TODO: race resolves or rejects as soon as the first of its argument promises does.
 //  -> CHAIN against the promise that won the race; ignore all others

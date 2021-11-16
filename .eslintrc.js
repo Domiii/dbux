@@ -1,6 +1,7 @@
 module.exports = {
   ignorePatterns: [
-    '**/dist/*'
+    '**/dist/*',
+    'dbux_projects/**/*'
   ],
   extends: [
     "airbnb-base"
@@ -24,8 +25,19 @@ module.exports = {
      */
     __non_webpack_require__: true
   },
+
   parser: "@babel/eslint-parser",
-  // parserOptions: {
+
+  parserOptions: {
+    /**
+     * Make sure, eslint works, even without babel config?
+     * @see https://github.com/babel/babel/issues/11975#issuecomment-798832457
+     */
+    requireConfigFile: false,
+    // babelOptions: {
+    //   configFile: './babel.config.js'
+    // }
+  },
   //   ecmaVersion: "2018",
   //   ecmaFeatures: {
   //     jsx: true
@@ -67,6 +79,8 @@ module.exports = {
     "no-path-concat": 0,
     "no-return-await": 0,
     "no-lonely-if": 0,
+    quotes: 0,
+    camelcase: ["warn", { ignoreGlobals: true }],
     "constructor-super": "warn",
     "valid-typeof": "warn",
     // "class-methods-use-this": "warn",
@@ -95,7 +109,6 @@ module.exports = {
     "implicit-arrow-linebreak": 0,
     "function-paren-newline": 0,
     "linebreak-style": 0,
-    quotes: 0,
     "spaced-comment": 0,
     "max-len": ["warn", { code: 180, ignoreComments: true }],
     "one-var": 0,
@@ -109,7 +122,7 @@ module.exports = {
   settings: {
     'import/resolver': {
       node: {}, // placed above other resolver configs
-      webpack: {}
+      // webpack: {}
     }
   },
 
@@ -128,6 +141,18 @@ module.exports = {
       env: {
         node: true
       }
-    }
+    },
+    // {
+    //   files: [
+    //     'dbux_projects/**/*'
+    //   ],
+    //   rules: {
+    //     "import/no-extraneous-dependencies": ["error", { devDependencies: true }],
+    //     "no-console": 0
+    //   },
+    //   env: {
+    //     node: true
+    //   }
+    // }
   ]
 };

@@ -7,7 +7,8 @@ const promiseLinkType = {
   Reject: 4,
   All: 5,
   Promisify: 6,
-  Race: 7
+  Race: 7,
+  Any: 8
 };
 
 /**

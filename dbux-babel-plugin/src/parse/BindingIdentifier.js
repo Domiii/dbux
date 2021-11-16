@@ -77,6 +77,17 @@ export default class BindingIdentifier extends BaseId {
     return bindingScopeNode;
   }
 
+  buildDefaultTrace() {
+    if (this.path.isReferencedIdentifier()) {
+      /**
+       * hackfix
+       * @see https://github.com/Domiii/dbux/issues/602
+       */
+      return this.buildDefaultTraceBase();
+    }
+    return super.buildDefaultTrace();
+  }
+
   /**
    * Add declaration trace to scope.
    * Hoisted by default (unless `hoisted` set to false).

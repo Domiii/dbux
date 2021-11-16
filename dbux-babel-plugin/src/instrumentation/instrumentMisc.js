@@ -18,21 +18,32 @@ export function instrumentExpression(state, traceCfg) {
 }
 
 /**
- * Insert trace call behind `targetPath`
+ * Insert trace call behind `targetPath`.
  */
 export function instrumentBehind(state, traceCfg) {
-  const path = getInstrumentPath(traceCfg);
-  const resultNode = doBuild(state, traceCfg);
+  let path = getInstrumentPath(traceCfg);
 
   // const s = pathToString(path);
   // const { type } = path.node;
 
-  path.insertAfter(resultNode);
+  const resultNode = doBuild(state, traceCfg);
+
+  // hackfix: babel seems to force us to handle array and non-array separately
+  const bodyPath = path.get('body');
+  if (bodyPath.node) {
+    bodyPath.insertAfter(resultNode);
+  }
+  else {
+    path.pushContainer('body', resultNode);
+  }
   // console.debug(`tWE`, type, s, '->', astNodeToString(resultNode));
 
   postInstrument(traceCfg, resultNode);
 }
 
+/**
+ * Insert trace call at beginning of `targetPath`.
+ */
 export function instrumentUnshiftBody(state, traceCfg) {
   // const path = getInstrumentPath(traceCfg);
   const { path } = traceCfg;

@@ -15,9 +15,9 @@ const originalCallbacksByPatched = new WeakMap();
 
 export function _registerMonkeyPatchedFunction(originalFunction, patchedFunction) {
   try {
-    if (originalFunction === Array.prototype.push) {
-      console.log();
-    }
+    // if (originalFunction === Array.prototype.push) {
+    //   console.log();
+    // }
     patchedFunctionsByOriginalFunction.set(originalFunction, patchedFunction);
     if (originalFunction !== patchedFunction) {
       // NOTE: for some reason, native functions cannot be WeakMap keys

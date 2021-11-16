@@ -5,9 +5,9 @@ import { existsSync, readdirSync, realpathSync } from 'fs';
 import { exportApplication, importApplication } from '@dbux/data/src/applications/appUtil';
 import { getFileSizeSync } from '@dbux/common-node/src/util/fileUtil';
 import { performance } from 'perf_hooks';
+import { basename } from 'path';
 import { getCodeDirectory } from '../codeUtil/codePath';
 import { showInformationMessage } from '../codeUtil/codeModals';
-import { basename } from 'path';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Research');

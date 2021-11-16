@@ -1,6 +1,7 @@
 // import 'ws'; // this must work on Node!
 import io, { Socket } from 'socket.io-client';
-import msgpackParser from 'socket.io-msgpack-parser';
+// import msgpackParser from 'socket.io-msgpack-parser';
+import msgpackParser from '@dbux/common/src/msgpackParser';
 import minBy from 'lodash/minBy';
 import maxBy from 'lodash/maxBy';
 import { logWarn, newLogger } from '@dbux/common/src/log/logger';
@@ -98,7 +99,7 @@ export default class Client {
        * @see https://github.com/websockets/ws/blob/abde9cfc21ce0f1cb7e2556aea70b423359364c7/lib/receiver.js#L371
        */
       // eslint-disable-next-line max-len
-      logWarn(`Connection incoming while disconnected. If you were connected before, This might (or might not) be an unintended sign that sent data exceeds the configured server maximum. In that case, consider increasing the maximum via socket.io's maxHttpBufferSize.`);
+      logWarn(`New connection established while disconnected. If you were connected before, this might (or might not) be an unintended sign that sent data exceeds the configured server maximum. In that case, consider increasing the maximum via socket.io's maxHttpBufferSize.`);
     }
     this._socket = socket;
     Verbose > 1 && debug('-> connected', !!socket);
@@ -120,6 +121,9 @@ export default class Client {
          * @see https://github.com/socketio/socket.io/issues/4062
          */
         msg += ` (possibly due to timeout)`;
+
+        // in case of timeout, there will be no further reconnect attempts, so we re-try explicitely
+        setTimeout(() => this._connect(), 2000);
       }
       debug(`failed to connect - "${msg}". Will keep trying to reconnect...`);
     }
@@ -127,9 +131,10 @@ export default class Client {
 
   _handleDisconnect = () => {
     Verbose && debug('-> disconnected');
+    console.error('discon', new Error());
     this._connected = false;
     this._ready = false;
-    this._disconnectedSocket = this._socket.io?.engine?.transport?.ws;
+    this._disconnectedSocket = this._socket?.io?.engine?.transport?.ws;
     this._socket = null;
   }
 
@@ -242,12 +247,13 @@ export default class Client {
       Object.entries(data)
         .map(([key, arr]) => {
           try {
-            return `${arr.length} ${key} (${this._computeDataSize(arr)}${minBy(arr, entry => entry._id)?._id}~${maxBy(arr, entry => entry._id)?._id})`;
+            // ${this._computeDataSize(arr)} // NOTE: this is very slow
+            return `${arr.length} ${key} (${minBy(arr, entry => entry._id)?._id}~${maxBy(arr, entry => entry._id)?._id})`;
           }
           catch (err) {
-            const idx = arr?.findIndex?.(x => x === null || x === undefined);
-            logError(`invalid data key "${key}": "${err.message}". Index #${idx} is ${arr?.[idx]} (${arr})`);
-            return `(invalid data key "${key}")`;
+            const hasMissing = arr?.find?.(x => x === null || x === undefined);
+            // logError(`invalid data key "${key}": "${err.message}". Index #${idx} is ${arr?.[idx]} (${arr})`);
+            return `(could not compute data size of "${key}"${hasMissing ? ' (hasMissing)' : ''}: "${err.message}")`;
           }
         })
         .join(', ')
@@ -302,6 +308,7 @@ export default class Client {
 
   _connect() {
     // future-work: make port configurable
+    this._connectFailed = false;
     this._connectStart = Date.now();
     const port = DefaultPort;
     const Remote = `ws://localhost:${port}`;
@@ -316,6 +323,12 @@ export default class Client {
       upgrade: false,
 
       /**
+       * Bug hackfix (workaround)
+       * @see https://socket.io/docs/v4/client-options/#timeout
+       */
+      timeout: 1e6,
+
+      /**
        * @see https://socket.io/docs/v4/custom-parser#The-msgpack-parser
        */
       parser: msgpackParser
@@ -325,8 +338,8 @@ export default class Client {
     // on reconnection, reset the transports option
     // -> because the Websocket
     //  connection may have failed (caused by proxy, firewall, browser, ...)
-    socket.on('reconnect_attempt', () => {
-      Verbose && debug('<- reconnecting...');
+    socket.on('reconnect_attempt', (...args) => {
+      debug('<- reconnecting...', ...args);
       // socket.io.opts.transports = ['websocket'];
     });
 

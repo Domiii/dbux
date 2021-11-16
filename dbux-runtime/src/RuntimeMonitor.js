@@ -30,9 +30,6 @@ const Verbose = 0;
 
 const debug = (...args) => Verbose && _debug(...args);
 
-const DataNodeMetaBySpecialIdentifierType = {
-};
-
 // TODO: we can properly use Proxy to wrap callbacks
 // function _inheritsLoose(subClass, superClass) {
 //   if (superClass.prototype) {
@@ -59,6 +56,10 @@ export default class RuntimeMonitor {
 
   _programMonitors = new Map();
   _runtime = new Runtime();
+  /**
+   * @type {CallbackPatcher}
+   */
+  callbackPatcher;
 
   /**
    * @type {Runtime}
@@ -167,9 +168,9 @@ export default class RuntimeMonitor {
       }
       else {
         // normal root
-        // const staticContextId = staticContextCollection.getStaticContextId(programId, inProgramStaticContextId);
-        // const contextInfo = staticContextCollection.makeStaticContextInfo(staticContextId);
-        // warn(`[Root] ${contextInfo}`);
+        const staticContextId = staticContextCollection.getStaticContextId(programId, inProgramStaticContextId);
+        const contextInfo = staticContextCollection.makeStaticContextInfo(staticContextId);
+        warn(`[Root] ${contextInfo}`);
       }
     }
     else if (this._rootDisableCount) {

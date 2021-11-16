@@ -44,6 +44,7 @@ const traceTypeObj = {
 
   Finally: 23,
   Catch: 24,
+  TryBlockExit: 25,
 
 
   Declaration: 30,

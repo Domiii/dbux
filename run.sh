@@ -7,7 +7,7 @@ set -e # cancel on error
 
 # fname="__samplesInput__/async/promisify5-no-root"
 # fname="__samplesInput__/defineProperty3-setter"
-fname="__samplesInput__/error4"
+fname="__samplesInput__/unary1"
 
 
 

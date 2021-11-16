@@ -93,6 +93,8 @@ export default function buildBabelOptions(options) {
     // console.debug(JSON.stringify(packageWhitelist), typeof packageWhitelist);
     packageWhitelist = Array.from(packageWhitelist).join(',');
   }
+  
+  // packageBlacklist && console.warn('packageBlacklist', packageBlacklist);
   let packageWhitelistRegExps = packageWhitelist?.split(',')
     .map(s => s.trim())
     .map(generateFullMatchRegExp);

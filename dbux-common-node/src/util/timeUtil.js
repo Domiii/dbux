@@ -1,4 +1,4 @@
-import { performance } from 'perf_hooks';
+import { performance } from '@dbux/common/src/util/universalLibs';
 
 export function performanceNow() {
   return performance.now();
@@ -40,6 +40,13 @@ export class PrettyTimer {
     this.endTime = performanceNow();
   }
 
+  getFinalTimeSeconds() {
+    if (!this.endTime()) {
+      this.stop();
+    }
+    return this.endTime - this.startTime;
+  }
+
   print(printFun, msg) {
     printFun(`[perf] ${msg}: ${this}`);
   }
@@ -48,11 +55,14 @@ export class PrettyTimer {
     if (!this.startTime) {
       throw new Error(`Tried to print PrettyTimer, but did not start yet.`);
     }
-    if (!this.endTime) {
+
+    let to = this.endTime;
+    if (!to) {
       // throw new Error(`Tried to print PrettyTimer, but did not stop yet.`);
-      this.stop();
+      // this.stop();
+      to = performanceNow();
     }
-    return getPrettyPerformanceDelta(this.startTime, this.endTime);
+    return getPrettyPerformanceDelta(this.startTime, to);
   }
 }
 

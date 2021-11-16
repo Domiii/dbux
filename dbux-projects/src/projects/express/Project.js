@@ -4,7 +4,7 @@ import Project from '../../projectLib/Project';
 import { buildMochaRunCommand } from '../../util/mochaUtil';
 import exerciseConfigs from './exerciseConfig';
 
-/** @typedef {import('../../projectLib/ExerciseConfig').ExerciseConfig} ExerciseConfig */
+/** @typedef {import('../../projectLib/ExerciseConfig').default} ExerciseConfig */
 
 export default class ExpressProject extends Project {
   gitRemote = 'BugsJS/express.git';
@@ -16,7 +16,7 @@ export default class ExpressProject extends Project {
   }
 
   /**
-   * @return {exerciseConfig}
+   * @return {ExerciseConfig[]}
    */
   loadExerciseConfigs() {
     return exerciseConfigs;

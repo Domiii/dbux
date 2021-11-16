@@ -14,7 +14,8 @@ export default class ExerciseNode extends BaseTreeViewNode {
   }
 
   init = () => {
-    this.description = this.exercise.description;
+    const { description, number } = this.exercise;
+    this.description = `${description}${number && ` #${number}` || ''}`;
   }
 
   /**

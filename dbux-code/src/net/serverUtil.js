@@ -1,6 +1,7 @@
 import http from 'http';
 import { Server } from 'socket.io';  // socket.io@3+
-import msgpackParser from 'socket.io-msgpack-parser';
+// import msgpackParser from 'socket.io-msgpack-parser';
+import msgpackParser from '@dbux/common/src/msgpackParser';
 
 // import Server from 'socket.io';       // socket.io@2
 import { newLogger } from '@dbux/common/src/log/logger';
@@ -24,8 +25,20 @@ export function makeHttpServer(port) {
       resolve(httpServer);
     });
 
+    httpServer.on('connect', () => {
+      debug(`client connection incoming...`);
+    });
+
+    httpServer.on('finish', () => {
+      debug(`HTTP finish.`);
+    });
+
+    httpServer.on('clientError', (err, socket) => {
+      logError(`HTTP clientError ${socket?.id}`, err);
+    });
+
     httpServer.on('error', err => {
-      logError('dbux http server failed', err);
+      logError('HTTP server failed', err);
 
       reject(new Error(`makeHttpServer failed`));
     });
@@ -36,8 +49,14 @@ export function makeHttpServer(port) {
 export async function makeListenSocket(port) {
   const httpServer = await makeHttpServer(port);
 
-  // see: https://socket.io/docs/server-api/
+  /**
+   * @see https://socket.io/docs/server-api/
+   * @see https://github.com/socketio/socket.io/blob/master/lib/index.ts#L143
+   */
   const listenSocket = new Server(httpServer, {
+    // NOTE: `wsEngine` is 'ws' by default since 4.0
+    // wsEngine: 'ws' // in case uws is not supported
+
     // const server = require('socket.io')(httpServer, {
     serveClient: false,
     allowUpgrades: false,
@@ -45,19 +64,17 @@ export async function makeListenSocket(port) {
      * NOTE: 100MB was the default in v2
      * @see https://socket.io/docs/v4/server-initialization/#maxHttpBufferSize
      */
-    maxHttpBufferSize: 5e8,
+    maxHttpBufferSize: 2e9,
 
-    // NOTE: `wsEngine` is 'ws' by default since 4.0
-    // wsEngine: 'ws' // in case uws is not supported
+    /**
+     * @see https://github.com/socketio/socket.io/issues/2769
+     */
+    pingTimeout: 1e6,
 
     /**
      * @see https://socket.io/docs/v4/custom-parser#The-msgpack-parser
      */
     parser: msgpackParser
-  });
-
-  listenSocket.on('error', err => {
-    logError('dbux listen server failed', err);
   });
 
   return listenSocket;

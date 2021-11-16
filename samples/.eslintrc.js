@@ -1,9 +1,11 @@
 const path = require('path');
 
-module.exports = {
-ignorePatterns: ['**/*'],
+x = 3;
 
-  extends: [path.join(__dirname, '../.eslintrc.js')],
+module.exports = {
+  ignorePatterns: ['**/*'],
+
+  extends: [path.join(__dirname, '../config/.eslintrc.babel.js')],
 
   env: {
     commonjs: true,

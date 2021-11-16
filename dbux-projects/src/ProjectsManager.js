@@ -957,7 +957,7 @@ export default class ProjectsManager {
 
       // delete previously installed node_modules
       // NOTE: if we don't do it, we (sometimes randomly) bump against https://github.com/npm/npm/issues/13528#issuecomment-380201967
-      // await sh.rm('-rf', path.join(projectsRoot, 'node_modules'));
+      // await rm('-rf', path.join(projectsRoot, 'node_modules'));
 
       // debug(`Verifying NPM cache. This might (or might not) take a while...`);
       // await this.runner._exec('npm cache verify', logger, execOptions);

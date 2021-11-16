@@ -1,4 +1,5 @@
 import fs, { promises as fsAsync } from 'fs';
+import sh from 'shelljs';
 import path from 'path';
 import glob from 'glob';
 import os from 'os';
@@ -140,3 +141,12 @@ export function mtime(fpath) {
 export function makeTempFolder(dir = os.tmpdir(), prefix = 'dbux-') {
   return pathNormalizedForce(fs.mkdtempSync(path.join(dir, prefix)));
 }
+
+export function rm(...args) {
+  const { code, stderr, stdout } = sh.rm(...args);
+  if (code) {
+    const fpath = args[1] || args[0];
+    throw new Error(`Failed to remove file "${fpath}" (code=${code}) - ${stderr} ${stdout}`);
+  }
+}
+
