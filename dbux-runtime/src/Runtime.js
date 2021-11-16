@@ -185,7 +185,6 @@ export default class Runtime {
     }
 
     // we are popping a context that is not at the top nor peek of the stack,
-    // meaning that all intermediate contexts are now in waiting
     const oldPeekIdx = stack.getPeekIndex();
     const stackPos = stack.popOther(contextId);
     if (stackPos !== -1) {
@@ -194,10 +193,8 @@ export default class Runtime {
       // all contexts between the one that got popped, and the old peek are now considered "in waiting"
       for (let i = stackPos; i < oldPeekIdx; ++i) {
         const intermediateContextId = stack._stack[i];
-        // if (!stack.isPoppedButStillAround(intermediateContextId)) {
-        // mark as waiting, if it wasn't already popped
+        // mark as waiting
         this._markWaiting(intermediateContextId);
-        // }
       }
     }
     return stackPos;

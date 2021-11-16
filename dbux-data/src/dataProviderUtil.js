@@ -2573,11 +2573,12 @@ export default {
           }
         }
 
-        if (!nestedUpdate /* && nestedLink.type === PromiseLinkType.Promisify */ && nestedLink?.asyncPromisifyPromiseId) {
+        if (!nestedUpdate && nestedLink?.asyncPromisifyPromiseId && nestedLink.rootId) {
+          // TODO: can `nestedUpdate` ever exist for promisify links?
           // Promise ctor's resolve was called while this AE was waiting for it.
-          //    Also, there was no nestedUpdate, meaning resolve was called 
-          //      outside of a promisified callback.
-          //    -> means it was called by a root outside this AE's own thread.
+          //    -> `nestedLink.rootId` implies that it was attached to a root.
+          //    -> `!nestedUpdate` implies that resolve was called outside of a promisified callback.
+          //        -> means it was called by a root outside this AE's own thread.
           syncPromiseIds.push(nestingPromiseId);
           return null;
         }

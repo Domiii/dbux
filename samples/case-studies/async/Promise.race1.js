@@ -14,7 +14,7 @@ const nodes = [
     [1, 2, 3, 4].map(y => P(
       ...[1, 2].map(x =>
         () => {
-          `C${x}${y}`
+          console.log(`C${x}${y}`);
           return sleep((5 - y) * 100);
         }
       )

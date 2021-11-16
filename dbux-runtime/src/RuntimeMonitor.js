@@ -170,7 +170,7 @@ export default class RuntimeMonitor {
         // normal root
         const staticContextId = staticContextCollection.getStaticContextId(programId, inProgramStaticContextId);
         const contextInfo = staticContextCollection.makeStaticContextInfo(staticContextId);
-        warn(`[Root] ${contextInfo}`);
+        // warn(`[Root] ${contextInfo}`);
       }
     }
     else if (this._rootDisableCount) {
