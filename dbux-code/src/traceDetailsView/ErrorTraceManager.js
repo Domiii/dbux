@@ -11,8 +11,8 @@ export default class ErrorTraceManager {
 
   refresh() {
     this.index = 0;
-    const firstApp = allApplications.selection.getAll()[0];
-    this._all = firstApp?.dataProvider.util.getAllErrorTraces() || EmptyArray;
+    const apps = allApplications.selection.getAll();
+    this._all = apps.map(app => app.dataProvider.util.getAllErrorTraces() || EmptyArray).flat();
     this.updateErrorButton();
   }
 
