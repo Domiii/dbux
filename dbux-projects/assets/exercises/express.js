@@ -1,4 +1,4 @@
-import { isArray } from 'lodash';
+const isArray = require('lodash/isArray');
 
 // future-work: load automatically from BugsJs bug database
 // NOTE: some bugs have multiple test files, or no test file at all
@@ -402,4 +402,4 @@ exerciseConfigs.
   }).
   filter(bug => !!bug);
 
-export default exerciseConfigs;
+module.exports = exerciseConfigs;

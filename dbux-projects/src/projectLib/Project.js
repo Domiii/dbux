@@ -1,5 +1,5 @@
 import path from 'path';
-import fs, { existsSync, mkdirSync } from 'fs';
+import fs, { existsSync } from 'fs';
 import pull from 'lodash/pull';
 import defaultsDeep from 'lodash/defaultsDeep';
 import sh from 'shelljs';
@@ -7,10 +7,10 @@ import NestedError from '@dbux/common/src/NestedError';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import { requireUncached } from '@dbux/common-node/src/util/requireUtil';
 import { getAllFilesInFolders, globRelative, rm } from '@dbux/common-node/src/util/fileUtil';
 import { pathJoin, pathRelative, pathResolve, realPathSyncNormalized } from '@dbux/common-node/src/util/pathUtil';
 import isObject from 'lodash/isObject';
-import cloneDeep from 'lodash/cloneDeep';
 import ExerciseList from './ExerciseList';
 import Process from '../util/Process';
 import { MultipleFileWatcher } from '../util/multipleFileWatcher';
@@ -19,6 +19,8 @@ import { checkSystemWithRequirement } from '../checkSystem';
 import RunStatus, { isStatusRunningType } from './RunStatus';
 import ProjectBase from './ProjectBase';
 import Exercise from './Exercise';
+
+/** @typedef {import('./ExerciseConfig').default} ExerciseConfig */
 
 const Verbose = false;
 const SharedAssetFolder = 'sharedAssets';
@@ -380,13 +382,18 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   }
 
   /**
-   * @return {exerciseConfig}
+   * @return {ExerciseConfig[]}
    */
-  loadExercises() {
-    if (!this.exercises) {
-      throw new Error(`${this.debugTag} failed to provide exercises or override loadExercises`);
+  loadExerciseConfigs() {
+    const rawConfigFile = this.manager.externals.resources.getResourcePath('dist', 'projects', 'exercises', `${this.name}.js`);
+    try {
+      const configs = requireUncached(rawConfigFile);
+      return configs;
     }
-    return cloneDeep(this.exercises);
+    catch (err) {
+      this.logger.error(`Cannot load exercises for project "${this.name}": ${err.stack}`);
+      return EmptyArray;
+    }
   }
 
   async openInEditor() {
@@ -974,7 +981,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       if (iErr >= 0) {
         throw new Error('invalid entry in `rmFiles` is not in `projectPath`: ' + rmFiles[iErr]);
       }
-      
+
       this.logger.warn('Removing files:', absRmFiles.join(','));
       rm('-rf', absRmFiles);
     }

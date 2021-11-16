@@ -2,7 +2,7 @@
  * git diff --ignore-cr-at-eol --color=never | unix2dos > ../../dbux-projects/assets/_patches_/todomvc-es6/error.patch
  * @type {ExerciseConfig[]}
  */
-const exercises = [
+const exerciseConfigs = [
   {
     label: 'Baseline',
     description: 'Working sample.',
@@ -288,4 +288,4 @@ const exercises = [
 
 ];
 
-export default exercises;
+module.exports = exerciseConfigs;

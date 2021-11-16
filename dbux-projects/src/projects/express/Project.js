@@ -1,8 +1,6 @@
 import sh from 'shelljs';
-import isArray from 'lodash/isArray';
 import Project from '../../projectLib/Project';
 import { buildMochaRunCommand } from '../../util/mochaUtil';
-import exerciseConfigs from './exerciseConfig';
 
 /** @typedef {import('../../projectLib/ExerciseConfig').default} ExerciseConfig */
 
@@ -13,13 +11,6 @@ export default class ExpressProject extends Project {
 
   get envName() {
     return 'test';
-  }
-
-  /**
-   * @return {ExerciseConfig[]}
-   */
-  loadExerciseConfigs() {
-    return exerciseConfigs;
   }
 
   getExerciseGitTag(exerciseNumber, tagCategory) {

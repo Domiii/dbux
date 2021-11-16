@@ -2,7 +2,6 @@ import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import WebpackBuilder from '../../buildTools/WebpackBuilder';
 import Exercise from '../../projectLib/Exercise';
 import Project from '../../projectLib/Project';
-import exerciseConfigs from '../express/exerciseConfig';
 
 /** @typedef {import('../../projectLib/ExerciseConfig').default} ExerciseConfig */
 
@@ -17,13 +16,6 @@ export default class TodomvcEs6Project extends Project {
   rmFiles = [
     'package.json'
   ];
-
-  /**
-   * @return {ExerciseConfig[]}
-   */
-  loadExerciseConfigs() {
-    return exerciseConfigs;
-  }
 
   get actualProjectRoot() {
     return pathResolve(this.projectPath, RelativeRoot);
