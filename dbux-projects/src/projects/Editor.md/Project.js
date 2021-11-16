@@ -42,7 +42,7 @@ export default class EditorMdProject extends Project {
   /**
    * @return {ExerciseConfig[]}
    */
-  loadExercises() {
+  loadExerciseConfigs() {
     // git diff --color=never --ignore-cr-at-eol > ../../dbux-projects/assets/_patches_/Editor.md/baseline.patch | unix2dos
 
     return [

@@ -26,7 +26,7 @@ export default class SocketIOProject extends Project {
   /**
    * @return {ExerciseConfig[]}
    */
-  loadExercises() {
+  loadExerciseConfigs() {
     return [
       {
         label: 'basic example1',

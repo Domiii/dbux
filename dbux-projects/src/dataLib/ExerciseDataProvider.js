@@ -2,35 +2,35 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import DataProviderBase from '@dbux/data/src/DataProviderBase';
 import Collection from '@dbux/data/src/Collection';
 import Indexes from '@dbux/data/src/indexes/Indexes';
-import BugProgressByBugIdIndex from './indexes/BugProgressByBugIdIndex';
-import BugProgress from './BugProgress';
-import { emitBugProgressChanged, emitNewBugProgress } from '../userEvents';
+import ExerciseProgressByExerciseIdIndex from './indexes/ExerciseProgressByExerciseIdIndex';
+import ExerciseProgress from './ExerciseProgress';
+import { emitExerciseProgressChanged, emitNewExerciseProgress } from '../userEvents';
 
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('BugDataProvider');
+const { log, debug, warn, error: logError } = newLogger('ExerciseDataProvider');
 
-const storageKey = 'dbux-projects.bugData';
+const storageKey = 'dbux-projects.exerciseData';
 
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
 
 /**
- * @extends {Collection<BugProgress>}
+ * @extends {Collection<ExerciseProgress>}
  */
-class BugProgressCollection extends Collection {
+class ExerciseProgressCollection extends Collection {
   constructor(pdp) {
-    super('bugProgresses', pdp);
+    super('exerciseProgresses', pdp);
   }
 }
 
-export default class BugDataProvider extends DataProviderBase {
+export default class ExerciseDataProvider extends DataProviderBase {
   /**
    * @type {ProjectsManager}
    */
   manager;
 
   constructor(manager) {
-    super('BugDataProvider');
+    super('ExerciseDataProvider');
     this.manager = manager;
     this.storage = manager.externals.storage;
 
@@ -43,50 +43,50 @@ export default class BugDataProvider extends DataProviderBase {
   // ###########################################################################
 
   /**
-   * @param {Bug} bug
+   * @param {Exercise} exercise
    * @param {number} status
    * @param {boolean} stopwatchEnabled
-   * @return {BugProgress}
+   * @return {ExerciseProgress}
    */
-  addBugProgress(bug, status, stopwatchEnabled) {
-    const bugProgress = new BugProgress(bug, status, stopwatchEnabled);
-    this.addData({ bugProgresses: [bugProgress] });
-    emitNewBugProgress(bugProgress);
-    return bugProgress;
+  addExerciseProgress(exercise, status, stopwatchEnabled) {
+    const exerciseProgress = new ExerciseProgress(exercise, status, stopwatchEnabled);
+    this.addData({ exerciseProgresses: [exerciseProgress] });
+    emitNewExerciseProgress(exerciseProgress);
+    return exerciseProgress;
   }
 
   /**
    * NOTE: This may break indexes' keys
-   * @param {Bug} bug 
+   * @param {Exercise} exercise 
    * @param {Object} update
    */
-  updateBugProgress(bug, update) {
-    const bugProgress = this.getBugProgressByBug(bug);
-    if (!bugProgress) {
+  updateExerciseProgress(bug, update) {
+    const exerciseProgress = this.getExerciseProgressByExercise(bug);
+    if (!exerciseProgress) {
       this.logger.error(`Tried to update bug (${Object.keys(update || {})}) progress but no previous record found: ${bug.id}`);
       return;
     }
     for (const key of Object.keys(update)) {
-      bugProgress[key] = update[key];
+      exerciseProgress[key] = update[key];
     }
-    bugProgress.updatedAt = Date.now();
-    emitBugProgressChanged(bugProgress);
+    exerciseProgress.updatedAt = Date.now();
+    emitExerciseProgressChanged(exerciseProgress);
   }
 
   // ###########################################################################
   // util
   // ###########################################################################
 
-  getBugProgressByBug(bug) {
-    return this.indexes.bugProgresses.byBugId.get(bug.id)?.[0] || null;
+  getExerciseProgressByExercise(exercise) {
+    return this.indexes.exerciseProgresses.byExerciseId.get(exercise.id)?.[0] || null;
   }
 
   /**
-   * @param {BugProgress} bugProgress
-   * @param {Bug} bug 
+   * @param {ExerciseProgress} exerciseProgress
+   * @param {Exercise} exercise 
    */
-  isBugProgressOfBug(bugProgress, bug) {
-    return bugProgress.bugId === bug.id;
+  isExerciseProgressOfExercise(exerciseProgress, exercise) {
+    return exerciseProgress.exerciseId === exercise.id;
   }
 
   // ###########################################################################
@@ -99,11 +99,11 @@ export default class BugDataProvider extends DataProviderBase {
    */
   init() {
     this.collections = {
-      bugProgresses: new BugProgressCollection(this)
+      exerciseProgresses: new ExerciseProgressCollection(this)
     };
 
     this.indexes = new Indexes();
-    this.addIndex(new BugProgressByBugIdIndex());
+    this.addIndex(new ExerciseProgressByExerciseIdIndex());
   }
 
   /**

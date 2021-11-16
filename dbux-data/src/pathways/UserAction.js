@@ -12,7 +12,7 @@ export default class UserAction {
   /**
    * @type {string}
    */
-  bugId;
+  exerciseId;
 
   /**
    * @type {number} event create time

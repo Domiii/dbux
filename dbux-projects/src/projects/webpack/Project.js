@@ -146,7 +146,7 @@ export default class WebpackProject extends Project {
   /**
    * @return {ExerciseConfig[]}
    */
-  loadExercises() {
+  loadExerciseConfigs() {
     // git diff --color=never --ignore-cr-at-eol > ../../dbux-projects/assets/_patches_/webpack/error.patch
 
     return [

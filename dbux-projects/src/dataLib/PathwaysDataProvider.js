@@ -13,8 +13,8 @@ import StepType, { getStepTypeByActionType } from '@dbux/data/src/pathways/StepT
 import { emitNewTestRun } from '../userEvents';
 import getFirstLine from '../util/readFirstLine';
 import PathwaysDataUtil from './pathwaysDataUtil';
-import TestRunsByBugIdIndex from './indexes/TestRunsByBugIdIndex';
-import UserActionByBugIdIndex from './indexes/UserActionByBugIdIndex';
+import TestRunsByExerciseIdIndex from './indexes/TestRunsByExerciseIdIndex';
+import UserActionByExerciseIdIndex from './indexes/UserActionByExerciseIdIndex';
 import UserActionByTypeIndex from './indexes/UserActionByTypeIndex';
 import UserActionsByStepIndex from './indexes/UserActionsByStepIndex';
 import UserActionsByGroupIndex from './indexes/UserActionsByGroupIndex';
@@ -28,10 +28,11 @@ import VisitedStaticTracesByFile from './indexes/VisitedStaticTracesByFileIndex'
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError, trace: logTrace } = newLogger('PathwaysDataProvider');
 
-/** @typedef {import('../ProjectsManager').default} ProjectsManager */
-/** @typedef {import('./TestRun').default} TestRun */
 /** @typedef {import('@dbux/data/src/pathways/UserAction').default} UserAction */
 /** @typedef {import('@dbux/data/src/applications/Application').default} Application */
+/** @typedef {import('../projectLib/Exercise').default} Exercise */
+/** @typedef {import('../ProjectsManager').default} ProjectsManager */
+/** @typedef {import('./TestRun').default} TestRun */
 
 class PathwaysCollection extends Collection {
   handleAdd(entry) {
@@ -274,15 +275,15 @@ export default class PathwaysDataProvider extends DataProviderBase {
   // ###########################################################################
 
   /**
-   * @param {Bug} bug 
+   * @param {Exercise} exercise 
    * @param {number} nFailedTests
    * @param {string} patchString 
    * @param {Application[]} apps applications of this TestRun
    * @return {TestRun}
    */
-  addTestRun(bug, nFailedTests, patchString, apps) {
+  addTestRun(exercise, nFailedTests, patchString, apps) {
     const appUUIDs = apps.map(app => app.uuid);
-    const testRun = new TestRun(bug, nFailedTests, patchString, appUUIDs);
+    const testRun = new TestRun(exercise, nFailedTests, patchString, appUUIDs);
     this.addData({ testRuns: [testRun] });
 
     emitNewTestRun(testRun);
@@ -309,7 +310,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
 
     const {
       sessionId,
-      bugId,
+      exerciseId,
       type: actionType,
       createdAt,
       trace
@@ -321,7 +322,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
 
     const step = {
       sessionId,
-      bugId,
+      exerciseId,
       createdAt,
 
       type,
@@ -441,7 +442,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
     };
 
     this.indexes = new Indexes();
-    this.addIndex(new TestRunsByBugIdIndex());
+    this.addIndex(new TestRunsByExerciseIdIndex());
 
     this._resetUserActions();
   }
@@ -455,7 +456,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
       userActions: new UserActionCollection(this),
     };
 
-    this.addIndex(new UserActionByBugIdIndex());
+    this.addIndex(new UserActionByExerciseIdIndex());
     this.addIndex(new UserActionByTypeIndex());
     this.addIndex(new UserActionsByStepIndex());
     this.addIndex(new UserActionsByGroupIndex());
@@ -554,8 +555,8 @@ export default class PathwaysDataProvider extends DataProviderBase {
 
   writeHeader() {
     const { version } = this;
-    const { logFilePath, sessionId, createdAt, bug: { id: bugId } } = this.session;
-    fs.appendFileSync(logFilePath, `${JSON.stringify({ headerTag: true, version, sessionId, bugId, createdAt })}\n`, { flag: 'ax' });
+    const { logFilePath, sessionId, createdAt, exercise: { id: exerciseId } } = this.session;
+    fs.appendFileSync(logFilePath, `${JSON.stringify({ headerTag: true, version, sessionId, exerciseId, createdAt })}\n`, { flag: 'ax' });
     this.updateIndexFile();
   }
 
@@ -569,10 +570,10 @@ export default class PathwaysDataProvider extends DataProviderBase {
   }
 
   updateIndexFile() {
-    const bug = this.session?.bug;
+    const bug = this.session?.exercise;
     const { sessionId } = this;
     if (bug) {
-      const indexFilePath = this.manager.getIndexFilePathByBug(bug);
+      const indexFilePath = this.manager.getIndexFilePathByExercise(bug);
       let index;
       if (fs.existsSync(indexFilePath)) {
         index = JSON.parse(fs.readFileSync(indexFilePath, 'utf-8'));

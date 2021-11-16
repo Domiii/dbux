@@ -12,7 +12,7 @@ export default class AsyncJsProject extends Project {
   /**
    * @return {ExerciseConfig[]}
    */
-  loadExercises() {
+  loadExerciseConfigs() {
     return [
       {
         id: 1,

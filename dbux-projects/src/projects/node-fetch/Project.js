@@ -7,7 +7,6 @@
 // node --enable-source-maps --stack-trace-limit=1000 "../../node_modules/@dbux/cli/bin/dbux.js" run --esnext --verbose=1  --pw=.* "./example.js" --
 
 import Project from '../../projectLib/Project';
-import { buildNodeCommand } from '../../util/nodeUtil';
 
 
 export default class NodeFetchProject extends Project {
@@ -15,19 +14,6 @@ export default class NodeFetchProject extends Project {
   gitCommit = 'tags/v2.1.2'
 
   packageManager = 'yarn';
-
-  /**
-   * @return {ExerciseConfig[]}
-   */
-  loadExercises() {
-    return [
-      {
-        label: 'basic example1',
-        // testRe: 'OPTIONS should only include each method once',
-        testFilePaths: ['example1.js']
-      }
-    ];
-  }
 
   decorateExerciseForRun(bug) {
     if (!bug.testFilePaths) {

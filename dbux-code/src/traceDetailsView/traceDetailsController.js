@@ -22,7 +22,11 @@ class TraceDetailsController {
     this.tracesAtCursor = getOrCreateTracesAtCursor(context);
     this.errorTraceManager = new ErrorTraceManager();
 
-    this.documentChangedList = new Set();
+    /**
+     * @type {Map<number, Set>}
+     */
+    this.documentChangedByAppId = new Map();
+    this.edited = false;
     workspace.onDidChangeTextDocument(this.handleDocumentChanged);
     window.onDidChangeActiveTextEditor(this.updateEditedWarning);
   }
@@ -42,6 +46,7 @@ class TraceDetailsController {
 
   refresh = () => {
     this.treeDataProvider.refresh();
+    this.updateEditedWarning();
   }
   refreshOnData = () => {
     this.refresh();
@@ -128,24 +133,36 @@ class TraceDetailsController {
     }
 
     const changedFileName = activeTextEditor.document.fileName;
-    if (this.documentChangedList.has(changedFileName)) {
-      return;
+    const affectedAppIds = getRelatedAppIds(changedFileName);
+    for (const appId of affectedAppIds) {
+      if (!this.documentChangedByAppId.get(appId)) {
+        this.documentChangedByAppId.set(appId, new Set());
+      }
+      this.documentChangedByAppId.get(appId).add(changedFileName);
     }
+    this.updateEditedWarning(activeTextEditor);
+  }
 
-    if (getRelatedAppIds(changedFileName).length) {
-      this.documentChangedList.add(changedFileName);
-      this.updateEditedWarning(activeTextEditor);
+  updateEditedWarning = (activeTextEditor = window.activeTextEditor) => {
+    const selectedApplicationId = traceSelection.selected?.applicationId;
+    if (this.documentChangedByAppId.get(selectedApplicationId)?.has(activeTextEditor?.document.fileName)) {
+      this.setWarning(true);
+    }
+    else {
+      this.setWarning(false);
     }
   }
 
-  updateEditedWarning = (activeTextEditor) => {
-    if (this.documentChangedList.has(activeTextEditor?.document.fileName)) {
-      this.treeDataProvider.setTitle(`${this.treeDataProvider.defaultTitle} ⚠️`);
-      commands.executeCommand('setContext', 'dbuxTraceDetailsView.context.editedWarning', true);
-    }
-    else {
-      this.treeDataProvider.resetTitle();
-      commands.executeCommand('setContext', 'dbuxTraceDetailsView.context.editedWarning', false);
+  setWarning(edited) {
+    if (edited !== this.edited) {
+      this.edited = edited;
+      if (edited) {
+        this.treeDataProvider.setTitle(`${this.treeDataProvider.defaultTitle} ⚠️`);
+      }
+      else {
+        this.treeDataProvider.resetTitle();
+      }
+      commands.executeCommand('setContext', 'dbuxTraceDetailsView.context.editedWarning', edited);
     }
   }
 

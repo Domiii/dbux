@@ -1,7 +1,7 @@
 import Project from '@dbux/projects/src/projectLib/Project';
 import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
-import BugNode from './BugNode';
+import ExerciseNode from './ExerciseNode';
 import { runTaskWithProgressBar } from '../../codeUtil/runTaskWithProgressBar';
 import { showInformationMessage } from '../../codeUtil/codeModals';
 
@@ -50,13 +50,12 @@ export default class ProjectNode extends BaseTreeViewNode {
   }
 
   buildChildren() {
-    // getOrLoadBugs returns a `BugList`, use Array.from to convert to array
     const bugs = Array.from(this.project.getOrLoadExercises());
-    return bugs.map(this.buildBugNode.bind(this));
+    return bugs.map(this.buildExerciseNode.bind(this));
   }
 
-  buildBugNode(bug) {
-    return this.treeNodeProvider.buildNode(BugNode, bug, this);
+  buildExerciseNode(bug) {
+    return this.treeNodeProvider.buildNode(ExerciseNode, bug, this);
   }
 
   async cleanUp() {

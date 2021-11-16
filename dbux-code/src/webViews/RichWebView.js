@@ -4,9 +4,10 @@ import {
   window,
   Uri
 } from 'vscode';
-import { buildWebviewClientHtml } from './clientSource';
 import WebviewWrapper from '../codeUtil/WebviewWrapper';
-import { showInformationMessage } from '../codeUtil/codeModals.js';
+import { showInformationMessage } from '../codeUtil/codeModals';
+import { getResourcePath } from '../codeUtil/codePath';
+import { buildWebviewClientHtml } from './clientSource';
 
 /** @typedef {import('@dbux/graph-host/src/WebHost').HostWrapper} HostWrapper */
 
@@ -41,9 +42,9 @@ export default class RichWebView extends WebviewWrapper {
 
   async buildClientHtml() {
     const mode = this.getThemeMode();
-    const scriptPath = this.getResourcePath(this.getMainScriptPath());
+    const scriptPath = getResourcePath(this.getMainScriptPath());
     const modeFolderName = ThemeMode.getName(mode).toLowerCase();
-    const themePath = this.getResourcePath(`dist/web/${modeFolderName}/bootstrap.min.css`);
+    const themePath = getResourcePath('dist', 'web', modeFolderName, 'bootstrap.min.css');
     const src = await buildWebviewClientHtml([scriptPath], themePath);
     // console.debug('webview', src);
     return src;
@@ -109,7 +110,7 @@ export default class RichWebView extends WebviewWrapper {
      * @see https://github.com/microsoft/vscode/issues/127068
      */
     getClientResourceUri: (...segments) => {
-      const p = this.getResourcePath(...segments);
+      const p = getResourcePath(...segments);
       const uri = this.panel.webview.asWebviewUri(Uri.file(p)).toString();
       // console.debug('getClientResourceUri', uri);
       return uri;

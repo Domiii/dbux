@@ -15,7 +15,7 @@ export default class RealworldWebComponentsProject extends Project {
   /**
    * @return {ExerciseConfig[]}
    */
-  loadExercises() {
+  loadExerciseConfigs() {
     // TODO: add/generate some bugs?
     return [
       {

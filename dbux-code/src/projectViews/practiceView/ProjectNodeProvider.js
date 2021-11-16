@@ -1,11 +1,14 @@
 import BaseTreeViewNodeProvider from '../../codeUtil/BaseTreeViewNodeProvider';
 import ProjectNode from './ProjectNode';
+import ChapterNode from './ChapterNode';
 import EmptyNode from './EmptyNode';
 
 export default class ProjectNodeProvider extends BaseTreeViewNodeProvider {
   constructor(context, treeViewController) {
     super('dbuxProjectView');
     this.controller = treeViewController;
+
+    this.byChapter = true; // default
 
     this.initDefaultClickCommand(context);
   }
@@ -17,20 +20,38 @@ export default class ProjectNodeProvider extends BaseTreeViewNodeProvider {
   buildRoots() {
     const roots = [];
 
-    const projects = this.controller.manager.getOrCreateDefaultProjectList();
-    for (let project of projects) {
-      const node = this.buildProjectNode(project);
-      roots.push(node);
+    if (this.byChapter) {
+      const { chapters } = this.controller.manager;
+      for (let chapter of chapters) {
+        const node = this.buildChapterNode(chapter);
+        roots.push(node);
+      }
+    }
+    else {
+      const projects = this.controller.manager.getOrCreateDefaultProjectList();
+      for (let project of projects) {
+        const node = this.buildProjectNode(project);
+        roots.push(node);
+      }
+      roots.reverse();
     }
 
     if (!roots.length) {
       roots.push(EmptyNode.instance);
     }
 
-    return roots.reverse();
+    return roots;
+  }
+
+  toggleListMode() {
+    this.byChapter = !this.byChapter;
   }
 
   buildProjectNode(project) {
     return this.buildNode(ProjectNode, project);
+  }
+
+  buildChapterNode(chapter) {
+    return this.buildNode(ChapterNode, chapter);
   }
 }

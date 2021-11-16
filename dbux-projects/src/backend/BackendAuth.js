@@ -50,7 +50,7 @@ export default class BackendAuth {
 
   async login() {
     const { WebviewWrapper } = this.backendController.practiceManager.externals;
-    this.loginController = makeLoginController(WebviewWrapper);
+    this.loginController = makeLoginController(WebviewWrapper, this.backendController.practiceManager);
     return this.loginController.show();
   }
 

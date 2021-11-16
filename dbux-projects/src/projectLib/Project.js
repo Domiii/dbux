@@ -1,5 +1,5 @@
 import path from 'path';
-import fs, { existsSync, mkdirSync } from 'fs';
+import fs, { existsSync } from 'fs';
 import pull from 'lodash/pull';
 import defaultsDeep from 'lodash/defaultsDeep';
 import sh from 'shelljs';
@@ -7,10 +7,10 @@ import NestedError from '@dbux/common/src/NestedError';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import { requireUncached } from '@dbux/common-node/src/util/requireUtil';
 import { getAllFilesInFolders, globRelative, rm } from '@dbux/common-node/src/util/fileUtil';
 import { pathJoin, pathRelative, pathResolve, realPathSyncNormalized } from '@dbux/common-node/src/util/pathUtil';
 import isObject from 'lodash/isObject';
-import cloneDeep from 'lodash/cloneDeep';
 import ExerciseList from './ExerciseList';
 import Process from '../util/Process';
 import { MultipleFileWatcher } from '../util/multipleFileWatcher';
@@ -18,15 +18,18 @@ import { buildNodeCommand } from '../util/nodeUtil';
 import { checkSystemWithRequirement } from '../checkSystem';
 import RunStatus, { isStatusRunningType } from './RunStatus';
 import ProjectBase from './ProjectBase';
+import Exercise from './Exercise';
+
+/** @typedef {import('./ExerciseConfig').default} ExerciseConfig */
 
 const Verbose = false;
-const SharedAssetFolder = '_shared_assets_';
-const BugAssetFolder = '_bug_assets_';
-const PatchFolderName = '_patches_';
+const SharedAssetFolder = 'sharedAssets';
+const ExerciseAssetFolder = 'exerciseAssets';
+const PatchFolderName = 'patches';
 const GitInstalledTag = '__dbux_project_installed';
 
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
-/** @typedef {import('./Exercise').default} Bug */
+/** @typedef {import('./Exercise').default} Exercise */
 
 /**
  * Project class file.
@@ -44,6 +47,11 @@ export default class Project extends ProjectBase {
    * @type {ProjectsManager}
    */
   manager;
+
+  /**
+   * @type {string}
+   */
+  name;
 
   /**
    * Hold reference to webpack (watch mode), `http-serve` and other long-running background processes.
@@ -360,6 +368,11 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     // git clone
     await this.gitClone();
 
+    // fetch all bug tags if needed
+    if (this.getExerciseGitTag) {
+      await this.exec(`${this.gitCommand} fetch --all --tags`);
+    }
+
     // run hook
     await this.install();
   }
@@ -369,13 +382,18 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   }
 
   /**
-   * @abstract
+   * @return {ExerciseConfig[]}
    */
-  loadExercises() {
-    if (!this.exercises) {
-      throw new Error(`${this.debugTag} failed to provide exercises or override loadExercises`);
+  loadExerciseConfigs() {
+    const rawConfigFile = this.manager.externals.resources.getResourcePath('dist', 'projects', 'exercises', `${this.name}.js`);
+    try {
+      const configs = requireUncached(rawConfigFile);
+      return configs;
     }
-    return cloneDeep(this.exercises);
+    catch (err) {
+      this.logger.error(`Cannot load exercises for project "${this.name}": ${err.stack}`);
+      return EmptyArray;
+    }
   }
 
   async openInEditor() {
@@ -387,16 +405,16 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   // ###########################################################################
 
   /**
-   * @param {Bug} bug 
+   * @param {Exercise} exercise 
    */
-  async startWatchModeIfNotRunning(bug) {
+  async startWatchModeIfNotRunning(exercise) {
     if (!this.backgroundProcesses?.length && this.startWatchMode) {
-      const outputFileString = bug.watchFilePaths
+      const outputFileString = exercise.watchFilePaths
         .map(f => `"${f}"`)
         .join(', ');
       // let _firstOutputPromise = new Promise((resolve, reject) => {
       // watch out for entry (output) files to be created
-      const watchFiles = bug.watchFilePaths.map(f => path.resolve(this.projectPath, f));
+      const watchFiles = exercise.watchFilePaths.map(f => path.resolve(this.projectPath, f));
       const watcher = new MultipleFileWatcher();
       let _firstBuildPromise = watcher.waitForAll(watchFiles);
       //   watcher.on('change', (filename, curStat, prevStat) => {
@@ -414,7 +432,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       // });
 
       // start
-      const backgroundProcess = await this.startWatchMode(bug).catch(err => {
+      const backgroundProcess = await this.startWatchMode(exercise).catch(err => {
         // this.logger.error('startWatchMode failed -', err?.stack || err);
         throw new Error(`startWatchMode failed while waiting for "${outputFileString}" - ${err?.stack || err}`);
       });
@@ -659,21 +677,21 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   }
 
   /**
-   * @deprecated We are managing bug activated state in `BugRunner.actiavtedBug` and applying patch automaticly in `ProjectManager.switchToBug`. Commit user changes here will break the tag structure assumption.
+   * @deprecated We are managing bug activated state in `BugRunner.actiavtedBug` and applying patch automaticly in `ProjectManager.switchToExercise`. Commit user changes here will break the tag structure assumption.
    */
-  async deactivateBug(bug) {
+  async deactivateExercise(exercise) {
     const project = this;
-    const bugCachedTag = project.getBugCachedTagName(bug);
+    const exerciseCachedTag = project.getExerciseCachedTagTagName(exercise);
 
     // commit and set tag to latest commit
-    await project.autoCommit(`Deactivated bug ${bug.id}.`);
-    await project.gitSetTag(bugCachedTag);
+    await project.autoCommit(`Deactivated bug ${exercise.id}.`);
+    await project.gitSetTag(exerciseCachedTag);
   }
 
   /**
-   * @param {Bug} bug 
+   * @param {Exercise} exercise 
    */
-  async installBug(bug) {
+  async installBug(exercise) {
     // const oldBug = this.manager.runner.bug;
     // if (oldBug && oldBug !== bug) {
     //   const oldProject = oldBug.project;
@@ -682,20 +700,20 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
     const project = this;
     const installedTag = project.getProjectInstalledTagName();
-    const bugCachedTag = project.getBugCachedTagName(bug);
+    const exerciseCachedTag = project.getExerciseCachedTagTagName(exercise);
 
     let successfulCacheFlag = false;
-    if (await project.gitDoesTagExist(bugCachedTag)) {
+    if (await project.gitDoesTagExist(exerciseCachedTag)) {
       // get back to bug's original state
-      await project._gitCheckout(bugCachedTag);
+      await project._gitCheckout(exerciseCachedTag);
       const currentTags = await project.gitGetAllCurrentTagName();
-      if (currentTags.includes(bugCachedTag)) {
-        // hackfix: there is some bug here where `bugCachedTag` appears to exist, but we never stored it, and after checkout, it ends up in `installedTag` instead
+      if (currentTags.includes(exerciseCachedTag)) {
+        // hackfix: there is some bug here where `exerciseCachedTag` appears to exist, but we never stored it, and after checkout, it ends up in `installedTag` instead
         // -> $ git tag -l *dbux*
         successfulCacheFlag = true;
       }
       else {
-        throw new Error(`installBug failed - tried to checkout bug tag "${bugCachedTag}", but could not find tag (found: "${currentTags}"). Please re-install bug.`);
+        throw new Error(`installBug failed - tried to checkout bug tag "${exerciseCachedTag}", but could not find tag (found: "${currentTags}"). Please re-install bug.`);
       }
     }
 
@@ -704,31 +722,31 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       await project._gitCheckout(installedTag);
 
       // checkout bug commit, apply patch, etc.
-      await project.beforeSelectBug?.(bug);
-      await project.selectExercise(bug);
-      await project.afterSelectBug?.(bug);
+      await project.beforeSelectBug?.(exercise);
+      await project.selectExercise(exercise);
+      await project.afterSelectBug?.(exercise);
 
       // copy assets
-      await this.installAssets(bug);
+      await this.installAssets(exercise);
 
       // install default + custom dependencies
       await project.npmInstall();
-      await project.installBugDependencies?.(bug);
+      await project.installBugDependencies?.(exercise);
 
       // autoCommit + set tag
-      await project.autoCommit(`Selected bug ${bug.id}.`);
-      await project.gitSetTag(bugCachedTag);
+      await project.autoCommit(`Selected bug ${exercise.id}.`);
+      await project.gitSetTag(exerciseCachedTag);
     }
 
     // copy assets
-    await this.installAssets(bug);
+    await this.installAssets(exercise);
     await project.npmInstall();
     await project.autoCommit(`Installed assests.`);
   }
 
   /**
    * NOTE: This will only be called when the bug is run the first time.
-   * @param {Bug} bug 
+   * @param {Exercise} bug 
    */
   async selectExercise(bug) {
     const { tag, commit } = bug;
@@ -885,12 +903,12 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
    *    -> this should be the inverse of {@link Project#installBug}
    * TODO: make sure, individual overrides of {@link Project#selectExercise} don't do anything that is not undoable (or provide some sort of `uninstallBug` function)
    */
-  async resetBug(bug) {
+  async resetExercise(bug) {
     const installedTag = this.getProjectInstalledTagName();
-    const bugCachedTag = this.getBugCachedTagName(bug);
+    const exerciseCachedTag = this.getExerciseCachedTagTagName(bug);
 
-    const currentTag = await this.gitGetCurrentTagName();
-    if (currentTag === bugCachedTag) {
+    const currentTags = await this.gitGetAllCurrentTagName();
+    if (currentTags.includes(exerciseCachedTag)) {
       // if (await this.gitDoesTagExist(installedTag)) {
       // get back to project's original state
       await this._gitResetAndCheckout(installedTag);
@@ -900,7 +918,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       await this._gitResetAndCheckout(installedTag);
     }
 
-    await this.gitDeleteTag(bugCachedTag);
+    await this.gitDeleteTag(exerciseCachedTag);
   }
 
   /** ###########################################################################
@@ -963,7 +981,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       if (iErr >= 0) {
         throw new Error('invalid entry in `rmFiles` is not in `projectPath`: ' + rmFiles[iErr]);
       }
-      
+
       this.logger.warn('Removing files:', absRmFiles.join(','));
       rm('-rf', absRmFiles);
     }
@@ -1017,7 +1035,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
   getBugAssetFolderName(bug) {
     if (bug.hasAssets) {
-      return pathJoin(BugAssetFolder, this.name, bug.name || bug.id);
+      return pathJoin(ExerciseAssetFolder, this.name, bug.name || bug.id);
     }
     else {
       return null;
@@ -1133,7 +1151,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   async getCurrentBugFromTag() {
     if (this.doesProjectFolderExist()) {
       for (const tag of (await this.gitGetAllCurrentTagName())) {
-        const bug = this.parseBugCachedTag(tag);
+        const bug = this.parseExerciseCachedTag(tag);
         if (bug) {
           return bug;
         }
@@ -1163,6 +1181,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   }
 
   async gitDeleteTag(tagName) {
+    await this.checkCorrectGitRepository();
     return this.exec(`${this.gitCommand} tag -d ${tagName}`);
   }
 
@@ -1178,14 +1197,14 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     return GitInstalledTag;
   }
 
-  getBugCachedTagName(bug) {
-    return `__dbux_bug_${bug.id}_selected`;
+  getExerciseCachedTagTagName(bug) {
+    return `__dbux_exercise_${bug.id}_selected`;
   }
 
-  parseBugCachedTag(tagName) {
-    const bugId = tagName.match(/__dbux_bug_([^_]*)_selected/)?.[1];
-    if (bugId) {
-      return this._exercises.getById(bugId);
+  parseExerciseCachedTag(tagName) {
+    const exerciseId = tagName.match(/__dbux_exercise_([^_]*)_selected/)?.[1];
+    if (exerciseId) {
+      return this._exercises.getById(exerciseId);
     }
     else {
       return null;
@@ -1197,35 +1216,50 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   // ###########################################################################
 
   /**
-   * @virtual
-   */
-  setupBug(bug) { }
-
-  /**
    * Get all bugs for this project
    * @return {ExerciseList}
    */
   getOrLoadExercises() {
     if (!this._exercises) {
-      let arr = this.loadExercises();
-      arr.forEach(bug => {
+      let exerciseConfigs = this.loadExerciseConfigs();
+      const hasIds = exerciseConfigs.some(exercise => !!exercise.id);
+      let lastExercise = 0;
+
+      let exercises = exerciseConfigs.map(config => {
+        // exercise.description
         let {
           description,
           testRe,
           testFilePaths
-        } = bug;
-        bug.description = description || testRe || testFilePaths?.[0] || '';
+        } = config;
+        config.description = description || testRe || testFilePaths?.[0] || '';
 
-        this.setupBug(bug);
+        // exercise.number
+        if (!config.number) {
+          // ensure cfg.number exists(type number)
+          config.number = hasIds ? config.id : ++lastExercise;
+        }
+
+        // exercise.bugLocations
+        if (config.bugLocations && !config.bugLocations.length) {
+          // we use `!!bug.bugLocations` to determine whether this bug is "solvable"
+          config.bugLocations = null;
+        }
+
+        // exercise.id
+        // convert number typed id to string type(thus it's globally unique)
+        config.id = `${this.name}#${config.number}`;
+
+        return new Exercise(this, config);
       });
 
       if (process.env.NODE_ENV === 'production') {
         // NOTE: this is an immature feature
         //      for now, only provide one bug for demonstration purposes and to allow us gather feedback
-        arr = arr.filter(bug => bug.label && bug.isSolvable);
+        exercises = exercises.filter(exercise => exercise.label && exercise.isSolvable);
       }
 
-      this._exercises = new ExerciseList(this, arr);
+      this._exercises = new ExerciseList(exercises);
     }
     return this._exercises;
   }
