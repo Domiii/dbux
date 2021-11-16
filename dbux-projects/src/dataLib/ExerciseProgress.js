@@ -1,8 +1,8 @@
-export default class BugProgress {
-  constructor(bug, status, stopwatchEnabled) {
+export default class ExerciseProgress {
+  constructor(exercise, status, stopwatchEnabled) {
     const timeStamp = Date.now();
-    this.projectName = bug.project.name;
-    this.bugId = bug.id;
+    this.projectName = exercise.project.name;
+    this.exerciseId = exercise.id;
     this.createdAt = timeStamp;
     this.updatedAt = timeStamp;
     /**

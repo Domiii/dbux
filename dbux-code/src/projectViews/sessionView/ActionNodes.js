@@ -9,7 +9,7 @@ import { isProjectFolderInWorkspace } from '../../codeUtil/workspaceUtil';
 
 /** @typedef {import('../projectViewsController').default} ProjectViewsController */
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
-/** @typedef {import('@dbux/projects/src/projectLib/Exercise').default} Bug */
+/** @typedef {import('@dbux/projects/src/projectLib/Exercise').default} Exercise */
 
 class SessionNode extends BaseTreeViewNode {
   /**
@@ -27,9 +27,9 @@ class SessionNode extends BaseTreeViewNode {
   }
 
   /**
-   * @return {Bug}
+   * @return {Exercise}
    */
-  get bug() {
+  get exercise() {
     return this.entry;
   }
 
@@ -50,16 +50,16 @@ class SessionNode extends BaseTreeViewNode {
 
 class DetailNode extends SessionNode {
   /**
-   * @param {Bug} bug 
+   * @param {Exercise} exercise 
    */
-  static makeLabel(bug) {
-    const state = bug.manager.practiceSession?.state;
-    return `Current bug: ${bug.label} (${PracticeSessionState.getName(state)})`;
+  static makeLabel(exercise) {
+    const state = exercise.manager.practiceSession?.state;
+    return `Current exercise: ${exercise.label} (${PracticeSessionState.getName(state)})`;
   }
 
   init() {
     this.contextValue = 'dbuxSessionView.detailNode';
-    this.description = this.bug.id;
+    this.description = this.exercise.id;
   }
 
   makeIconPath() {
@@ -67,7 +67,7 @@ class DetailNode extends SessionNode {
   }
 
   async doHandleClick() {
-    await this.bug.manager.externals.showBugIntroduction(this.bug);
+    await this.exercise.manager.externals.showExerciseIntroduction(this.exercise);
   }
 }
 
@@ -86,7 +86,7 @@ class ShowEntryNode extends SessionNode {
 
   async doHandleClick() {
     const success = await this.entry.openInEditor();
-    !success && await showInformationMessage(`No entry file of this bug.`);
+    !success && await showInformationMessage(`No entry file of this exercise.`);
   }
 }
 
@@ -110,7 +110,7 @@ class OpenWorkspaceNode extends SessionNode {
 
   async showEntry() {
     const success = await this.entry.openInEditor();
-    !success && await showInformationMessage(`No entry file of this bug.`);
+    !success && await showInformationMessage(`No entry file of this exercise.`);
   }
 }
 
@@ -132,7 +132,7 @@ class RunNode extends SessionNode {
   }
 
   async flushCache() {
-    return await this.bug.project.flushCacheConfirm();
+    return await this.exercise.project.flushCacheConfirm();
   }
 }
 
@@ -160,11 +160,11 @@ class TagNode extends SessionNode {
   }
 
   static makeLabel() {
-    return 'The bug is in the selected trace\'s line!';
+    return 'The exercise is in the selected trace\'s line!';
   }
 
   init() {
-    this.tooltip = 'Tag current trace as bug location';
+    this.tooltip = 'Tag current trace as exercise location';
     this.contextValue = 'dbuxSessionView.tagNode';
   }
 
@@ -179,7 +179,7 @@ class TagNode extends SessionNode {
       const cursorLoc = getCursorLocation();
       const cursorLine = codeLineToBabelLine(cursorLoc?.pos.line);
       const cursorFile = cursorLoc?.fpath;
-      this.manager.practiceSession.tagBugTrace(trace, cursorFile, cursorLine);
+      this.manager.practiceSession.tagExerciseTrace(trace, cursorFile, cursorLine);
     }
     else {
       await showWarningMessage('You have not selected any trace yet.');
@@ -188,8 +188,8 @@ class TagNode extends SessionNode {
 }
 
 class StopPracticeNode extends SessionNode {
-  static makeLabel(bug) {
-    if (bug.manager.practiceSession.isFinished()) {
+  static makeLabel(exercise) {
+    if (exercise.manager.practiceSession.isFinished()) {
       return 'Exit Session';
     }
     else {
@@ -215,8 +215,8 @@ class StopPracticeNode extends SessionNode {
   }
 }
 
-export function getActionNodeClasses(bug) {
-  const { project } = bug;
+export function getActionNodeClasses(exercise) {
+  const { project } = exercise;
   return [
     DetailNode,
     isProjectFolderInWorkspace(project) ? ShowEntryNode : OpenWorkspaceNode,

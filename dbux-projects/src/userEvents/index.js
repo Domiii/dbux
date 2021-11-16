@@ -32,7 +32,7 @@ export function emitPracticeSessionEvent(eventName, practiceSession) {
   emitUserEvent(UserActionType.PracticeSessionChanged, {
     eventType: eventName,
     sessionId: practiceSession.sessionId,
-    bugId: practiceSession.bug.id
+    exerciseId: practiceSession.exercise.id
   });
 }
 
@@ -52,12 +52,12 @@ export function emitNewTestRun(testRun) {
   });
 }
 
-export function emitNewBugProgress(bugProgress) {
-  emitUserEvent(UserActionType.NewBugProgress, { bugProgress });
+export function emitNewExerciseProgress(exerciseProgress) {
+  emitUserEvent(UserActionType.NewExerciseProgress, { exerciseProgress });
 }
 
-export function emitBugProgressChanged(bugProgress) {
-  emitUserEvent(UserActionType.BugProgressChanged, { bugProgress });
+export function emitExerciseProgressChanged(exerciseProgress) {
+  emitUserEvent(UserActionType.ExerciseProgressChanged, { exerciseProgress });
 }
 
 // ###########################################################################
@@ -77,7 +77,7 @@ const emitter = new NanoEvents();
  * @typedef {Object} UserEvent
  * @property {string} name
  * @property {string} sessionId
- * @property {string} bugId
+ * @property {string} exerciseId
  * @property {Object} data
  * @property {number} createdAt
  */
@@ -98,7 +98,7 @@ export function emitUserEvent(eventType, evtData) {
     emitter.emit('e', {
       type: eventType,
       sessionId: manager.practiceSession.sessionId,
-      bugId: manager.practiceSession.bug.id,
+      exerciseId: manager.practiceSession.exercise.id,
       createdAt: Date.now(),
       ...evtData
     });

@@ -30,7 +30,7 @@ export default class KarmaProject extends Project {
   /**
    * @return {ExerciseConfig[]}
    */
-  loadExercises() {
+  loadExerciseConfigs() {
     // TODO: load automatically from BugsJs bug database
     // NOTE: some bugs have multiple test files, or no test file at all
     // see: https://github.com/BugsJS/express/releases?after=Bug-4-test
@@ -70,16 +70,16 @@ export default class KarmaProject extends Project {
       filter(bug => !!bug);
   }
 
-  getBugGitTag(bugId, tagCategory) {
-    return `Bug-${bugId}-${tagCategory}`;
+  getExerciseGitTag(exerciseId, tagCategory) {
+    return `Bug-${exerciseId}-${tagCategory}`;
   }
 
-  async selectExercise(bug) {
+  async selectExercise(exercise) {
     const {
       id, name
-    } = bug;
+    } = exercise;
     const tagCategory = "test"; // "test", "fix" or "full"
-    const tag = this.getBugGitTag(id, tagCategory);
+    const tag = this.getExerciseGitTag(id, tagCategory);
 
     if ((await this.gitGetCurrentTagName()).startsWith(tag)) {
       // do not checkout bug, if we already on the right tag

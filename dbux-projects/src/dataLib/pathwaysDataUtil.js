@@ -36,19 +36,19 @@ export default {
 
   /**
    * @param {PathwaysDataProvider} pdp
-   * @param {Exercise} bug 
+   * @param {Exercise} exercise 
    */
-  getTestRunsByBug(pdp, bug) {
-    return pdp.indexes.testRuns.byBugId.get(bug.id) || EmptyArray;
+  getTestRunsByExercise(pdp, exercise) {
+    return pdp.indexes.testRuns.byExerciseId.get(exercise.id) || EmptyArray;
   },
 
   /**
    * @param {PathwaysDataProvider} pdp 
    * @param {TestRun} testRun 
-   * @param {Exercise} bug 
+   * @param {Exercise} exercise 
    */
-  isTestRunOfBug(pdp, testRun, bug) {
-    return testRun.bugId === bug.id;
+  isTestRunOfBug(pdp, testRun, exercise) {
+    return testRun.exerciseId === exercise.id;
   },
 
   isLastVisibleGroup(pdp, actionGroupId) {

@@ -25,7 +25,7 @@ export default class ReactProject extends Project {
     // await this.installPackages(`todomvc-app-css@2.3.0`);
   }
 
-  loadExercises() {
+  loadExerciseConfigs() {
     return [
       {
         label: 'Empty list with clear error message',

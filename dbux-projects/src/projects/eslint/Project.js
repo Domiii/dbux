@@ -30,11 +30,11 @@ export default class EslintProject extends Project {
   /**
    * @return {ExerciseConfig[]}
    */
-  loadExercises() {
+  loadExerciseConfigs() {
     // TODO: load automatically from BugsJs bug database
     // NOTE: some bugs have multiple test files, or no test file at all
     // see: https://github.com/BugsJS/express/releases?after=Bug-4-test
-    const bugs = [
+    const exercises = [
       {
         // see https://github.com/BugsJS/eslint/commit/e7839668c859752e5237c829ee2a1745625b7347
         id: 1,
@@ -65,25 +65,25 @@ export default class EslintProject extends Project {
       },
     ];
 
-    return bugs.
-      map((bug) => {
-        if (!bug.testFilePaths) {
+    return exercises.
+      map((exercise) => {
+        if (!exercise.testFilePaths) {
           // bug not fully configured yet
           return null;
         }
 
-        const runFilePaths = bug.testFilePaths;
-        let watchFilePaths = bug.testFilePaths.map(file => path.join(this.projectPath, 'dist', file));
+        const runFilePaths = exercise.testFilePaths;
+        let watchFilePaths = exercise.testFilePaths.map(file => path.join(this.projectPath, 'dist', file));
 
         const tagCategory = "test"; // "test", "fix" or "full"
 
         return {
           // id: i + 1,
           // name: `bug #${bug.id}`,
-          description: bug.testRe,
+          description: exercise.testRe,
           runArgs: [
             '--grep',
-            `"${bug.testRe}"`,
+            `"${exercise.testRe}"`,
             '--',
             // ...watchFilePaths,
             // eslint-disable-next-line max-len
@@ -91,17 +91,17 @@ export default class EslintProject extends Project {
           ],
           runFilePaths,
           watchFilePaths,
-          tag: this._getBugGitTag(bug.id, tagCategory),
+          tag: this._getExerciseGitTag(exercise.id, tagCategory),
           // require: ['test/support/env'],
-          ...bug,
+          ...exercise,
           // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
         };
       }).
-      filter(bug => !!bug);
+      filter(exercise => !!exercise);
   }
 
-  _getBugGitTag(bugNumber, tagCategory) {
-    return `Bug-${bugNumber}-${tagCategory}`;
+  _getExerciseGitTag(exerciseNumber, tagCategory) {
+    return `Bug-${exerciseNumber}-${tagCategory}`;
   }
 
   async selectExercise(bug) {
@@ -113,13 +113,13 @@ export default class EslintProject extends Project {
   // ###########################################################################
 
   /**
-   * @param {Bug} bug 
+   * @param {Exercise} exercise 
    */
-  async startWatchMode(bug) {
+  async startWatchMode(exercise) {
     // start webpack using latest node (long-time support)
     // make sure we have Dbux dependencies ready (since linkage might be screwed up in dev+install mode)
     const req = `-r "${this.manager.getDbuxPath('@dbux/cli/dist/linkOwnDependencies.js')}"`;
-    const args = `--config ./dbux.webpack.config.js --env entry=${bug.testFilePaths.join(',')}`;
+    const args = `--config ./dbux.webpack.config.js --env entry=${exercise.testFilePaths.join(',')}`;
     
     // weird bug - sometimes it just will keep saying "volta not found"... gotta hate system configuration problems...
     const volta = 'volta'; //'/Users/domi/.volta/bin/volta'; // 'volta';

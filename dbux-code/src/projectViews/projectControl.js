@@ -11,7 +11,7 @@ import TerminalWrapper from '../terminal/TerminalWrapper';
 import { set as storageSet, get as storageGet } from '../memento';
 import { interactiveGithubLogin } from '../net/GithubAuth';
 import WebviewWrapper from '../codeUtil/WebviewWrapper';
-import { showBugIntroduction } from './BugIntroduction';
+import { showExerciseIntroduction } from './ExerciseIntroduction';
 import { getStopwatch } from './practiceStopwatch';
 import { initUserEvent } from '../userEvents';
 import { initRuntimeServer } from '../net/SocketServer';
@@ -107,7 +107,7 @@ export function createProjectManager(extensionContext) {
       hide: stopwatch.hide.bind(stopwatch)
     },
     WebviewWrapper,
-    showBugIntroduction,
+    showExerciseIntroduction,
     interactiveGithubLogin,
     openWebsite(url) {
       return env.openExternal(Uri.parse(url));

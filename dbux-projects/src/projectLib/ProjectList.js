@@ -22,7 +22,14 @@ export default class ProjectList {
    */
   add(...projects) {
     projects.forEach((project) => {
-      Array.from(project.getOrLoadExercises()).forEach(exercise => this._exerciseByIdMap.set(exercise.id, exercise));
+      const exercises = Array.from(project.getOrLoadExercises());
+      exercises.forEach(exercise => {
+        if (!exercise) {
+          debugger;
+        }
+        this._exerciseByIdMap.set(exercise.id, exercise);
+      }
+      );
 
       this._map.set(project.name, project);
       this._list.push(project);
@@ -45,7 +52,7 @@ export default class ProjectList {
     return this._exerciseByIdMap.get(exerciseId);
   }
 
-  * [Symbol.iterator]() {
+  *[Symbol.iterator]() {
     yield* this._list;
   }
 }

@@ -12,20 +12,20 @@ const { log, debug, warn, error: logError } = newLogger('ExerciseIntroduction');
 
 const defaultColumn = ViewColumn.One;
 
-export default class BugIntroduction extends WebviewWrapper {
+export default class ExerciseIntroductionView extends WebviewWrapper {
   /**
    * 
    * @param {Exercise} exercise 
    */
   constructor(exercise) {
-    super('dbux-bugIntroduction', `Introduction: exercise #${exercise.id}`, defaultColumn);
+    super('dbux-exerciseIntroduction', `Introduction: exercise #${exercise.id}`, defaultColumn);
 
     this.exercise = exercise;
   }
 
   async buildClientHtml() {
-    return `Bug ${this.exercise.id}<br>`
-      // + `name: ${this.bug.name}<br>`
+    return `Exercise ${this.exercise.id}<br>`
+      // + `name: ${this.exercise.name}<br>`
       + `label: ${this.exercise.label}<br>`
       + `description: ${this.exercise.description}<br>`
       + (this.exercise.testRe && `testRe: ${JSON.stringify(this.exercise.testRe)}<br>` || '')
@@ -37,9 +37,9 @@ export default class BugIntroduction extends WebviewWrapper {
   async shutdownHost() { }
 }
 
-export async function showBugIntroduction(exercise) {
-  let bugIntroduction = new BugIntroduction(exercise);
-  await bugIntroduction.show();
+export async function showExerciseIntroduction(exercise) {
+  let exerciseIntroductionView = new ExerciseIntroductionView(exercise);
+  await exerciseIntroductionView.show();
 
-  return bugIntroduction;
+  return exerciseIntroductionView;
 }

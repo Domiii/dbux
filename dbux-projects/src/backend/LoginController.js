@@ -5,14 +5,14 @@ import { newLogger } from '@dbux/common/src/log/logger';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('LoginController');
 
-export function makeLoginController(WebviewWrapper) {
+export function makeLoginController(WebviewWrapper, manager) {
   class LoginController extends WebviewWrapper {
     constructor() {
       super('dbux-firebase-login', 'Dbux Login (Firebase)');
     }
 
     async buildClientHtml() {
-      const htmlPath = this.getResourcePath('dist', 'projects', 'login.html');
+      const htmlPath = manager.externals.getResourcePath('dist', 'projects', 'login.html');
       return await fs.readFile(htmlPath, "utf8");
     }
 

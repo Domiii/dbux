@@ -5,7 +5,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import Stopwatch from './Stopwatch';
 import PracticeSessionState from './PracticeSessionState';
-import BugStatus from '../dataLib/BugStatus';
+import ExerciseStatus from '../dataLib/ExerciseStatus';
 import { emitPracticeSessionEvent, emitSessionFinishedEvent } from '../userEvents';
 import PracticeSessionData from './PracticeSessionData';
 
@@ -28,25 +28,25 @@ export default class PracticeSession {
     this.sessionId = sessionId || uuidv4();
     this.createdAt = createdAt || Date.now();
     this.stopwatch = new Stopwatch(manager.externals.stopwatch);
-    this.bug = exercise;
+    this.exercise = exercise;
     this.manager = manager;
     this.lastAnnotation = '';
 
     // TODO: move to `logFilePath` getter
     this.logFilePath = logFilePath || sessionData.logFilePath || this.getDefaultLogFilePath();
 
-    let bugProgress = this.bdp.getBugProgressByBug(exercise);
-    if (!bugProgress) {
-      throw new Error(`Can't find bugProgress when creating practiceSession of bug ${exercise.id}`);
+    let exerciseProgress = this.bdp.getExerciseProgressByExercise(exercise);
+    if (!exerciseProgress) {
+      throw new Error(`Can't find exerciseProgress when creating practiceSession of bug ${exercise.id}`);
     }
 
     // state management
-    this.stopwatchEnabled = bugProgress.stopwatchEnabled;
-    this.state = state || (BugStatus.is.Solved(bugProgress.status) ? PracticeSessionState.Solved : PracticeSessionState.Solving);
+    this.stopwatchEnabled = exerciseProgress.stopwatchEnabled;
+    this.state = state || (ExerciseStatus.is.Solved(exerciseProgress.status) ? PracticeSessionState.Solved : PracticeSessionState.Solving);
   }
 
   get project() {
-    return this.bug.project;
+    return this.exercise.project;
   }
 
   get bdp() {
@@ -72,8 +72,8 @@ export default class PracticeSession {
    * Activate bug, run the test and process the result
    * @param {Object} inputCfg 
    */
-  async testBug(inputCfg = EmptyObject) {
-    const { bug } = this;
+  async testExercise(inputCfg = EmptyObject) {
+    const { exercise: bug } = this;
     const result = await this.manager.switchAndTestBug(bug, inputCfg);
     // this.maybeUpdateBugStatusByResult(result);
 
@@ -102,7 +102,7 @@ export default class PracticeSession {
    */
   giveup() {
     if (this.stopwatchEnabled) {
-      this.bdp.updateBugProgress(this.bug, { stopwatchEnabled: false });
+      this.bdp.updateExerciseProgress(this.exercise, { stopwatchEnabled: false });
       this.stopwatchEnabled = false;
       this.stopwatch.pause();
       this.stopwatch.hide();
@@ -111,7 +111,7 @@ export default class PracticeSession {
 
   setupStopwatch() {
     if (this.stopwatchEnabled) {
-      const { solvedAt, startedAt } = this.bdp.getBugProgressByBug(this.bug);
+      const { solvedAt, startedAt } = this.bdp.getExerciseProgressByExercise(this.exercise);
       if (this.isSolved) {
         this.stopwatch.set(solvedAt - startedAt);
       }
@@ -143,9 +143,9 @@ export default class PracticeSession {
       return;
     }
 
-    const isCorrect = this.bug.isCorrectBugLocation(location);
+    const isCorrect = this.exercise.isCorrectBugLocation(location);
     if (isCorrect) {
-      this.manager.bdp.updateBugProgress(this.bug, { status: BugStatus.Found });
+      this.manager.bdp.updateExerciseProgress(this.exercise, { status: ExerciseStatus.Found });
       this.setState(PracticeSessionState.Found);
       emitSessionFinishedEvent(this.state);
       this.save();
@@ -245,13 +245,13 @@ export default class PracticeSession {
    * @param {BugStatus} newStatus 
    */
   updateBugStatus(newStatus) {
-    const bugProgress = this.bdp.getBugProgressByBug(this.bug);
-    if (bugProgress.status < newStatus) {
+    const exerciseProgress = this.bdp.getExerciseProgressByExercise(this.exercise);
+    if (exerciseProgress.status < newStatus) {
       const update = { status: newStatus };
-      if (BugStatus.is.Solved(newStatus)) {
+      if (ExerciseStatus.is.Solved(newStatus)) {
         update.solvedAt = Date.now();
       }
-      this.bdp.updateBugProgress(this.bug, update);
+      this.bdp.updateExerciseProgress(this.exercise, update);
     }
   }
 

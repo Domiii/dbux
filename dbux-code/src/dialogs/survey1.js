@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import { env, Uri, window } from 'vscode';
-import BugStatus from '@dbux/projects/src/dataLib/BugStatus';
+import ExerciseStatus from '@dbux/projects/src/dataLib/ExerciseStatus';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { showHelp } from '../help';
 import DialogNodeKind from './DialogNodeKind';
@@ -36,8 +36,8 @@ function getPreviousNodeName(stack) {
 async function waitForBugSolved(bug) {
   const projectManager = getProjectManager();
   return new Promise((r) => {
-    const bugstatus = projectManager.bdp.getBugProgressByBug(bug)?.status;
-    if (BugStatus.is.Solved(bugstatus)) {
+    const bugstatus = projectManager.bdp.getExerciseProgressByExercise(bug)?.status;
+    if (ExerciseStatus.is.Solved(bugstatus)) {
       r();
     }
     else {

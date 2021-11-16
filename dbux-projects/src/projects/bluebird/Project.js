@@ -18,7 +18,7 @@ export default class BluebirdProject extends Project {
   /**
    * @return {ExerciseConfig[]}
    */
-  loadExercises() {
+  loadExerciseConfigs() {
     return [
       {
         label: 'basic example1',

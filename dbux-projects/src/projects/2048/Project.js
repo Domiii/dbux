@@ -28,7 +28,7 @@ export default class _2048Project extends Project {
   /**
    * @return {ExerciseConfig[]}
    */
-  loadExercises() {
+  loadExerciseConfigs() {
     // git diff --color=never --ignore-cr-at-eol > ../../dbux-projects/assets/_patches_/2048/error.patch
 
     return [
