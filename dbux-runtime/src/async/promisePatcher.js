@@ -633,12 +633,8 @@ function raceHandler(thisArg, args, originalFunction, patchedFunction) {
   const nestedPromises = args[0];
   const nestedArr = Array.from(nestedPromises);
 
-  // call originalFunction
-  const racePromise = originalFunction.call(thisArg, nestedArr);
-
+  let racePromise, thenRef;
   if (nestedArr.length) {
-    const thenRef = _makeThenRef(racePromise, patchedFunction);
-
     let hasFinished = false;
 
     for (let i = 0; i < nestedArr.length; ++i) {
@@ -651,11 +647,15 @@ function raceHandler(thisArg, args, originalFunction, patchedFunction) {
             return;
           }
           hasFinished = true;
-          RuntimeMonitorInstance._runtime.async.race(p, racePromise, thenRef?.schedulerTraceId);
+          // RuntimeMonitorInstance._runtime.async.race(p, racePromise, thenRef?.schedulerTraceId);
         });
       }
     }
   }
+
+  // call originalFunction
+  racePromise = originalFunction.call(thisArg, nestedArr);
+  thenRef = nestedArr.length ? _makeThenRef(racePromise, patchedFunction) : null;
 
   return racePromise;
 }
@@ -670,12 +670,8 @@ function anyHandler(thisArg, args, originalFunction, patchedFunction) {
   const nestedPromises = args[0];
   const nestedArr = Array.from(nestedPromises);
 
-  // call originalFunction
-  const anyPromise = originalFunction.call(thisArg, nestedArr);
-
+  let anyPromise, thenRef;
   if (nestedArr.length) {
-    const thenRef = _makeThenRef(anyPromise, patchedFunction);
-
     let hasFinished = false;
 
     for (let i = 0; i < nestedArr.length; ++i) {
@@ -693,6 +689,10 @@ function anyHandler(thisArg, args, originalFunction, patchedFunction) {
       }
     }
   }
+
+  // call originalFunction
+  anyPromise = originalFunction.call(thisArg, nestedArr);
+  thenRef = nestedArr.length ? _makeThenRef(anyPromise, patchedFunction) : null;
 
   return anyPromise;
 }

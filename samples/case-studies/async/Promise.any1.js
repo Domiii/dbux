@@ -1,7 +1,34 @@
-const promise1 = Promise.reject(0);
-const promise2 = new Promise((resolve) => setTimeout(resolve, 100, 'quick'));
-const promise3 = new Promise((resolve) => setTimeout(resolve, 500, 'slow'));
+/**
+ * @file 
+ */
 
-const promises = [promise1, promise2, promise3];
+import { A, P, Abind, Pbind, sleep } from '../../util/asyncUtil';
 
-Promise.any(promises).then((value) => console.log(value))
+const nodes = [
+  'A',
+  // [
+  //   'BA',
+  //   'BB'
+  // ],
+  () => Promise.any(
+    ['r1', 'r2'].map(async reason => {
+      await sleep(0);
+      return Promise.reject(reason);
+    })
+      .concat(
+        [1, 2, 3, 4].map(y => P(
+          ...[1, 2].map(x =>
+            () => {
+              `C${x}${y}`
+              return sleep((5 - y) * 100);
+            }
+          )
+        ))
+      )
+  ),
+  () => 'D',
+  () => 'E'
+];
+
+Abind('A', ...nodes);
+// Pbind('P', ...nodes);
