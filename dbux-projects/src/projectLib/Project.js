@@ -21,9 +21,9 @@ import ProjectBase from './ProjectBase';
 import Exercise from './Exercise';
 
 const Verbose = false;
-const SharedAssetFolder = '_shared_assets_';
-const BugAssetFolder = '_bug_assets_';
-const PatchFolderName = '_patches_';
+const SharedAssetFolder = 'sharedAssets';
+const BugAssetFolder = 'bugAssets';
+const PatchFolderName = 'patches';
 const GitInstalledTag = '__dbux_project_installed';
 
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
