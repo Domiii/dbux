@@ -30,6 +30,7 @@ export default class ValueTDRefNode extends ValueNode {
   static makeProperties(dataNode/*, parent, props*/) {
     return {
       key: ValueLabel,
+      refId: dataNode.refId,
       rootDataNode: dataNode,
     };
   }
@@ -43,7 +44,7 @@ export default class ValueTDRefNode extends ValueNode {
   }
 
   get valueRef() {
-    return this.dp.collections.values.getById(this.dataNode.refId);
+    return this.dp.collections.values.getById(this.refId);
   }
 
   init() {
@@ -56,8 +57,7 @@ export default class ValueTDRefNode extends ValueNode {
   }
 
   buildChildren() {
-    const { rootDataNode, dp } = this;
-    const { refId, nodeId } = this.dataNode;
+    const { rootDataNode, dp, refId } = this;
     const valueObj = dp.util.constructValueObjectShallow(refId, rootDataNode.nodeId);
     const entries = valueObj && Object.entries(valueObj);
 
