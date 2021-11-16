@@ -19,56 +19,24 @@ const { log, debug, warn, error: logError } = logger;
  * @param {ProjectViewController} projectViewController 
  */
 export function initProjectCommands(extensionContext, projectViewController) {
-  registerCommand(extensionContext, 'dbuxProjectView.showDiff', (/* node */) => {
-    return projectViewController.manager.externals.showMessage.info(`You may click 'Source Control' button to review your change.`);
-  });
-
-  registerCommand(extensionContext, 'dbuxProject.uploadLog', async (/* node */) => {
-    return projectViewController.manager.uploadLog();
-  });
-
-  registerCommand(extensionContext, 'dbuxProjectView.node.addProjectToWorkspace', (node) => {
-    return addProjectFolderToWorkspace(node.project);
-  });
-
-  registerCommand(extensionContext, 'dbuxProjectView.node.cleanup', (node) => {
-    return node.cleanUp();
-  });
-
-  registerCommand(extensionContext, 'dbuxProjectView.node.stopProject', (/* node */) => {
-    return projectViewController.manager.runner.cancel();
-  });
-
-  registerCommand(extensionContext, 'dbuxProjectView.node.startPractice', (exerciseNode) => {
-    return projectViewController.startPractice(exerciseNode.exercise);
-  });
+  /** ###########################################################################
+   * user command
+   *  #########################################################################*/
 
   registerCommand(extensionContext, 'dbux.loadPracticeLogFile', async () => {
     await projectViewController.loadPracticeSession();
   });
 
-  registerCommand(extensionContext, 'dbuxProjectView.node.busyIcon', (/* node */) => {
-    return showInformationMessage(translate('busyNow')); // how to triggger this
+  registerCommand(extensionContext, 'dbux.reloadExerciseList', async () => {
+    const { manager } = projectViewController;
+    if (await manager.stopPractice()) {
+      manager.loadChapters();
+      projectViewController.refresh();
+    }
   });
 
-  registerCommand(extensionContext, 'dbuxProjectView.node.stopRunner', (/* node */) => {
-    return projectViewController.manager.runner.cancel();
-  });
-
-  registerCommand(extensionContext, 'dbuxProjectView.node.resetExercise', async (node) => {
-    await node.tryResetExercise();
-  });
-
-  registerCommand(extensionContext, 'dbuxProjectView.node.showWebsite', (node) => {
-    return node.showWebsite?.();
-  });
-
-  registerCommand(extensionContext, 'dbuxProjectView.node.showExerciseIntroduction', async (node) => {
-    await node.showExerciseIntroduction();
-  });
-
-  registerCommand(extensionContext, 'dbuxProjectView.node.showExerciseLog', async (node) => {
-    await node.showExerciseLog();
+  registerCommand(extensionContext, 'dbuxProject.uploadLog', async (/* node */) => {
+    return projectViewController.manager.uploadLog();
   });
 
   registerCommand(extensionContext, 'dbux.cancelBugRunner', (/* node */) => {
@@ -98,6 +66,63 @@ export function initProjectCommands(extensionContext, projectViewController) {
   registerCommand(extensionContext, 'dbux.clearDBStats', async () => {
     projectViewController.manager._backend.clearDBStats();
   });
+
+  /** ###########################################################################
+   * project view
+   *  #########################################################################*/
+
+  registerCommand(extensionContext, 'dbuxProjectView.toggleListMode', (/* node */) => {
+    projectViewController.projectViewNodeProvider.toggleListMode();
+    projectViewController.projectViewNodeProvider.refresh();
+  });
+
+  registerCommand(extensionContext, 'dbuxProjectView.showDiff', (/* node */) => {
+    return showInformationMessage(`You may click 'Source Control' button to review your change.`);
+  });
+
+  registerCommand(extensionContext, 'dbuxProjectView.node.addProjectToWorkspace', (node) => {
+    return addProjectFolderToWorkspace(node.project);
+  });
+
+  registerCommand(extensionContext, 'dbuxProjectView.node.cleanup', (node) => {
+    return node.cleanUp();
+  });
+
+  registerCommand(extensionContext, 'dbuxProjectView.node.stopProject', (/* node */) => {
+    return projectViewController.manager.runner.cancel();
+  });
+
+  registerCommand(extensionContext, 'dbuxProjectView.node.startPractice', (exerciseNode) => {
+    return projectViewController.startPractice(exerciseNode.exercise);
+  });
+
+  registerCommand(extensionContext, 'dbuxProjectView.node.busyIcon', (/* node */) => {
+    return showInformationMessage(translate('busyNow')); // how to triggger this
+  });
+
+  registerCommand(extensionContext, 'dbuxProjectView.node.stopRunner', (/* node */) => {
+    return projectViewController.manager.runner.cancel();
+  });
+
+  registerCommand(extensionContext, 'dbuxProjectView.node.resetExercise', async (node) => {
+    await node.tryResetExercise();
+  });
+
+  registerCommand(extensionContext, 'dbuxProjectView.node.showWebsite', (node) => {
+    return node.showWebsite?.();
+  });
+
+  registerCommand(extensionContext, 'dbuxProjectView.node.showExerciseIntroduction', async (node) => {
+    await node.showExerciseIntroduction();
+  });
+
+  registerCommand(extensionContext, 'dbuxProjectView.node.showExerciseLog', async (node) => {
+    await node.showExerciseLog();
+  });
+
+  /** ###########################################################################
+   * session view
+   *  #########################################################################*/
 
   registerCommand(extensionContext, 'dbuxSessionView.run', async () => {
     return await projectViewController.testBug({ debugMode: false, dbuxEnabled: false });

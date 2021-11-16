@@ -22,12 +22,12 @@ import Exercise from './Exercise';
 
 const Verbose = false;
 const SharedAssetFolder = 'sharedAssets';
-const BugAssetFolder = 'bugAssets';
+const ExerciseAssetFolder = 'exerciseAssets';
 const PatchFolderName = 'patches';
 const GitInstalledTag = '__dbux_project_installed';
 
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
-/** @typedef {import('./Exercise').default} Bug */
+/** @typedef {import('./Exercise').default} Exercise */
 
 /**
  * Project class file.
@@ -398,16 +398,16 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   // ###########################################################################
 
   /**
-   * @param {Bug} bug 
+   * @param {Exercise} exercise 
    */
-  async startWatchModeIfNotRunning(bug) {
+  async startWatchModeIfNotRunning(exercise) {
     if (!this.backgroundProcesses?.length && this.startWatchMode) {
-      const outputFileString = bug.watchFilePaths
+      const outputFileString = exercise.watchFilePaths
         .map(f => `"${f}"`)
         .join(', ');
       // let _firstOutputPromise = new Promise((resolve, reject) => {
       // watch out for entry (output) files to be created
-      const watchFiles = bug.watchFilePaths.map(f => path.resolve(this.projectPath, f));
+      const watchFiles = exercise.watchFilePaths.map(f => path.resolve(this.projectPath, f));
       const watcher = new MultipleFileWatcher();
       let _firstBuildPromise = watcher.waitForAll(watchFiles);
       //   watcher.on('change', (filename, curStat, prevStat) => {
@@ -425,7 +425,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       // });
 
       // start
-      const backgroundProcess = await this.startWatchMode(bug).catch(err => {
+      const backgroundProcess = await this.startWatchMode(exercise).catch(err => {
         // this.logger.error('startWatchMode failed -', err?.stack || err);
         throw new Error(`startWatchMode failed while waiting for "${outputFileString}" - ${err?.stack || err}`);
       });
@@ -682,9 +682,9 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   }
 
   /**
-   * @param {Bug} bug 
+   * @param {Exercise} exercise 
    */
-  async installBug(bug) {
+  async installBug(exercise) {
     // const oldBug = this.manager.runner.bug;
     // if (oldBug && oldBug !== bug) {
     //   const oldProject = oldBug.project;
@@ -693,7 +693,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
     const project = this;
     const installedTag = project.getProjectInstalledTagName();
-    const exerciseCachedTag = project.getExerciseCachedTagTagName(bug);
+    const exerciseCachedTag = project.getExerciseCachedTagTagName(exercise);
 
     let successfulCacheFlag = false;
     if (await project.gitDoesTagExist(exerciseCachedTag)) {
@@ -715,31 +715,31 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       await project._gitCheckout(installedTag);
 
       // checkout bug commit, apply patch, etc.
-      await project.beforeSelectBug?.(bug);
-      await project.selectExercise(bug);
-      await project.afterSelectBug?.(bug);
+      await project.beforeSelectBug?.(exercise);
+      await project.selectExercise(exercise);
+      await project.afterSelectBug?.(exercise);
 
       // copy assets
-      await this.installAssets(bug);
+      await this.installAssets(exercise);
 
       // install default + custom dependencies
       await project.npmInstall();
-      await project.installBugDependencies?.(bug);
+      await project.installBugDependencies?.(exercise);
 
       // autoCommit + set tag
-      await project.autoCommit(`Selected bug ${bug.id}.`);
+      await project.autoCommit(`Selected bug ${exercise.id}.`);
       await project.gitSetTag(exerciseCachedTag);
     }
 
     // copy assets
-    await this.installAssets(bug);
+    await this.installAssets(exercise);
     await project.npmInstall();
     await project.autoCommit(`Installed assests.`);
   }
 
   /**
    * NOTE: This will only be called when the bug is run the first time.
-   * @param {Bug} bug 
+   * @param {Exercise} bug 
    */
   async selectExercise(bug) {
     const { tag, commit } = bug;
@@ -1028,7 +1028,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
   getBugAssetFolderName(bug) {
     if (bug.hasAssets) {
-      return pathJoin(BugAssetFolder, this.name, bug.name || bug.id);
+      return pathJoin(ExerciseAssetFolder, this.name, bug.name || bug.id);
     }
     else {
       return null;

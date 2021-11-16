@@ -90,6 +90,10 @@
         "title": "Dbux: Import Application Data"
       },
       {
+        "command": "dbux.reloadExerciseList",
+        "title": "Dbux: Reload Exercise List"
+      },
+      {
         "command": "dbux.showDecorations",
         "title": "Dbux: Show Code Decorations"
       },
@@ -499,6 +503,14 @@
         "icon": {
           "light": "resources/light/nextTrace.svg",
           "dark": "resources/dark/nextTrace.svg"
+        }
+      },
+      {
+        "command": "dbuxProjectView.toggleListMode",
+        "title": "Toggle List Mode",
+        "icon": {
+          "light": "resources/light/stack.svg",
+          "dark": "resources/dark/stack.svg"
         }
       },
       {
@@ -988,6 +1000,11 @@
           "group": "navigation@5"
         },
         {
+          "command": "dbuxProjectView.toggleListMode",
+          "when": "view == dbuxProjectView",
+          "group": "navigation"
+        },
+        {
           "command": "dbuxProjectView.showDiff",
           "when": "view == dbuxProjectView",
           "group": "navigation"
@@ -1025,6 +1042,10 @@
         },
         {
           "command": "dbux.importApplicationData",
+          "when": "dbux.context.activated && dbux.context.nodeEnv == development"
+        },
+        {
+          "command": "dbux.reloadExerciseList",
           "when": "dbux.context.activated && dbux.context.nodeEnv == development"
         },
         {
@@ -1282,6 +1303,10 @@
         },
         {
           "command": "dbuxProjectView.node.addProjectToWorkspace",
+          "when": "false"
+        },
+        {
+          "command": "dbuxProjectView.toggleListMode",
           "when": "false"
         },
         {

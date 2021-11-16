@@ -24,7 +24,6 @@ import initLang, { getTranslationScope } from './lang';
 import upload from './fileUpload';
 import { checkSystemWithRequirement } from './checkSystem';
 import Chapter from './projectLib/Chapter';
-import chapterRegistry from './_chapterRegistry';
 
 const logger = newLogger('PracticeManager');
 // eslint-disable-next-line no-unused-vars
@@ -169,20 +168,22 @@ export default class ProjectsManager {
   }
 
   loadChapters() {
-    // TODO: use dynamic require
     try {
-      this.chapters = [null];
+      const chapterRegistryFilePath = this.externals.resources.getResourcePath('dist', 'projects', 'exercises', 'exerciseList.json');
+      const chapterRegistry = JSON.parse(fs.readFileSync(chapterRegistryFilePath, 'utf-8'));
+      this.chapters = [];
       for (const chapterConfig of chapterRegistry) {
-        const { name, exercises: exerciseIds } = chapterConfig;
+        const { id, name, exercises: exerciseIds } = chapterConfig;
         const exercises = exerciseIds.map(_id => this.projects.getExerciseById(_id));
-        const chapter = new Chapter(this, this.chapters.length, name, exercises);
+        const chapter = new Chapter(this, id, name, exercises);
         this.chapters.push(chapter);
       }
       return this.chapters;
     }
     catch (err) {
       logError(`Cannot load chapters: ${err.message}`);
-      return null;
+      this.chapters = EmptyArray;
+      return this.chapters;
     }
   }
 

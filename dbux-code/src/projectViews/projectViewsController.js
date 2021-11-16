@@ -113,7 +113,7 @@ export class ProjectViewController {
   refresh() {
     if (this.isShowingTreeView) {
       if (this.isShowingPraciceView()) {
-        this.projectViewNodeProvider.refreshIcon();
+        this.projectViewNodeProvider.refresh();
       }
       else {
         this.sessionViewNodeProvider.refresh();
