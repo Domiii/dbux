@@ -87,6 +87,10 @@ class BaseGroupNode extends BaseTreeViewNode {
     super(treeNodeProvider, label, entry, parent, moreProps);
   }
 
+  get defaultCollapsibleState() {
+    return TreeItemCollapsibleState.Expanded;
+  }
+
   handleClick() {
     if (this.relevantTrace) {
       traceSelection.selectTrace(this.relevantTrace);
