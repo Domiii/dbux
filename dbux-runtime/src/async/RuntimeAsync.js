@@ -360,9 +360,8 @@ export default class RuntimeAsync {
    * `resolve` or `reject` was called from a promise ctor's executor.
    * NOTE: Only called if resolved value is thenable.
    */
-  resolve(inner, outer, promiseLinkType, traceId, asyncPromisifyPromiseId) {
-    // NOTE: `reject` does not settle nested promises!
-    const rootId = this.getCurrentVirtualRootContextId();
+  resolve(inner, outer, rootId, promiseLinkType, traceId, asyncPromisifyPromiseId) {
+    // const rootId = this.getCurrentVirtualRootContextId();
     const from = getPromiseId(inner);
     const to = getPromiseId(outer);
     // if (!from || !to) {

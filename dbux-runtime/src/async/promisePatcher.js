@@ -15,14 +15,12 @@ import valueCollection from '../data/valueCollection';
 import { isMonkeyPatchedFunction, monkeyPatchFunctionHolder, tryRegisterMonkeyPatchedFunction, _registerMonkeyPatchedCallback, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug: _debug, warn, error: logError } = newLogger('PromisePatcher');
+const { log, debug, warn, error: logError } = newLogger('PromisePatcher');
 
 /** @typedef {import('../RuntimeMonitor').default} RuntimeMonitor */
 
 // const Verbose = true;
 const Verbose = false;
-
-const debug = (...args) => Verbose && _debug(...args);
 
 const PromiseInstrumentationDisabled = false;
 
@@ -362,23 +360,7 @@ function patchPromiseClass(BasePromiseClass) {
               deferredCall = wrapResolve.bind(null, resolveArg);
             }
             else {
-              // TODO: `thenRef` is wrong if there is no recorded root
-              const thenRef = _makeThenRef(this, wrapResolve);
-              const resolveRealRootId = RuntimeMonitorInstance.runtime.peekRealRootContextId();
-              if (thenRef) {
-                const inner = resolveArg;
-                const thisPromiseId = getPromiseId(this) || 0;
-
-                // NOTE: we only care about promisify, if async
-                // NOTE2: this is extra messy because we keep the virtual root around in `_runFinished` for `PostThen`, and RealRoot is not as reliable
-                const isAsync = (executorRealRootId !== resolveRealRootId ||
-                  executorRootId !== thenRef.rootId);
-                const asyncPromisifyPromiseId = isAsync ? thisPromiseId : 0;
-                RuntimeMonitorInstance._runtime.async.resolve(
-                  inner, this, PromiseLinkType.Promisify, thenRef.schedulerTraceId, asyncPromisifyPromiseId
-                );
-              }
-              resolve(...args);
+              doResolve(this, wrapResolve, executorRealRootId, executorRootId, resolve, args);
             }
           };
           const wrapReject = (...args) => {
@@ -389,23 +371,7 @@ function patchPromiseClass(BasePromiseClass) {
               deferredCall = wrapReject.bind(null, err);
             }
             else {
-              const thenRef = _makeThenRef(this, wrapReject);
-              const resolveRealRootId = RuntimeMonitorInstance.runtime.peekRealRootContextId();
-              if (thenRef) {
-                // NOTE: reject can also nest a promise (but will pass the promise (not its resolved value) to `catch`)
-                const inner = err;
-                const thisPromiseId = getPromiseId(this) || 0;
-
-                // NOTE: we only care about promisify, if async
-                // NOTE2: this is extra messy because we keep the virtual root around in `_runFinished` for `PostThen`, and RealRoot is not as reliable
-                const isAsync = (executorRealRootId !== resolveRealRootId ||
-                  executorRootId !== thenRef.rootId);
-                const asyncPromisifyPromiseId = isAsync ? thisPromiseId : 0;
-                RuntimeMonitorInstance._runtime.async.resolve(
-                  inner, this, PromiseLinkType.Promisify, thenRef.schedulerTraceId, asyncPromisifyPromiseId
-                );
-              }
-              reject(...args);
+              doResolve(this, wrapReject, executorRealRootId, executorRootId, reject, args);
             }
           };
 
@@ -469,6 +435,29 @@ function patchPromiseClass(BasePromiseClass) {
   patchPromiseMethods(BasePromiseClass.prototype);
 
   return PatchedPromise;
+}
+
+function doResolve(promise, wrapResolve, executorRealRootId, executorRootId, resolve, args) {
+  const thenRef = _makeThenRef(promise, wrapResolve);
+  const resolveRealRootId = RuntimeMonitorInstance.runtime.peekRealRootContextId();
+  if (thenRef) {
+    const resolveArg = args[0];
+    const inner = resolveArg;
+    const thisPromiseId = getPromiseId(promise) || 0;
+
+    // NOTE: we only care about promisify, if async
+    // NOTE2: this is extra messy because we keep the virtual root around in `_runFinished` for `PostThen`, and RealRoot is not as reliable
+    const isAsync = (executorRealRootId !== resolveRealRootId || executorRootId !== thenRef.rootId);
+    const asyncPromisifyPromiseId = isAsync ? thisPromiseId : 0;
+
+    // eslint-disable-next-line max-len
+    debug(`[promisify resolve] ${asyncPromisifyPromiseId} (${resolveRealRootId}). ${executorRealRootId} != ${resolveRealRootId}, ${executorRealRootId} != ${thenRef.rootId}. stack: \n  ${RuntimeMonitorInstance.runtime._executingStack.humanReadable().join('\n  ')}\n`);
+
+    RuntimeMonitorInstance._runtime.async.resolve(
+      inner, promise, resolveRealRootId, PromiseLinkType.Promisify, thenRef.schedulerTraceId, asyncPromisifyPromiseId
+    );
+  }
+  resolve(...args);
 }
 
 
@@ -647,7 +636,7 @@ function raceHandler(thisArg, args, originalFunction, patchedFunction) {
             return;
           }
           hasFinished = true;
-          // RuntimeMonitorInstance._runtime.async.race(p, racePromise, thenRef?.schedulerTraceId);
+          RuntimeMonitorInstance._runtime.async.race(p, racePromise, thenRef?.schedulerTraceId);
         });
       }
     }

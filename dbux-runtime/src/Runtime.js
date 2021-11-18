@@ -281,7 +281,7 @@ export default class Runtime {
 
   /**
    * Same as `getVirtualRootContext()`, except when in async functions.
-   * In `async` functions, this returns the root context of the real context.
+   * TODO; In `async` functions, this returns the root context of the real context.
    */
   peekRealRootContextId() {
     if (!this._executingStack || this._executingStack.isEmptySync()) {

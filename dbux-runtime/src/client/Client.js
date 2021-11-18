@@ -131,7 +131,7 @@ export default class Client {
 
   _handleDisconnect = () => {
     Verbose && debug('-> disconnected');
-    console.error('discon', new Error());
+    // console.debug(new Error('(disconnected stack)'));
     this._connected = false;
     this._ready = false;
     this._disconnectedSocket = this._socket?.io?.engine?.transport?.ws;
