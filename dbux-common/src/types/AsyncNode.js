@@ -39,6 +39,7 @@ export default class AsyncNode {
   applicationId;
 
   /**
+   * Assigned for `toRootId` in `setNodeThreadId`
    * @type {number | number[]}
    */
   syncPromiseIds;

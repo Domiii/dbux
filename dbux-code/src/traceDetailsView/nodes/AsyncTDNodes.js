@@ -164,6 +164,10 @@ class ScheduledEdgesTDNode extends TraceDetailNode {
   }
 }
 
+/** ###########################################################################
+ * {@link AsyncTDNode}
+ * ##########################################################################*/
+
 export default class AsyncTDNode extends TraceDetailNode {
   static makeLabel(/* trace, parent */) {
     return 'Async';

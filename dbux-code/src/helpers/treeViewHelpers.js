@@ -51,7 +51,8 @@ function keyValueLabel(key, value) {
 
 function makeChildNode(key, value) {
   if (value instanceof TreeItem) {
-    return makeTreeItem(value);
+    return value;
+    // return makeTreeItem(value);
   }
   // if (value instanceof TreeChildNode) {
 
@@ -59,9 +60,14 @@ function makeChildNode(key, value) {
   if (isFunction(value)) {
     return makeTreeItem(value(key));
   }
-  return isObject(value) ?
-    makeTreeItem(key, value) :  // open up objects recursively
-    makeTreeItem(keyValueLabel(key, value));
+  // if (Array.isArray(value)) {
+  //   return makeTreeItem(key, value);
+  // }
+  if (isObject(value)) { // implies isArray
+    return makeTreeItem(key, value);
+  }
+
+  return makeTreeItem(keyValueLabel(key, value));
 }
 
 export function makeTreeChildren(obj) {
@@ -81,8 +87,22 @@ export function makeTreeItem(labelOrArrOrItem, children, itemProps) {
   let label;
   let item;
 
+  // if (isFunction(children)) {
+  //   children = children();
+  // }
+
   if (Array.isArray(labelOrArrOrItem)) {
+    // if (!labelOrArrOrItem.length || labelOrArrOrItem[0] instanceof TreeItem) {
+    //   // NOTE: if there is only an array of children, we would be missing the label -> wrap in `makeTreeItem` instead
+    //   /**
+    //    * `children` is array of `TreeItem`.
+    //    * Don't do anything: will be handled in {@link makeTreeChildren}
+    //    */
+    // }
+    // else {
+    // array represents a single node
     [label, children, itemProps] = labelOrArrOrItem;
+    // }
   }
   else {
     label = labelOrArrOrItem;
@@ -103,7 +123,7 @@ export function makeTreeItem(labelOrArrOrItem, children, itemProps) {
   else {
     label = ('' + label); // coerce to string (else it won't show up)
 
-    if (!hasChildren && children) {
+    if (!hasChildren /* && children */) {
       label = keyValueLabel(label, children);
     }
     item = new TreeItem(label, collapsibleState);

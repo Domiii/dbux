@@ -178,6 +178,9 @@ class ValueCollection extends Collection {
   // public methods
   // ###########################################################################
 
+  /**
+   * @return {ValueRef}
+   */
   getRefByValue(value) {
     value = unwrapValue(value);
     return this.valueRefsByObject.get(value);

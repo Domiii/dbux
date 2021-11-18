@@ -1,3 +1,4 @@
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import AsyncEventUpdateType, { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
@@ -12,14 +13,14 @@ import TraceDetailNode from './traceDetailNode';
  * util
  *  #########################################################################*/
 
-function makeArrayLengthLabel(label, arr) {
-  return `${label} (${arr?.length || 0})`;
+function makeArrayLengthLabel(arr, label) {
+  return `${label && (label + ' ') || ''}(${arr?.length || 0})`;
 }
 
 function makeObjectArrayNodes(obj) {
   return Object.fromEntries(
     Object.entries(obj)
-      .map(([name, arr]) => [makeArrayLengthLabel(name, arr), arr || {}])
+      .map(([name, arr]) => [makeArrayLengthLabel(arr, name), arr || {}])
   );
 }
 
@@ -159,7 +160,7 @@ export class DebugTDNode extends TraceDetailNode {
     const rootContextNode = [`rootContext`, rootContext, { description: `${rootContext?.contextId}` }];
 
     // ###########################################################################
-    // async
+    // async (Root)
     // ###########################################################################
 
     const asyncNode = dp.indexes.asyncNodes.byRoot.getFirst(rootContextId);
@@ -174,12 +175,8 @@ export class DebugTDNode extends TraceDetailNode {
       filter(({ type }) => !isPostEventUpdate(type))?.
       map(this.makeAsyncUpdateItem);
 
-    const promiseLinksFrom = promiseId && dp.indexes.promiseLinks.from.get(promiseId) || null;
-    const promiseLinksTo = promiseId && dp.indexes.promiseLinks.to.get(promiseId) || null;
-    const promiseUpdates = promiseId && dp.indexes.asyncEventUpdates.byPromise.get(promiseId) || null;
-
-    const asyncContainerNode = [
-      'Async',
+    const rootNode = makeTreeItem(
+      'Root',
       {
         AsyncNode: asyncNode,
         PostEventUpdateData: makeTreeItem(
@@ -190,25 +187,75 @@ export class DebugTDNode extends TraceDetailNode {
         ...makeObjectArrayNodes({
           OtherUpdates: otherEventUpdates,
         }),
-        promiseLinksFrom: makeTreeItem(
-          'PromiseLinks From',
-          promiseLinksFrom,
-          { description: makeArrayLengthLabel(`promiseId=${promiseId}`, promiseLinksFrom) }
-        ),
-        promiseLinksTo: makeTreeItem(
-          'PromiseLinks To',
-          promiseLinksTo,
-          { description: makeArrayLengthLabel('', promiseLinksTo) }
-        ),
-        promiseUpdates: makeTreeItem(
-          'Promise Updates',
-          promiseUpdates?.map(this.makeAsyncUpdateItem),
-          { description: makeArrayLengthLabel('', promiseUpdates) }
-        )
       },
       {
+        description: `rootId=${rootContextId}${postEventUpdateData?.map(upd => ` (${AsyncEventUpdateType.nameFrom(upd.type)})`) || ''}`
+      }
+    );
+
+    /** ########################################
+     * async (Promise)
+     * #######################################*/
+
+    const promiseLinksFrom = promiseId && dp.indexes.promiseLinks.from.get(promiseId) || null;
+    const promiseLinksTo = promiseId && dp.indexes.promiseLinks.to.get(promiseId) || null;
+    const promiseUpdates = promiseId && dp.indexes.asyncEventUpdates.byPromise.get(promiseId) || null;
+
+    const promiseNode = makeTreeItem(
+      `Promise`,
+      !promiseId && EmptyObject || [
+        makeTreeItem(
+          'PromiseLinks From',
+          promiseLinksFrom,
+          { description: makeArrayLengthLabel(promiseLinksFrom) }
+        ),
+        makeTreeItem(
+          'PromiseLinks To',
+          promiseLinksTo,
+          { description: makeArrayLengthLabel(promiseLinksTo) }
+        ),
+        makeTreeItem(
+          'Promise Updates',
+          promiseUpdates?.map(this.makeAsyncUpdateItem),
+          { description: makeArrayLengthLabel(promiseUpdates) }
+        )
+      ],
+      {
+        description: `promiseId=${promiseId}`
+      }
+    );
+
+    /** ###########################################################################
+     * Async Ancestor
+     *  #########################################################################*/
+
+    const nestingTraces = dp.util.getNestedAncestors(trace.rootContextId)
+      .map((_traceId, i) => {
+        const _trace = dp.collections.traces.getById(_traceId);
+        return makeTreeItem(dp.util.makeTraceInfo(_trace), _trace, {
+          description: `(traceId: ${_traceId})`,
+          handleClick() {
+            traceSelection.selectTrace(_trace);
+          }
+        });
+      });
+
+    const ancestorNode = makeTreeItem(
+      `Ancestors`,
+      nestingTraces,
+      { description: `(${nestingTraces.length})` }
+    );
+
+    const asyncContainerNode = [
+      'Async',
+      [
+        rootNode,
+        promiseNode,
+        ancestorNode,
+      ],
+      {
         // eslint-disable-next-line max-len
-        description: `thread=${asyncNode?.threadId}, root=${rootContextId}${postEventUpdateData?.map(upd => ` (${AsyncEventUpdateType.nameFrom(upd.type)})`) || ''}`
+        description: `thread=${asyncNode?.threadId}`
       }
     ];
 
@@ -251,22 +298,6 @@ export class DebugTDNode extends TraceDetailNode {
       ownDataNodes
     ]);
 
-    /** ###########################################################################
-     * Async Ancestor
-     *  #########################################################################*/
-
-    const nestingTraces = dp.util.getNestedAncestors(trace.rootContextId)
-      .map((_traceId, i) => {
-        const _trace = dp.collections.traces.getById(_traceId);
-        return makeTreeItem(dp.util.makeTraceInfo(_trace), _trace, {
-          description: `(traceId: ${_traceId})`,
-          handleClick() {
-            traceSelection.selectTrace(_trace);
-          }
-        });
-      });
-
-
     // ###########################################################################
     // final result
     // ###########################################################################
@@ -277,7 +308,6 @@ export class DebugTDNode extends TraceDetailNode {
         ContextTDNode,
       ]),
       ...makeTreeItems(
-        [`Ancestors(${nestingTraces.length}x)`, nestingTraces],
         ['trace', otherTraceProps],
         valueNode,
         contextNode,

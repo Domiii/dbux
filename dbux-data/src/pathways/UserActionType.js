@@ -35,6 +35,7 @@ let UserActionType = {
 
   TDDebugUse: 31,
   TDAsyncUse: 32,
+  TDDebugAppUse: 33,
   
   NavigationPreviousInContext: 40,
   NavigationPreviousChildContext: 41,

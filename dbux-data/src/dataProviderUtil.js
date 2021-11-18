@@ -1620,7 +1620,7 @@ export default {
   },
 
   // ###########################################################################
-  // trace grouping
+  // trace grouping/searching
   // ###########################################################################
 
   /**
@@ -1661,8 +1661,15 @@ export default {
   },
 
   /**
+   * @param {DataProvider} dp
+   */
+  getAllTracesOfType(dp, traceType) {
+    return dp.collections.traces.getAllActual().filter(t => dp.util.getTraceType(t.traceId) === traceType);
+  },
+  
+  /**
    * @param {DataProvider} dp 
-  */
+   */
   getTracesOfParentStaticContext(dp, staticContextId) {
     const staticContext = dp.collections.staticContexts.getById(staticContextId);
     const parentStaticContextId = staticContext.parentId;
@@ -1717,6 +1724,18 @@ export default {
   // trace info + debugging
   // ###########################################################################
 
+  // /**
+  //  * @param {DataProvider} dp
+  //  * NOTE: use `makeContext*Label` for now
+  //  */
+  // makeContextInfo(dp, contextId) {
+  //   // TODO: if is virtual?
+  //   return dp.util.context
+  // },
+
+  /**
+   * @param {DataProvider} dp
+   */
   makeStaticTraceInfo(dp, traceId) {
     const fpath = dp.util.getTraceProgramPath(traceId);
     const st = dp.util.getStaticTrace(traceId);

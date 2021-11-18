@@ -52,8 +52,11 @@ export default function patchFunction(runtimeMonitor) {
       else {
         argTids = EmptyArray;
       }
-      
-      runtimeMonitor.callbackPatcher.monkeyPatchArgs(actualFunction, bceTrace?.traceId || 0, args, EmptyArray, argTids);
+
+      const callId = bceTrace?.traceId || 0;
+      if (callId) {
+        runtimeMonitor.callbackPatcher.monkeyPatchArgs(actualFunction, callId, args, EmptyArray, argTids);
+      }
 
       return originalCall.bind(actualFunction)(...args);
     }
@@ -76,9 +79,10 @@ export default function patchFunction(runtimeMonitor) {
       }
 
       const args = applyArgs[1];
-
-      if (Array.isArray(args)) {
-        runtimeMonitor.callbackPatcher.monkeyPatchArgs(actualFunction, bceTrace?.traceId || 0, args, EmptyArray, argTids);
+      const callId = bceTrace?.traceId || 0;
+      
+      if (Array.isArray(args) && callId) {
+        runtimeMonitor.callbackPatcher.monkeyPatchArgs(actualFunction, callId, args, EmptyArray, argTids);
       }
 
 

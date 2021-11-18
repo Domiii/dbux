@@ -134,8 +134,10 @@ export default class CallbackPatcher {
   // patchCallback
   // ###########################################################################
 
-
-  patchCallback(originalCallback, schedulerTraceId, promisifyPromiseVirtualRef) {
+  /**
+   * Dynamic callback patcher.
+   */
+  patchCallback(originalCallback, callId, schedulerTraceId, promisifyPromiseVirtualRef) {
     const { runtime } = this;
 
     if (isMonkeyPatchedCallback(originalCallback)) {
@@ -174,7 +176,7 @@ export default class CallbackPatcher {
       }
       finally {
         runtime.promisifyEnd(promisifyPromiseVirtualRef);
-        
+
         if (!lastContextId) {
           // NOTE: should never happen, since we have already patched the callback?
         }
@@ -216,6 +218,21 @@ export default class CallbackPatcher {
     }
 
     _registerMonkeyPatchedCallback(originalCallback, patchedCallback);
+
+    // [edit-after-send]
+    const bceTrace = traceCollection.getById(callId);
+    if (bceTrace) {
+      bceTrace.data = bceTrace.data || {};
+      bceTrace.data.patchedCallbacks = bceTrace.data.patchedCallbacks || [];
+      const ref = valueCollection.getRefByValue(originalCallback);
+      bceTrace.data.patchedCallbacks.push({
+        ref: ref?.refId || valueCollection._readProperty(originalCallback, 'name'),
+        schedulerTraceId
+      });
+    }
+    else {
+      // NOTE: this should never happen!?
+    }
 
     return patchedCallback;
   }
@@ -283,7 +300,7 @@ export default class CallbackPatcher {
     ) || 0;
   }
 
-  maybeMonkeyPatchCallback(arg, traceId) {
+  maybeMonkeyPatchCallback(arg, callId, traceId) {
     if (!isInstrumentedFunction(arg)) {
       return arg;
     }
@@ -299,7 +316,7 @@ export default class CallbackPatcher {
     this.runtime.async.preCallback(traceId, isEventListener, promisifyPromiseVirtualRef);
 
     // patch callback
-    const newArg = this.patchCallback(arg, traceId, promisifyPromiseVirtualRef);
+    const newArg = this.patchCallback(arg, callId, traceId, promisifyPromiseVirtualRef);
     return newArg || arg;
   }
 
@@ -335,11 +352,11 @@ export default class CallbackPatcher {
           // patch spread args
           for (let j = 0; j < spreadArgs[i].length; j++) {
             // TODO: unique traceId per callback (but spreadArgs[i] all share the same trace)
-            args[i][j] = this.maybeMonkeyPatchCallback(args[i][j], instCount === 1 ? callId : argTid || callId);
+            args[i][j] = this.maybeMonkeyPatchCallback(args[i][j], callId, instCount === 1 ? callId : argTid || callId);
           }
         }
         // patch regular arg
-        args[i] = this.maybeMonkeyPatchCallback(args[i], instCount === 1 ? callId : argTid || callId);
+        args[i] = this.maybeMonkeyPatchCallback(args[i], callId, instCount === 1 ? callId : argTid || callId);
       }
       // let f = getPatchedFunctionOrNull(originalFunction);
       // if (!f) {
