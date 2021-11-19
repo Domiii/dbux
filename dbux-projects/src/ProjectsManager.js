@@ -2,12 +2,12 @@ import path from 'path';
 import fs from 'fs';
 import sh from 'shelljs';
 import NanoEvents from 'nanoevents';
+import merge from 'lodash/merge';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { logTrace, newLogger } from '@dbux/common/src/log/logger';
-import { pathJoin, pathRelative, realPathSyncNormalized } from '@dbux/common-node/src/util/pathUtil';
+import { pathJoin, realPathSyncNormalized } from '@dbux/common-node/src/util/pathUtil';
 import { getFileSizeSync } from '@dbux/common-node/src/util/fileUtil';
-import Application from '@dbux/data/src/applications/Application';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { readPackageJson } from '@dbux/cli/lib/package-util';
 import projectRegistry from './_projectRegistry';
@@ -22,7 +22,7 @@ import { initUserEvent, emitSessionFinishedEvent, emitPracticeSessionEvent, onUs
 import ExerciseDataProvider from './dataLib/ExerciseDataProvider';
 import initLang, { getTranslationScope } from './lang';
 import upload from './fileUpload';
-import { checkSystemWithRequirement } from './checkSystem';
+import { checkSystem, getDefaultRequirement } from './checkSystem';
 import Chapter from './projectLib/Chapter';
 
 const logger = newLogger('PracticeManager');
@@ -32,10 +32,11 @@ const { debug, log, warn, error: logError } = logger;
 const depsStorageKey = 'PracticeManager.deps';
 const savedPracticeSessionKey = 'dbux.dbux-projects.savedPracticeSession';
 
+/** @typedef {import('dbux-code/src/terminal/TerminalWrapper').default} TerminalWrapper */
+/** @typedef {import('@dbux/data/src/applications/Application').default} Application */
 /** @typedef {import('./projectLib/Project').default} Project */
 /** @typedef {import('./projectLib/Exercise').default} Exercise */
 /** @typedef {import('./externals/Storage').default} ExternalStorage */
-/** @typedef {import('dbux-code/src/terminal/TerminalWrapper').default} TerminalWrapper */
 
 function canIgnoreDependency(name) {
   if (process.env.NODE_ENV === 'development' && name.startsWith('@dbux/')) {
@@ -270,7 +271,8 @@ export default class ProjectsManager {
       return;
     }
 
-    await checkSystemWithRequirement(this, this._systemRequirement);
+    const requirements = merge({}, getDefaultRequirement(true), this._systemRequirement);
+    await checkSystem(this, requirements, false);
 
     const exerciseProgress = this.bdp.getExerciseProgressByExercise(exercise);
     if (!exerciseProgress) {
@@ -555,7 +557,7 @@ export default class ProjectsManager {
     // TODO: maybe a new data type? or submit remotely?
   }
 
-  async maybeAskForTestExercise(exercise) {
+  async maybeAskForTestExercise() {
     try {
       if (!allApplications.getAll().length) {
         // TOTRANSLATE
