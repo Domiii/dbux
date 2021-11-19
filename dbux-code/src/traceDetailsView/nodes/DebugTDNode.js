@@ -3,7 +3,7 @@ import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import AsyncEventUpdateType, { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import traceSelection from '@dbux/data/src/traceSelection';
-import { makeTreeItem, makeTreeItems } from '../../helpers/treeViewHelpers';
+import makeTreeItem, { makeTreeItems } from '../../helpers/makeTreeItem';
 import { ContextTDNode, TraceTypeTDNode } from './traceInfoNodes';
 import TraceDetailNode from './traceDetailNode';
 

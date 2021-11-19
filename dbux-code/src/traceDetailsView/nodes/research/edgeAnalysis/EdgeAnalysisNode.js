@@ -19,7 +19,7 @@ import AsyncEventType from '@dbux/common/src/types/constants/AsyncEventType';
 import { getPrettyPerformanceDelta, performanceNow, startPrettyTimer } from '@dbux/common-node/src/util/timeUtil';
 import NestedError from '@dbux/common/src/NestedError';
 import TraceDetailNode from '../../traceDetailNode';
-import { makeTreeItem } from '../../../../helpers/treeViewHelpers';
+import makeTreeItem from '../../../../helpers/makeTreeItem';
 // eslint-disable-next-line max-len
 import { getCurrentResearch, getDataFolderLink, Research } from '../../../../research/Research';
 import { confirm, showErrorMessage, showInformationMessage, showWarningMessage } from '../../../../codeUtil/codeModals';
