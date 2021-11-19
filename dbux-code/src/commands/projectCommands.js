@@ -30,7 +30,7 @@ export function initProjectCommands(extensionContext, projectViewController) {
   registerCommand(extensionContext, 'dbux.reloadExerciseList', async () => {
     const { manager } = projectViewController;
     if (await manager.stopPractice()) {
-      manager.loadChapters();
+      manager.reloadExercises();
       projectViewController.refresh();
     }
   });
@@ -73,7 +73,6 @@ export function initProjectCommands(extensionContext, projectViewController) {
 
   registerCommand(extensionContext, 'dbuxProjectView.toggleListMode', (/* node */) => {
     projectViewController.projectViewNodeProvider.toggleListMode();
-    projectViewController.projectViewNodeProvider.refresh();
   });
 
   registerCommand(extensionContext, 'dbuxProjectView.showDiff', (/* node */) => {

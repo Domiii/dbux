@@ -128,7 +128,7 @@ export class ProjectViewController {
 
       progress.report({ message: 'Recovering practice session...' });
       const previousActivatingExerciseId = mementoGet(ActivatingBugKeyName);
-      const previousActivatingBug = this.manager.getOrCreateDefaultProjectList().getExerciseById(previousActivatingExerciseId);
+      const previousActivatingBug = this.manager.getExerciseById(previousActivatingExerciseId);
       if (previousActivatingBug) {
         await mementoRemove(ActivatingBugKeyName);
         await this.startPractice(previousActivatingBug);
