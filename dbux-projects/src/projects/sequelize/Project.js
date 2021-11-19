@@ -43,7 +43,7 @@ export default class SequelizeProject extends Project {
       delete pkg.dependencies[dep];
       delete pkg.devDependencies[dep];
     }
-    
+
     /** ########################################
      * all versions of sequelize
      * #######################################*/
@@ -65,56 +65,18 @@ export default class SequelizeProject extends Project {
     this._fixPackageJson();
   }
 
-  /**
-   * @return {ExerciseConfig[]}
-   */
-  loadExerciseConfigs() {
-    return [
-      {
-        label: 'sscce1-sqlite',
-        testFilePaths: ['sscce1.js']
-      },
-      {
-        label: 'error1-sqlite',
-        testFilePaths: ['error1.js']
-      },
-      // {
-      //   label: 'findOrCreate-atomic-violation',
-      //   tag: 'v3.5.1',
-      //   patch: 'findOrCreate-av1',
-      //   testFilePaths: ['findOrCreate-av1.js']
-      // },
-      {
-        label: 'findOrCreate-serial',
-        testFilePaths: ['findOrCreate-serial.js']
-      },
-      {
-        name: 'findOrCreate-parallel',
-        hasAssets: true,
-        label: 'findOrCreate-parallel',
-        testFilePaths: ['findOrCreate-parallel.js']
-      },
-      {
-        name: 'findOrCreate-parallel-rewrite',
-        hasAssets: true,
-        label: 'findOrCreate-parallel-rewrite',
-        testFilePaths: ['findOrCreate-parallel.js']
-      },
-    ];
+  canRun(config) {
+    return !!config.testFilePaths;
   }
 
-  decorateExerciseForRun(bug) {
-    if (!bug.testFilePaths) {
-      // bug not fully configured yet
-      return;
-    }
-
-    Object.assign(bug, {
+  decorateExercise(config) {
+    Object.assign(config, {
       // -> lodash - future-work: it has issues w/ `Object.defineProperties` being polyfilled or proxied or otherwise replaced and ending up being `undefined` (or somesuch)?
       // -> bluebird
       dbuxArgs: '--pw=.* --pb=lodash,bluebird'
       // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
     });
+    return config;
   }
 
   /**

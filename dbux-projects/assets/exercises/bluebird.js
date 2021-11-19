@@ -1,8 +1,11 @@
 const configs = [
   {
     label: 'basic example1',
-    // testRe: 'OPTIONS should only include each method once',
     testFilePaths: ['example1.js']
+  },
+  {
+    label: 'error1',
+    testFilePaths: ['error1.js']
   }
 ];
 

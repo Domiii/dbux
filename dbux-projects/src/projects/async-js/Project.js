@@ -9,39 +9,14 @@ export default class AsyncJsProject extends Project {
   gitCommit = 'tags/v3.2.0'
   packageManager = 'yarn';
 
-  /**
-   * @return {ExerciseConfig[]}
-   */
-  loadExerciseConfigs() {
-    return [
-      {
-        id: 1,
-        label: 'queue bug',
-        testFilePaths: ['bug1.js'],
-        bugLocations: [
-          {
-            file: 'lib/internal/queue.js',
-            line: 127
-          }
-        ]
-      },
-      {
-        id: 2,
-        label: 'queue bug (fixed)',
-        testFilePaths: ['bug1.js'],
-        patch: 'bug1-fix',
-      }
-    ];
+  canRun(config) {
+    return !!config.testFilePaths;
   }
 
-  decorateExerciseForRun(bug) {
-    if (!bug.testFilePaths) {
-      // bug not fully configured yet
-      return;
-    }
-
-    Object.assign(bug, {
+  decorateExercise(config) {
+    Object.assign(config, {
       dbuxArgs: '--pw=.* --pb=@babel.* --esnext'
     });
+    return config;
   }
 }
