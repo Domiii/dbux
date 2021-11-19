@@ -14,42 +14,26 @@ export default class JavascriptAlgorithmProject extends Project {
   /**
    * @return {ExerciseConfig[]}
    */
-  loadExerciseConfigs() {
-    // TODO: load automatically from BugsJs bug database
-    // NOTE: some bugs have multiple test files, or no test file at all
-    // see: https://github.com/BugsJS/express/releases?after=Bug-4-test
-    const bugs = [
-      {
-        // https://github.com/trekhleb/javascript-algorithms/blob/master/src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js
-        id: 1,
-        testName: 'BubbleSort should sort array',
-        testFilePaths: ['src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js'],
-      }
-    ];
+  postLoadExerciseConfig(config) {
+    if (!config.testFilePaths) {
+      // bug not fully configured yet
+      return null;
+    }
 
-    return bugs.
-      map((bug) => {
-        if (!bug.testFilePaths) {
-          // bug not fully configured yet
-          return null;
-        }
-
-        return {
-          // id: i + 1,
-          name: bug.testName,
-          // description: bug.testName,
-          runArgs: [
-            '--runInBand', // -i
-            '-t',
-            `"${bug.testName}"`,
-            '--runTestsByPath',
-            bug.testFilePaths.join(' ')
-          ],
-          ...bug,
-          // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
-        };
-      }).
-      filter(bug => !!bug);
+    return {
+      // id: i + 1,
+      name: config.testName,
+      // description: bug.testName,
+      runArgs: [
+        '--runInBand', // -i
+        '-t',
+        `"${config.testName}"`,
+        '--runTestsByPath',
+        config.testFilePaths.join(' ')
+      ],
+      ...config,
+      // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
+    };
   }
 
   async selectExercise(bug) {

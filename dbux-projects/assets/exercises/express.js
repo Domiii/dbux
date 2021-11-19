@@ -1,11 +1,8 @@
-const isArray = require('lodash/isArray');
-
 // future-work: load automatically from BugsJs bug database
 // NOTE: some bugs have multiple test files, or no test file at all
 // see: https://github.com/BugsJS/express/releases?after=Bug-4-test
 
-// eslint-disable-next-line import/no-mutable-exports
-let exerciseConfigs = [
+const exerciseConfigs = [
   {
     // https://github.com/BugsJS/express/releases/tag/Bug-1-test
     // https://github.com/BugsJS/express/commit/8bd36202bef586889d20bd5fa0732d3495da54eb
@@ -369,37 +366,5 @@ let exerciseConfigs = [
     // ]
   }
 ];
-
-exerciseConfigs.
-  map((exercise) => {
-    if (!exercise.testFilePaths) {
-      // bug not fully configured yet
-      return null;
-    }
-
-    let { testRe } = exercise;
-    if (isArray(testRe)) {
-      testRe = testRe.map(re => `(?:${re})`).join('|');
-    }
-
-    testRe = testRe.replace(/"/g, '\\"');
-
-    return {
-      description: testRe,
-      runArgs: [
-        '--grep',
-        `"${testRe}"`,
-        ...(exercise.testArgs ? [exercise.testArgs] : []),
-        '--',
-        ...exercise.testFilePaths
-      ],
-      require: exercise.require || ['./test/support/env.js'],
-      // dbuxArgs: '--pw=superagent',
-      dbuxArgs: '--pw=.*',
-      ...exercise,
-      // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
-    };
-  }).
-  filter(bug => !!bug);
 
 module.exports = exerciseConfigs;

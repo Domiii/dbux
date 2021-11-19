@@ -23,18 +23,6 @@ export default class SocketIOProject extends Project {
     await this.execInTerminal('yarn install --prod');
   }
 
-  /**
-   * @return {ExerciseConfig[]}
-   */
-  loadExerciseConfigs() {
-    return [
-      {
-        label: 'basic example1',
-        testFilePaths: ['example1.js']
-      }
-    ];
-  }
-
   decorateExerciseForRun(bug) {
     if (!bug.testFilePaths) {
       // bug not fully configured yet

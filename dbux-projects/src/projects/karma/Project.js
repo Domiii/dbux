@@ -30,44 +30,28 @@ export default class KarmaProject extends Project {
   /**
    * @return {ExerciseConfig[]}
    */
-  loadExerciseConfigs() {
-    // TODO: load automatically from BugsJs bug database
-    // NOTE: some bugs have multiple test files, or no test file at all
-    // see: https://github.com/BugsJS/express/releases?after=Bug-4-test
-    const bugs = [
-      // see https://github.com/BugsJS/eslint/commit/e7839668c859752e5237c829ee2a1745625b7347
-      {
-        id: 2,
-        testRe: 'should parse right port of proxy target',
-        testFilePaths: ['test/unit/middleware/proxy.spec.js']
-      }
-    ];
+  postLoadExerciseConfig(config) {
+    if (!config.testFilePaths) {
+      // bug not fully configured yet
+      return null;
+    }
 
-    return bugs.
-      map((bug) => {
-        if (!bug.testFilePaths) {
-          // bug not fully configured yet
-          return null;
-        }
-
-        return {
-          // id: i + 1,
-          name: `bug #${bug.id}`,
-          description: bug.testRe,
-          runArgs: [
-            '--grep',
-            `"${bug.testRe}"`,
-            '--',
-            ...bug.testFilePaths.map(file => path.join('dist', file)),
-            // eslint-disable-next-line max-len
-            // 'tests/lib/rules/**/*.js tests/lib/*.js tests/templates/*.js tests/bin/**/*.js tests/lib/code-path-analysis/**/*.js tests/lib/config/**/*.js tests/lib/formatters/**/*.js tests/lib/internal-rules/**/*.js tests/lib/testers/**/*.js tests/lib/util/**/*.js'
-          ],
-          // require: ['test/support/env'],
-          ...bug,
-          // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
-        };
-      }).
-      filter(bug => !!bug);
+    return {
+      // id: i + 1,
+      name: `bug #${config.id}`,
+      description: config.testRe,
+      runArgs: [
+        '--grep',
+        `"${config.testRe}"`,
+        '--',
+        ...config.testFilePaths.map(file => path.join('dist', file)),
+        // eslint-disable-next-line max-len
+        // 'tests/lib/rules/**/*.js tests/lib/*.js tests/templates/*.js tests/bin/**/*.js tests/lib/code-path-analysis/**/*.js tests/lib/config/**/*.js tests/lib/formatters/**/*.js tests/lib/internal-rules/**/*.js tests/lib/testers/**/*.js tests/lib/util/**/*.js'
+      ],
+      // require: ['test/support/env'],
+      ...config,
+      // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
+    };
   }
 
   getExerciseGitTag(exerciseId, tagCategory) {

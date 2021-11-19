@@ -127,13 +127,11 @@ export default class Project extends ProjectBase {
     super();
 
     this.manager = manager;
-
     // NOTE: we get `constructorName` from the registry
     this.name = this.folderName = name || this.constructor.constructorName;
+    this.logger = newLogger(this.debugTag);
 
     this.reloadExercises();
-
-    this.logger = newLogger(this.debugTag);
   }
 
   get originalGitFolderPath() {
@@ -386,21 +384,6 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
   async checkSystemRequirement() {
     await checkSystemWithRequirement(this.manager, this.systemRequirements);
-  }
-
-  /**
-   * @return {ExerciseConfig[]}
-   */
-  loadExerciseConfigs() {
-    const rawConfigFile = this.manager.externals.resources.getResourcePath('dist', 'projects', 'exercises', `${this.name}.js`);
-    try {
-      const configs = requireUncached(rawConfigFile);
-      return configs;
-    }
-    catch (err) {
-      this.logger.error(`Cannot load exercises for project "${this.name}": ${err.stack}`);
-      return EmptyArray;
-    }
   }
 
   async openInEditor() {
@@ -1223,11 +1206,37 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   // ###########################################################################
 
   /**
+ * @return {ExerciseConfig[]}
+ */
+  loadExerciseConfigs() {
+    const rawConfigFile = this.manager.externals.resources.getResourcePath('dist', 'projects', 'exercises', `${this.name}.js`);
+    try {
+      const configs = requireUncached(rawConfigFile);
+      return configs;
+    }
+    catch (err) {
+      this.logger.error(`Cannot load exercises for project "${this.name}": ${err.stack}`);
+      return EmptyArray;
+    }
+  }
+
+  /**
+   * Use this to decorate or filter(by returning null) exercises.
+   * @virtual
+   * @param {ExerciseConfig} config 
+   * @returns {ExerciseConfig|null}
+   */
+  postLoadExerciseConfig(config) {
+    return config;
+  }
+
+  /**
    * Get all exercises for this project
    * @return {ExerciseList}
    */
   reloadExercises() {
     let exerciseConfigs = this.loadExerciseConfigs();
+    exerciseConfigs = exerciseConfigs.map(this.postLoadExerciseConfig.bind(this));
     const hasIds = exerciseConfigs.some(exercise => !!exercise.id);
     let lastExercise = 0;
 
