@@ -1,4 +1,5 @@
 import sh from 'shelljs';
+import isArray from 'lodash/isArray';
 import Project from '../../projectLib/Project';
 import { buildMochaRunCommand } from '../../util/mochaUtil';
 
@@ -68,5 +69,33 @@ export default class ExpressProject extends Project {
       // "--reporter=json",
     ],
     */
+  }
+
+  canRun(config) {
+    return !!config.testFilePaths;
+  }
+
+  decorateExercise(config) {
+    let { testRe } = config;
+    if (isArray(testRe)) {
+      testRe = testRe.map(re => `(?:${re})`).join('|');
+    }
+    testRe = testRe.replace(/"/g, '\\"');
+
+    return {
+      description: testRe,
+      runArgs: [
+        '--grep',
+        `"${testRe}"`,
+        ...(config.testArgs ? [config.testArgs] : []),
+        '--',
+        ...config.testFilePaths
+      ],
+      require: config.require || ['./test/support/env.js'],
+      // dbuxArgs: '--pw=superagent',
+      dbuxArgs: '--pw=.*',
+      ...config,
+      // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
+    };
   }
 }

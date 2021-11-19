@@ -10,22 +10,6 @@ export default class RealworldWebComponentsProject extends Project {
    * @see https://github.com/gothinkster/web-components-realworld-example-app/commit/e435cf6b57a7214c158d289335d2b867c5d45c92
    */
   gitCommit = 'e435cf6b57a7214c158d289335d2b867c5d45c92';
-  
-
-  /**
-   * @return {ExerciseConfig[]}
-   */
-  loadExerciseConfigs() {
-    // TODO: add/generate some bugs?
-    return [
-      {
-        id: 1,
-        name: 'test',
-        description: 'just run it',
-        runArgs: []
-      }
-    ];
-  }
 
   async runWebpack() {
     return this.execBackground('npx webpack serve --config ./dbux.webpack.config.js');
@@ -36,11 +20,12 @@ export default class RealworldWebComponentsProject extends Project {
     this.runWebpack();
   }
 
-  decorateExerciseForRun(bug) {
-    bug.testFilePaths = ['app.js'];
+  decorateExercise(config) {
+    config.testFilePaths = ['app.js'];
     // bug.runFilePaths = bug.testFilePaths;
-    bug.watchFilePaths = bug.testFilePaths.map(file => pathJoin(this.projectPath, 'dist', file));
-    bug.website = 'http://localhost:3842/';
+    config.watchFilePaths = config.testFilePaths.map(file => pathJoin(this.projectPath, 'dist', file));
+    config.website = 'http://localhost:3842/';
+    return config;
   }
 
   async runCommand(bug, cfg) {

@@ -9,6 +9,13 @@
   },
   {
     "id": 2,
+    "name": "Todo-list",
+    "exercises": [
+      "todomvc-es6#2"
+    ]
+  },
+  {
+    "id": 3,
     "name": "Async",
     "exercises": [
       "async-js#1",

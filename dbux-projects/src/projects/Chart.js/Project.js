@@ -19,51 +19,15 @@ export default class ChartJsProject extends Project {
     await this.execInTerminal(`npm i -D @rollup/plugin-babel@5.3.0 rollup-plugin-serve@1.1.0`);
   }
 
-  /**
-   * @return {ExerciseConfig[]}
-   */
-  loadExerciseConfigs() {
-    // TODO: load automatically from BugsJs bug database
-    // NOTE: some bugs have multiple test files, or no test file at all
-    // see: https://github.com/BugsJS/express/releases?after=Bug-4-test
-    const exercises = [
-      {
-        label: 'baseline',
-        description: 'Baseline: select sample page.',
-        runArgs: [],
-        website: 'http://localhost:10001/samples/index.html'
-      },
-      {
-        label: 'baseline_vertical_bar',
-        description: 'Baseline: vertical bar graph.',
-        runArgs: [],
-        website: 'http://localhost:10001/samples/charts/bar/vertical.html'
-      },
-      // more bugs:
-      // {
-      // * easingFunction is not a function (v2 only?) - https://github.com/chartjs/Chart.js/issues/7180
-      // * maxTicksLimit does not work for gridlines when ticks are not displayed - https://github.com/chartjs/Chart.js/issues/7302
-      // }
-      // bugs not suited for learning:
-      // * Right-most point gets cut off in line chart: more of a layout bug or feature change - https://github.com/chartjs/Chart.js/issues/6414
-      //
-      // bugs that seem good but...:
-      // * only on ipad, iphone; also not reliably reproducible - https://github.com/chartjs/Chart.js/issues/6235
-    ];
+  decorateExercise(config) {
+    config.website = config.website || 'http://localhost:10001/samples/index.html';
+    config.testFilePaths = ['src/index.js'];
 
-    return exercises.
-      map((exercise) => {
-        exercise.website = exercise.website || 'http://localhost:10001/samples/index.html';
-        exercise.testFilePaths = ['src/index.js'];
+    const outputFiles = ['chart.min.js'];
+    config.watchFilePaths = outputFiles.map(file => path.join('dist', file));
 
-        const outputFiles = ['chart.min.js'];
-        exercise.watchFilePaths = outputFiles.map(file => path.join('dist', file));
-
-        return exercise;
-      }).
-      filter(bug => !!bug);
+    return config;
   }
-
 
   // ###########################################################################
   // run

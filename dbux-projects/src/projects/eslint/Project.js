@@ -14,7 +14,7 @@ export default class EslintProject extends Project {
 
   // TODO: get nodeVersion by bug instead
   nodeVersion = '7';
-  
+
   async installDependencies() {
     // TODO: install Babel plugins in dev mode, if not present
     const webpackJs = this.getWebpackJs();
@@ -26,78 +26,33 @@ export default class EslintProject extends Project {
     await this.exec('bash -c "echo ""dist"" >> .gitignore"');
   }
 
+  canRun(config) {
+    return !!config.testFilePaths;
+  }
 
-  /**
-   * @return {ExerciseConfig[]}
-   */
-  loadExerciseConfigs() {
-    // TODO: load automatically from BugsJs bug database
-    // NOTE: some bugs have multiple test files, or no test file at all
-    // see: https://github.com/BugsJS/express/releases?after=Bug-4-test
-    const exercises = [
-      {
-        // see https://github.com/BugsJS/eslint/commit/e7839668c859752e5237c829ee2a1745625b7347
-        id: 1,
-        testRe: '',
-        nodeVersion: 7,
-        testFilePaths: ['tests/lib/rules/no-obj-calls.js']
-      },
-      // {
-      //   // test file too large
-      //   // see https://github.com/BugsJS/eslint/commit/125f20e630f01d67d9433ef752924a5bb75005fe
-      //   id: 2,
-      //   testRe: '',
-      //   testFilePaths: ['']
-      // },
-      // {
-      //   // problem: load-rules
-      //   id: 3,
-      //   testRe: '',
-      //   nodeVersion: 8,
-      //   testFilePaths: ['tests/lib/rules/prefer-template.js']
-      // },
-      {
-        // see https://github.com/BugsJS/eslint/commit/e7839668c859752e5237c829ee2a1745625b7347
-        id: 4,
-        testRe: '',
-        nodeVersion: 7,
-        testFilePaths: ['tests/lib/rules/no-dupe-keys.js']
-      },
-    ];
+  decorateExercise(config) {
+    const runFilePaths = config.testFilePaths;
+    let watchFilePaths = config.testFilePaths.map(file => path.join(this.projectPath, 'dist', file));
 
-    return exercises.
-      map((exercise) => {
-        if (!exercise.testFilePaths) {
-          // bug not fully configured yet
-          return null;
-        }
+    const tagCategory = "test"; // "test", "fix" or "full"
 
-        const runFilePaths = exercise.testFilePaths;
-        let watchFilePaths = exercise.testFilePaths.map(file => path.join(this.projectPath, 'dist', file));
-
-        const tagCategory = "test"; // "test", "fix" or "full"
-
-        return {
-          // id: i + 1,
-          // name: `bug #${bug.id}`,
-          description: exercise.testRe,
-          runArgs: [
-            '--grep',
-            `"${exercise.testRe}"`,
-            '--',
-            // ...watchFilePaths,
-            // eslint-disable-next-line max-len
-            // 'tests/lib/rules/**/*.js tests/lib/*.js tests/templates/*.js tests/bin/**/*.js tests/lib/code-path-analysis/**/*.js tests/lib/config/**/*.js tests/lib/formatters/**/*.js tests/lib/internal-rules/**/*.js tests/lib/testers/**/*.js tests/lib/util/**/*.js'
-          ],
-          runFilePaths,
-          watchFilePaths,
-          tag: this._getExerciseGitTag(exercise.id, tagCategory),
-          // require: ['test/support/env'],
-          ...exercise,
-          // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
-        };
-      }).
-      filter(exercise => !!exercise);
+    return {
+      description: config.testRe,
+      runArgs: [
+        '--grep',
+        `"${config.testRe}"`,
+        '--',
+        // ...watchFilePaths,
+        // eslint-disable-next-line max-len
+        // 'tests/lib/rules/**/*.js tests/lib/*.js tests/templates/*.js tests/bin/**/*.js tests/lib/code-path-analysis/**/*.js tests/lib/config/**/*.js tests/lib/formatters/**/*.js tests/lib/internal-rules/**/*.js tests/lib/testers/**/*.js tests/lib/util/**/*.js'
+      ],
+      runFilePaths,
+      watchFilePaths,
+      tag: this._getExerciseGitTag(config.id, tagCategory),
+      // require: ['test/support/env'],
+      ...config,
+      // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
+    };
   }
 
   _getExerciseGitTag(exerciseNumber, tagCategory) {
@@ -120,13 +75,13 @@ export default class EslintProject extends Project {
     // make sure we have Dbux dependencies ready (since linkage might be screwed up in dev+install mode)
     const req = `-r "${this.manager.getDbuxPath('@dbux/cli/dist/linkOwnDependencies.js')}"`;
     const args = `--config ./dbux.webpack.config.js --env entry=${exercise.testFilePaths.join(',')}`;
-    
+
     // weird bug - sometimes it just will keep saying "volta not found"... gotta hate system configuration problems...
     const volta = 'volta'; //'/Users/domi/.volta/bin/volta'; // 'volta';
 
     await this.execBackground(`which ${volta}`);
     // await this.execBackground(`echo $PATH`);
-    
+
     return this.execBackground(
       // TODO: use `WebpackBuilder` instead
       `"${volta}" run --node 12 node ${req} "${this.getWebpackJs()}" ${args}`

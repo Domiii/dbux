@@ -138,47 +138,14 @@ export default class WebpackProject extends Project {
     // await this.installWebpack4();
   }
 
-
-  // ###########################################################################
-  // loadBugs
-  // ###########################################################################
-
-  /**
-   * @return {ExerciseConfig[]}
-   */
-  loadExerciseConfigs() {
-    // git diff --color=never --ignore-cr-at-eol > ../../dbux-projects/assets/_patches_/webpack/error.patch
-
-    return [
-      /**
-      cd examples/commonjs
-      node "../../../../node_modules/@dbux/cli/bin/dbux.js" run --pw=webpack,webpack-cli --verbose=1 --runtime="{\"tracesDisabled\":1}" "../../bin/webpack.js" -- --mode none --env none --stats-reasons --stats-used-exports --stats-provided-exports --no-stats-colors --stats-chunks  --stats-modules-space 99999 --stats-chunk-origins --output-public-path "dist/"  --entry ./example.js --output-filename output.js
-       */
-      {
-        label: 'examples/commonjs1',
-        cwd: 'examples/commonjs',
-        // patch: 'patch1',
-        description: 'Basic commonjs Webpack example.',
-        runArgs: []
-      },
-      {
-        label: 'examples/commonjs1 (--pw=.*)',
-        cwd: 'examples/commonjs',
-        // patch: 'patch1',
-        description: 'Basic commonjs Webpack example (all modules).',
-        runArgs: [],
-        dbuxArgs: `--pw=.* --pb=v8-compile-cache`,
-      }
-    ];
-  }
-
   // ###########################################################################
   // testing
   // ###########################################################################
 
-  decorateExerciseForRun(exercise) {
-    exercise.mainEntryPoint = [this.cliBin];
-    exercise.dbuxArgs = exercise.dbuxArgs || '--pw=tapable,graceful-fs,enhanced-resolve';
+  decorateExercise(config) {
+    config.mainEntryPoint = [this.cliBin];
+    config.dbuxArgs = config.dbuxArgs || '--pw=tapable,graceful-fs,enhanced-resolve';
+    return config;
   }
 
   async runCommand(exercise, cfg) {
