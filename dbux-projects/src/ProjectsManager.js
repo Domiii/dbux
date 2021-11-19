@@ -52,10 +52,6 @@ export default class ProjectsManager {
    */
   practiceSession;
   /**
-   * @type {ProjectList}
-   */
-  projects;
-  /**
    * @type {ExerciseRunner}
    */
   runner;
@@ -105,8 +101,8 @@ export default class ProjectsManager {
     this._emitter = new NanoEvents();
 
     // build projects + chapters
-    this.getOrCreateDefaultProjectList();
-    this.loadChapters();
+    this.loadProjectList();
+    this.reloadExercises();
 
     this._backend = new BackendController(this);
 
@@ -137,54 +133,76 @@ export default class ProjectsManager {
    * sorted by name (in descending order).
    * @return {ProjectList}
    */
-  getOrCreateDefaultProjectList() {
-    if (!this.projects) {
-      // fix up names
-      for (const name in projectRegistry) {
-        const Clazz = projectRegistry[name];
+  loadProjectList() {
+    // fix up names
+    for (const name in projectRegistry) {
+      const Clazz = projectRegistry[name];
 
-        // NOTE: function/class names might get mangled by Webpack (or other bundlers/tools)
-        Clazz.constructorName = name;
-      }
-
-      // sort all classes by name
-      const classes = Object.values(projectRegistry);
-      classes.sort((a, b) => {
-        const nameA = a.constructorName.toLowerCase();
-        const nameB = b.constructorName.toLowerCase();
-        return nameB.localeCompare(nameA);
-      });
-
-      // build + return ProjectList
-      const list = new ProjectList(this);
-      list.add(...classes.map(ProjectClazz =>
-        new ProjectClazz(this)
-      ));
-
-      this.projects = list;
+      // NOTE: function/class names might get mangled by Webpack (or other bundlers/tools)
+      Clazz.constructorName = name;
     }
 
-    return this.projects;
+    // sort all classes by name
+    const classes = Object.values(projectRegistry);
+    classes.sort((a, b) => {
+      const nameA = a.constructorName.toLowerCase();
+      const nameB = b.constructorName.toLowerCase();
+      return nameB.localeCompare(nameA);
+    });
+
+    // build + return ProjectList
+    const list = new ProjectList(this);
+    list.add(...classes.map(ProjectClazz =>
+      new ProjectClazz(this)
+    ));
+
+    this._projects = list;
+
+    return this._projects;
   }
 
-  loadChapters() {
+  reloadChapters() {
     try {
       const chapterRegistryFilePath = this.externals.resources.getResourcePath('dist', 'projects', 'exercises', 'exerciseList.json');
       const chapterRegistry = JSON.parse(fs.readFileSync(chapterRegistryFilePath, 'utf-8'));
       this.chapters = [];
       for (const chapterConfig of chapterRegistry) {
         const { id, name, exercises: exerciseIds } = chapterConfig;
-        const exercises = exerciseIds.map(_id => this.projects.getExerciseById(_id));
+        const exercises = exerciseIds.map(_id => {
+          const exercise = this.getExerciseById(_id);
+          if (!exercise) {
+            warn(`Cannot find exercise of id:${_id} in chapter#${id} registry. Make sure exerciesIds in "exerciseList.json" are correct.`);
+            return null;
+          }
+          return exercise;
+        }).filter(x => !!x);
         const chapter = new Chapter(this, id, name, exercises);
         this.chapters.push(chapter);
       }
       return this.chapters;
     }
     catch (err) {
-      logError(`Cannot load chapters: ${err.message}`);
+      logError(`Cannot load chapters: ${err.stack}`);
       this.chapters = EmptyArray;
       return this.chapters;
     }
+  }
+
+  /**
+   * Reload exercises for every project, also reload chapters.
+   */
+  reloadExercises() {
+    this._exercisesByIdMap = new Map();
+    for (const project of this.projects) {
+      for (const exercise of project.reloadExercises()) {
+        this._exercisesByIdMap.set(exercise.id, exercise);
+      }
+    }
+    this.reloadChapters();
+  }
+
+  getExerciseById(exerciseId) {
+    return this._exercisesByIdMap.get(exerciseId);
   }
 
   /**
@@ -226,6 +244,16 @@ export default class ProjectsManager {
 
   get research() {
     return this.externals.getCurrentResearch();
+  }
+
+  /**
+   * @return {ProjectList}
+   */
+  get projects() {
+    if (!this._projects) {
+      this.loadProjectList();
+    }
+    return this._projects;
   }
 
   async getAndInitBackend() {
@@ -298,7 +326,7 @@ export default class ProjectsManager {
 
     try {
       const { sessionId, createdAt, exerciseId } = await PathwaysDataProvider.parseHeader(filePath);
-      const exercise = this.getOrCreateDefaultProjectList().getExerciseById(exerciseId);
+      const exercise = this.getExerciseById(exerciseId);
       if (!exercise) {
         throw new Error(`Cannot find exercise of exerciseId: ${exerciseId} in log file`);
       }
@@ -349,7 +377,7 @@ export default class ProjectsManager {
 
       ({ exerciseId } = savedPracticeSession);
     }
-    const exercise = this.getOrCreateDefaultProjectList().getExerciseById(exerciseId);
+    const exercise = this.getExerciseById(exerciseId);
     if (!exercise) {
       // sanity check
       warn(`Can't find exercise for id "${exerciseId}"`);
@@ -856,7 +884,7 @@ export default class ProjectsManager {
   getExerciseByKey(key) {
     const id = this.externals.storage.get(key);
 
-    return this.getOrCreateDefaultProjectList().getExerciseById(id) || null;
+    return this.getExerciseById(id) || null;
   }
 
 
