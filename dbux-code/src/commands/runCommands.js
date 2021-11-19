@@ -3,7 +3,7 @@ import { window, workspace } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { pathNormalizedForce, realPathSyncNormalized } from '@dbux/common-node/src/util/pathUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import { checkSystem } from '@dbux/projects/src/checkSystem';
+import { checkSystem, getDefaultRequirement } from '@dbux/projects/src/checkSystem';
 import { getProjectManager } from '../projectViews/projectControl';
 import { runInTerminalInteractive } from '../codeUtil/terminalUtil';
 import { initRuntimeServer } from '../net/SocketServer';
@@ -98,7 +98,7 @@ export async function runFile(extensionContext, debugMode = false) {
 
   // start runtime server
   await initRuntimeServer(extensionContext);
-  await checkSystem(projectManager, false, false);
+  await checkSystem(projectManager, getDefaultRequirement(false), false);
 
   let [nodeArgs, dbuxArgs, programArgs] = getArgs(debugMode);
   nodeArgs = `${nodeArgs || ''}`;
