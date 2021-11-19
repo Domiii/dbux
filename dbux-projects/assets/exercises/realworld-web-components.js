@@ -1,5 +1,5 @@
 // TODO: add/generate some bugs?
-const config = [
+const configs = [
   {
     id: 1,
     name: 'test',
@@ -8,4 +8,4 @@ const config = [
   }
 ];
 
-module.exports = config;
+module.exports = configs;

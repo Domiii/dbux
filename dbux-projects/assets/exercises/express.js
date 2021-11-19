@@ -2,7 +2,7 @@
 // NOTE: some bugs have multiple test files, or no test file at all
 // see: https://github.com/BugsJS/express/releases?after=Bug-4-test
 
-const exerciseConfigs = [
+const configs = [
   {
     // https://github.com/BugsJS/express/releases/tag/Bug-1-test
     // https://github.com/BugsJS/express/commit/8bd36202bef586889d20bd5fa0732d3495da54eb
@@ -367,4 +367,4 @@ const exerciseConfigs = [
   }
 ];
 
-module.exports = exerciseConfigs;
+module.exports = configs;

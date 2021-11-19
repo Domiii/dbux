@@ -1,7 +1,7 @@
 // TODO: load automatically from BugsJs bug database
 // NOTE: some bugs have multiple test files, or no test file at all
 // see: https://github.com/BugsJS/express/releases?after=Bug-4-test
-const config = [
+const configs = [
   {
     label: 'baseline',
     description: 'Baseline: select sample page.',
@@ -26,4 +26,4 @@ const config = [
   // * only on ipad, iphone; also not reliably reproducible - https://github.com/chartjs/Chart.js/issues/6235
 ];
 
-module.exports = config;
+module.exports = configs;

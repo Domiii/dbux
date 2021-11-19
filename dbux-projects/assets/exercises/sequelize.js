@@ -1,4 +1,4 @@
-const config = [
+const configs = [
   {
     label: 'sscce1-sqlite',
     testFilePaths: ['sscce1.js']
@@ -31,4 +31,4 @@ const config = [
   },
 ];
 
-module.exports = config;
+module.exports = configs;

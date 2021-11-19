@@ -1,5 +1,5 @@
 // git diff --color=never --ignore-cr-at-eol > ../../dbux-projects/assets/_patches_/Editor.md/baseline.patch | unix2dos
-const config = [
+const configs = [
   {
     label: 'full',
     // patch: 'patch1',
@@ -38,4 +38,4 @@ const config = [
   }
 ];
 
-module.exports = config;
+module.exports = configs;

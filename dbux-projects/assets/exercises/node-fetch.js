@@ -1,4 +1,4 @@
-const exerciseConfigs = [
+const configs = [
   {
     label: 'basic example1',
     // testRe: 'OPTIONS should only include each method once',
@@ -6,4 +6,4 @@ const exerciseConfigs = [
   }
 ];
 
-module.exports = exerciseConfigs;
+module.exports = configs;

@@ -1,4 +1,4 @@
-const config = [
+const configs = [
   {
     // not a challenge to find the bug
     // https://github.com/BugsJS/hexo/releases/tag/Bug-1-test
@@ -72,4 +72,4 @@ const config = [
   }
 ];
 
-module.exports = config;
+module.exports = configs;

@@ -1,4 +1,4 @@
-const config = [
+const configs = [
   /**
   cd examples/commonjs
   node "../../../../node_modules/@dbux/cli/bin/dbux.js" run --pw=webpack,webpack-cli --verbose=1 --runtime="{\"tracesDisabled\":1}" "../../bin/webpack.js" -- --mode none --env none --stats-reasons --stats-used-exports --stats-provided-exports --no-stats-colors --stats-chunks  --stats-modules-space 99999 --stats-chunk-origins --output-public-path "dist/"  --entry ./example.js --output-filename output.js
@@ -20,4 +20,4 @@ const config = [
   }
 ];
 
-module.exports = config;
+module.exports = configs;
