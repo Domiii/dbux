@@ -168,4 +168,12 @@ export default class Stack {
       `${i === peekIdx ? '> ' : ''}${executionContextCollection.makeContextInfo(contextId)}`
     );
   }
+
+  humanReadableString() {
+    const stack = this.humanReadable();
+    if (stack) {
+      return '\n  ' + stack.join('\n  ');
+    }
+    return null;
+  }
 }

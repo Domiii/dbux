@@ -197,13 +197,14 @@ export default class ExerciseRunner {
    * @returns {Promise<ExecuteResult>}
    */
   async testExercise(exercise, cfg) {
-    const { project, website } = exercise;
-
+    const { project } = exercise;
     try {
       this.setStatus(BugRunnerStatus.Busy);
-
+      
       // init bug
       await project.initExercise(exercise);
+      
+      const { website } = exercise;
 
       // after Exercise, produce final cfg
       const cwd = pathNormalizedForce(path.resolve(project.projectPath, exercise.cwd || ''));

@@ -4,7 +4,7 @@ import ResolveType from '@dbux/common/src/types/constants/ResolveType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import isThenable from '@dbux/common/src/util/isThenable';
 import PromiseLinkType from '@dbux/common/src/types/constants/PromiseLinkType';
-import PromiseLink from '@dbux/common/src/types/PromiseLink';
+// import PromiseLink from '@dbux/common/src/types/PromiseLink';
 import traceCollection from '../data/traceCollection';
 import dataNodeCollection from '../data/dataNodeCollection';
 import { peekBCEMatchCallee, getLastContextCheckCallee, isInstrumentedFunction, peekBCEMatchCalleeUnchecked } from '../data/dataUtil';
@@ -19,8 +19,8 @@ const { log, debug, warn, error: logError } = newLogger('PromisePatcher');
 
 /** @typedef {import('../RuntimeMonitor').default} RuntimeMonitor */
 
-// const Verbose = true;
-const Verbose = false;
+const Verbose = true;
+// const Verbose = false;
 
 const PromiseInstrumentationDisabled = false;
 
@@ -451,7 +451,13 @@ function doResolve(promise, wrapResolve, executorRealRootId, executorRootId, res
     const asyncPromisifyPromiseId = isAsync ? thisPromiseId : 0;
 
     // eslint-disable-next-line max-len
-    debug(`[promisify resolve] ${asyncPromisifyPromiseId} (${resolveRealRootId}). ${executorRealRootId} != ${resolveRealRootId}, ${executorRealRootId} != ${thenRef.rootId}. stack: \n  ${RuntimeMonitorInstance.runtime._executingStack.humanReadable().join('\n  ')}\n`);
+    if (Verbose) {
+      const stack = RuntimeMonitorInstance.runtime._executingStack?.humanReadableString();
+      debug(
+        `[promisify resolve] ${asyncPromisifyPromiseId} (${resolveRealRootId}). ${executorRealRootId} != ${resolveRealRootId}, ${executorRealRootId} != ${thenRef.rootId}. stack:` +
+        `${stack || '(empty)'}`
+      );
+    }
 
     RuntimeMonitorInstance._runtime.async.resolve(
       inner, promise, resolveRealRootId, PromiseLinkType.Promisify, thenRef.schedulerTraceId, asyncPromisifyPromiseId
