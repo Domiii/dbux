@@ -10,16 +10,12 @@ export default class HexoProject extends Project {
 
   packageManager = 'yarn';
 
-  postLoadExerciseConfig(config) {
-    if (!config.testFilePaths) {
-      // exercise not ready yet
-      return null;
-    }
-    return config;
+  canRun(config) {
+    return !!config.testFilePaths;
   }
 
-  decorateExerciseForRun(bug) {
-    Object.assign(bug, {
+  decorateExercise(config) {
+    Object.assign(config, {
       // name: `bug #${bug.id}`,
       // require: ['./test/support/env.js'],
       // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
@@ -29,6 +25,7 @@ export default class HexoProject extends Project {
       // dbuxArgs: '--pw=.*',
       dbuxArgs: '--pw=.* --pb=lodash,bluebird',
     });
+    return config;
   }
 
   getExerciseGitTag(exerciseNumber, tagCategory) {

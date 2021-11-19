@@ -11,15 +11,11 @@ export default class JavascriptAlgorithmProject extends Project {
     '.huskyrc.json'   // unwanted commit hooks
   ];
 
-  /**
-   * @return {ExerciseConfig[]}
-   */
-  postLoadExerciseConfig(config) {
-    if (!config.testFilePaths) {
-      // bug not fully configured yet
-      return null;
-    }
+  canRun(config) {
+    return !!config.testFilePaths;
+  }
 
+  decorateExercise(config) {
     return {
       // id: i + 1,
       name: config.testName,

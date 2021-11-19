@@ -20,11 +20,12 @@ export default class RealworldWebComponentsProject extends Project {
     this.runWebpack();
   }
 
-  decorateExerciseForRun(bug) {
-    bug.testFilePaths = ['app.js'];
+  decorateExercise(config) {
+    config.testFilePaths = ['app.js'];
     // bug.runFilePaths = bug.testFilePaths;
-    bug.watchFilePaths = bug.testFilePaths.map(file => pathJoin(this.projectPath, 'dist', file));
-    bug.website = 'http://localhost:3842/';
+    config.watchFilePaths = config.testFilePaths.map(file => pathJoin(this.projectPath, 'dist', file));
+    config.website = 'http://localhost:3842/';
+    return config;
   }
 
   async runCommand(bug, cfg) {

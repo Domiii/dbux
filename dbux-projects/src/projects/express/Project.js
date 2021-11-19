@@ -71,12 +71,11 @@ export default class ExpressProject extends Project {
     */
   }
 
-  postLoadExerciseConfig(config) {
-    if (!config.testFilePaths) {
-      // exercise not fully configured yet
-      return null;
-    }
+  canRun(config) {
+    return !!config.testFilePaths;
+  }
 
+  decorateExercise(config) {
     let { testRe } = config;
     if (isArray(testRe)) {
       testRe = testRe.map(re => `(?:${re})`).join('|');

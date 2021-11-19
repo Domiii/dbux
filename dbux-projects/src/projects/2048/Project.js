@@ -25,8 +25,9 @@ export default class _2048Project extends Project {
     // await this.autoCommit(); // NOTE: autoCommit is called right after this method
   }
 
-  decorateExerciseForRun(bug) {
-    bug.mainEntryPoint = ['js/application.js'];
+  decorateExercise(config) {
+    config.mainEntryPoint = ['js/application.js'];
+    return config;
   }
 
   async runCommand(bug, cfg) {

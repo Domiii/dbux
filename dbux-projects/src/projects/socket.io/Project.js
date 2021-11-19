@@ -23,15 +23,15 @@ export default class SocketIOProject extends Project {
     await this.execInTerminal('yarn install --prod');
   }
 
-  decorateExerciseForRun(bug) {
-    if (!bug.testFilePaths) {
-      // bug not fully configured yet
-      return;
-    }
+  canRun(config) {
+    return !!config.testFilePaths;
+  }
 
-    Object.assign(bug, {
+  decorateExercise(config) {
+    Object.assign(config, {
       dbuxArgs: '--pw=.* --esnext'
     });
+    return config;
   }
 
   async afterInstall() {

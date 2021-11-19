@@ -65,18 +65,18 @@ export default class SequelizeProject extends Project {
     this._fixPackageJson();
   }
 
-  decorateExerciseForRun(bug) {
-    if (!bug.testFilePaths) {
-      // bug not fully configured yet
-      return;
-    }
+  canRun(config) {
+    return !!config.testFilePaths;
+  }
 
-    Object.assign(bug, {
+  decorateExercise(config) {
+    Object.assign(config, {
       // -> lodash - future-work: it has issues w/ `Object.defineProperties` being polyfilled or proxied or otherwise replaced and ending up being `undefined` (or somesuch)?
       // -> bluebird
       dbuxArgs: '--pw=.* --pb=lodash,bluebird'
       // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
     });
+    return config;
   }
 
   /**

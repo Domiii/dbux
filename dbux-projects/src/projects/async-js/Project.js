@@ -9,14 +9,14 @@ export default class AsyncJsProject extends Project {
   gitCommit = 'tags/v3.2.0'
   packageManager = 'yarn';
 
-  decorateExerciseForRun(bug) {
-    if (!bug.testFilePaths) {
-      // bug not fully configured yet
-      return;
-    }
+  canRun(config) {
+    return !!config.testFilePaths;
+  }
 
-    Object.assign(bug, {
+  decorateExercise(config) {
+    Object.assign(config, {
       dbuxArgs: '--pw=.* --pb=@babel.* --esnext'
     });
+    return config;
   }
 }

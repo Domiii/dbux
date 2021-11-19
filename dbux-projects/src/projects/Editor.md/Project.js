@@ -39,8 +39,9 @@ export default class EditorMdProject extends Project {
     await this.applyPatch('baseline');
   }
 
-  decorateExerciseForRun(bug) {
-    bug.mainEntryPoint = ['src/editormd.js'];
+  decorateExercise(config) {
+    config.mainEntryPoint = ['src/editormd.js'];
+    return config;
   }
 
   async runCommand(bug, cfg) {

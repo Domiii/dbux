@@ -15,14 +15,14 @@ export default class NodeFetchProject extends Project {
 
   packageManager = 'yarn';
 
-  decorateExerciseForRun(bug) {
-    if (!bug.testFilePaths) {
-      // bug not fully configured yet
-      return;
-    }
+  canRun(config) {
+    return !!config.testFilePaths;
+  }
 
-    Object.assign(bug, {
+  decorateExercise(config) {
+    Object.assign(config, {
       dbuxArgs: '--pw=.* --pb=@babel.* --esnext'
     });
+    return config;
   }
 }

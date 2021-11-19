@@ -19,7 +19,7 @@ export default class ChartJsProject extends Project {
     await this.execInTerminal(`npm i -D @rollup/plugin-babel@5.3.0 rollup-plugin-serve@1.1.0`);
   }
 
-  postLoadExerciseConfig(config) {
+  decorateExercise(config) {
     config.website = config.website || 'http://localhost:10001/samples/index.html';
     config.testFilePaths = ['src/index.js'];
 
@@ -28,7 +28,6 @@ export default class ChartJsProject extends Project {
 
     return config;
   }
-
 
   // ###########################################################################
   // run

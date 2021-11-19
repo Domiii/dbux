@@ -162,9 +162,40 @@ export default class Project extends ProjectBase {
     }
   }
 
-  async initExercise(bug) {
-    await this.decorateExerciseForRun?.(bug);
-    await this.builder?.decorateExerciseForRun(bug);
+  /**
+   * Projects could return false to filter out incomplete exercises, e.g, exercises missing `testFilePaths`.
+   * @virtual
+   * @param {ExerciseConfig} config
+   * @return {boolean}
+   */
+  canRun(config) {
+    return true;
+  }
+
+  /**
+   * Decorate exercise config on loaded.
+   * @virtual
+   * @param {ExerciseConfig} exerciseConfig
+   */
+  async decorateExercise(exerciseConfig) {
+    // noop by default
+    return exerciseConfig;
+  }
+
+  /**
+   * NOTE: this is separate from `decorateExercise` because `decorateExercise` might be called before the project has been downloaded. This function however is called after download, so that all files are ready and accessible.
+   * future-work: split this into `decorateOnLoad` and `decorateForRun` if needed
+   * @virtual
+   * @param {Exercise} exercise
+   */
+  async decorateExerciseForRun(exercise) {
+    // noop by default
+    return exercise;
+  }
+
+  async initExercise(exercise) {
+    await this.decorateExerciseForRun(exercise);
+    await this.builder?.decorateExerciseForRun(exercise);
 
     // future-work: generalize test regexes
     // let { testRe } = bug;
@@ -1221,22 +1252,13 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   }
 
   /**
-   * Use this to decorate or filter(by returning null) exercises.
-   * @virtual
-   * @param {ExerciseConfig} config 
-   * @returns {ExerciseConfig|null}
-   */
-  postLoadExerciseConfig(config) {
-    return config;
-  }
-
-  /**
    * Get all exercises for this project
    * @return {ExerciseList}
    */
   reloadExercises() {
-    let exerciseConfigs = this.loadExerciseConfigs();
-    exerciseConfigs = exerciseConfigs.map(this.postLoadExerciseConfig.bind(this));
+    let exerciseConfigs = this.loadExerciseConfigs()
+      .filter(this.canRun.bind(this))
+      .map(this.decorateExercise.bind(this));
     const hasIds = exerciseConfigs.some(exercise => !!exercise.id);
     let lastExercise = 0;
 
@@ -1251,7 +1273,6 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
       // exercise.number
       if (!config.number) {
-        // ensure cfg.number exists(type number)
         config.number = hasIds ? config.id : ++lastExercise;
       }
 

@@ -15,9 +15,10 @@ export default class BluebirdProject extends Project {
 
   packageManager = 'yarn';
 
-  decorateExerciseForRun(bug) {
-    Object.assign(bug, {
+  decorateExercise(config) {
+    Object.assign(config, {
       dbuxArgs: '--pw=.*'
     });
+    return config;
   }
 }

@@ -142,9 +142,10 @@ export default class WebpackProject extends Project {
   // testing
   // ###########################################################################
 
-  decorateExerciseForRun(exercise) {
-    exercise.mainEntryPoint = [this.cliBin];
-    exercise.dbuxArgs = exercise.dbuxArgs || '--pw=tapable,graceful-fs,enhanced-resolve';
+  decorateExercise(config) {
+    config.mainEntryPoint = [this.cliBin];
+    config.dbuxArgs = config.dbuxArgs || '--pw=tapable,graceful-fs,enhanced-resolve';
+    return config;
   }
 
   async runCommand(exercise, cfg) {

@@ -26,16 +26,11 @@ export default class KarmaProject extends Project {
     await this.exec('bash -c "echo ""dist"" >> .gitignore"');
   }
 
+  canRun(config) {
+    return !!config.testFilePaths;
+  }
 
-  /**
-   * @return {ExerciseConfig[]}
-   */
-  postLoadExerciseConfig(config) {
-    if (!config.testFilePaths) {
-      // bug not fully configured yet
-      return null;
-    }
-
+  decorateExercise(config) {
     return {
       // id: i + 1,
       name: `bug #${config.id}`,
