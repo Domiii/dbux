@@ -8,8 +8,7 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { importApplication, exportApplication } from '@dbux/data/src/applications/appUtil';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { checkSystem } from '@dbux/projects/src/checkSystem';
-import sleep from '@dbux/common/src/util/sleep';
+import { checkSystem, getDefaultRequirement } from '@dbux/projects/src/checkSystem';
 import { registerCommand } from './commandUtil';
 import { showTextDocument } from '../codeUtil/codeNav';
 import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../codeUtil/codeExport';
@@ -263,7 +262,7 @@ export function initUserCommands(extensionContext) {
 
   registerCommand(extensionContext, 'dbux.systemCheck', async () => {
     let projectManager = getProjectManager(extensionContext);
-    await checkSystem(projectManager, true, true);
+    await checkSystem(projectManager, getDefaultRequirement(true), true);
   });
 
   // ###########################################################################

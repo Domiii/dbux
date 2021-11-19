@@ -6,14 +6,16 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { whichNormalized } from '@dbux/common-node/src/util/pathUtil';
 import Process from './util/Process';
 
-/** @typedef {import('./ProjectsManager').default} ProjectManager */
+/** @typedef {import('./ProjectsManager').default} ProjectsManager */
 
 const logger = newLogger('checkSystem');
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = logger;
 
-const option = { failOnStatusCode: false };
+/** ###########################################################################
+ * result cache
+ *  #########################################################################*/
 
 let checkedRequirements = new Set();
 
@@ -31,6 +33,9 @@ function isChecked(requirements) {
   return checkedRequirements.has(JSON.stringify(requirements));
 }
 
+/** ###########################################################################
+ * check util
+ *  #########################################################################*/
 
 /**
  * Get version of `program`.
@@ -38,6 +43,7 @@ function isChecked(requirements) {
  * @return {Promise<string>} semver of `program`
  */
 async function getVersion(program) {
+  const option = { failOnStatusCode: false };
   let result = await Process.execCaptureOut(`${program} --version`, option);
 
   return semver.valid(semver.coerce(result));
@@ -51,12 +57,17 @@ function isWindows() {
   return process.platform === 'win32';
 }
 
+/** ###########################################################################
+ * main check function
+ *  #########################################################################*/
+
 /**
- * @param {ProjectManager} projectManager 
- * @param {object} requirements
- * @param {boolean} calledFromUser 
+ * Check system with requirements
+ * @param {ProjectsManager} manager
+ * @param {boolean} calledFromUser Whether the function is called by user. Decides showing success message to user or not.
+ * @param {boolean} fullCheck if false, skip checking `git` and `bash`.
  */
-async function _checkSystem(projectManager, requirements, calledFromUser) {
+export async function checkSystem(manager, requirements, calledFromUser) {
   if (!calledFromUser && isChecked(requirements)) {
     return;
   }
@@ -92,7 +103,7 @@ async function _checkSystem(projectManager, requirements, calledFromUser) {
         message += `✓  ${program}\n    Found at "${result.path}"`;
         result.success = true;
       }
-      
+
       let customRequirement = requirement.custom;
       if (result.success && customRequirement) {
         if (!isArray(customRequirement)) {
@@ -106,7 +117,7 @@ async function _checkSystem(projectManager, requirements, calledFromUser) {
               if (customResult.message) {
                 message += `\n\t✓  ${customResult.message}`;
               }
-            } 
+            }
             else {
               result.success = false;
 
@@ -164,10 +175,10 @@ async function _checkSystem(projectManager, requirements, calledFromUser) {
         ignore = true;
       }
     } : {};
-    await projectManager.externals.showMessage.warning(modalMessage, options, { modal: true });
+    await manager.externals.showMessage.warning(modalMessage, options, { modal: true });
   }
   else if (calledFromUser) {
-    await projectManager.externals.showMessage.info(modalMessage, {}, { modal: true });
+    await manager.externals.showMessage.info(modalMessage, {}, { modal: true });
   }
 
   if (!success && !calledFromUser && !ignore) {
@@ -175,17 +186,21 @@ async function _checkSystem(projectManager, requirements, calledFromUser) {
   }
 }
 
-export function getRequirement(fullCheck) {
+/**
+ * @see https://github.com/Domiii/dbux/issues/593
+ */
+const DefaultNodeVersion = '16';
+export function getDefaultRequirement(fullCheck) {
   if (!fullCheck) {
     return {
-      node: { version: ">=12" },
+      node: { version: DefaultNodeVersion },
       npm: {},
     };
   }
   else {
     return {
       bash: {},
-      node: { version: ">=12" },
+      node: { version: DefaultNodeVersion },
       npm: {},
       git: {
         custom: async () => {
@@ -215,25 +230,4 @@ export function getRequirement(fullCheck) {
       },
     };
   }
-}
-
-/**
- * Entry point of checking system compatibility
- * @param {ProjectManager} projectManager
- * @param {boolean} calledFromUser Whether the function is called by user. Decides showing success message to user or not.
- * @param {boolean} fullCheck if false, skip checking `git` and `bash`.
- */
-export async function checkSystem(projectManager, calledFromUser, fullCheck) {
-  const requirement = getRequirement(fullCheck);
-  await _checkSystem(projectManager, requirement, calledFromUser);
-}
-
-/**
- * Check system with custom requirement.
- * @param {ProjectManager} projectManager 
- * @param {object} requirement 
- */
-export async function checkSystemWithRequirement(projectManager, requirement) {
-  requirement = merge({}, getRequirement(true), requirement);
-  await _checkSystem(projectManager, requirement, false);
 }

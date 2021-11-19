@@ -3,6 +3,7 @@ import fs, { existsSync } from 'fs';
 import pull from 'lodash/pull';
 import defaultsDeep from 'lodash/defaultsDeep';
 import sh from 'shelljs';
+import merge from 'lodash/merge';
 import NestedError from '@dbux/common/src/NestedError';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
@@ -15,7 +16,7 @@ import ExerciseList from './ExerciseList';
 import Process from '../util/Process';
 import { MultipleFileWatcher } from '../util/multipleFileWatcher';
 import { buildNodeCommand } from '../util/nodeUtil';
-import { checkSystemWithRequirement } from '../checkSystem';
+import { checkSystem, getDefaultRequirement } from '../checkSystem';
 import RunStatus, { isStatusRunningType } from './RunStatus';
 import ProjectBase from './ProjectBase';
 import Exercise from './Exercise';
@@ -385,7 +386,8 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   }
 
   async checkSystemRequirement() {
-    await checkSystemWithRequirement(this.manager, this.systemRequirements);
+    const requirements = merge({}, getDefaultRequirement(true), this.systemRequirements);
+    await checkSystem(this.manager, requirements, false);
   }
 
   /**
