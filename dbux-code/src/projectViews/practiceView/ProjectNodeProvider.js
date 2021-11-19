@@ -28,7 +28,7 @@ export default class ProjectNodeProvider extends BaseTreeViewNodeProvider {
       }
     }
     else {
-      const projects = this.controller.manager.getOrCreateDefaultProjectList();
+      const { projects } = this.controller.manager;
       for (let project of projects) {
         const node = this.buildProjectNode(project);
         roots.push(node);
@@ -45,6 +45,8 @@ export default class ProjectNodeProvider extends BaseTreeViewNodeProvider {
 
   toggleListMode() {
     this.byChapter = !this.byChapter;
+    this.controller.manager.reloadExercises();
+    this.refresh();
   }
 
   buildProjectNode(project) {

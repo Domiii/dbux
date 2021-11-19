@@ -38,7 +38,7 @@ const GitInstalledTag = '__dbux_project_installed';
 
 export default class Project extends ProjectBase {
   /**
-   * Created by {@link #getOrLoadBugs}.
+   * Created by `this.loadExercises`.
    * @type {ExerciseList}
    */
   _exercises;
@@ -67,11 +67,6 @@ export default class Project extends ProjectBase {
    * Automatically assigned if `makeBuilder` method is present.
    */
   builder;
-
-  /**
-   * @type {ExerciseConfig[]?}
-   */
-  exercises;
 
   /**
    * Use github by default.
@@ -113,6 +108,16 @@ export default class Project extends ProjectBase {
     return !this.builder || this.builder.needsDbuxCli;
   }
 
+  /**
+   * @type {ExerciseList}
+   */
+  get exercises() {
+    if (!this._exercises) {
+      this.reloadExercises();
+    }
+    return this._exercises;
+  }
+
 
   // ###########################################################################
   // constructor + init
@@ -125,6 +130,8 @@ export default class Project extends ProjectBase {
 
     // NOTE: we get `constructorName` from the registry
     this.name = this.folderName = name || this.constructor.constructorName;
+
+    this.reloadExercises();
 
     this.logger = newLogger(this.debugTag);
   }
@@ -1212,55 +1219,54 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   }
 
   // ###########################################################################
-  // bugs
+  // exercises
   // ###########################################################################
 
   /**
-   * Get all bugs for this project
+   * Get all exercises for this project
    * @return {ExerciseList}
    */
-  getOrLoadExercises() {
-    if (!this._exercises) {
-      let exerciseConfigs = this.loadExerciseConfigs();
-      const hasIds = exerciseConfigs.some(exercise => !!exercise.id);
-      let lastExercise = 0;
+  reloadExercises() {
+    let exerciseConfigs = this.loadExerciseConfigs();
+    const hasIds = exerciseConfigs.some(exercise => !!exercise.id);
+    let lastExercise = 0;
 
-      let exercises = exerciseConfigs.map(config => {
-        // exercise.description
-        let {
-          description,
-          testRe,
-          testFilePaths
-        } = config;
-        config.description = description || testRe || testFilePaths?.[0] || '';
+    let exercises = exerciseConfigs.map(config => {
+      // exercise.description
+      let {
+        description,
+        testRe,
+        testFilePaths
+      } = config;
+      config.description = description || testRe || testFilePaths?.[0] || '';
 
-        // exercise.number
-        if (!config.number) {
-          // ensure cfg.number exists(type number)
-          config.number = hasIds ? config.id : ++lastExercise;
-        }
-
-        // exercise.bugLocations
-        if (config.bugLocations && !config.bugLocations.length) {
-          // we use `!!bug.bugLocations` to determine whether this bug is "solvable"
-          config.bugLocations = null;
-        }
-
-        // exercise.id
-        // convert number typed id to string type(thus it's globally unique)
-        config.id = `${this.name}#${config.number}`;
-
-        return new Exercise(this, config);
-      });
-
-      if (process.env.NODE_ENV === 'production') {
-        // NOTE: this is an immature feature
-        //      for now, only provide one bug for demonstration purposes and to allow us gather feedback
-        exercises = exercises.filter(exercise => exercise.label && exercise.isSolvable);
+      // exercise.number
+      if (!config.number) {
+        // ensure cfg.number exists(type number)
+        config.number = hasIds ? config.id : ++lastExercise;
       }
 
-      this._exercises = new ExerciseList(exercises);
+      // exercise.bugLocations
+      if (config.bugLocations && !config.bugLocations.length) {
+        // we use `!!bug.bugLocations` to determine whether this bug is "solvable"
+        config.bugLocations = null;
+      }
+
+      // exercise.id
+      // convert number typed id to string type(thus it's globally unique)
+      config.id = `${this.name}#${config.number}`;
+
+      return new Exercise(this, config);
+    });
+
+    if (process.env.NODE_ENV === 'production') {
+      // NOTE: this is an immature feature
+      //      for now, only provide one bug for demonstration purposes and to allow us gather feedback
+      exercises = exercises.filter(exercise => exercise.label && exercise.isSolvable);
     }
+
+    this._exercises = new ExerciseList(exercises);
+
     return this._exercises;
   }
 

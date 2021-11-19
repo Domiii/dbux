@@ -50,7 +50,7 @@ export default class ProjectNode extends BaseTreeViewNode {
   }
 
   buildChildren() {
-    const bugs = Array.from(this.project.getOrLoadExercises());
+    const bugs = Array.from(this.project.exercises);
     return bugs.map(this.buildExerciseNode.bind(this));
   }
 
