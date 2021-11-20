@@ -9,6 +9,9 @@ import { showInformationMessage } from '../../codeUtil/codeModals';
 /** @typedef {import('./ProjectNode').default} ProjectNode */
 
 export default class ExerciseNode extends BaseTreeViewNode {
+  /**
+   * @param {Exercise} exercise 
+   */
   static makeLabel(exercise) {
     return exercise.label;
   }

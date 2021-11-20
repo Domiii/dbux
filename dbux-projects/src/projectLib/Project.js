@@ -1019,8 +1019,8 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     if (bug) {
       const bugAssetsFolder = this.getBugAssetFolderName(bug);
       if (bugAssetsFolder) {
-        if (!existsSync(this.getAssetDir(bugAssetsFolder))) {
-          this.logger.error(`Experiment "${bug.id}" should have assets, but no asset folder at "${this.getAssetDir(bugAssetsFolder)}"`);
+        if (!existsSync(this.getAssetPath(bugAssetsFolder))) {
+          this.logger.error(`Experiment "${bug.id}" should have assets, but no asset folder at "${this.getAssetPath(bugAssetsFolder)}"`);
         }
         else {
           this.copyAssetFolder(bugAssetsFolder);
@@ -1035,19 +1035,13 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     }
   }
 
-  getAssetDir(assetPath) {
-    if (path.isAbsolute(assetPath)) {
-      // absolute path
-      return realPathSyncNormalized(assetPath);
-    }
-    else {
-      // relative to dbux-internal asset path
-      return this.manager.externals.resources.getResourcePath('dist', 'projects', assetPath);
-    }
+  getAssetPath(...segments) {
+    // relative to dbux-internal asset path
+    return this.manager.getAssetPath(...segments);
   }
 
   getAllAssetFolderNames() {
-    const individualAssetDir = this.getAssetDir(this.folderName);
+    const individualAssetDir = this.getAssetPath(this.folderName);
     if (sh.test('-d', individualAssetDir)) {
       return [SharedAssetFolder, this.folderName];
     }
@@ -1068,7 +1062,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   getAllAssetFiles() {
     return this
       .getAllAssetFolderNames()
-      .map(folderName => this.getAssetDir(folderName))
+      .map(folderName => this.getAssetPath(folderName))
       .flatMap(folder => {
         const files = globRelative(folder, '**/*');
         // hackfix: for some reason, `globRelative` sometimes picks up deleted files
@@ -1079,7 +1073,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
   copyAssetFolder(assetFolderName) {
     // const assetDir = path.resolve(path.join(__dirname, `../../dbux-projects/assets/${assetFolderName}`));
-    const assetDir = this.getAssetDir(assetFolderName);
+    const assetDir = this.getAssetPath(assetFolderName);
     // copy assets, if this project has any
     this.log(`Copying assets from ${assetDir} to ${this.projectPath}`);
 
@@ -1098,7 +1092,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   // ###########################################################################
 
   getPatchFolder() {
-    return pathJoin(this.getAssetDir(PatchFolderName), this.folderName);
+    return pathJoin(this.getAssetPath(PatchFolderName), this.folderName);
   }
 
   getPatchFile(patchFName) {

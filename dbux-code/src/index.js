@@ -80,7 +80,7 @@ async function activate(context) {
     await initGraphView();
     await initPathwaysView();
 
-    await projectViewController.initProject();
+    await projectViewController.doInitWork();
 
     // Survey disabled for now
     // await maybeStartSurvey1ForTheFirstTime();

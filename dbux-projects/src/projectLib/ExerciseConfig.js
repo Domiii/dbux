@@ -26,6 +26,7 @@ export default class ExerciseConfig {
   number;
   name;
   description;
+  label;
 
   /**
    * Not used too much.

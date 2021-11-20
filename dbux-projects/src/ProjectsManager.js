@@ -6,7 +6,7 @@ import merge from 'lodash/merge';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { logTrace, newLogger } from '@dbux/common/src/log/logger';
-import { pathJoin, realPathSyncNormalized } from '@dbux/common-node/src/util/pathUtil';
+import { pathJoin, pathResolve, realPathSyncNormalized } from '@dbux/common-node/src/util/pathUtil';
 import { getFileSizeSync } from '@dbux/common-node/src/util/fileUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { readPackageJson } from '@dbux/cli/lib/package-util';
@@ -101,10 +101,6 @@ export default class ProjectsManager {
     this.runner.start();
     this._emitter = new NanoEvents();
 
-    // build projects + chapters
-    this.loadProjectList();
-    this.reloadExercises();
-
     this._backend = new BackendController(this);
 
     this.pathwayDataProvider = new PathwaysDataProvider(this);
@@ -127,83 +123,10 @@ export default class ProjectsManager {
 
   async init() {
     await initLang(this.config.dbuxLanguage);
-  }
 
-  /**
-   * Retrieves all case study objects, 
-   * sorted by name (in descending order).
-   * @return {ProjectList}
-   */
-  loadProjectList() {
-    // fix up names
-    for (const name in projectRegistry) {
-      const Clazz = projectRegistry[name];
-
-      // NOTE: function/class names might get mangled by Webpack (or other bundlers/tools)
-      Clazz.constructorName = name;
-    }
-
-    // sort all classes by name
-    const classes = Object.values(projectRegistry);
-    classes.sort((a, b) => {
-      const nameA = a.constructorName.toLowerCase();
-      const nameB = b.constructorName.toLowerCase();
-      return nameB.localeCompare(nameA);
-    });
-
-    // build + return ProjectList
-    const list = new ProjectList(this);
-    list.add(...classes.map(ProjectClazz =>
-      new ProjectClazz(this)
-    ));
-
-    this._projects = list;
-
-    return this._projects;
-  }
-
-  reloadChapters() {
-    try {
-      const chapterRegistryFilePath = this.externals.resources.getResourcePath('dist', 'projects', 'exercises', 'exerciseList.json');
-      const chapterRegistry = JSON.parse(fs.readFileSync(chapterRegistryFilePath, 'utf-8'));
-      this.chapters = [];
-      for (const chapterConfig of chapterRegistry) {
-        const { id, name, exercises: exerciseIds } = chapterConfig;
-        const exercises = exerciseIds.map(_id => {
-          const exercise = this.getExerciseById(_id);
-          if (!exercise) {
-            warn(`Cannot find exercise of id:${_id} in chapter#${id} registry. Make sure exerciesIds in "exerciseList.json" are correct.`);
-            return null;
-          }
-          return exercise;
-        }).filter(x => !!x);
-        const chapter = new Chapter(this, id, name, exercises);
-        this.chapters.push(chapter);
-      }
-      return this.chapters;
-    }
-    catch (err) {
-      logError(`Cannot load chapters: ${err.stack}`);
-      this.chapters = EmptyArray;
-      return this.chapters;
-    }
-  }
-
-  /**
-   * Reload exercises for every project, also reload chapters.
-   */
-  reloadExercises() {
-    this._exercisesByIdMap = new Map();
-    for (const project of this.projects) {
-      for (const exercise of project.reloadExercises()) {
-        this._exercisesByIdMap.set(exercise.id, exercise);
-      }
-    }
-    this.reloadChapters();
-  }
-
-  getExerciseById(exerciseId) {
-    return this._exercisesByIdMap.get(exerciseId);
+    // build projects + chapters
+    this.loadProjectList();
+    this.reloadExercises();
   }
 
   /**
@@ -260,6 +183,101 @@ export default class ProjectsManager {
   async getAndInitBackend() {
     await this._backend.init();
     return this._backend;
+  }
+
+  getAssetPath(...segments) {
+    if (path.isAbsolute(segments[0])) {
+      // absolute path
+      return realPathSyncNormalized(pathResolve(...segments));
+    }
+    else {
+      return this.externals.resources.getResourcePath('dist', 'projects', ...segments);
+    }
+  }
+
+  /** ###########################################################################
+   * exercise management
+   * ##########################################################################*/
+
+  /**
+   * Retrieves all case study objects, 
+   * sorted by name (in descending order).
+   * @return {ProjectList}
+   */
+  loadProjectList() {
+    // fix up names
+    for (const name in projectRegistry) {
+      const Clazz = projectRegistry[name];
+
+      // NOTE: function/class names might get mangled by Webpack (or other bundlers/tools)
+      Clazz.constructorName = name;
+    }
+
+    // sort all classes by name
+    const classes = Object.values(projectRegistry);
+    classes.sort((a, b) => {
+      const nameA = a.constructorName.toLowerCase();
+      const nameB = b.constructorName.toLowerCase();
+      return nameB.localeCompare(nameA);
+    });
+
+    // build + return ProjectList
+    const list = new ProjectList(this);
+    list.add(...classes.map(ProjectClazz =>
+      new ProjectClazz(this)
+    ));
+
+    this._projects = list;
+
+    return this._projects;
+  }
+
+  reloadChapterList() {
+    try {
+      // future-work: allow for loading/choosing any chapter list
+      const chapterListFile = this.getAssetPath('chapterLists', 'list1.json');
+      const chapterRegistry = JSON.parse(fs.readFileSync(chapterListFile, 'utf-8'));
+      this.chapters = [];
+      for (const chapterConfig of chapterRegistry) {
+        const { id, name, exercises: exerciseIds } = chapterConfig;
+        const exercises = exerciseIds.map(_id => {
+          const exercise = this.getExerciseById(_id);
+          if (!exercise) {
+            warn(
+              `Cannot find exercise of id:${_id} in chapter#${id} (${name}) registry. ` +
+              `Make sure exerciesIds in "exerciseList.json" are correct.`
+            );
+            return null;
+          }
+          return exercise;
+        }).filter(x => !!x);
+        const chapter = new Chapter(this, id, name, exercises);
+        this.chapters.push(chapter);
+      }
+      return this.chapters;
+    }
+    catch (err) {
+      logError(`Cannot load chapters: ${err.stack}`);
+      this.chapters = EmptyArray;
+      return this.chapters;
+    }
+  }
+
+  /**
+   * Reload exercises for every project, also reload chapters.
+   */
+  reloadExercises() {
+    this._exercisesByIdMap = new Map();
+    for (const project of this.projects) {
+      for (const exercise of project.reloadExercises()) {
+        this._exercisesByIdMap.set(exercise.id, exercise);
+      }
+    }
+    this.reloadChapterList();
+  }
+
+  getExerciseById(exerciseId) {
+    return this._exercisesByIdMap.get(exerciseId);
   }
 
   // ###########################################################################
@@ -500,15 +518,15 @@ export default class ProjectsManager {
    * TODO: move all project-related files to a project-related directory
    */
   getApplicationFilePath(uuid) {
-    return pathJoin(this.externals.resources.getLogsDirectory(), `${uuid}.dbuxapp`);
+    return pathResolve(this.externals.resources.getLogsDirectory(), `${uuid}.dbuxapp`);
   }
 
   getPathwaysLogFilePath(sessionId) {
-    return pathJoin(this.externals.resources.getLogsDirectory(), `${sessionId}.dbuxlog`);
+    return pathResolve(this.externals.resources.getLogsDirectory(), `${sessionId}.dbuxlog`);
   }
 
   getIndexFilePathByExercise(exercise) {
-    return pathJoin(this.externals.resources.getLogsDirectory(), `${exercise.id}.index`);
+    return pathResolve(this.externals.resources.getLogsDirectory(), `${exercise.id}.index`);
   }
 
   /** ###########################################################################

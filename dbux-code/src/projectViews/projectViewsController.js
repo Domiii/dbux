@@ -46,6 +46,7 @@ export function showOutputChannel() {
 
 export class ProjectViewController {
   constructor(context) {
+    this.context = context;
     this.manager = getProjectManager(context);
 
     // ########################################
@@ -54,25 +55,6 @@ export class ProjectViewController {
     this.isShowingTreeView = mementoGet(ShowProjectViewKeyName, true);
     commands.executeCommand('setContext', 'dbux.context.showPracticeViews', this.isShowingTreeView);
     commands.executeCommand('setContext', 'dbux.context.hasPracticeSession', !!this.manager.practiceSession);
-
-    this.projectViewNodeProvider = new ProjectNodeProvider(context, this);
-    this.sessionViewNodeProvider = new SessionNodeProvider(context, this);
-
-    this.practiceStopwatch = getStopwatch();
-    this.practiceStopwatch.onClick(context, async () => {
-      await this.manager.stopPractice();
-    });
-
-    // ########################################
-    //  listen on practice status changed
-    // ########################################
-    this.manager.onRunStatusChanged(this.handleStatusChanged.bind(this));
-    this.manager.onBugStatusChanged(this.refresh.bind(this));
-    this.manager.onPracticeSessionStateChanged(this.handlePracticeSessionStateChanged.bind(this));
-
-    initCodeEvents(this.manager, context);
-
-    this.maybeNotifyExistingPracticeSession();
   }
 
   async maybeNotifyExistingPracticeSession() {
@@ -121,11 +103,38 @@ export class ProjectViewController {
     }
   }
 
-  async initProject() {
+  /** ###########################################################################
+   * init
+   *  #########################################################################*/
+
+  async doInitWork() {
     await runTaskWithProgressBar(async (progress) => {
-      progress.report({ message: 'Initializing dbux-project...' });
+      progress.report({ message: 'Initializing dbux-projects...' });
       await this.manager.init();
 
+      // init work
+      const { context } = this;
+      this.projectViewNodeProvider = new ProjectNodeProvider(context, this);
+      this.sessionViewNodeProvider = new SessionNodeProvider(context, this);
+
+      this.practiceStopwatch = getStopwatch();
+      this.practiceStopwatch.onClick(context, async () => {
+        await this.manager.stopPractice();
+      });
+
+      // ########################################
+      //  listen on practice status changed
+      // ########################################
+      this.manager.onRunStatusChanged(this.handleStatusChanged.bind(this));
+      this.manager.onBugStatusChanged(this.refresh.bind(this));
+      this.manager.onPracticeSessionStateChanged(this.handlePracticeSessionStateChanged.bind(this));
+
+      initCodeEvents(this.manager, context);
+
+      this.maybeNotifyExistingPracticeSession();
+
+
+      // recover
       progress.report({ message: 'Recovering practice session...' });
       const previousActivatingExerciseId = mementoGet(ActivatingBugKeyName);
       const previousActivatingBug = this.manager.getExerciseById(previousActivatingExerciseId);
@@ -136,6 +145,8 @@ export class ProjectViewController {
       else if (await this.manager.tryRecoverPracticeSession()) {
         // projectManager.maybeAskForTestBug(projectManager.activeBug);
       }
+
+      this.refresh();
     }, { cancellable: false });
   }
 
@@ -310,9 +321,9 @@ export class ProjectViewController {
   }
 }
 
-// ###########################################################################
-// init/dispose
-// ###########################################################################
+/** ###########################################################################
+ * {@link initProjectView}
+ *  #########################################################################*/
 
 /**
  * @type {ProjectViewController}
@@ -329,10 +340,6 @@ export function initProjectView(context) {
         controller.manager.stopRunner();
       }
     });
-
-    // refresh right away
-    controller.projectViewNodeProvider.refresh();
-    controller.sessionViewNodeProvider.refresh();
 
     // register commands
     initProjectCommands(context, controller);
