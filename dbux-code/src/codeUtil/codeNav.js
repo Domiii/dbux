@@ -6,7 +6,7 @@ import {
   TextEditorRevealType
 } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { normalizeDriveLetter } from '@dbux/common-node/src/util/pathUtil';
+import { normalizeDriveLetter, pathNormalized } from '@dbux/common-node/src/util/pathUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { babelLocToCodeRange } from '../helpers/codeLocHelpers';
 
@@ -117,7 +117,7 @@ export function getCursorLocation() {
     // see: https://code.visualstudio.com/api/references/vscode-api#Selection
     const { selection } = textEditor;
     if (selection) {
-      const fpath = normalizeDriveLetter(textEditor.document.uri.fsPath);
+      const fpath = pathNormalized(normalizeDriveLetter(textEditor.document.uri.fsPath));
       const { active } = selection;
 
       const where = {

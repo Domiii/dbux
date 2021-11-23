@@ -1,5 +1,6 @@
 import path from 'path';
 import StaticProgramContext from '@dbux/common/src/types/StaticProgramContext';
+import { pathJoin, pathNormalized, pathRelative } from '@dbux/common-node/src/util/pathUtil';
 import Collection from '../Collection';
 
 // ###########################################################################
@@ -26,19 +27,25 @@ export default class StaticProgramContextCollection extends Collection {
     }
   }
 
+  postAddRaw(entries) {
+    for (const entry of entries) {
+      entry.filePath = pathNormalized(entry.filePath);
+    }
+  }
+
   /**
    * @param {StaticProgramContext} staticProgramContext 
    */
   serialize(staticProgramContext) {
     const staticProgramContextData = { ...staticProgramContext };
-    staticProgramContextData.relativeFilePath = path.relative(this.dp.application.entryPointPath, staticProgramContext.filePath).replace(/\\/g, '/');
+    staticProgramContextData.relativeFilePath = pathRelative(this.dp.application.entryPointPath, staticProgramContext.filePath);
     delete staticProgramContextData.filePath;
     return staticProgramContextData;
   }
 
   deserialize(staticProgramContextData) {
     const staticProgramContext = { ...staticProgramContextData };
-    staticProgramContext.filePath = path.join(this.dp.application.entryPointPath, staticProgramContext.relativeFilePath);
+    staticProgramContext.filePath = pathJoin(this.dp.application.entryPointPath, staticProgramContext.relativeFilePath);
     delete staticProgramContext.relativeFilePath;
     return staticProgramContext;
   }

@@ -35,6 +35,7 @@ class SessionNode extends BaseTreeViewNode {
 
   async handleClick() {
     if (this.manager.isBusy()) {
+      // TOTRANSLATE
       await showInformationMessage('Currently busy, please wait');
     }
     else {
