@@ -3,6 +3,7 @@ import map from 'lodash/map';
 import isObject from 'lodash/isObject';
 import isEmpty from 'lodash/isEmpty';
 import isFunction from 'lodash/isFunction';
+import isString from 'lodash/isString';
 import isPlainObject from 'lodash/isPlainObject';
 import size from 'lodash/size';
 
@@ -166,7 +167,7 @@ export default function makeTreeItem(labelOrArrOrItem, childrenOrCfg, itemProps)
   else {
     label = ('' + label); // coerce to string (else it won't show up)
 
-    if (!hasChildren /* && children */) {
+    if (!hasChildren && !isString(labelOrArrOrItem)) {
       label = keyValueLabel(label, children);
     }
     item = new TreeItem(label, collapsibleState);
