@@ -80,7 +80,7 @@ export default class BindingIdentifier extends BaseId {
   buildDefaultTrace() {
     if (this.path.isReferencedIdentifier()) {
       /**
-       * hackfix
+       * hackfix for `!` unary operator
        * @see https://github.com/Domiii/dbux/issues/602
        */
       return this.buildDefaultTraceBase();

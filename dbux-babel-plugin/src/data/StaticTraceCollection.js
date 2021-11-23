@@ -25,7 +25,11 @@ const traceCustomizationsByType = {
   // [TraceType.Resume]: tracePathEnd,
   [TraceType.BlockStart]: tracePathStart,
   [TraceType.BlockEnd]: tracePathEnd,
-  [TraceType.EndOfContext]: tracePathEnd
+  [TraceType.EndOfContext]: tracePathEnd,
+  [TraceType.Catch]: tracePathStart,
+  [TraceType.Finally]: tracePathStart,
+  [TraceType.TryExit]: tracePathEnd,
+  [TraceType.FinallyExit]: tracePathEnd,
 };
 
 

@@ -3,6 +3,8 @@ import TraceType from '@dbux/common/src/types/constants/TraceType';
 import BaseNode from './BaseNode';
 import BindingIdentifier from './BindingIdentifier';
 
+/** @typedef { import("./TryStatement").default } TryStatement */
+
 export default class CatchClause extends BaseNode {
   static children = ['param'];
   static plugins = ['Params'];
@@ -21,8 +23,11 @@ export default class CatchClause extends BaseNode {
   exit1() {
     const [paramNode] = this.getChildNodes();
 
+    /**
+     * @type {TryStatement}
+     */
     const tryNode = this.peekNodeForce('TryStatement');
-    tryNode.addConsequentTrace(this, TraceType.Catch, 'traceCatch');
+    tryNode.addConsequentStartTrace(this, TraceType.Catch, 'traceCatch');
 
     if (paramNode) {
       const moreTraceData = {

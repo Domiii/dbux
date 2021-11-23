@@ -42,9 +42,16 @@ const traceTypeObj = {
 
   EndOfContext: 22,
 
+  /**
+   * FinallyStart
+   */
   Finally: 23,
+  /**
+   * CatchStart
+   */
   Catch: 24,
-  TryBlockExit: 25,
+  TryExit: 25,
+  FinallyExit: 26,
 
 
   Declaration: 30,

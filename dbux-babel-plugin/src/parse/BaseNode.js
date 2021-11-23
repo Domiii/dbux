@@ -38,7 +38,7 @@ export default class BaseNode extends ParseNode {
 
 
   // ###########################################################################
-  // trace utility
+  // get
   // ###########################################################################
 
   /**
@@ -77,6 +77,19 @@ export default class BaseNode extends ParseNode {
     }
     return undefined;
   }
+
+  /**
+   * NOTE: this is a relatively new method, to allow overriding default paths in node for further use in Plugin (amongst other use cases).
+   * Only used by `ArithmeticExpression` (as it traces all children by default).
+   * There are probably only few other potential use cases.
+   */
+  getDefaultChildPaths() {
+    return this.getChildPaths();
+  }
+
+  /** ###########################################################################
+   * misc
+   * ##########################################################################*/
 
   /**
    * NOTE: same path can be wrapped multiple times.
