@@ -211,7 +211,6 @@ export default class CallGraph {
     const index = this._binarySearchByKey(traces, trace, (t) => t.traceId);
     if (index === null) {
       logError('Trace not found in traces');
-      debugger;
       return null;
     }
     const previousTraceById = this.dp.collections.traces.getById(traceId - 1);
