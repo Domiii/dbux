@@ -226,7 +226,7 @@ export default class TraceCollection extends Collection {
         previousTrace.error = true;
       }
       else if (TraceType.is.Finally(traceType)) {
-        if (!TraceType.is.TryBlockExit(previousTraceType) && !isTraceReturn(previousTraceType)) {
+        if (!TraceType.is.TryExit(previousTraceType) && !isTraceReturn(previousTraceType)) {
           previousTrace.error = true;
         }
       }
