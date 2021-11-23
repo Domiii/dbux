@@ -12,9 +12,12 @@ import { getNodeNames } from '../visitors/nameVisitors';
 // trace state management utilities
 // ###########################################################################
 
+/**
+ * Build `loc` based on `TraceType`.
+ */
 const traceCustomizationsByType = {
-  [TraceType.PushImmediate]: tracePathStart,
-  [TraceType.PopImmediate]: tracePathEnd,
+  [TraceType.PushImmediate]: tracePathStartContext,
+  [TraceType.PopImmediate]: tracePathEndContext,
 
   // NOTE: PushCallback + PopCallback are sharing the StaticTrace of `CallbackArgument` which pegs on `CallArgument` (so they won't pass through here)
   // [TraceType.PushCallback]: tracePathStart,
@@ -25,7 +28,7 @@ const traceCustomizationsByType = {
   // [TraceType.Resume]: tracePathEnd,
   [TraceType.BlockStart]: tracePathStart,
   [TraceType.BlockEnd]: tracePathEnd,
-  [TraceType.EndOfContext]: tracePathEnd,
+  [TraceType.EndOfContext]: tracePathEndContext,
   [TraceType.Catch]: tracePathStart,
   [TraceType.Finally]: tracePathStart,
   [TraceType.TryExit]: tracePathEnd,
@@ -69,6 +72,20 @@ function tracePathEnd(path, state, thin) {
       end
     }
   };
+}
+
+function tracePathStartContext(path, state) {
+  const thin = path.isProgram();
+  return tracePathStart(path, state, thin);
+}
+
+function tracePathEndContext(path, state) {
+  const thin = path.isProgram();
+  return tracePathEnd(path, state, thin);
+}
+
+function tracePathEndThin(path, state) {
+  return tracePathEnd(path, state, true);
 }
 
 function getTraceDisplayName(path, state) {

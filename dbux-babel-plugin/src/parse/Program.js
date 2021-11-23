@@ -47,7 +47,7 @@ function buildProgramInit(path, { ids, contexts: { genContextId } }) {
 }
 
 function buildPopProgram(dbux) {
-  // TODO: use template instead
+  // TODO: add `awaitContextId`
   return buildSource(`${dbux.name}.popProgram();`);
 }
 

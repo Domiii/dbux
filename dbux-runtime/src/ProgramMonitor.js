@@ -167,7 +167,7 @@ export default class ProgramMonitor {
       return undefined;
     }
 
-    return this._runtimeMonitor.popImmediate(this.getProgramId(), this._programContextId, ProgramEndTraceId);
+    return this._runtimeMonitor.popProgram(this.getProgramId(), this._programContextId, ProgramEndTraceId);
   }
 
   // ###########################################################################

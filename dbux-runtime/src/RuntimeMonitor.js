@@ -249,6 +249,26 @@ export default class RuntimeMonitor {
     return this.popImmediate(programId, realContextId, traceId, awaitContextId);
   }
 
+  /**
+   * Case 1: normal pop function.
+   * Case 2: pop function during `PostAwait` event, but after error was thrown in inner `async` callee
+   *        -> need to handle `postAwait` here
+   */
+  popProgram(programId, realContextId, inProgramStaticTraceId) {
+    // TODO: awaitContextId
+    // this._fixContext(programId, realContextId, awaitContextId);
+    let traceId;
+    if (!this.areTracesDisabled) {
+      try {
+        traceId = this.newTraceId(programId, inProgramStaticTraceId);
+      }
+      catch (err) {
+        throw new NestedError(`"popProgram" failed at context "${executionContextCollection.makeContextInfo(realContextId)}"`, err);
+      }
+    }
+    return this.popImmediate(programId, realContextId, traceId);
+  }
+
   popImmediate(programId, contextId, traceId, awaitContextId) {
     if (this._rootDisableCount) {
       // context and its children were omitted
