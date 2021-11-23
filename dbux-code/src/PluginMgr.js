@@ -27,7 +27,7 @@ export default class PluginMgr {
       }
 
       // future-work: expose dbux-code systems to plugin
-      this.plugins = await pluginInit();
+      return await pluginInit();
     }
     catch (err) {
       throw new NestedError(`plugin initialization failed for "${fpath}"`, err);
@@ -38,7 +38,7 @@ export default class PluginMgr {
     const { pluginFolder } = this;
     const pluginFiles = getAllFilesInFolders(pluginFolder);
 
-    await Promise.all(
+    this.plugins = await Promise.all(
       pluginFiles.map(this.loadPlugin)
     );
   }

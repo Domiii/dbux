@@ -12,7 +12,7 @@ export default class ArithmeticExpression extends BasePlugin {
     const { node } = this;
     const { path, Traces } = node;
     // const childNodes = node.getChildNodes();
-    const childPaths = node.getChildPaths();
+    const childPaths = node.getDefaultChildPaths();
 
     // this.warn('childPaths', childPaths.map(c => pathToString(c)));
 

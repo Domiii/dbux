@@ -6,8 +6,7 @@ export default class ThrowStatement extends BaseNode {
 
   exit() {
     const { path, Traces } = this;
-    const childPaths = this.getChildPaths();
-    const [argPath] = childPaths;
+    const [argPath] = this.getChildPaths();
 
     const traceData = {
       node: this,

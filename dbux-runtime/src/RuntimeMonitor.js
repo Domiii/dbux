@@ -1,4 +1,5 @@
 import { newLogger } from '@dbux/common/src/log/logger';
+import Trace from '@dbux/common/src/types/Trace';
 import ExecutionContextType from '@dbux/common/src/types/constants/ExecutionContextType';
 import { isBeforeCallExpression, isPopTrace } from '@dbux/common/src/types/constants/TraceType';
 // import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
@@ -1293,6 +1294,9 @@ export default class RuntimeMonitor {
     return trace;
   }
 
+  /**
+   * @param {Trace} trace 
+   */
   _onTrace(contextId, trace, staticTraceType = undefined) {
     if (!staticTraceType) {
       const { staticTraceId } = trace;

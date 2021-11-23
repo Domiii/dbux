@@ -2,6 +2,9 @@
 
 import isFunction from 'lodash/isFunction';
 
+/**
+ * @return {string} Name of plugin entry. Name is used to look up plugin in `ParseNode` via `ParseRegistry`.
+ */
 export function pickPlugin(node, keyOrKeyFun, byKey) {
   let key;
   if (isFunction(keyOrKeyFun)) {
@@ -10,9 +13,13 @@ export function pickPlugin(node, keyOrKeyFun, byKey) {
   else {
     key = keyOrKeyFun;
   }
+  
   const pluginName = byKey[key];
   if (!pluginName) {
-    node.logger.error(`unknown plugin key: "${key}" at "${node}" in "${node.getParent()}"`);
+    if (!(key in byKey)) {
+      // key was not registered
+      node.logger.error(`unknown plugin key: "${key}" at "${node}" in "${node.getParent()}"`);
+    }
   }
   // console.debug(`[LVAL] key = ${key} - ${pathToString(node.path)}`);
   return pluginName;
