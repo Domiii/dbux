@@ -178,7 +178,7 @@ export default class Project extends ProjectBase {
    * @virtual
    * @param {ExerciseConfig} exerciseConfig
    */
-  async decorateExercise(exerciseConfig) {
+  decorateExercise(exerciseConfig) {
     // noop by default
     return exerciseConfig;
   }
