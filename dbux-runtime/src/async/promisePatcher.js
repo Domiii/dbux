@@ -245,6 +245,7 @@ function patchThen(holder) {
 }
 
 function patchFinally(holder) {
+  // TODO: use `valueCollection._startAccess` before reading `finally`
   if (!holder.finally) {
     return;
   }

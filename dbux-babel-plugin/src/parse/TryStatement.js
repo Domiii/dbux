@@ -12,9 +12,11 @@ export default class TryStatement extends BaseNode {
   static plugins = [];
 
   /**
+   * NOTE: adds `contextIdVar` to traceCall.
+   * 
    * @param {BaseNode} node
    */
-  addConsequentTrace(node, traceType, traceCall) {
+  addConsequentStartTrace(node, traceType, traceCall) {
     /**
      * @type {StaticContext}
      */
@@ -41,7 +43,7 @@ export default class TryStatement extends BaseNode {
       },
       meta: {
         noTidIdentifier: true,
-        hoisted: true,
+        hoisted: true,    // add to beginning of block
         // instrument: instrumentUnshiftBody,
         build: buildTraceStatic,
         traceCall,
@@ -52,6 +54,23 @@ export default class TryStatement extends BaseNode {
     return node.Traces.addTrace(traceData);
   }
 
+  addConsequentExitTrace(node, traceType, traceCall = 'newTraceId') {
+    return this.Traces.addTrace({
+      path: node.path,
+      node,
+      staticTraceData: {
+        type: traceType
+      },
+      meta: {
+        noTidIdentifier: true,
+        instrument: instrumentBehind,
+        // build: buildTraceId // we don't want the variable
+        build: buildTraceStatic,
+        traceCall
+      }
+    });
+  }
+
   /**
    * 
    */
@@ -60,25 +79,26 @@ export default class TryStatement extends BaseNode {
     const [tryPath] = this.getChildPaths();
 
     /**
-     * Add `TryBlockExit` to the end of `try` block.
+     * Add `TryExit` to the end of `try` block.
      */
     this.Traces.addTrace({
       path: tryPath,
       node: this,
       staticTraceData: {
-        type: TraceType.TryBlockExit
+        type: TraceType.TryExit
       },
       meta: {
-        traceCall: 'newTraceId',
         noTidIdentifier: true,
         instrument: instrumentBehind,
         // build: buildTraceId // we don't want the variable
-        build: buildTraceStatic
+        build: buildTraceStatic,
+        traceCall: 'newTraceId'
       }
     });
 
     if (finalizerNode) {
-      this.addConsequentTrace(finalizerNode, TraceType.Finally, 'traceFinally');
+      this.addConsequentStartTrace(finalizerNode, TraceType.Finally, 'traceFinally');
+      this.addConsequentExitTrace(finalizerNode, TraceType.FinallyExit);
     }
   }
 }
