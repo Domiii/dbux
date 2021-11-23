@@ -221,24 +221,19 @@ export default class TraceCollection extends Collection {
 
       const previousTraceId = previousTrace.traceId;
       const previousTraceType = util.getTraceType(previousTraceId);
-      if (isTracePop(traceType) && !isTraceReturn(previousTraceType) && !isTraceFunctionExit(previousTraceType)) {
-        previousTrace.error = true;
-        continue;
-      }
 
       if (TraceType.is.Catch(traceType)) {
         previousTrace.error = true;
-        continue;
       }
-
-      if (TraceType.is.Finally(traceType) &&
-        `previousTrace is in try block` &&
-        `no TraceType.TryBlockExit` &&
-        !isTraceReturn(previousTraceType) &&
-        !isTraceFunctionExit(previousTraceType)
-      ) {
-        previousTrace.error = true;
-        continue;
+      else if (TraceType.is.Finally(traceType)) {
+        if (!TraceType.is.TryBlockExit(previousTraceType) && !isTraceReturn(previousTraceType)) {
+          previousTrace.error = true;
+        }
+      }
+      else if (isTracePop(traceType)) {
+        if (!isTraceReturn(previousTraceType) && !isTraceFunctionExit(previousTraceType) && !TraceType.is.FinallyExit(previousTraceType)) {
+          previousTrace.error = true;
+        }
       }
 
       // if (!isTraceFunctionExit(previousTraceType)) {
