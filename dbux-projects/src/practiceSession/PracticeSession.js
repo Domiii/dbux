@@ -123,7 +123,7 @@ export default class PracticeSession {
     }
   }
 
-  tagBugTrace(trace, cursorFile, cursorLine) {
+  tagExerciseTrace(trace, cursorFile, cursorLine) {
     if (this.isFinished()) {
       const alertsMsg = `Practice session aleady finished.`;
       this.manager.externals.alert(alertsMsg);
