@@ -80,7 +80,7 @@ const tutorial = {
       },
       edges: [
         {
-          text: 'Try to "run" the first bug',
+          text: 'Try to "run" the first experiment',
           node: 'bug12'
         }
       ]

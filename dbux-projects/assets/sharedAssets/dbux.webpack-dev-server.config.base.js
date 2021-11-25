@@ -19,6 +19,7 @@ module.exports = (ProjectRoot, cfg, argv) => {
 
     contentBase: [
       path.join(ProjectRoot, 'dist'),
+      path.join(ProjectRoot, 'public')
       // ProjectRoot
     ],
     // publicPath: outputFolder

@@ -13,6 +13,7 @@ import NodeFetchProject from './projects/node-fetch/Project';
 import BluebirdProject from './projects/bluebird/Project';
 import AsyncJsProject from './projects/async-js/Project';
 import SocketIOProject from './projects/socket.io/Project';
+import ReactProject from './projects/react-tic-tac-toe/Project';
 
 // eslint-disable-next-line import/no-mutable-exports
 let registry = {
@@ -28,6 +29,8 @@ if (process.env.NODE_ENV === 'development') {
 
   registry = {
     ...registry,
+
+    'react-tic-tac-toe': ReactProject,
 
     // NOTE: sequelize not a good public candidate due to the sqlite dependency losing binaries over time
     sequelize: SequelizeProject,

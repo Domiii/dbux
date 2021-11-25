@@ -256,16 +256,20 @@ class WebpackBuilder {
 
     // prepare args
 
-    const moreEnv = this.getCfgValue(bug, 'env');
+    const target = this.getCfgValue(bug, 'target') || 'web';
     const webpackConfig = this.getCfgValue(bug, 'webpackConfig');
     const projectRoot = this.getProjectRoot(bug);
     const outputPath = this.getOutputPath(bug);
     const context = this.getContext(bug);
     const entry = this.getEntry();
+    const moreEnv = this.getCfgValue(bug, 'env');
     const copyPlugin = this.getCopyPlugin(bug);
 
     let env = {
       ...moreEnv,
+      /**
+       * NOTE: `cfg` is interpreted by dbux.webpack.config.base.js.
+       */
       cfg: {
         // TODO: add dbuxArgs
         ...webpackConfig,
@@ -273,6 +277,7 @@ class WebpackBuilder {
         outputPath,
         context,
         entry,
+        target,
         copyPlugin,
         port: bug.websitePort || 0
       }

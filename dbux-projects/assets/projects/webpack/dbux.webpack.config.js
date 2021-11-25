@@ -9,7 +9,7 @@ const settings = {
     'webpack-cli/packages/webpack-cli/bin',
     'webpack-cli/packages/webpack-cli/lib'
   ],
-  preLoaders: [
+  babelPreLoaders: [
     // see https://github.com/JavascriptIsMagic/shebang-loader/blob/master/index.js
     // allowHashbang
     {

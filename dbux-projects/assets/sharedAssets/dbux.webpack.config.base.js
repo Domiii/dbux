@@ -70,7 +70,7 @@ const defaultBabelOptions = {
     // "@babel/plugin-syntax-export-default-from",
     // "@babel/plugin-syntax-dynamic-import",
     // "@babel/plugin-transform-runtime",
-    '@dbux/babel-plugin'
+    '@dbux/babel-plugin',
   ]
 };
 
@@ -114,9 +114,11 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
       plugins,
       target = 'node',
       babelOptions: babelOptionsOverrides,
+      moduleRules = [],
+      babelPreLoaders = [],
+      babelPostLoaders = [],
       devServer: devServerCfg,
-      preLoaders = [],
-      postLoaders = []
+      port,
     } = customConfig;
 
     ProjectRoot = projectRootOverride || ProjectRoot;
@@ -126,7 +128,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     // ###########################################################################
 
     let devServer;
-    if (devServerCfg) {
+    if (port || devServerCfg) {
       const devServerFn = require('./dbux.webpack-dev-server.config.base.js');
       devServer = devServerFn(ProjectRoot, customConfig, argv);
       let devServerOverrides;
@@ -136,7 +138,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
       else if (isFunction(devServerCfg)) {
         devServerOverrides = devServerCfg(customConfig, argv);
       }
-      else if (devServerCfg !== true) {
+      else if (devServerCfg !== true && !(port && devServerCfg === undefined)) {
         throw new Error(`Invalid devServer config (must be true, object or function) - ${JSON.stringify(devServerCfg)}`);
       }
       devServer = mergeConcatArray(devServer, devServerOverrides);
@@ -315,20 +317,24 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
           {
             test: /\.jsx?$/,
             use: [
-              ...postLoaders,
+              ...babelPostLoaders,
               {
                 loader: 'babel-loader',
                 options: babelOptions
               },
-              ...preLoaders
+              ...babelPreLoaders
             ],
             include: [
               ...srcFolders.map(folder => path.join(ProjectRoot, folder))
             ],
             // enforce: 'pre'
           },
+          {
+            test: /\.css$/i,
+            use: ["style-loader", "css-loader"],
+          },
 
-          // ...dbuxRules
+          ...moduleRules
         ],
 
         // // [webpack-2]

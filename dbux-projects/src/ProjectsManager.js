@@ -489,6 +489,9 @@ export default class ProjectsManager {
         sizeMessage('Research', researchSize) +
         `\nDo you want to load a previous session?`;
       const buttons = {
+        // TODO: option to only go to experiment and ignore session?
+        // []: async () => {
+        // },
         ...practiceSize && { [`Load Practice Session`]: () => [true, false] } || EmptyObject,
         ...researchSize && { [`Load Research Session`]: () => [false, true] } || EmptyObject,
         [`Ignore (don't ask again)`]: async () => {
