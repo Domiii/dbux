@@ -220,18 +220,22 @@ const configs = [
       }))
     ]
   },
-  {
-    id: 16,
-    label: 'redirect with custom status code',
-    testRe: [
-      'should include the redirect type'
-    ],
-    testFilePaths: ['test/res.redirect.js'],
-    bugLocations: [798, 799, 801].map(line => ({
-      fileName: 'lib/response.js',
-      line
-    }))
-  },
+  /**
+   * Bug locations should be at line 821 "and" 826 of 'test/res.redirect.js'(`url` should be replaced with `address`).
+   * Currently we do not support bugs that require fixes on multiple line in the same time, needs further design.
+   */
+  // {
+  //   id: 16,
+  //   label: 'redirect with custom status code',
+  //   testRe: [
+  //     'should include the redirect type'
+  //   ],
+  //   testFilePaths: ['test/res.redirect.js'],
+  //   bugLocations: [798, 799, 801].map(line => ({
+  //     fileName: 'lib/response.js',
+  //     line
+  //   }))
+  // },
   {
     id: 17,
     label: 'missing "view engine"',
