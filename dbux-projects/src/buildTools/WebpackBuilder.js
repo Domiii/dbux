@@ -1,10 +1,8 @@
 import path from 'path';
-import glob from 'glob';
 import isFunction from 'lodash/isFunction';
-import isEmpty from 'lodash/isEmpty';
-import { filesToEntry, getWebpackJs, getWebpackDevServerJs, serializeEnv, fileWithoutExt } from '@dbux/common-node/src/util/webpackUtil';
+import { serializeEnv, globPatternToEntry } from '@dbux/common-node/src/util/webpackUtil';
 import { globRelative } from '@dbux/common-node/src/util/fileUtil';
-import { pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
+import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
 
 /** @typedef { import("../projectLib/Project").default } Project */
 
@@ -122,41 +120,8 @@ class WebpackBuilder {
         throw new Error(`"${exercise.id}" - WebpackBuilder not configured correctly - must provide entry or entryPattern.`);
       }
 
-      entryPatterns = Array.isArray(entryPatterns) ? entryPatterns : [entryPatterns];
       const contextRoot = this.getContext(exercise);
-      entry = Object.fromEntries(
-        entryPatterns.flatMap(pattern => {
-          let parent;
-          if (Array.isArray(pattern)) {
-            [parent, pattern] = pattern;
-          }
-          else {
-            parent = '';
-            // const startIdx = pattern.indexOf('*');
-            // if (startIdx < 0) {
-            //   throw new Error(`"${bug.id}" - invalid entryPattern is missing wildcard (*)`);
-            // }
-            // const parentIdx = pattern.lastIndexOf('/', startIdx);
-            // if (parentIdx < 0) {
-            //   pattern = ['', pattern];
-            // }
-            // else {
-            //   // split by the last path-separator before the first wildcard
-            //   pattern = [pattern.substring(0, parentIdx), pattern.substring(parentIdx + 1)];
-            // }
-          }
-          const entryRoot = pathResolve(contextRoot, parent);
-          return glob
-            .sync(pathResolve(entryRoot, pattern))
-            .map(fpath => [
-              fileWithoutExt(pathRelative(contextRoot, fpath)),
-              fpath
-            ]);
-        })
-      );
-      if (isEmpty(entry)) {
-        throw new Error(`"${exercise.id}" - entryPattern did not match any files: ${entryPatterns}`);
-      }
+      entry = globPatternToEntry(contextRoot, entryPatterns);
     }
     return this._entry = entry;
   }

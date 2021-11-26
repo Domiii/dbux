@@ -68,7 +68,8 @@ export function pathNormalizedForce(fpath) {
 }
 
 export function parseNodeModuleName(fpath) {
-  const matchResult = fpath.match(/(?<=node_modules[/\\])(?!node_modules)(?<packageName>[^/\\]+)(?=[/\\](?!node_modules).*)/);
+  fpath = pathNormalized(fpath);
+  const matchResult = fpath.match(/(?<=node_modules[/])(?!node_modules)(?<packageName>[^/]+)(?=[/](?!node_modules).*)?/);
   return matchResult?.groups.packageName || null;
 }
 

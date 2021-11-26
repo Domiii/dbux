@@ -3,11 +3,11 @@ import isString from 'lodash/isString';
 import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
 import { requireDynamic } from '@dbux/common-node/src/util/requireUtil';
 
-// const Verbose = 0;
-const Verbose = 1;
+const Verbose = 0;
+// const Verbose = 1;
 
 function debugLog(...args) {
-  let msg = `[@dbux/cli] ${args.join(' ')}`;
+  let msg = `[@dbux/babel-plugin][moduleFilter] ${args.join(' ')}`;
   // msg = colors.gray(msg);
 
   // eslint-disable-next-line no-console
@@ -15,8 +15,10 @@ function debugLog(...args) {
 }
 
 function shouldInstrumentPackage(packageName, whitelist, blacklist) {
-  return (!whitelist || whitelist.some(regexp => regexp.test(packageName))) &&
-    (!blacklist || !blacklist?.some(regexp => regexp.test(packageName)));
+  const white = (!whitelist || whitelist.some(regexp => regexp.test(packageName)));
+  const black = (!blacklist || !blacklist?.some(regexp => regexp.test(packageName)));
+  // console.log('shouldInstrumentPackage', packageName, { white, black, whitelist });
+  return white && black;
 }
 
 export default function moduleFilter(options, includeDefault) {
@@ -41,13 +43,14 @@ export default function moduleFilter(options, includeDefault) {
   Verbose > 1 && debugLog(`pw`, packageWhitelistRegExps?.join(','), 'pb', packageBlacklistRegExps?.join(','));
 
   // future-work: use Webpack5 magic comments instead
-  Verbose > 1 && debugLog(`[@dbux/babel-plugin]`,
-    requireDynamic.resolve/* ._resolveFilename */('@dbux/babel-plugin/package.json'));
+  Verbose > 1 && debugLog(
+    requireDynamic.resolve/* ._resolveFilename */('@dbux/babel-plugin/package.json')
+  );
 
 
-  return function shouldIgnore(modulePath, ...otherArgs) {
+  return function _include(modulePath, ...otherArgs) {
     if (!modulePath) {
-      Verbose && debugLog(`no modulePath`);
+      Verbose && debugLog(`no modulePath - otherArgs = ${otherArgs}`);
       return undefined;
     }
     if (modulePath.match(/((dbux-runtime)|(@dbux[/\\]runtime))[/\\]/)) {
@@ -58,6 +61,8 @@ export default function moduleFilter(options, includeDefault) {
     // TODO: make this dist and .mjs stuff customizable
     const matchSkipFileResult = modulePath.match(/([/\\]dist[/\\])|(\.mjs$)/);
     const packageName = parseNodeModuleName(modulePath);
+
+    // console.log('matchSkipFileResult', modulePath, packageName, matchSkipFileResult);
 
     if (matchSkipFileResult ||
       (packageName &&
