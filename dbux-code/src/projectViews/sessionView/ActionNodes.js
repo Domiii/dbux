@@ -12,6 +12,8 @@ import { isProjectFolderInWorkspace } from '../../codeUtil/workspaceUtil';
 /** @typedef {import('@dbux/projects/src/projectLib/Exercise').default} Exercise */
 
 class SessionNode extends BaseTreeViewNode {
+  availableOnBusy = false;
+
   /**
    * @return {ProjectViewsController}
    */
@@ -34,7 +36,7 @@ class SessionNode extends BaseTreeViewNode {
   }
 
   async handleClick() {
-    if (this.manager.isBusy()) {
+    if (!this.availableOnBusy && this.manager.isBusy()) {
       // TOTRANSLATE
       await showInformationMessage('Currently busy, please wait');
     }
@@ -61,6 +63,7 @@ class DetailNode extends SessionNode {
   init() {
     this.contextValue = 'dbuxSessionView.detailNode';
     this.description = this.exercise.id;
+    this.availableOnBusy = true;
   }
 
   makeIconPath() {

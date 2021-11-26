@@ -295,6 +295,10 @@ export default class ProjectsManager {
     const exerciseProgress = this.bdp.getExerciseProgressByExercise(exercise);
     if (!exerciseProgress) {
       const stopwatchEnabled = await this.askForStopwatch(exercise);
+      if (stopwatchEnabled === null) {
+        // user canceled
+        return;
+      }
       this.bdp.addExerciseProgress(exercise, ExerciseStatus.Solving, stopwatchEnabled);
       this.bdp.updateExerciseProgress(exercise, { startedAt: Date.now() });
     }
@@ -685,8 +689,8 @@ export default class ProjectsManager {
     const previousExercise = await project.getCurrentBugFromTag();
     if (previousExercise) {
       await this.saveFileChanges(previousExercise);
-      await project.gitResetHard();
     }
+    await project.gitResetHard();
 
     // install things
     await this.runner.activateExercise(exercise);
