@@ -1168,9 +1168,9 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   async getCurrentBugFromTag() {
     if (this.doesProjectFolderExist()) {
       for (const tag of (await this.gitGetAllCurrentTagName())) {
-        const bug = this.parseExerciseCachedTag(tag);
-        if (bug) {
-          return bug;
+        const exercise = this.parseExerciseCachedTag(tag);
+        if (exercise) {
+          return exercise;
         }
       }
     }
@@ -1214,14 +1214,18 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     return GitInstalledTag;
   }
 
-  getExerciseCachedTagTagName(bug) {
-    return `__dbux_exercise_${bug.id}_selected`;
+  getExerciseCachedTagTagName(exercise) {
+    return `__dbux_exercise_${exercise.id}_selected`;
   }
 
   parseExerciseCachedTag(tagName) {
     const exerciseId = tagName.match(/__dbux_exercise_([^_]*)_selected/)?.[1];
     if (exerciseId) {
-      return this._exercises.getById(exerciseId);
+      const exercise = this._exercises.getById(exerciseId);
+      if (!exercise) {
+        this.logger.warn(`Found exerciseId "${exerciseId}" from tag, but exercise of that id does not exist.`);
+      }
+      return exercise;
     }
     else {
       return null;

@@ -60,10 +60,10 @@ export default class ExerciseDataProvider extends DataProviderBase {
    * @param {Exercise} exercise 
    * @param {Object} update
    */
-  updateExerciseProgress(bug, update) {
-    const exerciseProgress = this.getExerciseProgressByExercise(bug);
+  updateExerciseProgress(exercise, update) {
+    const exerciseProgress = this.getExerciseProgressByExercise(exercise);
     if (!exerciseProgress) {
-      this.logger.error(`Tried to update bug (${Object.keys(update || {})}) progress but no previous record found: ${bug.id}`);
+      this.logger.error(`Tried to update bug (${Object.keys(update || {})}) progress but no previous record found: ${exercise.id}`);
       return;
     }
     for (const key of Object.keys(update)) {
