@@ -1,5 +1,5 @@
 import path from 'path';
-import fs, { existsSync } from 'fs';
+import fs from 'fs';
 import pull from 'lodash/pull';
 import defaultsDeep from 'lodash/defaultsDeep';
 import sh from 'shelljs';
@@ -10,7 +10,7 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { requireUncached } from '@dbux/common-node/src/util/requireUtil';
 import { getAllFilesInFolders, globRelative, rm } from '@dbux/common-node/src/util/fileUtil';
-import { pathJoin, pathRelative, pathResolve, realPathSyncNormalized } from '@dbux/common-node/src/util/pathUtil';
+import { pathJoin, pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import isObject from 'lodash/isObject';
 import ExerciseList from './ExerciseList';
 import Process from '../util/Process';
@@ -24,8 +24,9 @@ import Exercise from './Exercise';
 /** @typedef {import('./ExerciseConfig').default} ExerciseConfig */
 
 const Verbose = false;
-const SharedAssetFolder = 'sharedAssets';
-const ExerciseAssetFolder = 'exerciseAssets';
+const SharedAssetFolderName = 'sharedAssets';
+const ExerciseAssetFolderName = 'exerciseAssets';
+const ProjectAssetFolderName = 'projectAssets';
 const PatchFolderName = 'patches';
 const GitInstalledTag = '__dbux_project_installed';
 
@@ -995,7 +996,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   /**
    * Copy all assets into project folder.
    */
-  async installAssets(bug = null) {
+  async installAssets(exercise = null) {
     // remove unwanted files
     let { projectPath, rmFiles } = this;
     if (rmFiles?.length) {
@@ -1009,21 +1010,21 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       rm('-rf', absRmFiles);
     }
 
-    // copy assets
-    const projectAssetsFolders = this.getAllAssetFolderNames();
+    // copy project assets
+    const projectAssetsFolders = this.getAllAssetFolderPaths();
     projectAssetsFolders.forEach(folderName => {
       this.copyAssetFolder(folderName);
     });
 
-    // copy bug assets
-    if (bug) {
-      const bugAssetsFolder = this.getBugAssetFolderName(bug);
-      if (bugAssetsFolder) {
-        if (!existsSync(this.getAssetPath(bugAssetsFolder))) {
-          this.logger.error(`Experiment "${bug.id}" should have assets, but no asset folder at "${this.getAssetPath(bugAssetsFolder)}"`);
+    // copy exercise assets
+    if (exercise) {
+      const exerciseAssetsFolderPath = this.getExerciseAssetFolderPath(exercise);
+      if (exerciseAssetsFolderPath) {
+        if (!fs.existsSync(exerciseAssetsFolderPath)) {
+          this.logger.error(`Experiment "${exercise.id}" should have assets, but no asset folder at "${this.getAssetPath(exerciseAssetsFolderPath)}"`);
         }
         else {
-          this.copyAssetFolder(bugAssetsFolder);
+          this.copyAssetFolder(exerciseAssetsFolderPath);
         }
       }
     }
@@ -1035,24 +1036,28 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     }
   }
 
+  /**
+   * @returns {string} absolute path of asset
+   */
   getAssetPath(...segments) {
     // relative to dbux-internal asset path
     return this.manager.getAssetPath(...segments);
   }
 
-  getAllAssetFolderNames() {
-    const individualAssetDir = this.getAssetPath(this.folderName);
-    if (sh.test('-d', individualAssetDir)) {
-      return [SharedAssetFolder, this.folderName];
+  getAllAssetFolderPaths() {
+    const sharedAssetFolder = this.getAssetPath(SharedAssetFolderName);
+    const individualAssetFolderPath = this.getAssetPath(ProjectAssetFolderName, this.folderName);
+    if (sh.test('-d', individualAssetFolderPath)) {
+      return [sharedAssetFolder, individualAssetFolderPath];
     }
     else {
-      return [SharedAssetFolder];
+      return [sharedAssetFolder];
     }
   }
 
-  getBugAssetFolderName(bug) {
-    if (bug.hasAssets) {
-      return pathJoin(ExerciseAssetFolder, this.name, bug.name || bug.id);
+  getExerciseAssetFolderPath(exercise) {
+    if (exercise.hasAssets) {
+      return this.getAssetPath(ExerciseAssetFolderName, this.name, exercise.name || exercise.id);
     }
     else {
       return null;
@@ -1061,8 +1066,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
   getAllAssetFiles() {
     return this
-      .getAllAssetFolderNames()
-      .map(folderName => this.getAssetPath(folderName))
+      .getAllAssetFolderPaths()
       .flatMap(folder => {
         const files = globRelative(folder, '**/*');
         // hackfix: for some reason, `globRelative` sometimes picks up deleted files
@@ -1071,18 +1075,14 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       });
   }
 
-  copyAssetFolder(assetFolderName) {
-    // const assetDir = path.resolve(path.join(__dirname, `../../dbux-projects/assets/${assetFolderName}`));
-    const assetDir = this.getAssetPath(assetFolderName);
-    // copy assets, if this project has any
-    this.log(`Copying assets from ${assetDir} to ${this.projectPath}`);
+  copyAssetFolder(assetFolderPath) {
+    this.log(`Copying assets from ${assetFolderPath} to ${this.projectPath}`);
 
     // Globs are tricky. See: https://stackoverflow.com/a/31438355/2228771
-    const copyRes = sh.cp('-rf', `${assetDir}/{.[!.],..?,}*`, this.projectPath);
+    const copyRes = sh.cp('-rf', `${assetFolderPath}/{.[!.],..?,}*`, this.projectPath);
 
-    const assetFiles = getAllFilesInFolders(assetDir).join(',');
-    // this.log(`Copied assets. All root files: ${await getAllFilesInFolders(this.projectPath, false).join(', ')}`);
-    this.log(`Copied assets (${assetDir}): result=${copyRes.toString()}, files=${assetFiles}`,
+    const assetFiles = getAllFilesInFolders(assetFolderPath).join(',');
+    this.log(`Copied assets (${assetFolderPath}): result=${copyRes.toString()}, files=${assetFiles}`,
       // this.execCaptureOut(`cat ${this.projectPath}/.babelrc.js`)
     );
   }
