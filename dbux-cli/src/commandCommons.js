@@ -1,3 +1,4 @@
+import { requireDynamic } from '@dbux/common-node/src/util/requireUtil';
 import fs from 'fs';
 import path from 'path';
 
@@ -84,8 +85,7 @@ export function processRemainingOptions(options) {
     req.split(',').forEach(f => {
       f = path.resolve(process.cwd(), f);
       // eslint-disable-next-line import/no-dynamic-require
-      const requireFunc = typeof __non_webpack_require__ === "function" ? __non_webpack_require__ : require;
-      requireFunc(f);
+      requireDynamic(f);
     });
   }
 }

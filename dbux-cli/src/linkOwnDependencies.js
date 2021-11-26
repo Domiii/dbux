@@ -56,8 +56,6 @@ function linkOwnDependencies() {
   );
   linkDependencies(absoluteDeps);
 
-  // // see: https://stackoverflow.com/questions/42797313/webpack-dynamic-module-loader-by-requir
   // // eslint-disable-next-line camelcase
-  // const requireFunc = typeof __non_webpack_require__ === "function" ? __non_webpack_require__ : require;
-  // depNames.forEach(n => requireFunc(n));
+  // depNames.forEach(n => requireDynamic(n));
 }

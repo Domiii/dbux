@@ -6,7 +6,7 @@ export function requireAllByName(pattern, propName = 'name') {
   const files = glob.sync(pattern);
   return Object.fromEntries(
     files.map((file) => {
-      const obj = __non_webpack_require__(path.resolve(file)).default;
+      const obj = requireDynamic(path.resolve(file)).default;
       const prop = obj?.[propName];
       if (!prop) {
         // eslint-disable-next-line max-len
@@ -15,6 +15,15 @@ export function requireAllByName(pattern, propName = 'name') {
       return [prop, obj];
     })
   );
+}
+
+/**
+ * @see https://stackoverflow.com/questions/42797313/webpack-dynamic-module-loader-by-requir
+ */
+export function requireDynamic(module) {
+  // eslint-disable-next-line camelcase
+  const requireFunc = typeof __non_webpack_require__ === "function" ? __non_webpack_require__ : require;
+  return requireFunc(module);
 }
 
 export function requireUncached(module) {

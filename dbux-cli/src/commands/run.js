@@ -1,6 +1,7 @@
 /* global __non_webpack_require__ */
 // import path from 'path';
 import sleep from '@dbux/common/src/util/sleep';
+import { requireDynamic } from '@dbux/common-node/src/util/requireUtil';
 import { wrapCommand } from '../util/commandUtil';
 import dbuxRegister from '../dbuxRegister';
 import { processEnv } from '../util/processEnv';
@@ -24,6 +25,7 @@ export const handler = wrapCommand(async ({ file, _, ...moreOptions }) => {
 
   // hackfix: get some cli + runtime dependencies out of the way, so that @babel/register will not instrument them
   //      NOTE: this is a terrible solution
+  // eslint-disable-next-line import/no-extraneous-dependencies
   require('cliui');
   // require('socket.io-client');
   // require('lodash');
@@ -40,14 +42,10 @@ export const handler = wrapCommand(async ({ file, _, ...moreOptions }) => {
   
   // go time!
 
-  // see: https://stackoverflow.com/questions/42797313/webpack-dynamic-module-loader-by-requir
-  // eslint-disable-next-line camelcase
-  const requireFunc = typeof __non_webpack_require__ === "function" ? __non_webpack_require__ : require;
-
   // TODO: if esm -> call `import` instead
 
   try {
-    requireFunc(targetPath);
+    requireDynamic(targetPath);
   }
   catch (err) {
     // delay shutdown

@@ -1,6 +1,7 @@
 import dbuxBabelPlugin from '@dbux/babel-plugin';
-import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import shouldIgnore from '@dbux/babel-plugin/src/external/shouldIgnore';
+import { requireDynamic } from '@dbux/common-node/src/util/requireUtil';
 import colors from 'colors/safe';
 import isString from 'lodash/isString';
 
@@ -57,8 +58,6 @@ export default function buildBabelOptions(options) {
     dontInjectDbux,
     dontAddPresets,
     dbuxOptions: babelPluginOptions,
-    packageWhitelist,
-    packageBlacklist,
     verbose = 0,
     runtime = null,
   } = options;
@@ -77,25 +76,9 @@ export default function buildBabelOptions(options) {
   //   injectDependencies();
   // }
 
-  if (!isString(packageWhitelist)) {
-    // console.debug(JSON.stringify(packageWhitelist), typeof packageWhitelist);
-    packageWhitelist = Array.from(packageWhitelist).join(',');
-  }
-  
-  // packageBlacklist && console.warn('packageBlacklist', packageBlacklist);
-  let packageWhitelistRegExps = packageWhitelist?.split(',')
-    .map(s => s.trim())
-    .map(generateFullMatchRegExp);
-  let packageBlacklistRegExps = packageBlacklist?.split(',')
-    .map(s => s.trim())
-    .map(generateFullMatchRegExp);
-
-  verbose > 1 && debugLog(`pw`, packageWhitelistRegExps?.join(','), 'pb', packageBlacklistRegExps?.join(','));
-
   // future-work: use Webpack5 magic comments instead
-  const requireFunc = typeof __non_webpack_require__ === "function" ? __non_webpack_require__ : require;
   verbose > 1 && debugLog(`[@dbux/babel-plugin]`,
-    requireFunc.resolve/* ._resolveFilename */('@dbux/babel-plugin/package.json'));
+    requireDynamic.resolve/* ._resolveFilename */('@dbux/babel-plugin/package.json'));
 
   // setup babel-register
   const baseOptions = esnext ? baseBabelOptions : EmptyObject;
@@ -108,32 +91,7 @@ export default function buildBabelOptions(options) {
     // see https://babeljs.io/docs/en/options#parseropts
     parserOpts: { allowReturnOutsideFunction: true },
     ignore: [
-      function shouldIgnore(modulePath, ...otherArgs) {
-        if (!modulePath) {
-          verbose && debugLog(`no modulePath`);
-          return undefined;
-        }
-        if (modulePath.match(/((dbux-runtime)|(@dbux[/\\]runtime))[/\\]/)) {
-          // TODO: only debug this if we are targeting dbux directly; else this could cause infinite loops
-          return true;
-        }
-
-        const matchSkipFileResult = modulePath.match(/([/\\]dist[/\\])|(\.mjs$)/);
-        const packageName = parseNodeModuleName(modulePath);
-
-        if (matchSkipFileResult || 
-            (packageName && 
-          !shouldInstrumentPackage(packageName, packageWhitelistRegExps, packageBlacklistRegExps))) {
-          verbose > 1 && debugLog(`no-register`, modulePath);
-          return true;
-        }
-
-        // modulePath = modulePath.toLowerCase();
-
-        const ignore = false;
-        verbose && debugLog(`REGISTER`, modulePath);
-        return ignore;
-      }
+      shouldIgnore(options)
     ]
   };
 

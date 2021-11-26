@@ -12,4 +12,4 @@ module.exports = function loadBabel(name) {
     return module.default;
   }
   return module;
-}
+};

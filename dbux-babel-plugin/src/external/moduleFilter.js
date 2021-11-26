@@ -1,6 +1,9 @@
+
 import isString from 'lodash/isString';
 import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
+import { requireDynamic } from '@dbux/common-node/src/util/requireUtil';
 
+// const Verbose = 0;
 const Verbose = 1;
 
 function debugLog(...args) {
@@ -38,9 +41,8 @@ export default function moduleFilter(options, includeDefault) {
   Verbose > 1 && debugLog(`pw`, packageWhitelistRegExps?.join(','), 'pb', packageBlacklistRegExps?.join(','));
 
   // future-work: use Webpack5 magic comments instead
-  const requireFunc = typeof __non_webpack_require__ === "function" ? __non_webpack_require__ : require;
   Verbose > 1 && debugLog(`[@dbux/babel-plugin]`,
-    requireFunc.resolve/* ._resolveFilename */('@dbux/babel-plugin/package.json'));
+    requireDynamic.resolve/* ._resolveFilename */('@dbux/babel-plugin/package.json'));
 
 
   return function shouldIgnore(modulePath, ...otherArgs) {
@@ -53,6 +55,7 @@ export default function moduleFilter(options, includeDefault) {
       return !includeDefault;
     }
 
+    // TODO: make this dist and .mjs stuff customizable
     const matchSkipFileResult = modulePath.match(/([/\\]dist[/\\])|(\.mjs$)/);
     const packageName = parseNodeModuleName(modulePath);
 

@@ -11,6 +11,7 @@ import isDate from 'lodash/isDate';
 import sleep from '@dbux/common/src/util/sleep';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Backlog from './Backlog';
+import { requireDynamic } from '@dbux/common-node/src/util/requireUtil';
 
 /** @typedef {import('./BackendController').default} BackendController */
 
@@ -66,11 +67,8 @@ export class Db {
   }
 
   _req(target) {
-    // eslint-disable-next-line camelcase
-    const _req = __non_webpack_require__;
-    // const _req = require;
     debug(`requiring ${target}...`);
-    return _req(target);
+    return requireDynamic(target);
   }
 
   /**

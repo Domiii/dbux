@@ -1,5 +1,4 @@
 /* eslint no-console: 0 */
-
 const path = require('path');
 // const process = require('process');
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
@@ -14,7 +13,8 @@ const {
 
 // register self, so we can load dbux src files
 require('../dbux-cli/lib/dbux-register-self');
-const { globToEntry } = require('../dbux-common-node/src/util/webpackUtil');
+const { pathRelative } = require('../dbux-common-node/src/util/pathUtil');
+const { globPatternToEntry } = require('../dbux-common-node/src/util/webpackUtil');
 
 // const _oldLog = console.log; console.log = (...args) => _oldLog(new Error(' ').stack.split('\n')[2], ...args);
 const PackageRoot = path.resolve(__dirname);
@@ -40,7 +40,7 @@ module.exports = (env, argv) => {
 
 
   const dependencyPaths = [
-    'dbux-common', 
+    'dbux-common',
     'dbux-common-node'
   ];
 
@@ -70,11 +70,20 @@ module.exports = (env, argv) => {
 
   const entry = {
     index: path.join(PackageRoot, 'src/index.js'),
-    ...globToEntry(PackageRoot, 'src/external/*.js'),
-    
+    ...globPatternToEntry(
+      PackageRoot,
+      [['src/external', '*.js']],
+      (key, fpath/* , parent, entryRoot */) => {
+        key = path.basename(key); // put file directly into dist, don't keep intermediate path
+        return [
+          key, fpath
+        ];
+      }
+    ),
+
   };
 
-  // console.warn('[dbux-cli] entry:', JSON.stringify(entry, null, 2));
+  console.warn('[dbux-babel-plugin] entry:', JSON.stringify(entry, null, 2));
 
 
   return {

@@ -1,7 +1,8 @@
 import NestedError from '@dbux/common/src/NestedError';
-import { getAllFilesInFolders } from '@dbux/common-node/src/util/fileUtil';
-import { pathJoin } from '@dbux/common-node/src/util/pathUtil';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { pathJoin } from '@dbux/common-node/src/util/pathUtil';
+import { getAllFilesInFolders } from '@dbux/common-node/src/util/fileUtil';
+import { requireDynamic } from '@dbux/common-node/src/util/requireUtil';
 import { getExtensionPath } from './codeUtil/codePath';
 
 const { log, debug, warn, error: logError } = newLogger('dbux-code');
@@ -19,8 +20,7 @@ export default class PluginMgr {
     const fpath = pathJoin(pluginFolder, f);
     try {
       // eslint-disable-next-line import/no-dynamic-require,global-require,camelcase
-      const requireFunc = typeof __non_webpack_require__ === "function" ? __non_webpack_require__ : require;
-      const pluginInit = requireFunc(fpath);
+      const pluginInit = requireDynamic(fpath);
 
       if (!pluginInit) {
         throw new Error(`Plugin did not export anything. Make sure to export an init function (e.g. \`exports.init = async function init(dbuxCode) { dosomething })\`.`);

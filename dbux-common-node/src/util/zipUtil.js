@@ -1,8 +1,9 @@
-import { _require } from '@dbux/common/src/util/universalLibs';
+import { requireDynamic } from './requireUtil';
 
 /** ###########################################################################
  * write
  * ##########################################################################*/
+
 
 /**
  * 
@@ -12,7 +13,7 @@ import { _require } from '@dbux/common/src/util/universalLibs';
  * @see https://www.npmjs.com/package/adm-zip
  */
 export function zipDataToFile(zipFpath, data, entryName = 'first-entry') {
-  const AdmZip = _require('adm-zip');
+  const AdmZip = requireDynamic('adm-zip');
 
   let zip = new AdmZip();
   zip.addFile(entryName, Buffer.from(data));
@@ -20,7 +21,7 @@ export function zipDataToFile(zipFpath, data, entryName = 'first-entry') {
 }
 
 export function zipFile(inputFpath, zipFpath) {
-  const AdmZip = _require('adm-zip');
+  const AdmZip = requireDynamic('adm-zip');
   
   let zip = new AdmZip();
   zip.addLocalFile(inputFpath);
@@ -40,7 +41,7 @@ export function getZipFirstEntryName(zip) {
 }
 
 export function readZipFirstEntryText(zipFpath) {
-  const AdmZip = _require('adm-zip');
+  const AdmZip = requireDynamic('adm-zip');
 
   let zip = new AdmZip(zipFpath);
   const firstEntry = getZipFirstEntryName(zip);
@@ -48,7 +49,7 @@ export function readZipFirstEntryText(zipFpath) {
 }
 
 export function unzipAllTo(zipFpath, targetPath, overwrite = true) {
-  const AdmZip = _require('adm-zip');
+  const AdmZip = requireDynamic('adm-zip');
 
   let zip = new AdmZip(zipFpath);
   zip.extractAllTo(targetPath, overwrite);
