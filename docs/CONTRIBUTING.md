@@ -57,6 +57,19 @@ We use Lerna with Yarn workspaces, so instead of `npm i pkg`, we can do the foll
    `yarn add --dev -W pkg`
 
 
+## Using Dbux Local Development Build
+
+If you want to use the local development build of Dbux in other folders, make sure to hard-link them.
+
+E.g. on Windows:
+
+```ps
+mkdir ..\..\node_modules\@dbux
+mklink /J ..\..\node_modules\@dbux\babel-plugin ..\..\..\dbux\dbux-babel-plugin
+mklink /J ..\..\node_modules\@dbux\runtime ..\..\..\dbux\dbux-runtime
+```
+
+
 # Joining the Community
 
 While you can certainly try to get started on your own, you probably make your life a lot easier by [join the dev team on Discord](https://discord.gg/8kR2a7h) first :)

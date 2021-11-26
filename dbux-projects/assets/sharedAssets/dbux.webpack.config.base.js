@@ -37,13 +37,15 @@ function mergeConcatArray(...inputs) {
   );
 }
 
-// TODO: pass actual node version in via parameter (part of `target`)
-// const presets = 
 
+/**
+ * @see https://github.com/babel/babel-loader#options
+ */
 const defaultBabelOptions = {
   // sourceMaps: "both",
   // see https://github.com/webpack/webpack/issues/11510#issuecomment-696027212
   sourceType: "unambiguous",
+  // cacheDirectory: , // TODO
   sourceMaps: true,
   retainLines: true,
   babelrc: true,

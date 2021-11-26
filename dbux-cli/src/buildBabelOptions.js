@@ -30,18 +30,6 @@ function debugLog(...args) {
   // }
 }
 
-/**
- * Add `^` and `$` (if not exist) to `s` and convert to `RegExp`.
- * @param {string} s 
- */
-function generateFullMatchRegExp(s) {
-  return new RegExp(`${s[0] === '^' ? '' : '^'}${s}${s[s.length - 1] === '$' ? '' : '$'}`);
-}
-
-function shouldInstrumentPackage(packageName, whitelist, blacklist) {
-  return (!whitelist || whitelist.some(regexp => regexp.test(packageName))) && 
-    (!blacklist || !blacklist?.some(regexp => regexp.test(packageName)));
-}
 
 /**
  * TODO: allow custom babel options to also trace configured libraries.

@@ -98,7 +98,7 @@ var isObject = function (value) {
 function Encoder() { }
 
 function printTimer(what, timer, buffer) {
-  if (buffer.length > 1e6) {
+  if (buffer.length > 1e8) {
     timer.print(debug, `${what} (not small buffer): ${Math.round(buffer.length / 1000).toLocaleString('en-us')} kb`);
   }
 }

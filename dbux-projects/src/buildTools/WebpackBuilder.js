@@ -109,21 +109,21 @@ class WebpackBuilder {
     return this.getCfgValue(bug, 'context') || this.getProjectRoot(bug);
   }
 
-  getEntry(bug, force = false) {
+  getEntry(exercise, force = false) {
     if (!force && this._entry) {
       return this._entry;
     }
-    let entry = this.getCfgValue(bug, 'entry');
+    let entry = this.getCfgValue(exercise, 'entry');
     if (!entry) {
       // return getAllFilesInFolders(path.join(this.projectPath, folder));
       // return globToEntry(this.projectPath, 'js/*');
-      let entryPatterns = this.getCfgValue(bug, 'entryPattern');
+      let entryPatterns = this.getCfgValue(exercise, 'entryPattern');
       if (!entryPatterns) {
-        throw new Error(`"${bug.id}" - WebpackBuilder not configured correctly - must provide entry or entryPattern.`);
+        throw new Error(`"${exercise.id}" - WebpackBuilder not configured correctly - must provide entry or entryPattern.`);
       }
 
       entryPatterns = Array.isArray(entryPatterns) ? entryPatterns : [entryPatterns];
-      const contextRoot = this.getContext(bug);
+      const contextRoot = this.getContext(exercise);
       entry = Object.fromEntries(
         entryPatterns.flatMap(pattern => {
           let parent;
@@ -155,7 +155,7 @@ class WebpackBuilder {
         })
       );
       if (isEmpty(entry)) {
-        throw new Error(`"${bug.id}" - entryPattern did not match any files: ${entryPatterns}`);
+        throw new Error(`"${exercise.id}" - entryPattern did not match any files: ${entryPatterns}`);
       }
     }
     return this._entry = entry;
@@ -194,13 +194,13 @@ class WebpackBuilder {
     return null;
   }
 
-  getCfgValue(bug, name) {
+  getCfgValue(exercise, name) {
     const { project, cfg } = this;
 
-    let value = bug[name] || cfg[name];
+    let value = exercise[name] || cfg[name];
     if (isFunction(value)) {
       // this === project, first arg = bug
-      value = value.call(project, bug);
+      value = value.call(project, exercise);
     }
     return value;
   }
@@ -245,7 +245,7 @@ class WebpackBuilder {
     return this.project.getSharedDependencyPath('webpack-cli/bin/cli.js');
   }
 
-  async startWatchMode(bug) {
+  async startWatchMode(exercise) {
     const { project, cfg } = this;
     const { projectPath } = project;
 
@@ -256,14 +256,14 @@ class WebpackBuilder {
 
     // prepare args
 
-    const target = this.getCfgValue(bug, 'target') || 'web';
-    const webpackConfig = this.getCfgValue(bug, 'webpackConfig');
-    const projectRoot = this.getProjectRoot(bug);
-    const outputPath = this.getOutputPath(bug);
-    const context = this.getContext(bug);
+    const target = this.getCfgValue(exercise, 'target') || 'web';
+    const webpackConfig = this.getCfgValue(exercise, 'webpackConfig');
+    const projectRoot = this.getProjectRoot(exercise);
+    const outputPath = this.getOutputPath(exercise);
+    const context = this.getContext(exercise);
     const entry = this.getEntry();
-    const moreEnv = this.getCfgValue(bug, 'env');
-    const copyPlugin = this.getCopyPlugin(bug);
+    const moreEnv = this.getCfgValue(exercise, 'env');
+    const copyPlugin = this.getCopyPlugin(exercise);
 
     let env = {
       ...moreEnv,
@@ -279,7 +279,7 @@ class WebpackBuilder {
         entry,
         target,
         copyPlugin,
-        port: bug.websitePort || 0
+        port: exercise.websitePort || 0
       }
     };
     env = serializeEnv(env);

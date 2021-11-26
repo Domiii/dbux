@@ -14,6 +14,7 @@ const {
 
 // register self, so we can load dbux src files
 require('../dbux-cli/lib/dbux-register-self');
+const { globToEntry } = require('../dbux-common-node/src/util/webpackUtil');
 
 // const _oldLog = console.log; console.log = (...args) => _oldLog(new Error(' ').stack.split('\n')[2], ...args);
 const PackageRoot = path.resolve(__dirname);
@@ -68,7 +69,9 @@ module.exports = (env, argv) => {
   ];
 
   const entry = {
-    index: path.join(PackageRoot, 'src/index.js')
+    index: path.join(PackageRoot, 'src/index.js'),
+    ...globToEntry(PackageRoot, 'src/external/*.js'),
+    
   };
 
   // console.warn('[dbux-cli] entry:', JSON.stringify(entry, null, 2));

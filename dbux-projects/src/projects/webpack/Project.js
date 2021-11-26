@@ -185,6 +185,9 @@ export default class WebpackProject extends Project {
       }),
       {
         env: {
+          /**
+           * @see https://webpack.js.org/api/cli/#cli-environment-variables
+           */
           WEBPACK_CLI_SKIP_IMPORT_LOCAL: 1
         },
       }
