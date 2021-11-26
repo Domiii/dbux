@@ -11,6 +11,11 @@ import traceCollection from '../data/traceCollection';
 import valueCollection from '../data/valueCollection';
 
 
+/**
+ * TODO: make more easily configurable
+ */
+const Enabled = false;
+
 function containsInstrumentedCallbacks(args, spreadArgs) {
   spreadArgs = spreadArgs || EmptyArray;
   return args.some((arg, i) => {
@@ -321,6 +326,9 @@ export default class CallbackPatcher {
   }
 
   monkeyPatchCallee(originalFunction) {
+    if (!Enabled) {
+      return null;
+    }
     return getPatchedFunctionOrNull(originalFunction);
   }
 
@@ -333,7 +341,7 @@ export default class CallbackPatcher {
     //   // monkey patching is only necessary for instrumenting callback arguments -> nothing to do
     //   return originalFunction;
     // }
-    if (!args) {
+    if (!Enabled || !args) {
       return;
     }
     if (this.ignoreCallbacks.has(originalFunction)) {

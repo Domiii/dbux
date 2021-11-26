@@ -2,6 +2,7 @@
 import isString from 'lodash/isString';
 import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
 import { requireDynamic } from '@dbux/common-node/src/util/requireUtil';
+import { isRegExp } from 'lodash';
 
 const Verbose = 0;
 // const Verbose = 1;
@@ -27,18 +28,8 @@ export default function moduleFilter(options, includeDefault) {
     packageBlacklist
   } = options;
 
-  if (!isString(packageWhitelist)) {
-    // console.debug(JSON.stringify(packageWhitelist), typeof packageWhitelist);
-    packageWhitelist = Array.from(packageWhitelist).join(',');
-  }
-
-  // packageBlacklist && console.warn('packageBlacklist', packageBlacklist);
-  let packageWhitelistRegExps = packageWhitelist?.split(',')
-    .map(s => s.trim())
-    .map(generateFullMatchRegExp);
-  let packageBlacklistRegExps = packageBlacklist?.split(',')
-    .map(s => s.trim())
-    .map(generateFullMatchRegExp);
+  let packageWhitelistRegExps = generateRegExps(packageWhitelist);
+  let packageBlacklistRegExps = generateRegExps(packageBlacklist);
 
   Verbose > 1 && debugLog(`pw`, packageWhitelistRegExps?.join(','), 'pb', packageBlacklistRegExps?.join(','));
 
@@ -80,11 +71,33 @@ export default function moduleFilter(options, includeDefault) {
 }
 
 
+/** ###########################################################################
+ * util
+ *  #########################################################################*/
 
 /**
  * Add `^` and `$` (if not exist) to `s` and convert to `RegExp`.
  * @param {string} s 
  */
 function generateFullMatchRegExp(s) {
+  s = s.trim();
   return new RegExp(`${s[0] === '^' ? '' : '^'}${s}${s[s.length - 1] === '$' ? '' : '$'}`);
+}
+
+function generateRegExps(list) {
+  if (!list) {
+    return list;
+  }
+
+  if (isString(list)) {
+    list = list.trim().split(',');
+  }
+  else {
+    // console.debug(JSON.stringify(packageWhitelist), typeof packageWhitelist);
+    list = Array.from(list).join(',')
+      .map(s => isRegExp(s) ? s : generateFullMatchRegExp(s));
+  }
+
+  // packageBlacklist && console.warn('packageBlacklist', packageBlacklist);
+  return list.map(generateFullMatchRegExp);
 }

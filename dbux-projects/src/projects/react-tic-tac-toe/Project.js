@@ -16,7 +16,17 @@ export default class ReactProject extends Project {
         // vendor: ['todomvc-app-css/index.css'],
       },
       webpackConfig: {
+        alias: {
+          // eslint-disable-next-line quote-props
+          'react': 'react/cjs/react.development.js',
+          'react-dom': 'react-dom/cjs/react-dom.development.js'
+        },
+        babelInclude: {
+          // packageWhitelist: /^react(?:[-]dom)?$/ // NOTE: cannot serialize regexp
+          packageWhitelist: '^react(?:[-]dom)?$'
+        },
         babelOptions: {
+          cacheDirectory: true,
           presets: [
             '@babel/preset-react'
           ]

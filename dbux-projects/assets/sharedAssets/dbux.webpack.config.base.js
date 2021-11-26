@@ -13,8 +13,10 @@ const isFunction = require('lodash/isFunction');
 // const isArray = require('lodash/isArray');
 const isObject = require('lodash/isObject');
 const CopyPlugin = require('copy-webpack-plugin');
-const { inspect } = require('util');
-require('@dbux/babel-plugin');
+// const { inspect } = require('util');
+
+// require('@dbux/babel-plugin');
+const makeInclude = require('@dbux/babel-plugin/dist/include').default;
 
 
 // eslint-disable-next-line import/no-dynamic-require
@@ -37,45 +39,59 @@ function mergeConcatArray(...inputs) {
   );
 }
 
+/** ###########################################################################
+ * babel defaults
+ *  #########################################################################*/
 
 /**
  * @see https://github.com/babel/babel-loader#options
  */
-const defaultBabelOptions = {
-  // sourceMaps: "both",
-  // see https://github.com/webpack/webpack/issues/11510#issuecomment-696027212
-  sourceType: "unambiguous",
-  // cacheDirectory: , // TODO
-  sourceMaps: true,
-  retainLines: true,
-  babelrc: true,
-  // see https://babeljs.io/docs/en/options#parseropts
-  parserOpts: { allowReturnOutsideFunction: true },
-  presets: [
-    // [
-    //   '@babel/preset-env',
-    //   {
-    //     useBuiltIns: 'usage',
-    //     corejs: 3
-    //   }
-    // ]
-  ],
-  plugins: [
-    // "@babel/plugin-proposal-optional-chaining",
-    //   "@babel/plugin-proposal-decorators",
-    // [
-    //   {
-    //     legacy: true
-    //   }
-    // ],
-    // "@babel/plugin-proposal-function-bind",
-    // "@babel/plugin-syntax-export-default-from",
-    // "@babel/plugin-syntax-dynamic-import",
-    // "@babel/plugin-transform-runtime",
-    '@dbux/babel-plugin',
-  ]
-};
+function babelOptionsDefault() {
+  return {
+    // sourceMaps: "both",
+    // see https://github.com/webpack/webpack/issues/11510#issuecomment-696027212
+    sourceType: "unambiguous",
+    // cacheDirectory: ,
+    sourceMaps: true,
+    retainLines: true,
+    babelrc: true,
+    // see https://babeljs.io/docs/en/options#parseropts
+    parserOpts: { allowReturnOutsideFunction: true },
+    presets: [
+      // [
+      //   '@babel/preset-env',
+      //   {
+      //     useBuiltIns: 'usage',
+      //     corejs: 3
+      //   }
+      // ]
+    ],
+    plugins: [
+      // "@babel/plugin-proposal-optional-chaining",
+      //   "@babel/plugin-proposal-decorators",
+      // [
+      //   {
+      //     legacy: true
+      //   }
+      // ],
+      // "@babel/plugin-proposal-function-bind",
+      // "@babel/plugin-syntax-export-default-from",
+      // "@babel/plugin-syntax-dynamic-import",
+      // "@babel/plugin-transform-runtime",
+      '@dbux/babel-plugin',
+    ]
+  };
+}
 
+function babelIncludeDefault(ProjectRoot, srcFolders) {
+  return [
+    ...srcFolders.map(folder => path.join(ProjectRoot, folder))
+  ];
+}
+
+/** ###########################################################################
+ * final config
+ *  #########################################################################*/
 
 module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
   return (env, argv) => {
@@ -115,8 +131,10 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
       entry,
       plugins,
       target = 'node',
-      babelOptions: babelOptionsOverrides,
+      babelOptions: babelOptionsOverride,
+      babelInclude: babelIncludeOverride,
       moduleRules = [],
+      alias = {},
       babelPreLoaders = [],
       babelPostLoaders = [],
       devServer: devServerCfg,
@@ -232,22 +250,29 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     // resolve.alias
     // ###########################################################################
 
-    const alias = {
-    };
+    // alias = ...
 
     // ###########################################################################
-    // externals
+    // babel options
     // ###########################################################################
 
-    const babelOptions = { ...defaultBabelOptions };
-    if (babelOptionsOverrides) {
+    const babelOptions = { ...babelOptionsDefault() };
+    if (babelOptionsOverride) {
       // babel overrides
-      Object.assign(babelOptions, babelOptionsOverrides);
+      Object.assign(babelOptions, babelOptionsOverride);
     }
-    if (!(babelOptionsOverrides && babelOptionsOverrides.presets) && target !== 'node') {
-      // remove custom options of preset-env
-      // babelOptions.presets[0].splice(1, 1);
-    }
+    // if (!(babelOptionsOverrides && babelOptionsOverrides.presets) && target !== 'node') {
+    //   // remove custom options of preset-env
+    //   // babelOptions.presets[0].splice(1, 1);
+    // }
+
+    const babelInclude = babelIncludeOverride ? 
+      makeInclude(babelIncludeOverride) : 
+      babelIncludeDefault(ProjectRoot, srcFolders);
+
+    /** ###########################################################################
+     * externals
+     *  #########################################################################*/
 
     const externals = target !== 'node' ?
       [
@@ -326,9 +351,8 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
               },
               ...babelPreLoaders
             ],
-            include: [
-              ...srcFolders.map(folder => path.join(ProjectRoot, folder))
-            ],
+            include: babelInclude,
+            // include: makeInclude(includeOptions),
             // enforce: 'pre'
           },
           {
