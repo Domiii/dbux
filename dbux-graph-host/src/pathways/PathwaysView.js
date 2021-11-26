@@ -124,7 +124,7 @@ class PathwaysView extends HostComponentEndpoint {
     return staticContextId ? getStaticContextColor(themeMode, staticContextId) : '';
   }
 
-  makeStep = (themeMode, modeName, step) => {
+  makeStep = (themeMode, step) => {
     const {
       _id: stepId,
       applicationId,
@@ -180,7 +180,7 @@ class PathwaysView extends HostComponentEndpoint {
       icon = getIconByStep(stepType);
     }
 
-    const iconUri = this.getIconUri(modeName, icon);
+    const iconUri = this.getIconUri(icon);
     const timeSpent = formatTimeSpent(this.pdp.util.getStepTimeSpent(stepId));
     const background = this.makeStepBackground(step, themeMode);
     const hasTrace = StepType.is.Trace(stepType);
@@ -279,7 +279,6 @@ class PathwaysView extends HostComponentEndpoint {
     this.pdp = pdp;
 
     const { themeMode } = this.context;
-    const modeName = ThemeMode.getName(themeMode).toLowerCase();
 
     // TODO: get step's prepared data, not raw data
     let stepGroups;
@@ -296,7 +295,7 @@ class PathwaysView extends HostComponentEndpoint {
           _id: stepGroupId,
           timeSpentMillis,
           timeSpent: formatTimeSpent(timeSpentMillis),
-          firstStep: this.makeStep(themeMode, modeName, pdp.indexes.steps.byGroup.getFirst(stepGroupId))
+          firstStep: this.makeStep(themeMode, pdp.indexes.steps.byGroup.getFirst(stepGroupId))
         };
       });
       stepGroups.sort((a, b) => b.timeSpentMillis - a.timeSpentMillis);
@@ -317,7 +316,7 @@ class PathwaysView extends HostComponentEndpoint {
       // non-analyze mode
       steps = pdp.collections.steps.getAll().
         filter(step => !!step).
-        map(step => this.makeStep(themeMode, modeName, step));
+        map(step => this.makeStep(themeMode, step));
     }
 
 
@@ -331,7 +330,7 @@ class PathwaysView extends HostComponentEndpoint {
         } = actionGroup;
 
         const typeName = ActionGroupType.getName(type);
-        const iconUri = this.getIconUri(modeName, getIconByActionGroup(type));
+        const iconUri = this.getIconUri(getIconByActionGroup(type));
         const timeSpent = formatTimeSpent(pdp.util.getActionGroupTimeSpent(groupId));
         const hasTrace = !!pdp.util.getActionGroupAction(groupId)?.trace;
         const step = pdp.collections.steps.getById(stepId);
