@@ -35,7 +35,7 @@ This page explains the dbux-code extension and how to use it. For more general i
 - [Commands](#commands)
 - [Configuration](#configuration)
 - [Dbux Runtime Server](#dbux-runtime-server)
-- [How does Dbux work](#how-does-dbux-work)
+- [How does Dbux work?](#how-does-dbux-work)
 
 # Introduction w/ Examples
 
@@ -423,6 +423,6 @@ The 📡 runtime server is hosted by the Dbux VSCode extension to receive runtim
 
 If you want to invoke Dbux independently, make sure to press the button in the "Applications" view to start the server (if not started already).
 
-# How does Dbux work
+# How does Dbux work?
 
 Please refer to the [main page](https://github.com/Domiii/dbux/tree/master/#readme) for more information on how Dbux works, how to configure it, performance considerations and more.
