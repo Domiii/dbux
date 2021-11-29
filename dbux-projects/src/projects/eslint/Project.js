@@ -16,6 +16,7 @@ export default class EslintProject extends Project {
   nodeVersion = '7';
 
   async installDependencies() {
+    // TODO: don't use webpack (or use `WebpackBuilder` if webpack is preferrable)
     // TODO: install Babel plugins in dev mode, if not present
     const webpackJs = this.getWebpackJs();
     if (!sh.test('-f', webpackJs)) {
