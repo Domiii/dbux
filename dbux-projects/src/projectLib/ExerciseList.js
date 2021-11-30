@@ -36,6 +36,10 @@ export default class ExerciseList {
     return this.project.manager;
   }
 
+  get length() {
+    return this._all.length;
+  }
+
   /**
    * @return {Exercise}
    */
@@ -45,6 +49,10 @@ export default class ExerciseList {
 
   getAt(i) {
     return this._byNumber[i];
+  }
+
+  getAll() {
+    return this._all;
   }
 
   *[Symbol.iterator]() {

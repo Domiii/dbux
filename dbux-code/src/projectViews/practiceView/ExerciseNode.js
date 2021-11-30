@@ -91,7 +91,7 @@ export default class ExerciseNode extends BaseTreeViewNode {
     try {
       if (await this.manager.stopPractice()) {
         await this.manager.resetExercise(this.exercise);
-        await showInformationMessage(`Exercise ${this.exercise.label} has been reset successfully.`);
+        await showInformationMessage(`Exercise "${this.exercise.id}" has been reset successfully.`);
       }
     }
     catch (err) {
