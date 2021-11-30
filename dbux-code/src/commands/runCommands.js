@@ -28,11 +28,15 @@ function parseEnv(env) {
   return result ? ` --env=${result}` : '';
 }
 
+/** ###########################################################################
+ * {@link getNodeRunArgs}
+ * ##########################################################################*/
+
 /**
  * Parse arguments from configuration based on `debugMode`
  * @param {boolean} debugMode 
  */
-function getArgs(debugMode) {
+function getNodeRunArgs(debugMode) {
   const runMode = debugMode ? 'debug' : 'run';
   const config = workspace.getConfiguration('');
 
@@ -58,6 +62,10 @@ function getArgs(debugMode) {
 
   return [nodeArgs, dbuxArgs, programArgs];
 }
+
+/** ###########################################################################
+ * {@link runFile}
+ * ##########################################################################*/
 
 export async function runFile(extensionContext, debugMode = false) {
   const projectViewsController = initProjectView();
@@ -97,11 +105,13 @@ export async function runFile(extensionContext, debugMode = false) {
   await installDbuxDependencies();
 
   // start runtime server
-  await initRuntimeServer(extensionContext);
   await checkSystem(projectManager, getDefaultRequirement(false), false);
+  await initRuntimeServer(extensionContext);
 
-  let [nodeArgs, dbuxArgs, programArgs] = getArgs(debugMode);
+  let [nodeArgs, dbuxArgs, programArgs] = getNodeRunArgs(debugMode);
   nodeArgs = `${nodeArgs || ''}`;
+
+  nodeArgs += ` -r ${projectManager.getDbuxPath('@dbux/cli/dist/linkOwnDependencies.js')}`;
 
   // go!
   const dbuxBin = projectManager.getDbuxCliBinPath();

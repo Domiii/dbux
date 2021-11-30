@@ -14,9 +14,11 @@ import BluebirdProject from './projects/bluebird/Project';
 import AsyncJsProject from './projects/async-js/Project';
 import SocketIOProject from './projects/socket.io/Project';
 import ReactProject from './projects/react-tic-tac-toe/Project';
+import GettingStartedProject from './projects/getting-started/Project';
 
 // eslint-disable-next-line import/no-mutable-exports
 let registry = {
+  'Getting Started': GettingStartedProject,
   'todomvc-es6': TodomvcEs6,
   2048: Project2048,
   express: Express,

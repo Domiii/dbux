@@ -23,10 +23,6 @@ export const handler = wrapCommand(async ({ file, _, ...moreOptions }) => {
   // patch up file path
   const targetPath = resolveCommandTargetPath(file);
 
-  // hackfix: get some cli + runtime dependencies out of the way, so that @babel/register will not instrument them
-  //      NOTE: this is a terrible solution
-  // eslint-disable-next-line import/no-extraneous-dependencies
-  require('cliui');
   // require('socket.io-client');
   // require('lodash');
 

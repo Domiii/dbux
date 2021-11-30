@@ -321,38 +321,50 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     // TODO: read git + editor commands from config
 
     // clone (will do nothing if already cloned)
-    if (!this.doesProjectFolderExist()) {
+    if (this.doesProjectFolderExist()) {
+      sh.cd(projectPath);
+      this.log('(skipped cloning)');
+    }
+    else {
       try {
         this.runner.createMainFolder();
-        let cmd, cwd;
-        const target = this.gitTargetRef;
-        // if (!target) {
-        /**
-         * This is the fastest approach.
-         * Test: time bash -cl "git clone --single-branch --depth=1 --branch=v1 git@github.com:real-world-debugging/todomvc-es6.git"
-         * -> took 6s
-         * @see https://stackoverflow.com/a/69798821/2228771
-         */
-        const branchArg = target ? ` --branch=${this.gitTargetRef}` : '';
-        const moreArgs = ' --single-branch --depth=1';
-        cmd = `git clone${branchArg}${moreArgs} "${githubUrl}" "${projectPath}"`;
-        cwd = projectsRoot;
-        // }
-        // else {
-        //   /**
-        //    * With target branch.
-        //    * Test: time bash -cl "git init && git remote add -t v1 -f origin git@github.com:real-world-debugging/todomvc-es6.git && git checkout v1"
-        //    * -> took 25s
-        //    * 
-        //    * @see https://stackoverflow.com/a/4146786
-        //    */
-        //   cmd = `git init && git remote add -t ${target} -f origin ${githubUrl} && git checkout ${target}`;
-        //   cwd = projectPath;
-        //   sh.mkdir('-p', cwd);
-        // }
-        await this.execInTerminal(cmd, {
-          cwd
-        });
+
+        if (!githubUrl) {
+          // project does not have a remote git repo -> create separate local repo instead
+          fs.mkdirSync(projectPath, { recursive: true });
+          const cmd = 'git init';
+          await this.execInTerminal(cmd);
+        }
+        else {
+          // if (!target) {
+          /**
+           * This is the fastest approach.
+           * Test: time bash -cl "git clone --single-branch --depth=1 --branch=v1 git@github.com:real-world-debugging/todomvc-es6.git"
+           * -> took 6s
+           * @see https://stackoverflow.com/a/69798821/2228771
+          */
+          const target = this.gitTargetRef;
+          const branchArg = target ? ` --branch=${target}` : '';
+          const moreArgs = ' --single-branch --depth=1';
+          const cmd = `git clone${branchArg}${moreArgs} "${githubUrl}" "${projectPath}"`;
+          const cwd = projectsRoot;
+          // }
+          // else {
+          //   /**
+          //    * With target branch.
+          //    * Test: time bash -cl "git init && git remote add -t v1 -f origin git@github.com:real-world-debugging/todomvc-es6.git && git checkout v1"
+          //    * -> took 25s
+          //    * 
+          //    * @see https://stackoverflow.com/a/4146786
+          //    */
+          //   cmd = `git init && git remote add -t ${target} -f origin ${githubUrl} && git checkout ${target}`;
+          //   cwd = projectPath;
+          //   sh.mkdir('-p', cwd);
+          // }
+          await this.execInTerminal(cmd, {
+            cwd
+          });
+        }
       }
       catch (err) {
         const errMsg = `Failed to clone git repository. Sometimes a reset (by using the \`Delete project folder\` button) can help fix this - ${err.stack}`;
@@ -366,10 +378,6 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       await this.selectDefaultCommit();
 
       this.log(`Cloned.`);
-    }
-    else {
-      sh.cd(projectPath);
-      this.log('(skipped cloning)');
     }
   }
 

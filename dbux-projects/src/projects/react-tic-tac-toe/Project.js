@@ -22,7 +22,7 @@ export default class ReactProject extends Project {
           'react-dom': 'react-dom/cjs/react-dom.development.js'
         },
         babelInclude: {
-          // packageWhitelist: /^react(?:[-]dom)?$/ // NOTE: cannot serialize regexp
+          // packageWhitelist: /^react(?:[-]dom)?$/ // NOTE: regexp serialization NYI
           packageWhitelist: '^react(?:[-]dom)?$'
         },
         babelOptions: {

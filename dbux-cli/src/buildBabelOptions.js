@@ -80,6 +80,10 @@ export default function buildBabelOptions(options) {
   verbose > 1 && debugLog(`[@dbux/babel-plugin]`,
     requireDynamic.resolve/* ._resolveFilename */('@dbux/babel-plugin/package.json'));
 
+  const ignore = [
+    shouldIgnore(options)
+  ];
+
   // setup babel-register
   const baseOptions = esnext ? baseBabelOptions : EmptyObject;
   const babelOptions = {
@@ -90,9 +94,7 @@ export default function buildBabelOptions(options) {
     retainLines: true,
     // see https://babeljs.io/docs/en/options#parseropts
     parserOpts: { allowReturnOutsideFunction: true },
-    ignore: [
-      shouldIgnore(options)
-    ]
+    ignore
   };
 
   if ('cache' in options) {

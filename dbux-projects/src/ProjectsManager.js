@@ -876,7 +876,7 @@ export default class ProjectsManager {
 
   getDbuxPath(relativePath) {
     debug(`getDbuxPath(), relativePath='${relativePath}', getDbuxRoot()='${this.getDbuxRoot()}', config=${JSON.stringify(this.config)}`);
-    return path.join(this.getDbuxRoot(), 'node_modules', relativePath);
+    return pathJoin(this.getDbuxRoot(), 'node_modules', relativePath);
   }
 
   getDbuxRoot() {
