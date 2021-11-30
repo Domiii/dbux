@@ -21,3 +21,11 @@ practicingTypes[ExerciseStatus.Attempted] = true;
 export function isPracticingTypes(status) {
   return practicingTypes[status];
 }
+
+const passedTypes = new Array(ExerciseStatus.getValueMaxIndex()).map(() => false);
+passedTypes[ExerciseStatus.Found] = true;
+passedTypes[ExerciseStatus.Solved] = true;
+
+export function isPassedTypes(status) {
+  return passedTypes[status];
+}
