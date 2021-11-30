@@ -579,7 +579,7 @@
       },
       {
         "command": "dbuxProjectView.node.resetExercise",
-        "title": "Reset this exercise",
+        "title": "Dev Only: Reset this exercise",
         "icon": {
           "light": "resources/light/refresh.svg",
           "dark": "resources/dark/refresh.svg"
@@ -829,7 +829,7 @@
         },
         {
           "command": "dbuxProjectView.node.resetExercise",
-          "when": "viewItem =~ /dbuxProjectView\\.exerciseNode\\..*\\..*/ && !dbuxProjectView.context.isBusy",
+          "when": "viewItem =~ /dbuxProjectView\\.exerciseNode\\..*\\..*/ && !dbuxProjectView.context.isBusy && dbux.context.nodeEnv == development",
           "group": "inline@15"
         },
         {
