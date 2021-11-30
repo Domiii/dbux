@@ -30,10 +30,10 @@ export default class ValueTDSimpleNode extends ValueNode {
    * For root node only.
    */
   static makeProperties(dataNode/*, parent, props*/) {
-    const { value } = dataNode;
+    const { value, hasValue } = dataNode;
     return {
       key: ValueLabel,
-      value,
+      value: hasValue ? value : undefined,
       rootDataNode: dataNode,
     };
   }

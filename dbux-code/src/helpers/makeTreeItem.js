@@ -93,13 +93,61 @@ export function makeTreeChildren(obj) {
 // export function makeTreeChild(value, itemProps) {
 // }
 
+export function makeTreeItemNoChildren(labelOrArrOrItem, itemProps) {
+  let label;
+  let item;
+
+  // if (isFunction(children)) {
+  //   children = children();
+  // }
+
+  if (isFunction(labelOrArrOrItem)) {
+    label = (labelOrArrOrItem.name || '').replace(/[_]/g, ' ');
+    itemProps = labelOrArrOrItem();
+  }
+  else {
+    if (Array.isArray(labelOrArrOrItem)) {
+      // if (!labelOrArrOrItem.length || labelOrArrOrItem[0] instanceof TreeItem) {
+      //   // NOTE: if there is only an array of children, we would be missing the label -> wrap in `makeTreeItem` instead
+      //   /**
+      //    * `children` is array of `TreeItem`.
+      //    * Don't do anything: will be handled in {@link makeTreeChildren}
+      //    */
+      // }
+      // else {
+      // array represents a single node
+      [label, itemProps] = labelOrArrOrItem;
+      // }
+    }
+    else {
+      label = labelOrArrOrItem;
+    }
+  }
+
+  if (label instanceof TreeItem) {
+    item = label;
+  }
+  else {
+    label = ('' + label); // coerce to string (else it won't show up)
+    item = new TreeItem(label);
+  }
+
+  if (itemProps) {
+    Object.assign(item, itemProps);
+  }
+  return item;
+}
+
 /**
  * TODO: Replace this with `makeTreeViewItem`, rename this to `makeTreeItemSimple`.
  */
-export default function makeTreeItem(labelOrArrOrItem, childrenOrCfg, itemProps) {
+export default function makeTreeItem(labelOrArrOrItem, childrenRaw, itemProps) {
   let label;
   let item;
   let children;
+
+  // future-work: this over-generalized function always has children -> will have to fix its use cases for this to work
+  let maybeHasChildren = true;
 
   // if (isFunction(children)) {
   //   children = children();
@@ -124,19 +172,19 @@ export default function makeTreeItem(labelOrArrOrItem, childrenOrCfg, itemProps)
       // }
       // else {
       // array represents a single node
-      [label, childrenOrCfg, itemProps] = labelOrArrOrItem;
+      [label, childrenRaw, itemProps] = labelOrArrOrItem;
       // }
     }
     else {
       label = labelOrArrOrItem;
     }
 
-    if (Array.isArray(childrenOrCfg)) {
-      children = childrenOrCfg;
+    if (Array.isArray(childrenRaw)) {
+      children = childrenRaw;
     }
     else {
-      if (isFunction(childrenOrCfg)) {
-        childrenOrCfg = childrenOrCfg();
+      if (isFunction(childrenRaw)) {
+        childrenRaw = childrenRaw();
       }
       // if (childrenOrCfg?.children && !itemProps && size(childrenOrCfg) <= 2) {
       //   // hackfix: since we allow arbitrary objects to also represent `children`, 
@@ -147,14 +195,14 @@ export default function makeTreeItem(labelOrArrOrItem, childrenOrCfg, itemProps)
       //   } = childrenOrCfg);
       // }
       // else {
-      children = childrenOrCfg;
+      children = childrenRaw;
       // }
     }
   }
 
-  const hasChildren = children && !isEmpty(children);
+  const renderChildrenInline = !children || isEmpty(children);
   let collapsibleState;
-  if (hasChildren) {
+  if (!renderChildrenInline) {
     collapsibleState = TreeItemCollapsibleState.Expanded;
   }
   else {
@@ -167,13 +215,13 @@ export default function makeTreeItem(labelOrArrOrItem, childrenOrCfg, itemProps)
   else {
     label = ('' + label); // coerce to string (else it won't show up)
 
-    if (!hasChildren && !isString(labelOrArrOrItem)) {
+    if (renderChildrenInline && !isString(labelOrArrOrItem)) {
       label = keyValueLabel(label, children);
     }
     item = new TreeItem(label, collapsibleState);
   }
 
-  if (hasChildren) {
+  if (!renderChildrenInline) {
     item.children = makeTreeChildren(children);
   }
   if (itemProps) {

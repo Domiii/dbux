@@ -734,7 +734,12 @@ export default {
       }
     }
     else {
-      valueString = dataNode.value?.toString?.() || String(dataNode.value);
+      if (dataNode.hasValue) {
+        valueString = dataNode.value?.toString?.() || String(dataNode.value);
+      }
+      else {
+        valueString = 'undefined';
+      }
     }
 
     // if (shorten) {

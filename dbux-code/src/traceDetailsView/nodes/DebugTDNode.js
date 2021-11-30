@@ -1,11 +1,13 @@
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import { renderValueSimple } from '@dbux/common/src/util/stringUtil';
 import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import AsyncEventUpdateType, { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import traceSelection from '@dbux/data/src/traceSelection';
-import makeTreeItem, { makeTreeItems } from '../../helpers/makeTreeItem';
+import makeTreeItem, { makeTreeItemNoChildren, makeTreeItems } from '../../helpers/makeTreeItem';
 import { ContextTDNode, TraceTypeTDNode } from './traceInfoNodes';
 import TraceDetailNode from './traceDetailNode';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
@@ -128,6 +130,53 @@ export class DebugTDNode extends TraceDetailNode {
     const staticProgramContext = dp.collections.staticProgramContexts.getById(programId);
     const dataTraceId = dp.util.getValueTrace(traceId)?.traceId || traceId;
 
+    /** ###########################################################################
+     * context
+     *  #########################################################################*/
+
+    const contextNode = [`context`, context, { description: `${context?.contextId}` }];
+    const rootContextNode = [`rootContext`, rootContext, { description: `${rootContext?.contextId}` }];
+
+
+    // ###########################################################################
+    // dataNodes
+    // ###########################################################################
+    const ownDataNodes = dp.indexes.dataNodes.byTrace.get(traceId);
+    const dataNodes = dp.util.getDataNodesOfTrace(dataTraceId);
+
+    let dataNode;
+    if (nodeId) {
+      dataNode = dp.collections.dataNodes.getById(nodeId);
+    }
+    else {
+      dataNode = dataNodes?.[0];
+    }
+
+    let dataNodeIndex = dataNodes?.indexOf(dataNode);
+    const isInDataNodes = dataNodeIndex >= 0;
+    dataNodeIndex = isInDataNodes ? dataNodeIndex : ownDataNodes?.indexOf(dataNode);
+
+    // eslint-disable-next-line no-nested-ternary
+    const ownDataNodeContainer = isInDataNodes ? 'dataNodes' : 'ownDataNodes';
+    const ownDataNodeLabel = dataNode ? `${ownDataNodeContainer}[${dataNodeIndex}]` : `dataNodes: []`;
+    const dataNodeCount = dataNodes?.length || 0;
+
+    const allDataNodes = [];
+    !!dataNode && allDataNodes.push([
+      ownDataNodeLabel,
+      dataNode,
+      { description: `nodeId=${dataNode.nodeId}, valueId=${dataNode.valueId}, accessId=${dataNode.accessId}` }
+    ]);
+    dataNodeCount > 1 && allDataNodes.push([
+      `all dataNodes (${dataNodeCount})`,
+      dataNodes
+    ]);
+    ownDataNodes && ownDataNodes !== dataNodes && allDataNodes.push([
+      `ownDataNodes (${ownDataNodes.length})`,
+      ownDataNodes
+    ]);
+
+
     // ###########################################################################
     // valueRef
     // ###########################################################################
@@ -135,13 +184,33 @@ export class DebugTDNode extends TraceDetailNode {
     const valueRef = dp.util.getTraceValueRef(dataTraceId);
     const refId = valueRef?.refId || 0;
     const promiseId = valueRef?.isThenable && refId || 0;
-    const valueNode = [
-      'valueRef',
-      valueRef,
-      {
-        description: `refId=${refId}`
-      }
-    ];
+    const hasValue = !!refId || !!dataNode?.hasValue;
+    let valueNode;
+    if (!hasValue) {
+      valueNode = makeTreeItemNoChildren(
+        'no value',
+        {
+          description: '(no value or undefined)'
+        }
+      );
+    }
+    else if (refId) {
+      valueNode = [
+        'valueRef',
+        valueRef,
+        {
+          description: `refId=${refId}`
+        }
+      ];
+    }
+    else {
+      valueNode = makeTreeItemNoChildren(
+        'value',
+        {
+          description: renderValueSimple(dataNode.value)
+        }
+      );
+    }
     // const promiseData = dataProvider.collections.promises.getById(context.promiseId);
     // const promiseNode = [
     //   'promise', 
@@ -150,15 +219,6 @@ export class DebugTDNode extends TraceDetailNode {
     //     description: (promiseData?.valueId + '') || 0
     //   }
     // ];
-
-    /** ###########################################################################
-     * context
-     *  #########################################################################*/
-
-    const contextNode = [`context`, context, { description: `${context?.contextId}` }];
-
-    const rootContextNode = [`rootContext`, rootContext, { description: `${rootContext?.contextId}` }];
-
     // ###########################################################################
     // async (Root)
     // ###########################################################################
@@ -258,45 +318,6 @@ export class DebugTDNode extends TraceDetailNode {
         description: `thread=${asyncNode?.threadId}`
       }
     ];
-
-
-    // ###########################################################################
-    // dataNodes
-    // ###########################################################################
-    const ownDataNodes = dp.indexes.dataNodes.byTrace.get(traceId);
-    const dataNodes = dp.util.getDataNodesOfTrace(dataTraceId);
-
-    let dataNode;
-    if (nodeId) {
-      dataNode = dp.collections.dataNodes.getById(nodeId);
-    }
-    else {
-      dataNode = dataNodes?.[0];
-    }
-
-    let dataNodeIndex = dataNodes?.indexOf(dataNode);
-    const isInDataNodes = dataNodeIndex >= 0;
-    dataNodeIndex = isInDataNodes ? dataNodeIndex : ownDataNodes?.indexOf(dataNode);
-
-    // eslint-disable-next-line no-nested-ternary
-    const ownDataNodeContainer = isInDataNodes ? 'dataNodes' : 'ownDataNodes';
-    const ownDataNodeLabel = dataNode ? `${ownDataNodeContainer}[${dataNodeIndex}]` : `dataNodes: []`;
-    const dataNodeCount = dataNodes?.length || 0;
-
-    const allDataNodes = [];
-    !!dataNode && allDataNodes.push([
-      ownDataNodeLabel,
-      dataNode,
-      { description: `nodeId=${dataNode.nodeId}, valueId=${dataNode.valueId}, accessId=${dataNode.accessId}` }
-    ]);
-    dataNodeCount > 1 && allDataNodes.push([
-      `all dataNodes (${dataNodeCount})`,
-      dataNodes
-    ]);
-    ownDataNodes && ownDataNodes !== dataNodes && allDataNodes.push([
-      `ownDataNodes (${ownDataNodes.length})`,
-      ownDataNodes
-    ]);
 
     // ###########################################################################
     // final result

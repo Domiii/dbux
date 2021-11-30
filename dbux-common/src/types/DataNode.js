@@ -94,6 +94,13 @@ export default class DataNode {
    * value is set for primitive value type vars
    */
   value;
+
+  /**
+   * If this DataNode has a value, this will be `true`.
+   * We track this separately, since `value` might get converted from `undefined` to null by encoder.
+   * @type {boolean?}
+   */
+  hasValue;
 }
 
 // /**

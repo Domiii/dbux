@@ -9,6 +9,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { getOriginalFunction, getPatchedFunction, getUnpatchedCallbackOrPatchedFunction } from '../util/monkeyPatchUtil';
 import Collection from './Collection';
 import pools from './pools';
+import DataNode from '@dbux/common/src/types/DataNode';
 
 
 /** @typedef {import('@dbux/common/src/types/ValueRef').default} ValueRef */
@@ -191,7 +192,7 @@ class ValueCollection extends Collection {
   }
 
   /**
-   * 
+   * @param {DataNode} dataNode
    * @returns {ValueRef}
    */
   registerValueMaybe(value, dataNode, meta = null) {
@@ -206,6 +207,7 @@ class ValueCollection extends Collection {
     if (!isTrackableCategory(category)) {
       valueRef = null;
       dataNode.value = this._serializeNonTrackable(value, category);
+      dataNode.hasValue = dataNode.value !== undefined;
     }
     else {
       valueRef = this._serialize(value, nodeId, 1, category, meta);
