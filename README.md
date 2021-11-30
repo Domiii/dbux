@@ -53,7 +53,6 @@ This page covers more broad topics related to the Dbux project:
     - [Asynchronous Call Graph](#asynchronous-call-graph)
 - [How is Dbux being used?](#how-is-dbux-being-used)
 - [Development + Contributions](#development--contributions)
-- [Future Work](#future-work)
 
 
 # Adding Dbux to your build pipeline
@@ -331,10 +330,3 @@ TODO
 
 If you are interested in Dbux development and maybe even want to participate or contribute, feel free to take a look at [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
 
-
-# Future Work
-
-So many things that can be done... Amongst others:
-
-* Support web-based VSCode https://vscode.dev/
-* Support [Yarn PnP](https://yarnpkg.com/features/pnp)

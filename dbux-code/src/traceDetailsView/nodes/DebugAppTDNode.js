@@ -1,15 +1,11 @@
 /* eslint-disable camelcase */
 import isString from 'lodash/isString';
-import EmptyObject from '@dbux/common/src/util/EmptyObject';
-import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
-import AsyncEventUpdateType, { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import traceSelection from '@dbux/data/src/traceSelection';
 import { makeContextLabel, makeContextLocLabel, makeTraceLabel } from '@dbux/data/src/helpers/makeLabels';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import makeTreeItem, { makeTreeItems } from '../../helpers/makeTreeItem';
-import { ContextTDNode, TraceTypeTDNode } from './traceInfoNodes';
 import TraceDetailNode from './traceDetailNode';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
