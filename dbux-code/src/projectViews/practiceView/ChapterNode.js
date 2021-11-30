@@ -1,3 +1,4 @@
+import { isPassedTypes } from '@dbux/projects/src/dataLib/ExerciseStatus';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import ExerciseNode from './ExerciseNode';
 
@@ -17,6 +18,19 @@ export default class ChapterNode extends BaseTreeViewNode {
     return this.entry;
   }
 
+  get description() {
+    const totalExercisesCount = this.chapter.exercises.length;
+    const solvedExercisesCount = this.solvedExercises.length;
+    return `(${solvedExercisesCount}/${totalExercisesCount})`;
+  }
+
+  get solvedExercises() {
+    return this.chapter.exercises.getAll().filter(e => {
+      const progress = this.manager.exerciseDataProvider.getExerciseProgressByExercise(e);
+      return isPassedTypes(progress?.status);
+    });
+  }
+
   /**
    * @type {ProjectsManager}
    */
@@ -29,11 +43,16 @@ export default class ChapterNode extends BaseTreeViewNode {
   }
 
   makeIconPath() {
-    return '';
+    if (this.solvedExercises.length === this.chapter.exercises.length) {
+      return 'correct_bw.svg';
+    }
+    else {
+      return '';
+    }
   }
 
   buildChildren() {
-    const exercises = Array.from(this.chapter.exercises);
+    const exercises = this.chapter.exercises.getAll();
     return exercises.map(this.buildExerciseNode.bind(this));
   }
 

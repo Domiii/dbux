@@ -88,3 +88,8 @@ export function getPathRelativeToCommonAncestor(fpath, ...otherPaths) {
 export function getCommonAncestorPath(...paths) {
   return commonAncestorPath(...paths);
 }
+
+export function isSubdirectory(parent, dir) {
+  const relative = pathRelative(parent, dir);
+  return relative && !relative.startsWith('..') && !path.isAbsolute(relative);
+}

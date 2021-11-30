@@ -77,6 +77,10 @@ export default class ExerciseDataProvider extends DataProviderBase {
   // util
   // ###########################################################################
 
+  /**
+   * @param {Exercise} exercise 
+   * @returns {ExerciseProgress}
+   */
   getExerciseProgressByExercise(exercise) {
     return this.indexes.exerciseProgresses.byExerciseId.get(exercise.id)?.[0] || null;
   }

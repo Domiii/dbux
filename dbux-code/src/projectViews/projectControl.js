@@ -4,9 +4,10 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { pathJoin, pathNormalizedForce } from '@dbux/common-node/src/util/pathUtil';
 import { initDbuxProjects } from '@dbux/projects/src';
 import Process from '@dbux/projects/src/util/Process';
-import { showWarningMessage, showInformationMessage, confirm } from '../codeUtil/codeModals';
+import { showWarningMessage, showInformationMessage, confirm, alert } from '../codeUtil/codeModals';
 import { showTextDocument, showTextInNewFile } from '../codeUtil/codeNav';
 import { getResourcePath, getLogsDirectory, asAbsolutePath } from '../codeUtil/codePath';
+import { closeAllEditors } from '../codeUtil/editorUtil';
 import TerminalWrapper from '../terminal/TerminalWrapper';
 import { set as storageSet, get as storageGet } from '../memento';
 import { interactiveGithubLogin } from '../net/GithubAuth';
@@ -87,9 +88,7 @@ export function createProjectManager(extensionContext) {
       set: storageSet,
     },
     confirm,
-    async alert(msg, modal = false) {
-      await showInformationMessage(msg, undefined, { modal });
-    },
+    alert,
     TerminalWrapper,
     resources: {
       getResourcePath,
@@ -116,7 +115,8 @@ export function createProjectManager(extensionContext) {
       return await initRuntimeServer(extensionContext);
     },
 
-    getCurrentResearch
+    getCurrentResearch,
+    closeAllEditors,
   };
 
   // ########################################

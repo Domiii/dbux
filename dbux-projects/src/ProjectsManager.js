@@ -684,8 +684,16 @@ export default class ProjectsManager {
       return;
     }
 
-    // save changes in the project
+    /**
+     * close all files before applying changes
+     * TODO: only close relative files, currently lack of API support.
+     * @see https://github.com/microsoft/vscode/issues/15178#issuecomment-909462369 proposed `Tab` API
+     * @see https://code.visualstudio.com/api/references/vscode-api#TextEditor `TextEditor.hide` deprecated
+     */
     const { project } = exercise;
+    await this.externals.closeAllEditors();
+
+    // save changes in the project
     const previousExercise = await project.getCurrentBugFromTag();
     if (previousExercise) {
       await this.saveFileChanges(previousExercise);

@@ -83,3 +83,7 @@ export async function confirm(msg, modal = true, throwOnCancel = false) {
     return result === confirmText;
   }
 }
+
+export async function alert(msg, modal = false) {
+  return await showInformationMessage(msg, undefined, { modal });
+}
