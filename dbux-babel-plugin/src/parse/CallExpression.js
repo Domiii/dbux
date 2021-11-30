@@ -2,7 +2,8 @@
 import { isNotArgsTraceableIfConstantType, isNotCalleeTraceableType } from '@dbux/common/src/types/constants/SpecialIdentifierType';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import { getLeftMostPathOfME } from '../helpers/objectHelpers';
+import { getLeftMostPathOfME, isAnyMemberExpression } from '../helpers/objectHelpers';
+// import { pathToString } from '../helpers/pathHelpers';
 import { makeSpreadableArgumentArrayCfg } from '../helpers/argsUtil';
 import { traceCallExpressionDefault } from '../instrumentation/callExpressions';
 import BaseNode from './BaseNode';
@@ -10,7 +11,8 @@ import BaseNode from './BaseNode';
 
 function getCalleePlugin(node) {
   const [calleePath] = node.getChildPaths();
-  if (calleePath.isMemberExpression()) {
+  // console.warn('getCalleePlugin', isAnyMemberExpression(calleePath), !isNotCalleeTraceableNodeME(calleePath), pathToString(calleePath));
+  if (isAnyMemberExpression(calleePath)) {
     if (!isNotCalleeTraceableNodeME(calleePath)) {
       return 'CalleeME';
     }

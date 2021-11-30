@@ -1,3 +1,4 @@
+import * as t from '@babel/types';
 import { NodePath } from '@babel/core';
 import { getClassAncestryString } from './traversalHelpers';
 import { extractSourceStringWithoutComments } from './sourceHelpers';
@@ -45,4 +46,8 @@ export function getMemberExpressionName(path, state, includeAncestry = true) {
     name = extractSourceStringWithoutComments(path.node, state);
   }
   return name;
+}
+
+export function isAnyMemberExpression(pathOrNode) {
+  return t.isMemberExpression(pathOrNode) || t.isOptionalMemberExpression(pathOrNode);
 }

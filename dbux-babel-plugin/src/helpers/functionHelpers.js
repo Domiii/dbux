@@ -16,10 +16,6 @@ export function isCallPath(pathOrNode) {
   return t.isCallExpression(pathOrNode) || t.isOptionalCallExpression(pathOrNode) || t.isNewExpression(pathOrNode);
 }
 
-export function isAnyMemberExpression(pathOrNode) {
-  return t.isMemberExpression(pathOrNode) || t.isOptionalMemberExpression(pathOrNode);
-}
-
 export function functionNoName() {
   // return `(${pathToString(functionPath.toString(), 30)})`;
   return '(anonymous)';
