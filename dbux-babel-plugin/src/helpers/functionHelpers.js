@@ -1,7 +1,7 @@
 import * as t from '@babel/types';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { getClassAncestryString } from './traversalHelpers';
-import { getMemberExpressionName } from './objectHelpers';
+import { getMemberExpressionName, isAnyMemberExpression } from './objectHelpers';
 import { extractSourceStringWithoutComments } from './sourceHelpers';
 import { isNodeInstrumented } from './astUtil';
 

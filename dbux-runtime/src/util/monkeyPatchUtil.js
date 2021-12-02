@@ -1,5 +1,6 @@
 import { logError, logWarn } from '@dbux/common/src/log/logger';
 import NestedError from '@dbux/common/src/NestedError';
+import isFunction from 'lodash/isFunction';
 
 /**
  * future-work: `WeakMap` won't work here. Use `WeakRef` + finalizer instead
@@ -110,7 +111,7 @@ export function getOriginalCallback(patchedFunction) {
  * ##########################################################################*/
 
 export function getOrPatchFunction(originalFunction, patcher) {
-  if (!(originalFunction instanceof Function)) {
+  if (!isFunction(originalFunction)) {
     throw new Error(`Monkey-patching failed - argument is not a function: ${originalFunction}`);
   }
   let patchedFunction = getPatchedFunctionOrNull(originalFunction);
@@ -123,7 +124,7 @@ export function getOrPatchFunction(originalFunction, patcher) {
 
 export function tryRegisterMonkeyPatchedFunction(holder, name, patchedFunction) {
   const originalFunction = holder[name];
-  if (!(originalFunction instanceof Function)) {
+  if (!isFunction(originalFunction)) {
     throw new Error(`Monkey-patching failed - ${holder}.${name} is not a function: ${originalFunction}`);
   }
   if (isMonkeyPatchedFunction(originalFunction) || isMonkeyPatchedCallback(originalFunction)) {

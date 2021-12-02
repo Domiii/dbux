@@ -12,7 +12,7 @@ module.exports = {
           safari: '13'
         },
         useBuiltIns: 'usage',
-        corejs: 3.15
+        corejs: "3.15"
       }
     ]
   ],

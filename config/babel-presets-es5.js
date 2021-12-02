@@ -11,7 +11,7 @@ module.exports = {
       loadBabel('@babel/preset-env'),
       {
         useBuiltIns: 'usage',
-        corejs: 3.15
+        corejs: "3.15"
       }
     ]
   ],

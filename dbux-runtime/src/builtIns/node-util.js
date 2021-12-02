@@ -9,7 +9,7 @@ export default function patchNodeUtil() {
   // ###########################################################################
 
   /**
-   * NOTE: We only implement this,
+   * NOTE: We only implement this, 
    * so automatic builtin patcher won't patch this (since it modifies function arguments).
    * 
    * @see https://nodejs.org/docs/latest/api/util.html#util_util_inherits_constructor_superconstructor

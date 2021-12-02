@@ -11,7 +11,7 @@ module.exports = {
           node: '14'
         },
         useBuiltIns: 'usage',
-        corejs: 3.15,
+        corejs: "3.15",
 
         // /**
         //  * @see https://babeljs.io/docs/en/babel-preset-env#modules

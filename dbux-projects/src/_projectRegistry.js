@@ -18,7 +18,7 @@ import GettingStartedProject from './projects/getting-started/Project';
 
 // eslint-disable-next-line import/no-mutable-exports
 let registry = {
-  'Getting Started': GettingStartedProject,
+  'getting-started': GettingStartedProject,
   'todomvc-es6': TodomvcEs6,
   2048: Project2048,
   express: Express,
