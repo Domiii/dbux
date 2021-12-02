@@ -5,6 +5,10 @@
  * @see https://raw.githubusercontent.com/mdlavin/nested-error-stacks/master/index.js
  */
 class NestedError extends Error {
+  /**
+   * @param {string} message
+   * @param {Error?} cause 
+   */
   constructor(message, cause) {
     super(message);
 

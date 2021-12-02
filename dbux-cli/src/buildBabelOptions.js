@@ -4,6 +4,8 @@ import shouldIgnore from '@dbux/babel-plugin/src/external/shouldIgnore';
 import { requireDynamic } from '@dbux/common-node/src/util/requireUtil';
 import colors from 'colors/safe';
 import isString from 'lodash/isString';
+import isPlainObject from 'lodash/isPlainObject';
+import NestedError from '@dbux/common/src/NestedError';
 
 // sanity check: make sure, some core stuff is loaded and working before starting instrumentation
 // import '@babel/preset-env';
@@ -60,6 +62,7 @@ export default function buildBabelOptions(options) {
     dbuxOptions: babelPluginOptions,
     verbose = 0,
     runtime = null,
+    targets
   } = options;
 
   // if (!cache) {
@@ -71,6 +74,8 @@ export default function buildBabelOptions(options) {
     // nothing to babel
     return null;
   }
+
+  targets = makeTargets(targets);
 
   // if (process.env.NODE_ENV === 'development') {
   //   injectDependencies();
@@ -88,6 +93,12 @@ export default function buildBabelOptions(options) {
   const baseOptions = esnext ? baseBabelOptions : EmptyObject;
   const babelOptions = {
     ...baseOptions,
+    /**
+     * Force target so it won't try to aim for browser compatability.
+     * @see https://github.com/browserslist/browserslist/issues/629#issuecomment-984459369
+     */
+    targets,
+    browserslistConfigFile: false,
     sourceType: 'unambiguous',
     sourceMaps: 'inline',
     sourceRoot,
@@ -115,7 +126,9 @@ export default function buildBabelOptions(options) {
     babelOptions.plugins.push([dbuxBabelPlugin, babelPluginOptions]);
   }
 
+  // console.warn(JSON.stringify(babelOptions), dontAddPresets);
   if (dontAddPresets) {
+    // NOTE: only makes a difference in combination with `--esnext`
     delete babelOptions.presets;
   }
 
@@ -124,4 +137,28 @@ export default function buildBabelOptions(options) {
   // TODO: add babel override config here
 
   return babelOptions;
+}
+
+/** ###########################################################################
+ * util
+ * ##########################################################################*/
+
+function makeTargets(targets) {
+  if (isString(targets)) {
+    try {
+      targets = JSON.parse(targets);
+      if (targets !== null && !isPlainObject(targets)) {
+        throw new Error(`expected JSON string representing an object. Found: ${typeof targets}`);
+      }
+    }
+    catch (err) {
+      throw new NestedError(`invalid "targets" option cannot be parsed (targets="${targets}")`, err);
+    }
+  }
+  if (!targets) {
+    targets = {
+      node: 16
+    };
+  }
+  return targets;
 }

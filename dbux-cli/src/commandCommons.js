@@ -29,7 +29,8 @@ export function buildCommonCommandOptions() {
     },
     dontAddPresets: {
       alias: ['p'],
-      describe: 'Do NOT add `@babel/preset-env`. Not adding this, might cause incompatabilities, but keeps the code closer to its original form.',
+      // eslint-disable-next-line max-len
+      describe: 'This is only used in combination with `--esnext`. If set, this will add some plugins, but NOT add `@babel/preset-env`. Not adding this, might cause incompatabilities, but keeps the code closer to its original form.',
       default: false,
       type: 'boolean'
     },
@@ -67,6 +68,11 @@ export function buildCommonCommandOptions() {
     require: {
       alias: ['r'],
       describe: 'Require files, after babel/register, but before doing the actual work.',
+      default: null
+    },
+    targets: {
+      type: 'string',
+      describe: 'Babel targets descriptor in JSON format (see https://babeljs.io/docs/en/babel-preset-env#targets)',
       default: null
     }
   };
