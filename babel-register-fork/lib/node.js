@@ -151,6 +151,7 @@ function register(opts) {
 
   transformOpts = {
     ...opts,
+    // configFile: false,  // TODO!
     caller: {
       name: "@babel/register",
       ...(opts.caller || {}),

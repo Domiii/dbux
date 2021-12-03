@@ -177,6 +177,7 @@ export function buildVisitors() {
             if (isPathSkipped(path)) {
               return;
             }
+            // debug(`[visitEnter]`, path.node.type, state.filePath);
             visitEnter(ParserNodeClazz, path, state);
           }
         },

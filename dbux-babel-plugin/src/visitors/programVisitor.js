@@ -5,6 +5,7 @@ import injectDbuxState from '../dbuxState';
 import { buildVisitors as traceVisitors } from '../parseLib/visitors';
 import Program from '../parse/Program';
 import nameVisitors, { clearNames } from './nameVisitors';
+import NestedError from '@dbux/common/src/NestedError';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('programVisitor');
@@ -58,8 +59,7 @@ function traverse(path, state, visitors) {
     // hackfix: if we don't re-throw here, babel swallows the error for some reason
     // console.error(err);
     // throw new Error('traversal failed');
-    logError('traversal failed:', err.message);
-    throw err;
+    throw new NestedError(`traversal failed in file "${state.filePath}"`, err);
   }
 }
 

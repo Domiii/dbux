@@ -139,8 +139,8 @@ export default class ParseStack {
       if (getNodeOfPath(path)) {
         // TODO: this is definitely going to happen. need to fix this somehow
         this.logger.warn(
-          `Path has more than one matching node type: ` +
-          `${newNode.nodeTypeName} and ${getNodeOfPath(path.nodeTypeName)}`
+          `Tried to create node more than once. It might have more than one matching node type: ` +
+          `"${path.node.type}". Previously created node: "${getNodeOfPath(path)}"`
         );
       }
 

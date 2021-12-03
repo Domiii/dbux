@@ -262,8 +262,12 @@ export default class Project extends ProjectBase {
     return bug.nodeVersion || this.nodeVersion || '14';
   }
 
-  doesProjectFolderExist() {
+  doesProjectGitFolderExist() {
     return sh.test('-d', this.hiddenGitFolderPath);
+  }
+
+  doesProjectFolderExist() {
+    return sh.test('-d', this.projectPath);
   }
 
   getRelativeProjectPath() {
@@ -329,7 +333,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     // TODO: read git + editor commands from config
 
     // clone (will do nothing if already cloned)
-    if (this.doesProjectFolderExist()) {
+    if (this.doesProjectGitFolderExist()) {
       sh.cd(projectPath);
       this.log('(skipped cloning)');
     }
@@ -977,7 +981,6 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     // if given, switch to specific commit hash, branch or tag name
     // see: https://stackoverflow.com/questions/3489173/how-to-clone-git-repository-with-specific-revision-changeset
     if (this.gitCommit) {
-      this.manager.externals.showMessage.warning(``);
       await this._gitResetAndCheckout(this.gitCommit);
     }
   }
@@ -1177,7 +1180,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   // ###########################################################################
 
   async getCurrentBugFromTag() {
-    if (this.doesProjectFolderExist()) {
+    if (this.doesProjectGitFolderExist()) {
       for (const tag of (await this.gitGetAllCurrentTagName())) {
         const exercise = this.parseExerciseCachedTag(tag);
         if (exercise) {

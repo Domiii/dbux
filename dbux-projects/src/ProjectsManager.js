@@ -698,7 +698,9 @@ export default class ProjectsManager {
     if (previousExercise) {
       await this.saveFileChanges(previousExercise);
     }
-    await project.gitResetHard();
+    if (await project.doesProjectFolderExist() && await project.doesProjectGitFolderExist()) {
+      await project.gitResetHard();
+    }
 
     // install things
     await this.runner.activateExercise(exercise);

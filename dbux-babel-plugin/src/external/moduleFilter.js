@@ -22,21 +22,28 @@ function shouldInstrumentPackage(packageName, whitelist, blacklist) {
   return white && black;
 }
 
+/** ###########################################################################
+ * {@link moduleFilter}
+ * ##########################################################################*/
+
 export default function moduleFilter(options, includeDefault) {
   let {
     packageWhitelist,
-    packageBlacklist
+    packageBlacklist,
+    fileWhitelist,
+    fileBlacklist
   } = options;
 
-  let packageWhitelistRegExps = generateRegExps(packageWhitelist);
-  let packageBlacklistRegExps = generateRegExps(packageBlacklist);
+  const packageWhitelistRegExps = makeFullMatchRegExps(packageWhitelist);
+  const packageBlacklistRegExps = makeFullMatchRegExps(packageBlacklist);
+  const fileWhitelistRegExps = makeRegExps(fileWhitelist);
+  const fileBlacklistRegExps = makeRegExps(fileBlacklist);
 
   Verbose > 1 && debugLog(`pw`, packageWhitelistRegExps?.join(','), 'pb', packageBlacklistRegExps?.join(','));
 
-  // future-work: use Webpack5 magic comments instead
-  Verbose > 1 && debugLog(
-    requireDynamic.resolve/* ._resolveFilename */('@dbux/babel-plugin/package.json')
-  );
+  // Verbose > 1 && debugLog('moduleFilter', 
+  //   requireDynamic.resolve/* ._resolveFilename */('@dbux/babel-plugin/package.json')
+  // );
 
 
   return function _include(modulePath, ...otherArgs) {
@@ -45,11 +52,11 @@ export default function moduleFilter(options, includeDefault) {
       return undefined;
     }
     if (modulePath.match(/((dbux-runtime)|(@dbux[/\\]runtime))[/\\]/)) {
-      // TODO: only debug this if we are targeting dbux directly; else this could cause infinite loops
+      // future-work: only debug these paths if we are targeting dbux directly; else this could cause infinite loops
       return !includeDefault;
     }
 
-    // TODO: make this dist and .mjs stuff customizable
+    // TODO: make `dist` and `.mjs` path settings configurable
     const matchSkipFileResult = modulePath.match(/([/\\]dist[/\\])|(\.mjs$)/);
     const packageName = parseNodeModuleName(modulePath);
 
@@ -58,15 +65,16 @@ export default function moduleFilter(options, includeDefault) {
     if (matchSkipFileResult ||
       (packageName &&
         !shouldInstrumentPackage(packageName, packageWhitelistRegExps, packageBlacklistRegExps))) {
-      Verbose > 1 && debugLog(`no-register`, modulePath);
+      reportRegister(modulePath, false);
       return !includeDefault;
     }
 
     // modulePath = modulePath.toLowerCase();
 
-    const include = includeDefault;
-    Verbose && debugLog(`REGISTER`, modulePath);
-    return include;
+    // const shouldInclude = includeDefault;
+    const shouldInclude = shouldInstrumentPackage(modulePath, fileWhitelistRegExps, fileBlacklistRegExps);
+    reportRegister(modulePath, shouldInclude);
+    return shouldInclude;
   };
 }
 
@@ -79,25 +87,40 @@ export default function moduleFilter(options, includeDefault) {
  * Add `^` and `$` (if not exist) to `s` and convert to `RegExp`.
  * @param {string} s 
  */
-function generateFullMatchRegExp(s) {
+function makeFullMatchRegExp(s) {
   s = s.trim();
   return new RegExp(`${s[0] === '^' ? '' : '^'}${s}${s[s.length - 1] === '$' ? '' : '$'}`);
 }
 
-function generateRegExps(list) {
+function makeFullMatchRegExps(list) {
+  return makeRegExps(list, makeFullMatchRegExp);
+}
+
+function makeRegExps(list, toRegexp = RegExp) {
   if (!list) {
     return list;
   }
 
   if (isString(list)) {
-    list = list.trim().split(',');
+    list = list.trim().split(',')
+      .map(toRegexp);
   }
   else {
-    // console.debug(JSON.stringify(packageWhitelist), typeof packageWhitelist);
     list = Array.from(list).join(',')
-      .map(s => isRegExp(s) ? s : generateFullMatchRegExp(s));
+      .map(s => isRegExp(s) ? s : toRegexp(s));
   }
 
-  // packageBlacklist && console.warn('packageBlacklist', packageBlacklist);
-  return list.map(generateFullMatchRegExp);
+  return list;
+}
+
+
+function reportRegister(modulePath, shouldInclude) {
+  if (Verbose) {
+    if (shouldInclude) {
+      debugLog(`REGISTER`, modulePath);
+    }
+    else if (Verbose > 1) {
+      debugLog(`no-register`, modulePath);
+    }
+  }
 }

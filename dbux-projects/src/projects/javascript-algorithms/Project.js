@@ -5,9 +5,10 @@ import { buildJestRunBugCommand } from '../../util/jestUtil';
 
 export default class JavascriptAlgorithmProject extends Project {
   gitRemote = 'trekhleb/javascript-algorithms.git';
+  gitCommit = '9bb60fa';
 
   rmFiles = [
-    '.babelrc',       // we need .babelrc.js instead
+    '.babelrc',       // we need babel.config.js instead
     '.huskyrc.json'   // unwanted commit hooks
   ];
 
@@ -44,14 +45,15 @@ export default class JavascriptAlgorithmProject extends Project {
       '--testTimeout 30000' // timeout
     ]);
 
-    const mochaCfg = {
+    cfg = {
       ...cfg,
       ...testCfg,
-      dbuxJs: null,
+      // dbuxJs: null,
       cwd: projectPath,
+      dbuxArgs: '--pw=.* --pb=import[-]local,locate[-]path'
     };
 
     // node --stack-trace-limit=100 "./node_modules/jest/bin/jest.js" --runInBand -t "BubbleSort should sort array" --runTestsByPath src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js --cache=false
-    return buildJestRunBugCommand(mochaCfg);
+    return buildJestRunBugCommand(cfg);
   }
 }

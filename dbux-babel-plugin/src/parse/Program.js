@@ -92,7 +92,7 @@ export default class Program extends BaseNode {
       filePath,
     } = state;
 
-    // this.logger.debug(`ENTER ${filePath}`);
+    this.logger.debug(`ENTER ${filePath}`);
 
     // staticProgramContext
     const staticProgramContext = this.staticProgramContext = {

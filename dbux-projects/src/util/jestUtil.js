@@ -21,9 +21,8 @@ export async function buildJestRunBugCommand(cfg) {
   // const transform = `{
   //     "^.+\\.jsx?$": ["babel-jest"]
   //   }`;
-  testArgs = `${testArgs} --cache=false`;
+  // testArgs = `${testArgs} --cache=false`;
   // --transform=${transform}`;
-  // --cache=false
 
   // final command
 
