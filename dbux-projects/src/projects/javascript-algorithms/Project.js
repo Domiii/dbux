@@ -49,7 +49,15 @@ export default class JavascriptAlgorithmProject extends Project {
       ...testCfg,
       // dbuxJs: null,
       cwd: projectPath,
-      dbuxArgs: '--pw=.* --pb=graceful[-]fs,require.*,import.*,locate.*,pretty[-]format --fw=.* --fb=requireOrImportModule\\.js'
+      dbuxArgs: [
+        cfg.dbuxArgs,
+        '--pw=.*',
+        // eslint-disable-next-line max-len
+        '--pb=babel[-].*,graceful[-]fs,require.*,resolve.*,import.*,locate.*,pretty[-]format,jest[-]config,jest[-]validate,jest[-]resolve.*,jest[-]runtime,@jest/transform,regenerator[-]transform,.*source[-]map,browserslist,human[-]signals,react[-]is,jest[-]haste[-]map,@jest/reporters',
+        '--fw=.*',
+        '--fb=requireOrImportModule\\.js',
+        '--runtime="{\\"tracesDisabled\\":1}"'
+      ].join(' ')
     };
 
     // node --stack-trace-limit=100 "./node_modules/jest/bin/jest.js" --runInBand -t "BubbleSort should sort array" --runTestsByPath src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js --cache=false

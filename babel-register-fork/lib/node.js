@@ -80,6 +80,7 @@ function compile(code, srcFilename) {
       registerCache.saveFile(srcFilename, cacheFilename, cacheKey, cached);
     }
   }
+  // console.debug(`[@babel/register -> compile] ${srcFilename}: ${code}`);
 
   if (cached.map) {
     if (Object.keys(maps).length === 0) {

@@ -35,7 +35,8 @@ module.exports = {
   ],
   "plugins": [
     ["@dbux/babel-plugin", {
-      verbose: 1
+      verbose: 1,
+      runtime: '{"tracesDisabled": 1}'
     }]],
 
   ignore

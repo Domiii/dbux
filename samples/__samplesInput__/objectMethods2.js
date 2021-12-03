@@ -11,3 +11,5 @@ const o = {
 };
 
 console.log(o);
+
+// console.log('run', require('@dbux/runtime'));

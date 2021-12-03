@@ -12,6 +12,8 @@ export const aliases = ['r'];
 export const describe = 'Run the given file with DBUX injected and reporting. Needs a receiving runtime server (such as the DBUX VSCode extension) running.';
 export const builder = buildCommonCommandOptions();
 
+// console.log('run', __non_webpack_require__.resolve('@dbux/runtime'));
+
 // process.env.BABEL_DISABLE_CACHE = 1;
 
 /**

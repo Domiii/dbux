@@ -52,7 +52,12 @@ export default class ObjectMethod extends BaseNode {
     const [keyNode] = this.getChildNodes();
     // NOTE: non-computed keys don't have their own ParseNode (for now).
     //      `ObjectExpression` instrumentation will assure correct traces + DataNodes nevertheless.
-    keyNode?.addDefaultTrace();
+    if (keyNode?.path && !keyNode.path.isLiteral()) {
+      // NOTE: method name can be a string literal. 
+      //    In which case, we can trace it (but need to convert to `computed`).
+      //  -> For now, just don't instrument.
+      keyNode.addDefaultTrace();
+    }
 
     // add trace
     const traceCfg = super.addDefaultTrace();

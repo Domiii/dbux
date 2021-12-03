@@ -1,5 +1,4 @@
 import path from 'path';
-import colors from 'colors/safe';
 import { readPackageJson } from '../lib/package-util';
 import { getDependencyRoot, getDbuxCliRoot } from '../lib/dbux-folders';
 import linkDependencies from './linkDependencies';

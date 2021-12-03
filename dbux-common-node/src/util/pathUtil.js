@@ -2,6 +2,7 @@ import sh from 'shelljs';
 import fs from 'fs';
 import path from 'path';
 import commonAncestorPath from 'common-ancestor-path';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 /**
  * Get command executable path
@@ -69,8 +70,17 @@ export function pathNormalizedForce(fpath) {
 
 export function parseNodeModuleName(fpath) {
   fpath = pathNormalized(fpath);
-  const matchResult = fpath.match(/(?<=node_modules[/])(?!node_modules)(?<packageName>[^/]+)(?=[/](?!node_modules).*)?/);
-  return matchResult?.groups.packageName || null;
+  const matchResult = fpath.match(/(?<=node_modules[/])(?!node_modules)(?<packageName>[^/]+)(?=[/](?!node_modules)(?<name2>[^/]+).*?)/);
+  let { packageName, name2 } = matchResult?.groups || EmptyObject;
+  if (!packageName) {
+    return null;
+  }
+  if (packageName.startsWith('@') && name2) {
+    // only a prefix
+    packageName += '/' + name2;
+    // console.warn('module match:', packageName, name2);
+  }
+  return packageName || null;
 }
 
 export function getPathRelativeToCommonAncestor(fpath, ...otherPaths) {

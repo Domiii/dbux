@@ -105,6 +105,10 @@ export default class RuntimeMonitor {
     this.tracesDisabled = !!tracesDisabled + 0;
     this.valuesDisabled = !!valuesDisabled + 0;
 
+    // if (runtimeCfg || Verbose) {
+    // _debug(`addProgram, runtimeCfg: ${JSON.stringify(runtimeCfg)}`);
+    // }
+
     // go!
     const staticProgramContext = staticProgramContextCollection.addProgram(programData);
     const { programId } = staticProgramContext;
@@ -190,15 +194,15 @@ export default class RuntimeMonitor {
     }
     this._runtime.push(contextId, isInterruptable);
 
-    if (Verbose) {
-      // const staticContext = staticContextCollection.getContext(programId, inProgramStaticContextId);
-      debug(
-        // ${JSON.stringify(staticContext)}
-        // eslint-disable-next-line max-len
-        `>${' '.repeat(this.runtime._executingStack._stack?.length || 0)} ${executionContextCollection.makeContextInfo(contextId)} (pid=${programId}, pcid=${parentContextId})`
-      );
-      this.debugOnContextAdd(context);
-    }
+    // if (Verbose) {
+    // const staticContext = staticContextCollection.getContext(programId, inProgramStaticContextId);
+    _debug(
+      // ${JSON.stringify(staticContext)}
+      // eslint-disable-next-line max-len
+      `PUSH>${' '.repeat(this.runtime._executingStack._stack?.length || 0)} ${executionContextCollection.makeContextInfo(contextId)} (pid=${programId}, pcid=${parentContextId})`
+    );
+    this.debugOnContextAdd(context);
+    // }
 
     this.newTraceId(programId, inProgramStaticTraceId);
 
@@ -288,10 +292,7 @@ export default class RuntimeMonitor {
     }
 
     if (Verbose) {
-      // const { staticContextId } = context;
-      // const staticContext = staticContextCollection.getById(staticContextId);
       debug(
-        // ${JSON.stringify(staticContext)}
         `<${' '.repeat(this.runtime._executingStack._stack?.length || 0)} ${executionContextCollection.makeContextInfo(contextId)} (pid=${programId})`
       );
     }

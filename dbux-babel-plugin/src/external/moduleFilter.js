@@ -1,10 +1,11 @@
 import isString from 'lodash/isString';
 import isRegExp from 'lodash/isRegExp';
 import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 // import { requireDynamic } from '@dbux/common-node/src/util/requireUtil';
 
-// const Verbose = 0;
-const Verbose = 2;
+const Verbose = 1;
+// const Verbose = 2;
 
 function debugLog(...args) {
   let msg = `[@dbux/babel-plugin][moduleFilter] ${args.join(' ')}`;
@@ -12,6 +13,13 @@ function debugLog(...args) {
 
   // eslint-disable-next-line no-console
   console.log(msg);
+}
+function traceLog(...args) {
+  let msg = `[@dbux/babel-plugin][moduleFilter] ${args.join(' ')}`;
+  // msg = colors.gray(msg);
+
+  // eslint-disable-next-line no-console
+  console.trace(msg);
 }
 
 function shouldInstrument(input, whitelist, blacklist) {
@@ -59,10 +67,10 @@ export default function moduleFilter(options, includeDefault) {
 
   return function _include(modulePath, ...otherArgs) {
     if (!modulePath) {
-      Verbose && debugLog(`no modulePath - otherArgs = ${otherArgs}`);
+      Verbose && traceLog(`no modulePath - otherArgs = ${otherArgs}`);
       return undefined;
     }
-    if (modulePath.match(/((dbux-runtime)|(@dbux[/\\]runtime))[/\\]/)) {
+    if (modulePath.match(/((dbux[-]runtime)|(@dbux[/\\]runtime))[/\\]/)) {
       // future-work: only debug these paths if we are targeting dbux directly; else this could cause infinite loops
       return !includeDefault;
     }
@@ -71,7 +79,7 @@ export default function moduleFilter(options, includeDefault) {
     const unwanted = modulePath.match(/([/\\]dist[/\\])|(\.mjs$)|([/\\]@babel[/\\])|([/\\]babel[-]plugin.*[/\\])/);
     const packageName = parseNodeModuleName(modulePath);
 
-    // console.log('matchSkipFileResult', modulePath, packageName, matchSkipFileResult);
+    // console.debug('unwanted', modulePath, packageName, unwanted);
 
     if (unwanted ||
       (packageName &&
@@ -83,7 +91,8 @@ export default function moduleFilter(options, includeDefault) {
     // modulePath = modulePath.toLowerCase();
 
     // const shouldInclude = includeDefault;
-    const shouldInclude = shouldInstrument(modulePath, fileWhitelistRegExps, fileBlacklistRegExps);
+    const shouldInclude = (!fileWhitelistRegExps.length && !fileBlacklistRegExps.length) || 
+      shouldInstrument(modulePath, fileWhitelistRegExps, fileBlacklistRegExps);
     reportRegister(modulePath, shouldInclude);
     return (shouldInclude && includeDefault) || (!shouldInclude && !includeDefault);
     // if (shouldInclude) {
@@ -117,7 +126,7 @@ function defaultRegexpCreator(s) {
 
 function makeRegExps(list, toRegexp = defaultRegexpCreator) {
   if (!list) {
-    return [];
+    return EmptyArray;
   }
 
   if (isString(list)) {
