@@ -42,6 +42,7 @@ export default class BaseTreeViewNodeProvider {
    */
   constructor(viewName, options = {}) {
     this.treeViewName = viewName;
+    this.logger = newLogger(this.constructor.name);
     const { showCollapseAll = false, createTreeView = true } = options;
 
     // NOTE: view creation inside the data provider is not ideal, 
@@ -73,9 +74,16 @@ export default class BaseTreeViewNodeProvider {
     this.setTitle(this.defaultTitle);
   }
 
+  decorateTitle(decoration) {
+    this.setTitle(`${this.treeDataProvider.defaultTitle} ${decoration}`);
+  }
+
   setTitle(title) {
     if (this.treeView) {
       this.treeView.title = title;
+    }
+    else {
+      this.logger.error(`Cannot setTitle before treeView is created.`);
     }
   }
 
@@ -100,7 +108,7 @@ export default class BaseTreeViewNodeProvider {
       this.repaint();
     }
     catch (err) {
-      logError(`${this.constructor.name}.refresh() failed`, err);
+      this.logger.error(`${this.constructor.name}.refresh() failed`, err);
       throw err;
     }
   }, 50);
@@ -148,7 +156,7 @@ export default class BaseTreeViewNodeProvider {
         node.collapsibleState = TreeItemCollapsibleState.Collapsed;
         break;
       default:
-        logError('invalid node collapsibleState on state change: ', node.collapsibleState, node);
+        this.logger.error('invalid node collapsibleState on state change: ', node.collapsibleState, node);
         break;
     }
     this.idsCollapsibleState.set(node.id, node.collapsibleState);
@@ -337,7 +345,7 @@ export default class BaseTreeViewNodeProvider {
       }
     }
     catch (err) {
-      logError(`${this.constructor.name}.getChildren() failed`, err);
+      this.logger.error(`${this.constructor.name}.getChildren() failed`, err);
       debugger;
       throw err;
     }
