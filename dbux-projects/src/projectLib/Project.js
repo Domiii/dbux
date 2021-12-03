@@ -262,6 +262,14 @@ export default class Project extends ProjectBase {
     return bug.nodeVersion || this.nodeVersion || '14';
   }
 
+  doesProjectFolderExist() {
+    return sh.test('-d', this.hiddenGitFolderPath);
+  }
+
+  getRelativeProjectPath() {
+    return pathRelative(this.manager.getDefaultSourceRoot(), this.projectPath);
+  }
+
   // ###########################################################################
   // git utilities
   // ###########################################################################
@@ -874,62 +882,6 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     return true;
   }
 
-
-  /**
-   * @param {Project} project 
-   */
-  async flushCacheConfirm() {
-    // future-work: this might be the wrong cache folder, if `findCacheDir` resolves it differently
-    //    -> offer an API to get (and/or flush) cache folder in babel-register (see `prepareCache`)
-    const cacheRoot = this.getCacheRoot();
-    const relativeProjectPath = this.getRelativeProjectPath();
-    const cacheFolderStr = `${cacheRoot}/\n  ${relativeProjectPath}`;  // NOTE: path too long for modal
-    if (this.doesCacheFolderExist()) {
-      if (await this.manager.externals.confirm(`This will flush the cache at "${cacheFolderStr}", are you sure?`)) {
-        this.deleteCacheFolder();
-        await this.manager.externals.alert(`Successfully deleted cache folder for project "${this.name}"`, true);
-      }
-    }
-    else {
-      await this.manager.externals.alert(`Cache for project "${this.name}" is empty (${cacheFolderStr})`, false);
-    }
-  }
-
-  getRelativeProjectPath() {
-    return pathRelative(this.manager.getDefaultSourceRoot(), this.projectPath);
-  }
-
-  getCacheRoot() {
-    const { envName } = this;
-    return pathJoin(this.manager.getDefaultSourceRoot(), 'node_modules', '.cache', '@babel', 'register', envName);
-  }
-
-  getCacheFolder() {
-    const cacheRoot = this.getCacheRoot();
-    const relativeProjectPath = this.getRelativeProjectPath();
-
-    return pathJoin(
-      cacheRoot,
-      relativeProjectPath
-    );
-  }
-
-  doesProjectFolderExist() {
-    return sh.test('-d', this.hiddenGitFolderPath);
-  }
-
-  doesCacheFolderExist() {
-    const cacheFolder = this.getCacheFolder();
-    return fs.existsSync(cacheFolder);
-  }
-
-  deleteCacheFolder() {
-    const cacheFolder = this.getCacheFolder();
-    if (fs.existsSync(cacheFolder)) {
-      fs.rmSync(cacheFolder, { recursive: true });
-    }
-  }
-
   /**
    * 1. select bug tag, 2. reset hard, 3. remove bug tag
    *    -> this should be the inverse of {@link Project#installBug}
@@ -951,6 +903,57 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     }
 
     await this.gitDeleteTag(exerciseCachedTag);
+  }
+
+  /** ###########################################################################
+   * cache
+   *  #########################################################################*/
+
+  /**
+   * @param {Project} project 
+   */
+  async flushCacheConfirm() {
+    // future-work: this might be the wrong cache folder, if `findCacheDir` resolves it differently
+    //    -> offer an API to get (and/or flush) cache folder in babel-register (see `prepareCache`)
+    const cacheRoot = this.getCacheRoot();
+    const relativeProjectPath = this.getRelativeProjectPath();
+    const cacheFolderStr = `${cacheRoot}/\n  ${relativeProjectPath}`;  // NOTE: path too long for modal
+    if (this.doesCacheFolderExist()) {
+      if (await this.manager.externals.confirm(`This will flush the cache at "${cacheFolderStr}", are you sure?`)) {
+        this.deleteCacheFolder();
+        await this.manager.externals.alert(`Successfully deleted cache folder for project "${this.name}"`, true);
+      }
+    }
+    else {
+      await this.manager.externals.alert(`Cache for project "${this.name}" is empty (${cacheFolderStr})`, false);
+    }
+  }
+
+  getCacheRoot() {
+    const { envName } = this;
+    return pathJoin(this.manager.getDefaultSourceRoot(), 'node_modules', '.cache', '@babel', 'register', envName);
+  }
+
+  getCacheFolder() {
+    const cacheRoot = this.getCacheRoot();
+    const relativeProjectPath = this.getRelativeProjectPath();
+
+    return pathJoin(
+      cacheRoot,
+      relativeProjectPath
+    );
+  }
+
+  doesCacheFolderExist() {
+    const cacheFolder = this.getCacheFolder();
+    return fs.existsSync(cacheFolder);
+  }
+
+  deleteCacheFolder() {
+    const cacheFolder = this.getCacheFolder();
+    if (fs.existsSync(cacheFolder)) {
+      fs.rmSync(cacheFolder, { recursive: true });
+    }
   }
 
   /** ###########################################################################

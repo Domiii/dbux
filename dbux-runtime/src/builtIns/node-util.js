@@ -1,5 +1,5 @@
 import util from 'util';
-import { monkeyPatchFunctionHolder, monkeyPatchMethod } from '../util/monkeyPatchUtil';
+import { monkeyPatchFunctionHolderDefault } from '../util/monkeyPatchUtil';
 // import { peekBCEMatchCallee } from '../data/dataUtil';
 
 // node -e "console.log(require('util'))"
@@ -14,11 +14,7 @@ export default function patchNodeUtil() {
    * 
    * @see https://nodejs.org/docs/latest/api/util.html#util_util_inherits_constructor_superconstructor
    * @deprecated
-   */
-  monkeyPatchFunctionHolder(util, 'inherits',
-    (thisArg, args, originalFunction, patchedFunction) => {
-      // const bceTrace = peekBCEMatchCallee(patchedFunction);
-      return originalFunction(...args);
-    }
-  );
+  */
+  monkeyPatchFunctionHolderDefault(util, 'inherits');
+  monkeyPatchFunctionHolderDefault(process, 'cwd');
 }
