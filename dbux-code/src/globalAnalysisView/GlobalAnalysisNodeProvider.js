@@ -1,6 +1,6 @@
 import allApplications from '@dbux/data/src/applications/allApplications';
-import EmptyNode from './nodes/EmptyNode';
 import BaseTreeViewNodeProvider from '../codeUtil/BaseTreeViewNodeProvider';
+import EmptyTreeViewNode from '../codeUtil/EmptyTreeViewNode';
 import GlobalNodeClasses from './nodes/GlobalNodes';
 
 export default class GlobalAnalysisNodeProvider extends BaseTreeViewNodeProvider {
@@ -21,7 +21,7 @@ export default class GlobalAnalysisNodeProvider extends BaseTreeViewNodeProvider
       );
     }
     else {
-      roots.push(EmptyNode.instance);
+      roots.push(EmptyTreeViewNode.get('(no applications)'));
     }
 
     return roots;

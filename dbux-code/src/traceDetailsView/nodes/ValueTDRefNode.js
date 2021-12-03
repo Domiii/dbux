@@ -1,5 +1,5 @@
 import allApplications from '@dbux/data/src/applications/allApplications';
-import EmptyValueNode from './EmptyValueNode';
+import EmptyTreeViewNode from '../../codeUtil/EmptyTreeViewNode';
 import ValueNode, { ValueLabel } from './ValueNode';
 import ValueTDSimpleNode from './ValueTDSimpleNode';
 
@@ -82,7 +82,7 @@ export default class ValueTDRefNode extends ValueNode {
       if (simpleValue !== undefined) {
         return [];
       }
-      return [EmptyValueNode.instance];
+      return [EmptyTreeViewNode.get('(no properties)')];
     }
   }
 

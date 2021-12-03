@@ -1,9 +1,9 @@
 import traceSelection from '@dbux/data/src/traceSelection';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import EmptyTreeViewNode from '../codeUtil/EmptyTreeViewNode';
 import { DetailNodeClasses } from './nodes/traceDetailNodes';
 import SelectedTraceNode from './nodes/SelectedTraceNode';
 import TraceNode from './nodes/TraceNode';
-import EmptyNode from './nodes/EmptyNode';
 import BaseTreeViewNodeProvider from '../codeUtil/BaseTreeViewNodeProvider';
 import NavigationNode from './nodes/NavigationNode';
 
@@ -33,7 +33,7 @@ export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
     else {
       this.trace = null;
       // add empty node
-      roots.push(EmptyNode.instance);
+      roots.push(EmptyTreeViewNode.get('(no trace selected)'));
     }
 
     return roots;

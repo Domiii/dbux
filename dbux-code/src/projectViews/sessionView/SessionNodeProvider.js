@@ -1,5 +1,5 @@
-import EmptyNode from './EmptyNode';
 import BaseTreeViewNodeProvider from '../../codeUtil/BaseTreeViewNodeProvider';
+import EmptyTreeViewNode from '../../codeUtil/EmptyTreeViewNode';
 import { getActionNodeClasses } from './ActionNodes';
 
 /** @typedef {import('../projectViewsController').ProjectViewController} ProjectViewController */
@@ -34,7 +34,7 @@ export default class SessionNodeProvider extends BaseTreeViewNodeProvider {
     }
 
     if (!roots.length) {
-      roots.push(EmptyNode.instance);
+      roots.push(EmptyTreeViewNode.get('(No current practice session)'));
     }
 
     return roots;

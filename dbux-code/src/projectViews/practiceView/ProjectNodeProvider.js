@@ -1,7 +1,7 @@
 import BaseTreeViewNodeProvider from '../../codeUtil/BaseTreeViewNodeProvider';
+import EmptyTreeViewNode from '../../codeUtil/EmptyTreeViewNode';
 import ProjectNode from './ProjectNode';
 import ChapterNode from './ChapterNode';
-import EmptyNode from './EmptyNode';
 
 export default class ProjectNodeProvider extends BaseTreeViewNodeProvider {
   constructor(context, treeViewController) {
@@ -37,7 +37,7 @@ export default class ProjectNodeProvider extends BaseTreeViewNodeProvider {
     }
 
     if (!roots.length) {
-      roots.push(EmptyNode.instance);
+      roots.push(EmptyTreeViewNode.get('(Empty Project List)'));
     }
 
     return roots;
