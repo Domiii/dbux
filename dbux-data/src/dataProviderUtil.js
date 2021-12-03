@@ -10,6 +10,7 @@ import { pushArrayOfArray } from '@dbux/common/src/util/arrayUtil';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { renderValueSimple } from '@dbux/common/src/util/stringUtil';
 import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
 import StaticTrace from '@dbux/common/src/types/StaticTrace';
 import StaticContextType, { isVirtualContextType } from '@dbux/common/src/types/constants/StaticContextType';
@@ -670,7 +671,7 @@ export default {
       }
     }
     else if (isString(value)) {
-      return JSON.stringify(value);
+      return renderValueSimple(value);
     }
     else {
       return String(value);
