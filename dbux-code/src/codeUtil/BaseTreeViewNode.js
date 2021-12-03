@@ -68,23 +68,13 @@ export default class BaseTreeViewNode extends TreeItem {
     // default: do nothing
   }
 
-  /**
-   * future-work: generalize to be used by all buildNode algorithms?
-   */
-  makeChildPropsDefault() {
+  static makeChildPropsDefault() {
     return EmptyObject;
   }
 
 
   buildChildrenDefault() {
-    if (!this.childClasses) {
-      return null;
-    }
-
-    return this.childClasses.map(Clazz => {
-      const props = this.makeChildPropsDefault(Clazz);
-      return this.treeNodeProvider.buildNode(Clazz, this.entry, this, props);
-    });
+    return this.treeNodeProvider.buildNodes(this.childClasses);
   }
 
   // /**

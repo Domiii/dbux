@@ -6,20 +6,23 @@ import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import { getThemeResourcePath } from './codePath';
 import { registerCommand } from '../commands/commandUtil';
 import { emitTreeViewAction, emitTreeViewCollapseChangeAction } from '../userEvents';
+import BaseTreeViewNode from './BaseTreeViewNode';
+
+/** @typedef { import("./BaseTreeViewNode").default } BaseTreeViewNode */
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('BaseTreeViewNodeProvider');
 
-const nodeClasses = new Map();
+const allNodeClasses = new Map();
 
 function makeNodeClassId(NodeClass) {
   if (!NodeClass.name) {
     // in production, names might get mangled and/or removed entirely, so we need a different class identifier here
     logError(`NodeClass.name is empty (Terser setup problem?)`);
-    let id = nodeClasses.get(NodeClass);
+    let id = allNodeClasses.get(NodeClass);
     if (!id) {
-      id = nodeClasses.size + 1;
-      nodeClasses.set(NodeClass, id);
+      id = allNodeClasses.size + 1;
+      allNodeClasses.set(NodeClass, id);
     }
 
     return id;
@@ -216,10 +219,26 @@ export default class BaseTreeViewNodeProvider {
     return new NodeClass(this, label, entry, parent, moreProps);
   }
 
+  /**
+   * @param {BaseTreeViewNode} node 
+   */
   buildChildren(node) {
     node.children = node.buildChildren && node.buildChildren() || node.buildChildrenDefault();
     this.decorateChildren(node);
     return node.children;
+  }
+
+  buildNodes(nodeClasses) {
+    if (!nodeClasses) {
+      return null;
+    }
+
+    return nodeClasses
+      .map(Clazz => {
+        const props = (Clazz.makeChildPropsDefault || BaseTreeViewNode.makeChildPropsDefault)?.(Clazz);
+        return this.buildNode(Clazz, this.entry, this, props);
+      })
+      .filter(node => !!node);
   }
 
   decorateChildren(node) {

@@ -9,7 +9,7 @@ class ResearchNode extends TraceDetailNode {
     return 'Research';
   }
 
-  makeChildPropsDefault() {
+  static makeChildPropsDefault() {
     return {
       collapsibleState: TreeItemCollapsibleState.Expanded
     };
