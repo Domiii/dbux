@@ -1,6 +1,7 @@
 import findLast from 'lodash/findLast';
 import groupBy from 'lodash/groupBy';
 import isNumber from 'lodash/isNumber';
+import isString from 'lodash/isString';
 import truncate from 'lodash/truncate';
 import isPlainObject from 'lodash/isPlainObject';
 import TraceType, { hasDynamicTypes, isTracePop, isBeforeCallExpression } from '@dbux/common/src/types/constants/TraceType';
@@ -667,6 +668,9 @@ export default {
       else {
         return String(valueRef.value);
       }
+    }
+    else if (isString(value)) {
+      return JSON.stringify(value);
     }
     else {
       return String(value);
@@ -1671,7 +1675,7 @@ export default {
   getAllTracesOfType(dp, traceType) {
     return dp.collections.traces.getAllActual().filter(t => dp.util.getTraceType(t.traceId) === traceType);
   },
-  
+
   /**
    * @param {DataProvider} dp 
    */
