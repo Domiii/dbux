@@ -7,5 +7,5 @@ function obj2String(obj) {
   console.log('  ', s);
 }
 
-obj2String(['hi']);
+obj2String(['hi','hello']);
 obj2String(null);
