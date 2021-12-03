@@ -4,7 +4,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import CallRootNode from './CallRootNode';
 import BaseTreeViewNodeProvider from '../codeUtil/BaseTreeViewNodeProvider';
-import EmptyNode from './EmptyNode';
+import EmptyTreeViewNode from '../codeUtil/EmptyTreeViewNode';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('CallGraphNodeProvider');
@@ -21,7 +21,7 @@ export default class CallGraphNodeProvider extends BaseTreeViewNodeProvider {
 
 
     if (!allRootNode.length) {
-      allRootNode.push(EmptyNode.instance);
+      allRootNode.push(EmptyTreeViewNode.get('(no active applications)'));
     }
 
     return allRootNode.reverse();

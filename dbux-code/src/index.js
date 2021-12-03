@@ -18,6 +18,7 @@ import { initPathwaysView } from './webViews/pathwaysWebView';
 import { initWebviewWrapper } from './codeUtil/WebviewWrapper';
 import { installDbuxDependencies } from './codeUtil/installUtil';
 import { initDataFlowView } from './dataFlowView/dataFlowViewController';
+import { initGlobalAnalysisView } from './globalAnalysisView/GlobalAnalysisViewController';
 // import { initPlugins } from './PluginMgr';
 // import { maybeStartSurvey1ForTheFirstTime } from './dialogs/dialogController';
 
@@ -47,6 +48,7 @@ async function activate(context) {
     initWebviewWrapper(context);
 
     initApplicationsView(context);
+    initGlobalAnalysisView(context);
     const traceDetailsController = initTraceDetailsView(context);
     const dataFlowController = initDataFlowView(context);
     const projectViewController = initProjectView(context);

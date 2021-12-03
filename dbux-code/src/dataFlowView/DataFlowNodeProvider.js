@@ -4,9 +4,8 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
 import BaseTreeViewNodeProvider from '../codeUtil/BaseTreeViewNodeProvider';
+import EmptyTreeViewNode from '../codeUtil/EmptyTreeViewNode';
 import DataFlowSearchModeType from './DataFlowSearchModeType';
-import EmptyNode from './EmptyNode';
-import EmptyDataNode from './EmptyDataNode';
 import DataFlowFilterModeType from './DataFlowFilterModeType';
 import ParentDataNode from './ParentDataNode';
 
@@ -37,15 +36,15 @@ export default class DataFlowNodeProvider extends BaseTreeViewNodeProvider {
       const { nodeId } = traceSelection;
 
       roots.push(
-        ...this.buildDataNodes(trace, nodeId)
+        ...(this.buildDataNodes(trace, nodeId) || EmptyArray)
       );
 
       if (!roots.length) {
-        roots.push(EmptyDataNode.instance);
+        roots.push(EmptyTreeViewNode.get('(trace has no value)'));
       }
     }
     else {
-      roots.push(EmptyNode.instance);
+      roots.push(EmptyTreeViewNode.get('(no trace selected)'));
     }
 
     return roots;
@@ -67,7 +66,7 @@ export default class DataFlowNodeProvider extends BaseTreeViewNodeProvider {
     }
     const dataNode = dp.collections.dataNodes.getById(nodeId);
     if (!dataNode) {
-      return [EmptyDataNode.instance];
+      return null;
     }
 
     if (dataNode.traceId !== traceId) {
@@ -102,7 +101,7 @@ export default class DataFlowNodeProvider extends BaseTreeViewNodeProvider {
         dataTraceIds.add(dataTrace.traceId);
         return this.buildNode(ParentDataNode, dataTrace, null, { dataNode: node });
       }
-    }).filter(x => !!x) || EmptyArray;
+    }).filter(x => !!x);
 
     // return dataNodes?.map((dataNode) => {
     //   const trace = dp.collections.traces.getById(dataNode.traceId);
