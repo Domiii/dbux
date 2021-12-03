@@ -1,11 +1,10 @@
-
 import isString from 'lodash/isString';
+import isRegExp from 'lodash/isRegExp';
 import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
-import { requireDynamic } from '@dbux/common-node/src/util/requireUtil';
-import { isRegExp } from 'lodash';
+// import { requireDynamic } from '@dbux/common-node/src/util/requireUtil';
 
-const Verbose = 0;
-// const Verbose = 1;
+// const Verbose = 0;
+const Verbose = 2;
 
 function debugLog(...args) {
   let msg = `[@dbux/babel-plugin][moduleFilter] ${args.join(' ')}`;
@@ -15,17 +14,24 @@ function debugLog(...args) {
   console.log(msg);
 }
 
-function shouldInstrumentPackage(packageName, whitelist, blacklist) {
-  const white = (!whitelist || whitelist.some(regexp => regexp.test(packageName)));
-  const black = (!blacklist || !blacklist?.some(regexp => regexp.test(packageName)));
-  // console.log('shouldInstrumentPackage', packageName, { white, black, whitelist });
-  return white && black;
+function shouldInstrument(input, whitelist, blacklist) {
+  const white = (!whitelist || whitelist.some(regexp => regexp.test(input)));
+  const black = (!blacklist || !blacklist.some(regexp => regexp.test(input)));
+  const result = white && black;
+  // Verbose > 1 && debugLog('shouldInstrument', input, result, '\n  ', 
+  //   JSON.stringify({ white, black, whitelist: whitelist?.map(x => x.toString()), blacklist: blacklist?.map(x => x.toString()) })
+  // );
+  return result;
 }
 
 /** ###########################################################################
  * {@link moduleFilter}
  * ##########################################################################*/
 
+/**
+ * @param {*} options 
+ * @param {boolean} includeDefault Is used internally to determine whether we are including or ignoring.
+ */
 export default function moduleFilter(options, includeDefault) {
   let {
     packageWhitelist,
@@ -39,7 +45,12 @@ export default function moduleFilter(options, includeDefault) {
   const fileWhitelistRegExps = makeRegExps(fileWhitelist);
   const fileBlacklistRegExps = makeRegExps(fileBlacklist);
 
-  Verbose > 1 && debugLog(`pw`, packageWhitelistRegExps?.join(','), 'pb', packageBlacklistRegExps?.join(','));
+  Verbose > 1 && debugLog(
+    `pw`, packageWhitelistRegExps?.join(','), 
+    'pb', packageBlacklistRegExps?.join(','),
+    'fw', fileWhitelistRegExps?.join(','),
+    'fb', fileBlacklistRegExps?.join(',')
+  );
 
   // Verbose > 1 && debugLog('moduleFilter', 
   //   requireDynamic.resolve/* ._resolveFilename */('@dbux/babel-plugin/package.json')
@@ -56,15 +67,15 @@ export default function moduleFilter(options, includeDefault) {
       return !includeDefault;
     }
 
-    // TODO: make `dist` and `.mjs` path settings configurable
-    const matchSkipFileResult = modulePath.match(/([/\\]dist[/\\])|(\.mjs$)/);
+    // TODO: make `dist`, `.mjs` and @babel path settings configurable
+    const unwanted = modulePath.match(/([/\\]dist[/\\])|(\.mjs$)|([/\\]@babel[/\\])|([/\\]babel[-]plugin.*[/\\])/);
     const packageName = parseNodeModuleName(modulePath);
 
     // console.log('matchSkipFileResult', modulePath, packageName, matchSkipFileResult);
 
-    if (matchSkipFileResult ||
+    if (unwanted ||
       (packageName &&
-        !shouldInstrumentPackage(packageName, packageWhitelistRegExps, packageBlacklistRegExps))) {
+        !shouldInstrument(packageName, packageWhitelistRegExps, packageBlacklistRegExps))) {
       reportRegister(modulePath, false);
       return !includeDefault;
     }
@@ -72,9 +83,13 @@ export default function moduleFilter(options, includeDefault) {
     // modulePath = modulePath.toLowerCase();
 
     // const shouldInclude = includeDefault;
-    const shouldInclude = shouldInstrumentPackage(modulePath, fileWhitelistRegExps, fileBlacklistRegExps);
+    const shouldInclude = shouldInstrument(modulePath, fileWhitelistRegExps, fileBlacklistRegExps);
     reportRegister(modulePath, shouldInclude);
-    return shouldInclude;
+    return (shouldInclude && includeDefault) || (!shouldInclude && !includeDefault);
+    // if (shouldInclude) {
+    //   return includeDefault;
+    // }
+    // return !includeDefault;
   };
 }
 
@@ -96,9 +111,13 @@ function makeFullMatchRegExps(list) {
   return makeRegExps(list, makeFullMatchRegExp);
 }
 
-function makeRegExps(list, toRegexp = RegExp) {
+function defaultRegexpCreator(s) {
+  return new RegExp(s);
+}
+
+function makeRegExps(list, toRegexp = defaultRegexpCreator) {
   if (!list) {
-    return list;
+    return [];
   }
 
   if (isString(list)) {

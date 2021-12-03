@@ -6,6 +6,9 @@ import mergeWith from 'lodash/mergeWith';
 import { transformSync } from '@babel/core';
 import { babelConfigNext, babelConfigEs5 } from './babelConfigs';
 import dbuxBabelPlugin from '..';
+import path from 'path';
+
+throw new Error('FIXME! Also upgrade outdated jest dependencies: jest: ^25.1.0 jest-expect-message: ^1.0.2 jest-extended: ^0.11.5');
 
 const sourceMaps = 'inline';
 

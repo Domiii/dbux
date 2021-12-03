@@ -1,14 +1,14 @@
 import { newLogger, playbackLogRecords } from '@dbux/common/src/log/logger';
+import NestedError from '@dbux/common/src/NestedError';
 import errorWrapVisitor from '../helpers/errorWrapVisitor';
 import { clearSourceHelperCache } from '../helpers/sourceHelpers';
 import injectDbuxState from '../dbuxState';
 import { buildVisitors as traceVisitors } from '../parseLib/visitors';
 import Program from '../parse/Program';
 import nameVisitors, { clearNames } from './nameVisitors';
-import NestedError from '@dbux/common/src/NestedError';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('programVisitor');
+const { log, debug, warn, error: logError, trace: logTrace } = newLogger('programVisitor');
 
 
 // ###########################################################################
@@ -22,7 +22,7 @@ function enter(path, state) {
   // const cfg = state.opts;
   if (state.onEnter) return; // make sure to not visit Program node more than once
   // console.warn('P', path.toString());
-  // console.warn(state.filename);
+  // logTrace('[Program]', state.filename);
   // console.warn(state.file.code.substring(0, 100));
 
   // inject data + methods that we are going to use for instrumentation

@@ -35,7 +35,7 @@
     "serialize-javascript": "^5.0.1",
     "serve": "^11.3.2",
     "shelljs": "0.8.4",
-    "yargs": "^15.4.1"
+    "yargs": "^16.2.0"
   },
   "devDependencies": {
     "glob": "^7.1.6"

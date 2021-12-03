@@ -9,7 +9,7 @@ export default class JavascriptAlgorithmProject extends Project {
 
   rmFiles = [
     '.babelrc',       // we need babel.config.js instead
-    '.huskyrc.json'   // unwanted commit hooks
+    '.husky'   // unwanted commit hooks
   ];
 
   canRun(config) {
@@ -41,8 +41,7 @@ export default class JavascriptAlgorithmProject extends Project {
     const { projectPath } = this;
     // const bugArgs = this.getMochaRunArgs(bug);
     const testCfg = this.getJestCfg(bug, [
-      '--setupFilesAfterEnv ./dbuxJestSetup.js',
-      '--testTimeout 30000' // timeout
+      '--setupFilesAfterEnv ./dbuxJestSetup.js'
     ]);
 
     cfg = {
@@ -50,7 +49,7 @@ export default class JavascriptAlgorithmProject extends Project {
       ...testCfg,
       // dbuxJs: null,
       cwd: projectPath,
-      dbuxArgs: '--pw=.* --pb=import[-]local,locate[-]path'
+      dbuxArgs: '--pw=.* --pb=graceful[-]fs,require.*,import.*,locate.*,pretty[-]format --fw=.* --fb=requireOrImportModule\\.js'
     };
 
     // node --stack-trace-limit=100 "./node_modules/jest/bin/jest.js" --runInBand -t "BubbleSort should sort array" --runTestsByPath src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js --cache=false

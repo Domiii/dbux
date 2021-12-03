@@ -4,7 +4,11 @@
 
 const shouldIgnore = require('@dbux/babel-plugin/dist/shouldIgnore').default;
 const ignoreOptions = {
-  packageWhitelist: 'jest,jest[-].*,@jest.*'
+  // packageWhitelist: 'jest,jest[-].*,@jest.*',
+  packageWhitelist: '.*',
+  packageBlacklist: 'require.*,import.*,locate.*',
+  fileWhitelist: '.*',
+  fileBlacklist: 'requireOrImportModule\\.js'
 };
 
 const ignore = [

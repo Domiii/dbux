@@ -4,7 +4,7 @@ module.exports = {
   bail: false,
 
   // Indicates whether each individual test should be reported during the run.
-  verbose: false,
+  verbose: true,
 
   // Indicates whether the coverage information should be collected while executing the test
   collectCoverage: false,
@@ -20,8 +20,15 @@ module.exports = {
   // @see: https://github.com/facebook/jest/issues/6769
   testURL: 'http://localhost/',
 
+  /**
+   * important: provide via `jest.config.js`
+   * (Because when trying to pass it in via `@dbux/cli`, its process.argv value gets casted to `int`, for some odd reason, leading to an error.)
+   */
+  testTimeout: 30000,
+
   transformIgnorePatterns: [
     '(.*[\\/])?dbux[-]runtime([\\/].*)?',
-    '(.*[\\/])?@dbux/runtime([\\/].*)?'
+    '(.*[\\/])?@dbux/runtime([\\/].*)?',
+    'pretty-format([\\/].*)?'
   ]
 };
