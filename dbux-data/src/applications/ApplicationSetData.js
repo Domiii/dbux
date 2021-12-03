@@ -86,4 +86,8 @@ export default class ApplicationSetData {
 
     return results;
   }
+
+  collectGlobalStats(cb) {
+    return this.set.getAll().flatMap(app => cb(app.dataProvider, app));
+  }
 }

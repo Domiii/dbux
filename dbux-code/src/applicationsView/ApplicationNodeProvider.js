@@ -1,7 +1,7 @@
 import allApplications from '@dbux/data/src/applications/allApplications';
 import BaseTreeViewNodeProvider from '../codeUtil/BaseTreeViewNodeProvider';
+import EmptyTreeViewNode from '../codeUtil/EmptyTreeViewNode';
 import ApplicationNode from './ApplicationNode';
-import EmptyNode from './EmptyNode';
 
 export default class ApplicationNodeProvider extends BaseTreeViewNodeProvider {
   constructor() {
@@ -30,7 +30,7 @@ export default class ApplicationNodeProvider extends BaseTreeViewNodeProvider {
     }
 
     if (!roots.length) {
-      roots.push(EmptyNode.instance);
+      roots.push(EmptyTreeViewNode.get('(no applications)'));
     }
 
     return roots.reverse();
