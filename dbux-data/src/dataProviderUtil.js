@@ -1,6 +1,7 @@
 import findLast from 'lodash/findLast';
 import groupBy from 'lodash/groupBy';
 import isNumber from 'lodash/isNumber';
+import isString from 'lodash/isString';
 import truncate from 'lodash/truncate';
 import isPlainObject from 'lodash/isPlainObject';
 import TraceType, { hasDynamicTypes, isTracePop, isBeforeCallExpression } from '@dbux/common/src/types/constants/TraceType';
@@ -9,6 +10,7 @@ import { pushArrayOfArray } from '@dbux/common/src/util/arrayUtil';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { renderValueSimple } from '@dbux/common/src/util/stringUtil';
 import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
 import StaticTrace from '@dbux/common/src/types/StaticTrace';
 import StaticContextType, { isVirtualContextType } from '@dbux/common/src/types/constants/StaticContextType';
@@ -668,6 +670,9 @@ export default {
         return String(valueRef.value);
       }
     }
+    else if (isString(value)) {
+      return renderValueSimple(value);
+    }
     else {
       return String(value);
     }
@@ -1315,6 +1320,24 @@ export default {
   },
 
   /**
+   * Hackfix: Wrapper for CallGraph ContextNode, only render `call` and `value` for the first context with same caller.
+   * @see https://github.com/Domiii/dbux/issues/561 - fix CallGraph rendering for HoF's (map et al.)
+   * @param {*} dp 
+   * @param {*} contextId 
+   * @returns 
+   */
+  getCallerOrSchedulerTraceOfFirstContext(dp, contextId) {
+    const callerOrScheduler = dp.util.getCallerOrSchedulerTraceOfContext(contextId);
+    const isFirstOfCaller = dp.indexes.executionContexts.byCalleeTrace.getFirst(callerOrScheduler?.traceId)?.contextId !== contextId;
+    if (!dp.util.isRootContext(contextId) && isFirstOfCaller) {
+      return null;
+    }
+    else {
+      return callerOrScheduler;
+    }
+  },
+
+  /**
    * Return scheduler trace of a `root context` and return caller trace otherwise.
    * @param {DataProvider} dp
    */
@@ -1671,7 +1694,7 @@ export default {
   getAllTracesOfType(dp, traceType) {
     return dp.collections.traces.getAllActual().filter(t => dp.util.getTraceType(t.traceId) === traceType);
   },
-  
+
   /**
    * @param {DataProvider} dp 
    */

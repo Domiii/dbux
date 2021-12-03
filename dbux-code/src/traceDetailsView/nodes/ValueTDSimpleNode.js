@@ -1,5 +1,7 @@
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import { renderValueSimple } from '@dbux/common/src/util/stringUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
+import isString from 'lodash/isString';
 import ValueNode, { ValueLabel } from './ValueNode';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
@@ -39,12 +41,16 @@ export default class ValueTDSimpleNode extends ValueNode {
   }
 
   static makeLabel(dataNode, parent, { key, value }) {
-    return `${key}: ${value}`;
+    let valueLabel = value;
+    if (isString(value)) {
+      valueLabel = renderValueSimple(value);
+    }
+    return `${key}: ${valueLabel}`;
   }
 
   init() {
     super.init();
-    
+
     if (this.value === undefined) {
       this.description = '(no value or undefined)';
     }
