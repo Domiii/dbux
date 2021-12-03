@@ -1319,6 +1319,24 @@ export default {
   },
 
   /**
+   * Hackfix: Wrapper for CallGraph ContextNode, only render `call` and `value` for the first context with same caller.
+   * @see https://github.com/Domiii/dbux/issues/561 - fix CallGraph rendering for HoF's (map et al.)
+   * @param {*} dp 
+   * @param {*} contextId 
+   * @returns 
+   */
+  getCallerOrSchedulerTraceOfFirstContext(dp, contextId) {
+    const callerOrScheduler = dp.util.getCallerOrSchedulerTraceOfContext(contextId);
+    const isFirstOfCaller = dp.indexes.executionContexts.byCalleeTrace.getFirst(callerOrScheduler?.traceId)?.contextId !== contextId;
+    if (!dp.util.isRootContext(contextId) && isFirstOfCaller) {
+      return null;
+    }
+    else {
+      return callerOrScheduler;
+    }
+  },
+
+  /**
    * Return scheduler trace of a `root context` and return caller trace otherwise.
    * @param {DataProvider} dp
    */

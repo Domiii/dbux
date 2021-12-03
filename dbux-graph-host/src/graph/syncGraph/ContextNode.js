@@ -30,8 +30,8 @@ class ContextNode extends HostComponentEndpoint {
     this.state.contextLocLabel = makeContextLocLabel(applicationId, context);
     this.state.realStaticContextid = dp.util.getRealContextOfContext(contextId).staticContextId;
     const { callTrace } = this;
-    this.state.callerTracelabel = dp.util.makeContextCallerOrSchedulerLabel(contextId);
     if (callTrace) {
+      this.state.callerTracelabel = dp.util.makeContextCallerOrSchedulerLabel(contextId);
       this.state.valueLabel = makeTraceValueLabel(callTrace);
     }
     this.state.moduleName = dp.util.getContextModuleName(contextId);
@@ -66,7 +66,7 @@ class ContextNode extends HostComponentEndpoint {
   }
 
   get callTrace() {
-    return this.dp.util.getCallerOrSchedulerTraceOfContext(this.contextId);
+    return this.dp.util.getCallerOrSchedulerTraceOfFirstContext(this.contextId);
   }
 
   get nTreeContexts() {
