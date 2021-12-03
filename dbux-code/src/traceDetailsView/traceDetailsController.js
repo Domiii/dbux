@@ -157,7 +157,7 @@ class TraceDetailsController {
     if (edited !== this.edited) {
       this.edited = edited;
       if (edited) {
-        this.treeDataProvider.setTitle(`${this.treeDataProvider.defaultTitle} ⚠️`);
+        this.treeDataProvider.decorateTitle(`⚠️`);
       }
       else {
         this.treeDataProvider.resetTitle();

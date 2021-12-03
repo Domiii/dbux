@@ -75,7 +75,7 @@ export default class BaseTreeViewNodeProvider {
   }
 
   decorateTitle(decoration) {
-    this.setTitle(`${this.treeDataProvider.defaultTitle} ${decoration}`);
+    this.setTitle(`${this.defaultTitle} ${decoration}`);
   }
 
   setTitle(title) {

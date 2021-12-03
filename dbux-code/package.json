@@ -48,6 +48,11 @@
           "when": "dbux.context.activated"
         },
         {
+          "id": "dbuxGlobalAnalysisView",
+          "name": "Global",
+          "when": "dbux.context.activated"
+        },
+        {
           "id": "dbuxDataFlowView",
           "name": "Data Flow",
           "when": "dbux.context.activated"
