@@ -5,8 +5,16 @@ const configs = [
   {
     // https://github.com/trekhleb/javascript-algorithms/blob/master/src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js
     id: 1,
+    label: 'BubbleSort bug#1',
     testName: 'BubbleSort should sort array',
-    testFilePaths: ['src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js'],
+    patch: 'error1',
+    testFilePaths: ['src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js']
+  },
+  {
+    id: 2,
+    label: 'BubbleSort (ok)',
+    testName: 'BubbleSort should sort array',
+    testFilePaths: ['src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js']
   }
 ];
 

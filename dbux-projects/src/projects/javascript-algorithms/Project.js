@@ -46,7 +46,8 @@ export default class JavascriptAlgorithmProject extends Project {
     const { projectPath } = this;
     // const bugArgs = this.getMochaRunArgs(bug);
     const testCfg = this.getJestCfg(bug, [
-      '--setupFilesAfterEnv ./dbuxJestSetup.js'
+      '--setupFilesAfterEnv ./dbuxJestSetup.js',
+      '--colors'
     ]);
 
     cfg = {
@@ -55,9 +56,9 @@ export default class JavascriptAlgorithmProject extends Project {
       cwd: projectPath,
       /**
        * NOTE: Jest has a two-layer approach, where the first layer bootstraps Jest,
-       *  and the second layer runs inside... a JS VM (maybe?!), after jest applies some transformation.
-       * That is why we cannot easily run this with `@babel/register`, 
-       * since Jest's own transformer then doubles up the instrumentation.
+       *  and the second layer runs inside a VM (after running through `@jest/transform` and more).
+       * We found that, if we run `Jest` with `@babel/register`, 
+       * Jest's own transformer doubles up the instrumentation on some of the code.
        * 
        * One possible solution: make sure, each library (or specific files) only runs in one of the layers, so
        * transformation never doubles up.
