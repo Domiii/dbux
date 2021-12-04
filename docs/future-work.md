@@ -5,7 +5,10 @@ So many things that can be done... So little time...
 
 * more advanced search/filter features, such a...
   * searching for arrays/objects that contain certain values
+  * searching/filtering of/by all (or subset of) `node_modules`, package names
+  * enabling/disabling/grouping of/by modules/files etc. in call graph
   * searching/filtering only system calls or sub-systems (e.g. all `HTTP` calls)
+* Explore execution by all module/package and/or their dependencies
 * Support web-based VSCode https://vscode.dev/
 * Support [Yarn PnP](https://yarnpkg.com/features/pnp)
 

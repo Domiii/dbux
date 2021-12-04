@@ -29,6 +29,7 @@ module.exports = {
   transformIgnorePatterns: [
     '(.*[\\/])?dbux[-]runtime([\\/].*)?',
     '(.*[\\/])?@dbux/runtime([\\/].*)?',
-    'pretty-format([\\/].*)?'
+    'dbux[^/\\\\]*[.]js',
+    '[\\/]node_modules[\\/]'
   ]
 };

@@ -101,19 +101,24 @@ export default class ProgramMonitor {
   // ###########################################################################
 
   pushImmediate = (inProgramStaticContextId, inProgramStaticTraceId, definitionTid, isInterruptable) => {
-    if (this.disabled) {
+    if (!this.incBusy()) {
       return 0;
     }
 
-    const tracesDisabled = this.areTracesDisabled;
-    return this._runtimeMonitor.pushImmediate(
-      this.getProgramId(),
-      inProgramStaticContextId,
-      inProgramStaticTraceId,
-      definitionTid,
-      isInterruptable,
-      tracesDisabled
-    );
+    try {
+      const tracesDisabled = this.areTracesDisabled;
+      return this._runtimeMonitor.pushImmediate(
+        this.getProgramId(),
+        inProgramStaticContextId,
+        inProgramStaticTraceId,
+        definitionTid,
+        isInterruptable,
+        tracesDisabled
+      );
+    }
+    finally {
+      this.decBusy();
+    }
   }
 
   registerParams = (paramTids) => {
@@ -154,7 +159,7 @@ export default class ProgramMonitor {
   }
 
   popFunction = (contextId, inProgramStaticTraceId, awaitContextId) => {
-    if (this.disabled) {
+    if (this.busy) {
       return undefined;
     }
 
@@ -163,7 +168,7 @@ export default class ProgramMonitor {
 
   popProgram = () => {
     // finished initializing the program
-    if (this.disabled) {
+    if (this.busy) {
       return undefined;
     }
 
@@ -185,7 +190,7 @@ export default class ProgramMonitor {
   }
 
   preAwait = (inProgramStaticContextId, traceId, awaitArgument) => {
-    if (this.disabled) {
+    if (this.busy) {
       // TODO: calling asynchronous methods when disabled hints at non-pure getters and will most likely cause trouble :(
       this._logger.error(`Encountered await in disabled call #${traceId} (NOTE: dbux does not play well with impure getters, especially if tey  call asynchronous code)`);
       return 0;
@@ -349,7 +354,7 @@ export default class ProgramMonitor {
   }
 
   traceArg = (arg) => {
-    
+
   }
 
   traceSpreadArg = () => {
@@ -522,8 +527,20 @@ export default class ProgramMonitor {
   // internal stuff
   // ###########################################################################
 
-  get disabled() {
-    return !!this._runtimeMonitor.disabled;
+  incBusy() {
+    if (this.busy) {
+      return false;
+    }
+    this._runtimeMonitor.incBusy();
+    return true;
+  }
+
+  decBusy() {
+    this._runtimeMonitor.decBusy();
+  }
+
+  get busy() {
+    return !!this._runtimeMonitor.busy;
   }
 
   get areTracesDisabled() {

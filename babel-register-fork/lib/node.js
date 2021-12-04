@@ -66,11 +66,12 @@ function compile(code, srcFilename) {
     cached = registerCache.loadFile(srcFilename, cacheFilename, cacheKey);
   }
 
+  const sourceMaps = opts.sourceMaps === undefined ? false : opts.sourceMaps;
   if (!cached) {
     // transform
     cached = babel.transform(code, {
       ...opts,
-      sourceMaps: opts.sourceMaps === undefined ? "both" : opts.sourceMaps,
+      sourceMaps,
       ast: false
     });
 
@@ -78,6 +79,11 @@ function compile(code, srcFilename) {
       // save cache
       // console.warn(`[@babel/register] caching file ${cacheFilename}`);
       registerCache.saveFile(srcFilename, cacheFilename, cacheKey, cached);
+    }
+  }
+  else {
+    if (!sourceMaps) {
+      delete cached.map;
     }
   }
   // console.debug(`[@babel/register -> compile] ${srcFilename}: ${code}`);

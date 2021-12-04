@@ -70,6 +70,8 @@ export default class Project extends ProjectBase {
    */
   builder;
 
+  runCfg;
+
   /**
    * Use github by default.
    */

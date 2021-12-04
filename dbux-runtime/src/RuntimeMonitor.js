@@ -168,7 +168,7 @@ export default class RuntimeMonitor {
         const contextInfo = staticContextCollection.makeStaticContextInfo(staticContextId);
         warn(`[Root OMITTED] ${contextInfo}`);
         ++this._rootDisableCount;
-        this.incDisabled();
+        this.incBusy();
         return 0;
       }
       else {
@@ -194,15 +194,14 @@ export default class RuntimeMonitor {
     }
     this._runtime.push(contextId, isInterruptable);
 
-    // if (Verbose) {
-    // const staticContext = staticContextCollection.getContext(programId, inProgramStaticContextId);
-    _debug(
-      // ${JSON.stringify(staticContext)}
-      // eslint-disable-next-line max-len
-      `PUSH>${' '.repeat(this.runtime._executingStack._stack?.length || 0)} ${executionContextCollection.makeContextInfo(contextId)} (pid=${programId}, pcid=${parentContextId})`
-    );
-    this.debugOnContextAdd(context);
-    // }
+    if (Verbose) {
+      _debug(
+        // ${JSON.stringify(staticContext)}
+        // eslint-disable-next-line max-len
+        `PUSH>${' '.repeat(this.runtime._executingStack._stack?.length || 0)} ${executionContextCollection.makeContextInfo(contextId)} (pid=${programId}, pcid=${parentContextId})`
+      );
+      this.debugOnContextAdd(context);
+    }
 
     this.newTraceId(programId, inProgramStaticTraceId);
 
@@ -279,7 +278,7 @@ export default class RuntimeMonitor {
       --this._rootDisableCount;
       if (!this._rootDisableCount) {
         // this is the root that we first disabled on -> re-enable.
-        this.decDisabled();
+        this.decBusy();
       }
       return;
     }
@@ -1424,7 +1423,7 @@ export default class RuntimeMonitor {
   // internally used stuff
   // ###########################################################################
 
-  disabled = 0;
+  busy = 0;
   tracesDisabled = 0;
   _valuesDisabled = 0;
 
@@ -1433,7 +1432,7 @@ export default class RuntimeMonitor {
   }
 
   get areTracesDisabled() {
-    return !!this.disabled || !!this.tracesDisabled;
+    return !!this.busy || !!this.tracesDisabled;
   }
 
   set valuesDisabled(val) {
@@ -1441,13 +1440,13 @@ export default class RuntimeMonitor {
     valueCollection.valuesDisabled = val;
   }
 
-  incDisabled() {
-    ++this.disabled;
+  incBusy() {
+    ++this.busy;
     ++this.tracesDisabled;
   }
 
-  decDisabled() {
-    --this.disabled;
+  decBusy() {
+    --this.busy;
     --this.tracesDisabled;
   }
 

@@ -12,6 +12,10 @@ export default class JavascriptAlgorithmProject extends Project {
     '.husky'   // unwanted commit hooks
   ];
 
+  runCfg = {
+
+  };
+
   canRun(config) {
     return !!config.testFilePaths;
   }
@@ -28,6 +32,7 @@ export default class JavascriptAlgorithmProject extends Project {
         '--runTestsByPath',
         config.testFilePaths.join(' ')
       ],
+      enableSourceMaps: false,
       ...config,
       // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
     };
@@ -47,20 +52,50 @@ export default class JavascriptAlgorithmProject extends Project {
     cfg = {
       ...cfg,
       ...testCfg,
-      // dbuxJs: null,
       cwd: projectPath,
-      dbuxArgs: [
-        cfg.dbuxArgs,
-        '--pw=.*',
-        // eslint-disable-next-line max-len
-        '--pb=babel[-].*,graceful[-]fs,require.*,resolve.*,import.*,locate.*,pretty[-]format,jest[-]config,jest[-]validate,jest[-]resolve.*,jest[-]runtime,@jest/transform,regenerator[-]transform,.*source[-]map,browserslist,human[-]signals,react[-]is,jest[-]haste[-]map,@jest/reporters',
-        '--fw=.*',
-        '--fb=requireOrImportModule\\.js',
-        '--runtime="{\\"tracesDisabled\\":1}"'
-      ].join(' ')
+      /**
+       * NOTE: Jest has a two-layer approach, where the first layer bootstraps Jest,
+       *  and the second layer runs inside... a JS VM (maybe?!), after jest applies some transformation.
+       * That is why we cannot easily run this with `@babel/register`, 
+       * since Jest's own transformer then doubles up the instrumentation.
+       * 
+       * One possible solution: make sure, each library (or specific files) only runs in one of the layers, so
+       * transformation never doubles up.
+       *
+       * Libraries that might be exclusively used in test layer:
+       *   * jest-runner
+       *   * jest-environment-node
+       * Libraries that run code in both layers:
+       *   * jest-circus
+       */
+      dbuxJs: null,
+      // dbuxArgs: [
+      //   cfg.dbuxArgs,
+      //   '--pw=.*',
+      //   /**
+      //    * babel, debug, pirates, resolve, import, jest-resolve, jest-runtime, @jest/transform, regenerator-transform, source-map*: very likely to mess things up.
+      //    * human-signals, jest-haste-map, safe-buffer: caused weird problems?
+      //    * gensync: seems to be connected to regenerator-transform?
+      //    * graceful-fs: messy polyfilles
+      //    * 
+      //    * Uninteresting libraries:
+      //    * browserslist, react-is
+      //    * jsesc: data conversion
+      //    */
+      //   // eslint-disable-next-line max-len
+      //   '--pb=babel[-].*,graceful[-]fs,require.*,resolve.*,import.*,locate.*,pretty[-]format,jest[-]config,jest[-]validate,jest[-]resolve.*,jest[-]runtime,@jest/transform,regenerator[-]transform,.*source[-]map,browserslist,human[-]signals,react[-]is,jest[-]haste[-]map,@jest/reporters,debug,pirates,jsesc,gensync,safe-buffer',
+      //   '--fw=.*',
+      //   '--fb=requireOrImportModule\\.js',
+      //   // '--runtime="{\\"tracesDisabled\\":1}"'
+      // ].join(' ')
     };
-
-    // node --stack-trace-limit=100 "./node_modules/jest/bin/jest.js" --runInBand -t "BubbleSort should sort array" --runTestsByPath src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js --cache=false
+    
+    /**
+     * NOTES
+     * 
+     * 1. node_modules/jest-util/build/index.js:38 getter might cause infinite loop (but does not for now)
+     */
+    
     return buildJestRunBugCommand(cfg);
   }
 }

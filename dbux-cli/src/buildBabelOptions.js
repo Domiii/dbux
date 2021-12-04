@@ -94,13 +94,13 @@ export default function buildBabelOptions(options) {
   const babelOptions = {
     ...baseOptions,
     /**
-     * Force target so it won't try to aim for browser compatability.
+     * Force target (to `node`) so it won't try to aim for browser compatability.
      * @see https://github.com/browserslist/browserslist/issues/629#issuecomment-984459369
      */
     targets,
     browserslistConfigFile: false,
     sourceType: 'unambiguous',
-    sourceMaps: 'inline',
+    sourceMaps: false,
     sourceRoot,
     retainLines: true,
     // see https://babeljs.io/docs/en/options#parseropts

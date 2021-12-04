@@ -317,7 +317,7 @@ export default class ProjectsManager {
       this.practiceSession.setupStopwatch();
       await this.savePracticeSession();
       await this.bdp.save();
-      await this.practiceSession.testExercise(exercise);
+      await this.practiceSession.testExercise();
       // this.maybeAskForTestBug(bug);
     }
   }
@@ -668,7 +668,7 @@ export default class ProjectsManager {
    * @param {Exercise} exercise 
    * @param {Object} inputCfg
    */
-  async switchAndTestBug(exercise, inputCfg = EmptyObject) {
+  async switchAndTestBug(exercise, inputCfg) {
     await this.switchToExercise(exercise);
     const result = await this.runTest(exercise, inputCfg);
     return result;
@@ -730,13 +730,15 @@ export default class ProjectsManager {
     }
   }
 
-  async runTest(exercise, inputCfg) {
-    // TODO: make this configurable
-    // NOTE2: nolazy is required for proper breakpoints in debug mode
+  /**
+   * @param {Exercise} exercise 
+   * @param {object} inputCfg Is currently brought in from `projectViewsController`.
+   */
+  async runTest(exercise, inputCfg = EmptyObject) {
     let {
       debugMode = false,
       dbuxEnabled = true,
-      enableSourceMaps = true
+      enableSourceMaps = false
     } = inputCfg;
 
     // WARN: --enable-source-maps makes execution super slow in production mode for some reason
@@ -747,6 +749,7 @@ export default class ProjectsManager {
       '--enable-source-maps' : // NOTE: `enable-source-maps` can also severely slow things down
       '';
 
+    // NOTE: `nolazy` is required for proper breakpoints in debug mode
     const nodeArgs = `--stack-trace-limit=100 ${debugMode ? '--nolazy' : ''} ${sourceMapsFlag}`;
     const cfg = {
       debugMode,
@@ -754,6 +757,8 @@ export default class ProjectsManager {
       dbuxEnabled,
 
       // NOTE: if !dbuxEnabled -> we don't actually run dbux at all anymore.
+      // TODO: make cache configurable
+      // TODO: tie `enableSourceMaps` to `sourceMaps` setting in `buildBabelOptions`
       dbuxArgs: dbuxEnabled ? `--verbose=1 --cache --sourceRoot=${this.getDefaultSourceRoot()}` : '--dontInjectDbux',
     };
 

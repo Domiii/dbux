@@ -25,11 +25,11 @@ function runTask(n) {
 
 runTask(3).
   then(() => {
-    __dbux__.incDisabled();
+    __dbux__.incBusy();
     return runTask(6);
   }).
   then(() => {
-    __dbux__.decDisabled();
+    __dbux__.decBusy();
     return runTask(9);
   });
 

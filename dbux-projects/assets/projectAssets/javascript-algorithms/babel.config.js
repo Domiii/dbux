@@ -3,12 +3,18 @@
  */
 
 const shouldIgnore = require('@dbux/babel-plugin/dist/shouldIgnore').default;
+// const ignoreOptions = {
+//   // packageWhitelist: 'jest,jest[-].*,@jest.*',
+//   packageWhitelist: '.*',
+//   // packageBlacklist: 'require.*,import.*,locate.*',
+//   fileWhitelist: '.*',
+//   fileBlacklist: 'dbux[^/\\\\]*[.]js'
+// };
+
+/**
+ * Ignore node_modules by default.
+ */
 const ignoreOptions = {
-  // packageWhitelist: 'jest,jest[-].*,@jest.*',
-  packageWhitelist: '.*',
-  packageBlacklist: 'require.*,import.*,locate.*',
-  fileWhitelist: '.*',
-  fileBlacklist: 'requireOrImportModule\\.js'
 };
 
 const ignore = [
@@ -16,6 +22,7 @@ const ignore = [
 ];
 
 module.exports = {
+  // sourceMaps: false,
   "presets": [
     [
       "@babel/preset-env",
@@ -36,7 +43,7 @@ module.exports = {
   "plugins": [
     ["@dbux/babel-plugin", {
       verbose: 1,
-      runtime: '{"tracesDisabled": 1}'
+      // runtime: '{"tracesDisabled": 1}'
     }]],
 
   ignore

@@ -14,12 +14,12 @@ const dbux = {
     return this._r.addProgram(staticProgramData, runtimeCfg);
   },
 
-  incDisabled() {
-    this._r.incDisabled();
+  incBusy() {
+    this._r.incBusy();
   },
 
-  decDisabled() {
-    this._r.decDisabled();
+  decBusy() {
+    this._r.decBusy();
   }
 };
 

@@ -431,12 +431,12 @@ class ValueCollection extends Collection {
     // NOTE: disable tracing while reading the property
 
     // eslint-disable-next-line no-undef
-    __dbux__._r.incDisabled();
+    __dbux__._r.incBusy();
   }
 
   _endAccess() {
     // eslint-disable-next-line no-undef
-    __dbux__._r.decDisabled();
+    __dbux__._r.decBusy();
   }
 
   _onAccessError(obj, errorsByType) {
