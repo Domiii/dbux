@@ -23,12 +23,15 @@ export default class JavascriptAlgorithmProject extends Project {
   decorateExercise(config) {
     return {
       // id: i + 1,
-      name: config.testName,
+      // name: config.testName,
       // description: bug.testName,
       runArgs: [
         '--runInBand', // -i
         '-t',
-        `"${config.testName}"`,
+        /**
+         * @see https://jestjs.io/docs/cli#--testnamepatternregex
+         */
+        `"${config.testNamePattern}"`,
         '--runTestsByPath',
         config.testFilePaths.join(' ')
       ],
@@ -38,7 +41,7 @@ export default class JavascriptAlgorithmProject extends Project {
     };
   }
 
-  async selectExercise(bug) {
+  async selectExercise(exercise) {
     // nothing to do here
   }
 
