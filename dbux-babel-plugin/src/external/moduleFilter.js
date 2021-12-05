@@ -4,8 +4,8 @@ import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 // import { requireDynamic } from '@dbux/common-node/src/util/requireUtil';
 
-// const Verbose = 1;
-const Verbose = 2;
+const Verbose = 1;
+// const Verbose = 2;
 
 function debugLog(...args) {
   let msg = `[@dbux/babel-plugin][moduleFilter] ${args.join(' ')}`;

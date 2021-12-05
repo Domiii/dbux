@@ -26,6 +26,10 @@ export default class ValueNode extends BaseTreeViewNode {
     return trace;
   }
 
+  get nodeId() {
+    return this.entry?.nodeId;
+  }
+
   get dp() {
     const { applicationId } = this.trace;
     return allApplications.getById(applicationId).dataProvider;
@@ -42,12 +46,7 @@ export default class ValueNode extends BaseTreeViewNode {
 
   valueRender() {
     // log(`Clicking ValueNode is temporarily disabled.`);
-    const { dp, entry } = this;
-
-    const nodeId = entry?.nodeId;
-    if (!nodeId) {
-      return;
-    }
+    const { dp, entry, nodeId } = this;
 
     const valueRef = entry.refId && dp.collections.values.getById(entry.refId);
     const value = dp.util.constructValueFull(nodeId);
@@ -65,8 +64,8 @@ export default class ValueNode extends BaseTreeViewNode {
 
   selectValueCreationTrace() {
     const { dp } = this;
-    const { valueId } = dp.collections.dataNodes.getById(this.nodeId);
-    const firstNodeByValue = dp.indexes.dataNodes.byValueId.getFirst(valueId);
+    const valueId = dp.collections.dataNodes.getById(this.nodeId)?.valueId;
+    const firstNodeByValue = valueId && dp.indexes.dataNodes.byValueId.getFirst(valueId);
     if (firstNodeByValue) {
       const firstTraceByValue = dp.collections.traces.getById(firstNodeByValue.traceId);
       traceSelection.selectTrace(firstTraceByValue);

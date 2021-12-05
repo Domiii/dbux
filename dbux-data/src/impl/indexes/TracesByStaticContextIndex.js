@@ -1,4 +1,3 @@
-import StaticTrace from '@dbux/common/src/types/StaticTrace';
 import Trace from '@dbux/common/src/types/Trace';
 import CollectionIndex from '../../indexes/CollectionIndex';
 import RuntimeDataProvider from '../../RuntimeDataProvider';
@@ -17,6 +16,6 @@ export default class TracesByStaticContextIndex extends CollectionIndex {
   makeKey(dp, trace) {
     const { contextId } = trace;
     const context = dp.collections.executionContexts.getById(contextId);
-    return context.staticContextId;
+    return context?.staticContextId;
   }
 }

@@ -74,6 +74,10 @@ export class DataNodeCollection extends Collection {
     }
     const { nodeId: readNodeId } = readTrace;
     const readNode = this.getById(readNodeId);
+    if (!readNode) {
+      this.logger.warn(new Error(`Could not lookup readNode of traceId ${readTraceId} (${readNodeId}) in createWriteNodeFromTrace`));
+      return null;
+    }
     return this.createWriteNodeFromReadNode(writeTraceId, readNode, varAccess);
   }
 

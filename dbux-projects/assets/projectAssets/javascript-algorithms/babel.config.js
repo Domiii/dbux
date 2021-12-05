@@ -15,6 +15,7 @@ const shouldIgnore = require('@dbux/babel-plugin/dist/shouldIgnore').default;
  * Ignore node_modules by default.
  */
 const ignoreOptions = {
+  packageWhitelist: '.*'
 };
 
 const ignore = [

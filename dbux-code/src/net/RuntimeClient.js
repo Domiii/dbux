@@ -79,7 +79,7 @@ export default class RuntimeClient extends SocketClient {
       }, { cancellable: false, title: `Application "${this.application.getPreferredName()}": new data` });
     }
     catch (err) {
-      logError(`error while adding data:`, err);
+      logError(`WARNING: Error encountered while adding data. Analysis results might be incorrect.`, err);
     }
     finally {
       debug(`handleData ACK, app time: ${Math.round(this.application.totalTimeSpent)}, ${Math.round(this.application.lastAddTimeSpent)}`);

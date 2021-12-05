@@ -550,17 +550,23 @@ export default {
       finalValue = _value;
     }
     else {
-      const entries = Object.entries(dp.util.constructValueObjectShallow(_refId, _rootNodeId));
-      const constructedEntries = entries.map(([key, [childNodeId, childRefId, childValue]]) => {
-        return [key, dp.util.constructValueFull(childNodeId, childRefId, childValue, _visited, _rootNodeId)];
-      });
+      const shallow = dp.util.constructValueObjectShallow(_refId, _rootNodeId);
+      if (isPlainObject(shallow)) {
+        const entries = Object.entries(shallow);
+        const constructedEntries = entries.map(([key, [childNodeId, childRefId, childValue]]) => {
+          return [key, dp.util.constructValueFull(childNodeId, childRefId, childValue, _visited, _rootNodeId)];
+        });
 
-      if (ValueTypeCategory.is.Array(valueRef.category)) {
-        finalValue = [];
-        constructedEntries.forEach(([key, value]) => finalValue[key] = value);
+        if (ValueTypeCategory.is.Array(valueRef.category)) {
+          finalValue = [];
+          constructedEntries.forEach(([key, value]) => finalValue[key] = value);
+        }
+        else {
+          finalValue = Object.fromEntries(constructedEntries);
+        }
       }
       else {
-        finalValue = Object.fromEntries(constructedEntries);
+        finalValue = shallow;
       }
     }
 
@@ -601,7 +607,7 @@ export default {
     let entries;
     const { category } = valueRef;
     if (!isPlainObject(valueRef.value)) {
-      return null;
+      return valueRef.value;
     }
     if (ValueTypeCategory.is.Array(category)) {
       entries = dp.util.getDataNodeArrayChildren(refId);
@@ -1032,13 +1038,17 @@ export default {
     }
     let argDataNodes = argTraces.flatMap((t, i) => {
       const dataNodes = dp.util.getDataNodesOfTrace(t.traceId);
+      if (!dataNodes) {
+        logError(`Argument trace #${t.traceId} does not have data nodes, which will likely lead to data flow analysis inaccuracies.`);
+        return null;
+      }
       if (!argConfigs[i]?.isSpread) {
         // not spread -> take the argument's own `DataNode`
         return dataNodes[0];
       }
       // spread -> take all of the spread argument's additional `DataNode`s (which are the argument DataNodes)
       return dataNodes.slice(1);
-    });
+    }).filter(Boolean);
 
     const bceTrace = dp.util.getTrace(callId);
     const callType = dp.util.getSpecialCallType(callId);
@@ -1419,10 +1429,10 @@ export default {
   /** @param {DataProvider} dp */
   getRealContextIdOfContext(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
-    const { parentContextId } = context;
+    const parentContextId = context?.parentContextId;
     let parentContext;
 
-    if (isRealContextType(context.contextType)) {
+    if (isRealContextType(context?.contextType)) {
       return contextId;
     }
     else if (
@@ -1947,7 +1957,7 @@ export default {
    * @param {DataProvider} dp
    */
   isContextTraced(dp, contextId) {
-    const { tracesDisabled } = dp.util.getExecutionContext(contextId);
+    const tracesDisabled = dp.util.getExecutionContext(contextId)?.tracesDisabled;
     return !tracesDisabled;
   },
 

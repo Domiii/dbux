@@ -19,13 +19,19 @@ const configs = [
   {
     id: 3,
     label: 'BinarySearch bug#1',
-    // testNamePattern: 'BinarySearch',
+    testNamePattern: 'binarySearch should search',
     testFilePaths: ['src/algorithms/search/binary-search/__test__/binarySearch.test.js']
   },
   {
     id: 4,
+    label: 'BinarySearch bug#2',
+    testNamePattern: 'binarySearch should search',
+    testFilePaths: ['src/algorithms/search/binary-search/__test__/binarySearch.test.js']
+  },
+  {
+    id: 5,
     label: 'BinarySearch (ok)',
-    // testNamePattern: 'BinarySearch',
+    testNamePattern: '.*',
     testFilePaths: ['src/algorithms/search/binary-search/__test__/binarySearch.test.js']
   }
 ];

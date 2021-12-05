@@ -53,6 +53,18 @@ export default class JavascriptAlgorithmProject extends Project {
       '--colors'
     ]);
 
+    /**
+     * TODO: find `describe`
+     * 
+     * * for now, we cannot find the definition of the `describe` function
+     * * or maybe some other way to determine how tests are registered and sorted?
+     * * -> it's coming from `@jest/core` -> `runWithoutWatch`
+     * * -> `nonFlagArgs` contains the test files (from `jest.config.js`)
+     * * -> have not found the actual tests yet.
+     * * -> for that, maybe console log tracing will help?
+     * * if `jasmine` enabled -> https://github.com/facebook/jest/blob/e0b33b74b5afd738edc183858b5c34053cfc26dd/packages/jest-jasmine2/src/jasmine/Env.ts#L383
+     */
+
     cfg = {
       ...cfg,
       ...testCfg,
@@ -72,10 +84,10 @@ export default class JavascriptAlgorithmProject extends Project {
        * Libraries that run code in both layers:
        *   * jest-circus
        */
-      dbuxJs: null,
-      // dbuxArgs: [
-      //   cfg.dbuxArgs,
-      //   '--pw=.*',
+      // dbuxJs: null,
+      dbuxArgs: [
+        cfg.dbuxArgs,
+        '--pw=jest[-]circus,jest[-]runner,jest[-]runtime,jest[-]environment[-]node,jest[-]jasmine2', //,@jest/core',
       //   /**
       //    * babel, debug, pirates, resolve, import, jest-resolve, jest-runtime, @jest/transform, regenerator-transform, source-map*: very likely to mess things up.
       //    * human-signals, jest-haste-map, safe-buffer: caused weird problems?
@@ -91,7 +103,7 @@ export default class JavascriptAlgorithmProject extends Project {
       //   '--fw=.*',
       //   '--fb=requireOrImportModule\\.js',
       //   // '--runtime="{\\"tracesDisabled\\":1}"'
-      // ].join(' ')
+      ].join(' ')
     };
     
     /**
