@@ -18,20 +18,28 @@ module.exports = function runTests(f, tests) {
    * run tests
    * #######################################*/
   const results = tests.map(([inputs, expected]) => {
-    const actual = f(...inputs);
+    let actual;
+    let error;
+    try {
+      actual = f(...inputs);
+    }
+    catch (caught) {
+      error = caught;
+    }
     return {
       passed: isEqual(actual, expected),
       inputs,
 
       actual,
-      expected
+      expected,
+      error
     };
   });
 
   /** ########################################
    * render results
    * #######################################*/
-  const resultString = '  ' + results.map(({ passed, inputs, actual, expected }, i) => {
+  const resultString = '  ' + results.map(({ passed, inputs, actual, expected, error }, i) => {
     const num = i.toString().padEnd(2, ' ');
     let msg;
     if (passed) {
@@ -40,10 +48,13 @@ module.exports = function runTests(f, tests) {
     else {
       msg = `Test ${num} FAILED ❌`;
     }
-    return `${msg}\n` +
-      `      inputs: [${inputs.map(obj2String)}]\n` +
-      `      actual: ${obj2String(actual)}\n` +
-      `    expected: ${obj2String(expected)}`;
+    return `${msg}` +
+      `\n      inputs: [${inputs.map(obj2String)}]` +
+      `\n    expected: ${obj2String(expected)}` +
+      (error ?
+        `\n       error: ${error.stack}` :
+        `\n      actual: ${obj2String(actual)}`
+      );
   }).join('\n  ');
 
   /** ########################################
@@ -55,4 +66,4 @@ module.exports = function runTests(f, tests) {
   else {
     console.log(`SUCCESS! All tests passed:\n${resultString}`);
   }
-}
+};

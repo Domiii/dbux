@@ -1496,16 +1496,22 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   /**
    * Default implementation: run a node sample file.
    */
-  async runCommand(bug, cfg) {
+  async runCommand(exercise, cfg) {
     const runCfg = {
       env: {
       }
     };
 
+
+    if (!exercise.testFilePaths || !exercise.testFilePaths[0]) {
+      throw new Error(`exercise.testFilepaths are missing for "${exercise.id}"`);
+    }
+    const program = exercise.testFilePaths[0];
+
     return [
       buildNodeCommand({
         ...cfg,
-        program: bug.testFilePaths[0]
+        program
       }),
       runCfg
     ];

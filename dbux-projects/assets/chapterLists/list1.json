@@ -1,21 +1,37 @@
 [
   {
     "id": 1,
-    "name": "Basic",
+    "name": "Getting Started",
     "exercises": [
-      "express#1",
-      "express#2"
+      "getting-started#firstDuplicate/for-bad",
+      "getting-started#firstDuplicate/find-bad",
+      "getting-started#largestNumbersInArrays/for-bad",
+      "getting-started#largestNumbersInArrays/map-bad",
+      "getting-started#adjacentElementsProduct/for-bad",
+      "getting-started#adjacentElementsProduct/reduce-bad",
+      "getting-started#findLongestWordLength/for-bad",
+      "getting-started#findLongestWordLength/reduce-bad",
+      "getting-started#ghostlyMatrix/for-bad",
+      "getting-started#ghostlyMatrix/reduce-bad"
     ]
   },
   {
     "id": 2,
-    "name": "Todo-list",
+    "name": "javascript-algorithms",
     "exercises": [
-      "todomvc-es6#2"
+      "javascript-algorithms#bubbleSort1"
     ]
   },
   {
     "id": 3,
+    "name": "TODO MVC",
+    "exercises": [
+      "todomvc-es6#1",
+      "todomvc-es6#2"
+    ]
+  },
+  {
+    "id": 4,
     "name": "Async",
     "exercises": [
       "async-js#1",
