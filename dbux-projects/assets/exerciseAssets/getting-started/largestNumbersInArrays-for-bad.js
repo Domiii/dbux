@@ -1,4 +1,4 @@
-const tests = require('./tests');
+const tests = require('./largestNumbersInArrays-tests');
 const runTests = require('./runTests');
 
 /**

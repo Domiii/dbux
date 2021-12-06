@@ -17,7 +17,8 @@ export default class GettingStartedProject extends Project {
 
   decorateExercise(config) {
     Object.assign(config, {
-      dbuxArgs: '--pw=.* --esnext'
+      // dbuxArgs: '--pw=.* --esnext'
+      dbuxArgs: ''
     });
     return config;
   }

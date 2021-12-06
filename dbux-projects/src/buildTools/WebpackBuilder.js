@@ -46,6 +46,8 @@ class WebpackBuilder {
    */
   _entry;
 
+  sharedAssetFolder = 'webpack';
+
   /**
    * @param {WebpackOptions} cfg 
    */

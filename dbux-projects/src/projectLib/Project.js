@@ -1076,7 +1076,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
         if (Array.isArray(assetFolderPathOrPaths)) {
           for (const assetPath of assetFolderPathOrPaths) {
             if (!fs.existsSync(assetPath)) {
-              this.logger.error(`Experiment "${exercise.id}" asset does not exist: "${assetPath}"`);
+              throw new Error(`Experiment "${exercise.id}" asset does not exist: "${assetPath}"`);
             }
             else {
               this.copyAssetFile(assetPath);
@@ -1085,7 +1085,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
         }
         else {
           if (!fs.existsSync(assetFolderPathOrPaths)) {
-            this.logger.error(`Experiment "${exercise.id}" should have assets but folder not found: "${assetFolderPathOrPaths}"`);
+            throw new Error(`Experiment "${exercise.id}" should have assets but folder not found: "${assetFolderPathOrPaths}"`);
           }
           else {
             this.copyAssetFolder(assetFolderPathOrPaths);
@@ -1110,14 +1110,15 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   }
 
   getAllAssetFolderPaths() {
-    const sharedAssetFolder = this.getAssetPath(SharedAssetFolderName);
-    const individualAssetFolderPath = this.getAssetPath(ProjectAssetFolderName, this.folderName);
-    if (sh.test('-d', individualAssetFolderPath)) {
-      return [sharedAssetFolder, individualAssetFolderPath];
-    }
-    else {
-      return [sharedAssetFolder];
-    }
+    const assets = [
+      this.builder?.sharedAssetFolder && this.getAssetPath(
+        SharedAssetFolderName, 
+        this.builder.sharedAssetFolder
+      ),
+      this.getAssetPath(ProjectAssetFolderName, this.folderName)
+    ];
+
+    return assets.filter(assetPath => !!assetPath && sh.test('-d', assetPath));
   }
 
   /**
@@ -1160,15 +1161,15 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     );
   }
 
-  copyAssetFile(assetFolderPath) {
-    this.log(`Copying asset from ${assetFolderPath} to ${this.projectPath}`);
+  copyAssetFile(assetPath) {
+    // this.log(`Copying asset from ${assetFolderPath} to ${this.projectPath}`);
 
     // Globs are tricky. See: https://stackoverflow.com/a/31438355/2228771
-    const copyRes = sh.cp('-rf', `${assetFolderPath}`, this.projectPath);
+    const copyRes = sh.cp('-rf', `${assetPath}`, this.projectPath);
 
-    const assetFiles = getAllFilesInFolders(assetFolderPath).join(',');
-    this.log(`Copied assets (${assetFolderPath}): result=${copyRes.toString()}, files=${assetFiles}`,
-      // this.execCaptureOut(`cat ${this.projectPath}/.babelrc.js`)
+    // const assetFiles = getAllFilesInFolders(assetFolderPath).join(',');
+    this.log(`Copied asset (${assetPath}): result=${copyRes.toString()}, files=${assetPath}`,
+      this.execCaptureOut(`cat ${this.projectPath}/.babelrc.js`)
     );
   }
 
