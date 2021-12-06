@@ -77,6 +77,9 @@ export default class Project extends ProjectBase {
    */
   get gitUrl() {
     let { gitRemote } = this;
+    if (!gitRemote) {
+      return null;
+    }
     if (!gitRemote.startsWith('http')) {
       // assume github by default
       gitRemote = 'https://github.com/' + gitRemote;
@@ -294,9 +297,26 @@ export default class Project extends ProjectBase {
     }
   }
 
+  /**
+   * Will fail if project has trouble looking up remotes, or if remotes are not empty.
+   */
+  async assertLocalOnlyGitRepository() {
+    // make sure, git command succeeds
+    const errResult = (await this.execGitCaptureErr(`remote -v`)).trim();
+    if (errResult) {
+      throw new Error(`"git remote -v" failed - "${errResult}"`);
+    }
+    const result = (await this.execCaptureOut(`${this.gitCommand} remote -v`)).trim();
+    if (result) {
+      throw new Error(`Local-only git repository assumption failed. Git has (but should not have) a remote: ${result}`);
+    }
+  }
+
   async isCorrectGitRepository() {
     if (!this.gitRemote) {
-      return false;
+      // we only have a local git repository
+      await this.assertLocalOnlyGitRepository();
+      return true;
     }
 
     const remote = await this.execCaptureOut(`${this.gitCommand} remote -v`);
@@ -306,7 +326,7 @@ export default class Project extends ProjectBase {
   async checkCorrectGitRepository() {
     if (!await this.isCorrectGitRepository()) {
       const repo = await this.execCaptureOut(`${this.gitCommand} remote -v`);
-      throw new Error(`Trying to execute command in wrong git repository:\n${repo}
+      throw new Error(`Trying to execute command in wrong git repository:\n"${repo}"
 Sometimes a reset (by using the \`Delete project folder\` button) can help fix this.`);
     }
   }
@@ -346,8 +366,13 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
         if (!githubUrl) {
           // project does not have a remote git repo -> create separate local repo instead
           fs.mkdirSync(projectPath, { recursive: true });
-          const cmd = 'git init';
-          await this.execInTerminal(cmd);
+          // git init and create initial commit (which becomes HEAD)
+          await this.execInTerminal('git init');
+          await this.execInTerminal('touch initial_file');
+          await this.execInTerminal('git add initial_file');
+          await this.execInTerminal('git commit -am "initial commit"');
+          await this.execInTerminal('rm initial_file');
+          await this.execInTerminal('git commit -am "initial commit 2"');
         }
         else {
           // if (!target) {
@@ -549,6 +574,10 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     return this.runner._exec(command, this.logger, options, input);
   }
 
+  /**
+   * TODO: possibly replace all `git` calls to {@link #execCaptureOut}
+   *   -> use a command similar to `execGitCaptureErr` instead, but return `out`, instead of `err`.
+   */
   execCaptureOut = async (command, processOptions) => {
     processOptions = {
       cwd: this.projectPath,
@@ -563,6 +592,14 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       ...(processOptions || EmptyObject)
     };
     return Process.execCaptureErr(command, { processOptions });
+  }
+
+  execCaptureAll = async (command, processOptions) => {
+    processOptions = {
+      cwd: this.projectPath,
+      ...(processOptions || EmptyObject)
+    };
+    return Process.execCaptureAll(command, { processOptions });
   }
 
   /**
@@ -580,7 +617,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     catch (err) {
       throw new NestedError(`Git command "${cmd}" failed`, err);
     }
-    if (errStringResult.startsWith('error:')) {
+    if (errStringResult.startsWith('error:') || errStringResult.startsWith('fatal:')) {
       throw new Error(`Git command "${cmd}" failed:\n  ${errStringResult}`);
     }
     return errStringResult;
@@ -1034,13 +1071,25 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
     // copy exercise assets
     if (exercise) {
-      const exerciseAssetsFolderPath = this.getExerciseAssetFolderPath(exercise);
-      if (exerciseAssetsFolderPath) {
-        if (!fs.existsSync(exerciseAssetsFolderPath)) {
-          this.logger.error(`Experiment "${exercise.id}" should have assets, but no asset folder at "${this.getAssetPath(exerciseAssetsFolderPath)}"`);
+      let assetFolderPathOrPaths = this.getExerciseAssetFolderPaths(exercise);
+      if (assetFolderPathOrPaths) {
+        if (Array.isArray(assetFolderPathOrPaths)) {
+          for (const assetPath of assetFolderPathOrPaths) {
+            if (!fs.existsSync(assetPath)) {
+              this.logger.error(`Experiment "${exercise.id}" asset does not exist: "${assetPath}"`);
+            }
+            else {
+              this.copyAssetFile(assetPath);
+            }
+          }
         }
         else {
-          this.copyAssetFolder(exerciseAssetsFolderPath);
+          if (!fs.existsSync(assetFolderPathOrPaths)) {
+            this.logger.error(`Experiment "${exercise.id}" should have assets but folder not found: "${assetFolderPathOrPaths}"`);
+          }
+          else {
+            this.copyAssetFolder(assetFolderPathOrPaths);
+          }
         }
       }
     }
@@ -1071,9 +1120,17 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     }
   }
 
-  getExerciseAssetFolderPath(exercise) {
+  /**
+   * @param {Exercise} exercise 
+   */
+  getExerciseAssetFolderPaths(exercise) {
     if (exercise.hasAssets) {
-      return this.getAssetPath(ExerciseAssetFolderName, this.name, exercise.name || exercise.id);
+      // copy all exercise assets from exercise-specific asset folder
+      return this.getAssetPath(ExerciseAssetFolderName, this.name, exercise.name || exercise.number);
+    }
+    else if (exercise.assets) {
+      // copy specific files
+      return exercise.assets.map(fpath => this.getAssetPath(ExerciseAssetFolderName, this.name, fpath));
     }
     else {
       return null;
@@ -1096,6 +1153,18 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
     // Globs are tricky. See: https://stackoverflow.com/a/31438355/2228771
     const copyRes = sh.cp('-rf', `${assetFolderPath}/{.[!.],..?,}*`, this.projectPath);
+
+    const assetFiles = getAllFilesInFolders(assetFolderPath).join(',');
+    this.log(`Copied assets (${assetFolderPath}): result=${copyRes.toString()}, files=${assetFiles}`,
+      // this.execCaptureOut(`cat ${this.projectPath}/.babelrc.js`)
+    );
+  }
+
+  copyAssetFile(assetFolderPath) {
+    this.log(`Copying asset from ${assetFolderPath} to ${this.projectPath}`);
+
+    // Globs are tricky. See: https://stackoverflow.com/a/31438355/2228771
+    const copyRes = sh.cp('-rf', `${assetFolderPath}`, this.projectPath);
 
     const assetFiles = getAllFilesInFolders(assetFolderPath).join(',');
     this.log(`Copied assets (${assetFolderPath}): result=${copyRes.toString()}, files=${assetFiles}`,
@@ -1200,7 +1269,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
   async gitGetAllCurrentTagName() {
     await this.checkCorrectGitRepository();
-    const tags = (await this.execCaptureOut(`git tag --points-at HEAD`)).split(/\r?\n/);
+    const tags = (await this.execCaptureOut(`${this.gitCommand} tag --points-at HEAD`)).split(/\r?\n/);
     return tags;
   }
 
@@ -1253,8 +1322,8 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   // ###########################################################################
 
   /**
- * @return {ExerciseConfig[]}
- */
+   * @return {ExerciseConfig[]}
+   */
   loadExerciseConfigs() {
     const rawConfigFile = this.manager.externals.resources.getResourcePath('dist', 'projects', 'exercises', `${this.name}.js`);
     try {
@@ -1301,14 +1370,15 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       // exercise.id
       // convert number typed id to string type(thus it's globally unique)
       config.id = `${this.name}#${config.number}`;
+      if (config.name) {
+        config.uniqueName = `${this.name}#${config.name}`;
+      }
 
       return new Exercise(this, config);
     });
 
     if (process.env.NODE_ENV === 'production') {
-      // NOTE: this is an immature feature
-      //      for now, only provide one bug for demonstration purposes and to allow us gather feedback
-      exercises = exercises.filter(exercise => exercise.label && exercise.isSolvable);
+      exercises = exercises.filter(exercise => exercise.label);
     }
 
     this._exercises = new ExerciseList(exercises);

@@ -20,12 +20,40 @@ export class ExerciseDifficultyConfig {
 
 export default class ExerciseConfig {
   /**
+   * Unique number/index of exercise within project.
+   * Assigned automatically.
+   * @type {number}
+   */
+  number;
+
+  /**
+   * Optional, unique name of exercise within project.
+   * Is used to identify name of exercise's asset folder, if {@link #hasAssets} is truthy.
+   * @type {string}
+   */
+  name;
+
+  /**
    * Uniquely identifies this exercise across projects.
+   * Set to `${project.name}#${number}`
+   * @type {number}
    */
   id;
-  number;
-  name;
+
+  /**
+   * If exercise was given `name`, uniquely identifies this exercise across projects.
+   * Set to `${project.name}#${number}`.
+   * @type {string}
+   */
+  uniqueName;
+
+  /**
+   * @type {string}
+   */
   description;
+  /**
+   * @type {string}
+   */
   label;
 
   /**
@@ -53,8 +81,22 @@ export default class ExerciseConfig {
 
   /**
    * [Optional] file name of patch inside of `_patches_` folder to be applied to activate exercise
+   * @type {string}
    */
   patch;
+
+  /**
+   * If true, assets will be copied from asset exercise folder (identified by {@link #name}).
+   * 
+   * @type {boolean}
+   */
+  hasAssets;
+
+  /**
+   * Optional array of actual asset names in exercise asset folder.
+   * @type {string[]?}
+   */
+  assets;
 
   /**
    * Can be used to provide even more information about the exercise.
@@ -65,12 +107,12 @@ export default class ExerciseConfig {
   hints; // TODO
 
   /**
-   * @type {ExerciseLocation[]}
-   */
-  bugLocations;
-
-  /**
    * @type {ExerciseDifficultyConfig}
    */
   difficulty;
+
+  /**
+   * @type {ExerciseLocation[]}
+   */
+  bugLocations;
 }

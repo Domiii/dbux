@@ -15,7 +15,14 @@ export default class ExerciseList {
    * @type {Map<number, Exercise>}
    */
   _byId = new Map();
+  /**
+   * @type {Map<string, Exercise>}
+   */
+  _byName = new Map();
 
+  /**
+   * @type {Exercise[]}
+   */
   _all = [];
 
   /**
@@ -25,6 +32,12 @@ export default class ExerciseList {
     for (const exercise of exercises) {
       this._byId.set(exercise.id, exercise);
       this._byNumber[exercise.number] = exercise;
+      if (exercise.name) {
+        if (this._byName[exercise.name]) {
+          throw new Error(`exercise name is not unique for ${exercise.id}: ${JSON.stringify(exercise)}`);
+        }
+        this._byName[exercise.name] = exercise;
+      }
       this._all.push(exercise);
     }
   }
@@ -45,6 +58,10 @@ export default class ExerciseList {
    */
   getById(id) {
     return this._byId.get(id) || null;
+  }
+
+  getByName(name) {
+    return this._byName.get(name) || null;
   }
 
   getAt(i) {

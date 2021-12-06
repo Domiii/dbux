@@ -2,16 +2,16 @@
 module.exports = [
   {
     id: 1,
-    label: '',
-    testFilePaths: [''],
+    label: 'largestNumberInArrays (for loop) bug',
+    assets: [
+      'largestNumberInArrays-for-bad.js',
+      'largestNumberInArrays-tests.js'
+    ],
+    testFilePaths: ['largestNumberInArrays-for-bad.js'],
     bugLocations: [
       {
-        fileName: 'lib/router/index.js',
-        line: 156
-      },
-      {
-        fileName: 'lib/router/index.js',
-        line: 210
+        fileName: 'largestNumberInArrays-for-bad.js',
+        line: 12
       }
     ]
   },

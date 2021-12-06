@@ -61,6 +61,16 @@ export default class ProjectsManager {
    */
   _backend;
 
+  /**
+   * @type {Map.<string, Exercise>}
+   */
+  _allExercisesById;
+
+  /**
+   * @type {Map.<string, Exercise>}
+   */
+  _allExercisesByName;
+
   _pkg;
   _sharedDependencyNamesToCheck;
 
@@ -239,18 +249,18 @@ export default class ProjectsManager {
       const chapterRegistry = JSON.parse(fs.readFileSync(chapterListFile, 'utf-8'));
       this.chapters = [];
       for (const chapterConfig of chapterRegistry) {
-        const { id, name, exercises: exerciseIds } = chapterConfig;
-        const exercises = exerciseIds.map(_id => {
-          const exercise = this.getExerciseById(_id);
+        const { id, name, exercises: exerciseIdOrNames } = chapterConfig;
+        const exercises = exerciseIdOrNames.map(idOrName => {
+          const exercise = this.getExerciseByIdOrName(idOrName);
           if (!exercise) {
             warn(
-              `Cannot find exercise of id:${_id} in chapter#${id} (${name}) registry. ` +
-              `Make sure exerciesIds in "exerciseList.json" are correct.`
+              `Cannot find exercise of id or name:${idOrName} in chapter#${id} (${name}). ` +
+              `Make sure exerciseIds in "exerciseList.json" are correct.`
             );
             return null;
           }
           return exercise;
-        }).filter(x => !!x);
+        }).filter(Boolean);
         const chapter = new Chapter(this, id, name, exercises);
         this.chapters.push(chapter);
       }
@@ -267,17 +277,26 @@ export default class ProjectsManager {
    * Reload exercises for every project, also reload chapters.
    */
   reloadExercises() {
-    this._exercisesByIdMap = new Map();
+    this._allExercisesById = new Map();
+    this._allExercisesByName = new Map();
     for (const project of this.projects) {
       for (const exercise of project.reloadExercises()) {
-        this._exercisesByIdMap.set(exercise.id, exercise);
+        this._allExercisesById.set(exercise.id, exercise);
+        if (exercise.uniqueName) {
+          this._allExercisesByName.set(exercise.uniqueName, exercise);
+        }
       }
     }
     this.reloadChapterList();
   }
 
-  getExerciseById(exerciseId) {
-    return this._exercisesByIdMap.get(exerciseId);
+  getExerciseById(id) {
+    return this._allExercisesById.get(id);
+  }
+
+  getExerciseByIdOrName(exerciseIdOrUniqueName) {
+    return this._allExercisesById.get(exerciseIdOrUniqueName) ||
+      this._allExercisesByName.get(exerciseIdOrUniqueName);
   }
 
   // ###########################################################################
@@ -401,7 +420,7 @@ export default class ProjectsManager {
 
       ({ exerciseId } = savedPracticeSession);
     }
-    const exercise = this.getExerciseById(exerciseId);
+    const exercise = this.getExerciseByIdOrName(exerciseId);
     if (!exercise) {
       // sanity check
       warn(`Can't find exercise for id "${exerciseId}"`);
