@@ -4,13 +4,14 @@ import pull from 'lodash/pull';
 import defaultsDeep from 'lodash/defaultsDeep';
 import sh from 'shelljs';
 import merge from 'lodash/merge';
+import isPlainObject from 'lodash/isPlainObject';
 import NestedError from '@dbux/common/src/NestedError';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { requireUncached } from '@dbux/common-node/src/util/requireUtil';
 import { getAllFilesInFolders, globRelative, rm } from '@dbux/common-node/src/util/fileUtil';
-import { pathJoin, pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
+import { isFileInPath, pathJoin, pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import isObject from 'lodash/isObject';
 import ExerciseList from './ExerciseList';
 import Process from '../util/Process';
@@ -1075,12 +1076,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       if (assetFolderPathOrPaths) {
         if (Array.isArray(assetFolderPathOrPaths)) {
           for (const assetPath of assetFolderPathOrPaths) {
-            if (!fs.existsSync(assetPath)) {
-              throw new Error(`Experiment "${exercise.id}" asset does not exist: "${assetPath}"`);
-            }
-            else {
-              this.copyAssetFile(assetPath);
-            }
+            this.copyAssetFile(assetPath);
           }
         }
         else {
@@ -1112,7 +1108,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   getAllAssetFolderPaths() {
     const assets = [
       this.builder?.sharedAssetFolder && this.getAssetPath(
-        SharedAssetFolderName, 
+        SharedAssetFolderName,
         this.builder.sharedAssetFolder
       ),
       this.getAssetPath(ProjectAssetFolderName, this.folderName)
@@ -1131,7 +1127,17 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     }
     else if (exercise.assets) {
       // copy specific files
-      return exercise.assets.map(fpath => this.getAssetPath(ExerciseAssetFolderName, this.name, fpath));
+      if (isPlainObject(exercise.assets)) {
+        throw new Error(`NYI: assets must be array. Objects containing from<->to mapping are not yet supported.`);
+      }
+      else if (Array.isArray(exercise.assets)) {
+        return exercise.assets.map(relativeFilePath => {
+          const from = this.getAssetPath(ExerciseAssetFolderName, this.name, relativeFilePath);
+          const to = relativeFilePath;
+          return [from, to];
+        });
+      }
+      throw new Error(`assets must be array but found: ${typeof exercise.assets}`);
     }
     else {
       return null;
@@ -1162,15 +1168,40 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   }
 
   copyAssetFile(assetPath) {
-    // this.log(`Copying asset from ${assetFolderPath} to ${this.projectPath}`);
+    const { projectPath } = this;
+    // this.log(`Copying asset from ${assetFolderPath} to ${projectPath}`);
+    let from, to;
+    if (Array.isArray(assetPath)) {
+      ([from, to] = assetPath);
+    }
+    else {
+      from = assetPath;
+      to = '';
+    }
 
-    // Globs are tricky. See: https://stackoverflow.com/a/31438355/2228771
-    const copyRes = sh.cp('-rf', `${assetPath}`, this.projectPath);
+    // make sure, file exists
+    if (!fs.existsSync(from)) {
+      throw new Error(`Asset file does not exist: "${from}"`);
+    }
+
+    // resolve target file path
+    const toAbsolute = pathResolve(projectPath, to);
+    if (!isFileInPath(projectPath, toAbsolute)) {
+      throw new Error(`Asset "to" file=${to} is not (but must be) relative to projectPath="${projectPath}" (${assetPath})`);
+    }
+    const toFolder = path.dirname(toAbsolute);
+    if (!fs.existsSync(toFolder)) {
+      fs.mkdirSync(toFolder, { recursive: true });
+    }
+
+    /**
+     * Globs are tricky.
+     * @see https://stackoverflow.com/a/31438355/2228771
+     */
+    const copyRes = sh.cp('-rf', from, toAbsolute);
 
     // const assetFiles = getAllFilesInFolders(assetFolderPath).join(',');
-    this.log(`Copied asset (${assetPath}): result=${copyRes.toString()}, files=${assetPath}`,
-      this.execCaptureOut(`cat ${this.projectPath}/.babelrc.js`)
-    );
+    this.log(`Copied asset (${toAbsolute}): result=${copyRes.toString()}`);
   }
 
   // ###########################################################################

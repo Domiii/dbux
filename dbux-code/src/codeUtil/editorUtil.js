@@ -45,7 +45,7 @@ export async function closeAllEditors() {
 //  * @returns 
 //  */
 // function isInvalidEditor(editor, folderPath) {
-//   if (editor?.document.uri.scheme === 'file' && isSubdirectory(folderPath, editor.document.uri.fsPath)) {
+//   if (editor?.document.uri.scheme === 'file' && isFileInPath(folderPath, editor.document.uri.fsPath)) {
 //     return true;
 //   }
 //   return false;

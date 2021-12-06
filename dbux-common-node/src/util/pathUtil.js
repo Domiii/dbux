@@ -99,7 +99,7 @@ export function getCommonAncestorPath(...paths) {
   return commonAncestorPath(...paths);
 }
 
-export function isSubdirectory(parent, dir) {
-  const relative = pathRelative(parent, dir);
+export function isFileInPath(parent, file) {
+  const relative = pathRelative(parent, file);
   return relative && !relative.startsWith('..') && !path.isAbsolute(relative);
 }
