@@ -260,6 +260,8 @@ export function nextMode() {
 //  ExecutionTDNode
 // ###########################################################################
 
+export const ExecutionsTDNodeContextValue = 'dbuxTraceDetailsView.node.executionsTDNodeRoot';
+
 export default class ExecutionsTDNode extends BaseTreeViewNode {
   static makeLabel(trace, parent, props) {
     return props.label;
@@ -292,7 +294,7 @@ export default class ExecutionsTDNode extends BaseTreeViewNode {
   }
 
   init() {
-    this.contextValue = 'dbuxTraceDetailsView.node.executionsTDNodeRoot';
+    this.contextValue = ExecutionsTDNodeContextValue;
   }
 
   buildChildren() {
@@ -301,6 +303,22 @@ export default class ExecutionsTDNode extends BaseTreeViewNode {
     const GroupNodeClazz = GroupNodeRegistry[groupingMode];
     const groupNodes = GroupNodeClazz.buildNodes(this, groupedTraces);
     return groupNodes;
+  }
+
+  getSelectedChildren() {
+    if (groupingMode === GroupingMode.Ungrouped) {
+      return this.children.find(node => node.isSelected());
+    }
+    else {
+      for (const groupNode of this.children) {
+        for (const executionNode of groupNode.children) {
+          if (executionNode.isSelected()) {
+            return executionNode;
+          }
+        }
+      }
+      return null;
+    }
   }
 }
 

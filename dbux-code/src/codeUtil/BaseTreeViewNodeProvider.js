@@ -34,7 +34,7 @@ export default class BaseTreeViewNodeProvider {
   _onDidChangeTreeData = new EventEmitter();
   onDidChangeTreeData = this._onDidChangeTreeData.event;
 
-  rootNodes;
+  rootNodes = [];
   idsCollapsibleState = new Map();
 
   /**
