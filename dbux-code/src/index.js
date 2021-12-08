@@ -1,16 +1,19 @@
-import { window } from 'vscode';
+const { window } = require('vscode');
 
 global.window = window;
+
+// eslint-disable-next-line no-console
+console.log(`Activating Dbux...`);
 
 /**
  * Put the whole thing into try/catch, so that activation errors are caught correctly.
  */
+let preActivate, deactivate;
 try {
   // eslint-disable-next-line global-require
-  const preActivate = require('./preActivate');
+  preActivate = require('./preActivate').default;
   // eslint-disable-next-line global-require
-  const deactivate = require('./deactivate');
-  module.exports = { activate: preActivate, deactivate };
+  deactivate = require('./deactivate').default;
 }
 catch (err) {
   // eslint-disable-next-line no-console
@@ -18,3 +21,7 @@ catch (err) {
   debugger;
   throw err;
 }
+module.exports = {
+  activate: preActivate,
+  deactivate
+};

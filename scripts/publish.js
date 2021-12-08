@@ -259,7 +259,7 @@ async function main() {
     console.warn(`Non-interactive mode enabled: always NO, chooseVersionBump='${chooseVersionBump}'`);
   }
 
-  log(`Preparing to publish (bumping from version ${await getDbuxVersion()})...`);
+  log(`Preparing to publish (old version: ${await getDbuxVersion()})...`);
 
   try {
     if (await execCaptureOut('npm whoami') !== 'domiii') {

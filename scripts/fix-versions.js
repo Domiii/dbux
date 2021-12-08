@@ -46,7 +46,10 @@ function parseLernaVersion() {
  *  #########################################################################*/
 
 async function setVersion(version) {
-  await exec(`npx lerna version ${version} --yes --no-changelog --no-git-tag-version --no-push`);
+  /**
+   * @see https://github.com/lerna/lerna/tree/main/commands/version
+   */
+  await exec(`npx lerna version ${version} --yes --no-private --no-changelog --no-git-tag-version --no-push`);
   
   const lernaVersion = readLernaJson().version;
   if (lernaVersion !== version) {

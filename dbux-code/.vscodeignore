@@ -10,8 +10,10 @@ node_modules/**
 src/**
 test/**
 public/**
+_analysis
 *.vsix
 webpack.config.js
 logs/**
 dbux_projects/**
 userdata
+dataFolder.lnk
