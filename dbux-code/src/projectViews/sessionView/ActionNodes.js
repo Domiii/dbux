@@ -11,6 +11,10 @@ import { isProjectFolderInWorkspace } from '../../codeUtil/workspaceUtil';
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
 /** @typedef {import('@dbux/projects/src/projectLib/Exercise').default} Exercise */
 
+/** ###########################################################################
+ * {@link SessionNode}
+ *  #########################################################################*/
+
 class SessionNode extends BaseTreeViewNode {
   availableOnBusy = false;
 
@@ -51,29 +55,37 @@ class SessionNode extends BaseTreeViewNode {
   async doHandleClick() { }
 }
 
+/** ###########################################################################
+ * {@link DetailNode}
+ *  #########################################################################*/
 class DetailNode extends SessionNode {
   /**
    * @param {Exercise} exercise 
    */
   static makeLabel(exercise) {
     const state = exercise.manager.practiceSession?.state;
-    return `Current exercise: ${exercise.label} (${PracticeSessionState.getName(state)})`;
+    return `${PracticeSessionState.getName(state)}: ${exercise.label}`;
   }
 
   init() {
+    this.tooltip = 'Click for more information on current exercise.';
     this.contextValue = 'dbuxSessionView.detailNode';
     this.description = this.exercise.id;
     this.availableOnBusy = true;
   }
 
   makeIconPath() {
-    return 'project.svg';
+    return 'question.svg';
   }
 
   async doHandleClick() {
     await this.exercise.manager.externals.showExerciseIntroduction(this.exercise);
   }
 }
+
+/** ###########################################################################
+ * {@link ShowEntryNode}
+ * ##########################################################################*/
 
 class ShowEntryNode extends SessionNode {
   static makeLabel() {
@@ -93,6 +105,10 @@ class ShowEntryNode extends SessionNode {
     !success && await showInformationMessage(`No entry file of this exercise.`);
   }
 }
+
+/** ###########################################################################
+ * {@link OpenWorkspaceNode}
+ * ##########################################################################*/
 
 class OpenWorkspaceNode extends SessionNode {
   static makeLabel() {
@@ -118,6 +134,10 @@ class OpenWorkspaceNode extends SessionNode {
   }
 }
 
+/** ###########################################################################
+ * {@link RunNode}
+ * ##########################################################################*/
+
 class RunNode extends SessionNode {
   static makeLabel() {
     return 'Run';
@@ -140,6 +160,10 @@ class RunNode extends SessionNode {
   }
 }
 
+/** ###########################################################################
+ * {@link RunWithoutDbuxNode}
+ * ##########################################################################*/
+
 class RunWithoutDbuxNode extends SessionNode {
   static makeLabel() {
     return 'Run without Dbux';
@@ -157,6 +181,10 @@ class RunWithoutDbuxNode extends SessionNode {
     return 'dbuxSessionView.run';
   }
 }
+
+/** ###########################################################################
+ * {@link TagNode}
+ * ##########################################################################*/
 
 class TagNode extends SessionNode {
   get clickUserActionType() {
@@ -190,6 +218,11 @@ class TagNode extends SessionNode {
     }
   }
 }
+
+
+/** ###########################################################################
+ * {@link StopPracticeNode}
+ *  #########################################################################*/
 
 class StopPracticeNode extends SessionNode {
   static makeLabel(exercise) {

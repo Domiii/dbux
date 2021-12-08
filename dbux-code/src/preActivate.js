@@ -4,7 +4,7 @@ import { initMemento, get as mementoGet, set as mementoSet } from './memento';
 import { initInstallId } from './installId';
 import { initLogging } from './logging';
 import { initCodePath } from './codeUtil/codePath';
-import { activate } from '.';
+import activate from './activate';
 import { initPreActivateView } from './preActivateView/preActivateNodeProvider';
 import { registerCommand } from './commands/commandUtil';
 import { initDialogController } from './dialogs/dialogController';
@@ -45,44 +45,39 @@ export function getActivatedState() {
  * This will be called right after dbux has been activate and will call `doActivate` when needed
  * @param {import('vscode').ExtensionContext} context
  */
-export async function preActivate(context) {
-  try {
-    registerErrorHandler();
+export default async function preActivate(context) {
+  registerErrorHandler();
 
-    initMemento(context);
-    await initInstallId();
-    initLogging();
-    initCodePath(context);
-    const dialogController = initDialogController();
+  initMemento(context);
+  await initInstallId();
+  initLogging();
+  initCodePath(context);
 
-    await maybeSelectLanguage();
-    await initLang(mementoGet('dbux.language'));
+  await maybeSelectLanguage();
+  await initLang(mementoGet('dbux.language'));
 
-    // [debugging]
-    // await dialogController.getDialog('survey1').clear();
-    // await dialogController.getDialog('tutorial').clear();
-    // await getOrCreateProjectManager(context).pathwayDataProvider.reset();
+  // [debugging]
+  // await dialogController.getDialog('survey1').clear();
+  // await dialogController.getDialog('tutorial').clear();
+  // await getOrCreateProjectManager(context).pathwayDataProvider.reset();
 
-    commands.executeCommand('setContext', 'dbux.context.nodeEnv', process.env.NODE_ENV);
+  commands.executeCommand('setContext', 'dbux.context.nodeEnv', process.env.NODE_ENV);
 
-    // the following should ensures `doActivate` will be called at least once
-    const autoStart = (process.env.NODE_ENV === 'development') || 
-      workspace.getConfiguration('dbux').get('autoStart');
-    if (autoStart) {
-      await doActivate(context);
-    }
-    else {
-      initPreActivateView();
-      initPreActivateCommand(context);
-    }
-
-    await maybeStartTutorial(dialogController, context);
-    await maybeContinueSurvey1(dialogController, context);
+  // the following should ensures `doActivate` will be called at least once
+  const autoStart = (process.env.NODE_ENV === 'development') ||
+    workspace.getConfiguration('dbux').get('autoStart');
+  if (autoStart) {
+    await ensureActivate(context);
   }
-  catch (e) {
-    logError('error in \'preActivate\'', e.stack);
-    throw e;
+  else {
+    initPreActivateView();
+    initPreActivateCommand(context);
   }
+
+  // TODO: fix tutorial and initial survey
+  // const dialogController = initDialogController();
+  // await maybeStartTutorial(dialogController, context);
+  // await maybeContinueSurvey1(dialogController, context);
 }
 
 async function doActivate(context) {
@@ -119,10 +114,12 @@ async function maybeSelectLanguage() {
   const keyName = `dbux.language`;
 
   if (!mementoGet(keyName)) {
-    let lang = await showInformationMessage('Select a language for dbux', {
-      en: () => 'en',
-      zh: () => 'zh',
-    }, { modal: true });
+    // TODO: re-enable multi-language support, once we have a significant amount of messages translated
+    // let lang = await showInformationMessage('Select a language for dbux', {
+    //   en: () => 'en',
+    //   zh: () => 'zh',
+    // }, { modal: true });
+    const lang = 'en';
     await mementoSet(keyName, lang);
   }
 }

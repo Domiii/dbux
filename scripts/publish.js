@@ -301,7 +301,7 @@ async function main() {
 
   if (await yesno('Skip publish to Marketplace? (or publish without building)')) {
     if (await yesno('Install locally?')) {
-      await exec('npm run code:install');
+      await exec('npm run code:install-only');
     }
   }
   else {

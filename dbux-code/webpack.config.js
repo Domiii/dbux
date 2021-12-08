@@ -139,7 +139,7 @@ module.exports = (env, argv) => {
     plugins: webpackPlugins,
     context: path.join(projectRoot, '.'),
     entry: {
-      bundle: path.join(projectRoot, 'src/_includeIndex.js'),
+      bundle: path.join(projectRoot, 'src/index.js'),
       _dbux_run: path.join(projectRoot, 'resources/src/_dbux_run.js')
     },
     output: {
