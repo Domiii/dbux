@@ -12,9 +12,9 @@ import valueCollection from '../data/valueCollection';
 
 
 /**
- * TODO: make more easily configurable
+ * TODO: make configurable
  */
-const Enabled = false;
+const Enabled = true;
 
 function containsInstrumentedCallbacks(args, spreadArgs) {
   spreadArgs = spreadArgs || EmptyArray;
