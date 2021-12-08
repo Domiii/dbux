@@ -164,11 +164,11 @@ class TagNode extends SessionNode {
   }
 
   static makeLabel() {
-    return 'The exercise is in the selected trace\'s line!';
+    return 'Solve: Mark selected trace\'s line as buggy!';
   }
 
   init() {
-    this.tooltip = 'Tag current trace as exercise location';
+    this.tooltip = 'Mark current trace as bug location.';
     this.contextValue = 'dbuxSessionView.tagNode';
   }
 

@@ -23,7 +23,7 @@ export default class SocketIOProject extends Project {
     await this.execInTerminal('yarn install --prod');
   }
 
-  canRun(config) {
+  canRunExercise(config) {
     return !!config.testFilePaths;
   }
 

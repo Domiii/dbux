@@ -7,7 +7,6 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import makeTreeItem, { makeTreeItemNoChildren, makeTreeItems } from '../../helpers/makeTreeItem';
 import { ContextTDNode, TraceTypeTDNode } from './traceInfoNodes';
 import TraceDetailNode from './traceDetailNode';
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
@@ -116,7 +115,7 @@ export class DebugTDNode extends TraceDetailNode {
       ...otherTraceProps
     } = trace;
 
-    let context = dp.collections.executionContexts.getById(contextId);
+    let context = dp.collections.executionContexts.getById(contextId) || EmptyObject;
     context = {
       ...context,
       stackTrace: parseStackTrace(context.stackTrace)
@@ -125,9 +124,9 @@ export class DebugTDNode extends TraceDetailNode {
 
     const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
     const { staticContextId } = context;
-    const staticContext = dp.collections.staticContexts.getById(staticContextId);
+    const staticContext = dp.collections.staticContexts.getById(staticContextId) || EmptyObject;
     const { programId } = staticContext;
-    const staticProgramContext = dp.collections.staticProgramContexts.getById(programId);
+    const staticProgramContext = dp.collections.staticProgramContexts.getById(programId) || EmptyObject;
     const dataTraceId = dp.util.getValueTrace(traceId)?.traceId || traceId;
 
     /** ###########################################################################

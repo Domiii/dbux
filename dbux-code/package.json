@@ -592,7 +592,7 @@
       },
       {
         "command": "dbuxProjectView.node.showWebsite",
-        "title": "Show website",
+        "title": "Show Website",
         "icon": {
           "light": "resources/light/boolean.svg",
           "dark": "resources/dark/boolean.svg"
@@ -600,7 +600,7 @@
       },
       {
         "command": "dbuxProjectView.node.showExerciseIntroduction",
-        "title": "Show introduction",
+        "title": "Show Exercise Introduction",
         "icon": {
           "light": "resources/light/question.svg",
           "dark": "resources/dark/question.svg"

@@ -7,6 +7,6 @@ index 947303b..f20c681 100644
  	 */
  	itemCounter(activeTodos) {
 -		return `${activeTodos} item${activeTodos !== 1 ? 's' : ''} left`;
-+		return `${activeTodos} item${activeTodos !== 0 ? 's' : ''} left`;
++		return `${activeTodos} item${activeTodos ? 's' : ''} left`;
  	}
  }

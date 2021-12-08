@@ -755,10 +755,22 @@ export default class ProjectsManager {
    */
   async runTest(exercise, inputCfg = EmptyObject) {
     let {
-      debugMode = false,
-      dbuxEnabled = true,
+      debugMode,
+      dbuxEnabled,
       enableSourceMaps = false
     } = inputCfg;
+
+    if (!('debugMode' in inputCfg)) {
+      inputCfg.debugMode = false;
+    }
+
+    if (!('dbuxEnabled' in inputCfg)) {
+      inputCfg.dbuxEnabled = true;
+    }
+    
+    if (!exercise.project.checkRunMode(inputCfg)) {
+      return;
+    }
 
     // WARN: --enable-source-maps makes execution super slow in production mode for some reason
     // NOTE: only supported in Node 12.12+
@@ -1224,20 +1236,22 @@ export default class ProjectsManager {
   }
 
   async showExerciseLog(bug) {
-    await this.getAndInitBackend();
-    await this._backend.login();
-    // Rules not edit yet, so needs login to read
+    throw new Error(`Not currently implemented`);
 
-    let collectionRef = this._backend.db.collection('userEvents');
-    let result = await collectionRef.get();
-    let allData = [];
-    result.forEach(doc => {
-      allData.push({
-        id: doc.id,
-        data: doc.data(),
-      });
-    });
-    this.externals.editor.showTextInNewFile('all.json', JSON.stringify(allData, null, 2));
+    // await this.getAndInitBackend();
+    // await this._backend.login();
+    // // Rules not edit yet, so needs login to read
+
+    // let collectionRef = this._backend.db.collection('userEvents');
+    // let result = await collectionRef.get();
+    // let allData = [];
+    // result.forEach(doc => {
+    //   allData.push({
+    //     id: doc.id,
+    //     data: doc.data(),
+    //   });
+    // });
+    // this.externals.editor.showTextInNewFile('all.json', JSON.stringify(allData, null, 2));
   }
 
   async deleteUserEvents() {

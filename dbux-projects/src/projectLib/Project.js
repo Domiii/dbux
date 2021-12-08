@@ -170,13 +170,30 @@ export default class Project extends ProjectBase {
     }
   }
 
+  checkRunMode(config) {
+    const {
+      debugMode,
+      dbuxEnabled,
+    } = config;
+    if (this.builder) {
+      // we currently do not support explicit debug mode or disabling dbux with webpack
+      if (debugMode) {
+        throw new Error(`Debug mode is currently not supported for ${this.name}.`);
+      }
+      if (!dbuxEnabled) {
+        throw new Error(`Dbux can currently not be disabled for ${this.name}.`);
+      }
+    }
+    return true;
+  }
+
   /**
-   * Projects could return false to filter out incomplete exercises, e.g, exercises missing `testFilePaths`.
+   * Projects can return false to filter out incomplete exercises.
    * @virtual
-   * @param {ExerciseConfig} config
+   * @param {ExerciseConfig} exerciseConfig
    * @return {boolean}
    */
-  canRun(config) {
+  canRunExercise(exerciseConfig) {
     return true;
   }
 
@@ -1374,19 +1391,19 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
    */
   reloadExercises() {
     let exerciseConfigs = this.loadExerciseConfigs()
-      .filter(this.canRun.bind(this))
+      .filter(this.canRunExercise.bind(this))
       .map(this.decorateExercise.bind(this));
     const hasIds = exerciseConfigs.some(exercise => !!exercise.id);
     let lastExercise = 0;
 
     let exercises = exerciseConfigs.map(config => {
       // exercise.description
-      let {
-        description,
-        testRe,
-        testFilePaths
-      } = config;
-      config.description = description || testRe || testFilePaths?.[0] || '';
+      // let {
+      //   description,
+      //   testRe,
+      //   testFilePaths
+      // } = config;
+      // config.description = description || testRe || testFilePaths?.[0] || '';
 
       // exercise.number
       if (!config.number) {

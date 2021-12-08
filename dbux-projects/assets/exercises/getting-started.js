@@ -2,7 +2,7 @@
 const exercises = [];
 
 function add(cfgs) {
-  for (let { number, problemName, label, fname, bugLine } of cfgs) {
+  for (let { number, problemName, label, fname, bugLine, ...moreProps } of cfgs) {
     const name = `${problemName}/${fname}`;
     fname += '.js';
     const fpath = `${problemName}/${fname}`;
@@ -15,6 +15,7 @@ function add(cfgs) {
         `${problemName}/tests.js`
       ],
       testFilePaths: [fpath],
+      ...moreProps,
       bugLocations: [
         {
           fileName: fpath,
