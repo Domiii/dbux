@@ -1,14 +1,16 @@
-import { commands, ExtensionContext, window, workspace } from 'vscode';
+import { commands, ExtensionContext, TreeItemCollapsibleState, window, workspace } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
+import sleep from '@dbux/common/src/util/sleep';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
-import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import { emitSelectTraceAction } from '../userEvents';
 import { getRelatedAppIds } from '../codeDeco/editedWarning';
 import { showWarningMessage } from '../codeUtil/codeModals';
 import TraceDetailsDataProvider from './TraceDetailsNodeProvider';
 import { getOrCreateTracesAtCursor } from './TracesAtCursor';
 import ErrorTraceManager from './ErrorTraceManager';
+import { ExecutionsTDNodeContextValue } from './nodes/ExecutionsTDNodes';
+import { NavigationNodeContextValue } from './nodes/NavigationNode';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('traceDetailsController');
@@ -35,12 +37,24 @@ class TraceDetailsController {
     return this.treeDataProvider.treeView;
   }
 
-  // reveal treeView if any node exist
-  tryReveal() {
-    // try second node first to show the navigation buttons
-    const targetNode = this.treeDataProvider.rootNodes[1] || this.treeDataProvider.rootNodes[0];
-    if (targetNode) {
-      this.treeView.reveal(targetNode, { focus: true });
+  async setFocus() {
+    try {
+      const executionsTDNode = this.treeDataProvider.rootNodes.find(node => node.contextValue === ExecutionsTDNodeContextValue);
+      const navigationNode = this.treeDataProvider.rootNodes.find(node => node.contextValue === NavigationNodeContextValue);
+      if (executionsTDNode && navigationNode) {
+        if (executionsTDNode.collapsibleState === TreeItemCollapsibleState.Expanded) {
+          const selectedExecutionNode = executionsTDNode.getSelectedChildren();
+          await this.treeView.reveal(navigationNode, { select: true });
+          await sleep();
+          await this.treeView.reveal(selectedExecutionNode, { select: false });
+        }
+        else {
+          await this.treeView.reveal(navigationNode, { focus: true });
+        }
+      }
+    }
+    catch (err) {
+      logError(`Failed to focus on TraceTDView`, err.stack);
     }
   }
 
@@ -111,7 +125,7 @@ class TraceDetailsController {
     // add traceSelection event handler
     traceSelection.onTraceSelectionChanged((/* selected */) => {
       this.refresh();
-      this.tryReveal();
+      this.setFocus();
     });
   }
 

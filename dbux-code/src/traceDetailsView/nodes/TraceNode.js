@@ -29,8 +29,12 @@ export default class TraceNode extends BaseTreeViewNode {
     return allApplications.getById(applicationId).dataProvider;
   }
 
+  isSelected() {
+    return traceSelection.isSelected(this.trace);
+  }
+
   makeIconPath() {
-    return traceSelection.isSelected(this.trace) ? 'play.svg' : ' ';
+    return this.isSelected() ? 'play.svg' : ' ';
   }
 
   init() {
