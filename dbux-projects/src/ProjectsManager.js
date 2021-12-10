@@ -18,7 +18,7 @@ import ExerciseStatus from './dataLib/ExerciseStatus';
 import BackendController from './backend/BackendController';
 import PathwaysDataProvider from './dataLib/PathwaysDataProvider';
 import PracticeSessionState from './practiceSession/PracticeSessionState';
-import { initUserEvent, emitSessionFinishedEvent, emitPracticeSessionEvent, onUserEvent, emitUserEvent } from './userEvents';
+import { initUserEvents, emitSessionFinishedEvent, emitPracticeSessionEvent, onUserEvent, emitUserEvent } from './userEvents';
 import ExerciseDataProvider from './dataLib/ExerciseDataProvider';
 import initLang, { getTranslationScope } from './lang';
 import upload from './fileUpload';
@@ -120,11 +120,11 @@ export default class ProjectsManager {
     this._pkg = readPackageJson(this.config.dependencyRoot);
     this._sharedDependencyNamesToCheck = [
       ...this._sharedDependencyNames,
-      ...Object.entries(this._pkg.dependencies).
+      ...Object.entries(this._pkg.dependencies || EmptyObject).
         map(([name, version]) => `${name}@${version}`)
     ];
 
-    initUserEvent(this);
+    initUserEvents(this);
 
     // NOTE: This is for public API. To emit event in dbux-projects, register event in dbux-projects/src/userEvents.js and import it directly 
     this.onUserEvent = onUserEvent;

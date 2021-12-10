@@ -1,3 +1,6 @@
+// eslint-disable-next-line no-console
+console.log(`Starting #################...`);
+
 const { window } = require('vscode');
 
 global.window = window;
@@ -18,10 +21,15 @@ try {
 catch (err) {
   // eslint-disable-next-line no-console
   console.error(`Dbux extension initialization failed:`, err);
-  debugger;
   throw err;
 }
 module.exports = {
   activate: preActivate,
   deactivate
 };
+// module.exports = {
+//   activate() {
+//     console.log('hi this is Dbux');
+//   },
+//   deactivate
+// };

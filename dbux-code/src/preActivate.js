@@ -46,38 +46,47 @@ export function getActivatedState() {
  * @param {import('vscode').ExtensionContext} context
  */
 export default async function preActivate(context) {
-  registerErrorHandler();
+  let autoStart;
+  try {
+    registerErrorHandler();
 
-  initMemento(context);
-  await initInstallId();
-  initLogging();
-  initCodePath(context);
+    initMemento(context);
+    await initInstallId();
+    initLogging();
+    initCodePath(context);
 
-  await maybeSelectLanguage();
-  await initLang(mementoGet('dbux.language'));
+    await maybeSelectLanguage();
+    await initLang(mementoGet('dbux.language'));
 
-  // [debugging]
-  // await dialogController.getDialog('survey1').clear();
-  // await dialogController.getDialog('tutorial').clear();
-  // await getOrCreateProjectManager(context).pathwayDataProvider.reset();
+    // [debugging]
+    // await dialogController.getDialog('survey1').clear();
+    // await dialogController.getDialog('tutorial').clear();
+    // await getOrCreateProjectManager(context).pathwayDataProvider.reset();
 
-  commands.executeCommand('setContext', 'dbux.context.nodeEnv', process.env.NODE_ENV);
+    commands.executeCommand('setContext', 'dbux.context.nodeEnv', process.env.NODE_ENV);
 
-  // the following should ensures `doActivate` will be called at least once
-  const autoStart = (process.env.NODE_ENV === 'development') ||
-    workspace.getConfiguration('dbux').get('autoStart');
-  if (autoStart) {
-    await ensureActivate(context);
+    // the following should ensures `doActivate` will be called at least once
+    autoStart = (process.env.NODE_ENV === 'development') ||
+      workspace.getConfiguration('dbux').get('autoStart');
+    if (autoStart) {
+      await ensureActivate(context);
+    }
+    else {
+      initPreActivateView();
+      initPreActivateCommand(context);
+    }
+
+    // TODO: fix tutorial and initial survey
+    // const dialogController = initDialogController();
+    // await maybeStartTutorial(dialogController, context);
+    // await maybeContinueSurvey1(dialogController, context);
   }
-  else {
-    initPreActivateView();
-    initPreActivateCommand(context);
+  catch (err) {
+    logError(`DBUX activate FAILED (autoStart=${autoStart}) -`, err);
   }
-
-  // TODO: fix tutorial and initial survey
-  // const dialogController = initDialogController();
-  // await maybeStartTutorial(dialogController, context);
-  // await maybeContinueSurvey1(dialogController, context);
+  finally {
+    // log(`DBUX `);
+  }
 }
 
 async function doActivate(context) {
