@@ -71,7 +71,7 @@ export default class ExpressProject extends Project {
     */
   }
 
-  canRun(config) {
+  canRunExercise(config) {
     return !!config.testFilePaths;
   }
 

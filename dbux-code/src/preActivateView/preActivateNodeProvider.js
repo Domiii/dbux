@@ -23,8 +23,8 @@ let nodeProvider;
 export function initPreActivateView() {
   nodeProvider = new PreActivateNodeProvider();
 
-  // refresh right away
-  nodeProvider.refresh();
+  // // refresh right away
+  // nodeProvider.refresh();
 
   return nodeProvider;
 }

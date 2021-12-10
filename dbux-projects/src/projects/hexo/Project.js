@@ -10,7 +10,7 @@ export default class HexoProject extends Project {
 
   packageManager = 'yarn';
 
-  canRun(config) {
+  canRunExercise(config) {
     return !!config.testFilePaths;
   }
 

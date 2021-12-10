@@ -27,7 +27,7 @@ export default class EslintProject extends Project {
     await this.exec('bash -c "echo ""dist"" >> .gitignore"');
   }
 
-  canRun(config) {
+  canRunExercise(config) {
     return !!config.testFilePaths;
   }
 

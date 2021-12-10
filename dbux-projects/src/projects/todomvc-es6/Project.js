@@ -13,9 +13,9 @@ export default class TodomvcEs6Project extends Project {
   gitTargetRef = 'v1';
   // gitCommit = 'fed8e56';
 
-  rmFiles = [
-    'package.json'
-  ];
+  // rmFiles = [
+  //   'package.json'
+  // ];
 
   get actualProjectRoot() {
     return pathResolve(this.projectPath, RelativeRoot);
@@ -54,7 +54,8 @@ export default class TodomvcEs6Project extends Project {
    */
   decorateExerciseForRun(exercise) {
     // fix relative file paths
-    exercise.mainEntryPoint = this.builder.getEntryOutputPath('bundle', exercise);
+    // exercise.mainEntryPoint = this.builder.getEntryOutputPath('bundle', exercise);
+    exercise.mainEntryPoint = pathResolve(this.projectPath, 'src/app.js');
     if (exercise.bugLocations) {
       exercise.bugLocations = exercise.bugLocations.map(loc => (loc && {
         ...loc,

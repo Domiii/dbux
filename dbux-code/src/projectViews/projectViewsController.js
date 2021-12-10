@@ -234,8 +234,8 @@ export class ProjectViewController {
   }
 
   async testBug(inputCfg) {
-    const { exercise: bug } = this.manager.practiceSession;
-    const title = `Bug ${`"${bug.label}"` || ''} (${bug.id})`;
+    const { exercise } = this.manager.practiceSession;
+    const title = `Exercise ${`"${exercise.label}"` || ''} (${exercise.id})`;
     await this.runProjectTask(title, async (report) => {
       // TOTRANSLATE
       report({ message: 'Running test...' });

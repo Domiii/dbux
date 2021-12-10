@@ -25,7 +25,7 @@ function makeArrayLengthLabel(arr, label) {
 
 export default class GlobalDebugNode extends BaseTreeViewNode {
   static makeLabel(/*app, parent*/) {
-    return `Debug (App)`;
+    return `Debug`;
   }
 
   get collapseChangeUserActionType() {

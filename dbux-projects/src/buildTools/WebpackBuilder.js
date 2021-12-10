@@ -86,7 +86,7 @@ class WebpackBuilder {
       'clean-webpack-plugin': '^4'
     };
     if (this.needsDevServer) {
-      deps['webpack-dev-server'] = '^3';
+      deps['webpack-dev-server'] = '^4';
     }
     await this.project.installPackages(deps, shared);
   }

@@ -101,12 +101,12 @@ export default class ProgramMonitor {
   // ###########################################################################
 
   pushImmediate = (inProgramStaticContextId, inProgramStaticTraceId, definitionTid, isInterruptable) => {
+    const tracesDisabled = this.areTracesDisabled;
     if (!this.incBusy()) {
       return 0;
     }
 
     try {
-      const tracesDisabled = this.areTracesDisabled;
       return this._runtimeMonitor.pushImmediate(
         this.getProgramId(),
         inProgramStaticContextId,

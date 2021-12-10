@@ -14,13 +14,19 @@ const { log, debug, error: logError } = console;
 const execCaptureOut = (cmd, options) => Process.execCaptureOut(cmd, options, logger);
 const exec = (cmd, options) => Process.exec(cmd, options, logger);
 
+/** ###########################################################################
+ * {@link parseLernaVersion}
+ *  #########################################################################*/
+
 function parseLernaVersion() {
   const lerna = readLernaJson();
   if (!lerna.version) {
     throw new Error('lerna.json does not have a version.');
   }
-
+  
   let { version } = lerna;
+  
+  // future-work: just use `semver` instead
 
   // NOTE: we cannot roll with the current "dev" build version since we depend on the version to be available on the `npm` registry
   // so we must downgrade!
@@ -35,14 +41,25 @@ function parseLernaVersion() {
   return [version, maj, min, pat, release];
 }
 
+/** ###########################################################################
+ * {@link setVersion}
+ *  #########################################################################*/
+
 async function setVersion(version) {
-  await exec(`npx lerna version ${version} --yes --no-changelog --no-git-tag-version --no-push`);
+  /**
+   * @see https://github.com/lerna/lerna/tree/main/commands/version
+   */
+  await exec(`npx lerna version ${version} --yes --no-private --no-changelog --no-git-tag-version --no-push`);
   
   const lernaVersion = readLernaJson().version;
   if (lernaVersion !== version) {
     throw new Error(`Revert failed. Expected: ${version} - found: ${lernaVersion}`);
   }
 }
+
+/** ###########################################################################
+ * {@link downgradeProdVersion}
+ *  #########################################################################*/
 
 async function downgradeProdVersion() {
   let [version, maj, min, pat, release] = parseLernaVersion();
@@ -65,6 +82,10 @@ async function downgradeProdVersion() {
     // NOTE: if there is no "dev" version, there is no need to downgrade
   }
 }
+
+/** ###########################################################################
+ * {@link revertToDevVersion}
+ *  #########################################################################*/
 
 async function revertToDevVersion() {
   let [version, maj, min, pat, release] = parseLernaVersion();

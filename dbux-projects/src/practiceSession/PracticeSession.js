@@ -72,9 +72,9 @@ export default class PracticeSession {
    * Activate bug, run the test and process the result
    * @param {Object} inputCfg 
    */
-  async testExercise(inputCfg = EmptyObject) {
+  async testExercise(inputCfg = {}) {
     const { exercise: bug } = this;
-    const result = await this.manager.switchAndTestBug(bug, inputCfg);
+    await this.manager.switchAndTestBug(bug, inputCfg);
     // this.maybeUpdateBugStatusByResult(result);
 
     // NOTE: `BugRunner.testBug` returns invalid code, disable the function for now

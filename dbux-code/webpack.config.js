@@ -27,10 +27,13 @@ module.exports = (env, argv) => {
     DBUX_VERSION,
     DBUX_ROOT
   } = webpackCommon('dbux-runtime', mode);
-  
-  const outputFolderName = 'dist';
 
+
+  // TODO: bring back optimization later
+  const ForceNoOptimization = true;
+  const outputFolderName = 'dist';
   const aggregateTimeout = mode === 'development' ? 200 : 3000;
+
 
   const webpackPlugins = [
     new webpack.EnvironmentPlugin({
@@ -47,11 +50,12 @@ module.exports = (env, argv) => {
           from: path.join(MonoRoot, 'dbux-projects', 'assets'),
           to: path.join(MonoRoot, 'dbux-code', 'resources', 'dist', 'projects')
         },
-        {
-          force: true,
-          from: path.join(MonoRoot, 'node_modules/firebase'),
-          to: path.join(MonoRoot, 'dbux-code', 'resources', 'dist', 'node_modules', 'firebase')
-        }
+        // TODO: bring firebase back in, if we decide to use it
+        // {
+        //   force: true,
+        //   from: path.join(MonoRoot, 'node_modules/firebase'),
+        //   to: path.join(MonoRoot, 'dbux-code', 'resources', 'dist', 'node_modules', 'firebase')
+        // }
       ]
     }),
     msgPackPlugin()
@@ -111,18 +115,25 @@ module.exports = (env, argv) => {
     }
   ];
 
-  // see https://v4.webpack.js.org/guides/production/#minification
-  const optimization = mode !== 'production' ? undefined : {
-    minimize: true,
-    minimizer: [
-      new TerserPlugin({
-        terserOptions: {
-          keep_classnames: true,
-          // keep_fnames: true
-        }
-      })
-    ]
-  };
+  // see https://webpack.js.org/guides/production/#minification
+  // eslint-disable-next-line no-nested-ternary
+  const optimization = mode !== 'production' ?
+    undefined :
+    ForceNoOptimization ?
+      {
+        minimize: false
+      } :
+      {
+        minimize: true,
+        minimizer: [
+          new TerserPlugin({
+            terserOptions: {
+              keep_classnames: true,
+              // keep_fnames: true
+            }
+          })
+        ]
+      };
 
   return {
     watchOptions: {
@@ -139,8 +150,8 @@ module.exports = (env, argv) => {
     plugins: webpackPlugins,
     context: path.join(projectRoot, '.'),
     entry: {
-      bundle: path.join(projectRoot, 'src/_includeIndex.js'),
-      _dbux_run: path.join(projectRoot, 'resources/src/_dbux_run.js')
+      bundle: path.join(projectRoot, 'src/index.js'),
+      // _dbux_run: path.join(projectRoot, 'resources/src/_dbux_run.js')
     },
     output: {
       path: path.join(projectRoot, outputFolderName),
@@ -169,6 +180,7 @@ module.exports = (env, argv) => {
       __dirname: false,
       __filename: false,
     },
+
     optimization
   };
 };

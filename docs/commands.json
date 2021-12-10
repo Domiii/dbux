@@ -50,6 +50,11 @@
     "description": ""
   },
   {
+    "command": "dbux.importApplicationData",
+    "title": "Dbux: Import Application Data",
+    "description": ""
+  },
+  {
     "command": "dbux.loadPracticeLogFile",
     "title": "Dbux Dev:Load Practice Log",
     "description": ""
@@ -57,6 +62,11 @@
   {
     "command": "dbux.openPracticeLogFolder",
     "title": "Dbux: Open Practice Log Folder",
+    "description": ""
+  },
+  {
+    "command": "dbux.reloadExerciseList",
+    "title": "Dbux: Reload Exercise List",
     "description": ""
   },
   {
@@ -152,6 +162,31 @@
   {
     "command": "dbuxProjectView.showDiff",
     "title": "Show difference",
+    "description": ""
+  },
+  {
+    "command": "dbuxSessionView.flushCache",
+    "title": "Dbux Project: Flush cache",
+    "description": ""
+  },
+  {
+    "command": "dbuxSessionView.run",
+    "title": "Dbux Project: Run without dbux",
+    "description": ""
+  },
+  {
+    "command": "dbuxSessionView.run#dbux",
+    "title": "Dbux Project: Run with dbux",
+    "description": ""
+  },
+  {
+    "command": "dbuxSessionView.run#debug",
+    "title": "Dbux Project: Run without dbux in debug mode",
+    "description": ""
+  },
+  {
+    "command": "dbuxSessionView.run#debug#dbux",
+    "title": "Dbux Project: Run with dbux in debug mode",
     "description": ""
   },
   {

@@ -9,7 +9,7 @@ export default class AsyncJsProject extends Project {
   gitCommit = 'tags/v3.2.0'
   packageManager = 'yarn';
 
-  canRun(config) {
+  canRunExercise(config) {
     return !!config.testFilePaths;
   }
 

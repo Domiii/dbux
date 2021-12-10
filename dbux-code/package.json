@@ -592,7 +592,7 @@
       },
       {
         "command": "dbuxProjectView.node.showWebsite",
-        "title": "Show website",
+        "title": "Show Website",
         "icon": {
           "light": "resources/light/boolean.svg",
           "dark": "resources/dark/boolean.svg"
@@ -600,7 +600,7 @@
       },
       {
         "command": "dbuxProjectView.node.showExerciseIntroduction",
-        "title": "Show introduction",
+        "title": "Show Exercise Introduction",
         "icon": {
           "light": "resources/light/question.svg",
           "dark": "resources/dark/question.svg"
@@ -1229,7 +1229,6 @@
           "command": "dbuxTraceDetailsView.node.showError.disabled",
           "when": "false"
         },
-        
         {
           "command": "dbuxTraceDetailsView.node.editedWarning",
           "when": "false"
@@ -1444,14 +1443,18 @@
     "test": "node ./test/runTest.js",
     "build:clean": "rm -rf ./dist ./public ./resources/dist && rm -rf *.vsix",
     "vscode:prepublish": "",
-    "uninstallself": "code --uninstall-extension Domi.dbux-code",
-    "reinstallself": "yarn run uninstallself --silent ; files=(*.vsix); code --install-extension \"${files[0]}\" && echo 'DBUX installed. >Developer: Reload Window< to see it.'",
+    "uninstallself": "bash ../scripts/code-uninstall.sh",
+    "reinstallself": "yarn uninstallself && bash ../scripts/code-install.sh",
     "readme": "echo 'Updating README.md...' && node ../scripts/replaceReadmeAnnotations.js",
-    "package-no-build": "rm -rf *.vsix && yarn run readme && echo 'Packaging...' && vsce package --yarn",
-    "package:analyze": "cd .. && yarn run build:prod && cd dbux-code && yarn run package-no-build && mkdir public && mv *.vsix public && cd public && 7z x -o\"contents\" *.vsix",
-    "package:publish-no-build": "yarn run package-no-build && yarn run publish-only",
-    "publish-only": "echo 'Publishing...' && vsce publish --yarn",
-    "watch": "node ../node_modules/webpack/bin/webpack.js --watch"
+    "watch": "node ../node_modules/webpack/bin/webpack.js watch",
+    "build+pkg": "yarn build:prod && yarn package-no-build ",
+    "build:dev": "node ../node_modules/webpack/bin/webpack.js build --mode=development",
+    "build:prod": "node ../node_modules/webpack/bin/webpack.js build --mode=production",
+    "package-no-build": "rm -rf *.vsix && yarn readme && echo 'Packaging...' && vsce package --yarn",
+    "package:build+pkg+analyze": "yarn build+pkg && yarn package:pkg+analyze",
+    "package:pkg+analyze": "yarn package-no-build && mkdir _analysis && mv *.vsix _analysis && cd _analysis && 7z x -o\"contents\" *.vsix",
+    "publish-no-build": "yarn package-no-build && yarn publish-only",
+    "publish-only": "echo 'Publishing...' && vsce publish --yarn"
   },
   "devDependencies": {
     "@dbux/babel-plugin": "^0.4.4-dev.0",
@@ -1464,15 +1467,17 @@
     "@dbux/projects": "^0.4.4-dev.0",
     "@dbux/runtime": "^0.4.4-dev.0",
     "@types/glob": "^7.1.1",
-    "@types/mocha": "^5.2.7",
-    "@types/node": "^12.11.7",
+    "@types/node": "^16",
     "@types/vscode": "^1.41.0",
+    "firebase": "^9",
     "glob": "^7.1.5",
+    "i18next": "^19.8.2",
+    "lockfile": "^1.0.4",
     "lodash": "^4.17.21",
-    "mocha": "^6.2.2",
     "moment": "^2.24.0",
     "nanoevents": "^2.0.0",
     "open": "^7.1.0",
+    "serialize-javascript": "^5.0.1",
     "socket.io": "^4",
     "socket.io-msgpack-parser": "^3.0.1",
     "strip-color": "^0.1.0",
@@ -1480,13 +1485,6 @@
     "uuid": "^8.3.0",
     "vsce": "*",
     "vscode-test": "^1.2.2"
-  },
-  "dependencies": {
-    "firebase": "^9",
-    "i18next": "^19.8.2",
-    "lockfile": "^1.0.4",
-    "serialize-javascript": "^5.0.1",
-    "vsce": "^1.85.0"
   },
   "_moduleAliases": {}
 }

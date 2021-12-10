@@ -65,7 +65,7 @@ export default class SequelizeProject extends Project {
     this._fixPackageJson();
   }
 
-  canRun(config) {
+  canRunExercise(config) {
     return !!config.testFilePaths;
   }
 

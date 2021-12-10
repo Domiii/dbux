@@ -73,7 +73,7 @@ export default class TerminalWrapper {
     tmpFolder = pathNormalizedForce(tmpFolder);
 
     const pathToNode = pathNormalizedForce(await getPathToNode());
-    const pathToDbuxRun = pathNormalizedForce(getResourcePath('../dist/_dbux_run.js'));
+    const pathToDbuxRun = pathNormalizedForce(getResourcePath('src/_dbux_run.js'));
 
     // serialize everything
     const runJsargs = { cwd, command, options, tmpFolder };

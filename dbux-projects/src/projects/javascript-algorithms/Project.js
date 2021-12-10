@@ -16,7 +16,7 @@ export default class JavascriptAlgorithmProject extends Project {
 
   };
 
-  canRun(config) {
+  canRunExercise(config) {
     return !!config.testFilePaths;
   }
 

@@ -15,7 +15,7 @@ export default class NodeFetchProject extends Project {
 
   packageManager = 'yarn';
 
-  canRun(config) {
+  canRunExercise(config) {
     return !!config.testFilePaths;
   }
 

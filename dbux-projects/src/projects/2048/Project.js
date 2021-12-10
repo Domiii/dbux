@@ -18,11 +18,11 @@ export default class _2048Project extends Project {
   }
 
   async afterInstall() {
-    // NOTE: we need to expose all globals manually, since there is no easy way to workaround that problem with Webpack
-    await this.applyPatch('baseline');
-
     await this.execInTerminal('npm init -y');
     // await this.autoCommit(); // NOTE: autoCommit is called right after this method
+
+    // NOTE: we need to expose all globals manually, since there is no easy way to workaround that problem with Webpack
+    await this.applyPatch('baseline');
   }
 
   decorateExercise(config) {

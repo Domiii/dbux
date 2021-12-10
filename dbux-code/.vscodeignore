@@ -2,7 +2,6 @@
 
 .vscode/**
 .vscode-test/**
-.gitignore
 vsc-extension-quickstart.md
 **/jsconfig.json
 **/*.map
@@ -11,7 +10,10 @@ node_modules/**
 src/**
 test/**
 public/**
+_analysis
 *.vsix
 webpack.config.js
 logs/**
 dbux_projects/**
+userdata
+dataFolder.lnk
