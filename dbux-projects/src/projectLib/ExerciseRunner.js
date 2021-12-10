@@ -259,7 +259,8 @@ export default class ExerciseRunner {
         });
         const successful = await this.manager.externals.openWebsite(website);
         if (successful) {
-          await waitForNewAppPromise;
+          // NOTE: this used to work fine, but now, the promise never resolves. Maybe a recent VSCode bug.
+          // await waitForNewAppPromise;
         }
         else {
           this.logger.warn(`Cannot open website ${website}`);

@@ -162,7 +162,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
         throw new Error(`Invalid devServer config (must be true, object or function) - ${JSON.stringify(devServerCfg)}`);
       }
       devServer = mergeConcatArray(devServer, devServerOverrides);
-      // console.warn('devServer', JSON.stringify(devServer, null, 2));
+      console.warn('devServer', JSON.stringify(devServer, null, 2));
     }
 
     // ###########################################################################

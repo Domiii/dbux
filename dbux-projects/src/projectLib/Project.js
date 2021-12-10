@@ -745,6 +745,9 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     if (!await this.gitDoesTagExist(installedTag)) {
       this.log(`Installing...`);
 
+      // delete unwanted files right away
+      await this.deleteAssets();
+
       // install dbux dependencies
       await this.manager.installDependencies();
 
@@ -841,7 +844,9 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
     // copy assets
     await this.installAssets(exercise);
-    await project.npmInstall();
+    if (successfulCacheFlag) {
+      await project.npmInstall();
+    }
     await project.autoCommit(`Installed assests.`);
   }
 
@@ -959,7 +964,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       await this._gitResetAndCheckout(installedTag);
       await this.npmInstall(); // NOTE: node_modules are not affected by git reset or checkout
 
-      // make sure, there are no unwanted changes kicking around
+      // make sure, there are no unwanted changes kicking around after install
       await this._gitResetAndCheckout(installedTag);
     }
 
@@ -1042,9 +1047,13 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     }
   }
 
+  getNpmInstallFolder() {
+    return this.projectPath;
+  }
+
   async npmInstall() {
     if (this.preferredPackageManager === 'yarn') {
-      await this.execInTerminal('yarn install');
+      await this.execInTerminal('yarn install', { cwd: this.getNpmInstallFolder() });
     }
     else {
       // await this.exec('npm cache verify');
@@ -1052,7 +1061,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       //      see: https://npm.community/t/need-to-run-npm-install-twice/3920
       //      Sometimes running it a second time after checking out a different branch 
       //      deletes all node_modules. The second run brings everything back correctly (for now).
-      await this.execInTerminal(`npm install && npm install`);
+      await this.execInTerminal(`npm install && npm install`, { cwd: this.getNpmInstallFolder() });
     }
   }
 
@@ -1064,10 +1073,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   // assets
   // ###########################################################################
 
-  /**
-   * Copy all assets into project folder.
-   */
-  async installAssets(exercise = null) {
+  async deleteAssets() {
     // remove unwanted files
     let { projectPath, rmFiles } = this;
     if (rmFiles?.length) {
@@ -1080,7 +1086,12 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       this.logger.warn('Removing files:', absRmFiles.join(','));
       rm('-rf', absRmFiles);
     }
+  }
 
+  /**
+   * Copy all assets into project folder.
+   */
+  async installAssets(exercise = null) {
     // copy project assets
     const projectAssetsFolders = this.getAllAssetFolderPaths();
     projectAssetsFolders.forEach(folderName => {
@@ -1285,9 +1296,10 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
   /**
    * Use this to create bug patches.
-   * 
+   *
    * git diff --color=never > patchName.patch
-   * git diff --color=never --ignore-cr-at-eol | unix2dos > ../../dbux-projects/assets/_patches_/X/baseline.patch
+   * cd dbux_projects/X
+   * git diff --color=never --ignore-cr-at-eol | unix2dos > ../../dbux-projects/assets/patches/X/error1.patch
    */
   async getPatchString() {
     await this.checkCorrectGitRepository();

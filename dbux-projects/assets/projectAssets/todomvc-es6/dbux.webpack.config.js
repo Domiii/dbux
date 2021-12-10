@@ -1,6 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+// const HtmlWebpackPlugin = require('html-webpack-plugin');
 const buildWebpackConfig = require('./dbux.webpack.config.base');
 
 
@@ -10,7 +10,9 @@ const ProjectRoot = path.resolve(__dirname);
 const customCfg = {
   target: 'web',
   devServer: {
-    publicPath: '/'
+    devMiddleware: {
+      publicPath: '/'
+    }
   }
 };
 

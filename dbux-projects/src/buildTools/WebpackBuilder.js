@@ -62,6 +62,10 @@ class WebpackBuilder {
     return !!websitePort;
   }
 
+  get needsHtmlPlugin() {
+    return this.cfg.htmlPlugin;
+  }
+
   /**
    * WebpackBuilder already instruments and injects dbux.
    * `runCommand` should not use @dbux/cli.
@@ -87,6 +91,9 @@ class WebpackBuilder {
     };
     if (this.needsDevServer) {
       deps['webpack-dev-server'] = '^4';
+    }
+    if (this.needsHtmlPlugin) {
+      deps['html-webpack-plugin'] = '^5';
     }
     await this.project.installPackages(deps, shared);
   }

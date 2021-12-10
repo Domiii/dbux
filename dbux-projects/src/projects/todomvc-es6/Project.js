@@ -13,39 +13,51 @@ export default class TodomvcEs6Project extends Project {
   gitTargetRef = 'v1';
   // gitCommit = 'fed8e56';
 
-  // rmFiles = [
-  //   'package.json'
-  // ];
+  rmFiles = [
+  ];
 
-  get actualProjectRoot() {
+  get srcRoot() {
     return pathResolve(this.projectPath, RelativeRoot);
   }
 
+  getNpmInstallFolder() {
+    return this.srcRoot;
+  }
+
   getAbsoluteFilePath(fpath) {
-    return pathResolve(this.actualProjectRoot, fpath);
+    return pathResolve(this.srcRoot, fpath || '');
   }
 
   makeBuilder() {
-    const projectRoot = this.actualProjectRoot;
+    const projectRoot = this.srcRoot;
     return new WebpackBuilder({
       websitePort: 3842,
-      projectRoot,
+      projectRoot, // NOTE: this is also used as `context`
       // websitePath: ,
-      // context: this.actualProjectRoot,
+      // context: this.srcRoot,
       entry: {
         bundle: 'src/app.js',
         // vendor: ['todomvc-app-css/index.css'],
       },
+      htmlPlugin: true,
       webpackConfig: {
         devServer: {
-          contentBase: [projectRoot]
+          devMiddleware: {
+            publicPath: '/'
+          },
+          static: [
+            {
+              directory: projectRoot, //.replace(/\//g, '\\'),
+              publicPath: '/'
+            }
+          ]
         }
       }
     });
   }
 
   async afterInstall() {
-    await this.applyPatch('baseline');
+    // await this.applyPatch('baseline');
   }
 
   /**
