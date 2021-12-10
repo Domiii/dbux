@@ -44,6 +44,11 @@ class TraceDetailsController {
       if (executionsTDNode && navigationNode) {
         if (executionsTDNode.collapsibleState === TreeItemCollapsibleState.Expanded) {
           const selectedExecutionNode = executionsTDNode.getSelectedChildren();
+          /**
+           * We have to select `NavigationNode` manually to show the buttons, VSCode API does not support persistant buttons
+           * @see https://github.com/microsoft/vscode/issues/78829
+           * NOTE: we can call the command `${this.treeDataProvider.treeViewName}.focus` to only show view but not the nodes.
+           */
           await this.treeView.reveal(navigationNode, { select: true });
           await sleep();
           await this.treeView.reveal(selectedExecutionNode, { select: false });
