@@ -5,6 +5,7 @@ import traceSelection from '@dbux/data/src/traceSelection/index';
 import { makeContextLocLabel, makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
 import AsyncNodeDataMap from '@dbux/graph-common/src/graph/types/AsyncNodeDataMap';
 import GraphType from '@dbux/graph-common/src/shared/GraphType';
+import StackMode from '@dbux/graph-common/src/shared/StackMode';
 import GraphBase from '../GraphBase';
 
 /** @typedef {import('@dbux/data/src/applications/Application').default} Application */
@@ -26,7 +27,8 @@ class AsyncGraph extends GraphBase {
   }
 
   shouldBeEnabled() {
-    if (this.context.graphDocument.state.graphMode === GraphType.AsyncGraph) {
+    const { graphMode, stackMode } = this.context.graphDocument.state;
+    if (graphMode === GraphType.AsyncGraph && stackMode !== StackMode.FullScreen) {
       return true;
     }
     else {
@@ -235,15 +237,6 @@ class AsyncGraph extends GraphBase {
       nodeData.widthUp = Math.max(widthUp, 1);
     }
     return nodeData.widthUp;
-  }
-
-  makeApplicationState(apps = EmptyArray) {
-    const applications = apps.map(app => ({
-      applicationId: app.applicationId,
-      entryPointPath: app.entryPointPath,
-      name: app.getPreferredName()
-    }));
-    return { applications };
   }
 
   /**
