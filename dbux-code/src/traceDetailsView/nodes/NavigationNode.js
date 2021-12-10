@@ -34,6 +34,8 @@ const defaultMethods = {
 
 export { NavigationMethods };
 
+export const NavigationNodeContextValue = 'dbuxTraceDetailsView.navigationNode';
+
 export default class NavigationNode extends BaseTreeViewNode {
   static makeLabel(/* trace, parent */) {
     return '';
@@ -48,7 +50,7 @@ export default class NavigationNode extends BaseTreeViewNode {
   }
 
   init() {
-    this.contextValue = 'dbuxTraceDetailsView.navigationNode';
+    this.contextValue = NavigationNodeContextValue;
   }
 
   canHaveChildren() {
