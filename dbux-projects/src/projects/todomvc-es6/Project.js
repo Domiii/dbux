@@ -13,9 +13,9 @@ export default class TodomvcEs6Project extends Project {
   gitTargetRef = 'v1';
   // gitCommit = 'fed8e56';
 
-  rmFiles = [
-    'package.json'
-  ];
+  // rmFiles = [
+  //   'package.json'
+  // ];
 
   get actualProjectRoot() {
     return pathResolve(this.projectPath, RelativeRoot);
