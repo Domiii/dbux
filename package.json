@@ -50,7 +50,7 @@
     "webpack": "^5",
     "webpack-bundle-analyzer": "^4",
     "webpack-cli": "^4",
-    "webpack-dev-server": "^3",
+    "webpack-dev-server": "^4",
     "webpack-node-externals": "^3"
   },
   "dependencies": {

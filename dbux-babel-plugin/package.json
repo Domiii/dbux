@@ -1,5 +1,6 @@
 {
   "name": "@dbux/babel-plugin",
+  "private": true,
   "version": "0.4.4-dev.0",
   "description": "",
   "author": "Domi",
