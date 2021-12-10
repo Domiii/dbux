@@ -3,7 +3,7 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import { makeTraceLabel, makeTraceLocLabel } from '@dbux/data/src/helpers/makeLabels';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
+import BaseTreeViewNode from './BaseTreeViewNode';
 
 export default class TraceNode extends BaseTreeViewNode {
   get clickUserActionType() {

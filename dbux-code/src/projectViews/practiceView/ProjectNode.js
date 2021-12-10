@@ -1,6 +1,6 @@
 import Project from '@dbux/projects/src/projectLib/Project';
 import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
-import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
+import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 import ExerciseNode from './ExerciseNode';
 import { runTaskWithProgressBar } from '../../codeUtil/runTaskWithProgressBar';
 import { showInformationMessage } from '../../codeUtil/codeModals';

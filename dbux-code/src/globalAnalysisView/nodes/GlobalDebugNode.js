@@ -7,7 +7,7 @@ import { makeContextLabel, makeContextLocLabel, makeTraceLabel } from '@dbux/dat
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import makeTreeItem, { makeTreeItems } from '../../helpers/makeTreeItem';
-import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
+import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 

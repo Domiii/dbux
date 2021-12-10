@@ -1,5 +1,5 @@
 import allApplications from '@dbux/data/src/applications/allApplications';
-import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
+import BaseTreeViewNode from '../codeUtil/treeView/BaseTreeViewNode';
 
 /** @typedef {import('@dbux/data/src/applications/Application').default} Application */
 

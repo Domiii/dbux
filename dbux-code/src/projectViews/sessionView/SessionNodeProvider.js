@@ -1,5 +1,5 @@
-import BaseTreeViewNodeProvider from '../../codeUtil/BaseTreeViewNodeProvider';
-import EmptyTreeViewNode from '../../codeUtil/EmptyTreeViewNode';
+import BaseTreeViewNodeProvider from '../../codeUtil/treeView/BaseTreeViewNodeProvider';
+import EmptyTreeViewNode from '../../codeUtil/treeView/EmptyNode';
 import { getActionNodeClasses } from './ActionNodes';
 
 /** @typedef {import('../projectViewsController').ProjectViewController} ProjectViewController */

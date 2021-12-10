@@ -1,4 +1,4 @@
-import BaseTreeViewNodeProvider from '../codeUtil/BaseTreeViewNodeProvider';
+import BaseTreeViewNodeProvider from '../codeUtil/treeView/BaseTreeViewNodeProvider';
 import { ActivateNode } from './ActivateNode';
 
 class PreActivateNodeProvider extends BaseTreeViewNodeProvider {

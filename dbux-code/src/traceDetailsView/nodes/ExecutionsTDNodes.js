@@ -5,9 +5,9 @@ import { makeTraceLabel, makeTraceValueLabel, makeCallValueLabel, makeContextLab
 import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import { isCallbackRelatedTrace } from '@dbux/common/src/types/constants/TraceType';
-import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
+import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 import { emitSelectTraceAction } from '../../userEvents';
-import TraceNode from './TraceNode';
+import TraceNode from '../../codeUtil/treeView/TraceNode';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 

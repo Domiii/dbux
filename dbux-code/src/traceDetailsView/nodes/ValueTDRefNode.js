@@ -1,5 +1,5 @@
 import allApplications from '@dbux/data/src/applications/allApplications';
-import EmptyTreeViewNode from '../../codeUtil/EmptyTreeViewNode';
+import EmptyTreeViewNode from '../../codeUtil/treeView/EmptyNode';
 import ValueNode, { ValueLabel } from './ValueNode';
 import ValueTDSimpleNode from './ValueTDSimpleNode';
 

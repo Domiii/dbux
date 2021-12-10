@@ -1,8 +1,8 @@
 import { TreeItemCollapsibleState, TreeItem } from 'vscode';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import TraceNode from './TraceNode';
-import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
+import TraceNode from '../../codeUtil/treeView/TraceNode';
+import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 
 export default class StaticContextTDNode extends BaseTreeViewNode {
   static makeProperties(trace/* , parent, props */) {

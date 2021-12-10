@@ -1,5 +1,5 @@
 import { isPassedTypes } from '@dbux/projects/src/dataLib/ExerciseStatus';
-import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
+import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 import ExerciseNode from './ExerciseNode';
 
 /** @typedef {import('@dbux/projects/src/projectLib/Chapter').default} Chapter */

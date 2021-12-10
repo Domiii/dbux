@@ -5,7 +5,7 @@ import { makeRootTraceLabel } from '@dbux/data/src/helpers/makeLabels';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import ContextNode from './ContextNode';
 import ErrorNode from './ErrorNode';
-import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
+import BaseTreeViewNode from '../codeUtil/treeView/BaseTreeViewNode';
 
 export default class CallRootNode extends BaseTreeViewNode {
   /**
