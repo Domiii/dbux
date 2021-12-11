@@ -93,6 +93,10 @@ export default class ParseStack {
   // push + pop
   // ###########################################################################
 
+  /**
+   * @param {*} ParseNodeClazz 
+   * @param {ParseNode} newNode 
+   */
   push(ParseNodeClazz, newNode) {
     const { name } = ParseNodeClazz;
     if (!name) {

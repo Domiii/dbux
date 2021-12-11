@@ -4,12 +4,13 @@ const path = require('path');
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
-const webpackCommon = require('../config/webpack.config.common');
+const TerserPlugin = require('terser-webpack-plugin');
 // const fromEntries = require('object.fromentries');    // NOTE: Object.fromEntries was only added in Node v12
 const {
   makeResolve,
   makeAbsolutePaths
 } = require('../dbux-cli/lib/package-util');
+const webpackCommon = require('../config/webpack.config.common');
 
 // register self, so we can load dbux src files
 require('../scripts/dbux-register-self');
@@ -21,7 +22,9 @@ const PackageRoot = path.resolve(__dirname);
 // const projectConfig = path.resolve(projectRoot, 'config');
 const MonoRoot = path.resolve(__dirname, '..');
 
+
 module.exports = (env, argv) => {
+  const ForceNoOptimization = false;
   const outputFolderName = 'dist';
   const mode = argv.mode || 'development';
 
@@ -85,6 +88,25 @@ module.exports = (env, argv) => {
 
   console.warn('[dbux-babel-plugin] entry:', JSON.stringify(entry, null, 2));
 
+  // eslint-disable-next-line no-nested-ternary
+  const optimization = mode !== 'production' ?
+    undefined :
+    ForceNoOptimization ?
+      {
+        minimize: false
+      } :
+      {
+        minimize: true,
+        minimizer: [
+          new TerserPlugin({
+            terserOptions: {
+              keep_classnames: true,
+              // keep_fnames: true
+            }
+          })
+        ]
+      };
+
 
   return {
     watchOptions: {
@@ -113,7 +135,8 @@ module.exports = (env, argv) => {
     module: {
       rules
     },
-
+    
+    optimization,
     // // NOTE: the following generates chunks correctly; however the chunks are not imported in the entries...
     // // "all is not supported on Node in Webpack 4"
     // // It is fixed in 5.0.0-alpha.13.

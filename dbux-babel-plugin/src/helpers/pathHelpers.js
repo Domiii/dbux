@@ -22,7 +22,7 @@ export function pathToString(path, addLoc = false, MaxLen = 100) {
   let s = astNodeToString(path.node, MaxLen);
   if (addLoc) {
     if (path.node.loc) {
-    s = `${s} @${locToString(path.node.loc)}`;
+      s = `${s} @${locToString(path.node.loc)}`;
     }
     else {
       s = `${s} @(no loc)`;

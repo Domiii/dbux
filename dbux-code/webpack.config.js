@@ -1,5 +1,4 @@
 /* eslint no-console: 0 */
-
 const path = require('path');
 // const process = require('process');
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
@@ -10,7 +9,6 @@ const {
   makeResolve,
   makeAbsolutePaths
 } = require('../dbux-cli/lib/package-util');
-
 const webpackCommon = require('../config/webpack.config.common');
 
 const { msgPackPlugin } = webpackCommon;
@@ -30,7 +28,7 @@ module.exports = (env, argv) => {
 
 
   // TODO: bring back optimization later
-  const ForceNoOptimization = true;
+  const ForceNoOptimization = false;
   const outputFolderName = 'dist';
   const aggregateTimeout = mode === 'development' ? 200 : 3000;
 
