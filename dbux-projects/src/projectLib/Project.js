@@ -520,6 +520,9 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       //   });
       // });
 
+      // show output channel (if there is any)
+      this.manager.externals.showOutputChannel();
+
       // start
       const backgroundProcess = await this.startWatchMode(exercise).catch(err => {
         // this.logger.error('startWatchMode failed -', err?.stack || err);
@@ -686,7 +689,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   // ###########################################################################
 
   async ensurePackageJson() {
-    const cwd = this.projectPath;
+    const cwd = this.packageJsonFolder;
     if (!sh.test('-f', path.join(cwd, 'package.json'))) {
       await this.exec('npm init -y', { cwd });
     }
@@ -702,7 +705,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     //       -> That is why we choose `dependencyRoot` instead
 
     // NOTE: we don't do shared for now.
-    const cwd = shared ? this.sharedRoot : this.projectPath;
+    const cwd = shared ? this.sharedRoot : this.packageJsonFolder;
     const cmd = this.preferredPackageManager === 'yarn' ?
       `yarn add ${shared && (process.env.NODE_ENV === 'development') ? '-W --dev' : ''}` :
       `npm install -D`;
@@ -1047,14 +1050,15 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     }
   }
 
-  getNpmInstallFolder() {
+  get packageJsonFolder() {
     return this.projectPath;
   }
 
   async npmInstall() {
     await this.ensurePackageJson();
+
     if (this.preferredPackageManager === 'yarn') {
-      await this.execInTerminal('yarn install', { cwd: this.getNpmInstallFolder() });
+      await this.execInTerminal('yarn install', { cwd: this.packageJsonFolder });
     }
     else {
       // await this.exec('npm cache verify');
@@ -1062,7 +1066,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       //      see: https://npm.community/t/need-to-run-npm-install-twice/3920
       //      Sometimes running it a second time after checking out a different branch 
       //      deletes all node_modules. The second run brings everything back correctly (for now).
-      await this.execInTerminal(`npm install && npm install`, { cwd: this.getNpmInstallFolder() });
+      await this.execInTerminal(`npm install && npm install`, { cwd: this.packageJsonFolder });
     }
   }
 

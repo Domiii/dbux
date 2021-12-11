@@ -95,19 +95,22 @@ class WebpackBuilder {
   async afterInstall() {
     const shared = false; // <- don't share for now (since it messes with Dbux's own dependencies)
     const deps = {
-      // future-work: yarn IGNORES carret versioning. Does not add carret to `package.json`
+      /**
+       * NOTE: caret hell, caused by broken input mechanisms
+       * @see https://github.com/yarnpkg/yarn/issues/3270
+       */
       // eslint-disable-next-line quote-props
-      'webpack': '^5',
-      'webpack-cli': '^4',
+      'webpack': '^^^^5',
+      'webpack-cli': '^^^^4',
       // 'webpack-config-utils': '???',
-      'copy-webpack-plugin': '^8',
-      'clean-webpack-plugin': '^4'
+      'copy-webpack-plugin': '^^^^8',
+      'clean-webpack-plugin': '^^^^4'
     };
     if (this.needsDevServer) {
-      deps['webpack-dev-server'] = '^4';
+      deps['webpack-dev-server'] = '^^^^4';
     }
     if (this.needsHtmlPlugin) {
-      deps['html-webpack-plugin'] = '^5';
+      deps['html-webpack-plugin'] = '^^^^5';
     }
     await this.project.installPackages(deps, shared);
   }
@@ -234,16 +237,12 @@ class WebpackBuilder {
   }
 
   async startWatchMode(exercise) {
-    const { project, cfg } = this;
-    const { projectPath } = project;
+    const { project } = this;
+    const { 
+      projectPath
+    } = project;
 
-    const {
-      nodeArgs = '',
-      processOptions
-    } = cfg;
-
-    // prepare args
-
+    // prepare args (encode into `env`)
     const target = this.getCfgValue(exercise, 'target') || 'web';
     const webpackConfig = this.getCfgValue(exercise, 'webpackConfig');
     const projectRoot = this.getProjectRoot(exercise);
@@ -271,19 +270,18 @@ class WebpackBuilder {
       }
     };
     env = serializeEnv(env);
-
+    
     // start webpack
-    const webpackConfigPath = path.join(projectPath, 'dbux.webpack.config.js');
-    const webpackArgs = `--config ${webpackConfigPath} ${env}`;
-
+    const cwd = project.packageJsonFolder;
+    const webpackConfigPath = pathResolve(projectPath, 'dbux.webpack.config.js');
+    
+    const nodeArgs = ' --stack-trace-limit=100';
     const webpackCliBin = this.webpackCliBin();
     const webpackCliCommand = this.webpackCliCommand();
-    let cmd = `node ${nodeArgs} --stack-trace-limit=100 ${webpackCliBin} ${webpackCliCommand} ${webpackArgs}`;
+    const webpackArgs = `--config "${webpackConfigPath}" ${env}`;
+    let cmd = `node${nodeArgs} "${webpackCliBin}" ${webpackCliCommand} ${webpackArgs}`;
 
-    // TODO: find better solution for this
-    cmd = cmd.replace(/\\/g, '/');
-
-    return project.execBackground(cmd, processOptions);
+    return project.execBackground(cmd, { cwd });
   }
 }
 

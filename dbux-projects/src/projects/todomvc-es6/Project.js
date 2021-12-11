@@ -21,7 +21,7 @@ export default class TodomvcEs6Project extends Project {
     return pathResolve(this.projectPath, RelativeRoot);
   }
 
-  getNpmInstallFolder() {
+  get packageJsonFolder() {
     return this.srcRoot;
   }
 

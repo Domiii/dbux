@@ -17,6 +17,7 @@ import { getStopwatch } from './practiceStopwatch';
 import { initUserEvent } from '../userEvents';
 import { initRuntimeServer } from '../net/SocketServer';
 import { getCurrentResearch } from '../research/Research';
+import { showOutputChannel } from './projectViewsController';
 
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
 
@@ -73,6 +74,7 @@ export function createProjectManager(extensionContext) {
     projectsRoot,
     dbuxLanguage,
   };
+
   const externals = {
     editor: {
       async openFile(fpath) {
@@ -118,6 +120,7 @@ export function createProjectManager(extensionContext) {
 
     getCurrentResearch,
     closeAllEditors,
+    showOutputChannel
   };
 
   // ########################################
