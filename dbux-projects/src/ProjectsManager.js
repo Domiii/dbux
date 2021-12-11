@@ -1017,7 +1017,7 @@ export default class ProjectsManager {
     // }
 
     const target = path.join(dependencyRoot, 'node_modules', name);
-    // warn('isDependencyInstalled', qualifiedDependencyName, target);
+    // warn('isDependencyInstalled', target, target);
 
     return sh.test('-d', target);
   }

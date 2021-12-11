@@ -18,6 +18,9 @@ const CopyPlugin = require('copy-webpack-plugin');
 // require('@dbux/babel-plugin');
 const makeInclude = require('@dbux/babel-plugin/dist/include').default;
 
+// make sure, babel-loader is available
+require('babel-loader');
+
 
 
 process.env.BABEL_DISABLE_CACHE = 1;

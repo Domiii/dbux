@@ -104,7 +104,8 @@ class WebpackBuilder {
       'webpack-cli': '^^^^4',
       // 'webpack-config-utils': '???',
       'copy-webpack-plugin': '^^^^8',
-      'clean-webpack-plugin': '^^^^4'
+      'clean-webpack-plugin': '^^^^4',
+      'babel-loader': '^^^^8'
     };
     if (this.needsDevServer) {
       deps['webpack-dev-server'] = '^^^^4';
