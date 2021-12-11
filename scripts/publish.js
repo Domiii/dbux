@@ -306,16 +306,14 @@ async function main() {
 
   if (await yesno('Skip publish to Marketplace? (or publish already built version)')) {
     if (await yesno('Install locally?')) {
-      await exec('npm run code:install-only');
+      await exec('npm run code:install');
     }
   }
   else {
     await publishToMarketplace();
   }
 
-  await fixLerna();
-
-  await bumpToDevVersion();
+  await postPublish();
 
   // await pushToDev();
 
@@ -323,6 +321,11 @@ async function main() {
 
   // hackfix: not sure why, but sometimes this process stays open for some reason... gotta do some monitoring
   process.exit(0);
+}
+
+async function postPublish() {
+  await fixLerna();
+  await bumpToDevVersion();
 }
 
 main().catch((err) => {

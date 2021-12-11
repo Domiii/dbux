@@ -385,12 +385,11 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
           // project does not have a remote git repo -> create separate local repo instead
           fs.mkdirSync(projectPath, { recursive: true });
           // git init and create initial commit (which becomes HEAD)
-          await this.execInTerminal('git init');
-          await this.execInTerminal('touch initial_file');
-          await this.execInTerminal('git add initial_file');
-          await this.execInTerminal('git commit -am "initial commit"');
-          await this.execInTerminal('rm initial_file');
-          await this.execInTerminal('git commit -am "initial commit 2"');
+          await this.exec('git init');
+          await this.exec('touch .gitignore');
+          await this.exec('echo "node_modules" > .gitignore');
+          await this.exec('git add .gitignore');
+          await this.exec('git commit -am "initial commit"');
         }
         else {
           // if (!target) {

@@ -99,7 +99,7 @@ async function revertToDevVersion() {
     const matchingTag = tags.find(tag => tag.startsWith('v' + newVersion));
     if (!matchingTag) {
       // eslint-disable-next-line max-len
-      throw new Error(`Could not find matching tag for ${newVersion} to revert to. Usually publish.js would create it after publishing (via "npx lerna version prepatch --preid dev --yes --force-publish").`);
+      throw new Error(`Could not find matching tag for ${newVersion} to revert to. Usually publish.js would create it after publishing. Did it terminate early? Make sure to run it's postPublish function.`);
     }
 
     newVersion = matchingTag.substring(1);
