@@ -304,13 +304,11 @@ async function main() {
   //   await run('yarn prepublishOnly');
   // }
 
-  if (await yesno('Skip publish to Marketplace? (or publish already built version)')) {
-    if (await yesno('Install locally?')) {
-      await exec('npm run code:install');
-    }
-  }
-  else {
+  if (await yesno('Publish (already built version) to Marketplace?')) {
     await publishToMarketplace();
+  }
+  else if (!await yesno('Skip installing locally?')) {
+    await exec('npm run code:install');
   }
 
   await postPublish();
