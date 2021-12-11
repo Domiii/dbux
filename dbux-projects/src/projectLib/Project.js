@@ -289,6 +289,10 @@ export default class Project extends ProjectBase {
     return sh.test('-d', this.hiddenGitFolderPath);
   }
 
+  async isGitInitialized() {
+    return this.doesProjectGitFolderExist();
+  }
+
   doesProjectFolderExist() {
     return sh.test('-d', this.projectPath);
   }
@@ -373,8 +377,8 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     // TODO: read git + editor commands from config
 
     // clone (will do nothing if already cloned)
-    if (this.doesProjectGitFolderExist()) {
-      sh.cd(projectPath);
+    if (await this.isGitInitialized()) {
+      // sh.cd(projectPath);
       this.log('(skipped cloning)');
     }
     else {
@@ -389,7 +393,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
           await this.exec('touch .gitignore');
           await this.exec('echo "node_modules" > .gitignore');
           await this.exec('git add .gitignore');
-          await this.exec('git commit -am "initial commit"');
+          await this.execInTerminal('git commit -a -m "initial commit"');
         }
         else {
           // if (!target) {
@@ -725,7 +729,10 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     // NOTE: returns status code 1, if there are any changes, IFF --exit-code or --quiet is provided
     // see: https://stackoverflow.com/questions/28296130/what-does-this-git-diff-index-quiet-head-mean
     await this.exec(`${this.gitCommand} add -A`);
-    const code = await this.exec(`${this.gitCommand} diff-index --quiet HEAD --`, { failOnStatusCode: false });
+    const code = await this.exec(`${this.gitCommand} diff-index --exit-code HEAD --`, {
+      failOnStatusCode: false,
+      failWhenNotFound: false // weird -> it responds with ENOENT sometimes?!
+    });
 
     return !!code;  // code !== 0 means that there are pending changes
   }
@@ -1316,7 +1323,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   // ###########################################################################
 
   async getCurrentBugFromTag() {
-    if (this.doesProjectGitFolderExist()) {
+    if (await this.isGitInitialized()) {
       for (const tag of (await this.gitGetAllCurrentTagName())) {
         const exercise = this.parseExerciseCachedTag(tag);
         if (exercise) {

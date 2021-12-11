@@ -1008,7 +1008,7 @@
         },
         {
           "command": "dbuxProjectView.toggleListMode",
-          "when": "view == dbuxProjectView && dbux.context.nodeEnv == development",
+          "when": "view == dbuxProjectView",
           "group": "navigation"
         },
         {

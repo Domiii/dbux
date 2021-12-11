@@ -22,4 +22,16 @@ export default class GettingStartedProject extends Project {
     });
     return config;
   }
+
+  async isGitInitialized() {
+    return this.doesProjectGitFolderExist() &&
+
+      /**
+       * Check if HEAD already exists
+       * @see https://stackoverflow.com/questions/18515488/how-to-check-if-the-commit-exists-in-a-git-repository-by-its-sha-1
+       */
+      !await this.exec('cat-file -e HEAD', {
+        failOnStatusCode: false
+      });
+  }
 }

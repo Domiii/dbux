@@ -717,7 +717,7 @@ export default class ProjectsManager {
     if (previousExercise) {
       await this.saveFileChanges(previousExercise);
     }
-    if (await project.doesProjectFolderExist() && await project.doesProjectGitFolderExist()) {
+    if (await project.doesProjectFolderExist() && await project.isGitInitialized()) {
       await project.gitResetHard();
     }
 
