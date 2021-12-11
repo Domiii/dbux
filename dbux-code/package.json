@@ -1,7 +1,7 @@
 {
   "name": "dbux-code",
   "displayName": "Dbux (ALPHA)",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "publisher": "Domi",
   "description": "Integrated Debugging Environment with an Omniscient Debugger for JS.",
   "repository": {
@@ -1458,15 +1458,15 @@
     "publish-only": "echo 'Publishing...' && vsce publish --yarn"
   },
   "devDependencies": {
-    "@dbux/babel-plugin": "^0.5.1",
-    "@dbux/cli": "^0.5.1",
-    "@dbux/common": "^0.5.1",
-    "@dbux/common-node": "^0.5.1",
-    "@dbux/data": "^0.5.1",
-    "@dbux/graph-common": "^0.5.1",
-    "@dbux/graph-host": "^0.5.1",
-    "@dbux/projects": "^0.5.1",
-    "@dbux/runtime": "^0.5.1",
+    "@dbux/babel-plugin": "^0.5.2",
+    "@dbux/cli": "^0.5.2",
+    "@dbux/common": "^0.5.2",
+    "@dbux/common-node": "^0.5.2",
+    "@dbux/data": "^0.5.2",
+    "@dbux/graph-common": "^0.5.2",
+    "@dbux/graph-host": "^0.5.2",
+    "@dbux/projects": "^0.5.2",
+    "@dbux/runtime": "^0.5.2",
     "@types/glob": "^7.1.1",
     "@types/node": "^16",
     "@types/vscode": "^1.41.0",
