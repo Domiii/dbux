@@ -1,6 +1,6 @@
 {
   "name": "@dbux/graph-client",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "",
   "module": "src/index.js",
   "main": "src/index.js",
@@ -22,8 +22,8 @@
   "author": "Domi",
   "license": "Apache-2.0",
   "dependencies": {
-    "@dbux/common": "^0.5.0",
-    "@dbux/graph-common": "^0.5.0",
+    "@dbux/common": "^0.5.1",
+    "@dbux/graph-common": "^0.5.1",
     "@popperjs/core": "^2.3.3",
     "bootstrap": "^4.4.1",
     "html2canvas": "^1.0.0-rc.5",
