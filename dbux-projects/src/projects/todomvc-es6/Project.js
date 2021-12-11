@@ -1,3 +1,4 @@
+import path from 'path';
 import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import WebpackBuilder from '../../buildTools/WebpackBuilder';
 import Exercise from '../../projectLib/Exercise';
@@ -31,8 +32,8 @@ export default class TodomvcEs6Project extends Project {
   makeBuilder() {
     const projectRoot = this.srcRoot;
     return new WebpackBuilder({
-      websitePort: 3842,
       projectRoot, // NOTE: this is also used as `context`
+      websitePort: 3842,
       // websitePath: ,
       // context: this.srcRoot,
       entry: {
@@ -47,7 +48,7 @@ export default class TodomvcEs6Project extends Project {
           },
           static: [
             {
-              directory: projectRoot, //.replace(/\//g, '\\'),
+              directory: path.resolve(projectRoot),
               publicPath: '/'
             }
           ]

@@ -12,6 +12,13 @@ export class WebpackOptions {
   websitePort;
 
   /**
+   * Used for context if {@link #context} is not given.
+   */
+  projectRoot;
+
+  context;
+
+  /**
    * NOTE: this can be many things.
    * 1. a single pattern string, where all matching files will be added to `entry` individually,
    * 2. an array of pattern strings,
@@ -23,6 +30,13 @@ export class WebpackOptions {
    * @type {Array.<Array.<string> | string> | string}
    */
   entryPattern;
+
+  /**
+   * Globs of files to be copied from `projectRoot` to `distFolder`.
+   * Uses {@link globRelative}.
+   * @type {string | Array.<string>}
+   */
+  copy;
 
   entry;
 
@@ -196,7 +210,7 @@ class WebpackBuilder {
     if (websitePort) {
       // website settings
       bug.websitePort = websitePort;
-      bug.website = `http://localhost:${websitePort}${bug.websitePath || '/'}`;
+      bug.website = new URL(bug.websitePath || '/', `http://localhost:${websitePort}`).href;
     }
   }
 

@@ -7,10 +7,6 @@ const ProjectRoot = path.resolve(__dirname);
 const customCfg = {
   target: 'web',
   src: ['js'],
-  devServer: {
-    // hot: false,
-    // inline: false
-  },
   plugins: [
     // new HtmlWebpackPlugin({
     //   template: './index.html',

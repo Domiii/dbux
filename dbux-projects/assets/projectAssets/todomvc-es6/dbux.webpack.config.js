@@ -7,14 +7,7 @@ const buildWebpackConfig = require('./dbux.webpack.config.base');
 // const ProjectRoot = path.resolve(__dirname, 'examples', 'vanilla-es6');
 const ProjectRoot = path.resolve(__dirname);
 
-const customCfg = {
-  target: 'web',
-  devServer: {
-    devMiddleware: {
-      publicPath: '/'
-    }
-  }
-};
+const customCfg = { };
 
 const resultCfg = buildWebpackConfig(ProjectRoot, customCfg, (env, arg) => {
   return {

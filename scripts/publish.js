@@ -12,13 +12,13 @@ let chooseVersionBump;
 
 const path = require('path');
 const fs = require('fs');
-const open = require('open');
+// const open = require('open');
 const isArray = require('lodash/isArray');
 
 const run = require('./run');
 const LineReader = require('./LineReader');
 
-require('../scripts/dbux-register-self');    // add babel-register, so we can import dbux src files
+require('./dbux-register-self');    // add babel-register, so we can import dbux src files
 require('../dbux-common/src/util/prettyLogs');    // make console log pretty
 
 const { newLogger } = require('../dbux-common/src/log/logger');
@@ -135,7 +135,7 @@ async function bumpVersion() {
   })[0];
 
   if (choice !== '(skip)') {
-    await exec(`npx lerna version ${choice} --force-publish -y`);
+    await exec(`npx lerna version ${choice} --no-private --force-publish -y`);
   }
 
   return choice !== '(skip)';

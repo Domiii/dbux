@@ -1,3 +1,4 @@
+import path from 'path';
 import Project from '../../projectLib/Project';
 import WebpackBuilder from '../../buildTools/WebpackBuilder';
 // import { getAllFilesInFolders } from '../../util/fileUtil';
@@ -11,14 +12,32 @@ export default class _2048Project extends Project {
   gitCommit = 'fc1ef4f';
 
   makeBuilder() {
+    const projectRoot = this.projectPath;
     return new WebpackBuilder({
+      projectRoot, // NOTE: this is also used as `context`
       websitePort: 3843,
-      entryPattern: 'js/*'
+      entryPattern: 'js/*',
+      webpackConfig: {
+        devServer: {
+          devMiddleware: {
+            publicPath: '/'
+          },
+          static: [
+            {
+              directory: path.resolve(projectRoot),
+              publicPath: '/'
+            }
+          ]
+        }
+      }
     });
   }
 
+  // async beforeInstall() {
+  //   await this.execInTerminal('npm init -y');
+  // }
+
   async afterInstall() {
-    await this.execInTerminal('npm init -y');
     // await this.autoCommit(); // NOTE: autoCommit is called right after this method
 
     // NOTE: we need to expose all globals manually, since there is no easy way to workaround that problem with Webpack

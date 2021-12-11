@@ -685,24 +685,24 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   // more file + package utilities
   // ###########################################################################
 
-  async installPackages(s, shared = false/* , force = true */) {
-    // TODO: let user choose, or just prefer yarn by default?
+  async ensurePackageJson() {
+    const cwd = this.projectPath;
+    if (!sh.test('-f', path.join(cwd, 'package.json'))) {
+      await this.exec('npm init -y', { cwd });
+    }
+  }
 
+  async installPackages(s, shared = false/* , force = true */) {
     if (isObject(s)) {
       s = Object.entries(s).map(([name, version]) => `${name}@${version}`).join(' ');
     }
+    await this.ensurePackageJson();
 
     // NOTE: somehow Node module resolution algorithm skips a directory, that is `projectsRoot`
     //       -> That is why we choose `dependencyRoot` instead
 
+    // NOTE: we don't do shared for now.
     const cwd = shared ? this.sharedRoot : this.projectPath;
-
-    if (!sh.test('-f', path.join(cwd, 'package.json'))) {
-      await this.exec('npm init -y', { cwd });
-    }
-
-    // TODO: make sure, `shared` does not override existing dependencies
-
     const cmd = this.preferredPackageManager === 'yarn' ?
       `yarn add ${shared && (process.env.NODE_ENV === 'development') ? '-W --dev' : ''}` :
       `npm install -D`;
@@ -1052,6 +1052,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   }
 
   async npmInstall() {
+    await this.ensurePackageJson();
     if (this.preferredPackageManager === 'yarn') {
       await this.execInTerminal('yarn install', { cwd: this.getNpmInstallFolder() });
     }

@@ -25,7 +25,7 @@ const nodeExternals = require(path.join(getDependencyRoot(), 'node_modules/webpa
 process.env.BABEL_DISABLE_CACHE = 1;
 
 const buildMode = 'development';
-const distFolderName = 'dist';
+const DefaultDistFolderName = 'dist';
 //const buildMode = 'production';
 
 function mergeConcatArray(...inputs) {
@@ -139,6 +139,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
       babelPostLoaders = [],
       devServer: devServerCfg,
       port,
+      distFolderName = DefaultDistFolderName
     } = customConfig;
 
     ProjectRoot = projectRootOverride || ProjectRoot;
@@ -408,11 +409,12 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
 // copyPlugin
 // ###########################################################################
 function copyPlugin(ProjectRoot, files) {
+  const distFolder = path.join(ProjectRoot, distFolderName);
   return new CopyPlugin({
     patterns: files.map(f => ({
       force: true,
       from: path.join(ProjectRoot, f),
-      to: path.join(ProjectRoot, distFolderName, f)
+      to: path.join(distFolder, f)
     }))
   });
 }

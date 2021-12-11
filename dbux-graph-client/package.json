@@ -24,7 +24,6 @@
   "dependencies": {
     "@dbux/common": "^0.4.4-dev.0",
     "@dbux/graph-common": "^0.4.4-dev.0",
-    "@dbux/panzoom": "^0.4.3",
     "@popperjs/core": "^2.3.3",
     "bootstrap": "^4.4.1",
     "html2canvas": "^1.0.0-rc.5",
@@ -33,6 +32,7 @@
     "serialize-javascript": "^5.0.1"
   },
   "devDependencies": {
+    "@dbux/panzoom": "^0.4.3",
     "open-cli": "^6.0.0"
   }
 }
