@@ -293,13 +293,18 @@ async function main() {
 
   await pullMaster();
 
-  await run('yarn run i');
+  await run('yarn i');
 
   if (await bumpVersion()) {
+    // build + publish
     await publishToNPM();
   }
+  // else {
+  //   // build -> should not be necessary, since, if anything changed, it should be re-published anyway!
+  //   await run('yarn prepublishOnly');
+  // }
 
-  if (await yesno('Skip publish to Marketplace? (or publish without building)')) {
+  if (await yesno('Skip publish to Marketplace? (or publish already built version)')) {
     if (await yesno('Install locally?')) {
       await exec('npm run code:install-only');
     }

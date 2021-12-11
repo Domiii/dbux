@@ -244,7 +244,7 @@ export default class Process {
         const code = err.code = err.code || -1;
         this.code = code;
 
-        if (failWhenNotFound && (code === 127 || code === 'ENOENT')) {
+        if (!failWhenNotFound && (code === 127 || code === 'ENOENT')) {
           // command not found, but we don't care
           // see: https://stackoverflow.com/questions/1763156/127-return-code-from
           resolve(code);

@@ -66,6 +66,7 @@
     "utf-8-validate": "^5.0.2"
   },
   "scripts": {
+    "prepublishOnly": "yarn run build:prod",
     "i": "npx lerna bootstrap --force-local && npx lerna link --force-local",
     "start": "yarn run build:clean && yarn run version:dev && yarn runall:dev",
     "pub": "node scripts/publish.js",
@@ -83,7 +84,6 @@
     "build:dev": "yarn run version:dev && yarn run build:clean && yarn run graph:build:dev && node --stack-trace-limit=1000 -- ./node_modules/webpack/bin/webpack.js --mode development",
     "build:prod": "yarn run version:prod && yarn run build:clean && yarn run graph:build:prod && node --stack-trace-limit=1000 -- ./node_modules/webpack/bin/webpack.js build --mode production",
     "readme": "cd dbux-code && yarn run readme",
-    "prepublishOnly": "yarn run build:prod",
     "graph:watch": "cd dbux-graph-client && npm start",
     "graph:watch:prod": "cd dbux-graph-client && yarn run start:prod",
     "graph:build:dev": "cd dbux-graph-client && yarn run build:dev",
