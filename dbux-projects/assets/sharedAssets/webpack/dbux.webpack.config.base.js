@@ -19,8 +19,6 @@ const CopyPlugin = require('copy-webpack-plugin');
 const makeInclude = require('@dbux/babel-plugin/dist/include').default;
 
 
-// eslint-disable-next-line import/no-dynamic-require
-const nodeExternals = require(path.join(getDependencyRoot(), 'node_modules/webpack-node-externals'));
 
 process.env.BABEL_DISABLE_CACHE = 1;
 
@@ -267,21 +265,19 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     //   // babelOptions.presets[0].splice(1, 1);
     // }
 
-    const babelInclude = babelIncludeOverride ? 
-      makeInclude(babelIncludeOverride) : 
+    const babelInclude = babelIncludeOverride ?
+      makeInclude(babelIncludeOverride) :
       babelIncludeDefault(ProjectRoot, srcFolders);
 
     /** ###########################################################################
      * externals
      *  #########################################################################*/
 
-    const externals = target !== 'node' ?
-      [
-        {
-          fs: 'null',
-          tls: 'null'
-        }
-      ] : [
+    let externals;
+    if (target === 'node') {
+      // eslint-disable-next-line import/no-extraneous-dependencies
+      const nodeExternals = require('webpack-node-externals');
+      externals = [
         {
           // 'dbux-runtime': 'umd @dbux/runtime',
           '@dbux/runtime': 'commonjs @dbux/runtime'
@@ -289,12 +285,20 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
         nodeExternals({
           additionalModuleDirs: [path.join(getDependencyRoot(), 'node_modules')]
         }),
-
         // (context, request, callback) => {
         //   console.warn('external', context, request);
         //   callback();
         // }
       ];
+    }
+    else {
+      externals = [
+        {
+          fs: 'null',
+          tls: 'null'
+        }
+      ];
+    }
 
     // ###########################################################################
     // optimization
