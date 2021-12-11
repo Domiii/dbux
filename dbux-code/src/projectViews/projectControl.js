@@ -1,7 +1,7 @@
 import { env, Uri } from 'vscode';
 import path from 'path';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { pathJoin, pathNormalizedForce } from '@dbux/common-node/src/util/pathUtil';
+import { pathJoin } from '@dbux/common-node/src/util/pathUtil';
 import { initDbuxProjects } from '@dbux/projects/src';
 import Process from '@dbux/projects/src/util/Process';
 import { showWarningMessage, showInformationMessage, confirm, alert } from '../codeUtil/codeModals';
@@ -17,7 +17,7 @@ import { getStopwatch } from './practiceStopwatch';
 import { initUserEvent } from '../userEvents';
 import { initRuntimeServer } from '../net/SocketServer';
 import { getCurrentResearch } from '../research/Research';
-import { showOutputChannel } from './projectViewsController';
+import { showOutputChannel } from '../OutputChannel';
 
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
 
@@ -45,26 +45,36 @@ export function createProjectManager(extensionContext) {
   // the folder that is parent to `node_modules` for installing all extraneous dependencies (such as @dbux/cli, firebase etc.)
   let dependencyRoot = asAbsolutePath('.');     // extension_folder
   // let dependencyRoot = extensionContext.extensionPath;              // extension_folder
-  const extensionFolderMatch = dependencyRoot.match(/(.+)[/\\](?:.+\.)dbux-code(?:.*[/\\]?)/);    // NOTE: in prod, folder name changes to "author.dbux-code-version"
-  if (extensionFolderMatch) {
-    if (process.env.NODE_ENV === 'development') {
-      // eslint-disable-next-line prefer-destructuring
-      // dependencyRoot = pathNormalizedForce(pathMatch[1]);
-      // if (dependencyRoot !== process.env.DBUX_ROOT) {
-      //   logError(`Potential path problems: ${dependencyRoot} !== DBUX_ROOT (${process.env.DBUX_ROOT})\nIgnoring DBUX_ROOT...`);
-      //   // dependencyRoot = process.env.DBUX_ROOT;
-      // }
-      // TODO: allow running dev mode with non-local dependencies, too
-      dependencyRoot = process.env.DBUX_ROOT;
-      if (!dependencyRoot) {
-        throw new Error(`DBUX_ROOT is empty`);
-      }
+  // const extensionFolderMatch = dependencyRoot.match(/(.+)[/\\](?:.+\.)dbux-code(?:.*[/\\]?)/);    // NOTE: in prod, folder name changes to "author.dbux-code-version"
+  // if (extensionFolderMatch) {
+  //   if (process.env.NODE_ENV === 'development') {
+  //     // eslint-disable-next-line prefer-destructuring
+  //     // dependencyRoot = pathNormalizedForce(pathMatch[1]);
+  //     // if (dependencyRoot !== process.env.DBUX_ROOT) {
+  //     //   logError(`Potential path problems: ${dependencyRoot} !== DBUX_ROOT (${process.env.DBUX_ROOT})\nIgnoring DBUX_ROOT...`);
+  //     //   // dependencyRoot = process.env.DBUX_ROOT;
+  //     // }
+  //     // TODO: allow running dev mode with non-local dependencies, too
+  //   }
+  // }
+
+  if (process.env.NODE_ENV === 'development') {
+    // eslint-disable-next-line prefer-destructuring
+    // dependencyRoot = pathNormalizedForce(pathMatch[1]);
+    // if (dependencyRoot !== process.env.DBUX_ROOT) {
+    //   logError(`Potential path problems: ${dependencyRoot} !== DBUX_ROOT (${process.env.DBUX_ROOT})\nIgnoring DBUX_ROOT...`);
+    //   // dependencyRoot = process.env.DBUX_ROOT;
+    // }
+    // TODO: allow running dev mode with non-local dependencies, too
+    dependencyRoot = process.env.DBUX_ROOT;
+    if (!dependencyRoot) {
+      throw new Error(`DBUX_ROOT is empty`);
     }
-    else {
-      // production: dependencyRoot is the dbux-code folder itself
-      // eslint-disable-next-line prefer-destructuring
-      // dependencyRoot = pathMatch[0];
-    }
+  }
+  else {
+    // production: dependencyRoot is the dbux-code folder itself
+    // eslint-disable-next-line prefer-destructuring
+    // dependencyRoot = pathMatch[0];
   }
 
   // the folder that contains the sample projects for dbux-practice

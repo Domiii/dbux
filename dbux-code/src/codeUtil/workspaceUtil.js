@@ -13,15 +13,17 @@ export function addProjectFolderToWorkspace(project) {
 }
 
 export function isProjectFolderInWorkspace(project) {
-  const uri = Uri.file(project.projectPath);
-  return workspace.workspaceFolders && Array.from(workspace.workspaceFolders).some((workspaceFolder) => {
-    if (workspaceFolder.uri.fsPath === uri.fsPath) {
-      return true;
-    }
-    else {
-      return false;
-    }
-  });
+  const projectFsPath = Uri.file(project.projectPath).fsPath;
+  return workspace.workspaceFolders &&
+    Array.from(workspace.workspaceFolders)
+      .some((workspaceFolder) => {
+        if (workspaceFolder.uri.fsPath === projectFsPath) {
+          return true;
+        }
+        else {
+          return false;
+        }
+      });
 }
 
 export function getDefaultWorkspaceFilePath(project) {

@@ -1,5 +1,6 @@
 import { window } from 'vscode';
 import strip from 'strip-color';
+import { addOutputStreams } from '@dbux/common/src/log/logger';
 
 export default class OutputChannel {
   constructor(name) {
@@ -21,4 +22,18 @@ export default class OutputChannel {
   clear() {
     this._channel.clear();
   }
+}
+
+
+const outputChannel = new OutputChannel('Dbux');
+
+addOutputStreams({
+  log: outputChannel.log.bind(outputChannel),
+  warn: outputChannel.log.bind(outputChannel),
+  error: outputChannel.log.bind(outputChannel),
+  debug: outputChannel.log.bind(outputChannel)
+}, true);
+
+export function showOutputChannel() {
+  outputChannel.show();
 }

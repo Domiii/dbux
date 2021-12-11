@@ -903,10 +903,11 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       // only auto commit if files changed
 
       // add assest files to git
-      // NOTE: && is not supported in all shells (e.g. Powershell)
-      const files = this.getAllAssetFiles();
+      const files = this.getAllAssetFilesInProjectAbsolute()
+        .map(f => pathRelative(this.projectPath, f))
+        .map(f => `"${f}"`);
       // this.logger.debug(files.map(f => `${f}: ${fs.existsSync(f)}`));
-      await this.exec(`${this.gitCommand} add ${files.map(name => `"${name}"`).join(' ')}`);
+      await this.exec(`${this.gitCommand} add ${files.join(' ')}`);
 
       message && (message = ' ' + message);
 
@@ -1198,8 +1199,21 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       });
   }
 
+  getAllAssetFilesInProjectAbsolute() {
+    return this.getAllAssetFiles()
+      .map(relativePath => this.getAssetFileInProject(relativePath));
+  }
+
+  /**
+   * The folder that all assets should be copied to.
+   * Usually {@link #projectPath}.
+   */
   getAssetsTargetFolder() {
     return this.projectPath;
+  }
+
+  getAssetFileInProject(...segments) {
+    return pathResolve(this.getAssetsTargetFolder(), ...segments);
   }
 
   copyAssetFolder(assetFolderPath) {
