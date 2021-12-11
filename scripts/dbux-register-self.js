@@ -1,13 +1,14 @@
 #!/usr/bin/env node
+
 const path = require('path');
 
 // don't cache this
 process.env.BABEL_DISABLE_CACHE = 1;
+const DbuxRoot = path.resolve(__dirname, '..');
 
-const defaultBabelOptions = require('../babel.config');
+const defaultBabelOptions = require('../dbux-cli/babel.config');
+const babelRegister = require('../babel-register-fork/lib');
 
-// TODO: fix this
-const DbuxRoot = path.resolve(__dirname, '../..');
 
 // babel-register (makes sure that src/* files get babeled upon require)
 const babelRegisterOptions = {
@@ -30,8 +31,5 @@ const babelRegisterOptions = {
   ]
 };
 
-
-// eslint-disable-next-line import/newline-after-import,import/order
-const babelRegister = require('@babel/register');
 
 babelRegister(babelRegisterOptions);

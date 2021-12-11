@@ -15,7 +15,7 @@ const {
 } = require('./lib/package-util');
 
 // register self, so we can load dbux src files
-require('./lib/dbux-register-self');
+require('../scripts/dbux-register-self');
 const { globToEntry } = require('../dbux-common-node/src/util/webpackUtil');
 // require('../dbux-common/src/util/prettyLogs');
 
@@ -128,7 +128,7 @@ module.exports = (env, argv) => {
       path: path.join(projectRoot, outputFolderName),
       filename: '[name].js',
       publicPath: outputFolderName,
-      libraryTarget: "umd", // probably want commonjs instead
+      libraryTarget: "commonjs",
       devtoolModuleFilenameTemplate: "../[resource-path]",
       // sourceMapFilename: outFile + ".map"
     },
@@ -167,6 +167,7 @@ module.exports = (env, argv) => {
         ],
         allowlist: [
           /^lodash\/.*/,
+          /^@babel\/register(\/.*)?/,
           ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/src/.*`))
           // (...args) => {
           //   console.error(...args);

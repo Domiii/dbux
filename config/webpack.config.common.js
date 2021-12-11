@@ -10,7 +10,7 @@ const webpack = require('webpack');
 // });
 
 // add some of our own good stuff
-require('../dbux-cli/lib/dbux-register-self');
+require('../scripts/dbux-register-self');
 require('../dbux-common/src/util/prettyLogs');
 
 // const {pathNormalizedForce}  = require('');

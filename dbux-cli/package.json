@@ -25,7 +25,6 @@
     "@babel/plugin-syntax-export-default-from": "^7.10.1",
     "@babel/plugin-transform-runtime": "^7.10.1",
     "@babel/preset-env": "^7.10.1",
-    "@babel/register": "7.14.5",
     "@dbux/babel-plugin": "^0.4.4-dev.0",
     "@dbux/common": "^0.4.4-dev.0",
     "@dbux/common-node": "^0.4.4-dev.0",
@@ -40,5 +39,8 @@
     "serialize-javascript": "^5.0.1",
     "shelljs": "0.8.4",
     "yargs": "^16.2.0"
+  },
+  "devDependencies": {
+    "@babel/register": "7.14.5"
   }
 }

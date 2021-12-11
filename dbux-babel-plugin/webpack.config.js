@@ -12,7 +12,7 @@ const {
 } = require('../dbux-cli/lib/package-util');
 
 // register self, so we can load dbux src files
-require('../dbux-cli/lib/dbux-register-self');
+require('../scripts/dbux-register-self');
 const { pathRelative } = require('../dbux-common-node/src/util/pathUtil');
 const { globPatternToEntry } = require('../dbux-common-node/src/util/webpackUtil');
 

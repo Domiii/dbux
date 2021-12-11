@@ -45,4 +45,7 @@ function parseEnv(env) {
   }
 }
 
-module.exports = { deserializeWebpackInput, parseEnv };
+module.exports = { 
+  deserializeWebpackInput, 
+  parseEnv
+};

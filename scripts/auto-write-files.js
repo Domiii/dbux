@@ -7,7 +7,7 @@ const t = require('@babel/types');
 const virtualTypes = require('@babel/traverse/lib/path/lib/virtual-types.js');
 
 // add some of our own good stuff
-require('../dbux-cli/lib/dbux-register-self');
+require('./dbux-register-self');
 require('../dbux-common/src/util/prettyLogs');
 const { writeFileRegistryFile } = require('../dbux-common-node/src/util/codeGenUtil');
 

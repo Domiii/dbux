@@ -7,7 +7,7 @@ const sh = require('shelljs');
 const run = require('./run');
 
 // add babel-register, so we can import dbux src files
-require('../dbux-cli/lib/dbux-register-self');
+require('./dbux-register-self');
 
 require('../dbux-common/src/util/prettyLogs');
 const sleep = require('../dbux-common/src/util/sleep').default;
