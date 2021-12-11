@@ -24,7 +24,7 @@ export function getGraphClassByType(graphType) {
 }
 
 const EnabledGraphTypes = new Set([
-  GraphType.None,
+  // GraphType.None,
   GraphType.SyncGraph,
   GraphType.AsyncGraph,
 ]);
@@ -38,7 +38,7 @@ export function nextGraphType(type) {
 }
 
 const DisplayNameByType = {
-  [GraphType.None]: 'Off',
+  // [GraphType.None]: 'Off',
   [GraphType.SyncGraph]: 'Sync',
   [GraphType.AsyncGraph]: 'Async',
 };

@@ -1,5 +1,6 @@
 import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
+import StackMode from '@dbux/graph-common/src/shared/StackMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
 class Toolbar extends HostComponentEndpoint {
@@ -44,8 +45,10 @@ class Toolbar extends HostComponentEndpoint {
       this.parent.nextGraphMode();
     },
 
-    toggleStackEnabled() {
-      this.parent.setState({ stackEnabled: !this.parent.state.stackEnabled });
+    nextStackMode() {
+      this.parent.setState({
+        stackMode: StackMode.nextValue(this.parent.state.stackMode)
+      });
       this.parent.asyncStackContainer.refreshGraph();
     },
 

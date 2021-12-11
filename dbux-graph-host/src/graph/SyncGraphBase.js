@@ -84,6 +84,8 @@ class SyncGraphBase extends GraphBase {
     }
 
     this.roots = newRoots;
+
+    this._setApplicationState();
   }
 
   removeAllContextNode() {
@@ -232,9 +234,20 @@ class SyncGraphBase extends GraphBase {
   getChildrenCount() {
     return this.children.getComponents('ContextNode').length;
   }
-  
+
   getSubGraphChildrenCount() {
     return this.children.getComponents('ContextNode').reduce((v, node) => v + node.nTreeContexts, 0);
+  }
+
+  /** ###########################################################################
+   * State management
+   *  #########################################################################*/
+
+  _setApplicationState() {
+    const update = {
+      applications: this.makeApplicationState()
+    };
+    this.setState(update);
   }
 
   // ###########################################################################

@@ -1,3 +1,4 @@
+import allApplications from '@dbux/data/src/applications/allApplications';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
 /**
@@ -26,6 +27,19 @@ class GraphBase extends HostComponentEndpoint {
 
   get focusController() {
     return this.parent.controllers.getComponent('FocusController');
+  }
+
+  /** ###########################################################################
+   * helpers
+   *  #########################################################################*/
+
+  makeApplicationState(apps = allApplications.selection.getAll()) {
+    const applications = apps.map(app => ({
+      applicationId: app.applicationId,
+      entryPointPath: app.entryPointPath,
+      name: app.getPreferredName()
+    }));
+    return applications;
   }
 }
 
