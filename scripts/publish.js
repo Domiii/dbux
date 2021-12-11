@@ -97,13 +97,11 @@ async function isDevVersion() {
 // ###########################################################################
 
 function goToMaster() {
+  log('Switching to master');
+  run('git checkout master');
+  run('git pull');
   if (getBranchName() !== 'master') {
-    log('Switching to master');
-    run('git checkout master');
-    run('git pull');
-    if (getBranchName() !== 'master') {
-      throw new Error(`Could not switch to master - current branch is "${getBranchName()}"`);
-    }
+    throw new Error(`Could not switch to master - current branch is "${getBranchName()}"`);
   }
 }
 
@@ -289,7 +287,9 @@ async function main() {
   //   }
   // );
 
-  await goToMaster();
+  if (getBranchName() !== 'master') {
+    await goToMaster();
+  }
 
   await pullMaster();
 
