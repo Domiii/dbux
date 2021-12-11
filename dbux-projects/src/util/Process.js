@@ -5,12 +5,12 @@ import sh from 'shelljs';
 import stringArgv from 'string-argv';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { execSync } from 'child_process';
+import { ChildProcess, execSync } from 'child_process';
 import spawn from 'cross-spawn';
 import { pathNormalizedForce } from '@dbux/common-node/src/util/pathUtil';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('Process');
+const { log, debug, warn, error: logError, trace: logTrace } = newLogger('Process');
 
 function cleanOutput(chunk) {
   if (!isString(chunk)) {
@@ -28,6 +28,9 @@ function pipeStreamToFn(stream, logFn) {
 
 export default class Process {
   command;
+  /**
+   * @type {ChildProcess}
+   */
   _process;
   _promise;
 
@@ -71,7 +74,8 @@ export default class Process {
       failWhenNotFound = true,
       sync = false,
       logStdout = true,
-      logStderr = true
+      logStderr = true,
+      readStdin = false,
     } = (options || EmptyObject);
 
     const processOptions = {
@@ -114,8 +118,8 @@ export default class Process {
     if (sync) {
       // TODO: sync might not work, since it foregoes cross-spawn
       // NOTE: this will just block until the process is done
-      this._process = execSync(command, processOptions);
-      return this._process;
+      const result = execSync(command, processOptions);
+      return result;
     }
 
     this._process = spawn(commandName, commandArgs, processOptions);
@@ -149,11 +153,11 @@ export default class Process {
       newProcess.stdin.write(`${input}\n`);
       newProcess.stdin.end();
     }
-    else {
+    else if (readStdin) {
       // WARNING: On MAC, for some reason, piping seems to swallow up line feeds?
       // TODO: only register stdin listener on `resume`?
       newProcess.stdin.on('resume', (...args) => {
-        logError('STDIN RESUME', ...args);
+        logTrace('STDIN RESUME', ...args);
       });
       onStdin = buf => {
         const s = buf.toString();
@@ -185,6 +189,7 @@ export default class Process {
     // done
     let done = false;
     function checkDone() {
+      // console.warn('PROCESS checkDone()', done + 1);
       if (done) {
         return true;
       }
@@ -192,6 +197,15 @@ export default class Process {
 
       // stop reading stdin
       onStdin && process.stdin.off('data', onStdin);
+      newProcess.stdin.destroy();
+
+      setTimeout(() => {
+        // make sure, the process never lingers excessively
+        if (newProcess.connected) {
+          logger.warn(`process was killed due to lingering.`);
+          newProcess.kill();
+        }
+      }, 300);
 
       // if (this._killed) {
       //   resolve('killed');
