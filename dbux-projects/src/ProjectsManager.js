@@ -485,8 +485,8 @@ export default class ProjectsManager {
       if (!size) {
         return '';
       }
-      size = size / 1024 / 1024;
-      return `${prefix} log file is ${size.toFixed(2)}MB (zipped).\n`;
+      size = Math.round(size).toLocaleString('en-us');
+      return `${prefix} log file is ${size} bytes.\n`;
     }
     try {
       // research

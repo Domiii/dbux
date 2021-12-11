@@ -233,7 +233,9 @@ class WebpackBuilder {
 
   webpackCliBin() {
     // return this.cfg.webpackCliBin || (this.needsDevServer ? this.getWebpackDevServerJs() : this.getWebpackJs());
-    return this.project.getSharedDependencyPath('webpack-cli/bin/cli.js');
+    // return this.project.getSharedDependencyPath('webpack-cli/bin/cli.js');
+    const { project } = this;
+    return project.getNodeModulesFile('webpack-cli/bin/cli.js');
   }
 
   async startWatchMode(exercise) {

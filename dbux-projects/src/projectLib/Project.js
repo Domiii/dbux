@@ -1060,6 +1060,10 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     return this.projectPath;
   }
 
+  getNodeModulesFile(...segments) {
+    return pathResolve(this.packageJsonFolder, 'node_modules', ...segments);
+  }
+
   async npmInstall() {
     await this.ensurePackageJson();
 
