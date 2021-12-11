@@ -1,5 +1,6 @@
 {
   "name": "dbux-code",
+  "private": true,
   "displayName": "Dbux (ALPHA)",
   "version": "0.5.4-dev.0",
   "publisher": "Domi",
@@ -1480,7 +1481,6 @@
     "open": "^7.1.0",
     "serialize-javascript": "^5.0.1",
     "socket.io": "^4",
-    "socket.io-msgpack-parser": "^3.0.1",
     "strip-color": "^0.1.0",
     "typescript": "^3.6.4",
     "uuid": "^8.3.0",

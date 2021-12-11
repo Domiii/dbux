@@ -1,5 +1,6 @@
 {
   "name": "@dbux/build-tools",
+  "private": true,
   "version": "0.5.4-dev.0",
   "description": "> TODO: description",
   "author": "Domi",

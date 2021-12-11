@@ -71,9 +71,6 @@ export async function makeListenSocket(port) {
      */
     pingTimeout: 1e6,
 
-    /**
-     * @see https://socket.io/docs/v4/custom-parser#The-msgpack-parser
-     */
     parser: msgpackParser
   });
 

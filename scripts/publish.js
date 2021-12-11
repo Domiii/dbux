@@ -85,7 +85,7 @@ async function yesno(q) {
 // ###########################################################################
 
 function getDbuxVersion() {
-  return readPackageJsonVersion(path.join(__dirname, '../dbux-code'));
+  return readPackageJsonVersion(path.join(__dirname, '../dbux-cli'));
 }
 
 async function isDevVersion() {
