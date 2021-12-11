@@ -1,5 +1,6 @@
 import allApplications from '@dbux/data/src/applications/allApplications';
 import GraphType from '@dbux/graph-common/src/shared/GraphType';
+import StackMode from '@dbux/graph-common/src/shared/StackMode';
 import SyncGraphBase from '../SyncGraphBase';
 
 class SyncGraph extends SyncGraphBase {
@@ -12,7 +13,8 @@ class SyncGraph extends SyncGraphBase {
   }
 
   shouldBeEnabled() {
-    if (this.context.graphDocument.state.graphMode === GraphType.SyncGraph) {
+    const { graphMode, stackMode } = this.context.graphDocument.state;
+    if (graphMode === GraphType.SyncGraph && stackMode !== StackMode.FullScreen) {
       return true;
     }
     else {
@@ -26,8 +28,6 @@ class SyncGraph extends SyncGraphBase {
     }).flat();
 
     this.updateByContexts(roots);
-    
-    this._setApplicationState();
   }
 
   _resubscribeOnData() {
@@ -59,17 +59,6 @@ class SyncGraph extends SyncGraphBase {
 
   _handleAddExecutionContexts = (app, newContexts) => {
     this.refresh();
-  }
-
-  _setApplicationState() {
-    const update = {
-      applications: allApplications.selection.getAll().map(app => ({
-        applicationId: app.applicationId,
-        entryPointPath: app.entryPointPath,
-        name: app.getPreferredName()
-      }))
-    };
-    this.setState(update);
   }
 }
 

@@ -1,6 +1,7 @@
 import NanoEvents from 'nanoevents';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
+import StackMode from '@dbux/graph-common/src/shared/StackMode';
 import GraphType, { nextGraphType } from '@dbux/graph-common/src/shared/GraphType';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
@@ -14,12 +15,12 @@ class GraphDocument extends HostComponentEndpoint {
 
     // default mode settings
     this.state.graphMode = GraphType.AsyncGraph;
+    this.state.stackMode = StackMode.Hidden;
     this.state.followMode = true;
     this.state.locMode = true;
     this.state.callMode = true;
     this.state.valueMode = false;
     this.state.thinMode = false;
-    this.state.stackEnabled = false;
     this.state.asyncDetailMode = false;
 
     this.createOwnComponents();

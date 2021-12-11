@@ -19,8 +19,19 @@ class AsyncStack extends SyncGraphBase {
           </div>
         </div>
         <div data-el="nodeChildren" data-mount="ContextNode" class="node-children flex-column"></div>
+        <p data-el="label"></p>
       </div>
     `);
+  }
+
+  update() {
+    const contextNodeChildren = this.children.getComponents('ContextNode');
+    if (!contextNodeChildren.length) {
+      this.els.label.textContent = '(no trace selected)';
+    }
+    else {
+      this.els.label.textContent = '';
+    }
   }
 }
 export default AsyncStack;

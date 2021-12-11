@@ -1,5 +1,6 @@
 import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import GraphType, { getGraphTypeDisplayName } from '@dbux/graph-common/src/shared/GraphType';
+import StackMode, { getStackModeDisplayName } from '@dbux/graph-common/src/shared/StackMode';
 import { compileHtmlElement, decorateClasses, decorateAttr } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
@@ -88,7 +89,7 @@ class Toolbar extends ClientComponentEndpoint {
       searchTermContexts,
       searchTermTraces,
       graphMode,
-      stackEnabled,
+      stackMode,
       asyncDetailMode,
     } = this.parent.state;
 
@@ -123,7 +124,7 @@ class Toolbar extends ClientComponentEndpoint {
       active: graphMode !== GraphType.None
     });
     decorateClasses(this.els.asyncStackBtn, {
-      active: !!stackEnabled
+      active: stackMode !== StackMode.Hidden
     });
     decorateClasses(this.els.asyncDetailModeBtn, {
       active: !!asyncDetailMode
@@ -142,6 +143,7 @@ class Toolbar extends ClientComponentEndpoint {
     this.els.hideNewRunBtn.innerHTML = `${hideAfter ? '⚪' : '🔴'}`;
 
     this.els.graphModeBtn.innerHTML = getGraphTypeDisplayName(graphMode);
+    this.els.asyncStackBtn.innerHTML = getStackModeDisplayName(stackMode);
   }
 
   renderModes() {
@@ -263,7 +265,7 @@ class Toolbar extends ClientComponentEndpoint {
     asyncStackBtn: {
       click(evt) {
         evt.preventDefault();
-        this.remote.toggleStackEnabled();
+        this.remote.nextStackMode();
       },
       focus(evt) { evt.target.blur(); }
     },

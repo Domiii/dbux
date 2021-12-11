@@ -1,6 +1,7 @@
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection/index';
+import StackMode from '@dbux/graph-common/src/shared/StackMode';
 import SyncGraphBase from '../SyncGraphBase';
 
 /** @typedef {import('@dbux/data/src/applications/Application').default} Application */
@@ -16,7 +17,7 @@ class AsyncStack extends SyncGraphBase {
   }
 
   shouldBeEnabled() {
-    if (this.context.graphDocument.state.stackEnabled) {
+    if (this.context.graphDocument.state.stackMode !== StackMode.Hidden) {
       return true;
     }
     else {
