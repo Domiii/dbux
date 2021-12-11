@@ -21,8 +21,8 @@ class Toolbar extends ClientComponentEndpoint {
           <button title="Search for contexts by name" data-el="searchContextsBtn" class="toolbar-btn btn btn-info" href="#">🔍</button>
           <button title="Search for traces by name" data-el="searchTracesBtn" class="toolbar-btn btn btn-info" href="#">🔍+</button>
           <button title="Toggle Async Graph Mode" data-el="graphModeBtn" class="toolbar-btn btn btn-info" href="#">async</button>
-          <button title="Toggle Async Stack" data-el="asyncStackBtn" class="toolbar-btn btn btn-info" href="#">stack</button>
           <button title="Toggle Async Detail" data-el="asyncDetailModeBtn" class="toolbar-btn btn btn-info" href="#">detail</button>
+          <button title="Toggle Async Stack" data-el="asyncStackBtn" class="toolbar-btn btn btn-info" href="#">stack</button>
           <button title="Clear Thread Selection" data-el="clearThreadSelectionBtn" class="toolbar-btn btn btn-info" href="#">
             <img width="12px" src="${this.state.theradSelectionIconUri}" />
           </button>

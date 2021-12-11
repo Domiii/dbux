@@ -15,9 +15,9 @@ const StackMode = new Enum(StackModeConfig);
 export default StackMode;
 
 const DisplayNameByType = {
-  [StackMode.Hidden]: 'Stack: Hide',
-  [StackMode.Visible]: 'Stack: Visible',
-  [StackMode.FullScreen]: 'Stack: FullScreen',
+  [StackMode.Hidden]: 'stack',
+  [StackMode.Visible]: 'stack',
+  [StackMode.FullScreen]: 'Stack',
 };
 
 export function getStackModeDisplayName(type) {
