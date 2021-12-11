@@ -29,6 +29,10 @@ export default class TodomvcEs6Project extends Project {
     return pathResolve(this.srcRoot, fpath || '');
   }
 
+  getAssetsTargetFolder() {
+    return this.srcRoot;
+  }
+
   makeBuilder() {
     const projectRoot = this.srcRoot;
     return new WebpackBuilder({

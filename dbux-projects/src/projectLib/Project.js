@@ -1198,21 +1198,26 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       });
   }
 
+  getAssetsTargetFolder() {
+    return this.projectPath;
+  }
+
   copyAssetFolder(assetFolderPath) {
-    this.log(`Copying assets from ${assetFolderPath} to ${this.projectPath}`);
+    const assetsTargetFolder = this.getAssetsTargetFolder();
+    this.log(`Copying assets from ${assetFolderPath} to ${assetsTargetFolder}`);
 
     // Globs are tricky. See: https://stackoverflow.com/a/31438355/2228771
-    const copyRes = sh.cp('-rf', `${assetFolderPath}/{.[!.],..?,}*`, this.projectPath);
+    const copyRes = sh.cp('-rf', `${assetFolderPath}/{.[!.],..?,}*`, assetsTargetFolder);
 
     const assetFiles = getAllFilesInFolders(assetFolderPath).join(',');
     this.log(`Copied assets (${assetFolderPath}): result=${copyRes.toString()}, files=${assetFiles}`,
-      // this.execCaptureOut(`cat ${this.projectPath}/.babelrc.js`)
+      // this.execCaptureOut(`cat ${assetsTargetFolder}/.babelrc.js`)
     );
   }
 
   copyAssetFile(assetPath) {
-    const { projectPath } = this;
-    // this.log(`Copying asset from ${assetFolderPath} to ${projectPath}`);
+    const assetsTargetFolder = this.getAssetsTargetFolder();
+    // this.log(`Copying asset from ${assetFolderPath} to ${assetsTargetFolder}`);
     let from, to;
     if (Array.isArray(assetPath)) {
       ([from, to] = assetPath);
@@ -1228,9 +1233,9 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     }
 
     // resolve target file path
-    const toAbsolute = pathResolve(projectPath, to);
-    if (!isFileInPath(projectPath, toAbsolute)) {
-      throw new Error(`Asset "to" file=${to} is not (but must be) relative to projectPath="${projectPath}" (${assetPath})`);
+    const toAbsolute = pathResolve(assetsTargetFolder, to);
+    if (!isFileInPath(assetsTargetFolder, toAbsolute)) {
+      throw new Error(`Asset "to" file=${to} is not (but must be) relative to assetsTargetFolder="${assetsTargetFolder}" (${assetPath})`);
     }
     const toFolder = path.dirname(toAbsolute);
     if (!fs.existsSync(toFolder)) {

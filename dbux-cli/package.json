@@ -39,8 +39,5 @@
     "serialize-javascript": "^5.0.1",
     "shelljs": "0.8.4",
     "yargs": "^16.2.0"
-  },
-  "devDependencies": {
-    "@babel/register": "^0.5.8-dev.0"
   }
 }

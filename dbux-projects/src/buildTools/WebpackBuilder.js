@@ -275,7 +275,7 @@ class WebpackBuilder {
     
     // start webpack
     const cwd = project.packageJsonFolder;
-    const webpackConfigPath = pathResolve(projectPath, 'dbux.webpack.config.js');
+    const webpackConfigPath = pathResolve(project.getAssetsTargetFolder(), 'dbux.webpack.config.js');
     
     const nodeArgs = ' --stack-trace-limit=100';
     const webpackCliBin = this.webpackCliBin();

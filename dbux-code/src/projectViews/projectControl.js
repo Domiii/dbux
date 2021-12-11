@@ -45,14 +45,19 @@ export function createProjectManager(extensionContext) {
   // the folder that is parent to `node_modules` for installing all extraneous dependencies (such as @dbux/cli, firebase etc.)
   let dependencyRoot = asAbsolutePath('.');     // extension_folder
   // let dependencyRoot = extensionContext.extensionPath;              // extension_folder
-  const pathMatch = dependencyRoot.match(/(.+)[/\\](?:.+\.)?dbux-code(?:.*[/\\]?)?/);    // NOTE: in prod, folder name changes to "author.dbux-code-version"
-  if (pathMatch) {
+  const extensionFolderMatch = dependencyRoot.match(/(.+)[/\\](?:.+\.)dbux-code(?:.*[/\\]?)/);    // NOTE: in prod, folder name changes to "author.dbux-code-version"
+  if (extensionFolderMatch) {
     if (process.env.NODE_ENV === 'development') {
       // eslint-disable-next-line prefer-destructuring
       // dependencyRoot = pathNormalizedForce(pathMatch[1]);
-      if (dependencyRoot !== process.env.DBUX_ROOT) {
-        logError(`Potential path problems: ${dependencyRoot} !== DBUX_ROOT (${process.env.DBUX_ROOT})\nIgnoring DBUX_ROOT...`);
-        // dependencyRoot = process.env.DBUX_ROOT;
+      // if (dependencyRoot !== process.env.DBUX_ROOT) {
+      //   logError(`Potential path problems: ${dependencyRoot} !== DBUX_ROOT (${process.env.DBUX_ROOT})\nIgnoring DBUX_ROOT...`);
+      //   // dependencyRoot = process.env.DBUX_ROOT;
+      // }
+      // TODO: allow running dev mode with non-local dependencies, too
+      dependencyRoot = process.env.DBUX_ROOT;
+      if (!dependencyRoot) {
+        throw new Error(`DBUX_ROOT is empty`);
       }
     }
     else {

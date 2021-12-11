@@ -25,10 +25,10 @@ export async function installDbuxDependencies() {
         // eslint-disable-next-line max-len
         await showWarningMessage(`Development Mode: Found ${missingDependencies.length} missing libraries. Cancel and run yarn i!\n\n ${missingDependencies.join('\n ')}`, {}, { modal: true });
       }
-      progress.report({ message: `New version. Installing ${missingDependencies.length} libraries (1-3 mins)${'...'}` });
+      progress.report({ message: `New version. Installing ${missingDependencies.length} library/ies (1-3 mins)${'...'}` });
 
       let lockfilePath = asAbsolutePath('install.lock');
-      debug(`install: obtaining file lock. If stuck here, make sure that no other VSCode instance is running and manually remove the lock file at: "${lockfilePath}"`);
+      debug(`install: obtaining file lock. (If stuck here, make sure that no other VSCode instance is running and manually remove the lock file at: "${lockfilePath}")`);
 
       try {
         await new Promise((resolve, reject) => {
