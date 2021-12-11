@@ -127,12 +127,12 @@ async function pullMaster() {
  * Bump version and produce new git tag
  */
 async function bumpVersion() {
-  const choice = chooseVersionBump || await menu('Version bump?', {
+  const choice = chooseVersionBump || (await menu('Version bump?', {
     1: ['(skip)'],
     2: ['patch'],
     3: ['minor'],
     4: ['major']
-  })[0];
+  }))[0];
 
   if (choice !== '(skip)') {
     await exec(`npx lerna version ${choice} --no-private --force-publish -y`);
