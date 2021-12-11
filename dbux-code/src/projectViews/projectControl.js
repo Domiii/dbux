@@ -49,10 +49,10 @@ export function createProjectManager(extensionContext) {
   if (pathMatch) {
     if (process.env.NODE_ENV === 'development') {
       // eslint-disable-next-line prefer-destructuring
-      dependencyRoot = pathNormalizedForce(pathMatch[1]);
+      // dependencyRoot = pathNormalizedForce(pathMatch[1]);
       if (dependencyRoot !== process.env.DBUX_ROOT) {
-        logError(`Potential path problems: ${dependencyRoot} !== DBUX_ROOT (${process.env.DBUX_ROOT})`);
-        dependencyRoot = process.env.DBUX_ROOT;
+        logError(`Potential path problems: ${dependencyRoot} !== DBUX_ROOT (${process.env.DBUX_ROOT})\nIgnoring DBUX_ROOT...`);
+        // dependencyRoot = process.env.DBUX_ROOT;
       }
     }
     else {
