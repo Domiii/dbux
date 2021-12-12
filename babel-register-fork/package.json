@@ -1,8 +1,7 @@
 {
-  "name": "@babel/register",
-  "private": true,
+  "name": "@dbux/babel-register-fork",
   "version": "0.5.10-dev.0",
-  "description": "babel require hook (quick-n-dirty FORK)",
+  "description": "quick-n-dirty fork OF @babel/register",
   "license": "MIT",
   "publishConfig": {
     "access": "public"

@@ -167,12 +167,11 @@ module.exports = (env, argv) => {
         ],
         allowlist: [
           /^lodash\/.*/,
-          // /^@babel\/register(\/.*)?/,
           ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/src/.*`)),
-          (...args) => {
-            console.error('[dbux-cli] bundle allowlist', ...args);
-            return false;
-          }
+          // (...args) => {
+          //   console.error('[dbux-cli] bundle allowlist', ...args);
+          //   return false;
+          // }
         ]
       })
     ],

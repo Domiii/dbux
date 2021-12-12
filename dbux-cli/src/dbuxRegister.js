@@ -1,20 +1,10 @@
-// import { requireDynamic } from '@dbux/common-node/src/util/requireUtil';
-/**
- * NOTE: we are doing some magic with @babel/register. We don't want it as explicit dependency, because:
- *  1. 
- *  2. in that case, `npm install` likes to mess things up.
- */
-
-// eslint-disable-next-line import/no-extraneous-dependencies
-import babelRegister from '@babel/register';
-
+import { requireDynamic } from '@dbux/common-node/src/util/requireUtil';
 import { escapeRegExp } from 'lodash';
 import buildBabelOptions from './buildBabelOptions';
 
 // import './linkOwnDependencies';
 import { purgeModuleCache } from './util/moduleCacheUtil';
 
-// const babelRegister = require('@babel/register').default;
 
 /**
  * hackfix: get of our own third-party dependencies out of the way, so that @babel/register will not instrument them
@@ -40,7 +30,8 @@ export default function dbuxRegister(options) {
   //  (see https://babeljs.io/docs/en/babel-register#usage)
   babelOptions.extensions = ['.es6', '.es', '.jsx', '.mjs', '.js', ''];
 
-  console.debug('[dbux|@babel/register]', JSON.stringify(options));
+  console.debug('[@dbux/babel-register-fork]', JSON.stringify(options));
+  const babelRegister = requireDynamic('@dbux/babel-register-fork').default;
   babelRegister(babelOptions);
   purgeModuleCache();
 }
