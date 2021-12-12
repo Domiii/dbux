@@ -753,20 +753,20 @@ export default class ProjectsManager {
    * @param {Exercise} exercise 
    * @param {object} inputCfg Is currently brought in from `projectViewsController`.
    */
-  async runTest(exercise, inputCfg = EmptyObject) {
+  async runTest(exercise, inputCfg = { }) {
+    // fix defaults
+    if (!('debugMode' in inputCfg)) {
+      inputCfg.debugMode = false;
+    }
+    if (!('dbuxEnabled' in inputCfg)) {
+      inputCfg.dbuxEnabled = true;
+    }
+
     let {
       debugMode,
       dbuxEnabled,
       enableSourceMaps = false
     } = inputCfg;
-
-    if (!('debugMode' in inputCfg)) {
-      inputCfg.debugMode = false;
-    }
-
-    if (!('dbuxEnabled' in inputCfg)) {
-      inputCfg.dbuxEnabled = true;
-    }
     
     if (!exercise.project.checkRunMode(inputCfg)) {
       return;
@@ -777,7 +777,7 @@ export default class ProjectsManager {
     const sourceMapsFlag = (enableSourceMaps &&
       (!exercise.project.nodeVersion || parseFloat(exercise.project.nodeVersion) > 12.12)
     ) ?
-      '--enable-source-maps' : // NOTE: `enable-source-maps` can also severely slow things down
+      '--enable-source-maps' : // NOTE: `enable-source-maps` is extremely slow on Node < 16
       '';
 
     // NOTE: `nolazy` is required for proper breakpoints in debug mode

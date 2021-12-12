@@ -24,7 +24,10 @@ const MonoRoot = path.resolve(__dirname, '..');
 
 
 module.exports = (env, argv) => {
-  const ForceNoOptimization = false;
+  /**
+   * NOTE: optimization somehow makes it impossible to lookup the `Function` plugin...
+   */
+  const ForceNoOptimization = true;
   const outputFolderName = 'dist';
   const mode = argv.mode || 'development';
 
@@ -100,8 +103,7 @@ module.exports = (env, argv) => {
         minimizer: [
           new TerserPlugin({
             terserOptions: {
-              keep_classnames: true,
-              // keep_fnames: true
+              keep_classnames: true
             }
           })
         ]

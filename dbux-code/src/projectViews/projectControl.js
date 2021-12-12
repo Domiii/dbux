@@ -1,7 +1,7 @@
 import { env, Uri } from 'vscode';
 import path from 'path';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { pathJoin } from '@dbux/common-node/src/util/pathUtil';
+import { pathJoin, pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import { initDbuxProjects } from '@dbux/projects/src';
 import Process from '@dbux/projects/src/util/Process';
 import { showWarningMessage, showInformationMessage, confirm, alert } from '../codeUtil/codeModals';
@@ -45,8 +45,8 @@ export function createProjectManager(extensionContext) {
   // the folder that is parent to `node_modules` for installing all extraneous dependencies (such as @dbux/cli, firebase etc.)
   let dependencyRoot = asAbsolutePath('.');     // extension_folder
   // let dependencyRoot = extensionContext.extensionPath;              // extension_folder
-  // const extensionFolderMatch = dependencyRoot.match(/(.+)[/\\](?:.+\.)dbux-code(?:.*[/\\]?)/);    // NOTE: in prod, folder name changes to "author.dbux-code-version"
-  // if (extensionFolderMatch) {
+  const sharedExtensionsFolderMatch = dependencyRoot.match(/(.+)[/\\](?:.+\.)dbux-code(?:.*[/\\]?)/);    // NOTE: in prod, folder name changes to "author.dbux-code-version"
+  // if (sharedExtensionsFolderMatch) {
   //   if (process.env.NODE_ENV === 'development') {
   //     // eslint-disable-next-line prefer-destructuring
   //     // dependencyRoot = pathNormalizedForce(pathMatch[1]);
@@ -58,7 +58,8 @@ export function createProjectManager(extensionContext) {
   //   }
   // }
 
-  if (process.env.NODE_ENV === 'development') {
+  // if (process.env.NODE_ENV === 'development') {
+  if (process.env.DBUX_ROOT) {
     // eslint-disable-next-line prefer-destructuring
     // dependencyRoot = pathNormalizedForce(pathMatch[1]);
     // if (dependencyRoot !== process.env.DBUX_ROOT) {
@@ -70,6 +71,11 @@ export function createProjectManager(extensionContext) {
     if (!dependencyRoot) {
       throw new Error(`DBUX_ROOT is empty`);
     }
+  }
+  else if (!sharedExtensionsFolderMatch) {
+    // no DBUX_ROOT and not shared -> we are running production mode from local dev env
+    // -> go up by one
+    dependencyRoot = pathResolve(dependencyRoot, '..');
   }
   else {
     // production: dependencyRoot is the dbux-code folder itself

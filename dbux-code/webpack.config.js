@@ -125,6 +125,10 @@ module.exports = (env, argv) => {
         minimize: true,
         minimizer: [
           new TerserPlugin({
+            /**
+             * Don't minimize resource files.
+             */
+            exclude: /resources[\\/]dist[\\/]/,
             terserOptions: {
               keep_classnames: true,
               // keep_fnames: true
