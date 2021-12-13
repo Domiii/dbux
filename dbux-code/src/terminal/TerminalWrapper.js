@@ -152,7 +152,12 @@ export default class TerminalWrapper {
       throw err;
     } finally {
       // this.dispose();
-      fs.rmdirSync(tmpFolder);
+      try {
+        fs.rmdirSync(tmpFolder, { force: true, recursive: true });
+      }
+      catch (err) {
+        debug(`(unable to remove temp folder "${tmpFolder}" - ${err.message})`);
+      }
     }
   }
 
