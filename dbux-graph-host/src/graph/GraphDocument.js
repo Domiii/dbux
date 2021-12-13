@@ -17,11 +17,11 @@ class GraphDocument extends HostComponentEndpoint {
     this.state.graphMode = GraphType.AsyncGraph;
     this.state.stackMode = StackMode.Hidden;
     this.state.followMode = true;
-    this.state.locMode = true;
+    this.state.locMode = false;
     this.state.callMode = true;
     this.state.valueMode = false;
     this.state.thinMode = false;
-    this.state.asyncDetailMode = false;
+    this.state.asyncDetailMode = true;
 
     this.createOwnComponents();
 

@@ -131,7 +131,10 @@ module.exports = (env, argv) => {
             exclude: /resources[\\/]dist[\\/]/,
             terserOptions: {
               keep_classnames: true,
-              // keep_fnames: true
+              /**
+               * We use function names in `makeTreeItems`.
+               */
+              keep_fnames: true
             }
           })
         ]

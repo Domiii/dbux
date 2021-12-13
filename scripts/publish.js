@@ -3,8 +3,8 @@
 
 // Examples:
 //
-// npm run pub -- n
-// npm run pub -- n minor
+// yarn pub -- n
+// yarn pub -- n minor
 //
 
 let chooseAlwaysNo = false;
@@ -81,20 +81,12 @@ async function yesno(q) {
 }
 
 // ###########################################################################
-// utilities
+// branch management
 // ###########################################################################
 
-function getDbuxVersion() {
-  return readPackageJsonVersion(path.join(__dirname, '../dbux-cli'));
+function getBranchName() {
+  return run('git branch --show-current');
 }
-
-async function isDevVersion() {
-  return (await getDbuxVersion()).includes('dev');
-}
-
-// ###########################################################################
-// 
-// ###########################################################################
 
 function goToMaster() {
   log('Switching to master');
@@ -119,6 +111,18 @@ async function pullMaster() {
       throw new Error(`Publish script ${ownName} (probably) has changed. Please run again to make sure.`);
     }
   }
+}
+
+/** ###########################################################################
+ * versioning
+ * ##########################################################################*/
+
+function getDbuxVersion() {
+  return readPackageJsonVersion(path.join(__dirname, '../dbux-cli'));
+}
+
+async function isDevVersion() {
+  return (await getDbuxVersion()).includes('dev');
 }
 
 /**
@@ -147,7 +151,7 @@ async function bumpVersion() {
 
 // function build() {
 //   // NOTE: this will be done automatically when publishing
-//   run(`npm run build:prod`);
+//   run(`yarn build:prod`);
 // }
 
 async function ensureProdVersion() {
@@ -158,6 +162,36 @@ async function ensureProdVersion() {
     throw new Error(msg);
   }
 }
+
+async function writeNewVersion() {
+  const version = await getDbuxVersion();
+  const fpath = path.join(__dirname, '../version.txt');
+  fs.writeFileSync(fpath, version);
+}
+
+async function bumpToDevVersion() {
+  if (!await yesno('Skip setting dev version?')) {
+    if (await isDevVersion()) {
+      console.error(`Something is wrong. We are already on a dev version (${await getDbuxVersion()}). Did version bump not succeed?`);
+    }
+    else {
+      // make sure we have at least one change (cannot downgrade without any committed changes)
+      await writeNewVersion();
+
+      // bump version
+      await exec(`npx lerna version prepatch --preid dev --force-publish -y`);
+
+      // commit + push
+      await run(`git commit -am "version bump"`);
+      await run(`git push`);
+    }
+  }
+}
+
+
+/** ###########################################################################
+ * publish
+ * ##########################################################################*/
 
 async function publishToNPM() {
   await ensureProdVersion();
@@ -196,43 +230,12 @@ async function publishToMarketplace() {
   await ensureProdVersion();
 
   // publish dbux-code to VSCode marketplace (already built)
-  await exec('npm run code:publish-no-build');
+  await exec('yarn code:publish-no-build');
 
   // if (await yesno('Published to Marketplace. Open extension website?')) {
   //   // open('https://marketplace.visualstudio.com/manage/publishers/Domi');
   //   open('https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code');
   // }
-}
-
-async function fixLerna() {
-  debug('Checking for invalid entries in package.json files (lerna hackfix)...');
-
-  await exec('npm run dbux-lerna-fix');
-}
-
-async function writeNewVersion() {
-  const version = await getDbuxVersion();
-  const fpath = path.join(__dirname, '../version.txt');
-  fs.writeFileSync(fpath, version);
-}
-
-async function bumpToDevVersion() {
-  if (!await yesno('Skip setting dev version?')) {
-    if (await isDevVersion()) {
-      console.error(`Something is wrong. We are already on a dev version (${await getDbuxVersion()}). Did version bump not succeed?`);
-    }
-    else {
-      // make sure we have at least one change (cannot downgrade without any committed changes)
-      await writeNewVersion();
-
-      // bump version
-      await exec(`npx lerna version prepatch --preid dev --force-publish -y`);
-
-      // commit + push
-      await run(`git commit -am "version bump"`);
-      await run(`git push`);
-    }
-  }
 }
 
 // async function pushToDev() {
@@ -242,13 +245,6 @@ async function bumpToDevVersion() {
 //   }
 // }
 
-// ###########################################################################
-// utilities
-// ###########################################################################
-
-function getBranchName() {
-  return run('git branch --show-current');
-}
 
 // ###########################################################################
 // main
@@ -265,6 +261,7 @@ async function main() {
 
   log(`Preparing to publish (old version: ${await getDbuxVersion()})...`);
 
+  // check the basics
   try {
     if (await execCaptureOut('npm whoami') !== 'domiii') {
       throw new Error('Not logged into NPM. Login first with: `npm login <user>`');
@@ -293,13 +290,17 @@ async function main() {
   //   }
   // );
 
+  // go to and pull master
   if (getBranchName() !== 'master') {
     await goToMaster();
   }
-
   await pullMaster();
 
-  await run('yarn i');
+  // always start at the dev version
+  run('yarn version:dev');
+
+  // install
+  run('yarn i');
 
   if (await bumpVersion()) {
     // build + publish
@@ -314,7 +315,7 @@ async function main() {
     await publishToMarketplace();
   }
   else if (!await yesno('Skip installing locally?')) {
-    await exec('npm run code:install');
+    await exec('yarn code:install');
   }
 
   await postPublish();
@@ -327,10 +328,24 @@ async function main() {
   process.exit(0);
 }
 
+/** ###########################################################################
+ * postPublish
+ * ##########################################################################*/
+
 async function postPublish() {
   await fixLerna();
   await bumpToDevVersion();
 }
+
+async function fixLerna() {
+  debug('Checking for invalid entries in package.json files (lerna hackfix)...');
+
+  await exec('yarn dbux-lerna-fix');
+}
+
+/** ###########################################################################
+ * go!
+ * ##########################################################################*/
 
 main().catch((err) => {
   logError(err);

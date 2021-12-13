@@ -1236,7 +1236,7 @@ export default class ProjectsManager {
   }
 
   async showExerciseLog(bug) {
-    throw new Error(`Not currently implemented`);
+    throw new Error(`The "Exercise Log" feature is temporarily disabled.`);
 
     // await this.getAndInitBackend();
     // await this._backend.login();
