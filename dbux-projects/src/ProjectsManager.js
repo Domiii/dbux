@@ -485,8 +485,8 @@ export default class ProjectsManager {
       if (!size) {
         return '';
       }
-      size = Math.round(size).toLocaleString('en-us');
-      return `${prefix} log file is ${size} bytes.\n`;
+      size = (Math.round(size) / 1000).toFixed(2).toLocaleString('en-us');
+      return `${prefix} log file is ${size}kb.\n`;
     }
     try {
       // research
@@ -753,7 +753,7 @@ export default class ProjectsManager {
    * @param {Exercise} exercise 
    * @param {object} inputCfg Is currently brought in from `projectViewsController`.
    */
-  async runTest(exercise, inputCfg = { }) {
+  async runTest(exercise, inputCfg = {}) {
     // fix defaults
     if (!('debugMode' in inputCfg)) {
       inputCfg.debugMode = false;
@@ -767,7 +767,7 @@ export default class ProjectsManager {
       dbuxEnabled,
       enableSourceMaps = false
     } = inputCfg;
-    
+
     if (!exercise.project.checkRunMode(inputCfg)) {
       return;
     }

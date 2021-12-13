@@ -25,7 +25,8 @@ const MonoRoot = path.resolve(__dirname, '..');
 
 module.exports = (env, argv) => {
   /**
-   * NOTE: optimization somehow makes it impossible to lookup the `Function` plugin...
+   * NOTE: optimization for some reason renames our `class Function` to `class Function_Function`...
+   * But that does not happen when running `echo 'class Function {}' > test.js ; npx terser --mangle --keep-classnames test.js`.
    */
   const ForceNoOptimization = true;
   const outputFolderName = 'dist';

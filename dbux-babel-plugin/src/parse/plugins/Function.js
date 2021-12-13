@@ -70,7 +70,7 @@ function getLastNodeOfBody(bodyNode) {
 }
 
 
-export default class Function_ extends BasePlugin {
+export default class Function extends BasePlugin {
   static plugins = ['Params'];
 
   createStaticTraceData(namePath, traceType) {
