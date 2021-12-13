@@ -32,7 +32,7 @@
     "serialize-javascript": "^5.0.1"
   },
   "devDependencies": {
-    "@dbux/panzoom": "^0.5.12-dev.0",
+    "@dbux/panzoom": "^0.5.15-dev.1",
     "open-cli": "^6.0.0"
   }
 }

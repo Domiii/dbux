@@ -140,7 +140,7 @@ async function bumpVersion() {
   const bumped = choice !== '(skip)';
 
   if (bumped) {
-    await exec(`npx lerna version ${choice} --preid=dev --no-private --force-publish -y`);
+    await exec(`npx lerna version ${choice} --preid=dev --force-publish -y`);
   }
 
   return bumped;
@@ -201,9 +201,6 @@ async function publishToNPM() {
   // else {
   publishCmd += ' from-package';
   // }
-
-  // install
-  await exec('yarn i');
 
   // publish
   await exec(publishCmd);
@@ -302,6 +299,9 @@ async function main() {
 
   // always start at the dev version
   await exec('yarn version:dev');
+
+  // quick install (lerna will link things up correctly anyway, after version bump)
+  await exec('yarn i');
 
   if (await bumpVersion()) {
     // build + publish
