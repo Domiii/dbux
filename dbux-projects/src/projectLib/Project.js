@@ -711,7 +711,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     const cwd = shared ? this.sharedRoot : this.packageJsonFolder;
     const cmd = this.preferredPackageManager === 'yarn' ?
       `yarn add ${shared && (process.env.NODE_ENV === 'development') ? '-W --dev' : ''}` :
-      `npm install -D`;
+      `npm install --legacy-peer-deps -D`;
     return this.execInTerminal(`${cmd} ${s}`, { cwd });
   }
 
@@ -1077,7 +1077,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       //      see: https://npm.community/t/need-to-run-npm-install-twice/3920
       //      Sometimes running it a second time after checking out a different branch 
       //      deletes all node_modules. The second run brings everything back correctly (for now).
-      await this.execInTerminal(`npm install && npm install`, { cwd: this.packageJsonFolder });
+      await this.execInTerminal(`npm install --legacy-peer-deps && npm install --legacy-peer-deps`, { cwd: this.packageJsonFolder });
     }
   }
 
@@ -1468,14 +1468,19 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       if (config.name) {
         config.uniqueName = `${this.name}#${config.name}`;
       }
-      this.logger.debug(`exercise found: ${config.id}${config.uniqueName && ` (${config.uniqueName})` || ''}`);
-
       return new Exercise(this, config);
     });
 
     if (process.env.NODE_ENV === 'production') {
       exercises = exercises.filter(exercise => exercise.label);
     }
+
+    this.logger.debug(
+      `loaded ${exercises.length} exercises: ` + 
+      exercises.
+        map(ex => `${ex.id}${ex.uniqueName && ` (${ex.uniqueName})` || ''}`).
+        join(', ')
+    );
 
     this._exercises = new ExerciseList(exercises);
 

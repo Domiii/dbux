@@ -8,6 +8,7 @@ export default class JavascriptAlgorithmProject extends Project {
   gitCommit = '9bb60fa';
 
   rmFiles = [
+    'package-lock.json',
     '.babelrc',       // we need babel.config.js instead
     '.husky'   // unwanted commit hooks
   ];
