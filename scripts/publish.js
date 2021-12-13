@@ -160,21 +160,19 @@ async function ensureProdVersion() {
   }
 }
 
-async function writeNewVersion() {
+async function writeVersionFile() {
   const version = await getDbuxVersion();
   const fpath = path.join(__dirname, '../version.txt');
   fs.writeFileSync(fpath, version);
 }
 
 async function bumpToDevVersion() {
-  if (!await yesno('Skip setting dev version?')) {
-    if (await isDevVersion()) {
-      console.error(`Something is wrong. We are already on a dev version (${await getDbuxVersion()}). Did version bump not succeed?`);
-    }
-    else {
+  if (await isDevVersion()) {
+    // console.error(`Something is wrong. We are already on a dev version (${await getDbuxVersion()}). Did version bump not succeed?`);
+  }
+  else {
+    if (!await yesno('Skip setting dev version?')) {
       // make sure we have at least one change (cannot downgrade without any committed changes)
-      await writeNewVersion();
-
       // bump version
       await exec(`npx lerna version prerelease --preid=dev --force-publish -y`);
 
@@ -334,6 +332,7 @@ async function main() {
  * ##########################################################################*/
 
 async function postPublish() {
+  await writeVersionFile();
   await fixLerna();
   await bumpToDevVersion();
 }
