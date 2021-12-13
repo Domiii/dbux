@@ -262,7 +262,7 @@ async function main() {
   // console.log(process.argv);
   if (process.argv[2] === 'n') {
     chooseAlwaysNo = true;
-    chooseVersionBump = process.argv[3] || 'prepatch';
+    chooseVersionBump = process.argv[3] || 'prerelease';
     console.warn(`Non-interactive mode enabled: always NO, chooseVersionBump='${chooseVersionBump}'`);
   }
 
