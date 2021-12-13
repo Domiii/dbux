@@ -130,6 +130,9 @@ module.exports = (env, argv) => {
              */
             exclude: /resources[\\/]dist[\\/]/,
             terserOptions: {
+              /**
+               * We use class names for registering dbux-projects.
+               */
               keep_classnames: true,
               /**
                * We use function names in `makeTreeItems`.

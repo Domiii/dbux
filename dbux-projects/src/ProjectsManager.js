@@ -10,6 +10,7 @@ import { pathJoin, pathResolve, realPathSyncNormalized } from '@dbux/common-node
 import { getFileSizeSync } from '@dbux/common-node/src/util/fileUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { readPackageJson } from '@dbux/cli/lib/package-util';
+import { requireUncached } from '@dbux/common-node/src/util/requireUtil';
 import projectRegistry from './_projectRegistry';
 import ProjectList from './projectLib/ProjectList';
 import ExerciseRunner from './projectLib/ExerciseRunner';
@@ -245,8 +246,9 @@ export default class ProjectsManager {
   reloadChapterList() {
     try {
       // future-work: allow for loading/choosing any chapter list
-      const chapterListFile = this.getAssetPath('chapterLists', 'list1.json');
-      const chapterRegistry = JSON.parse(fs.readFileSync(chapterListFile, 'utf-8'));
+      const chapterListFile = this.getAssetPath('chapterLists', 'list1.js');
+      // const chapterRegistry = JSON.parse(fs.readFileSync(chapterListFile, 'utf-8'));
+      const chapterRegistry = requireUncached(chapterListFile);
       this.chapters = [];
       for (const chapterConfig of chapterRegistry) {
         const { id, name, exercises: exerciseIdOrNames } = chapterConfig;

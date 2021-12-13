@@ -3,6 +3,9 @@ const sharedPlugins = require('./_sharedPlugins');
 
 module.exports = {
   sourceType: 'unambiguous',
+  targets: {
+    node: 14
+  },
   presets: [
     [
       loadBabel('@babel/preset-env'),

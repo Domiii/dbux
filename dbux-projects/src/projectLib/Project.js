@@ -1468,6 +1468,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       if (config.name) {
         config.uniqueName = `${this.name}#${config.name}`;
       }
+      this.logger.debug(`exercise found: ${config.id}${config.uniqueName && ` (${config.uniqueName})` || ''}`);
 
       return new Exercise(this, config);
     });
