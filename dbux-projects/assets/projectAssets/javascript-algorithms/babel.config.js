@@ -11,6 +11,10 @@ const shouldIgnore = require('@dbux/babel-plugin/dist/shouldIgnore').default;
 //   fileBlacklist: 'dbux[^/\\\\]*[.]js'
 // };
 
+const targets = {
+  node: 16
+};
+
 /**
  * Ignore node_modules by default.
  */
@@ -22,16 +26,16 @@ const ignore = [
   shouldIgnore(ignoreOptions)
 ];
 
+
 module.exports = {
   // sourceMaps: false,
-  "presets": [
+  targets,
+  presets: [
     [
       "@babel/preset-env",
       {
         // debug: true,
-        targets: {
-          node: 16
-        },
+        targets,
         // useBuiltIns: "usage",
         shippedProposals: true,
         // corejs: {
@@ -41,7 +45,7 @@ module.exports = {
       }
     ]
   ],
-  "plugins": [
+  plugins: [
     ["@dbux/babel-plugin", {
       verbose: 1,
       // runtime: '{"tracesDisabled": 1}'

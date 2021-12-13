@@ -31,5 +31,7 @@ const babelRegisterOptions = {
   ]
 };
 
+// console.warn('dbux-register-self', JSON.stringify(babelRegisterOptions, null, 2));
+
 
 babelRegister(babelRegisterOptions);

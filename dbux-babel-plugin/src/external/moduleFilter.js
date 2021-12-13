@@ -67,7 +67,7 @@ export default function moduleFilter(options, includeDefault) {
 
   return function _include(modulePath, ...otherArgs) {
     if (!modulePath) {
-      Verbose && traceLog(`no modulePath - otherArgs = ${otherArgs}`);
+      Verbose > 2 && traceLog(`no modulePath - otherArgs = ${JSON.stringify(otherArgs)}`);
       return undefined;
     }
     if (modulePath.match(/((dbux[-]runtime)|(@dbux[/\\]runtime))[/\\]/)) {

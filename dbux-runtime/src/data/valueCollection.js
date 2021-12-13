@@ -6,7 +6,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 // import serialize from '@dbux/common/src/serialization/serialize';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { getOriginalFunction, getPatchedFunction, getUnpatchedCallbackOrPatchedFunction } from '../util/monkeyPatchUtil';
+import { getOriginalFunction, getPatchedFunctionOrSelf, getUnpatchedCallbackOrPatchedFunction } from '../util/monkeyPatchUtil';
 import Collection from './Collection';
 import pools from './pools';
 import DataNode from '@dbux/common/src/types/DataNode';
@@ -679,7 +679,7 @@ const valueCollection = new ValueCollection();
 export function wrapValue(value) {
   if (valueCollection._getIsInstanceOf(value, Function)) {
     // value = getUnpatchedCallbackOrPatchedFunction(value);
-    value = getPatchedFunction(value);
+    value = getPatchedFunctionOrSelf(value);
   }
   return value;
 }

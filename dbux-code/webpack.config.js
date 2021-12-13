@@ -93,24 +93,28 @@ module.exports = (env, argv) => {
         babelrcRoots: absoluteDependencies
       }
     },
-    {
-      loader: 'babel-loader',
-      include: resourcesSrc,
-      options: {
-        presets: [
-          [
-            '@babel/preset-env',
-            {
-              targets: {
-                node: '4'
-              },
-              useBuiltIns: 'usage',
-              corejs: 3
-            }
-          ]
-        ],
-      }
-    }
+    // NOTE: we did the following for some outdated samples from BugJs that required very old Node versions.
+    // {
+    //   loader: 'babel-loader',
+    //   include: resourcesSrc,
+    //   options: {
+    //     targets: {
+    //        node: '4'
+    //     }
+    //     presets: [
+    //       [
+    //         '@babel/preset-env',
+    //         {
+    //           targets: {
+    //             node: '4'
+    //           },
+    //           useBuiltIns: 'usage',
+    //           corejs: 3
+    //         }
+    //       ]
+    //     ],
+    //   }
+    // }
   ];
 
   // see https://webpack.js.org/guides/production/#minification

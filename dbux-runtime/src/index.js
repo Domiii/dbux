@@ -9,6 +9,10 @@ import { getPromiseId } from './async/promisePatcher';
 const dbux = {
   _r: RuntimeMonitor.instance,
 
+  get r() {
+    return this._r;
+  },
+
   initProgram(staticProgramData, runtimeCfg) {
     this.runtimeCfg = runtimeCfg;
     return this._r.addProgram(staticProgramData, runtimeCfg);
