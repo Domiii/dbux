@@ -379,3 +379,8 @@ export default class Function extends BasePlugin {
     bodyPath.replaceWith(newBody);
   }
 }
+
+/**
+ * Hackfix: webpack, renames `class Function` to `class Function_Function`, but only in production mode (even with `optimization` disabled).
+ */
+Function.nameOverride = 'Function';

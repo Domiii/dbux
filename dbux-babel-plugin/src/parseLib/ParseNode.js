@@ -97,7 +97,9 @@ export default class ParseNode {
   // }
 
   getPlugin(pluginNameOrClazz) {
-    const pluginName = isString(pluginNameOrClazz) ? pluginNameOrClazz : pluginNameOrClazz.name;
+    const pluginName = isString(pluginNameOrClazz) ? 
+      pluginNameOrClazz : 
+      (pluginNameOrClazz.nameOverride || pluginNameOrClazz.name);
     return this.plugins[pluginName] || null;
   }
 
@@ -340,7 +342,8 @@ export default class ParseNode {
     const plugin = new Clazz();
     plugin.node = this;
     plugin.init?.(cfg);
-    this.plugins[Clazz.name] = plugin;
+    const name = Clazz.nameOverride || Clazz.name;
+    this.plugins[name] = plugin;
     this.pluginList.push(plugin);
     if (cfg.alias) {
       if (this.plugins[cfg.alias]) {
