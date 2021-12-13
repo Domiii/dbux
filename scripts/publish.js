@@ -205,6 +205,11 @@ async function publishToNPM() {
   // else {
   publishCmd += ' from-package';
   // }
+
+  // install
+  await exec('yarn i');
+
+  // publish
   await exec(publishCmd);
 
   // // check package status on NPM
@@ -297,10 +302,7 @@ async function main() {
   await pullMaster();
 
   // always start at the dev version
-  run('yarn version:dev');
-
-  // install
-  run('yarn i');
+  await exec('yarn version:dev');
 
   if (await bumpVersion()) {
     // build + publish
@@ -308,7 +310,7 @@ async function main() {
   }
   // else {
   //   // build -> should not be necessary, since, if anything changed, it should be re-published anyway!
-  //   await run('yarn prepublishOnly');
+  //   await exec('yarn prepublishOnly');
   // }
 
   if (await yesno('Publish (already built version) to Marketplace?')) {
