@@ -140,10 +140,7 @@ async function bumpVersion() {
   const bumped = choice !== '(skip)';
 
   if (bumped) {
-    if (choice === 'prerelease') {
-      choice += ' --preid dev';
-    }
-    await exec(`npx lerna version ${choice} --no-private --force-publish -y`);
+    await exec(`npx lerna version ${choice} --preid=dev --no-private --force-publish -y`);
   }
 
   return bumped;
