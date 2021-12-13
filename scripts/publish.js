@@ -125,18 +125,24 @@ async function pullMaster() {
  * Bump version and produce new git tag
  */
 async function bumpVersion() {
-  const choice = chooseVersionBump || (await menu('Version bump?', {
+  let choice = chooseVersionBump || (await menu('Version bump?', {
     1: ['(skip)'],
-    2: ['patch'],
-    3: ['minor'],
-    4: ['major']
+    2: ['prepatch'],
+    3: ['patch'],
+    4: ['minor'],
+    5: ['major']
   }))[0];
 
-  if (choice !== '(skip)') {
+  const bumped = choice !== '(skip)';
+
+  if (bumped) {
+    if (choice === 'prepatch') {
+      choice += ' --preid dev';
+    }
     await exec(`npx lerna version ${choice} --no-private --force-publish -y`);
   }
 
-  return choice !== '(skip)';
+  return bumped;
 }
 
 // function build() {
@@ -220,7 +226,7 @@ async function bumpToDevVersion() {
       await writeNewVersion();
 
       // bump version
-      await exec(`npx lerna version prepatch --preid dev --yes --force-publish`);
+      await exec(`npx lerna version prepatch --preid dev --force-publish -y`);
 
       // commit + push
       await run(`git commit -am "version bump"`);
@@ -253,7 +259,7 @@ async function main() {
   // console.log(process.argv);
   if (process.argv[2] === 'n') {
     chooseAlwaysNo = true;
-    chooseVersionBump = process.argv[3] || 'patch';
+    chooseVersionBump = process.argv[3] || 'prepatch';
     console.warn(`Non-interactive mode enabled: always NO, chooseVersionBump='${chooseVersionBump}'`);
   }
 

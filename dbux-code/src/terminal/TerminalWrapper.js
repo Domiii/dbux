@@ -4,7 +4,6 @@ import path from 'path';
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { pathNormalized, pathNormalizedForce, whichNormalized } from '@dbux/common-node/src/util/pathUtil';
-import Process from '@dbux/projects/src/util/Process';
 // import sleep from '@dbux/common/src/util/sleep';
 import { closeDefaultTerminal, runInTerminal, runInTerminalInteractive } from '../codeUtil/terminalUtil';
 import { getResourcePath } from '../codeUtil/codePath';
@@ -20,15 +19,15 @@ const { log, debug, warn, error: logError } = newLogger('terminalWrapper');
 // ###########################################################################
 
 /**
- * TODO: clean this up and move it to a more suitable place
+ * 
  */
 async function getPathToNode() {
-  const hasVolta = !!whichNormalized('volta');
-  if (hasVolta) {
-    // get the actual Node binary location that is not inside the target directory (i.e. the globally installed version)
-    const nodePath = await Process.execCaptureOut(`volta which node`, { processOptions: { cwd: __dirname } });
-    return pathNormalized(nodePath);
-  }
+  // const hasVolta = !!whichNormalized('volta');
+  // if (hasVolta) {
+  //   // get the actual Node binary location that is not inside the target directory (i.e. the globally installed version)
+  //   const nodePath = await Process.execCaptureOut(`volta which node`, { processOptions: { cwd: __dirname } });
+  //   return pathNormalized(nodePath);
+  // }
   return 'node';
 }
 
