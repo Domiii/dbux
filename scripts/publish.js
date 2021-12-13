@@ -194,7 +194,6 @@ async function bumpToDevVersion() {
  * ##########################################################################*/
 
 async function publishToNPM() {
-  await ensureProdVersion();
   // publish dependencies to NPM
   // NOTE: will trigger build scripts before publishing
   log('Publishing to NPM...');
@@ -226,6 +225,9 @@ async function publishToMarketplace() {
 
   // // make sure dbux-code is ready
   // await exec('cd dbux-code && yarn list --prod --json');
+
+  // don't publish dev version to marketplace
+  await ensureProdVersion();
 
   if (await isDevVersion() && await yesno(`Currently on dev version. Downgrade and continue?`)) {
     await downgradeProdVersion();
