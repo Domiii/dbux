@@ -131,7 +131,7 @@ async function isDevVersion() {
 async function bumpVersion() {
   let choice = chooseVersionBump || (await menu('Version bump?', {
     1: ['(skip)'],
-    2: ['prepatch'],
+    2: ['prerelease'],
     3: ['patch'],
     4: ['minor'],
     5: ['major']
@@ -140,7 +140,7 @@ async function bumpVersion() {
   const bumped = choice !== '(skip)';
 
   if (bumped) {
-    if (choice === 'prepatch') {
+    if (choice === 'prerelease') {
       choice += ' --preid dev';
     }
     await exec(`npx lerna version ${choice} --no-private --force-publish -y`);
@@ -179,7 +179,7 @@ async function bumpToDevVersion() {
       await writeNewVersion();
 
       // bump version
-      await exec(`npx lerna version prepatch --preid dev --force-publish -y`);
+      await exec(`npx lerna version prerelease --preid=dev --force-publish -y`);
 
       // commit + push
       await run(`git commit -am "version bump"`);
