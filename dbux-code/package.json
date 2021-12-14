@@ -10,7 +10,7 @@
     "url": "https://github.com/Domiii/dbux"
   },
   "engines": {
-    "vscode": "^1.63.0"
+    "vscode": "^1.50.0"
   },
   "categories": [
     "Other"

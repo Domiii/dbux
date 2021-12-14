@@ -12,7 +12,7 @@ module.exports = [
     -1
   ],
   [
-    [new Array(1e3).fill(0).map((_, i) => i)],
+    [new Array(50).fill(0).map((_, i) => i)],
     -1
   ]
 ];

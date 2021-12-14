@@ -9,7 +9,7 @@ const configs = [
     patch: ['no-callbacks']
   },
   {
-    label: 'ToDo items are not rendered, with clear error message.',
+    label: 'ToDo items are not rendered. Luckily, there is a clear error message.',
     // description: 'ToDo items never show up. Luckily there is a clear error message.',
     patch: ['no-callbacks', 'error1'],
     domains: ['init', 'controller'],
