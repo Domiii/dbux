@@ -553,6 +553,14 @@
         }
       },
       {
+        "command": "dbuxProjectView.node.exerciseCleanup",
+        "title": "Clean Up",
+        "icon": {
+          "light": "resources/light/clear.svg",
+          "dark": "resources/dark/clear.svg"
+        }
+      },
+      {
         "command": "dbuxProjectView.node.stopProject",
         "title": "Stop project",
         "icon": {
@@ -820,6 +828,11 @@
           "group": "inline@0"
         },
         {
+          "command": "dbuxProjectView.node.exerciseCleanup",
+          "when": "viewItem =~ /dbuxProjectView\\.exerciseNode/ && !dbuxProjectView.context.isBusy",
+          "group": "inline@2"
+        },
+        {
           "command": "dbuxProjectView.node.startPractice",
           "when": "viewItem =~ /dbuxProjectView\\.exerciseNode\\.(None|Done)\\..*/ && !dbuxProjectView.context.isBusy",
           "group": "inline@20"
@@ -851,7 +864,7 @@
         },
         {
           "command": "dbuxProjectView.node.showExerciseLog",
-          "when": "viewItem =~ /dbuxProjectView\\.exerciseNode/",
+          "when": "false && viewItem =~ /dbuxProjectView\\.exerciseNode/",
           "group": "inline@8"
         },
         {
@@ -1317,6 +1330,10 @@
         },
         {
           "command": "dbuxProjectView.node.cleanup",
+          "when": "false"
+        },
+        {
+          "command": "dbuxProjectView.node.exerciseCleanup",
           "when": "false"
         },
         {

@@ -29,6 +29,7 @@ module.exports = [
     id: 3,
     name: 'TODO MVC',
     exercises: [
+      'todomvc-es6#1',
       'todomvc-es6#2',
       'todomvc-es6#3',
       'todomvc-es6#4',

@@ -87,6 +87,10 @@ export function initProjectCommands(extensionContext, projectViewController) {
     return node.cleanUp();
   });
 
+  registerCommand(extensionContext, 'dbuxProjectView.node.exerciseCleanup', (node) => {
+    return node.cleanUp();
+  });
+
   registerCommand(extensionContext, 'dbuxProjectView.node.stopProject', (/* node */) => {
     return projectViewController.manager.runner.cancel();
   });
