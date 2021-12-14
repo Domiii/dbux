@@ -175,10 +175,6 @@ async function bumpToDevVersion() {
       // make sure we have at least one change (cannot downgrade without any committed changes)
       // bump version
       await exec(`npx lerna version prerelease --preid=dev --force-publish -y`);
-
-      // commit + push
-      await run(`git commit -am "version bump"`);
-      await run(`git push`);
     }
   }
 }
@@ -335,6 +331,10 @@ async function postPublish() {
   await writeVersionFile();
   await fixLerna();
   await bumpToDevVersion();
+
+  // commit + push
+  await run(`git commit -am "version bump"`);
+  await run(`git push`);
 }
 
 async function fixLerna() {
