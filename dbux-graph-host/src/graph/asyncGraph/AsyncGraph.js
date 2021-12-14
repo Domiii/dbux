@@ -42,6 +42,7 @@ class AsyncGraph extends GraphBase {
     const { selectedApplicationId, selected } = allApplications.selection.data.threadSelection;
     this.setState({ children, applications, selectedApplicationId, selectedThreadIds: Array.from(selected) });
     this._resubscribeOnData();
+    this.postUpdate();
   }
 
   clear() {
@@ -319,9 +320,7 @@ class AsyncGraph extends GraphBase {
     await this.remote.highlightSyncRoots(nodes);
   }
 
-  handleTraceSelected = async (trace) => {
-    // goto async node of trace
-    await this.waitForRender();
+  updateSelectedAsyncNode = async (trace) => {
     let asyncNode;
     if (trace) {
       const { applicationId, rootContextId } = trace;
@@ -332,11 +331,29 @@ class AsyncGraph extends GraphBase {
       }
     }
     await this.remote.selectAsyncNode(asyncNode);
-    await Promise.all([
-      this.updateStackHighlight(trace),
-      this.updateSyncRootsHighlight(trace),
-      this.updateRootValueLabel(trace),
-    ]);
+  }
+
+  /**
+   * Do view updates that depends on `TraceSelection`.
+   */
+  postUpdate = async () => {
+    try {
+      const trace = traceSelection.selected;
+      await this.waitForRender();
+      await Promise.all([
+        this.updateStackHighlight(trace),
+        this.updateSyncRootsHighlight(trace),
+        this.updateRootValueLabel(trace),
+        this.updateSelectedAsyncNode(trace),
+      ]);
+    }
+    catch (err) {
+      this.logger.error(`postUpdate failed`, err);
+    }
+  }
+
+  handleTraceSelected = async () => {
+    await this.postUpdate();
   }
 
   // ###########################################################################

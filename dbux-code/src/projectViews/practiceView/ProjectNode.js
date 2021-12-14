@@ -1,9 +1,8 @@
 import Project from '@dbux/projects/src/projectLib/Project';
 import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
+import cleanUp from './cleanUp';
 import ExerciseNode from './ExerciseNode';
-import { runTaskWithProgressBar } from '../../codeUtil/runTaskWithProgressBar';
-import { showInformationMessage } from '../../codeUtil/codeModals';
 
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
 
@@ -59,41 +58,6 @@ export default class ProjectNode extends BaseTreeViewNode {
   }
 
   async cleanUp() {
-    const confirmMessage = `How do you want to clean up the project: ${this.project.name}?`;
-    const btnConfig = {
-      "Flush Cache Only": async () => {
-        await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
-          progress.report({ message: 'deleting project folder...' });
-          this.project.deleteCacheFolder();
-        }, {
-          cancellable: false,
-          title: this.project.name,
-        });
-
-        this.treeNodeProvider.refresh();
-        showInformationMessage('Cache flushed successfully.');
-      },
-      "Clear Log Files": async () => {
-        // TODO: better explain this
-        await this.project.clearLog();
-        showInformationMessage('Log files removed successfully.');
-      },
-      "Delete Project (+ Cache)": async () => {
-        const success = await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
-          progress.report({ message: 'deleting project folder...' });
-
-          return await this.project.deleteProjectFolder();
-        }, {
-          cancellable: false,
-          title: this.project.name,
-        });
-
-        if (success) {
-          this.treeNodeProvider.refresh();
-          await showInformationMessage('Project has been deleted successfully.');
-        }
-      }
-    };
-    await showInformationMessage(confirmMessage, btnConfig, { modal: true });
+    await cleanUp(this.treeNodeProvider, this.project);
   }
 }

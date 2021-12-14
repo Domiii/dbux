@@ -166,8 +166,9 @@ class HostComponentEndpoint extends ComponentEndpoint {
     try {
       this._waitingForUpdate = true;
       this._preInit();                                    // 0. host: preInit
+      Verbose && this.logger.debug('init start');
       this.init();                                        // 1. host: init
-      Verbose && this.logger.debug('init called');
+      Verbose && this.logger.debug('update start');
       this.update();                                      // 2. host: update
     }
     catch (err) {
@@ -179,6 +180,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
   }
 
   async _doInitClient() {
+    Verbose && this.logger.debug('_doInitClient start');
     const resultFromClientInit = this.parent && await this.componentManager._initClient(this); // 3. client: init -> update (ignore `internal root component`)
     // success                                        // 4. waitForInit resolved
     Verbose && this.logger.debug('initialized');
@@ -357,12 +359,13 @@ class HostComponentEndpoint extends ComponentEndpoint {
    * First disposes all descendants (removes recursively) and then removes itself.
    */
   dispose(silent = false) {
+    Verbose && this.logger.debug('dispose start');
     super.dispose();
 
     // Promise.resolve(this.waitForInit()).then(() => {
-    if (!this.isInitialized && !silent) {
-      throw new Error(this.debugTag + ' Trying to dispose before initialized');
-    }
+    // if (!this.isInitialized && !silent) {
+    //   throw new Error(this.debugTag + ' Trying to dispose before initialized');
+    // }
 
     this.clearChildren(silent);
 
@@ -372,11 +375,17 @@ class HostComponentEndpoint extends ComponentEndpoint {
       list._removeComponent(this);
     }
 
-    if (!silent) {
-      // also dispose on client
-      this._remoteInternal.dispose();
-    }
-    // });
+    // also dispose on client
+    Promise.resolve(this.waitForInit())
+      .then(() => {
+        this._remoteInternal.dispose();
+      })
+      .catch((err) => {
+        if (!silent) {
+          this.logger.error(err);
+        }
+      });
+    Verbose && this.logger.debug('disposed');
   }
 
   // ###########################################################################
