@@ -114,7 +114,9 @@ class SyncGraphBase extends GraphBase {
 
     this.contextNodesByContext.set(context, contextNode);
     contextNode.addDisposable(() => {
-      this.contextNodesByContext.delete(context);
+      if (this.contextNodesByContext.get(context) === contextNode) {
+        this.contextNodesByContext.delete(context);
+      }
     });
 
     return contextNode;
@@ -125,7 +127,8 @@ class SyncGraphBase extends GraphBase {
     // NOTE: sometimes, `contextNode` does not exist, for some reason
     //    -> might be because `this.roots` contains roots that are not actually displayed
     contextNode?.dispose();
-    this.contextNodesByContext.delete(context);
+    // register disposable on add instead
+    // this.contextNodesByContext.delete(context);
   }
 
   buildContextNodeChildren(contextNode) {
