@@ -1,16 +1,16 @@
 {
   "name": "@dbux/projects",
-  "version": "0.5.15-dev.4",
+  "version": "0.5.15-dev.5",
   "description": "",
   "main": "dist/bundle.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@dbux/cli": "^0.5.15-dev.4",
-    "@dbux/common": "^0.5.15-dev.4",
-    "@dbux/common-node": "^0.5.15-dev.4",
-    "@dbux/data": "^0.5.15-dev.4",
+    "@dbux/cli": "^0.5.15-dev.5",
+    "@dbux/common": "^0.5.15-dev.5",
+    "@dbux/common-node": "^0.5.15-dev.5",
+    "@dbux/data": "^0.5.15-dev.5",
     "cross-spawn": "^7.0.3",
     "glob": "^7.1.6",
     "i18next": "^19.8.2",
