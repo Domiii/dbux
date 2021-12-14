@@ -75,16 +75,17 @@ export default class TodomvcEs6Project extends Project {
    * 
    * @param {Exercise} exercise 
    */
-  decorateExerciseForRun(exercise) {
+  decorateExercise(exercise) {
     // fix relative file paths
     // exercise.mainEntryPoint = this.builder.getEntryOutputPath('bundle', exercise);
-    exercise.mainEntryPoint = pathResolve(this.projectPath, 'src/app.js');
+    exercise.mainEntryPoint = pathResolve(this.srcRoot, 'src/app.js');
     if (exercise.bugLocations) {
       exercise.bugLocations = exercise.bugLocations.map(loc => (loc && {
         ...loc,
         file: this.getAbsoluteFilePath(loc.file)
       }));
     }
+    return exercise;
   }
 
   async runCommand(bug, cfg) {
