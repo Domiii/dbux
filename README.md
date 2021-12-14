@@ -4,34 +4,30 @@
 [![Discord](https://img.shields.io/discord/743765518116454432.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/QKgq9ZE)
 [![David](https://flat.badgen.net/david/dev/Domiii/dbux)](https://david-dm.org/Domiii/dbux?type=dev)
 
-# TODO: This documentation has not been updated with changes since May 2021. Will update soon!
-
 # Introduction
 
-Dbux aims at helping analyze the execution of JavaScript programs by recording (almost) all runtime data, visualizationg it and making it interactive, thereby (hopefully) helping developers (i) improve program comprehension and (ii) reduce time spent on finding bugs.
+Dbux aims at helping analyze the execution of JavaScript programs by recording (almost) all runtime data, visualizing it and making it interactive, thereby (hopefully) helping developers (i) improve program comprehension and (ii) reduce time spent on finding bugs.
 
-This video explains what Dbux is and features **two examples** of how to use the Dbux VSCode extension:
+This (too long) video explains what Dbux is and features two examples of how to use the Dbux VSCode extension:
 
 <a href="https://www.youtube.com/watch?v=m1ANEuZJFT8" target="_blank" alt="video">
    <img src="https://img.youtube.com/vi/m1ANEuZJFT8/0.jpg">
 </a>
 
-If you have any questions or are interested in the progress of this project, feel free to [join us on DISCORD](https://discord.gg/QKgq9ZE).
+If you have any questions, feel free to [join us on DISCORD](https://discord.gg/QKgq9ZE).
 
 # Getting Started
 
 We recommend getting started with Dbux by playing around with the [Dbux VSCode extension](dbux-code#readme).
 
-This page covers more broad topics related to the Dbux project:
+This page covers broad topics related to the Dbux project:
 
-- [TODO: This documentation has not been updated with changes since May 2021. Will update soon!](#todo-this-documentation-has-not-been-updated-with-changes-since-may-2021-will-update-soon)
 - [Introduction](#introduction)
 - [Getting Started](#getting-started)
-- [Adding Dbux to your build pipeline](#adding-dbux-to-your-build-pipeline)
+- [Adding Dbux to Your Build Pipeline](#adding-dbux-to-your-build-pipeline)
 - [Which files will be traced?](#which-files-will-be-traced)
 - [Performance](#performance)
 - [Known Limitations](#known-limitations)
-  - [async/await](#asyncawait)
   - [Loops](#loops)
   - [Other Syntax Limitations](#other-syntax-limitations)
   - [Problems with Values](#problems-with-values)
@@ -40,8 +36,8 @@ This page covers more broad topics related to the Dbux project:
   - [`eval` and dynamically loaded code](#eval-and-dynamically-loaded-code)
   - [Function.prototype.toString and Function.name do not behave as expected](#functionprototypetostring-and-functionname-do-not-behave-as-expected)
   - [SyntaxError: Unexpected reserved word 'XX'](#syntaxerror-unexpected-reserved-word-xx)
-  - [Async Call Graph + Callback tracking](#async-call-graph--callback-tracking)
   - [Issues on Windows](#issues-on-windows)
+  - [More...](#more)
 - [Dbux Data Analysis](#dbux-data-analysis)
 - [Dbux Architecture](#dbux-architecture)
   - [Call Graph GUI Implementation](#call-graph-gui-implementation)
@@ -55,11 +51,13 @@ This page covers more broad topics related to the Dbux project:
 - [Development + Contributions](#development--contributions)
 
 
-# Adding Dbux to your build pipeline
+# Adding Dbux to Your Build Pipeline
 
-In order to analyze your program's runtime, the program must:
-1. be instrumented with Dbux and
-1. injected with the [@dbux/runtime](dbux-runtime#readme).
+In order to analyze your program's runtime, your program must:
+
+1. Be instrumented with `@dbux/babel-plugin`.
+2. Injected with the `@dbux/runtime`.
+3. Have a server listen for the data, such as the Dbux VSCode extension.
 
 We employ [@dbux/babel-plugin](dbux-babel-plugin#readme) to do these two jobs for us.
 
@@ -112,13 +110,6 @@ Main considerations include:
 
 
 # Known Limitations
-
-## async/await
-
-* Instrumentation of `async/await` is largely untested. We cannot yet guarantee it fully working.
-* NOTE: Yes, we also believe that this is an absolutely vital feature of modern JavaScript and we hate to not have it fully working yet (despite having already spent quite some time on it).
-* This is tracked in #128.
-* If concerned about `async/await`, you might also be interested in the separate [Async Call Graph + Callback tracking](#async-call-graph--callback-tracking) feature.
 
 ## Loops
 
@@ -211,32 +202,18 @@ This is only of concern to those who rely on serializing and deserializing funct
 * See "[Adding Dbux to your build pipeline](#adding-dbux-to-your-build-pipeline)" on how to customize the babel config
 
 
-## Async Call Graph + Callback tracking
-
-Theoretically we should be able to track all callbacks and their data flow to the call site, however we don't do that properly quite yet.
-
-That is because we currently only support a "synchronous call graph", meaning that **all** execution is organized in a single serial "thread". While that makes sense (especially since JavaScript is inherently single-threaded), logically we want to group "threads of asynchronous contexts" together.
-
-That means that, for now, invocation of promise callbacks (callbacks passed to `then()`, `catch()`, `finally()` etc.), and even resuming of an `async` function, will result in a new `run`, seen executing serially in the Call Graph, and you cannot easily trace a single promise or the execution of a asingle `async` function through the graph. Instead, they will be cut up into multiple pieces scattered across the linear Call Graph representation, and sprinkled with other unrelated calls that happen to occur in between.
-
-In other words:
-
-* When calling `setTimeout(f)`, you will see that `f` gets executed, but it's execution is not linked to the `setTimeout(f)` call that scheduled its execution.
-* The same problem exists with `Promise.then(f)`, and, in general, any instance where callbacks are used.
-
-This link between a caller passing a callback and the execution of that callback is considered an edge on the "asynchronous call graph", an elusive feature that we are planning to support, but don't have finished yet.
-
-The "Asynchronous Call Graph" feature is tracked in issue #210.
-
-
 ## Issues on Windows
 
-* A bug unrelated to Dbux occurs **very rarely**, when running things in VSCode's built-in terminal: it might change `require` or `import` paths to lower-case drive letter.
+* A bug unrelated to Dbux occurs **very rarely**, when running things in VSCode's built-in terminal: it might change `require` or `import` paths to lower- or upper-case drive letter.
    * NOTE: Luckily, we have not seen this bug occur in quite some time.
    * The bug causes a mixture of lower-case and upper-case drive letters to start appearing in `require` paths
       * => this makes `babel` unhappy ([github issue](https://github.com/webpack/webpack/issues/2815))
    * Official bug report: https://github.com/microsoft/vscode/issues/9448
-   * Workaround: Restart your computer (can help!), run command in external `cmd` or find a better behaving shell/terminal
+   * Workaround: Restart your computer (can help!), run command in external `cmd` or find a better behaving shell/terminal.
+
+## More...
+
+We keep track of some of our big ideas in [docs/future-work.md](docs/future-work.md).
 
 
 # Dbux Data Analysis

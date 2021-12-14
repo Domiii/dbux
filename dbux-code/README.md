@@ -7,43 +7,13 @@ This page explains the dbux-code extension and how to use it. For more general i
 
 <h2>Table of Contents</h2>
 
-- [Introduction w/ Examples](#introduction-w-examples)
 - [Installation](#installation)
 - [Usage](#usage)
-- ["Run with Dbux" and "Debug with Dbux"](#run-with-dbux-and-debug-with-dbux)
-  - [How the Run + Debug buttons work](#how-the-run--debug-buttons-work)
-- [Analysis Features](#analysis-features)
-  - [Applications](#applications)
-  - [Code decorations](#code-decorations)
-  - [Trace Selection](#trace-selection)
-  - [Trace Details](#trace-details)
-  - [Trace Details: Navigation](#trace-details-navigation)
-  - [Trace Details: Value](#trace-details-value)
-  - [Trace Details: Object Traces](#trace-details-object-traces)
-  - [Trace Details: Trace Executions](#trace-details-trace-executions)
-  - [Trace Details: Nearby Values](#trace-details-nearby-values)
-  - [Trace Details: Debug](#trace-details-debug)
-  - [Call Graph](#call-graph)
-  - [Call Graph: pause (pause/resume live updates)](#call-graph-pause-pauseresume-live-updates)
-  - [Call Graph: clear (show/hide already recorded traces)](#call-graph-clear-showhide-already-recorded-traces)
-  - [Call Graph: sync (toggle sync mode)](#call-graph-sync-toggle-sync-mode)
-  - [Call Graph: loc](#call-graph-loc)
-  - [Call Graph: call](#call-graph-call)
-  - [Call Graph: Search](#call-graph-search)
-  - [Finding Errors](#finding-errors)
-- [Practice debugging with "Dbux Practice"](#practice-debugging-with-dbux-practice)
 - [Commands](#commands)
 - [Configuration](#configuration)
 - [Dbux Runtime Server](#dbux-runtime-server)
 - [How does Dbux work?](#how-does-dbux-work)
 
-# Introduction w/ Examples
-
-This video explains what Dbux is and features **two examples** of how to use the Dbux VSCode extension:
-
-<a href="https://www.youtube.com/watch?v=m1ANEuZJFT8" target="_blank" alt="video">
-   <img src="https://img.youtube.com/vi/m1ANEuZJFT8/0.jpg">
-</a>
 
 # Installation
 
@@ -63,7 +33,7 @@ If you have a build pipeline, and cannot just run it via `node myProgram.js`, re
 Dbux is not perfect. You might want to read up on [known limitations](https://github.com/Domiii/dbux/tree/master/#known-limitations).
 
 
-# "Run with Dbux" and "Debug with Dbux"
+<!-- # "Run with Dbux" and "Debug with Dbux"
 
 The "Run with Dbux" button is the easiest way to get started with Dbux
 * It is located in multiple places:
@@ -325,7 +295,7 @@ If there are multiple errors, it should take you to the first error in your prog
 
 "Dbux Practice" aims to allow anyone to easily get into practicing debugging on real-world bugs in professionally developed open source projects.
 
-We are still working on this. More on this soon :)
+We are still working on this. More on this soon :) -->
 
 
 # Commands

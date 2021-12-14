@@ -3,7 +3,12 @@
 This file serves to keep track of features that could prove very valuable for runtime analysis and debugging purposes. 
 So many things that can be done... So little time...
 
-* more advanced search/filter features, such a...
+* `@dbux/runtime` is currently hardcoded to connect to a `localhost` server (see [here](C:\Users\domin\code\dbux\dbux-runtime\src\client\Client.js)).
+* More advanced filter runtime features, to reduce noise and improve speed.
+  * Currently, a loop of 1 million iterations already stretches Dbux to its limits. We want to improve that.
+  * Adaptive trace logging would be advantageous: (i) only log traces that are relevant, and (ii) allow user to easily select or change what is "relevant".
+* Config file support for instrumentation + `runtime`.
+* More advanced search/filter analysis features, such as...
   * searching for arrays/objects that contain certain values
   * searching/filtering of/by all (or subset of) `node_modules`, package names
   * enabling/disabling/grouping of/by modules/files etc. in call graph
@@ -12,6 +17,8 @@ So many things that can be done... So little time...
 * Support web-based VSCode https://vscode.dev/
 * Support [Yarn PnP](https://yarnpkg.com/features/pnp)
 
+
+# More Future Ideas
 
 * advanced **context-sensitive** keymap support to expand/collapse/click all buttons (e.g. similar to [AOE4's "grid keys"](https://www.google.com/search?q=aoe4+grid+keys))
   * provide a single `Toggle Dbux Keymap` shortcut/command. When enabled:

@@ -25,6 +25,7 @@ const StayAwake = false;
 // const StayAwake = true;
 const SleepDelay = 1000;
 const DefaultPort = 3374;
+const RemoteHost = 'localhost';
 
 // ###########################################################################
 // time management
@@ -311,7 +312,7 @@ export default class Client {
     this._connectFailed = false;
     this._connectStart = Date.now();
     const port = DefaultPort;
-    const Remote = `ws://localhost:${port}`;
+    const Remote = `ws://${RemoteHost}:${port}`;
     const socket = this._socket = io.connect(Remote, {
       // jsonp: false,
       // forceNode: true,
