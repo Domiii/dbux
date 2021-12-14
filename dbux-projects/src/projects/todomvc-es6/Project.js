@@ -1,4 +1,5 @@
 import path from 'path';
+import { writeMergePackageJson } from '@dbux/cli/lib/package-util';
 import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import WebpackBuilder from '../../buildTools/WebpackBuilder';
 import Exercise from '../../projectLib/Exercise';
@@ -59,6 +60,11 @@ export default class TodomvcEs6Project extends Project {
         }
       }
     });
+  }
+  
+  async beforeInstall() {
+    // remove husky from package.json
+    writeMergePackageJson(this.projectPath, { scripts: undefined });
   }
 
   async afterInstall() {
