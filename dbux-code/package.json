@@ -965,11 +965,6 @@
           "group": "navigation@2"
         },
         {
-          "command": "dbux.runFile",
-          "when": "view == dbuxTraceDetailsView",
-          "group": "navigation@5"
-        },
-        {
           "command": "dbux.showGraphView",
           "when": "view == dbuxTraceDetailsView && !dbuxWebView.context.dbux-graph.isActive",
           "group": "navigation@10"

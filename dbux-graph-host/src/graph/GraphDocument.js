@@ -14,7 +14,7 @@ class GraphDocument extends HostComponentEndpoint {
     this._emitter = new NanoEvents();
 
     // default mode settings
-    this.state.graphMode = GraphType.AsyncGraph;
+    this.state.graphMode = GraphType.SyncGraph;
     this.state.stackMode = StackMode.Hidden;
     this.state.followMode = true;
     this.state.locMode = false;
@@ -27,6 +27,7 @@ class GraphDocument extends HostComponentEndpoint {
 
     // NOTE: this will be called immediately
     this.addDisposable(allApplications.selection.onApplicationsChanged(() => {
+      this.handleApplicationsChanged();
       this.refreshGraphs();
     }));
   }
@@ -89,6 +90,9 @@ class GraphDocument extends HostComponentEndpoint {
 
   onGraphModeChanged(cb) {
     return this._emitter.on('graphModeChanged', cb);
+  }
+
+  handleApplicationsChanged() {
   }
 
   refreshGraphs() {

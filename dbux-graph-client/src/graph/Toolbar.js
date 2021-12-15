@@ -20,12 +20,12 @@ class Toolbar extends ClientComponentEndpoint {
           <button title="Show arguments and return value of function call in the form of: (args) -> returnValue" data-el="valueModeBtn" class="toolbar-btn btn btn-info" href="#">val</button>
           <button title="Thin mode" data-el="thinModeBtn" class="no-horizontal-padding btn btn-info" href="#"></button>
 
+          <button title="Search for contexts by name" data-el="searchContextsBtn" class="toolbar-btn btn btn-info" href="#">🔍</button>
+          <button title="Search for traces by name" data-el="searchTracesBtn" class="toolbar-btn btn btn-info hidden" href="#">🔍+</button>
+
           <button title="Sync and always lock onto selected trace" data-el="followModeBtn" class="toolbar-btn btn btn-info" href="#">follow</button>
           <button title="Stop recording: Do not add new runs/traces" data-el="hideNewRunBtn" class="toolbar-btn btn btn-info" href="#"></button>
           <button title="Clear: Hide all existing runs/traces" data-el="hideOldRunBtn" class="toolbar-btn btn btn-info" href="#">x</button>
-
-          <button title="Search for contexts by name" data-el="searchContextsBtn" class="toolbar-btn btn btn-info" href="#">🔍</button>
-          <button title="Search for traces by name" data-el="searchTracesBtn" class="toolbar-btn btn btn-info" href="#">🔍+</button>
 
           <button title="Clear Thread Selection" data-el="clearThreadSelectionBtn" class="toolbar-btn btn btn-info" href="#">
             <img width="12px" src="${this.state.theradSelectionIconUri}" />
