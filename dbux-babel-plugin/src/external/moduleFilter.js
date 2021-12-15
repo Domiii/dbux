@@ -1,5 +1,6 @@
 import isString from 'lodash/isString';
 import isRegExp from 'lodash/isRegExp';
+import { homedir } from 'os';
 import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 // import { requireDynamic } from '@dbux/common-node/src/util/requireUtil';
@@ -144,13 +145,22 @@ function makeRegExps(list, toRegexp = defaultRegexpCreator) {
   return list;
 }
 
+function renderPath(fpath) {
+  const home = homedir();
+  if (fpath.startsWith(home)) {
+    fpath = '~' + fpath.substring(home.length);
+  }
+  return fpath;
+}
 
 function reportRegister(modulePath, shouldInclude, what) {
   if (Verbose) {
     if (shouldInclude) {
+      modulePath = renderPath(modulePath);
       debugLog(`REGISTER`, modulePath, `(${what})`);
     }
     else if (Verbose > 1) {
+      modulePath = renderPath(modulePath);
       debugLog(`no-register`, modulePath, `(${what})`);
     }
   }
