@@ -4,14 +4,15 @@
 
 ## Prerequisites
 
-* bash
+* `bash`
    * On Windows, you can get this via cygwin or `git` (which also installs cygwin)
 * [Volta](https://docs.volta.sh/guide/getting-started)
-  * Make sure to delete `node`, `yarn` (and possibly `n` and `nvm` if you have it) first
+  * `Volta`, unlike `n` and `nvm`, is fully cross-platform.
   * We recommend using volta to manage `node`, `npm` and `yarn`. It is a breeze to work with, and makes version management child's play.
+  * Make sure to delete `node`, `yarn` (and possibly `n` and `nvm` if you have it) first
   * Use `volta` to install `node` and `yarn`
     * node
-       * we recommend [v12.12.0](https://nodejs.org/en/blog/release/v12.12.0/) or higher for its source map support
+       * we recommend `node@16` or higher for better support of source maps (node source map support used to be very slow before `node@16`).
     * yarn
 
 
@@ -21,7 +22,7 @@
 git clone https://github.com/Domiii/dbux.git
 cd dbux
 code dbux.code-workspace # open project in vscode
-yarn i # install dependencies
+yarn install && yarn i # install dependencies
 ```
 
 Finally, you might want to enable Dbux auto start by default:
@@ -29,7 +30,7 @@ Finally, you might want to enable Dbux auto start by default:
 ![dbux auto start](.\img\dbux-auto-start-workspace-setting.png)
 
 
-If dependencies bug out, run the (very aggressive) clean-up command: `npm run dbux-reinstall`
+If dependencies bug out, sometimes running the (very aggressive) clean-up command can help: `npm run dbux-reinstall` (of course we don't recommend this).
 
 
 ## Start development

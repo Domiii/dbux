@@ -4,9 +4,10 @@ This file serves to keep track of features that could prove very valuable for ru
 So many things that can be done... So little time...
 
 * `@dbux/runtime` is currently hardcoded to connect to a `localhost` server (see [here](C:\Users\domin\code\dbux\dbux-runtime\src\client\Client.js)).
-* More advanced filter runtime features, to reduce noise and improve speed.
+* More advanced trace filter features, to reduce noise and improve performance.
   * Currently, a loop of 1 million iterations already stretches Dbux to its limits. We want to improve that.
-  * Adaptive trace logging would be advantageous: (i) only log traces that are relevant, and (ii) allow user to easily select or change what is "relevant".
+  * Adaptive trace logging would be advantageous: 
+    * (i) only log traces that are "relevant", and (ii) allow user to easily select or change what is "relevant".
 * Config file support for instrumentation + `runtime`.
 * More advanced search/filter analysis features, such as...
   * searching for arrays/objects that contain certain values

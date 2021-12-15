@@ -31,37 +31,29 @@ This page covers broad topics related to the Dbux project:
   - [Loops](#loops)
   - [Other Syntax Limitations](#other-syntax-limitations)
   - [Problems with Values](#problems-with-values)
-  - [Calling `process.exit` as well as uncaught exceptions are not handled properly](#calling-processexit-as-well-as-uncaught-exceptions-are-not-handled-properly)
+  - [Calling `process.exit` as well as uncaught exceptions are not always handled properly](#calling-processexit-as-well-as-uncaught-exceptions-are-not-always-handled-properly)
   - [Observer Effect](#observer-effect)
   - [`eval` and dynamically loaded code](#eval-and-dynamically-loaded-code)
   - [Function.prototype.toString and Function.name do not behave as expected](#functionprototypetostring-and-functionname-do-not-behave-as-expected)
-  - [SyntaxError: Unexpected reserved word 'XX'](#syntaxerror-unexpected-reserved-word-xx)
   - [Issues on Windows](#issues-on-windows)
-  - [More...](#more)
+  - [SyntaxError: Unexpected reserved word 'XX'](#syntaxerror-unexpected-reserved-word-xx)
 - [Dbux Data Analysis](#dbux-data-analysis)
 - [Dbux Architecture](#dbux-architecture)
   - [Call Graph GUI Implementation](#call-graph-gui-implementation)
 - [Terminology](#terminology)
   - [Trace](#trace)
   - [Context](#context)
-  - [Run](#run)
+  - [Call Graph Root (CGR)](#call-graph-root-cgr)
   - [Call Graph](#call-graph)
     - [Asynchronous Call Graph](#asynchronous-call-graph)
 - [How is Dbux being used?](#how-is-dbux-being-used)
 - [Development + Contributions](#development--contributions)
+- [Future Work](#future-work)
 
 
 # Adding Dbux to Your Build Pipeline
 
-In order to analyze your program's runtime, your program must:
-
-1. Be instrumented with `@dbux/babel-plugin`.
-2. Injected with the `@dbux/runtime`.
-3. Have a server listen for the data, such as the Dbux VSCode extension.
-
-We employ [@dbux/babel-plugin](dbux-babel-plugin#readme) to do these two jobs for us.
-
-That means that you need to "[babel](https://babeljs.io/) your program" with [@dbux/babel-plugin](dbux-babel-plugin#readme) enabled.
+In order to analyze your program's runtime, your program must be instrumented with `@dbux/babel-plugin`, meaning that you need to "[babel](https://babeljs.io/) your program" with [@dbux/babel-plugin](dbux-babel-plugin#readme) enabled.
 
 There are two approaches:
 
@@ -74,16 +66,14 @@ There are two approaches:
 
 
 
+Once running, the injected `@dbux/runtime` will send collected data to the runtime server inside the [Dbux VSCode extension](dbux-code#readme).
+
+
 # Which files will be traced?
 
-When running Dbux, most relevant parts of the code will be traced. However it will not trace *everything*.
+When running Dbux, most relevant parts of the code will be traced. However, tracing *everything* is very slow. That is why you want to fine-tune configuration as to what and how you want to trace. We currently offer several configuration options to that end in [moduleFilter](dbux-babel-plugin/src/external/moduleFilter.js), such as `packageWhitelist`, `packageBlacklist`, `fileWhitelist` and `fileBlacklist`.
 
-* When using the "Run button", we trace all executed code, but ignore anything in `node_modules` and `dist` folders.
-   * This logic is hard-coded in [dbux-cli/src/buildBabelOptions.js](dbux-cli/src/buildBabelOptions.js).
-   * Soon you will be able to override the `dbux-cli`'s default babel config.
-* You can easily control what to instrument if you add `@dbux/babel-plugin` to your build pipeline.
-   * via Babel [`test`, `include`, `exclude` and `only` config options](https://babeljs.io/docs/en/options#test)
-   * via Webpack [rule conditions](https://webpack.js.org/configuration/module/#rule-conditions)
+We hope to provide better and more adaptive tracing for this [in the future](docs/future-work.md).
 
 
 # Performance
@@ -92,28 +82,22 @@ There are many performance considerations in tracing and recording *all* activit
 
 Main considerations include:
 
-* Instrumentation via [`@dbux/cli`](dbux-cli#readme) is slow.
-  * It uses [`@babel/register`](https://babeljs.io/docs/en/babel-register) (currently with babel-cache disabled) which itself can be very slow, since it re-instruments every file on every run.
-  * If you want to speed things up, do not use `@dbux/cli`, but use the `@dbux/babel-plugin` directly, in combination with Webpack (or some other bundler) in *watch mode*, so it will only instrument code that has been changed, rather than *everything* all the time.
-* In order to render the value of variables, we need to actually copy all variables anytime they are used in any way.
-   * That can get very slow very fast if your code operates on large arrays, objects and strings.
-   * That is why we have a few parameters to tune.
-   * Currently, those parameters are hardcoded and cannot be configured from the outside.
-   * Tracked in #217
+* Instrumentation can be slow.
+  * `@dbux/cli` uses [`@babel/register`](https://babeljs.io/docs/en/babel-register) with custom caching. That caching currently has limited configuration, but we hope for more in the future.
+  * If you use a bundler, make sure to configure caching for it.
 * When executing *a lot of stuff* (e.g. long loops or high FPS games etc), things will get slow
-   * In the future, instead of recording *everything*, we might want to be able to choose what to record, and when.
-      * For example: Dbux probably won't really work at all if you run it on a 30+FPS game.
-         * In that case, we might want to be very strategic in telling Dbux to only record: (i) initialization, (ii) a select few other functions and then (iii) several frames of the gameloop for our analysis.
-   * However, that is future work. Dbux does not currently have such fine-grained control over the recording process.
-   * Tracked in issue#219
-* When running a program with Dbux enabled, and also running it in debug mode (i.e. `--inspect` or `--inspect-brk`), things probably slow down even worse. When things get too slow, you might want to consider using the `Run` button instead of the `Debug` button, and use the Dbux built-in features for debugging; unless there are some features in the traditional debugger that you just cannot live without in some specific circumstances.
+  * For example: Dbux probably won't really work at all if you run it on a 30+FPS game.
+    * In that case, we might want to be very strategic in telling Dbux to only record: (i) initialization, (ii) a select few other functions and then (iii) several frames of the gameloop for our analysis.
+  * Again, adaptive tracing is something we want to do in the future.
+* When running a program with Dbux enabled, and also running it in debug mode in Node (i.e. `--inspect` or `--inspect-brk`), things slow down even worse. When things get too slow, you might want to consider using the `Run` button instead of the `Debug` button, and use the Dbux built-in features for debugging; unless there are some features in the traditional debugger that you just cannot live without in some specific circumstances.
+* Recording of large arrays and objects is limited, according to some (currently hardcoded) `SerializationLimits`, to be found in [valueCollection](dbux-runtime/src/data/valueCollection.js).
 
 
 # Known Limitations
 
 ## Loops
 
-Loop support is being worked on, and tracing of loop-relevant traces is currently disabled.
+Loop comprehension is currently limited.
 
 Tracked in [#222](https://github.com/Domiii/dbux/issues/222).
 
@@ -123,9 +107,12 @@ Tracked in [#222](https://github.com/Domiii/dbux/issues/222).
 The following JS syntax constructs are not supported at all or support is limited.
 
 * Generator functions
-   * *Probably* broken so bad that it will lead to errors when trying to run JS code with generator function declarations in it.
-* do-while loops
-   * `do-while` loops are currently not traced because Babel complained any kind of `DoWhileStatement` visitor. Will have to investigate further.
+  * Untested and not properly traced.
+* Some es6 features are traced correctly, but data flow analysis is limited.
+  * We do not currently connect data flow through es6 deconstruction.
+  * In verbose mode, `Dbux` raises some warnings tagged with "`[NYI]`" to notify you of those missing connections.
+
+NOTE: Most of these features still work fine, but some related information is not available and data flow analysis is interrupted.
 
 
 ## Problems with Values
@@ -133,21 +120,20 @@ The following JS syntax constructs are not supported at all or support is limite
 Because of [performance](#performance) reasons, we cannot record *everything*.
 
 * Big objects, arrays and strings are truncated (see [performance](#performance) for more information).
-* We currently do not properly handle certain built-in types (such as `Map` and `Set`) correctly; will probably not really reveal much.
+* We currently do not properly trace all built-ins. Tracked in https://github.com/Domiii/dbux/issues/543.
 
 
-## Calling `process.exit` as well as uncaught exceptions are not handled properly
+## Calling `process.exit` as well as uncaught exceptions are not always handled properly
 
-* You might see a message along the lines of "Process shutdown but not all data has been sent out. Analysis will be incomplete. This is probably because of a crash or `process.exit` was called manually
-* `process.exit` and uncaught exceptions kill the process, even if not all recorded data has been sent out yet. As a result, not all of the runtime data could be recorded properly.
-* If you *MUST* call `process.exit` manually, consider doing it after a `setTimeout` with 0.5-1s delay to be on the safe side.
-   * NOTE: some frameworks that kill your process by can be configured not to do so (e.g. for `Mocha` you want to add the `--no-exit` flag)
-* This is tracked in #201.
+* You might see a message along the lines of "`Process shutdown but not all data has been sent out. Analysis will be incomplete. This is probably because of a crash or process.exit was called manually.`"
+* `process.exit` and uncaught exceptions kill the process, even if not all recorded data has been sent out yet. As a result, not all runtime data could be recorded properly. That is why Dbux tries to stall upon process.exit and uncaught exceptions and also issues a warning.
+  * NOTE: some frameworks that kill your process by can be configured not to do so (e.g. for `Mocha` you want to add the `--no-exit` flag).
+* This was tracked in [#201](https://github.com/Domiii/dbux/issues/201).
 
 
 ## Observer Effect
 
-By trying to observe a program, while definitely not intending to, you will inevitably change its behavior due to the [observer effect](https://en.wikipedia.org/wiki/Observer_effect_(physics)). Here are a few examples:
+By trying to observe a program, while not intending to, you will inevitably change its behavior due to the [observer effect](https://en.wikipedia.org/wiki/Observer_effect_(physics)). Here are a few examples:
 
 * Property getters with [side effects](https://softwareengineering.stackexchange.com/questions/40297/what-is-a-side-effect) will be called automatically by `Dbux` (to get all that juicy runtime data) and potentially break things
    * Dbux tracks data in real-time, by reading and recording variables, objects, arrays etc.
@@ -164,43 +150,26 @@ By trying to observe a program, while definitely not intending to, you will inev
    * At the same time, Proxy property access, also very much by design, often has side effects.
    * -> This means that in many scenarios where Proxies (with side effects) are in play, you might just not be able to use Dbux properly.
 
-In the future, we will hope to more easily control what gets traced and when, to prevent accessing property getters with side-effects. For example by allowing in-line comment directives (just like Eslint does it), but we sadly just don't have that yet. Tracked in issue #209.
+You can completely disable tracing of any sensitive AST nodes by preceding them with a `/* dbux disable */` comment. Tracked in issue [#209](https://github.com/Domiii/dbux/issues/209).
 
 ## `eval` and dynamically loaded code
 
 As a general rule of thumb - Any dynamically loaded code will currently not be traced. That is because we are not proactively scanning the application for code injections or outside code references.
 
-Affected examples include:
+This includes:
 
 * Calling `eval` on non-instrumented code
 * Any kind of `<script>` tags containing or referencing non-instrumented code
 
-In order to trace such code, the runtime would have to:
+* If it is not generated dynamically: instrument that code beforehand.
+* If the code is generated dynamically, Dbux cannot be of help right now, as we would have to ship and inject `@dbux/babel-plugin` dynamically. While this is not impossible, it is not at all a priority to us. Contact us if you really need this to work.
 
-1. (Probably) stop execution of the application.
-2. "Babel the code" with `@dbux/babel-plugin` enabled.
-3. Replace the code with the instrumented version
-4. Resume.
-
-While this is not impossible, we certainly do not currently support this feature.
 
 ## Function.prototype.toString and Function.name do not behave as expected
 
-Because we instrument the function body, and sometimes even change the structure of functions to allow better tracing their behavior, their `toString()` and `name` might not be what you expect it to be.
+Because we instrument the function body, and sometimes even change the structure of functions, to allow better tracing their behavior, their `myFunc.toString()` is not what you expect it to be. `name` on the other hand should always survive (or so we hope).
 
 This is only of concern to those who rely on serializing and deserializing functions, e.g. for sending functions of to run in a `webworker` ([related discussion here](https://stackoverflow.com/questions/11354992/why-cant-web-worker-call-a-function-directly)).
-
-
-## SyntaxError: Unexpected reserved word 'XX'
-
-* Example: When just running `var public = 3;` in `node` or the browser, you don't get an error. However when running the same code with [@dbux/cli](dbux-cli#readme) (which is also invoked when pressing the `Dbux VSCode Plugin`'s "Run with Dbux" button), it throws a synxtax error.
-* That is because:
-   1. `public` (and others) are reserved keywords and using reserved keywords is only an error in **strict mode** ([relevant discussion here](https://stackoverflow.com/questions/6458935/just-how-reserved-are-the-words-private-and-public-in-javascript)).
-   2. [@dbux/cli](dbux-cli#readme) uses [@babel/register](https://babeljs.io/docs/en/babel-register) with a bunch of default settings.
-   3. By default, babel treats js files as [ESModules](https://nodejs.org/api/esm.html) (or `esm`s), and ESModules have strict mode enabled by default. This is also discussed here: https://github.com/babel/babel/issues/7910
-   4. NOTE: You can see the same syntax error when slightly modifying above example and running it in `node` (without Dbux) but with strict mode enabled: `"use strict"; var public = 3;`.
-* See "[Adding Dbux to your build pipeline](#adding-dbux-to-your-build-pipeline)" on how to customize the babel config
-
 
 ## Issues on Windows
 
@@ -211,9 +180,15 @@ This is only of concern to those who rely on serializing and deserializing funct
    * Official bug report: https://github.com/microsoft/vscode/issues/9448
    * Workaround: Restart your computer (can help!), run command in external `cmd` or find a better behaving shell/terminal.
 
-## More...
+## SyntaxError: Unexpected reserved word 'XX'
 
-We keep track of some of our big ideas in [docs/future-work.md](docs/future-work.md).
+* Example: When just running `var public = 3;` in `node` or the browser, you don't get an error. However when running the same code with [@dbux/cli](dbux-cli#readme) (which is also invoked when pressing the `Dbux VSCode Plugin`'s "Run with Dbux" button), it throws a synxtax error.
+* That is because:
+   1. `public` (and others) are reserved keywords and using reserved keywords is only an error in **strict mode** ([relevant discussion here](https://stackoverflow.com/questions/6458935/just-how-reserved-are-the-words-private-and-public-in-javascript)).
+   2. [@dbux/cli](dbux-cli#readme) uses [@babel/register](https://babeljs.io/docs/en/babel-register) with a bunch of default settings.
+   3. By default, babel treats js files as [ESModules](https://nodejs.org/api/esm.html) (or `esm`s), and ESModules have strict mode enabled by default. This is also discussed here: https://github.com/babel/babel/issues/7910
+   4. NOTE: You can see the same syntax error when slightly modifying above example and running it in `node` (without Dbux) but with strict mode enabled: `"use strict"; var public = 3;`.
+* See "[Adding Dbux to your build pipeline](#adding-dbux-to-your-build-pipeline)" on how to customize the babel config
 
 
 # Dbux Data Analysis
@@ -265,23 +240,29 @@ We use (i) the name `staticTrace` to represent a piece of code (e.g. `f(x)`), an
 
 ## Context
 
-* A `static context` can be a `function` declaration or a `Program` (`Program` is Babel's word for "JavaScript file"). A `context` (sometimes also called `executionContext`) is any execution of such function or Program.
-* In many ways, a `context` can also be considered a "stack frame" (or `frame` in short).
-   * (That idea only came to us later, and that is why we are not currently using this terminology.)
-* JavaScript implementation note: While functions can be executed many times, JavaScript files usually only execute once, that is the first time they are `require`'d or `import`'ed. After that first time, their `exports` are cached, and returned to any following caller of `require` or `import`. That is why you will only see a single trace in the file scope, even if you require them many times.
-* TODO: explain how this works for `async function`s
+* A `static context` can be a `function` declaration or a `Program` (`Program` is Babel's word for "JavaScript file").
+* A `context` (sometimes also called `executionContext`) is any execution of such function or Program.
+* In many ways, a `context` can also be considered a "stack frame", but it is not quite the same.
+* On file contexts:
+  * While functions can be executed many times, JavaScript files usually only execute once, that is the first time they are `require`'d or `import`'ed.
+  * After that first time, their `exports` are cached, and returned to any following caller of `require` or `import`.
+  * That is why you will only see a single trace in the file scope, even if you require them many times.
+* TODO: explain virtual and async contexts
 
-## Run
 
-A "run" is an invocation of code from outside our visible (recorded) runtime. Examples include:
+## Call Graph Root (CGR)
 
-* Execution of a JavaScript file (often called by `node` or by the webpack bundle (which in turn is called by the underlying JS runtime environment)).
-* Browser executing JavaScript of a &lt;script> tag
-* Execution of a callback supplied to `setTimeout`, `setInterval`, `setIntermediate`, `Process.nextTick` and even `Promise.then`. These callbacks are (usually) scheduled and then, at a later point in time, executed by the underlying JS runtime environment.
-* DOM event handler callbacks
-* and probably more...
+A "call graph root" is an invocation of code from outside our visible (recorded) runtime. Examples include:
 
-The set of all runs comprise the "root nodes" of our Call Graph.
+* Your application's entry point.
+* Execution of a JavaScript file, often called by `node` or by the webpack bundle (which in turn is called by the underlying JS runtime environment).
+* Browser executing a &lt;script> tag.
+* Execution of a callback supplied to `setTimeout`, `setInterval`, `setIntermediate`, `Process.nextTick`, `Promise.then` etc. These callbacks are scheduled and then, at a later point in time, executed by the underlying JS runtime environment.
+* DOM or OS event handler callbacks.
+* and more...
+
+The nodes of the async call graph only comprises these call graph roots.
+
 
 ## Call Graph
 
@@ -305,5 +286,9 @@ TODO
 
 # Development + Contributions
 
-If you are interested in Dbux development and maybe even want to participate or contribute, feel free to take a look at [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
+If you are interested in Dbux development, feel free to take a look at [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
 
+
+# Future Work
+
+We keep track of some of our big ideas in [docs/future-work.md](docs/future-work.md).
