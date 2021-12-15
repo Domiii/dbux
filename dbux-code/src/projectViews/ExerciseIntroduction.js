@@ -69,8 +69,8 @@ export default class ExerciseIntroductionView extends WebviewWrapper {
       entryHtml('description'),
       entryHtml('stepsToReproduce', null, makeOl),
       entryHtml('tags', null, makeUl),
+      entryHtml('testRe'),
       entryHtml('difficulty'),
-      entryHtml('testRe')
     ].join('\n\n');
   }
 

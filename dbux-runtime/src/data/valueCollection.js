@@ -6,10 +6,10 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 // import serialize from '@dbux/common/src/serialization/serialize';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { getOriginalFunction, getPatchedFunctionOrSelf, getUnpatchedCallbackOrPatchedFunction } from '../util/monkeyPatchUtil';
+import DataNode from '@dbux/common/src/types/DataNode';
+import { getOriginalFunction, getPatchedFunctionOrSelf } from '../util/monkeyPatchUtil';
 import Collection from './Collection';
 import pools from './pools';
-import DataNode from '@dbux/common/src/types/DataNode';
 
 
 /** @typedef {import('@dbux/common/src/types/ValueRef').default} ValueRef */
@@ -22,7 +22,7 @@ const Verbose = false;
 // const VerboseErrors = Verbose || true;
 const VerboseErrors = Verbose || false;
 
-const SerializationConfig = {
+const SerializationLimits = {
   maxDepth: 4,          // applies to arrays and object
   maxObjectSize: 50,    // applies to arrays and object
   maxStringLength: 1000
@@ -134,7 +134,6 @@ class ValueCollection extends Collection {
   }
 
   getBuiltInSerializer(value) {
-
     if (!value.constructor || value === value.constructor.prototype) {
       // don't try to default-serialize a built-in prototype
       return null;
@@ -471,8 +470,8 @@ class ValueCollection extends Collection {
     // switch (category) {
     //   case ValueTypeCategory.String:
     if (isString(value)) {
-      if (value.length > SerializationConfig.maxStringLength) {
-        serialized = value.substring(0, SerializationConfig.maxStringLength) + '...';
+      if (value.length > SerializationLimits.maxStringLength) {
+        serialized = value.substring(0, SerializationLimits.maxStringLength) + '...';
         // pruneState = ValuePruneState.Shortened;
       }
       else {
@@ -511,7 +510,7 @@ class ValueCollection extends Collection {
    * @return {ValueRef}
    */
   _serialize(value, nodeId, depth = 1, category = null, meta = null) {
-    // let serialized = serialize(category, value, serializationConfig);
+    // let serialized = serialize(category, value, serializationLimits);
     let serialized;
     let pruneState = ValuePruneState.Normal;
     let typeName = '';
@@ -520,7 +519,7 @@ class ValueCollection extends Collection {
     if (this.valuesDisabled) {
       return this._addValueDisabled();
     }
-    if (depth > SerializationConfig.maxDepth) {
+    if (depth > SerializationLimits.maxDepth) {
       return this.addOmitted();
     }
 
@@ -575,9 +574,9 @@ class ValueCollection extends Collection {
 
       case ValueTypeCategory.Array: {
         let n = value.length;
-        if (n > SerializationConfig.maxObjectSize) {
+        if (n > SerializationLimits.maxObjectSize) {
           pruneState = ValuePruneState.Shortened;
-          n = SerializationConfig.maxObjectSize;
+          n = SerializationLimits.maxObjectSize;
         }
 
         // build array
@@ -625,9 +624,9 @@ class ValueCollection extends Collection {
 
             // prune
             let n = props.length;
-            if (n > SerializationConfig.maxObjectSize) {
+            if (n > SerializationLimits.maxObjectSize) {
               pruneState = ValuePruneState.Shortened;
-              n = SerializationConfig.maxObjectSize;
+              n = SerializationLimits.maxObjectSize;
             }
 
             // start serializing
