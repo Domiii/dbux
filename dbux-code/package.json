@@ -250,7 +250,7 @@
       },
       {
         "command": "dbuxTraceDetailsView.node.showError",
-        "title": "Show all errors",
+        "title": "Go to Error",
         "icon": {
           "light": "resources/light/fire.svg",
           "dark": "resources/dark/fire.svg"

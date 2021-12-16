@@ -18,9 +18,11 @@ If you have any questions, feel free to [join us on DISCORD](https://discord.gg/
 
 # Getting Started
 
-We recommend getting started with Dbux by playing around with the [Dbux VSCode extension](dbux-code#readme).
+We recommend getting started with Dbux by playing around with the Dbux VSCode extension.
 
-This page covers broad topics related to the Dbux project:
+[These slides serve as an introduction and tutorial](https://docs.google.com/presentation/d/1-tFBB0afJl9PGSouEZyr3QIOV0ATyttUZVAjhOuW5iA/edit#slide=id.p) for `Dbux` + `Dbux Practice`.
+
+The rest of this page covers several broad topics related to the Dbux project:
 
 - [Introduction](#introduction)
 - [Getting Started](#getting-started)
@@ -55,7 +57,7 @@ This page covers broad topics related to the Dbux project:
 
 In order to analyze your program's runtime, your program must be instrumented with `@dbux/babel-plugin`, meaning that you need to "[babel](https://babeljs.io/) your program" with [@dbux/babel-plugin](dbux-babel-plugin#readme) enabled.
 
-There are two approaches:
+There are three approaches:
 
 1. either: Use the [@dbux/cli](dbux-cli#readme) (command line interface)
    * It uses [@babel/register](https://babeljs.io/docs/en/babel-register) to instrument code on the fly.
@@ -63,6 +65,7 @@ There are two approaches:
    * [Read more here](dbux-cli#readme).
 2. or: Add the [@dbux/babel-plugin](dbux-babel-plugin#readme) to your build pipeline manually
    * [Read more here](dbux-babel-plugin#readme).
+3. `Dbux Practice` is integrated in the `Dbux VSCode Extension` and allows you to explore and debug several sample and real-world applications
 
 
 

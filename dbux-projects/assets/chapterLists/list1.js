@@ -26,7 +26,7 @@ module.exports = [
   //   ]
   // },
   {
-    id: 3,
+    id: 2,
     name: 'TODO-MVC (es6)',
     exercises: [
       'todomvc-es6#1',
@@ -43,7 +43,7 @@ module.exports = [
     ]
   },
   {
-    id: 4,
+    id: 3,
     name: 'express',
     exercises: [
       'express#file-paths-slashes',
