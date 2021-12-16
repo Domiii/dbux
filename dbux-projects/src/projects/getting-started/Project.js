@@ -13,7 +13,7 @@ export default class GettingStartedProject extends Project {
   // gitRemote = 'node-fetch/node-fetch.git';
   // gitCommit = 'tags/v2.1.2'
 
-  packageManager = 'yarn';
+  // packageManager = 'yarn';
 
   decorateExercise(config) {
     Object.assign(config, {

@@ -12,7 +12,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { requireUncached } from '@dbux/common-node/src/util/requireUtil';
 import { getAllFilesInFolders, globRelative, rm } from '@dbux/common-node/src/util/fileUtil';
 import { isFileInPath, pathJoin, pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
-import isObject from 'lodash/isObject';
+import { writeMergePackageJson } from '@dbux/cli/lib/package-util';
 import ExerciseList from './ExerciseList';
 import Process from '../util/Process';
 import { MultipleFileWatcher } from '../util/multipleFileWatcher';
@@ -698,11 +698,23 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     }
   }
 
-  async installPackages(s, shared = false/* , force = true */) {
-    if (isObject(s)) {
-      s = Object.entries(s).map(([name, version]) => `${name}@${version}`).join(' ');
+  async installPackages(dependencies, shared = false/* , force = true */) {
+    if (!isPlainObject(dependencies)) {
+      throw new Error(`installPackages requires plain object, but received ${typeof dependencies}: ${JSON.stringify(dependencies)}`);
     }
+    // dependencies = Object.entries(dependencies).map(([name, version]) => `${name}@${version}`).join(' ');
     await this.ensurePackageJson();
+
+    /**
+     * Write to `package.json` directly to circumvent weird problems with caret escaping.
+     * Windows, for some reason requires quadruple escaping of carets, while mac does not.
+     * future-work: add checks to `exec` command that no carets are passed in, since that would not be cross-platform.
+     * 
+     * @see https://github.com/yarnpkg/yarn/issues/3270
+     */
+    writeMergePackageJson(this.packageJsonFolder, {
+      dependencies
+    });
 
     // NOTE: somehow Node module resolution algorithm skips a directory, that is `projectsRoot`
     //       -> That is why we choose `dependencyRoot` instead
@@ -710,9 +722,9 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     // NOTE: we don't do shared for now.
     const cwd = shared ? this.sharedRoot : this.packageJsonFolder;
     const cmd = this.preferredPackageManager === 'yarn' ?
-      `yarn add ${shared && (process.env.NODE_ENV === 'development') ? '-W --dev' : ''}` :
-      `npm install --legacy-peer-deps -D`;
-    return this.execInTerminal(`${cmd} ${s}`, { cwd });
+      `yarn install` :
+      `npm install --legacy-peer-deps`;
+    return this.execInTerminal(`${cmd} `, { cwd });
   }
 
   /**
@@ -1476,7 +1488,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     }
 
     this.logger.debug(
-      `loaded ${exercises.length} exercises: ` + 
+      `loaded ${exercises.length} exercises: ` +
       exercises.
         map(ex => `${ex.id}${ex.uniqueName && ` (${ex.uniqueName})` || ''}`).
         join(', ')

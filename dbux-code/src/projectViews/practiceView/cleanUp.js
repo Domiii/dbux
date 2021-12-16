@@ -13,7 +13,7 @@ export default async function cleanUp(treeNodeProvider, project) {
   const btnConfig = {
     "Flush Cache Only": async () => {
       await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
-        progress.report({ message: 'deleting project folder...' });
+        progress.report({ message: 'deleting cache folder...' });
         project.deleteCacheFolder();
       }, {
         cancellable: false,

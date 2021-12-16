@@ -95,23 +95,19 @@ class WebpackBuilder {
   async afterInstall() {
     const shared = false; // <- don't share for now (since it messes with Dbux's own dependencies)
     const deps = {
-      /**
-       * NOTE: caret hell, caused by broken input mechanisms
-       * @see https://github.com/yarnpkg/yarn/issues/3270
-       */
       // eslint-disable-next-line quote-props
-      'webpack': '^^^^5',
-      'webpack-cli': '^^^^4',
+      'webpack': '^5',
+      'webpack-cli': '^4',
       // 'webpack-config-utils': '???',
-      'copy-webpack-plugin': '^^^^8',
-      'clean-webpack-plugin': '^^^^4',
-      'babel-loader': '^^^^8'
+      'copy-webpack-plugin': '^8',
+      'clean-webpack-plugin': '^4',
+      'babel-loader': '^8'
     };
     if (this.needsDevServer) {
-      deps['webpack-dev-server'] = '^^^^4';
+      deps['webpack-dev-server'] = '^4';
     }
     if (this.needsHtmlPlugin) {
-      deps['html-webpack-plugin'] = '^^^^5';
+      deps['html-webpack-plugin'] = '^5';
     }
     await this.project.installPackages(deps, shared);
   }
