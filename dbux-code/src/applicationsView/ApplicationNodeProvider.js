@@ -22,10 +22,13 @@ export default class ApplicationNodeProvider extends BaseTreeViewNodeProvider {
 
     const roots = [];
     for (let [entry, apps] of Object.entries(appByPath)) {
-      const newRoot = apps.slice(-1)[0];
-      const children = apps.slice(0, -1).reverse();
+      const newRoot = apps.pop();
+      const children = apps.reverse();
       newRoot.children = children.length ? children : null;
       newRoot.tooltip = entry;
+      for (const child of children) {
+        child.parent = newRoot;
+      }
       roots.push(newRoot);
     }
 
