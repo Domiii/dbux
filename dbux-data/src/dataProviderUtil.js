@@ -240,6 +240,24 @@ export default {
       flat();
   },
 
+  /**
+   * @param {DataProvider} dp 
+   * @param {number|string} searchTerm
+   */
+  findContextsByValueSearchTerm(dp, searchTerm) {
+    searchTerm = searchTerm.toString().toLowerCase();
+
+    const matchedContextIds = new Set();
+    for (const dataNode of dp.util.getSimpleDataNodes()) {
+      if (dataNode.value?.toString().includes(searchTerm)) {
+        const trace = dp.collections.traces.getById(dataNode.traceId);
+        matchedContextIds.add(trace.contextId);
+      }
+    }
+
+    return Array.from(matchedContextIds).map(contextId => dp.collections.executionContexts.getById(contextId));
+  },
+
   /** @param {DataProvider} dp */
   getContextModuleName(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
@@ -405,6 +423,10 @@ export default {
   getDataNodesOfTrace(dp, traceId) {
     const valueTrace = dp.util.getValueTrace(traceId);
     return dp.indexes.dataNodes.byTrace.get(valueTrace.traceId);
+  },
+
+  getSimpleDataNodes(dp) {
+    return dp.indexes.dataNodes.simple.get(1) || EmptyArray;
   },
 
   /** @param {DataProvider} dp */
