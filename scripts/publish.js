@@ -305,7 +305,7 @@ async function main() {
     await exec('yarn version:dev');
   }
   catch (err) {
-    if (await yesno(`Unable to revert to dev version. Ignore and continue?`)) {
+    if (await yesno(`Unable to revert to dev version. Should I stop?`)) {
       return;
     }
   }
