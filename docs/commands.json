@@ -15,6 +15,11 @@
     "description": "(Feature still in development. Won't work.)"
   },
   {
+    "command": "dbux.diagnostics",
+    "title": "Dbux: Diagnostics",
+    "description": ""
+  },
+  {
     "command": "dbux.doActivate",
     "title": "Dbux: Start Dbux",
     "description": ""
