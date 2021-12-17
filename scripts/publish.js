@@ -300,8 +300,15 @@ async function main() {
   }
   await pullMaster();
 
-  // always start at the dev version
-  await exec('yarn version:dev');
+  try {
+    // always start at the dev version
+    await exec('yarn version:dev');
+  }
+  catch (err) {
+    if (await yesno(`Unable to revert to dev version. Ignore and continue?`)) {
+      return;
+    }
+  }
 
   // quick install (lerna will link things up correctly anyway, after version bump)
   await exec('yarn i');
