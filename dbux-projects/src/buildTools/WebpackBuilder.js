@@ -1,4 +1,3 @@
-import path from 'path';
 import isFunction from 'lodash/isFunction';
 import { serializeEnv, globPatternToEntry } from '@dbux/common-node/src/util/webpackUtil';
 import { globRelative } from '@dbux/common-node/src/util/fileUtil';
@@ -244,7 +243,8 @@ class WebpackBuilder {
 
   async checkPort(port, projectManager) {
     do {
-      const pids = await portPid(port).tcp;
+      const pidResult = await portPid(port);
+      const pids = pidResult.tcp;
       if (!pids.length) {
         return;
       }
@@ -252,13 +252,19 @@ class WebpackBuilder {
       // port is occupied
       if (projectManager.interactiveMode) {
         const userDecision = await projectManager.externals.confirm(
-          `Port ${port} is occupied by process(es) with PID: ${pids.join(', ')}. Should Dbux attempt to kill these processes?`,
+          `Port ${port} is occupied by ${pids.length} process(es) with PID: ${pids.join(', ')}.\n\nShould Dbux attempt to kill it/them?`,
           { modal: true }
         );
         if (userDecision) {
           for (const pid of pids) {
             debug(`Terminating PID ${pid}...`);
-            await terminate(pid);
+            try {
+              await terminate(pid);
+              projectManager.externals.showMessage.info(`Process successfully terminated.`);
+            }
+            catch (err) {
+              logError(`Failed to terminate process -`, err);
+            }
           }
           continue;
         }
@@ -272,12 +278,12 @@ class WebpackBuilder {
     } while (true);
   }
 
-  async startWatchMode(exercise, projectManager) {
+  async startWatchMode(exercise) {
     const { project } = this;
 
     const port = exercise.websitePort || 0;
 
-    await this.checkPort(port, projectManager);
+    await this.checkPort(port, project.manager);
 
 
     // prepare args (encode into `env`)

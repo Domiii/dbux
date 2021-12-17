@@ -107,6 +107,7 @@ export default class Process {
       logStdout = true,
       logStderr = true,
       readStdin = false,
+      ignoreEnv
     } = (options || EmptyObject);
 
     const processOptions = {
@@ -125,7 +126,7 @@ export default class Process {
     // }
     processOptions.shell = 'bash';
 
-    if (processOptions.env || options.ignoreEnv) {
+    if (processOptions.env || ignoreEnv) {
       /**
        * Fix env problems:
        * if `env` is provided, it will override all of the parent env.
@@ -135,7 +136,7 @@ export default class Process {
        * @see https://github.com/nodejs/node/issues/12986#issuecomment-301101354
        * @see https://github.com/microsoft/vscode/issues/102890
        */
-      processOptions.env = cloneEnv(processOptions.env, options.ignoreEnv);
+      processOptions.env = cloneEnv(processOptions.env, ignoreEnv);
     }
 
     // some weird problem where some shells don't recognize things correctly
