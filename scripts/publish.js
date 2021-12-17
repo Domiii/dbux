@@ -8,6 +8,7 @@
 //
 
 let chooseAlwaysNo = false;
+let forceMarketplace = undefined;
 let chooseVersionBump;
 
 const path = require('path');
@@ -224,6 +225,8 @@ async function publishToMarketplace() {
   // cannot publish dev version
   await ensureProdVersion();
 
+  log('Publishing to marketplace...');
+
   // publish dbux-code to VSCode marketplace (already built)
   await exec('yarn code:publish-no-build');
 
@@ -248,7 +251,13 @@ async function publishToMarketplace() {
 async function main() {
   input = new LineReader();
   // console.log(process.argv);
-  if (process.argv[2] === 'n') {
+  if (process.argv[2] === 'marketplace') {
+    chooseAlwaysNo = true;
+    chooseVersionBump = process.argv[3] || 'minor';
+    forceMarketplace = true;
+    console.warn(`Non-interactive mode enabled: always NO, chooseVersionBump='${chooseVersionBump}'`);
+  }
+  else if (process.argv[2] === 'pre') {
     chooseAlwaysNo = true;
     chooseVersionBump = process.argv[3] || 'prerelease';
     console.warn(`Non-interactive mode enabled: always NO, chooseVersionBump='${chooseVersionBump}'`);
@@ -306,7 +315,7 @@ async function main() {
   //   await exec('yarn prepublishOnly');
   // }
 
-  if (await yesno('Publish (already built version) to Marketplace?')) {
+  if (forceMarketplace || await yesno('Publish (already built version) to Marketplace?')) {
     await publishToMarketplace();
   }
   else if (!await yesno('Skip installing locally?')) {
