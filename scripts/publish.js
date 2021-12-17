@@ -253,7 +253,7 @@ async function main() {
   // console.log(process.argv);
   if (process.argv[2] === 'marketplace') {
     chooseAlwaysNo = true;
-    chooseVersionBump = process.argv[3] || 'minor';
+    chooseVersionBump = process.argv[3] || 'patch';
     forceMarketplace = true;
     console.warn(`Non-interactive mode enabled: always NO, chooseVersionBump='${chooseVersionBump}'`);
   }
