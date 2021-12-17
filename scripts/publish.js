@@ -161,25 +161,6 @@ async function ensureProdVersion() {
   }
 }
 
-async function writeVersionFile() {
-  const version = await getDbuxVersion();
-  const fpath = path.join(__dirname, '../version.txt');
-  fs.writeFileSync(fpath, version);
-}
-
-async function bumpToDevVersion() {
-  if (await isDevVersion()) {
-    // console.error(`Something is wrong. We are already on a dev version (${await getDbuxVersion()}). Did version bump not succeed?`);
-  }
-  else {
-    if (!await yesno('Skip setting dev version?')) {
-      // make sure we have at least one change (cannot downgrade without any committed changes)
-      // bump version
-      await exec(`npx lerna version prerelease --preid=dev --force-publish -y`);
-    }
-  }
-}
-
 
 /** ###########################################################################
  * publish
@@ -353,10 +334,29 @@ async function postPublish() {
   await run(`git push`);
 }
 
+async function writeVersionFile() {
+  const version = await getDbuxVersion();
+  const fpath = path.join(__dirname, '../version.txt');
+  fs.writeFileSync(fpath, version);
+}
+
 async function fixLerna() {
   debug('Checking for invalid entries in package.json files (lerna hackfix)...');
 
   await exec('yarn dbux-lerna-fix');
+}
+
+async function bumpToDevVersion() {
+  if (await isDevVersion()) {
+    // console.error(`Something is wrong. We are already on a dev version (${await getDbuxVersion()}). Did version bump not succeed?`);
+  }
+  else {
+    if (!await yesno('Skip setting dev version?')) {
+      // make sure we have at least one change (cannot downgrade without any committed changes)
+      // bump version
+      await exec(`yarn version:dev:bump`);
+    }
+  }
 }
 
 /** ###########################################################################

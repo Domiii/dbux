@@ -80,6 +80,7 @@
     "version:dev": "node --unhandled-rejections=strict -e \"require('./scripts/fix-versions').revertToDevVersion().then(() => process.exit(0))\"",
     "version:dev:next": "node --unhandled-rejections=strict -e \"require('./scripts/fix-versions').nextDevVersion().then(() => process.exit(0))\"",
     "version:prod": "node --unhandled-rejections=strict -e \"require('./scripts/fix-versions').downgradeProdVersion().then(() => process.exit(0))\"",
+    "version:dev:bump": "npx lerna version prerelease --preid=dev --force-publish -y",
     "build:clean": "bash scripts/dbux-run-all.sh \"rm -rf dist\" && cd dbux-code && yarn run build:clean",
     "____trace:dep": "node --trace-deprecation --stack-trace-limit=1000 ...",
     "watch": "yarn run version:dev && node --trace-deprecation --stack-trace-limit=1000 -- ./node_modules/webpack/bin/webpack.js watch --mode development",
