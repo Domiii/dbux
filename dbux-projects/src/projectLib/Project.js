@@ -659,6 +659,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
     // set cwd
     let cwd = options?.cwd || projectPath;
+    
     const env = {
       NODE_SKIP_PLATFORM_CHECK: 1,
       ...options?.env

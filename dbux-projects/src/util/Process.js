@@ -1,5 +1,6 @@
 import path from 'path';
 import isString from 'lodash/isString';
+import omit from 'lodash/omit';
 import kill from 'tree-kill';
 import sh from 'shelljs';
 import stringArgv from 'string-argv';
@@ -26,6 +27,13 @@ function pipeStreamToFn(stream, logFn) {
   });
 }
 
+/**
+ * These options are passed to child_process as-is (with some minor customizations).
+ */
+export class RawProcessOptions {
+  env;
+}
+
 export class ProcessOptions {
   /**
    * If true(default ), fail if command returns non - zero status code.
@@ -38,6 +46,16 @@ export class ProcessOptions {
    * @type {boolean}
    */
   failWhenNotFound;
+
+  /**
+   * @type {RawProcessOptions}
+   */
+  processOptions;
+
+  /**
+   * @type {Array.<string>?}
+   */
+  ignoreEnv;
 }
 
 export default class Process {
@@ -106,6 +124,19 @@ export default class Process {
     //   processOptions.shell = true;
     // }
     processOptions.shell = 'bash';
+
+    if (processOptions.env || options.ignoreEnv) {
+      /**
+       * Fix env problems:
+       * if `env` is provided, it will override all of the parent env.
+       * This approach merges parent and custom env.
+       * Also allows for ignoring parent env settings.
+       * 
+       * @see https://github.com/nodejs/node/issues/12986#issuecomment-301101354
+       * @see https://github.com/microsoft/vscode/issues/102890
+       */
+      processOptions.env = cloneEnv(processOptions.env, options.ignoreEnv);
+    }
 
     // some weird problem where some shells don't recognize things correctly
     // see: https://github.com/shelljs/shelljs/blob/master/src/exec.js#L51
@@ -360,4 +391,10 @@ export default class Process {
     const newProcess = new Process();
     return newProcess.start(command, logger || newLogger('exec'), options);
   }
+}
+
+export function cloneEnv(customEnv, envIgnore) {
+  let { env } = process;
+  env = omit(env, envIgnore);
+  return { ...env, ...customEnv };
 }
