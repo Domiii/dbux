@@ -157,6 +157,10 @@ export default class ProjectsManager {
   // getters
   // ###########################################################################
 
+  get interactiveMode() {
+    return true;
+  }
+
   get activeProject() {
     return this.runner.project;
   }
@@ -623,7 +627,7 @@ export default class ProjectsManager {
   }
 
   // ###########################################################################
-  // Project Controll
+  // ProjectControl
   // ###########################################################################
 
   /**

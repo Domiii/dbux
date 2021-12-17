@@ -3,6 +3,13 @@ import isFunction from 'lodash/isFunction';
 import { serializeEnv, globPatternToEntry } from '@dbux/common-node/src/util/webpackUtil';
 import { globRelative } from '@dbux/common-node/src/util/fileUtil';
 import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
+import portPid from '@dbux/common-node/src/util/portPid';
+import terminate from '@dbux/common-node/src/util/terminate';
+
+import { newLogger } from '@dbux/common/src/log/logger';
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('WebpackBuilder');
 
 /** @typedef { import("../projectLib/Project").default } Project */
 
@@ -235,11 +242,43 @@ class WebpackBuilder {
     return project.getNodeModulesFile('webpack-cli/bin/cli.js');
   }
 
-  async startWatchMode(exercise) {
+  async checkPort(port, projectManager) {
+    do {
+      const pids = await portPid(port).tcp;
+      if (!pids.length) {
+        return;
+      }
+
+      // port is occupied
+      if (projectManager.interactiveMode) {
+        const userDecision = await projectManager.externals.confirm(
+          `Port ${port} is occupied by process(es) with PID: ${pids.join(', ')}. Should Dbux attempt to kill these processes?`,
+          { modal: true }
+        );
+        if (userDecision) {
+          for (const pid of pids) {
+            debug(`Terminating PID ${pid}...`);
+            await terminate(pid);
+          }
+          continue;
+        }
+      }
+      else {
+        // TODO: use config, if not interactive
+      }
+      throw new Error(`Could not start webpack: PORT already in use by another process.`);
+
+    // eslint-disable-next-line no-constant-condition
+    } while (true);
+  }
+
+  async startWatchMode(exercise, projectManager) {
     const { project } = this;
-    const { 
-      projectPath
-    } = project;
+
+    const port = exercise.websitePort || 0;
+
+    await this.checkPort(port, projectManager);
+
 
     // prepare args (encode into `env`)
     const target = this.getCfgValue(exercise, 'target') || 'web';
@@ -265,15 +304,15 @@ class WebpackBuilder {
         entry,
         target,
         copyPlugin,
-        port: exercise.websitePort || 0
+        port
       }
     };
     env = serializeEnv(env);
-    
+
     // start webpack
     const cwd = project.packageJsonFolder;
     const webpackConfigPath = pathResolve(project.getAssetsTargetFolder(), 'dbux.webpack.config.js');
-    
+
     const nodeArgs = ' --stack-trace-limit=100';
     const webpackCliBin = this.webpackCliBin();
     const webpackCliCommand = this.webpackCliCommand();

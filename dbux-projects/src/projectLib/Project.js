@@ -532,10 +532,6 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
         throw new Error(`startWatchMode failed while waiting for "${outputFileString}" - ${err?.stack || err}`);
       });
 
-      // if (!this.backgroundProcesses?.length) {
-      //   this.logger.error('startWatchMode did not result in any new background processes');
-      // }
-
       // wait for output files, before moving on
       this.logger.debug(`startWatchMode waiting for output files: ${outputFileString} ...`);
       await Promise.race([

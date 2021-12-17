@@ -20,7 +20,10 @@
     "nanoevents": "^2.0.0",
     "serialize-javascript": "^5.0.1",
     "shell-escape": "^0.2.0",
-    "shelljs": "0.8.4"
+    "shelljs": "0.8.4",
+    "netstats": "0.0.6",
+    "selective-whitespace": "^1.0.0",
+    "terminate": "^2.2.2"
   },
   "_moduleAliases": {}
 }
