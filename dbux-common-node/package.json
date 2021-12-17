@@ -1,6 +1,6 @@
 {
   "name": "@dbux/common-node",
-  "version": "0.6.2",
+  "version": "0.6.3-dev.0",
   "description": "",
   "module": "src/index.js",
   "main": "src/index.js",
@@ -9,7 +9,7 @@
   "author": "Domi",
   "license": "Apache-2.0",
   "dependencies": {
-    "@dbux/common": "^0.6.2",
+    "@dbux/common": "^0.6.3-dev.0",
     "adm-zip": "^0.5.9",
     "colors": "^1.4.0",
     "common-ancestor-path": "^1.0.1",
@@ -25,5 +25,6 @@
     "shelljs": "0.8.4",
     "terminate": "^2.2.2"
   },
-  "_moduleAliases": {}
+  "_moduleAliases": {},
+  "gitHead": "6afd2b38e8b60cd5b843d2799b72aa033a3f1b21"
 }

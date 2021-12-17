@@ -1,6 +1,6 @@
 {
   "name": "@dbux/runtime",
-  "version": "0.6.2",
+  "version": "0.6.3-dev.0",
   "description": "",
   "module": "dist/index-node.js",
   "main": "dist/index-node.js",
@@ -21,7 +21,7 @@
   ],
   "dependencies": {
     "@babel/runtime": "^7.10.2",
-    "@dbux/common": "^0.6.2",
+    "@dbux/common": "^0.6.3-dev.0",
     "core-js": "^3.15",
     "i18next": "^19.8.2",
     "lodash": "^4.17.21",
@@ -30,5 +30,6 @@
     "socket.io-client": "^4",
     "ws": "^7.4.6"
   },
-  "_moduleAliases": {}
+  "_moduleAliases": {},
+  "gitHead": "6afd2b38e8b60cd5b843d2799b72aa033a3f1b21"
 }
