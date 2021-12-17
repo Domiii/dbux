@@ -1,6 +1,6 @@
 {
   "name": "@dbux/babel-register-fork",
-  "version": "0.6.3",
+  "version": "0.6.4-dev.0",
   "description": "quick-n-dirty fork OF @babel/register",
   "license": "MIT",
   "publishConfig": {
@@ -31,6 +31,5 @@
   "bugs": "https://github.com/babel/babel/issues?utf8=%E2%9C%93&q=is%3Aissue+label%3A%22pkg%3A%20register%22+is%3Aopen",
   "engines": {
     "node": ">=6.9.0"
-  },
-  "gitHead": "6afd2b38e8b60cd5b843d2799b72aa033a3f1b21"
+  }
 }

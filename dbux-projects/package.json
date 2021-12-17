@@ -1,16 +1,16 @@
 {
   "name": "@dbux/projects",
-  "version": "0.6.3",
+  "version": "0.6.4-dev.0",
   "description": "",
   "main": "dist/bundle.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@dbux/cli": "^0.6.3",
-    "@dbux/common": "^0.6.3",
-    "@dbux/common-node": "^0.6.3",
-    "@dbux/data": "^0.6.3",
+    "@dbux/cli": "^0.6.4-dev.0",
+    "@dbux/common": "^0.6.4-dev.0",
+    "@dbux/common-node": "^0.6.4-dev.0",
+    "@dbux/data": "^0.6.4-dev.0",
     "cross-spawn": "^7.0.3",
     "glob": "^7.1.6",
     "i18next": "^19.8.2",
@@ -26,6 +26,5 @@
   },
   "keywords": [],
   "author": "Domi",
-  "license": "Apache-2.0",
-  "gitHead": "6afd2b38e8b60cd5b843d2799b72aa033a3f1b21"
+  "license": "Apache-2.0"
 }
