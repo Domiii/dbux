@@ -71,6 +71,7 @@
     "i": "npx lerna bootstrap --force-local && npx lerna link --force-local",
     "start": "yarn run build:clean && yarn run version:dev && yarn runall:dev",
     "pub": "node scripts/publish.js",
+    "marketplace": "node scripts/publish.js marketplace",
     "nra": "node node_modules/npm-run-all/bin/npm-run-all",
     "runall:dev": "npm run nra -- -p watch graph:watch",
     "_runall:dev": "(yarn watch) & (graph:watch)",
