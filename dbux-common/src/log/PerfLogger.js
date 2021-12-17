@@ -1,4 +1,4 @@
-import { performance } from '../util/universalLibs';
+import { performance } from '../util/universalLib';
 import { Logger } from './logger';
 
 // ###########################################################################

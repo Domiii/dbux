@@ -4,18 +4,30 @@
  * @file
  */
 
+import isFunction from 'lodash/isFunction';
+import isString from 'lodash/isString';
+
 const Global = this || globalThis;
 
-function universalLib(globalName, fallbackCb) {
-  if (globalName in Global) {
+export default function universalLib(globalName, fallbackNameOrCb) {
+  if (globalName && globalName in Global) {
     return Global[globalName];
   }
+
   try {
-    return fallbackCb();
+    if (isFunction(fallbackNameOrCb)) {
+      // cb
+      return fallbackNameOrCb();
+    }
+    else if (isString(fallbackNameOrCb)) {
+      // name
+      return _require(fallbackNameOrCb);
+    }
   }
   catch (err) {
     throw new Error(`could not load library ${globalName} --\n  ${err}`);
   }
+  throw new Error(`invalid use of universalLib. fallbackNameOrCb should be string or function but was: ${fallbackNameOrCb}`);
 }
 
 /**
@@ -49,6 +61,11 @@ export const performance = universalLib('performance', () => {
   const lib = _require('perf_hooks');
   return lib.performance;
 });
+
+/**
+ * 
+ */
+export const util = universalLib(null, 'util');
 
 
 // NOTE: inspect does not exist in the browser

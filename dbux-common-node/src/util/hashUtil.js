@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { _require } from '@dbux/common/src/util/universalLibs';
+import { _require } from '@dbux/common/src/util/universalLib';
 import NestedError from '@dbux/common/src/NestedError';
 
 /**

@@ -7,7 +7,7 @@ import maxBy from 'lodash/maxBy';
 import { logWarn, newLogger } from '@dbux/common/src/log/logger';
 import sleep from '@dbux/common/src/util/sleep';
 import { getDataCount } from '@dbux/common/src/util/dataUtil';
-// import universalLibs from '@dbux/common/src/util/universalLibs';
+// import universalLibs from '@dbux/common/src/util/universalLib';
 import SendQueue from './SendQueue';
 
 const Verbose = 1;

@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { performance } from '@dbux/common/src/util/universalLibs';
+import { performance } from '@dbux/common/src/util/universalLib';
 import { pathGetParent, pathSafe } from '@dbux/common/src/util/pathUtil';
 import { getCommonAncestorPath, getPathRelativeToCommonAncestor, pathNormalizedForce, pathRelative } from '@dbux/common-node/src/util/pathUtil';
 import RuntimeDataProvider from '../RuntimeDataProvider';
