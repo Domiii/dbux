@@ -77,12 +77,8 @@
         "title": "Dbux: Start Dbux"
       },
       {
-        "command": "dbux.showMemento",
-        "title": "Dbux: View Memento Storage"
-      },
-      {
-        "command": "dbux.clearMemento",
-        "title": "Dbux: Clear Memento Storage"
+        "command": "dbux.diagnostics",
+        "title": "Dbux: Diagnostics"
       },
       {
         "command": "dbux.cancelBugRunner",
@@ -223,14 +219,6 @@
       {
         "command": "dbux.loadPracticeLogFile",
         "title": "Dbux Dev:Load Practice Log"
-      },
-      {
-        "command": "dbux.showDBStats",
-        "title": "Dbux: Show DB Stats"
-      },
-      {
-        "command": "dbux.clearDBStats",
-        "title": "Dbux: Clear DB Stats"
       },
       {
         "command": "dbux.showOutputChannel",
@@ -1040,11 +1028,7 @@
           "when": "dbux.context.activated"
         },
         {
-          "command": "dbux.showMemento",
-          "when": "dbux.context.activated"
-        },
-        {
-          "command": "dbux.clearMemento",
+          "command": "dbux.diagnostics",
           "when": "dbux.context.activated"
         },
         {
@@ -1106,14 +1090,6 @@
         {
           "command": "dbux.loadPracticeLogFile",
           "when": "dbux.context.activated && dbux.context.nodeEnv == development"
-        },
-        {
-          "command": "dbux.showDBStats",
-          "when": "dbux.context.activated"
-        },
-        {
-          "command": "dbux.clearDBStats",
-          "when": "dbux.context.activated"
         },
         {
           "command": "dbux.showOutputChannel",

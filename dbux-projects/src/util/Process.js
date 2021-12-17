@@ -26,6 +26,20 @@ function pipeStreamToFn(stream, logFn) {
   });
 }
 
+export class ProcessOptions {
+  /**
+   * If true(default ), fail if command returns non - zero status code.
+   * @type {boolean}
+   */
+  failOnStatusCode;
+
+  /**
+   * If true(default ), fails if program was not found.
+   * @type {boolean}
+   */
+  failWhenNotFound;
+}
+
 export default class Process {
   command;
   /**
@@ -53,8 +67,7 @@ export default class Process {
 
   /**
    *
-   * @param {*} options.failOnStatusCode If true (default), fail if command returns non-zero status code
-   * @param {*} options.failWhenNotFound If true (default), fails if program was not found
+   * @param {ProcessOptions} options
    */
   async start(command, logger, options, input) {
     if (!command || !logger) {

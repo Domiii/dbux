@@ -14,7 +14,7 @@ import { getAllFilesInFolders, globRelative, rm } from '@dbux/common-node/src/ut
 import { isFileInPath, pathJoin, pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import { writeMergePackageJson } from '@dbux/cli/lib/package-util';
 import ExerciseList from './ExerciseList';
-import Process from '../util/Process';
+import Process, { ProcessOptions } from '../util/Process';
 import { MultipleFileWatcher } from '../util/multipleFileWatcher';
 import { buildNodeCommand } from '../util/nodeUtil';
 import { checkSystem, getDefaultRequirement } from '../checkSystem';
@@ -618,6 +618,11 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     return Process.execCaptureErr(command, { processOptions });
   }
 
+  /**
+   * 
+   * @param {string} command 
+   * @param {ProcessOptions} processOptions 
+   */
   execCaptureAll = async (command, processOptions) => {
     processOptions = {
       cwd: this.projectPath,

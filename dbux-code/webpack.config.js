@@ -139,7 +139,7 @@ module.exports = (env, argv) => {
                */
               keep_classnames: true,
               /**
-               * We use function names in `makeTreeItems`.
+               * We use function names in `makeTreeItems` and some other places (e.g. `userCommands`).
                */
               keep_fnames: true
             }

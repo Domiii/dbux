@@ -5,16 +5,6 @@
     "description": "(Feature still in development. Won't work.)"
   },
   {
-    "command": "dbux.clearDBStats",
-    "title": "Dbux: Clear DB Stats",
-    "description": ""
-  },
-  {
-    "command": "dbux.clearMemento",
-    "title": "Dbux: Clear Memento Storage",
-    "description": ""
-  },
-  {
     "command": "dbux.debugFile",
     "title": "Dbux: Debug current file",
     "description": "Run selected file with Dbux, but with Node's `--inspect-brk` enabled. Make sure to enable VSCode's auto attach beforehand."
@@ -90,11 +80,6 @@
     "description": "Mostly used for debugging Dbux, or when (for some other reason) you would know some trace by its id."
   },
   {
-    "command": "dbux.showDBStats",
-    "title": "Dbux: Show DB Stats",
-    "description": ""
-  },
-  {
     "command": "dbux.showDecorations",
     "title": "Dbux: Show Code Decorations",
     "description": "Show code decorations again after hiding them."
@@ -108,11 +93,6 @@
     "command": "dbux.showHelp",
     "title": "Dbux: Help",
     "description": "Show the Dbux help dialog."
-  },
-  {
-    "command": "dbux.showMemento",
-    "title": "Dbux: View Memento Storage",
-    "description": ""
   },
   {
     "command": "dbux.showOutputChannel",
