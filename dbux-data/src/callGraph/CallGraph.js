@@ -115,7 +115,7 @@ export default class CallGraph {
 
     // if trace has callId, `step in` to that call right away
     if (hasCallId(trace)) {
-      const lastChild = this.dp.util.getLastTraceByCalleeTrace(trace.callId);
+      const lastChild = this.dp.util.getLastTraceByCallerTrace(trace.callId);
       if (lastChild) {
         return lastChild;
       }
@@ -129,7 +129,7 @@ export default class CallGraph {
     }
     else if (prevChild === trace) {
       // nextChild is itself(usually in getter/setter), return the first child inside
-      const firstChild = this.dp.util.getFirstTraceByCalleeTrace(traceId);
+      const firstChild = this.dp.util.getFirstTraceByCallerTrace(traceId);
       if (firstChild) {
         return firstChild;
       }
@@ -148,7 +148,7 @@ export default class CallGraph {
 
     // if trace has callId, `step in` to that call right away
     if (hasCallId(trace)) {
-      const firstChild = this.dp.util.getFirstTraceByCalleeTrace(trace.callId);
+      const firstChild = this.dp.util.getFirstTraceByCallerTrace(trace.callId);
       if (firstChild) {
         return firstChild;
       }
@@ -162,7 +162,7 @@ export default class CallGraph {
     }
     else if (nextChild === trace) {
       // nextChild is itself(usually in getter/setter), return the first child inside
-      const firstChild = this.dp.util.getFirstTraceByCalleeTrace(traceId);
+      const firstChild = this.dp.util.getFirstTraceByCallerTrace(traceId);
       if (firstChild) {
         return firstChild;
       }

@@ -25,7 +25,7 @@ import ErrorTracesByRootIndex from './impl/indexes/ErrorTracesByRootIndex';
 import ContextChildrenIndex from './impl/indexes/ContextChildrenIndex';
 import ContextsByStaticContextIndex from './impl/indexes/ContextsByStaticContextIndex';
 import ContextsByRunIndex from './impl/indexes/ContextsByRunIndex';
-import ContextsByCalleeTraceIndex from './impl/indexes/ContextsByCalleeTraceIndex';
+import ContextsByCallerTraceIndex from './impl/indexes/ContextsByCallerTraceIndex';
 import RootContextsIndex from './impl/indexes/RootContextsIndex';
 import ExecutedStaticTracesByFileIndex from './impl/indexes/ExecutedStaticTracesByFileIndex';
 import ParentTracesInRealContextIndex from './impl/indexes/ParentTracesInRealContextIndex';
@@ -84,7 +84,7 @@ export function newDataProvider(application) {
   dp.addIndex(new ContextsByStaticContextIndex());
   dp.addIndex(new ContextsByRunIndex());
   dp.addIndex(new ContextsByTypeIndex());
-  dp.addIndex(new ContextsByCalleeTraceIndex());
+  dp.addIndex(new ContextsByCallerTraceIndex());
   dp.addIndex(new ContextChildrenIndex());
   dp.addIndex(new RootContextsIndex());
   dp.addIndex(new FirstContextsInRunsIndex());
