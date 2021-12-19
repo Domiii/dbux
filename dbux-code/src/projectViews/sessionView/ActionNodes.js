@@ -94,6 +94,7 @@ class ShowEntryNode extends SessionNode {
 
   init() {
     this.contextValue = 'dbuxSessionView.showEntryNode';
+    this.availableOnBusy = true;
   }
 
   makeIconPath() {

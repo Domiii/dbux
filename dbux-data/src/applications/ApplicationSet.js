@@ -1,4 +1,5 @@
 import pull from 'lodash/pull';
+import isArray from 'lodash/isArray';
 import { areArraysEqual } from '@dbux/common/src/util/arrayUtil';
 import NanoEvents from 'nanoevents';
 import ApplicationSetData from './ApplicationSetData';
@@ -94,13 +95,19 @@ export default class ApplicationSet {
 
   /**
    * Replace previousApplication with newApplication and sends only one event
-   * @param {Application} previousApplication 
+   * @param {Application|Application[]} previousApplications 
    * @param {Application} newApplication 
    */
-  replaceApplication(previousApplication, newApplication) {
-    if (this.containsApplication(previousApplication)) {
-      this._applicationIds.delete(previousApplication.applicationId);
-      pull(this._applications, previousApplication);
+  replaceApplication(previousApplications, newApplication) {
+    if (!isArray(previousApplications)) {
+      previousApplications = [previousApplications];
+    }
+
+    for (const prevApps of previousApplications) {
+      if (this.containsApplication(prevApps)) {
+        this._applicationIds.delete(prevApps.applicationId);
+        pull(this._applications, prevApps);
+      }
     }
 
     this._applicationIds.add(newApplication.applicationId);

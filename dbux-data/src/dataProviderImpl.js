@@ -25,7 +25,7 @@ import ErrorTracesByRootIndex from './impl/indexes/ErrorTracesByRootIndex';
 import ContextChildrenIndex from './impl/indexes/ContextChildrenIndex';
 import ContextsByStaticContextIndex from './impl/indexes/ContextsByStaticContextIndex';
 import ContextsByRunIndex from './impl/indexes/ContextsByRunIndex';
-import ContextsByCalleeTraceIndex from './impl/indexes/ContextsByCalleeTraceIndex';
+import ContextsByCallerTraceIndex from './impl/indexes/ContextsByCallerTraceIndex';
 import RootContextsIndex from './impl/indexes/RootContextsIndex';
 import ExecutedStaticTracesByFileIndex from './impl/indexes/ExecutedStaticTracesByFileIndex';
 import ParentTracesInRealContextIndex from './impl/indexes/ParentTracesInRealContextIndex';
@@ -42,6 +42,7 @@ import DataNodesByAccessIdIndex from './impl/indexes/DataNodesByAccessIdIndex';
 import DataNodesByValueIdIndex from './impl/indexes/DataNodesByValueIdIndex';
 import DataNodesByRefIdIndex from './impl/indexes/DataNodesByRefIdIndex';
 import DataNodesByObjectRefIdIndex from './impl/indexes/DataNodesByObjectRefIdIndex';
+import SimpleDataNodesIndex from './impl/indexes/SimpleDataNodesIndex';
 import AsyncEventsFromIndex from './impl/indexes/AsyncEventsFromIndex';
 import AsyncEventsToIndex from './impl/indexes/AsyncEventsToIndex';
 import AsyncEventsFromThreadIndex from './impl/indexes/AsyncEventsFromThreadIndex';
@@ -84,7 +85,7 @@ export function newDataProvider(application) {
   dp.addIndex(new ContextsByStaticContextIndex());
   dp.addIndex(new ContextsByRunIndex());
   dp.addIndex(new ContextsByTypeIndex());
-  dp.addIndex(new ContextsByCalleeTraceIndex());
+  dp.addIndex(new ContextsByCallerTraceIndex());
   dp.addIndex(new ContextChildrenIndex());
   dp.addIndex(new RootContextsIndex());
   dp.addIndex(new FirstContextsInRunsIndex());
@@ -115,6 +116,7 @@ export function newDataProvider(application) {
   dp.addIndex(new DataNodesByValueIdIndex());
   dp.addIndex(new DataNodesByRefIdIndex());
   dp.addIndex(new DataNodesByObjectRefIdIndex());
+  dp.addIndex(new SimpleDataNodesIndex());
   dp.addIndex(new ValueRefByErrorIndex());
   
   // complex indexes (that have dependencies)

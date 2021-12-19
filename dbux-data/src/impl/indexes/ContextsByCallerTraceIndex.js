@@ -13,9 +13,9 @@ function makeKey(dp, context) {
 
 
 /** @extends {CollectionIndex<ExecutionContext>} */
-export default class ContextsByCalleeTraceIndex extends CollectionIndex {
+export default class ContextsByCallerTraceIndex extends CollectionIndex {
   constructor() {
-    super('executionContexts', 'byCalleeTrace');
+    super('executionContexts', 'byCallerTrace');
   }
 
   makeKey = makeKey

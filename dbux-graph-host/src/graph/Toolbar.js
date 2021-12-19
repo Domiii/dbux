@@ -73,6 +73,17 @@ class Toolbar extends HostComponentEndpoint {
       const contextNodeManager = this.context.graphDocument.syncGraphContainer.graph.controllers.getComponent('ContextNodeManager');
       contextNodeManager.highlightBySearchTermTraces(searchTermTraces);
     },
+
+    searchValues(searchTermValues) {
+      this.parent.setState({ searchTermValues });
+
+      if (searchTermValues) {
+        this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphSearchValues, { searchTerm: searchTermValues });
+      }
+
+      const contextNodeManager = this.context.graphDocument.syncGraphContainer.graph.controllers.getComponent('ContextNodeManager');
+      contextNodeManager.highlightBySearchTermValues(searchTermValues);
+    },
     clearThreadSelection() {
       allApplications.selection.data.threadSelection.clear();
     }

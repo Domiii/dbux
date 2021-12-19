@@ -34,12 +34,16 @@ export default class ProjectNode extends BaseTreeViewNode {
     return false;
   }
 
+  getSelectedAppOfSameEntry() {
+    return allApplications.selection.getAll().filter(app => app.entryPointPath === this.application.entryPointPath);
+  }
+
   handleClick() {
     if (this.isSelected) {
       allApplications.selection.removeApplication(this.application);
     }
     else {
-      allApplications.selection.addApplication(this.application);
+      allApplications.selection.replaceApplication(this.getSelectedAppOfSameEntry(), this.application);
     }
   }
 

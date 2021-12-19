@@ -240,6 +240,24 @@ export default {
       flat();
   },
 
+  /**
+   * @param {DataProvider} dp 
+   * @param {number|string} searchTerm
+   */
+  findContextsByValueSearchTerm(dp, searchTerm) {
+    searchTerm = searchTerm.toString().toLowerCase();
+
+    const matchedContextIds = new Set();
+    for (const dataNode of dp.util.getSimpleDataNodes()) {
+      if (dataNode.value?.toString().includes(searchTerm)) {
+        const trace = dp.collections.traces.getById(dataNode.traceId);
+        matchedContextIds.add(trace.contextId);
+      }
+    }
+
+    return Array.from(matchedContextIds).map(contextId => dp.collections.executionContexts.getById(contextId));
+  },
+
   /** @param {DataProvider} dp */
   getContextModuleName(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
@@ -405,6 +423,10 @@ export default {
   getDataNodesOfTrace(dp, traceId) {
     const valueTrace = dp.util.getValueTrace(traceId);
     return dp.indexes.dataNodes.byTrace.get(valueTrace.traceId);
+  },
+
+  getSimpleDataNodes(dp) {
+    return dp.indexes.dataNodes.simple.get(1) || EmptyArray;
   },
 
   /** @param {DataProvider} dp */
@@ -1171,7 +1193,7 @@ export default {
   },
 
   // getTracesOfCalledContext(dp, callId) {
-  //   return dp.indexes.traces.byCalleeTrace.get(callId) || EmptyArray;
+  //   return dp.indexes.traces.byCallerTrace.get(callId) || EmptyArray;
   // },
 
   /**
@@ -1189,15 +1211,15 @@ export default {
    * @param {DataProvider} dp
    */
   getCalledContext(dp, callId) {
-    return dp.indexes.executionContexts.byCalleeTrace.getFirst(callId);
+    return dp.indexes.executionContexts.byCallerTrace.getFirst(callId);
   },
 
   /**
    * NOTE: Contexts having common callee trace must be siblings.
    * @param {DataProvider} dp
    */
-  getFirstTraceByCalleeTrace(dp, callId) {
-    const firstContext = dp.indexes.executionContexts.byCalleeTrace.getFirst(callId);
+  getFirstTraceByCallerTrace(dp, callId) {
+    const firstContext = dp.indexes.executionContexts.byCallerTrace.getFirst(callId);
     return dp.indexes.traces.byContext.getFirst(firstContext?.contextId);
   },
 
@@ -1205,8 +1227,8 @@ export default {
    * NOTE: Contexts having common callee trace must be siblings.
    * @param {DataProvider} dp
    */
-  getLastTraceByCalleeTrace(dp, callId) {
-    const lastContext = dp.indexes.executionContexts.byCalleeTrace.getLast(callId);
+  getLastTraceByCallerTrace(dp, callId) {
+    const lastContext = dp.indexes.executionContexts.byCallerTrace.getLast(callId);
     return dp.indexes.traces.byContext.getLast(lastContext?.contextId);
   },
 
@@ -1338,7 +1360,7 @@ export default {
    */
   getCallerOrSchedulerTraceOfFirstContext(dp, contextId) {
     const callerOrScheduler = dp.util.getCallerOrSchedulerTraceOfContext(contextId);
-    const isFirstOfCaller = dp.indexes.executionContexts.byCalleeTrace.getFirst(callerOrScheduler?.traceId)?.contextId !== contextId;
+    const isFirstOfCaller = dp.indexes.executionContexts.byCallerTrace.getFirst(callerOrScheduler?.traceId)?.contextId !== contextId;
     if (!dp.util.isRootContext(contextId) && isFirstOfCaller) {
       return null;
     }
