@@ -16,11 +16,14 @@ So many things that can be done... So little time...
   * Adaptive trace logging would be advantageous: 
     * (i) only log traces that are "relevant", and (ii) allow user to easily select or change what is "relevant".
 * Config file support for instrumentation + `runtime`.
+* Configurable stats display for `CallGraph` stats (see `ContextNode._addStats`)
+* Proper `stats` screen where one can easily analyze all kinds of program execution statistics
 * More advanced search/filter analysis features, such as...
   * searching for arrays/objects that contain certain values
   * searching/filtering of/by all (or subset of) `node_modules`, package names
   * enabling/disabling/grouping of/by modules/files etc. in call graph
   * searching/filtering only system calls or sub-systems (e.g. all `HTTP` calls)
+  * complex search queries (and, or, parentheses etc.)
 * Analyze by module/files and along the dependency trees
 * Support web-based VSCode https://vscode.dev/
 * Support [Yarn PnP](https://yarnpkg.com/features/pnp)
