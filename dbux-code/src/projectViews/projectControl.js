@@ -12,12 +12,13 @@ import TerminalWrapper from '../terminal/TerminalWrapper';
 import { set as storageSet, get as storageGet } from '../memento';
 import { interactiveGithubLogin } from '../net/GithubAuth';
 import WebviewWrapper from '../codeUtil/WebviewWrapper';
-import { showExerciseIntroduction } from './ExerciseIntroduction';
-import { getStopwatch } from './practiceStopwatch';
 import { initUserEvent } from '../userEvents';
+import { showHelp } from '../help';
 import { initRuntimeServer } from '../net/SocketServer';
 import { getCurrentResearch } from '../research/Research';
 import { showOutputChannel } from '../OutputChannel';
+import { showExerciseIntroduction } from './ExerciseIntroduction';
+import { getStopwatch } from './practiceStopwatch';
 
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
 
@@ -141,7 +142,8 @@ export function createProjectManager(extensionContext) {
 
     getCurrentResearch,
     closeAllEditors,
-    showOutputChannel
+    showOutputChannel,
+    showHelp,
   };
 
   // ########################################
