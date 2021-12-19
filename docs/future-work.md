@@ -3,8 +3,15 @@
 This file serves to keep track of features that could prove very valuable for runtime analysis and debugging purposes. 
 So many things that can be done... So little time...
 
-* `@dbux/runtime` is currently hardcoded to connect to a `localhost` server (see [here](C:\Users\domin\code\dbux\dbux-runtime\src\client\Client.js)).
-* More advanced trace filter features, to reduce noise and improve performance.
+* Typescript support
+* Remote capabilities
+  * NOTE: `@dbux/runtime` is currently hardcoded to connect to a `localhost` server (see [here](C:\Users\domin\code\dbux\dbux-runtime\src\client\Client.js)).
+* Properly test and provide recipes for all environments, e.g.:
+  * Node's `vm` (Jest uses that also)
+  * `WebWorker`
+  * `WebContainer`
+  * more...
+* Advanced dynamic runtime adaptive recording, to reduce noise and improve performance.
   * Currently, a loop of 1 million iterations already stretches Dbux to its limits. We want to improve that.
   * Adaptive trace logging would be advantageous: 
     * (i) only log traces that are "relevant", and (ii) allow user to easily select or change what is "relevant".
@@ -14,7 +21,7 @@ So many things that can be done... So little time...
   * searching/filtering of/by all (or subset of) `node_modules`, package names
   * enabling/disabling/grouping of/by modules/files etc. in call graph
   * searching/filtering only system calls or sub-systems (e.g. all `HTTP` calls)
-* Explore execution by all module/package and/or their dependencies
+* Analyze by module/files and along the dependency trees
 * Support web-based VSCode https://vscode.dev/
 * Support [Yarn PnP](https://yarnpkg.com/features/pnp)
 
