@@ -52,10 +52,10 @@ In addition to the `src` and `dist` folders, it contains a `lib` folder which co
 
 # Caveats
 
-* `@dbux/cli` is slow
-   * [Read more about performance considerations here](https://github.com/Domiii/dbux/tree/master/#performance).
+* [You probably want to be aware of performance considerations](https://github.com/Domiii/dbux/tree/master/#performance).
 * When using `@dbux/cli` with `--esnext`, it sometimes cannot find Babel plugins.
-   * To make things easier to use it uses `module-alias` to alias all it's own dependencies (see [`linkOwnDependencies.js`](src/linkOwnDependencies.js))
+   * To make things easier to use, we employ `module-alias` to alias all relevant dependencies (see [`linkOwnDependencies.js`](src/linkOwnDependencies.js))
    * Internally, `module-alias` [overwrites ` Module._resolveFilename`](https://github.com/ilearnio/ module-alias/blob/dev/index.js#L29)
-   * However, Babel's own plugin resolution ignores that (because it uses [browserify/resolve](https://github.com/browserify/resolve/blob/master/lib/sync.js#L95) which apparently does not care about aliases)
+   * However, Babel's own plugin resolution ignores that (because it uses [browserify/resolve](https://github.com/browserify/resolve/blob/master/lib/sync.js#L95) which does not care about aliases)
    * Meaning that when using `--esnext`, babel plugins cannot be found and, must either be installed or linked to a local `node_modules` folder in `cwd` or any of its parent directories.
+   * TODO: explain this better.
