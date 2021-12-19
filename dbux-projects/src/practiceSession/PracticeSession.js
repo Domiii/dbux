@@ -157,7 +157,16 @@ export default class PracticeSession {
     else if (isCorrect === false) {
       // TOTRANSLATE
       const failedMsg = `This is not the right line, keep going!`;
-      this.manager.externals.alert(failedMsg, false);
+      const buttonConfig = {
+        OK: () => { },
+        "That sucks!": async () => {
+          await this.manager.externals.showHelp();
+        },
+        Help: async () => {
+          await this.manager.externals.showHelp();
+        }
+      };
+      this.manager.externals.showMessage.info(failedMsg, buttonConfig);
     }
     else if (isCorrect === null) {
       // skip if the result is null or something else, since bug location may not been defined yet
