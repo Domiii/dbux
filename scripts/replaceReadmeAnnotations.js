@@ -18,7 +18,7 @@ function getPath(...segments) {
 }
 
 function getCommandJsonPath() {
-  return getPath('docs', 'commands.json');
+  return getPath('docs/data/commands.json');
 }
 
 function readCodePackageJson() {
