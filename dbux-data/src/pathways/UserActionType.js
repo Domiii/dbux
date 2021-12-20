@@ -54,6 +54,7 @@ let UserActionType = {
   CallGraphNodeCollapseChange: 104,
   CallGraphTrace: 105,
   CallGraphCallTrace: 106,
+  CallGraphSearchValues: 107,
 
   SessionFinished: 110
 };
