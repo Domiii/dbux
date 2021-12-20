@@ -23,6 +23,32 @@
   padding: 0 var(--ifm-pre-padding);
 }
 
-html[data-theme='dark'] .docusaurus-highlight-code-line {
+html[data-theme="dark"] .docusaurus-highlight-code-line {
   background-color: rgba(0, 0, 0, 0.3);
+}
+
+.run-button {
+  color: red;
+  /* list-style: url(../img/play.svg) no-repeat; */
+}
+
+/* Override non-category links to be horizonally compact */
+li > a.menu__link {
+  justify-content: flex-start;
+}
+
+/* .section1 > div > a::before {
+  content: url(../img/play.svg);
+} */
+
+/* .run-button > .menu__link {
+  color: red;
+} */
+
+/**
+ * @see https://stackoverflow.com/questions/68412480/how-to-add-icon-to-docusaurus-sidebar-group-or-item/70423077#70423077
+ */
+.run-button a::before {
+  padding-right: 0.5rem;
+  content: url(../img/play.svg);
 }

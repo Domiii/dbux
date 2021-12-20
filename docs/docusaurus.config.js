@@ -8,7 +8,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
   title: 'Dbux',
   tagline: 'Integrated Debugging Environment + Omniscient Debugger',
-  url: 'https://domiii.github.io/dbux',
+  url: 'https://domiii.github.io',
   baseUrl: '/dbux/',
 
   projectName: 'Dbux', // Usually your repo name.
@@ -27,17 +27,11 @@ const config = {
           routeBasePath: '/',
           path: 'content',
           sidebarPath: require.resolve('./sidebars.js'),
-          // Please change this to your repo.
           editUrl: 'https://github.com/Domiii/dbux/blob/master/docs/content',
+          sidebarCollapsed: false
         },
-        // blog: {
-        //   showReadingTime: true,
-        //   // Please change this to your repo.
-        //   editUrl:
-        //     'https://github.com/facebook/docusaurus/edit/main/website/blog/',
-        // },
         theme: {
-          customCss: require.resolve('./src/css/custom.css'),
+          customCss: require.resolve('./src/css/custom.css')
         },
       }),
     ],
@@ -49,6 +43,7 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      hideableSidebar: true,
       colorMode: {
         defaultMode: 'dark',
       },
