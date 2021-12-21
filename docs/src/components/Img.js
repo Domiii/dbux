@@ -13,8 +13,8 @@ import useResourceSrc from '../hooks/useResourceSrc';
  * 
  * @see https://docusaurus.io/docs/api/themes/configuration#hooks
  */
-export default function Img({ src, zoomable, ...moreProps }) {
-  const actualSrc = useResourceSrc({ src, noLightMode: true });
+export default function Img({ src, zoomable, darkLight, ...moreProps }) {
+  const actualSrc = useResourceSrc({ src, darkLight });
   // const actualSrc = src;
   const className = zoomable ? 'zoomable' : '';
 

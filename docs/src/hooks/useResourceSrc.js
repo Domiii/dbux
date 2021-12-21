@@ -8,7 +8,7 @@ import useThemeContext from '@theme/hooks/useThemeContext';
  * 
  * @see https://stackoverflow.com/questions/64425555/is-it-possible-to-detect-if-docusaurus-is-in-light-or-dark-mode
  */
-export default function useResourceSrc({ src, noLightMode }) {
+export default function useResourceSrc({ src, darkLight }) {
   /**
    * @see https://docusaurus.io/docs/api/themes/configuration#hooks
    */
@@ -25,7 +25,8 @@ export default function useResourceSrc({ src, noLightMode }) {
   } } = useDocusaurusContext();
 
   let modePath;
-  if (noLightMode) {
+  if (!darkLight) {
+    // only add `dark/light` to the path if specifically required
     modePath = '';
   }
   else {
