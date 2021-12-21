@@ -4,7 +4,7 @@ import RuntimeDataProvider from '../../RuntimeDataProvider';
 /** @typedef {import('@dbux/common/src/types/DataNode').default} DataNode */
 
 /** @extends {CollectionIndex<DataNode>} */
-export default class SimpleDataNodesIndex extends CollectionIndex {
+export default class PrimitiveDataNodesIndex extends CollectionIndex {
   constructor() {
     super('dataNodes', 'simple');
   }
