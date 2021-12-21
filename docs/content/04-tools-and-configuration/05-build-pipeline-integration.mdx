@@ -1,0 +1,48 @@
+# Build Pipeline Integration
+
+As explained in [the Using Dbux Chapter](../using-dbux/overview#run-application-w-dbux-enabled): For Dbux to work, it first needs to record JavaScript application behavior.
+
+To that end, you need to add the [@dbux/babel-plugin](./dbux-babel-plugin) into your build pipeline.
+
+
+import TOCInline from '@theme/TOCInline'
+
+<!-- NOTE: we want a TOC on the side, but not inline. -->
+<!-- see https://docusaurus.io/docs/markdown-features/inline-toc -->
+<div style={{display: 'none'}}>
+  <TOCInline toc={toc} />
+</div>
+
+## Overview
+
+TODO: babel pipeline overview
+
+TODO: link to relevant configs
+
+TODO: `moduleFilter`, blacklist, whitelist etc.
+
+
+## Node Applications
+
+Node applications generally do not need bundling nor a build pipeline to run. In that case, you can simply use [@dbux/cli](./dbux-cli).
+
+
+## Use w/ Webpack
+
+TODO
+
+## Use w/ Rollup
+
+TODO
+
+## Create-React-App
+
+TODO
+
+## Next.js
+
+TODO
+
+## Other Bundlers or Bundler Wrappers
+
+TODO
