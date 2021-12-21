@@ -1,6 +1,7 @@
 import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import GraphType, { getGraphTypeDisplayName } from '@dbux/graph-common/src/shared/GraphType';
 import StackMode, { getStackModeDisplayName } from '@dbux/graph-common/src/shared/StackMode';
+import SearchMode from '@dbux/graph-common/src/shared/SearchMode';
 import { compileHtmlElement, decorateClasses, decorateAttr } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
@@ -23,13 +24,12 @@ class Toolbar extends ClientComponentEndpoint {
             <button data-el="searchMenuBtn" class="toolbar-btn btn btn-info dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             🔍
             </button>
-            <div data-el="searchMenuBody" class="dropdown-menu" style="left: inherit; right: 0; min-width: 0;">
+            <div data-el="searchMenuBody" class="dropdown-menu">
               <button title="Search for contexts by name" data-el="searchContextsBtn" class="full-width toolbar-btn btn btn-info" href="#">Search by context</button>
               <button title="Search for traces by name" data-el="searchTracesBtn" class="full-width toolbar-btn btn btn-info" href="#">Search by trace</button>
               <button title="Search for traces by value" data-el="searchValuesBtn" class="full-width toolbar-btn btn btn-info" href="#">Search by value</button>
             </div>
           </div>
-          <button title="Sync and always lock onto selected trace" data-el="followModeBtn" class="toolbar-btn btn btn-info" href="#">x</button>
           <button title="Sync and always lock onto selected trace" data-el="followModeBtn" class="toolbar-btn btn btn-info" href="#">follow</button>
           <button title="Stop recording: Do not add new runs/traces" data-el="hideNewRunBtn" class="toolbar-btn btn btn-info" href="#"></button>
           <button title="Clear: Hide all existing runs/traces" data-el="hideOldRunBtn" class="toolbar-btn btn btn-info" href="#">x</button>
@@ -52,6 +52,10 @@ class Toolbar extends ClientComponentEndpoint {
         </div>
       </nav>
     `);
+  }
+
+  get searchBar() {
+    return this.context.graphDocument.children.getComponent('SearchBar');
   }
 
   setupEl() {
@@ -91,6 +95,10 @@ class Toolbar extends ClientComponentEndpoint {
     else {
       this.els.searchMenuBody.style.display = 'none';
     }
+
+    decorateClasses(this.els.searchMenu, {
+      active: !!this.searchMenuOpen
+    });
   }
 
   // ###########################################################################
@@ -111,9 +119,6 @@ class Toolbar extends ClientComponentEndpoint {
       thinMode,
       hideBefore,
       hideAfter,
-      searchTermContexts,
-      searchTermTraces,
-      searchTermValues,
       graphMode,
       stackMode,
       asyncDetailMode,
@@ -156,13 +161,13 @@ class Toolbar extends ClientComponentEndpoint {
       active: !!asyncDetailMode
     });
     decorateClasses(this.els.searchContextsBtn, {
-      active: !!searchTermContexts
+      active: this.searchBar.state.mode === SearchMode.ByContext
     });
     decorateClasses(this.els.searchTracesBtn, {
-      active: !!searchTermTraces
+      active: this.searchBar.state.mode === SearchMode.ByTrace
     });
     decorateClasses(this.els.searchValuesBtn, {
-      active: !!searchTermValues
+      active: this.searchBar.state.mode === SearchMode.ByValue
     });
     decorateClasses(this.els.clearThreadSelectionBtn, {
       hidden: !isThreadSelectionActive
@@ -318,16 +323,12 @@ class Toolbar extends ClientComponentEndpoint {
     searchContextsBtn: {
       async click(evt) {
         evt.preventDefault();
-        if (this.parent.state.searchTermContexts) {
+        if (this.searchBar.state.mode === SearchMode.ByContext) {
           // stop searching
-          await this.remote.searchContexts(null);
+          await this.remote.setSearchMode(SearchMode.None);
         }
         else {
-          // start searching
-          const searchTermContexts = await this.app.prompt('Enter CONTEXT search term');
-          if (searchTermContexts) {
-            await this.remote.searchContexts(searchTermContexts);
-          }
+          await this.remote.setSearchMode(SearchMode.ByContext);
         }
       },
       focus(evt) { evt.target.blur(); }
@@ -336,16 +337,12 @@ class Toolbar extends ClientComponentEndpoint {
     searchTracesBtn: {
       async click(evt) {
         evt.preventDefault();
-        if (this.parent.state.searchTermTraces) {
+        if (this.searchBar.state.mode === SearchMode.ByTrace) {
           // stop searching
-          await this.remote.searchTraces(null);
+          await this.remote.setSearchMode(SearchMode.None);
         }
         else {
-          // start searching
-          const searchTermTraces = await this.app.prompt('Enter TRACE search term');
-          if (searchTermTraces) {
-            await this.remote.searchTraces(searchTermTraces);
-          }
+          await this.remote.setSearchMode(SearchMode.ByTrace);
         }
       },
       focus(evt) { evt.target.blur(); }
@@ -354,16 +351,12 @@ class Toolbar extends ClientComponentEndpoint {
     searchValuesBtn: {
       async click(evt) {
         evt.preventDefault();
-        if (this.parent.state.searchTermValues) {
+        if (this.searchBar.state.mode === SearchMode.ByValue) {
           // stop searching
-          await this.remote.searchValues(null);
+          await this.remote.setSearchMode(SearchMode.None);
         }
         else {
-          // start searching
-          const searchTermValues = await this.app.prompt('Enter VALUE search term');
-          if (searchTermValues) {
-            await this.remote.searchValues(searchTermValues);
-          }
+          await this.remote.setSearchMode(SearchMode.ByValue);
         }
       },
       focus(evt) { evt.target.blur(); }

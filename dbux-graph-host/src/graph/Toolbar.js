@@ -52,38 +52,11 @@ class Toolbar extends HostComponentEndpoint {
       this.parent.asyncStackContainer.refreshGraph();
     },
 
-    searchContexts(searchTermContexts) {
-      this.parent.setState({ searchTermContexts });
-
-      if (searchTermContexts) {
-        this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphSearchContexts, { searchTerm: searchTermContexts });
-      }
-
-      const contextNodeManager = this.context.graphDocument.syncGraphContainer.graph.controllers.getComponent('ContextNodeManager');
-      contextNodeManager.highlightBySearchTermContexts(searchTermContexts);
+    setSearchMode(mode) {
+      this.context.graphDocument.searchBar.setSearchMode(mode);
+      this.forceUpdate();
     },
 
-    searchTraces(searchTermTraces) {
-      this.parent.setState({ searchTermTraces });
-
-      if (searchTermTraces) {
-        this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphSearchTraces, { searchTerm: searchTermTraces });
-      }
-
-      const contextNodeManager = this.context.graphDocument.syncGraphContainer.graph.controllers.getComponent('ContextNodeManager');
-      contextNodeManager.highlightBySearchTermTraces(searchTermTraces);
-    },
-
-    searchValues(searchTermValues) {
-      this.parent.setState({ searchTermValues });
-
-      if (searchTermValues) {
-        this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphSearchValues, { searchTerm: searchTermValues });
-      }
-
-      const contextNodeManager = this.context.graphDocument.syncGraphContainer.graph.controllers.getComponent('ContextNodeManager');
-      contextNodeManager.highlightBySearchTermValues(searchTermValues);
-    },
     clearThreadSelection() {
       allApplications.selection.data.threadSelection.clear();
     }

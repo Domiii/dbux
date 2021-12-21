@@ -17,6 +17,7 @@ import PopperController from './controllers/PopperController';
 import PopperManager from './controllers/PopperManager';
 import Highlighter from './controllers/Highlighter';
 import HighlightManager from './controllers/HighlightManager';
+import SearchBar from './SearchBar';
 // import MiniMap from './MiniMap';
 
 export default {
@@ -39,5 +40,6 @@ export default {
   PopperController,
   PopperManager,
   Highlighter,
-  HighlightManager
+  HighlightManager,
+  SearchBar,
 };
