@@ -30,7 +30,7 @@ export default class HighlightManager extends HostComponentEndpoint {
   }
 
   on(eventName, cb) {
-    this._emitter.on(eventName, cb);
+    return this._emitter.on(eventName, cb);
   }
 
   _highlighterUpdated = makeDebounce(() => {

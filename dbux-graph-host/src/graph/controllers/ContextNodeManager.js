@@ -1,6 +1,7 @@
 import isEqual from 'lodash/isEqual';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Enum from '@dbux/common/src/util/Enum';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import objectTracker from '@dbux/data/src/objectTracker';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
@@ -21,6 +22,8 @@ const SelectorTypeConfig = {
  * @type {(Enum|typeof SelectorTypeConfig)}
  */
 const SelectorType = new Enum(SelectorTypeConfig);
+
+export { SelectorType };
 
 const FindContextsByMode = {
   [SelectorType.ObjectTrace]: (selector) => {
@@ -66,17 +69,16 @@ export default class ContextNodeManager extends HostComponentEndpoint {
     this.contextNodes = null;
 
     const highlightManager = this.context.graphContainer.controllers.getComponent('HighlightManager');
-    highlightManager.on('clear', () => {
+    this.addDisposable(highlightManager.on('clear', () => {
       this.selector = null;
       this.selectorType = null;
       this.contextNodes = null;
-    });
+    }));
 
     this.owner.on('newNode', this.refreshOnData);
     this.owner.on('refresh', this.refreshOnData);
 
-    const unsubscribe = objectTracker.onObjectSelectionChanged(this.highlightByObject);
-    this.addDisposable(unsubscribe);
+    this.addDisposable(objectTracker.onObjectSelectionChanged(this.highlightByObject));
   }
 
   // TODO: makeDebounce
@@ -125,7 +127,7 @@ export default class ContextNodeManager extends HostComponentEndpoint {
     }
 
     if (!selector) {
-      return;
+      return EmptyArray;
     }
 
     this.context.graphRoot.controllers.getComponent('GraphNode').setMode(GraphNodeMode.Collapsed);
@@ -136,6 +138,8 @@ export default class ContextNodeManager extends HostComponentEndpoint {
     this.selector = selector;
     this.selectorType = mode;
     this.highlightContexts(contexts);
+
+    return contexts;
   }
 
   /** ###########################################################################
@@ -152,21 +156,6 @@ export default class ContextNodeManager extends HostComponentEndpoint {
   }
 
   highlightByObject = (trace) => {
-    this.highlight(SelectorType.ObjectTrace, trace);
-  }
-
-  highlightBySearchTermContexts(searchTerm) {
-    const selector = searchTerm ? { searchTerm } : null;
-    this.highlight(SelectorType.SearchContext, selector);
-  }
-
-  highlightBySearchTermTraces(searchTerm) {
-    const selector = searchTerm ? { searchTerm } : null;
-    this.highlight(SelectorType.SearchTrace, selector);
-  }
-
-  highlightBySearchTermValues(searchTerm) {
-    const selector = searchTerm ? { searchTerm } : null;
-    this.highlight(SelectorType.SearchValue, selector);
+    return this.highlight(SelectorType.ObjectTrace, trace);
   }
 }

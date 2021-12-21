@@ -17,6 +17,7 @@ const Highlighter = require('./controllers/Highlighter').default;
 const HighlightManager = require('./controllers/HighlightManager').default;
 const Toolbar = require('./Toolbar').default;
 const ZoomBar = require('./ZoomBar').default;
+const SearchBar = require('./SearchBar').default;
 // const MiniMap = require('./MiniMap').default;
 
 export default {
@@ -39,5 +40,6 @@ export default {
   PopperManager,
   HiddenNodeManager,
   Highlighter,
-  HighlightManager
+  HighlightManager,
+  SearchBar,
 };

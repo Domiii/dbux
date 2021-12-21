@@ -37,6 +37,7 @@ class GraphDocument extends HostComponentEndpoint {
     this.syncGraphContainer = this.children.createComponent('GraphContainer', { graphType: GraphType.SyncGraph });
     this.asyncGraphContainer = this.children.createComponent('GraphContainer', { graphType: GraphType.AsyncGraph });
     this.asyncStackContainer = this.children.createComponent('GraphContainer', { graphType: GraphType.AsyncStack });
+    this.searchBar = this.children.createComponent('SearchBar');
     this.toolbar = this.children.createComponent('Toolbar');
   }
 
