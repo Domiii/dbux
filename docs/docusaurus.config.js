@@ -6,7 +6,6 @@ const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 const DbuxRoot = path.resolve(__dirname, `..`);
-const ResourceRoot = path.resolve(DbuxRoot, 'dbux-code/resources');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -25,9 +24,14 @@ const config = {
   /**
    * @see https://docusaurus.io/docs/next/markdown-features/assets
    */
-  staticDirectories: ['public', 'static', ResourceRoot],
+  staticDirectories: [
+    'public', 'static', 
+    path.resolve(DbuxRoot, 'dbux-code/resources'),
+    path.resolve(DbuxRoot, 'docs/dbux_img')
+  ],
 
   plugins: [
+    'plugin-image-zoom',
     [
       path.resolve(__dirname, './plugins/webpack-override-plugin'),
       {
@@ -73,6 +77,12 @@ const config = {
       },
       // announcementBar: {
       // },
+
+      /**
+       * @see https://github.com/flexanalytics/plugin-image-zoom
+       */
+      zoomSelector: 'img.zoomable',
+
       navbar: {
         title: 'Dbux',
         logo: {

@@ -5,6 +5,7 @@
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
+    "docs": "yarn start",
     "build": "docusaurus build",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
@@ -15,7 +16,9 @@
   },
   "dependencies": {
     "@docusaurus/core": "2.0.0-beta.13",
+    "@docusaurus/plugin-ideal-image": "^2.0.0-beta.13",
     "@docusaurus/preset-classic": "2.0.0-beta.13",
+    "plugin-image-zoom": "github:ataft/plugin-image-zoom",
     "@mdx-js/react": "^1.6.21",
     "clsx": "^1.1.1",
     "prism-react-renderer": "^1.2.1",

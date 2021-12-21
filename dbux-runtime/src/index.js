@@ -55,9 +55,10 @@ function handleShutdown() {
   _didShutdown = true;
 
   if (!client.hasFinished()) {
+    // TODO: always show this message, even if not verbose?
     // eslint-disable-next-line no-console
     console.error('[dbux-runtime] Process exiting but not all data has been sent out. Analysis will be incomplete. ' +
-      'This is probably because of a crash or process.exit was called manually.');
+      'This is probably because of a crash or because process.exit was called manually.');
   }
   // else {
   //   console.trace('[Dbux Runtime] shutdown detected...');
