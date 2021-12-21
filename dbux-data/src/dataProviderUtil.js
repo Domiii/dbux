@@ -248,7 +248,7 @@ export default {
     searchTerm = searchTerm.toString().toLowerCase();
 
     const matchedContextIds = new Set();
-    for (const dataNode of dp.util.getSimpleDataNodes()) {
+    for (const dataNode of dp.util.getPrimitiveDataNodes()) {
       if (dataNode.value?.toString().includes(searchTerm)) {
         const trace = dp.collections.traces.getById(dataNode.traceId);
         matchedContextIds.add(trace.contextId);
@@ -425,7 +425,7 @@ export default {
     return dp.indexes.dataNodes.byTrace.get(valueTrace.traceId);
   },
 
-  getSimpleDataNodes(dp) {
+  getPrimitiveDataNodes(dp) {
     return dp.indexes.dataNodes.simple.get(1) || EmptyArray;
   },
 
