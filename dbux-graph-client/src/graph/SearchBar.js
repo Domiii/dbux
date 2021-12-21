@@ -2,7 +2,7 @@ import SearchMode from '@dbux/graph-common/src/shared/SearchMode';
 import { compileHtmlElement, decorateAttr, decorateClasses } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
-class Toolbar extends ClientComponentEndpoint {
+class SearchBar extends ClientComponentEndpoint {
   createEl() {
     return compileHtmlElement(/*html*/` 
       <div class="input-group bg-light text-dark">
@@ -53,7 +53,7 @@ class Toolbar extends ClientComponentEndpoint {
       this.els.nextBtn.removeAttribute('disabled');
     }
 
-    this.els.matchLabel.innerHTML = searchTerm ? `${index + 1}/${count}` : '(empty)';
+    this.els.matchLabel.innerHTML = searchTerm ? `${index + 1}/${count}` : '(N/A)';
   }
 
   // ###########################################################################
@@ -79,4 +79,4 @@ class Toolbar extends ClientComponentEndpoint {
   }
 }
 
-export default Toolbar;
+export default SearchBar;
