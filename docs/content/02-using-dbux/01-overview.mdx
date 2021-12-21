@@ -1,9 +1,11 @@
 ---
 title: Overview
 ---
-# Using Dbux: Overview
 
-import TOCInline from '@theme/TOCInline'
+import TOCInline from '@theme/TOCInline';
+import ResourceImg from '@src/components/ResourceImg';
+
+# Using Dbux: Overview
 
 <!-- NOTE: we want a TOC on the side, but not inline. -->
 <!-- see https://docusaurus.io/docs/markdown-features/inline-toc -->
@@ -13,9 +15,10 @@ import TOCInline from '@theme/TOCInline'
 
 ## Run Application w/ Dbux Enabled
 
-Once [installed](../getting-started/installation), the first step to using Dbux is to execute a JS application with Dbux enabled. Once instrumented and injected, a target application will try to record and send all runtime data to the [runtime server].
+Once [installed](../getting-started/installation), the first step of using Dbux is to execute a JS application with Dbux enabled. That means that the application must be instrumented and injected with the TODO.
+Once.. a target application will try to record and send all runtime data to the [runtime server](../tools-and-configuration/dbux-code#runtime-server).
 
-These are the primary approaches to achieve this goal:
+There are four different ways to run an application with Dbux enabled:
 
 1. [The Run Button](../getting-started/the-run-button) allows you to easily run a simple Node application.
 3. The [@dbux/cli](../tools-and-configuration/dbux-cli) provides the magic that makes [The Run Button](../getting-started/the-run-button) work. It should allow you to run any non-bundled Node application.
@@ -25,6 +28,8 @@ These are the primary approaches to achieve this goal:
 <!-- (given the network queue is not starved) -->
 
 ## Select Trace
+
+<ResourceImg src='crosshair_red.svg' />
 
 TODO
 

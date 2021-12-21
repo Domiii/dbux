@@ -1,8 +1,12 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
+const path = require('path');
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+
+const DbuxRoot = path.resolve(__dirname, `..`);
+const ResourceRoot = path.resolve(DbuxRoot, 'dbux-code/resources');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -17,6 +21,26 @@ const config = {
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
+
+  /**
+   * @see https://docusaurus.io/docs/next/markdown-features/assets
+   */
+  staticDirectories: ['public', 'static', ResourceRoot],
+
+  plugins: [
+    [
+      path.resolve(__dirname, './plugins/webpack-override-plugin'),
+      {
+        overrides: {
+          resolve: {
+            alias: {
+              '@src': path.resolve(__dirname, './src')
+            }
+          }
+        }
+      }
+    ]
+  ],
 
   presets: [
     [
