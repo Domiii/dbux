@@ -47,11 +47,18 @@ export function isEnvNode() {
  */
 let _r;
 export function _require(name) {
+  if (_r !== undefined) {
+    return _r;
+  }
   // eslint-disable-next-line no-eval
-  const r = _r || (_r = eval(`
-    (typeof __non_webpack_require__ !== 'undefined' && __non_webpack_require__ || require)
-  `));
-  return r(name);
+  _r = eval(`
+    ((typeof __non_webpack_require__ !== 'undefined' && __non_webpack_require__) || 
+    (typeof require !== 'undefined' && require))
+  `) || null;
+  if (!_r) {
+    return null;
+  }
+  return _r(name);
 }
 
 /**
