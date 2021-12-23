@@ -10,30 +10,11 @@ import TOC from '@src/components/TOC';
 <TOC toc={toc} />
 
 
-## Runtime Analysis w/ Dbux
 
-Using Dbux involves three steps:
+Using Dbux involves two steps:
 
 1. Run an application [with Dbux enabled](#enabling-dbux).
-2. Make sure that the new application shows up in the [Application View](#application-view).
-3. Start your analysis...
-
-The Dbux UI offers several tools for runtime analysis:
-
-* Use the [Application View](#application-view) to go to the Application entry point.
-* Get a high-level overview via:
-  * the [Call Graph](#call-graph).
-  * the [Global View](#global-view).
-* Get down into the nitty-gritty:
-  * [Select a Trace](#select-trace) <DarkLightImg src='crosshair_red.svg' />
-  * Investigate individual traces using the [Trace Details View](#trace-details-view)
-  * [Navigate](#navigation) TODO(pic) between traces.
-  * [Search](#search) for traces, contexts, modules or data.
-* Understand where data came from and where it went using the [Data Flow View](#data-flow-view).
-
-:::tip
-All buttons in the Dbux VSCode Extension have corresponding [commands](../tools-and-configuration/dbux-code#commands) which in turn (are not by default but) can be keybound.
-:::
+2. Use the Dbux VSCode Extension for [runtime analysis](#runtime-analysis).
 
 
 ## Enabling Dbux
@@ -43,71 +24,31 @@ Once running, an instrumented target application will try to record and send all
 
 There are four different ways to run an application with Dbux enabled:
 
-1. [The Run Button](./the-run-button) allows you to easily run a simple Node application.
+1. [The Run Button](./the-run-button) allows you to easily run a simple Node application with Dbux enabled.
 2. The [@dbux/cli](../tools-and-configuration/dbux-cli) provides the magic that makes [The Run Button](./the-run-button) work. It should allow you to run any non-bundled Node application.
 3. [Dbux Practice](../dbux-practice) allows the user to execute a curated list of frontend, backend (and hopefully soon, full-stack) applications at the click of a single button.
 4. Frontend and other bundled applications require [build pipeline integration](../tools-and-configuration/build-pipeline-integration).
 
 
-## Application View
+Once executed, it should show up in the [Application View](./application-view).
 
-This view lists all recorded applications. Applications of the same entry point are grouped together.
 
-TODO(pics -> show multiple applications, some nested, some activated, also show "go to entry point" button)
+## Runtime Analysis
 
-* You can enable/disable each application manually. If an application is disabled (no checkmark), you cannot interact with it. It's code is not augmented, it's traces cannot be selected and it does not show up in the call graph.
-* You can use the arrow button to the right of every application to go to its entry point.
+Once [recorded](#enabling-dbux), the Dbux VSCode Extension offers several tools for runtime analysis:
 
-:::note
-If your application does not show up, please [refer to our FAQ](../faq#my-applications-dont-show-up).
-:::
+* Use the [Application View](./applications) to go to the Application entry point.
+* Get a high-level overview via:
+  * the [Global View](./global).
+  * the [Call Graph](./call-graph).
+* Get down into the nitty-gritty:
+  * [Select a Trace](./code-augmentation-select-trace) <DarkLightImg src='crosshair_red.svg' />.
+  * Investigate individual traces using the [Trace Details View](./trace-details)
+  * [Navigate](./trace-details#navigation) TODO(pic) between traces.
+  * [Search](./search) for traces, contexts, modules or data.
+* Understand where data came from and where it went using the [Data Flow View](./data-flow).
 
 :::tip
-This is not a crucial analysis view. We recommend minimizing it unless you really need it.
+All buttons in the Dbux VSCode Extension have corresponding [commands](../tools-and-configuration/dbux-code#commands) which in turn (are not by default but) [can be key-bound](https://code.visualstudio.com/docs/getstarted/keybindings).
 :::
-
-
-## Code Augmentation
-
-TODO
-
-## Select Trace
-
-* Place the keyboard cursor on a piece of code that has executed. Usually, executed code is [visually augmented](#code-augmentation).
-* You should see the red crosshair <DarkLightImg src='crosshair_red.svg' /> show up in two places: the top right of the editor window and in the [Trace Details View](#trace-detail-view).
-* Click the crosshair.
-* The [Trace Details View](#trace-details-view) should pop up and show you all relevant information of the recorded trace in that place of the code.
-
-
-## Global View
-
-TODO
-
-## Trace Details View
-
-TODO
-
-## Navigation
-
-TODO
-
-## Data Flow View
-
-TODO
-
-## Call Graph
-
-TODO
-
-## Search
-
-TODO
-
-## Dbux Practice View
-
-TODO
-
-## Pathways
-
-TODO
 

@@ -1,0 +1,20 @@
+## Code Augmentation + Select Trace
+
+When browsing executed code, you should see code augmentations, like this:
+
+TODO(pic)
+
+You can investigate the details of the execution of a piece of code via trace selection:
+
+* Place the keyboard cursor on a piece of code that has executed.
+  * NOTE: Usually, executed code is [visually augmented](./code-augmentation).
+* You should see the red crosshair<DarkLightImg src="crosshair_red.svg" /> show up in two places: the top right of the editor window and in the [Trace Details View](./trace-detail)[^1].
+* Click the crosshair.
+* The [Trace Details View](./trace-details) should pop up and show you all relevant information of the recorded trace in that place of the code.
+
+
+TODO: code augmentation legend
+
+
+
+[^1]: You might need to hover over the `Trace Details View` for buttons to show up. This is a [limitation of the VSCode Extension API](https://github.com/microsoft/vscode/issues/78829).
