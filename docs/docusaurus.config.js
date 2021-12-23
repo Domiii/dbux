@@ -7,12 +7,14 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 const DbuxRoot = path.resolve(__dirname, `..`);
 
+const baseUrl = '/dbux/';
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Dbux',
   tagline: 'Integrated Debugging Environment + Omniscient Debugger',
   url: 'https://domiii.github.io',
-  baseUrl: '/dbux/',
+  baseUrl,
 
   projectName: 'Dbux', // Usually your repo name.
   organizationName: 'realworld-debugging', // Usually your GitHub org/user name.
