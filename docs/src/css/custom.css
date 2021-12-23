@@ -27,14 +27,37 @@ html[data-theme="dark"] .docusaurus-highlight-code-line {
   background-color: rgba(0, 0, 0, 0.3);
 }
 
-.run-button {
-  color: red;
-  /* list-style: url(../img/play.svg) no-repeat; */
-}
+/** ###########################################################################
+ * fix links
+ * ############################################################################*/
 
 /* Override non-category links to be horizonally compact */
 li > a.menu__link {
   justify-content: flex-start;
+}
+
+/** ###########################################################################
+ * misc
+ * ############################################################################*/
+
+.color-gray {
+  color: lightgray;
+}
+
+.border-gray {
+  border: 1px solid gray;
+}
+
+.round {
+  border-radius: 50%;
+}
+
+/** ###########################################################################
+ * run-button
+ * ############################################################################*/
+
+.run-button {
+  /* list-style: url(../img/play.svg) no-repeat; */
 }
 
 /* .section1 > div > a::before {
@@ -52,3 +75,5 @@ li > a.menu__link {
   padding-right: 0.5rem;
   content: url(../img/play.svg);
 }
+
+

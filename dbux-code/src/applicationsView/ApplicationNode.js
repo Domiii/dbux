@@ -27,7 +27,7 @@ export default class ProjectNode extends BaseTreeViewNode {
 
   init = () => {
     this.contextValue = 'ApplicationNode';
-    this.description = this.application.entryPointPath;
+    this.description = this.application.renderEntryPoint();
   }
 
   canHaveChildren() {

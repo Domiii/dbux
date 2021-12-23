@@ -1,7 +1,8 @@
 import React from 'react';
 
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+
 import useThemeContext from '@theme/hooks/useThemeContext';
+import useBaseUrl from './useBaseUrl';
 
 /**
  * Look up resource src, relative to a resources/light or resources/dark folder.
@@ -13,16 +14,8 @@ export default function useResourceSrc({ src, darkLight }) {
    * @see https://docusaurus.io/docs/api/themes/configuration#hooks
    */
   const { isDarkTheme } = useThemeContext();
-
-  /**
-   * @see https://docusaurus.io/docs/docusaurus-core#usedocusauruscontext
-   */
-  const { siteConfig: {
-    /**
-     * NOTE: `baseUrl` must be a string with trailing slash.
-     */
-    baseUrl
-  } } = useDocusaurusContext();
+  
+  const baseUrl = useBaseUrl();
 
   let modePath;
   if (!darkLight) {
