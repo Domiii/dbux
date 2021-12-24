@@ -1,8 +1,11 @@
-/** @typedef {import('./ApplicationSet').default} ApplicationSet */
-
+import sum from 'lodash/sum';
 import AsyncNodesInOrder from './AsyncNodesInOrder';
 import AsyncThreadsInOrder from './AsyncThreadsInOrder';
 import { ThreadSelection } from './ThreadSelection';
+
+/** @typedef {import('./Application').default} Application */
+/** @typedef {import('./ApplicationSet').default} ApplicationSet */
+/** @typedef {import('../DataProviderBase').default} DataProviderBase */
 
 /**
  * Encapsulates all data that is related to the set of selected applications;
@@ -87,7 +90,31 @@ export default class ApplicationSetData {
     return results;
   }
 
+  /**
+   * @callback collectStatsCb
+   * @param {DataProviderBase} dp
+   * @param {Application} app
+   */
+
+  /**
+   * 
+   * @param {collectStatsCb} cb 
+   */
   collectGlobalStats(cb) {
     return this.set.getAll().flatMap(app => cb(app.dataProvider, app));
+  }
+
+  /**
+   * @callback countStatsCb
+   * @param {DataProviderBase} dp
+   * @param {Application} app
+   * @return {number}
+   */
+
+  /**
+   * @param {countStatsCb} cb 
+   */
+  countStats(cb) {
+    return sum(this.set.getAll().flatMap(app => cb(app.dataProvider, app)));
   }
 }

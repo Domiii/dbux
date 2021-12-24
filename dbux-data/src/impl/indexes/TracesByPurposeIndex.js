@@ -1,9 +1,10 @@
-import StaticTrace from '@dbux/common/src/types/StaticTrace';
+import Trace from '@dbux/common/src/types/Trace';
+import TracePurpose from '@dbux/common/src/types/constants/TracePurpose';
 import CollectionIndex from '../../indexes/CollectionIndex';
 
 
-/** @extends {CollectionIndex<StaticTrace>} */
-export default class StaticTracesByFileIndex extends CollectionIndex {
+/** @extends {CollectionIndex<Trace>} */
+export default class TracesByPurposeIndex extends CollectionIndex {
   /**
    * debug-only: Usually, indexes are partitions of underlying collections. This index is not.
    */

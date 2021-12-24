@@ -61,6 +61,7 @@ import NestedPromiseToIndex from './impl/indexes/NestedPromiseToIndex';
 import PreAsyncEventUpdatesByPostEventPromiseIndex from './impl/indexes/PreAsyncEventUpdatesByPostEventPromiseIndex';
 import ValueRefByErrorIndex from './impl/indexes/ValueRefByErrorIndex';
 import AsyncEventUpdatesByNestedPromiseIndex from './impl/indexes/AsyncEventUpdatesByNestedPromiseIndex';
+import TracesByPurposeIndex from './impl/indexes/TracesByPurposeIndex';
 
 export function newDataProvider(application) {
   const dp = new RuntimeDataProvider(application);
@@ -123,6 +124,9 @@ export function newDataProvider(application) {
   // NOTE: we are currently solving index dependencies by simply adding depdendents after dependees
   dp.addIndex(new ExecutedStaticTracesByFileIndex());
   dp.addIndex(new ParentTracesInRealContextIndex());
+
+  // many-to-many indexes
+  dp.addIndex(new TracesByPurposeIndex());
 
   // ########################################
   // async

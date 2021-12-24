@@ -16,7 +16,7 @@ export default class GlobalAnalysisViewController {
   }
 
   refresh = () => {
-    this.treeDataProvider.refresh();
+    return this.treeDataProvider.refresh(); // -> debounced
   }
 
   initOnActivate(context) {
@@ -24,9 +24,15 @@ export default class GlobalAnalysisViewController {
     this.treeDataProvider.initDefaultClickCommand(context);
 
     // application selection changed
-    allApplications.selection.onApplicationsChanged((apps) => {
-      this.treeDataProvider.decorateTitle(`(${apps.length})`);
+    allApplications.selection.onApplicationsChanged((selectedApps) => {
+      this.treeDataProvider.decorateTitle(`(${selectedApps.length} apps)`);
       this.refresh();
+
+      for (const app of selectedApps) {
+        allApplications.selection.subscribe(
+          app.dataProvider.onData('traces', this.refresh)
+        );
+      }
     });
   }
 }

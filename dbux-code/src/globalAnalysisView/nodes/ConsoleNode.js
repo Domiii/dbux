@@ -1,14 +1,22 @@
 import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
+import TracePurpose from '@dbux/common/src/types/constants/TracePurpose';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import makeTreeItem from '../../helpers/makeTreeItem';
+import TraceNode from '../../traceDetailsView/nodes/TraceNode';
 
 
 /** ###########################################################################
  * {@link ConsoleNode}
  * ##########################################################################*/
 
+class ConsoleTraceNode extends TraceNode {
 
+}
+
+/**
+ * TODO: use TraceContainerNode
+ */
 export default class ConsoleNode extends BaseTreeViewNode {
   static makeLabel(/*app, parent*/) {
     return `Console`;
@@ -19,32 +27,17 @@ export default class ConsoleNode extends BaseTreeViewNode {
   }
 
   init() {
-    const n = allApplications.selection.data.collectGlobalStats((dp, app) => {
+    const n = allApplications.selection.data.countStats((dp) => {
+      return dp.indexes.traces.byPurpose.getSize(TracePurpose.Console);
     });
-    this.description = `${}`;
+    this.description = `(${n})`;
   }
 
   buildChildren() {
     return allApplications.selection.data.collectGlobalStats((dp, app) => {
-      return dp.collections.asyncNodes.getAllActual()
-        .filter(asyncNode => !!asyncNode.syncPromiseIds?.length)
-        .map(asyncNode => {
-          const rootId = asyncNode.rootContextId;
-          const rootContext = dp.collections.executionContexts.getById(rootId);
-          return makeTreeItem(
-            makeContextLabel(rootContext, app), // makeContextLocLabel()
-            asyncNode,
-            {
-              description: `${makeContextLocLabel(app.applicationId, rootContext)}`,
-              handleClick() {
-                // -> go to first trace in edge's toRoot
-                const targetTrace = dp.util.getFirstTraceOfContext(rootId);
-                if (targetTrace) {
-                  traceSelection.selectTrace(targetTrace);
-                }
-              }
-            }
-          );
+      return dp.indexes.traces.byPurpose.get(TracePurpose.Console)
+        .map(trace => {
+          return this.treeNodeProvider.buildNode(ConsoleTraceNode, trace, this);
         });
     });
   }

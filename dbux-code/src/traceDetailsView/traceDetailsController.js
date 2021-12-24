@@ -62,6 +62,10 @@ class TraceDetailsController {
     this.treeDataProvider.refresh();
     this.updateEditedWarning();
   }
+
+  /**
+   * TODO: bring back debounce
+   */
   refreshOnData = () => {
     this.refresh();
     this.tracesAtCursor.needRefresh = true;
