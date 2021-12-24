@@ -4,8 +4,8 @@ import isObject from 'lodash/isObject';
 import isEmpty from 'lodash/isEmpty';
 import isFunction from 'lodash/isFunction';
 import isString from 'lodash/isString';
-import isPlainObject from 'lodash/isPlainObject';
-import size from 'lodash/size';
+
+import { getPrettyFunctionName } from '@dbux/common/src/util/functionUtil';
 
 /**
  * Use:
@@ -102,7 +102,7 @@ export function makeTreeItemNoChildren(labelOrArrOrItem, itemProps) {
   // }
 
   if (isFunction(labelOrArrOrItem)) {
-    label = (labelOrArrOrItem.name || '').replace(/[_]/g, ' ');
+    label = getPrettyFunctionName(labelOrArrOrItem);
     itemProps = labelOrArrOrItem();
   }
   else {

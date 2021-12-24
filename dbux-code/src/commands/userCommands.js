@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { Uri, window } from 'vscode';
 
 import open from 'open';
@@ -22,9 +23,7 @@ import { getProjectManager } from '../projectViews/projectControl';
 import { showHelp } from '../help';
 // import { installDbuxDependencies } from '../codeUtil/installUtil';
 import { showOutputChannel } from '../projectViews/projectViewsController';
-import { renderValueAsJsonInEditor } from '../traceDetailsView/valueRender';
-import { getAllMemento, clearAll } from '../memento';
-import { confirm, showErrorMessage, showInformationMessage } from '../codeUtil/codeModals';
+import { confirm, showErrorMessage, showInformationMessage, showQuickPick } from '../codeUtil/codeModals';
 import { translate } from '../lang';
 import { getCodeDirectory, getDefaultExportDirectory, getLogsDirectory } from '../codeUtil/codePath';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
@@ -279,15 +278,5 @@ export function initUserCommands(extensionContext) {
 
   registerCommand(extensionContext, 'dbux.showOutputChannel', async () => {
     return showOutputChannel();
-  });
-
-  registerCommand(extensionContext, 'dbux.showMemento', async () => {
-    return await renderValueAsJsonInEditor(getAllMemento());
-  });
-
-  registerCommand(extensionContext, 'dbux.clearMemento', async () => {
-    await clearAll();
-    // TOTRANSLATE
-    await showInformationMessage('Memento cleared, please reload the window');
   });
 }

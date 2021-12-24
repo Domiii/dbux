@@ -1,5 +1,15 @@
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 
+/**
+ * NOTE: uses volta
+ */
+export function makeNodeAtVersionCommand(version, cmd) {
+  // NOTE: there is a weird bug sometimes, where it just will keep saying "volta not found"...
+  const volta = 'volta';
+  this.exec(`which ${volta}`); // make sure, volta exists
+  return `"${volta}" run --node ${version} node ${cmd}`;
+}
+
 export function buildNodeCommand(cfg) {
   let {
     // cwd,

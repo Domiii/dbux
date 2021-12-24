@@ -128,7 +128,9 @@ export default class WebpackProject extends Project {
     // https://github.com/webpack/webpack/blob/master/_SETUP.md
     await this.execInTerminal('yarn link && yarn link webpack');
 
-    await this.installPackages('shebang-loader');
+    await this.installPackages({
+      'shebang-loader': '*'
+    });
 
     await this.installWebpackCli();
 

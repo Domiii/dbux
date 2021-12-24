@@ -1,9 +1,8 @@
-import last from 'lodash/last';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { binarySearchByKey } from '@dbux/common/src/util/arrayUtil';
 import TraceType, { isTracePush, isTracePop, isDataOnlyTrace } from '@dbux/common/src/types/constants/TraceType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import { hasCallId } from '@dbux/common/src/types/constants/traceCategorization';
+import { hasCallId, isCallResult } from '@dbux/common/src/types/constants/traceCategorization';
 import RuntimeDataProvider from '../RuntimeDataProvider';
 
 // eslint-disable-next-line no-unused-vars
@@ -105,7 +104,6 @@ export default class CallGraph {
           return this.dp.collections.traces.getById(callerTrace.resultId);
         }
       }
-      
       return null;
     }
   }
@@ -115,7 +113,7 @@ export default class CallGraph {
 
     // if trace has callId, `step in` to that call right away
     if (hasCallId(trace)) {
-      const lastChild = this.dp.util.getLastTraceByCalleeTrace(trace.callId);
+      const lastChild = this.dp.util.getLastTraceByCallerTrace(trace.callId);
       if (lastChild) {
         return lastChild;
       }
@@ -129,7 +127,7 @@ export default class CallGraph {
     }
     else if (prevChild === trace) {
       // nextChild is itself(usually in getter/setter), return the first child inside
-      const firstChild = this.dp.util.getFirstTraceByCalleeTrace(traceId);
+      const firstChild = this.dp.util.getFirstTraceByCallerTrace(traceId);
       if (firstChild) {
         return firstChild;
       }
@@ -146,9 +144,9 @@ export default class CallGraph {
   getNextChildContext(traceId) {
     const trace = this.dp.collections.traces.getById(traceId);
 
-    // if trace has callId, `step in` to that call right away
-    if (hasCallId(trace)) {
-      const firstChild = this.dp.util.getFirstTraceByCalleeTrace(trace.callId);
+    // if trace is call-related, `step in` to that call right away
+    if (isCallResult(trace) || hasCallId(trace)) {
+      const firstChild = this.dp.util.getFirstTraceByCallerTrace(trace.resultCallId || trace.callId);
       if (firstChild) {
         return firstChild;
       }
@@ -162,7 +160,7 @@ export default class CallGraph {
     }
     else if (nextChild === trace) {
       // nextChild is itself(usually in getter/setter), return the first child inside
-      const firstChild = this.dp.util.getFirstTraceByCalleeTrace(traceId);
+      const firstChild = this.dp.util.getFirstTraceByCallerTrace(traceId);
       if (firstChild) {
         return firstChild;
       }
@@ -208,7 +206,7 @@ export default class CallGraph {
   _getPreviousInContext(traceId) {
     const trace = this.dp.collections.traces.getById(traceId);
     const traces = this.dp.util.getTracesOfRealContext(traceId);
-    const index = this._binarySearchByKey(traces, trace, (t) => t.traceId);
+    const index = binarySearchByKey(traces, trace, (t) => t.traceId);
     if (index === null) {
       logError('Trace not found in traces');
       return null;
@@ -232,7 +230,7 @@ export default class CallGraph {
   _getNextInContext(traceId) {
     const trace = this.dp.collections.traces.getById(traceId);
     const traces = this.dp.util.getTracesOfRealContext(traceId);
-    const index = this._binarySearchByKey(traces, trace, (t) => t.traceId);
+    const index = binarySearchByKey(traces, trace, (t) => t.traceId);
     if (index === null) {
       logError('Trace not found in traces');
       debugger;
@@ -289,29 +287,6 @@ export default class CallGraph {
   // ########################################
   //  Util
   // ########################################
-
-  /**
-   * Note: The array mapped by makeKey must be sorted.
-   */
-  _binarySearchByKey(arr, x, makeKey) {
-    if (makeKey) {
-      arr = arr.map(makeKey);
-      x = makeKey(x);
-    }
-    let start = 0;
-    let end = arr.length - 1;
-    let mid;
-
-    while (start <= end) {
-      mid = Math.floor((start + end) / 2);
-      if (arr[mid] === x) return mid;
-      else if (arr[mid] < x) start = mid + 1;
-      else end = mid - 1;
-    }
-
-    // x not in arr
-    return null;
-  }
 
   /**
    * Note: The array mapped by makeKey must be sorted.

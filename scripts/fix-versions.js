@@ -1,5 +1,5 @@
 // make sure, we can import dbux stuff without any problems (and console log is pretty)
-require('../dbux-cli/lib/dbux-register-self');
+require('./dbux-register-self');
 require('@dbux/common/src/util/prettyLogs');
 
 const { newLogger } = require('@dbux/common/src/log/logger');
@@ -23,9 +23,9 @@ function parseLernaVersion() {
   if (!lerna.version) {
     throw new Error('lerna.json does not have a version.');
   }
-  
+
   let { version } = lerna;
-  
+
   // future-work: just use `semver` instead
 
   // NOTE: we cannot roll with the current "dev" build version since we depend on the version to be available on the `npm` registry
@@ -49,12 +49,16 @@ async function setVersion(version) {
   /**
    * @see https://github.com/lerna/lerna/tree/main/commands/version
    */
-  await exec(`npx lerna version ${version} --yes --no-private --no-changelog --no-git-tag-version --no-push`);
-  
-  const lernaVersion = readLernaJson().version;
-  if (lernaVersion !== version) {
-    throw new Error(`Revert failed. Expected: ${version} - found: ${lernaVersion}`);
-  }
+  // --no-private
+  // NOTE: we need --force-publish=* to force it to collect all packages (even though, it does not publish)
+  const cmd = `npx lerna version ${version} --preid=dev --no-changelog --no-git-tag-version --no-push --force-publish=* -y`;
+  await exec(cmd);
+  // console.warn('setVersion', cmd);
+
+  // const lernaVersion = readLernaJson().version;
+  // if (lernaVersion !== version) {
+  //   throw new Error(`Revert failed. Expected: ${version} - found: ${lernaVersion}`);
+  // }
 }
 
 /** ###########################################################################
@@ -75,7 +79,6 @@ async function downgradeProdVersion() {
     console.warn(`Downgrading version for production: ${version} -> ${newVersion}`);
 
     await setVersion(newVersion);
-    
     console.warn(`Success. Downgraded to prod version: ${newVersion}`);
   }
   else {
@@ -87,38 +90,54 @@ async function downgradeProdVersion() {
  * {@link revertToDevVersion}
  *  #########################################################################*/
 
-async function revertToDevVersion() {
+async function revertToDevVersion(force = false) {
   let [version, maj, min, pat, release] = parseLernaVersion();
 
-  if (!release) {
-    const tags = (await execCaptureOut('git tag')).split('\n');
+  if (!release?.includes('dev') || force) {
+    // git tag | tail
+    const tags = (await execCaptureOut('git tag')).split('\n').reverse();
     let newVersion = `${maj}.${min}.${pat + 1}`;
 
-    // TODO: just get latest version?
-    
-    const matchingTag = tags.find(tag => tag.startsWith('v' + newVersion));
+    // future-work: just get latest version?
+
+    const matchingTags = tags.filter(tag => tag.startsWith('v' + newVersion));
+
+    const matchingTag = matchingTags[0];
     if (!matchingTag) {
       // eslint-disable-next-line max-len
-      throw new Error(`Could not find matching tag for ${newVersion} to revert to. Usually publish.js would create it after publishing (via "npx lerna version prepatch --preid dev --yes --force-publish").`);
+      throw new Error(`Could not find matching tag for ${newVersion} to revert to. Usually publish.js would create it after publishing. Did it terminate early? Make sure to run it's postPublish function.`);
     }
 
+    console.log('matchingTags: ', matchingTags.join(', '));
+
     newVersion = matchingTag.substring(1);
-    
+
     console.warn(`Reverting to development version: ${version} -> ${newVersion}`);
 
     await setVersion(newVersion);
-
     console.warn(`Success. Reverted to development version: ${newVersion}`);
   }
   else {
-    // NOTE: if there already is a "dev" version, there is no need to revert
+    // nothing to do
   }
+}
+
+async function nextDevVersion() {
+  let [version, maj, min, pat, release] = parseLernaVersion();
+
+  if (!release?.includes('dev')) {
+    // throw new Error(`Cannot upgrade dev version while not on dev version.`);
+    await revertToDevVersion();
+  }
+
+  return await setVersion('prerelease');
 }
 
 
 module.exports = {
   downgradeProdVersion,
-  revertToDevVersion
+  revertToDevVersion,
+  nextDevVersion
 };
 
 /*

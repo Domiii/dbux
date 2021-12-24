@@ -152,25 +152,25 @@ function getDbuxVersion(mode) {
   }
 
   let { version } = lerna;
-  const originalVersion = version;
-  if (mode === 'production') {
-    // NOTE: we cannot roll with the current "dev" build version since we depend on the version to be available on the `npm` registry
-    // so we must downgrade!
-    const match = version.match(/(\d+)\.(\d+)\.(\d+)(-dev\.\d+)?/);
-    if (!match) {
-      throw new Error(`Could not parse lerna version: ${version}`);
-    }
-    let [_, maj, min, pat, release] = match;
+  // const originalVersion = version;
+  // if (mode === 'production') {
+  //   // NOTE: we used to not be able to run with the current "dev" build version since 
+  //   //    we depended on a prod version to be available on the `npm` registry
+  //   //    -> So we had to downgrade
+  //   const match = version.match(/(\d+)\.(\d+)\.(\d+)(-dev\.\d+)?/);
+  //   if (!match) {
+  //     throw new Error(`Could not parse lerna version: ${version}`);
+  //   }
+  //   let [_, maj, min, pat, release] = match;
+  //   [maj, min, pat] = [maj, min, pat].map(n => parseInt(n, 10));
 
-    [maj, min, pat] = [maj, min, pat].map(n => parseInt(n, 10));
-
-    if (release) {
-      throw new Error(`Cannot make a production build of a dev version.`);
-    }
-    else {
-      // NOTE: if there is no "dev" version, there is no need to downgrade
-    }
-  }
+  //   // if (release) {
+  //   //   throw new Error(`Cannot make a production build of a dev version.`);
+  //   // }
+  //   // else {
+  //   //   // NOTE: if there is no "dev" version, there is no need to downgrade
+  //   // }
+  // }
   return version;
 }
 

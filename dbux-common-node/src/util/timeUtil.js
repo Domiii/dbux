@@ -1,4 +1,4 @@
-import { performance } from '@dbux/common/src/util/universalLibs';
+import { performance } from '@dbux/common/src/util/universalLib';
 
 export function performanceNow() {
   return performance.now();

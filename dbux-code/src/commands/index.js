@@ -3,6 +3,7 @@ import { initUserCommands } from './userCommands';
 import { initApplicationsViewCommands } from './applicationsViewCommands';
 // import { initCallGraphViewCommands } from './callGraphViewCommands';
 import { initDataFlowViewCommands } from './dataFlowViewCommands';
+import { initDiagnosticCommands } from './diagnosticCommands';
 // import { initCallStackViewCommands } from './callStackViewCommands';
 
 export function initCommands(
@@ -17,4 +18,5 @@ export function initCommands(
   // initCallGraphViewCommands(context, callGraphViewController);
   initDataFlowViewCommands(context, dataFlowViewController);
   // initCallStackViewCommands(context, callStackViewController);
+  initDiagnosticCommands(context);
 }

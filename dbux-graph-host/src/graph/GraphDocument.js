@@ -1,6 +1,7 @@
 import NanoEvents from 'nanoevents';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
+import StackMode from '@dbux/graph-common/src/shared/StackMode';
 import GraphType, { nextGraphType } from '@dbux/graph-common/src/shared/GraphType';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
@@ -13,19 +14,20 @@ class GraphDocument extends HostComponentEndpoint {
     this._emitter = new NanoEvents();
 
     // default mode settings
-    this.state.graphMode = GraphType.AsyncGraph;
+    this.state.graphMode = GraphType.SyncGraph;
+    this.state.stackMode = StackMode.Hidden;
     this.state.followMode = true;
-    this.state.locMode = true;
+    this.state.locMode = false;
     this.state.callMode = true;
     this.state.valueMode = false;
     this.state.thinMode = false;
-    this.state.stackEnabled = false;
-    this.state.asyncDetailMode = false;
+    this.state.asyncDetailMode = true;
 
     this.createOwnComponents();
 
     // NOTE: this will be called immediately
     this.addDisposable(allApplications.selection.onApplicationsChanged(() => {
+      this.handleApplicationsChanged();
       this.refreshGraphs();
     }));
   }
@@ -35,6 +37,7 @@ class GraphDocument extends HostComponentEndpoint {
     this.syncGraphContainer = this.children.createComponent('GraphContainer', { graphType: GraphType.SyncGraph });
     this.asyncGraphContainer = this.children.createComponent('GraphContainer', { graphType: GraphType.AsyncGraph });
     this.asyncStackContainer = this.children.createComponent('GraphContainer', { graphType: GraphType.AsyncStack });
+    this.searchBar = this.children.createComponent('SearchBar');
     this.toolbar = this.children.createComponent('Toolbar');
   }
 
@@ -88,6 +91,9 @@ class GraphDocument extends HostComponentEndpoint {
 
   onGraphModeChanged(cb) {
     return this._emitter.on('graphModeChanged', cb);
+  }
+
+  handleApplicationsChanged() {
   }
 
   refreshGraphs() {

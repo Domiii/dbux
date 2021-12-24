@@ -11,15 +11,15 @@ export default class StaticContextTDNode extends BaseTreeViewNode {
     const dp = allApplications.getById(applicationId).dataProvider;
     const { staticContextId } = dp.collections.executionContexts.getById(contextId);
     const contexts = dp.indexes.executionContexts.byStaticContext.get(staticContextId) || EmptyArray;
-    const calleeTraces = contexts
+    const callerTraces = contexts
       .map((context) => dp.util.getCallerTraceOfContext(context.contextId))
       .filter(t => !!t);
 
     // StaticProgramContext do not have parentTrace and will be filtered
-    const label = `Function executed: ${Math.max(calleeTraces.length, 1)}x`;
+    const label = `Function executed: ${Math.max(callerTraces.length, 1)}x`;
 
     let collapsibleStateOverride;
-    if (calleeTraces.length) {
+    if (callerTraces.length) {
       collapsibleStateOverride = TreeItemCollapsibleState.Collapsed;
     }
     else {
@@ -27,7 +27,7 @@ export default class StaticContextTDNode extends BaseTreeViewNode {
     }
 
     return {
-      calleeTraces,
+      callerTraces,
       label,
       collapsibleStateOverride
     };
@@ -39,12 +39,12 @@ export default class StaticContextTDNode extends BaseTreeViewNode {
 
   buildChildren() {
     // use built children in makeProperties
-    const nodes = this.calleeTraces.map(this.buildCalleeTraceNode);
+    const nodes = this.callerTraces.map(this.buildCallerTraceNode);
     return nodes;
   }
 
-  buildCalleeTraceNode = (calleeTrace) => {
-    const newNode = this.treeNodeProvider.buildNode(TraceNode, calleeTrace, this);
+  buildCallerTraceNode = (callerTrace) => {
+    const newNode = this.treeNodeProvider.buildNode(TraceNode, callerTrace, this);
     return newNode;
   }
 }

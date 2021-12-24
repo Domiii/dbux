@@ -1,5 +1,5 @@
 // make sure, we can import dbux stuff without any problems (and console log is pretty)
-require('../dbux-cli/lib/dbux-register-self');
+require('./dbux-register-self');
 require('../dbux-common/src/util/prettyLogs');
 
 const path = require('path');
@@ -18,7 +18,7 @@ function getPath(...segments) {
 }
 
 function getCommandJsonPath() {
-  return getPath('docs', 'commands.json');
+  return getPath('docs/data/commands.json');
 }
 
 function readCodePackageJson() {

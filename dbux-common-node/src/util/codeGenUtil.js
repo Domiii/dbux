@@ -4,6 +4,7 @@
 
 import fs from 'fs';
 import glob from 'glob';
+import identity from 'lodash/identity';
 import isString from 'lodash/isString';
 import path from 'path';
 
@@ -32,14 +33,15 @@ function genImport(dir, name) {
   return `import ${name} from '${dir}/${name}';`;
 }
 
-function genExportAll(names) {
+function genExportAll(names, transformEntry) {
+  names = names.map(transformEntry);
   return `export {\n${IndentUnit}${names.join(`,\n${IndentUnit}`)}\n};`;
 }
 
 /**
  * Produce a js file that imports and exports all files in a given directory.
  */
-export function writeFileRegistryFile(outFile, dir, predicate, moreImports = '', initFn = null) {
+export function writeFileRegistryFile(outFile, dir, predicate, moreImports = '', initFn = null, transformEntry = identity) {
   const files = glob.sync(dir + '/*')
     .filter(f => path.basename(f) !== outFile)
     .map(f => path.parse(f).name)
@@ -61,7 +63,7 @@ export function writeFileRegistryFile(outFile, dir, predicate, moreImports = '',
     ...doInit,
     '',
     // exports
-    genExportAll(files)
+    genExportAll(files, transformEntry)
   ];
 
   outFile = path.resolve(dir, outFile);

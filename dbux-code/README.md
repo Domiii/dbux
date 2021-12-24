@@ -7,43 +7,13 @@ This page explains the dbux-code extension and how to use it. For more general i
 
 <h2>Table of Contents</h2>
 
-- [Introduction w/ Examples](#introduction-w-examples)
 - [Installation](#installation)
 - [Usage](#usage)
-- ["Run with Dbux" and "Debug with Dbux"](#run-with-dbux-and-debug-with-dbux)
-  - [How the Run + Debug buttons work](#how-the-run--debug-buttons-work)
-- [Analysis Features](#analysis-features)
-  - [Applications](#applications)
-  - [Code decorations](#code-decorations)
-  - [Trace Selection](#trace-selection)
-  - [Trace Details](#trace-details)
-  - [Trace Details: Navigation](#trace-details-navigation)
-  - [Trace Details: Value](#trace-details-value)
-  - [Trace Details: Object Traces](#trace-details-object-traces)
-  - [Trace Details: Trace Executions](#trace-details-trace-executions)
-  - [Trace Details: Nearby Values](#trace-details-nearby-values)
-  - [Trace Details: Debug](#trace-details-debug)
-  - [Call Graph](#call-graph)
-  - [Call Graph: pause (pause/resume live updates)](#call-graph-pause-pauseresume-live-updates)
-  - [Call Graph: clear (show/hide already recorded traces)](#call-graph-clear-showhide-already-recorded-traces)
-  - [Call Graph: sync (toggle sync mode)](#call-graph-sync-toggle-sync-mode)
-  - [Call Graph: loc](#call-graph-loc)
-  - [Call Graph: call](#call-graph-call)
-  - [Call Graph: Search](#call-graph-search)
-  - [Finding Errors](#finding-errors)
-- [Practice debugging with "Dbux Practice"](#practice-debugging-with-dbux-practice)
 - [Commands](#commands)
 - [Configuration](#configuration)
 - [Dbux Runtime Server](#dbux-runtime-server)
 - [How does Dbux work?](#how-does-dbux-work)
 
-# Introduction w/ Examples
-
-This video explains what Dbux is and features **two examples** of how to use the Dbux VSCode extension:
-
-<a href="https://www.youtube.com/watch?v=m1ANEuZJFT8" target="_blank" alt="video">
-   <img src="https://img.youtube.com/vi/m1ANEuZJFT8/0.jpg">
-</a>
 
 # Installation
 
@@ -63,7 +33,7 @@ If you have a build pipeline, and cannot just run it via `node myProgram.js`, re
 Dbux is not perfect. You might want to read up on [known limitations](https://github.com/Domiii/dbux/tree/master/#known-limitations).
 
 
-# "Run with Dbux" and "Debug with Dbux"
+<!-- # "Run with Dbux" and "Debug with Dbux"
 
 The "Run with Dbux" button is the easiest way to get started with Dbux
 * It is located in multiple places:
@@ -325,7 +295,7 @@ If there are multiple errors, it should take you to the first error in your prog
 
 "Dbux Practice" aims to allow anyone to easily get into practicing debugging on real-world bugs in professionally developed open source projects.
 
-We are still working on this. More on this soon :)
+We are still working on this. More on this soon :) -->
 
 
 # Commands
@@ -349,10 +319,9 @@ A rough outline of (hopefully all) commands:
 | Command                                               | Title                                               | Description                                                                                                                                |
 | ----------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | dbux.backendLogin                                     | Dbux: Backend Login                                 | (Feature still in development. Won't work.)                                                                                                |
-| dbux.clearDBStats                                     | Dbux: Clear DB Stats                                |                                                                                                                                            |
-| dbux.clearMemento                                     | Dbux: Clear Memento Storage                         |                                                                                                                                            |
 | dbux.debugFile                                        | Dbux: Debug current file                            | Run selected file with Dbux, but with Node's `--inspect-brk` enabled. Make sure to enable VSCode's auto attach beforehand.                 |
 | dbux.deleteUserEvents                                 | Dbux Dev: Delete all user events                    | (Feature still in development. Won't work.)                                                                                                |
+| dbux.diagnostics                                      | Dbux: Diagnostics                                   |                                                                                                                                            |
 | dbux.doActivate                                       | Dbux: Start Dbux                                    |                                                                                                                                            |
 | dbux.exportApplicationData                            | Dbux: Export Application Data                       | Export raw recorded Dbux data of a previously executed application to a `json` file.                                                       |
 | dbux.hideDecorations                                  | Dbux: Hide Code Decorations                         | Do not annotate executed code with Dbux code decorations (<span style='color:red'>✦↱</span><span style='color:orange'>🔥ƒ</span> etc).     |
@@ -366,11 +335,9 @@ A rough outline of (hopefully all) commands:
 | dbux.resetPracticeProgress                            | Dbux Dev: Reset Practice Progress                   |                                                                                                                                            |
 | dbux.runFile                                          | Dbux: Run current file                              | Run selected file with Dbux                                                                                                                |
 | dbux.selectTrace                                      | Dbux: Select Trace by id                            | Mostly used for debugging Dbux, or when (for some other reason) you would know some trace by its id.                                       |
-| dbux.showDBStats                                      | Dbux: Show DB Stats                                 |                                                                                                                                            |
 | dbux.showDecorations                                  | Dbux: Show Code Decorations                         | Show code decorations again after hiding them.                                                                                             |
 | dbux.showGraphView                                    | Dbux: Show Call Graph                               | Open the Call Graph panel.                                                                                                                 |
 | dbux.showHelp                                         | Dbux: Help                                          | Show the Dbux help dialog.                                                                                                                 |
-| dbux.showMemento                                      | Dbux: View Memento Storage                          |                                                                                                                                            |
 | dbux.showOutputChannel                                | Dbux: Show output channel                           |                                                                                                                                            |
 | dbux.showPathwaysView                                 | Dbux: Show Pathways View                            |                                                                                                                                            |
 | dbux.startRuntimeServer                               | Dbux: Start Dbux Runtime Server                     |                                                                                                                                            |

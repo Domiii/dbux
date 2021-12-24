@@ -1,15 +1,18 @@
 const loadBabel = require('./loadBabel');
 const sharedPlugins = require('./_sharedPlugins');
 
+const targets = {
+  node: 14
+};
+
 module.exports = {
   sourceType: 'unambiguous',
+  targets,
   presets: [
     [
       loadBabel('@babel/preset-env'),
       {
-        targets: {
-          node: '14'
-        },
+        targets,
         useBuiltIns: 'usage',
         corejs: "3.15",
 

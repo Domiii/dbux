@@ -1,0 +1,54 @@
+---
+# path: overview
+---
+
+# Enabling Dbux
+
+import DarkLightImg from '@src/components/DarkLightImg';
+import TOC from '@src/components/TOC';
+
+<TOC toc={toc} />
+
+
+
+Using Dbux involves two steps:
+
+1. [Run an Application with Dbux Enabled](#run-an-application-with-dbux-enabled).
+2. Use the Dbux VSCode Extension for [runtime analysis](#runtime-analysis).
+
+
+## Run an Application with Dbux Enabled
+
+Once [installed](../getting-started/installation), the first step of using Dbux is to execute a JS application with Dbux enabled. That means that the application must be instrumented and injected with the [@dbux/runtime](../tools-and-configuration/dbux-runtime).
+
+There are four different ways to run an application with Dbux enabled:
+
+1. [The Run Button](./the-run-button) allows you to easily run a simple Node application with Dbux enabled.
+2. The [@dbux/cli](../tools-and-configuration/dbux-cli) provides the magic that makes [The Run Button](./the-run-button) <DarkLightImg src='play.svg' /> work. You can use it directly in order to run simple non-bundled Node applications.
+3. [Dbux Practice](../dbux-practice) allows the user to execute a curated list of real-world applications (some with real-world bugs!) at the click of a single button, in order to explore and analyze them.
+4. In order to enable Dbux for frontend and other bundled applications the developer needs to TODO [build pipeline integration](../tools-and-configuration/build-pipeline-integration).
+
+Once running, an instrumented target application will try to record and send all runtime data to the [runtime server](../tools-and-configuration/dbux-code#runtime-server) from where [runtime analysis](#runtime-analysis) can commence.
+
+
+## Runtime Analysis
+
+Once executed, the recorded application should show up in the [Application View](./application-view).
+
+Once [recorded](#run-an-application-with-dbux-enabled), the Dbux VSCode Extension offers several tools for runtime analysis:
+
+* Use the [Application View](./applications) to go to the Application entry point.
+* Get a high-level overview via:
+  * the [Global View](./global).
+  * the [Call Graph](./call-graph).
+* Get down into the nitty-gritty:
+  * [Select a Trace](./code-augmentation-select-trace) <DarkLightImg src='crosshair_red.svg' />.
+  * Investigate individual traces using the [Trace Details View](./trace-details)
+  * [Navigate](./trace-details#navigation) TODO(pic) between traces.
+  * [Search](./search) for traces, contexts, modules or data.
+* Understand where data came from and where it went using the [Data Flow View](./data-flow).
+
+:::tip
+All buttons in the Dbux VSCode Extension have corresponding [commands](../tools-and-configuration/dbux-code#commands) which in turn (are not by default but) [can be key-bound](https://code.visualstudio.com/docs/getstarted/keybindings).
+:::
+

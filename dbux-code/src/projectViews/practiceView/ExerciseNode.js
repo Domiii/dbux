@@ -3,6 +3,7 @@ import ExerciseStatus from '@dbux/projects/src/dataLib/ExerciseStatus';
 import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 import { showInformationMessage } from '../../codeUtil/codeModals';
+import cleanUp from './cleanUp';
 
 /** @typedef {import('@dbux/projects/src/projectLib/Exercise').default} Exercise */
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
@@ -110,5 +111,9 @@ export default class ExerciseNode extends BaseTreeViewNode {
 
   async showExerciseLog() {
     await this.exercise.manager.showExerciseLog(this.exercise);
+  }
+
+  async cleanUp() {
+    await cleanUp(this.treeNodeProvider, this.exercise.project);
   }
 }

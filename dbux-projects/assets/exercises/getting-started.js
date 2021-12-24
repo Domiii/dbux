@@ -34,7 +34,7 @@ add([
     problemName: 'firstDuplicate',
     label: 'for loop bug',
     fname: 'for-bad',
-    bugLine: 10
+    bugLine: 13
   },
   {
     problemName: 'firstDuplicate',
@@ -82,13 +82,13 @@ add([
     problemName: 'findLongestWordLength',
     label: 'for loop bug',
     fname: 'for-bad',
-    bugLine: 9
+    bugLine: 12
   },
   {
     problemName: 'findLongestWordLength',
     label: 'Array.reduce bug',
     fname: 'reduce-bad',
-    bugLine: 9
+    bugLine: 11
   },
 
   /** ########################################

@@ -1,0 +1,232 @@
+[
+  {
+    "command": "dbux.backendLogin",
+    "title": "Dbux: Backend Login",
+    "description": "(Feature still in development. Won't work.)"
+  },
+  {
+    "command": "dbux.debugFile",
+    "title": "Dbux: Debug current file",
+    "description": "Run selected file with Dbux, but with Node's `--inspect-brk` enabled. Make sure to enable VSCode's auto attach beforehand."
+  },
+  {
+    "command": "dbux.deleteUserEvents",
+    "title": "Dbux Dev: Delete all user events",
+    "description": "(Feature still in development. Won't work.)"
+  },
+  {
+    "command": "dbux.diagnostics",
+    "title": "Dbux: Diagnostics",
+    "description": ""
+  },
+  {
+    "command": "dbux.doActivate",
+    "title": "Dbux: Start Dbux",
+    "description": ""
+  },
+  {
+    "command": "dbux.exportApplicationData",
+    "title": "Dbux: Export Application Data",
+    "description": "Export raw recorded Dbux data of a previously executed application to a `json` file."
+  },
+  {
+    "command": "dbux.hideDecorations",
+    "title": "Dbux: Hide Code Decorations",
+    "description": "Do not annotate executed code with Dbux code decorations (<span style='color:red'>✦↱</span><span style='color:orange'>🔥ƒ</span> etc)."
+  },
+  {
+    "command": "dbux.hideGraphView",
+    "title": "Dbux: Hide Call Graph",
+    "description": "Close the Call Graph panel."
+  },
+  {
+    "command": "dbux.hidePathwaysView",
+    "title": "Dbux: Hide Pathways View",
+    "description": ""
+  },
+  {
+    "command": "dbux.importApplicationData",
+    "title": "Dbux: Import Application Data",
+    "description": ""
+  },
+  {
+    "command": "dbux.loadPracticeLogFile",
+    "title": "Dbux Dev:Load Practice Log",
+    "description": ""
+  },
+  {
+    "command": "dbux.openPracticeLogFolder",
+    "title": "Dbux: Open Practice Log Folder",
+    "description": ""
+  },
+  {
+    "command": "dbux.reloadExerciseList",
+    "title": "Dbux: Reload Exercise List",
+    "description": ""
+  },
+  {
+    "command": "dbux.resetPracticeLog",
+    "title": "Dbux Dev: Reset Practice Log",
+    "description": ""
+  },
+  {
+    "command": "dbux.resetPracticeProgress",
+    "title": "Dbux Dev: Reset Practice Progress",
+    "description": ""
+  },
+  {
+    "command": "dbux.runFile",
+    "title": "Dbux: Run current file",
+    "description": "Run selected file with Dbux"
+  },
+  {
+    "command": "dbux.selectTrace",
+    "title": "Dbux: Select Trace by id",
+    "description": "Mostly used for debugging Dbux, or when (for some other reason) you would know some trace by its id."
+  },
+  {
+    "command": "dbux.showDecorations",
+    "title": "Dbux: Show Code Decorations",
+    "description": "Show code decorations again after hiding them."
+  },
+  {
+    "command": "dbux.showGraphView",
+    "title": "Dbux: Show Call Graph",
+    "description": "Open the Call Graph panel."
+  },
+  {
+    "command": "dbux.showHelp",
+    "title": "Dbux: Help",
+    "description": "Show the Dbux help dialog."
+  },
+  {
+    "command": "dbux.showOutputChannel",
+    "title": "Dbux: Show output channel",
+    "description": ""
+  },
+  {
+    "command": "dbux.showPathwaysView",
+    "title": "Dbux: Show Pathways View",
+    "description": ""
+  },
+  {
+    "command": "dbux.startRuntimeServer",
+    "title": "Dbux: Start Dbux Runtime Server",
+    "description": ""
+  },
+  {
+    "command": "dbux.stopRuntimeServer",
+    "title": "Dbux: Stop Dbux Runtime Server",
+    "description": ""
+  },
+  {
+    "command": "dbux.systemCheck",
+    "title": "Dbux: Check System Dependencies",
+    "description": "Dbux (especially Dbux practice) needs some system tools in order to work properly. You can check these dependencies with this command."
+  },
+  {
+    "command": "dbux.toggleErrorLog",
+    "title": "Dbux: Toggle Error Notifications",
+    "description": "Suppress/unsuppress all Dbux error notifications."
+  },
+  {
+    "command": "dbux.toggleNavButton",
+    "title": "Dbux: Toggle Editor Buttons",
+    "description": "Hide/show Dbux buttons in the editor tab bar. Use this if you don't want to see any extra buttons at the top right of your editor tab bar."
+  },
+  {
+    "command": "dbux.togglePracticeView",
+    "title": "Dbux: Toggle Practice View",
+    "description": "Feature still in development. You can use this to use Dbux on a pre-configured bug in express."
+  },
+  {
+    "command": "dbuxProject.uploadLog",
+    "title": "Upload log files",
+    "description": ""
+  },
+  {
+    "command": "dbuxProjectView.showDiff",
+    "title": "Show difference",
+    "description": ""
+  },
+  {
+    "command": "dbuxSessionView.flushCache",
+    "title": "Dbux Project: Flush cache",
+    "description": ""
+  },
+  {
+    "command": "dbuxSessionView.run",
+    "title": "Dbux Project: Run without dbux",
+    "description": ""
+  },
+  {
+    "command": "dbuxSessionView.run#dbux",
+    "title": "Dbux Project: Run with dbux",
+    "description": ""
+  },
+  {
+    "command": "dbuxSessionView.run#debug",
+    "title": "Dbux Project: Run without dbux in debug mode",
+    "description": ""
+  },
+  {
+    "command": "dbuxSessionView.run#debug#dbux",
+    "title": "Dbux Project: Run with dbux in debug mode",
+    "description": ""
+  },
+  {
+    "command": "dbuxTraceDetailsView.navigation.NextChildContext",
+    "title": "Dbux: Go to next function call in context",
+    "description": ""
+  },
+  {
+    "command": "dbuxTraceDetailsView.navigation.NextInContext",
+    "title": "Dbux: Go to next \"non-trivial\" trace in context",
+    "description": ""
+  },
+  {
+    "command": "dbuxTraceDetailsView.navigation.NextParentContext",
+    "title": "Dbux: Go to end of context",
+    "description": ""
+  },
+  {
+    "command": "dbuxTraceDetailsView.navigation.NextStaticTrace",
+    "title": "Dbux: Go to next execution of the same trace",
+    "description": ""
+  },
+  {
+    "command": "dbuxTraceDetailsView.navigation.NextTrace",
+    "title": "Dbux: Go to next trace (unconditionally)",
+    "description": ""
+  },
+  {
+    "command": "dbuxTraceDetailsView.navigation.PreviousChildContext",
+    "title": "Dbux: Go to previous function call in context",
+    "description": ""
+  },
+  {
+    "command": "dbuxTraceDetailsView.navigation.PreviousInContext",
+    "title": "Dbux: Go to previous \"non-trivial\" trace in context",
+    "description": ""
+  },
+  {
+    "command": "dbuxTraceDetailsView.navigation.PreviousParentContext",
+    "title": "Dbux: Go to start of context",
+    "description": ""
+  },
+  {
+    "command": "dbuxTraceDetailsView.navigation.PreviousStaticTrace",
+    "title": "Dbux: Go to previous execution of the same trace",
+    "description": ""
+  },
+  {
+    "command": "dbuxTraceDetailsView.navigation.PreviousTrace",
+    "title": "Dbux: Go to previous trace (unconditionally)",
+    "description": ""
+  },
+  {
+    "command": "dbuxTraceDetailsView.selectTraceAtCursor",
+    "title": "Dbux: Select Trace At Cursor",
+    "description": "Selects the trace at the keyboard cursor (if there is any executed trace)."
+  }
+]

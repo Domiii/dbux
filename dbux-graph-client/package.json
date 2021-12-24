@@ -1,6 +1,6 @@
 {
   "name": "@dbux/graph-client",
-  "version": "0.4.4-dev.0",
+  "version": "0.6.4-dev.0",
   "description": "",
   "module": "src/index.js",
   "main": "src/index.js",
@@ -8,23 +8,22 @@
     "clean": "rm -rf ./dist",
     "__start": "npm run build:serve",
     "__build:serve": "npx nodemon --exec \"node --trace-deprecation --stack-trace-limit=1000 ../node_modules/webpack-dev-server/bin/webpack-dev-server\"",
-    "start": "npm run build:watch",
-    "start:prod": "npm run build:watch:prod",
-    "build:prod": "node --trace-deprecation --stack-trace-limit=1000 ../node_modules/webpack/bin/webpack --mode production",
-    "build:dev": "node --trace-deprecation --stack-trace-limit=1000 ../node_modules/webpack/bin/webpack --mode development",
-    "build:watch": "node --trace-deprecation --stack-trace-limit=1000 ../node_modules/webpack/bin/webpack --mode development --watch",
-    "build:watch___": "npx nodemon --exec \"node --trace-deprecation --stack-trace-limit=1000 ../node_modules/webpack/bin/webpack --mode development --watch\"",
-    "build:watch:prod": "node --trace-deprecation --stack-trace-limit=1000 ../node_modules/webpack/bin/webpack --mode production --watch",
-    "build:watch:prod___": "npx nodemon --exec \"node --trace-deprecation --stack-trace-limit=1000 ../node_modules/webpack/bin/webpack --mode production --watch\"",
+    "start": "npm run watch",
+    "start:prod": "npm run watch:prod",
+    "build:prod": "node --trace-deprecation --stack-trace-limit=1000 ../node_modules/webpack/bin/webpack build --mode production",
+    "build:dev": "node --trace-deprecation --stack-trace-limit=1000 ../node_modules/webpack/bin/webpack build --mode development",
+    "watch": "node --trace-deprecation --stack-trace-limit=1000 ../node_modules/webpack/bin/webpack watch --mode development",
+    "watch___": "npx nodemon --exec \"node --trace-deprecation --stack-trace-limit=1000 ../node_modules/webpack/bin/webpack watch --mode development\"",
+    "watch:prod": "node --trace-deprecation --stack-trace-limit=1000 ../node_modules/webpack/bin/webpack watch --mode production",
+    "watch:prod___": "npx nodemon --exec \"node --trace-deprecation --stack-trace-limit=1000 ../node_modules/webpack/bin/webpack watch --mode production\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "Domi",
   "license": "Apache-2.0",
   "dependencies": {
-    "@dbux/common": "^0.4.4-dev.0",
-    "@dbux/graph-common": "^0.4.4-dev.0",
-    "@dbux/panzoom": "^0.4.4-dev.0",
+    "@dbux/common": "^0.6.4-dev.0",
+    "@dbux/graph-common": "^0.6.4-dev.0",
     "@popperjs/core": "^2.3.3",
     "bootstrap": "^4.4.1",
     "html2canvas": "^1.0.0-rc.5",
@@ -33,6 +32,7 @@
     "serialize-javascript": "^5.0.1"
   },
   "devDependencies": {
+    "@dbux/panzoom": "^0.6.4-dev.0",
     "open-cli": "^6.0.0"
   }
 }

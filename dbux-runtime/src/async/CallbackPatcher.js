@@ -4,7 +4,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { isInstrumentedFunction, getFirstContextAfterTrace } from '../data/dataUtil';
 // eslint-disable-next-line max-len
-import { getOriginalCallback, getPatchedFunctionOrNull, isMonkeyPatchedCallback, isOrHasMonkeyPatchedFunction, _registerMonkeyPatchedCallback, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
+import { getOriginalCallback, getOriginalFunction, getPatchedCallback, getPatchedFunction, getPatchedFunctionOrNull, isMonkeyPatchedCallback, isMonkeyPatchedFunction, isOrHasMonkeyPatchedFunction, _registerMonkeyPatchedCallback, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
 // import executionContextCollection from '../data/executionContextCollection';
 import executionContextCollection from '../data/executionContextCollection';
 import traceCollection from '../data/traceCollection';
@@ -58,8 +58,30 @@ export default class CallbackPatcher {
     return this._runtimeMonitorInstance.runtime;
   }
 
+  isMonkeyPatchedCallback = isMonkeyPatchedCallback;
+  getOriginalCallback = getOriginalCallback;
+
+  isMonkeyPatchedFunction = isMonkeyPatchedFunction;
+  getOriginalFunction = getOriginalFunction;
+
+  isPatched(arg) {
+    return !!this.getOriginal(arg);
+  }
+
+  hasPatched(arg) {
+    return !!this.getPatched(arg);
+  }
+
+  getOriginal(arg) {
+    return getOriginalCallback(arg) || getOriginalFunction(arg);
+  }
+
+  getPatched(arg) {
+    return getPatchedFunction(arg) || getPatchedCallback(arg);
+  }
+
   // ###########################################################################
-  // ctor
+  // ctor + init
   // ###########################################################################
 
   constructor(_runtimeMonitorInstance) {
@@ -68,76 +90,17 @@ export default class CallbackPatcher {
     // this.patchSetTimeout();
   }
 
-  addCallbackIgnoreFunction(originalFunction) {
-    this.ignoreCallbacks.add(originalFunction);
-  }
 
   init() { }
 
-  // // ###########################################################################
-  // // setTimeout
-  // // ###########################################################################
+  /** ###########################################################################
+   * {@link #patchCallback}
+   * ##########################################################################*/
 
-  // patchSetTimeout() {
-  //   monkeyPatchGlobalRaw('setTimeout',
-  //     (_ /* global */, [cb, delayMs, ...args], originalSetTimeout, patchedSetTimeout) => {
-  //       const bceTrace = peekBCEMatchCallee(patchedSetTimeout);
-  //       const schedulerTraceId = bceTrace?.traceId;
-  //       if (schedulerTraceId) {
-  //         cb = this.patchSetTimeoutCallback(cb, schedulerTraceId);
-  //       }
-
-  //       const timer = originalSetTimeout(cb, delayMs, ...args);
-
-  //       if (schedulerTraceId) {
-  //         this.runtime.async.preCallback(schedulerTraceId);
-  //       }
-
-  //       return timer;
-  //     }
-  //   );
-  // }
-
-  // patchSetTimeoutCallback(cb, schedulerTraceId) {
-  //   if (!isFunction(cb)) {
-  //     // not a cb
-  //     return cb;
-  //   }
-  //   if (!valueCollection.getRefByValue(cb)) {
-  //     // not instrumented
-  //     return cb;
-  //   }
-
-  //   const originalCb = cb;
-
-  //   const { runtime } = this;
-
-  //   return function patchedPromiseCb(...args) {
-  //     let returnValue;
-  //     // TODO: peekBCEMatchCallee(patchedCb)
-  //     try {
-  //       // actually call `then` callback
-  //       returnValue = originalCb(...args);
-  //     }
-  //     finally {
-  //       // const cbContext = getLastContextCheckCallee(originalCb);
-  //       const runId = runtime.getCurrentRunId();
-  //       const rootId = runtime.getCurrentVirtualRootContextId();
-  //       const context = executionContextCollection.getLastRealContext();
-
-  //       if (context?.contextId === rootId) {
-  //         // the CB was called asynchronously
-  //         runtime.async.postCallback(schedulerTraceId, runId, rootId);
-  //       }
-  //     }
-  //     return returnValue;
-  //   };
-  // }
-
-
-  // ###########################################################################
-  // patchCallback
-  // ###########################################################################
+  addCallbackIgnoreFunction(originalFunction) {
+    // TODO: fix this mess... should not just be on ignore for callbacks?!
+    this.ignoreCallbacks.add(originalFunction);
+  }
 
   /**
    * Dynamic callback patcher.
@@ -242,56 +205,10 @@ export default class CallbackPatcher {
     return patchedCallback;
   }
 
-  // ###########################################################################
-  // monkeyPatchCallee
-  // ###########################################################################
-
-  // defaultCalleePatcher = (firstCallId, originalFunction) => {
-  //   if (!originalFunction) {
-  //     trace(`tried to patch non-existing callback (at ${traceCollection.makeTraceInfo(firstCallId)})`);
-  //     return originalFunction;
-  //   }
-
-  //   const self = this; // NOTE: inside `patchedCallee` `this` will be the callee's `this`
-  //   const eventListenerRegex = /^on[A-Z]|event/;
-  //   const isEventListener = !!(originalFunction.name || '').match(eventListenerRegex);
-  //   // const schedulerTraceId = firstCallId;
-
-  //   return function patchedCallee(...args) {
-  //     if (this instanceof patchedCallee) {
-  //       // -> `originalFunction` is a ctor
-  //       trace(`patched constructor call - new ${originalFunction.name} -`, originalFunction);
-  //     }
-
-  //     // // NOTE: the registered value for callee is `originalFunction`, not `patchedFunction`
-  //     const bceTrace = peekBCEMatchCallee(originalFunction);
-  //     const schedulerTraceId = bceTrace?.traceId;
-
-  //     let hasInstrumentedCallback = false;
-  //     if (schedulerTraceId) {
-  //       args = args.map(arg => {
-  //         if (!isInstrumentedFunction(arg)) {
-  //           return arg;
-  //         }
-
-  //         // wrap callbacks
-  //         const newArg = self.patchCallback(arg, schedulerTraceId);
-  //         hasInstrumentedCallback = !!newArg;
-  //         return newArg || arg;
-  //       });
-  //     }
-
-  //     // console.trace(`calleePatcher ${originalFunction.name}`);
-  //     const result = originalFunction.call(this, ...args);
-
-  //     if (hasInstrumentedCallback) {
-  //       self.runtime.async.preCallback(schedulerTraceId, isEventListener);
-  //     }
-
-  //     return result;
-  //   };
-  // };
-
+  /**
+   * Check call arguments for instrumentation.
+   * @param {*} args  
+   */
   checkAndCountInstrumentedCallbacks(originalFunction, args, spreadArgs) {
     return (
       // only instrument callbacks of functions that themselves are not instrumented (recorded)
@@ -315,7 +232,7 @@ export default class CallbackPatcher {
     const name = valueCollection._readProperty(arg, 'name');
     const isEventListener = !!(name || '').match(eventListenerRegex);
 
-    // TODO: make sure each `traceId` does not have more than PreCallback update
+    // TODO: make sure each `traceId` does not have more than 1 PreCallback update
 
     const promisifyPromiseVirtualRef = this.runtime.getPromisifyPromiseVirtualRef();
     this.runtime.async.preCallback(traceId, isEventListener, promisifyPromiseVirtualRef);

@@ -1,6 +1,7 @@
 import sh from 'shelljs';
 import fs from 'fs';
 import path from 'path';
+import { homedir } from 'os';
 import commonAncestorPath from 'common-ancestor-path';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
@@ -102,4 +103,12 @@ export function getCommonAncestorPath(...paths) {
 export function isFileInPath(parent, file) {
   const relative = pathRelative(parent, file);
   return relative && !relative.startsWith('..') && !path.isAbsolute(relative);
+}
+
+export function renderPath(fpath) {
+  const home = homedir();
+  if (fpath.startsWith(home)) {
+    fpath = '~' + fpath.substring(home.length);
+  }
+  return fpath;
 }

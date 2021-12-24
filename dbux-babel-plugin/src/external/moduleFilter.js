@@ -1,6 +1,6 @@
 import isString from 'lodash/isString';
 import isRegExp from 'lodash/isRegExp';
-import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
+import { parseNodeModuleName, renderPath } from '@dbux/common-node/src/util/pathUtil';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 // import { requireDynamic } from '@dbux/common-node/src/util/requireUtil';
 
@@ -67,7 +67,7 @@ export default function moduleFilter(options, includeDefault) {
 
   return function _include(modulePath, ...otherArgs) {
     if (!modulePath) {
-      Verbose && traceLog(`no modulePath - otherArgs = ${otherArgs}`);
+      Verbose > 2 && traceLog(`no modulePath - otherArgs = ${JSON.stringify(otherArgs)}`);
       return undefined;
     }
     if (modulePath.match(/((dbux[-]runtime)|(@dbux[/\\]runtime))[/\\]/)) {
@@ -144,13 +144,14 @@ function makeRegExps(list, toRegexp = defaultRegexpCreator) {
   return list;
 }
 
-
 function reportRegister(modulePath, shouldInclude, what) {
   if (Verbose) {
     if (shouldInclude) {
+      modulePath = renderPath(modulePath);
       debugLog(`REGISTER`, modulePath, `(${what})`);
     }
     else if (Verbose > 1) {
+      modulePath = renderPath(modulePath);
       debugLog(`no-register`, modulePath, `(${what})`);
     }
   }

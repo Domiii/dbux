@@ -13,7 +13,7 @@ import UserActionType from '@dbux/data/src/pathways/UserActionType';
  */
 let manager;
 
-export function initUserEvent(_manager) {
+export function initUserEvents(_manager) {
   manager = _manager;
   onUserEvent((data) => {
     manager.pdp.addNewUserAction(data);

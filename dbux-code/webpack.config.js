@@ -1,5 +1,4 @@
 /* eslint no-console: 0 */
-
 const path = require('path');
 // const process = require('process');
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
@@ -10,7 +9,6 @@ const {
   makeResolve,
   makeAbsolutePaths
 } = require('../dbux-cli/lib/package-util');
-
 const webpackCommon = require('../config/webpack.config.common');
 
 const { msgPackPlugin } = webpackCommon;
@@ -30,7 +28,7 @@ module.exports = (env, argv) => {
 
 
   // TODO: bring back optimization later
-  const ForceNoOptimization = true;
+  const ForceNoOptimization = false;
   const outputFolderName = 'dist';
   const aggregateTimeout = mode === 'development' ? 200 : 3000;
 
@@ -95,24 +93,28 @@ module.exports = (env, argv) => {
         babelrcRoots: absoluteDependencies
       }
     },
-    {
-      loader: 'babel-loader',
-      include: resourcesSrc,
-      options: {
-        presets: [
-          [
-            '@babel/preset-env',
-            {
-              targets: {
-                node: '4'
-              },
-              useBuiltIns: 'usage',
-              corejs: 3
-            }
-          ]
-        ],
-      }
-    }
+    // NOTE: we did the following for some outdated samples from BugJs that required very old Node versions.
+    // {
+    //   loader: 'babel-loader',
+    //   include: resourcesSrc,
+    //   options: {
+    //     targets: {
+    //        node: '4'
+    //     }
+    //     presets: [
+    //       [
+    //         '@babel/preset-env',
+    //         {
+    //           targets: {
+    //             node: '4'
+    //           },
+    //           useBuiltIns: 'usage',
+    //           corejs: 3
+    //         }
+    //       ]
+    //     ],
+    //   }
+    // }
   ];
 
   // see https://webpack.js.org/guides/production/#minification
@@ -127,9 +129,19 @@ module.exports = (env, argv) => {
         minimize: true,
         minimizer: [
           new TerserPlugin({
+            /**
+             * Don't minimize resource files.
+             */
+            exclude: /resources[\\/]dist[\\/]/,
             terserOptions: {
+              /**
+               * We use class names for registering dbux-projects.
+               */
               keep_classnames: true,
-              // keep_fnames: true
+              /**
+               * We use function names in `makeTreeItems` and some other places (e.g. `userCommands`).
+               */
+              keep_fnames: true
             }
           })
         ]

@@ -1,8 +1,14 @@
-import path from 'path';
 import isFunction from 'lodash/isFunction';
 import { serializeEnv, globPatternToEntry } from '@dbux/common-node/src/util/webpackUtil';
 import { globRelative } from '@dbux/common-node/src/util/fileUtil';
 import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
+import portPid from '@dbux/common-node/src/util/portPid';
+import terminate from '@dbux/common-node/src/util/terminate';
+
+import { newLogger } from '@dbux/common/src/log/logger';
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('WebpackBuilder');
 
 /** @typedef { import("../projectLib/Project").default } Project */
 
@@ -10,6 +16,13 @@ const distFolderName = 'dist';
 
 export class WebpackOptions {
   websitePort;
+
+  /**
+   * Used for context if {@link #context} is not given.
+   */
+  projectRoot;
+
+  context;
 
   /**
    * NOTE: this can be many things.
@@ -23,6 +36,13 @@ export class WebpackOptions {
    * @type {Array.<Array.<string> | string> | string}
    */
   entryPattern;
+
+  /**
+   * Globs of files to be copied from `projectRoot` to `distFolder`.
+   * Uses {@link globRelative}.
+   * @type {string | Array.<string>}
+   */
+  copy;
 
   entry;
 
@@ -62,6 +82,10 @@ class WebpackBuilder {
     return !!websitePort;
   }
 
+  get needsHtmlPlugin() {
+    return this.cfg.htmlPlugin;
+  }
+
   /**
    * WebpackBuilder already instruments and injects dbux.
    * `runCommand` should not use @dbux/cli.
@@ -77,16 +101,19 @@ class WebpackBuilder {
   async afterInstall() {
     const shared = false; // <- don't share for now (since it messes with Dbux's own dependencies)
     const deps = {
-      // future-work: yarn IGNORES carret versioning. Does not add carret to `package.json`
       // eslint-disable-next-line quote-props
       'webpack': '^5',
       'webpack-cli': '^4',
       // 'webpack-config-utils': '???',
       'copy-webpack-plugin': '^8',
-      'clean-webpack-plugin': '^4'
+      'clean-webpack-plugin': '^4',
+      'babel-loader': '^8'
     };
     if (this.needsDevServer) {
       deps['webpack-dev-server'] = '^4';
+    }
+    if (this.needsHtmlPlugin) {
+      deps['html-webpack-plugin'] = '^5';
     }
     await this.project.installPackages(deps, shared);
   }
@@ -189,7 +216,7 @@ class WebpackBuilder {
     if (websitePort) {
       // website settings
       bug.websitePort = websitePort;
-      bug.website = `http://localhost:${websitePort}${bug.websitePath || '/'}`;
+      bug.website = new URL(bug.websitePath || '/', `http://localhost:${websitePort}`).href;
     }
   }
 
@@ -209,20 +236,57 @@ class WebpackBuilder {
 
   webpackCliBin() {
     // return this.cfg.webpackCliBin || (this.needsDevServer ? this.getWebpackDevServerJs() : this.getWebpackJs());
-    return this.project.getSharedDependencyPath('webpack-cli/bin/cli.js');
+    // return this.project.getSharedDependencyPath('webpack-cli/bin/cli.js');
+    const { project } = this;
+    return project.getNodeModulesFile('webpack-cli/bin/cli.js');
+  }
+
+  async checkPort(port, projectManager) {
+    do {
+      const pidResult = await portPid(port);
+      const pids = pidResult.tcp;
+      if (!pids.length) {
+        return;
+      }
+
+      // port is occupied
+      if (projectManager.interactiveMode) {
+        const userDecision = await projectManager.externals.confirm(
+          `Port ${port} is occupied by ${pids.length} process(es) with PID: ${pids.join(', ')}.\n\nShould Dbux attempt to kill it/them?`,
+          { modal: true }
+        );
+        if (userDecision) {
+          for (const pid of pids) {
+            debug(`Terminating PID ${pid}...`);
+            try {
+              await terminate(pid);
+              projectManager.externals.showMessage.info(`Process successfully terminated.`);
+            }
+            catch (err) {
+              logError(`Failed to terminate process -`, err);
+            }
+          }
+          continue;
+        }
+      }
+      else {
+        // TODO: use config, if not interactive
+      }
+      throw new Error(`Could not start webpack: PORT already in use by another process.`);
+
+    // eslint-disable-next-line no-constant-condition
+    } while (true);
   }
 
   async startWatchMode(exercise) {
-    const { project, cfg } = this;
-    const { projectPath } = project;
+    const { project } = this;
 
-    const {
-      nodeArgs = '',
-      processOptions
-    } = cfg;
+    const port = exercise.websitePort || 0;
 
-    // prepare args
+    await this.checkPort(port, project.manager);
 
+
+    // prepare args (encode into `env`)
     const target = this.getCfgValue(exercise, 'target') || 'web';
     const webpackConfig = this.getCfgValue(exercise, 'webpackConfig');
     const projectRoot = this.getProjectRoot(exercise);
@@ -246,23 +310,22 @@ class WebpackBuilder {
         entry,
         target,
         copyPlugin,
-        port: exercise.websitePort || 0
+        port
       }
     };
     env = serializeEnv(env);
 
     // start webpack
-    const webpackConfigPath = path.join(projectPath, 'dbux.webpack.config.js');
-    const webpackArgs = `--config ${webpackConfigPath} ${env}`;
+    const cwd = project.packageJsonFolder;
+    const webpackConfigPath = pathResolve(project.getAssetsTargetFolder(), 'dbux.webpack.config.js');
 
+    const nodeArgs = ' --stack-trace-limit=100';
     const webpackCliBin = this.webpackCliBin();
     const webpackCliCommand = this.webpackCliCommand();
-    let cmd = `node ${nodeArgs} --stack-trace-limit=100 ${webpackCliBin} ${webpackCliCommand} ${webpackArgs}`;
+    const webpackArgs = `--config "${webpackConfigPath}" ${env}`;
+    let cmd = `node${nodeArgs} "${webpackCliBin}" ${webpackCliCommand} ${webpackArgs}`;
 
-    // TODO: find better solution for this
-    cmd = cmd.replace(/\\/g, '/');
-
-    return project.execBackground(cmd, processOptions);
+    return project.execBackground(cmd, { cwd });
   }
 }
 

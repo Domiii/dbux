@@ -7,6 +7,7 @@ const configs = [
     // https://github.com/BugsJS/express/releases/tag/Bug-1-test
     // https://github.com/BugsJS/express/commit/8bd36202bef586889d20bd5fa0732d3495da54eb
     id: 1,
+    name: 'get-put-get',
     label: 'options: GET,PUT,GET',
     testRe: 'OPTIONS should only include each method once',
     testFilePaths: ['test/app.options.js'],
@@ -26,6 +27,7 @@ const configs = [
     // https://github.com/BugsJS/express/releases/tag/Bug-2-test
     // https://github.com/BugsJS/express/commit/3260309b422cd964ce834e3925823c80b3399f3c
     id: 2,
+    name: 'hop-count-https',
     label: 'hop count + HTTPS',
     testRe: [
       'req .protocol when "trust proxy" is enabled when trusting hop count should respect X-Forwarded-Proto',
@@ -58,6 +60,7 @@ const configs = [
   {
     // https://github.com/BugsJS/express/commit/337662df8c02d379e5a14b4f0155ecb29b4aa81e
     id: 4,
+    name: 'ip-subdomains',
     label: 'ip vs. subdomains',
     testRe: [
       'should work with IPv[46] address',
@@ -74,6 +77,7 @@ const configs = [
   {
     // https://github.com/BugsJS/express/commit/796657f6f67bd8f8dfae8d25a2d353c8d657da50
     id: 5,
+    name: 'file-paths-slashes',
     label: 'Windows file paths and slashes',
     testRe: 'utils\\.isAbsolute\\(\\) should support windows',
     testFilePaths: ['test/utils.js'],

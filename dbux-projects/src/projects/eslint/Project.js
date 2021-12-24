@@ -16,15 +16,15 @@ export default class EslintProject extends Project {
   nodeVersion = '7';
 
   async installDependencies() {
-    // TODO: don't use webpack (or use `WebpackBuilder` if webpack is preferrable)
-    // TODO: install Babel plugins in dev mode, if not present
-    const webpackJs = this.getWebpackJs();
-    if (!sh.test('-f', webpackJs)) {
-      await this.execInTerminal(`npm i -D webpack@4.41.5 webpack-cli@3.3.10 webpack-node-externals@2.5.0 string-replace-loader@2.3.0`);
-    }
+    throw new Error(`TODO: don't use webpack (or use WebpackBuilder if webpack is preferrable)`);
+    // // TODO: install Babel plugins in dev mode, if not present
+    // const webpackJs = this.getWebpackJs();
+    // if (!sh.test('-f', webpackJs)) {
+    //   await this.execInTerminal(`npm i -D webpack@4.41.5 webpack-cli@3.3.10 webpack-node-externals@2.5.0 string-replace-loader@2.3.0`);
+    // }
 
-    // add "dist" folder to gitignore
-    await this.exec('bash -c "echo ""dist"" >> .gitignore"');
+    // // add "dist" folder to gitignore
+    // await this.exec('bash -c "echo ""dist"" >> .gitignore"');
   }
 
   canRunExercise(config) {
@@ -76,17 +76,9 @@ export default class EslintProject extends Project {
     // make sure we have Dbux dependencies ready (since linkage might be screwed up in dev+install mode)
     const req = `-r "${this.manager.getDbuxPath('@dbux/cli/dist/linkOwnDependencies.js')}"`;
     const args = `--config ./dbux.webpack.config.js --env entry=${exercise.testFilePaths.join(',')}`;
-
-    // weird bug - sometimes it just will keep saying "volta not found"... gotta hate system configuration problems...
-    const volta = 'volta'; //'/Users/domi/.volta/bin/volta'; // 'volta';
-
-    await this.execBackground(`which ${volta}`);
-    // await this.execBackground(`echo $PATH`);
-
-    return this.execBackground(
-      // TODO: use `WebpackBuilder` instead
-      `"${volta}" run --node 12 node ${req} "${this.getWebpackJs()}" ${args}`
-    );
+    const cmd = `${req} "${this.getWebpackJs()}" ${args}`;
+    // cmd = makeNodeAtVersionCommand(12, cmd);
+    return this.execBackground(cmd);
   }
 
   async runCommand(exercise, cfg) {

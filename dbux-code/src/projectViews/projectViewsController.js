@@ -1,11 +1,11 @@
 import { commands, window, Uri, workspace } from 'vscode';
 import fs from 'fs';
-import { newLogger, addOutputStreams } from '@dbux/common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
 import ProjectNodeProvider from './practiceView/ProjectNodeProvider';
 import SessionNodeProvider from './sessionView/SessionNodeProvider';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
-import OutputChannel from './OutputChannel';
+import { showOutputChannel } from '../OutputChannel';
 import { getStopwatch } from './practiceStopwatch';
 import { getProjectManager } from './projectControl';
 import { initProjectCommands } from '../commands/projectCommands';
@@ -31,18 +31,10 @@ const logger = newLogger('dbux-practice');
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = logger;
 
-const outputChannel = new OutputChannel('Dbux');
-
-addOutputStreams({
-  log: outputChannel.log.bind(outputChannel),
-  warn: outputChannel.log.bind(outputChannel),
-  error: outputChannel.log.bind(outputChannel),
-  debug: outputChannel.log.bind(outputChannel)
-}, true);
-
-export function showOutputChannel() {
-  outputChannel.show();
-}
+// future-work: remove from here. Make everyone import from `OutputChannel` instead.
+export {
+  showOutputChannel
+};
 
 export class ProjectViewController {
   constructor(context) {
@@ -283,6 +275,7 @@ export class ProjectViewController {
     }
 
     const message = `Project "${project.name}" is currently not in your workspace (which makes it harder to work with it).`;
+    debug(`Open workspaceFolders: ${workspace.workspaceFolders?.map(f => f.uri.fsPath).join(',')}`);
 
     const buttons = {};
     if (workspace.workspaceFolders !== undefined) {

@@ -3,22 +3,23 @@
 
 // Examples:
 //
-// npm run pub -- n
-// npm run pub -- n minor
+// yarn pub -- n
+// yarn pub -- n minor
 //
 
 let chooseAlwaysNo = false;
+let forceMarketplace = undefined;
 let chooseVersionBump;
 
 const path = require('path');
 const fs = require('fs');
-const open = require('open');
+// const open = require('open');
 const isArray = require('lodash/isArray');
 
 const run = require('./run');
 const LineReader = require('./LineReader');
 
-require('../dbux-cli/lib/dbux-register-self');    // add babel-register, so we can import dbux src files
+require('./dbux-register-self');    // add babel-register, so we can import dbux src files
 require('../dbux-common/src/util/prettyLogs');    // make console log pretty
 
 const { newLogger } = require('../dbux-common/src/log/logger');
@@ -81,29 +82,19 @@ async function yesno(q) {
 }
 
 // ###########################################################################
-// utilities
+// branch management
 // ###########################################################################
 
-function getDbuxVersion() {
-  return readPackageJsonVersion(path.join(__dirname, '../dbux-code'));
+function getBranchName() {
+  return run('git branch --show-current');
 }
-
-async function isDevVersion() {
-  return (await getDbuxVersion()).includes('dev');
-}
-
-// ###########################################################################
-// 
-// ###########################################################################
 
 function goToMaster() {
+  log('Switching to master');
+  run('git checkout master');
+  run('git pull');
   if (getBranchName() !== 'master') {
-    log('Switching to master');
-    run('git checkout master');
-    run('git pull');
-    if (getBranchName() !== 'master') {
-      throw new Error(`Could not switch to master - current branch is "${getBranchName()}"`);
-    }
+    throw new Error(`Could not switch to master - current branch is "${getBranchName()}"`);
   }
 }
 
@@ -123,27 +114,42 @@ async function pullMaster() {
   }
 }
 
+/** ###########################################################################
+ * versioning
+ * ##########################################################################*/
+
+function getDbuxVersion() {
+  return readPackageJsonVersion(path.join(__dirname, '../dbux-cli'));
+}
+
+async function isDevVersion() {
+  return (await getDbuxVersion()).includes('dev');
+}
+
 /**
  * Bump version and produce new git tag
  */
 async function bumpVersion() {
-  const choice = chooseVersionBump || await menu('Version bump?', {
+  let choice = chooseVersionBump || (await menu('Version bump?', {
     1: ['(skip)'],
-    2: ['patch'],
-    3: ['minor'],
-    4: ['major']
-  })[0];
+    2: ['prerelease'],
+    3: ['patch'],
+    4: ['minor'],
+    5: ['major']
+  }))[0];
 
-  if (choice !== '(skip)') {
-    await exec(`npx lerna version ${choice} --force-publish -y`);
+  const bumped = choice !== '(skip)';
+
+  if (bumped) {
+    await exec(`npx lerna version ${choice} --preid=dev --force-publish -y`);
   }
 
-  return choice !== '(skip)';
+  return bumped;
 }
 
 // function build() {
 //   // NOTE: this will be done automatically when publishing
-//   run(`npm run build:prod`);
+//   run(`yarn build:prod`);
 // }
 
 async function ensureProdVersion() {
@@ -155,8 +161,12 @@ async function ensureProdVersion() {
   }
 }
 
+
+/** ###########################################################################
+ * publish
+ * ##########################################################################*/
+
 async function publishToNPM() {
-  await ensureProdVersion();
   // publish dependencies to NPM
   // NOTE: will trigger build scripts before publishing
   log('Publishing to NPM...');
@@ -167,6 +177,8 @@ async function publishToNPM() {
   // else {
   publishCmd += ' from-package';
   // }
+
+  // publish
   await exec(publishCmd);
 
   // // check package status on NPM
@@ -184,6 +196,9 @@ async function publishToMarketplace() {
   // // make sure dbux-code is ready
   // await exec('cd dbux-code && yarn list --prod --json');
 
+  // don't publish dev version to marketplace
+  await ensureProdVersion();
+
   if (await isDevVersion() && await yesno(`Currently on dev version. Downgrade and continue?`)) {
     await downgradeProdVersion();
   }
@@ -191,44 +206,15 @@ async function publishToMarketplace() {
   // cannot publish dev version
   await ensureProdVersion();
 
+  log('Publishing to marketplace...');
+
   // publish dbux-code to VSCode marketplace (already built)
-  await exec('npm run code:publish-no-build');
+  await exec('yarn code:publish-no-build');
 
   // if (await yesno('Published to Marketplace. Open extension website?')) {
   //   // open('https://marketplace.visualstudio.com/manage/publishers/Domi');
   //   open('https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code');
   // }
-}
-
-async function fixLerna() {
-  debug('Checking for invalid entries in package.json files (lerna hackfix)...');
-
-  await exec('npm run dbux-lerna-fix');
-}
-
-async function writeNewVersion() {
-  const version = await getDbuxVersion();
-  const fpath = path.join(__dirname, '../version.txt');
-  fs.writeFileSync(fpath, version);
-}
-
-async function bumpToDevVersion() {
-  if (!await yesno('Skip setting dev version?')) {
-    if (await isDevVersion()) {
-      console.error(`Something is wrong. We are already on a dev version (${await getDbuxVersion()}). Did version bump not succeed?`);
-    }
-    else {
-      // make sure we have at least one change (cannot downgrade without any committed changes)
-      await writeNewVersion();
-
-      // bump version
-      await exec(`npx lerna version prepatch --preid dev --yes --force-publish`);
-
-      // commit + push
-      await run(`git commit -am "version bump"`);
-      await run(`git push`);
-    }
-  }
 }
 
 // async function pushToDev() {
@@ -238,13 +224,6 @@ async function bumpToDevVersion() {
 //   }
 // }
 
-// ###########################################################################
-// utilities
-// ###########################################################################
-
-function getBranchName() {
-  return run('git branch --show-current');
-}
 
 // ###########################################################################
 // main
@@ -253,14 +232,21 @@ function getBranchName() {
 async function main() {
   input = new LineReader();
   // console.log(process.argv);
-  if (process.argv[2] === 'n') {
+  if (process.argv[2] === 'marketplace') {
     chooseAlwaysNo = true;
     chooseVersionBump = process.argv[3] || 'patch';
+    forceMarketplace = true;
+    console.warn(`Non-interactive mode enabled: always NO, chooseVersionBump='${chooseVersionBump}'`);
+  }
+  else if (process.argv[2] === 'pre') {
+    chooseAlwaysNo = true;
+    chooseVersionBump = process.argv[3] || 'prerelease';
     console.warn(`Non-interactive mode enabled: always NO, chooseVersionBump='${chooseVersionBump}'`);
   }
 
   log(`Preparing to publish (old version: ${await getDbuxVersion()})...`);
 
+  // check the basics
   try {
     if (await execCaptureOut('npm whoami') !== 'domiii') {
       throw new Error('Not logged into NPM. Login first with: `npm login <user>`');
@@ -289,28 +275,42 @@ async function main() {
   //   }
   // );
 
-  await goToMaster();
-
+  // go to and pull master
+  if (getBranchName() !== 'master') {
+    await goToMaster();
+  }
   await pullMaster();
 
-  await run('yarn run i');
-
-  if (await bumpVersion()) {
-    await publishToNPM();
+  try {
+    // always start at the dev version
+    await exec('yarn version:dev');
   }
-
-  if (await yesno('Skip publish to Marketplace? (or publish without building)')) {
-    if (await yesno('Install locally?')) {
-      await exec('npm run code:install-only');
+  catch (err) {
+    if (await yesno(`Unable to revert to dev version. Should I stop?`)) {
+      return;
     }
   }
-  else {
+
+  // quick install (lerna will link things up correctly anyway, after version bump)
+  await exec('yarn i');
+
+  if (await bumpVersion()) {
+    // build + publish
+    await publishToNPM();
+  }
+  // else {
+  //   // build -> should not be necessary, since, if anything changed, it should be re-published anyway!
+  //   await exec('yarn prepublishOnly');
+  // }
+
+  if (forceMarketplace || await yesno('Publish (already built version) to Marketplace?')) {
     await publishToMarketplace();
   }
+  else if (!await yesno('Skip installing locally?')) {
+    await exec('yarn code:install');
+  }
 
-  await fixLerna();
-
-  await bumpToDevVersion();
+  await postPublish();
 
   // await pushToDev();
 
@@ -319,6 +319,49 @@ async function main() {
   // hackfix: not sure why, but sometimes this process stays open for some reason... gotta do some monitoring
   process.exit(0);
 }
+
+/** ###########################################################################
+ * postPublish
+ * ##########################################################################*/
+
+async function postPublish() {
+  await writeVersionFile();
+  await fixLerna();
+  await bumpToDevVersion();
+
+  // commit + push
+  await run(`git commit -am "version bump"`);
+  await run(`git push`);
+}
+
+async function writeVersionFile() {
+  const version = await getDbuxVersion();
+  const fpath = path.join(__dirname, '../version.txt');
+  fs.writeFileSync(fpath, version);
+}
+
+async function fixLerna() {
+  debug('Checking for invalid entries in package.json files (lerna hackfix)...');
+
+  await exec('yarn dbux-lerna-fix');
+}
+
+async function bumpToDevVersion() {
+  if (await isDevVersion()) {
+    // console.error(`Something is wrong. We are already on a dev version (${await getDbuxVersion()}). Did version bump not succeed?`);
+  }
+  else {
+    if (!await yesno('Skip setting dev version?')) {
+      // make sure we have at least one change (cannot downgrade without any committed changes)
+      // bump version
+      await exec(`yarn version:dev:bump`);
+    }
+  }
+}
+
+/** ###########################################################################
+ * go!
+ * ##########################################################################*/
 
 main().catch((err) => {
   logError(err);

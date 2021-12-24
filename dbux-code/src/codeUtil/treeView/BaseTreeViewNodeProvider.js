@@ -111,8 +111,7 @@ export default class BaseTreeViewNodeProvider {
       this.repaint();
     }
     catch (err) {
-      this.logger.error(`${this.constructor.name}.refresh() failed`, err);
-      throw err;
+      throw new NestedError(`${this.constructor.name}.refresh() failed`, err);
     }
   }, 50);
 

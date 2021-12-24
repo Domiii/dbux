@@ -11,7 +11,7 @@ const fs = require('fs');
 const path = require('path');
 
 // make sure, we can import dbux stuff without any problems (and console log is pretty)
-require('../dbux-cli/lib/dbux-register-self');
+require('./dbux-register-self');
 require('../dbux-common/src/util/prettyLogs');
 
 const {

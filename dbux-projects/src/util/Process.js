@@ -1,16 +1,17 @@
 import path from 'path';
 import isString from 'lodash/isString';
+import omit from 'lodash/omit';
 import kill from 'tree-kill';
 import sh from 'shelljs';
 import stringArgv from 'string-argv';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { execSync } from 'child_process';
+import { ChildProcess, execSync } from 'child_process';
 import spawn from 'cross-spawn';
 import { pathNormalizedForce } from '@dbux/common-node/src/util/pathUtil';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('Process');
+const { log, debug, warn, error: logError, trace: logTrace } = newLogger('Process');
 
 function cleanOutput(chunk) {
   if (!isString(chunk)) {
@@ -26,8 +27,42 @@ function pipeStreamToFn(stream, logFn) {
   });
 }
 
+/**
+ * These options are passed to child_process as-is (with some minor customizations).
+ */
+export class RawProcessOptions {
+  env;
+}
+
+export class ProcessOptions {
+  /**
+   * If true(default ), fail if command returns non - zero status code.
+   * @type {boolean}
+   */
+  failOnStatusCode;
+
+  /**
+   * If true(default ), fails if program was not found.
+   * @type {boolean}
+   */
+  failWhenNotFound;
+
+  /**
+   * @type {RawProcessOptions}
+   */
+  processOptions;
+
+  /**
+   * @type {Array.<string>?}
+   */
+  ignoreEnv;
+}
+
 export default class Process {
   command;
+  /**
+   * @type {ChildProcess}
+   */
   _process;
   _promise;
 
@@ -50,8 +85,7 @@ export default class Process {
 
   /**
    *
-   * @param {*} options.failOnStatusCode If true (default), fail if command returns non-zero status code
-   * @param {*} options.failWhenNotFound If true (default), fails if program was not found
+   * @param {ProcessOptions} options
    */
   async start(command, logger, options, input) {
     if (!command || !logger) {
@@ -71,7 +105,9 @@ export default class Process {
       failWhenNotFound = true,
       sync = false,
       logStdout = true,
-      logStderr = true
+      logStderr = true,
+      readStdin = false,
+      ignoreEnv
     } = (options || EmptyObject);
 
     const processOptions = {
@@ -89,6 +125,19 @@ export default class Process {
     //   processOptions.shell = true;
     // }
     processOptions.shell = 'bash';
+
+    if (processOptions.env || ignoreEnv) {
+      /**
+       * Fix env problems:
+       * if `env` is provided, it will override all of the parent env.
+       * This approach merges parent and custom env.
+       * Also allows for ignoring parent env settings.
+       * 
+       * @see https://github.com/nodejs/node/issues/12986#issuecomment-301101354
+       * @see https://github.com/microsoft/vscode/issues/102890
+       */
+      processOptions.env = cloneEnv(processOptions.env, ignoreEnv);
+    }
 
     // some weird problem where some shells don't recognize things correctly
     // see: https://github.com/shelljs/shelljs/blob/master/src/exec.js#L51
@@ -114,8 +163,8 @@ export default class Process {
     if (sync) {
       // TODO: sync might not work, since it foregoes cross-spawn
       // NOTE: this will just block until the process is done
-      this._process = execSync(command, processOptions);
-      return this._process;
+      const result = execSync(command, processOptions);
+      return result;
     }
 
     this._process = spawn(commandName, commandArgs, processOptions);
@@ -149,11 +198,11 @@ export default class Process {
       newProcess.stdin.write(`${input}\n`);
       newProcess.stdin.end();
     }
-    else {
+    else if (readStdin) {
       // WARNING: On MAC, for some reason, piping seems to swallow up line feeds?
       // TODO: only register stdin listener on `resume`?
       newProcess.stdin.on('resume', (...args) => {
-        logError('STDIN RESUME', ...args);
+        logTrace('STDIN RESUME', ...args);
       });
       onStdin = buf => {
         const s = buf.toString();
@@ -185,6 +234,7 @@ export default class Process {
     // done
     let done = false;
     function checkDone() {
+      // console.warn('PROCESS checkDone()', done + 1);
       if (done) {
         return true;
       }
@@ -192,6 +242,15 @@ export default class Process {
 
       // stop reading stdin
       onStdin && process.stdin.off('data', onStdin);
+      newProcess.stdin.destroy();
+
+      setTimeout(() => {
+        // make sure, the process never lingers excessively
+        if (newProcess.connected) {
+          logger.warn(`process was killed due to lingering.`);
+          newProcess.kill();
+        }
+      }, 300);
 
       // if (this._killed) {
       //   resolve('killed');
@@ -230,7 +289,7 @@ export default class Process {
         const code = err.code = err.code || -1;
         this.code = code;
 
-        if (failWhenNotFound && (code === 127 || code === 'ENOENT')) {
+        if (!failWhenNotFound && (code === 127 || code === 'ENOENT')) {
           // command not found, but we don't care
           // see: https://stackoverflow.com/questions/1763156/127-return-code-from
           resolve(code);
@@ -333,4 +392,10 @@ export default class Process {
     const newProcess = new Process();
     return newProcess.start(command, logger || newLogger('exec'), options);
   }
+}
+
+export function cloneEnv(customEnv, envIgnore) {
+  let { env } = process;
+  env = omit(env, envIgnore);
+  return { ...env, ...customEnv };
 }

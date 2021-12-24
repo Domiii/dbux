@@ -84,6 +84,8 @@ class SyncGraphBase extends GraphBase {
     }
 
     this.roots = newRoots;
+
+    this._setApplicationState();
   }
 
   removeAllContextNode() {
@@ -112,7 +114,9 @@ class SyncGraphBase extends GraphBase {
 
     this.contextNodesByContext.set(context, contextNode);
     contextNode.addDisposable(() => {
-      this.contextNodesByContext.delete(context);
+      if (this.contextNodesByContext.get(context) === contextNode) {
+        this.contextNodesByContext.delete(context);
+      }
     });
 
     return contextNode;
@@ -123,7 +127,8 @@ class SyncGraphBase extends GraphBase {
     // NOTE: sometimes, `contextNode` does not exist, for some reason
     //    -> might be because `this.roots` contains roots that are not actually displayed
     contextNode?.dispose();
-    this.contextNodesByContext.delete(context);
+    // register disposable on add instead
+    // this.contextNodesByContext.delete(context);
   }
 
   buildContextNodeChildren(contextNode) {
@@ -232,9 +237,20 @@ class SyncGraphBase extends GraphBase {
   getChildrenCount() {
     return this.children.getComponents('ContextNode').length;
   }
-  
+
   getSubGraphChildrenCount() {
     return this.children.getComponents('ContextNode').reduce((v, node) => v + node.nTreeContexts, 0);
+  }
+
+  /** ###########################################################################
+   * State management
+   *  #########################################################################*/
+
+  _setApplicationState() {
+    const update = {
+      applications: this.makeApplicationState()
+    };
+    this.setState(update);
   }
 
   // ###########################################################################

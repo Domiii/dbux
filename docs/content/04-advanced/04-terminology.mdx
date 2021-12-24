@@ -1,0 +1,41 @@
+# Terminology
+
+
+Terminology regarding the JavaScript runtime is either not well defined in general, or we have just not yet spent enough time finding all the definitions. That is why we try to explain some of the terminology that we came up with here (feel free to help us improve):
+
+## Trace
+
+We use (i) the name `staticTrace` to represent a piece of code (e.g. `f(x)`), and (ii) the name `trace` to represent a recorded execution of that code; meaning that one `staticTrace` (piece of code) has 0 or more `traces` (executions).
+
+## Context
+
+* A `static context` can be a `function` declaration or a `Program` (`Program` is Babel's word for "JavaScript file").
+* A `context` (sometimes also called `executionContext`) is any execution of such function or Program.
+* In many ways, a `context` can also be considered a "stack frame", but it is not quite the same.
+* On file contexts:
+  * While functions can be executed many times, JavaScript files usually only execute once, that is the first time they are `require`'d or `import`'ed.
+  * After that first time, their `exports` are cached, and returned to any following caller of `require` or `import`.
+  * That is why you will only see a single trace in the file scope, even if you require them many times.
+* TODO: explain virtual and async contexts
+
+
+## Call Graph Root (CGR) {#cgr}
+
+A "call graph root" (CGR) is an invocation of code from outside our visible (recorded) runtime. Examples include:
+
+* Your application's entry point.
+* Execution of a JavaScript file, often called by `node` or by the webpack bundle (which in turn is called by the underlying JS runtime environment).
+* Browser executing a &lt;script> tag.
+* Execution of a callback supplied to `setTimeout`, `setInterval`, `setIntermediate`, `Process.nextTick`, `Promise.then` etc. These callbacks are scheduled and then, at a later point in time, executed by the underlying JS runtime environment.
+* DOM or OS event handler callbacks.
+* and more...
+
+The nodes of the async call graph only comprises these call graph roots.
+
+
+## Call Graph
+
+Dbux records and visualizes the **Dynamic Call Graph** of JavaScript applications.
+
+TODO: a lot more to be said here.
+

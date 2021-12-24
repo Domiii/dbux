@@ -12,9 +12,9 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { requireUncached } from '@dbux/common-node/src/util/requireUtil';
 import { getAllFilesInFolders, globRelative, rm } from '@dbux/common-node/src/util/fileUtil';
 import { isFileInPath, pathJoin, pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
-import isObject from 'lodash/isObject';
+import { writeMergePackageJson } from '@dbux/cli/lib/package-util';
 import ExerciseList from './ExerciseList';
-import Process from '../util/Process';
+import Process, { ProcessOptions } from '../util/Process';
 import { MultipleFileWatcher } from '../util/multipleFileWatcher';
 import { buildNodeCommand } from '../util/nodeUtil';
 import { checkSystem, getDefaultRequirement } from '../checkSystem';
@@ -289,6 +289,10 @@ export default class Project extends ProjectBase {
     return sh.test('-d', this.hiddenGitFolderPath);
   }
 
+  async isGitInitialized() {
+    return this.doesProjectGitFolderExist();
+  }
+
   doesProjectFolderExist() {
     return sh.test('-d', this.projectPath);
   }
@@ -373,8 +377,8 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     // TODO: read git + editor commands from config
 
     // clone (will do nothing if already cloned)
-    if (this.doesProjectGitFolderExist()) {
-      sh.cd(projectPath);
+    if (await this.isGitInitialized()) {
+      // sh.cd(projectPath);
       this.log('(skipped cloning)');
     }
     else {
@@ -385,12 +389,11 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
           // project does not have a remote git repo -> create separate local repo instead
           fs.mkdirSync(projectPath, { recursive: true });
           // git init and create initial commit (which becomes HEAD)
-          await this.execInTerminal('git init');
-          await this.execInTerminal('touch initial_file');
-          await this.execInTerminal('git add initial_file');
-          await this.execInTerminal('git commit -am "initial commit"');
-          await this.execInTerminal('rm initial_file');
-          await this.execInTerminal('git commit -am "initial commit 2"');
+          await this.exec('git init');
+          await this.exec('touch .gitignore');
+          await this.exec('echo "node_modules" > .gitignore');
+          await this.exec('git add .gitignore');
+          await this.execInTerminal('git commit -a -m "initial commit"');
         }
         else {
           // if (!target) {
@@ -520,15 +523,14 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       //   });
       // });
 
+      // show output channel (if there is any)
+      this.manager.externals.showOutputChannel();
+
       // start
       const backgroundProcess = await this.startWatchMode(exercise).catch(err => {
         // this.logger.error('startWatchMode failed -', err?.stack || err);
         throw new Error(`startWatchMode failed while waiting for "${outputFileString}" - ${err?.stack || err}`);
       });
-
-      // if (!this.backgroundProcesses?.length) {
-      //   this.logger.error('startWatchMode did not result in any new background processes');
-      // }
 
       // wait for output files, before moving on
       this.logger.debug(`startWatchMode waiting for output files: ${outputFileString} ...`);
@@ -612,6 +614,11 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     return Process.execCaptureErr(command, { processOptions });
   }
 
+  /**
+   * 
+   * @param {string} command 
+   * @param {ProcessOptions} processOptions 
+   */
   execCaptureAll = async (command, processOptions) => {
     processOptions = {
       cwd: this.projectPath,
@@ -648,6 +655,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
     // set cwd
     let cwd = options?.cwd || projectPath;
+    
     const env = {
       NODE_SKIP_PLATFORM_CHECK: 1,
       ...options?.env
@@ -685,28 +693,40 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   // more file + package utilities
   // ###########################################################################
 
-  async installPackages(s, shared = false/* , force = true */) {
-    // TODO: let user choose, or just prefer yarn by default?
-
-    if (isObject(s)) {
-      s = Object.entries(s).map(([name, version]) => `${name}@${version}`).join(' ');
+  async ensurePackageJson() {
+    const cwd = this.packageJsonFolder;
+    if (!sh.test('-f', path.join(cwd, 'package.json'))) {
+      await this.exec('npm init -y', { cwd });
     }
+  }
+
+  async installPackages(dependencies, shared = false/* , force = true */) {
+    if (!isPlainObject(dependencies)) {
+      throw new Error(`installPackages requires plain object, but received ${typeof dependencies}: ${JSON.stringify(dependencies)}`);
+    }
+    // dependencies = Object.entries(dependencies).map(([name, version]) => `${name}@${version}`).join(' ');
+    await this.ensurePackageJson();
+
+    /**
+     * Write to `package.json` directly to circumvent weird problems with caret escaping.
+     * Windows, for some reason requires quadruple escaping of carets, while mac does not.
+     * future-work: add checks to `exec` command that no carets are passed in, since that would not be cross-platform.
+     * 
+     * @see https://github.com/yarnpkg/yarn/issues/3270
+     */
+    writeMergePackageJson(this.packageJsonFolder, {
+      dependencies
+    });
 
     // NOTE: somehow Node module resolution algorithm skips a directory, that is `projectsRoot`
     //       -> That is why we choose `dependencyRoot` instead
 
-    const cwd = shared ? this.sharedRoot : this.projectPath;
-
-    if (!sh.test('-f', path.join(cwd, 'package.json'))) {
-      await this.exec('npm init -y', { cwd });
-    }
-
-    // TODO: make sure, `shared` does not override existing dependencies
-
+    // NOTE: we don't do shared for now.
+    const cwd = shared ? this.sharedRoot : this.packageJsonFolder;
     const cmd = this.preferredPackageManager === 'yarn' ?
-      `yarn add ${shared && (process.env.NODE_ENV === 'development') ? '-W --dev' : ''}` :
-      `npm install -D`;
-    return this.execInTerminal(`${cmd} ${s}`, { cwd });
+      `yarn install` :
+      `npm install --legacy-peer-deps`;
+    return this.execInTerminal(`${cmd} `, { cwd });
   }
 
   /**
@@ -723,7 +743,10 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     // NOTE: returns status code 1, if there are any changes, IFF --exit-code or --quiet is provided
     // see: https://stackoverflow.com/questions/28296130/what-does-this-git-diff-index-quiet-head-mean
     await this.exec(`${this.gitCommand} add -A`);
-    const code = await this.exec(`${this.gitCommand} diff-index --quiet HEAD --`, { failOnStatusCode: false });
+    const code = await this.exec(`${this.gitCommand} diff-index --exit-code HEAD --`, {
+      failOnStatusCode: false,
+      failWhenNotFound: false // weird -> it responds with ENOENT sometimes?!
+    });
 
     return !!code;  // code !== 0 means that there are pending changes
   }
@@ -744,6 +767,9 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     const installedTag = this.getProjectInstalledTagName();
     if (!await this.gitDoesTagExist(installedTag)) {
       this.log(`Installing...`);
+
+      // delete unwanted files right away
+      await this.deleteAssets();
 
       // install dbux dependencies
       await this.manager.installDependencies();
@@ -841,7 +867,9 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
     // copy assets
     await this.installAssets(exercise);
-    await project.npmInstall();
+    if (successfulCacheFlag) {
+      await project.npmInstall();
+    }
     await project.autoCommit(`Installed assests.`);
   }
 
@@ -889,10 +917,11 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       // only auto commit if files changed
 
       // add assest files to git
-      // NOTE: && is not supported in all shells (e.g. Powershell)
-      const files = this.getAllAssetFiles();
+      const files = this.getAllAssetFilesInProjectAbsolute()
+        .map(f => pathRelative(this.projectPath, f))
+        .map(f => `"${f}"`);
       // this.logger.debug(files.map(f => `${f}: ${fs.existsSync(f)}`));
-      await this.exec(`${this.gitCommand} add ${files.map(name => `"${name}"`).join(' ')}`);
+      await this.exec(`${this.gitCommand} add ${files.join(' ')}`);
 
       message && (message = ' ' + message);
 
@@ -959,7 +988,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       await this._gitResetAndCheckout(installedTag);
       await this.npmInstall(); // NOTE: node_modules are not affected by git reset or checkout
 
-      // make sure, there are no unwanted changes kicking around
+      // make sure, there are no unwanted changes kicking around after install
       await this._gitResetAndCheckout(installedTag);
     }
 
@@ -1042,9 +1071,19 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     }
   }
 
+  get packageJsonFolder() {
+    return this.projectPath;
+  }
+
+  getNodeModulesFile(...segments) {
+    return pathResolve(this.packageJsonFolder, 'node_modules', ...segments);
+  }
+
   async npmInstall() {
+    await this.ensurePackageJson();
+
     if (this.preferredPackageManager === 'yarn') {
-      await this.execInTerminal('yarn install');
+      await this.execInTerminal('yarn install', { cwd: this.packageJsonFolder });
     }
     else {
       // await this.exec('npm cache verify');
@@ -1052,7 +1091,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       //      see: https://npm.community/t/need-to-run-npm-install-twice/3920
       //      Sometimes running it a second time after checking out a different branch 
       //      deletes all node_modules. The second run brings everything back correctly (for now).
-      await this.execInTerminal(`npm install && npm install`);
+      await this.execInTerminal(`npm install --legacy-peer-deps && npm install --legacy-peer-deps`, { cwd: this.packageJsonFolder });
     }
   }
 
@@ -1064,10 +1103,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   // assets
   // ###########################################################################
 
-  /**
-   * Copy all assets into project folder.
-   */
-  async installAssets(exercise = null) {
+  async deleteAssets() {
     // remove unwanted files
     let { projectPath, rmFiles } = this;
     if (rmFiles?.length) {
@@ -1080,7 +1116,12 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       this.logger.warn('Removing files:', absRmFiles.join(','));
       rm('-rf', absRmFiles);
     }
+  }
 
+  /**
+   * Copy all assets into project folder.
+   */
+  async installAssets(exercise = null) {
     // copy project assets
     const projectAssetsFolders = this.getAllAssetFolderPaths();
     projectAssetsFolders.forEach(folderName => {
@@ -1172,21 +1213,39 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       });
   }
 
+  getAllAssetFilesInProjectAbsolute() {
+    return this.getAllAssetFiles()
+      .map(relativePath => this.getAssetFileInProject(relativePath));
+  }
+
+  /**
+   * The folder that all assets should be copied to.
+   * Usually {@link #projectPath}.
+   */
+  getAssetsTargetFolder() {
+    return this.projectPath;
+  }
+
+  getAssetFileInProject(...segments) {
+    return pathResolve(this.getAssetsTargetFolder(), ...segments);
+  }
+
   copyAssetFolder(assetFolderPath) {
-    this.log(`Copying assets from ${assetFolderPath} to ${this.projectPath}`);
+    const assetsTargetFolder = this.getAssetsTargetFolder();
+    this.log(`Copying assets from ${assetFolderPath} to ${assetsTargetFolder}`);
 
     // Globs are tricky. See: https://stackoverflow.com/a/31438355/2228771
-    const copyRes = sh.cp('-rf', `${assetFolderPath}/{.[!.],..?,}*`, this.projectPath);
+    const copyRes = sh.cp('-rf', `${assetFolderPath}/{.[!.],..?,}*`, assetsTargetFolder);
 
     const assetFiles = getAllFilesInFolders(assetFolderPath).join(',');
     this.log(`Copied assets (${assetFolderPath}): result=${copyRes.toString()}, files=${assetFiles}`,
-      // this.execCaptureOut(`cat ${this.projectPath}/.babelrc.js`)
+      // this.execCaptureOut(`cat ${assetsTargetFolder}/.babelrc.js`)
     );
   }
 
   copyAssetFile(assetPath) {
-    const { projectPath } = this;
-    // this.log(`Copying asset from ${assetFolderPath} to ${projectPath}`);
+    const assetsTargetFolder = this.getAssetsTargetFolder();
+    // this.log(`Copying asset from ${assetFolderPath} to ${assetsTargetFolder}`);
     let from, to;
     if (Array.isArray(assetPath)) {
       ([from, to] = assetPath);
@@ -1202,9 +1261,9 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     }
 
     // resolve target file path
-    const toAbsolute = pathResolve(projectPath, to);
-    if (!isFileInPath(projectPath, toAbsolute)) {
-      throw new Error(`Asset "to" file=${to} is not (but must be) relative to projectPath="${projectPath}" (${assetPath})`);
+    const toAbsolute = pathResolve(assetsTargetFolder, to);
+    if (!isFileInPath(assetsTargetFolder, toAbsolute)) {
+      throw new Error(`Asset "to" file=${to} is not (but must be) relative to assetsTargetFolder="${assetsTargetFolder}" (${assetPath})`);
     }
     const toFolder = path.dirname(toAbsolute);
     if (!fs.existsSync(toFolder)) {
@@ -1285,9 +1344,10 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
   /**
    * Use this to create bug patches.
-   * 
+   *
    * git diff --color=never > patchName.patch
-   * git diff --color=never --ignore-cr-at-eol | unix2dos > ../../dbux-projects/assets/_patches_/X/baseline.patch
+   * cd dbux_projects/X
+   * git diff --color=never --ignore-cr-at-eol | unix2dos > ../../dbux-projects/assets/patches/X/error1.patch
    */
   async getPatchString() {
     await this.checkCorrectGitRepository();
@@ -1300,7 +1360,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   // ###########################################################################
 
   async getCurrentBugFromTag() {
-    if (this.doesProjectGitFolderExist()) {
+    if (await this.isGitInitialized()) {
       for (const tag of (await this.gitGetAllCurrentTagName())) {
         const exercise = this.parseExerciseCachedTag(tag);
         if (exercise) {
@@ -1422,13 +1482,19 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       if (config.name) {
         config.uniqueName = `${this.name}#${config.name}`;
       }
-
       return new Exercise(this, config);
     });
 
     if (process.env.NODE_ENV === 'production') {
       exercises = exercises.filter(exercise => exercise.label);
     }
+
+    this.logger.debug(
+      `loaded ${exercises.length} exercises: ` +
+      exercises.
+        map(ex => `${ex.id}${ex.uniqueName && ` (${ex.uniqueName})` || ''}`).
+        join(', ')
+    );
 
     this._exercises = new ExerciseList(exercises);
 

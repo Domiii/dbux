@@ -1,3 +1,4 @@
+import path from 'path';
 import Project from '../../projectLib/Project';
 import WebpackBuilder from '../../buildTools/WebpackBuilder';
 
@@ -27,11 +28,26 @@ export default class EditorMdProject extends Project {
 
   makeBuilder() {
     // node node_modules\webpack\bin\webpack.js --watch=false --config ./dbux.webpack.config.js --env port=3244 --env entry="{ \"editormd\": \"src/editormd.js\" }"
+    const projectRoot = this.projectPath;
     return new WebpackBuilder({
+      projectRoot,
       websitePort: 3844,
       // entryPattern: [['src', '*'], 'dbux-examples/*.js'],
       entryPattern: ['dbux-examples/*.js'],
-      copy: ['examples', 'css', 'lib', 'fonts', 'images', 'languages', 'dbux-examples/*.html']
+      copy: ['examples', 'css', 'lib', 'fonts', 'images', 'languages', 'dbux-examples/*.html'],
+      webpackConfig: {
+        devServer: {
+          devMiddleware: {
+            publicPath: '/'
+          },
+          static: [
+            {
+              directory: path.resolve(projectRoot),
+              publicPath: '/'
+            }
+          ]
+        }
+      }
     });
   }
 

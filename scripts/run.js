@@ -1,6 +1,9 @@
 const path = require('path');
 const sh = require('shelljs');
 
+/**
+ * This is worse than `exec` because it buffers all output until the command has fininshed.
+ */
 module.exports = function run(command, cwd, options) {
   const {
     silent

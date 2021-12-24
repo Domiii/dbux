@@ -1,6 +1,7 @@
 import isEqual from 'lodash/isEqual';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Enum from '@dbux/common/src/util/Enum';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import objectTracker from '@dbux/data/src/objectTracker';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
@@ -9,14 +10,57 @@ import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('ContextNodeManager');
 
-let SelectorType = {
+const SelectorTypeConfig = {
   ObjectTrace: 1,
   StaticContext: 2,
   SearchContext: 3,
-  SearchTrace: 4
+  SearchTrace: 4,
+  SearchValue: 5,
 };
 
-SelectorType = new Enum(SelectorType);
+/**
+ * @type {(Enum|typeof SelectorTypeConfig)}
+ */
+const SelectorType = new Enum(SelectorTypeConfig);
+
+export { SelectorType };
+
+const FindContextsByMode = {
+  [SelectorType.ObjectTrace]: (selector) => {
+    const { applicationId, traceId: originTraceId } = selector;
+    const dp = allApplications.getById(applicationId).dataProvider;
+
+    const { traceId } = dp.util.getValueTrace(originTraceId);
+    const refId = dp.util.getTraceRefId(traceId);
+    const contexts = dp.util.getContextsByRefId(refId);
+    return contexts;
+  },
+  [SelectorType.StaticContext]: (selector) => {
+    const { applicationId, staticContextId } = selector;
+    const dp = allApplications.getById(applicationId).dataProvider;
+    const contexts = dp.indexes.executionContexts.byStaticContext.get(staticContextId);
+    return contexts;
+  },
+  [SelectorType.SearchContext]: (selector) => {
+    const { searchTerm } = selector;
+    const contexts = allApplications.selection.getAll().
+      flatMap(({ dataProvider }) => dataProvider.util.searchContexts(searchTerm));
+    return contexts;
+  },
+  [SelectorType.SearchTrace]: (selector) => {
+    const { searchTerm } = selector;
+    const contexts = allApplications.selection.getAll().
+      flatMap(({ dataProvider }) => dataProvider.util.findContextsByTraceSearchTerm(searchTerm));
+    return contexts;
+  },
+  [SelectorType.SearchValue]: (selector) => {
+    const { searchTerm } = selector;
+    const contexts = allApplications.selection.getAll().
+      flatMap(({ dataProvider }) => dataProvider.util.findContextsByValueSearchTerm(searchTerm));
+    return contexts;
+  }
+};
+
 
 export default class ContextNodeManager extends HostComponentEndpoint {
   init() {
@@ -25,17 +69,16 @@ export default class ContextNodeManager extends HostComponentEndpoint {
     this.contextNodes = null;
 
     const highlightManager = this.context.graphContainer.controllers.getComponent('HighlightManager');
-    highlightManager.on('clear', () => {
+    this.addDisposable(highlightManager.on('clear', () => {
       this.selector = null;
       this.selectorType = null;
       this.contextNodes = null;
-    });
+    }));
 
     this.owner.on('newNode', this.refreshOnData);
     this.owner.on('refresh', this.refreshOnData);
 
-    const unsubscribe = objectTracker.onObjectSelectionChanged(this.highlightByObject);
-    this.addDisposable(unsubscribe);
+    this.addDisposable(objectTracker.onObjectSelectionChanged(this.highlightByObject));
   }
 
   // TODO: makeDebounce
@@ -44,28 +87,8 @@ export default class ContextNodeManager extends HostComponentEndpoint {
       // block highlighting on non-active apps
       this.clear();
     }
-    else {
-      switch (this.selectorType) {
-        case SelectorType.ObjectTrace: {
-          this.highlightByObject(this.selector);
-          break;
-        }
-        case SelectorType.StaticContext: {
-          const { applicationId, staticContextId } = this.selector;
-          this.highlightByStaticContext(applicationId, staticContextId);
-          break;
-        }
-        case SelectorType.SearchContext: {
-          const { searchTerm } = this.selector;
-          this.highlightBySearchTermContexts(searchTerm);
-          break;
-        }
-        case SelectorType.SearchTrace: {
-          const { searchTerm } = this.selector;
-          this.highlightBySearchTermTraces(searchTerm);
-          break;
-        }
-      }
+    else if (this.selectorType) {
+      this.highlight(this.selectorType, this.selector);
     }
   }
 
@@ -94,102 +117,45 @@ export default class ContextNodeManager extends HostComponentEndpoint {
     this.contextNodes = null;
   }
 
-  // ###########################################################################
-  //  byStaticContext
-  // ###########################################################################
+  /** ###########################################################################
+   *   highlight
+   *  #########################################################################*/
 
-  highlightByStaticContext = (applicationId, staticContextId) => {
-    if (this.selector) this.clear();
+  highlight(mode, selector) {
+    if (this.selector) {
+      this.clear();
+    }
 
+    if (!selector) {
+      return EmptyArray;
+    }
+
+    this.context.graphRoot.controllers.getComponent('GraphNode').setMode(GraphNodeMode.Collapsed);
     this.context.graphDocument.setFollowMode(false);
 
-    const dp = allApplications.getById(applicationId).dataProvider;
-    const contexts = dp.indexes.executionContexts.byStaticContext.get(staticContextId);
+    const contexts = FindContextsByMode[mode](selector);
 
-    this.selector = { applicationId, staticContextId };
-    this.selectorType = SelectorType.StaticContext;
+    this.selector = selector;
+    this.selectorType = mode;
     this.highlightContexts(contexts);
+
+    return contexts;
   }
 
-  toggleStaticContextHighlight = (applicationId, staticContextId) => {
-    if (isEqual(this.selector, { applicationId, staticContextId })) {
+  /** ###########################################################################
+   *   public
+   *  #########################################################################*/
+
+  toggleStaticContextHighlight = (selector) => {
+    if (isEqual(this.selector, selector)) {
       this.clear();
     }
     else {
-      this.highlightByStaticContext(applicationId, staticContextId);
+      this.highlight(SelectorType.StaticContext, selector);
     }
   }
 
-
-  // ###########################################################################
-  //  byObject
-  // ###########################################################################
-
-  highlightByObject = (traceSelector) => {
-    if (this.selector) this.clear();
-
-    this.context.graphRoot.controllers.getComponent('GraphNode').setMode(GraphNodeMode.Collapsed);
-    this.context.graphDocument.setFollowMode(false);
-
-    const { applicationId, traceId: originTraceId } = traceSelector;
-    const dp = allApplications.getById(applicationId).dataProvider;
-
-    const { traceId } = dp.util.getValueTrace(originTraceId);
-    const refId = dp.util.getTraceRefId(traceId);
-    const contexts = dp.util.getContextsByRefId(refId);
-
-    this.selector = { applicationId, traceId };
-    this.selectorType = SelectorType.ObjectTrace;
-    this.highlightContexts(contexts);
-  }
-
-  toggleObjectHighlight = (trace) => {
-    if (trace === this.selector) {
-      this.clear();
-    }
-    else {
-      this.highlightByObject(trace);
-    }
-  }
-
-  // ###########################################################################
-  // search
-  // ###########################################################################
-
-
-  highlightBySearchTermContexts(searchTerm) {
-    if (this.selector) this.clear();
-    if (!searchTerm) {
-      return;
-    }
-
-    this.context.graphRoot.controllers.getComponent('GraphNode').setMode(GraphNodeMode.Collapsed);
-    this.context.graphDocument.setFollowMode(false);
-
-    const contexts = allApplications.selection.getAll().
-      map(({ dataProvider: dp }) => dp.util.searchContexts(searchTerm)).
-      flat();
-
-    this.selector = { searchTerm };
-    this.selectorType = SelectorType.SearchContext;
-    this.highlightContexts(contexts);
-  }
-
-  highlightBySearchTermTraces(searchTerm) {
-    if (this.selector) this.clear();
-    if (!searchTerm) {
-      return;
-    }
-
-    this.context.graphRoot.controllers.getComponent('GraphNode').setMode(GraphNodeMode.Collapsed);
-    this.context.graphDocument.setFollowMode(false);
-
-    const contexts = allApplications.selection.getAll().
-      map(({ dataProvider: dp }) => dp.util.findContextsByTraceSearchTerm(searchTerm)).
-      flat();
-
-    this.selector = { searchTerm };
-    this.selectorType = SelectorType.SearchTrace;
-    this.highlightContexts(contexts);
+  highlightByObject = (trace) => {
+    return this.highlight(SelectorType.ObjectTrace, trace);
   }
 }

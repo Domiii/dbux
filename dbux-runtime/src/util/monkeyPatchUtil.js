@@ -48,13 +48,21 @@ export function getOriginalFunction(patchedFunction) {
   return originalFunctionsByPatchedFunctions.get(patchedFunction);
 }
 
-export function getUnpatchedCallbackOrPatchedFunction(fn) {
-  return originalCallbacksByPatched.get(fn) ||
-    patchedFunctionsByOriginalFunction.get(fn) || 
-    fn;
-}
+// export function getUnpatchedCallbackOrPatchedFunction(fn) {
+//   return originalCallbacksByPatched.get(fn) ||
+//     patchedFunctionsByOriginalFunction.get(fn) || 
+//     fn;
+// }
 
 export function getPatchedFunction(originalFunction) {
+  return patchedFunctionsByOriginalFunction.get(originalFunction);
+}
+
+/**
+ * @param {*} originalFunction
+ * @return `originalFunction` if it has no patched function, else its patched function.
+ */
+export function getPatchedFunctionOrSelf(originalFunction) {
   return patchedFunctionsByOriginalFunction.get(originalFunction) || originalFunction;
 }
 
@@ -91,6 +99,10 @@ export function isMonkeyPatchedCallback(f) {
 
 export function getOriginalCallback(patchedFunction) {
   return originalCallbacksByPatched.get(patchedFunction);
+}
+
+export function getPatchedCallback(originalCallback) {
+  return patchedCallbacksByOriginal.get(originalCallback);
 }
 
 // export function getPatchedCallbackOrNull(originalFunction) {

@@ -89,7 +89,7 @@ export async function checkSystem(manager, requirements, calledFromUser) {
         result.version = await getVersion(program);
         if (semver.satisfies(result.version, requirement.version)) {
           // TOTRANSLATE
-          message += `✓  ${program}\n    Found at "${result.path}" (v${result.version} satisfies ${requirement.version})`;
+          message += `✓  ${program}\n    found at "${result.path}" (v${result.version} satisfies ${requirement.version})`;
           result.success = true;
         }
         else {
@@ -100,7 +100,7 @@ export async function checkSystem(manager, requirements, calledFromUser) {
       }
       else {
         // TOTRANSLATE
-        message += `✓  ${program}\n    Found at "${result.path}"`;
+        message += `✓  ${program}\n    found at "${result.path}"`;
         result.success = true;
       }
 
@@ -169,16 +169,21 @@ export async function checkSystem(manager, requirements, calledFromUser) {
 
   let ignore = false;
   if (!success) {
-    const options = !calledFromUser ? {
-      // TOTRANSLATE
-      [`Ignore and run anyway!`]: () => {
-        ignore = true;
-      }
-    } : {};
+    const options = calledFromUser ?
+      {
+        // TOTRANSLATE
+        [`Ignore and run anyway!`]: () => {
+          ignore = true;
+        }
+      } :
+      {};
     await manager.externals.showMessage.warning(modalMessage, options, { modal: true });
   }
   else if (calledFromUser) {
     await manager.externals.showMessage.info(modalMessage, {}, { modal: true });
+  }
+  else {
+    debug(`checkSystem() result: ${modalMessage}`);
   }
 
   if (!success && !calledFromUser && !ignore) {

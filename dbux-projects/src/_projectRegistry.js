@@ -24,6 +24,7 @@ let registry = {
   express: Express,
   'node-fetch': NodeFetchProject,
   'async-js': AsyncJsProject,
+  'javascript-algorithms': JavascriptAlgorithmProject,
 };
 
 if (process.env.NODE_ENV === 'development') {
@@ -46,7 +47,6 @@ if (process.env.NODE_ENV === 'development') {
 
     bluebird: BluebirdProject,
 
-    'javascript-algorithms': JavascriptAlgorithmProject,
     eslint: Eslint
   };
 }

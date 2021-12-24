@@ -6,7 +6,7 @@ const path = require('path');
 const process = require('process');
 const webpack = require('webpack');
 const { getDependencyRoot } = require('@dbux/cli/lib/dbux-folders');
-const { parseEnv } = require('@dbux/cli/lib/webpack-basics');
+const { parseEnv } = require('@dbux/cli/lib/webpack-util');
 const mergeWith = require('lodash/mergeWith');
 const merge = require('lodash/merge');
 const isFunction = require('lodash/isFunction');
@@ -18,14 +18,15 @@ const CopyPlugin = require('copy-webpack-plugin');
 // require('@dbux/babel-plugin');
 const makeInclude = require('@dbux/babel-plugin/dist/include').default;
 
+// make sure, babel-loader is available
+require('babel-loader');
 
-// eslint-disable-next-line import/no-dynamic-require
-const nodeExternals = require(path.join(getDependencyRoot(), 'node_modules/webpack-node-externals'));
+
 
 process.env.BABEL_DISABLE_CACHE = 1;
 
 const buildMode = 'development';
-const distFolderName = 'dist';
+const DefaultDistFolderName = 'dist';
 //const buildMode = 'production';
 
 function mergeConcatArray(...inputs) {
@@ -139,6 +140,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
       babelPostLoaders = [],
       devServer: devServerCfg,
       port,
+      distFolderName = DefaultDistFolderName
     } = customConfig;
 
     ProjectRoot = projectRootOverride || ProjectRoot;
@@ -162,7 +164,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
         throw new Error(`Invalid devServer config (must be true, object or function) - ${JSON.stringify(devServerCfg)}`);
       }
       devServer = mergeConcatArray(devServer, devServerOverrides);
-      // console.warn('devServer', JSON.stringify(devServer, null, 2));
+      console.warn('devServer', JSON.stringify(devServer, null, 2));
     }
 
     // ###########################################################################
@@ -266,21 +268,19 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     //   // babelOptions.presets[0].splice(1, 1);
     // }
 
-    const babelInclude = babelIncludeOverride ? 
-      makeInclude(babelIncludeOverride) : 
+    const babelInclude = babelIncludeOverride ?
+      makeInclude(babelIncludeOverride) :
       babelIncludeDefault(ProjectRoot, srcFolders);
 
     /** ###########################################################################
      * externals
      *  #########################################################################*/
 
-    const externals = target !== 'node' ?
-      [
-        {
-          fs: 'null',
-          tls: 'null'
-        }
-      ] : [
+    let externals;
+    if (target === 'node') {
+      // eslint-disable-next-line import/no-extraneous-dependencies
+      const nodeExternals = require('webpack-node-externals');
+      externals = [
         {
           // 'dbux-runtime': 'umd @dbux/runtime',
           '@dbux/runtime': 'commonjs @dbux/runtime'
@@ -288,12 +288,20 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
         nodeExternals({
           additionalModuleDirs: [path.join(getDependencyRoot(), 'node_modules')]
         }),
-
         // (context, request, callback) => {
         //   console.warn('external', context, request);
         //   callback();
         // }
       ];
+    }
+    else {
+      externals = [
+        {
+          fs: 'null',
+          tls: 'null'
+        }
+      ];
+    }
 
     // ###########################################################################
     // optimization
@@ -408,11 +416,12 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
 // copyPlugin
 // ###########################################################################
 function copyPlugin(ProjectRoot, files) {
+  const distFolder = path.join(ProjectRoot, distFolderName);
   return new CopyPlugin({
     patterns: files.map(f => ({
       force: true,
       from: path.join(ProjectRoot, f),
-      to: path.join(ProjectRoot, distFolderName, f)
+      to: path.join(distFolder, f)
     }))
   });
 }

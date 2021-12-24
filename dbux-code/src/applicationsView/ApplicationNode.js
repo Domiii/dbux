@@ -27,11 +27,15 @@ export default class ProjectNode extends BaseTreeViewNode {
 
   init = () => {
     this.contextValue = 'ApplicationNode';
-    this.description = this.application.entryPointPath;
+    this.description = this.application.renderEntryPoint();
   }
 
   canHaveChildren() {
     return false;
+  }
+
+  getSelectedAppOfSameEntry() {
+    return allApplications.selection.getAll().filter(app => app.entryPointPath === this.application.entryPointPath);
   }
 
   handleClick() {
@@ -39,7 +43,7 @@ export default class ProjectNode extends BaseTreeViewNode {
       allApplications.selection.removeApplication(this.application);
     }
     else {
-      allApplications.selection.addApplication(this.application);
+      allApplications.selection.replaceApplication(this.getSelectedAppOfSameEntry(), this.application);
     }
   }
 

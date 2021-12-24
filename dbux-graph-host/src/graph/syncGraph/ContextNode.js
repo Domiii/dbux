@@ -203,7 +203,7 @@ class ContextNode extends HostComponentEndpoint {
     // toggleStaticContextHighlight() {
     //   const { applicationId, context: { staticContextId } } = this.state;
     //   const contextNodeManager = this.context.graphRoot.controllers.getComponent('ContextNodeManager');
-    //   contextNodeManager.toggleStaticContextHighlight(applicationId, staticContextId);
+    //   contextNodeManager.toggleStaticContextHighlight({ applicationId, staticContextId });
     // },
     // async selectPreviousContextByStaticContext() {
     //   const { applicationId, context } = this.state;

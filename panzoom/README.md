@@ -1,5 +1,7 @@
 
-Adaption of `panzoom` from https://github.com/anvaka/panzoom to support scrollbar scrolling.
+Adaption of `panzoom` from https://github.com/anvaka/panzoom.
+
+Supports scrollbar scrolling and a few other goodies.
 
 
 # panzoom [![Build Status](https://travis-ci.org/anvaka/panzoom.svg)](https://travis-ci.org/anvaka/panzoom)

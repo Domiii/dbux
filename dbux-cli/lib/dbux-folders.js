@@ -8,7 +8,8 @@ module.exports = {
 
   getDependencyRoot() {
     let dependencyRoot;
-    if (process.env.NODE_ENV === 'development') {
+    // if (process.env.NODE_ENV === 'development') {
+    if (process.env.DBUX_ROOT) {
       // link dbux dependencies to monorepo root development folder
       // NOTE: in monorepo, dependencies are hoisted to root
       // NOTE: in monorepo, packages are also linked to root `node_modules` folder

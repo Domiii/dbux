@@ -13,7 +13,7 @@ export default class GettingStartedProject extends Project {
   // gitRemote = 'node-fetch/node-fetch.git';
   // gitCommit = 'tags/v2.1.2'
 
-  packageManager = 'yarn';
+  // packageManager = 'yarn';
 
   decorateExercise(config) {
     Object.assign(config, {
@@ -21,5 +21,17 @@ export default class GettingStartedProject extends Project {
       dbuxArgs: ''
     });
     return config;
+  }
+
+  async isGitInitialized() {
+    return this.doesProjectGitFolderExist() &&
+
+      /**
+       * Check if HEAD already exists
+       * @see https://stackoverflow.com/questions/18515488/how-to-check-if-the-commit-exists-in-a-git-repository-by-its-sha-1
+       */
+      !await this.exec('git cat-file -e HEAD', {
+        failOnStatusCode: false
+      });
   }
 }

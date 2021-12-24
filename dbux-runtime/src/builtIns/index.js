@@ -2,7 +2,6 @@
 import { monkeyPatchFunctionHolderDefault } from '../util/monkeyPatchUtil';
 import patchArray from './arrays';
 import patchFunction from './functions';
-import tryPatchNode from './node';
 import patchObject from './objects';
 
 /** @typedef { import("../RuntimeMonitor").default } RuntimeMonitor */
@@ -22,8 +21,16 @@ export default function initPatchBuiltins(runtimeMonitor) {
   patchObject(runtimeMonitor);
   patchArray(runtimeMonitor);
   patchFunction(runtimeMonitor);
-  tryPatchNode(runtimeMonitor);
   patchOther(runtimeMonitor);
+
+  /**
+   * @see https://stackoverflow.com/a/35813135
+   */
+  if (globalThis.process?.release?.name === 'node') {
+    // -> deal with system-dependent things dynamically
+    // eslint-disable-next-line global-require
+    require('./node').tryPatchNode(runtimeMonitor);
+  }
 }
 
 /**

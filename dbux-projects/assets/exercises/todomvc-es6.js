@@ -9,7 +9,7 @@ const configs = [
     patch: ['no-callbacks']
   },
   {
-    label: 'ToDo items are not rendered, with clear error message.',
+    label: 'ToDo items are not rendered. Luckily, there is a clear error message.',
     // description: 'ToDo items never show up. Luckily there is a clear error message.',
     patch: ['no-callbacks', 'error1'],
     domains: ['init', 'controller'],
@@ -28,13 +28,14 @@ const configs = [
     }
   },
   {
-    label: 'Completed ToDo items are shown as not completed and vice versa (only during initial rendering)',
+    label: 'During initial rendering (before clicking), completed ToDo items are shown as not completed and vice versa.',
     patch: ['no-callbacks', 'error2'],
     domains: ['init', 'render'],
     stepsToReproduce: [
       'Have a non-empty list.',
       'Make sure, some items are completed, some not.',
-      'Check whether they are rendered as "completed" correctly.'
+      'If you made changes, reload the website.',
+      'See that ToDo items are not rendered correctly.'
     ],
     tags: ['boolean-logic', 'operator'],
     bugLocations: [

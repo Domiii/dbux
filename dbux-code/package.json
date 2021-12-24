@@ -2,7 +2,7 @@
   "name": "dbux-code",
   "private": true,
   "displayName": "Dbux (ALPHA)",
-  "version": "0.4.4-dev.0",
+  "version": "0.6.4-dev.0",
   "publisher": "Domi",
   "description": "Integrated Debugging Environment with an Omniscient Debugger for JS.",
   "repository": {
@@ -10,13 +10,15 @@
     "url": "https://github.com/Domiii/dbux"
   },
   "engines": {
-    "vscode": "^1.46.0"
+    "vscode": "^1.50.0"
   },
   "categories": [
     "Other"
   ],
   "activationEvents": [
-    "*"
+    "onView:dbuxPreActivateView",
+    "onView:dbuxApplicationsView",
+    "onLanguage:javascript"
   ],
   "__main": "./src/index.js",
   "main": "./dist/bundle.js",
@@ -75,12 +77,8 @@
         "title": "Dbux: Start Dbux"
       },
       {
-        "command": "dbux.showMemento",
-        "title": "Dbux: View Memento Storage"
-      },
-      {
-        "command": "dbux.clearMemento",
-        "title": "Dbux: Clear Memento Storage"
+        "command": "dbux.diagnostics",
+        "title": "Dbux: Diagnostics"
       },
       {
         "command": "dbux.cancelBugRunner",
@@ -223,14 +221,6 @@
         "title": "Dbux Dev:Load Practice Log"
       },
       {
-        "command": "dbux.showDBStats",
-        "title": "Dbux: Show DB Stats"
-      },
-      {
-        "command": "dbux.clearDBStats",
-        "title": "Dbux: Clear DB Stats"
-      },
-      {
         "command": "dbux.showOutputChannel",
         "title": "Dbux: Show output channel"
       },
@@ -248,7 +238,7 @@
       },
       {
         "command": "dbuxTraceDetailsView.node.showError",
-        "title": "Show all errors",
+        "title": "Go to Error",
         "icon": {
           "light": "resources/light/fire.svg",
           "dark": "resources/dark/fire.svg"
@@ -551,6 +541,14 @@
         }
       },
       {
+        "command": "dbuxProjectView.node.exerciseCleanup",
+        "title": "Clean Up",
+        "icon": {
+          "light": "resources/light/clear.svg",
+          "dark": "resources/dark/clear.svg"
+        }
+      },
+      {
         "command": "dbuxProjectView.node.stopProject",
         "title": "Stop project",
         "icon": {
@@ -818,6 +816,11 @@
           "group": "inline@0"
         },
         {
+          "command": "dbuxProjectView.node.exerciseCleanup",
+          "when": "viewItem =~ /dbuxProjectView\\.exerciseNode/ && !dbuxProjectView.context.isBusy",
+          "group": "inline@2"
+        },
+        {
           "command": "dbuxProjectView.node.startPractice",
           "when": "viewItem =~ /dbuxProjectView\\.exerciseNode\\.(None|Done)\\..*/ && !dbuxProjectView.context.isBusy",
           "group": "inline@20"
@@ -849,7 +852,7 @@
         },
         {
           "command": "dbuxProjectView.node.showExerciseLog",
-          "when": "viewItem =~ /dbuxProjectView\\.exerciseNode/",
+          "when": "false && viewItem =~ /dbuxProjectView\\.exerciseNode/",
           "group": "inline@8"
         },
         {
@@ -950,11 +953,6 @@
           "group": "navigation@2"
         },
         {
-          "command": "dbux.runFile",
-          "when": "view == dbuxTraceDetailsView",
-          "group": "navigation@5"
-        },
-        {
           "command": "dbux.showGraphView",
           "when": "view == dbuxTraceDetailsView && !dbuxWebView.context.dbux-graph.isActive",
           "group": "navigation@10"
@@ -1006,7 +1004,7 @@
         },
         {
           "command": "dbuxProjectView.toggleListMode",
-          "when": "view == dbuxProjectView && dbux.context.nodeEnv == development",
+          "when": "view == dbuxProjectView",
           "group": "navigation"
         },
         {
@@ -1030,11 +1028,7 @@
           "when": "dbux.context.activated"
         },
         {
-          "command": "dbux.showMemento",
-          "when": "dbux.context.activated"
-        },
-        {
-          "command": "dbux.clearMemento",
+          "command": "dbux.diagnostics",
           "when": "dbux.context.activated"
         },
         {
@@ -1096,14 +1090,6 @@
         {
           "command": "dbux.loadPracticeLogFile",
           "when": "dbux.context.activated && dbux.context.nodeEnv == development"
-        },
-        {
-          "command": "dbux.showDBStats",
-          "when": "dbux.context.activated"
-        },
-        {
-          "command": "dbux.clearDBStats",
-          "when": "dbux.context.activated"
         },
         {
           "command": "dbux.showOutputChannel",
@@ -1318,6 +1304,10 @@
           "when": "false"
         },
         {
+          "command": "dbuxProjectView.node.exerciseCleanup",
+          "when": "false"
+        },
+        {
           "command": "dbuxProjectView.node.stopProject",
           "when": "false"
         },
@@ -1457,15 +1447,15 @@
     "publish-only": "echo 'Publishing...' && vsce publish --yarn"
   },
   "devDependencies": {
-    "@dbux/babel-plugin": "^0.4.4-dev.0",
-    "@dbux/cli": "^0.4.4-dev.0",
-    "@dbux/common": "^0.4.4-dev.0",
-    "@dbux/common-node": "^0.4.4-dev.0",
-    "@dbux/data": "^0.4.4-dev.0",
-    "@dbux/graph-common": "^0.4.4-dev.0",
-    "@dbux/graph-host": "^0.4.4-dev.0",
-    "@dbux/projects": "^0.4.4-dev.0",
-    "@dbux/runtime": "^0.4.4-dev.0",
+    "@dbux/babel-plugin": "^0.6.4-dev.0",
+    "@dbux/cli": "^0.6.4-dev.0",
+    "@dbux/common": "^0.6.4-dev.0",
+    "@dbux/common-node": "^0.6.4-dev.0",
+    "@dbux/data": "^0.6.4-dev.0",
+    "@dbux/graph-common": "^0.6.4-dev.0",
+    "@dbux/graph-host": "^0.6.4-dev.0",
+    "@dbux/projects": "^0.6.4-dev.0",
+    "@dbux/runtime": "^0.6.4-dev.0",
     "@types/glob": "^7.1.1",
     "@types/node": "^16",
     "@types/vscode": "^1.41.0",
@@ -1479,7 +1469,6 @@
     "open": "^7.1.0",
     "serialize-javascript": "^5.0.1",
     "socket.io": "^4",
-    "socket.io-msgpack-parser": "^3.0.1",
     "strip-color": "^0.1.0",
     "typescript": "^3.6.4",
     "uuid": "^8.3.0",

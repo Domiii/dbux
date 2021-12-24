@@ -7,7 +7,7 @@ import maxBy from 'lodash/maxBy';
 import { logWarn, newLogger } from '@dbux/common/src/log/logger';
 import sleep from '@dbux/common/src/util/sleep';
 import { getDataCount } from '@dbux/common/src/util/dataUtil';
-// import universalLibs from '@dbux/common/src/util/universalLibs';
+// import universalLibs from '@dbux/common/src/util/universalLib';
 import SendQueue from './SendQueue';
 
 const Verbose = 1;
@@ -25,6 +25,7 @@ const StayAwake = false;
 // const StayAwake = true;
 const SleepDelay = 1000;
 const DefaultPort = 3374;
+const RemoteHost = 'localhost';
 
 // ###########################################################################
 // time management
@@ -311,7 +312,7 @@ export default class Client {
     this._connectFailed = false;
     this._connectStart = Date.now();
     const port = DefaultPort;
-    const Remote = `ws://localhost:${port}`;
+    const Remote = `ws://${RemoteHost}:${port}`;
     const socket = this._socket = io.connect(Remote, {
       // jsonp: false,
       // forceNode: true,
@@ -328,9 +329,6 @@ export default class Client {
        */
       timeout: 1e6,
 
-      /**
-       * @see https://socket.io/docs/v4/custom-parser#The-msgpack-parser
-       */
       parser: msgpackParser
     });
     Verbose && debug('<- connecting...');

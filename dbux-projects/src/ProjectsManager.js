@@ -10,6 +10,7 @@ import { pathJoin, pathResolve, realPathSyncNormalized } from '@dbux/common-node
 import { getFileSizeSync } from '@dbux/common-node/src/util/fileUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { readPackageJson } from '@dbux/cli/lib/package-util';
+import { requireUncached } from '@dbux/common-node/src/util/requireUtil';
 import projectRegistry from './_projectRegistry';
 import ProjectList from './projectLib/ProjectList';
 import ExerciseRunner from './projectLib/ExerciseRunner';
@@ -18,7 +19,7 @@ import ExerciseStatus from './dataLib/ExerciseStatus';
 import BackendController from './backend/BackendController';
 import PathwaysDataProvider from './dataLib/PathwaysDataProvider';
 import PracticeSessionState from './practiceSession/PracticeSessionState';
-import { initUserEvent, emitSessionFinishedEvent, emitPracticeSessionEvent, onUserEvent, emitUserEvent } from './userEvents';
+import { initUserEvents, emitSessionFinishedEvent, emitPracticeSessionEvent, onUserEvent, emitUserEvent } from './userEvents';
 import ExerciseDataProvider from './dataLib/ExerciseDataProvider';
 import initLang, { getTranslationScope } from './lang';
 import upload from './fileUpload';
@@ -120,11 +121,11 @@ export default class ProjectsManager {
     this._pkg = readPackageJson(this.config.dependencyRoot);
     this._sharedDependencyNamesToCheck = [
       ...this._sharedDependencyNames,
-      ...Object.entries(this._pkg.dependencies).
+      ...Object.entries(this._pkg.dependencies || EmptyObject).
         map(([name, version]) => `${name}@${version}`)
     ];
 
-    initUserEvent(this);
+    initUserEvents(this);
 
     // NOTE: This is for public API. To emit event in dbux-projects, register event in dbux-projects/src/userEvents.js and import it directly 
     this.onUserEvent = onUserEvent;
@@ -155,6 +156,10 @@ export default class ProjectsManager {
   // ###########################################################################
   // getters
   // ###########################################################################
+
+  get interactiveMode() {
+    return true;
+  }
 
   get activeProject() {
     return this.runner.project;
@@ -245,8 +250,9 @@ export default class ProjectsManager {
   reloadChapterList() {
     try {
       // future-work: allow for loading/choosing any chapter list
-      const chapterListFile = this.getAssetPath('chapterLists', 'list1.json');
-      const chapterRegistry = JSON.parse(fs.readFileSync(chapterListFile, 'utf-8'));
+      const chapterListFile = this.getAssetPath('chapterLists', 'list1.js');
+      // const chapterRegistry = JSON.parse(fs.readFileSync(chapterListFile, 'utf-8'));
+      const chapterRegistry = requireUncached(chapterListFile);
       this.chapters = [];
       for (const chapterConfig of chapterRegistry) {
         const { id, name, exercises: exerciseIdOrNames } = chapterConfig;
@@ -485,8 +491,8 @@ export default class ProjectsManager {
       if (!size) {
         return '';
       }
-      size = size / 1024 / 1024;
-      return `${prefix} log file is ${size.toFixed(2)}MB (zipped).\n`;
+      size = (Math.round(size) / 1000).toFixed(2).toLocaleString('en-us');
+      return `${prefix} log file is ${size}kb.\n`;
     }
     try {
       // research
@@ -621,7 +627,7 @@ export default class ProjectsManager {
   }
 
   // ###########################################################################
-  // Project Controll
+  // ProjectControl
   // ###########################################################################
 
   /**
@@ -703,21 +709,21 @@ export default class ProjectsManager {
       return;
     }
 
-    /**
-     * close all files before applying changes
-     * TODO: only close relative files, currently lack of API support.
-     * @see https://github.com/microsoft/vscode/issues/15178#issuecomment-909462369 proposed `Tab` API
-     * @see https://code.visualstudio.com/api/references/vscode-api#TextEditor `TextEditor.hide` deprecated
-     */
-    const { project } = exercise;
-    await this.externals.closeAllEditors();
+    // /**
+    //  * close all files before applying changes
+    //  * TODO: only close relative files, currently lack of API support.
+    //  * @see https://github.com/microsoft/vscode/issues/15178#issuecomment-909462369 proposed `Tab` API
+    //  * @see https://code.visualstudio.com/api/references/vscode-api#TextEditor `TextEditor.hide` deprecated
+    //  */
+    // await this.externals.closeAllEditors();
 
     // save changes in the project
+    const { project } = exercise;
     const previousExercise = await project.getCurrentBugFromTag();
     if (previousExercise) {
       await this.saveFileChanges(previousExercise);
     }
-    if (await project.doesProjectFolderExist() && await project.doesProjectGitFolderExist()) {
+    if (await project.doesProjectFolderExist() && await project.isGitInitialized()) {
       await project.gitResetHard();
     }
 
@@ -753,21 +759,21 @@ export default class ProjectsManager {
    * @param {Exercise} exercise 
    * @param {object} inputCfg Is currently brought in from `projectViewsController`.
    */
-  async runTest(exercise, inputCfg = EmptyObject) {
+  async runTest(exercise, inputCfg = {}) {
+    // fix defaults
+    if (!('debugMode' in inputCfg)) {
+      inputCfg.debugMode = false;
+    }
+    if (!('dbuxEnabled' in inputCfg)) {
+      inputCfg.dbuxEnabled = true;
+    }
+
     let {
       debugMode,
       dbuxEnabled,
       enableSourceMaps = false
     } = inputCfg;
 
-    if (!('debugMode' in inputCfg)) {
-      inputCfg.debugMode = false;
-    }
-
-    if (!('dbuxEnabled' in inputCfg)) {
-      inputCfg.dbuxEnabled = true;
-    }
-    
     if (!exercise.project.checkRunMode(inputCfg)) {
       return;
     }
@@ -777,7 +783,7 @@ export default class ProjectsManager {
     const sourceMapsFlag = (enableSourceMaps &&
       (!exercise.project.nodeVersion || parseFloat(exercise.project.nodeVersion) > 12.12)
     ) ?
-      '--enable-source-maps' : // NOTE: `enable-source-maps` can also severely slow things down
+      '--enable-source-maps' : // NOTE: `enable-source-maps` is extremely slow on Node < 16
       '';
 
     // NOTE: `nolazy` is required for proper breakpoints in debug mode
@@ -1017,7 +1023,7 @@ export default class ProjectsManager {
     // }
 
     const target = path.join(dependencyRoot, 'node_modules', name);
-    // warn('isDependencyInstalled', qualifiedDependencyName, target);
+    // warn('isDependencyInstalled', target, target);
 
     return sh.test('-d', target);
   }
@@ -1236,7 +1242,7 @@ export default class ProjectsManager {
   }
 
   async showExerciseLog(bug) {
-    throw new Error(`Not currently implemented`);
+    throw new Error(`The "Exercise Log" feature is temporarily disabled.`);
 
     // await this.getAndInitBackend();
     // await this._backend.login();

@@ -30,8 +30,8 @@ export default function dbuxRegister(options) {
   //  (see https://babeljs.io/docs/en/babel-register#usage)
   babelOptions.extensions = ['.es6', '.es', '.jsx', '.mjs', '.js', ''];
 
-  console.debug('babelRegister', JSON.stringify(options));
-  const babelRegister = requireDynamic('@babel/register').default;
+  console.debug('[@dbux/babel-register-fork]', JSON.stringify(options));
+  const babelRegister = requireDynamic('@dbux/babel-register-fork').default;
   babelRegister(babelOptions);
   purgeModuleCache();
 }

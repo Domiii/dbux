@@ -1,3 +1,4 @@
+import { writeMergePackageJson } from '@dbux/cli/lib/package-util';
 import Project from '../../projectLib/Project';
 import { buildJestRunBugCommand } from '../../util/jestUtil';
 
@@ -8,6 +9,7 @@ export default class JavascriptAlgorithmProject extends Project {
   gitCommit = '9bb60fa';
 
   rmFiles = [
+    'package-lock.json',
     '.babelrc',       // we need babel.config.js instead
     '.husky'   // unwanted commit hooks
   ];
@@ -15,6 +17,11 @@ export default class JavascriptAlgorithmProject extends Project {
   runCfg = {
 
   };
+
+  async beforeInstall() {
+    // remove husky from package.json
+    writeMergePackageJson(this.projectPath, { scripts: { prepare: '' } });
+  }
 
   canRunExercise(config) {
     return !!config.testFilePaths;
@@ -88,30 +95,30 @@ export default class JavascriptAlgorithmProject extends Project {
       dbuxArgs: [
         cfg.dbuxArgs,
         '--pw=jest[-]circus,jest[-]runner,jest[-]runtime,jest[-]environment[-]node,jest[-]jasmine2', //,@jest/core',
-      //   /**
-      //    * babel, debug, pirates, resolve, import, jest-resolve, jest-runtime, @jest/transform, regenerator-transform, source-map*: very likely to mess things up.
-      //    * human-signals, jest-haste-map, safe-buffer: caused weird problems?
-      //    * gensync: seems to be connected to regenerator-transform?
-      //    * graceful-fs: messy polyfilles
-      //    * 
-      //    * Uninteresting libraries:
-      //    * browserslist, react-is
-      //    * jsesc: data conversion
-      //    */
-      //   // eslint-disable-next-line max-len
-      //   '--pb=babel[-].*,graceful[-]fs,require.*,resolve.*,import.*,locate.*,pretty[-]format,jest[-]config,jest[-]validate,jest[-]resolve.*,jest[-]runtime,@jest/transform,regenerator[-]transform,.*source[-]map,browserslist,human[-]signals,react[-]is,jest[-]haste[-]map,@jest/reporters,debug,pirates,jsesc,gensync,safe-buffer',
-      //   '--fw=.*',
-      //   '--fb=requireOrImportModule\\.js',
-      //   // '--runtime="{\\"tracesDisabled\\":1}"'
+        //   /**
+        //    * babel, debug, pirates, resolve, import, jest-resolve, jest-runtime, @jest/transform, regenerator-transform, source-map*: very likely to mess things up.
+        //    * human-signals, jest-haste-map, safe-buffer: caused weird problems?
+        //    * gensync: seems to be connected to regenerator-transform?
+        //    * graceful-fs: messy polyfilles
+        //    * 
+        //    * Uninteresting libraries:
+        //    * browserslist, react-is
+        //    * jsesc: data conversion
+        //    */
+        //   // eslint-disable-next-line max-len
+        //   '--pb=babel[-].*,graceful[-]fs,require.*,resolve.*,import.*,locate.*,pretty[-]format,jest[-]config,jest[-]validate,jest[-]resolve.*,jest[-]runtime,@jest/transform,regenerator[-]transform,.*source[-]map,browserslist,human[-]signals,react[-]is,jest[-]haste[-]map,@jest/reporters,debug,pirates,jsesc,gensync,safe-buffer',
+        //   '--fw=.*',
+        //   '--fb=requireOrImportModule\\.js',
+        //   // '--runtime="{\\"tracesDisabled\\":1}"'
       ].join(' ')
     };
-    
+
     /**
      * NOTES
      * 
      * 1. node_modules/jest-util/build/index.js:38 getter might cause infinite loop (but does not for now)
      */
-    
+
     return buildJestRunBugCommand(cfg);
   }
 }

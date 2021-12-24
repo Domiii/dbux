@@ -249,8 +249,9 @@ module.exports = (env, argv) => {
       let cfg = {
         watchOptions: {
           poll: true,
-          // keep watching notepack, but ignore everything else
-          ignored: /node_modules[\\/](?!notepack\.io)/
+          // // keep watching notepack, but ignore everything else
+          // ignored: /node_modules[\\/](?!notepack\.io)/
+          ignored: /node_modules/
         },
         mode,
 
@@ -386,7 +387,7 @@ module.exports = (env, argv) => {
     ];
 
     // allCfgs.forEach(cfg => {
-    //   console.warn(cfg.output.filename);
+    //   console.warn('CONFIG', JSON.stringify(cfg, null, 2));
     // });
 
     return allCfgs;

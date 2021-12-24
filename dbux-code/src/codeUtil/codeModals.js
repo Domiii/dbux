@@ -3,6 +3,10 @@ import {
 } from 'vscode';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
+import isFunction from 'lodash/isFunction';
+import isPlainObject from 'lodash/isPlainObject';
+import isString from 'lodash/isString';
+import { getPrettyFunctionName } from '@dbux/common/src/util/functionUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Notifications');
@@ -27,6 +31,7 @@ export async function showInformationMessage(message, btnConfig, messageCfg = Em
   }
   message = `[Dbux] ${message}`;
   debug(message);
+
   const result = await window.showInformationMessage(message, messageCfg, ...buttons);
   if (result === undefined) {
     return await cancelCallback?.();
@@ -39,6 +44,7 @@ export async function showWarningMessage(message, btnConfig, messageCfg = EmptyO
   btnConfig = btnConfig || EmptyObject;
   message = `[Dbux] ${message}`;
   warn(message);
+
   const result = await window.showWarningMessage(message, messageCfg, ...Object.keys(btnConfig || EmptyObject));
   if (result === undefined) {
     await cancelCallback?.();
@@ -84,6 +90,32 @@ export async function confirm(msg, modal = true, throwOnCancel = false) {
   }
 }
 
-export async function alert(msg, modal = false) {
+export async function alert(msg, modal = true) {
   return await showInformationMessage(msg, undefined, { modal });
+}
+
+export async function showQuickPick(items) {
+  // future-work: better ways of naming functions with some simple tricks?
+  //    -> Object.values({ ['hi' + 123]() { } })[0].name
+
+  items = items
+    .map((item) => {
+      if (isFunction(item)) {
+        return {
+          label: getPrettyFunctionName(item),
+          cb: item
+        };
+      }
+      else if (isString(item)) {
+        return { label: item };
+      }
+      else if (!isPlainObject(item)) {
+        throw new Error(`Invalid quick-pick item must be function or plain object: ${item}`);
+      }
+      return item;
+    });
+
+  debug(`[showQuickPick] ${items.map((item, i) => `(${i + 1}) ${item.label}`).join(', ')}`);
+
+  return window.showQuickPick(items);
 }

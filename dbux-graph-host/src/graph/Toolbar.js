@@ -1,5 +1,6 @@
 import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
+import StackMode from '@dbux/graph-common/src/shared/StackMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
 class Toolbar extends HostComponentEndpoint {
@@ -44,32 +45,18 @@ class Toolbar extends HostComponentEndpoint {
       this.parent.nextGraphMode();
     },
 
-    toggleStackEnabled() {
-      this.parent.setState({ stackEnabled: !this.parent.state.stackEnabled });
+    nextStackMode() {
+      this.parent.setState({
+        stackMode: StackMode.nextValue(this.parent.state.stackMode)
+      });
       this.parent.asyncStackContainer.refreshGraph();
     },
 
-    searchContexts(searchTermContexts) {
-      this.parent.setState({ searchTermContexts });
-
-      if (searchTermContexts) {
-        this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphSearchContexts, { searchTerm: searchTermContexts });
-      }
-
-      const contextNodeManager = this.context.graphDocument.syncGraphContainer.graph.controllers.getComponent('ContextNodeManager');
-      contextNodeManager.highlightBySearchTermContexts(searchTermContexts);
+    setSearchMode(mode) {
+      this.context.graphDocument.searchBar.setSearchMode(mode);
+      this.forceUpdate();
     },
 
-    searchTraces(searchTermTraces) {
-      this.parent.setState({ searchTermTraces });
-
-      if (searchTermTraces) {
-        this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphSearchTraces, { searchTerm: searchTermTraces });
-      }
-
-      const contextNodeManager = this.context.graphDocument.syncGraphContainer.graph.controllers.getComponent('ContextNodeManager');
-      contextNodeManager.highlightBySearchTermTraces(searchTermTraces);
-    },
     clearThreadSelection() {
       allApplications.selection.data.threadSelection.clear();
     }
