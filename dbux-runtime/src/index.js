@@ -1,10 +1,24 @@
 import isString from 'lodash/isString';
 import getGlobal from '@dbux/common/src/getGlobal';
+import { newLogger } from '@dbux/common/src/log/logger';
 // import { enableLogRecording, playbackLogRecords } from '@dbux/common/src/log/logger';
 import RuntimeMonitor from './RuntimeMonitor';
 import { initClient } from './client/index';
 import { getPromiseId } from './async/promisePatcher';
 
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError, trace: logTrace } = newLogger('[@dbux/runtime]');
+
+
+/**
+ * @type {import('./client/Client').default}
+ */
+let client;
+
+/** ###########################################################################
+ * The global __dbux__ object.
+ * ##########################################################################*/
 
 const dbux = {
   _r: RuntimeMonitor.instance,
@@ -27,6 +41,11 @@ const dbux = {
   }
 };
 
+
+/** ###########################################################################
+ * global management
+ * ##########################################################################*/
+
 let __global__;
 
 function registerDbuxAsGlobal() {
@@ -39,10 +58,9 @@ function registerDbuxAsGlobal() {
   __global__.__dbux__ = dbux;
 }
 
-/**
- * @type {import('./client/Client').default}
- */
-let client;
+/** ###########################################################################
+ * {@link handleShutdown}
+ * ##########################################################################*/
 
 let _didShutdown = false;
 function handleShutdown() {
@@ -61,7 +79,7 @@ function handleShutdown() {
       'This is probably because of a crash or because process.exit was called manually.');
   }
   // else {
-  //   console.trace('[Dbux Runtime] shutdown detected...');
+  //   console.trace('shutdown detected...');
   // }
   // console.log('playbackLogRecords');
   // playbackLogRecords();
@@ -103,10 +121,10 @@ function handleShutdown() {
       }
 
       errorTime = Date.now();
-      console.warn(`[Dbux Runtime] shutdown delayed (${reason})...`);
+      warn(`shutdown delayed (${reason})...`);
 
       shutdownDelayTimer = setInterval(() => {
-        console.warn('[Dbux Runtime] exiting now.');
+        warn('exiting now.');
         processExit.call(process, ...args);
       }, shutdownDelayMs);
     }
@@ -114,17 +132,17 @@ function handleShutdown() {
     process.on('exit', handleShutdown);
 
     process.exit = (...args) => {
-      console.trace(`[Dbux Runtime] process.exit(${args}) was called.`);
+      logTrace(`process.exit(${args}) was called.`);
       delayShutdown('process.exit', ...args);
     };
 
 
     process.on('uncaughtException', async (err) => {
-      console.error(`[Dbux Runtime] uncaughtException detected. reason - ${err2String(err)}`);
+      logError(`uncaughtException detected. reason - ${err2String(err)}`);
       delayShutdown('uncaughtException');
     });
     process.on('unhandledRejection', (err, promise) => {
-      console.error(`[Dbux Runtime] unhandledRejection detected. reason - ${err2String(err)}, promise: #${getPromiseId(promise)}`);
+      logError(`unhandledRejection detected. reason - ${err2String(err)}, promise: #${getPromiseId(promise)}`);
       delayShutdown('unhandledRejection');
     });
   }
@@ -141,8 +159,6 @@ function handleShutdown() {
   // }
 })();
 
-export default dbux;
-
 
 /** ###########################################################################
  * util
@@ -152,22 +168,29 @@ export default dbux;
 function err2String(err) {
   if (Array.isArray(err?.stack)) {
     /**
-     * stack is array of `CallSite`
+     * Stack is array of `CallSite`.
+     * This is usually provided from the `Error.prepareStackTrace` hook.
+     * NOTE: this is just a heuristic, since the stack trace can be arbitrarily customized.
+     * @see https://v8.dev/docs/stack-trace-api#customizing-stack-traces
      */
     return `${err.message}\n    ${err.stack.map(callSite2String).join('\n    ')}`;
   }
-  return isString(err?.stack) && err.stack.includes(err.message) ? err.stack : err.toString();
+  return isString(err?.stack) && err.stack.includes(err.message) ?
+    err.stack :
+    err.toString();
 }
 
 /**
+ * @param {CallSite}
+ * 
+ * @see https://v8.dev/docs/stack-trace-api#customizing-stack-traces
  * @see https://microsoft.github.io/PowerBI-JavaScript/interfaces/_node_modules__types_node_globals_d_.nodejs.callsite.html
- * @see https://github.com/dougwilson/nodejs-depd/blob/master/index.js#L267
  */
 function callSite2String(callSite) {
   var file = callSite.getFileName() || '<anonymous>';
   var line = callSite.getLineNumber();
   var col = callSite.getColumnNumber();
-  
+
   if (callSite.isEval()) {
     file = callSite.getEvalOrigin() + ', ' + file;
   }
@@ -177,3 +200,9 @@ function callSite2String(callSite) {
 
   return `at ${fname} (${file}:${line}:${col})`;
 }
+
+/** ###########################################################################
+ * export
+ * ##########################################################################*/
+
+export default dbux;
