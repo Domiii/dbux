@@ -1,41 +1,30 @@
-import UserActionType from '@dbux/data/src/pathways/UserActionType';
-import allApplications from '@dbux/data/src/applications/allApplications';
-import { makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
-import TraceContainerNode, { GroupNode } from '../../codeUtil/treeView/TraceContainerNode';
+import TraceNode from '../../codeUtil/treeView/TraceNode';
+import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
-
-class ErrorsGroupNode extends GroupNode {
-  static labelPrefix = 'Errors';
-}
-
-class ErrorsByContext extends ErrorsGroupNode {
-  static labelSuffix = 'by Context';
-
-  static makeKey(_dp, errorTrace) {
-    return errorTrace.contextId;
-  }
-
-  static makeLabel(_entry, _parent, props) {
-    const { applicationId, contextId } = props.key;
-    const application = allApplications.getById(applicationId);
-    const context = application.dataProvider.collections.executionContexts.getById(contextId);
-    return makeContextLabel(context, application);
-  }
-
-  static makeDescription() {
-    return `ContextId: ${this.key}`;
-  }
-}
 
 /** ###########################################################################
  * {@link GlobalErrorsNode}
  * ##########################################################################*/
 
-export default class GlobalErrorsNode extends TraceContainerNode {
-  static GroupClasses = [ErrorsByContext];
+export default class GlobalErrorsNode extends BaseTreeViewNode {
+  static makeLabel() {
+    return `Errors`;
+  }
 
-  get collapseChangeUserActionType() {
-    return UserActionType.GlobalErrorUse;
+  getSelectedChildren() {
+    for (const child of this.children) {
+      if (child.isSelected()) {
+        return child;
+      }
+    }
+    return null;
+  }
+
+  buildChildren() {
+    const errorTraces = this.treeNodeProvider.controller.errorTraceManager.getAll();
+    return errorTraces.map(trace => {
+      return this.treeNodeProvider.buildNode(TraceNode, trace, this);
+    });
   }
 }

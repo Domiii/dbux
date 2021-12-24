@@ -237,7 +237,7 @@
         }
       },
       {
-        "command": "dbuxTraceDetailsView.node.showError",
+        "command": "dbuxGlobalAnalysisView.showError",
         "title": "Go to Error",
         "icon": {
           "light": "resources/light/fire.svg",
@@ -245,7 +245,7 @@
         }
       },
       {
-        "command": "dbuxTraceDetailsView.node.showError.disabled",
+        "command": "dbuxGlobalAnalysisView.showError.disabled",
         "title": "No error occurred",
         "icon": {
           "light": "resources/light/fire_disabled.svg",
@@ -903,13 +903,13 @@
           "group": "navigation"
         },
         {
-          "command": "dbuxTraceDetailsView.node.showError",
-          "when": "view == dbuxTraceDetailsView && dbux.context.hasError",
+          "command": "dbuxGlobalAnalysisView.showError",
+          "when": "view == dbuxGlobalAnalysisView && dbux.context.hasError",
           "group": "navigation"
         },
         {
-          "command": "dbuxTraceDetailsView.node.showError.disabled",
-          "when": "view == dbuxTraceDetailsView && !dbux.context.hasError",
+          "command": "dbuxGlobalAnalysisView.showError.disabled",
+          "when": "view == dbuxGlobalAnalysisView && !dbux.context.hasError",
           "group": "navigation"
         },
         {
@@ -1208,11 +1208,11 @@
           "when": "false"
         },
         {
-          "command": "dbuxTraceDetailsView.node.showError",
+          "command": "dbuxGlobalAnalysisView.showError",
           "when": "false"
         },
         {
-          "command": "dbuxTraceDetailsView.node.showError.disabled",
+          "command": "dbuxGlobalAnalysisView.showError.disabled",
           "when": "false"
         },
         {

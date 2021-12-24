@@ -1,7 +1,13 @@
+import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
+import traceSelection from '@dbux/data/src/traceSelection';
+import ErrorTraceManager from './ErrorTraceManager';
 import GlobalAnalysisNodeProvider from './GlobalAnalysisNodeProvider';
 
 /** @typedef {import('vscode').ExtensionContext} ExtensionContext */
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('GlobalAnalysisViewController');
 
 let controller;
 
@@ -9,6 +15,7 @@ export default class GlobalAnalysisViewController {
   constructor() {
     this.treeDataProvider = new GlobalAnalysisNodeProvider();
     this.treeDataProvider.controller = this;
+    this.errorTraceManager = new ErrorTraceManager();
   }
 
   get treeView() {
@@ -16,18 +23,53 @@ export default class GlobalAnalysisViewController {
   }
 
   refresh = () => {
+    this.treeDataProvider.decorateTitle(`(${allApplications.selection.getAll().length})`);
     this.treeDataProvider.refresh();
   }
+
+  refreshOnData = () => {
+    this.errorTraceManager.refresh();
+
+    this.refresh();
+  }
+
+  /** ###########################################################################
+   * error
+   *  #########################################################################*/
+
+  async showError() {
+    if (!this.children) {
+      await this.treeView.reveal(this.treeDataProvider.rootNodes[1], { select: false, expand: true });
+    }
+    this.errorTraceManager.showError();
+    const selectedTrace = this.treeDataProvider.rootNodes[1].getSelectedChildren();
+    if (selectedTrace) {
+      await this.treeView.reveal(selectedTrace);
+    }
+    else {
+      logError(`Cannot find selected children after showError`);
+    }
+  }
+
+  /** ###########################################################################
+   * init
+   *  #########################################################################*/
 
   initOnActivate(context) {
     // click event listener
     this.treeDataProvider.initDefaultClickCommand(context);
 
     // application selection changed
-    allApplications.selection.onApplicationsChanged((apps) => {
-      this.treeDataProvider.decorateTitle(`(${apps.length})`);
-      this.refresh();
+    allApplications.selection.onApplicationsChanged((selectedApps) => {
+      this.refreshOnData();
+      for (const app of selectedApps) {
+        allApplications.selection.subscribe(
+          app.dataProvider.onData('traces', this.refreshOnData)
+        );
+      }
     });
+
+    traceSelection.onTraceSelectionChanged(() => this.treeDataProvider.refreshIcon());
   }
 }
 

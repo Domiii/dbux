@@ -8,7 +8,6 @@ import { getRelatedAppIds } from '../codeDeco/editedWarning';
 import { showWarningMessage } from '../codeUtil/codeModals';
 import TraceDetailsDataProvider from './TraceDetailsNodeProvider';
 import { getOrCreateTracesAtCursor } from './TracesAtCursor';
-import ErrorTraceManager from './ErrorTraceManager';
 import { ExecutionsTDNodeContextValue } from './nodes/ExecutionsTDNodes';
 import { NavigationNodeContextValue } from './nodes/NavigationNode';
 
@@ -22,7 +21,6 @@ class TraceDetailsController {
     this.treeDataProvider = new TraceDetailsDataProvider();
     this.treeDataProvider.controller = this;
     this.tracesAtCursor = getOrCreateTracesAtCursor(context);
-    this.errorTraceManager = new ErrorTraceManager();
 
     /**
      * @type {Map<number, Set>}
@@ -71,14 +69,12 @@ class TraceDetailsController {
     this.refresh();
     this.tracesAtCursor.needRefresh = true;
     this.tracesAtCursor.updateSelectTraceAtCursorButton();
-    this.errorTraceManager.refresh();
   }
 
   // refreshOnData = makeDebounce(() => {
   //   this.refresh();
   //   this.tracesAtCursor.needRefresh = true;
   //   this.tracesAtCursor.updateSelectTraceAtCursorButton();
-  //   this.errorTraceManager.refresh();
   // }, 200);
 
   selectTraceAtCursor = () => {
@@ -132,14 +128,6 @@ class TraceDetailsController {
       this.refresh();
       this.setFocus();
     });
-  }
-
-  /** ###########################################################################
-   * error
-   *  #########################################################################*/
-
-  showError() {
-    this.errorTraceManager.showError();
   }
 
   /** ###########################################################################

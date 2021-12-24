@@ -3,7 +3,7 @@ import GlobalErrorsNode from './GlobalErrorsNode';
 
 const GlobalNodeClasses = [
   GlobalDebugNode,
-  // GlobalErrorsNode
+  GlobalErrorsNode
 ];
 
 export default GlobalNodeClasses;
