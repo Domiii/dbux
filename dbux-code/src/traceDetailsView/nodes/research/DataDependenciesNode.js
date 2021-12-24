@@ -4,7 +4,7 @@ import StaticContextType from '@dbux/common/src/types/constants/StaticContextTyp
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
-import TraceDetailNode from '../traceDetailNode';
+import TraceDetailNode from '../TraceDetailNode';
 import TraceNode from '../TraceNode';
 
 // eslint-disable-next-line no-unused-vars

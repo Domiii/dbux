@@ -1,6 +1,6 @@
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { TreeItemCollapsibleState } from 'vscode';
-import TraceDetailNode from '../traceDetailNode';
+import TraceDetailNode from '../TraceDetailNode';
 import EdgeAnalysisNode from './edgeAnalysis/EdgeAnalysisNode';
 import DataDependenciesNode from './DataDependenciesNode';
 

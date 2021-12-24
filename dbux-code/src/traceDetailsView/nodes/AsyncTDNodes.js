@@ -6,7 +6,7 @@ import { makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
 import traceSelection from '@dbux/data/src/traceSelection';
 import { showInformationMessage } from '../../codeUtil/codeModals';
 import makeTreeItem from '../../helpers/makeTreeItem';
-import TraceDetailNode from './traceDetailNode';
+import TraceDetailNode from './TraceDetailNode';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 

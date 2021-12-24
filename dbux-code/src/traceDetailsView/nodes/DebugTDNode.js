@@ -6,7 +6,7 @@ import AsyncEventUpdateType, { isPostEventUpdate } from '@dbux/common/src/types/
 import traceSelection from '@dbux/data/src/traceSelection';
 import makeTreeItem, { makeTreeItemNoChildren, makeTreeItems } from '../../helpers/makeTreeItem';
 import { ContextTDNode, TraceTypeTDNode } from './traceInfoNodes';
-import TraceDetailNode from './traceDetailNode';
+import TraceDetailNode from './TraceDetailNode';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
