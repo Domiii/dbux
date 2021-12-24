@@ -8,22 +8,30 @@ const { startPrettyTimer } = require('@dbux/common-node/src/util/timeUtil');
 const { getMemUsageDelta } = require('@dbux/common-node/src/util/memUtil');
 
 
-const ObjSize = 10;
-const ObjCount = 1e6;
+/**
+ * Observations:
+ * if ObjSize <= 10, there is no measurable advantage
+ * if ObjSize >= 20, compiled memory advantage is 5-7x
+ */
+
+
+const ObjSize = 20;
+const ObjCount = 1e5;
 const nIterations = 5;
-let used;
+const propPrefix = new Array(100).fill('a').join('');
+let allocated;
 
 /** ###########################################################################
- * {@link jsonCreator}
+ * {@link unstructuredCreator}
  * ##########################################################################*/
 
-function jsonInit() {
+function unstructuredInit() {
 }
 
-function jsonCreator() {
+function unstructuredCreator() {
   const obj = {};
   for (let i = 0; i < ObjSize; ++i) {
-    obj['a' + i] = i;
+    obj[propPrefix + i] = i;
   }
   return obj;
 }
@@ -36,7 +44,7 @@ let CompiledClass;
 let compiledClassCreateFn;
 
 function compiledClassInit() {
-  const props = new Array(ObjSize).fill().map((_, i) => 'a' + i);
+  const props = new Array(ObjSize).fill().map((_, i) => propPrefix + i);
   CompiledClass = eval(`(class CompiledClass { ${props.map(p => `${p};`).join('\n')}\n })`);
   // console.log('props:', Object.getOwnPropertyNames(new CompiledClass()));
   compiledClassCreateFn = () => new CompiledClass();
@@ -45,7 +53,7 @@ function compiledClassInit() {
 function compiledClassCreator() {
   const obj = compiledClassCreateFn();
   for (let i = 0; i < ObjSize; ++i) {
-    obj['a' + i] = i;
+    obj[propPrefix + i] = i;
   }
   return obj;
 }
@@ -56,14 +64,14 @@ function compiledClassCreator() {
 
 function runTest(init, creator) {
   compiledClassInit();
-  used = new Array(ObjCount).fill().map(creator);
+  allocated = new Array(ObjCount).fill().map(creator);
 }
 
 
 function runOnce(i) {
-  used = null;
+  allocated = null;
   gc(); gc(); gc();
-  
+
   console.log('\n\n\n########################\nTest run start', i);
   let mem, label;
 
@@ -72,21 +80,23 @@ function runOnce(i) {
   mem = process.memoryUsage();
   // const timer = startPrettyTimer();
   runTest(compiledClassInit, compiledClassCreator);
-  printMem(mem, label);
+  const compiledMem = getMemUsageDelta(mem, process.memoryUsage());
+  // printMem(mem, label);
 
-  used = null;
+  allocated = null;
   gc(); gc(); gc();
 
-  console.log('\n\n');
+  // console.log('\n\n');
 
-  label = 'json' + i;
+  label = 'unstructured' + i;
   mem = process.memoryUsage();
   // const timer = startPrettyTimer();
-  runTest(jsonInit, jsonCreator);
-  printMem(mem, label);
+  runTest(unstructuredInit, unstructuredCreator);
+  const unstructuredMem = getMemUsageDelta(mem, process.memoryUsage());
+  printMem(compiledMem, unstructuredMem);
 
 
-  used = null;
+  allocated = null;
   gc(); gc(); gc();
 }
 
@@ -101,8 +111,39 @@ function runOnce(i) {
  * util
  * ##########################################################################*/
 
-function printMem(mem1, label) {
-  const mem2 = process.memoryUsage();
-  const delta = getMemUsageDelta(mem2, mem1);
-  console.log(`[${label}][MEM]`, JSON.stringify(delta, null, 2));
+function prettyK(x) {
+  x = (x / 1000).toFixed(2);
+  return `${x}k`;
+}
+
+function prettyRatio(a, b) {
+  a = parseFloat(a);
+  b = parseFloat(b);
+  if (b < 0.00001) {
+    b = 0.00001;
+  }
+  const ratio = a / b;
+  return ratio.toFixed(2);
+}
+
+// function printMem(mem1, label) {
+//   const mem2 = process.memoryUsage();
+//   // const delta = getMemUsageDelta(mem1, mem2);
+//   const used = prettyK(mem2.heapUsed - mem1.heapUsed);
+//   const total = prettyK(mem2.heapTotal - mem1.heapTotal);
+
+//   // const used = prettyRatio(mem1.heapUsed, mem2.heapUsed);
+//   // const total = prettyRatio(mem1.heapTotal, mem2.heapTotal);
+//   console.log(`[${label}][MEM]`, `used = ${used}, total = ${total}`);
+// }
+
+function printMem(compiledMem, unstructuredMem) {
+  // const mem2 = process.memoryUsage();
+  // const delta = getMemUsageDelta(mem1, mem2);
+  // const used = prettyK(mem2.heapUsed - mem1.heapUsed);
+  // const total = prettyK(mem2.heapTotal - mem1.heapTotal);
+
+  const used = prettyRatio(compiledMem.heapUsed, unstructuredMem.heapUsed);
+  const total = prettyRatio(compiledMem.heapTotal, unstructuredMem.heapTotal);
+  console.log(`[MEM]`, `heapUsed ratio = ${used}, heapTotal ratio = ${total}, unstructured.heapUsed = ${unstructuredMem.heapUsed}, compiledMem.heapUsed = ${compiledMem.heapUsed}`);
 }

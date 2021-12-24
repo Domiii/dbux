@@ -1,5 +1,5 @@
 
-function prettyMem(x) {
+function prettyK(x) {
   x = (x / 1000).toFixed(2);
   return `${x}k`;
 }
@@ -7,7 +7,7 @@ function prettyMem(x) {
 export function getMemUsageDelta(memUsage1, memUsage2) {
   return Object.fromEntries(
     Object.entries(memUsage1).map(([key, val1]) => (
-      [key, prettyMem(memUsage2[key] - val1)])
+      [key, prettyK(memUsage2[key] - val1)])
     )
   );
 }
