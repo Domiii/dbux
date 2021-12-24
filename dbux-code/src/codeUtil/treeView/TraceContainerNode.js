@@ -9,6 +9,7 @@ import TraceNode from './TraceNode';
 /** @typedef {import('./TraceNode').default} TraceNode */
 
 export class GroupNode extends BaseTreeViewNode {
+  static labelPrefix = '';
   static labelSuffix = '';
   static TraceNodeClass = TraceNode;
 
@@ -24,7 +25,6 @@ export class GroupNode extends BaseTreeViewNode {
 
   /**
    * @abstract
-   * @param {null} entry
    * @param {BaseTreeViewNode} parent
    * @param {object} moreProp
    */
@@ -47,8 +47,7 @@ export class GroupNode extends BaseTreeViewNode {
     }
   }
 
-  static group(app, traces) {
-    const dp = app.dataProvider;
+  static group(dp, traces) {
     const byKey = new Map();
     for (const trace of traces) {
       const key = this.makeKey(dp, trace);
@@ -59,13 +58,17 @@ export class GroupNode extends BaseTreeViewNode {
     return Array.from(byKey.entries());
   }
 
-  static build(rootNode, { key, childTraces }) {
+  static build(rootNode, [key, childTraces]) {
     const { treeNodeProvider, applicationId } = rootNode;
     return treeNodeProvider.buildNode(this, null, rootNode, { key, childTraces, applicationId });
   }
 
   get defaultCollapsibleState() {
     return TreeItemCollapsibleState.Expanded;
+  }
+
+  get dp() {
+    return allApplications.getById(this.applicationId).dataProvider;
   }
 
   init() {
@@ -90,7 +93,7 @@ export class GroupNode extends BaseTreeViewNode {
    * @virtual
    */
   // eslint-disable-next-line no-unused-vars
-  getRelevantTrace(dp, key) {
+  getRelevantTrace() {
     return null;
   }
 
@@ -110,10 +113,10 @@ export default class TraceContainerNode extends BaseTreeViewNode {
    * Group mode management
    *  #########################################################################*/
   static GroupClasses = [];
-  static GroupModeIndex = 0;
+  static groupModeIndex = 0;
 
   static nextGroupMode() {
-    this.GroupModeIndex = (this.GroupModeIndex + 1) % this.GroupClasses.length;
+    this.groupModeIndex = (this.groupModeIndex + 1) % this.GroupClasses.length;
   }
 
   static makeLabel(_entry, _parent, props) {
@@ -131,7 +134,7 @@ export default class TraceContainerNode extends BaseTreeViewNode {
     const applicationId = allTraces[0]?.applicationId;
     const dp = allApplications.getById(applicationId).dataProvider;
 
-    const GroupNodeClazz = this.GroupClasses[this.GroupModeIndex];
+    const GroupNodeClazz = this.getCurrentGroupClass();
     const groupNodesData = GroupNodeClazz.group(dp, allTraces);
     const label = GroupNodeClazz.makeRootlabel(allTraces, groupNodesData);
 
@@ -140,6 +143,10 @@ export default class TraceContainerNode extends BaseTreeViewNode {
       groupNodesData,
       label
     };
+  }
+
+  static getCurrentGroupClass() {
+    return this.GroupClasses[this.groupModeIndex];
   }
 
   get defaultCollapsibleState() {
@@ -153,7 +160,7 @@ export default class TraceContainerNode extends BaseTreeViewNode {
   buildChildren() {
     // use children built in `makeProperties`
     const { groupNodesData } = this;
-    const GroupNodeClass = this.constructor.GroupClasses[this.constructor.GroupModeIndex];
+    const GroupNodeClass = this.constructor.getCurrentGroupClass();
     return groupNodesData.map(groupNodeData => {
       return GroupNodeClass.build(this, groupNodeData);
     });

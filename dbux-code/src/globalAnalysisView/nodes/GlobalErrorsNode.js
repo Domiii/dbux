@@ -26,10 +26,6 @@ class ErrorsByContext extends ErrorsGroupNode {
   static makeDescription() {
     return `ContextId: ${this.key}`;
   }
-
-  static getRelevantTrace(dp, contextId) {
-    return dp.util.getFirstTraceOfContext(contextId);
-  }
 }
 
 /** ###########################################################################
@@ -38,10 +34,6 @@ class ErrorsByContext extends ErrorsGroupNode {
 
 export default class GlobalErrorsNode extends TraceContainerNode {
   static GroupClasses = [ErrorsByContext];
-
-  static labelPrefix(/*_, parent*/) {
-    return `Errors`;
-  }
 
   get collapseChangeUserActionType() {
     return UserActionType.GlobalErrorUse;
