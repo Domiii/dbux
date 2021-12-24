@@ -913,6 +913,16 @@
           "group": "navigation"
         },
         {
+          "command": "dbuxGlobalAnalysisView.showError",
+          "when": "view == dbuxTraceDetailsView && dbux.context.hasError",
+          "group": "navigation"
+        },
+        {
+          "command": "dbuxGlobalAnalysisView.showError.disabled",
+          "when": "view == dbuxTraceDetailsView && !dbux.context.hasError",
+          "group": "navigation"
+        },
+        {
           "command": "dbuxTraceDetailsView.node.editedWarning",
           "when": "view == dbuxTraceDetailsView && dbuxTraceDetailsView.context.editedWarning",
           "group": "navigation"
