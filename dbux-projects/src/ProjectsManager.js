@@ -5,7 +5,7 @@ import NanoEvents from 'nanoevents';
 import merge from 'lodash/merge';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
-import { logTrace, newLogger } from '@dbux/common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 import { pathJoin, pathResolve, realPathSyncNormalized } from '@dbux/common-node/src/util/pathUtil';
 import { getFileSizeSync } from '@dbux/common-node/src/util/fileUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';

@@ -1,7 +1,6 @@
 import isString from 'lodash/isString';
 // import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import NestedError from '@dbux/common/src/NestedError';
-import { Logger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { pathToString } from '../helpers/pathHelpers';
 import ParseRegistry from './ParseRegistry';

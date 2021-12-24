@@ -1,55 +1,6 @@
-/* eslint no-console: 0 */
 import NanoEvents from 'nanoevents';
+import { consoleOutputStreams } from '../console';
 
-
-(function _compatabilityHackfix() {
-  // NOTE: console.debug is not supported in some environments and babel, for some reason, does not polyfill it
-  // eslint-disable-next-line no-console
-  console.debug = console.debug || console.log;
-})();
-
-
-// ###########################################################################
-// outside log event handler
-// ###########################################################################
-
-let logRecords;
-// let logRecorder;
-
-function addLogRecord(type, ...args) {
-  (logRecords[type] = logRecords[type] || []).push(args);
-}
-
-export function playbackLogRecords() {
-  const entries = Object.entries(logRecords);
-  const n = entries.reduce((a, [, msgs]) => a + msgs.length, 0);
-  if (!n) {
-    // nothing to report
-    return;
-  }
-  
-  for (const [type, msgs] of entries) {
-    console[type].call(console, `${msgs.length} x ${type}s:`);
-    msgs.forEach((args, i) => {
-      console[type].call(console, ` `, ...args);
-    });
-  }
-}
-
-/**
- * Little hackfix for simplistic "log counting".
- */
-export function enableLogRecording() {
-  logRecords = {};
-
-  // NOTE: for now, only count warn + error log messages
-  addOutputStreams(Object.fromEntries(
-    ['warn', 'error']
-      .map(type => {
-        return [type, addLogRecord.bind(null, type)];
-      })
-  ));
-}
 
 // ###########################################################################
 // reporting + flood gating
@@ -174,14 +125,6 @@ export function newFileLogger(fpath) {
   return new Logger(fname);
 }
 
-const consoleOutputStreams = {
-  log: console.log.bind(console),
-  warn: console.warn.bind(console),
-  debug: console.debug.bind(console),
-  error: console.error.bind(console),
-  trace: console.trace.bind(console),
-};
-
 let outputStreams = consoleOutputStreams;
 
 function mergeOutputStreams(newStreams) {
@@ -202,12 +145,12 @@ function wrapNs(ns) {
   return ns && `[${ns}]` || '';
 }
 
-export function loglog(ns, ...args) {
+function loglog(ns, ...args) {
   outputStreams.log(wrapNs(ns), ...args);
 }
 
 // const prettyDebug = makePrettyLog(console.debug, 'gray');
-export function logDebug(ns, ...args) {
+function logDebug(ns, ...args) {
   // color decoration
   // prettyDebug(wrapNs(ns), ...args);
 
@@ -215,7 +158,7 @@ export function logDebug(ns, ...args) {
   outputStreams.debug(wrapNs(ns), ...args);
 }
 
-export function logWarn(ns, ...args) {
+function logWarn(ns, ...args) {
   ns = wrapNs(ns);
   outputStreams.warn(ns, ...args);
   // report('warn', ns, ...args);
@@ -227,7 +170,7 @@ export function logError(ns, ...args) {
   report('error', ns, ...args);
 }
 
-export function logTrace(ns, ...args) {
+function logTrace(ns, ...args) {
   ns = wrapNs(ns);
   outputStreams.trace(ns, ...args);
   report('error', ns, ...args);
@@ -249,3 +192,45 @@ export function addOutputStreams(newOutputStreams, fullErrorStack = true) {
   }
   outputStreams = mergeOutputStreams(newOutputStreams);
 }
+
+// // ###########################################################################
+// // log playback experiments (unused)
+// // ###########################################################################
+
+// let logRecords;
+// // let logRecorder;
+
+// export function playbackLogRecords() {
+//   const entries = Object.entries(logRecords);
+//   const n = entries.reduce((a, [, msgs]) => a + msgs.length, 0);
+//   if (!n) {
+//     // nothing to report
+//     return;
+//   }
+  
+//   for (const [type, msgs] of entries) {
+//     console[type].call(console, `${msgs.length} x ${type}s:`);
+//     msgs.forEach((args, i) => {
+//       console[type].call(console, ` `, ...args);
+//     });
+//   }
+// }
+
+// function addLogRecord(type, ...args) {
+//   (logRecords[type] = logRecords[type] || []).push(args);
+// }
+
+// /**
+//  * Little hackfix for simplistic "log counting".
+//  */
+// export function enableLogRecording() {
+//   logRecords = {};
+
+//   // NOTE: for now, only count warn + error log messages
+//   addOutputStreams(Object.fromEntries(
+//     ['warn', 'error']
+//       .map(type => {
+//         return [type, addLogRecord.bind(null, type)];
+//       })
+//   ));
+// }

@@ -1,7 +1,6 @@
 import isString from 'lodash/isString';
 import getGlobal from '@dbux/common/src/getGlobal';
 import { newLogger } from '@dbux/common/src/log/logger';
-// import { enableLogRecording, playbackLogRecords } from '@dbux/common/src/log/logger';
 import RuntimeMonitor from './RuntimeMonitor';
 import { initClient } from './client/index';
 import { getPromiseId } from './async/promisePatcher';
@@ -91,8 +90,6 @@ function handleShutdown() {
  * ##########################################################################*/
 
 (function main() {
-  // enableLogRecording();
-
   __global__ = getGlobal();
   registerDbuxAsGlobal();
 

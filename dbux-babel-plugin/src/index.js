@@ -1,10 +1,7 @@
 import './hackfixes';
 // import '@dbux/common/src/util/prettyLogs';
-import { enableLogRecording } from '@dbux/common/src/log/logger';
 import programVisitor from './visitors/programVisitor';
 // import _slicingTestVisitor from './_slicingTestVisitor';
-
-enableLogRecording();
 
 /**
  * The Dbux Babel plugin.

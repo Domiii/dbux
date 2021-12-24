@@ -4,7 +4,7 @@ import io, { Socket } from 'socket.io-client';
 import msgpackParser from '@dbux/common/src/msgpackParser';
 import minBy from 'lodash/minBy';
 import maxBy from 'lodash/maxBy';
-import { logWarn, newLogger } from '@dbux/common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 import sleep from '@dbux/common/src/util/sleep';
 import { getDataCount } from '@dbux/common/src/util/dataUtil';
 // import universalLibs from '@dbux/common/src/util/universalLib';
@@ -100,7 +100,7 @@ export default class Client {
        * @see https://github.com/websockets/ws/blob/abde9cfc21ce0f1cb7e2556aea70b423359364c7/lib/receiver.js#L371
        */
       // eslint-disable-next-line max-len
-      logWarn(`New connection established while disconnected. If you were connected before, this might (or might not) be an unintended sign that sent data exceeds the configured server maximum. In that case, consider increasing the maximum via socket.io's maxHttpBufferSize.`);
+      warn(`New connection established while disconnected. If you were connected before, this might (or might not) be an unintended sign that sent data exceeds the configured server maximum. In that case, consider increasing the maximum via socket.io's maxHttpBufferSize.`);
     }
     this._socket = socket;
     Verbose > 1 && debug('-> connected', !!socket);

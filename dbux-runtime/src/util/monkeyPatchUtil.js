@@ -1,6 +1,10 @@
-import { logError, logWarn } from '@dbux/common/src/log/logger';
 import NestedError from '@dbux/common/src/NestedError';
 import isFunction from 'lodash/isFunction';
+
+import { newLogger } from '@dbux/common/src/log/logger';
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('monkeyPatchUtil');
 
 /**
  * future-work: `WeakMap` won't work here. Use `WeakRef` + finalizer instead
@@ -166,7 +170,7 @@ export function monkeyPatchFunctionOverrideDefault(fn) {
   //   return orig.call(this, ...args);
   // });
   if (patchedFunctionsByOriginalFunction.has(fn)) {
-    logWarn(`Tried to re-register original function: ${fn.name} (${fn})`);
+    warn(`Tried to re-register original function: ${fn.name} (${fn})`);
   }
   else {
     _registerMonkeyPatchedFunction(fn, fn);
@@ -178,7 +182,7 @@ export function monkeyPatchMethodOverrideDefault(holder, fnName) {
     return monkeyPatchFunctionOverrideDefault(holder.prototype[fnName]);
   }
   catch (err) {
-    console.error(new NestedError(
+    logError(new NestedError(
       `monkeyPatchMethodOverrideDefault failed for ${holder}.prototype.${fnName}`,
       err
     ));
@@ -190,7 +194,7 @@ export function monkeyPatchHolderOverrideDefault(holder, fnName) {
     return monkeyPatchFunctionOverrideDefault(holder[fnName]);
   }
   catch (err) {
-    console.error(new NestedError(
+    logError(new NestedError(
       `monkeyPatchMethodOverrideDefault failed for ${holder}.${fnName}`,
       err
     ));

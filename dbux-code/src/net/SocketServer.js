@@ -1,5 +1,5 @@
 import NanoEvents from 'nanoevents';
-import { logDebug, newLogger } from '@dbux/common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 import RuntimeClient from './RuntimeClient';
 import { makeListenSocket } from './serverUtil';
 
@@ -47,11 +47,11 @@ export default class SocketServer {
   _handleAccept(socket) {
     const client = new this.ClientClass(this, socket);
     this._clients.push(client);
-    logDebug('Client Connected', socket.id);
+    debug('Client Connected', socket.id);
 
     // handle disconnects
     socket.on('disconnect', () => {
-      logDebug('Client Disconnected', socket.id);
+      debug('Client Disconnected', socket.id);
       this._clients = this._clients.filter(c => c !== client);
       client._handleDisconnect?.();
     });
@@ -68,7 +68,7 @@ export default class SocketServer {
   }
 
   _handleDisconnect(...args) {
-    logDebug('disconnected.', ...args);
+    debug('disconnected.', ...args);
   }
 
   dispose() {
