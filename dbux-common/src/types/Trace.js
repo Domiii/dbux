@@ -1,3 +1,9 @@
+export class TracePurposeInfo {
+  type;
+
+  // more context-sensitive data here
+}
+
 
 export default class Trace {
   /**
@@ -46,6 +52,11 @@ export default class Trace {
    * @type {boolean}
    */
   error;
+
+  /**
+   * @type {TracePurposeInfo[]}
+   */
+  purposes;
 
   /**
    * NOTE: this is the dynamic type only.

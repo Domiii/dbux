@@ -1,7 +1,7 @@
 import Enum from '../../util/Enum';
 
 /**
- * Allows discerning
+ * Allows discerning between different call, apply, bind.
  */
 let specialCallType = {
   Call: 1,

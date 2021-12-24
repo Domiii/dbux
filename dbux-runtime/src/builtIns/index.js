@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
-import { monkeyPatchFunctionHolderDefault } from '../util/monkeyPatchUtil';
 import patchArray from './arrays';
+import patchConsole from './console';
 import patchFunction from './functions';
 import patchObject from './objects';
 
@@ -10,14 +10,7 @@ import patchObject from './objects';
  * @param {RuntimeMonitor} runtimeMonitor 
  */
 export default function initPatchBuiltins(runtimeMonitor) {
-  if (globalThis.console) {
-    for (const key of Object.keys(console)) {
-      if (console[key] instanceof Function) {
-        monkeyPatchFunctionHolderDefault(console, key);
-      }
-    }
-  }
-
+  patchConsole(runtimeMonitor);
   patchObject(runtimeMonitor);
   patchArray(runtimeMonitor);
   patchFunction(runtimeMonitor);

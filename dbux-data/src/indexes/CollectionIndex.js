@@ -248,6 +248,11 @@ export class CollectionIndexConfig {
  */
 export default class CollectionIndex {
   /**
+   * debug-only: allows us to hunt down non-partitioning indexes.
+   */
+  manyToMany;
+
+  /**
    * @type {DataProvider}
    */
   dp;
