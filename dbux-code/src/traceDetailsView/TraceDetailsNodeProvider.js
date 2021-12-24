@@ -70,12 +70,6 @@ export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
         return null;
       }
     }
-    const newProps = NodeClass.makeProperties?.(entry, parent, props) || EmptyObject;
-    props = {
-      entry,
-      ...props,
-      ...newProps
-    };
     return this.buildNode(NodeClass, entry, parent, props);
   }
 

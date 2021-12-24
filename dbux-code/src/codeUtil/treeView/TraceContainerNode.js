@@ -1,17 +1,16 @@
-/**
- * @file Not done yet
- */
-
+import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
 import { TreeItemCollapsibleState } from 'vscode';
 import BaseTreeViewNode from './BaseTreeViewNode';
+import TraceNode from './TraceNode';
 
 /** @typedef {import('@dbux/data/src/RuntimeDataProvider').default} RuntimeDataProvider */
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 /** @typedef {import('./TraceNode').default} TraceNode */
 
-class GroupNode extends BaseTreeViewNode {
+export class GroupNode extends BaseTreeViewNode {
   static labelSuffix = '';
+  static TraceNodeClass = TraceNode;
 
   /**
    * @abstract
@@ -25,89 +24,138 @@ class GroupNode extends BaseTreeViewNode {
 
   /**
    * @abstract
-   * @param {string} key
+   * @param {null} entry
+   * @param {BaseTreeViewNode} parent
+   * @param {object} moreProp
    */
   // eslint-disable-next-line no-unused-vars
-  static makeLabel(key) {
+  static makeLabel(entry, parent, moreProp) {
     throw new Error('abstract method not implemented');
   }
 
   /**
-   * @param {Array<Trace>} executedTraces
-   * @param {Array<Trace>} groupedTraces
+   * @param {Array<Trace>} allTraces
+   * @param {Array<Trace>} groupNodesData
    */
   // eslint-disable-next-line no-unused-vars
-  static makeRootlabel(executedTraces, groupedTraces) {
+  static makeRootlabel(allTraces, groupNodesData) {
     if (this.labelSuffix) {
-      return `Executions: ${executedTraces?.length || 0}x (${groupedTraces?.length || 0} groups ${this.labelSuffix})`;
+      return `${this.labelPrefix}: ${allTraces?.length || 0}x (${groupNodesData?.length || 0} groups ${this.labelSuffix})`;
     }
     else {
-      return `Executions: ${executedTraces?.length || 0}x`;
+      return `${this.labelPrefix}: ${allTraces?.length || 0}x`;
     }
   }
 
-  static group(application, traces) {
+  static group(app, traces) {
+    const dp = app.dataProvider;
     const byKey = new Map();
     for (const trace of traces) {
-      const key = this.makeKey(application, trace);
+      const key = this.makeKey(dp, trace);
       if (!byKey.get(key)) byKey.set(key, []);
       byKey.get(key).push(trace);
     }
 
-    const groupedTraces = Array.from(byKey.entries())
-      .map(([key, childTraces]) => {
-        const label = this.makeLabel(application, key);
-        const description = this.makeDescription(key);
-        const relevantTrace = this.makeRelevantTrace?.(application, key);
-        return { label, childTraces, description, relevantTrace };
-      });
-
-    return groupedTraces;
+    return Array.from(byKey.entries());
   }
 
-  static buildNodes(rootNode, groupedTraces) {
-    const { treeNodeProvider } = rootNode;
-    return groupedTraces.map(({ label, childTraces, description, relevantTrace }) => {
-      const groupNode = new this(treeNodeProvider, label, null, rootNode, { description, relevantTrace });
-      groupNode.children = buildExecutionNodes(childTraces, groupNode);
-      return groupNode;
-    });
-  }
-
-  constructor(treeNodeProvider, label, entry, parent, moreProps) {
-    moreProps = {
-      ...moreProps,
-      collapsibleState: TreeItemCollapsibleState.Expanded
-    };
-    super(treeNodeProvider, label, entry, parent, moreProps);
+  static build(rootNode, { key, childTraces }) {
+    const { treeNodeProvider, applicationId } = rootNode;
+    return treeNodeProvider.buildNode(this, null, rootNode, { key, childTraces, applicationId });
   }
 
   get defaultCollapsibleState() {
     return TreeItemCollapsibleState.Expanded;
   }
 
+  init() {
+    this.description = this.makeDescription?.();
+  }
+
+  /**
+   * @virtual
+   */
+  makeDescription() {
+    return '';
+  }
+
   handleClick() {
-    if (this.relevantTrace) {
-      traceSelection.selectTrace(this.relevantTrace);
+    const relevantTrace = this.getRelevantTrace();
+    if (relevantTrace) {
+      traceSelection.selectTrace(relevantTrace);
     }
+  }
+
+  /**
+   * @virtual
+   */
+  // eslint-disable-next-line no-unused-vars
+  getRelevantTrace(dp, key) {
+    return null;
+  }
+
+  buildChildren() {
+    const { TraceNodeClass } = this.constructor;
+    return this.childTraces.map(trace => {
+      return this.treeNodeProvider.buildNode(TraceNodeClass, trace, this);
+    });
   }
 }
 
 /**
  * Containing {@link TraceNode} as children and supports custom grouping.
- * TODO: finish this
  */
 export default class TraceContainerNode extends BaseTreeViewNode {
-  groupClasses = [];
+  /** ###########################################################################
+   * Group mode management
+   *  #########################################################################*/
+  static GroupClasses = [];
+  static GroupModeIndex = 0;
 
-  /**
-   * @virtual
-   */
-  static makeLabel(entry, parent) {
+  static nextGroupMode() {
+    this.GroupModeIndex = (this.GroupModeIndex + 1) % this.GroupClasses.length;
+  }
+
+  static makeLabel(_entry, _parent, props) {
+    return props.label;
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  static getAllTraces(entry) {
     throw new Error('abstract method not implemented');
   }
 
+  // eslint-disable-next-line no-unused-vars
+  static makeProperties(entry, parent, props) {
+    const allTraces = this.getAllTraces(entry);
+    const applicationId = allTraces[0]?.applicationId;
+    const dp = allApplications.getById(applicationId).dataProvider;
+
+    const GroupNodeClazz = this.GroupClasses[this.GroupModeIndex];
+    const groupNodesData = GroupNodeClazz.group(dp, allTraces);
+    const label = GroupNodeClazz.makeRootlabel(allTraces, groupNodesData);
+
+    return {
+      applicationId,
+      groupNodesData,
+      label
+    };
+  }
+
+  get defaultCollapsibleState() {
+    return TreeItemCollapsibleState.Collapsed;
+  }
+
   init() {
-    this.description = this.makeDescription?.();
+    this.contextValue = 'dbux.node.TraceContainerNode';
+  }
+
+  buildChildren() {
+    // use children built in `makeProperties`
+    const { groupNodesData } = this;
+    const GroupNodeClass = this.constructor.GroupClasses[this.constructor.GroupModeIndex];
+    return groupNodesData.map(groupNodeData => {
+      return GroupNodeClass.build(this, groupNodeData);
+    });
   }
 }

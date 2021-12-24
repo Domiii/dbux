@@ -222,6 +222,12 @@ export default class BaseTreeViewNodeProvider {
   }
 
   buildNode(NodeClass, entry, parent, moreProps = EmptyObject) {
+    const newProps = NodeClass.makeProperties?.(entry, parent, moreProps) || EmptyObject;
+    moreProps = {
+      entry,
+      ...moreProps,
+      ...newProps
+    };
     const label = NodeClass.makeLabel(entry, parent, moreProps);
     return new NodeClass(this, label, entry, parent, moreProps);
   }
