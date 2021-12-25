@@ -86,16 +86,6 @@ export function initTraceDetailsViewCommands(context, traceDetailsViewController
   );
 
   registerCommand(context,
-    'dbuxTraceDetailsView.node.showError',
-    () => traceDetailsViewController.showError()
-  );
-
-  registerCommand(context,
-    'dbuxTraceDetailsView.node.showError.disabled',
-    () => showInformationMessage('No error occurred.')
-  );
-
-  registerCommand(context,
     'dbuxTraceDetailsView.node.editedWarning',
     async () => traceDetailsViewController.showEditedWarning()
   );

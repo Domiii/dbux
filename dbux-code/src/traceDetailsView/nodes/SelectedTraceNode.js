@@ -1,5 +1,5 @@
 import Trace from '@dbux/common/src/types/Trace';
-import TraceNode from './TraceNode';
+import TraceNode from '../../codeUtil/treeView/TraceNode';
 
 export default class SelectedTraceNode extends TraceNode {
   /**

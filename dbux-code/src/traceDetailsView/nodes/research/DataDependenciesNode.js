@@ -5,7 +5,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
 import TraceDetailNode from '../TraceDetailNode';
-import TraceNode from '../TraceNode';
+import TraceNode from '../../../codeUtil/treeView/TraceNode';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('DataDependencies');

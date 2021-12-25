@@ -4,7 +4,7 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
+import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 import TraceValueNode from './TraceValueNode';
 import { getRangeByTrace } from '../../codeUtil/codeRangeUtil';
 

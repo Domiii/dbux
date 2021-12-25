@@ -1,4 +1,4 @@
-import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
+import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 
 export default class GroupNode extends BaseTreeViewNode {
   makeIconPath() {

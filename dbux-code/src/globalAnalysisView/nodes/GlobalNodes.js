@@ -1,9 +1,11 @@
 import GlobalDebugNode from './GlobalDebugNode';
-import ConsoleNode from './ConsoleNode';
+import GlobalErrorsNode from './GlobalErrorsNode';
+import GlobalConsoleNode from './ConsoleNode';
 
 const GlobalNodeClasses = [
   GlobalDebugNode,
-  ConsoleNode
+  GlobalErrorsNode,
+  GlobalConsoleNode
 ];
 
 export default GlobalNodeClasses;

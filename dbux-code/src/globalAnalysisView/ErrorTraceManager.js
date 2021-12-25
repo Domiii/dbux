@@ -1,5 +1,4 @@
 import { commands } from 'vscode';
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
 
@@ -11,13 +10,16 @@ export default class ErrorTraceManager {
 
   refresh() {
     this.index = 0;
-    const apps = allApplications.selection.getAll();
-    this._all = apps.map(app => app.dataProvider.util.getAllErrorTraces() || EmptyArray).flat();
+    this._all = allApplications.selection.data.collectGlobalStats((dp) => dp.util.getAllErrorTraces());
     this.updateErrorButton();
   }
 
   get() {
     return this._all[this.index] || null;
+  }
+
+  getAll() {
+    return this._all;
   }
 
   next() {

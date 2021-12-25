@@ -3,8 +3,8 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import CallRootNode from './CallRootNode';
-import BaseTreeViewNodeProvider from '../codeUtil/BaseTreeViewNodeProvider';
-import EmptyTreeViewNode from '../codeUtil/EmptyTreeViewNode';
+import BaseTreeViewNodeProvider from '../codeUtil/treeView/BaseTreeViewNodeProvider';
+import EmptyTreeViewNode from '../codeUtil/treeView/EmptyNode';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('CallGraphNodeProvider');
