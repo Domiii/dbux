@@ -1,7 +1,7 @@
 import { env, Uri } from 'vscode';
 import ExerciseStatus from '@dbux/projects/src/dataLib/ExerciseStatus';
 import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
-import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
+import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 import { showInformationMessage } from '../../codeUtil/codeModals';
 import cleanUp from './cleanUp';
 

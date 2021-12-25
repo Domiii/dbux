@@ -1,10 +1,10 @@
 import traceSelection from '@dbux/data/src/traceSelection';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
-import EmptyTreeViewNode from '../codeUtil/EmptyTreeViewNode';
+import EmptyTreeViewNode from '../codeUtil/treeView/EmptyNode';
 import { DetailNodeClasses } from './nodes/traceDetailNodes';
 import SelectedTraceNode from './nodes/SelectedTraceNode';
-import TraceNode from './nodes/TraceNode';
-import BaseTreeViewNodeProvider from '../codeUtil/BaseTreeViewNodeProvider';
+import TraceNode from '../codeUtil/treeView/TraceNode';
+import BaseTreeViewNodeProvider from '../codeUtil/treeView/BaseTreeViewNodeProvider';
 import NavigationNode from './nodes/NavigationNode';
 
 export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
@@ -70,12 +70,6 @@ export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
         return null;
       }
     }
-    const newProps = NodeClass.makeProperties?.(entry, parent, props) || EmptyObject;
-    props = {
-      entry,
-      ...props,
-      ...newProps
-    };
     return this.buildNode(NodeClass, entry, parent, props);
   }
 

@@ -1,7 +1,7 @@
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
-import TraceNode from '../traceDetailsView/nodes/TraceNode';
+import TraceNode from '../codeUtil/treeView/TraceNode';
 
 
 /**

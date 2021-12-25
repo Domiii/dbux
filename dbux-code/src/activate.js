@@ -47,7 +47,7 @@ export default async function activate(context) {
   initWebviewWrapper(context);
 
   initApplicationsView(context);
-  initGlobalAnalysisView(context);
+  const globalAnalysisViewController = initGlobalAnalysisView(context);
   const traceDetailsController = initTraceDetailsView(context);
   const dataFlowController = initDataFlowView(context);
   const projectViewController = initProjectView(context);
@@ -74,7 +74,8 @@ export default async function activate(context) {
     context,
     traceDetailsController,
     // callGraphViewController,
-    dataFlowController
+    dataFlowController,
+    globalAnalysisViewController,
   );
 
   // init the webviews

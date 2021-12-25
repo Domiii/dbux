@@ -1,6 +1,6 @@
 import allApplications from '@dbux/data/src/applications/allApplications';
 import Trace from '@dbux/common/src/types/Trace';
-import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
+import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 

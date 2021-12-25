@@ -1,6 +1,6 @@
 import traceSelection from '@dbux/data/src/traceSelection';
 import PracticeSessionState from '@dbux/projects/src/practiceSession/PracticeSessionState';
-import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
+import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 import { showInformationMessage, showWarningMessage } from '../../codeUtil/codeModals';
 import { emitTagTraceAction } from '../../userEvents';
 import { getCursorLocation } from '../../codeUtil/codeNav';

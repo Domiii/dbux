@@ -3,9 +3,9 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import NestedError from '@dbux/common/src/NestedError';
 import { makeDebounce } from '@dbux/common/src/util/scheduling';
-import { getThemeResourcePath } from './codePath';
-import { registerCommand } from '../commands/commandUtil';
-import { emitTreeViewAction, emitTreeViewCollapseChangeAction } from '../userEvents';
+import { getThemeResourcePath } from '../codePath';
+import { registerCommand } from '../../commands/commandUtil';
+import { emitTreeViewAction, emitTreeViewCollapseChangeAction } from '../../userEvents';
 import BaseTreeViewNode from './BaseTreeViewNode';
 
 /** @typedef { import("./BaseTreeViewNode").default } BaseTreeViewNode */
@@ -222,6 +222,12 @@ export default class BaseTreeViewNodeProvider {
   }
 
   buildNode(NodeClass, entry, parent, moreProps = EmptyObject) {
+    const newProps = NodeClass.makeProperties?.(entry, parent, moreProps) || EmptyObject;
+    moreProps = {
+      entry,
+      ...moreProps,
+      ...newProps
+    };
     const label = NodeClass.makeLabel(entry, parent, moreProps);
     return new NodeClass(this, label, entry, parent, moreProps);
   }

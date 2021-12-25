@@ -1,6 +1,6 @@
 import { getTraceCreatedAt, makeTraceLabel } from '@dbux/data/src/helpers/makeLabels';
 import traceSelection from '@dbux/data/src/traceSelection';
-import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
+import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 import { babelLocToCodeRange } from '../../helpers/codeLocHelpers';
 
 export default class TraceNode extends BaseTreeViewNode {
