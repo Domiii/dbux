@@ -5,7 +5,7 @@ import { ThreadSelection } from './ThreadSelection';
 
 /** @typedef {import('./Application').default} Application */
 /** @typedef {import('./ApplicationSet').default} ApplicationSet */
-/** @typedef {import('../DataProviderBase').default} DataProviderBase */
+/** @typedef {import('../RuntimeDataProvider').default} RuntimeDataProvider */
 
 /**
  * Encapsulates all data that is related to the set of selected applications;
@@ -50,10 +50,10 @@ export default class ApplicationSetData {
    */
   getApplicationCountAtPath(fpath) {
     const applications = this.set.getAll();
-    return applications.reduce((sum, { dataProvider }) => {
+    return sum(applications.map(({ dataProvider }) => {
       const programId = dataProvider.queries.programIdByFilePath(fpath);
-      return sum + !!programId;
-    }, 0);
+      return !!programId;
+    }));
   }
 
   /**
@@ -92,7 +92,7 @@ export default class ApplicationSetData {
 
   /**
    * @callback collectStatsCb
-   * @param {DataProviderBase} dp
+   * @param {RuntimeDataProvider} dp
    * @param {Application} app
    */
 
@@ -108,7 +108,7 @@ export default class ApplicationSetData {
 
   /**
    * @callback countStatsCb
-   * @param {DataProviderBase} dp
+   * @param {RuntimeDataProvider} dp
    * @param {Application} app
    * @return {number}
    */

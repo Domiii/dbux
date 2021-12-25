@@ -1,6 +1,3 @@
-import { format } from 'util';
-import stripAnsi from 'strip-ansi';
-import isString from 'lodash/isString';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import TracePurpose from '@dbux/common/src/types/constants/TracePurpose';
@@ -10,23 +7,6 @@ import TraceNode from '../../codeUtil/treeView/TraceNode';
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 
 
-function renderConsoleMessage(trace) {
-  /**
-   * Render accurate string result.
-   * future-work: formatting for console.table et al?
-   */
-  const { applicationId } = trace;
-  const dp = allApplications.getById(applicationId).dataProvider;
-  const stringArgs = dp.util.getCallArgValueStrings(trace.traceId)
-    .map(arg => isString(arg) ? arg : (arg + ''))
-    .map(arg => stripAnsi(arg));
-
-  /**
-   * "the arguments are all passed to util.format()"
-   * @see https://nodejs.org/api/console.html#consolelogdata-args
-   */
-  return format(...stringArgs);
-}
 
 /** ###########################################################################
  * {@link ConsoleTraceNode}
@@ -46,6 +26,7 @@ class ConsoleTraceNode extends TraceNode {
   }
 }
 
+
 /** ###########################################################################
  * {@link GlobalConsoleNode}
  *  #########################################################################*/
@@ -59,7 +40,7 @@ export default class GlobalConsoleNode extends BaseTreeViewNode {
   }
 
   get collapseChangeUserActionType() {
-    return UserActionType.GlobalDebugAppUse;
+    return UserActionType.GlobalConsoleUse;
   }
 
   init() {
@@ -73,7 +54,7 @@ export default class GlobalConsoleNode extends BaseTreeViewNode {
     return allApplications.selection.data.collectGlobalStats((dp, app) => {
       return dp.indexes.traces.byPurpose.get(TracePurpose.Console)
         ?.map(trace => {
-          const consoleMessage = renderConsoleMessage(trace);
+          const consoleMessage = dp.util.renderConsoleMessage(trace.traceId);
           return this.treeNodeProvider.buildNode(ConsoleTraceNode, trace, this, { consoleMessage });
         });
     });

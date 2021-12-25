@@ -103,11 +103,26 @@ export default class Application {
     return appRoot && pathRelative(appRoot, entryPoint) || entryPoint;
   }
 
+  getPathRelativeToEntryRoot(fpath) {
+    const entryPoint = this.entryPointPath;
+    return pathRelative(entryPoint, fpath);
+  }
+
+  getPathRelativeToAppAncestorPath(fpath) {
+    const ancestorPath = this.getAppCommonAncestorPath();
+    return pathRelative(ancestorPath, fpath);
+  }
+
+  getPathsRelativeToAppAncestorPath(fpaths) {
+    const ancestorPath = this.getAppCommonAncestorPath();
+    return fpaths.map(fpath => pathRelative(ancestorPath, fpath));
+  }
+
   getRelativeFolder() {
     return pathGetParent(this.getRelativeEntryPoint());
   }
 
-  getCommonAncestorPath() {
+  getAppCommonAncestorPath() {
     const { staticProgramContexts } = this.dataProvider.collections;
     return getCommonAncestorPath(...staticProgramContexts.getAllExisting().map(p => p.filePath));
   }

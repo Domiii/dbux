@@ -1,7 +1,7 @@
 import allApplications from '@dbux/data/src/applications/allApplications';
 import BaseTreeViewNodeProvider from '../codeUtil/treeView/BaseTreeViewNodeProvider';
 import EmptyTreeViewNode from '../codeUtil/treeView/EmptyNode';
-import GlobalNodeClasses from './nodes/GlobalNodes';
+import GlobalNodeClasses from './nodes';
 
 export default class GlobalAnalysisNodeProvider extends BaseTreeViewNodeProvider {
   constructor() {

@@ -49,7 +49,7 @@ function selectedModalBtn(selected, text) {
  * @param {[]} files 
  */
 function fixFiles(app, files) {
-  const commonFolder = app.getCommonAncestorPath();
+  const commonFolder = app.getAppCommonAncestorPath();
   return Object.fromEntries(Object.entries(files)
     .map(([key, val]) => {
       if (!Array.isArray(val)) {

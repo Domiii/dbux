@@ -14,7 +14,8 @@ export class ApplicationTDNode extends BaseTreeViewNode {
   static makeEntry(trace) {
     const application = allApplications.getApplication(trace.applicationId);
     const fpath = application.dataProvider.util.getTraceFilePath(trace.traceId);
-    if (allApplications.selection.data.getApplicationCountAtPath(fpath) < 2) {
+    const n = allApplications.selection.data.getApplicationCountAtPath(fpath);
+    if (n < 2) {
       return null;
     }
     return application;

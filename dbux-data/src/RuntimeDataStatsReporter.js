@@ -57,7 +57,7 @@ class StatsBase {
  */
 class ModuleStats extends StatsBase {
   preData() {
-    this.oldRequireModuleNames = this.dpUtil.getAllRequireModuleNames();
+    this.oldRequireModuleNames = this.dpUtil.getAllRequirePackageNames();
   }
 
   reset() {
@@ -69,7 +69,7 @@ class ModuleStats extends StatsBase {
 
     const { oldRequireModuleNames, reporter: { collectionStats } } = this;
 
-    const allRequireModuleNames = util.getAllRequireModuleNames();
+    const allRequireModuleNames = util.getAllRequirePackageNames();
     const newRequireModuleNames = difference(allRequireModuleNames, oldRequireModuleNames);
 
     // program stats

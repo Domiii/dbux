@@ -12,6 +12,7 @@ import AsyncNodeCollection from './collections/AsyncNodeCollection';
 import AsyncEventCollection from './collections/AsyncEventCollection';
 import AsyncEventUpdateCollection from './collections/AsyncEventUpdateCollection';
 
+/** @typedef { import("./applications/Application").default } Application */
 /** @typedef { import("./RuntimeDataStatsReporter").default } RuntimeDataStatsReporter */
 /** @typedef {import('./callGraph/CallGraph').default} CallGraph */
 
@@ -35,6 +36,15 @@ export default class RuntimeDataProvider extends DataProviderBase {
    */
   reporter;
 
+  /**
+   * @type {Application}
+   */
+  application;
+
+
+  /**
+   * @param {Application} application
+   */
   constructor(application) {
     super('RuntimeDataProvider');
 

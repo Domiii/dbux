@@ -1,7 +1,9 @@
+import { format } from 'util';
+import stripAnsi from 'strip-ansi';
+import isString from 'lodash/isString';
 import findLast from 'lodash/findLast';
 import groupBy from 'lodash/groupBy';
 import isNumber from 'lodash/isNumber';
-import isString from 'lodash/isString';
 import truncate from 'lodash/truncate';
 import isPlainObject from 'lodash/isPlainObject';
 import TraceType, { hasDynamicTypes, isTracePop, isBeforeCallExpression } from '@dbux/common/src/types/constants/TraceType';
@@ -21,7 +23,7 @@ import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFu
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import SpecialCallType from '@dbux/common/src/types/constants/SpecialCallType';
 import PromiseLinkType from '@dbux/common/src/types/constants/PromiseLinkType';
-import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
+import { parseNodeModuleName, renderPath } from '@dbux/common-node/src/util/pathUtil';
 import AsyncEventUpdateType, { isPostEventUpdate, isPreEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import AsyncEventType, { getAsyncEventTypeOfAsyncEventUpdateType } from '@dbux/common/src/types/constants/AsyncEventType';
 import { AsyncUpdateBase, PreCallbackUpdate } from '@dbux/common/src/types/AsyncEventUpdate';
@@ -76,6 +78,32 @@ export default {
   /** @param {DataProvider} dp */
   getFilePathFromProgramId(dp, programId) {
     return dp.collections.staticProgramContexts.getById(programId)?.filePath || null;
+  },
+
+  /** 
+   * @param {DataProvider} dp
+   */
+  renderRelativeProgramFilePath(dp, programId) {
+    const app = dp.application;
+
+    let fpath = dp.util.getFilePathFromProgramId(programId);
+    fpath = app.getPathRelativeToAppAncestorPath(fpath);
+
+    fpath = renderPath(fpath);
+    return fpath;
+  },
+
+  /** 
+   * @param {DataProvider} dp
+   */
+  renderRelativeProgramFilePaths(dp) {
+    const app = dp.application;
+
+    let fpaths = dp.collections.staticProgramContexts.getAllActual().map(program => program.filePath);
+    fpaths = app.getPathsRelativeToAppAncestorPath(fpaths);
+
+    fpaths = fpaths.map(fpath => renderPath(fpath));
+    return fpaths;
   },
 
   /** 
@@ -1125,6 +1153,24 @@ export default {
   },
 
   /**
+   * Render accurate string result.
+   * future-work: formatting for console.table et al?
+   * 
+   * @param {DataProvider} dp
+   */
+  renderConsoleMessage(dp, consoleCallId) {
+    const stringArgs = dp.util.getCallArgValueStrings(consoleCallId)
+      .map(arg => isString(arg) ? arg : (arg + ''))
+      .map(arg => stripAnsi(arg));
+
+    /**
+     * "the arguments are all passed to util.format()"
+     * @see https://nodejs.org/api/console.html#consolelogdata-args
+     */
+    return format(...stringArgs);
+  },
+
+  /**
    * @param {DataProvider} dp
    * @return the ValueRef of given `context`'s BCE. We use it to get an `async` function call's own promise.
    */
@@ -1672,16 +1718,26 @@ export default {
     return dp.util.getTracesOfSpecialIdentifierType(SpecialIdentifierType.Require, startId);
   },
 
+  /**
+   * @param {DataProvider} dp
+   */
   getAllRequirePaths(dp, startId = 1) {
     // NOTE: these should be BCE traces, meaning traceId === callId
     const traces = dp.util.getAllRequireTraces(startId);
 
     // get all first arguments of `require`
-    // TODO: currently first arguments are not traced in case of constant expression -> store in `staticTrace` instead!
-    return traces.map(t => dp.util.getCallArgPrimitiveValues(t.traceId)?.[0]).filter(t => !!t);
+    // TODO: currently, first arguments are not traced in case of constant expression -> store in `staticTrace` instead!
+    return traces.map(t => {
+      const primitiveArgs = dp.util.getCallArgPrimitiveValues(t.traceId);
+      return primitiveArgs?.[0];
+    }).filter(t => !!t);
   },
 
-  getAllRequireModuleNames(dp, startId = 1) {
+  /**
+   * Return the name of all packages required 
+   * @param {DataProvider} dp
+   */
+  getAllRequirePackageNames(dp, startId = 1) {
     const set = new Set(
       dp.util.getAllRequirePaths(startId)
         .map(p => p.split('/', 1)[0])
