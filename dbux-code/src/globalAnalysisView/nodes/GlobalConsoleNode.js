@@ -5,9 +5,9 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import TracePurpose from '@dbux/common/src/types/constants/TracePurpose';
 import { makeTraceLabel, makeTraceLocLabel } from '@dbux/data/src/helpers/makeLabels';
-import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
-import TraceNode from '../../traceDetailsView/nodes/TraceNode';
 import { makeShortString } from '@dbux/common/src/util/stringUtil';
+import TraceNode from '../../codeUtil/treeView/TraceNode';
+import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 
 
 function renderConsoleMessage(trace) {
@@ -47,13 +47,13 @@ class ConsoleTraceNode extends TraceNode {
 }
 
 /** ###########################################################################
- * {@link ConsoleNode}
+ * {@link GlobalConsoleNode}
  *  #########################################################################*/
 
 /**
  * TODO: use TraceContainerNode
  */
-export default class ConsoleNode extends BaseTreeViewNode {
+export default class GlobalConsoleNode extends BaseTreeViewNode {
   static makeLabel(/*app, parent*/) {
     return `Console`;
   }
