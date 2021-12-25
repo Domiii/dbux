@@ -97,11 +97,13 @@ export default class ApplicationSetData {
    */
 
   /**
-   * 
    * @param {collectStatsCb} cb 
+   * @return {[]}
    */
   collectGlobalStats(cb) {
-    return this.set.getAll().flatMap(app => cb(app.dataProvider, app));
+    return this.set.getAll()
+      .flatMap(app => cb(app.dataProvider, app))
+      .filter(result => result !== null && result !== undefined);
   }
 
   /**
@@ -113,8 +115,9 @@ export default class ApplicationSetData {
 
   /**
    * @param {countStatsCb} cb 
+   * @return {number}
    */
   countStats(cb) {
-    return sum(this.set.getAll().flatMap(app => cb(app.dataProvider, app)));
+    return sum(this.collectGlobalStats(cb));
   }
 }

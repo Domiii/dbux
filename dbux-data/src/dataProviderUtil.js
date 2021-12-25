@@ -64,7 +64,7 @@ const ShortenNestedCfg = { length: ShortenMaxLength - 2 };
 /**
  * @param {string} s 
  */
-function makeShortString(s, cfg) {
+function makeShortString(s, cfg = null) {
   return truncate(s.replace(/\s+/g, ' '), cfg);
 }
 
@@ -787,12 +787,12 @@ export default {
   },
 
   /** @param {DataProvider} dp */
-  getDataNodeValueString(dp, nodeId, terminateNodeId = null) {
+  getDataNodeValueString(dp, nodeId, terminateNodeId = nodeId) {
     return dp.util._getDataNodeValueString(nodeId, terminateNodeId, false);
   },
 
   /** @param {DataProvider} dp */
-  getDataNodeValueStringShort(dp, nodeId, terminateNodeId = null) {
+  getDataNodeValueStringShort(dp, nodeId, terminateNodeId = nodeId) {
     return dp.util._getDataNodeValueString(nodeId, terminateNodeId, true);
   },
 
@@ -1047,7 +1047,7 @@ export default {
   },
 
   /**
-   * NOTE: This works automatically for spread operator.
+   * NOTE: This also flattens spread arguments.
    *
    * @param {DataProvider} dp
    * @return Flattened version of DataNodes of `CallExpression` arguments.
@@ -1072,6 +1072,7 @@ export default {
       return dataNodes.slice(1);
     }).filter(Boolean);
 
+    // handle call, apply, bind
     const bceTrace = dp.util.getTrace(callId);
     const callType = dp.util.getSpecialCallType(callId);
     switch (callType) {
@@ -1087,6 +1088,7 @@ export default {
         break;
     }
 
+    // special handling for bind
     if (bceTrace?.data.calleeTid) {
       // check for `Bound`
       const bindTrace = dp.util.getBindCallTrace(bceTrace.data.calleeTid);
@@ -1106,10 +1108,20 @@ export default {
   /**
    * Returns array of values of args, but only for primitive values.
    * Non-primitive argument values will be `undefined`.
+   * 
+   * @param {DataProvider} dp
    */
   getCallArgPrimitiveValues(dp, callId) {
     const dataNodes = dp.util.getCallArgDataNodes(callId);
     return dataNodes?.map(node => node.value);
+  },
+
+  /**
+   * @param {DataProvider} dp
+   */
+  getCallArgValueStrings(dp, callId) {
+    const dataNodes = dp.util.getCallArgDataNodes(callId);
+    return dataNodes?.map(node => dp.util.getDataNodeValueString(node.nodeId));
   },
 
   /**

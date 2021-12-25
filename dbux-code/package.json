@@ -1473,7 +1473,8 @@
     "typescript": "^3.6.4",
     "uuid": "^8.3.0",
     "vsce": "*",
-    "vscode-test": "^1.2.2"
+    "vscode-test": "^1.2.2",
+    "strip-ansi": "^7.0.1"
   },
   "_moduleAliases": {}
 }

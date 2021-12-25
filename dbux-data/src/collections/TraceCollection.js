@@ -139,7 +139,7 @@ export default class TraceCollection extends Collection {
       const { traceId: callId, data } = trace;
       const monkey = data?.monkey;
       if (monkey?.wireInputs) {
-        // NOTE: function is monkey patched, and generated it's own set of ("monkey") `DataNode`s, one per argument
+        // NOTE: function is monkey-patched, and generated it's own set of ("monkey") `DataNode`s, one per argument
 
         // monkeyDataNodes are attached to `BCE` (because result trace is not available while monkey'ing)
         const monkeyDataNodes = this.dp.util.getDataNodesOfTrace(callId);

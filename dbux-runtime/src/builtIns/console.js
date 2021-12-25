@@ -1,7 +1,7 @@
 import { consoleOutputStreams } from '@dbux/common/src/console';
 import TracePurpose from '@dbux/common/src/types/constants/TracePurpose';
 import { peekBCEMatchCallee } from '../data/dataUtil';
-import { monkeyPatchMethod } from '../util/monkeyPatchUtil';
+import { monkeyPatchFunctionHolder, monkeyPatchMethod } from '../util/monkeyPatchUtil';
 
 export default function patchConsole() {
   if (!globalThis.console) {
@@ -10,7 +10,7 @@ export default function patchConsole() {
 
   // add console output overrides
   for (const [name/* , fn */] of Object.entries(consoleOutputStreams)) {
-    monkeyPatchMethod(console, name,
+    monkeyPatchFunctionHolder(console, name,
       // eslint-disable-next-line no-loop-func
       (arr, args, originalFunction, patchedFunction) => {
         const bceTrace = peekBCEMatchCallee(patchedFunction);

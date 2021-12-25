@@ -868,6 +868,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     // copy assets
     await this.installAssets(exercise);
     if (successfulCacheFlag) {
+      // re-install deps (because we might have switched between exercises)
       await project.npmInstall();
     }
     await project.autoCommit(`Installed assests.`);
