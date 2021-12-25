@@ -1,6 +1,6 @@
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { renderValueSimple } from '@dbux/common/src/util/stringUtil';
-import { parseNodeModuleName } from '@dbux/common-node/src/util/pathUtil';
+import { parseNodeModuleName } from '@dbux/common-node/src/util/moduleUtil';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import AsyncEventUpdateType, { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import traceSelection from '@dbux/data/src/traceSelection';

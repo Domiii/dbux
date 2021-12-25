@@ -23,7 +23,8 @@ import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFu
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import SpecialCallType from '@dbux/common/src/types/constants/SpecialCallType';
 import PromiseLinkType from '@dbux/common/src/types/constants/PromiseLinkType';
-import { parseNodeModuleName, renderPath } from '@dbux/common-node/src/util/pathUtil';
+import { renderPath } from '@dbux/common-node/src/util/pathUtil';
+import { parsePackageName } from '@dbux/common-node/src/util/moduleUtil';
 import AsyncEventUpdateType, { isPostEventUpdate, isPreEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import AsyncEventType, { getAsyncEventTypeOfAsyncEventUpdateType } from '@dbux/common/src/types/constants/AsyncEventType';
 import { AsyncUpdateBase, PreCallbackUpdate } from '@dbux/common/src/types/AsyncEventUpdate';
@@ -96,7 +97,7 @@ export default {
   /** 
    * @param {DataProvider} dp
    */
-  renderRelativeProgramFilePaths(dp) {
+  getAllProgramsByPackage(dp) {
     const app = dp.application;
 
     let fpaths = dp.collections.staticProgramContexts.getAllActual().map(program => program.filePath);
@@ -117,7 +118,7 @@ export default {
       return programContext._moduleName;
     }
     else {
-      return programContext._moduleName = parseNodeModuleName(programContext.filePath);
+      return programContext._moduleName = parsePackageName(programContext.filePath);
     }
   },
 

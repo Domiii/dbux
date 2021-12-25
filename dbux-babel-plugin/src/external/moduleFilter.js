@@ -1,6 +1,7 @@
 import isString from 'lodash/isString';
 import isRegExp from 'lodash/isRegExp';
-import { parseNodeModuleName, renderPath } from '@dbux/common-node/src/util/pathUtil';
+import { renderPath } from '@dbux/common-node/src/util/pathUtil';
+import { parsePackageName } from '@dbux/common-node/src/util/moduleUtil';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 // import { requireDynamic } from '@dbux/common-node/src/util/requireUtil';
 
@@ -77,7 +78,7 @@ export default function moduleFilter(options, includeDefault) {
 
     // TODO: make `dist`, `.mjs` and @babel path settings configurable
     const unwanted = modulePath.match(/([/\\]dist[/\\])|(\.mjs$)|([/\\]@babel[/\\])|([/\\]babel[-]plugin.*[/\\])/);
-    const packageName = parseNodeModuleName(modulePath);
+    const packageName = parsePackageName(modulePath);
 
     // console.debug('unwanted', modulePath, packageName, unwanted);
 
