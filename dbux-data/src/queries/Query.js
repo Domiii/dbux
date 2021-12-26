@@ -1,5 +1,7 @@
+/** @typedef { import("../RuntimeDataProvider").default } RuntimeDataProvider */
+
 export default class Query {
-  /** @type {DataProviderBase} */
+  /** @type {RuntimeDataProvider} */
   dp;
   
   constructor(name, cfg) {

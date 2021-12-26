@@ -1,6 +1,6 @@
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { renderValueSimple } from '@dbux/common/src/util/stringUtil';
-import { parseNodeModuleName } from '@dbux/common-node/src/util/moduleUtil';
+import { parsePackageName } from '@dbux/common-node/src/util/moduleUtil';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import AsyncEventUpdateType, { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import traceSelection from '@dbux/data/src/traceSelection';
@@ -37,7 +37,7 @@ function parseStackTrace(stackTrace) {
       .filter(s => s.includes('node_modules'))
       .map((s) => {
         // s = s.trim();
-        return parseNodeModuleName(s);
+        return parsePackageName(s);
       })
       .filter(s => !!s)
   ));

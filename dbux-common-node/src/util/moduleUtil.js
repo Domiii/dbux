@@ -7,16 +7,15 @@ import { pathNormalized } from './pathUtil';
 
 const singlePackageRegex = /(?<=node_modules[/])(?!.*\/node_modules\/)(?<packageName>[^/]+)([/](?<name2>[^/]+)?)/;
 const multiPackageRegex = /(?<=node_modules[/])(?<packageName>[^/]+)([/](?<name2>[^/]+)?)/g;
-const packageFolderRegex = /(?<path>(?<=node_modules[/])(?!.*\/node_modules\/))(?<packageName>[^/]+)([/](?<name2>[^/]+)?)/;
+const packageFolderRegex = /(?<folder>(?<=node_modules[/])(?!.*\/node_modules\/))(?<packageName>[^/]+)([/](?<name2>[^/]+)?)/;
 
-function makePackageRegex(multi) {
-  return multi ?
-    multiPackageRegex :
-    singlePackageRegex;
+export class PackageId {
+  name;
+  folder;
 }
 
 function parseResult(matchResult) {
-  let { path, packageName, name2 } = matchResult?.groups || EmptyObject;
+  let { folder, packageName, name2 } = matchResult?.groups || EmptyObject;
   if (!packageName) {
     return null;
   }
@@ -26,7 +25,13 @@ function parseResult(matchResult) {
     packageName += '/' + name2;
     // console.warn('module match:', packageName, name2);
   }
-  return `${path}/${packageName}` || null;
+  if (folder) {
+    return {
+      name: packageName,
+      folder
+    };
+  }
+  return `${packageName}` || null;
 }
 
 /**
@@ -55,7 +60,10 @@ export function parsePackageName(fpath, multi = false) {
   }
 }
 
-export function getPackageFolder(fpath) {
+/**
+ * @return {PackageId}
+ */
+export function getPackageId(fpath) {
   fpath = pathNormalized(fpath);
   let matchResult = fpath.match(packageFolderRegex);
   return parseResult(matchResult);

@@ -62,6 +62,7 @@ import PreAsyncEventUpdatesByPostEventPromiseIndex from './impl/indexes/PreAsync
 import ValueRefByErrorIndex from './impl/indexes/ValueRefByErrorIndex';
 import AsyncEventUpdatesByNestedPromiseIndex from './impl/indexes/AsyncEventUpdatesByNestedPromiseIndex';
 import TracesByPurposeIndex from './impl/indexes/TracesByPurposeIndex';
+import PackageQuery from './files/PackageQuery';
 
 export function newDataProvider(application) {
   const dp = new RuntimeDataProvider(application);
@@ -154,6 +155,7 @@ export function newDataProvider(application) {
   dp.addQuery(new ProgramIdByFilePathQuery());
   dp.addQuery(new ProgramFilePathByTraceIdQuery());
   dp.addQuery(new StatsByContextQuery());
+  dp.addQuery(new PackageQuery());
 
   return dp;
 }

@@ -11,6 +11,13 @@ export default class StaticProgramContext {
    * @type {number}
    */
   applicationId;
+
+  /**
+   * `Date.now()`.
+   * 
+   * @type {number}
+   */
+  createdAt;
   
   /**
    * @type {number}

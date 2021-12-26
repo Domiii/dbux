@@ -6,6 +6,8 @@ import CachedQuery from './CachedQuery';
  * @typedef {import('../DataProviderBase').default} DataProviderBase
  */
 
+const ClearCacheDelay = 10000;
+
 /**
  * This is a {@link CachedQuery} that can be subscribed to.
  * Starts working once subscribed, at which point it registers data event handlers with the dependent collections.
@@ -20,21 +22,33 @@ export default class SubscribableQuery extends CachedQuery {
   /**
    * @type {number}
    */
-  isEnabled = 0;
+  _enabled = 0;
 
   _unsubscribeCb;
+  _hydrated = 0;
 
   // _nUncommited = 0;
   // _uncommitedData = null;
+
+  get isEnabled() {
+    return !!this._enabled;
+  }
+
+  get isHydrated() {
+    return !!this._hydrated;
+  }
 
   /** ###########################################################################
    * {@link #subscribe}
    * ##########################################################################*/
 
+  /**
+   * @param {function?} cb NYI: Optional callback will be invoked when data is updated
+   */
   subscribe() {
-    ++this.isEnabled;
+    ++this._enabled;
 
-    if (this.isEnabled <= 1) {
+    if (this._enabled <= 1) {
       // start listening on events
       const collectionCbs = Object.fromEntries(
         this.cfg.collectionNames.map(name => (
@@ -65,7 +79,7 @@ export default class SubscribableQuery extends CachedQuery {
    * @virtual
    */
   executeQuery(dp, args) {
-    if (!this.isEnabled) {
+    if (!this._enabled) {
       // cold start
       // this.turnOn();
       throw new Error(`Must subscribe before using query: ${this}`);
@@ -85,7 +99,15 @@ export default class SubscribableQuery extends CachedQuery {
       const data = dp.collections[collectionName].getAllActual();
       this._handleCollectionUpdate(collectionName, data);
     }
+    ++this._hydrated;
     // throw new Error(`abstract method not implemented: ${this}.hydrateCache`);
+  }
+
+  clearCache() {
+    super.clearCache();
+    --this._hydrated;
+
+    this.handleClearCache?.();
   }
 
   /** ###########################################################################
@@ -93,12 +115,17 @@ export default class SubscribableQuery extends CachedQuery {
    * ##########################################################################*/
 
   _unsubscribe = () => {
-    --this.isEnabled;
+    --this._enabled;
 
-    if (this.isEnabled <= 0) {
-      this._unsubscribeCb?.();
-      this._unsubscribeCb = null;
-      this.clearCache();
+    if (this._enabled <= 0) {
+      setTimeout(() => {
+        // only clear cache if unused for a while 
+        if (this._enabled <= 0) {
+          this.clearCache();
+          this._unsubscribeCb?.();
+          this._unsubscribeCb = null;
+        }
+      }, ClearCacheDelay);
     }
   }
 

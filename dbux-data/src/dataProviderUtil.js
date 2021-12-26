@@ -1711,10 +1711,20 @@ export default {
   // SpecialIdentifierType
   // ###########################################################################
 
+  /**
+   * @param {DataProvider} dp
+   */
   getTracesOfSpecialIdentifierType(dp, specialType, startId = 1) {
     return dp.indexes.traces.bySpecialIdentifierType.get(specialType) || EmptyArray;
   },
 
+  /** ###########################################################################
+   * Require
+   * ##########################################################################*/
+
+  /**
+   * @param {DataProvider} dp
+   */
   getAllRequireTraces(dp, startId = 1) {
     return dp.util.getTracesOfSpecialIdentifierType(SpecialIdentifierType.Require, startId);
   },

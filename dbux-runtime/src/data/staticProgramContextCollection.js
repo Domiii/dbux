@@ -17,7 +17,8 @@ export class StaticProgramContextCollection extends Collection {
       programId,
       fileName,
       filePath,
-      programIndex
+      programIndex,
+      createdAt: Date.now()  // { createdAt }
     };
     
     this.push(staticProgramContext);

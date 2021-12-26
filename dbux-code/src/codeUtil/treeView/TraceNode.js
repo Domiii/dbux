@@ -1,3 +1,4 @@
+import { TreeItemCollapsibleState } from 'vscode';
 import Trace from '@dbux/common/src/types/Trace';
 import traceSelection from '@dbux/data/src/traceSelection';
 import { makeTraceLabel, makeTraceLocLabel } from '@dbux/data/src/helpers/makeLabels';
@@ -15,6 +16,10 @@ export default class TraceNode extends BaseTreeViewNode {
    */
   static makeLabel(trace) {
     return makeTraceLabel(trace);
+  }
+
+  get defaultCollapsibleState() {
+    return TreeItemCollapsibleState.None;
   }
 
   /**

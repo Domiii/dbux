@@ -1,5 +1,6 @@
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
-import { TreeItem, TreeItemCollapsibleState } from 'vscode';
+import EventHandlerList from '@dbux/common/src/util/EventHandlerList';
+import { TreeItem } from 'vscode';
 
 /** @typedef {import('./BaseTreeViewNodeProvider').default} BaseTreeViewNodeProvider */
 
@@ -21,8 +22,24 @@ export default class BaseTreeViewNode extends TreeItem {
    */
   treeNodeProvider;
 
+  /**
+   * @type {EventHandlerList}
+   */
+  _activeEventHandlers;
+
+  /**
+   * If `true`, will `registerActiveEvents` right after `init`.
+   * Else will activate and deactivate when expanding/collapsing.
+   */
+  alwaysActive = false;
+
+
   static makeLabel(/* entry */) {
     return '(unnamed node)';
+  }
+
+  static makeChildPropsDefault() {
+    return EmptyObject;
   }
 
   constructor(treeNodeProvider, label, entry, parent, moreProps) {
@@ -68,11 +85,6 @@ export default class BaseTreeViewNode extends TreeItem {
     // default: do nothing
   }
 
-  static makeChildPropsDefault() {
-    return EmptyObject;
-  }
-
-
   buildChildrenDefault() {
     return this.treeNodeProvider.buildNodes(this.childClasses);
   }
@@ -83,4 +95,30 @@ export default class BaseTreeViewNode extends TreeItem {
   // buildChildren() {
   //   // default: no children
   // }
+
+  /** ###########################################################################
+   * event handlers (usually active while node is expanded)
+   * ##########################################################################*/
+
+  _handleActivate() {
+    let arr = this.registerActiveEvents();
+    if (arr) {
+      if (!Array.isArray(arr)) {
+        arr = [arr];
+      }
+      this._activeEventHandlers = new EventHandlerList(arr);
+    }
+  }
+
+  _handleDeactivate() {
+    this._activeEventHandlers?.unsubscribe();
+    this._activeEventHandlers = null;
+  }
+
+  /**
+   * @return {[]?}
+   */
+  registerActiveEvents() {
+    return null;
+  }
 }

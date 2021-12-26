@@ -1,7 +1,7 @@
 import SubscribableQuery from '../../queries/SubscribableQuery';
-import RuntimeDataProvider from '../../RuntimeDataProvider';
 
-class ContextStats {
+
+export class ContextStats {
   /**
    * Amount of contexts in context, plus it's entire sub-tree.
    * @type {number}

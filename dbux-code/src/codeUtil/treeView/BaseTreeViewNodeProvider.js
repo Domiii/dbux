@@ -150,12 +150,15 @@ export default class BaseTreeViewNodeProvider {
   handleCollapsibleStateChanged = evt => {
     // the event does not actually tell us or modify the state; we have to keep track manually
     const node = evt.element;
+    let evtHandler;
     switch (node.collapsibleState) {
       case TreeItemCollapsibleState.Collapsed:
         node.collapsibleState = TreeItemCollapsibleState.Expanded;
+        evtHandler = this.handleExpanded;
         break;
       case TreeItemCollapsibleState.Expanded:
         node.collapsibleState = TreeItemCollapsibleState.Collapsed;
+        evtHandler = this.handleCollapsed;
         break;
       default:
         this.logger.error('invalid node collapsibleState on state change: ', node.collapsibleState, node);
@@ -163,7 +166,38 @@ export default class BaseTreeViewNodeProvider {
     }
     this.idsCollapsibleState.set(node.id, node.collapsibleState);
 
+    // record user action
+    const { treeViewName } = this;
+    const action = ''; // not a button click
+    const nodeId = node.id;
+    const args = {
+      description: node.description,
+      clazz: node.constructor.name,
+      collapsibleState: node.collapsibleState
+    };
+    emitTreeViewCollapseChangeAction(treeViewName, action, nodeId, node.label, node.collapseChangeUserActionType, args);
+
+    // trigger event handlers
+    evtHandler.call(this, node);
     this.handleNodeCollapsibleStateChanged(node);
+  }
+
+  handleExpanded(node) {
+    if (node._handleActivate && !node.alwaysActive) {
+      node._handleActivate();
+    }
+    node.handleExpanded?.();
+  }
+
+  handleCollapsed(node) {
+    if (node._handleDeactivate && !node.alwaysActive) {
+      node._handleDeactivate();
+    }
+    node.handleCollapsed?.();
+  }
+
+  handleNodeCollapsibleStateChanged = (node) => {
+    node.handleCollapsibleStateChanged?.();
   }
 
   /**
@@ -196,21 +230,6 @@ export default class BaseTreeViewNodeProvider {
     catch (err) {
       throw new NestedError(`handleClick failed`, err);
     }
-  }
-
-  handleNodeCollapsibleStateChanged = (node) => {
-    const { treeViewName } = this;
-    const action = ''; // not a button click
-    const nodeId = node.id;
-    const args = {
-      description: node.description,
-      clazz: node.constructor.name,
-      collapsibleState: node.collapsibleState
-    };
-
-    emitTreeViewCollapseChangeAction(treeViewName, action, nodeId, node.label, node.collapseChangeUserActionType, args);
-
-    node.handleCollapsibleStateChanged?.();
   }
 
   // ###########################################################################
@@ -322,6 +341,10 @@ export default class BaseTreeViewNodeProvider {
 
     // init
     node.init?.();
+    if (node._handleActivate && node.alwaysActive) {
+      // activate right away
+      node._handleActivate();
+    }
 
     if (node.children) {
       // this node has built-in children

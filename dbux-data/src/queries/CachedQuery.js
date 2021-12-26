@@ -51,6 +51,10 @@ export default class CachedQuery extends Query {
    * public methods
    * ##########################################################################*/
 
+  has(key) {
+    return this._cache.has(key);
+  }
+
   lookup(args) {
     const key = makeKey(args);
     return this._cache.get(key);

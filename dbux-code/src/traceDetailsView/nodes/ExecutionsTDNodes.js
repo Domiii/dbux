@@ -1,4 +1,3 @@
-import { TreeItemCollapsibleState } from 'vscode';
 import { makeTraceLabel, makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import allApplications from '@dbux/data/src/applications/allApplications';
@@ -15,10 +14,6 @@ import TraceContainerNode, { GroupNode } from '../../codeUtil/treeView/TraceCont
 class ExecutionNode extends TraceNode {
   get clickUserActionType() {
     return false;
-  }
-
-  get defaultCollapsibleState() {
-    return TreeItemCollapsibleState.None;
   }
 
   handleClick() {
@@ -45,6 +40,10 @@ class UngroupedNode extends ExecutionsGroupNode {
     return rootNode.treeNodeProvider.buildNode(this.TraceNodeClass, trace, rootNode);
   }
 }
+
+/** ###########################################################################
+ * {@link GroupByRootNode}
+ * ##########################################################################*/
 
 class GroupByRootNode extends ExecutionsGroupNode {
   static labelSuffix = 'by Root Context';

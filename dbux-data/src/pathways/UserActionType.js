@@ -37,7 +37,7 @@ let UserActionType = {
   TDAsyncUse: 32,
   GlobalDebugAppUse: 33,
   GlobalConsoleUse: 34,
-  GlobalModulesUse: 35,
+  GlobalProgramsUse: 35,
   
   NavigationPreviousInContext: 40,
   NavigationPreviousChildContext: 41,
