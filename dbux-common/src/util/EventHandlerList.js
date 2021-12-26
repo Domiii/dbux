@@ -8,14 +8,15 @@ export default class EventHandlerList {
   }
 
   subscribe(...unsubscribeCallbacks) {
-    this._unsubscribeCallbacks.push(...unsubscribeCallbacks.flatMap()
-      .map(cb => {
+    unsubscribeCallbacks = unsubscribeCallbacks.flat(1000);
+    this._unsubscribeCallbacks.push(...unsubscribeCallbacks.map(
+      cb => {
         if (!isFunction(cb)) {
           throw new Error(`EventHandlerList.subcribe expects functions. Found: ${cb}`);
         }
         return cb;
-      })
-    );
+      }
+    ));
   }
 
   unsubscribe() {

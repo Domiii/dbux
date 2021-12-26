@@ -233,6 +233,13 @@ export default class BaseTreeViewNodeProvider {
   // building
   // ###########################################################################
 
+  handleBeforeChildren(node) {
+    // NOTE: this will be triggered before the `expanded` event, so we activate here.
+    if (node._handleActivate && !node.alwaysActive) {
+      node._handleActivate();
+    }
+  }
+
   buildRoots() {
     throw new Error('abstract method not implemented');
   }
@@ -244,7 +251,7 @@ export default class BaseTreeViewNodeProvider {
       ...moreProps,
       ...newProps
     };
-    const label = NodeClass.makeLabel(entry, parent, moreProps);
+    const label = NodeClass.makeLabel(entry, parent, moreProps, this);
     return new NodeClass(this, label, entry, parent, moreProps);
   }
 
@@ -252,11 +259,6 @@ export default class BaseTreeViewNodeProvider {
    * @param {BaseTreeViewNode} node 
    */
   buildChildren(node) {
-    // NOTE: this will be triggered before the `expanded` event, so we activate here.
-    if (node._handleActivate && !node.alwaysActive) {
-      node._handleActivate();
-    }
-
     node.children = node.buildChildren && node.buildChildren() || node.buildChildrenDefault();
     this.decorateChildren(node);
     return node.children;
@@ -381,6 +383,7 @@ export default class BaseTreeViewNodeProvider {
   getChildren = async (node) => {
     try {
       if (node) {
+        this.handleBeforeChildren(node);
         if (node.children) {
           return node.children;
         }

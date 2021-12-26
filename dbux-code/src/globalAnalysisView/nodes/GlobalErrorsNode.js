@@ -8,8 +8,19 @@ import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
  * ##########################################################################*/
 
 export default class GlobalErrorsNode extends BaseTreeViewNode {
-  static makeLabel() {
-    return `Errors`;
+  static makeLabel(entry, parent, moreProps, provider) {
+    const errorTraces = provider.controller.errorTraceManager.getAll();
+    const icon = errorTraces.length ? ' 🔥' : '';
+    return `Errors${icon}`;
+  }
+
+  get errorTraceManager() {
+    return this.treeNodeProvider.controller.errorTraceManager;
+  }
+
+  init() {
+    const errorTraces = this.errorTraceManager.getLeaves();
+    this.description = `(${errorTraces.length})`;
   }
 
   getSelectedChildren() {
@@ -22,7 +33,7 @@ export default class GlobalErrorsNode extends BaseTreeViewNode {
   }
 
   buildChildren() {
-    const errorTraces = this.treeNodeProvider.controller.errorTraceManager.getAll();
+    const errorTraces = this.errorTraceManager.getAll();
     return errorTraces.map(trace => {
       return this.treeNodeProvider.buildNode(TraceNode, trace, this);
     });

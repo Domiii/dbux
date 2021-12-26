@@ -1,6 +1,9 @@
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import Trace from '@dbux/common/src/types/Trace';
 
+/**
+ * @deprecated We don't use runs anymore.
+ */
 export default class FirstTracesInOrder {
   /**
    * @type {Array<Trace>}

@@ -124,7 +124,13 @@ export default class Application {
 
   getAppCommonAncestorPath() {
     const { staticProgramContexts } = this.dataProvider.collections;
-    return getCommonAncestorPath(...staticProgramContexts.getAllExisting().map(p => p.filePath));
+    const paths = staticProgramContexts.getAllExisting().map(p => p.filePath);
+    return getCommonAncestorPath(...paths);
+  }
+
+  getAppPackageJsonPath() {
+    // TODO
+    // TODO: handle the case where we just run a random script, that happens to be in a folder of some other package (do we need to?)
   }
 
   /**

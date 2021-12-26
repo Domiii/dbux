@@ -5,6 +5,7 @@ import findLast from 'lodash/findLast';
 import groupBy from 'lodash/groupBy';
 import isNumber from 'lodash/isNumber';
 import truncate from 'lodash/truncate';
+import sum from 'lodash/sum';
 import isPlainObject from 'lodash/isPlainObject';
 import TraceType, { hasDynamicTypes, isTracePop, isBeforeCallExpression } from '@dbux/common/src/types/constants/TraceType';
 import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
@@ -95,6 +96,7 @@ export default {
   },
 
   /** 
+   * @deprecated Use `dp.queries.packages.getAll()` instead.
    * @param {DataProvider} dp
    */
   getAllProgramsByPackage(dp) {
@@ -133,6 +135,25 @@ export default {
     programIds.delete(null);
 
     return Array.from(programIds);
+  },
+
+  getStaticContextOfProgram(dp, programId) {
+    // assumption: first staticContext of program should be the program itself.
+    return dp.indexes.staticContexts.byFile.getFirst(programId);
+  },
+
+  getStaticContextsOfProgram(dp, programId) {
+    return dp.indexes.staticContexts.byFile.get(programId);
+  },
+
+
+  /** @param {DataProvider} dp */
+  getFirstTraceOfProgram(dp, programId) {
+    const staticContext = dp.util.getStaticContextOfProgram(programId);
+    if (staticContext) {
+      return dp.util.getFirstTraceOfStaticContext(staticContext.staticContextId);
+    }
+    return null;
   },
 
   // ###########################################################################
@@ -176,7 +197,10 @@ export default {
     return false;
   },
 
-  /** @param {DataProvider} dp */
+  /**
+   * @deprecated We don't use runs anymore.
+   * @param {DataProvider} dp
+   */
   getFirstTracesInRuns(dp) {
     return dp.indexes.traces.firsts.get(1);
   },
@@ -294,6 +318,15 @@ export default {
     return dp.util.getExternalProgramModuleName(staticContext.programId);
   },
 
+  /** @param {DataProvider} dp */
+  countExecutedFunctionsOfProgram(dp, programId) {
+    // const contexts = dp.indexes.executionContexts.byStaticContext.get(staticContext.staticContextIdId);
+    const staticContexts = dp.util.getStaticContextsOfProgram(programId);
+    return staticContexts ? sum(
+      staticContexts.map(staticContext => !!dp.util.getFirstTraceOfContext(staticContext.staticContextId))
+    ) + 0 : 0;
+  },
+
   // ###########################################################################
   // static contexts + static traces
   // ###########################################################################
@@ -373,6 +406,15 @@ export default {
       return null;
     }
     return traces[traces.length - 1];
+  },
+
+  /** @param {DataProvider} dp */
+  getFirstTraceOfStaticContext(dp, staticContextId) {
+    const firstContext = dp.indexes.executionContexts.byStaticContext.getFirst(staticContextId);
+    if (firstContext) {
+      return dp.util.getFirstTraceOfContext(firstContext.contextId);
+    }
+    return null;
   },
 
   /**

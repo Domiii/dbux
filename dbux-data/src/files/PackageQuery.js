@@ -51,7 +51,14 @@ export default class PackageQuery extends SubscribableQuery {
      */
     staticProgramContexts(programs) {
       for (const program of programs) {
-        const packageId = getPackageId(program.filePath);
+        let packageId = getPackageId(program.filePath);
+        if (!packageId) {
+          // default package
+          packageId = {
+            name: '(default package)',
+            folder: this.dp.application.getAppCommonAncestorPath() // TODO!
+          };
+        }
         const key = packageId.folder;
         // const packageInfo = this.packageInfos.getOrCreate(packageId);
 
@@ -67,10 +74,6 @@ export default class PackageQuery extends SubscribableQuery {
       }
     }
   };
-
-  getAll() {
-    return Array.from(this._cache.values);
-  }
 
   handleClearCache() {
     this.packagesInOrder = null;

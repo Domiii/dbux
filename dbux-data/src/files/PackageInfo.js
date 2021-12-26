@@ -2,10 +2,6 @@ import { PackageId, getPackageId, parsePackageName } from '@dbux/common-node/src
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 
 export default class PackageInfo {
-  name;
-  folder;
-
-
   /**
    * Array of all packages in path.
    * Usually `length === 1`, but sometimes dependencies are nested, e.g.:
@@ -18,15 +14,22 @@ export default class PackageInfo {
   /**
    * @type {StaticProgramContext[]}
    */
-  programs;
+  programs = [];
 
   /**
    * @param {PackageId} packageId 
    */
   constructor(packageId) {
-    this.name = packageId.name;
-    this.folder = packageId.folder;
+    this.packageId = packageId;
     this.names = this.folder && parsePackageName(this.folder, true) || EmptyArray;
+  }
+
+  get name() {
+    return this.packageId.name;
+  }
+
+  get folder() {
+    return this.packageId.folder;
   }
 
   get key() {

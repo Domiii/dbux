@@ -17,6 +17,8 @@ const ClearCacheDelay = 10000;
  * This is used if:
  *  (i) a query result might change with incoming data, or if 
  * (ii) querying "all data points" of a collection (which by definition, also changes with new incoming data).
+ * 
+ * future-work: currently ignores `invalidateOnUpdate`. Will never invalidate unless subscription is cancelled.
  */
 export default class SubscribableQuery extends CachedQuery {
   /**
@@ -36,6 +38,10 @@ export default class SubscribableQuery extends CachedQuery {
 
   get isHydrated() {
     return !!this._hydrated;
+  }
+
+  getAll() {
+    return Array.from(this._cache.values());
   }
 
   /** ###########################################################################

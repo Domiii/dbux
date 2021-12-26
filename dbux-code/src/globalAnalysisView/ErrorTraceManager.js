@@ -18,6 +18,11 @@ export default class ErrorTraceManager {
     return this._all[this.index] || null;
   }
 
+  getLeaves() {
+    // TODO: fix this
+    return this._all;
+  }
+
   getAll() {
     return this._all;
   }

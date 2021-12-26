@@ -1,13 +1,18 @@
 /** @typedef {import('../Loc').default} Loc */
 
 /**
- * WARNING: This is a bit of a mess.
- * -> `dbux-babel-plugin` has two versions of this (StaticContextCollection vs. `staticData` `buildDbuxInit` in `staticdata.js`)
- * -> `dbux-runtime` has another version (staticProgramContextCollection)
- * -> `dbux-code` adds `applicationId`
+ * NOTE: this is NOT a `StaticContext`.
+ * This thing just tracks extra program information and is added in `staticProgramContextCollection.addProgram`.
+ * You can correlate them with other data using `byProgram` and `byFile` indexes,
+ * e.g.: `dp.indexes.staticContexts.byFile`
+ * 
+ * 
+ * @type {number}
  */
 export default class StaticProgramContext {
   /**
+   * WARNING: this is only added by dbux-data (not available during runtime).
+   * 
    * @type {number}
    */
   applicationId;

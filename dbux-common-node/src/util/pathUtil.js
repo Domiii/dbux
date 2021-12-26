@@ -2,7 +2,7 @@ import sh from 'shelljs';
 import fs from 'fs';
 import path from 'path';
 import { homedir } from 'os';
-import commonAncestorPath from 'common-ancestor-path';
+import _commonAncestorPath from 'common-ancestor-path';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 /**
@@ -82,7 +82,10 @@ export function getPathRelativeToCommonAncestor(fpath, ...otherPaths) {
  * @see https://github.com/isaacs/common-ancestor-path#readme
  */
 export function getCommonAncestorPath(...paths) {
-  return commonAncestorPath(...paths);
+  // NOTE: the library requires OS-specific separators
+  paths = paths.map(p => path.resolve(p));
+  const result = _commonAncestorPath(...paths);
+  return pathNormalized(result);
 }
 
 export function isFileInPath(parent, file) {

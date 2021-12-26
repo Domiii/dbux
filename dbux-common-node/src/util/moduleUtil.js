@@ -7,10 +7,17 @@ import { pathNormalized } from './pathUtil';
 
 const singlePackageRegex = /(?<=node_modules[/])(?!.*\/node_modules\/)(?<packageName>[^/]+)([/](?<name2>[^/]+)?)/;
 const multiPackageRegex = /(?<=node_modules[/])(?<packageName>[^/]+)([/](?<name2>[^/]+)?)/g;
-const packageFolderRegex = /(?<folder>(?<=node_modules[/])(?!.*\/node_modules\/))(?<packageName>[^/]+)([/](?<name2>[^/]+)?)/;
+const packageFolderRegex = /^(?<folder>.*?)(?<=node_modules[/])(?!.*\/node_modules\/)(?<packageName>[^/]+)([/](?<name2>[^/]+)?)/;
 
 export class PackageId {
+  /**
+   * @type {string}
+   */
   name;
+
+  /**
+   * @type {string}
+   */
   folder;
 }
 
@@ -28,7 +35,7 @@ function parseResult(matchResult) {
   if (folder) {
     return {
       name: packageName,
-      folder
+      folder: folder + packageName
     };
   }
   return `${packageName}` || null;

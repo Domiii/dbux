@@ -2,6 +2,8 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import PackageInfo from '@dbux/data/src/files/PackageInfo';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import StaticProgramContext from '@dbux/common/src/types/StaticProgramContext';
+import traceSelection from '@dbux/data/src/traceSelection';
+import { pathRelative } from '@dbux/common-node/src/util/pathUtil';
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 import TraceNode from '../../codeUtil/treeView/TraceNode';
 
@@ -14,12 +16,51 @@ class ProgramNode extends BaseTreeViewNode {
   /**
    * @param {StaticProgramContext} program
    */
-  static makeLabel(program) {
-    // TODO: relative path to pkg
-    return program.fileName;
+  static makeLabel(program, parent) {
+    const { package: pkg } = parent;
+
+    return pkg?.folder ?
+      pathRelative(pkg.folder, program.filePath) :
+      program.fileName;
   }
 
-  // TODO: list recorded requires + functions?
+  get package() {
+    return this.parent.package;
+  }
+
+  get programId() {
+    return this.program.programId;
+  }
+
+  /**
+   * @type {StaticProgramContext}
+   */
+  get program() {
+    return this.entry;
+  }
+
+  get dp() {
+    const { applicationId } = this.program;
+    return allApplications.getById(applicationId).dataProvider;
+  }
+
+  // TODO: render some sort of "selected" icon if selectedTrace is in program
+
+  init() {
+    const { dp, programId } = this;
+    this.nExecutedFunctions = dp.util.countExecutedFunctionsOfProgram(programId);
+    this.description = `(${this.nExecutedFunctions} ƒ)`;
+    this.tooltip = this.program.filePath;
+  }
+
+  handleClick() {
+    const trace = this.dp.util.getFirstTraceOfProgram(this.programId);
+    trace && traceSelection.selectTrace(trace, 'TraceNode');
+  }
+
+  // buildChildren() {
+  //   // TODO: list recorded requires + functions?
+  // }
 }
 
 /** ###########################################################################
@@ -42,7 +83,8 @@ class PackageNode extends BaseTreeViewNode {
   init() {
     // const { package } = this;
     // this.description = `${traceLabel} @${loc}`;
-    // this.tooltip = this.consoleMessage;
+    this.description = `(${this.package.programs?.length || 0})`;
+    this.tooltip = this.package.folder;
   }
 
   buildChildren() {
@@ -65,7 +107,7 @@ class PackageNode extends BaseTreeViewNode {
  * 
  * In Node.js, all programs are modules by default.
  */
-class RecordedProgramsNode extends BaseTreeViewNode {
+export class RecordedProgramsNode extends BaseTreeViewNode {
   static makeLabel(/*entry, parent*/) {
     return `Recorded Programs`;
   }
@@ -89,7 +131,7 @@ class RecordedProgramsNode extends BaseTreeViewNode {
       dp.collections.staticProgramContexts.getCount()
     );
 
-    this.description = `(${this.nPrograms} programs)`;
+    this.description = `(${this.nPrograms})`;
   }
 
   registerActiveEvents() {
@@ -99,10 +141,17 @@ class RecordedProgramsNode extends BaseTreeViewNode {
   }
 
   buildChildren() {
+    // TODO: put default package at the top
     return this.packages
       ?.map(pkg => {
         return this.treeNodeProvider.buildNode(PackageNode, pkg, this);
       });
+  }
+
+  // TODO: render some sort of "selected" icon if selectedTrace is in package
+
+  handleClick() {
+    // TODO: reveal node + go to first file?
   }
 }
 
@@ -114,7 +163,7 @@ class RequireNode extends TraceNode {
 
 }
 
-class ImportsNode extends BaseTreeViewNode {
+export class ImportsNode extends BaseTreeViewNode {
   static makeLabel(/*entry, parent*/) {
     return `Imports`;
   }
@@ -145,30 +194,4 @@ class ImportsNode extends BaseTreeViewNode {
         return this.treeNodeProvider.buildNode(RequireNode, trace, this);
       });
   }
-}
-
-
-/** ###########################################################################
- * {@link GlobalModulesNode}
- *  #########################################################################*/
-
-
-/**
- * TODO: use TraceContainerNode
- */
-export default class GlobalModulesNode extends BaseTreeViewNode {
-  static makeLabel(/*app, parent*/) {
-    return `Modules, Programs, Files`;
-  }
-
-  tooltip = `Allows investigating executed JavaScript files and scripts.`;
-
-  get collapseChangeUserActionType() {
-    return UserActionType.GlobalProgramsUse;
-  }
-
-  childClasses = [
-    RecordedProgramsNode,
-    ImportsNode
-  ];
 }
