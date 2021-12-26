@@ -109,7 +109,8 @@ class PackageNode extends BaseTreeViewNode {
  */
 export class RecordedProgramsNode extends BaseTreeViewNode {
   static makeLabel(/*entry, parent*/) {
-    return `Recorded Programs`;
+    // NOTE: "module" is a more well-known term, despite not being quite accurate
+    return `Recorded Modules`;
   }
 
   /**
@@ -151,7 +152,7 @@ export class RecordedProgramsNode extends BaseTreeViewNode {
   // TODO: render some sort of "selected" icon if selectedTrace is in package
 
   handleClick() {
-    // TODO: reveal node + go to first file?
+    // TODO: reveal node + go to first trace of package
   }
 }
 
@@ -176,7 +177,7 @@ export class ImportsNode extends BaseTreeViewNode {
 
 
   init() {
-    // TODO: import support
+    // future-work: import support
     this.requireTraces = allApplications.selection.data.collectGlobalStats((dp, app) => {
       return dp.util.getAllRequireTraces();
     });
