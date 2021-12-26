@@ -1,4 +1,4 @@
-import IncrementalQuery from '../../queries/IncrementalQuery';
+import SubscribableQuery from '../../queries/SubscribableQuery';
 import RuntimeDataProvider from '../../RuntimeDataProvider';
 
 class ContextStats {
@@ -21,7 +21,7 @@ class ContextStats {
   nTreeFileCalled = 0;
 }
 
-export default class StatsByContextQuery extends IncrementalQuery {
+export default class StatsByContextQuery extends SubscribableQuery {
   constructor() {
     super('statsByContext', {
       collectionNames: ['executionContexts']
@@ -37,26 +37,7 @@ export default class StatsByContextQuery extends IncrementalQuery {
   }
 
   /**
-   * @param {RuntimeDataProvider} dp
-   */
-  hydrateCache(dp) {
-    const contexts = dp.collections.executionContexts.getAll().slice(1);
-    this._updateStats(contexts);
-  }
-
-  handleNewData(dataByCollection) {
-    if (!dataByCollection.executionContexts) {
-      return;
-    }
-    let contexts = dataByCollection.executionContexts;
-    if (!contexts[0]) {
-      contexts = contexts.slice(1);
-    }
-    this._updateStats(contexts);
-  }
-
-  /**
-   * TODO: properly handle async contexts, whose stats can change over time.
+   * future-work: also properly handle async contexts (their stats can change over time)
    */
   _updateStats(contexts) {
     // DFS + post-order sums
@@ -95,5 +76,33 @@ export default class StatsByContextQuery extends IncrementalQuery {
         return statsSet;
       }
     );
+  }
+
+  /** ###########################################################################
+   * Interface implementation
+   * ##########################################################################*/
+
+  /**
+   * @param {RuntimeDataProvider} dp
+   * @override
+   */
+  hydrateCache(dp) {
+    const contexts = dp.collections.executionContexts.getAll().slice(1);
+    this._updateStats(contexts);
+  }
+
+  /**
+   * @param {*} data dataByCollection 
+   * @override
+   */
+  handleNewData(data) {
+    if (!data.executionContexts) {
+      return;
+    }
+    let contexts = data.executionContexts;
+    if (!contexts[0]) {
+      contexts = contexts.slice(1);
+    }
+    this._updateStats(contexts);
   }
 }

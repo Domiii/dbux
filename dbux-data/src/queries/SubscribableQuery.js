@@ -1,0 +1,124 @@
+// import DoesNotExist from './DoesNotExist';
+import CachedQuery from './CachedQuery';
+
+
+/**
+ * @typedef {import('../DataProviderBase').default} DataProviderBase
+ */
+
+/**
+ * This is a {@link CachedQuery} that can be subscribed to.
+ * Starts working once subscribed, at which point it registers data event handlers with the dependent collections.
+ * Once all subscribers have unsubscribed, it stops listening on events and clears itself.
+ * 
+ * This is used if:
+ *  (i) a query result might change with incoming data, or if 
+ * (ii) querying "all data points" of a collection (which by definition, also changes with new incoming data).
+ */
+export default class SubscribableQuery extends CachedQuery {
+  /**
+   * @type {number}
+   */
+  isEnabled = 0;
+
+  _unsubscribeCb;
+
+  _nUncommited = 0;
+  _uncommitedData = null;
+
+  /** ###########################################################################
+   * {@link #subscribe}
+   * ##########################################################################*/
+
+  subscribe() {
+    ++this.isEnabled;
+
+    if (this.isEnabled <= 1) {
+      // start listening on events
+      const collectionCbs = Object.fromEntries(
+        this.cfg.collectionNames.map(name => (
+          [name, this._handleCollectionUpdate.bind(this, name)]
+        ))
+      );
+      this._unsubscribeCb = this.dp._onMultiCollectionData(collectionCbs, 
+        this.dp._dataEventListenersInternal);
+
+      // cold start
+      this.hydrateCache(this.dp);
+    }
+
+    let subscribed = true;
+    return () => {
+      if (subscribed) {
+        this._unsubscribe();
+        subscribed = false;
+      }
+    };
+  }
+
+  /** ###########################################################################
+   * abstract/virtual interface methods
+   * ##########################################################################*/
+
+  /**
+   * @virtual
+   */
+  executeQuery(dp, args) {
+    if (!this.isEnabled) {
+      // cold start
+      // this.turnOn();
+      throw new Error(`Must subscribe before using: ${this}`);
+    }
+
+    // things are always up to date while enabled
+    return this.lookup(args);
+  }
+
+  /**
+   * Cold start: put everything in cache.
+   * @abstract
+   */
+  hydrateCache(/* dp */) {
+    throw new Error(`abstract method not implemented: ${this}.hydrateCache`);
+  }
+
+  /**
+   * Incrementally update cached data, from given collection data.
+   * @virtual
+   */
+  handleNewData(/* dataByCollection */) {
+    throw new Error(`abstract method not implemented: ${this}.handleNewData`);
+  }
+
+  /** ###########################################################################
+   * internal methods
+   * ##########################################################################*/
+
+  _unsubscribe = () => {
+    --this.isEnabled;
+
+    if (this.isEnabled <= 0) {
+      this._unsubscribeCb?.();
+      this._unsubscribeCb = null;
+      this.clearCache();
+    }
+  }
+
+  _handleCollectionUpdate(collectionName, newData) {
+    ++this._nUncommited;
+    if (!this._uncommitedData) {
+      this._uncommitedData = {};
+    }
+
+    this._uncommitedData[collectionName] = newData;
+
+    if (this._nUncommited === this.cfg.collectionNames.length) {
+      // commit!
+      this.handleNewData(this._uncommitedData);
+
+      // reset
+      this._uncommitedData = null;
+      this._nUncommited = 0;
+    }
+  }
+}

@@ -22,7 +22,7 @@ export class PackageInfo {
   /**
    * Returns array of all packages in path.
    * Usually `length === 1`, but sometimes dependencies are nested, e.g.:
-   * '/pre/node_modules/@a/a2/a3/a4/node_modules/@b/c' -> `['@a/a2', '@b/c']`
+   * '/some/where/node_modules/@a/a2/a3/a4/node_modules/@b/c' -> `['@a/a2', '@b/c']`
    * 
    * @type {string[]}
    */
@@ -36,7 +36,13 @@ export class PackageInfo {
   }
 }
 
+/** ###########################################################################
+ * {@link PackageProgramTree}
+ * ##########################################################################*/
 
+/**
+ * A package and its executed files (and more?).
+ */
 export default class PackageProgramTree {
   /**
    * @type {PackageInfo[]}

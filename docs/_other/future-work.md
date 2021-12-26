@@ -24,9 +24,12 @@ So many things that can be done... So little time...
   * enabling/disabling/grouping of/by modules/files etc. in call graph
   * searching/filtering only system calls or sub-systems (e.g. all `HTTP` calls)
   * complex search queries (and, or, parentheses etc.)
-* Analyze by module/files and along the dependency trees
+* Advanced analysis of code along the dependency tree(s)
 * Support web-based VSCode https://vscode.dev/
-* Support [Yarn PnP](https://yarnpkg.com/features/pnp)
+* Support [Yarn PnP](https://yarnpkg.com/features/pnp) - considerations include:
+  * [Using Traditional Debugger with PNP](https://github.com/yarnpkg/berry/issues/558)
+    * NOTE: file paths could look a little like this: `repo/.yarn/virtual/webpack-dev-server-virtual-98c281437e/0/cache/webpack-dev-server-npm-3.9.0-e9c2d8aa12.zip/node_modules/webpack-dev-server/bin/webpack-dev-server.js`
+    * [ESM Support](https://github.com/yarnpkg/berry/issues/638)
 
 
 # More Future Ideas

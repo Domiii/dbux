@@ -17,6 +17,23 @@ function makeKey(args) {
 // CachedQuery
 // ###########################################################################
 
+export class CachedQueryConfig {
+  collectionNames;
+  collectionIds;
+  /**
+   * NOTE: currently unused
+   * @type {boolean}
+   */
+  onlyCacheExisting = false;
+
+  /**
+   * Whether to clear cache when data changes.
+   * 
+   * @type {boolean}
+   */
+  invalidateOnUpdate = true;
+}
+
 /**
  * This type of query caches it's results.
  * Still requires implementing the `Query.execute` function.
@@ -24,6 +41,53 @@ function makeKey(args) {
 export default class CachedQuery extends Query {
   _cache = new Map();
   _lastVersions;
+
+  /**
+   * @type {CachedQueryConfig}
+   */
+  cfg;
+
+  /** ###########################################################################
+   * public methods
+   * ##########################################################################*/
+
+  lookup(args) {
+    const key = makeKey(args);
+    return this._cache.get(key);
+  }
+
+  storeByKey(args, result) {
+    const key = makeKey(args);
+    this._cache.set(key, result);
+  }
+
+  clearCache() {
+    this._cache.clear();
+  }
+
+  /** ###########################################################################
+   * abstract/virtual interface methods
+   * ##########################################################################*/
+
+  executeQuery(dp, args) {
+    // check version
+    if (this._updateVersions(dp.versions) && this.cfg.invalidateOnUpdate) {
+      // clear cache if outdated
+      this.clearCache();
+    }
+
+    let result = this.lookup(args);
+
+    if (result === DoesNotExist) {
+      result = this._getOrUpdateCachedEntry(dp, args);
+    }
+    return result;
+  }
+
+  /** ###########################################################################
+   * private methods
+   * ##########################################################################*/
+
 
   _init(dp) {
     super._init(dp);
@@ -33,7 +97,8 @@ export default class CachedQuery extends Query {
     // ########################################
     let {
       collectionNames,
-      onlyCacheExisting = false
+      onlyCacheExisting = false,
+      invalidateOnUpdate = true
     } = this.cfg;
 
     let collectionIds;
@@ -57,7 +122,8 @@ export default class CachedQuery extends Query {
     this.cfg = Object.assign(this.cfg, {
       collectionNames,
       collectionIds,
-      onlyCacheExisting
+      onlyCacheExisting,
+      invalidateOnUpdate
     });
 
     // ########################################
@@ -107,37 +173,6 @@ export default class CachedQuery extends Query {
 
     // put result back into cache
     this.storeByKey(args, result);
-    return result;
-  }
-
-
-  lookup(args) {
-    const key = makeKey(args);
-    return this._cache.get(key);
-  }
-
-  storeByKey(args, result) {
-    const key = makeKey(args);
-    this._cache.set(key, result);
-  }
-
-  clearCache() {
-    this._cache.clear();
-  }
-
-
-  executeQuery(dp, args) {
-    // check version
-    if (this._updateVersions(dp.versions)) {
-      // clear cache if outdated
-      this.clearCache();
-    }
-
-    let result = this.lookup(args);
-
-    if (result === DoesNotExist) {
-      result = this._getOrUpdateCachedEntry(dp, args);
-    }
     return result;
   }
 }
