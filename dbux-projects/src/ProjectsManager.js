@@ -496,7 +496,7 @@ export default class ProjectsManager {
     }
     try {
       // research
-      const researchEnabled = process.env.RESEARCH;
+      const researchEnabled = process.env.RESEARCH_ENABLED;
       const researchSize = researchEnabled && experimentId && this.research.getAppFileSize(experimentId);
 
       // Dbux Practice

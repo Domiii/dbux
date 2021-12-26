@@ -22,7 +22,7 @@ class ResearchNode extends TraceDetailNode {
 }
 
 export function makeResearchNodes() {
-  if (!process.env.RESEARCH) {
+  if (!process.env.RESEARCH_ENABLED) {
     return EmptyArray;
   }
 

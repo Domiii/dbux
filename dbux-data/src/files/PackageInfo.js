@@ -26,7 +26,7 @@ export default class PackageInfo {
   constructor(packageId) {
     this.name = packageId.name;
     this.folder = packageId.folder;
-    this.names = parsePackageName(this.folderPath, true) || EmptyArray;
+    this.names = this.folder && parsePackageName(this.folder, true) || EmptyArray;
   }
 
   get key() {

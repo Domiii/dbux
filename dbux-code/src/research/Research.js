@@ -164,8 +164,11 @@ export class Research {
   }
 }
 
-const currentResearch = new Research(CurrentResearchName);
+let currentResearch;
 
 export function getCurrentResearch() {
+  if (process.env.RESEARCH_ENABLED) {
+    currentResearch = new Research(CurrentResearchName);
+  }
   return currentResearch;
 }

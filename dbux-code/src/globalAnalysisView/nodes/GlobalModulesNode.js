@@ -94,7 +94,7 @@ class RecordedProgramsNode extends BaseTreeViewNode {
 
   registerActiveEvents() {
     return allApplications.selection.data.collectGlobalStats((dp) =>
-      dp.queries.packages.subscribe()
+      dp.queryImpl.packages.subscribe()
     );
   }
 

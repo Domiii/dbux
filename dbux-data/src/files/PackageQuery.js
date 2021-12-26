@@ -1,4 +1,5 @@
 import { getPackageId } from '@dbux/common-node/src/util/moduleUtil';
+import StaticProgramContext from '@dbux/common/src/types/StaticProgramContext';
 import SubscribableQuery from '../queries/SubscribableQuery';
 import PackageInfo from './PackageInfo';
 
@@ -45,10 +46,12 @@ export default class PackageQuery extends SubscribableQuery {
    * ##########################################################################*/
 
   on = {
+    /**
+     * @param {StaticProgramContext[]} programs 
+     */
     staticProgramContexts(programs) {
-      // TODO
       for (const program of programs) {
-        const packageId = getPackageId(program);
+        const packageId = getPackageId(program.filePath);
         const key = packageId.folder;
         // const packageInfo = this.packageInfos.getOrCreate(packageId);
 

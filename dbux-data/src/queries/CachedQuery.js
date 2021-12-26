@@ -42,10 +42,10 @@ export default class CachedQuery extends Query {
   _cache = new Map();
   _lastVersions;
 
-  /**
-   * @type {CachedQueryConfig}
-   */
-  cfg;
+  // /**
+  //  * @type {CachedQueryConfig}
+  //  */
+  // cfg;
 
   /** ###########################################################################
    * public methods

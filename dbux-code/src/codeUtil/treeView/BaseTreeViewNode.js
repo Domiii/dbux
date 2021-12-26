@@ -100,19 +100,31 @@ export default class BaseTreeViewNode extends TreeItem {
    * event handlers (usually active while node is expanded)
    * ##########################################################################*/
 
+  _activated = 0;
+
+  get isActivated() {
+    return !!this._activated;
+  }
+
   _handleActivate() {
-    let arr = this.registerActiveEvents();
-    if (arr) {
-      if (!Array.isArray(arr)) {
-        arr = [arr];
+    if (!this.isActivated) {
+      let arr = this.registerActiveEvents();
+      if (arr) {
+        if (!Array.isArray(arr)) {
+          arr = [arr];
+        }
+        this._activeEventHandlers = new EventHandlerList(arr);
       }
-      this._activeEventHandlers = new EventHandlerList(arr);
+      ++this._activated;
     }
   }
 
   _handleDeactivate() {
-    this._activeEventHandlers?.unsubscribe();
-    this._activeEventHandlers = null;
+    if (this.isActivated) {
+      this._activeEventHandlers?.unsubscribe();
+      this._activeEventHandlers = null;
+      --this._activated;
+    }
   }
 
   /**

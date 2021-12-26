@@ -183,9 +183,6 @@ export default class BaseTreeViewNodeProvider {
   }
 
   handleExpanded(node) {
-    if (node._handleActivate && !node.alwaysActive) {
-      node._handleActivate();
-    }
     node.handleExpanded?.();
   }
 
@@ -255,6 +252,11 @@ export default class BaseTreeViewNodeProvider {
    * @param {BaseTreeViewNode} node 
    */
   buildChildren(node) {
+    // NOTE: this will be triggered before the `expanded` event, so we activate here.
+    if (node._handleActivate && !node.alwaysActive) {
+      node._handleActivate();
+    }
+
     node.children = node.buildChildren && node.buildChildren() || node.buildChildrenDefault();
     this.decorateChildren(node);
     return node.children;

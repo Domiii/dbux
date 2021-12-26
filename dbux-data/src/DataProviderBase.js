@@ -5,6 +5,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import Queries from './queries/Queries';
 import Indexes from './indexes/Indexes';
 import CollectionIndex from './indexes/CollectionIndex';
+import Query from './queries/Query';
 
 export default class DataProviderBase {
   /**
@@ -53,6 +54,9 @@ export default class DataProviderBase {
    */
   indexes;
 
+  /**
+   * @type {Record.<string, Query>}
+   */
   queryImpl = {};
 
   constructor(name) {

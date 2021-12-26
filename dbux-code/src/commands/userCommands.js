@@ -67,7 +67,6 @@ export function initUserCommands(extensionContext) {
   registerCommand(extensionContext, 'dbux.importApplicationData', async () => {
     let defaultImportDir = getDefaultExportDirectory();
 
-    // TODO: research is currently very invasive - fix later
     const researchDir = getCurrentResearch()?.getDataRootLfs();
     defaultImportDir = researchDir || defaultImportDir;
 
