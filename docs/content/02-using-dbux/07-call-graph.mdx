@@ -1,10 +1,9 @@
-
-
 # Call Graph
 
 import Term from '@src/components/Term';
 
-TODO
+Most developers know the call stack: the list of all executed functions that have not yet concluded, at a certain point in time of our program's execution. The call stack, while useful, only paints a very narrow picture of our program. It can also be seen as a single slice of the call graph, as it is being traversed [depth-first](https://en.wikipedia.org/wiki/Depth-first_search).
+
 
 ## Sync Call Graph
 
@@ -19,4 +18,4 @@ TODO
 
 In `async` mode, disabling details visually compacts the graph. This is used to expose high-level patterns between <Term term="cgr">CGRs</Term>. One can probably best see the "big picture" by disabling `Details` and zooming out.
 
-It currently does nothing in `sync` mode.
+`Details` currently does nothing in [sync](#sync-call-graph) mode.

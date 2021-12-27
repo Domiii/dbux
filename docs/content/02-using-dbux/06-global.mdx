@@ -1,20 +1,32 @@
 # Global View
 
-The Global View allows quickly navigating global events and their data. Currently, it boasts two types of events:
+The Global View allows quickly navigating global events and their data, including:
+
+TODO(screenshots)
 
 ## Errors
-TODO
+
+Lists all thrown errors in the program. The children of each node are stack frames that were interrupted by this error.
+
+:::caution
+The "interrupted stack frame" children are sometimes incorrect when multiple errors occur on the same stack[^1].
+:::
 
 
-## Console Events
-TODO
+## Console
+
+Lists all console output events, such as `console.debug`, `console.log`, `console.warn`, `console.error` etc.
+Clicking each event, takes you to the code that triggered it.
 
 
 ## Modules
 
-TODO
+Lists all executed packages and all their executed files/modules/script-tags.
 
 
 ## Debug
 
 The Debug node holds internally used data, usually only used for debugging or understanding Dbux's own behavior.
+
+
+[^1]: https://github.com/Domiii/dbux/issues/618

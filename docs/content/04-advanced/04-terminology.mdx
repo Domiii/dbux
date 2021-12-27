@@ -7,6 +7,10 @@ Terminology regarding the JavaScript runtime is either not well defined in gener
 
 We use (i) the name `staticTrace` to represent a piece of code (e.g. `f(x)`), and (ii) the name `trace` to represent a recorded execution of that code; meaning that one `staticTrace` (piece of code) has 0 or more `traces` (executions).
 
+:::info
+In runtime analysis research, the term "trace" usually refers to the entire runtime log. We, on the other hand, use it as a shorthand for "trace record" (or "trace entry"), referring to an individual log entry, rather than all entries.
+:::
+
 ## Context
 
 * A `static context` can be a `function` declaration or a `Program` (`Program` is Babel's word for "JavaScript file").
