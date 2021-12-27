@@ -41,16 +41,16 @@ All that data is then available for use to the developer, as explained in the [U
 
 
 
-### Debugging Known vs. Unknown Code
+<!-- ### Debugging Known vs. Unknown Code
 
-TODO
+TODO -->
 
 
 ## Concluding Remarks: "Dbux vs. Debugging"
 
-I started this project on 11/16/2019 because I felt that, after programming, designing software and solving problems for 20 years, I have not fully mastered my craft. I would sometimes be stuck for 30 minutes or longer to **locate** a single bug. This frustration has not only led to the invention of Dbux, but to an exciting journey which brought about greater appreciation and many newly gained insights into the structures of the dynamic runtime execution of a program.
+I started this project on 11/16/2019 because I felt that, after programming and designing software, and debugging for 20 years, I have not fully mastered my craft. I would sometimes be stuck for 30 minutes or longer to **locate** a single bug. This frustration has not only led to the invention of Dbux, but to an exciting journey which brought about greater appreciation and many newly gained insights into the structures of the dynamic runtime execution of a program.
 
-When I debug without Dbux, I feel I start by strategizing, rather than "going with my gut". I am much more likely to reason about and even visualize many aspects of the structures hidden beneath each statement, including its dynamic call sub-graph and the asynchronous events it was likely to have triggered or is affected by. It is my biased opinion that Dbux can be beneficial to many developers, by not just being a tool for debugging, but maybe (just maybe) even helping them re-evaluate and dig deeper when it comes to approaching the debugging process.
+These days, even when I debug without Dbux, I feel I start by strategizing, rather than "going with my gut". I am much more likely to reason about and even visualize many aspects of the structures hidden beneath each statement, including its dynamic call sub-graph and the asynchronous events it was likely to have triggered or is affected by. It is my biased opinion that Dbux can be beneficial to many developers, not just by aiding runtime analysis, but also helping us re-evaluate our approach to debugging.
 
 
 <!-- Debugging is a quintessential task in the day-to-day life of a software developer. Something went wrong, and it is our job to fix it. Sometimes it is something that we did, sometimes it is someone else in our team, and sometimes it is under-documented, malfunctioning behavior or a regression in a dependency. Sometimes the bug is hiding in code we have recently been working on, sometimes it is hiding in code that we have almost entirely forgotten, sometimes it is hidden in the depth of the `node_modules` folder. -->
