@@ -1,19 +1,33 @@
+---
+path: cast
+---
 # Code Augmentation + Select Trace
+
+import DarkLightImg from '@src/components/DarkLightImg';
+import TOC from '@src/components/TOC';
+
+## Select Trace
 
 When browsing executed code, you should see code augmentations, like this:
 
-TODO(pic)
+TODO(pics)
 
-You can investigate the details of the execution of a piece of code via trace selection:
+You can investigate the execution of a piece of code by selecting it for analysis:
 
 * Place the keyboard cursor on a piece of code that has executed.
-  * NOTE: Usually, executed code is [visually augmented](./code-augmentation).
-* You should see the red crosshair<DarkLightImg src="crosshair_red.svg" /> show up in two places: the top right of the editor window and in the [Trace Details View](./trace-detail)[^1].
-* Click the crosshair.
-* The [Trace Details View](./trace-details) should pop up and show you all relevant information of the recorded trace in that place of the code.
+  * You should see the red crosshair <DarkLightImg src="crosshair_red.svg" /> show up in two places: the top right of the editor window and in the [Trace Details View](./trace-detail)[^1].
+  * NOTE: Usually, executed code is [visually augmented](#code-augmentation) <span className='color-red'> ↳ ↱ </span><span className='color-gray'>↳</span><span className='color-orange'>ƒ</span>.
+* Click the crosshair <DarkLightImg src="crosshair_red.svg" />.
+* The [Trace Details View](./trace-details) should now offer a wide array of relevant information regarding the selected piece of code.
+
+:::caution
+A piece of code might have [executed multiple times](./trace-details#executions). Make sure to select the "right one" (or find "the right one") before drawing conclusions.
+:::
 
 
-TODO: code augmentation legend
+## Code Augmentation
+
+TODO(code augmentation legend)
 
 
 

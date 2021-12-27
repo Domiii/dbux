@@ -44,6 +44,14 @@ li > a.menu__link {
   color: lightgray;
 }
 
+.color-red {
+  color: red;
+}
+
+.color-orange {
+  color: orange;
+}
+
 .border-gray {
   border: 1px solid gray;
 }
