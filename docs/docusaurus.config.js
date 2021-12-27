@@ -89,7 +89,7 @@ const config = {
         title: 'Dbux',
         logo: {
           alt: 'Dbux Logo',
-          src: 'img/logo.svg',
+          src: 'img/dbux_icon.png',
         },
         items: [
           // {
