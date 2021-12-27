@@ -2,6 +2,8 @@
   "name": "dbux-code",
   "private": true,
   "displayName": "Dbux (ALPHA)",
+  "preview": true,
+  "icon": "resources/dbux_icon_transparent.png",
   "version": "0.6.4-dev.0",
   "publisher": "Domi",
   "description": "Integrated Debugging Environment with an Omniscient Debugger for JS.",
@@ -28,7 +30,7 @@
         {
           "id": "dbuxViewContainer",
           "title": "Dbux",
-          "icon": "resources/bug.svg"
+          "icon": "resources/dbux_icon_transparent.png"
         }
       ]
     },
