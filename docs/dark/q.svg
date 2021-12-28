@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16pt" height="16pt" viewBox="0 0 16 16" version="1.1">
+<defs>
+<g>
+<symbol overflow="visible" id="glyph0-0">
+<path style="stroke:none;" d=""/>
+</symbol>
+<symbol overflow="visible" id="glyph0-1">
+<path style="stroke:none;" d="M 6.25 2.828125 L 6.25 -6.8125 L 5.3125 -6.8125 L 5.3125 -5.90625 C 4.828125 -6.609375 4.078125 -7 3.203125 -7 C 1.46875 -7 0.328125 -5.53125 0.328125 -3.28125 C 0.328125 -1.0625 1.40625 0.296875 3.15625 0.296875 C 4.078125 0.296875 4.703125 -0.03125 5.203125 -0.78125 L 5.203125 2.828125 Z M 3.359375 -6 C 4.484375 -6 5.203125 -4.96875 5.203125 -3.3125 C 5.203125 -1.75 4.46875 -0.71875 3.359375 -0.71875 C 2.203125 -0.71875 1.421875 -1.765625 1.421875 -3.359375 C 1.421875 -4.9375 2.203125 -6 3.359375 -6 Z M 3.359375 -6 "/>
+</symbol>
+</g>
+</defs>
+<g id="surface1">
+<path style="fill:none;stroke-width:30;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(100%,100%,100%);stroke-opacity:1;stroke-miterlimit:4;" d="M 467.5 256 C 467.5 139.25 372.75 44.5 256 44.5 C 139.25 44.5 44.5 139.25 44.5 256 C 44.5 372.75 139.25 467.5 256 467.5 C 372.75 467.5 467.5 372.75 467.5 256 Z M 467.5 256 " transform="matrix(0.03125,0,0,0.03125,0,0)"/>
+<g style="fill:rgb(100%,100%,100%);fill-opacity:1;">
+  <use xlink:href="#glyph0-1" x="4.265625" y="10.325977"/>
+</g>
+</g>
+</svg>
