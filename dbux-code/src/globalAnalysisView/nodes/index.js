@@ -4,12 +4,13 @@ import GlobalConsoleNode from './GlobalConsoleNode';
 import { ImportsNode, RecordedProgramsNode } from './GlobalModulesNode';
 
 const GlobalNodeClasses = [
-  GlobalDebugNode,
   GlobalErrorsNode,
   GlobalConsoleNode,
   
   RecordedProgramsNode,
-  ImportsNode
+  ImportsNode,
+
+  GlobalDebugNode
 ];
 
 export default GlobalNodeClasses;
