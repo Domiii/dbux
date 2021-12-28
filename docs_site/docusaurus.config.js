@@ -31,7 +31,7 @@ const config = {
     'public',
     'static', 
     path.resolve(DbuxRoot, 'dbux-code/resources'),
-    path.resolve(DbuxRoot, 'docs/dbux_img')
+    path.resolve(__dirname, 'dbux_img')
   ],
 
   plugins: [

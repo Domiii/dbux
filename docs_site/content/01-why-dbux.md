@@ -10,7 +10,7 @@ Dbux aims at helping analyze the execution of JavaScript programs by recording (
 This (too long) video explains what Dbux is and features two examples of how to use the Dbux VSCode extension:
 
 <a href="https://www.youtube.com/watch?v=m1ANEuZJFT8" target="_blank" alt="video">
-   <img src="https://img.youtube.com/vi/m1ANEuZJFT8/0.jpg">
+   <img width="150px" src="https://img.youtube.com/vi/m1ANEuZJFT8/0.jpg" />
 </a>
 
 If you have any questions, feel free to [join us on DISCORD](https://discord.gg/QKgq9ZE).
