@@ -24,3 +24,16 @@ The [Dbux monorepo](https://github.com/Domiii/dbux) includes the following modul
 * <CodeLink pkg="@dbux/data" /> Receives, pre-processes and manages all data sent by `@dbux/runtime`. It allows us to query and analyze JS runtime data on a higher level.
 * [`dbux-code`](./dbux-code) The Dbux VSCode extension ([VSCode marketplace link](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code)).
 * <CodeLink pkg="@dbux/projects" /> Used by `dbux-code` as part of [Dbux Practice](../dbux-practice) (but does not depend on `VSCode`). It is used to organize real-world projects, their bugs and practice exercises.
+
+
+## Which files are traced?
+
+TODO: give this its own section TODO(name = ?, location = ?)
+TODO(re-write: build-time vs. run-time performance considerations etc.)
+
+
+When running Dbux, it is a balancing act to determine the optimal set of files to trace. Often times it is easiest to tell Dbux to just trace everything. However, tracing *everything* can slow down the build process significantly. 
+
+Also, tracing long-running loops or high-FPS code . That is why you want to fine-tune configuration as to what and how you want to trace. We currently offer several configuration options to that end in [moduleFilter](dbux-babel-plugin/src/external/moduleFilter.js), such as `packageWhitelist`, `packageBlacklist`, `fileWhitelist` and `fileBlacklist`.
+
+We hope to provide better and more adaptive tracing for this [in the future](../advanced/future-work.md).

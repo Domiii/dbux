@@ -4,22 +4,13 @@
 [![Discord](https://img.shields.io/discord/743765518116454432.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/QKgq9ZE)
 [![David](https://flat.badgen.net/david/dev/Domiii/dbux)](https://david-dm.org/Domiii/dbux?type=dev)
 
+
 TODO: We are currently in the process of deploying our documentation page.
 
 [Issue: Documentation v1](https://github.com/Domiii/dbux/issues/632).
 
 Will update soon with correct link. (promise by Domiii on 2021/12/28!)
 
-
-# Adding Dbux to Your Build Pipeline
-
-
-
-# Which files will be traced?
-
-When running Dbux, most relevant parts of the code will be traced. However, tracing *everything* is very slow. That is why you want to fine-tune configuration as to what and how you want to trace. We currently offer several configuration options to that end in [moduleFilter](dbux-babel-plugin/src/external/moduleFilter.js), such as `packageWhitelist`, `packageBlacklist`, `fileWhitelist` and `fileBlacklist`.
-
-We hope to provide better and more adaptive tracing for this [in the future](docs/future-work.md).
 
 
 # Performance
