@@ -1,5 +1,7 @@
 # Contributing
 
+import Img from '@src/components/Img';
+
 ## Code of Conduct
 
 TODO

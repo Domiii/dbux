@@ -11,21 +11,27 @@ function join(a, b) {
   return `${(a && b) && `${a}/` || a || ''}${b || ''}`;
 }
 
-function getPkgName(pkg) {
-  const name = pkgNames[pkg];
+function getPrettyPath(path) {
+  const name = pkgNames[path];
   if (name) {
     return name;
   }
-  if (pkg.startsWith('dbux-')) {
-    return `@dbux/${pkg.substring(5)}`;
+
+  // hackfix stuff
+  if (path.startsWith('dbux-') && !path.startsWith('dbux-code')) {
+    return `@dbux/${path.substring(5)}`;
   }
-  return pkg;
+
+  return path;
 }
 
-export default function CodeLink({ path, children, title, ...moreProps }) {
-  // const baseUrl = useBaseUrl();
+export default function CodeLink(props) {
+  let { path, children, title, ...moreProps } = props;
+  if (!path) {
+    throw new Error(`invalid <CodeLink /> missing "path". - props: ${JSON.stringify(props, null, 2)}`);
+  }
 
-  const prettyPath = getPkgName(path);
+  const prettyPath = getPrettyPath(path);
   children = children || prettyPath;
   title = title || children;
 

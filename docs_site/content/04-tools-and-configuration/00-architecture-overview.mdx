@@ -12,7 +12,7 @@ import CodeLink from '@src/components/CodeLink';
 The [Dbux monorepo](https://github.com/Domiii/dbux) includes the following modules:
 
 * <CodeLink path="dbux-babel-plugin" /> instruments and injects <CodeLink path="dbux-runtime" /> into a given js program when supplied as a `plugin` to Babel.
-* <CodeLink path="@dbux/runtime" /> When an instrumented program runs, this module is responsible for recording and sending runtime data to the `@dbux/data` module, running on a receiving server (using `socket-io.client`). [The Dbux VSCode Extension](./dbux-code) hosts such a server.
+* <CodeLink path="@dbux/runtime" /> When an instrumented program runs, this module is responsible for recording and sending runtime data to the `@dbux/data` module, running on a receiving server (using `socket-io.client`). [The Dbux VSCode Extension](./tools-and-configuration/dbux-code) hosts such a server.
 * <CodeLink path="@dbux/cli" /> The cli (command-line interface) allows us to easily run a js program while instrumenting it on the fly using [@babel/register](https://babeljs.io/docs/en/babel-register).
 * <CodeLink path="@dbux/graph-common" />, <CodeLink path="@dbux/graph-client" /> and <CodeLink path="@dbux/graph-host" /> Are responsible for rendering and letting the user interact with the "Call Graph" through an HTML GUI.
 
@@ -22,7 +22,7 @@ The [Dbux monorepo](https://github.com/Domiii/dbux) includes the following modul
 * <CodeLink path="@dbux/common" /> Collection of commonly used utilities shared among (more or less) all other modules.
 * <CodeLink path="@dbux/common-node" /> Collection of commonly used utilities shared among (more or less) all node-only modules.
 * <CodeLink path="@dbux/data" /> Receives, pre-processes and manages all data sent by `@dbux/runtime`. It allows us to query and analyze JS runtime data on a higher level.
-* [`dbux-code`](./dbux-code) The Dbux VSCode extension ([VSCode marketplace link](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code)).
+* [`dbux-code`](./tools-and-configuration/dbux-code) The Dbux VSCode extension ([VSCode marketplace link](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code)).
 * <CodeLink path="@dbux/projects" /> Used by `dbux-code` as part of [Dbux Practice](../dbux-practice) (but does not depend on `VSCode`). It is used to organize real-world projects, their bugs and practice exercises.
 
 
@@ -36,4 +36,4 @@ When running Dbux, it is a balancing act to determine the optimal set of files t
 
 Also, tracing long-running loops or high-FPS code TODO(explain). That is why you want to fine-tune configuration as to what and how you want to trace. We currently offer several configuration options to that end in <CodeLink path="dbux-babel-plugin/src/external/moduleFilter.js" />, such as `packageWhitelist`, `packageBlacklist`, `fileWhitelist` and `fileBlacklist`.
 
-We hope to provide better and more adaptive tracing for this [in the future](../advanced/known-limitations-and-future-work).
+We hope to provide better and more adaptive tracing for this [in the future](./advanced/future-work).
