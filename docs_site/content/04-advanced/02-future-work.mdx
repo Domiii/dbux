@@ -16,7 +16,7 @@ NOTE: Most of these features still work fine, but some related information is no
 
 ## Problems with Values
 
-Because of [performance](#performance) reasons, we cannot record *everything*.
+Because of [performance](./performance) reasons, we cannot record *everything*.
 
 * Big objects, arrays and strings are truncated (see [performance](#performance) for more information).
 * We currently do not properly trace all built-ins. Tracked in https://github.com/Domiii/dbux/issues/543.
@@ -81,28 +81,15 @@ This is only of concern to those who rely on serializing and deserializing funct
 
 ## SyntaxError: Unexpected reserved word 'XX'
 
-* Example: When just running `var public = 3;` in `node` or the browser, you don't get an error. However when running the same code with [@dbux/cli](dbux-cli#readme) (which is also invoked when pressing the `Dbux VSCode Plugin`'s "Run with Dbux" button), it throws a synxtax error.
-* That is because:
+Example: When just running `var public = 3;` in `node` or the browser, you don't get an error. However when running the same code with [@dbux/cli](../tools-and-configuration/dbux-cli) (which is also invoked when pressing the `Dbux VSCode Extension`'s "Run with Dbux" button), it throws a synxtax error.
+
+-> That is because it is interpreted as `"use strict"; var public = 3;`.
+
+* Why?
    1. `public` (and others) are reserved keywords and using reserved keywords is only an error in **strict mode** ([relevant discussion here](https://stackoverflow.com/questions/6458935/just-how-reserved-are-the-words-private-and-public-in-javascript)).
-   2. [@dbux/cli](dbux-cli#readme) uses [@babel/register](https://babeljs.io/docs/en/babel-register) with a bunch of default settings.
-   3. By default, babel treats js files as [ESModules](https://nodejs.org/api/esm.html) (or `esm`s), and ESModules have strict mode enabled by default. This is also discussed here: https://github.com/babel/babel/issues/7910
-   4. NOTE: You can see the same syntax error when slightly modifying above example and running it in `node` (without Dbux) but with strict mode enabled: `"use strict"; var public = 3;`.
-* See "[Adding Dbux to your build pipeline](#adding-dbux-to-your-build-pipeline)" on how to customize the babel config
+   2. [@dbux/cli](../tools-and-configuration/dbux-cli) uses [@babel/register](https://babeljs.io/docs/en/babel-register) with a bunch of default settings.
+   3. By default, `babel` treats `*.js` files as [ESModules](https://nodejs.org/api/esm.html) (or `esm`s), and ESModules have `strict mode` enabled by default. This is also discussed here: https://github.com/babel/babel/issues/7910
 
-
-
-## Call Graph GUI Implementation
-
-(For learning how to use the Call Graph, please refer to the [Dbux VSCode Plugin documentation](dbux-code#call-graph).)
-
-A few more notes on the Call Graph GUI implementation:
-
-* The Call Graph view is an HTML gui, currently most prominently seen as the "Call Graph" window inside the [Dbux VSCode Plugin](dbux-code#readme).
-* Inside of `dbux-code`, the graph is hosted in [GraphWebView](dbux-code/src/graphView/GraphWebView.js), but you could also host it independently on a website, in an iframe etc.
-* The Call Graph consists of three modules [`@dbux/graph-common`](dbux-graph-common#readme), [`@dbux/graph-client`](dbux-graph-client#readme) and [`@dbux/graph-host`](dbux-graph-host#readme).
-* Client and host are running in separated runtimes, and they share the graph-common module for any code sharing between the two.
-* We developed an IPC-first component system to easily render things on the client, while allowing us to control it from the host.
-* `client` and `host` communicate via a supplied `IpcAdapter` which must provide two functions (whose implementation depends on the environment that they run in): `onMessage` and `postMessage`.
 
 ## More Future Work
 
@@ -113,7 +100,7 @@ So many things that can be done... So little time...
 
 * Typescript support
 * Remote capabilities
-  * NOTE: `@dbux/runtime` is currently hardcoded to connect to a `localhost` server (see [here](C:\Users\domin\code\dbux\dbux-runtime\src\client\Client.js)).
+  * NOTE: `@dbux/runtime` is currently hardcoded to connect to a `localhost` server (see <CodeLink path="dbux-runtime\src\client\Client.js" />).
 * Properly test and provide recipes for all environments, e.g.:
   * Node's `vm` (Jest uses that also)
   * `WebWorker`

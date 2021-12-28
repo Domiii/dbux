@@ -11,19 +11,19 @@ import CodeLink from '@src/components/CodeLink';
 
 The [Dbux monorepo](https://github.com/Domiii/dbux) includes the following modules:
 
-* <CodeLink pkg="dbux-babel-plugin" /> instruments and injects <CodeLink pkg="dbux-runtime" /> into a given js program when supplied as a `plugin` to Babel.
-* <CodeLink pkg="@dbux/runtime" /> When an instrumented program runs, this module is responsible for recording and sending runtime data to the `@dbux/data` module, running on a receiving server (using `socket-io.client`). [The Dbux VSCode plugin](./dbux-code) hosts such a server.
-* <CodeLink pkg="@dbux/cli" /> The cli (command-line interface) allows us to easily run a js program while instrumenting it on the fly using [@babel/register](https://babeljs.io/docs/en/babel-register).
-* <CodeLink pkg="@dbux/graph-common" />, <CodeLink pkg="@dbux/graph-client" /> and <CodeLink pkg="@dbux/graph-host" /> Are responsible for rendering and letting the user interact with the "Call Graph" through an HTML GUI.
+* <CodeLink path="dbux-babel-plugin" /> instruments and injects <CodeLink path="dbux-runtime" /> into a given js program when supplied as a `plugin` to Babel.
+* <CodeLink path="@dbux/runtime" /> When an instrumented program runs, this module is responsible for recording and sending runtime data to the `@dbux/data` module, running on a receiving server (using `socket-io.client`). [The Dbux VSCode Extension](./dbux-code) hosts such a server.
+* <CodeLink path="@dbux/cli" /> The cli (command-line interface) allows us to easily run a js program while instrumenting it on the fly using [@babel/register](https://babeljs.io/docs/en/babel-register).
+* <CodeLink path="@dbux/graph-common" />, <CodeLink path="@dbux/graph-client" /> and <CodeLink path="@dbux/graph-host" /> Are responsible for rendering and letting the user interact with the "Call Graph" through an HTML GUI.
 
 
 ## Utilities and Libraries
 
-* <CodeLink pkg="@dbux/common" /> Collection of commonly used utilities shared among (more or less) all other modules.
-* <CodeLink pkg="@dbux/common-node" /> Collection of commonly used utilities shared among (more or less) all node-only modules.
-* <CodeLink pkg="@dbux/data" /> Receives, pre-processes and manages all data sent by `@dbux/runtime`. It allows us to query and analyze JS runtime data on a higher level.
+* <CodeLink path="@dbux/common" /> Collection of commonly used utilities shared among (more or less) all other modules.
+* <CodeLink path="@dbux/common-node" /> Collection of commonly used utilities shared among (more or less) all node-only modules.
+* <CodeLink path="@dbux/data" /> Receives, pre-processes and manages all data sent by `@dbux/runtime`. It allows us to query and analyze JS runtime data on a higher level.
 * [`dbux-code`](./dbux-code) The Dbux VSCode extension ([VSCode marketplace link](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code)).
-* <CodeLink pkg="@dbux/projects" /> Used by `dbux-code` as part of [Dbux Practice](../dbux-practice) (but does not depend on `VSCode`). It is used to organize real-world projects, their bugs and practice exercises.
+* <CodeLink path="@dbux/projects" /> Used by `dbux-code` as part of [Dbux Practice](../dbux-practice) (but does not depend on `VSCode`). It is used to organize real-world projects, their bugs and practice exercises.
 
 
 ## Which files are traced?
@@ -34,6 +34,6 @@ TODO(re-write: build-time vs. run-time performance considerations etc.)
 
 When running Dbux, it is a balancing act to determine the optimal set of files to trace. Often times it is easiest to tell Dbux to just trace everything. However, tracing *everything* can slow down the build process significantly. 
 
-Also, tracing long-running loops or high-FPS code . That is why you want to fine-tune configuration as to what and how you want to trace. We currently offer several configuration options to that end in [moduleFilter](dbux-babel-plugin/src/external/moduleFilter.js), such as `packageWhitelist`, `packageBlacklist`, `fileWhitelist` and `fileBlacklist`.
+Also, tracing long-running loops or high-FPS code TODO(explain). That is why you want to fine-tune configuration as to what and how you want to trace. We currently offer several configuration options to that end in <CodeLink path="dbux-babel-plugin/src/external/moduleFilter.js" />, such as `packageWhitelist`, `packageBlacklist`, `fileWhitelist` and `fileBlacklist`.
 
 We hope to provide better and more adaptive tracing for this [in the future](../advanced/known-limitations-and-future-work).

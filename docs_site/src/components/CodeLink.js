@@ -22,15 +22,14 @@ function getPkgName(pkg) {
   return pkg;
 }
 
-export default function CodeLink({ pkg, path, children, title, ...moreProps }) {
+export default function CodeLink({ path, children, title, ...moreProps }) {
   // const baseUrl = useBaseUrl();
 
-  const pkgName = getPkgName(pkg);
-  const prettyPath = join(pkgName, path);
+  const prettyPath = getPkgName(path);
   children = children || prettyPath;
   title = title || children;
 
-  const href = `${codeBaseUrl}${join(pkg, path)}`;
+  const href = `${codeBaseUrl}${path}`; // join(pkg, path)
 
   return (
     <a title={title} href={href} {...moreProps}>{children}</a>

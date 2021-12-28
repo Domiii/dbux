@@ -42,3 +42,17 @@ TODO
 In `async` mode, disabling `Details` visually compacts the graph. This is used to better expose high-level patterns between <Term term="cgr">CGRs</Term>. One can probably best see the "big picture" by disabling `Details` and then zooming out.
 
 `Details` currently does nothing in [sync](#sync-call-graph) mode.
+
+
+
+## Implementation Details
+
+A few more notes on the Call Graph GUI implementation:
+
+* The Call Graph is implemented as a WebView.
+* Inside of `dbux-code`, the graph is hosted in <CodeLink path="dbux-code/src/webViews/graphWebView.js" />
+* The Call Graph consists of three modules <CodeLink path="dbux-graph-common" />, <CodeLink path="dbux-graph-client" /> and <CodeLink path="dbux-graph-host" />.
+* Client and host are running in separated runtimes, and they share the graph-common module for any code sharing between the two.
+  * Theoretically, the client can also be rendered independent of VSCode, on a website, in an iframe etc.
+* We developed an IPC-first component system to easily render things on the client, while allowing us to control it from the host.
+* `client` and `host` communicate via a supplied `IpcAdapter` which must provide two functions (whose implementation depends on the environment that they run in): `onMessage` and `postMessage`.

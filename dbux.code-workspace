@@ -38,6 +38,9 @@
     "editor.detectIndentation": false,
     "dbux.run.nodeArgs": "",
     "peacock.color": "#110f23",
+    "files.exclude": {
+      "/docs": true
+    },
     "files.associations": {
     	"*.mdx": "markdown"
     }

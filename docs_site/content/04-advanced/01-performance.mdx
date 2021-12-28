@@ -12,7 +12,7 @@ Main considerations include:
     * In that case, we might want to be very strategic in telling Dbux to only record: (i) initialization, (ii) a select few other functions and then (iii) several frames of the gameloop for our analysis.
   * Again, adaptive tracing is something we want to do in the future.
 * When running a program with Dbux enabled, and also running it in debug mode in Node (i.e. `--inspect` or `--inspect-brk`), things slow down even worse. When things get too slow, you might want to consider using the `Run` button instead of the `Debug` button, and use the Dbux built-in features for debugging; unless there are some features in the traditional debugger that you just cannot live without in some specific circumstances.
-* Recording of large arrays and objects is limited, according to some (currently hardcoded) `SerializationLimits`, to be found in [valueCollection](dbux-runtime/src/data/valueCollection.js).
+* Recording of large arrays and objects is limited, according to some (currently hardcoded) `SerializationLimits`, to be found in <CodeLink path="dbux-runtime/src/data/valueCollection.js" />.
 
 
 TODO(fix this up; also link to "trace filters" and more relevant articles.)

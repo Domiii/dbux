@@ -1,10 +1,12 @@
 # Dbux Data Analysis
 
+import CodeLink from '@src/components/CodeLink';
+
 `@dbux/runtime` collects fine-grained JavaScript runtime data, which is then received by the [runtime server](../tools-and-configuration/dbux-code#runtime-server), where it gets stored in memory. If you are interested in analyzing this data programmatically:
 
-1. You generally want to start by exporting the data. You can get the data using the ["Dbux: Export Application Data" command](dbux-code/src/codeUtil/codeExport.js).
-2. <CodeLink pkg="dbux-data" /> is our main data processing JavaScript package. We use it to preprocess and manage all runtime data. <CodeLink pkg="dbux-code" /> uses its preprocessed data for visualization and user interactions.
-3. <CodeLink pkg="analysis" /> contains a few Python functions and notebooks for rudimentary analysis on extracted data for testing and development purposes. NOTE: This approach is not matured and, unlike `@dbux/data`, has almost no Dbux-specific data processing utilities.
+1. You generally want to start by exporting the data. You can get the data using the `"Dbux: Export Application Data"` command[^1].
+2. <CodeLink path="dbux-data" /> is our main data processing JavaScript package. We use it to preprocess and manage all runtime data. <CodeLink path="dbux-code" /> uses its preprocessed data for visualization and user interactions.
+3. <CodeLink path="analysis" /> contains a few Python functions and notebooks for rudimentary analysis on extracted data for testing and development purposes. NOTE: This approach is not matured and, unlike `@dbux/data`, has almost no Dbux-specific data processing utilities.
 
 In summary: If you want to try custom data analysis on Dbux data, we strongly recommend using `@dbux/data`, but other approaches can of course work just as well. Make sure to give it a good try, and feel free to complain or otherwise report back to us on the [Dbux DISCORD](https://discord.gg/QKgq9ZE).
 
@@ -26,3 +28,5 @@ In the `analyze/` folder, you find several python notebooks that allow you analy
 4. Run one of the notebooks, load the file, and analyze.
 
 NOTE: this is not currently well maintained. Make sure to [reach out](https://discord.gg/QKgq9ZE), if things go wrong.
+
+[^1]: <CodeExport pkg="dbux-code" link="src/codeUtil/codeExport.js" />
