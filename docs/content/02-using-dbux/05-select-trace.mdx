@@ -1,18 +1,10 @@
----
-path: cast
----
-# Code Augmentation + Select Trace
+# Select Trace
 
 import DarkLightImg from '@src/components/DarkLightImg';
 import TOC from '@src/components/TOC';
 
-## Select Trace
 
-After [executing a piece of code with dbux enabled](./enabling-dbux), you should see [code augmentations](#code-augmentation), like this:
-
-TODO(pic)
-
-You can investigate such code by pressing "select <Term term="trace" />":
+You can investigate executed code using the "Select <Term term="trace" />" <DarkLightImg src="crosshair_red.svg" /> button:
 
 * Place the keyboard cursor on a piece of code that has executed.
   * You should see the red crosshair <DarkLightImg src="crosshair_red.svg" /> show up in two places: the top right of the editor window and in the [Trace Details View](./trace-detail)[^1].
@@ -20,15 +12,11 @@ You can investigate such code by pressing "select <Term term="trace" />":
 * Click the crosshair <DarkLightImg src="crosshair_red.svg" />.
 * The [Trace Details View](./trace-details) should now offer a wide array of relevant information regarding the selected piece of code.
 
+
+TODO(pic)
+
 :::caution
-A piece of code might have [executed multiple times](./trace-details#executions). Make sure to select the "right one" (or find "the right one") before drawing conclusions.
+A piece of code might have [executed multiple times](./trace-details#executions). Make sure to select the "right" execution (or find it first) before drawing conclusions.
 :::
-
-
-## Code Augmentation
-
-TODO(code augmentation legend)
-
-
 
 [^1]: You might need to hover over the `Trace Details View` for buttons to show up. This is a [limitation of the VSCode Extension API](https://github.com/microsoft/vscode/issues/78829).

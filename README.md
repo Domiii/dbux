@@ -40,7 +40,6 @@ The rest of this page covers several broad topics related to the Dbux project:
   - [Issues on Windows](#issues-on-windows)
   - [SyntaxError: Unexpected reserved word 'XX'](#syntaxerror-unexpected-reserved-word-xx)
 - [Dbux Data Analysis](#dbux-data-analysis)
-- [Dbux Architecture](#dbux-architecture)
   - [Call Graph GUI Implementation](#call-graph-gui-implementation)
 - [How is Dbux being used?](#how-is-dbux-being-used)
 - [Development + Contributions](#development--contributions)
@@ -196,22 +195,6 @@ This is only of concern to those who rely on serializing and deserializing funct
 1. [analysis](analysis) contains a few Python functions and notebooks for rudimentary analysis on extracted data for testing and development purposes. We exported the data via the (also rather crude) [dbux.exportApplicationData command](dbux-code/src/codeUtil/codeExport.js). NOTE: This approach is a lot less mature and provides a lot less pre-built functionality than [@dbux/data](dbux-data#readme).
 
 This feature is still at somewhat of an infant stage. We track related feedback in issue #208.
-
-# Dbux Architecture
-
-![architecture-v001](docs/img/architecture-v001.png)
-
-This [monorepo](https://en.wikipedia.org/wiki/Monorepo) includes the following modules:
-
-* [`@dbux/common`](dbux-common#readme) Collection of commonly used utilities shared among (more or less) all other modules.
-* [`@dbux/common-node`](dbux-common-node#readme) Collection of commonly used utilities shared among (more or less) all node-only modules.
-* [`@dbux/babel-plugin`](dbux-babel-plugin#readme) Instruments and injects `@dbux/runtime` into a given js program when supplied as a `plugin` to Babel.
-* [`@dbux/runtime`](dbux-runtime#readme) When an instrumented program runs, this module is responsible for recording and sending runtime data to the `@dbux/data` module, running on a receiving server (using `socket-io.client`). [The Dbux VSCode plugin](dbux-code#readme) hosts such a server.
-* [`@dbux/cli`](dbux-cli#readme) The cli (command-line interface) allows us to easily run a js program while instrumenting it on the fly using [@babel/register](https://babeljs.io/docs/en/babel-register).
-* [`@dbux/data`](dbux-data#readme) Receives, pre-processes and manages all data sent by `@dbux/runtime`. It allows us to query and analyze JS runtime data on a higher level.
-* [`dbux-code`](dbux-code#readme) The Dbux VSCode extension ([VSCode marketplace link](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code)).
-* [`@dbux/practice`](dbux-projects#readme) Used by `dbux-code` (but does not depend on `VSCode`) to allow practicing Dbux (and, more generally) debugging concepts and strategies on real-world bugs inside of real-world open source projects.
-* [`@dbux/graph-common`](dbux-graph-common#readme), [`@dbux/graph-client`](dbux-graph-client#readme) and [`@dbux/graph-host`](dbux-graph-host#readme) Are responsible for rendering and letting the user interact with the "Call Graph" through an HTML GUI.
 
 
 ## Call Graph GUI Implementation

@@ -27,7 +27,8 @@ const config = {
    * @see https://docusaurus.io/docs/next/markdown-features/assets
    */
   staticDirectories: [
-    'public', 'static', 
+    'public',
+    'static', 
     path.resolve(DbuxRoot, 'dbux-code/resources'),
     path.resolve(DbuxRoot, 'docs/dbux_img')
   ],

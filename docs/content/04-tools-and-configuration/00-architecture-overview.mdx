@@ -1,0 +1,25 @@
+---
+slug: /tools-and-configuration/
+---
+
+# Architecture Overview
+
+import Img from '@src/components/Img';
+
+<Img src="architecture-v001.png" />
+
+The [Dbux monorepo](https://github.com/Domiii/dbux) includes the following modules:
+
+* [`@dbux/babel-plugin`](dbux-babel-plugin#readme) Instruments and injects `@dbux/runtime` into a given js program when supplied as a `plugin` to Babel.
+* [`@dbux/runtime`](dbux-runtime#readme) When an instrumented program runs, this module is responsible for recording and sending runtime data to the `@dbux/data` module, running on a receiving server (using `socket-io.client`). [The Dbux VSCode plugin](dbux-code#readme) hosts such a server.
+* [`@dbux/cli`](dbux-cli#readme) The cli (command-line interface) allows us to easily run a js program while instrumenting it on the fly using [@babel/register](https://babeljs.io/docs/en/babel-register).
+* [`@dbux/data`](dbux-data#readme) Receives, pre-processes and manages all data sent by `@dbux/runtime`. It allows us to query and analyze JS runtime data on a higher level.
+* [`dbux-code`](dbux-code#readme) The Dbux VSCode extension ([VSCode marketplace link](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code)).
+* [`@dbux/projects`](dbux-projects#readme) Used by `dbux-code` as part of [Dbux Practice](../dbux-practice) (but does not depend on `VSCode`). It is used to organize real-world projects, their bugs and practice exercises.
+* [`@dbux/graph-common`](dbux-graph-common#readme), [`@dbux/graph-client`](dbux-graph-client#readme) and [`@dbux/graph-host`](dbux-graph-host#readme) Are responsible for rendering and letting the user interact with the "Call Graph" through an HTML GUI.
+
+
+## Shared Libraries
+
+* [`@dbux/common`](dbux-common#readme) Collection of commonly used utilities shared among (more or less) all other modules.
+* [`@dbux/common-node`](dbux-common-node#readme) Collection of commonly used utilities shared among (more or less) all node-only modules.
