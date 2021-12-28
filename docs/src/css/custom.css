@@ -79,9 +79,24 @@ li > a.menu__link {
 /**
  * @see https://stackoverflow.com/questions/68412480/how-to-add-icon-to-docusaurus-sidebar-group-or-item/70423077#70423077
  */
-.run-button a::before {
+[data-theme=dark] .run-button a::before {
   padding-right: 0.5rem;
-  content: url(../img/play.svg);
+  content: url(/dark/play.svg);
+}
+[data-theme=light] .run-button a::before {
+  padding-right: 0.5rem;
+  content: url(/light/play.svg);
 }
 
+/** ###########################################################################
+ * select-trace
+ * ############################################################################*/
 
+.sidebar-select-trace a::before {
+  padding-right: 0.5rem;
+  /**
+   * NOTE: this references image from staticDirectories directly.
+   * @see https://github.com/facebook/docusaurus/issues/6208
+   */
+  content: url(/crosshair_red.svg);
+}

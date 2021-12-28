@@ -5,6 +5,15 @@ slug: /
 
 # Dbux: What and Why?
 
+Dbux aims at helping analyze the execution of JavaScript programs by recording (almost) all runtime data, visualizing it and making it interactive, thereby (hopefully) helping developers (i) improve program comprehension and (ii) reduce time spent on finding bugs.
+
+This (too long) video explains what Dbux is and features two examples of how to use the Dbux VSCode extension:
+
+<a href="https://www.youtube.com/watch?v=m1ANEuZJFT8" target="_blank" alt="video">
+   <img src="https://img.youtube.com/vi/m1ANEuZJFT8/0.jpg">
+</a>
+
+If you have any questions, feel free to [join us on DISCORD](https://discord.gg/QKgq9ZE).
 
 ## On Debugging
 
@@ -28,15 +37,15 @@ We argue: this approach to debugging is of course **not bad**. Our goal is not t
 
 Dbux is an [omniscient debugger](https://scholar.google.com/scholar?hl=en&as_sdt=0%2C5&q=omniscient+debugger), meaning it automatically gathers and visualizes your application's runtime behavior, and makes it interactive. The term "omniscient" (meaning "**all-knowing**") is a quirky exaggeration (it does not know your grandma's birthday). The things that it does know can be configured. By default, it records the beginning and end of all executed files and functions, all asynchronous events and the entire trace log, meaning (almost) all statements and expressions and their values.
 
-All that data is then available for use to the developer, as explained in the [Using Dbux](../using-dbux#runtime-analysis) chapter.
+All that data is then available for use to the developer, as explained in the [Using Dbux](./using-dbux) chapter.
 
 ## Advantages of Dbux:
 
-* Instead of only a call stack, Dbux presents us with the entire [call graph](../using-dbux/call-graph). A complete asynchronous call stack is also available when needed.
-* Instead of guessing which files, third-party modules, console log statements executed and how, one can overview all that in Dbux's [global view](../using-dbux/global).
-* Instead of using the traditional debugger as a "magnifying glass" to slowly crawl along the execution timeline, Dbux's [trace selection](../using-dbux/cast), [trace details and navigation](../using-dbux/trace-details) allow random-access investigation of any piece of code and all its executions. We also threw in [code augmentation](../using-dbux/cast) to help us quickly see which code executed and how.
-* Dbux eliminates the need for most of "[print-based debugging](https://www.google.com/search?q=print-based+debugging&hl=en)", because it logs for us, allowing to quickly overview. It even offers [searching for executed files, functions, values and more](../using-dbux/search). Note that it is not built to replace [logging](https://www.google.com/search?q=logging+programming+best+practices).
-* [Data flow analysis](../using-dbux/data-flow) allows us to quickly trace the reads, writes and creation of a selected value.
+* Instead of only a call stack, Dbux presents us with the entire [call graph](./using-dbux/call-graph). A complete asynchronous call stack is also available when needed.
+* Instead of guessing which files, third-party modules, console log statements executed and how, one can overview all that in Dbux's [global view](./using-dbux/global).
+* Instead of using the traditional debugger as a "magnifying glass" to slowly crawl along the execution timeline, Dbux's [trace selection](./using-dbux/select-trace), [trace details and navigation](./using-dbux/trace-details) allow random-access investigation of any piece of code and all its executions. We also threw in [code augmentation](./using-dbux/code-augmentation) to help us quickly see which code executed and how.
+* Dbux eliminates the need for most of "[print-based debugging](https://www.google.com/search?q=print-based+debugging&hl=en)", because it logs for us, allowing to quickly overview. It even offers [searching for executed files, functions, values and more](./using-dbux/search). Note that it is not built to replace [logging](https://www.google.com/search?q=logging+programming+best+practices).
+* [Data flow analysis](./using-dbux/data-flow) allows us to quickly trace the reads, writes and creation of a selected value.
 
 
 

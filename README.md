@@ -4,65 +4,15 @@
 [![Discord](https://img.shields.io/discord/743765518116454432.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/QKgq9ZE)
 [![David](https://flat.badgen.net/david/dev/Domiii/dbux)](https://david-dm.org/Domiii/dbux?type=dev)
 
-# Introduction
+TODO: We are currently in the process of deploying our documentation page.
 
-Dbux aims at helping analyze the execution of JavaScript programs by recording (almost) all runtime data, visualizing it and making it interactive, thereby (hopefully) helping developers (i) improve program comprehension and (ii) reduce time spent on finding bugs.
+[Issue: Documentation v1](https://github.com/Domiii/dbux/issues/632).
 
-This (too long) video explains what Dbux is and features two examples of how to use the Dbux VSCode extension:
-
-<a href="https://www.youtube.com/watch?v=m1ANEuZJFT8" target="_blank" alt="video">
-   <img src="https://img.youtube.com/vi/m1ANEuZJFT8/0.jpg">
-</a>
-
-If you have any questions, feel free to [join us on DISCORD](https://discord.gg/QKgq9ZE).
-
-# Getting Started
-
-We recommend getting started with Dbux by playing around with the Dbux VSCode extension.
-
-[These slides serve as an introduction and tutorial](https://docs.google.com/presentation/d/1-tFBB0afJl9PGSouEZyr3QIOV0ATyttUZVAjhOuW5iA/edit#slide=id.p) for `Dbux` + `Dbux Practice`.
-
-The rest of this page covers several broad topics related to the Dbux project:
-
-- [Introduction](#introduction)
-- [Getting Started](#getting-started)
-- [Adding Dbux to Your Build Pipeline](#adding-dbux-to-your-build-pipeline)
-- [Which files will be traced?](#which-files-will-be-traced)
-- [Performance](#performance)
-- [Known Limitations](#known-limitations)
-  - [Loops](#loops)
-  - [Other Syntax Limitations](#other-syntax-limitations)
-  - [Problems with Values](#problems-with-values)
-  - [Calling `process.exit` as well as uncaught exceptions are not always handled properly](#calling-processexit-as-well-as-uncaught-exceptions-are-not-always-handled-properly)
-  - [Observer Effect](#observer-effect)
-  - [`eval` and dynamically loaded code](#eval-and-dynamically-loaded-code)
-  - [Function.prototype.toString and Function.name do not behave as expected](#functionprototypetostring-and-functionname-do-not-behave-as-expected)
-  - [Issues on Windows](#issues-on-windows)
-  - [SyntaxError: Unexpected reserved word 'XX'](#syntaxerror-unexpected-reserved-word-xx)
-- [Dbux Data Analysis](#dbux-data-analysis)
-  - [Call Graph GUI Implementation](#call-graph-gui-implementation)
-- [How is Dbux being used?](#how-is-dbux-being-used)
-- [Development + Contributions](#development--contributions)
-- [Future Work](#future-work)
+Will update soon with correct link. (promise by Domiii on 2021/12/28!)
 
 
 # Adding Dbux to Your Build Pipeline
 
-In order to analyze your program's runtime, your program must be instrumented with `@dbux/babel-plugin`, meaning that you need to "[babel](https://babeljs.io/) your program" with [@dbux/babel-plugin](dbux-babel-plugin#readme) enabled.
-
-There are three approaches:
-
-1. either: Use the [@dbux/cli](dbux-cli#readme) (command line interface)
-   * It uses [@babel/register](https://babeljs.io/docs/en/babel-register) to instrument code on the fly.
-   * This is also used by `Dbux VSCode Plugin`'s "Run with Dbux" button
-   * [Read more here](dbux-cli#readme).
-2. or: Add the [@dbux/babel-plugin](dbux-babel-plugin#readme) to your build pipeline manually
-   * [Read more here](dbux-babel-plugin#readme).
-3. `Dbux Practice` is integrated in the `Dbux VSCode Extension` and allows you to explore and debug several sample and real-world applications
-
-
-
-Once running, the injected `@dbux/runtime` will send collected data to the runtime server inside the [Dbux VSCode extension](dbux-code#readme).
 
 
 # Which files will be traced?

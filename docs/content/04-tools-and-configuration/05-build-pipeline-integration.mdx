@@ -1,29 +1,32 @@
 # Build Pipeline Integration
 
-As explained in [the Using Dbux Chapter](../using-dbux/enabling-dbux): For Dbux to work, it first needs to record JavaScript application behavior.
-
-To that end, you need to add the [@dbux/babel-plugin](./dbux-babel-plugin) into your build pipeline.
-
 import TOC from '@src/components/TOC';
+
 <TOC toc={toc} />
+
+As explained in [the Using Dbux Chapter](../using-dbux): For Dbux to work, it first needs to record JavaScript application behavior. To that end, your program must be instrumented with <CodeLink pkg="dbux-babel-plugin" /> (i.e.: you need to "[babel](https://babeljs.io/) your program" with `@dbux/babel-plugin` enabled).
+
+Once running, the injected `@dbux/runtime` will send collected data to the [runtime server](./dbux-code#runtime-server).
+
+:::note
+The [architecture overview](./) shows how `@dbux/babel-plugin` fits into the bigger picture.
+:::
 
 
 ## Setup
 
 TODO: add relevant dbux dependencies (`npm install -D`, `yarn add --dev`)
 
-## Overview
 
-TODO: babel pipeline overview
-
-TODO: link to relevant configs
+## Config
 
 TODO: `moduleFilter`, blacklist, whitelist etc.
+TODO: more config stuff
 
 
-## Node Applications
+## Unbundled Applications
 
-Node applications generally do not need bundling nor a build pipeline to run. In that case, you can simply use [the Dbux CLI](./dbux-cli).
+Unbundled Node applications do not need bundling nor a build pipeline to run. Use [the Dbux CLI](./dbux-cli) instead.
 
 
 ## Use w/ Webpack

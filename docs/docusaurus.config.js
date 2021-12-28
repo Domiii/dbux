@@ -20,7 +20,8 @@ const config = {
   organizationName: 'realworld-debugging', // Usually your GitHub org/user name.
   favicon: 'img/favicon.ico',
 
-  onBrokenLinks: 'throw',
+  trailingSlash: false,
+  onBrokenLinks: 'error',
   onBrokenMarkdownLinks: 'warn',
 
   /**

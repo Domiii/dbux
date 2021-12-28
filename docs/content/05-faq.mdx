@@ -12,7 +12,7 @@ While technically not a question, this is certainly a frustrating experience to 
 
 There is a multitude of possible reasons for things to not quite work out:
 
-1. You did not instrument the application. Make sure to use one of the four methods of [Running a JavaScript Application w/ Dbux Enabled](../using-dbux/enabling-dbux).
+1. You did not instrument the application. Make sure to use one of the four methods of [Running a JavaScript Application w/ Dbux Enabled](./using-dbux).
 2. Your application exited prematurely due to a crash or `process.exit` being called. In that case, Dbux might not have been able to send out the data on time. Usually, this is accompanied by a console message that reads a little like `"Process exiting but not all data has been sent out. Analysis will be incomplete. This is probably because of a crash or because process.exit was called manually."`.
    * Note that some environments (such as `Jest`) might swallow important console messages, which would explain why you were not able to see the message.
    * In order to prevent this situation, Dbux tries (rather aggressively) to keep an instrumented application alive. If it does, it would accompany its moves with further log messages. Look for the hints.
