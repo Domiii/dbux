@@ -25,6 +25,8 @@ class SearchBar extends ClientComponentEndpoint {
   }
 
   setupEl() {
+    this.originMode = this.state.mode;
+
     // hide search bar on `ESC` is pressed
     document.addEventListener('keydown', async (event) => {
       if (event.key === 'Escape') {
@@ -54,6 +56,12 @@ class SearchBar extends ClientComponentEndpoint {
     decorateClasses(this.el, {
       hidden: mode === SearchMode.None
     });
+
+    // auto focus on open
+    if (this.originMode !== mode) {
+      this.els.searchInput.focus();
+    }
+    this.originMode = mode;
 
     if (!count) {
       this.els.previousBtn.setAttribute('disabled', '');
