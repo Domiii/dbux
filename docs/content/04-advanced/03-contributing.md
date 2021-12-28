@@ -1,8 +1,12 @@
-# Code of Conduct
+# Contributing
 
-# Development + Contributing: Getting Started
+## Code of Conduct
 
-## Prerequisites
+TODO
+
+## Development + Contributing: Getting Started
+
+### Prerequisites
 
 * `bash`
    * On Windows, you can get this via cygwin or `git` (which also installs cygwin)
@@ -16,7 +20,7 @@
     * yarn
 
 
-## Setup
+### Setup
 
 ```sh
 git clone https://github.com/Domiii/dbux.git
@@ -33,7 +37,7 @@ Finally, you might want to enable Dbux auto start by default:
 If dependencies bug out, sometimes running the (very aggressive) clean-up command can help: `npm run dbux-reinstall` (of course we don't recommend this).
 
 
-## Start development
+### Start development
 
 1. Open project + start webpack
    ```sh
@@ -44,7 +48,7 @@ If dependencies bug out, sometimes running the (very aggressive) clean-up comman
 1. Inside of the new window, you can then use the development version of `dbux-code`
 
 
-## Adding dependencies
+### Adding dependencies
 
 We use Lerna with Yarn workspaces, so instead of `npm i pkg`, we can do the following:
 
@@ -58,7 +62,7 @@ We use Lerna with Yarn workspaces, so instead of `npm i pkg`, we can do the foll
    `yarn add --dev -W pkg`
 
 
-## Using Dbux Local Development Build
+### Using Dbux Local Development Build
 
 If you want to use the local development build of Dbux in other folders, make sure to hard-link them.
 
@@ -71,12 +75,12 @@ mklink /J ..\..\node_modules\@dbux\runtime ..\..\..\dbux\dbux-runtime
 ```
 
 
-# Joining the Community
+## Joining the Community
 
 While you can certainly try to get started on your own, you probably make your life a lot easier by [join the dev team on Discord](https://discord.gg/8kR2a7h) first :)
 
 
-# VSCode extension development
+## VSCode extension development
 
 ### Adding a command/button
 
@@ -194,20 +198,7 @@ TODO: more to be said here in the future (consider https://gist.github.com/Purpl
 
 
 
-# Advanced/random features
 
+## Joining the Community
 
-## Analyze with Python Notebooks
-
-In the `analyze/` folder, you find several python notebooks that allow you analyze the data that `dbux` generates. Here is how you set that up:
-
-1. Run some program with Dbux enabled (e.g. `samples/[...]/oop1.js`)
-1. In the VSCode extension, open a file of that program that has traces in it
-1. In VSCode `Run Command` (`CTRL/Command + SHIFT + P`) -> `Dbux: Export file`
-1. Make sure you have Python + Jupyter setup
-   * Windows
-      * [Install `Anaconda` with `chocolatey`](https://chocolatey.org/packages/anaconda3)
-      * Set your `%PYTHONPATH%` in system config to your Anaconda `Lib` + `DLLs` folders (e.g. `C:\tools\Anaconda3\Lib;C:\tools\Anaconda3\DLLs;`)
-      * Done!
-   * Other OSes
-1. Run one of the notebooks, load the file, and analyze
+While you can certainly try to get started on your own, you probably make your life a lot easier by joining the dev team on [DISCORD](https://discord.gg/8kR2a7h) first :)

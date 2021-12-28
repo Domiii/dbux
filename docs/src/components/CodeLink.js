@@ -3,11 +3,19 @@ import React from 'react';
 
 const codeBaseUrl = 'https://github.com/Domiii/dbux/';
 
+const pkgNames = {
+  'dbux-code': 'Dbux VSCode Extension'
+};
+
 function join(a, b) {
   return `${(a && b) && `${a}/` || a || ''}${b || ''}`;
 }
 
 function getPkgName(pkg) {
+  const name = pkgNames[pkg];
+  if (name) {
+    return name;
+  }
   if (pkg.startsWith('dbux-')) {
     return `@dbux/${pkg.substring(5)}`;
   }

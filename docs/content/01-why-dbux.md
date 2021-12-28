@@ -15,6 +15,7 @@ This (too long) video explains what Dbux is and features two examples of how to 
 
 If you have any questions, feel free to [join us on DISCORD](https://discord.gg/QKgq9ZE).
 
+
 ## On Debugging
 
 "Debugging is just plain hard." "Real programmers don't need debugging tools," skeptics say, according to Henry Lieberman[^1]. Back in 1997, in a heart-warming, informal call to arms, Lieberman envisions a future where new innovative debugging tools like his ZStep 95[^2] omniscient LISP debugger will surely become a staple of developer tool boxes around the world. 24 years later, the skeptics seem to have been proven right, and him wrong. While a lot of progress has been made in domain-specific debugging tools, commonly available general purpose debuggers are still mostly the same as back then. We also agree with Lieberman on modern computational resources, in that we can "use some of that speed and storage to process information that the programmer needs to understand what's going on in the program". 
@@ -38,6 +39,7 @@ We argue: this approach to debugging is of course **not bad**. Our goal is not t
 Dbux is an [omniscient debugger](https://scholar.google.com/scholar?hl=en&as_sdt=0%2C5&q=omniscient+debugger), meaning it automatically gathers and visualizes your application's runtime behavior, and makes it interactive. The term "omniscient" (meaning "**all-knowing**") is a quirky exaggeration (it does not know your grandma's birthday). The things that it does know can be configured. By default, it records the beginning and end of all executed files and functions, all asynchronous events and the entire trace log, meaning (almost) all statements and expressions and their values.
 
 All that data is then available for use to the developer, as explained in the [Using Dbux](./using-dbux) chapter.
+
 
 ## Advantages of Dbux:
 
@@ -65,6 +67,11 @@ These days, even when I debug without Dbux, I feel I start by strategizing, rath
 <!-- Debugging is a quintessential task in the day-to-day life of a software developer. Something went wrong, and it is our job to fix it. Sometimes it is something that we did, sometimes it is someone else in our team, and sometimes it is under-documented, malfunctioning behavior or a regression in a dependency. Sometimes the bug is hiding in code we have recently been working on, sometimes it is hiding in code that we have almost entirely forgotten, sometimes it is hidden in the depth of the `node_modules` folder. -->
 
 <!-- While debugging can be tough, we can get a leg up if we have designed a decent software architecture and proper working knowledge of used technology, frameworks and libraries. But even then,  -->
+
+## Joining the Community
+
+While you can certainly try to get started on your own, you probably make your life a lot easier by joining us on 
+[DISCORD](https://discord.gg/8kR2a7h) and ask questions as you go along.
 
 
 
