@@ -34,10 +34,11 @@ class SearchBar extends HostComponentEndpoint {
     return this.context.graphDocument.syncGraphContainer.graph.controllers.getComponent('ContextNodeManager');
   }
 
-  setSearchMode(mode) {
+  setSearchMode = (mode) => {
     if (mode !== this.state.mode) {
       this.setState({ mode });
       this.search(this.state.searchTerm);
+      this.parent.toolbar.forceUpdate();
       Verbose && this.logger.log(`.setSearchMode() with mode=${mode}`);
     }
   }
@@ -81,7 +82,8 @@ class SearchBar extends HostComponentEndpoint {
       this.selectContext(this.matches[index]);
       this.setState({ index });
     },
-    search: this.search
+    search: this.search,
+    setSearchMode: this.setSearchMode
   }
 }
 

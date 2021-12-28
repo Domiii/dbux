@@ -54,7 +54,6 @@ class Toolbar extends HostComponentEndpoint {
 
     setSearchMode(mode) {
       this.context.graphDocument.searchBar.setSearchMode(mode);
-      this.forceUpdate();
     },
 
     clearThreadSelection() {
