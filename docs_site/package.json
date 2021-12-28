@@ -8,9 +8,9 @@
     "docs": "yarn start",
     "build": "docusaurus build --out-dir ../docs",
     "swizzle": "docusaurus swizzle",
-    "deploy": "docusaurus deploy",
+    "deploy": "docusaurus deploy --out-dir ../docs",
     "clear": "docusaurus clear",
-    "serve": "docusaurus serve",
+    "serve": "docusaurus serve --dir=../docs",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids"
   },
