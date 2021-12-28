@@ -64,7 +64,8 @@ export default class GlobalAnalysisViewController {
       this.refreshOnData();
       for (const app of selectedApps) {
         allApplications.selection.subscribe(
-          app.dataProvider.onData('traces', this.refreshOnData)
+          app.dataProvider.onData('traces', this.refreshOnData),
+          // app.dataProvider.onData('staticProgramContexts', this.refreshOnData)
         );
       }
     });

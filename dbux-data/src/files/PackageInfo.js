@@ -2,6 +2,8 @@ import { PackageId, getPackageId, parsePackageName } from '@dbux/common-node/src
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 
 export default class PackageInfo {
+  packageId;
+
   /**
    * Array of all packages in path.
    * Usually `length === 1`, but sometimes dependencies are nested, e.g.:
@@ -17,11 +19,17 @@ export default class PackageInfo {
   programs = [];
 
   /**
+   * @type {number?} Usually undefined. Only set for packages that appear at the top (i.e. "default package").
+   */
+  order;
+
+  /**
    * @param {PackageId} packageId 
    */
-  constructor(packageId) {
+  constructor(packageId, order = undefined) {
     this.packageId = packageId;
     this.names = this.folder && parsePackageName(this.folder, true) || EmptyArray;
+    this.order = order;
   }
 
   get name() {

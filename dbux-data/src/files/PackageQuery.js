@@ -52,8 +52,10 @@ export default class PackageQuery extends SubscribableQuery {
     staticProgramContexts(programs) {
       for (const program of programs) {
         let packageId = getPackageId(program.filePath);
+        let order;
         if (!packageId) {
           // default package
+          order = 1;
           packageId = {
             name: '(default package)',
             folder: this.dp.application.getAppCommonAncestorPath() // TODO!
@@ -67,7 +69,7 @@ export default class PackageQuery extends SubscribableQuery {
          */
         let packageInfo = this.lookup(key);
         if (!packageInfo) {
-          packageInfo = new PackageInfo(packageId);
+          packageInfo = new PackageInfo(packageId, order);
           this.storeByKey(key, packageInfo);
         }
         packageInfo.programs.push(program);
@@ -76,6 +78,6 @@ export default class PackageQuery extends SubscribableQuery {
   };
 
   handleClearCache() {
-    this.packagesInOrder = null;
+    // this.packagesInOrder = null;
   }
 }

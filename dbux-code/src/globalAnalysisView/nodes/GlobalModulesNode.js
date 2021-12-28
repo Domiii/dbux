@@ -6,6 +6,7 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import { pathRelative } from '@dbux/common-node/src/util/pathUtil';
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 import TraceNode from '../../codeUtil/treeView/TraceNode';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 
 
 /** ###########################################################################
@@ -118,20 +119,10 @@ export class RecordedProgramsNode extends BaseTreeViewNode {
    */
   nPrograms;
 
-  /**
-   * 
-   */
-  get packages() {
-    return allApplications.selection.data.collectGlobalStats((dp) =>
-      dp.queries.packages.getAll()
-    );
-  }
-
   init() {
     this.nPrograms = allApplications.selection.data.countStats((dp) =>
       dp.collections.staticProgramContexts.getCount()
     );
-
     this.description = `(${this.nPrograms})`;
   }
 
@@ -142,9 +133,30 @@ export class RecordedProgramsNode extends BaseTreeViewNode {
   }
 
   buildChildren() {
-    // TODO: put default package at the top
-    return this.packages
-      ?.map(pkg => {
+    const packages = allApplications.selection.data.collectGlobalStats((dp) =>
+      dp.queries.packages.getAll()
+    );
+    if (!packages) {
+      return null;
+    }
+    packages.sort((a, b) => {
+      if (a.order && b.order && a.order !== b.order) {
+        return b.order - a.order;
+      }
+      if (a.order) {
+        return -1;
+      }
+      if (b.order) {
+        return 1;
+      }
+
+      const aApp = allApplications.getApplication(a.programs[0].applicationId);
+      const bApp = allApplications.getApplication(b.programs[0].applicationId);
+      return bApp.createdAt - aApp.createdAt;
+    });
+
+    return packages
+      .map(pkg => {
         return this.treeNodeProvider.buildNode(PackageNode, pkg, this);
       });
   }
