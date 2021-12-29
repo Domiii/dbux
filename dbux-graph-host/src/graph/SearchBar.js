@@ -7,6 +7,8 @@ import { SelectorType } from './controllers/ContextNodeManager';
 
 /** @typedef {import('./controllers/ContextNodeManager').default} ContextNodeManager */
 
+const Verbose = false;
+
 const UserActionTypeByMode = {
   [SearchMode.ByContext]: UserActionType.CallGraphSearchContexts,
   [SearchMode.ByTrace]: UserActionType.CallGraphSearchTraces,
@@ -14,6 +16,7 @@ const UserActionTypeByMode = {
 };
 
 const SearchMethodByMode = {
+  [SearchMode.None]: null,
   [SearchMode.ByContext]: SelectorType.SearchContext,
   [SearchMode.ByTrace]: SelectorType.SearchTrace,
   [SearchMode.ByValue]: SelectorType.SearchValue,
@@ -31,11 +34,12 @@ class SearchBar extends HostComponentEndpoint {
     return this.context.graphDocument.syncGraphContainer.graph.controllers.getComponent('ContextNodeManager');
   }
 
-  setSearchMode(mode) {
-    // TODO: search & highlight by ContextNodeManager
-
-    if (mode !== this.mode) {
+  setSearchMode = (mode) => {
+    if (mode !== this.state.mode) {
       this.setState({ mode });
+      this.search(this.state.searchTerm);
+      this.parent.toolbar.forceUpdate();
+      Verbose && this.logger.log(`.setSearchMode() with mode=${mode}`);
     }
   }
 
@@ -43,6 +47,28 @@ class SearchBar extends HostComponentEndpoint {
     const dp = allApplications.getById(context.applicationId).dataProvider;
     const trace = dp.util.getFirstTraceOfContext(context.contextId);
     traceSelection.selectTrace(trace);
+  }
+
+  search = (searchTerm) => {
+    Verbose && this.logger.log(`.search() with searchTerm=${searchTerm}`);
+
+    if (searchTerm) {
+      const searchActionType = UserActionTypeByMode[this.state.mode];
+      this.componentManager.externals.emitCallGraphAction(searchActionType, { searchTerm: searchTerm });
+    }
+
+    const selector = searchTerm ? { searchTerm } : null;
+    this.matches = this.contextNodeManager.highlight(SearchMethodByMode[this.state.mode], selector);
+    let index = -1;
+    if (this.matches.length) {
+      index = 0;
+      this.selectContext(this.matches[index]);
+    }
+    this.setState({
+      searchTerm,
+      index,
+      count: this.matches.length,
+    });
   }
 
   public = {
@@ -56,30 +82,8 @@ class SearchBar extends HostComponentEndpoint {
       this.selectContext(this.matches[index]);
       this.setState({ index });
     },
-    search: (searchTerm) => {
-      if (this.state.mode === SearchMode.None) {
-        this.logger.warn(`Called "SearchBar.search" when mode is None`);
-        return;
-      }
-
-      if (searchTerm) {
-        const searchActionType = UserActionTypeByMode[this.state.mode];
-        this.componentManager.externals.emitCallGraphAction(searchActionType, { searchTerm: searchTerm });
-      }
-
-      const selector = searchTerm ? { searchTerm } : null;
-      this.matches = this.contextNodeManager.highlight(SearchMethodByMode[this.state.mode], selector);
-      let index = -1;
-      if (this.matches.length) {
-        index = 0;
-        this.selectContext(this.matches[index]);
-      }
-      this.setState({
-        searchTerm,
-        index,
-        count: this.matches.length,
-      });
-    }
+    search: this.search,
+    setSearchMode: this.setSearchMode
   }
 }
 

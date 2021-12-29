@@ -25,7 +25,20 @@ class SearchBar extends ClientComponentEndpoint {
   }
 
   setupEl() {
+    this.originMode = this.state.mode;
 
+    // hide search bar on `ESC` is pressed
+    document.addEventListener('keydown', async (event) => {
+      if (event.key === 'Escape') {
+        //if esc key was not pressed in combination with ctrl or alt or shift
+        const isNotCombinedKey = !(event.ctrlKey || event.altKey || event.shiftKey);
+        if (isNotCombinedKey) {
+          if (this.state.mode !== SearchMode.None) {
+            await this.remote.setSearchMode(SearchMode.None);
+          }
+        }
+      }
+    });
   }
 
   // ###########################################################################
@@ -43,6 +56,12 @@ class SearchBar extends ClientComponentEndpoint {
     decorateClasses(this.el, {
       hidden: mode === SearchMode.None
     });
+
+    // auto focus on open
+    if (this.originMode !== mode) {
+      this.els.searchInput.focus();
+    }
+    this.originMode = mode;
 
     if (!count) {
       this.els.previousBtn.setAttribute('disabled', '');

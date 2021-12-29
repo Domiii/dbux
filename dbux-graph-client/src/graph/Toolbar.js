@@ -20,9 +20,12 @@ class Toolbar extends ClientComponentEndpoint {
           <button title="Show caller (call trace) of function call" data-el="callModeBtn" class="toolbar-btn btn btn-info" href="#">call</button>
           <button title="Show arguments and return value of function call in the form of: (args) -> returnValue" data-el="valueModeBtn" class="toolbar-btn btn btn-info" href="#">val</button>
           <button title="Thin mode" data-el="thinModeBtn" class="no-horizontal-padding btn btn-info" href="#"></button>
-          <div data-el="searchMenu" class="dropdown btn-info">
-            <button data-el="searchMenuBtn" class="toolbar-btn btn btn-info dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            🔍
+          <div data-el="searchMenu" class="btn-group">
+            <button data-el="searchMenuBtn" type="button" class="toolbar-btn btn btn-info" aria-haspopup="true" aria-expanded="false">
+              🔍
+            </button>
+            <button data-el="searchMenuToggleBtn" type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <span class="sr-only">Toggle Dropdown</span>
             </button>
             <div data-el="searchMenuBody" class="dropdown-menu">
               <button title="Search for contexts by name" data-el="searchContextsBtn" class="full-width toolbar-btn btn btn-info" href="#">Search by context</button>
@@ -67,12 +70,12 @@ class Toolbar extends ClientComponentEndpoint {
   }
 
   _onDocumentClick = (evt) => {
-    const { searchMenuBtn, mainMenuBtn } = this.els;
+    const { searchMenuBtn, searchMenuToggleBtn, mainMenuBtn } = this.els;
     if (evt.target !== mainMenuBtn && this.dropDownOpen) {
       this.toggleMainMenu();
     }
 
-    if (evt.target !== searchMenuBtn && this.searchMenuOpen) {
+    if ((evt.target !== searchMenuBtn && evt.target !== searchMenuToggleBtn) && this.searchMenuOpen) {
       this.toggleSearchMenu();
     }
   };
@@ -90,7 +93,8 @@ class Toolbar extends ClientComponentEndpoint {
   toggleSearchMenu() {
     this.searchMenuOpen = !this.searchMenuOpen;
     if (this.searchMenuOpen) {
-      this.els.searchMenuBody.style.display = 'inherit';
+      // using display: 'inherit' will make it `flex-row`
+      this.els.searchMenuBody.style.display = 'block';
     }
     else {
       this.els.searchMenuBody.style.display = 'none';
@@ -159,6 +163,9 @@ class Toolbar extends ClientComponentEndpoint {
     });
     decorateClasses(this.els.asyncDetailModeBtn, {
       active: !!asyncDetailMode
+    });
+    decorateClasses(this.els.searchMenuBtn, {
+      active: this.searchBar.state.mode !== SearchMode.None
     });
     decorateClasses(this.els.searchContextsBtn, {
       active: this.searchBar.state.mode === SearchMode.ByContext
@@ -363,6 +370,19 @@ class Toolbar extends ClientComponentEndpoint {
     },
 
     searchMenuBtn: {
+      async click() {
+        if (this.searchBar.state.mode !== SearchMode.None) {
+          // stop searching
+          await this.remote.setSearchMode(SearchMode.None);
+        }
+        else {
+          this.toggleSearchMenu();
+        }
+      },
+      focus(evt) { evt.target.blur(); }
+    },
+
+    searchMenuToggleBtn: {
       click() {
         this.toggleSearchMenu();
       },

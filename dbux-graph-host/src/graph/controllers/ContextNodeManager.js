@@ -126,7 +126,7 @@ export default class ContextNodeManager extends HostComponentEndpoint {
       this.clear();
     }
 
-    if (!selector) {
+    if (!mode || !selector) {
       return EmptyArray;
     }
 
