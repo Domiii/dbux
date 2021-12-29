@@ -5,6 +5,61 @@ import Term from '@src/components/Term';
 
 Most developers know the call stack: the list of all executed functions that have not yet concluded, at a certain point in time of our program's execution. The call stack, while useful, only paints a very narrow picture of our program. It can also be seen as a single slice of the call graph during [depth-first traversal](https://en.wikipedia.org/wiki/Depth-first_search).
 
+<!-- 
+The <img src="https://domiii.github.io/dbux/dbux-code/resources/dark/call-graph.png" title="call graph" height="24px" width="24px" style="background-color: #1A1A1A"> Call Graph renders a bird's eye overview over all executed files and functions.
+
+As an analogy, I would say that the call graph is like (a rather crude) "Google Maps" while the [trace details view](#trace-details) is (a rather crude) "Google Street View" of your application's execution. Together they offer a multi-resolutional interactive tool to see and find everything that is going on in your application.
+
+The timeline expands vertically, while execution depth goes into the horizontal.
+
+At the outer most level, you see individual "[Run](https://github.com/Domiii/dbux/tree/master/#run)" nodes.
+
+Each "Run" contains all (visible/recorded) "[Context](https://github.com/Domiii/dbux/tree/master/#context)" sub trees, that is all invocations of traced functions and files.
+
+Call graph visualizations have many uses. E.g.:
+
+* overview the complex system that is our application.
+* quickly identify points of interests in code that is not our own.
+* visualize [recursion trees](https://www.google.com/search?q=recursion+trees), like in the screengrab below
+
+![call graph: fibonacci1](https://domiii.github.io/dbux/docs/img/call-graph-fib-1.png)
+
+## Call Graph: pause (pause/resume live updates)
+
+* Dbux keeps recording and rendering all code execution in real-time, as long as an application (or website) is running.
+* During analysis, once we have recorded the bug (or other event of interest), we might not be interested in further updates.
+* Use the 🔴 button to pause/resume the rendering of new incoming data, so we can focus on what we already have.
+   * NOTE: You might be tempted into thinking that pausing with this button will stop all recording, however that is not what happens. Currently, Dbux keeps on recording for as long as the application is running. This button only hides that new data behind a single "Hidden Node". That inability to completely pause recording, can make things very slow and thus make debugging of games and other kinds of high performance applications very difficult. [You can read more about performance considerations here](https://github.com/Domiii/dbux/tree/master/#performance).
+
+
+## Call Graph: clear (show/hide already recorded traces)
+
+* The `x` button (`clear`) is useful for removing clutter when investigating a bug that does not appear immediately, or is not part of the initialization routine.
+* For example, when investigating a bug that happens after pressing some button (a "buggy button" if you will) in your application, you can:
+   1. wait for the application to finish initialization and for the "buggy button" to show up
+   1. press `x`
+   1. press your application's buggy button
+   1. (if necessary) wait until the bug occurs
+   1. press 🔴 (pause).
+* -> This lets you completely isolate the code that was executed when clicking that button, render only the relevant sub graph, while removing (hiding) all kinds of unrelated clutter.
+
+
+## Call Graph: sync (toggle sync mode)
+
+`sync` mode makes sure that while you select traces in and navigate through your code, the selected trace's context is always automatically expanded and in clear sight inside the Call Graph view.
+
+
+## Call Graph: loc
+
+Show/hide locations in context nodes.
+
+Clicking the location takes you there.
+
+## Call Graph: call
+
+Show/hide caller traces of all contexts that are function invocations.
+
+You can click the call trace to go there. You can `CTRL/Command` + `Click` it to select it. -->
 
 ## Sync Call Graph
 

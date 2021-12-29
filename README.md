@@ -5,11 +5,8 @@
 [![David](https://flat.badgen.net/david/dev/Domiii/dbux)](https://david-dm.org/Domiii/dbux?type=dev)
 
 
-TODO: We are currently in the process of deploying our documentation page.
+Dbux is an integrated debugging environment (IDbE) and omniscient debugger for JavaScript runtime analysis. We hope to help developers (i) improve program comprehension and (ii) increase debugging efficiency. To that end, Dbux records an application's runtime data, visualizes it and makes it interactive.
 
-[Issue: Documentation v1](https://github.com/Domiii/dbux/issues/632).
+For more information, please refer to [our documentation](https://domiii.github.io/).
 
-Will update soon with correct link. (promise by Domiii on 2021/12/28!)
-
-
-
+![Dbux Architecture](./docs_site/dbux_img/architecture-v001.png)

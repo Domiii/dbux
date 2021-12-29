@@ -1,7 +1,7 @@
 import React from 'react';
 // import useBaseUrl from '../hooks/useBaseUrl';
 
-const codeBaseUrl = 'https://github.com/Domiii/dbux/';
+const codeBaseUrl = 'https://github.com/Domiii/dbux/tree/master/';
 
 const pkgNames = {
   'dbux-code': 'Dbux VSCode Extension'

@@ -8,7 +8,56 @@ import Img from '@src/components/Img';
 import DarkLightImg from '@src/components/DarkLightImg';
 
 
-The Run Button <DarkLightImg src='play.svg' /> allows the user to easily run a simple Node application [with Dbux enabled](./). Simply open a `*.js` file and press it, e.g.:
+The Run Button <DarkLightImg src='play.svg' /> allows the user to easily run a simple Node application [with Dbux enabled](./).
 
-<Img src="screens/run-button.gif" />
+You can find it in the top right of opened `*.js` files:
+
+<Img src="screens/run-button.png" className="border-screenshot" />
+
+:::tip
+The Run button simply calls the `Dbux: Run Current File` command. You can also access it via [VSCode's command palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette), and (like [all commands](../04-tools-and-configuration/01-dbux-code.mdx#commands)) can be key-bound.
+:::
+
+:::note
+The `Debug Current File` command does the same thing as the Run button but with `--inspect-brk` enabled.
+:::
+
+<!-- 
+## Debugging
+* Make sure to turn on VSCode's Auto Attach for this.
+* For more information on VSCVode debugging, consult [the official manual on "Node.js debugging in VS Code"](https://code.visualstudio.com/docs/nodejs/nodejs-debugging). -->
+
+
+## Results
+
+When pressed, a Terminal opens and starts executing the active `*.js` file with [@dbux/cli](../04-tools-and-configuration/02-dbux-cli.mdx), e.g.:
+
+> ```$ node --enable-source-maps --stack-trace-limit=1000 --enable-source-maps -r dbux/node_modules/@dbux/cli/dist/linkOwnDependencies.js "dbux/node_modules/@dbux/cli/bin/dbux.js" run --esnext --pw=.* "/my-code/firstDuplicate/find-bad.js"```
+
+Beneath it, you will see (a potentially verbose) log of things that Dbux does, interleaved with the program's own console output, e.g.:
+
+
+```
+FAILURE. Not all tests passed:
+  Test 0  FAILED ❌
+      inputs: [[2,1,3,5,3,4]]
+      actual: -1
+    expected: 3
+  Test 1  FAILED ❌
+      inputs: [[8,4,6,2,6,4,7,9,5,8]]
+      actual: -1
+    expected: 6
+  Test 2  PASSED ✔️
+      inputs: [[2,1,6,5,3,4]]
+      actual: -1
+    expected: -1
+  Test 3  PASSED ✔️
+      inputs: [[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,...]
+      actual: -1
+    expected: -1
+[Dbux Runtime Client] <- connecting...
+[Dbux Runtime Client] <- data (n = 64,482): 114 staticProgramContexts (1~114), 225 staticContexts (1~225), 6365 staticTraces (1~6365), 2357 executionContexts (1~2357), 29399 traces (1~29399), 852 values (1~852), 25170 dataNodes (1~25170)
+[Dbux Runtime Client] ACK 1
+[Dbux Runtime Client] -> disconnected
+```
 

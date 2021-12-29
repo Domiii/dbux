@@ -11,6 +11,7 @@ import useBaseUrl from '../hooks/useBaseUrl';
 const AbbrevAnchorsByAbbrev = {
   cgr: 'cgr',
   trace: 'trace',
+  staticTrace: 'trace',
   context: 'context'
 };
 

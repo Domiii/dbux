@@ -1,4 +1,5 @@
 import React from 'react';
+import c from 'classnames';
 
 
 /**
@@ -13,13 +14,25 @@ import useResourceSrc from '../hooks/useResourceSrc';
  * 
  * @see https://docusaurus.io/docs/api/themes/configuration#hooks
  */
-export default function Img({ src, title, zoomable, darkLight, ...moreProps }) {
+export default function Img({ src, title, zoomable, darkLight, screen, className, ...moreProps }) {
+  if (screen) {
+    if (!src.startsWith('screen') && !src.startsWith('/') && !src.includes('://')) {
+      src = `screens/${src}`;
+    }
+  }
   const actualSrc = useResourceSrc({ src, darkLight });
   // const actualSrc = src;
-  const className = zoomable ? 'zoomable' : '';
 
   title = title || src;
   const alt = title;
+
+  className = c(
+    className,
+    {
+      'border-screen': screen,
+      zoomable
+    }
+  );
 
   return (
     // <Image img={actualSrc} {...moreProps} />

@@ -1,1 +1,1 @@
-console.log(1, 'hi');
+console.log('hi', 'world', 1, 2, 3);

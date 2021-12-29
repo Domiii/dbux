@@ -5,7 +5,9 @@ slug: /
 
 # Dbux: What and Why?
 
-Dbux aims at helping analyze the execution of JavaScript programs by recording (almost) all runtime data, visualizing it and making it interactive, thereby (hopefully) helping developers (i) improve program comprehension and (ii) reduce time spent on finding bugs.
+Dbux is an integrated debugging environment (IDbE) and omniscient debugger for JavaScript runtime analysis. We hope to help developers (i) improve program comprehension and (ii) increase debugging efficiency. To that end, Dbux records an application's runtime data, visualizes it and makes it interactive.
+
+TODO(improve + add architectural diagram)
 
 This (too long) video explains what Dbux is and features two examples of how to use the Dbux VSCode extension:
 
@@ -45,7 +47,7 @@ All that data is then available for use to the developer, as explained in the [U
 
 * Instead of only a call stack, Dbux presents us with the entire [call graph](./using-dbux/call-graph). A complete asynchronous call stack is also available when needed.
 * Instead of guessing which files, third-party modules, console log statements executed and how, one can overview all that in Dbux's [global view](./using-dbux/global).
-* Instead of using the traditional debugger as a "magnifying glass" to slowly crawl along the execution timeline, Dbux's [trace selection](./using-dbux/select-trace), [trace details and navigation](./using-dbux/trace-details) allow random-access investigation of any piece of code and all its executions. We also threw in [code augmentation](./using-dbux/code-augmentation) to help us quickly see which code executed and how.
+* Instead of using the traditional debugger as a "magnifying glass" to slowly crawl along the execution timeline, Dbux's [trace selection](./using-dbux/select-trace), [trace details and navigation](./using-dbux/trace-details) allow random-access investigation of any piece of code and all its executions. We also threw in [code decorations](./02-using-dbux/04-code-augmentation.mdx) to help us quickly see which code executed and how.
 * Dbux eliminates the need for most of "[print-based debugging](https://www.google.com/search?q=print-based+debugging&hl=en)", because it logs for us, allowing to quickly overview. It even offers [searching for executed files, functions, values and more](./using-dbux/search). Note that it is not built to replace [logging](https://www.google.com/search?q=logging+programming+best+practices).
 * [Data flow analysis](./using-dbux/data-flow) allows us to quickly trace the reads, writes and creation of a selected value.
 

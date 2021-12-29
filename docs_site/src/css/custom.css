@@ -56,6 +56,10 @@ li > a.menu__link {
   border: 1px solid gray;
 }
 
+.border-screen {
+  border: 1px solid purple;
+}
+
 .round {
   border-radius: 50%;
 }

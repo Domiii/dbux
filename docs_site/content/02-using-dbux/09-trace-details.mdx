@@ -14,7 +14,10 @@ After you [selected a trace](./05-select-trace.mdx), you can inspect most of the
 
 ## Navigation
 
-The navigation buttons allow you to move between <Term term="trace">traces</Term>.
+The navigation buttons allow you to move between <Term term="trace">traces</Term>[^1]:
+
+<Img screen src="nav1.png" />
+
 
 #### <DarkLightImg width="24px" src="previousParentContext.png" /> <DarkLightImg width="24px" src="nextParentContext.png" /> Go to start/end of context
 
@@ -55,23 +58,43 @@ The navigation buttons allow you to move between <Term term="trace">traces</Term
    * These buttons help you follow the exact control flow of your program, visiting every expression and statement, not ignoring anything.
    * Especially useful for convoluted one-liners or otherwise compressed, complex expressions and statements that are not intuitive to disentangle.
 
+:::note
+We are not debugging in real-time, but analyzing a previously recorded execution log, so we can:
+
+1. Step forward and also *backward* in time, meaning that all navigation modes exist twice (one forward, one backward).
+2. More easily (to some extent) take smarter (or: "slightly less stupid") steps than the default debugger. E.g. it automatically finds "the next context to step into" (and stops in front of it first, rather than jumping into it right away) etc.
+:::
 
 ## Values
 
-Investigate (a rough string representation of) the value held by currently selected trace. This will (generally) be `(no value or undefined)` if the selected trace is not an expression.
+If your currently selected trace is an expression with a value that is `!== undefined`, that value will be rendered here. You will see `(no value or undefined)` if the selected trace is `undefined` or not an expression.
+
+You will see (a rough string representation of) the value held by the currently selected trace.
+
+E.g.:
+
+<Img screen src="values.gif" />
 
 
 ## Executions
 
-A piece of code might have executed multiple times. The `Executions` node lists all of them. You can select any of them by clicking in them.
+A piece of code might have executed multiple times. The `Executions` node lists all of them. You can select them by clicking.
+Another way of putting this is: `Executions` lists all `traces` of the currently selected `trace`'s <Term term="staticTrace" />.
 
-The group button TODO(icon) in the top right of the `Executions` node allows you to group them by:
+Since this can be a lot of traces, you can group them by different criteria through the group button on the `Executions` node:
 
-TODO(grouping)
+<Img screen src="trace-executions-hof1.png" />
 
-When investigating, make sure, you are looking at the right execution!
+TODO(grouping categories + explanations)
+
+:::tip
+After selecting a trace, always first check how many executions are recorded and whether you are looking at the right one.
+:::
 
 
 ## Debug
 
 The `Debug` node holds internally used data, usually only used for debugging Dbux and understanding the raw version of the collected data.
+
+
+[^1]: You might need to hover over the corresponding views for navigation, group (and other) buttons to show up. This is a [limitation of the VSCode Extension API](https://github.com/microsoft/vscode/issues/78829).

@@ -59,7 +59,7 @@ const config = {
           routeBasePath: '/',
           path: 'content',
           sidebarPath: require.resolve('./sidebars.js'),
-          editUrl: 'https://github.com/Domiii/dbux/blob/master/docs/content',
+          editUrl: 'https://github.com/Domiii/dbux/blob/master/docs',
           sidebarCollapsed: false
         },
         theme: {

@@ -132,7 +132,7 @@
       },
       {
         "command": "dbux.runFile",
-        "title": "Dbux: Run current file",
+        "title": "Dbux: Run Current File",
         "icon": {
           "light": "resources/light/play.svg",
           "dark": "resources/dark/play.svg"
@@ -140,7 +140,7 @@
       },
       {
         "command": "dbux.debugFile",
-        "title": "Dbux: Debug current file",
+        "title": "Dbux: Debug Current File",
         "icon": {
           "light": "resources/light/bug.svg",
           "dark": "resources/dark/bug.svg"
