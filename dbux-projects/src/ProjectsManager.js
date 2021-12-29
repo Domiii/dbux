@@ -23,7 +23,6 @@ import { initUserEvents, emitSessionFinishedEvent, emitPracticeSessionEvent, onU
 import ExerciseDataProvider from './dataLib/ExerciseDataProvider';
 import initLang, { getTranslationScope } from './lang';
 import upload from './fileUpload';
-import { checkSystem, getDefaultRequirement } from './checkSystem';
 import Chapter from './projectLib/Chapter';
 
 const logger = newLogger('PracticeManager');
@@ -314,7 +313,7 @@ export default class ProjectsManager {
       return;
     }
 
-    const requirements = merge({}, getDefaultRequirement(true), this._systemRequirement);
+    const requirements = merge({}, getDefaultRequirements(true), this._systemRequirement);
     await checkSystem(this, requirements, false);
 
     const exerciseProgress = this.bdp.getExerciseProgressByExercise(exercise);

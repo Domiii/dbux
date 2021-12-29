@@ -4,11 +4,15 @@ import { getProjectManager } from '../projectViews/projectControl';
 import { runTaskWithProgressBar } from './runTaskWithProgressBar';
 import { showWarningMessage } from './codeModals';
 import { asAbsolutePath } from './codePath';
+import checkSystem from '../checkSystem';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('installUtil');
 
 export async function installDbuxDependencies() {
+  // make sure, we got the tools in place...
+  await checkSystem(false, false);
+
   const projectManager = getProjectManager();
   const missingDependencies = projectManager.getMissingSharedDependencies();
 

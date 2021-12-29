@@ -3,7 +3,7 @@ import { window, workspace } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { pathNormalizedForce, realPathSyncNormalized } from '@dbux/common-node/src/util/pathUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import { checkSystem, getDefaultRequirement } from '@dbux/projects/src/checkSystem';
+import checkSystem from '../checkSystem';
 import { getProjectManager } from '../projectViews/projectControl';
 import { runInTerminalInteractive } from '../codeUtil/terminalUtil';
 import { initRuntimeServer } from '../net/SocketServer';
@@ -67,6 +67,9 @@ function getNodeRunArgs(debugMode) {
  * {@link runFile}
  * ##########################################################################*/
 
+/**
+ * Basically this is "the Run Button".
+ */
 export async function runFile(extensionContext, debugMode = false) {
   const projectViewsController = initProjectView();
   if (!await projectViewsController.confirmCancelPracticeSession()) {
@@ -100,12 +103,13 @@ export async function runFile(extensionContext, debugMode = false) {
   //   window.activeTextEditor.document.uri);
   // console.debug(`file colorInfos:`, colorInfos);
 
+  // check system
+  await checkSystem(false, true);
 
   // install dependencies
   await installDbuxDependencies();
 
   // start runtime server
-  await checkSystem(projectManager, getDefaultRequirement(false), false);
   await initRuntimeServer(extensionContext);
 
   let [nodeArgs, dbuxArgs, programArgs] = getNodeRunArgs(debugMode);

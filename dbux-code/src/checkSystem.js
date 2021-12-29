@@ -1,12 +1,13 @@
-import merge from 'lodash/merge';
 import semver from 'semver';
 import isArray from 'lodash/isArray';
 import isFunction from 'lodash/isFunction';
+import isObject from 'lodash/isObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { whichNormalized } from '@dbux/common-node/src/util/pathUtil';
-import Process from './util/Process';
+import Process from '../../dbux-projects/src/util/Process';
+import { confirm, showInformationMessage, showWarningMessage } from './codeUtil/codeModals';
 
-/** @typedef {import('./ProjectsManager').default} ProjectsManager */
+/** @typedef {import('../../dbux-projects/src/ProjectsManager').default} ProjectsManager */
 
 const logger = newLogger('checkSystem');
 
@@ -58,16 +59,26 @@ function isWindows() {
 }
 
 /** ###########################################################################
- * main check function
+ * {@link checkSystem}
  *  #########################################################################*/
 
 /**
  * Check system with requirements
- * @param {ProjectsManager} manager
+ * @param {object | boolean} requirements
  * @param {boolean} calledFromUser Whether the function is called by user. Decides showing success message to user or not.
- * @param {boolean} fullCheck if false, skip checking `git` and `bash`.
  */
-export async function checkSystem(manager, requirements, calledFromUser) {
+export default async function checkSystem(requirements, calledFromUser, moreRequirements) {
+  if (!isObject(requirements)) {
+    // requirements is a bool
+    requirements = getDefaultRequirements(!!requirements);
+  }
+  if (moreRequirements) {
+    requirements = {
+      ...requirements,
+      ...moreRequirements
+    };
+  }
+
   if (!calledFromUser && isChecked(requirements)) {
     return;
   }
@@ -94,7 +105,12 @@ export async function checkSystem(manager, requirements, calledFromUser) {
         }
         else {
           // TOTRANSLATE
-          message += `¯\\_(ツ)_/¯ ${program}\n    Installed but old. Version is ${result.version} but we recommend ${requirement.version}.`;
+          // ¯\\_(ツ)_/¯
+          message += `x ${program}\n    Installed but old. Your installed version is ${result.version} but we recommend ${requirement.version}.`;
+          if (program === 'node') {
+            // eslint-disable-next-line max-len
+            message += `\n      NOTE: we strongly recommend volta (https://volta.sh/) for managing Node versions.\n      It is cross-platform and has several features that nvm and n do not have (as of Jan 2022).`;
+          }
           result.success = false;
         }
       }
@@ -169,44 +185,59 @@ export async function checkSystem(manager, requirements, calledFromUser) {
 
   let ignore = false;
   if (!success) {
-    const options = calledFromUser ?
-      {
-        // TOTRANSLATE
-        [`Ignore and run anyway!`]: () => {
-          ignore = true;
-        }
-      } :
-      {};
-    await manager.externals.showMessage.warning(modalMessage, options, { modal: true });
+    // always allow user
+    const options = //calledFromUser ?
+    {
+      // TOTRANSLATE
+      [`Ignore WARNING and run anyway!`]: () => {
+        ignore = true;
+      }
+    };
+    // : {};
+    await showWarningMessage(modalMessage, options, { modal: true });
   }
   else if (calledFromUser) {
-    await manager.externals.showMessage.info(modalMessage, {}, { modal: true });
+    await showInformationMessage(modalMessage, {}, { modal: true });
   }
   else {
     debug(`checkSystem() result: ${modalMessage}`);
   }
 
-  if (!success && !calledFromUser && !ignore) {
-    throw new Error(`[Dbux] System dependency check failed :(`);
+  if (!success) {
+    if (!ignore) {
+      throw new Error(`[Dbux] System dependency check failed :(`);
+    }
+    else {
+      if (!await confirm(`[Dbux] System dependency check failed, but running anyway. Are you sure?`)) {
+        throw new Error(`[Dbux] System dependency check failed :(`);
+      }
+    }
   }
 }
+
+/** ###########################################################################
+ * {@link getDefaultRequirements}
+ * ##########################################################################*/
 
 /**
  * @see https://github.com/Domiii/dbux/issues/593
  */
 const DefaultNodeVersion = '16';
-export function getDefaultRequirement(fullCheck) {
+
+
+export function getDefaultRequirements(fullCheck) {
+  const baseReqs = {
+    node: { version: DefaultNodeVersion },
+    npm: {},
+  };
   if (!fullCheck) {
-    return {
-      node: { version: DefaultNodeVersion },
-      npm: {},
-    };
+    return baseReqs;
   }
   else {
     return {
+      ...baseReqs,
+
       bash: {},
-      node: { version: DefaultNodeVersion },
-      npm: {},
       git: {
         custom: async () => {
           const gitConfig = await Process.execCaptureOut(`git config -l`);

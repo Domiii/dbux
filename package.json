@@ -104,11 +104,9 @@
     "force-uninstall": "yarn run build:clean && rm -rf ./node_modules && rm -f ./package-lock.json && rm -f yarn.lock && bash scripts/dbux-run-all.sh \"rm -rf ./node_modules && rm -f ./package-lock.json && rm -f yarn.lock\"",
     "dbux-lerna-fix": "lerna exec -- node ../scripts/lerna-fix.js",
     "dbux-all": "bash scripts/dbux-run-all.sh",
-
     "docs": "cd ./docs && yarn start",
     "docs:build": "cd ./docs && yarn build",
     "docs:deploy": "cd ./docs && yarn deploy",
-
     "clinic": "clinic flame -- node dbux-cli/bin/run-js-unbabel ../samples/__samplesOutput__/oop1.es5.js || (echo \"\\033[1;31mCould not execute clinic - checking installed version:\\033[0m\" && clinic -v)",
     "cloc": "bash scripts/cloc.sh",
     "cloc-eslint": "cd dbux_projects/eslint && volta run --node lts npx cloc --match-f=\".*\\.(e?js|ts)$\" --by-file lib bin tests templates packages",
@@ -131,9 +129,5 @@
     "yarn-upgrade": "npx lerna exec --concurrency 1 -- yarn upgrade --",
     "shapez-run": "yarn && cd gulp && yarn && yarn gulp",
     "shapez-install": "git clone https://github.com/tobspr/shapez.io.git && cd shapez.io && git lfs pull && yarn && cd gulp && yarn && yarn gulp && echo TODO: also install git-lfs + ffmpeg, see: https://github.com/tobspr/shapez.io/tree/master/.travis.yml"
-  },
-  "volta": {
-    "node": "16.13.0",
-    "yarn": "1.22.17"
   }
 }

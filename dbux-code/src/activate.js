@@ -18,6 +18,8 @@ import { initWebviewWrapper } from './codeUtil/WebviewWrapper';
 import { installDbuxDependencies } from './codeUtil/installUtil';
 import { initDataFlowView } from './dataFlowView/dataFlowViewController';
 import { initGlobalAnalysisView } from './globalAnalysisView/GlobalAnalysisViewController';
+import { showOutputChannel } from './OutputChannel';
+
 // import { initPlugins } from './PluginMgr';
 // import { maybeStartSurvey1ForTheFirstTime } from './dialogs/dialogController';
 
@@ -33,9 +35,6 @@ export default async function activate(context) {
 
   // make sure, projectManager is available
   createProjectManager(context);
-
-  // install dependencies (and show progress bar) right away
-  await installDbuxDependencies();
 
   // initRuntimeServer(context);
   initCodeApplications(context);
@@ -77,6 +76,16 @@ export default async function activate(context) {
     dataFlowController,
     globalAnalysisViewController,
   );
+
+  try {
+    // install dependencies (and show progress bar) right away
+    await installDbuxDependencies();
+  }
+  catch (err) {
+    showOutputChannel();
+    logError(`Oh-oh! Dbux failed to install dependencies. Please:\n1. Fix the reported problem.\n2. Once fixed, restart VSCode and try again.`);
+    return;
+  }
 
   // init the webviews
   await initGraphView();

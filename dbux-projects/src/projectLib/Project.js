@@ -17,7 +17,6 @@ import ExerciseList from './ExerciseList';
 import Process, { ProcessOptions } from '../util/Process';
 import { MultipleFileWatcher } from '../util/multipleFileWatcher';
 import { buildNodeCommand } from '../util/nodeUtil';
-import { checkSystem, getDefaultRequirement } from '../checkSystem';
 import RunStatus, { isStatusRunningType } from './RunStatus';
 import ProjectBase from './ProjectBase';
 import Exercise from './Exercise';
@@ -484,8 +483,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   }
 
   async checkSystemRequirement() {
-    const requirements = merge({}, getDefaultRequirement(true), this.systemRequirements);
-    await checkSystem(this.manager, requirements, false);
+    await this.manager.externals.checkSystem(true, false, this.systemRequirements);
   }
 
   async openInEditor() {

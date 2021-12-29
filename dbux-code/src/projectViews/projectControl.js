@@ -13,6 +13,7 @@ import { set as storageSet, get as storageGet } from '../memento';
 import { interactiveGithubLogin } from '../net/GithubAuth';
 import WebviewWrapper from '../codeUtil/WebviewWrapper';
 import { initUserEvent } from '../userEvents';
+import checkSystem from '../checkSystem';
 import { showHelp } from '../help';
 import { initRuntimeServer } from '../net/SocketServer';
 import { getCurrentResearch } from '../research/Research';
@@ -98,6 +99,7 @@ export function createProjectManager(extensionContext) {
   };
 
   const externals = {
+    checkSystem,
     editor: {
       async openFile(fpath) {
         return await showTextDocument(fpath);

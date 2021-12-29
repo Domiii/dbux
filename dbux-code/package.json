@@ -1486,7 +1486,8 @@
     "uuid": "^8.3.0",
     "vsce": "*",
     "vscode-test": "^1.2.2",
-    "strip-ansi": "^7.0.1"
+    "strip-ansi": "^7.0.1",
+    "semver": "^7.3.2"
   },
   "_moduleAliases": {}
 }
