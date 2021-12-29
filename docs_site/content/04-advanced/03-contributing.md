@@ -33,7 +33,7 @@ yarn install && yarn i # install dependencies
 
 Finally, you might want to enable Dbux auto start by default:
 
-<Img src="dbux-auto-start-workspace-setting.png" />
+<Img src="screens/dbux-auto-start-workspace-setting.png" />
 
 
 If dependencies bug out, sometimes running the (very aggressive) clean-up command can help: `npm run dbux-reinstall` (of course we don't recommend this).
