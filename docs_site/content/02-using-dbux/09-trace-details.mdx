@@ -1,16 +1,65 @@
 # Trace Details
 
+import Img from '@src/components/Img';
+import DarkLightImg from '@src/components/DarkLightImg';
 import Term from '@src/components/Term';
 
-After you selected a <Term term="trace" />.
+After you [selected a trace](./05-select-trace.mdx), you can inspect most of the <Term term="trace" />'s relevant information in this view.
+
+<Img src="screens/trace-details.png" />
+
+<!-- zoomable={true} width="150px" -->
+
+
 
 ## Navigation
 
-TODO
+The navigation buttons allow you to move between <Term term="trace">traces</Term>.
+
+#### <DarkLightImg width="24px" src="previousParentContext.png" /> <DarkLightImg width="24px" src="nextParentContext.png" /> Go to start/end of context
+
+* Jump to the start/end of the current <Term term="context" /> (function or file).
+* When pressed again, steps out to caller (which we also call "parent").
+
+#### <DarkLightImg width="24px" src="previousChildContext.png" /> <DarkLightImg width="24px" src="nextChildContext.png" /> Go to previous/next function call in context
+
+* Jump to previous/next *traced* function call (red <span className="color-red">↱</span>) before/after the currently selected trace.
+   * Note that library or native calls (gray <span className="color-gray">↱</span>) are not traced and thus will be skipped by this button.
+* When pressed again, steps into that function (aka <Term term="context" /> aka "child context of this context").
+* NOTE: Things might be a bit off in case of [getters and setters](https://www.w3schools.com/js/js_object_accessors.asp)
+   * Getters and setters work, but navigation is a bit less intuitive.
+   * Since getters and setters don't have a clearly identifyable caller trace, they will need some more development work before they will be fully smoothed out.
+
+#### <DarkLightImg width="24px" src="nextInContext.svg" /> <DarkLightImg width="24px" src="previousInContext.svg" /> Go to previous/next "non-trivial" trace in context.
+
+* Jump to previous/next "non-trivial" trace in <Term term="context" />.
+* Stepping would be a lot of work, if we tried to step through every single expression.
+* That is why Dbux uses some basic heuristics to ignore some of the more "trivial traces".
+   * Ex1: In case of `a.b`, it will step to `a.b`, but it will not step to `a`.
+   * Ex2: In case of `o.f(x, y);`, it will step straight to `o.f(x, y)`, while ignoring `o`, `o.f`, `x` and `y` (all four of which are also all traced expressions, just a bit more "trivial" than the call expression itself).
+* (Dev note: we internally determine "trivial traces" as traces of `TraceType.ExpressionValue`.)
+
+
+#### <DarkLightImg width="24px" src="previousStaticTrace.png" /> <DarkLightImg width="24px" src="nextStaticTrace.png" /> Go to previous/next execution of the same trace
+
+* If a piece of code was executed multiple times (because a function was called multiple times, or there is a loop etc), these buttons allow you to jump between the traces of those different executions.
+* These buttons step through all traces of the currently selected `trace`'s <Term term="trace">staticTrace</Term>.
+
+
+#### <DarkLightImg width="24px" src="leftArrow.png" /> <DarkLightImg width="24px" src="rightArrow.png" /> Go to previous/next trace (unconditionally)
+
+* Go to previous/next trace, no matter what. This navigation method does not filter out "trivial traces", and it also moves in and out of contexts, if that is where the previous/next trace is.
+* These buttons provide the most granular navigation option.
+* Recommendation:
+   * Only use these buttons for short distances, as there is usually a lot of trivial traces to step through, slowing navigation down a lot.
+   * These buttons help you follow the exact control flow of your program, visiting every expression and statement, not ignoring anything.
+   * Especially useful for convoluted one-liners or otherwise compressed, complex expressions and statements that are not intuitive to disentangle.
+
 
 ## Values
 
-TODO
+Investigate (a rough string representation of) the value held by currently selected trace. This will (generally) be `(no value or undefined)` if the selected trace is not an expression.
+
 
 ## Executions
 
@@ -21,6 +70,7 @@ The group button TODO(icon) in the top right of the `Executions` node allows you
 TODO(grouping)
 
 When investigating, make sure, you are looking at the right execution!
+
 
 ## Debug
 

@@ -10,7 +10,8 @@ import useBaseUrl from '../hooks/useBaseUrl';
  */
 const AbbrevAnchorsByAbbrev = {
   cgr: 'cgr',
-  trace: 'trace'
+  trace: 'trace',
+  context: 'context'
 };
 
 

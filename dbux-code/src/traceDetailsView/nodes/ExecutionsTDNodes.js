@@ -1,4 +1,4 @@
-import { makeTraceLabel, makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
+import { makeTraceLabel, makeContextLabel, makeTraceValueLabel } from '@dbux/data/src/helpers/makeLabels';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { emitSelectTraceAction } from '../../userEvents';
@@ -12,6 +12,14 @@ import TraceContainerNode, { GroupNode } from '../../codeUtil/treeView/TraceCont
  *  #########################################################################*/
 
 class ExecutionNode extends TraceNode {
+  /**
+   * @param {Trace} 
+   */
+  static makeLabel(trace) {
+    return makeTraceValueLabel(trace);
+    // return makeTraceLabel(trace);
+  }
+
   get clickUserActionType() {
     return false;
   }

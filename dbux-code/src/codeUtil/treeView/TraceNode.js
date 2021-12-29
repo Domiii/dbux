@@ -15,6 +15,7 @@ export default class TraceNode extends BaseTreeViewNode {
    * @param {Trace} 
    */
   static makeLabel(trace) {
+    // return makeTraceValueLabel(trace);
     return makeTraceLabel(trace);
   }
 
