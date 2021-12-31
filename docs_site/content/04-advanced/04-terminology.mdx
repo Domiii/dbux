@@ -23,6 +23,11 @@ In runtime analysis research, the term "trace" usually refers to the entire runt
 * TODO: explain virtual and async contexts
 
 
+## Asynchronous Event
+
+TODO
+
+
 ## Call Graph Root (CGR) {#cgr}
 
 A "call graph root" (CGR) is an invocation of code from outside our visible (recorded) runtime. Examples include:
@@ -34,8 +39,10 @@ A "call graph root" (CGR) is an invocation of code from outside our visible (rec
 * DOM or OS event handler callbacks.
 * and more...
 
-The nodes of the async call graph only comprises these call graph roots.
-
+:::tip
+The *synchronous* [call graph](../02-using-dbux/08-call-graph.mdx) lists all CGRs on a linear timeline.
+The nodes of the *asynchronous* [call graph](../02-using-dbux/08-call-graph.mdx) only comprises call graph roots.
+:::
 
 ## Call Graph
 
@@ -43,3 +50,11 @@ Dbux records and visualizes the **Dynamic Call Graph** of JavaScript application
 
 TODO: a lot more to be said here.
 
+
+## Omniscient Debugger
+
+TODO
+
+## Integrated Debugging Environment {idbe}
+
+TODO

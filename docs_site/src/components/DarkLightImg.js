@@ -11,6 +11,8 @@ export default function DarkLightImg({ ...moreProps }) {
   if (!('darkLight' in moreProps)) {
     moreProps.darkLight = true;
   }
+
+  // moreProps.className = 'valign-middle';
   
   return (
     <Img {...moreProps} />

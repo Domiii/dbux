@@ -1,3 +1,4 @@
 {"rule":"PROBLEM_SOLVE_HYPHEN","sentence":"^\\QDebugging is probably the most quintessential part of the software developer's problem solving process.\\E$"}
 {"rule":"PROBLEM_SOLVE_HYPHEN","sentence":"^\\QThat end, we can have a leg up, if we have (i) good design, (ii) proper working knowledge of used technology, frameworks and libraries and, what is rarely discussed, (iii) proper problem solving strategy.\\E$"}
 {"rule":"CONFUSION_OF_OUR_OUT","sentence":"^\\QRather, we sought out to find a\\E$"}
+{"rule":"AS_ADJ_AS","sentence":"^\\QWhile a lot of progress has been made in domain-specific debugging tools and automatic debugging research, general purpose debuggers are still mostly the same as back then.\\E$"}

@@ -1,5 +1,6 @@
 import React from 'react';
 import c from 'classnames';
+import isString from 'lodash/isString';
 
 
 /**
@@ -14,7 +15,7 @@ import useResourceSrc from '../hooks/useResourceSrc';
  * 
  * @see https://docusaurus.io/docs/api/themes/configuration#hooks
  */
-export default function Img({ src, title, zoomable, darkLight, screen, className, ...moreProps }) {
+export default function Img({ src, title, zoomable, darkLight, screen, className, maxWidth, style, ...moreProps }) {
   if (screen) {
     if (!src.startsWith('screen') && !src.startsWith('/') && !src.includes('://')) {
       src = `screens/${src}`;
@@ -34,8 +35,13 @@ export default function Img({ src, title, zoomable, darkLight, screen, className
     }
   );
 
+  const s = {
+    maxWidth: isString(maxWidth) ? `${maxWidth}px` : maxWidth,
+    ...style
+  };
+
   return (
     // <Image img={actualSrc} {...moreProps} />
-    <img className={className} src={actualSrc} alt={alt} title={title} {...moreProps} />
+    <img className={className} style={s} src={actualSrc} alt={alt} title={title} {...moreProps} />
   );
 }

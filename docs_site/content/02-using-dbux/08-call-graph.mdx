@@ -1,12 +1,18 @@
-# Call Graph
+---
+title: Call Graph
+---
+
+# Call Graph <DarkLightImg src="call-graph.png" maxWidth={56} />
 
 import CodeLink from '@src/components/CodeLink';
 import Term from '@src/components/Term';
+import Img from '@src/components/Img';
+import DarkLightImg from '@src/components/DarkLightImg';
 
-Most developers know the call stack: the list of all executed functions that have not yet concluded, at a certain point in time of our program's execution. The call stack, while useful, only paints a very narrow picture of our program. It can also be seen as a single slice of the call graph during [depth-first traversal](https://en.wikipedia.org/wiki/Depth-first_search).
+Most developers know the call stack: the list of all executed functions that have not yet concluded, at a certain point in time of our program's execution. The call stack, while useful, only paints a very narrow picture of our program. It can also be seen as a single slice of the <Term term="call graph" /> during [depth-first traversal](https://en.wikipedia.org/wiki/Depth-first_search).
 
 <!-- 
-The <img src="https://domiii.github.io/dbux/dbux-code/resources/dark/call-graph.png" title="call graph" height="24px" width="24px" style="background-color: #1A1A1A"> Call Graph renders a bird's eye overview over all executed files and functions.
+The <img src="https://domiii.github.io/dbux/dbux-code/resources/dark/" title="call graph" height="24px" width="24px" style="background-color: #1A1A1A"> Call Graph renders a bird's eye overview over all executed files and functions.
 
 As an analogy, I would say that the call graph is like (a rather crude) "Google Maps" while the [trace details view](#trace-details) is (a rather crude) "Google Street View" of your application's execution. Together they offer a multi-resolutional interactive tool to see and find everything that is going on in your application.
 
@@ -61,12 +67,14 @@ Show/hide caller traces of all contexts that are function invocations.
 
 You can click the call trace to go there. You can `CTRL/Command` + `Click` it to select it. -->
 
-## Sync Call Graph
+## The Synchronous Call Graph
 
 When investigating an application without any asynchronous events, the call graph is best viewed in `Sync` mode. 
-Initially, only it's single root is shown: the entry point of the application; more precisely: the first piece of code that Dbux recorded.
+By default, the synchronous call graph shows a list of all <Term term="cgr">call graph roots</Term>: the entry point of the application, as well as the starting point of any <Term term="asynchronous event" />. As more asynchronous events are recorded, more <Term term="cgr">CGRs</Term> are added to it.
 
-Each node represents one execution of a file or function. We internally refer to these as <Term term="context">contexts</Term>. TODO(virtual contexts + async explanations)
+In general, nodes each node represents the execution of a file or function, which we call <Term term="context">contexts</Term>.
+
+TODO(virtual contexts + async explanations)
 
 TODO: Sync graph children exclude [asynchronous continuations](#asynchronous-continuation).
 
@@ -89,7 +97,8 @@ TODO
 
 ### Asynchronous Continuation
 
-TODO
+TODO: decide where to define all this (considering that it is actually terminology)
+
 
 ## Toolbar
 

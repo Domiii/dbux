@@ -12,9 +12,11 @@ const AbbrevAnchorsByAbbrev = {
   cgr: 'cgr',
   trace: 'trace',
   staticTrace: 'trace',
-  context: 'context'
+  context: 'context',
+  'asynchronous event': 'asynchronous-event'
 };
 
+const terminologyPath = 'advanced/terminology';
 
 function makeTermSrc(term) {
   const anchor = AbbrevAnchorsByAbbrev[term];
@@ -24,7 +26,7 @@ function makeTermSrc(term) {
 
   const baseUrl = useBaseUrl();
 
-  return `${baseUrl}advanced/terminology#${anchor}`;
+  return `${baseUrl}${terminologyPath}#${anchor}`;
 }
 
 /**
