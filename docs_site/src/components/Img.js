@@ -20,6 +20,9 @@ export default function Img({ src, title, zoomable, darkLight, screen, className
     if (!src.startsWith('screen') && !src.startsWith('/') && !src.includes('://')) {
       src = `screens/${src}`;
     }
+    if (zoomable === undefined) {
+      zoomable = true;
+    }
   }
   const actualSrc = useResourceSrc({ src, darkLight });
   // const actualSrc = src;

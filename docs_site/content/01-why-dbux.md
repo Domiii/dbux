@@ -5,9 +5,12 @@ slug: /
 
 # Dbux: What and Why?
 
+import Img from '@src/components/Img';
+import Term from '@src/components/Term';
+
 Dbux is an integrated debugging environment (IDbE) and omniscient debugger for JavaScript runtime analysis. We hope to help developers (i) improve program comprehension and (ii) increase debugging efficiency. To that end, Dbux records an application's runtime data, visualizes it and makes it interactive.
 
-TODO(improve + add architectural diagram)
+<Img screen src="dbux-all-async1.png" />
 
 <!-- https://docusaurus.io/docs/next/markdown-features/admonitions -->
 :::caution
@@ -69,7 +72,9 @@ TODO -->
 
 I started this project on 11/16/2019 because I felt that after programming/designing software, and debugging for 20 years, I have not fully mastered my craft. I would sometimes be stuck for 30 minutes or longer to **locate** a single bug. This frustration has not only led to the invention of Dbux, but to an exciting journey which brought about greater appreciation and many newly gained insights into the structures of the dynamic runtime execution of a program.
 
-These days, even when I debug without Dbux, I feel I start by strategizing, rather than "going with my gut". I am much more likely to reason about and even visualize many aspects of the structures hidden beneath each statement and expression. This includes its dynamic call sub-graph and the asynchronous events it was likely to have triggered or is affected by. It is my biased opinion that Dbux can be beneficial to many developers, not just by aiding runtime analysis, but also helping us re-evaluate our approach to debugging.
+It is my biased opinion that Dbux does NOT make you a great debugger. However, it can help us better see what is going on in our programs and can reveal the structures hidden beneath each statement and expression, including its synchronous and asynchronous call sub-graph.
+
+<!-- These days, I personally feel even when debugging without Dbux that I start by strategizing, rather than "going with my gut" and put together a priority queue of places to check, before taking the next step. -->
 
 
 <!-- Debugging is a quintessential task in the day-to-day life of a software developer. Something went wrong, and it is our job to fix it. Sometimes it is something that we did, sometimes it is someone else in our team, and sometimes it is under-documented, malfunctioning behavior or a regression in a dependency. Sometimes the bug is hiding in code we have recently been working on, sometimes it is hiding in code that we have almost entirely forgotten, sometimes it is hidden in the depth of the `node_modules` folder. -->
