@@ -8,7 +8,13 @@ slug: /
 import Img from '@src/components/Img';
 import Term from '@src/components/Term';
 
+
 Dbux is an integrated debugging environment (IDbE) and omniscient debugger for JavaScript runtime analysis. We hope to help developers (i) improve program comprehension and (ii) increase debugging efficiency. To that end, Dbux records an application's runtime data, visualizes it and makes it interactive.
+
+[This video]("https://www.youtube.com/watch?v=m1ANEuZJFT8) [20 min] <span className="color-gray">(too long and a bit outdated)</span> explains what Dbux is and shows two examples of how to use the [Dbux VSCode Extension](./04-tools-andconfiguration/01-dbux-code.mdx).
+<!-- <a href="https://www.youtube.com/watch?v=m1ANEuZJFT8" target="_blank" alt="video">
+   <img width="150px" src="https://img.youtube.com/vi/m1ANEuZJFT8/0.jpg" />
+</a> -->
 
 <Img screen src="dbux-all-async1.png" />
 
@@ -19,23 +25,19 @@ Dbux has a bit of a learning curve. We recommend programming beginners to start 
 If you have any questions, feel free to [join us on DISCORD](https://discord.gg/QKgq9ZE).
 :::
 
-This (too long) video explains what Dbux is and features two examples of how to use the Dbux VSCode extension:
 
-<a href="https://www.youtube.com/watch?v=m1ANEuZJFT8" target="_blank" alt="video">
-   <img width="150px" src="https://img.youtube.com/vi/m1ANEuZJFT8/0.jpg" />
-</a>
+## Dbux Features
 
-## Dbux: Features at a Glance
+<!-- TODO: make this part bigger and more visual -->
 
-<!-- TODO: make this section bigger and more visual -->
-
-* Dbux's [global view](./02-using-dbux/07-global.mdx) lists third-party modules, files and console log statements, and allow taking you to the relevant code in a single click
+* Dbux's [global view](./02-using-dbux/07-global.mdx) lists third-party modules, files and console log events. Takes user to the relevant code in a single click.
   * NOTE: While this eliminates the need for most of "[print-based debugging](https://www.google.com/search?q=print-based+debugging&hl=en)", it does not replace use of [proper logging](https://www.google.com/search?q=logging+programming+best+practices).
 * [Trace selection](./02-using-dbux/05-select-trace.mdx) and the [Trace Details view](./02-using-dbux/09-trace-details.mdx) allow overviewing and investigating all executions of any piece of code and their respective values.
-* Instead of only a call stack, Dbux presents us with the entire [call graph](./02-using-dbux/08-call-graph.mdx). A complete [asynchronous call stack](./02-using-dbux/08-call-graph.mdx#call-stack) is also available when needed.
+* Instead of only a call stack, Dbux presents us with the entire [call graph](./02-using-dbux/08-call-graph.mdx).
+  * A complete [asynchronous call stack](./02-using-dbux/08-call-graph.mdx#call-stack) is also available when needed.
 * Instead of using the traditional debugger as a "magnifying glass" to slowly crawl along the execution timeline, Dbux offers random-access [navigation](./02-using-dbux/09-trace-details.mdx#navigation), in both directions of the timeline.
 * [Code decorations](./02-using-dbux/04-code-augmentation.mdx) can make it a lot more obvious what code executed at all, and how.
-* Executed files, functions and values [can be searched](./02-using-dbux/10-search.mdx) for/through, culling a lot of noise when compared to code-based search.
+* Executed files, functions and values [can be searched](./02-using-dbux/10-search.mdx) for/through (culls a lot of noise when compared to code-based search).
 * [Data flow analysis](./02-using-dbux/11-data-flow.mdx) allows us to quickly trace the reads, writes and creation of a selected value. This can also take us to the place of creation of a value in a single click.
 
 

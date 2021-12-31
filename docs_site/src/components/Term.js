@@ -14,7 +14,8 @@ const AbbrevAnchorsByAbbrev = {
   staticTrace: 'trace',
   context: 'context',
   'asynchronous event': 'asynchronous-event',
-  'dynamic runtime analysis': 'dynamic-runtime-analysis'
+  'dynamic runtime analysis': 'dynamic-runtime-analysis',
+  idbe: 'idbe'
 };
 
 const terminologyPath = 'advanced/terminology';
