@@ -68,6 +68,32 @@ li > a.menu__link {
   vertical-align: middle;
 }
 
+.flex {
+  display: flex;
+  flex: 1;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.flex-row {
+  flex-direction: row;
+}
+
+.flex-center {
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.font-size-3 {
+  font-size: 3rem;
+}
+
+/* .flex-center {
+  justify-content: center;
+} */
+
 /** ###########################################################################
  * run-button
  * ############################################################################*/
@@ -108,3 +134,17 @@ li > a.menu__link {
    */
   content: url(/crosshair_red.svg);
 }
+
+/** ###########################################################################
+ * call-graph
+ * ############################################################################*/
+
+[data-theme=dark] .sidebar-call-graph a::before {
+  padding-right: 0.5rem;
+  content: url(/dark/tree.svg);
+}
+[data-theme=light] .sidebar-call-graph a::before {
+  padding-right: 0.5rem;
+  content: url(/light/tree.svg);
+}
+

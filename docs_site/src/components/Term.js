@@ -13,6 +13,7 @@ const AbbrevAnchorsByAbbrev = {
   trace: 'trace',
   staticTrace: 'trace',
   context: 'context',
+  'call graph': 'call-graph',
   'asynchronous event': 'asynchronous-event',
   'dynamic runtime analysis': 'dynamic-runtime-analysis',
   idbe: 'idbe'
@@ -21,7 +22,7 @@ const AbbrevAnchorsByAbbrev = {
 const terminologyPath = 'advanced/terminology';
 
 function makeTermSrc(term) {
-  const anchor = AbbrevAnchorsByAbbrev[term];
+  const anchor = AbbrevAnchorsByAbbrev[term.toLowerCase()];
   if (!anchor) {
     return null;
   }

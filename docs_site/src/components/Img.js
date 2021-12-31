@@ -38,13 +38,28 @@ export default function Img({ src, title, zoomable, darkLight, screen, className
     }
   );
 
-  const s = {
-    maxWidth: isString(maxWidth) ? `${maxWidth}px` : maxWidth,
-    ...style
-  };
+  let img = <img className={className} style={style} src={actualSrc} alt={alt} title={title} {...moreProps} />;
 
-  return (
-    // <Image img={actualSrc} {...moreProps} />
-    <img className={className} style={s} src={actualSrc} alt={alt} title={title} {...moreProps} />
-  );
+  if (maxWidth) {
+    maxWidth = !isString(maxWidth) ? `${maxWidth}px` : maxWidth;
+    /**
+     * Keep image responsive.
+     * 
+     * @see https://stackoverflow.com/questions/50193946/responsive-image-with-max-height-max-width/50194061
+     */
+    const containerStyle = {
+      display: 'inline-block',
+      maxWidth
+      //   /**
+      //    * @see https://stackoverflow.com/a/65690408
+      //    */
+      //   // objectFit: 'contain',
+    };
+
+    img = (
+      <div style={containerStyle}>{img}</div>
+    );
+  }
+
+  return img;
 }

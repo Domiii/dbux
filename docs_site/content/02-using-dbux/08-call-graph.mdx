@@ -1,82 +1,50 @@
 ---
 title: Call Graph
+sidebar_class_name: sidebar-call-graph
 ---
 
-# Call Graph <DarkLightImg src="call-graph.png" maxWidth={56} />
+# Call Graph <DarkLightImg src="tree.svg" width={56} />
 
 import CodeLink from '@src/components/CodeLink';
 import Term from '@src/components/Term';
 import Img from '@src/components/Img';
 import DarkLightImg from '@src/components/DarkLightImg';
 
-Most developers know the call stack: the list of all executed functions that have not yet concluded, at a certain point in time of our program's execution. The call stack, while useful, only paints a very narrow picture of our program. It can also be seen as a single slice of the <Term term="call graph" /> during [depth-first traversal](https://en.wikipedia.org/wiki/Depth-first_search).
+The call graph serves as a "runtime execution map": it provides a bird's eye overview of all file and function executions.
 
-<!-- 
-The <img src="https://domiii.github.io/dbux/dbux-code/resources/dark/" title="call graph" height="24px" width="24px" style="background-color: #1A1A1A"> Call Graph renders a bird's eye overview over all executed files and functions.
+Most developers know the **call stack**: the list of all executed functions that have not yet concluded, at a specific point in time. While useful, the call stack only represents a small fraction of our application. It is merely a small slice of the <Term term="call graph" /> during its [depth-first traversal](https://en.wikipedia.org/wiki/Depth-first_search).
 
-As an analogy, I would say that the call graph is like (a rather crude) "Google Maps" while the [trace details view](#trace-details) is (a rather crude) "Google Street View" of your application's execution. Together they offer a multi-resolutional interactive tool to see and find everything that is going on in your application.
 
-The timeline expands vertically, while execution depth goes into the horizontal.
-
-At the outer most level, you see individual "[Run](https://github.com/Domiii/dbux/tree/master/#run)" nodes.
-
-Each "Run" contains all (visible/recorded) "[Context](https://github.com/Domiii/dbux/tree/master/#context)" sub trees, that is all invocations of traced functions and files.
+## Why do we need a Call Graph?
 
 Call graph visualizations have many uses. E.g.:
 
-* overview the complex system that is our application.
-* quickly identify points of interests in code that is not our own.
-* visualize [recursion trees](https://www.google.com/search?q=recursion+trees), like in the screengrab below
+* Overview the complex system that is our application.
+* Identify points of interests in code that is not our own.
+* Find entry points of <Term term="asynchronous event">asynchronous events</Term>.
+* Visualize [recursion trees](https://www.google.com/search?q=recursion+trees), like in the screengrab of the [fibbonacci number](https://www.google.com/search?q=fibonacci+algorithm) generator below:
+  <Img screen src="call-graph-fib-1.png" maxWidth={600} />
+* ...and more...
 
-![call graph: fibonacci1](https://domiii.github.io/dbux/docs/img/call-graph-fib-1.png)
+As an analogy, the call graph can be seen as a (rather crude) "Google Maps" while the [trace details view](#trace-details) is (a rather crude) "Google Street View" of our applications' execution. Together, they offer a multi-resolutional interactive tool to investigate most aspects of runtime behavior.
 
-## Call Graph: pause (pause/resume live updates)
-
-* Dbux keeps recording and rendering all code execution in real-time, as long as an application (or website) is running.
-* During analysis, once we have recorded the bug (or other event of interest), we might not be interested in further updates.
-* Use the 🔴 button to pause/resume the rendering of new incoming data, so we can focus on what we already have.
-   * NOTE: You might be tempted into thinking that pausing with this button will stop all recording, however that is not what happens. Currently, Dbux keeps on recording for as long as the application is running. This button only hides that new data behind a single "Hidden Node". That inability to completely pause recording, can make things very slow and thus make debugging of games and other kinds of high performance applications very difficult. [You can read more about performance considerations here](https://github.com/Domiii/dbux/tree/master/#performance).
-
-
-## Call Graph: clear (show/hide already recorded traces)
-
-* The `x` button (`clear`) is useful for removing clutter when investigating a bug that does not appear immediately, or is not part of the initialization routine.
-* For example, when investigating a bug that happens after pressing some button (a "buggy button" if you will) in your application, you can:
-   1. wait for the application to finish initialization and for the "buggy button" to show up
-   1. press `x`
-   1. press your application's buggy button
-   1. (if necessary) wait until the bug occurs
-   1. press 🔴 (pause).
-* -> This lets you completely isolate the code that was executed when clicking that button, render only the relevant sub graph, while removing (hiding) all kinds of unrelated clutter.
-
-
-## Call Graph: sync (toggle sync mode)
-
-`sync` mode makes sure that while you select traces in and navigate through your code, the selected trace's context is always automatically expanded and in clear sight inside the Call Graph view.
-
-
-## Call Graph: loc
-
-Show/hide locations in context nodes.
-
-Clicking the location takes you there.
-
-## Call Graph: call
-
-Show/hide caller traces of all contexts that are function invocations.
-
-You can click the call trace to go there. You can `CTRL/Command` + `Click` it to select it. -->
 
 ## The Synchronous Call Graph
 
-When investigating an application without any asynchronous events, the call graph is best viewed in `Sync` mode. 
-By default, the synchronous call graph shows a list of all <Term term="cgr">call graph roots</Term>: the entry point of the application, as well as the starting point of any <Term term="asynchronous event" />. As more asynchronous events are recorded, more <Term term="cgr">CGRs</Term> are added to it.
+When investigating an application without any <Term term="asynchronous event">asynchronous events</Term>, the call graph is best viewed in `Sync` mode.
 
-In general, nodes each node represents the execution of a file or function, which we call <Term term="context">contexts</Term>.
+<Img screen src="dbux-all-longest-word.png" />
 
-TODO(virtual contexts + async explanations)
+By default, the synchronous call graph shows a list of all <Term term="CGR">call graph roots</Term>: the entry point of the application, as well as the starting point of any <Term term="asynchronous event" />, vertically sorted by time of recording (later is lower). The call graph updates in real-time: as more asynchronous events are recorded, more <Term term="CGR">CGRs</Term> are added to it.
 
-TODO: Sync graph children exclude [asynchronous continuations](#asynchronous-continuation).
+<Term term="CGR">CGRs</Term> can have sub-trees, where each node represents the execution of a file or function that was called by its parent node. Conventionally, this is referred to as a "stack frame". We usually refer to these nodes as <Term term="context">contexts</Term>
+
+
+<div className="flex flex-col flex-center font-size-3">
+  <Img screen src="call_graph_1_one_root.png" maxWidth={300} />
+  <div className="">&darr;</div>
+  <Img screen src="call_graph_2_expanded.png" maxWidth={400} />
+</div>
 
 Non-empty nodes have two (of three) buttons to their left:
 
@@ -85,14 +53,16 @@ Non-empty nodes have two (of three) buttons to their left:
 * TODO(icon) one to collapse the node.
 
 
-TODO(pics)
-
-TODO(explain call graph behavior of (different types of) modules)
+<!-- TODO(explain call graph behavior of (different types of) modules) -->
 
 
 ## Async Call Graph
 
 TODO
+
+TODO(virtual contexts + async explanations)
+
+TODO: Sync graph children exclude [asynchronous continuations](#asynchronous-continuation).
 
 
 ### Asynchronous Continuation
@@ -102,22 +72,72 @@ TODO: decide where to define all this (considering that it is actually terminolo
 
 ## Toolbar
 
-### Details
 
-In `async` mode, disabling `Details` visually compacts the graph. This is used to better expose high-level patterns between <Term term="cgr">CGRs</Term>. One can probably best see the "big picture" by disabling `Details` and then zooming out.
+### value
+
+TODO
+
+### loc
+
+Show/hide locations in context nodes.
+
+Clicking the location takes you there.
+
+### call
+
+Show/hide caller traces of all contexts that are function invocations.
+
+You can click the call trace to go there. You can `CTRL/Command` + `Click` it to select it.
+
+### details
+
+In `async` mode, disabling `Details` visually compacts the graph. This is used to better expose high-level patterns between <Term term="CGR">CGRs</Term>. One can probably best see the "big picture" by disabling `Details` and then zooming out.
 
 `Details` currently does nothing in [sync](#sync-call-graph) mode.
 
 
 
-## Implementation Details
+### Call Graph: pause/resume/clear
+
+These features lets you isolate the part of the call graph responsible for executing specific events (such as clicking a buggy button), while removing (hiding) all kinds of unrelated clutter.
+
+#### <span className="color-red">🔴</span> pause/resume
+
+Use the 🔴 button to pause/resume the rendering of new incoming data, so we can focus on what we already have.
+This is useful to prevent cluttering the call graph with events that get recorded once we have recorded the bug (or other event of interest).
+
+For example, when investigating a bug that happens after pressing some button (a "buggy button" if you will) in your application, you can:
+
+1. Wait for the application to finish initialization and for the "buggy button" to show up.
+2. Press `x`.
+3. Press a buggy button.
+4. (if necessary) Wait until the bug occurs.
+5. Press 🔴 (pause).
+
+
+:::caution
+You might be tempted into thinking that pausing with this button will stop all recording, however that is not what happens. Currently, Dbux keeps on recording for as long as the application is running. This button only hides that new data behind a single "Hidden Node". That inability to completely pause recording, can make things very slow and thus make debugging of games and other kinds of high performance applications very difficult. [You can read more about performance considerations here](https://github.com/Domiii/dbux/tree/master/#performance).
+:::
+
+
+#### `x` Clear (show/hide already recorded traces)
+
+The clear button (`x`) is useful for removing clutter when investigating a bug that does not appear immediately, or is not part of the initialization routine.
+
+
+
+## Call Graph Implementation Details
 
 A few more notes on the Call Graph GUI implementation:
 
-* The Call Graph is implemented as a WebView.
-* Inside of `dbux-code`, the graph is hosted in <CodeLink path="dbux-code/src/webViews/graphWebView.js" />
-* The Call Graph consists of three modules <CodeLink path="dbux-graph-common" />, <CodeLink path="dbux-graph-client" /> and <CodeLink path="dbux-graph-host" />.
-* Client and host are running in separated runtimes, and they share the graph-common module for any code sharing between the two.
+* The Call Graph is implemented as a [VSCode WebView](https://code.visualstudio.com/api/extension-guides/webview).
+  * Inside of `dbux-code`, the graph is defined in <CodeLink path="dbux-code/src/webViews/graphWebView.js" />
+* The Call Graph consists of three modules:
+  * <CodeLink path="dbux-graph-common" />
+  * <CodeLink path="dbux-graph-client" />
+  * <CodeLink path="dbux-graph-host" />
+* Client and host are running in separate runtimes. They share the `graph-common` module.
+  * For a better call graph experience, we developed an IPC-first component system to easily render things on the client, while allowing us to control it from the host. Its implementation can be found in the three modules' `src/componentLib` folders.
   * Theoretically, the client can also be rendered independent of VSCode, on a website, in an iframe etc.
-* We developed an IPC-first component system to easily render things on the client, while allowing us to control it from the host.
-* `client` and `host` communicate via a supplied `IpcAdapter` which must provide two functions (whose implementation depends on the environment that they run in): `onMessage` and `postMessage`.
+    * `client` and `host` communicate via a `IpcAdapter` which must provide two functions (whose implementation depends on the environment that they run in): `onMessage` and `postMessage`.
+    * The custom client would require its own `IpcAdapter` implementation. `dbux-code`'s can be found in <CodeLink path="dbux-code/src/codeUtil/WebviewWrapper.js" />.

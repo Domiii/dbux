@@ -10,7 +10,6 @@ const defaultColumn = ViewColumn.Two;
 
 export default class GraphWebView extends RichWebView {
   constructor() {
-    // 'Call Graph'
     super(GraphHost, 'dbux-graph', defaultColumn);
   }
 
