@@ -13,7 +13,8 @@ const AbbrevAnchorsByAbbrev = {
   trace: 'trace',
   staticTrace: 'trace',
   context: 'context',
-  'asynchronous event': 'asynchronous-event'
+  'asynchronous event': 'asynchronous-event',
+  'dynamic runtime analysis': 'dynamic-runtime-analysis'
 };
 
 const terminologyPath = 'advanced/terminology';
