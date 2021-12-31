@@ -11,7 +11,10 @@ For more information, please refer to [our documentation](https://domiii.github.
 The Dbux VSCode Extension documentation explaining its commands and configuration can be found at:
 https://domiii.github.io/dbux/tools-and-configuration/dbux-code
 
-![Dbux Architecture](../docs_site/dbux_img/architecture-v001.png)
+
+![Dbux Screenshot](../docs_site/dbux_img/screens/dbux-all-async1.png)
+
+<!-- ![Dbux Architecture](../docs_site/dbux_img/architecture-v001.png) -->
 
 
 TODO(move commands + config entries to `docs_site`)
