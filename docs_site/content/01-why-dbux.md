@@ -14,7 +14,7 @@ Dbux is an integrated debugging environment (IDbE) and omniscient debugger for J
 
 <!-- https://docusaurus.io/docs/next/markdown-features/admonitions -->
 :::caution
-Dbux might be a bit difficult to get into in the beginning. We strongly recommend to start with the [interactive tutorials](./03-dbux-practice/02-tutorial.md).
+Dbux has a bit of a learning curve. We recommend programming beginners to start with the [interactive tutorials](./03-dbux-practice/02-tutorial.md).
 
 If you have any questions, feel free to [join us on DISCORD](https://discord.gg/QKgq9ZE).
 :::
