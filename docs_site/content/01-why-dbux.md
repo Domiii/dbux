@@ -11,7 +11,7 @@ import Term from '@src/components/Term';
 
 Dbux is an integrated debugging environment (IDbE) and omniscient debugger for JavaScript runtime analysis. We hope to help developers (i) improve program comprehension and (ii) increase debugging efficiency. To that end, Dbux records an application's runtime data, visualizes it and makes it interactive.
 
-[This video]("https://www.youtube.com/watch?v=m1ANEuZJFT8) [20 min] <span className="color-gray">(too long and a bit outdated)</span> explains what Dbux is and shows two examples of how to use the [Dbux VSCode Extension](./04-tools-andconfiguration/01-dbux-code.mdx).
+[This video](https://www.youtube.com/watch?v=m1ANEuZJFT8) [20 min] <span className="color-gray">(too long and a bit outdated)</span> explains what Dbux is and shows two examples of how to use the [Dbux VSCode Extension](./04-tools-and-configuration/01-dbux-code.mdx).
 <!-- <a href="https://www.youtube.com/watch?v=m1ANEuZJFT8" target="_blank" alt="video">
    <img width="150px" src="https://img.youtube.com/vi/m1ANEuZJFT8/0.jpg" />
 </a> -->
@@ -36,7 +36,7 @@ If you have any questions, feel free to [join us on DISCORD](https://discord.gg/
 * Instead of only a call stack, Dbux presents us with the entire [call graph](./02-using-dbux/08-call-graph.mdx).
   * A complete [asynchronous call stack](./02-using-dbux/08-call-graph.mdx#call-stack) is also available when needed.
 * Instead of using the traditional debugger as a "magnifying glass" to slowly crawl along the execution timeline, Dbux offers random-access [navigation](./02-using-dbux/09-trace-details.mdx#navigation), in both directions of the timeline.
-* [Code decorations](./02-using-dbux/04-code-augmentation.mdx) can make it a lot more obvious what code executed at all, and how.
+* [Code decorations](./02-using-dbux/04-code-decorations.mdx) can make it a lot more obvious what code executed at all, and how.
 * Executed files, functions and values [can be searched](./02-using-dbux/10-search.mdx) for/through (culls a lot of noise when compared to code-based search).
 * [Data flow analysis](./02-using-dbux/11-data-flow.mdx) allows us to quickly trace the reads, writes and creation of a selected value. This can also take us to the place of creation of a value in a single click.
 
@@ -62,7 +62,7 @@ We argue: this approach to debugging is of course **not bad**. Our goal is not t
 
 Dbux is an [omniscient debugger](https://scholar.google.com/scholar?hl=en&as_sdt=0%2C5&q=omniscient+debugger), meaning it automatically gathers and visualizes your application's runtime behavior, and makes it interactive. The term "omniscient" (meaning "**all-knowing**") is a quirky exaggeration (it does not know your grandma's birthday). By default, it records the beginning and end of all executed files and functions, all asynchronous events and the entire trace log, meaning (almost) all statements and expressions and their values.
 
-All that data is then available for the developer to inspect and interact with, as explained in the [Using Dbux](./02-using-dbux/02-enable-dbux.mdx) chapter. We decided that the diversity and depth of the tools available in the [Dbux VSCode Extension](./04-tools-andconfiguration/01-dbux-code.mdx) might warrant the title of **IDbE**: <Term term="idbe">Integrated Debugging Environment</Term> (not to be confused with [IDE](https://en.wikipedia.org/wiki/Integrated_development_environment)).
+All that data is then available for the developer to inspect and interact with, as explained in the [Using Dbux](./02-using-dbux/02-enable-dbux.mdx) chapter. We decided that the diversity and depth of the tools available in the [Dbux VSCode Extension](./04-tools-and-configuration/01-dbux-code.mdx) might warrant the title of **IDbE**: <Term term="idbe">Integrated Debugging Environment</Term> (not to be confused with [IDE](https://en.wikipedia.org/wiki/Integrated_development_environment)).
 
 
 
