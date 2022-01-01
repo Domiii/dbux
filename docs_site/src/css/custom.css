@@ -90,6 +90,10 @@ li > a.menu__link {
   font-size: 3rem;
 }
 
+.no-wrap {
+  white-space: nowrap;
+}
+
 /* .flex-center {
   justify-content: center;
 } */
@@ -113,11 +117,11 @@ li > a.menu__link {
 /**
  * @see https://stackoverflow.com/questions/68412480/how-to-add-icon-to-docusaurus-sidebar-group-or-item/70423077#70423077
  */
-[data-theme=dark] .run-button a::before {
+[data-theme="dark"] .run-button a::before {
   padding-right: 0.5rem;
   content: url(/dark/play.svg);
 }
-[data-theme=light] .run-button a::before {
+[data-theme="light"] .run-button a::before {
   padding-right: 0.5rem;
   content: url(/light/play.svg);
 }
@@ -139,12 +143,11 @@ li > a.menu__link {
  * call-graph
  * ############################################################################*/
 
-[data-theme=dark] .sidebar-call-graph a::before {
+[data-theme="dark"] .sidebar-call-graph a::before {
   padding-right: 0.5rem;
   content: url(/dark/tree.svg);
 }
-[data-theme=light] .sidebar-call-graph a::before {
+[data-theme="light"] .sidebar-call-graph a::before {
   padding-right: 0.5rem;
   content: url(/light/tree.svg);
 }
-

@@ -6,7 +6,7 @@
   },
   {
     "command": "dbux.debugFile",
-    "title": "Dbux: Debug current file",
+    "title": "Dbux: Debug Current File",
     "description": "Run selected file with Dbux, but with Node's `--inspect-brk` enabled. Make sure to enable VSCode's auto attach beforehand."
   },
   {
@@ -32,7 +32,7 @@
   {
     "command": "dbux.hideDecorations",
     "title": "Dbux: Hide Code Decorations",
-    "description": "Do not annotate executed code with Dbux code decorations (<span style='color:red'>✦↱</span><span style='color:orange'>🔥ƒ</span> etc)."
+    "description": "Do not annotate executed code with Dbux code decorations (<span className=\"color-red\">✦↱</span><span className=\"color-orange\">🔥ƒ</span> etc)."
   },
   {
     "command": "dbux.hideGraphView",
@@ -76,7 +76,7 @@
   },
   {
     "command": "dbux.runFile",
-    "title": "Dbux: Run current file",
+    "title": "Dbux: Run Current File",
     "description": "Run selected file with Dbux"
   },
   {

@@ -22,17 +22,18 @@ function readCodePackageJson() {
   return readPackageJson(getDbuxPath('dbux-code'));
 }
 
+function writeJsonFile(fpath, obj) {
+  const s = JSON.stringify(obj, null, 2);
+  fs.writeFileSync(fpath, s);
+}
+
 function readJsonFile(fpath) {
   const content = fs.readFileSync(fpath);
   return JSON.parse(content);
 }
 
-function writeJsonFile(fpath, data) {
-  fs.writeFileSync(fpath, JSON.stringify(data, null, 2));
-}
 
-
-module.exports = function getDbuxCodePackageData() {
+module.exports = function updateAndGetDbuxCodePackageData() {
   const commandJsonPath = getDbuxCodePackageJsonPath();
   const packageJson = readCodePackageJson();
   const commandJson = readJsonFile(commandJsonPath);
@@ -101,8 +102,10 @@ module.exports = function getDbuxCodePackageData() {
     return 0;
   });
 
-  // writeJsonFile(commandJsonPath, userCommandsToWrite);
+  // write to file
+  writeJsonFile(commandJsonPath, commandData);
 
+  // return
   return commandData;
 };
 

@@ -28,7 +28,7 @@
       "type": "shell",
       "command": "yarn",
       "args": [
-        "write-dbux-code-docs-md"
+        "update-dbux-code-docs"
       ],
       "problemMatcher": []
     },

@@ -87,7 +87,7 @@
     "watch:prod": "node --stack-trace-limit=1000 -- ./node_modules/webpack/bin/webpack.js watch --mode production",
     "build:dev": "yarn run version:dev && yarn run build:clean && yarn run graph:build:dev && node --stack-trace-limit=1000 -- ./node_modules/webpack/bin/webpack.js --mode development",
     "build:prod": "yarn run build:clean && yarn run graph:build:prod && node --stack-trace-limit=1000 -- ./node_modules/webpack/bin/webpack.js build --mode production",
-    "write-dbux-code-docs-md": "node ./scripts/docs/writeDbuxCodeMd.js",
+    "update-dbux-code-docs": "cd dbux-code && yarn update-docs",
     "__old__readme": "cd dbux-code && yarn run readme",
     "graph:watch": "cd dbux-graph-client && npm start",
     "graph:watch:prod": "cd dbux-graph-client && yarn run start:prod",

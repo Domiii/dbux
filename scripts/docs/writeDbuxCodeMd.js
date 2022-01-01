@@ -11,7 +11,7 @@ const isString = require('lodash/isString');
 const mapValues = require('lodash/mapValues');
 const tablemark = require('tablemark');
 const path = require('path');
-const getDbuxCodePackageData = require('./getDbuxCodePackageData');
+const updateAndGetDbuxCodePackageData = require('./updateAndGetDbuxCodePackageData');
 
 const { readPackageJson } = require('../../dbux-cli/lib/package-util');
 
@@ -38,7 +38,7 @@ function readJsonFile(fpath) {
  * ##########################################################################*/
 
 function genCommandsMd() {
-  const commands = getDbuxCodePackageData()
+  const commands = updateAndGetDbuxCodePackageData()
     .filter(cmd => !cmd.dev);
 
   return tablemark(commands);
@@ -56,7 +56,7 @@ function genConfigMd() {
     // console.debug('cfg', key, val, val === '--esnext');
     if (val === '--esnext') {
       // hackfix
-      return "<span style='white-space:nowrap;'>--esnext</span>";
+      return "<span className=\"no-wrap\">--esnext</span>";
     }
     return isString(val) ? val : JSON.stringify(val);
   }
@@ -74,8 +74,11 @@ function genConfigMd() {
 }
 
 /**
+ * NOTE: we have the extra commands.json step, so we can manually annotate the `commands.json` file
+ * with descriptions etc.
+ * 
  * Steps:
- * 1. read `package.json` -> write `_dbux-code-commands.mdx`
+ * 1. read `package.json` -> update->edit->read `commands.json` -> write `_dbux-code-commands.mdx`
  * 2. read `package.json` -> write `_dbux-code-config.mdx`
  */
 function writeDbuxCodeMd() {
