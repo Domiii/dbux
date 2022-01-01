@@ -16,8 +16,7 @@ const config = {
   url: 'https://domiii.github.io',
   baseUrl,
 
-  projectName: 'Dbux', // Usually your repo name.
-  organizationName: 'realworld-debugging', // Usually your GitHub org/user name.
+  projectName: 'dbux', // Usually your repo name.
   favicon: 'img/favicon.ico',
 
   trailingSlash: false,
@@ -29,7 +28,7 @@ const config = {
    */
   staticDirectories: [
     'public',
-    'static', 
+    'static',
     path.resolve(DbuxRoot, 'dbux-code/resources'),
     path.resolve(__dirname, 'dbux_img')
   ],
@@ -143,6 +142,16 @@ const config = {
         darkTheme: darkCodeTheme,
       },
     }),
+
+  /** ###########################################################################
+   * deployment
+   * @see https://docusaurus.io/docs/deployment#deploying-to-github-pages
+   * ##########################################################################*/
+
+  // organizationName: 'real-world-debugging', // Usually your GitHub org/user name.
+  organizationName: 'Domiii', // Usually your GitHub org/user name.
+  deploymentBranch: 'master'
+
 };
 
 module.exports = config;
