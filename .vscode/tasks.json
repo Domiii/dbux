@@ -24,6 +24,15 @@
       "problemMatcher": []
     },
     {
+      "label": "Write dbux-code docs partials",
+      "type": "shell",
+      "command": "yarn",
+      "args": [
+        "write-dbux-code-docs-md"
+      ],
+      "problemMatcher": []
+    },
+    {
       "label": "Test shell",
       "type": "shell",
       "command": "bash",
@@ -31,14 +40,6 @@
         "-lc",
         "--",
         "echo $PATH && node -v"
-      ]
-    },
-    {
-      "label": "Test node",
-      "type": "shell",
-      "command": "node",
-      "args": [
-        "-v"
       ]
     },
     {

@@ -1447,7 +1447,6 @@
     "vscode:prepublish": "",
     "uninstallself": "bash ../scripts/code-uninstall.sh",
     "reinstallself": "yarn uninstallself && bash ../scripts/code-install.sh",
-    "readme": "echo 'Updating README.md...' && node ../scripts/replaceReadmeAnnotations.js",
     "watch": "node ../node_modules/webpack/bin/webpack.js watch",
     "build+pkg": "yarn build:prod && yarn package-no-build ",
     "build:dev": "node ../node_modules/webpack/bin/webpack.js build --mode=development",
