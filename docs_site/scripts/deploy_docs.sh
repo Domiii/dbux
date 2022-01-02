@@ -16,10 +16,10 @@ yarn build
 
 # TODO: get user input first
 echo "Docs Built. You are on branch=$branch."
-echo "Deploy? [y/N]"
+echo "Deploy? [Y/n]"
 read ok
 
-if [ "$ok" != "y" ]; then
+if [ "$ok" != "" & "$ok" != "y" ]; then
   exit -1
 fi
 
