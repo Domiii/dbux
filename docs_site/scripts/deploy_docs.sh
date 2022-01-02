@@ -3,9 +3,7 @@ set -e
 branch=$(git symbolic-ref --short HEAD)
 
 if [ "$branch" != "master" ]; then
-  echo "You are on the wrong branch."
-  echo "  Expected=master"
-  echo "  Actual  =$branch"
+  echo "You are on the wrong branch: expected=master, actual=$branch"
   exit -1
 fi
 
@@ -31,4 +29,4 @@ git add -A
 git commit -am "[deploy docs]"
 git push
 
-echo 'Done!'
+echo 'Docs deployed successfully.'

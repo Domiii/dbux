@@ -10,7 +10,7 @@
     "build": "yarn update-docs && docusaurus build --out-dir ../docs",
     "swizzle": "docusaurus swizzle",
     "_deploy_orig": "yarn update-docs && docusaurus deploy --out-dir ../docs",
-    "deploy": "bash ./deploy_docs.sh",
+    "deploy": "bash ./scripts/deploy_docs.sh",
     "clear": "docusaurus clear",
     "serve": "docusaurus serve --dir=../docs",
     "write-translations": "docusaurus write-translations",
