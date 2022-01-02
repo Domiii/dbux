@@ -1,5 +1,6 @@
 # Global View
 
+import Img from '@src/components/Img';
 import DarkLightImg from '@src/components/DarkLightImg';
 
 The Global View allows quickly navigating global events and their data, including:
@@ -10,7 +11,7 @@ TODO(screenshots)
 
 Lists all thrown errors in the program. The children of each node are stack frames that were interrupted by this error:
 
-TODO(screen)
+TODO(screenshot)
 
 In case of errors, the `Error button` <DarkLightImg src="fire.svg" /> also shows up in two places:
 * At the top right in VSCode (to the right of the editor tabs).
@@ -30,13 +31,24 @@ The "interrupted stack frame" children might be incorrect when multiple errors o
 Lists all console output events, such as `console.debug`, `console.log`, `console.warn`, `console.error` etc.
 Clicking each event, takes you to the code where the event was recorded.
 
-TODO(screenshot)
+<Img screen src="global-console-sample1.png" maxWidth={600} />
+
+:::tip
+Hover over each node to see the complete message, as well as the code that triggered it and its location.
+:::
 
 ## Modules
 
 Lists all executed packages and all their executed files/modules/script-tags.
 
-TODO(screenshot)
+* `(application)` is our own application's code.
+* Packages and files are (by default) ordered by first time of execution (except for "`(application)`").
+
+<Img screen src="global-modules-sample1.png" maxWidth={300} />
+
+:::note
+The above screenshot features `debug` twice. That is because the application loaded `debug` twice, each from two different locations ([more info here](https://stackoverflow.com/questions/42147243/how-does-npm-handle-version-conflicts)). Often times, this is not going to cause any trouble, but it has the potential to cause dependency conflicts since modules/packages should be uniquely identifiable by their name. Dbux can help discover these types of issues.
+:::
 
 
 ## Debug

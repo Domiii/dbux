@@ -2,31 +2,31 @@
 
 import CodeLink from '@src/components/CodeLink';
 
-`@dbux/runtime` collects fine-grained JavaScript runtime data, which is then received by the [runtime server](../tools-and-configuration/dbux-code#runtime-server), where it gets stored in memory. If you are interested in analyzing this data programmatically:
+Dbux provides several tools for manual data analysis. However, this page explains how to use **advanced data analysis tools and techniques**.
 
-1. You generally want to start by exporting the data. You can get the data using the `"Dbux: Export Application Data"` command[^1].
-2. <CodeLink path="dbux-data" /> is our main data processing JavaScript package. We use it to preprocess and manage all runtime data. <CodeLink path="dbux-code" /> uses its preprocessed data for visualization and user interactions.
-3. <CodeLink path="analysis" /> contains a few Python functions and notebooks for rudimentary analysis on extracted data for testing and development purposes. NOTE: This approach is not matured and, unlike `@dbux/data`, has almost no Dbux-specific data processing utilities.
+1. You probably want to start by exporting the data, using the `"Dbux: Export Application Data"` command[^1].
+2. &#8203<CodeLink path="dbux-data" /> is our main data processing JavaScript package. We use it to preprocess and manage all runtime data. <CodeLink path="dbux-code" /> uses <CodeLink path="dbux-data" />'s preprocessed data for visualization and user interactions.
+4. &#8203<CodeLink path="analysis" /> contains a few Python functions and example notebooks that use extracted data for testing and development purposes. NOTE: This package is not matured and, unlike `@dbux/data`, has almost no Dbux-specific data processing utilities. More details [below](#python-experiments).
 
-In summary: If you want to try custom data analysis on Dbux data, we strongly recommend using `@dbux/data`, but other approaches can of course work just as well. Make sure to give it a good try, and feel free to complain or otherwise report back to us on the [Dbux DISCORD](https://discord.gg/QKgq9ZE).
-
-(Also see https://github.com/Domiii/dbux/issues/208.)
+Make sure to give it a good try, and feel free to complain or otherwise report back to us on the [Dbux DISCORD](https://discord.gg/QKgq9ZE).
 
 
 ## Python Experiments
 
-In the `analyze/` folder, you find several python notebooks that allow you analyze the data that `dbux` generates. Here is how you set that up:
+In the `analyze/` folder, you find several example notebooks that allow you to analyze the data that `dbux` generates. Here is how you set that up:
 
 1. Run some program with Dbux enabled (e.g. `samples/[...]/oop1.js`)
 2. In VSCode `Run Command` (`CTRL/Command + SHIFT + P`) -> `Dbux: Export Application Data`
 3. Make sure you have Python + Jupyter setup
    * Windows
-      * [Install `Anaconda` with `chocolatey`](https://chocolatey.org/packages/anaconda3)
-      * Set your `%PYTHONPATH%` in system config to your Anaconda `Lib` + `DLLs` folders (e.g. `C:\tools\Anaconda3\Lib;C:\tools\Anaconda3\DLLs;`)
-      * Done!
+      1. [Install `Anaconda` with `chocolatey`](https://chocolatey.org/packages/anaconda3)
+      1. Set your `%PYTHONPATH%` in system config to your Anaconda `Lib` + `DLLs` folders (e.g. `C:\tools\Anaconda3\Lib;C:\tools\Anaconda3\DLLs;`)
+      1. Done!
    * TODO: Other OS'es
 4. Run one of the notebooks, load the file, and analyze.
 
 NOTE: this is not currently well maintained. Make sure to [reach out](https://discord.gg/QKgq9ZE), if things go wrong.
 
-[^1]: <CodeLink path="dbux-code" link="src/codeUtil/codeExport.js" />
+PS: If you want more/better support for automatic data analysis, please let us know on Discord and also feel free to up-vote [this issue](https://github.com/Domiii/dbux/issues/208).
+
+[^1]: <CodeLink path="dbux-data/src/applications/importExport.js" />

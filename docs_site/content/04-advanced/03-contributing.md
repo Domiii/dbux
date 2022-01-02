@@ -82,9 +82,17 @@ mklink /J ..\..\node_modules\@dbux\runtime ..\..\..\dbux\dbux-runtime
 While you can certainly try to get started on your own, you probably make your life a lot easier by [join the dev team on Discord](https://discord.gg/8kR2a7h) first :)
 
 
-## VSCode extension development
+## Dealing with Documentation
 
-### Adding a command/button
+* `react` followed by `md` in the same line does not format correctly: https://github.com/mdx-js/mdx/discussions/1876
+  * Add `&#8203` in front of the line.
+
+
+## Unsorted Notes
+
+### VSCode extension development
+
+#### Adding a command/button
 
 (VSCode's buttons are representation of commands, you must add a command before adding a button)
 
@@ -197,10 +205,3 @@ While you can certainly try to get started on your own, you probably make your l
 
 TODO: more to be said here in the future (consider https://gist.github.com/PurpleBooth/b24679402957c63ec426)
 
-
-
-
-
-## Joining the Community
-
-While you can certainly try to get started on your own, you probably make your life a lot easier by joining the dev team on [DISCORD](https://discord.gg/8kR2a7h) first :)

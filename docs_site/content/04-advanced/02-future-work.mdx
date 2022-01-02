@@ -67,9 +67,10 @@ This includes:
 
 ## Function.prototype.toString and Function.name do not behave as expected
 
-Because we instrument the function body, and sometimes even change the structure of functions, to allow better tracing their behavior, their `myFunc.toString()` is not what you expect it to be. `name` on the other hand should always survive (or so we hope).
+Because we instrument the function body, and sometimes even change the structure of functions, to allow better tracing their behavior, their `myFunc.toString()` is not what you expect it to be. `name` on the other hand should always survive (please [report an issue](https://github.com/Domiii/dbux/issues/new/choose) if not).
 
-This is only of concern to those who rely on serializing and deserializing functions, e.g. for sending functions of to run in a `webworker` ([related discussion here](https://stackoverflow.com/questions/11354992/why-cant-web-worker-call-a-function-directly)).
+(This is only of concern to those who rely on serializing and deserializing functions. E.g. for sending functions of to run in a `webworker`[*](https://stackoverflow.com/questions/11354992/why-cant-web-worker-call-a-function-directly) etc.)
+
 
 ## Issues on Windows
 
@@ -80,16 +81,17 @@ This is only of concern to those who rely on serializing and deserializing funct
    * Official bug report: https://github.com/microsoft/vscode/issues/9448
    * Workaround: Restart your computer (can help!), run command in external `cmd` or find a better behaving shell/terminal.
 
-## SyntaxError: Unexpected reserved word 'XX'
+<!-- ## SyntaxError: Unexpected reserved word 'XX'
 
-Example: When just running `var public = 3;` in `node` or the browser, you don't get an error. However when running the same code with [@dbux/cli](../tools-and-configuration/dbux-cli) (which is also invoked when pressing the `Dbux VSCode Extension`'s "Run with Dbux" button), it throws a synxtax error.
+Example: When running `var public = 3;` in `node` or the browser, you don't get an error. However, when running the same code with [@dbux/cli](../tools-and-configuration/dbux-cli) (which is also invoked when pressing the `Dbux VSCode Extension`'s "Run with Dbux" button) with `--esnext` enabled, it might throw a SyntaxError.
 
 -> That is because it is interpreted as `"use strict"; var public = 3;`.
 
-* Why?
-   1. `public` (and others) are reserved keywords and using reserved keywords is only an error in **strict mode** ([relevant discussion here](https://stackoverflow.com/questions/6458935/just-how-reserved-are-the-words-private-and-public-in-javascript)).
-   2. [@dbux/cli](../tools-and-configuration/dbux-cli) uses [@babel/register](https://babeljs.io/docs/en/babel-register) with a bunch of default settings.
-   3. By default, `babel` treats `*.js` files as [ESModules](https://nodejs.org/api/esm.html) (or `esm`s), and ESModules have `strict mode` enabled by default. This is also discussed here: https://github.com/babel/babel/issues/7910
+More explanations:
+
+1. `public` (and others) are reserved keywords and using reserved keywords result in an error in **strict mode** ([relevant discussion here](https://stackoverflow.com/questions/6458935/just-how-reserved-are-the-words-private-and-public-in-javascript)).
+2. [@dbux/cli](../tools-and-configuration/dbux-cli) uses [@babel/register](https://babeljs.io/docs/en/babel-register) with a bunch of default settings.
+3. By default, `plugin-transform-modules-commonjs` treats `*.js` files as [ESModules](https://nodejs.org/api/esm.html) (or `esm`s), and ESModules have `strict mode` enabled by default. This is also discussed here: https://github.com/babel/babel/issues/7910 -->
 
 
 ## More Future Work
