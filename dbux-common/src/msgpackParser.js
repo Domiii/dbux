@@ -98,9 +98,10 @@ var isObject = function (value) {
 function Encoder() { }
 
 function printTimer(what, timer, buffer) {
-  if (buffer.length > 1e8) {
-    timer.print(debug, `${what} (not small buffer): ${Math.round(buffer.length / 1000).toLocaleString('en-us')} kb`);
-  }
+  // if (buffer.length > 1e8) {
+  const msg = buffer.length > 1e8 ? ' (buffer NOT SMALL)' : '';
+  timer.print(debug, `${what}${msg}: ${Math.round(buffer.length / 1000).toLocaleString('en-us')} kb`);
+  // }
 }
 
 Encoder.prototype.encode = function (packet) {
@@ -177,7 +178,8 @@ Decoder.prototype.checkPacket = function (decoded) {
 
 Decoder.prototype.destroy = function () { };
 
-export default {
+const msgpackParser = {
   Encoder,
   Decoder
 };
+export default msgpackParser;

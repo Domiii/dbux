@@ -98,7 +98,7 @@ export default class AsyncNodeCollection extends Collection {
 
     if (entries.length) {
       this.logger.debug(`addUnassignedNodes (${entries.length}):`,
-        entries.map(asyncNode => asyncNode.rootContextId).join(','));
+        entries.map(asyncNode => asyncNode.rootContextId).join(', '));
     }
 
     this.addEntriesPostAdd(entries);
