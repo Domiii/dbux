@@ -13,11 +13,11 @@ export async function showHelp(message) {
       return env.openExternal(Uri.parse('https://discord.gg/jWN356W'));
     },
     async [translate('showHelp.manual')]() {
-      return env.openExternal(Uri.parse('https://github.com/Domiii/dbux#readme'));
+      return env.openExternal(Uri.parse('https://domiii.github.io/dbux/'));
     },
-    async [translate('showHelp.readDbux')]() {
-      return env.openExternal(Uri.parse('https://github.com/Domiii/dbux#known-limitations'));
-    },
+    // async [translate('showHelp.readDbux')]() {
+    //   return env.openExternal(Uri.parse('https://github.com/Domiii/dbux#known-limitations'));
+    // },
     async [translate('showHelp.report')]() {
       return env.openExternal(Uri.parse('https://github.com/Domiii/dbux/issues'));
     }
