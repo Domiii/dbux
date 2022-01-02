@@ -4,8 +4,8 @@ import {
 
 import allApplications from '@dbux/data/src/applications/allApplications';
 // import { showTextDocument } from './codeNav';
-import { showInformationMessage, showWarningMessage } from './codeModals';
-import { CodeApplication, getSelectedApplicationInActiveEditor } from './CodeApplication';
+import { showInformationMessage, showWarningMessage } from '../codeUtil/codeModals';
+import { CodeApplication, getSelectedApplicationInActiveEditor } from '../codeUtil/CodeApplication';
 
 
 /**

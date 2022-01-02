@@ -57,7 +57,7 @@ export default class PackageQuery extends SubscribableQuery {
           // default package
           order = 1;
           packageId = {
-            name: '(default package)',
+            name: '(application)',
             folder: this.dp.application.getAppCommonAncestorPath() // TODO!
           };
         }

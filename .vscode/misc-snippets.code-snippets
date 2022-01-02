@@ -141,5 +141,12 @@
       "/** @typedef {import('$1').$0} $0 */"
     ],
     "scope": "javascript,typescript"
-  }
+  },
+  "md-invisible-space": {
+    "prefix": "inivisible-space",
+    "body": [
+      "&#8203"
+    ],
+    "scope": "markdown,mdx,md"
+  },
 }

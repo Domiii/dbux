@@ -213,12 +213,19 @@ export default class TraceCollection extends Collection {
         continue;
       }
 
+      if (!(TraceType.is.Catch(traceType) || TraceType.is.Finally(traceType) || isTracePop(traceType))) {
+        /**
+         * performance hackfix
+         * @see https://github.com/Domiii/dbux/issues/637
+         */
+        return;
+      }
+
       const previousTrace = this.dp.callGraph._getPreviousInContext(traceId);
       if (!previousTrace) {
         // the following conditions only set error for previous trace
         continue;
       }
-
       const previousTraceId = previousTrace.traceId;
       const previousTraceType = util.getTraceType(previousTraceId);
 

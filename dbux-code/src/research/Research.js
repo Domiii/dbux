@@ -2,7 +2,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import { getPrettyPerformanceDelta } from '@dbux/common-node/src/util/timeUtil';
 import { existsSync, readdirSync, realpathSync } from 'fs';
-import { exportApplication, importApplication } from '@dbux/data/src/applications/appUtil';
+import { exportApplication, importApplication } from '@dbux/data/src/applications/importExport';
 import { getFileSizeSync } from '@dbux/common-node/src/util/fileUtil';
 import { performance } from 'perf_hooks';
 import { basename } from 'path';

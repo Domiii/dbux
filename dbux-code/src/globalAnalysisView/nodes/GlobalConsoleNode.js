@@ -21,8 +21,8 @@ class ConsoleTraceNode extends TraceNode {
     const { trace } = this;
     const traceLabel = makeTraceLabel(trace);
     const loc = makeTraceLocLabel(this.trace);
-    this.description = `${traceLabel} @${loc}`;
-    this.tooltip = this.consoleMessage;
+    this.description = `${traceLabel} (${loc})`;
+    this.tooltip = `${this.consoleMessage}\n\n---------------\n  > ${traceLabel}\n  at ${loc}`;
   }
 }
 
