@@ -106,9 +106,9 @@
     "dbux-lerna-fix": "lerna exec -- node ../scripts/lerna-fix.js",
     "dbux-all": "bash scripts/dbux-run-all.sh",
 
-    "docs": "cd ./docs && yarn start",
-    "docs:build": "cd ./docs && yarn build",
-    "docs:deploy": "cd ./docs && yarn deploy",
+    "docs": "cd ./docs_site && yarn start",
+    "docs:build": "cd ./docs_site && yarn build",
+    "docs:deploy": "cd ./docs_site && yarn deploy",
 
     "clinic": "clinic flame -- node dbux-cli/bin/run-js-unbabel ../samples/__samplesOutput__/oop1.es5.js || (echo \"\\033[1;31mCould not execute clinic - checking installed version:\\033[0m\" && clinic -v)",
     "cloc": "bash scripts/cloc.sh",
