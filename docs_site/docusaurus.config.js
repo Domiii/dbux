@@ -20,8 +20,8 @@ const config = {
   favicon: 'img/favicon.ico',
 
   trailingSlash: false,
-  onBrokenLinks: 'error',
-  onBrokenMarkdownLinks: 'warn',
+  onBrokenLinks: 'throw',
+  onBrokenMarkdownLinks: 'throw',
 
   /**
    * @see https://docusaurus.io/docs/next/markdown-features/assets
