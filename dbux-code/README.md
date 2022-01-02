@@ -6,107 +6,14 @@
 
 Dbux is an integrated debugging environment (IDbE) and omniscient debugger for JavaScript runtime analysis. We hope to help developers (i) improve program comprehension and (ii) increase debugging efficiency. To that end, Dbux records an application's runtime data, visualizes it and makes it interactive.
 
-For more information, please refer to [our documentation](https://domiii.github.io/).
-
-The Dbux VSCode Extension documentation explaining its commands and configuration can be found at:
-https://domiii.github.io/dbux/tools-and-configuration/dbux-code
-
 
 ![Dbux Screenshot](../docs_site/dbux_img/screens/dbux-all-async1.png)
 
 <!-- ![Dbux Architecture](../docs_site/dbux_img/architecture-v001.png) -->
 
+[Please consult Dbux's extensive documentation for more information](https://domiii.github.io/dbux).
 
-TODO(move commands + config entries to `docs_site`)
+Quick links:
 
-# Commands
-
-**How to execute [VSCode commands](https://code.visualstudio.com/docs/getstarted/tips-and-tricks#_command-palette)?**
-
-1. Press `CTRL/Command + Shift + P`
-1. Search for a command... (type the name or some letters of the name)
-1. Select the command (`Enter`)
-1. See it execute.
-
-You can bind commands to keys. [This official documentation explains how to easily keybind any command in VSCode](https://code.visualstudio.com/docs/getstarted/keybindings).
-
-Note that many of the built-in Dbux buttons can also be controlled via commands.
-
-
-
-A rough outline of (hopefully all) commands:
-
-<!-- dbux:codeCommands start -->
-| Command                                               | Title                                               | Description                                                                                                                                |
-| ----------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| dbux.backendLogin                                     | Dbux: Backend Login                                 | (Feature still in development. Won't work.)                                                                                                |
-| dbux.debugFile                                        | Dbux: Debug current file                            | Run selected file with Dbux, but with Node's `--inspect-brk` enabled. Make sure to enable VSCode's auto attach beforehand.                 |
-| dbux.deleteUserEvents                                 | Dbux Dev: Delete all user events                    | (Feature still in development. Won't work.)                                                                                                |
-| dbux.diagnostics                                      | Dbux: Diagnostics                                   |                                                                                                                                            |
-| dbux.doActivate                                       | Dbux: Start Dbux                                    |                                                                                                                                            |
-| dbux.exportApplicationData                            | Dbux: Export Application Data                       | Export raw recorded Dbux data of a previously executed application to a `json` file.                                                       |
-| dbux.hideDecorations                                  | Dbux: Hide Code Decorations                         | Do not annotate executed code with Dbux code decorations (<span style='color:red'>✦↱</span><span style='color:orange'>🔥ƒ</span> etc).     |
-| dbux.hideGraphView                                    | Dbux: Hide Call Graph                               | Close the Call Graph panel.                                                                                                                |
-| dbux.hidePathwaysView                                 | Dbux: Hide Pathways View                            |                                                                                                                                            |
-| dbux.importApplicationData                            | Dbux: Import Application Data                       |                                                                                                                                            |
-| dbux.loadPracticeLogFile                              | Dbux Dev:Load Practice Log                          |                                                                                                                                            |
-| dbux.openPracticeLogFolder                            | Dbux: Open Practice Log Folder                      |                                                                                                                                            |
-| dbux.reloadExerciseList                               | Dbux: Reload Exercise List                          |                                                                                                                                            |
-| dbux.resetPracticeLog                                 | Dbux Dev: Reset Practice Log                        |                                                                                                                                            |
-| dbux.resetPracticeProgress                            | Dbux Dev: Reset Practice Progress                   |                                                                                                                                            |
-| dbux.runFile                                          | Dbux: Run current file                              | Run selected file with Dbux                                                                                                                |
-| dbux.selectTrace                                      | Dbux: Select Trace by id                            | Mostly used for debugging Dbux, or when (for some other reason) you would know some trace by its id.                                       |
-| dbux.showDecorations                                  | Dbux: Show Code Decorations                         | Show code decorations again after hiding them.                                                                                             |
-| dbux.showGraphView                                    | Dbux: Show Call Graph                               | Open the Call Graph panel.                                                                                                                 |
-| dbux.showHelp                                         | Dbux: Help                                          | Show the Dbux help dialog.                                                                                                                 |
-| dbux.showOutputChannel                                | Dbux: Show output channel                           |                                                                                                                                            |
-| dbux.showPathwaysView                                 | Dbux: Show Pathways View                            |                                                                                                                                            |
-| dbux.startRuntimeServer                               | Dbux: Start Dbux Runtime Server                     |                                                                                                                                            |
-| dbux.stopRuntimeServer                                | Dbux: Stop Dbux Runtime Server                      |                                                                                                                                            |
-| dbux.systemCheck                                      | Dbux: Check System Dependencies                     | Dbux (especially Dbux practice) needs some system tools in order to work properly. You can check these dependencies with this command.     |
-| dbux.toggleErrorLog                                   | Dbux: Toggle Error Notifications                    | Suppress/unsuppress all Dbux error notifications.                                                                                          |
-| dbux.toggleNavButton                                  | Dbux: Toggle Editor Buttons                         | Hide/show Dbux buttons in the editor tab bar. Use this if you don't want to see any extra buttons at the top right of your editor tab bar. |
-| dbux.togglePracticeView                               | Dbux: Toggle Practice View                          | Feature still in development. You can use this to use Dbux on a pre-configured bug in express.                                             |
-| dbuxProject.uploadLog                                 | Upload log files                                    |                                                                                                                                            |
-| dbuxProjectView.showDiff                              | Show difference                                     |                                                                                                                                            |
-| dbuxSessionView.flushCache                            | Dbux Project: Flush cache                           |                                                                                                                                            |
-| dbuxSessionView.run                                   | Dbux Project: Run without dbux                      |                                                                                                                                            |
-| dbuxSessionView.run#dbux                              | Dbux Project: Run with dbux                         |                                                                                                                                            |
-| dbuxSessionView.run#debug                             | Dbux Project: Run without dbux in debug mode        |                                                                                                                                            |
-| dbuxSessionView.run#debug#dbux                        | Dbux Project: Run with dbux in debug mode           |                                                                                                                                            |
-| dbuxTraceDetailsView.navigation.NextChildContext      | Dbux: Go to next function call in context           |                                                                                                                                            |
-| dbuxTraceDetailsView.navigation.NextInContext         | Dbux: Go to next "non-trivial" trace in context     |                                                                                                                                            |
-| dbuxTraceDetailsView.navigation.NextParentContext     | Dbux: Go to end of context                          |                                                                                                                                            |
-| dbuxTraceDetailsView.navigation.NextStaticTrace       | Dbux: Go to next execution of the same trace        |                                                                                                                                            |
-| dbuxTraceDetailsView.navigation.NextTrace             | Dbux: Go to next trace (unconditionally)            |                                                                                                                                            |
-| dbuxTraceDetailsView.navigation.PreviousChildContext  | Dbux: Go to previous function call in context       |                                                                                                                                            |
-| dbuxTraceDetailsView.navigation.PreviousInContext     | Dbux: Go to previous "non-trivial" trace in context |                                                                                                                                            |
-| dbuxTraceDetailsView.navigation.PreviousParentContext | Dbux: Go to start of context                        |                                                                                                                                            |
-| dbuxTraceDetailsView.navigation.PreviousStaticTrace   | Dbux: Go to previous execution of the same trace    |                                                                                                                                            |
-| dbuxTraceDetailsView.navigation.PreviousTrace         | Dbux: Go to previous trace (unconditionally)        |                                                                                                                                            |
-| dbuxTraceDetailsView.selectTraceAtCursor              | Dbux: Select Trace At Cursor                        | Selects the trace at the keyboard cursor (if there is any executed trace).                                                                 |
-
-<!-- dbux:codeCommands end -->
-
-# Configuration
-
-These are all currently supported configuration parameters (mostly for the "Run with Dbux" and "Debug with Dbux" buttons/commands):
-
-(You can open configuration via `CTRL/Command + Shift + P` -> "Open {User,Workspace} Settings")
-
-<!-- dbux:codeConfig start -->
-| Entry                  | Type    | Default                                           | Description                                                                                                                                                               |
-| ---------------------- | ------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| dbux.autoStart         | boolean | false                                             | Auto start Dbux when opening vscode                                                                                                                                       |
-| dbux.run.dbuxArgs      | string  | <span style='white-space:nowrap;'>--esnext</span> | Custom `dbux run` command options. You can find a list of all available dbux command options in https://github.com/Domiii/dbux/blob/master/dbux-cli/src/commandCommons.js |
-| dbux.run.nodeArgs      | string  | --enable-source-maps                              | Custom node options passed to node when running the program.                                                                                                              |
-| dbux.run.programArgs   | string  |                                                   | Custom program arguments, available to the program via `process.argv`.                                                                                                    |
-| dbux.run.env           | object  | {}                                                | Custom program environment variables available via `process.env` (probably not working yet).                                                                              |
-| dbux.debug.dbuxArgs    | string  | <span style='white-space:nowrap;'>--esnext</span> | Custom `dbux run` command options. You can find a list of all available dbux command options in https://github.com/Domiii/dbux/blob/master/dbux-cli/src/commandCommons.js |
-| dbux.debug.nodeArgs    | string  |                                                   | Custom node options passed to node when running the program.                                                                                                              |
-| dbux.debug.programArgs | string  |                                                   | Custom program arguments, available to the program via `process.argv`.                                                                                                    |
-| dbux.debug.env         | object  | {}                                                | Custom program environment variables available via `process.env` (probably not working yet).                                                                              |
-| dbux.packageWhitelist  | string  |                                                   | Specify which package will be traced by Dbux, seperated by space, regex supported.                                                                                        |
-
-<!-- dbux:codeConfig end -->
-
+* [User Manual](https://domiii.github.io/dbux/using-dbux).
+* [Commands and configuration](https://domiii.github.io/dbux/tools-and-configuration/dbux-code).

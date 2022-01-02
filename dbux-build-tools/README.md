@@ -1,13 +1,3 @@
-# `@dbux/build-tools`
+Used by Dbux dev team internally.
 
-> TODO: description
-
-## Usage
-
-```
-npm -g i @dbux/build-tools
-
-dbux-webpack --help
-
-// TODO: DEMONSTRATE API
-```
+Mostly unused.

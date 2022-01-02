@@ -8,7 +8,7 @@ TODO
 While technically not a question, this is certainly a frustrating experience to encounter. Please don't hesitate to reach out. We recommend using [our GitHub Issues Page](https://github.com/Domiii/dbux/issues) to file well-written complaints, or [join us on Discord](https://discord.gg/QKgq9ZE) to ask questions or discuss anything you feel like.
 
 
-## My Applications don't Show Up!?
+## My Applications don't Show Up
 
 There is a multitude of possible reasons for things to not quite work out:
 
@@ -18,6 +18,26 @@ There is a multitude of possible reasons for things to not quite work out:
    * In order to prevent this situation, Dbux tries (rather aggressively) to keep an instrumented application alive. If it does, it would accompany its moves with further log messages. Look for the hints.
 3. Your application has an infinite loop or otherwise starves the network queue.
    * Since Dbux relies on the network queue to send data back to the mothership, it requires the code to give up control for that to happen first. Thus, Dbux is not (currently) a good tool to help in dealing with infinite loops or starvation.
+
+
+## How to use commands?
+
+Dbux offers [several commands](./04-tools-and-configuration/01-dbux-code.mdx#commands). This is how commands work in VSCode:
+
+1. Press `F1` or `CTRL/Command + Shift + P`
+2. Search for a command... (type the name or some letters of the name)
+3. Select the command (`Enter`)
+4. See it execute.
+5. [Official documentation for VSCode Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette).
+   * [(even more info...)](https://www.google.com/search?q=Official+documentation+for+VSCode+Command+Palette&hl=en)
+
+:::tip
+All buttons in the Dbux VSCode Extension have corresponding [commands](../tools-and-configuration/dbux-code#commands).
+:::
+
+:::tip
+You can bind commands to keys. [This official documentation explains how to easily keybind any command in VSCode](https://code.visualstudio.com/docs/getstarted/keybindings).
+:::
 
 
 ## Which files will be traced?
