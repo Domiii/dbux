@@ -1,6 +1,9 @@
 # Contributing
 
 import Img from '@src/components/Img';
+import TOC from '@src/components/TOC';
+
+<TOC toc={toc} />
 
 ## Code of Conduct
 

@@ -6,7 +6,6 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import { pathRelative } from '@dbux/common-node/src/util/pathUtil';
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 import TraceNode from '../../codeUtil/treeView/TraceNode';
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
 
 
 /** ###########################################################################
@@ -73,6 +72,7 @@ class PackageNode extends BaseTreeViewNode {
    * @param {PackageInfo} pkg 
    */
   static makeLabel(pkg) {
+    // TODO: `${pkg.name}@${version}`
     return pkg.name;
   }
 
@@ -84,6 +84,11 @@ class PackageNode extends BaseTreeViewNode {
   init() {
     // const { package } = this;
     // this.description = `${traceLabel} @${loc}`;
+
+    // TODO: if not cached yet: start asynchronously fetching version from `package.json` and store in a cache
+    //    -> once returned, re-render this node only
+    //    -> add version in makeLabel
+
     this.description = `(${this.package.programs?.length || 0})`;
     this.tooltip = this.package.folder;
   }
@@ -97,7 +102,7 @@ class PackageNode extends BaseTreeViewNode {
 }
 
 /** ###########################################################################
- * {@link RecordedProgramsNode}
+ * {@link RecordedPackagesNode}
  *  #########################################################################*/
 
 /**
@@ -108,10 +113,10 @@ class PackageNode extends BaseTreeViewNode {
  * 
  * In Node.js, all programs are modules by default.
  */
-export class RecordedProgramsNode extends BaseTreeViewNode {
+export class RecordedPackagesNode extends BaseTreeViewNode {
   static makeLabel(/*entry, parent*/) {
     // NOTE: "module" is a more well-known term, despite not being quite accurate
-    return `Recorded Modules`;
+    return `Recorded Packages`;
   }
 
   /**
@@ -123,7 +128,9 @@ export class RecordedProgramsNode extends BaseTreeViewNode {
     this.nPrograms = allApplications.selection.data.countStats((dp) =>
       dp.collections.staticProgramContexts.getCount()
     );
-    this.description = `(${this.nPrograms})`;
+
+    // TODO: update with accurate package count when opening the node?
+    this.description = `(${this.nPrograms} files)`;
   }
 
   registerActiveEvents() {
@@ -140,6 +147,7 @@ export class RecordedProgramsNode extends BaseTreeViewNode {
       return null;
     }
     packages.sort((a, b) => {
+      // -> put default package to the top
       if (a.order && b.order && a.order !== b.order) {
         return b.order - a.order;
       }

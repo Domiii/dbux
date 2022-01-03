@@ -1,10 +1,13 @@
 # Known Limitations and Future Work
 
 import CodeLink from '@src/components/CodeLink';
+import TOC from '@src/components/TOC';
+
+<TOC toc={toc} />
 
 ## Other Syntax Limitations
 
-The following JS syntax constructs are not supported at all or support is limited.
+Some JS syntax constructs are not supported at all or support is limited:
 
 * Generator functions
   * Untested and not properly traced.
@@ -12,15 +15,15 @@ The following JS syntax constructs are not supported at all or support is limite
   * We do not currently connect data flow through es6 deconstruction.
   * In verbose mode, `Dbux` raises some warnings tagged with "`[NYI]`" to notify you of those missing connections.
 
-NOTE: Most of these features still work fine, but some related information is not available and data flow analysis is interrupted.
+NOTE: Most of these features still work fine, but some related information is not available and data flow analysis is incomplete.
 
 
 ## Problems with Values
 
 Because of [performance](./performance) reasons, we cannot record *everything*.
 
-* Big objects, arrays and strings are truncated (see [performance](#performance) for more information).
-* We currently do not properly trace all built-ins. Tracked in https://github.com/Domiii/dbux/issues/543.
+* Big objects, arrays and strings are truncated. See [performance](#performance) for more information.
+* We currently do not properly trace all built-in data types. This is tracked in: https://github.com/Domiii/dbux/issues/543.
 
 
 ## Calling `process.exit` as well as uncaught exceptions are not always handled properly
@@ -28,7 +31,14 @@ Because of [performance](./performance) reasons, we cannot record *everything*.
 * You might see a message along the lines of "`Process shutdown but not all data has been sent out. Analysis will be incomplete. This is probably because of a crash or process.exit was called manually.`"
 * `process.exit` and uncaught exceptions kill the process, even if not all recorded data has been sent out yet. As a result, not all runtime data could be recorded properly. That is why Dbux tries to stall upon process.exit and uncaught exceptions and also issues a warning.
   * NOTE: some frameworks that kill your process by can be configured not to do so (e.g. for `Mocha` you want to add the `--no-exit` flag).
-* This was tracked in [#201](https://github.com/Domiii/dbux/issues/201).
+* This was tracked in: https://github.com/Domiii/dbux/issues/201.
+
+
+## Remote Analysis
+
+`@dbux/runtime` is currently hard-coded to connect to a `localhost` server (see <CodeLink path="dbux-runtime/src/client/Client.js" />).
+
+Tracked in: https://github.com/Domiii/dbux/issues/639.
 
 
 ## Observer Effect
@@ -72,7 +82,7 @@ Because we instrument the function body, and sometimes even change the structure
 (This is only of concern to those who rely on serializing and deserializing functions. E.g. for sending functions of to run in a `webworker`[*](https://stackoverflow.com/questions/11354992/why-cant-web-worker-call-a-function-directly) etc.)
 
 
-## Issues on Windows
+## File Path Issues on Windows
 
 * A bug unrelated to Dbux occurs **very rarely**, when running things in VSCode's built-in terminal: it might change `require` or `import` paths to lower- or upper-case drive letter.
    * NOTE: Luckily, we have not seen this bug occur in quite some time.
@@ -102,8 +112,6 @@ This file serves to keep track of features that could prove very valuable for ru
 So many things that can be done... So little time...
 
 * Typescript support
-* Remote capabilities
-  * NOTE: `@dbux/runtime` is currently hardcoded to connect to a `localhost` server (see <CodeLink path="dbux-runtime\src\client\Client.js" />).
 * Properly test and provide recipes for all environments, e.g.:
   * Node's `vm` (Jest uses that also)
   * `WebWorker`

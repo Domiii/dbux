@@ -2,40 +2,41 @@
 
 import Img from '@src/components/Img';
 import DarkLightImg from '@src/components/DarkLightImg';
+import TOC from '@src/components/TOC';
+
+<TOC toc={toc} />
 
 The Global View allows quickly navigating global events and their data, including:
 
-TODO(screenshots)
 
 ## Errors
 
-Lists all thrown errors in the program. The children of each node are stack frames that were interrupted by this error:
+Lists all thrown errors in the program.
+Errors are identified by interrupted stack frames and `throw` statements.
+Each interrupted stack contributes one node to this list.
+The nodes are the first (deepest) recorded interrupted frame.
+The children of each node are all other interrupted stack frames on the same stack[^1].
 
-TODO(screenshot)
+TODO(screenshot: https://github.com/Domiii/dbux/issues/618)
 
-In case of errors, the `Error button` <DarkLightImg src="fire.svg" /> also shows up in two places:
+If there are recorded errors, you can either look through the list or click the `Error button` <DarkLightImg src="fire.svg" /> to take you right to the recorded error location in code. From there you can investigate everything related to the error, including the error object itself, if it is available.
+If there are multiple errors, you can click the button multiple times to toggle through all of them. The `Error button` <DarkLightImg src="fire.svg" /> shows up in two places:
 * At the top right in VSCode (to the right of the editor tabs).
 * At the top of the `Global` view.
 
-When you click the `Error button` <DarkLightImg src="fire.svg" />, it takes you right to the recorded error location in code.
-If there are multiple errors, you can click it multiple times to toggle through all of them.
-
-
-:::caution
-The "interrupted stack frame" children might be incorrect when multiple errors occur on the same stack[^1].
-:::
 
 
 ## Console
 
-Lists all console output events, such as `console.debug`, `console.log`, `console.warn`, `console.error` etc.
-Clicking each event, takes you to the code where the event was recorded.
+Lists console output events, such as `console.debug`, `console.log`, `console.warn`, `console.error` etc ([src](https://github.com/Domiii/dbux/blob/master/dbux-runtime/src/builtIns/console.js)).
+Clicking each event takes you to the code where the event was recorded.
 
 <Img screen src="global-console-sample1.png" maxWidth={600} />
 
 :::tip
 Hover over each node to see the complete message, as well as the code that triggered it and its location.
 :::
+
 
 ## Modules
 
@@ -47,13 +48,13 @@ Lists all executed packages and all their executed files/modules/script-tags.
 <Img screen src="global-modules-sample1.png" maxWidth={300} />
 
 :::note
-The above screenshot features `debug` twice. That is because the application loaded `debug` twice, each from two different locations ([more info here](https://stackoverflow.com/questions/42147243/how-does-npm-handle-version-conflicts)). Often times, this is not going to cause any trouble, but it has the potential to cause dependency conflicts since modules/packages should be uniquely identifiable by their name. Dbux can help discover these types of issues.
+The above screenshot features the `debug` package twice. That is because the application loaded `debug` twice, each from a different location ([more info here](https://stackoverflow.com/questions/42147243/how-does-npm-handle-version-conflicts)). Often times, this is not going to cause any trouble, but it has the potential to cause dependency conflicts or otherwise defeat assumptions about third-party dependencies to be of a specific version and be loaded from a specific place. Dbux can help discover these types of issues.
 :::
 
 
 ## Debug
 
-The Debug node holds internally used data, usually only used for debugging or understanding Dbux's own behavior.
+The `Debug` node holds raw data, usually only used for debugging Dbux and [advanced data analysis](../04-advanced/05-data-analysis.mdx).
 
 
-[^1]: https://github.com/Domiii/dbux/issues/618
+[^1]: We introduced (rough) specs of the `GlobalErrorsNode` in https://github.com/Domiii/dbux/issues/618

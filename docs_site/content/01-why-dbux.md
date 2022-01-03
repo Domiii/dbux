@@ -11,7 +11,7 @@ import Term from '@src/components/Term';
 
 Dbux is an integrated debugging environment (IDbE) and omniscient debugger for JavaScript runtime analysis. We hope to help developers (i) improve program comprehension and (ii) increase debugging efficiency. To that end, Dbux records an application's runtime data, visualizes it and makes it interactive.
 
-[This video](https://www.youtube.com/watch?v=m1ANEuZJFT8) [20 min] <span className="color-gray">(too long and a bit outdated)</span> explains what Dbux is and shows two examples of how to use the [Dbux VSCode Extension](./04-tools-and-configuration/01-dbux-code.mdx).
+[This (slightly outdated) video](https://www.youtube.com/watch?v=m1ANEuZJFT8) [20 min] <span className="color-gray"></span> explains how Dbux came to be and shows two basic examples of how to use a subset of its features.
 <!-- <a href="https://www.youtube.com/watch?v=m1ANEuZJFT8" target="_blank" alt="video">
    <img width="150px" src="https://img.youtube.com/vi/m1ANEuZJFT8/0.jpg" />
 </a> -->
@@ -19,10 +19,10 @@ Dbux is an integrated debugging environment (IDbE) and omniscient debugger for J
 <Img screen src="dbux-all-async1.png" />
 
 <!-- https://docusaurus.io/docs/next/markdown-features/admonitions -->
-:::caution
+:::tip
 Dbux has a bit of a learning curve. We recommend programming beginners to start with the [interactive tutorials](./03-dbux-practice/02-tutorial.md).
 
-If you have any questions, feel free to [join us on DISCORD](https://discord.gg/QKgq9ZE).
+While you can certainly try to get started on your own, you are welcome to join us on [DISCORD](https://discord.gg/8kR2a7h), ask questions and complain as you go along.
 :::
 
 
@@ -84,9 +84,6 @@ It is my biased opinion that Dbux does NOT make you a great debugger. However, i
 
 <!-- While debugging can be tough, we can get a leg up if we have designed a decent software architecture and proper working knowledge of used technology, frameworks and libraries. But even then,  -->
 
-## Joining the Community
-
-While you can certainly try to get started on your own, you are welcome to join us on [DISCORD](https://discord.gg/8kR2a7h), ask questions and complain as you go along.
 
 
 

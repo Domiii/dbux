@@ -3,6 +3,9 @@
 import Img from '@src/components/Img';
 import DarkLightImg from '@src/components/DarkLightImg';
 import Term from '@src/components/Term';
+import TOC from '@src/components/TOC';
+
+<TOC toc={toc} />
 
 After you [selected a trace](./05-select-trace.mdx), you can inspect most of the <Term term="trace" />'s relevant information in this view.
 
@@ -94,7 +97,7 @@ After selecting a trace, always first check how many executions are recorded and
 
 ## Debug
 
-The `Debug` node holds internally used data, usually only used for debugging Dbux and understanding the raw version of the collected data.
+The `Debug` node holds raw data, usually only used for debugging Dbux and [advanced data analysis](../04-advanced/05-data-analysis.mdx).
 
 
 [^1]: You might need to hover over the corresponding views for navigation, group (and other) buttons to show up. This is a [limitation of the VSCode Extension API](https://github.com/microsoft/vscode/issues/78829).
