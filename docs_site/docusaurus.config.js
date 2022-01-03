@@ -41,7 +41,8 @@ const config = {
         overrides: {
           resolve: {
             alias: {
-              '@src': path.resolve(__dirname, './src')
+              '@src': path.resolve(__dirname, './src'),
+              '@comp': path.resolve(__dirname, './src/components')
             }
           }
         }

@@ -27,7 +27,7 @@ Call graph visualizations have many uses, e.g.:
 
 * Overview the complex system that is our application.
 * Identify all <Term term="asynchronous event">asynchronous events</Term> and their connections.
-* Visualize [recursion trees](https://www.google.com/search?q=recursion+trees), like in the screengrab of the [fibbonacci number](https://www.google.com/search?q=fibonacci+algorithm) generator below:
+* Visualize [recursion trees](https://www.google.com/search?q=recursion+trees), like in the screenshot of the [fibbonacci number](https://www.google.com/search?q=fibonacci+algorithm) generator below:
   <Img screen src="call-graph-fib-1.png" maxWidth={600} />
 * ...and more...
 
@@ -36,7 +36,7 @@ As an analogy, the call graph can be seen as a (rather crude) "Google Maps" whil
 
 ### Call Graph vs. Call Stack
 
-The **call stack** is the list of all executed functions that have not yet concluded, and are not currently suspended (e.g. by `await` or `yield`), at a specific point in time. While useful, the call stack only represents a small fraction of our application. In fact, the call stack is a small slice of the <Term term="call graph" /> during its [depth-first traversal](https://en.wikipedia.org/wiki/Depth-first_search), at a specific point in time.
+The **call stack** is the list of all executed functions that have not yet concluded, and are not currently suspended (e.g. by `await` or `yield`), at a specific point in time. While useful, the call stack only represents a small fraction of our application. In fact, the call stack is a small slice of the call graph during its [depth-first traversal](https://en.wikipedia.org/wiki/Depth-first_search), at a specific point in time.
 
 
 ## The Synchronous Call Graph
@@ -68,7 +68,7 @@ Non-empty nodes have two (of three) buttons to their left:
 <!-- TODO(explain call graph behavior of (different types of) modules) -->
 
 
-## Async Call Graph
+## Asynchronouse Call Graph {async}
 
 TODO
 
@@ -84,7 +84,13 @@ TODO: Sync graph children exclude [asynchronous continuations](#asynchronous-con
 
 ### value
 
-TODO
+Show/hide value in context nodes.
+
+**Sync**: In synchronous mode, it shows `(arguments) -> returnValue` of the context's call expression.
+
+**Async**: In asynchronous mode, it shows the value of the first trace of the currently selected trace in each root. Among other uses, this allows you identifying the roots that executed the selected trace's code.
+
+
 
 ### loc
 

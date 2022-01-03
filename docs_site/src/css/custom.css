@@ -56,6 +56,10 @@ li > a.menu__link {
   border: 1px solid gray;
 }
 
+.border-purple {
+  border: 1px solid purple;
+}
+
 .border-screen {
   border: 1px solid purple;
 }
@@ -86,12 +90,39 @@ li > a.menu__link {
   align-items: center;
 }
 
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
 .font-size-3 {
   font-size: 3rem;
 }
 
 .no-wrap {
   white-space: nowrap;
+}
+
+.code-block {
+  border-radius: 0 !important;
+}
+
+.code-block code {
+  flex-basis: auto; /* default value */
+  flex-grow: 1;
+  padding: 2px;
+  height: 100%;
+}
+
+.code-block div,pre {
+  height: 100%;
+}
+
+.mr-05 {
+  margin-right: 0.5rem;
+}
+
+.p-2px {
+  padding: 2px;
 }
 
 /* .flex-center {
