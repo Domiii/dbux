@@ -15,7 +15,7 @@ You can find it in the top right of opened `*.js` files:
 <Img src="screens/run-button.png" className="border-screenshot" />
 
 :::tip
-The Run button simply calls the `Dbux: Run Current File` command. You can also access it via [VSCode's command palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette), and (like [all commands](../04-tools-and-configuration/01-dbux-code.mdx#commands)) can be key-bound.
+The Run button simply calls the `Dbux: Run Current File` command. You can also access it via [VSCode's command palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette), and (like [all commands](../tools-and-configuration/01-dbux-code.mdx#commands)) can be key-bound.
 :::
 
 :::note
@@ -30,7 +30,7 @@ The `Debug Current File` command does the same thing as the Run button but with 
 
 ## Results
 
-When pressed, a Terminal opens and starts executing the active `*.js` file with [@dbux/cli](../04-tools-and-configuration/02-dbux-cli.mdx), e.g.:
+When pressed, a Terminal opens and starts executing the active `*.js` file with [@dbux/cli](../tools-and-configuration/02-dbux-cli.mdx), e.g.:
 
 > ```$ node --enable-source-maps --stack-trace-limit=1000 --enable-source-maps -r dbux/node_modules/@dbux/cli/dist/linkOwnDependencies.js "dbux/node_modules/@dbux/cli/bin/dbux.js" run --esnext --pw=.* "/my-code/firstDuplicate/find-bad.js"```
 

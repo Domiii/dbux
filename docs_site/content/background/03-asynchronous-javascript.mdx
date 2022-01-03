@@ -1,0 +1,40 @@
+# Asynchronous JavaScript
+
+import TOC from '@src/components/TOC';
+
+<TOC toc={toc} />
+
+
+## Call Graph
+
+Dbux records and visualizes the **Dynamic Call Graph** of JavaScript applications.
+
+TODO: a lot more to be said here.
+
+
+### Call Graph Roots (CGR) {#cgr}
+
+A "call graph root" (CGR) is an invocation of code from outside our visible (recorded) runtime. Examples include:
+
+* Your application's entry point.
+* Execution of a JavaScript file, often called by `node` or by the webpack bundle (which in turn is called by the underlying JS runtime environment).
+* Browser executing a &lt;script> tag.
+* Execution of a callback supplied to `setTimeout`, `setInterval`, `setIntermediate`, `Process.nextTick`, `Promise.then` etc. These callbacks are scheduled and then, at a later point in time, executed by the underlying JS runtime environment.
+* DOM or OS event handler callbacks.
+* and more...
+
+:::tip
+The *synchronous* [call graph](../using-dbux/08-call-graph.mdx) lists all CGRs on a linear timeline.
+The nodes of the *asynchronous* [call graph](../using-dbux/08-call-graph.mdx) only comprises call graph roots.
+:::
+
+
+## Terminology
+
+### Asynchronous Event
+
+TODO
+
+### Asynchronous Continuation
+
+TODO

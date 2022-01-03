@@ -13,23 +13,30 @@ import TOC from '@src/components/TOC';
 
 <TOC toc={toc} />
 
-The call graph serves as a "runtime execution map": it provides a bird's eye overview of all file and function executions.
+The call graph serves as a "map of your runtime execution": it provides a bird's eye overview of all file and function executions.
 
-Most developers know the **call stack**: the list of all executed functions that have not yet concluded, at a specific point in time. While useful, the call stack only represents a small fraction of our application. It is merely a small slice of the <Term term="call graph" /> during its [depth-first traversal](https://en.wikipedia.org/wiki/Depth-first_search).
+<!-- TODO: add new `Background: Asynchronous JavaScript` chapter somewhere  -->
+<!--        incl.: ### Asynchronous Continuation -->
+<!-- TODO: more call graph explanations -->
+<!-- TODO: merge with terminology: call-graph -->
 
 
 ## Why do we need a Call Graph?
 
-Call graph visualizations have many uses. E.g.:
+Call graph visualizations have many uses, e.g.:
 
 * Overview the complex system that is our application.
-* Identify points of interests in code that is not our own.
-* Find entry points of <Term term="asynchronous event">asynchronous events</Term>.
+* Identify all <Term term="asynchronous event">asynchronous events</Term> and their connections.
 * Visualize [recursion trees](https://www.google.com/search?q=recursion+trees), like in the screengrab of the [fibbonacci number](https://www.google.com/search?q=fibonacci+algorithm) generator below:
   <Img screen src="call-graph-fib-1.png" maxWidth={600} />
 * ...and more...
 
 As an analogy, the call graph can be seen as a (rather crude) "Google Maps" while the [trace details view](#trace-details) is (a rather crude) "Google Street View" of our applications' execution. Together, they offer a multi-resolutional interactive tool to investigate most aspects of runtime behavior.
+
+
+### Call Graph vs. Call Stack
+
+The **call stack** is the list of all executed functions that have not yet concluded, and are not currently suspended (e.g. by `await` or `yield`), at a specific point in time. While useful, the call stack only represents a small fraction of our application. In fact, the call stack is a small slice of the <Term term="call graph" /> during its [depth-first traversal](https://en.wikipedia.org/wiki/Depth-first_search), at a specific point in time.
 
 
 ## The Synchronous Call Graph
@@ -38,9 +45,12 @@ When investigating an application without any <Term term="asynchronous event">as
 
 <Img screen src="dbux-all-longest-word.png" />
 
-By default, the synchronous call graph shows a list of all <Term term="CGR">call graph roots</Term>: the entry point of the application, as well as the starting point of any <Term term="asynchronous event" />, vertically sorted by time of recording (later is lower). The call graph updates in real-time: as more asynchronous events are recorded, more <Term term="CGR">CGRs</Term> are added to it.
+The synchronous call graph has the following properties:
 
-<Term term="CGR">CGRs</Term> can have sub-trees, where each node represents the execution of a file or function that was called by its parent node. Conventionally, this is referred to as a "stack frame". We usually refer to these nodes as <Term term="context">contexts</Term>
+* **Roots**: By default, the synchronous call graph shows a list of all <Term term="CGR">call graph roots</Term>: the entry point of the application, as well as the starting point of any <Term term="asynchronous event" />, vertically sorted by time of recording (later is lower).
+* **Nodes**: <Term term="CGR">CGRs</Term> can have children and entire **subtrees**. Each child node represents the execution of a file or function that was called by its parent node. Conventionally, each node is referred to as a "stack frame", but we felt that that terminology is confusing in the context of the more general call graph. We usually refer to these nodes as <Term term="context">contexts</Term> instead.
+* **Real-time**: The call graph updates in real-time. A new <Term term="CGR">CGR</Term> is added to the graph, for each newly recorded asynchronous event.
+
 
 
 <div className="flex flex-col flex-center font-size-3">
@@ -52,9 +62,8 @@ By default, the synchronous call graph shows a list of all <Term term="CGR">call
 Non-empty nodes have two (of three) buttons to their left:
 
 * TODO(icon) one to only expand immediate children of the node. These are functions that were called directly by this context.
-* TODO(icon) one to expand the entire sub-tree.
+* TODO(icon) one to expand the entire subtree.
 * TODO(icon) one to collapse the node.
-
 
 <!-- TODO(explain call graph behavior of (different types of) modules) -->
 
@@ -68,9 +77,6 @@ TODO(virtual contexts + async explanations)
 TODO: Sync graph children exclude [asynchronous continuations](#asynchronous-continuation).
 
 
-### Asynchronous Continuation
-
-TODO: decide where to define all this (considering that it is actually terminology)
 
 
 ## Toolbar

@@ -20,7 +20,7 @@ Dbux is an integrated debugging environment (IDbE) and omniscient debugger for J
 
 <!-- https://docusaurus.io/docs/next/markdown-features/admonitions -->
 :::tip
-Dbux has a bit of a learning curve. We recommend programming beginners to start with the [interactive tutorials](./03-dbux-practice/02-tutorial.md).
+Dbux has a bit of a learning curve. We recommend programming beginners to start with the [interactive tutorials](./dbux-practice/02-tutorial.md).
 
 While you can certainly try to get started on your own, you are welcome to join us on [DISCORD](https://discord.gg/8kR2a7h), ask questions and complain as you go along.
 :::
@@ -30,15 +30,15 @@ While you can certainly try to get started on your own, you are welcome to join 
 
 <!-- TODO: make this part bigger and more visual -->
 
-* Dbux's [global view](./02-using-dbux/07-global.mdx) lists third-party modules, files and console log events. Takes user to the relevant code in a single click.
+* Dbux's [global view](./using-dbux/07-global.mdx) lists third-party modules, files and console log events. Takes user to the relevant code in a single click.
   * NOTE: While this eliminates the need for most of "[print-based debugging](https://www.google.com/search?q=print-based+debugging&hl=en)", it does not replace use of [proper logging](https://www.google.com/search?q=logging+programming+best+practices).
-* [Trace selection](./02-using-dbux/05-select-trace.mdx) and the [Trace Details view](./02-using-dbux/09-trace-details.mdx) allow overviewing and investigating all executions of any piece of code and their respective values.
-* Instead of only a call stack, Dbux presents us with the entire [call graph](./02-using-dbux/08-call-graph.mdx).
-  * A complete [asynchronous call stack](./02-using-dbux/08-call-graph.mdx#call-stack) is also available when needed.
-* Instead of using the traditional debugger as a "magnifying glass" to slowly crawl along the execution timeline, Dbux offers random-access [navigation](./02-using-dbux/09-trace-details.mdx#navigation), in both directions of the timeline.
-* [Code decorations](./02-using-dbux/04-code-decorations.mdx) can make it a lot more obvious what code executed at all, and how.
-* Executed files, functions and values [can be searched](./02-using-dbux/10-search.mdx) for/through (culls a lot of noise when compared to code-based search).
-* [Data flow analysis](./02-using-dbux/11-data-flow.mdx) allows us to quickly trace the reads, writes and creation of a selected value. This can also take us to the place of creation of a value in a single click.
+* [Trace selection](./using-dbux/05-select-trace.mdx) and the [Trace Details view](./using-dbux/09-trace-details.mdx) allow overviewing and investigating all executions of any piece of code and their respective values.
+* Instead of only a call stack, Dbux presents us with the entire [call graph](./using-dbux/08-call-graph.mdx).
+  * A complete [asynchronous call stack](./using-dbux/08-call-graph.mdx#call-stack) is also available when needed.
+* Instead of using the traditional debugger as a "magnifying glass" to slowly crawl along the execution timeline, Dbux offers random-access [navigation](./using-dbux/09-trace-details.mdx#navigation), in both directions of the timeline.
+* [Code decorations](./using-dbux/04-code-decorations.mdx) can make it a lot more obvious what code executed at all, and how.
+* Executed files, functions and values [can be searched](./using-dbux/10-search.mdx) for/through (culls a lot of noise when compared to code-based search).
+* [Data flow analysis](./using-dbux/11-data-flow.mdx) allows us to quickly trace the reads, writes and creation of a selected value. This can also take us to the place of creation of a value in a single click.
 
 
 
@@ -62,7 +62,7 @@ We argue: this approach to debugging is of course **not bad**. Our goal is not t
 
 Dbux is an [omniscient debugger](https://scholar.google.com/scholar?hl=en&as_sdt=0%2C5&q=omniscient+debugger), meaning it automatically gathers and visualizes your application's runtime behavior, and makes it interactive. The term "omniscient" (meaning "**all-knowing**") is a quirky exaggeration (it does not know your grandma's birthday). By default, it records the beginning and end of all executed files and functions, all asynchronous events and the entire trace log, meaning (almost) all statements and expressions and their values.
 
-All that data is then available for the developer to inspect and interact with, as explained in the [Using Dbux](./02-using-dbux/02-enable-dbux.mdx) chapter. We decided that the diversity and depth of the tools available in the [Dbux VSCode Extension](./04-tools-and-configuration/01-dbux-code.mdx) might warrant the title of **IDbE**: <Term term="idbe">Integrated Debugging Environment</Term> (not to be confused with [IDE](https://en.wikipedia.org/wiki/Integrated_development_environment)).
+All that data is then available for the developer to inspect and interact with, as explained in the [Using Dbux](./using-dbux/02-enable-dbux.mdx) chapter. We decided that the diversity and depth of the tools available in the [Dbux VSCode Extension](./tools-and-configuration/01-dbux-code.mdx) might warrant the title of **IDbE**: <Term term="idbe">Integrated Debugging Environment</Term> (not to be confused with [IDE](https://en.wikipedia.org/wiki/Integrated_development_environment)).
 
 
 
