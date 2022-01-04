@@ -162,14 +162,16 @@ ref - more examples: https://docs.google.com/presentation/d/1HT7VcdklD5dG7jZvW4y
 
 ## Promise Creation and Promise Nesting {#promise-nesting}
 
-Certain types of promises can be nested dynamically. This allows for the nested promise to TODO(more basic and background).
+Certain types of promises can be nested dynamically. Nested promises are always [chained](#chain-fork).
+
+<!-- This allows for the nested promise to TODO(more basic and background). -->
 
 In JavaScript, promises can be created in five ways, some allow promise nesting:
 
 1. The Promise constructor takes an executor function which in turn is provided two parameters: the `resolve` and `reject` functions which are to be called to settle the promise. The executor function is called synchronously from the constructor. The Promise constructor is commonly used to wrap asynchronous callbacks into promises. This process is commonly referred to as "promisification".
 <!-- new Promise(
   r => r(console.log(1), sleep(100).then(() => console.log(2)))
-).then(() => console.log(3)) -->
+).then(() => console.log(3)) // 1 -> 3 -> 2 -->
 2. `Promise.resolve(x)` and `Promise.reject(x)` are equivalent to using the (i) Promise constructor and synchronously calling `resolve` or `reject` respectively. `Promise.all` and `Promise.race` work similar to `resolve` but allow nesting multiple promises. `Promise.all` fulfills once all nested promises fulfill and rejects once any promise rejects. `Promise.race` fulfills once any nested promise fulfills and rejects if any promise rejects before any other fulfills.
 3. When an async function is called, the runtime environment creates a new promise. Its call expression value is set to that promise. Async functions execute synchronously until the first `await` is encountered. This means that if an async function concluded without explicitly invoking an `await` expression or any of the three other types of events, it does not trigger an asynchronous event. Await expressions can nest promises. Furthermore, promises can be nested by returning them from an async function.
 4. Promise chaining (`then`, `catch`, `finally`) allows for promise nesting by returning a promise from their respective fulfillment and rejection handler callbacks.
