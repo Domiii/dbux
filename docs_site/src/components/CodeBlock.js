@@ -4,10 +4,15 @@ import classnames from 'classnames';
 import isString from 'lodash/isString';
 
 /**
- * Slightly improved CodeBlock
+ * Slightly improved CodeBlock.
+ * NOTE: The standard docusaurus `CodeBlock` uses `prism`'s `Highlight`.
  * 
+ * @see https://github.com/FormidableLabs/prism-react-renderer#theming
  * @see https://docusaurus.io/docs/markdown-features/react
+ * @see https://github.com/facebook/docusaurus/search?q=%22prism-react-renderer%22
+ * @see https://github.com/FormidableLabs/prism-react-renderer/blob/master/src/components/Highlight.js
  * @see https://github.com/facebook/docusaurus/blob/main/website/src/theme/CodeBlock/index.tsx
+ * @see https://github.com/facebook/docusaurus/blob/master/packages/docusaurus-theme-classic/src/theme/CodeBlock/index.tsx
  */
 export default function CodeBlock({ src, lang, minWidth, className, style, children, ...props }) {
   props.className = classnames(
@@ -49,6 +54,9 @@ export default function CodeBlock({ src, lang, minWidth, className, style, child
     children += content;
   }
 
+  if (isString(children)) {
+    children = children.trim();
+  }
 
   return (<CodeBlockOrig {...props}>{children}</CodeBlockOrig>);
 }

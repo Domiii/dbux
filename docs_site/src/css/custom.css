@@ -104,6 +104,7 @@ li > a.menu__link {
 
 .code-block {
   border-radius: 0 !important;
+  margin: 0 !important;
 }
 
 .code-block code {
@@ -113,12 +114,21 @@ li > a.menu__link {
   height: 100%;
 }
 
-.code-block div,pre {
+.code-block div,
+pre {
   height: 100%;
 }
 
 .mr-05 {
   margin-right: 0.5rem;
+}
+
+.mb-05 {
+  margin-bottom: 0.5rem;
+}
+
+.m-none {
+  margin: 0;
 }
 
 .p-2px {
@@ -131,6 +141,17 @@ li > a.menu__link {
 
 .w-half {
   width: 50%;
+}
+
+.grid {
+  display: grid;
+}
+
+.grid-2-col {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-column-gap: 4px;
+  grid-row-gap: 4px;
 }
 
 /* .flex-center {

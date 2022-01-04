@@ -65,7 +65,7 @@ The following three pieces of code illustrate the three types of Asynchronous Ev
 Note that asynchronous event can be one-shot (one `toRoot` per `scheduler`) and repeating (multiple `toRoot` per `scheduler`). `THEN` and `AWAIT` type of events are always one-shot, while asynchronous callbacks can be executed multiple times, e.g. when scheduled via `setInterval`, `addEventListener` etc.
 
 
-## CHAINs vs. FORKs {#chain-fork}
+## Execution Patterns: CHAINs vs. FORKs {#chain-fork}
 
 In order to capture and visualize degree of concurrency of JavaScript applications, Dbux further classifies <Term term="AEs" /> (i.e. the edges of the <Term term="ACG" />) into CHAINs and FORKs.
 Making that distinction is the same as asking: are the events of the `toRoot` a logical continuation of the events of the `fromRoot` (CHAIN)? Or are they the start of something new (FORK)?
@@ -84,27 +84,27 @@ async function f() {
 
 <!-- TODO: 2x2 layout -->
 
-```js
+<div className="grid-2-col mb-05">
+  <CodeBlock className="border-purple" lang="js">{`
 // ex1: E1 is FORK
 A; f(); B;
-```
-
-```js
+  `}</CodeBlock>
+  <CodeBlock className="border-purple" lang="js">{`
 // ex2: E1 is CHAIN
 A; await f(); B;
-```
-
-```js
+  `}</CodeBlock>
+  <CodeBlock className="border-purple" lang="js">{`
 // ex3: E1 is FORK
 await g();
 function g() { f(); }
-```
-
-```js
+  `}</CodeBlock>
+  <CodeBlock className="border-purple" lang="js">{`
 // ex4: E1 is CHAIN
 let p; h(); await p;
 function h() { p = f(); }
-```
+  `}</CodeBlock>
+</div>
+
 
 Below are several more illustrations of asynchronous programs and their expected conceptual ACG with CHAINs (blue) and FORKs (purple):
 
