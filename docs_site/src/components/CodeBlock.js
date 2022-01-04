@@ -15,6 +15,10 @@ import isString from 'lodash/isString';
  * @see https://github.com/facebook/docusaurus/blob/master/packages/docusaurus-theme-classic/src/theme/CodeBlock/index.tsx
  */
 export default function CodeBlock({ src, lang, minWidth, className, style, children, ...props }) {
+  if (lang === undefined) {
+    lang = 'js';
+  }
+  
   props.className = classnames(
     className,
     'code-block',

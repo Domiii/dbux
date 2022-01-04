@@ -149,7 +149,7 @@ pre {
 
 .grid-2-col {
   display: grid;
-  grid-template-columns: 50% 50%;
+  grid-template-columns: calc(50% - 2px) calc(50% - 2px);
   grid-column-gap: 4px;
   grid-row-gap: 4px;
 }

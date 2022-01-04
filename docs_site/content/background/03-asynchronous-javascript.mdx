@@ -6,9 +6,9 @@ import Term from '@comp/Term';
 import Img from '@comp/Img';
 import TOC from '@comp/TOC';
 
-This page goes into the basics and the nitty-gritty of asynchronous JavaScript. It also covers the concepts as well as implementation details of Dbux's <Term term="acg">Asynchronous Call Graph (ACG)</Term>.
-
 <TOC toc={toc} />
+
+This page goes into the basics and the nitty-gritty of asynchronous JavaScript. It also covers the concepts as well as implementation details of Dbux's <Term term="acg">Asynchronous Call Graph (ACG)</Term>.
 
 ## JavaScript Execution Semantics
 
@@ -70,9 +70,15 @@ Note that asynchronous event can be one-shot (one `toRoot` per `scheduler`) and 
 In order to capture and visualize degree of concurrency of JavaScript applications, Dbux further classifies <Term term="AEs" /> (i.e. the edges of the <Term term="ACG" />) into CHAINs and FORKs.
 Making that distinction is the same as asking: are the events of the `toRoot` a logical continuation of the events of the `fromRoot` (CHAIN)? Or are they the start of something new (FORK)?
 
-In the following example, `f` has two AEs `E1` and `E2`. `E2` is always a CHAIN, but `E1` might be CHAIN or FORK, depending on the caller. Assume that the example codes ex1-ex4 are all at root-level:
+NOTE: CHAINs between AWAIT and THEN event roots propagate errors, while CBs have no automatic error propagation mechanism.
 
-```js
+#### First await/then
+
+This example illustrates one of the difficulties involved in trying to determine CHAIN vs. FORK for the first `await` in an async function (similar logic applies to the first `then` in a promise chain): `f` has two AEs `E1` and `E2`. `E2` is always a CHAIN, but `E1` might be CHAIN or FORK, depending on the caller. Assume that the example codes ex1-ex4 are all at root-level:
+
+<div className="border-purple mb-05">
+<div className="mb-05">
+  <CodeBlock lang="js">{`
 async function f() {
   FA
   await 0;  // E1
@@ -80,33 +86,36 @@ async function f() {
   await 0;  // E2
   FC
 }
-```
+  `}</CodeBlock>
+</div>
 
-<!-- TODO: 2x2 layout -->
-
-<div className="grid-2-col mb-05">
-  <CodeBlock className="border-purple" lang="js">{`
+<div className="grid-2-col">
+  <CodeBlock lang="js">{`
 // ex1: E1 is FORK
 A; f(); B;
   `}</CodeBlock>
-  <CodeBlock className="border-purple" lang="js">{`
+  <CodeBlock lang="js">{`
 // ex2: E1 is CHAIN
 A; await f(); B;
   `}</CodeBlock>
-  <CodeBlock className="border-purple" lang="js">{`
+  <CodeBlock lang="js">{`
 // ex3: E1 is FORK
 await g();
 function g() { f(); }
   `}</CodeBlock>
-  <CodeBlock className="border-purple" lang="js">{`
+  <CodeBlock lang="js">{`
 // ex4: E1 is CHAIN
 let p; h(); await p;
 function h() { p = f(); }
   `}</CodeBlock>
 </div>
 
+</div>
 
-Below are several more illustrations of asynchronous programs and their expected conceptual ACG with CHAINs (blue) and FORKs (purple):
+
+#### More Example Graphs
+
+Below are several illustrations of asynchronous programs and their expected conceptual ACG with CHAINs (blue) and FORKs (purple):
 
 <div className="flex flex-row w-full">
   <div className="flex-col w-half">
@@ -148,35 +157,41 @@ ref - more examples: https://docs.google.com/presentation/d/1HT7VcdklD5dG7jZvW4y
 \end{figure}
 -->
 
-
-NOTE: chains between AWAIT and THEN event roots propagate errors, while CBs have no automatic error propagation mechanism.
-
 <!-- CB-type events often do not provide enough information to distinguish between FORK and CHAIN, which is why we classify them as FORK, unless they are promisified or match a set of CALLBACK\_CHAIN\_HEURISTICS. In those cases, they are classified as CHAIN. -->
 
 
-## Promise Creation and Promise Nesting
+## Promise Creation and Promise Nesting {#promise-nesting}
 
-<!-- % \begin{figure}[t]
-%   \begin{minted}{javascript}
-% function sleep(ms) {
-%   return new Promise((resolve) => setTimeout(resolve, ms));
-% }
-%   \end{minted}
-%   \captiondetail[Implement `sleep` with `setTimeout`]{The Promise constructor itself does not trigger an asynchronous event but `setTimeout` does.}
-%   \label{fig:promise_sleep}
-% \end{figure} -->
+Certain types of promises can be nested dynamically. This allows for the nested promise to TODO(more basic and background).
 
-
-In JavaScript, promises can be created in five ways. Somewhat counter-intuitively, (1), (2) and (3) do *not* cause an asynchronous event on their own.
-However, all of them can nest promises. Most of these nesting relationships are captured by Dbux's [asynchronous call graph](../using-dbux/08-call-graph.mdx#async):
+In JavaScript, promises can be created in five ways, some allow promise nesting:
 
 1. The Promise constructor takes an executor function which in turn is provided two parameters: the `resolve` and `reject` functions which are to be called to settle the promise. The executor function is called synchronously from the constructor. The Promise constructor is commonly used to wrap asynchronous callbacks into promises. This process is commonly referred to as "promisification".
+<!-- new Promise(
+  r => r(console.log(1), sleep(100).then(() => console.log(2)))
+).then(() => console.log(3)) -->
 2. `Promise.resolve(x)` and `Promise.reject(x)` are equivalent to using the (i) Promise constructor and synchronously calling `resolve` or `reject` respectively. `Promise.all` and `Promise.race` work similar to `resolve` but allow nesting multiple promises. `Promise.all` fulfills once all nested promises fulfill and rejects once any promise rejects. `Promise.race` fulfills once any nested promise fulfills and rejects if any promise rejects before any other fulfills.
 3. When an async function is called, the runtime environment creates a new promise. Its call expression value is set to that promise. Async functions execute synchronously until the first `await` is encountered. This means that if an async function concluded without explicitly invoking an `await` expression or any of the three other types of events, it does not trigger an asynchronous event. Await expressions can nest promises. Furthermore, promises can be nested by returning them from an async function.
 4. Promise chaining (`then`, `catch`, `finally`) allows for promise nesting by returning a promise from their respective fulfillment and rejection handler callbacks.
 5. [Dynamic imports](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import\#Dynamic_Imports) and other native functions create and return promises.
-   * NOTE: The <Term term="ACG" /> does not yet handle dynamic imports or top-level `awaits` correctly.
+   * NOTE: The first dynamic import of a file can be seen as nesting top-level `awaits` of the imported files, but the <Term term="ACG" /> does not yet capture asynchronous events related to dynamic imports.
 
+Somewhat counter-intuitively, (1), (2) and (3) do *not* cause an asynchronous event on their own.
+However, all of them can nest promises. Most of these nesting relationships are captured by Dbux's [asynchronous call graph](../using-dbux/08-call-graph.mdx#async).
+
+#### Example
+
+The following example implements `sleep` using `setTimeout`. The Promise constructor itself does not trigger an asynchronous event but `setTimeout` does.
+
+<div className="flex flex-row flex-center">
+  <CodeBlock className="border-screen" lang="js" src="async-sleep.js" />
+  <div className="font-size-3">
+    &rarr;
+  </div>
+  <div>
+    <Img screen src="sample-async-sleep.png" />
+  </div>
+</div>
 
 <!-- 
 ## Terminology

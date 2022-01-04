@@ -1,33 +1,21 @@
 /**
- * @file repeat sleep for huge async graph
+ * @file
  */
-async function sleep(ms) {
-  return new Promise((r) => {
-    setTimeout(r, ms);
-  })
-}
 
-// temporarily disabled due to broken promise instrumentation
-// async function f(i) {
-//   console.log(i, 'a');
-//   await sleep((i % 10) * 100);
-//   console.log(i, 'b');
-//   await sleep((i % 10) * 100);
-//   console.log(i, 'c');
-//   await sleep((i % 10) * 100);
-//   console.log(i, 'd');
+function sleep(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
+
+(async function f() {
+  console.log(1);
+  await sleep(100);
+  console.log(2);
+  await sleep(200);
+  console.log(3);
+  await sleep(300);
+  console.log(4);
+})();
+
+// f(0);
+
+// for (let i = 0; i < 2; ++i) {
+//   f(i);
 // }
-
-async function f(i) {
-  console.log(i, 'a');
-  await 1;
-  console.log(i, 'b');
-  await 2;
-  console.log(i, 'c');
-  await 3;
-  console.log(i, 'd');
-}
-
-for (let i = 0; i < 2; ++i) {
-  f(i);
-}
