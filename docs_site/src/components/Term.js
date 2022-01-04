@@ -8,13 +8,22 @@ import useBaseUrl from '../hooks/useBaseUrl';
  * 
  * @see https://github.com/facebook/docusaurus/blob/b393700a613ee00b8e59d347283f68495acb68ba/packages/docusaurus/src/commands/writeHeadingIds.ts#L41
  */
+
+const ae = 'TODO';
+
 const AbbrevAnchorsByAbbrev = {
   cgr: 'cgr',
   trace: 'trace',
   staticTrace: 'trace',
   context: 'context',
+  acg: 'TODO', // /using-dbux/08-call-graph.mdx#async
   'call graph': 'call-graph',
-  'asynchronous event': 'asynchronous-event',
+
+  ae,
+  aes: ae,
+  'asynchronous event': ae,
+  'asynchronous events': ae,
+
   'dynamic runtime analysis': 'dynamic-runtime-analysis',
   idbe: 'idbe'
 };

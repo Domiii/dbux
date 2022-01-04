@@ -26,7 +26,7 @@ The call graph serves as a "map of your runtime execution": it provides a bird's
 Call graph visualizations have many uses, e.g.:
 
 * Overview the complex system that is our application.
-* Identify all <Term term="asynchronous event">asynchronous events</Term> and their connections.
+* Identify all <Term term="ae">asynchronous events</Term> and their connections.
 * Visualize [recursion trees](https://www.google.com/search?q=recursion+trees), like in the screenshot of the [fibbonacci number](https://www.google.com/search?q=fibonacci+algorithm) generator below:
   <Img screen src="call-graph-fib-1.png" maxWidth={600} />
 * ...and more...
@@ -41,13 +41,13 @@ The **call stack** is the list of all executed functions that have not yet concl
 
 ## The Synchronous Call Graph
 
-When investigating an application without any <Term term="asynchronous event">asynchronous events</Term>, the call graph is best viewed in `Sync` mode.
+When investigating an application without any <Term term="ae">asynchronous events</Term>, the call graph is best viewed in `Sync` mode.
 
 <Img screen src="dbux-all-longest-word.png" />
 
 The synchronous call graph has the following properties:
 
-* **Roots**: By default, the synchronous call graph shows a list of all <Term term="CGR">call graph roots</Term>: the entry point of the application, as well as the starting point of any <Term term="asynchronous event" />, vertically sorted by time of recording (later is lower).
+* **Roots**: By default, the synchronous call graph shows a list of all <Term term="CGR">call graph roots</Term>: the entry point of the application, as well as the starting point of any <Term term="ae" />, vertically sorted by time of recording (later is lower).
 * **Nodes**: <Term term="CGR">CGRs</Term> can have children and entire **subtrees**. Each child node represents the execution of a file or function that was called by its parent node. Conventionally, each node is referred to as a "stack frame", but we felt that that terminology is confusing in the context of the more general call graph. We usually refer to these nodes as <Term term="context">contexts</Term> instead.
 * **Real-time**: The call graph updates in real-time. A new <Term term="CGR">CGR</Term> is added to the graph, for each newly recorded asynchronous event.
 
@@ -68,7 +68,7 @@ Non-empty nodes have two (of three) buttons to their left:
 <!-- TODO(explain call graph behavior of (different types of) modules) -->
 
 
-## Asynchronouse Call Graph {async}
+## Asynchronouse Call Graph {#async}
 
 TODO
 

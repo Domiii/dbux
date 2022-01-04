@@ -1,15 +1,58 @@
 # Asynchronous JavaScript
 
-
 import CodeBlock from '@comp/CodeBlock';
 import HSpace from '@comp/HSpace';
-import TOC from '@src/components/TOC';
+import Term from '@comp/Term';
+import Img from '@comp/Img';
+import TOC from '@comp/TOC';
+
+This page goes into the basics and the nitty-gritty of asynchronous JavaScript. It also covers the concepts as well as implementation details of Dbux's <Term term="acg">Asynchronous Call Graph (ACG)</Term>.
 
 <TOC toc={toc} />
 
-## Asynchronous Events
+## JavaScript Execution Semantics
 
-The following three pieces of code illustrate the three types of Asynchronous Events (AE). In all three cases, the resulting Asynchronous Call Graph (ACG) should feature three nodes, connected by two CHAINs.
+Modern JavaScript engines are driven by a single-threaded event loop dispatching events from multiple queues<sup>[1](https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop)</sup> <sup>[2](https://nodejs.org/en/docs/guides/event-loop-timers-and-nexttick/)</sup>. These queued events include all user-requested JavaScript events, such as the program's entry point, event handler callbacks and asynchronous continuations (i.e. continuations of `async` function stacks interrupted by `await`).
+
+JavaScript is non-preemptive and single-threaded, thereby guaranteeing that once dequeued, a script keeps executing until the call stack has no more user code on it, or until it interrupts itself with a root-level `await`, before another event is dequeued.
+
+The Dbux <Term term="ACG" /> supports most asynchronous features of ES2022, sans [dynamic imports](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import#dynamic_imports). In order to be accurate, it requires Promises to adhere to the [A+ specification](https://promisesaplus.com/), as modern browsers, Node and other JS engines do.
+<!-- specifically, we assume that `thenCbs` must be executed asynchronously. -->
+
+
+## Call Graph Roots (CGR) {#cgr}
+
+A CGR represents the invocation of a piece of code from outside our visible (recorded) runtime, i.e. on an empty stack[^3].
+
+Call Graph Roots (CGRs) are the ***nodes*** of Dbux's [Asynchronous Call Graph (ACG)](../using-dbux/08-call-graph.mdx#async). By comparison, in the `synchronous` [call graph](../using-dbux/08-call-graph.mdx) lists all CGRs on a linear timeline.
+
+Examples include:
+
+* The application's entry point.
+* A promise handler callback.
+* Continuation of an async function.
+* Execution of a JavaScript file, often called by `node` or by the webpack bundle (which in turn is called by the underlying JS runtime environment).
+* Browser executing a &lt;script> tag.
+* Execution of a callback supplied to `setTimeout`, `setInterval`, `setIntermediate`, `Process.nextTick`, `Promise.then` etc. These callbacks are scheduled and, at a later point in time, executed by the underlying JS runtime environment.
+* DOM, OS or other types of event handler callbacks.
+* and more...
+
+In order to better understand CGRs and the relationships between them, we define asynchronous events:
+
+## Asynchronous Events (AE) {#ae}
+
+Asynchronous Events (AEs) are the ***edges*** in Dbux's [Asynchronous Call Graph (ACG)](../using-dbux/08-call-graph.mdx#async). They connect pieces of executed code that can never appear together in the same (non-asynchronous) call stack. Any AE `e` has at least three properties:
+
+* `scheduler` - the event (<Term term="trace" />) that created it and its [CGR](#cgr) `fromRoot`, and
+* `toRoot` - the [CGR](#cgr) that executes upon its completion.
+
+We define three types of asynchronous events in JavaScript:
+
+* `AWAIT` <!-- \textemdash{} -->- Scheduled by an `await` expression. `toRoot(e)` is the root of the continuation's virtual context or "resume context/root".
+* `THEN` <!-- \textemdash{} -->- Scheduled by `q = p.THEN(f[, g])` for some promise `p`. For brevity, we use `THEN` to represent `then`, `catch` and `finally`. `toRoot(e)` is that of `e`'s fulfillment or rejection handler, which we also call `thenCb`.
+* `CB` <!-- \textemdash{} -->- Asynchronous callbacks scheduled by a call to an uninstrumented function which takes at least one argument `f` of type `function`.
+
+The following three pieces of code illustrate the three types of Asynchronous Events (AE). In all three cases, the resulting Asynchronous Call Graph (ACG) should feature three nodes, connected by two edges.
 
 <div className="flex flex-row flex-wrap">
   <CodeBlock className="border-purple" lang="js" src="async-send-file-await.js" />
@@ -19,87 +62,69 @@ The following three pieces of code illustrate the three types of Asynchronous Ev
   <CodeBlock className="border-purple" lang="js" src="async-send-file-cb.js" />
 </div>
 
+Note that asynchronous event can be one-shot (one `toRoot` per `scheduler`) and repeating (multiple `toRoot` per `scheduler`). `THEN` and `AWAIT` type of events are always one-shot, while asynchronous callbacks can be executed multiple times, e.g. when scheduled via `setInterval`, `addEventListener` etc.
+
+
+## CHAINs vs. FORKs {#chain-fork}
+
+In order to capture and visualize degree of concurrency of JavaScript applications, Dbux further classifies <Term term="AEs" /> (i.e. the edges of the <Term term="ACG" />) into CHAINs and FORKs.
+Making that distinction is the same as asking: are the events of the `toRoot` a logical continuation of the events of the `fromRoot` (CHAIN)? Or are they the start of something new (FORK)?
+
+In the following example, `f` has two AEs `E1` and `E2`. `E2` is always a CHAIN, but `E1` might be CHAIN or FORK, depending on the caller. Assume that the example codes ex1-ex4 are all at root-level:
+
+```js
+async function f() {
+  FA
+  await 0;  // E1
+  FB
+  await 0;  // E2
+  FC
+}
+```
+
+<!-- TODO: 2x2 layout -->
+
+```js
+// ex1: E1 is FORK
+A; f(); B;
+```
+
+```js
+// ex2: E1 is CHAIN
+A; await f(); B;
+```
+
+```js
+// ex3: E1 is FORK
+await g();
+function g() { f(); }
+```
+
+```js
+// ex4: E1 is CHAIN
+let p; h(); await p;
+function h() { p = f(); }
+```
+
+Below are several more illustrations of asynchronous programs and their expected conceptual ACG with CHAINs (blue) and FORKs (purple):
+
+<div className="flex flex-row w-full">
+  <div className="flex-col w-half">
+    <Img concept src="chain_fork_1.png" />
+    <Img concept src="chain_fork_3.png" />
+  </div>
+  <div className="flex-col w-half">
+    <Img concept src="chain_fork_2.png" />
+  </div>
+</div>
+
+
+
 <!-- 
-TODO: this
-
-% ###############################################################################
-\subsection{Asynchronous Events and Promise Links}
-% ###############################################################################
-
-Modern JS engines are driven by a single-threaded event loop dispatching events from multiple queues. These queued events include all user-requested JS events, such as the program's entry point, event handler callbacks and \code{async} function stacks interrupted by \code{await}.
-% \footnote{(https://nodejs.org/en/docs/guides/event-loop-timers-and-nexttick/, https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop)}
-JavaScript is non-preemptive and single-threaded, thereby guaranteeing that once dequeued, a script keeps executing until the call stack has no more user code on it, or until it interrupts itself with a root-level \code{await} before another event is dequeued.
-Our approach supports the latest asynchronous features of ES2020 but, in order to be accurate, requires Promises to adhere to the A+ specification~\cite{promiseaplus}, as modern browsers, Node and other JS engines do.
-% NOTE: “Promises/A+ mandates that "thenCbs" must be executed asynchronously. However, Promises/A is ambiguous about whether onFulfilled can be fired immediately and synchronously”
-
-To build the ACG, we record three types of Asynchronous Events (AE). Any AE \code{e} has at least two properties: the \code{scheduler}, the event that scheduled it, and \code{toRoot}, the CGR that executes upon its completion. Once the \code{toRoot} executed, the AE and its \code{toRoot} have a unique 1:1 relationship, which is why we may refer to them interchangeably (``an AE's CGR'' or ``a CGR's AE''). The AE types are:
-
-\begin{enumerate}
-  \item \code{AWAIT} \textemdash{} Scheduled by an \code{await} expression. \code{toRoot(e)} is the root of the continuation's virtual context or ``resume context/root''.
-        Additional properties: \code{nestedPromise}: the await argument if it is a promise. \code{callerPromise}: promise of the async function, returned to caller.
-  \item \code{THEN} \textemdash{} Scheduled by \code{q = p.THEN(f[, g])} for some promise \code{p}. For brevity, we use \code{THEN} to represent \code{then}, \code{catch} and \code{finally}. \code{toRoot(e)} is that of \code{e}'s fulfillment or rejection handler, which we also call \code{thenCb}. Additional properties: \code{p}, \code{q}.
-        % \code{nestedPromise}, \code{realContext} (context of the async function).
-  \item \code{CB} \textemdash{} Asynchronous callbacks scheduled by a call to an uninstrumented function which takes at least one argument \code{f} of type \code{function}. \code{toRoot(e)} is that of the executed callback \code{f}. Every execution of \code{f} will create another edge. Additional property: promise \code{p} (if callback was scheduled inside \code{p}'s promise ctor).
-\end{enumerate}
-
-We record the rest of the promise graph in five (out of six) types of PromiseLinks. Each link stores a NESTING relationship between two promises \code{from} and \code{to}: \textbf{NestedThen} links the promises involved in a \code{THEN} event: \code{to = p.then(() => from)} for some promise \code{p}. \textbf{AsyncReturn} links the promise returned by an \code{async} function \code{f} and its caller's return value \textemdash{} \code{to = f()}. \textbf{Resolve} links \code{to = PRe(from)} if \code{from} is promise, where \code{PRe} is \code{Promise.resolve} or \code{Promise.reject}. One \textbf{All} link is created from each promise \code{$p_i$} in \code{to = PAll([$p_1$, $p_2$...])} where \code{PAll} are Promise \code{all} or \code{allSettled} functions. We also add the special \textbf{Promisify} type which is added when the \code{resolve} or \code{reject} function of a promise ctor is called. We have not yet implemented a link for \textbf{Promise.race}.
-
-A CGR is defined as ``belonging to'', or ``owned by'' a promise \code{p}, if the CGR is directly scheduled via \code{p}. That includes \code{p}'s \code{thenCbs}, async function resume roots (the owner \code{p} is its \code{callerPromise}) and promisified asynchronous callbacks. Note that not all promises
-% (e.g. \code{Promise.resolve()})
-have CGRs.
- -->
-
-
-
-
-<!-- 
-% see https://docs.google.com/presentation/d/1-jx2MDEBoufTazqmeKHII0h_aU0F9NF6iRlwOXjstaY/edit#slide=id.gf19b7b13b3_0_543
-
-
-
-Below are several illustrations of asynchronous programs and their expected conceptual ACG.
-
-Fig.~\ref{fig:ae-comparison-code} illustrates the three types of Asynchronous Events (AE). In all three cases, the resulting Asynchronous Call Graph (ACG) should feature three nodes, connected by two CHAINs.
-
--->
-
-## Promise Creation and Promise Nesting
-
-<!-- % \begin{figure}[t]
-%   \begin{minted}{javascript}
-% function sleep(ms) {
-%   return new Promise((resolve) => setTimeout(resolve, ms));
-% }
-%   \end{minted}
-%   \captiondetail[Implement `sleep` with `setTimeout`]{The Promise constructor itself does not trigger an asynchronous event but `setTimeout` does.}
-%   \label{fig:promise_sleep}
-% \end{figure} -->
-
-
-In JavaScript, promises can be created in the following four ways. Somewhat counter-intuitively, (i), (ii) and (iii) do *not* cause an asynchronous event on their own.
-However, all of them can nest promises. Most of these nesting relationships are captured by Dbux's [asynchronous call graph](../using-dbux/08-call-graph.mdx#async):
-
-The (i) Promise constructor takes an executor function which in turn is provided two parameters: the `resolve` and `reject` functions which are to be called to settle the promise. The executor function is called synchronously from the constructor. The Promise constructor is commonly used to wrap asynchronous callbacks into promises. This process is commonly referred to as "promisification".
-
-(ii) `Promise.resolve(x)` and `Promise.reject(x)` are equivalent to using the (i) Promise constructor and synchronously calling `resolve` or `reject` respectively. `Promise.all` and `Promise.race` work similar to `resolve` but allow nesting multiple promises. `Promise.all` fulfills once all nested promises fulfill and rejects once any promise rejects. `Promise.race` fulfills once any nested promise fulfills and rejects if any promise rejects before any other fulfills.
-
-When (iii) an async function is called, the runtime environment creates a new promise. Its call expression value is set to that promise. Async functions execute synchronously until the first `await` is encountered. This means that if an async function concluded without explicitly invoking an `await` expression or any of the three other types of events, it does not trigger an asynchronous event. Await expressions can nest promises. Furthermore, promises can be nested by returning them from an async function.
-
-(iv) Promise chaining (`then`, `catch`, `finally`) allows for promise nesting by returning a promise from their respective fulfillment and rejection handler callbacks.
-
-<!-- TODO: (v) [Dynamic imports](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import\#Dynamic_Imports) and other native functions might return promises. (but they don't nest) -->
-
-
-## CHAINs vs. FORKs
 
 TODO
-
-<!-- 
-TODO: this - remember: no need to get too technical. We better link the paper(s)/technical report(s) instead.
-
 ref - more examples: https://docs.google.com/presentation/d/1HT7VcdklD5dG7jZvW4ytk3ZB3bpGAZTQ52Ml6vDF_U8/edit#slide=id.gb48a591586_0_331
 
-Below are several illustrations of asynchronous programs and their expected conceptual ACG (forks and chains):
 
 \begin{figure}[H]
   \includegraphics[width=\maxwidth{1.0\columnwidth}]{chain_fork_1}
@@ -123,63 +148,34 @@ Below are several illustrations of asynchronous programs and their expected conc
 \end{figure}
 -->
 
-<!-- 
-NOTE on CBs:
 
-CB-type events often do not provide enough information to distinguish between FORK and CHAIN, which is why we classify them as FORK, unless they are promisified or match any of the CALLBACK\_CHAIN\_HEURISTICS. In those cases, they are classified as CHAIN. Chains between AWAIT and THEN event roots propagate errors, while CBs have no automatic error propagation mechanism.
+NOTE: chains between AWAIT and THEN event roots propagate errors, while CBs have no automatic error propagation mechanism.
 
- -->
-
-<!-- 
-TODO: this
-
-Making that distinction is the same as asking: are the events of the \code{toRoot} a logical continuation of the events of the \code{fromRoot} (CHAIN)? Or are they the start of something new (FORK)?
-
-\begin{listing}[thp]
-  \caption{CHAIN vs. FORK: \code{f} has two AEs \code{E1} and \code{E2}. \code{E2} is always a CHAIN, but \code{E1} might be CHAIN or FORK, depending on the caller. The example codes ex1-4 are at root-level.}
-  \begin{minted}{javascript}
-async function f() {
-  FA
-  await 0;  // E1
-  FB
-  await 0;  // E2
-  FC
-}
-
-// ex1: E1 is FORK
-A; f(); B;
-
-// ex2: E1 is CHAIN
-A; await f(); B;
-
-// ex3: E1 is FORK
-await g();
-function g() { f(); }
-
-// ex4: E1 is CHAIN
-let p; h(); await p;
-function h() { p = f(); }
-  \end{minted}
-  \label{code:chains_vs_fork}
-\end{listing} -->
+<!-- CB-type events often do not provide enough information to distinguish between FORK and CHAIN, which is why we classify them as FORK, unless they are promisified or match a set of CALLBACK\_CHAIN\_HEURISTICS. In those cases, they are classified as CHAIN. -->
 
 
+## Promise Creation and Promise Nesting
 
-## Call Graph Roots (CGR) {#cgr}
+<!-- % \begin{figure}[t]
+%   \begin{minted}{javascript}
+% function sleep(ms) {
+%   return new Promise((resolve) => setTimeout(resolve, ms));
+% }
+%   \end{minted}
+%   \captiondetail[Implement `sleep` with `setTimeout`]{The Promise constructor itself does not trigger an asynchronous event but `setTimeout` does.}
+%   \label{fig:promise_sleep}
+% \end{figure} -->
 
-A "call graph root" (CGR) represents an invocation of code from outside our visible (recorded) runtime, i.e. on an empty stack. Examples include:
 
-* The application's entry point.
-* Execution of a JavaScript file, often called by `node` or by the webpack bundle (which in turn is called by the underlying JS runtime environment).
-* Browser executing a &lt;script> tag.
-* Execution of a callback supplied to `setTimeout`, `setInterval`, `setIntermediate`, `Process.nextTick`, `Promise.then` etc. These callbacks are scheduled and then, at a later point in time, executed by the underlying JS runtime environment.
-* DOM or OS event handler callbacks.
-* and more...
+In JavaScript, promises can be created in five ways. Somewhat counter-intuitively, (1), (2) and (3) do *not* cause an asynchronous event on their own.
+However, all of them can nest promises. Most of these nesting relationships are captured by Dbux's [asynchronous call graph](../using-dbux/08-call-graph.mdx#async):
 
-:::tip
-The *synchronous* [call graph](../using-dbux/08-call-graph.mdx) lists all CGRs on a linear timeline.
-The nodes of the *asynchronous* [call graph](../using-dbux/08-call-graph.mdx) only comprises call graph roots.
-:::
+1. The Promise constructor takes an executor function which in turn is provided two parameters: the `resolve` and `reject` functions which are to be called to settle the promise. The executor function is called synchronously from the constructor. The Promise constructor is commonly used to wrap asynchronous callbacks into promises. This process is commonly referred to as "promisification".
+2. `Promise.resolve(x)` and `Promise.reject(x)` are equivalent to using the (i) Promise constructor and synchronously calling `resolve` or `reject` respectively. `Promise.all` and `Promise.race` work similar to `resolve` but allow nesting multiple promises. `Promise.all` fulfills once all nested promises fulfill and rejects once any promise rejects. `Promise.race` fulfills once any nested promise fulfills and rejects if any promise rejects before any other fulfills.
+3. When an async function is called, the runtime environment creates a new promise. Its call expression value is set to that promise. Async functions execute synchronously until the first `await` is encountered. This means that if an async function concluded without explicitly invoking an `await` expression or any of the three other types of events, it does not trigger an asynchronous event. Await expressions can nest promises. Furthermore, promises can be nested by returning them from an async function.
+4. Promise chaining (`then`, `catch`, `finally`) allows for promise nesting by returning a promise from their respective fulfillment and rejection handler callbacks.
+5. [Dynamic imports](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import\#Dynamic_Imports) and other native functions create and return promises.
+   * NOTE: The <Term term="ACG" /> does not yet handle dynamic imports or top-level `awaits` correctly.
 
 
 <!-- 
@@ -193,3 +189,5 @@ TODO
 
 TODO
 -->
+
+[^3]: In terms of the [Promises/A+](https://promisesaplus.com/) terminology, this is equivalent to executing a piece of code when the stack "contains only platform code".

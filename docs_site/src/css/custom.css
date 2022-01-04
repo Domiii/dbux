@@ -125,6 +125,14 @@ li > a.menu__link {
   padding: 2px;
 }
 
+.w-full {
+  width: 100%;
+}
+
+.w-half {
+  width: 50%;
+}
+
 /* .flex-center {
   justify-content: center;
 } */
