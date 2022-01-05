@@ -4,6 +4,7 @@ sidebar_class_name: sidebar-select-trace
 
 # Select Trace
 
+import Img from '@src/components/Img';
 import DarkLightImg from '@src/components/DarkLightImg';
 import Term from '@src/components/Term';
 
@@ -12,16 +13,15 @@ You can investigate a trace record (short: <Term term="trace"></Term>) of execut
 
 * Place the keyboard cursor on a piece of code that has executed.
   * You should see the red crosshair <DarkLightImg src="crosshair_red.svg" /> show up in two places: the top right of the editor window and in the [Trace Details View](./trace-details)[^1].
+  * If there is no red crosshair, the selected code has not executed (or its execution has not been recorded).
   * NOTE: Most executed code is [decorated](./04-code-decorations.mdx) <span className='color-red'> ↳ ↱ </span><span className='color-gray'>↳</span> <span className='color-orange'>ƒ</span>.
-* Click the crosshair <DarkLightImg src="crosshair_red.svg" />.
-* The [Trace Details View](./trace-details) should now offer a wide array of relevant information regarding the selected piece of code.
+  * Keywords like `if` and `return` cannot currently be selected, however their conditions/arguments can.
+* Click the crosshair <DarkLightImg src="crosshair_red.svg" /> or use the `Dbux: Select Trace at Cursor` command to select.
+* Use repeatedly to select surrounding traces (as shown in the gif above).
+
+Once a <Term term="trace" /> is selected, the [Trace Details View](./trace-details) should offer a wide array of relevant information regarding the selected piece of code:
 
 <Img screen src="select-trace.gif" />
-
-* Code that has executed can be traced and analyzed. Executed code can be distinguished from code that did not execute from [code decorations](#code-decorations) (if enabled).
-* To select a trace, place the keyboard cursor on executed code and press the "Select Trace" button.
-   * NOTE: Keywords like `if` and `return` cannot currently be selected, however their conditions/arguments can.
-* Press repeatedly to select surrounding traces (as shown in the gif above). -->
 
 
 :::caution

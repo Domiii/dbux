@@ -10,7 +10,16 @@ import TOC from '@src/components/TOC';
 
 The Dbux CLI package `@dbux/cli` is a tool for easily running Node applications with Dbux enabled.
 
-* Example: `npx dbux run --pb=lodash ./test.js`
+## Getting Started
+
+1. Install
+   * `npm install -D @dbux/cli` or
+   * `yarn add --dev @dbux/cli`
+   * TODO: make sure that there are no packages missing
+2. Run
+   * E.g.: `npx dbux run ./test.js`
+
+
 
 ## Config
 
@@ -20,9 +29,6 @@ TODO
 
 
 <!-- 
-
-
-The cli injects `@dbux/runtime` upon `import` of any `js` file. As it executs, the runtime records all kinds of execution data, and automatically connects and sends the data to a server at a hardcoded port. Currently, the receiving server is hosted by the `dbux-code` VSCode extension. Without that extension, `@dbux/cli` (as of now) probably won't be of much use to you.
 
 # Installation
 
