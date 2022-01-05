@@ -19,6 +19,10 @@ Dbux is an integrated debugging environment (IDbE) and omniscient debugger for J
 <Img screen src="dbux-all-async1.png" />
 
 <!-- https://docusaurus.io/docs/next/markdown-features/admonitions -->
+:::danger
+Dbux is currently still in alpha. While we have been testing it on many real-world projects, there is always a chance, that the next one does not exactly work the way we would like. For example, tracing the internals of `react` is currently not possible without making changes to the Dbux source code: https://github.com/Domiii/dbux/issues/640.
+If you run into any problems when using Dbux, please let us know.
+:::
 :::tip
 Dbux has a bit of a learning curve. We recommend programming beginners to start with the [interactive tutorials](./dbux-practice/02-tutorial.md).
 
@@ -29,6 +33,8 @@ While you can certainly try to get started on your own, you are welcome to join 
 ## Dbux Features
 
 <!-- TODO: make this part bigger and more visual -->
+
+Once an application has executed with [Dbux enabled](./using-dbux/02-enable-dbux.mdx), a collection of analytical tools is available via the [Dbux VSCode Extension](./tools-and-configuration/01-dbux-code.mdx):
 
 * Dbux's [global view](./using-dbux/07-global.mdx) lists third-party modules, files and console log events. Takes user to the relevant code in a single click.
   * NOTE: While this eliminates the need for most of "[print-based debugging](https://www.google.com/search?q=print-based+debugging&hl=en)", it does not replace use of [proper logging](https://www.google.com/search?q=logging+programming+best+practices).

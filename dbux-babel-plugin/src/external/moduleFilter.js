@@ -71,19 +71,28 @@ export default function moduleFilter(options, includeDefault) {
       Verbose > 2 && traceLog(`no modulePath - otherArgs = ${JSON.stringify(otherArgs)}`);
       return undefined;
     }
+
+    // 1. internal stuff
     if (modulePath.match(/((dbux[-]runtime)|(@dbux[/\\]runtime))[/\\]/)) {
-      // future-work: only debug these paths if we are targeting dbux directly; else this could cause infinite loops
+      // NOTE: it could cause problems, if dbux tries to instrument itself.
+      // future-work: allow including these paths so we can debug Dbux with Dbux.
       return !includeDefault;
     }
 
+    // 2. some stuff we want to ignore by default
     // TODO: make `dist`, `.mjs` and @babel path settings configurable
+    // TODO: *.mjs files should be fine now -> re-test (#577)
     const unwanted = modulePath.match(/([/\\]dist[/\\])|(\.mjs$)|([/\\]@babel[/\\])|([/\\]babel[-]plugin.*[/\\])/);
+    if (unwanted) {
+      reportRegister(modulePath, false, 'unwanted');
+      return !includeDefault;
+    }
+
     const packageName = parsePackageName(modulePath);
 
-    // console.debug('unwanted', modulePath, packageName, unwanted);
 
-    if (unwanted ||
-      (packageName &&
+    // 3. check package name (based on )
+    if ((packageName &&
         !shouldInstrument(packageName, packageWhitelistRegExps, packageBlacklistRegExps))) {
       reportRegister(modulePath, false, 'package');
       return !includeDefault;
@@ -91,15 +100,12 @@ export default function moduleFilter(options, includeDefault) {
 
     // modulePath = modulePath.toLowerCase();
 
-    // const shouldInclude = includeDefault;
+    // 4. check complete path
     const shouldInclude = (!fileWhitelistRegExps.length && !fileBlacklistRegExps.length) || 
       shouldInstrument(modulePath, fileWhitelistRegExps, fileBlacklistRegExps);
     reportRegister(modulePath, shouldInclude, 'file');
-    return (shouldInclude && includeDefault) || (!shouldInclude && !includeDefault);
-    // if (shouldInclude) {
-    //   return includeDefault;
-    // }
-    // return !includeDefault;
+    return shouldInclude === includeDefault;
+    // return (shouldInclude && includeDefault) || (!shouldInclude && !includeDefault);
   };
 }
 

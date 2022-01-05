@@ -1,0 +1,29 @@
+# Which Files are Traced?
+
+import CodeLink from '@src/components/CodeLink';
+import TOC from '@src/components/TOC';
+
+<TOC toc={toc} />
+
+
+This article explains Dbux determines which files to record.
+
+When [Dbux is enabled](../using-dbux/02-enable-dbux.mdx), it automatically records execution of all files that are not in `node_modules`[^1]. It is a balancing act to determine the optimal set of files to trace. Often times it is easiest to tell Dbux to just trace everything. However, tracing *everything* can slow down the build/parse time significantly.
+
+<!-- TODO(re-write this: build-time vs. run-time performance considerations etc.)
+
+Also, tracing long-running loops or high-FPS code TODO(explain). That is why you want to fine-tune configuration as to what and how you want to trace.  -->
+
+
+Dbux currently offers several configuration options:
+
+* `packageWhitelist`
+* `packageBlacklist`
+* `fileWhitelist`
+* `fileBlacklist`
+
+* -> These settings are in <CodeLink path="dbux-babel-plugin/src/external/moduleFilter.js" />.
+* -> Package name is determined via <CodeLink path="dbux-common-node/src/util/moduleUtil.js">`parsePackageName`</CodeLink>
+
+
+[^1]: Support for PnP and other module systems are [pending](../advanced/02-future-work.mdx).

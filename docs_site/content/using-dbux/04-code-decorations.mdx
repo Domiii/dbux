@@ -4,19 +4,23 @@ import Img from '@src/components/Img';
 import CodeLink from '@src/components/CodeLink';
 import DarkLightImg from '@src/components/DarkLightImg';
 
+After [executing an application with Dbux enabled](./02-enable-dbux.mdx), all executed code is decorated with <span className='color-red'>↳ ↱</span> <span className='color-gray'>↳</span> <span className='color-orange'>ƒ</span> etc.
 
-* After [executing a piece of code with Dbux enabled](./02-enable-dbux.mdx), all executed code is decorated <span className='color-red'>↳ ↱</span> <span className='color-gray'>↳</span> <span className='color-orange'>ƒ</span>.
-* These decorations allow us to better understand which parts of the code actually executed.
-* You can toggle decorations via the `Dbux: Hide Decorations` and `Dbux: Show Decorations` commands.
-  * <Img screen src="toggle-deco.png" />
+* These decorations allow us to better understand which parts of the code actually executed, and covey some basic properties of how the code executed.
+* You can toggle decorations via the `Dbux: Hide Decorations` and `Dbux: Show Decorations` commands:
+  <Img screen src="toggle-deco.png" />
+
+
+## Interpreting Decorations
+
+* `f()` <span className="color-red">↱</span>: the function `f` was executed and recorded, and we can step into it.
+* `g()` <span className="color-gray">↱</span>: the function `g` was executed but not recorded, and we cannot step into it. This means that `g` is a native function or recording for it was [disabled explicitly]().
+* For all other code decorations and their meanings, please refer to <CodeLink path="dbux-code/src/codeDeco/traceDecoConfig.js" />.
 
 ## Examples
 
-* `f()` <span className="color-red">↱</span>: the function `f` is recorded and we can step into it.
-* `g()` <span className="color-gray">↱</span>: the function `g` is not recorded and we cannot step into it.
-
 In this buggy code, we find that line 6 never executed, just from the code decorations:
-  <Img screen src="code-deco1.png" />
 
+<Img screen src="code-deco1.png" />
 
-For all code decorations and their meanings, please refer to <CodeLink path="dbux-code/src/codeDeco/traceDecoConfig.js" />.
+TODO: more examples

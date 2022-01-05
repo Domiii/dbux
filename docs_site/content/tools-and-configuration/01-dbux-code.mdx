@@ -3,8 +3,6 @@ title: Dbux VSCode Extension
 ---
 # Dbux VSCode Extension
 
-TODO(intro)
-
 import Img from '@src/components/Img';
 import DarkLightImg from '@src/components/DarkLightImg';
 import TOC from '@src/components/TOC';
@@ -12,16 +10,23 @@ import TOC from '@src/components/TOC';
 <TOC toc={toc} />
 
 
+The Dbux VSCode Extension is currently the only GUI implementation for Dbux. All its GUI features are explained in [the "Using Dbux" Chapter](../using-dbux/02-enable-dbux.mdx).
+
+
 ## Runtime Server
 
-Currently, the Dbux VSCode Extension offers the only implementation of the Dbux 📡 Runtime Server. If enabled, it receives data from applications running on `localhost`[^1]. Once a first batch of data is received, the application will show up in the [Application View](../using-dbux/applications).
+Currently, the VSCode Extension is also the only implementation of the Dbux Runtime Server 📡. If enabled, it receives data from [Dbux-enabled](../using-dbux/02-enable-dbux.mdx) applications running on `localhost`[^1]. Once a first batch of data is received, the application will show up in the [Application View](../using-dbux/applications).
 
-The Runtime Server turns on automatically the first time you use [the Run Button](../using-dbux/03-the-run-button.mdx) or run a [Dbux Practice exercise](../dbux-practice/01-overview.mdx). In any other case, you need to turn it on manually. The button is located at the top of [the Applications view](../using-dbux/06-applications.mdx)[^2]:
+The Runtime Server is turned off on start-up. It turns on automatically the first time you use [the Run Button](../using-dbux/03-the-run-button.mdx) or run a [Dbux Practice exercise](../dbux-practice/01-overview.mdx). In any other case, you need to turn it on manually. 
 
+You can turn it on or off via "the Runtime Server button" at the top of [the Applications view](../using-dbux/06-applications.mdx)[^2]:
 <Img screen src="runtime-server-button.png" />
 
 Also see: [Dbux Architecture](./00-architecture-overview.mdx).
 
+:::note
+Since the Runtime Server port is currently hard-coded[^1], only one instance can be running per computer/VM/container. Trying to start another instance will fail with a corresponding "port in use" error message.
+:::
 
 ## Commands
 
@@ -51,5 +56,5 @@ You can change configuration via the `Preferences: Open User/Workspace Settings`
 <Config />
 
 
-[^1]: We currently only support `localhost` for analysis. Fixing this shortcoming is part of our planned [future work](../advanced/future-work).
+[^1]: Dbux can currently only receive data on `localhost` via a hard-coded port. This is a [known limitation](../advanced/future-work) we intend to address in the near future.
 [^2]: You might need to hover over the `Applications` view for buttons to show up. This is a [limitation of the VSCode Extension API](https://github.com/microsoft/vscode/issues/78829).

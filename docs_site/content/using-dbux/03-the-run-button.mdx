@@ -19,7 +19,7 @@ The Run button simply calls the `Dbux: Run Current File` command. You can also a
 :::
 
 :::note
-The `Debug Current File` command does the same thing as the Run button but with `--inspect-brk` enabled.
+The `Dbux: Debug Current File` command does the same thing as the Run button but with `--inspect-brk` enabled.
 :::
 
 <!-- 
@@ -34,7 +34,9 @@ When pressed, a Terminal opens and starts executing the active `*.js` file with 
 
 > ```$ node --enable-source-maps --stack-trace-limit=1000 --enable-source-maps -r dbux/node_modules/@dbux/cli/dist/linkOwnDependencies.js "dbux/node_modules/@dbux/cli/bin/dbux.js" run --esnext --pw=.* "/my-code/firstDuplicate/find-bad.js"```
 
-Beneath it, you will see (a potentially verbose) log of things that Dbux does, interleaved with the program's own console output, e.g.:
+### Example Output
+
+In the terminal you will see (a potentially verbose) log of things that Dbux does, interleaved with the program's own console output, e.g.:
 
 
 ```
