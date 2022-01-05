@@ -32,7 +32,7 @@ The `Dbux: Debug Current File` command does the same thing as the Run button but
 
 When pressed, a Terminal opens and starts executing the active `*.js` file with [@dbux/cli](../tools-and-configuration/02-dbux-cli.mdx), e.g.:
 
-> ```$ node --enable-source-maps --stack-trace-limit=1000 --enable-source-maps -r dbux/node_modules/@dbux/cli/dist/linkOwnDependencies.js "dbux/node_modules/@dbux/cli/bin/dbux.js" run --esnext --pw=.* "/my-code/firstDuplicate/find-bad.js"```
+> ```$ node --stack-trace-limit=1000 --enable-source-maps -r ./my-code/node_modules/@dbux/cli/dist/linkOwnDependencies.js "./my-code/node_modules/@dbux/cli/bin/dbux.js" run --esnext --pw=.* "./my-code/firstDuplicate/find-bad.js"```
 
 ### Example Output
 

@@ -1,18 +1,98 @@
 # Installation
 
 import Img from '@src/components/Img';
+import HintVolta from './_install-hint-volta.mdx';
+import HintNode from './_install-hint-node.mdx';
 
 
 :::note
 Currently, Dbux only provides a UI through the Dbux VSCode extension.
 :::
 
-1. Install the [Dbux VSCode Extension](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code)
+1. [Install the Dbux VSCode Extension](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code) from the VSCode Marketplace.
 2. Select the Dbux Extension on the VS sidebar -> Click the "Start Dbux" button
    * <Img src="screens/start_dbux.png" zoomable={true} width="300px" />
 3. When necessary (e.g. after installation), wait for dependencies to update.
    * <Img src="screens/installing_dependencies.png" zoomable={true} width="300px" />
 4. The Dbux VSCode Extension is now ready [to use](../using-dbux)!
    * <Img src="screens/dbux-ready.png" zoomable={true} width="150px" />
+
+
+## System Requirements
+
+The [Dbux VSCode Extension](../tools-and-configuration/01-dbux-code.mdx) requires several system tools to be installed to function. It automatically tries its best to determine whether the tools it requires are installed.
+
+At least it requires `Node@16` and `npm`. If it is missing anything, it should warn you when starting. If nothing is missing, you should see a message like this in the Dbux Output Channel:
+
+```
+Dbux requires the following programs to be installed and available on your system in order to run smoothly. Please make sure, you have all of them installed.
+
+✓  node
+    found at "C:/PROGRAM FILES/VOLTA/NODE.EXE" (v16.13.1 satisfies 16)
+✓  npm
+    found at "C:/PROGRAM FILES/VOLTA/NPM.EXE"
+
+SUCCESS! All system dependencies seem to be in order.
+```
+
+:::caution
+When facing an issue with your Node version, [please read on below](#node-version).
+:::
+
+<!-- 
+<details>
+  <summary>IMPORTANT: A word on installing Node and changing Node versions.</summary>
+  <div>
+    <HintVolta />
+  </div>
+</details>
+
+<details>
+  <summary>Hint 2: Be careful when changing Node versions.</summary>
+  <div>
+    <HintNode />
+  </div>
+</details> -->
+
+When working through [Dbux Practice](../dbux-practice/01-overview.mdx) exercises, more tools are required:
+
+```
+✓  node
+    found at "C:/PROGRAM FILES/VOLTA/NODE.EXE" (v16.13.1 satisfies 16)
+✓  npm
+    found at "C:/PROGRAM FILES/VOLTA/NPM.EXE"
+✓  bash
+    found at "C:/PROGRAM FILES/GIT/USR/BIN/BASH.EXE"
+✓  git
+    found at "C:/PROGRAM FILES/GIT/CMD/GIT.EXE"
+```
+
+
+## Node Version Nightmare {#node-version}
+
+### Changing Node Management Systems
+
+We strongly recommend using [Volta](https://volta.sh/) for managing your Node versions. Unlike `nvm` and `n`, it is cross-platform. It also allows to locally require specific node versions. This way, different projects on your computer can easily run at a different version of node without messing with each other.
+
+:::caution
+Note that when changing Node management systems, make sure to first uninstall all previously installed managers and versions of node.
+:::
+
+### Changing Node Versions
+
+Even if you are not changing Node management systems: changing your system-wide Node version can still become a bit of a ***nightmare***:
+
+That is because when changing Node versions, **it might uninstall or forget all your globally installed node packages**. If you are using globally installed packages, please consult your current Node installer/manager on how they manage them, before taking the big step. If you change your Node installer/manager, then you will most definitely lose all globally installed packages.
+
+
+:::caution
+This is a [PSA](https://en.wikipedia.org/wiki/Public_service_announcement):
+
+[Don't Install Node Packages Globally](https://www.google.com/search?q=dont+install+node+packages+globally&hl=en)!
+
+Like [many others](https://www.google.com/search?q=dont+install+node+packages+globally&hl=en), we recommend to never install packages globally (even if the module authors recommend otherwise). Maintaining globally installed packages is always a lot more painful, because they might affect all projects on your system, and, unlike locally installed packages, they don't have proper dependency management which easily leads to dependency conflicts.
+
+If you have already done so, that is of course also Ok. It just needs a lot of careful attention when you want to use different Node versions at any point in time.
+:::
 
 <!-- future-work(interactive config for auto-start + dependency directory?) -->

@@ -1488,5 +1488,9 @@
     "vscode-test": "^1.2.2",
     "strip-ansi": "^7.0.1"
   },
-  "_moduleAliases": {}
+  "_moduleAliases": {},
+  "volta": {
+    "node": "16.13.0",
+    "yarn": "1.22.17"
+  }
 }
