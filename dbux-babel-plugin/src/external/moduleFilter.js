@@ -27,10 +27,33 @@ function shouldInstrument(input, whitelist, blacklist) {
   const white = (!whitelist || whitelist.some(regexp => regexp.test(input)));
   const black = (!blacklist || !blacklist.some(regexp => regexp.test(input)));
   const result = white && black;
-  Verbose > 1 && debugLog('shouldInstrument', input, result, '\n  ', 
+  Verbose > 1 && debugLog('shouldInstrument', input, result, '\n  ',
     JSON.stringify({ white, black, whitelist: whitelist?.map(x => x.toString()), blacklist: blacklist?.map(x => x.toString()) })
   );
   return result;
+}
+
+/** ###########################################################################
+ * {@link ModuleFilterOptions}
+ * ##########################################################################*/
+
+export class ModuleFilterOptions {
+  /**
+   * @type {string | RegExp | Array.<string | RegExp>}
+   */
+  packageWhitelist;
+  /**
+   * @type {string | RegExp | Array.<string | RegExp>}
+   */
+  packageBlacklist;
+  /**
+   * @type {string | RegExp | Array.<string | RegExp>}
+   */
+  fileWhitelist;
+  /**
+   * @type {string | RegExp | Array.<string | RegExp>}
+   */
+  fileBlacklist;
 }
 
 /** ###########################################################################
@@ -38,7 +61,7 @@ function shouldInstrument(input, whitelist, blacklist) {
  * ##########################################################################*/
 
 /**
- * @param {*} options 
+ * @param {ModuleFilterOptions} options 
  * @param {boolean} includeDefault Is used internally to determine whether we are including or ignoring.
  */
 export default function moduleFilter(options, includeDefault) {
@@ -55,7 +78,7 @@ export default function moduleFilter(options, includeDefault) {
   const fileBlacklistRegExps = makeRegExps(fileBlacklist);
 
   Verbose > 1 && debugLog(
-    `pw`, packageWhitelistRegExps?.join(','), 
+    `pw`, packageWhitelistRegExps?.join(','),
     'pb', packageBlacklistRegExps?.join(','),
     'fw', fileWhitelistRegExps?.join(','),
     'fb', fileBlacklistRegExps?.join(',')
@@ -93,7 +116,7 @@ export default function moduleFilter(options, includeDefault) {
 
     // 3. check package name (based on )
     if ((packageName &&
-        !shouldInstrument(packageName, packageWhitelistRegExps, packageBlacklistRegExps))) {
+      !shouldInstrument(packageName, packageWhitelistRegExps, packageBlacklistRegExps))) {
       reportRegister(modulePath, false, 'package');
       return !includeDefault;
     }
@@ -101,7 +124,7 @@ export default function moduleFilter(options, includeDefault) {
     // modulePath = modulePath.toLowerCase();
 
     // 4. check complete path
-    const shouldInclude = (!fileWhitelistRegExps.length && !fileBlacklistRegExps.length) || 
+    const shouldInclude = (!fileWhitelistRegExps.length && !fileBlacklistRegExps.length) ||
       shouldInstrument(modulePath, fileWhitelistRegExps, fileBlacklistRegExps);
     reportRegister(modulePath, shouldInclude, 'file');
     return shouldInclude === includeDefault;
@@ -145,10 +168,10 @@ function makeRegExps(list, toRegexp = defaultRegexpCreator) {
   }
   else {
     list = Array.from(list)
-      .map(s => isRegExp(s) ? s : toRegexp(s));
+      .map(s => makeRegExps(s, toRegexp));
   }
 
-  return list;
+  return list.flat();
 }
 
 function reportRegister(modulePath, shouldInclude, what) {

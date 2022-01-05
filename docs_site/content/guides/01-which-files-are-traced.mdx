@@ -17,13 +17,116 @@ Also, tracing long-running loops or high-FPS code TODO(explain). That is why you
 
 Dbux currently offers several configuration options:
 
-* `packageWhitelist`
-* `packageBlacklist`
-* `fileWhitelist`
-* `fileBlacklist`
+* `packageWhitelist` (`pw`)
+* `packageBlacklist` (`pb`)
+* `fileWhitelist` (`fw`)
+* `fileBlacklist` (`fb`)
 
 * -> These settings are in <CodeLink path="dbux-babel-plugin/src/external/moduleFilter.js" />.
-* -> Package name is determined via <CodeLink path="dbux-common-node/src/util/moduleUtil.js">`parsePackageName`</CodeLink>
+* -> `packageName` is determined via <CodeLink path="dbux-common-node/src/util/moduleUtil.js">`parsePackageName`</CodeLink>
+  * NOTE: `packageName` support namespaces.
+  * Examples of `packageName` detection for different module paths:
+    * `/pre/node_modules/a` -> `a`
+    * `/pre/node_modules/a/b/c.js` -> `a`
+    * `/pre/node_modules/a/b/node_modules/c/d` -> `c`
+    * `/pre/node_modules/@a/b/c.js` -> `@a/b`
+
+### Example
+
+```js
+const moduleFilterOptions = {
+  packageWhitelist: 'interestingPackage1,@interesting/package2',
+  // packageBlacklist: '',
+  fileBlacklist: '.*bad_file1\.js,.*/unwanted_dir1/.*'
+};
+```
+
+TODO: more explanations + examples
+
+<!-- 
+## Module Filter Examples
+
+#### Example 1
+
+```js
+moduleFilterOptions TODO
+``` -->
+
+
+## Run Button + @dbux/cli
+
+When using [the Run Button](../using-dbux/03-the-run-button.mdx) and/or [@dbux/cli](../tools-and-configuration/02-dbux-cli.mdx), you can configure this via the `--pw`, `--pb`, `--fw` and `--fb` flags.
+
+* Example: `npx dbux run --pb=lodash ./test.js`
+
+## Babel Config
+
+When [manually integrating Dbux into your build pipeline](./02-build-pipeline-integration.mdx), you generally want to make use of the `moduleFilter` tools (<CodeLink path="dbux-babel-plugin/src/external" />) in your config file and manually adjust your global Babel `include` **or** `ignore` settings.
+
+NOTE: These tools return `function` (not `string` or `RegExp`).
+
+### Webpack Example:
+
+
+```js
+const shouldInclude = require('@dbux/babel-plugin/dist/include').default;
+
+// ...
+
+module.exports = {
+  // ...
+  module: {
+    rules: [
+      {
+        test: /\.jsx?$/,
+        include: [
+          shouldInclude(moduleFilterOptions)
+        ],
+        use: {
+          loader: 'babel-loader',
+          options: {
+            plugins: [
+              // other plugins, running **after** Dbux...
+              '@dbux/babel-plugin'
+              // other plugins, running **before** Dbux...
+            ]
+          }
+        }
+      }
+    ]
+  }
+};
+```
+
+
+### Rollup Example
+
+TODO: We have not tested this in a while. Need to verify and set it in stone. Test with the previously working `Chart.js` practice exercises (which uses Rollup).
+
+Rollup requires use of [@rollup/plugin-babel](https://www.npmjs.com/package/@rollup/plugin-babel).
+
+Something like this:
+
+```js
+const shouldInclude = require('@dbux/babel-plugin/dist/include').default;
+
+const config = {
+  ...
+  plugins: [
+    babel({
+      babelHelpers: 'inline',
+      filter: shouldInclude(moduleFilterOptions),
+      /**
+       * WARNING: if not skipped, we saw some serious memory leaks (in 2020), 
+       *    but should already be fixed on the Dbux side.
+       * TODO: we need to test this again.
+       */
+      skipPreflightCheck: true
+    })
+  ]
+};
+```
+
 
 
 [^1]: Support for PnP and other module systems are [pending](../advanced/02-future-work.mdx).

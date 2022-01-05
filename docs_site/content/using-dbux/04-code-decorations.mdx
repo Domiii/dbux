@@ -14,7 +14,7 @@ After [executing an application with Dbux enabled](./02-enable-dbux.mdx), all ex
 ## Interpreting Decorations
 
 * `f()` <span className="color-red">↱</span>: the function `f` was executed and recorded, and we can step into it.
-* `g()` <span className="color-gray">↱</span>: the function `g` was executed but not recorded, and we cannot step into it. This means that `g` is a native function or recording for it was [disabled explicitly]().
+* `g()` <span className="color-gray">↱</span>: the function `g` was executed but not recorded, and we cannot step into it. This means that `g` is a native function or is [not configured to be recorded](../guides/01-which-files-are-traced.mdx).
 * For all other code decorations and their meanings, please refer to <CodeLink path="dbux-code/src/codeDeco/traceDecoConfig.js" />.
 
 ## Examples

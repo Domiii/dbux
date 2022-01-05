@@ -53,6 +53,10 @@ module.exports = [
           // 'D:/code/dbux/dbux-babel-plugin'
         ],
         // exclude: 'node_modules/**',
+        /**
+         * TODO: does `ignore` work? looks like it should be `filter` instead?!
+         * @see https://www.npmjs.com/package/@rollup/plugin-babel
+         */
         ignore: [
           function shouldIgnore(modulePath) {
             if (!modulePath) {

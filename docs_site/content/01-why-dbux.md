@@ -19,8 +19,9 @@ Dbux is an integrated debugging environment (IDbE) and omniscient debugger for J
 <Img screen src="dbux-all-async1.png" />
 
 <!-- https://docusaurus.io/docs/next/markdown-features/admonitions -->
-:::danger
-Dbux is currently still in alpha. While we have been testing it on many real-world projects, there is always a chance, that the next one does not exactly work the way we would like. For example, tracing the internals of `react` is currently not possible without making changes to the Dbux source code: https://github.com/Domiii/dbux/issues/640.
+:::caution
+Dbux is currently still in ALPHA. While we have been testing it on many many small <CodeLink path="samples" /> and several real-world projects, there is always a chance, that the next one does not exactly work the way we would like. For example, tracing the internals of `react` is currently not possible without making changes to the Dbux source code: https://github.com/Domiii/dbux/issues/640.
+
 If you run into any problems when using Dbux, please let us know.
 :::
 :::tip
