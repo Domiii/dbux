@@ -23,7 +23,7 @@ Dbux currently offers several configuration options:
 * `fileBlacklist` (`fb`)
 
 * -> These settings are in <CodeLink path="dbux-babel-plugin/src/external/moduleFilter.js" />.
-* -> `packageName` is determined via <CodeLink path="dbux-common-node/src/util/moduleUtil.js">`parsePackageName`</CodeLink>
+* -> `packageName` is determined via <CodeLink path="dbux-common-node/src/util/moduleUtil.js"><code>parsePackageName</code></CodeLink>
   * NOTE: `packageName` support namespaces.
   * Examples of `packageName` detection for different module paths:
     * `/pre/node_modules/a` -> `a`
@@ -61,7 +61,7 @@ When using [the Run Button](../using-dbux/03-the-run-button.mdx) and/or [@dbux/c
 
 ## Babel Config
 
-When [manually integrating Dbux into your build pipeline](./02-build-pipeline-integration.mdx), you generally want to make use of the `moduleFilter` tools (<CodeLink path="dbux-babel-plugin/src/external" />) in your config file and manually adjust your global Babel `include` **or** `ignore` settings.
+When [manually integrating Dbux into your build pipeline](./02-build-pipeline-integration.mdx), you generally want to make use of the `moduleFilter` tools (<CodeLink path="dbux-babel-plugin/src/external" />) in your config file and manually adjust your global Babel `include` **or** `ignore` settings to make sure that you are tracing and recording the files that you want.
 
 NOTE: These tools return `function` (not `string` or `RegExp`).
 
@@ -77,6 +77,7 @@ module.exports = {
   // ...
   module: {
     rules: [
+      // ...
       {
         test: /\.jsx?$/,
         include: [

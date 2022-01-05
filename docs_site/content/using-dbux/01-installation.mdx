@@ -5,9 +5,6 @@ import HintVolta from './_install-hint-volta.mdx';
 import HintNode from './_install-hint-node.mdx';
 
 
-:::note
-Currently, Dbux only provides a UI through the Dbux VSCode extension.
-:::
 
 1. [Install the Dbux VSCode Extension](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code) from the VSCode Marketplace.
 2. Select the Dbux Extension on the VS sidebar -> Click the "Start Dbux" button
@@ -17,12 +14,23 @@ Currently, Dbux only provides a UI through the Dbux VSCode extension.
 4. The Dbux VSCode Extension is now ready [to use](../using-dbux)!
    * <Img src="screens/dbux-ready.png" zoomable={true} width="150px" />
 
+:::note
+Currently, Dbux only provides a UI through the [Dbux VSCode Extension](../tools-and-configuration/01-dbux-code.mdx).
+:::
 
 ## System Requirements
 
-The [Dbux VSCode Extension](../tools-and-configuration/01-dbux-code.mdx) requires several system tools to be installed to function. It automatically tries its best to determine whether the tools it requires are installed.
+:::caution
+As of Jan. 2022, Dbux at least requires `Node@16` and `npm`.
 
-At least it requires `Node@16` and `npm`. If it is missing anything, it should warn you when starting. If nothing is missing, you should see a message like this in the Dbux Output Channel:
+If you don't have the right Node version, [please read this](#node-version).
+:::
+
+The [Dbux VSCode Extension](../tools-and-configuration/01-dbux-code.mdx) requires several command line tools to be installed.
+
+It automatically tries to determine whether those tools are installed.
+If it is missing anything, it should warn you upon start-up.
+If nothing is missing, it leaves a positive message in the Dbux Output Channel. E.g.:
 
 ```
 Dbux requires the following programs to be installed and available on your system in order to run smoothly. Please make sure, you have all of them installed.
@@ -34,10 +42,6 @@ Dbux requires the following programs to be installed and available on your syste
 
 SUCCESS! All system dependencies seem to be in order.
 ```
-
-:::caution
-When facing an issue with your Node version, [please read on below](#node-version).
-:::
 
 <!-- 
 <details>
@@ -54,7 +58,7 @@ When facing an issue with your Node version, [please read on below](#node-versio
   </div>
 </details> -->
 
-When working through [Dbux Practice](../dbux-practice/01-overview.mdx) exercises, more tools are required:
+When working through [Dbux Practice](../dbux-practice/01-overview.mdx) exercises, more tools might be required for each project. As of Jan. 2022, it at least requires `git` and `bash` to be installed:
 
 ```
 ✓  node
@@ -67,6 +71,20 @@ When working through [Dbux Practice](../dbux-practice/01-overview.mdx) exercises
     found at "C:/PROGRAM FILES/GIT/CMD/GIT.EXE"
 ```
 
+:::caution Caution: Windows Users
+`git` and `bash` might not be installed, or otherwise not available as command-line tools on Windows.
+
+The trick here is that you only need `git` for Windows to get both (`git` automatically installs `bash`). However, it must make sure to select the "Add UNIX tools to path" option when installing.
+
+If you use `git`'s GUI installer, [select the "Add UNIX tools to path" option in the installer](https://www.google.com/search?q=git+add+unix+tools+to+path+windows&tbm=isch).
+
+[If you use `choco`](https://www.google.com/search?q=choco+windows+git), add the corresponding command-line parameter, i.e.:
+
+```
+choco install git.install --params "/GitAndUnixToolsOnPath"
+```
+:::
+
 
 ## Node Version Nightmare {#node-version}
 
@@ -74,25 +92,23 @@ When working through [Dbux Practice](../dbux-practice/01-overview.mdx) exercises
 
 We strongly recommend using [Volta](https://volta.sh/) for managing your Node versions. Unlike `nvm` and `n`, it is cross-platform. It also allows to locally require specific node versions. This way, different projects on your computer can easily run at a different version of node without messing with each other.
 
-:::caution
+:::caution Caution: Uninstall First
 Note that when changing Node management systems, make sure to first uninstall all previously installed managers and versions of node.
 :::
 
 ### Changing Node Versions
 
-Even if you are not changing Node management systems: changing your system-wide Node version can still become a bit of a ***nightmare***:
+Even if you are not changing Node management systems: changing your system-wide Node version can still become a bit of a ***nightmare***.
 
 That is because when changing Node versions, **it might uninstall or forget all your globally installed node packages**. If you are using globally installed packages, please consult your current Node installer/manager on how they manage them, before taking the big step. If you change your Node installer/manager, then you will most definitely lose all globally installed packages.
 
 
-:::caution
-This is a [PSA](https://en.wikipedia.org/wiki/Public_service_announcement):
-
-[Don't Install Node Packages Globally](https://www.google.com/search?q=dont+install+node+packages+globally&hl=en)!
+:::caution Caution: Global Packages
+This is a [PSA](https://en.wikipedia.org/wiki/Public_service_announcement): [Don't Install Node Packages Globally](https://www.google.com/search?q=dont+install+node+packages+globally&hl=en)!
 
 Like [many others](https://www.google.com/search?q=dont+install+node+packages+globally&hl=en), we recommend to never install packages globally (even if the module authors recommend otherwise). Maintaining globally installed packages is always a lot more painful, because they might affect all projects on your system, and, unlike locally installed packages, they don't have proper dependency management which easily leads to dependency conflicts.
 
-If you have already done so, that is of course also Ok. It just needs a lot of careful attention when you want to use different Node versions at any point in time.
+If you already have globally installed Node packages, that is of course also Ok. It just needs some careful attention when you want to move to a different Node version.
 :::
 
 <!-- future-work(interactive config for auto-start + dependency directory?) -->
