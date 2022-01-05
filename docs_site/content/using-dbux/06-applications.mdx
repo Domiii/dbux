@@ -1,20 +1,27 @@
 # Application View
 
 import Term from '@src/components/Term';
+import Img from '@src/components/Img';
 
-This view lists all recorded applications. Applications of the same entry point are grouped together.
+This view lists all recorded applications. Applications of the same entry point are grouped together:
 
-<!-- TODO(pics -> show multiple applications, some nested, some activated, also show "go to entry point" button) -->
+<Img screen src="sample-applications-view.png" />
 
-* You can enable/disable each application manually. If an application is disabled (no checkmark), you cannot interact with it: its code is not augmented, its traces cannot be selected or searched, and it does not show up in the call graph.
-* You can use the arrow button to the right of every application to go to its entry point.
-* Activating multiple applications at once can be useful for full-stack debugging purposes.
-   * When multiple applications are enabled at the same time, their <Term term="cgr">call graph roots</Term> are merged onto a single timeline, allowing their data to be inspected together and (to some extent) correlated.
+<br />
+<br />
+
+You can use this view in several ways:
+
+* Use the arrow button to the right of every application to go to its entry point.
+* Click an application to enable/disable it.
+  * If an application is disabled (no checkmark), you cannot interact with it: its code is not augmented, its traces cannot be selected or searched, and it does not show up in the call graph.
+  * NOTE: Activating multiple applications at once can be useful for full-stack debugging purposes.
+    * When multiple applications are enabled at the same time, their <Term term="cgr">call graph roots</Term> are merged onto a single timeline, allowing their data to be inspected together.
 
 :::caution
 If your application does not show up here, you cannot analyze it. If that happens to you, please [refer to our FAQ](../08-faq.mdx#my-applications-dont-show-up).
 :::
 
 :::tip
-This view is not crucial for most analysis tasks. We recommend minimizing it unless you really need it.
+This view is not crucial for most analysis tasks. We recommend minimizing it when you don't need it.
 :::
