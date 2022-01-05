@@ -7,6 +7,7 @@ slug: /
 
 import Img from '@src/components/Img';
 import Term from '@src/components/Term';
+import CodeLink from '@src/components/CodeLink';
 
 
 Dbux is an integrated debugging environment (IDbE) and omniscient debugger for JavaScript runtime analysis. We hope to help developers (i) improve program comprehension and (ii) increase debugging efficiency. To that end, Dbux records an application's runtime data, visualizes it and makes it interactive.
