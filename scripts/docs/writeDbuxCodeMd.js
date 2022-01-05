@@ -82,11 +82,11 @@ function genConfigMd() {
  * 2. read `package.json` -> write `_dbux-code-config.mdx`
  */
 function writeDbuxCodeMd() {
-  const commandsMdPath = getDbuxPath('docs_site/content/partials/_dbux-code-commands.mdx');
+  const commandsMdPath = getDbuxPath('docs_site/content/_partials/_dbux-code-commands.mdx');
   fs.writeFileSync(commandsMdPath, genCommandsMd());
   console.log(`Wrote ${commandsMdPath}`);
 
-  const configMdPath = getDbuxPath('docs_site/content/partials/_dbux-code-config.mdx');
+  const configMdPath = getDbuxPath('docs_site/content/_partials/_dbux-code-config.mdx');
   fs.writeFileSync(configMdPath, genConfigMd());
   console.log(`Wrote ${configMdPath}`);
 }
