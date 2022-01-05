@@ -19,7 +19,10 @@ As of 01/2022, Dbux consists of four applications and six supplementary modules,
 
 Dbux's three stages \textit{instrument}, \textit{runtime} and \textit{post-processing} are implemented in four collaborating applications:
 
-TODO: change CodeLink to ToolLink
+
+TODO: fix this! also, change CodeLink to ToolLink.
+
+
 
 * <CodeLink path="dbux-babel-plugin" /> instruments and injects <CodeLink path="dbux-runtime" /> a given application.
 * <CodeLink path="dbux-runtime" /> When an instrumented program runs, this module is responsible for recording and sending runtime data to the `@dbux/data` module, running on a receiving server (using `socket-io.client`).
@@ -44,13 +47,13 @@ Several utilities and libraries are also part of the [Dbux Monorepo](https://git
 Once [installed](./using-dbux/installation), using Dbux involves two steps:
 
 1. First: make sure to [run an Application with Dbux enabled](./02-enable-dbux.mdx).
-2. Then use the Dbux VSCode Extension for [runtime analysis](./00-dbux-overview.mdx#runtime-analysis), as explained below:
+2. Then use the Dbux VSCode Extension for [runtime analysis](./00-dbux-overview.mdx#runtime-analysis):
 
-All recorded application should show up in the [Application View](./using-dbux/06-applications.mdx).
+All recorded applications show up in the [Application View](./using-dbux/06-applications.mdx).
 Once the application shows up, you can use the following tools for analysis:
 
 * Use the [Application View](./using-dbux/applications) to overview all recorded applications.
-  * Here you can also toggle applications individually and go to the ***entry point***.
+  * From here you can also go to the ***entry point***.
 * Get a high-level overview with:
   * The [Global View](./using-dbux/global).
   * The [Call Graph](./using-dbux/call-graph).
