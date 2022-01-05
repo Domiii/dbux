@@ -41,15 +41,19 @@ Several utilities and libraries are also part of the [Dbux Monorepo](https://git
 
 ## Runtime Analysis
 
-You can analyze your application using the [Dbux VSCode Extension](../tools-and-configuration/01-dbux-code.mdx) (which is currently the only GUI implementation for Dbux).
+Once [installed](./using-dbux/installation), using Dbux involves two steps:
 
-Once executed, the recorded application should show up in the [Application View](./using-dbux/applications).
+1. First: make sure to [run an Application with Dbux enabled](./02-enable-dbux.mdx).
+2. Then use the Dbux VSCode Extension for [runtime analysis](./00-dbux-overview.mdx#runtime-analysis), as explained below:
+
+All recorded application should show up in the [Application View](./using-dbux/06-applications.mdx).
 Once the application shows up, you can use the following tools for analysis:
 
-* Use the [Application View](./using-dbux/applications) to go to the Application entry point.
+* Use the [Application View](./using-dbux/applications) to overview all recorded applications.
+  * Here you can also toggle applications individually and go to the ***entry point***.
 * Get a high-level overview with:
-  * the [Global View](./using-dbux/global).
-  * the [Call Graph](./using-dbux/call-graph).
+  * The [Global View](./using-dbux/global).
+  * The [Call Graph](./using-dbux/call-graph).
 * Get down into the nitty-gritty:
   * &#8203<DarkLightImg src="crosshair_red.svg" /> [Select a Trace](./05-select-trace.mdx).
   * Investigate individual traces using the [Trace Details View](./using-dbux/trace-details).
