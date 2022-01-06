@@ -1,8 +1,9 @@
 ---
+title: Overview
 slug: /runtime-analysis
 ---
 
-# Dbux Overview
+# Dbux Runtime Analysis
 
 import Img from '@src/components/Img';
 import DarkLightImg from '@src/components/DarkLightImg';
@@ -12,39 +13,43 @@ import TOC from '@src/components/TOC';
 
 <TOC toc={toc} />
 
-This page introduces Dbux at the high level, while the next few pages explain how to use the <ToolLink name="dbux-code" /> for runtime analysis.
+This page introduces Dbux at the high level, while the next few pages explain the <ToolLink name="dbux-code" />'s runtime analysis features.
 
 
 ## Dbux Architecture
 
-As of 01/2022, Dbux consists of four applications and seven supplementary modules:
+<!-- As of 01/2022, Dbux consists of four applications and seven supplementary modules: -->
+
+Dbux runtime analysis has three stages: `instrument`, `runtime` and `post-processing`.
+They are implemented in four applications and several library packages:
 
 <Img zoomable src="dbux-architecture.png" />
 
 <!-- from https://docs.google.com/presentation/d/15uSkBoZsBjoPOLtx23iEACaEwR4buyKF5qNqygwvhsg/edit#slide=id.gaea430f77a_0_0 -->
 
-Dbux has three stages `instrument`, `runtime` and `post-processing`, implemented in four collaborating applications:
+<br />
+<br />
+
+### Applications
+
+* &#8203;<ToolLink name="dbux-babel-plugin" /> instruments a given application and injects <ToolLink name="dbux-runtime" />.
+* &#8203;<ToolLink name="dbux-runtime" /> is responsible for recording and sending runtime data to the runtime server (via `socket-io`).
+* &#8203;<ToolLink name="dbux-code">dbux-code</ToolLink> is a one-click-installable VSCode Extension. It hosts the run-time server to receive the data produced by `dbux-runtime`. When data is received it is post-processed with the help of the `@dbux/data` module before visualizing it. Data is processed and presented in real-time, meaning that applications can be debugged while they are still running.
+* &#8203;<ToolLink name="dbux-cli" />, a convenience CLI tool, allows executing a Node application with Dbux enabled (using [@babel/register](https://babeljs.io/docs/en/babel-register)).
 
 
+### Library Packages
 
-* &#8203;<ToolLink name="dbux-babel-plugin" /> instruments and injects <ToolLink name="dbux-runtime" /> a given application.
-* &#8203;<ToolLink name="dbux-runtime" /> When an instrumented program runs, this module is responsible for recording and sending runtime data to the `@dbux/data` module, running on a receiving server (using `socket-io.client`).
-* &#8203;<ToolLink name="dbux-code">dbux-code</ToolLink> is a one-click-installable VSCode Extension. It hosts the run-time server to receive the data produced by `dbux-runtime`. When data is received it is post-processed with the help of the `dbux-data` module before allowing the user to investigate it. Data is processed and presented in real-time, meaning that applications can be debugged while they are still running.
-* &#8203;<ToolLink name="dbux-cli" />, a convenience CLI tool, allows executing a Node application with Dbux enabled using [@babel/register](https://babeljs.io/docs/en/babel-register).
+Several library packages are also part of the [Dbux Monorepo](https://github.com/Domiii/dbux):
 
-
-### Utilities and Libraries
-
-Several utilities and libraries are also part of the [Dbux Monorepo](https://github.com/Domiii/dbux):
-
-* &#8203;<CodeLink path="dbux-graph-common" />, <CodeLink path="dbux-graph-client" /> and <CodeLink path="dbux-graph-host" /> are responsible for rendering and letting the user interact with the "Call Graph" through an HTML GUI.
+* &#8203;<CodeLink path="dbux-graph-common" />, <CodeLink path="dbux-graph-client" /> and <CodeLink path="dbux-graph-host" /> are responsible for rendering and letting the user interact with the [Call Graph](./08-call-graph.mdx) webview.
 * &#8203;<CodeLink path="dbux-data" /> Receives, pre-processes and manages all data sent by `@dbux/runtime`. It allows us to query and analyze JS runtime data on a higher level.
 * &#8203;<CodeLink path="dbux-projects" /> is used by `dbux-code` as part of [Dbux Practice](../dbux-practice) (but does not depend on `VSCode`). It allows users to clone, install and execute real-world projects, their bugs and practice exercises *with a single click*.
 * &#8203;<CodeLink path="dbux-common" /> Collection of commonly used utilities shared among (more or less) all other modules.
 * &#8203;<CodeLink path="dbux-common-node" /> Collection of commonly used utilities shared among (more or less) all node-only modules.
 
 
-## Runtime Analysis
+## Runtime Analysis Features
 
 Once [installed](./runtime-analysis/installation), using Dbux involves two steps:
 

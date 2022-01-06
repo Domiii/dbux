@@ -127,6 +127,14 @@ pre {
   margin-bottom: 0.5rem;
 }
 
+.mb-1 {
+  margin-bottom: 1rem;
+}
+
+.mb-2 {
+  margin-bottom: 2rem;
+}
+
 .m-none {
   margin: 0;
 }
@@ -142,6 +150,18 @@ pre {
 .w-half {
   width: 50%;
 }
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.cursor-help {
+  cursor: help;
+}
+
+/** ###########################################################################
+ * grid
+ * ############################################################################*/
 
 .grid {
   display: grid;

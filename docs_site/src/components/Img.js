@@ -15,7 +15,7 @@ import useResourceSrc from '../hooks/useResourceSrc';
  * 
  * @see https://docusaurus.io/docs/api/themes/configuration#hooks
  */
-export default function Img({ src, title, zoomable, darkLight, screen, concept, className, maxWidth, style, ...moreProps }) {
+export default function Img({ src, title, zoomable, darkLight, screen, concept, className, maxWidth, mb, style, ...moreProps }) {
   if (concept) {
     if (!src.startsWith('concept') && !src.startsWith('/') && !src.includes('://')) {
       src = `concepts/${src}`;
@@ -41,11 +41,17 @@ export default function Img({ src, title, zoomable, darkLight, screen, concept, 
   title = title || src;
   const alt = title;
 
+  const hasDiv = !!maxWidth;
+
   className = c(
     className,
     {
       'border-screen': canBeBig,
-      zoomable
+      zoomable,
+      /**
+       * margin-bottom
+       */
+      'mb-1': !hasDiv && !mb
     }
   );
 
@@ -53,6 +59,10 @@ export default function Img({ src, title, zoomable, darkLight, screen, concept, 
 
   if (maxWidth) {
     maxWidth = !isString(maxWidth) ? `${maxWidth}px` : maxWidth;
+    mb = mb === undefined ? 'mb-2' : mb;
+    const divClass = c(
+      mb
+    );
     /**
      * Keep image responsive.
      * 
@@ -60,7 +70,8 @@ export default function Img({ src, title, zoomable, darkLight, screen, concept, 
      */
     const containerStyle = {
       display: 'inline-block',
-      maxWidth
+      maxWidth,
+      lineHeight: 0
       //   /**
       //    * @see https://stackoverflow.com/a/65690408
       //    */
@@ -68,7 +79,7 @@ export default function Img({ src, title, zoomable, darkLight, screen, concept, 
     };
 
     img = (
-      <div style={containerStyle}>{img}</div>
+      <div className={divClass} style={containerStyle}>{img}</div>
     );
   }
 

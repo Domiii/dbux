@@ -23,52 +23,52 @@ The call graph serves as a "map of your runtime execution": it provides a bird's
 
 ## Why do we need a Call Graph?
 
-Call graph visualizations have many uses, e.g.:
+An interactive call graph has many uses. To name a few:
 
 * Overview the complex system that is our application.
 * Identify all <Term term="ae">asynchronous events</Term> and their connections.
-* Visualize [recursion trees](https://www.google.com/search?q=recursion+trees), like in the screenshot of the [fibbonacci number](https://www.google.com/search?q=fibonacci+algorithm) generator below:
-  <Img screen src="call-graph-fib-1.png" maxWidth={600} />
+* Visualize [recursion trees](https://www.google.com/search?q=recursion+trees).
+  <!-- * &#8203;<Img screen src="call-graph-fib-1.png" maxWidth={600} /> <br /> Screenshot of a [fibbonacci number](https://www.google.com/search?q=fibonacci+algorithm) generation algorithm -->
 * ...and more...
 
-As an analogy, the call graph can be seen as a (rather crude) "Google Maps" while the [trace details view](#trace-details) is (a rather crude) "Google Street View" of our applications' execution. Together, they offer a multi-resolutional interactive tool to investigate most aspects of runtime behavior.
+As an analogy, the call graph can be seen as a high-level "Map" while the [trace details view](#trace-details) is a low-level "Street View" of our applications' execution. Together, they offer a multi-resolutional interactive tool to investigate many aspects of runtime behavior.
 
 
-### Call Graph vs. Call Stack
 
-The **call stack** is the list of all executed functions that have not yet concluded, and are not currently suspended (e.g. by `await` or `yield`), at a specific point in time. While useful, the call stack only represents a small fraction of our application. In fact, the call stack is a small slice of the call graph during its [depth-first traversal](https://en.wikipedia.org/wiki/Depth-first_search), at a specific point in time.
-
-
-## The Synchronous Call Graph
-
-When investigating an application without any <Term term="ae">asynchronous events</Term>, the call graph is best viewed in `Sync` mode.
+## Synchronous Call Graph
 
 <Img screen src="dbux-all-longest-word.png" />
 
+When investigating an application without any <Term term="ae">asynchronous events</Term>, the call graph is best viewed in `Sync` mode.
+
 The synchronous call graph has the following properties:
 
-* **Roots**: By default, the synchronous call graph shows a list of all <Term term="CGR">call graph roots</Term>: the entry point of the application, as well as the starting point of any <Term term="ae" />, vertically sorted by time of recording (later is lower).
+* **Roots**: By default, the synchronous call graph shows a list of all root nodes (or "<Term term="CGR">call graph roots</Term>" or "CGRs"): the entry point of the application, as well as the starting point of any <Term term="asynchronous event" />, vertically sorted by time of recording (later is lower).
 * **Nodes**: <Term term="CGR">CGRs</Term> can have children and entire **subtrees**. Each child node represents the execution of a file or function that was called by its parent node. Conventionally, each node is referred to as a "stack frame", but we felt that that terminology is confusing in the context of the more general call graph. We usually refer to these nodes as <Term term="context">contexts</Term> instead.
 * **Real-time**: The call graph updates in real-time. A new <Term term="CGR">CGR</Term> is added to the graph, for each newly recorded asynchronous event.
 
 
-
-<div className="flex flex-col flex-center font-size-3">
-  <Img screen src="call_graph_1_one_root.png" maxWidth={300} />
-  <div className="">&darr;</div>
+<div className="flex flex-col flex-center">
+  <Img screen src="call_graph_1_one_root.png" maxWidth={300} mb="" />
+  <div className="font-size-3">&darr;</div>
   <Img screen src="call_graph_2_expanded.png" maxWidth={400} />
 </div>
 
-Non-empty nodes have two (of three) buttons to their left:
-
-* TODO(icon) one to only expand immediate children of the node. These are functions that were called directly by this context.
-* TODO(icon) one to expand the entire subtree.
-* TODO(icon) one to collapse the node.
-
-<!-- TODO(explain call graph behavior of (different types of) modules) -->
+Non-empty nodes have two of three buttons to their left in order to expand and collapse children and/or entire subtrees.
 
 
-## Asynchronouse Call Graph {#async}
+TODO: link to paper explaining call graph construction
+
+<!--
+* expand only immediate children of the node. These are functions that were called directly by this context.
+* expand the entire subtree.
+* collapse the subtree.
+* -->
+
+<!-- TODO(examples of call graph behavior of (different types of) applications/modules) -->
+
+
+## Asynchronous Call Graph {#async}
 
 TODO
 
@@ -77,6 +77,32 @@ TODO(virtual contexts + async explanations)
 TODO: Sync graph children exclude [asynchronous continuations](#asynchronous-continuation).
 
 
+
+
+## Call Graph vs. Call Stack {#call-stack}
+
+The **call stack** is the list of all executed functions that have not yet concluded and are not currently suspended<sup><span className="cursor-help" title="e.g. by await or yield">?</span></sup>, at a specific point in time. While useful, the call stack only represents a small fraction of our application. In fact, the call stack can be defined as a slice of the call graph during its [depth-first traversal](https://en.wikipedia.org/wiki/Depth-first_search), at a specific point in time.
+
+### Call Stack: Example 1 {#acs-example1}
+
+Example: The following screenshot shows call graph and stack of `fibonacci(6)`.
+The graph implicitly shows the (non-asynchronous) stack (nested toward the right):
+
+<Img screen src="sample-fibonacci-graph-vs-stack.png" />
+
+### Call Stack: Example 2
+
+Lack of a proper asynchronous call stack (ACS) has been frequently lamented by developers[^1].
+That is why Dbux offers a dedicated **call stack view**. In [Example 1](#acs-example1), the call stack can be relatively easily understood from the call graph view alone. But there are many scenarios where a dedicated call stack view is still necessary, especially in case of long-winded, asynchronous control flows.
+
+For example, [sequelize issue #8199](https://github.com/sequelize/sequelize/issues/8199) demonstrates how inadequate support for asynchronous execution in modern JavaScript engines and debuggers asynchronous execution is a real concern. If an error arises, the developer has no easy way of finding the sequelize call that caused it because the execution stack is missing asynchronous nodes. The Dbux call stack attempts to address that issue.
+
+<Img screen src="sequelize-acs-full.png" />
+
+Above screenshot shows the asynchronous call stack of an Error captured when executing sequelize's [findOrCreate](https://sequelize.org/master/manual/model-querying-finders.html#-code-findorcreate--code-).
+Note that the method called by the user `Model.findOrCreate` is prominently displayed near the top of the stack.
+
+It is also worth noting that the [color scheme](#color-scheme) is not as revealing as it could be because we executed the code from within the `sequelize` repository. TODO: re-capture this with sequelize used as third-party library (so its stack frames would be dimmer, thus making application code even more obvious).
 
 
 ## Toolbar
@@ -140,6 +166,9 @@ You might be tempted into thinking that pausing with this button will stop all r
 The clear button (`x`) is useful for removing clutter when investigating a bug that does not appear immediately, or is not part of the initialization routine.
 
 
+## Call Graph Colors {#color-scheme}
+
+TODO: color scheme
 
 ## Call Graph Implementation Details
 
@@ -156,3 +185,5 @@ A few more notes on the Call Graph GUI implementation:
   * Theoretically, the client can also be rendered independent of VSCode, on a website, in an iframe etc.
     * `client` and `host` communicate via a `IpcAdapter` which must provide two functions (whose implementation depends on the environment that they run in): `onMessage` and `postMessage`.
     * The custom client would require its own `IpcAdapter` implementation. `dbux-code`'s can be found in <CodeLink path="dbux-code/src/codeUtil/WebviewWrapper.js" />.
+
+[^1]: [GitHub Issue: Incomplete async stack traces in Node.js](https://github.com/nodejs/node/issues/36126)
