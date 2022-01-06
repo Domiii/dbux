@@ -6,14 +6,7 @@ import TOC from '@src/components/TOC';
 <TOC toc={toc} />
 
 
-## It Just Won't Work!
-
-While technically not a question, this is certainly a frustrating experience to encounter.
-
-Please don't hesitate to reach out. We recommend using [our GitHub Issues Page](https://github.com/Domiii/dbux/issues) to file well-written reports/complaints, or [join us on Discord](https://discord.gg/QKgq9ZE) to ask questions about or discuss whatever it is you encountered.
-
-
-## Why don't my Applications Show Up?
+## Why don't My Applications Show Up?
 
 In order to analyze an application, it first needs to be [recorded](./runtime-analysis/02-enable-dbux.mdx) and sub-sequently show up in [the application view](./runtime-analysis/06-applications.mdx).
 
@@ -28,7 +21,7 @@ There can be a multitude of possible reasons for this to go wrong:
 4. You are not running on `localhost`.
 
 
-## How to use commands?
+## How to Use Commands?
 
 Dbux offers [several commands](./tools-and-configuration/01-dbux-code.mdx#commands). This is how commands work in VSCode:
 
@@ -44,6 +37,13 @@ You can bind commands to keys. [This official documentation explains how to easi
 :::
 
 
-## Which files will be traced?
+## Why is someFile.js not Traced?
 
-TODO
+If you are certain that a file executed in a [Dbux-enabled application](./runtime-analysis/02-enable-dbux.mdx), make sure your [configuration is setup to include](./guides/01-which-files-are-traced.mdx) the file in that specific package or path.
+
+
+## It Just Won't Work!
+
+While technically not a question, this is certainly a frustrating experience to encounter.
+
+Please don't hesitate to reach out. We recommend using [our GitHub Issues Page](https://github.com/Domiii/dbux/issues) to file well-written reports/complaints, or [join us on Discord](https://discord.gg/QKgq9ZE) to ask questions about or discuss whatever it is you encountered.

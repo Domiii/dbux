@@ -90,6 +90,11 @@ li > a.menu__link {
   align-items: center;
 }
 
+.flex-center-slim {
+  justify-content: center;
+  align-items: center;
+}
+
 .flex-wrap {
   flex-wrap: wrap;
 }
@@ -157,6 +162,10 @@ pre {
 
 .cursor-help {
   cursor: help;
+}
+
+.highlight-on-hover:hover {
+  color: yellow;
 }
 
 /** ###########################################################################
