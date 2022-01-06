@@ -162,7 +162,11 @@ pre {
  * run-button
  * ############################################################################*/
 
-.run-button {
+.run-button a::before {
+  display: inline-block;
+  width: 28px;
+  margin-left: -8px;
+  text-align: center;
   /* list-style: url(../img/play.svg) no-repeat; */
 }
 
@@ -178,11 +182,9 @@ pre {
  * @see https://stackoverflow.com/questions/68412480/how-to-add-icon-to-docusaurus-sidebar-group-or-item/70423077#70423077
  */
 [data-theme="dark"] .run-button a::before {
-  padding-right: 0.5rem;
   content: url(/dark/play.svg);
 }
 [data-theme="light"] .run-button a::before {
-  padding-right: 0.5rem;
   content: url(/light/play.svg);
 }
 
@@ -191,7 +193,10 @@ pre {
  * ############################################################################*/
 
 .sidebar-select-trace a::before {
-  padding-right: 0.5rem;
+  display: inline-block;
+  width: 28px;
+  margin-left: -8px;
+  text-align: center;
   /**
    * NOTE: this references image from staticDirectories directly.
    * @see https://github.com/facebook/docusaurus/issues/6208
@@ -203,11 +208,33 @@ pre {
  * call-graph
  * ############################################################################*/
 
+.sidebar-call-graph a::before {
+  display: inline-block;
+  width: 28px;
+  margin-left: -8px;
+  text-align: center;
+  /* padding-right: 0.5rem; */
+}
+
 [data-theme="dark"] .sidebar-call-graph a::before {
-  padding-right: 0.5rem;
   content: url(/dark/tree.svg);
 }
 [data-theme="light"] .sidebar-call-graph a::before {
-  padding-right: 0.5rem;
   content: url(/light/tree.svg);
+}
+
+/** ###########################################################################
+ * code deco
+ * ############################################################################*/
+
+.sidebar-code-decorations a::before {
+  /* padding-right: 0.5rem; */
+  display: inline-block;
+  width: 28px;
+  margin-left: -8px;
+  text-align: center;
+  /* position: absolute; */
+
+  color: red;
+  content: "↱";
 }

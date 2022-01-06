@@ -1,3 +1,7 @@
+---
+sidebar_class_name: sidebar-code-decorations
+---
+
 # Code Decorations
 
 import Img from '@src/components/Img';
@@ -13,13 +17,13 @@ After [executing an application with Dbux enabled](./02-enable-dbux.mdx), all ex
 
 ## Interpreting Decorations
 
-* `f()` <span className="color-red">↱</span>: the function `f` was executed and recorded, and we can step into it.
-* `g()` <span className="color-gray">↱</span>: the function `g` was executed but not recorded, and we cannot step into it. This means that `g` is a native function or is [not configured to be recorded](../guides/01-which-files-are-traced.mdx).
-* For all other code decorations and their meanings, please refer to <CodeLink path="dbux-code/src/codeDeco/traceDecoConfig.js" />.
+* Example: `f()` <span className="color-red">↱</span>: the function `f` was executed and recorded, and we can step into it.
+* Example: `g()` <span className="color-gray">↱</span>: the function `g` was executed but not recorded, and we cannot step into it. This means that `g` is a native function or [not recorded for other reasons](../guides/01-which-files-are-traced.mdx).
+* All code decorations and their meanings are defined in <CodeLink path="dbux-code/src/codeDeco/traceDecoConfig.js" />.
 
 ## Examples
 
-In this buggy code, we find that line 6 never executed, just from the code decorations:
+In this buggy code, we can see that line 6 never executed, just from the code decorations:
 
 <Img screen src="code-deco1.png" />
 
