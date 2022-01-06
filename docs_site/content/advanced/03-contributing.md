@@ -88,7 +88,7 @@ While you can certainly try to get started on your own, you probably make your l
 ## Dealing with Documentation
 
 * `react` followed by `md` in the same line does not format correctly: https://github.com/mdx-js/mdx/discussions/1876
-  * Add `&#8203` in front of the line.
+  * Add `&#8203;` in front of the line.
 
 
 ## Unsorted Notes

@@ -238,3 +238,18 @@ pre {
   color: red;
   content: "↱";
 }
+
+
+/** ###########################################################################
+ * search
+ * ############################################################################*/
+
+.sidebar-search a::before {
+  /* padding-right: 0.5rem; */
+  display: inline-block;
+  width: 28px;
+  margin-left: -8px;
+  text-align: center;
+
+  content: "🔍";
+}

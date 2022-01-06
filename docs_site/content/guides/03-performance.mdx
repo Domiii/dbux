@@ -17,6 +17,14 @@ Main considerations include:
 * Recording of large arrays and objects is limited, according to some (currently hardcoded) `SerializationLimits`, to be found in <CodeLink path="dbux-runtime/src/data/valueCollection.js" />.
 
 
-TODO: provide some numbers
-
 TODO: make this less messy; also link to "trace filters" and more relevant articles.
+
+
+## Comment
+
+Performance and scalability issues are often cited as the biggest problems for omniscient debuggers. However, as Henry Liebermann pointed out in reference to his omniscient debugger (called ZStep 95) in 1997[^1]: "Even in an extremely large program, where keeping a complete history is infeasible, judicious testing can often isolate a fragement of the code which is not too large to run ZStep on. Nevertheless, we admit that there may be bugs that appear only after long runs involving large amounts of code, and so our techniques may be inappropriate in these cases. However, we conjecture that the  vast majority of bugs are relatively shallow, and the productivity improvements from finding".
+
+We believe, this applies to any omniscient debugger. While even large applications can be debugged with it, Dbux and its omniscient peers will falter when confronted with bugs in applications with high event frequency, such as games or complex algorithms running on a lot of data, if those bugs cannot be easily reproduced in a test case or short test run.
+
+
+TODO: provide some numbers

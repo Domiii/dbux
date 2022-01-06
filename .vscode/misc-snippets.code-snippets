@@ -145,7 +145,7 @@
   "md-invisible-space": {
     "prefix": "inivisible-space",
     "body": [
-      "&#8203"
+      "&#8203;"
     ],
     "scope": "markdown,mdx,md"
   },
