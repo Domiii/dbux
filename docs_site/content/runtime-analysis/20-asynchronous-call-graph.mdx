@@ -16,7 +16,7 @@ import TOC from '@comp/TOC';
 
 <a className="flex flex-row flex-center-slim" href="https://www.reddit.com/r/ProgrammerHumor/comments/rvco1a/asynchronous_proggraming_be_like/">
   "Asynchronous Programming be like..."
-  <HSpace />
+  <HSpace space="4rem" />
   <Img title="Asynchronous Programming is hard" src="async-hard.gif" />
 </a>
 
@@ -216,8 +216,6 @@ However, all of them can nest promises. Most of these nesting relationships are 
 
 #### Example
 
-The following example implements `sleep` using `setTimeout`. The Promise constructor itself does not trigger an asynchronous event but `setTimeout` does.
-
 <div className="flex flex-row flex-center">
   <CodeBlock className="border-screen" lang="js" src="async-sleep.js" />
   <div className="font-size-3">
@@ -227,6 +225,8 @@ The following example implements `sleep` using `setTimeout`. The Promise constru
     <Img screen src="sample-async-sleep.png" />
   </div>
 </div>
+
+Above example implements `sleep` using `setTimeout`. The Promise constructor itself ***does not*** trigger an [asynchronous event](#ae) but `setTimeout` does. We thus only see one ACG node per call to `sleep`.
 
 <!-- 
 ## Terminology
@@ -245,4 +245,4 @@ TODO
 
 ## More on Asynchronous Execution Semantics
 
-While there is a lot more to be said, we instead plan to link relevant papers once they are published. Stay tuned (if you want to)!
+While there is a lot more to be said, we instead plan to link relevant papers once they are published. Stay tuned (if you feel like it)!
