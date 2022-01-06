@@ -41,17 +41,17 @@ We (Dominik and Michael) believe that Dbux does NOT make someone good at debuggi
 
 <!-- TODO: make this part bigger and more visual -->
 
-Once an application has executed with [Dbux enabled](./using-dbux/02-enable-dbux.mdx), a collection of analytical tools is available via the [Dbux VSCode Extension](./tools-and-configuration/01-dbux-code.mdx):
+Once an application has executed with [Dbux enabled](./runtime-analysis/02-enable-dbux.mdx), a collection of analytical tools is available via the [Dbux VSCode Extension](./tools-and-configuration/01-dbux-code.mdx):
 
-* Dbux's [global view](./using-dbux/07-global.mdx) lists third-party modules, files and console log events. Takes user to the relevant code in a single click.
+* Dbux's [global view](./runtime-analysis/07-global.mdx) lists third-party modules, files and console log events. Takes user to the relevant code in a single click.
   * NOTE: While this eliminates the need for most of "[print-based debugging](https://www.google.com/search?q=print-based+debugging&hl=en)", it does not replace use of [proper logging](https://www.google.com/search?q=logging+programming+best+practices).
-* [Trace selection](./using-dbux/05-select-trace.mdx) and the [Trace Details view](./using-dbux/09-trace-details.mdx) allow overviewing and investigating all executions of any piece of code and their respective values.
-* Instead of only a call stack, Dbux presents us with the entire [call graph](./using-dbux/08-call-graph.mdx).
-  * A complete [asynchronous call stack](./using-dbux/08-call-graph.mdx#call-stack) is also available when needed.
-* Instead of using the traditional debugger as a "magnifying glass" to slowly crawl along the execution timeline, Dbux offers random-access [navigation](./using-dbux/09-trace-details.mdx#navigation), in both directions of the timeline.
-* [Code decorations](./using-dbux/04-code-decorations.mdx) can make it a lot more obvious what code executed at all, and how.
-* Executed files, functions and values [can be searched](./using-dbux/10-search.mdx) for/through (culls a lot of noise when compared to code-based search).
-* [Data flow analysis](./using-dbux/11-data-flow.mdx) allows us to quickly trace the reads, writes and creation of a selected value. This can also take us to the place of creation of a value in a single click.
+* [Trace selection](./runtime-analysis/05-select-trace.mdx) and the [Trace Details view](./runtime-analysis/09-trace-details.mdx) allow overviewing and investigating all executions of any piece of code and their respective values.
+* Instead of only a call stack, Dbux presents us with the entire [call graph](./runtime-analysis/08-call-graph.mdx).
+  * A complete [asynchronous call stack](./runtime-analysis/08-call-graph.mdx#call-stack) is also available when needed.
+* Instead of using the traditional debugger as a "magnifying glass" to slowly crawl along the execution timeline, Dbux offers random-access [navigation](./runtime-analysis/09-trace-details.mdx#navigation), in both directions of the timeline.
+* [Code decorations](./runtime-analysis/04-code-decorations.mdx) can make it a lot more obvious what code executed at all, and how.
+* Executed files, functions and values [can be searched](./runtime-analysis/10-search.mdx) for/through (culls a lot of noise when compared to code-based search).
+* [Data flow analysis](./runtime-analysis/11-data-flow.mdx) allows us to quickly trace the reads, writes and creation of a selected value. This can also take us to the place of creation of a value in a single click.
 
 
 ## Word of Caution

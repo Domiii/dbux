@@ -9,7 +9,7 @@ Dbux is an integrated debugging environment (IDbE) and omniscient debugger for J
 # Quick links:
 
 * [Dbux Documentation](https://domiii.github.io/dbux)
-* [Dbux for Runtime Analysis](https://domiii.github.io/dbux/using-dbux)
+* [Dbux for Runtime Analysis](https://domiii.github.io/dbux/runtime-analysis)
 * [Dbux VSCode Extension: Commands and configuration](https://domiii.github.io/dbux/tools-and-configuration/dbux-code)
 
 # Example Screenshot

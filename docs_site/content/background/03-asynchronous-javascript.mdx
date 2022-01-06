@@ -24,7 +24,7 @@ The Dbux <Term term="ACG" /> supports most asynchronous features of ES2022, sans
 
 A CGR represents the invocation of a piece of code from outside our visible (recorded) runtime, i.e. on an empty stack[^3].
 
-Call Graph Roots (CGRs) are the ***nodes*** of Dbux's [Asynchronous Call Graph (ACG)](../using-dbux/08-call-graph.mdx#async). By comparison, in the `synchronous` [call graph](../using-dbux/08-call-graph.mdx) lists all CGRs on a linear timeline.
+Call Graph Roots (CGRs) are the ***nodes*** of Dbux's [Asynchronous Call Graph (ACG)](../runtime-analysis/08-call-graph.mdx#async). By comparison, in the `synchronous` [call graph](../runtime-analysis/08-call-graph.mdx) lists all CGRs on a linear timeline.
 
 Examples include:
 
@@ -41,7 +41,7 @@ In order to better understand CGRs and the relationships between them, we define
 
 ## Asynchronous Events (AE) {#ae}
 
-Asynchronous Events (AEs) are the ***edges*** in Dbux's [Asynchronous Call Graph (ACG)](../using-dbux/08-call-graph.mdx#async). They connect pieces of executed code that can never appear together in the same (non-asynchronous) call stack. Any AE `e` has at least three properties:
+Asynchronous Events (AEs) are the ***edges*** in Dbux's [Asynchronous Call Graph (ACG)](../runtime-analysis/08-call-graph.mdx#async). They connect pieces of executed code that can never appear together in the same (non-asynchronous) call stack. Any AE `e` has at least three properties:
 
 * `scheduler` - the event (<Term term="trace" />) that created it and its [CGR](#cgr) `fromRoot`, and
 * `toRoot` - the [CGR](#cgr) that executes upon its completion.
@@ -179,7 +179,7 @@ In JavaScript, promises can be created in five ways, some allow promise nesting:
    * NOTE: The first dynamic import of a file can be seen as nesting top-level `awaits` of the imported files, but the <Term term="ACG" /> does not yet capture asynchronous events related to dynamic imports.
 
 Somewhat counter-intuitively, (1), (2) and (3) do *not* cause an asynchronous event on their own.
-However, all of them can nest promises. Most of these nesting relationships are captured by Dbux's [asynchronous call graph](../using-dbux/08-call-graph.mdx#async).
+However, all of them can nest promises. Most of these nesting relationships are captured by Dbux's [asynchronous call graph](../runtime-analysis/08-call-graph.mdx#async).
 
 #### Example
 

@@ -16,7 +16,7 @@ const AbbrevAnchorsByAbbrev = {
   trace: 'trace',
   staticTrace: 'trace',
   context: 'context',
-  acg: 'TODO', // /using-dbux/08-call-graph.mdx#async
+  acg: 'TODO', // /runtime-analysis/08-call-graph.mdx#async
   'call graph': 'call-graph',
 
   ae,

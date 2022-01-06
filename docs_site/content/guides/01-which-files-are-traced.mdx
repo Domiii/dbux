@@ -8,7 +8,7 @@ import TOC from '@src/components/TOC';
 
 This article explains Dbux determines which files to record.
 
-When [Dbux is enabled](../using-dbux/02-enable-dbux.mdx), it automatically records execution of all files that are not in `node_modules`[^1]. It is a balancing act to determine the optimal set of files to trace. Often times it is easiest to tell Dbux to just trace everything. However, tracing *everything* can slow down the build/parse time significantly.
+When [Dbux is enabled](../runtime-analysis/02-enable-dbux.mdx), it automatically records execution of all files that are not in `node_modules`[^1]. It is a balancing act to determine the optimal set of files to trace. Often times it is easiest to tell Dbux to just trace everything. However, tracing *everything* can slow down the build/parse time significantly.
 
 <!-- TODO(re-write this: build-time vs. run-time performance considerations etc.)
 
@@ -55,7 +55,7 @@ moduleFilterOptions TODO
 
 ## Run Button + @dbux/cli
 
-When using [the Run Button](../using-dbux/03-the-run-button.mdx) and/or [@dbux/cli](../tools-and-configuration/02-dbux-cli.mdx), you can configure this via the `--pw`, `--pb`, `--fw` and `--fb` flags.
+When using [the Run Button](../runtime-analysis/03-the-run-button.mdx) and/or [@dbux/cli](../tools-and-configuration/02-dbux-cli.mdx), you can configure this via the `--pw`, `--pb`, `--fw` and `--fb` flags.
 
 * Example: `npx dbux run --pb=lodash ./test.js`
 
