@@ -694,6 +694,16 @@
           "command": "dbuxTraceDetailsView.selectTraceAtCursor",
           "when": "dbux.context.activated && dbuxTraceDetailsView.context.hasTracesAtCursor && dbux.context.showNavButton",
           "group": "navigation@11"
+        },
+        {
+          "command": "dbux.showGraphView",
+          "when": "!dbuxWebView.context.dbux-graph.isActive && !dbux.context.isApplicationEmpty",
+          "group": "navigation@1"
+        },
+        {
+          "command": "dbux.hideGraphView",
+          "when": "dbuxWebView.context.dbux-graph.isActive && !dbux.context.isApplicationEmpty",
+          "group": "navigation@2"
         }
       ],
       "view/item/context": [
@@ -966,22 +976,22 @@
         },
         {
           "command": "dbux.showGraphView",
-          "when": "view == dbuxTraceDetailsView && !dbuxWebView.context.dbux-graph.isActive",
+          "when": "view =~ /(dbuxTraceDetailsView|dbuxGlobalAnalysisView)/ && !dbuxWebView.context.dbux-graph.isActive",
           "group": "navigation@10"
         },
         {
           "command": "dbux.hideGraphView",
-          "when": "view == dbuxTraceDetailsView && dbuxWebView.context.dbux-graph.isActive",
+          "when": "view =~ /(dbuxTraceDetailsView|dbuxGlobalAnalysisView)/ && dbuxWebView.context.dbux-graph.isActive",
           "group": "navigation@10"
         },
         {
           "command": "dbux.showPathwaysView",
-          "when": "view == dbuxTraceDetailsView && !dbuxWebView.context.dbux-pathways.isActive",
+          "when": "view == dbuxApplicationsView && !dbuxWebView.context.dbux-pathways.isActive",
           "group": "navigation@11"
         },
         {
           "command": "dbux.hidePathwaysView",
-          "when": "view == dbuxTraceDetailsView && dbuxWebView.context.dbux-pathways.isActive",
+          "when": "view == dbuxApplicationsView && dbuxWebView.context.dbux-pathways.isActive",
           "group": "navigation@11"
         },
         {
