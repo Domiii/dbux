@@ -41,17 +41,14 @@ export default function Img({ src, title, zoomable, darkLight, screen, concept, 
   title = title || src;
   const alt = title;
 
-  const hasDiv = !!maxWidth;
+  // const hasDiv = !!maxWidth;
 
   className = c(
     className,
     {
       'border-screen': canBeBig,
       zoomable,
-      /**
-       * margin-bottom
-       */
-      'mb-1': !hasDiv && !mb
+      // 'mb-1': hasDiv && !mb
     }
   );
 

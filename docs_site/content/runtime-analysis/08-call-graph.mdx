@@ -48,16 +48,17 @@ The synchronous call graph has the following properties:
 * **Real-time**: The call graph updates in real-time. A new <Term term="CGR">CGR</Term> is added to the graph, for each newly recorded asynchronous event.
 
 
+Non-empty nodes have two of three buttons to their left in order to expand and collapse children and/or entire subtrees.
+
 <div className="flex flex-col flex-center">
   <Img screen src="call_graph_1_one_root.png" maxWidth={300} mb="" />
   <div className="font-size-3">&darr;</div>
   <Img screen src="call_graph_2_expanded.png" maxWidth={400} />
 </div>
 
-Non-empty nodes have two of three buttons to their left in order to expand and collapse children and/or entire subtrees.
+Above screenshots: (1) the call graph has a single collapsed root. (2) The entire subtree is expanded.
 
-
-TODO: link to paper explaining call graph construction
+<!-- TODO: link to paper explaining call graph construction -->
 
 <!--
 * expand only immediate children of the node. These are functions that were called directly by this context.
@@ -66,18 +67,20 @@ TODO: link to paper explaining call graph construction
 * -->
 
 <!-- TODO(examples of call graph behavior of (different types of) applications/modules) -->
+<!-- TODO: call graph ***definitions*** and related work -->
 
 
 ## Asynchronous Call Graph {#async}
 
-In `Async` mode, the call graph becomes the asynchronous call graph, which is explained on [the next page](./20-asynchronous-call-graph.mdx).
+In `Async` mode, the call graph becomes the [asynchronous call graph](./20-asynchronous-call-graph.mdx) (short: ACG), which is explained on [the next page](./20-asynchronous-call-graph.mdx).
 
 
 
 
 ## Call Graph vs. Call Stack {#call-stack}
 
-The **call stack** is the list of all executed functions that have not yet concluded and are not currently suspended<sup><span className="cursor-help" title="e.g. by await or yield">?</span></sup>, at a specific point in time. While useful, the call stack only represents a small fraction of our application. In fact, the call stack can be defined as a slice of the call graph during its [depth-first traversal](https://en.wikipedia.org/wiki/Depth-first_search), at a specific point in time.
+The **call stack** is the list of all stack frames at a current point in time. That means: all executed functions that have not yet concluded and are not currently suspended<sup><span className="cursor-help" title="e.g. by await or yield">?</span></sup>. While useful, the call stack only represents a small fraction of our application. In fact, the call stack can be defined as a slice of the call graph during its [depth-first traversal](https://en.wikipedia.org/wiki/Depth-first_search), at a specific point in time.
+
 
 ### Call Stack: Example 1 {#acs-example1}
 

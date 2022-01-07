@@ -20,23 +20,22 @@ NOTE: The code should still work fine, but some of Dbux's analysis tools (especi
 
 ## Problems with Values
 
-Because of [performance](../guides/03-performance.mdx) reasons, we cannot record *everything*.
-
-* Big objects, arrays and strings are truncated. See [performance](#performance) for more information.
+* Big objects, arrays and strings are truncated because trying to record **all values** might severely impact [performance](../guides/03-performance.mdx).
+  * TODO: make more configurable
 * We currently do not properly trace all built-in data types. This is tracked in: https://github.com/Domiii/dbux/issues/543.
 
 
 ## Calling `process.exit` as well as uncaught exceptions are not always handled properly
 
 * You might see a message along the lines of "`Process shutdown but not all data has been sent out. Analysis will be incomplete. This is probably because of a crash or process.exit was called manually.`"
-* `process.exit` and uncaught exceptions kill the process, even if not all recorded data has been sent out yet. As a result, not all runtime data could be recorded properly. That is why Dbux tries to stall upon process.exit and uncaught exceptions and also issues a warning.
+* That is because `process.exit` and uncaught exceptions kill the process, even if not all recorded data has been sent out yet. As a result, not all runtime data could be recorded properly. That is why Dbux tries to stall upon process.exit and uncaught exceptions and also issues a warning.
   * NOTE: some frameworks that kill your process by can be configured not to do so (e.g. for `Mocha` you want to add the `--no-exit` flag).
 * This was tracked in: https://github.com/Domiii/dbux/issues/201.
 
 
 ## Remote Analysis
 
-`@dbux/runtime` is currently hard-coded to connect to a `localhost` server (see <CodeLink path="dbux-runtime/src/client/Client.js" />).
+`@dbux/runtime` is currently hard-coded to connect to a `localhost` server (see <CodeLink path="dbux-runtime/src/client/Client.js" />). You thus cannot use Dbux remotely. However, one can [export + import trace log files](./05-data-analysis.mdx#art-vandelay) on different machines.
 
 Tracked in: https://github.com/Domiii/dbux/issues/639.
 

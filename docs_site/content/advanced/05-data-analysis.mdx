@@ -14,17 +14,29 @@ Dbux provides several tools for manual data analysis. However, this page explain
 Make sure to give it a good try, and feel free to complain or otherwise report back to us on the [Dbux DISCORD](https://discord.gg/QKgq9ZE).
 
 
+## Exporting + Importing Trace Logs {#art-vandelay}
+
+You can export and import application data using corresponding [commands](../tools-and-configuration/01-dbux-code.mdx#commands). 
+
+Specifically:
+
+* `Dbux: Export Application Data` and
+* `Dbux: Import Application Data`
+
+Cross-platform imports are (should be) supported.
+
+
 ## Python Experiments
 
 In the `analyze/` folder, you find several example notebooks that allow you to analyze the data that `dbux` generates. Here is how you set that up:
 
 1. Run some program with Dbux enabled (e.g. `samples/[...]/oop1.js`)
-2. In VSCode `Run Command` (`CTRL/Command + SHIFT + P`) -> `Dbux: Export Application Data`
+2. Use the ["Export Application Data" command](#art-vandelay).
 3. Make sure you have Python + Jupyter setup
    * Windows
       1. [Install `Anaconda` with `chocolatey`](https://chocolatey.org/packages/anaconda3)
-      1. Set your `%PYTHONPATH%` in system config to your Anaconda `Lib` + `DLLs` folders (e.g. `C:\tools\Anaconda3\Lib;C:\tools\Anaconda3\DLLs;`)
-      1. Done!
+      2. Set your `%PYTHONPATH%` in system config to your Anaconda `Lib` + `DLLs` folders (e.g. `C:\tools\Anaconda3\Lib;C:\tools\Anaconda3\DLLs;`)
+      3. Done!
    * TODO: Other OS'es
 4. Run one of the notebooks, load the file, and analyze.
 

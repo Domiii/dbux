@@ -10,24 +10,22 @@ import TOC from '@src/components/TOC';
 
 <TOC toc={toc} />
 
-After you [selected a trace](./05-select-trace.mdx), you can inspect most of the <Term term="trace" />'s relevant information in this view, e.g.:
+After you [selected a trace](./05-select-trace.mdx), you can inspect most of a <Term term="trace" />'s relevant information in this view, e.g.:
 
-<Img src="screens/trace-details.png" />
+<Img screen src="trace-details.png" />
 
 <!-- zoomable={true} width="150px" -->
 
 
 ## Values
 
-If your currently selected trace is an expression with a value that is `!== undefined`, that value will be rendered here. You will see `(no value or undefined)` if the selected trace is `undefined` or not an expression.
-
-You will see (a rough string representation of) the value held by the currently selected trace.
+If your currently selected trace is an expression with a value that is `!== undefined`, that value will be rendered here. You will see `(no value or undefined)` otherwise.
 
 E.g.:
 
 <Img screen src="values.gif" />
 
-There are buttons to render the value in a new VSCode window, as well as going to the value's origin trace (see [Data Flow](./50-data-flow.mdx) for more info).
+There are buttons to: (i) render the value in a new VSCode window and (ii) go to the value's origin trace (see [Data Flow](./50-data-flow.mdx) for more info).
 
 
 ## Executions
