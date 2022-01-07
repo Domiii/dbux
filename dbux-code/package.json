@@ -4,7 +4,7 @@
   "displayName": "Dbux (ALPHA)",
   "preview": true,
   "icon": "resources/dbux_icon_transparent.png",
-  "version": "0.6.4-dev.0",
+  "version": "0.6.4-dev.1",
   "publisher": "Domi",
   "description": "Integrated Debugging Environment with an Omniscient Debugger for JS.",
   "repository": {
@@ -1459,15 +1459,15 @@
     "publish-only": "echo 'Publishing...' && vsce publish --yarn"
   },
   "devDependencies": {
-    "@dbux/babel-plugin": "^0.6.4-dev.0",
-    "@dbux/cli": "^0.6.4-dev.0",
-    "@dbux/common": "^0.6.4-dev.0",
-    "@dbux/common-node": "^0.6.4-dev.0",
-    "@dbux/data": "^0.6.4-dev.0",
-    "@dbux/graph-common": "^0.6.4-dev.0",
-    "@dbux/graph-host": "^0.6.4-dev.0",
-    "@dbux/projects": "^0.6.4-dev.0",
-    "@dbux/runtime": "^0.6.4-dev.0",
+    "@dbux/babel-plugin": "^0.6.4-dev.1",
+    "@dbux/cli": "^0.6.4-dev.1",
+    "@dbux/common": "^0.6.4-dev.1",
+    "@dbux/common-node": "^0.6.4-dev.1",
+    "@dbux/data": "^0.6.4-dev.1",
+    "@dbux/graph-common": "^0.6.4-dev.1",
+    "@dbux/graph-host": "^0.6.4-dev.1",
+    "@dbux/projects": "^0.6.4-dev.1",
+    "@dbux/runtime": "^0.6.4-dev.1",
     "@types/glob": "^7.1.1",
     "@types/node": "^16",
     "@types/vscode": "^1.41.0",
@@ -1481,12 +1481,12 @@
     "open": "^7.1.0",
     "serialize-javascript": "^5.0.1",
     "socket.io": "^4",
+    "strip-ansi": "^7.0.1",
     "strip-color": "^0.1.0",
     "typescript": "^3.6.4",
     "uuid": "^8.3.0",
     "vsce": "*",
-    "vscode-test": "^1.2.2",
-    "strip-ansi": "^7.0.1"
+    "vscode-test": "^1.2.2"
   },
   "_moduleAliases": {},
   "volta": {

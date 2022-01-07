@@ -1,6 +1,6 @@
 {
   "name": "@dbux/data",
-  "version": "0.6.4-dev.0",
+  "version": "0.6.4-dev.1",
   "description": "",
   "module": "src/index.js",
   "main": "src/index.js",
@@ -12,14 +12,14 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@datastructures-js/priority-queue": "^5.2.0",
-    "@dbux/common": "^0.6.4-dev.0",
-    "@dbux/common-node": "^0.6.4-dev.0",
+    "@dbux/common": "^0.6.4-dev.1",
+    "@dbux/common-node": "^0.6.4-dev.1",
     "i18next": "^19.8.2",
     "lodash": "^4.17.21",
     "nanoevents": "^2.0.0",
     "serialize-javascript": "^5.0.1",
-    "uuid": "^8.3.1",
-    "strip-ansi": "^7.0.1"
+    "strip-ansi": "^7.0.1",
+    "uuid": "^8.3.1"
   },
   "_moduleAliases": {}
 }
