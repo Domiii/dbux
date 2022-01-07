@@ -198,6 +198,10 @@ export class AllApplications {
     return this.applicationSelection;
   }
 
+  get length() {
+    return this._all.length - 1;
+  }
+
   // ###########################################################################
   // event listeners
   // ###########################################################################

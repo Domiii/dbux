@@ -35,6 +35,7 @@ class ApplicationsViewController {
 
     // data changed
     allApplications.selection.onApplicationsChanged((apps) => {
+      this.updateApplicationContext();
       this.refreshOnData();
 
       for (const app of apps) {
@@ -47,6 +48,15 @@ class ApplicationsViewController {
     allApplications.onRemoved(this.refreshOnData);
     allApplications.onClear(this.refreshOnData);
     // allApplications.onRestarted(this.refreshOnData);
+  }
+
+  async updateApplicationContext() {
+    try {
+      await commands.executeCommand('setContext', 'dbux.context.isApplicationEmpty', allApplications.length === 0);
+    }
+    catch (err) {
+      logError(err);
+    }
   }
 }
 
