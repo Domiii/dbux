@@ -218,7 +218,7 @@ export default class TraceCollection extends Collection {
          * performance hackfix
          * @see https://github.com/Domiii/dbux/issues/637
          */
-        return;
+        continue;
       }
 
       const previousTrace = this.dp.callGraph._getPreviousInContext(traceId);
