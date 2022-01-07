@@ -177,6 +177,7 @@ export default class TraceCollection extends Collection {
         this.dp.indexes.traces.errorByContext.addEntry(trace);
         this.dp.indexes.traces.errorByRoot.addEntry(trace);
         errorTraces.add(trace);
+        changedFlag = true;
       }
     }
     this._newErrorTraces = null;
@@ -185,11 +186,11 @@ export default class TraceCollection extends Collection {
       /**
        * hackfix: array might be unordered after insertion, needs to sort them manually
        */
-      this.dp.indexes.traces.error.get(1).sort();
+      this.dp.indexes.traces.error.get(1).sort((t1, t2) => t1.traceId - t2.traceId);
     }
 
     if (errorTraces.size) {
-      const msg = errorTraces.map(t => `${this.dp.util.makeTraceInfo(t)}`).join('\n ');
+      const msg = Array.from(errorTraces).map(t => `${this.dp.util.makeTraceInfo(t)}`).join('\n ');
       this.logger.debug(`#### ${errorTraces.size} ERROR traces ####\n ${msg}`);
     }
   }
@@ -237,7 +238,8 @@ export default class TraceCollection extends Collection {
 
       const previousTrace = this.dp.callGraph._getPreviousInContext(traceId);
       if (!previousTrace) {
-        // the following conditions only set error for previous trace
+        // this should not happen, only happen if trace is push
+        this.logger.warn(`Cannot find previousTrace for potential error trace ${JSON.stringify(trace)}`);
         continue;
       }
       const previousTraceId = previousTrace.traceId;
