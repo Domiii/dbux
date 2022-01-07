@@ -966,22 +966,22 @@
         },
         {
           "command": "dbux.showGraphView",
-          "when": "view == dbuxTraceDetailsView && !dbuxWebView.context.dbux-graph.isActive",
+          "when": "view =~ /(dbuxTraceDetailsView|dbuxGlobalAnalysisView)/ && !dbuxWebView.context.dbux-graph.isActive",
           "group": "navigation@10"
         },
         {
           "command": "dbux.hideGraphView",
-          "when": "view == dbuxTraceDetailsView && dbuxWebView.context.dbux-graph.isActive",
+          "when": "view =~ /(dbuxTraceDetailsView|dbuxGlobalAnalysisView)/ && dbuxWebView.context.dbux-graph.isActive",
           "group": "navigation@10"
         },
         {
           "command": "dbux.showPathwaysView",
-          "when": "view == dbuxTraceDetailsView && !dbuxWebView.context.dbux-pathways.isActive",
+          "when": "view == dbuxApplicationsView && !dbuxWebView.context.dbux-pathways.isActive",
           "group": "navigation@11"
         },
         {
           "command": "dbux.hidePathwaysView",
-          "when": "view == dbuxTraceDetailsView && dbuxWebView.context.dbux-pathways.isActive",
+          "when": "view == dbuxApplicationsView && dbuxWebView.context.dbux-pathways.isActive",
           "group": "navigation@11"
         },
         {
