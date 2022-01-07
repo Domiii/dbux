@@ -1,7 +1,8 @@
-import TraceNode from '../../codeUtil/treeView/TraceNode';
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
+import GlobalErrorsChildNode from './GlobalErrorsChildNode';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
+/** @typedef {import('../ErrorTraceManager').default} ErrorTraceManager */
 
 /** ###########################################################################
  * {@link GlobalErrorsNode}
@@ -14,6 +15,9 @@ export default class GlobalErrorsNode extends BaseTreeViewNode {
     return `Errors${icon}`;
   }
 
+  /**
+   * @type {ErrorTraceManager}
+   */
   get errorTraceManager() {
     return this.treeNodeProvider.controller.errorTraceManager;
   }
@@ -33,9 +37,11 @@ export default class GlobalErrorsNode extends BaseTreeViewNode {
   }
 
   buildChildren() {
-    const errorTraces = this.errorTraceManager.getAll();
-    return errorTraces.map(trace => {
-      return this.treeNodeProvider.buildNode(TraceNode, trace, this);
+    const leaves = this.errorTraceManager.getLeaves().reverse();
+
+    return leaves.map(leaf => {
+      const errorsOnStack = this.errorTraceManager.getErrorsByLeaf(leaf);
+      return this.treeNodeProvider.buildNode(GlobalErrorsChildNode, leaf, this, { childTraces: errorsOnStack });
     });
   }
 }
