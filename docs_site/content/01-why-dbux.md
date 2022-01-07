@@ -54,9 +54,9 @@ Once an application has executed with [Dbux enabled](./runtime-analysis/02-enabl
 * [Data flow analysis](./runtime-analysis/50-data-flow.mdx) allows us to quickly trace the reads, writes and creation of a selected value. This can also take us to the place of creation of a value in a single click.
 
 
-## Word of Caution
+## Word of Caution: ALPHA Phase!
 
-Dbux is currently still in ALPHA. While we have been testing it on many many small <CodeLink path="samples" /> and several real-world projects, there is always a chance, that the next one does not exactly work the way we would like. For example, tracing the internals of `react` is currently not possible without making changes to the Dbux source code: https://github.com/Domiii/dbux/issues/640.
+Dbux is currently still in ALPHA. While we have been testing it on many small <CodeLink path="samples" /> and <CodeLink path="dbux-projects/src/projects" >several real-world projects</CodeLink>, there is always a chance, that the next one does not exactly work the way it should. For example, tracing the internals of `react` is currently (01/2022) bugged: https://github.com/Domiii/dbux/issues/640.
 
 If you run into any problems when using Dbux, please [let us know](https://discord.gg/8kR2a7h).
 

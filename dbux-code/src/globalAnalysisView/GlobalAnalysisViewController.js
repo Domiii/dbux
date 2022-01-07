@@ -39,10 +39,10 @@ export default class GlobalAnalysisViewController {
 
   async showError() {
     if (!this.children) {
-      await this.treeView.reveal(this.treeDataProvider.rootNodes[1], { select: false, expand: true });
+      await this.treeView.reveal(this.treeDataProvider.rootNodes[0], { select: false, expand: true });
     }
     this.errorTraceManager.showError();
-    const selectedTrace = this.treeDataProvider.rootNodes[1].getSelectedChildren();
+    const selectedTrace = this.treeDataProvider.rootNodes[0].getSelectedChildren();
     if (selectedTrace) {
       await this.treeView.reveal(selectedTrace);
     }

@@ -22,7 +22,15 @@ export default function initPatchBuiltins(runtimeMonitor) {
   if (globalThis.process?.release?.name === 'node') {
     // -> deal with system-dependent things dynamically
     // eslint-disable-next-line global-require
-    require('./node').tryPatchNode(runtimeMonitor);
+    const nodeBuiltins = require('./node');
+    if (!nodeBuiltins.tryPatchNode) {
+      // extra precaution: we had a bug where we tryPatchNode was not found for some reason
+      throw new Error(`could not resolve "nodeBuiltins.tryPatchNode", but found: ${JSON.stringify(
+        Object.keys(Object.assign({}, nodeBuiltins)) // little hackfix to get keys of built-in objects
+      )} `);
+    }
+
+    nodeBuiltins.tryPatchNode(runtimeMonitor);
   }
 }
 

@@ -166,22 +166,32 @@ export default class TraceCollection extends Collection {
 
   /**
    * This is used to add error trace to indexes. Since trace.error is resolved in `postIndex`, we have to add these manually.
-   * @param {Trace} trace 
+   * @param {Trace[]} traces
    */
   recordErrorTraces(traces) {
-    const errorTraces = [];
-    for (const trace of traces) {
-      if (trace.error) {
+    const errorTraces = new Set();
+    let changedFlag = false;
+    for (const trace of this._newErrorTraces) {
+      if (trace.error && !errorTraces.has(trace)) {
         this.dp.indexes.traces.error.addEntry(trace);
         this.dp.indexes.traces.errorByContext.addEntry(trace);
         this.dp.indexes.traces.errorByRoot.addEntry(trace);
-        errorTraces.push(trace);
+        errorTraces.add(trace);
+        changedFlag = true;
       }
     }
+    this._newErrorTraces = null;
 
-    if (errorTraces.length) {
-      const msg = errorTraces.map(t => `${this.dp.util.makeTraceInfo(t)}`).join('\n ');
-      this.logger.debug(`#### ${errorTraces.length} ERROR traces ####\n ${msg}`);
+    if (changedFlag) {
+      /**
+       * hackfix: array might be unordered after insertion, needs to sort them manually
+       */
+      this.dp.indexes.traces.error.get(1).sort((t1, t2) => t1.traceId - t2.traceId);
+    }
+
+    if (errorTraces.size) {
+      const msg = Array.from(errorTraces).map(t => `${this.dp.util.makeTraceInfo(t)}`).join('\n ');
+      this.logger.debug(`#### ${errorTraces.size} ERROR traces ####\n ${msg}`);
     }
   }
 
@@ -189,6 +199,10 @@ export default class TraceCollection extends Collection {
    * @param {Trace[]} traces 
    */
   resolveErrorTraces(traces) {
+    /**
+     * hackfix: record new error traces in temp array, to correctly record previous trace in previous run
+     */
+    this._newErrorTraces = [];
     const { dp: { util } } = this;
     for (const trace of traces) {
       const {
@@ -199,6 +213,7 @@ export default class TraceCollection extends Collection {
       const traceType = util.getTraceType(traceId);
       if (TraceType.is.ThrowArgument(traceType)) {
         trace.error = true;
+        this._newErrorTraces.push(trace);
       }
 
       // if traces were disabled, there is nothing to do here
@@ -218,12 +233,13 @@ export default class TraceCollection extends Collection {
          * performance hackfix
          * @see https://github.com/Domiii/dbux/issues/637
          */
-        return;
+        continue;
       }
 
       const previousTrace = this.dp.callGraph._getPreviousInContext(traceId);
       if (!previousTrace) {
-        // the following conditions only set error for previous trace
+        // this should not happen, only happen if trace is push
+        this.logger.warn(`Cannot find previousTrace for potential error trace ${JSON.stringify(trace)}`);
         continue;
       }
       const previousTraceId = previousTrace.traceId;
@@ -231,15 +247,18 @@ export default class TraceCollection extends Collection {
 
       if (TraceType.is.Catch(traceType)) {
         previousTrace.error = true;
+        this._newErrorTraces.push(previousTrace);
       }
       else if (TraceType.is.Finally(traceType)) {
         if (!TraceType.is.TryExit(previousTraceType) && !isTraceReturn(previousTraceType)) {
           previousTrace.error = true;
+          this._newErrorTraces.push(previousTrace);
         }
       }
       else if (isTracePop(traceType)) {
         if (!isTraceReturn(previousTraceType) && !isTraceFunctionExit(previousTraceType) && !TraceType.is.FinallyExit(previousTraceType)) {
           previousTrace.error = true;
+          this._newErrorTraces.push(previousTrace);
         }
       }
 

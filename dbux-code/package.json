@@ -4,7 +4,7 @@
   "displayName": "Dbux (ALPHA)",
   "preview": true,
   "icon": "resources/dbux_icon_transparent.png",
-  "version": "0.6.4-dev.0",
+  "version": "0.6.6-dev.0",
   "publisher": "Domi",
   "description": "Integrated Debugging Environment with an Omniscient Debugger for JS.",
   "repository": {
@@ -694,6 +694,16 @@
           "command": "dbuxTraceDetailsView.selectTraceAtCursor",
           "when": "dbux.context.activated && dbuxTraceDetailsView.context.hasTracesAtCursor && dbux.context.showNavButton",
           "group": "navigation@11"
+        },
+        {
+          "command": "dbux.showGraphView",
+          "when": "!dbuxWebView.context.dbux-graph.isActive && !dbux.context.isApplicationEmpty",
+          "group": "navigation@1"
+        },
+        {
+          "command": "dbux.hideGraphView",
+          "when": "dbuxWebView.context.dbux-graph.isActive && !dbux.context.isApplicationEmpty",
+          "group": "navigation@2"
         }
       ],
       "view/item/context": [
@@ -966,22 +976,22 @@
         },
         {
           "command": "dbux.showGraphView",
-          "when": "view == dbuxTraceDetailsView && !dbuxWebView.context.dbux-graph.isActive",
+          "when": "view =~ /(dbuxTraceDetailsView|dbuxGlobalAnalysisView)/ && !dbuxWebView.context.dbux-graph.isActive",
           "group": "navigation@10"
         },
         {
           "command": "dbux.hideGraphView",
-          "when": "view == dbuxTraceDetailsView && dbuxWebView.context.dbux-graph.isActive",
+          "when": "view =~ /(dbuxTraceDetailsView|dbuxGlobalAnalysisView)/ && dbuxWebView.context.dbux-graph.isActive",
           "group": "navigation@10"
         },
         {
           "command": "dbux.showPathwaysView",
-          "when": "view == dbuxTraceDetailsView && !dbuxWebView.context.dbux-pathways.isActive",
+          "when": "view == dbuxApplicationsView && !dbuxWebView.context.dbux-pathways.isActive",
           "group": "navigation@11"
         },
         {
           "command": "dbux.hidePathwaysView",
-          "when": "view == dbuxTraceDetailsView && dbuxWebView.context.dbux-pathways.isActive",
+          "when": "view == dbuxApplicationsView && dbuxWebView.context.dbux-pathways.isActive",
           "group": "navigation@11"
         },
         {
@@ -1453,21 +1463,21 @@
     "build:prod": "node ../node_modules/webpack/bin/webpack.js build --mode=production",
     "update-docs": "node ../scripts/docs/writeDbuxCodeMd.js",
     "package-no-build": "rm -rf *.vsix && yarn update-docs && echo 'Packaging...' && vsce package --yarn",
-    "package:build+pkg+analyze": "yarn build+pkg && yarn package:pkg+analyze",
+    "package:build+pkg+analyze": "yarn build:prod && yarn package:pkg+analyze",
     "package:pkg+analyze": "yarn package-no-build && mkdir _analysis && mv *.vsix _analysis && cd _analysis && 7z x -o\"contents\" *.vsix",
     "publish-no-build": "yarn package-no-build && yarn publish-only",
     "publish-only": "echo 'Publishing...' && vsce publish --yarn"
   },
   "devDependencies": {
-    "@dbux/babel-plugin": "^0.6.4-dev.0",
-    "@dbux/cli": "^0.6.4-dev.0",
-    "@dbux/common": "^0.6.4-dev.0",
-    "@dbux/common-node": "^0.6.4-dev.0",
-    "@dbux/data": "^0.6.4-dev.0",
-    "@dbux/graph-common": "^0.6.4-dev.0",
-    "@dbux/graph-host": "^0.6.4-dev.0",
-    "@dbux/projects": "^0.6.4-dev.0",
-    "@dbux/runtime": "^0.6.4-dev.0",
+    "@dbux/babel-plugin": "^0.6.6-dev.0",
+    "@dbux/cli": "^0.6.6-dev.0",
+    "@dbux/common": "^0.6.6-dev.0",
+    "@dbux/common-node": "^0.6.6-dev.0",
+    "@dbux/data": "^0.6.6-dev.0",
+    "@dbux/graph-common": "^0.6.6-dev.0",
+    "@dbux/graph-host": "^0.6.6-dev.0",
+    "@dbux/projects": "^0.6.6-dev.0",
+    "@dbux/runtime": "^0.6.6-dev.0",
     "@types/glob": "^7.1.1",
     "@types/node": "^16",
     "@types/vscode": "^1.41.0",
@@ -1481,12 +1491,12 @@
     "open": "^7.1.0",
     "serialize-javascript": "^5.0.1",
     "socket.io": "^4",
+    "strip-ansi": "^7.0.1",
     "strip-color": "^0.1.0",
     "typescript": "^3.6.4",
     "uuid": "^8.3.0",
     "vsce": "*",
-    "vscode-test": "^1.2.2",
-    "strip-ansi": "^7.0.1"
+    "vscode-test": "^1.2.2"
   },
   "_moduleAliases": {},
   "volta": {

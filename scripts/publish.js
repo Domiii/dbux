@@ -232,16 +232,18 @@ async function publishToMarketplace() {
 async function main() {
   input = new LineReader();
   // console.log(process.argv);
-  if (process.argv[2] === 'marketplace') {
+  if (process.argv[2] === 'n' || process.argv[2] === 'pre') {
+    // always no && pre-release
+    chooseAlwaysNo = true;
+    chooseVersionBump = process.argv[3] || 'prerelease';
+    console.warn(`Non-interactive mode enabled: chooseAlwaysNo, chooseVersionBump='${chooseVersionBump}'`);
+  }
+  else if (process.argv[2] === 'marketplace') {
+    // 'marketplace' implies 'n'
     chooseAlwaysNo = true;
     chooseVersionBump = process.argv[3] || 'patch';
     forceMarketplace = true;
-    console.warn(`Non-interactive mode enabled: always NO, chooseVersionBump='${chooseVersionBump}'`);
-  }
-  else if (process.argv[2] === 'pre') {
-    chooseAlwaysNo = true;
-    chooseVersionBump = process.argv[3] || 'prerelease';
-    console.warn(`Non-interactive mode enabled: always NO, chooseVersionBump='${chooseVersionBump}'`);
+    console.warn(`Non-interactive mode enabled: chooseAlwaysNo + forceMarketplace, chooseVersionBump='${chooseVersionBump}'`);
   }
 
   log(`Preparing to publish (old version: ${await getDbuxVersion()})...`);

@@ -31,8 +31,6 @@ export const handler = wrapCommand(async ({ file, _, ...moreOptions }) => {
   // dbuxRegister (injects babel + dbux)
   dbuxRegister(moreOptions);
 
-  console.log('hi');
-
   processRemainingOptions(moreOptions);
 
   // hackfix: patch up argv! We are cheating, to make sure, argv can get processed by the program as usual

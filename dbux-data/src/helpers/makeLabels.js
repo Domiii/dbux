@@ -98,7 +98,11 @@ const byType = {
   [TraceType.BlockEnd](/* trace, application */) {
     // const context = application.dataProvider.collections.executionContexts.getById(trace.contextId);
     return `⤴`;
-  }
+  },
+  [TraceType.Await](trace, application) {
+    const awaitArgumentTrace = application.dataProvider.collections.traces.getById(trace.traceId - 1);
+    return 'await ' + makeTraceLabel(awaitArgumentTrace);
+  },
 };
 
 /**
