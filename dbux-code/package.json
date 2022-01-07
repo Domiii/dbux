@@ -1453,7 +1453,7 @@
     "build:prod": "node ../node_modules/webpack/bin/webpack.js build --mode=production",
     "update-docs": "node ../scripts/docs/writeDbuxCodeMd.js",
     "package-no-build": "rm -rf *.vsix && yarn update-docs && echo 'Packaging...' && vsce package --yarn",
-    "package:build+pkg+analyze": "yarn build+pkg && yarn package:pkg+analyze",
+    "package:build+pkg+analyze": "yarn build:prod && yarn package:pkg+analyze",
     "package:pkg+analyze": "yarn package-no-build && mkdir _analysis && mv *.vsix _analysis && cd _analysis && 7z x -o\"contents\" *.vsix",
     "publish-no-build": "yarn package-no-build && yarn publish-only",
     "publish-only": "echo 'Publishing...' && vsce publish --yarn"
