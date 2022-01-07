@@ -44,32 +44,32 @@ Several library packages are also part of the [Dbux Monorepo](https://github.com
 
 * &#8203;<CodeLink path="dbux-graph-common" />, <CodeLink path="dbux-graph-client" /> and <CodeLink path="dbux-graph-host" /> are responsible for rendering and letting the user interact with the [Call Graph](./08-call-graph.mdx) webview.
 * &#8203;<CodeLink path="dbux-data" /> Receives, pre-processes and manages all data sent by `@dbux/runtime`. It allows us to query and analyze JS runtime data on a higher level.
-* &#8203;<CodeLink path="dbux-projects" /> is used by `dbux-code` as part of [Dbux Practice](../dbux-practice) (but does not depend on `VSCode`). It allows users to clone, install and execute real-world projects, their bugs and practice exercises *with a single click*.
+* &#8203;<CodeLink path="dbux-projects" /> is used by `dbux-code` as part of [Dbux Practice](../dbux-practice/01-overview.mdx) (but does not depend on `VSCode`). It allows users to clone, install and execute real-world projects, their bugs and practice exercises *with a single click*.
 * &#8203;<CodeLink path="dbux-common" /> Collection of commonly used utilities shared among (more or less) all other modules.
 * &#8203;<CodeLink path="dbux-common-node" /> Collection of commonly used utilities shared among (more or less) all node-only modules.
 
 
 ## Runtime Analysis Features
 
-Once [installed](./runtime-analysis/installation), using Dbux involves two steps:
+Once [installed](./01-installation.mdx), using Dbux involves two steps:
 
 1. First: make sure to [run an Application with Dbux enabled](./02-enable-dbux.mdx).
 2. Then use the Dbux VSCode Extension for [runtime analysis](./00-dbux-overview.mdx#runtime-analysis):
 
-All recorded applications show up in the [Application View](./runtime-analysis/06-applications.mdx).
+All recorded applications show up in the [Application View](./06-applications.mdx).
 Once the application shows up, you can use the following tools for analysis:
 
-* Use the [Application View](./runtime-analysis/applications) to overview all recorded applications.
+* Use the [Application View](./06-applications.mdx) to overview all recorded applications.
   * From here you can also go to the ***entry point***.
 * Get a high-level overview with:
-  * The [Global View](./runtime-analysis/global).
-  * The [Call Graph](./runtime-analysis/call-graph).
+  * The [Global View](./07-global.mdx).
+  * The [Call Graph](./08-call-graph.mdx) or [Asynchronous Call Graph](./20-asynchronous-call-graph.mdx).
 * Get down into the nitty-gritty:
   * &#8203;<DarkLightImg src="crosshair_red.svg" /> [Select a Trace](./05-select-trace.mdx).
-  * Investigate individual traces using the [Trace Details View](./runtime-analysis/trace-details).
-  * &#8203;<DarkLightImg width="24px" src="nextInContext.svg" /> <DarkLightImg width="24px" src="previousInContext.svg" /> [Navigate](./runtime-analysis/trace-details#navigation) between traces.
-  * [Search](./runtime-analysis/search) for traces, contexts, modules or data.
-* Understand where data came from and where it went using the [Data Flow View](./runtime-analysis/data-flow).
+  * Investigate individual traces using the [Trace Details View](./30-trace-details.mdx).
+  * &#8203;<DarkLightImg width="24px" src="nextInContext.svg" /> <DarkLightImg width="24px" src="previousInContext.svg" /> [Navigate](./30-trace-details.mdx#navigation) between traces.
+  * [Search](./40-search.mdx) for traces, contexts, modules or data.
+* Understand where data came from and where it went using the [Data Flow View](./50-data-flow.mdx).
 
 :::tip
 All buttons in the Dbux VSCode Extension have corresponding [commands](./tools-and-configuration/dbux-code#commands) which in turn (are not by default but) [can be key-bound](https://code.visualstudio.com/docs/getstarted/keybindings).
