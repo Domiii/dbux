@@ -47,6 +47,7 @@ export default function Img({ src, title, zoomable, darkLight, screen, concept, 
     className,
     {
       'border-screen': canBeBig,
+      'img-crisp': canBeBig,
       zoomable,
       // 'mb-1': hasDiv && !mb
     }

@@ -28,9 +28,29 @@ import TOC from '@comp/TOC';
 
 [Asynchronous JavaScript](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous), and its relatives [parallel programming](https://en.wikipedia.org/wiki/Parallel_programming) and [concurrent computing](https://en.wikipedia.org/wiki/Concurrent_computing), lead to much more complex execution pattern than their non-asynchronous, non-parallel, non-concurrent counterparts. In fact, asynchronous semantics are one of the most daunting aspects of JavaScript that software developers have to deal with on a day-to-day basis, <span className="cursor-help highlight-on-hover" title="This is a generic statement, so phrased for dramatic effect, not for accuracy.">feared by many, underestimated by the rest<sup>*</sup></span>.
 
-This page aims to explain (most of) Dbux's Asynchronous Call Graph (ACG). In order to understand how it works, we start by introducing relevant terminology as it pertains to JavaScript's asynchronous semantics:
+## Example
+
+The following screenshot demonstrates an ACG of a sample program:
+
+<Img screen src="dbux-all-async1.png" />
+
+The ACG (right) renders the program [CGRs](#cgr) and the [asynchronous event edges](#ae) that connect them. The vertical axis is time (pointing downwards) and the horizontal dimension is "virtual threads" or "degree of concurrency" (experimental measure).
+
+* Code: The red solid border around the `done()` call expression indicates that it is [selected](./05-select-trace.mdx).
+* In the ACG, the `await Promise.all(...)` is also automatically selected (due to [follow mode](./08-call-graph.mdx#follow)). 
+  * &rarr; This means that `done()` is in the CGR of that corresponding asynchronous continuation (or "virtual/resume context"). 
+  * &rarr; This also means that `done()` executed synchronously after the awaited promise settled.
+* The dashed (red) border around the nodes on the left (`f1`, `sleep1s`, `f2`) indicate that the selected node "[synchronizes](https://en.wikipedia.org/wiki/Synchronization_(computer_science))" against them.
+  * &rarr; Those nodes were scheduled earlier but also had to finish before this root could start executing.
+* Other observations:
+  * `f2` will always follow `f1`, `g2` will always follow `g1` and `h2` will always `h1`.
+  * `f`, `g` and `h` are executing concurrently, and have no mechanism to ensure that one will finish before the other.
+  * &rarr; If someone wrote code that works based on the assumption that `h` always finishes after `g`, or `f` after `h`, there might be a [race condition](https://en.wikipedia.org/wiki/Race_condition) because there is no such order assured in the code that we are presented with. That is why the three are rendered on separate "virtual threads" (vertical columns).
+
 
 ## JavaScript Execution Semantics
+
+In order to better understand how the ACG works, we start by introducing relevant terminology as it pertains to JavaScript's asynchronous semantics.
 
 Modern JavaScript engines are driven by a single-threaded event loop dispatching events from multiple queues<sup>[1](https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop)</sup> <sup>[2](https://nodejs.org/en/docs/guides/event-loop-timers-and-nexttick/)</sup>. These queued events include all user-requested JavaScript events, such as the program's entry point, event handler callbacks and asynchronous continuations<!--  (i.e. continuations of function stacks interrupted by root-level `await` or `yield`) -->.
 
@@ -63,6 +83,8 @@ TODO: virtual contexts + async explanations.
   also: SyncCG children exclude [asynchronous continuations](#asynchronous-continuation)
   -> link paper
 -->
+
+<!-- A CGR is defined as "belonging to", or "owned by" a promise `p`, if the CGR is directly scheduled via `p`. That includes `p`'s `thenCbs`, async function resume roots (the owner `p` is its `callerPromise`) and promisified asynchronous callbacks. Note that not all promises <!-- (e.g. `Promise.resolve()`) --> have CGRs. -->
 
 :::note
 The [`synchronous` call graph](../runtime-analysis/08-call-graph.mdx) lists all CGRs on a linear timeline and allows inspecting individual children and subtrees of each root. The ACG, on the other hand, only shows CGRs (and none of their children), but further visualizes [their relationships](#chain-fork).

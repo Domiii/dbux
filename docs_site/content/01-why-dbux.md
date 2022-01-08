@@ -14,7 +14,7 @@ Dbux is an integrated debugging environment (IDbE) and omniscient debugger for J
 
 <Img screen src="dbux-all-async1.png" />
 
-The screenshot above demonstrates several of Dbux's features, including: omni-directional navigation, values, executions, data flow (left), code decorations and trace selection (middle), asynchronous call graph (right).
+The screenshot above demonstrates several of Dbux's features, including: [omni-directional navigation, values, executions](./runtime-analysis/30-trace-details.mdx), [data flow](./runtime-analysis/50-data-flow.mdx) (left), [code decorations](./runtime-analysis/04-code-decorations.mdx) and [trace selection](./runtime-analysis/05-select-trace.mdx) (middle), [asynchronous call graph](./runtime-analysis/20-asynchronous-call-graph.mdx) (right).
 
 [This (slightly outdated) video](https://www.youtube.com/watch?v=m1ANEuZJFT8) [20 min] <span className="color-gray"></span> explains how Dbux came to be and shows two basic examples of how to use a subset of its features.
 <!-- <a href="https://www.youtube.com/watch?v=m1ANEuZJFT8" target="_blank" alt="video">
