@@ -9,37 +9,58 @@ import useBaseUrl from '../hooks/useBaseUrl';
  * @see https://github.com/facebook/docusaurus/blob/b393700a613ee00b8e59d347283f68495acb68ba/packages/docusaurus/src/commands/writeHeadingIds.ts#L41
  */
 
-const ae = 'TODO';
 // const acg = 'TODO';
 
-const AbbrevAnchorsByAbbrev = {
-  cgr: 'cgr',
-  trace: 'trace',
-  staticTrace: 'trace',
-  context: 'context',
-  acg: 'TODO', // /runtime-analysis/08-call-graph.mdx#async
-  'call graph': 'call-graph',
+const AcgPath = 'runtime-analysis/asynchronous-call-graph';
 
-  ae,
-  aes: ae,
-  'asynchronous event': ae,
-  'asynchronous events': ae,
+const PathByTerm = {
+  'call graph': 'runtime-analysis/call-graph',
 
-  'dynamic runtime analysis': 'dynamic-runtime-analysis',
+  acg: AcgPath,
+  cgr: AcgPath,
+  ae: AcgPath,
+  aes: AcgPath,
+  'asynchronous event': AcgPath,
+  'asynchronous events': AcgPath,
+
   idbe: 'idbe'
 };
 
-const terminologyPath = 'advanced/terminology';
+const AeAnchor = 'ae';
+
+const AnchorsByTerm = {
+  trace: 'trace',
+  staticTrace: 'trace',
+  context: 'context',
+
+  'call graph': 'call-graph',
+
+  acg: '',
+  cgr: 'cgr',
+  ae: AeAnchor,
+  aes: AeAnchor,
+  'asynchronous event': AeAnchor,
+  'asynchronous events': AeAnchor,
+
+  // 'dynamic runtime analysis': 'dynamic-runtime-analysis',
+  // idbe: 'idbe'
+};
+
+const TerminologyPathDefault = 'advanced/terminology';
 
 function makeTermSrc(term) {
-  const anchor = AbbrevAnchorsByAbbrev[term.toLowerCase()];
-  if (!anchor) {
+  const lookupTerm = term.toLowerCase();
+  const terminologyPath = PathByTerm[lookupTerm] || TerminologyPathDefault;
+  let anchor = AnchorsByTerm[lookupTerm];
+  if (anchor === undefined) {
     return null;
   }
+  
+  anchor = `#${anchor}`;
 
   const baseUrl = useBaseUrl();
 
-  return `${baseUrl}${terminologyPath}#${anchor}`;
+  return `${baseUrl}${terminologyPath}${anchor}`;
 }
 
 /**

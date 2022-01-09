@@ -106,8 +106,13 @@ More explanations:
 ## Future Work: Missing Features
 
 This list serves to keep track of features that could prove very valuable for runtime analysis and debugging purposes. 
+
+In addition to the issue tracker, we have some more "exotic items" that we can only add slowly over time, and we encourage Dbux users to talk to us about and vote in favor of. 
 So many things that can be done... So little time...
 
+
+
+* Fix [#640](https://github.com/Domiii/dbux/issues/640): tracing the internals of `react` is currently (01/2022) bugged.
 * Change <ToolLink name="dbux-runtime" /> to evict unused data.
   * NOTE: It currently keeps almost all data in memory, since it will need *some of it* to keep track of and/or establish connections between reads, writes, interrupted functions and more.
 * Typescript support.

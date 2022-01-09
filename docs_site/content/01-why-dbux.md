@@ -27,13 +27,15 @@ The screenshot above demonstrates several of Dbux's features, including: [omni-d
 <!-- https://docusaurus.io/docs/next/markdown-features/admonitions
 :::caution -->
 
-I (Dominik) started this project on 11/16/2019 because I felt that after programming/designing software, and debugging for 20 years, I have not fully mastered my craft. This became particularly apparent during problem solving sessions with clients, that is when being rather, or at least quite, unfamiliar with the code. Being stuck for 30 minutes or longer to locate a single bug was not a rare occasion. I felt like I was lacking something, lacking an approach, lacking strategy, and also lacking a sufficiently deep understanding of the semantics of the program at hand. It was this frustration that lead me on the journey to build Dbux.
+I (Dominik) started this project on 11/16/2019 because I felt that after programming/designing software, and debugging for 20 years, I have not fully mastered my craft. This became particularly apparent during problem solving sessions with clients, when I'm rather, or at least quite, unfamiliar with the code. Being stuck for 30 minutes or longer to locate a single bug was not a rare occasion. I felt like I was lacking something, lacking an approach, lacking strategy, and also lacking a sufficiently deep understanding of the semantics of the program at hand. It was this frustration that lead me on the journey to build Dbux.
 
-Most importantly, I wanted to be able to answer (seemingly always the same type of) questions, like: How did THAT happen? Where did THAT data come from? Where did the execution take THAT turn?
+I started to realize that I wanted to be able to answer (seemingly always the same type of) questions, like: How did THAT happen? Where did THAT data come from? Where did the execution take THAT turn?
 
 I wanted to be able to more easily **see** (not just [guess/assume/theorize/conjecture/suppose/opine/test/prod/verify](https://www.thesaurus.com/browse/guess)) what is going on. I wanted to interact more with the runtime structure, not just indirectly through print statements, or one single small step at a time. I wanted to see the whole thing, zoom in and out, whenever necessary be able to zoom in real close, and then interact with it in order to investigate some of the non-obvious connections from where I am to where the bug is.
 
-We (Dominik and Michael) believe that Dbux does NOT make someone good at debugging. However, it can help better see (and appreciate?) what is going on in our applications by revealing the hidden structures beneath it. What you do with that information, is up to you!
+The goal was clear: collect all relevant run-time data, record it and make it easily accessible. And thus, Dbux was born. 
+
+We (Dominik and Michael) believe that Dbux does NOT make someone good at debugging. However, it can help better see (and appreciate?) what is going on in our applications by revealing the hidden structures beneath it. What you do with that information, is up to you! Luckily, it is (speaking from a rather biased position) kinda fun to interact with Dbux to poke around the actual recorded behavior of the code, navigating along the connections, and uncovering interesting little insights into what is actually going on in our applications. It is at least more fun (or so we feel) than just staring at the code guessing, more fun than adding/removing print/console statements, and more fun than waiting for the debugging session to re-start for the 5th time, after overshooting a crucial line of code yet again.
 
 
 
@@ -41,7 +43,7 @@ We (Dominik and Michael) believe that Dbux does NOT make someone good at debuggi
 
 <!-- TODO: make this part bigger and more visual -->
 
-Once an application has executed with [Dbux enabled](./runtime-analysis/02-enable-dbux.mdx), a collection of analytical tools is available via the [Dbux VSCode Extension](./tools-and-configuration/01-dbux-code.mdx):
+Once an application has executed with [Dbux enabled](./runtime-analysis/02-enable-dbux.mdx), a collection of analytical tools is available via the [Dbux VSCode Extension](./tools-and-configuration/01-dbux-code.mdx), including:
 
 * Dbux's [global view](./runtime-analysis/07-global.mdx) lists third-party modules, files and console log events. Takes user to the relevant code in a single click.
   * NOTE: While this eliminates the need for most of "[print-based debugging](https://www.google.com/search?q=print-based+debugging&hl=en)", it does not replace use of [proper logging](https://www.google.com/search?q=logging+programming+best+practices).
@@ -56,7 +58,7 @@ Once an application has executed with [Dbux enabled](./runtime-analysis/02-enabl
 
 ## Word of Caution: ALPHA Phase!
 
-Dbux is currently still in ALPHA. While we have been testing it on many small <CodeLink path="samples" /> and <CodeLink path="dbux-projects/src/projects" >several real-world projects</CodeLink>, there is always a chance, that the next one does not exactly work the way it should. For example, tracing the internals of `react` is currently (01/2022) bugged: https://github.com/Domiii/dbux/issues/640.
+Dbux is currently still in ALPHA. While we have been testing it on many small <CodeLink path="samples" /> and <CodeLink path="dbux-projects/src/projects" >several real-world projects</CodeLink>, there is always a chance, that the next one does not exactly work the way it should. For example, tracing the internals of `react` is currently (01/2022) [bugged](https://github.com/Domiii/dbux/issues/640).
 
 If you run into any problems when using Dbux, please [let us know](https://discord.gg/8kR2a7h).
 
