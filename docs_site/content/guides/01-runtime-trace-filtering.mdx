@@ -1,4 +1,4 @@
-# Which Files are Traced?
+# Runtime Trace Filtering
 
 import CodeLink from '@src/components/CodeLink';
 import TOC from '@src/components/TOC';
@@ -6,13 +6,31 @@ import TOC from '@src/components/TOC';
 <TOC toc={toc} />
 
 
-This article explains Dbux determines which files to record.
+This article explains how Dbux determines which files and lines of code to trace.
 
 When [Dbux is enabled](../runtime-analysis/02-enable-dbux.mdx), it automatically records execution of all files that are not in `node_modules`[^1]. It is a balancing act to determine the optimal set of files to trace. Often times it is easiest to tell Dbux to just trace everything. However, tracing *everything* can slow down the build/parse time significantly.
+
+:::tip
+If you know that some packages do not contribute to your runtime analysis, do not `whitelist` them or explicitly `blacklist` them. This can improve [performance](./02-performance.mdx), especially if they contain many lines of code or many <Term term="trace" /> event records.
+:::
 
 <!-- TODO(re-write this: build-time vs. run-time performance considerations etc.)
 
 Also, tracing long-running loops or high-FPS code TODO(explain). That is why you want to fine-tune configuration as to what and how you want to trace.  -->
+
+## /** dbux disable */ {#dbux-disable}
+
+You can disable tracing of individual traces and/or expressions by adding a comment containing a line of `dbux disable`, (e.g. `/** dbux disable */`) in front of it. E.g., in the following sample code, a long-running (but unimportant) loop will not get instrumented, thus largely improving [performance](./02-performance.mdx):
+
+```js
+f();
+/* dbux disable */
+for (const i = 0; i < veryLargeNumber; ++i) {
+  // ...
+}
+g();
+```
+
 
 ## Whitelists and Blacklists
 
@@ -37,44 +55,20 @@ Some notes:
     * `my/app/node_modules/@a/b/c.js` -> `@a/b`
     * etc.
 
-### Example
-
-```js
-const moduleFilterOptions = {
-  packageWhitelist: 'interestingPackage1,@interesting/package2',
-  // packageBlacklist: '',
-  fileBlacklist: '.*bad_file1\.js,.*/unwanted_dir1/.*'
-};
-```
-
-TODO: more explanations + examples
-
-<!-- 
-## Module Filter Examples
-
-#### Example 1
-
-```js
-moduleFilterOptions TODO
-``` -->
-
 
 ## Run Button + @dbux/cli
 
 When using [the Run Button](../runtime-analysis/03-the-run-button.mdx) and/or [@dbux/cli](../tools-and-configuration/02-dbux-cli.mdx), you can configure this via the `--pw`, `--pb`, `--fw` and `--fb` flags.
 
 * Example: `npx dbux run --pw=.* --pb=lodash ./test.js`
-  * Traces all libraries, but `lodash`.
+  * -> Traces all libraries, but `lodash`.
 
 
 ## Babel Config
 
-When [manually integrating Dbux into your build pipeline](./02-build-pipeline-integration.mdx), you generally want to make use of the `moduleFilter` API (<CodeLink path="dbux-babel-plugin/src/external" />) in your config file and manually adjust your global Babel `include` **or** `ignore` settings to make sure that you are tracing and recording the files that you want.
+When [manually integrating Dbux into your build pipeline](./03-build-pipeline-integration.mdx), you generally want to make use of the `moduleFilter` API (<CodeLink path="dbux-babel-plugin/src/external" />) in your config file and manually adjust your global Babel `include` **or** `ignore` settings to make sure that you are tracing and recording the files that you want.
 
 NOTE: The `moduleFilter` functions return `function` (not `string` or `RegExp`).
-
-
-### Webpack Example:
 
 
 ```js
@@ -82,7 +76,20 @@ const shouldInclude = require('@dbux/babel-plugin/dist/include').default;
 
 // ...
 
+const moduleFilterOptions = {
+  packageWhitelist: 'interestingPackage1,@interesting/package2',
+  // packageBlacklist: '',
+  fileBlacklist: '.*bad_file1\.js,.*/unwanted_dir1/.*'
+};
+
 module.exports = {
+  include: [
+    shouldInclude(moduleFilterOptions)
+  ]
+};
+```
+
+<!-- module.exports = {
   // ...
   module: {
     rules: [
@@ -105,37 +112,7 @@ module.exports = {
       }
     ]
   }
-};
-```
+}; -->
 
 
-### Rollup Example
-
-TODO: We have not tested this in a while. Need to verify and set it in stone. Test with the previously working `Chart.js` practice exercises (which uses Rollup).
-
-Rollup requires use of [@rollup/plugin-babel](https://www.npmjs.com/package/@rollup/plugin-babel).
-
-Something like this:
-
-```js
-const shouldInclude = require('@dbux/babel-plugin/dist/include').default;
-
-const config = {
-  ...
-  plugins: [
-    babel({
-      babelHelpers: 'inline',
-      filter: shouldInclude(moduleFilterOptions),
-      /**
-       * WARNING: if not skipped, we saw some serious memory leaks (in 2020), but might already be fixed in 2022.
-       * TODO: we need to test this again.
-       */
-      skipPreflightCheck: true
-    })
-  ]
-};
-```
-
-
-
-[^1]: Support for PnP and other module systems are [pending](../advanced/02-future-work.mdx).
+[^1]: Support for PnP and other module systems are [future-work](../advanced/02-future-work.mdx).

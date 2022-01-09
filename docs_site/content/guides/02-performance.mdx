@@ -1,0 +1,48 @@
+# Performance
+
+import ToolLink from '@src/components/ToolLink';
+import CodeLink from '@src/components/CodeLink';
+
+There are many performance considerations in tracing and recording *all* activity of a program.
+
+## Performance Considerations
+
+Main considerations include:
+
+* Instrumentation can be slow.
+  * <ToolLink name="dbux-cli" /> uses a custom implementation of [`@babel/register`](https://babeljs.io/docs/en/babel-register).
+    * That implementation provides improved caching. Make sure to enable `caching` when using <ToolLink name="dbux-cli" />. 
+    * It currently has limited configuration, but we hope for more in the future.
+  * If you use a bundler, you might want to configure caching for it as well, especially to reduce cold-start overhead. 
+    * E.g.: `cacheDirectory` for [webpack's babel-loader](https://github.com/babel/babel-loader)
+* When executing *a lot of stuff* (e.g. long loops or high FPS games etc), things will get slow:
+  * A simple loop with 1 million+ iterations will already get pretty slow. It generates 100+MB of serialized data and significantly increases memory pressure on <ToolLink name="dbux-runtime" /> as well as <ToolLink name="dbux-code" />.
+  * For the same reason, Dbux probably is not yet able to cope with a 30+FPS game running for more than a few seconds.
+* When running a program with Dbux enabled, and also running it in debug mode in Node (i.e. `--inspect` or `--inspect-brk`), things slow down even worse. When things get too slow, you might want to consider using the `Run` button instead of the `Debug` button, and use the Dbux built-in features for debugging; unless there are some features in the traditional debugger that you just cannot live without in some specific circumstances.
+* Recording of large arrays and objects is limited, according to some (currently hardcoded) `SerializationLimits`, to be found in <CodeLink path="dbux-runtime/src/data/valueCollection.js" />.
+
+:::note
+Improving performance and adding performance enhancing mechanisms is [future work](../advanced/02-future-work.mdx).
+:::
+
+## Improving Performance
+
+Main steps to take to improve performance:
+
+1. Join our [Discord](https://discord.gg/QKgq9ZE) and share your story, so we can advise, and also consider what types of performance improvements are most wanted.
+2. [Disable tracing of specific files, statements or expressions](./01-runtime-trace-filtering.mdx), if they are not important for your analysis.
+3. TODO: `tracesDisabled`
+
+
+
+
+## A Comment on Performance
+
+Performance and scalability issues are often cited as the biggest problems for [omniscient debuggers](../background/02-debugging.mdx). However, as Henry Liebermann pointed out in reference to his omniscient debugger (called ZStep 95) in 1997[^1]: "Even in an extremely large program, where keeping a complete history is infeasible, judicious testing can often isolate a fragement of the code which is not too large to run ZStep on. Nevertheless, we admit that there may be bugs that appear only after long runs involving large amounts of code, and so our techniques may be inappropriate in these cases. However, we conjecture that the  vast majority of bugs are relatively shallow, and the productivity improvements from finding".
+
+We believe, this applies to any omniscient debugger. While even large applications can be debugged with it, Dbux and its omniscient peers will falter when confronted with bugs in applications with high event frequency, such as games or complex algorithms running on a lot of data, if those bugs cannot be easily reproduced in a test case or short test run.
+
+
+## TODO: Some Results
+
+TODO: provide some numbers

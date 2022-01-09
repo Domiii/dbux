@@ -48,7 +48,7 @@ These are some useful default settings.
 * The `--cache` flag provides big performance benefits when running large applications multiple times.
   * (NOTE: We forked (copied) `@babel/register` and implemented our own caching for this, as explained [in this comment](https://github.com/babel/babel/issues/5667#issuecomment-888339734).)
 * The `--pw` flag is one type of ***module filter***. It whitelists 3rd party packages (from `node_modules`) to also be instrumented and traced.
-  * More explanations on module filters can be found [in the trace guide](../guides/01-which-files-are-traced.mdx).
+  * More explanations on module filters can be found [in the trace guide](../guides/01-runtime-trace-filtering.mdx).
 
 * `npx dbux r --esnext --verbose=1 --cache --pw=* ./someFile.js`
 

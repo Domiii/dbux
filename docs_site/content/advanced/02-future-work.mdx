@@ -1,5 +1,6 @@
 # Known Limitations and Future Work
 
+import ToolLink from '@src/components/ToolLink';
 import CodeLink from '@src/components/CodeLink';
 import TOC from '@src/components/TOC';
 
@@ -20,7 +21,7 @@ NOTE: The code should still work fine, but some of Dbux's analysis tools (especi
 
 ## Problems with Values
 
-* Big objects, arrays and strings are truncated because trying to record **all values** might severely impact [performance](../guides/03-performance.mdx).
+* Big objects, arrays and strings are truncated because trying to record **all values** might severely impact [performance](../guides/02-performance.mdx).
 * We currently do not properly trace all built-in data types. This is tracked in: https://github.com/Domiii/dbux/issues/543.
 * We also plan to make the currently hardcoded thresholds configurable, if there is sufficient demand for this.
 
@@ -107,7 +108,9 @@ More explanations:
 This list serves to keep track of features that could prove very valuable for runtime analysis and debugging purposes. 
 So many things that can be done... So little time...
 
-* Typescript support
+* Change <ToolLink name="dbux-runtime" /> to evict unused data.
+  * NOTE: It currently keeps almost all data in memory, since it will need *some of it* to keep track of and/or establish connections between reads, writes, interrupted functions and more.
+* Typescript support.
 * Properly test and provide recipes for all environments, e.g.:
   * Node's `vm` (Jest uses that also)
   * `WebWorker`
