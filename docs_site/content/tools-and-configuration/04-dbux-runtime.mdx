@@ -1,11 +1,13 @@
 # Dbux Runtime
 
+import CodeLink from '@src/components/CodeLink';
 import TOC from '@src/components/TOC';
 
 <TOC toc={toc} />
 
-The Dbux Runtime ([@dbux/runtime](https://www.npmjs.com/package/@dbux/runtime)) is injected by the [@dbux/babel-plugin](./dbux-babel-plugin) in order to record a JavaScript application's execution trace.
-Once running, it is responsible for collection and sending execution to the [runtime server](../tools-and-configuration/dbux-code#runtime-server).
+<CodeLink path="dbux-babel-plugin" /> is injected by the [@dbux/babel-plugin](./dbux-babel-plugin) in order to record a JavaScript application's runtime trace log.
+
+Once running, it is responsible for collecting and sending runtime data to the [runtime server](../tools-and-configuration/dbux-code#runtime-server).
 
 
 ## Config

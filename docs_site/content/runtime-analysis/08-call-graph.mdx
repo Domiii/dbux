@@ -15,8 +15,6 @@ import TOC from '@src/components/TOC';
 
 The call graph serves as a "map of your runtime execution": it provides a bird's eye overview of all file and function executions.
 
-<!-- TODO: add new `Background: Asynchronous JavaScript` chapter somewhere  -->
-<!--        incl.: ### Asynchronous Continuation -->
 <!-- TODO: more call graph explanations -->
 <!-- TODO: merge with terminology: call-graph -->
 
@@ -101,11 +99,12 @@ For example, [sequelize issue #8199](https://github.com/sequelize/sequelize/issu
 Above screenshot shows the asynchronous call stack of an Error captured when executing sequelize's [findOrCreate](https://sequelize.org/master/manual/model-querying-finders.html#-code-findorcreate--code-).
 Note that the method called by the user `Model.findOrCreate` is prominently displayed near the top of the stack.
 
-It is also worth noting that the [color scheme](#color-scheme) is not as revealing as it could be because we executed the code from within the `sequelize` repository. TODO: re-capture this with sequelize used as third-party library (so its stack frames would be dimmer, thus making application code even more obvious).
+<!-- It is also worth noting that the [color scheme](#color-scheme) is not as revealing as it could be because we executed the code from within the `sequelize` repository. TODO: re-capture this with sequelize used as third-party library (so its stack frames would be dimmer, thus making application code even more obvious). -->
 
 
 ## Toolbar
 
+The toolbar
 
 ### follow
 
@@ -118,7 +117,7 @@ Show/hide value in context nodes.
 
 **Sync**: In synchronous mode, it shows `(arguments) -> returnValue` of the context's call expression.
 
-**Async**: In asynchronous mode, it shows the value of the first trace of the currently selected trace in each root. Among other uses, this allows you identifying the roots that executed the selected trace's code.
+**Async**: In asynchronous mode, it shows the value of the first trace of the currently selected trace in each root. Among other uses, this allows you identifying the roots that executed the selected trace's code and what the value of that root was. This in turn can be used to better understand the main purpose of different roots, if the right trace is selected. (TODO: examples)
 
 
 
@@ -126,25 +125,27 @@ Show/hide value in context nodes.
 
 Show/hide locations in context nodes.
 
-Clicking the location takes you there.
+<!-- Clicking the location inside the node takes you there. -->
+
 
 ### call
 
-Show/hide caller traces of all contexts that are function invocations.
+**Sync**: Show/hide caller traces of all contexts that are function invocations. This allows to quickly understand how a context node ("stack frame") was called.
 
-You can click the call trace to go there. You can `CTRL/Command` + `Click` it to select it.
+<!-- You can click the call trace to go there. You can `CTRL/Command` + `Click` it to select it. -->
+
 
 ### details
 
-In `async` mode, disabling `Details` visually compacts the graph. This is used to better expose high-level patterns between <Term term="CGR">CGRs</Term>. One can probably best see the "big picture" by disabling `Details` and then zooming out.
+**Async**: In `async` mode, disabling `details` visually compacts the graph. This is used to better expose high-level patterns between <Term term="CGR">CGRs</Term>. One can better see the "big picture" by disabling `details` and then zooming out.
 
-`Details` currently does nothing in [sync](#sync-call-graph) mode.
+**Sync**: `details` currently does nothing in `Sync` mode.
 
 
 
 ### Call Graph: pause/resume/clear
 
-These features lets you isolate the part of the call graph responsible for executing specific events (such as clicking a buggy button), while removing (hiding) all kinds of unrelated clutter.
+These features let you isolate the part of the call graph responsible for executing specific events (such as clicking a buggy button), while removing (hiding) all kinds of unrelated clutter.
 
 #### <span className="color-red">🔴</span> pause/resume
 
@@ -173,6 +174,7 @@ The clear button (`x`) is useful for removing clutter when investigating a bug t
 ## Call Graph Colors {#color-scheme}
 
 TODO: color scheme
+
 
 ## Call Graph Implementation Details
 

@@ -9,9 +9,4 @@ Things that are different in this fork:
 * `node.js`, `cache.js` to address the caching issues
 * `package.json`, so we can easily link it locally
 
-
-# @babel/register
-
-> babel require hook
-
-See our website [@babel/register](https://babeljs.io/docs/en/babel-register) for more information or the [issues](https://github.com/babel/babel/issues?utf8=%E2%9C%93&q=is%3Aissue+label%3A%22pkg%3A%20register%22+is%3Aopen) associated with this package.
+This is being made use of by [@dbux/cli](../dbux-cli#readme), which, thanks to this modification, offers a reliable and efficient cache implementation that can be enabled with the `--cache` flag.

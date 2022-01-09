@@ -21,8 +21,8 @@ NOTE: The code should still work fine, but some of Dbux's analysis tools (especi
 ## Problems with Values
 
 * Big objects, arrays and strings are truncated because trying to record **all values** might severely impact [performance](../guides/03-performance.mdx).
-  * TODO: make more configurable
 * We currently do not properly trace all built-in data types. This is tracked in: https://github.com/Domiii/dbux/issues/543.
+* We also plan to make the currently hardcoded thresholds configurable, if there is sufficient demand for this.
 
 
 ## Calling `process.exit` as well as uncaught exceptions are not always handled properly

@@ -11,13 +11,18 @@ The Global View allows quickly navigating global events and their data, includin
 
 ## Errors
 
-Lists all thrown errors in the program.
-Errors are identified by interrupted stack frames and `throw` statements.
+:::caution
+[This is currently still WIP](https://github.com/Domiii/dbux/issues/618).
+:::
+
+Lists all detected errors in the program.
+
+Errors are identified by interrupted stack frames or `throw` statements.
 Each interrupted stack contributes one node to this list.
 The nodes are the first (deepest) recorded interrupted frame.
 The children of each node are all other interrupted stack frames on the same stack[^1].
 
-TODO(screenshot: https://github.com/Domiii/dbux/issues/618)
+<!-- TODO(screenshot: ) -->
 
 If there are recorded errors, you can either look through the list or click the `Error button` <DarkLightImg src="fire.svg" /> to take you right to the recorded error location in code. From there you can investigate everything related to the error, including the error object itself, if it is available.
 If there are multiple errors, you can click the button multiple times to toggle through all of them. The `Error button` <DarkLightImg src="fire.svg" /> shows up in two places:

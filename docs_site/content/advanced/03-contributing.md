@@ -15,14 +15,10 @@ TODO
 
 * `bash`
    * On Windows, you can get this via cygwin or `git` (which also installs cygwin)
-* [Volta](https://docs.volta.sh/guide/getting-started)
-  * `Volta`, unlike `n` and `nvm`, is fully cross-platform.
-  * We recommend using volta to manage `node`, `npm` and `yarn`. It is a breeze to work with, and makes version management child's play.
-  * Make sure to delete `node`, `yarn` (and possibly `n` and `nvm` if you have it) first
-  * Use `volta` to install `node` and `yarn`
-    * node
-       * we recommend `node@16` or higher for better support of source maps (node source map support used to be very slow before `node@16`).
-    * yarn
+* Recommended: [Volta](https://docs.volta.sh/guide/getting-started)
+  * Please consider the [installation chapter](../runtime-analysis/01-installation.mdx#system-requirements) for pros, cons and installation instructions.
+* `yarn`
+* `Node@16`
 
 
 ### Setup
@@ -36,38 +32,37 @@ yarn install && yarn i # install dependencies
 
 Finally, you might want to enable Dbux auto start by default:
 
-<Img src="screens/dbux-auto-start-workspace-setting.png" />
+<Img screen src="dbux-auto-start-workspace-setting.png" />
 
 
-If dependencies bug out, sometimes running the (very aggressive) clean-up command can help: `npm run dbux-reinstall` (of course we don't recommend this).
+If dependencies bug out, sometimes running the (very aggressive) clean-up command can help: `npm run dbux-reinstall`.
+Of course, we don't recommend this, unless absolutely necessary. It will delete your `yarn.lock` file, which can lead to installation of package versions that have breaking changes in them, potentially introducing even more problems.
 
 
-### Start development
+### Start Development
 
-1. Open project + start webpack
+1. Open project + start build+watch mode
    ```sh
    code dbux.code-workspace # open project in vscode
-   npm start # start webpack development build of all projects in watch mode
+   yarn start # start webpack development build of all projects in watch mode
    ```
-1. Go to your debug tab, select the `dbux-code` configuration and press F5 (runs dbux-code (VSCode extension) in debug mode)
-1. Inside of the new window, you can then use the development version of `dbux-code`
+2. Go to your VSCode debug tab, select the `dbux-code` configuration and press F5. This runs the [Dbux VSCode Extension](../tools-and-configuration/01-dbux-code.mdx) in debug mode.
+3. Inside the new window, you can then use [Dbux VSCode Extension](../tools-and-configuration/01-dbux-code.mdx) as usual (but in debug mode).
 
 
 ### Adding dependencies
 
-We use Lerna with Yarn workspaces, so instead of `npm i pkg`, we can do the following:
+We use Lerna with Yarn workspaces, so instead of `npm install pkg`, we do the following:
 
 * Adding `pkg` to `@dbux/something` (where `dbux-something` is the folder containing the package `@dbux/something`):
    `npx lerna add --scope=@dbux/something pkg`
    `npx lerna add --scope=@dbux/common pkg`
    `npx lerna add --scope=dbux-code pkg      # note: dbux-code's package name has a dash (-), not a slash (/)!`
-
-
-* Adding `pkg` as devDependency to the root:
+* Adding `pkg` to the root's `devDependencies`:
    `yarn add --dev -W pkg`
 
 
-### Using Dbux Local Development Build
+<!-- ### Local Development Build
 
 If you want to use the local development build of Dbux in other folders, make sure to hard-link them.
 
@@ -77,7 +72,7 @@ E.g. on Windows:
 mkdir ..\..\node_modules\@dbux
 mklink /J ..\..\node_modules\@dbux\babel-plugin ..\..\..\dbux\dbux-babel-plugin
 mklink /J ..\..\node_modules\@dbux\runtime ..\..\..\dbux\dbux-runtime
-```
+``` -->
 
 
 ## Joining the Community
@@ -85,10 +80,27 @@ mklink /J ..\..\node_modules\@dbux\runtime ..\..\..\dbux\dbux-runtime
 While you can certainly try to get started on your own, you probably make your life a lot easier by [join the dev team on Discord](https://discord.gg/8kR2a7h) first :)
 
 
-## Dealing with Documentation
+## Documentation: docs_site
 
-* `react` followed by `md` in the same line does not format correctly: https://github.com/mdx-js/mdx/discussions/1876
-  * Add `&#8203;` in front of the line.
+We use `docusaurus` for documentation.
+
+* `cd docs_site`
+* `yarn start`
+
+
+### Build + Deploy docs
+
+* `yarn build`
+  * -> Make sure, there are no build problems.
+* `yarn serve`
+  * This serves the production build locally to allow you manually test and check whether the documentation site works correctly.
+  * You especially want to do this when introducing new complex logic or components.
+* `yarn deploy`
+  * Make the changes go live.
+
+### Known Problems + Related Issues
+
+See https://github.com/Domiii/dbux/issues/632 and https://github.com/Domiii/dbux/labels/documentation.
 
 
 ## Unsorted Notes
@@ -206,5 +218,5 @@ While you can certainly try to get started on your own, you probably make your l
     - If you remove `"group": "navigation"` , the button will be listed in a dropdown menu, see [Sorting of groups](https://code.visualstudio.com/api/references/contribution-points#Sorting-of-groups) for more information
     - The `when` property defines when should the button be visible, see ['when' clause contexts](https://code.visualstudio.com/docs/getstarted/keybindings#_when-clause-contexts) for more available condition
 
-TODO: more to be said here in the future (consider https://gist.github.com/PurpleBooth/b24679402957c63ec426)
+<!-- TODO: more to be said here in the future (e.g., consider https://gist.github.com/PurpleBooth/b24679402957c63ec426) -->
 

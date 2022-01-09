@@ -1,5 +1,5 @@
-`@dbux/cli` is a command line interface for Dbux instrumentation.
+The Dbux CLI package `@dbux/cli` is a tool for easily running Node applications with Dbux enabled.
 
-In a way, `@dbux/cli` to Dbux is what [`nyc`](https://github.com/istanbuljs/nyc) is to `istanbul`.
+`@dbux/cli` to Dbux is (similar to) what [`nyc`](https://github.com/istanbuljs/nyc) is to `istanbul`.
 
 Documentation: https://domiii.github.io/dbux/tools-and-configuration/dbux-cli

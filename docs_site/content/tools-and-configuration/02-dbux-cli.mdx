@@ -5,69 +5,114 @@ title: Dbux CLI
 # Dbux CLI
 
 import TOC from '@src/components/TOC';
+import CodeLink from '@src/components/CodeLink';
 
 <TOC toc={toc} />
 
-The Dbux CLI package `@dbux/cli` is a tool for easily running Node applications with Dbux enabled.
+The Dbux CLI package `@dbux/cli` is a tool for easily running Node applications [with Dbux enabled](../runtime-analysis/02-enable-dbux.mdx).
+
 
 ## Getting Started
 
 1. Install `@dbux/cli` locally:
    * `npm install -D @dbux/cli` or
    * `yarn add --dev @dbux/cli`
-   * NOTE: this also installs several other tools that it depends on, such as `@dbux/babel-plugin`.
+   * NOTE: this also installs several other tools that it depends on, such as `@dbux/babel-plugin` and several `babel` packages.
 2. Run
    * E.g.: `npx dbux run ./test.js`
 
 
-## Config
+The CLI currently supports two commands: [`run`](#run) and [`instrument`](#instrument) (<CodeLink path="dbux-cli/src/commands">code here</CodeLink>).
 
-TODO
-
-
-
-
-<!-- 
-
-
-
-# Usage
-The CLI currently supports two commands: [`run`](#run) and [`instrument`](#instrument) ([code here](src/commands)).
-
-They share [these command options](src/util/commandCommons.js).
 
 ## Run
 
+This command executes a given JavaScript application with Dbux enabled.
+
 * Usage: `npx dbux run app.js`
-* Alias: `npx dbux r ...`
+  * Alias = `r`: `npx dbux r ...`
 
-Run some JavaScript application with Dbux enabled.
+Run `someFile.js` with Dbux enabled:
 
-* `npx dbux r someFile.js`
+* `npx dbux r ./someFile.js`
 
-You can enable babel to add all kinds of `esnext` syntax proposals enabled with the `--esnext` flag.
+### Recipes
 
-Examples:
+#### esnext + verbose + cache + pw
 
-* Run a `mocha` test `myTest.js`: `node --stack-trace-limit=100 --enable-source-maps "node_modules/@dbux/cli/bin/dbux.js" run --verbose=1 --esnext node_modules/mocha/bin/_mocha -- --no-exit -- myTest.js`
-   * Custom `node` options (`--stack-trace-limit=100 --enable-source-maps`)
-   * Custom `dbux` options (`--verbose=1 --esnext`)
-   * Custom `mocha` options (`--no-exit`; between the two `--`'s)
+These are some useful default settings.
 
-## Instrument (i)
+* The `--esnext` flag adds all kinds of `esnext` syntax support and proposals.
+  * (TODO: We need to review and better explain this. We also might want to replace our self-maintained list of plugins with `preset-env` (now that `preset-env` is a lot more mature), or at least update the list of added plugins.)
+* The `--verbose` flag adds more verbose information about what Dbux does.
+* The `--cache` flag provides big performance benefits when running large applications multiple times.
+  * (NOTE: We forked (copied) `@babel/register` and implemented our own caching for this, as explained [in this comment](https://github.com/babel/babel/issues/5667#issuecomment-888339734).)
+* The `--pw` flag is one type of ***module filter***. It whitelists 3rd party packages (from `node_modules`) to also be instrumented and traced.
+  * More explanations on module filters can be found [in the trace guide](../guides/01-which-files-are-traced.mdx).
+
+* `npx dbux r --esnext --verbose=1 --cache --pw=* ./someFile.js`
+
+:::caution Caution: --pw=*
+`pw=*` leads to **all** packages being traced. While this can work in many settings, it can also wreak havoc on performance, or even lead to some really naughty behavior, where libraries are instrumented which themselves aim to instrument, such as [v8-compile-cache](https://www.npmjs.com/package/v8-compile-cache). For example, we came across bugs caused by Dbux trying to instrument the instrumenters when tracing `webpack` as well as `Jest`.
+
+<!-- We will have to find better ways of dealing with or detecting potentially nasty code. -->
+<!-- Most of this caused by the Dynamic Callback Patcher. When it is disabled, almost everything will run smoothly. -->
+:::
+
+
+#### Mocha
+
+Run a `mocha` test files `myTest1.js` and `myTest2.js`:
+
+* `node --stack-trace-limit=100 --enable-source-maps "./node_modules/@dbux/cli/bin/dbux.js" run --esnext --verbose=1 --cache --pw=* ./node_modules/mocha/bin/_mocha -- --no-exit -- myTest1.js myTest2.js`
+
+Explanations:
+
+* `node` options: `--stack-trace-limit=100 --enable-source-maps`
+* `dbux` options: `--verbose=1 --esnext`
+* `mocha` options: `--no-exit` (between the two `--`'s)
+* Target files: `myTest1.js myTest2.js` (following the last `--`)
+
+`node --stack-trace-limit=100    --require "./test/support/env.js" "./node_modules/@dbux/cli/bin/dbux.js" run --verbose=1 --cache --sourceRoot=C:/Users/domin/code/dbux --pw=.* "C:/Users/domin/code/dbux/dbux_projects/express/node_modules/mocha/bin/_mocha" -- --no-exit -c -t 10000 --grep "OPTIONS should only include each method once" --grep "OPTIONS should only include each method once" -- test/app.options.js test/app.options.js`
+
+
+:::note
+While of course entirely possible, we generally do not recommend running **all tests* with `Dbux` enabled, since that can be extremely slow. What you want to do instead is only run failing tests with Dbux.
+
+We already know about the importance of being able to do so, and hopefully will provide an easier solution in the near future. Please contact us on Discord, if better test-/CI-integration is of great import to you or your team.
+:::
+
+#### Jest
+
+TODO
+
+<!-- TODO: fix javascript-algorithms and update this -->
+
+
+## Instrument
 
 * Usage: `npx dbux instrument app.js`
-* Alias: `npx dbux i ...`
+  * Alias: `npx dbux i ...`
 
-This is more for internal development purposes. It allows you to look at the effective code after instrumentation.
+This is mostly used for internal development purposes. It allows developers to inspect the instrumented version of their applications.
 
 Examples:
 
 * Show instrumented code result in VSCode: `npx dbux i someFile.js | code -`
 
 
+## Config
 
-# Files
+`run` and `instrument` commands both share (for the most part) <CodeLink path="dbux-cli/src/util/commandCommons.js">these command options</CodeLink>.
+
+TODO: add proper list of configuration options here
+
+
+
+
+<!-- 
+
+## Files and Folders
 
 In addition to the `src` and `dist` folders, it contains a `lib` folder which contains some scripts that are used in several command line utilitiies throughout the project structure (mostly in `webpack.config`s and `publish.js`) and do not require babel'ing.
 
@@ -76,6 +121,7 @@ In addition to the `src` and `dist` folders, it contains a `lib` folder which co
 
 * [You probably want to be aware of performance considerations](https://github.com/Domiii/dbux/tree/master/#performance).
 * When using `@dbux/cli` with `--esnext`, it sometimes cannot find Babel plugins.
+   * NOTE: this should be solved now, if `@dbux/cli` is installed locally -> `@dbux/cli` has everything it needs listed as dependency.
    * To make things easier to use, we employ `module-alias` to alias all relevant dependencies (see [`linkOwnDependencies.js`](src/linkOwnDependencies.js))
    * Internally, `module-alias` [overwrites ` Module._resolveFilename`](https://github.com/ilearnio/ module-alias/blob/dev/index.js#L29)
    * However, Babel's own plugin resolution ignores that (because it uses [browserify/resolve](https://github.com/browserify/resolve/blob/master/lib/sync.js#L95) which does not care about aliases)

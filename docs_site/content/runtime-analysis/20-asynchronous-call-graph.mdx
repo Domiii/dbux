@@ -26,31 +26,51 @@ import TOC from '@comp/TOC';
   <source src="../async-hard.gif" type="video/mp4" />
 </video> -->
 
-[Asynchronous JavaScript](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous), and its relatives [parallel programming](https://en.wikipedia.org/wiki/Parallel_programming) and [concurrent computing](https://en.wikipedia.org/wiki/Concurrent_computing), lead to much more complex execution pattern than their non-asynchronous, non-parallel, non-concurrent counterparts. In fact, asynchronous semantics are one of the most daunting aspects of JavaScript that software developers have to deal with on a day-to-day basis, <span className="cursor-help highlight-on-hover" title="This is a generic statement, so phrased for dramatic effect, not for accuracy.">feared by many, underestimated by the rest<sup>*</sup></span>.
+**What is the Asynchronous Call Graph (ACG)?**
 
-## Example
+The Asynchronous Call Graph (ACG) is the [call graph](./08-call-graph.mdx) but in `Async` mode. You can see the ACG by opening the [call graph](./08-call-graph.mdx) and then clicking the `Sync` button. The two call graph modes share many of the toolbar features, as explained [here](./08-call-graph.mdx#toolbar).
 
-The following screenshot demonstrates an ACG of a sample program:
+Here, you can see many high-level patterns, that the synchronous call graph cannot capture. While `Sync` mode allows inspecting children and children of children of file and function executions, `Async` mode focuses on relating the roots of the graph to one another.
+
+**Why?**
+
+[Asynchronous JavaScript](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous) and its relatives [parallel programming](https://en.wikipedia.org/wiki/Parallel_programming) and [concurrent computing](https://en.wikipedia.org/wiki/Concurrent_computing) lead to much more complex execution pattern than their non-asynchronous, non-parallel, non-concurrent counterparts. In fact, asynchronous semantics are one of the most daunting aspects of JavaScript that software developers have to deal with on a day-to-day basis, making it <span className="cursor-help highlight-on-hover" title="This is a generic statement, so phrased for dramatic effect, not for accuracy.">feared by many, underestimated by the rest<sup>*</sup></span>.
+
+## Examples
+
+### Example1
+
+This example demonstrates the ACG of a sample program:
 
 <Img screen src="dbux-all-async1.png" />
 
-The ACG (right) renders the program [CGRs](#cgr) and the [asynchronous event edges](#ae) that connect them. The vertical axis is time (pointing downwards) and the horizontal dimension is "virtual threads" or "degree of concurrency" (experimental measure).
+The ACG (right) renders the program [CGRs](#cgr) and the [asynchronous event edges](#ae) that connect them. The vertical axis is time (pointing downwards) and the horizontal dimension is a new experimental measure of "virtual threads" or "degree of concurrency".
 
 * Code: The red solid border around the `done()` call expression indicates that it is [selected](./05-select-trace.mdx).
-* In the ACG, the `await Promise.all(...)` is also automatically selected (due to [follow mode](./08-call-graph.mdx#follow)). 
+* In the ACG, the `await Promise.all(...)` node is also selected (due to [follow mode](./08-call-graph.mdx#follow)), indicated by a yellow solid border.
   * &rarr; This means that `done()` is in the CGR of that corresponding asynchronous continuation (or "virtual/resume context"). 
-  * &rarr; This also means that `done()` executed synchronously after the awaited promise settled.
+  * &rarr; This also means that `done()`'s CGR executed after the awaited promise settled.
 * The dashed (red) border around the nodes on the left (`f1`, `sleep1s`, `f2`) indicate that the selected node "[synchronizes](https://en.wikipedia.org/wiki/Synchronization_(computer_science))" against them.
-  * &rarr; Those nodes were scheduled earlier but also had to finish before this root could start executing.
+  * &rarr; Those CGRs are part of a promise that scheduled earlier but had to finish before this root could start executing.
 * Other observations:
   * `f2` will always follow `f1`, `g2` will always follow `g1` and `h2` will always `h1`.
-  * `f`, `g` and `h` are executing concurrently, and have no mechanism to ensure that one will finish before the other.
+  * `f`, `g` and `h` are executing concurrently. Presented with what we can see from the screenshot, we cannot assume that there is any ordering between them.
   * &rarr; If someone wrote code that works based on the assumption that `h` always finishes after `g`, or `f` after `h`, there might be a [race condition](https://en.wikipedia.org/wiki/Race_condition) because there is no such order assured in the code that we are presented with. That is why the three are rendered on separate "virtual threads" (vertical columns).
+
+
+### Example2: todomvc {#example2}
+
+This example demonstrates the ACG of [todomvc (vanilla-es6)](https://github.com/tastejs/todomvc/tree/master/examples/vanilla-es6):
+
+TODO
+
 
 
 ## JavaScript Execution Semantics
 
-In order to better understand how the ACG works, we start by introducing relevant terminology as it pertains to JavaScript's asynchronous semantics.
+:::note
+This section gets rather technical, as it goes deeper into JavaScript Execution Semantics, where we introduce relevant terminology as it pertains to JavaScript's asynchronous semantics and how it affects the ACG.
+:::
 
 Modern JavaScript engines are driven by a single-threaded event loop dispatching events from multiple queues<sup>[1](https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop)</sup> <sup>[2](https://nodejs.org/en/docs/guides/event-loop-timers-and-nexttick/)</sup>. These queued events include all user-requested JavaScript events, such as the program's entry point, event handler callbacks and asynchronous continuations<!--  (i.e. continuations of function stacks interrupted by root-level `await` or `yield`) -->.
 
@@ -60,7 +80,7 @@ The ACG captures most asynchronous semantics of [ES2022](https://www.google.com/
 <!-- specifically, we assume that `thenCbs` must be executed asynchronously. -->
 
 
-## Call Graph Roots (CGR) {#cgr}
+### Call Graph Roots (CGR) {#cgr}
 
 A CGR represents the invocation of a piece of code from outside our visible (recorded) runtime, i.e. on a stack that is empty or only contains frames that have not been recorded.
 <!-- TODO: not necessarily empty, just not anything recorded on it -->
@@ -77,7 +97,7 @@ Examples of CGRs include:
 * Browser executing a &lt;script> tag.
 * Execution of a callback supplied to `setTimeout`, `setInterval`, `setIntermediate`, `Process.nextTick`, `Promise.then` etc. These callbacks are scheduled and, at a later point in time, executed by the underlying JS runtime environment.
 * DOM, OS or other types of event handler callbacks.
- 
+
 <!--
 TODO: virtual contexts + async explanations. 
   also: SyncCG children exclude [asynchronous continuations](#asynchronous-continuation)
@@ -90,7 +110,7 @@ TODO: virtual contexts + async explanations.
 The [`synchronous` call graph](../runtime-analysis/08-call-graph.mdx) lists all CGRs on a linear timeline and allows inspecting individual children and subtrees of each root. The ACG, on the other hand, only shows CGRs (and none of their children), but further visualizes [their relationships](#chain-fork).
 :::
 
-## Asynchronous Events (AE) {#ae}
+### Asynchronous Events (AE) {#ae}
 
 <!-- In order to better understand CGRs and the relationships between them, we define: -->
 
@@ -118,7 +138,7 @@ The following three implementations of a `send` file function illustrate the thr
 Note that asynchronous events can either be one-shot (one-to-one: one `toRoot` per `scheduler`) or repeating (one-to-many: one `scheduler` can have 0 or more `toRoot`s). `THEN` and `AWAIT` type of events are always one-shot, while asynchronous callbacks can be executed multiple times, e.g. in case of `setInterval`, `addEventListener` etc.
 
 
-## Execution Patterns: CHAINs vs. FORKs {#chain-fork}
+### Execution Patterns: CHAINs vs. FORKs {#chain-fork}
 
 In order to capture and visualize degree of concurrency of JavaScript applications, the ACG further classifies <Term term="AEs" /> (i.e. the edges of the <Term term="ACG" />) into CHAINs and FORKs.
 Making that distinction is the same as asking: are the events of the `toRoot` a logical continuation of the events of the `fromRoot` (CHAIN)? Or are they the start of something new (FORK)?
@@ -137,10 +157,12 @@ Below are several illustrations of asynchronous programs and their expected conc
   </div>
 </div>
 
+<!-- TODO: at least mention/reference to callback heuristics? -->
 
-### The "First await" Problem
 
-*"The First `then` Problem"*
+#### The "First await Problem"
+
+*also: "The First `then` Problem"*
 
 This example illustrates one of the difficulties involved in trying to determine CHAIN vs. FORK for the first `await` in an async function (similar logic applies to the first `then` in a promise chain):
 
@@ -251,11 +273,8 @@ However, all of them can nest promises. Most of these nesting relationships are 
 Above example implements `sleep` using `setTimeout`. The Promise constructor itself ***does not*** trigger an [asynchronous event](#ae) but `setTimeout` does. We thus only see one ACG node per call to `sleep`.
 
 <!-- 
-## Terminology
+## More Terminology
 
-### Asynchronous Event
-
-TODO
 
 ### Asynchronous Continuation
 

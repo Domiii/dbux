@@ -14,22 +14,28 @@ When [Dbux is enabled](../runtime-analysis/02-enable-dbux.mdx), it automatically
 
 Also, tracing long-running loops or high-FPS code TODO(explain). That is why you want to fine-tune configuration as to what and how you want to trace.  -->
 
+## Whitelists and Blacklists
 
-Dbux currently offers several configuration options:
+Dbux currently offers several configuration options to tell Dbux which files to trace:
 
 * `packageWhitelist` (`pw`)
 * `packageBlacklist` (`pb`)
 * `fileWhitelist` (`fw`)
 * `fileBlacklist` (`fb`)
 
-* -> These settings are in <CodeLink path="dbux-babel-plugin/src/external/moduleFilter.js" />.
+Some notes:
+
+* Each one of these settings supports comma-separated lists of file or package names or regexes.
+* All paths are normalized to use `/`, so don't use backslashes on Windows.
+* Implementation of the filter is in <CodeLink path="dbux-babel-plugin/src/external/moduleFilter.js" />.
 * -> `packageName` is determined via <CodeLink path="dbux-common-node/src/util/moduleUtil.js"><code>parsePackageName</code></CodeLink>
-  * NOTE: `packageName` support namespaces.
+  * NOTE: `packageName` supports namespaces.
   * Examples of `packageName` detection for different module paths:
-    * `/pre/node_modules/a` -> `a`
-    * `/pre/node_modules/a/b/c.js` -> `a`
-    * `/pre/node_modules/a/b/node_modules/c/d` -> `c`
-    * `/pre/node_modules/@a/b/c.js` -> `@a/b`
+    * `my/app/node_modules/a` -> `a`
+    * `my/app/node_modules/a/b/c.js` -> `a`
+    * `my/app/node_modules/a/b/node_modules/c/d` -> `c`
+    * `my/app/node_modules/@a/b/c.js` -> `@a/b`
+    * etc.
 
 ### Example
 
@@ -57,13 +63,16 @@ moduleFilterOptions TODO
 
 When using [the Run Button](../runtime-analysis/03-the-run-button.mdx) and/or [@dbux/cli](../tools-and-configuration/02-dbux-cli.mdx), you can configure this via the `--pw`, `--pb`, `--fw` and `--fb` flags.
 
-* Example: `npx dbux run --pb=lodash ./test.js`
+* Example: `npx dbux run --pw=.* --pb=lodash ./test.js`
+  * Traces all libraries, but `lodash`.
+
 
 ## Babel Config
 
-When [manually integrating Dbux into your build pipeline](./02-build-pipeline-integration.mdx), you generally want to make use of the `moduleFilter` tools (<CodeLink path="dbux-babel-plugin/src/external" />) in your config file and manually adjust your global Babel `include` **or** `ignore` settings to make sure that you are tracing and recording the files that you want.
+When [manually integrating Dbux into your build pipeline](./02-build-pipeline-integration.mdx), you generally want to make use of the `moduleFilter` API (<CodeLink path="dbux-babel-plugin/src/external" />) in your config file and manually adjust your global Babel `include` **or** `ignore` settings to make sure that you are tracing and recording the files that you want.
 
-NOTE: These tools return `function` (not `string` or `RegExp`).
+NOTE: The `moduleFilter` functions return `function` (not `string` or `RegExp`).
+
 
 ### Webpack Example:
 
@@ -118,8 +127,7 @@ const config = {
       babelHelpers: 'inline',
       filter: shouldInclude(moduleFilterOptions),
       /**
-       * WARNING: if not skipped, we saw some serious memory leaks (in 2020), 
-       *    but should already be fixed on the Dbux side.
+       * WARNING: if not skipped, we saw some serious memory leaks (in 2020), but might already be fixed in 2022.
        * TODO: we need to test this again.
        */
       skipPreflightCheck: true
