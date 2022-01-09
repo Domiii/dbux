@@ -31,16 +31,15 @@ Main steps to take to improve performance:
 
 1. Join our [Discord](https://discord.gg/QKgq9ZE) and share your story, so we can advise, and also consider what types of performance improvements are most wanted.
 2. [Disable tracing of specific files, statements or expressions](./01-runtime-trace-filtering.mdx), if they are not important for your analysis.
-3. TODO: `tracesDisabled`
-
-
+3. `tracesDisabled` can significantly improve performance because it only traces function executions, no more individual statements or values.
+   * TODO: explain how
 
 
 ## A Comment on Performance
 
-Performance and scalability issues are often cited as the biggest problems for [omniscient debuggers](../background/02-debugging.mdx). However, as Henry Liebermann pointed out in reference to his omniscient debugger (called ZStep 95) in 1997[^1]: "Even in an extremely large program, where keeping a complete history is infeasible, judicious testing can often isolate a fragement of the code which is not too large to run ZStep on. Nevertheless, we admit that there may be bugs that appear only after long runs involving large amounts of code, and so our techniques may be inappropriate in these cases. However, we conjecture that the  vast majority of bugs are relatively shallow, and the productivity improvements from finding".
+Performance and scalability issues are often cited as the biggest problems for [omniscient debuggers](../background/02-debugging.mdx). However, as Henry Liebermann pointed out in reference to his omniscient debugger (called ZStep 95) in 1997[^1]: "Even in an extremely large program, where keeping a complete history is infeasible, judicious testing can often isolate a fragement of the code which is not too large to run ZStep on. Nevertheless, we admit that there may be bugs that appear only after long runs involving large amounts of code, and so our techniques may be inappropriate in these cases. However, we conjecture that the vast majority of bugs are relatively shallow, and the productivity improvements from finding".
 
-We believe, this applies to any omniscient debugger. While even large applications can be debugged with it, Dbux and its omniscient peers will falter when confronted with bugs in applications with high event frequency, such as games or complex algorithms running on a lot of data, if those bugs cannot be easily reproduced in a test case or short test run.
+We believe, this applies to any omniscient debugger. While even large applications can be debugged with it, Dbux and its omniscient peers will falter when confronted with bugs in applications with high event frequency, such as games or algorithms with long-running loops. In order to make better use of Dbux in those cases, you (for now) need to first manually narrow down the bug to a shorter test case or short manual test run, before starting to use Dbux on them.
 
 
 ## TODO: Some Results
