@@ -26,7 +26,7 @@ export class AllApplications {
   DefaultApplicationClass = Application;
 
   /**
-   * In dbux-code, this is the project folder.
+   * In dbux-code, this is the dbux_projects folder.
    */
   appRoot;
 

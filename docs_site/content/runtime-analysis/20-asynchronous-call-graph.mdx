@@ -38,7 +38,7 @@ Here, you can see many high-level patterns, that the synchronous call graph cann
 
 ## Examples
 
-### Example1
+### Example1: sample program {#example1}
 
 This example demonstrates the ACG of a sample program:
 
@@ -62,8 +62,12 @@ The ACG (right) renders the program [CGRs](#cgr) and the [asynchronous event edg
 
 This example demonstrates the ACG of [todomvc (vanilla-es6)](https://github.com/tastejs/todomvc/tree/master/examples/vanilla-es6):
 
-TODO
+<Img screen src="todomvc-sample-acg1.png" />
 
+* We have enabled [value mode](./08-call-graph.mdx#value).
+  * This renders the first execution of the currently selected trace's value in each <Term term="CGR" />.
+* NOTE: Event handler invocations of the same event are rendered in the same column.
+  * TODO: explain *callback heuristics* in more detailed.
 
 
 ## JavaScript Execution Semantics
@@ -156,8 +160,6 @@ Below are several illustrations of asynchronous programs and their expected conc
     <Img concept src="chain_fork_2.png" />
   </div>
 </div>
-
-<!-- TODO: at least mention/reference to callback heuristics? -->
 
 
 #### The "First await Problem"

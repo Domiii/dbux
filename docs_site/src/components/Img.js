@@ -27,7 +27,7 @@ export default function Img({ src, title, zoomable, darkLight, screen, concept, 
     }
   }
 
-  const canBeBig = concept || screen;
+  const canBeBig = concept || screen || zoomable;
 
   if (canBeBig) {
     if (zoomable === undefined) {

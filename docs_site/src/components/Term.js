@@ -12,38 +12,43 @@ import useBaseUrl from '../hooks/useBaseUrl';
 // const acg = 'TODO';
 
 const AcgPath = 'runtime-analysis/asynchronous-call-graph';
+const DebuggingBackgroundPath = 'background/debugging';
 
 const PathByTerm = {
   'call graph': 'runtime-analysis/call-graph',
 
   acg: AcgPath,
+  'asynchronous call graph': AcgPath,
   cgr: AcgPath,
   ae: AcgPath,
   aes: AcgPath,
   'asynchronous event': AcgPath,
   'asynchronous events': AcgPath,
 
-  idbe: 'idbe'
+  'dynamic runtime analysis': DebuggingBackgroundPath,
+  idbe: DebuggingBackgroundPath
 };
 
 const AeAnchor = 'ae';
 
 const AnchorsByTerm = {
   trace: 'trace',
-  staticTrace: 'trace',
+  statictrace: 'trace',
   context: 'context',
+  staticcontext: 'staticContext',
 
   'call graph': 'call-graph',
 
   acg: '',
+  'asynchronous call graph': '',
   cgr: 'cgr',
   ae: AeAnchor,
   aes: AeAnchor,
   'asynchronous event': AeAnchor,
   'asynchronous events': AeAnchor,
 
-  // 'dynamic runtime analysis': 'dynamic-runtime-analysis',
-  // idbe: 'idbe'
+  'dynamic runtime analysis': '',
+  idbe: ''
 };
 
 const TerminologyPathDefault = 'advanced/terminology';

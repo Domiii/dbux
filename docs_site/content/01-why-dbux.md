@@ -14,9 +14,13 @@ Dbux is an integrated debugging environment (IDbE) and omniscient debugger for J
 
 <Img screen src="dbux-all-async1.png" />
 
-The screenshot above demonstrates several of Dbux's features, including: [omni-directional navigation, values, executions](./runtime-analysis/30-trace-details.mdx), [data flow](./runtime-analysis/50-data-flow.mdx) (left), [code decorations](./runtime-analysis/04-code-decorations.mdx) and [trace selection](./runtime-analysis/05-select-trace.mdx) (middle), [asynchronous call graph](./runtime-analysis/20-asynchronous-call-graph.mdx) (right).
+The screenshot above demonstrates several of Dbux's features, including:
 
-[This (slightly outdated) video](https://www.youtube.com/watch?v=m1ANEuZJFT8) [20 min] <span className="color-gray"></span> explains how Dbux came to be and shows two basic examples of how to use a subset of its features.
+* Left: [omni-directional navigation, values, executions](./runtime-analysis/30-trace-details.mdx) and [data flow](./runtime-analysis/50-data-flow.mdx).
+* Middle: [code decorations](./runtime-analysis/04-code-decorations.mdx) and [trace selection](./runtime-analysis/05-select-trace.mdx).
+* Right: [asynchronous call graph](./runtime-analysis/20-asynchronous-call-graph.mdx).
+
+Furthermore, [this (slightly outdated) video](https://www.youtube.com/watch?v=m1ANEuZJFT8) [20 min] <span className="color-gray"></span> explains how Dbux came to be and shows two basic examples of how to use a subset of its features.
 <!-- <a href="https://www.youtube.com/watch?v=m1ANEuZJFT8" target="_blank" alt="video">
    <img width="150px" src="https://img.youtube.com/vi/m1ANEuZJFT8/0.jpg" />
 </a> -->
@@ -49,7 +53,7 @@ Once an application has executed with [Dbux enabled](./runtime-analysis/02-enabl
   * NOTE: While this eliminates the need for most of "[print-based debugging](https://www.google.com/search?q=print-based+debugging&hl=en)", it does not replace use of [proper logging](https://www.google.com/search?q=logging+programming+best+practices).
 * [Trace selection](./runtime-analysis/05-select-trace.mdx) and the [Trace Details view](./runtime-analysis/30-trace-details.mdx) allow overviewing and investigating all executions of any piece of code and their respective values.
 * Instead of only a call stack, Dbux presents us with the entire [call graph](./runtime-analysis/08-call-graph.mdx).
-  * A complete [asynchronous call stack](./runtime-analysis/08-call-graph.mdx#call-stack) is also available when needed.
+  * A complete [asynchronous call stack](./runtime-analysis/08-call-graph.mdx#stack) is also available.
 * Instead of using the traditional debugger as a "magnifying glass" to slowly crawl along the execution timeline, Dbux offers random-access [navigation](./runtime-analysis/30-trace-details.mdx#navigation), in both directions of the timeline.
 * [Code decorations](./runtime-analysis/04-code-decorations.mdx) can make it a lot more obvious what code executed at all, and how.
 * Executed files, functions and values [can be searched](./runtime-analysis/40-search.mdx) for/through (culls a lot of noise when compared to code-based search).

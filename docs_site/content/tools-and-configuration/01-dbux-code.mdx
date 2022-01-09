@@ -12,23 +12,19 @@ import TOC from '@src/components/TOC';
 
 The Dbux VSCode Extension is available on the [VSCode Marketplace](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code). It is currently the only GUI implementation for Dbux.
 
-:::tip Important
-[The Runtime Analysis manual](../runtime-analysis/) explains the GUI and all analysis features in detail.
+:::tip
+This page goes into some lower level details while [the Runtime Analysis manual](../runtime-analysis/) explains the GUI and all analysis features in detail.
 :::
-
-This page goes over technical expension-specific topics:
 
 
 ## Runtime Server
 
-Currently, the VSCode Extension is the only implementation of the <DarkLightImg src="antenna_green.svg" /> Dbux Runtime Server <DarkLightImg src="antenna_red.svg" />. If enabled, it receives data from [Dbux-enabled applications](../runtime-analysis/02-enable-dbux.mdx) running on `localhost`[^1]. Once a first batch of data is received, the application will show up in the [Application View](../runtime-analysis/applications).
+Currently, the VSCode Extension is the only implementation of the <DarkLightImg src="antenna_green.svg" /><DarkLightImg src="antenna_red.svg" /> Dbux Runtime Server. If enabled, it receives data from [Dbux-enabled applications](../runtime-analysis/02-enable-dbux.mdx) running on `localhost`[^1]. Once a first batch of data is received, the application will show up in the [Application View](../runtime-analysis/applications).
 
 The Runtime Server is turned off by default. It turns on automatically the first time you use [the Run Button](../runtime-analysis/03-the-run-button.mdx) or run a [Dbux Practice exercise](../dbux-practice/01-overview.mdx).
 
 You can manually turn it on or off via "the Runtime Server button" at the top of [the Applications view](../runtime-analysis/06-applications.mdx)[^2]:
 <Img screen src="runtime-server-button.png" />
-
-Also see: [Dbux Architecture](./00-architecture-overview.mdx).
 
 :::note
 Since the Runtime Server port is currently hard-coded[^1], only one instance can be running per computer/VM/container. Trying to start another instance will fail with a corresponding "port in use" error message.
@@ -42,10 +38,8 @@ Dbux offers a multitude of commands. If you have trouble, using the commands, pl
 
 :::tip
 (Almost?) all buttons in the Dbux VSCode Extension have corresponding commands.
-:::
 
-:::tip
-You can bind commands to keys: [VSCode official documentation on key-binds](https://code.visualstudio.com/docs/getstarted/keybindings).
+Also: You can bind commands to keys: [VSCode official documentation on key-binds](https://code.visualstudio.com/docs/getstarted/keybindings).
 :::
 
 <Commands />

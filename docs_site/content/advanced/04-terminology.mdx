@@ -4,7 +4,10 @@ import TOC from '@src/components/TOC';
 
 <TOC toc={toc} />
 
-This page lists some Dbux's own terminology. More general terminology and background can be found in the [Background and Related Work](../background) chapter.
+This page lists some of Dbux's own terminology. More relevant background information can be found in the [Background and Related Work](../background) chapter.
+
+
+<span id="staticTrace" />
 
 ## Trace
 
@@ -14,7 +17,10 @@ We use (i) the name `staticTrace` to represent a piece of code (e.g. `f(x)`), an
 In runtime analysis research, the term `trace` usually refers to the entire runtime log and `event` refers to an individual "trace log entry". But since the term `event` is commonly used by JavaScript developers to refer to something else instead, we decided to, use `trace` to refer to "trace log entry" instead. This choice, despite being more confusing to researchers, likely alleviates confusion for most JavaScript developers.
 :::
 
+<span id="staticContext" />
+
 ## Context
+
 
 * A `static context` can be a `function` declaration or a `Program` (`Program` is Babel's word for "JavaScript file").
 * A `context` (sometimes also called `executionContext`) is any execution of such function or Program.

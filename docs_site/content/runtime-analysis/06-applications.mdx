@@ -2,6 +2,7 @@
 
 import Term from '@src/components/Term';
 import Img from '@src/components/Img';
+import DarkLightImg from '@src/components/DarkLightImg';
 
 This view lists all recorded applications. Applications of the same entry point are grouped together:
 
@@ -12,7 +13,7 @@ This view lists all recorded applications. Applications of the same entry point 
 
 You can use this view in several ways:
 
-* Use the arrow button to the right of every application to go to its entry point.
+* Use the <DarkLightImg src="nextTrace.svg" /> button to the right of an application to go to its entry point.
 * Click an application to enable/disable it.
   * If an application is disabled (no checkmark), you cannot interact with it: its code is not augmented, its traces cannot be selected or searched, and it does not show up in the call graph.
   * NOTE: Activating multiple applications at once can be useful for full-stack debugging purposes.

@@ -74,19 +74,15 @@ When working through [Dbux Practice](../dbux-practice/01-overview.mdx) exercises
     found at "C:/PROGRAM FILES/GIT/CMD/GIT.EXE"
 ```
 
-:::caution Caution: Windows Users
-`git` and `bash` might not be installed, or otherwise not available as command-line tools on Windows.
+### System Tools on Windows
 
-The trick here is that you only need `git` for Windows to get both (`git` automatically installs `bash`). However, it must make sure to select the "Add UNIX tools to path" option when installing.
+On Windows, `git` and `bash` might not be installed, or installed but not available as command-line tools on Windows.
 
-If you use `git`'s GUI installer, [select the "Add UNIX tools to path" option in the installer](https://www.google.com/search?q=git+add+unix+tools+to+path+windows&tbm=isch).
+The trick here is that you only need `git` for Windows to get both (`git` automatically installs `bash`). However, in order for `bash` and friends to be available to Dbux (and to all tools in general), you must make sure to select the "Add UNIX tools to path" option when installing:
 
-[If you use `choco`](https://www.google.com/search?q=choco+windows+git), add the corresponding command-line parameter, i.e.:
-
-```
-choco install git.install --params "/GitAndUnixToolsOnPath"
-```
-:::
+* If you use `git`'s GUI installer, [select the "Add UNIX tools to path" option in the installer](https://www.google.com/search?q=git+add+unix+tools+to+path+windows&tbm=isch).
+* [If you use `choco`](https://www.google.com/search?q=choco+windows+git), add the corresponding command-line parameter, i.e.:
+  * `choco install git.install --params "/GitAndUnixToolsOnPath"`
 
 
 ## Node Version Nightmare {#node-version}

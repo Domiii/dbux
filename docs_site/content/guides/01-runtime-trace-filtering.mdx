@@ -8,29 +8,11 @@ import TOC from '@src/components/TOC';
 
 This article explains how Dbux determines which files and lines of code to trace.
 
-When [Dbux is enabled](../runtime-analysis/02-enable-dbux.mdx), it automatically records execution of all files that are not in `node_modules`[^1]. It is a balancing act to determine the optimal set of files to trace. Often times it is easiest to tell Dbux to just trace everything. However, tracing *everything* can slow down the build/parse time significantly.
+When [Dbux is enabled](../runtime-analysis/02-enable-dbux.mdx), it automatically records execution of all files that are not in `node_modules`[^1]. This can be configured. However, it is a balancing act to determine the optimal set of files to trace. Often times it is easiest to tell Dbux to just trace everything, but tracing *everything* can slow things down significantly.
 
 :::tip
 If you know that some packages do not contribute to your runtime analysis, do not `whitelist` them or explicitly `blacklist` them. This can improve [performance](./02-performance.mdx), especially if they contain many lines of code or many <Term term="trace" /> event records.
 :::
-
-<!-- TODO(re-write this: build-time vs. run-time performance considerations etc.)
-
-Also, tracing long-running loops or high-FPS code TODO(explain). That is why you want to fine-tune configuration as to what and how you want to trace.  -->
-
-## /** dbux disable */ {#dbux-disable}
-
-You can disable tracing of individual traces and/or expressions by adding a comment containing a line of `dbux disable`, (e.g. `/** dbux disable */`) in front of it. E.g., in the following sample code, a long-running (but unimportant) loop will not get instrumented, thus largely improving [performance](./02-performance.mdx):
-
-```js
-f();
-/* dbux disable */
-for (const i = 0; i < veryLargeNumber; ++i) {
-  // ...
-}
-g();
-```
-
 
 ## Whitelists and Blacklists
 
@@ -56,7 +38,7 @@ Some notes:
     * etc.
 
 
-## Run Button + @dbux/cli
+### Run Button + @dbux/cli
 
 When using [the Run Button](../runtime-analysis/03-the-run-button.mdx) and/or [@dbux/cli](../tools-and-configuration/02-dbux-cli.mdx), you can configure this via the `--pw`, `--pb`, `--fw` and `--fb` flags.
 
@@ -64,7 +46,7 @@ When using [the Run Button](../runtime-analysis/03-the-run-button.mdx) and/or [@
   * -> Traces all libraries, but `lodash`.
 
 
-## Babel Config
+### Babel Config
 
 When [manually integrating Dbux into your build pipeline](./03-build-pipeline-integration.mdx), you generally want to make use of the `moduleFilter` API (<CodeLink path="dbux-babel-plugin/src/external" />) in your config file and manually adjust your global Babel `include` **or** `ignore` settings to make sure that you are tracing and recording the files that you want.
 
@@ -113,6 +95,27 @@ module.exports = {
     ]
   }
 }; -->
+
+
+<!-- TODO(re-write this: build-time vs. run-time performance considerations etc.)
+
+Also, tracing long-running loops or high-FPS code TODO(explain). That is why you want to fine-tune configuration as to what and how you want to trace.  -->
+
+## /** dbux disable */ {#dbux-disable}
+
+You can disable tracing of individual traces and/or expressions by adding a comment containing a line of `dbux disable`, (e.g. `/** dbux disable */`) in front of it.
+
+E.g., in the following sample code, a long-running (but unimportant) loop will not get instrumented, thus largely improving [performance](./02-performance.mdx):
+
+```js
+f();
+/* dbux disable */
+for (const i = 0; i < 1e6; ++i) {
+  // ...
+}
+g();
+```
+
 
 
 [^1]: Support for PnP and other module systems are [future-work](../advanced/02-future-work.mdx).
