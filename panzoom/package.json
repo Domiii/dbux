@@ -1,7 +1,7 @@
 {
   "name": "@dbux/panzoom",
   "private": true,
-  "version": "0.6.6",
+  "version": "0.6.7",
   "description": "Extensible, mobile friendly pan and zoom framework (supports DOM and SVG).",
   "main": "index.js",
   "scripts": {
