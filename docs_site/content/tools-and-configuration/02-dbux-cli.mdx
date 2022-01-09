@@ -9,7 +9,7 @@ import CodeLink from '@src/components/CodeLink';
 
 <TOC toc={toc} />
 
-The Dbux CLI package `@dbux/cli` is a tool for easily running Node applications [with Dbux enabled](../runtime-analysis/02-enable-dbux.mdx).
+<CodeLink path="dbux-cli" /> is a tool for easily running Node applications [with Dbux enabled](../runtime-analysis/02-enable-dbux.mdx).
 
 
 ## Getting Started
@@ -119,7 +119,6 @@ In addition to the `src` and `dist` folders, it contains a `lib` folder which co
 
 # Caveats
 
-* [You probably want to be aware of performance considerations](https://github.com/Domiii/dbux/tree/master/#performance).
 * When using `@dbux/cli` with `--esnext`, it sometimes cannot find Babel plugins.
    * NOTE: this should be solved now, if `@dbux/cli` is installed locally -> `@dbux/cli` has everything it needs listed as dependency.
    * To make things easier to use, we employ `module-alias` to alias all relevant dependencies (see [`linkOwnDependencies.js`](src/linkOwnDependencies.js))
