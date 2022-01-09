@@ -700,6 +700,8 @@ export default {
     let entries;
     const { category } = valueRef;
     if (!isPlainObject(valueRef.value)) {
+      // already serialized?
+      // TODO: apply reads + writes nevertheless?
       return valueRef.value;
     }
     if (ValueTypeCategory.is.Array(category)) {

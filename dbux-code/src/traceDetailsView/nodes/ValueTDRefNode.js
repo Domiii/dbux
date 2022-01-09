@@ -27,15 +27,17 @@ export default class ValueTDRefNode extends ValueNode {
   /**
    * For root node only.
    */
-  static makeProperties(dataNode/*, parent, props*/) {
+  static makeProperties(dataNode, parent, props) {
     return {
-      key: ValueLabel,
       refId: dataNode.refId,
       rootDataNode: dataNode,
     };
   }
 
   static makeLabel(dataNode, parent, { key }) {
+    if (!parent) {
+      key = ValueLabel;
+    }
     return `${key}:`;
   }
 

@@ -31,19 +31,31 @@ export default class ValueTDSimpleNode extends ValueNode {
   /**
    * For root node only.
    */
-  static makeProperties(dataNode/*, parent, props*/) {
-    const { value, hasValue } = dataNode;
-    return {
-      key: ValueLabel,
-      value: hasValue ? value : undefined,
-      rootDataNode: dataNode,
-    };
+  static makeProperties(dataNode, parent, props) {
+    if (parent) {
+      // NOTE: `value` is already in `props`, and has been computed by a call to `constructValueObjectShallow`
+      // const { value, hasValue } = dataNode;
+      return {
+        // value: hasValue ? value : undefined,
+        // rootDataNode: dataNode
+      };
+    }
+    else {
+      const { value, hasValue } = dataNode;
+      return {
+        value: hasValue ? value : undefined,
+        // dataNode
+      };
+    }
   }
 
   static makeLabel(dataNode, parent, { key, value }) {
     let valueLabel = value;
     if (isString(value)) {
       valueLabel = renderValueSimple(value);
+    }
+    if (!parent) {
+      key = ValueLabel;
     }
     return `${key}: ${valueLabel}`;
   }
