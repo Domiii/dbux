@@ -1,4 +1,9 @@
 var o = { x: 1, y: 2 };
-var a = ['a', 'b'];
+var arr = ['a', 'b'];
 
-console.log(o, a);
+o.x = 111;
+arr[0] = 'aaa';
+
+var o2 = { arr, o };
+
+console.log(o, arr, o2);
