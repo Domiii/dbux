@@ -69,6 +69,10 @@ export default class TraceCollection extends Collection {
     for (const trace of traces) {
       const { traceId, staticTraceId, nodeId } = trace;
       const staticTrace = this.dp.collections.staticTraces.getById(staticTraceId);
+      if (!staticTrace) {
+        this.logger.warn(`Could not find staticTrace #${staticTraceId} for trace #${traceId} in "registerValueRefSpecialObjectType"`);
+        continue;
+      }
       const specialType = staticTrace.data?.specialType;
       if (SpecialObjectType.hasValue(specialType)) {
         const dataNode = this.dp.collections.dataNodes.getById(nodeId);
@@ -171,13 +175,15 @@ export default class TraceCollection extends Collection {
   recordErrorTraces(traces) {
     const errorTraces = new Set();
     let changedFlag = false;
-    for (const trace of this._newErrorTraces) {
-      if (trace.error && !errorTraces.has(trace)) {
-        this.dp.indexes.traces.error.addEntry(trace);
-        this.dp.indexes.traces.errorByContext.addEntry(trace);
-        this.dp.indexes.traces.errorByRoot.addEntry(trace);
-        errorTraces.add(trace);
-        changedFlag = true;
+    if (this._newErrorTraces) {
+      for (const trace of this._newErrorTraces) {
+        if (trace.error && !errorTraces.has(trace)) {
+          this.dp.indexes.traces.error.addEntry(trace);
+          this.dp.indexes.traces.errorByContext.addEntry(trace);
+          this.dp.indexes.traces.errorByRoot.addEntry(trace);
+          errorTraces.add(trace);
+          changedFlag = true;
+        }
       }
     }
     this._newErrorTraces = null;
