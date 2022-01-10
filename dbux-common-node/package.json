@@ -11,7 +11,7 @@
   "dependencies": {
     "@dbux/common": "^0.6.9-dev.0",
     "adm-zip": "^0.5.9",
-    "colors": "^1.4.0",
+    "colors": "1.4.0",
     "common-ancestor-path": "^1.0.1",
     "cross-spawn": "^7.0.3",
     "glob": "^7.1.6",
