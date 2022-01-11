@@ -6,6 +6,7 @@ import portPid from '@dbux/common-node/src/util/portPid';
 import terminate from '@dbux/common-node/src/util/terminate';
 
 import { newLogger } from '@dbux/common/src/log/logger';
+import sleep from '@dbux/common/src/util/sleep';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('WebpackBuilder');
@@ -260,10 +261,15 @@ class WebpackBuilder {
             debug(`Terminating PID ${pid}...`);
             try {
               await terminate(pid);
+              await sleep(100);
               projectManager.externals.showMessage.info(`Process successfully terminated.`);
             }
             catch (err) {
-              logError(`Failed to terminate process -`, err);
+              /**
+               * NOTE: sometimes ESRCH is thrown
+               * @see https://unix.stackexchange.com/questions/258955/what-does-esrch-mean
+               */
+              projectManager.externals.showMessage.warn(`Failed to terminate process -`, err);
             }
           }
           continue;

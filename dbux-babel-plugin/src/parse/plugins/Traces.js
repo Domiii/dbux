@@ -94,7 +94,7 @@ export default class Traces extends BasePlugin {
       // handle some (basic) default AST node types
       const traceData = makeDefaultTrace[path.node.type]?.(path);
       if (!traceData) {
-        this.node.logger.warn(`Could not addDefaultTrace for unknown AST node type "${path.node.type}", path: ${pathToString(path)}`);
+        this.node.logger.warn(`[NYI] Could not addDefaultTrace for unknown AST node type "${path.node.type}", path: ${pathToString(path)}`);
         return null;
       }
       return this.addTrace(traceData);

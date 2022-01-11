@@ -36,6 +36,80 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
     this.description = ``;
   }
 
+  /** ###########################################################################
+   * {@link #Patched_Callbacks}
+   * ##########################################################################*/
+  Patched_Callbacks = function Patched_Callbacks() {
+    const allPatchedCallbackNodes = allApplications.selection.data.collectGlobalStats((dp, app) => {
+      const patchedTraces = dp.util.getAllTracesOfType(TraceType.BeforeCallExpression).
+        filter(bceTrace => !!bceTrace.data?.patchedCallbacks?.length);
+
+      const staticTraceIds = Array.from(new Set(
+        patchedTraces.map(bceTrace => bceTrace.staticTraceId)
+      ));
+
+      // 1. group by staticTrace
+      const staticTraceNodes = staticTraceIds.map(staticTraceId => {
+        const traces = dp.indexes.traces.byStaticTrace.get(staticTraceId).
+          filter(bceTrace => !!bceTrace.data?.patchedCallbacks?.length);
+
+        const firstTrace = traces[0];
+        const staticLabel = makeTraceLabel(firstTrace);
+
+        // 2. group by trace
+        const traceNodes = traces.map(trace => {
+          // const callId = trace.traceId;
+
+          // 3. group by patch (one trace might be patched more than once)
+          const patchNodes = trace.data.patchedCallbacks.map(patchedCallback => {
+            const { schedulerTraceId, ref: refId, name } = patchedCallback;
+            // TODO: use `refId`?
+            // const trace = schedulerTraceId && dp.util.getTrace(schedulerTraceId) ||
+            //   (callId && dp.util.getTrace(callId)) ||
+            //   (isString(ref) ? ref : (ref && dp.util.getFirstTraceByRefId(ref) || '(unknown)'));
+
+            return makeTreeItem(
+              schedulerTraceId && makeTraceLabel(dp.util.getTrace(schedulerTraceId)) || name,
+              patchedCallback,
+              {
+                handleClick() {
+                  // TODO
+                }
+              }
+            );
+          });
+
+          return makeTreeItem(
+            makeTraceLabel(trace),
+            patchNodes,
+            {
+              handleClick() {
+                traceSelection.selectTrace(trace);
+              }
+            }
+          );
+        });
+
+        return makeTreeItem(
+          staticLabel,
+          traceNodes,
+          {
+            handleClick() {
+              traceSelection.selectTrace(firstTrace);
+            }
+          }
+        );
+      });
+
+      return staticTraceNodes;
+    });
+
+    return {
+      children: allPatchedCallbackNodes,
+      props: { description: `${makeArrayLengthLabel(allPatchedCallbackNodes)}` }
+    };
+  };
+
   nodes() {
     return [
       /** ###########################################################################
@@ -44,45 +118,7 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
       function Async() {
         return {
           children: [
-            /** ########################################
-             * Callbacks
-             * #######################################*/
-            function Patched_Callbacks() {
-              const allPatchedCallbackNodes = allApplications.selection.data.collectGlobalStats((dp, app) => {
-                return Array.from(new Set(
-                  dp.util.getAllTracesOfType(TraceType.BeforeCallExpression)
-                    .flatMap(bceTrace =>
-                      bceTrace.data?.patchedCallbacks?.map(patchedCallback => ({
-                        callId: bceTrace.traceId,
-                        ...patchedCallback
-                      })) ||
-                      EmptyArray
-                    )
-                    .map((patchedCallback) => {
-                      const { schedulerTraceId, ref, callId } = patchedCallback;
-                      const trace = schedulerTraceId && dp.util.getTrace(schedulerTraceId) ||
-                        (callId && dp.util.getTrace(callId)) ||
-                        (isString(ref) ? ref : (ref && dp.util.getFirstTraceByRefId(ref) || '(unknown)'));
-                      return makeTreeItem(
-                        schedulerTraceId && makeTraceLabel(dp.util.getTrace(schedulerTraceId)) || ref,
-                        patchedCallback,
-                        {
-                          handleClick() {
-                            if (trace) {
-                              traceSelection.selectTrace(trace);
-                            }
-                          }
-                        }
-                      );
-                    })
-                ));
-              });
-
-              return {
-                children: allPatchedCallbackNodes,
-                props: { description: `${makeArrayLengthLabel(allPatchedCallbackNodes)}` }
-              };
-            },
+            this.patchedCallbacks,
 
             /** ########################################
              * Syncing Roots

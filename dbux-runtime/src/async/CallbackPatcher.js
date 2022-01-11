@@ -194,7 +194,8 @@ export default class CallbackPatcher {
       bceTrace.data.patchedCallbacks = bceTrace.data.patchedCallbacks || [];
       const ref = valueCollection.getRefByValue(originalCallback);
       bceTrace.data.patchedCallbacks.push({
-        ref: ref?.refId || valueCollection._readProperty(originalCallback, 'name'),
+        ref: ref?.refId,
+        name: valueCollection._readProperty(originalCallback, 'name'),
         schedulerTraceId
       });
     }
