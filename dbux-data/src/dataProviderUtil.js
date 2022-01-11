@@ -745,6 +745,10 @@ export default {
     return entries;
   },
 
+  /** ###########################################################################
+   * value strings
+   * ##########################################################################*/
+
   /**
    * Handle special circumstances.
    */
@@ -807,7 +811,8 @@ export default {
 
     // get value
     let valueString;
-    const { refId } = dataNode;
+    const { refId, value, hasValue } = dataNode;
+
     if (refId) {
       const entries = dp.util.constructValueObjectShallow(refId, terminateNodeId);
       const valueRef = dp.collections.values.getById(refId);
@@ -840,8 +845,8 @@ export default {
       }
     }
     else {
-      if (dataNode.hasValue) {
-        valueString = dataNode.value?.toString?.() || String(dataNode.value);
+      if (hasValue) {
+        valueString = value?.toString?.() || String(value);
       }
       else {
         valueString = 'undefined';
@@ -857,6 +862,15 @@ export default {
     // }
 
     return valueString;
+  },
+
+  /** @param {DataProvider} dp */
+  getRefFirstDataNodeValueStringShort(dp, refId) {
+    const dataNode = dp.util.getFirstDataNodeByRefId(refId);
+    if (dataNode) {
+      return dp.util.getDataNodeValueStringShort(dataNode.nodeId);
+    }
+    return undefined;
   },
 
   /** @param {DataProvider} dp */
@@ -886,6 +900,10 @@ export default {
     }
     return '(no value or undefined)';
   },
+
+  /** ###########################################################################
+   * more data associations
+   * ##########################################################################*/
 
   /** @param {DataProvider} dp */
   getTraceRefId(dp, traceId) {
@@ -919,6 +937,10 @@ export default {
 
   getDataNodesByRefId(dp, refId) {
     return dp.indexes.dataNodes.byRefId.get(refId);
+  },
+
+  getFirstDataNodeByRefId(dp, refId) {
+    return dp.indexes.dataNodes.byRefId.getFirst(refId);
   },
 
   getFirstTraceIdByRefId(dp, refId) {

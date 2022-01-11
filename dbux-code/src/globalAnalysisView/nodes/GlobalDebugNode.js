@@ -57,21 +57,23 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
         const staticLabel = makeTraceLabel(firstTrace);
 
         // 2. group by trace
-        const traceNodes = traces.map(trace => {
+        const traceNodes = traces.map((trace, iTrace) => {
           // const callId = trace.traceId;
 
           // 3. group by patch (one trace might be patched more than once)
-          const patchNodes = trace.data.patchedCallbacks.map(patchedCallback => {
+          const patchNodes = trace.data.patchedCallbacks.map((patchedCallback, iPatch) => {
             const { schedulerTraceId, ref: refId, name } = patchedCallback;
-            // TODO: use `refId`?
-            // const trace = schedulerTraceId && dp.util.getTrace(schedulerTraceId) ||
-            //   (callId && dp.util.getTrace(callId)) ||
-            //   (isString(ref) ? ref : (ref && dp.util.getFirstTraceByRefId(ref) || '(unknown)'));
+            const patchLabel = dp.util.getRefFirstDataNodeValueStringShort(refId);
+
 
             return makeTreeItem(
-              schedulerTraceId && makeTraceLabel(dp.util.getTrace(schedulerTraceId)) || name,
+              // schedulerTraceId && makeTraceLabel(dp.util.getTrace(schedulerTraceId)) || name,
+              // iPatch,
+              patchLabel,
+              null,
               patchedCallback,
               {
+                description: JSON.stringify(patchedCallback),
                 handleClick() {
                   // TODO
                 }
@@ -80,9 +82,11 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
           });
 
           return makeTreeItem(
-            makeTraceLabel(trace),
+            // makeTraceLabel(trace),
+            iTrace,
             patchNodes,
             {
+              description: `(${patchNodes.length})`,
               handleClick() {
                 traceSelection.selectTrace(trace);
               }
@@ -94,6 +98,7 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
           staticLabel,
           traceNodes,
           {
+            description: `(${traceNodes.length})`,
             handleClick() {
               traceSelection.selectTrace(firstTrace);
             }
@@ -110,52 +115,54 @@ export default class GlobalDebugNode extends BaseTreeViewNode {
     };
   };
 
+  /** ###########################################################################
+   * {@link Async}
+   * ##########################################################################*/
+  Async = function Async() {
+    return {
+      children: [
+        this.Patched_Callbacks.bind(this),
+
+        /** ########################################
+         * Syncing Roots
+         * #######################################*/
+        function Syncing_Roots() {
+          const syncingAsyncNodes = allApplications.selection.data.collectGlobalStats((dp, app) => {
+            return dp.collections.asyncNodes.getAllActual()
+              .filter(asyncNode => !!asyncNode.syncPromiseIds?.length)
+              .map(asyncNode => {
+                const rootId = asyncNode.rootContextId;
+                const rootContext = dp.collections.executionContexts.getById(rootId);
+                return makeTreeItem(
+                  makeContextLabel(rootContext, app), // makeContextLocLabel()
+                  asyncNode,
+                  {
+                    description: `${makeContextLocLabel(app.applicationId, rootContext)}`,
+                    handleClick() {
+                      // -> go to first trace in edge's toRoot
+                      const targetTrace = dp.util.getFirstTraceOfContext(rootId);
+                      if (targetTrace) {
+                        traceSelection.selectTrace(targetTrace);
+                      }
+                    }
+                  }
+                );
+              });
+          });
+
+          return {
+            children: syncingAsyncNodes,
+            props: { description: `${makeArrayLengthLabel(syncingAsyncNodes)}` }
+          };
+        }
+      ],
+      props: { description: `` }
+    };
+  }.bind(this);
+
   nodes() {
     return [
-      /** ###########################################################################
-       * {@link Async}
-       * ##########################################################################*/
-      function Async() {
-        return {
-          children: [
-            this.patchedCallbacks,
-
-            /** ########################################
-             * Syncing Roots
-             * #######################################*/
-            function Syncing_Roots() {
-              const syncingAsyncNodes = allApplications.selection.data.collectGlobalStats((dp, app) => {
-                return dp.collections.asyncNodes.getAllActual()
-                  .filter(asyncNode => !!asyncNode.syncPromiseIds?.length)
-                  .map(asyncNode => {
-                    const rootId = asyncNode.rootContextId;
-                    const rootContext = dp.collections.executionContexts.getById(rootId);
-                    return makeTreeItem(
-                      makeContextLabel(rootContext, app), // makeContextLocLabel()
-                      asyncNode,
-                      {
-                        description: `${makeContextLocLabel(app.applicationId, rootContext)}`,
-                        handleClick() {
-                          // -> go to first trace in edge's toRoot
-                          const targetTrace = dp.util.getFirstTraceOfContext(rootId);
-                          if (targetTrace) {
-                            traceSelection.selectTrace(targetTrace);
-                          }
-                        }
-                      }
-                    );
-                  });
-              });
-
-              return {
-                children: syncingAsyncNodes,
-                props: { description: `${makeArrayLengthLabel(syncingAsyncNodes)}` }
-              };
-            }
-          ],
-          props: { description: `` }
-        };
-      }
+      this.Async
     ];
   }
 
