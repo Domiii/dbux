@@ -115,15 +115,15 @@ export default class CallbackPatcher {
       return originalCallback;
     }
 
-    // let f = getPatchedFunctionOrNull(originalFunction);
-    // if (!f) {
-    //   const calleePatcher = this.defaultCalleePatcher;
-
-    //   f = monkeyPatchFunctionOverride(
-    //     originalFunction,
-    //     calleePatcher.bind(this, callId)
-    //   );
-    // }
+    let f = getPatchedCallback(originalCallback);
+    if (f) {
+      return f;
+      // const calleePatcher = this.defaultCalleePatcher;
+      // f = monkeyPatchFunctionOverride(
+      //   originalFunction,
+      //   calleePatcher.bind(this, callId)
+      // );
+    }
 
     // const self = this; // NOTE: `this` will be the callback's `this`
 

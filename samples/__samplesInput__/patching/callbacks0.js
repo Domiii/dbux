@@ -38,6 +38,7 @@ function nativeCallCompare(cb) {
    *    and many other callback management mechanisms cannot work correctly.
    */
   nativeCallStore(cb);
+  debugger;
   nativeCallCompare(cb);
 
   // TODO: more testing here, with checks for multi-patching
