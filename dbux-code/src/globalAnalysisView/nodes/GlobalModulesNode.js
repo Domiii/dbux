@@ -6,6 +6,7 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import { pathRelative } from '@dbux/common-node/src/util/pathUtil';
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 import TraceNode from '../../codeUtil/treeView/TraceNode';
+import PackageNodeSortMode from './PackageNodeSortMode';
 
 
 /** ###########################################################################
@@ -102,6 +103,27 @@ class PackageNode extends BaseTreeViewNode {
 }
 
 /** ###########################################################################
+ *   Package Node sort mode
+ *  #########################################################################*/
+
+let sortMode = PackageNodeSortMode.ByCreatedAt;
+
+export function nextMode() {
+  sortMode = PackageNodeSortMode.nextValue(sortMode);
+}
+
+const SortFunctionsByMode = {
+  [PackageNodeSortMode.ByCreatedAt]: (a, b) => {
+    const aApp = allApplications.getApplication(a.programs[0].applicationId);
+    const bApp = allApplications.getApplication(b.programs[0].applicationId);
+    return bApp.createdAt - aApp.createdAt;
+  },
+  [PackageNodeSortMode.ByName]: (a, b) => {
+    return a.name.localeCompare(b.name);
+  }
+};
+
+/** ###########################################################################
  * {@link RecordedPackagesNode}
  *  #########################################################################*/
 
@@ -130,7 +152,9 @@ export class RecordedPackagesNode extends BaseTreeViewNode {
     );
 
     // TODO: update with accurate package count when opening the node?
-    this.description = `(${this.nPrograms} files)`;
+    const sortModeName = PackageNodeSortMode.getName(sortMode);
+    this.description = `(${this.nPrograms} files)(${sortModeName})`;
+    this.contextValue = 'dbuxGlobalAnalysisView.node.recordedPackageNode';
   }
 
   registerActiveEvents() {
@@ -158,9 +182,7 @@ export class RecordedPackagesNode extends BaseTreeViewNode {
         return 1;
       }
 
-      const aApp = allApplications.getApplication(a.programs[0].applicationId);
-      const bApp = allApplications.getApplication(b.programs[0].applicationId);
-      return bApp.createdAt - aApp.createdAt;
+      return SortFunctionsByMode[sortMode](a, b);
     });
 
     return packages

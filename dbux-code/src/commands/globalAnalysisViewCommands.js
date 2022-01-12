@@ -1,3 +1,4 @@
+import { nextMode } from '../globalAnalysisView/nodes/GlobalModulesNode';
 import { showInformationMessage } from '../codeUtil/codeModals';
 import { registerCommand } from './commandUtil';
 
@@ -15,5 +16,13 @@ export function initGlobalAnalysisViewCommands(context, globalAnalysisViewContro
   registerCommand(context,
     'dbuxGlobalAnalysisView.showError.disabled',
     () => showInformationMessage('No error occurred.')
+  );
+
+  registerCommand(context,
+    'dbuxGlobalAnalysisView.node.nextSortMode',
+    () => {
+      nextMode();
+      globalAnalysisViewController.refresh();
+    }
   );
 }
