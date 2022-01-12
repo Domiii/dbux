@@ -1,5 +1,6 @@
 import allApplications from '@dbux/data/src/applications/allApplications';
 import EmptyTreeViewNode from '../../codeUtil/treeView/EmptyNode';
+import { valueRender } from '../valueRender';
 import ValueNode, { ValueLabel } from './ValueNode';
 import ValueTDSimpleNode from './ValueTDSimpleNode';
 
@@ -90,5 +91,12 @@ export default class ValueTDRefNode extends ValueNode {
 
   canHaveChildren() {
     return true;
+  }
+
+  valueRender() {
+    const { dp, nodeId } = this;
+    const value = dp.util.constructValueFull(nodeId);
+
+    valueRender(value);
   }
 }

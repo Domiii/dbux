@@ -36,7 +36,7 @@ export default class TraceValueNode extends TraceNode {
   }
 
   valueRender() {
-    const { valueRef, value } = this;
-    valueRender(valueRef, value);
+    const { value } = this;
+    valueRender(value);
   }
 }

@@ -4,7 +4,6 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
-import { valueRender } from '../valueRender';
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 
 // eslint-disable-next-line no-unused-vars
@@ -45,13 +44,7 @@ export default class ValueNode extends BaseTreeViewNode {
   }
 
   valueRender() {
-    // log(`Clicking ValueNode is temporarily disabled.`);
-    const { dp, entry, nodeId } = this;
-
-    const valueRef = entry.refId && dp.collections.values.getById(entry.refId);
-    const value = dp.util.constructValueFull(nodeId);
-
-    valueRender(valueRef, value);
+    throw new Error('abstract method not implemented');
   }
 
   selectWriteTrace() {

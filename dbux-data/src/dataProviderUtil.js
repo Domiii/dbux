@@ -6,6 +6,7 @@ import groupBy from 'lodash/groupBy';
 import isNumber from 'lodash/isNumber';
 import truncate from 'lodash/truncate';
 import sum from 'lodash/sum';
+import isArray from 'lodash/isArray';
 import isPlainObject from 'lodash/isPlainObject';
 import TraceType, { hasDynamicTypes, isTracePop, isBeforeCallExpression } from '@dbux/common/src/types/constants/TraceType';
 import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
@@ -644,7 +645,7 @@ export default {
     }
     else {
       const shallow = dp.util.constructValueObjectShallow(_refId, _rootNodeId);
-      if (isPlainObject(shallow)) {
+      if (isPlainObject(shallow) || isArray(shallow)) {
         const entries = Object.entries(shallow);
         const constructedEntries = entries.map(([key, [childNodeId, childRefId, childValue]]) => {
           return [key, dp.util.constructValueFull(childNodeId, childRefId, childValue, _visited, _rootNodeId)];
@@ -688,7 +689,7 @@ export default {
 
   /**
    * @param {DataProvider} dp
-   * @return {{prop: number}} returns the `prop`, `nodeId` key-value pairs
+   * @return {{prop: [number, number, any]}} returns the `prop`, `[modifyNodeId, newValueRefId, newValue]` key-value pairs
    */
   constructValueObjectShallow(dp, refId, terminateNodeId = Infinity) {
     const valueRef = dp.collections.values.getById(refId);
