@@ -2,12 +2,13 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { renderValueSimple } from '@dbux/common/src/util/stringUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import isString from 'lodash/isString';
+import { valueRender } from '../valueRender';
 import ValueNode, { ValueLabel } from './ValueNode';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
 /**
- * Node contains pure value, use `V`alueNode.value` to render
+ * Node contains pure value, use `ValueNode.value` to render
  */
 export default class ValueTDSimpleNode extends ValueNode {
   /**
@@ -70,5 +71,9 @@ export default class ValueTDSimpleNode extends ValueNode {
 
   canHaveChildren() {
     return false;
+  }
+
+  valueRender() {
+    valueRender(this.value);
   }
 }
