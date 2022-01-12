@@ -266,6 +266,14 @@
         }
       },
       {
+        "command": "dbuxGlobalAnalysisView.node.nextSortMode",
+        "title": "Next mode",
+        "icon": {
+          "light": "resources/light/sort.svg",
+          "dark": "resources/dark/sort.svg"
+        }
+      },
+      {
         "command": "dbuxTraceDetailsView.node.editedWarning",
         "title": "Document changed -> code decorations might be inaccurate",
         "icon": {
@@ -726,6 +734,11 @@
         {
           "command": "dbuxCallStackView.showScheduler",
           "when": "view == dbuxCallStackView && viewItem == callStackNode.both.parent",
+          "group": "inline"
+        },
+        {
+          "command": "dbuxGlobalAnalysisView.node.nextSortMode",
+          "when": "viewItem == dbuxGlobalAnalysisView.node.recordedPackageNode",
           "group": "inline"
         },
         {
@@ -1266,6 +1279,10 @@
         },
         {
           "command": "dbuxCallStackView.showScheduler",
+          "when": "false"
+        },
+        {
+          "command": "dbuxGlobalAnalysisView.node.nextSortMode",
           "when": "false"
         },
         {
