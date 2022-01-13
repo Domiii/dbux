@@ -101,7 +101,10 @@ More explanations:
 
 1. `public` (and others) are reserved keywords and using reserved keywords result in an error in **strict mode** ([relevant discussion here](https://stackoverflow.com/questions/6458935/just-how-reserved-are-the-words-private-and-public-in-javascript)).
 2. [@dbux/cli](../tools-and-configuration/dbux-cli) uses [@babel/register](https://babeljs.io/docs/en/babel-register) with a bunch of default settings.
-3. By default, `plugin-transform-modules-commonjs` treats `*.js` files as [ESModules](https://nodejs.org/api/esm.html) (or `esm`s), and ESModules have `strict mode` enabled by default. This is also discussed here: https://github.com/babel/babel/issues/7910 -->
+3. By default, `plugin-transform-modules-commonjs` treats `*.js` files as [ESModules](https://nodejs.org/api/esm.html) (or `esm`s), and ESModules have `strict mode` enabled by default.
+   * This is also discussed here: https://github.com/babel/babel/issues/7910
+   * And here: https://stackoverflow.com/questions/33821312/how-to-remove-global-use-strict-added-by-babel
+-->
 
 ## Future Work: Missing Features
 

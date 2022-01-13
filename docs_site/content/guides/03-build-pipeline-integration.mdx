@@ -46,6 +46,12 @@ Example:
 ```js
 const shouldInclude = require('@dbux/babel-plugin/dist/include').default;
 
+const moduleFilterOptions = {
+  packageWhitelist: 'interestingPackage1,@interesting/package2',
+  // packageBlacklist: '',
+  fileBlacklist: '.*bad_file1\.js,.*/unwanted_dir1/.*'
+};
+
 // ...
 
 module.exports = {
@@ -88,6 +94,12 @@ Example - something like this:
 
 ```js
 const shouldInclude = require('@dbux/babel-plugin/dist/include').default;
+
+const moduleFilterOptions = {
+  packageWhitelist: 'interestingPackage1,@interesting/package2',
+  // packageBlacklist: '',
+  fileBlacklist: '.*bad_file1\.js,.*/unwanted_dir1/.*'
+};
 
 const config = {
   ...
