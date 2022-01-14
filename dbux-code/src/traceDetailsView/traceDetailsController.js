@@ -1,6 +1,8 @@
 import { commands, ExtensionContext, TreeItemCollapsibleState, window, workspace } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import sleep from '@dbux/common/src/util/sleep';
+import NestedError from '@dbux/common/src/NestedError';
+import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
 import { emitSelectTraceAction } from '../userEvents';
@@ -41,7 +43,6 @@ class TraceDetailsController {
       const navigationNode = this.treeDataProvider.rootNodes.find(node => node.contextValue === NavigationNodeContextValue);
       if (executionsTDNode && navigationNode) {
         if (executionsTDNode.collapsibleState === TreeItemCollapsibleState.Expanded) {
-          const selectedExecutionNode = executionsTDNode.getSelectedChildren();
           /**
            * We have to select `NavigationNode` manually to show the buttons, VSCode API does not support persistant buttons
            * @see https://github.com/microsoft/vscode/issues/78829
@@ -49,7 +50,10 @@ class TraceDetailsController {
            */
           await this.treeView.reveal(navigationNode, { select: true });
           await sleep();
-          await this.treeView.reveal(selectedExecutionNode, { select: false });
+          const selectedExecutionNode = executionsTDNode.getSelectedChildren();
+          if (selectedExecutionNode) {
+            await this.treeView.reveal(selectedExecutionNode, { select: false });
+          }
         }
         else {
           await this.treeView.reveal(navigationNode, { focus: true });
@@ -57,13 +61,20 @@ class TraceDetailsController {
       }
     }
     catch (err) {
-      logError(`Failed to focus on TraceTDView`, err.stack);
+      const wrappedError = new NestedError(`Failed to focus on TraceTDView`, err);
+      logError(wrappedError);
     }
   }
 
+  handleTraceSelectionChanged = makeDebounce(async () => {
+    await this.refresh();
+    await this.setFocus();
+  }, 50)
+
   refresh = () => {
-    this.treeDataProvider.refresh();
+    const refreshPromise = this.treeDataProvider.refresh();
     this.updateEditedWarning();
+    return refreshPromise;
   }
 
   /**
@@ -128,10 +139,7 @@ class TraceDetailsController {
     });
 
     // add traceSelection event handler
-    traceSelection.onTraceSelectionChanged((/* selected */) => {
-      this.refresh();
-      this.setFocus();
-    });
+    traceSelection.onTraceSelectionChanged(this.handleTraceSelectionChanged);
   }
 
   /** ###########################################################################

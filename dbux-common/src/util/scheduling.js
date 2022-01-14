@@ -8,20 +8,32 @@ const { log, debug, warn, error: logError } = newLogger('makeDebounce');
  */
 // eslint-disable-next-line camelcase
 export function makeDebounce(cb, ms = 300) {
-  let timer;
-  function _wrapDebounce() {
-    timer = null;
+  let resolve, reject, p;
+  async function _wrapDebounce() {
+    const _resolve = resolve, _reject = reject;
     try {
-      cb();
+      const result = await cb();
+      _resolve(result);
     }
     catch (err) {
-      logError('Error when executing callback', 
+      logError('Error when executing callback',
         cb.name?.trim() || '(anonymous callback)', '-', err);
+      _reject(err);
+    }
+    finally {
+      p = null;
+      resolve = null;
+      reject = null;
     }
   }
   return () => {
-    if (!timer) {
-      timer = setTimeout(_wrapDebounce, ms);
+    if (!p) {
+      p = new Promise((_resolve, _reject) => {
+        resolve = _resolve;
+        reject = _reject;
+      });
+      setTimeout(_wrapDebounce, ms);
     }
+    return p;
   };
 }
