@@ -12,21 +12,24 @@ import valueCollection from '../data/valueCollection';
 
 
 /**
+ * NOTE: The CallbackPatcher is quite aggressive since its approach can change execution semantics, which introduces bugs.
+ * 
  * TODO: make configurable
  */
+// const Enabled = false;
 const Enabled = true;
 
-function containsInstrumentedCallbacks(args, spreadArgs) {
-  spreadArgs = spreadArgs || EmptyArray;
-  return args.some((arg, i) => {
-    if (spreadArgs[i]) {
-      // check all spread args
-      return spreadArgs[i].some(isInstrumentedFunction);
-    }
-    // check regular arg
-    return isInstrumentedFunction(arg);
-  });
-}
+// function containsInstrumentedCallbacks(args, spreadArgs) {
+//   spreadArgs = spreadArgs || EmptyArray;
+//   return args.some((arg, i) => {
+//     if (spreadArgs[i]) {
+//       // check all spread args
+//       return spreadArgs[i].some(isInstrumentedFunction);
+//     }
+//     // check regular arg
+//     return isInstrumentedFunction(arg);
+//   });
+// }
 
 function countInstrumentedCallbacks(args, spreadArgs) {
   spreadArgs = spreadArgs || EmptyArray;
