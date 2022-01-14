@@ -67,10 +67,8 @@ class TraceDetailsController {
   }
 
   handleTraceSelectionChanged = makeDebounce(async () => {
-    this.treeDataProvider.logger.log(`handleTraceSelectionChanged, start refresh`);
     await this.refresh();
-    this.treeDataProvider.logger.log(`handleTraceSelectionChanged, start setFocus`);
-    this.setFocus();
+    await this.setFocus();
   }, 50)
 
   refresh = () => {
