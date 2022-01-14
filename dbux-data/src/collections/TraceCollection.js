@@ -2,6 +2,7 @@ import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdent
 import SpecialObjectType from '@dbux/common/src/types/constants/SpecialObjectType';
 import TraceType, { isTraceFunctionExit, isTracePop, isTraceReturn, isTraceThrow } from '@dbux/common/src/types/constants/TraceType';
 import Trace from '@dbux/common/src/types/Trace';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import Collection from '../Collection';
 
 /** @typedef { import("./ExecutionContextCollection").default } ExecutionContextCollection */
@@ -48,11 +49,11 @@ export default class TraceCollection extends Collection {
   }
 
   postIndexRaw(traces) {
-    this.errorWrapMethod('resolveErrorTraces', traces);
     this.errorWrapMethod('resolveMonkeyParams', traces);
   }
-
+  
   postIndexProcessed(traces) {
+    this.errorWrapMethod('resolveErrorTraces', traces);
     this.errorWrapMethod('recordErrorTraces', traces);
   }
 
@@ -186,7 +187,7 @@ export default class TraceCollection extends Collection {
         }
       }
     }
-    this._newErrorTraces = null;
+    this._newErrorTraces = EmptyArray;
 
     if (changedFlag) {
       /**
