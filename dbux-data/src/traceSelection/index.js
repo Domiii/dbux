@@ -16,6 +16,7 @@ export class TraceSelection {
       nodeId = trace.nodeId || null;
     }
     this._setSelectTrace(trace, nodeId);
+    console.log(`[traceSelection] selection changed`);
     this._emitSelectionChangedEvent(sender, nodeId);
   }
 

@@ -19,6 +19,7 @@ export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
   // ###########################################################################
 
   buildRoots() {
+    this.logger.log(`Start building roots...`);
     const roots = [];
 
     if (traceSelection.selected) {
@@ -36,6 +37,7 @@ export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
       roots.push(EmptyTreeViewNode.get('(no trace selected)'));
     }
 
+    this.logger.log(`Roots built`);
     return roots;
   }
 

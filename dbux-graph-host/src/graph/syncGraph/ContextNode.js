@@ -183,11 +183,17 @@ class ContextNode extends HostComponentEndpoint {
   }
 
   public = {
-    selectFirstTrace() {
+    selectFirstTrace(i) {
       const { firstTrace } = this;
       if (firstTrace) {
         this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphTrace, { trace: firstTrace });
-        traceSelection.selectTrace(firstTrace);
+        if (i) {
+          const trace = this.dp.util.getFirstTraceOfContext(i);
+          traceSelection.selectTrace(trace);
+        }
+        else {
+          traceSelection.selectTrace(firstTrace);
+        }
       }
       else {
         this.componentManager.externals.alert('Cannot find any trace of this context.', false);

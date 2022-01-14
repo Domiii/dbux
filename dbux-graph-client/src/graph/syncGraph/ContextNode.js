@@ -143,7 +143,15 @@ class ContextNode extends ClientComponentEndpoint {
     }
     // if (isMouseEventPlatformModifierKey(evt)) 
     // ctrl(meta) + click: select trace
+
+    this.remote.selectFirstTrace(1);
+    this.remote.selectFirstTrace(2);
     this.remote.selectFirstTrace();
+
+    // test only
+    for (let i = 0; i < 4; i++) {
+      this.remote.selectFirstTrace(i % 2 + 1);
+    }
     document.getSelection().removeAllRanges();
     // else {
     //   // click: show trace

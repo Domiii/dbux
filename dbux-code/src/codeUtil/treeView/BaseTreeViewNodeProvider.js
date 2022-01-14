@@ -1,6 +1,7 @@
 import { TreeItemCollapsibleState, EventEmitter, window } from 'vscode';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import NestedError from '@dbux/common/src/NestedError';
 import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import { getThemeResourcePath } from '../codePath';
@@ -127,6 +128,7 @@ export default class BaseTreeViewNodeProvider {
   // }, 10);
 
   repaint() {
+    this.logger.log('repaint!');
     this._onDidChangeTreeData.fire();
   }
 
@@ -306,6 +308,8 @@ export default class BaseTreeViewNodeProvider {
       childIndexes.set(child.constructor, index);
       const id = this.makeNodeId(child.constructor, parent, index);
 
+      this.logger.log(`madeNodeId "${id}"`);
+
       // decorate based on id
       this._decorateNewNode(child, id);
     });
@@ -377,10 +381,12 @@ export default class BaseTreeViewNodeProvider {
   // ###########################################################################
 
   getTreeItem = (node) => {
+    this.logger.log(`[VSCode] .getTreeItem on node ${node?.id}`);
     return node;
   }
 
   getChildren = async (node) => {
+    this.logger.log(`[VSCode] .getChildren on node ${node?.id}`);
     try {
       if (node) {
         this.handleBeforeChildren(node);
@@ -388,9 +394,10 @@ export default class BaseTreeViewNodeProvider {
           return node.children;
         }
         if (node.canHaveChildren()) {
+          this.logger.log(`[VSCode] .buildChildren ${node?.id}`);
           return this.buildChildren(node);
         }
-        return null;
+        return EmptyArray;
       }
       else {
         return this.rootNodes;
@@ -404,6 +411,7 @@ export default class BaseTreeViewNodeProvider {
   }
 
   getParent = (node) => {
+    this.logger.log(`[VSCode] .getChildren on node ${node?.id}`);
     return node?.parent;
   }
 }
