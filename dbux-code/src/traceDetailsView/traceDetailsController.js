@@ -17,6 +17,7 @@ import { NavigationNodeContextValue } from './nodes/NavigationNode';
 const { log, debug, warn, error: logError } = newLogger('traceDetailsController');
 
 let controller;
+let i = 0;
 
 class TraceDetailsController {
   constructor(context) {
@@ -39,6 +40,8 @@ class TraceDetailsController {
 
   async setFocus() {
     try {
+      i++;
+      this.treeDataProvider.logger.log(`setFocus start ${i}`);
       const executionsTDNode = this.treeDataProvider.rootNodes.find(node => node.contextValue === ExecutionsTDNodeContextValue);
       const navigationNode = this.treeDataProvider.rootNodes.find(node => node.contextValue === NavigationNodeContextValue);
       if (executionsTDNode && navigationNode) {
@@ -66,7 +69,10 @@ class TraceDetailsController {
     catch (err) {
       const wrappedError = new NestedError(`Failed to focus on TraceTDView`, err);
       logError(wrappedError);
-      throw wrappedError;
+    }
+    finally {
+      i--;
+      this.treeDataProvider.logger.log(`setFocus end ${i}`);
     }
   }
 
