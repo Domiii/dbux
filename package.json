@@ -59,7 +59,7 @@
     "find-package-json": "^1.2.0",
     "lodash": "^4.17.21",
     "shell-escape": "^0.2.0",
-    "shelljs": "0.8.4",
+    "shelljs": "0.8.5",
     "yargs": "^16.2.0"
   },
   "optionalDependencies": {
