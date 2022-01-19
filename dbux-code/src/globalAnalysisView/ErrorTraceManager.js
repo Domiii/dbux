@@ -8,6 +8,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 export default class ErrorTraceManager {
   constructor() {
     this._all = [];
+    this._leaves = [];
     this.index = 0;
     this._leavesNeedUpdate = false;
   }
@@ -19,10 +20,6 @@ export default class ErrorTraceManager {
     this.updateErrorButton();
   }
 
-  get() {
-    return this._all[this.index] || null;
-  }
-
   /**
    * @returns {Trace[]}
    */
@@ -31,7 +28,7 @@ export default class ErrorTraceManager {
       this._findLeaves();
       this._leavesNeedUpdate = false;
     }
-    return Array.from(this._errorsByLeaf.keys());
+    return this._leaves;
   }
 
   getErrorsByLeaf(leaf) {
@@ -42,8 +39,12 @@ export default class ErrorTraceManager {
     return this._all;
   }
 
+  get() {
+    return this._leaves[this.index] || null;
+  }
+
   next() {
-    this.index = (this.index + 1) % this._all.length;
+    this.index = (this.index + 1) % this._leaves.length;
   }
 
   updateErrorButton() {
@@ -85,5 +86,6 @@ export default class ErrorTraceManager {
         this._errorsByLeaf.set(trace, errorsOnStack);
       }
     }
+    this._leaves = Array.from(this._errorsByLeaf.keys());
   }
 }

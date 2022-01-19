@@ -31,13 +31,15 @@ export default class GlobalErrorsNode extends BaseTreeViewNode {
   }
 
   getSelectedChildren() {
-    for (const errorParent of this.children) {
-      if (errorParent.isSelected()) {
-        return errorParent;
+    for (const child of this.children) {
+      if (child.isSelected()) {
+        return child;
       }
-      const selectedErrorLeaf = errorParent.getSelectedChildren();
-      if (selectedErrorLeaf) {
-        return selectedErrorLeaf;
+    }
+    for (const child of this.children) {
+      const selectedErrorChild = child.getSelectedChildren();
+      if (selectedErrorChild) {
+        return selectedErrorChild;
       }
     }
     return null;
