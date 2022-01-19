@@ -8,6 +8,8 @@ class SearchController {
     this._emitter = new NanoEvents();
     this.mode = SearchMode.None;
     this.searchTerm = '';
+    this.matches = EmptyArray;
+    this.contexts = EmptyArray;
     this.searchTools = {
       [SearchMode.ByContext]: new SearchContext(),
       [SearchMode.ByTrace]: new SearchTrace(),

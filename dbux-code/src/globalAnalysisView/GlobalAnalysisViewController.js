@@ -1,6 +1,7 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
+import searchController from '../search/searchController';
 import ErrorTraceManager from './ErrorTraceManager';
 import GlobalAnalysisNodeProvider from './GlobalAnalysisNodeProvider';
 
@@ -30,6 +31,10 @@ export default class GlobalAnalysisViewController {
   refreshOnData = () => {
     this.errorTraceManager.refresh();
 
+    this.refresh();
+  }
+
+  handleSearch = () => {
     this.refresh();
   }
 
@@ -70,6 +75,7 @@ export default class GlobalAnalysisViewController {
       }
     });
 
+    searchController.onSearch(this.handleSearch);
     traceSelection.onTraceSelectionChanged(() => this.treeDataProvider.refreshIcon());
   }
 }

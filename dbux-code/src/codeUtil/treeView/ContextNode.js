@@ -24,7 +24,7 @@ export default class ContextNode extends BaseTreeViewNode {
   makeIconPath() {
     const selectedTrace = traceSelection.selected;
     if (selectedTrace) {
-      const dp = allApplications.getById(this.applicationId).dataProvider;
+      const dp = allApplications.getById(selectedTrace.applicationId).dataProvider;
       const selectedContext = dp.collections.executionContexts.getById(selectedTrace.contextId);
       if (this.context === selectedContext) {
         return 'play.svg';
