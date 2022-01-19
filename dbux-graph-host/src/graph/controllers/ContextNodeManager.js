@@ -41,23 +41,17 @@ const FindContextsByMode = {
     const contexts = dp.indexes.executionContexts.byStaticContext.get(staticContextId);
     return contexts;
   },
-  [SelectorType.SearchContext]: (selector) => {
-    const { searchTerm } = selector;
-    const contexts = allApplications.selection.getAll().
-      flatMap(({ dataProvider }) => dataProvider.util.searchContexts(searchTerm));
-    return contexts;
+  [SelectorType.SearchContext]: (selector, manager) => {
+    const { searchController } = manager.componentManager.externals;
+    return searchController.contexts;
   },
-  [SelectorType.SearchTrace]: (selector) => {
-    const { searchTerm } = selector;
-    const contexts = allApplications.selection.getAll().
-      flatMap(({ dataProvider }) => dataProvider.util.findContextsByTraceSearchTerm(searchTerm));
-    return contexts;
+  [SelectorType.SearchTrace]: (selector, manager) => {
+    const { searchController } = manager.componentManager.externals;
+    return searchController.contexts;
   },
-  [SelectorType.SearchValue]: (selector) => {
-    const { searchTerm } = selector;
-    const contexts = allApplications.selection.getAll().
-      flatMap(({ dataProvider }) => dataProvider.util.findContextsByValueSearchTerm(searchTerm));
-    return contexts;
+  [SelectorType.SearchValue]: (selector, manager) => {
+    const { searchController } = manager.componentManager.externals;
+    return searchController.contexts;
   }
 };
 
@@ -121,7 +115,7 @@ export default class ContextNodeManager extends HostComponentEndpoint {
    *   highlight
    *  #########################################################################*/
 
-  highlight(mode, selector) {
+  highlight(mode, selector, disableFollowMode = true) {
     if (this.selector) {
       this.clear();
     }
@@ -131,9 +125,11 @@ export default class ContextNodeManager extends HostComponentEndpoint {
     }
 
     this.context.graphRoot.controllers.getComponent('GraphNode').setMode(GraphNodeMode.Collapsed);
-    this.context.graphDocument.setFollowMode(false);
+    if (disableFollowMode) {
+      this.context.graphDocument.setFollowMode(false);
+    }
 
-    const contexts = FindContextsByMode[mode](selector);
+    const contexts = FindContextsByMode[mode](selector, this);
 
     this.selector = selector;
     this.selectorType = mode;

@@ -1,7 +1,7 @@
+import SearchMode from '@dbux/graph-common/src/shared/SearchMode';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import traceSelection from '@dbux/data/src/traceSelection/index';
-import SearchMode from '@dbux/graph-common/src/shared/SearchMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import { SelectorType } from './controllers/ContextNodeManager';
 
@@ -24,7 +24,21 @@ const SearchMethodByMode = {
 
 class SearchBar extends HostComponentEndpoint {
   init() {
-    this.state.mode = SearchMode.None;
+    this.state.mode = this.searchController.mode;
+    this.state.searchTerm = this.searchController.searchTerm;
+
+    this.searchController.onSearchModeChanged((mode) => {
+      this.setState({ mode });
+      this.search(this.state.searchTerm);
+      this.parent.toolbar.forceUpdate();
+    });
+
+    this.searchController.onSearch(this.handleSearch);
+  }
+
+
+  get searchController() {
+    return this.componentManager.externals.searchController;
   }
 
   /**
@@ -34,19 +48,16 @@ class SearchBar extends HostComponentEndpoint {
     return this.context.graphDocument.syncGraphContainer.graph.controllers.getComponent('ContextNodeManager');
   }
 
-  setSearchMode = (mode) => {
-    if (mode !== this.state.mode) {
-      this.setState({ mode });
-      this.search(this.state.searchTerm);
-      this.parent.toolbar.forceUpdate();
-      Verbose && this.logger.log(`.setSearchMode() with mode=${mode}`);
-    }
-  }
-
-  selectContext(context) {
+  selectContextByIndex(index) {
+    const context = this.searchController.contexts[index];
     const dp = allApplications.getById(context.applicationId).dataProvider;
     const trace = dp.util.getFirstTraceOfContext(context.contextId);
     traceSelection.selectTrace(trace);
+  }
+
+  setSearchMode = (mode) => {
+    Verbose && this.logger.log(`.setSearchMode() with mode=${mode}`);
+    this.searchController.setSearchMode(mode);
   }
 
   search = (searchTerm) => {
@@ -57,29 +68,38 @@ class SearchBar extends HostComponentEndpoint {
       this.componentManager.externals.emitCallGraphAction(searchActionType, { searchTerm: searchTerm });
     }
 
+    this.searchController.search(searchTerm);
+  }
+
+  handleSearch = (matches, searchTerm) => {
+    const { contexts } = this.searchController;
+    // highlight in callgraph
     const selector = searchTerm ? { searchTerm } : null;
-    this.matches = this.contextNodeManager.highlight(SearchMethodByMode[this.state.mode], selector);
+    // TODO: use searchController's result instead of search again
+    this.contextNodeManager.highlight(SearchMethodByMode[this.state.mode], selector, false);
+    // this.matches = this.contextNodeManager.highlight(SearchMethodByMode[this.state.mode], selector);
+
     let index = -1;
-    if (this.matches.length) {
+    if (contexts.length) {
       index = 0;
-      this.selectContext(this.matches[index]);
+      this.selectContextByIndex(index);
     }
     this.setState({
       searchTerm,
       index,
-      count: this.matches.length,
+      count: contexts.length,
     });
   }
 
   public = {
     previous: () => {
-      const index = (this.state.index - 1 + this.matches.length) % this.matches.length;
-      this.selectContext(this.matches[index]);
+      const index = (this.state.index - 1 + this.searchController.contexts.length) % this.searchController.contexts.length;
+      this.selectContextByIndex(index);
       this.setState({ index });
     },
     next: () => {
-      const index = (this.state.index + 1) % this.matches.length;
-      this.selectContext(this.matches[index]);
+      const index = (this.state.index + 1) % this.searchController.contexts.length;
+      this.selectContextByIndex(index);
       this.setState({ index });
     },
     search: this.search,
