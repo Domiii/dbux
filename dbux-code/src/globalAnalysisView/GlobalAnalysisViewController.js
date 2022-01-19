@@ -3,6 +3,7 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
 import ErrorTraceManager from './ErrorTraceManager';
 import GlobalAnalysisNodeProvider from './GlobalAnalysisNodeProvider';
+import GlobalErrorsNode from './nodes/GlobalErrorsNode';
 
 /** @typedef {import('vscode').ExtensionContext} ExtensionContext */
 
@@ -39,12 +40,14 @@ export default class GlobalAnalysisViewController {
 
   async showError() {
     if (!this.children) {
-      await this.treeView.reveal(this.treeDataProvider.rootNodes[0], { select: false, expand: true });
+      const errorNode = this.treeDataProvider.getNodeByClass(GlobalErrorsNode);
+      await this.treeView.reveal(errorNode, { select: false, expand: true });
     }
     this.errorTraceManager.showError();
-    const selectedTrace = this.treeDataProvider.rootNodes[0].getSelectedChildren();
-    if (selectedTrace) {
-      await this.treeView.reveal(selectedTrace);
+    const errorNode = this.treeDataProvider.getNodeByClass(GlobalErrorsNode);
+    const selectedErrorNode = errorNode.getSelectedChildren();
+    if (selectedErrorNode) {
+      await this.treeView.reveal(selectedErrorNode);
     }
     else {
       logError(`Cannot find selected children after showError`);
