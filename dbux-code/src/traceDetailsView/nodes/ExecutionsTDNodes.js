@@ -207,7 +207,7 @@ export default class ExecutionsTDNode extends TraceContainerNode {
 
   getSelectedChildren() {
     if (ExecutionsTDNode.getCurrentGroupClass() === UngroupedNode) {
-      return this.children.find(node => node.isSelected());
+      return this.children?.find(node => node.isSelected());
     }
     else {
       for (const groupNode of this.children) {

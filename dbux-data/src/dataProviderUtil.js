@@ -324,7 +324,7 @@ export default {
     // const contexts = dp.indexes.executionContexts.byStaticContext.get(staticContext.staticContextIdId);
     const staticContexts = dp.util.getStaticContextsOfProgram(programId);
     return staticContexts ? sum(
-      staticContexts.map(staticContext => !!dp.util.getFirstTraceOfContext(staticContext.staticContextId))
+      staticContexts.map(staticContext => !!dp.indexes.traces.byStaticContext.get(staticContext.staticContextId))
     ) + 0 : 0;
   },
 
