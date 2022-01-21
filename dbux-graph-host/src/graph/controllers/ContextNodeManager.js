@@ -13,9 +13,7 @@ const { log, debug, warn, error: logError } = newLogger('ContextNodeManager');
 const SelectorTypeConfig = {
   ObjectTrace: 1,
   StaticContext: 2,
-  SearchContext: 3,
-  SearchTrace: 4,
-  SearchValue: 5,
+  Search: 3,
 };
 
 /**
@@ -41,16 +39,8 @@ const FindContextsByMode = {
     const contexts = dp.indexes.executionContexts.byStaticContext.get(staticContextId);
     return contexts;
   },
-  [SelectorType.SearchContext]: (selector, manager) => {
-    const { searchController } = manager.componentManager.externals;
-    return searchController.contexts;
-  },
-  [SelectorType.SearchTrace]: (selector, manager) => {
-    const { searchController } = manager.componentManager.externals;
-    return searchController.contexts;
-  },
-  [SelectorType.SearchValue]: (selector, manager) => {
-    const { searchController } = manager.componentManager.externals;
+  [SelectorType.Search]: (selector) => {
+    const { searchController } = selector;
     return searchController.contexts;
   }
 };
@@ -76,28 +66,23 @@ export default class ContextNodeManager extends HostComponentEndpoint {
   }
 
   // TODO: makeDebounce
-  refreshOnData = () => {
+  refreshOnData = async () => {
     if (this.selector?.applicationId && !allApplications.selection.containsApplication(this.selector.applicationId)) {
       // block highlighting on non-active apps
       this.clear();
     }
     else if (this.selectorType) {
-      this.highlight(this.selectorType, this.selector);
+      await this.highlight(this.selectorType, this.selector);
     }
   }
 
   async highlightContexts(contexts) {
-    try {
-      this.contextNodes = contexts.map(this.owner.getContextNodeByContext);
-      await Promise.all(this.contextNodes.map(async (contextNode) => {
-        await contextNode?.waitForInit();
-        contextNode?.controllers.getComponent('Highlighter').inc();
-      }));
-      this.contextNodes.forEach((contextNode) => contextNode?.reveal());
-    }
-    catch (err) {
-      logError(err);
-    }
+    this.contextNodes = contexts.map(this.owner.getContextNodeByContext);
+    return await Promise.all(this.contextNodes.map(async (contextNode) => {
+      await contextNode?.waitForInit();
+      contextNode?.controllers.getComponent('Highlighter').inc();
+      await contextNode.reveal();
+    }));
   }
 
   clear() {
@@ -115,7 +100,7 @@ export default class ContextNodeManager extends HostComponentEndpoint {
    *   highlight
    *  #########################################################################*/
 
-  highlight(mode, selector, disableFollowMode = true) {
+  async highlight(mode, selector, disableFollowMode = true) {
     if (this.selector) {
       this.clear();
     }
@@ -133,7 +118,7 @@ export default class ContextNodeManager extends HostComponentEndpoint {
 
     this.selector = selector;
     this.selectorType = mode;
-    this.highlightContexts(contexts);
+    await this.highlightContexts(contexts);
 
     return contexts;
   }
@@ -142,16 +127,16 @@ export default class ContextNodeManager extends HostComponentEndpoint {
    *   public
    *  #########################################################################*/
 
-  toggleStaticContextHighlight = (selector) => {
+  toggleStaticContextHighlight = async (selector) => {
     if (isEqual(this.selector, selector)) {
       this.clear();
     }
     else {
-      this.highlight(SelectorType.StaticContext, selector);
+      await this.highlight(SelectorType.StaticContext, selector);
     }
   }
 
-  highlightByObject = (trace) => {
-    return this.highlight(SelectorType.ObjectTrace, trace);
+  highlightByObject = async (trace) => {
+    return await this.highlight(SelectorType.ObjectTrace, trace);
   }
 }

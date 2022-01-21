@@ -15,25 +15,15 @@ const UserActionTypeByMode = {
   [SearchMode.ByValue]: UserActionType.CallGraphSearchValues,
 };
 
-const SearchMethodByMode = {
-  [SearchMode.None]: null,
-  [SearchMode.ByContext]: SelectorType.SearchContext,
-  [SearchMode.ByTrace]: SelectorType.SearchTrace,
-  [SearchMode.ByValue]: SelectorType.SearchValue,
-};
-
 class SearchBar extends HostComponentEndpoint {
   init() {
     this.state.mode = this.searchController.mode;
     this.state.searchTerm = this.searchController.searchTerm;
 
-    this.searchController.onSearchModeChanged((mode) => {
-      this.setState({ mode });
-      this.search(this.state.searchTerm);
-      this.parent.toolbar.forceUpdate();
-    });
-
-    this.searchController.onSearch(this.handleSearch);
+    this.addDisposable(
+      this.searchController.onSearchModeChanged(this.handleSearchModeChanged),
+      this.searchController.onSearch(this.handleSearch)
+    );
   }
 
 
@@ -64,21 +54,31 @@ class SearchBar extends HostComponentEndpoint {
     Verbose && this.logger.log(`.search() with searchTerm=${searchTerm}`);
 
     if (searchTerm) {
-      const searchActionType = UserActionTypeByMode[this.state.mode];
-      this.componentManager.externals.emitCallGraphAction(searchActionType, { searchTerm: searchTerm });
+      const { mode } = this.searchController;
+      const searchActionType = UserActionTypeByMode[mode];
+      this.componentManager.externals.emitCallGraphAction(searchActionType, { searchTerm, mode });
     }
 
     this.searchController.search(searchTerm);
   }
 
-  handleSearch = (matches, searchTerm) => {
-    const { contexts } = this.searchController;
-    // highlight in callgraph
-    const selector = searchTerm ? { searchTerm } : null;
-    // TODO: use searchController's result instead of search again
-    this.contextNodeManager.highlight(SearchMethodByMode[this.state.mode], selector, false);
-    // this.matches = this.contextNodeManager.highlight(SearchMethodByMode[this.state.mode], selector);
+  handleSearchModeChanged = (mode) => {
+    this.setState({ mode });
+    if (this.searchController.searchTerm) {
+      this.search(this.searchController.searchTerm);
+    }
+    this.parent.toolbar.forceUpdate();
+  }
 
+  handleSearch = async () => {
+    const { searchController } = this;
+    const { contexts, searchTerm, mode } = searchController;
+
+    // highlight in callgraph
+    const selector = (mode !== SearchMode.None && searchTerm) ? { searchController } : null;
+    await this.contextNodeManager.highlight(SelectorType.Search, selector, false);
+
+    // select first match
     let index = -1;
     if (contexts.length) {
       index = 0;

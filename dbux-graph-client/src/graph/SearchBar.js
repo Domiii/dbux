@@ -81,8 +81,10 @@ class SearchBar extends ClientComponentEndpoint {
 
   on = {
     searchInput: {
-      change(evt) {
-        this.remote.search(evt.target.value);
+      keydown(evt) {
+        if (evt.keyCode === 13) {
+          this.remote.search(evt.target.value);
+        }
       }
     },
     previousBtn: {
