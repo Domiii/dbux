@@ -5,6 +5,7 @@ import searchController from '../search/searchController';
 import ErrorTraceManager from './ErrorTraceManager';
 import GlobalAnalysisNodeProvider from './GlobalAnalysisNodeProvider';
 import GlobalErrorsNode from './nodes/GlobalErrorsNode';
+import GlobalSearchNode from './nodes/GlobalSearchNode';
 
 /** @typedef {import('vscode').ExtensionContext} ExtensionContext */
 
@@ -43,8 +44,10 @@ export default class GlobalAnalysisViewController {
   /** ###########################################################################
    * search
    *  #########################################################################*/
+
   async focusOnSearchResult() {
-    // TODO: finish this
+    const searchResultNode = this.treeDataProvider.getNodeByClass(GlobalSearchNode);
+    await this.treeView.reveal(searchResultNode, { select: false, expand: 1 });
   }
 
   /** ###########################################################################

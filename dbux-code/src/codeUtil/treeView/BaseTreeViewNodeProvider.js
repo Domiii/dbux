@@ -415,6 +415,7 @@ export default class BaseTreeViewNodeProvider {
    * Find a chlid node of given class from parent, or from roots if parent is `undefined`.
    * @param {*} clazz A node class that extends `BaseTreeViewNode` 
    * @param {BaseTreeViewNode} parent 
+   * @return {BaseTreeViewNode}
    */
   getNodeByClass(clazz, parent = null) {
     let children = this.rootNodes;
