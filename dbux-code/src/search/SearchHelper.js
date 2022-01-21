@@ -45,7 +45,7 @@ class SearchToolBase {
     for (const { applicationId, matches } of matchesByApp) {
       const dp = allApplications.getById(applicationId).dataProvider;
       for (const match of matches) {
-        contexts.add(this._getContext(dp, match));
+        contexts.add(this.getContext(dp, match));
       }
     }
 
@@ -57,7 +57,7 @@ class SearchToolBase {
    * @param {T[]} matches
    * @return {ExecutionContext[]}
    */
-  _getContext(dp, match) {
+  getContext(dp, match) {
     throw new Error('abstract method not implemented');
   }
 }
@@ -70,7 +70,7 @@ export class SearchContext extends SearchToolBase {
     return dp.util.searchContexts(searchTerm);
   }
 
-  _getContext(dp, context) {
+  getContext(dp, context) {
     return context;
   }
 }
@@ -83,7 +83,7 @@ export class SearchTrace extends SearchToolBase {
     return dp.util.searchTraces(searchTerm);
   }
 
-  _getContext(dp, trace) {
+  getContext(dp, trace) {
     return dp.collections.executionContexts.getById(trace.contextId);
   }
 }
@@ -96,7 +96,7 @@ export class SearchValue extends SearchToolBase {
     return dp.util.searchValues(searchTerm);
   }
 
-  _getContext(dp, dataNode) {
+  getContext(dp, dataNode) {
     const trace = dp.collections.traces.getById(dataNode.traceId);
     const context = dp.collections.executionContexts.getById(trace.contextId);
     return context;

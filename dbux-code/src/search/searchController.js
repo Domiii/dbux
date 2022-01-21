@@ -8,6 +8,9 @@ class SearchController {
     this._emitter = new NanoEvents();
     this.mode = SearchMode.None;
     this.searchTerm = '';
+    /**
+     * @type {[{applicationId: number, matches: any[]}]}
+     */
     this.matches = EmptyArray;
     this.contexts = EmptyArray;
     this.searchTools = {
@@ -42,6 +45,13 @@ class SearchController {
     this._notifySearch();
 
     return this.matches;
+  }
+
+  /**
+   * Get context of a match result depending on current search mode
+   */
+  getContext(dp, match) {
+    return this.searchTools[this.mode].getContext(dp, match);
   }
 
   /** ###########################################################################

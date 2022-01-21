@@ -34,8 +34,16 @@ export default class GlobalAnalysisViewController {
     this.refresh();
   }
 
-  handleSearch = () => {
-    this.refresh();
+  handleSearch = async () => {
+    await this.refresh();
+    this.focusOnSearchResult();
+  }
+
+  /** ###########################################################################
+   * search
+   *  #########################################################################*/
+  async focusOnSearchResult() {
+    // TODO: finish this
   }
 
   /** ###########################################################################

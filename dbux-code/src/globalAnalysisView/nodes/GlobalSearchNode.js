@@ -1,7 +1,8 @@
+import allApplications from '@dbux/data/src/applications/allApplications';
 import SearchMode from '@dbux/graph-common/src/shared/SearchMode';
 import searchController from '../../search/searchController';
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
-import ContextNode from '../../codeUtil/treeView/ContextNode';
+import SearchContextNode from './SearchContextNode';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
@@ -30,8 +31,23 @@ export default class GlobalSearchNode extends BaseTreeViewNode {
   }
 
   buildChildren() {
+    // group matches by context
+    const matchesByContext = new Map();
+    for (const { matches, applicationId } of searchController.matches) {
+      const dp = allApplications.getById(applicationId).dataProvider;
+      for (const match of matches) {
+        const context = searchController.getContext(dp, match);
+        if (!matchesByContext.get(context)) {
+          matchesByContext.set(context, []);
+        }
+        matchesByContext.get(context).push(match);
+      }
+    }
+
+    // build ContextNode
+    const { mode } = searchController;
     return searchController.contexts.map(context => {
-      return this.treeNodeProvider.buildNode(ContextNode, context, this);
+      return this.treeNodeProvider.buildNode(SearchContextNode, context, this, { matches: matchesByContext.get(context), mode });
     });
   }
 }
