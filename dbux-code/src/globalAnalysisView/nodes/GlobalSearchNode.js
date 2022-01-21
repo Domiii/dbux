@@ -17,11 +17,12 @@ const DescriptionByMode = {
  * ##########################################################################*/
 
 export default class GlobalSearchNode extends BaseTreeViewNode {
-  static makeLabel(entry, parent, moreProps, provider) {
+  static makeLabel() {
     return `Search(${searchController.contexts.length})`;
   }
 
   init() {
+    this.contextValue = 'dbuxGlobalAnalysisView.node.searchNode';
     if (searchController.mode !== SearchMode.None) {
       this.description = `(${DescriptionByMode[searchController.mode]})`;
     }

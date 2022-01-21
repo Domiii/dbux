@@ -6,8 +6,8 @@ export class TraceSelection {
   selected = null;
   history = new TraceSelectionHistory();
 
-  isSelected(trace) {
-    return this.selected === trace;
+  isSelected(trace, nodeId = null) {
+    return this.selected === trace && (!nodeId || nodeId === this.nodeId);
   }
 
   selectTrace(trace, sender = null, nodeId = null) {

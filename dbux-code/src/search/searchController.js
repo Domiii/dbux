@@ -47,6 +47,14 @@ class SearchController {
     return this.matches;
   }
 
+  nextSearchMode() {
+    let nextMode = SearchMode.nextValue(this.mode);
+    if (nextMode === SearchMode.None) {
+      nextMode = SearchMode.nextValue(nextMode);
+    }
+    this.setSearchMode(nextMode);
+  }
+
   /**
    * Get context of a match result depending on current search mode
    */

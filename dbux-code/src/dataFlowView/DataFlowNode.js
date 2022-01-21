@@ -1,33 +1,19 @@
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import allApplications from '@dbux/data/src/applications/allApplications';
-import traceSelection from '@dbux/data/src/traceSelection';
-import TraceNode from '../codeUtil/treeView/TraceNode';
+import DataNodeNode from '../codeUtil/treeView/DataNodeNode';
 
 
 /**
  * Besides a `Trace`, this node also has a `dataNode` to specify one of it's dataNodes.
  * @property {DataNode} dataNode
  */
-export default class DataFlowNode extends TraceNode {
+export default class DataFlowNode extends DataNodeNode {
   get clickUserActionType() {
     // TODO: add a new action type?
     return null;
   }
 
-  get nodeId() {
-    return this.dataNode.nodeId;
-  }
-
   init() {
     this.contextValue = 'dbuxDataFlowView.node.data';
-  }
-
-  makeIconPath() {
-    return (traceSelection.isSelected(this.trace) && traceSelection.nodeId === this.nodeId) ? 'play.svg' : ' ';
-  }
-
-  handleClick() {
-    traceSelection.selectTrace(this.trace, 'TraceNode', this.nodeId);
   }
 
   getTraceDataNodes() {

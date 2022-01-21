@@ -5,12 +5,16 @@ import { makeTraceLabel, makeTraceLocLabel } from '@dbux/data/src/helpers/makeLa
 import allApplications from '@dbux/data/src/applications/allApplications';
 import BaseTreeViewNode from './BaseTreeViewNode';
 
-export default class TraceNode extends BaseTreeViewNode {
+/**
+ * This is a TreeViewNode representing a `DataNode`
+ */
+export default class DataNodeNode extends BaseTreeViewNode {
   /**
-   * @param {Trace} 
+   * @param {DataNode} 
    */
-  static makeLabel(trace) {
-    // return makeTraceValueLabel(trace);
+  static makeLabel(dataNode) {
+    const dp = allApplications.getById(dataNode.applicationId).dataProvider;
+    const trace = dp.collections.traces.getById(dataNode.traceId);
     return makeTraceLabel(trace);
   }
 
@@ -18,20 +22,27 @@ export default class TraceNode extends BaseTreeViewNode {
     return TreeItemCollapsibleState.None;
   }
 
+  get dp() {
+    const { applicationId } = this.entry;
+    return allApplications.getById(applicationId).dataProvider;
+  }
+
   /**
    * @type {Trace}
    */
   get trace() {
+    return this.dp.collections.traces.getById(this.dataNode.traceId);
+  }
+
+  /**
+   * @type {DataNode}
+   */
+  get dataNode() {
     return this.entry;
   }
 
-  get dp() {
-    const { applicationId } = this.trace;
-    return allApplications.getById(applicationId).dataProvider;
-  }
-
   isSelected() {
-    return traceSelection.isSelected(this.trace);
+    return traceSelection.isSelected(this.trace, this.dataNode.nodeId);
   }
 
   makeIconPath() {
@@ -39,14 +50,11 @@ export default class TraceNode extends BaseTreeViewNode {
   }
 
   init() {
-    // description
-    // NOTE: description MUST be a string or it won't be properly displayed
-    // const dt = getTraceCreatedAt(this.trace);
     const loc = makeTraceLocLabel(this.trace);
     this.description = loc;
   }
 
   handleClick() {
-    traceSelection.selectTrace(this.trace, 'TraceNode');
+    traceSelection.selectTrace(this.trace, 'DataNode', this.dataNode.nodeId);
   }
 }
