@@ -2722,10 +2722,10 @@ export default {
     else {
       // Cases for nesting:
 
-      //    -> nestedUpdate (u) can be {PostAwait,PostThen,PostCallback}
-      //    -> nestedLink (link) can be {AsyncReturn,ThenNested,Resolve,All,Promisify}
+      // * nestedUpdate(u) can be {PostAwait,PostThen,PostCallback}
+      // * nestedLink(link) can be {AsyncReturn,ThenNested,Resolve,All,Promisify}
 
-      // Case 1:  p nests shallow link     -> !u && link (Resolve,All)
+      // Case 1:  p nests shallow link     -> !u && link (Resolve,All,Race)
       // Case 2a: p nests u (PostAwait)    -> u && !link
       // Case 2b: p nests u (PostAwait)    -> u && link (AsyncReturn) [can be BOTH]
       // Case 3a: p nests u (PostThen)     -> u && !link

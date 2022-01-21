@@ -118,15 +118,20 @@ export default class CallbackPatcher {
       return originalCallback;
     }
 
-    let f = getPatchedCallback(originalCallback);
-    if (f) {
-      return f;
-      // const calleePatcher = this.defaultCalleePatcher;
-      // f = monkeyPatchFunctionOverride(
-      //   originalFunction,
-      //   calleePatcher.bind(this, callId)
-      // );
-    }
+    // /**
+    //  * Get previously registered callback.
+    //  * NOTE: we don't really want that, since each potential scheduler should get their own instance.
+    //  * NOTE2: there is still the problem of the scheduler function not keeping track of correct identity (e.g. `addEventListener` and `removeEventListener`).
+    //  */
+    // let f = getPatchedCallback(originalCallback);
+    // if (f) {
+    //   return f;
+    //   // const calleePatcher = this.defaultCalleePatcher;
+    //   // f = monkeyPatchFunctionOverride(
+    //   //   originalFunction,
+    //   //   calleePatcher.bind(this, callId)
+    //   // );
+    // }
 
     // const self = this; // NOTE: `this` will be the callback's `this`
 
