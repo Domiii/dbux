@@ -3,15 +3,18 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import traceSelection from '@dbux/data/src/traceSelection';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { makeDebounce } from '@dbux/common/src/util/scheduling';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import CallGraphNodeProvider from './CallGraphNodeProvider';
 import { emitTagTraceAction } from '../userEvents';
-import UserActionType from '@dbux/data/src/pathways/UserActionType';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('callGraphViewController');
 
 let controller;
 
+/**
+ * @deprecated
+ */
 export class CallGraphViewController {
   constructor() {
     this.treeDataProvider = new CallGraphNodeProvider(this);
@@ -24,9 +27,6 @@ export class CallGraphViewController {
     this.treeDataProvider.refreshOnData();
   }
 
-  /**
-   * @deprecated Moved to "TraceDetailsView"
-   */
   refreshIcon = () => {
     // let hasError = false;
     // for (const app of allApplications.selection.getAll()) {

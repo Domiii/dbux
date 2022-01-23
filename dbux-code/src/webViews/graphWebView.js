@@ -3,8 +3,9 @@ import {
 } from 'vscode';
 import GraphHost from '@dbux/graph-host/src/GraphHost';
 import { getThemeResourcePathUri } from '../codeUtil/codePath';
-import RichWebView from './RichWebView';
 import { emitCallGraphAction } from '../userEvents';
+import searchController from '../search/searchController';
+import RichWebView from './RichWebView';
 
 const defaultColumn = ViewColumn.Two;
 
@@ -26,7 +27,8 @@ export default class GraphWebView extends RichWebView {
   // ###########################################################################
 
   externals = {
-    emitCallGraphAction
+    emitCallGraphAction,
+    searchController,
   }
 }
 

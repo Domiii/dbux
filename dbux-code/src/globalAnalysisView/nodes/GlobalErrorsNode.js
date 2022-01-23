@@ -4,6 +4,8 @@ import GlobalErrorsChildNode from './GlobalErrorsChildNode';
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 /** @typedef {import('../ErrorTraceManager').default} ErrorTraceManager */
 
+export const GlobalErrorNodeContextValue = 'dbuxGlobalAnalysisView.node.globalError';
+
 /** ###########################################################################
  * {@link GlobalErrorsNode}
  * ##########################################################################*/
@@ -24,6 +26,7 @@ export default class GlobalErrorsNode extends BaseTreeViewNode {
 
   init() {
     const errorTraces = this.errorTraceManager.getLeaves();
+    this.contextValue = GlobalErrorNodeContextValue;
     this.description = `(${errorTraces.length})`;
   }
 
@@ -31,6 +34,12 @@ export default class GlobalErrorsNode extends BaseTreeViewNode {
     for (const child of this.children) {
       if (child.isSelected()) {
         return child;
+      }
+    }
+    for (const child of this.children) {
+      const selectedErrorChild = child.getSelectedChildren();
+      if (selectedErrorChild) {
+        return selectedErrorChild;
       }
     }
     return null;

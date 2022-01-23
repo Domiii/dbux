@@ -274,6 +274,14 @@
         }
       },
       {
+        "command": "dbuxGlobalAnalysisView.node.nextSearchMode",
+        "title": "Next search mode",
+        "icon": {
+          "light": "resources/light/string.svg",
+          "dark": "resources/dark/string.svg"
+        }
+      },
+      {
         "command": "dbuxTraceDetailsView.node.editedWarning",
         "title": "Document changed -> code decorations might be inaccurate",
         "icon": {
@@ -739,6 +747,11 @@
         {
           "command": "dbuxGlobalAnalysisView.node.nextSortMode",
           "when": "viewItem == dbuxGlobalAnalysisView.node.recordedPackageNode",
+          "group": "inline"
+        },
+        {
+          "command": "dbuxGlobalAnalysisView.node.nextSearchMode",
+          "when": "viewItem == dbuxGlobalAnalysisView.node.searchNode",
           "group": "inline"
         },
         {

@@ -10,9 +10,9 @@ export default class ParentDataNode extends DataFlowNode {
   }
 
   buildChildren() {
-    const { nodeId } = this.trace;
+    const { nodeId } = this.dataNode;
     const dataNodes = this.getTraceDataNodes().filter(node => node.nodeId !== nodeId);
     return dataNodes
-      .map(node => this.treeNodeProvider.buildNode(ChildDataNode, this.trace, this, { dataNode: node }));
+      .map(node => this.treeNodeProvider.buildNode(ChildDataNode, node, this));
   }
 }

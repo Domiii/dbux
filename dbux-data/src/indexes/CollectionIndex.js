@@ -244,7 +244,7 @@ export class CollectionIndexConfig {
  */
 
 /**
- * @template {T}
+ * @template T
  */
 export default class CollectionIndex {
   /**

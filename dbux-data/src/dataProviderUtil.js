@@ -272,44 +272,37 @@ export default {
       filter(staticContext => {
         return staticContext.displayName?.toLowerCase().includes(searchTerm);
       }).
-      map(staticContext =>
+      flatMap(staticContext =>
         dp.indexes.executionContexts.byStaticContext.get(staticContext.staticContextId)
-      ).
-      flat();
+      );
   },
 
-  findContextsByTraceSearchTerm(dp, searchTerm) {
+  searchTraces(dp, searchTerm) {
     searchTerm = searchTerm.toLowerCase();
 
     return dp.util.getAllExecutedStaticContexts().
-      filter(staticContext => {
+      flatMap(staticContext => {
         const staticTraces = dp.util.getExecutedStaticTracesInStaticContext(staticContext.staticContextId) || EmptyArray;
-        return staticTraces.some(staticTrace =>
+        return staticTraces.filter(staticTrace =>
           staticTrace.displayName?.toLowerCase().includes(searchTerm)
         );
       }).
-      map(staticContext =>
-        dp.indexes.executionContexts.byStaticContext.get(staticContext.staticContextId)
-      ).
-      flat();
+      flatMap(staticTrace =>
+        dp.indexes.traces.byStaticTrace.get(staticTrace.staticTraceId) || EmptyArray
+      );
   },
 
   /**
    * @param {DataProvider} dp 
    * @param {number|string} searchTerm
    */
-  findContextsByValueSearchTerm(dp, searchTerm) {
+  searchValues(dp, searchTerm) {
     searchTerm = searchTerm.toString().toLowerCase();
 
-    const matchedContextIds = new Set();
-    for (const dataNode of dp.util.getPrimitiveDataNodes()) {
-      if (dataNode.value?.toString().includes(searchTerm)) {
-        const trace = dp.collections.traces.getById(dataNode.traceId);
-        matchedContextIds.add(trace.contextId);
-      }
-    }
-
-    return Array.from(matchedContextIds).map(contextId => dp.collections.executionContexts.getById(contextId));
+    return dp.util.getPrimitiveDataNodes()
+      .filter(dataNode =>
+        dataNode.value?.toString().includes(searchTerm)
+      );
   },
 
   /** @param {DataProvider} dp */

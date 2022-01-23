@@ -1,8 +1,11 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
+import searchController from '../search/searchController';
 import ErrorTraceManager from './ErrorTraceManager';
 import GlobalAnalysisNodeProvider from './GlobalAnalysisNodeProvider';
+import GlobalErrorsNode from './nodes/GlobalErrorsNode';
+import GlobalSearchNode from './nodes/GlobalSearchNode';
 
 /** @typedef {import('vscode').ExtensionContext} ExtensionContext */
 
@@ -33,18 +36,34 @@ export default class GlobalAnalysisViewController {
     this.refresh();
   }
 
+  handleSearch = async () => {
+    await this.refresh();
+    this.focusOnSearchResult();
+  }
+
+  /** ###########################################################################
+   * search
+   *  #########################################################################*/
+
+  async focusOnSearchResult() {
+    const searchResultNode = this.treeDataProvider.getNodeByClass(GlobalSearchNode);
+    await this.treeView.reveal(searchResultNode, { select: false, expand: 1 });
+  }
+
   /** ###########################################################################
    * error
    *  #########################################################################*/
 
   async showError() {
     if (!this.children) {
-      await this.treeView.reveal(this.treeDataProvider.rootNodes[0], { select: false, expand: true });
+      const errorNode = this.treeDataProvider.getNodeByClass(GlobalErrorsNode);
+      await this.treeView.reveal(errorNode, { select: false, expand: true });
     }
     this.errorTraceManager.showError();
-    const selectedTrace = this.treeDataProvider.rootNodes[0].getSelectedChildren();
-    if (selectedTrace) {
-      await this.treeView.reveal(selectedTrace);
+    const errorNode = this.treeDataProvider.getNodeByClass(GlobalErrorsNode);
+    const selectedErrorNode = errorNode.getSelectedChildren();
+    if (selectedErrorNode) {
+      await this.treeView.reveal(selectedErrorNode);
     }
     else {
       logError(`Cannot find selected children after showError`);
@@ -70,6 +89,7 @@ export default class GlobalAnalysisViewController {
       }
     });
 
+    searchController.onSearch(this.handleSearch);
     traceSelection.onTraceSelectionChanged(() => this.treeDataProvider.refreshIcon());
   }
 }

@@ -47,7 +47,7 @@ export default class FocusController extends HostComponentEndpoint {
       targetNode = hiddenNode;
     }
 
-    await targetNode.reveal?.(true);
+    await targetNode.reveal?.();
     this.remote.slideToNode(targetNode);
   }
 

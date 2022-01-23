@@ -12,6 +12,14 @@ export default class DataNodeCollection extends Collection {
     this.accessUIdMap = new Map();
   }
 
+  addEntry(dataNode) {
+    super.addEntry(dataNode);
+    if (dataNode) {
+      // set applicationId
+      dataNode.applicationId = this.dp.application.applicationId;
+    }
+  }
+
   /**
    * @param {DataNode} dataNode
    */
@@ -145,6 +153,7 @@ export default class DataNodeCollection extends Collection {
 
   serialize(dataNode) {
     const dataNodeObj = { ...dataNode };
+    delete dataNodeObj.applicationId;
     delete dataNodeObj._valueString;
     delete dataNodeObj._valueStringShort;
     return dataNodeObj;
