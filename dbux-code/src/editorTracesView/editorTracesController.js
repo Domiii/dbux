@@ -12,6 +12,7 @@ const { log, debug, warn, error: logError } = newLogger('editorTracesController'
 let controller;
 
 /**
+ * @deprecated
  * TreeView to investigate and understand all traces at cursor.
  * Currently unused.
  */

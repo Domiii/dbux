@@ -1,4 +1,6 @@
+import isString from 'lodash/isString';
 import NanoEvents from 'nanoevents';
+import { err2String } from '../util/errorLog';
 import { consoleOutputStreams } from '../console';
 
 
@@ -186,7 +188,17 @@ export function addOutputStreams(newOutputStreams, fullErrorStack = true) {
     // NOTE: by default, Error.toString() returns only the message for some reason
     const cb = newOutputStreams.error;
     newOutputStreams.error = (...args) => {
-      args = args.map(arg => arg instanceof Error ? arg.stack : arg);
+      args = args.map(arg => {
+        if (arg instanceof Error) {
+          arg = err2String(arg);
+        }
+        
+        if (!isString(arg)) {
+          arg = arg + '';
+        }
+
+        return arg;
+      });
       cb(...args);
     };
   }

@@ -1,5 +1,6 @@
 import { nextMode } from '../globalAnalysisView/nodes/GlobalModulesNode';
 import { showInformationMessage } from '../codeUtil/codeModals';
+import searchController from '../search/searchController';
 import { registerCommand } from './commandUtil';
 
 /** @typedef {import('../globalAnalysisView/GlobalAnalysisViewController').default} GlobalAnalysisViewController */
@@ -23,6 +24,13 @@ export function initGlobalAnalysisViewCommands(context, globalAnalysisViewContro
     () => {
       nextMode();
       globalAnalysisViewController.refresh();
+    }
+  );
+
+  registerCommand(context,
+    'dbuxGlobalAnalysisView.node.nextSearchMode',
+    () => {
+      searchController.nextSearchMode();
     }
   );
 }

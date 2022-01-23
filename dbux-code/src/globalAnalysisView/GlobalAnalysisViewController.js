@@ -1,9 +1,11 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
+import searchController from '../search/searchController';
 import ErrorTraceManager from './ErrorTraceManager';
 import GlobalAnalysisNodeProvider from './GlobalAnalysisNodeProvider';
 import GlobalErrorsNode from './nodes/GlobalErrorsNode';
+import GlobalSearchNode from './nodes/GlobalSearchNode';
 
 /** @typedef {import('vscode').ExtensionContext} ExtensionContext */
 
@@ -32,6 +34,20 @@ export default class GlobalAnalysisViewController {
     this.errorTraceManager.refresh();
 
     this.refresh();
+  }
+
+  handleSearch = async () => {
+    await this.refresh();
+    this.focusOnSearchResult();
+  }
+
+  /** ###########################################################################
+   * search
+   *  #########################################################################*/
+
+  async focusOnSearchResult() {
+    const searchResultNode = this.treeDataProvider.getNodeByClass(GlobalSearchNode);
+    await this.treeView.reveal(searchResultNode, { select: false, expand: 1 });
   }
 
   /** ###########################################################################
@@ -73,6 +89,7 @@ export default class GlobalAnalysisViewController {
       }
     });
 
+    searchController.onSearch(this.handleSearch);
     traceSelection.onTraceSelectionChanged(() => this.treeDataProvider.refreshIcon());
   }
 }
