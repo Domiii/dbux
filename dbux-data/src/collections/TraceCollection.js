@@ -16,6 +16,7 @@ export default class TraceCollection extends Collection {
 
   constructor(dp) {
     super('traces', dp);
+    this.addedErrorTraces = new Set();
   }
 
   addEntry(trace) {
@@ -174,31 +175,35 @@ export default class TraceCollection extends Collection {
    * @param {Trace[]} traces
    */
   recordErrorTraces(traces) {
-    const errorTraces = new Set();
-    let changedFlag = false;
-    if (this._newErrorTraces) {
-      for (const trace of this._newErrorTraces) {
-        if (trace.error && !errorTraces.has(trace)) {
+    // records all error traces per dp to prevent duplication
+    this.addedErrorTraces = new Set();
+    // records new actual error traces for logging purpose 
+    const newErrorTraces = [];
+
+    // check and add potential errors
+    if (this._newPotentialErrorTraces) {
+      for (const trace of this._newPotentialErrorTraces) {
+        if (trace.error && !this.addedErrorTraces.has(trace)) {
           this.dp.indexes.traces.error.addEntry(trace);
           this.dp.indexes.traces.errorByContext.addEntry(trace);
           this.dp.indexes.traces.errorByRoot.addEntry(trace);
-          errorTraces.add(trace);
-          changedFlag = true;
+          this.addedErrorTraces.add(trace);
+          newErrorTraces.push(trace);
         }
       }
     }
-    this._newErrorTraces = EmptyArray;
+    this._newPotentialErrorTraces = EmptyArray;
 
-    if (changedFlag) {
+    if (newErrorTraces.length) {
       /**
        * hackfix: array might be unordered after insertion, needs to sort them manually
        */
       this.dp.indexes.traces.error.get(1).sort((t1, t2) => t1.traceId - t2.traceId);
     }
 
-    if (errorTraces.size) {
-      const msg = Array.from(errorTraces).map(t => `${this.dp.util.makeTraceInfo(t)}`).join('\n ');
-      this.logger.debug(`#### ${errorTraces.size} ERROR traces ####\n ${msg}`);
+    if (newErrorTraces.length) {
+      const msg = newErrorTraces.map(t => `${this.dp.util.makeTraceInfo(t)}`).join('\n ');
+      this.logger.debug(`#### ${newErrorTraces.length} ERROR traces ####\n ${msg}`);
     }
   }
 
@@ -209,7 +214,7 @@ export default class TraceCollection extends Collection {
     /**
      * hackfix: record new error traces in temp array, to correctly record previous trace in previous run
      */
-    this._newErrorTraces = [];
+    this._newPotentialErrorTraces = [];
     const { dp: { util } } = this;
     for (const trace of traces) {
       const {
@@ -220,7 +225,7 @@ export default class TraceCollection extends Collection {
       const traceType = util.getTraceType(traceId);
       if (TraceType.is.ThrowArgument(traceType)) {
         trace.error = true;
-        this._newErrorTraces.push(trace);
+        this._newPotentialErrorTraces.push(trace);
       }
 
       // if traces were disabled, there is nothing to do here
@@ -254,18 +259,18 @@ export default class TraceCollection extends Collection {
 
       if (TraceType.is.Catch(traceType)) {
         previousTrace.error = true;
-        this._newErrorTraces.push(previousTrace);
+        this._newPotentialErrorTraces.push(previousTrace);
       }
       else if (TraceType.is.Finally(traceType)) {
         if (!TraceType.is.TryExit(previousTraceType) && !isTraceReturn(previousTraceType)) {
           previousTrace.error = true;
-          this._newErrorTraces.push(previousTrace);
+          this._newPotentialErrorTraces.push(previousTrace);
         }
       }
       else if (isTracePop(traceType)) {
         if (!isTraceReturn(previousTraceType) && !isTraceFunctionExit(previousTraceType) && !TraceType.is.FinallyExit(previousTraceType)) {
           previousTrace.error = true;
-          this._newErrorTraces.push(previousTrace);
+          this._newPotentialErrorTraces.push(previousTrace);
         }
       }
 
