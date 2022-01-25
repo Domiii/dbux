@@ -1,6 +1,7 @@
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import DataNodeNode from '../codeUtil/treeView/DataNodeNode';
 
+const Verbose = false;
 
 /**
  * Besides a `Trace`, this node also has a `dataNode` to specify one of it's dataNodes.
@@ -14,6 +15,9 @@ export default class DataFlowNode extends DataNodeNode {
 
   init() {
     this.contextValue = 'dbuxDataFlowView.node.data';
+    if (Verbose) {
+      this.description = `traceId=${this.trace.traceId}, nodeId=${this.dataNode.nodeId}`;
+    }
   }
 
   getTraceDataNodes() {

@@ -42,7 +42,7 @@ export default class DataNodeNode extends BaseTreeViewNode {
   }
 
   isSelected() {
-    return traceSelection.isSelected(this.trace, this.dataNode.nodeId);
+    return traceSelection.nodeId === this.dataNode.nodeId;
   }
 
   makeIconPath() {
