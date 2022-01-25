@@ -1,4 +1,5 @@
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import SearchMode from '@dbux/graph-common/src/shared/SearchMode';
 import NanoEvents from 'nanoevents';
 import SearchTools from './SearchTools';
@@ -12,6 +13,8 @@ class SearchController {
   constructor() {
     this._emitter = new NanoEvents();
     this.reset();
+
+    allApplications.selection.onApplicationsChanged(this.handleApplicationSelectionChanged);
   }
 
   /** ###########################################################################
@@ -85,6 +88,10 @@ class SearchController {
 
   onSearch(cb) {
     return this._emitter.on('search', cb);
+  }
+
+  handleApplicationSelectionChanged = () => {
+    this.search(this.searchTerm);
   }
 }
 
