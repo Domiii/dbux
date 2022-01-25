@@ -71,7 +71,7 @@ export default class GraphNode extends HostComponentEndpoint {
     const childMode = this.getChildMode();
     for (const child of this.owner.children) {
       if (!hasGraphNode(child)) {
-        this.logger.warn(`GraphNode owner's children ${child.debugTag} contains no graphNode`);
+        this.logger.warn(`Cannot setMode for some child node. ${this.owner.debugTag}'s child ${child.debugTag} does not have GraphNode`);
       }
       else {
         child.controllers.getComponent(GraphNode).setMode(childMode);

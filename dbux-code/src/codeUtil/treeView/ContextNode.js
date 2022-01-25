@@ -14,6 +14,10 @@ export default class ContextNode extends BaseTreeViewNode {
     return makeContextLabel(context, app);
   }
 
+  get dp() {
+    return allApplications.getById(this.entry.contextId).dataProvider;
+  }
+
   get context() {
     return this.entry;
   }
@@ -34,9 +38,8 @@ export default class ContextNode extends BaseTreeViewNode {
   }
 
   handleClick = () => {
-    const { applicationId, contextId } = this.context;
-    const dp = allApplications.getById(applicationId).dataProvider;
-    const firstTrace = dp.util.getFirstTraceOfContext(contextId);
+    const { contextId } = this.context;
+    const firstTrace = this.dp.util.getFirstTraceOfContext(contextId);
     traceSelection.selectTrace(firstTrace);
   }
 }

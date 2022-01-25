@@ -1,8 +1,7 @@
 import Enum from '@dbux/common/src/util/Enum';
 
 
-// eslint-disable-next-line import/no-mutable-exports
-let UserActionType = {
+const UserActionTypeObj = {
   PracticeSessionChanged: 1,
   TestRunFinished: 2,
   NewExerciseProgress: 3,
@@ -61,7 +60,10 @@ let UserActionType = {
   SessionFinished: 110
 };
 
-UserActionType = new Enum(UserActionType);
+/**
+ * @type {(Enum|typeof UserActionTypeObj)}
+ */
+const UserActionType = new Enum(UserActionTypeObj);
 
 
 export default UserActionType;
