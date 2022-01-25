@@ -69,13 +69,19 @@ export default class CallGraph {
   getPreviousParentContext(traceId) {
     const trace = this.dp.collections.traces.getById(traceId);
     const { contextId } = trace;
-    const firstTrace = this.dp.util.getFirstTraceOfContext(contextId);
+    const realContextId = this.dp.util.getRealContextIdOfContext(contextId);
+    const firstTraceInContext = this.dp.util.getFirstTraceOfContext(contextId); 
+    const firstTraceInRealContext = this.dp.util.getFirstTraceOfRealContext(realContextId);
 
-    if (trace !== firstTrace) {
-      return firstTrace;
+    if (
+      trace !== firstTraceInRealContext &&
+      !(trace === firstTraceInContext && this.dp.util.isFirstContextInParent(contextId))
+    ) {
+      return firstTraceInRealContext;
     }
     else {
-      const parentTrace = this._getParentTraceByContextId(contextId);
+      const realContext = this.dp.util.getRealContextOfContext(contextId);
+      const parentTrace = this._getParentTraceByContextId(realContext.contextId);
       if (parentTrace) {
         const callerTrace = this.dp.util.getPreviousCallerTraceOfTrace(parentTrace.traceId);
         return callerTrace || null;
