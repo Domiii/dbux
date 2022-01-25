@@ -5,6 +5,7 @@ import open from 'open';
 import { existsSync } from 'fs';
 import isNaN from 'lodash/isNaN';
 // import { stringify as jsonStringify } from 'comment-json';
+import SearchMode from '@dbux/graph-common/src/shared/SearchMode';
 import traceSelection from '@dbux/data/src/traceSelection';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { importApplication, exportApplication } from '@dbux/data/src/applications/importExport';
@@ -28,6 +29,7 @@ import { translate } from '../lang';
 import { getCodeDirectory, getDefaultExportDirectory, getLogsDirectory } from '../codeUtil/codePath';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import { getCurrentResearch } from '../research/Research';
+import searchController from '../search/searchController';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('userCommands');
@@ -278,4 +280,29 @@ export function initUserCommands(extensionContext) {
   registerCommand(extensionContext, 'dbux.showOutputChannel', async () => {
     return showOutputChannel();
   });
+
+  /** ###########################################################################
+   * search
+   *  #########################################################################*/
+
+  registerCommand(extensionContext, 'dbux.searchContexts', async () => {
+    return activeSearch(SearchMode.ByContext);
+  });
+
+  registerCommand(extensionContext, 'dbux.searchTraces', async () => {
+    return activeSearch(SearchMode.ByTrace);
+  });
+  
+  registerCommand(extensionContext, 'dbux.searchValues', async () => {
+    return activeSearch(SearchMode.ByValue);
+  });
+}
+
+/** ###########################################################################
+ * helpers
+ *  #########################################################################*/
+
+async function activeSearch(mode) {
+  searchController.setSearchMode(mode);
+  await showGraphView();
 }
