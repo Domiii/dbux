@@ -113,7 +113,13 @@ TODO
 
 ## Create-React-App
 
-<!-- ```js
+<!--
+
+NOTES: 
+* currently, CRA has one babel-loader for src and one for dependencies [1/2022]
+* -> TODO: probably need to add module filtering to the plugin itself, rather than relying on babel-register or webpack to filter for us.
+
+ ```js
 const { getLoaders, loaderByName } = require('@craco/craco');
 
 const shouldInclude = require('@dbux/babel-plugin/dist/include').default;
