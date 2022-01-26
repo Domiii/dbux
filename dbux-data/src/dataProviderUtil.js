@@ -2537,7 +2537,7 @@ export default {
 
     const nestingLink = dp.indexes.promiseLinks.from.getFirst(nestedPromiseId);
     if (nestingLink) {
-      // “Nested PostThen” or “AsyncReturn” or “resolve” or “all”
+      // “Nested PostThen”, “AsyncReturn”, “resolve”, “all”, “race”
       const { to: outerPromiseId/* , rootId */ } = nestingLink;
       if ((u = dp.util.getLastAsyncPostEventUpdateOfPromise(outerPromiseId, beforeRootId))) {
         // “Nested PostThen” or “AsyncReturn” (of function with `PostAwait`, i.e. `await` executed)
