@@ -13,8 +13,17 @@ import { compareTraceInner } from '../codeUtil/codeRangeUtil';
  * @param {Trace} t1 
  * @param {Trace} t2 
  */
-function isTracesInSameContext(t1, t2) {
-  return t1.applicationId === t2.applicationId && t1.contextId === t2.contextId;
+function isTracesInSameRealContext(t1, t2) {
+  if (t1.applicationId !== t2.applicationId) {
+    return false;
+  }
+  else if (t1.contextId === t2.contextId) {
+    return true;
+  }
+  else {
+    const dp = allApplications.getById(t1.applicationId).dataProvider;
+    return dp.util.getRealContextIdOfContext(t1.contextId) === dp.util.getRealContextIdOfContext(t2.contextId);
+  }
 }
 
 export default class TracesAtCursor {
@@ -76,7 +85,7 @@ export default class TracesAtCursor {
 
     // filter out traces in other context
     allTraces = allTraces.filter((t) => {
-      return isTracesInSameContext(t, nearestTrace);
+      return isTracesInSameRealContext(t, nearestTrace);
     });
 
     // TODO: [performance] only sort them when next or previous is called

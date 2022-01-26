@@ -386,11 +386,12 @@ export default {
 
   /** @param {DataProvider} dp */
   getFirstTraceOfContext(dp, contextId) {
-    const traces = dp.indexes.traces.byContext.get(contextId);
-    if (!traces?.length) {
-      return null;
-    }
-    return traces[0];
+    return dp.indexes.traces.byContext.getFirst(contextId);
+  },
+
+  /** @param {DataProvider} dp */
+  getFirstTraceOfRealContext(dp, realContextId) {
+    return dp.indexes.traces.byRealContext.getFirst(realContextId);
   },
 
   /** @param {DataProvider} dp */

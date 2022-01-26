@@ -15,7 +15,6 @@ let controller;
 export class DataFlowViewController {
   constructor() {
     this.treeDataProvider = new DataFlowNodeProvider(this);
-    
     this.setSearchMode(DataFlowSearchModeType.ByValueId, false);
     this.setFilterMode(DataFlowFilterModeType.None, false);
   }
@@ -40,8 +39,15 @@ export class DataFlowViewController {
     }
   }
 
+  focusOnSelectedNode = async () => {
+    const selectedNode = this.treeDataProvider.rootNodes.find(root => root.isSelected());
+    if (selectedNode) {
+      await this.treeView.reveal(selectedNode, { select: false });
+    }
+  }
+
   refresh = () => {
-    this.treeDataProvider.refresh();
+    return this.treeDataProvider.refresh();
   }
 
   refreshOnData = () => {
@@ -67,8 +73,9 @@ export class DataFlowViewController {
     });
 
     // add traceSelection event handler
-    traceSelection.onTraceSelectionChanged((/* selected */) => {
-      this.refresh();
+    traceSelection.onTraceSelectionChanged(async (/* selected */) => {
+      await this.refresh();
+      await this.focusOnSelectedNode();
     });
   }
 }
