@@ -1,6 +1,13 @@
 import NanoEvents from 'nanoevents';
 import TraceSelectionHistory from './TraceSelectionHistory';
 
+/** @typedef {import('../applications/allApplications').AllApplications} AllApplications */
+
+/**
+ * @type {AllApplications}
+ */
+let _allApplications;
+
 export class TraceSelection {
   _emitter = new NanoEvents();
   selected = null;
@@ -13,7 +20,15 @@ export class TraceSelection {
   selectTrace(trace, sender = null, nodeId = null) {
     if (!nodeId) {
       // select its node by default
-      nodeId = trace.nodeId || null;
+      if (trace.nodeId) {
+        nodeId = trace.nodeId;
+      }
+      else {
+        const { applicationId, traceId } = trace;
+        const dp = _allApplications.getById(applicationId).dataProvider;
+        const dataNode = dp.util.getDataNodeOfTrace(traceId);
+        nodeId = dataNode.nodeId || null;
+      }
     }
     this._setSelectTrace(trace, nodeId);
     this._emitSelectionChangedEvent(sender, nodeId);
@@ -35,3 +50,7 @@ export class TraceSelection {
 
 const traceSelection = new TraceSelection();
 export default traceSelection;
+
+export function initTraceSelection(allApplications) {
+  _allApplications = allApplications;
+}

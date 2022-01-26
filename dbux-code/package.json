@@ -130,6 +130,18 @@
         "title": "Dbux: Select Trace by id"
       },
       {
+        "command": "dbux.searchContexts",
+        "title": "Dbux: Search in contexts"
+      },
+      {
+        "command": "dbux.searchTraces",
+        "title": "Dbux: Search in traces"
+      },
+      {
+        "command": "dbux.searchValues",
+        "title": "Dbux: Search in values"
+      },
+      {
         "command": "dbux.togglePracticeView",
         "title": "Dbux: Toggle Practice View",
         "icon": {
@@ -1172,6 +1184,18 @@
         },
         {
           "command": "dbux.toggleNavButton",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.searchContexts",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.searchTraces",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.searchValues",
           "when": "dbux.context.activated"
         },
         {

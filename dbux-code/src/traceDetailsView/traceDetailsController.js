@@ -50,7 +50,7 @@ class TraceDetailsController {
            */
           await this.treeView.reveal(navigationNode, { select: true });
           await sleep();
-          const selectedExecutionNode = executionsTDNode.getSelectedChildren();
+          const selectedExecutionNode = executionsTDNode.getSelectedChild();
           if (selectedExecutionNode) {
             await this.treeView.reveal(selectedExecutionNode, { select: false });
           }
