@@ -205,7 +205,7 @@ export default class ExecutionsTDNode extends TraceContainerNode {
     this.contextValue = ExecutionsTDNodeContextValue;
   }
 
-  getSelectedChildren() {
+  getSelectedChild() {
     if (ExecutionsTDNode.getCurrentGroupClass() === UngroupedNode) {
       return this.children?.find(node => node.isSelected());
     }

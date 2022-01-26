@@ -30,16 +30,18 @@ export default class GlobalErrorsNode extends BaseTreeViewNode {
     this.description = `(${errorTraces.length})`;
   }
 
-  getSelectedChildren() {
-    for (const child of this.children) {
-      if (child.isSelected()) {
-        return child;
-      }
+  getSelectedChild() {
+    // find in children
+    const selectedChild = this.children.find(child => child.isSelected());
+    if (selectedChild) {
+      return selectedChild;
     }
+
+    // find in further descendants
     for (const child of this.children) {
-      const selectedErrorChild = child.getSelectedChildren();
-      if (selectedErrorChild) {
-        return selectedErrorChild;
+      const selectedDescendant = child.getSelectedChild();
+      if (selectedDescendant) {
+        return selectedDescendant;
       }
     }
     return null;

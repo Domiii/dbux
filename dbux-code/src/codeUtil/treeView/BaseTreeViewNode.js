@@ -2,6 +2,7 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import EventHandlerList from '@dbux/common/src/util/EventHandlerList';
 import { TreeItem } from 'vscode';
 
+/** @typedef {import('@dbux/data/src/pathways/UserActionType').default} UserActionType */
 /** @typedef {import('./BaseTreeViewNodeProvider').default} BaseTreeViewNodeProvider */
 
 export default class BaseTreeViewNode extends TreeItem {
@@ -76,6 +77,14 @@ export default class BaseTreeViewNode extends TreeItem {
   makeIconPath() {
     // default: no icon
     return '';
+  }
+
+  /**
+   * Set this to a {@link UserActionType} to record onclick UserAction, or set to `false` to prevent recording
+   * @virtual
+   */
+  get clickUserActionType() {
+    return false;
   }
 
   /**

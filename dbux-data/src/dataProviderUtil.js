@@ -265,47 +265,6 @@ export default {
   },
 
   /** @param {DataProvider} dp */
-  searchContexts(dp, searchTerm) {
-    searchTerm = searchTerm.toLowerCase();
-
-    return dp.util.getAllExecutedStaticContexts().
-      filter(staticContext => {
-        return staticContext.displayName?.toLowerCase().includes(searchTerm);
-      }).
-      flatMap(staticContext =>
-        dp.indexes.executionContexts.byStaticContext.get(staticContext.staticContextId)
-      );
-  },
-
-  searchTraces(dp, searchTerm) {
-    searchTerm = searchTerm.toLowerCase();
-
-    return dp.util.getAllExecutedStaticContexts().
-      flatMap(staticContext => {
-        const staticTraces = dp.util.getExecutedStaticTracesInStaticContext(staticContext.staticContextId) || EmptyArray;
-        return staticTraces.filter(staticTrace =>
-          staticTrace.displayName?.toLowerCase().includes(searchTerm)
-        );
-      }).
-      flatMap(staticTrace =>
-        dp.indexes.traces.byStaticTrace.get(staticTrace.staticTraceId) || EmptyArray
-      );
-  },
-
-  /**
-   * @param {DataProvider} dp 
-   * @param {number|string} searchTerm
-   */
-  searchValues(dp, searchTerm) {
-    searchTerm = searchTerm.toString().toLowerCase();
-
-    return dp.util.getPrimitiveDataNodes()
-      .filter(dataNode =>
-        dataNode.value?.toString().includes(searchTerm)
-      );
-  },
-
-  /** @param {DataProvider} dp */
   getContextModuleName(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
     const staticContext = dp.collections.staticContexts.getById(context.staticContextId);
@@ -2178,6 +2137,58 @@ export default {
       }
       return true;
     });
+  },
+
+  /** ###########################################################################
+   * search
+   *  #########################################################################*/
+
+  /**
+   * @param {DataProvider} dp 
+   * @param {string} searchTerm
+   */
+  searchContexts(dp, searchTerm) {
+    searchTerm = searchTerm.toLowerCase();
+
+    return dp.util.getAllExecutedStaticContexts().
+      filter(staticContext => {
+        return staticContext.displayName?.toLowerCase().includes(searchTerm);
+      }).
+      flatMap(staticContext =>
+        dp.indexes.executionContexts.byStaticContext.get(staticContext.staticContextId)
+      );
+  },
+
+  /**
+   * @param {DataProvider} dp 
+   * @param {string} searchTerm
+   */
+  searchTraces(dp, searchTerm) {
+    searchTerm = searchTerm.toLowerCase();
+
+    return dp.util.getAllExecutedStaticContexts().
+      flatMap(staticContext => {
+        const staticTraces = dp.util.getExecutedStaticTracesInStaticContext(staticContext.staticContextId) || EmptyArray;
+        return staticTraces.filter(staticTrace =>
+          staticTrace.displayName?.toLowerCase().includes(searchTerm)
+        );
+      }).
+      flatMap(staticTrace =>
+        dp.indexes.traces.byStaticTrace.get(staticTrace.staticTraceId) || EmptyArray
+      );
+  },
+
+  /**
+   * @param {DataProvider} dp 
+   * @param {number|string} searchTerm
+   */
+  searchValues(dp, searchTerm) {
+    searchTerm = searchTerm.toString().toLowerCase();
+
+    return dp.util.getPrimitiveDataNodes()
+      .filter(dataNode =>
+        dataNode.value?.toString().toLowerCase().includes(searchTerm)
+      );
   },
 
   // ###########################################################################

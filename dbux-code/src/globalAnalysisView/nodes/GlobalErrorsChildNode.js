@@ -9,7 +9,7 @@ export default class GlobalErrorsChildNode extends TraceNode {
     return this.childTraces.map(t => this.treeNodeProvider.buildNode(TraceNode, t, this));
   }
 
-  getSelectedChildren() {
+  getSelectedChild() {
     if (!this.children) {
       this.treeNodeProvider.buildChildren(this);
     }

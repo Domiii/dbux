@@ -1,4 +1,5 @@
 import allApplications from '@dbux/data/src/applications/allApplications';
+import SearchMode from '@dbux/graph-common/src/shared/SearchMode';
 
 /** @typedef {import('@dbux/data/src/RuntimeDataProvider').default} RuntimeDataProvider */
 /** @typedef {import('@dbux/common/src/types/ExecutionContext').default} ExecutionContext */
@@ -65,7 +66,7 @@ class SearchToolBase {
 /**
  * @extends {SearchToolBase<ExecutionContext>}
  */
-export class SearchContext extends SearchToolBase {
+class SearchContext extends SearchToolBase {
   _search(dp, searchTerm) {
     return dp.util.searchContexts(searchTerm);
   }
@@ -78,7 +79,7 @@ export class SearchContext extends SearchToolBase {
 /**
  * @extends {SearchToolBase<Trace>}
  */
-export class SearchTrace extends SearchToolBase {
+class SearchTrace extends SearchToolBase {
   _search(dp, searchTerm) {
     return dp.util.searchTraces(searchTerm);
   }
@@ -91,7 +92,7 @@ export class SearchTrace extends SearchToolBase {
 /**
  * @extends {SearchToolBase<DataNode>}
  */
-export class SearchValue extends SearchToolBase {
+class SearchValue extends SearchToolBase {
   _search(dp, searchTerm) {
     return dp.util.searchValues(searchTerm);
   }
@@ -102,3 +103,11 @@ export class SearchValue extends SearchToolBase {
     return context;
   }
 }
+
+const SearchTools = {
+  [SearchMode.ByContext]: new SearchContext(),
+  [SearchMode.ByTrace]: new SearchTrace(),
+  [SearchMode.ByValue]: new SearchValue(),
+};
+
+export default SearchTools;

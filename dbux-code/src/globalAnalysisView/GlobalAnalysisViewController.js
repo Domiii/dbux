@@ -38,7 +38,7 @@ export default class GlobalAnalysisViewController {
 
   handleSearch = async () => {
     await this.refresh();
-    this.focusOnSearchResult();
+    await this.focusOnSearchResult();
   }
 
   /** ###########################################################################
@@ -61,7 +61,7 @@ export default class GlobalAnalysisViewController {
     }
     this.errorTraceManager.showError();
     const errorNode = this.treeDataProvider.getNodeByClass(GlobalErrorsNode);
-    const selectedErrorNode = errorNode.getSelectedChildren();
+    const selectedErrorNode = errorNode.getSelectedChild();
     if (selectedErrorNode) {
       await this.treeView.reveal(selectedErrorNode);
     }

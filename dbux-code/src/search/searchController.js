@@ -1,23 +1,20 @@
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import SearchMode from '@dbux/graph-common/src/shared/SearchMode';
 import NanoEvents from 'nanoevents';
-import { SearchContext, SearchTrace, SearchValue } from './SearchHelper';
+import SearchTools from './SearchTools';
 
 class SearchController {
+  /**
+   * @type {[{applicationId: number, matches: any[]}]}
+   */
+  matches = EmptyArray;
+
   constructor() {
     this._emitter = new NanoEvents();
-    this.mode = SearchMode.None;
-    this.searchTerm = '';
-    /**
-     * @type {[{applicationId: number, matches: any[]}]}
-     */
-    this.matches = EmptyArray;
-    this.contexts = EmptyArray;
-    this.searchTools = {
-      [SearchMode.ByContext]: new SearchContext(),
-      [SearchMode.ByTrace]: new SearchTrace(),
-      [SearchMode.ByValue]: new SearchValue()
-    };
+    this.reset();
+
+    allApplications.selection.onApplicationsChanged(this.handleApplicationSelectionChanged);
   }
 
   /** ###########################################################################
@@ -38,8 +35,8 @@ class SearchController {
       this.contexts = EmptyArray;
     }
     else {
-      this.matches = this.searchTools[this.mode].search(searchTerm);
-      this.contexts = this.searchTools[this.mode].getContexts(this.matches);
+      this.matches = SearchTools[this.mode].search(searchTerm);
+      this.contexts = SearchTools[this.mode].getContexts(this.matches);
     }
 
     this._notifySearch();
@@ -59,7 +56,18 @@ class SearchController {
    * Get context of a match result depending on current search mode
    */
   getContext(dp, match) {
-    return this.searchTools[this.mode].getContext(dp, match);
+    return SearchTools[this.mode].getContext(dp, match);
+  }
+
+  clearSearch() {
+    this.searchTerm = '';
+    this.matches = EmptyArray;
+    this.contexts = EmptyArray;
+  }
+
+  reset() {
+    this.mode = SearchMode.None;
+    this.clearSearch();
   }
 
   /** ###########################################################################
@@ -80,6 +88,10 @@ class SearchController {
 
   onSearch(cb) {
     return this._emitter.on('search', cb);
+  }
+
+  handleApplicationSelectionChanged = () => {
+    this.search(this.searchTerm);
   }
 }
 
