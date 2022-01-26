@@ -49,13 +49,19 @@ const UserActionTypeObj = {
   NavigationPreviousTrace: 48,
   NavigationNextTrace: 49,
 
+  DataFlowViewSearchModeChanged: 60,
+  DataFlowViewFilterModeChanged: 61,
+  DataFlowSelectTrace: 65,
+  
+  SearchModeChanged: 90,
+  SearchContexts: 91,
+  SearchTraces: 92,
+  SearchValues: 93,
+
   CallGraphOther: 100,
-  CallGraphSearchContexts: 102,
-  CallGraphSearchTraces: 103,
-  CallGraphNodeCollapseChange: 104,
-  CallGraphTrace: 105,
-  CallGraphCallTrace: 106,
-  CallGraphSearchValues: 107,
+  CallGraphNodeCollapseChange: 101,
+  CallGraphTrace: 102,
+  CallGraphCallTrace: 103,
 
   SessionFinished: 110
 };

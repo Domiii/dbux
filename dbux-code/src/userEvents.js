@@ -23,6 +23,10 @@ export function initUserEvent(_manager) {
 // events registry
 // ###########################################################################
 
+export function emitUserAction(actionType, data) {
+  emitUserEvent(actionType, data);
+}
+
 export function emitEditorAction(type, data) {
   emitUserEvent(type, data);
 }

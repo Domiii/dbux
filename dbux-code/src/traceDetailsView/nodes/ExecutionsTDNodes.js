@@ -20,10 +20,6 @@ class ExecutionNode extends TraceNode {
     // return makeTraceLabel(trace);
   }
 
-  get clickUserActionType() {
-    return false;
-  }
-
   handleClick() {
     emitSelectTraceAction(this.trace, UserActionType.TDExecutionsTraceUse);
     super.handleClick();

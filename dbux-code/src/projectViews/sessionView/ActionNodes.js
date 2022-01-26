@@ -188,10 +188,6 @@ class RunWithoutDbuxNode extends SessionNode {
  * ##########################################################################*/
 
 class TagNode extends SessionNode {
-  get clickUserActionType() {
-    return false;
-  }
-
   static makeLabel() {
     return 'Solve: Mark selected trace\'s line as buggy!';
   }
