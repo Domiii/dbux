@@ -118,6 +118,8 @@ export default class CallbackPatcher {
       return originalCallback;
     }
 
+    // TODO: register as proxy instead
+
     // /**
     //  * Get previously registered callback.
     //  * NOTE: we don't really want that, since each potential scheduler should get their own instance.

@@ -282,7 +282,7 @@ function isClass(value) {
 }
 
 export function isInstrumentedFunction(value) {
-  return isFunction(value) && !isClass(value) &&
+  return isFunction(value) &&
     !!getFunctionDefinitionTraceOfValue(value);
 }
 
