@@ -7,7 +7,7 @@ index 2592a93..bb3e16b 100644
          if (data.length === 0 && q.idle()) {
              // call drain immediately if there are no tasks
 -            setImmediate(() => trigger('drain'));
-+            setImmediate(() => q.idle() && trigger('drain'));
++            setImmediate(() => void q.idle() && trigger('drain'));
              return true
          }
          return false

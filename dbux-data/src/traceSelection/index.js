@@ -27,7 +27,7 @@ export class TraceSelection {
         const { applicationId, traceId } = trace;
         const dp = _allApplications.getById(applicationId).dataProvider;
         const dataNode = dp.util.getDataNodeOfTrace(traceId);
-        nodeId = dataNode.nodeId || null;
+        nodeId = dataNode?.nodeId || null;
       }
     }
     this._setSelectTrace(trace, nodeId);
