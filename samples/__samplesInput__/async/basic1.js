@@ -2,14 +2,6 @@ function R(x) {
   return Promise.resolve(x);
 }
 
-function sleep1s() {
-  return sleep(1000);
-}
-
-function sleep(ms) {
-  return new Promise(r => setTimeout(r, ms));
-}
-
 
 async function main() {
   const p = R().then(f1)
@@ -25,7 +17,13 @@ async function main() {
 }
 main();
 
+function sleep1s() {
+  return sleep(1000);
+}
 
+function sleep(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
 
 function f1() { }
 function f2() { }
