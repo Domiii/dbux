@@ -11,7 +11,8 @@ import useBaseUrl from '../hooks/useBaseUrl';
 
 // const acg = 'TODO';
 
-const AcgPath = 'runtime-analysis/asynchronous-call-graph';
+// const AcgPath = 'runtime-analysis/asynchronous-call-graph';
+const AcgPath = 'acg';
 const DebuggingBackgroundPath = 'background/debugging';
 
 const PathByTerm = {

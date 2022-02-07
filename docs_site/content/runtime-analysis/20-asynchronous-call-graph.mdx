@@ -1,5 +1,6 @@
 ---
 sidebar_class_name: sidebar-call-graph
+slug: /acg
 ---
 
 # Asynchronous Call Graph
@@ -96,8 +97,8 @@ Examples of CGRs include:
 
 * The application's entry point.
 * A promise handler callback.
-* Continuation of an async function.
-* Execution of a JavaScript file, often called by `node` or by the webpack bundle (which in turn is called by the underlying JS runtime environment).
+* Continuation of an async function, after an `await` expression.
+* Execution of a JavaScript file, e.g. when `require`d or `import`ed by `node` or the webpack (or other) bundling system.
 * Browser executing a &lt;script> tag.
 * Execution of a callback supplied to `setTimeout`, `setInterval`, `setIntermediate`, `Process.nextTick`, `Promise.then` etc. These callbacks are scheduled and, at a later point in time, executed by the underlying JS runtime environment.
 * DOM, OS or other types of event handler callbacks.
