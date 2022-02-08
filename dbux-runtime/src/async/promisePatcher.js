@@ -565,7 +565,7 @@ export function getPromiseOwnAsyncFunctionContextId(promise) {
 // }
 
 /** ###########################################################################
- * built-ins
+ * resolve + reject
  * ##########################################################################*/
 
 monkeyPatchFunctionHolder(Promise, 'resolve',
@@ -598,6 +598,10 @@ monkeyPatchFunctionHolder(Promise, 'reject',
   }
 );
 
+/** ###########################################################################
+ * Promise.all
+ * ##########################################################################*/
+
 function allHandler(thisArg, args, originalFunction, patchedFunction) {
   // NOTE: This function accepts an iterable and fails if it is not an iterable.
   // hackfix: We force conversion to array before passing it in, to make sure that the iterable does not iterate more than once.
@@ -616,8 +620,9 @@ function allHandler(thisArg, args, originalFunction, patchedFunction) {
   return allPromise;
 }
 
-monkeyPatchFunctionHolder(Promise, 'all', allHandler);
-monkeyPatchFunctionHolder(Promise, 'allSettled', allHandler);
+/** ###########################################################################
+ * Promise.race
+ * ##########################################################################*/
 
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/race
@@ -656,6 +661,10 @@ function raceHandler(thisArg, args, originalFunction, patchedFunction) {
   return racePromise;
 }
 
+/** ###########################################################################
+ * Promise.any
+ * ##########################################################################*/
+
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/any
  */
@@ -693,8 +702,14 @@ function anyHandler(thisArg, args, originalFunction, patchedFunction) {
   return anyPromise;
 }
 
-monkeyPatchFunctionHolder(Promise, 'race', raceHandler);
+/** ###########################################################################
+ * future-work: move these to a better place?
+ * ##########################################################################*/
+
+monkeyPatchFunctionHolder(Promise, 'all', allHandler);
+monkeyPatchFunctionHolder(Promise, 'allSettled', allHandler);
 monkeyPatchFunctionHolder(Promise, 'any', anyHandler);
+monkeyPatchFunctionHolder(Promise, 'race', raceHandler);
 
 // TODO: race resolves or rejects as soon as the first of its argument promises does.
 //  -> CHAIN against the promise that won the race; ignore all others
