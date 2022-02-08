@@ -75,7 +75,9 @@ export class DataFlowViewController {
     // add traceSelection event handler
     traceSelection.onTraceSelectionChanged(async (/* selected */) => {
       await this.refresh();
-      await this.focusOnSelectedNode();
+      if (this.treeView.visible) {
+        await this.focusOnSelectedNode();
+      }
     });
   }
 }
