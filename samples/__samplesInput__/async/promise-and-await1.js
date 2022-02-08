@@ -1,16 +1,16 @@
-const { P, sleep } = require('../../util/asyncUtil');
+const { A, P, sleep } = require('../../util/asyncUtil');
 
 P(
-  'A',
+  // 'A',
   async () => {
     // await sleep();
     return P()
       .then(() => 'B');
   },
-  () => {
-    // await sleep();
-    return P('C');
-  }
+  // () => {
+  //   // await sleep();
+  //   return A('C');
+  // }
 )
 .catch(err => {
   throw new Error('err! - ' + err.stack);

@@ -9,9 +9,9 @@ async function f(x) {
   console.log('f1', x);
   await 0;  // 2x FORK
   console.log('f2', x);
-  await 0;
+  await 1;
   console.log('f3', x);
-  await 0;
+  await 2;
   console.log('f3', x);
 }
 

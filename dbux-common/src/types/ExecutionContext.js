@@ -93,4 +93,9 @@ export default class ExecutionContext {
    * @type {number}
    */
   asyncPromiseId;
+
+  /**
+   * @type {{callerPromiseId: number}?}
+   */
+  data;
 }

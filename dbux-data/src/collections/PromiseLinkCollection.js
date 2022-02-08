@@ -15,17 +15,23 @@ export default class PromiseLinkCollection extends Collection {
     const { util } = this.dp;
     for (const entry of entries) {
       if (!PromiseLinkType.is.AsyncReturn(entry.type) || !entry.traceId || !!entry.to) {
-        // fix those links that need fixing
         continue;
       }
+      /**
+       * here, we fix AsyncReturn links without `to`: look up caller promise
+       *    → If called async function is also thenCb, there is no BCE, and thus
+       *      → postThen and traceCallPromiseResult both call `setAsyncContextPromise` to provide the promiseId.
+       */
 
-      // fix up "async return" links (establish `to` promise)
-      const realContextId = util.getRealContextIdOfTrace(entry.traceId);
-      const bceTrace = realContextId && util.getOwnCallerTraceOfContext(realContextId);
-      // const resultTraceId = bceTrace && util.getBCEResultTraceId(bceTrace.traceId);
-      const promiseRef = bceTrace && util.getTraceValueRef(bceTrace.traceId);
+      const realContext = util.getRealContextOfTrace(entry.traceId);
+      const promiseId = realContext?.data?.callerPromiseId;
+      // const realContextId = util.getRealContextIdOfTrace(entry.traceId);
+      // const bceTrace = realContextId && util.getOwnCallerTraceOfContext(realContextId);
+      // // const resultTraceId = bceTrace && util.getBCEResultTraceId(bceTrace.traceId);
+      // const promiseRef = bceTrace && util.getTraceValueRef(bceTrace.traceId);
+      // const promiseId = promiseRef?.refId;
     
-      entry.to = promiseRef?.refId;
+      entry.to = promiseId;
 
       if (!entry.to) {
         // TODO: fix `then(async function() {})` in `promisePatcher`!!!

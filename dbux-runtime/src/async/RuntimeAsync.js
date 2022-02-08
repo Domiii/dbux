@@ -38,11 +38,26 @@ export default class RuntimeAsync {
     return this._runtime.getCurrentVirtualRootContextId();
   }
 
+  setAsyncContextPromise(context, promiseId) {
+    // NOTE: this branch should always execute
+    context.data = context.data || {};
+    context.data.callerPromiseId = promiseId;
+  }
+
   /**
    * We use this to associate `contextId` of an async function `f`, with its returned `promise`,
    * in the SPECIAL CASE of `then(f)`.
    */
-  setAsyncContextPromise(contextId, promise) {
+  setAsyncContextIdPromise(contextId, promise) {
+    const promiseId = getPromiseId(promise);
+
+    const context = executionContextCollection.getById(contextId);
+    if (context) {
+      this.setAsyncContextPromise(context, promiseId);
+    }
+
+    // old version
+    // TODO: remove the following part → this does not work if async function has no await!
     const lastAwaitData = this.lastAwaitByRealContext.get(contextId);
 
     // eslint-disable-next-line max-len
@@ -50,10 +65,9 @@ export default class RuntimeAsync {
     //   lastAwaitData);
 
     if (lastAwaitData) {
-      const promiseId = getPromiseId(promise);
       lastAwaitData.asyncFunctionPromiseId = promiseId;
 
-      // NOTE: the function has already returned -> the first `preAwait` was already executed (but not been sent yet)
+      // NOTE: the function has already returned -> the first `preAwait` was already executed (but not sent yet)
       // [edit-after-send]
       const lastUpdate = asyncEventUpdateCollection.getById(lastAwaitData.updateId);
       lastUpdate.promiseId = promiseId;
@@ -90,7 +104,7 @@ export default class RuntimeAsync {
 
     if (calledContext) {
       calledContextId = calledContext?.contextId;
-      this.setAsyncContextPromise(calledContextId, promise);
+      this.setAsyncContextIdPromise(calledContextId, promise);
     }
     //   // else if (!getFunctionRefByContext(executionContextCollection.getLastRealContext())) {
     //   //   // eslint-disable-next-line max-len
@@ -209,7 +223,7 @@ export default class RuntimeAsync {
       context.isVirtualRoot = true;
 
       // WARNING: `new Error().stack` might internally call functions that are instrumented by user code
-      
+
       // future-work: make this configurable, as it is extremely bad for performance, especially if source maps are enabled
       // context.stackTrace = valueCollection._readProperty(new Error(), 'stack');
     }
@@ -430,9 +444,10 @@ export default class RuntimeAsync {
   /**
    * Async function returning given `promise`.
    * NOTE: Only called if returned value is thenable.
+   * NOTE2: toPromiseId is just a placeholder, since we don't necessarily know the `to` promiseId yet (if async function did not `await` yet).
+   *    -> is fixed up in `PromiseLinkCollection`.
    */
   returnAsync(promise, traceId) {
-    // NOTE: this is just a placeholder, since we don't necessarily know the `to` promiseId yet (if async function did not `await` yet)
     const rootId = this.getCurrentVirtualRootContextId();
     return nestedPromiseCollection.addLink(PromiseLinkType.AsyncReturn, getPromiseId(promise), 0, traceId, rootId);
   }
@@ -505,20 +520,6 @@ export default class RuntimeAsync {
     // }
     this.lastAwaitByRealContext.set(realContextId, data);
     return data;
-  }
-
-  /**
-   * TODO: remove from use in `preAwait`
-   * @deprecated 
-   */
-  getPromiseLastAwait(promise) {
-    const nestedAsyncContextId = getPromiseOwnAsyncFunctionContextId(promise);
-    const nestedAsyncData = nestedAsyncContextId && this.lastAwaitByRealContext.get(nestedAsyncContextId);
-    if (nestedAsyncContextId && !nestedAsyncData) {
-      this.logger.warn(`nestedAsyncData not found for asyncFunctionContextId=${nestedAsyncContextId}`);
-      return null;
-    }
-    return nestedAsyncData;
   }
 
   // /**

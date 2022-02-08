@@ -7,12 +7,13 @@ import PromiseLinkType from '@dbux/common/src/types/constants/PromiseLinkType';
 // import PromiseLink from '@dbux/common/src/types/PromiseLink';
 import traceCollection from '../data/traceCollection';
 import dataNodeCollection from '../data/dataNodeCollection';
-import { peekBCEMatchCallee, getLastContextCheckCallee, isInstrumentedFunction, peekBCEMatchCalleeUnchecked } from '../data/dataUtil';
+import { peekBCEMatchCallee, getContextOfFunc, isInstrumentedFunction, peekBCEMatchCalleeUnchecked } from '../data/dataUtil';
 import PromiseRuntimeData from '../data/PromiseRuntimeData';
 // import traceCollection from '../data/traceCollection';
 import valueCollection from '../data/valueCollection';
 // eslint-disable-next-line max-len
 import { isMonkeyPatchedFunction, monkeyPatchFunctionHolder, tryRegisterMonkeyPatchedFunction, _registerMonkeyPatchedCallback, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
+import executionContextCollection from '../data/executionContextCollection';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PromisePatcher');
@@ -122,6 +123,7 @@ function patchThenCallback(cb, thenRef) {
     // TODO: peekBCEMatchCallee(patchedCb)
 
     ++activeThenCbCount;
+    const lastContextIndex = executionContextCollection.getLastIndex();
 
     let returnValue;
     try {
@@ -130,12 +132,9 @@ function patchThenCallback(cb, thenRef) {
         returnValue = originalCb.call(this, ...args);
       }
       finally {
-        const cbContext = getLastContextCheckCallee(originalCb);
-        // TODO: cbContext exists, even if `originalCb` was not instrumented for some reason?!
-        //    -> need to remove `!isInstrumentedFunction(cb)` check to test
-
+        const cbContext = getContextOfFunc(lastContextIndex, originalCb);
         if (isThenable(returnValue)) {
-          // Promise#resolve(Promise) was called: nested promise
+          // nested promise: a promise was returned by thenCb
 
           if (!getPromiseId(returnValue)) {
             /**
@@ -162,7 +161,8 @@ function patchThenCallback(cb, thenRef) {
 
           // console.trace('thenCb', cbContext?.contextId, getPromiseId(returnValue));
           // set async function call's `AsyncEventUpdate.promiseId`
-          cbContext && RuntimeMonitorInstance._runtime.async.setAsyncContextPromise(cbContext.contextId, returnValue);
+          const promiseId = getPromiseId(returnValue);
+          cbContext && RuntimeMonitorInstance._runtime.async.setAsyncContextPromise(cbContext, promiseId);
         }
         // thenExecuted(thenRef, previousResult, returnValue);
 

@@ -1528,6 +1528,12 @@ export default {
   },
 
   /** @param {DataProvider} dp */
+  getRealContextOfTrace(dp, traceId) {
+    const { contextId } = dp.collections.traces.getById(traceId);
+    return dp.util.getRealContextOfContext(contextId);
+  },
+
+  /** @param {DataProvider} dp */
   getRealContextIdOfContext(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
     const parentContextId = context?.parentContextId;
@@ -1554,7 +1560,8 @@ export default {
 
   /** @param {DataProvider} dp */
   getRealContextOfContext(dp, contextId) {
-    return dp.collections.executionContexts.getById(dp.util.getRealContextIdOfContext(contextId));
+    const realContextId = dp.util.getRealContextIdOfContext(contextId);
+    return dp.collections.executionContexts.getById(realContextId);
   },
 
   /** @param {DataProvider} dp */
