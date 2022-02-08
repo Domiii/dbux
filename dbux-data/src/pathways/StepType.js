@@ -10,7 +10,8 @@ let StepType = {
   None: 1,
   Trace: 2,
   CallGraph: 3,
-  Other: 4
+  Search: 4,
+  Other: 5
 };
 
 const stepByActionType = {
@@ -37,15 +38,13 @@ const stepByActionType = {
   [UserActionType.NavigationNextStaticTrace]: StepType.Trace,
   [UserActionType.NavigationPreviousTrace]: StepType.Trace,
   [UserActionType.NavigationNextTrace]: StepType.Trace,
-
+  [UserActionType.SearchContexts]: StepType.Search,
+  [UserActionType.SearchTraces]: StepType.Search,
+  [UserActionType.SearchValues]: StepType.Search,
   [UserActionType.CallGraphOther]: StepType.CallGraph,
-  [UserActionType.CallGraphSearchContexts]: StepType.CallGraph,
-  [UserActionType.CallGraphSearchTraces]: StepType.CallGraph,
   [UserActionType.CallGraphNodeCollapseChange]: StepType.CallGraph,
-
   [UserActionType.CallGraphTrace]: StepType.Trace,
   [UserActionType.CallGraphCallTrace]: StepType.Trace,
-
   [UserActionType.SessionFinished]: StepType.SessionFinished
 };
 

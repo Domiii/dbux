@@ -18,7 +18,7 @@ export class TraceSelection {
   }
 
   selectTrace(trace, sender = null, nodeId = null) {
-    if (!nodeId) {
+    if (!nodeId && trace) {
       // select its node by default
       if (trace.nodeId) {
         nodeId = trace.nodeId;

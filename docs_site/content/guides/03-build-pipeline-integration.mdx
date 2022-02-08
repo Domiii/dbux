@@ -113,7 +113,67 @@ TODO
 
 ## Create-React-App
 
-TODO
+<!--
+
+NOTES: 
+* currently, CRA has one babel-loader for src and one for dependencies [1/2022]
+* -> TODO: probably need to add module filtering to the plugin itself, rather than relying on babel-register or webpack to filter for us.
+
+ ```js
+const { getLoaders, loaderByName } = require('@craco/craco');
+
+const shouldInclude = require('@dbux/babel-plugin/dist/include').default;
+
+const moduleFilterOptions = {
+  packageWhitelist: '',
+};
+
+module.exports = {
+  webpack: {
+    configure: (webpackConfig, { env, paths }) => {
+      const { isFound, matches } = getLoaders(webpackConfig, loaderByName("babel-loader"));
+      const match = matches.find(match => 'include' in match.loader);
+      // // console.log(isFound, match?.loader?.options?.plugins);
+      // if (isFound) {
+      //   match.loader.options.plugins.push('@dbux/babel-plugin');
+      // }
+      // else {
+      //   throw new Error('babel-loader not found');
+      // }
+
+      // const config = {
+      //   test: /\.jsx?$/,
+      //   include: [
+      //     shouldInclude(moduleFilterOptions)
+      //   ],
+      //   use: {
+      //     loader: 'babel-loader',
+      //     options: {
+      //       cacheDirectory: true,
+      //       presets: [
+      //         // '@babel/preset-react'
+      //         ...match.loader.options.presets
+      //       ],
+      //       plugins: [
+      //         ...match.loader.options.plugins,
+      //         '@dbux/babel-plugin',
+      //       ],
+      //     }
+      //   }
+      // };
+
+      // console.log(JSON.stringify(match.loader.options, null, 2))
+      // console.log(JSON.stringify(webpackConfig.module.rules, null, 2))
+
+      // webpackConfig.module.rules.push(config);
+      match.loader.options.plugins.push('@dbux/babel-plugin');
+
+      // console.log(JSON.stringify(webpackConfig.module.rules, null, 2));
+      return webpackConfig;
+    }
+  },
+};
+``` -->
 
 
 ## Next.js

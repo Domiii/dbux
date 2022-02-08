@@ -1,3 +1,5 @@
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
+import { emitUserAction } from '../userEvents';
 import DataFlowFilterModeType from '../dataFlowView/DataFlowFilterModeType';
 import DataFlowSearchModeType from '../dataFlowView/DataFlowSearchModeType';
 import { registerCommand } from './commandUtil';
@@ -12,6 +14,7 @@ export function initDataFlowViewCommands(context, dataFlowViewController) {
     'dbuxDataFlowView.setSearchMode.ByAccessId',
     (/* node */) => {
       dataFlowViewController.setSearchMode(DataFlowSearchModeType.nextValue(DataFlowSearchModeType.ByAccessId));
+      emitUserAction(UserActionType.DataFlowViewSearchModeChanged, DataFlowSearchModeType.ByAccessId);
     }
   );
 
@@ -19,6 +22,7 @@ export function initDataFlowViewCommands(context, dataFlowViewController) {
     'dbuxDataFlowView.setSearchMode.ByValueId',
     (/* node */) => {
       dataFlowViewController.setSearchMode(DataFlowSearchModeType.nextValue(DataFlowSearchModeType.ByValueId));
+      emitUserAction(UserActionType.DataFlowViewSearchModeChanged, DataFlowSearchModeType.ByValueId);
     }
   );
 
@@ -26,6 +30,7 @@ export function initDataFlowViewCommands(context, dataFlowViewController) {
     'dbuxDataFlowView.setFilterMode.None',
     (/* node */) => {
       dataFlowViewController.setFilterMode(DataFlowFilterModeType.nextValue(DataFlowFilterModeType.None));
+      emitUserAction(UserActionType.DataFlowViewFilterModeChanged, DataFlowFilterModeType.None);
     }
   );
 
@@ -33,6 +38,7 @@ export function initDataFlowViewCommands(context, dataFlowViewController) {
     'dbuxDataFlowView.setFilterMode.ReadOnly',
     (/* node */) => {
       dataFlowViewController.setFilterMode(DataFlowFilterModeType.nextValue(DataFlowFilterModeType.ReadOnly));
+      emitUserAction(UserActionType.DataFlowViewFilterModeChanged, DataFlowFilterModeType.ReadOnly);
     }
   );
 
@@ -40,6 +46,7 @@ export function initDataFlowViewCommands(context, dataFlowViewController) {
     'dbuxDataFlowView.setFilterMode.WriteOnly',
     (/* node */) => {
       dataFlowViewController.setFilterMode(DataFlowFilterModeType.nextValue(DataFlowFilterModeType.WriteOnly));
+      emitUserAction(UserActionType.DataFlowViewFilterModeChanged, DataFlowFilterModeType.WriteOnly);
     }
   );
 }
