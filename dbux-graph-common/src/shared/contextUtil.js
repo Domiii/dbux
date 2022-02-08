@@ -21,8 +21,8 @@ export function getStaticContextColor(themeMode, staticContextId, { bland = fals
   let lightness = ThemeMode.is.Dark(themeMode) ? 30 : 65;
 
   if (highContractMode) {
-    saturation = 60;
-    lightness = 65;
+    saturation = 80;
+    lightness = 80;
   }
 
   return `hsl(${hue},${saturation}%,${lightness}%)`;

@@ -10,6 +10,8 @@ import GraphBase from '../GraphBase';
 
 /** @typedef {import('../controllers/PopperManager').default} PopperManager */
 
+const HideLabelInScreenShotMode = false;
+
 class AsyncGraph extends GraphBase {
   /**
    * @return {PopperManager}
@@ -138,9 +140,9 @@ class AsyncGraph extends GraphBase {
     } = nodeData;
 
     const { themeMode, screenshotMode, graphDocument } = this.context;
-    const { asyncDetailMode } = graphDocument.state;
-    const highContractMode = screenshotMode && !asyncDetailMode;
-
+    // const { asyncDetailMode } = graphDocument.state;
+    // const highContractMode = screenshotMode && !asyncDetailMode;
+    const highContractMode = screenshotMode;
     // const moduleLabel = moduleName ? `${moduleName} | ` : '';
 
     const backgroundColor = getStaticContextColor(themeMode, realStaticContextid, { bland: !!moduleName, highContractMode });
@@ -167,7 +169,7 @@ class AsyncGraph extends GraphBase {
         }
         break;
     }
-    if (this.context.screenshotMode) {
+    if (screenshotMode && HideLabelInScreenShotMode) {
       shortLabel = '';
       fullLabel = '';
     }

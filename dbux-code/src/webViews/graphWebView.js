@@ -5,6 +5,7 @@ import GraphHost from '@dbux/graph-host/src/GraphHost';
 import { getThemeResourcePathUri } from '../codeUtil/codePath';
 import { emitCallGraphAction } from '../userEvents';
 import searchController from '../search/searchController';
+import { getGlobalAnalysisViewController } from '../globalAnalysisView/GlobalAnalysisViewController';
 import RichWebView from './RichWebView';
 
 const defaultColumn = ViewColumn.Two;
@@ -29,6 +30,7 @@ export default class GraphWebView extends RichWebView {
   externals = {
     emitCallGraphAction,
     searchController,
+    globalAnalysisViewController: getGlobalAnalysisViewController()
   }
 }
 
