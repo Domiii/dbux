@@ -11,24 +11,18 @@ const nodes = [
   //   'BB'
   // ],
   () => Promise.all(
-    [1, 2, 3, 4, 5].map(y => P(
-      () => {
-        // await sleep();
-        return P(`B${y}-1`);
+    [1, 2, 3, 4, 5].map(x => P(
+      async () => {
+        await sleep();
+        return P(`B${x}-1`);
       },
-      () => {
-        // await sleep();
-        return P(`B${y}-2`);
+      async () => {
+        await sleep();
+        if (x === 3) {
+          throw new Error('FAIL');
+        }
+        return P(`B${x}-2`);
       }
-      // ...[1, 2].map(x => {
-      //   if (x === 2 && y === 3) {
-      //     return () => { throw new Error('FAIL'); }
-      //   }
-      //   return async () => {
-      //     await sleep();
-      //     return P(`B${y}-${x}`);
-      //   };
-      // })
     ))
   )
     .catch(err => 'C'),

@@ -8,7 +8,7 @@ set -e # cancel on error
 # fname="__samplesInput__/async/promisify5-no-root"
 # fname="__samplesInput__/defineProperty3-setter"
 # fname="__samplesInput__/async/Promise.all2-fail1"
-fname="__samplesInput__/async/promise-and-await1"
+fname="__samplesInput__/async/async-thencb0"
 
 
 

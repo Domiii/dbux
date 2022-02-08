@@ -124,6 +124,7 @@ function patchThenCallback(cb, thenRef) {
 
     ++activeThenCbCount;
     const lastContextIndex = executionContextCollection.getLastIndex();
+    const lastTraceIndex = traceCollection.getLastIndex();
 
     let returnValue;
     try {
@@ -132,7 +133,8 @@ function patchThenCallback(cb, thenRef) {
         returnValue = originalCb.call(this, ...args);
       }
       finally {
-        const cbContext = getContextOfFunc(lastContextIndex, originalCb);
+        const wasCbInstrumented = executionContextCollection.getLastIndex() > lastContextIndex;
+        const cbContext = wasCbInstrumented && getContextOfFunc(lastContextIndex, originalCb) || null;
         if (isThenable(returnValue)) {
           // nested promise: a promise was returned by thenCb
 
@@ -140,19 +142,18 @@ function patchThenCallback(cb, thenRef) {
             /**
              * [hackfix-datanode]
              * hackfix: we must make sure, that we have the promise's `ValueRef`.
-             * We might not have seen this promise for several reasons:
+             * We might not have seen this promise for the following reasons:
              *  1. Then callback is an async function.
-             * WARNING: this might cause some trouble down the line, since:
-             *  1. either this DataNode is not in a meaningful place (lastTraceOfContext).
-             *  2. or it is entirely out of order (schedulerTraceId)
              */
-            const lastTrace = traceCollection.getLast();
+            const cbFirstTrace = traceCollection.getByIndex(lastTraceIndex + 1);
             let dataNodeTraceId;
-            if (lastTrace && lastTrace.contextId === cbContext?.contextId) {
-              dataNodeTraceId = lastTrace.traceId;
+            if (cbFirstTrace) {
+              // new promise's trace is first trace of thenCb
+              dataNodeTraceId = cbFirstTrace.traceId;
             }
             else {
-              dataNodeTraceId = thenRef.schedulerTraceId;
+              // TODO: thenCb was not instrumented... now we really don't have a good traceId to go by...
+              dataNodeTraceId = thenRef.schedulerTraceId; // = 0;
             }
             dataNodeCollection.createDataNode(returnValue, dataNodeTraceId, DataNodeType.Write, null);
 

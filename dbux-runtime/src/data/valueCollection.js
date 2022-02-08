@@ -33,6 +33,8 @@ const SerializationLimits = {
 // ###########################################################################
 
 /**
+ * We need this in case we need a promiseId before the promise exists.
+ * Currently only used by promise ctor when executor is executed synchronously.
  * WARNING: use carefully.
  */
 export class VirtualRef {
@@ -155,7 +157,6 @@ class ValueCollection extends Collection {
   /**
    * hackfix: Placeholders are generic objects that are currently assumed to be fully resolved
    * before value actually gets sent out.
-   * [edit-after-send]
    */
   generatePlaceholder() {
     return new VirtualRef();

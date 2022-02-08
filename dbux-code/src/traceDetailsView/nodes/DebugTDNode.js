@@ -7,6 +7,8 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import makeTreeItem, { makeTreeItemNoChildren, makeTreeItems } from '../../helpers/makeTreeItem';
 import { ContextTDNode, TraceTypeTDNode } from './traceInfoNodes';
 import TraceDetailNode from './TraceDetailNode';
+import PromiseLink from '@dbux/common/src/types/PromiseLink';
+import PromiseLinkType from '@dbux/common/src/types/constants/PromiseLinkType';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
@@ -89,6 +91,53 @@ export class DebugTDNode extends TraceDetailNode {
           if (schedulerTrace) {
             traceSelection.selectTrace(schedulerTrace);
           }
+        }
+      }
+    );
+  }
+
+  /** ###########################################################################
+   * 
+   * ##########################################################################*/
+
+  /**
+   * @param {string} label 
+   * @param {number} promiseId 
+   * @param {string} dir 
+   * @param {PromiseLink} link 
+   */
+  makePromiseLinkTree = (label, promiseId, dir, link = '') => {
+    const { dp } = this;
+    /**
+     * @type {PromiseLink}
+     */
+    const childLinks = promiseId && dp.indexes.promiseLinks[dir].get(promiseId) || null;
+    const otherDir = ['from', 'to'].find(d => d !== dir);
+
+    let rootId, traceId, desc;
+    if (link) {
+      ({ rootId, traceId } = link);
+      desc = `root=${rootId}`;
+    }
+
+    return makeTreeItem(
+      label,
+      childLinks?.map((childLink) => {
+        const { from, to, type } = childLink;
+        const nextPromiseId = childLink[otherDir];
+        const typeName = PromiseLinkType.nameFrom(type) || type;
+        return this.makePromiseLinkTree(
+          `${from} → ${to} [${typeName}]`,
+          nextPromiseId,
+          dir,
+          childLink
+        );
+      }),
+      {
+        description: childLinks ? `${makeArrayLengthLabel(childLinks, desc)}` : desc,
+        handleClick() {
+          const trace = dp.util.getTrace(traceId);
+          trace && traceSelection.selectTrace(trace);
         }
       }
     );
@@ -256,23 +305,13 @@ export class DebugTDNode extends TraceDetailNode {
      * async (Promise)
      * #######################################*/
 
-    const promiseLinksFrom = promiseId && dp.indexes.promiseLinks.from.get(promiseId) || null;
-    const promiseLinksTo = promiseId && dp.indexes.promiseLinks.to.get(promiseId) || null;
     const promiseUpdates = promiseId && dp.indexes.asyncEventUpdates.byPromise.get(promiseId) || null;
 
     const promiseNode = makeTreeItem(
       `Promise`,
       !promiseId && EmptyObject || [
-        makeTreeItem(
-          'PromiseLinks From',
-          promiseLinksFrom,
-          { description: makeArrayLengthLabel(promiseLinksFrom) }
-        ),
-        makeTreeItem(
-          'PromiseLinks To',
-          promiseLinksTo,
-          { description: makeArrayLengthLabel(promiseLinksTo) }
-        ),
+        this.makePromiseLinkTree('PromiseLinks From', promiseId, 'from'),
+        this.makePromiseLinkTree('PromiseLinks To', promiseId, 'to'),
         makeTreeItem(
           'Promise Updates',
           promiseUpdates?.map(this.makeAsyncUpdateItem),
