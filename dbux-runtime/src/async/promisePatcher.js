@@ -316,10 +316,15 @@ function _onThen(thenRef, preEventPromise, postEventPromise) {
  * ##########################################################################*/
 
 const originalThen = Promise.prototype.then;
+const originalFinally = Promise.prototype.finally;
 const promiseReject = Promise.reject;
 
 function callThen(preEventPromise, successCb, failCb) {
   return originalThen.call(preEventPromise, successCb, failCb);
+}
+
+function callFinally(preEventPromise, cb) {
+  return originalFinally.call(preEventPromise, cb); 
 }
 
 // ###########################################################################
@@ -616,46 +621,48 @@ monkeyPatchFunctionHolder(Promise, 'reject',
 function allHandler(thisArg, args, originalFunction, patchedFunction) {
   // NOTE: This function accepts an iterable and fails if it is not an iterable.
   // hackfix: We force conversion to array before passing it in, to make sure that the iterable does not iterate more than once.
+
+  let thenRef, allPromise;
+
+  function onOneSettled(p) {
+    // -> send out Promise.all links as soon as individual promises settle
+    if (!allPromise) {
+      // allPromise has already been settled!
+      return;
+    }
+
+    // TODO: big problem.
+    //      → this is too late in case of nesting
+    //      → and also, we canNOT know who is CHAINed when first CGR of nested promise finishes
+    RuntimeMonitorInstance._runtime.async.all(p, allPromise, thenRef?.schedulerTraceId);
+  }
+
+  function onAllSettled() {
+    allPromise = null;
+  }
+
   const nestedPromisesIt = args[0];
-  const settledPromises = [];
   const nestedPromises = Array.from(nestedPromisesIt)
     .map(
       p => {
-        return callThen(
+        return callFinally(
           p,
-          res => {
-            // remember all settled promises
-            settledPromises.push(p);
-            return res;
-          },
-          err => {
-            // remember all settled promises
-            settledPromises.push(p);
-            return promiseReject(err);
+          () => {
+            onOneSettled(p);
           }
         );
       }
     );
 
-  // call originalFunction
-  let allPromise = originalFunction.call(thisArg, nestedPromises);
+  // → call originalFunction
+  allPromise = originalFunction.call(thisArg, nestedPromises);
 
   if (nestedPromises.length) {
-    const onAfter = () => {
-      // only link against promises settled before Promise.all settled
-      const thenRef = _makeThenRef(allPromise, patchedFunction);
-      RuntimeMonitorInstance._runtime.async.all(settledPromises, allPromise, thenRef?.schedulerTraceId);
-    };
-
-    allPromise = callThen(
+    thenRef = _makeThenRef(allPromise, patchedFunction);
+    allPromise = callFinally(
       allPromise,
-      res => {
-        onAfter();
-        return res;
-      },
-      err => {
-        onAfter();
-        return promiseReject(err);
+      () => {
+        onAllSettled();
       }
     );
   }
@@ -692,7 +699,6 @@ function allSettledHandler(thisArg, args, originalFunction, patchedFunction) {
  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/race
  */
 function raceHandler(thisArg, args, originalFunction, patchedFunction) {
-  // TODO: create new promise for each nested promise, so we can know the winner
   // NOTE: This function accepts an iterable and fails if it is not an iterable.
   // hackfix: We force conversion to array before passing it in, to make sure that the iterable does not iterate more than once.
   const nestedPromises = args[0];
@@ -705,9 +711,9 @@ function raceHandler(thisArg, args, originalFunction, patchedFunction) {
     for (let i = 0; i < nestedArr.length; ++i) {
       const p = nestedArr[i];
       // TODO: use `valueCollection._startAccess` before starting to read (potential) promise properties
-      if (isThenable(p) && p.finally) {
+      if (isThenable(p)) {
         // eslint-disable-next-line no-loop-func
-        nestedArr[i] = p.finally(() => {
+        nestedArr[i] = callFinally(() => {
           if (hasFinished) {
             return;
           }
@@ -733,7 +739,6 @@ function raceHandler(thisArg, args, originalFunction, patchedFunction) {
  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/any
  */
 function anyHandler(thisArg, args, originalFunction, patchedFunction) {
-  // TODO: create new promise for each nested promise, so we can know the winner
   // NOTE: This function accepts an iterable and fails if it is not an iterable.
   // hackfix: We force conversion to array before passing it in, to make sure that the iterable does not iterate more than once.
   const nestedPromises = args[0];
@@ -748,7 +753,7 @@ function anyHandler(thisArg, args, originalFunction, patchedFunction) {
       // TODO: use `valueCollection._startAccess` before starting to read (potential) promise properties
       if (isThenable(p)) {
         // eslint-disable-next-line no-loop-func
-        nestedArr[i] = callThen(p, () => {
+        nestedArr[i] = callFinally(p, () => {
           if (hasFinished) {
             return;
           }
@@ -774,11 +779,3 @@ monkeyPatchFunctionHolder(Promise, 'all', allHandler);
 monkeyPatchFunctionHolder(Promise, 'allSettled', allSettledHandler);
 monkeyPatchFunctionHolder(Promise, 'any', anyHandler);
 monkeyPatchFunctionHolder(Promise, 'race', raceHandler);
-
-// TODO: race resolves or rejects as soon as the first of its argument promises does.
-//  -> CHAIN against the promise that won the race; ignore all others
-// monkeyPatchFunctionHolder(Promise, 'race', allHandler);
-
-// TODO: any resolves as soon as any of its argument promises resolves. If all reject, it rejects.
-//  -> CHAIN against the resolved, and all previously rejected promises; ignore all others
-// monkeyPatchFunctionHolder(Promise, 'any', allHandler);

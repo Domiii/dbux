@@ -416,10 +416,14 @@ export default class RuntimeAsync {
     // });
   }
 
+  /**
+   * NOTE: we add one link for each settled promise.
+   */
   all(inner, outer, traceId) {
     // NOTE: `reject` does not settle nested promises!
     const rootId = this.getCurrentVirtualRootContextId();
-    const from = inner.map(p => getPromiseId(p));
+    // const from = inner.map(p => getPromiseId(p));
+    const from = getPromiseId(inner);
     const to = getPromiseId(outer);
     // if (!from || !to) {
     //   this.logger.error(`resolve link failed: promise did not have an id, from=${from}, to=${to}, trace=${traceCollection.makeTraceInfo(traceId)}`);

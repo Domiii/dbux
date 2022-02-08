@@ -1,21 +1,19 @@
 /**
- * @file
+ * @file Promise.all with a bit of nesting going on.
  */
 
 const { P, v, sleep } = require('../../util/asyncUtil');
 
 P()
-  .then(() => v('A'))
   .then(() =>
     Promise.all(
       [1, 2].map(x =>
         P(
-          async () => {
-            await sleep();
-            return P(`B${x}`);
+          () => {
+            return P(`A${x}`);
           }
         )
       )
     )
   )
-  .then(() => v('C'));
+  .then(() => v('B'));
