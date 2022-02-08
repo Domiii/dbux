@@ -1,16 +1,18 @@
 const { A, P, sleep } = require('../../util/asyncUtil');
 
 P(
-  // 'A',
+  'A',
   async () => {
-    // await sleep();
+    await sleep();
     return P()
       .then(() => 'B');
   },
-  // () => {
-  //   // await sleep();
-  //   return A('C');
-  // }
+  () => {
+    return P('C');
+  },
+  () => {
+    return A('D');
+  }
 )
 .catch(err => {
   throw new Error('err! - ' + err.stack);

@@ -286,6 +286,14 @@ export default class DataProviderBase {
     }
   }
 
+  /**
+   * 1. add
+   * 2. postAddRaw
+   * 3. postAddProcessed
+   * 4. indexes
+   * 5. postIndexRaw
+   * 6. postIndexProcessed
+   */
   _postAdd(collectionNames, allData, isRaw) {
     if (isRaw) {
       // notify collections that adding(raw data) has finished

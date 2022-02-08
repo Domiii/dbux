@@ -2,7 +2,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import isThenable from '@dbux/common/src/util/isThenable';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import PromiseLinkType from '@dbux/common/src/types/constants/PromiseLinkType';
-import { isFirstContextInParent, peekBCEContextCheckCallee } from '../data/dataUtil';
+import { getAsyncFunctionCallerPromiseId, isFirstContextInParent, peekBCEContextCheckCallee } from '../data/dataUtil';
 import ThenRef from '../data/ThenRef';
 // eslint-disable-next-line max-len
 import { getPromiseData, getPromiseId, getPromiseOwnAsyncFunctionContextId, setPromiseData } from './promisePatcher';
@@ -40,6 +40,7 @@ export default class RuntimeAsync {
 
   setAsyncContextPromise(context, promiseId) {
     // NOTE: this branch should always execute
+    // [edit-after-execute]
     context.data = context.data || {};
     context.data.callerPromiseId = promiseId;
   }
@@ -74,10 +75,6 @@ export default class RuntimeAsync {
     }
     return lastAwaitData;
   }
-
-  // ###########################################################################
-  // preAwait
-  // ###########################################################################
 
   /**
    * Track any created promise (that is the return value of a function or ctor call).
@@ -121,11 +118,20 @@ export default class RuntimeAsync {
     //   // }
   }
 
+  // ###########################################################################
+  // preAwait
+  // ###########################################################################
+
   preAwait(awaitArgument, resumeContextId, realContextId, schedulerTraceId) {
     const currentRootId = this.getCurrentVirtualRootContextId();
     const currentRunId = this._runtime.getCurrentRunId();
-    const awaitData = this.lastAwaitByRealContext.get(realContextId) || EmptyObject;
-    const { asyncFunctionPromiseId } = awaitData;
+    // const awaitData = this.lastAwaitByRealContext.get(realContextId) || EmptyObject;
+    // const { asyncFunctionPromiseId } = awaitData;
+    /**
+     * WARNING: sometimes `promiseId` is not set and serves as placeholder (e.g. in case of async thenCb).
+     * Will be patched up in post.
+     */
+    const promiseId = getAsyncFunctionCallerPromiseId(realContextId);
 
     // store update
     const update = asyncEventUpdateCollection.addPreAwaitUpdate({
@@ -134,7 +140,7 @@ export default class RuntimeAsync {
       contextId: resumeContextId,
       schedulerTraceId, // preAwaitTid
       realContextId,
-      promiseId: asyncFunctionPromiseId,
+      promiseId,
       nestedPromiseId: isThenable(awaitArgument) ? getPromiseId(awaitArgument) : 0
     });
 
@@ -242,12 +248,15 @@ export default class RuntimeAsync {
    */
   postAwait(/* awaitContextId, */ realContextId, postEventContextId, awaitArgument) {
     const asyncData = this.lastAwaitByRealContext.get(realContextId);
+    /**
+     * WARNING: sometimes `promiseId` is not set and serves as placeholder (e.g. in case of async thenCb).
+     * Will be patched up in post.
+     */
+    const promiseId = getAsyncFunctionCallerPromiseId(realContextId);
+
     let {
-      resumeContextId: preEventContextId,
-      preAwaitRootId: preEventRootId,
       // preEventThreadId,
-      schedulerTraceId,
-      asyncFunctionPromiseId
+      schedulerTraceId
     } = asyncData;
 
     const postEventRootId = this.getCurrentVirtualRootContextId();
@@ -261,7 +270,7 @@ export default class RuntimeAsync {
       contextId: postEventContextId,
       schedulerTraceId,
       realContextId,
-      promiseId: asyncFunctionPromiseId,
+      promiseId
       // nestedPromiseId: isThenable(awaitArgument) ? getPromiseId(awaitArgument) : 0
     });
   }
