@@ -3,6 +3,13 @@
  * util
  * ##########################################################################*/
 
+/**
+ * NOTE: we use this for more easily rendering things on the ACG.
+ */
+export function v(val) {
+  return val;
+}
+
 export function sleep(ms) {
   return new Promise(r => {
     // function cb() { r(); };
@@ -31,11 +38,11 @@ function nest(x, F) {
     };
 }
 
-function unwrapValue(val) {
-  if (val instanceof Function) {
-    val = val();
+function unwrapValue(value) {
+  if (value instanceof Function) {
+    value = value();
   }
-  return val;
+  return v(value);
 }
 
 function unwrapBoundValue(val, x) {

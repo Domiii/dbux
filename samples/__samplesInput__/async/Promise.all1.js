@@ -1,25 +1,21 @@
 /**
- * @file Base case: chain against all promises.
+ * @file
  */
 
-import { A, P, Abind, Pbind } from '../../util/asyncUtil';
+const { P, v, sleep } = require('../../util/asyncUtil');
 
-const nodes = [
-  'A',
-  [
-    'BA',
-    'BB'
-  ],
-  () => Promise.all(
-    [1, 2, 3, 4].map(y => P(
-      ...[1, 2].map(x =>
-        `C${x}${y}`
+P()
+  .then(() => v('A'))
+  .then(() =>
+    Promise.all(
+      [1, 2].map(x =>
+        P(
+          async () => {
+            await sleep();
+            return P(`B${x}`);
+          }
+        )
       )
-    ))
-  ),
-  'D',
-  'E'
-];
-
-Abind('A', ...nodes);
-// Pbind('P', ...nodes);
+    )
+  )
+  .then(() => v('C'));

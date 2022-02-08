@@ -25,9 +25,9 @@ const nodes = [
       }
     ))
   )
-    .catch(err => 'C'),
-  'D',
-  'E'
+    .catch(err => 'ERR'),
+  'C',
+  'D'
 ];
 
 P(...nodes);

@@ -311,6 +311,16 @@ function _onThen(thenRef, preEventPromise, postEventPromise) {
   RuntimeMonitorInstance._runtime.async.preThen(thenRef);
 }
 
+/** ###########################################################################
+ * keep utility functions to invoke unpatched versions of functions.
+ * ##########################################################################*/
+
+const originalThen = Promise.prototype.then;
+const promiseReject = Promise.reject;
+
+function callThen(preEventPromise, successCb, failCb) {
+  return originalThen.call(preEventPromise, successCb, failCb);
+}
 
 // ###########################################################################
 // patchPromiseClass + prototype
@@ -606,6 +616,59 @@ monkeyPatchFunctionHolder(Promise, 'reject',
 function allHandler(thisArg, args, originalFunction, patchedFunction) {
   // NOTE: This function accepts an iterable and fails if it is not an iterable.
   // hackfix: We force conversion to array before passing it in, to make sure that the iterable does not iterate more than once.
+  const nestedPromisesIt = args[0];
+  const settledPromises = [];
+  const nestedPromises = Array.from(nestedPromisesIt)
+    .map(
+      p => {
+        return callThen(
+          p,
+          res => {
+            // remember all settled promises
+            settledPromises.push(p);
+            return res;
+          },
+          err => {
+            // remember all settled promises
+            settledPromises.push(p);
+            return promiseReject(err);
+          }
+        );
+      }
+    );
+
+  // call originalFunction
+  let allPromise = originalFunction.call(thisArg, nestedPromises);
+
+  if (nestedPromises.length) {
+    const onAfter = () => {
+      // only link against promises settled before Promise.all settled
+      const thenRef = _makeThenRef(allPromise, patchedFunction);
+      RuntimeMonitorInstance._runtime.async.all(settledPromises, allPromise, thenRef?.schedulerTraceId);
+    };
+
+    allPromise = callThen(
+      allPromise,
+      res => {
+        onAfter();
+        return res;
+      },
+      err => {
+        onAfter();
+        return promiseReject(err);
+      }
+    );
+  }
+  return allPromise;
+}
+
+/** ###########################################################################
+ * Promise.allSettled
+ * ##########################################################################*/
+
+function allSettledHandler(thisArg, args, originalFunction, patchedFunction) {
+  // NOTE: This function accepts an iterable and fails if it is not an iterable.
+  // hackfix: We force conversion to array before passing it in, to make sure that the iterable does not iterate more than once.
   const nestedPromises = args[0];
   const nestedArr = Array.from(nestedPromises);
 
@@ -685,7 +748,7 @@ function anyHandler(thisArg, args, originalFunction, patchedFunction) {
       // TODO: use `valueCollection._startAccess` before starting to read (potential) promise properties
       if (isThenable(p)) {
         // eslint-disable-next-line no-loop-func
-        nestedArr[i] = p.then(() => {
+        nestedArr[i] = callThen(p, () => {
           if (hasFinished) {
             return;
           }
@@ -708,7 +771,7 @@ function anyHandler(thisArg, args, originalFunction, patchedFunction) {
  * ##########################################################################*/
 
 monkeyPatchFunctionHolder(Promise, 'all', allHandler);
-monkeyPatchFunctionHolder(Promise, 'allSettled', allHandler);
+monkeyPatchFunctionHolder(Promise, 'allSettled', allSettledHandler);
 monkeyPatchFunctionHolder(Promise, 'any', anyHandler);
 monkeyPatchFunctionHolder(Promise, 'race', raceHandler);
 
