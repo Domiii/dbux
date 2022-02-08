@@ -632,9 +632,11 @@ function allHandler(thisArg, args, originalFunction, patchedFunction) {
     }
 
     // TODO: big problem. → this is too late in case of nesting, instead:
-    //      → multi-CHAIN TO all started CGRs that happened before Promise.all settled
-    //      → multi-CHAIN FROM all final promise CGRs, but only SYNC from the promises that did not make it
-    //      → once this is fixed, apply same logic to RACE and ANY
+    //    → multi-CHAIN TO all started CGRs that happened before Promise.all settled
+    //    → multi-CHAIN FROM all final promise CGRs, but only SYNC from the promises that did not make it
+    //    → once this is fixed, apply same logic to RACE and ANY
+    // TODO: implementation
+    //    → always register all links right away, but annotate them, then fix up logic in post
     RuntimeMonitorInstance._runtime.async.all(p, allPromise, thenRef?.schedulerTraceId);
   }
 
