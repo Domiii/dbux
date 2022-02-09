@@ -43,6 +43,9 @@ extensionCodec.register({
       case 'symbol':
         // convert to string
         return encode(input.toString());
+      // case 'function':
+      //   warn(`[ENCODE] trying to encode invalid type "${t}":`, input, `(${input.toString()})`);
+      //   return encode(input.toString());
       default:
         // don't return anything -> so the default mechanisms can take care of it
 
@@ -69,7 +72,7 @@ exports.protocol = 5;
  * Packet types (see https://github.com/socketio/socket.io-protocol)
  */
 
-var PacketType = (exports.PacketType = {
+const PacketType = (exports.PacketType = {
   CONNECT: 0,
   DISCONNECT: 1,
   EVENT: 2,
@@ -77,7 +80,7 @@ var PacketType = (exports.PacketType = {
   CONNECT_ERROR: 4,
 });
 
-var isInteger =
+const isInteger =
   Number.isInteger ||
   function (value) {
     return (
@@ -87,13 +90,13 @@ var isInteger =
     );
   };
 
-var isString = function (value) {
+function isString(value) {
   return typeof value === 'string';
-};
+}
 
-var isObject = function (value) {
+function isObject(value) {
   return Object.prototype.toString.call(value) === '[object Object]';
-};
+}
 
 function Encoder() { }
 
