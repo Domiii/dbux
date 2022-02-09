@@ -21,8 +21,14 @@ const { log, debug, warn, error: logError, trace: logTrace } = newLogger('progra
 function enter(path, state) {
   // const cfg = state.opts;
   if (state.onEnter) return; // make sure to not visit Program node more than once
+  
+  const { opts, filename } = state;
+  if (!shouldInstrument(opts, filename)) {
+    return;
+  }
+
   // console.warn('P', path.toString());
-  // logTrace('[Program]', state.filename);
+  warn('[Program]', state.filename, opts.ignore);
   // console.warn(state.file.code.substring(0, 100));
 
   // inject data + methods that we are going to use for instrumentation
@@ -104,4 +110,33 @@ export default function programVisitor(buildCfg) {
     enter,
     // exit
   };
+}
+
+/** ########################################
+ * util
+ *  ######################################*/
+
+/**
+ * Determine whether a file should be included depending on `ignore` option.
+ * @param {{ignore: function|[function]}} config 
+ * @param {string} path 
+ */
+function shouldInstrument(config, path) {
+  const { ignore } = config;
+  if (ignore) {
+    if (Array.isArray(ignore)) {
+      for (const ignoreFunc of ignore) {
+        if (ignoreFunc(path)) {
+          return false;
+        }
+      }
+    }
+    else {
+      if (ignore(path)) {
+        return false;
+      }
+    }
+  }
+
+  return true;
 }

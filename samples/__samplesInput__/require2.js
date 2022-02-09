@@ -1,5 +1,7 @@
 /**
 node --enable-source-maps --stack-trace-limit=1000 -r "@dbux/runtime" "../../node_modules/@dbux/cli/bin/dbux.js" run --esnext ".\require2.js" --pw=my-test-module-1,my-test-module-2,my-test-module-3 --verbose=2
+npx dbux run --esnext ".\require2.js" --pw=my-test-module-1,my-test-module-2,my-test-module-3 --verbose=1
+npx dbux run --esnext ".\require2.js" --pb=.* --verbose=1
  */
 
 const path = require('path');
@@ -11,7 +13,7 @@ function testRequire(i) {
   const targetDir = path.join(__dirname, 'node_modules', moduleName);
   const targetFile = path.join(targetDir, 'index.js');
 
-  if (!fs.existsSync()) {
+  if (!fs.existsSync(targetFile)) {
     sh.mkdir('-p', targetDir);
     fs.writeFileSync(targetFile, `console.log("hi!"); module.exports = { x: ${i} };`);
   }
