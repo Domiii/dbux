@@ -110,3 +110,10 @@ export function initGlobalAnalysisView(context) {
 
   return controller;
 }
+
+export function getGlobalAnalysisViewController() {
+  if (!controller) {
+    logError(`Cannot get GlobalAnalysisViewController before initialization.`);
+  }
+  return controller;
+}
