@@ -8,9 +8,10 @@ import Program from '../parse/Program';
 import shouldIgnore from '../external/shouldIgnore';
 import nameVisitors, { clearNames } from './nameVisitors';
 
+/** @typedef {import('../external/moduleFilter').ModuleFilterOptions} ModuleFilterOptions */
+
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError, trace: logTrace } = newLogger('programVisitor');
-
 
 // ###########################################################################
 // visitor
@@ -119,28 +120,32 @@ export default function programVisitor(buildCfg) {
 
 /**
  * Determine whether a file should be included depending on `ignore` option.
- * @param {{ignore: function|[function]}} config 
+ * @param {{ignore?: function|[function], moduleFilter?: ModuleFilterOptions}} config 
  * @param {string} path 
  */
 function shouldInstrument(config, path) {
-  let { ignore, moduleFilterOptions } = config;
+  let { ignore, moduleFilter } = config;
 
-  if (moduleFilterOptions) {
-    ignore = shouldIgnore(moduleFilterOptions);
+  if (Array.isArray(ignore)) {
+    ignore = [...ignore];
+  }
+  else if (ignore) {
+    ignore = [ignore];
+  }
+  else {
+    ignore = [];
   }
 
-  if (ignore) {
-    if (Array.isArray(ignore)) {
-      for (const ignoreFunc of ignore) {
-        if (ignoreFunc(path)) {
-          return false;
-        }
-      }
+  if (moduleFilter) {
+    if (!config._ignore) {
+      config._ignore = shouldIgnore(moduleFilter);
     }
-    else {
-      if (ignore(path)) {
-        return false;
-      }
+    ignore.push(config._ignore);
+  }
+
+  for (const ignoreFunc of ignore) {
+    if (ignoreFunc(path)) {
+      return false;
     }
   }
 
