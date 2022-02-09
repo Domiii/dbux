@@ -130,16 +130,10 @@ Example - something like this:
 
 const { getLoaders, loaderByName } = require('@craco/craco');
 
-const shouldIgnore = require('@dbux/babel-plugin/dist/shouldIgnore').default;
-
-const moduleFilterOptions = {
-  fileWhitelist: 'App.js',
-}
-
 const dbuxOptions = {
-  ignore: [
-    shouldIgnore(moduleFilterOptions),
-  ],
+  moduleFilterOptions: {
+    fileWhitelist: 'App.js',
+  }
 };
 
 module.exports = {

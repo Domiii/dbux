@@ -5,6 +5,7 @@ import { clearSourceHelperCache } from '../helpers/sourceHelpers';
 import injectDbuxState from '../dbuxState';
 import { buildVisitors as traceVisitors } from '../parseLib/visitors';
 import Program from '../parse/Program';
+import shouldIgnore from '../external/shouldIgnore';
 import nameVisitors, { clearNames } from './nameVisitors';
 
 // eslint-disable-next-line no-unused-vars
@@ -21,7 +22,7 @@ const { log, debug, warn, error: logError, trace: logTrace } = newLogger('progra
 function enter(path, state) {
   // const cfg = state.opts;
   if (state.onEnter) return; // make sure to not visit Program node more than once
-  
+
   const { opts, filename } = state;
   if (!shouldInstrument(opts, filename)) {
     return;
@@ -122,7 +123,12 @@ export default function programVisitor(buildCfg) {
  * @param {string} path 
  */
 function shouldInstrument(config, path) {
-  const { ignore } = config;
+  let { ignore, moduleFilterOptions } = config;
+
+  if (moduleFilterOptions) {
+    ignore = shouldIgnore(moduleFilterOptions);
+  }
+
   if (ignore) {
     if (Array.isArray(ignore)) {
       for (const ignoreFunc of ignore) {
