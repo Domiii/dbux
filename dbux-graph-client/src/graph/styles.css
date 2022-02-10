@@ -682,9 +682,9 @@ body:not(.theme-mode-dark) .highlight {
   font-weight: 600;
 }
 
-/* .research-mode .async-cell .left-label {
+.research-mode .async-cell .left-label {
   display: none !important;
-} */
+}
 
 /* .research-mode .async-cell .async-context-label {
   display: none !important;
@@ -724,10 +724,10 @@ body:not(.theme-mode-dark) .highlight {
   /* background: unset !important; */
 }
 
-/* .research-mode .async-error .async-brief {
+.research-mode .async-error .async-brief {
   background: unset;
   transform: translateX(100%);
-} */
+}
 
 .research-mode .context-stats {
   display: none !important;
