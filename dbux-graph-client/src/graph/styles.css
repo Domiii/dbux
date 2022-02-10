@@ -719,7 +719,7 @@ body:not(.theme-mode-dark) .highlight {
 }
 
 .research-mode .async-error {
-  border-color: red;
+  /* border-color: red; */
   background-blend-mode: darken;
   /* background: unset !important; */
 }

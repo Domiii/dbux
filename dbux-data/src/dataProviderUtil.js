@@ -768,7 +768,7 @@ export default {
     const { refId, value, hasValue } = dataNode;
 
     if (refId) {
-      valueString = dp.getValueRefValueStringShort(refId, terminateNodeId, shorten);
+      valueString = dp.util.getValueRefValueStringShort(refId, terminateNodeId, shorten);
     }
     else {
       if (hasValue) {

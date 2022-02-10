@@ -295,27 +295,21 @@ class AsyncGraph extends GraphBase {
             _col = lastForkSibling.colId + 1;
           }
           const _width = colId - _col;
-          if (_width >= 0) {
+          if (_width > 0) {
             const positionProp = makeGridPositionProp(parentAsyncNode.rowId, _col, { colSpan: _width });
             html += /*html*/ `
               <div style="${positionProp}" class="hz-d"></div>
               `;
           }
-          else {
-            continue;
-          }
         }
         {
           // vertical line
           const _height = rowId - parentAsyncNode.rowId - 1;
-          if (_height >= 0) {
+          if (_height > 0) {
             const positionProp = makeGridPositionProp(parentAsyncNode.rowId + 1, colId, { rowSpan: _height });
             html += /*html*/ `
                 <div style="${positionProp}" class="vt-d"></div>
               `;
-          }
-          else {
-            continue;
           }
         }
         {
