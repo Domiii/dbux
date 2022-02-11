@@ -10,6 +10,10 @@ import isString from 'lodash/isString';
 
 import useResourceSrc from '../hooks/useResourceSrc';
 
+function isSrcAbsolute(src) {
+  return src.startsWith('/') || src.includes('://');
+}
+
 /**
  * Image from a resources/light or resources/dark folder.
  * 
@@ -17,12 +21,12 @@ import useResourceSrc from '../hooks/useResourceSrc';
  */
 export default function Img({ src, title, zoomable, darkLight, screen, concept, className, maxWidth, mb, style, ...moreProps }) {
   if (concept) {
-    if (!src.startsWith('concept') && !src.startsWith('/') && !src.includes('://')) {
+    if (!src.startsWith('concept') && !isSrcAbsolute(src)) {
       src = `concepts/${src}`;
     }
   }
   if (screen) {
-    if (!src.startsWith('screen') && !src.startsWith('/') && !src.includes('://')) {
+    if (!src.startsWith('screen') && !isSrcAbsolute(src)) {
       src = `screens/${src}`;
     }
   }
