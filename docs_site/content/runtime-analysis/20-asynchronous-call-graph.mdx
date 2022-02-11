@@ -40,7 +40,7 @@ In many debugging scenarios, you probably want to toggle between the two modes, 
 
 [Asynchronous JavaScript](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous) and its relatives, [parallel programming](https://en.wikipedia.org/wiki/Parallel_programming) and [concurrent computing](https://en.wikipedia.org/wiki/Concurrent_computing), lead to much more complex execution pattern than their non-asynchronous, non-parallel, non-concurrent counterparts. In fact, asynchronous semantics are one of the most daunting aspects of JavaScript that software developers have to deal with on a day-to-day basis, making it <span className="cursor-help highlight-on-hover" title="This is a generic statement, so phrased for dramatic effect, not for accuracy.">feared by many, underestimated by the rest<sup>*</sup></span>.
 
-With the ACG we hope to make asynchronous JavaScript a lot easier to understand and digest. It presents a clear picture of an application's asynchronous control flow, and makes many types of race conditions visually obvious. For example: if your application's ACG has many individual columns, but a very low level of concurrency, it might indicate that you forgot to `await` or otherwise chain or nest your promises.
+With the ACG we hope to make asynchronous JavaScript a lot easier to understand and digest. It presents a clear picture of an application's asynchronous control flow, and makes many types of <Term term="race conditions" /> visually obvious. For example: if your application's ACG has many individual columns, but a low level of concurrency, it might indicate that you forgot to `await` or otherwise chain or nest your promises.
 <!-- TODO: better/more examples for visible race conditions -->
 
 ## Examples
@@ -68,6 +68,8 @@ The ACG (right) renders the program <Term term="CGRs" /> and the [asynchronous e
 ### Example2: todomvc {#example2}
 
 This example demonstrates the ACG of [todomvc (vanilla-es6)](https://github.com/tastejs/todomvc/tree/master/examples/vanilla-es6):
+
+<!-- TODO: take todovmc pic again -->
 
 <Img screen src="todomvc-sample-acg1.png" />
 

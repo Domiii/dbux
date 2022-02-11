@@ -24,8 +24,10 @@ const aliases = {
   aes: 'ae',
   'asynchronous event': 'ae',
   'asynchronous events': 'ae',
-  
-  'asynchronous call graph': 'acg'
+
+  'asynchronous call graph': 'acg',
+
+  'race conditions': 'race condition'
 };
 
 const PathByTerm = {
@@ -35,7 +37,9 @@ const PathByTerm = {
   ae: AcgPath,
 
   'dynamic runtime analysis': DebuggingBackgroundPath,
-  idbe: DebuggingBackgroundPath
+  idbe: DebuggingBackgroundPath,
+
+  'race condition': 'https://www.google.com/search?q=race+condition&hl=en'
 };
 
 const AnchorsByTerm = {
@@ -61,7 +65,7 @@ function makeTermSrc(term) {
 
   const terminologyPath = PathByTerm[lookupTerm] || TerminologyPathDefault;
   let anchor = AnchorsByTerm[lookupTerm];
-  if (anchor === undefined) {
+  if (!terminologyPath && !anchor) {
     return null;
   }
   
