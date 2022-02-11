@@ -31,7 +31,7 @@ import TOC from '@comp/TOC';
 
 The Asynchronous Call Graph (ACG) is the [call graph](./08-call-graph.mdx) in `Async` mode. You can see the ACG by opening the [call graph](./08-call-graph.mdx) and switching to `Async` mode (by clicking the `Sync` button in the [toolbar](./08-call-graph.mdx#toolbar)). The two call graph modes share many features, including the toolbar buttons, coloring and more, as explained [here](./08-call-graph.mdx#toolbar).
 
-`Sync` mode allows inspecting children and children of children of file and function executions. However, it simply puts <Term term="call graph roots" /> on a linear (vertical) timeline. The ACG, on the other hand, uncovers the hidden connections between those roots.
+`Sync` mode allows inspecting children and children of children of file and function executions. However, it simply puts <Term term="call graph roots" /> on a single linear vertical timeline. The ACG, on the other hand, uncovers the hidden connections between those roots on multiple vertical timelines and connections rendered between them.
 In other words, `Sync` mode is great for inspecting control flow **within** individual <Term term="call graph roots" />, while `Async` mode is great for inspecting control flow **between** them.
 In many debugging scenarios, you probably want to toggle between the two modes, as you investigate the control flow of an application.
 
