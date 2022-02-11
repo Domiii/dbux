@@ -19,7 +19,7 @@ set -e
 # echo "Deploy? [Y/n]"
 # read ok
 
-if [ "$ok" != ""] & ["$ok" != "y" ]; then
+if [ "$ok" != ""] && ["$ok" != "y" ]; then
   exit -1
 fi
 
