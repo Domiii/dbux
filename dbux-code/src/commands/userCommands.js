@@ -4,6 +4,7 @@ import { Uri, window } from 'vscode';
 import open from 'open';
 import { existsSync } from 'fs';
 import isNaN from 'lodash/isNaN';
+import sleep from '@dbux/common/src/util/sleep';
 // import { stringify as jsonStringify } from 'comment-json';
 import SearchMode from '@dbux/graph-common/src/shared/SearchMode';
 import traceSelection from '@dbux/data/src/traceSelection';
@@ -87,7 +88,8 @@ export function initUserCommands(extensionContext) {
 
       await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
         progress.report({ message: 'importing...' });
-        await importApplication(file.fsPath);
+        await sleep(100);
+        importApplication(file.fsPath);
       });
     }
   });

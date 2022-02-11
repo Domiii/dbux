@@ -10,8 +10,6 @@ import GraphBase from '../GraphBase';
 
 /** @typedef {import('../controllers/PopperManager').default} PopperManager */
 
-const HideLabelInScreenShotMode = false;
-
 class AsyncGraph extends GraphBase {
   /**
    * @return {PopperManager}
@@ -169,7 +167,7 @@ class AsyncGraph extends GraphBase {
         }
         break;
     }
-    if (screenshotMode && HideLabelInScreenShotMode) {
+    if (screenshotMode) {
       shortLabel = '';
       fullLabel = '';
     }
@@ -279,7 +277,7 @@ class AsyncGraph extends GraphBase {
           const _row = parentAsyncNode.rowId + 1;
           const _col = Math.max(parentAsyncNode.colId, colId);
           const _height = rowId - _row;
-          if (_height) {
+          if (_height > 0) {
             const positionProp = makeGridPositionProp(_row, _col, { rowSpan: _height });
             html += /*html*/ `
                 <div style="${positionProp}" class="vt"></div>
@@ -297,7 +295,7 @@ class AsyncGraph extends GraphBase {
             _col = lastForkSibling.colId + 1;
           }
           const _width = colId - _col;
-          if (_width) {
+          if (_width > 0) {
             const positionProp = makeGridPositionProp(parentAsyncNode.rowId, _col, { colSpan: _width });
             html += /*html*/ `
               <div style="${positionProp}" class="hz-d"></div>
@@ -307,7 +305,7 @@ class AsyncGraph extends GraphBase {
         {
           // vertical line
           const _height = rowId - parentAsyncNode.rowId - 1;
-          if (_height) {
+          if (_height > 0) {
             const positionProp = makeGridPositionProp(parentAsyncNode.rowId + 1, colId, { rowSpan: _height });
             html += /*html*/ `
                 <div style="${positionProp}" class="vt-d"></div>

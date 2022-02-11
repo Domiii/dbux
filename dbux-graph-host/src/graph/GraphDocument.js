@@ -6,8 +6,8 @@ import GraphType, { nextGraphType } from '@dbux/graph-common/src/shared/GraphTyp
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
-const screenshotMode = true;
-// const screenshotMode = false;
+// const screenshotMode = true;
+const screenshotMode = false;
 
 class GraphDocument extends HostComponentEndpoint {
   init() {
