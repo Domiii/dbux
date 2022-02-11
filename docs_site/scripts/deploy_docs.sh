@@ -23,7 +23,7 @@ read ok
 # see https://stackoverflow.com/questions/13617843/unary-operator-expected-error-in-bash-if-condition
 if [[ $ok != "" ]] && [[ $ok != "y" ]]; then
   echo "Cancelled: deploy_docs.sh"
-  exit -1
+  exit 0
 fi
 
 echo 'DOCS DEPLOYING...'

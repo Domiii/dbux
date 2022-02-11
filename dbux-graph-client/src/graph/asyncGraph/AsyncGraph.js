@@ -27,7 +27,7 @@ class AsyncGraph extends GraphBase {
           <h4>Applications:</h4>
           <pre data-el="applications"></pre>
         </div>
-        <div data-el="main" style="grid-area:main;" class="grid async-grid"></div>
+        <div data-el="main" style="grid-area:main;" class="graph-body grid async-grid"></div>
       </div>
     `);
   }
