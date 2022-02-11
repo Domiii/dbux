@@ -80,6 +80,21 @@
     "description": "Run selected file with Dbux"
   },
   {
+    "command": "dbux.searchContexts",
+    "title": "Dbux: Search in contexts",
+    "description": ""
+  },
+  {
+    "command": "dbux.searchTraces",
+    "title": "Dbux: Search in traces",
+    "description": ""
+  },
+  {
+    "command": "dbux.searchValues",
+    "title": "Dbux: Search in values",
+    "description": ""
+  },
+  {
     "command": "dbux.selectTrace",
     "title": "Dbux: Select Trace by id",
     "description": "Mostly used for debugging Dbux, or when (for some other reason) you would know some trace by its id."
@@ -138,6 +153,11 @@
     "command": "dbux.togglePracticeView",
     "title": "Dbux: Toggle Practice View",
     "description": "Feature still in development. You can use this to use Dbux on a pre-configured bug in express."
+  },
+  {
+    "command": "dbuxGlobalAnalysisView.node.nextSearchMode",
+    "title": "Next search mode",
+    "description": ""
   },
   {
     "command": "dbuxProject.uploadLog",
