@@ -9,7 +9,11 @@ function cb() {
 (async function main() {
   const timer = setInterval(cb, 50);
 
-  await sleep(200); // let timer run (roughly) 4 times
+  await sleep(50);
+  await sleep(50);
+
+  // let timer run a few more times
+  await sleep(200);
 
   clearInterval(timer);
 })();

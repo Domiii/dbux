@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import patchArray from './arrays';
 import patchConsole from './console';
+import patchEventTarget from './EventTarget';
 import patchFunction from './functions';
 import patchObject from './objects';
 
@@ -14,8 +15,16 @@ export default function initPatchBuiltins(runtimeMonitor) {
   patchObject(runtimeMonitor);
   patchArray(runtimeMonitor);
   patchFunction(runtimeMonitor);
-  patchOther(runtimeMonitor);
+  patchEventTarget(runtimeMonitor);
+  patchError(runtimeMonitor);
+  
+  patchNode(runtimeMonitor);
+}
 
+/**
+ * @param {RuntimeMonitor} runtimeMonitor 
+ */
+function patchNode(runtimeMonitor) {
   /**
    * @see https://stackoverflow.com/a/35813135
    */
@@ -24,8 +33,9 @@ export default function initPatchBuiltins(runtimeMonitor) {
     // eslint-disable-next-line global-require
     const nodeBuiltins = require('./node');
     if (!nodeBuiltins.tryPatchNode) {
-      // extra precaution: we had a bug where we tryPatchNode was not found for some reason
+      // extra precaution: we had a bug where tryPatchNode was not found for some reason
       throw new Error(`could not resolve "nodeBuiltins.tryPatchNode", but found: ${JSON.stringify(
+        // eslint-disable-next-line prefer-object-spread
         Object.keys(Object.assign({}, nodeBuiltins)) // little hackfix to get keys of built-in objects
       )} `);
     }
@@ -37,6 +47,6 @@ export default function initPatchBuiltins(runtimeMonitor) {
 /**
  * @param {RuntimeMonitor} runtimeMonitor 
  */
-function patchOther(runtimeMonitor) {
+function patchError(runtimeMonitor) {
   Error.captureStackTrace && runtimeMonitor.callbackPatcher.addCallbackIgnoreFunction(Error.captureStackTrace);
 }

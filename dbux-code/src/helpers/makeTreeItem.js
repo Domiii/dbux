@@ -154,7 +154,9 @@ export default function makeTreeItem(labelOrArrOrItem, childrenRaw, itemProps) {
   // }
 
   if (isFunction(labelOrArrOrItem)) {
-    label = (labelOrArrOrItem.name || '').replace(/[_]/g, ' ');
+    label = (labelOrArrOrItem.name || '')
+      .replace(/[_]/g, ' ')    // replace _ with spaces (looks prettier)
+      .replace(/^bound /, ''); // functions created with `.bind()` are prefixed with "bound "
     labelOrArrOrItem = labelOrArrOrItem();
     ({
       children,
