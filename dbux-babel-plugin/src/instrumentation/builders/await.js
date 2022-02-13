@@ -7,7 +7,7 @@ import { buildTraceId, buildTraceIdValue } from './traceId';
 export const buildWrapAwait = buildTraceCall(
   `(%%wrapAwait%%(
   %%argumentVar%% = %%argument%%,
-  %%awaitContextIdVar%% = %%preAwait%%(%%awaitStaticContextId%%, %%tid%%, %%argumentVar%%)
+  %%awaitContextIdVar%% = %%preAwait%%(%%awaitStaticContextId%%, %%schedulerTid%%, %%argumentVar%%)
 ))`,
   function buildWrapAwait(state, traceCfg) {
     const { ids: { aliases: { preAwait, wrapAwait } } } = state;
@@ -19,7 +19,7 @@ export const buildWrapAwait = buildTraceCall(
       }
     } = traceCfg;
     const argument = getInstrumentTargetAstNode(state, traceCfg);
-    const tid = buildTraceId(state, traceCfg);
+    const schedulerTid = buildTraceId(state, traceCfg);
     // TODO: add argumentVar
     // const { } = ;
 
@@ -30,7 +30,7 @@ export const buildWrapAwait = buildTraceCall(
       argumentVar,
       awaitContextIdVar,
       awaitStaticContextId: t.numericLiteral(awaitStaticContextId),
-      tid,
+      schedulerTid,
     };
   }
 );

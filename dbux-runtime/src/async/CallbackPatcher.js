@@ -181,7 +181,6 @@ export default class CallbackPatcher {
               // warn(`[patchedCallback] lastTrace=${lastTraceId}, cid=${context.contextId}, rootId=${rootId}, schedulerTraceId=${schedulerTraceId}`);
               // the CB was called asynchronously
 
-              // const cbContext = getLastContextCheckCallee(originalCb);
               const runId = runtime.getCurrentRunId();
               // const trace = getFirstTraceOfRefValue(callee);
               // const staticTrace = trace && staticTraceCollection.getById(trace.staticTraceId);

@@ -21,6 +21,10 @@ export default class Collection {
     this._all.push(entry);
   }
 
+  getById(id) {
+    return this._all[id];
+  }
+
   getAll() {
     return this._all;
   }
@@ -37,8 +41,12 @@ export default class Collection {
     return this._all.length - 1;
   }
 
-  getById(id) {
-    return this._all[id];
+  getLastIndex() {
+    return this.getLastId();    // id is index
+  }
+
+  getByIndex(i) {
+    return this.getById(i);     // id is index
   }
 
   /**

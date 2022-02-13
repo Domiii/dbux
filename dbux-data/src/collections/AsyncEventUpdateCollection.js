@@ -39,9 +39,10 @@ export default class AsyncEventUpdateCollection extends Collection {
         // set async function's `promiseId`
         const { realContextId } = update;
 
-        // NOTE: `getCallValueRefOfContext` might not return anything for `f`'s contextId in case of `then(f)`
-        //    -> we handle that case in `patchedPromiseCb`
-        update.promiseId = update.promiseId || dp.util.getCallValueRefOfContext(realContextId)?.refId;   // returnPromiseId
+        // hackfix: fix up promiseId (especially for first PreAwait)
+        update.promiseId = update.promiseId || 
+          dp.util.getCallValueRefOfContext(realContextId)?.refId ||
+          dp.util.getAsyncFunctionCallerPromiseId(realContextId);
         // if (!update.promiseId) {
         //   // should never happen!
         //   this.logger.warn(`postAddRaw [${AsyncEventUpdateType.nameFromForce(update.type)}] "getCallValueRefOfContext" failed:`, update);
@@ -77,7 +78,6 @@ export default class AsyncEventUpdateCollection extends Collection {
     //   rootId: preEventRootId,
     //   nestedPromiseId
     // } = update;
-
 
     // const nestedUpdate = nestedPromiseId && dp.util.getFirstPostOrResolveAsyncEventOfPromise(nestedPromiseId, preEventRootId);
     // if (nestedUpdate?.rootId <= preEventRootId) {

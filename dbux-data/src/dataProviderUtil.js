@@ -1528,6 +1528,12 @@ export default {
   },
 
   /** @param {DataProvider} dp */
+  getRealContextOfTrace(dp, traceId) {
+    const { contextId } = dp.collections.traces.getById(traceId);
+    return dp.util.getRealContextOfContext(contextId);
+  },
+
+  /** @param {DataProvider} dp */
   getRealContextIdOfContext(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
     const parentContextId = context?.parentContextId;
@@ -1554,7 +1560,8 @@ export default {
 
   /** @param {DataProvider} dp */
   getRealContextOfContext(dp, contextId) {
-    return dp.collections.executionContexts.getById(dp.util.getRealContextIdOfContext(contextId));
+    const realContextId = dp.util.getRealContextIdOfContext(contextId);
+    return dp.collections.executionContexts.getById(realContextId);
   },
 
   /** @param {DataProvider} dp */
@@ -2339,7 +2346,14 @@ export default {
     return updates?.find(upd => isPostEventUpdate(upd.type)) || null;
   },
 
-  // TODO!
+  /**
+   * @return {}
+   */
+  getAsyncFunctionCallerPromiseId(dp, realContextId) {
+    const context = dp.collections.executionContexts.getById(realContextId);
+    return context?.data?.callerPromiseId;
+  },
+
   // /** 
   //  * Get the last "Post" asyncEvent of given `schedulerTraceId`.
   //  * That update must have `rootId` < `beforeRootId`.
@@ -2720,6 +2734,7 @@ export default {
     if (promiseRootId < syncBeforeRootId) {
       // potentially nested for synchronization -> do not go deeper
       // const chainFrom = dp.util.getChainFrom(nestedUpdate.rootId); // store for debugging
+      // TODO: fix (async-thencb1.js)
       syncPromiseIds.push(nestingPromiseId);
       // log(`SYNC`, postUpdateData, nestingPromiseId);
       return null;

@@ -7,12 +7,13 @@ import PromiseLinkType from '@dbux/common/src/types/constants/PromiseLinkType';
 // import PromiseLink from '@dbux/common/src/types/PromiseLink';
 import traceCollection from '../data/traceCollection';
 import dataNodeCollection from '../data/dataNodeCollection';
-import { peekBCEMatchCallee, getLastContextCheckCallee, isInstrumentedFunction, peekBCEMatchCalleeUnchecked } from '../data/dataUtil';
+import { peekBCEMatchCallee, getContextOfFunc, isInstrumentedFunction, peekBCEMatchCalleeUnchecked } from '../data/dataUtil';
 import PromiseRuntimeData from '../data/PromiseRuntimeData';
 // import traceCollection from '../data/traceCollection';
 import valueCollection from '../data/valueCollection';
 // eslint-disable-next-line max-len
 import { isMonkeyPatchedFunction, monkeyPatchFunctionHolder, tryRegisterMonkeyPatchedFunction, _registerMonkeyPatchedCallback, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
+import executionContextCollection from '../data/executionContextCollection';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PromisePatcher');
@@ -122,6 +123,8 @@ function patchThenCallback(cb, thenRef) {
     // TODO: peekBCEMatchCallee(patchedCb)
 
     ++activeThenCbCount;
+    const lastContextIndex = executionContextCollection.getLastIndex();
+    const lastTraceIndex = traceCollection.getLastIndex();
 
     let returnValue;
     try {
@@ -130,30 +133,27 @@ function patchThenCallback(cb, thenRef) {
         returnValue = originalCb.call(this, ...args);
       }
       finally {
-        const cbContext = getLastContextCheckCallee(originalCb);
-        // TODO: cbContext exists, even if `originalCb` was not instrumented for some reason?!
-        //    -> need to remove `!isInstrumentedFunction(cb)` check to test
-
+        const wasCbInstrumented = executionContextCollection.getLastIndex() > lastContextIndex;
+        const cbContext = wasCbInstrumented && getContextOfFunc(lastContextIndex, originalCb) || null;
         if (isThenable(returnValue)) {
-          // Promise#resolve(Promise) was called: nested promise
+          // nested promise: a promise was returned by thenCb
 
           if (!getPromiseId(returnValue)) {
             /**
              * [hackfix-datanode]
              * hackfix: we must make sure, that we have the promise's `ValueRef`.
-             * We might not have seen this promise for several reasons:
+             * We might not have seen this promise for the following reasons:
              *  1. Then callback is an async function.
-             * WARNING: this might cause some trouble down the line, since:
-             *  1. either this DataNode is not in a meaningful place (lastTraceOfContext).
-             *  2. or it is entirely out of order (schedulerTraceId)
              */
-            const lastTrace = traceCollection.getLast();
+            const cbFirstTrace = traceCollection.getByIndex(lastTraceIndex + 1);
             let dataNodeTraceId;
-            if (lastTrace && lastTrace.contextId === cbContext?.contextId) {
-              dataNodeTraceId = lastTrace.traceId;
+            if (cbFirstTrace) {
+              // new promise's trace is first trace of thenCb
+              dataNodeTraceId = cbFirstTrace.traceId;
             }
             else {
-              dataNodeTraceId = thenRef.schedulerTraceId;
+              // TODO: thenCb was not instrumented... now we really don't have a good traceId to go by...
+              dataNodeTraceId = thenRef.schedulerTraceId; // = 0;
             }
             dataNodeCollection.createDataNode(returnValue, dataNodeTraceId, DataNodeType.Write, null);
 
@@ -162,7 +162,8 @@ function patchThenCallback(cb, thenRef) {
 
           // console.trace('thenCb', cbContext?.contextId, getPromiseId(returnValue));
           // set async function call's `AsyncEventUpdate.promiseId`
-          cbContext && RuntimeMonitorInstance._runtime.async.setAsyncContextPromise(cbContext.contextId, returnValue);
+          const promiseId = getPromiseId(returnValue);
+          cbContext && RuntimeMonitorInstance._runtime.async.setAsyncContextPromise(cbContext, promiseId);
         }
         // thenExecuted(thenRef, previousResult, returnValue);
 
@@ -310,6 +311,21 @@ function _onThen(thenRef, preEventPromise, postEventPromise) {
   RuntimeMonitorInstance._runtime.async.preThen(thenRef);
 }
 
+/** ###########################################################################
+ * keep utility functions to invoke unpatched versions of functions.
+ * ##########################################################################*/
+
+const originalThen = Promise.prototype.then;
+const originalFinally = Promise.prototype.finally;
+const promiseReject = Promise.reject;
+
+function callThen(preEventPromise, successCb, failCb) {
+  return originalThen.call(preEventPromise, successCb, failCb);
+}
+
+function callFinally(preEventPromise, cb) {
+  return originalFinally.call(preEventPromise, cb); 
+}
 
 // ###########################################################################
 // patchPromiseClass + prototype
@@ -565,7 +581,7 @@ export function getPromiseOwnAsyncFunctionContextId(promise) {
 // }
 
 /** ###########################################################################
- * built-ins
+ * resolve + reject
  * ##########################################################################*/
 
 monkeyPatchFunctionHolder(Promise, 'resolve',
@@ -598,7 +614,69 @@ monkeyPatchFunctionHolder(Promise, 'reject',
   }
 );
 
+/** ###########################################################################
+ * Promise.all
+ * ##########################################################################*/
+
 function allHandler(thisArg, args, originalFunction, patchedFunction) {
+  // NOTE: This function accepts an iterable and fails if it is not an iterable.
+  // hackfix: We force conversion to array before passing it in, to make sure that the iterable does not iterate more than once.
+
+  let thenRef, allPromise;
+
+  function onOneSettled(p) {
+    // -> send out Promise.all links as soon as individual promises settle
+    if (!allPromise) {
+      // allPromise has already been settled!
+      return;
+    }
+
+    // TODO: big problem. → this is too late in case of nesting, instead:
+    //    → multi-CHAIN TO all started CGRs that happened before Promise.all settled
+    //    → multi-CHAIN FROM all final promise CGRs, but only SYNC from the promises that did not make it
+    //    → once this is fixed, apply same logic to RACE and ANY
+    // TODO: implementation
+    //    → always register all links right away, but annotate them, then fix up logic in post
+    RuntimeMonitorInstance._runtime.async.all(p, allPromise, thenRef?.schedulerTraceId);
+  }
+
+  function onAllSettled() {
+    allPromise = null;
+  }
+
+  const nestedPromisesIt = args[0];
+  const nestedPromises = Array.from(nestedPromisesIt)
+    .map(
+      p => {
+        return callFinally(
+          p,
+          () => {
+            onOneSettled(p);
+          }
+        );
+      }
+    );
+
+  // → call originalFunction
+  allPromise = originalFunction.call(thisArg, nestedPromises);
+
+  if (nestedPromises.length) {
+    thenRef = _makeThenRef(allPromise, patchedFunction);
+    allPromise = callFinally(
+      allPromise,
+      () => {
+        onAllSettled();
+      }
+    );
+  }
+  return allPromise;
+}
+
+/** ###########################################################################
+ * Promise.allSettled
+ * ##########################################################################*/
+
+function allSettledHandler(thisArg, args, originalFunction, patchedFunction) {
   // NOTE: This function accepts an iterable and fails if it is not an iterable.
   // hackfix: We force conversion to array before passing it in, to make sure that the iterable does not iterate more than once.
   const nestedPromises = args[0];
@@ -616,14 +694,14 @@ function allHandler(thisArg, args, originalFunction, patchedFunction) {
   return allPromise;
 }
 
-monkeyPatchFunctionHolder(Promise, 'all', allHandler);
-monkeyPatchFunctionHolder(Promise, 'allSettled', allHandler);
+/** ###########################################################################
+ * Promise.race
+ * ##########################################################################*/
 
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/race
  */
 function raceHandler(thisArg, args, originalFunction, patchedFunction) {
-  // TODO: create new promise for each nested promise, so we can know the winner
   // NOTE: This function accepts an iterable and fails if it is not an iterable.
   // hackfix: We force conversion to array before passing it in, to make sure that the iterable does not iterate more than once.
   const nestedPromises = args[0];
@@ -636,9 +714,9 @@ function raceHandler(thisArg, args, originalFunction, patchedFunction) {
     for (let i = 0; i < nestedArr.length; ++i) {
       const p = nestedArr[i];
       // TODO: use `valueCollection._startAccess` before starting to read (potential) promise properties
-      if (isThenable(p) && p.finally) {
+      if (isThenable(p)) {
         // eslint-disable-next-line no-loop-func
-        nestedArr[i] = p.finally(() => {
+        nestedArr[i] = callFinally(() => {
           if (hasFinished) {
             return;
           }
@@ -656,11 +734,14 @@ function raceHandler(thisArg, args, originalFunction, patchedFunction) {
   return racePromise;
 }
 
+/** ###########################################################################
+ * Promise.any
+ * ##########################################################################*/
+
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/any
  */
 function anyHandler(thisArg, args, originalFunction, patchedFunction) {
-  // TODO: create new promise for each nested promise, so we can know the winner
   // NOTE: This function accepts an iterable and fails if it is not an iterable.
   // hackfix: We force conversion to array before passing it in, to make sure that the iterable does not iterate more than once.
   const nestedPromises = args[0];
@@ -675,7 +756,7 @@ function anyHandler(thisArg, args, originalFunction, patchedFunction) {
       // TODO: use `valueCollection._startAccess` before starting to read (potential) promise properties
       if (isThenable(p)) {
         // eslint-disable-next-line no-loop-func
-        nestedArr[i] = p.then(() => {
+        nestedArr[i] = callFinally(p, () => {
           if (hasFinished) {
             return;
           }
@@ -693,13 +774,11 @@ function anyHandler(thisArg, args, originalFunction, patchedFunction) {
   return anyPromise;
 }
 
-monkeyPatchFunctionHolder(Promise, 'race', raceHandler);
+/** ###########################################################################
+ * future-work: move these to a better place?
+ * ##########################################################################*/
+
+monkeyPatchFunctionHolder(Promise, 'all', allHandler);
+monkeyPatchFunctionHolder(Promise, 'allSettled', allSettledHandler);
 monkeyPatchFunctionHolder(Promise, 'any', anyHandler);
-
-// TODO: race resolves or rejects as soon as the first of its argument promises does.
-//  -> CHAIN against the promise that won the race; ignore all others
-// monkeyPatchFunctionHolder(Promise, 'race', allHandler);
-
-// TODO: any resolves as soon as any of its argument promises resolves. If all reject, it rejects.
-//  -> CHAIN against the resolved, and all previously rejected promises; ignore all others
-// monkeyPatchFunctionHolder(Promise, 'any', allHandler);
+monkeyPatchFunctionHolder(Promise, 'race', raceHandler);

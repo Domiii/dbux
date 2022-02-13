@@ -144,12 +144,12 @@ export function peekBCEContextCheckCallee(callId) {
 /**
  * @returns The last opened context, if it is the execution of given `func`.
  */
-export function getLastContextCheckCallee(func) {
+export function getContextOfFunc(i, func) {
   const functionRef = valueCollection.getRefByValue(func);
   if (!functionRef) {
     return null;
   }
-  const context = executionContextCollection.getLastRealContext();
+  const context = executionContextCollection.getByIndex(i + 1);
   const contextFunctionRef = context && getFunctionRefByContext(context);
   return functionRef === contextFunctionRef ? context : null;
 }
@@ -163,9 +163,9 @@ export function isRootContext(contextId) {
   return !executionContextCollection.getById(contextId).parentContextId;
 }
 
-// ###########################################################################
-//
-// ###########################################################################
+/** ###########################################################################
+ * 
+ * ##########################################################################*/
 
 /**
  * NOTE: returns `null` if its first trace is not its own (e.g. if value was first recorded as a child value on another object)
@@ -354,4 +354,13 @@ export function getSpecialCallType(callId) {
   }
 
   return null;
+}
+
+/** ###########################################################################
+ * async + promise stuff
+ * ##########################################################################*/
+
+export function getAsyncFunctionCallerPromiseId(realContextId) {
+  const context = executionContextCollection.getById(realContextId);
+  return context?.data?.callerPromiseId;
 }
