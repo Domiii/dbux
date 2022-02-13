@@ -114,11 +114,11 @@ export default function patchArray() {
   // ###########################################################################
 
   monkeyPatchMethod(Array, 'slice',
-    (arr, args, originalFunction, patchedFunction) => {
+    (thisArg, args, originalFunction, patchedFunction) => {
       let [start, end] = args;
-      const ref = valueCollection.getRefByValue(arr);
+      const ref = valueCollection.getRefByValue(thisArg);
       const bceTrace = ref && peekBCEMatchCallee(patchedFunction);
-      const newArray = originalFunction.apply(arr, args);
+      const newArray = originalFunction.apply(thisArg, args);
       if (!bceTrace) {
         return newArray;
       }
@@ -130,8 +130,8 @@ export default function patchArray() {
       // DataNodeType.Create
       const newArrayNode = dataNodeCollection.createBCEOwnDataNode(newArray, callId, DataNodeType.Write);
 
-      start = !Number.isNaN(start) ? wrapIndex(start, arr) : 0;
-      end = !Number.isNaN(end) ? wrapIndex(end, arr) : arr.length - 1;
+      start = !Number.isNaN(start) ? wrapIndex(start, thisArg) : 0;
+      end = !Number.isNaN(end) ? wrapIndex(end, thisArg) : thisArg.length - 1;
 
       // record all DataNodes of copy operation
       for (let i = start; i < end; ++i) {
@@ -139,7 +139,7 @@ export default function patchArray() {
           objectNodeId: arrNodeId,
           prop: i
         };
-        const readNode = dataNodeCollection.createDataNode(arr[i], callId, DataNodeType.Read, varAccessRead);
+        const readNode = dataNodeCollection.createDataNode(thisArg[i], callId, DataNodeType.Read, varAccessRead);
 
         const varAccessWrite = {
           objectNodeId: newArrayNode.nodeId,

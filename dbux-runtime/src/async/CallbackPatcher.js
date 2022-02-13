@@ -197,6 +197,7 @@ export default class CallbackPatcher {
     const callbackProxy = registerMonkeyPatchedCallback(originalCallback, patchedCallback);
 
     // [edit-after-send]
+    // we use `callId` to modify the bceTrace
     const bceTrace = traceCollection.getById(callId);
     if (bceTrace) {
       bceTrace.data = bceTrace.data || {};

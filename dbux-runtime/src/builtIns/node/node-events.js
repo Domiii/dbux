@@ -18,5 +18,6 @@ import { EventEmitter } from 'events';
  * @param {RuntimeMonitor} runtimeMonitor 
  */
 export default function patchNodeEvents(runtimeMonitor) {
-  // EventEmitter
+  // TODO: patch EventEmitter, similar to EventTarget
+  //      (however, consider that there are many more methods for adding and removing events)
 }
