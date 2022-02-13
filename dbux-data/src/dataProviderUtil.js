@@ -768,35 +768,7 @@ export default {
     const { refId, value, hasValue } = dataNode;
 
     if (refId) {
-      const entries = dp.util.constructValueObjectShallow(refId, terminateNodeId);
-      const valueRef = dp.collections.values.getById(refId);
-      if (!entries) {
-        // node was omitted or did not have children for other reasons
-        // default
-        valueString = valueRef.value?.toString?.() || String(valueRef.value);
-      }
-      else {
-        const { category } = valueRef;
-        if (ValueTypeCategory.is.Array(category)) {
-          let content = `${entries.map(x => dp.util._simplifyValue(x))}`;
-          shorten && (content = makeShortString(content, ShortenNestedCfg));
-          valueString = `[${content}]`;
-        }
-        else if (ValueTypeCategory.is.Object(category)) {
-          let content = `${Object.keys(entries)}`;
-          shorten && (content = makeShortString(content, ShortenNestedCfg));
-          valueString = `{${content}}`;
-        }
-        else if (ValueTypeCategory.is.Function(category)) {
-          let content = entries.name?.[2] || '(anonymous)';
-          shorten && (content = makeShortString(content, ShortenNestedCfg));
-          valueString = `ƒ ${content}`;
-        }
-        else {
-          // default
-          valueString = valueRef.value?.toString?.() || String(valueRef.value);
-        }
-      }
+      valueString = dp.util.getValueRefValueStringShort(refId, terminateNodeId, shorten);
     }
     else {
       if (hasValue) {
@@ -806,14 +778,6 @@ export default {
         valueString = 'undefined';
       }
     }
-
-    // if (shorten) {
-    //   valueString = makeShortString(valueString, ShortenCfg);
-    //   dataNode._valueStringShort = valueString;
-    // }
-    // else {
-    //   dataNode._valueString = valueString;
-    // }
 
     return valueString;
   },
@@ -853,6 +817,42 @@ export default {
       return dp.util.getDataNodeValueStringShort(dataNode.nodeId);
     }
     return '(no value or undefined)';
+  },
+
+  getValueRefValueStringShort(dp, refId, terminateNodeId, shorten) {
+    const entries = dp.util.constructValueObjectShallow(refId, terminateNodeId);
+    const valueRef = dp.collections.values.getById(refId);
+
+    let valueString;
+    if (!entries) {
+      // node was omitted or did not have children for other reasons
+      // default
+      valueString = valueRef.value?.toString?.() || String(valueRef.value);
+    }
+    else {
+      const { category } = valueRef;
+      if (ValueTypeCategory.is.Array(category)) {
+        let content = `${entries.map(x => dp.util._simplifyValue(x))}`;
+        shorten && (content = makeShortString(content, ShortenNestedCfg));
+        valueString = `[${content}]`;
+      }
+      else if (ValueTypeCategory.is.Object(category)) {
+        let content = `${Object.keys(entries)}`;
+        shorten && (content = makeShortString(content, ShortenNestedCfg));
+        valueString = `{${content}}`;
+      }
+      else if (ValueTypeCategory.is.Function(category)) {
+        let content = entries.name?.[2] || '(anonymous)';
+        shorten && (content = makeShortString(content, ShortenNestedCfg));
+        valueString = `ƒ ${content}`;
+      }
+      else {
+        // default
+        valueString = valueRef.value?.toString?.() || String(valueRef.value);
+      }
+    }
+
+    return valueString;
   },
 
   /** ###########################################################################

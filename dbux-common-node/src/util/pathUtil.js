@@ -3,7 +3,6 @@ import fs from 'fs';
 import path from 'path';
 import { homedir } from 'os';
 import _commonAncestorPath from 'common-ancestor-path';
-import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 /**
  * Get command executable path

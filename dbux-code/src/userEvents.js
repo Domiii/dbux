@@ -23,10 +23,16 @@ export function initUserEvent(_manager) {
 // events registry
 // ###########################################################################
 
+/**
+ * NOTE: Register every possible UserActions here, so we can manage them all together
+ */
 export function emitUserAction(actionType, data) {
   emitUserEvent(actionType, data);
 }
 
+/**
+ * NOTE: For editor events
+ */
 export function emitEditorAction(type, data) {
   emitUserEvent(type, data);
 }
@@ -125,7 +131,7 @@ export function onUserEvent(cb) {
 }
 
 /**
- * 
+ * NOTE: Basic UserAction emitter, should not be used without registration
  * @param {string} name 
  * @param {Object} data NOTE: data *must* always be completely serializable, simple data.
  */

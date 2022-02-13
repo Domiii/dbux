@@ -1,4 +1,5 @@
 set -e
+# set -x
 
 branch=$(git symbolic-ref --short HEAD)
 
@@ -10,7 +11,7 @@ fi
 # echo "You are on the right branch: $branch"
 echo "DOCS BUILDING..."
 
-yarn update-docs
+# yarn update-docs # "yarn build" already runs update-docs
 yarn build
 
 
@@ -19,8 +20,10 @@ echo "Docs Built. You are on branch=$branch."
 echo "Deploy? [Y/n]"
 read ok
 
-if [ "$ok" != "" & "$ok" != "y" ]; then
-  exit -1
+# see https://stackoverflow.com/questions/13617843/unary-operator-expected-error-in-bash-if-condition
+if [[ $ok != "" ]] && [[ $ok != "y" ]]; then
+  echo "Cancelled: deploy_docs.sh"
+  exit 0
 fi
 
 echo 'DOCS DEPLOYING...'

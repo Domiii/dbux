@@ -4,9 +4,12 @@ import io, { Socket } from 'socket.io-client';
 import msgpackParser from '@dbux/common/src/msgpackParser';
 import minBy from 'lodash/minBy';
 import maxBy from 'lodash/maxBy';
+import isFunction from 'lodash/isFunction';
 import { newLogger } from '@dbux/common/src/log/logger';
 import sleep from '@dbux/common/src/util/sleep';
+import NestedError from '@dbux/common/src/NestedError';
 import { getDataCount } from '@dbux/common/src/util/dataUtil';
+import { findPathInObject } from '@dbux/common/src/util/objectUtil';
 // import universalLibs from '@dbux/common/src/util/universalLib';
 import SendQueue from './SendQueue';
 
@@ -213,21 +216,27 @@ export default class Client {
    */
   sendWithAck(msg, data) {
     return new Promise((resolve, reject) => {
+      const errorListener = err => {
+        // NOTE: we had a bug where sometimes functions were accidentally sent. This helps check for that possibility.
+        const functionPath = findPathInObject(data, val => isFunction(val));
+        reject(new NestedError(`sendWithAck failed - functionPath=${functionPath} - data: ${JSON.stringify(data, null, 2)}`, err));
+      };
       try {
         // debug(`SEND`, this._sending, msg);
+        this._socket.once('error', errorListener);
         this._socket.emit(msg, data, (ackMsg) => {
           debug(`ACK`, this._sending);
           if (ackMsg !== msg) {
             reject(new Error(`Ack not received while sending`));
           }
           else {
+            this._socket.removeListener('error', errorListener);
             resolve();
           }
         });
-        this._socket.once('error', reject);
       }
       catch (err) {
-        reject(err);
+        errorListener(err);
       }
     });
   }

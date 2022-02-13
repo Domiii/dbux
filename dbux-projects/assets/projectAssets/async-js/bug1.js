@@ -3,30 +3,23 @@
  * @see https://github.com/caolan/async/issues/1729
  */
 
+const { default: sleep } = require('@dbux/common/src/util/sleep');
 const { queue } = require('./lib');
 
-const createTask = () => {
-  return {
-    doIt: () => {
-      return new Promise((r) => setTimeout(r, 2000));
-    }
-  };
-};
-
-const createQueueAndProcess = async () => {
-  await 0;
+async function main() {
+  await start();
   const q = queue(async (task) => {
-    await task.doIt();
+    await sleep(1000);
     console.log("task done");
   });
 
   //Comment the empty array push line below
   // and see the issue go away
   q.push([]);
-  q.push([createTask(), createTask(), createTask()]);
+  q.push([1, 2]);
 
   await q.drain();
   console.log("all tasks completed");
-};
+}
 
-createQueueAndProcess();
+main();

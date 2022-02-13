@@ -61,7 +61,7 @@ class AsyncGraph extends GraphBase {
     const appData = allApplications.selection.data;
     const asyncNodes = appData.asyncNodesInOrder.getAllActual();
 
-    const childrenData = asyncNodes.map((asyncNode) => {
+    let childrenData = asyncNodes.map((asyncNode) => {
       const { applicationId, rootContextId } = asyncNode;
 
       // if (appData.threadSelection.isActive()) {
@@ -96,8 +96,6 @@ class AsyncGraph extends GraphBase {
       const parentEdge = parentEdges[0];
       const parentEdgeType = parentEdge?.edgeType;
       const parentAsyncNodeId = parentEdge?.parentAsyncNodeId;
-      const hasError = !!dp.indexes.traces.errorByRoot.get(rootContextId);
-
       const nestingDepth = dp.util.getNestedDepth(rootContextId);
 
       return {
@@ -117,20 +115,28 @@ class AsyncGraph extends GraphBase {
         realStaticContextid,
         moduleName,
         postAsyncEventUpdateType,
-        hasError,
+
+        /**
+         * dummy value, will be resolve later in `resolveErrorData`
+         */
+        hasError: false,
       };
     }).filter(n => !!n);
 
-    return this.resolvePositionData(childrenData);
+
+    const dataByNodeMap = new AsyncNodeDataMap();
+    childrenData.forEach(childData => dataByNodeMap.add(childData));
+
+    childrenData = this.resolvePositionData(childrenData, dataByNodeMap);
+    childrenData = this.resolveErrorData(childrenData, dataByNodeMap);
+
+    return childrenData;
   }
 
   /**
    * Resolve `rowId`, `colId` and `width`.
    */
-  resolvePositionData(asyncNodeData) {
-    const dataByNodeMap = new AsyncNodeDataMap();
-    asyncNodeData.forEach(childData => dataByNodeMap.add(childData));
-
+  resolvePositionData(asyncNodeData, dataByNodeMap) {
     // rowId
     asyncNodeData.forEach((childData, index) => {
       childData.rowId = index + 1;
@@ -199,6 +205,19 @@ class AsyncGraph extends GraphBase {
       }
       childData.colId = (parentAsyncData?.blockOffset || 0) + childData.inBlockOffset + 1;
     });
+
+    return asyncNodeData;
+  }
+
+  resolveErrorData(asyncNodeData, dataByNodeMap) {
+    const rootErrors = this.componentManager.externals.globalAnalysisViewController.errorTraceManager.getLeaves();
+    for (const rootErrorTrace of rootErrors) {
+      const { applicationId, rootContextId } = rootErrorTrace;
+      const dp = allApplications.getById(applicationId).dataProvider;
+      const { asyncNodeId } = dp.indexes.asyncNodes.byRoot.getUnique(rootContextId);
+      const nodeData = dataByNodeMap.get(applicationId, asyncNodeId);
+      nodeData.hasError = true;
+    }
 
     return asyncNodeData;
   }

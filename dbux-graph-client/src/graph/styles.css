@@ -252,22 +252,6 @@ div {
   overflow: hidden;
 }
 
-/* .research-mode .async-cell .left-label {
-  display: none !important;
-} */
-
-.research-mode .async-cell .async-context-label {
-  display: none !important;
-}
-
-.research-mode .async-cell .loc-label {
-  display: none !important;
-}
-
-.research-mode .async-cell .right-label {
-  display: none !important;
-}
-
 .terminal-node {
   /* TODO: new design */
   /* border-bottom: white solid 1px; */
@@ -348,7 +332,7 @@ div {
 }
 
 .theme-mode-dark .loc-label {
-  color: rgba(200, 200, 200);
+  color: #222;
 }
 
 .hide-locs .loc-label {
@@ -423,10 +407,6 @@ div {
   border-top: var(--async-line-width) dashed var(--async-line-color);
 }
 
-.research-mode .hz-d {
-  border-color: #fff
-}
-
 /* vertical solid */
 .vt {
   display: flex;
@@ -438,10 +418,6 @@ div {
   height: 100%;
   width: 0;
   border-left: var(--async-line-width) solid var(--async-line-color);
-}
-
-.research-mode .vt {
-  border-color: #fff
 }
 
 /* vertical dashed */
@@ -457,10 +433,6 @@ div {
   border-left: var(--async-line-width) dashed var(--async-line-color);
 }
 
-.research-mode .vt-d {
-  border-color: #fff
-}
-
 /* corner dashed */
 .cn-d {
   display: flex;
@@ -474,10 +446,6 @@ div {
   height: 50%;
   border-top: var(--async-line-width) dashed var(--async-line-color);
   border-right: var(--async-line-width) dashed var(--async-line-color);
-}
-
-.research-mode .cn-d {
-  border-color: #fff
 }
 
 /* T-shape dashed */
@@ -501,21 +469,6 @@ div {
   height: calc(50% - 0.5px);
   border-top: var(--async-line-width) dashed var(--async-line-color);
   border-left: var(--async-line-width) dashed var(--async-line-color);
-}
-
-.research-mode .t-d {
-  border-color: #fff
-}
-
-.research-mode .async-error {
-  border-color: red;
-  background-blend-mode: darken;
-  /* background: unset !important; */
-}
-
-.research-mode .async-error .async-brief {
-  background: unset;
-  transform: translateX(100%);
 }
 
 /** ###########################################################################
@@ -708,14 +661,78 @@ body:not(.theme-mode-dark) .highlight {
   font-size: 0.9rem;
 }
 
-.research-mode .context-stats {
-  display: none !important;
-}
-
 /** ###########################################################################
  * toolbar
  * ############################################################################*/
 
 .toolbar-btn {
   padding: 4px !important;
+}
+
+
+/** ###########################################################################
+ * screenShotMode(.research-mode)
+ * ############################################################################*/
+
+ .theme-mode-dark .research-mode .async-node {
+  color: #333;
+}
+
+.research-mode .async-context-label {
+  font-weight: 600;
+}
+
+.research-mode .async-cell .left-label {
+  display: none !important;
+}
+
+/* .research-mode .async-cell .async-context-label {
+  display: none !important;
+}
+
+.research-mode .async-cell .loc-label {
+  display: none !important;
+}
+
+.research-mode .async-cell .right-label {
+  display: none !important;
+} */
+
+.research-mode .hz-d {
+  border-color: #fff
+}
+
+.research-mode .vt {
+  border-color: #fff
+}
+
+.research-mode .vt-d {
+  border-color: #fff
+}
+
+.research-mode .cn-d {
+  border-color: #fff
+}
+
+.research-mode .t-d {
+  border-color: #fff
+}
+
+.research-mode .async-error {
+  /* border-color: red; */
+  background-blend-mode: darken;
+  /* background: unset !important; */
+}
+
+.research-mode .async-error .async-brief {
+  background: unset;
+  transform: translateX(100%);
+}
+
+.research-mode .context-stats {
+  display: none !important;
+}
+
+.research-mode .left-label {
+  display: none !important;
 }
