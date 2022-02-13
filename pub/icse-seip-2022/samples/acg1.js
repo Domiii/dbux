@@ -1,5 +1,5 @@
- function R(x) {
-  return Promise.resolve(x);
+function R(x) { 
+   return Promise.resolve(x);
 }
 
 async function main() {

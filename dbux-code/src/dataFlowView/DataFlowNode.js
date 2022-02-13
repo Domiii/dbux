@@ -1,4 +1,5 @@
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import DataNodeNode from '../codeUtil/treeView/DataNodeNode';
 
 const Verbose = false;
@@ -9,8 +10,7 @@ const Verbose = false;
  */
 export default class DataFlowNode extends DataNodeNode {
   get clickUserActionType() {
-    // TODO: add a new action type?
-    return null;
+    return UserActionType.DataFlowSelectTrace;
   }
 
   init() {

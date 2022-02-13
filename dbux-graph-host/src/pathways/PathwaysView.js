@@ -151,6 +151,9 @@ class PathwaysView extends HostComponentEndpoint {
       case StepType.CallGraph:
         label = '(Call Graph Investigation)';
         break;
+      case StepType.Search:
+        label = '(Search)';
+        break;
       case StepType.Other:
         if (staticContextId) {
           const dp = allApplications.getById(applicationId)?.dataProvider;
@@ -253,6 +256,7 @@ class PathwaysView extends HostComponentEndpoint {
         }
       },
       [StepType.CallGraph]: () => 'cg',
+      [StepType.Search]: () => 'se',
       [StepType.Other]: () => 'o'
     };
 

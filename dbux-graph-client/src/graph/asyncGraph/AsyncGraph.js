@@ -25,7 +25,7 @@ class AsyncGraph extends GraphBase {
           <h4>Applications:</h4>
           <pre data-el="applications"></pre>
         </div>
-        <div data-el="main" style="grid-area:main;" class="grid async-grid"></div>
+        <div data-el="main" style="grid-area:main;" class="graph-body grid async-grid"></div>
       </div>
     `);
   }
@@ -138,9 +138,9 @@ class AsyncGraph extends GraphBase {
     } = nodeData;
 
     const { themeMode, screenshotMode, graphDocument } = this.context;
-    const { asyncDetailMode } = graphDocument.state;
-    const highContractMode = screenshotMode && !asyncDetailMode;
-
+    // const { asyncDetailMode } = graphDocument.state;
+    // const highContractMode = screenshotMode && !asyncDetailMode;
+    const highContractMode = screenshotMode;
     // const moduleLabel = moduleName ? `${moduleName} | ` : '';
 
     const backgroundColor = getStaticContextColor(themeMode, realStaticContextid, { bland: !!moduleName, highContractMode });
@@ -167,7 +167,7 @@ class AsyncGraph extends GraphBase {
         }
         break;
     }
-    if (this.context.screenshotMode) {
+    if (screenshotMode) {
       shortLabel = '';
       fullLabel = '';
     }
@@ -277,7 +277,7 @@ class AsyncGraph extends GraphBase {
           const _row = parentAsyncNode.rowId + 1;
           const _col = Math.max(parentAsyncNode.colId, colId);
           const _height = rowId - _row;
-          if (_height) {
+          if (_height > 0) {
             const positionProp = makeGridPositionProp(_row, _col, { rowSpan: _height });
             html += /*html*/ `
                 <div style="${positionProp}" class="vt"></div>
@@ -295,7 +295,7 @@ class AsyncGraph extends GraphBase {
             _col = lastForkSibling.colId + 1;
           }
           const _width = colId - _col;
-          if (_width) {
+          if (_width > 0) {
             const positionProp = makeGridPositionProp(parentAsyncNode.rowId, _col, { colSpan: _width });
             html += /*html*/ `
               <div style="${positionProp}" class="hz-d"></div>
@@ -305,7 +305,7 @@ class AsyncGraph extends GraphBase {
         {
           // vertical line
           const _height = rowId - parentAsyncNode.rowId - 1;
-          if (_height) {
+          if (_height > 0) {
             const positionProp = makeGridPositionProp(parentAsyncNode.rowId + 1, colId, { rowSpan: _height });
             html += /*html*/ `
                 <div style="${positionProp}" class="vt-d"></div>

@@ -8,6 +8,7 @@ import ValueTDSimpleNode from './ValueTDSimpleNode';
 
 /**
  * Node represents an complex value, use `ValueNode.entry.refId` + `ValueNode.rootDataNode.nodeId`(as terminalNodeId) to render.
+ * NOTE: `ValueTDRefNode.entry` might be inaccurate, since a ValueRef may not have a corresponding DataNode
  */
 export default class ValueTDRefNode extends ValueNode {
   /**
@@ -29,10 +30,15 @@ export default class ValueTDRefNode extends ValueNode {
    * For root node only.
    */
   static makeProperties(dataNode, parent, props) {
-    return {
-      refId: dataNode.refId,
-      rootDataNode: dataNode,
-    };
+    if (!parent) {
+      return {
+        refId: dataNode.refId,
+        rootDataNode: dataNode,
+      };
+    }
+    else {
+      return null;
+    }
   }
 
   static makeLabel(dataNode, parent, { key }) {
@@ -56,7 +62,7 @@ export default class ValueTDRefNode extends ValueNode {
     const { rootDataNode } = this;
     const { typeName } = this.valueRef;
     const { nodeId } = this.dataNode;
-    this.description = `${this.dp.util.getDataNodeValueStringShort(nodeId, rootDataNode.nodeId)}${typeName && ` (${typeName})`}`;
+    this.description = `${this.dp.util.getValueRefValueStringShort(this.refId, rootDataNode.nodeId)}${typeName && ` (${typeName})`}`;
   }
 
   buildChildren() {

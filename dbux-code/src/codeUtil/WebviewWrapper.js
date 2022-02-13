@@ -224,11 +224,30 @@ export default class WebviewWrapper {
   _webviewUpdateToken = 0;
 
   async _restartClientDOM() {
+    const { webview } = this.panel;
     let html = await this.buildClientHtml();
+    //     /**
+    //      * @see https://code.visualstudio.com/api/extension-guides/webview#content-security-policy
+    //      * @see https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/content_security_policy#example
+    //      */
+    //     const allowedScripts = `https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js`;
+    //     const allowedCss = `https://fonts.googleapis.com`;
+    //     const csp = `<meta
+    //   http-equiv="Content-Security-Policy"
+    //   content="\
+    //     img-src 'self' 'unsafe-inline' ${webview.cspSource}; \
+    //     script-src 'self' 'unsafe-inline' 'unsafe-eval' ${webview.cspSource} ${allowedScripts}; \
+    //     style-src 'self' 'unsafe-inline' ${webview.cspSource} ${allowedCss};\
+    //   "
+    // />`;
+    // NOTE: CSP stuff still seems immature (2/2022) and vastly underdocumented. Will need to revisit in the future.
+    const csp = '';
+
     html = `
 <script>
   window._WebResourceRoot = ${JSON.stringify(this.resourceRoot)};
 </script>
+${csp}
 ${html}
 <!-- ${++this._webviewUpdateToken} -->`;
     this.panel.webview.html = html;

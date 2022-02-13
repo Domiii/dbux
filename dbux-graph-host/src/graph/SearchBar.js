@@ -9,12 +9,6 @@ import { SelectorType } from './controllers/ContextNodeManager';
 
 const Verbose = false;
 
-const UserActionTypeByMode = {
-  [SearchMode.ByContext]: UserActionType.CallGraphSearchContexts,
-  [SearchMode.ByTrace]: UserActionType.CallGraphSearchTraces,
-  [SearchMode.ByValue]: UserActionType.CallGraphSearchValues,
-};
-
 class SearchBar extends HostComponentEndpoint {
   init() {
     this.state.mode = this.searchController.mode;
@@ -52,13 +46,6 @@ class SearchBar extends HostComponentEndpoint {
 
   search = (searchTerm) => {
     Verbose && this.logger.log(`.search() with searchTerm=${searchTerm}`);
-
-    if (searchTerm) {
-      const { mode } = this.searchController;
-      const searchActionType = UserActionTypeByMode[mode];
-      this.componentManager.externals.emitCallGraphAction(searchActionType, { searchTerm, mode });
-    }
-
     this.searchController.search(searchTerm);
   }
 

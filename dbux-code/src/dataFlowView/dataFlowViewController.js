@@ -40,7 +40,7 @@ export class DataFlowViewController {
   }
 
   focusOnSelectedNode = async () => {
-    const selectedNode = this.treeDataProvider.rootNodes.find(root => root.isSelected());
+    const selectedNode = this.treeDataProvider.rootNodes.find(root => root.isSelected?.());
     if (selectedNode) {
       await this.treeView.reveal(selectedNode, { select: false });
     }
@@ -75,7 +75,9 @@ export class DataFlowViewController {
     // add traceSelection event handler
     traceSelection.onTraceSelectionChanged(async (/* selected */) => {
       await this.refresh();
-      await this.focusOnSelectedNode();
+      if (this.treeView.visible) {
+        await this.focusOnSelectedNode();
+      }
     });
   }
 }

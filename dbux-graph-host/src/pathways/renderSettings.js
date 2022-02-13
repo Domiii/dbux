@@ -28,8 +28,7 @@ const labelsByActionGroupType = {
   [ActionGroupType.NavigationPreviousTrace]: 'NavigationPreviousTrace',
   [ActionGroupType.NavigationNextTrace]: 'NavigationNextTrace',
   [ActionGroupType.CallGraphSelectTrace]: 'CallGraphSelectTrace',
-  [ActionGroupType.CallGraphSearchContexts]: 'CallGraphSearchContexts',
-  [ActionGroupType.CallGraphSearchTraces]: 'CallGraphSearchTraces',
+  [ActionGroupType.Search]: 'SearchContexts',
   [ActionGroupType.CallGraphSelectTrace]: 'CallGraphTrace',
   [ActionGroupType.CallGraphOther]: 'CallGraphOther',
   [ActionGroupType.Other]: 'Other'
@@ -64,9 +63,8 @@ const iconsByActionGroupType = {
   [ActionGroupType.NavigationNextTrace]: 'rightArrow.svg',
   [ActionGroupType.CallGraphSelectTrace]: 'callGraphSelectTrace.svg',
   [ActionGroupType.CallGraphToggleContextNode]: 'listItem.svg',
-  [ActionGroupType.CallGraphSearchContexts]: 'callGraphSearchContexts.svg',
-  [ActionGroupType.CallGraphSearchTraces]: 'callGraphSearchTraces.svg',
   [ActionGroupType.CallGraphOther]: defaultActionGroupIcon,
+  [ActionGroupType.Search]: 'magnifier.svg',
   [ActionGroupType.Other]: defaultActionGroupIcon,
   [ActionGroupType.Hidden]: ' ',
   [ActionGroupType.SessionFinished]: 'end.svg'
@@ -76,6 +74,7 @@ const iconsByStepType = {
   [StepType.None]: defaultActionGroupIcon,
   [StepType.Trace]: 'crosshair_red.svg',
   [StepType.CallGraph]: 'dependency.svg',
+  [StepType.Search]: 'magnifier.svg',
   [StepType.Other]: 'cursor_click.svg',
 };
 

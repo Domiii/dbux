@@ -26,12 +26,11 @@ let ActionGroupType = {
    */
   TDTrace: 17,
 
-  
   CallGraphSelectTrace: 20,
   CallGraphToggleContextNode: 21,
-  CallGraphSearchContexts: 22,
-  CallGraphSearchTraces: 23,
-  CallGraphOther: 25,
+  CallGraphOther: 22,
+
+  Search: 30,
 
   NavigationPreviousInContext: 40,
   NavigationPreviousChildContext: 41,
@@ -79,10 +78,10 @@ const groupByActionType = {
   [UserActionType.NavigationNextStaticTrace]: ActionGroupType.NavigationNextStaticTrace,
   [UserActionType.NavigationPreviousTrace]: ActionGroupType.NavigationPreviousTrace,
   [UserActionType.NavigationNextTrace]: ActionGroupType.NavigationNextTrace,
-
+  [UserActionType.SearchContexts]: ActionGroupType.Search,
+  [UserActionType.SearchTraces]: ActionGroupType.Search,
+  [UserActionType.SearchValues]: ActionGroupType.Search,
   [UserActionType.CallGraphOther]: ActionGroupType.CallGraphOther,
-  [UserActionType.CallGraphSearchContexts]: ActionGroupType.CallGraphSearchContexts,
-  [UserActionType.CallGraphSearchTraces]: ActionGroupType.CallGraphSearchTraces,
   [UserActionType.CallGraphNodeCollapseChange]: ActionGroupType.CallGraphToggleContextNode,
   [UserActionType.CallGraphTrace]: ActionGroupType.CallGraphSelectTrace,
   [UserActionType.CallGraphCallTrace]: ActionGroupType.CallGraphSelectTrace,
