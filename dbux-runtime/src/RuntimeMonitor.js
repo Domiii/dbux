@@ -1055,7 +1055,7 @@ export default class RuntimeMonitor {
 
     // console.trace(`BCE`, callee.toString(), callee);
 
-    const overrideCallee = this.callbackPatcher.monkeyPatchCallee(callee);
+    const overrideCallee = this.callbackPatcher.getPatchedFunctionOrNull(callee);
     if (!overrideCallee) {
       this.callbackPatcher.monkeyPatchArgs(callee, callId, args, spreadArgs, argTids);
     }

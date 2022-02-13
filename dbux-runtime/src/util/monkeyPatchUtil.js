@@ -14,6 +14,10 @@ const originalFunctionsByProxy = new WeakMap();
 const callbackProxiesByOriginal = new Map();
 const originalCallbacksByProxy = new WeakMap();
 
+/** ###########################################################################
+ * {@link makeProxy}
+ * ##########################################################################*/
+
 function makeProxy(cb) {
   // TODO: add missing data nodes
   return new Proxy(cb, {
@@ -45,11 +49,11 @@ function makeProxy(cb) {
 }
 
 
-// ###########################################################################
-// book-keeping (other)
-// ###########################################################################
+/** ###########################################################################
+ * {@link registerMonkeyPatchedFunction}
+ * ##########################################################################*/
 
-export function _registerMonkeyPatchedFunction(originalFunction, patchedFunction) {
+export function registerMonkeyPatchedFunction(originalFunction, patchedFunction) {
   try {
     const proxy = makeProxy(patchedFunction);
     functionProxiesByOriginalFunction.set(originalFunction, proxy);
@@ -58,6 +62,7 @@ export function _registerMonkeyPatchedFunction(originalFunction, patchedFunction
       //    (because for some reason, native functions cannot be WeakMap keys)
       originalFunctionsByProxy.set(proxy, originalFunction);
     }
+    return proxy;
   }
   catch (err) {
     functionProxiesByOriginalFunction.delete(originalFunction); // ATOMIC constraint: undo partial result
@@ -101,7 +106,7 @@ export function getPatchedFunctionOrSelf(originalFunction) {
   return functionProxiesByOriginalFunction.get(originalFunction) || originalFunction;
 }
 
-export function getPatchedFunctionOrNull(originalFunction) {
+export function _getPatchedFunctionOrNull(originalFunction) {
   let patchedFunction;
   if (isMonkeyPatchedFunction(originalFunction)) {
     // NOTE: this is actually a patched (not original) function
@@ -115,14 +120,15 @@ export function getPatchedFunctionOrNull(originalFunction) {
 
 
 /** ###########################################################################
- * book-keeping (callbacks)
+ * {@link registerMonkeyPatchedCallback}
  * ##########################################################################*/
 
-export function _registerMonkeyPatchedCallback(originalFunction, patchedFunction) {
+export function registerMonkeyPatchedCallback(originalFunction, patchedFunction) {
   try {
     const proxy = makeProxy(patchedFunction);
     callbackProxiesByOriginal.set(originalFunction, proxy);
     originalCallbacksByProxy.set(proxy, originalFunction);
+    return proxy;
   }
   catch (err) {
     callbackProxiesByOriginal.delete(originalFunction); // ATOMIC constraint: undo partial result
@@ -156,19 +162,8 @@ export function getPatchedCallback(originalCallback) {
 
 
 /** ###########################################################################
- * monkey patching
+ * {@link tryRegisterMonkeyPatchedFunction}
  * ##########################################################################*/
-
-export function getOrPatchFunction(originalFunction, patcher) {
-  if (!isFunction(originalFunction)) {
-    throw new Error(`Monkey-patching failed - argument is not a function: ${originalFunction}`);
-  }
-  let patchedFunction = getPatchedFunctionOrNull(originalFunction);
-  if (!patchedFunction) {
-    patchedFunction = monkeyPatchFunctionOverride(originalFunction, patcher);
-  }
-  return patchedFunction;
-}
 
 
 export function tryRegisterMonkeyPatchedFunction(holder, name, patchedFunction) {
@@ -178,11 +173,26 @@ export function tryRegisterMonkeyPatchedFunction(holder, name, patchedFunction) 
   }
   if (isMonkeyPatchedFunction(originalFunction) || isMonkeyPatchedCallback(originalFunction)) {
     // don't patch already patched function
-    logError(`Monkey-patching failed - ${holder}.${name} is already patched:`, originalFunction);
-    return;
+    throw new Error(`Monkey-patching failed - ${holder}.${name} is already patched:`, originalFunction);
   }
-  // holder[name] = patchedFunction;  // NOTE: we do not override the actual function
-  _registerMonkeyPatchedFunction(originalFunction, patchedFunction);
+
+  /**
+   * NOTE: we do not override the actual function.
+   *    → Instead, we look up the function via `getPatchedFunctionOrNull`.
+   */
+  // holder[name] = patchedFunction;
+  return registerMonkeyPatchedFunction(originalFunction, patchedFunction);
+}
+
+export function getOrPatchFunction(originalFunction, patcher) {
+  if (!isFunction(originalFunction)) {
+    throw new Error(`Monkey-patching failed - argument is not a function: ${originalFunction}`);
+  }
+  let patchedFunction = _getPatchedFunctionOrNull(originalFunction);
+  if (!patchedFunction) {
+    patchedFunction = monkeyPatchFunctionOverride(originalFunction, patcher);
+  }
+  return patchedFunction;
 }
 
 /** ###########################################################################
@@ -191,8 +201,7 @@ export function tryRegisterMonkeyPatchedFunction(holder, name, patchedFunction) 
 
 export function monkeyPatchFunctionOverride(originalFunction, patcher) {
   const patchedFunction = patcher(originalFunction);
-  _registerMonkeyPatchedFunction(originalFunction, patchedFunction);
-  return patchedFunction;
+  return registerMonkeyPatchedFunction(originalFunction, patchedFunction);
 }
 
 /**
@@ -204,11 +213,11 @@ export function monkeyPatchFunctionOverrideDefault(fn) {
   // });
   if (functionProxiesByOriginalFunction.has(fn)) {
     warn(`Tried to re-register original function: ${fn.name} (${fn})`);
+    return null;
   }
   else {
-    _registerMonkeyPatchedFunction(fn, fn);
+    return registerMonkeyPatchedFunction(fn, fn);
   }
-  return fn;
 }
 export function monkeyPatchMethodOverrideDefault(holder, fnName) {
   try {
@@ -236,21 +245,21 @@ export function monkeyPatchHolderOverrideDefault(holder, fnName) {
 }
 
 
-// ###########################################################################
-// patching with `holder`
-// ###########################################################################
-
-export function monkeyPatchMethod(Clazz, methodName, handler) {
-  return monkeyPatchFunctionHolder(Clazz.prototype, methodName, handler);
-}
+/** ########################################
+ * {@link monkeyPatchFunctionHolder}
+ * #######################################*/
 
 
 export function monkeyPatchFunctionHolder(holder, name, handler) {
   const originalFunction = holder[name];
-  tryRegisterMonkeyPatchedFunction(holder, name, function patchedFunction(...args) {
+  return tryRegisterMonkeyPatchedFunction(holder, name, function patchedFunction(...args) {
     // console.debug(`patchedFunction called:`, name, originalFunction);
     return handler(this, args, originalFunction, patchedFunction);
   });
+}
+
+export function monkeyPatchMethod(Clazz, methodName, handler) {
+  return monkeyPatchFunctionHolder(Clazz.prototype, methodName, handler);
 }
 
 export function monkeyPatchFunctionHolderDefault(holder, name) {
@@ -258,7 +267,7 @@ export function monkeyPatchFunctionHolderDefault(holder, name) {
     // const bceTrace = peekBCEMatchCallee(patchedFunction);
     return originalFunction(...args);
   };
-  monkeyPatchFunctionHolder(holder, name, handler);
+  return monkeyPatchFunctionHolder(holder, name, handler);
 }
 
 export function monkeyPatchMethodDefault(Clazz, name) {
@@ -266,7 +275,7 @@ export function monkeyPatchMethodDefault(Clazz, name) {
     // const bceTrace = peekBCEMatchCallee(patchedFunction);
     return originalFunction.call(thisArg, ...args);
   };
-  monkeyPatchMethod(Clazz, name, handler);
+  return monkeyPatchMethod(Clazz, name, handler);
 }
 
 export function monkeyPatchMethodRaw(Clazz, methodName, handler) {

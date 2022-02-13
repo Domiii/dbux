@@ -12,7 +12,7 @@ import PromiseRuntimeData from '../data/PromiseRuntimeData';
 // import traceCollection from '../data/traceCollection';
 import valueCollection from '../data/valueCollection';
 // eslint-disable-next-line max-len
-import { isMonkeyPatchedFunction, monkeyPatchFunctionHolder, tryRegisterMonkeyPatchedFunction, _registerMonkeyPatchedCallback, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
+import { isMonkeyPatchedFunction, monkeyPatchFunctionHolder, tryRegisterMonkeyPatchedFunction, registerMonkeyPatchedCallback, registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
 import executionContextCollection from '../data/executionContextCollection';
 
 // eslint-disable-next-line no-unused-vars
@@ -177,7 +177,7 @@ function patchThenCallback(cb, thenRef) {
     return returnValue;
   }
 
-  _registerMonkeyPatchedCallback(cb, patchedThenCb);
+  registerMonkeyPatchedCallback(cb, patchedThenCb);
 
   return patchedThenCb;
 }
@@ -288,7 +288,7 @@ function patchCatch(holder) {
   //  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/catch
   //  */
   // tryRegisterMonkeyPatchedFunction(holder, 'catch', function patchedCatch(failCb) {
-  //   RuntimeMonitorInstance.callbackPatcher.monkeyPatchCallee()
+  //   RuntimeMonitorInstance.callbackPatcher.getPatchedFunctionOrNull()
   //   const then = getPatchedThen(...);
   //   return then(undefined, failCb);
   // });
@@ -447,7 +447,7 @@ function patchPromiseClass(BasePromiseClass) {
   }
 
   // register this, so we don't accidentally patch its arguments
-  _registerMonkeyPatchedFunction(Promise, PatchedPromise);
+  registerMonkeyPatchedFunction(Promise, PatchedPromise);
 
   patchPromiseMethods(BasePromiseClass.prototype);
 

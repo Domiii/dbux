@@ -4,7 +4,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { isInstrumentedFunction, getFirstContextAfterTrace } from '../data/dataUtil';
 // eslint-disable-next-line max-len
-import { getOriginalCallback, getOriginalFunction, getPatchedCallback, getPatchedFunction, getPatchedFunctionOrNull, isMonkeyPatchedCallback, isMonkeyPatchedFunction, isOrHasMonkeyPatchedFunction, _registerMonkeyPatchedCallback, _registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
+import { getOriginalCallback, getOriginalFunction, getPatchedCallback, getPatchedFunction, _getPatchedFunctionOrNull, isMonkeyPatchedCallback, isMonkeyPatchedFunction, isOrHasMonkeyPatchedFunction, registerMonkeyPatchedCallback, registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
 // import executionContextCollection from '../data/executionContextCollection';
 import executionContextCollection from '../data/executionContextCollection';
 import traceCollection from '../data/traceCollection';
@@ -194,7 +194,7 @@ export default class CallbackPatcher {
       return returnValue;
     }
 
-    _registerMonkeyPatchedCallback(originalCallback, patchedCallback);
+    const callbackProxy = registerMonkeyPatchedCallback(originalCallback, patchedCallback);
 
     // [edit-after-send]
     const bceTrace = traceCollection.getById(callId);
@@ -212,7 +212,7 @@ export default class CallbackPatcher {
       // NOTE: this should never happen!?
     }
 
-    return patchedCallback;
+    return callbackProxy;
   }
 
   /**
@@ -252,11 +252,11 @@ export default class CallbackPatcher {
     return newArg || arg;
   }
 
-  monkeyPatchCallee(originalFunction) {
+  getPatchedFunctionOrNull(originalFunction) {
     if (!Enabled) {
       return null;
     }
-    return getPatchedFunctionOrNull(originalFunction);
+    return _getPatchedFunctionOrNull(originalFunction);
   }
 
   /**
