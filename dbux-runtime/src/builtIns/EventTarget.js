@@ -26,9 +26,10 @@ function getOrCreateEventHandlersOfCb(capture, eventTarget, type, originalCb) {
   //   // the CB was not monkey patched (e.g. due to `dbux disable` etc.)
   //   originalCb = cb;
   // }
-  let eventHandlersByTypeByCb = eventHandlersByCaptureByTargetByTypeByCb[capture].get(eventTarget);
+  const captureIndex = capture + 0;
+  let eventHandlersByTypeByCb = eventHandlersByCaptureByTargetByTypeByCb[captureIndex].get(eventTarget);
   if (!eventHandlersByTypeByCb) {
-    eventHandlersByCaptureByTargetByTypeByCb[capture].set(eventTarget, eventHandlersByTypeByCb = new Map());
+    eventHandlersByCaptureByTargetByTypeByCb[captureIndex].set(eventTarget, eventHandlersByTypeByCb = new Map());
   }
   let eventHandlersByCb = eventHandlersByTypeByCb.get(type);
   if (!eventHandlersByCb) {
