@@ -57,11 +57,11 @@ export function registerMonkeyPatchedFunction(originalFunction, patchedFunction)
   try {
     const proxy = makeProxy(patchedFunction);
     functionProxiesByOriginalFunction.set(originalFunction, proxy);
-    if (originalFunction !== patchedFunction) {
-      // hackfix: we sometimes set native functions to be itself to prevent auto patching
-      //    (because for some reason, native functions cannot be WeakMap keys)
-      originalFunctionsByProxy.set(proxy, originalFunction);
-    }
+    // if (originalFunction !== patchedFunction) {
+    // hackfix: we sometimes set native functions to be itself to prevent auto patching
+    //    (because for some reason, native functions cannot be WeakMap keys)
+    originalFunctionsByProxy.set(proxy, originalFunction);
+    // }
     return proxy;
   }
   catch (err) {
@@ -252,10 +252,11 @@ export function monkeyPatchHolderOverrideDefault(holder, fnName) {
 
 export function monkeyPatchFunctionHolder(holder, name, handler) {
   const originalFunction = holder[name];
-  return tryRegisterMonkeyPatchedFunction(holder, name, function patchedFunction(...args) {
+  const proxy = tryRegisterMonkeyPatchedFunction(holder, name, function patchedFunction(...args) {
     // console.debug(`patchedFunction called:`, name, originalFunction);
-    return handler(this, args, originalFunction, patchedFunction);
+    return handler(this, args, originalFunction, proxy);
   });
+  return proxy;
 }
 
 export function monkeyPatchMethod(Clazz, methodName, handler) {

@@ -12,7 +12,7 @@ import PromiseRuntimeData from '../data/PromiseRuntimeData';
 // import traceCollection from '../data/traceCollection';
 import valueCollection from '../data/valueCollection';
 // eslint-disable-next-line max-len
-import { isMonkeyPatchedFunction, monkeyPatchFunctionHolder, tryRegisterMonkeyPatchedFunction, registerMonkeyPatchedCallback, registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
+import { isMonkeyPatchedFunction, monkeyPatchFunctionHolder, registerMonkeyPatchedCallback, registerMonkeyPatchedFunction } from '../util/monkeyPatchUtil';
 import executionContextCollection from '../data/executionContextCollection';
 
 // eslint-disable-next-line no-unused-vars
@@ -447,11 +447,11 @@ function patchPromiseClass(BasePromiseClass) {
   }
 
   // register this, so we don't accidentally patch its arguments
-  registerMonkeyPatchedFunction(Promise, PatchedPromise);
+  const proxy = registerMonkeyPatchedFunction(Promise, PatchedPromise);
 
   patchPromiseMethods(BasePromiseClass.prototype);
 
-  return PatchedPromise;
+  return proxy;
 }
 
 function doResolve(promise, wrapResolve, executorRealRootId, executorRootId, resolve, args) {

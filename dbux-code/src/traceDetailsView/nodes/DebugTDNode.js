@@ -176,7 +176,7 @@ export class DebugTDNode extends TraceDetailNode {
     const staticContext = dp.collections.staticContexts.getById(staticContextId) || EmptyObject;
     const { programId } = staticContext;
     const staticProgramContext = dp.collections.staticProgramContexts.getById(programId) || EmptyObject;
-    const dataTraceId = dp.util.getValueTrace(traceId)?.traceId || traceId;
+    const valueTraceId = dp.util.getValueTrace(traceId)?.traceId;
 
     /** ###########################################################################
      * context
@@ -190,24 +190,25 @@ export class DebugTDNode extends TraceDetailNode {
     // dataNodes
     // ###########################################################################
     const ownDataNodes = dp.indexes.dataNodes.byTrace.get(traceId);
-    const dataNodes = dp.util.getDataNodesOfTrace(dataTraceId);
+
+    // NOTE: only used for BCE -> CRE extra look-up
+    const valueTraceDataNodes = valueTraceId && dp.util.getDataNodesOfTrace(valueTraceId) || null;
 
     let dataNode;
     if (nodeId) {
       dataNode = dp.collections.dataNodes.getById(nodeId);
     }
     else {
-      dataNode = dataNodes?.[0];
+      dataNode = valueTraceDataNodes?.[0];
     }
 
-    let dataNodeIndex = dataNodes?.indexOf(dataNode);
-    const isInDataNodes = dataNodeIndex >= 0;
-    dataNodeIndex = isInDataNodes ? dataNodeIndex : ownDataNodes?.indexOf(dataNode);
+    let dataNodeIndex = valueTraceDataNodes?.indexOf(dataNode);
+    const isInValueTraceDataNodes = dataNodeIndex >= 0;
+    dataNodeIndex = isInValueTraceDataNodes ? dataNodeIndex : ownDataNodes?.indexOf(dataNode);
 
-    // eslint-disable-next-line no-nested-ternary
-    const ownDataNodeContainer = isInDataNodes ? 'dataNodes' : 'ownDataNodes';
-    const ownDataNodeLabel = dataNode ? `${ownDataNodeContainer}[${dataNodeIndex}]` : `dataNodes: []`;
-    const dataNodeCount = dataNodes?.length || 0;
+    const ownDataNodeContainer = isInValueTraceDataNodes ? 'resultDataNodes' : 'ownDataNodes';
+    const ownDataNodeLabel = dataNode ? `${ownDataNodeContainer}[${dataNodeIndex}]` : `resultDataNodes: []`;
+    const valueTraceDataNodeCount = valueTraceDataNodes?.length || 0;
 
     const allDataNodes = [];
     !!dataNode && allDataNodes.push([
@@ -215,11 +216,11 @@ export class DebugTDNode extends TraceDetailNode {
       dataNode,
       { description: `nodeId=${dataNode.nodeId}, valueId=${dataNode.valueId}, accessId=${dataNode.accessId}` }
     ]);
-    dataNodeCount > 1 && allDataNodes.push([
-      `all dataNodes (${dataNodeCount})`,
-      dataNodes
+    valueTraceDataNodeCount > 1 && allDataNodes.push([
+      `all dataNodes (${valueTraceDataNodeCount})`,
+      valueTraceDataNodes
     ]);
-    ownDataNodes && ownDataNodes !== dataNodes && allDataNodes.push([
+    ownDataNodes && ownDataNodes !== valueTraceDataNodes && allDataNodes.push([
       `ownDataNodes (${ownDataNodes.length})`,
       ownDataNodes
     ]);
@@ -229,7 +230,7 @@ export class DebugTDNode extends TraceDetailNode {
     // valueRef
     // ###########################################################################
 
-    const valueRef = dp.util.getTraceValueRef(dataTraceId);
+    const valueRef = dp.util.getTraceValueRef(valueTraceId);
     const refId = valueRef?.refId || 0;
     const promiseId = valueRef?.isThenable && refId || 0;
     const hasValue = !!refId || !!dataNode?.hasValue;

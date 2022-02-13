@@ -141,33 +141,38 @@ export default class TraceCollection extends Collection {
    * For normal functions, consider {@link ExecutionContextCollection#setParamInputs}
    */
   resolveMonkeyParams(traces) {
-    for (const trace of traces) {
-      const { traceId: callId, data } = trace;
-      const monkey = data?.monkey;
-      if (monkey?.wireInputs) {
-        // NOTE: function is monkey-patched, and generated it's own set of ("monkey") `DataNode`s, one per argument
+    /**
+     * NOTE: Disabled for now. This does not seem necessary anymore.
+     * @see https://github.com/Domiii/dbux/issues/669
+     */
 
-        // monkeyDataNodes are attached to `BCE` (because result trace is not available while monkey'ing)
-        const monkeyDataNodes = this.dp.util.getDataNodesOfTrace(callId);
+    // for (const trace of traces) {
+    //   const { traceId: callId, data } = trace;
+    //   const monkey = data?.monkey;
+    //   if (monkey?.wireInputs) {
+    //     // NOTE: function is monkey-patched, and generated it's own set of ("monkey") `DataNode`s, one per argument
 
-        // get `argDataNodes` (flattened, in case of spread)
-        const argDataNodes = this.dp.util.getCallArgDataNodes(callId);
+    //     // monkeyDataNodes are attached to `BCE` (because result trace is not available while monkey'ing)
+    //     const monkeyDataNodes = this.dp.indexes.dataNodes.byTrace.get(callId);
 
-        if (!monkeyDataNodes || !argDataNodes) {
-          continue;
-        }
+    //     // get `argDataNodes` (flattened, in case of spread)
+    //     const argDataNodes = this.dp.util.getCallArgDataNodes(callId);
 
-        // wire monkey <-> arg DataNodes (should be 1:1)
-        for (let i = 0; i < monkeyDataNodes.length; i++) {
-          const monkeyDataNode = monkeyDataNodes[i];
-          const argDataNode = argDataNodes[i];
+    //     if (!monkeyDataNodes || !argDataNodes) {
+    //       continue;
+    //     }
 
-          // set argument nodes as input nodes for monkey result nodes
-          // NOTE: argDataNode might be missing (e.g. because it had a "dbux disable" instruction)
-          argDataNode && (monkeyDataNode.inputs = [argDataNode.nodeId]);
-        }
-      }
-    }
+    //     // wire monkey <-> arg DataNodes (should be 1:1)
+    //     for (let i = 0; i < monkeyDataNodes.length; i++) {
+    //       const monkeyDataNode = monkeyDataNodes[i];
+    //       const argDataNode = argDataNodes[i];
+
+    //       // set argument nodes as input nodes for monkey result nodes
+    //       // NOTE: argDataNode might be missing (e.g. because it had a "dbux disable" instruction)
+    //       argDataNode && (monkeyDataNode.inputs = [argDataNode.nodeId]);
+    //     }
+    //   }
+    // }
   }
 
   /**
