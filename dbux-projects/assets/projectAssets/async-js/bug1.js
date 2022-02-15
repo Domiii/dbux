@@ -6,6 +6,8 @@
 const { default: sleep } = require('@dbux/common/src/util/sleep');
 const { queue } = require('./lib');
 
+function start() { }
+
 async function main() {
   await start();
   const q = queue(async (task) => {

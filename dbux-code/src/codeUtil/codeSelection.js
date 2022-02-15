@@ -15,7 +15,7 @@ import { babelLocToCodeRange } from '../helpers/codeLocHelpers';
  * @see https://code.visualstudio.com/api/references/vscode-api#DecorationRenderOptions
  */
 const selectedTraceDecoType = {
-  border: '1px solid red'
+  border: '1px solid orange'
 };
 
 /**
