@@ -96,7 +96,7 @@ class AsyncGraph extends GraphBase {
       const parentEdge = parentEdges[0];
       const parentEdgeType = parentEdge?.edgeType;
       const parentAsyncNodeId = parentEdge?.parentAsyncNodeId;
-      const nestingDepth = dp.util.getNestedDepth(rootContextId);
+      // const nestingDepth = dp.util.getNestedDepth(rootContextId);
 
       return {
         asyncNode,
@@ -109,7 +109,7 @@ class AsyncGraph extends GraphBase {
         parentEdges,
         parentEdgeType,
         parentAsyncNodeId,
-        nestingDepth,
+        // nestingDepth,
 
         isProgramRoot,
         realStaticContextid,
