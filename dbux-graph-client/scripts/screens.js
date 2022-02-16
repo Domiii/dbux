@@ -5,7 +5,7 @@
  * 
  */
 async function screen() {
-  await takeScreenshot('.graph-body');
+  await takeScreenshot('.graph-container:not(.hidden) .graph-body');
 }
 
 /** ###########################################################################
