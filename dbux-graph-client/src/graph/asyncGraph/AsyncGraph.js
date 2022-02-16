@@ -200,7 +200,7 @@ class AsyncGraph extends GraphBase {
 
     return /*html*/`
         <div class="async-cell async-node flex-row align-center ${classAttrs}" style="${styleProps}" ${dataAttrs}>
-          <!-- <div class="left-label">${leftLabel}</div> -->
+          <div class="left-label">${leftLabel}</div>
           <div class="async-brief full-width">
             ${shortLabel}
           </div>
