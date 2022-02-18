@@ -2802,7 +2802,7 @@ export default {
       //    -> some link to Promise.resolve() etc.
       //    -> some go deeper
       // TODO: also, one of the links could be PromisifyResolve, which would currently be resolved incorrectly
-      //    -> in this case, CHAIN against the inner promise that owns the root where resolve is called
+      //    -> in this case, try CHAIN against the inner promise that owns the root where resolve is called
       //      -> only do that if its not a SYNC
       //    -> see promisify-promise2.js
       const nestedLink = dp.indexes.promiseLinks.to.getUnique(nestingPromiseId);
