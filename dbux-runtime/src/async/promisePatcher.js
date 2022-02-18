@@ -353,26 +353,26 @@ function patchPromiseClass(BasePromiseClass) {
           const executorRootId = RuntimeMonitorInstance.runtime.getCurrentVirtualRootContextId();
           const executorRealRootId = RuntimeMonitorInstance.runtime.peekRealRootContextId();
 
-          const wrapResolve = (...args) => {
+          const patchedResolve = (...args) => {
             // Event: resolve
             // TODO: track `result` data flow
             const resolveArg = args[0];
             if (!superCalled) {
-              deferredCall = wrapResolve.bind(null, resolveArg);
+              deferredCall = patchedResolve.bind(null, resolveArg);
             }
             else {
-              doResolve(this, wrapResolve, executorRealRootId, executorRootId, resolve, args);
+              doResolve(this, patchedResolve, executorRealRootId, executorRootId, resolve, args);
             }
           };
-          const wrapReject = (...args) => {
+          const patchedReject = (...args) => {
             // Event: reject
             // TODO: track `err` data flow
             const err = args[0];
             if (!superCalled) {
-              deferredCall = wrapReject.bind(null, err);
+              deferredCall = patchedReject.bind(null, err);
             }
             else {
-              doResolve(this, wrapReject, executorRealRootId, executorRootId, reject, args);
+              doResolve(this, patchedReject, executorRealRootId, executorRootId, reject, args);
             }
           };
 
@@ -381,7 +381,7 @@ function patchPromiseClass(BasePromiseClass) {
             RuntimeMonitorInstance.runtime.promisifyStart(promiseIdPlaceholder);
 
             // call actual executor
-            originalExecutor(wrapResolve, wrapReject);
+            originalExecutor(patchedResolve, patchedReject);
           }
           finally {
             RuntimeMonitorInstance.runtime.promisifyEnd(promiseIdPlaceholder);
@@ -438,8 +438,11 @@ function patchPromiseClass(BasePromiseClass) {
   return PatchedPromise;
 }
 
-function doResolve(promise, wrapResolve, executorRealRootId, executorRootId, resolve, args) {
-  const thenRef = _makeThenRef(promise, wrapResolve);
+/**
+ * Add `PromiseLink` when a promise ctor executor's `resolve`/`reject` is called asynchronously.
+ */
+function doResolve(promise, patchedResolve, executorRealRootId, executorRootId, resolve, args) {
+  const thenRef = _makeThenRef(promise, patchedResolve);
   const resolveRealRootId = RuntimeMonitorInstance.runtime.peekRealRootContextId();
   if (thenRef) {
     const resolveArg = args[0];
