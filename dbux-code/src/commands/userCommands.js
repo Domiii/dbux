@@ -56,6 +56,7 @@ export function initUserCommands(extensionContext) {
 
     await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
       progress.report({ message: 'exporting...' });
+      await sleep();    // TODO: fix this in general -> reported message does not show up before next tick
       application && await exportApplication(application, exportFpath);
     });
 

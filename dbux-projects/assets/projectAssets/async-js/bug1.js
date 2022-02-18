@@ -11,7 +11,7 @@ function start() { }
 async function main() {
   await start();
   const q = queue(async (task) => {
-    await sleep(1000);
+    await sleep(10);
     console.log("task done");
   });
 

@@ -322,9 +322,7 @@ div {
 }
 
 .loc-label {
-  /* color: #333; */
   white-space: nowrap;
-  color: rgba(0, 0, 0);
 }
 
 .context-loc-label {
@@ -332,7 +330,7 @@ div {
 }
 
 .theme-mode-dark .loc-label {
-  color: #222;
+  color: white;
 }
 
 .hide-locs .loc-label {
@@ -355,7 +353,6 @@ div {
 } */
 
 [data-el="callLabel"] {
-  /* color: #222; */
   background: rgba(0, 0, 0, 0.03);
   font-size: 1rem;
   margin-right: 0.3rem !important;
@@ -366,7 +363,6 @@ div {
 }
 
 .value-label {
-  /* color: #222; */
   background: rgba(0, 0, 0, 0.1);
   font-size: 1rem;
   margin-right: 0.3rem !important;
@@ -387,7 +383,7 @@ div {
 }
 
 .theme-mode-dark .depth-label {
-  background: rgba(32, 32, 32);
+  background: #333;
 }
 
 /** #######################################
@@ -578,17 +574,17 @@ body:not(.theme-mode-dark) .highlight {
 
 .highlight-on.theme-mode-dark .graph-node:not(.highlight)>* {
   background: #1e1e1e !important;
-  color: #3b3b3b!important;
+  color: #3b3b3b !important;
 }
 
 .highlight-on.theme-mode-dark .graph-node:not(.highlight)>div>.content button {
   background: #1e1e1e !important;
-  color: #3b3b3b!important;
+  color: #3b3b3b !important;
 }
 
 .highlight-on.theme-mode-dark .graph-node .node-children {
   background: #1e1e1e !important;
-  color: #3b3b3b!important;
+  color: #3b3b3b !important;
 }
 
 .theme-mode-dark .highlight {
@@ -674,7 +670,7 @@ body:not(.theme-mode-dark) .highlight {
  * screenShotMode(.research-mode)
  * ############################################################################*/
 
- .theme-mode-dark .research-mode .async-node {
+.theme-mode-dark .research-mode .async-node {
   color: #333;
 }
 

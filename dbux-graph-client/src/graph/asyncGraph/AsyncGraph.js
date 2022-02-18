@@ -107,7 +107,8 @@ class AsyncGraph extends GraphBase {
       mainHTML += children.map(child => this.makeAsyncNodeEl(child)).join('');
       // mainHTML += this.makeParentThreadDecoration();
       mainHTML += children.map(child => this.makeAsyncEdgeDecoration(child)).join('');
-      mainHTML += this.makeHeaderEl();
+      // TODO: re-enable headers when thread/column filtering features are re-enabled
+      // mainHTML += this.makeHeaderEl();
 
       this.els.main.innerHTML = mainHTML;
     }
@@ -134,7 +135,7 @@ class AsyncGraph extends GraphBase {
       moduleName,
       postAsyncEventUpdateType,
       hasError,
-      nestingDepth,
+      // nestingDepth,
     } = nodeData;
 
     const { themeMode, screenshotMode, graphDocument } = this.context;
@@ -169,7 +170,7 @@ class AsyncGraph extends GraphBase {
     }
     if (screenshotMode) {
       shortLabel = '';
-      fullLabel = '';
+      // fullLabel = '';
     }
     const classes = [];
     if (hasError) {
@@ -177,12 +178,12 @@ class AsyncGraph extends GraphBase {
       shortLabel += '🔥';
       fullLabel += '🔥';
     }
-    if (nestingDepth) {
-      const depthLabel = /*html*/`<span class="depth-label">${nestingDepth}</span>`;
-      leftLabel = depthLabel;
-      // shortLabel = `${depthLabel}${shortLabel}`;
-      // fullLabel = `${depthLabel}${fullLabel}`;
-    }
+    // if (nestingDepth) {
+    //   const depthLabel = /*html*/`<span class="depth-label">${nestingDepth}</span>`;
+    //   leftLabel = depthLabel;
+    //   // shortLabel = `${depthLabel}${shortLabel}`;
+    //   // fullLabel = `${depthLabel}${fullLabel}`;
+    // }
     const { asyncNodeId, applicationId, isTerminalNode } = asyncNode;
     const asyncNodeData = {
       'async-node-id': asyncNodeId,
