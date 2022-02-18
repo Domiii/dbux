@@ -218,7 +218,7 @@ export function initUserCommands(extensionContext) {
     const trace = dp.collections.traces.getById(traceId);
     if (!trace) {
       // TOTRANSLATE
-      await showErrorMessage(`Can't find trace of traceId ${traceId} & applicationId ${applicationId}`);
+      await showErrorMessage(`Can't find trace of traceId=${traceId} (applicationId=${applicationId})`);
     }
     else {
       traceSelection.selectTrace(trace);

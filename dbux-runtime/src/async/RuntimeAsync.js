@@ -380,8 +380,7 @@ export default class RuntimeAsync {
   // ###########################################################################
 
   /**
-   * `resolve` or `reject` was called from a promise ctor's executor.
-   * NOTE: Only called if resolved value is thenable.
+   * A promise ctor's executor callback's `resolve` or `reject` call.
    */
   resolve(inner, outer, rootId, promiseLinkType, traceId, asyncPromisifyPromiseId) {
     // const rootId = this.getCurrentVirtualRootContextId();
@@ -392,28 +391,6 @@ export default class RuntimeAsync {
     // }
     // else {
     return nestedPromiseCollection.addLink(promiseLinkType, from, to, traceId, rootId, asyncPromisifyPromiseId);
-
-    // const {
-    //   preEventPromise,
-    //   // postEventPromise,
-    //   schedulerTraceId
-    // } = thenRef;
-
-    // const runId = this._runtime.getCurrentRunId();
-    // const preEventRootId = this.getCurrentVirtualRootContextId();
-    // const contextId = this._runtime.peekCurrentContextId();
-
-    // // store update
-    // asyncEventUpdateCollection.addResolveUpdate({
-    //   runId,
-    //   rootId: preEventRootId,
-    //   contextId: contextId,
-    //   schedulerTraceId,
-    //   promiseId: getPromiseId(preEventPromise),
-
-    //   argPromiseId: isThenable(resolveArg) && getPromiseId(resolveArg) || 0,
-    //   resolveType
-    // });
   }
 
   /**

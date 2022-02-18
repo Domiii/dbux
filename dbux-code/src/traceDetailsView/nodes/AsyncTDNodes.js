@@ -4,9 +4,13 @@ import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import AsyncEventUpdateType, { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import { makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
 import traceSelection from '@dbux/data/src/traceSelection';
+import PromiseLink from '@dbux/common/src/types/PromiseLink';
+import PromiseLinkType from '@dbux/common/src/types/constants/PromiseLinkType';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { showInformationMessage } from '../../codeUtil/codeModals';
-import makeTreeItem from '../../helpers/makeTreeItem';
+import makeTreeItem, { makeTreeItems } from '../../helpers/makeTreeItem';
 import TraceDetailNode from './TraceDetailNode';
+import { makeArrayLengthLabel } from '../../helpers/treeViewUtil';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
@@ -40,6 +44,7 @@ class RootEdgesTDNode extends TraceDetailNode {
     this.contextValue = 'dbuxTraceDetailsView.node.asyncRootEdgesTDNode';
     this.description = `(${this.allEdges.length || 0})`;
   }
+
 
   // makeIconPath(traceDetail) {
   //   return 'string.svg';
@@ -125,7 +130,7 @@ class RootEdgesTDNode extends TraceDetailNode {
 
 class ScheduledEdgesTDNode extends TraceDetailNode {
   static makeLabel(/* trace, parent */) {
-    return 'Trace: scheduled';
+    return 'Trace: scheduled async events';
   }
 
   get collapseChangeUserActionType() {
@@ -188,9 +193,90 @@ export default class AsyncTDNode extends TraceDetailNode {
     this.description = `(root=${rootContextId}, from=${fromRootId.join(',') || '?'})`;
   }
 
+  /** ###########################################################################
+   * promises
+   * ##########################################################################*/
+
+  /**
+   * @param {string} label 
+   * @param {number} promiseId 
+   * @param {string} dir 
+   * @param {PromiseLink} link 
+   */
+  makePromiseLinkTree = (label, promiseId, dir, link = '') => {
+    const { dp } = this;
+    /**
+     * @type {PromiseLink}
+     */
+    const childLinks = promiseId && dp.indexes.promiseLinks[dir].get(promiseId) || null;
+    const otherDir = ['from', 'to'].find(d => d !== dir);
+
+    let rootId, traceId, desc, asyncPromisifyPromiseId;
+    if (link) {
+      ({ rootId, traceId, asyncPromisifyPromiseId } = link);
+      desc = [
+        rootId && `root=${rootId}`,
+        asyncPromisifyPromiseId && `promisifyId=${asyncPromisifyPromiseId}`
+      ].filter(Boolean).join(', ');
+    }
+
+    return makeTreeItem(
+      label,
+      childLinks?.map((childLink) => {
+        const { from, to, type } = childLink;
+        const nextPromiseId = childLink[otherDir];
+        const typeName = PromiseLinkType.nameFrom(type) || type;
+        return this.makePromiseLinkTree(
+          `${from} → ${to} [${typeName}]`,
+          nextPromiseId,
+          dir,
+          childLink
+        );
+      }),
+      {
+        description: childLinks ? `${makeArrayLengthLabel(childLinks, desc)}` : desc,
+        handleClick() {
+          const trace = dp.util.getTrace(traceId);
+          trace && traceSelection.selectTrace(trace);
+        }
+      }
+    );
+  }
+
+  makePromiseNode(promiseId, label) {
+    const { dp } = this;
+    const promiseUpdates = promiseId && dp.indexes.asyncEventUpdates.byPromise.get(promiseId) || null;
+
+    return makeTreeItem(
+      label,
+      !promiseId && EmptyObject || [
+        this.makePromiseLinkTree('PromiseLinks From', promiseId, 'from'),
+        this.makePromiseLinkTree('PromiseLinks To', promiseId, 'to'),
+        makeTreeItem(
+          'Promise Updates',
+          promiseUpdates?.map(this.makeAsyncUpdateItem),
+          { description: makeArrayLengthLabel(promiseUpdates) }
+        )
+      ],
+      {
+        description: `promiseId=${promiseId}`
+      }
+    );
+  }
+
+  /** ###########################################################################
+   * buildChildren
+   * ##########################################################################*/
+
   buildChildren() {
+    const { dp, rootContextId, valueRef } = this;
+    const rootPromiseId = dp.util.getFirstAsyncPostEventUpdateOfRoot(rootContextId);
+
+    const tracePromiseId = valueRef?.isThenable && valueRef.refId || 0;
     return [
+      this.makePromiseNode(rootPromiseId, 'Root Promise'),
       this.treeNodeProvider.buildNode(RootEdgesTDNode, this.trace, this),
+      this.makePromiseNode(tracePromiseId, 'Trace Promise'),
       this.treeNodeProvider.buildNode(ScheduledEdgesTDNode, this.trace, this),
     ];
   }

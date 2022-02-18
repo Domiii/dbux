@@ -517,6 +517,12 @@ export default {
   },
 
   /** @param {DataProvider} dp */
+  getValueRefOfTrace(dp, traceId) {
+    const dataNode = dp.util.getDataNodeOfTrace(traceId);
+    return dataNode ? dp.util.getDataNodeValueRef(dataNode.nodeId) : null;
+  },
+
+  /** @param {DataProvider} dp */
   isTraceTrackableValue(dp, traceId) {
     const dataNode = dp.util.getDataNodeOfTrace(traceId);
     return dataNode ? dp.util.isDataNodeTrackableValue(dataNode.nodeId) : false;
@@ -2278,6 +2284,11 @@ export default {
    */
   getAsyncPreEventUpdateOfTrace(dp, schedulerTraceId) {
     return dp.indexes.asyncEventUpdates.byTrace.get(schedulerTraceId)?.[0];
+  },
+
+  /** @param {DataProvider} dp */
+  getFirstAsyncPostEventUpdateOfRoot(dp, rootId) {
+    return dp.indexes.asyncEventUpdates.byRoot.get(rootId)?.[1];
   },
 
   /** @param {DataProvider} dp */

@@ -7,25 +7,13 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import makeTreeItem, { makeTreeItemNoChildren, makeTreeItems } from '../../helpers/makeTreeItem';
 import { ContextTDNode, TraceTypeTDNode } from './traceInfoNodes';
 import TraceDetailNode from './TraceDetailNode';
-import PromiseLink from '@dbux/common/src/types/PromiseLink';
-import PromiseLinkType from '@dbux/common/src/types/constants/PromiseLinkType';
+import { makeObjectArrayNodes } from '../../helpers/treeViewUtil';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
 /** ###########################################################################
  * util
  *  #########################################################################*/
-
-function makeArrayLengthLabel(arr, label) {
-  return `${label && (label + ' ') || ''}(${arr?.length || 0})`;
-}
-
-function makeObjectArrayNodes(obj) {
-  return Object.fromEntries(
-    Object.entries(obj)
-      .map(([name, arr]) => [makeArrayLengthLabel(arr, name), arr || {}])
-  );
-}
 
 function parseStackTrace(stackTrace) {
   if (!stackTrace) {
@@ -85,59 +73,12 @@ export class DebugTDNode extends TraceDetailNode {
       `${upd.rootId}`,
       upd,
       {
-        description: `${AsyncEventUpdateType.nameFrom(upd.type)} ${upd.schedulerTraceId}`,
+        description: `[${AsyncEventUpdateType.nameFrom(upd.type)}] trace=${upd.schedulerTraceId}`,
         handleClick: () => {
           const schedulerTrace = dp.util.getTrace(upd.schedulerTraceId);
           if (schedulerTrace) {
             traceSelection.selectTrace(schedulerTrace);
           }
-        }
-      }
-    );
-  }
-
-  /** ###########################################################################
-   * 
-   * ##########################################################################*/
-
-  /**
-   * @param {string} label 
-   * @param {number} promiseId 
-   * @param {string} dir 
-   * @param {PromiseLink} link 
-   */
-  makePromiseLinkTree = (label, promiseId, dir, link = '') => {
-    const { dp } = this;
-    /**
-     * @type {PromiseLink}
-     */
-    const childLinks = promiseId && dp.indexes.promiseLinks[dir].get(promiseId) || null;
-    const otherDir = ['from', 'to'].find(d => d !== dir);
-
-    let rootId, traceId, desc;
-    if (link) {
-      ({ rootId, traceId } = link);
-      desc = `root=${rootId}`;
-    }
-
-    return makeTreeItem(
-      label,
-      childLinks?.map((childLink) => {
-        const { from, to, type } = childLink;
-        const nextPromiseId = childLink[otherDir];
-        const typeName = PromiseLinkType.nameFrom(type) || type;
-        return this.makePromiseLinkTree(
-          `${from} → ${to} [${typeName}]`,
-          nextPromiseId,
-          dir,
-          childLink
-        );
-      }),
-      {
-        description: childLinks ? `${makeArrayLengthLabel(childLinks, desc)}` : desc,
-        handleClick() {
-          const trace = dp.util.getTrace(traceId);
-          trace && traceSelection.selectTrace(trace);
         }
       }
     );
@@ -232,7 +173,7 @@ export class DebugTDNode extends TraceDetailNode {
 
     const valueRef = dp.util.getTraceValueRef(valueTraceId);
     const refId = valueRef?.refId || 0;
-    const promiseId = valueRef?.isThenable && refId || 0;
+
     const hasValue = !!refId || !!dataNode?.hasValue;
     let valueNode;
     if (!hasValue) {
@@ -260,14 +201,7 @@ export class DebugTDNode extends TraceDetailNode {
         }
       );
     }
-    // const promiseData = dataProvider.collections.promises.getById(context.promiseId);
-    // const promiseNode = [
-    //   'promise', 
-    //   promiseData,
-    //   { 
-    //     description: (promiseData?.valueId + '') || 0
-    //   }
-    // ];
+
     // ###########################################################################
     // async (Root)
     // ###########################################################################
@@ -278,6 +212,7 @@ export class DebugTDNode extends TraceDetailNode {
     // one POST event per `rootId`
     const postEventUpdates = asyncEventUpdates?.filter(({ type }) => isPostEventUpdate(type));
     const postEventUpdateData = postEventUpdates?.map(this.mapPostAsyncEvent);
+    const postEventUpdate = postEventUpdateData?.[0];
 
     // many PRE events per `rootId`
     const otherEventUpdates = asyncEventUpdates?.
@@ -295,32 +230,10 @@ export class DebugTDNode extends TraceDetailNode {
         ),
         ...makeObjectArrayNodes({
           OtherUpdates: otherEventUpdates,
-        }),
+        })
       },
       {
         description: `rootId=${rootContextId}${postEventUpdateData?.map(upd => ` (${AsyncEventUpdateType.nameFrom(upd.type)})`) || ''}`
-      }
-    );
-
-    /** ########################################
-     * async (Promise)
-     * #######################################*/
-
-    const promiseUpdates = promiseId && dp.indexes.asyncEventUpdates.byPromise.get(promiseId) || null;
-
-    const promiseNode = makeTreeItem(
-      `Promise`,
-      !promiseId && EmptyObject || [
-        this.makePromiseLinkTree('PromiseLinks From', promiseId, 'from'),
-        this.makePromiseLinkTree('PromiseLinks To', promiseId, 'to'),
-        makeTreeItem(
-          'Promise Updates',
-          promiseUpdates?.map(this.makeAsyncUpdateItem),
-          { description: makeArrayLengthLabel(promiseUpdates) }
-        )
-      ],
-      {
-        description: `promiseId=${promiseId}`
       }
     );
 
@@ -349,7 +262,6 @@ export class DebugTDNode extends TraceDetailNode {
       'Async',
       [
         rootNode,
-        promiseNode,
         ancestorNode,
       ],
       {

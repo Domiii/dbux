@@ -455,7 +455,8 @@ function patchPromiseClass(BasePromiseClass) {
 }
 
 /**
- * Add `PromiseLink` when a promise ctor executor's `resolve`/`reject` is called asynchronously.
+ * Add `PromiseLinkType.Promisify` link when a promise ctor executor's `resolve`/`reject` is called asynchronously.
+ * The link has `asyncPromisifyPromiseId` iff `resolve` was called asynchronously.
  */
 function doResolve(promise, patchedResolve, executorRealRootId, executorRootId, resolve, args) {
   const thenRef = _makeThenRef(promise, patchedResolve);
@@ -479,8 +480,10 @@ function doResolve(promise, patchedResolve, executorRealRootId, executorRootId, 
       );
     }
 
+    const innerPromise = isThenable(inner) && inner || null;
+
     RuntimeMonitorInstance._runtime.async.resolve(
-      inner, promise, resolveRealRootId, PromiseLinkType.Promisify, thenRef.schedulerTraceId, asyncPromisifyPromiseId
+      innerPromise, promise, resolveRealRootId, PromiseLinkType.Promisify, thenRef.schedulerTraceId, asyncPromisifyPromiseId
     );
   }
   resolve(...args);
@@ -595,7 +598,7 @@ monkeyPatchFunctionHolder(Promise, 'resolve',
     if (value !== result && isThenable(value) && getPromiseId(value)) {
       const thenRef = _makeThenRef(result, patchedFunction);
 
-      RuntimeMonitorInstance._runtime.async.resolve(value, result, PromiseLinkType.Resolve, thenRef?.schedulerTraceId);
+      RuntimeMonitorInstance._runtime.async.resolve(value, result, thenRef?.rootId, PromiseLinkType.Resolve, thenRef?.schedulerTraceId);
     }
 
     return result;
@@ -610,7 +613,7 @@ monkeyPatchFunctionHolder(Promise, 'reject',
     if (value !== result && isThenable(value) && getPromiseId(value)) {
       const thenRef = _makeThenRef(result, patchedFunction);
 
-      RuntimeMonitorInstance._runtime.async.resolve(value, result, PromiseLinkType.Reject, thenRef?.schedulerTraceId);
+      RuntimeMonitorInstance._runtime.async.resolve(value, result, thenRef?.rootId, PromiseLinkType.Reject, thenRef?.schedulerTraceId);
     }
 
     return result;
@@ -621,65 +624,66 @@ monkeyPatchFunctionHolder(Promise, 'reject',
  * Promise.all
  * ##########################################################################*/
 
-function allHandler(thisArg, args, originalFunction, patchedFunction) {
-  // NOTE: This function accepts an iterable and fails if it is not an iterable.
-  // hackfix: We force conversion to array before passing it in, to make sure that the iterable does not iterate more than once.
+// TODO: needs more work
+// function allHandler(thisArg, args, originalFunction, patchedFunction) {
+//   // NOTE: This function accepts an iterable and fails if it is not an iterable.
+//   // hackfix: We force conversion to array before passing it in, to make sure that the iterable does not iterate more than once.
 
-  let thenRef, allPromise;
+//   let thenRef, allPromise;
 
-  function onOneSettled(p) {
-    // -> send out Promise.all links as soon as individual promises settle
-    if (!allPromise) {
-      // allPromise has already been settled!
-      return;
-    }
+//   function onOneSettled(p) {
+//     // -> send out Promise.all links as soon as individual promises settle
+//     if (!allPromise) {
+//       // allPromise has already been settled!
+//       return;
+//     }
 
-    // TODO: big problem. → this is too late in case of nesting, instead:
-    //    → multi-CHAIN TO all started CGRs that happened before Promise.all settled
-    //    → multi-CHAIN FROM all final promise CGRs, but only SYNC from the promises that did not make it
-    //    → once this is fixed, apply same logic to RACE and ANY
-    // TODO: implementation
-    //    → always register all links right away, but annotate them, then fix up logic in post
-    RuntimeMonitorInstance._runtime.async.all(p, allPromise, thenRef?.schedulerTraceId);
-  }
+//     // TODO: big problem. → this is too late in case of nesting, instead:
+//     //    → multi-CHAIN TO all started CGRs that happened before Promise.all settled
+//     //    → multi-CHAIN FROM all final promise CGRs, but only SYNC from the promises that did not make it
+//     //    → once this is fixed, apply same logic to RACE and ANY
+//     // TODO: implementation
+//     //    → always register all links right away, but annotate them, then fix up logic in post
+//     RuntimeMonitorInstance._runtime.async.all(p, allPromise, thenRef?.schedulerTraceId);
+//   }
 
-  function onAllSettled() {
-    allPromise = null;
-  }
+//   function onAllSettled() {
+//     allPromise = null;
+//   }
 
-  const nestedPromisesIt = args[0];
-  const nestedPromises = Array.from(nestedPromisesIt)
-    .map(
-      p => {
-        return callFinally(
-          p,
-          () => {
-            onOneSettled(p);
-          }
-        );
-      }
-    );
+//   const nestedPromisesIt = args[0];
+//   const nestedPromises = Array.from(nestedPromisesIt)
+//     .map(
+//       p => {
+//         return callFinally(
+//           p,
+//           () => {
+//             onOneSettled(p);
+//           }
+//         );
+//       }
+//     );
 
-  // → call originalFunction
-  allPromise = originalFunction.call(thisArg, nestedPromises);
+//   // → call originalFunction
+//   allPromise = originalFunction.call(thisArg, nestedPromises);
 
-  if (nestedPromises.length) {
-    thenRef = _makeThenRef(allPromise, patchedFunction);
-    allPromise = callFinally(
-      allPromise,
-      () => {
-        onAllSettled();
-      }
-    );
-  }
-  return allPromise;
-}
+//   if (nestedPromises.length) {
+//     thenRef = _makeThenRef(allPromise, patchedFunction);
+//     allPromise = callFinally(
+//       allPromise,
+//       () => {
+//         onAllSettled();
+//       }
+//     );
+//   }
+//   return allPromise;
+// }
 
 /** ###########################################################################
  * Promise.allSettled
  * ##########################################################################*/
 
-function allSettledHandler(thisArg, args, originalFunction, patchedFunction) {
+function allHandler(thisArg, args, originalFunction, patchedFunction) {
   // NOTE: This function accepts an iterable and fails if it is not an iterable.
   // hackfix: We force conversion to array before passing it in, to make sure that the iterable does not iterate more than once.
   const nestedPromises = args[0];
@@ -782,6 +786,6 @@ function anyHandler(thisArg, args, originalFunction, patchedFunction) {
  * ##########################################################################*/
 
 monkeyPatchFunctionHolder(Promise, 'all', allHandler);
-monkeyPatchFunctionHolder(Promise, 'allSettled', allSettledHandler);
+monkeyPatchFunctionHolder(Promise, 'allSettled', allHandler);
 monkeyPatchFunctionHolder(Promise, 'any', anyHandler);
 monkeyPatchFunctionHolder(Promise, 'race', raceHandler);
