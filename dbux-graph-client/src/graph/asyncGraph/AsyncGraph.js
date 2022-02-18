@@ -107,7 +107,8 @@ class AsyncGraph extends GraphBase {
       mainHTML += children.map(child => this.makeAsyncNodeEl(child)).join('');
       // mainHTML += this.makeParentThreadDecoration();
       mainHTML += children.map(child => this.makeAsyncEdgeDecoration(child)).join('');
-      mainHTML += this.makeHeaderEl();
+      // TODO: re-enable headers when thread/column filtering features are re-enabled
+      // mainHTML += this.makeHeaderEl();
 
       this.els.main.innerHTML = mainHTML;
     }
@@ -169,7 +170,7 @@ class AsyncGraph extends GraphBase {
     }
     if (screenshotMode) {
       shortLabel = '';
-      fullLabel = '';
+      // fullLabel = '';
     }
     const classes = [];
     if (hasError) {
