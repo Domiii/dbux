@@ -441,7 +441,7 @@ export default {
    */
   getDataNodeOfTrace(dp, traceId) {
     const valueTrace = dp.util.getValueTrace(traceId);
-    return dp.collections.dataNodes.getById(valueTrace.nodeId);
+    return valueTrace ? dp.collections.dataNodes.getById(valueTrace.nodeId) : null;
   },
 
   /** @param {DataProvider} dp */
@@ -908,6 +908,7 @@ export default {
     return dataNode?.traceId;
   },
 
+  /** @param {DataProvider} dp */
   getFirstTraceByRefId(dp, refId) {
     const traceId = dp.util.getFirstTraceIdByRefId(refId);
     return traceId && dp.util.getTrace(traceId);
@@ -1653,11 +1654,13 @@ export default {
     return staticContext.type;
   },
 
+  /** @param {DataProvider} dp */
   getTrace(dp, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     return trace;
   },
 
+  /** @param {DataProvider} dp */
   getExecutionContext(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
     return context;
@@ -2288,7 +2291,7 @@ export default {
 
   /** @param {DataProvider} dp */
   getFirstAsyncPostEventUpdateOfRoot(dp, rootId) {
-    return dp.indexes.asyncEventUpdates.byRoot.get(rootId)?.[1];
+    return dp.indexes.asyncEventUpdates.byRoot.get(rootId)?.find(upd => isPostEventUpdate(upd.type));
   },
 
   /** @param {DataProvider} dp */
@@ -2306,12 +2309,6 @@ export default {
   getLastAsyncPostEventUpdateOfPromise(dp, promiseId, beforeRootId) {
     const updates = dp.indexes.asyncEventUpdates.byPromise.get(promiseId);
     return findLast(updates, upd => isPostEventUpdate(upd.type) && upd.rootId < beforeRootId);
-  },
-
-  /** @param {DataProvider} dp */
-  getPromiseCreationRoot(dp, promiseId) {
-    const firstTraceOfPromise = dp.util.getFirstTraceByRefId(promiseId);
-    return dp.collections.executionContexts.getById(firstTraceOfPromise.rootContextId);
   },
 
   /** 
@@ -2517,7 +2514,7 @@ export default {
       // handle special Promisify synchronization
       for (const p of postUpdateData.syncPromiseIds) {
         const link = dp.indexes.promiseLinks.to.getUnique(p);
-        if (link && link.type === PromiseLinkType.Promisify && !roots.includes(link.rootId)) {
+        if (link && link.type === PromiseLinkType.PromisifyResolve && !roots.includes(link.rootId)) {
           roots.push(link.rootId);
         }
       }
@@ -2540,14 +2537,36 @@ export default {
   },
 
   /** ###########################################################################
-   * new async promise linkage
+   * Special promise getters.
    *  #########################################################################*/
 
   /** @param {DataProvider} dp */
-  getPromiseRootId(dp, promiseId) {
-    const traceId = dp.util.getFirstTraceIdByRefId(promiseId);
-    return traceId && dp.util.getRootContextOfTrace(traceId)?.contextId || 0;
+  getPromiseCreationRootId(dp, promiseId) {
+    const firstTraceOfPromise = dp.util.getFirstTraceByRefId(promiseId);
+    return firstTraceOfPromise?.rootContextId || 0;
   },
+
+  /** @param {DataProvider} dp */
+  getPromiseCreationRoot(dp, promiseId) {
+    const rootId = dp.util.getPromiseCreationRootId(promiseId);
+    return rootId && dp.collections.executionContexts.getById(rootId) || null;
+  },
+
+  /** @param {DataProvider} dp */
+  getPromiseCreationContextId(dp, promiseId) {
+    const firstTraceOfPromise = dp.util.getFirstTraceByRefId(promiseId);
+    return firstTraceOfPromise?.contextId || 0;
+  },
+
+  /** @param {DataProvider} dp */
+  getPromiseCreationContext(dp, promiseId) {
+    const rootId = dp.util.getPromiseCreationContextId(promiseId);
+    return rootId && dp.collections.executionContexts.getById(rootId) || null;
+  },
+
+  /** ###########################################################################
+   * UP + DOWN
+   *  #########################################################################*/
 
   /** 
    * Find rootId of last Post* update of top-most promise that nests promise of given `promiseId`.
@@ -2590,7 +2609,7 @@ export default {
       // u is PreAwait && PostAwait has not happened yet: `await nestedPromise`
       // NOTE: This is guaranteed to be PreAwait, not PreThen
       //    -> because "Nested PostThen" has a `nestingLink`, and thus would go down previous branch
-      const promiseRootId = dp.util.getPromiseRootId(nestedPromiseId);
+      const promiseRootId = dp.util.getPromiseCreationRootId(nestedPromiseId);
       if (promiseRootId < u.rootId) {
         // NOTE: this implies `await q2` (because `q1` is always new).
         // NOTE: SYNC edge will be added in u's own Post* event handler
@@ -2616,6 +2635,21 @@ export default {
       //  -> follow down the THEN chain (until we find a promise that is nested)
       return dp.util.UP(u.postEventPromiseId, beforeRootId, nestingUpdates);
     }
+    else {
+      // NOTE: we are doing this via the new PromisifyPromise link
+      // // no link, and no update found -> check if this promise was created from within a promise ctor
+      // // const promisifyPromiseId = dp.util.get TODO nestingPromiseId;
+      // const rootContext = dp.util.getPromiseCreationContext(nestedPromiseId);
+      // if (rootContext?.promisifyId) {
+      //   if (nestedPromiseId === rootContext.promisifyId) {
+      //     warn(`unexpected - Promise nesting itself: ${nestedPromiseId}`);
+      //   }
+      //   else {
+      //     // hackfix: prevent inf loop
+      //     return dp.util.UP(rootContext.promisifyId, beforeRootId, nestingUpdates);
+      //   }
+      // }
+    }
 
     // -> nestedPromiseId is nested but there is no relevant Post event to CHAIN from, return 0
     return 0;
@@ -2639,7 +2673,7 @@ export default {
       return dp.util.getNestedAncestorsOfPromise(outerPromiseId, beforeRootId, nestingTraces);
     }
     else if ((u = dp.util.getFirstUpdateOfNestedPromise(nestedPromiseId)) && u.rootId < beforeRootId) {
-      const promiseRootId = dp.util.getPromiseRootId(nestedPromiseId);
+      const promiseRootId = dp.util.getPromiseCreationRootId(nestedPromiseId);
       if (promiseRootId < u.rootId) {
         return nestedPromiseId; // SYNC
       }
@@ -2737,7 +2771,7 @@ export default {
     visited.add(nestingPromiseId);
     const { links, syncPromiseIds } = postUpdateData;
 
-    const promiseRootId = dp.util.getPromiseRootId(nestingPromiseId);
+    const promiseRootId = dp.util.getPromiseCreationRootId(nestingPromiseId);
     let nestedUpdate = dp.util.getLastAsyncPostEventUpdateOfPromise(nestingPromiseId, beforeRootId);
 
     // SYNC if: (i) promise was created in a root BEFORE the NESTING happened, or
@@ -2756,7 +2790,7 @@ export default {
       // * nestedUpdate(u) can be {PostAwait,PostThen,PostCallback}
       // * nestedLink(link) can be {AsyncReturn,ThenNested,Resolve,All,Promisify}
 
-      // Case 1:  p nests shallow link     -> !u && link (Resolve,All,Race)
+      // Case 1:  p nests shallow link     -> !u && link (Resolve,All,Race,PromisifiedPromise)
       // Case 2a: p nests u (PostAwait)    -> u && !link
       // Case 2b: p nests u (PostAwait)    -> u && link (AsyncReturn) [can be BOTH]
       // Case 3a: p nests u (PostThen)     -> u && !link
@@ -2764,6 +2798,11 @@ export default {
       // Case 4a: p nests u (PostCallback) -> u && !link 
       // Case 4a: p nests u (PostCallback) -> u && link (Promisify) [can only be either SYNC or CHAIN]
 
+      // TODO: in case of PromisifyPromise, we might have multiple links.
+      //    -> some link to Promise.resolve() etc.
+      //    -> some go deeper
+      // TODO: also, one of the links could be PromisifyResolve, which would currently be resolved incorrectly
+      //    -> see promisify-promise2.js
       const nestedLink = dp.indexes.promiseLinks.to.getUnique(nestingPromiseId);
       if (nestedLink) {
         // -> go deep on nested link
@@ -2829,14 +2868,25 @@ export default {
           }
         }
 
-        if (!nestedUpdate && nestedLink?.asyncPromisifyPromiseId && nestedLink.rootId) {
-          // TODO: can `nestedUpdate` ever exist for promisify links?
-          // Promise ctor's resolve was called while this AE was waiting for it.
-          //    -> `nestedLink.rootId` implies that it was attached to a root.
-          //    -> `!nestedUpdate` implies that resolve was called outside of a promisified callback.
-          //        -> means it was called by a root outside this AE's own thread.
-          syncPromiseIds.push(nestingPromiseId);
-          return null;
+        if (!nestedUpdate) {
+          // check promisification special cases
+          if (!nestedLink) {
+            // NOTE: this part is now done via PromiseLink.PromisifiedPromise
+            //   const rootContext = dp.util.getPromiseCreationContext(nestedPromiseId);
+            //   if (rootContext?.promisifyId) {
+            //     if (nestedPromiseId === rootContext.promisifyId) {
+            //       warn(`unexpected - Promise nesting itself: ${nestedPromiseId}`);
+            //     }
+            //   }
+          }
+          else if (nestedLink.asyncPromisifyPromiseId && nestedLink.rootId) {
+            // Promise ctor's resolve was called while this AE was waiting for it.
+            //    -> `nestedLink.rootId` implies that it was attached to a root.
+            //    -> `!nestedUpdate` implies that resolve was called outside of a promisified callback.
+            //        -> means it was called by a root outside this AE's own thread.
+            syncPromiseIds.push(nestingPromiseId);
+            return null;
+          }
         }
       }
       return nestedUpdate;

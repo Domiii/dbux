@@ -244,19 +244,14 @@ export default class AsyncTDNode extends TraceDetailNode {
   }
 
   makePromiseNode(promiseId, label) {
-    const { dp } = this;
-    const promiseUpdates = promiseId && dp.indexes.asyncEventUpdates.byPromise.get(promiseId) || null;
+    // const { dp } = this;
+    // const promiseUpdates = promiseId && dp.indexes.asyncEventUpdates.byPromise.get(promiseId) || null;
 
     return makeTreeItem(
       label,
       !promiseId && EmptyObject || [
         this.makePromiseLinkTree('PromiseLinks From', promiseId, 'from'),
-        this.makePromiseLinkTree('PromiseLinks To', promiseId, 'to'),
-        makeTreeItem(
-          'Promise Updates',
-          promiseUpdates?.map(this.makeAsyncUpdateItem),
-          { description: makeArrayLengthLabel(promiseUpdates) }
-        )
+        this.makePromiseLinkTree('PromiseLinks To', promiseId, 'to')
       ],
       {
         description: `promiseId=${promiseId}`
@@ -270,7 +265,8 @@ export default class AsyncTDNode extends TraceDetailNode {
 
   buildChildren() {
     const { dp, rootContextId, valueRef } = this;
-    const rootPromiseId = dp.util.getFirstAsyncPostEventUpdateOfRoot(rootContextId);
+    const postUpdate = dp.util.getFirstAsyncPostEventUpdateOfRoot(rootContextId);
+    const rootPromiseId = postUpdate?.promiseId || 0;
 
     const tracePromiseId = valueRef?.isThenable && valueRef.refId || 0;
     return [

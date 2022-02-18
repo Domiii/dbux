@@ -5,10 +5,12 @@ const promiseLinkType = {
   AsyncReturn: 2,
   Resolve: 3,
   Reject: 4,
-  All: 5,
-  Promisify: 6,
-  Race: 7,
-  Any: 8
+  PromisifyResolve: 5,
+  PromisifiedPromise: 6,
+  All: 7,
+  AllSettled: 8,
+  Race: 9,
+  Any: 10
 };
 
 /**

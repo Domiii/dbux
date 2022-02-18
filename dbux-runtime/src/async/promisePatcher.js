@@ -42,7 +42,7 @@ export const OriginalPromiseClass = Promise;
 /**
  * hackfix: prevent circular dependency
  */
-valueCollection.maybePatchPromise = maybePatchPromise;
+valueCollection.maybePatchPromise = maybePatchPromiseNewValue;
 
 
 // ###########################################################################
@@ -70,23 +70,35 @@ export default function initPatchPromise(_runtimeMonitorInstance) {
 // patchPromise
 // ###########################################################################
 
-export function maybePatchPromise(promise) {
+/**
+ * Consider patching promise, when encountering it for the first time by valueCollection.
+ */
+function maybePatchPromiseNewValue(promise) {
+  const promisifyPromiseVirtualRef = RuntimeMonitorInstance.runtime.getPromisifyPromiseVirtualRef();
+  if (promisifyPromiseVirtualRef) {
+    // add PromisifyPromise link
+    const promiseId = getPromiseId(promise);
+    RuntimeMonitorInstance._runtime.async.promisifyPromise(promiseId, promisifyPromiseVirtualRef);
+  }
+  maybePatchPromise(promise);
+}
+
+function maybePatchPromise(promise) {
   if (PromiseInstrumentationDisabled) {
     return;
   }
 
+  // future-work: don't read promise.then directly -> add read guards
+  //    (-> only necessary if promise is proxified or there are other shannanigans at play)
+  // TODO: isMonkeyPatchedFunction(promise.then) does not seem to work at all
   if (isMonkeyPatchedFunction(promise.then)) {
     return;
   }
-
-  // console.trace('new promise', valueRef.refId);
 
   patchPromise(promise);
 }
 
 export function patchPromise(promise) {
-  // future-work: use `valueCollection._startAccess` before starting to read promise properties
-  //    (-> only necessary if promise is proxified or there are other shannanigans at play)
   const proto = promise.constructor?.prototype;
   if (proto && promise.then === proto.then) {
     // patch prototype
@@ -183,6 +195,10 @@ function patchThenCallback(cb, thenRef) {
 }
 
 /**
+ * Does a few things:
+ * * Makes sure that there is a ValueRef.
+ * * Gets schedulerTraceId.
+ * * Gets rootId.
  * 
  * @param {*} promise 
  * @param {*} originalThen 
@@ -455,7 +471,7 @@ function patchPromiseClass(BasePromiseClass) {
 }
 
 /**
- * Add `PromiseLinkType.Promisify` link when a promise ctor executor's `resolve`/`reject` is called asynchronously.
+ * Add `PromiseLinkType.PromisifyResolve` link when a promise ctor executor's `resolve`/`reject` is called asynchronously.
  * The link has `asyncPromisifyPromiseId` iff `resolve` was called asynchronously.
  */
 function doResolve(promise, patchedResolve, executorRealRootId, executorRootId, resolve, args) {
@@ -483,7 +499,7 @@ function doResolve(promise, patchedResolve, executorRealRootId, executorRootId, 
     const innerPromise = isThenable(inner) && inner || null;
 
     RuntimeMonitorInstance._runtime.async.resolve(
-      innerPromise, promise, resolveRealRootId, PromiseLinkType.Promisify, thenRef.schedulerTraceId, asyncPromisifyPromiseId
+      innerPromise, promise, resolveRealRootId, PromiseLinkType.PromisifyResolve, thenRef.schedulerTraceId, asyncPromisifyPromiseId
     );
   }
   resolve(...args);

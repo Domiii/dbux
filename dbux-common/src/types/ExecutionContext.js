@@ -98,4 +98,11 @@ export default class ExecutionContext {
    * @type {{callerPromiseId: number}?}
    */
   data;
+
+  /**
+   * Set to id of promise whose ctor executor was on stack (if any).
+   * 
+   * @type {number?}
+   */
+  promisifyId;
 }

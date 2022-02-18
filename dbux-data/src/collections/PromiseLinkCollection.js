@@ -11,6 +11,9 @@ export default class PromiseLinkCollection extends Collection {
     this._all.push(null);
   }
 
+  /**
+   * @param {PromiseLink[]} entries 
+   */
   postAddRaw(entries) {
     const { util } = this.dp;
     for (const entry of entries) {
@@ -18,7 +21,7 @@ export default class PromiseLinkCollection extends Collection {
         continue;
       }
       /**
-       * here, we fix AsyncReturn links without `to`: look up caller promise
+       * hackfix: for AsyncReturn links without `to`: look up caller promise
        *    → If called async function is also thenCb, there is no BCE, and thus
        *      → postThen and traceCallPromiseResult both call `setAsyncContextPromise` to provide the promiseId.
        */
@@ -37,6 +40,19 @@ export default class PromiseLinkCollection extends Collection {
         // TODO: fix `then(async function() {})` in `promisePatcher`!!!
         // NOTE: we can't get the promiseId of an async function that was called by the system
         this.logger.warn(`Could not resolve "to" for PromiseLink (${this.dp.util.makeTraceInfo(entry.traceId)}):`, entry);
+      }
+    }
+  }
+  
+  /**
+   * @param {PromiseLink[]} entries 
+   */
+  postIndexRaw(entries) {
+    const { util } = this.dp;
+    for (const entry of entries) {
+      if (!entry.traceId) {
+        // hackfix: in case of PromisifyPromise, `traceId` is not set
+        entry.traceId = util.getFirstTraceIdByRefId(entry.from);
       }
     }
   }

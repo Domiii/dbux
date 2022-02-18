@@ -380,6 +380,19 @@ export default class RuntimeAsync {
   // ###########################################################################
 
   /**
+   * 
+   */
+  promisifyPromise(from, promisifyPromiseVirtualRef) {
+    const to = 0; // will be filled in via `promisifyPromiseVirtualRef`
+    const traceId = 0; // will be resolved in post (PromiseLinkCollection)
+    const rootId = this.getCurrentVirtualRootContextId();
+    const link = nestedPromiseCollection.addLink(PromiseLinkType.PromisifiedPromise, from, to, traceId, rootId);
+
+    // [edit-after-send]
+    promisifyPromiseVirtualRef?.add(link, 'to');
+  }
+
+  /**
    * A promise ctor's executor callback's `resolve` or `reject` call.
    */
   resolve(inner, outer, rootId, promiseLinkType, traceId, asyncPromisifyPromiseId) {
@@ -399,8 +412,8 @@ export default class RuntimeAsync {
   all(inner, outer, traceId) {
     // NOTE: `reject` does not settle nested promises!
     const rootId = this.getCurrentVirtualRootContextId();
-    // const from = inner.map(p => getPromiseId(p));
-    const from = getPromiseId(inner);
+    const from = inner.map(p => getPromiseId(p));
+    // const from = getPromiseId(inner);
     const to = getPromiseId(outer);
     // if (!from || !to) {
     //   this.logger.error(`resolve link failed: promise did not have an id, from=${from}, to=${to}, trace=${traceCollection.makeTraceInfo(traceId)}`);

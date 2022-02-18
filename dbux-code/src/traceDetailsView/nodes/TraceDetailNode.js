@@ -16,7 +16,7 @@ export default class TraceDetailNode extends BaseTreeViewNode {
   }
 
   get traceId() {
-    return this.entry.taceId;
+    return this.entry.traceId;
   }
 
   get rootContextId() {

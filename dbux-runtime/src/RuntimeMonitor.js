@@ -173,8 +173,8 @@ export default class RuntimeMonitor {
       }
       else {
         // normal root
-        const staticContextId = staticContextCollection.getStaticContextId(programId, inProgramStaticContextId);
-        const contextInfo = staticContextCollection.makeStaticContextInfo(staticContextId);
+        // const staticContextId = staticContextCollection.getStaticContextId(programId, inProgramStaticContextId);
+        // const contextInfo = staticContextCollection.makeStaticContextInfo(staticContextId);
         // warn(`[Root] ${contextInfo}`);
       }
     }
@@ -185,9 +185,15 @@ export default class RuntimeMonitor {
     }
 
     const context = executionContextCollection.pushImmediate(
-      stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId, definitionTid, tracesDisabled
+      stackDepth, runId, parentContextId, parentTraceId, programId,
+      inProgramStaticContextId, definitionTid, tracesDisabled
     );
     const { contextId } = context;
+
+    // hackfix: link context to surrounding promise (if promise ctor executor on stack)
+    // [edit-after-send]
+    const promisifyPromiseVirtualRef = this._runtime.getPromisifyPromiseVirtualRef();
+    promisifyPromiseVirtualRef?.add(context, 'promisifyId');
 
     if (!parentContextId) {
       this._runtime._updateVirtualRootContext(contextId);

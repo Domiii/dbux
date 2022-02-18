@@ -15,7 +15,7 @@ import pools from './pools';
 /** @typedef {import('@dbux/common/src/types/ValueRef').default} ValueRef */
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('RuntimeMonitor');
+const { log, debug, warn, error: logError } = newLogger('valueCollection');
 
 // const Verbose = true;
 const Verbose = false;
