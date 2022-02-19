@@ -1,4 +1,4 @@
-// import { makeDebounce } from '@dbux/common/src/util/scheduling';
+// import { throttle } from '@dbux/common/src/util/scheduling';
 // import html2canvas from 'html2canvas';
 import { compileHtmlElement } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
@@ -33,7 +33,7 @@ class MiniMap extends ClientComponentEndpoint {
     // // mutationObserver.disconnect();
   }
 
-  // drawMiniMap = makeDebounce(() => {
+  // drawMiniMap = throttle(() => {
   //   const rootEl = this.parent.el.querySelector('#test');
   //   html2canvas(rootEl).then((canvas) => {
   //     let data = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);

@@ -2,7 +2,7 @@ import { TreeItemCollapsibleState, EventEmitter, window } from 'vscode';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import NestedError from '@dbux/common/src/NestedError';
-import { makeDebounce } from '@dbux/common/src/util/scheduling';
+import { throttle } from '@dbux/common/src/util/scheduling';
 import { getThemeResourcePath } from '../codePath';
 import { registerCommand } from '../../commands/commandUtil';
 import { emitTreeViewAction, emitTreeViewCollapseChangeAction } from '../../userEvents';
@@ -100,7 +100,7 @@ export default class BaseTreeViewNodeProvider {
    * TODO: allow refreshing sub tree only
    */
   // refresh = () => {
-  refresh = makeDebounce(() => {
+  refresh = throttle(() => {
     try {
       this.rootNodes = this.buildRoots();
       this._decorateNodes(null, this.rootNodes);
@@ -118,11 +118,11 @@ export default class BaseTreeViewNodeProvider {
   refreshOnData() {
     return this.refresh();
   }
-  // refreshOnData = makeDebounce(() => {
+  // refreshOnData = throttle(() => {
   //   this.refresh();
   // }, 50);
 
-  // repaint = makeDebounce(() => {
+  // repaint = throttle(() => {
   //   this._onDidChangeTreeData.fire();
   // }, 10);
 

@@ -1,5 +1,5 @@
 import NanoEvents from 'nanoevents';
-import { makeDebounce } from '@dbux/common/src/util/scheduling';
+import { throttle } from '@dbux/common/src/util/scheduling';
 import { newLogger } from '@dbux/common/src/log/logger';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
@@ -33,7 +33,7 @@ export default class HighlightManager extends HostComponentEndpoint {
     return this._emitter.on(eventName, cb);
   }
 
-  _highlighterUpdated = makeDebounce(() => {
+  _highlighterUpdated = throttle(() => {
     if (!this.isDisposed) {
       const { size } = this.allHighlighter;
       this.setState({

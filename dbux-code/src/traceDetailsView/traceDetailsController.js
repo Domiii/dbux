@@ -2,7 +2,7 @@ import { commands, ExtensionContext, TreeItemCollapsibleState, window, workspace
 import { newLogger } from '@dbux/common/src/log/logger';
 import sleep from '@dbux/common/src/util/sleep';
 import NestedError from '@dbux/common/src/NestedError';
-import { makeDebounce } from '@dbux/common/src/util/scheduling';
+import { throttle } from '@dbux/common/src/util/scheduling';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
 import { emitSelectTraceAction } from '../userEvents';
@@ -66,7 +66,7 @@ class TraceDetailsController {
     }
   }
 
-  handleTraceSelectionChanged = makeDebounce(async () => {
+  handleTraceSelectionChanged = throttle(async () => {
     await this.refresh();
     await this.setFocus();
   }, 50)
@@ -86,7 +86,7 @@ class TraceDetailsController {
     this.tracesAtCursor.updateSelectTraceAtCursorButton();
   }
 
-  // refreshOnData = makeDebounce(() => {
+  // refreshOnData = throttle(() => {
   //   this.refresh();
   //   this.tracesAtCursor.needRefresh = true;
   //   this.tracesAtCursor.updateSelectTraceAtCursorButton();

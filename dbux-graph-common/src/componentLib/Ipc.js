@@ -1,7 +1,7 @@
 import get from 'lodash/get';
 import NestedError from '@dbux/common/src/NestedError';
 import { newPerfLogger } from '@dbux/common/src/log/PerfLogger';
-// import { makeDebounce } from '@dbux/common/src/util/scheduling';
+// import { throttle } from '@dbux/common/src/util/scheduling';
 import MessageType from './MessageType';
 import ComponentEndpoint from './ComponentEndpoint';
 
@@ -212,7 +212,7 @@ export default class Ipc {
   // IPCAdapter interface
   // ###########################################################################
 
-  // _postMessage = makeDebounce((msg) => {
+  // _postMessage = throttle((msg) => {
   //   this.ipcAdapter.postMessage(msg);
   // }, 0);
 

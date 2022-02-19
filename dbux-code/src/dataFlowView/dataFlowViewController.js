@@ -1,7 +1,7 @@
 import { ExtensionContext, commands } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import traceSelection from '@dbux/data/src/traceSelection';
-import { makeDebounce } from '@dbux/common/src/util/scheduling';
+import { throttle } from '@dbux/common/src/util/scheduling';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import DataFlowNodeProvider from './DataFlowNodeProvider';
 import DataFlowSearchModeType from './DataFlowSearchModeType';

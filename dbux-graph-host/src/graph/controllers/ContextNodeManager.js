@@ -2,7 +2,7 @@ import isEqual from 'lodash/isEqual';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Enum from '@dbux/common/src/util/Enum';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import { makeDebounce } from '@dbux/common/src/util/scheduling';
+import { throttle } from '@dbux/common/src/util/scheduling';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import objectTracker from '@dbux/data/src/objectTracker';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
@@ -66,7 +66,7 @@ export default class ContextNodeManager extends HostComponentEndpoint {
     this.addDisposable(objectTracker.onObjectSelectionChanged(this.highlightByObject));
   }
 
-  refreshOnData = makeDebounce(async () => {
+  refreshOnData = throttle(async () => {
     if (this.selector?.applicationId && !allApplications.selection.containsApplication(this.selector.applicationId)) {
       // block highlighting on non-active apps
       this.clear();

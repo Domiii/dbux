@@ -1,7 +1,6 @@
 import { commands } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import ApplicationNodeProvider from './ApplicationNodeProvider';
 import { onRuntimerServerStatusChanged } from '../net/SocketServer';
 

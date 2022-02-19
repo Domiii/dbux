@@ -8,7 +8,7 @@ import {
   TextEditor
 } from 'vscode';
 
-import { makeDebounce } from '@dbux/common/src/util/scheduling';
+import { throttle } from '@dbux/common/src/util/scheduling';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { renderTraceDecorations, clearTraceDecorations } from './traceDecorator';
@@ -37,7 +37,7 @@ let showDeco;
 // render
 // ###########################################################################
 
-const renderDecorations = makeDebounce(function renderDecorations() {
+const renderDecorations = throttle(function renderDecorations() {
   if (!activeEditor) {
     return;
   }

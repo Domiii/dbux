@@ -2,7 +2,7 @@ import { ExtensionContext, commands, window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import traceSelection from '@dbux/data/src/traceSelection';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import { makeDebounce } from '@dbux/common/src/util/scheduling';
+import { throttle } from '@dbux/common/src/util/scheduling';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import CallGraphNodeProvider from './CallGraphNodeProvider';
 import { emitTagTraceAction } from '../userEvents';
