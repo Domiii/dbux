@@ -69,7 +69,7 @@ const ShortenNestedCfg = { length: ShortenMaxLength - 2 };
 /**
  * @param {string} s 
  */
-function makeShortString(s, cfg = null) {
+function truncateStringDefault(s, cfg = null) {
   return truncate(s.replace(/\s+/g, ' '), cfg);
 }
 
@@ -839,17 +839,17 @@ export default {
       const { category } = valueRef;
       if (ValueTypeCategory.is.Array(category)) {
         let content = `${entries.map(x => dp.util._simplifyValue(x))}`;
-        shorten && (content = makeShortString(content, ShortenNestedCfg));
+        shorten && (content = truncateStringDefault(content, ShortenNestedCfg));
         valueString = `[${content}]`;
       }
       else if (ValueTypeCategory.is.Object(category)) {
         let content = `${Object.keys(entries)}`;
-        shorten && (content = makeShortString(content, ShortenNestedCfg));
+        shorten && (content = truncateStringDefault(content, ShortenNestedCfg));
         valueString = `{${content}}`;
       }
       else if (ValueTypeCategory.is.Function(category)) {
         let content = entries.name?.[2] || '(anonymous)';
-        shorten && (content = makeShortString(content, ShortenNestedCfg));
+        shorten && (content = truncateStringDefault(content, ShortenNestedCfg));
         valueString = `ƒ ${content}`;
       }
       else {

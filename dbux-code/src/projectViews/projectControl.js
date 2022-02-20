@@ -121,7 +121,7 @@ export function createProjectManager(extensionContext) {
     },
     showMessage: {
       info: showInformationMessage,
-      warning: showWarningMessage,
+      warn: showWarningMessage,
     },
     stopwatch: {
       start: stopwatch.start.bind(stopwatch),

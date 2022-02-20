@@ -533,7 +533,7 @@ export default class ProjectsManager {
           await this.savePracticeSession(null);
           // fs.rmSync(appFilePath);
           // TODO: delete all application- and session-related files of a single session here
-          this.externals.showMessage.warning(`File deletion is not implemented yet :(`);
+          this.externals.showMessage.warn(`File deletion is not implemented yet :(`);
           return false;
         }
       };
@@ -739,7 +739,7 @@ export default class ProjectsManager {
         throw err;
       }
 
-      const keepRunning = await this.externals.showMessage.warning(`Failed when applying previous progress of this bug.`, {
+      const keepRunning = await this.externals.showMessage.warn(`Failed when applying previous progress of this bug.`, {
         'Show diff in new tab and cancel': async () => {
           await this.externals.editor.showTextInNewFile(`diff.diff`, err.patchString);
           return false;

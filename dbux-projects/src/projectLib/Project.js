@@ -12,6 +12,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { requireUncached } from '@dbux/common-node/src/util/requireUtil';
 import { getAllFilesInFolders, globRelative, rm } from '@dbux/common-node/src/util/fileUtil';
 import { isFileInPath, pathJoin, pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
+import isProductionMode from '@dbux/common-node/src/isProductionMode';
 import { writeMergePackageJson } from '@dbux/cli/lib/package-util';
 import ExerciseList from './ExerciseList';
 import Process, { ProcessOptions } from '../util/Process';
@@ -154,7 +155,7 @@ export default class Project extends ProjectBase {
   }
 
   initProject() {
-    if (this._initialized) {
+    if (isProductionMode() && this._initialized) {
       return;
     }
     this._initialized = true;
@@ -648,7 +649,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     return errStringResult;
   }
 
-  execBackground(cmd, options) {
+  execBackground(cmd, options, label = cmd) {
     const {
       projectPath
     } = this;
@@ -679,7 +680,9 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     this.backgroundProcesses.push(process);
     process.
       start(cmd, this.logger, options).
-      catch(err => this.logger.error(err)).
+      catch(err => {
+        this.logger.warn(`[Background Process] "${label}" stopped.\n`, err);
+      }).
       finally(() => {
         pull(this.backgroundProcesses, process);
         if (!this.backgroundProcesses.length) {

@@ -9,6 +9,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { ChildProcess, execSync } from 'child_process';
 import spawn from 'cross-spawn';
 import { pathNormalizedForce } from '@dbux/common-node/src/util/pathUtil';
+import { truncateStringDefault } from '@dbux/common/src/util/stringUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError, trace: logTrace } = newLogger('Process');
@@ -157,8 +158,9 @@ export default class Process {
     const [commandName, ...commandArgs] = stringArgv(command);
     this.commandName = commandName;
 
-    const processExecMsg = `${cwd}$ "${commandName}" ${commandArgs.map(s => `${s}`).join(' ')}`;
-    logger.debug('>', processExecMsg); //, `(pwd = ${sh.pwd().toString()})`);
+    let processExecLabel = `${cwd}$ "${commandName}" ${commandArgs.map(s => `${s}`).join(' ')}`;
+    processExecLabel = truncateStringDefault(processExecLabel);
+    logger.debug('>', processExecLabel); //, `(pwd = ${sh.pwd().toString()})`);
 
     if (sync) {
       // TODO: sync might not work, since it foregoes cross-spawn
@@ -271,10 +273,10 @@ export default class Process {
           resolve();
         }
         else if (this._killed) {
-          reject(new Error(`Process "${processExecMsg}" was killed`));
+          reject(new Error(`Process "${processExecLabel}" was killed`));
         }
         else if (failOnStatusCode && code) {
-          reject(new Error(`Process "${processExecMsg}" failed with status code: ${code}`));
+          reject(new Error(`Process "${processExecLabel}" failed with status code: ${code}`));
         }
         else {
           resolve(code);
@@ -296,7 +298,7 @@ export default class Process {
         }
         else {
           // throw new Error(`"${command}" failed because executable or command not found. Either configure it's absolute path or make sure that it is installed and in your PATH.`);
-          reject(new Error(`Process "${processExecMsg}" failed with error ${err.code}: ${err.message}`));
+          reject(new Error(`Process "${processExecLabel}" failed with error ${err.code}: ${err.message}`));
         }
       });
     }).finally(this._finished);

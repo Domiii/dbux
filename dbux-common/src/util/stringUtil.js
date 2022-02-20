@@ -16,6 +16,6 @@ const ShortenCfg = { length: ShortenMaxLength };
 /**
  * @param {string} s 
  */
-export function makeShortString(s, cfg = ShortenCfg) {
+export function truncateStringDefault(s, cfg = ShortenCfg) {
   return truncate(s.replace(/\s+/g, ' '), cfg);
 }

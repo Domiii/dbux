@@ -2,7 +2,7 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import TracePurpose from '@dbux/common/src/types/constants/TracePurpose';
 import { makeTraceLabel, makeTraceLocLabel } from '@dbux/data/src/helpers/makeLabels';
-import { makeShortString } from '@dbux/common/src/util/stringUtil';
+import { truncateStringDefault } from '@dbux/common/src/util/stringUtil';
 import TraceNode from '../../codeUtil/treeView/TraceNode';
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 
@@ -14,7 +14,7 @@ import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 
 class ConsoleTraceNode extends TraceNode {
   static makeLabel(trace, parent, { consoleMessage }) {
-    return makeShortString(consoleMessage);
+    return truncateStringDefault(consoleMessage);
   }
 
   init() {

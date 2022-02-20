@@ -177,7 +177,7 @@ export async function checkSystem(manager, requirements, calledFromUser) {
         }
       } :
       {};
-    await manager.externals.showMessage.warning(modalMessage, options, { modal: true });
+    await manager.externals.showMessage.warn(modalMessage, options, { modal: true });
   }
   else if (calledFromUser) {
     await manager.externals.showMessage.info(modalMessage, {}, { modal: true });
