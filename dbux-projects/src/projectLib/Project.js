@@ -655,7 +655,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
     // set cwd
     let cwd = options?.cwd || projectPath;
-    
+
     const env = {
       NODE_SKIP_PLATFORM_CHECK: 1,
       ...options?.env
@@ -765,7 +765,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
    */
   async install() {
     const installedTag = this.getProjectInstalledTagName();
-    if (!await this.gitDoesTagExist(installedTag)) {
+    if (!await this.gitDoesTagExistLocally(installedTag)) {
       this.log(`Installing...`);
 
       // delete unwanted files right away
@@ -830,7 +830,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     const exerciseCachedTag = project.getExerciseCachedTagTagName(exercise);
 
     let successfulCacheFlag = false;
-    if (await project.gitDoesTagExist(exerciseCachedTag)) {
+    if (await project.gitDoesTagExistLocally(exerciseCachedTag)) {
       // get back to bug's original state
       await project._gitCheckout(exerciseCachedTag);
       const currentTags = await project.gitGetAllCurrentTagName();
@@ -984,7 +984,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
     const currentTags = await this.gitGetAllCurrentTagName();
     if (currentTags.includes(exerciseCachedTag)) {
-      // if (await this.gitDoesTagExist(installedTag)) {
+      // if (await this.gitDoesTagExistLocally(installedTag)) {
       // get back to project's original state
       await this._gitResetAndCheckout(installedTag);
       await this.npmInstall(); // NOTE: node_modules are not affected by git reset or checkout
@@ -1068,6 +1068,9 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     // if given, switch to specific commit hash, branch or tag name
     // see: https://stackoverflow.com/questions/3489173/how-to-clone-git-repository-with-specific-revision-changeset
     if (this.gitCommit) {
+      if (!await this.gitDoesTagExistLocally(this.gitCommit)) {
+        await this.execInTerminal(`${this.gitCommand} fetch origin ${this.gitCommit}:${this.gitCommit}`);
+      }
       await this._gitResetAndCheckout(this.gitCommit);
     }
   }
@@ -1397,12 +1400,21 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     return this.exec(`${this.gitCommand} tag -d ${tagName}`);
   }
 
-  async gitDoesTagExist(tag) {
+  async gitDoesTagExistLocally(tag) {
     await this.checkCorrectGitRepository();
-    // const code = (await this.exec(`${this.gitCommand} rev-parse "${tag}" --`, { failOnStatusCode: false }));
-    // return !code;
-    const result = await this.execCaptureOut(`${this.gitCommand} tag -l "${tag}" --`);
-    return !!result;
+    try {
+      await this.execGitCaptureErr(`rev-parse "${tag}" --`, { failOnStatusCode: false });
+      return true;
+    }
+    catch (err) {
+      this.logger.log(err.message);
+      return false;
+    }
+    /**
+     * "git tag -l" cannot resolve some tag format, e.g. tags/v3.7.2 of bluebird
+     */
+    // const result = await this.execCaptureOut(`${this.gitCommand} tag -l "${tag}" --`);
+    // return !!result;
   }
 
   getProjectInstalledTagName() {
