@@ -21,14 +21,13 @@ export function throttle(cb, ms = 300) {
           p = null;
 
           // start doing the work
-          const _resolve = resolve, _reject = reject;
           try {
             const result = await cb(...args);
-            _resolve(result);
+            resolve(result);
           }
           catch (err) {
             // logError('Error when executing callback', cb.name?.trim() || '(anonymous callback)', '-', err);
-            _reject(err);
+            reject(err);
           }
           finally {
             resolve = null;
