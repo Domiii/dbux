@@ -100,10 +100,14 @@ export default class RuntimeMonitor {
     // read cfg
     const {
       tracesDisabled,
-      valuesDisabled
+      valuesDisabled,
+      valuesShallow
     } = runtimeCfg;
     this.tracesDisabled = !!tracesDisabled + 0;
+
+    // TODO: value config has been bugs since CallbackPatcher and PromisePatcher depend on valueCollection.
     this.valuesDisabled = !!valuesDisabled + 0;
+    this.valuesShallow = !!valuesShallow + 0;
 
     // if (runtimeCfg || Verbose) {
     // _debug(`addProgram, runtimeCfg: ${JSON.stringify(runtimeCfg)}`);
@@ -1431,19 +1435,25 @@ export default class RuntimeMonitor {
 
   busy = 0;
   tracesDisabled = 0;
-  _valuesDisabled = 0;
-
-  get valuesDisabled() {
-    return this._valuesDisabled;
-  }
 
   get areTracesDisabled() {
     return !!this.busy || !!this.tracesDisabled;
   }
 
+  get valuesDisabled() {
+    return valueCollection.valuesDisabled;
+  }
+
   set valuesDisabled(val) {
-    this._valuesDisabled = val;
     valueCollection.valuesDisabled = val;
+  }
+
+  get valuesShallow() {
+    return valueCollection.valuesShallow;
+  }
+
+  set valuesShallow(val) {
+    valueCollection.valuesShallow = val;
   }
 
   incBusy() {

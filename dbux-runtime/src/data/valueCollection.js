@@ -70,9 +70,15 @@ export class VirtualRef {
  */
 class ValueCollection extends Collection {
   /**
-   * NOTE: initialized from `RuntimeMonitor`
+   * Config: valuesDisabled.
+   * NOTE: controlled by `RuntimeMonitor`
    */
-  valuesDisabled;
+  valuesDisabled = 0;
+  /**
+   * Config: valuesShallow.
+   * NOTE: controlled by `RuntimeMonitor`
+   */
+  valuesShallow = 0;
 
   /**
    * hackfix: set `maybePatchPromise` to avoid dependency cycle.
@@ -118,7 +124,7 @@ class ValueCollection extends Collection {
   ]);
 
   makeDefaultSerializer(f) {
-    return (value, nodeId, depth, serialized, valueRef) => {
+    return (value, nodeId, depth, serialized, valueRef, meta) => {
       const children = f(value, valueRef);
       for (const entry of children) {
         let [key] = entry;
@@ -129,7 +135,7 @@ class ValueCollection extends Collection {
         else {
           childValue = this._readProperty(value, key);
         }
-        const childRef = this._serialize(childValue, nodeId, depth + 1);
+        const childRef = this._serialize(childValue, nodeId, depth + 1, null, meta);
         this._pushObjectProp(depth, key, childRef, childValue, serialized);
       }
     };
@@ -506,6 +512,22 @@ class ValueCollection extends Collection {
     return serialized;
   }
 
+  /** ###########################################################################
+   * promise and other hackfixes
+   * ##########################################################################*/
+
+  registerPromiseValue(valueRef, value) {
+    const thenRepresentation = value && this._readProperty(value, 'then');
+    valueRef.isThenable = thenRepresentation && isFunction(thenRepresentation);
+    if (valueRef.isThenable) {
+      this.maybePatchPromise(value);
+    }
+  }
+
+  /** ###########################################################################
+   * {@link #_serialize}
+   * ##########################################################################*/
+
   /**
    * @param {Map} visited
    * @return {ValueRef}
@@ -547,9 +569,18 @@ class ValueCollection extends Collection {
     // new ref
     valueRef = this._addValueRef(category, nodeId, value);
 
-    if (meta?.shallow) {
+    if (this.valuesShallow || meta?.shallow) {
       // shortcut -> don't serialize children
       typeName = value.constructor?.name || '';
+
+      switch (category) {
+        case ValueTypeCategory.Object: {
+          // special handling for promise
+          this.registerPromiseValue(valueRef, value);
+          break;
+        }
+      }
+
       this._finishValue(valueRef, typeName, Array.isArray(value) ? EmptyArray : EmptyObject, pruneState);
       return valueRef;
     }
@@ -568,7 +599,7 @@ class ValueCollection extends Collection {
         // TODO: functions can have custom properties too
         serialized = {};
         this._pushObjectProp(depth, 'name', null, (value.name || ''), serialized);
-        const prototypeRef = this._serialize(value.prototype, nodeId, depth + 1);
+        const prototypeRef = this._serialize(value.prototype, nodeId, depth + 1, null, meta);
         this._pushObjectProp(depth, 'prototype', prototypeRef, null, serialized);
         break;
       }
@@ -589,7 +620,7 @@ class ValueCollection extends Collection {
           }
           else {
             childValue = this._readProperty(value, i);
-            childRef = this._serialize(childValue, nodeId, depth + 1);
+            childRef = this._serialize(childValue, nodeId, depth + 1, null, meta);
           }
           Verbose > 1 && this._logValue(`${' '.repeat(depth)}[${i}]`, childRef, childValue);
 
@@ -606,12 +637,8 @@ class ValueCollection extends Collection {
           // iterate over all object properties
           let props = this._getProperties(value);
 
-          // check for promise
-          const thenRepresentation = value && this._readProperty(value, 'then');
-          valueRef.isThenable = thenRepresentation && isFunction(thenRepresentation);
-          if (valueRef.isThenable) {
-            this.maybePatchPromise(value);
-          }
+          // special handling for promise
+          this.registerPromiseValue(valueRef, value);
 
           if (!props) {
             // error
@@ -636,7 +663,7 @@ class ValueCollection extends Collection {
             const builtInSerializer = this.getBuiltInSerializer(value);
             if (builtInSerializer) {
               // serialize built-in types - especially: RegExp, Map, Set
-              builtInSerializer(value, nodeId, depth, serialized, valueRef);
+              builtInSerializer(value, nodeId, depth, serialized, valueRef, meta);
             }
             else {
               // serialize object (default)
@@ -649,7 +676,7 @@ class ValueCollection extends Collection {
                 }
                 else {
                   childValue = this._readProperty(value, prop);
-                  childRef = this._serialize(childValue, nodeId, depth + 1);
+                  childRef = this._serialize(childValue, nodeId, depth + 1, null, meta);
                 }
                 this._pushObjectProp(depth, prop, childRef, childValue, serialized);
               }

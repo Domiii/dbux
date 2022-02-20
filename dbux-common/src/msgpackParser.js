@@ -20,7 +20,7 @@ import {
 } from '@msgpack/msgpack';
 import Emitter from 'component-emitter';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { startPrettyTimer } from '@dbux/common-node/src/util/timeUtil';
+import { startPrettyTimer, PrettyTimer } from '@dbux/common-node/src/util/timeUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('msgpack');
@@ -100,20 +100,29 @@ function isObject(value) {
 
 function Encoder() { }
 
+/**
+ * @param {*} what 
+ * @param {PrettyTimer} timer 
+ * @param {*} buffer 
+ */
 function printTimer(what, timer, buffer) {
   // if (buffer.length > 1e8) {
-  const msg = buffer.length > 1e8 ? ' (buffer NOT SMALL)' : '';
-  timer.print(debug, `${what}${msg}: ${Math.round(buffer.length / 1000).toLocaleString('en-us')} kb`);
+  const seconds = timer.getFinalTimeSeconds();
+  if (seconds > 0.5) {
+    let msg = buffer.length > 1e8 ? ' (buffer NOT SMALL)' : '';
+    const time = `${seconds.toFixed(2)}s`;
+    debug(`[perf] SLOW ${what}${msg}: ${time}, ${Math.round(buffer.length / 1000).toLocaleString('en-us')}kb`);
+  }
   // }
 }
 
 Encoder.prototype.encode = function (packet) {
   // warn(`ENCODE`/* , packet */);
 
-  const timer = startPrettyTimer();
+  // const timer = startPrettyTimer();
   const encoded = [encoder.encode(packet)];
   // const s = timer.getFinalTimeSeconds();
-  printTimer('ENCODE', timer, encoded[0]);
+  // printTimer('ENCODE', timer, encoded[0]);
 
   return encoded;
 };

@@ -71,18 +71,22 @@ export default class RuntimeClient extends SocketClient {
   }
 
   _handleData = async (data, ack) => {
-    debug(`handleData START`);
+    // debug(`handleData START`);
     try {
       await runTaskWithProgressBar(async (progress) => {
         progress.report({ message: 'Processing incoming runtime data...' });
         this.application.addData(data);
-      }, { cancellable: false, title: `Application "${this.application.getPreferredName()}": new data` });
+      }, { cancellable: false, title: `Application "${this.application.getPreferredName()}": ` });
     }
     catch (err) {
       logError(`WARNING: Error encountered while adding data. Analysis results might be incorrect.`, err);
     }
     finally {
-      debug(`handleData ACK, app time: ${Math.round(this.application.totalTimeSpent)}, ${Math.round(this.application.lastAddTimeSpent)}`);
+      // debug(`handleData ACK, app time: ${Math.round(this.application.totalTimeSpent)}, ${Math.round(this.application.lastAddTimeSpent)}`);
+      const timeSpent = this.application.lastAddTimeSpent;
+      if (timeSpent > 500) {
+        debug(`: ${Math.round(timeSpent / 1000).toFixed(2)}s`);
+      }
       ack('data'); // send ack
     }
   }

@@ -5,7 +5,11 @@ export function performanceNow() {
 }
 
 export function getPrettyPerformanceDelta(start, end = performanceNow()) {
-  const delta = ((end - start) / 1000).toFixed(2);
+  return getPrettyTime(end - start);
+}
+
+export function getPrettyTime(x) {
+  const delta = (x / 1000).toFixed(2);
   return `${delta}s`;
 }
 
@@ -17,6 +21,17 @@ export class PrettyTimer {
     if (startNow) {
       this.start();
     }
+  }
+
+  get elapsed() {
+    return (performanceNow() - this.endTime) / 1000;
+  }
+
+  getFinalTimeSeconds() {
+    if (!this.endTime) {
+      this.stop();
+    }
+    return (this.endTime - this.startTime) / 1000;
   }
 
   reset() {
@@ -38,13 +53,6 @@ export class PrettyTimer {
       throw new Error(`Tried to stop PrettyTimer, but stopped already.`);
     }
     this.endTime = performanceNow();
-  }
-
-  getFinalTimeSeconds() {
-    if (!this.endTime()) {
-      this.stop();
-    }
-    return this.endTime - this.startTime;
   }
 
   print(printFun, msg) {
