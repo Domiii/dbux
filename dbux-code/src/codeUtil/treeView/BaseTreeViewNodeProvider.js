@@ -264,7 +264,7 @@ export default class BaseTreeViewNodeProvider {
     return node.children;
   }
 
-  buildNodes(nodeClasses) {
+  buildNodes(nodeClasses, parent) {
     if (!nodeClasses) {
       return null;
     }
@@ -272,7 +272,7 @@ export default class BaseTreeViewNodeProvider {
     return nodeClasses
       .map(Clazz => {
         const props = (Clazz.makeChildPropsDefault || BaseTreeViewNode.makeChildPropsDefault)?.(Clazz);
-        return this.buildNode(Clazz, this.entry, this, props);
+        return this.buildNode(Clazz, parent.entry, parent, props);
       })
       .filter(node => !!node);
   }

@@ -45,20 +45,26 @@ export function isEnvNode() {
 /**
  * Custom require function to make webpack "happy".
  */
-let _r;
+let __r;
 export function _require(name) {
-  if (_r !== undefined) {
-    return _r;
-  }
   // eslint-disable-next-line no-eval
-  _r = eval(`
+  const _r = __r || (__r = eval(`
     ((typeof __non_webpack_require__ !== 'undefined' && __non_webpack_require__) || 
     (typeof require !== 'undefined' && require))
-  `) || null;
+  `)) || null;
   if (!_r) {
     return null;
   }
-  return _r(name);
+  let m = _r(name);
+  const Module = _r('module');
+  if (m instanceof Module) {
+    /**
+     * Require might return a module object, rather than its exported content in an ESM context.
+     * @see https://nodejs.org/api/module.html#the-module-object
+     */
+    m = m.default;
+  }
+  return m;
 }
 
 /**
@@ -73,6 +79,11 @@ export const performance = universalLib('performance', () => {
  * 
  */
 export const util = universalLib(null, 'util');
+
+/**
+ * 
+ */
+export const crypto = universalLib(null, 'crypto');
 
 
 // NOTE: inspect does not exist in the browser

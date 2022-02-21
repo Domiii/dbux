@@ -8,7 +8,7 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import { emitSelectTraceAction } from '../userEvents';
 import { getRelatedAppIds } from '../codeDeco/editedWarning';
 import { showWarningMessage } from '../codeUtil/codeModals';
-import TraceDetailsDataProvider from './TraceDetailsNodeProvider';
+import TraceDetailsNodeProvider from './TraceDetailsNodeProvider';
 import { getOrCreateTracesAtCursor } from './TracesAtCursor';
 import { ExecutionsTDNodeContextValue } from './nodes/ExecutionsTDNodes';
 import { NavigationNodeContextValue } from './nodes/NavigationNode';
@@ -20,7 +20,7 @@ let controller;
 
 class TraceDetailsController {
   constructor(context) {
-    this.treeDataProvider = new TraceDetailsDataProvider();
+    this.treeDataProvider = new TraceDetailsNodeProvider();
     this.treeDataProvider.controller = this;
     this.tracesAtCursor = getOrCreateTracesAtCursor(context);
 

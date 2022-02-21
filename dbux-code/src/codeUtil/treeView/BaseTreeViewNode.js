@@ -95,7 +95,7 @@ export default class BaseTreeViewNode extends TreeItem {
   }
 
   buildChildrenDefault() {
-    return this.treeNodeProvider.buildNodes(this.childClasses);
+    return this.treeNodeProvider.buildNodes(this.childClasses, this);
   }
 
   getOrBuildChildren() {
