@@ -33,9 +33,10 @@ export class GroupNode extends BaseTreeViewNode {
     throw new Error('abstract method not implemented');
   }
 
-  static group(dp, traces) {
+  static group(traces) {
     const byKey = new Map();
     for (const trace of traces) {
+      const dp = allApplications.getById(trace.applicationId).dataProvider;
       const key = this.makeKey(dp, trace);
       if (!byKey.get(key)) byKey.set(key, []);
       byKey.get(key).push(trace);
@@ -45,8 +46,8 @@ export class GroupNode extends BaseTreeViewNode {
   }
 
   static build(rootNode, [key, childTraces]) {
-    const { treeNodeProvider, applicationId } = rootNode;
-    return treeNodeProvider.buildNode(this, null, rootNode, { key, childTraces, applicationId });
+    const { treeNodeProvider } = rootNode;
+    return treeNodeProvider.buildNode(this, null, rootNode, { key, childTraces });
   }
 
   get defaultCollapsibleState() {
@@ -96,7 +97,7 @@ export class GroupNode extends BaseTreeViewNode {
  *  #########################################################################*/
 
 export class UngroupedNode extends GroupNode {
-  static group(application, traces) {
+  static group(traces) {
     return traces;
   }
 
@@ -116,7 +117,8 @@ export class GroupByRootNode extends GroupNode {
     return dp.util.getRootContextOfTrace(trace.traceId).contextId;
   }
 
-  static makeLabel(trace, parent, { key: rootContextId, applicationId }) {
+  static makeLabel(trace, parent, { key: rootContextId, childTraces }) {
+    const { applicationId } = childTraces[0];
     const dp = allApplications.getById(applicationId).dataProvider;
     const context = dp.collections.executionContexts.getById(rootContextId);
     return makeContextLabel(context, dp.application);
@@ -139,7 +141,8 @@ export class GroupByRealContextNode extends GroupNode {
     return dp.util.getRealContextIdOfContext(trace.contextId);
   }
 
-  static makeLabel(trace, parent, { key: contextId, applicationId }) {
+  static makeLabel(trace, parent, { key: contextId, childTraces }) {
+    const { applicationId } = childTraces[0];
     const dp = allApplications.getById(applicationId).dataProvider;
     const context = dp.collections.executionContexts.getById(contextId);
     return makeContextLabel(context, dp.application);
@@ -163,7 +166,8 @@ export class GroupByCallerNode extends GroupNode {
     return callerId;
   }
 
-  static makeLabel(trace, parent, { key: callerId, applicationId }) {
+  static makeLabel(trace, parent, { key: callerId, childTraces }) {
+    const { applicationId } = childTraces[0];
     const dp = allApplications.getById(applicationId).dataProvider;
     const callerTrace = dp.collections.traces.getById(callerId);
     return callerTrace ? makeTraceLabel(callerTrace) : '(No Caller Trace)';
@@ -187,7 +191,8 @@ export class GroupByParentContextNode extends GroupNode {
     return dp.collections.executionContexts.getById(contextId)?.parentContextId || 0;
   }
 
-  static makeLabel(trace, parent, { key: parentContextId, applicationId }) {
+  static makeLabel(trace, parent, { key: parentContextId, childTraces }) {
+    const { applicationId } = childTraces[0];
     const dp = allApplications.getById(applicationId).dataProvider;
     const context = dp.collections.executionContexts.getById(parentContextId);
     return context ? makeContextLabel(context, dp.application) : '(No Parent Context)';
@@ -234,6 +239,7 @@ export class GroupByParentContextNode extends GroupNode {
 
 /**
  * Containing {@link TraceNode} as children and supports custom grouping.
+ * TODO: support cross app trace grouping (consider applictionId in group key)
  */
 export default class TraceContainerNode extends BaseTreeViewNode {
   /** ###########################################################################
@@ -271,14 +277,10 @@ export default class TraceContainerNode extends BaseTreeViewNode {
   // eslint-disable-next-line no-unused-vars
   static makeProperties(entry, parent, props) {
     const allTraces = this.getAllTraces(entry);
-    const applicationId = allTraces[0]?.applicationId;
-    const dp = allApplications.getById(applicationId).dataProvider;
-
     const GroupNodeClazz = this.getCurrentGroupClass();
-    const groupNodesData = GroupNodeClazz.group(dp, allTraces);
+    const groupNodesData = GroupNodeClazz.group(allTraces);
 
     return {
-      applicationId,
       allTraces,
       groupNodesData,
     };

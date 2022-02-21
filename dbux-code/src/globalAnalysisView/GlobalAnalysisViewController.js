@@ -55,12 +55,11 @@ export default class GlobalAnalysisViewController {
    *  #########################################################################*/
 
   async showError() {
-    if (!this.children) {
-      const errorNode = this.treeDataProvider.getNodeByClass(GlobalErrorsNode);
+    const errorNode = this.treeDataProvider.getNodeByClass(GlobalErrorsNode);
+    if (!errorNode.children) {
       await this.treeView.reveal(errorNode, { select: false, expand: true });
     }
     this.errorTraceManager.showError();
-    const errorNode = this.treeDataProvider.getNodeByClass(GlobalErrorsNode);
     const selectedErrorNode = errorNode.getSelectedChild();
     if (selectedErrorNode) {
       await this.treeView.reveal(selectedErrorNode);
