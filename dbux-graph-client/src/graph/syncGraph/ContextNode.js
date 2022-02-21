@@ -57,10 +57,21 @@ class ContextNode extends ClientComponentEndpoint {
     `);
   }
 
+  setupEl() {
+    const {
+      context: { applicationId, contextId },
+      rootContextId
+    } = this.state;
+
+    this.el.dataset.applicationId = applicationId;
+    this.el.dataset.contextId = contextId;
+    this.el.dataset.rootContextId = rootContextId;
+  }
+
   update() {
     const {
-      applicationId,
-      context: { contextId },
+      context: { applicationId, contextId },
+      rootContextId,
       realStaticContextid,
       contextLabel,
       contextLocLabel,
@@ -73,7 +84,6 @@ class ContextNode extends ClientComponentEndpoint {
       statsEnabled,
       moduleName,
       visible,
-      isRoot,
     } = this.state;
 
     const { themeMode, screenshotMode } = this.context;
@@ -101,8 +111,11 @@ class ContextNode extends ClientComponentEndpoint {
       this.els.stats.textContent = '';
     }
 
+    const prevSibling = this.el.previousElementSibling;
+    const isAsyncRoot = prevSibling && parseInt(prevSibling.dataset.rootContextId, 10) !== rootContextId;
+
     decorateClasses(this.el, {
-      'root-context-node': isRoot
+      'root-context-node': isAsyncRoot
     });
 
     decorateClasses(this.els.title, {

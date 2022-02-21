@@ -168,20 +168,29 @@ export default {
 
   /** @param {DataProvider} dp */
   getRootContextOfContext(dp, contextId) {
-    const { executionContexts } = dp.collections;
-    let parentContextId;
-    while (
-      !dp.util.isRootContext(contextId) &&
-      (parentContextId = executionContexts.getById(contextId).parentContextId)) {
-      contextId = parentContextId;
-    }
-    return executionContexts.getById(contextId);
+    // const { executionContexts } = dp.collections;
+    // const context = executionContexts.getById(contextId);
+    // if (!context._rootContextId) {
+    //   let currentContextId = contextId;
+    //   let parentContextId;
+    //   while (
+    //     !dp.util.isRootContext(currentContextId) &&
+    //     (parentContextId = executionContexts.getById(currentContextId).parentContextId)) {
+    //     currentContextId = parentContextId;
+    //   }
+    //   context._rootContextId = currentContextId;
+    // }
+    // return executionContexts.getById(context._rootContextId);
+
+    const firstTrace = dp.util.getFirstTraceOfContext(contextId);
+    const rootContext = dp.collections.executionContexts.getById(firstTrace?.rootContextId);
+    return rootContext;
   },
 
   /** @param {DataProvider} dp */
   getRootContextOfTrace(dp, traceId) {
     const trace = dp.collections.traces.getById(traceId);
-    return dp.util.getRootContextOfContext(trace.contextId);
+    return dp.collections.executionContexts.getById(trace.rootContextId);
   },
 
   /** @param {DataProvider} dp */
