@@ -1,8 +1,6 @@
 /* eslint-disable no-console */
 'use strict';
 
-const path = require('path');
-const { expect } = require('chai');
 const { createSequelizeInstance } = require('./dev/sscce-helpers');
 const { Model, DataTypes } = require('.');
 

@@ -48,6 +48,9 @@ export function makeEdgeTable(folder, experimentIds) {
  * {@link tableRow}
  * ##########################################################################*/
 
+/**
+ * NOTE: See `ETC` enum for all columns behind AE counts.
+ */
 function tableRow(folder, experimentId, nameCount) {
   const fpath = getExperimentDataFilePath(experimentId);
   const name = experimentId.split('#', 1)[0];
@@ -76,7 +79,7 @@ function tableRow(folder, experimentId, nameCount) {
     }
 
     // fix formatting
-    edgeTypeCounts[ETC.O] = `\\corr{${edgeTypeCounts[ETC.O]}}`;
+    // edgeTypeCounts[ETC.O] = `\\corr{${edgeTypeCounts[ETC.O]}}`;
     edgeTypeCounts[ETC.Acc] = edgeTypeCounts[ETC.Acc].toFixed(2);
     edgeTypeCounts[ETC.N] = Math.round(edgeTypeCounts[ETC.N]); // edgeTypeCounts[5].toFixed(1);
 
@@ -133,16 +136,22 @@ const rts = {
   'webpack': [1, 3],
 };
 
+/**
+ * RT = real thread count
+ */
 function getRt(experimentId) {
   const match = Object.entries(rts)
     .filter(([projectName]) => experimentId.startsWith(projectName));
   if (match.length !== 1) {
-    throw new Error(`experiment does not have RT: ${experimentId} (${JSON.stringify(match)})`);
+    // throw new Error(`experiment does not have RT: ${experimentId} (${JSON.stringify(match)})`);
+    return NaN;
   }
   return match[0][1];
 }
 
 const projectOrder = [
+  'getting-started',
+
   'express',
   'hexo',
 

@@ -8,12 +8,13 @@ import { getCurrentResearch } from '../../../../research/Research';
  * ##########################################################################*/
 export const ETC = {
   C: 0,  // Chain
-  F: 1,  // Fork + Multi-Chain
-  O: 2,  // Orphan
-  TT: 3, // Total Threads
-  RT: 4, // Real Threads
-  Acc: 5, // Accuracy
-  N: 6,  // Nested count average
+  F: 1,  // Multi-Chain
+  MC: 2,  // Multi-Chain
+  O: 3,  // Orphan
+  TT: 4, // Total Threads
+  RT: 5, // Real Threads
+  Acc: 6, // Accuracy
+  N: 7,  // Nested count average
 };
 
 /** ###########################################################################

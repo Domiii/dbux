@@ -1,0 +1,38 @@
+# from dbux-projects/assets/exerciseAssets/sequelize/findOrCreate-parallel-rewrite/node_modules/retry-as-promised/index.js
+0a1,5
+> /*
+> code .\node_modules\retry-as-promised
+> Original: https://raw.githubusercontent.com/mickhansen/retry-as-promised/v3.2.0/index.js
+> */
+> 
+60d64
+<   return new Promise(function (resolve, reject) {
+70,72c74,75
+<     Promise.resolve(callback({ current: options.$current }))
+<       .then(resolve)
+<       .then(function () {
+---
+>   return Promise.resolve(callback({ current: options.$current }))
+>     .then(function (result) {
+74a78
+>       return result;
+85c89
+<         if (!shouldRetry) return reject(err);
+---
+>       if (!shouldRetry) return Promise.reject(err);
+89c93
+<         if (!shouldRetry) return reject(err);
+---
+>       if (!shouldRetry) return Promise.reject(err);
+102a107
+>         return new Promise((resolve, reject) => {
+107a113
+>         });
+109,111c115
+<           retryAsPromised(callback, options)
+<             .then(resolve)
+<             .catch(reject);
+---
+>         return retryAsPromised(callback, options);
+114d117
+<   });
