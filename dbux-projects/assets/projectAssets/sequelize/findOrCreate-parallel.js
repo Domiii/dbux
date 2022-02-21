@@ -22,7 +22,7 @@ async function main() {
     }, { sequelize, modelName: 'user' });
     await sequelize.sync({ force: true });
 
-    // this does not work (AV)
+    // this does not work
     const [b1, b2] = await Promise.all([
       User.findOrCreate({
         where: { name: "b" },

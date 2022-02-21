@@ -52,6 +52,10 @@ export default class RuntimeAsync {
   setAsyncContextIdPromise(contextId, promise) {
     const promiseId = getPromiseId(promise);
 
+    // if (!promiseId) {
+
+    // }
+
     const context = executionContextCollection.getById(contextId);
     if (context) {
       this.setAsyncContextPromise(context, promiseId);
@@ -62,7 +66,7 @@ export default class RuntimeAsync {
     const lastAwaitData = this.lastAwaitByRealContext.get(contextId);
 
     // eslint-disable-next-line max-len
-    // this.logger.warn(`[traceCallPromiseResult] trace=${traceCollection.makeTraceInfo(trace.traceId)}, lastContextId=${executionContextCollection.getLastRealContext()?.contextId}`, calledContext?.contextId,
+    // this.logger.warn(`[traceCallPromiseResult] trace=${traceCollection.makeTraceInfo(trace.traceId)}, lastContextId=${executionContextCollection.getLastRealContext(this._runtime.getLastPoppedContextId())?.contextId}`, calledContext?.contextId,
     //   lastAwaitData);
 
     if (lastAwaitData) {
@@ -87,15 +91,8 @@ export default class RuntimeAsync {
     //   }
 
     const callId = trace.resultCallId;
-    const calledContext = peekBCEContextCheckCallee(callId);
-
-    // if (callId === ) {
-    //   const promiseId = getPromiseId(promise);
-    //   const lastContext = executionContextCollection.getLastRealContext();
-    //   const lastAwaitData = this.lastAwaitByRealContext.get(contextId);
-    //   console.trace('traceCallPromiseResult',
-    //     { callId, contextId, calledContext: !!calledContext, promiseId, trace, lastContext, lastAwaitData });
-    // }
+    const lastContextId = this._runtime.getLastPoppedContextId();
+    const calledContext = peekBCEContextCheckCallee(callId, lastContextId);
 
     let calledContextId;
 
@@ -103,19 +100,6 @@ export default class RuntimeAsync {
       calledContextId = calledContext?.contextId;
       this.setAsyncContextIdPromise(calledContextId, promise);
     }
-    //   // else if (!getFunctionRefByContext(executionContextCollection.getLastRealContext())) {
-    //   //   // eslint-disable-next-line max-len
-    //   //   this.logger.warn(`[traceCallPromiseResult] function is not instrumented, trace=${traceCollection.makeTraceInfo(trace.traceId)}, lastContextId=${executionContextCollection.getLastRealContext()?.contextId}`);
-    //   // }
-
-    //   // register previously unseen promise
-    //   this.recordFloatingPromise(promise, currentRootId, lastAwaitData && calledContextId);
-
-    //   // if (calledFirstAwaitPromise) {
-    //   //   // const key = { runId, contextId, traceId };
-    //   //   // this.runContextCallTracePromiseMap.set(key, promise);
-    //   //   // this.promiseRunContextTraceMap.set(promise, key);
-    //   // }
   }
 
   // ###########################################################################

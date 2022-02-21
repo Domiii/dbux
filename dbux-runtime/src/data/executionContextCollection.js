@@ -39,8 +39,12 @@ export class ExecutionContextCollection extends Collection {
     return programId;
   }
 
-  getLastRealContext() {
-    let lastContext = this.getLast();
+  getLastRealContext(lastContextId) {
+    if (!lastContextId) {
+      this.logger.error(`tried to call getLastRealContext without argument.`);
+      return null;
+    }
+    let lastContext = this.getById(lastContextId);
     if (!lastContext) {
       return null;
     }

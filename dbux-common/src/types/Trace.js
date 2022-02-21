@@ -4,6 +4,35 @@ export class TracePurposeInfo {
   // more context-sensitive data here
 }
 
+export class TraceData {
+  /**
+   * only: BCE.
+   * traceId of the callee.
+   */
+  calleeTid;
+
+  /**
+   * only: BCE.
+   */
+  argTids;
+
+  /**
+   * only: BCE.
+   */
+  spreadLengths;
+
+  /**
+   * only: BCE.
+   * Assigned in case of `call`, `apply`, `bind` etc.
+   */
+  calledFunctionTid;
+
+  /**
+   * only: BCE.
+   */
+  monkey;
+}
+
 
 export default class Trace {
   /**
@@ -67,7 +96,7 @@ export default class Trace {
 
   /**
    * Extra data related to this trace, based on circumstances.
-   * -> contains { argTids, spreadLengths[, monkey] } for BCE.
+   * @type {TraceData}
    */
   data;
 }
