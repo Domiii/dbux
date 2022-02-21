@@ -768,12 +768,12 @@
         },
         {
           "command": "dbuxTraceDetailsView.nextGroupingMode",
-          "when": "viewItem == dbuxTraceDetailsView.node.executionsTDNodeRoot",
+          "when": "viewItem =~ /#traceContainer/",
           "group": "inline@2"
         },
         {
           "command": "dbuxTraceDetailsView.expandNode",
-          "when": "viewItem == dbuxTraceDetailsView.node.executionsTDNodeRoot",
+          "when": "viewItem =~ /#traceContainer/",
           "group": "inline@3"
         },
         {

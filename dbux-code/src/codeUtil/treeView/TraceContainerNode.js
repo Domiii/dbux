@@ -1,4 +1,5 @@
 import allApplications from '@dbux/data/src/applications/allApplications';
+import { makeContextLabel, makeTraceLabel } from '@dbux/data/src/helpers/makeLabels';
 import traceSelection from '@dbux/data/src/traceSelection';
 import { TreeItemCollapsibleState } from 'vscode';
 import BaseTreeViewNode from './BaseTreeViewNode';
@@ -9,7 +10,6 @@ import TraceNode from './TraceNode';
 /** @typedef {import('./TraceNode').default} TraceNode */
 
 export class GroupNode extends BaseTreeViewNode {
-  static labelPrefix = '';
   static labelSuffix = '';
   static TraceNodeClass = TraceNode;
 
@@ -31,20 +31,6 @@ export class GroupNode extends BaseTreeViewNode {
   // eslint-disable-next-line no-unused-vars
   static makeLabel(entry, parent, moreProp) {
     throw new Error('abstract method not implemented');
-  }
-
-  /**
-   * @param {Array<Trace>} allTraces
-   * @param {Array<Trace>} groupNodesData
-   */
-  // eslint-disable-next-line no-unused-vars
-  static makeRootlabel(allTraces, groupNodesData) {
-    if (this.labelSuffix) {
-      return `${this.labelPrefix}: ${allTraces?.length || 0}x (${groupNodesData?.length || 0} groups ${this.labelSuffix})`;
-    }
-    else {
-      return `${this.labelPrefix}: ${allTraces?.length || 0}x`;
-    }
   }
 
   static group(dp, traces) {
@@ -105,6 +91,147 @@ export class GroupNode extends BaseTreeViewNode {
   }
 }
 
+/** ###########################################################################
+ * GroupNodes implementation
+ *  #########################################################################*/
+
+export class UngroupedNode extends GroupNode {
+  static group(application, traces) {
+    return traces;
+  }
+
+  static build(rootNode, trace) {
+    return rootNode.treeNodeProvider.buildNode(this.TraceNodeClass, trace, rootNode);
+  }
+}
+
+/** ###########################################################################
+ * {@link GroupByRootNode}
+ * ##########################################################################*/
+
+export class GroupByRootNode extends GroupNode {
+  static labelSuffix = 'by Root Context';
+
+  static makeKey(dp, trace) {
+    return dp.util.getRootContextOfTrace(trace.traceId).contextId;
+  }
+
+  static makeLabel(trace, parent, { key: rootContextId, applicationId }) {
+    const dp = allApplications.getById(applicationId).dataProvider;
+    const context = dp.collections.executionContexts.getById(rootContextId);
+    return makeContextLabel(context, dp.application);
+  }
+
+  makeDescription() {
+    return `Root Context: ${this.key}`;
+  }
+
+  getRelevantTrace() {
+    const contextId = this.key;
+    return this.dp.dataProvider.util.getFirstTraceOfContext(contextId);
+  }
+}
+
+export class GroupByRealContextNode extends GroupNode {
+  static labelSuffix = 'by Real Context';
+
+  static makeKey(dp, trace) {
+    return dp.util.getRealContextIdOfContext(trace.contextId);
+  }
+
+  static makeLabel(trace, parent, { key: contextId, applicationId }) {
+    const dp = allApplications.getById(applicationId).dataProvider;
+    const context = dp.collections.executionContexts.getById(contextId);
+    return makeContextLabel(context, dp.application);
+  }
+
+  makeDescription() {
+    return `ContextId: ${this.key}`;
+  }
+
+  getRelevantTrace(dp, contextId) {
+    return dp.dataProvider.util.getFirstTraceOfContext(contextId);
+  }
+}
+
+export class GroupByCallerNode extends GroupNode {
+  static labelSuffix = 'by Caller Trace';
+
+  static makeKey(dp, trace) {
+    const { contextId } = trace;
+    const callerId = dp.util.getCallerTraceOfContext(contextId)?.traceId || 0;
+    return callerId;
+  }
+
+  static makeLabel(trace, parent, { key: callerId, applicationId }) {
+    const dp = allApplications.getById(applicationId).dataProvider;
+    const callerTrace = dp.collections.traces.getById(callerId);
+    return callerTrace ? makeTraceLabel(callerTrace) : '(No Caller Trace)';
+  }
+
+  makeDescription() {
+    return `CallerTraceId: ${this.key}`;
+  }
+
+  getRelevantTrace(dp, callerId) {
+    return dp.dataProvider.collections.traces.getById(callerId);
+  }
+}
+
+export class GroupByParentContextNode extends GroupNode {
+  static labelSuffix = 'by Parent Context';
+
+  static makeKey(dp, trace) {
+    let { contextId } = trace;
+    contextId = dp.util.getRealContextIdOfContext(trace.contextId);
+    return dp.collections.executionContexts.getById(contextId)?.parentContextId || 0;
+  }
+
+  static makeLabel(trace, parent, { key: parentContextId, applicationId }) {
+    const dp = allApplications.getById(applicationId).dataProvider;
+    const context = dp.collections.executionContexts.getById(parentContextId);
+    return context ? makeContextLabel(context, dp.application) : '(No Parent Context)';
+  }
+
+  makeDescription() {
+    return `ParentContextId: ${this.key}`;
+  }
+
+  getRelevantTrace() {
+    const parentContextId = this.key;
+    return this.dp.dataProvider.util.getFirstTraceOfContext(parentContextId);
+  }
+}
+
+// export class GroupByCallbackNode extends ExecutionsGroupNode {
+//   static labelSuffix = 'by Callback';
+
+//   static makeKey(dp, trace) {
+//     const { contextId } = trace;
+//     const dp = application.dataProvider;
+//     const { schedulerTraceId } = dp.collections.executionContexts.getById(contextId);
+//     const { callId = 0 } = dp.collections.traces.getById(schedulerTraceId) || trace;
+//     return callId;
+//   }
+
+//   static makeLabel(application, callId) {
+//     const trace = application.dp.collections.traces.getById(callId);
+//     return trace ? makeCallValueLabel(trace) : '(No Caller)';
+//   }
+
+//   makeDescription() {
+//     return `Call: ${callId}`;
+//   }
+
+//   getRelevantTrace(dp, callId) {
+//     return dp.dataProvider.collections.traces.getById(callId);
+//   }
+// }
+
+/** ###########################################################################
+ * TraceContainerNode
+ *  #########################################################################*/
+
 /**
  * Containing {@link TraceNode} as children and supports custom grouping.
  */
@@ -112,7 +239,13 @@ export default class TraceContainerNode extends BaseTreeViewNode {
   /** ###########################################################################
    * Group mode management
    *  #########################################################################*/
-  static GroupClasses = [];
+  static GroupClasses = [
+    UngroupedNode,
+    GroupByRootNode,
+    GroupByRealContextNode,
+    GroupByCallerNode,
+    GroupByParentContextNode,
+  ];
   static groupModeIndex = 0;
 
   static nextGroupMode() {
@@ -120,7 +253,14 @@ export default class TraceContainerNode extends BaseTreeViewNode {
   }
 
   static makeLabel(_entry, _parent, props) {
-    return props.label;
+    const { allTraces, groupNodesData } = props;
+    const GroupNodeClass = this.getCurrentGroupClass();
+    if (GroupNodeClass.labelSuffix) {
+      return `${this.labelPrefix}: ${allTraces?.length || 0}x (${groupNodesData?.length || 0} groups ${GroupNodeClass.labelSuffix})`;
+    }
+    else {
+      return `${this.labelPrefix}: ${allTraces?.length || 0}x`;
+    }
   }
 
   // eslint-disable-next-line no-unused-vars
@@ -136,12 +276,11 @@ export default class TraceContainerNode extends BaseTreeViewNode {
 
     const GroupNodeClazz = this.getCurrentGroupClass();
     const groupNodesData = GroupNodeClazz.group(dp, allTraces);
-    const label = GroupNodeClazz.makeRootlabel(allTraces, groupNodesData);
 
     return {
       applicationId,
+      allTraces,
       groupNodesData,
-      label
     };
   }
 
