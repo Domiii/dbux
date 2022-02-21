@@ -28,7 +28,11 @@ export default class TraceDetailNode extends BaseTreeViewNode {
   }
 
   get app() {
-    const { applicationId } = this.trace;
+    const { trace } = this;
+    // if (!trace) {
+    //   return null;
+    // }
+    const { applicationId } = trace;
     return allApplications.getById(applicationId);
   }
 

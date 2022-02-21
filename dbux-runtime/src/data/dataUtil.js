@@ -254,12 +254,12 @@ export function getFunctionDefinitionTraceOfTrace(trace) {
     // }
     // else 
     if (isCallResult(trace)) {
-      // -> check for call, apply, bind
+      // callee itself is a CallExpression, e.g. `g(2)(1)`
       const bceTrace = getBCETraceOfTrace(trace.traceId);
-      if (!bceTrace?.data?.calledFunctionTid) {
-        return null;
+      if (bceTrace?.data?.calledFunctionTid) {
+        // -> call, apply, or bind
+        trace = traceCollection.getById(bceTrace.data.calledFunctionTid);
       }
-      trace = traceCollection.getById(bceTrace.data.calledFunctionTid);
     }
 
     const originalTrace = trace && getFirstOwnTraceOfTraceValue(trace.traceId);

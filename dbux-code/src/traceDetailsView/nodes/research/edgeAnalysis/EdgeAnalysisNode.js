@@ -152,7 +152,8 @@ class EdgeAnalysisController {
   }
 
   get app() {
-    return this.node.app;
+    // NOTE: app depends on trace
+    return this.node.trace && this.node.app || null;
   }
 
   get trace() {

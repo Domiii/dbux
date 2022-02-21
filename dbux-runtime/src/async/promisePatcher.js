@@ -74,12 +74,12 @@ export default function initPatchPromise(_runtimeMonitorInstance) {
  * Consider patching promise, when encountering it for the first time by valueCollection.
  */
 function maybePatchPromiseNewValue(promise) {
-  const promisifyPromiseVirtualRef = RuntimeMonitorInstance.runtime.getPromisifyPromiseVirtualRef();
-  if (promisifyPromiseVirtualRef) {
-    // add PromisifyPromise link
-    const promiseId = getPromiseId(promise);
-    RuntimeMonitorInstance._runtime.async.promisifyPromise(promiseId, promisifyPromiseVirtualRef);
-  }
+  // const promisifyPromiseVirtualRef = RuntimeMonitorInstance.runtime.getPromisifyPromiseVirtualRef();
+  // if (promisifyPromiseVirtualRef) {
+  //   // future-work: add PromisifyPromise link
+  //   const promiseId = getPromiseId(promise);
+  //   RuntimeMonitorInstance._runtime.async.promisifyPromise(promiseId, promisifyPromiseVirtualRef);
+  // }
   maybePatchPromise(promise);
 }
 
@@ -173,7 +173,7 @@ function patchThenCallback(cb, thenRef) {
           }
 
           // console.trace('thenCb', cbContext?.contextId, getPromiseId(returnValue));
-          // set async function call's `AsyncEventUpdate.promiseId`
+          // set async context's `AsyncEventUpdate.callerPromiseId`
           const promiseId = getPromiseId(returnValue);
           cbContext && RuntimeMonitorInstance._runtime.async.setAsyncContextPromise(cbContext, promiseId);
         }
