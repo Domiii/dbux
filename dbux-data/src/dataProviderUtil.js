@@ -3135,9 +3135,9 @@ export default {
 
     let chainToPromiseId, chainFromRootId, rootIdDown, rootIdUp;
 
-    // NOTE: `nestingPostUpdate` is the PostEventUpdate of preEventUpdate -> actually nesting the promise
-    const nestingPostUpdate = util.getAsyncPostEventUpdateOfRoot(preEventRootId);
-    const nestingPromiseId = nestingPostUpdate.promiseId;
+    // NOTE: `nestingPostUpdate` is the PostEventUpdate of preEventUpdate -> the Update that creates the promise
+    // const nestingPostUpdate = util.getAsyncPostEventUpdateOfRoot(preEventRootId);
+    // const nestingPromiseId = nestingPostUpdate.promiseId;
     const firstPostEventHandlerUpdate = util.getFirstAsyncPostEventUpdateOfTrace(schedulerTraceId);
 
     let promisePostUpdateData;
@@ -3171,7 +3171,7 @@ export default {
 
       const lastOfPromise = dp.util.getLastAsyncPostEventUpdateOfPromise(preEventPromiseId, beforeRootId);
       rootIdDown = lastOfPromise?.rootId || 0;
-      // rootIdDown = lastOfPromise?.rootId ||
+      // rootIdDown = lastOfPromise?.rootId ||  // NOTE: this was the old, flawed logic, before we had all links working.
       //   nestingPromiseId &&
       //   util.DOWN(nestingPromiseId, beforeRootId, syncBeforeRootId, promisePostUpdateData) ||
       //   0;
