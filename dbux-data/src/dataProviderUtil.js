@@ -923,10 +923,10 @@ export default {
     return traceId && dp.util.getTrace(traceId);
   },
 
-  // ###########################################################################
-  // call related trace
-  // ###########################################################################
 
+  // ###########################################################################
+  // call related traces
+  // ###########################################################################
 
   /** @param {DataProvider} dp */
   isTraceArgument(dp, traceId) {
@@ -938,6 +938,15 @@ export default {
       }
     }
     return false;
+  },
+
+  /** @param {DataProvider} dp */
+  getCallRelatedTraceBCE(dp, traceId) {
+    const trace = dp.collections.traces.getById(traceId);
+    if (trace.callId) {
+      return dp.collections.traces.getById(trace.callId);
+    }
+    return null;
   },
 
   isCallBCEOrResultTrace(dp, traceId) {

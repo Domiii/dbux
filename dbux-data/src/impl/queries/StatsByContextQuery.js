@@ -52,31 +52,31 @@ export default class StatsByContextQuery extends SubscribableQuery {
           const { contextId } = context;
           const stats = this._cache.get(contextId) || new ContextStats();
 
-          const staticContextSet = new Set();
-          const programIdSet = new Set();
+          const staticContexts = new Set();
+          const programIds = new Set();
 
           const staticContextId = dp.util.getContextStaticContextId(contextId);
-          staticContextSet.add(staticContextId);
+          staticContexts.add(staticContextId);
           stats.nTreeContexts = 1;
 
           const staticContextProgramId = dp.util.getContextStaticContext(contextId)?.programId;
-          programIdSet.add(staticContextProgramId);
+          programIds.add(staticContextProgramId);
 
           for (const child of children) {
             const childSet = dfs(child);
 
             // add childSet to staticContextSet
-            childSet.staticContextSet.forEach(staticContextSet.add, staticContextSet);
-            childSet.programIdSet.forEach(programIdSet.add, programIdSet);
+            childSet.staticContextSet.forEach(staticContexts.add, staticContexts);
+            childSet.programIdSet.forEach(programIds.add, programIds);
 
             stats.nTreeContexts += this.getContextNTreeContexts(child.contextId);
           }
-          stats.nTreeStaticContexts = staticContextSet.size;
-          stats.nTreeFileCalled = programIdSet.size;
+          stats.nTreeStaticContexts = staticContexts.size;
+          stats.nTreeFileCalled = programIds.size;
 
           this.storeByKey(contextId, stats);
 
-          const statsSet = { staticContextSet, programIdSet };
+          const statsSet = { staticContextSet: staticContexts, programIdSet: programIds };
 
           return statsSet;
         }

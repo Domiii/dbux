@@ -272,9 +272,15 @@ const ContextCallerLabelByEventUpdateType = {
   [AsyncEventUpdateType.PostThen]: () => 'then',
   [AsyncEventUpdateType.PostCallback]: (context, dp) => {
     const asyncNode = dp.indexes.asyncNodes.byRoot.getUnique(context.contextId);
-    const calleeTraceId = asyncNode && dp.util.getCalleeTraceId(asyncNode.schedulerTraceId);
-    const calleeTrace = calleeTraceId && dp.collections.traces.getById(calleeTraceId);
-    return calleeTraceId && makeTraceLabel(calleeTrace) || '(unknown callback)';
+
+    /**
+     * NOTE: CB scheduler trace is usually a BCE or one of its arguments.
+     */
+    const trace = asyncNode && asyncNode.schedulerTraceId &&
+      dp.util.getCalleeTraceId(asyncNode.schedulerTraceId) ||
+      dp.util.getCallRelatedTraceBCE(asyncNode.schedulerTraceId) ||
+      dp.util.getTrace(asyncNode.schedulerTraceId);
+    return trace && makeTraceLabel(trace) || '(unknown callback)';
   }
 };
 

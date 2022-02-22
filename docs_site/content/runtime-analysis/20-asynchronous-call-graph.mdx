@@ -1,5 +1,7 @@
 ---
 sidebar_class_name: sidebar-call-graph
+# IMPORTANT: this link is linked in our ICSE-SEIP 2022 paper. IT SHOULD BE PERMANENT.
+#     If we ever change this, need to add a redirect from /acg!
 slug: /acg
 ---
 
@@ -23,26 +25,6 @@ import TOC from '@comp/TOC';
 
 <hr />
 
-<!-- <video controls autoplay loop>
-  <source src="../async-hard.gif" type="video/mp4" />
-</video> -->
-
-**What is the Asynchronous Call Graph (ACG)?**
-
-The Asynchronous Call Graph (ACG) is the [call graph](./08-call-graph.mdx) in `Async` mode. You can see the ACG by opening the [call graph](./08-call-graph.mdx) and switching to `Async` mode (by clicking the `Sync` button in the [toolbar](./08-call-graph.mdx#toolbar)). The two call graph modes share many features, including the toolbar buttons, coloring and more, as explained [here](./08-call-graph.mdx#toolbar).
-
-`Sync` mode allows inspecting children and children of children of file and function executions. However, it simply puts <Term term="call graph roots" /> on a single linear vertical timeline. The ACG, on the other hand, uncovers the hidden connections between those roots on multiple vertical timelines and connections rendered between them.
-In other words, `Sync` mode is great for inspecting control flow **within** individual <Term term="call graph roots" />, while `Async` mode is great for inspecting control flow **between** them.
-In many debugging scenarios, you probably want to toggle between the two modes, as you investigate the control flow of an application.
-
-
-**Why?**
-
-[Asynchronous JavaScript](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous) and its relatives, [parallel programming](https://en.wikipedia.org/wiki/Parallel_programming) and [concurrent computing](https://en.wikipedia.org/wiki/Concurrent_computing), lead to much more complex execution pattern than their non-asynchronous, non-parallel, non-concurrent counterparts. In fact, asynchronous semantics are one of the most daunting aspects of JavaScript that software developers have to deal with on a day-to-day basis, making it <span className="cursor-help highlight-on-hover" title="This is a generic statement, so phrased for dramatic effect, not for accuracy.">feared by many, underestimated by the rest<sup>*</sup></span>.
-
-With the ACG we hope to make asynchronous JavaScript a lot easier to understand and digest. It presents a clear picture of an application's asynchronous control flow, and makes many types of <Term term="race conditions" /> visually obvious. It can also help uncover lacking error propagation and a lot more. For example, if your application's ACG has many individual columns, but a low level of actual concurrency (things don't actually happen concurrently), it might indicate that you (i) forgot to `await` or otherwise chain or nest your promises, or maybe (ii) are suffering from legacy code involving asynchronous callbacks and potential callback hell, that would benefit from re-writing using modern explicit asynchronous semantics.
-<!-- TODO: examples for visible race conditions -->
-
 ## Examples
 
 ### Example1: sample program {#example1}
@@ -60,9 +42,9 @@ The ACG (right) renders the program <Term term="CGRs" /> and the [asynchronous e
 * The dashed (red) border around the nodes on the left (`f1`, `sleep1s`, `f2`) indicate that the selected node "[synchronizes](https://en.wikipedia.org/wiki/Synchronization_(computer_science))" against them.
   * &rarr; Those CGRs are part of a promise that scheduled earlier but had to finish before this root could start executing.
 * Other observations:
-  * `f2` will always follow `f1`, `g2` will always follow `g1` and `h2` will always `h1`.
-  * `f`, `g` and `h` are executing concurrently. Presented with what we can see from the screenshot, we cannot assume that there is any ordering between them.
-  * &rarr; If someone wrote code that works based on the assumption that `h` always finishes after `g`, or `f` after `h`, there might be a [race condition](https://en.wikipedia.org/wiki/Race_condition) because there is no such order assured in the code that we are presented with. That is why the three are rendered on separate "virtual threads" (vertical columns).
+  * `f2` will always follow `f1`, `g2` will always follow `g1` and `h2` follows `h1`.
+  * The ACG also clearly shows that  `f`, `g` and `h` are executing concurrently.
+  * &rarr; If someone wrote code requiring `h` to always finish after `f`, or `g` after `h`, there might be a [race condition](https://en.wikipedia.org/wiki/Race_condition) because there is no such order assured in the code. That is why the ACG renders the three functions on separate "virtual threads" (vertical columns), illustrating that concurrency.
 
 
 ### Example2: todomvc {#example2}
@@ -73,10 +55,33 @@ This example demonstrates the ACG of [todomvc (vanilla-es6)](https://github.com/
 
 <Img screen src="todomvc-sample-acg1.png" />
 
-* We have enabled [value mode](./08-call-graph.mdx#value).
-  * This renders the first execution of the currently selected trace's value in each <Term term="CGR" />.
+* In this example, `val` (aka [value mode](./08-call-graph.mdx#value)) is enabled.
+  * This option renders the value of the first execution of the currently selected trace in each <Term term="CGR" />.
+  * In the ACG, we can see the value of `selector` for each <Term term="CGR" />, allowing us to see where/when the corresponding event (of this particular event handler) for each selector were handled.
+  * We can click into each individual node to get us to the relevant execution of that event handler.
 * NOTE: Event handler invocations of the same event are rendered in the same column.
-  * TODO: explain *callback heuristics* in more detailed.
+  <!-- * TODO: explain *callback CHAIN heuristics* in more detail. -->
+
+
+<!-- <video controls autoplay loop>
+  <source src="../async-hard.gif" type="video/mp4" />
+</video> -->
+
+## What is the Asynchronous Call Graph (ACG)?
+
+The Asynchronous Call Graph (ACG) is the [call graph](./08-call-graph.mdx) in `Async` mode. You can see the ACG by opening the [call graph](./08-call-graph.mdx) and switching to `Async` mode (by clicking the `Sync` button in the [toolbar](./08-call-graph.mdx#toolbar)). The two call graph modes share many features, including the toolbar buttons, coloring and more, as explained [here](./08-call-graph.mdx#toolbar).
+
+`Sync` mode allows inspecting children and children of children of file and function executions. However, it simply puts <Term term="call graph roots" /> on a single linear vertical timeline. The ACG, on the other hand, uncovers the hidden connections between those roots on multiple vertical timelines and connections rendered between them.
+In other words, `Sync` mode is great for inspecting control flow **within** individual <Term term="call graph roots" />, while `Async` mode is great for inspecting control flow **between** them.
+In many debugging scenarios, you probably want to toggle between the two modes, as you investigate the control flow of an application.
+
+
+## Why?
+
+[Asynchronous JavaScript](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous) and its relatives, [parallel programming](https://en.wikipedia.org/wiki/Parallel_programming) and [concurrent computing](https://en.wikipedia.org/wiki/Concurrent_computing), lead to much more complex execution pattern than their non-asynchronous, non-parallel, non-concurrent counterparts. In fact, asynchronous semantics are one of the most daunting aspects of JavaScript that software developers have to deal with on a day-to-day basis, making it <span className="cursor-help highlight-on-hover" title="This is a generic statement, so phrased for dramatic effect, not for accuracy.">feared by many, underestimated by the rest<sup>*</sup></span>.
+
+With the ACG we hope to make asynchronous JavaScript a lot easier to understand and digest. It presents a clear picture of an application's asynchronous control flow, and makes many types of <Term term="race conditions" /> visually obvious. It can also help uncover lacking error propagation and a lot more. For example, if your application's ACG has many individual columns, but a low level of actual concurrency (things don't actually happen concurrently), it might indicate that you (i) forgot to `await` or otherwise chain or nest your promises, or maybe (ii) are suffering from legacy code involving asynchronous callbacks and potential callback hell, that would benefit from re-writing using modern explicit asynchronous semantics.
+<!-- TODO: examples for visible race conditions -->
 
 
 ## JavaScript Execution Semantics
@@ -108,7 +113,7 @@ Examples of CGRs include:
 * Asynchronous executions of a JavaScript file, e.g. when `require`d or `import`ed by `node` or the webpack (or other) bundling system. (NOTE: Not all files are executed asynchronously.)
 * Browser executing a &lt;script> tag.
 * Execution of a callback supplied to `setTimeout`, `setInterval`, `setIntermediate`, `Process.nextTick`, `Promise.then` etc. These callbacks are scheduled and, at a later point in time, executed by the underlying JS runtime environment.
-* DOM, OS or other types of event handler callbacks.
+* Event handler callbacks (e.g. DOM's [addEventListener](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener), Node's [fs.watchFile](https://nodejs.org/docs/latest/api/fs.html#fswatchfilefilename-options-listener) etc.).
 
 <!--
 TODO: virtual contexts + async explanations. 
