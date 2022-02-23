@@ -66,6 +66,12 @@ class ContextNode extends ClientComponentEndpoint {
     this.el.dataset.applicationId = applicationId;
     this.el.dataset.contextId = contextId;
     this.el.dataset.rootContextId = rootContextId;
+
+    this.el.classList.add('blink-me');
+
+    setTimeout(() => {
+      this.el?.classList.remove('blink-me');
+    }, 4000);
   }
 
   update() {
