@@ -135,7 +135,7 @@ class AsyncGraph extends GraphBase {
       moduleName,
       postAsyncEventUpdateType,
       hasError,
-      // nestingDepth,
+      nestingDepth,
     } = nodeData;
 
     const { themeMode, screenshotMode, graphDocument } = this.context;
@@ -146,7 +146,7 @@ class AsyncGraph extends GraphBase {
 
     const backgroundColor = getStaticContextColor(themeMode, realStaticContextid, { bland: !!moduleName, highContractMode });
 
-    let leftLabel = '', rightLabel = '';
+    let leftLabel = '', rightLabel = '', errorLabel = '';
     let shortLabel, fullLabel = displayName;
 
     switch (postAsyncEventUpdateType) {
@@ -175,15 +175,14 @@ class AsyncGraph extends GraphBase {
     const classes = [];
     if (hasError) {
       classes.push('async-error');
-      shortLabel += '🔥';
-      fullLabel += '🔥';
+      errorLabel = '🔥';
     }
-    // if (nestingDepth) {
-    //   const depthLabel = /*html*/`<span class="depth-label">${nestingDepth}</span>`;
-    //   leftLabel = depthLabel;
-    //   // shortLabel = `${depthLabel}${shortLabel}`;
-    //   // fullLabel = `${depthLabel}${fullLabel}`;
-    // }
+    if (nestingDepth) {
+      const depthLabel = /*html*/`<span class="depth-label">${nestingDepth}</span>`;
+      leftLabel = depthLabel;
+      // shortLabel = `${depthLabel}${shortLabel}`;
+      // fullLabel = `${depthLabel}${fullLabel}`;
+    }
     const { asyncNodeId, applicationId, isTerminalNode } = asyncNode;
     const asyncNodeData = {
       'async-node-id': asyncNodeId,
@@ -204,11 +203,13 @@ class AsyncGraph extends GraphBase {
           <div class="left-label">${leftLabel}</div>
           <div class="async-brief full-width">
             ${shortLabel}
+            <span>${errorLabel}</span>
           </div>
           <div class="async-detail full-width flex-column cross-axis-align-center">
             <div class="full-width flex-row align-center">
               <div class="ellipsis-10 async-context-label">${fullLabel}</div>
               <div class="ellipsis-10 value-label"></div>
+              <span>${errorLabel}</span>
             </div>
             <div class="loc-label ellipsis-10">
               <span>${locLabel}</span>
@@ -359,9 +360,12 @@ class AsyncGraph extends GraphBase {
   // ###########################################################################
 
   handleClickAsyncNode(asyncNodeData) {
-    const { asyncNode: { applicationId, asyncNodeId } } = asyncNodeData;
+    const { asyncNode: { applicationId, asyncNodeId }, valueTraceId } = asyncNodeData;
 
-    if (applicationId && asyncNodeId) {
+    if (this.context.graphDocument.state.valueMode && valueTraceId) {
+      this.remote.gotoValueTrace(applicationId, valueTraceId);
+    }
+    else if (applicationId && asyncNodeId) {
       this.remote.gotoAsyncNode(applicationId, asyncNodeId);
     }
   }
@@ -470,10 +474,13 @@ class AsyncGraph extends GraphBase {
       this.allNodeData.forEach((node) => {
         // default label if no value
         node.valueLabel = '';
+        node.valueTraceId = null;
       });
       if (values) {
-        values.forEach(({ applicationId, asyncNodeId, label }) => {
-          this.allNodeData.get(applicationId, asyncNodeId).valueLabel = label;
+        values.forEach(({ applicationId, asyncNodeId, label, valueTraceId }) => {
+          const asyncNodeData = this.allNodeData.get(applicationId, asyncNodeId);
+          asyncNodeData.valueLabel = label;
+          asyncNodeData.valueTraceId = valueTraceId;
         });
       }
       this.renderRootValueLabel();
