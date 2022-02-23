@@ -135,7 +135,7 @@ class AsyncGraph extends GraphBase {
       moduleName,
       postAsyncEventUpdateType,
       hasError,
-      // nestingDepth,
+      nestingDepth,
     } = nodeData;
 
     const { themeMode, screenshotMode, graphDocument } = this.context;
@@ -178,12 +178,12 @@ class AsyncGraph extends GraphBase {
       shortLabel += '🔥';
       fullLabel += '🔥';
     }
-    // if (nestingDepth) {
-    //   const depthLabel = /*html*/`<span class="depth-label">${nestingDepth}</span>`;
-    //   leftLabel = depthLabel;
-    //   // shortLabel = `${depthLabel}${shortLabel}`;
-    //   // fullLabel = `${depthLabel}${fullLabel}`;
-    // }
+    if (nestingDepth) {
+      const depthLabel = /*html*/`<span class="depth-label">${nestingDepth}</span>`;
+      leftLabel = depthLabel;
+      // shortLabel = `${depthLabel}${shortLabel}`;
+      // fullLabel = `${depthLabel}${fullLabel}`;
+    }
     const { asyncNodeId, applicationId, isTerminalNode } = asyncNode;
     const asyncNodeData = {
       'async-node-id': asyncNodeId,
