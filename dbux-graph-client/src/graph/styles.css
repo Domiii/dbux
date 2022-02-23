@@ -323,6 +323,7 @@ div {
 
 .loc-label {
   white-space: nowrap;
+  opacity: 0.6;
 }
 
 .context-loc-label {
