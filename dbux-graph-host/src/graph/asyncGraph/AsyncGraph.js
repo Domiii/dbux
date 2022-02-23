@@ -299,13 +299,15 @@ class AsyncGraph extends GraphBase {
         }
       });
       const values = Array.from(firstTraces.values()).map(t => {
-        const { asyncNodeId } = dp.util.getAsyncNode(t.rootContextId);
-        const label = dp.util.getTraceValueStringShort(t.traceId);
+        const { traceId, rootContextId } = t;
+        const { asyncNodeId } = dp.util.getAsyncNode(rootContextId);
+        const label = dp.util.getTraceValueStringShort(traceId);
 
         return {
           applicationId,
           asyncNodeId,
-          label
+          label,
+          valueTraceId: traceId,
         };
       });
       await this.remote.updateRootValueLabel(values);
@@ -428,6 +430,13 @@ class AsyncGraph extends GraphBase {
     gotoAsyncNode(applicationId, asyncNodeId) {
       const dp = allApplications.getById(applicationId).dataProvider;
       const trace = dp.util.getTraceOfAsyncNode(asyncNodeId);
+      if (trace) {
+        traceSelection.selectTrace(trace);
+      }
+    },
+    gotoValueTrace(applicationId, valueTraceId) {
+      const dp = allApplications.getById(applicationId).dataProvider;
+      const trace = dp.util.getTrace(valueTraceId);
       if (trace) {
         traceSelection.selectTrace(trace);
       }

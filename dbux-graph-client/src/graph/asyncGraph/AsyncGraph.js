@@ -360,9 +360,12 @@ class AsyncGraph extends GraphBase {
   // ###########################################################################
 
   handleClickAsyncNode(asyncNodeData) {
-    const { asyncNode: { applicationId, asyncNodeId } } = asyncNodeData;
+    const { asyncNode: { applicationId, asyncNodeId }, valueTraceId } = asyncNodeData;
 
-    if (applicationId && asyncNodeId) {
+    if (this.context.graphDocument.state.valueMode && valueTraceId) {
+      this.remote.gotoValueTrace(applicationId, valueTraceId);
+    }
+    else if (applicationId && asyncNodeId) {
       this.remote.gotoAsyncNode(applicationId, asyncNodeId);
     }
   }
@@ -471,10 +474,13 @@ class AsyncGraph extends GraphBase {
       this.allNodeData.forEach((node) => {
         // default label if no value
         node.valueLabel = '';
+        node.valueTraceId = null;
       });
       if (values) {
-        values.forEach(({ applicationId, asyncNodeId, label }) => {
-          this.allNodeData.get(applicationId, asyncNodeId).valueLabel = label;
+        values.forEach(({ applicationId, asyncNodeId, label, valueTraceId }) => {
+          const asyncNodeData = this.allNodeData.get(applicationId, asyncNodeId);
+          asyncNodeData.valueLabel = label;
+          asyncNodeData.valueTraceId = valueTraceId;
         });
       }
       this.renderRootValueLabel();
