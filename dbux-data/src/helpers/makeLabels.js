@@ -277,7 +277,7 @@ const ContextCallerLabelByEventUpdateType = {
      * NOTE: CB scheduler trace is usually a BCE or one of its arguments.
      */
     const trace = asyncNode && asyncNode.schedulerTraceId &&
-      dp.util.getCalleeTraceId(asyncNode.schedulerTraceId) ||
+      dp.util.getCalleeTrace(asyncNode.schedulerTraceId) ||
       dp.util.getCallRelatedTraceBCE(asyncNode.schedulerTraceId) ||
       dp.util.getTrace(asyncNode.schedulerTraceId);
     return trace && makeTraceLabel(trace) || '(unknown callback)';
