@@ -146,7 +146,7 @@ class AsyncGraph extends GraphBase {
 
     const backgroundColor = getStaticContextColor(themeMode, realStaticContextid, { bland: !!moduleName, highContractMode });
 
-    let leftLabel = '', rightLabel = '';
+    let leftLabel = '', rightLabel = '', errorLabel = '';
     let shortLabel, fullLabel = displayName;
 
     switch (postAsyncEventUpdateType) {
@@ -175,8 +175,7 @@ class AsyncGraph extends GraphBase {
     const classes = [];
     if (hasError) {
       classes.push('async-error');
-      shortLabel += '🔥';
-      fullLabel += '🔥';
+      errorLabel = '🔥';
     }
     if (nestingDepth) {
       const depthLabel = /*html*/`<span class="depth-label">${nestingDepth}</span>`;
@@ -204,11 +203,13 @@ class AsyncGraph extends GraphBase {
           <div class="left-label">${leftLabel}</div>
           <div class="async-brief full-width">
             ${shortLabel}
+            <span>${errorLabel}</span>
           </div>
           <div class="async-detail full-width flex-column cross-axis-align-center">
             <div class="full-width flex-row align-center">
               <div class="ellipsis-10 async-context-label">${fullLabel}</div>
               <div class="ellipsis-10 value-label"></div>
+              <span>${errorLabel}</span>
             </div>
             <div class="loc-label ellipsis-10">
               <span>${locLabel}</span>
