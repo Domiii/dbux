@@ -146,7 +146,9 @@ class ContextNode extends HostComponentEndpoint {
   }
 
   expand() {
-    this.controllers.getComponent('GraphNode').setMode(GraphNodeMode.ExpandChildren);
+    if (this.controllers.getComponent('GraphNode').state.mode === GraphNodeMode.Collapsed) {
+      this.controllers.getComponent('GraphNode').setMode(GraphNodeMode.ExpandChildren);
+    }
   }
 
   getChildrenCount() {
