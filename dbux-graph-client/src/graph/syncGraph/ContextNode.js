@@ -67,11 +67,13 @@ class ContextNode extends ClientComponentEndpoint {
     this.el.dataset.contextId = contextId;
     this.el.dataset.rootContextId = rootContextId;
 
-    this.el.classList.add('blink-me');
+    if (!(this.parent instanceof ContextNode)) {
+      this.el.classList.add('blink-me');
 
-    setTimeout(() => {
-      this.el?.classList.remove('blink-me');
-    }, 4000);
+      setTimeout(() => {
+        this.el?.classList.remove('blink-me');
+      }, 4000);
+    }
   }
 
   update() {
@@ -96,8 +98,8 @@ class ContextNode extends ClientComponentEndpoint {
     const moduleLabel = moduleName ? `${moduleName} | ` : '';
 
     this.el.id = `application_${applicationId}-context_${contextId}`;
-    this.el.style.background = getStaticContextColor(themeMode, realStaticContextid, { 
-      bland: !!moduleName, 
+    this.el.style.background = getStaticContextColor(themeMode, realStaticContextid, {
+      bland: !!moduleName,
       screenshotMode
     });
     this.els.contextLabel.textContent = contextLabel;
