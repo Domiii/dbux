@@ -118,7 +118,7 @@ class FunctionStats extends StatsBase {
     const newUntracedRefIds = difference(allUntracedRefIds, oldUntracedRefIds);
     const newUntracedNames = newUntracedRefIds
       .map(refId => allUntracedFunctionCallTracesByRefId[refId][0])       // first BCE of refId
-      .map(trace => util.getTrace(util.getCalleeTraceId(trace.traceId)))  // -> callee
+      .map(trace => util.getCalleeTrace(trace.traceId))                   // -> callee
       .map(makeTraceLabel);                                               // -> label
 
     newUntracedNames.length && 

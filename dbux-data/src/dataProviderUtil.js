@@ -1296,6 +1296,11 @@ export default {
     return dp.collections.traces.getById(callId)?.data?.calleeTid;
   },
 
+  /** @param {DataProvider} dp */
+  getCalleeTrace(dp, callId) {
+    return dp.util.getTrace(dp.util.getCalleeTraceId(callId));
+  },
+
   // getTracesOfCalledContext(dp, callId) {
   //   return dp.indexes.traces.byCallerTrace.get(callId) || EmptyArray;
   // },
