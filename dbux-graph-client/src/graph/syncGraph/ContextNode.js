@@ -28,6 +28,7 @@ class ContextNode extends ClientComponentEndpoint {
                 <div data-el="title" class="flex-row cross-axis-align-center">
                   <div data-el="contextLabel" class="ellipsis-20 dbux-link"></div>
                 </div>
+                <span data-el="errorLabel"></span>
                 <!--div data-el="selectedTraceIcon" class="darkred">
                   &nbsp;☩
                 </div-->
@@ -92,6 +93,7 @@ class ContextNode extends ClientComponentEndpoint {
       statsEnabled,
       moduleName,
       visible,
+      hasError,
     } = this.state;
 
     const { themeMode, screenshotMode } = this.context;
@@ -106,6 +108,7 @@ class ContextNode extends ClientComponentEndpoint {
     this.els.locLabel.textContent = contextLocLabel && ` @ ${moduleLabel}${contextLocLabel}` || '';
     this.els.callLabel.textContent = callerTracelabel || '';
     this.els.valueLabel.textContent = valueLabel;
+    this.els.errorLabel.textContent = hasError ? '🔥' : '';
 
     if (statsEnabled) {
       const {
