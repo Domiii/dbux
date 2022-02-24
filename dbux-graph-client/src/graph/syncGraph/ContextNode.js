@@ -28,6 +28,7 @@ class ContextNode extends ClientComponentEndpoint {
                 <div data-el="title" class="flex-row cross-axis-align-center">
                   <div data-el="contextLabel" class="ellipsis-20 dbux-link"></div>
                 </div>
+                <span data-el="errorLabel"></span>
                 <!--div data-el="selectedTraceIcon" class="darkred">
                   &nbsp;☩
                 </div-->
@@ -66,6 +67,14 @@ class ContextNode extends ClientComponentEndpoint {
     this.el.dataset.applicationId = applicationId;
     this.el.dataset.contextId = contextId;
     this.el.dataset.rootContextId = rootContextId;
+
+    if (!(this.parent instanceof ContextNode)) {
+      this.el.classList.add('blink-me');
+
+      setTimeout(() => {
+        this.el?.classList.remove('blink-me');
+      }, 4000);
+    }
   }
 
   update() {
@@ -84,20 +93,22 @@ class ContextNode extends ClientComponentEndpoint {
       statsEnabled,
       moduleName,
       visible,
+      hasError,
     } = this.state;
 
     const { themeMode, screenshotMode } = this.context;
     const moduleLabel = moduleName ? `${moduleName} | ` : '';
 
     this.el.id = `application_${applicationId}-context_${contextId}`;
-    this.el.style.background = getStaticContextColor(themeMode, realStaticContextid, { 
-      bland: !!moduleName, 
+    this.el.style.background = getStaticContextColor(themeMode, realStaticContextid, {
+      bland: !!moduleName,
       screenshotMode
     });
     this.els.contextLabel.textContent = contextLabel;
     this.els.locLabel.textContent = contextLocLabel && ` @ ${moduleLabel}${contextLocLabel}` || '';
     this.els.callLabel.textContent = callerTracelabel || '';
     this.els.valueLabel.textContent = valueLabel;
+    this.els.errorLabel.textContent = hasError ? '🔥' : '';
 
     if (statsEnabled) {
       const {

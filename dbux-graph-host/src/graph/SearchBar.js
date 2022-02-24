@@ -46,7 +46,7 @@ class SearchBar extends HostComponentEndpoint {
 
   search = (searchTerm) => {
     Verbose && this.logger.log(`.search() with searchTerm=${searchTerm}`);
-    this.searchController.search(searchTerm);
+    this.searchController.search(searchTerm, true);
   }
 
   handleSearchModeChanged = (mode) => {
