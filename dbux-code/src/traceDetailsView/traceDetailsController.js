@@ -9,7 +9,7 @@ import { emitSelectTraceAction } from '../userEvents';
 import { getRelatedAppIds } from '../codeDeco/editedWarning';
 import { showWarningMessage } from '../codeUtil/codeModals';
 import TraceDetailsNodeProvider from './TraceDetailsNodeProvider';
-import { getOrCreateTracesAtCursor } from './TracesAtCursor';
+import { getOrCreateTracesAtCursor } from '../codeUtil/TracesAtCursor';
 import { ExecutionsTDNodeContextValue } from './nodes/ExecutionsTDNodes';
 import { NavigationNodeContextValue } from './nodes/NavigationNode';
 

@@ -407,7 +407,10 @@ export default {
     return parentTrace || null;
   },
 
-  /** @param {DataProvider} dp */
+  /**
+   * @deprecated Runs are no longer. Use roots (CGRs) instead.
+   *  @param {DataProvider} dp 
+   */
   getFirstTraceOfRun(dp, runId) {
     const traces = dp.indexes.traces.byRun.get(runId);
     if (!traces?.length) {
@@ -1712,6 +1715,10 @@ export default {
     return dp.util.getFilePathFromProgramId(staticContext.programId);
   },
 
+  /** 
+   * @param {DataProvider} dp
+   * @return {StaticTrace}
+   */
   getStaticTrace(dp, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     const { staticTraceId } = trace;
@@ -1764,6 +1771,12 @@ export default {
   getTraceFileName(dp, traceId) {
     const programId = dp.util.getTraceProgramId(traceId);
     return programId && dp.collections.staticProgramContexts.getById(programId).fileName || null;
+  },
+
+  /** @param {DataProvider} dp */
+  getTraceLoc(dp, traceId) {
+    const staticTrace = dp.util.getStaticTrace(traceId);
+    return staticTrace.loc;
   },
 
   // ###########################################################################
@@ -2089,15 +2102,6 @@ export default {
   //   const trace = dp.util.getLastTraceInRealContext(realContextId);
   //   return dp.util.isErrorTrace(trace);
   // },
-
-  // ###########################################################################
-  // loc (locations)
-  // ###########################################################################
-
-  getTraceLoc(dp, traceId) {
-    const { loc } = dp.util.getStaticTrace(traceId);
-    return loc;
-  },
 
   // ###########################################################################
   // code chunks

@@ -32,13 +32,13 @@ export function compareTraces(t1, t2) {
   /**
    * Sort rules:
    *  1. prefer traces of minimum `contextId` (or, if `Resume` or `Await`, `parentContextId`) distance
-   *  2. prefer traces of minimum `runId` distance
+   *  2. prefer traces of minimum `rootContextId` distance
    *  3. prefer traces of minimum `traceId` distance
    */
-  // TODO: In 2., sort by 'firstTracesInOrder' instead of 'runId'
+  // TODO: In 2., sort by 'firstTracesInOrder' instead of 'rootContextId'
   // TODO: Consider the application difference
   return compareByContextId(t1, t2) ||
-    compareByRunId(t1, t2) ||
+    compareByRootId(t1, t2) ||
     compareByTraceId(t1, t2);
 }
 
@@ -68,10 +68,10 @@ function compareByContextId(t1, t2) {
  * @param {Trace} t1 
  * @param {Trace} t2 
  */
-function compareByRunId(t1, t2) {
+function compareByRootId(t1, t2) {
   const { selected } = traceSelection;
-  const t1Distance = Math.abs(t1.runId - selected.runId);
-  const t2Distance = Math.abs(t2.runId - selected.runId);
+  const t1Distance = Math.abs(t1.rootContextId - selected.rootContextId);
+  const t2Distance = Math.abs(t2.rootContextId - selected.rootContextId);
   if (t1Distance < t2Distance) return -1;
   if (t1Distance > t2Distance) return 1;
   return 0;

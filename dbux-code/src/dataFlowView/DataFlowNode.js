@@ -14,9 +14,10 @@ export default class DataFlowNode extends DataNodeNode {
   }
 
   init() {
+    super.init();
     this.contextValue = 'dbuxDataFlowView.node.data';
     if (Verbose) {
-      this.description = `traceId=${this.trace.traceId}, nodeId=${this.dataNode.nodeId}`;
+      this.description += ` (traceId=${this.trace.traceId}, nodeId=${this.dataNode.nodeId})`;
     }
   }
 

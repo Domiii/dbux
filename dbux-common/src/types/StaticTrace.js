@@ -1,6 +1,6 @@
 import StaticDataNode from './StaticDataNode';
 
-/** @typedef {import('../Loc').default} Loc */
+/** @typedef {import('./Loc').default} Loc */
 
 
 export default class StaticTrace {

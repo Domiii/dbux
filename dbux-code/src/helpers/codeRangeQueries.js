@@ -1,7 +1,10 @@
+import maxBy from 'lodash/maxBy';
 import StaticContext from '@dbux/common/src/types/StaticContext';
 import Trace from '@dbux/common/src/types/Trace';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
-import { babelLocToCodeRange } from './codeLocHelpers';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import allApplications from '@dbux/data/src/applications/allApplications';
+import { babelLocToCodePosition, babelLocToCodeRange } from './codeLocHelpers';
 
 /** @typedef {import('@dbux/data/src/applications/Application').default} Application */
 
@@ -21,8 +24,7 @@ import { babelLocToCodeRange } from './codeLocHelpers';
 // }
 
 /**
- * If not interruptable, returns array with static context of function.
- * If interruptable returns all Resume contexts.
+ * TODO: move to `dbux-data`, but need to implement `contains` first
  * @return {StaticContext}
  */
 export function getStaticContextAt(application, programId, pos) {
@@ -96,3 +98,38 @@ export function getTracesAt(application, programId, pos) {
     return range.contains(pos);
   });
 }
+
+/**
+ * @param {Trace} trace
+ * @return {Trace} 
+ */
+export function getOuterMostTraceOfSameLine(trace) {
+  const { traceId, applicationId } = trace;
+  const application = allApplications.getApplication(applicationId);
+  const dp = application.dataProvider;
+  const programId = dp.util.getTraceProgramId(traceId);
+  const { start, end } = dp.util.getTraceLoc(traceId);
+  const startCodePos = babelLocToCodePosition(start);
+  // const endCodePos = babelLocToCodePosition(end);
+
+  if (start.line !== end.line) {
+    // trace itself is multiline -> just return that
+    return trace;
+  }
+
+  let traces = getTracesAt(application, programId, startCodePos) || EmptyArray;
+
+
+  return maxBy(traces, t => {
+    const l = dp.util.getTraceLoc(t.traceId);
+    // 1. must not span over multiple lines
+    // 2. must include `end`
+    if (l.start.line !== l.end.line || l.end.column < end.column) {
+      return -1;
+    }
+
+    // 3. maximize loc range
+    return l.end.column - l.start.column;
+  }) || trace;
+}
+
