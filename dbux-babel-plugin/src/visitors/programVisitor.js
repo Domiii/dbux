@@ -5,11 +5,13 @@ import { clearSourceHelperCache } from '../helpers/sourceHelpers';
 import injectDbuxState from '../dbuxState';
 import { buildVisitors as traceVisitors } from '../parseLib/visitors';
 import Program from '../parse/Program';
+import shouldIgnore from '../external/shouldIgnore';
 import nameVisitors, { clearNames } from './nameVisitors';
+
+/** @typedef {import('../external/moduleFilter').ModuleFilterOptions} ModuleFilterOptions */
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError, trace: logTrace } = newLogger('programVisitor');
-
 
 // ###########################################################################
 // visitor
@@ -21,8 +23,14 @@ const { log, debug, warn, error: logError, trace: logTrace } = newLogger('progra
 function enter(path, state) {
   // const cfg = state.opts;
   if (state.onEnter) return; // make sure to not visit Program node more than once
+
+  const { opts, filename } = state;
+  if (!shouldInstrument(opts, filename)) {
+    return;
+  }
+
   // console.warn('P', path.toString());
-  // logTrace('[Program]', state.filename);
+  warn('[Program]', state.filename, opts.ignore);
   // console.warn(state.file.code.substring(0, 100));
 
   // inject data + methods that we are going to use for instrumentation
@@ -104,4 +112,42 @@ export default function programVisitor(buildCfg) {
     enter,
     // exit
   };
+}
+
+/** ########################################
+ * util
+ *  ######################################*/
+
+/**
+ * Determine whether a file should be included depending on `ignore` option.
+ * @param {{ignore?: function|[function], moduleFilter?: ModuleFilterOptions}} config 
+ * @param {string} path 
+ */
+function shouldInstrument(config, path) {
+  let { ignore, moduleFilter } = config;
+
+  if (Array.isArray(ignore)) {
+    ignore = [...ignore];
+  }
+  else if (ignore) {
+    ignore = [ignore];
+  }
+  else {
+    ignore = [];
+  }
+
+  if (moduleFilter) {
+    if (!config._ignore) {
+      config._ignore = shouldIgnore(moduleFilter);
+    }
+    ignore.push(config._ignore);
+  }
+
+  for (const ignoreFunc of ignore) {
+    if (ignoreFunc(path)) {
+      return false;
+    }
+  }
+
+  return true;
 }

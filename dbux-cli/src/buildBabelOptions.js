@@ -85,6 +85,7 @@ export default function buildBabelOptions(options) {
   verbose > 1 && debugLog(`[@dbux/babel-plugin]`,
     requireDynamic.resolve/* ._resolveFilename */('@dbux/babel-plugin/package.json'));
 
+  // Build ignore config using whitelist/blacklist options
   const ignore = [
     shouldIgnore(options)
   ];
@@ -105,7 +106,6 @@ export default function buildBabelOptions(options) {
     retainLines: true,
     // see https://babeljs.io/docs/en/options#parseropts
     parserOpts: { allowReturnOutsideFunction: true },
-    ignore
   };
 
   if ('cache' in options) {
@@ -121,6 +121,7 @@ export default function buildBabelOptions(options) {
     // default plugin options
     babelPluginOptions.verbose = babelPluginOptions.verbose || verbose;
     babelPluginOptions.runtime = babelPluginOptions.runtime || runtime;
+    babelPluginOptions.ignore = ignore;
 
     babelOptions.plugins = babelOptions.plugins || [];
     babelOptions.plugins.push([dbuxBabelPlugin, babelPluginOptions]);
