@@ -5,8 +5,8 @@ import { parsePackageName } from '@dbux/common-node/src/util/moduleUtil';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 // import { requireDynamic } from '@dbux/common-node/src/util/requireUtil';
 
-const Verbose = 1;
-// const Verbose = 2;
+// const Verbose = 1;
+const Verbose = 2;
 
 function debugLog(...args) {
   let msg = `[@dbux/babel-plugin][moduleFilter] ${args.join(' ')}`;
@@ -95,17 +95,16 @@ export default function moduleFilter(options, includeDefault) {
       return undefined;
     }
 
-    // 1. internal stuff
-    if (modulePath.match(/((dbux[-]runtime)|(@dbux[/\\]runtime))[/\\]/)) {
-      // NOTE: it could cause problems, if dbux tries to instrument itself.
-      // future-work: allow including these paths so we can debug Dbux with Dbux.
-      return !includeDefault;
-    }
 
-    // 2. some stuff we want to ignore by default
-    // TODO: make `dist`, `.mjs` and @babel path settings configurable
-    // TODO: *.mjs files should be fine now -> re-test (#577)
-    const unwanted = modulePath.match(/([/\\]dist[/\\])|(\.mjs$)|([/\\]@babel[/\\])|([/\\]babel[-]plugin.*[/\\])/);
+    const unwanted =
+      // 1. internal stuff
+      // NOTE: this could cause problems, if dbux or babel tries to instrument itself.
+      // future-work: allow including these paths so we can debug Dbux with Dbux.
+      modulePath.match(/((dbux[-]runtime)|(@dbux[/\\]runtime))[/\\]/) ||
+
+      // 2. some stuff we want to ignore by default
+      // TODO: make `.mjs` and @babel path settings configurable
+      modulePath.match(/(\.mjs$)|([/\\]@babel[/\\])|([/\\]babel[-]plugin.*[/\\])/);
     if (unwanted) {
       reportRegister(modulePath, false, 'unwanted');
       return !includeDefault;

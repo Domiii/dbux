@@ -13,6 +13,7 @@ module.exports = [
   loadBabel('@babel/plugin-syntax-dynamic-import'),
   loadBabel('@babel/plugin-transform-runtime'),
   loadBabel('@babel/plugin-syntax-top-level-await')
+  // '@babel/plugin-proposal-class-properties'
 
   // NOTE: cannot convert mjs with @babel/register: https://github.com/babel/babel/issues/6737
   // '@babel/plugin-transform-modules-commonjs'

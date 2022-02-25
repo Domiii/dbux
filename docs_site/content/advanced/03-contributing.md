@@ -103,6 +103,21 @@ We use `docusaurus` for documentation.
 See https://github.com/Domiii/dbux/issues/632 and https://github.com/Domiii/dbux/labels/documentation.
 
 
+### Local Development Build
+
+When trying to use a local Dbux dev build, we recommend using `yalc`:
+
+* In your local dbux folder: run `yarn yalc`
+* Might have to use `npm` in target project (it seems to bug out with `yarn`)
+* `yalc add --dev @dbux/babel-plugin @dbux/runtime @dbux/cli @dbux/common @dbux/common-node @dbux/babel-register-fork`
+* Sometimes, the build cache needs to be flushed
+  * E.g. when using `webpack` and `babel`: `rm -rf ./node_modules/.cache/babel-loader`
+
+
+See https://github.com/Domiii/dbux/issues/661.
+
+
+
 ## Unsorted Notes
 
 ### VSCode extension development

@@ -1,26 +1,32 @@
 import * as t from '@babel/types';
 import { newLogger } from '@dbux/common/src/log/logger';
+import NestedError from '@dbux/common/src/NestedError';
 import { buildVarDecl, buildVarAssignments } from '../instrumentation/builders/common';
+import { getBindingIdentifierPaths } from './bindingsUtil';
+import { pathToString } from './pathHelpers';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('topLevelHelpers');
 
-function extractExportNamedVariableDeclaration(path, node, exportIds, newIds, bodyNodes, exportNodes) {
+function extractExportNamedVariableDeclaration(programPath, path, exportIds, newIds, bodyNodes, exportNodes) {
   // variable declaration
-  const decls = node.declaration.declarations;
-  const nodeExportIds = decls.map(n => n.id);
+  const decls = path.get('declaration.declarations');
+  const declIds = decls.flatMap(p => getBindingIdentifierPaths(p));
+  // console.debug('exports', declIds.map((p, i) => `(${i + 1}) ${pathToString(p)}`).join(', '));
+  const nodeExportIds = declIds.map(p => p.node);
   exportIds.push(...nodeExportIds);
-  const newNodeIds = nodeExportIds.map(id => path.scope.generateUidIdentifier(id.name));
+  const newNodeIds = nodeExportIds.map(id => programPath.scope.generateUidIdentifier(id.name));
   newIds.push(...newNodeIds);
   exportNodes.push(
     t.exportNamedDeclaration(null,
       nodeExportIds.map((exportId, i) => t.exportSpecifier(newNodeIds[i], exportId))
     )
   );
-  bodyNodes.push(node.declaration);   // keep declaration in body
+  bodyNodes.push(path.node.declaration);   // keep declaration in body
 }
 
-function extractExportNamedDeclaration(path, node, exportIds, newIds, bodyNodes, exportNodes) {
+function extractExportNamedDeclaration(programPath, path, exportIds, newIds, bodyNodes, exportNodes) {
+  const { node } = path;
   if (node.source) {
     // e.g. `export ... from ...`
     exportNodes.push(node);
@@ -30,11 +36,11 @@ function extractExportNamedDeclaration(path, node, exportIds, newIds, bodyNodes,
     const { id } = node.declaration;
     if (t.isVariableDeclaration(node.declaration)) {
       // variable declaration
-      extractExportNamedVariableDeclaration(path, node, exportIds, newIds, bodyNodes, exportNodes);
+      extractExportNamedVariableDeclaration(programPath, path, exportIds, newIds, bodyNodes, exportNodes);
     }
     else if (id) {
       // non-variable declaration
-      const newId = path.scope.generateUidIdentifier(id.name);
+      const newId = programPath.scope.generateUidIdentifier(id.name);
       exportIds.push(id);
       newIds.push(newId);
       exportNodes.push(
@@ -54,7 +60,7 @@ function extractExportNamedDeclaration(path, node, exportIds, newIds, bodyNodes,
     // export new var as exported specifier
     const nodeExportIds = node.specifiers.map(spec => spec.local);
     exportIds.push(...nodeExportIds);
-    const newNodeIds = nodeExportIds.map(id => path.scope.generateUidIdentifier(id.name));
+    const newNodeIds = nodeExportIds.map(id => programPath.scope.generateUidIdentifier(id.name));
     newIds.push(...newNodeIds);
     exportNodes.push(
       t.exportNamedDeclaration(null,
@@ -67,15 +73,16 @@ function extractExportNamedDeclaration(path, node, exportIds, newIds, bodyNodes,
   }
 }
 
-function extractExportDefaultDeclaration(path, node, exportIds, newIds, bodyNodes, exportNodes) {
+function extractExportDefaultDeclaration(programPath, path, exportIds, newIds, bodyNodes, exportNodes) {
+  const { node } = path;
   if (!node.declaration) {
-    logError('cannot understand export default node', node.toString());
+    logError('cannot understand export default node:', pathToString(path));
     exportNodes.push(node);
   }
   else if (node.declaration.id) {
     // e.g. `export default function f() {}`
     const { id } = node.declaration;
-    const newId = path.scope.generateUidIdentifier(id.name);
+    const newId = programPath.scope.generateUidIdentifier(id.name);
     exportIds.push(id);
     newIds.push(newId);
     exportNodes.push(t.exportDefaultDeclaration(newId));
@@ -84,14 +91,14 @@ function extractExportDefaultDeclaration(path, node, exportIds, newIds, bodyNode
   else if (t.isIdentifier(node.declaration)) {
     // e.g. `export default x`
     const id = node.declaration;
-    const newId = path.scope.generateUidIdentifier(id.name);
+    const newId = programPath.scope.generateUidIdentifier(id.name);
     exportIds.push(id);
     newIds.push(newId);
     exportNodes.push(t.exportDefaultDeclaration(newId));
   }
   else {
     // e.g. `export default f()`
-    const newId = path.scope.generateUidIdentifier('exp');
+    const newId = programPath.scope.generateUidIdentifier('exp');
     exportNodes.push(t.exportDefaultDeclaration(newId));
     bodyNodes.push(               // assign temp variable in body
       t.variableDeclaration('var', [
@@ -106,19 +113,19 @@ function extractExportDefaultDeclaration(path, node, exportIds, newIds, bodyNode
   }
 }
 
-function extractExportDeclaration(path, node, exportIds, newIds, bodyNodes, exportNodes) {
+function extractExportDeclaration(programPath, path, exportIds, newIds, bodyNodes, exportNodes) {
   // console.warn(`[export] ${path} ${t.isExportNamedDeclaration(node)} ${t.isExportDefaultDeclaration(node)}`);
-  if (t.isExportNamedDeclaration(node)) {
-    extractExportNamedDeclaration(path, node, exportIds, newIds, bodyNodes, exportNodes);
+  if (path.isExportNamedDeclaration()) {
+    extractExportNamedDeclaration(programPath, path, exportIds, newIds, bodyNodes, exportNodes);
   }
-  else if (t.isExportDefaultDeclaration(node)) {
-    extractExportDefaultDeclaration(path, node, exportIds, newIds, bodyNodes, exportNodes);
+  else if (path.isExportDefaultDeclaration()) {
+    extractExportDefaultDeclaration(programPath, path, exportIds, newIds, bodyNodes, exportNodes);
   }
-  else if (!node.declaration) {
-    exportNodes.push(node);
+  else if (!path.node.declaration) {
+    exportNodes.push(path.node);
   }
   else {
-    logError('Cannot understand export node (not named, not default, but has declaration)', node.toString());
+    logError('Cannot understand export node (not named, not default, but has declaration)', pathToString(path));
   }
 }
 
@@ -148,7 +155,12 @@ export function extractTopLevelDeclarations(programPath) {
       importNodes.push(node);
     }
     else if (t.isExportDeclaration(node)) {
-      extractExportDeclaration(programPath, node, exportIds, newIds, bodyNodes, exportNodes);
+      try {
+        extractExportDeclaration(programPath, childPath, exportIds, newIds, bodyNodes, exportNodes);
+      }
+      catch (err) {
+        throw new NestedError(`"extractTopLevelDeclarations" failed for ${pathToString(childPath)}`, err);
+      }
     }
     else {
       bodyNodes.push(node);

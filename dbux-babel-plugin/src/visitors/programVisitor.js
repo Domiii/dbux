@@ -22,16 +22,15 @@ const { log, debug, warn, error: logError, trace: logTrace } = newLogger('progra
  */
 function enter(path, state) {
   const { opts: buildConfig, filename } = state;
-  console.debug('[Program]', state.filename, !!buildConfig.ignore);
-
+  
   if (state.onEnter) return; // make sure to not visit Program node more than once
-
+  
   if (!shouldInstrument(buildConfig, filename)) {
     return;
   }
 
-  // console.warn('P', path.toString());
-  // console.warn(state.file.code.substring(0, 100));
+  // NOTE: `warn(...)` is muted by CRA, for some reason
+  // console.debug('[Program]', state.filename, !!buildConfig.ignore);
 
   // inject data + methods that we are going to use for instrumentation
   injectDbuxState(path, state);

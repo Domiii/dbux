@@ -7,7 +7,7 @@ set -e # cancel on error
 
 # fname="__samplesInput__/async/promisify5-no-root"
 # fname="__samplesInput__/defineProperty3-setter"
-fname="__samplesInput__/async/Promise.all-fail1"
+fname="__samplesInput__/export1"
 
 
 
@@ -18,7 +18,7 @@ rootDir=$(node -e "console.log(require('path').resolve('$thisDirRelative'))") # 
 nodeArgsAlways="--stack-trace-limit=100"
 nodeArgs=""
 
-dbuxArgs="--esnext"
+# dbuxArgs="--esnext"
 # dbuxArgs="--pw=.*"
 # dbuxArgs=""
 dbuxArgsI=""
