@@ -105,6 +105,7 @@
     "force-uninstall": "yarn run build:clean && rm -rf ./node_modules && rm -f ./package-lock.json && rm -f yarn.lock && bash scripts/dbux-run-all.sh \"rm -rf ./node_modules && rm -f ./package-lock.json && rm -f yarn.lock\"",
     "dbux-lerna-fix": "lerna exec -- node ../scripts/lerna-fix.js",
     "dbux-all": "bash scripts/dbux-run-all.sh",
+    "yalc": "yalc push dbux-babel-plugin && yalc push dbux-runtime && yalc push dbux-cli && yalc push dbux-common && yalc push dbux-common-node && yalc push babel-register-fork",
 
     "docs": "cd ./docs_site && yarn start",
     "docs:build": "cd ./docs_site && yarn build",

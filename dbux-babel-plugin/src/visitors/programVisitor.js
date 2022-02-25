@@ -21,16 +21,16 @@ const { log, debug, warn, error: logError, trace: logTrace } = newLogger('progra
  * 
  */
 function enter(path, state) {
-  // const cfg = state.opts;
+  const { opts: buildConfig, filename } = state;
+  console.debug('[Program]', state.filename, !!buildConfig.ignore);
+
   if (state.onEnter) return; // make sure to not visit Program node more than once
 
-  const { opts, filename } = state;
-  if (!shouldInstrument(opts, filename)) {
+  if (!shouldInstrument(buildConfig, filename)) {
     return;
   }
 
   // console.warn('P', path.toString());
-  warn('[Program]', state.filename, opts.ignore);
   // console.warn(state.file.code.substring(0, 100));
 
   // inject data + methods that we are going to use for instrumentation

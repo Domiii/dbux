@@ -6,7 +6,6 @@
   "module": "dist/index.js",
   "main": "dist/index.js",
   "bin": {
-    "dbux-instrument-file": "./bin/dbux-instrument-file.js"
   },
   "scripts": {
     "clean": "rm -rf dist && rm -rf dist.samples",
