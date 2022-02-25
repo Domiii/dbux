@@ -145,8 +145,12 @@ const { getLoaders, loaderByName } = require('@craco/craco');
 const dbuxOptions = {
   moduleFilter: {
     packageWhitelist: '.*',
-    // NOTE: these libraries hook themselves into webpack and run before dbux is initialized, so they must not be instrumented
-    packageBlacklist: 'react-dev-utils,react-refresh,react-error-overlay,process',
+    /**
+     * NOTE: these libraries might run before dbux is initialized, so they must be blacklisted.
+     * 1. Some hook themsleves into webpack.
+     * 2. The later ones are polyfills (probably brought in by CRA) and their libraries; loaded when first requiring things, and before `@dbux/runtime`.
+     */
+    packageBlacklist: 'react-dev-utils,react-refresh,react-error-overlay,process,buffer,isarray,ieee754,base64-js',
     fileWhitelist: '.*',
     // we generally do not want to mess with production or webpack code
     fileBlacklist: '.*production.*,.*[wW]ebpack.*'
