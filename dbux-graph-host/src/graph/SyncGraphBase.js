@@ -10,6 +10,90 @@ import ContextNode from './syncGraph/ContextNode';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('SyncGraphBase');
 
+/** ###########################################################################
+ * {@link ContextNodegraph}
+ * ##########################################################################*/
+
+class ContextHoleNode {
+  id;
+  contexts = [];
+}
+
+/**
+ * Provides a graph-with-holes data structure.
+ * Holes span over entire connected subgraphs for which each node holds the given filterPrefix.
+ */
+class ContextNodeGraph {
+  /**
+   * @type {Map<number, ContextNode>}
+   */
+  contextNodesByContextId = new Map();
+  holeNodesByContextId = new Map();
+  filterPrefix;
+
+  _lastHoldeNodeId = 0;
+  holeNodesById = [];
+
+  constructor(filterPrefix) {
+    this.filterPrefix = filterPrefix || (() => true);
+  }
+
+  has(contextId) {
+
+  }
+
+  add(contextId, contextNode) {
+
+  }
+
+  delete(contextId) {
+
+  }
+
+  /**
+   * @param {number} contextId
+   * @return {ContextNode | HoleNode} 
+   */
+  getNode(contextId) {
+
+  }
+
+  /**
+   * This function ONLY makes sure that (i) given node, (ii) its children and (iii) all its ancestors are built.
+   * NOTE: Subgraph expansion is done recursively in {@link GraphNode#setMode}.
+   * 
+   * @param {ExecutionContext} context 
+   * @returns 
+   */
+  buildContextNode(context) {
+    const { applicationId } = context;
+    const dp = allApplications.getById(applicationId).dataProvider;
+    let currentContext = context;
+    let currentNode;
+    const ancestors = [];
+
+    while (!(currentNode = this.contextNodesByContext.get(currentContext))) {
+      if (!currentContext) {
+        // root
+        return null;
+      }
+      ancestors.push(currentContext);
+      currentContext = dp.collections.executionContexts.getById(currentContext.parentContextId);
+    }
+
+    for (const childContext of ancestors.reverse()) {
+      this.buildContextNodeChildren(currentNode);
+      currentNode = this.contextNodesByContext.get(childContext);
+    }
+
+    return currentNode;
+  }
+}
+
+/** ###########################################################################
+ * {@link SyncGraphBase}
+ * ##########################################################################*/
+
 class SyncGraphBase extends GraphBase {
   /**
    * @type {Map<ExecutionContext, ContextNode>}
