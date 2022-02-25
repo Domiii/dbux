@@ -51,9 +51,10 @@ export default class GraphNode extends HostComponentEndpoint {
    * NOTE: setMode might takes a long time to expand ContextNodes. If setMode is called by user, we confirm before expand it.
    */
   async setModeUser(mode) {
+    const nThreshold = 1e4;
     const newChildrenCount = getNewChildrenCount[mode](this.owner);
-    const confirmMessage = `There are ${newChildrenCount} ContextNodes to expand and it might take a while. Are you sure?`;
-    if (newChildrenCount > 10000 && !await this.componentManager.externals.confirm(confirmMessage, true)) {
+    const confirmMessage = `This would expand ${newChildrenCount} ContextNodes. Are you sure?`;
+    if (newChildrenCount > nThreshold && !await this.componentManager.externals.confirm(confirmMessage, true)) {
       return;
     }
     this.setMode(mode);

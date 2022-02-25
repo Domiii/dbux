@@ -131,6 +131,11 @@ class SyncGraphBase extends GraphBase {
     // this.contextNodesByContext.delete(context);
   }
 
+  /**
+   * This function makes sure that the given node's children are built.
+   * 
+   * @param {ContextNode} contextNode 
+   */
   buildContextNodeChildren(contextNode) {
     if (contextNode.childrenBuilt) {
       return contextNode.children.getComponents('ContextNode');
@@ -143,6 +148,9 @@ class SyncGraphBase extends GraphBase {
   }
 
   /**
+   * This function ONLY makes sure that (i) given node, (ii) its children and (iii) all its ancestors are built.
+   * NOTE: Subgraph expansion is done recursively in {@link GraphNode#setMode}.
+   * 
    * @param {ExecutionContext} context 
    * @returns 
    */
