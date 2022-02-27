@@ -5,6 +5,7 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import GraphBase from './GraphBase';
 import ContextNode from './syncGraph/ContextNode';
+import HoleNode from './syncGraph/HoleNode';
 
 /** @typedef { import("@dbux/data/src/RuntimeDataProvider").default } RuntimeDataProvider */
 /** @typedef {import('@dbux/common/src/types/ExecutionContext').default} ExecutionContext */
@@ -24,9 +25,22 @@ function getDp(applicationIdHolder) {
  * {@link ContextNodegraph}
  * ##########################################################################*/
 
-class ContextHoleNode {
+/**
+ * NOTE: gets copied to client (and will not take class/prototype to client).
+ */
+class ContextHole {
   id;
-  contexts = [];
+  contexts;
+  /**
+   * @type {ExecutionContext[]} All child contexts following the hole. Produced by `floodHole`.
+   */
+  frontier;
+
+  constructor(id, contexts, frontier) {
+    this.id = id;
+    this.contexts = contexts;
+    this.frontier = frontier;
+  }
 }
 
 /**
@@ -50,11 +64,11 @@ class CallGraphNodes {
    */
   contextNodesByContext;
   /**
-   * @type {Map<ExecutionContext, ContextHoleNode>}
+   * @type {Map<ExecutionContext, HoleNode>}
    */
   holeNodesByContext;
 
-  _lastHoldeNodeId = 0;
+  _lastHoldeId = 0;
   holeNodesById = [];
 
   constructor(graph, predicate) {
@@ -80,61 +94,98 @@ class CallGraphNodes {
     return this.contextNodesByContext.values();
   }
 
+  isHole(context) {
+    return this.predicate(context);
+  }
+
   /** ###########################################################################
-   * add, build
+   * {@link #floodHole}
    * ##########################################################################*/
 
   /**
-   * 
    * @param {ExecutionContext[]} contexts 
+   * @param {ExecutionContext[]} frontier The "children" (neighboring nodes in ↓ direction) of the entire hole
    * @param {ExecutionContext} context 
    * @param {number} siblingIndex 
    */
-  floodHole(contexts, context, parentContext = undefined, siblingIndex = undefined) {
+  floodHole(contexts, frontier, context, goUp = true, goLeft = true, goRight = true, goDown = true, parentContext = undefined, siblingIndex = undefined) {
     const dp = getDp(context);
-    const goBackUp = !siblingIndex;
+
     parentContext = parentContext === undefined ?
       (context.parentContextId && dp.collections.executionContexts.getById(context.parentContextId)) :
-      parentContext;
-    const contextsOfParent = TODO; // TODO: consider getChildrenOfContextInRoot vs. getChildrenOfContext
-    siblingIndex = siblingIndex || (parentContext && contextsOfParent.indexOf(context)) || null;
+      null;
 
     // 1. go up (parent)
-    if (goBackUp && parentContext) {
-      if (this.predicate(parentContext)) {
-        // add to hole
+    if (goUp && parentContext) {
+      if (this.isHole(parentContext)) {
+        // add to hole: ←↑→
         contexts.push(parentContext);
-        this.floodHole(contexts, parentContext);
+        this.floodHole(contexts, frontier, parentContext, true, true, true, false);
       }
     }
 
-    if (siblingIndex !== null) {
-      // 2. go left (previous siblings)
-      for (let i = siblingIndex - 1; --i; i >= 0) {
-        const sibling = contextsOfParent[i];
-        if (!this.predicate(sibling)) {
-          break;
-        }
-        // add to hole
-        contexts.push(sibling);
-        this.floodHole(contexts, sibling, parentContext, i);
-      }
+    if (goLeft || goRight) {
+      const contextsOfParent = parentContext &&
+        dp.util.getChildrenOfContextInRoot(parentContext.contextId) ||
+        this.graph.getAllRootContexts();  // at root level -> siblings are other roots
 
-      // 3. go right (following siblings)
-      for (let i = siblingIndex + 1; ++i; i < contextsOfParent.length) {
-        const sibling = contextsOfParent[i];
-        if (!this.predicate(sibling)) {
-          break;
+      siblingIndex = siblingIndex !== undefined ? siblingIndex : contextsOfParent.indexOf(context);
+      if (siblingIndex === -1) {
+        this.graph.logger.error(`Could not look up siblingIndex in Graph Construction for context:\n  > "${dp.util.makeContextInfo(context)}"`);
+      }
+      else {
+        // 2. go left (previous sibling)
+        if (goLeft) {
+          const leftIndex = siblingIndex - 1;
+          if (leftIndex >= 0) {
+            const left = contextsOfParent[leftIndex];
+            if (this.isHole(left)) {
+              // add to hole: ←↓
+              contexts.push(left);
+              this.floodHole(contexts, frontier, left, false, true, false, true, parentContext, leftIndex);
+            }
+          }
         }
-        // add to hole
-        contexts.push(sibling);
-        this.floodHole(contexts, sibling, parentContext, i);
+
+        // 3. go right (next sibling)
+        if (goRight) {
+          const rightIndex = siblingIndex + 1;
+          if (rightIndex < contextsOfParent.length) {
+            const right = contextsOfParent[rightIndex];
+            if (this.isHole(right)) {
+              // add to hole: ↓→
+              contexts.push(right);
+              this.floodHole(contexts, frontier, right, false, false, true, true, parentContext, rightIndex);
+            }
+          }
+        }
       }
     }
 
     // 4. go down (children)
-    TODO;
+    if (goDown) {
+      const children = dp.util.getChildrenOfContextInRoot(context.contextId);
+      // NOTE: Here, we specifically iterate over all children, 
+      //      because sibling iteration would stop at the first non-filtered sibling,
+      //      while this should go through all.
+      for (let i = 0; i < children.length; ++i) {
+        const child = children[i];
+        if (this.isHole(child)) {
+          // add to hole: ↓
+          contexts.push(child);
+          this.floodHole(contexts, frontier, child, false, false, false, true, context);
+        }
+        else {
+          // NOTE: add all non-hole children to frontier
+          frontier.push(child);
+        }
+      }
+    }
   }
+
+  /** ###########################################################################
+   * {@link #add}
+   * ##########################################################################*/
 
   add(parentNode, context) {
     if (this.getContextNodeByContext(context)) {
@@ -143,22 +194,29 @@ class CallGraphNodes {
     }
 
     let newNode;
-    if (this.predicate(context)) {
+    if (this.isHole(context)) {
       const contexts = [];
+      const frontier = [];
       contexts.push(context);
-      this.floodHole(contexts, context);
+      this.floodHole(contexts, frontier, context);
+      const hole = this.addHole(contexts, frontier);
       newNode = parentNode.children.createComponent('HoleNode', {
-        context: minBy(contexts, c => c.contextId),   // TODO: HoleNodes dont actually have a representative `context`
-        contexts
+        // TODO: HoleNodes dont actually have a single representative `context`
+        context: minBy(contexts, c => c.contextId),
+        hole
       });
+      for (const c of contexts) {
+        // associate all contexts with the node
+        this.contextNodesByContext.set(c, newNode);
+      }
     }
     else {
       newNode = parentNode.children.createComponent('ContextNode', {
         context,
       });
+      this.contextNodesByContext.set(context, newNode);
     }
 
-    this.contextNodesByContext.set(context, newNode);
     newNode.addDisposable(() => {
       this._handleContextNodeDisposed(context, newNode);
     });
@@ -166,8 +224,19 @@ class CallGraphNodes {
     return newNode;
   }
 
+  addHole(contexts, frontier) {
+    const holeId = ++this._lastHoldeId;
+    const hole = new ContextHole(holeId, contexts, frontier);
+    return hole;
+  }
+
+  /** ###########################################################################
+   * {@link #buildContextNode}
+   * ##########################################################################*/
+
   /**
    * This function ONLY makes sure that (i) given node, (ii) its children and (iii) all its ancestors are built.
+   * Also takes care of holes (via {@link #add}).
    * NOTE: Subgraph expansion is done recursively in {@link GraphNode#setMode}.
    * 
    * @param {ExecutionContext} context 
@@ -210,7 +279,7 @@ class CallGraphNodes {
     }
 
     contextNode.childrenBuilt = true;
-    return contextNode.getValidChildContexts().map(context => {
+    return contextNode.getActualChildContexts().map(context => {
       return this.add(contextNode, context);
     });
   }
