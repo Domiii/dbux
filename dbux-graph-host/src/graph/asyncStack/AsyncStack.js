@@ -1,3 +1,4 @@
+import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection/index';
@@ -25,7 +26,10 @@ class AsyncStack extends SyncGraphBase {
     }
   }
 
-  updateContextNodes() {
+  /**
+   * @return {Array.<ExecutionContext>} All root contexts participating in this graph.
+   */
+  getAllRootContexts() {
     let contexts = EmptyArray;
 
     const trace = traceSelection.selected;
@@ -34,8 +38,7 @@ class AsyncStack extends SyncGraphBase {
       const dp = allApplications.getById(applicationId).dataProvider;
       contexts = dp.util.getAsyncStackContexts(traceId);
     }
-
-    this.updateByContexts(contexts);
+    return contexts;
   }
 
   _resubscribeOnData() {
