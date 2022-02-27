@@ -347,7 +347,13 @@ class SyncGraphBase extends GraphBase {
     let contextNode;
     if (trace) {
       const { applicationId, contextId } = trace;
-      contextNode = this.getContextNodeById(applicationId, contextId);
+      const dp = allApplications.getById(applicationId).dataProvider;
+      const context = dp.collections.executionContexts.getById(contextId);
+      contextNode = this.getContextNodeByContext(context);
+      if (!contextNode) {
+        this.buildContextNode(context);
+        contextNode = this.getContextNodeByContext(context);
+      }
       if (this.context.graphDocument.state.followMode && contextNode) {
         // NOTE: since we do this right after init, need to check if contextNode have been built
         await contextNode.waitForInit();
