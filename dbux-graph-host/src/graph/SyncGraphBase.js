@@ -1,15 +1,24 @@
 import NanoEvents from 'nanoevents';
+import minBy from 'lodash/minBy';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import GraphBase from './GraphBase';
 import ContextNode from './syncGraph/ContextNode';
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
 
+/** @typedef { import("@dbux/data/src/RuntimeDataProvider").default } RuntimeDataProvider */
 /** @typedef {import('@dbux/common/src/types/ExecutionContext').default} ExecutionContext */
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('SyncGraphBase');
+
+/**
+ * @param {{ applicationId, contextId }} applicationIdHolder 
+ * @return {RuntimeDataProvider}
+ */
+function getDp(applicationIdHolder) {
+  return allApplications.getById(applicationIdHolder.applicationId).dataProvider;
+}
 
 /** ###########################################################################
  * {@link ContextNodegraph}
@@ -71,43 +80,90 @@ class CallGraphNodes {
     return this.contextNodesByContext.values();
   }
 
+  /** ###########################################################################
+   * add, build
+   * ##########################################################################*/
+
+  /**
+   * 
+   * @param {ExecutionContext[]} contexts 
+   * @param {ExecutionContext} context 
+   * @param {number} siblingIndex 
+   */
+  floodHole(contexts, context, parentContext = undefined, siblingIndex = undefined) {
+    const dp = getDp(context);
+    const goBackUp = !siblingIndex;
+    parentContext = parentContext === undefined ?
+      (context.parentContextId && dp.collections.executionContexts.getById(context.parentContextId)) :
+      parentContext;
+    const contextsOfParent = TODO; // TODO: consider getChildrenOfContextInRoot vs. getChildrenOfContext
+    siblingIndex = siblingIndex || (parentContext && contextsOfParent.indexOf(context)) || null;
+
+    // 1. go up (parent)
+    if (goBackUp && parentContext) {
+      if (this.predicate(parentContext)) {
+        // add to hole
+        contexts.push(parentContext);
+        this.floodHole(contexts, parentContext);
+      }
+    }
+
+    if (siblingIndex !== null) {
+      // 2. go left (previous siblings)
+      for (let i = siblingIndex - 1; --i; i >= 0) {
+        const sibling = contextsOfParent[i];
+        if (!this.predicate(sibling)) {
+          break;
+        }
+        // add to hole
+        contexts.push(sibling);
+        this.floodHole(contexts, sibling, parentContext, i);
+      }
+
+      // 3. go right (following siblings)
+      for (let i = siblingIndex + 1; ++i; i < contextsOfParent.length) {
+        const sibling = contextsOfParent[i];
+        if (!this.predicate(sibling)) {
+          break;
+        }
+        // add to hole
+        contexts.push(sibling);
+        this.floodHole(contexts, sibling, parentContext, i);
+      }
+    }
+
+    // 4. go down (children)
+    TODO;
+  }
+
   add(parentNode, context) {
     if (this.getContextNodeByContext(context)) {
       this.graph.logger.warn(`Tried to add ContextNode with id=${context.contextId} but Node already exist`);
       return null;
     }
 
-    const contextNode = parentNode.children.createComponent('ContextNode', {
-      context,
-    });
-
-    this.contextNodesByContext.set(context, contextNode);
-    contextNode.addDisposable(() => {
-      this._handleContextNodeDisposed(context, contextNode);
-    });
-
-    return contextNode;
-  }
-
-  _handleContextNodeDisposed = (context, contextNode) => {
-    if (this.getContextNodeByContext(context) === contextNode) {
-      // actual removal of node
-      this.contextNodesByContext.delete(context);
-    }
-  }
-
-  delete(context) {
-    const contextNode = this.getContextNodeByContext(context);
-    // NOTE: sometimes, `contextNode` does not exist, for some reason
-    //    -> might be because `this.roots` contains roots that are not actually displayed
-    if (contextNode) {
-      // this will trigger _handleContextNodeDisposed -> removal
-      contextNode.dispose();
+    let newNode;
+    if (this.predicate(context)) {
+      const contexts = [];
+      contexts.push(context);
+      this.floodHole(contexts, context);
+      newNode = parentNode.children.createComponent('HoleNode', {
+        context: minBy(contexts, c => c.contextId),   // TODO: HoleNodes dont actually have a representative `context`
+        contexts
+      });
     }
     else {
-      // don't do this -> because this is also called when iterating over `...values()`
-      // this._nodes.delete(context);
+      newNode = parentNode.children.createComponent('ContextNode', {
+        context,
+      });
     }
+
+    this.contextNodesByContext.set(context, newNode);
+    newNode.addDisposable(() => {
+      this._handleContextNodeDisposed(context, newNode);
+    });
+
+    return newNode;
   }
 
   /**
@@ -157,6 +213,31 @@ class CallGraphNodes {
     return contextNode.getValidChildContexts().map(context => {
       return this.add(contextNode, context);
     });
+  }
+
+  /** ###########################################################################
+   * dispose, delete, clear
+   * ##########################################################################*/
+
+  _handleContextNodeDisposed = (context, contextNode) => {
+    if (this.n(context) === contextNode) {
+      // actual removal of node
+      this.contextNodesByContext.delete(context);
+    }
+  }
+
+  delete(context) {
+    const contextNode = this.getContextNodeByContext(context);
+    // NOTE: sometimes, `contextNode` does not exist, for some reason
+    //    -> might be because `this.roots` contains roots that are not actually displayed
+    if (contextNode) {
+      // this will trigger _handleContextNodeDisposed -> removal
+      contextNode.dispose();
+    }
+    else {
+      // don't do this -> because this is also called when iterating over `...values()`
+      // this._nodes.delete(context);
+    }
   }
 
   clear() {
