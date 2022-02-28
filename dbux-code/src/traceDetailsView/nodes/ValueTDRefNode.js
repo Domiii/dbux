@@ -1,6 +1,7 @@
 import { ValuePruneState } from '@dbux/common/src/types/constants/ValueTypeCategory';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import { makeTreeItemNoChildren } from '../../helpers/makeTreeItem';
+// import { makeTreeItemNoChildren } from '../../helpers/makeTreeItem';
 import EmptyTreeViewNode from '../../codeUtil/treeView/EmptyNode';
 import { valueRender } from '../valueRender';
 import ValueNode, { ValueLabel } from './ValueNode';
@@ -72,9 +73,7 @@ export default class ValueTDRefNode extends ValueNode {
     const objectValue = dp.util.constructValueObjectShallow(refId, rootDataNode.nodeId);
 
     if (valueRef.pruneState === ValuePruneState.Omitted) {
-      return [
-        makeTreeItemNoChildren(objectValue)
-      ];
+      return EmptyArray;
     }
 
     const entries = objectValue && Object.entries(objectValue);
