@@ -138,10 +138,16 @@ class GraphDocument extends HostComponentEndpoint {
       [GraphNodeMode.ExpandChildren]: this.getIconUri('stack.svg'),
       [GraphNodeMode.ExpandSubgraph]: this.getIconUri('listItem.svg'),
     };
+    const statsIconUris = {
+      nTreeContexts: this.getIconUri('nTreeContextsStats.svg'),
+      nTreeStaticContext: this.getIconUri('nTreeStaticContextsStats.svg'),
+      nTreeFileCalled: this.getIconUri('nTreeFileCalledStats.svg'),
+    };
     return {
       themeMode,
       contextNodeIconUris,
-      screenshotMode
+      statsIconUris,
+      screenshotMode,
     };
   }
 
@@ -151,6 +157,7 @@ class GraphDocument extends HostComponentEndpoint {
         graphDocument: this,
         themeMode: this.state.themeMode,
         contextNodeIconUris: this.state.contextNodeIconUris,
+        statsIconUris: this.state.statsIconUris,
         screenshotMode: this.state.screenshotMode
       }
     };
