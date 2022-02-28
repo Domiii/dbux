@@ -22,12 +22,15 @@ class SyncGraph extends SyncGraphBase {
     }
   }
 
-  updateContextNodes() {
+  /**
+   * @return {Array.<ExecutionContext>} All root contexts participating in this graph.
+   */
+  getAllRootContexts() {
     const roots = allApplications.selection.getAll().map(app => {
       return app.dataProvider.util.getAllRootContexts();
     }).flat();
 
-    this.updateByContexts(roots);
+    return roots;
   }
 
   _resubscribeOnData() {

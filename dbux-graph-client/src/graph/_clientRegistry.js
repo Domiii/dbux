@@ -5,8 +5,11 @@ const RootContextNode = require('./syncGraph/RootContextNode').default;
 const ContextNode = require('./syncGraph/ContextNode').default;
 const HiddenAfterNode = require('./syncGraph/HiddenAfterNode').default;
 const HiddenBeforeNode = require('./syncGraph/HiddenBeforeNode').default;
+const GroupNode = require('./syncGraph/GroupNode').default;
+const HoleNode = require('./syncGraph/GroupNode').default;
 const AsyncGraph = require('./asyncGraph/AsyncGraph').default;
 const AsyncStack = require('./asyncStack/AsyncStack').default;
+
 const ContextNodeManager = require('./controllers/ContextNodeManager').default;
 const FocusController = require('./controllers/FocusController').default;
 const PopperController = require('./controllers/PopperController').default;
@@ -26,10 +29,13 @@ export default {
   GraphDocument,
   GraphContainer,
   SyncGraph,
-  AsyncGraph,
-  AsyncStack,
   HiddenAfterNode,
   HiddenBeforeNode,
+  GroupNode,
+  HoleNode,
+  AsyncGraph,
+  AsyncStack,
+
   GraphNode,
   Toolbar,
   // MiniMap,

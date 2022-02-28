@@ -1,24 +1,345 @@
 import NanoEvents from 'nanoevents';
+import minBy from 'lodash/minBy';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import GraphBase from './GraphBase';
 import ContextNode from './syncGraph/ContextNode';
+import HoleNode from './syncGraph/HoleNode';
 
+/** @typedef { import("@dbux/data/src/RuntimeDataProvider").default } RuntimeDataProvider */
 /** @typedef {import('@dbux/common/src/types/ExecutionContext').default} ExecutionContext */
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('SyncGraphBase');
+
+/**
+ * @param {{ applicationId, contextId }} applicationIdHolder 
+ * @return {RuntimeDataProvider}
+ */
+function getDp(applicationIdHolder) {
+  return allApplications.getById(applicationIdHolder.applicationId).dataProvider;
+}
+
+/** ###########################################################################
+ * {@link ContextNodegraph}
+ * ##########################################################################*/
+
+/**
+ * NOTE: gets copied to client (and will not take class/prototype to client).
+ */
+class ContextHole {
+  id;
+  contexts;
+  /**
+   * @type {ExecutionContext[]} All child contexts following the hole. Produced by `floodHole`.
+   */
+  frontier;
+
+  constructor(id, contexts, frontier) {
+    this.id = id;
+    this.contexts = contexts;
+    this.frontier = frontier;
+  }
+}
+
+/**
+ * Provides a graph-with-holes data structure.
+ * Holes are connected subgraphs for which each node of that subgraph holds the given predicate.
+ */
+class CallGraphNodes {
+  /**
+   * @type {SyncGraphBase}
+   */
+  graph;
+  /**
+   * Decides whether the given context should be displayed or "is part of a hole".
+   * 
+   * @type {(context) => Boolean}
+   */
+  includePredicate;
+
+  /**
+   * @type {Map<ExecutionContext, ContextNode>}
+   */
+  contextNodesByContext;
+  /**
+   * @type {Map<ExecutionContext, HoleNode>}
+   */
+  holeNodesByContext;
+
+  _lastHoldeId = 0;
+  holeNodesById = [];
+
+  constructor(graph, includePredicate) {
+    this.graph = graph;
+    this.includePredicate = includePredicate || (() => true);
+
+    this.clear();
+  }
+
+  has(context) {
+    this.contextNodesByContext.has(context);
+  }
+
+  /**
+   * @param {ExecutionContext} context
+   * @return {ContextNode | HoleNode} 
+   */
+  getContextNodeByContext(context) {
+    return this.contextNodesByContext.get(context);
+  }
+
+  getAllContextNodes() {
+    return this.contextNodesByContext.values();
+  }
+
+  isHole(context) {
+    return !this.includePredicate(context);
+  }
+
+  /** ###########################################################################
+   * {@link #floodHole}
+   * ##########################################################################*/
+
+  /**
+   * @param {ExecutionContext[]} contexts 
+   * @param {ExecutionContext[]} frontier The "children" (neighboring nodes in ↓ direction) of the entire hole
+   * @param {ExecutionContext} context 
+   * @param {number} siblingIndex 
+   */
+  floodHole(contexts, frontier, context, goUp = true, goLeft = true, goRight = true, goDown = true, parentContext = undefined, siblingIndex = undefined) {
+    const dp = getDp(context);
+
+    parentContext = parentContext === undefined ?
+      (context.parentContextId && dp.collections.executionContexts.getById(context.parentContextId)) :
+      null;
+
+    // 1. go up (parent)
+    if (goUp && parentContext) {
+      if (this.isHole(parentContext)) {
+        // add to hole: ←↑→
+        contexts.push(parentContext);
+        this.floodHole(contexts, frontier, parentContext, true, true, true, false);
+      }
+    }
+
+    if (goLeft || goRight) {
+      const contextsOfParent = parentContext &&
+        dp.util.getChildrenOfContextInRoot(parentContext.contextId) ||
+        this.graph.getAllRootContexts();  // at root level -> siblings are other roots
+
+      siblingIndex = siblingIndex !== undefined ? siblingIndex : contextsOfParent.indexOf(context);
+      if (siblingIndex === -1) {
+        this.graph.logger.error(`Could not look up siblingIndex in Graph Construction for context:\n  > "${dp.util.makeContextInfo(context)}"`);
+      }
+      else {
+        // 2. go left (previous sibling)
+        if (goLeft) {
+          const leftIndex = siblingIndex - 1;
+          if (leftIndex >= 0) {
+            const left = contextsOfParent[leftIndex];
+            if (this.isHole(left)) {
+              // add to hole: ←↓
+              contexts.push(left);
+              this.floodHole(contexts, frontier, left, false, true, false, true, parentContext, leftIndex);
+            }
+          }
+        }
+
+        // 3. go right (next sibling)
+        if (goRight) {
+          const rightIndex = siblingIndex + 1;
+          if (rightIndex < contextsOfParent.length) {
+            const right = contextsOfParent[rightIndex];
+            if (this.isHole(right)) {
+              // add to hole: ↓→
+              contexts.push(right);
+              this.floodHole(contexts, frontier, right, false, false, true, true, parentContext, rightIndex);
+            }
+          }
+        }
+      }
+    }
+
+    // 4. go down (children)
+    if (goDown) {
+      const children = dp.util.getChildrenOfContextInRoot(context.contextId);
+      // NOTE: Here, we specifically iterate over all children, 
+      //      because sibling iteration would stop at the first non-filtered sibling,
+      //      while this should go through all.
+      for (let i = 0; i < children.length; ++i) {
+        const child = children[i];
+        if (this.isHole(child)) {
+          // add to hole: ↓
+          contexts.push(child);
+          this.floodHole(contexts, frontier, child, false, false, false, true, context);
+        }
+        else {
+          // NOTE: add all non-hole children to frontier
+          frontier.push(child);
+        }
+      }
+    }
+  }
+
+  /** ###########################################################################
+   * {@link #add}
+   * ##########################################################################*/
+
+  add(parentNode, context) {
+    if (this.getContextNodeByContext(context)) {
+      this.graph.logger.warn(`Tried to add ContextNode with id=${context.contextId} but Node already exist`);
+      return null;
+    }
+
+    let newNode;
+    if (this.isHole(context)) {
+      const contexts = [];
+      const frontier = [];
+      contexts.push(context);
+      this.floodHole(contexts, frontier, context);
+      const hole = this.addHole(contexts, frontier);
+      newNode = parentNode.children.createComponent('HoleNode', {
+        // TODO: HoleNodes dont actually have a single representative `context`
+        context: minBy(contexts, c => c.contextId),
+        hole
+      });
+      for (const c of contexts) {
+        // associate all contexts with the node
+        this.contextNodesByContext.set(c, newNode);
+      }
+    }
+    else {
+      newNode = parentNode.children.createComponent('ContextNode', {
+        context,
+      });
+      this.contextNodesByContext.set(context, newNode);
+    }
+
+    newNode.addDisposable(() => {
+      this._handleContextNodeDisposed(context, newNode);
+    });
+
+    return newNode;
+  }
+
+  addHole(contexts, frontier) {
+    const holeId = ++this._lastHoldeId;
+    const hole = new ContextHole(holeId, contexts, frontier);
+    return hole;
+  }
+
+  /** ###########################################################################
+   * {@link #buildContextNode}
+   * ##########################################################################*/
+
+  /**
+   * This function ONLY makes sure that (i) given node, (ii) its children and (iii) all its ancestors are built.
+   * Also takes care of holes (via {@link #add}).
+   * NOTE: Subgraph expansion is done recursively in {@link GraphNode#setMode}.
+   * 
+   * @param {ExecutionContext} context 
+   * @returns 
+   */
+  buildContextNode(context) {
+    const { applicationId } = context;
+    const dp = allApplications.getById(applicationId).dataProvider;
+    let currentContext = context;
+    let currentNode;
+    const ancestors = [];
+
+    while (!(currentNode = this.getContextNodeByContext(currentContext))) {
+      if (!currentContext) {
+        // root
+        return null;
+      }
+      ancestors.push(currentContext);
+      currentContext = dp.collections.executionContexts.getById(currentContext.parentContextId);
+    }
+
+    for (const childContext of ancestors.reverse()) {
+      this.buildContextNodeChildren(currentNode);
+      currentNode = this.getContextNodeByContext(childContext);
+    }
+
+    return currentNode;
+  }
+
+
+  /**
+   * This function makes sure that the given node's children are built.
+   * This is called by `#buildContextNode` and `GraphNode.setOwnMode`.
+   * 
+   * @param {ContextNode} contextNode 
+   */
+  buildContextNodeChildren(contextNode) {
+    if (contextNode.childrenBuilt) {
+      return contextNode.children.getComponents('ContextNode');
+    }
+
+    contextNode.childrenBuilt = true;
+    return contextNode.getActualChildContexts().map(context => {
+      return this.add(contextNode, context);
+    });
+  }
+
+  /** ###########################################################################
+   * dispose, delete, clear
+   * ##########################################################################*/
+
+  _handleContextNodeDisposed = (context, contextNode) => {
+    if (this.getContextNodeByContext(context) === contextNode) {
+      // actual removal of node
+      this.contextNodesByContext.delete(context);
+    }
+  }
+
+  delete(context) {
+    const contextNode = this.getContextNodeByContext(context);
+    // NOTE: sometimes, `contextNode` does not exist, for some reason
+    //    -> might be because `this.roots` contains roots that are not actually displayed
+    if (contextNode) {
+      // this will trigger _handleContextNodeDisposed -> removal
+      contextNode.dispose();
+    }
+    else {
+      // don't do this -> because this is also called when iterating over `...values()`
+      // this._nodes.delete(context);
+    }
+  }
+
+  clear() {
+    if (this.contextNodesByContext) {
+      for (const { state: { context } } of this.getAllContextNodes()) {
+        this.delete(context);
+      }
+    }
+
+    this.contextNodesByContext = new Map();
+    this.holeNodesByContext = new Map();
+    this._lastHoldeNodeId = 0;
+    this.holeNodesById = [];
+  }
+}
+
+/** ###########################################################################
+ * {@link SyncGraphBase}
+ * ##########################################################################*/
 
 class SyncGraphBase extends GraphBase {
   /**
    * @type {Map<ExecutionContext, ContextNode>}
    */
   contextNodesByContext;
+  /**
+   * @type {CallGraphNodes}
+   */
+  _nodes;
 
   init() {
+    this._nodes = new CallGraphNodes(this);
     this.roots = new Set();
-    this.contextNodesByContext = new Map();
     this.state.applications = [];
     this._emitter = new NanoEvents();
     this._unsubscribeOnNewData = [];
@@ -36,10 +357,13 @@ class SyncGraphBase extends GraphBase {
    *  #########################################################################*/
 
   handleRefresh() {
-    this.updateContextNodes();
+    this.updateAllRoots();
   }
 
-  updateContextNodes() {
+  /**
+   * @return {Array.<ExecutionContext>} All root contexts participating in this graph.
+   */
+  getAllRootContexts() {
     throw new Error('abstract method not implemented');
   }
 
@@ -48,16 +372,21 @@ class SyncGraphBase extends GraphBase {
   }
 
   clear() {
-    this.removeAllContextNode();
+    this.roots = new Set();
+    return this._nodes.clear();
   }
 
   // ###########################################################################
   // Context Node management
   // ###########################################################################
 
-  updateByContexts(contexts) {
-    const newRoots = new Set(contexts);
-    const oldRoots = new Set(this.roots);
+  /**
+   * @param {*} newRootsArr 
+   */
+  updateAllRoots() {
+    const allRoots = this.getAllRootContexts();
+    const newRoots = new Set(allRoots);
+    const oldRoots = this.roots;
 
     // always re-subscribe since applicationSet clears subscribtion everytime it changes
     this._resubscribeOnData();
@@ -71,7 +400,7 @@ class SyncGraphBase extends GraphBase {
 
     // remove new roots if exists as an old children, then add
     for (const root of newRoots) {
-      const node = this.contextNodesByContext.get(root);
+      const node = this.getContextNodeByContext(root);
       if (node) {
         if (oldRoots.has(root)) {
           continue;
@@ -88,95 +417,24 @@ class SyncGraphBase extends GraphBase {
     this._setApplicationState();
   }
 
-  removeAllContextNode() {
-    for (const { state: { context } } of this.contextNodesByContext.values()) {
-      this._removeContextNode(context);
-    }
-  }
-
-  getAllContextNode() {
-    return this.contextNodesByContext.values();
+  getAllContextNodes() {
+    return this._nodes.getAllContextNodes();
   }
 
   _addRoot(context) {
-    return this._addContextNode(this, context);
-  }
-
-  _addContextNode(parentNode, context) {
-    if (this.contextNodesByContext.get(context)) {
-      this.logger.warn(`ContextNode with id=${context.contextId} already exist`);
-      return null;
-    }
-
-    const contextNode = parentNode.children.createComponent('ContextNode', {
-      context,
-    });
-
-    this.contextNodesByContext.set(context, contextNode);
-    contextNode.addDisposable(() => {
-      if (this.contextNodesByContext.get(context) === contextNode) {
-        this.contextNodesByContext.delete(context);
-      }
-    });
-
-    return contextNode;
+    return this._nodes.add(this, context);
   }
 
   _removeContextNode(context) {
-    const contextNode = this.contextNodesByContext.get(context);
-    // NOTE: sometimes, `contextNode` does not exist, for some reason
-    //    -> might be because `this.roots` contains roots that are not actually displayed
-    contextNode?.dispose();
-    // register disposable on add instead
-    // this.contextNodesByContext.delete(context);
+    this._nodes.delete(context);
   }
 
   /**
-   * This function makes sure that the given node's children are built.
-   * 
-   * @param {ContextNode} contextNode 
+   * Find or create a ContextNode.
+   *  @return {ContextNode}
    */
-  buildContextNodeChildren(contextNode) {
-    if (contextNode.childrenBuilt) {
-      return contextNode.children.getComponents('ContextNode');
-    }
-
-    contextNode.childrenBuilt = true;
-    return contextNode.getValidChildContexts().map(context => {
-      return this._addContextNode(contextNode, context);
-    });
-  }
-
-  /**
-   * This function ONLY makes sure that (i) given node, (ii) its children and (iii) all its ancestors are built.
-   * NOTE: Subgraph expansion is done recursively in {@link GraphNode#setMode}.
-   * 
-   * @param {ExecutionContext} context 
-   * @returns 
-   */
-  buildContextNode(context) {
-    const { applicationId } = context;
-    const dp = allApplications.getById(applicationId).dataProvider;
-    let currentContext = context;
-    let currentNode;
-    const contextQueue = [];
-
-    while (!(currentNode = this.contextNodesByContext.get(currentContext))) {
-      if (!currentContext) {
-        // all of its ascendents are not presented
-        // this.logger.error(`Cannot build context node: No parent context of context ${context} exists. contextQueue=[${contextQueue.map(x => x?.contextId)}]`);
-        return null;
-      }
-      contextQueue.push(currentContext);
-      currentContext = dp.collections.executionContexts.getById(currentContext.parentContextId);
-    }
-
-    for (const childContext of contextQueue.reverse()) {
-      this.buildContextNodeChildren(currentNode);
-      currentNode = this.contextNodesByContext.get(childContext);
-    }
-
-    return currentNode;
+  getContextNodeByContext = (context) => {
+    return this._nodes.getContextNodeByContext(context);
   }
 
   /**
@@ -189,20 +447,6 @@ class SyncGraphBase extends GraphBase {
   }
 
   /**
-   * Find or create a ContextNode.
-   *  @return {ContextNode}
-   */
-  getContextNodeByContext = (context) => {
-    let node = this.contextNodesByContext.get(context);
-    if (!node) {
-      // node is not created yet
-      node = this.buildContextNode(context);
-    }
-
-    return node;
-  }
-
-  /**
    *  @return {ContextNode}
    */
   getContextNodeByContextForce = (context) => {
@@ -211,6 +455,27 @@ class SyncGraphBase extends GraphBase {
       this.logger.error(`Can neither find ContextNode for context ${context} nor create one.`);
     }
     return node;
+  }
+
+  /**
+   * This function ONLY makes sure that (i) given node, (ii) its children and (iii) all its ancestors are built.
+   * NOTE: Subgraph expansion is done recursively in {@link GraphNode#setMode}.
+   * 
+   * @param {ExecutionContext} context 
+   * @returns 
+   */
+  buildContextNode(context) {
+    return this._nodes.buildContextNode(context);
+  }
+
+  /**
+   * Makes sure that the given node's children are built.
+   * This is called by `#buildContextNode` and `GraphNode.setOwnMode`.
+   * 
+   * @param {ContextNode} contextNode 
+   */
+  buildContextNodeChildren(contextNode) {
+    return this._nodes.buildContextNodeChildren(contextNode);
   }
 
   _selectContextNode(contextNode) {
@@ -232,7 +497,13 @@ class SyncGraphBase extends GraphBase {
     let contextNode;
     if (trace) {
       const { applicationId, contextId } = trace;
-      contextNode = this.getContextNodeById(applicationId, contextId);
+      const dp = allApplications.getById(applicationId).dataProvider;
+      const context = dp.collections.executionContexts.getById(contextId);
+      contextNode = this.getContextNodeByContext(context);
+      if (!contextNode) {
+        this.buildContextNode(context);
+        contextNode = this.getContextNodeByContext(context);
+      }
       if (this.context.graphDocument.state.followMode && contextNode) {
         // NOTE: since we do this right after init, need to check if contextNode have been built
         await contextNode.waitForInit();

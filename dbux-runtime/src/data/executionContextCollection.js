@@ -56,10 +56,10 @@ export class ExecutionContextCollection extends Collection {
 
   makeContextInfo(contextOrContextId) {
     const context = this.asContext(contextOrContextId);
-    const { contextId } = context;
     if (!context) {
-      return `null (#${contextId})`;
+      return `null Context (${contextOrContextId})`;
     }
+    const { contextId } = context;
     const { contextType, staticContextId } = context;
     const staticInfo = staticContextCollection.makeStaticContextInfo(staticContextId, false);
     return `[${ExecutionContextType.nameFrom(contextType)}] #${contextId} ${staticInfo}`;

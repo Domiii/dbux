@@ -274,6 +274,18 @@ export default {
   },
 
   /** @param {DataProvider} dp */
+  getContextProgram(dp, contextId) {
+    const context = dp.collections.executionContexts.getById(contextId);
+    return dp.util.getStaticContextProgram(context.staticContextId);
+  },
+
+  /** @param {DataProvider} dp */
+  getStaticContextProgram(dp, staticContextId) {
+    const staticContext = dp.collections.staticContexts.getById(staticContextId);
+    return dp.collections.staticProgramContexts.getById(staticContext.programId);
+  },
+
+  /** @param {DataProvider} dp */
   getContextModuleName(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
     const staticContext = dp.collections.staticContexts.getById(context.staticContextId);
@@ -1935,14 +1947,48 @@ export default {
   // trace info + debugging
   // ###########################################################################
 
-  // /**
-  //  * @param {DataProvider} dp
-  //  * NOTE: use `makeContext*Label` for now
-  //  */
-  // makeContextInfo(dp, contextId) {
-  //   // TODO: if is virtual?
-  //   return dp.util.context
-  // },
+  /**
+   * @param {DataProvider} dp
+   */
+  asContext(dp, isOrHasAContextId) {
+    let id;
+    if (isOrHasAContextId?.contextId) {
+      id = isOrHasAContextId?.contextId;
+    }
+    else {
+      id = isOrHasAContextId;
+    }
+    return dp.collections.executionContexts.getById(id);
+  },
+
+  /**
+   * @param {DataProvider} dp
+   */
+  makeStaticContextInfo(dp, staticContextId, addPrefix = true) {
+    /**
+     * @type {StaticContext}
+     */
+    const staticContext = dp.util.getStaticExecutionContextOfContext(staticContextId);
+    const { displayName, loc, type } = staticContext;
+    const program = dp.util.getStaticContextProgram(staticContextId);
+    const { filePath } = program;
+    const prefix = addPrefix ? `[${StaticContextType.nameFrom(type)}] ` : '';
+    return `${prefix}"${displayName}" @ ${filePath}:${locToString(loc)}`;
+  },
+
+  /**
+   * @param {DataProvider} dp
+   */
+  makeContextInfo(dp, isOrHasAContextId) {
+    const context = dp.util.asContext(isOrHasAContextId);
+    if (!context) {
+      return `null Context (${isOrHasAContextId})`;
+    }
+    const { contextId } = context;
+    const { contextType, staticContextId } = context;
+    const staticInfo = dp.util.makeStaticContextInfo(staticContextId, false);
+    return `[${ExecutionContextType.nameFrom(contextType)}] #${contextId} ${staticInfo}`;
+  },
 
   /**
    * @param {DataProvider} dp

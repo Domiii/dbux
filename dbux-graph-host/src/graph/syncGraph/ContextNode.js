@@ -5,6 +5,7 @@ import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { makeTraceValueLabel, makeTraceLabel, makeContextLocLabel, makeTraceLocLabel, makeContextLabel, makeContextCallerLabel } from '@dbux/data/src/helpers/makeLabels';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
+import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
 class ContextNode extends HostComponentEndpoint {
@@ -41,7 +42,7 @@ class ContextNode extends HostComponentEndpoint {
     }
 
     // add controllers
-    let hasChildren = !!this.getValidChildContexts().length;
+    let hasChildren = !!this.getActualChildContexts().length;
     this.controllers.createComponent('GraphNode', { hasChildren });
     this.controllers.createComponent('PopperController');
     this.controllers.createComponent('Highlighter');
@@ -114,10 +115,23 @@ class ContextNode extends HostComponentEndpoint {
   // children
   // ########################################
 
-  getValidChildContexts() {
+  /**
+   * @virtual
+   * @return {ExecutionContext[]}
+   */
+  getAllChildContexts() {
     const { applicationId, contextId } = this.state.context;
     const dp = allApplications.getById(applicationId).dataProvider;
-    const childContexts = dp.indexes.executionContexts.children.get(contextId) || EmptyArray;
+    return dp.indexes.executionContexts.children.get(contextId) || EmptyArray;
+  }
+
+  /**
+   * Filters out contexts not to be added as children to the SCG's node representation of the context.
+   * 
+   * @return {ExecutionContext[]}
+   */
+  getActualChildContexts() {
+    const childContexts = this.getAllChildContexts();
     return childContexts.filter(childContext => {
       if (this.context.graphRoot.roots.has(childContext)) {
         return false;
@@ -152,7 +166,7 @@ class ContextNode extends HostComponentEndpoint {
   }
 
   getChildrenCount() {
-    return this.getValidChildContexts().length;
+    return this.getActualChildContexts().length;
   }
 
   getSubGraphChildrenCount() {

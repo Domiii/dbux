@@ -5,10 +5,13 @@ import RootContextNode from './syncGraph/RootContextNode';
 import ContextNode from './syncGraph/ContextNode';
 import HiddenAfterNode from './syncGraph/HiddenAfterNode';
 import HiddenBeforeNode from './syncGraph/HiddenBeforeNode';
+import GroupNode from './syncGraph/GroupNode';
+import HoleNode from './syncGraph/HoleNode';
 import AsyncGraph from './asyncGraph/AsyncGraph';
 import AsyncStack from './asyncStack/AsyncStack';
 import Toolbar from './Toolbar';
 import ZoomBar from './ZoomBar';
+
 import GraphNode from './controllers/GraphNode';
 import HiddenNodeManager from './controllers/HiddenNodeManager';
 import ContextNodeManager from './controllers/ContextNodeManager';
@@ -32,6 +35,9 @@ export default {
   AsyncStack,
   HiddenAfterNode,
   HiddenBeforeNode,
+  GroupNode,
+  HoleNode,
+  
   Toolbar,
   // MiniMap,
   ZoomBar,
