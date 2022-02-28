@@ -270,6 +270,33 @@ export class DebugTDNode extends TraceDetailNode {
       }
     ];
 
+    /** ###########################################################################
+     * value details
+     *  #########################################################################*/
+
+    let valueDetails;
+    if (refId) {
+      const entries = dp.util.constructValueObjectShallow(refId, nodeId);
+      valueDetails = makeTreeItem(
+        'Value Object',
+        Object.entries(entries).map(([prop, valueArr]) => {
+          const [modifyNodeId, valueRefId, value] = valueArr;
+          return makeTreeItem(
+            prop,
+            { modifyNodeId, valueRefId, value },
+            {
+              description: JSON.stringify(valueArr)
+            }
+          );
+        }),
+      );
+    }
+    else {
+      valueDetails = makeTreeItemNoChildren(
+        'No related valueRef'
+      );
+    }
+
     // ###########################################################################
     // final result
     // ###########################################################################
@@ -288,7 +315,8 @@ export class DebugTDNode extends TraceDetailNode {
         ...allDataNodes,
         ['staticTrace', staticTrace],
         ['staticContext', staticContext],
-        ['staticProgramContext', staticProgramContext]
+        ['staticProgramContext', staticProgramContext],
+        valueDetails,
       )
     ];
 
