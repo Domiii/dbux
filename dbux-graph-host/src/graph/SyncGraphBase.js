@@ -289,7 +289,7 @@ class CallGraphNodes {
    * ##########################################################################*/
 
   _handleContextNodeDisposed = (context, contextNode) => {
-    if (this.n(context) === contextNode) {
+    if (this.getContextNodeByContext(context) === contextNode) {
       // actual removal of node
       this.contextNodesByContext.delete(context);
     }
