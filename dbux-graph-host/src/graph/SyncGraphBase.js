@@ -57,7 +57,7 @@ class CallGraphNodes {
    * 
    * @type {(context) => Boolean}
    */
-  predicate;
+  includePredicate;
 
   /**
    * @type {Map<ExecutionContext, ContextNode>}
@@ -71,9 +71,9 @@ class CallGraphNodes {
   _lastHoldeId = 0;
   holeNodesById = [];
 
-  constructor(graph, predicate) {
+  constructor(graph, includePredicate) {
     this.graph = graph;
-    this.predicate = predicate || (() => true);
+    this.includePredicate = includePredicate || (() => true);
 
     this.clear();
   }
@@ -95,7 +95,7 @@ class CallGraphNodes {
   }
 
   isHole(context) {
-    return this.predicate(context);
+    return !this.includePredicate(context);
   }
 
   /** ###########################################################################

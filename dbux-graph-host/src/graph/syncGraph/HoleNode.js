@@ -6,7 +6,7 @@ import GroupNode from './GroupNode';
 export default class HoleNode extends GroupNode {
   init() {
     // TODO: make this a proper "Hole"/"Group" representation → not just a single context!
-    this.super.init();
+    super.init();
 
     this.state.contextLabel = `HOLE (${this.state.hole.contexts.length})`;
     this.state.callerTracelabel = '';
