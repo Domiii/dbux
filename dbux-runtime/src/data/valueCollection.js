@@ -367,9 +367,9 @@ class ValueCollection extends Collection {
     }
     catch (err) {
       this._onAccessError(obj, this._readErrorsByType);
-      const msg = `ERROR: reading "${Object.getPrototypeOf(obj)} instanceof ${Clazz?.name}" caused exception`;
+      const msg = VerboseErrors && `ERROR: Dbux failed "${Object.getPrototypeOf(obj)} instanceof ${Clazz?.name}":`;
       VerboseErrors && this.logger.debug(msg, err.message);
-      return `(${msg})`;
+      return false;
     }
     finally {
       this._endAccess(obj);
@@ -387,7 +387,7 @@ class ValueCollection extends Collection {
     }
     catch (err) {
       this._onAccessError(obj, this._readErrorsByType);
-      const msg = `ERROR: accessing ${Object.getPrototypeOf(obj)}.${key} caused exception`;
+      const msg = `ERROR: Dbux failed to read object property "${Object.getPrototypeOf(obj)}.${key}":`;
       VerboseErrors && this.logger.debug(msg, err.message);
       return `(${msg})`;
     }
