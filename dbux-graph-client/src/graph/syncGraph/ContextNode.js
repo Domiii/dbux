@@ -43,7 +43,9 @@ class ContextNode extends ClientComponentEndpoint {
                 <div>
                   <span class="value-label" data-el="valueLabel"></span>
                 </div>
-                <div data-el="stats" class="context-stats"></div>
+                <div data-el="statsNTreeContexts" class="context-stats" title="Amount of directly called child contexts"></div>
+                <div data-el="statsNTreeStaticContexts" class="context-stats" title="Amount of child contexts in subgraph"></div>
+                <div data-el="statsNTreeFileCalled" class="context-stats" title="Amount of files involved in subgraph"></div>
               </div>
               <div class="flex-row">
               </div>
@@ -114,12 +116,19 @@ class ContextNode extends ClientComponentEndpoint {
       const {
         nTreeContexts,
         nTreeStaticContexts,
-        nTreeFileCalled
+        nTreeFileCalled,
       } = this.state;
-      this.els.stats.textContent = `${nTreeContexts} / ${nTreeStaticContexts} / ${nTreeFileCalled}`;
+      const {
+        statsIconUris
+      } = this.context;
+      this.els.statsNTreeContexts.innerHTML = `<img src="${statsIconUris.nTreeContexts}" />&nbsp;${nTreeContexts}&nbsp;`;
+      this.els.statsNTreeStaticContexts.innerHTML = `<img src="${statsIconUris.nTreeStaticContext}" />&nbsp;${nTreeStaticContexts}&nbsp;`;
+      this.els.statsNTreeFileCalled.innerHTML = `<img src="${statsIconUris.nTreeFileCalled}" />&nbsp;${nTreeFileCalled}&nbsp;`;
     }
     else {
-      this.els.stats.textContent = '';
+      this.els.statsNTreeContexts.innerHTML = '';
+      this.els.statsNTreeStaticContexts.innerHTML = '';
+      this.els.statsNTreeFileCalled.innerHTML = '';
     }
 
     const prevSibling = this.el.previousElementSibling;
