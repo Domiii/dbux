@@ -659,7 +659,12 @@ body:not(.theme-mode-dark) .highlight {
 .context-stats {
   border: 1px solid black;
   border-radius: 4px;
-  font-size: 0.9rem;
+  font-size: 9px;
+}
+
+.context-stats img {
+  width: 13px;
+  height: 13px;
 }
 
 /** ###########################################################################
