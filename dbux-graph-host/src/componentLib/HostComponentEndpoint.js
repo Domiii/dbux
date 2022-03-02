@@ -31,6 +31,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
 
   _refreshPromise = null;
   _refreshRequests = 0;
+  _finishedDisposed = false;
 
 
   constructor() {
@@ -380,15 +381,39 @@ class HostComponentEndpoint extends ComponentEndpoint {
 
     // also dispose on client
     Promise.resolve(this.waitForInit())
-      .then(() => {
-        this._remoteInternal.dispose();
+      .then(async () => {
+        await this._remoteInternal.dispose();
+        Verbose && this.logger.debug('disposed');
       })
       .catch((err) => {
         if (!silent) {
-          this.logger.error(err);
+          this.logger.error('error while disposing -', err);
         }
+        else {
+          Verbose && this.logger.debug('error while disposing');
+        }
+      })
+      .finally(() => {
+        this._finishedDisposed = true;
       });
-    Verbose && this.logger.debug('disposed');
+  }
+
+  async waitForClear() {
+    let waiting = true;
+    let doneWaiting = false;
+    await Promise.race([
+      (async () => {
+        while (waiting) {
+          await sleep(20);
+          if (this._finishedDisposed) {
+            break;
+          }
+        }
+      })(),
+      sleep(2000)
+    ]);
+    waiting = false;
+    return doneWaiting;
   }
 
   // ###########################################################################
