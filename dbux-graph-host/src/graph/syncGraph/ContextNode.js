@@ -86,6 +86,11 @@ class ContextNode extends HostComponentEndpoint {
     return state?.nTreeFileCalled || 0;
   }
 
+  get nTreeTraces() {
+    const stats = this.dp.queries.statsByContext(this.contextId);
+    return stats?.nTreeTraces || 0;
+  }
+
   get hiddenNodeManager() {
     return this.context.graphRoot.controllers.getComponent('HiddenNodeManager');
   }
@@ -109,6 +114,7 @@ class ContextNode extends HostComponentEndpoint {
     _update.nTreeStaticContexts = this.nTreeStaticContexts;
     //nTreeFileCalled
     _update.nTreeFileCalled = this.nTreeFileCalled;
+    _update.nTreeTraces = this.nTreeTraces;
   }
 
   // ########################################

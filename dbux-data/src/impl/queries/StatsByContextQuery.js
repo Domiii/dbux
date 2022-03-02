@@ -19,6 +19,12 @@ export class ContextStats {
    * @type {number}
    */
   nTreeFileCalled = 0;
+
+  /**
+   * Amount of traces in context, plus it's entire sub-tree.
+   * @type {number}
+   */
+  nTreeTraces = 0;
 }
 
 export default class StatsByContextQuery extends SubscribableQuery {
@@ -34,6 +40,10 @@ export default class StatsByContextQuery extends SubscribableQuery {
 
   getContextNTreeStaticContexts(contextId) {
     return this._cache.get(contextId)?.nTreeStaticContexts || 0;
+  }
+
+  getContextNTreeTraces(contextId) {
+    return this._cache.get(contextId)?.nTreeTraces || 0;
   }
 
   /** ###########################################################################
@@ -58,6 +68,8 @@ export default class StatsByContextQuery extends SubscribableQuery {
           const staticContextId = dp.util.getContextStaticContextId(contextId);
           staticContexts.add(staticContextId);
           stats.nTreeContexts = 1;
+          const childTraces = dp.indexes.traces.byContext.get(contextId);
+          stats.nTreeTraces = childTraces?.length || 0;
 
           const staticContextProgramId = dp.util.getContextStaticContext(contextId)?.programId;
           programIds.add(staticContextProgramId);
@@ -70,6 +82,7 @@ export default class StatsByContextQuery extends SubscribableQuery {
             childSet.programIdSet.forEach(programIds.add, programIds);
 
             stats.nTreeContexts += this.getContextNTreeContexts(child.contextId);
+            stats.nTreeTraces += this.getContextNTreeTraces(child.contextId);
           }
           stats.nTreeStaticContexts = staticContexts.size;
           stats.nTreeFileCalled = programIds.size;
