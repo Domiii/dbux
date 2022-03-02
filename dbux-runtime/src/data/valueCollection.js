@@ -299,6 +299,14 @@ class ValueCollection extends Collection {
     return this._omitted;
   }
 
+  addReadError() {
+    if (!this._readError) {
+      this._readError = this._addValueRef();
+      this._finishValue(this._readError, null, '(ERROR: Dbux could not read properties of object)', ValuePruneState.ReadError);
+    }
+    return this._readError;
+  }
+
   /**
    * @return {ValueRef}
    */
@@ -616,7 +624,8 @@ class ValueCollection extends Collection {
         for (let i = 0; i < n; ++i) {
           let childRef, childValue;
           if (!this._canAccess(value)) {
-            childRef = this.addOmitted();
+            // childRef = this.addOmitted();
+            childRef = this.addReadError();
           }
           else {
             childValue = this._readProperty(value, i);
