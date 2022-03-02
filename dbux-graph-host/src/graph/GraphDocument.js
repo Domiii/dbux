@@ -6,6 +6,8 @@ import GraphType, { nextGraphType } from '@dbux/graph-common/src/shared/GraphTyp
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
+/** @typedef {import('./GraphContainer').default} GraphContainer */
+
 // const screenshotMode = true;
 const screenshotMode = false;
 
@@ -44,8 +46,6 @@ class GraphDocument extends HostComponentEndpoint {
   update() {
     this.toolbar.forceUpdate();
 
-    // TODO: [performance] better mechanic
-    // hackfix: use this to toggle highContract mode with async detail mode(refresh every time we toggle the mode)
     this.refreshGraphs();
   }
 
@@ -96,9 +96,16 @@ class GraphDocument extends HostComponentEndpoint {
   handleApplicationsChanged() {
   }
 
+  /**
+   * @type {GraphContainer[]}
+   */
+  get containers() {
+    return this.children.getComponents('GraphContainer');
+  }
+
   refreshGraphs() {
-    this.children.getComponents('GraphContainer').forEach((container) => {
-      container.refreshGraph();
+    this.containers.forEach((container) => {
+      container.refreshGraphRoots();
     });
   }
 
@@ -128,7 +135,7 @@ class GraphDocument extends HostComponentEndpoint {
   }
 
   // ###########################################################################
-  // initial state + context
+  // initial state + shared context
   // ###########################################################################
 
   makeInitialState() {
@@ -154,6 +161,9 @@ class GraphDocument extends HostComponentEndpoint {
 
   shared() {
     return {
+      /**
+       * Non-modular version of react's "context": a type of global state.
+       */
       context: {
         graphDocument: this,
         themeMode: this.state.themeMode,

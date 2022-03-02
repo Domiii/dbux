@@ -1,7 +1,8 @@
 import allApplications from '@dbux/data/src/applications/allApplications';
-import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import StackMode from '@dbux/graph-common/src/shared/StackMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
+
+/** @typedef { import("./GraphDocument").default } GraphDocument */
 
 class Toolbar extends HostComponentEndpoint {
   init() {
@@ -21,16 +22,31 @@ class Toolbar extends HostComponentEndpoint {
   }
 
   /**
+   * @type {GraphDocument}
+   */
+  get doc() {
+    return this.parent;
+  }
+
+  /**
    * NOTE: `SyncGraph` only
    */
   get hiddenNodeManager() {
-    const { syncGraphContainer } = this.parent;
+    const { syncGraphContainer } = this.doc;
     return syncGraphContainer.graph.controllers.getComponent('HiddenNodeManager');
   }
 
   public = {
+    /**
+     * hackfix for intellisense (which is not smart enough to look up `this.doc` correctly.)
+     * @type {GraphDocument}
+     */
+    get doc() {
+      return this.parent;
+    },
+
     toggleFollowMode() {
-      this.parent.toggleFollowMode();
+      this.doc.toggleFollowMode();
     },
 
     hideOldRun(time) {
@@ -42,18 +58,18 @@ class Toolbar extends HostComponentEndpoint {
     },
 
     nextGraphMode() {
-      this.parent.nextGraphMode();
+      this.doc.nextGraphMode();
     },
 
     nextStackMode() {
-      this.parent.setState({
+      this.doc.setState({
         stackMode: StackMode.nextValue(this.parent.state.stackMode)
       });
-      this.parent.asyncStackContainer.refreshGraph();
+      this.doc.asyncStackContainer.refreshGraph();
     },
 
     setSearchMode(mode) {
-      this.context.graphDocument.searchBar.setSearchMode(mode);
+      this.doc.searchBar.setSearchMode(mode);
     },
 
     clearThreadSelection() {

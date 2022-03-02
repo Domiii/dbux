@@ -309,6 +309,10 @@ class HostComponentEndpoint extends ComponentEndpoint {
     return this._refreshPromise;
   }
 
+  /**
+   * Triggers a refresh, if not already in progress.
+   * Use `waitForRefresh` to wait until it's done, right after calling `refresh`.
+   */
   refresh = () => {
     ++this._refreshRequests;
     if (this._refreshPromise) {
