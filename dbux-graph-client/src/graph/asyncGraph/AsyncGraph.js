@@ -136,9 +136,15 @@ class AsyncGraph extends GraphBase {
       postAsyncEventUpdateType,
       hasError,
       nestingDepth,
+      stats: {
+        nTreeContexts,
+        nTreeStaticContexts,
+        nTreeFileCalled,
+        nTreeTraces,
+      },
     } = nodeData;
 
-    const { themeMode, screenshotMode, graphDocument } = this.context;
+    const { themeMode, screenshotMode, statsEnabled } = this.context;
     // const { asyncDetailMode } = graphDocument.state;
     // const highContractMode = screenshotMode && !asyncDetailMode;
     const highContractMode = screenshotMode;
@@ -146,7 +152,7 @@ class AsyncGraph extends GraphBase {
 
     const backgroundColor = getStaticContextColor(themeMode, realStaticContextid, { bland: !!moduleName, highContractMode });
 
-    let leftLabel = '', rightLabel = '', errorLabel = '';
+    let leftLabel = '', errorLabel = '', statsRawEl = '';
     let shortLabel, fullLabel = displayName;
 
     switch (postAsyncEventUpdateType) {
@@ -183,6 +189,25 @@ class AsyncGraph extends GraphBase {
       // shortLabel = `${depthLabel}${shortLabel}`;
       // fullLabel = `${depthLabel}${fullLabel}`;
     }
+    if (statsEnabled) {
+      const { statsIconUris } = this.context;
+      statsRawEl = /*html*/`
+        <div class="grid" style="width: max-content;">
+          <div style="grid-row: 1; grid-column:1;" class="context-stats" title="Amount of child contexts in subgraph">
+            <img src="${statsIconUris.nTreeContexts}" /><span>${nTreeContexts}</span>
+          </div>
+          <div style="grid-row: 1; grid-column:2;" class="context-stats" title="Amount of static contexts involved in subgraph">
+            <img src="${statsIconUris.nTreeStaticContexts}" /><span>${nTreeStaticContexts}</span>
+          </div>
+          <div style="grid-row: 2; grid-column:1;" class="context-stats" title="Amount of files involved in subgraph">
+            <img src="${statsIconUris.nTreeFileCalled}" /><span>${nTreeFileCalled}</span>
+          </div>
+          <div style="grid-row: 2; grid-column:2;" class="context-stats" title="Amount of traces in subgraph. This is a rough measure.">
+            <img src="${statsIconUris.nTreeTraces}" /><span>${nTreeTraces}</span>
+          </div>
+        </div>
+      `;
+    }
     const { asyncNodeId, applicationId, isTerminalNode } = asyncNode;
     const asyncNodeData = {
       'async-node-id': asyncNodeId,
@@ -215,7 +240,9 @@ class AsyncGraph extends GraphBase {
               <span>${locLabel}</span>
             </div>
           </div>
-          <div class="right-label">${rightLabel}</div>
+          <div class="right-label">
+            ${statsRawEl}
+          </div>
         </div>
       `;
   }

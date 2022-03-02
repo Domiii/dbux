@@ -11,20 +11,22 @@ import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 class ContextNode extends HostComponentEndpoint {
   init() {
     this.childrenBuilt = false;
-    this.state.statsEnabled = true;
     this.state.visible = this.hiddenNodeManager ? this.hiddenNodeManager.shouldBeVisible(this) : true;
 
     const {
       context,
-      statsEnabled
     } = this.state;
+
+    const {
+      statsEnabled
+    } = this.context;
 
     const { applicationId, contextId } = context;
 
     // get name (and other needed data)
     const app = allApplications.getById(applicationId);
     const dp = app.dataProvider;
-    
+
     this.state.hasError = !!dp.indexes.traces.errorByContext.get(contextId)?.length;
     this.state.rootContextId = dp.util.getRootContextOfContext(contextId).contextId;
     this.state.contextLabel = makeContextLabel(context, app);
@@ -86,6 +88,11 @@ class ContextNode extends HostComponentEndpoint {
     return state?.nTreeFileCalled || 0;
   }
 
+  get nTreeTraces() {
+    const stats = this.dp.queries.statsByContext(this.contextId);
+    return stats?.nTreeTraces || 0;
+  }
+
   get hiddenNodeManager() {
     return this.context.graphRoot.controllers.getComponent('HiddenNodeManager');
   }
@@ -109,6 +116,7 @@ class ContextNode extends HostComponentEndpoint {
     _update.nTreeStaticContexts = this.nTreeStaticContexts;
     //nTreeFileCalled
     _update.nTreeFileCalled = this.nTreeFileCalled;
+    _update.nTreeTraces = this.nTreeTraces;
   }
 
   // ########################################

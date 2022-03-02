@@ -98,6 +98,11 @@ class AsyncGraph extends GraphBase {
       const parentAsyncNodeId = parentEdge?.parentAsyncNodeId;
       const nestingDepth = dp.util.getNestedDepth(rootContextId);
 
+      let stats = null;
+      if (this.context.statsEnabled) {
+        stats = dp.queries.statsByContext(rootContextId);
+      }
+
       return {
         asyncNode,
         executionContext,
@@ -115,6 +120,7 @@ class AsyncGraph extends GraphBase {
         realStaticContextid,
         moduleName,
         postAsyncEventUpdateType,
+        stats,
 
         /**
          * dummy value, will be resolve later in `resolveErrorData`
