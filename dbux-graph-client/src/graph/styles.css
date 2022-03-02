@@ -660,6 +660,8 @@ body:not(.theme-mode-dark) .highlight {
   border: 1px solid black;
   border-radius: 4px;
   font-size: 9px;
+  white-space: nowrap;
+  width: max-content;
 }
 
 .context-stats img {

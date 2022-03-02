@@ -11,13 +11,15 @@ import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 class ContextNode extends HostComponentEndpoint {
   init() {
     this.childrenBuilt = false;
-    this.state.statsEnabled = true;
     this.state.visible = this.hiddenNodeManager ? this.hiddenNodeManager.shouldBeVisible(this) : true;
 
     const {
       context,
-      statsEnabled
     } = this.state;
+
+    const {
+      statsEnabled
+    } = this.context;
 
     const { applicationId, contextId } = context;
 

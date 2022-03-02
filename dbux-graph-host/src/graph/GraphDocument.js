@@ -140,7 +140,7 @@ class GraphDocument extends HostComponentEndpoint {
     };
     const statsIconUris = {
       nTreeContexts: this.getIconUri('nTreeContextsStats.svg'),
-      nTreeStaticContext: this.getIconUri('nTreeStaticContextsStats.svg'),
+      nTreeStaticContexts: this.getIconUri('nTreeStaticContextsStats.svg'),
       nTreeFileCalled: this.getIconUri('document.svg'),
       nTreeTraces: this.getIconUri('circuit.svg'),
     };
@@ -159,7 +159,8 @@ class GraphDocument extends HostComponentEndpoint {
         themeMode: this.state.themeMode,
         contextNodeIconUris: this.state.contextNodeIconUris,
         statsIconUris: this.state.statsIconUris,
-        screenshotMode: this.state.screenshotMode
+        screenshotMode: this.state.screenshotMode,
+        statsEnabled: true,
       }
     };
   }
