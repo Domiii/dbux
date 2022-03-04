@@ -146,7 +146,7 @@ class HostComponentManager extends BaseComponentManager {
   // manage init count
   // ###########################################################################
 
-  setInitCount(n) {
+  _setInitCount(n) {
     const oldState = this.isBusyInit();
 
     this._initCount += n;
@@ -173,11 +173,11 @@ class HostComponentManager extends BaseComponentManager {
   }
 
   incInitCount() {
-    this.setInitCount(1);
+    this._setInitCount(1);
   }
 
   decInitCount() {
-    this.setInitCount(-1);
+    this._setInitCount(-1);
   }
 
   isBusyInit() {
@@ -188,6 +188,11 @@ class HostComponentManager extends BaseComponentManager {
     return this._emitter.on('busyStateChanged', cb);
   }
 
+  /**
+   * Returns a promise that is settled when all added components have finished initialization.
+   * 
+   * TODO: find out why the name of this function contains the word "busy"?
+   */
   waitForBusyInit() {
     return this._busyInitPromise;
   }

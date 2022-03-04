@@ -37,6 +37,9 @@ function shouldInstrument(input, whitelist, blacklist) {
  * {@link ModuleFilterOptions}
  * ##########################################################################*/
 
+/**
+ * hackfix type definition
+ */
 export class ModuleFilterOptions {
   /**
    * @type {string | RegExp | Array.<string | RegExp>}

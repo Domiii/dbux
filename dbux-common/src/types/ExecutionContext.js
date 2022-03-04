@@ -23,6 +23,7 @@ export default class ExecutionContext {
   stackDepth;
 
   /**
+   * @deprecated Use `rootContextId` instead. NOTE: `trace` has it, context did not need it quite yet.
    * @type {number}
    */
   runId;

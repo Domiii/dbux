@@ -1,3 +1,4 @@
+import sleep from '@dbux/common/src/util/sleep';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
@@ -15,6 +16,30 @@ class GraphBase extends HostComponentEndpoint {
 
   shouldBeEnabled() {
     throw new Error('abstract method not implemented');
+  }
+
+  _resetPromise;
+  fullReset() {
+    if (!this._resetPromise) {
+      this._resetPromise = (async () => {
+        try {
+          await sleep(50); // implicit debounce
+          await this.waitForAll();
+          this.clear();
+          await this.waitForClear();
+          this.refresh();
+          await this.waitForAll();
+        }
+        finally {
+          this._resetPromise = null;
+        }
+      })();
+    }
+    return this._resetPromise;
+  }
+
+  waitForReset() {
+    return this._resetPromise;
   }
 
   // ###########################################################################

@@ -111,6 +111,17 @@ class HostComponentEndpoint extends ComponentEndpoint {
     }
   }
 
+  /**
+   * Returns a promise that settles when `init`, `update` and `refresh` are all fulfilled.
+   */
+  async waitForAll() {
+    await Promise.all([
+      this.waitForInit(),
+      this.waitForUpdate(),
+      this.waitForRefresh()
+    ]);
+  }
+
   // ###########################################################################
   // utilities
   // ###########################################################################
@@ -306,25 +317,32 @@ class HostComponentEndpoint extends ComponentEndpoint {
     throw new Error(`${this.componentName}.handleRefresh not implemented`);
   }
 
+  /**
+   * A refresh is usually triggered by some data change event handler.
+   * A refresh implies:
+   *   1. waiting for initialization of previously added components
+   *   2. changing the graph (usually implemented in `handleRefresh`)
+   *   3. waiting for initialization of newly added components
+   */
   async waitForRefresh() {
     return this._refreshPromise;
   }
 
   /**
    * Triggers a refresh, if not already in progress.
-   * Use `waitForRefresh` to wait until it's done, right after calling `refresh`.
+   * Use `waitForRefresh` to wait until it's done.
    */
   refresh = () => {
     ++this._refreshRequests;
     if (this._refreshPromise) {
       return;
     }
-    this._refreshPromise = this.doRefresh();
+    this._refreshPromise = this._doRefresh();
   };
 
-  async doRefresh() {
+  async _doRefresh() {
     try {
-      await sleep(50);
+      await sleep(50); // implicit debounce
       while (this._refreshRequests) {
         this._refreshRequests = 0;
 

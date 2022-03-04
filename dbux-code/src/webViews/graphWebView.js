@@ -7,8 +7,11 @@ import { emitCallGraphAction } from '../userEvents';
 import searchController from '../search/searchController';
 import { getGlobalAnalysisViewController } from '../globalAnalysisView/GlobalAnalysisViewController';
 import RichWebView from './RichWebView';
+import { get as getMemento, set as setMemento } from '../memento';
 
 const defaultColumn = ViewColumn.Two;
+
+const ContextFilterMementoKey = 'graph-context-filter';
 
 export default class GraphWebView extends RichWebView {
   constructor() {
@@ -23,6 +26,14 @@ export default class GraphWebView extends RichWebView {
     return 'dist/web/graph.client.js';
   }
 
+  getContextFilter = () => {
+    return getMemento(ContextFilterMementoKey);
+  };
+
+  setContextFilter = (value) => {
+    return setMemento(ContextFilterMementoKey, value);
+  };
+
   // ###########################################################################
   // provide externals to HostComponentManager
   // ###########################################################################
@@ -30,7 +41,10 @@ export default class GraphWebView extends RichWebView {
   externals = {
     emitCallGraphAction,
     searchController,
-    globalAnalysisViewController: getGlobalAnalysisViewController()
+    globalAnalysisViewController: getGlobalAnalysisViewController(),
+
+    getContextFilter: this.getContextFilter,
+    setContextFilter: this.setContextFilter
   }
 }
 

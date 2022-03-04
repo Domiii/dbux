@@ -1,6 +1,6 @@
 import dbuxBabelPlugin from '@dbux/babel-plugin';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
-import shouldIgnore from '@dbux/babel-plugin/src/external/shouldIgnore';
+import makeIgnore from '@dbux/common-node/src/filters/makeIgnore';
 import { requireDynamic } from '@dbux/common-node/src/util/requireUtil';
 import colors from 'colors/safe';
 import isString from 'lodash/isString';
@@ -87,7 +87,7 @@ export default function buildBabelOptions(options) {
 
   // Build ignore config using whitelist/blacklist options
   const ignore = [
-    shouldIgnore(options)
+    makeIgnore(options)
   ];
 
   // setup babel-register

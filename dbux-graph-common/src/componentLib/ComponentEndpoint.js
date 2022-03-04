@@ -5,7 +5,12 @@ import NestedError from '@dbux/common/src/NestedError';
 import isFunction from 'lodash/isFunction';
 import RemoteCommandProxy from './RemoteCommandProxy';
 
+/** @typedef { import("./BaseComponentManager").default } BaseComponentManager */
+
 class ComponentEndpoint {
+  /**
+   * @type {BaseComponentManager}
+   */
   componentManager;
 
   /**

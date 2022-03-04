@@ -1,12 +1,15 @@
 import NanoEvents from 'nanoevents';
 import minBy from 'lodash/minBy';
+import isPlainObject from 'lodash/isPlainObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import GraphBase from './GraphBase';
 import ContextNode from './syncGraph/ContextNode';
 import HoleNode from './syncGraph/HoleNode';
+import makeIncludeContext from './makeIncludeContext';
 
+/** @typedef { import("./GraphDocument").default } GraphDocument */
 /** @typedef { import("@dbux/data/src/RuntimeDataProvider").default } RuntimeDataProvider */
 /** @typedef {import('@dbux/common/src/types/ExecutionContext').default} ExecutionContext */
 
@@ -96,6 +99,16 @@ class CallGraphNodes {
 
   isHole(context) {
     return !this.includePredicate(context);
+  }
+
+  setIncludePredicate(newPredicate) {
+    if (isPlainObject(newPredicate)) {
+      // config input
+      newPredicate = makeIncludeContext(newPredicate);
+    }
+    this.includePredicate = newPredicate;
+    // future-work: also remember and re-initiate GraphNodeMode of all visible nodes
+    return this.graph.fullReset();
   }
 
   /** ###########################################################################
@@ -338,7 +351,9 @@ class SyncGraphBase extends GraphBase {
   _nodes;
 
   init() {
-    this._nodes = new CallGraphNodes(this);
+    const includePredicate = this.graph.componentManager.externals.getContextFilter();
+    this._nodes = new CallGraphNodes(this, includePredicate);
+    
     this.roots = new Set();
     this.state.applications = [];
     this._emitter = new NanoEvents();
@@ -350,6 +365,13 @@ class SyncGraphBase extends GraphBase {
     });
     this.controllers.createComponent('ContextNodeManager');
     this.controllers.createComponent('PopperController');
+  }
+
+  /**
+   * @type {GraphDocument}
+   */
+  get graphDocument() {
+    return this.context.graphDocument;
   }
 
   /** ###########################################################################
@@ -504,7 +526,7 @@ class SyncGraphBase extends GraphBase {
         this.buildContextNode(context);
         contextNode = this.getContextNodeByContext(context);
       }
-      if (this.context.graphDocument.state.followMode && contextNode) {
+      if (this.graphDocument.state.followMode && contextNode) {
         // NOTE: since we do this right after init, need to check if contextNode have been built
         await contextNode.waitForInit();
         await this.focusController.focus(contextNode);

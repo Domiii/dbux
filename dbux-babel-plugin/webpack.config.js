@@ -19,8 +19,11 @@ const { globPatternToEntry } = require('../dbux-common-node/src/util/webpackUtil
 
 // const _oldLog = console.log; console.log = (...args) => _oldLog(new Error(' ').stack.split('\n')[2], ...args);
 const PackageRoot = path.resolve(__dirname);
+const PackageFolder = path.basename(__dirname);
 // const projectConfig = path.resolve(projectRoot, 'config');
 const MonoRoot = path.resolve(__dirname, '..');
+
+const CommonNodeFolder = 'dbux-common-node';
 
 
 module.exports = (env, argv) => {
@@ -48,7 +51,7 @@ module.exports = (env, argv) => {
 
   const dependencyPaths = [
     'dbux-common',
-    'dbux-common-node'
+    CommonNodeFolder
   ];
 
 
@@ -76,17 +79,21 @@ module.exports = (env, argv) => {
   ];
 
   const entry = {
-    index: path.join(PackageRoot, 'src/index.js'),
+    [`${PackageFolder}/dist/index`]: path.join(PackageRoot, 'src/index.js'),
+    
+    // hackfix: also generate some of common-node's stuff (since that does not have its own webpack.config for now)
     ...globPatternToEntry(
-      PackageRoot,
-      [['src/external', '*.js']],
-      (key, fpath/* , parent, entryRoot */) => {
-        key = path.basename(key); // put file directly into dist, don't keep intermediate path
+      path.join(MonoRoot, CommonNodeFolder, 'src'),
+      [['filters', '*.js']],
+      (entryKey, fpath/* , parent, entryRoot */) => {
+        // entryKey = path.basename(entryKey); // put file directly into dist; don't keep intermediate path
+        entryKey = `${CommonNodeFolder}/dist/${entryKey}`;
         return [
-          key, fpath
+          entryKey, fpath
         ];
       }
     ),
+
 
   };
 
@@ -126,7 +133,9 @@ module.exports = (env, argv) => {
     context: path.join(PackageRoot, '.'),
     entry,
     output: {
-      path: path.join(PackageRoot, outputFolderName),
+      // see entry hackfix
+      // path: path.join(PackageRoot, outputFolderName),
+      path: MonoRoot,
       filename: '[name].js',
       publicPath: outputFolderName,
       libraryTarget: "umd", // probably want commonjs instead

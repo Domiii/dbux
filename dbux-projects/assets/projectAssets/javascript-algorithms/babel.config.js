@@ -2,7 +2,7 @@
  * @see https://github.com/facebook/jest/issues/6229
  */
 
-const shouldIgnore = require('@dbux/babel-plugin/dist/shouldIgnore').default;
+const makeIgnore = require('@dbux/common-node/dist/filters/makeIgnore').default;
 // const ignoreOptions = {
 //   // packageWhitelist: 'jest,jest[-].*,@jest.*',
 //   packageWhitelist: '.*',
@@ -23,7 +23,7 @@ const ignoreOptions = {
 };
 
 const ignore = [
-  shouldIgnore(ignoreOptions)
+  makeIgnore(ignoreOptions)
 ];
 
 

@@ -280,6 +280,13 @@ export default {
   },
 
   /** @param {DataProvider} dp */
+  getContextFilePath(dp, contextId) {
+    const context = dp.collections.executionContexts.getById(contextId);
+    const programContext = dp.util.getStaticContextProgram(context.staticContextId);
+    return programContext.filePath;
+  },
+
+  /** @param {DataProvider} dp */
   getStaticContextProgram(dp, staticContextId) {
     const staticContext = dp.collections.staticContexts.getById(staticContextId);
     return dp.collections.staticProgramContexts.getById(staticContext.programId);

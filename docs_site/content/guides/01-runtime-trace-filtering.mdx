@@ -28,7 +28,7 @@ Some notes:
 
 * Each one of these settings supports comma-separated lists of file or package names or regexes.
 * All paths are normalized to use `/`, so don't use backslashes on Windows.
-* Implementation of the filter is in <CodeLink path="dbux-babel-plugin/src/external/moduleFilter.js" />.
+* Implementation of the filter is in <CodeLink path="dbux-common-node/src/filters/moduleFilter.js" />.
 * -> `packageName` is determined via <CodeLink path="dbux-common-node/src/util/moduleUtil.js"><code>parsePackageName</code></CodeLink>
   * NOTE: `packageName` supports namespaces.
   * Examples of `packageName` detection for different module paths:
@@ -55,7 +55,7 @@ NOTE: The `moduleFilter` functions return `function` (not `string` or `RegExp`).
 
 
 ```js
-const shouldInclude = require('@dbux/babel-plugin/dist/include').default;
+const shouldInclude = require('@dbux/common-node/dist/filters/include').default;
 
 // ...
 

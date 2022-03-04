@@ -1,14 +1,14 @@
 import { newLogger, playbackLogRecords } from '@dbux/common/src/log/logger';
 import NestedError from '@dbux/common/src/NestedError';
+import makeIgnore from '@dbux/common-node/src/filters/makeIgnore';
 import errorWrapVisitor from '../helpers/errorWrapVisitor';
 import { clearSourceHelperCache } from '../helpers/sourceHelpers';
 import injectDbuxState from '../dbuxState';
 import { buildVisitors as traceVisitors } from '../parseLib/visitors';
 import Program from '../parse/Program';
-import shouldIgnore from '../external/shouldIgnore';
 import nameVisitors, { clearNames } from './nameVisitors';
 
-/** @typedef {import('../external/moduleFilter').ModuleFilterOptions} ModuleFilterOptions */
+/** @typedef {import('@dbux/common-node/src/filters/moduleFilter').ModuleFilterOptions} ModuleFilterOptions */
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError, trace: logTrace } = newLogger('programVisitor');
@@ -137,7 +137,7 @@ function shouldInstrument(config, path) {
 
   if (moduleFilter) {
     if (!config._ignore) {
-      config._ignore = shouldIgnore(moduleFilter);
+      config._ignore = makeIgnore(moduleFilter);
     }
     ignore.push(config._ignore);
   }
