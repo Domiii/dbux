@@ -54,7 +54,7 @@ class ContextNode extends ClientComponentEndpoint {
           </div>
           <div class="full-width flex-row">
             <div class="node-left-padding"></div>
-            <div data-mount="ContextNode" data-el="nodeChildren" class="node-children"></div>
+            <div data-mount="ContextNode,HoleNode" data-el="nodeChildren" class="node-children"></div>
           </div>
         </div>
       </div>

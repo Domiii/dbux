@@ -105,7 +105,7 @@ class GraphDocument extends HostComponentEndpoint {
 
   refreshGraphs() {
     this.containers.forEach((container) => {
-      container.refreshGraphRoots();
+      container.refreshGraph();
     });
   }
 

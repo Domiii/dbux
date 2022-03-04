@@ -46,6 +46,10 @@ class ContextHole {
   }
 }
 
+const DefaultPredicateCfg = {
+
+};
+
 /**
  * Provides a graph-with-holes data structure.
  * Holes are connected subgraphs for which each node of that subgraph holds the given predicate.
@@ -74,9 +78,9 @@ class CallGraphNodes {
   _lastHoldeId = 0;
   holeNodesById = [];
 
-  constructor(graph, includePredicate) {
+  constructor(graph, predicateCfg = DefaultPredicateCfg) {
     this.graph = graph;
-    this.includePredicate = includePredicate || (() => true);
+    this._setIncludePredicate(predicateCfg);
 
     this.clear();
   }
@@ -101,12 +105,17 @@ class CallGraphNodes {
     return !this.includePredicate(context);
   }
 
-  setIncludePredicate(newPredicate) {
+  _setIncludePredicate(newPredicate) {
     if (isPlainObject(newPredicate)) {
       // config input
       newPredicate = makeIncludeContext(newPredicate);
     }
     this.includePredicate = newPredicate;
+  }
+
+  setIncludePredicate(newPredicate) {
+    this._setIncludePredicate(newPredicate);
+
     // future-work: also remember and re-initiate GraphNodeMode of all visible nodes
     return this.graph.fullReset();
   }
@@ -212,7 +221,7 @@ class CallGraphNodes {
       const frontier = [];
       contexts.push(context);
       this.floodHole(contexts, frontier, context);
-      const hole = this.addHole(contexts, frontier);
+      const hole = this.createHole(contexts, frontier);
       newNode = parentNode.children.createComponent('HoleNode', {
         // TODO: HoleNodes dont actually have a single representative `context`
         context: minBy(contexts, c => c.contextId),
@@ -237,7 +246,7 @@ class CallGraphNodes {
     return newNode;
   }
 
-  addHole(contexts, frontier) {
+  createHole(contexts, frontier) {
     const holeId = ++this._lastHoldeId;
     const hole = new ContextHole(holeId, contexts, frontier);
     return hole;
@@ -351,9 +360,9 @@ class SyncGraphBase extends GraphBase {
   _nodes;
 
   init() {
-    const includePredicate = this.graph.componentManager.externals.getContextFilter();
+    const includePredicate = this.componentManager.externals.getContextFilter();
     this._nodes = new CallGraphNodes(this, includePredicate);
-    
+
     this.roots = new Set();
     this.state.applications = [];
     this._emitter = new NanoEvents();

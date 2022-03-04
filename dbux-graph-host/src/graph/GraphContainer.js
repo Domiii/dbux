@@ -24,6 +24,10 @@ class GraphContainer extends HostComponentEndpoint {
     return this.state.enabled;
   }
 
+  refreshGraph() {
+    this.refreshGraphRoots();
+  }
+
   refreshGraphRoots() {
     if (this.graph.shouldBeEnabled()) {
       this.setState({ enabled: true });
