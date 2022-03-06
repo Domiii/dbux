@@ -99,6 +99,9 @@ export default function buildBabelOptions(options) {
      * @see https://github.com/browserslist/browserslist/issues/629#issuecomment-984459369
      */
     targets,
+
+    ignore,
+
     browserslistConfigFile: false,
     sourceType: 'unambiguous',
     sourceMaps: false,
@@ -121,7 +124,7 @@ export default function buildBabelOptions(options) {
     // default plugin options
     babelPluginOptions.verbose = babelPluginOptions.verbose || verbose;
     babelPluginOptions.runtime = babelPluginOptions.runtime || runtime;
-    babelPluginOptions.ignore = ignore;
+    // babelPluginOptions.ignore = ignore; // NOTE: if we don't pass `ignore` to `babel`, it will ignore node_modules by default
 
     babelOptions.plugins = babelOptions.plugins || [];
     babelOptions.plugins.push([dbuxBabelPlugin, babelPluginOptions]);

@@ -119,9 +119,9 @@ class ContextNode extends ClientComponentEndpoint {
       const {
         statsIconUris
       } = this.context;
-      this.els.statsNTreeContexts.innerHTML = `<img src="${statsIconUris.nTreeContexts}" /><span>${nTreeContexts}</span>`;
-      this.els.statsNTreeStaticContexts.innerHTML = `<img src="${statsIconUris.nTreeStaticContexts}" /><span>${nTreeStaticContexts}</span>`;
       this.els.statsNTreeFileCalled.innerHTML = `<img src="${statsIconUris.nTreeFileCalled}" /><span>${nTreeFileCalled}</span>`;
+      this.els.statsNTreeStaticContexts.innerHTML = `<img src="${statsIconUris.nTreeStaticContexts}" /><span>${nTreeStaticContexts}</span>`;
+      this.els.statsNTreeContexts.innerHTML = `<img src="${statsIconUris.nTreeContexts}" /><span>${nTreeContexts}</span>`;
       this.els.statsNTreeTraces.innerHTML = `<img src="${statsIconUris.nTreeTraces}" /><span>${nTreeTraces}</span>`;
     }
     else {

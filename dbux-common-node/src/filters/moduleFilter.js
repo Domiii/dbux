@@ -1,22 +1,23 @@
 import isString from 'lodash/isString';
 import isRegExp from 'lodash/isRegExp';
-import { renderPath } from '@dbux/common-node/src/util/pathUtil';
-import { parsePackageName } from '@dbux/common-node/src/util/moduleUtil';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-// import { requireDynamic } from '@dbux/common-node/src/util/requireUtil';
+import { renderPath } from '../util/pathUtil';
+import { parsePackageName } from '../util/moduleUtil';
+// import { requireDynamic } from '../util/requireUtil';
 
-// const Verbose = 1;
-const Verbose = 2;
+const Verbose = 1;
+// const Verbose = 2;
+// const Verbose = 10;
 
 function debugLog(...args) {
-  let msg = `[@dbux/babel-plugin][moduleFilter] ${args.join(' ')}`;
+  let msg = `[Dbux] [moduleFilter] ${args.join(' ')}`;
   // msg = colors.gray(msg);
 
   // eslint-disable-next-line no-console
   console.log(msg);
 }
 function traceLog(...args) {
-  let msg = `[@dbux/babel-plugin][moduleFilter] ${args.join(' ')}`;
+  let msg = `[Dbux] [moduleFilter] ${args.join(' ')}`;
   // msg = colors.gray(msg);
 
   // eslint-disable-next-line no-console
@@ -80,7 +81,7 @@ export default function moduleFilter(options, includeDefault) {
   const fileWhitelistRegExps = makeRegExps(fileWhitelist);
   const fileBlacklistRegExps = makeRegExps(fileBlacklist);
 
-  Verbose > 1 && debugLog(
+  Verbose > 2 && debugLog(
     `pw`, packageWhitelistRegExps?.join(','),
     'pb', packageBlacklistRegExps?.join(','),
     'fw', fileWhitelistRegExps?.join(','),
@@ -108,8 +109,11 @@ export default function moduleFilter(options, includeDefault) {
       // 2. some stuff we want to ignore by default
       // TODO: make `.mjs` and @babel path settings configurable
       modulePath.match(/(\.mjs$)|([/\\]@babel[/\\])|([/\\]babel[-]plugin.*[/\\])/);
+
+    Verbose > 3 && debugLog(`CHECK: "${parsePackageName(modulePath)}" in "${modulePath}"`);
+      
     if (unwanted) {
-      reportRegister(modulePath, false, 'unwanted');
+      reportRegister(modulePath, !includeDefault, 'unwanted');
       return !includeDefault;
     }
 
@@ -119,7 +123,7 @@ export default function moduleFilter(options, includeDefault) {
     // 3. check package name (based on )
     if ((packageName &&
       !shouldInstrument(packageName, packageWhitelistRegExps, packageBlacklistRegExps))) {
-      reportRegister(modulePath, false, 'package');
+      reportRegister(modulePath, !includeDefault, 'package');
       return !includeDefault;
     }
 

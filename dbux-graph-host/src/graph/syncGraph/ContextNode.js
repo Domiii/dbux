@@ -95,27 +95,10 @@ class ContextNode extends HostComponentEndpoint {
     return this.dp.util.getCallerOrSchedulerTraceOfFirstContext(this.contextId);
   }
 
-  get nTreeContexts() {
-    const stats = this.dp.queries.statsByContext(this.contextId);
-    return stats?.nTreeContexts || 0;
+  get allContextStats() {
+    return this.dp.queries.statsByContext(this.contextId);
   }
-
-  get nTreeStaticContexts() {
-    const stats = this.dp.queries.statsByContext(this.contextId);
-    return stats?.nTreeStaticContexts || 0;
-  }
-
-  //get amount of file call
-  get nTreeFileCalled() {
-    const state = this.dp.queries.statsByContext(this.contextId);
-    return state?.nTreeFileCalled || 0;
-  }
-
-  get nTreeTraces() {
-    const stats = this.dp.queries.statsByContext(this.contextId);
-    return stats?.nTreeTraces || 0;
-  }
-
+  
   get hiddenNodeManager() {
     return this.context.graphRoot.controllers.getComponent('HiddenNodeManager');
   }
@@ -135,11 +118,11 @@ class ContextNode extends HostComponentEndpoint {
   }
 
   _addStats(_update) {
-    _update.nTreeContexts = this.nTreeContexts;
-    _update.nTreeStaticContexts = this.nTreeStaticContexts;
-    //nTreeFileCalled
-    _update.nTreeFileCalled = this.nTreeFileCalled;
-    _update.nTreeTraces = this.nTreeTraces;
+    const stats = this.allContextStats;
+    _update.nTreeFileCalled = stats.nTreeFileCalled;
+    _update.nTreeStaticContexts = stats.nTreeStaticContexts;
+    _update.nTreeContexts = stats.nTreeContexts;
+    _update.nTreeTraces = stats.nTreeTraces;
   }
 
   // ########################################

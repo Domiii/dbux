@@ -118,7 +118,7 @@ function handleShutdown() {
       }
 
       errorTime = Date.now();
-      warn(`shutdown delayed (${reason})...`);
+      warn(`Dbux is trying to delay shutdown (${reason}) by ${shutdownDelayMs / 1000}s...`);
 
       shutdownDelayTimer = setInterval(() => {
         warn('exiting now.');
@@ -129,7 +129,7 @@ function handleShutdown() {
     process.on('exit', handleShutdown);
 
     process.exit = (...args) => {
-      logTrace(`process.exit(${args}) was called.`);
+      logTrace(`NOTE: process.exit(${args}) was called by the application.`);
       delayShutdown('process.exit', ...args);
     };
 

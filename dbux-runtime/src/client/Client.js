@@ -225,9 +225,9 @@ export default class Client {
         // debug(`SEND`, this._sending, msg);
         this._socket.once('error', errorListener);
         this._socket.emit(msg, data, (ackMsg) => {
-          debug(`ACK`, this._sending);
+          // debug(`ACK`, this._sending);
           if (ackMsg !== msg) {
-            reject(new Error(`Ack not received while sending`));
+            reject(new Error(`Ack received but did not match (hints at @dbux/runtime race condition or socket.io shenanigans).`));
           }
           else {
             this._socket.removeListener('error', errorListener);

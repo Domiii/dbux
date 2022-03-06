@@ -236,7 +236,8 @@ class CallGraphNodes {
    */
   add(parentNode, context) {
     if (this.getContextNodeByContext(context)) {
-      this.graph.logger.warn(`Tried to add ContextNode with id=${context.contextId} but Node already exist`);
+      const dp = getDp(context);
+      this.graph.logger.warn(`Tried to add ContextNode but Node already exist for context: ${dp.util.makeContextInfo(context)}`);
       return null;
     }
 
@@ -296,6 +297,7 @@ class CallGraphNodes {
   buildContextNode(context) {
     const { applicationId } = context;
     const dp = allApplications.getById(applicationId).dataProvider;
+
     let currentContext = context;
     let currentNode;
     const ancestors = [];
