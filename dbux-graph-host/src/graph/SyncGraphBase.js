@@ -17,6 +17,8 @@ import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('SyncGraphBase');
 
+const Verbose = 1;
+
 /**
  * @param {{ applicationId, contextId }} applicationIdHolder 
  * @return {RuntimeDataProvider}
@@ -235,9 +237,16 @@ class CallGraphNodes {
    * @param {HostComponentEndpoint} parentNode 
    */
   add(parentNode, context) {
-    if (this.getContextNodeByContext(context)) {
+    if (Verbose) {
       const dp = getDp(context);
-      this.graph.logger.warn(`Tried to add ContextNode but Node already exist for context: ${dp.util.makeContextInfo(context)}`);
+      const nAncestors = dp.util.getContextAncestorCountInRoot(context.contextId);
+      this.graph.logger.debug(`[add] ${' '.repeat(nAncestors)}${dp.util.makeContextInfo(context)}`);
+    }
+
+    if (this.getContextNodeByContext(context)) {
+      // NOTE: this can happen if this is a "hole sibling" (hole was added when previous sibling was added, but hole includes this context)
+      // const dp = getDp(context);
+      // this.graph.logger.warn(`Tried to add ContextNode but Node already exist for context: ${dp.util.makeContextInfo(context)}`);
       return null;
     }
 
@@ -333,9 +342,6 @@ class CallGraphNodes {
 
     contextNode.childrenBuilt = true;
     return contextNode.getActualChildContexts().map(context => {
-      const dp = getDp(context);
-      const nAncestors = dp.util.getContextAncestorCountInRoot(context.contextId);
-      this.graph.logger.debug(`[add] ${' '.repeat(nAncestors)}${dp.util.makeContextInfo(context)}`);
       return this.add(contextNode, context);
     });
   }
