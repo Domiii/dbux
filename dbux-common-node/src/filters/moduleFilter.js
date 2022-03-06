@@ -5,9 +5,10 @@ import { renderPath } from '../util/pathUtil';
 import { parsePackageName } from '../util/moduleUtil';
 // import { requireDynamic } from '../util/requireUtil';
 
-const Verbose = 1;
-// const Verbose = 2;
-// const Verbose = 10;
+let Verbose;
+// const DefaultVerbose = 1;
+const DefaultVerbose = 2;
+// const DefaultVerbose = 10;
 
 function debugLog(...args) {
   let msg = `[Dbux] [moduleFilter] ${args.join(' ')}`;
@@ -70,11 +71,14 @@ export class ModuleFilterOptions {
  */
 export default function moduleFilter(options, includeDefault) {
   let {
+    verbose,
     packageWhitelist,
     packageBlacklist,
     fileWhitelist,
     fileBlacklist
   } = options;
+
+  Verbose = verbose === -1 ? DefaultVerbose : verbose; // hackfix
 
   const packageWhitelistRegExps = makeFullMatchRegExps(packageWhitelist);
   const packageBlacklistRegExps = makeFullMatchRegExps(packageBlacklist);

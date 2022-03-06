@@ -86,8 +86,12 @@ export default function buildBabelOptions(options) {
     requireDynamic.resolve/* ._resolveFilename */('@dbux/babel-plugin/package.json'));
 
   // Build ignore config using whitelist/blacklist options
+  const moduleFilterOptions = {
+    ...options,
+    verbose: -1
+  };
   const ignore = [
-    makeIgnore(options)
+    makeIgnore(moduleFilterOptions)
   ];
 
   // setup babel-register

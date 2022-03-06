@@ -1,12 +1,12 @@
 // eslint-disable-next-line no-console
-console.log(`Starting #################...`);
+// console.debug(`Starting #################...`);
 
 const { window } = require('vscode');
 
 global.window = window;
 
 // eslint-disable-next-line no-console
-console.log(`Activating Dbux...`);
+console.debug(`Activating Dbux...`);
 
 /**
  * Put the whole thing into try/catch, so that activation errors are caught correctly.

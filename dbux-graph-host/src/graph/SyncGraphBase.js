@@ -333,6 +333,9 @@ class CallGraphNodes {
 
     contextNode.childrenBuilt = true;
     return contextNode.getActualChildContexts().map(context => {
+      const dp = getDp(context);
+      const nAncestors = dp.util.getContextAncestorCountInRoot(context.contextId);
+      this.graph.logger.debug(`[add] ${' '.repeat(nAncestors)}${dp.util.makeContextInfo(context)}`);
       return this.add(contextNode, context);
     });
   }

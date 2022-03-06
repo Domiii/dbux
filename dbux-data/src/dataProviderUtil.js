@@ -1971,16 +1971,18 @@ export default {
   /**
    * @param {DataProvider} dp
    */
-  makeStaticContextInfo(dp, staticContextId, addPrefix = true) {
+  makeStaticContextInfo(dp, staticContextId, addLoc = true, addPrefix = true) {
     /**
      * @type {StaticContext}
      */
-    const staticContext = dp.util.getStaticExecutionContextOfContext(staticContextId);
+    // const staticContext = dp.util.getStaticExecutionContextOfContext(staticContextId);
+    const staticContext = dp.collections.staticContexts.getById(staticContextId);
     const { displayName, loc, type } = staticContext;
     const program = dp.util.getStaticContextProgram(staticContextId);
     const { filePath } = program;
     const prefix = addPrefix ? `[${StaticContextType.nameFrom(type)}] ` : '';
-    return `${prefix}"${displayName}" @ ${filePath}:${locToString(loc)}`;
+    const locLabel = addLoc ? ` @ ${filePath}:${locToString(loc)}` : '';
+    return `${prefix}"${displayName}"${locLabel}`;
   },
 
   /**
@@ -1993,7 +1995,7 @@ export default {
     }
     const { contextId } = context;
     const { contextType, staticContextId } = context;
-    const staticInfo = dp.util.makeStaticContextInfo(staticContextId, false);
+    const staticInfo = dp.util.makeStaticContextInfo(staticContextId, false, false);
     return `[${ExecutionContextType.nameFrom(contextType)}] #${contextId} ${staticInfo}`;
   },
 
@@ -2222,6 +2224,7 @@ export default {
     return dp.indexes.executionContexts.children.get(contextId) || EmptyArray;
   },
 
+  /** @param {DataProvider} dp */
   getChildrenOfContextInRoot(dp, contextId) {
     return dp.util.getChildrenOfContext(contextId).filter(context => {
       if (context.isVirtualRoot) {
@@ -2234,6 +2237,16 @@ export default {
       return true;
     });
   },
+
+  /** @param {DataProvider} dp */
+  getContextAncestorCountInRoot(dp, contextId) {
+    if (!dp.util.isRootContext(contextId)) {
+      const { parentContextId } = dp.collections.executionContexts.getById(contextId);
+      return 1 + dp.util.getContextAncestorCountInRoot(parentContextId);
+    }
+    return 0;
+  },
+
 
   /** ###########################################################################
    * search
