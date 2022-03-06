@@ -1,4 +1,4 @@
-import allApplications from '@dbux/data/src/applications/allApplications';
+// import allApplications from '@dbux/data/src/applications/allApplications';
 import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import GroupNode from './GroupNode';
 
@@ -12,37 +12,29 @@ export default class HoleNode extends GroupNode {
   aliases = ['HoleNode', 'GroupNode', 'ContextNode'];
 
   init() {
-    // TODO: make this a proper "Hole"/"Group" representation → not just a single context!
     super.init();
   }
 
   setNodeState() {
+    // const {
+    //   context
+    // } = this.state;
     const {
-      context
-    } = this.state;
-    const {
-      screenshotMode,
+      // screenshotMode,
       themeMode
     } = this.context;
-    const { applicationId, contextId } = context;
-    const app = allApplications.getById(applicationId);
-    const dp = app.dataProvider;
+    // const { applicationId, contextId } = context;
+    // const app = allApplications.getById(applicationId);
+    // const dp = app.dataProvider;
 
-    this.state.contextLabel = `(hidden ${this.state.hole.contextCount})`;
+    this.state.contextLabel = `(hidden: ${this.state.group.contextCount})`;
 
     // const hue = 0; // does not matter much
     // let saturation = 5;
     // let lightness = ThemeMode.is.Dark(themeMode) ? 30 : 65;
     // this.state.backgroundStyle = `hsl(${hue},${saturation}%,${lightness}%)`;
-    const x = ThemeMode.is.Dark(themeMode) ? '44' : 'BB';
-    this.state.backgroundStyle = `#${x}${x}${x}`;
-  }
-
-  /**
-   * @type {ContextNodeHole}
-   */
-  get hole() {
-    return this.hostOnlyState.hole;
+    const gray = ThemeMode.is.Dark(themeMode) ? '33' : 'CC';
+    this.state.backgroundStyle = `#${gray}${gray}${gray}`;
   }
 
   /**
@@ -50,7 +42,7 @@ export default class HoleNode extends GroupNode {
    * @return {ExecutionContext[]}
    */
   getAllChildContexts() {
-    const { frontier } = this.hole;
+    const { frontier } = this.group;
     return frontier;
   }
 }

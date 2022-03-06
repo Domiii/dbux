@@ -46,6 +46,24 @@ export default class StatsByContextQuery extends SubscribableQuery {
     return this._cache.get(contextId)?.nTreeTraces || 0;
   }
 
+  /**
+   * @param {number[]} contextIds 
+   */
+  getCombinedStats(contextIds) {
+    let stats = this._cache.get(contextIds[0]);
+    const keys = Object.keys(stats);
+    if (contextIds.length > 1) {
+      stats = { ...stats };
+      for (let i = 1; i < contextIds.length; ++i) {
+        const next = this._cache.get(contextIds[i]);
+        for (const key of keys) {
+          stats[key] += next[key];
+        }
+      }
+    }
+    return stats;
+  }
+
   /** ###########################################################################
    * Interface implementation
    * ##########################################################################*/
@@ -75,11 +93,11 @@ export default class StatsByContextQuery extends SubscribableQuery {
           programIds.add(staticContextProgramId);
 
           for (const child of children) {
-            const childSet = dfs(child);
+            const childSets = dfs(child);
 
             // add childSet to staticContextSet
-            childSet.staticContextSet.forEach(staticContexts.add, staticContexts);
-            childSet.programIdSet.forEach(programIds.add, programIds);
+            childSets.staticContextSet.forEach(staticContexts.add, staticContexts);
+            childSets.programIdSet.forEach(programIds.add, programIds);
 
             stats.nTreeContexts += this.getContextNTreeContexts(child.contextId);
             stats.nTreeTraces += this.getContextNTreeTraces(child.contextId);
@@ -89,9 +107,8 @@ export default class StatsByContextQuery extends SubscribableQuery {
 
           this.storeByKey(contextId, stats);
 
-          const statsSet = { staticContextSet: staticContexts, programIdSet: programIds };
-
-          return statsSet;
+          const sets = { staticContextSet: staticContexts, programIdSet: programIds };
+          return sets;
         }
       );
     }

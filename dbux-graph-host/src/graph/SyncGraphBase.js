@@ -62,6 +62,7 @@ export class ContextNodeHole {
   constructor(id, contexts, frontier) {
     this.id = id;
     this.contexts = contexts;
+    this.contextIds = contexts.map(c => c.contextId);
     this.frontier = frontier;
   }
 
@@ -168,14 +169,14 @@ class CallGraphNodes {
       parentContext)
       || null;
 
-    // // 1. go up (parent) → NOTE: we DON'T go up, because the node creation algorithm is always top-down
-    // if (goUp && parentContext) {
-    //   if (this.isHole(parentContext)) {
-    //     // add to hole: ←↑→
-    //     contexts.push(parentContext);
-    //     this.floodHole(contexts, frontier, parentContext, true, true, true, false);
-    //   }
-    // }
+    // 1. go up (parent) → NOTE: we DON'T go up, because the node creation algorithm is always top-down
+    if (goUp && parentContext) {
+      if (this.isHole(parentContext)) {
+        // add to hole: ←↑→
+        contexts.push(parentContext);
+        this.floodHole(contexts, frontier, parentContext, true, true, true, false);
+      }
+    }
 
     if (goLeft || goRight) {
       const contextsOfParent = parentContext &&
@@ -263,14 +264,14 @@ class CallGraphNodes {
       const frontier = [];
       contexts.push(context);
       this.floodHole(contexts, frontier, context);
-      const hole = this.createHole(contexts, frontier);
+      const group = this.createHole(contexts, frontier);
       const state = {
         // TODO: HoleNodes dont actually have a single representative `context`
         context: minBy(contexts, c => c.contextId),
-        hole: hole.makeSharedData()
+        group: group.makeSharedData()
       };
       const hostOnlyState = {
-        hole
+        group
       };
       newNode = parentNode.children.createComponent('HoleNode', state, hostOnlyState);
       for (const c of contexts) {

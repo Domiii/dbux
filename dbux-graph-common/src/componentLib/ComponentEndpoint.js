@@ -39,6 +39,8 @@ class ComponentEndpoint {
   remote;
   state;
   /**
+   * If aliases are given, it will show up in 
+   *    `children/controllers.getChildren(x)` for every `x` in `aliases`.
    * @type {string[]}
    */
   aliases;

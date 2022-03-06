@@ -110,13 +110,13 @@ export default class Ipc {
       args
     } = message;
 
-    const msg = new NestedError(`${this.endpointName} failed to process request "${commandName}"`, err).stack;
+    err = new NestedError(`${this.endpointName} failed to process request "${commandName}"`, err);
 
 
     // eslint-disable-next-line no-console
-    this.ipcAdapter.onError(`[${commandName}]`, args, '\n\n', msg);
+    this.ipcAdapter.onError(`[${commandName}]`, args, '\n\n', err);
     // this._sendReply('reject', callId, componentId, info + err.message);
-    this._sendReply('reject', callId, componentId, msg);
+    this._sendReply('reject', callId, componentId, err.stack);
   }
 
   // ###########################################################################

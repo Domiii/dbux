@@ -127,23 +127,23 @@ class ContextNode extends HostComponentEndpoint {
   // ########################################
 
   get nTreeContexts() {
-    const stats = this.dp.queries.statsByContext(this.contextId);
+    const stats = this.allContextStats;
     return stats?.nTreeContexts || 0;
   }
 
   get nTreeStaticContexts() {
-    const stats = this.dp.queries.statsByContext(this.contextId);
+    const stats = this.allContextStats;
     return stats?.nTreeStaticContexts || 0;
   }
 
   //get amount of file call
   get nTreeFileCalled() {
-    const state = this.dp.queries.statsByContext(this.contextId);
+    const state = this.allContextStats;
     return state?.nTreeFileCalled || 0;
   }
 
   get nTreeTraces() {
-    const stats = this.dp.queries.statsByContext(this.contextId);
+    const stats = this.allContextStats;
     return stats?.nTreeTraces || 0;
   }
 
