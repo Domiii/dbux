@@ -5,16 +5,19 @@ import NestedError from '@dbux/common/src/NestedError';
 import isFunction from 'lodash/isFunction';
 import RemoteCommandProxy from './RemoteCommandProxy';
 
-/** @typedef { import("./BaseComponentManager").default } BaseComponentManager */
-
+/**
+ * @template {ComponentEndpoint} C
+ */
 class ComponentEndpoint {
   /**
-   * @type {BaseComponentManager}
+   * (NOTE: cannot import at top of file due to circular type resolution dependency)
+   * @type {import("./BaseComponentManager").default<C>}
    */
   componentManager;
 
   /**
    * Parent endpoint (is null if this is the root (or "Document") endpoint)
+   * @type {C}
    */
   parent;
 

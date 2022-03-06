@@ -1,4 +1,5 @@
 import ExecutionContextType from '@dbux/common/src/types/constants/ExecutionContextType';
+import { makeStaticContextColor } from '@dbux/graph-common/src/shared/contextUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
@@ -14,7 +15,7 @@ class ContextNode extends HostComponentEndpoint {
     this.state.visible = this.hiddenNodeManager ? this.hiddenNodeManager.shouldBeVisible(this) : true;
 
     const {
-      context,
+      context
     } = this.state;
 
     const {
@@ -22,22 +23,13 @@ class ContextNode extends HostComponentEndpoint {
     } = this.context;
 
     const { applicationId, contextId } = context;
-
-    // get name (and other needed data)
     const app = allApplications.getById(applicationId);
     const dp = app.dataProvider;
 
     this.state.hasError = !!dp.indexes.traces.errorByContext.get(contextId)?.length;
     this.state.rootContextId = dp.util.getRootContextOfContext(contextId).contextId;
-    this.state.contextLabel = makeContextLabel(context, app);
-    this.state.contextLocLabel = makeContextLocLabel(applicationId, context);
-    this.state.realStaticContextid = dp.util.getRealContextOfContext(contextId).staticContextId;
-    const { callTrace } = this;
-    if (callTrace) {
-      this.state.callerTracelabel = dp.util.makeContextCallerOrSchedulerLabel(contextId);
-      this.state.valueLabel = makeTraceValueLabel(callTrace);
-    }
-    this.state.moduleName = dp.util.getContextModuleName(contextId);
+
+    this.setNodeState();
 
     if (statsEnabled) {
       this._addStats(this.state);
@@ -48,6 +40,37 @@ class ContextNode extends HostComponentEndpoint {
     this.controllers.createComponent('GraphNode', { hasChildren });
     this.controllers.createComponent('PopperController');
     this.controllers.createComponent('Highlighter');
+  }
+
+  /**
+   * @virtual
+   */
+  setNodeState() {
+    const {
+      context
+    } = this.state;
+    const {
+      screenshotMode,
+      themeMode
+    } = this.context;
+    const { applicationId, contextId } = context;
+    const app = allApplications.getById(applicationId);
+    const dp = app.dataProvider;
+
+    this.state.contextLabel = makeContextLabel(context, app);
+    this.state.contextLocLabel = makeContextLocLabel(applicationId, context);
+    const { callTrace } = this;
+    if (callTrace) {
+      this.state.callerTracelabel = dp.util.makeContextCallerOrSchedulerLabel(contextId);
+      this.state.valueLabel = makeTraceValueLabel(callTrace);
+    }
+    const moduleName = this.state.moduleName = dp.util.getContextModuleName(contextId);
+
+    const realStaticContextid = dp.util.getRealContextOfContext(contextId).staticContextId;
+    this.state.backgroundStyle = makeStaticContextColor(themeMode, realStaticContextid, {
+      bland: !!moduleName,
+      screenshotMode
+    });
   }
 
   // ########################################

@@ -1,7 +1,7 @@
 import last from 'lodash/last';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
-import { getStaticContextColor } from '@dbux/graph-common/src/shared/contextUtil';
+import { makeStaticContextColor } from '@dbux/graph-common/src/shared/contextUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
 import { makeStaticContextLocLabel } from '@dbux/data/src/helpers/makeLabels';
@@ -121,7 +121,7 @@ class PathwaysView extends HostComponentEndpoint {
 
   makeStepBackground(step, themeMode) {
     const { staticContextId } = step;
-    return staticContextId ? getStaticContextColor(themeMode, staticContextId) : '';
+    return staticContextId ? makeStaticContextColor(themeMode, staticContextId) : '';
   }
 
   makeStep = (themeMode, step) => {

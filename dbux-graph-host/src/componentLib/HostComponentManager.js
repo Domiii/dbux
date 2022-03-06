@@ -37,6 +37,9 @@ const usedExternals = [
   'restart', 'logClientError', 'confirm', 'prompt', 'goToTrace'
 ];
 
+/**
+ * @extends {BaseComponentManager<HostComponentEndpoint>}
+ */
 class HostComponentManager extends BaseComponentManager {
   constructor(ipcAdapter, externals, componentRegistry) {
     super(componentRegistry, ipcAdapter);
@@ -71,9 +74,15 @@ class HostComponentManager extends BaseComponentManager {
   // private methods
   // ###########################################################################
 
-  _createComponent(parent, ComponentEndpointClass, initialState = {}) {
+  /**
+   * 
+   * @param {HostComponentEndpoint} parent
+   * @param {*} ComponentEndpointClass
+   * @param {*} initialState 
+   */
+  _createComponent(parent, ComponentEndpointClass, initialState = {}, hostOnlyState = null) {
     const componentId = ++this._lastComponentId;
-    return this._registerComponent(componentId, parent, ComponentEndpointClass, initialState);
+    return this._registerComponent(componentId, parent, ComponentEndpointClass, initialState, hostOnlyState);
   }
 
   _wrapShared(component) {

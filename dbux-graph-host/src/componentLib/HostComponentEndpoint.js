@@ -10,6 +10,7 @@ const Verbose = false;
 
 /**
  * The Host endpoint controls the Client endpoint.
+ * @extends ComponentEndpoint<HostComponentEndpoint>
  */
 class HostComponentEndpoint extends ComponentEndpoint {
   /**
@@ -22,6 +23,12 @@ class HostComponentEndpoint extends ComponentEndpoint {
    * @type {HostComponentList}
    */
   controllers;
+
+  /**
+   * Can be assigned via `createComponent`.
+   * @type {Object}
+   */
+  hostOnlyState;
 
   _isInitialized = false;
   _initPromise;
@@ -47,6 +54,12 @@ class HostComponentEndpoint extends ComponentEndpoint {
 
   get isInitialized() {
     return this._isInitialized;
+  }
+  /**
+   * @type {import("./HostComponentManager").default}
+   */
+  get componentManager() {
+    return super.componentManager;
   }
 
   setState(update) {
@@ -143,9 +156,10 @@ class HostComponentEndpoint extends ComponentEndpoint {
   /**
    * NOTE: this is called by `BaseComponentManager._createComponent`
    */
-  _build(componentManager, parent, componentId, initialState) {
+  _build(componentManager, parent, componentId, initialState, hostOnlyState) {
     // store properties
     super._build(componentManager, parent, componentId, initialState);
+    this.hostOnlyState = hostOnlyState;
 
     componentManager.incInitCount();
 

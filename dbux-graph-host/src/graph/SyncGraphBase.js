@@ -8,6 +8,7 @@ import GraphBase from './GraphBase';
 import ContextNode from './syncGraph/ContextNode';
 import HoleNode from './syncGraph/HoleNode';
 import makeIncludeContext from './makeIncludeContext';
+import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
 /** @typedef { import("./GraphDocument").default } GraphDocument */
 /** @typedef { import("@dbux/data/src/RuntimeDataProvider").default } RuntimeDataProvider */
@@ -29,20 +30,41 @@ function getDp(applicationIdHolder) {
  * ##########################################################################*/
 
 /**
- * NOTE: gets copied to client (and will not take class/prototype to client).
+ * pseudo type
  */
-class ContextHole {
+export class ContextNodeHoleClient {
+  /**
+   * @type {number}
+   */
+  contextCount;
+}
+
+/**
+ * Keeps all data related to a hole.
+ */
+export class ContextNodeHole {
   id;
+  /**
+   * @type {ExecutionContext[]} All contexts that participate in the hole.
+   */
   contexts;
   /**
    * @type {ExecutionContext[]} All child contexts following the hole. Produced by `floodHole`.
    */
   frontier;
 
+  _sharedData;
+
   constructor(id, contexts, frontier) {
     this.id = id;
     this.contexts = contexts;
     this.frontier = frontier;
+  }
+
+  makeSharedData() {
+    return this._sharedData || (this._sharedData = {
+      contextCount: this.contexts.length
+    });
   }
 }
 
@@ -209,6 +231,9 @@ class CallGraphNodes {
    * {@link #add}
    * ##########################################################################*/
 
+  /**
+   * @param {HostComponentEndpoint} parentNode 
+   */
   add(parentNode, context) {
     if (this.getContextNodeByContext(context)) {
       this.graph.logger.warn(`Tried to add ContextNode with id=${context.contextId} but Node already exist`);
@@ -222,11 +247,15 @@ class CallGraphNodes {
       contexts.push(context);
       this.floodHole(contexts, frontier, context);
       const hole = this.createHole(contexts, frontier);
-      newNode = parentNode.children.createComponent('HoleNode', {
+      const state = {
         // TODO: HoleNodes dont actually have a single representative `context`
         context: minBy(contexts, c => c.contextId),
+        hole: hole.makeSharedData()
+      };
+      const hostOnlyState = {
         hole
-      });
+      };
+      newNode = parentNode.children.createComponent('HoleNode', state, hostOnlyState);
       for (const c of contexts) {
         // associate all contexts with the node
         this.contextNodesByContext.set(c, newNode);
@@ -248,7 +277,7 @@ class CallGraphNodes {
 
   createHole(contexts, frontier) {
     const holeId = ++this._lastHoldeId;
-    const hole = new ContextHole(holeId, contexts, frontier);
+    const hole = new ContextNodeHole(holeId, contexts, frontier);
     return hole;
   }
 
