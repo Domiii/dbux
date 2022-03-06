@@ -160,16 +160,16 @@ class CallGraphNodes {
   floodHole(contexts, frontier, context, goUp = true, goLeft = true, goRight = true, goDown = true, parentContext = undefined, siblingIndex = undefined) {
     const dp = getDp(context);
 
-    if (context.contextId === 1) {
-      console.debug(`[flood] ${context.contextId} ${goUp && '↑' || ''}${goLeft && '←' || ''}${goDown && '↓' || ''}${goRight && '→' || ''}`);
-    }
+    // if (context.contextId === 1) {
+    //   console.debug(`[flood] ${context.contextId} ${goUp && '↑' || ''}${goLeft && '←' || ''}${goDown && '↓' || ''}${goRight && '→' || ''}`);
+    // }
 
     parentContext = (parentContext === undefined ?
-      (context.parentContextId && dp.collections.executionContexts.getById(context.parentContextId)) :
+      (!dp.util.isRootContext(context.contextId) && dp.collections.executionContexts.getById(context.parentContextId)) :
       parentContext)
       || null;
 
-    // 1. go up (parent) → NOTE: we DON'T go up, because the node creation algorithm is always top-down
+    // 1. go up (parent)
     if (goUp && parentContext) {
       if (this.isHole(parentContext)) {
         // add to hole: ←↑→
@@ -263,6 +263,9 @@ class CallGraphNodes {
       const contexts = [];
       const frontier = [];
       contexts.push(context);
+      // TODO: fix root handling:
+      //    1. extend existing root holes (rather than creating new ones)
+      //    2. use ACG edges to determine root connectivity (rather than just "direct neighbor"?)
       this.floodHole(contexts, frontier, context);
       const group = this.createHole(contexts, frontier);
       const state = {
