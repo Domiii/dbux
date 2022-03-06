@@ -163,9 +163,10 @@ class CallGraphNodes {
       console.debug(`[flood] ${context.contextId} ${goUp && '↑' || ''}${goLeft && '←' || ''}${goDown && '↓' || ''}${goRight && '→' || ''}`);
     }
 
-    parentContext = parentContext === undefined ?
+    parentContext = (parentContext === undefined ?
       (context.parentContextId && dp.collections.executionContexts.getById(context.parentContextId)) :
-      (parentContext || null);
+      parentContext)
+      || null;
 
     // // 1. go up (parent) → NOTE: we DON'T go up, because the node creation algorithm is always top-down
     // if (goUp && parentContext) {
