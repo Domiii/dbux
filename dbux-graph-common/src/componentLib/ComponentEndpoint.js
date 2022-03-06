@@ -16,6 +16,16 @@ class ComponentEndpoint {
   componentManager;
 
   /**
+   * @type {import("./ComponentList").default<C>}
+   */
+  children;
+
+  /**
+   * @type {import("./ComponentList").default<C>}
+   */
+  controllers;
+
+  /**
    * Parent endpoint (is null if this is the root (or "Document") endpoint)
    * @type {C}
    */
@@ -24,6 +34,10 @@ class ComponentEndpoint {
   componentId;
   remote;
   state;
+  /**
+   * @type {string[]}
+   */
+  aliases;
 
   _isDisposed = false;
   _disposables = [];

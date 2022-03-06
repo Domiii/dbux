@@ -114,7 +114,8 @@ class HostComponentManager extends BaseComponentManager {
       componentId,
       componentName,
       parent,
-      state
+      state,
+      aliases
     } = component;
 
     // parent
@@ -129,13 +130,18 @@ class HostComponentManager extends BaseComponentManager {
     // send new component to client *AFTER* its parent has finished init'ing
     await parent?.waitForInit();
 
+    const clientAdditionalProps = {
+      aliases
+    };
+
     return this.app._remoteInternal.createClientComponent(
       parentId,
       role,
       componentId,
       componentName,
       shared,
-      state
+      state,
+      clientAdditionalProps
     );
   }
 

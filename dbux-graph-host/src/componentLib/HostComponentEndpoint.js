@@ -43,6 +43,8 @@ class HostComponentEndpoint extends ComponentEndpoint {
 
   constructor() {
     super();
+    
+    this.aliases = this.aliases || [this._componentName];
 
     this.children = new HostComponentList(this, 'child');
     this.controllers = new HostComponentList(this, 'controller');
@@ -158,8 +160,8 @@ class HostComponentEndpoint extends ComponentEndpoint {
    */
   _build(componentManager, parent, componentId, initialState, hostOnlyState) {
     // store properties
-    super._build(componentManager, parent, componentId, initialState);
     this.hostOnlyState = hostOnlyState;
+    super._build(componentManager, parent, componentId, initialState);
 
     componentManager.incInitCount();
 

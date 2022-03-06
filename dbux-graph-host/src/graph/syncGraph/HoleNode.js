@@ -9,6 +9,8 @@ import GroupNode from './GroupNode';
  * 
  */
 export default class HoleNode extends GroupNode {
+  aliases = ['HoleNode', 'GroupNode', 'ContextNode'];
+
   init() {
     // TODO: make this a proper "Hole"/"Group" representation → not just a single context!
     super.init();

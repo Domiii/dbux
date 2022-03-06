@@ -4,6 +4,7 @@ import ClientComponentList from './ClientComponentList';
 
 /**
  * The Client endpoint is controlled by the Host endpoint.
+ * @extends ComponentEndpoint<ClientComponentEndpoint>
  */
 class ClientComponentEndpoint extends ComponentEndpoint {
   /**
@@ -67,6 +68,14 @@ class ClientComponentEndpoint extends ComponentEndpoint {
   // ###########################################################################
   // private methods
   // ###########################################################################
+
+  _build(componentManager, parent, componentId, initialState, clientProps) {
+    // store client endpoint props
+    Object.assign(this, clientProps);
+
+    // build
+    return super._build(componentManager, parent, componentId, initialState);
+  }
 
   _performClientInit(role) {
     this._internalRoleName = role;
