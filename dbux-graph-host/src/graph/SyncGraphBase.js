@@ -265,7 +265,6 @@ class CallGraphNodes {
       contexts.push(context);
       // TODO: fix root handling:
       //    1. extend existing root holes (rather than creating new ones)
-      //    2. use ACG edges to determine root connectivity (rather than just "direct neighbor"?)
       this.floodHole(contexts, frontier, context);
       const group = this.createHole(contexts, frontier);
       const state = {
