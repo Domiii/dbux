@@ -6,8 +6,8 @@ import { parsePackageName } from '../util/moduleUtil';
 // import { requireDynamic } from '../util/requireUtil';
 
 let Verbose;
-// const DefaultVerbose = 1;
-const DefaultVerbose = 2;
+const DefaultVerbose = 1;
+// const DefaultVerbose = 2;
 // const DefaultVerbose = 10;
 
 function debugLog(...args) {
