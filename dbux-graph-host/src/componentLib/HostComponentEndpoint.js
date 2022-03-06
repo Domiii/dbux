@@ -5,8 +5,9 @@ import ComponentEndpoint from '@dbux/graph-common/src/componentLib/ComponentEndp
 import NestedError from '@dbux/common/src/NestedError';
 import HostComponentList from './HostComponentList';
 
-// const Verbose = true;
-const Verbose = false;
+const Verbose = 1;
+// const Verbose = 0;
+// const Verbose = 2;
 
 /**
  * The Host endpoint controls the Client endpoint.
@@ -43,7 +44,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
 
   constructor() {
     super();
-    
+
     this.aliases = this.aliases || [this._componentName];
 
     this.children = new HostComponentList(this, 'child');
@@ -193,9 +194,9 @@ class HostComponentEndpoint extends ComponentEndpoint {
     try {
       this._waitingForUpdate = true;
       this._preInit();                                    // 0. host: preInit
-      Verbose && this.logger.debug('init start');
+      Verbose > 1 && this.logger.debug('init start');
       this.init();                                        // 1. host: init
-      Verbose && this.logger.debug('update start');
+      Verbose > 1 && this.logger.debug('update start');
       this.update();                                      // 2. host: update
     }
     catch (err) {
@@ -210,7 +211,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
     Verbose && this.logger.debug('_doInitClient start');
     const resultFromClientInit = this.parent && await this.componentManager._initClient(this); // 3. client: init -> update (ignore `internal root component`)
     // success                                        // 4. waitForInit resolved
-    Verbose && this.logger.debug('initialized');
+    Verbose > 1 && this.logger.debug('initialized');
     this._isInitialized = true;
     return resultFromClientInit;
   }
@@ -397,7 +398,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
    * First disposes all descendants (removes recursively) and then removes itself.
    */
   dispose(silent = false) {
-    Verbose && this.logger.debug('dispose start');
+    Verbose > 1 && this.logger.debug('dispose start');
     super.dispose();
 
     // Promise.resolve(this.waitForInit()).then(() => {
@@ -417,14 +418,14 @@ class HostComponentEndpoint extends ComponentEndpoint {
     Promise.resolve(this.waitForInit())
       .then(async () => {
         await this._remoteInternal.dispose();
-        Verbose && this.logger.debug('disposed');
+        Verbose > 1 && this.logger.debug('disposed');
       })
       .catch((err) => {
         if (!silent) {
           this.logger.error('error while disposing -', err);
         }
         else {
-          Verbose && this.logger.debug('error while disposing');
+          Verbose > 1 && this.logger.debug('error while disposing');
         }
       })
       .finally(() => {

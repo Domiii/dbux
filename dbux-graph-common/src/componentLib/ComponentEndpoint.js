@@ -5,6 +5,10 @@ import NestedError from '@dbux/common/src/NestedError';
 import isFunction from 'lodash/isFunction';
 import RemoteCommandProxy from './RemoteCommandProxy';
 
+
+// eslint-disable-next-line no-unused-vars
+const DefaultLogger = newLogger('ComponentEndpoint (pre init)');
+
 /**
  * @template {ComponentEndpoint} C
  */
@@ -50,8 +54,8 @@ class ComponentEndpoint {
   constructor() {
     // TODO: `this.constructor.name` won't work on Host when enabling minifcation/obfuscation in webpack/bundler
     //    NOTE: Client already has a better way for this
+    this.logger = DefaultLogger;
     this._componentName = this.constructor._componentName || this.constructor.name;
-    this.logger = newLogger(this.debugTag);
   }
 
   _build(componentManager, parent, componentId, initialStateArg) {
@@ -63,6 +67,7 @@ class ComponentEndpoint {
     this._remoteInternal = new RemoteCommandProxy(componentManager.ipc, componentId, '_publicInternal');
 
     this.state = this.makeInitialState(initialStateArg);
+    this.logger = newLogger(this.debugTag);
   }
 
   makeInitialState(initialStateArg) {

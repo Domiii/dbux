@@ -1,5 +1,6 @@
 import NanoEvents from 'nanoevents';
 import minBy from 'lodash/minBy';
+import difference from 'lodash/difference';
 import isPlainObject from 'lodash/isPlainObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
@@ -18,6 +19,7 @@ import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 const { log, debug, warn, error: logError } = newLogger('SyncGraphBase');
 
 const Verbose = 1;
+// const Verbose = 1;
 
 /**
  * @param {{ applicationId, contextId }} applicationIdHolder 
@@ -157,18 +159,22 @@ class CallGraphNodes {
   floodHole(contexts, frontier, context, goUp = true, goLeft = true, goRight = true, goDown = true, parentContext = undefined, siblingIndex = undefined) {
     const dp = getDp(context);
 
+    if (context.contextId === 1) {
+      console.debug(`[flood] ${context.contextId} ${goUp && '↑' || ''}${goLeft && '←' || ''}${goDown && '↓' || ''}${goRight && '→' || ''}`);
+    }
+
     parentContext = parentContext === undefined ?
       (context.parentContextId && dp.collections.executionContexts.getById(context.parentContextId)) :
-      null;
+      (parentContext || null);
 
-    // 1. go up (parent)
-    if (goUp && parentContext) {
-      if (this.isHole(parentContext)) {
-        // add to hole: ←↑→
-        contexts.push(parentContext);
-        this.floodHole(contexts, frontier, parentContext, true, true, true, false);
-      }
-    }
+    // // 1. go up (parent) → NOTE: we DON'T go up, because the node creation algorithm is always top-down
+    // if (goUp && parentContext) {
+    //   if (this.isHole(parentContext)) {
+    //     // add to hole: ←↑→
+    //     contexts.push(parentContext);
+    //     this.floodHole(contexts, frontier, parentContext, true, true, true, false);
+    //   }
+    // }
 
     if (goLeft || goRight) {
       const contextsOfParent = parentContext &&
@@ -394,6 +400,12 @@ class SyncGraphBase extends GraphBase {
    * @type {Map<ExecutionContext, ContextNode>}
    */
   contextNodesByContext;
+
+  /**
+   * @type {ExecutionContext[]}
+   */
+  roots;
+
   /**
    * @type {CallGraphNodes}
    */
@@ -403,7 +415,7 @@ class SyncGraphBase extends GraphBase {
     const includePredicate = this.componentManager.externals.getContextFilter();
     this._nodes = new CallGraphNodes(this, includePredicate);
 
-    this.roots = new Set();
+    this.roots = [];
     this.state.applications = [];
     this._emitter = new NanoEvents();
     this._unsubscribeOnNewData = [];
@@ -443,7 +455,7 @@ class SyncGraphBase extends GraphBase {
   }
 
   clear() {
-    this.roots = new Set();
+    this.roots = [];
     return this._nodes.clear();
   }
 
@@ -452,36 +464,42 @@ class SyncGraphBase extends GraphBase {
   // ###########################################################################
 
   /**
-   * @param {*} newRootsArr 
+   * 
    */
   updateAllRoots() {
     const allRoots = this.getAllRootContexts();
-    const newRoots = new Set(allRoots);
+    const newRoots = allRoots;
     const oldRoots = this.roots;
+
+    const removedRoots = difference(oldRoots, newRoots);
+    const addedRoots = difference(newRoots, oldRoots);
 
     // always re-subscribe since applicationSet clears subscribtion everytime it changes
     this._resubscribeOnData();
 
     // remove old roots
-    for (const root of oldRoots) {
-      if (!newRoots.has(root)) {
-        this._removeContextNode(root);
-      }
+    for (const root of removedRoots) {
+      this._removeContextNode(root);
     }
 
-    // remove new roots if exists as an old children, then add
-    for (const root of newRoots) {
-      const node = this.getContextNodeByContext(root);
-      if (node) {
-        if (oldRoots.has(root)) {
-          continue;
-        }
-        else {
-          this._removeContextNode(root);
-        }
-      }
+    // add new roots
+    for (const root of addedRoots) {
       this._addRoot(root);
     }
+
+    // // remove new roots if exists as an old children, then re-add (serves as a refresh)
+    // for (const root of addedRoots) {
+    //   const node = this.getContextNodeByContext(root);
+    //   if (node) {
+    //     if (oldRoots.has(root)) {
+    //       continue;
+    //     }
+    //     else {
+    //       this._removeContextNode(root);
+    //     }
+    //   }
+    //   this._addRoot(root);
+    // }
 
     this.roots = newRoots;
 
@@ -596,6 +614,9 @@ class SyncGraphBase extends GraphBase {
    * State management
    *  #########################################################################*/
 
+  /**
+   * Basically a `forceUpdate()` with `state.applications` updated
+   */
   _setApplicationState() {
     const update = {
       applications: this.makeApplicationState()

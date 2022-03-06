@@ -9,12 +9,31 @@ import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
+/** @typedef { import("@dbux/data/src/RuntimeDataProvider").default } RuntimeDataProvider */
+
+/**
+ * @param {{ applicationId, contextId }} applicationIdHolder 
+ * @return {RuntimeDataProvider}
+ */
+function getDp(applicationIdHolder) {
+  return allApplications.getById(applicationIdHolder.applicationId).dataProvider;
+}
+
 class ContextNode extends HostComponentEndpoint {
+  get debugTag() {
+    const dp = getDp(this.state.context);
+    return `[${this.componentName}: ${dp.util.makeContextInfo(this.state.context)}]`;
+    // return super.debugTag;
+  }
+
   init() {
     this.childrenBuilt = false;
     this.state.visible = this.hiddenNodeManager ? this.hiddenNodeManager.shouldBeVisible(this) : true;
 
     const {
+      /**
+       * @type {ExecutionContext}
+       */
       context
     } = this.state;
 
@@ -98,7 +117,7 @@ class ContextNode extends HostComponentEndpoint {
   get allContextStats() {
     return this.dp.queries.statsByContext(this.contextId);
   }
-  
+
   get hiddenNodeManager() {
     return this.context.graphRoot.controllers.getComponent('HiddenNodeManager');
   }
@@ -155,9 +174,8 @@ class ContextNode extends HostComponentEndpoint {
    * @return {ExecutionContext[]}
    */
   getAllChildContexts() {
-    const { applicationId, contextId } = this.state.context;
-    const dp = allApplications.getById(applicationId).dataProvider;
-    return dp.indexes.executionContexts.children.get(contextId) || EmptyArray;
+    const dp = getDp(this.state.context);
+    return dp.indexes.executionContexts.children.get(this.state.context.contextId) || EmptyArray;
   }
 
   /**
@@ -167,8 +185,9 @@ class ContextNode extends HostComponentEndpoint {
    */
   getActualChildContexts() {
     const childContexts = this.getAllChildContexts();
+    const dp = getDp(this.state.context);
     return childContexts.filter(childContext => {
-      if (this.context.graphRoot.roots.has(childContext)) {
+      if (dp.util.isRootContext(childContext.contextId)) {
         return false;
       }
 
