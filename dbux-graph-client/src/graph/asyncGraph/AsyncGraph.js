@@ -136,16 +136,11 @@ class AsyncGraph extends GraphBase {
       postAsyncEventUpdateType,
       hasError,
       nestingDepth,
-      stats: {
-        nTreeContexts,
-        nTreeStaticContexts,
-        nTreeFileCalled,
-        nTreeTraces,
-      },
+      stats,
     } = nodeData;
 
-    const { themeMode, screenshotMode, statsEnabled } = this.context;
-    // const { asyncDetailMode } = graphDocument.state;
+    const { themeMode, screenshotMode, graphDocument } = this.context;
+    const { statsEnabled } = graphDocument.state;
     // const highContractMode = screenshotMode && !asyncDetailMode;
     const highContractMode = screenshotMode;
     // const moduleLabel = packageName ? `${packageName} | ` : '';
@@ -191,6 +186,12 @@ class AsyncGraph extends GraphBase {
     }
     if (statsEnabled) {
       const { statsIconUris } = this.context;
+      const {
+        nTreeContexts,
+        nTreeStaticContexts,
+        nTreeFileCalled,
+        nTreeTraces,
+      } = stats;
       statsRawEl = /*html*/`
         <div class="grid" style="width: max-content;">
           <div style="grid-row: 1; grid-column:1;" class="context-stats" title="Amount of child contexts in subgraph">

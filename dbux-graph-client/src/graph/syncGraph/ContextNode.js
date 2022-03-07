@@ -98,7 +98,7 @@ class ContextNode extends ClientComponentEndpoint {
       hasError,
     } = this.state;
 
-    const { statsEnabled } = this.context;
+    const { statsEnabled } = this.context.graphDocument.state;
     const moduleLabel = packageName ? `${packageName} | ` : '';
 
     this.el.id = `application_${applicationId}-context_${contextId}`;

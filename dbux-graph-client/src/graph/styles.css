@@ -269,6 +269,10 @@ div {
   margin-left: 3px;
 }
 
+.stats-disabled .context-stats {
+  display: none !important;
+}
+
 .show-values .async-context-label {
   display: none !important;
 }

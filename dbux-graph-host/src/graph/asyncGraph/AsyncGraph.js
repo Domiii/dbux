@@ -58,6 +58,7 @@ class AsyncGraph extends GraphBase {
    *  #########################################################################*/
 
   makeChildrenData() {
+    const { statsEnabled } = this.context.graphDocument.state;
     const appData = allApplications.selection.data;
     const asyncNodes = appData.asyncNodesInOrder.getAllActual();
 
@@ -99,7 +100,7 @@ class AsyncGraph extends GraphBase {
       const nestingDepth = dp.util.getNestedDepth(rootContextId);
 
       let stats = null;
-      if (this.context.statsEnabled) {
+      if (statsEnabled) {
         stats = dp.queries.statsByContext(rootContextId);
       }
 

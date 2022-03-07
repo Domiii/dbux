@@ -24,6 +24,7 @@ class GraphDocument extends HostComponentEndpoint {
     this.state.valueMode = false;
     this.state.thinMode = false;
     this.state.asyncDetailMode = true;
+    this.state.statsEnabled = true;
 
     this.createOwnComponents();
 
@@ -170,7 +171,6 @@ class GraphDocument extends HostComponentEndpoint {
         contextNodeIconUris: this.state.contextNodeIconUris,
         statsIconUris: this.state.statsIconUris,
         screenshotMode: this.state.screenshotMode,
-        statsEnabled: true,
       }
     };
   }

@@ -39,7 +39,7 @@ class ContextNode extends HostComponentEndpoint {
 
     const {
       statsEnabled
-    } = this.context;
+    } = this.context.graphDocument.state;
 
     const { applicationId, contextId } = context;
     const app = allApplications.getById(applicationId);

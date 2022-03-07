@@ -80,6 +80,13 @@ class Toolbar extends HostComponentEndpoint {
 
     clearThreadSelection() {
       allApplications.selection.data.threadSelection.clear();
+    },
+
+    toggleStats() {
+      const { statsEnabled } = this.doc.state;
+      this.doc.setState({
+        statsEnabled: !statsEnabled
+      });
     }
   }
 }

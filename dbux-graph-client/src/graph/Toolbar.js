@@ -49,6 +49,7 @@ class Toolbar extends ClientComponentEndpoint {
           style="left: inherit; right: 0; min-width: 0;"
           aria-labelledby="dropdownMenuButton">
             <!--button data-el="showIdsBtn" class="toolbar-btn btn btn-info full-width" href="#">ids</button-->
+            <button title="Toggle context stats" data-el="statsBtn" class="toolbar-btn btn btn-info full-width" href="#">stats</button>
             <div class="dropdown-divider"></div>
             <button title="Restart the Webview (can eliviate some bugs)" data-el="restartBtn" class="toolbar-btn btn btn-danger full-width" href="#">Restart</button>
           </div>
@@ -126,6 +127,7 @@ class Toolbar extends ClientComponentEndpoint {
       graphMode,
       stackMode,
       asyncDetailMode,
+      statsEnabled,
     } = this.parent.state;
 
     const {
@@ -179,6 +181,9 @@ class Toolbar extends ClientComponentEndpoint {
     decorateClasses(this.els.clearThreadSelectionBtn, {
       hidden: !isThreadSelectionActive
     });
+    decorateClasses(this.els.statsBtn, {
+      active: statsEnabled
+    });
     [`navbar-${themeModeName}`, `bg-${themeModeName}`].forEach(mode => this.el.classList.add(mode));
     this.els.thinModeBtn.innerHTML = `${!!thinMode && '||&nbsp;' || '|&nbsp;|'}`;
     this.els.hideNewRunBtn.innerHTML = `${hideAfter ? '⚪' : '🔴'}`;
@@ -194,6 +199,7 @@ class Toolbar extends ClientComponentEndpoint {
       valueMode,
       thinMode,
       asyncDetailMode,
+      statsEnabled,
     } = this.parent.state;
 
     const docEl = this.parent.el;
@@ -201,7 +207,8 @@ class Toolbar extends ClientComponentEndpoint {
       'hide-locs': !locMode,
       'hide-values': !valueMode,
       'show-values': valueMode,
-      'thin-mode': thinMode
+      'thin-mode': thinMode,
+      'stats-disabled': !statsEnabled,
     });
 
     decorateAttr(docEl, {
@@ -325,6 +332,12 @@ class Toolbar extends ClientComponentEndpoint {
         this.remote.clearThreadSelection();
       },
       focus(evt) { evt.target.blur(); }
+    },
+    statsBtn: {
+      async click(evt) {
+        evt.preventDefault();
+        await this.remote.toggleStats();
+      }
     },
 
     searchContextsBtn: {
