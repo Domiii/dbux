@@ -293,7 +293,7 @@ export default {
   },
 
   /** @param {DataProvider} dp */
-  getContextModuleName(dp, contextId) {
+  getContextPackageName(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
     const staticContext = dp.collections.staticContexts.getById(context.staticContextId);
     return dp.util.getExternalProgramModuleName(staticContext.programId);

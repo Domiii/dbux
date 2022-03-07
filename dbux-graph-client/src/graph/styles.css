@@ -269,6 +269,10 @@ div {
   margin-left: 3px;
 }
 
+.stats-disabled .context-stats {
+  display: none !important;
+}
+
 .show-values .async-context-label {
   display: none !important;
 }
@@ -667,6 +671,7 @@ body:not(.theme-mode-dark) .highlight {
 .context-stats img {
   width: 13px;
   height: 13px;
+  filter: grayscale(1);
 }
 
 /** ###########################################################################

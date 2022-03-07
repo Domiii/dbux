@@ -594,11 +594,19 @@ class SyncGraphBase extends GraphBase {
   }
 
   /**
-   * Find or create a ContextNode.
-   *  @return {ContextNode}
+   * Find a `ContextNode`.
+   *  @return {ContextNode | HoleNode}
    */
   getContextNodeByContext = (context) => {
     return this._nodes.getContextNodeByContext(context);
+  }
+
+  /**
+   * Find or create a `ContextNode`.
+   *  @return {ContextNode | HoleNode}
+   */
+  getOrCreateContextNodeByContext = (context) => {
+    return this.getContextNodeByContext(context) || this.buildContextNode(context);
   }
 
   /**

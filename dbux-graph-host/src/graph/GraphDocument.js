@@ -24,6 +24,7 @@ class GraphDocument extends HostComponentEndpoint {
     this.state.valueMode = false;
     this.state.thinMode = false;
     this.state.asyncDetailMode = true;
+    this.state.statsEnabled = true;
 
     this.createOwnComponents();
 
@@ -150,6 +151,7 @@ class GraphDocument extends HostComponentEndpoint {
       nTreeStaticContexts: this.getIconUri('nTreeStaticContextsStats.svg'),
       nTreeFileCalled: this.getIconUri('document.svg'),
       nTreeTraces: this.getIconUri('circuit.svg'),
+      nTreePackages: this.getIconUri('nodejs.svg'),
     };
     return {
       themeMode,
@@ -170,7 +172,6 @@ class GraphDocument extends HostComponentEndpoint {
         contextNodeIconUris: this.state.contextNodeIconUris,
         statsIconUris: this.state.statsIconUris,
         screenshotMode: this.state.screenshotMode,
-        statsEnabled: true,
       }
     };
   }

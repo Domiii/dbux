@@ -37,10 +37,6 @@ class ContextNode extends HostComponentEndpoint {
       context
     } = this.state;
 
-    const {
-      statsEnabled
-    } = this.context;
-
     const { applicationId, contextId } = context;
     const app = allApplications.getById(applicationId);
     const dp = app.dataProvider;
@@ -50,15 +46,15 @@ class ContextNode extends HostComponentEndpoint {
 
     this.setNodeState();
 
-    if (statsEnabled) {
-      this._addStats(this.state);
-    }
-
     // add controllers
     let hasChildren = !!this.getActualChildContexts().length;
     this.controllers.createComponent('GraphNode', { hasChildren });
     this.controllers.createComponent('PopperController');
     this.controllers.createComponent('Highlighter');
+  }
+
+  update() {
+    this._addStats(this.state);
   }
 
   /**
@@ -83,11 +79,11 @@ class ContextNode extends HostComponentEndpoint {
       this.state.callerTracelabel = dp.util.makeContextCallerOrSchedulerLabel(contextId);
       this.state.valueLabel = makeTraceValueLabel(callTrace);
     }
-    const moduleName = this.state.moduleName = dp.util.getContextModuleName(contextId);
+    const packageName = this.state.packageName = dp.util.getContextPackageName(contextId);
 
     const realStaticContextid = dp.util.getRealContextOfContext(contextId).staticContextId;
     this.state.backgroundStyle = makeStaticContextColor(themeMode, realStaticContextid, {
-      bland: !!moduleName,
+      bland: !!packageName,
       screenshotMode
     });
   }
@@ -147,22 +143,13 @@ class ContextNode extends HostComponentEndpoint {
     return stats?.nTreeTraces || 0;
   }
 
-  setStatsEnabled(enabled) {
-    const upd = {
-      statsEnabled: enabled
-    };
-    if (enabled) {
-      this._addStats(upd);
-    }
-    this.setState(upd);
-  }
-
   _addStats(_update) {
     const stats = this.allContextStats;
     _update.nTreeFileCalled = stats.nTreeFileCalled;
     _update.nTreeStaticContexts = stats.nTreeStaticContexts;
     _update.nTreeContexts = stats.nTreeContexts;
     _update.nTreeTraces = stats.nTreeTraces;
+    _update.nTreePackages = stats.nTreePackages;
   }
 
   // ########################################

@@ -16,7 +16,7 @@ export default class AsyncNodeData {
    */
   isProgramRoot;
   realStaticContextid;
-  moduleName;
+  packageName;
   postAsyncEventUpdateType;
   hasError;
 }
