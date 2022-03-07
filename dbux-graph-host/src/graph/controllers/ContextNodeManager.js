@@ -77,10 +77,10 @@ export default class ContextNodeManager extends HostComponentEndpoint {
   }, 100);
 
   async highlightContexts(contexts) {
-    this.contextNodes = contexts.map(this.owner.getContextNodeByContext);
+    this.contextNodes = contexts.map(this.owner.getOrCreateContextNodeByContext);
     return await Promise.all(this.contextNodes.map(async (contextNode) => {
-      await contextNode?.waitForInit();
-      contextNode?.controllers.getComponent('Highlighter').inc();
+      await contextNode.waitForInit();
+      contextNode.controllers.getComponent('Highlighter').inc();
       await contextNode.reveal();
     }));
   }
@@ -109,7 +109,7 @@ export default class ContextNodeManager extends HostComponentEndpoint {
       return EmptyArray;
     }
 
-    this.context.graphRoot.controllers.getComponent('GraphNode').setMode(GraphNodeMode.Collapsed);
+    this.context.graphRoot.controllers.getComponent('GraphNode').setMode(GraphNodeMode.ExpandChildren);
     if (disableFollowMode) {
       this.context.graphDocument.setFollowMode(false);
     }
