@@ -37,10 +37,6 @@ class ContextNode extends HostComponentEndpoint {
       context
     } = this.state;
 
-    const {
-      statsEnabled
-    } = this.context.graphDocument.state;
-
     const { applicationId, contextId } = context;
     const app = allApplications.getById(applicationId);
     const dp = app.dataProvider;
@@ -50,9 +46,7 @@ class ContextNode extends HostComponentEndpoint {
 
     this.setNodeState();
 
-    if (statsEnabled) {
-      this._addStats(this.state);
-    }
+    this._addStats(this.state);
 
     // add controllers
     let hasChildren = !!this.getActualChildContexts().length;
@@ -145,16 +139,6 @@ class ContextNode extends HostComponentEndpoint {
   get nTreeTraces() {
     const stats = this.allContextStats;
     return stats?.nTreeTraces || 0;
-  }
-
-  setStatsEnabled(enabled) {
-    const upd = {
-      statsEnabled: enabled
-    };
-    if (enabled) {
-      this._addStats(upd);
-    }
-    this.setState(upd);
   }
 
   _addStats(_update) {
