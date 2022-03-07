@@ -249,7 +249,7 @@ class CallGraphNodes {
    * ##########################################################################*/
 
   /**
-   * In some cases we want to extend an existing, rather than create a new hole.
+   * In some cases we want to extend an existing, rather than create a new, hole.
    * This currently only applies to CGRs whose previous sibling was already part of a hole.
    * @return {{ holeNode: HoleNode, newContexts: ExecutionContext[] }}
    */
