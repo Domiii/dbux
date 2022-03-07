@@ -10,6 +10,7 @@ import { buildTraceId } from '../../instrumentation/builders/traceId';
 import { buildRegisterParams } from '../../instrumentation/builders/function';
 // import { locToString } from '../../helpers/locHelpers';
 import { astNodeToString, pathToStringAnnotated } from '../../helpers/pathHelpers';
+import StaticContextType from '@dbux/common/src/types/constants/StaticContextType';
 
 function addContextTrace(bodyPath, state, type) {
   const { scope } = bodyPath;
@@ -53,12 +54,12 @@ const pushResumeTemplate = template(
 // util
 // ###########################################################################
 
-function addResumeContext(bodyPath, state/* , staticId */) {
+function addResumeContext(bodyPath, state, staticContextId, contextType) {
   const { loc: bodyLoc } = bodyPath.node;
 
   // the "resume context" starts with the function (function is in "Resumed" state initially)
   const locStart = bodyLoc.start;
-  return state.contexts.addResumeContext(bodyPath, locStart);
+  return state.contexts.addResumeContext(bodyPath, locStart, contextType);
 }
 
 function getLastNodeOfBody(bodyNode) {
@@ -95,7 +96,7 @@ export default class Function extends BasePlugin {
     const { path } = this.node;
     const isGenerator = path.node.generator;
     const isAsync = path.node.async;
-    return isGenerator || isAsync;
+    return isAsync || isGenerator;
   }
 
   get isAsync() {
@@ -103,13 +104,23 @@ export default class Function extends BasePlugin {
     return path.node.async;
   }
 
+  get isGenerator() {
+    const { path } = this.node;
+    return path.node.generator;
+  }
+
   // ###########################################################################
   // enter
   // ###########################################################################
 
   enter() {
-    // TODO: move `push` and `pop`s to their corresponding correct phases
-    const { isInterruptable, node: { path, state } } = this;
+    // TODO: move `pop`s to correct phase
+    const { 
+      isAsync,
+      isGenerator,
+      node: { path, state }
+    } = this;
+
     const bodyPath = path.get('body');
 
     const names = getNodeNames(path.node);
@@ -122,7 +133,8 @@ export default class Function extends BasePlugin {
       type: 2, // {StaticContextType}
       name,
       displayName,
-      isInterruptable
+      isAsync,
+      isGenerator
     };
 
     // this.node.getPlugin('StaticContext')
@@ -148,9 +160,11 @@ export default class Function extends BasePlugin {
 
     // staticResumeContextId
     let staticResumeContextId;
+    const isInterruptable = isAsync || isGenerator;
     if (isInterruptable) {
       // TODO: also add this to top-level context, if it contains `await`
-      staticResumeContextId = addResumeContext(bodyPath, state, staticContextId);
+      staticResumeContextId = addResumeContext(bodyPath, state, staticContextId, 
+        isAsync ? StaticContextType.ResumeAsync : StaticContextType.ResumeGen);
     }
 
     this.data = {

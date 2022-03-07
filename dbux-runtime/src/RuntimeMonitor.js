@@ -1,6 +1,6 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import Trace from '@dbux/common/src/types/Trace';
-import ExecutionContextType from '@dbux/common/src/types/constants/ExecutionContextType';
+import ExecutionContextType, { isResumeType } from '@dbux/common/src/types/constants/ExecutionContextType';
 import { isBeforeCallExpression, isPopTrace } from '@dbux/common/src/types/constants/TraceType';
 // import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
@@ -573,7 +573,7 @@ export default class RuntimeMonitor {
       logTrace(`Tried to popResume, but context was not registered - resumeContextId=${resumeContextId}`);
       return;
     }
-    if (!ExecutionContextType.is.Resume(context.contextType)) {
+    if (!isResumeType(context.contextType)) {
       logTrace('Tried to popResume, but stack top is not of type `Resume`:', context);
       return;
     }
@@ -956,6 +956,7 @@ export default class RuntimeMonitor {
   _fixContext(programId, realContextId, awaitContextId) {
     // TODO: make sure that `Program` also gets a `realContextId` (contextIdVar)
     if (realContextId && awaitContextId && this.runtime.isContextWaiting(awaitContextId)) {
+      // we are resuming an async context without knowing how we got here
       debug(`fixContext(${[programId, realContextId, awaitContextId]})`);
       this.postAwait(programId, undefined, undefined, awaitContextId);
     }
@@ -974,7 +975,7 @@ export default class RuntimeMonitor {
   //   const realStaticContext = parentContext && staticContextCollection.getById(realContext.staticContextId);
   //   if (parentContext && (
   //     !realStaticContext.isInterruptable ||
-  //     ExecutionContextType.is.Resume(parentContext.contextType)
+  //     isResumeType(parentContext.contextType)
   //   )
   //   ) {
   //     return;

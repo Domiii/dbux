@@ -1,3 +1,4 @@
+import ExecutionContextType from '@dbux/common/src/types/constants/ExecutionContextType';
 import StaticContextType from '@dbux/common/src/types/constants/StaticContextType';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
@@ -75,16 +76,15 @@ export default class ExecutionContextCollection extends Collection {
   }
 
   /**
-   * 
+   * Set promiseId for async function contexts.
    */
   setAsyncPromiseIds(contexts) {
     const { dp, dp: { util } } = this;
     for (const context of contexts) {
-      const { contextId } = context;
-      const { type, isInterruptable } = util.getContextStaticContext(contextId);
-      // future-work: make sure, this is not called on generator functions
+      const { contextId, contextType } = context;
+      const { isInterruptable } = util.getContextStaticContext(contextId);
 
-      if (StaticContextType.is.Resume(type)) {
+      if (ExecutionContextType.is.ResumeAsync(contextType)) {
         const returnRef = util.getReturnValueRefOfContext(contextId);
         const returnedPromiseRef = returnRef?.refId && util.getPromiseValueRef(returnRef.refId);
         // returnedPromiseRef.
@@ -95,7 +95,6 @@ export default class ExecutionContextCollection extends Collection {
         //    -> seperately add "same root" constraint
       }
       else if (isInterruptable) {
-        // TODO: differentiate between async vs. generator
         const callTrace = dp.util.getCallerTraceOfContext(contextId);
         const callResultTrace = callTrace && dp.util.getValueTrace(callTrace.traceId);
         const refId = callResultTrace && dp.util.getTraceRefId(callResultTrace.traceId);

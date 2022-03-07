@@ -33,7 +33,7 @@ const traceTypeObj = {
 
   // Await
   Await: 20,
-  Resume: 21,
+  ResumeAsync: 21,
   
 
   // AwaitCallExpression: 1,
@@ -87,7 +87,9 @@ const traceTypeObj = {
   ClassDeclaration: 43,
   ClassDefinition: 44,
   ClassInstance: 45,
-  ClassProperty: 45
+  ClassProperty: 45,
+
+  ResumeGen: 48,
 };
 
 /**

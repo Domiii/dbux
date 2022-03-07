@@ -2,7 +2,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import TraceType, { isCallbackRelatedTrace } from '@dbux/common/src/types/constants/TraceType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import AsyncEventUpdateType, { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
-import ExecutionContextType from '@dbux/common/src/types/constants/ExecutionContextType';
+import ExecutionContextType, { isResumeType } from '@dbux/common/src/types/constants/ExecutionContextType';
 
 /** @typedef {import('@dbux/common/src/types/ExecutionContext').default} ExecutionContext */
 /** @typedef {import('../applications/Application').default} Application */
@@ -244,7 +244,7 @@ export function makeContextLabel(context, app) {
   const { contextType: type } = context;
   const dp = app.dataProvider;
 
-  if (ExecutionContextType.is.Resume(type)) {
+  if (isResumeType(type)) {
     const { contextId, parentContextId } = context;
     const parentContext = dp.collections.executionContexts.getById(parentContextId);
     const firstTrace = dp.indexes.traces.byContext.getFirst(contextId);

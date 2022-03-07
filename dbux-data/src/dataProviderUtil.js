@@ -17,8 +17,8 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { renderValueSimple } from '@dbux/common/src/util/stringUtil';
 import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
 import StaticTrace from '@dbux/common/src/types/StaticTrace';
-import StaticContextType, { isVirtualContextType } from '@dbux/common/src/types/constants/StaticContextType';
-import ExecutionContextType, { isRealContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
+import StaticContextType, { isVirtualStaticContextType } from '@dbux/common/src/types/constants/StaticContextType';
+import ExecutionContextType, { isRealContextType, isVirtualContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
 import { isCallResult, hasCallId } from '@dbux/common/src/types/constants/traceCategorization';
 // eslint-disable-next-line max-len
 import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory, ValuePruneState, getSimpleTypeString } from '@dbux/common/src/types/constants/ValueTypeCategory';
@@ -1857,11 +1857,11 @@ export default {
    * @param {DataProvider} dp
    */
   isContextVirtual(dp, contextId) {
-    const staticContext = dp.util.getContextStaticContext(contextId);
+    const context = dp.collections.executionContexts.getById(contextId);
     const {
-      type: staticContextType
-    } = staticContext;
-    return isVirtualContextType(staticContextType);
+      contextType
+    } = context;
+    return isVirtualContextType(contextType);
   },
 
   /**
@@ -1878,7 +1878,7 @@ export default {
     } = staticContext;
 
     let traces;
-    if (isVirtualContextType(staticContextType)) {
+    if (isVirtualStaticContextType(staticContextType)) {
       // Get all traces of the actual function, not it's virtual children (such as `Await`, `Resume` et al)
       // NOTE: `Await` and `Yield` contexts do not contain traces, only `Resume` contexts contain traces for interruptable functions
       traces = dp.util.getTracesOfParentStaticContext(staticContextId);
