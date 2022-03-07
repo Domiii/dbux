@@ -25,29 +25,31 @@ function tree(args, indent = '', x = 'ROOT') {
 }
 
 (function main() {
-  tree([
-    f,
-    [
-      g,
+  const t = tree(
+    [f, [
+      [g, [
+        g,
+        g,
+        g
+      ]],
       g,
       [f, [
         f,
+        g,
+        g,
         [g, [
           g,
+          f,
           g,
-          [g, [
-            g,
+          [f, [
             f,
-            g,
-            [f, [
-              f,
-              f
-            ]]
+            f
           ]]
         ]],
         f
       ]],
       f
-    ]
-  ])();
+    ]]
+  );
+  t();
 })();

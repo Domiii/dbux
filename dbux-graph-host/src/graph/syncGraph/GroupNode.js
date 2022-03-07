@@ -15,6 +15,14 @@ export default class GroupNode extends ContextNode {
     return this.hostOnlyState.group;
   }
 
+  /**
+   * Returns all contexts at the top of this group (not necessarily CGRs).
+   * They (probably?) should all be siblings of the same parent.
+   */
+  get rootContextsOfGroup() {
+    return this.group.contexts.filter(TODO);
+  }
+
   get allContextStats() {
     return this.dp.queryImpl.statsByContext.getCombinedStats(this.group.contextIds);
   }
