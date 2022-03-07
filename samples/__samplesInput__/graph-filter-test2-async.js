@@ -1,10 +1,13 @@
-const g = require('graph-filter-test/g');
+const g = require('graph-filter-test/gAsync');
 
-function f(indent, x, children) {
+function sleep(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
+
+async function f(indent, x, children) {
   console.log(indent, 'f', x);
+  await sleep(200);
   if (children) {
     for (const c of children) {
-      c();
+      await c();
     }
   }
 }
@@ -32,8 +35,8 @@ function treeAsync(args, indent = '', x = 'ROOT') {
     [
       g,
       g,
-      [f, [
-        f,
+      [g, [
+        g,
         [g, [
           g,
           g,
@@ -47,9 +50,9 @@ function treeAsync(args, indent = '', x = 'ROOT') {
             ]]
           ]]
         ]],
-        f
+        // f
       ]],
-      f
+      // f
     ]
   ])();
 })();

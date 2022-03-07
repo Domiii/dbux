@@ -57,13 +57,19 @@ export class ContextNodeHole {
    */
   frontier;
 
-  _sharedData;
+  _sharedData = null;
 
   constructor(id, contexts, frontier) {
     this.id = id;
     this.contexts = contexts;
-    this.contextIds = contexts.map(c => c.contextId);
     this.frontier = frontier;
+
+    this.updateHoleData();
+  }
+
+  updateHoleData() {
+    this.contextIds = this.contexts.map(c => c.contextId);
+    this._sharedData = null;
   }
 
   makeSharedData() {
@@ -237,6 +243,43 @@ class CallGraphNodes {
     }
   }
 
+
+  /** ###########################################################################
+   * {@link tryExtendHole}
+   * ##########################################################################*/
+
+  /**
+   * In some cases we want to extend an existing, rather than create a new hole.
+   * This currently only applies to CGRs whose previous sibling was already part of a hole.
+   * @return {{ holeNode: HoleNode, newContexts: ExecutionContext[] }}
+   */
+  tryExtendHole(context) {
+    const dp = getDp(context);
+    if (dp.util.isRootContext(context.contextId)) {
+      const roots = this.graph.getAllRootContexts();
+      const index = roots.indexOf(context);
+      const previousRoot = roots[index - 1];
+      if (previousRoot && this.isHole(previousRoot)) {
+        /**
+         * @type {HoleNode}
+         */
+        const hole = this.graph.getContextNodeByContext(previousRoot);
+        if ((hole instanceof HoleNode)) {
+          const { contexts, frontier } = hole.group;
+          const nContexts = contexts.length;
+          this.floodHole(contexts, frontier, context, false, true, true, true, null, index);
+          return { holeNode: hole, newContexts: contexts.slice(nContexts) };
+        }
+        else {
+          this.graph.logger.warn(`Previous root of hole context was also in hole, but had no HoleNode: ${dp.util.makeContextInfo(previousRoot)}`);
+        }
+      }
+    }
+
+
+    return null;
+  }
+
   /** ###########################################################################
    * {@link #add}
    * ##########################################################################*/
@@ -245,8 +288,8 @@ class CallGraphNodes {
    * @param {HostComponentEndpoint} parentNode 
    */
   add(parentNode, context) {
+    const dp = getDp(context);
     if (Verbose) {
-      const dp = getDp(context);
       const nAncestors = dp.util.getContextAncestorCountInRoot(context.contextId);
       this.graph.logger.debug(`[add] ${' '.repeat(nAncestors)}${dp.util.makeContextInfo(context)}`);
     }
@@ -258,41 +301,60 @@ class CallGraphNodes {
       return null;
     }
 
-    let newNode;
+    /**
+     * @type {ContextNode | HoleNode}
+     */
+    let node;
     if (this.isHole(context)) {
-      const contexts = [];
-      const frontier = [];
-      contexts.push(context);
-      // TODO: fix root handling:
-      //    1. extend existing root holes (rather than creating new ones)
-      this.floodHole(contexts, frontier, context);
-      const group = this.createHole(contexts, frontier);
-      const state = {
-        // TODO: HoleNodes dont actually have a single representative `context`
-        context: minBy(contexts, c => c.contextId),
-        group: group.makeSharedData()
-      };
-      const hostOnlyState = {
-        group
-      };
-      newNode = parentNode.children.createComponent('HoleNode', state, hostOnlyState);
-      for (const c of contexts) {
+      const extendResult = this.tryExtendHole(context);
+      /**
+       * @type {ExecutionContext[]}
+       */
+      let newContexts;
+      if (extendResult) {
+        ({ holeNode: node, newContexts } = extendResult);
+        // update existing hole
+        node.group.updateHoleData();
+        node.setState({
+          group: node.group.makeSharedData()
+        });
+      }
+      else {
+        newContexts = [];
+        const frontier = [];
+        newContexts.push(context);
+
+        this.floodHole(newContexts, frontier, context);
+
+        // create new hole
+        const group = this.createHole(newContexts, frontier);
+        const state = {
+          // future-work: HoleNodes dont actually have a single representative `context`
+          context: minBy(newContexts, c => c.contextId),
+          group: group.makeSharedData()
+        };
+        const hostOnlyState = {
+          group
+        };
+        node = parentNode.children.createComponent('HoleNode', state, hostOnlyState);
+      }
+      for (const c of newContexts) {
         // associate all contexts with the node
-        this.contextNodesByContext.set(c, newNode);
+        this.contextNodesByContext.set(c, node);
       }
     }
     else {
-      newNode = parentNode.children.createComponent('ContextNode', {
+      node = parentNode.children.createComponent('ContextNode', {
         context,
       });
-      this.contextNodesByContext.set(context, newNode);
+      this.contextNodesByContext.set(context, node);
+
+      node.addDisposable(() => {
+        this._handleContextNodeDisposed(context, node);
+      });
     }
 
-    newNode.addDisposable(() => {
-      this._handleContextNodeDisposed(context, newNode);
-    });
-
-    return newNode;
+    return node;
   }
 
   createHole(contexts, frontier) {
@@ -364,6 +426,15 @@ class CallGraphNodes {
     if (this.getContextNodeByContext(context) === contextNode) {
       // actual removal of node
       this.contextNodesByContext.delete(context);
+    }
+  }
+
+  _handleContextNodesDisposed = (contexts, contextNode) => {
+    if (this.getContextNodeByContext(contexts[0]) === contextNode) {
+      // actual removal of nodes
+      for (const context of contexts) {
+        this.contextNodesByContext.delete(context);
+      }
     }
   }
 

@@ -15,6 +15,10 @@ export default class HoleNode extends GroupNode {
     super.init();
   }
 
+  update() {
+    this.state.contextLabel = `(hidden: ${this.state.group.contextCount})`;
+  }
+
   setNodeState() {
     // const {
     //   context
@@ -26,8 +30,6 @@ export default class HoleNode extends GroupNode {
     // const { applicationId, contextId } = context;
     // const app = allApplications.getById(applicationId);
     // const dp = app.dataProvider;
-
-    this.state.contextLabel = `(hidden: ${this.state.group.contextCount})`;
 
     // const hue = 0; // does not matter much
     // let saturation = 5;
