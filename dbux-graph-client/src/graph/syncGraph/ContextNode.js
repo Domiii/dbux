@@ -93,13 +93,13 @@ class ContextNode extends ClientComponentEndpoint {
       traceId,
       isSelectedTraceCallRelated,
       contextIdOfSelectedCallTrace,
-      moduleName,
+      packageName,
       visible,
       hasError,
     } = this.state;
 
     const { statsEnabled } = this.context;
-    const moduleLabel = moduleName ? `${moduleName} | ` : '';
+    const moduleLabel = packageName ? `${packageName} | ` : '';
 
     this.el.id = `application_${applicationId}-context_${contextId}`;
     this.el.style.background = backgroundStyle;

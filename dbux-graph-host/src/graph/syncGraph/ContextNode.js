@@ -83,11 +83,11 @@ class ContextNode extends HostComponentEndpoint {
       this.state.callerTracelabel = dp.util.makeContextCallerOrSchedulerLabel(contextId);
       this.state.valueLabel = makeTraceValueLabel(callTrace);
     }
-    const moduleName = this.state.moduleName = dp.util.getContextModuleName(contextId);
+    const packageName = this.state.packageName = dp.util.getContextPackageName(contextId);
 
     const realStaticContextid = dp.util.getRealContextOfContext(contextId).staticContextId;
     this.state.backgroundStyle = makeStaticContextColor(themeMode, realStaticContextid, {
-      bland: !!moduleName,
+      bland: !!packageName,
       screenshotMode
     });
   }

@@ -132,7 +132,7 @@ class AsyncGraph extends GraphBase {
 
       isProgramRoot,
       realStaticContextid,
-      moduleName,
+      packageName,
       postAsyncEventUpdateType,
       hasError,
       nestingDepth,
@@ -148,9 +148,9 @@ class AsyncGraph extends GraphBase {
     // const { asyncDetailMode } = graphDocument.state;
     // const highContractMode = screenshotMode && !asyncDetailMode;
     const highContractMode = screenshotMode;
-    // const moduleLabel = moduleName ? `${moduleName} | ` : '';
+    // const moduleLabel = packageName ? `${packageName} | ` : '';
 
-    const backgroundColor = makeStaticContextColor(themeMode, realStaticContextid, { bland: !!moduleName, highContractMode });
+    const backgroundColor = makeStaticContextColor(themeMode, realStaticContextid, { bland: !!packageName, highContractMode });
 
     let leftLabel = '', errorLabel = '', statsRawEl = '';
     let shortLabel, fullLabel = displayName;

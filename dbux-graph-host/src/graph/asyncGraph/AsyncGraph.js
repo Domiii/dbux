@@ -80,7 +80,7 @@ class AsyncGraph extends GraphBase {
 
       const isProgramRoot = dp.util.isContextProgramContext(rootContextId);
       const realStaticContextid = dp.util.getRealContextOfContext(rootContextId).staticContextId;
-      const moduleName = dp.util.getContextModuleName(rootContextId);
+      const packageName = dp.util.getContextPackageName(rootContextId);
       const postAsyncEventUpdate = dp.util.getAsyncPostEventUpdateOfRoot(rootContextId);
       const postAsyncEventUpdateType = postAsyncEventUpdate?.type;
 
@@ -118,7 +118,7 @@ class AsyncGraph extends GraphBase {
 
         isProgramRoot,
         realStaticContextid,
-        moduleName,
+        packageName,
         postAsyncEventUpdateType,
         stats,
 
