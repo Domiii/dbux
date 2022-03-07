@@ -18,6 +18,7 @@ userdata
 # node_modules in asset folder are allowed
 node_modules/
 !dbux-projects/assets/**/node_modules/
+!samples/__samplesInput__/**/node_modules/
 
 # auto-generated files
 dbux-babel-plugin/src/parse/_registry.js
