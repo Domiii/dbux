@@ -25,6 +25,12 @@ export class ContextStats {
    * @type {number}
    */
   nTreeTraces = 0;
+  
+  /**
+   * Amount of packages in context, plus it's entire sub-tree.
+   * @type {number}
+   */
+  nTreePackages = 0;
 }
 
 export default class StatsByContextQuery extends SubscribableQuery {
@@ -82,6 +88,7 @@ export default class StatsByContextQuery extends SubscribableQuery {
 
           const staticContexts = new Set();
           const programIds = new Set();
+          const packageNames = new Set();
 
           const staticContextId = dp.util.getContextStaticContextId(contextId);
           staticContexts.add(staticContextId);
@@ -91,6 +98,7 @@ export default class StatsByContextQuery extends SubscribableQuery {
 
           const staticContextProgramId = dp.util.getContextStaticContext(contextId)?.programId;
           programIds.add(staticContextProgramId);
+          packageNames.add(dp.util.getContextPackageName(contextId));
 
           for (const child of children) {
             const childSets = dfs(child);
@@ -98,16 +106,18 @@ export default class StatsByContextQuery extends SubscribableQuery {
             // add childSet to staticContextSet
             childSets.staticContextSet.forEach(staticContexts.add, staticContexts);
             childSets.programIdSet.forEach(programIds.add, programIds);
+            childSets.packageNameSet.forEach(packageNames.add, packageNames);
 
             stats.nTreeContexts += this.getContextNTreeContexts(child.contextId);
             stats.nTreeTraces += this.getContextNTreeTraces(child.contextId);
           }
           stats.nTreeStaticContexts = staticContexts.size;
           stats.nTreeFileCalled = programIds.size;
+          stats.nTreePackages = packageNames.size;
 
           this.storeByKey(contextId, stats);
 
-          const sets = { staticContextSet: staticContexts, programIdSet: programIds };
+          const sets = { staticContextSet: staticContexts, programIdSet: programIds, packageNameSet: packageNames };
           return sets;
         }
       );

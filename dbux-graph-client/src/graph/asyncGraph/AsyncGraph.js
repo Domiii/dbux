@@ -191,6 +191,7 @@ class AsyncGraph extends GraphBase {
       nTreeStaticContexts,
       nTreeFileCalled,
       nTreeTraces,
+      nTreePackages,
     } = stats;
     statsRawEl = /*html*/`
       <div class="grid" style="width: max-content;">
@@ -205,6 +206,9 @@ class AsyncGraph extends GraphBase {
         </div>
         <div style="grid-row: 2; grid-column:2;" class="context-stats" title="Amount of traces in subgraph. This is a rough measure.">
           <img src="${statsIconUris.nTreeTraces}" /><span>${nTreeTraces}</span>
+        </div>
+        <div style="grid-row: 3; grid-column:1;" class="context-stats" title="Amount of packages in subgraph">
+          <img src="${statsIconUris.nTreePackages}" /><span>${nTreePackages}</span>
         </div>
       </div>
     `;

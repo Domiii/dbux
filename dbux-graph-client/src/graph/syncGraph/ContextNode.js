@@ -46,6 +46,7 @@ class ContextNode extends ClientComponentEndpoint {
                 <div data-el="statsNTreeStaticContexts" class="context-stats" title="Amount of static contexts involved in subgraph"></div>
                 <div data-el="statsNTreeContexts" class="context-stats" title="Amount of child contexts in subgraph"></div>
                 <div data-el="statsNTreeTraces" class="context-stats" title="Amount of traces in subgraph. This is a rough measure."></div>
+                <div data-el="statsNTreePackages" class="context-stats" title="Amount of packages in subgraph"></div>
               </div>
               <div class="flex-row">
               </div>
@@ -114,6 +115,7 @@ class ContextNode extends ClientComponentEndpoint {
       nTreeStaticContexts,
       nTreeFileCalled,
       nTreeTraces,
+      nTreePackages,
     } = this.state;
     const {
       statsIconUris
@@ -122,6 +124,7 @@ class ContextNode extends ClientComponentEndpoint {
     this.els.statsNTreeStaticContexts.innerHTML = `<img src="${statsIconUris.nTreeStaticContexts}" /><span>${nTreeStaticContexts}</span>`;
     this.els.statsNTreeContexts.innerHTML = `<img src="${statsIconUris.nTreeContexts}" /><span>${nTreeContexts}</span>`;
     this.els.statsNTreeTraces.innerHTML = `<img src="${statsIconUris.nTreeTraces}" /><span>${nTreeTraces}</span>`;
+    this.els.statsNTreePackages.innerHTML = `<img src="${statsIconUris.nTreePackages}" /><span>${nTreePackages}</span>`;
 
     const prevSibling = this.el.previousElementSibling;
     const isAsyncRoot = prevSibling && parseInt(prevSibling.dataset.rootContextId, 10) !== rootContextId;

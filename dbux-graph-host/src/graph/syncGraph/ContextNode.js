@@ -147,6 +147,7 @@ class ContextNode extends HostComponentEndpoint {
     _update.nTreeStaticContexts = stats.nTreeStaticContexts;
     _update.nTreeContexts = stats.nTreeContexts;
     _update.nTreeTraces = stats.nTreeTraces;
+    _update.nTreePackages = stats.nTreePackages;
   }
 
   // ########################################
