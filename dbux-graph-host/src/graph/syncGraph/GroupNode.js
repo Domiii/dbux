@@ -16,8 +16,8 @@ export default class GroupNode extends ContextNode {
   }
 
   /**
-   * Returns all contexts at the top of this group (not actual CGRs).
-   * They (probably?) should all be children at the same level of depth.
+   * Returns all contexts at the top of this group (not necessarily CGRs).
+   * They (probably?) should all be siblings of the same parent.
    */
   get rootContextsOfGroup() {
     return this.group.contexts.filter(TODO);
