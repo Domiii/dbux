@@ -98,7 +98,7 @@ class AsyncGraph extends GraphBase {
       const parentAsyncNodeId = parentEdge?.parentAsyncNodeId;
       const nestingDepth = dp.util.getNestedDepth(rootContextId);
 
-      let stats = dp.queries.statsByContext(rootContextId);
+      const stats = this.getContextStats(executionContext);
 
       return {
         asyncNode,
@@ -223,6 +223,18 @@ class AsyncGraph extends GraphBase {
     }
 
     return asyncNodeData;
+  }
+
+  getContextStats({ applicationId, contextId }) {
+    const dp = allApplications.getById(applicationId).dataProvider;
+    const stats = dp.queries.statsByContext(contextId);
+    return {
+      nTreeFileCalled: stats.nTreeFileCalled,
+      nTreeStaticContexts: stats.nTreeStaticContexts,
+      nTreeContexts: stats.nTreeContexts,
+      nTreeTraces: stats.nTreeTraces,
+      nTreePackages: stats.nTreePackages,
+    };
   }
 
   getAsyncNodeWidthDown(nodeData, dataByNodeMap) {

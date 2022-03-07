@@ -3,34 +3,74 @@ import SubscribableQuery from '../../queries/SubscribableQuery';
 
 export class ContextStats {
   /**
+   * 
+   * @param  {...ContextStats} stats 
+   */
+  static merge(...stats) {
+    const newStats = new ContextStats();
+
+    for (const s of stats) {
+      newStats.nTreeContexts += s.nTreeContexts;
+      newStats.nTreeTraces += s.nTreeTraces;
+      
+      s._staticContextIds.forEach(newStats._staticContextIds.add, newStats._staticContextIds);
+      s._programIds.forEach(newStats._programIds.add, newStats._programIds);
+      s._packageNames.forEach(newStats._packageNames.add, newStats._packageNames);
+    }
+
+    return newStats;
+  }
+
+  /**
    * Amount of contexts in context, plus it's entire sub-tree.
    * @type {number}
    */
   nTreeContexts = 0;
 
   /**
+   * Amount of traces in context, plus it's entire sub-tree.
+   * @type {number}
+   */
+  nTreeTraces = 0;
+
+  /**
    * Amount of referenced staticContexts in context, plus it's entire sub-tree.
    * @type {number}
    */
-  nTreeStaticContexts = 0;
+  get nTreeStaticContexts() {
+    return this._staticContextIds.size;
+  }
 
   /**
    * Amount of file called in context, plus it's entire sub-tree.?
    * @type {number}
    */
-  nTreeFileCalled = 0;
+  get nTreeFileCalled() {
+    return this._programIds.size;
+  }
 
-  /**
-   * Amount of traces in context, plus it's entire sub-tree.
-   * @type {number}
-   */
-  nTreeTraces = 0;
-  
   /**
    * Amount of packages in context, plus it's entire sub-tree.
    * @type {number}
    */
-  nTreePackages = 0;
+  get nTreePackages() {
+    return this._packageNames.size;
+  }
+
+  /**
+   * @type {Set<number>}
+   */
+  _staticContextIds = new Set();
+
+  /**
+   * @type {Set<number>}
+   */
+  _programIds = new Set();
+
+  /**
+   * @type {Set<number>}
+   */
+  _packageNames = new Set();
 }
 
 export default class StatsByContextQuery extends SubscribableQuery {
@@ -56,18 +96,8 @@ export default class StatsByContextQuery extends SubscribableQuery {
    * @param {number[]} contextIds 
    */
   getCombinedStats(contextIds) {
-    let stats = this._cache.get(contextIds[0]);
-    const keys = Object.keys(stats);
-    if (contextIds.length > 1) {
-      stats = { ...stats };
-      for (let i = 1; i < contextIds.length; ++i) {
-        const next = this._cache.get(contextIds[i]);
-        for (const key of keys) {
-          stats[key] += next[key];
-        }
-      }
-    }
-    return stats;
+    const allStats = contextIds.map((contextId) => this._cache.get(contextId));
+    return ContextStats.merge(...allStats);
   }
 
   /** ###########################################################################
@@ -86,38 +116,40 @@ export default class StatsByContextQuery extends SubscribableQuery {
           const { contextId } = context;
           const stats = this._cache.get(contextId) || new ContextStats();
 
-          const staticContexts = new Set();
-          const programIds = new Set();
-          const packageNames = new Set();
+          const staticContextIds = stats._staticContextIds;
+          const programIds = stats._programIds;
+          const packageNames = stats._packageNames;
 
-          const staticContextId = dp.util.getContextStaticContextId(contextId);
-          staticContexts.add(staticContextId);
           stats.nTreeContexts = 1;
           const childTraces = dp.indexes.traces.byContext.get(contextId);
           stats.nTreeTraces = childTraces?.length || 0;
 
+          const staticContextId = dp.util.getContextStaticContextId(contextId);
+          staticContextIds.add(staticContextId);
           const staticContextProgramId = dp.util.getContextStaticContext(contextId)?.programId;
           programIds.add(staticContextProgramId);
-          packageNames.add(dp.util.getContextPackageName(contextId));
+          const packageName = dp.util.getContextPackageName(contextId);
+          packageNames.add(packageName);
 
           for (const child of children) {
             const childSets = dfs(child);
 
             // add childSet to staticContextSet
-            childSets.staticContextSet.forEach(staticContexts.add, staticContexts);
+            childSets.staticContextIdSet.forEach(staticContextIds.add, staticContextIds);
             childSets.programIdSet.forEach(programIds.add, programIds);
             childSets.packageNameSet.forEach(packageNames.add, packageNames);
 
             stats.nTreeContexts += this.getContextNTreeContexts(child.contextId);
             stats.nTreeTraces += this.getContextNTreeTraces(child.contextId);
           }
-          stats.nTreeStaticContexts = staticContexts.size;
-          stats.nTreeFileCalled = programIds.size;
-          stats.nTreePackages = packageNames.size;
+          // data are directly added into the set
+          // stats._staticContextIds = staticContextIds;
+          // stats._programIds = programIds;
+          // stats._packageNames = packageNames;
 
           this.storeByKey(contextId, stats);
 
-          const sets = { staticContextSet: staticContexts, programIdSet: programIds, packageNameSet: packageNames };
+          const sets = { staticContextIdSet: staticContextIds, programIdSet: programIds, packageNameSet: packageNames };
           return sets;
         }
       );
