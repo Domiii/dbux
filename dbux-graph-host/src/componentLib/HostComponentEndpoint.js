@@ -5,8 +5,8 @@ import ComponentEndpoint from '@dbux/graph-common/src/componentLib/ComponentEndp
 import NestedError from '@dbux/common/src/NestedError';
 import HostComponentList from './HostComponentList';
 
-const Verbose = 1;
-// const Verbose = 0;
+const Verbose = 0;
+// const Verbose = 1;
 // const Verbose = 2;
 
 /**
