@@ -132,25 +132,19 @@ class AsyncGraph extends GraphBase {
 
       isProgramRoot,
       realStaticContextid,
-      moduleName,
+      packageName,
       postAsyncEventUpdateType,
       hasError,
       nestingDepth,
-      stats: {
-        nTreeContexts,
-        nTreeStaticContexts,
-        nTreeFileCalled,
-        nTreeTraces,
-      },
+      stats,
     } = nodeData;
 
-    const { themeMode, screenshotMode, statsEnabled } = this.context;
-    // const { asyncDetailMode } = graphDocument.state;
+    const { themeMode, screenshotMode } = this.context;
     // const highContractMode = screenshotMode && !asyncDetailMode;
     const highContractMode = screenshotMode;
-    // const moduleLabel = moduleName ? `${moduleName} | ` : '';
+    // const moduleLabel = packageName ? `${packageName} | ` : '';
 
-    const backgroundColor = makeStaticContextColor(themeMode, realStaticContextid, { bland: !!moduleName, highContractMode });
+    const backgroundColor = makeStaticContextColor(themeMode, realStaticContextid, { bland: !!packageName, highContractMode });
 
     let leftLabel = '', errorLabel = '', statsRawEl = '';
     let shortLabel, fullLabel = displayName;
@@ -189,25 +183,36 @@ class AsyncGraph extends GraphBase {
       // shortLabel = `${depthLabel}${shortLabel}`;
       // fullLabel = `${depthLabel}${fullLabel}`;
     }
-    if (statsEnabled) {
-      const { statsIconUris } = this.context;
-      statsRawEl = /*html*/`
-        <div class="grid" style="width: max-content;">
-          <div style="grid-row: 1; grid-column:1;" class="context-stats" title="Amount of child contexts in subgraph">
-            <img src="${statsIconUris.nTreeContexts}" /><span>${nTreeContexts}</span>
-          </div>
-          <div style="grid-row: 1; grid-column:2;" class="context-stats" title="Amount of static contexts involved in subgraph">
-            <img src="${statsIconUris.nTreeStaticContexts}" /><span>${nTreeStaticContexts}</span>
-          </div>
-          <div style="grid-row: 2; grid-column:1;" class="context-stats" title="Amount of files involved in subgraph">
-            <img src="${statsIconUris.nTreeFileCalled}" /><span>${nTreeFileCalled}</span>
-          </div>
-          <div style="grid-row: 2; grid-column:2;" class="context-stats" title="Amount of traces in subgraph. This is a rough measure.">
-            <img src="${statsIconUris.nTreeTraces}" /><span>${nTreeTraces}</span>
-          </div>
+
+    // generate stats label
+    const { statsIconUris } = this.context;
+    const {
+      nTreeContexts,
+      nTreeStaticContexts,
+      nTreeFileCalled,
+      nTreeTraces,
+      nTreePackages,
+    } = stats;
+    statsRawEl = /*html*/`
+      <div class="grid" style="width: max-content;">
+        <div style="grid-row: 1; grid-column:1;" class="context-stats" title="Amount of child contexts in subgraph">
+          <img src="${statsIconUris.nTreeContexts}" /><span>${nTreeContexts}</span>
         </div>
-      `;
-    }
+        <div style="grid-row: 1; grid-column:2;" class="context-stats" title="Amount of static contexts involved in subgraph">
+          <img src="${statsIconUris.nTreeStaticContexts}" /><span>${nTreeStaticContexts}</span>
+        </div>
+        <div style="grid-row: 2; grid-column:1;" class="context-stats" title="Amount of files involved in subgraph">
+          <img src="${statsIconUris.nTreeFileCalled}" /><span>${nTreeFileCalled}</span>
+        </div>
+        <div style="grid-row: 2; grid-column:2;" class="context-stats" title="Amount of traces in subgraph. This is a rough measure.">
+          <img src="${statsIconUris.nTreeTraces}" /><span>${nTreeTraces}</span>
+        </div>
+        <div style="grid-row: 3; grid-column:1;" class="context-stats" title="Amount of packages in subgraph">
+          <img src="${statsIconUris.nTreePackages}" /><span>${nTreePackages}</span>
+        </div>
+      </div>
+    `;
+
     const { asyncNodeId, applicationId, isTerminalNode } = asyncNode;
     const asyncNodeData = {
       'async-node-id': asyncNodeId,

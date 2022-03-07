@@ -46,6 +46,7 @@ class ContextNode extends ClientComponentEndpoint {
                 <div data-el="statsNTreeStaticContexts" class="context-stats" title="Amount of static contexts involved in subgraph"></div>
                 <div data-el="statsNTreeContexts" class="context-stats" title="Amount of child contexts in subgraph"></div>
                 <div data-el="statsNTreeTraces" class="context-stats" title="Amount of traces in subgraph. This is a rough measure."></div>
+                <div data-el="statsNTreePackages" class="context-stats" title="Amount of packages in subgraph"></div>
               </div>
               <div class="flex-row">
               </div>
@@ -93,13 +94,12 @@ class ContextNode extends ClientComponentEndpoint {
       traceId,
       isSelectedTraceCallRelated,
       contextIdOfSelectedCallTrace,
-      moduleName,
+      packageName,
       visible,
       hasError,
     } = this.state;
 
-    const { statsEnabled } = this.context;
-    const moduleLabel = moduleName ? `${moduleName} | ` : '';
+    const moduleLabel = packageName ? `${packageName} | ` : '';
 
     this.el.id = `application_${applicationId}-context_${contextId}`;
     this.el.style.background = backgroundStyle;
@@ -109,27 +109,22 @@ class ContextNode extends ClientComponentEndpoint {
     this.els.valueLabel.textContent = valueLabel;
     this.els.errorLabel.textContent = hasError ? '🔥' : '';
 
-    if (statsEnabled) {
-      const {
-        nTreeContexts,
-        nTreeStaticContexts,
-        nTreeFileCalled,
-        nTreeTraces,
-      } = this.state;
-      const {
-        statsIconUris
-      } = this.context;
-      this.els.statsNTreeFileCalled.innerHTML = `<img src="${statsIconUris.nTreeFileCalled}" /><span>${nTreeFileCalled}</span>`;
-      this.els.statsNTreeStaticContexts.innerHTML = `<img src="${statsIconUris.nTreeStaticContexts}" /><span>${nTreeStaticContexts}</span>`;
-      this.els.statsNTreeContexts.innerHTML = `<img src="${statsIconUris.nTreeContexts}" /><span>${nTreeContexts}</span>`;
-      this.els.statsNTreeTraces.innerHTML = `<img src="${statsIconUris.nTreeTraces}" /><span>${nTreeTraces}</span>`;
-    }
-    else {
-      this.els.statsNTreeContexts.innerHTML = '';
-      this.els.statsNTreeStaticContexts.innerHTML = '';
-      this.els.statsNTreeFileCalled.innerHTML = '';
-      this.els.statsNTreeTraces.innerHTML = '';
-    }
+    // generate stats label
+    const {
+      nTreeContexts,
+      nTreeStaticContexts,
+      nTreeFileCalled,
+      nTreeTraces,
+      nTreePackages,
+    } = this.state;
+    const {
+      statsIconUris
+    } = this.context;
+    this.els.statsNTreeFileCalled.innerHTML = `<img src="${statsIconUris.nTreeFileCalled}" /><span>${nTreeFileCalled}</span>`;
+    this.els.statsNTreeStaticContexts.innerHTML = `<img src="${statsIconUris.nTreeStaticContexts}" /><span>${nTreeStaticContexts}</span>`;
+    this.els.statsNTreeContexts.innerHTML = `<img src="${statsIconUris.nTreeContexts}" /><span>${nTreeContexts}</span>`;
+    this.els.statsNTreeTraces.innerHTML = `<img src="${statsIconUris.nTreeTraces}" /><span>${nTreeTraces}</span>`;
+    this.els.statsNTreePackages.innerHTML = `<img src="${statsIconUris.nTreePackages}" /><span>${nTreePackages}</span>`;
 
     const prevSibling = this.el.previousElementSibling;
     const isAsyncRoot = prevSibling && parseInt(prevSibling.dataset.rootContextId, 10) !== rootContextId;

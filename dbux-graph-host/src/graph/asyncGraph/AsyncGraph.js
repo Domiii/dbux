@@ -80,7 +80,7 @@ class AsyncGraph extends GraphBase {
 
       const isProgramRoot = dp.util.isContextProgramContext(rootContextId);
       const realStaticContextid = dp.util.getRealContextOfContext(rootContextId).staticContextId;
-      const moduleName = dp.util.getContextModuleName(rootContextId);
+      const packageName = dp.util.getContextPackageName(rootContextId);
       const postAsyncEventUpdate = dp.util.getAsyncPostEventUpdateOfRoot(rootContextId);
       const postAsyncEventUpdateType = postAsyncEventUpdate?.type;
 
@@ -98,10 +98,7 @@ class AsyncGraph extends GraphBase {
       const parentAsyncNodeId = parentEdge?.parentAsyncNodeId;
       const nestingDepth = dp.util.getNestedDepth(rootContextId);
 
-      let stats = null;
-      if (this.context.statsEnabled) {
-        stats = dp.queries.statsByContext(rootContextId);
-      }
+      const stats = this.getContextStats(executionContext);
 
       return {
         asyncNode,
@@ -118,7 +115,7 @@ class AsyncGraph extends GraphBase {
 
         isProgramRoot,
         realStaticContextid,
-        moduleName,
+        packageName,
         postAsyncEventUpdateType,
         stats,
 
@@ -226,6 +223,18 @@ class AsyncGraph extends GraphBase {
     }
 
     return asyncNodeData;
+  }
+
+  getContextStats({ applicationId, contextId }) {
+    const dp = allApplications.getById(applicationId).dataProvider;
+    const stats = dp.queries.statsByContext(contextId);
+    return {
+      nTreeFileCalled: stats.nTreeFileCalled,
+      nTreeStaticContexts: stats.nTreeStaticContexts,
+      nTreeContexts: stats.nTreeContexts,
+      nTreeTraces: stats.nTreeTraces,
+      nTreePackages: stats.nTreePackages,
+    };
   }
 
   getAsyncNodeWidthDown(nodeData, dataByNodeMap) {
