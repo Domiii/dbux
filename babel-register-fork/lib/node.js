@@ -176,7 +176,7 @@ function register(opts) {
   cwd = transformOpts.cwd = path.resolve(cwd);
 
   if (transformOpts.ignore === undefined && transformOpts.only === undefined) {
-    Verbose && console.debug('[@dbux/babel-register-fork] NOTE: no `ignore` in options → ignoring node_modules');
+    // Verbose && console.debug('[@dbux/babel-register-fork] NOTE: no `ignore` in options → ignoring node_modules');
     transformOpts.only = [
       // Only compile things inside the current working directory.
       // $FlowIgnore

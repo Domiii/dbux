@@ -117,7 +117,7 @@ export default function moduleFilter(options, includeDefault) {
     Verbose > 3 && debugLog(`CHECK: "${parsePackageName(modulePath)}" in "${modulePath}"`);
       
     if (unwanted) {
-      reportRegister(modulePath, !includeDefault, 'unwanted');
+      reportRegister(modulePath, false, 'unwanted');
       return !includeDefault;
     }
 
@@ -127,7 +127,7 @@ export default function moduleFilter(options, includeDefault) {
     // 3. check package name (based on )
     if ((packageName &&
       !shouldInstrument(packageName, packageWhitelistRegExps, packageBlacklistRegExps))) {
-      reportRegister(modulePath, !includeDefault, 'package');
+      reportRegister(modulePath, false, 'package');
       return !includeDefault;
     }
 

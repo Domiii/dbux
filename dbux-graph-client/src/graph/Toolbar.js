@@ -19,12 +19,12 @@ class Toolbar extends ClientComponentEndpoint {
           <button title="Show location of context (function declaration or start of file)" data-el="locModeBtn" class="toolbar-btn btn btn-info" href="#">loc</button>
           <button title="Show caller (call trace) of function call" data-el="callModeBtn" class="toolbar-btn btn btn-info" href="#">call</button>
           <button title="Show arguments and return value of function call in the form of: (args) -> returnValue" data-el="valueModeBtn" class="toolbar-btn btn btn-info" href="#">val</button>
-          <button title="Thin mode" data-el="thinModeBtn" class="no-horizontal-padding btn btn-info" href="#"></button>
+          <button title="Thin mode" data-el="thinModeBtn" class="toolbar-btn btn btn-info" href="#"></button>
           <div data-el="searchMenu" class="btn-group">
             <button data-el="searchMenuBtn" type="button" class="toolbar-btn btn btn-info" aria-haspopup="true" aria-expanded="false">
               🔍
             </button>
-            <button data-el="searchMenuToggleBtn" type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button data-el="searchMenuToggleBtn" type="button" class="toolbar-btn btn btn-info dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <span class="sr-only">Toggle Dropdown</span>
             </button>
             <div data-el="searchMenuBody" class="dropdown-menu">
