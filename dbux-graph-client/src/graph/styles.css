@@ -671,6 +671,7 @@ body:not(.theme-mode-dark) .highlight {
 .context-stats img {
   width: 13px;
   height: 13px;
+  filter: grayscale(1);
 }
 
 /** ###########################################################################

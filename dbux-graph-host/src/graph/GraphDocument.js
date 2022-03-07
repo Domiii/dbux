@@ -151,6 +151,7 @@ class GraphDocument extends HostComponentEndpoint {
       nTreeStaticContexts: this.getIconUri('nTreeStaticContextsStats.svg'),
       nTreeFileCalled: this.getIconUri('document.svg'),
       nTreeTraces: this.getIconUri('circuit.svg'),
+      nTreePackages: this.getIconUri('nodejs.svg'),
     };
     return {
       themeMode,
