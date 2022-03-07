@@ -16,6 +16,7 @@ export default class HoleNode extends GroupNode {
   }
 
   update() {
+    super.update();
     this.state.contextLabel = `(hidden: ${this.state.group.contextCount})`;
   }
 

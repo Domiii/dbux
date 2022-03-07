@@ -46,13 +46,15 @@ class ContextNode extends HostComponentEndpoint {
 
     this.setNodeState();
 
-    this._addStats(this.state);
-
     // add controllers
     let hasChildren = !!this.getActualChildContexts().length;
     this.controllers.createComponent('GraphNode', { hasChildren });
     this.controllers.createComponent('PopperController');
     this.controllers.createComponent('Highlighter');
+  }
+
+  update() {
+    this._addStats(this.state);
   }
 
   /**
