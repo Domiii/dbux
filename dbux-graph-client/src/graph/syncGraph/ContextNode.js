@@ -43,11 +43,11 @@ class ContextNode extends ClientComponentEndpoint {
                 <div>
                   <span class="value-label" data-el="valueLabel"></span>
                 </div>
+                <div data-el="statsNTreePackages" class="context-stats" title="Amount of packages involved in subgraph"></div>
                 <div data-el="statsNTreeFileCalled" class="context-stats" title="Amount of files involved in subgraph"></div>
                 <div data-el="statsNTreeStaticContexts" class="context-stats" title="Amount of static contexts involved in subgraph"></div>
                 <div data-el="statsNTreeContexts" class="context-stats" title="Amount of child contexts in subgraph"></div>
-                <div data-el="statsNTreeTraces" class="context-stats" title="Amount of traces in subgraph. This is a rough measure."></div>
-                <div data-el="statsNTreePackages" class="context-stats" title="Amount of packages in subgraph"></div>
+                <div data-el="statsNTreeTraces" class="context-stats" title="Amount of traces in subgraph (approximates the amount of executed statements/expressions)"></div>
               </div>
               <div class="flex-row">
               </div>

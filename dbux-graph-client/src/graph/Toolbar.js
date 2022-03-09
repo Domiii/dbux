@@ -16,7 +16,7 @@ class Toolbar extends ClientComponentEndpoint {
           <button title="Toggle Async Detail" data-el="asyncDetailModeBtn" class="toolbar-btn btn btn-info" href="#">detail</button>
           <button title="Toggle Async Stack" data-el="asyncStackBtn" class="toolbar-btn btn btn-info" href="#">stack</button>
 
-          <div class="">&nbsp;&nbsp;</div>
+          <div class="">&nbsp;</div>
           
           <button title="Show location of contexts" data-el="locModeBtn" class="toolbar-btn btn btn-info" href="#">loc</button>
           <button title="Show caller (call trace) of contexts" data-el="callModeBtn" class="toolbar-btn btn btn-info" href="#">call</button>
@@ -26,7 +26,7 @@ class Toolbar extends ClientComponentEndpoint {
           </button>
           
 
-          <div class="">&nbsp;&nbsp;</div>
+          <div class="">&nbsp;</div>
 
           <div data-el="searchMenu" class="btn-group">
             <button data-el="searchMenuBtn" type="button" class="toolbar-btn btn btn-info" aria-haspopup="true" aria-expanded="false">
@@ -42,10 +42,12 @@ class Toolbar extends ClientComponentEndpoint {
             </div>
           </div>
 
-          <div class="">&nbsp;&nbsp;</div>
+          <div class="">&nbsp;</div>
+
+          <button title="If enabled: reveal, focus on and highlight the context of selected trace" data-el="followModeBtn" class="toolbar-btn btn btn-info" href="#">follow</button>
 
           <button title="Thin mode" data-el="thinModeBtn" class="toolbar-btn btn btn-info" href="#"></button>
-          <button title="If enabled: reveal, focus on and highlight the context of selected trace" data-el="followModeBtn" class="toolbar-btn btn btn-info" href="#">follow</button>
+          
           <button title="Stop recording: Do not add new contexts/traces" data-el="hideNewRunBtn" class="toolbar-btn btn btn-info" href="#"></button>
           <button title="Clear: Hide all existing contexts/traces" data-el="hideOldRunBtn" class="toolbar-btn btn btn-info" href="#">x</button>
 
