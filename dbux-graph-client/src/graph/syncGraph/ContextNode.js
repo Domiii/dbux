@@ -4,6 +4,7 @@ import { getPlatformModifierKeyString } from '../../util/platformUtil';
 import ClientComponentEndpoint from '../../componentLib/ClientComponentEndpoint';
 
 let choicingIndicator;
+const ContextBlinkAnimationTime = 4000;
 class ContextNode extends ClientComponentEndpoint {
   createEl() {
     return compileHtmlElement(/*html*/`
@@ -63,7 +64,7 @@ class ContextNode extends ClientComponentEndpoint {
 
   setupEl() {
     const {
-      context: { applicationId, contextId },
+      context: { applicationId, contextId, createdAt },
       rootContextId
     } = this.state;
 
@@ -72,11 +73,15 @@ class ContextNode extends ClientComponentEndpoint {
     this.el.dataset.rootContextId = rootContextId;
 
     if (!(this.parent instanceof ContextNode)) {
-      this.el.classList.add('blink-me');
+      const animationEndTime = createdAt + ContextBlinkAnimationTime;
+      const duration = animationEndTime - Date.now();
+      if (duration > 0) {
+        this.el.classList.add('blink-me');
 
-      setTimeout(() => {
-        this.el?.classList.remove('blink-me');
-      }, 4000);
+        setTimeout(() => {
+          this.el?.classList.remove('blink-me');
+        }, duration);
+      }
     }
   }
 
