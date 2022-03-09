@@ -40,6 +40,12 @@ class GraphContainer extends HostComponentEndpoint {
     }
   }
 
+  maybeFullReset() {
+    if (this.state.enabled) {
+      this.graph.fullReset();
+    }
+  }
+
   shared() {
     return {
       context: {

@@ -5,6 +5,7 @@ import StackMode from '@dbux/graph-common/src/shared/StackMode';
 import GraphType, { nextGraphType } from '@dbux/graph-common/src/shared/GraphType';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
+import ContextFilterManager from './ContextFilterManager';
 
 /** @typedef {import('./GraphContainer').default} GraphContainer */
 
@@ -26,11 +27,14 @@ class GraphDocument extends HostComponentEndpoint {
     this.state.asyncDetailMode = true;
     this.state.statsEnabled = true;
 
+    // context filter
+    this.contextFilterManager = new ContextFilterManager(this);
+    this.contextFilterManager.init();
+
     this.createOwnComponents();
 
     // NOTE: this will be called immediately
     this.addDisposable(allApplications.selection.onApplicationsChanged(() => {
-      this.handleApplicationsChanged();
       this.refreshGraphs();
     }));
   }
@@ -50,9 +54,9 @@ class GraphDocument extends HostComponentEndpoint {
     this.refreshGraphs();
   }
 
-  /** ########################################
+  /** ###########################################################################
    * util
-   *  ######################################*/
+   *  #########################################################################*/
 
   getIconUri(fileName, modeName) {
     if (!fileName) {
@@ -94,9 +98,6 @@ class GraphDocument extends HostComponentEndpoint {
     return this._emitter.on('graphModeChanged', cb);
   }
 
-  handleApplicationsChanged() {
-  }
-
   /**
    * @type {GraphContainer[]}
    */
@@ -104,9 +105,21 @@ class GraphDocument extends HostComponentEndpoint {
     return this.children.getComponents('GraphContainer');
   }
 
+  /**
+   * Refresh every graphs, including their enabled states and children
+   */
   refreshGraphs() {
     this.containers.forEach((container) => {
       container.refreshGraph();
+    });
+  }
+
+  /**
+   * Clear and rebuild every enabled graph
+   */
+  maybeFullResetGraphs() {
+    this.containers.forEach((container) => {
+      container.maybeFullReset();
     });
   }
 
@@ -153,10 +166,15 @@ class GraphDocument extends HostComponentEndpoint {
       nTreeTraces: this.getIconUri('circuit.svg'),
       nTreePackages: this.getIconUri('nodejs.svg'),
     };
+    const toolbarIconUris = {
+      theradSelection: this.getIconUri('filter.svg'),
+      contextFilter: this.getIconUri('packageWhitelist.svg'),
+    };
     return {
       themeMode,
       contextNodeIconUris,
       statsIconUris,
+      toolbarIconUris,
       screenshotMode,
     };
   }
@@ -169,8 +187,6 @@ class GraphDocument extends HostComponentEndpoint {
       context: {
         graphDocument: this,
         themeMode: this.state.themeMode,
-        contextNodeIconUris: this.state.contextNodeIconUris,
-        statsIconUris: this.state.statsIconUris,
         screenshotMode: this.state.screenshotMode,
       }
     };
