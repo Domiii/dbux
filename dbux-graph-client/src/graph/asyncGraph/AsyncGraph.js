@@ -194,20 +194,20 @@ class AsyncGraph extends GraphBase {
       nTreePackages,
     } = stats;
     statsRawEl = /*html*/`
-      <div class="grid" style="width: max-content;">
+      <div class="grid async-detail" style="width: max-content;">
         <div style="grid-row: 1; grid-column:1;" class="context-stats" title="Amount of child contexts in subgraph">
           <img src="${statsIconUris.nTreeContexts}" /><span>${nTreeContexts}</span>
         </div>
         <div style="grid-row: 1; grid-column:2;" class="context-stats" title="Amount of static contexts involved in subgraph">
           <img src="${statsIconUris.nTreeStaticContexts}" /><span>${nTreeStaticContexts}</span>
         </div>
-        <div style="grid-row: 2; grid-column:1;" class="context-stats" title="Amount of files involved in subgraph">
+        <div style="grid-row: 1; grid-column:3;" class="context-stats" title="Amount of files involved in subgraph">
           <img src="${statsIconUris.nTreeFileCalled}" /><span>${nTreeFileCalled}</span>
         </div>
-        <div style="grid-row: 2; grid-column:2;" class="context-stats" title="Amount of traces in subgraph. This is a rough measure.">
+        <div style="grid-row: 1; grid-column:4;" class="context-stats" title="Amount of traces in subgraph. This is a rough measure.">
           <img src="${statsIconUris.nTreeTraces}" /><span>${nTreeTraces}</span>
         </div>
-        <div style="grid-row: 3; grid-column:1;" class="context-stats" title="Amount of packages in subgraph">
+        <div style="grid-row: 1; grid-column:5;" class="context-stats" title="Amount of packages in subgraph">
           <img src="${statsIconUris.nTreePackages}" /><span>${nTreePackages}</span>
         </div>
       </div>
