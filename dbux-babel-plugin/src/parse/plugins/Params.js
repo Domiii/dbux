@@ -55,7 +55,9 @@ export default class Params extends BasePlugin {
 
   addParamTrace = (paramPath, traceType = TraceType.Param, moreTraceData = null) => {
     if (!isSupported(paramPath)) {
-      this.warn(`[NYI] - unsupported param type: [${paramPath.node?.type}] "${pathToString(paramPath)}" in "${this.node}"`);
+      if (this.node.state.verbose.nyi) {
+        this.warn(`[NYI] - unsupported param type: [${paramPath.node?.type}] "${pathToString(paramPath)}" in "${this.node}"`);
+      }
       return null;
     }
 
@@ -63,7 +65,9 @@ export default class Params extends BasePlugin {
 
     const idPaths = getBindingIdentifierPaths(paramPath);
     if (idPaths.length !== 1) {
-      this.warn(`[NYI] - param has more or less than 1 variable: "${pathToString(paramPath)}" in "${this.node}"`);
+      if (this.node.state.verbose.nyi) {
+        this.warn(`[NYI] - param has more or less than 1 variable: "${pathToString(paramPath)}" in "${this.node}"`);
+      }
       return null;
     }
     const idPath = idPaths[0];
