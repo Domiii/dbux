@@ -7,6 +7,9 @@ const { log, debug, warn, error: logError, trace: logTrace } = newLogger('FocusC
 
 /** @typedef {import('../ContextNode').default} ContextNode */
 
+/**
+ * TODO: rename to `FollowController`
+ */
 export default class FocusController extends HostComponentEndpoint {
   init() {
     this.addDisposable(

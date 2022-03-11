@@ -64,7 +64,7 @@ export function initUserCommands(extensionContext) {
     const msg = translate('savedSuccessfully', { fileName: exportFpath });
     await showInformationMessage(msg, {
       async 'Show File'() {
-        await showTextDocument(path.dirname(exportFpath));
+        await open(path.dirname(exportFpath));
       }
     });
   });

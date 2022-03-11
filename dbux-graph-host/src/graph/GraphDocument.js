@@ -45,9 +45,10 @@ class GraphDocument extends HostComponentEndpoint {
   }
 
   update() {
-    this.toolbar.forceUpdate();
-
-    this.refreshGraphs();
+    // this.toolbar.forceUpdate();
+    // this.refreshGraphs();
+    
+    this.forceUpdateTree();
   }
 
   /** ########################################
@@ -114,6 +115,7 @@ class GraphDocument extends HostComponentEndpoint {
 
   refreshGraphs() {
     this.containers.forEach((container) => {
+      // container.clearChildren();  // hackfix: brute-force this
       container.refreshGraph();
     });
   }
