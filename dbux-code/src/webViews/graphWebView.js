@@ -3,11 +3,12 @@ import {
 } from 'vscode';
 import GraphHost from '@dbux/graph-host/src/GraphHost';
 import { getThemeResourcePathUri } from '../codeUtil/codePath';
+import { showQuickPick } from '../codeUtil/codeModals';
 import { emitCallGraphAction } from '../userEvents';
 import searchController from '../search/searchController';
 import { getGlobalAnalysisViewController } from '../globalAnalysisView/GlobalAnalysisViewController';
-import RichWebView from './RichWebView';
 import { get as getMemento, set as setMemento } from '../memento';
+import RichWebView from './RichWebView';
 
 const defaultColumn = ViewColumn.Two;
 
@@ -30,8 +31,8 @@ export default class GraphWebView extends RichWebView {
     return getMemento(ContextFilterMementoKey);
   };
 
-  setContextFilter = (value) => {
-    return setMemento(ContextFilterMementoKey, value);
+  setContextFilter = async (value) => {
+    return await setMemento(ContextFilterMementoKey, value);
   };
 
   // ###########################################################################
@@ -42,9 +43,10 @@ export default class GraphWebView extends RichWebView {
     emitCallGraphAction,
     searchController,
     globalAnalysisViewController: getGlobalAnalysisViewController(),
+    showQuickPick,
 
     getContextFilter: this.getContextFilter,
-    setContextFilter: this.setContextFilter
+    setContextFilter: this.setContextFilter,
   }
 }
 

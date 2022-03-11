@@ -7,7 +7,6 @@ import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 class Toolbar extends HostComponentEndpoint {
   init() {
     const { threadSelection } = allApplications.selection.data;
-    this.state.theradSelectionIconUri = this.context.graphDocument.getIconUri('filter.svg');
     this.state.isThreadSelectionActive = threadSelection.isActive();
 
     // listen on mode changed event
@@ -47,6 +46,10 @@ class Toolbar extends HostComponentEndpoint {
 
     toggleFollowMode() {
       this.doc.toggleFollowMode();
+    },
+
+    async setContextFilter(predicateKey) {
+      await this.doc.contextFilterManager.setContextFilter(predicateKey);
     },
 
     hideOldRun(time) {

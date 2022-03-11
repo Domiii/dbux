@@ -6,9 +6,11 @@ import { compileHtmlElement, decorateClasses, decorateAttr } from '../util/domUt
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 let documentClickHandler;
+const toolbarIconSize = '12px';
 
 class Toolbar extends ClientComponentEndpoint {
   createEl() {
+    const iconUri = this.context.graphDocument.state.toolbarIconUris;
     return compileHtmlElement(/*html*/`
       <nav class="navbar sticky-top navbar-expand-lg no-padding" id="toolbar">
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
@@ -20,6 +22,15 @@ class Toolbar extends ClientComponentEndpoint {
           <button title="Show caller (call trace) of function call" data-el="callModeBtn" class="toolbar-btn btn btn-info" href="#">call</button>
           <button title="Show arguments and return value of function call in the form of: (args) -> returnValue" data-el="valueModeBtn" class="toolbar-btn btn btn-info" href="#">val</button>
           <button title="Thin mode" data-el="thinModeBtn" class="toolbar-btn btn btn-info" href="#"></button>
+          <div data-el="contextFilterMenu" class="dropdown btn-info">
+            <button data-el="contextFilterMenuBtn" type="button" class="toolbar-btn btn btn-info dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+              <img width="${toolbarIconSize}" src="${iconUri.contextFilter}" />
+            </button>
+            <div data-el="contextFilterMenuBody" class="dropdown-menu">
+              <button title="Filter context with package whitelist" data-el="packageWhitelistBtn" class="full-width toolbar-btn btn btn-info" href="#">Package whitelist</button>
+              <button title="Filter context with package blacklist" data-el="packageBlacklistBtn" class="full-width toolbar-btn btn btn-info" href="#">Package blacklist</button>
+            </div>
+          </div>
           <div data-el="searchMenu" class="btn-group">
             <button data-el="searchMenuBtn" type="button" class="toolbar-btn btn btn-info" aria-haspopup="true" aria-expanded="false">
               🔍
@@ -38,7 +49,7 @@ class Toolbar extends ClientComponentEndpoint {
           <button title="Clear: Hide all existing runs/traces" data-el="hideOldRunBtn" class="toolbar-btn btn btn-info" href="#">x</button>
 
           <button title="Clear Thread Selection" data-el="clearThreadSelectionBtn" class="toolbar-btn btn btn-info" href="#">
-            <img width="12px" src="${this.state.theradSelectionIconUri}" />
+            <img width="${toolbarIconSize}" src="${iconUri.theradSelection}" />
           </button>
         </div>
         <div data-el="moreMenu" class="dropdown">
@@ -71,13 +82,17 @@ class Toolbar extends ClientComponentEndpoint {
   }
 
   _onDocumentClick = (evt) => {
-    const { searchMenuBtn, searchMenuToggleBtn, mainMenuBtn } = this.els;
+    const { searchMenuBtn, searchMenuToggleBtn, mainMenuBtn, contextFilterMenuBtn } = this.els;
     if (evt.target !== mainMenuBtn && this.dropDownOpen) {
       this.toggleMainMenu();
     }
 
     if ((evt.target !== searchMenuBtn && evt.target !== searchMenuToggleBtn) && this.searchMenuOpen) {
       this.toggleSearchMenu();
+    }
+
+    if (evt.target !== contextFilterMenuBtn && this.contextFilterMenuOpen) {
+      this.toggleContextFilterMenu();
     }
   };
 
@@ -88,6 +103,16 @@ class Toolbar extends ClientComponentEndpoint {
     }
     else {
       this.els.moreMenuBody.style.display = 'none';
+    }
+  }
+
+  toggleContextFilterMenu() {
+    this.contextFilterMenuOpen = !this.contextFilterMenuOpen;
+    if (this.contextFilterMenuOpen) {
+      this.els.contextFilterMenuBody.style.display = 'inherit';
+    }
+    else {
+      this.els.contextFilterMenuBody.style.display = 'none';
     }
   }
 
@@ -264,7 +289,6 @@ class Toolbar extends ClientComponentEndpoint {
       },
       // focus(evt) { evt.target.blur(); }
     },
-
     valueModeBtn: {
       click(evt) {
         evt.preventDefault();
@@ -274,7 +298,6 @@ class Toolbar extends ClientComponentEndpoint {
       },
       focus(evt) { evt.target.blur(); }
     },
-
     thinModeBtn: {
       click(evt) {
         evt.preventDefault();
@@ -284,7 +307,20 @@ class Toolbar extends ClientComponentEndpoint {
       },
       focus(evt) { evt.target.blur(); }
     },
-
+    packageWhitelistBtn: {
+      async click(evt) {
+        evt.preventDefault();
+        await this.remote.setContextFilter('packageWhitelist');
+      },
+      focus(evt) { evt.target.blur(); }
+    },
+    packageBlacklistBtn: {
+      async click(evt) {
+        evt.preventDefault();
+        await this.remote.setContextFilter('packageBlacklist');
+      },
+      focus(evt) { evt.target.blur(); }
+    },
     hideOldRunBtn: {
       click(evt) {
         evt.preventDefault();
@@ -293,7 +329,6 @@ class Toolbar extends ClientComponentEndpoint {
       },
       focus(evt) { evt.target.blur(); }
     },
-
     hideNewRunBtn: {
       click(evt) {
         evt.preventDefault();
@@ -302,7 +337,6 @@ class Toolbar extends ClientComponentEndpoint {
       },
       focus(evt) { evt.target.blur(); }
     },
-
     graphModeBtn: {
       click(evt) {
         evt.preventDefault();
@@ -407,7 +441,14 @@ class Toolbar extends ClientComponentEndpoint {
         this.toggleMainMenu();
       },
       focus(evt) { evt.target.blur(); }
-    }
+    },
+
+    contextFilterMenuBtn: {
+      click(/* evt */) {
+        this.toggleContextFilterMenu();
+      },
+      focus(evt) { evt.target.blur(); }
+    },
   }
 }
 
