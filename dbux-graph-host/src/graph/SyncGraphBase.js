@@ -1,14 +1,12 @@
 import NanoEvents from 'nanoevents';
 import minBy from 'lodash/minBy';
 import difference from 'lodash/difference';
-import isPlainObject from 'lodash/isPlainObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import GraphBase from './GraphBase';
 import ContextNode from './syncGraph/ContextNode';
 import HoleNode from './syncGraph/HoleNode';
-import makeIncludeContext from './makeIncludeContext';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
 /** @typedef { import("./GraphDocument").default } GraphDocument */
@@ -79,10 +77,6 @@ export class ContextNodeHole {
   }
 }
 
-const DefaultPredicateCfg = {
-
-};
-
 /**
  * Provides a graph-with-holes data structure.
  * Holes are connected subgraphs for which each node of that subgraph holds the given predicate.
@@ -92,12 +86,6 @@ class CallGraphNodes {
    * @type {SyncGraphBase}
    */
   graph;
-  /**
-   * Decides whether the given context should be displayed or "is part of a hole".
-   * 
-   * @type {(context) => Boolean}
-   */
-  includePredicate;
 
   /**
    * @type {Map<ExecutionContext, ContextNode>}
@@ -111,11 +99,19 @@ class CallGraphNodes {
   _lastHoldeId = 0;
   holeNodesById = [];
 
-  constructor(graph, predicateCfg = DefaultPredicateCfg) {
+  constructor(graph) {
     this.graph = graph;
-    this._setIncludePredicate(predicateCfg);
 
     this.clear();
+  }
+
+  /**
+   * Decides whether the given context should be displayed or "is part of a hole".
+   * 
+   * @type {(context) => Boolean}
+   */
+  includePredicate(context) {
+    return this.graph.context.graphDocument.contextFilterManager.includePredicate(context);
   }
 
   has(context) {
@@ -134,23 +130,8 @@ class CallGraphNodes {
     return this.contextNodesByContext.values();
   }
 
-  isHole(context) {
+  isHole = (context) => {
     return !this.includePredicate(context);
-  }
-
-  _setIncludePredicate(newPredicate) {
-    if (isPlainObject(newPredicate)) {
-      // config input
-      newPredicate = makeIncludeContext(newPredicate);
-    }
-    this.includePredicate = newPredicate;
-  }
-
-  setIncludePredicate(newPredicate) {
-    this._setIncludePredicate(newPredicate);
-
-    // future-work: also remember and re-initiate GraphNodeMode of all visible nodes
-    return this.graph.fullReset();
   }
 
   /** ###########################################################################
@@ -487,8 +468,7 @@ class SyncGraphBase extends GraphBase {
   _nodes;
 
   init() {
-    const includePredicate = this.componentManager.externals.getContextFilter();
-    this._nodes = new CallGraphNodes(this, includePredicate);
+    this._nodes = new CallGraphNodes(this);
 
     this.roots = [];
     this.state.applications = [];

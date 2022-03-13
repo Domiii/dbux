@@ -46,7 +46,7 @@ export default class GraphNode extends ClientComponentEndpoint {
       nextModeButtonImg
     } = this.owner.els;
 
-    const { contextNodeIconUris } = this.context;
+    const { contextNodeIconUris } = this.context.graphDocument.state;
 
     if (!buttonDisabled) {
       if (hasChildren) {

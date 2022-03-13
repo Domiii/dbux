@@ -185,7 +185,7 @@ class AsyncGraph extends GraphBase {
     }
 
     // generate stats label
-    const { statsIconUris } = this.context;
+    const { statsIconUris } = this.context.graphDocument.state;
     const {
       nTreeContexts,
       nTreeStaticContexts,
