@@ -40,6 +40,8 @@ class History {
 }
 
 export default class ContextFilterManager {
+  _rawPredicate = {};
+
   /**
    * 
    * @param {GraphDocument} graphDocument 
@@ -52,14 +54,22 @@ export default class ContextFilterManager {
     return this.doc.componentManager.externals;
   }
 
+  getRawFilter(key) {
+    if (key in this._rawPredicate) {
+      return this._rawPredicate[key];
+    }
+    return DefaultPredicateCfg[key];
+  }
+
   async setContextFilter(key) {
     const newValueItem = {
       label: 'New Filter',
       cb: () => this.externals.prompt('New context filter', this._rawPredicate[key])
     };
+    const defaultFilterValue = DefaultPredicateCfg[key];
     const defaultItem = {
-      label: 'Clear Filter',
-      cb: () => DefaultPredicateCfg[key],
+      label: `Clear Filter (${defaultFilterValue})`,
+      cb: () => defaultFilterValue
     };
     const historyItems = this.history[key].getAll().map((val) => {
       return {
@@ -69,7 +79,8 @@ export default class ContextFilterManager {
     });
     const quickPickItems = [newValueItem, defaultItem, ...historyItems];
     const pickedItem = await this.externals.showQuickPick(quickPickItems, {
-      placeHolder: historyItems[0]?.label || '',
+      // placeHolder: historyItems[0]?.label || ''
+      placeHolder: '(select a filter below)' // this.getRawFilter(key)
     });
     if (pickedItem) {
       const result = (await pickedItem.cb?.()) ?? pickedItem.label;
@@ -121,5 +132,6 @@ export default class ContextFilterManager {
 }
 
 function wrapLabel(str) {
-  return JSON.stringify(str);
+  // return JSON.stringify(str);
+  return str;
 }
