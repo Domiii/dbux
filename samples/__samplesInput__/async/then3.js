@@ -9,7 +9,7 @@ function g(x) {
     .then(t.bind(null, 2, x))
 }
 
-function t() { }
+function t(a, b) { }
 
 (async function main() {
   await f(1);
