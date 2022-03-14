@@ -5,7 +5,6 @@ import StackMode from '@dbux/graph-common/src/shared/StackMode';
 import GraphType, { nextGraphType } from '@dbux/graph-common/src/shared/GraphType';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
-import ContextFilterManager from './ContextFilterManager';
 
 /** @typedef {import('./GraphContainer').default} GraphContainer */
 
@@ -27,10 +26,6 @@ class GraphDocument extends HostComponentEndpoint {
     this.state.asyncDetailMode = true;
     this.state.statsEnabled = true;
 
-    // context filter
-    this.contextFilterManager = new ContextFilterManager(this);
-    this.contextFilterManager.init();
-
     this.createOwnComponents();
 
     // NOTE: this will be called immediately
@@ -46,12 +41,14 @@ class GraphDocument extends HostComponentEndpoint {
     this.asyncStackContainer = this.children.createComponent('GraphContainer', { graphType: GraphType.AsyncStack });
     this.searchBar = this.children.createComponent('SearchBar');
     this.toolbar = this.children.createComponent('Toolbar');
+
+    this.contextFilterManager = this.controllers.createComponent('ContextFilterManager');
   }
 
   update() {
     // this.toolbar.forceUpdate();
     // this.refreshGraphs();
-    
+
     this.forceUpdateTree();
   }
 
@@ -93,8 +90,7 @@ class GraphDocument extends HostComponentEndpoint {
         upd.statsEnabled = false;
       }
       this.setState(upd);
-      // refresh in update
-      // this.refreshGraphs();
+      this.refreshGraphs();
       this._notifyGraphModeChanged(mode);
     }
   }
