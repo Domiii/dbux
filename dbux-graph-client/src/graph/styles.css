@@ -330,6 +330,10 @@ div {
   opacity: 0.6;
 }
 
+.error-label:hover {
+  border: yellow solid 1px;
+}
+
 .context-loc-label {
   margin-right: 0.3rem !important;
 }

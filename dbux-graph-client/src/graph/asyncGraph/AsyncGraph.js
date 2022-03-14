@@ -42,6 +42,9 @@ class AsyncGraph extends GraphBase {
         if (event.target.matches('div.async-header')) {
           this.handleClickAsyncHeader(asyncNodeData);
         }
+        else if (event.target.matches('span.error-label')) {
+          this.handleClickErrorLabel(asyncNodeData);
+        }
         else {
           this.handleClickAsyncNode(asyncNodeData);
         }
@@ -233,13 +236,13 @@ class AsyncGraph extends GraphBase {
           <div class="left-label">${leftLabel}</div>
           <div class="async-brief full-width">
             ${shortLabel}
-            <span>${errorLabel}</span>
+            <span class="error-label">${errorLabel}</span>
           </div>
           <div class="async-detail full-width flex-column cross-axis-align-center">
             <div class="full-width flex-row align-center">
               <div class="ellipsis-10 async-context-label">${fullLabel}</div>
               <div class="ellipsis-10 value-label"></div>
-              <span>${errorLabel}</span>
+              <span class="error-label">${errorLabel}</span>
             </div>
             <div class="loc-label ellipsis-10">
               <span>${locLabel}</span>
@@ -412,6 +415,14 @@ class AsyncGraph extends GraphBase {
 
     if (applicationId && threadId) {
       this.remote.selectRelevantThread(applicationId, threadId);
+    }
+  }
+
+  handleClickErrorLabel(asyncNodeData) {
+    const { applicationId, rootContextId } = asyncNodeData.asyncNode;
+
+    if (applicationId && rootContextId) {
+      this.remote.selectError(applicationId, rootContextId);
     }
   }
 
