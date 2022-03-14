@@ -484,6 +484,17 @@ class AsyncGraph extends GraphBase {
     selectRelevantThread(applicationId, threadId) {
       this.componentManager.externals.alert('Thread selection is currently disabled.', false);
       // allApplications.selection.data.threadSelection.select(applicationId, [threadId]);
+    },
+    async selectError(applicationId, rootContextId) {
+      const dp = allApplications.getById(applicationId).dataProvider;
+      const firstError = dp.indexes.traces.errorByRoot.getFirst(rootContextId);
+      if (firstError) {
+        traceSelection.selectTrace(firstError);
+        await this.componentManager.externals.globalAnalysisViewController.revealSelectedError();
+      }
+      else {
+        this.componentManager.externals.alert('No error in this async node.', false);
+      }
     }
   }
 }
