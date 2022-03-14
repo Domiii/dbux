@@ -100,6 +100,10 @@ class HostComponentEndpoint extends ComponentEndpoint {
     this.forceUpdateDescendants();
   }
 
+  async waitForAllChildren() {
+    return Promise.all(this.children.components.map(c => c.waitForAll()));
+  }
+
   async waitForInit() {
     // NOTE: make sure, `waitFor` calls fulfill in order by appending our own task into the promise chain
     // return this._initPromise = this._initPromise.then(noop);
@@ -366,7 +370,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
         // wait for init before dispose something
         await this.componentManager.waitForBusyInit();
 
-        this.handleRefresh();
+        await this.handleRefresh();
 
         // wait for init to ensure client side finished
         await this.componentManager.waitForBusyInit();

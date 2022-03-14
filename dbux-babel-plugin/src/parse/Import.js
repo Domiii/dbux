@@ -14,7 +14,7 @@ export default class ImportExpression extends BaseId {
 
   getDeclarationTidIdentifier() {
     // hackfix: for now, just don't care about declarationTid
-    //    NOTE: can use `refId` to trace access, since they 100% coincide
+    //    NOTE: luckily, most of these are objects, so we can use `refId` to trace access.
     return ZeroNode;
   }
 

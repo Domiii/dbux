@@ -494,8 +494,16 @@ class SyncGraphBase extends GraphBase {
    * public interface
    *  #########################################################################*/
 
-  handleRefresh() {
+  async handleRefresh() {
     this.updateAllRoots();
+
+    await this.waitForAllChildren();
+
+    // force update collapse/expand state
+    const graphNode = this.controllers.getComponent('GraphNode');
+    if (graphNode.state.mode !== GraphNodeMode.Collapsed) {
+      graphNode.setMode(graphNode.state.mode, true);
+    }
   }
 
   /**

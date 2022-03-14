@@ -49,9 +49,10 @@ class GraphDocument extends HostComponentEndpoint {
   }
 
   update() {
-    this.toolbar.forceUpdate();
-
-    this.refreshGraphs();
+    // this.toolbar.forceUpdate();
+    // this.refreshGraphs();
+    
+    this.forceUpdateTree();
   }
 
   /** ###########################################################################
@@ -83,7 +84,15 @@ class GraphDocument extends HostComponentEndpoint {
 
   setGraphMode(mode) {
     if (this.state.graphMode !== mode) {
-      this.setState({ graphMode: mode });
+      const upd = {
+        graphMode: mode
+      };
+      if (mode === GraphType.AsyncGraph) {
+        // TODO: use memento to remember mode per type!
+        // disable stats for ACG by default (for now), since there is just not enough space
+        upd.statsEnabled = false;
+      }
+      this.setState(upd);
       // refresh in update
       // this.refreshGraphs();
       this._notifyGraphModeChanged(mode);
@@ -110,6 +119,7 @@ class GraphDocument extends HostComponentEndpoint {
    */
   refreshGraphs() {
     this.containers.forEach((container) => {
+      // container.clearChildren();  // hackfix: brute-force this
       container.refreshGraph();
     });
   }

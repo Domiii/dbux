@@ -60,8 +60,8 @@ export default class GraphNode extends HostComponentEndpoint {
     this.setMode(mode);
   }
 
-  setMode(mode) {
-    if (this.state.mode === mode) {
+  setMode(mode, force = false) {
+    if (!force && this.state.mode === mode) {
       // nothing left to do
       return;
     }
@@ -75,7 +75,7 @@ export default class GraphNode extends HostComponentEndpoint {
         this.logger.warn(`Cannot setMode for some child node. ${this.owner.debugTag}'s child ${child.debugTag} does not have GraphNode`);
       }
       else {
-        child.controllers.getComponent(GraphNode).setMode(childMode);
+        child.controllers.getComponent(GraphNode).setMode(childMode, force);
       }
     }
   }

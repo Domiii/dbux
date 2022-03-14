@@ -75,12 +75,6 @@ class Toolbar extends HostComponentEndpoint {
       this.doc.searchBar.setSearchMode(mode);
     },
 
-    setFilter(filter) {
-      // TODO: add filter button to client
-      // TODO: only show button for "GraphContainer"s that have filter enabled
-      // TODO: add filter logic here
-    },
-
     clearThreadSelection() {
       allApplications.selection.data.threadSelection.clear();
     },

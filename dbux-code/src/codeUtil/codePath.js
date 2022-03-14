@@ -3,6 +3,7 @@ import {
   ExtensionContext,
   Uri
 } from 'vscode';
+import { getCurrentResearch } from '../research/Research';
 
 /**
  * @type {ExtensionContext}
@@ -22,7 +23,9 @@ export function getLogsDirectory() {
 }
 
 export function getDefaultExportDirectory() {
-  return pathResolve(getUserDataDirectory(), 'exports');
+  const dir = pathResolve(getUserDataDirectory(), 'exports');
+  const researchDir = getCurrentResearch()?.getDataRootLfs();
+  return researchDir || dir;
 }
 
 /**
