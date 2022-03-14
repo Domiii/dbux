@@ -51,7 +51,7 @@ class GraphDocument extends HostComponentEndpoint {
   update() {
     // this.toolbar.forceUpdate();
     // this.refreshGraphs();
-    
+
     this.forceUpdateTree();
   }
 
@@ -93,8 +93,7 @@ class GraphDocument extends HostComponentEndpoint {
         upd.statsEnabled = false;
       }
       this.setState(upd);
-      // refresh in update
-      // this.refreshGraphs();
+      this.refreshGraphs();
       this._notifyGraphModeChanged(mode);
     }
   }
