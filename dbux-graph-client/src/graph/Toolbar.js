@@ -49,6 +49,8 @@ class Toolbar extends ClientComponentEndpoint {
             <div data-el="contextFilterMenuBody" class="dropdown-menu">
               <button title="Filter context with package whitelist" data-el="packageWhitelistBtn" class="full-width toolbar-btn btn btn-info" href="#">Package whitelist</button>
               <button title="Filter context with package blacklist" data-el="packageBlacklistBtn" class="full-width toolbar-btn btn btn-info" href="#">Package blacklist</button>
+              <button title="Filter context with file whitelist" data-el="fileWhitelistBtn" class="full-width toolbar-btn btn btn-info" href="#">File whitelist</button>
+              <button title="Filter context with file blacklist" data-el="fileBlacklistBtn" class="full-width toolbar-btn btn btn-info" href="#">File blacklist</button>
             </div>
           </div>
 
@@ -95,16 +97,15 @@ class Toolbar extends ClientComponentEndpoint {
   }
 
   _onDocumentClick = (evt) => {
-    const { searchMenuBtn, searchMenuToggleBtn, mainMenuBtn, contextFilterMenuBtn } = this.els;
-    if (evt.target !== mainMenuBtn && this.dropDownOpen) {
+    if (!evt.target.closest('[data-el="mainMenuBtn"]') && this.dropDownOpen) {
       this.toggleMainMenu();
     }
 
-    if ((evt.target !== searchMenuBtn && evt.target !== searchMenuToggleBtn) && this.searchMenuOpen) {
+    if (!evt.target.closest('[data-el="searchMenu"]') && this.searchMenuOpen) {
       this.toggleSearchMenu();
     }
 
-    if (evt.target !== contextFilterMenuBtn && this.contextFilterMenuOpen) {
+    if (!evt.target.closest('[data-el="contextFilterMenuBtn"]') && this.contextFilterMenuOpen) {
       this.toggleContextFilterMenu();
     }
   };
@@ -331,6 +332,20 @@ class Toolbar extends ClientComponentEndpoint {
       async click(evt) {
         evt.preventDefault();
         await this.remote.setContextFilter('packageBlacklist');
+      },
+      focus(evt) { evt.target.blur(); }
+    },
+    fileWhitelistBtn: {
+      async click(evt) {
+        evt.preventDefault();
+        await this.remote.setContextFilter('fileWhitelist');
+      },
+      focus(evt) { evt.target.blur(); }
+    },
+    fileBlacklistBtn: {
+      async click(evt) {
+        evt.preventDefault();
+        await this.remote.setContextFilter('fileBlacklist');
       },
       focus(evt) { evt.target.blur(); }
     },
