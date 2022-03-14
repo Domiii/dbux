@@ -26,7 +26,7 @@ class ForkButton extends AsyncButton {
     const { applicationId } = asyncNodeData.asyncNode;
     const { parentAsyncNodeId } = asyncNodeData;
     if (parentAsyncNodeId) {
-      asyncGraph.remote.gotoAsyncNode(applicationId, parentAsyncNodeId);
+      asyncGraph.remote.gotoToForkParent(applicationId, parentAsyncNodeId);
     }
   }
 }
@@ -45,7 +45,7 @@ class SchedulerButton extends AsyncButton {
     const { applicationId } = asyncNodeData.asyncNode;
     const { asyncNode: { schedulerTraceId } } = asyncNodeData;
     if (schedulerTraceId) {
-      asyncGraph.remote.selectTrace(applicationId, schedulerTraceId);
+      asyncGraph.remote.gotoScheduler(applicationId, schedulerTraceId);
     }
   }
 }

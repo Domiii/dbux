@@ -30,6 +30,8 @@ let ActionGroupType = {
   CallGraphToggleContextNode: 21,
   CallGraphOther: 22,
 
+  AsyncCallGraphSelectTrace: 26,
+
   Search: 30,
 
   NavigationPreviousInContext: 40,
@@ -85,6 +87,12 @@ const groupByActionType = {
   [UserActionType.CallGraphNodeCollapseChange]: ActionGroupType.CallGraphToggleContextNode,
   [UserActionType.CallGraphTrace]: ActionGroupType.CallGraphSelectTrace,
   [UserActionType.CallGraphCallTrace]: ActionGroupType.CallGraphSelectTrace,
+  
+  [UserActionType.AsyncCallGraphTrace]: ActionGroupType.AsyncCallGraphSelectTrace,
+  [UserActionType.AsyncCallGraphError]: ActionGroupType.AsyncCallGraphSelectTrace,
+  [UserActionType.AsyncCallGraphParent]: ActionGroupType.AsyncCallGraphSelectTrace,
+  [UserActionType.AsyncCallGraphScheduler]: ActionGroupType.AsyncCallGraphSelectTrace,
+  [UserActionType.AsyncCallGraphValueTrace]: ActionGroupType.AsyncCallGraphSelectTrace,
 
   [UserActionType.SessionFinished]: ActionGroupType.SessionFinished
 };

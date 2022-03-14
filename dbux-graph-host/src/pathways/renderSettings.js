@@ -27,9 +27,9 @@ const labelsByActionGroupType = {
   [ActionGroupType.NavigationNextStaticTrace]: 'NavigationNextStaticTrace',
   [ActionGroupType.NavigationPreviousTrace]: 'NavigationPreviousTrace',
   [ActionGroupType.NavigationNextTrace]: 'NavigationNextTrace',
-  [ActionGroupType.CallGraphSelectTrace]: 'CallGraphSelectTrace',
   [ActionGroupType.Search]: 'SearchContexts',
   [ActionGroupType.CallGraphSelectTrace]: 'CallGraphTrace',
+  [ActionGroupType.AsyncCallGraphSelectTrace]: 'AsyncCallGraphTrace',
   [ActionGroupType.CallGraphOther]: 'CallGraphOther',
   [ActionGroupType.Other]: 'Other'
 };
@@ -62,6 +62,7 @@ const iconsByActionGroupType = {
   [ActionGroupType.NavigationPreviousTrace]: 'leftArrow.svg',
   [ActionGroupType.NavigationNextTrace]: 'rightArrow.svg',
   [ActionGroupType.CallGraphSelectTrace]: 'callGraphSelectTrace.svg',
+  [ActionGroupType.AsyncCallGraphSelectTrace]: 'callGraphSelectTrace.svg',
   [ActionGroupType.CallGraphToggleContextNode]: 'listItem.svg',
   [ActionGroupType.CallGraphOther]: defaultActionGroupIcon,
   [ActionGroupType.Search]: 'magnifier.svg',

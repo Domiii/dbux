@@ -1,6 +1,7 @@
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import allApplications from '@dbux/data/src/applications/allApplications';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import traceSelection from '@dbux/data/src/traceSelection/index';
 import { makeContextLocLabel, makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
 import AsyncNodeDataMap from '@dbux/graph-common/src/graph/types/AsyncNodeDataMap';
@@ -430,6 +431,16 @@ class AsyncGraph extends GraphBase {
     }
     return false;
   }
+  
+  gotoToAsyncNode(applicationId, asyncNodeId) {
+    const dp = allApplications.getById(applicationId).dataProvider;
+    const trace = dp.util.getTraceOfAsyncNode(asyncNodeId);
+    if (trace) {
+      traceSelection.selectTrace(trace);
+      return trace;
+    }
+    return null;
+  }
 
   shared() {
     return {
@@ -440,46 +451,51 @@ class AsyncGraph extends GraphBase {
   }
 
   public = {
-    selectTrace(applicationId, traceId) {
+    gotoScheduler(applicationId, schedulerTraceId) {
       const dp = allApplications.getById(applicationId).dataProvider;
-      const trace = dp.util.getTrace(traceId);
+      const trace = dp.util.getTrace(schedulerTraceId);
       if (trace) {
-        traceSelection.selectTrace(trace);
+        traceSelection.selectTrace(trace); 
+        this.componentManager.externals.emitCallGraphAction(UserActionType.AsyncCallGraphScheduler, { trace });
       }
     },
+    gotoForkParent(applicationId, parentAsyncNodeId) {
+      const trace = this.gotoToAsyncNode(applicationId, parentAsyncNodeId);
+      trace && this.componentManager.externals.emitCallGraphAction(UserActionType.AsyncCallGraphParent, { trace });
+    },
     gotoAsyncNode(applicationId, asyncNodeId) {
-      const dp = allApplications.getById(applicationId).dataProvider;
-      const trace = dp.util.getTraceOfAsyncNode(asyncNodeId);
-      if (trace) {
-        traceSelection.selectTrace(trace);
-      }
+      const trace = this.gotoToAsyncNode(applicationId, asyncNodeId);
+      trace && this.componentManager.externals.emitCallGraphAction(UserActionType.AsyncCallGraphTrace, { trace });
     },
     gotoValueTrace(applicationId, valueTraceId) {
       const dp = allApplications.getById(applicationId).dataProvider;
       const trace = dp.util.getTrace(valueTraceId);
       if (trace) {
         traceSelection.selectTrace(trace);
+        this.componentManager.externals.emitCallGraphAction(UserActionType.AsyncCallGraphValueTrace, { trace });
       }
     },
     selectSyncInThreads(applicationId, asyncNodeId) {
-      const dp = allApplications.getById(applicationId).dataProvider;
-      const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
-      const syncInThreads = dp.indexes.asyncEvents.syncInByRoot.get(asyncNode.rootContextId);
-      const syncInThreadIds = syncInThreads.map(event => {
-        return dp.indexes.asyncNodes.byRoot.getUniqueNotNull(event.fromRootContextId).threadId;
-      });
-      syncInThreadIds.push(asyncNode.threadId);
-      allApplications.selection.data.threadSelection.select(applicationId, syncInThreadIds);
+      this.componentManager.externals.alert('Thread selection is currently disabled.', false);
+      // const dp = allApplications.getById(applicationId).dataProvider;
+      // const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
+      // const syncInThreads = dp.indexes.asyncEvents.syncInByRoot.get(asyncNode.rootContextId);
+      // const syncInThreadIds = syncInThreads.map(event => {
+      //   return dp.indexes.asyncNodes.byRoot.getUniqueNotNull(event.fromRootContextId).threadId;
+      // });
+      // syncInThreadIds.push(asyncNode.threadId);
+      // allApplications.selection.data.threadSelection.select(applicationId, syncInThreadIds);
     },
     selectSyncOutThreads(applicationId, asyncNodeId) {
-      const dp = allApplications.getById(applicationId).dataProvider;
-      const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
-      const syncOutThreads = dp.indexes.asyncEvents.syncOutByRoot.get(asyncNode.rootContextId);
-      const syncOutThreadIds = syncOutThreads.map(event => {
-        return dp.indexes.asyncNodes.byRoot.getUniqueNotNull(event.toRootContextId).threadId;
-      });
-      syncOutThreadIds.push(asyncNode.threadId);
-      allApplications.selection.data.threadSelection.select(applicationId, syncOutThreadIds);
+      this.componentManager.externals.alert('Thread selection is currently disabled.', false);
+      // const dp = allApplications.getById(applicationId).dataProvider;
+      // const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
+      // const syncOutThreads = dp.indexes.asyncEvents.syncOutByRoot.get(asyncNode.rootContextId);
+      // const syncOutThreadIds = syncOutThreads.map(event => {
+      //   return dp.indexes.asyncNodes.byRoot.getUniqueNotNull(event.toRootContextId).threadId;
+      // });
+      // syncOutThreadIds.push(asyncNode.threadId);
+      // allApplications.selection.data.threadSelection.select(applicationId, syncOutThreadIds);
     },
     selectRelevantThread(applicationId, threadId) {
       this.componentManager.externals.alert('Thread selection is currently disabled.', false);

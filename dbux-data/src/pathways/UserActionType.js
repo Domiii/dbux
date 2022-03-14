@@ -63,7 +63,13 @@ const UserActionTypeObj = {
   CallGraphTrace: 102,
   CallGraphCallTrace: 103,
 
-  SessionFinished: 110
+  AsyncCallGraphTrace: 106,
+  AsyncCallGraphError: 107,
+  AsyncCallGraphParent: 108,
+  AsyncCallGraphScheduler: 109,
+  AsyncCallGraphValueTrace: 110,
+
+  SessionFinished: 200,
 };
 
 /**
