@@ -1025,28 +1025,13 @@
         },
         {
           "command": "dbux.showGraphView",
-          "when": "view =~ /(dbuxTraceDetailsView|dbuxGlobalAnalysisView)/ && !dbuxWebView.context.dbux-graph.isActive",
-          "group": "navigation@10"
+          "when": "view =~ /(dbuxTraceDetailsView|dbuxGlobalAnalysisView|dbuxApplicationsView)/ && !dbuxWebView.context.dbux-graph.isActive",
+          "group": "navigation@6"
         },
         {
           "command": "dbux.hideGraphView",
-          "when": "view =~ /(dbuxTraceDetailsView|dbuxGlobalAnalysisView)/ && dbuxWebView.context.dbux-graph.isActive",
-          "group": "navigation@10"
-        },
-        {
-          "command": "dbux.showPathwaysView",
-          "when": "view == dbuxApplicationsView && !dbuxWebView.context.dbux-pathways.isActive",
-          "group": "navigation@11"
-        },
-        {
-          "command": "dbux.hidePathwaysView",
-          "when": "view == dbuxApplicationsView && dbuxWebView.context.dbux-pathways.isActive",
-          "group": "navigation@11"
-        },
-        {
-          "command": "dbux.togglePracticeView",
-          "when": "view == dbuxApplicationsView",
-          "group": "navigation@3"
+          "when": "view =~ /(dbuxTraceDetailsView|dbuxGlobalAnalysisView|dbuxApplicationsView)/ && dbuxWebView.context.dbux-graph.isActive",
+          "group": "navigation@6"
         },
         {
           "command": "dbux.startRuntimeServer",
@@ -1061,17 +1046,32 @@
         {
           "command": "dbux.runFile",
           "when": "view == dbuxApplicationsView",
-          "group": "navigation@15"
+          "group": "navigation@10"
         },
         {
           "command": "dbux.debugFile",
           "when": "view == dbuxApplicationsView",
-          "group": "navigation@10"
+          "group": "navigation@11"
+        },
+        {
+          "command": "dbux.showPathwaysView",
+          "when": "view == dbuxApplicationsView && !dbuxWebView.context.dbux-pathways.isActive",
+          "group": "navigation@21"
+        },
+        {
+          "command": "dbux.hidePathwaysView",
+          "when": "view == dbuxApplicationsView && dbuxWebView.context.dbux-pathways.isActive",
+          "group": "navigation@21"
         },
         {
           "command": "dbux.showHelp",
           "when": "view == dbuxApplicationsView",
-          "group": "navigation@5"
+          "group": "navigation@30"
+        },
+        {
+          "command": "dbux.togglePracticeView",
+          "when": "false",
+          "group": "navigation@3"
         },
         {
           "command": "dbuxProjectView.toggleListMode",
