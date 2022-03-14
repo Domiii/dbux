@@ -1,8 +1,9 @@
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
-import makeIncludeContext from './makeIncludeContext';
+import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
+import makeIncludeContext from '../makeIncludeContext';
 
-/** @typedef {import('./GraphDocument').default} GraphDocument */
+/** @typedef {import('../GraphDocument').default} GraphDocument */
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('ContextFilterManager');
@@ -12,6 +13,8 @@ const MaxHistoryLength = 50;
 const DefaultPredicateCfg = {
   packageWhitelist: '.*',
   packageBlacklist: '',
+  fileWhitelist: '.*',
+  fileBlacklist: '',
 };
 
 const PredicateKeys = [
@@ -39,15 +42,12 @@ class History {
   }
 }
 
-export default class ContextFilterManager {
-  _rawPredicate = {};
-
+export default class ContextFilterManager extends HostComponentEndpoint {
   /**
-   * 
-   * @param {GraphDocument} graphDocument 
+   * @return {GraphDocument} 
    */
-  constructor(graphDocument) {
-    this.doc = graphDocument;
+  get doc() {
+    return this.parent;
   }
 
   get externals() {
@@ -79,7 +79,6 @@ export default class ContextFilterManager {
     });
     const quickPickItems = [newValueItem, defaultItem, ...historyItems];
     const pickedItem = await this.externals.showQuickPick(quickPickItems, {
-      // placeHolder: historyItems[0]?.label || ''
       placeHolder: '(select a filter below)' // this.getRawFilter(key)
     });
     if (pickedItem) {
@@ -94,9 +93,24 @@ export default class ContextFilterManager {
     const saved = this.externals.getContextFilter() || EmptyObject;
     for (const key of PredicateKeys) {
       this.history[key] = new History(saved[key]);
-      this._rawPredicate[key] = this.history[key].top() ?? DefaultPredicateCfg[key];
+      if (this.history[key].top()) {
+        this._rawPredicate[key] = this.history[key].top() ?? DefaultPredicateCfg[key];
+      }
     }
     this.makeIncludePredicate();
+    this.state.filterActived = this.makeState();
+  }
+
+  makeState() {
+    const filterActived = {};
+    for (const key of PredicateKeys) {
+      filterActived[key] = this._rawPredicate[key] !== DefaultPredicateCfg[key];
+    }
+    return filterActived;
+  }
+
+  updateToolbarButton() {
+    this.setState({ filterActived: this.makeState() });
   }
 
   _set(prop, value) {
@@ -108,6 +122,8 @@ export default class ContextFilterManager {
 
   set(prop, value) {
     this._set(prop, value);
+
+    this.updateToolbarButton();
 
     // future-work: also remember and re-initiate GraphNodeMode of all visible nodes
     return this.doc.maybeFullResetGraphs();
