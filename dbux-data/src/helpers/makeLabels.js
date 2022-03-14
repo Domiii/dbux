@@ -253,12 +253,24 @@ export function makeContextLabel(context, app) {
     if (firstTrace) {
       const staticTrace = firstTrace && dp.collections.staticTraces.getById(firstTrace.staticTraceId);
       let displayName;
-      if (staticTrace.displayName?.match(/^await /)) {
-        // displayName = staticTrace.displayName.replace('await ', '').replace(/\([^(]*\)$/, '');
-        displayName = staticTrace.displayName.replace('await ', '').replace(/;$/, '');
+      if (ExecutionContextType.is.ResumeAsync(type)) {
+        if (staticTrace.displayName?.match(/^await /)) {
+          // displayName = staticTrace.displayName.replace('await ', '').replace(/\([^(]*\)$/, '');
+          displayName = staticTrace.displayName.replace('await ', '').replace(/;$/, '');
+        }
+        else {
+          displayName = '(async start)';
+        }
       }
       else {
-        displayName = '(async start)';
+        // yield
+        if (staticTrace.displayName?.match(/^yield /)) {
+          // displayName = staticTrace.displayName.replace('await ', '').replace(/\([^(]*\)$/, '');
+          displayName = staticTrace.displayName.replace('yield ', '').replace(/;$/, '');
+        }
+        else {
+          displayName = '()';
+        }
       }
       return `${parentContext && makeContextLabel(parentContext, app)} | ${displayName}`;
     }

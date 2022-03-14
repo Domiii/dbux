@@ -324,6 +324,10 @@ export default class Runtime {
     return this._executingStack?.peek() || null;
   }
 
+  peekCurrentContextIdTwo() {
+    return this._executingStack?.peekTwo() || null;
+  }
+
   // ###########################################################################
   // Push + Pop basics
   // ###########################################################################

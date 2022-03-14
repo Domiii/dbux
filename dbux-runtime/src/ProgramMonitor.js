@@ -204,7 +204,7 @@ export default class ProgramMonitor {
   }
 
   pushResume = (resumeStaticContextId, inProgramStaticTraceId) => {
-    return this._runtimeMonitor.pushResume(this.getProgramId(), resumeStaticContextId, inProgramStaticTraceId, true);
+    return this._runtimeMonitor.pushResume(this.getProgramId(), 0, resumeStaticContextId, inProgramStaticTraceId, true);
   }
 
   popResume = (resumeContextId) => {
@@ -222,9 +222,8 @@ export default class ProgramMonitor {
   //   return this._runtimeMonitor.preYield(this.getProgramId(), inProgramStaticContextId, traceId, yieldArgument);
   // }
 
-  wrapYield = (argument, schedulerTid) => {
-    // nothing to do
-    return argument;
+  preYield = (argument, schedulerTid) => {
+    return this._runtimeMonitor.preYield(this.getProgramId(), argument, schedulerTid);
   }
 
   postYield = (yieldResult, yieldArgument, staticResumeContextId) => {

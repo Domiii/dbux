@@ -89,7 +89,8 @@ const traceTypeObj = {
   ClassInstance: 45,
   ClassProperty: 45,
 
-  ResumeGen: 48,
+  Yield: 50,
+  ResumeGen: 51,
 };
 
 /**

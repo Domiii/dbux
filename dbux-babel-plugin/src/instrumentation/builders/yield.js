@@ -1,15 +1,16 @@
+import * as t from "@babel/types";
 import { getInstrumentTargetAstNode } from './common';
 import { buildTraceCall } from './templateUtil';
 import { buildTraceId, buildTraceIdValue } from './traceId';
 
 
 export const buildWrapYield = buildTraceCall(
-  `(%%wrapYield%%(
+  `(%%preYield%%(
   %%argumentVar%% = %%argument%%,
   %%schedulerTid%%
 ))`,
   function buildWrapYield(state, traceCfg) {
-    const { ids: { aliases: { wrapYield } } } = state;
+    const { ids: { aliases: { preYield } } } = state;
     const {
       data: {
         argumentVar
@@ -21,7 +22,7 @@ export const buildWrapYield = buildTraceCall(
     // const { } = ;
 
     return {
-      wrapYield,
+      preYield,
       argument,
       argumentVar,
       schedulerTid,
@@ -54,7 +55,7 @@ export const buildPostYield = buildTraceCall(
       resultVar,
       yieldNode,
       argumentVar,
-      staticResumeContextId,
+      staticResumeContextId: t.numericLiteral(staticResumeContextId),
       postYield,
       tid
     };

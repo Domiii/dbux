@@ -164,7 +164,8 @@ export default class Function extends BasePlugin {
     if (isInterruptable) {
       // TODO: also add this to top-level context, if it contains `await`
       staticResumeContextId = addResumeContext(bodyPath, state, staticContextId, 
-        isAsync ? StaticContextType.ResumeAsync : StaticContextType.ResumeGen);
+        isAsync ? StaticContextType.ResumeAsync : StaticContextType.ResumeGen
+      );
     }
 
     this.data = {

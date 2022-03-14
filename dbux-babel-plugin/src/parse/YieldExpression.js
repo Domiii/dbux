@@ -28,7 +28,7 @@ export default class YieldExpression extends BaseNode {
     } = this;
 
     // future-work: don't use unnamed constants ('yiCid')
-    this.yieldContextIdVar = Traces.getOrGenerateUniqueIdentifier('yiCid');
+    // this.yieldContextIdVar = Traces.getOrGenerateUniqueIdentifier('yiCid');
   }
 
 
@@ -39,7 +39,7 @@ export default class YieldExpression extends BaseNode {
     const {
       path,
       // state,
-      yieldContextIdVar,
+      // yieldContextIdVar,
       Traces
     } = this;
 
@@ -60,7 +60,7 @@ export default class YieldExpression extends BaseNode {
       },
       data: {
         argumentVar,
-        yieldContextIdVar
+        // yieldContextIdVar
       },
       meta: {
         build: buildWrapYield
