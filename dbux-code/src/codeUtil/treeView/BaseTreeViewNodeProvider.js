@@ -1,4 +1,4 @@
-import { TreeItemCollapsibleState, EventEmitter, window } from 'vscode';
+import { TreeItemCollapsibleState, EventEmitter, window, TreeView } from 'vscode';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import NestedError from '@dbux/common/src/NestedError';
@@ -36,6 +36,10 @@ export default class BaseTreeViewNodeProvider {
 
   rootNodes = [];
   idsCollapsibleState = new Map();
+  /**
+   * @type {TreeView<BaseTreeViewNode>}
+   */
+  treeView;
 
   /**
    * @param {string} viewName 

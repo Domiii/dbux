@@ -34,6 +34,7 @@ import { locToString } from './util/misc';
 import { makeContextSchedulerLabel, makeTraceLabel } from './helpers/makeLabels';
 
 /** @typedef {import('./RuntimeDataProvider').default} DataProvider */
+/** @typedef {import('@dbux/common/src/types/DataNode').default} DataNode */
 /** @typedef {import('@dbux/common/src/types/AsyncNode').default} AsyncNode */
 /** @typedef {import('@dbux/common/src/types/StaticContext').default} StaticContext */
 /** @typedef {import('@dbux/common/src/types/ExecutionContext').default} ExecutionContext */
@@ -751,6 +752,17 @@ export default {
     return null;
   },
 
+  /**
+   * @param {DataProvider} dp
+   */
+  hasAnyValue(dp, nodeId) {
+    const dataNode = dp.util.getDataNode(nodeId);
+    if (dataNode) {
+      return !!(dataNode.hasValue || dataNode.refId);
+    }
+    return false;
+  },
+
   /** 
    * internal helper
    * @param {DataProvider} dp
@@ -848,12 +860,15 @@ export default {
   },
 
   /** @param {DataProvider} dp */
-  getTraceValueStringShort(dp, traceId) {
+  getTraceValueStringShort(dp, traceId, ignoreUndefined = false) {
     const dataNode = dp.util.getDataNodeOfTrace(traceId);
-    if (dataNode) {
+    if (dp.util.hasAnyValue(dataNode?.nodeId)) {
       return dp.util.getDataNodeValueStringShort(dataNode.nodeId);
     }
-    return '(no value or undefined)';
+    if (ignoreUndefined) {
+      return undefined;
+    }
+    return 'undefined';
   },
 
   getValueRefValueStringShort(dp, refId, terminateNodeId, shorten) {

@@ -39,6 +39,10 @@ class TraceDetailsController {
 
   async setFocus() {
     try {
+      if (!this.treeView.visible) {
+        // don't focus if treeView not visible
+        return;
+      }
       const executionsTDNode = this.treeDataProvider.rootNodes.find(node => node.contextValue === ExecutionsTDNodeContextValue);
       const navigationNode = this.treeDataProvider.rootNodes.find(node => node.contextValue === NavigationNodeContextValue);
       if (executionsTDNode && navigationNode) {

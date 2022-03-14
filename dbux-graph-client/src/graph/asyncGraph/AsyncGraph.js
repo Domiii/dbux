@@ -42,6 +42,9 @@ class AsyncGraph extends GraphBase {
         if (event.target.matches('div.async-header')) {
           this.handleClickAsyncHeader(asyncNodeData);
         }
+        else if (event.target.matches('span.error-label')) {
+          this.handleClickErrorLabel(asyncNodeData);
+        }
         else {
           this.handleClickAsyncNode(asyncNodeData);
         }
@@ -185,7 +188,7 @@ class AsyncGraph extends GraphBase {
     }
 
     // generate stats label
-    const { statsIconUris } = this.context;
+    const { statsIconUris } = this.context.graphDocument.state;
     const {
       nTreeContexts,
       nTreeStaticContexts,
@@ -194,21 +197,21 @@ class AsyncGraph extends GraphBase {
       nTreePackages,
     } = stats;
     statsRawEl = /*html*/`
-      <div class="grid" style="width: max-content;">
-        <div style="grid-row: 1; grid-column:1;" class="context-stats" title="Amount of child contexts in subgraph">
-          <img src="${statsIconUris.nTreeContexts}" /><span>${nTreeContexts}</span>
+      <div class="grid async-detail" style="width: max-content;">
+        <div style="grid-row: 1; grid-column:1;" class="context-stats" title="Amount of packages in subgraph: ${nTreePackages}">
+          <img src="${statsIconUris.nTreePackages}" /><span>${nTreePackages}</span>
         </div>
-        <div style="grid-row: 1; grid-column:2;" class="context-stats" title="Amount of static contexts involved in subgraph">
-          <img src="${statsIconUris.nTreeStaticContexts}" /><span>${nTreeStaticContexts}</span>
-        </div>
-        <div style="grid-row: 2; grid-column:1;" class="context-stats" title="Amount of files involved in subgraph">
+        <div style="grid-row: 1; grid-column:2;" class="context-stats" title="Amount of files involved in subgraph: ${nTreeFileCalled}">
           <img src="${statsIconUris.nTreeFileCalled}" /><span>${nTreeFileCalled}</span>
         </div>
-        <div style="grid-row: 2; grid-column:2;" class="context-stats" title="Amount of traces in subgraph. This is a rough measure.">
-          <img src="${statsIconUris.nTreeTraces}" /><span>${nTreeTraces}</span>
+        <div style="grid-row: 1; grid-column:3;" class="context-stats" title="Amount of static contexts involved in subgraph: ${nTreeStaticContexts}">
+          <img src="${statsIconUris.nTreeStaticContexts}" /><span>${nTreeStaticContexts}</span>
         </div>
-        <div style="grid-row: 3; grid-column:1;" class="context-stats" title="Amount of packages in subgraph">
-          <img src="${statsIconUris.nTreePackages}" /><span>${nTreePackages}</span>
+        <div style="grid-row: 1; grid-column:4;" class="context-stats" title="Amount of child contexts in subgraph: ${nTreeContexts}">
+          <img src="${statsIconUris.nTreeContexts}" /><span>${nTreeContexts}</span>
+        </div>
+        <div style="grid-row: 1; grid-column:5;" class="context-stats" title="Amount of traces in subgraph: ${nTreeTraces} (approximates the amount of executed statements/expressions)">
+          <img src="${statsIconUris.nTreeTraces}" /><span>${nTreeTraces}</span>
         </div>
       </div>
     `;
@@ -233,13 +236,13 @@ class AsyncGraph extends GraphBase {
           <div class="left-label">${leftLabel}</div>
           <div class="async-brief full-width">
             ${shortLabel}
-            <span>${errorLabel}</span>
+            <span class="error-label">${errorLabel}</span>
           </div>
           <div class="async-detail full-width flex-column cross-axis-align-center">
             <div class="full-width flex-row align-center">
               <div class="ellipsis-10 async-context-label">${fullLabel}</div>
               <div class="ellipsis-10 value-label"></div>
-              <span>${errorLabel}</span>
+              <span class="error-label">${errorLabel}</span>
             </div>
             <div class="loc-label ellipsis-10">
               <span>${locLabel}</span>
@@ -412,6 +415,14 @@ class AsyncGraph extends GraphBase {
 
     if (applicationId && threadId) {
       this.remote.selectRelevantThread(applicationId, threadId);
+    }
+  }
+
+  handleClickErrorLabel(asyncNodeData) {
+    const { applicationId, rootContextId } = asyncNodeData.asyncNode;
+
+    if (applicationId && rootContextId) {
+      this.remote.selectError(applicationId, rootContextId);
     }
   }
 

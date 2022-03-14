@@ -58,6 +58,10 @@ export default class ValueTDSimpleNode extends ValueNode {
     if (!parent) {
       key = ValueLabel;
     }
+    if (value === undefined) {
+      return key;
+    }
+    
     return `${key}: ${valueLabel}`;
   }
 

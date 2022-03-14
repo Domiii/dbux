@@ -6,6 +6,7 @@ import ExecutionContextType, { isResumeType } from '@dbux/common/src/types/const
 
 /** @typedef {import('@dbux/common/src/types/ExecutionContext').default} ExecutionContext */
 /** @typedef {import('../applications/Application').default} Application */
+/** @typedef {import('../applications/allApplications').default} AllApplications */
 /** @typedef {import('../RuntimeDataProvider').default} RuntimeDataProvider */
 
 // eslint-disable-next-line no-unused-vars
@@ -14,6 +15,7 @@ const { log, debug, warn, error: logError } = newLogger('makeLabels');
 /**
  * hackfix: break dependency cycle
  * NOTE: this terrible, non-modular design needs fixing in the long run.
+ * @type {AllApplications}
  */
 let _allApplications;
 
@@ -206,7 +208,7 @@ export function makeCallValueLabel(bceTrace) {
 
   const argsTraces = dp.util.getCallArgTraces(traceId) || EmptyArray;
   const argValues = argsTraces.map(arg => dp.util.getTraceValueStringShort(arg.traceId));
-  const resultValue = resultId && dp.util.getTraceValueStringShort(resultId);
+  const resultValue = resultId && dp.util.getTraceValueStringShort(resultId, true);
   const result = resultValue && ` -> ${resultValue}` || '';
   const str = `(${argValues.join(', ')})${result}`;
   return str;

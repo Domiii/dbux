@@ -2,6 +2,9 @@ import sleep from '@dbux/common/src/util/sleep';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
+/** @typedef { import("./controllers/FocusController").default } FocusController */
+/** @typedef { import("./controllers/HighlightManager").default } HighlightManager */
+
 /**
  * Template class of `Graph`s, child of `GraphConatiner`
  */
@@ -46,10 +49,16 @@ class GraphBase extends HostComponentEndpoint {
   // getters
   // ###########################################################################
 
+  /**
+   * @type {HighlightManager}
+   */
   get highlightManager() {
     return this.parent.controllers.getComponent('HighlightManager');
   }
 
+  /**
+   * @type {FocusController}
+   */
   get focusController() {
     return this.parent.controllers.getComponent('FocusController');
   }

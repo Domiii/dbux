@@ -37,11 +37,11 @@ class AsyncGraph extends GraphBase {
   }
 
   handleRefresh() {
+    this._resubscribeOnData();
     const children = this.makeChildrenData();
     const applications = this.makeApplicationState(allApplications.selection.getAll());
     const { selectedApplicationId, selected } = allApplications.selection.data.threadSelection;
     this.setState({ children, applications, selectedApplicationId, selectedThreadIds: Array.from(selected) });
-    this._resubscribeOnData();
     this.postUpdate();
   }
 
@@ -284,17 +284,22 @@ class AsyncGraph extends GraphBase {
 
     // subscribe new
     for (const app of allApplications.selection.getAll()) {
-      const { dataProvider } = app;
-      const unsubscribe = dataProvider.onData('asyncNodes',
-        () => {
-          this.refresh();
-        }
-      );
+      const { dataProvider: dp } = app;
+      const unsubscribes = [
+        dp.onData('asyncNodes',
+          () => {
+            this.refresh();
+          }
+        ),
+        dp.queryImpl.statsByContext.subscribe()
+      ];
 
-      // future-work: avoid potential memory leak
-      allApplications.selection.subscribe(unsubscribe);
-      this.addDisposable(unsubscribe);
-      this._unsubscribeOnNewData.push(unsubscribe);
+      // unsubscribe on refresh
+      this._unsubscribeOnNewData.push(...unsubscribes);
+      // also when application is deselected
+      allApplications.selection.subscribe(...unsubscribes);
+      // also when node is disposed
+      this.addDisposable(...unsubscribes);
     }
   }
 
@@ -479,6 +484,17 @@ class AsyncGraph extends GraphBase {
     selectRelevantThread(applicationId, threadId) {
       this.componentManager.externals.alert('Thread selection is currently disabled.', false);
       // allApplications.selection.data.threadSelection.select(applicationId, [threadId]);
+    },
+    async selectError(applicationId, rootContextId) {
+      const dp = allApplications.getById(applicationId).dataProvider;
+      const firstError = dp.indexes.traces.errorByRoot.getFirst(rootContextId);
+      if (firstError) {
+        traceSelection.selectTrace(firstError);
+        await this.componentManager.externals.globalAnalysisViewController.revealSelectedError();
+      }
+      else {
+        this.componentManager.externals.alert('No error in this async node.', false);
+      }
     }
   }
 }

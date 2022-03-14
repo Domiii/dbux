@@ -11,8 +11,9 @@ const GlobalNodeClasses = [
   RecordedPackagesNode,
   ImportsNode,
 
-  GlobalDebugNode,
   GlobalSearchNode,
+  
+  GlobalDebugNode,
 ];
 
 export default GlobalNodeClasses;

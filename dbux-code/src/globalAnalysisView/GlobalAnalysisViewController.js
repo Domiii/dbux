@@ -58,19 +58,23 @@ export default class GlobalAnalysisViewController {
    *  #########################################################################*/
 
   async showError() {
+    this.errorTraceManager.showError();
+    await this.revealSelectedError();
+  }
+
+  async revealSelectedError() {
     if (!this.children) {
       const errorNode = this.treeDataProvider.getNodeByClass(GlobalErrorsNode);
       await this.treeView.reveal(errorNode, { select: false, expand: true });
     }
-    this.errorTraceManager.showError();
     const errorNode = this.treeDataProvider.getNodeByClass(GlobalErrorsNode);
     const selectedErrorNode = errorNode.getSelectedChild();
     if (selectedErrorNode) {
       await this.treeView.reveal(selectedErrorNode);
     }
-    else {
-      logError(`Cannot find selected children after showError`);
-    }
+    // else {
+    //   logError(`Cannot find selected children after showError`);
+    // }
   }
 
   /** ###########################################################################

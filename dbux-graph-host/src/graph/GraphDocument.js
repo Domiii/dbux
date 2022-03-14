@@ -30,7 +30,6 @@ class GraphDocument extends HostComponentEndpoint {
 
     // NOTE: this will be called immediately
     this.addDisposable(allApplications.selection.onApplicationsChanged(() => {
-      this.handleApplicationsChanged();
       this.refreshGraphs();
     }));
   }
@@ -42,17 +41,20 @@ class GraphDocument extends HostComponentEndpoint {
     this.asyncStackContainer = this.children.createComponent('GraphContainer', { graphType: GraphType.AsyncStack });
     this.searchBar = this.children.createComponent('SearchBar');
     this.toolbar = this.children.createComponent('Toolbar');
+
+    this.contextFilterManager = this.controllers.createComponent('ContextFilterManager');
   }
 
   update() {
-    this.toolbar.forceUpdate();
+    // this.toolbar.forceUpdate();
+    // this.refreshGraphs();
 
-    this.refreshGraphs();
+    this.forceUpdateTree();
   }
 
-  /** ########################################
+  /** ###########################################################################
    * util
-   *  ######################################*/
+   *  #########################################################################*/
 
   getIconUri(fileName, modeName) {
     if (!fileName) {
@@ -79,9 +81,16 @@ class GraphDocument extends HostComponentEndpoint {
 
   setGraphMode(mode) {
     if (this.state.graphMode !== mode) {
-      this.setState({ graphMode: mode });
-      // refresh in update
-      // this.refreshGraphs();
+      const upd = {
+        graphMode: mode
+      };
+      if (mode === GraphType.AsyncGraph) {
+        // TODO: use memento to remember mode per type!
+        // disable stats for ACG by default (for now), since there is just not enough space
+        upd.statsEnabled = false;
+      }
+      this.setState(upd);
+      this.refreshGraphs();
       this._notifyGraphModeChanged(mode);
     }
   }
@@ -94,9 +103,6 @@ class GraphDocument extends HostComponentEndpoint {
     return this._emitter.on('graphModeChanged', cb);
   }
 
-  handleApplicationsChanged() {
-  }
-
   /**
    * @type {GraphContainer[]}
    */
@@ -104,9 +110,22 @@ class GraphDocument extends HostComponentEndpoint {
     return this.children.getComponents('GraphContainer');
   }
 
+  /**
+   * Refresh every graphs, including their enabled states and children
+   */
   refreshGraphs() {
     this.containers.forEach((container) => {
+      // container.clearChildren();  // hackfix: brute-force this
       container.refreshGraph();
+    });
+  }
+
+  /**
+   * Clear and rebuild every enabled graph
+   */
+  maybeFullResetGraphs() {
+    this.containers.forEach((container) => {
+      container.maybeFullReset();
     });
   }
 
@@ -153,10 +172,15 @@ class GraphDocument extends HostComponentEndpoint {
       nTreeTraces: this.getIconUri('circuit.svg'),
       nTreePackages: this.getIconUri('nodejs.svg'),
     };
+    const toolbarIconUris = {
+      theradSelection: this.getIconUri('filter.svg'),
+      contextFilter: this.getIconUri('packageWhitelist.svg'),
+    };
     return {
       themeMode,
       contextNodeIconUris,
       statsIconUris,
+      toolbarIconUris,
       screenshotMode,
     };
   }
@@ -169,8 +193,6 @@ class GraphDocument extends HostComponentEndpoint {
       context: {
         graphDocument: this,
         themeMode: this.state.themeMode,
-        contextNodeIconUris: this.state.contextNodeIconUris,
-        statsIconUris: this.state.statsIconUris,
         screenshotMode: this.state.screenshotMode,
       }
     };

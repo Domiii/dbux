@@ -12,6 +12,7 @@ import AsyncStack from './asyncStack/AsyncStack';
 import Toolbar from './Toolbar';
 import ZoomBar from './ZoomBar';
 
+import ContextFilterManager from './controllers/ContextFilterManager';
 import GraphNode from './controllers/GraphNode';
 import HiddenNodeManager from './controllers/HiddenNodeManager';
 import ContextNodeManager from './controllers/ContextNodeManager';
@@ -37,7 +38,8 @@ export default {
   HiddenBeforeNode,
   GroupNode,
   HoleNode,
-  
+
+  ContextFilterManager,
   Toolbar,
   // MiniMap,
   ZoomBar,

@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import { Uri, window } from 'vscode';
+import path from 'path';
 
 import open from 'open';
 import { existsSync } from 'fs';
@@ -62,17 +63,14 @@ export function initUserCommands(extensionContext) {
 
     const msg = translate('savedSuccessfully', { fileName: exportFpath });
     await showInformationMessage(msg, {
-      Open: async () => {
-        await showTextDocument(exportFpath);
+      async 'Show File'() {
+        await open(path.dirname(exportFpath));
       }
     });
   });
 
   registerCommand(extensionContext, 'dbux.importApplicationData', async () => {
     let defaultImportDir = getDefaultExportDirectory();
-
-    const researchDir = getCurrentResearch()?.getDataRootLfs();
-    defaultImportDir = researchDir || defaultImportDir;
 
     const options = {
       title: 'Select a file to read',

@@ -96,8 +96,9 @@ export default class DataNode {
   value;
 
   /**
-   * If this DataNode has a value, this will be `true`.
+   * If this DataNode has a primitive value (i.e. `#value` has been assigned), this will be `true`.
    * We track this separately, since `value` might get converted from `undefined` to null by encoder.
+   * Use `DataProvider.util.hasAnyValue` to determine whether there is any value associated with this node in general.
    * @type {boolean?}
    */
   hasValue;

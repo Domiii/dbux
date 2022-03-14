@@ -4,6 +4,7 @@ import { getPlatformModifierKeyString } from '../../util/platformUtil';
 import ClientComponentEndpoint from '../../componentLib/ClientComponentEndpoint';
 
 let choicingIndicator;
+const ContextBlinkAnimationTime = 4000;
 class ContextNode extends ClientComponentEndpoint {
   createEl() {
     return compileHtmlElement(/*html*/`
@@ -42,11 +43,11 @@ class ContextNode extends ClientComponentEndpoint {
                 <div>
                   <span class="value-label" data-el="valueLabel"></span>
                 </div>
+                <div data-el="statsNTreePackages" class="context-stats" title="Amount of packages involved in subgraph"></div>
                 <div data-el="statsNTreeFileCalled" class="context-stats" title="Amount of files involved in subgraph"></div>
                 <div data-el="statsNTreeStaticContexts" class="context-stats" title="Amount of static contexts involved in subgraph"></div>
                 <div data-el="statsNTreeContexts" class="context-stats" title="Amount of child contexts in subgraph"></div>
-                <div data-el="statsNTreeTraces" class="context-stats" title="Amount of traces in subgraph. This is a rough measure."></div>
-                <div data-el="statsNTreePackages" class="context-stats" title="Amount of packages in subgraph"></div>
+                <div data-el="statsNTreeTraces" class="context-stats" title="Amount of traces in subgraph (approximates the amount of executed statements/expressions)"></div>
               </div>
               <div class="flex-row">
               </div>
@@ -63,7 +64,7 @@ class ContextNode extends ClientComponentEndpoint {
 
   setupEl() {
     const {
-      context: { applicationId, contextId },
+      context: { applicationId, contextId, createdAt },
       rootContextId
     } = this.state;
 
@@ -72,11 +73,15 @@ class ContextNode extends ClientComponentEndpoint {
     this.el.dataset.rootContextId = rootContextId;
 
     if (!(this.parent instanceof ContextNode)) {
-      this.el.classList.add('blink-me');
+      const animationEndTime = createdAt + ContextBlinkAnimationTime;
+      const duration = animationEndTime - Date.now();
+      if (duration > 0) {
+        this.el.classList.add('blink-me');
 
-      setTimeout(() => {
-        this.el?.classList.remove('blink-me');
-      }, 4000);
+        setTimeout(() => {
+          this.el?.classList.remove('blink-me');
+        }, duration);
+      }
     }
   }
 
@@ -119,7 +124,7 @@ class ContextNode extends ClientComponentEndpoint {
     } = this.state;
     const {
       statsIconUris
-    } = this.context;
+    } = this.context.graphDocument.state;
     this.els.statsNTreeFileCalled.innerHTML = `<img src="${statsIconUris.nTreeFileCalled}" /><span>${nTreeFileCalled}</span>`;
     this.els.statsNTreeStaticContexts.innerHTML = `<img src="${statsIconUris.nTreeStaticContexts}" /><span>${nTreeStaticContexts}</span>`;
     this.els.statsNTreeContexts.innerHTML = `<img src="${statsIconUris.nTreeContexts}" /><span>${nTreeContexts}</span>`;

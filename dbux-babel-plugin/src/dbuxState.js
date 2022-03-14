@@ -13,6 +13,17 @@ import * as PluginClassesByName from './parse/plugins/_registry';
 
 import ParseRegistry from './parseLib/ParseRegistry';
 
+/** ###########################################################################
+ * {@link VerboseSettings}
+ * ##########################################################################*/
+
+/**
+ * Basic first steps toward proper configurable logging.
+ */
+export class VerboseSettings {
+  nyi = 0;
+}
+
 // ###########################################################################
 // init parser
 // ###########################################################################
@@ -57,6 +68,7 @@ export default function injectDbuxState(programPath, programState) {
 
   const dbuxState = {
     runtimeCfg,
+    verbose: new VerboseSettings(),
 
     // static program data
     programFile,
