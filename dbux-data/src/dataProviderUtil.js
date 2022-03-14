@@ -862,7 +862,7 @@ export default {
   /** @param {DataProvider} dp */
   getTraceValueStringShort(dp, traceId, ignoreUndefined = false) {
     const dataNode = dp.util.getDataNodeOfTrace(traceId);
-    if (dp.util.hasAnyValue(dataNode.nodeId)) {
+    if (dp.util.hasAnyValue(dataNode?.nodeId)) {
       return dp.util.getDataNodeValueStringShort(dataNode.nodeId);
     }
     if (ignoreUndefined) {
