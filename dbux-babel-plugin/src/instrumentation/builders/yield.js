@@ -1,4 +1,3 @@
-import * as t from "@babel/types";
 import { getInstrumentTargetAstNode } from './common';
 import { buildTraceCall } from './templateUtil';
 import { buildTraceId, buildTraceIdValue } from './traceId';
@@ -7,14 +6,13 @@ import { buildTraceId, buildTraceIdValue } from './traceId';
 export const buildWrapYield = buildTraceCall(
   `(%%wrapYield%%(
   %%argumentVar%% = %%argument%%,
-  %%preYield%%(%%yieldStaticContextId%%, %%schedulerTid%%, %%argumentVar%%)
+  %%schedulerTid%%
 ))`,
   function buildWrapYield(state, traceCfg) {
-    const { ids: { aliases: { preYield, wrapYield } } } = state;
+    const { ids: { aliases: { wrapYield } } } = state;
     const {
       data: {
-        argumentVar,
-        yieldStaticContextId
+        argumentVar
       }
     } = traceCfg;
     const argument = getInstrumentTargetAstNode(state, traceCfg);
@@ -23,21 +21,18 @@ export const buildWrapYield = buildTraceCall(
     // const { } = ;
 
     return {
-      preYield,
       wrapYield,
       argument,
       argumentVar,
-      yieldStaticContextId: t.numericLiteral(yieldStaticContextId),
       schedulerTid,
     };
   }
 );
 
 export const buildPostYield = buildTraceCall(
-  // future-work: I forgot why `tid` was not part of the `postYield` call?
   `(
   %%resultVar%% = %%yieldNode%%,
-  %%postYield%%(%%resultVar%%, %%argumentVar%%),
+  %%postYield%%(%%resultVar%%, %%argumentVar%%, %%staticResumeContextId%%),
   %%tid%%,
   %%resultVar%%
 )`,
@@ -49,7 +44,7 @@ export const buildPostYield = buildTraceCall(
       data: {
         argumentVar,
         resultVar,
-        
+        staticResumeContextId
       }
     } = traceCfg;
     const yieldNode = getInstrumentTargetAstNode(state, traceCfg);
@@ -59,6 +54,7 @@ export const buildPostYield = buildTraceCall(
       resultVar,
       yieldNode,
       argumentVar,
+      staticResumeContextId,
       postYield,
       tid
     };

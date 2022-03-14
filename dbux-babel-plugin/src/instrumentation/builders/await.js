@@ -4,6 +4,9 @@ import { buildTraceCall } from './templateUtil';
 import { buildTraceId, buildTraceIdValue } from './traceId';
 
 
+/**
+ * Instrument the AwaitExpression's argument.
+ */
 export const buildWrapAwait = buildTraceCall(
   `(%%wrapAwait%%(
   %%argumentVar%% = %%argument%%,
@@ -35,6 +38,9 @@ export const buildWrapAwait = buildTraceCall(
   }
 );
 
+/**
+ * Instrument the AwaitExpression.
+ */
 export const buildPostAwait = buildTraceCall(
   // future-work: I forgot why `tid` was not part of the `postAwait` call?
   `(

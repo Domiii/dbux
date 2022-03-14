@@ -22,6 +22,16 @@ export default class YieldExpression extends BaseNode {
     return state.contexts.addResumeContext(path, locStart, StaticContextType.ResumeGen);
   }
 
+  enter() {
+    const {
+      Traces
+    } = this;
+
+    // future-work: don't use unnamed constants ('yiCid')
+    this.yieldContextIdVar = Traces.getOrGenerateUniqueIdentifier('yiCid');
+  }
+
+
   /**
    * Assumption: `path` has already been instrumented with `wrapYield`.
    */
@@ -29,11 +39,14 @@ export default class YieldExpression extends BaseNode {
     const {
       path,
       // state,
+      yieldContextIdVar,
       Traces
     } = this;
 
     const [argumentNode] = this.getChildNodes();
     argumentNode?.addDefaultTrace();
+
+    const staticResumeContextId = this.addResumeContext();
 
     const argumentVar = Traces.generateDeclaredUidIdentifier('arg');
     const resultVar = Traces.generateDeclaredUidIdentifier('res');
@@ -46,7 +59,8 @@ export default class YieldExpression extends BaseNode {
         type: TraceType.Yield
       },
       data: {
-        argumentVar
+        argumentVar,
+        yieldContextIdVar
       },
       meta: {
         build: buildWrapYield
@@ -62,7 +76,8 @@ export default class YieldExpression extends BaseNode {
       },
       data: {
         argumentVar,
-        resultVar
+        resultVar,
+        staticResumeContextId
       },
       meta: {
         build: buildPostYield

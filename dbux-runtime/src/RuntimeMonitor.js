@@ -425,11 +425,6 @@ export default class RuntimeMonitor {
   // await
   // ###########################################################################
 
-  wrapAwait(programId, awaitValue) {
-    // nothing to do
-    return awaitValue;
-  }
-
   preAwait(programId, inProgramStaticContextId, preAwaitTid, awaitArgument) {
     const stackDepth = this._runtime.getStackDepth();
     const runId = this._runtime.getCurrentRunId();
@@ -460,12 +455,18 @@ export default class RuntimeMonitor {
     // manually climb up the stack
     this._runtime.skipPopPostAwait();
 
-    // await part
+    // → add ACG data
     this._runtime.async.preAwait(awaitArgument, resumeContextId, parentContextId, preAwaitTid);
 
 
     return awaitContextId;
   }
+
+  wrapAwait(programId, awaitValue) {
+    // nothing to do
+    return awaitValue;
+  }
+
 
   /**
    * Resume given stack
@@ -595,6 +596,28 @@ export default class RuntimeMonitor {
 
   isValidContext() {
     return !!this._runtime._executingStack?.length;
+  }
+
+  /** ###########################################################################
+   * generator functions
+   *  #########################################################################*/
+
+  postYield(programId, yieldResult, yieldArgument, staticResumeContextId) {
+    // resume after yield
+    if (Verbose) {
+      debug(
+        // ${JSON.stringify(staticContext)}
+        `<${' '.repeat(this.runtime._executingStack._stack?.length || 0)} Yield ${staticResumeContextId}`
+      );
+    }
+
+    // pushResume
+    // NOTE: `tid` is a separate instruction, following `postAwait`
+    const resumeInProgramStaticTraceId = 0;
+    /* const resumeContextId = */ this.pushResume(programId, staticResumeContextId, resumeInProgramStaticTraceId);
+
+    // const { parentContextId: realContextId } = executionContextCollection.getById(resumeContextId);
+    // const postEventContextId = resumeContextId;
   }
 
   /** ###########################################################################
