@@ -53,6 +53,18 @@ class GraphDocument extends HostComponentEndpoint {
   }
 
   /** ###########################################################################
+   * Context filter manager
+   *  #########################################################################*/
+
+  /**
+   * Decides whether the given context should be displayed or "is part of a hole".
+   * @type {(context) => Boolean}
+   */
+  includePredicate(context) {
+    return this.contextFilterManager.includePredicate(context);
+  }
+
+  /** ###########################################################################
    * util
    *  #########################################################################*/
 

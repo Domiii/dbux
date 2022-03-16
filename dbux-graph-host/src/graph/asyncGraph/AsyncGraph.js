@@ -7,14 +7,217 @@ import AsyncNodeDataMap from '@dbux/graph-common/src/graph/types/AsyncNodeDataMa
 import GraphType from '@dbux/graph-common/src/shared/GraphType';
 import StackMode from '@dbux/graph-common/src/shared/StackMode';
 import GraphBase from '../GraphBase';
+import AsyncGraphNode from './AsyncGraphNode';
+import AsyncGraphHoleNode from './AsyncGraphHoleNode';
 
+/** @typedef {import('@dbux/common/src/types/AsyncNode').default} AsyncNode */
 /** @typedef {import('@dbux/data/src/applications/Application').default} Application */
+/** @typedef {import("@dbux/data/src/RuntimeDataProvider").default } RuntimeDataProvider */
 
-class AsyncGraph extends GraphBase {
+class AsyncGraphNodes {
+  constructor(graph) {
+    this.graph = graph;
+    this.init();
+  }
+
+  /**
+   * @param {AsyncNode} asyncNode 
+   * @returns {boolean}
+   */
+  isHole(asyncNode) {
+    const dp = getDp(asyncNode);
+    const { rootContextId } = asyncNode;
+    const rootContext = dp.collections.executionContexts.getById(rootContextId);
+    return !this.graph.context.graphDocument.includePredicate(rootContext);
+  }
+
+  init() {
+    /**
+     * @type {AsyncGraphNode[]}
+     */
+    this.all = [];
+
+    /**
+     * @type {Map<AsyncNode, AsyncGraphNode>}
+     */
+    this.nodesByAsyncNode = new Map();
+  }
+
+  /**
+   * Build `AsyncGraphNode` from an `AsyncNode` and (maybe) flood its neighboring nodes.
+   * @param {AsyncNode} asyncNode 
+   * @return {AsyncGraphNode | AsyncGraphHoleNode}
+   */
+  add(asyncNode) {
+    let newGraphNode;
+    if (this.isHole(asyncNode)) {
+      // try extend
+      const extendedHoleNode = this.tryExtendHole(asyncNode);
+      if (!extendedHoleNode) {
+        // neighboring hole exists, extend the old hole
+      }
+      else {
+        // otherwise, create a new hole
+        const asyncNodes = [asyncNode];
+        const frontier = [];
+
+        this.floodHole(asyncNodes, frontier, asyncNode);
+
+        newGraphNode = new AsyncGraphHoleNode(asyncNodes, frontier);
+        asyncNodes.forEach((node) => this.nodesByAsyncNode.set(node, newGraphNode));
+      }
+    }
+    else {
+      const parentAsyncNode = this.getParent(asyncNode);
+      const parentGraphNode = this.nodesByAsyncNode(parentAsyncNode);
+      newGraphNode = new AsyncGraphNode(asyncNode, parentGraphNode);
+      this.nodesByAsyncNode.set(asyncNode, newGraphNode);
+    }
+
+    return newGraphNode;
+  }
+
+  maybeAdd(asyncNode) {
+    if (!this.nodesByAsyncNode.get(asyncNode)) {
+      return this.add(asyncNode);
+    }
+    else {
+      return null;
+    }
+  }
+
+  /**
+   * Try extend from parent or left sibling
+   * @param {AsyncNode} asyncNode 
+   * @returns {AsyncGraphHoleNode | null} The extended AsyncGraphHoleNode.
+   */
+  tryExtendHole(asyncNode) {
+    // 1. try extend from parent
+    const parentAsyncNode = this.getParent(asyncNode);
+    const parentGraphNode = this.nodesByAsyncNode(parentAsyncNode);
+    if (parentGraphNode.isHole) {
+      this.extendHole(parentGraphNode, asyncNode);
+      return parentGraphNode;
+    }
+
+    // 2. try extend from left sibling
+    const siblingAsyncNodes = this.getSiblings(asyncNode);
+    const siblingIndex = siblingAsyncNodes.indexOf(asyncNode);
+    const leftIndex = siblingIndex - 1;
+    if (leftIndex >= 0) {
+      const leftAsyncNode = siblingAsyncNodes[leftIndex];
+      const leftGraphNode = this.nodesByAsyncNode.get(leftAsyncNode);
+      if (leftGraphNode.isHole) {
+        this.extendHole(leftGraphNode, asyncNode);
+        return leftGraphNode;
+      }
+    }
+
+    // 3. no hole to extend
+    return null;
+  }
+
+  extendHole(holeNode, asyncNode) {
+    // TODO-M: update hole if needed
+    const { asyncNodes, frontier } = holeNode;
+    const originalNodeCounts = asyncNodes.length;
+    asyncNodes.push(asyncNode);
+    this.floodHole(asyncNodes, frontier, asyncNode, false, true, true);
+    const newNodes = asyncNodes.slice(originalNodeCounts);
+    newNodes.forEach(_asyncNode => this.nodesByAsyncNode.set(_asyncNode, holeNode));
+  }
+
+  floodHole(asyncNodes, frontier, asyncNode, goLeft = true, goRight = true, goDown = true, siblingIndex = undefined) {
+    if (goLeft || goRight) {
+      const siblings = this.getSiblings(asyncNode);
+      siblingIndex = siblingIndex ?? siblings.indexOf(asyncNode);
+      if (siblingIndex !== -1) {
+        this.graph.logger.error(`Could not look up siblingIndex in Graph Construction for asyncNode:\n  > "${JSON.stringify(asyncNode)}"`);
+      }
+      else {
+        // 1. go left (previous sibling)
+        if (goLeft) {
+          const leftIndex = siblingIndex - 1;
+          if (leftIndex >= 0) {
+            const left = siblings[leftIndex];
+            if (this.isHole(left)) {
+              // add to hole: ←↓
+              asyncNodes.push(left);
+              this.floodHole(asyncNodes, frontier, left, true, false, true, leftIndex);
+            }
+          }
+        }
+
+        // 2. go right (next sibling)
+        if (goRight) {
+          const rightIndex = siblingIndex + 1;
+          if (rightIndex < siblings.length) {
+            const right = siblings[rightIndex];
+            if (this.isHole(right)) {
+              // add to hole: ↓→
+              asyncNodes.push(right);
+              this.floodHole(asyncNodes, frontier, right, false, true, true, rightIndex);
+            }
+          }
+        }
+      }
+    }
+
+    // 3. go down (children)
+    if (goDown) {
+      const children = this.getChildren(asyncNode);
+      // NOTE: Here, we specifically iterate over all children, 
+      //      because sibling iteration would stop at the first non-filtered sibling,
+      //      while this should go through all.
+      for (const child of children) {
+        if (this.isHole(child)) {
+          // add to hole: ↓
+          asyncNodes.push(child);
+          this.floodHole(asyncNodes, frontier, child, false, false, true);
+        }
+        else {
+          // NOTE: add all non-hole children to frontier
+          frontier.push(child);
+        }
+      }
+    }
+  }
+
+  /** ###########################################################################
+   * Graph traversal helper
+   *  #########################################################################*/
+
+  getParent(asyncNode) {
+    const dp = getDp(asyncNode);
+    const { rootContextId } = asyncNode;
+
+    const firstEdge = dp.indexes.asyncEvents.to.getFirst(rootContextId);
+    const parentAsyncNode = dp.util.getAsyncNode(firstEdge.fromRootContextId);
+    return parentAsyncNode;
+  }
+
+  getChildren(asyncNode) {
+    const dp = getDp(asyncNode);
+    const { rootContextId } = asyncNode;
+
+    const edges = dp.indexes.asyncEvents.from.get(rootContextId) || EmptyArray;
+    const childAsyncNodes = edges.map(edge => dp.util.getAsyncNode(edge.toRootContextId));
+    return childAsyncNodes;
+  }
+
+  getSiblings(asyncNode) {
+    const parentNode = this.getParent(asyncNode);
+    const siblings = this.getChildren(parentNode);
+    return siblings;
+  }
+}
+
+export default class AsyncGraph extends GraphBase {
   init() {
     this.state.applications = [];
     // this.state.ascendingMode = false;
     this.state.ascendingMode = true;
+    this.nodes = new AsyncGraphNodes();
     this._unsubscribeOnNewData = [];
 
     this.controllers.createComponent('PopperController');
@@ -38,7 +241,7 @@ class AsyncGraph extends GraphBase {
 
   handleRefresh() {
     this._resubscribeOnData();
-    const children = this.makeChildrenData();
+    const children = this.makeAsyncGraphNodes();
     const applications = this.makeApplicationState(allApplications.selection.getAll());
     const { selectedApplicationId, selected } = allApplications.selection.data.threadSelection;
     this.setState({ children, applications, selectedApplicationId, selectedThreadIds: Array.from(selected) });
@@ -57,9 +260,13 @@ class AsyncGraph extends GraphBase {
    * data
    *  #########################################################################*/
 
-  makeChildrenData() {
+  makeAsyncGraphNodes() {
     const appData = allApplications.selection.data;
     const asyncNodes = appData.asyncNodesInOrder.getAllActual();
+
+    for (const asyncNode of asyncNodes) {
+      this.nodes.maybeAdd(asyncNode);
+    }
 
     let childrenData = asyncNodes.map((asyncNode) => {
       const { applicationId, rootContextId } = asyncNode;
@@ -499,4 +706,14 @@ class AsyncGraph extends GraphBase {
   }
 }
 
-export default AsyncGraph;
+/** ###########################################################################
+ * util
+ *  #########################################################################*/
+
+/**
+ * @param {{ applicationId:number }} applicationIdHolder 
+ * @returns {RuntimeDataProvider}
+ */
+function getDp(applicationIdHolder) {
+  return allApplications.getById(applicationIdHolder.applicationId).dataProvider;
+}

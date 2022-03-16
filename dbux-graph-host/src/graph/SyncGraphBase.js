@@ -9,8 +9,8 @@ import ContextNode from './syncGraph/ContextNode';
 import HoleNode from './syncGraph/HoleNode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
-/** @typedef { import("./GraphDocument").default } GraphDocument */
-/** @typedef { import("@dbux/data/src/RuntimeDataProvider").default } RuntimeDataProvider */
+/** @typedef {import("./GraphDocument").default } GraphDocument */
+/** @typedef {import("@dbux/data/src/RuntimeDataProvider").default } RuntimeDataProvider */
 /** @typedef {import('@dbux/common/src/types/ExecutionContext').default} ExecutionContext */
 
 // eslint-disable-next-line no-unused-vars
@@ -105,15 +105,6 @@ class CallGraphNodes {
     this.clear();
   }
 
-  /**
-   * Decides whether the given context should be displayed or "is part of a hole".
-   * 
-   * @type {(context) => Boolean}
-   */
-  includePredicate(context) {
-    return this.graph.context.graphDocument.contextFilterManager.includePredicate(context);
-  }
-
   has(context) {
     this.contextNodesByContext.has(context);
   }
@@ -131,7 +122,7 @@ class CallGraphNodes {
   }
 
   isHole = (context) => {
-    return !this.includePredicate(context);
+    return this.graph.context.graphDocument.includePredicate(context);
   }
 
   /** ###########################################################################
@@ -248,6 +239,7 @@ class CallGraphNodes {
         if ((hole instanceof HoleNode)) {
           const { contexts, frontier } = hole.group;
           const nContexts = contexts.length;
+          contexts.push(context);
           this.floodHole(contexts, frontier, context, false, true, true, true, null, index);
           return { holeNode: hole, newContexts: contexts.slice(nContexts) };
         }
