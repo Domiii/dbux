@@ -25,9 +25,9 @@ import { getDefaultClient } from './client/index';
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError, trace: logTrace } = newLogger('RuntimeMonitor');
 
-const Verbose = 2;
+// const Verbose = 2;
 // const Verbose = 1;
-// const Verbose = 0;
+const Verbose = 0;
 
 const debug = (...args) => Verbose && _debug(...args);
 
