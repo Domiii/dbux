@@ -3,7 +3,13 @@ import CollectionIndex from '../../indexes/CollectionIndex';
 import RuntimeDataProvider from '../../RuntimeDataProvider';
 
 
-/** @extends {CollectionIndex<Trace>} */
+/** @typedef { import("@dbux/common/src/types/constants/SpecialIdentifierType").default } SpecialIdentifierType */
+
+/**
+ * Traces by {@link SpecialIdentifierType}
+ * 
+ * @extends {CollectionIndex<Trace>}
+ */
 export default class TracesBySpecialIdentifierTypeIndex extends CollectionIndex {
   constructor() {
     super('traces', 'bySpecialIdentifierType');

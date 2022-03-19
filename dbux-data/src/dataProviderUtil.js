@@ -2112,6 +2112,7 @@ export default {
     return last;
   },
 
+  /** @param {DataProvider} dp */
   getTracesOfContextAndType(dp, contextId, type) {
     const traces = dp.indexes.traces.byContext.get(contextId);
     // NOTE: `Await` contexts don't have traces
@@ -2119,6 +2120,15 @@ export default {
     //   dp.logger.error(`Context did not have any traces: ${contextId}`);
     // }
     return traces?.filter(trace => dp.util.getTraceType(trace.traceId) === type) || EmptyArray;
+  },
+
+  /** @param {DataProvider} dp */
+  getTracesOfRealContextAndType(dp, contextId, type) {
+    const realContextId = dp.util.getRealContextIdOfContext(contextId);
+    if (!realContextId) {
+      return null;
+    }
+    return dp.util.getTracesOfContextAndType(realContextId, type);
   },
 
   /** @param {DataProvider} dp */

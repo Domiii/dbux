@@ -1,4 +1,4 @@
-import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
+import SpecialDynamicTraceType from '@dbux/common/src/types/constants/SpecialDynamicTraceType';
 import SpecialObjectType from '@dbux/common/src/types/constants/SpecialObjectType';
 import TraceType, { isTraceFunctionExit, isTracePop, isTraceReturn, isTraceThrow } from '@dbux/common/src/types/constants/TraceType';
 import Trace from '@dbux/common/src/types/Trace';
@@ -50,7 +50,8 @@ export default class TraceCollection extends Collection {
   }
 
   postIndexRaw(traces) {
-    this.errorWrapMethod('resolveMonkeyParams', traces);
+    // this.errorWrapMethod('resolveMonkeyParams', traces);
+    this.errorWrapMethod('resolveBuiltInHOFParams', traces);
   }
   
   postIndexProcessed(traces) {
@@ -132,6 +133,17 @@ export default class TraceCollection extends Collection {
       if (argTraces) {
         // BCE
         argTraces.forEach(t => t.callId = callId);
+      }
+    }
+  }
+
+  /**
+   * @param {Trace[]} traces 
+   */
+  resolveBuiltInHOFParams(traces) {
+    for (const trace of traces) {
+      if (SpecialDynamicTraceType.is.ArrayHofCall(trace.data?.specialDynamicType)) {
+        this.dp.collections.executionContexts.resolveBuiltInHOFParams(trace);
       }
     }
   }

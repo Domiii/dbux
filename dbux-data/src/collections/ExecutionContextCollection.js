@@ -1,6 +1,7 @@
 import StaticContextType from '@dbux/common/src/types/constants/StaticContextType';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
+import Trace from '@dbux/common/src/types/Trace';
 import Collection from '../Collection';
 
 /** @typedef { import("./TraceCollection").default } TraceCollection */
@@ -18,6 +19,48 @@ export default class ExecutionContextCollection extends Collection {
     super.addEntry(entry);
     if (entry) {
       entry.applicationId = this.dp.application.applicationId;
+    }
+  }
+
+  _addParamInput(paramTraceId, inputNodeId) {
+    const paramDataNodes = this.dp.util.getDataNodesOfTrace(paramTraceId);
+
+    if (paramDataNodes?.length) {
+      // NOTE: a param should have exactly one DataNode
+      paramDataNodes[0].inputs = [inputNodeId];
+    }
+  }
+
+  /**
+   * Hook up array HOFs via dp.indexes.executionContexts.byCallerTrace.getById().
+   * @param {Trace} hofCallTrace 
+   */
+  resolveBuiltInHOFParams(hofCallTrace) {
+    const { dp: { util } } = this;
+    const callId = hofCallTrace.traceId;
+    const contexts = this.dp.indexes.executionContexts.byCallerTrace.getById(callId);
+    const arrayReadNodes = this.dp.indexes.dataNodes.byTrace.get(callId);
+
+    if (contexts) {
+      for (let i = 0; i < contexts.length; ++i) {
+        const { contextId } = contexts[i];
+        const paramTraces = util.getTracesOfRealContextAndType(contextId, TraceType.Param);
+        if (!paramTraces.length) {
+          // function has no parameters -> nothing to do
+          continue;
+        }
+
+        // add to `Param` trace's `inputs`
+        const paramTrace = paramTraces[0];
+        const inputNode = arrayReadNodes[i];
+        if (!inputNode) {
+          // this parameter did not have a corresponding argument
+          //    (something must have gone wrong here)
+          continue;
+        }
+
+        this._addParamInput(paramTrace.traceId, inputNode.nodeId);
+      }
     }
   }
 
@@ -43,6 +86,9 @@ export default class ExecutionContextCollection extends Collection {
         continue;
       }
       const bceTrace = util.getOwnCallerTraceOfContext(contextId); // BCE
+
+      // TODO: fix async functions (parameters are in first virtual child, but args belong to parent)
+
       if (!bceTrace) {
         // no BCE -> must be root context (not called by us) -> nothing to do
         continue;
@@ -61,12 +107,12 @@ export default class ExecutionContextCollection extends Collection {
       for (let i = 0; i < paramTraces.length; i++) {
         const paramTrace = paramTraces[i];
         const argDataNode = argDataNodes[i];
-        if (argDataNode) {
-          const paramDataNodes = util.getDataNodesOfTrace(paramTrace.traceId);
-          paramDataNodes[0].inputs = [argDataNode.nodeId];
+        if (!argDataNode) {
+          // NOTE: this parameter did not have a corresponding argument
+          continue;
         }
         else {
-          // NOTE: this parameter did not have a corresponding argument
+          this._addParamInput(paramTrace.traceId, argDataNode.nodeId);
         }
       }
 

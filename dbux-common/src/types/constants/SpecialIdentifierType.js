@@ -3,8 +3,8 @@ import Enum from '../../util/Enum';
 // eslint-disable-next-line import/no-mutable-exports
 let SpecialIdentifierType = {
   Module: 1,
-  Arguments: 2,
-  Undefined: 3,
+  // Arguments: 2,
+  // Undefined: 3,
   Eval: 4,
   
   // future-work: consider `@babel/traverse` -> referencesImport
