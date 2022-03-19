@@ -541,7 +541,6 @@ class ValueCollection extends Collection {
    * @return {ValueRef}
    */
   _serialize(value, nodeId, depth = 1, category = null, meta = null) {
-    // let serialized = serialize(category, value, serializationLimits);
     let serialized;
     let pruneState = ValuePruneState.Normal;
     let typeName = '';
@@ -669,10 +668,10 @@ class ValueCollection extends Collection {
             // start serializing
             serialized = {};
 
-            const builtInSerializer = this.getBuiltInSerializer(value);
-            if (builtInSerializer) {
+            const serialize = this.getBuiltInSerializer(value);
+            if (serialize) {
               // serialize built-in types - especially: RegExp, Map, Set
-              builtInSerializer(value, nodeId, depth, serialized, valueRef, meta);
+              serialize(value, nodeId, depth, serialized, valueRef, meta);
             }
             else {
               // serialize object (default)

@@ -941,14 +941,48 @@ export default {
     return null;
   },
 
+  /** @param {DataProvider} dp */
   getDataNodesByRefId(dp, refId) {
     return dp.indexes.dataNodes.byRefId.get(refId);
   },
 
+  /** @param {DataProvider} dp */
   getFirstDataNodeByRefId(dp, refId) {
     return dp.indexes.dataNodes.byRefId.getFirst(refId);
   },
 
+  /** 
+   * Get first DataNode by refId, even if it does NOT OWN it.
+   * 
+   * @param {DataProvider} dp
+   */
+  getAnyFirstNodeIdByRefId(dp, refId) {
+    const ref = dp.collections.values.getById(refId);
+    const { nodeId } = ref;
+    // const { traceId } = dp.collections.dataNodes.getById(nodeId);
+    // return traceId;
+    return nodeId;
+  },
+
+  /** 
+   * Get first DataNode by refId, even if it does NOT OWN it.
+   * 
+   * @param {DataProvider} dp
+   */
+  getAnyFirstNodeByRefId(dp, refId) {
+    const nodeId = dp.util.getAnyFirstNodeIdByRefId(refId);
+    return nodeId && dp.collections.dataNodes.getById(nodeId);
+  },
+
+  /**
+   * @param {DataProvider} dp
+   */
+  getFirstTraceIdByNodeId(dp, nodeId) {
+    const { traceId } = dp.collections.dataNodes.getById(nodeId);
+    return traceId;
+  },
+
+  /** @param {DataProvider} dp */
   getFirstTraceIdByRefId(dp, refId) {
     const dataNode = dp.indexes.dataNodes.byRefId.getFirst(refId);
     return dataNode?.traceId;
