@@ -38,7 +38,7 @@ export default class ExecutionContextCollection extends Collection {
   resolveBuiltInHOFParams(hofCallTrace) {
     const { dp: { util } } = this;
     const callId = hofCallTrace.traceId;
-    const contexts = this.dp.indexes.executionContexts.byCallerTrace.getById(callId);
+    const contexts = this.dp.indexes.executionContexts.byCallerTrace.get(callId);
     const arrayReadNodes = this.dp.indexes.dataNodes.byTrace.get(callId);
 
     if (contexts) {

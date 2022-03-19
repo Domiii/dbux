@@ -172,29 +172,28 @@ export default function patchArray() {
         // let [cb] = args;
         const ref = valueCollection.getRefByValue(arr);
         const bceTrace = ref && peekBCEMatchCallee(patchedFunction);
+        if (bceTrace) {
+          const { traceId: callId } = bceTrace;
+
+          // [edit-after-send]
+          bceTrace.data = bceTrace.data || {};
+          bceTrace.data.specialDynamicType = SpecialDynamicTraceType.ArrayHofCall;
+
+          const arrNodeId = getNodeIdFromRef(ref);
+
+          // record all DataNodes of copy operation
+          for (let i = 0; i < arr.length; ++i) {
+            const varAccessRead = {
+              objectNodeId: arrNodeId,
+              prop: i
+            };
+
+            // add new DataNodes to BCE
+            /* const readNode = */
+            dataNodeCollection.createDataNode(arr[i], callId, DataNodeType.Read, varAccessRead);
+          }
+        }
         const result = originalFunction.apply(arr, args);
-        if (!bceTrace) {
-          return result;
-        }
-
-        const { traceId: callId } = bceTrace;
-
-        // [edit-after-send]
-        bceTrace.data = bceTrace.data || {};
-        bceTrace.data.specialDynamicType = SpecialDynamicTraceType.ArrayHofCall;
-
-        const arrNodeId = getNodeIdFromRef(ref);
-
-        // record all DataNodes of copy operation
-        for (let i = 0; i < arr.length; ++i) {
-          const varAccessRead = {
-            objectNodeId: arrNodeId,
-            prop: i
-          };
-
-          // add new DataNodes to BCE
-          /* const readNode = */ dataNodeCollection.createDataNode(arr[i], callId, DataNodeType.Read, varAccessRead);
-        }
         return result;
       }
     );

@@ -99,6 +99,26 @@ export function getTracesAt(application, programId, pos) {
   });
 }
 
+const MaxTraceLabelLen = 50;
+
+function getSameLineValue(dp, end, candidate) {
+  const l = dp.util.getTraceLoc(candidate.traceId);
+  // 1. must not span over multiple lines
+  // 2. must include trace.end
+  if (l.start.line !== l.end.line || l.end.column < end.column) {
+    return -1;
+  }
+
+  // 3. must not exceed some size (e.g. in case of minimized code)
+  const nStrLen = l.end.column - l.start.column;
+  if (nStrLen > MaxTraceLabelLen) {
+    return -1;
+  }
+
+  // 4. maximize loc range
+  return l.end.column - l.start.column;
+}
+
 /**
  * @param {Trace} trace
  * @return {Trace} 
@@ -112,24 +132,21 @@ export function getOuterMostTraceOfSameLine(trace) {
   const startCodePos = babelLocToCodePosition(start);
   // const endCodePos = babelLocToCodePosition(end);
 
-  if (start.line !== end.line) {
-    // trace itself is multiline -> just return that
-    return trace;
-  }
+  let best;
+  if (start.line === end.line) {
+    let traces = getTracesAt(application, programId, startCodePos) || EmptyArray;
 
-  let traces = getTracesAt(application, programId, startCodePos) || EmptyArray;
+    const valueFun = getSameLineValue.bind(null, dp, end);
+    best = maxBy(traces, valueFun);
 
-
-  return maxBy(traces, t => {
-    const l = dp.util.getTraceLoc(t.traceId);
-    // 1. must not span over multiple lines
-    // 2. must include `end`
-    if (l.start.line !== l.end.line || l.end.column < end.column) {
-      return -1;
+    if (!best || valueFun(best) < 0) {
+      // in case of no good trace -> pick original
+      best = trace;
     }
-
-    // 3. maximize loc range
-    return l.end.column - l.start.column;
-  }) || trace;
+  }
+  else {
+    best = trace;
+  }
+  return best;
 }
 
