@@ -1471,7 +1471,8 @@ export default {
       case SpecialCallType.Apply:
         realCalleeTid = bceTrace.data.calledFunctionTid;
         break;
-      case SpecialCallType.Bind: {
+      case SpecialCallType.Bind: 
+      default: {
         // nothing to do here -> handle `Bound` case below
         break;
       }
@@ -1480,7 +1481,7 @@ export default {
     // no match -> check for Bound
     const { calleeTid } = bceTrace.data;
     const bindTrace = dp.util.getBindCallTrace(calleeTid);
-    if (bindTrace) {
+    if (bindTrace?.data) {
       realCalleeTid = bindTrace.data.calledFunctionTid;
     }
 

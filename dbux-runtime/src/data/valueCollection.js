@@ -385,6 +385,7 @@ class ValueCollection extends Collection {
   }
 
   /**
+   * [access-guard]
    * Read a property of an object to copy + track it.
    * WARNING: This might invoke a getter function, thereby tempering with semantics (something that we genreally never want to do).
    */

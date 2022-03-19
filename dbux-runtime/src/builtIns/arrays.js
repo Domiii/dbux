@@ -1,7 +1,7 @@
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import traceCollection from '../data/traceCollection';
 import dataNodeCollection from '../data/dataNodeCollection';
-import { peekBCEMatchCallee } from '../data/dataUtil';
+import { getOrCreateRealArgumentDataNodeIds, peekBCEMatchCallee } from '../data/dataUtil';
 import valueCollection from '../data/valueCollection';
 import { monkeyPatchFunctionOverride, monkeyPatchHolderOverrideDefault, monkeyPatchMethod, monkeyPatchMethodOverrideDefault } from '../util/monkeyPatchUtil';
 import SpecialDynamicTraceType from '@dbux/common/src/types/constants/SpecialDynamicTraceType';
@@ -38,7 +38,13 @@ export default function patchArray() {
         return originalFunction.apply(arr, args);
       }
 
-      const { traceId: callId, data: { argTids } } = bceTrace;
+      const {
+        traceId: callId,
+        // data: { argTids }
+      } = bceTrace;
+
+      const inputNodeIds = getOrCreateRealArgumentDataNodeIds(bceTrace, args);
+
       const arrNodeId = getNodeIdFromRef(ref);
 
       for (let i = 0; i < args.length; ++i) {
@@ -47,8 +53,7 @@ export default function patchArray() {
           prop: arr.length + i
         };
         // console.debug(`[Array.push] #${traceId} ref ${ref.refId}, node ${nodeId}, arrNodeId ${arrNodeId}`);
-        const argTid = argTids[i];
-        const inputs = [traceCollection.getOwnDataNodeIdByTraceId(argTid)];
+        const inputs = [inputNodeIds[i]];
         dataNodeCollection.createDataNode(args[i], callId, DataNodeType.Write, varAccess, inputs);
       }
 
@@ -140,6 +145,7 @@ export default function patchArray() {
           objectNodeId: arrNodeId,
           prop: i
         };
+
         const readNode = dataNodeCollection.createDataNode(arr[i], callId, DataNodeType.Read, varAccessRead);
 
         const varAccessWrite = {

@@ -16,6 +16,7 @@ export class TraceData {
 
   /**
    * only: BCE.
+   * @type {number[]}
    */
   argTids;
 

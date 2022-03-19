@@ -4,8 +4,9 @@
  */
 
 import { peekBCEMatchCallee } from '../data/dataUtil';
-import RuntimeMonitor from '../RuntimeMonitor';
-import { getOriginalCallback, isMonkeyPatchedCallback, monkeyPatchMethod } from '../util/monkeyPatchUtil';
+import { monkeyPatchMethod } from '../util/monkeyPatchUtil';
+
+/** @typedef { import("./RuntimeMonitor").default } RuntimeMonitor */
 
 // future-work: keep things clean → don't arbitrarily add globals like this.
 /**
