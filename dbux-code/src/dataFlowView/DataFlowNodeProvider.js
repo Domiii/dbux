@@ -114,7 +114,11 @@ export default class DataFlowNodeProvider extends BaseTreeViewNodeProvider {
       }
       else {
         dataTraceIds.add(dataTrace.traceId);
-        return this.buildNode(ParentDataNode, node, null);
+        /**
+         * @type {ParentDataNode}
+         */
+        const dataNodeNode = this.buildNode(ParentDataNode, node, null);
+        // dataNodeNode.targetNodeId = ;
       }
     }).filter(x => !!x);
 
