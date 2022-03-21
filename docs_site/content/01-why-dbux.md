@@ -20,10 +20,14 @@ The screenshot above demonstrates several of Dbux's features, including:
 * Middle: [code decorations](./runtime-analysis/04-code-decorations.mdx) and [trace selection](./runtime-analysis/05-select-trace.mdx).
 * Right: [asynchronous call graph](./runtime-analysis/20-asynchronous-call-graph.mdx).
 
-Furthermore, [this (slightly outdated) video](https://www.youtube.com/watch?v=m1ANEuZJFT8) [20 min] <span className="color-gray"></span> explains how Dbux came to be and shows two basic examples of how to use a subset of its features.
 <!-- <a href="https://www.youtube.com/watch?v=m1ANEuZJFT8" target="_blank" alt="video">
    <img width="150px" src="https://img.youtube.com/vi/m1ANEuZJFT8/0.jpg" />
 </a> -->
+
+
+## Video Introduction
+
+[![Video Introduction](https://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](https://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE)
 
 
 ## Why Dbux?

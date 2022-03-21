@@ -126,89 +126,13 @@ TODO
 
 ## Create-React-App
 
-<!-- 
+TODO: Clean this up
 
 1. install `CRACO`
    ```bash
-   $ yarn add @craco/craco
+   $ yarn add --dev @craco/craco
    ```
-
-2. overwrite webpack config with `CRACO`
-
-Example - something like this:
-
-```js
-/* craco.config.js */
-
-const { getLoaders, loaderByName } = require('@craco/craco');
-
-const dbuxOptions = {
-  moduleFilter: {
-    packageWhitelist: '.*',
-    /**
-     * NOTE: these libraries might run before dbux is initialized, so they must be blacklisted.
-     * 1. Some hook themsleves into webpack.
-     * 2. The later ones are polyfills (probably brought in by CRA) and their libraries; loaded when first requiring things, and before `@dbux/runtime`.
-     */
-    packageBlacklist: 'react-dev-utils,react-refresh,react-error-overlay,process,buffer,isarray,ieee754,base64-js',
-    fileWhitelist: '.*',
-    // we generally do not want to mess with production or webpack code
-    fileBlacklist: '.*production.*,.*[wW]ebpack.*'
-  }
-};
-
-module.exports = {
-  webpack: {
-    configure: (webpackConfig, { env, paths }) => {
-      const { hasFoundAny, matches } = getLoaders(webpackConfig, loaderByName("babel-loader"));
-
-
-      // // TODO: write output files (this won't work, `devServer` does not exit)
-      // webpackConfig.devServer.devMiddleware.writeToDisk = true;
-
-      // // exclude dbux from all rules
-      // const reported = new Set();
-      // webpackConfig.module.rules.forEach(rule => {
-      //   if (rule.exclude && !Array.isArray(rule.exclude)) {
-      //     rule.exclude = [rule.exclude];
-      //   }
-      //   if (!rule.exclude) {
-      //     rule.exclude = [];
-      //   }
-      //   rule.exclude.push((modulePath) => {
-      //     const exclude = modulePath.includes('@dbux');
-      //     if (!reported.has(modulePath)) {
-      //       reported.add(modulePath);
-      //       console.debug(`[WEBPACK]`, modulePath, !exclude);
-      //     }
-      //     return exclude;
-      //   });
-      // });
-
-      // add dbux to loader
-      if (hasFoundAny) {
-        matches.forEach(match => {
-          const babelOptions = match.loader.options;
-          if (!babelOptions.plugins) {
-            babelOptions.plugins = [];
-          }
-          // NOTE: weird bug with a class having public fields (in @dbux/runtime) that Babel complains about
-          babelOptions.plugins.push(['@babel/plugin-proposal-class-properties', { loose: true }]);
-          babelOptions.plugins.push(['@dbux/babel-plugin', dbuxOptions]);
-        });
-        console.debug(`Added @dbux/babel-plugin to babel-loaders.`);
-      }
-      else {
-        throw new Error(`Could not inject Dbux: 'babel-loader' found`);
-      }
-
-      return webpackConfig;
-    }
-  },
-};
-```
-
-3. set default scripts using `CRACO`:
+2. Fix `package.json` to use `craco` instead of `react-scripts`:
    ```
    /* package.json */
    
@@ -218,8 +142,78 @@ module.exports = {
      "test": "craco test"
    }
    ```
-
--->
+3. Customize webpack config with `CRACO`:
+   Example - something like this:
+   ```js
+   // craco.config.js
+   
+   const { getLoaders, loaderByName } = require('@craco/craco');
+   
+   const dbuxOptions = {
+     moduleFilter: {
+       packageWhitelist: '.*',
+       /**
+        * NOTE: these libraries might run before dbux is initialized, so they must be blacklisted.
+        * 1. Some hook themsleves into webpack.
+        * 2. The later ones are polyfills (probably brought in by CRA) and their libraries; loaded when first requiring things,    and before `@dbux/runtime`.
+        */
+       packageBlacklist: 'react-dev-utils,react-refresh,react-error-overlay,process,buffer,isarray,ieee754,base64-js',
+       fileWhitelist: '.*',
+       // we generally do not want to mess with production or webpack code
+       fileBlacklist: '.*production.*,.*[wW]ebpack.*'
+     }
+   };
+   
+   module.exports = {
+     webpack: {
+       configure: (webpackConfig, { env, paths }) => {
+         const { hasFoundAny, matches } = getLoaders(webpackConfig, loaderByName("babel-loader"));
+   
+   
+         // // TODO: write output files (this won't work, `devServer` does not exit)
+         // webpackConfig.devServer.devMiddleware.writeToDisk = true;
+   
+         // // exclude dbux from all rules
+         // const reported = new Set();
+         // webpackConfig.module.rules.forEach(rule => {
+         //   if (rule.exclude && !Array.isArray(rule.exclude)) {
+         //     rule.exclude = [rule.exclude];
+         //   }
+         //   if (!rule.exclude) {
+         //     rule.exclude = [];
+         //   }
+         //   rule.exclude.push((modulePath) => {
+         //     const exclude = modulePath.includes('@dbux');
+         //     if (!reported.has(modulePath)) {
+         //       reported.add(modulePath);
+         //       console.debug(`[WEBPACK]`, modulePath, !exclude);
+         //     }
+         //     return exclude;
+         //   });
+         // });
+   
+         // add dbux to loader
+         if (hasFoundAny) {
+           matches.forEach(match => {
+             const babelOptions = match.loader.options;
+             if (!babelOptions.plugins) {
+               babelOptions.plugins = [];
+             }
+             // NOTE: weird bug with a class having public fields (in @dbux/runtime) that Babel complains about
+             babelOptions.plugins.push(['@babel/plugin-proposal-class-properties', { loose: true }]);
+             babelOptions.plugins.push(['@dbux/babel-plugin', dbuxOptions]);
+           });
+           console.debug(`Added @dbux/babel-plugin to babel-loaders.`);
+         }
+         else {
+           throw new Error(`Could not inject Dbux: 'babel-loader' found`);
+         }
+   
+         return webpackConfig;
+       }
+     },
+   };
+   ```
 
 
 ## Next.js
