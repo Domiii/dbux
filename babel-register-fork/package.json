@@ -1,6 +1,6 @@
 {
   "name": "@dbux/babel-register-fork",
-  "version": "0.6.9-dev.3",
+  "version": "0.6.9",
   "description": "quick-n-dirty fork OF @babel/register",
   "license": "MIT",
   "publishConfig": {
