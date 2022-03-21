@@ -234,7 +234,7 @@ export default {
   },
 
   /**
-   * Find a context's parent in call stack, skips virtual contexts and looking for async parent if it is a root context.
+   * Find a context's parent in call stack, looking for async parent if it is a root context.
    * NOTE: used in `AsyncCallStack`, `RootEdgesTDNode` and `ParentContext navigation` for consistency
    * @param {DataProvider} dp 
    * @param {number} contextId 
@@ -242,8 +242,11 @@ export default {
   getContextAsyncStackParent(dp, contextId) {
     const { parentContextId, contextType } = dp.collections.executionContexts.getById(contextId);
     if (!dp.util.isRootContext(contextId)) {
-      // not a root, get real parent
-      return dp.util.getRealContextOfContext(parentContextId);
+      // // not a root, get real parent
+      // return dp.util.getRealContextOfContext(parentContextId);
+
+      // not a root, get parent
+      return dp.collections.executionContexts.getById(parentContextId);
     }
     else {
       // is root, looking for async parent
@@ -267,9 +270,12 @@ export default {
         }
       }
       else {
-        // if virtual: skip to realContext's parent and call trace (skip all virtual contexts, in general)
-        const realContext = dp.util.getRealContextOfContext(contextId);
-        return dp.util.getRealContextOfContext(realContext.parentContextId);
+        // // if virtual: skip to realContext's parent and call trace (skip all virtual contexts, in general)
+        // const realContext = dp.util.getRealContextOfContext(contextId);
+        // return dp.util.getRealContextOfContext(realContext.parentContextId);
+
+        // if virtual: go to real context
+        return dp.util.getRealContextOfContext(contextId);
       }
     }
   },
@@ -1471,7 +1477,7 @@ export default {
       case SpecialCallType.Apply:
         realCalleeTid = bceTrace.data.calledFunctionTid;
         break;
-      case SpecialCallType.Bind: 
+      case SpecialCallType.Bind:
       default: {
         // nothing to do here -> handle `Bound` case below
         break;

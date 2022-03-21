@@ -190,7 +190,7 @@ div {
  * ############################################################################ */
 
 .async-graph {
-  grid-template-areas: "header" "main";
+  grid-template-areas: "header""main";
 }
 
 .async-grid {
@@ -495,20 +495,25 @@ div {
   0% {
     background: #fff;
   }
+
   20% {
     opacity: 1;
     background: none;
   }
+
   40% {
     background: #fff;
   }
+
   60% {
     opacity: 1;
     background: none;
   }
+
   80% {
     background: #fff;
   }
+
   100% {
     opacity: 1;
     background: none;
@@ -519,6 +524,7 @@ div {
   0% {
     background: #fff;
   }
+
   100% {
     opacity: 1;
     background: none;
@@ -751,5 +757,13 @@ body:not(.theme-mode-dark) .highlight {
 }
 
 .research-mode .left-label {
+  display: none !important;
+}
+
+/** ###########################################################################
+ * async stack
+ * ############################################################################*/
+
+[data-mount="AsyncStack"] .graph-mode-button {
   display: none !important;
 }

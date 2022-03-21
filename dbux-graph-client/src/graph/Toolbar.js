@@ -197,7 +197,7 @@ class Toolbar extends ClientComponentEndpoint {
       active: !hideAfter
     });
     decorateClasses(this.els.graphModeBtn, {
-      active: graphMode !== GraphType.None
+      active: graphMode !== GraphType.None && stackMode !== StackMode.FullScreen
     });
     decorateClasses(this.els.asyncStackBtn, {
       active: stackMode !== StackMode.Hidden

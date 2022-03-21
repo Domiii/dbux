@@ -68,7 +68,7 @@ class Toolbar extends HostComponentEndpoint {
       this.doc.setState({
         stackMode: StackMode.nextValue(this.parent.state.stackMode)
       });
-      this.doc.asyncStackContainer.refreshGraph();
+      this.doc.refreshGraphs();
     },
 
     setSearchMode(mode) {
