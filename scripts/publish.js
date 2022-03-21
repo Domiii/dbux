@@ -4,8 +4,9 @@
 // Examples (don't use yarn, it won't work!):
 //
 // npm run pub -- n
-// npm run pub -- n patch
-// npm run pub -- n minor
+// npm run pub -- n marketplace
+// npm run pub -- n marketplace patch
+// npm run pub -- n marketplace minor
 //
 
 const DefaultVersionBump = 'prerelease';
