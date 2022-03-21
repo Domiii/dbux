@@ -933,12 +933,12 @@
         },
         {
           "command": "dbuxSessionView.node.annotateTraceQ",
-          "when": "viewItem == dbuxSessionView.tagNode",
+          "when": "viewItem == dbuxSessionView.tagNode && false",
           "group": "inline@1"
         },
         {
           "command": "dbuxSessionView.node.annotateTraceI",
-          "when": "viewItem == dbuxSessionView.tagNode",
+          "when": "viewItem == dbuxSessionView.tagNode && false",
           "group": "inline@2"
         },
         {
