@@ -412,6 +412,7 @@ class Toolbar extends ClientComponentEndpoint {
         else {
           await this.remote.setSearchMode(SearchMode.ByContext);
         }
+        this.toggleSearchMenu();
       },
       focus(evt) { evt.target.blur(); }
     },
@@ -426,6 +427,7 @@ class Toolbar extends ClientComponentEndpoint {
         else {
           await this.remote.setSearchMode(SearchMode.ByTrace);
         }
+        this.toggleSearchMenu();
       },
       focus(evt) { evt.target.blur(); }
     },
@@ -440,6 +442,7 @@ class Toolbar extends ClientComponentEndpoint {
         else {
           await this.remote.setSearchMode(SearchMode.ByValue);
         }
+        this.toggleSearchMenu();
       },
       focus(evt) { evt.target.blur(); }
     },
