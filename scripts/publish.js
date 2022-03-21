@@ -4,6 +4,7 @@
 // Examples (don't use yarn, it won't work!):
 //
 // npm run pub -- n
+// npm run pub -- n patch
 // npm run pub -- n minor
 //
 
