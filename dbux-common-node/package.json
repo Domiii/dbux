@@ -25,5 +25,6 @@
     "shelljs": "0.8.4",
     "terminate": "^2.2.2"
   },
-  "_moduleAliases": {}
+  "_moduleAliases": {},
+  "gitHead": "71330a00c5d45ff1720bc1f8aef3d28ed89b2861"
 }
