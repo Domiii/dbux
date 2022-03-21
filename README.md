@@ -22,6 +22,7 @@ To get a good first impression of Dbux, we recommend this video. It...:
 * → demonstrates all of Dbux's tools with plenty of examples,
 * → is fully timestamped (if you are impatient, we recommend taking a quick glimpse by skipping around a bunch).
 
+[![Video Introduction](https://img.youtube.com/vi/N9W6rhHMKbA/0.jpg)](https://www.youtube.com/watch?v=N9W6rhHMKbA)
 
 
 # Dbux Architecture
