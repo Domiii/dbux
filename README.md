@@ -19,11 +19,6 @@ Dbux is an integrated debugging environment (IDbE) and omniscient debugger for J
 [![Video Introduction](https://img.youtube.com/vi/N9W6rhHMKbA/0.jpg)](https://www.youtube.com/watch?v=N9W6rhHMKbA)
 
 
-# Example Screenshot
-
-![Dbux Screenshot](./docs_site/dbux_img/screens/dbux-all-async1.png)
-
-
 # Dbux Architecture
 
 ![Dbux Architecture](./docs_site/dbux_img/dbux-architecture.png)
