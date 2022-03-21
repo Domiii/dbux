@@ -19,6 +19,5 @@
     "lodash": "^4.17.21",
     "nanoevents": "^2.0.0",
     "serialize-javascript": "^5.0.1"
-  },
-  "gitHead": "71330a00c5d45ff1720bc1f8aef3d28ed89b2861"
+  }
 }

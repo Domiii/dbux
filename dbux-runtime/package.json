@@ -30,6 +30,5 @@
     "socket.io-client": "^4",
     "ws": "^7.4.6"
   },
-  "_moduleAliases": {},
-  "gitHead": "71330a00c5d45ff1720bc1f8aef3d28ed89b2861"
+  "_moduleAliases": {}
 }

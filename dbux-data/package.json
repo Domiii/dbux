@@ -21,6 +21,5 @@
     "strip-ansi": "^7.0.1",
     "uuid": "^8.3.1"
   },
-  "_moduleAliases": {},
-  "gitHead": "71330a00c5d45ff1720bc1f8aef3d28ed89b2861"
+  "_moduleAliases": {}
 }

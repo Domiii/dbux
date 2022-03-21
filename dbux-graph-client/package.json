@@ -34,6 +34,5 @@
   "devDependencies": {
     "@dbux/panzoom": "^0.6.9-dev.3",
     "open-cli": "^6.0.0"
-  },
-  "gitHead": "71330a00c5d45ff1720bc1f8aef3d28ed89b2861"
+  }
 }
