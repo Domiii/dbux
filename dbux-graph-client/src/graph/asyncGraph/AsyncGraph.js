@@ -443,6 +443,12 @@ class AsyncGraph extends GraphBase {
     return document.querySelector(selector);
   }
 
+  reportAsyncNodeElNotExists(asyncNode, functionName) {
+    const functionNameLabel = functionName ? `[${functionName}] ` : '';
+    const err = new Error(`${functionNameLabel}Cannot find DOM of asyncNode: ${JSON.stringify(asyncNode)} when trying to focus`);
+    this.logger.warn(err);
+  }
+
   public = {
     /**
      * @param {{applicationId: number, asyncNodeId: number}} asyncNode 
@@ -454,7 +460,7 @@ class AsyncGraph extends GraphBase {
         this.focusController.slide(asyncNodeEl);
       }
       else if (!ignoreFailed) {
-        this.logger.error(`Cannot find DOM of asyncNode: ${JSON.stringify(asyncNode)} when trying to focus`);
+        this.reportAsyncNodeElNotExists(asyncNode, 'focusAsyncNode');
       }
     },
 
@@ -472,7 +478,7 @@ class AsyncGraph extends GraphBase {
           asyncNodeEl.classList.add('async-cell-selected');
         }
         else if (!ignoreFailed) {
-          this.logger.error(`Cannot find DOM of asyncNode: ${JSON.stringify(asyncNode)} when trying to select`);
+          this.reportAsyncNodeElNotExists(asyncNode, 'selectAsyncNode');
         }
       }
     },
@@ -492,7 +498,7 @@ class AsyncGraph extends GraphBase {
             asyncNodeEl.classList.add('async-cell-stack-highlight');
           }
           else {
-            this.logger.error(`[public.highlightStack] Cannot find DOM of asyncNode: ${JSON.stringify(asyncNodes)}.`);
+            this.reportAsyncNodeElNotExists(asyncNode, 'highlightStack');
           }
         });
       }
@@ -508,7 +514,7 @@ class AsyncGraph extends GraphBase {
             asyncNodeEl.classList.add('async-cell-sync-root-highlight');
           }
           else {
-            this.logger.error(`[public.highlightSyncRoots] Cannot find DOM of asyncNode: ${JSON.stringify(asyncNodes)}.`);
+            this.reportAsyncNodeElNotExists(asyncNode, 'highlightSyncRoots');
           }
         });
       }
@@ -522,8 +528,13 @@ class AsyncGraph extends GraphBase {
       if (values) {
         values.forEach(({ applicationId, asyncNodeId, label, valueTraceId }) => {
           const asyncNodeData = this.allNodeData.get(applicationId, asyncNodeId);
-          asyncNodeData.valueLabel = label;
-          asyncNodeData.valueTraceId = valueTraceId;
+          if (asyncNodeData) {
+            asyncNodeData.valueLabel = label;
+            asyncNodeData.valueTraceId = valueTraceId;
+          }
+          else {
+            this.logger.warn(`[updateRootValueLabel] update before asyncNodeData is set.`);
+          }
         });
       }
       this.renderRootValueLabel();

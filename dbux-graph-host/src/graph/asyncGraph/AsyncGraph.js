@@ -42,7 +42,7 @@ class AsyncGraph extends GraphBase {
     const applications = this.makeApplicationState(allApplications.selection.getAll());
     const { selectedApplicationId, selected } = allApplications.selection.data.threadSelection;
     this.setState({ children, applications, selectedApplicationId, selectedThreadIds: Array.from(selected) });
-    this.postUpdate();
+    // this.viewUpdate();
   }
 
   clear() {
@@ -374,10 +374,18 @@ class AsyncGraph extends GraphBase {
     await this.remote.selectAsyncNode(asyncNode);
   }
 
+  update() {
+    this.registerViewUpdate();
+  }
+
   /**
    * Do view updates that depends on `TraceSelection`.
    */
-  postUpdate = async () => {
+  registerViewUpdate = async () => {
+    if (!this.graphContainer.isEnabled()) {
+      return;
+    }
+
     try {
       const trace = traceSelection.selected;
       await this.waitForRender();
@@ -394,7 +402,7 @@ class AsyncGraph extends GraphBase {
   }
 
   handleTraceSelected = async () => {
-    await this.postUpdate();
+    await this.registerViewUpdate();
   }
 
   // ###########################################################################
@@ -402,9 +410,8 @@ class AsyncGraph extends GraphBase {
   // ###########################################################################
 
   async waitForRender() {
-    const { asyncGraphContainer } = this.context.graphDocument;
-    await asyncGraphContainer.graph.waitForRefresh();
-    await asyncGraphContainer.graph.waitForUpdate();
+    await this.waitForRefresh();
+    await this.waitForUpdate();
   }
 
   isRelevantAsyncNode(asyncNode) {

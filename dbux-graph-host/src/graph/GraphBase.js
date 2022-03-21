@@ -63,6 +63,10 @@ class GraphBase extends HostComponentEndpoint {
     return this.parent.controllers.getComponent('FocusController');
   }
 
+  get graphContainer() {
+    return this.parent;
+  }
+
   /** ###########################################################################
    * helpers
    *  #########################################################################*/
