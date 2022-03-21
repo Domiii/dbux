@@ -2338,6 +2338,9 @@ export default {
     return dp.indexes.asyncNodes.byRoot.getUnique(rootId);
   },
 
+  getRootAsyncNodes(dp) {
+    return dp.indexes.asyncNodes.roots.get(1) || EmptyArray;
+  },
 
   /** @param {DataProvider} dp */
   getAsyncRootThreadId(dp, rootId) {

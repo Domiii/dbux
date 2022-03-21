@@ -54,6 +54,7 @@ import AsyncNodesByThreadIndex from './impl/indexes/AsyncNodesByThreadIndex';
 import AsyncEventUpdatesByTraceIndex from './impl/indexes/AsyncEventUpdatesByTraceIndex';
 import AsyncEventUpdatesByPromiseIndex from './impl/indexes/PostAsyncEventUpdateByPromiseIndex';
 import AsyncEventUpdatesByRootIndex from './impl/indexes/AsyncEventUpdatesByRootIndex';
+import RootAsyncNodesIndex from './impl/indexes/RootAsyncNodesIndex';
 import RuntimeDataStatsReporter from './RuntimeDataStatsReporter';
 // import AsyncEventUpdatesByPreThenPromise from './impl/indexes/AsyncEventUpdatesByPreThenPromise';
 import NestedPromiseFromIndex from './impl/indexes/NestedPromiseFromIndex';
@@ -141,6 +142,7 @@ export function newDataProvider(application) {
   dp.addIndex(new SyncOutAsyncEventsByRootIndex());
   dp.addIndex(new AsyncNodesByRootIndex());
   dp.addIndex(new AsyncNodesByThreadIndex());
+  dp.addIndex(new RootAsyncNodesIndex());
 
   dp.addIndex(new AsyncEventUpdatesByTraceIndex());
   dp.addIndex(new AsyncEventUpdatesByRootIndex());

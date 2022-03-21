@@ -44,16 +44,30 @@ class AsyncGraphNodes {
   }
 
   /**
+   * @param {AsyncNode} asyncNode 
+   * @return {AsyncGraphNode | AsyncGraphHoleNode}
+   */
+  get(asyncNode) {
+    return this.nodesByAsyncNode.get(asyncNode);
+  }
+
+  getAll() {
+    return [...this.all];
+  }
+
+  /**
    * Build `AsyncGraphNode` from an `AsyncNode` and (maybe) flood its neighboring nodes.
    * @param {AsyncNode} asyncNode 
    * @return {AsyncGraphNode | AsyncGraphHoleNode}
    */
   add(asyncNode) {
     let newGraphNode;
+    const { parentAsyncNode, parentEdgeType } = this.getParent(asyncNode);
+    const parentGraphNode = this.nodesByAsyncNode.get(parentAsyncNode);
     if (this.isHole(asyncNode)) {
       // try extend
       const extendedHoleNode = this.tryExtendHole(asyncNode);
-      if (!extendedHoleNode) {
+      if (extendedHoleNode) {
         // neighboring hole exists, extend the old hole
       }
       else {
@@ -63,15 +77,17 @@ class AsyncGraphNodes {
 
         this.floodHole(asyncNodes, frontier, asyncNode);
 
-        newGraphNode = new AsyncGraphHoleNode(asyncNodes, frontier);
+        newGraphNode = new AsyncGraphHoleNode(asyncNodes, frontier, parentGraphNode, parentEdgeType);
         asyncNodes.forEach((node) => this.nodesByAsyncNode.set(node, newGraphNode));
       }
     }
     else {
-      const parentAsyncNode = this.getParent(asyncNode);
-      const parentGraphNode = this.nodesByAsyncNode(parentAsyncNode);
-      newGraphNode = new AsyncGraphNode(asyncNode, parentGraphNode);
+      newGraphNode = new AsyncGraphNode(asyncNode, parentGraphNode, parentEdgeType);
       this.nodesByAsyncNode.set(asyncNode, newGraphNode);
+    }
+
+    if (newGraphNode) {
+      this.all.push(newGraphNode);
     }
 
     return newGraphNode;
@@ -93,9 +109,9 @@ class AsyncGraphNodes {
    */
   tryExtendHole(asyncNode) {
     // 1. try extend from parent
-    const parentAsyncNode = this.getParent(asyncNode);
-    const parentGraphNode = this.nodesByAsyncNode(parentAsyncNode);
-    if (parentGraphNode.isHole) {
+    const { parentAsyncNode } = this.getParent(asyncNode);
+    const parentGraphNode = this.nodesByAsyncNode.get(parentAsyncNode);
+    if (parentGraphNode?.isHole) {
       this.extendHole(parentGraphNode, asyncNode);
       return parentGraphNode;
     }
@@ -192,8 +208,8 @@ class AsyncGraphNodes {
     const { rootContextId } = asyncNode;
 
     const firstEdge = dp.indexes.asyncEvents.to.getFirst(rootContextId);
-    const parentAsyncNode = dp.util.getAsyncNode(firstEdge.fromRootContextId);
-    return parentAsyncNode;
+    const parentAsyncNode = dp.util.getAsyncNode(firstEdge?.fromRootContextId);
+    return { parentAsyncNode, parentEdgeType: firstEdge?.type };
   }
 
   getChildren(asyncNode) {
@@ -206,9 +222,15 @@ class AsyncGraphNodes {
   }
 
   getSiblings(asyncNode) {
-    const parentNode = this.getParent(asyncNode);
-    const siblings = this.getChildren(parentNode);
-    return siblings;
+    const dp = getDp(asyncNode);
+    const { parentAsyncNode } = this.getParent(asyncNode);
+    if (parentAsyncNode) {
+      const siblings = this.getChildren(parentAsyncNode);
+      return siblings;
+    }
+    else {
+      return dp.util.getRootAsyncNodes();
+    }
   }
 }
 
@@ -217,7 +239,7 @@ export default class AsyncGraph extends GraphBase {
     this.state.applications = [];
     // this.state.ascendingMode = false;
     this.state.ascendingMode = true;
-    this.nodes = new AsyncGraphNodes();
+    this.nodes = new AsyncGraphNodes(this);
     this._unsubscribeOnNewData = [];
 
     this.controllers.createComponent('PopperController');
@@ -264,75 +286,20 @@ export default class AsyncGraph extends GraphBase {
     const appData = allApplications.selection.data;
     const asyncNodes = appData.asyncNodesInOrder.getAllActual();
 
+    this.nodes.init();
     for (const asyncNode of asyncNodes) {
       this.nodes.maybeAdd(asyncNode);
     }
 
-    let childrenData = asyncNodes.map((asyncNode) => {
-      const { applicationId, rootContextId } = asyncNode;
-
+    let childrenData = this.nodes.getAll().map((asyncGraphNode) => {
       // if (appData.threadSelection.isActive()) {
       //   if (!this.isRelevantAsyncNode(asyncNode)) {
       //     return null;
       //   }
       // }
 
-      const app = allApplications.getById(applicationId);
-      const dp = app.dataProvider;
-      const executionContext = dp.collections.executionContexts.getById(rootContextId);
-      const displayName = makeContextLabel(executionContext, app);
-      const locLabel = makeContextLocLabel(applicationId, executionContext);
-      const syncInCount = dp.indexes.asyncEvents.syncInByRoot.getSize(rootContextId);
-      const syncOutCount = dp.indexes.asyncEvents.syncOutByRoot.getSize(rootContextId);
-
-      const isProgramRoot = dp.util.isContextProgramContext(rootContextId);
-      const realStaticContextid = dp.util.getRealContextOfContext(rootContextId).staticContextId;
-      const packageName = dp.util.getContextPackageName(rootContextId);
-      const postAsyncEventUpdate = dp.util.getAsyncPostEventUpdateOfRoot(rootContextId);
-      const postAsyncEventUpdateType = postAsyncEventUpdate?.type;
-
-      const parentEdges = (dp.indexes.asyncEvents.to.get(rootContextId) || EmptyArray)
-        .map(edge => {
-          const parentAsyncNode = dp.util.getAsyncNode(edge.fromRootContextId);
-          return {
-            edgeType: edge.edgeType,
-            parentAsyncNodeId: parentAsyncNode.asyncNodeId
-          };
-        });
-      // assuming all incoming edges of a node have same `edgeType`, so we can just take the first one
-      const parentEdge = parentEdges[0];
-      const parentEdgeType = parentEdge?.edgeType;
-      const parentAsyncNodeId = parentEdge?.parentAsyncNodeId;
-      const nestingDepth = dp.util.getNestedDepth(rootContextId);
-
-      const stats = this.getContextStats(executionContext);
-
-      return {
-        asyncNode,
-        executionContext,
-
-        displayName,
-        locLabel,
-        syncInCount,
-        syncOutCount,
-        parentEdges,
-        parentEdgeType,
-        parentAsyncNodeId,
-        nestingDepth,
-
-        isProgramRoot,
-        realStaticContextid,
-        packageName,
-        postAsyncEventUpdateType,
-        stats,
-
-        /**
-         * dummy value, will be resolve later in `resolveErrorData`
-         */
-        hasError: false,
-      };
+      return asyncGraphNode.serialize();
     }).filter(n => !!n);
-
 
     const dataByNodeMap = new AsyncNodeDataMap();
     childrenData.forEach(childData => dataByNodeMap.add(childData));
@@ -589,10 +556,11 @@ export default class AsyncGraph extends GraphBase {
       const trace = traceSelection.selected;
       await this.waitForRender();
       await Promise.all([
-        this.updateStackHighlight(trace),
-        this.updateSyncRootsHighlight(trace),
-        this.updateRootValueLabel(trace),
-        this.updateSelectedAsyncNode(trace),
+        // TODO-M: bring this back
+        // this.updateStackHighlight(trace),
+        // this.updateSyncRootsHighlight(trace),
+        // this.updateRootValueLabel(trace),
+        // this.updateSelectedAsyncNode(trace),
       ]);
     }
     catch (err) {

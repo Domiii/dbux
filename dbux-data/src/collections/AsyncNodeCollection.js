@@ -161,8 +161,13 @@ export default class AsyncNodeCollection extends Collection {
     }
   }
 
+  registerRoots(asyncNodes) {
+    this.dp.indexes.asyncNodes.roots.addEntries(asyncNodes);
+  }
+
   postIndexProcessed(asyncNodes) {
     this.errorWrapMethod('resolveThreadLaneIds', asyncNodes);
+    this.errorWrapMethod('registerRoots', asyncNodes);
   }
 
   serialize(asyncNode) {
