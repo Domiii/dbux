@@ -3,7 +3,14 @@ import Enum from '../../util/Enum';
 // eslint-disable-next-line import/no-mutable-exports
 let SpecialIdentifierType = {
   Module: 1,
+  /**
+   * Linked against {@link SpecialObjectType}.
+   * TODO: Does not seem like we are using this?
+   */
   Arguments: 2,
+  /**
+   * TODO: Does not seem like we are using this?
+   */
   Undefined: 3,
   Eval: 4,
   

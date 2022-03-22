@@ -18,6 +18,8 @@ function makeDataNodeTypeSymbol(dataNode) {
  * This is a TreeViewNode representing a `DataNode`
  */
 export default class DataNodeNode extends BaseTreeViewNode {
+  targetNodeId;
+  
   /**
    * @param {DataNode} 
    */
@@ -75,6 +77,7 @@ export default class DataNodeNode extends BaseTreeViewNode {
   }
 
   handleClick() {
-    traceSelection.selectTrace(this.trace, 'DataNode', this.dataNode.nodeId);
+    const nodeId = this.targetNodeId || this.dataNode.nodeId;
+    traceSelection.selectTrace(this.trace, 'DataNode', nodeId);
   }
 }

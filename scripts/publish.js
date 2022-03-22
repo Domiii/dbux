@@ -1,11 +1,15 @@
 /* eslint no-console: 0 */
 /* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
 
-// Examples:
+// Examples (don't use yarn, it won't work!):
 //
-// yarn pub -- n
-// yarn pub -- n minor
+// npm run pub -- n
+// npm run pub -- n marketplace
+// npm run pub -- n marketplace patch
+// npm run pub -- n marketplace minor
 //
+
+const DefaultVersionBump = 'prerelease';
 
 let chooseAlwaysNo = false;
 let forceMarketplace = undefined;
@@ -235,7 +239,7 @@ async function main() {
   if (process.argv[2] === 'n' || process.argv[2] === 'pre') {
     // always no && pre-release
     chooseAlwaysNo = true;
-    chooseVersionBump = process.argv[3] || 'prerelease';
+    chooseVersionBump = process.argv[3] || DefaultVersionBump;
     console.warn(`Non-interactive mode enabled: chooseAlwaysNo, chooseVersionBump='${chooseVersionBump}'`);
   }
   else if (process.argv[2] === 'marketplace') {

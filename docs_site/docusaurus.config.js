@@ -94,16 +94,22 @@ const config = {
           src: 'dbux_icon.png',
         },
         items: [
-          // {
-          //   type: 'doc',
-          //   docId: 'intro',
-          //   position: 'left',
-          //   label: 'Tutorial',
-          // },
-          // { 
-          //   to: '/blog', label: 'Blog', position: 'left'
-          // },
           {
+            // VS Marketplace
+            href: 'https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code',
+            label: ' ',
+            position: 'right',
+            className: 'nav-icon btn-dbux-marketplace'
+          },
+          {
+            // Discord
+            href: 'https://discord.gg/QKgq9ZE',
+            label: ' ',
+            position: 'right',
+            className: 'nav-icon btn-dbux-discord'
+          },
+          {
+            // GitHub
             href: 'https://github.com/domiii/dbux',
             label: 'GitHub',
             position: 'right'

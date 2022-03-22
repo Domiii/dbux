@@ -4,7 +4,9 @@
  */
 
 import { peekBCEMatchCallee } from '../data/dataUtil';
-import { getOriginalCallback, isMonkeyPatchedCallback, monkeyPatchMethod } from '../util/monkeyPatchUtil';
+import { monkeyPatchMethod } from '../util/monkeyPatchUtil';
+
+/** @typedef { import("./RuntimeMonitor").default } RuntimeMonitor */
 
 /** @typedef {import('../RuntimeMonitor').default} RuntimeMonitor */
 

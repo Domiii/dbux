@@ -30,6 +30,8 @@ export default class DataNodeCollection extends Collection {
 
     if (dataNode.refId) {
       const firstRef = this.dp.indexes.dataNodes.byRefId.getFirst(dataNode.refId);
+      // const firstNodeId = this.dp.util.getAnyFirstNodeIdByRefId(dataNode.refId);
+      // return Math.min(firstNodeId, firstRef.nodeId);
       return firstRef.nodeId;
     }
     else {

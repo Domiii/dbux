@@ -152,25 +152,6 @@ export function getTraceCreatedAt(trace) {
 // ########################################
 
 /**
- * Make label that representing a root trace, used in `CallGraphView`.
- * @param {Trace} trace 
- * @return {string}
- */
-export function makeRootTraceLabel(trace) {
-  const { traceId, applicationId } = trace;
-  const dp = _allApplications.getById(applicationId).dataProvider;
-  const traceType = dp.util.getTraceType(traceId);
-  let label;
-  if (isCallbackRelatedTrace(traceType)) {
-    label = makeTraceValueLabel(trace);
-  }
-  else {
-    label = makeTraceLabel(trace);
-  }
-  return label;
-}
-
-/**
  * Make label that shows the value of trace, use `makeCallValueLabel` when it's a call-related trace.
  * @param {Trace} trace 
  */

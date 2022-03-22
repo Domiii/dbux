@@ -12,7 +12,7 @@
     "omniscient debugger",
     "runtime analysis"
   ],
-  "version": "0.6.9-dev.0",
+  "version": "0.6.14-dev.0",
   "publisher": "Domi",
   "description": "Integrated Debugging Environment with an Omniscient Debugger for JS.",
   "repository": {
@@ -254,14 +254,6 @@
         "title": "Click"
       },
       {
-        "command": "dbuxCallGraphView.showContext",
-        "title": "Show contexts",
-        "icon": {
-          "light": "resources/light/document.svg",
-          "dark": "resources/dark/document.svg"
-        }
-      },
-      {
         "command": "dbuxGlobalAnalysisView.showError",
         "title": "Go to Error",
         "icon": {
@@ -299,22 +291,6 @@
         "icon": {
           "light": "resources/light/warning.svg",
           "dark": "resources/dark/warning.svg"
-        }
-      },
-      {
-        "command": "dbuxCallGraphView.setFilter",
-        "title": "Filter",
-        "icon": {
-          "light": "resources/light/boolean.svg",
-          "dark": "resources/dark/boolean.svg"
-        }
-      },
-      {
-        "command": "dbuxCallGraphView.clearFilter",
-        "title": "Clear Filter",
-        "icon": {
-          "light": "resources/light/clear.svg",
-          "dark": "resources/dark/clear.svg"
         }
       },
       {
@@ -933,12 +909,12 @@
         },
         {
           "command": "dbuxSessionView.node.annotateTraceQ",
-          "when": "viewItem == dbuxSessionView.tagNode",
+          "when": "viewItem == dbuxSessionView.tagNode && false",
           "group": "inline@1"
         },
         {
           "command": "dbuxSessionView.node.annotateTraceI",
-          "when": "viewItem == dbuxSessionView.tagNode",
+          "when": "viewItem == dbuxSessionView.tagNode && false",
           "group": "inline@2"
         },
         {
@@ -948,21 +924,6 @@
         }
       ],
       "view/title": [
-        {
-          "command": "dbuxCallGraphView.setFilter",
-          "when": "view == dbuxCallGraphView && !dbuxCallGraphView.context.filtering",
-          "group": "navigation"
-        },
-        {
-          "command": "dbuxCallGraphView.clearFilter",
-          "when": "view == dbuxCallGraphView && dbuxCallGraphView.context.filtering",
-          "group": "navigation"
-        },
-        {
-          "command": "dbuxCallGraphView.showContext",
-          "when": "view == dbuxCallGraphView && dbuxCallGraphView.context.mode != context && dbux.context.hasError",
-          "group": "navigation"
-        },
         {
           "command": "dbuxGlobalAnalysisView.showError",
           "when": "view == dbuxGlobalAnalysisView && dbux.context.hasError",
@@ -1287,10 +1248,6 @@
           "when": "false"
         },
         {
-          "command": "dbuxCallGraphView.showContext",
-          "when": "false"
-        },
-        {
           "command": "dbuxGlobalAnalysisView.showError",
           "when": "false"
         },
@@ -1300,14 +1257,6 @@
         },
         {
           "command": "dbuxTraceDetailsView.node.editedWarning",
-          "when": "false"
-        },
-        {
-          "command": "dbuxCallGraphView.setFilter",
-          "when": "false"
-        },
-        {
-          "command": "dbuxCallGraphView.clearFilter",
           "when": "false"
         },
         {
@@ -1534,15 +1483,15 @@
     "publish-only": "echo 'Publishing...' && vsce publish --yarn  --baseImagesUrl https://github.com/Domiii/dbux/dbux-code --baseContentUrl https://github.com/Domiii/dbux/dbux-code"
   },
   "devDependencies": {
-    "@dbux/babel-plugin": "^0.6.9-dev.0",
-    "@dbux/cli": "^0.6.9-dev.0",
-    "@dbux/common": "^0.6.9-dev.0",
-    "@dbux/common-node": "^0.6.9-dev.0",
-    "@dbux/data": "^0.6.9-dev.0",
-    "@dbux/graph-common": "^0.6.9-dev.0",
-    "@dbux/graph-host": "^0.6.9-dev.0",
-    "@dbux/projects": "^0.6.9-dev.0",
-    "@dbux/runtime": "^0.6.9-dev.0",
+    "@dbux/babel-plugin": "^0.6.14-dev.0",
+    "@dbux/cli": "^0.6.14-dev.0",
+    "@dbux/common": "^0.6.14-dev.0",
+    "@dbux/common-node": "^0.6.14-dev.0",
+    "@dbux/data": "^0.6.14-dev.0",
+    "@dbux/graph-common": "^0.6.14-dev.0",
+    "@dbux/graph-host": "^0.6.14-dev.0",
+    "@dbux/projects": "^0.6.14-dev.0",
+    "@dbux/runtime": "^0.6.14-dev.0",
     "@types/glob": "^7.1.1",
     "@types/node": "^16",
     "@types/vscode": "^1.41.0",

@@ -1,9 +1,10 @@
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import traceCollection from '../data/traceCollection';
 import dataNodeCollection from '../data/dataNodeCollection';
-import { peekBCEMatchCallee } from '../data/dataUtil';
+import { getOrCreateRealArgumentDataNodeIds, peekBCEMatchCallee } from '../data/dataUtil';
 import valueCollection from '../data/valueCollection';
 import { monkeyPatchFunctionOverride, monkeyPatchHolderOverrideDefault, monkeyPatchMethod, monkeyPatchMethodOverrideDefault } from '../util/monkeyPatchUtil';
+import SpecialDynamicTraceType from '@dbux/common/src/types/constants/SpecialDynamicTraceType';
 
 
 // ###########################################################################
@@ -37,7 +38,13 @@ export default function patchArray() {
         return originalFunction.apply(arr, args);
       }
 
-      const { traceId: callId, data: { argTids } } = bceTrace;
+      const {
+        traceId: callId,
+        // data: { argTids }
+      } = bceTrace;
+
+      const inputNodeIds = getOrCreateRealArgumentDataNodeIds(bceTrace, args);
+
       const arrNodeId = getNodeIdFromRef(ref);
 
       for (let i = 0; i < args.length; ++i) {
@@ -46,8 +53,7 @@ export default function patchArray() {
           prop: arr.length + i
         };
         // console.debug(`[Array.push] #${traceId} ref ${ref.refId}, node ${nodeId}, arrNodeId ${arrNodeId}`);
-        const argTid = argTids[i];
-        const inputs = [traceCollection.getOwnDataNodeIdByTraceId(argTid)];
+        const inputs = [inputNodeIds[i]];
         dataNodeCollection.createDataNode(args[i], callId, DataNodeType.Write, varAccess, inputs);
       }
 
@@ -114,11 +120,11 @@ export default function patchArray() {
   // ###########################################################################
 
   monkeyPatchMethod(Array, 'slice',
-    (thisArg, args, originalFunction, patchedFunction) => {
+    (arr, args, originalFunction, patchedFunction) => {
       let [start, end] = args;
-      const ref = valueCollection.getRefByValue(thisArg);
+      const ref = valueCollection.getRefByValue(arr);
       const bceTrace = ref && peekBCEMatchCallee(patchedFunction);
-      const newArray = originalFunction.apply(thisArg, args);
+      const newArray = originalFunction.apply(arr, args);
       if (!bceTrace) {
         return newArray;
       }
@@ -130,8 +136,8 @@ export default function patchArray() {
       // DataNodeType.Create
       const newArrayNode = dataNodeCollection.createBCEOwnDataNode(newArray, callId, DataNodeType.Write);
 
-      start = !Number.isNaN(start) ? wrapIndex(start, thisArg) : 0;
-      end = !Number.isNaN(end) ? wrapIndex(end, thisArg) : thisArg.length - 1;
+      start = !Number.isNaN(start) ? wrapIndex(start, arr) : 0;
+      end = !Number.isNaN(end) ? wrapIndex(end, arr) : arr.length - 1;
 
       // record all DataNodes of copy operation
       for (let i = start; i < end; ++i) {
@@ -139,7 +145,8 @@ export default function patchArray() {
           objectNodeId: arrNodeId,
           prop: i
         };
-        const readNode = dataNodeCollection.createDataNode(thisArg[i], callId, DataNodeType.Read, varAccessRead);
+
+        const readNode = dataNodeCollection.createDataNode(arr[i], callId, DataNodeType.Read, varAccessRead);
 
         const varAccessWrite = {
           objectNodeId: newArrayNode.nodeId,
@@ -150,6 +157,62 @@ export default function patchArray() {
       return newArray;
     }
   );
+
+  /** ###########################################################################
+   * built-in HOFs
+   * ##########################################################################*/
+
+  /**
+   * These HOFs are called with a callback function, which will be called
+   * once per array entry.
+   */
+  [
+    "forEach",
+    "filter",
+    "map",
+    "every",
+    "some"
+  ].forEach((m) => {
+    monkeyPatchMethod(Array, m,
+      (arr, args, originalFunction, patchedFunction) => {
+        // let [cb] = args;
+        const ref = valueCollection.getRefByValue(arr);
+        const bceTrace = ref && peekBCEMatchCallee(patchedFunction);
+        if (bceTrace) {
+          const { traceId: callId } = bceTrace;
+
+          // [edit-after-send]
+          bceTrace.data = bceTrace.data || {};
+          bceTrace.data.specialDynamicType = SpecialDynamicTraceType.ArrayHofCall;
+
+          const arrNodeId = getNodeIdFromRef(ref);
+
+          // record all DataNodes of copy operation
+          for (let i = 0; i < arr.length; ++i) {
+            const varAccessRead = {
+              objectNodeId: arrNodeId,
+              prop: i
+            };
+
+            // add new DataNodes to BCE
+            /* const readNode = */
+            dataNodeCollection.createDataNode(arr[i], callId, DataNodeType.Read, varAccessRead);
+          }
+        }
+        const result = originalFunction.apply(arr, args);
+        return result;
+      }
+    );
+  });
+
+  [
+    "reduce",
+    "reduceRight"
+  ].forEach((m) => {
+    // TODO
+    monkeyPatchMethodOverrideDefault(Array, m);
+  });
+
 
   /** ###########################################################################
    * other (make non-patchable for now)
@@ -176,20 +239,13 @@ export default function patchArray() {
     "keys",
     "entries",
     "values",
-    "forEach",
-    "filter",
     "flat",
     "flatMap",
-    "map",
-    "every",
-    "some",
-    "reduce",
-    "reduceRight",
     "toLocaleString",
     "toString"
-  ].forEach(key => monkeyPatchMethodOverrideDefault(Array, key));
+  ].forEach(m => monkeyPatchMethodOverrideDefault(Array, m));
 }
 
 [
   'isArray',
-].forEach(key => monkeyPatchHolderOverrideDefault(Array, key));
+].forEach(m => monkeyPatchHolderOverrideDefault(Array, m));

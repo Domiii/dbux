@@ -93,9 +93,7 @@ export default class ContextFilterManager extends HostComponentEndpoint {
     const saved = this.externals.getContextFilter() || EmptyObject;
     for (const key of PredicateKeys) {
       this.history[key] = new History(saved[key]);
-      if (this.history[key].top()) {
-        this._rawPredicate[key] = this.history[key].top() ?? DefaultPredicateCfg[key];
-      }
+      this._rawPredicate[key] = this.history[key].top() ?? DefaultPredicateCfg[key];
     }
     this.makeIncludePredicate();
     this.state.filterActived = this.makeState();

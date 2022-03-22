@@ -197,7 +197,7 @@ class Toolbar extends ClientComponentEndpoint {
       active: !hideAfter
     });
     decorateClasses(this.els.graphModeBtn, {
-      active: graphMode !== GraphType.None
+      active: graphMode !== GraphType.None && stackMode !== StackMode.FullScreen
     });
     decorateClasses(this.els.asyncStackBtn, {
       active: stackMode !== StackMode.Hidden
@@ -412,6 +412,7 @@ class Toolbar extends ClientComponentEndpoint {
         else {
           await this.remote.setSearchMode(SearchMode.ByContext);
         }
+        this.toggleSearchMenu();
       },
       focus(evt) { evt.target.blur(); }
     },
@@ -426,6 +427,7 @@ class Toolbar extends ClientComponentEndpoint {
         else {
           await this.remote.setSearchMode(SearchMode.ByTrace);
         }
+        this.toggleSearchMenu();
       },
       focus(evt) { evt.target.blur(); }
     },
@@ -440,6 +442,7 @@ class Toolbar extends ClientComponentEndpoint {
         else {
           await this.remote.setSearchMode(SearchMode.ByValue);
         }
+        this.toggleSearchMenu();
       },
       focus(evt) { evt.target.blur(); }
     },

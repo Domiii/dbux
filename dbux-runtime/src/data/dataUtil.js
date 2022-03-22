@@ -4,6 +4,8 @@ import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import SpecialCallType from '@dbux/common/src/types/constants/SpecialCallType';
 import Trace from '@dbux/common/src/types/Trace';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import isFunction from 'lodash/isFunction';
 import dataNodeCollection from './dataNodeCollection';
 import executionContextCollection from './executionContextCollection';
@@ -42,8 +44,9 @@ export function getFunctionRefByContext(context) {
  */
 export function getBCECalleeFunctionRef(bceTrace) {
   // lookup callee
-  const { calleeTid } = bceTrace?.data || EmptyObject;
-  const calleeTrace = calleeTid && traceCollection.getById(calleeTid);
+  // const { calleeTid } = bceTrace?.data || EmptyObject;
+  // const calleeTrace = calleeTid && traceCollection.getById(calleeTid);
+  const calleeTrace = getRealCalleeTrace(bceTrace.traceId);
   const calleeNode = calleeTrace && dataNodeCollection.getById(calleeTrace.nodeId);
 
   // lookup function data
@@ -100,6 +103,47 @@ export function peekBCEMatchCallee(func) {
   // TODO: `functionRef` is referring to the original (because the original was traced)
   //    -> but `calleeRef` refers to the patched function instead
   return calleeRef && calleeRef === functionRef && bceTrace || null;
+}
+
+/**
+ * @param {Trace} bceTrace
+ * @param {[]} args
+ */
+export function getOrCreateRealArgumentDataNodeIds(bceTrace, args) {
+  let {
+    traceId: callId,
+    data: { argTids }
+  } = bceTrace;
+
+  const callType = getSpecialCallType(callId);
+  switch (callType) {
+    case SpecialCallType.Call:
+      argTids = argTids.slice(1);
+      break;
+    case SpecialCallType.Apply: {
+      const argArrTraceId = argTids[1];
+      const argArrNodeId = traceCollection.getOwnDataNodeIdByTraceId(argArrTraceId);
+
+      // create new DataNodes: one per arg
+      return args.map((arg, i) => {
+        const varAccess = {
+          objectNodeId: argArrNodeId,
+          prop: i
+        };
+        const node = dataNodeCollection.createDataNode(
+          arg, callId, DataNodeType.Read, varAccess
+        );
+        return node.nodeId;
+      });
+    }
+    case SpecialCallType.Bind:
+      // TODO: handle bind
+      argTids = EmptyArray;
+      break;
+    default:
+      break;
+  }
+  return argTids.map(tid => traceCollection.getOwnDataNodeIdByTraceId(tid));
 }
 
 
@@ -191,8 +235,9 @@ export function getFirstOwnTraceOfRef(ref) {
 /**
  * NOTE: returns `null` if its first trace is not its own
  *    (e.g. if value was first recorded as a child value on another object)
+ * @return {Trace}
  */
-export function getFirstOwnTraceOfTraceValue(traceId) {
+export function getFirstOwnTraceOfTrace(traceId) {
   const refId = getTraceRefId(traceId);
   const ref = valueCollection.getById(refId);
   if (!ref) { return null; }
@@ -262,7 +307,7 @@ export function getFunctionDefinitionTraceOfTrace(trace) {
       }
     }
 
-    const originalTrace = trace && getFirstOwnTraceOfTraceValue(trace.traceId);
+    const originalTrace = trace && getFirstOwnTraceOfTrace(trace.traceId);
     if (originalTrace === trace) {
       break;
     }
@@ -360,6 +405,67 @@ export function getSpecialCallType(callId) {
       return bceTrace.data.specialCallType;
   }
 
+  return null;
+}
+
+
+/**
+ * Accounts for `call`, `apply`, `bind`.
+ * @param {DataProvider} dp
+ */
+export function getRealCalleeTrace(callId) {
+  const bceTrace = traceCollection.getById(callId);
+  if (!bceTrace?.data) {
+    return null;
+  }
+
+  let realCalleeTid;
+  const callType = getSpecialCallType(callId);
+  switch (callType) {
+    case SpecialCallType.Call:
+    case SpecialCallType.Apply:
+      realCalleeTid = bceTrace.data.calledFunctionTid;
+      break;
+    case SpecialCallType.Bind:
+    default: {
+      // nothing to do here -> handle `Bound` case below
+      break;
+    }
+  }
+
+  // no match -> check for Bound
+  const { calleeTid } = bceTrace.data;
+  const bindTrace = getBindCallTrace(calleeTid);
+  if (bindTrace?.data) {
+    realCalleeTid = bindTrace.data.calledFunctionTid;
+  }
+
+  if (!realCalleeTid) {
+    // default
+    realCalleeTid = bceTrace.data.calleeTid;
+  }
+  else {
+    // TODO: keep recursing in order to support arbitrary `bind` chains, e.g.: `f.bind.bind()`
+  }
+
+  return traceCollection.getById(realCalleeTid);
+}
+
+export function getBindCallTrace(functionTraceId) {
+  if (!functionTraceId) {
+    // callee was not recorded
+    return null;
+  }
+  // const trace = dp.util.getTrace(functionTraceId);
+  // if (!trace) {
+  //   dp.logger.warn(`invalid functionTraceId does not have a trace:`, functionTraceId/* , dp.collections.traces._all */);
+  //   return null;
+  // }
+  const originalTrace = getFirstOwnTraceOfTrace(functionTraceId);
+  const bindTrace = originalTrace && getBCETraceOfTrace(originalTrace.traceId);
+  if (bindTrace?.data?.specialCallType === SpecialCallType.Bind) {
+    return bindTrace;
+  }
   return null;
 }
 

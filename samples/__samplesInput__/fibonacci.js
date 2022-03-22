@@ -1,4 +1,3 @@
-
 function fibonacci(n) {
   if (n < 1) {
     return 0;
@@ -10,4 +9,3 @@ function fibonacci(n) {
 }
 
 console.log(fibonacci(6));
-

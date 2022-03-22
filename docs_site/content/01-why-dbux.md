@@ -20,10 +20,21 @@ The screenshot above demonstrates several of Dbux's features, including:
 * Middle: [code decorations](./runtime-analysis/04-code-decorations.mdx) and [trace selection](./runtime-analysis/05-select-trace.mdx).
 * Right: [asynchronous call graph](./runtime-analysis/20-asynchronous-call-graph.mdx).
 
-Furthermore, [this (slightly outdated) video](https://www.youtube.com/watch?v=m1ANEuZJFT8) [20 min] <span className="color-gray"></span> explains how Dbux came to be and shows two basic examples of how to use a subset of its features.
 <!-- <a href="https://www.youtube.com/watch?v=m1ANEuZJFT8" target="_blank" alt="video">
    <img width="150px" src="https://img.youtube.com/vi/m1ANEuZJFT8/0.jpg" />
 </a> -->
+
+
+## Video Introduction
+
+To get a good first impression of Dbux, we recommend this video. It...:
+
+* → explains why we need better Debuggers,
+* → demonstrates all of Dbux's tools with plenty of examples,
+* → is fully timestamped (if you are impatient, we recommend taking a quick glimpse by skipping around a bunch).
+
+[![Video Introduction](https://img.youtube.com/vi/N9W6rhHMKbA/0.jpg)](https://www.youtube.com/watch?v=N9W6rhHMKbA)
+
 
 
 ## Why Dbux?
@@ -59,6 +70,9 @@ Once an application has executed with [Dbux enabled](./runtime-analysis/02-enabl
 * Executed files, functions and values [can be searched](./runtime-analysis/40-search.mdx) for/through (culls a lot of noise when compared to code-based search).
 * [Data flow analysis](./runtime-analysis/50-data-flow.mdx) allows us to quickly trace the reads, writes and creation of a selected value. This can also take us to the place of creation of a value in a single click.
 
+## Call to Action
+
+If you are so inclined, please check out Dbux, and feel free to bombard me with any questions, complaints, any kind of feedback. I would greatly appreciate it!
 
 ## Word of Caution: ALPHA Phase!
 

@@ -77,7 +77,7 @@ export default class FocusController extends ClientComponentEndpoint {
     }
 
     if (!node.el) {
-      this.logger.error(`Trying to focus on node without DOM element: ${JSON.stringify(node)}`);
+      this.logger.error(`Trying to focus on node without DOM element: ${node.debugTag}`);
       return;
     }
 

@@ -301,3 +301,48 @@ pre {
 
   content: "🔍";
 }
+
+/** ###########################################################################
+ * navbar
+ * ############################################################################*/
+
+.navbar {
+  height: 40px;
+  padding-top: 0;
+  padding-bottom: 4px;
+}
+
+.navbar__brand {
+  /* margin-top: -6px; */
+}
+
+.nav-icon svg {
+  /* get rid of the default*/
+  display: none;
+}
+.nav-icon span::before,
+.nav-icon span::after {
+  /* hackfix: vertical alignment is messed up (probably because it does not care about image height) */
+  vertical-align: sub;
+}
+
+.btn-dbux-marketplace span::before {
+  content: "";
+  display: inline-block;
+  height: 1rem;
+  width: 1rem;
+  background-image: url(/img/vscode-icon.png);
+  background-size: 1rem 1rem;
+}
+.btn-dbux-marketplace span::after {
+  display: inline-block;
+  /**
+   * @see https://vsmarketplacebadge.apphb.com
+   */
+  content: url(https://vsmarketplacebadge.apphb.com/version-short/Domi.dbux-code.svg);
+}
+
+.btn-dbux-discord span::after {
+  display: inline-block;
+  content: url(https://img.shields.io/discord/743765518116454432.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2);
+}

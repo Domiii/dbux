@@ -16,7 +16,7 @@ import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('SyncGraphBase');
 
-const Verbose = 1;
+const Verbose = 0;
 // const Verbose = 1;
 
 /**
