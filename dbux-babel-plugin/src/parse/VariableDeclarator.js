@@ -1,5 +1,6 @@
 // import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
+import { pathToStringAnnotated } from '../helpers/pathHelpers';
 import BaseNode from './BaseNode';
 import BindingIdentifier from './BindingIdentifier';
 import { getVariableDeclaratorLValPlugin } from './helpers/lvalUtil';
@@ -46,7 +47,17 @@ export default class VariableDeclarator extends BaseNode {
     // NOTE: This adds the hoisted declaration trace, while `plugins.lval` adds the write trace (after calling `decorateWriteTraceData`).
     if (this.hasSeparateDeclarationTrace) {
       // add declaration trace
-      this.getOwnDeclarationNode().addOwnDeclarationTrace();
+      const decl = this.getOwnDeclarationNode();
+      const declsDecl = decl.getOwnDeclarationNode();
+      this.stack.Verbose && this.debug('[NEW DECL]', !!declsDecl, pathToStringAnnotated(decl.path, true));
+
+      if (declsDecl) {
+        decl.addOwnDeclarationTrace();
+      }
+      else {
+        // TODO: declsDecl cannot be looked up because getNodeOfPath cannot look things up because decl.data is `null`
+        //  → only seems to happen in weird edge case scenarios, where the var already has a declaration trace to make use of...?
+      }
     }
   }
 
