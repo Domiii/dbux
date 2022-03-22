@@ -254,14 +254,6 @@
         "title": "Click"
       },
       {
-        "command": "dbuxCallGraphView.showContext",
-        "title": "Show contexts",
-        "icon": {
-          "light": "resources/light/document.svg",
-          "dark": "resources/dark/document.svg"
-        }
-      },
-      {
         "command": "dbuxGlobalAnalysisView.showError",
         "title": "Go to Error",
         "icon": {
@@ -299,22 +291,6 @@
         "icon": {
           "light": "resources/light/warning.svg",
           "dark": "resources/dark/warning.svg"
-        }
-      },
-      {
-        "command": "dbuxCallGraphView.setFilter",
-        "title": "Filter",
-        "icon": {
-          "light": "resources/light/boolean.svg",
-          "dark": "resources/dark/boolean.svg"
-        }
-      },
-      {
-        "command": "dbuxCallGraphView.clearFilter",
-        "title": "Clear Filter",
-        "icon": {
-          "light": "resources/light/clear.svg",
-          "dark": "resources/dark/clear.svg"
         }
       },
       {
@@ -949,21 +925,6 @@
       ],
       "view/title": [
         {
-          "command": "dbuxCallGraphView.setFilter",
-          "when": "view == dbuxCallGraphView && !dbuxCallGraphView.context.filtering",
-          "group": "navigation"
-        },
-        {
-          "command": "dbuxCallGraphView.clearFilter",
-          "when": "view == dbuxCallGraphView && dbuxCallGraphView.context.filtering",
-          "group": "navigation"
-        },
-        {
-          "command": "dbuxCallGraphView.showContext",
-          "when": "view == dbuxCallGraphView && dbuxCallGraphView.context.mode != context && dbux.context.hasError",
-          "group": "navigation"
-        },
-        {
           "command": "dbuxGlobalAnalysisView.showError",
           "when": "view == dbuxGlobalAnalysisView && dbux.context.hasError",
           "group": "navigation"
@@ -1287,10 +1248,6 @@
           "when": "false"
         },
         {
-          "command": "dbuxCallGraphView.showContext",
-          "when": "false"
-        },
-        {
           "command": "dbuxGlobalAnalysisView.showError",
           "when": "false"
         },
@@ -1300,14 +1257,6 @@
         },
         {
           "command": "dbuxTraceDetailsView.node.editedWarning",
-          "when": "false"
-        },
-        {
-          "command": "dbuxCallGraphView.setFilter",
-          "when": "false"
-        },
-        {
-          "command": "dbuxCallGraphView.clearFilter",
           "when": "false"
         },
         {
