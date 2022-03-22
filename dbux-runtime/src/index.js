@@ -29,6 +29,7 @@ const dbuxInstance = {
 
   initProgram(staticProgramData, runtimeCfg) {
     this.runtimeCfg = runtimeCfg;
+    registerGlobal(runtimeCfg);
     return this._r.addProgram(staticProgramData, runtimeCfg);
   },
 
@@ -52,13 +53,31 @@ function registerDbuxInstance() {
   // → register for local consumption
   _setDbuxInstance(dbuxInstance);
 
+  const id = __global__.__dbux__id__ || 0;
+  dbuxInstance.id = id;
+
+  // eslint-disable-next-line camelcase
+  __global__.__dbux__id__ += 1;
+
+  // eslint-disable-next-line camelcase
+  __global__.__dbux__all__ = __global__.__dbux__all__ || [];
+  __global__.__dbux__all__[id] = {
+    file: __filename
+  };
+}
+
+function registerGlobal(runtimeCfg) {
+  const globalName = runtimeCfg?.global || '__dbux__';
   // → register global instance
-  if (__global__.__dbux__) {
-    // eslint-disable-next-line no-console
-    console.warn(`@dbux/runtime registered more than once - this could be a bundling deoptimization, or a serious conflict.`);
+
+  if (!__global__[globalName]) {
+    /* eslint-disable no-var */
+    __global__[globalName] = dbuxInstance;
   }
-  /* eslint-disable no-var */
-  __global__.__dbux__ = dbuxInstance;
+  else if (__global__[globalName] !== dbuxInstance) {
+    // eslint-disable-next-line max-len
+    console.warn(`[@dbux/runtime] global "${globalName}" registered more than once - This is a bad edge cases where @dbux/runtime gets loaded more than once, but with the same global. This is usually due to bad bundling or multiple copies of @dbux/runtime getting loaded from different places.`);
+  }
 }
 
 /** ###########################################################################

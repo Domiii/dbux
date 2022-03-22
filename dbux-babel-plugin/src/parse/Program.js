@@ -16,10 +16,11 @@ let lastProgramIndex = 0;
 // Builders
 // ###########################################################################
 
-function buildProgramInit(path, { ids, contexts: { genContextId } }) {
+function buildProgramInit(path, state) {
+  const { ids, contexts: { genContextId } } = state;
   const {
+    runtimeCfg,
     dbuxInit,
-    // dbuxRuntime,
     dbux,
     aliases
   } = ids;
@@ -36,9 +37,11 @@ function buildProgramInit(path, { ids, contexts: { genContextId } }) {
     throw new Error(`Non-unique alias detected: ${Object.values(aliases).join(',')}`);
   }
 
+  const globalName = runtimeCfg?.global || '__dbux__';
+
   return buildSource([
-    // call `dbuxInit`
-    `var ${dbux.name} = ${dbuxInit.name}(typeof __dbux__ !== 'undefined' && __dbux__ || require('@dbux/runtime'));`,
+    // call `dbuxRuntime.initProgram(dbuxInstance)`
+    `var ${dbux.name} = ${dbuxInit.name}(typeof ${globalName} !== 'undefined' && ${globalName} || require('@dbux/runtime'));`,
     `var ${contextId.name} = ${dbux.name}.getProgramContextId();`,
     `var ${aliasesEntries
       .map(([dbuxProp, varName]) => `${varName.name} = ${dbux.name}.${dbuxProp}`)

@@ -235,3 +235,26 @@ See https://github.com/Domiii/dbux/issues/661.
 
 <!-- TODO: more to be said here in the future (e.g., consider https://gist.github.com/PurpleBooth/b24679402957c63ec426) -->
 
+## How to use Dbux on Dbux?
+
+TODO: we have not fully added support for this yet.
+
+<!-- 
+### How to "dbux" dbux-runtime?
+
+#### Build it
+
+→ We need a new version of `@dbux/runtime` that is built with and records things with `@dbux/runtime`. We call it the "incep" (short for "inception") version.
+
+1. Set `@dbux/babel-plugin`'s cfg's `runtime.global` to `__dbux_incep__`
+2. Add two new configs to `@dbux/runtime`'s `webpack` and add `@dbux/babel-plugin` to them: `index-${target}-incep`
+
+#### Run it
+
+1. Fix build/register pipelines:
+   * `@dbux/cli` needs to allow customizing the `@dbux/runtime` being used.
+   * webpack and other bundlers need to easily be able to load the `incep`, rather than the standard version.
+2. Run it!
+   * You should now see two different applications pop up in your Dbux frontend (e.g. `dbux-code`).
+
+ -->
