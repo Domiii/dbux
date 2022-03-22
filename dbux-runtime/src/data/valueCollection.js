@@ -10,6 +10,7 @@ import DataNode from '@dbux/common/src/types/DataNode';
 import { getOriginalFunction, getPatchedFunctionOrSelf } from '../util/monkeyPatchUtil';
 import Collection from './Collection';
 import pools from './pools';
+import getDbuxInstance from '../getDbuxInstance';
 
 
 /** @typedef {import('@dbux/common/src/types/ValueRef').default} ValueRef */
@@ -438,7 +439,7 @@ class ValueCollection extends Collection {
   _startAccess(/* obj */) {
     // NOTE: don't error out. We have nested access when traces disabled to get instanceof for wrapValue before the trace disabled check.
     // // eslint-disable-next-line no-undef
-    // if (__dbux__._r.disabled) {
+    // if (getDbuxInstance()._r.disabled) {
     //   this.logger.error(`Tried to start accessing object while already accessing another object - ${new Error().stack}`);
     //   return;
     // }
@@ -446,12 +447,12 @@ class ValueCollection extends Collection {
     // NOTE: disable tracing while reading the property
 
     // eslint-disable-next-line no-undef
-    __dbux__._r.incBusy();
+    getDbuxInstance()._r.incBusy();
   }
 
   _endAccess() {
     // eslint-disable-next-line no-undef
-    __dbux__._r.decBusy();
+    getDbuxInstance()._r.decBusy();
   }
 
   _onAccessError(obj, errorsByType) {

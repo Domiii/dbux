@@ -4,6 +4,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import RuntimeMonitor from './RuntimeMonitor';
 import { initClient } from './client/index';
 import { getPromiseId } from './async/promisePatcher';
+import { _setDbuxInstance } from './getDbuxInstance';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -16,10 +17,10 @@ const { log, debug, warn, error: logError, trace: logTrace } = newLogger('[@dbux
 let client;
 
 /** ###########################################################################
- * The global __dbux__ object.
+ * The (global) dbux instance.
  * ##########################################################################*/
 
-const dbux = {
+const dbuxInstance = {
   _r: RuntimeMonitor.instance,
 
   get r() {
@@ -47,14 +48,17 @@ const dbux = {
 
 let __global__;
 
-function registerDbuxAsGlobal() {
+function registerDbuxInstance() {
+  // → register for local consumption
+  _setDbuxInstance(dbuxInstance);
+
+  // → register global instance
   if (__global__.__dbux__) {
-    // TODO: add version checking?
     // eslint-disable-next-line no-console
     console.warn(`@dbux/runtime registered more than once - this could be a bundling deoptimization, or a serious conflict.`);
   }
   /* eslint-disable no-var */
-  __global__.__dbux__ = dbux;
+  __global__.__dbux__ = dbuxInstance;
 }
 
 /** ###########################################################################
@@ -91,11 +95,11 @@ function handleShutdown() {
 
 (function main() {
   __global__ = getGlobal();
-  registerDbuxAsGlobal();
+  registerDbuxInstance();
 
   // NOTE: make sure to `initClient` right at the start, or else:
   // make sure that the client's `createdAt` will be smaller than any other `createdAt` in data set!
-  client = dbux.client = initClient();
+  client = dbuxInstance.client = initClient();
 
   // NOTE: we want to improve our chances that all data gets sent out before the process closes down.
   //    `process.exit` can disrupt that (kills without allowing us to perform another async handshake + `send`)
@@ -202,4 +206,4 @@ function callSite2String(callSite) {
  * export
  * ##########################################################################*/
 
-export default dbux;
+export default dbuxInstance;
