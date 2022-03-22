@@ -33,9 +33,6 @@ export function buildDbuxInit(state) {
     loops: loops._all
   };
 
-  // // const staticDataString = JSON.stringify(staticData, null, 2);
-  // Verbose && console.time(`[Dbux] babel write 1 (stringify) "${filePath}"`);
-  const staticDataString = JSON.stringify(staticData);
   let runtimeCfgString = '{}';
   if (runtimeCfg) {
     if (isString(runtimeCfg)) {
@@ -62,28 +59,22 @@ export function buildDbuxInit(state) {
     Verbose && console.debug(`Received runtime cfg: ${runtimeCfgString}`);
   }
 
-  // Verbose && console.debug(`Received runtime cfg: ${runtimeCfgString}`);
-
-  // Verbose && console.timeEnd(`[Dbux] babel write 1 (stringify) "${filePath}"`);
-
+  // Verbose > 3 && console.debug(`Received runtime cfg: ${runtimeCfgString}`);
   // Verbose && console.debug(`[Dbux] babel write size:`, (staticDataString.length / 1000).toFixed(2), 'k');
-
   // Verbose && console.time(`[Dbux] babel write (AST)`);
-  // console.trace('dbuxRuntime', dbuxRuntime);
+
+  // // const staticDataString = JSON.stringify(staticData, null, 2);
+  const staticDataString = JSON.stringify(staticData);
 
   // WARNING: "TypeError: `initProgram` is not a function" is a common problem here.
-  //    -> that can be due to circular dependencies or other issues breaking `require('@dbux/runtime')`
-  //    -> console.warn('dbux_init', dbuxRuntime, typeof __dbux__, require('@dbux/runtime'));
+  //    -> that is usually due to circular dependencies or other issues breaking `require('@dbux/runtime')`
   const result = buildSource(`
 function ${dbuxInit.name}(dbuxRuntime) {
+  if (dbuxRuntime.initProgram) {
+    throw new Error('Dbux failed to initialize in "${fileName}"');
+  }
   return dbuxRuntime.initProgram(${staticDataString}, ${runtimeCfgString});
 }`);
   // Verbose && console.timeEnd(`[Dbux] babel write (AST)`);
-
-  // free up some memory (doesn't make a difference)
-  // delete state.contexts;
-  // delete state.traces;
-  // delete state.loops;
-  // const result = buildSource(`"";`);
   return result;
 }
