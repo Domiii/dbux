@@ -165,6 +165,7 @@ export default class RuntimeMonitor {
     const parentTraceId = this._runtime.getParentTraceId();
 
     if (!parentContextId) {
+      // → root
       // NOTE: the breakpoint does not make a difference in terms of performance
       // getDefaultClient().bufferBreakpoint();
       if (!this.checkCanRecord()) {
@@ -250,6 +251,9 @@ export default class RuntimeMonitor {
    */
   popFunction(programId, realContextId, inProgramStaticTraceId, awaitContextId) {
     // this.checkErrorOnFunctionExit(contextId, inProgramStaticTraceId);
+
+    // TODO: [generator-fix] make sure this works for (async and non-async) generator functions that push and pop in different roots
+
     this._fixContext(programId, realContextId, awaitContextId);
     let traceId;
     if (!this.areTracesDisabled) {
@@ -622,25 +626,23 @@ export default class RuntimeMonitor {
   preYield(programId, yieldArgument, schedulerTid) {
     const [parentContextId, resumeContextId] = this._runtime.peekCurrentContextIdTwo();
 
-    const context = executionContextCollection.getById(resumeContextId);
-    const { staticContextId } = context;
-    // get generator function context
-    const { parentId: generatorStaticContextId } = staticContextCollection.getById(staticContextId);
+    // const context = executionContextCollection.getById(resumeContextId);
+    // const { staticContextId } = context;
 
-    const { staticContextId: parentStaticContextId } = executionContextCollection.getById(parentContextId);
+    // // get generator function context
+    // const { parentId: generatorStaticContextId } = staticContextCollection.getById(staticContextId);
+    // const { staticContextId: parentStaticContextId } = executionContextCollection.getById(parentContextId);
 
     // → pop Resume context
     this.popResume(resumeContextId);
 
-    if (parentStaticContextId === generatorStaticContextId) {
-      // also pop generator function context on first yield
+    // if (parentStaticContextId === generatorStaticContextId) {
+    //   // considerations:
+    //   //    → generator + async modifiers need to play well with one another, so we they should work mostly very similarly
 
-      // TODO: consider how to do this?
-      //    → where should the pop trace go? (what if we don't have one? → NOTE: error handling ignores interruptable contexts)
-      //    → NOTE: the final value after the last `yield` is the function's return value.
-
-      // this.popFunction(programId, parentContextId, TODO);
-    }
+    //   // also pop generator function context on first yield
+    //   // this.popFunction(programId, parentContextId, TODO);
+    // }
 
     return yieldArgument;
   }

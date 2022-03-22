@@ -1,16 +1,16 @@
 import template from '@babel/template';
 import * as t from "@babel/types";
 import TraceType from '@dbux/common/src/types/constants/TraceType';
+import StaticContextType from '@dbux/common/src/types/constants/StaticContextType';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import BasePlugin from './BasePlugin';
 import { getNodeNames } from '../../visitors/nameVisitors';
 import { doesNodeEndScope } from '../../helpers/astUtil';
 import { buildWrapTryFinally, buildBlock } from '../../instrumentation/builders/common';
-import { buildContextEndTrace, injectContextEndTrace } from '../../instrumentation/context';
-import { buildTraceId } from '../../instrumentation/builders/traceId';
+import { buildContextEndTrace } from '../../instrumentation/context';
 import { buildRegisterParams } from '../../instrumentation/builders/function';
 // import { locToString } from '../../helpers/locHelpers';
 import { astNodeToString, pathToStringAnnotated } from '../../helpers/pathHelpers';
-import StaticContextType from '@dbux/common/src/types/constants/StaticContextType';
 
 function addContextTrace(bodyPath, state, type) {
   const { scope } = bodyPath;
@@ -306,6 +306,7 @@ export default class Function extends BasePlugin {
   doInstrument = (state /*, traceCfg */) => {
     const {
       isInterruptable,
+      isGenerator,
       node: { path, dontInstrumentContextEnd },
       data: {
         staticPushTid,
@@ -320,10 +321,7 @@ export default class Function extends BasePlugin {
     //      -> consider bundling `@dbux/babel-plugin` and `@babel/register` with runtime in case of eval?
     const bodyPath = path.get('body');
 
-    // NOTE: `pushImmediate` also records the `trace` for us.
-
     let pushes = this.buildPush();
-
     let pops = [
       this.buildPop()
     ];

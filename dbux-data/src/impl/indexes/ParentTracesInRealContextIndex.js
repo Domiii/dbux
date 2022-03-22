@@ -5,7 +5,11 @@ import CollectionIndex from '../../indexes/CollectionIndex';
 import RuntimeDataProvider from '../../RuntimeDataProvider';
 
 
-/** @extends {CollectionIndex<Trace>} */
+/**
+ * TODO: [generator-fix] does not work correctly for generator functions yet
+ * 
+ * @extends {CollectionIndex<Trace>}
+ */
 export default class ParentTracesInRealContextIndex extends CollectionIndex {
   constructor() {
     super('traces', 'parentsByRealContext', { addOnNewData: false });

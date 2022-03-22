@@ -7,8 +7,8 @@ set -e # cancel on error
 
 # fname="__samplesInput__/async/promisify5-no-root"
 # fname="__samplesInput__/defineProperty3-setter"
-# fname="__samplesInput__/generator-functions1"
-fname="__samplesInput__/async/await2"
+fname="__samplesInput__/generator-functions1"
+# fname="__samplesInput__/async/await2"
 
 
 

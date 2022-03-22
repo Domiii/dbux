@@ -219,47 +219,57 @@ export function makeTraceLocLabel(trace) {
 // ###########################################################################
 
 /**
+ * @param {Application} app 
+ * @return {string}
+ */
+export function makeContextLabelPlain(staticContextId, app) {
+  const dp = app.dataProvider;
+  const staticContext = dp.collections.staticContexts.getById(staticContextId);
+  return `${staticContext.displayName}`;
+}
+
+/**
  * @param {ExecutionContext} context 
  * @param {Application} app 
  * @return {string}
  */
 export function makeContextLabel(context, app) {
-  const { contextType: type } = context;
+  const { contextType: type, staticContextId } = context;
   const dp = app.dataProvider;
 
   if (isResumeType(type)) {
-    const { contextId, parentContextId } = context;
-    const parentContext = dp.collections.executionContexts.getById(parentContextId);
+    const { contextId } = context;
     const firstTrace = dp.indexes.traces.byContext.getFirst(contextId);
     if (firstTrace) {
       const staticTrace = firstTrace && dp.collections.staticTraces.getById(firstTrace.staticTraceId);
-      let displayName;
+      let virtualLabel;
       if (ExecutionContextType.is.ResumeAsync(type)) {
         if (staticTrace.displayName?.match(/^await /)) {
           // displayName = staticTrace.displayName.replace('await ', '').replace(/\([^(]*\)$/, '');
-          displayName = staticTrace.displayName.replace('await ', '').replace(/;$/, '');
+          virtualLabel = staticTrace.displayName.replace('await ', '').replace(/;$/, '');
         }
         else {
-          displayName = '(async start)';
+          virtualLabel = '(async start)';
         }
       }
       else {
         // yield
         if (staticTrace.displayName?.match(/^yield /)) {
           // displayName = staticTrace.displayName.replace('await ', '').replace(/\([^(]*\)$/, '');
-          displayName = staticTrace.displayName.replace('yield ', '').replace(/;$/, '');
+          virtualLabel = staticTrace.displayName.replace('yield ', '').replace(/;$/, '');
         }
         else {
-          displayName = '()';
+          virtualLabel = '(gen start)';
         }
       }
-      return `${parentContext && makeContextLabel(parentContext, app)} | ${displayName}`;
+      return `${makeContextLabelPlain(staticContextId, app)} | ${virtualLabel}`;
+    }
+    else {
+      // bug: could not find any of the context's traces
     }
   }
 
-  const { staticContextId } = context;
-  const staticContext = dp.collections.staticContexts.getById(staticContextId);
-  return `${staticContext.displayName}`;
+  return makeContextLabelPlain(staticContextId, app);
 }
 
 const ContextCallerLabelByEventUpdateType = {
