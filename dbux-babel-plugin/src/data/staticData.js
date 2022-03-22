@@ -68,8 +68,8 @@ export function buildDbuxInit(state) {
   //    -> that is usually due to circular dependencies or other issues breaking `require('@dbux/runtime')`
   const result = buildSource(`
 function ${dbuxInit.name}(dbuxRuntime) {
-  if (dbuxRuntime.initProgram) {
-    throw new Error('Dbux failed to initialize in "${fileName}"');
+  if (!dbuxRuntime.initProgram) {
+    throw new Error('[@dbux/runtime] "initProgram" unavailable in "${fileName}"');
   }
   return dbuxRuntime.initProgram(${staticDataString}, ${runtimeCfgString});
 }`);

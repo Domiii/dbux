@@ -7,6 +7,7 @@ import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import isThenable from '@dbux/common/src/util/isThenable';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import NestedError from '@dbux/common/src/NestedError';
+import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
 import staticProgramContextCollection from './data/staticProgramContextCollection';
 import executionContextCollection from './data/executionContextCollection';
 import staticContextCollection from './data/staticContextCollection';
@@ -25,9 +26,9 @@ import { getDefaultClient } from './client/index';
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError, trace: logTrace } = newLogger('RuntimeMonitor');
 
-// const Verbose = 2;
+const Verbose = 2;
 // const Verbose = 1;
-const Verbose = 0;
+// const Verbose = 0;
 
 const debug = (...args) => Verbose && _debug(...args);
 
@@ -208,7 +209,7 @@ export default class RuntimeMonitor {
       _debug(
         // ${JSON.stringify(staticContext)}
         // eslint-disable-next-line max-len
-        `PUSH>${' '.repeat(this.runtime._executingStack._stack?.length || 0)} ${executionContextCollection.makeContextInfo(contextId)} (pid=${programId}, pcid=${parentContextId})`
+        `>${' '.repeat(this.runtime._executingStack._stack?.length || 0)} ${executionContextCollection.makeContextInfo(contextId)} (pid=${programId}, pcid=${parentContextId})`
       );
       this.debugOnContextAdd(context);
     }
@@ -245,7 +246,7 @@ export default class RuntimeMonitor {
   /**
    * Case 1: normal pop function.
    * Case 2: pop function during `PostAwait` event, but after error was thrown in inner `async` callee
-   *        -> need to handle `postAwait` here
+   *        → need to handle `postAwait` here
    */
   popFunction(programId, realContextId, inProgramStaticTraceId, awaitContextId) {
     // this.checkErrorOnFunctionExit(contextId, inProgramStaticTraceId);
@@ -265,7 +266,7 @@ export default class RuntimeMonitor {
   /**
    * Case 1: normal pop function.
    * Case 2: pop function during `PostAwait` event, but after error was thrown in inner `async` callee
-   *        -> need to handle `postAwait` here
+   *        → need to handle `postAwait` here
    */
   popProgram(programId, realContextId, inProgramStaticTraceId) {
     // TODO: awaitContextId
@@ -287,7 +288,7 @@ export default class RuntimeMonitor {
       // context and its children were omitted
       --this._rootDisableCount;
       if (!this._rootDisableCount) {
-        // this is the root that we first disabled on -> re-enable.
+        // this is the root that we first disabled on → re-enable.
         this.decBusy();
       }
       return;
@@ -307,7 +308,7 @@ export default class RuntimeMonitor {
     }
 
     if (awaitContextId !== undefined) { // NOTE: awaitContextIdVar might be 0
-      // interruptable function -> pop resume
+      // interruptable function → pop resume
       this.popResume(this._runtime.peekCurrentContextId());
     }
 
@@ -446,7 +447,8 @@ export default class RuntimeMonitor {
     if (Verbose) {
       debug(
         // ${JSON.stringify(staticContext)}
-        `>${' '.repeat(this.runtime._executingStack._stack?.length || 0)} ${executionContextCollection.makeContextInfo(awaitContextId)} (pid=${programId}, pcid=${parentContextId})`
+        // eslint-disable-next-line max-len
+        `[preAwait]${' '.repeat(this.runtime._executingStack._stack?.length || 0)} ${executionContextCollection.makeContextInfo(awaitContextId)} (pid=${programId}, pcid=${parentContextId})`
       );
       this.debugOnContextAdd(context);
     }
@@ -472,6 +474,9 @@ export default class RuntimeMonitor {
    * Resume given stack
    */
   postAwait(programId, awaitResult, awaitArgument, awaitContextId) {
+    // TODO:
+    //  * fix`postAwait` not pushing async function context back on shadow stack
+
     // sanity checks
     // console.trace('postAwait', awaitArgument);
     const awaitContext = executionContextCollection.getById(awaitContextId);
@@ -479,13 +484,13 @@ export default class RuntimeMonitor {
       logTrace('Tried to postAwait, but context was not registered:', awaitContextId);
     }
     else {
-      // resume after await -> pop Await context
+      // resume after await → pop Await context
       this._runtime.resumeWaitingStackAndPopAwait(awaitContextId);
 
       if (Verbose) {
         debug(
           // ${JSON.stringify(staticContext)}
-          `<${' '.repeat(this.runtime._executingStack._stack?.length || 0)} Await ${awaitContextId}`
+          `[postAwait]${' '.repeat(this.runtime._executingStack._stack?.length || 0)} Await ${awaitContextId}`
         );
       }
 
@@ -493,12 +498,12 @@ export default class RuntimeMonitor {
       // NOTE: staticContext is the same for resume and await
       const { staticContextId: awaitStaticContextId } = awaitContext;
       const awaitStaticContext = staticContextCollection.getById(awaitStaticContextId);
-      const { resumeId: resumeStaticContextId, type } = awaitStaticContext;
+      const { resumeId: resumeStaticContextId } = awaitStaticContext;
 
       // pushResume
       // NOTE: `tid` is a separate instruction, following `postAwait`
       const resumeInProgramStaticTraceId = 0;
-      const resumeContextId = this.pushResume(programId, type, resumeStaticContextId, resumeInProgramStaticTraceId);
+      const resumeContextId = this.pushResume(programId, ExecutionContextType.ResumeAsync, resumeStaticContextId, resumeInProgramStaticTraceId);
 
       this._runtime._updateVirtualRootContext(resumeContextId);
 
@@ -562,7 +567,7 @@ export default class RuntimeMonitor {
     // sanity checks
     if (!resumeContextId) {
       // Case 1: an error was thrown in a nested `async` function call (should be fixed)
-      //    -> as a result the calling `async` function would not have had a chance to `pushResume` before hitting `finally` -> `popResume`
+      //    → as a result the calling `async` function would not have had a chance to `pushResume` before hitting `finally` → `popResume`
       // Case 2: async function called from object getter?
       // logTrace('Tried to popResume, but cid was 0. Is this an async function that started in an object getter?');
       return;
@@ -571,7 +576,7 @@ export default class RuntimeMonitor {
     if (Verbose) {
       debug(
         // ${JSON.stringify(staticContext)}
-        `<${' '.repeat(this.runtime._executingStack._stack?.length || 0)} Resume ${resumeContextId}`
+        `<${' '.repeat(this.runtime._executingStack._stack?.length || 0)}${executionContextCollection.makeContextInfo(resumeContextId)}`
       );
     }
 
@@ -583,7 +588,11 @@ export default class RuntimeMonitor {
       return;
     }
     if (!isResumeType(context.contextType)) {
-      logTrace('Tried to popResume, but stack top is not of type `Resume`:', context);
+      logTrace(
+        `Tried to popResume, but stack top is not of type "Resume" -`,
+        // ${executionContextCollection.makeContextInfo(context)}
+        `stack: ${this.runtime._executingStack?.humanReadableString()}\n\n`
+      );
       return;
     }
 
@@ -655,6 +664,11 @@ export default class RuntimeMonitor {
    * debugging
    *  #########################################################################*/
 
+  /**
+   * Record stack data with context object for debugging purpose.
+   * 
+   * @param {ExecutionContext} context 
+   */
   debugOnContextAdd(context) {
     // warn('[PUSH]', ' '.repeat(this.runtime._executingStack._stack?.length || 0), executionContextCollection.makeContextInfo(context));
     executionContextCollection.debugAddContextDebugData(context, {
@@ -962,7 +976,7 @@ export default class RuntimeMonitor {
 
     if (updateValue !== returnValue) {
       // add separate expression value node
-      // future work consideration: input to UE is the `Read` node -> somehow missing the missing `1`.
+      // future work consideration: input to UE is the `Read` node → somehow missing the missing `1`.
       const updateNode = dataNodeCollection.createDataNode(returnValue, tid, DataNodeType.Read, null, inputs);
       trace.nodeId = updateNode.nodeId;
     }
@@ -1036,7 +1050,7 @@ export default class RuntimeMonitor {
   //   }
 
   //   // NOTE: only if we are in interruptable function and there is no `Resume` context on the current stack
-  //   //    -> patch it up
+  //   //    → patch it up
 
   //   // resume after await failure
   //   this._runtime.resumeWaitingStackReal(realContextId);

@@ -173,7 +173,7 @@ export default class Stack {
     const peekIdx = this._peekIdx;
     return this._stack.map((contextId, i) =>
       `${i === peekIdx ? '> ' : ''}${executionContextCollection.makeContextInfo(contextId)}`
-    );
+    ).reverse();
   }
 
   humanReadableString() {

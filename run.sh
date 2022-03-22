@@ -3,11 +3,12 @@
 # NOTE: This script is used for developing the slicing feature, to quickly run some tests
 
 set -e # cancel on error
-set -x # verbose echo mode
+# set -x # verbose echo mode
 
 # fname="__samplesInput__/async/promisify5-no-root"
 # fname="__samplesInput__/defineProperty3-setter"
-fname="__samplesInput__/generator-functions1"
+# fname="__samplesInput__/generator-functions1"
+fname="__samplesInput__/async/await2"
 
 
 
