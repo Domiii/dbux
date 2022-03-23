@@ -1073,7 +1073,7 @@
         },
         {
           "command": "dbux.importApplicationData",
-          "when": "dbux.context.activated && dbux.context.nodeEnv == development"
+          "when": "dbux.context.activated"
         },
         {
           "command": "dbux.reloadExerciseList",

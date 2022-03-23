@@ -302,7 +302,12 @@ export default {
   /** @param {DataProvider} dp */
   getContextPackageName(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
-    const staticContext = dp.collections.staticContexts.getById(context.staticContextId);
+    return dp.util.getStaticContextPackageName(context.staticContextId);
+  },
+
+  /** @param {DataProvider} dp */
+  getStaticContextPackageName(dp, staticContextId) {
+    const staticContext = dp.collections.staticContexts.getById(staticContextId);
     return dp.util.getExternalProgramModuleName(staticContext.programId);
   },
 
