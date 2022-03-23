@@ -1,4 +1,5 @@
 import { newLogger } from '@dbux/common/src/log/logger';
+import NestedError from '@dbux/common/src/NestedError';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
 import searchController from '../search/searchController';
@@ -49,8 +50,18 @@ export default class GlobalAnalysisViewController {
    *  #########################################################################*/
 
   async focusOnSearchResult() {
-    const searchResultNode = this.treeDataProvider.getNodeByClass(GlobalSearchNode);
-    await this.treeView.reveal(searchResultNode, { select: false, expand: 1 });
+    const searchResultNode = this.treeDataProvider.getRootByClass(GlobalSearchNode);
+    try {
+      /**
+       * NOTE: VSCode sometimes failed to reveal if `refresh` is executing simultaneously, which causes an error:
+       *  `Error: TreeError [dbuxTraceDetailsView] Data tree node not found: [object Object]`.
+       *  But currently VSCode API does not support thenable `refresh`.
+       */
+      await this.treeView.reveal(searchResultNode, { select: false, expand: 1 });
+    }
+    catch (err) {
+      warn(new NestedError(`Failed to focus on search result`, err));
+    }
   }
 
   /** ###########################################################################
@@ -64,10 +75,10 @@ export default class GlobalAnalysisViewController {
 
   async revealSelectedError() {
     if (!this.children) {
-      const errorNode = this.treeDataProvider.getNodeByClass(GlobalErrorsNode);
+      const errorNode = this.treeDataProvider.getRootByClass(GlobalErrorsNode);
       await this.treeView.reveal(errorNode, { select: false, expand: true });
     }
-    const errorNode = this.treeDataProvider.getNodeByClass(GlobalErrorsNode);
+    const errorNode = this.treeDataProvider.getRootByClass(GlobalErrorsNode);
     const selectedErrorNode = errorNode.getSelectedChild();
     if (selectedErrorNode) {
       await this.treeView.reveal(selectedErrorNode);

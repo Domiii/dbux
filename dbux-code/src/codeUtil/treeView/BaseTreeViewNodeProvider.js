@@ -1,4 +1,5 @@
 import { TreeItemCollapsibleState, EventEmitter, window, TreeView } from 'vscode';
+import TriggerablePromise from '@dbux/common/src/util/TriggerablePromise';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import NestedError from '@dbux/common/src/NestedError';
@@ -50,6 +51,7 @@ export default class BaseTreeViewNodeProvider {
   constructor(viewName, options = {}) {
     this.treeViewName = viewName;
     this.logger = newLogger(this.constructor.name);
+    this.refreshPromise = new TriggerablePromise(500);
     const { showCollapseAll = false, createTreeView = true } = options;
 
     // NOTE: view creation inside the data provider is not ideal, 
@@ -113,6 +115,8 @@ export default class BaseTreeViewNodeProvider {
 
       // NOTE: if we only want to update subtree, pass root of subtree to `fire`
       this.repaint();
+
+      this.refreshPromise.startIfNotStarted();
     }
     catch (err) {
       throw new NestedError(`${this.constructor.name}.refresh() failed`, err);
@@ -385,6 +389,12 @@ export default class BaseTreeViewNodeProvider {
   }
 
   getChildren = async (node) => {
+    const children = await this._getChildren(node); 
+    this.refreshPromise.resolve(children);
+    return children;
+  }
+
+  _getChildren = async (node) => {
     try {
       if (node) {
         this.handleBeforeChildren(node);
@@ -418,15 +428,19 @@ export default class BaseTreeViewNodeProvider {
   /**
    * Find a chlid node of given class from parent, or from roots if parent is `undefined`.
    * @param {*} clazz A node class that extends `BaseTreeViewNode` 
-   * @param {BaseTreeViewNode} parent 
+   * @param {BaseTreeViewNode} parent
    * @return {BaseTreeViewNode}
    */
-  getNodeByClass(clazz, parent = null) {
-    let children = this.rootNodes;
-    if (parent) {
-      children = parent.children;
-    }
+  getChildByClass(clazz, parent) {
+    return parent.children.find(node => node instanceof clazz);
+  }
 
-    return children.find(node => node instanceof clazz);
+  /**
+   * Find root of given class.
+   * @param {*} clazz A node class that extends `BaseTreeViewNode` 
+   * @return {BaseTreeViewNode}
+   */
+  getRootByClass(clazz) {
+    return this.rootNodes.find(node => node instanceof clazz);
   }
 }
