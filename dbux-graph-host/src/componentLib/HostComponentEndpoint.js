@@ -126,8 +126,8 @@ class HostComponentEndpoint extends ComponentEndpoint {
       await sleep(0);
     }
 
-    if (this._updatePromise) {
-      await (this._updatePromise = this._updatePromise.then(noop));
+    while (this._updatePromise) {
+      await this._updatePromise;
     }
   }
 
@@ -263,15 +263,17 @@ class HostComponentEndpoint extends ComponentEndpoint {
     }
   }
 
-  _executeUpdate = async () => {
+  /**
+   * @returns {Promise}
+   */
+  _executeUpdate = () => {
     // debounce mechanism
     this._waitingForUpdate = true;
-    await sleep(0);
 
     // push out new update
-    const promise = Promise.resolve(
-      this._performUpdate()                                   // 1. host: update
-    ).
+    const promise = sleep(0).then(() => {
+      return this._performUpdate();                                  // 1. host: update
+    }).
       then(() => {
         return this._remoteInternal.updateClient(this.state); // 2. client: update
       }).
