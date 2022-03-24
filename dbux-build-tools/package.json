@@ -1,7 +1,7 @@
 {
   "name": "@dbux/build-tools",
   "private": true,
-  "version": "0.6.14-dev.0",
+  "version": "0.6.14",
   "description": "> TODO: description",
   "author": "Domi",
   "homepage": "https://github.com/Domiii/dbux#readme",
