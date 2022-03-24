@@ -199,6 +199,7 @@ const DefaultNodeVersion = '16';
 export function getDefaultRequirement(fullCheck) {
   if (!fullCheck) {
     return {
+      bash: {},
       node: { version: DefaultNodeVersion },
       npm: {},
     };
