@@ -1084,8 +1084,8 @@ export default class ProjectsManager {
 
       const { npm } = this.paths;
       const command = [
-        `"${npm}" install --only=prod`,
-        ...deps.length && [`"${npm}" i ${deps.join(' ')}`] || EmptyArray
+        `"${npm}" i --only=prod`,
+        ...deps.length && [`"${npm}" i --only=prod ${deps.join(' ')}`] || EmptyArray
       ];
 
       // await this.runner._exec(command, logger, execOptions);
