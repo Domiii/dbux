@@ -95,7 +95,7 @@ async function revertToDevVersion(force = false) {
 
   if (!release?.includes('dev') || force) {
     // git tag | tail
-    const tags = (await execCaptureOut('git tag')).split('\n').reverse();
+    const tags = (await execCaptureOut(`git tag`)).split('\n').reverse();
     let newVersion = `${maj}.${min}.${pat + 1}`;
 
     // future-work: just get latest version?

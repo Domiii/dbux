@@ -9,6 +9,7 @@ import { runInTerminalInteractive } from '../codeUtil/terminalUtil';
 import { initRuntimeServer } from '../net/SocketServer';
 import { installDbuxDependencies } from '../codeUtil/installUtil';
 import { initProjectView } from '../projectViews/projectViewsController';
+import { getNodePath } from '../codeUtil/codePath';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('DBUX run file');
@@ -115,7 +116,8 @@ export async function runFile(extensionContext, debugMode = false) {
 
   // go!
   const dbuxBin = projectManager.getDbuxCliBinPath();
-  const command = `node ${nodeArgs} "${dbuxBin}" run ${dbuxArgs} "${file}" -- ${programArgs}`;
+  const nodePath = getNodePath();
+  const command = `"${nodePath}" ${nodeArgs} "${dbuxBin}" run ${dbuxArgs} "${file}" -- ${programArgs}`;
   allApplications.selection.clear();
   await runInTerminalInteractive(cwd, command);
   // runInTerminal(cwd, `node /Users/domi/code/dbux/scripts/time-test.js spawn-child && sleep 30`);

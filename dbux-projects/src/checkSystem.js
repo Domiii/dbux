@@ -39,12 +39,12 @@ function isChecked(requirements) {
 
 /**
  * Get version of `program`.
- * @param {string} program 
+ * @param {string} programPath
  * @return {Promise<string>} semver of `program`
  */
-async function getVersion(program) {
+async function getVersion(programPath) {
   const option = { failOnStatusCode: false };
-  let result = await Process.execCaptureOut(`${program} --version`, option);
+  let result = await Process.execCaptureOut(`"${programPath}" --version`, option);
 
   return semver.valid(semver.coerce(result));
 }
@@ -80,13 +80,14 @@ export async function checkSystem(manager, requirements, calledFromUser) {
     ' Please make sure, you have all of them installed.\n\n';
 
   for (let program of Object.keys(requirements)) {
-    const result = { path: whichNormalized(program) };
+    const programPath = manager.paths[program] || program;
+    const result = { path: whichNormalized(programPath) };
     let message = '';
     let requirement = requirements[program];
 
     if (result.path) {
       if (requirement.version) {
-        result.version = await getVersion(program);
+        result.version = await getVersion(programPath);
         if (semver.satisfies(result.version, requirement.version)) {
           // TOTRANSLATE
           message += `✓  ${program}\n    found at "${result.path}" (v${result.version} satisfies ${requirement.version})`;
@@ -112,7 +113,7 @@ export async function checkSystem(manager, requirements, calledFromUser) {
 
         for (const customRequirementFunction of customRequirement) {
           if (isFunction(customRequirementFunction)) {
-            const customResult = await customRequirementFunction?.();
+            const customResult = await customRequirementFunction?.(manager);
             if (customResult.success) {
               if (customResult.message) {
                 message += `\n\t✓  ${customResult.message}`;
@@ -157,7 +158,7 @@ export async function checkSystem(manager, requirements, calledFromUser) {
 
   if ((results?.git?.success === false || results?.bash?.success === false) && isWindows()) {
     // TOTRANSLATE
-    modalMessage += '\n\nWindows users can install bash and git into $PATH by installing "git" ' +
+    modalMessage += '\n\nGit or bash are missing. Windows users can install bash and git into $PATH by installing "git" ' +
       'and checking the "adding UNIX tools to PATH". You can achieve that by:\n' +
       '1. Installing choco\n' +
       '2. then run: choco install git.install --params "/GitAndUnixToolsOnPath"';
@@ -208,8 +209,12 @@ export function getDefaultRequirement(fullCheck) {
       node: { version: DefaultNodeVersion },
       npm: {},
       git: {
-        custom: async () => {
-          const gitConfig = await Process.execCaptureOut(`git config -l`);
+        /**
+         * @param {ProjectsManager} manager 
+         */
+        custom: async (manager) => {
+          const { git } = manager.paths;
+          const gitConfig = await Process.execCaptureOut(`"${git}" config -l`);
           const configs = Object.fromEntries(gitConfig.split("\n").map(line => line.split('=')));
           const checkKeys = ["user.name", "user.email"];
           let success = true;
@@ -229,7 +234,7 @@ export function getDefaultRequirement(fullCheck) {
           }
           return {
             success,
-            message: `${message}\nAdd these config via \`git config --global <key> <value>\`\n`,
+            message: `${message}\nAdd these config entries via \`git config --global <key> <value>\`\n`,
           };
         }
       },
