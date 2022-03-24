@@ -99,17 +99,18 @@ class ContextNode extends ClientComponentEndpoint {
       traceId,
       isSelectedTraceCallRelated,
       contextIdOfSelectedCallTrace,
-      packageName,
+      // packageName,
       visible,
       hasError,
     } = this.state;
 
-    const moduleLabel = packageName ? `${packageName} | ` : '';
-
+    
     this.el.id = `application_${applicationId}-context_${contextId}`;
     this.el.style.background = backgroundStyle;
     this.els.contextLabel.textContent = contextLabel;
-    this.els.locLabel.textContent = contextLocLabel && ` @ ${moduleLabel}${contextLocLabel}` || '';
+
+    this.els.locLabel.textContent = contextLocLabel && ` ${contextLocLabel}` || '';
+
     this.els.callLabel.textContent = callerTracelabel || '';
     this.els.valueLabel.textContent = valueLabel;
     this.els.errorLabel.textContent = hasError ? '🔥' : '';

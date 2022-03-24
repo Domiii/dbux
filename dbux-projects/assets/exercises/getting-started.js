@@ -2,27 +2,34 @@
 const exercises = [];
 
 function add(cfgs) {
-  for (let { number, problemName, label, fname, bugLine, ...moreProps } of cfgs) {
+  for (let { number, problemName, label, fname, bugLine, noTests, ...moreProps } of cfgs) {
     const name = `${problemName}/${fname}`;
     fname += '.js';
     const fpath = `${problemName}/${fname}`;
-    exercises.push({
+    const exercise = {
       number,
       name,
       label: `${problemName} - ${label}`,
       assets: [
-        fpath,
-        `${problemName}/tests.js`
+        fpath
       ],
       testFilePaths: [fpath],
-      ...moreProps,
-      bugLocations: [
+      ...moreProps
+    };
+
+    if (!noTests) {
+      exercise.assets.push(`${problemName}/tests.js`);
+    }
+
+    if (bugLine) {
+      exercise.bugLocations = [
         {
           fileName: fpath,
           line: bugLine
         }
-      ]
-    });
+      ];
+    }
+    exercises.push(exercise);
   }
 }
 
@@ -89,6 +96,15 @@ add([
     label: 'Array.reduce bug',
     fname: 'reduce-bad',
     bugLine: 11
+  },
+
+  /** ########################################
+   * fibonacci
+   *  ######################################*/
+  {
+    problemName: 'fibonacci',
+    label: 'baseline',
+    fname: 'plain-good'
   },
 
   /** ########################################

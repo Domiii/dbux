@@ -25,6 +25,7 @@ import initLang, { getTranslationScope } from './lang';
 import upload from './fileUpload';
 import { checkSystem, getDefaultRequirement } from './checkSystem';
 import Chapter from './projectLib/Chapter';
+import { initProcess } from './util/Process';
 
 const logger = newLogger('PracticeManager');
 // eslint-disable-next-line no-unused-vars
@@ -107,6 +108,11 @@ export default class ProjectsManager {
     }
     this.externals = externals;
     this.editor = externals.editor;
+
+    initProcess({
+      shell: this.paths.bash
+    });
+
     this.practiceSession = null;
     this.runner = new ExerciseRunner(this);
     this.runner.start();
@@ -156,6 +162,10 @@ export default class ProjectsManager {
   // ###########################################################################
   // getters
   // ###########################################################################
+
+  get paths() {
+    return this.externals.paths;
+  }
 
   get interactiveMode() {
     return true;
@@ -775,7 +785,7 @@ export default class ProjectsManager {
     } = inputCfg;
 
     if (!exercise.project.checkRunMode(inputCfg)) {
-      return;
+      return undefined;
     }
 
     // WARN: --enable-source-maps makes execution super slow in production mode for some reason
@@ -1056,7 +1066,7 @@ export default class ProjectsManager {
       // };
       // if (!sh.test('-f', rootPackageJson)) {
       //   // make sure, we have a local `package.json`
-      //   await this.runner._exec('npm init -y', logger, execOptions);
+      //   await this.runner._exec('${npm} init -y', logger, execOptions);
       // }
       if (this.areDependenciesInstalled(deps)) {
         // already done!
@@ -1068,13 +1078,14 @@ export default class ProjectsManager {
       // await rm('-rf', path.join(projectsRoot, 'node_modules'));
 
       // debug(`Verifying NPM cache. This might (or might not) take a while...`);
-      // await this.runner._exec('npm cache verify', logger, execOptions);
+      // await this.runner._exec('${npm} cache verify', logger, execOptions);
 
       // this.externals.showMessage.info(`Installing dependencies: "${deps.join(', ')}" This might (or might not) take a while...`);
 
+      const { npm } = this.paths;
       const command = [
-        `npm install --only=prod`,
-        ...deps.length && [`npm i ${deps.join(' ')}`] || EmptyArray
+        `"${npm}" install --only=prod`,
+        ...deps.length && [`"${npm}" i ${deps.join(' ')}`] || EmptyArray
       ];
 
       // await this.runner._exec(command, logger, execOptions);
@@ -1131,10 +1142,6 @@ export default class ProjectsManager {
       //   //     dbuxDeps.map(name => [`@dbux/${name}`, `../dbux/dbux-${name}`])
       //   //   )
       //   // };
-
-      //   // await this.runner._exec(`npm i --save link-module-alias`, logger, execOptions);
-      //   // writePackageJson(projectsRoot, pkg);
-      //   await this.runner._exec(`npm i --save ${allDeps.join(' ')}`, logger, execOptions);
       // }
     }
     finally {

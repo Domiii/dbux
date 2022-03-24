@@ -8,12 +8,11 @@ export async function buildJestRunBugCommand(cfg) {
   let {
     cwd,
     dbuxJs,
+    dbuxArgs,
     testArgs = '',
     // keepAlive = true, // TODO: keep alive
-    nodeArgs,
-    dbuxArgs,
     require = EmptyArray,
-    debugPort
+    ...moreCfg
   } = cfg;
 
   const jestJs = `${cwd}/node_modules/jest/bin/jest.js`;
@@ -38,9 +37,7 @@ export async function buildJestRunBugCommand(cfg) {
   }
 
   return buildNodeCommand({
-    cwd,
-    nodeArgs,
-    debugPort,
+    ...moreCfg,
     require,
     program,
     programArgs

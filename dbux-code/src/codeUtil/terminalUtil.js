@@ -2,6 +2,7 @@ import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { normalizeDriveLetter, whichNormalized } from '@dbux/common-node/src/util/pathUtil';
 import sleep from '@dbux/common/src/util/sleep';
+import { execPaths } from './codePath';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('terminalUtil');
@@ -62,7 +63,7 @@ export function runInTerminal(cwd, command) {
   const name = DefaultTerminalName;
   closeTerminal(name);
 
-  const pathToBash = whichNormalized('bash');
+  const shellPath = whichNormalized(execPaths.bash);
 
   // WARNING: terminal is not properly initialized when running the command. cwd is not set when executing `command`.
   const wrappedCommand = `cd "${cwd}" && ${command}; read -p "(Done. Press any key to exit.)"`;
@@ -70,7 +71,7 @@ export function runInTerminal(cwd, command) {
   const terminalOptions = {
     name: DefaultTerminalName,
     cwd,
-    shellPath: pathToBash,
+    shellPath: shellPath,
     // shellArgs: [wrappedCommand],
     shellArgs: ['-c', wrappedCommand]
   };
@@ -132,12 +133,12 @@ export async function runInTerminalInteractive(cwd, command, createNew = false) 
   }
   const terminalName = DefaultTerminalName;
 
-  const pathToBash = whichNormalized('bash');
+  const shellPath = whichNormalized(execPaths.bash);
 
   const terminalOptions = {
     name: terminalName,
     cwd,
-    shellPath: pathToBash
+    shellPath: shellPath
   };
 
   // hackfix: when running multiple commands in serial, subsequent terminal access might fail, if too fast

@@ -304,5 +304,9 @@ export function makeStaticContextLocLabel(applicationId, staticContextId) {
   // TODO: incorrect loc, when used in VSCode?
   const { line/* , column */ } = loc.start;
   // return `@${fileName}:${line}:${column}`;
-  return `${fileName}:${line}`;
+
+  const packageName = dp.util.getStaticContextPackageName(staticContextId);
+  const moduleLabel = packageName ? `${packageName} | ` : '';
+
+  return `${moduleLabel}${fileName}:${line}`;
 }
