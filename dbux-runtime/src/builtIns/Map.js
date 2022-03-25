@@ -1,4 +1,4 @@
-import { monkeyPatchHolderOverrideDefault } from '../util/monkeyPatchUtil';
+import { monkeyPatchMethodOverrideDefault } from '../util/monkeyPatchUtil';
 
 
 export default function patchMap() {
@@ -8,14 +8,13 @@ export default function patchMap() {
     'set',
     'delete',
     'forEach'
-  ].forEach(m => monkeyPatchHolderOverrideDefault(Map, m));
+  ].forEach(m => monkeyPatchMethodOverrideDefault(Map, m));
 
   [
     'has',
     'get',
     'set',
-    'delete',
-    'forEach'
-  ].forEach(m => monkeyPatchHolderOverrideDefault(WeakMap, m));
+    'delete'
+  ].forEach(m => monkeyPatchMethodOverrideDefault(WeakMap, m));
 }
 

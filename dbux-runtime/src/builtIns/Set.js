@@ -1,4 +1,4 @@
-import { monkeyPatchHolderOverrideDefault } from '../util/monkeyPatchUtil';
+import { monkeyPatchMethodOverrideDefault } from '../util/monkeyPatchUtil';
 
 
 export default function patchSet() {
@@ -7,6 +7,6 @@ export default function patchSet() {
     'add',
     'delete',
     'forEach'
-  ].forEach(m => monkeyPatchHolderOverrideDefault(Set, m));
+  ].forEach(m => monkeyPatchMethodOverrideDefault(Set, m));
 }
 
