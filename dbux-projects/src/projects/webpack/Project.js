@@ -148,7 +148,7 @@ export default class WebpackProject extends Project {
 
   decorateExercise(config) {
     config.mainEntryPoint = [this.cliBin];
-    config.dbuxArgs = config.dbuxArgs || '--pw=tapable,graceful-fs,enhanced-resolve';
+    config.dbuxArgs = config.dbuxArgs || '--pw=webpack.*,tapable,graceful-fs,enhanced-resolve';
     return config;
   }
 
