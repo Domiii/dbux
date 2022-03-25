@@ -107,8 +107,6 @@ module.exports = (env, argv) => {
     // )),
   };
 
-  // console.warn('[dbux-cli] entry:', JSON.stringify(entry, null, 2));
-
 
   return {
     watchOptions: {

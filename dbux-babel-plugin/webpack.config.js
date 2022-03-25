@@ -97,7 +97,7 @@ module.exports = (env, argv) => {
 
   };
 
-  console.warn('[dbux-babel-plugin] entry:', JSON.stringify(entry, null, 2));
+  // console.warn('[dbux-babel-plugin] entry:', JSON.stringify(entry, null, 2));
 
   // eslint-disable-next-line no-nested-ternary
   const optimization = mode !== 'production' ?
@@ -177,6 +177,10 @@ module.exports = (env, argv) => {
           path.join(MonoRoot, 'node_modules')
         ],
         allowlist: [
+          'nanoevents',
+          'serialize-javascript',
+          'i18next',
+          'shelljs',
           /^lodash\/.*/,
           ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/src/.*`))
         ]
