@@ -76,7 +76,7 @@ then
   node $nodeArgs --enable-source-maps "$rootDir/node_modules/@babel/cli/bin/babel.js" --config-file="$rootDir/config/babel-presets-$babelTarget.js" $inPath --out-file="$outPath"
   echo "Babeled ($babelTarget): $outPath"
 else
-  outPath="$rootDir/samples/$fname.inst.js"
+  outPath="$rootDir/samples/$fname.dbux.js"
   if [[ "$dbuxCmd" != "rr" ]] && [[ "$dbuxCmd" != "rrr" ]]
   then
     # instrument

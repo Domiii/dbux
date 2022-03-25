@@ -105,10 +105,10 @@ export default function moduleFilter(options, includeDefault) {
 
 
     const unwanted =
-      // 1. internal stuff
+      // 1. internal stuff + *.dbux.* files
       // NOTE: this could cause problems, if dbux or babel tries to instrument itself.
       // future-work: allow including these paths so we can debug Dbux with Dbux.
-      modulePath.match(/((dbux[-]runtime)|(@dbux[/\\]runtime))[/\\]/) ||
+      modulePath.match(/((dbux[-]runtime)|(@dbux[/\\]runtime)|(\.dbux\.))[/\\]/) ||
 
       // 2. some stuff we want to ignore by default
       // TODO: make `.mjs` and @babel path settings configurable

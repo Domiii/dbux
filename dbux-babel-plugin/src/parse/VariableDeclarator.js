@@ -43,6 +43,10 @@ export default class VariableDeclarator extends BaseNode {
     return idNode;
   }
 
+  enter() {
+    // this.logger.debug(`ENTER ${this.debugTag}`);
+  }
+
   exit1() {
     // NOTE: This adds the hoisted declaration trace, while `plugins.lval` adds the write trace (after calling `decorateWriteTraceData`).
     if (this.hasSeparateDeclarationTrace) {
