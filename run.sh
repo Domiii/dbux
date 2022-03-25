@@ -7,7 +7,7 @@ set -e # cancel on error
 
 # fname="__samplesInput__/async/promisify5-no-root"
 # fname="__samplesInput__/defineProperty3-setter"
-fname="__samplesInput__/arrays-push"
+fname="__samplesInput__/decorators2-properties"
 
 
 
@@ -18,10 +18,10 @@ rootDir=$(node -e "console.log(require('path').resolve('$thisDirRelative'))") # 
 nodeArgsAlways="--stack-trace-limit=100"
 nodeArgs=""
 
-# dbuxArgs="--esnext"
+dbuxArgsI="--esnext"
 # dbuxArgs="--pw=.*"
 # dbuxArgs=""
-dbuxArgsI=""
+# dbuxArgsI=""
 
 dbuxCmd="$1"
 if [[ $dbuxCmd = "" ]]
