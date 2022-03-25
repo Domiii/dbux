@@ -45,7 +45,7 @@ For Node applications that do not need bundling or building, refer to [the Dbux 
 Example:
 
 ```js
-const shouldInclude = require('@dbux/babel-plugin/dist/include').default;
+const makeInclude = require('@dbux/common-node/dist/filters/makeInclude').default;
 
 const moduleFilterOptions = {
   packageWhitelist: 'interestingPackage1,@interesting/package2',
@@ -63,7 +63,7 @@ module.exports = {
       {
         test: /\.jsx?$/,
         include: [
-          shouldInclude(moduleFilterOptions)
+          makeInclude(moduleFilterOptions)
         ],
         use: {
           loader: 'babel-loader',
@@ -94,7 +94,7 @@ Rollup requires use of [@rollup/plugin-babel](https://www.npmjs.com/package/@rol
 Example - something like this:
 
 ```js
-const shouldInclude = require('@dbux/common-node/dist/filters/makeInclude').default;
+const makeInclude = require('@dbux/common-node/dist/filters/makeInclude').default;
 
 const moduleFilterOptions = {
   packageWhitelist: 'interestingPackage1,@interesting/package2',
@@ -107,7 +107,7 @@ const config = {
   plugins: [
     babel({
       babelHelpers: 'inline',
-      filter: shouldInclude(moduleFilterOptions),
+      filter: makeInclude(moduleFilterOptions),
       /**
        * WARNING: if not skipped, we saw some serious memory leaks (in 2020), but might already be fixed in 2022.
        * TODO: we need to test this again.
