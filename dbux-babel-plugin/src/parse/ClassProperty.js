@@ -85,6 +85,6 @@ export default class ClassProperty extends BaseNode {
       }
     };
 
-    return Traces.addTraceWithInputs(traceData, valuePath && [valuePath] || EmptyArray);
+    return Traces.addTraceWithInputs(traceData, valuePath?.node && [valuePath] || EmptyArray);
   }
 }

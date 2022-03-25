@@ -20,7 +20,7 @@ import {
 } from '@msgpack/msgpack';
 import Emitter from 'component-emitter';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { startPrettyTimer, PrettyTimer } from '@dbux/common-node/src/util/timeUtil';
+import { startPrettyTimer, PrettyTimer } from '@dbux/common/src/util/timeUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('msgpack');

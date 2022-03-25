@@ -16,7 +16,7 @@ import { sha256String } from '@dbux/common-node/src/util/hashUtil';
 import Application from '@dbux/data/src/applications/Application';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import AsyncEventType from '@dbux/common/src/types/constants/AsyncEventType';
-import { getPrettyPerformanceDelta, performanceNow, startPrettyTimer } from '@dbux/common-node/src/util/timeUtil';
+import { getPrettyPerformanceDelta, performanceNow, startPrettyTimer } from '@dbux/common/src/util/timeUtil';
 import NestedError from '@dbux/common/src/NestedError';
 import TraceDetailNode from '../../TraceDetailNode';
 import makeTreeItem from '../../../../helpers/makeTreeItem';
