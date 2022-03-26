@@ -63,12 +63,12 @@ class GroupByRootNode extends ExecutionsGroupNode {
   }
 
   makeDescription() {
-    return `Root Context: ${this.key}`;
+    return `root=${this.key}`;
   }
 
   getRelevantTrace() {
     const contextId = this.key;
-    return this.dp.dataProvider.util.getFirstTraceOfContext(contextId);
+    return this.dp.util.getFirstTraceOfContext(contextId);
   }
 }
 
@@ -86,11 +86,11 @@ class GroupByRealContextNode extends ExecutionsGroupNode {
   }
 
   makeDescription() {
-    return `ContextId: ${this.key}`;
+    return `context=${this.key}`;
   }
 
-  getRelevantTrace(dp, contextId) {
-    return dp.dataProvider.util.getFirstTraceOfContext(contextId);
+  getRelevantTrace() {
+    return this.dp.util.getFirstTraceOfContext(this.key);
   }
 }
 
@@ -110,11 +110,11 @@ class GroupByCallerNode extends ExecutionsGroupNode {
   }
 
   makeDescription() {
-    return `CallerTraceId: ${this.key}`;
+    return `caller=${this.key}`;
   }
 
-  getRelevantTrace(dp, callerId) {
-    return dp.dataProvider.collections.traces.getById(callerId);
+  getRelevantTrace() {
+    return this.dp.collections.traces.getById(this.key);
   }
 }
 
@@ -134,39 +134,14 @@ class GroupByParentContextNode extends ExecutionsGroupNode {
   }
 
   makeDescription() {
-    return `ParentContextId: ${this.key}`;
+    return `parent=${this.key}`;
   }
 
   getRelevantTrace() {
     const parentContextId = this.key;
-    return this.dp.dataProvider.util.getFirstTraceOfContext(parentContextId);
+    return this.dp.util.getFirstTraceOfContext(parentContextId);
   }
 }
-
-// class GroupByCallbackNode extends ExecutionsGroupNode {
-//   static labelSuffix = 'by Callback';
-
-//   static makeKey(dp, trace) {
-//     const { contextId } = trace;
-//     const dp = application.dataProvider;
-//     const { schedulerTraceId } = dp.collections.executionContexts.getById(contextId);
-//     const { callId = 0 } = dp.collections.traces.getById(schedulerTraceId) || trace;
-//     return callId;
-//   }
-
-//   static makeLabel(application, callId) {
-//     const trace = application.dp.collections.traces.getById(callId);
-//     return trace ? makeCallValueLabel(trace) : '(No Caller)';
-//   }
-
-//   makeDescription() {
-//     return `Call: ${callId}`;
-//   }
-
-//   getRelevantTrace(dp, callId) {
-//     return dp.dataProvider.collections.traces.getById(callId);
-//   }
-// }
 
 // ###########################################################################
 //  ExecutionTDNode

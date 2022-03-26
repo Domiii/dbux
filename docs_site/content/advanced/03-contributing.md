@@ -124,14 +124,17 @@ While generally linking the local dev build using `yalc` works, it will not be a
 
 One way to work-around this with `yarn@1`:
 * After `yalc add...`:
-  * If you use `yarn workspaces`, remove linkage to other workspace packages.
+  * (If you use `yarn workspaces`: remove linkage to other workspace packages.)
   * Use `npm install` once, then remove `package-lock.json`.
-  * Bring back other workspace packages.
+  * (Bring back other workspace packages if needed.)
+  * If you use webpack or other bundlers, make sure, `.yalc` folder is in your `resolve.modules` (or other bundler's equivalent).
 * Whenever you need to change things with `yarn add/remove`, first remove `yalc` packages, then bring them back:
   ```sh
   yalc remove --all
   yalc add ...
   ```
+
+PROBLEM: (one of many) since `npm install` ignores your `yarn.lock`, and also undoes deduplication, your dependencies might get real messy real fast, if they have not been updated in a while or are not very well maintained (which is almost always).
 :::
 
 

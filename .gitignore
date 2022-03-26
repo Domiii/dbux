@@ -4,6 +4,7 @@
 /projects
 __samplesOutput__
 /samples/**/*.inst.js
+/samples/**/*.dbux.js
 /samples/**/*.es5.js
 /samples/**/*.node.js
 /samples/**/test-data*

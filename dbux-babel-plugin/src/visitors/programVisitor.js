@@ -26,11 +26,12 @@ function enter(path, state) {
   if (state.onEnter) return; // make sure to not visit Program node more than once
   
   if (!shouldInstrument(buildConfig, filename)) {
+    // console.debug('[ignored] [Program]', state.filename, !!buildConfig?.ignore);
     return;
   }
 
   // NOTE: `warn(...)` is muted by CRA, for some reason
-  // console.debug('[Program]', state.filename, !!buildConfig.ignore);
+  // console.debug('[Program]', state.filename, !!buildConfig?.ignore);
 
   // inject data + methods that we are going to use for instrumentation
   injectDbuxState(path, state);

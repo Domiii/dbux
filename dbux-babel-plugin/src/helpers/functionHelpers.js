@@ -4,6 +4,7 @@ import { getClassAncestryString } from './traversalHelpers';
 import { getMemberExpressionName, isAnyMemberExpression } from './objectHelpers';
 import { extractSourceStringWithoutComments } from './sourceHelpers';
 import { isNodeInstrumented } from './astUtil';
+import { pathToString, pathToStringAnnotated } from './pathHelpers';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('functionHelpers');
@@ -43,7 +44,7 @@ function getCallbackDisplayName(functionPath, state) {
       }
       else {
         // callName = '(unnamed)';
-        warn('could not extract name of callback\'s callee:', functionPath.parentPath.toString());
+        warn('could not extract name of callback\'s callee:', pathToStringAnnotated(functionPath, true));
         return null;
       }
     }

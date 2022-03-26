@@ -24,6 +24,7 @@ export const handler = wrapCommand(async ({ file, _, ...moreOptions }) => {
 
   // patch up file path
   const targetPath = resolveCommandTargetPath(file);
+  // const targetPath = file;
 
   // require('socket.io-client');
   // require('lodash');
@@ -35,14 +36,16 @@ export const handler = wrapCommand(async ({ file, _, ...moreOptions }) => {
 
   // hackfix: patch up argv! We are cheating, to make sure, argv can get processed by the program as usual
   const programArgs = _.slice(1); //.map(arg => `"${arg}"`).join(' ');
-  // console.warn('argv', process.argv);
   process.argv = [process.argv[0] /* node */, targetPath /* program */, ...programArgs];
-  
+  console.debug('[Dbux] run: ', ...process.argv);
+
   // go time!
 
   // TODO: if esm -> call `import` instead
+  // TODO: add an "execute" (x) command which looks up the target js file to execute instead (from its `package.json` → `bin` entries)
 
   try {
+    require('@dbux/runtime');
     requireDynamic(targetPath);
   }
   catch (err) {
