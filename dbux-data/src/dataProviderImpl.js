@@ -8,7 +8,6 @@ import FirstTracesIndex from './impl/indexes/FirstTracesIndex';
 import FirstContextsInRunsIndex from './impl/indexes/FirstContextsInRunsIndex';
 import FirstContextsInRunsByThreadIndex from './impl/indexes/FirstContextsInRunsByThreadIndex';
 import TracesByContextIndex from './impl/indexes/TracesByContextIndex';
-import TracesByParentContextIndex from './impl/indexes/TracesByParentContextIndex';
 import TracesByStaticTraceIndex from './impl/indexes/TracesByStaticTraceIndex';
 import TracesByRunIndex from './impl/indexes/TracesByRunIndex';
 import TracesByStaticContextIndex from './impl/indexes/TracesByStaticContextIndex';
@@ -96,7 +95,7 @@ export function newDataProvider(application) {
   dp.addIndex(new FirstTracesIndex());
   dp.addIndex(new TracesByFileIndex());
   dp.addIndex(new TracesByContextIndex());
-  dp.addIndex(new TracesByParentContextIndex());
+  dp.addIndex(new TracesByRealContextIndex());
   dp.addIndex(new TracesByStaticTraceIndex());
   dp.addIndex(new TracesByStaticContextIndex());
   dp.addIndex(new TracesByRealStaticContextIndex());
@@ -108,7 +107,6 @@ export function newDataProvider(application) {
   dp.addIndex(new ErrorTracesByContextIndex());
   dp.addIndex(new ErrorTracesByRootIndex());
   
-  dp.addIndex(new TracesByRealContextIndex());
   dp.addIndex(new TracesBySpecialIdentifierTypeIndex());
   
   // data + values

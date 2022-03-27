@@ -184,7 +184,8 @@ export default {
     // return executionContexts.getById(context._rootContextId);
 
     const firstTrace = dp.util.getFirstTraceOfContext(contextId);
-    const rootContext = dp.collections.executionContexts.getById(firstTrace?.rootContextId);
+    const rootContextId = firstTrace?.rootContextId;
+    const rootContext = rootContextId && dp.collections.executionContexts.getById(rootContextId) || null;
     return rootContext;
   },
 
@@ -1739,14 +1740,12 @@ export default {
   /** @param {DataProvider} dp */
   getTracesOfRealContext(dp, traceId) {
     const { contextId } = dp.collections.traces.getById(traceId);
-    if (dp.util.isTraceInRealContext(traceId)) {
-      return dp.indexes.traces.byContext.get(contextId);
-    }
-    else {
-      const context = dp.collections.executionContexts.getById(contextId);
-      const { parentContextId } = context;
-      return dp.indexes.traces.byParentContext.get(parentContextId);
-    }
+    return dp.indexes.traces.byRealContext.get(contextId);
+    // if (dp.util.isTraceInRealContext(traceId)) {
+    //   return dp.indexes.traces.byContext.get(contextId);
+    // }
+    // else {
+    // }
   },
 
   /** @param {DataProvider} dp */
@@ -2142,6 +2141,7 @@ export default {
     else {
       trace = traceOrTraceOrTraceId;
     }
+    
     if (!trace) {
       return `#${traceOrTraceOrTraceId} (null)`;
     }
