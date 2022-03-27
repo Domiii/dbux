@@ -1627,6 +1627,8 @@ export default {
   getRealStaticContextIdOfContext(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
 
+    TODO
+    // TODO: "first virtual" context of context is "real context"
     if (isRealContextType(context?.contextType)) {
       return context.staticContextId;
     }
@@ -1638,8 +1640,8 @@ export default {
 
     if (
       staticContext?.parentId &&
-      (parentStaticContext = dp.collections.staticContexts.getById(staticContext?.parentId)) &&
-      isRealStaticContext(parentStaticContext.type)
+      (parentStaticContext = dp.collections.staticContexts.getById(staticContext?.parentId)) 
+      // &&      isRealStaticContext(parentStaticContext.type)
     ) {
       return parentStaticContext.staticContextId;
     }
@@ -1658,16 +1660,20 @@ export default {
   getRealStaticContextIdOfStaticContext(dp, staticContextId) {
     const { parentId, type } = dp.collections.staticContexts.getById(staticContextId);
 
+    TODO
+    // TODO: "first virtual" context of context is "real context"
+    
     if (!isVirtualStaticContextType(type)) {
       return staticContextId;
     }
+
 
     let parentStaticContext;
 
     if (
       parentId &&
-      (parentStaticContext = dp.collections.staticContexts.getById(parentId)) &&
-      isRealStaticContext(parentStaticContext.type)
+      (parentStaticContext = dp.collections.staticContexts.getById(parentId)) 
+      // && isRealStaticContext(parentStaticContext.type)
     ) {
       return parentStaticContext.staticContextId;
     }

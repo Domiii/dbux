@@ -523,7 +523,9 @@ export default class RuntimeMonitor {
     }
   }
 
-
+  /**
+   * @return {number} resumeContextId
+   */
   pushResume(programId, realContextId, contextType, resumeStaticContextId, resumeInProgramStaticTraceId = 0/* , dontTrace = false */) {
     this._runtime.beforePush(null);
 

@@ -44,7 +44,7 @@ const pushImmediateTemplate = template(
 
 const pushResumeTemplate = template(
   /*var %%resumeContextId%% =*/
-  `%%dbux%%.pushResume(%%realContextId%%, %%resumeStaticContextId%%, %%inProgramStaticTraceId%%);`);
+  `var %%contextIdVar%% = %%dbux%%.pushResume(%%realContextId%%, %%resumeStaticContextId%%, %%inProgramStaticTraceId%%);`);
 
 // const popResumeTemplate = template(
 //   // `%%dbux%%.popResume(%%resumeContextId%%);`
@@ -272,6 +272,7 @@ export default class Function extends BasePlugin {
       return [
         pushResumeTemplate({
           dbux,
+          contextIdVar,
           // resumeContextId,
           // NOTE: `realContextId` and `contextType` will be determined by RuntimeMonitor.pushResume.
           realContextId: ZeroNode,
@@ -288,7 +289,7 @@ export default class Function extends BasePlugin {
         staticContextId: t.numericLiteral(staticContextId),
         inProgramStaticTraceId: t.numericLiteral(staticPushTid),
         definitionTid,
-        // isInterruptable: t.booleanLiteral(!!staticResumeContextId)
+        isInterruptable: t.booleanLiteral(false)
       })
     ];
   }
