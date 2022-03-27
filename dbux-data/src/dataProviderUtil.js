@@ -1627,8 +1627,8 @@ export default {
   getRealStaticContextIdOfContext(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
 
-    TODO
-    // TODO: "first virtual" context of context is "real context"
+    // NOTE: "first virtual" context of context is "real context"
+    
     if (isRealContextType(context?.contextType)) {
       return context.staticContextId;
     }
@@ -1660,9 +1660,8 @@ export default {
   getRealStaticContextIdOfStaticContext(dp, staticContextId) {
     const { parentId, type } = dp.collections.staticContexts.getById(staticContextId);
 
-    TODO
-    // TODO: "first virtual" context of context is "real context"
-    
+    // NOTE: "first virtual" context of context is "real context"
+
     if (!isVirtualStaticContextType(type)) {
       return staticContextId;
     }

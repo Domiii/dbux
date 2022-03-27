@@ -1,22 +1,35 @@
-function* f(x) {
-  yield x + 1;
-  yield x + 2;
+function* f(a) {
+  var b = yield a + 1;
+  var c = yield a + 2;
   // yield;
-  // return 123;
+  var d = a + 100;
+
+  return [b, c, d];
 }
 
-function g() {}
+(function main() {
+  function moveGen(arg, x) {
+    console.log(arg, gen.next(x).value);
+  }
 
-const gen = f(10);
-console.log(gen.next().value);
+  function g(x) {
+    moveGen('g', x);
+  }
 
-g(1);
+  function h() { }
 
-console.log(gen.next().value);
-console.log(gen.next().value);
-// console.log(gen.next().value);
-// console.log(gen.next().value);
+  const gen = f(10);
+  moveGen('main', 1);
 
-g(2);
+  g(2);
+  h(1);
 
-console.log('done');
+  moveGen('main', 3);
+
+  g(4);
+  h(2);
+
+  console.log('done');
+})();
+
+h(3);

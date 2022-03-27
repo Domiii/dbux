@@ -1,6 +1,6 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import Trace from '@dbux/common/src/types/Trace';
-import ExecutionContextType, { isResumeType } from '@dbux/common/src/types/constants/ExecutionContextType';
+import ExecutionContextType, { isResumeType, isVirtualContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
 import { isBeforeCallExpression, isPopTrace } from '@dbux/common/src/types/constants/TraceType';
 // import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
@@ -251,9 +251,6 @@ export default class RuntimeMonitor {
    */
   popFunction(programId, realContextId, inProgramStaticTraceId, awaitContextId) {
     // this.checkErrorOnFunctionExit(contextId, inProgramStaticTraceId);
-
-    // TODO: [generator-fix] make sure this works for (async and non-async) generator functions that push and pop in different roots
-
     this._fixContext(programId, realContextId, awaitContextId);
     let traceId;
     if (!this.areTracesDisabled) {
@@ -264,7 +261,11 @@ export default class RuntimeMonitor {
         throw new NestedError(`"popFunction" failed at context "${executionContextCollection.makeContextInfo(realContextId)}"`, err);
       }
     }
-    return this.popImmediate(programId, realContextId, awaitContextId);
+
+    // // NOTE: awaitContextIdVar might be 0
+    // const shouldPopResume = awaitContextId !== undefined;
+
+    return this.popImmediate(programId, realContextId);
   }
 
   /**
@@ -287,7 +288,7 @@ export default class RuntimeMonitor {
     return this.popImmediate(programId, realContextId);
   }
 
-  popImmediate(programId, contextId, awaitContextId) {
+  popImmediate(programId, contextId) {
     if (this._rootDisableCount) {
       // context and its children were omitted
       --this._rootDisableCount;
@@ -311,13 +312,14 @@ export default class RuntimeMonitor {
       );
     }
 
-    if (awaitContextId !== undefined) { // NOTE: awaitContextIdVar might be 0
-      // interruptable function → pop resume
+    if (isVirtualContextType(context.contextType)) {
+      // interruptable function → pop resume instead
       this.popResume(this._runtime.peekCurrentContextId());
     }
-
-    // pop from stack
-    this._pop(contextId);
+    else {
+      // pop from stack
+      this._pop(contextId);
+    }
 
     // trace
     // const runId = this._runtime.getCurrentRunId();

@@ -311,13 +311,12 @@ export default class Function extends BasePlugin {
       }
     } = state;
 
-    const contextPlugin = this.node.getPlugin('StaticContext');
 
     // NOTE: this is based on `buildTraceStatic`
     // future-work: use `buildTraceStatic` instead
     const { inProgramStaticTraceId } = popTraceCfg;
     const args = [contextIdVar, t.numericLiteral(inProgramStaticTraceId)];
-    contextPlugin.addAwaitContextIdVarArg(args);
+    this.node.StaticContext.addAwaitContextIdVarArg(args);
 
     return t.expressionStatement(
       t.callExpression(popFunction, args)
