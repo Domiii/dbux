@@ -8,6 +8,8 @@ import { monkeyPatchMethod } from '../util/monkeyPatchUtil';
 
 /** @typedef { import("./RuntimeMonitor").default } RuntimeMonitor */
 
+/** @typedef {import('../RuntimeMonitor').default} RuntimeMonitor */
+
 // future-work: keep things clean → don't arbitrarily add globals like this.
 /**
  * @type {Array.<Map.<EventTarget, Map.<string, Map.<Function, Set.<Function>>>>>}

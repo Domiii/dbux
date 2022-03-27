@@ -143,6 +143,11 @@ export default function injectDbuxState(programPath, programState) {
         preAwait: makeProgramId('aw0'),
         wrapAwait: makeProgramId('aw1'),
         postAwait: makeProgramId('aw2'),
+
+        // generator functions
+        preYield: makeProgramId('yi0'),
+        wrapYield: makeProgramId('yi1'),
+        postYield: makeProgramId('yi2'),
         // traceAwaitResult: makeProgramId('aw3')
       }
     },

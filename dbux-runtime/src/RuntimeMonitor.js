@@ -1,12 +1,13 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import Trace from '@dbux/common/src/types/Trace';
-import ExecutionContextType from '@dbux/common/src/types/constants/ExecutionContextType';
+import ExecutionContextType, { isResumeType, isVirtualContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
 import { isBeforeCallExpression, isPopTrace } from '@dbux/common/src/types/constants/TraceType';
 // import SpecialIdentifierType from '@dbux/common/src/types/constants/SpecialIdentifierType';
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import isThenable from '@dbux/common/src/util/isThenable';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import NestedError from '@dbux/common/src/NestedError';
+import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
 import staticProgramContextCollection from './data/staticProgramContextCollection';
 import executionContextCollection from './data/executionContextCollection';
 import staticContextCollection from './data/staticContextCollection';
@@ -25,9 +26,9 @@ import { getDefaultClient } from './client/index';
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError, trace: logTrace } = newLogger('RuntimeMonitor');
 
-// const Verbose = 2;
+const Verbose = 2;
 // const Verbose = 1;
-const Verbose = 0;
+// const Verbose = 0;
 
 const debug = (...args) => Verbose && _debug(...args);
 
@@ -164,7 +165,8 @@ export default class RuntimeMonitor {
     const parentTraceId = this._runtime.getParentTraceId();
 
     if (!parentContextId) {
-      // NOTE: the breakpoint does not make a difference in terms of performance
+      // → root
+      /// // NOTE: bufferBreakpoint here would not make a difference in terms of performance
       // getDefaultClient().bufferBreakpoint();
       if (!this.checkCanRecord()) {
         // hackfix: omit root (safeguard against potential infinite loops)
@@ -202,13 +204,13 @@ export default class RuntimeMonitor {
     if (!parentContextId) {
       this._runtime._updateVirtualRootContext(contextId);
     }
-    this._runtime.push(contextId, isInterruptable);
+    this._runtime.push(contextId, isInterruptable || false);
 
     if (Verbose) {
       _debug(
         // ${JSON.stringify(staticContext)}
         // eslint-disable-next-line max-len
-        `PUSH>${' '.repeat(this.runtime._executingStack._stack?.length || 0)} ${executionContextCollection.makeContextInfo(contextId)} (pid=${programId}, pcid=${parentContextId})`
+        `>${' '.repeat(this.runtime._executingStack._stack?.length || 0)} ${executionContextCollection.makeContextInfo(contextId)} (pid=${programId}, pcid=${parentContextId})`
       );
       this.debugOnContextAdd(context);
     }
@@ -245,7 +247,7 @@ export default class RuntimeMonitor {
   /**
    * Case 1: normal pop function.
    * Case 2: pop function during `PostAwait` event, but after error was thrown in inner `async` callee
-   *        -> need to handle `postAwait` here
+   *        → need to handle `postAwait` here
    */
   popFunction(programId, realContextId, inProgramStaticTraceId, awaitContextId) {
     // this.checkErrorOnFunctionExit(contextId, inProgramStaticTraceId);
@@ -259,13 +261,17 @@ export default class RuntimeMonitor {
         throw new NestedError(`"popFunction" failed at context "${executionContextCollection.makeContextInfo(realContextId)}"`, err);
       }
     }
-    return this.popImmediate(programId, realContextId, traceId, awaitContextId);
+
+    // // NOTE: awaitContextIdVar might be 0
+    // const shouldPopResume = awaitContextId !== undefined;
+
+    return this.popImmediate(programId, realContextId);
   }
 
   /**
    * Case 1: normal pop function.
    * Case 2: pop function during `PostAwait` event, but after error was thrown in inner `async` callee
-   *        -> need to handle `postAwait` here
+   *        → need to handle `postAwait` here
    */
   popProgram(programId, realContextId, inProgramStaticTraceId) {
     // TODO: awaitContextId
@@ -279,15 +285,15 @@ export default class RuntimeMonitor {
         throw new NestedError(`"popProgram" failed at context "${executionContextCollection.makeContextInfo(realContextId)}"`, err);
       }
     }
-    return this.popImmediate(programId, realContextId, traceId);
+    return this.popImmediate(programId, realContextId);
   }
 
-  popImmediate(programId, contextId, traceId, awaitContextId) {
+  popImmediate(programId, contextId) {
     if (this._rootDisableCount) {
       // context and its children were omitted
       --this._rootDisableCount;
       if (!this._rootDisableCount) {
-        // this is the root that we first disabled on -> re-enable.
+        // this is the root that we first disabled on → re-enable.
         this.decBusy();
       }
       return;
@@ -306,13 +312,14 @@ export default class RuntimeMonitor {
       );
     }
 
-    if (awaitContextId !== undefined) { // NOTE: awaitContextIdVar might be 0
-      // interruptable function -> pop resume
+    if (isVirtualContextType(context.contextType)) {
+      // interruptable function → pop resume instead
       this.popResume(this._runtime.peekCurrentContextId());
     }
-
-    // pop from stack
-    this._pop(contextId);
+    else {
+      // pop from stack
+      this._pop(contextId);
+    }
 
     // trace
     // const runId = this._runtime.getCurrentRunId();
@@ -425,33 +432,31 @@ export default class RuntimeMonitor {
   // await
   // ###########################################################################
 
-  wrapAwait(programId, awaitValue) {
-    // nothing to do
-    return awaitValue;
-  }
-
   preAwait(programId, inProgramStaticContextId, preAwaitTid, awaitArgument) {
     const stackDepth = this._runtime.getStackDepth();
     const runId = this._runtime.getCurrentRunId();
-    const resumeContextId = this._runtime.peekCurrentContextId(); // NOTE: parent == Resume
+    const resumeContextId = this._runtime.peekCurrentContextId(); // NOTE: current context == Resume
     // const parentTraceId = this._runtime.getParentTraceId();
     const parentTraceId = preAwaitTid;
 
     // pop Resume context
+    // should always exist
+    const realContextId = executionContextCollection.getById(resumeContextId)?.realContextId || 0;
     this.popResume(resumeContextId);
 
     // register Await context
     const parentContextId = this._runtime.peekCurrentContextId(); // Real context
     const context = executionContextCollection.pushAwait(
-      stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId
+      stackDepth, runId, realContextId, parentContextId, parentTraceId, programId, inProgramStaticContextId
     );
     const { contextId: awaitContextId } = context;
-    this._runtime.registerAwait(awaitContextId, parentContextId, awaitArgument);  // mark as "waiting"
+    this._runtime.registerAwait(awaitContextId, realContextId, awaitArgument);  // mark as "waiting"
 
     if (Verbose) {
       debug(
         // ${JSON.stringify(staticContext)}
-        `>${' '.repeat(this.runtime._executingStack._stack?.length || 0)} ${executionContextCollection.makeContextInfo(awaitContextId)} (pid=${programId}, pcid=${parentContextId})`
+        // eslint-disable-next-line max-len
+        `[preAwait]${' '.repeat(this.runtime._executingStack._stack?.length || 0)} ${executionContextCollection.makeContextInfo(awaitContextId)} (pid=${programId}, realCid=${realContextId}, pcid=${parentContextId})`
       );
       this.debugOnContextAdd(context);
     }
@@ -460,17 +465,26 @@ export default class RuntimeMonitor {
     // manually climb up the stack
     this._runtime.skipPopPostAwait();
 
-    // await part
-    this._runtime.async.preAwait(awaitArgument, resumeContextId, parentContextId, preAwaitTid);
+    // → add ACG data
+    this._runtime.async.preAwait(awaitArgument, resumeContextId, realContextId, preAwaitTid);
 
 
     return awaitContextId;
   }
 
+  wrapAwait(programId, awaitValue) {
+    // nothing to do
+    return awaitValue;
+  }
+
+
   /**
    * Resume given stack
    */
-  postAwait(programId, awaitResult, awaitArgument, awaitContextId) {
+  postAwait(programId, awaitResult, awaitArgument, realContextId, awaitContextId) {
+    // TODO:
+    //  * fix`postAwait` not pushing async function context back on shadow stack
+
     // sanity checks
     // console.trace('postAwait', awaitArgument);
     const awaitContext = executionContextCollection.getById(awaitContextId);
@@ -478,13 +492,13 @@ export default class RuntimeMonitor {
       logTrace('Tried to postAwait, but context was not registered:', awaitContextId);
     }
     else {
-      // resume after await -> pop Await context
+      // resume after await → pop Await context
       this._runtime.resumeWaitingStackAndPopAwait(awaitContextId);
 
       if (Verbose) {
         debug(
           // ${JSON.stringify(staticContext)}
-          `<${' '.repeat(this.runtime._executingStack._stack?.length || 0)} Await ${awaitContextId}`
+          `[postAwait]${' '.repeat(this.runtime._executingStack._stack?.length || 0)} Await ${awaitContextId}`
         );
       }
 
@@ -497,13 +511,13 @@ export default class RuntimeMonitor {
       // pushResume
       // NOTE: `tid` is a separate instruction, following `postAwait`
       const resumeInProgramStaticTraceId = 0;
-      const resumeContextId = this.pushResume(programId, resumeStaticContextId, resumeInProgramStaticTraceId);
+      const resumeContextId = this.pushResume(programId, realContextId, ExecutionContextType.ResumeAsync, resumeStaticContextId, resumeInProgramStaticTraceId);
 
       this._runtime._updateVirtualRootContext(resumeContextId);
 
       // debug(awaitArgument, 'is awaited at context', awaitContextId);
 
-      const { parentContextId: realContextId } = executionContextCollection.getById(resumeContextId);
+      // const { parentContextId: realContextId } = executionContextCollection.getById(resumeContextId);
       const postEventContextId = resumeContextId;
 
       // register thread logic
@@ -511,20 +525,34 @@ export default class RuntimeMonitor {
     }
   }
 
-
-  pushResume(programId, resumeStaticContextId, resumeInProgramStaticTraceId = 0/* , dontTrace = false */) {
+  /**
+   * @return {number} resumeContextId
+   */
+  pushResume(programId, realContextId, contextType, resumeStaticContextId, resumeInProgramStaticTraceId = 0/* , dontTrace = false */) {
     this._runtime.beforePush(null);
 
     const stackDepth = this._runtime.getStackDepth();
     const runId = this._runtime.getCurrentRunId();
-    const realContextId = this._runtime.peekCurrentContextId();
+    const parentContextId = this._runtime.peekCurrentContextId();
+
     const parentTraceId = this._runtime.getParentTraceId();
+
+    if (!contextType) {
+      // look up context type
+      const staticContext = staticContextCollection.getById(resumeStaticContextId);
+      ({ type: contextType } = staticContext);
+    }
 
     // add resumeContext
     const schedulerTraceId = null;
     const resumeContext = executionContextCollection.pushResume(
-      stackDepth, runId, realContextId, parentTraceId, programId, resumeStaticContextId, schedulerTraceId
+      contextType,
+      stackDepth, runId, realContextId, parentContextId, parentTraceId, programId, resumeStaticContextId, schedulerTraceId
     );
+    if (!realContextId) {
+      // hackfix: this is first push of interruptable function
+      resumeContext.realContextId = resumeContext.contextId;
+    }
 
     const { contextId: resumeContextId } = resumeContext;
     this._runtime.push(resumeContextId);
@@ -540,7 +568,7 @@ export default class RuntimeMonitor {
       debug(
         // ${JSON.stringify(staticContext)}
         // eslint-disable-next-line max-len
-        `>${' '.repeat(this.runtime._executingStack._stack?.length || 0)} ${executionContextCollection.makeContextInfo(resumeContextId)} (pid=${programId}, pcid=${realContextId})`
+        `>${' '.repeat(this.runtime._executingStack._stack?.length || 0)} ${executionContextCollection.makeContextInfo(resumeContextId)} (pid=${programId}, realCid=${realContextId}, pcid=${parentContextId})`
       );
       this.debugOnContextAdd(resumeContext);
     }
@@ -553,7 +581,7 @@ export default class RuntimeMonitor {
     // sanity checks
     if (!resumeContextId) {
       // Case 1: an error was thrown in a nested `async` function call (should be fixed)
-      //    -> as a result the calling `async` function would not have had a chance to `pushResume` before hitting `finally` -> `popResume`
+      //    → as a result the calling `async` function would not have had a chance to `pushResume` before hitting `finally` → `popResume`
       // Case 2: async function called from object getter?
       // logTrace('Tried to popResume, but cid was 0. Is this an async function that started in an object getter?');
       return;
@@ -562,7 +590,7 @@ export default class RuntimeMonitor {
     if (Verbose) {
       debug(
         // ${JSON.stringify(staticContext)}
-        `<${' '.repeat(this.runtime._executingStack._stack?.length || 0)} Resume ${resumeContextId}`
+        `<${' '.repeat(this.runtime._executingStack._stack?.length || 0)}${executionContextCollection.makeContextInfo(resumeContextId)}`
       );
     }
 
@@ -573,8 +601,12 @@ export default class RuntimeMonitor {
       logTrace(`Tried to popResume, but context was not registered - resumeContextId=${resumeContextId}`);
       return;
     }
-    if (!ExecutionContextType.is.Resume(context.contextType)) {
-      logTrace('Tried to popResume, but stack top is not of type `Resume`:', context);
+    if (!isResumeType(context.contextType)) {
+      logTrace(
+        `Tried to popResume, but stack top is not of type "Resume" -`,
+        // ${executionContextCollection.makeContextInfo(context)}
+        `stack: ${this.runtime._executingStack?.humanReadableString()}\n\n`
+      );
       return;
     }
 
@@ -598,9 +630,58 @@ export default class RuntimeMonitor {
   }
 
   /** ###########################################################################
+   * generator functions
+   *  #########################################################################*/
+
+  preYield(programId, yieldArgument, schedulerTid) {
+    const [parentContextId, resumeContextId] = this._runtime.peekCurrentContextIdTwo();
+
+    // const context = executionContextCollection.getById(resumeContextId);
+    // const { staticContextId } = context;
+
+    // // get generator function context
+    // const { parentId: generatorStaticContextId } = staticContextCollection.getById(staticContextId);
+    // const { staticContextId: parentStaticContextId } = executionContextCollection.getById(parentContextId);
+
+    // → pop Resume context
+    this.popResume(resumeContextId);
+
+    // if (parentStaticContextId === generatorStaticContextId) {
+    //   // considerations:
+    //   //    → generator + async modifiers need to play well with one another, so we they should work mostly very similarly
+
+    //   // also pop generator function context on first yield
+    //   // this.popFunction(programId, parentContextId, TODO);
+    // }
+
+    return yieldArgument;
+  }
+
+  postYield(programId, realContextId, yieldResult, yieldArgument, staticResumeContextId) {
+    // resume after yield
+    if (Verbose) {
+      debug(
+        // ${JSON.stringify(staticContext)}
+        `<${' '.repeat(this.runtime._executingStack._stack?.length || 0)} Yield ${staticResumeContextId}`
+      );
+    }
+
+    // pushResume
+    // NOTE: `tid` is a separate instruction, following `postYield`
+    const resumeInProgramStaticTraceId = 0;
+    /* const resumeContextId = */ 
+    this.pushResume(programId, realContextId, ExecutionContextType.ResumeGen, staticResumeContextId, resumeInProgramStaticTraceId);
+  }
+
+  /** ###########################################################################
    * debugging
    *  #########################################################################*/
 
+  /**
+   * Record stack data with context object for debugging purpose.
+   * 
+   * @param {ExecutionContext} context 
+   */
   debugOnContextAdd(context) {
     // warn('[PUSH]', ' '.repeat(this.runtime._executingStack._stack?.length || 0), executionContextCollection.makeContextInfo(context));
     executionContextCollection.debugAddContextDebugData(context, {
@@ -908,7 +989,7 @@ export default class RuntimeMonitor {
 
     if (updateValue !== returnValue) {
       // add separate expression value node
-      // future work consideration: input to UE is the `Read` node -> somehow missing the missing `1`.
+      // future work consideration: input to UE is the `Read` node → somehow missing the missing `1`.
       const updateNode = dataNodeCollection.createDataNode(returnValue, tid, DataNodeType.Read, null, inputs);
       trace.nodeId = updateNode.nodeId;
     }
@@ -956,6 +1037,7 @@ export default class RuntimeMonitor {
   _fixContext(programId, realContextId, awaitContextId) {
     // TODO: make sure that `Program` also gets a `realContextId` (contextIdVar)
     if (realContextId && awaitContextId && this.runtime.isContextWaiting(awaitContextId)) {
+      // we are resuming an async context without knowing how we got here
       debug(`fixContext(${[programId, realContextId, awaitContextId]})`);
       this.postAwait(programId, undefined, undefined, awaitContextId);
     }
@@ -974,14 +1056,14 @@ export default class RuntimeMonitor {
   //   const realStaticContext = parentContext && staticContextCollection.getById(realContext.staticContextId);
   //   if (parentContext && (
   //     !realStaticContext.isInterruptable ||
-  //     ExecutionContextType.is.Resume(parentContext.contextType)
+  //     isResumeType(parentContext.contextType)
   //   )
   //   ) {
   //     return;
   //   }
 
   //   // NOTE: only if we are in interruptable function and there is no `Resume` context on the current stack
-  //   //    -> patch it up
+  //   //    → patch it up
 
   //   // resume after await failure
   //   this._runtime.resumeWaitingStackReal(realContextId);
@@ -997,7 +1079,7 @@ export default class RuntimeMonitor {
   //   const { resumeId: resumeStaticContextId } = awaitStaticContext;
 
   //   // pushResume
-  //   const resumeContextId = this.pushResume(programId, resumeStaticContextId, resumeInProgramStaticTraceId);
+  //   const resumeContextId = this.pushResume(programId, realContextId, contextType, resumeStaticContextId, resumeInProgramStaticTraceId);
 
   //   this._runtime._updateVirtualRootContext(resumeContextId);
 

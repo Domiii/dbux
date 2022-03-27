@@ -50,7 +50,7 @@ export default class StaticContextCollection extends StaticCollection {
     return _staticId;
   }
 
-  addResumeContext(bodyOrAwaitPath, locStart) {
+  addResumeContext(bodyOrAwaitPath, locStart, contextType) {
     this.checkPath(bodyOrAwaitPath);
 
     const _parentId = this.getCurrentStaticContextId(bodyOrAwaitPath);
@@ -63,7 +63,7 @@ export default class StaticContextCollection extends StaticCollection {
 
     const _staticId = this._getNextId();
     this._push({
-      type: StaticContextType.Resume,
+      type: contextType,
       _staticId,
       _parentId,
       // displayName: parent.displayName,

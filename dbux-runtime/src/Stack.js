@@ -81,6 +81,13 @@ export default class Stack {
     return this._stack[this._peekIdx] || null;
   }
 
+  /**
+   * `contextId` at current `peek` position.
+   */
+  peekTwo() {
+    return [this._stack[this._peekIdx - 1], this._stack[this._peekIdx]];
+  }
+
   isPeekTop() {
     return this._peekIdx === this._stack.length;
   }
@@ -166,7 +173,7 @@ export default class Stack {
     const peekIdx = this._peekIdx;
     return this._stack.map((contextId, i) =>
       `${i === peekIdx ? '> ' : ''}${executionContextCollection.makeContextInfo(contextId)}`
-    );
+    ).reverse();
   }
 
   humanReadableString() {

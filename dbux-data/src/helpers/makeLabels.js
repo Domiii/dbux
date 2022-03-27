@@ -2,7 +2,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import TraceType, { isCallbackRelatedTrace } from '@dbux/common/src/types/constants/TraceType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import AsyncEventUpdateType, { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
-import ExecutionContextType from '@dbux/common/src/types/constants/ExecutionContextType';
+import ExecutionContextType, { isResumeType } from '@dbux/common/src/types/constants/ExecutionContextType';
 
 /** @typedef {import('@dbux/common/src/types/ExecutionContext').default} ExecutionContext */
 /** @typedef {import('../applications/Application').default} Application */
@@ -219,35 +219,57 @@ export function makeTraceLocLabel(trace) {
 // ###########################################################################
 
 /**
+ * @param {Application} app 
+ * @return {string}
+ */
+export function makeContextLabelPlain(staticContextId, app) {
+  const dp = app.dataProvider;
+  const staticContext = dp.collections.staticContexts.getById(staticContextId);
+  return `${staticContext.displayName}`;
+}
+
+/**
  * @param {ExecutionContext} context 
  * @param {Application} app 
  * @return {string}
  */
 export function makeContextLabel(context, app) {
-  const { contextType: type } = context;
+  const { contextId, contextType: type } = context;
   const dp = app.dataProvider;
+  const realStaticContextId = dp.util.getRealStaticContextIdOfContext(contextId);
 
-  if (ExecutionContextType.is.Resume(type)) {
-    const { contextId, parentContextId } = context;
-    const parentContext = dp.collections.executionContexts.getById(parentContextId);
+  if (isResumeType(type)) {
     const firstTrace = dp.indexes.traces.byContext.getFirst(contextId);
     if (firstTrace) {
       const staticTrace = firstTrace && dp.collections.staticTraces.getById(firstTrace.staticTraceId);
-      let displayName;
-      if (staticTrace.displayName?.match(/^await /)) {
-        // displayName = staticTrace.displayName.replace('await ', '').replace(/\([^(]*\)$/, '');
-        displayName = staticTrace.displayName.replace('await ', '').replace(/;$/, '');
+      let virtualLabel;
+      if (ExecutionContextType.is.ResumeAsync(type)) {
+        if (staticTrace.displayName?.match(/^await /)) {
+          // displayName = staticTrace.displayName.replace('await ', '').replace(/\([^(]*\)$/, '');
+          virtualLabel = staticTrace.displayName.replace('await ', '').replace(/;$/, '');
+        }
+        else {
+          virtualLabel = '(async start)';
+        }
       }
       else {
-        displayName = '(async start)';
+        // yield
+        if (staticTrace.displayName?.match(/^yield /)) {
+          // displayName = staticTrace.displayName.replace('await ', '').replace(/\([^(]*\)$/, '');
+          virtualLabel = staticTrace.displayName.replace('yield ', '').replace(/;$/, '');
+        }
+        else {
+          virtualLabel = '(gen start)';
+        }
       }
-      return `${parentContext && makeContextLabel(parentContext, app)} | ${displayName}`;
+      return `${makeContextLabelPlain(realStaticContextId, app)} | ${virtualLabel}`;
+    }
+    else {
+      // bug: could not find any of the context's traces
     }
   }
 
-  const { staticContextId } = context;
-  const staticContext = dp.collections.staticContexts.getById(staticContextId);
-  return `${staticContext.displayName}`;
+  return makeContextLabelPlain(realStaticContextId, app);
 }
 
 const ContextCallerLabelByEventUpdateType = {

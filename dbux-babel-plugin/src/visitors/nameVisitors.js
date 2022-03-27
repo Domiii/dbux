@@ -14,10 +14,10 @@ function setNodeNames(node, names) {
 function enter(path, state) {
   if (!state.onEnter(path, 'names')) return;
 
-  // console.debug(`[nameVisitors.js] ENTER ${pathToStringAnnotated(path)}`);
-
   const name = guessFunctionName(path, state);
   const displayName = getFunctionDisplayName(path, state, name);
+
+  // console.debug(`[nameVisitors.js] ENTER ${pathToStringAnnotated(path)}, name="${name?.substring(0, 20)}", displayName="${displayName?.substring(0, 20)}"`);
 
   setNodeNames(path.node, {
     name,

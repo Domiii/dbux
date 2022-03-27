@@ -16,10 +16,11 @@ let lastProgramIndex = 0;
 // Builders
 // ###########################################################################
 
-function buildProgramInit(path, { ids, contexts: { genContextId } }) {
+function buildProgramInit(path, state) {
+  const { ids, contexts: { genContextId } } = state;
   const {
+    runtimeCfg,
     dbuxInit,
-    // dbuxRuntime,
     dbux,
     aliases
   } = ids;
@@ -36,9 +37,11 @@ function buildProgramInit(path, { ids, contexts: { genContextId } }) {
     throw new Error(`Non-unique alias detected: ${Object.values(aliases).join(',')}`);
   }
 
+  const globalName = runtimeCfg?.global || '__dbux__';
+
   return buildSource([
-    // call `dbuxInit`
-    `var ${dbux.name} = ${dbuxInit.name}(typeof __dbux__ !== 'undefined' && __dbux__ || require('@dbux/runtime'));`,
+    // call `dbuxRuntime.initProgram(dbuxInstance)`
+    `var ${dbux.name} = ${dbuxInit.name}(typeof ${globalName} !== 'undefined' && ${globalName} || require('@dbux/runtime'));`,
     `var ${contextId.name} = ${dbux.name}.getProgramContextId();`,
     `var ${aliasesEntries
       .map(([dbuxProp, varName]) => `${varName.name} = ${dbux.name}.${dbuxProp}`)
@@ -107,14 +110,16 @@ export default class Program extends BaseNode {
     /**
      * NOTE: push/pop context and traces is hardcoded into `ProgramMonitor`
      *        -> Look for: `Program{Start,Stop}TraceId`
-     * TODO: make sure, final `PopImmediate` has the highest `staticTraceId` of the program instead
+     * future-work: make sure, final `PopImmediate` has the highest `staticTraceId` of the program instead
      */
     state.contexts.addStaticContext(path, staticProgramContext);
 
     state.traces.addTrace(path, { type: TraceType.PushImmediate });      // === 1
     state.traces.addTrace(path, { type: TraceType.PopImmediate });       // === 2
 
-    // TODO: must also call _fixContext with correct arguments (see Function#buildPop)!!
+    // TODO: async program contexts
+    //    → call _fixContext with correct arguments (see Function#buildPop)!!
+    //    → add async virtual contexts correctly
 
     // const contextPlugin = this('StaticContext');
     // contextPlugin.addAwaitContextIdVarArg(moreTraceCallArgs);

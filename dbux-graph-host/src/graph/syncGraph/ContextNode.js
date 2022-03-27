@@ -162,7 +162,7 @@ class ContextNode extends HostComponentEndpoint {
    */
   getAllChildContexts() {
     const dp = getDp(this.state.context);
-    return dp.indexes.executionContexts.children.get(this.state.context.contextId) || EmptyArray;
+    return dp.util.getChildrenOfContext(this.state.context.contextId) || EmptyArray;
   }
 
   /**

@@ -25,7 +25,6 @@ const traceCustomizationsByType = {
   [TraceType.BeforeExpression]: traceBeforeExpression,
 
   [TraceType.Await]: tracePathEnd,
-  // [TraceType.Resume]: tracePathEnd,
   [TraceType.BlockStart]: tracePathStart,
   [TraceType.BlockEnd]: tracePathEnd,
   [TraceType.EndOfContext]: tracePathEndContext,
@@ -158,7 +157,7 @@ export default class StaticTraceCollection extends StaticCollection {
     }
 
     if (!type) {
-      throw new Error(`invalid call to "addTrace" - missing "staticData.type", in path: ${pathToString(path)}`);
+      throw new Error(`invalid call to "addTrace" - missing "staticTraceData.type", in path: ${pathToString(path)}`);
     }
     if (traceCustomizationsByType[type]) {
       trace = traceCustomizationsByType[type](path, state);

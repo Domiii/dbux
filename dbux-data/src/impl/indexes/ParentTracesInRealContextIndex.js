@@ -5,7 +5,11 @@ import CollectionIndex from '../../indexes/CollectionIndex';
 import RuntimeDataProvider from '../../RuntimeDataProvider';
 
 
-/** @extends {CollectionIndex<Trace>} */
+/**
+ * NOTE: used for navigation to find "next child context's trace"
+ * 
+ * @extends {CollectionIndex<Trace>}
+ */
 export default class ParentTracesInRealContextIndex extends CollectionIndex {
   constructor() {
     super('traces', 'parentsByRealContext', { addOnNewData: false });

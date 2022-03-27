@@ -5,7 +5,7 @@ import BaseNode from './BaseNode';
 import { buildPostAwait, buildWrapAwait } from '../instrumentation/builders/await';
 
 // ###########################################################################
-// builders
+// util
 // ###########################################################################
 
 
@@ -14,10 +14,9 @@ function getAwaitDisplayName(path) {
 }
 
 
-// ###########################################################################
-// visitor
-// ###########################################################################
-
+/** ###########################################################################
+ * {@link AwaitExpression}
+ * ##########################################################################*/
 
 export default class AwaitExpression extends BaseNode {
   static children = ['argument'];
@@ -31,7 +30,7 @@ export default class AwaitExpression extends BaseNode {
     // NOTE: the "resume context" starts after the await statement
     const { loc: awaitLoc } = path.node;
     const locStart = awaitLoc.end;
-    return state.contexts.addResumeContext(path, locStart);
+    return state.contexts.addResumeContext(path, locStart, StaticContextType.ResumeAsync);
   }
 
   enter() {
@@ -39,7 +38,8 @@ export default class AwaitExpression extends BaseNode {
       Traces
     } = this;
 
-    // future-work: don't use unnamed constants (awCid)
+    // future-work: don't use unnamed constants ('awCid')
+    // NOTE: we need `awaitContextIdVar` to better deal with asynchronous error handling, in catch and finally blocks
     this.awaitContextIdVar = Traces.getOrGenerateUniqueIdentifier('awCid');
   }
 
@@ -57,6 +57,8 @@ export default class AwaitExpression extends BaseNode {
     const [argumentNode] = this.getChildNodes();
     argumentNode.addDefaultTrace();
 
+    const realContextIdVar = this.getRealContextIdVar();
+    
     const resumeId = this.addResumeContext();
     const awaitStaticContextId = state.contexts.addStaticContext(path, {
       type: StaticContextType.Await,
@@ -84,20 +86,17 @@ export default class AwaitExpression extends BaseNode {
       }
     });
 
-    // const staticPushTraceId = state.traces.addTrace(path, {
-    //   type: TraceType.Resume
-    // });
-
     // trace self
     Traces.addTrace({
       path,
       node: this,
       staticTraceData: {
-        type: TraceType.Resume
+        type: TraceType.ResumeAsync
       },
       data: {
         argumentVar,
         resultVar,
+        realContextIdVar,
         awaitContextIdVar
       },
       meta: {

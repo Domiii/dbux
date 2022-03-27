@@ -4,6 +4,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import RuntimeMonitor from './RuntimeMonitor';
 import { initClient } from './client/index';
 import { getPromiseId } from './async/promisePatcher';
+import { _setDbuxInstance } from './getDbuxInstance';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -16,10 +17,10 @@ const { log, debug, warn, error: logError, trace: logTrace } = newLogger('[@dbux
 let client;
 
 /** ###########################################################################
- * The global __dbux__ object.
+ * The (global) dbux instance.
  * ##########################################################################*/
 
-const dbux = {
+const dbuxInstance = {
   _r: RuntimeMonitor.instance,
 
   get r() {
@@ -28,6 +29,7 @@ const dbux = {
 
   initProgram(staticProgramData, runtimeCfg) {
     this.runtimeCfg = runtimeCfg;
+    registerGlobal(runtimeCfg);
     return this._r.addProgram(staticProgramData, runtimeCfg);
   },
 
@@ -47,14 +49,35 @@ const dbux = {
 
 let __global__;
 
-function registerDbuxAsGlobal() {
-  if (__global__.__dbux__) {
-    // TODO: add version checking?
-    // eslint-disable-next-line no-console
-    console.warn(`@dbux/runtime registered more than once - this could be a bundling deoptimization, or a serious conflict.`);
+function registerDbuxInstance() {
+  // → register for local consumption
+  _setDbuxInstance(dbuxInstance);
+
+  const id = __global__.__dbux__id__ || 0;
+  dbuxInstance.id = id;
+
+  // eslint-disable-next-line camelcase
+  __global__.__dbux__id__ += 1;
+
+  // eslint-disable-next-line camelcase
+  __global__.__dbux__all__ = __global__.__dbux__all__ || [];
+  __global__.__dbux__all__[id] = {
+    file: __filename
+  };
+}
+
+function registerGlobal(runtimeCfg) {
+  const globalName = runtimeCfg?.global || '__dbux__';
+  // → register global instance
+
+  if (!__global__[globalName]) {
+    /* eslint-disable no-var */
+    __global__[globalName] = dbuxInstance;
   }
-  /* eslint-disable no-var */
-  __global__.__dbux__ = dbux;
+  else if (__global__[globalName] !== dbuxInstance) {
+    // eslint-disable-next-line max-len
+    console.warn(`[@dbux/runtime] global "${globalName}" registered more than once - This is a bad edge cases where @dbux/runtime gets loaded more than once, but with the same global. This is usually due to bad bundling or multiple copies of @dbux/runtime getting loaded from different places.`);
+  }
 }
 
 /** ###########################################################################
@@ -91,11 +114,11 @@ function handleShutdown() {
 
 (function main() {
   __global__ = getGlobal();
-  registerDbuxAsGlobal();
+  registerDbuxInstance();
 
   // NOTE: make sure to `initClient` right at the start, or else:
   // make sure that the client's `createdAt` will be smaller than any other `createdAt` in data set!
-  client = dbux.client = initClient();
+  client = dbuxInstance.client = initClient();
 
   // NOTE: we want to improve our chances that all data gets sent out before the process closes down.
   //    `process.exit` can disrupt that (kills without allowing us to perform another async handshake + `send`)
@@ -202,4 +225,4 @@ function callSite2String(callSite) {
  * export
  * ##########################################################################*/
 
-export default dbux;
+export default dbuxInstance;

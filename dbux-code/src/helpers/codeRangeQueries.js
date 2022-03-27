@@ -85,7 +85,7 @@ export function getTracesAt(application, programId, pos) {
     staticContextId
   } = staticContext;
 
-  const traces = dp.util.getAllTracesOfStaticContext(staticContextId)
+  const traces = dp.util.getAllTracesOfRealStaticContext(staticContextId)
     ?.filter(trace =>
       !TraceType.is.CallExpressionResult(dp.util.getTraceType(trace.traceId))
     ) || [];

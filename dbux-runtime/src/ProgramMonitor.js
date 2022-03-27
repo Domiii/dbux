@@ -183,32 +183,52 @@ export default class ProgramMonitor {
   //   return this._runtimeMonitor.CallbackArgument(this.getProgramId(), 
   //     inProgramStaticContextId, schedulerId, traceId, cb);
   // }
+  preAwait = (inProgramStaticContextId, traceId, awaitArgument) => {
+    if (this.busy) {
+      // TODO: calling async function with `disabled` hints from non-pure getters will most likely cause trouble :(
+      this._logger.error(`Encountered await in disabled call #${traceId} (NOTE: Dbux does not play well with getters that have side effects, especially if they call asynchronous code)`);
+      return 0;
+    }
+    return this._runtimeMonitor.preAwait(this.getProgramId(), inProgramStaticContextId, traceId, awaitArgument);
+  }
 
   wrapAwait = (awaitValue/*, awaitContextId */) => {
     // nothing to do
     return this._runtimeMonitor.wrapAwait(this.getProgramId(), awaitValue);
   }
 
-  preAwait = (inProgramStaticContextId, traceId, awaitArgument) => {
-    if (this.busy) {
-      // TODO: calling asynchronous methods when disabled hints at non-pure getters and will most likely cause trouble :(
-      this._logger.error(`Encountered await in disabled call #${traceId} (NOTE: dbux does not play well with impure getters, especially if tey  call asynchronous code)`);
-      return 0;
-    }
-    return this._runtimeMonitor.preAwait(this.getProgramId(), inProgramStaticContextId, traceId, awaitArgument);
-  }
 
-  postAwait = (awaitResult, awaitArgument, awaitContextId, resumeTraceId) => {
+  postAwait = (awaitResult, awaitArgument, realContextId, awaitContextId) => {
     // this._logger.debug('await argument is', awaitArgument);
-    return this._runtimeMonitor.postAwait(this.getProgramId(), awaitResult, awaitArgument, awaitContextId, resumeTraceId);
+    return this._runtimeMonitor.postAwait(this.getProgramId(), awaitResult, awaitArgument, realContextId, awaitContextId);
   }
 
-  pushResume = (resumeStaticContextId, inProgramStaticTraceId) => {
-    return this._runtimeMonitor.pushResume(this.getProgramId(), resumeStaticContextId, inProgramStaticTraceId, true);
+  pushResume = (realContextId, resumeStaticContextId, inProgramStaticTraceId) => {
+    return this._runtimeMonitor.pushResume(this.getProgramId(), realContextId, 0, resumeStaticContextId, inProgramStaticTraceId, true);
   }
 
   popResume = (resumeContextId) => {
     return this._runtimeMonitor.popResume(resumeContextId);
+  }
+
+  /** ###########################################################################
+   * generator functions
+   *  #########################################################################*/
+
+  // preYield = (inProgramStaticContextId, traceId, yieldArgument) => {
+  //   if (this.busy) {
+  //     return 0;
+  //   }
+  //   return this._runtimeMonitor.preYield(this.getProgramId(), inProgramStaticContextId, traceId, yieldArgument);
+  // }
+
+  preYield = (argument, schedulerTid) => {
+    return this._runtimeMonitor.preYield(this.getProgramId(), argument, schedulerTid);
+  }
+
+  postYield = (yieldResult, yieldArgument, realContextId, staticResumeContextId) => {
+    // this._logger.debug('yield argument is', yieldArgument);
+    return this._runtimeMonitor.postYield(this.getProgramId(), realContextId, yieldResult, yieldArgument, staticResumeContextId);
   }
 
   // ###########################################################################
