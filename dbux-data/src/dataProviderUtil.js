@@ -1351,7 +1351,7 @@ export default {
         }
       }
     }
-    return null;
+    return dp.util.getReturnTraceOfContext(realContextId) || null;
   },
 
   /**
@@ -1767,6 +1767,7 @@ export default {
 
   /** @param {DataProvider} dp */
   isFirstContextInParent(dp, contextId) {
+    // TODO: virtual-func
     const context = dp.collections.executionContexts.getById(contextId);
     const { parentContextId } = context;
     if (parentContextId) {
@@ -2339,9 +2340,9 @@ export default {
   /** @param {DataProvider} dp */
   getChildrenOfContextInRoot(dp, contextId) {
     return dp.util.getChildrenOfContext(contextId).filter(context => {
-      if (context.isVirtualRoot) {
-        return false;
-      }
+      // if (context.isVirtualRoot) {
+      //   return false;
+      // }
 
       if (ExecutionContextType.is.Await(context.contextType)) {
         return false;
