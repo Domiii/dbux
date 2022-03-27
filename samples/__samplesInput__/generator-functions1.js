@@ -7,18 +7,20 @@ function* f(a) {
   return [b, c, d];
 }
 
+function moveGen(arg, x) {
+  console.log(arg, gen.next(x).value);
+}
+
+function g(x) {
+  moveGen('g', x);
+}
+
+function h() { }
+
+let gen;
+
 (function main() {
-  function moveGen(arg, x) {
-    console.log(arg, gen.next(x).value);
-  }
-
-  function g(x) {
-    moveGen('g', x);
-  }
-
-  function h() { }
-
-  const gen = f(10);
+  gen = f(10);
   moveGen('main', 1);
 
   g(2);
