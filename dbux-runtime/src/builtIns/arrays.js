@@ -1,10 +1,10 @@
 import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
+import SpecialDynamicTraceType from '@dbux/common/src/types/constants/SpecialDynamicTraceType';
 import traceCollection from '../data/traceCollection';
 import dataNodeCollection from '../data/dataNodeCollection';
 import { getOrCreateRealArgumentDataNodeIds, peekBCEMatchCallee } from '../data/dataUtil';
 import valueCollection from '../data/valueCollection';
 import { monkeyPatchFunctionOverride, monkeyPatchHolderOverrideDefault, monkeyPatchMethod, monkeyPatchMethodOverrideDefault } from '../util/monkeyPatchUtil';
-import SpecialDynamicTraceType from '@dbux/common/src/types/constants/SpecialDynamicTraceType';
 
 
 // ###########################################################################

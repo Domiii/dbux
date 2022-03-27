@@ -6,7 +6,7 @@ import { initDbuxProjects } from '@dbux/projects/src';
 import Process from '@dbux/projects/src/util/Process';
 import { showWarningMessage, showInformationMessage, confirm, alert } from '../codeUtil/codeModals';
 import { showTextDocument, showTextInNewFile } from '../codeUtil/codeNav';
-import { getResourcePath, getLogsDirectory, asAbsolutePath } from '../codeUtil/codePath';
+import { getResourcePath, getLogsDirectory, asAbsolutePath, execPaths } from '../codeUtil/codePath';
 import { closeAllEditors } from '../codeUtil/editorUtil';
 import TerminalWrapper from '../terminal/TerminalWrapper';
 import { set as storageSet, get as storageGet } from '../memento';
@@ -119,6 +119,7 @@ export function createProjectManager(extensionContext) {
       getResourcePath,
       getLogsDirectory
     },
+    paths: execPaths,
     showMessage: {
       info: showInformationMessage,
       warn: showWarningMessage,

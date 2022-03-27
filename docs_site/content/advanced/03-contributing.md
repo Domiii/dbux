@@ -105,13 +105,37 @@ See https://github.com/Domiii/dbux/issues/632 and https://github.com/Domiii/dbux
 
 ### Local Development Build
 
-When trying to use a local Dbux dev build, we recommend using `yalc`:
+When you want to debug a local project with a local Dbux dev build, we recommend using `yalc`:
 
-* In your local dbux folder: run `yarn yalc`
-* Might have to use `npm` in target project (it seems to bug out with `yarn`)
+* In your local Dbux folder: run `yarn yalc`
 * `yalc add --dev @dbux/babel-plugin @dbux/runtime @dbux/cli @dbux/common @dbux/common-node @dbux/babel-register-fork`
+* Add to .gitignore:
+  ```
+  .yalc
+  yalc.lock
+  ```
 * Sometimes, the build cache needs to be flushed
   * E.g. when using `webpack` and `babel`: `rm -rf ./node_modules/.cache/babel-loader`
+
+:::caution
+This will not work with `yarn@1`.
+
+While generally linking the local dev build using `yalc` works, it will not be able to install dependencies, and in general, `yarn add` and `yarn install` will always fail from now on, if you use `yarn@1`. [This is a well-known bug that was fixed for `yarn@>=2` only.](https://github.com/yarnpkg/yarn/issues/2611)
+
+One way to work-around this with `yarn@1`:
+* After `yalc add...`:
+  * (If you use `yarn workspaces`: remove linkage to other workspace packages.)
+  * Use `npm install` once, then remove `package-lock.json`.
+  * (Bring back other workspace packages if needed.)
+  * If you use webpack or other bundlers, make sure, `.yalc` folder is in your `resolve.modules` (or other bundler's equivalent).
+* Whenever you need to change things with `yarn add/remove`, first remove `yalc` packages, then bring them back:
+  ```sh
+  yalc remove --all
+  yalc add ...
+  ```
+
+PROBLEM: (one of many) since `npm install` ignores your `yarn.lock`, and also undoes deduplication, your dependencies might get real messy real fast, if they have not been updated in a while or are not very well maintained (which is almost always).
+:::
 
 
 See https://github.com/Domiii/dbux/issues/661.

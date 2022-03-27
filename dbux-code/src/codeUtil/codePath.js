@@ -1,14 +1,29 @@
 import { pathJoin, pathNormalizedForce, pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import {
   ExtensionContext,
-  Uri
+  Uri,
+  workspace
 } from 'vscode';
-import { getCurrentResearch } from '../research/Research';
+
+/** @typedef { { exportDirectoryOverride: string, nodePath: string } } CodePathConfig  */
 
 /**
  * @type {ExtensionContext}
  */
 let context;
+
+/**
+ * @type {CodePathConfig}
+ */
+let cfg;
+
+/**
+ * @param {CodePathConfig} _cfg
+ */
+export function initCodePath(_context, _cfg) {
+  context = _context;
+  cfg = _cfg;
+}
 
 export function getResourcePath(...relativePathSegments) {
   return asAbsolutePath(pathJoin('resources', ...relativePathSegments));
@@ -22,10 +37,10 @@ export function getLogsDirectory() {
   return pathResolve(getUserDataDirectory(), 'logs');
 }
 
+
 export function getDefaultExportDirectory() {
   const dir = pathResolve(getUserDataDirectory(), 'exports');
-  const researchDir = getCurrentResearch()?.getDataRootLfs();
-  return researchDir || dir;
+  return cfg.exportDirectoryOverride || dir;
 }
 
 /**
@@ -57,6 +72,60 @@ export function getExtensionPath() {
   return pathNormalizedForce(context.extensionPath);
 }
 
-export function initCodePath(_context) {
-  context = _context;
+export function getGitPath() {
+  const p = workspace.getConfiguration('').get('dbux.paths.git');
+  return p || 'git';
 }
+
+/**
+ * 
+ */
+export function getNodePath() {
+  // const hasVolta = !!whichNormalized('volta');
+  // if (hasVolta) {
+  //   // get the actual Node binary location that is not inside the target directory (i.e. the globally installed version)
+  //   const nodePath = await Process.execCaptureOut(`volta which node`, { processOptions: { cwd: __dirname } });
+  //   return pathNormalized(nodePath);
+  // }
+  const p = workspace.getConfiguration('').get('dbux.paths.node');
+  return p || 'node';
+}
+
+/**
+ * 
+ */
+export function getNpmPath() {
+  const p = workspace.getConfiguration('').get('dbux.paths.npm');
+  return p || 'npm';
+}
+
+/**
+ * 
+ */
+export function getYarnPath() {
+  const p = workspace.getConfiguration('').get('dbux.paths.yarn');
+  return p || 'yarn';
+}
+
+export function getBashPath() {
+  const p = workspace.getConfiguration('').get('dbux.paths.bash');
+  return p || 'bash';
+}
+
+export const execPaths = {
+  get git() {
+    return getGitPath();
+  },
+  get node() {
+    return getNodePath();
+  },
+  get npm() {
+    return getNpmPath();
+  },
+  get yarn() {
+    return getYarnPath();
+  },
+  get bash() {
+    return getBashPath();
+  }
+};

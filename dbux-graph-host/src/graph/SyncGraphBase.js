@@ -329,11 +329,11 @@ class CallGraphNodes {
         context,
       });
       this.contextNodesByContext.set(context, node);
-
-      node.addDisposable(() => {
-        this._handleContextNodeDisposed(context, node);
-      });
     }
+
+    node.addDisposable(() => {
+      this._handleContextNodeDisposed(node);
+    });
 
     return node;
   }
@@ -403,10 +403,26 @@ class CallGraphNodes {
    * dispose, delete, clear
    * ##########################################################################*/
 
-  _handleContextNodeDisposed = (context, contextNode) => {
-    if (this.getContextNodeByContext(context) === contextNode) {
-      // actual removal of node
-      this.contextNodesByContext.delete(context);
+  /**
+   * remove disposed node from `this.contextNodesByContext`
+   * @param {ContextNode | HoleNode} node 
+   */
+  _handleContextNodeDisposed = (node) => {
+    let contexts;
+    if (node instanceof ContextNode) {
+      contexts = [node.state.context];
+    }
+    else if (node instanceof HoleNode) {
+      contexts = node.group.contexts;
+    }
+    else {
+      throw new Error(`Calling "_handleContextNodeDisposed" with non-ContextNode parameter`);
+    }
+
+    for (const context of contexts) {
+      if (this.getContextNodeByContext(context) === node) {
+        this.contextNodesByContext.delete(context);
+      }
     }
   }
 

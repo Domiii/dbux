@@ -33,10 +33,6 @@ export default class _2048Project extends Project {
     });
   }
 
-  // async beforeInstall() {
-  //   await this.execInTerminal('npm init -y');
-  // }
-
   async afterInstall() {
     // await this.autoCommit(); // NOTE: autoCommit is called right after this method
 

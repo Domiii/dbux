@@ -20,7 +20,8 @@ class SearchController {
 
   constructor() {
     this._emitter = new NanoEvents();
-    this.reset();
+    this.mode = SearchMode.None;
+    this.resetSearch();
 
     allApplications.selection.onApplicationsChanged(this.handleApplicationSelectionChanged);
   }
@@ -54,6 +55,11 @@ class SearchController {
     return this.matches;
   }
 
+  clearSearch(fromUser = false) {
+    this.resetSearch();
+    this._notifySearch(fromUser);
+  }
+
   nextSearchMode() {
     let nextMode = SearchMode.nextValue(this.mode);
     if (nextMode === SearchMode.None) {
@@ -69,15 +75,10 @@ class SearchController {
     return SearchTools[this.mode].getContext(dp, match);
   }
 
-  clearSearch() {
+  resetSearch() {
     this.searchTerm = '';
     this.matches = EmptyArray;
     this.contexts = EmptyArray;
-  }
-
-  reset() {
-    this.mode = SearchMode.None;
-    this.clearSearch();
   }
 
   /** ###########################################################################

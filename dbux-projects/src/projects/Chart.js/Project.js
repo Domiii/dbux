@@ -16,7 +16,8 @@ export default class ChartJsProject extends Project {
   packageManager = 'npm';
 
   async installDependencies() {
-    await this.execInTerminal(`npm i -D @rollup/plugin-babel@5.3.0 rollup-plugin-serve@1.1.0`);
+    const { npm } = this.manager.paths;
+    await this.execInTerminal(`"${npm}" i -D @rollup/plugin-babel@5.3.0 rollup-plugin-serve@1.1.0`);
   }
 
   decorateExercise(config) {

@@ -185,7 +185,8 @@ export default class Traces extends BasePlugin {
 
     if (isDeclaration) {
       if (!declarationNode) {
-        throw new Error(`Assertion failed - node.getDeclarationNode() returned nothing ` +
+        node.getOwnDeclarationNode();
+        throw new Error(`Assertion failed - node.getOwnDeclarationNode() returned nothing ` +
           `for Declaration "${node}" in "${node.getParentString()}`);
       }
 

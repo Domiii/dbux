@@ -12,7 +12,7 @@
     "omniscient debugger",
     "runtime analysis"
   ],
-  "version": "0.6.14-dev.0",
+  "version": "0.6.16-dev.0",
   "publisher": "Domi",
   "description": "Integrated Debugging Environment with an Omniscient Debugger for JS.",
   "repository": {
@@ -1073,7 +1073,7 @@
         },
         {
           "command": "dbux.importApplicationData",
-          "when": "dbux.context.activated && dbux.context.nodeEnv == development"
+          "when": "dbux.context.activated"
         },
         {
           "command": "dbux.reloadExerciseList",
@@ -1404,7 +1404,37 @@
           "dbux.autoStart": {
             "type": "boolean",
             "default": false,
-            "description": "Auto start Dbux when opening vscode",
+            "description": "Whether to auto-start Dbux when opening vscode. Else, you have to click the \"Start Dbux\" button manually every time. (During this early stage, we still hide Dbux default behavior behind a button, to make sure you don't see annoying messages pop up when Dbux has to update dependencies etc. We will improve upon that as Dbux evolves.)",
+            "scope": "resource"
+          },
+          "dbux.paths.git": {
+            "type": "string",
+            "default": "git",
+            "description": "When executing git terminal commands, use `git` from this path. Only used for auto-installing and managing practice projects.",
+            "scope": "resource"
+          },
+          "dbux.paths.node": {
+            "type": "string",
+            "default": "node",
+            "description": "When executing terminal commands, use `node` from this path. (Hint: If you change this, you probably also want to change `paths.npm`.)",
+            "scope": "resource"
+          },
+          "dbux.paths.npm": {
+            "type": "string",
+            "default": "npm",
+            "description": "When installing packages initially or practice projects, use `npm` from this path. (Hint: If you change this, you probably also want to change `paths.node`.)",
+            "scope": "resource"
+          },
+          "dbux.paths.yarn": {
+            "type": "string",
+            "default": "yarn",
+            "description": "When playing with practice projects that require `yarn`, use this path. (Hint: If you change this, you probably also want to change `paths.npm`.)",
+            "scope": "resource"
+          },
+          "dbux.paths.bash": {
+            "type": "string",
+            "default": "bash",
+            "description": "When executing terminal commands, use `bash` from this path.",
             "scope": "resource"
           },
           "dbux.run.dbuxArgs": {
@@ -1483,15 +1513,15 @@
     "publish-only": "echo 'Publishing...' && vsce publish --yarn  --baseImagesUrl https://github.com/Domiii/dbux/dbux-code --baseContentUrl https://github.com/Domiii/dbux/dbux-code"
   },
   "devDependencies": {
-    "@dbux/babel-plugin": "^0.6.14-dev.0",
-    "@dbux/cli": "^0.6.14-dev.0",
-    "@dbux/common": "^0.6.14-dev.0",
-    "@dbux/common-node": "^0.6.14-dev.0",
-    "@dbux/data": "^0.6.14-dev.0",
-    "@dbux/graph-common": "^0.6.14-dev.0",
-    "@dbux/graph-host": "^0.6.14-dev.0",
-    "@dbux/projects": "^0.6.14-dev.0",
-    "@dbux/runtime": "^0.6.14-dev.0",
+    "@dbux/babel-plugin": "^0.6.16-dev.0",
+    "@dbux/cli": "^0.6.16-dev.0",
+    "@dbux/common": "^0.6.16-dev.0",
+    "@dbux/common-node": "^0.6.16-dev.0",
+    "@dbux/data": "^0.6.16-dev.0",
+    "@dbux/graph-common": "^0.6.16-dev.0",
+    "@dbux/graph-host": "^0.6.16-dev.0",
+    "@dbux/projects": "^0.6.16-dev.0",
+    "@dbux/runtime": "^0.6.16-dev.0",
     "@types/glob": "^7.1.1",
     "@types/node": "^16",
     "@types/vscode": "^1.41.0",

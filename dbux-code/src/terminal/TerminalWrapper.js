@@ -1,12 +1,12 @@
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
-import { window } from 'vscode';
+import { window, workspace } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { pathNormalized, pathNormalizedForce, whichNormalized } from '@dbux/common-node/src/util/pathUtil';
 // import sleep from '@dbux/common/src/util/sleep';
 import { closeDefaultTerminal, runInTerminal, runInTerminalInteractive } from '../codeUtil/terminalUtil';
-import { getResourcePath } from '../codeUtil/codePath';
+import { getBashPath, getNodePath, getResourcePath } from '../codeUtil/codePath';
 
 // const Verbose = true;
 const Verbose = false;
@@ -14,22 +14,6 @@ const Verbose = false;
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('terminalWrapper');
 
-// ###########################################################################
-// utilities
-// ###########################################################################
-
-/**
- * 
- */
-async function getPathToNode() {
-  // const hasVolta = !!whichNormalized('volta');
-  // if (hasVolta) {
-  //   // get the actual Node binary location that is not inside the target directory (i.e. the globally installed version)
-  //   const nodePath = await Process.execCaptureOut(`volta which node`, { processOptions: { cwd: __dirname } });
-  //   return pathNormalized(nodePath);
-  // }
-  return 'node';
-}
 
 // ###########################################################################
 // TerminalWrapper
@@ -71,11 +55,18 @@ export default class TerminalWrapper {
     let tmpFolder = pathNormalized(fs.mkdtempSync(path.join(os.tmpdir(), 'dbux-')));
     tmpFolder = pathNormalizedForce(tmpFolder);
 
-    const pathToNode = pathNormalizedForce(await getPathToNode());
+    const pathToNode = getNodePath();
+    const shell = getBashPath();
     const pathToDbuxRun = pathNormalizedForce(getResourcePath('src/_dbux_run.js'));
 
-    // serialize everything
-    const runJsargs = { cwd, command, options, tmpFolder };
+    // serialize all arguments for dbux_run.js
+    const runJsargs = { 
+      cwd, 
+      command, 
+      options,
+      tmpFolder,
+      shell
+    };
     const serializedRunJsArgs = Buffer.from(JSON.stringify(runJsargs)).toString('base64');
     // const runJsCommand = `pwd && node -v && which node && echo %PATH% && node ${pathToDbuxRun} ${serializedRunJsArgs}`;
     const runJsCommand = `"${pathToNode}" "${pathToDbuxRun}" ${!!isInteractive + 0} ${serializedRunJsArgs}`;

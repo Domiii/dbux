@@ -13,6 +13,7 @@ export function makeNodeAtVersionCommand(version, cmd) {
 export function buildNodeCommand(cfg) {
   let {
     // cwd,
+    nodePath = 'node',
     nodeArgs = '',
     require: req = EmptyArray,
     program,
@@ -53,5 +54,5 @@ export function buildNodeCommand(cfg) {
   const nodeRequireArgs = req.map(r => `--require "${r}"`).join(' ');
 
   // final command
-  return `node ${nodeArgs} ${nodeDebugArgs} ${nodeRequireArgs} "${program}" ${programArgs}`;
+  return `"${nodePath}" ${nodeArgs} ${nodeDebugArgs} ${nodeRequireArgs} "${program}" ${programArgs}`;
 }

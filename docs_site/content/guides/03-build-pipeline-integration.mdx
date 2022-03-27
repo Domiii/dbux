@@ -45,7 +45,7 @@ For Node applications that do not need bundling or building, refer to [the Dbux 
 Example:
 
 ```js
-const shouldInclude = require('@dbux/babel-plugin/dist/include').default;
+const makeInclude = require('@dbux/common-node/dist/filters/makeInclude').default;
 
 const moduleFilterOptions = {
   packageWhitelist: 'interestingPackage1,@interesting/package2',
@@ -63,7 +63,7 @@ module.exports = {
       {
         test: /\.jsx?$/,
         include: [
-          shouldInclude(moduleFilterOptions)
+          makeInclude(moduleFilterOptions)
         ],
         use: {
           loader: 'babel-loader',
@@ -81,7 +81,32 @@ module.exports = {
 };
 ```
 
-NOTE: We use the (configurable/flexible/complicated) <CodeLink path="dbux-projects/assets/sharedAssets/webpack/dbux.webpack.config.base.js">dbux.webpack.config.base.js</CodeLink> for [Dbux Practice](../dbux-practice/01-overview.mdx) projects.
+NOTE: For [Dbux Practice](../dbux-practice/01-overview.mdx) projects, we use the (configurable/flexible/complicated) <CodeLink path="dbux-projects/assets/sharedAssets/webpack/dbux.webpack.config.base.js">dbux.webpack.config.base.js</CodeLink>.
+
+### Debugging Webpack w/ Dbux
+
+Sometimes, you want to debug your `webpack.config.js`, or `webpack`, in general, using Dbux.
+
+This is the command to do that:
+
+```sh
+npx dbux run ../node_modules/webpack-cli/bin/cli.js -- webpack args here
+# or, if you want to debug webpack itself:
+npx dbux run --pw=webpack.*,tapable,graceful-fs,enhanced-resolve ../node_modules/webpack-cli/bin/cli.js -- webpack args here
+```
+
+
+
+Keep an eye out for the following pitfalls:
+
+1. `webpack` adds a layer of `@babel/register`.
+   * Because of that: webpack will run itself with the default babel config of the project. That usually does not affect anything, but there are buggy edge cases, and that's worth noting.
+   * Also, if you run that `webpack` project with Dbux enabled, Dbux adds a second layer of `@babel/register`. So it will double up. That is generally not a problem, but attentions is warranted.
+     * You want to make sure that `webpack` itself does not read a `babel` config which in turn adds `@dbux/babel-plugin` (which the project default babel config is likely to do).
+     * NOTE: If you don't run `webpack` with Dbux enabled, it is all fine.
+2. `webpack` uses few libraries that themselves are very heavy on instrumentation. Since Dbux also instruments things, you end up having one instrumenter trying to instrument another. That can lead to problems.
+   * If you want to understand the inner workings of `webpack`, we found the following whitelist to work quite well: `--pw=webpack.*,tapable,graceful-fs,enhanced-resolve`
+
 
 
 ## Rollup
@@ -94,7 +119,7 @@ Rollup requires use of [@rollup/plugin-babel](https://www.npmjs.com/package/@rol
 Example - something like this:
 
 ```js
-const shouldInclude = require('@dbux/common-node/dist/filters/makeInclude').default;
+const makeInclude = require('@dbux/common-node/dist/filters/makeInclude').default;
 
 const moduleFilterOptions = {
   packageWhitelist: 'interestingPackage1,@interesting/package2',
@@ -107,7 +132,7 @@ const config = {
   plugins: [
     babel({
       babelHelpers: 'inline',
-      filter: shouldInclude(moduleFilterOptions),
+      filter: makeInclude(moduleFilterOptions),
       /**
        * WARNING: if not skipped, we saw some serious memory leaks (in 2020), but might already be fixed in 2022.
        * TODO: we need to test this again.

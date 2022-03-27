@@ -82,7 +82,7 @@ export const handler = wrapCommand(async ({ file, outputFile, ...options }) => {
   if (!outputFile) {
     const ext = path.extname(file);
     const fnameBase = file.substring(0, file.length - ext.length);
-    outputFile = `${fnameBase}.inst${ext}`;
+    outputFile = `${fnameBase}.dbux${ext}`;
   }
 
   // if (!outputFile) {

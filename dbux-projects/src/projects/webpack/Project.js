@@ -23,7 +23,7 @@ export default class WebpackProject extends Project {
   //   // "node" "-r" "./dbux_projects/webpack/_dbux_/alias.build.js" "--stack-trace-limit=100" "./node_modules/webpack/bin/webpack.js" "--config" "./dbux_projects/webpack/dbux.webpack.config.js" "--env" "entry={\"bin/webpack\":\"bin//webpack.js\"}"
   //   // node --stack-trace-limit=100 ../../node_modules/@dbux/cli/bin/dbux.js run --pw=webpack,webpack-cli --verbose=1 --runtime="{\"tracesDisabled\":1}" -d -r=./_dbux_/alias.build.js ../../node_modules/webpack/bin/webpack.js -- --config ./dbux.webpack.config.js --env entry={"bin/webpack":"bin\\\\webpack.js"}
   //   // node --stack-trace-limit=100 -r ./_dbux_/alias.build.js ../../node_modules/webpack/bin/webpack.js -- --config ./dbux.webpack.config.js --env entry={"bin/webpack":"bin\\\\webpack.js"}
-    
+
   //   return new WebpackBuilder({
   //     entryPattern: [
   //       'webpack/lib/index.js',
@@ -96,6 +96,7 @@ export default class WebpackProject extends Project {
     // clone, install and link webpack-cli
     await this.execInTerminal(
       gitCloneCmd(
+        this.manager.paths.git,
         'https://github.com/webpack/webpack-cli.git',
         'refs/tags/webpack-cli@4.6.0',
         cliFolder
@@ -107,16 +108,17 @@ export default class WebpackProject extends Project {
 
     const linkFolder = pathResolve(projectPath, '../_links_');
     sh.mkdir('-p', linkFolder);
+    const { yarn } = this.manager.paths;
     await this.execInTerminal(
-      `yarn install`,
+      `"${yarn}" install`,
       { cwd: cliPackageFolder }
     );
     await this.execCaptureOut(
-      `yarn link --link-folder ${linkFolder}`,
+      `"${yarn}" link --link-folder ${linkFolder}`,
       { cwd: cliPackageFolder }
     );
     await this.execCaptureOut(
-      `yarn link --link-folder ${linkFolder} webpack-cli`,
+      `"${yarn}" link --link-folder ${linkFolder} webpack-cli`,
       { cwd: projectPath }
     );
 
@@ -146,7 +148,7 @@ export default class WebpackProject extends Project {
 
   decorateExercise(config) {
     config.mainEntryPoint = [this.cliBin];
-    config.dbuxArgs = config.dbuxArgs || '--pw=tapable,graceful-fs,enhanced-resolve';
+    config.dbuxArgs = config.dbuxArgs || '--pw=webpack.*,tapable,graceful-fs,enhanced-resolve';
     return config;
   }
 

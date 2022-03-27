@@ -4,7 +4,7 @@
 const { performance } = 'perf_hooks';
 
 require('../dbux-register-self');    // add babel-register, so we can import dbux src files
-const { startPrettyTimer } = require('@dbux/common-node/src/util/timeUtil');
+const { startPrettyTimer } = require('@dbux/common/src/util/timeUtil');
 const { getMemUsageDelta } = require('@dbux/common-node/src/util/memUtil');
 
 

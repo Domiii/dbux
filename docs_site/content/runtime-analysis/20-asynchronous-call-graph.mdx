@@ -102,14 +102,14 @@ The ACG captures most asynchronous semantics of [ES2022](https://www.google.com/
 
 Call Graph Roots (CGRs) are the ***nodes*** of the Asynchronous Call Graph (ACG).
 
-A CGR represents the invocation of a piece of code from outside our visible (recorded) runtime, i.e. on a stack that is empty or only contains frames that have not been recorded.
+A CGR represents the invocation of a piece of code from outside our visible (recorded) runtime by the JavaScript engine. Most of the time that will be the first execution of a file or function on a stack that is empty or only contains frames that have not been recorded.
 <!-- [^3] -->
 
 Examples of CGRs include:
 
 * The application's entry point.
 * A promise handler callback.
-* Continuation of an async function, after an `await` expression.
+* Continuation of an async function, after an `await` expression. (NOTE: This is a type of CGR where the stack is not empty.)
 * Asynchronous executions of a JavaScript file, e.g. when `require`d or `import`ed by `node` or the webpack (or other) bundling system. (NOTE: Not all files are executed asynchronously.)
 * Browser executing a &lt;script> tag.
 * Execution of a callback supplied to `setTimeout`, `setInterval`, `setIntermediate`, `Process.nextTick`, `Promise.then` etc. These callbacks are scheduled and, at a later point in time, executed by the underlying JS runtime environment.

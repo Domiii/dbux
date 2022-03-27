@@ -198,6 +198,22 @@ class ValueCollection extends Collection {
     return this.valueRefsByObject.get(value);
   }
 
+  determineValueTypeCategory(value) {
+    try {
+      this._startAccess(value);
+      return determineValueTypeCategory(value);
+    }
+    catch (err) {
+      this._onAccessError(value, this._readErrorsByType);
+      const msg = `ERROR: Dbux failed to process value "${Object.getPrototypeOf(value)}":`;
+      VerboseErrors && this.logger.debug(msg, err.message);
+      return `(${msg})`;
+    }
+    finally {
+      this._endAccess(value);
+    }
+  }
+
   /**
    * @param {DataNode} dataNode
    * @returns {ValueRef}
@@ -209,7 +225,7 @@ class ValueCollection extends Collection {
 
     let valueRef;
     const { nodeId } = dataNode;
-    const category = determineValueTypeCategory(value);
+    const category = this.determineValueTypeCategory(value);
     Verbose > 1 && this._log(`[val] dataNode #${nodeId}`);
     if (!isTrackableCategory(category)) {
       valueRef = null;
@@ -258,7 +274,7 @@ class ValueCollection extends Collection {
   }
 
   _logValue(prefix, valueRef, value) {
-    const category = ValueTypeCategory.nameFrom(determineValueTypeCategory(value));
+    const category = ValueTypeCategory.nameFrom(this.determineValueTypeCategory(value));
     if (valueRef) {
       this._log(`${prefix}${ValueTypeCategory.nameFrom(category)} -`, value);
     }
@@ -481,7 +497,7 @@ class ValueCollection extends Collection {
   }
 
   _serializeNonTrackable(value, category) {
-    // category = value || determineValueTypeCategory(value);
+    // category = value || this.determineValueTypeCategory(value);
 
     let serialized;
     // switch (category) {
@@ -559,7 +575,7 @@ class ValueCollection extends Collection {
     value = unwrapValue(value);
 
     // look-up existing value
-    category = category || determineValueTypeCategory(value);
+    category = category || this.determineValueTypeCategory(value);
     if (!isTrackableCategory(category)) {
       return null;
     }

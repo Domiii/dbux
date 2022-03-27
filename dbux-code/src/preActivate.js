@@ -11,6 +11,7 @@ import { initDialogController } from './dialogs/dialogController';
 import DialogNodeKind from './dialogs/DialogNodeKind';
 import { showInformationMessage } from './codeUtil/codeModals';
 import initLang, { translate } from './lang';
+import { getCurrentResearch } from './research/Research';
 
 /** @typedef {import('./dialogs/dialogController').DialogController} DialogController */
 
@@ -53,7 +54,9 @@ export default async function preActivate(context) {
     initMemento(context);
     await initInstallId();
     initLogging();
-    initCodePath(context);
+    initCodePath(context, {
+      exportDirectoryOverride: getCurrentResearch()?.getDataRootLfs()
+    });
 
     await maybeSelectLanguage();
     await initLang(mementoGet('dbux.language'));

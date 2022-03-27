@@ -173,7 +173,7 @@ export default class ParseStack {
     if (parseNode) {
       // push new node
       parseNode.phase = ParsePhase.Enter;
-      Verbose /* && parseNode.hasPhase('enter', 'exit') */ && this.debug(`enter ${parseNode}`);
+      Verbose /* && parseNode.hasPhase('enter', 'exit') */ && this.debug(`ENTER ${parseNode}`);
       this.push(ParseNodeClazz, parseNode);
       const data = parseNode.enter?.(path, state);
       parseNode.enterPlugins?.();
@@ -261,7 +261,7 @@ export default class ParseStack {
     // NOTE: the actual "exit" is run here for convinience. `exit1` is more of a "warm-up round".
     for (const task of genTasks) {
       const { parseNode } = task;
-      Verbose && parseNode.hasPhase('enter', 'exit') && this.debug(`exit ${parseNode}`);
+      Verbose && parseNode.hasPhase('enter', 'exit') && this.debug(`EXIT ${parseNode}`);
       this.nodePhase(ParsePhase.Exit, parseNode, parseNode.exitPlugins, parseNode.exit);
     }
 
