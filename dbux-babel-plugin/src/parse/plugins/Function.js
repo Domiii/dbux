@@ -12,6 +12,8 @@ import { buildRegisterParams } from '../../instrumentation/builders/function';
 // import { locToString } from '../../helpers/locHelpers';
 import { astNodeToString, pathToStringAnnotated } from '../../helpers/pathHelpers';
 
+/** @typedef { import("./StaticContext").default } StaticContext */
+
 function addContextTrace(bodyPath, state, type) {
   const { scope } = bodyPath;
   const inProgramStaticTraceId = state.traces.addTrace(
@@ -42,7 +44,7 @@ const pushImmediateTemplate = template(
 
 const pushResumeTemplate = template(
   /*var %%resumeContextId%% =*/
-  `%%dbux%%.pushResume(%%resumeStaticContextId%%, %%inProgramStaticTraceId%%);`);
+  `%%dbux%%.pushResume(%%realContextId%%, %%resumeStaticContextId%%, %%inProgramStaticTraceId%%);`);
 
 // const popResumeTemplate = template(
 //   // `%%dbux%%.popResume(%%resumeContextId%%);`
@@ -154,6 +156,9 @@ export default class Function extends BasePlugin {
       }
     );
 
+    /**
+     * @type {StaticContext}
+     */
     const contextPlugin = this.node.getPlugin('StaticContext');
     const contextIdVar = contextPlugin.genContext();
 
@@ -365,6 +370,7 @@ export default class Function extends BasePlugin {
         pushResumeTemplate({
           dbux,
           // resumeContextId,
+          realContextId: contextIdVar,
           resumeStaticContextId: t.numericLiteral(staticResumeContextId),
           inProgramStaticTraceId: t.numericLiteral(staticPushTid)
         })

@@ -48,6 +48,7 @@ export default class RuntimeAsync {
   /**
    * We use this to associate `contextId` of an async function `f`, with its returned `promise`,
    * in the SPECIAL CASE of `then(f)`.
+   * @deprecated
    */
   setAsyncContextIdPromise(contextId, promise) {
     const promiseId = getPromiseId(promise);
@@ -90,16 +91,16 @@ export default class RuntimeAsync {
     //     return;
     //   }
 
-    const callId = trace.resultCallId;
-    const lastContextId = this._runtime.getLastPoppedContextId();
-    const calledContext = peekBCEContextCheckCallee(callId, lastContextId);
+    // const callId = trace.resultCallId;
+    // const lastContextId = this._runtime.getLastPoppedContextId();
+    // const calledRealContext = peekBCEContextCheckCallee(callId, lastContextId);
 
-    let calledContextId;
+    // let calledContextId;
 
-    if (calledContext) {
-      calledContextId = calledContext?.contextId;
-      this.setAsyncContextIdPromise(calledContextId, promise);
-    }
+    // if (calledRealContext) {
+    //   calledContextId = calledRealContext?.contextId;
+    //   this.setAsyncContextIdPromise(calledContextId, promise);
+    // }
   }
 
   // ###########################################################################

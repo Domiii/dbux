@@ -57,6 +57,8 @@ export default class AwaitExpression extends BaseNode {
     const [argumentNode] = this.getChildNodes();
     argumentNode.addDefaultTrace();
 
+    const realContextIdVar = this.getRealContextIdVar();
+    
     const resumeId = this.addResumeContext();
     const awaitStaticContextId = state.contexts.addStaticContext(path, {
       type: StaticContextType.Await,
@@ -94,6 +96,7 @@ export default class AwaitExpression extends BaseNode {
       data: {
         argumentVar,
         resultVar,
+        realContextIdVar,
         awaitContextIdVar
       },
       meta: {

@@ -198,13 +198,13 @@ export default class ProgramMonitor {
   }
 
 
-  postAwait = (awaitResult, awaitArgument, awaitContextId) => {
+  postAwait = (awaitResult, awaitArgument, realContextId, awaitContextId) => {
     // this._logger.debug('await argument is', awaitArgument);
-    return this._runtimeMonitor.postAwait(this.getProgramId(), awaitResult, awaitArgument, awaitContextId);
+    return this._runtimeMonitor.postAwait(this.getProgramId(), awaitResult, awaitArgument, realContextId, awaitContextId);
   }
 
-  pushResume = (resumeStaticContextId, inProgramStaticTraceId) => {
-    return this._runtimeMonitor.pushResume(this.getProgramId(), 0, resumeStaticContextId, inProgramStaticTraceId, true);
+  pushResume = (realContextId, resumeStaticContextId, inProgramStaticTraceId) => {
+    return this._runtimeMonitor.pushResume(this.getProgramId(), realContextId, 0, resumeStaticContextId, inProgramStaticTraceId, true);
   }
 
   popResume = (resumeContextId) => {
@@ -226,9 +226,9 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.preYield(this.getProgramId(), argument, schedulerTid);
   }
 
-  postYield = (yieldResult, yieldArgument, staticResumeContextId) => {
+  postYield = (yieldResult, yieldArgument, realContextId, staticResumeContextId) => {
     // this._logger.debug('yield argument is', yieldArgument);
-    return this._runtimeMonitor.postYield(this.getProgramId(), yieldResult, yieldArgument, staticResumeContextId);
+    return this._runtimeMonitor.postYield(this.getProgramId(), realContextId, yieldResult, yieldArgument, staticResumeContextId);
   }
 
   // ###########################################################################

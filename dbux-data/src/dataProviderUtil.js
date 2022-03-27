@@ -17,7 +17,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { renderValueSimple } from '@dbux/common/src/util/stringUtil';
 import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
 import StaticTrace from '@dbux/common/src/types/StaticTrace';
-import StaticContextType, { isVirtualStaticContextType } from '@dbux/common/src/types/constants/StaticContextType';
+import StaticContextType, { isRealStaticContext, isVirtualStaticContextType } from '@dbux/common/src/types/constants/StaticContextType';
 import ExecutionContextType, { isRealContextType, isVirtualContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
 import { isCallResult, hasCallId } from '@dbux/common/src/types/constants/traceCategorization';
 // eslint-disable-next-line max-len
@@ -1635,6 +1635,37 @@ export default {
   },
 
   /** @param {DataProvider} dp */
+  getRealStaticContextIdOfContext(dp, contextId) {
+    const context = dp.collections.executionContexts.getById(contextId);
+
+    if (isRealContextType(context?.contextType)) {
+      return context.staticContextId;
+    }
+
+    // const parentContextId = context?.parentContextId;
+    const staticContextId = context?.staticContextId;
+    const staticContext = staticContextId && dp.collections.staticContexts.getById(staticContextId);
+    let parentStaticContext;
+
+    if (
+      staticContext?.parentId &&
+      (parentStaticContext = dp.collections.staticContexts.getById(staticContext?.parentId)) &&
+      isRealStaticContext(parentStaticContext.type)
+    ) {
+      return parentStaticContext.staticContextId;
+    }
+    else {
+      // if (parentContextId && !dp.collections.executionContexts.getById(parentContextId))
+
+      // eslint-disable-next-line max-len
+      dp.logger.trace(`Could not find realContext for contextId=${contextId}, parentStaticContext=${parentStaticContext}, parentStaticContext=`, parentStaticContext);
+      return null;
+    }
+    // const realContext = dp.util.getRealContextOfContext(contextId);
+    // return realContext.staticContextId;
+  },
+
+  /** @param {DataProvider} dp */
   getRealContextIdOfTrace(dp, traceId) {
     const { contextId } = dp.collections.traces.getById(traceId);
     return dp.util.getRealContextIdOfContext(contextId);
@@ -1649,24 +1680,25 @@ export default {
   /** @param {DataProvider} dp */
   getRealContextIdOfContext(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
-    const parentContextId = context?.parentContextId;
-    let parentContext;
 
     if (isRealContextType(context?.contextType)) {
       return contextId;
     }
-    else if (
-      parentContextId &&
-      (parentContext = dp.collections.executionContexts.getById(parentContextId)) &&
+
+    let parentContext;
+    const realContextId = context?.realContextId;
+    if (
+      realContextId &&
+      (parentContext = dp.collections.executionContexts.getById(realContextId)) &&
       isRealContextType(parentContext.contextType)
     ) {
-      return parentContextId;
+      return realContextId;
     }
     else {
       // if (parentContextId && !dp.collections.executionContexts.getById(parentContextId))
 
       // eslint-disable-next-line max-len
-      dp.logger.trace(`Could not find realContext for contextId=${contextId}, parentContextId=${parentContextId}, parentContext=`, dp.collections.executionContexts.getById(parentContextId));
+      dp.logger.trace(`Could not find realContext for contextId=${contextId}, parentContextId=${realContextId}, parentContext="${dp.util.makeContextInfo(realContextId)}"`);
       return null;
     }
   },
@@ -1776,22 +1808,31 @@ export default {
    * @param {DataProvider} dp
    * @return {StaticContext}
    */
-  getStaticExecutionContextOfContext(dp, contextId) {
+  getStaticContextOfContext(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
     const { staticContextId } = context;
     return dp.collections.staticContexts.getById(staticContextId);
     // return dp.collections.staticProgramContexts.
   },
 
+  /**
+   * @param {DataProvider} dp
+   * @return {number}
+   */
+  getStaticContextIdOfContext(dp, contextId) {
+    const context = dp.collections.executionContexts.getById(contextId);
+    return context.staticContextId;
+  },
+
   /** @param {DataProvider} dp */
   isContextProgramContext(dp, contextId) {
-    const staticContext = dp.util.getStaticExecutionContextOfContext(contextId);
+    const staticContext = dp.util.getStaticContextOfContext(contextId);
     return staticContext.type === StaticContextType.Program;
   },
 
   /** @param {DataProvider} dp */
   getProgramContextFilePath(dp, contextId) {
-    const staticContext = dp.util.getStaticExecutionContextOfContext(contextId);
+    const staticContext = dp.util.getStaticContextOfContext(contextId);
     return dp.util.getFilePathFromProgramId(staticContext.programId);
   },
 
@@ -2036,7 +2077,7 @@ export default {
     /**
      * @type {StaticContext}
      */
-    // const staticContext = dp.util.getStaticExecutionContextOfContext(staticContextId);
+    // const staticContext = dp.util.getStaticContextOfContext(staticContextId);
     const staticContext = dp.collections.staticContexts.getById(staticContextId);
     const { displayName, loc, type } = staticContext;
     const program = dp.util.getStaticContextProgram(staticContextId);

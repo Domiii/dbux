@@ -52,6 +52,11 @@ export default class ExecutionContext {
   contextId;
 
   /**
+   * @type {number?}
+   */
+  realContextId;
+
+  /**
    * @type {number}
    */
   staticContextId;

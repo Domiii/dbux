@@ -17,11 +17,7 @@ export default class TryStatement extends BaseNode {
    * @param {BaseNode} node
    */
   addConsequentStartTrace(node, traceType, traceCall) {
-    /**
-     * @type {StaticContext}
-     */
-    const contextPlugin = this.peekPluginForce('StaticContext');
-    const { contextIdVar: realContextIdVar } = contextPlugin;
+    const { realContextIdVar } = this;
 
     const moreTraceCallArgs = [];
     if (realContextIdVar) {
@@ -33,7 +29,7 @@ export default class TryStatement extends BaseNode {
     }
 
     // add `awaitContextId` to trace call args (if is async function)
-    contextPlugin.addAwaitContextIdVarArg(moreTraceCallArgs);
+    this.StaticContext.addAwaitContextIdVarArg(moreTraceCallArgs);
 
     const traceData = {
       path: node.path,

@@ -179,6 +179,7 @@ export function peekBCEContextCheckCallee(callId, lastContextId) {
   const calleeRef = bceTrace && getRealBCECalleeFunctionRef(bceTrace);
 
   // 2. get last executed real context
+  // TODO: getLastRealContext is busted
   const context = executionContextCollection.getLastRealContext(lastContextId);
   const contextFunctionRef = getFunctionRefByContext(context);
 

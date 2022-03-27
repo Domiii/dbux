@@ -45,7 +45,7 @@ export const buildPostAwait = buildTraceCall(
   // future-work: I forgot why `tid` was not part of the `postAwait` call?
   `(
   %%resultVar%% = %%awaitNode%%,
-  %%postAwait%%(%%resultVar%%, %%argumentVar%%, %%awaitContextIdVar%%),
+  %%postAwait%%(%%resultVar%%, %%argumentVar%%, %%realContextIdVar%%, %%awaitContextIdVar%%),
   %%tid%%,
   %%resultVar%%
 )`,
@@ -57,6 +57,7 @@ export const buildPostAwait = buildTraceCall(
       data: {
         argumentVar,
         resultVar,
+        realContextIdVar,
         awaitContextIdVar
       }
     } = traceCfg;
@@ -68,6 +69,7 @@ export const buildPostAwait = buildTraceCall(
       awaitNode,
       argumentVar,
       postAwait,
+      realContextIdVar,
       awaitContextIdVar,
       tid
     };

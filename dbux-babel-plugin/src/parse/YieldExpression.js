@@ -46,6 +46,7 @@ export default class YieldExpression extends BaseNode {
     const [argumentNode] = this.getChildNodes();
     argumentNode?.addDefaultTrace();
 
+    const realContextIdVar = this.getRealContextIdVar();
     const staticResumeContextId = this.addResumeContext();
 
     const argumentVar = Traces.generateDeclaredUidIdentifier('arg');
@@ -77,6 +78,7 @@ export default class YieldExpression extends BaseNode {
       data: {
         argumentVar,
         resultVar,
+        realContextIdVar,
         staticResumeContextId
       },
       meta: {

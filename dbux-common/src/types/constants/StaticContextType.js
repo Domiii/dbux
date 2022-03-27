@@ -27,7 +27,7 @@ export function isVirtualStaticContextType(staticContextType) {
   return interruptableChildTypes[staticContextType];
 }
 
-export function isRealContext(staticContextType) {
+export function isRealStaticContext(staticContextType) {
   return !isVirtualStaticContextType(staticContextType);
 }
 

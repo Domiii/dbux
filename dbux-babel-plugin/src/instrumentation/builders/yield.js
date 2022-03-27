@@ -33,7 +33,7 @@ export const buildWrapYield = buildTraceCall(
 export const buildPostYield = buildTraceCall(
   `(
   %%resultVar%% = %%yieldNode%%,
-  %%postYield%%(%%resultVar%%, %%argumentVar%%, %%staticResumeContextId%%),
+  %%postYield%%(%%resultVar%%, %%argumentVar%%, %%realContextIdVar%%, %%staticResumeContextId%%),
   %%tid%%,
   %%resultVar%%
 )`,
@@ -45,6 +45,7 @@ export const buildPostYield = buildTraceCall(
       data: {
         argumentVar,
         resultVar,
+        realContextIdVar,
         staticResumeContextId
       }
     } = traceCfg;
@@ -55,6 +56,7 @@ export const buildPostYield = buildTraceCall(
       resultVar,
       yieldNode,
       argumentVar,
+      realContextIdVar,
       staticResumeContextId: t.numericLiteral(staticResumeContextId),
       postYield,
       tid

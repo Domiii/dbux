@@ -234,11 +234,11 @@ export function makeContextLabelPlain(staticContextId, app) {
  * @return {string}
  */
 export function makeContextLabel(context, app) {
-  const { contextType: type, staticContextId } = context;
+  const { contextId, contextType: type } = context;
   const dp = app.dataProvider;
+  const realStaticContextId = dp.util.getRealStaticContextIdOfContext(contextId);
 
   if (isResumeType(type)) {
-    const { contextId } = context;
     const firstTrace = dp.indexes.traces.byContext.getFirst(contextId);
     if (firstTrace) {
       const staticTrace = firstTrace && dp.collections.staticTraces.getById(firstTrace.staticTraceId);
@@ -262,14 +262,14 @@ export function makeContextLabel(context, app) {
           virtualLabel = '(gen start)';
         }
       }
-      return `${makeContextLabelPlain(staticContextId, app)} | ${virtualLabel}`;
+      return `${makeContextLabelPlain(realStaticContextId, app)} | ${virtualLabel}`;
     }
     else {
       // bug: could not find any of the context's traces
     }
   }
 
-  return makeContextLabelPlain(staticContextId, app);
+  return makeContextLabelPlain(realStaticContextId, app);
 }
 
 const ContextCallerLabelByEventUpdateType = {

@@ -508,7 +508,7 @@ export default class Runtime {
   // async stuff
   // ###########################################################################
 
-  registerAwait(awaitContextId, parentContext, awaitArgument) {
+  registerAwait(awaitContextId, realContextId, awaitArgument) {
     if (!this.isExecuting()) {
       logError('Encountered `await`, but there was no active stack ', awaitContextId);
       return;
