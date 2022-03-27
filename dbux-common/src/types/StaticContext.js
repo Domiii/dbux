@@ -18,6 +18,14 @@ export default class StaticContext {
    */
   isInterruptable;
   /**
+   * @type {bool}
+   */
+  isAsync;
+  /**
+   * @type {bool}
+   */
+  isGenerator;
+  /**
    * @type {number}
    */
   staticContextId;

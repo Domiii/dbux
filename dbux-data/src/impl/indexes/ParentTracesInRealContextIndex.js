@@ -6,7 +6,7 @@ import RuntimeDataProvider from '../../RuntimeDataProvider';
 
 
 /**
- * TODO: [generator-fix] does not work correctly for generator functions yet
+ * NOTE: used for navigation to find "next child context's trace"
  * 
  * @extends {CollectionIndex<Trace>}
  */

@@ -1,4 +1,4 @@
-import ExecutionContextType from '@dbux/common/src/types/constants/ExecutionContextType';
+import ExecutionContextType, { isAsyncResumeType } from '@dbux/common/src/types/constants/ExecutionContextType';
 import StaticContextType from '@dbux/common/src/types/constants/StaticContextType';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
@@ -130,7 +130,7 @@ export default class ExecutionContextCollection extends Collection {
       const { contextId, contextType } = context;
       const { isInterruptable } = util.getContextStaticContext(contextId);
 
-      if (ExecutionContextType.is.ResumeAsync(contextType)) {
+      if (isAsyncResumeType(contextType)) {
         const returnRef = util.getReturnValueRefOfContext(contextId);
         const returnedPromiseRef = returnRef?.refId && util.getPromiseValueRef(returnRef.refId);
         // returnedPromiseRef.

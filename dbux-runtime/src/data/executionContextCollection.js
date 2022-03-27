@@ -166,7 +166,7 @@ export class ExecutionContextCollection extends Collection {
     }
     this._pushAndSend(context);
 
-    // if (!parentContextId) {
+    // if (!parentContextId || isVirtualRoot) {
     //   this.logger.warn(`CREATE root: ${context.contextId}`, this.makeContextInfo(contextId));
     // }
 

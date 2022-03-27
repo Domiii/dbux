@@ -2,7 +2,6 @@ import template from '@babel/template';
 import * as t from "@babel/types";
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import StaticContextType from '@dbux/common/src/types/constants/StaticContextType';
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import BasePlugin from './BasePlugin';
 import { getNodeNames } from '../../visitors/nameVisitors';
 import { doesNodeEndScope } from '../../helpers/astUtil';
@@ -11,6 +10,7 @@ import { buildContextEndTrace } from '../../instrumentation/context';
 import { buildRegisterParams } from '../../instrumentation/builders/function';
 // import { locToString } from '../../helpers/locHelpers';
 import { astNodeToString, pathToStringAnnotated } from '../../helpers/pathHelpers';
+import { ZeroNode } from '../../instrumentation/builders/buildUtil';
 
 /** @typedef { import("./StaticContext").default } StaticContext */
 
@@ -117,12 +117,13 @@ export default class Function extends BasePlugin {
 
   enter() {
     // TODO: move `pop`s to correct phase
-    const { 
+    const {
       isAsync,
       isGenerator,
       node: { path, state }
     } = this;
 
+    const isInterruptable = isAsync || isGenerator;
     const bodyPath = path.get('body');
 
     const names = getNodeNames(path.node);
@@ -132,12 +133,24 @@ export default class Function extends BasePlugin {
     } = names;
 
     const staticContextData = {
-      type: 2, // {StaticContextType}
       name,
       displayName,
-      isAsync,
-      isGenerator
+      // isInterruptable
     };
+
+    if (isInterruptable) {
+      // staticContextData.isAsync = isAsync;
+      // staticContextData.isGenerator = isGenerator;
+      if (isAsync && isGenerator) {
+        staticContextData.type = StaticContextType.ResumeAsyncGen;
+      }
+      else {
+        staticContextData.type = isAsync ? StaticContextType.ResumeAsync : StaticContextType.ResumeGen;
+      }
+    }
+    else {
+      staticContextData.type = StaticContextType.Function;
+    }
 
     // this.node.getPlugin('StaticContext')
 
@@ -165,10 +178,9 @@ export default class Function extends BasePlugin {
 
     // staticResumeContextId
     let staticResumeContextId;
-    const isInterruptable = isAsync || isGenerator;
     if (isInterruptable) {
       // TODO: also add this to top-level context, if it contains `await`
-      staticResumeContextId = addResumeContext(bodyPath, state, staticContextId, 
+      staticResumeContextId = addResumeContext(bodyPath, state, staticContextId,
         isAsync ? StaticContextType.ResumeAsync : StaticContextType.ResumeGen
       );
     }
@@ -236,11 +248,12 @@ export default class Function extends BasePlugin {
   }
 
   buildPush = () => {
-    // TODO: capture closure variables, to get their correct `declarationTid`
-
     const {
-      contextIdVar, staticContextId, staticPushTid, staticResumeContextId
-    } = this.data;
+      isInterruptable,
+      data: {
+        contextIdVar, staticContextId, staticPushTid, staticResumeContextId
+      }
+    } = this;
     const { state } = this.node;
     const {
       ids: {
@@ -252,6 +265,22 @@ export default class Function extends BasePlugin {
 
     const definitionTid = this.functionTraceCfg.tidIdentifier;
 
+    const { ids: { dbux } } = state;
+
+    if (isInterruptable) {
+      // const resumeContextId = bodyPath.scope.generateUid('resumeCid');
+      return [
+        pushResumeTemplate({
+          dbux,
+          // resumeContextId,
+          // NOTE: `realContextId` and `contextType` will be determined by RuntimeMonitor.pushResume.
+          realContextId: ZeroNode,
+          resumeStaticContextId: t.numericLiteral(staticResumeContextId),
+          inProgramStaticTraceId: t.numericLiteral(staticPushTid)
+        })
+      ];
+    }
+
     return [
       pushImmediateTemplate({
         contextIdVar,
@@ -259,7 +288,7 @@ export default class Function extends BasePlugin {
         staticContextId: t.numericLiteral(staticContextId),
         inProgramStaticTraceId: t.numericLiteral(staticPushTid),
         definitionTid,
-        isInterruptable: t.booleanLiteral(!!staticResumeContextId)
+        // isInterruptable: t.booleanLiteral(!!staticResumeContextId)
       })
     ];
   }
@@ -363,18 +392,10 @@ export default class Function extends BasePlugin {
 
     if (isInterruptable) {
       // this is an interruptable function -> push + pop "resume contexts"
-      const { ids: { dbux } } = state;
-      // const resumeContextId = bodyPath.scope.generateUid('resumeCid');
-      pushes = [
-        ...pushes,
-        pushResumeTemplate({
-          dbux,
-          // resumeContextId,
-          realContextId: contextIdVar,
-          resumeStaticContextId: t.numericLiteral(staticResumeContextId),
-          inProgramStaticTraceId: t.numericLiteral(staticPushTid)
-        })
-      ];
+
+      // pushes = [
+      //   ...pushes,
+      // ];
 
       pops = [
         // popResumeTemplate({

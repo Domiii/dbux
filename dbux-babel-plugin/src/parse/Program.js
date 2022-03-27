@@ -110,14 +110,16 @@ export default class Program extends BaseNode {
     /**
      * NOTE: push/pop context and traces is hardcoded into `ProgramMonitor`
      *        -> Look for: `Program{Start,Stop}TraceId`
-     * TODO: make sure, final `PopImmediate` has the highest `staticTraceId` of the program instead
+     * future-work: make sure, final `PopImmediate` has the highest `staticTraceId` of the program instead
      */
     state.contexts.addStaticContext(path, staticProgramContext);
 
     state.traces.addTrace(path, { type: TraceType.PushImmediate });      // === 1
     state.traces.addTrace(path, { type: TraceType.PopImmediate });       // === 2
 
-    // TODO: must also call _fixContext with correct arguments (see Function#buildPop)!!
+    // TODO: async program contexts
+    //    → call _fixContext with correct arguments (see Function#buildPop)!!
+    //    → add async virtual contexts correctly
 
     // const contextPlugin = this('StaticContext');
     // contextPlugin.addAwaitContextIdVarArg(moreTraceCallArgs);

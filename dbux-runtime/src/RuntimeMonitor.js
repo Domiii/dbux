@@ -166,7 +166,7 @@ export default class RuntimeMonitor {
 
     if (!parentContextId) {
       // → root
-      // NOTE: the breakpoint does not make a difference in terms of performance
+      /// // NOTE: bufferBreakpoint here would not make a difference in terms of performance
       // getDefaultClient().bufferBreakpoint();
       if (!this.checkCanRecord()) {
         // hackfix: omit root (safeguard against potential infinite loops)
@@ -204,7 +204,7 @@ export default class RuntimeMonitor {
     if (!parentContextId) {
       this._runtime._updateVirtualRootContext(contextId);
     }
-    this._runtime.push(contextId, isInterruptable);
+    this._runtime.push(contextId, isInterruptable || false);
 
     if (Verbose) {
       _debug(
@@ -545,6 +545,10 @@ export default class RuntimeMonitor {
       contextType,
       stackDepth, runId, realContextId, parentContextId, parentTraceId, programId, resumeStaticContextId, schedulerTraceId
     );
+    if (!realContextId) {
+      // hackfix: this is first push of interruptable function
+      resumeContext.realContextId = resumeContext.contextId;
+    }
 
     const { contextId: resumeContextId } = resumeContext;
     this._runtime.push(resumeContextId);

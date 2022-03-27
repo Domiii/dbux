@@ -11,6 +11,7 @@ let staticContextTypeObj = {
   Await: 3,
   ResumeAsync: 4,
   ResumeGen: 5,
+  ResumeAsyncGen: 6,
 };
 
 /**
@@ -23,12 +24,20 @@ const interruptableChildTypes = new Array(StaticContextType.getValueMaxIndex()).
 interruptableChildTypes[StaticContextType.Await] = true;
 interruptableChildTypes[StaticContextType.ResumeAsync] = true;
 interruptableChildTypes[StaticContextType.ResumeGen] = true;
+interruptableChildTypes[StaticContextType.ResumeAsyncGen] = true;
 export function isVirtualStaticContextType(staticContextType) {
   return interruptableChildTypes[staticContextType];
 }
 
 export function isRealStaticContext(staticContextType) {
   return !isVirtualStaticContextType(staticContextType);
+}
+
+const asyncResumeTypes = new Array(StaticContextType.getValueMaxIndex()).map((/* _ */) => false);
+asyncResumeTypes[StaticContextType.ResumeAsync] = true;
+asyncResumeTypes[StaticContextType.ResumeAsyncGen] = true;
+export function isAsyncResumeType(staticContextType) {
+  return asyncResumeTypes[staticContextType];
 }
 
 export default StaticContextType;

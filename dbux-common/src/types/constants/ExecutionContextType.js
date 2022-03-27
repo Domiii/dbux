@@ -7,7 +7,8 @@ let ExecutionContextType = {
   ExecuteCallback: 2,
   Await: 3,
   ResumeAsync: 4,
-  ResumeGen: 5
+  ResumeGen: 5,
+  ResumeAsyncGen: 6,
 };
 
 // NOTE: we cannot use `const` in a single assignment here, because that way, type members would not be recognized.
@@ -18,6 +19,7 @@ const virtualTypes = new Array(ExecutionContextType.getValueMaxIndex()).map((/* 
 virtualTypes[ExecutionContextType.Await] = true;
 virtualTypes[ExecutionContextType.ResumeAsync] = true;
 virtualTypes[ExecutionContextType.ResumeGen] = true;
+virtualTypes[ExecutionContextType.ResumeAsyncGen] = true;
 export function isVirtualContextType(executionContextType) {
   return virtualTypes[executionContextType];
 }
@@ -25,12 +27,20 @@ export function isVirtualContextType(executionContextType) {
 const resumeTypes = new Array(ExecutionContextType.getValueMaxIndex()).map((/* _ */) => false);
 resumeTypes[ExecutionContextType.ResumeAsync] = true;
 resumeTypes[ExecutionContextType.ResumeGen] = true;
+resumeTypes[ExecutionContextType.ResumeAsyncGen] = true;
 export function isResumeType(executionContextType) {
   return resumeTypes[executionContextType];
 }
 
 export function isRealContextType(executionContextType) {
   return !isVirtualContextType(executionContextType);
+}
+
+const asyncResumeTypes = new Array(ExecutionContextType.getValueMaxIndex()).map((/* _ */) => false);
+asyncResumeTypes[ExecutionContextType.ResumeAsync] = true;
+asyncResumeTypes[ExecutionContextType.ResumeAsyncGen] = true;
+export function isAsyncResumeType(executionContextType) {
+  return asyncResumeTypes[executionContextType];
 }
 
 export default ExecutionContextType;

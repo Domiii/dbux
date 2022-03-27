@@ -18,7 +18,7 @@ import { renderValueSimple } from '@dbux/common/src/util/stringUtil';
 import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
 import StaticTrace from '@dbux/common/src/types/StaticTrace';
 import StaticContextType, { isRealStaticContext, isVirtualStaticContextType } from '@dbux/common/src/types/constants/StaticContextType';
-import ExecutionContextType, { isRealContextType, isVirtualContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
+import ExecutionContextType, { isRealContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
 import { isCallResult, hasCallId } from '@dbux/common/src/types/constants/traceCategorization';
 // eslint-disable-next-line max-len
 import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory, ValuePruneState, getSimpleTypeString } from '@dbux/common/src/types/constants/ValueTypeCategory';
@@ -1324,19 +1324,6 @@ export default {
   },
 
   /**
-   * @param {DataProvider} dp
-   */
-  getReturnTraceOfRealContext(dp, contextId) {
-    if (dp.util.isContextVirtual(contextId)) {
-      const realContextId = dp.util.getRealContextIdOfContext(contextId);
-      return realContextId && dp.util.getReturnTraceOfInterruptableContext(realContextId);
-    }
-    else {
-      return dp.util.getReturnTraceOfContext(contextId);
-    }
-  },
-
-  /**
    * Requires the given context to have (virtual) child contexts.
    * WARNING: does not work for non-interruptable functions.
    * @param {DataProvider} dp
@@ -1356,6 +1343,8 @@ export default {
 
   /**
    * WARNING: does not work for `realContextId` of interruptable functions (need virtual `Resume` contextId instead).
+   *    → In that case: use {@link #getReturnTraceOfInterruptableContext} instead.
+   * 
    * @param {DataProvider} dp
    */
   getReturnTraceOfContext(dp, contextId) {
@@ -1666,6 +1655,34 @@ export default {
   },
 
   /** @param {DataProvider} dp */
+  getRealStaticContextIdOfStaticContext(dp, staticContextId) {
+    const { parentId, type } = dp.collections.staticContexts.getById(staticContextId);
+
+    if (!isVirtualStaticContextType(type)) {
+      return staticContextId;
+    }
+
+    let parentStaticContext;
+
+    if (
+      parentId &&
+      (parentStaticContext = dp.collections.staticContexts.getById(parentId)) &&
+      isRealStaticContext(parentStaticContext.type)
+    ) {
+      return parentStaticContext.staticContextId;
+    }
+    else {
+      // if (parentContextId && !dp.collections.executionContexts.getById(parentContextId))
+
+      // eslint-disable-next-line max-len
+      dp.logger.trace(`Could not find realContext for staticContextId=${staticContextId}, parentStaticContext=${parentStaticContext}, parentStaticContext=`, parentStaticContext);
+      return null;
+    }
+    // const realContext = dp.util.getRealContextOfContext(contextId);
+    // return realContext.staticContextId;
+  },
+
+  /** @param {DataProvider} dp */
   getRealContextIdOfTrace(dp, traceId) {
     const { contextId } = dp.collections.traces.getById(traceId);
     return dp.util.getRealContextIdOfContext(contextId);
@@ -1681,9 +1698,9 @@ export default {
   getRealContextIdOfContext(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
 
-    if (isRealContextType(context?.contextType)) {
-      return contextId;
-    }
+    // if (isRealContextType(context?.contextType)) {
+    //   return contextId;
+    // }
 
     let parentContext;
     const realContextId = context?.realContextId;
@@ -1692,15 +1709,20 @@ export default {
       (parentContext = dp.collections.executionContexts.getById(realContextId)) &&
       isRealContextType(parentContext.contextType)
     ) {
+      // looked up actual realContextId
       return realContextId;
     }
     else {
-      // if (parentContextId && !dp.collections.executionContexts.getById(parentContextId))
-
-      // eslint-disable-next-line max-len
-      dp.logger.trace(`Could not find realContext for contextId=${contextId}, parentContextId=${realContextId}, parentContext="${dp.util.makeContextInfo(realContextId)}"`);
-      return null;
+      // default
+      return contextId;
     }
+    // else {
+    //   // if (parentContextId && !dp.collections.executionContexts.getById(parentContextId))
+
+    //   // eslint-disable-next-line max-len
+    //   dp.logger.trace(`Could not find realContext for contextId=${contextId}, parentContextId=${realContextId}, parentContext="${dp.util.makeContextInfo(realContextId)}"`);
+    //   return null;
+    // }
   },
 
   /** @param {DataProvider} dp */
@@ -1956,41 +1978,41 @@ export default {
   // trace grouping/searching
   // ###########################################################################
 
-  /**
-   * @param {DataProvider} dp
-   */
-  isContextVirtual(dp, contextId) {
-    const context = dp.collections.executionContexts.getById(contextId);
-    const {
-      contextType
-    } = context;
-    return isVirtualContextType(contextType);
-  },
+  // /**
+  //  * @param {DataProvider} dp
+  //  */
+  // isContextVirtual(dp, contextId) {
+  //   const context = dp.collections.executionContexts.getById(contextId);
+  //   const {
+  //     contextType
+  //   } = context;
+  //   return isVirtualContextType(contextType);
+  // },
 
   /**
    * @param {DataProvider} dp 
    */
-  getAllTracesOfStaticContext(dp, staticContextId) {
+  getAllTracesOfRealStaticContext(dp, staticContextId) {
     const staticContext = dp.collections.staticContexts.getById(staticContextId);
     if (!staticContext) {
       return null;
     }
 
-    const {
-      type: staticContextType
-    } = staticContext;
+    const realStaticContextId = dp.util.getRealStaticContextIdOfStaticContext(staticContextId);
+    return realStaticContextId && dp.indexes.traces.byRealStaticContext.get(realStaticContextId) || EmptyArray;
 
-    let traces;
-    if (isVirtualStaticContextType(staticContextType)) {
-      // Get all traces of the actual function, not it's virtual children (such as `Await`, `Resume` et al)
-      // NOTE: `Await` and `Yield` contexts do not contain traces, only `Resume` contexts contain traces for interruptable functions
-      traces = dp.util.getTracesOfParentStaticContext(staticContextId);
-    }
-    else {
-      // find all traces belonging to that staticContext
-      traces = dp.indexes.traces.byStaticContext.get(staticContextId) || EmptyArray;
-    }
-    return traces;
+    // const {
+    //   type: staticContextType
+    // } = staticContext;
+    // const parentStaticContext = dp.collections.staticContexts.getById(parentStaticContextId);
+    // let traces;
+    // if (isVirtualStaticContextType(staticContextType)) {
+    // }
+    // else {
+    //   // find all traces belonging to that staticContext
+    //   traces = dp.indexes.traces.byStaticContext.get(staticContextId) || EmptyArray;
+    // }
+    // return traces;
   },
 
   /**
@@ -1998,16 +2020,6 @@ export default {
    */
   getAllTracesOfType(dp, traceType) {
     return dp.collections.traces.getAllActual().filter(t => dp.util.getTraceType(t.traceId) === traceType);
-  },
-
-  /**
-   * @param {DataProvider} dp 
-   */
-  getTracesOfParentStaticContext(dp, staticContextId) {
-    const staticContext = dp.collections.staticContexts.getById(staticContextId);
-    const parentStaticContextId = staticContext.parentId;
-    // const parentStaticContext = dp.collections.staticContexts.getById(parentStaticContextId);
-    return dp.indexes.traces.byParentStaticContext.get(parentStaticContextId) || EmptyArray;
   },
 
   /**
@@ -2340,11 +2352,13 @@ export default {
   /** @param {DataProvider} dp */
   getChildrenOfContextInRoot(dp, contextId) {
     return dp.util.getChildrenOfContext(contextId).filter(context => {
-      // if (context.isVirtualRoot) {
-      //   return false;
-      // }
+      if (context.isVirtualRoot) {
+        // ignore separate root
+        return false;
+      }
 
       if (ExecutionContextType.is.Await(context.contextType)) {
+        // ignore await contexts
         return false;
       }
       return true;

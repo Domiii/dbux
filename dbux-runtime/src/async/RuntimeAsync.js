@@ -208,9 +208,9 @@ export default class RuntimeAsync {
    *  #########################################################################*/
 
   virtualRootStarted(rootId) {
-    // [edit-after-send]
     const context = executionContextCollection.getById(rootId);
     if (context) {
+      // [edit-after-send]
       context.isVirtualRoot = true;
 
       // WARNING: `new Error().stack` might internally call functions that are instrumented by user code
