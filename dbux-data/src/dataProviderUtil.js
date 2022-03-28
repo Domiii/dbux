@@ -1712,8 +1712,7 @@ export default {
     const realContextId = context?.realContextId;
     if (
       realContextId &&
-      (parentContext = dp.collections.executionContexts.getById(realContextId)) &&
-      isRealContextType(parentContext.contextType)
+      (parentContext = dp.collections.executionContexts.getById(realContextId))
     ) {
       // looked up actual realContextId
       return realContextId;
