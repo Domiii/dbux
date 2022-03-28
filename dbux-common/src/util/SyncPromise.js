@@ -1,6 +1,6 @@
 import sleep from './sleep';
 
-export default class TriggerablePromise {
+export default class SyncPromise {
   promise;
 
   _resolve;

@@ -10,6 +10,8 @@ import GraphBase from '../GraphBase';
 
 /** @typedef {import('../controllers/PopperManager').default} PopperManager */
 
+const Verbose = false;
+
 class AsyncGraph extends GraphBase {
   /**
    * @return {PopperManager}
@@ -533,7 +535,7 @@ class AsyncGraph extends GraphBase {
             asyncNodeData.valueTraceId = valueTraceId;
           }
           else {
-            this.logger.warn(`[updateRootValueLabel] update before asyncNodeData is set.`);
+            Verbose && this.logger.warn(`[updateRootValueLabel] update before asyncNodeData is set.`);
           }
         });
       }

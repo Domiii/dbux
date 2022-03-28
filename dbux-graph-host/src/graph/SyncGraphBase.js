@@ -416,7 +416,7 @@ class CallGraphNodes {
       contexts = node.group.contexts;
     }
     else {
-      throw new Error(`Calling "_handleContextNodeDisposed" with non-ContextNode parameter`);
+      throw new Error(`Calling "_handleContextNodeDisposed" with non-ContextNode parameter: ${node}`);
     }
 
     for (const context of contexts) {
