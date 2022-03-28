@@ -1627,7 +1627,7 @@ export default {
   /** @param {DataProvider} dp */
   getRealStaticContextIdOfContext(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
-
+    
     // NOTE: "first virtual" context of context is "real context"
     
     if (isRealContextType(context?.contextType)) {

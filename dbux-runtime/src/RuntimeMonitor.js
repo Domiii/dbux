@@ -1039,7 +1039,7 @@ export default class RuntimeMonitor {
     if (realContextId && awaitContextId && this.runtime.isContextWaiting(awaitContextId)) {
       // we are resuming an async context without knowing how we got here
       debug(`fixContext(${[programId, realContextId, awaitContextId]})`);
-      this.postAwait(programId, undefined, undefined, awaitContextId);
+      this.postAwait(programId, undefined, undefined, realContextId, awaitContextId);
     }
   }
 
@@ -1492,6 +1492,7 @@ export default class RuntimeMonitor {
   //   const result = this.postAwait(
   //     await this.wrapAwait(promise, awaitContextId = this.preAwait(staticId, preTraceId)),
   //     awaitContextId,
+  //     realContextId,
   //     resumeTraceId
   //   );
 
