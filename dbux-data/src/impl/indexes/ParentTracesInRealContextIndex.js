@@ -35,10 +35,10 @@ export default class ParentTracesInRealContextIndex extends CollectionIndex {
         added: (contexts) => {
           for (const context of contexts) {
             const { parentTraceId, contextType } = context;
-            // skip parent trace of virtualContext
-            if (isVirtualContextType(contextType)) {
-              continue;
-            }
+            // // skip parent trace of virtualContext
+            // if (isVirtualContextType(contextType)) {
+            //   continue;
+            // }
             if (parentTraceId && !this.addedTraces.has(parentTraceId)) {
               this.addEntryById(parentTraceId);
               this.addedTraces.add(parentTraceId);
