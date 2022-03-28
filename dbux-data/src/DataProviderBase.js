@@ -356,6 +356,10 @@ export default class DataProviderBase {
     }
   }
 
+  /**
+   * Called after `postAdd`.
+   * That includes add calls from collections that add data manually.
+   */
   _notifyData(collectionNames, allData) {
     // fire internal event listeners
     for (const collectionName of collectionNames) {

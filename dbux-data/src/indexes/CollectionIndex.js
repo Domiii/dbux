@@ -243,6 +243,14 @@ export class CollectionIndexConfig {
  * @typedef {CollectionIndexConfig} CollectionIndexConfig
  */
 
+export class CollectionIndexDependencies {
+  /**
+   * NOTE: `dependencies.collections.X.added` event triggered by `_onDataInternal`.
+   * @type { Object<string, Object<string, function>> }
+   */
+  collections;
+}
+
 /**
  * @template T
  */
@@ -264,6 +272,11 @@ export default class CollectionIndex {
   _byKey;
 
   /**
+   * @type {CollectionIndexDependencies}
+   */
+  dependencies;
+
+  /**
    * 
    * @param {string} collectionName 
    * @param {string} indexName
@@ -273,7 +286,6 @@ export default class CollectionIndex {
     this.collectionName = collectionName;
     this.name = indexName;
     this.logger = newLogger(`indexes.${collectionName}.${indexName}`);
-
     const { addOnNewData = true, isMap = false, containerCfg = EmptyObject, isContainerSet = false } = cfg;
     this.addOnNewData = addOnNewData;
     this.isMap = isMap;
