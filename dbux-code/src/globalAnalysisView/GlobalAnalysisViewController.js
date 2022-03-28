@@ -50,13 +50,17 @@ export default class GlobalAnalysisViewController {
    *  #########################################################################*/
 
   async focusOnSearchResult() {
-    const searchResultNode = this.treeDataProvider.getRootByClass(GlobalSearchNode);
+    /**
+     * NOTE: VSCode sometimes failed to reveal if `refresh` is executing simultaneously, which causes an error:
+     *  `Error: TreeError [dbuxTraceDetailsView] Data tree node not found: [object Object]`.
+     *  But currently VSCode API does not support thenable `refresh`.
+     */
+    if (!this.treeView.visible) {
+      return;
+    }
+
     try {
-      /**
-       * NOTE: VSCode sometimes failed to reveal if `refresh` is executing simultaneously, which causes an error:
-       *  `Error: TreeError [dbuxTraceDetailsView] Data tree node not found: [object Object]`.
-       *  But currently VSCode API does not support thenable `refresh`.
-       */
+      const searchResultNode = this.treeDataProvider.getRootByClass(GlobalSearchNode);
       await this.treeView.reveal(searchResultNode, { select: false, expand: 1 });
     }
     catch (err) {

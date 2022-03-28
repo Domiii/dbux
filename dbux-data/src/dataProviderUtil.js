@@ -1629,7 +1629,7 @@ export default {
     const context = dp.collections.executionContexts.getById(contextId);
     
     // NOTE: "first virtual" context of context is "real context"
-    
+
     if (isRealContextType(context?.contextType)) {
       return context.staticContextId;
     }
@@ -1641,7 +1641,7 @@ export default {
 
     if (
       staticContext?.parentId &&
-      (parentStaticContext = dp.collections.staticContexts.getById(staticContext?.parentId)) 
+      (parentStaticContext = dp.collections.staticContexts.getById(staticContext?.parentId))
       // &&      isRealStaticContext(parentStaticContext.type)
     ) {
       return parentStaticContext.staticContextId;
@@ -1672,7 +1672,7 @@ export default {
 
     if (
       parentId &&
-      (parentStaticContext = dp.collections.staticContexts.getById(parentId)) 
+      (parentStaticContext = dp.collections.staticContexts.getById(parentId))
       // && isRealStaticContext(parentStaticContext.type)
     ) {
       return parentStaticContext.staticContextId;
@@ -1738,13 +1738,8 @@ export default {
 
   /** @param {DataProvider} dp */
   getTracesOfRealContext(dp, traceId) {
-    const { contextId } = dp.collections.traces.getById(traceId);
-    return dp.indexes.traces.byRealContext.get(contextId);
-    // if (dp.util.isTraceInRealContext(traceId)) {
-    //   return dp.indexes.traces.byContext.get(contextId);
-    // }
-    // else {
-    // }
+    const realContextId = dp.util.getRealContextIdOfTrace(traceId);
+    return dp.indexes.traces.byRealContext.get(realContextId);
   },
 
   /** @param {DataProvider} dp */
@@ -2140,7 +2135,7 @@ export default {
     else {
       trace = traceOrTraceOrTraceId;
     }
-    
+
     if (!trace) {
       return `#${traceOrTraceOrTraceId} (null)`;
     }
