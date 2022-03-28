@@ -50,13 +50,9 @@ export default class GlobalAnalysisViewController {
    *  #########################################################################*/
 
   async focusOnSearchResult() {
-    const searchResultNode = this.treeDataProvider.getRootByClass(GlobalSearchNode);
     try {
-      /**
-       * NOTE: VSCode sometimes failed to reveal if `refresh` is executing simultaneously, which causes an error:
-       *  `Error: TreeError [dbuxTraceDetailsView] Data tree node not found: [object Object]`.
-       *  But currently VSCode API does not support thenable `refresh`.
-       */
+      await this.treeDataProvider.showView();
+      const searchResultNode = this.treeDataProvider.getRootByClass(GlobalSearchNode);
       await this.treeView.reveal(searchResultNode, { select: false, expand: 1 });
     }
     catch (err) {
@@ -75,8 +71,7 @@ export default class GlobalAnalysisViewController {
 
   async revealSelectedError() {
     if (!this.children) {
-      const errorNode = this.treeDataProvider.getRootByClass(GlobalErrorsNode);
-      await this.treeView.reveal(errorNode, { select: false, expand: true });
+      await this.treeDataProvider.showView();
     }
     const errorNode = this.treeDataProvider.getRootByClass(GlobalErrorsNode);
     const selectedErrorNode = errorNode.getSelectedChild();
@@ -129,6 +124,9 @@ export function initGlobalAnalysisView(context) {
   return controller;
 }
 
+/**
+ * @returns {GlobalAnalysisViewController}
+ */
 export function getGlobalAnalysisViewController() {
   if (!controller) {
     logError(`Cannot get GlobalAnalysisViewController before initialization.`);

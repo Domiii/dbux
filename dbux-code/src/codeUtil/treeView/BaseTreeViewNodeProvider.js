@@ -96,6 +96,14 @@ export default class BaseTreeViewNodeProvider {
     }
   }
 
+  /**
+   * hackfix: VSCode API does not guarantee `TreeView.reveal` works with `undefined`, but we've tested that it works in VSCode 1.63.2.
+   *  @see https://code.visualstudio.com/api/references/vscode-api#TreeView
+   */
+  async showView() {
+    return await this.treeView.reveal(undefined);
+  }
+
   // ###########################################################################
   // basic event handling
   // ###########################################################################
@@ -389,7 +397,7 @@ export default class BaseTreeViewNodeProvider {
   }
 
   getChildren = async (node) => {
-    const children = await this._getChildren(node); 
+    const children = await this._getChildren(node);
     this.refreshPromise.resolve(children);
     return children;
   }

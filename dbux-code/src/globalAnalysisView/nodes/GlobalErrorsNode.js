@@ -31,6 +31,10 @@ export default class GlobalErrorsNode extends BaseTreeViewNode {
   }
 
   getSelectedChild() {
+    if (!this.children) {
+      this.treeNodeProvider.buildChildren(this);
+    }
+
     // find in children
     const selectedChild = this.children.find(child => child.isSelected());
     if (selectedChild) {
