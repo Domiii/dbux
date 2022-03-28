@@ -57,7 +57,7 @@ function registerDbuxInstance() {
   dbuxInstance.id = id;
 
   // eslint-disable-next-line camelcase
-  __global__.__dbux__id__ += 1;
+  __global__.__dbux__id__ = id + 1;
 
   // eslint-disable-next-line camelcase
   __global__.__dbux__all__ = __global__.__dbux__all__ || [];
@@ -76,7 +76,7 @@ function registerGlobal(runtimeCfg) {
   }
   else if (__global__[globalName] !== dbuxInstance) {
     // eslint-disable-next-line max-len
-    console.warn(`[@dbux/runtime] global "${globalName}" registered more than once - This is a bad edge cases where @dbux/runtime gets loaded more than once, but with the same global. This is usually due to bad bundling or multiple copies of @dbux/runtime getting loaded from different places.`);
+    console.warn(`[@dbux/runtime] global "${globalName}" registered more than once - This is a bad edge cases where @dbux/runtime gets loaded more than once, but with the same global name. This is usually due to bad bundling or multiple copies of @dbux/runtime getting loaded from different places.`);
   }
 }
 
