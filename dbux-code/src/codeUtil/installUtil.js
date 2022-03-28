@@ -16,7 +16,7 @@ export async function installDbuxDependencies() {
 
   if (projectManager.isInstallingSharedDependencies()) {
     // eslint-disable-next-line max-len
-    throw new Error('It looks like another VSCode is already busy isntalling/updating Dbux. This happens after extension installation (or update). This might (or might not) take a few minutes. Ignore this for now, and reload this VSCode window after Dbux update finished.');
+    throw new Error('It looks like another VSCode is already busy installing/updating Dbux. This happens after extension installation (or update). This might (or might not) take a few minutes. Ignore this for now, and reload this VSCode window after Dbux update finished.');
   }
   if (!projectManager.hasInstalledSharedDependencies()) {
     await runTaskWithProgressBar(async (progress) => {

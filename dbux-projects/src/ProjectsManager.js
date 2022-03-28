@@ -1052,101 +1052,104 @@ export default class ProjectsManager {
   }
 
   async installModules(deps) {
-    await this._installPromise;
-    return (this._installPromise = this._doInstallModules(deps));
-  }
-
-  async _doInstallModules(deps) {
+    while (this._installPromise) {
+      await this._installPromise;
+    }
+    
     try {
-      const { dependencyRoot } = this.config;
-      // const execOptions = {
-      //   processOptions: {
-      //     cwd: dependencyRoot
-      //   }
-      // };
-      // if (!sh.test('-f', rootPackageJson)) {
-      //   // make sure, we have a local `package.json`
-      //   await this.runner._exec('${npm} init -y', logger, execOptions);
-      // }
-      if (this.areDependenciesInstalled(deps)) {
-        // already done!
-        return;
-      }
-
-      // delete previously installed node_modules
-      // NOTE: if we don't do it, we (sometimes randomly) bump against https://github.com/npm/npm/issues/13528#issuecomment-380201967
-      // await rm('-rf', path.join(projectsRoot, 'node_modules'));
-
-      // debug(`Verifying NPM cache. This might (or might not) take a while...`);
-      // await this.runner._exec('${npm} cache verify', logger, execOptions);
-
-      // this.externals.showMessage.info(`Installing dependencies: "${deps.join(', ')}" This might (or might not) take a while...`);
-
-      const { npm } = this.paths;
-      const command = [
-        `"${npm}" i --only=prod`,
-        ...deps.length && [`"${npm}" i --only=prod ${deps.join(' ')}`] || EmptyArray
-      ];
-
-      // await this.runner._exec(command, logger, execOptions);
-      await this.execInTerminal(dependencyRoot, command);
-
-      // remember all installed dependencies
-      // const newDeps = this._getAllDependencies();
-      // let storedDeps = this.externals.storage.get(depsStorageKey) || {};
-      // storedDeps = {
-      //   ...storedDeps, 
-      //   ...Object.fromEntries(newDeps.map(dep => [dep, true]))
-      // };
-      // await this.externals.storage.set(depsStorageKey, storedDeps);
-
-      // else {
-      //   // we need socket.io for TerminalWrapper. Its version should match dbux-runtime's.
-      //   // const pkgPath = path.join(__dirname, '..', '..', '..', 'dbux-runtime');
-
-      //   const packageRoot = process.env.DBUX_ROOT;
-      //   const cliPath = path.join(packageRoot, 'dbux-cli');
-      //   const cliDeps = this._readLocalPkgDeps(cliPath);
-
-      //   const runtimePath = path.join(packageRoot, 'dbux-runtime');
-      //   const socketIoDeps = this._readLocalPkgDeps(runtimePath, 'socket.io-client');
-      //   // const socketIoVersion = pkg?.dependencies?.[socketIoName]; // ?.match(/\d+\.\d+.\d+/)?.[0];
-
-      //   // if (!socketIoVersion) {
-      //   //   throw new Error(`'Could not retrieve version of ${socketIoName} in "${runtimePath}"`);
-      //   // }
-
-      //   allDeps = [
-      //     // NOTE: installing local refs actually *copies* them. We don't want that.
-      //     // we will use `module-alias` in `_dbux_inject.js` instead
-      //     // this._convertPkgToLocalIfNecessary('@dbux/cli'),
-      //     ...cliDeps.filter(dep => !dep.includes('dbux-')),
-      //     ...socketIoDeps
-      //   ];
-
-      //   // NOTE: `link-module-alias` can cause problems. See: https://github.com/Rush/link-module-alias/issues/3
-      //   // // add dbux deps via `link-module-alias`
-      //   // const dbuxDeps = [
-      //   //   'common',
-      //   //   'cli',
-      //   //   'babel-plugin',
-      //   //   'runtime'
-      //   // ];
-      //   // let pkg = readPackageJson(projectsRoot);
-      //   // pkg = {
-      //   //   ...pkg,
-      //   //   script: {
-      //   //     postinstall: "npx link-module-alias"
-      //   //   },
-      //   //   _moduleAliases: Object.fromEntries(
-      //   //     dbuxDeps.map(name => [`@dbux/${name}`, `../dbux/dbux-${name}`])
-      //   //   )
-      //   // };
-      // }
+      await (this._installPromise = this._doInstallModules(deps));
     }
     finally {
       this._installPromise = null;
     }
+  }
+
+  async _doInstallModules(deps) {
+    const { dependencyRoot } = this.config;
+    // const execOptions = {
+    //   processOptions: {
+    //     cwd: dependencyRoot
+    //   }
+    // };
+    // if (!sh.test('-f', rootPackageJson)) {
+    //   // make sure, we have a local `package.json`
+    //   await this.runner._exec('${npm} init -y', logger, execOptions);
+    // }
+    if (this.areDependenciesInstalled(deps)) {
+      // already done!
+      return;
+    }
+
+    // delete previously installed node_modules
+    // NOTE: if we don't do it, we (sometimes randomly) bump against https://github.com/npm/npm/issues/13528#issuecomment-380201967
+    // await rm('-rf', path.join(projectsRoot, 'node_modules'));
+
+    // debug(`Verifying NPM cache. This might (or might not) take a while...`);
+    // await this.runner._exec('${npm} cache verify', logger, execOptions);
+
+    // this.externals.showMessage.info(`Installing dependencies: "${deps.join(', ')}" This might (or might not) take a while...`);
+
+    const { npm } = this.paths;
+    const command = [
+      `"${npm}" i --only=prod`,
+      ...deps.length && [`"${npm}" i --only=prod ${deps.join(' ')}`] || EmptyArray
+    ];
+
+    // await this.runner._exec(command, logger, execOptions);
+    await this.execInTerminal(dependencyRoot, command);
+
+    // remember all installed dependencies
+    // const newDeps = this._getAllDependencies();
+    // let storedDeps = this.externals.storage.get(depsStorageKey) || {};
+    // storedDeps = {
+    //   ...storedDeps, 
+    //   ...Object.fromEntries(newDeps.map(dep => [dep, true]))
+    // };
+    // await this.externals.storage.set(depsStorageKey, storedDeps);
+
+    // else {
+    //   // we need socket.io for TerminalWrapper. Its version should match dbux-runtime's.
+    //   // const pkgPath = path.join(__dirname, '..', '..', '..', 'dbux-runtime');
+
+    //   const packageRoot = process.env.DBUX_ROOT;
+    //   const cliPath = path.join(packageRoot, 'dbux-cli');
+    //   const cliDeps = this._readLocalPkgDeps(cliPath);
+
+    //   const runtimePath = path.join(packageRoot, 'dbux-runtime');
+    //   const socketIoDeps = this._readLocalPkgDeps(runtimePath, 'socket.io-client');
+    //   // const socketIoVersion = pkg?.dependencies?.[socketIoName]; // ?.match(/\d+\.\d+.\d+/)?.[0];
+
+    //   // if (!socketIoVersion) {
+    //   //   throw new Error(`'Could not retrieve version of ${socketIoName} in "${runtimePath}"`);
+    //   // }
+
+    //   allDeps = [
+    //     // NOTE: installing local refs actually *copies* them. We don't want that.
+    //     // we will use `module-alias` in `_dbux_inject.js` instead
+    //     // this._convertPkgToLocalIfNecessary('@dbux/cli'),
+    //     ...cliDeps.filter(dep => !dep.includes('dbux-')),
+    //     ...socketIoDeps
+    //   ];
+
+    //   // NOTE: `link-module-alias` can cause problems. See: https://github.com/Rush/link-module-alias/issues/3
+    //   // // add dbux deps via `link-module-alias`
+    //   // const dbuxDeps = [
+    //   //   'common',
+    //   //   'cli',
+    //   //   'babel-plugin',
+    //   //   'runtime'
+    //   // ];
+    //   // let pkg = readPackageJson(projectsRoot);
+    //   // pkg = {
+    //   //   ...pkg,
+    //   //   script: {
+    //   //     postinstall: "npx link-module-alias"
+    //   //   },
+    //   //   _moduleAliases: Object.fromEntries(
+    //   //     dbuxDeps.map(name => [`@dbux/${name}`, `../dbux/dbux-${name}`])
+    //   //   )
+    //   // };
+    // }
   }
 
   // ###########################################################################
