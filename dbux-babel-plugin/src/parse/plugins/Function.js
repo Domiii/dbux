@@ -139,8 +139,6 @@ export default class Function extends BasePlugin {
     };
 
     if (isInterruptable) {
-      // staticContextData.isAsync = isAsync;
-      // staticContextData.isGenerator = isGenerator;
       if (isAsync && isGenerator) {
         staticContextData.type = StaticContextType.ResumeAsyncGen;
       }
@@ -161,6 +159,8 @@ export default class Function extends BasePlugin {
     const staticContextId = state.contexts.addStaticContext(path, staticContextData);
     // const pushTraceCfg = addContextTrace(bodyPath, state, TraceType.PushImmediate);
 
+    // this.node.debug(`ENTER #${staticContextId} [${StaticContextType.nameFrom(staticContextData.type)}] "${staticContextData.displayName}"`);
+
     // TODO: use `const pushTrace = Traces.addTrace` instead
     const staticPushTid = state.traces.addTrace(
       bodyPath,
@@ -176,21 +176,18 @@ export default class Function extends BasePlugin {
     const contextIdVar = contextPlugin.genContext();
 
 
-    // staticResumeContextId
-    let staticResumeContextId;
-    if (isInterruptable) {
-      // TODO: also add this to top-level context, if it contains `await`
-      staticResumeContextId = addResumeContext(bodyPath, state, staticContextId,
-        isAsync ? StaticContextType.ResumeAsync : StaticContextType.ResumeGen
-      );
-    }
+    // let staticResumeContextId;
+    // if (isInterruptable) {
+    //   // TODO: also add this to top-level context, if it contains `await`
+    //   staticResumeContextId = addResumeContext(bodyPath, state, staticContextId, staticContextData.type);
+    // }
 
     this.data = {
       contextIdVar,
       staticContextId,
       staticPushTid,
       // pushTraceCfg,
-      staticResumeContextId
+      // staticResumeContextId
     };
   }
 
@@ -251,7 +248,7 @@ export default class Function extends BasePlugin {
     const {
       isInterruptable,
       data: {
-        contextIdVar, staticContextId, staticPushTid, staticResumeContextId
+        contextIdVar, staticContextId, staticPushTid //, staticResumeContextId
       }
     } = this;
     const { state } = this.node;
@@ -268,7 +265,7 @@ export default class Function extends BasePlugin {
     const { ids: { dbux } } = state;
 
     if (isInterruptable) {
-      // const resumeContextId = bodyPath.scope.generateUid('resumeCid');
+      const staticResumeContextId = staticContextId;
       return [
         pushResumeTemplate({
           dbux,
@@ -289,6 +286,8 @@ export default class Function extends BasePlugin {
         staticContextId: t.numericLiteral(staticContextId),
         inProgramStaticTraceId: t.numericLiteral(staticPushTid),
         definitionTid,
+
+        // TODO: remove this
         isInterruptable: t.booleanLiteral(false)
       })
     ];

@@ -33,6 +33,9 @@ export async function showInformationMessage(message, btnConfig, messageCfg = Em
   debug(message);
 
   const result = await window.showInformationMessage(message, messageCfg, ...buttons);
+  if (messageCfg?.modal) {
+    debug(`  > User responded with "${result}"`);
+  }
   if (result === undefined) {
     return await cancelCallback?.();
   }
@@ -46,6 +49,9 @@ export async function showWarningMessage(message, btnConfig, messageCfg = EmptyO
   warn(message);
 
   const result = await window.showWarningMessage(message, messageCfg, ...Object.keys(btnConfig || EmptyObject));
+  if (messageCfg?.modal) {
+    debug(`  > User responded with "${result}"`);
+  }
   if (result === undefined) {
     await cancelCallback?.();
     return null;
@@ -63,6 +69,10 @@ export async function showErrorMessage(message, btnConfig, messageCfg = EmptyObj
   //    -> if we called logError(), we would get an inf loop.
 
   const result = await window.showErrorMessage(`${prefix}${message}`, messageCfg, ...Object.keys(btnConfig));
+  if (messageCfg?.modal) {
+    debug(`  > User responded with "${result}"`);
+  }
+
   const cbResult = await btnConfig[result]?.();
   return cbResult === undefined ? null : cbResult;
 }

@@ -306,7 +306,7 @@ export default class Process {
         }
         else {
           // throw new Error(`"${command}" failed because executable or command not found. Either configure it's absolute path or make sure that it is installed and in your PATH.`);
-          reject(new Error(`Process "${processExecLabel}" failed with error ${err.code}: ${err.message}`));
+          reject(new Error(`Process "${processExecLabel}" failed with error "${err.code}": ${err.message}`));
         }
       });
     }).finally(this._finished);
