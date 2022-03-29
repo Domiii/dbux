@@ -5,10 +5,19 @@ import { renderPath } from '../util/pathUtil';
 import { parsePackageName } from '../util/moduleUtil';
 // import { requireDynamic } from '../util/requireUtil';
 
+// NOTE: aggressive debugging techniques for when console is not available.
+// import fs from 'fs';
+// const DebugFilePath = '...';
+// if (fs.existsSync(DebugFilePath)) {
+//   fs.unlinkSync(DebugFilePath);
+// }
+
 let Verbose;
 const DefaultVerbose = 1;
 // const DefaultVerbose = 2;
 // const DefaultVerbose = 10;
+
+
 
 function debugLog(...args) {
   let msg = `[Dbux] [moduleFilter] ${args.join(' ')}`;
@@ -16,6 +25,7 @@ function debugLog(...args) {
 
   // eslint-disable-next-line no-console
   console.log(msg);
+  // fs.appendFileSync(msg + '\n');
 }
 function traceLog(...args) {
   let msg = `[Dbux] [moduleFilter] ${args.join(' ')}`;
@@ -115,7 +125,7 @@ export default function moduleFilter(options, includeDefault) {
       modulePath.match(/(\.mjs$)|([/\\]@babel[/\\])|([/\\]babel[-]plugin.*[/\\])/);
 
     Verbose > 3 && debugLog(`CHECK: "${parsePackageName(modulePath)}" in "${modulePath}"`);
-      
+
     if (unwanted) {
       reportRegister(modulePath, false, 'unwanted');
       return !includeDefault;
