@@ -1627,7 +1627,7 @@ export default {
   /** @param {DataProvider} dp */
   getRealStaticContextIdOfContext(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
-    
+
     // NOTE: "first virtual" context of context is "real context"
 
     if (isRealContextType(context?.contextType)) {
@@ -2940,12 +2940,21 @@ export default {
     }
 
     let nextPromiseId = u.promiseId, nextRootId, nextTraceId;
-    if (nextPromiseId && !visited.has(nextPromiseId)) {
-      visited.add(nextPromiseId);
-      const nextNextPromiseId = dp.util.getNestedAncestorsOfPromise(nextPromiseId, rootId, nestingTraces);
-      const nextTrace = nextNextPromiseId && dp.util.getFirstTraceByRefId(nextNextPromiseId);
-      nextTraceId = nextTrace?.traceId;
-      nextRootId = nextTrace?.rootContextId;
+    if (nextPromiseId) {
+      if (visited.has(nextPromiseId)) {
+        // NOTE: worth warning about
+        // TODO: need a more complete approach here, to avoid spamming, and to help the user better.
+        // if (!_warnPromiseSet.has) { ... }
+        // TODO: add `makePromiseInfo` utility function
+        dp.logger.warn(`Never-ending promise found. Promise dynamically nested upon itself: v${nextPromiseId} at root c${rootId}`);
+      }
+      else {
+        visited.add(nextPromiseId);
+        const nextNextPromiseId = dp.util.getNestedAncestorsOfPromise(nextPromiseId, rootId, nestingTraces);
+        const nextTrace = nextNextPromiseId && dp.util.getFirstTraceByRefId(nextNextPromiseId);
+        nextTraceId = nextTrace?.traceId;
+        nextRootId = nextTrace?.rootContextId;
+      }
     }
 
     if (!nextRootId) {
