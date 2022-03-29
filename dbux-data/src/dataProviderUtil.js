@@ -2931,17 +2931,19 @@ export default {
    * TODO: [performance] cache this recursive result
    * NOTE: Wrapper of `util.getNestedAncestorsOfPromise` for context version
    * @param {DataProvider} dp
+   * @param {Set} visited Used to avoid infinite loops.
    */
-  _getNestedAncestors(dp, rootId, nestingTraces = []) {
+  _getNestedAncestors(dp, rootId, nestingTraces = [], visited = new Set()) {
     const u = dp.util.getAsyncPostEventUpdateOfRoot(rootId);
     if (!u) {
       return nestingTraces;
     }
 
     let nextPromiseId = u.promiseId, nextRootId, nextTraceId;
-    if (nextPromiseId) {
-      nextPromiseId = dp.util.getNestedAncestorsOfPromise(nextPromiseId, rootId, nestingTraces);
-      const nextTrace = dp.util.getFirstTraceByRefId(nextPromiseId);
+    if (nextPromiseId && !visited.has(nextPromiseId)) {
+      visited.add(nextPromiseId);
+      const nextNextPromiseId = dp.util.getNestedAncestorsOfPromise(nextPromiseId, rootId, nestingTraces);
+      const nextTrace = nextNextPromiseId && dp.util.getFirstTraceByRefId(nextNextPromiseId);
       nextTraceId = nextTrace?.traceId;
       nextRootId = nextTrace?.rootContextId;
     }
@@ -2957,7 +2959,7 @@ export default {
     }
 
     if (nextRootId) {
-      dp.util._getNestedAncestors(nextRootId, nestingTraces);
+      dp.util._getNestedAncestors(nextRootId, nestingTraces, visited);
     }
 
     return nestingTraces;
