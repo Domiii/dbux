@@ -241,7 +241,7 @@ export default {
    * @param {number} contextId 
    */
   getContextAsyncStackParent(dp, contextId) {
-    const { parentContextId, contextType } = dp.collections.executionContexts.getById(contextId);
+    const { parentContextId } = dp.collections.executionContexts.getById(contextId);
     if (!dp.util.isRootContext(contextId)) {
       // // not a root, get real parent
       // return dp.util.getRealContextOfContext(parentContextId);
@@ -250,34 +250,28 @@ export default {
       return dp.collections.executionContexts.getById(parentContextId);
     }
     else {
-      // is root, looking for async parent
-      // go to "real parent"
-      if (isRealContextType(contextType)) {
-        const fromAsyncEvent = dp.indexes.asyncEvents.to.getFirst(contextId);
-        if (fromAsyncEvent) {
-          const schedulerTrace = dp.util.getCallerOrSchedulerTraceOfContext(contextId);
-          const depth = dp.util.getNestedDepth(contextId);
-          const schedulerDepth = dp.util.getNestedDepth(schedulerTrace.rootContextId);
-          if (depth < schedulerDepth) {
-            return dp.util.getContextAsyncStackParent(schedulerTrace.rootContextId);
-          }
-          else {
-            const context = dp.collections.executionContexts.getById(schedulerTrace.contextId);
-            return context;
-          }
+      const realContext = dp.util.getRealContextOfContext(contextId);
+      if (realContext.contextId !== contextId) {
+        // real context is not itself
+        return realContext;
+      }
+
+      // is real root, looking for async parent
+      const fromAsyncEvent = dp.indexes.asyncEvents.to.getFirst(contextId);
+      if (fromAsyncEvent) {
+        const schedulerTrace = dp.util.getCallerOrSchedulerTraceOfContext(contextId);
+        const depth = dp.util.getNestedDepth(contextId);
+        const schedulerDepth = dp.util.getNestedDepth(schedulerTrace.rootContextId);
+        if (depth < schedulerDepth) {
+          return dp.util.getContextAsyncStackParent(schedulerTrace.rootContextId);
         }
         else {
-          return null;
+          const context = dp.collections.executionContexts.getById(schedulerTrace.contextId);
+          return context;
         }
       }
-      else {
-        // // if virtual: skip to realContext's parent and call trace (skip all virtual contexts, in general)
-        // const realContext = dp.util.getRealContextOfContext(contextId);
-        // return dp.util.getRealContextOfContext(realContext.parentContextId);
 
-        // if virtual: go to real context
-        return dp.util.getRealContextOfContext(contextId);
-      }
+      return null;
     }
   },
 
@@ -1626,35 +1620,36 @@ export default {
 
   /** @param {DataProvider} dp */
   getRealStaticContextIdOfContext(dp, contextId) {
-    const context = dp.collections.executionContexts.getById(contextId);
+    return dp.util.getRealContextOfContext(contextId)?.staticContextId;
+    // const context = dp.collections.executionContexts.getById(contextId);
 
-    // NOTE: "first virtual" context of context is "real context"
+    // // NOTE: "first virtual" context of context is "real context"
 
-    if (isRealContextType(context?.contextType)) {
-      return context.staticContextId;
-    }
+    // if (isRealContextType(context?.contextType)) {
+    //   return context.staticContextId;
+    // }
 
-    // const parentContextId = context?.parentContextId;
-    const staticContextId = context?.staticContextId;
-    const staticContext = staticContextId && dp.collections.staticContexts.getById(staticContextId);
-    let parentStaticContext;
+    // // const parentContextId = context?.parentContextId;
+    // const staticContextId = context?.staticContextId;
+    // const staticContext = staticContextId && dp.collections.staticContexts.getById(staticContextId);
+    // let parentStaticContext;
 
-    if (
-      staticContext?.parentId &&
-      (parentStaticContext = dp.collections.staticContexts.getById(staticContext?.parentId))
-      // &&      isRealStaticContext(parentStaticContext.type)
-    ) {
-      return parentStaticContext.staticContextId;
-    }
-    else {
-      // if (parentContextId && !dp.collections.executionContexts.getById(parentContextId))
+    // if (
+    //   staticContext?.parentId &&
+    //   (parentStaticContext = dp.collections.staticContexts.getById(staticContext?.parentId))
+    //   // &&      isRealStaticContext(parentStaticContext.type)
+    // ) {
+    //   return parentStaticContext.staticContextId;
+    // }
+    // else {
+    //   // if (parentContextId && !dp.collections.executionContexts.getById(parentContextId))
 
-      // eslint-disable-next-line max-len
-      dp.logger.trace(`Could not find realContext for contextId=${contextId}, parentStaticContext=${parentStaticContext}, parentStaticContext=`, parentStaticContext);
-      return null;
-    }
-    // const realContext = dp.util.getRealContextOfContext(contextId);
-    // return realContext.staticContextId;
+    //   // eslint-disable-next-line max-len
+    //   dp.logger.trace(`Could not find realContext for contextId=${contextId}, parentStaticContext=${parentStaticContext}, parentStaticContext=`, parentStaticContext);
+    //   return null;
+    // }
+    // // const realContext = dp.util.getRealContextOfContext(contextId);
+    // // return realContext.staticContextId;
   },
 
   /** @param {DataProvider} dp */
@@ -2673,13 +2668,23 @@ export default {
   /** @param {DataProvider} dp */
   getAsyncStackContexts(dp, traceId) {
     const roots = [];
+    const visited = new Set();
     // // skip first virtual context
     // const realContextId = dp.util.getRealContextIdOfTrace(traceId);
     // let currentContext = dp.collections.executionContexts.getById(realContextId);
     let currentContext = dp.util.getTraceContext(traceId);
     while (currentContext) {
+      visited.add(currentContext);
       roots.push(currentContext);
       currentContext = dp.util.getContextAsyncStackParent(currentContext.contextId);
+      if (visited.has(currentContext)) {
+        dp.logger.error(`[getAsyncStackContexts] infinite loop when finding async stack contexts.
+        current:
+          ${dp.util.makeContextInfo(currentContext)}
+        stack:
+${roots.map(c => `          ${dp.util.makeContextInfo(c)}`).join('\n')}`);
+        break;
+      }
     }
     roots.reverse();
     return roots;
