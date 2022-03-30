@@ -88,13 +88,9 @@ class CallGraphNodes {
   graph;
 
   /**
-   * @type {Map<ExecutionContext, ContextNode>}
+   * @type {Map<ExecutionContext, ContextNode | HoleNode>}
    */
   contextNodesByContext;
-  /**
-   * @type {Map<ExecutionContext, HoleNode>}
-   */
-  holeNodesByContext;
 
   _lastHoldeId = 0;
   holeNodesById = [];
@@ -248,7 +244,8 @@ class CallGraphNodes {
         if ((hole instanceof HoleNode)) {
           const { contexts, frontier } = hole.group;
           const nContexts = contexts.length;
-          this.floodHole(contexts, frontier, context, false, true, true, true, null, index);
+          contexts.push(context);
+          this.floodHole(contexts, frontier, context, false, false, true, true, null, index);
           return { holeNode: hole, newContexts: contexts.slice(nContexts) };
         }
         else {
@@ -409,11 +406,11 @@ class CallGraphNodes {
    */
   _handleContextNodeDisposed = (node) => {
     let contexts;
-    if (node instanceof ContextNode) {
-      contexts = [node.state.context];
-    }
-    else if (node instanceof HoleNode) {
+    if (node instanceof HoleNode) {
       contexts = node.group.contexts;
+    }
+    else if (node instanceof ContextNode) {
+      contexts = [node.state.context];
     }
     else {
       throw new Error(`Calling "_handleContextNodeDisposed" with non-ContextNode parameter: ${node}`);
@@ -426,19 +423,11 @@ class CallGraphNodes {
     }
   }
 
-  _handleContextNodesDisposed = (contexts, contextNode) => {
-    if (this.getContextNodeByContext(contexts[0]) === contextNode) {
-      // actual removal of nodes
-      for (const context of contexts) {
-        this.contextNodesByContext.delete(context);
-      }
-    }
-  }
-
   delete(context) {
     const contextNode = this.getContextNodeByContext(context);
     // NOTE: sometimes, `contextNode` does not exist, for some reason
     //    -> might be because `this.roots` contains roots that are not actually displayed
+    //    -> or many context may shared the same HoleNode
     if (contextNode) {
       // this will trigger _handleContextNodeDisposed -> removal
       contextNode.dispose();
@@ -457,7 +446,6 @@ class CallGraphNodes {
     }
 
     this.contextNodesByContext = new Map();
-    this.holeNodesByContext = new Map();
     this._lastHoldeNodeId = 0;
     this.holeNodesById = [];
   }
