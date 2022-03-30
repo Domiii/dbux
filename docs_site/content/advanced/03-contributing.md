@@ -107,15 +107,21 @@ See https://github.com/Domiii/dbux/issues/632 and https://github.com/Domiii/dbux
 
 When you want to debug a local project with a local Dbux dev build, we recommend using `yalc`:
 
-* In your local Dbux folder: run `yarn yalc`
-* `yalc add --dev @dbux/babel-plugin @dbux/runtime @dbux/cli @dbux/common @dbux/common-node @dbux/babel-register-fork`
-* Add to .gitignore:
-  ```
-  .yalc
-  yalc.lock
-  ```
-* Sometimes, the build cache needs to be flushed
+* Make sure you have the right `npm` and/or `yarn` versions, as explained [here](https://github.com/wclr/yalc/issues/187).
+* In your local Dbux folder:
+  * run `yarn yalc`
+* Inside your target project folder:
+  * `yalc add --dev @dbux/babel-plugin @dbux/runtime @dbux/cli @dbux/common @dbux/common-node @dbux/babel-register-fork`
+  * Add to .gitignore:
+    ```
+    .yalc
+    yalc.lock
+    ```
+* NOTE: Sometimes (but rarely), the build cache needs to be flushed.
   * E.g. when using `webpack` and `babel`: `rm -rf ./node_modules/.cache/babel-loader`
+
+
+* TODO: test the `workspace` and `pure` options (described [here](https://github.com/wclr/yalc/issues/180))
 
 :::caution
 This will not work with `yarn@1`.
