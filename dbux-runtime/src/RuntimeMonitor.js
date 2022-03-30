@@ -26,9 +26,9 @@ import { getDefaultClient } from './client/index';
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError, trace: logTrace } = newLogger('RuntimeMonitor');
 
-// const Verbose = 2;
+const Verbose = 2;
 // const Verbose = 1;
-const Verbose = 0;
+// const Verbose = 0;
 
 const debug = (...args) => Verbose && _debug(...args);
 
@@ -306,18 +306,17 @@ export default class RuntimeMonitor {
       return;
     }
 
-    if (Verbose) {
-      debug(
-        `<${' '.repeat(this.runtime._executingStack._stack?.length || 0)} ${executionContextCollection.makeContextInfo(contextId)} (pid=${programId})`
-      );
-    }
-
     if (isVirtualContextType(context.contextType)) {
-      // interruptable function → pop resume instead
+      // interruptable function → handle pop resume instead
       this.popResume(this._runtime.peekCurrentContextId());
     }
     else {
-      // pop from stack
+      // just pop from stack
+      if (Verbose) {
+        debug(
+          `<${' '.repeat(this.runtime._executingStack._stack?.length || 0)} ${executionContextCollection.makeContextInfo(contextId)} (pid=${programId})`
+        );
+      }
       this._pop(contextId);
     }
 
@@ -576,10 +575,14 @@ export default class RuntimeMonitor {
       );
       this.debugOnContextAdd(resumeContext);
     }
-
-
     return resumeContextId;
   }
+
+  // popResumeTop() {
+  //   const resumeContextId = this._runtime.peekCurrentContextId();
+  //   return this.popResume(resumeContextId);
+  // }
+  
 
   popResume(resumeContextId = 0) {
     // sanity checks
@@ -599,7 +602,7 @@ export default class RuntimeMonitor {
     }
 
     // sanity checks
-    resumeContextId = resumeContextId || this._runtime.peekCurrentContextId();
+    // resumeContextId = resumeContextId || this._runtime.peekCurrentContextId();
     const context = executionContextCollection.getById(resumeContextId);
     if (!context) {
       logTrace(`Tried to popResume, but context was not registered - resumeContextId=${resumeContextId}`);
@@ -638,8 +641,7 @@ export default class RuntimeMonitor {
    *  #########################################################################*/
 
   preYield(programId, yieldArgument, schedulerTid) {
-    const [parentContextId, resumeContextId] = this._runtime.peekCurrentContextIdTwo();
-
+    const resumeContextId = this._runtime.peekCurrentContextId();
     // const context = executionContextCollection.getById(resumeContextId);
     // const { staticContextId } = context;
 

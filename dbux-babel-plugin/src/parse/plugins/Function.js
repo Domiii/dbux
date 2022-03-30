@@ -173,7 +173,9 @@ export default class Function extends BasePlugin {
      * @type {StaticContext}
      */
     const contextPlugin = this.node.getPlugin('StaticContext');
-    const contextIdVar = contextPlugin.genContext();
+    
+    // `genContext` adds `contextIdVar` to this.StaticContext
+    contextPlugin.genContext();
 
 
     // let staticResumeContextId;
@@ -183,7 +185,6 @@ export default class Function extends BasePlugin {
     // }
 
     this.data = {
-      contextIdVar,
       staticContextId,
       staticPushTid,
       // pushTraceCfg,
@@ -248,7 +249,7 @@ export default class Function extends BasePlugin {
     const {
       isInterruptable,
       data: {
-        contextIdVar, staticContextId, staticPushTid //, staticResumeContextId
+        staticContextId, staticPushTid //, staticResumeContextId
       }
     } = this;
     const { state } = this.node;
@@ -260,6 +261,7 @@ export default class Function extends BasePlugin {
       }
     } = state;
 
+    const contextIdVar = this.node.getRealContextIdVar();
     const definitionTid = this.functionTraceCfg.tidIdentifier;
 
     const { ids: { dbux } } = state;
@@ -299,7 +301,7 @@ export default class Function extends BasePlugin {
 
   buildPop = () => {
     const {
-      contextIdVar, popTraceCfg
+      popTraceCfg
     } = this.data;
     const { state } = this.node;
     const {
@@ -309,6 +311,8 @@ export default class Function extends BasePlugin {
         }
       }
     } = state;
+
+    const contextIdVar = this.node.getRealContextIdVar();
 
 
     // NOTE: this is based on `buildTraceStatic`
@@ -341,12 +345,12 @@ export default class Function extends BasePlugin {
       isInterruptable,
       isGenerator,
       node: { path, dontInstrumentContextEnd },
-      data: {
-        staticPushTid,
-        staticResumeContextId,
-        contextIdVar,
-        popTraceCfg
-      }
+      // data: {
+      //   staticPushTid,
+      //   staticResumeContextId,
+      //   contextIdVar,
+      //   popTraceCfg
+      // }
     } = this;
 
     // future-work: warn of eval

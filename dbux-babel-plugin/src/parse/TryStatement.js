@@ -17,7 +17,7 @@ export default class TryStatement extends BaseNode {
    * @param {BaseNode} node
    */
   addConsequentStartTrace(node, traceType, traceCall) {
-    const { realContextIdVar } = this;
+    const realContextIdVar = this.getRealContextIdVar();
 
     const moreTraceCallArgs = [];
     if (realContextIdVar) {

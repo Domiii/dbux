@@ -186,6 +186,7 @@ export default class ProgramMonitor {
   preAwait = (inProgramStaticContextId, traceId, awaitArgument) => {
     if (this.busy) {
       // TODO: calling async function with `disabled` hints from non-pure getters will most likely cause trouble :(
+      // eslint-disable-next-line max-len
       this._logger.error(`Encountered await in disabled call #${traceId} (NOTE: Dbux does not play well with getters that have side effects, especially if they call asynchronous code)`);
       return 0;
     }
@@ -205,6 +206,10 @@ export default class ProgramMonitor {
 
   pushResume = (realContextId, resumeStaticContextId, inProgramStaticTraceId) => {
     return this._runtimeMonitor.pushResume(this.getProgramId(), realContextId, 0, resumeStaticContextId, inProgramStaticTraceId, true);
+  }
+
+  popResumeTop() {
+    return this._runtimeMonitor.popResumeTop();
   }
 
   popResume = (resumeContextId) => {
