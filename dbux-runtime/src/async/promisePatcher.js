@@ -340,7 +340,7 @@ function callThen(preEventPromise, successCb, failCb) {
 }
 
 function callFinally(preEventPromise, cb) {
-  return originalFinally.call(preEventPromise, cb); 
+  return originalFinally.call(preEventPromise, cb);
 }
 
 // ###########################################################################
@@ -739,13 +739,16 @@ function raceHandler(thisArg, args, originalFunction, patchedFunction) {
       // TODO: use `valueCollection._startAccess` before starting to read (potential) promise properties
       if (isThenable(p)) {
         // eslint-disable-next-line no-loop-func
-        nestedArr[i] = callFinally(() => {
-          if (hasFinished) {
-            return;
+        nestedArr[i] = callFinally(
+          p,
+          () => {
+            if (hasFinished) {
+              return;
+            }
+            hasFinished = true;
+            RuntimeMonitorInstance._runtime.async.race(p, racePromise, thenRef?.schedulerTraceId);
           }
-          hasFinished = true;
-          RuntimeMonitorInstance._runtime.async.race(p, racePromise, thenRef?.schedulerTraceId);
-        });
+        );
       }
     }
   }

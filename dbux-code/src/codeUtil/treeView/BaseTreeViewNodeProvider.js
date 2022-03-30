@@ -1,5 +1,5 @@
 import { TreeItemCollapsibleState, EventEmitter, window, TreeView } from 'vscode';
-import TriggerablePromise from '@dbux/common/src/util/TriggerablePromise';
+import SyncPromise from '@dbux/common/src/util/SyncPromise';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import NestedError from '@dbux/common/src/NestedError';
@@ -51,7 +51,7 @@ export default class BaseTreeViewNodeProvider {
   constructor(viewName, options = {}) {
     this.treeViewName = viewName;
     this.logger = newLogger(this.constructor.name);
-    this.refreshPromise = new TriggerablePromise(500);
+    this.refreshPromise = new SyncPromise(500);
     const { showCollapseAll = false, createTreeView = true } = options;
 
     // NOTE: view creation inside the data provider is not ideal, 
@@ -430,18 +430,8 @@ export default class BaseTreeViewNodeProvider {
   }
 
   /** ###########################################################################
-   * helper
-   *  #########################################################################*/
-
-  /**
-   * Find a chlid node of given class from parent, or from roots if parent is `undefined`.
-   * @param {*} clazz A node class that extends `BaseTreeViewNode` 
-   * @param {BaseTreeViewNode} parent
-   * @return {BaseTreeViewNode}
-   */
-  getChildByClass(clazz, parent) {
-    return parent.children.find(node => node instanceof clazz);
-  }
+    * helper
+    *  #########################################################################*/
 
   /**
    * Find root of given class.

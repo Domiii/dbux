@@ -1096,13 +1096,13 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       await this.execInTerminal(`"${yarn}" install`, { cwd: this.packageJsonFolder });
     }
     else {
-      // await this.exec('${npm} cache verify');
+      // await this.exec('"${npm}" cache verify');
       // hackfix: npm installs are broken somehow.
       //      see: https://npm.community/t/need-to-run-npm-install-twice/3920
       //      Sometimes running it a second time after checking out a different branch 
       //      deletes all node_modules. The second run brings everything back correctly (for now).
       const { npm } = this.manager.paths;
-      await this.execInTerminal(`"${npm}" install --legacy-peer-deps && ${npm} install --legacy-peer-deps`, { cwd: this.packageJsonFolder });
+      await this.execInTerminal(`"${npm}" install --legacy-peer-deps && "${npm}" install --legacy-peer-deps`, { cwd: this.packageJsonFolder });
     }
   }
 

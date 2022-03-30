@@ -164,6 +164,9 @@ export class ExecutionContextCollection extends Collection {
     if (realContextId) {
       context.realContextId = realContextId;
     }
+    if (type === 2) {
+      this.logger.debug(`[new context] ${this.makeContextInfo(context)}`);
+    }
     this._pushAndSend(context);
 
     // if (!parentContextId || isVirtualRoot) {
@@ -213,19 +216,19 @@ export class ExecutionContextCollection extends Collection {
     this._send(context);
   }
 
-  isFirstContextInParent(contextId) {
-    const context = this.getById(contextId);
-    if (context) {
-      const { parentContextId } = context;
-      if (parentContextId) {
-        return this._firstContextChild.get(parentContextId) === contextId;
-      }
-    }
-    else {
-      this.logger.trace(`[isFirstContextInParent] context does not exist - contextId=${contextId}`);
-    }
-    return false;
-  }
+  // isFirstContextInParent(contextId) {
+  //   const context = this.getById(contextId);
+  //   if (context) {
+  //     const { parentContextId } = context;
+  //     if (parentContextId) {
+  //       return this._firstContextChild.get(parentContextId) === contextId;
+  //     }
+  //   }
+  //   else {
+  //     this.logger.trace(`[isFirstContextInParent] context does not exist - contextId=${contextId}`);
+  //   }
+  //   return false;
+  // }
 }
 
 const executionContextCollection = new ExecutionContextCollection();

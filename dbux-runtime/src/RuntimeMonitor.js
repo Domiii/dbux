@@ -26,9 +26,9 @@ import { getDefaultClient } from './client/index';
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError, trace: logTrace } = newLogger('RuntimeMonitor');
 
-const Verbose = 2;
+// const Verbose = 2;
 // const Verbose = 1;
-// const Verbose = 0;
+const Verbose = 0;
 
 const debug = (...args) => Verbose && _debug(...args);
 
@@ -528,7 +528,7 @@ export default class RuntimeMonitor {
   /**
    * @return {number} resumeContextId
    */
-  pushResume(programId, realContextId, contextType, resumeStaticContextId, resumeInProgramStaticTraceId = 0/* , dontTrace = false */) {
+  pushResume(programId, realContextId, contextType, inProgramResumeStaticContextId, resumeInProgramStaticTraceId = 0/* , dontTrace = false */) {
     this._runtime.beforePush(null);
 
     const stackDepth = this._runtime.getStackDepth();
@@ -537,21 +537,25 @@ export default class RuntimeMonitor {
 
     const parentTraceId = this._runtime.getParentTraceId();
 
-    if (!contextType) {
-      // look up context type
-      const staticContext = staticContextCollection.getById(resumeStaticContextId);
-      ({ type: contextType } = staticContext);
-    }
-
     // add resumeContext
     const schedulerTraceId = null;
     const resumeContext = executionContextCollection.pushResume(
       contextType,
-      stackDepth, runId, realContextId, parentContextId, parentTraceId, programId, resumeStaticContextId, schedulerTraceId
+      stackDepth, runId, realContextId, parentContextId, parentTraceId, programId, inProgramResumeStaticContextId, schedulerTraceId
     );
     if (!realContextId) {
       // hackfix: this is first push of interruptable function
       resumeContext.realContextId = resumeContext.contextId;
+    }
+    if (!contextType) {
+      // look up context type
+      // NOTE: do this with actual staticContextId
+      const staticContext = staticContextCollection.getById(resumeContext.staticContextId);
+      ({ type: contextType } = staticContext);
+      resumeContext.contextType = contextType;
+      if (!isResumeType(contextType)) {
+        warn(`incorrect pushResume - contextType is not Resume in: "${executionContextCollection.makeContextInfo(resumeContext)}"`);
+      }
     }
 
     const { contextId: resumeContextId } = resumeContext;
@@ -565,10 +569,10 @@ export default class RuntimeMonitor {
 
     if (Verbose) {
       // const staticContext = staticContextCollection.getContext(programId, resumeStaticContextId);
-      debug(
+      _debug(
         // ${JSON.stringify(staticContext)}
         // eslint-disable-next-line max-len
-        `>${' '.repeat(this.runtime._executingStack._stack?.length || 0)} ${executionContextCollection.makeContextInfo(resumeContextId)} (pid=${programId}, realCid=${realContextId}, pcid=${parentContextId})`
+        `> ${' '.repeat(this.runtime._executingStack._stack?.length || 0)} (Resume) ${executionContextCollection.makeContextInfo(resumeContextId)} (pid=${programId}, realCid=${realContextId}, pcid=${parentContextId})`
       );
       this.debugOnContextAdd(resumeContext);
     }
@@ -604,8 +608,8 @@ export default class RuntimeMonitor {
     if (!isResumeType(context.contextType)) {
       logTrace(
         `Tried to popResume, but stack top is not of type "Resume" -`,
-        // ${executionContextCollection.makeContextInfo(context)}
-        `stack: ${this.runtime._executingStack?.humanReadableString()}\n\n`
+        `\n  Context: ${executionContextCollection.makeContextInfo(context)}`,
+        `\n----\n  Stack: ${this.runtime._executingStack?.humanReadableString()}\n\n`
       );
       return;
     }
@@ -669,7 +673,7 @@ export default class RuntimeMonitor {
     // pushResume
     // NOTE: `tid` is a separate instruction, following `postYield`
     const resumeInProgramStaticTraceId = 0;
-    /* const resumeContextId = */ 
+    /* const resumeContextId = */
     this.pushResume(programId, realContextId, ExecutionContextType.ResumeGen, staticResumeContextId, resumeInProgramStaticTraceId);
   }
 

@@ -218,10 +218,10 @@ export default class TraceCollection extends Collection {
       this.dp.indexes.traces.error.get(1).sort((t1, t2) => t1.traceId - t2.traceId);
     }
 
-    if (newErrorTraces.length) {
-      const msg = newErrorTraces.map(t => `${this.dp.util.makeTraceInfo(t)}`).join('\n ');
-      this.logger.debug(`#### ${newErrorTraces.length} ERROR traces ####\n ${msg}`);
-    }
+    // if (newErrorTraces.length) {
+    //   const msg = newErrorTraces.map(t => `${this.dp.util.makeTraceInfo(t)}`).join('\n ');
+    //   this.logger.debug(`#### ${newErrorTraces.length} ERROR traces ####\n ${msg}`);
+    // }
   }
 
   /**

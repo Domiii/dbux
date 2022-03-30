@@ -132,7 +132,7 @@ export default class RuntimeAsync {
     // TODO: add sync edge
     //    * if nested and promise already has `lastAsyncNode`
     //      -> add an edge from `preEvent` `AsyncNode` to promise's `lastAsyncNode`
-    const isFirstAwait = isFirstContextInParent(resumeContextId);
+    const isFirstAwait = resumeContextId === realContextId;
 
     // if (isRootContext(resumeContextId)) {
     //   // NOTE: this check is only necessary in case of a top-level `await`.

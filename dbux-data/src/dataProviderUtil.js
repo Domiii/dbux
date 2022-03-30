@@ -1627,9 +1627,9 @@ export default {
   /** @param {DataProvider} dp */
   getRealStaticContextIdOfContext(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
-    
+
     // NOTE: "first virtual" context of context is "real context"
-    
+
     if (isRealContextType(context?.contextType)) {
       return context.staticContextId;
     }
@@ -1641,7 +1641,7 @@ export default {
 
     if (
       staticContext?.parentId &&
-      (parentStaticContext = dp.collections.staticContexts.getById(staticContext?.parentId)) 
+      (parentStaticContext = dp.collections.staticContexts.getById(staticContext?.parentId))
       // &&      isRealStaticContext(parentStaticContext.type)
     ) {
       return parentStaticContext.staticContextId;
@@ -1672,7 +1672,7 @@ export default {
 
     if (
       parentId &&
-      (parentStaticContext = dp.collections.staticContexts.getById(parentId)) 
+      (parentStaticContext = dp.collections.staticContexts.getById(parentId))
       // && isRealStaticContext(parentStaticContext.type)
     ) {
       return parentStaticContext.staticContextId;
@@ -1738,13 +1738,8 @@ export default {
 
   /** @param {DataProvider} dp */
   getTracesOfRealContext(dp, traceId) {
-    const { contextId } = dp.collections.traces.getById(traceId);
-    return dp.indexes.traces.byRealContext.get(contextId);
-    // if (dp.util.isTraceInRealContext(traceId)) {
-    //   return dp.indexes.traces.byContext.get(contextId);
-    // }
-    // else {
-    // }
+    const realContextId = dp.util.getRealContextIdOfTrace(traceId);
+    return dp.indexes.traces.byRealContext.get(realContextId);
   },
 
   /** @param {DataProvider} dp */
@@ -2140,7 +2135,7 @@ export default {
     else {
       trace = traceOrTraceOrTraceId;
     }
-    
+
     if (!trace) {
       return `#${traceOrTraceOrTraceId} (null)`;
     }
@@ -2936,8 +2931,9 @@ export default {
    * TODO: [performance] cache this recursive result
    * NOTE: Wrapper of `util.getNestedAncestorsOfPromise` for context version
    * @param {DataProvider} dp
+   * @param {Set} visited Used to avoid infinite loops.
    */
-  _getNestedAncestors(dp, rootId, nestingTraces = []) {
+  _getNestedAncestors(dp, rootId, nestingTraces = [], visited = new Set()) {
     const u = dp.util.getAsyncPostEventUpdateOfRoot(rootId);
     if (!u) {
       return nestingTraces;
@@ -2945,10 +2941,20 @@ export default {
 
     let nextPromiseId = u.promiseId, nextRootId, nextTraceId;
     if (nextPromiseId) {
-      nextPromiseId = dp.util.getNestedAncestorsOfPromise(nextPromiseId, rootId, nestingTraces);
-      const nextTrace = dp.util.getFirstTraceByRefId(nextPromiseId);
-      nextTraceId = nextTrace?.traceId;
-      nextRootId = nextTrace?.rootContextId;
+      if (visited.has(nextPromiseId)) {
+        // NOTE: worth warning about
+        // TODO: need a more complete approach here, to avoid spamming, and to help the user better.
+        // if (!_warnPromiseSet.has) { ... }
+        // TODO: add `makePromiseInfo` utility function
+        dp.logger.warn(`Never-ending promise found. Promise dynamically nested upon itself: v${nextPromiseId} at root c${rootId}`);
+      }
+      else {
+        visited.add(nextPromiseId);
+        const nextNextPromiseId = dp.util.getNestedAncestorsOfPromise(nextPromiseId, rootId, nestingTraces);
+        const nextTrace = nextNextPromiseId && dp.util.getFirstTraceByRefId(nextNextPromiseId);
+        nextTraceId = nextTrace?.traceId;
+        nextRootId = nextTrace?.rootContextId;
+      }
     }
 
     if (!nextRootId) {
@@ -2962,7 +2968,7 @@ export default {
     }
 
     if (nextRootId) {
-      dp.util._getNestedAncestors(nextRootId, nestingTraces);
+      dp.util._getNestedAncestors(nextRootId, nestingTraces, visited);
     }
 
     return nestingTraces;

@@ -262,14 +262,16 @@ export default class CallGraph {
     const trace = this.dp.collections.traces.getById(traceId);
     const realContextId = this.dp.util.getRealContextIdOfTrace(traceId);
     const parentTraces = this.dp.indexes.traces.parentsByRealContext.get(realContextId) || EmptyArray;
+    const callerTraces = parentTraces.map(t => this.dp.util.getPreviousCallerTraceOfTrace(t.traceId))
+      .sort((t1, t2) => t1.traceId - t2.traceId);
 
-    const lowerIndex = this._binarySearchLowerIndexByKey(parentTraces, trace, (t) => t.traceId);
+    const lowerIndex = this._binarySearchLowerIndexByKey(callerTraces, trace, (t) => t.traceId);
 
     if (lowerIndex === null) {
       return null;
     }
     else {
-      return this.dp.util.getBCETraceOfTrace(parentTraces[lowerIndex].traceId);
+      return this.dp.util.getBCETraceOfTrace(callerTraces[lowerIndex].traceId);
     }
   }
 

@@ -184,8 +184,11 @@ export default class WebpackProject extends Project {
          * @see https://webpack.js.org/configuration/stats/#statsreasons
          */
         // eslint-disable-next-line max-len
-        // programArgs: '--mode none --env none --no-stats-colors --output-public-path "dist/"  --entry ./example.js --output-path output.js'
-        programArgs: '--mode none --env none --entry ./example.js --output-path output.js'
+        // programArgs: '--mode none --env none --no-stats-colors --output-public-path "dist/"  --entry ./example.js --output-path output'
+        programArgs: '--mode none --env none --entry ./example.js --output-path output'
+
+        // TODO: run to verify?
+        // → `node ./output/main.js`
       }),
       {
         env: {

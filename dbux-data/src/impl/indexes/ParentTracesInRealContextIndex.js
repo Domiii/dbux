@@ -1,7 +1,7 @@
 import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
 import { isVirtualContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
 import Trace from '@dbux/common/src/types/Trace';
-import CollectionIndex from '../../indexes/CollectionIndex';
+import CollectionIndex, { CollectionIndexDependencies } from '../../indexes/CollectionIndex';
 import RuntimeDataProvider from '../../RuntimeDataProvider';
 
 
@@ -16,6 +16,9 @@ export default class ParentTracesInRealContextIndex extends CollectionIndex {
     this.addedTraces = new Set();
   }
 
+  /**
+   * @type { CollectionIndexDependencies }
+   */
   dependencies = {
 
     // NOTE: we are currently solving index dependencies by simply adding depdendents after dependees
@@ -34,9 +37,9 @@ export default class ParentTracesInRealContextIndex extends CollectionIndex {
          */
         added: (contexts) => {
           for (const context of contexts) {
-            const { parentTraceId, contextType } = context;
-            // skip parent trace of virtualContext
-            if (isVirtualContextType(contextType)) {
+            const { parentTraceId, contextId } = context;
+            // skip empty contexts
+            if (this.dp.indexes.traces.byContext.getSize(contextId) === 0) {
               continue;
             }
             if (parentTraceId && !this.addedTraces.has(parentTraceId)) {
