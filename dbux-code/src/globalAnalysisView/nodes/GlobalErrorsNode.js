@@ -32,7 +32,7 @@ export default class GlobalErrorsNode extends BaseTreeViewNode {
 
   getSelectedChild() {
     if (!this.children) {
-      this.treeNodeProvider.buildChildren(this);
+      return null;
     }
 
     // find in children

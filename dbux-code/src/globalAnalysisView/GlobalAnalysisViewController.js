@@ -74,6 +74,9 @@ export default class GlobalAnalysisViewController {
       await this.treeDataProvider.showView();
     }
     const errorNode = this.treeDataProvider.getRootByClass(GlobalErrorsNode);
+    if (!errorNode.children) {
+      this.treeDataProvider.buildChildren(errorNode);
+    }
     const selectedErrorNode = errorNode.getSelectedChild();
     if (selectedErrorNode) {
       await this.treeView.reveal(selectedErrorNode);
