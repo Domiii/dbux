@@ -26,7 +26,7 @@ function makeProxy(originalFunction, patchedFunction) {
     },
     construct(target, args, newTarget) {
       // TODO: also trace construct calls (but requires removing and fully integrating the "patchedFunction" code with this)
-      return Reflect.construct(target, args, newTarget);
+      return Reflect.construct(patchedFunction, args, newTarget);
     },
     defineProperty(target, prop, attributes) {
       return Reflect.defineProperty(target, prop, attributes);
