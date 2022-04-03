@@ -124,7 +124,7 @@ TODO: virtual contexts + async explanations.
 <!-- A CGR is defined as "belonging to", or "owned by" a promise `p`, if the CGR is directly scheduled via `p`. That includes `p`'s `thenCbs`, async function resume roots (the owner `p` is its `callerPromise`) and promisified asynchronous callbacks. Note that not all promises <!-- (e.g. `Promise.resolve()`) --> have CGRs. -->
 
 :::note
-The [`synchronous` call graph](../runtime-analysis/08-call-graph.mdx) lists all CGRs on a linear timeline and allows inspecting individual children and subtrees of each root. The ACG, on the other hand, only shows CGRs (and none of their children), but further visualizes [their relationships](#chain-fork).
+The [`synchronous` call graph](../dynamic-analysis/08-call-graph.mdx) lists all CGRs on a linear timeline and allows inspecting individual children and subtrees of each root. The ACG, on the other hand, only shows CGRs (and none of their children), but further visualizes [their relationships](#chain-fork).
 :::
 
 ### Asynchronous Events (AE) {#ae}
@@ -269,7 +269,7 @@ In JavaScript, promises can be created in five ways, some allow promise nesting:
    * NOTE: The first dynamic import of a file can be seen as nesting top-level `awaits` of the imported files, but the <Term term="ACG" /> does not yet capture asynchronous events related to dynamic imports.
 
 Somewhat counter-intuitively, (1), (2) and (3) do *not* cause an asynchronous event on their own.
-However, all of them can nest promises. Most of these nesting relationships are captured by Dbux's [asynchronous call graph](../runtime-analysis/08-call-graph.mdx#async).
+However, all of them can nest promises. Most of these nesting relationships are captured by Dbux's [asynchronous call graph](../dynamic-analysis/08-call-graph.mdx#async).
 
 #### Example
 

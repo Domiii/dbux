@@ -4,12 +4,12 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 
-Dbux is an integrated debugging environment (IDbE) and omniscient debugger for JavaScript runtime analysis. We hope to help developers (i) improve program comprehension and (ii) increase debugging efficiency. To that end, Dbux records an application's runtime data, visualizes it and makes it interactive.
+Dbux is an integrated debugging environment (IDbE) and omniscient debugger for JavaScript dynamic analysis. We hope to help developers (i) improve program comprehension and (ii) increase debugging efficiency. To that end, Dbux records an application's runtime data, visualizes it and makes it interactive.
 
 # Quick links:
 
 * [Dbux Documentation](https://domiii.github.io/dbux)
-* [Dbux for Runtime Analysis](https://domiii.github.io/dbux/runtime-analysis)
+* [Dbux for Dynamic Analysis](https://domiii.github.io/dbux/dynamic-analysis)
 * [Dbux VSCode Extension: Commands and configuration](https://domiii.github.io/dbux/tools-and-configuration/dbux-code)
 
 

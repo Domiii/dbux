@@ -16,7 +16,7 @@ TODO
 * `bash`
    * On Windows, you can get this via cygwin or `git` (which also installs cygwin)
 * Recommended: [Volta](https://docs.volta.sh/guide/getting-started)
-  * Please consider the [installation chapter](../runtime-analysis/01-installation.mdx#system-requirements) for pros, cons and installation instructions.
+  * Please consider the [installation chapter](../dynamic-analysis/01-installation.mdx#system-requirements) for pros, cons and installation instructions.
 * `yarn`
 * `Node@16`
 

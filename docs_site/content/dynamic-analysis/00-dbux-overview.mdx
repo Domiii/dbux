@@ -1,9 +1,9 @@
 ---
 title: Overview
-slug: /runtime-analysis
+slug: /dynamic-analysis
 ---
 
-# Dbux Runtime Analysis
+# Dbux Dynamic Analysis
 
 import Img from '@src/components/Img';
 import DarkLightImg from '@src/components/DarkLightImg';
@@ -13,14 +13,14 @@ import TOC from '@src/components/TOC';
 
 <TOC toc={toc} />
 
-This page introduces Dbux at the high level, while the next few pages explain the <ToolLink name="dbux-code" />'s runtime analysis features.
+This page introduces Dbux at the high level, while the next few pages explain the <ToolLink name="dbux-code" />'s dynamic analysis features.
 
 
 ## Dbux Architecture
 
 <!-- As of 01/2022, Dbux consists of four applications and seven supplementary modules: -->
 
-Dbux runtime analysis has three stages: `instrument`, `runtime` and `post-processing`.
+Dbux dynamic analysis has three stages: `instrument`, `runtime` and `post-processing`.
 They are implemented in four applications and several library packages:
 
 <Img zoomable src="dbux-architecture.png" />
@@ -49,12 +49,12 @@ Several library packages are also part of the [Dbux Monorepo](https://github.com
 * &#8203;<CodeLink path="dbux-common-node" /> Collection of commonly used utilities shared among (more or less) all node-only modules.
 
 
-## Runtime Analysis Features
+## Dynamic Analysis Features
 
 Once [installed](./01-installation.mdx), using Dbux involves two steps:
 
 1. First: make sure to [run an Application with Dbux enabled](./02-enable-dbux.mdx).
-2. Then use the Dbux VSCode Extension for [runtime analysis](./00-dbux-overview.mdx#runtime-analysis):
+2. Then use the Dbux VSCode Extension for [dynamic analysis](./00-dbux-overview.mdx#dynamic-analysis):
 
 All recorded applications show up in the [Application View](./06-applications.mdx).
 Once the application shows up, you can use the following tools for analysis:

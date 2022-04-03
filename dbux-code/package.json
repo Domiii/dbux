@@ -10,7 +10,7 @@
     "call graph",
     "async",
     "omniscient debugger",
-    "runtime analysis"
+    "dynamic analysis"
   ],
   "version": "0.6.16-dev.0",
   "publisher": "Domi",
