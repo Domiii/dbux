@@ -1,11 +1,10 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import isThenable from '@dbux/common/src/util/isThenable';
-import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import PromiseLinkType from '@dbux/common/src/types/constants/PromiseLinkType';
-import { getAsyncFunctionCallerPromiseId, isFirstContextInParent, peekBCEContextCheckCallee } from '../data/dataUtil';
+import { getAsyncFunctionCallerPromiseId, peekBCEContextCheckCallee, } from '../data/dataUtil';
 import ThenRef from '../data/ThenRef';
 // eslint-disable-next-line max-len
-import { getPromiseData, getPromiseId, getPromiseOwnAsyncFunctionContextId, setPromiseData } from './promisePatcher';
+import { getPromiseData, getPromiseId } from './promisePatcher';
 import asyncEventUpdateCollection from '../data/asyncEventUpdateCollection';
 import executionContextCollection from '../data/executionContextCollection';
 import nestedPromiseCollection from '../data/promiseLinkCollection';
@@ -84,23 +83,21 @@ export default class RuntimeAsync {
   /**
    * Track any created promise (that is the return value of a function or ctor call).
    */
-  traceCallPromiseResult(contextId, trace, promise) {
+  traceCallPromiseResult(parentContextId, callResultTrace, promise) {
     //   const currentRootId = this.getCurrentVirtualRootContextId();
     //   if (!isNewPromise(promise, currentRootId)) {
     //     // this.logger.warn('have seen promise before', currentRootId, promise._dbux_);
     //     return;
     //   }
 
-    // const callId = trace.resultCallId;
-    // const lastContextId = this._runtime.getLastPoppedContextId();
-    // const calledRealContext = peekBCEContextCheckCallee(callId, lastContextId);
+    const callId = callResultTrace.resultCallId;
+    const lastContextId = this._runtime.getLastPoppedContextId();
+    const calledRealContext = peekBCEContextCheckCallee(callId, lastContextId);
 
-    // let calledContextId;
-
-    // if (calledRealContext) {
-    //   calledContextId = calledRealContext?.contextId;
-    //   this.setAsyncContextIdPromise(calledContextId, promise);
-    // }
+    if (calledRealContext) {
+      const calledContextId = calledRealContext.contextId;
+      this.setAsyncContextIdPromise(calledContextId, promise);
+    }
   }
 
   // ###########################################################################
@@ -149,6 +146,8 @@ export default class RuntimeAsync {
       updateId: update.updateId
       // awaitArgument
     });
+
+    this.logger.debug(`[preAwait] ${resumeContextId}, ${realContextId}, ${isFirstAwait}`);
 
     const isNested = isThenable(awaitArgument);
     if (!isNested) {
@@ -432,12 +431,16 @@ export default class RuntimeAsync {
   /**
    * Async function returning given `promise`.
    * NOTE: Only called if returned value is thenable.
-   * NOTE2: toPromiseId is just a placeholder, since we don't necessarily know the `to` promiseId yet (if async function did not `await` yet).
-   *    -> is fixed up in `PromiseLinkCollection`.
    */
   returnAsync(promise, traceId) {
     const rootId = this.getCurrentVirtualRootContextId();
-    return nestedPromiseCollection.addLink(PromiseLinkType.AsyncReturn, getPromiseId(promise), 0, traceId, rootId);
+    /**
+     * NOTE: toPromiseId is just a placeholder, 
+     *    since we don't necessarily know the `to` promiseId yet (if async function did not `await` yet).
+     * -> is fixed up in `PromiseLinkCollection.postAdd*`.
+     */
+    const to = 0;
+    return nestedPromiseCollection.addLink(PromiseLinkType.AsyncReturn, getPromiseId(promise), to, traceId, rootId);
   }
 
   // ###########################################################################

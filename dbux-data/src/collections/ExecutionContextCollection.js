@@ -70,7 +70,7 @@ export default class ExecutionContextCollection extends Collection {
    */
   postIndexRaw(entries) {
     this.errorWrapMethod('setParamInputs', entries);
-    this.errorWrapMethod('setAsyncPromiseIds', entries);
+    // this.errorWrapMethod('setAsyncPromiseIds', entries);
     this.errorWrapMethod('setCallExpressionResultInputs', entries);
   }
 
@@ -121,34 +121,35 @@ export default class ExecutionContextCollection extends Collection {
     }
   }
 
-  /**
-   * Set promiseId for async function contexts.
-   */
-  setAsyncPromiseIds(contexts) {
-    const { dp, dp: { util } } = this;
-    for (const context of contexts) {
-      const { contextId, contextType } = context;
-      const { isInterruptable } = util.getContextStaticContext(contextId);
+  // /**
+  //  * Set promiseId for async function contexts.
+  //  */
+  // setAsyncPromiseIds(contexts) {
+  //   const { dp, dp: { util } } = this;
+  //   for (const context of contexts) {
+  //     const { contextId, contextType } = context;
+  //     const { isInterruptable } = util.getContextStaticContext(contextId);
 
-      if (isAsyncResumeType(contextType)) {
-        const returnRef = util.getReturnValueRefOfContext(contextId);
-        const returnedPromiseRef = returnRef?.refId && util.getPromiseValueRef(returnRef.refId);
-        // returnedPromiseRef.
-        // TODO: store `nestedByPromiseId` with `DataNode`
-        //    -> add `nestedByPromiseId` index for promise `DataNode`
-        //    -> also add support for Request.resolve(promise)
-        //    -> use `getNestedPromiseId` to get return value promise of `async` function's `context.asyncPromiseId`
-        //    -> seperately add "same root" constraint
-      }
-      else if (isInterruptable) {
-        const callTrace = dp.util.getCallerTraceOfContext(contextId);
-        const callResultTrace = callTrace && dp.util.getValueTrace(callTrace.traceId);
-        const refId = callResultTrace && dp.util.getTraceRefId(callResultTrace.traceId);
-        const promiseId = refId && dp.util.getPromiseIdOfValueRef(refId);
-        context.asyncPromiseId = promiseId || 0;
-      }
-    }
-  }
+  //     if (isAsyncResumeType(contextType)) {
+  //       const returnRef = util.getReturnValueRefOfContext(contextId);
+  //       const returnedPromiseRef = returnRef?.refId && util.getPromiseValueRef(returnRef.refId);
+  //       // returnedPromiseRef.
+  //       // TODO: old idea
+  //       //    -> store `nestedByPromiseId` with `DataNode`
+  //       //    -> add `nestedByPromiseId` index for promise `DataNode`
+  //       //    -> also add support for Request.resolve(promise)
+  //       //    -> use `getNestedPromiseId` to get return value promise of `async` function's `context.asyncPromiseId`
+  //       //    -> add "same root" constraint
+  //     }
+  //     else if (isInterruptable) {
+  //       const callTrace = dp.util.getCallerTraceOfContext(contextId);
+  //       const callResultTrace = callTrace && dp.util.getValueTrace(callTrace.traceId);
+  //       const refId = callResultTrace && dp.util.getTraceRefId(callResultTrace.traceId);
+  //       const promiseId = refId && dp.util.getPromiseIdOfValueRef(refId);
+  //       context.asyncPromiseId = promiseId || 0;
+  //     }
+  //   }
+  // }
 
   /**
    * Set CallExpression result trace `inputs` to `[returnNodeId]`.

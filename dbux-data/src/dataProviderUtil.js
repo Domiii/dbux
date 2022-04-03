@@ -1716,13 +1716,6 @@ export default {
       // default
       return contextId;
     }
-    // else {
-    //   // if (parentContextId && !dp.collections.executionContexts.getById(parentContextId))
-
-    //   // eslint-disable-next-line max-len
-    //   dp.logger.trace(`Could not find realContext for contextId=${contextId}, parentContextId=${realContextId}, parentContext="${dp.util.makeContextInfo(realContextId)}"`);
-    //   return null;
-    // }
   },
 
   /** @param {DataProvider} dp */
@@ -1781,8 +1774,14 @@ export default {
   },
 
   /** @param {DataProvider} dp */
+  isFirstAwait(dp, resumeContextId) {
+    const context = dp.collections.executionContexts.getById(resumeContextId);
+    const { realContextId } = context;
+    return realContextId === resumeContextId;
+  },
+
+  /** @param {DataProvider} dp */
   isFirstContextInParent(dp, contextId) {
-    // TODO: virtual-func
     const context = dp.collections.executionContexts.getById(contextId);
     const { parentContextId } = context;
     if (parentContextId) {
@@ -2115,7 +2114,18 @@ export default {
     const st = dp.util.getStaticTrace(traceId);
     const loc = locToString(st.loc);
     const where = `${fpath}:${loc}`;
-    return `"${st?.displayName}" at ${where} (stid=${st?.staticTraceId})`;
+    let displayName = st?.displayName;
+    if (!displayName) {
+      if (TraceType.is.Await(st.type)) {
+        const previousTrace = dp.callGraph.getPreviousInContext(traceId);
+        const previousSt = previousTrace && dp.util.getStaticTrace(previousTrace.traceId);
+        displayName = previousSt?.displayName && `(awaiting) ${previousSt.displayName}`;
+      }
+    }
+    if (!displayName) {
+      displayName = `(${TraceType.nameFrom(st.type)})`;
+    }
+    return `${st?.displayName} at ${where} (stid=${st?.staticTraceId})`;
   },
 
   /**
@@ -2863,13 +2873,13 @@ ${roots.map(c => `          ${dp.util.makeContextInfo(c)}`).join('\n')}`);
       // // no link, and no update found -> check if this promise was created from within a promise ctor
       // // const promisifyPromiseId = dp.util.get TODO nestingPromiseId;
       // const rootContext = dp.util.getPromiseCreationContext(nestedPromiseId);
-      // if (rootContext?.promisifyId) {
-      //   if (nestedPromiseId === rootContext.promisifyId) {
+      // if (rootContext?.data?.promisifyId) {
+      //   if (nestedPromiseId === rootContext.data?.promisifyId) {
       //     warn(`unexpected - Promise nesting itself: ${nestedPromiseId}`);
       //   }
       //   else {
       //     // hackfix: prevent inf loop
-      //     return dp.util.UP(rootContext.promisifyId, beforeRootId, nestingUpdates);
+      //     return dp.util.UP(rootContext.data?.promisifyId, beforeRootId, nestingUpdates);
       //   }
       // }
     }
@@ -3205,7 +3215,7 @@ ${roots.map(c => `          ${dp.util.makeContextInfo(c)}`).join('\n')}`);
       rootId: preEventRootId
     } = preEventUpdate;
 
-    const isFirstAwait = util.isFirstContextInParent(preEventContextId);
+    const isFirstAwait = util.isFirstAwait(preEventContextId);
 
     /**
      * Implies that function was called by the system or some other caller that was not recorded

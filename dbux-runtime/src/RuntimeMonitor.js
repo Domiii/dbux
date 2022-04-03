@@ -199,7 +199,7 @@ export default class RuntimeMonitor {
     // hackfix: link context to surrounding promise (if promise ctor executor on stack)
     // [edit-after-send]
     const promisifyPromiseVirtualRef = this._runtime.getPromisifyPromiseVirtualRef();
-    promisifyPromiseVirtualRef?.add(context, 'promisifyId');
+    promisifyPromiseVirtualRef?.add(context, 'data.promisifyId');
 
     if (!parentContextId) {
       this._runtime._updateVirtualRootContext(contextId);
@@ -1165,7 +1165,7 @@ export default class RuntimeMonitor {
     if (!this._ensureExecuting()) {
       return value;
     }
-    const trace = traceCollection.getById(tid);
+    const callResultTrace = traceCollection.getById(tid);
 
     // const bceStaticTrace = traceCollection.getStaticTraceByTraceId(callId);
     // let valueMeta;
@@ -1175,20 +1175,20 @@ export default class RuntimeMonitor {
     // }
 
     // [edit-after-send]
-    trace.resultCallId = callId;
+    callResultTrace.resultCallId = callId;
 
     this.traceExpression(programId, value, tid, null);
 
     const contextId = this._runtime.peekCurrentContextId();
     // const runId = this._runtime.getCurrentRunId();
-    this._onTrace(contextId, trace);
+    this._onTrace(contextId, callResultTrace);
 
     if (!(isThenable(value))) {
       return value;
     }
 
     // register promise-valued CallExpression
-    this._runtime.async.traceCallPromiseResult(contextId, trace, value);
+    this._runtime.async.traceCallPromiseResult(contextId, callResultTrace, value);
     // this._runtime.thread2.recordMaybeNewPromise(value, runId, contextId, calledContextId);
 
     return value;

@@ -1511,12 +1511,12 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       exercises = exercises.filter(exercise => exercise.label);
     }
 
-    this.logger.debug(
-      `loaded ${exercises.length} exercises: ` +
-      exercises.
-        map(ex => `${ex.id}${ex.uniqueName && ` (${ex.uniqueName})` || ''}`).
-        join(', ')
-    );
+    // this.logger.debug(
+    //   `loaded ${exercises.length} exercises: ` +
+    //   exercises.
+    //     map(ex => `${ex.id}${ex.uniqueName && ` (${ex.uniqueName})` || ''}`).
+    //     join(', ')
+    // );
 
     this._exercises = new ExerciseList(exercises);
 

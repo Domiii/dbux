@@ -9,7 +9,7 @@ export class ExecutionContextCollection extends Collection {
   _lastContextId = -1;
   _lastOrderIds = [];
 
-  _lastTraceIds = [];
+  // _lastTraceIds = [];
 
   _firstContextChild = new Map();
 
@@ -47,8 +47,8 @@ export class ExecutionContextCollection extends Collection {
     if (!lastContext) {
       return null;
     }
-    if (!isRealContextType(lastContext.contextType)) {
-      lastContext = this.getById(lastContext.parentContextId);
+    if (lastContext.realContextId) {
+      lastContext = this.getById(lastContext.realContextId);
     }
     return lastContext;
   }

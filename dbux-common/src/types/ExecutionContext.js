@@ -11,6 +11,21 @@ import ExecutionContextType from './constants/ExecutionContextType';
 //   _performance = require('perf_hooks').performance;
 // }
 
+class ExecutionContextExtraData {
+  /**
+   * @type {number?}
+   */
+  callerPromiseId;
+
+  // /**
+  //  * Id of promise whose ctor executor was on stack (if any).
+  //  * Currently, not being used.
+  //  * 
+  //  * @type {number?}
+  //  */
+  // promisifyId;
+}
+
 export default class ExecutionContext {
   /**
    * @type {ExecutionContextType}
@@ -93,22 +108,15 @@ export default class ExecutionContext {
   //  */
   // stackTrace;
 
-  /**
-   * If the context is an async function, this is its returned `promiseId`.
-   * 
-   * @type {number}
-   */
-  asyncPromiseId;
+  // /**
+  //  * If the context is an async function, this is its returned `promiseId`.
+  //  * 
+  //  * @type {number}
+  //  */
+  // asyncPromiseId;
 
   /**
-   * @type {{callerPromiseId: number}?}
+   * @type {ExecutionContextExtraData?}
    */
   data;
-
-  /**
-   * Set to id of promise whose ctor executor was on stack (if any).
-   * 
-   * @type {number?}
-   */
-  promisifyId;
 }

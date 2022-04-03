@@ -1,6 +1,7 @@
 import truncate from 'lodash/truncate';
 import isFunction from 'lodash/isFunction';
 import isString from 'lodash/isString';
+import set from 'lodash/set';
 import ValueTypeCategory, { determineValueTypeCategory, ValuePruneState, isTrackableCategory } from '@dbux/common/src/types/constants/ValueTypeCategory';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
@@ -44,7 +45,7 @@ export class VirtualRef {
 
   add(participant, prop) {
     if (this.refId) {
-      participant[prop] = this.refId;
+      set(participant, prop, this.refId);
     }
     else {
       this.participants.push({ participant, prop });
@@ -55,7 +56,7 @@ export class VirtualRef {
     this.refId = refId;
     // [edit-after-send]
     for (const { participant, prop } of this.participants) {
-      participant[prop] = refId;
+      set(participant, prop, this.refId);
     }
     this.participants = null;
   }

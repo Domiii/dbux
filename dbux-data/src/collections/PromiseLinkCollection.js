@@ -37,7 +37,7 @@ export default class PromiseLinkCollection extends Collection {
       if (!promiseId) {
         // TODO: fix `then(async function() {})` in `promisePatcher`!!!
         // NOTE: we can't get the promiseId of an async function that was called by the system
-        this.logger.warn(`Could not resolve "to" for PromiseLink at trace (${this.dp.util.makeTraceInfo(entry.traceId)}):`, entry);
+        this.logger.warn(`Could not resolve "to" for PromiseLink at trace (${this.dp.util.makeTraceInfo(entry.traceId)}):`, JSON.stringify(entry, null, 2));
       }
       else {
         entry.to = promiseId;

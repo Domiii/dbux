@@ -5,6 +5,7 @@ function f(r) {
 }
 
 P(
+  'A',
   () => {
     return new Promise(r => {
       f(r);

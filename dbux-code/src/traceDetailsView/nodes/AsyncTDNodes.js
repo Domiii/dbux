@@ -257,7 +257,7 @@ export default class AsyncTDNode extends TraceDetailNode {
         this.makePromiseLinkTree('PromiseLinks To', promiseId, 'to')
       ],
       {
-        description: `promiseId=${promiseId}`
+        description: promiseId && `promiseId=${promiseId}` || `(no promise)`
       }
     );
   }

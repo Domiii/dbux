@@ -212,30 +212,13 @@ export class DebugTDNode extends TraceDetailNode {
     // one POST event per `rootId`
     const postEventUpdates = asyncEventUpdates?.filter(({ type }) => isPostEventUpdate(type));
     const postEventUpdateData = postEventUpdates?.map(this.mapPostAsyncEvent);
-    const postEventUpdate = postEventUpdateData?.[0];
+    // const postEventUpdate = postEventUpdateData?.[0];
 
     // many PRE events per `rootId`
     const otherEventUpdates = asyncEventUpdates?.
       filter(({ type }) => !isPostEventUpdate(type))?.
       map(this.makeAsyncUpdateItem);
 
-    const rootNode = makeTreeItem(
-      'Root',
-      {
-        AsyncNode: asyncNode,
-        PostEventUpdateData: makeTreeItem(
-          'PostEventUpdateData',
-          postEventUpdateData?.length === 1 ? postEventUpdateData[0] : (postEventUpdateData || {}),
-          { description: `${postEventUpdateData?.map(upd => AsyncEventUpdateType.nameFrom(upd.type)) || ''}` }
-        ),
-        ...makeObjectArrayNodes({
-          OtherUpdates: otherEventUpdates,
-        })
-      },
-      {
-        description: `rootId=${rootContextId}${postEventUpdateData?.map(upd => ` (${AsyncEventUpdateType.nameFrom(upd.type)})`) || ''}`
-      }
-    );
 
     /** ###########################################################################
      * Async Ancestor
@@ -252,23 +235,28 @@ export class DebugTDNode extends TraceDetailNode {
         });
       });
 
-    const ancestorNode = makeTreeItem(
-      `Ancestors`,
-      nestingTraces,
-      { description: `(${nestingTraces.length})` }
-    );
-
-    const asyncContainerNode = [
+    const asyncTreeNode = makeTreeItem(
       'Async',
-      [
-        rootNode,
-        ancestorNode,
-      ],
       {
-        // eslint-disable-next-line max-len
-        description: `thread=${asyncNode?.threadId}`
+        'Root AsyncNode': asyncNode,
+        PostEventUpdateData: makeTreeItem(
+          'Root PostEventUpdateData',
+          postEventUpdateData?.length === 1 ? postEventUpdateData[0] : (postEventUpdateData || {}),
+          { description: `${postEventUpdateData?.map(upd => AsyncEventUpdateType.nameFrom(upd.type)) || ''}` }
+        ),
+        ...makeObjectArrayNodes({
+          'Root OtherUpdates': otherEventUpdates,
+        }),
+        Ancestors: makeTreeItem(
+          `Root Async Ancestors`,
+          nestingTraces,
+          { description: `(${nestingTraces.length})` }
+        ),
+      },
+      {
+        description: `thread=${asyncNode?.threadId},rootId=${rootContextId}${postEventUpdateData?.map(upd => ` (${AsyncEventUpdateType.nameFrom(upd.type)})`) || ''}`
       }
-    ];
+    );
 
     /** ###########################################################################
      * value details
@@ -311,7 +299,7 @@ export class DebugTDNode extends TraceDetailNode {
         valueNode,
         contextNode,
         rootContextNode,
-        asyncContainerNode,
+        asyncTreeNode,
         ...allDataNodes,
         ['staticTrace', staticTrace],
         ['staticContext', staticContext],
