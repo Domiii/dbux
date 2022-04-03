@@ -3070,6 +3070,8 @@ ${roots.map(c => `          ${dp.util.makeContextInfo(c)}`).join('\n')}`);
           nestedUpdate = dp.util.GNPU(nestedLink.from, beforeRootId, syncBeforeRootId, postUpdateData, depth + 1, visited) || nestedUpdate;
         }
         else if (nestedLink.asyncPromisifyPromiseId) {
+          // NOTE: we somehow use PromiseLinkType.Promisify* to set `promiseId` on the PostCallbackUpdate instead.
+          //  → This means that non-CB links cannot be traced like that.
           //   // promisify linkage, encountering `p` in `C()` in:
           //   //  `A(); p.then(() => (B(), p)).then(C)`
           //   // NOTE: nestedLink is created when `resolve`/`reject` is called

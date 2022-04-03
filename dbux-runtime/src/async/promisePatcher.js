@@ -491,7 +491,8 @@ function doResolve(promise, patchedResolve, executorRealRootId, executorRootId, 
     if (Verbose) {
       const stack = RuntimeMonitorInstance.runtime._executingStack?.humanReadableString();
       debug(
-        `[promisify resolve] ${asyncPromisifyPromiseId} (${resolveRealRootId}). ${executorRealRootId} != ${resolveRealRootId}, ${executorRealRootId} != ${thenRef.rootId}. stack:` +
+        // eslint-disable-next-line max-len
+        `[promisify resolve] ${asyncPromisifyPromiseId} (${resolveRealRootId}). executorRealRootId=${executorRealRootId}, resolveRealRootId=${resolveRealRootId}, thenRef.rootId=${thenRef.rootId}. stack:` +
         `${stack || '(empty)'}`
       );
     }
