@@ -1,6 +1,7 @@
 import { makeTraceLabel, makeContextLabel, makeTraceValueLabel } from '@dbux/data/src/helpers/makeLabels';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import allApplications from '@dbux/data/src/applications/allApplications';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { emitSelectTraceAction } from '../../userEvents';
 import TraceNode from '../../codeUtil/treeView/TraceNode';
 import TraceContainerNode, { GroupNode } from '../../codeUtil/treeView/TraceContainerNode';
@@ -182,7 +183,7 @@ export default class ExecutionsTDNode extends TraceContainerNode {
     }
     else {
       for (const groupNode of this.children) {
-        for (const executionNode of groupNode.children) {
+        for (const executionNode of groupNode.children || EmptyArray) {
           if (executionNode.isSelected()) {
             return executionNode;
           }

@@ -147,7 +147,8 @@ export default class RuntimeAsync {
       // awaitArgument
     });
 
-    this.logger.debug(`[preAwait] ${resumeContextId}, ${realContextId}, ${isFirstAwait}`);
+    // NOTE: debug via `RuntimeMonitor` instead
+    // this.logger.debug(`[preAwait] ${resumeContextId}, ${realContextId}, ${isFirstAwait}`);
 
     const isNested = isThenable(awaitArgument);
     if (!isNested) {
@@ -396,7 +397,7 @@ export default class RuntimeAsync {
   all(inner, outer, traceId) {
     // NOTE: `reject` does not settle nested promises!
     const rootId = this.getCurrentVirtualRootContextId();
-    const from = inner.map(p => getPromiseId(p));
+    const from = inner.map(p => getPromiseId(p)).filter(Boolean);
     // const from = getPromiseId(inner);
     const to = getPromiseId(outer);
     // if (!from || !to) {

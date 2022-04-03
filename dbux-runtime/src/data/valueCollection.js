@@ -22,11 +22,11 @@ const { log, debug, warn, error: logError } = newLogger('valueCollection');
 // const Verbose = true;
 const Verbose = false;
 // const VerboseErrors = Verbose || true;
-const VerboseErrors = Verbose || false;
+const VerboseErrors = Verbose || true;
 
 const SerializationLimits = {
-  maxDepth: 4,          // applies to arrays and object
-  maxObjectSize: 50,    // applies to arrays and object
+  maxDepth: 8,          // applies to arrays and object
+  maxObjectSize: 30,    // applies to arrays and object
   maxStringLength: 1000
 };
 
@@ -228,7 +228,10 @@ class ValueCollection extends Collection {
     const { nodeId } = dataNode;
     const category = this.determineValueTypeCategory(value);
     Verbose > 1 && this._log(`[val] dataNode #${nodeId}`);
-    if (!isTrackableCategory(category)) {
+    if (globalThis === value) {
+      return this.addOmitted();
+    }
+    else if (!isTrackableCategory(category)) {
       valueRef = null;
       dataNode.value = this._serializeNonTrackable(value, category);
       dataNode.hasValue = dataNode.value !== undefined;
@@ -658,6 +661,8 @@ class ValueCollection extends Collection {
 
       case ValueTypeCategory.Object: {
         if (!this._canReadKeys(value)) {
+          serialized = `(ERROR: accessing object caused exception)`;
+          category = ValueTypeCategory.String;
           pruneState = ValuePruneState.Omitted;
         }
         else {

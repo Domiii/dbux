@@ -37,6 +37,7 @@ export default class ValueRefCollection extends Collection {
 
         if (pruneState !== ValuePruneState.Omitted && isObjectCategory(category) && serialized) {
           // map: [childRefId, childValue] => [(creation)nodeId, childRefId, childValue]
+          // TODO: `childNodeId` should be that of `childRef`, but we don't have a unique `nodeId` for refs whose explicit creation we have not recorded
           valueRef.value = Object.fromEntries(
             Object.entries(serialized)
               .map(([key, [childRefId, childValue]]) => [key, [childNodeId, childRefId, childValue]])

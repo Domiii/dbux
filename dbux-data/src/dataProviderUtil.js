@@ -630,6 +630,9 @@ export default {
     let valueRef;
     if (_refId) {
       valueRef = dp.collections.values.getById(_refId);
+      if (valueRef.pruneState) {
+        return valueRef.value;
+      }
       if (_visited.has(_refId)) {
         return '(circular dependency)';
       }
@@ -3009,7 +3012,7 @@ ${roots.map(c => `          ${dp.util.makeContextInfo(c)}`).join('\n')}`);
    * @param {PostUpdateData} postUpdateData
    */
   GNPU(dp, nestingPromiseId, beforeRootId, syncBeforeRootId, postUpdateData, depth = 0, visited = new Set()) {
-    if (visited.has(nestingPromiseId)) {
+    if (!nestingPromiseId || visited.has(nestingPromiseId)) {
       return null;
     }
     visited.add(nestingPromiseId);
