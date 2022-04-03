@@ -1497,7 +1497,6 @@ export default {
    * @param {number} contextId
    */
   getOwnCallerTraceOfContext(dp, contextId) {
-    const context = dp.collections.executionContexts.getById(contextId);
     const bceTrace = dp.util.getCallerTraceOfContext(contextId);
     if (!bceTrace?.data) {
       return null;
@@ -1517,6 +1516,7 @@ export default {
     }
 
     const { traceId } = dp.collections.dataNodes.getById(functionRef.nodeId);
+    const context = dp.collections.executionContexts.getById(contextId);
     if (context.definitionTid === traceId) {
       // Accept: definitionTid are matched
       return bceTrace;

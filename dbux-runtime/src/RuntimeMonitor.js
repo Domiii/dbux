@@ -527,7 +527,7 @@ export default class RuntimeMonitor {
   /**
    * @return {number} resumeContextId
    */
-  pushResume(programId, realContextId, contextType, inProgramResumeStaticContextId, resumeInProgramStaticTraceId = 0/* , dontTrace = false */) {
+  pushResume(programId, realContextId, contextType, inProgramResumeStaticContextId, resumeInProgramStaticTraceId = 0/* , dontTrace = false */, definitionTid = 0) {
     this._runtime.beforePush(null);
 
     const stackDepth = this._runtime.getStackDepth();
@@ -540,7 +540,8 @@ export default class RuntimeMonitor {
     const schedulerTraceId = null;
     const resumeContext = executionContextCollection.pushResume(
       contextType,
-      stackDepth, runId, realContextId, parentContextId, parentTraceId, programId, inProgramResumeStaticContextId, schedulerTraceId
+      stackDepth, runId, realContextId, parentContextId, parentTraceId, programId, inProgramResumeStaticContextId, schedulerTraceId, 
+      definitionTid
     );
     if (!realContextId) {
       // hackfix: this is first push of interruptable function

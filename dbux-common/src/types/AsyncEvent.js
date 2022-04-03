@@ -22,4 +22,6 @@ export default class AsyncEvent {
   //  * @type {number | number[]}
   //  */
   // syncPromiseIds;
+
+  promiseId;
 }

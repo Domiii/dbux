@@ -107,11 +107,10 @@ export class ExecutionContextCollection extends Collection {
    * (1) either when the function pops,
    * (2) or when another interrupt occurs.
    */
-  pushResume(contextType, stackDepth, runId, realContextId, parentContextId, parentTraceId, programId, inProgramStaticContextId, schedulerTraceId) {
+  pushResume(contextType, stackDepth, runId, realContextId, parentContextId, parentTraceId, programId, inProgramStaticContextId, schedulerTraceId, definitionTid) {
     // const parentContext = this.getById(parentContextId);
     // const { staticContextId: parenStaticContextId } = parentContext;
     // const { programId } = staticContextCollection.getById(inProgramStaticContextId);
-    const definitionTid = null;
     const context = this._create(contextType,
       stackDepth, runId, realContextId, parentContextId, parentTraceId, programId, inProgramStaticContextId, schedulerTraceId, definitionTid);
 

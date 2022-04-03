@@ -187,10 +187,13 @@ export default class AsyncTDNode extends TraceDetailNode {
       rootContextId
     } } = this;
 
+    const postUpdate = dp.util.getFirstAsyncPostEventUpdateOfRoot(rootContextId);
+    const updateType = postUpdate && AsyncEventUpdateType.nameFrom(postUpdate.type);
+
     const fromRootId = dp.indexes.asyncEvents.to.get(rootContextId)
       ?.flatMap(evt => evt.fromRootContextId) || EmptyArray;
 
-    this.description = `(root=${rootContextId}, from=${fromRootId.join(',') || '?'})`;
+    this.description = `[${updateType || ''}] (root=${rootContextId}, from=${fromRootId.join(',') || '?'})`;
   }
 
   /** ###########################################################################

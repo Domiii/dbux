@@ -204,8 +204,8 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.postAwait(this.getProgramId(), awaitResult, awaitArgument, realContextId, awaitContextId);
   }
 
-  pushResume = (realContextId, resumeStaticContextId, inProgramStaticTraceId) => {
-    return this._runtimeMonitor.pushResume(this.getProgramId(), realContextId, 0, resumeStaticContextId, inProgramStaticTraceId, true);
+  pushResume = (realContextId, resumeStaticContextId, inProgramStaticTraceId, definitionTid) => {
+    return this._runtimeMonitor.pushResume(this.getProgramId(), realContextId, 0, resumeStaticContextId, inProgramStaticTraceId, definitionTid);
   }
 
   popResumeTop() {
