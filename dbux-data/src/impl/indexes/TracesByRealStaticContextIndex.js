@@ -15,8 +15,7 @@ export default class TracesByRealStaticContextIndex extends CollectionIndex {
    */
   makeKey(dp, trace) {
     const { contextId } = trace;
-    const { staticContextId } = dp.collections.executionContexts.getById(contextId);
-    const realContextId = dp.util.getRealStaticContextIdOfStaticContext(staticContextId);
+    const realContextId = dp.util.getRealStaticContextIdOfContext(contextId);
 
     return realContextId || 0;
   }

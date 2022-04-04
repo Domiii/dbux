@@ -1657,11 +1657,11 @@ export default {
 
   /** @param {DataProvider} dp */
   getRealStaticContextIdOfStaticContext(dp, staticContextId) {
-    const { parentId, type } = dp.collections.staticContexts.getById(staticContextId);
+    const { parentId } = dp.collections.staticContexts.getById(staticContextId);
 
     // NOTE: "first virtual" context of context is "real context"
 
-    if (!isVirtualStaticContextType(type)) {
+    if (dp.util.isRealStaticContext(staticContextId)) {
       return staticContextId;
     }
 
@@ -1684,6 +1684,20 @@ export default {
     }
     // const realContext = dp.util.getRealContextOfContext(contextId);
     // return realContext.staticContextId;
+  },
+
+  /** @param {DataProvider} dp */
+  isRealStaticContext(dp, staticContextId) {
+    const staticContext = dp.collections.staticContexts.getById(staticContextId);
+    if (!isVirtualStaticContextType(staticContext.type)) {
+      return true;
+    }
+    else if (staticContext.isInterruptable) {
+      // `isInterruptable === true` for the first virtual context
+      return true;
+    }
+
+    return false;
   },
 
   /** @param {DataProvider} dp */
