@@ -1,5 +1,5 @@
 import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
-import { isVirtualContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
+import ExecutionContextType from '@dbux/common/src/types/constants/ExecutionContextType';
 import Trace from '@dbux/common/src/types/Trace';
 import CollectionIndex, { CollectionIndexDependencies } from '../../indexes/CollectionIndex';
 import RuntimeDataProvider from '../../RuntimeDataProvider';
@@ -38,10 +38,14 @@ export default class ParentTracesInRealContextIndex extends CollectionIndex {
         added: (contexts) => {
           for (const context of contexts) {
             const { parentTraceId, contextId } = context;
-            // skip empty contexts
+            // skip empty contexts, e.g. `Await`s
             if (this.dp.indexes.traces.byContext.getSize(contextId) === 0) {
               continue;
             }
+
+            /**
+             * NOTE: this will filter out non-first virtual contexts, since they have no `parentTraceId`
+             */
             if (parentTraceId && !this.addedTraces.has(parentTraceId)) {
               this.addEntryById(parentTraceId);
               this.addedTraces.add(parentTraceId);
