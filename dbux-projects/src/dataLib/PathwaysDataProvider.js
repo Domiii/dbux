@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { v4 as uuidv4 } from 'uuid';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
@@ -14,7 +15,6 @@ import { emitNewTestRun } from '../userEvents';
 import getFirstLine from '../util/readFirstLine';
 import PathwaysDataUtil from './pathwaysDataUtil';
 import TestRunsByExerciseIdIndex from './indexes/TestRunsByExerciseIdIndex';
-import UserActionByExerciseIdIndex from './indexes/UserActionByExerciseIdIndex';
 import UserActionByTypeIndex from './indexes/UserActionByTypeIndex';
 import UserActionsByStepIndex from './indexes/UserActionsByStepIndex';
 import UserActionsByGroupIndex from './indexes/UserActionsByGroupIndex';
@@ -55,6 +55,11 @@ class TestRunCollection extends PathwaysCollection {
 class ApplicationCollection extends PathwaysCollection {
   constructor(pdp) {
     super('applications', pdp);
+    this.addedApplicationUUIDs = new Set();
+  }
+
+  isApplicationAdded(app) {
+    return this.addedApplicationUUIDs.has(app.uuid);
   }
 
   /**
@@ -85,6 +90,10 @@ class ApplicationCollection extends PathwaysCollection {
     }
 
     this.dp.updateIndexFile();
+  }
+
+  postAddProcessed(app) {
+    this.addedApplicationUUIDs.add(app.uuid);
   }
 
   /**
@@ -267,7 +276,11 @@ export default class PathwaysDataProvider extends DataProviderBase {
   }
 
   get sessionId() {
-    return this.session?.sessionId;
+    return this.customSessionId || this.session?.sessionId;
+  }
+
+  get logFilePath() {
+    return this._logFilePath || this.session?.logFilePath;
   }
 
   // ###########################################################################
@@ -423,6 +436,26 @@ export default class PathwaysDataProvider extends DataProviderBase {
     return true;
   }
 
+  /** ###########################################################################
+   * custom practice session
+   *  #########################################################################*/
+
+  isActive() {
+    return this.session || this._isActive;
+  }
+
+  activate() {
+    this.customSessionId = uuidv4();
+    this._logFilePath = this.manager.getPathwaysLogFilePath(this.customSessionId);
+    this._isActive = true;
+  }
+
+  deactivate() {
+    this.customSessionId = null;
+    this._logFilePath = null;
+    this._isActive = false;
+  }
+
   // ###########################################################################
   // Data load + save
   // ###########################################################################
@@ -456,7 +489,6 @@ export default class PathwaysDataProvider extends DataProviderBase {
       userActions: new UserActionCollection(this),
     };
 
-    this.addIndex(new UserActionByExerciseIdIndex());
     this.addIndex(new UserActionByTypeIndex());
     this.addIndex(new UserActionsByStepIndex());
     this.addIndex(new UserActionsByGroupIndex());
@@ -468,7 +500,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
 
   async clearSteps() {
     this._resetUserActions();
-    fs.unlinkSync(this.session.logFilePath);
+    fs.unlinkSync(this.logFilePath);
 
     this.writeHeader();
     this.writeAll(
@@ -487,7 +519,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
    */
   load() {
     try {
-      let [headerString, ...allData] = fs.readFileSync(this.session.logFilePath, 'utf8').split(/\r?\n/);
+      let [headerString, ...allData] = fs.readFileSync(this.logFilePath, 'utf8').split(/\r?\n/);
       const header = JSON.parse(headerString);
       if (!header.headerTag) {
         // handle log files from version=1 which do not contain headers, this should be removed in the next version
@@ -508,7 +540,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
     }
     catch (err) {
       if (err.code === 'ENOENT') {
-        log(`No log file found at "${this.session.logFilePath}", header written`);
+        log(`No log file found at "${this.logFilePath}", header written`);
         this.writeHeader();
       }
       else {
@@ -550,12 +582,12 @@ export default class PathwaysDataProvider extends DataProviderBase {
    * @param {string} collectionName
    */
   writeCollectionData(collectionName, data) {
-    fs.appendFileSync(this.session.logFilePath, `${JSON.stringify({ collectionName, data })}\n`, { flag: 'a' });
+    fs.appendFileSync(this.logFilePath, `${JSON.stringify({ collectionName, data })}\n`, { flag: 'a' });
   }
 
   writeHeader() {
-    const { version } = this;
-    const { logFilePath, sessionId, createdAt, exercise: { id: exerciseId } } = this.session;
+    const { version, logFilePath } = this;
+    const { sessionId, createdAt, exercise: { id: exerciseId } } = this.session;
     fs.appendFileSync(logFilePath, `${JSON.stringify({ headerTag: true, version, sessionId, exerciseId, createdAt })}\n`, { flag: 'ax' });
     this.updateIndexFile();
   }

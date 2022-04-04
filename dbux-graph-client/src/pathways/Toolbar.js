@@ -1,8 +1,6 @@
-import PathwaysMode from '@dbux/data/src/pathways/PathwaysMode';
-import { compileHtmlElement, decorateClasses, decorateAttr } from '../util/domUtil';
+// import PathwaysMode from '@dbux/data/src/pathways/PathwaysMode';
+import { compileHtmlElement, decorateClasses } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
-
-let documentClickHandler;
 
 class Toolbar extends ClientComponentEndpoint {
   // ###########################################################################
@@ -37,7 +35,7 @@ class Toolbar extends ClientComponentEndpoint {
   }
 
   setupEl() {
-    
+
   }
 
   toggleMenu() {
@@ -71,7 +69,7 @@ class Toolbar extends ClientComponentEndpoint {
   // ###########################################################################
 
   on = {
-    
+
     modeBtn: {
       async click(evt) {
         await this.context.doc.remote.cyclePathwaysMode();
@@ -105,7 +103,7 @@ class Toolbar extends ClientComponentEndpoint {
 
       focus(evt) { evt.target.blur(); }
     },
-    
+
 
     moreMenuBtn: {
       click(/* evt */) {

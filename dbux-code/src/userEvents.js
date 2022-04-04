@@ -123,12 +123,12 @@ function getApplicationUUID(trace) {
 // emitter
 // ###########################################################################
 
-export function onUserEvent(cb) {
-  if (!manager) {
-    throw new Error('trying to listen on userEvent before ProjectsManager is registered');
-  }
-  return manager.onUserEvent(cb);
-}
+// export function onUserEvent(cb) {
+//   if (!manager) {
+//     throw new Error('trying to listen on userEvent before ProjectsManager is registered');
+//   }
+//   return manager.onUserEvent(cb);
+// }
 
 /**
  * NOTE: Basic UserAction emitter, should not be used without registration

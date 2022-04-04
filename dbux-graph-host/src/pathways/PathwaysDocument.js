@@ -16,10 +16,7 @@ class PathwaysDocument extends HostComponentEndpoint {
    * @type {PathwaysDataProvider}
    */
   get pdp() {
-    const {
-      getPathwaysDataProvider
-    } = this.componentManager.externals;
-    return getPathwaysDataProvider();
+    return this.componentManager.externals.getPathwaysDataProvider();
   }
 
   update() {
@@ -31,7 +28,7 @@ class PathwaysDocument extends HostComponentEndpoint {
   // ###########################################################################
 
   init() {
-    this.state.pathwaysMode = PathwaysMode.Analyze;
+    this.state.pathwaysMode = PathwaysMode.Normal;
 
     this.createOwnComponents();
 

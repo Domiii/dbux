@@ -59,6 +59,15 @@ export function initProjectCommands(extensionContext, projectViewController) {
     await projectViewController.toggleTreeView();
   });
 
+  registerCommand(extensionContext, 'dbux.startPathways', async () => {
+    await projectViewController.manager.startPathways();
+    await showInformationMessage('Start recording user actions.');
+  });
+
+  registerCommand(extensionContext, 'dbux.stopPathways', async () => {
+    return await projectViewController.manager.stopPathways();
+  });
+
   /** ###########################################################################
    * project view
    *  #########################################################################*/

@@ -2,23 +2,6 @@ import NanoEvents from 'nanoevents';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 
 /** @typedef {import('../practiceSession/PracticeSession').default} PracticeSession */
-/** @typedef {import('../ProjectsManager').default} ProjectsManager */
-
-// ###########################################################################
-// register ProjectsManager
-// ###########################################################################
-
-/**
- * @type {ProjectsManager}
- */
-let manager;
-
-export function initUserEvents(_manager) {
-  manager = _manager;
-  onUserEvent((data) => {
-    manager.pdp.addNewUserAction(data);
-  });
-}
 
 // ###########################################################################
 // event registry
@@ -64,6 +47,9 @@ export function emitExerciseProgressChanged(exerciseProgress) {
 // emitter
 // ###########################################################################
 
+/**
+ * @type {NanoEvents}
+ */
 const emitter = new NanoEvents();
 
 /**
@@ -94,13 +80,9 @@ export function onUserEvent(cb) {
  * @param {Object} evtData NOTE: data *must* always be completely serializable, simple data.
  */
 export function emitUserEvent(eventType, evtData) {
-  if (manager.practiceSession && !manager.practiceSession.isFinished()) {
-    emitter.emit('e', {
-      type: eventType,
-      sessionId: manager.practiceSession.sessionId,
-      exerciseId: manager.practiceSession.exercise.id,
-      createdAt: Date.now(),
-      ...evtData
-    });
-  }
+  emitter.emit('e', {
+    type: eventType,
+    createdAt: Date.now(),
+    ...evtData
+  });
 }
