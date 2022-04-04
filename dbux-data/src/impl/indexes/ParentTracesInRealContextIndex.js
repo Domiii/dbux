@@ -37,9 +37,9 @@ export default class ParentTracesInRealContextIndex extends CollectionIndex {
          */
         added: (contexts) => {
           for (const context of contexts) {
-            const { parentTraceId, contextType } = context;
-            // skip await contexts
-            if (ExecutionContextType.is.Await(contextType)) {
+            const { parentTraceId, contextId } = context;
+            // skip empty contexts, e.g. `Await`s
+            if (this.dp.indexes.traces.byContext.getSize(contextId) === 0) {
               continue;
             }
 
