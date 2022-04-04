@@ -44,7 +44,7 @@ export default class ParentTracesInRealContextIndex extends CollectionIndex {
             }
 
             /**
-             * NOTE: non-first virtual contexts have no `parentTraceId`
+             * NOTE: this will filter out non-first virtual contexts, since they have no `parentTraceId`
              */
             if (parentTraceId && !this.addedTraces.has(parentTraceId)) {
               this.addEntryById(parentTraceId);
