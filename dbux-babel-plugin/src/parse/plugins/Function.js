@@ -135,7 +135,7 @@ export default class Function extends BasePlugin {
     const staticContextData = {
       name,
       displayName,
-      // isInterruptable
+      isInterruptable
     };
 
     if (isInterruptable) {

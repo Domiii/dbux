@@ -17,14 +17,7 @@ export default class StaticContext {
    * @type {bool}
    */
   isInterruptable;
-  /**
-   * @type {bool}
-   */
-  isAsync;
-  /**
-   * @type {bool}
-   */
-  isGenerator;
+  
   /**
    * @type {number}
    */
