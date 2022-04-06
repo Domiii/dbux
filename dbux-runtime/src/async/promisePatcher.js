@@ -147,7 +147,7 @@ function patchThenCallback(cb, thenRef) {
       finally {
         const wasCbInstrumented = executionContextCollection.getLastIndex() > lastContextIndex;
         const cbContext = wasCbInstrumented && getContextOfFunc(lastContextIndex, originalCb) || null;
-        if (isThenable(returnValue)) {
+        if (valueCollection.getIsThenable(returnValue)) {
           // nested promise: a promise was returned by thenCb
 
           if (!getPromiseId(returnValue)) {
@@ -497,7 +497,7 @@ function doResolve(promise, patchedResolve, executorRealRootId, executorRootId, 
       );
     }
 
-    const innerPromise = isThenable(inner) && inner || null;
+    const innerPromise = valueCollection.getIsThenable(inner) && inner || null;
 
     RuntimeMonitorInstance._runtime.async.resolve(
       innerPromise, promise, resolveRealRootId, PromiseLinkType.PromisifyResolve, thenRef.schedulerTraceId, asyncPromisifyPromiseId
@@ -612,7 +612,7 @@ monkeyPatchFunctionHolder(Promise, 'resolve',
     const value = args[0];
     const result = originalFunction.apply(thisArg, args);
 
-    if (value !== result && isThenable(value) && getPromiseId(value)) {
+    if (value !== result && valueCollection.getIsThenable(value) && getPromiseId(value)) {
       const thenRef = _makeThenRef(result, patchedFunction);
 
       RuntimeMonitorInstance._runtime.async.resolve(value, result, thenRef?.rootId, PromiseLinkType.Resolve, thenRef?.schedulerTraceId);
@@ -627,7 +627,7 @@ monkeyPatchFunctionHolder(Promise, 'reject',
     const value = args[0];
     const result = originalFunction.apply(thisArg, args);
 
-    if (value !== result && isThenable(value) && getPromiseId(value)) {
+    if (value !== result && valueCollection.getIsThenable(value) && getPromiseId(value)) {
       const thenRef = _makeThenRef(result, patchedFunction);
 
       RuntimeMonitorInstance._runtime.async.resolve(value, result, thenRef?.rootId, PromiseLinkType.Reject, thenRef?.schedulerTraceId);
@@ -738,7 +738,7 @@ function raceHandler(thisArg, args, originalFunction, patchedFunction) {
     for (let i = 0; i < nestedArr.length; ++i) {
       const p = nestedArr[i];
       // TODO: use `valueCollection._startAccess` before starting to read (potential) promise properties
-      if (isThenable(p)) {
+      if (valueCollection.getIsThenable(p)) {
         // eslint-disable-next-line no-loop-func
         nestedArr[i] = callFinally(
           p,
@@ -781,7 +781,7 @@ function anyHandler(thisArg, args, originalFunction, patchedFunction) {
     for (let i = 0; i < nestedArr.length; ++i) {
       const p = nestedArr[i];
       // TODO: use `valueCollection._startAccess` before starting to read (potential) promise properties
-      if (isThenable(p)) {
+      if (valueCollection.getIsThenable(p)) {
         // eslint-disable-next-line no-loop-func
         nestedArr[i] = callFinally(p, () => {
           if (hasFinished) {

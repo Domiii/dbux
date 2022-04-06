@@ -234,7 +234,7 @@ export default class RuntimeMonitor {
 
   traceReturnAsync(programId, value, tid, inputs) {
     this.traceExpression(programId, value, tid, inputs);
-    if (isThenable(value)) {
+    if (valueCollection.getIsThenable(value)) {
       this.runtime.async.returnAsync(value, tid);
     }
   }
@@ -1183,7 +1183,7 @@ export default class RuntimeMonitor {
     // const runId = this._runtime.getCurrentRunId();
     this._onTrace(contextId, callResultTrace);
 
-    if (!(isThenable(value))) {
+    if (!valueCollection.getIsThenable(value)) {
       return value;
     }
 

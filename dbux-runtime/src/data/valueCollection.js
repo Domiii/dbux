@@ -12,6 +12,7 @@ import { getOriginalFunction, getPatchedFunctionOrSelf } from '../util/monkeyPat
 import Collection from './Collection';
 import pools from './pools';
 import getDbuxInstance from '../getDbuxInstance';
+import isThenable from '@dbux/common/src/util/isThenable';
 
 
 /** @typedef {import('@dbux/common/src/types/ValueRef').default} ValueRef */
@@ -29,6 +30,11 @@ const SerializationLimits = {
   maxObjectSize: 30,    // applies to arrays and object
   maxStringLength: 1000
 };
+
+const DefaultPrototypes = new Set([
+  EmptyObject,
+  EmptyArray
+].map(x => Object.getPrototypeOf(x)));
 
 // ###########################################################################
 // values
@@ -245,6 +251,40 @@ class ValueCollection extends Collection {
     return valueRef;
   }
 
+  /**
+   * Also needs to be error wrapped since instanceof can also be hi-jacked by user code.
+   * This happens (for example) in Chart.js.
+   */
+  getIsInstanceOf(obj, Clazz) {
+    try {
+      this._startAccess(obj);
+      return obj instanceof Clazz;
+    }
+    catch (err) {
+      this._onAccessError(obj, this._readErrorsByType);
+      const msg = VerboseErrors && `ERROR: Dbux failed "${Object.getPrototypeOf(obj)} instanceof ${Clazz?.name}":`;
+      VerboseErrors && this.logger.debug(msg, err.message);
+      return false;
+    }
+    finally {
+      this._endAccess(obj);
+    }
+  }
+
+  getIsThenable(val) {
+    try {
+      this._startAccess(val);
+      return isThenable(val);
+    }
+    catch (err) {
+      // accessing val failed
+      return false;
+    }
+    finally {
+      this._endAccess(val);
+    }
+  }
+
   // ###########################################################################
   // misc private methods
   // ###########################################################################
@@ -387,26 +427,6 @@ class ValueCollection extends Collection {
   }
 
   /**
-   * Also needs to be error wrapped since instanceof can also be hi-jacked by user code.
-   * This happens (for example) in Chart.js.
-   */
-  _getIsInstanceOf(obj, Clazz) {
-    try {
-      this._startAccess(obj);
-      return obj instanceof Clazz;
-    }
-    catch (err) {
-      this._onAccessError(obj, this._readErrorsByType);
-      const msg = VerboseErrors && `ERROR: Dbux failed "${Object.getPrototypeOf(obj)} instanceof ${Clazz?.name}":`;
-      VerboseErrors && this.logger.debug(msg, err.message);
-      return false;
-    }
-    finally {
-      this._endAccess(obj);
-    }
-  }
-
-  /**
    * [access-guard]
    * Read a property of an object to copy + track it.
    * WARNING: This might invoke a getter function, thereby tempering with semantics (something that we genreally never want to do).
@@ -481,8 +501,7 @@ class ValueCollection extends Collection {
     ++this._readErrorCount;
 
     const proto = Object.getPrototypeOf(obj);
-    if (proto !== Object.getPrototypeOf(Object)) {
-      // cannot be `Object` or other generic type...
+    if (!DefaultPrototypes.has(proto)) { // NOTE: cannot be `Object` or other generic type...
       errorsByType.set(proto, obj);
     }
     if ((this._readErrorCount % 100) === 0) {
@@ -750,7 +769,7 @@ const valueCollection = new ValueCollection();
  * ##########################################################################*/
 
 export function wrapValue(value) {
-  if (valueCollection._getIsInstanceOf(value, Function)) {
+  if (valueCollection.getIsInstanceOf(value, Function)) {
     // value = getUnpatchedCallbackOrPatchedFunction(value);
     value = getPatchedFunctionOrSelf(value);
   }
@@ -758,7 +777,7 @@ export function wrapValue(value) {
 }
 
 export function unwrapValue(value) {
-  if (valueCollection._getIsInstanceOf(value, Function)) {
+  if (valueCollection.getIsInstanceOf(value, Function)) {
     // TODO: handle callback identity?
     value = getOriginalFunction(value) || value;
   }
