@@ -387,7 +387,16 @@ export default class CollectionIndex {
     const key = this.makeKey(this.dp, entry);
     if (key === undefined) {
       // debugger;
-      this.logger.error('makeKey returned undefined for entry', entry);
+      // hackfix: maybe we can some better info
+      let moreInfo = [];
+      if (entry?.traceId) {
+        moreInfo.push(`trace=${this.dp.util.makeTraceInfo(entry.traceId)}`);
+      }
+      else if (entry?.contextId) {
+        moreInfo.push(`context=${this.dp.util.makeContextInfo(entry.contextId)}`);
+      }
+      const moreInfoString = moreInfo.length && ` (${moreInfo.join(',')})` || '';
+      this.logger.warn(`makeKey returned undefined for entry ${JSON.stringify(entry)}${moreInfoString}`);
       return;
     }
     if (key === false) {

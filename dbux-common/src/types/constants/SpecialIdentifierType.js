@@ -55,6 +55,7 @@ export function lookupSpecialIdentifierType(identifierName) {
 const notTraceable = new Array(SpecialIdentifierType.getValueMaxIndex()).map(() => false);
 notTraceable[SpecialIdentifierType.Eval] = true;
 notTraceable[SpecialIdentifierType.Require] = true;
+notTraceable[SpecialIdentifierType.Import] = true;
 notTraceable[SpecialIdentifierType.Super] = true;
 // NOTE: Proxy is traceable, but the proxy object's value should not be iterated over.
 // notTraceable[SpecialIdentifierType.Proxy] = true;
@@ -66,6 +67,7 @@ export function isNotCalleeTraceableType(type) {
 
 const argsNotTraceableIfConstant = new Array(SpecialIdentifierType.getValueMaxIndex()).map(() => false);
 argsNotTraceableIfConstant[SpecialIdentifierType.Require] = true;
+argsNotTraceableIfConstant[SpecialIdentifierType.Import] = true;
 argsNotTraceableIfConstant[SpecialIdentifierType.Super] = true;
 
 export function isNotArgsTraceableIfConstantType(type) {

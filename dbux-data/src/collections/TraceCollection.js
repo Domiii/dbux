@@ -63,7 +63,13 @@ export default class TraceCollection extends Collection {
     for (const { traceId, resultCallId } of traces) {
       if (resultCallId) {
         const bceTrace = this.dp.collections.traces.getById(resultCallId);
-        bceTrace.resultId = traceId;
+        if (bceTrace) {
+          bceTrace.resultId = traceId;
+        }
+        else {
+          // TODO: should not happen...
+          this.logger.warn(`Could not find BCE for CRT ${this.dp.util.makeTraceInfo(traceId)}`);
+        }
       }
     }
   }

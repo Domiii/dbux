@@ -67,9 +67,41 @@ export default class MemberExpression extends BaseNode {
 
   buildDefaultTrace() {
     // No need for a default trace.
-    // NOTE: MEs are traced depending on whether they are rvals or lvals
+    // NOTE: MEs are traced differently depending on whether they are rvals or lvals
     //      but they are always taken care of.
     return null;
+  }
+
+  isProcessEnv() {
+    const [objectPath, propertyPath] = this.getChildPaths();
+
+    if (!objectPath || !propertyPath) {
+      return false;
+    }
+
+    if (/* !objectPath.node.computed && !propertyPath.node.computed &&  */
+      objectPath.node.name === 'process' && propertyPath.node.name === 'env') {
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Certain rval MEs should not be traced.
+   * E.g.: `process.env` or `process.env.X`.
+   */
+  shouldIgnoreThisRVal() {
+    if (this.isProcessEnv()) {
+      // process.env
+      return true;
+    }
+    const [objectNode] = this.getChildNodes();
+    if (objectNode.path.isMemberExpression() && objectNode?.isProcessEnv()) {
+      // process.env.X
+      return true;
+    }
+    return false;
   }
 
   // ###########################################################################
@@ -101,6 +133,10 @@ export default class MemberExpression extends BaseNode {
    * `tme(te(g(), tid1), te(f(...(x)), tid2), tid0, [tid1, tid2])`
    */
   addRValTrace(targetPath, objectAstNode) {
+    if (this.shouldIgnoreThisRVal()) {
+      return null;
+    }
+
     /**
      * TODO: `super` (e.g. `super.f()`, `super.x = 3` etc.)
      * @example
