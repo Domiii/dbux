@@ -36,7 +36,7 @@ function getPreviousNodeName(stack) {
 async function waitForBugSolved(bug) {
   const projectManager = getProjectManager();
   return new Promise((r) => {
-    const bugstatus = projectManager.bdp.getExerciseProgressByExercise(bug)?.status;
+    const bugstatus = projectManager.bdp.getExerciseProgress(bug)?.status;
     if (ExerciseStatus.is.Solved(bugstatus)) {
       r();
     }

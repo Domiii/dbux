@@ -1,13 +1,11 @@
-import { v4 as uuidv4 } from 'uuid';
-import path from 'path';
-import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import Stopwatch from './Stopwatch';
 import PracticeSessionState from './PracticeSessionState';
 import ExerciseStatus from '../dataLib/ExerciseStatus';
-import { emitPracticeSessionEvent, emitSessionFinishedEvent } from '../userEvents';
+import { emitSessionFinishedEvent } from '../userEvents';
 import PracticeSessionData from './PracticeSessionData';
+import PathwaysSession from './PathwaysSession';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PracticeSession');
@@ -16,56 +14,45 @@ const { log, debug, warn, error: logError } = newLogger('PracticeSession');
 /** @typedef {import('../projectLib/Exercise').default} Exercise */
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
 
-export default class PracticeSession {
+export default class PracticeSession extends PathwaysSession {
   /**
    * A PracticeSession contains the information that user solving a bug.
    * @param {Exercise} exercise 
    * @param {ProjectsManager} manager
    * @param {PracticeSessionData} sessionData
+   * @param {string} [customLogFilePath]
    */
-  constructor(exercise, manager, sessionData, logFilePath) {
-    const { createdAt, sessionId, state } = sessionData;
-    this.sessionId = sessionId || uuidv4();
-    this.createdAt = createdAt || Date.now();
+  constructor(manager, sessionId, createdAt, state, customLogFilePath, exerciseId) {
+    super(manager, sessionId, createdAt, state, customLogFilePath);
+    this.exerciseId = exerciseId;
+
     this.stopwatch = new Stopwatch(manager.externals.stopwatch);
-    this.exercise = exercise;
-    this.manager = manager;
-    this.lastAnnotation = '';
 
-    // TODO: move to `logFilePath` getter
-    this.logFilePath = logFilePath || sessionData.logFilePath || this.getDefaultLogFilePath();
-
-    let exerciseProgress = this.bdp.getExerciseProgressByExercise(exercise);
-    if (!exerciseProgress) {
-      throw new Error(`Can't find exerciseProgress when creating practiceSession of bug ${exercise.id}`);
+    if (!this.progress) {
+      // sanity check
+      throw new Error(`Cannot find exerciseProgress when creating practiceSession of exerciseId ${exerciseId}`);
     }
-
-    // state management
-    this.stopwatchEnabled = exerciseProgress.stopwatchEnabled;
-    this.state = state || (ExerciseStatus.is.Solved(exerciseProgress.status) ? PracticeSessionState.Solved : PracticeSessionState.Solving);
   }
 
   get project() {
     return this.exercise.project;
   }
 
-  get bdp() {
-    return this.manager.bdp;
+  get exercise() {
+    return this.manager.getExerciseById(this.exerciseId);
+  }
+
+  get progress() {
+    return this.bdp.getExerciseProgress(this.exerciseId);
   }
 
   get isSolved() {
-    return PracticeSessionState.is.Solved(this.state);
+    const { progress } = this;
+    return ExerciseStatus.is.Solved(progress.status);
   }
 
-  isFinished() {
-    return this.manager.pdp.util.hasSessionFinished();
-  }
-
-  setState(state) {
-    if (this.state !== state) {
-      this.state = state;
-      this.manager._notifyPracticeSessionStateChanged();
-    }
+  get stopwatchEnabled() {
+    return this.progress.stopwatchEnabled;
   }
 
   /**
@@ -111,7 +98,7 @@ export default class PracticeSession {
 
   setupStopwatch() {
     if (this.stopwatchEnabled) {
-      const { solvedAt, startedAt } = this.bdp.getExerciseProgressByExercise(this.exercise);
+      const { solvedAt, startedAt } = this.bdp.getExerciseProgress(this.exercise.id);
       if (this.isSolved) {
         this.stopwatch.set(solvedAt - startedAt);
       }
@@ -176,85 +163,61 @@ export default class PracticeSession {
     }
   }
 
-  /**
-   * Stop practicing, but not quit session
-   */
-  async confirmStop() {
-    if (this.isFinished()) {
-      return true;
-    }
-
-    if (!await this.manager.externals.confirm(`You have not found the bug, are you sure?`)) {
-      return false;
-    }
-
+  async handleStop() {
     await this.manager.stopRunner();
     this.stopwatch.pause();
-    this.setState(PracticeSessionState.Stopped);
-    emitSessionFinishedEvent(this.state);
-    await this.save();
-
-    return true;
   }
 
-  async confirmExit() {
-    if (!await this.manager.externals.confirm(`Do you want to exit the practice session?`)) {
-      return false;
-    }
+  /** ###########################################################################
+   *  save/load
+   *  #########################################################################*/
 
-    if (this.stopwatchEnabled) {
-      if (!PracticeSessionState.is.Solved(this.state)) {
-        this.giveup();
-        await this.manager.bdp.save();
-      }
-      this.stopwatch.pause();
-      this.stopwatch.hide();
-    }
+  /**
+   * @returns {PracticeSessionData}
+   */
+  serialize() {
+    const exerciseId = this.exercise.id;
 
-    allApplications.clear();
+    return {
+      ...super.serialize(),
+      exerciseId,
+    };
+  }
 
-    this.manager.practiceSession = null;
-
-    await this.save();
-
-    // emitPracticeSessionEvent('stopped', practiceSession);
-    this.manager.pdp.reset();
-    this.manager._notifyPracticeSessionStateChanged();
-    return true;
+  /**
+   * @param {ProjectsManager} manager
+   * @param {PracticeSessionData} sessionData
+   * @returns 
+   */
+  static from(manager, sessionData) {
+    const {
+      sessionId,
+      createdAt,
+      logFilePath,
+      state,
+      exerciseId,
+    } = sessionData;
+    return new PracticeSession(manager, sessionId, createdAt, state, logFilePath, exerciseId);
   }
 
   // ###########################################################################
   // utils
   // ###########################################################################
 
-  getDefaultLogFilePath() {
-    return this.manager.getPathwaysLogFilePath(this.sessionId);
-  }
-
   async askToFinish() {
     const confirmString = 'You have solved the bug, do you want to stop the practice session?';
     const result = await this.manager.externals.confirm(confirmString);
 
     if (result) {
-      await this.manager.stopPractice();
+      await this.manager.exitPracticeSession();
     }
-  }
-
-  /**
-   * @param {Object} result 
-   * @param {number} result.code
-   */
-  maybeUpdateBugStatusByResult(result) {
-    const newStatus = this.manager.getResultStatus(result);
-
-    this.updateBugStatus(newStatus);
   }
 
   /**
    * @param {BugStatus} newStatus 
    */
-  updateBugStatus(newStatus) {
-    const exerciseProgress = this.bdp.getExerciseProgressByExercise(this.exercise);
+  updateExerciseStatus(newStatus) {
+    const exerciseProgress = this.bdp.getExerciseProgress(this.exercise.id);
     if (exerciseProgress.status < newStatus) {
       const update = { status: newStatus };
       if (ExerciseStatus.is.Solved(newStatus)) {
@@ -264,9 +227,26 @@ export default class PracticeSession {
     }
   }
 
+  /**
+   * @param {Exercise} exercise 
+   * @param {*} result 
+   */
+  async saveTestRunResult(exercise, result) {
+    // TODO: a better way to find the real application generated by the project
+    const patch = await exercise.project.getPatchString();
+    // TODO-M: find correct applications
+    const newApps = allApplications.selection.getAll().filter(app => !this.pdp.collections.applications.isApplicationAdded(app));
+
+    // TODO: find the correct `nFailedTests`
+    // this.pdp.addTestRun(bug, result?.code, patch, newApps);
+    this.pdp.addTestRun(exercise, null, patch, newApps);
+    // this.pdp.addApplications(newApps);
+    this.bdp.updateExerciseProgress(exercise, { patch });
+  }
+
   async save() {
     try {
-      await this.manager.savePracticeSession();
+      await this.manager.saveSession();
     }
     catch (err) {
       logError('Error when saving practiceSession:', err);

@@ -26,6 +26,7 @@ import upload from './fileUpload';
 import { checkSystem, getDefaultRequirement } from './checkSystem';
 import Chapter from './projectLib/Chapter';
 import { initProcess } from './util/Process';
+import PathwaysSession from './practiceSession/PathwaysSession';
 
 const logger = newLogger('PracticeManager');
 // eslint-disable-next-line no-unused-vars
@@ -120,7 +121,6 @@ export default class ProjectsManager {
 
     this._backend = new BackendController(this);
 
-    this.pathwayDataProvider = new PathwaysDataProvider(this);
     this.exerciseDataProvider = new ExerciseDataProvider(this);
 
     // Note: we need this to check if any dependencies are missing (not to install them)
@@ -131,7 +131,7 @@ export default class ProjectsManager {
         map(([name, version]) => `${name}@${version}`)
     ];
 
-    this.registerDPEventListeners();
+    this.registerPDPEventListeners();
 
     // NOTE: This is for public API. To emit event in dbux-projects, register event in dbux-projects/src/userEvents.js and import it directly 
     // this.onUserEvent = onUserEvent;
@@ -144,6 +144,12 @@ export default class ProjectsManager {
     // build projects + chapters
     this.loadProjectList();
     this.reloadExercises();
+
+    // ensure log folder exists
+    const logFolderPath = this.externals.resources.getLogsDirectory();
+    if (!fs.existsSync(logFolderPath)) {
+      fs.mkdirSync(logFolderPath, { recursive: true });
+    }
   }
 
   /**
@@ -181,10 +187,6 @@ export default class ProjectsManager {
 
   get activeExperiment() {
     return this.runner.exercise;
-  }
-
-  get pdp() {
-    return this.pathwayDataProvider;
   }
 
   get bdp() {
@@ -316,51 +318,77 @@ export default class ProjectsManager {
   }
 
   // ###########################################################################
-  // PracticeSession
+  // PracticeSession: start/stop/exit
   // ###########################################################################
 
+  /**
+   * Start a brand new session
+   * @param {Exercise} [exercise]
+   * @returns {Promise<PathwaysSession|PracticeSession|null>}
+   */
   async startPractice(exercise) {
-    if (!await this.stopPractice()) {
-      return;
+    if (!await this.exitPracticeSession()) {
+      return null;
     }
 
     const requirements = merge({}, getDefaultRequirement(true), this._systemRequirement);
     await checkSystem(this, requirements, false);
 
-    const exerciseProgress = this.bdp.getExerciseProgressByExercise(exercise);
-    if (!exerciseProgress) {
-      const stopwatchEnabled = await this.askForStopwatch(exercise);
-      if (stopwatchEnabled === null) {
-        // user canceled
-        return;
+    if (exercise) {
+      // start a `PracticeSession`
+      const exerciseProgress = this.bdp.getExerciseProgress(exercise.id);
+      if (!exerciseProgress) {
+        const stopwatchEnabled = await this.askForStopwatch(exercise);
+        if (stopwatchEnabled === null) {
+          // user canceled
+          return null;
+        }
+        this.bdp.addExerciseProgress(exercise, stopwatchEnabled, { startedAt: Date.now() });
+        await this.bdp.save();
       }
-      this.bdp.addExerciseProgress(exercise, ExerciseStatus.Solving, stopwatchEnabled);
-      this.bdp.updateExerciseProgress(exercise, { startedAt: Date.now() });
+
+      await this.switchToExercise(exercise);
     }
 
-    await this.switchToExercise(exercise);
+    allApplications.clear();
 
-
-    // TODO: currently loadPracticeSession CANNOT load a session, because the sessionId gets re-generated. Need to store and load sessionId by bug.
+    // TODO-M
     // TODO: also fix askForRecoverPracticeSession + recoverPracticeSession
     //  -> ultimately use research data for practice session data, if available (NOTE: the format is slightly different)
     //  -> if not available, should not store all application data; only that relevant for the practice session.
-    allApplications.clear();    // clear applications
 
-    if (!await this.tryRecoverPracticeSession(exercise.id)) {
-      this._loadPracticeSession(exercise/* , savedPracticeSession, true */);
+    this._loadSession(exercise);
+
+    if (exercise) {
       this.practiceSession.setupStopwatch();
-      await this.savePracticeSession();
-      await this.bdp.save();
       await this.practiceSession.testExercise();
-      // this.maybeAskForTestBug(bug);
     }
+    await this.saveSession();
+    return this.practiceSession;
   }
 
   /**
+   * Ask for `stop` practice session but not quit
    * @return {Promise<boolean>} indicates if practice session is stopped
    */
-  async stopPractice() {
+  async stopPracticeSession() {
+    if (!this.practiceSession) {
+      return true;
+    }
+
+    const stopped = await this.practiceSession.confirmStop();
+    if (!stopped) {
+      return false;
+    }
+
+    return stopped;
+  }
+
+  /**
+   * Ask for `stop` and `exit` practice session.
+   * @return {Promise<boolean>} indicates if practice session is exited
+   */
+  async exitPracticeSession() {
     if (!this.practiceSession) {
       return true;
     }
@@ -371,6 +399,9 @@ export default class ProjectsManager {
     }
 
     const exited = await this.practiceSession.confirmExit();
+    if (exited) {
+      this.practiceSession = null;
+    }
     return exited;
   }
 
@@ -379,7 +410,8 @@ export default class ProjectsManager {
    * @param {string} filePath 
    */
   async loadPracticeSessionFromFile(filePath) {
-    if (!await this.stopPractice()) {
+    // TODO-M: fix this
+    if (!await this.exitPracticeSession()) {
       return false;
     }
 
@@ -390,17 +422,18 @@ export default class ProjectsManager {
         throw new Error(`Cannot find exercise of exerciseId: ${exerciseId} in log file`);
       }
 
-      if (!this.bdp.getExerciseProgressByExercise(exercise)) {
-        this.bdp.addExerciseProgress(exercise, ExerciseStatus.Solving, false);
+      if (!this.bdp.getExerciseProgress(exercise.id)) {
+        this.bdp.addExerciseProgress(exercise, false);
       }
 
       await this.switchToExercise(exercise);
       allApplications.clear();    // clear applications
 
-      this._loadPracticeSession(exercise, { createdAt, sessionId, state: PracticeSessionState.Stopped }, true, filePath);
-      await this.savePracticeSession();
+      this._loadSession(exercise, { createdAt, sessionId, state: PracticeSessionState.Stopped }, true, filePath);
+      await this.saveSession();
       await this.bdp.save();
       const lastAction = this.pdp.collections.userActions.getLast();
+      // hackfix: emit a `SessionFinished` event to prevent keep recording
       emitSessionFinishedEvent(this.practiceSession.state, lastAction.createdAt);
       return true;
     }
@@ -410,64 +443,27 @@ export default class ProjectsManager {
     }
   }
 
-  _loadPracticeSession(exercise, sessionData = EmptyObject, load = false, filePath) {
-    // create new PracticeSession
-    this.practiceSession = new PracticeSession(exercise, this, sessionData, filePath);
-
-    // init (+ maybe load) pdp
-    this.pdp.init();
-
-    // notify event listeners
-    !load && emitPracticeSessionEvent('started', this.practiceSession);
-    this._notifyPracticeSessionStateChanged();
-  }
-
   /** ###########################################################################
    * PracticeSession: save/load
    * ##########################################################################*/
 
-  async tryRecoverPracticeSession(exerciseId) {
-    let savedPracticeSession;
-    if (!exerciseId) {
-      savedPracticeSession = this.externals.storage.get(savedPracticeSessionKey);
-      if (!savedPracticeSession) {
-        return false;
-      }
-
-      ({ exerciseId } = savedPracticeSession);
-    }
-    const exercise = this.getExerciseByIdOrName(exerciseId);
-    if (!exercise) {
-      // sanity check
-      warn(`Can't find exercise for id "${exerciseId}"`);
-      return false;
-    }
-    // const exerciseProgress = this.bdp.getExerciseProgressByBug(exercise);
-    // if (!exerciseProgress) {
-    //   // sanity check
-    //   warn(`Can't find exerciseProgress when recovering PracticeSession of exercise "${exercise.id}"`);
-    //   return false;
-    // }
-
-    allApplications.clear();    // clear applications
-
-    const recoverData = await this.askForRecoverPracticeSession(exerciseId, savedPracticeSession);
-    if (!recoverData) {
-      // await bug.project.deactivateBug(bug);
+  async tryRecoverPracticeSession() {
+    let savedSessionData = this.externals.storage.get(savedPracticeSessionKey);
+    if (!savedSessionData) {
       return false;
     }
 
-    const [shouldImportPracticeSession, shouldImportResearchData] = recoverData;
+    const shouldRecover = await this.askForRecoverPracticeSession(savedSessionData);
+    if (!shouldRecover) {
+      return false;
+    }
 
     try {
-      await this.switchToExercise(exercise);
-
-      if (shouldImportResearchData) {
-        this.research.importResearchAppData(exerciseId);
-        this._loadPracticeSession(exercise/* , savedPracticeSession, true */);
-      }
-      else if (shouldImportPracticeSession) {
-        this._loadPracticeSession(exercise, savedPracticeSession, true);
+      const { exerciseId } = savedSessionData;
+      const exercise = this.getExerciseById(exerciseId);
+      this._loadSession(exercise, savedSessionData, false);
+      if (exercise) {
+        await this.switchToExercise(exercise);
         this.practiceSession.setupStopwatch();
       }
       return true;
@@ -478,16 +474,24 @@ export default class ProjectsManager {
     }
   }
 
-  async savePracticeSession(practiceSession = this.practiceSession) {
-    if (practiceSession) {
-      const { exercise, createdAt, sessionId, logFilePath, state } = practiceSession;
-      const applicationUUIDs = this.pdp.collections.applications.getAllActual().map(app => app.uuid);
+  async loadResearchSession(exerciseId) {
+    // TODO-M: add research back
+    const researchEnabled = process.env.RESEARCH_ENABLED;
+    const researchSize = researchEnabled && exerciseId && this.research.getAppFileSize(exerciseId);
+    const exercise = this.getExerciseById(exerciseId);
+    this.research.importResearchAppData(exerciseId);
+    this._loadSession(exercise);
+  }
+
+  /**
+   * @param {PracticeSessionBase} session set to `null` to clear saved data.
+   */
+  async saveSession(session = this.practiceSession) {
+    if (session) {
+      const sessionData = session.serialize();
+      const applicationUUIDs = session.pdp.collections.applications.getAllActual().map(app => app.uuid);
       await this.externals.storage.set(savedPracticeSessionKey, {
-        exerciseId: exercise.id,
-        createdAt,
-        sessionId,
-        logFilePath,
-        state,
+        ...sessionData,
         applicationUUIDs,
       });
     }
@@ -496,7 +500,27 @@ export default class ProjectsManager {
     }
   }
 
-  async askForRecoverPracticeSession(experimentId, practiceSessionData) {
+  /**
+   * @param {PracticeSessionData} savedSessionData 
+   * @param {Exercise} exercise 
+   * @param {boolean} isNew 
+   * @returns 
+   */
+  _loadSession(exercise = null, savedSessionData = {}, isNew = true) {
+    if (exercise) {
+      const sessionData = { exerciseId: exercise.id };
+      Object.assign(sessionData, savedSessionData);
+      this.practiceSession = PracticeSession.from(this, sessionData);
+    }
+    else {
+      this.practiceSession = PathwaysSession.from(this, savedSessionData);
+    }
+
+    isNew && emitPracticeSessionEvent('started', this.practiceSession);
+    this._notifyPracticeSessionStateChanged();
+  }
+
+  async askForRecoverPracticeSession(sessionData = EmptyObject) {
     function sizeMessage(prefix, size) {
       if (!size) {
         return '';
@@ -504,43 +528,37 @@ export default class ProjectsManager {
       size = (Math.round(size) / 1000).toFixed(2).toLocaleString('en-us');
       return `${prefix} log file is ${size}kb.\n`;
     }
-    try {
-      // research
-      const researchEnabled = process.env.RESEARCH_ENABLED;
-      const researchSize = researchEnabled && experimentId && this.research.getAppFileSize(experimentId);
 
-      // Dbux Practice
-      const { logFilePath, applicationUUIDs } = practiceSessionData || EmptyObject;
+    try {
+      const { logFilePath, applicationUUIDs } = sessionData;
       const practiceSize = applicationUUIDs?.reduce((currentSize, uuid) => {
         const appFilePath = this.getApplicationFilePath(uuid);
         return currentSize + getFileSizeSync(appFilePath);
       }, getFileSizeSync(logFilePath)) || 0;
 
-      if (!practiceSize && !researchSize) {
+      if (!practiceSize) {
         return false;
       }
 
       debug(`practiceSize =`, practiceSize);
 
+      const { exerciseId } = sessionData;
+      const exerciseLabel = exerciseId ? ` for ${exerciseId}` : '';
+
       // eslint-disable-next-line max-len
-      const confirmMessage = `Dbux has found previous session(s) for "${experimentId}":\n` +
+      const confirmMessage = `Dbux has found previous session${exerciseLabel}":\n` +
         sizeMessage('Practice', practiceSize) +
-        sizeMessage('Research', researchSize) +
-        `\nDo you want to load a previous session?`;
+        `\nDo you want to load the previous session?`;
       const buttons = {
-        // TODO: option to only go to experiment and ignore session?
-        // []: async () => {
-        // },
-        ...practiceSize && { [`Load Practice Session`]: () => [true, false] } || EmptyObject,
-        ...researchSize && { [`Load Research Session`]: () => [false, true] } || EmptyObject,
+        [`Load Practice Session`]: () => true,
         [`Ignore (don't ask again)`]: async () => {
-          // log should be discarded and the user should not be asked again
-          await this.savePracticeSession(null);
+          // saved session should be discarded and the user should not be asked again
+          await this.saveSession(null);
           return false;
         },
         [`Delete Practice Session`]: async () => {
           // TODO: first CONFIRM! then delete research file
-          await this.savePracticeSession(null);
+          await this.saveSession(null);
           // fs.rmSync(appFilePath);
           // TODO: delete all application- and session-related files of a single session here
           this.externals.showMessage.warn(`File deletion is not implemented yet :(`);
@@ -551,7 +569,7 @@ export default class ProjectsManager {
       return await this.externals.showMessage.info(confirmMessage, buttons, { modal: true }, cancelCallback);
     }
     catch (err) {
-      logTrace(`Could not recover practice session`, err);
+      logError(`Could not recover practice session`, err);
       return false;
     }
   }
@@ -567,7 +585,7 @@ export default class ProjectsManager {
     return pathResolve(this.externals.resources.getLogsDirectory(), `${sessionId}.dbuxlog`);
   }
 
-  getIndexFilePathByExercise(exercise) {
+  getExerciseIndexFilePath(exercise) {
     return pathResolve(this.externals.resources.getLogsDirectory(), `${exercise.id}.index`);
   }
 
@@ -592,10 +610,10 @@ export default class ProjectsManager {
    * @return {Promise<boolean>}
    */
   async askForStopwatch(exercise) {
-    // TOTRANSLATE
     if (!exercise.isSolvable) {
       return false;
     }
+    // TOTRANSLATE
     const confirmMsg = `This is your first time activate this exercise, do you want to start a timer?\n`
       + `[WARN] You will not be able to time this exercise once you activate it.`;
     return await this.externals.confirm(confirmMsg);
@@ -640,40 +658,18 @@ export default class ProjectsManager {
    * Pathways
    *  #########################################################################*/
 
-  registerDPEventListeners() {
+  registerPDPEventListeners() {
     onUserEvent((actionData) => {
-      if (this.pdp.isActive()) {
-        this.pdp.addNewUserAction(actionData);
+      if (this.practiceSession && !this.practiceSession.isFinished()) {
+        this.practiceSession.pdp.addNewUserAction(actionData);
       }
     });
 
     allApplications.selection.onApplicationsChanged((apps) => {
-      if (this.pdp.isActive()) {
-        for (const app of apps) {
-          if (!this.pdp.collections.applications.isApplicationAdded(app)) {
-            this.pdp.addApplications(apps);
-          }
-        }
+      if (this.practiceSession && !this.practiceSession.isFinished()) {
+        this.practiceSession.maybeRecordApplications(apps);
       }
     });
-  }
-
-  async startPathways() {
-    // TODO-M
-    if (!await this.stopPractice()) {
-      return;
-    }
-
-    allApplications.clear();
-    this.pdp.reset();
-    this.pdp.activate();
-  }
-
-  async stopPathways() {
-    // TODO-M
-    allApplications.clear();
-    this.pdp.reset();
-    this.pdp.deactivate();
   }
 
   // ###########################################################################
@@ -696,7 +692,7 @@ export default class ProjectsManager {
 
     // await project.gitResetHard();
 
-    if (this.bdp.getExerciseProgressByExercise(exercise)) {
+    if (this.bdp.getExerciseProgress(exercise.id)) {
       this.bdp.updateExerciseProgress(exercise, { patch: '' });
       await this.bdp.save();
     }
@@ -707,7 +703,7 @@ export default class ProjectsManager {
    * @param {Exercise} exercise
    */
   async applyUserPatch(exercise) {
-    const patchString = this.bdp.getExerciseProgressByExercise(exercise)?.patch;
+    const patchString = this.bdp.getExerciseProgress(exercise.id)?.patch;
 
     if (patchString) {
       const { project } = exercise;
@@ -806,6 +802,7 @@ export default class ProjectsManager {
   }
 
   /**
+   * TODO-M: move to practice session
    * @param {Exercise} exercise 
    * @param {object} inputCfg Is currently brought in from `projectViewsController`.
    */
@@ -851,28 +848,11 @@ export default class ProjectsManager {
 
     const result = await this.runner.testExercise(exercise, cfg);
 
-    await this.saveTestRunResult(exercise, result);
+    await this.practiceSession?.saveTestRunResult?.(exercise, result);
 
     result?.code && await exercise.openInEditor();
 
     return result;
-  }
-
-  /**
-   * @param {Exercise} exercise 
-   * @param {*} result 
-   */
-  async saveTestRunResult(exercise, result) {
-    // TODO: a better way to find the real application generated by the project
-    const patch = await exercise.project.getPatchString();
-    // TODO-M: find correct applications
-    const newApps = allApplications.selection.getAll().filter(app => !this.pdp.collections.applications.isApplicationAdded(app));
-
-    // TODO: find the correct `nFailedTests`
-    // this.pdp.addTestRun(bug, result?.code, patch, newApps);
-    this.pdp.addTestRun(exercise, null, patch, newApps);
-    // this.pdp.addApplications(newApps);
-    this.bdp.updateExerciseProgress(exercise, { patch });
   }
 
   async stopRunner() {
@@ -911,8 +891,8 @@ export default class ProjectsManager {
    * NOTE: dev only
    */
   async resetProgress() {
-    if (await this.stopPractice()) {
-      await this.savePracticeSession();
+    if (await this.exitPracticeSession()) {
+      await this.saveSession();
       await this.bdp.reset();
       await this.runner.deactivateExercise();
     }

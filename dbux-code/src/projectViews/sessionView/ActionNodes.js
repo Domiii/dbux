@@ -244,19 +244,27 @@ class StopPracticeNode extends SessionNode {
       await this.manager.practiceSession.confirmStop();
     }
     else {
-      await this.manager.practiceSession.confirmExit();
+      await this.manager.exitPracticeSession();
     }
   }
 }
 
 export function getActionNodeClasses(exercise) {
-  const { project } = exercise;
-  return [
-    DetailNode,
-    isProjectFolderInWorkspace(project) ? ShowEntryNode : OpenWorkspaceNode,
-    RunNode,
-    RunWithoutDbuxNode,
-    TagNode,
-    StopPracticeNode
-  ];
+  if (exercise) {
+    const { project } = exercise;
+    return [
+      DetailNode,
+      isProjectFolderInWorkspace(project) ? ShowEntryNode : OpenWorkspaceNode,
+      RunNode,
+      RunWithoutDbuxNode,
+      TagNode,
+      StopPracticeNode
+    ];
+  }
+  else {
+    return [
+      TagNode,
+      StopPracticeNode,
+    ];
+  }
 }

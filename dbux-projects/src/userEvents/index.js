@@ -15,7 +15,7 @@ export function emitPracticeSessionEvent(eventName, practiceSession) {
   emitUserEvent(UserActionType.PracticeSessionChanged, {
     eventType: eventName,
     sessionId: practiceSession.sessionId,
-    exerciseId: practiceSession.exercise.id
+    exerciseId: practiceSession.exerciseId
   });
 }
 

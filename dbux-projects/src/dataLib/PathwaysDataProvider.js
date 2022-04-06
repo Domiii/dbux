@@ -1,9 +1,8 @@
 import fs from 'fs';
-import path from 'path';
-import { v4 as uuidv4 } from 'uuid';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { pathJoin, pathRelative } from '@dbux/common-node/src/util/pathUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { isCodeActionTypes } from '@dbux/data/src/pathways/UserActionType';
 import DataProviderBase from '@dbux/data/src/DataProviderBase';
@@ -31,9 +30,12 @@ const { log, debug, warn, error: logError, trace: logTrace } = newLogger('Pathwa
 /** @typedef {import('@dbux/data/src/pathways/UserAction').default} UserAction */
 /** @typedef {import('@dbux/data/src/applications/Application').default} Application */
 /** @typedef {import('../projectLib/Exercise').default} Exercise */
-/** @typedef {import('../ProjectsManager').default} ProjectsManager */
 /** @typedef {import('./TestRun').default} TestRun */
 
+/**
+ * @template T
+ * @extends {Collection<T>}
+ */
 class PathwaysCollection extends Collection {
   handleAdd(entry) {
     entry._id = this._all.length;
@@ -41,7 +43,7 @@ class PathwaysCollection extends Collection {
 }
 
 /**
- * @extends {Collection<TestRun>}
+ * @extends {PathwaysCollection<TestRun>}
  */
 class TestRunCollection extends PathwaysCollection {
   constructor(pdp) {
@@ -50,7 +52,7 @@ class TestRunCollection extends PathwaysCollection {
 }
 
 /**
- * @extends {Collection<Application>}
+ * @extends {PathwaysCollection<Application>}
  */
 class ApplicationCollection extends PathwaysCollection {
   constructor(pdp) {
@@ -67,7 +69,7 @@ class ApplicationCollection extends PathwaysCollection {
    */
   postAddRaw(applications) {
     for (const app of applications) {
-      const filePath = this.dp.manager.getApplicationFilePath(app.uuid);
+      const filePath = this.dp.session.getApplicationFilePath(app.uuid);
       const { version, collections } = app.dataProvider.serializeJson();
       const header = JSON.stringify({ headerTag: true, version });
       if (!fs.existsSync(filePath)) {
@@ -102,7 +104,7 @@ class ApplicationCollection extends PathwaysCollection {
    */
   serialize(application) {
     const { entryPointPath, createdAt, uuid } = application;
-    const relativeEntryPointPath = path.relative(this.dp.manager.config.projectsRoot, entryPointPath).replace(/\\/g, '/');
+    const relativeEntryPointPath = pathRelative(allApplications.appRoot, entryPointPath);
     return {
       relativeEntryPointPath,
       createdAt,
@@ -114,9 +116,9 @@ class ApplicationCollection extends PathwaysCollection {
    * @param {PathwaysDataProvider} pdp 
    */
   deserialize({ relativeEntryPointPath, createdAt, uuid }) {
-    const entryPointPath = path.join(this.dp.manager.config.projectsRoot, relativeEntryPointPath);
+    const entryPointPath = pathJoin(allApplications.appRoot, relativeEntryPointPath);
     const app = allApplications.addApplication({ entryPointPath, createdAt, uuid });
-    const filePath = this.dp.manager.getApplicationFilePath(app.uuid);
+    const filePath = this.dp.session.getApplicationFilePath(app.uuid);
     try {
       const fileString = fs.readFileSync(filePath, 'utf8');
       const [header, ...lines] = fileString.split(/\r?\n/);
@@ -136,7 +138,7 @@ class ApplicationCollection extends PathwaysCollection {
 }
 
 /**
- * @extends {Collection<UserAction>}
+ * @extends {PathwaysCollection<UserAction>}
  */
 class UserActionCollection extends PathwaysCollection {
   constructor(pdp) {
@@ -184,21 +186,21 @@ class UserActionCollection extends PathwaysCollection {
   serialize(action) {
     action = { ...action };
     if (isCodeActionTypes(action.type)) {
-      action.file = path.relative(this.dp.manager.config.projectsRoot, action.file).replace(/\\/g, '/');
+      action.file = pathRelative(allApplications.appRoot, action.file);
     }
     return action;
   }
 
   deserialize(action) {
     if (isCodeActionTypes(action.type)) {
-      action.file = path.join(this.dp.manager.config.projectsRoot, action.file);
+      action.file = pathJoin(allApplications.appRoot, action.file);
     }
     return action;
   }
 }
 
 /**
- * @extends {Collection<Step>}
+ * @extends {PathwaysCollection<Step>}
  */
 class StepCollection extends PathwaysCollection {
   groupIdsByKey = new Map();
@@ -233,7 +235,7 @@ class StepCollection extends PathwaysCollection {
 }
 
 /**
- * @extends {Collection<ActionGroup>}
+ * @extends {PathwaysCollection<ActionGroup>}
  */
 class ActionGroupCollection extends PathwaysCollection {
   constructor(pdp) {
@@ -243,44 +245,30 @@ class ActionGroupCollection extends PathwaysCollection {
 
 export default class PathwaysDataProvider extends DataProviderBase {
   /**
-   * @type {ProjectsManager}
-   */
-  manager;
-
-  /**
    * @type {PathwaysDataUtil}
    */
   util;
 
   // stepsByStaticContextId = new Map();
 
-  constructor(manager) {
+  constructor(session) {
     super('PathwaysDataProvider');
-    this.manager = manager;
+    this.session = session;
     this.version = 2;
 
     this.util = Object.fromEntries(
       Object.keys(PathwaysDataUtil).map(name => [name, PathwaysDataUtil[name].bind(null, this)])
     );
 
-    const logFolderPath = manager.externals.resources.getLogsDirectory();
-    if (!fs.existsSync(logFolderPath)) {
-      fs.mkdirSync(logFolderPath, { recursive: true });
-    }
-
     this.reset();
   }
 
-  get session() {
-    return this.manager.practiceSession;
-  }
-
   get sessionId() {
-    return this.customSessionId || this.session?.sessionId;
+    return this.session.sessionId;
   }
 
   get logFilePath() {
-    return this._logFilePath || this.session?.logFilePath;
+    return this.session.logFilePath;
   }
 
   // ###########################################################################
@@ -436,26 +424,6 @@ export default class PathwaysDataProvider extends DataProviderBase {
     return true;
   }
 
-  /** ###########################################################################
-   * custom practice session
-   *  #########################################################################*/
-
-  isActive() {
-    return this.session || this._isActive;
-  }
-
-  activate() {
-    this.customSessionId = uuidv4();
-    this._logFilePath = this.manager.getPathwaysLogFilePath(this.customSessionId);
-    this._isActive = true;
-  }
-
-  deactivate() {
-    this.customSessionId = null;
-    this._logFilePath = null;
-    this._isActive = false;
-  }
-
   // ###########################################################################
   // Data load + save
   // ###########################################################################
@@ -522,7 +490,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
       let [headerString, ...allData] = fs.readFileSync(this.logFilePath, 'utf8').split(/\r?\n/);
       const header = JSON.parse(headerString);
       if (!header.headerTag) {
-        // handle log files from version=1 which do not contain headers, this should be removed in the next version
+        // old log files have no headers, 
         warn(`No header is found in log file, assume it is of version 1`);
         allData.unshift(headerString);
         header.version = 1;
@@ -587,7 +555,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
 
   writeHeader() {
     const { version, logFilePath } = this;
-    const { sessionId, createdAt, exercise: { id: exerciseId } } = this.session;
+    const { sessionId, createdAt, exerciseId = null } = this.session;
     fs.appendFileSync(logFilePath, `${JSON.stringify({ headerTag: true, version, sessionId, exerciseId, createdAt })}\n`, { flag: 'ax' });
     this.updateIndexFile();
   }
@@ -602,10 +570,10 @@ export default class PathwaysDataProvider extends DataProviderBase {
   }
 
   updateIndexFile() {
-    const bug = this.session?.exercise;
+    const { exercise } = this.session;
     const { sessionId } = this;
-    if (bug) {
-      const indexFilePath = this.manager.getIndexFilePathByExercise(bug);
+    if (exercise) {
+      const indexFilePath = this.session.getExerciseIndexFilePath(exercise);
       let index;
       if (fs.existsSync(indexFilePath)) {
         index = JSON.parse(fs.readFileSync(indexFilePath, 'utf-8'));

@@ -70,9 +70,9 @@ function getNodeRunArgs(debugMode) {
 
 export async function runFile(extensionContext, debugMode = false) {
   const projectViewsController = initProjectView();
-  if (!await projectViewsController.confirmCancelPracticeSession()) {
-    return;
-  }
+  // if (!await projectViewsController.manager.exitPracticeSession()) {
+  //   return;
+  // }
 
   const projectManager = getProjectManager();
 

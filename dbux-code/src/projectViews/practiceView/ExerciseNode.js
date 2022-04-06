@@ -57,7 +57,7 @@ export default class ExerciseNode extends BaseTreeViewNode {
       case RunStatus.RunningInBackground:
         return 'play.svg';
     }
-    const progress = this.manager.bdp.getExerciseProgressByExercise(this.exercise);
+    const progress = this.manager.bdp.getExerciseProgress(this.exercise.id);
     switch (progress?.status) {
       case ExerciseStatus.Solving:
         return progress.stopwatchEnabled ? 'edit.svg' : 'edit.svg';
@@ -90,7 +90,7 @@ export default class ExerciseNode extends BaseTreeViewNode {
 
   async tryResetExercise() {
     try {
-      if (await this.manager.stopPractice()) {
+      if (await this.manager.exitPracticeSession()) {
         await this.manager.resetExercise(this.exercise);
         await showInformationMessage(`Exercise "${this.exercise.id}" has been reset successfully.`);
       }

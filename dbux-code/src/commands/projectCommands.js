@@ -29,7 +29,7 @@ export function initProjectCommands(extensionContext, projectViewController) {
 
   registerCommand(extensionContext, 'dbux.reloadExerciseList', async () => {
     const { manager } = projectViewController;
-    if (await manager.stopPractice()) {
+    if (await manager.exitPracticeSession()) {
       manager.reloadExercises();
       projectViewController.refresh();
     }
@@ -60,7 +60,7 @@ export function initProjectCommands(extensionContext, projectViewController) {
   });
 
   registerCommand(extensionContext, 'dbux.startPathways', async () => {
-    await projectViewController.manager.startPathways();
+    await projectViewController.manager.startPractice();
     await showInformationMessage('Start recording user actions.');
   });
 

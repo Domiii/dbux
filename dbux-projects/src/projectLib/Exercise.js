@@ -106,7 +106,7 @@ export default class Exercise extends ExerciseConfig {
   }
 
   async clearLog() {
-    const indexFilePath = this.manager.getIndexFilePathByExercise(this);
+    const indexFilePath = this.manager.getExerciseIndexFilePath(this);
     if (fs.existsSync(indexFilePath)) {
       const index = JSON.parse(fs.readFileSync(indexFilePath, 'utf-8'));
       for (const sessionId of Object.keys(index)) {

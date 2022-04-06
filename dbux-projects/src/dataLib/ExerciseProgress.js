@@ -1,5 +1,7 @@
+import ExerciseStatus from './ExerciseStatus';
+
 export default class ExerciseProgress {
-  constructor(exercise, status, stopwatchEnabled) {
+  constructor(exercise, stopwatchEnabled) {
     const timeStamp = Date.now();
     this.projectName = exercise.project.name;
     this.exerciseId = exercise.id;
@@ -14,7 +16,10 @@ export default class ExerciseProgress {
      */
     this.solvedAt = null;
     this.stopwatchEnabled = stopwatchEnabled;
-    this.status = status;
+    /**
+     * @type {number}
+     */
+    this.status = ExerciseStatus.Solving;
     this.patch = '';
   }
 }
