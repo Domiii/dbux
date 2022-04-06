@@ -4,7 +4,7 @@ import { parsePackageName } from '@dbux/common-node/src/util/moduleUtil';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import AsyncEventUpdateType, { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import traceSelection from '@dbux/data/src/traceSelection';
-import makeTreeItem, { makeTreeItemNoChildren, makeTreeItems } from '../../helpers/makeTreeItem';
+import makeTreeItem, { makeTreeItemNoChildren, makeTreeItems, makeTreeChildren } from '../../helpers/makeTreeItem';
 import { ContextTDNode, TraceTypeTDNode } from './traceInfoNodes';
 import TraceDetailNode from './TraceDetailNode';
 import { makeObjectArrayNodes } from '../../helpers/treeViewUtil';
@@ -97,7 +97,7 @@ export class DebugTDNode extends TraceDetailNode {
 
     const {
       traceId,
-      nodeId,
+      nodeId: traceNodeId,
       contextId,
       rootContextId,
       // runId,
@@ -136,8 +136,8 @@ export class DebugTDNode extends TraceDetailNode {
     const valueTraceDataNodes = valueTraceId && dp.util.getDataNodesOfTrace(valueTraceId) || null;
 
     let dataNode;
-    if (nodeId) {
-      dataNode = dp.collections.dataNodes.getById(nodeId);
+    if (traceNodeId) {
+      dataNode = dp.collections.dataNodes.getById(traceNodeId);
     }
     else {
       dataNode = valueTraceDataNodes?.[0];
@@ -157,28 +157,31 @@ export class DebugTDNode extends TraceDetailNode {
       dataNode,
       { description: `nodeId=${dataNode.nodeId}, valueId=${dataNode.valueId}, accessId=${dataNode.accessId}` }
     ]);
-    valueTraceDataNodeCount > 1 && allDataNodes.push([
+    valueTraceDataNodeCount > 1 && allDataNodes.push(makeTreeItem(
       `all dataNodes (${valueTraceDataNodeCount})`,
       valueTraceDataNodes
-    ]);
-    ownDataNodes && ownDataNodes !== valueTraceDataNodes && allDataNodes.push([
+    ));
+    ownDataNodes && ownDataNodes !== valueTraceDataNodes && allDataNodes.push(makeTreeItem(
       `ownDataNodes (${ownDataNodes.length})`,
       ownDataNodes
-    ]);
+    ));
 
 
-    // ###########################################################################
-    // valueRef
-    // ###########################################################################
+
+    /** ###########################################################################
+     * value details
+     *  #########################################################################*/
+
 
     const valueRef = dp.util.getTraceValueRef(valueTraceId);
     const refId = valueRef?.refId || 0;
+    const valueRefNodeId = valueRef?.nodeId || 0;
 
     const hasValue = !!refId || !!dataNode?.hasValue;
     let valueNode;
     if (!hasValue) {
       valueNode = makeTreeItemNoChildren(
-        'no value',
+        'value: no value',
         {
           description: '(no value or undefined)'
         }
@@ -186,7 +189,7 @@ export class DebugTDNode extends TraceDetailNode {
     }
     else if (refId) {
       valueNode = [
-        'valueRef',
+        'value: ref',
         valueRef,
         {
           description: `refId=${refId}`
@@ -195,12 +198,51 @@ export class DebugTDNode extends TraceDetailNode {
     }
     else {
       valueNode = makeTreeItemNoChildren(
-        'value',
+        'value: primitive',
         {
           description: renderValueSimple(dataNode.value)
         }
       );
     }
+
+
+    let valueDetails;
+    if (refId) {
+      const entries = dp.util.constructValueObjectShallow(refId, traceNodeId);
+      valueDetails = makeTreeItem(
+        'valueRef Object',
+        Object.entries(entries).map(([prop, valueArr]) => {
+          const [modifyNodeId, valueRefId, value] = valueArr;
+          return makeTreeItem(
+            prop,
+            { modifyNodeId, valueRefId, value },
+            {
+              description: JSON.stringify(valueArr)
+            }
+          );
+        }),
+      );
+    }
+    else {
+      valueDetails = makeTreeItemNoChildren(
+        '(no related valueRef)'
+      );
+    }
+
+    const valuesOfDataNode = makeTreeItem(
+      'values of DataNode',
+      valueRefNodeId && dp.indexes.values.byNodeId.get(valueRefNodeId)?.map(ref => {
+        return makeTreeItem(
+          `${ref.refId}`, 
+          ref,
+          {}
+        );
+      }),
+      {
+        description: `nodeId=${valueRefNodeId}`
+      }
+    );
+
 
     // ###########################################################################
     // async (Root)
@@ -258,32 +300,6 @@ export class DebugTDNode extends TraceDetailNode {
       }
     );
 
-    /** ###########################################################################
-     * value details
-     *  #########################################################################*/
-
-    let valueDetails;
-    if (refId) {
-      const entries = dp.util.constructValueObjectShallow(refId, nodeId);
-      valueDetails = makeTreeItem(
-        'Value Object',
-        Object.entries(entries).map(([prop, valueArr]) => {
-          const [modifyNodeId, valueRefId, value] = valueArr;
-          return makeTreeItem(
-            prop,
-            { modifyNodeId, valueRefId, value },
-            {
-              description: JSON.stringify(valueArr)
-            }
-          );
-        }),
-      );
-    }
-    else {
-      valueDetails = makeTreeItemNoChildren(
-        'No related valueRef'
-      );
-    }
 
     // ###########################################################################
     // final result
@@ -296,15 +312,23 @@ export class DebugTDNode extends TraceDetailNode {
       ]),
       ...makeTreeItems(
         ['trace', otherTraceProps],
-        valueNode,
         contextNode,
         rootContextNode,
+        makeTreeItem('value',
+          {
+            valueDetails,
+            valueNode,
+            valuesOfDataNode,
+            dataNodes: makeTreeItems(...allDataNodes)
+          },
+          {
+            description: `refId=${refId}`
+          }
+        ),
         asyncTreeNode,
-        ...allDataNodes,
         ['staticTrace', staticTrace],
         ['staticContext', staticContext],
         ['staticProgramContext', staticProgramContext],
-        valueDetails,
       )
     ];
 

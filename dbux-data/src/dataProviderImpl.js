@@ -62,6 +62,7 @@ import ValueRefByErrorIndex from './impl/indexes/ValueRefByErrorIndex';
 import AsyncEventUpdatesByNestedPromiseIndex from './impl/indexes/AsyncEventUpdatesByNestedPromiseIndex';
 import TracesByPurposeIndex from './impl/indexes/TracesByPurposeIndex';
 import PackageQuery from './files/PackageQuery';
+import ValueRefByNodeIndex from './impl/indexes/ValueRefByNodeIndex';
 
 export function newDataProvider(application) {
   const dp = new RuntimeDataProvider(application);
@@ -118,6 +119,7 @@ export function newDataProvider(application) {
   dp.addIndex(new DataNodesByObjectRefIdIndex());
   dp.addIndex(new PrimitiveDataNodesIndex());
   dp.addIndex(new ValueRefByErrorIndex());
+  dp.addIndex(new ValueRefByNodeIndex());
   
   // complex indexes (that have dependencies)
   // NOTE: we are currently solving index dependencies by simply adding depdendents after dependees

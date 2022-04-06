@@ -175,7 +175,7 @@ export default class ExecutionContextCollection extends Collection {
         // NOTE: function was called, but did not have CER. Possible due to exceptions etc.
       }
       else {
-        const cerDataNode = dp.collections.dataNodes.getById(cerTrace.nodeId);
+        const cerDataNode = dp.collections.dataNodes.getById(cerTrace.traceNodeId);
         cerDataNode.inputs = [returnTrace.nodeId];
       }
     }
