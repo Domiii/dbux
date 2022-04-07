@@ -1033,12 +1033,8 @@ export default class RuntimeMonitor {
     }
   }
 
-  traceCatchAsync(programId, inProgramStaticTraceId, realContextId, awaitContextId) {
+  traceCatchInterruptable(programId, inProgramStaticTraceId, realContextId, awaitContextId, inProgramStaticResumeContextId) {
     this._fixContextAsync(programId, realContextId, awaitContextId);
-    this.traceCatch(programId, inProgramStaticTraceId);
-  }
-
-  traceCatchGen(programId, inProgramStaticTraceId, realContextId, inProgramStaticResumeContextId) {
     this._fixContextGen(programId, realContextId, inProgramStaticResumeContextId);
     this.traceCatch(programId, inProgramStaticTraceId);
   }
@@ -1049,17 +1045,14 @@ export default class RuntimeMonitor {
     }
   }
 
-  traceFinallyAsync(programId, inProgramStaticTraceId, realContextId, awaitContextId) {
+  traceFinallyInterruptable(programId, inProgramStaticTraceId, realContextId, awaitContextId, inProgramStaticResumeContextId) {
     this._fixContextAsync(programId, realContextId, awaitContextId);
-    this.traceFinally(programId, inProgramStaticTraceId);
-  }
-
-  traceFinallyGen(programId, inProgramStaticTraceId, realContextId, awaitContextId) {
-    this._fixContextGen(programId, realContextId, awaitContextId);
+    this._fixContextGen(programId, realContextId, inProgramStaticResumeContextId);
     this.traceFinally(programId, inProgramStaticTraceId);
   }
 
   // TODO: what about async generator functions?
+  //    → IMPORTANT: gen.throw will be queued and will only take effect after its corresponding yield.
 
   _fixContextAsync(programId, realContextId, awaitContextId) {
     // TODO: make sure that `Program` also gets a `realContextId` (contextIdVar)
