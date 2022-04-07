@@ -4,28 +4,39 @@ import { buildTraceCall } from './templateUtil';
 import { buildTraceId, buildTraceIdValue } from './traceId';
 
 
+/**
+ * Wrap yield argument with `preYield`.
+ */
 export const buildWrapYield = buildTraceCall(
-  `(%%preYield%%(
-  %%argumentVar%% = %%argument%%,
-  %%schedulerTid%%
-))`,
+  `(
+  %%yieldStaticContextIdVar%% = %%staticResumeContextId%%, 
+  %%preYield%%(
+    %%argumentVar%% = %%argument%%,
+    %%schedulerTid%%
+  )
+)`,
   function buildWrapYield(state, traceCfg) {
     const { ids: { aliases: { preYield } } } = state;
     const {
       data: {
+        yieldStaticContextIdVar,
+        staticResumeContextId,
         argumentVar
       }
     } = traceCfg;
+
     const argument = getInstrumentTargetAstNode(state, traceCfg);
     const schedulerTid = buildTraceId(state, traceCfg);
     // TODO: add argumentVar
     // const { } = ;
 
     return {
+      yieldStaticContextIdVar,
+      staticResumeContextId: t.numericLiteral(staticResumeContextId),
       preYield,
       argument,
       argumentVar,
-      schedulerTid,
+      schedulerTid
     };
   }
 );
@@ -38,7 +49,7 @@ export const buildPostYield = buildTraceCall(
   %%resultVar%%
 )`,
   function buildPostYield(state, traceCfg) {
-    const { ids: { aliases: { 
+    const { ids: { aliases: {
       postYield
     } } } = state;
     const {
@@ -49,6 +60,8 @@ export const buildPostYield = buildTraceCall(
         staticResumeContextId
       }
     } = traceCfg;
+
+    // NOTE: `yieldNode` is: `yield preYield(...)`
     const yieldNode = getInstrumentTargetAstNode(state, traceCfg);
     const tid = buildTraceIdValue(state, traceCfg, resultVar);
 

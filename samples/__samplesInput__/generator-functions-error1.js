@@ -8,7 +8,7 @@ function* g(x, y) {
 
 function* f(x) {
   try {
-    yield 0;
+    // yield 0;
     yield* g(x, 1);
     yield 1;
   }

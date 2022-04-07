@@ -63,6 +63,15 @@ export class ExecutionContextCollection extends Collection {
     const staticInfo = staticContextCollection.makeStaticContextInfo(staticContextId, false);
     return `[${ExecutionContextType.nameFrom(contextType)}] #${contextId} ${staticInfo}`;
   }
+  
+  isContextOfStaticContext(contextId, programId, inProgramStaticContextId) {
+    const context = this.getById(contextId);
+    const staticContextId = staticContextCollection.getStaticContextId(programId, inProgramStaticContextId);
+    if (context && staticContextId) {
+      return context.staticContextId === staticContextId;
+    }
+    return false;
+  }
 
   // ###########################################################################
   // Create

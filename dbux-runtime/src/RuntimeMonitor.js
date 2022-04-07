@@ -26,9 +26,9 @@ import { getDefaultClient } from './client/index';
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError, trace: logTrace } = newLogger('RuntimeMonitor');
 
-// const Verbose = 2;
+const Verbose = 2;
 // const Verbose = 1;
-const Verbose = 0;
+// const Verbose = 0;
 
 const debug = (...args) => Verbose && _debug(...args);
 
@@ -251,7 +251,7 @@ export default class RuntimeMonitor {
    */
   popFunction(programId, realContextId, inProgramStaticTraceId, awaitContextId) {
     // this.checkErrorOnFunctionExit(contextId, inProgramStaticTraceId);
-    this._fixContext(programId, realContextId, awaitContextId);
+    this._fixContextAsync(programId, realContextId, awaitContextId);
     let traceId;
     if (!this.areTracesDisabled) {
       try {
@@ -492,7 +492,7 @@ export default class RuntimeMonitor {
     }
     else {
       // resume after await → pop Await context
-      this._runtime.resumeWaitingStackAndPopAwait(awaitContextId);
+      this._runtime.resumeWaitingStackAndPop(awaitContextId);
 
       if (Verbose) {
         debug(
@@ -664,20 +664,20 @@ export default class RuntimeMonitor {
     return yieldArgument;
   }
 
-  postYield(programId, realContextId, yieldResult, yieldArgument, staticResumeContextId) {
-    // resume after yield
-    if (Verbose) {
-      debug(
-        // ${JSON.stringify(staticContext)}
-        `<${' '.repeat(this.runtime._executingStack._stack?.length || 0)} Yield ${staticResumeContextId}`
-      );
-    }
+  postYield(programId, realContextId, yieldResult, yieldArgument, inProgramResumeStaticContextId) {
+    // // resume after yield
+    // if (Verbose) {
+    //   debug(
+    //     // ${JSON.stringify(staticContext)}
+    //     `>${' '.repeat(this.runtime._executingStack._stack?.length || 0)} Yield ${staticResumeContextId}`
+    //   );
+    // }
 
     // pushResume
     // NOTE: `tid` is a separate instruction, following `postYield`
     const resumeInProgramStaticTraceId = 0;
     /* const resumeContextId = */
-    this.pushResume(programId, realContextId, ExecutionContextType.ResumeGen, staticResumeContextId, resumeInProgramStaticTraceId);
+    this.pushResume(programId, realContextId, ExecutionContextType.ResumeGen, inProgramResumeStaticContextId, resumeInProgramStaticTraceId);
   }
 
   /** ###########################################################################
@@ -1027,26 +1027,55 @@ export default class RuntimeMonitor {
     return this._traceUpdateExpression(updateValue, returnValue, readTid, tid, varAccess);
   }
 
-  traceFinally(programId, inProgramStaticTraceId, realContextId, awaitContextId) {
-    this._fixContext(programId, realContextId, awaitContextId);
+  traceCatch(programId, inProgramStaticTraceId) {
     if (!this.areTracesDisabled) {
       this.newTraceId(programId, inProgramStaticTraceId);
     }
   }
 
-  traceCatch(programId, inProgramStaticTraceId, realContextId, awaitContextId) {
-    this._fixContext(programId, realContextId, awaitContextId);
+  traceCatchAsync(programId, inProgramStaticTraceId, realContextId, awaitContextId) {
+    this._fixContextAsync(programId, realContextId, awaitContextId);
+    this.traceCatch(programId, inProgramStaticTraceId);
+  }
+
+  traceCatchGen(programId, inProgramStaticTraceId, realContextId, inProgramStaticResumeContextId) {
+    this._fixContextGen(programId, realContextId, inProgramStaticResumeContextId);
+    this.traceCatch(programId, inProgramStaticTraceId);
+  }
+
+  traceFinally(programId, inProgramStaticTraceId) {
     if (!this.areTracesDisabled) {
       this.newTraceId(programId, inProgramStaticTraceId);
     }
   }
 
-  _fixContext(programId, realContextId, awaitContextId) {
+  traceFinallyAsync(programId, inProgramStaticTraceId, realContextId, awaitContextId) {
+    this._fixContextAsync(programId, realContextId, awaitContextId);
+    this.traceFinally(programId, inProgramStaticTraceId);
+  }
+
+  traceFinallyGen(programId, inProgramStaticTraceId, realContextId, awaitContextId) {
+    this._fixContextGen(programId, realContextId, awaitContextId);
+    this.traceFinally(programId, inProgramStaticTraceId);
+  }
+
+  // TODO: what about async generator functions?
+
+  _fixContextAsync(programId, realContextId, awaitContextId) {
     // TODO: make sure that `Program` also gets a `realContextId` (contextIdVar)
     if (realContextId && awaitContextId && this.runtime.isContextWaiting(awaitContextId)) {
-      // we are resuming an async context without knowing how we got here
+      // we are resuming an async context without knowing how we got here.
+      // Caused by error thrown asynchronously down the async stack while async function was waiting.
       debug(`fixContext(${[programId, realContextId, awaitContextId]})`);
       this.postAwait(programId, undefined, undefined, realContextId, awaitContextId);
+    }
+  }
+
+  _fixContextGen(programId, realContextId, inProgramStaticResumeContextId) {
+    if (inProgramStaticResumeContextId && !this.runtime.isStaticContextOnStack(programId, inProgramStaticResumeContextId)) {
+      // we are back in generator, but yield context is not on stack yet.
+      // Caused by error back-injected into generator when it was not on stack, via `yield * erroneousCall()` or `Generator.throw()`.
+      this.postYield(programId, realContextId, undefined, undefined, inProgramStaticResumeContextId);
     }
   }
 
