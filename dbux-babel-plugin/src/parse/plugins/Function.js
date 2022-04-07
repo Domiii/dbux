@@ -95,20 +95,15 @@ export default class Function extends BasePlugin {
   }
 
   get isInterruptable() {
-    const { path } = this.node;
-    const isGenerator = path.node.generator;
-    const isAsync = path.node.async;
-    return isAsync || isGenerator;
+    return this.node.StaticContext.isInterruptable;
   }
 
   get isAsync() {
-    const { path } = this.node;
-    return path.node.async;
+    return this.node.StaticContext.isAsync;
   }
 
   get isGenerator() {
-    const { path } = this.node;
-    return path.node.generator;
+    return this.node.StaticContext.isGenerator;
   }
 
   // ###########################################################################
@@ -140,10 +135,18 @@ export default class Function extends BasePlugin {
 
     if (isInterruptable) {
       if (isAsync && isGenerator) {
+        this.node.Traces.getOrGenerateUniqueIdentifier('awCid');
+        this.node.Traces.getOrGenerateUniqueIdentifier('genCid');
         staticContextData.type = StaticContextType.ResumeAsyncGen;
       }
-      else {
-        staticContextData.type = isAsync ? StaticContextType.ResumeAsync : StaticContextType.ResumeGen;
+      else if (isAsync) {
+        // future-work: don't use unnamed constants ('awCid')
+        this.node.Traces.getOrGenerateUniqueIdentifier('awCid');
+        staticContextData.type = StaticContextType.ResumeAsync;
+      }
+      else /* if (isGenerator) */ {
+        this.node.Traces.getOrGenerateUniqueIdentifier('genCid');
+        staticContextData.type = StaticContextType.ResumeGen;
       }
     }
     else {
@@ -307,9 +310,7 @@ export default class Function extends BasePlugin {
     const { state } = this.node;
     const {
       ids: {
-        aliases: {
-          popFunction
-        }
+        aliases
       }
     } = state;
 
@@ -320,10 +321,12 @@ export default class Function extends BasePlugin {
     // future-work: use `buildTraceStatic` instead
     const { inProgramStaticTraceId } = popTraceCfg;
     const args = [contextIdVar, t.numericLiteral(inProgramStaticTraceId)];
-    this.node.StaticContext.addAwaitContextIdVarArg(args);
+    this.node.StaticContext.addInterruptableContextArgs(args);
+
+    const popCall = this.isInterruptable ? aliases.popFunctionInterruptable : aliases.popFunction;
 
     return t.expressionStatement(
-      t.callExpression(popFunction, args)
+      t.callExpression(popCall, args)
     );
   }
 

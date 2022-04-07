@@ -9,7 +9,7 @@ import { buildTraceId, buildTraceIdValue } from './traceId';
  */
 export const buildWrapYield = buildTraceCall(
   `(
-  %%yieldStaticContextIdVar%% = %%staticResumeContextId%%, 
+  %%genStaticContextIdVar%% = %%staticResumeContextId%%, 
   %%preYield%%(
     %%argumentVar%% = %%argument%%,
     %%schedulerTid%%
@@ -19,7 +19,7 @@ export const buildWrapYield = buildTraceCall(
     const { ids: { aliases: { preYield } } } = state;
     const {
       data: {
-        yieldStaticContextIdVar,
+        genStaticContextIdVar,
         staticResumeContextId,
         argumentVar
       }
@@ -31,7 +31,7 @@ export const buildWrapYield = buildTraceCall(
     // const { } = ;
 
     return {
-      yieldStaticContextIdVar,
+      genStaticContextIdVar,
       staticResumeContextId: t.numericLiteral(staticResumeContextId),
       preYield,
       argument,

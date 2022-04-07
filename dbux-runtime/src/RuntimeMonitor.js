@@ -245,13 +245,9 @@ export default class RuntimeMonitor {
   }
 
   /**
-   * Case 1: normal pop function.
-   * Case 2: pop function during `PostAwait` event, but after error was thrown in inner `async` callee
-   *        → need to handle `postAwait` here
+   * Pop function.
    */
-  popFunction(programId, realContextId, inProgramStaticTraceId, awaitContextId) {
-    // this.checkErrorOnFunctionExit(contextId, inProgramStaticTraceId);
-    this._fixContextAsync(programId, realContextId, awaitContextId);
+  popFunction(programId, realContextId, inProgramStaticTraceId) {
     let traceId;
     if (!this.areTracesDisabled) {
       try {
@@ -269,7 +265,21 @@ export default class RuntimeMonitor {
   }
 
   /**
-   * Case 1: normal pop function.
+   * Pop function during `PostAwait` or after yield, but after error was thrown in inner `async` callee
+   *        → need to handle `postAwait` here
+   */
+  popFunctionInterruptable(programId, realContextId, inProgramStaticTraceId, awaitContextId, inProgramStaticResumeContextId) {
+    // this.checkErrorOnFunctionExit(contextId, inProgramStaticTraceId);
+    this._fixContextAsync(programId, realContextId, awaitContextId);
+    this._fixContextGen(programId, realContextId, inProgramStaticResumeContextId);
+
+    this.popFunction(programId, realContextId, inProgramStaticTraceId);
+  }
+
+  /**
+   * TODO: determine async program contexts?
+   * 
+   * Case 1: normal pop program.
    * Case 2: pop function during `PostAwait` event, but after error was thrown in inner `async` callee
    *        → need to handle `postAwait` here
    */
@@ -1059,7 +1069,7 @@ export default class RuntimeMonitor {
     if (realContextId && awaitContextId && this.runtime.isContextWaiting(awaitContextId)) {
       // we are resuming an async context without knowing how we got here.
       // Caused by error thrown asynchronously down the async stack while async function was waiting.
-      debug(`fixContext(${[programId, realContextId, awaitContextId]})`);
+      Verbose > 1 && debug(`fixContextAsync(${[programId, realContextId, awaitContextId]})`);
       this.postAwait(programId, undefined, undefined, realContextId, awaitContextId);
     }
   }
@@ -1068,6 +1078,7 @@ export default class RuntimeMonitor {
     if (inProgramStaticResumeContextId && !this.runtime.isStaticContextOnStack(programId, inProgramStaticResumeContextId)) {
       // we are back in generator, but yield context is not on stack yet.
       // Caused by error back-injected into generator when it was not on stack, via `yield * erroneousCall()` or `Generator.throw()`.
+      Verbose > 1 && debug(`fixContextGen(${[programId, realContextId, inProgramStaticResumeContextId]})`);
       this.postYield(programId, realContextId, undefined, undefined, inProgramStaticResumeContextId);
     }
   }

@@ -121,8 +121,7 @@ export default class Program extends BaseNode {
     //    → call _fixContext with correct arguments (see Function#buildPop)!!
     //    → add async virtual contexts correctly
 
-    // const contextPlugin = this('StaticContext');
-    // contextPlugin.addAwaitContextIdVarArg(moreTraceCallArgs);
+    // this.StaticContext.addInterruptableContextArgs(moreTraceCallArgs);
   }
 
   instrument() {

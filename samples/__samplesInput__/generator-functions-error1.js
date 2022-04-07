@@ -1,5 +1,3 @@
-const O = 1;
-
 function* g(x, y) {
   yield 0;
   throw new Error('OUCH');
@@ -13,10 +11,10 @@ function* f(x) {
     yield 1;
   }
   catch (err) {
-    console.error('ERROR', err, O, x);
+    console.error('ERROR', err, x);
   }
   finally {
-    console.log('finally', O, x);
+    console.log('finally', x);
   }
 }
 

@@ -1,4 +1,4 @@
-import { ZeroNode } from 'src/helpers/traceUtil';
+import { ZeroNode } from '../../helpers/traceUtil';
 import BasePlugin from './BasePlugin';
 
 /** @typedef { import("../BindingIdentifier").default } BindingIdentifier */
@@ -31,6 +31,24 @@ export default class StaticContext extends BasePlugin {
    */
   uniqueIdentifiers = null;
 
+
+  get isInterruptable() {
+    const { path } = this.node;
+    const isGenerator = path.node.generator;
+    const isAsync = path.node.async;
+    return isAsync || isGenerator;
+  }
+
+  get isAsync() {
+    const { path } = this.node;
+    return path.node.async;
+  }
+
+  get isGenerator() {
+    const { path } = this.node;
+    return path.node.generator;
+  }
+
   /**
    * @param {BaseId} id
    */
@@ -56,6 +74,10 @@ export default class StaticContext extends BasePlugin {
       contexts: { genContextId }
     } = state;
 
+    if (this.contextIdVar) {
+      throw new Error(`Tried to create contextIdVar more than once in "${this}"`);
+    }
+
     const bodyPath = path.get('body');
     return this.contextIdVar = genContextId(bodyPath);
   }
@@ -63,6 +85,11 @@ export default class StaticContext extends BasePlugin {
   getAwaitContextIdVar() {
     // future-work: don't use unnamed constants (awCid)
     return this.getUniqueIdentifier('awCid');
+  }
+
+  getGeneratorStaticContextIdVar() {
+    // future-work: don't use unnamed constants (genCid)
+    return this.getUniqueIdentifier('genCid');
   }
 
   getUniqueIdentifier(name) {
@@ -90,12 +117,14 @@ export default class StaticContext extends BasePlugin {
   }
 
   /**
-   * Used to add `awaitContextId` to arguments (if context is async) of trace calls.
+   * Used to add interruptable args which internally will be used for `fixContext`.
+   * This is necessary to correctly recover from "out-of-phase" errors.
    */
-  addAwaitContextIdVarArg(args) {
-    const awaitContextIdVar = this.getAwaitContextIdVar();
-    if (awaitContextIdVar) {
-      args.push(awaitContextIdVar || ZeroNode);
+  addInterruptableContextArgs(args) {
+    if (this.isInterruptable) {
+      const awaitContextIdVar = this.getAwaitContextIdVar();
+      const generatorStaticContextIdVar = this.getGeneratorStaticContextIdVar();
+      args.push(awaitContextIdVar || ZeroNode, generatorStaticContextIdVar || ZeroNode);
     }
   }
 

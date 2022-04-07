@@ -158,12 +158,20 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceThrow(this.getProgramId(), value, tid, inputs);
   }
 
-  popFunction = (contextId, inProgramStaticTraceId, awaitContextId) => {
+  popFunction = (contextId, inProgramStaticTraceId) => {
     if (this.busy) {
       return undefined;
     }
 
-    return this._runtimeMonitor.popFunction(this.getProgramId(), contextId, inProgramStaticTraceId, awaitContextId);
+    return this._runtimeMonitor.popFunction(this.getProgramId(), contextId, inProgramStaticTraceId);
+  }
+
+  popFunctionInterruptable = (contextId, inProgramStaticTraceId, awaitContextId, inProgramStaticResumeContextId) => {
+    if (this.busy) {
+      return undefined;
+    }
+
+    return this._runtimeMonitor.popFunctionInterruptable(this.getProgramId(), contextId, inProgramStaticTraceId, awaitContextId, inProgramStaticResumeContextId);
   }
 
   popProgram = () => {
@@ -349,20 +357,20 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceUpdateExpressionME(this.getProgramId(), obj, prop, updateValue, returnValue, readTid, tid, objectTid);
   }
 
-  traceCatch = (inProgramStaticTraceId, realContextId, awaitContextId = 0) => {
-    if (this.areTracesDisabled) {
-      return;
-    }
-
-    this._runtimeMonitor.traceCatch(this.getProgramId(), inProgramStaticTraceId, realContextId, awaitContextId);
+  traceCatch = (inProgramStaticTraceId, realContextId) => {
+    this._runtimeMonitor.traceCatch(this.getProgramId(), inProgramStaticTraceId, realContextId);
   }
 
-  traceFinally = (inProgramStaticTraceId, realContextId, awaitContextId = 0) => {
-    if (this.areTracesDisabled) {
-      return;
-    }
+  traceCatchInterruptable = (inProgramStaticTraceId, realContextId, awaitContextId, inProgramStaticResumeContextId) => {
+    this._runtimeMonitor.traceCatchInterruptable(this.getProgramId(), inProgramStaticTraceId, realContextId, awaitContextId, inProgramStaticResumeContextId);
+  }
 
-    this._runtimeMonitor.traceFinally(this.getProgramId(), inProgramStaticTraceId, realContextId, awaitContextId);
+  traceFinally = (inProgramStaticTraceId, realContextId) => {
+    this._runtimeMonitor.traceFinally(this.getProgramId(), inProgramStaticTraceId, realContextId);
+  }
+
+  traceFinallyInterruptable = (inProgramStaticTraceId, realContextId, awaitContextId, inProgramStaticResumeContextId) => {
+    this._runtimeMonitor.traceFinallyInterruptable(this.getProgramId(), inProgramStaticTraceId, realContextId, awaitContextId, inProgramStaticResumeContextId);
   }
 
   /** ###########################################################################
