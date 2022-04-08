@@ -42,6 +42,10 @@ export default class BaseId extends BaseNode {
     return this._binding;
   }
 
+  get isGlobal() {
+    return !this.binding;
+  }
+
   getOwnDeclarationNode() {
     let path = this.binding?.path;
     if (!path) {
@@ -102,7 +106,7 @@ export default class BaseId extends BaseNode {
           ...this.getDataNodeMeta()
         },
         data: {
-          specialType
+          // specialType
         }
       },
       meta: {}
@@ -127,8 +131,8 @@ export default class BaseId extends BaseNode {
 
   get specialType() {
     const { name } = this.path.node;
-    return !this.binding ?
-      lookupSpecialIdentifierType(name) :
+    return this.isGlobal &&
+      lookupSpecialIdentifierType(name) ||
       null;
   }
 

@@ -1,14 +1,7 @@
-const z = 1;
-
-export {
-  z
+exports.x = 1;
+exports.f = function() {
+  return 2;
 };
+module.exports.y = 3;
 
-export { default as abc } from './exports0';
-export { x } from './exports0';
-
-function f() {
-
-}
-
-export default f();
+console.log(exports.x, exports.f(), exports.y);
