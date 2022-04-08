@@ -95,13 +95,12 @@ class PathwaysView extends HostComponentEndpoint {
   // handleRefresh
   // ###########################################################################
 
-  makeStep = (themeMode, step) => {
-    return step;
-  }
-
   handleRefresh() {
     const { pdp } = this;
-    const { themeMode } = this.context;
+
+    if (!this.pdp) {
+      return;
+    }
 
     // TODO: get step's prepared data, not raw data
     let stepGroups;
@@ -124,9 +123,6 @@ class PathwaysView extends HostComponentEndpoint {
 
       // steps
       steps = EmptyArray;
-
-      // update timeline
-      this.timeline.forceUpdate();
     }
     else {
       // non-analyze mode
@@ -156,6 +152,9 @@ class PathwaysView extends HostComponentEndpoint {
     this.steps.update(steps);
     this.actionGroups.update(actionGroups);
     // this.actions.update(actions);
+
+    // update timeline
+    this.timeline.forceUpdate();
   }
 
 

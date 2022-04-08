@@ -28,13 +28,10 @@ class PathwaysTimeline extends HostComponentEndpoint {
   update() {
     const { themeMode } = this.context;
 
-    if (!this.context.doc.isAnalyzing()) {
-      return;
-    }
-
-    if (!this.pdp) {
+    if (!this.context.doc.isAnalyzing() || !this.pdp) {
       this.state.steps = EmptyArray;
       this.state.staleIntervals = EmptyArray;
+      return;
     }
 
     // make stale data
