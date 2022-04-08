@@ -12,6 +12,7 @@ import { getDataCount } from '@dbux/common/src/util/dataUtil';
 import { findPathInObject } from '@dbux/common/src/util/objectUtil';
 // import universalLibs from '@dbux/common/src/util/universalLib';
 import SendQueue from './SendQueue';
+import { startPrettyTimer } from '@dbux/common/src/util/timeUtil';
 
 const Verbose = 1;
 // const Verbose = 2;
@@ -248,25 +249,22 @@ export default class Client {
     return `${Math.round(JSON.stringify(data).length / 1000).toLocaleString('en-us')} kb, `;
   }
 
-  _dataDebugMessage(data) {
-    if (!Verbose) {
-      return;
-    }
-
-    debug(`<- data (n = ${getDataCount(data).toLocaleString('en-us')}): ` +
-      Object.entries(data)
-        .map(([key, arr]) => {
-          try {
-            // ${this._computeDataSize(arr)} // NOTE: this is very slow
-            return `${arr.length} ${key} (${minBy(arr, entry => entry._id)?._id}~${maxBy(arr, entry => entry._id)?._id})`;
-          }
-          catch (err) {
-            const hasMissing = arr?.find?.(x => x === null || x === undefined);
-            // logError(`invalid data key "${key}": "${err.message}". Index #${idx} is ${arr?.[idx]} (${arr})`);
-            return `(could not compute data size of "${key}"${hasMissing ? ' (hasMissing)' : ''}: "${err.message}")`;
-          }
-        })
-        .join(', ')
+  _dataDebugMessage(msg, data) {
+    const totalN = getDataCount(data).toLocaleString('en-us');
+    const dataDetails = Object.entries(data)
+      .map(([key, arr]) => {
+        try {
+          // ${this._computeDataSize(arr)} // NOTE: this is very slow
+          return `${arr.length} ${key} (${minBy(arr, entry => entry._id)?._id}~${maxBy(arr, entry => entry._id)?._id})`;
+        }
+        catch (err) {
+          const hasMissing = arr?.find?.(x => x === null || x === undefined);
+          // logError(`invalid data key "${key}": "${err.message}". Index #${idx} is ${arr?.[idx]} (${arr})`);
+          return `(could not compute data size of "${key}"${hasMissing ? ' (hasMissing)' : ''}: "${err.message}")`;
+        }
+      })
+      .join(', ');
+    debug(`${msg} (total = ${totalN}, ${dataDetails})`
     );
   }
 
@@ -283,9 +281,17 @@ export default class Client {
     else if (this.isReady()) {
       ++this._sending;
       try {
-        this._dataDebugMessage(data);
+        let timer;
+        if (Verbose) {
+          this._dataDebugMessage('[Data] Encoding, sending, waiting for ack...', data);
+          timer = startPrettyTimer();
+        }
 
         await this.sendWithAck('data', data);
+
+        if (timer) {
+          debug(`[Data] Done: ${timer}`);
+        }
       }
       finally {
         --this._sending;
