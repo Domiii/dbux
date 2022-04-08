@@ -29,7 +29,7 @@ export default class TryStatement extends BaseNode {
     }
 
     // add `awaitContextId` to trace call args (if is async function)
-    this.StaticContext.addAwaitContextIdVarArg(moreTraceCallArgs);
+    this.StaticContext.addInterruptableContextArgs(moreTraceCallArgs);
 
     const traceData = {
       path: node.path,
@@ -93,7 +93,8 @@ export default class TryStatement extends BaseNode {
     });
 
     if (finalizerNode) {
-      this.addConsequentStartTrace(finalizerNode, TraceType.Finally, 'traceFinally');
+      const traceCall = this.StaticContext.isInterruptable ? 'traceFinallyInterruptable' : 'traceFinally';
+      this.addConsequentStartTrace(finalizerNode, TraceType.Finally, traceCall);
       this.addConsequentExitTrace(finalizerNode, TraceType.FinallyExit);
     }
   }

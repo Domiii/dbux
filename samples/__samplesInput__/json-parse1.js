@@ -1,4 +1,13 @@
-var a = JSON.parse('[{ "x": 1 }, { "x": 2 }]');
+
+var o = { };
+
+var p = new Proxy(o, {
+  get() {
+    throw new Error('OUCH');
+  }
+});
+
+var a = JSON.parse('[{"x":{"a":1,"b":2,"o":{"aa":[{"x":1},{"y":2}]}}},{"x":{"c":3,"d":4}}]');
 
 var b = a[0];
 var c = a[1];

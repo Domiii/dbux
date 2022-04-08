@@ -234,7 +234,7 @@ export default class RuntimeMonitor {
 
   traceReturnAsync(programId, value, tid, inputs) {
     this.traceExpression(programId, value, tid, inputs);
-    if (isThenable(value)) {
+    if (valueCollection.getIsThenable(value)) {
       this.runtime.async.returnAsync(value, tid);
     }
   }
@@ -245,13 +245,9 @@ export default class RuntimeMonitor {
   }
 
   /**
-   * Case 1: normal pop function.
-   * Case 2: pop function during `PostAwait` event, but after error was thrown in inner `async` callee
-   *        → need to handle `postAwait` here
+   * Pop function.
    */
-  popFunction(programId, realContextId, inProgramStaticTraceId, awaitContextId) {
-    // this.checkErrorOnFunctionExit(contextId, inProgramStaticTraceId);
-    this._fixContext(programId, realContextId, awaitContextId);
+  popFunction(programId, realContextId, inProgramStaticTraceId) {
     let traceId;
     if (!this.areTracesDisabled) {
       try {
@@ -269,7 +265,21 @@ export default class RuntimeMonitor {
   }
 
   /**
-   * Case 1: normal pop function.
+   * Pop function during `PostAwait` or after yield, but after error was thrown in inner `async` callee
+   *        → need to handle `postAwait` here
+   */
+  popFunctionInterruptable(programId, realContextId, inProgramStaticTraceId, awaitContextId, inProgramStaticResumeContextId) {
+    // this.checkErrorOnFunctionExit(contextId, inProgramStaticTraceId);
+    this._fixContextAsync(programId, realContextId, awaitContextId);
+    this._fixContextGen(programId, realContextId, inProgramStaticResumeContextId);
+
+    this.popFunction(programId, realContextId, inProgramStaticTraceId);
+  }
+
+  /**
+   * TODO: determine async program contexts?
+   * 
+   * Case 1: normal pop program.
    * Case 2: pop function during `PostAwait` event, but after error was thrown in inner `async` callee
    *        → need to handle `postAwait` here
    */
@@ -492,7 +502,7 @@ export default class RuntimeMonitor {
     }
     else {
       // resume after await → pop Await context
-      this._runtime.resumeWaitingStackAndPopAwait(awaitContextId);
+      this._runtime.resumeWaitingStackAndPop(awaitContextId);
 
       if (Verbose) {
         debug(
@@ -664,20 +674,20 @@ export default class RuntimeMonitor {
     return yieldArgument;
   }
 
-  postYield(programId, realContextId, yieldResult, yieldArgument, staticResumeContextId) {
-    // resume after yield
-    if (Verbose) {
-      debug(
-        // ${JSON.stringify(staticContext)}
-        `<${' '.repeat(this.runtime._executingStack._stack?.length || 0)} Yield ${staticResumeContextId}`
-      );
-    }
+  postYield(programId, realContextId, yieldResult, yieldArgument, inProgramResumeStaticContextId) {
+    // // resume after yield
+    // if (Verbose) {
+    //   debug(
+    //     // ${JSON.stringify(staticContext)}
+    //     `>${' '.repeat(this.runtime._executingStack._stack?.length || 0)} Yield ${staticResumeContextId}`
+    //   );
+    // }
 
     // pushResume
     // NOTE: `tid` is a separate instruction, following `postYield`
     const resumeInProgramStaticTraceId = 0;
     /* const resumeContextId = */
-    this.pushResume(programId, realContextId, ExecutionContextType.ResumeGen, staticResumeContextId, resumeInProgramStaticTraceId);
+    this.pushResume(programId, realContextId, ExecutionContextType.ResumeGen, inProgramResumeStaticContextId, resumeInProgramStaticTraceId);
   }
 
   /** ###########################################################################
@@ -1027,26 +1037,49 @@ export default class RuntimeMonitor {
     return this._traceUpdateExpression(updateValue, returnValue, readTid, tid, varAccess);
   }
 
-  traceFinally(programId, inProgramStaticTraceId, realContextId, awaitContextId) {
-    this._fixContext(programId, realContextId, awaitContextId);
+  traceCatch(programId, inProgramStaticTraceId) {
     if (!this.areTracesDisabled) {
       this.newTraceId(programId, inProgramStaticTraceId);
     }
   }
 
-  traceCatch(programId, inProgramStaticTraceId, realContextId, awaitContextId) {
-    this._fixContext(programId, realContextId, awaitContextId);
+  traceCatchInterruptable(programId, inProgramStaticTraceId, realContextId, awaitContextId, inProgramStaticResumeContextId) {
+    this._fixContextAsync(programId, realContextId, awaitContextId);
+    this._fixContextGen(programId, realContextId, inProgramStaticResumeContextId);
+    this.traceCatch(programId, inProgramStaticTraceId);
+  }
+
+  traceFinally(programId, inProgramStaticTraceId) {
     if (!this.areTracesDisabled) {
       this.newTraceId(programId, inProgramStaticTraceId);
     }
   }
 
-  _fixContext(programId, realContextId, awaitContextId) {
+  traceFinallyInterruptable(programId, inProgramStaticTraceId, realContextId, awaitContextId, inProgramStaticResumeContextId) {
+    this._fixContextAsync(programId, realContextId, awaitContextId);
+    this._fixContextGen(programId, realContextId, inProgramStaticResumeContextId);
+    this.traceFinally(programId, inProgramStaticTraceId);
+  }
+
+  // TODO: what about async generator functions?
+  //    → IMPORTANT: gen.throw will be queued and will only take effect after its corresponding yield.
+
+  _fixContextAsync(programId, realContextId, awaitContextId) {
     // TODO: make sure that `Program` also gets a `realContextId` (contextIdVar)
     if (realContextId && awaitContextId && this.runtime.isContextWaiting(awaitContextId)) {
-      // we are resuming an async context without knowing how we got here
-      debug(`fixContext(${[programId, realContextId, awaitContextId]})`);
+      // we are resuming an async context without knowing how we got here.
+      // Caused by error thrown asynchronously down the async stack while async function was waiting.
+      Verbose > 1 && debug(`fixContextAsync(${[programId, realContextId, awaitContextId]})`);
       this.postAwait(programId, undefined, undefined, realContextId, awaitContextId);
+    }
+  }
+
+  _fixContextGen(programId, realContextId, inProgramStaticResumeContextId) {
+    if (inProgramStaticResumeContextId && !this.runtime.isStaticContextOnStack(programId, inProgramStaticResumeContextId)) {
+      // we are back in generator, but yield context is not on stack yet.
+      // Caused by error back-injected into generator when it was not on stack, via `yield * erroneousCall()` or `Generator.throw()`.
+      Verbose > 1 && debug(`fixContextGen(${[programId, realContextId, inProgramStaticResumeContextId]})`);
+      this.postYield(programId, realContextId, undefined, undefined, inProgramStaticResumeContextId);
     }
   }
 
@@ -1183,7 +1216,7 @@ export default class RuntimeMonitor {
     // const runId = this._runtime.getCurrentRunId();
     this._onTrace(contextId, callResultTrace);
 
-    if (!(isThenable(value))) {
+    if (!valueCollection.getIsThenable(value)) {
       return value;
     }
 

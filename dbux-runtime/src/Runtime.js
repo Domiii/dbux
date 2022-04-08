@@ -106,6 +106,17 @@ export default class Runtime {
   }
 
   /**
+   * @return {boolean} Whether stack top is given static context.
+   */
+  isStaticContextOnStack(programId, inProgramStaticContextId) {
+    const topContextId = this.peekCurrentContextId();
+    if (topContextId) {
+      return executionContextCollection.isContextOfStaticContext(topContextId, programId, inProgramStaticContextId);
+    }
+    return false;
+  }
+
+  /**
    * We currently have no good heuristics for checking whether we want to resume
    * an interrupted stack when pushing to an empty stack.
    * Instead, we need to rely on `_maybeResumeInterruptedStackOnPop` to try healing things
@@ -115,7 +126,7 @@ export default class Runtime {
   _maybeResumeInterruptedStackOnPushEmpty(contextId) {
     if (this._waitingStacks.has(contextId)) {
       // resume previous stack
-      this.resumeWaitingStackAndPopAwait(contextId);
+      this.resumeWaitingStackAndPop(contextId);
       return true;
     }
     else {
@@ -379,7 +390,7 @@ export default class Runtime {
 
     if (!stack) {
       // we probably had an unhandled interrupt that is now resumed
-      stack = this.resumeWaitingStackAndPopAwait(contextId);
+      stack = this.resumeWaitingStackAndPop(contextId);
       if (!stack) {
         logError(`Could not pop contextId off stack because there is stack active, and no waiting stack registered with this contextId`, contextId);
         return -1;
@@ -548,18 +559,18 @@ export default class Runtime {
 
   /**
    * Finds the stack containing the given `Resume` context, resumes the stack
-   * and pops the `Resume` context.
+   * and pops the given {@link popContextId}.
    */
-  resumeWaitingStackAndPopAwait(awaitContextId) {
-    const waitingStack = this._switchStackOnResume(awaitContextId);
+  resumeWaitingStackAndPop(popContextId) {
+    const waitingStack = this._switchStackOnResume(popContextId);
     if (!waitingStack) {
-      logTrace('resumeWaitingStack called on unregistered `awaitContextId`:', awaitContextId);
+      logTrace('resumeWaitingStack called on unregistered `awaitContextId`:', popContextId);
       return null;
     }
 
     // pop the await/yield context
-    this._markResume(awaitContextId);
-    this.pop(awaitContextId);
+    this._markResume(popContextId);
+    this.pop(popContextId);
 
     return waitingStack;
   }

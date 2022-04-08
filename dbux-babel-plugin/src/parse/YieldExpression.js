@@ -51,6 +51,7 @@ export default class YieldExpression extends BaseNode {
 
     const argumentVar = Traces.generateDeclaredUidIdentifier('arg');
     const resultVar = Traces.generateDeclaredUidIdentifier('res');
+    const genStaticContextIdVar = this.StaticContext.getGeneratorStaticContextIdVar();
     const argumentPath = argumentNode.path;
 
     // pre trace
@@ -61,7 +62,8 @@ export default class YieldExpression extends BaseNode {
       },
       data: {
         argumentVar,
-        // yieldContextIdVar
+        genStaticContextIdVar,
+        staticResumeContextId
       },
       meta: {
         build: buildWrapYield

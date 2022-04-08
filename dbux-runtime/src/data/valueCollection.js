@@ -12,6 +12,7 @@ import { getOriginalFunction, getPatchedFunctionOrSelf } from '../util/monkeyPat
 import Collection from './Collection';
 import pools from './pools';
 import getDbuxInstance from '../getDbuxInstance';
+import isThenable from '@dbux/common/src/util/isThenable';
 
 
 /** @typedef {import('@dbux/common/src/types/ValueRef').default} ValueRef */
@@ -29,6 +30,11 @@ const SerializationLimits = {
   maxObjectSize: 30,    // applies to arrays and object
   maxStringLength: 1000
 };
+
+const DefaultPrototypes = new Set([
+  EmptyObject,
+  EmptyArray
+].map(x => Object.getPrototypeOf(x)));
 
 // ###########################################################################
 // values
@@ -208,7 +214,8 @@ class ValueCollection extends Collection {
       this._onAccessError(value, this._readErrorsByType);
       const msg = `ERROR: Dbux failed to process value "${Object.getPrototypeOf(value)}":`;
       VerboseErrors && this.logger.debug(msg, err.message);
-      return `(${msg})`;
+      // return `(${msg})`;
+      return ValueTypeCategory.Primitive;
     }
     finally {
       this._endAccess(value);
@@ -242,6 +249,40 @@ class ValueCollection extends Collection {
     }
     Verbose && this._logValue(`[/val] dataNode #${nodeId}:`, valueRef, category, value);
     return valueRef;
+  }
+
+  /**
+   * Also needs to be error wrapped since instanceof can also be hi-jacked by user code.
+   * This happens (for example) in Chart.js.
+   */
+  getIsInstanceOf(obj, Clazz) {
+    try {
+      this._startAccess(obj);
+      return obj instanceof Clazz;
+    }
+    catch (err) {
+      this._onAccessError(obj, this._readErrorsByType);
+      const msg = VerboseErrors && `ERROR: Dbux failed "${Object.getPrototypeOf(obj)} instanceof ${Clazz?.name}":`;
+      VerboseErrors && this.logger.debug(msg, err.message);
+      return false;
+    }
+    finally {
+      this._endAccess(obj);
+    }
+  }
+
+  getIsThenable(val) {
+    try {
+      this._startAccess(val);
+      return isThenable(val);
+    }
+    catch (err) {
+      // accessing val failed
+      return false;
+    }
+    finally {
+      this._endAccess(val);
+    }
   }
 
   // ###########################################################################
@@ -386,26 +427,6 @@ class ValueCollection extends Collection {
   }
 
   /**
-   * Also needs to be error wrapped since instanceof can also be hi-jacked by user code.
-   * This happens (for example) in Chart.js.
-   */
-  _getIsInstanceOf(obj, Clazz) {
-    try {
-      this._startAccess(obj);
-      return obj instanceof Clazz;
-    }
-    catch (err) {
-      this._onAccessError(obj, this._readErrorsByType);
-      const msg = VerboseErrors && `ERROR: Dbux failed "${Object.getPrototypeOf(obj)} instanceof ${Clazz?.name}":`;
-      VerboseErrors && this.logger.debug(msg, err.message);
-      return false;
-    }
-    finally {
-      this._endAccess(obj);
-    }
-  }
-
-  /**
    * [access-guard]
    * Read a property of an object to copy + track it.
    * WARNING: This might invoke a getter function, thereby tempering with semantics (something that we genreally never want to do).
@@ -417,7 +438,7 @@ class ValueCollection extends Collection {
     }
     catch (err) {
       this._onAccessError(obj, this._readErrorsByType);
-      const msg = `ERROR: Dbux failed to read object property "${Object.getPrototypeOf(obj)}.${key}":`;
+      const msg = `ERROR: Dbux failed to read object property "${key}" of "${Object.getPrototypeOf(obj)}":`;
       VerboseErrors && this.logger.debug(msg, err.message);
       return `(${msg})`;
     }
@@ -479,10 +500,13 @@ class ValueCollection extends Collection {
     // TODO: consider adding a timeout for floodgates?
     ++this._readErrorCount;
 
-    errorsByType.set(Object.getPrototypeOf(obj), obj);
+    const proto = Object.getPrototypeOf(obj);
+    if (!DefaultPrototypes.has(proto)) { // NOTE: cannot be `Object` or other generic type...
+      errorsByType.set(proto, obj);
+    }
     if ((this._readErrorCount % 100) === 0) {
       // eslint-disable-next-line max-len,no-console
-      console.warn(`[Dbux] When Dbux records object data it blatantly invokes object getters. These object getters caused ${this._readErrorCount} exceptions. If this number is very high, you will likely observe significant slow-down.`);
+      console.warn(`[Dbux] Many read errors encountered. NOTE: when Dbux records object data it blatantly invokes object getters. These object getters caused ${this._readErrorCount} exceptions. If this number is very high, you will likely observe significant slow-down.`);
     }
   }
 
@@ -506,37 +530,46 @@ class ValueCollection extends Collection {
     let serialized;
     // switch (category) {
     //   case ValueTypeCategory.String:
-    if (isString(value)) {
-      if (value.length > SerializationLimits.maxStringLength) {
-        serialized = value.substring(0, SerializationLimits.maxStringLength) + '...';
-        // pruneState = ValuePruneState.Shortened;
+    try {
+      this._startAccess(value);
+      if (isString(value)) {
+        if (value.length > SerializationLimits.maxStringLength) {
+          serialized = value.substring(0, SerializationLimits.maxStringLength) + '...';
+          // pruneState = ValuePruneState.Shortened;
+        }
+        else {
+          serialized = value;
+        }
+        // serialized = JSON.stringify(value);
       }
       else {
-        serialized = value;
+        const t = typeof value;
+        if (t === 'bigint') {
+          /**
+           * hackfix: coerce to string
+           * NOTE: JSON + msgpack both don't support bigint
+           * @see https://github.com/Domiii/dbux/issues/533
+           */
+          serialized = value + 'n';
+        }
+        else if (t === 'symbol') {
+          /**
+           * hackfix: coerce to string
+           * NOTE: msgpack (notepack) does not support symbols
+           * @see https://github.com/darrachequesne/notepack/issues
+           */
+          serialized = value.toString();
+        }
+        else {
+          serialized = value;
+        }
       }
-      // serialized = JSON.stringify(value);
     }
-    else {
-      const t = typeof value;
-      if (t === 'bigint') {
-        /**
-         * hackfix: coerce to string
-         * NOTE: JSON + msgpack both don't support bigint
-         * @see https://github.com/Domiii/dbux/issues/533
-         */
-        serialized = value + 'n';
-      }
-      else if (t === 'symbol') {
-        /**
-         * hackfix: coerce to string
-         * NOTE: msgpack (notepack) does not support symbols
-         * @see https://github.com/darrachequesne/notepack/issues
-         */
-        serialized = value.toString();
-      }
-      else {
-        serialized = value;
-      }
+    catch (err) {
+      serialized = `(Dbux could not serialize this value - Error: ${err.message})`;
+    }
+    finally {
+      this._endAccess(value);
     }
     // this.logger.warn('_serializeNonTrackable', value, serialized);
     return serialized;
@@ -663,7 +696,7 @@ class ValueCollection extends Collection {
         if (!this._canReadKeys(value)) {
           serialized = `(ERROR: accessing object caused exception)`;
           category = ValueTypeCategory.String;
-          pruneState = ValuePruneState.Omitted;
+          pruneState = ValuePruneState.ReadError;
         }
         else {
           // iterate over all object properties
@@ -676,7 +709,7 @@ class ValueCollection extends Collection {
             // error
             serialized = `(ERROR: accessing object caused exception)`;
             category = ValueTypeCategory.String;
-            pruneState = ValuePruneState.Omitted;
+            pruneState = ValuePruneState.ReadError;
           }
           else {
             // future-work: the name might be mangled. We ideally want to get it from source code when we can.
@@ -704,7 +737,7 @@ class ValueCollection extends Collection {
                 let childRef;
                 let childValue;
                 if (!this._canAccess(value)) {
-                  childRef = this.addOmitted();
+                  childRef = this.addReadError();
                 }
                 else {
                   childValue = this._readProperty(value, prop);
@@ -736,7 +769,7 @@ const valueCollection = new ValueCollection();
  * ##########################################################################*/
 
 export function wrapValue(value) {
-  if (valueCollection._getIsInstanceOf(value, Function)) {
+  if (valueCollection.getIsInstanceOf(value, Function)) {
     // value = getUnpatchedCallbackOrPatchedFunction(value);
     value = getPatchedFunctionOrSelf(value);
   }
@@ -744,7 +777,7 @@ export function wrapValue(value) {
 }
 
 export function unwrapValue(value) {
-  if (valueCollection._getIsInstanceOf(value, Function)) {
+  if (valueCollection.getIsInstanceOf(value, Function)) {
     // TODO: handle callback identity?
     value = getOriginalFunction(value) || value;
   }

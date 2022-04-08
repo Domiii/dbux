@@ -10,7 +10,7 @@ async function g() {
 
 async function h() {
   await 0;
-  throw new Error('An error');
+  throw new Error('OUCH');
 }
 
 f();

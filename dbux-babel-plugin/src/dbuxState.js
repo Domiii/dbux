@@ -98,6 +98,7 @@ export default function injectDbuxState(programPath, programState) {
         // Function
         pushImmediate: makeProgramId('pI'),
         popFunction: makeProgramId('pF'),
+        popFunctionInterruptable: makeProgramId('pFI'),
         registerParams: makeProgramId('par'),
         traceReturn: makeProgramId('tr'),
         traceReturnAsync: makeProgramId('tra'),
@@ -109,8 +110,10 @@ export default function injectDbuxState(programPath, programState) {
         traceExpression: makeProgramId('te'),
         traceExpressionVar: makeProgramId('tev'),
         traceWriteVar: makeProgramId('twv'),
-        traceCatch: makeProgramId('tcatch'),
+        traceCatch: makeProgramId('tct'),
+        traceCatchInterruptable: makeProgramId('tctI'),
         traceFinally: makeProgramId('tf'),
+        traceFinallyInterruptable: makeProgramId('tfI'),
 
         // ME
         traceExpressionME: makeProgramId('tme'),

@@ -21,6 +21,10 @@ function getAwaitDisplayName(path) {
 export default class AwaitExpression extends BaseNode {
   static children = ['argument'];
 
+  get awaitContextIdVar() {
+    return this.StaticContext.getAwaitContextIdVar();
+  }
+
   addResumeContext() {
     const {
       path,
@@ -31,16 +35,6 @@ export default class AwaitExpression extends BaseNode {
     const { loc: awaitLoc } = path.node;
     const locStart = awaitLoc.end;
     return state.contexts.addResumeContext(path, locStart, StaticContextType.ResumeAsync);
-  }
-
-  enter() {
-    const {
-      Traces
-    } = this;
-
-    // future-work: don't use unnamed constants ('awCid')
-    // NOTE: we need `awaitContextIdVar` to better deal with asynchronous error handling, in catch and finally blocks
-    this.awaitContextIdVar = Traces.getOrGenerateUniqueIdentifier('awCid');
   }
 
   /**
