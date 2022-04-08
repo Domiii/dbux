@@ -5,10 +5,13 @@ import traceSelection from '@dbux/data/src/traceSelection';
 
 import KeyedComponentSet from '@dbux/graph-common/src/componentLib/KeyedComponentSet';
 import { isHiddenGroup } from '@dbux/data/src/pathways/ActionGroupType';
+import StepType from '@dbux/data/src/pathways/StepType';
+import { makeStaticContextLocLabel } from '@dbux/data/src/helpers/makeLabels';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import PathwaysStep from './PathwaysStep';
 import PathwaysActionGroup from './PathwaysActionGroup';
 import PathwaysStepGroup from './PathwaysStepGroup';
+import { getIconByStep, makeStepBackground } from './renderSettings';
 
 
 
@@ -116,7 +119,7 @@ class PathwaysView extends HostComponentEndpoint {
           _id: stepGroupId,
           timeSpentMillis,
           timeSpent: formatTime(timeSpentMillis),
-          firstStep: pdp.indexes.steps.byGroup.getFirst(stepGroupId),
+          firstStep: this.makeStep(pdp.indexes.steps.byGroup.getFirst(stepGroupId)),
         };
       });
       stepGroups.sort((a, b) => b.timeSpentMillis - a.timeSpentMillis);
@@ -155,6 +158,80 @@ class PathwaysView extends HostComponentEndpoint {
 
     // update timeline
     this.timeline.forceUpdate();
+  }
+
+  /**
+   * NOTE: `PathwaysStep` and `PathwaysStepGroup` share this function, so put it here to avoid code duplication
+   * @returns extra `Step` data
+   */
+  makeStep(step) {
+    const {
+      _id: stepId,
+      applicationId,
+      staticContextId,
+      type: stepType
+    } = step;
+
+    const { themeMode } = this.context;
+
+    let label;
+    let locLabel;
+    switch (stepType) {
+      case StepType.Trace:
+        if (staticContextId) {
+          const dp = allApplications.getById(applicationId)?.dataProvider;
+          const staticContext = dp?.collections.staticContexts.getById(staticContextId);
+          label = staticContext?.displayName || `(could not look up application or staticContext for ${applicationId}, ${staticContextId})`;
+          const locString = makeStaticContextLocLabel(applicationId, staticContextId);
+          locLabel = ` @ ${locString}`;
+        }
+        else {
+          label = '(other)';
+        }
+        break;
+      case StepType.CallGraph:
+        label = '(Call Graph Investigation)';
+        break;
+      case StepType.Search:
+        label = '(Search)';
+        break;
+      case StepType.Other:
+        if (staticContextId) {
+          const dp = allApplications.getById(applicationId)?.dataProvider;
+          const staticContext = dp?.collections.staticContexts.getById(staticContextId);
+          label = staticContext?.displayName || `(could not look up application or staticContext for ${applicationId}, ${staticContextId})`;
+          const locString = makeStaticContextLocLabel(applicationId, staticContextId);
+          locLabel = ` @ ${locString}`;
+        }
+        else {
+          label = '(other)';
+        }
+        break;
+      case StepType.None:
+      default:
+        label = '(Start)';
+        break;
+    }
+
+    /**
+     * hackfix: currently we have not recorded the trace data, so we temporarily set it to `StepType.Other`
+     */
+    let icon;
+    if (StepType.is.Trace(stepType) && !staticContextId) {
+      icon = getIconByStep(StepType.Other);
+    }
+    else {
+      icon = getIconByStep(stepType);
+    }
+
+    return {
+      label,
+      locLabel,
+      iconUri: this.context.doc.getIconUri(icon),
+      timeSpent: formatTime(this.pdp.util.getStepTimeSpent(stepId)),
+      background: makeStepBackground(step, themeMode),
+      hasTrace: StepType.is.Trace(stepType),
+    };
   }
 
 

@@ -6,7 +6,7 @@ import { emitSessionFinishedEvent } from '../userEvents';
 import PracticeSessionState from './PracticeSessionState';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('PracticeSessionBase');
+const { log, debug, warn, error: logError } = newLogger('PathwaysSession');
 
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
 /** @typedef {import('./PracticeSessionData').default} PracticeSessionData */

@@ -484,7 +484,8 @@ export default class ProjectsManager {
   }
 
   /**
-   * @param {PracticeSessionBase} session set to `null` to clear saved data.
+   * NOTE: We save sessionId and other data in `ExternalStorage`, and use it to find the corresponding log file.
+   * @param {PathwaysSession} session set to `null` to clear saved data.
    */
   async saveSession(session = this.practiceSession) {
     if (session) {
