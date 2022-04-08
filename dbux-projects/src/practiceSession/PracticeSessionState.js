@@ -17,6 +17,10 @@ const FoundedTypes = new Array(PracticeSessionState.getValueMaxIndex()).map(() =
 FoundedTypes[PracticeSessionState.Found] = true;
 FoundedTypes[PracticeSessionState.Solved] = true;
 
-export function isStateFoundedType(traceType) {
-  return FoundedTypes[traceType];
+export function isStateFoundedType(sessionType) {
+  return FoundedTypes[sessionType];
+}
+
+export function isStateFinishedType(sessionType) {
+  return sessionType >= 3;
 }

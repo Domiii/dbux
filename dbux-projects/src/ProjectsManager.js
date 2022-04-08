@@ -797,7 +797,7 @@ export default class ProjectsManager {
   }
 
   /**
-   * TODO-M: move to practice session
+   * TODO: move to practice session
    * @param {Exercise} exercise 
    * @param {object} inputCfg Is currently brought in from `projectViewsController`.
    */

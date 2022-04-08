@@ -3,7 +3,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import PathwaysDataProvider from '../dataLib/PathwaysDataProvider';
 import { emitSessionFinishedEvent } from '../userEvents';
-import PracticeSessionState from './PracticeSessionState';
+import PracticeSessionState, { isStateFinishedType } from './PracticeSessionState';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PathwaysSession');
@@ -53,9 +53,9 @@ export default class PathwaysSession {
    * @return {bool}
    */
   isFinished() {
-    // hackfix: use last `userAction` to check if session has finished
-    // TODO-M: properly use `setState`
-    return this.pdp.util.hasSessionFinished();
+    // // hackfix: use last `userAction` to check if session has finished
+    // return this.pdp.util.hasSessionFinished();
+    return isStateFinishedType(this.state);
   }
 
   setState(state) {
@@ -80,8 +80,8 @@ export default class PathwaysSession {
 
     await this.handleStop?.();
 
-    this.setState(PracticeSessionState.Stopped);
     emitSessionFinishedEvent(this.state);
+    this.setState(PracticeSessionState.Stopped);
     await this.save();
 
     return true;

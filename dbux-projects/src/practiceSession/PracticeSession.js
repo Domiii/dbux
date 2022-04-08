@@ -133,8 +133,8 @@ export default class PracticeSession extends PathwaysSession {
     const isCorrect = this.exercise.isCorrectBugLocation(location);
     if (isCorrect) {
       this.manager.bdp.updateExerciseProgress(this.exercise, { status: ExerciseStatus.Found });
-      this.setState(PracticeSessionState.Found);
       emitSessionFinishedEvent(this.state);
+      this.setState(PracticeSessionState.Found);
       this.save();
       this.manager.bdp.save();
       // TOTRANSLATE
