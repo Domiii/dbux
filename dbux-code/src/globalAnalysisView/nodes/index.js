@@ -3,13 +3,16 @@ import GlobalErrorsNode from './GlobalErrorsNode';
 import GlobalConsoleNode from './GlobalConsoleNode';
 import { ImportsNode, RecordedPackagesNode } from './GlobalModulesNode';
 import GlobalSearchNode from './GlobalSearchNode';
+import GlobalStatsNode from './GlobalStatsNode';
 
 const GlobalNodeClasses = [
   GlobalErrorsNode,
   GlobalConsoleNode,
   
   RecordedPackagesNode,
-  ImportsNode,
+  // ImportsNode,
+
+  GlobalStatsNode,
 
   GlobalSearchNode,
   

@@ -82,6 +82,9 @@ export function getPathRelativeToCommonAncestor(fpath, ...otherPaths) {
  */
 export function getCommonAncestorPath(...paths) {
   // NOTE: the library requires OS-specific separators
+  if (paths.length === 0) {
+    return '';
+  }
   paths = paths.map(p => path.resolve(p));
   const result = _commonAncestorPath(...paths);
   return pathNormalized(result);

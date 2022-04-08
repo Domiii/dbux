@@ -264,7 +264,7 @@ export default class Client {
         }
       })
       .join(', ');
-    debug(`${msg} (total = ${totalN}, ${dataDetails})`
+    debug(`${msg} | total = ${totalN} (${dataDetails})`
     );
   }
 

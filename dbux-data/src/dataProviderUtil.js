@@ -115,7 +115,7 @@ export default {
    * @param {DataProvider} dp
    * @return {Array.<string>} Names of all modules from `node_modules` folders that were executed.
    */
-  getExternalProgramModuleName(dp, programId) {
+  getProgramPackageName(dp, programId) {
     const programContext = dp.collections.staticProgramContexts.getById(programId);
 
     if ('_moduleName' in programContext) {
@@ -126,14 +126,14 @@ export default {
     }
   },
 
-  getAllExternalProgramModuleNames(dp, startId = 1) {
+  getAllPackageNames(dp, startId = 1) {
     const programIds = new Set(
       dp.collections.staticProgramContexts
         .getAllActual(startId)
-        .map(p => dp.util.getExternalProgramModuleName(p.programId))
+        .map(p => dp.util.getProgramPackageName(p.programId))
     );
 
-    // NOTE: `getExternalProgramModuleName` returns null if a program is not in `node_modules`.
+    // NOTE: `getProgramPackageName` returns null if a program is not in `node_modules`.
     programIds.delete(null);
 
     return Array.from(programIds);
@@ -148,7 +148,6 @@ export default {
     return dp.indexes.staticContexts.byFile.get(programId);
   },
 
-
   /** @param {DataProvider} dp */
   getFirstTraceOfProgram(dp, programId) {
     const staticContext = dp.util.getStaticContextOfProgram(programId);
@@ -156,6 +155,10 @@ export default {
       return dp.util.getFirstTraceOfStaticContext(staticContext.staticContextId);
     }
     return null;
+  },
+
+  getTracesOfProgram(dp, programId) {
+    return dp.indexes.traces.byFile.get(programId);
   },
 
   // ###########################################################################
@@ -303,7 +306,13 @@ export default {
   /** @param {DataProvider} dp */
   getStaticContextPackageName(dp, staticContextId) {
     const staticContext = dp.collections.staticContexts.getById(staticContextId);
-    return dp.util.getExternalProgramModuleName(staticContext.programId);
+    return dp.util.getProgramPackageName(staticContext.programId);
+  },
+
+  /** @param {DataProvider} dp */
+  getTracePackageName(dp, traceId) {
+    const trace = dp.collections.traces.getById(traceId);
+    return dp.util.getContextPackageName(trace.contextId);
   },
 
   /** @param {DataProvider} dp */
@@ -2457,6 +2466,38 @@ export default {
     const traceType = dp.util.getTraceType(traceId);
     const typeName = TraceType.nameFrom(traceType);
     return `[${typeName}]`;
+  },
+
+  /** ###########################################################################
+   * Stats
+   * ##########################################################################*/
+
+  /** @param {DataProvider} dp */
+  getTraceCountsByPackageName(dp, tracesByPackageName = {}, prop = 'nTraces') {
+    dp.collections.traces.getAllActual().forEach(t => {
+      const { traceId } = t;
+      const packageName = dp.util.getTracePackageName(traceId);
+      if (!tracesByPackageName[packageName]) {
+        tracesByPackageName[packageName] = {};
+      }
+      tracesByPackageName[packageName][prop] = (tracesByPackageName[packageName][prop] || 0) + 1;
+    });
+    return tracesByPackageName;
+  },
+
+  /** @param {DataProvider} dp */
+  getTraceCountsByStaticContext(dp, tracesByStaticContext = {}, prop = 'nTraces') {
+    const staticContextIds = dp.indexes.traces.byRealStaticContext.getAllKeys();
+    staticContextIds.forEach(staticContextId => {
+      const traces = dp.indexes.traces.byRealStaticContext.get(staticContextId);
+      if (!tracesByStaticContext[staticContextId]) {
+        tracesByStaticContext[staticContextId] = {
+          staticContextId
+        };
+      }
+      tracesByStaticContext[staticContextId][prop] = (tracesByStaticContext[staticContextId][prop] || 0) + traces.length;
+    });
+    return tracesByStaticContext;
   },
 
   // ###########################################################################
