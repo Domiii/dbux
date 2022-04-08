@@ -68,6 +68,11 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
+            /**
+             * Make sure, things work correctly, even if babeling (maybe previously unbabled) `node_modules`.
+             * @see https://github.com/webpack/webpack/issues/4039#issuecomment-419284940
+             */
+            sourceType: 'unambiguous',
             plugins: [
               // other plugins, running **after** Dbux...
               '@dbux/babel-plugin'
