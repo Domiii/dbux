@@ -407,38 +407,32 @@ export default class ProjectsManager {
 
   /**
    * NOTE: Dev only
-   * @param {string} filePath 
+   * @param {string} logFilePath 
    */
-  async loadPracticeSessionFromFile(filePath) {
-    // TODO-M: fix this
+  async loadPracticeSessionFromFile(logFilePath) {
     if (!await this.exitPracticeSession()) {
       return false;
     }
 
     try {
-      const { sessionId, createdAt, exerciseId } = await PathwaysDataProvider.parseHeader(filePath);
+      const { sessionId, createdAt, exerciseId } = await PathwaysDataProvider.parseHeader(logFilePath);
       const exercise = this.getExerciseById(exerciseId);
-      if (!exercise) {
-        throw new Error(`Cannot find exercise of exerciseId: ${exerciseId} in log file`);
+      if (exercise) {
+        if (!this.bdp.getExerciseProgress(exercise.id)) {
+          this.bdp.addExerciseProgress(exercise, false);
+        }
+        await this.bdp.save();
+        await this.switchToExercise(exercise);
       }
-
-      if (!this.bdp.getExerciseProgress(exercise.id)) {
-        this.bdp.addExerciseProgress(exercise, false);
-      }
-
-      await this.switchToExercise(exercise);
       allApplications.clear();    // clear applications
 
-      this._loadSession(exercise, { createdAt, sessionId, state: PracticeSessionState.Stopped }, true, filePath);
+      this._loadSession(exercise, { createdAt, sessionId, logFilePath, state: PracticeSessionState.Stopped }, false);
       await this.saveSession();
-      await this.bdp.save();
-      const lastAction = this.pdp.collections.userActions.getLast();
-      // hackfix: emit a `SessionFinished` event to prevent keep recording
-      emitSessionFinishedEvent(this.practiceSession.state, lastAction.createdAt);
+
       return true;
     }
     catch (err) {
-      logError(`Failed to load from log file ${filePath}:`, err);
+      logError(`Failed to load from log file ${logFilePath}:`, err);
       return false;
     }
   }
