@@ -468,10 +468,12 @@ export default class ProjectsManager {
   }
 
   async loadResearchSession(exerciseId) {
-    // TODO-M: add research back
-    const researchEnabled = process.env.RESEARCH_ENABLED;
-    const researchSize = researchEnabled && exerciseId && this.research.getAppFileSize(exerciseId);
+    // const researchSize = exerciseId && this.research.getAppFileSize(exerciseId);
     const exercise = this.getExerciseById(exerciseId);
+    if (!this.bdp.getExerciseProgress(exerciseId)) {
+      this.bdp.addExerciseProgress(exercise, false);
+    }
+    await this.bdp.save();
     this.research.importResearchAppData(exerciseId);
     this._loadSession(exercise, EmptyObject, false);
   }

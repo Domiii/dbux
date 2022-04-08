@@ -166,8 +166,11 @@ export class Research {
 
 let currentResearch;
 
+/**
+ * @returns {Research|null}
+ */
 export function getCurrentResearch() {
-  if (process.env.RESEARCH_ENABLED) {
+  if (process.env.RESEARCH_ENABLED && !currentResearch) {
     currentResearch = new Research(CurrentResearchName);
   }
   return currentResearch;

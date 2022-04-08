@@ -3,7 +3,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { initMemento, get as mementoGet, set as mementoSet } from './memento';
 import { initInstallId } from './installId';
 import { initLogging } from './logging';
-import { initCodePath } from './codeUtil/codePath';
+import { initCodePath, setCodePathConfig } from './codeUtil/codePath';
 import activate from './activate';
 import { initPreActivateView } from './preActivateView/preActivateNodeProvider';
 import { registerCommand } from './commands/commandUtil';
@@ -54,7 +54,8 @@ export default async function preActivate(context) {
     initMemento(context);
     await initInstallId();
     initLogging();
-    initCodePath(context, {
+    initCodePath(context);
+    setCodePathConfig({
       exportDirectoryOverride: getCurrentResearch()?.getDataRootLfs()
     });
 
@@ -67,6 +68,7 @@ export default async function preActivate(context) {
     // await getOrCreateProjectManager(context).pathwayDataProvider.reset();
 
     commands.executeCommand('setContext', 'dbux.context.nodeEnv', process.env.NODE_ENV);
+    commands.executeCommand('setContext', 'dbux.context.researchEnabled', !!process.env.RESEARCH_ENABLED);
 
     // the following should ensures `doActivate` will be called at least once
     autoStart = (process.env.NODE_ENV === 'development') ||

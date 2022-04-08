@@ -20,8 +20,11 @@ let cfg;
 /**
  * @param {CodePathConfig} _cfg
  */
-export function initCodePath(_context, _cfg) {
+export function initCodePath(_context) {
   context = _context;
+}
+
+export function setCodePathConfig(_cfg) {
   cfg = _cfg;
 }
 

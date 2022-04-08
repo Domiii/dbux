@@ -1,9 +1,11 @@
-import { window } from 'vscode';
+import path from 'path';
+import { window, Uri } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import traceSelection from '@dbux/data/src/traceSelection';
 import { registerCommand } from './commandUtil';
 import { showInformationMessage, showWarningMessage } from '../codeUtil/codeModals';
+import { getCurrentResearch } from '../research/Research';
 import { translate } from '../lang';
 import { emitAnnotateTraceAction } from '../userEvents';
 import { addProjectFolderToWorkspace } from '../codeUtil/workspaceUtil';
@@ -66,6 +68,45 @@ export function initProjectCommands(extensionContext, projectViewController) {
 
   registerCommand(extensionContext, 'dbux.stopPathways', async () => {
     return await projectViewController.manager.stopPathways();
+  });
+
+  registerCommand(extensionContext, 'dbux.loadResearchSession', async () => {
+    const researchEnabled = process.env.RESEARCH_ENABLED;
+    if (!researchEnabled) {
+      await showWarningMessage('Research is not enabled.');
+      return;
+    }
+
+    const researchDataFolder = getCurrentResearch().getDataRootLfs();
+    const openFileDialogOptions = {
+      // TOTRANSLATE
+      title: 'Select a research session to read',
+      canSelectFolders: false,
+      canSelectMany: false,
+      filters: {
+        'Dbux Research Data': ['dbuxapp.zip']
+      },
+      defaultUri: Uri.file(researchDataFolder),
+    };
+    const file = (await window.showOpenDialog(openFileDialogOptions))?.[0];
+    if (file) {
+      const exerciseId = path.basename(file.fsPath, '.dbuxapp.zip');
+      const exercise = projectViewController.manager.getExerciseById(exerciseId);
+      if (!exercise) {
+        throw new Error(`Cannot find exercise of id ${exerciseId}`);
+      }
+
+      // TOTRANSLATE
+      const title = 'Load research session';
+      const loaded = await projectViewController.runProjectTask(title, async (report) => {
+        // TOTRANSLATE
+        report({ message: 'Loading file....' });
+        return await projectViewController.manager.loadResearchSession(exerciseId);
+      });
+      if (loaded) {
+        await showInformationMessage(`Research session for exercise ${exerciseId} loaded`);
+      }
+    }
   });
 
   /** ###########################################################################

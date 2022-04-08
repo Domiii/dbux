@@ -150,6 +150,10 @@
         "title": "Dbux Pathways: Stop"
       },
       {
+        "command": "dbux.loadResearchSession",
+        "title": "Dbux: Load research session"
+      },
+      {
         "command": "dbux.togglePracticeView",
         "title": "Dbux: Toggle Practice View",
         "icon": {
@@ -251,7 +255,7 @@
       },
       {
         "command": "dbux.loadPracticeLogFile",
-        "title": "Dbux Dev:Load Practice Log"
+        "title": "Dbux Dev: Load Practice Log"
       },
       {
         "command": "dbux.showOutputChannel",
@@ -1098,6 +1102,10 @@
         {
           "command": "dbux.stopPathways",
           "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.loadResearchSession",
+          "when": "dbux.context.activated && dbux.context.researchEnabled"
         },
         {
           "command": "dbux.showGraphView",
