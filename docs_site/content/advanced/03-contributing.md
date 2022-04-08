@@ -79,31 +79,7 @@ mklink /J ..\..\node_modules\@dbux\runtime ..\..\..\dbux\dbux-runtime
 
 While you can certainly try to get started on your own, you probably make your life a lot easier by [join the dev team on Discord](https://discord.gg/8kR2a7h) first :)
 
-
-## Documentation: docs_site
-
-We use `docusaurus` for documentation.
-
-* `cd docs_site`
-* `yarn start`
-
-
-### Build + Deploy docs
-
-* `yarn build`
-  * -> Make sure, there are no build problems.
-* `yarn serve`
-  * This serves the production build locally to allow you manually test and check whether the documentation site works correctly.
-  * You especially want to do this when introducing new complex logic or components.
-* `yarn deploy`
-  * Make the changes go live.
-
-### Known Problems + Related Issues
-
-See https://github.com/Domiii/dbux/issues/632 and https://github.com/Domiii/dbux/labels/documentation.
-
-
-### Local Development Build
+## Local Development Build
 
 When you want to debug a local project with a local Dbux dev build, we recommend using `yalc`:
 
@@ -140,11 +116,36 @@ One way to work-around this with `yarn@1`:
   yalc add ...
   ```
 
-PROBLEM: (one of many) since `npm install` ignores your `yarn.lock`, and also undoes deduplication, your dependencies might get real messy real fast, if they have not been updated in a while or are not very well maintained (which is almost always).
+PROBLEM: (one of many) since `npm install` ignores your `yarn.lock`, and also might undo (some) deduplication, your dependencies might get real messy real fast. That is especially due to libraries often not following the convention of only introducing breaking changes with major releases. Meaning that all libraries that were added with (usual default of) [caret (^)](https://www.google.com/search?q=semver+caret+meaning) can potentially break due to this.
 :::
 
 
-See https://github.com/Domiii/dbux/issues/661.
+#### Related
+
+* [Issue: Propose a local development workflow](https://github.com/Domiii/dbux/issues/661).
+
+
+## Docs: docs_site
+
+We use `docusaurus` for documentation.
+
+* `cd docs_site`
+* `yarn start`
+
+
+### Build + Deploy docs
+
+* `yarn build`
+  * -> Make sure, there are no build problems.
+* `yarn serve`
+  * This serves the production build locally to allow you manually test and check whether the documentation site works correctly.
+  * You especially want to do this when introducing new complex logic or components.
+* `yarn deploy`
+  * Make the changes go live.
+
+### Related Issues: documentation
+
+* https://github.com/Domiii/dbux/labels/documentation.
 
 
 
