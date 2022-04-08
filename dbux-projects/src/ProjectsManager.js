@@ -352,7 +352,6 @@ export default class ProjectsManager {
 
     allApplications.clear();
 
-    // TODO-M
     // TODO: also fix askForRecoverPracticeSession + recoverPracticeSession
     //  -> ultimately use research data for practice session data, if available (NOTE: the format is slightly different)
     //  -> if not available, should not store all application data; only that relevant for the practice session.
@@ -474,7 +473,7 @@ export default class ProjectsManager {
     const researchSize = researchEnabled && exerciseId && this.research.getAppFileSize(exerciseId);
     const exercise = this.getExerciseById(exerciseId);
     this.research.importResearchAppData(exerciseId);
-    this._loadSession(exercise);
+    this._loadSession(exercise, EmptyObject, false);
   }
 
   /**

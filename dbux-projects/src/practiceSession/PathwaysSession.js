@@ -172,7 +172,6 @@ export default class PathwaysSession {
 
   async save() {
     try {
-      // TODO-M: use `this.serialize()`
       await this.manager.saveSession();
     }
     catch (err) {

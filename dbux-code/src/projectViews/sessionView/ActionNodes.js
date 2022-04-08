@@ -208,7 +208,7 @@ class TagNode extends SessionNode {
       const cursorLoc = getCursorLocation();
       const cursorLine = codeLineToBabelLine(cursorLoc?.pos.line);
       const cursorFile = cursorLoc?.fpath;
-      this.manager.practiceSession.tagExerciseTrace(trace, cursorFile, cursorLine);
+      await this.manager.practiceSession.tagExerciseTrace(trace, cursorFile, cursorLine);
     }
     else {
       await showWarningMessage('You have not selected any trace yet.');
