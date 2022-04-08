@@ -222,8 +222,8 @@ class TagNode extends SessionNode {
  *  #########################################################################*/
 
 class StopPracticeNode extends SessionNode {
-  static makeLabel(exercise) {
-    if (exercise.manager.practiceSession.isFinished()) {
+  static makeLabel(exercise, parent, prop, sessionNodeProvider) {
+    if (sessionNodeProvider.manager.practiceSession.isFinished()) {
       return 'Exit Session';
     }
     else {
@@ -263,7 +263,6 @@ export function getActionNodeClasses(exercise) {
   }
   else {
     return [
-      TagNode,
       StopPracticeNode,
     ];
   }

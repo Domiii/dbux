@@ -4,22 +4,30 @@ export default class UserAction {
    */
   type;
 
-  /**
-   * @type {string} uuid of PracticeSession
-   */
-  sessionId;
+  // /**
+  //  * @type {string} uuid of PracticeSession
+  //  */
+  // sessionId;
 
-  /**
-   * @type {string}
-   */
-  exerciseId;
+  // /**
+  //  * @type {string}
+  //  */
+  // exerciseId;
 
   /**
    * @type {number} event create time
    */
   createdAt;
 
+  /**
+   * @type {number} UserActionGroupId
+   */
+  groupId;
+
+  /**
+   * @type {number}
+   */
   stepId;
-  
+
   endTime;
 }

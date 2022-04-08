@@ -16,7 +16,7 @@ export default class PathwaysWebView extends RichWebView {
   }
 
   get pdp() {
-    return getProjectManager().pdp;
+    return getProjectManager().practiceSession?.pdp;
   }
 
   getIcon() {
