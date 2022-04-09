@@ -77,8 +77,8 @@ class ModuleStats extends StatsBase {
     const minProgramId = programData?.min;
 
     // loaded modules
-    const allModuleNames = util.getAllExternalProgramModuleNames();
-    const newModuleNames = minProgramId && util.getAllExternalProgramModuleNames(minProgramId);
+    const allModuleNames = util.getAllPackageNames();
+    const newModuleNames = minProgramId && util.getAllPackageNames(minProgramId);
 
     // untraced modules
     const allUntracedModules = difference(allRequireModuleNames, allModuleNames);

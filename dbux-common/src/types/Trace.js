@@ -41,6 +41,9 @@ export class TraceData {
   /**
    * Statically determined special properties of a trace.
    * 
+   * Currently only set in `BaseId` and `MemberExpression`.
+   * We do not set it for constants, whose `TraceType` already encodes the same information (e.g. `super`, `this`, etc.).
+   * 
    * {@link SpecialIdentifierType}
    */
   specialType;

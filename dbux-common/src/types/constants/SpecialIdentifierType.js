@@ -1,7 +1,7 @@
 import Enum from '../../util/Enum';
 
 // eslint-disable-next-line import/no-mutable-exports
-let SpecialIdentifierType = {
+let specialIdentifierTypeObj = {
   Module: 1,
   /**
    * Linked against {@link SpecialObjectType}.
@@ -16,7 +16,16 @@ let SpecialIdentifierType = {
   
   // future-work: consider `@babel/traverse` -> referencesImport
   Require: 10,
+  /**
+   * Dynamic import expression.
+   * @see https://v8.dev/features/dynamic-import
+   */
   Import: 11,
+  /**
+   * CommonJs.
+   * E.g.: `exports.f = 3;`.
+   */
+  Exports: 12,
 
   This: 20,
   Super: 21,
@@ -32,7 +41,7 @@ let SpecialIdentifierType = {
  * 
  * @type {(Enum)}
  */
-SpecialIdentifierType = new Enum(SpecialIdentifierType);
+const SpecialIdentifierType = new Enum(specialIdentifierTypeObj);
 
 
 const TypesByIdentifierName = Object.fromEntries(
@@ -53,9 +62,11 @@ export function lookupSpecialIdentifierType(identifierName) {
 }
 
 const notTraceable = new Array(SpecialIdentifierType.getValueMaxIndex()).map(() => false);
+notTraceable[SpecialIdentifierType.Module] = true;
 notTraceable[SpecialIdentifierType.Eval] = true;
 notTraceable[SpecialIdentifierType.Require] = true;
 notTraceable[SpecialIdentifierType.Import] = true;
+notTraceable[SpecialIdentifierType.Exports] = true;
 notTraceable[SpecialIdentifierType.Super] = true;
 // NOTE: Proxy is traceable, but the proxy object's value should not be iterated over.
 // notTraceable[SpecialIdentifierType.Proxy] = true;
