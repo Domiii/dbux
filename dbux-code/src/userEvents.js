@@ -200,6 +200,10 @@ export function emitCallGraphAction(evtType, data) {
   emitUserEvent(evtType, data);
 }
 
+export function emitCallGraphTraceAction(trace, evtType, moreProp) {
+  emitSelectTraceAction(trace, evtType, moreProp);
+}
+
 export function emitPathwaysAction(evtType, data) {
   emitUserEvent(evtType, data);
 }

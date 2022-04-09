@@ -3,6 +3,7 @@ import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection/index';
 import { makeContextLocLabel, makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import AsyncNodeDataMap from '@dbux/graph-common/src/graph/types/AsyncNodeDataMap';
 import GraphType from '@dbux/graph-common/src/shared/GraphType';
 import StackMode from '@dbux/graph-common/src/shared/StackMode';
@@ -447,24 +448,30 @@ class AsyncGraph extends GraphBase {
   }
 
   public = {
-    selectTrace(applicationId, traceId) {
-      const dp = allApplications.getById(applicationId).dataProvider;
-      const trace = dp.util.getTrace(traceId);
-      if (trace) {
-        traceSelection.selectTrace(trace);
-      }
-    },
     gotoAsyncNode(applicationId, asyncNodeId) {
       const dp = allApplications.getById(applicationId).dataProvider;
       const trace = dp.util.getTraceOfAsyncNode(asyncNodeId);
       if (trace) {
+        const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
+        this.componentManager.externals.emitCallGraphTraceAction(trace, UserActionType.AsyncCallGraphTrace, { asyncNode });
         traceSelection.selectTrace(trace);
       }
     },
-    gotoValueTrace(applicationId, valueTraceId) {
+    selectSchedulerTrace(applicationId, asyncNodeId, schedulerTraceId) {
+      const dp = allApplications.getById(applicationId).dataProvider;
+      const trace = dp.util.getTrace(schedulerTraceId);
+      if (trace) {
+        const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
+        this.componentManager.externals.emitCallGraphTraceAction(trace, UserActionType.AsyncCallGraphSchedulerTrace, { asyncNode });
+        traceSelection.selectTrace(trace);
+      }
+    },
+    gotoValueTrace(applicationId, asyncNodeId, valueTraceId) {
       const dp = allApplications.getById(applicationId).dataProvider;
       const trace = dp.util.getTrace(valueTraceId);
       if (trace) {
+        const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
+        this.componentManager.externals.emitCallGraphTraceAction(trace, UserActionType.AsyncCallGraphValueTrace, { asyncNode });
         traceSelection.selectTrace(trace);
       }
     },
@@ -492,10 +499,12 @@ class AsyncGraph extends GraphBase {
       this.componentManager.externals.alert('Thread selection is currently disabled.', false);
       // allApplications.selection.data.threadSelection.select(applicationId, [threadId]);
     },
-    async selectError(applicationId, rootContextId) {
+    async selectError(applicationId, asyncNodeId, rootContextId) {
       const dp = allApplications.getById(applicationId).dataProvider;
       const firstError = dp.indexes.traces.errorByRoot.getFirst(rootContextId);
       if (firstError) {
+        const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
+        this.componentManager.externals.emitCallGraphTraceAction(firstError, UserActionType.AsyncCallGraphError, { asyncNode });
         traceSelection.selectTrace(firstError);
         await this.componentManager.externals.globalAnalysisViewController.revealSelectedError();
       }

@@ -400,7 +400,7 @@ class AsyncGraph extends GraphBase {
     const { asyncNode: { applicationId, asyncNodeId }, valueTraceId } = asyncNodeData;
 
     if (this.context.graphDocument.state.valueMode && valueTraceId) {
-      this.remote.gotoValueTrace(applicationId, valueTraceId);
+      this.remote.gotoValueTrace(applicationId, asyncNodeId, valueTraceId);
     }
     else if (applicationId && asyncNodeId) {
       this.remote.gotoAsyncNode(applicationId, asyncNodeId);
@@ -421,10 +421,10 @@ class AsyncGraph extends GraphBase {
   }
 
   handleClickErrorLabel(asyncNodeData) {
-    const { applicationId, rootContextId } = asyncNodeData.asyncNode;
+    const { applicationId, asyncNodeId, rootContextId } = asyncNodeData.asyncNode;
 
     if (applicationId && rootContextId) {
-      this.remote.selectError(applicationId, rootContextId);
+      this.remote.selectError(applicationId, asyncNodeId, rootContextId);
     }
   }
 

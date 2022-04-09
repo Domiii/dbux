@@ -75,8 +75,11 @@ const UserActionTypeObj = {
   CallGraphTrace: 102,
   CallGraphCallTrace: 103,
   CallGraphVisibilityChanged: 104,
-
-  PathwaysVisibilityChanged: 110,
+  
+  AsyncCallGraphTrace: 110,
+  AsyncCallGraphSchedulerTrace: 111,
+  AsyncCallGraphValueTrace: 112,
+  AsyncCallGraphError: 113,
 
   StopProjectRunner: 120,
   ProjectViewsVisibilityChanged: 121,
@@ -86,6 +89,7 @@ const UserActionTypeObj = {
   OpenWebsite: 125,
   ShowExerciseIntroductionView: 126,
   NewApplications: 127,
+  PathwaysVisibilityChanged: 128,
 
   ProjectViewListModeChanged: 130,
 

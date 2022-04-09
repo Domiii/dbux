@@ -243,7 +243,7 @@ class ContextNode extends HostComponentEndpoint {
     selectFirstTrace() {
       const { firstTrace } = this;
       if (firstTrace) {
-        this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphTrace, { trace: firstTrace });
+        this.componentManager.externals.emitCallGraphTraceAction(firstTrace, UserActionType.CallGraphTrace);
         traceSelection.selectTrace(firstTrace);
       }
       else {
@@ -253,7 +253,7 @@ class ContextNode extends HostComponentEndpoint {
     selectCallTrace() {
       const { callTrace } = this;
       if (callTrace) {
-        this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphCallTrace, { trace: callTrace });
+        this.componentManager.externals.emitCallGraphTraceAction(callTrace, UserActionType.CallGraphCallTrace);
         traceSelection.selectTrace(callTrace);
       }
     },

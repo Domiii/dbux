@@ -42,10 +42,9 @@ class SchedulerButton extends AsyncButton {
   }
 
   static handleClick(asyncGraph, asyncNodeData) {
-    const { applicationId } = asyncNodeData.asyncNode;
-    const { asyncNode: { schedulerTraceId } } = asyncNodeData;
+    const { applicationId, asyncNodeId, schedulerTraceId } = asyncNodeData.asyncNode;
     if (schedulerTraceId) {
-      asyncGraph.remote.selectTrace(applicationId, schedulerTraceId);
+      asyncGraph.remote.selectSchedulerTrace(applicationId, asyncNodeId, schedulerTraceId);
     }
   }
 }
