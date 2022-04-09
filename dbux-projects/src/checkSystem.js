@@ -5,6 +5,7 @@ import isFunction from 'lodash/isFunction';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { whichNormalized } from '@dbux/common-node/src/util/pathUtil';
 import Process from './util/Process';
+import { emitCheckSystemAction } from './userEvents/index';
 
 /** @typedef {import('./ProjectsManager').default} ProjectsManager */
 
@@ -185,6 +186,10 @@ export async function checkSystem(manager, requirements, calledFromUser) {
   }
   else {
     debug(`checkSystem() result: ${modalMessage}`);
+  }
+
+  if (calledFromUser) {
+    emitCheckSystemAction(success, results);
   }
 
   if (!success && !calledFromUser && !ignore) {

@@ -1,7 +1,15 @@
 import NanoEvents from 'nanoevents';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import { newLogger } from '@dbux/common/src/log/logger';
 
 /** @typedef {import('../practiceSession/PracticeSession').default} PracticeSession */
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('UserEvents');
+
+const Verbose = true;
+// const Verbose = false;
 
 // ###########################################################################
 // event registry
@@ -41,6 +49,15 @@ export function emitNewExerciseProgress(exerciseProgress) {
 
 export function emitExerciseProgressChanged(exerciseProgress) {
   emitUserEvent(UserActionType.ExerciseProgressChanged, { exerciseProgress });
+}
+
+export function emitCheckSystemAction(success, result) {
+  emitUserEvent(UserActionType.CheckSystem, { success, result });
+}
+
+export function emitNewApplicationsAction(apps = EmptyArray) {
+  const uuids = apps.map(app => app.uuid);
+  emitUserEvent(UserActionType.NewApplications, { uuids });
 }
 
 // ###########################################################################
@@ -84,5 +101,13 @@ export function emitUserEvent(eventType, evtData) {
     type: eventType,
     createdAt: Date.now(),
     ...evtData
+  });
+}
+
+if (Verbose) {
+  onUserEvent((evt) => {
+    const { type, createdAt, ...evtData } = evt;
+    const typeName = UserActionType.nameFromForce(type);
+    log(`Emit user event "${typeName}", additional data=${JSON.stringify(evtData)}`);
   });
 }

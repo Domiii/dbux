@@ -35,6 +35,7 @@ export async function showHelp(message) {
     };
   }
 
+  
   return showInformationMessage(message, btns, { modal: true });
 }
 

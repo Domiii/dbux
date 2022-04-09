@@ -20,7 +20,7 @@ const stepByActionType = {
   [UserActionType.TagTrace]: StepType.Trace,
 
   [UserActionType.SelectTrace]: StepType.Trace,
-  [UserActionType.GoToError]: StepType.Trace,
+  [UserActionType.ShowError]: StepType.Trace,
   [UserActionType.TDValueClick]: StepType.Trace,
   [UserActionType.TDValueCollapseChange]: StepType.Trace,
   [UserActionType.TDTrackObjectUse]: StepType.Trace,

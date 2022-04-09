@@ -11,7 +11,7 @@ const { log, debug, warn, error: logError } = newLogger('renderSettings');
 const labelsByActionGroupType = {
   [ActionGroupType.SelectTrace]: 'SelectTrace',
   [ActionGroupType.TagTrace]: 'TagTrace',
-  [ActionGroupType.GoToError]: 'GoToError',
+  [ActionGroupType.ShowError]: 'ShowError',
   [ActionGroupType.TDValue]: 'TDValue',
   [ActionGroupType.TDTrackObject]: 'TDTrackObject',
   [ActionGroupType.TDExecutions]: 'TDExecutions',
@@ -39,7 +39,7 @@ const defaultActionGroupIcon = 'gear.svg';
 
 const iconsByActionGroupType = {
   [ActionGroupType.TagTrace]: 'flag.svg',
-  [ActionGroupType.GoToError]: 'fire.svg',
+  [ActionGroupType.ShowError]: 'fire.svg',
   [ActionGroupType.AnnotateTraceQ]: 'q.svg',
   [ActionGroupType.AnnotateTraceI]: 'i.svg',
   [ActionGroupType.EditorSelectionChanged]: 'cursor_click.svg',

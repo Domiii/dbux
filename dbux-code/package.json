@@ -119,14 +119,14 @@
       },
       {
         "command": "dbux.toggleNavButton",
-        "title": "Dbux: Toggle Editor Buttons"
+        "title": "Dbux: Toggle Editor Navigation Bar Buttons"
       },
       {
         "command": "dbux.toggleErrorLog",
         "title": "Dbux: Toggle Error Notifications"
       },
       {
-        "command": "dbux.selectTrace",
+        "command": "dbux.selectTraceById",
         "title": "Dbux: Select Trace by id"
       },
       {
@@ -260,10 +260,6 @@
       {
         "command": "dbux.showOutputChannel",
         "title": "Dbux: Show output channel"
-      },
-      {
-        "command": "dbuxCallStackView.itemClick",
-        "title": "Click"
       },
       {
         "command": "dbuxGlobalAnalysisView.showError",
@@ -611,7 +607,7 @@
       },
       {
         "command": "dbuxProjectView.node.resetExercise",
-        "title": "Dev Only: Reset this exercise",
+        "title": "Dbux Dev: Reset this exercise",
         "icon": {
           "light": "resources/light/refresh.svg",
           "dark": "resources/dark/refresh.svg"
@@ -714,7 +710,7 @@
       "editor/title": [
         {
           "command": "dbux.runFile",
-          "when": "dbux.context.activated && editorLangId == javascript",
+          "when": "dbux.context.activated && editorLangId == javascript && dbux.context.showNavButton",
           "group": "navigation@5"
         },
         {
@@ -724,12 +720,12 @@
         },
         {
           "command": "dbux.showGraphView",
-          "when": "!dbuxWebView.context.dbux-graph.isActive && !dbux.context.isApplicationEmpty",
+          "when": "!dbuxWebView.context.dbux-graph.isActive && !dbux.context.isApplicationEmpty && dbux.context.showNavButton",
           "group": "navigation@1"
         },
         {
           "command": "dbux.hideGraphView",
-          "when": "dbuxWebView.context.dbux-graph.isActive && !dbux.context.isApplicationEmpty",
+          "when": "dbuxWebView.context.dbux-graph.isActive && !dbux.context.isApplicationEmpty && dbux.context.showNavButton",
           "group": "navigation@2"
         }
       ],
@@ -1128,7 +1124,7 @@
           "when": "dbux.context.activated"
         },
         {
-          "command": "dbux.selectTrace",
+          "command": "dbux.selectTraceById",
           "when": "dbux.context.activated"
         },
         {
@@ -1266,10 +1262,6 @@
         {
           "command": "dbuxSessionView.flushCache",
           "when": "dbux.context.activated"
-        },
-        {
-          "command": "dbuxCallStackView.itemClick",
-          "when": "false"
         },
         {
           "command": "dbuxGlobalAnalysisView.showError",

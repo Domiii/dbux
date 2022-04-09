@@ -95,7 +95,7 @@
     "description": ""
   },
   {
-    "command": "dbux.selectTrace",
+    "command": "dbux.selectTraceById",
     "title": "Dbux: Select Trace by id",
     "description": "Mostly used for debugging Dbux, or when (for some other reason) you would know some trace by its id."
   },

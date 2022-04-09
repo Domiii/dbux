@@ -8,30 +8,30 @@ import isNaN from 'lodash/isNaN';
 import sleep from '@dbux/common/src/util/sleep';
 // import { stringify as jsonStringify } from 'comment-json';
 import SearchMode from '@dbux/graph-common/src/shared/SearchMode';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import traceSelection from '@dbux/data/src/traceSelection';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { importApplication, exportApplication } from '@dbux/data/src/applications/importExport';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { checkSystem, getDefaultRequirement } from '@dbux/projects/src/checkSystem';
 import { registerCommand } from './commandUtil';
-import { showTextDocument } from '../codeUtil/codeNav';
 import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../applicationsView/applicationModals';
 import { showGraphView, hideGraphView } from '../webViews/graphWebView';
 import { showPathwaysView, hidePathwaysView } from '../webViews/pathwaysWebView';
 import { setShowDeco } from '../codeDeco';
 import { toggleNavButton } from '../toolbar';
 import { toggleErrorLog } from '../logging';
-import { runFile } from './runCommands';
 import { getProjectManager } from '../projectViews/projectControl';
 import { showHelp } from '../help';
 // import { installDbuxDependencies } from '../codeUtil/installUtil';
 import { showOutputChannel } from '../projectViews/projectViewsController';
-import { confirm, showErrorMessage, showInformationMessage, showQuickPick } from '../codeUtil/codeModals';
+import { confirm, showErrorMessage, showInformationMessage } from '../codeUtil/codeModals';
 import { translate } from '../lang';
-import { getCodeDirectory, getDefaultExportDirectory, getLogsDirectory } from '../codeUtil/codePath';
+import { getDefaultExportDirectory, getLogsDirectory } from '../codeUtil/codePath';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
-import { getCurrentResearch } from '../research/Research';
 import searchController from '../search/searchController';
+import { emitSelectTraceAction, emitShowOutputChannelAction } from '../userEvents';
+import { runFile } from './runCommands';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('userCommands');
@@ -219,11 +219,12 @@ export function initUserCommands(extensionContext) {
       await showErrorMessage(`Can't find trace of traceId=${traceId} (applicationId=${applicationId})`);
     }
     else {
+      emitSelectTraceAction(trace, UserActionType.SelectTraceById, { userInput });
       traceSelection.selectTrace(trace);
     }
   }
 
-  registerCommand(extensionContext, 'dbux.selectTrace', openSelectTraceUI);
+  registerCommand(extensionContext, 'dbux.selectTraceById', openSelectTraceUI);
 
 
   // ###########################################################################
@@ -279,6 +280,7 @@ export function initUserCommands(extensionContext) {
   // ###########################################################################
 
   registerCommand(extensionContext, 'dbux.showOutputChannel', async () => {
+    emitShowOutputChannelAction();
     return showOutputChannel();
   });
 
@@ -287,15 +289,15 @@ export function initUserCommands(extensionContext) {
    *  #########################################################################*/
 
   registerCommand(extensionContext, 'dbux.searchContexts', async () => {
-    return activeSearch(SearchMode.ByContext);
+    return activateSearch(SearchMode.ByContext);
   });
 
   registerCommand(extensionContext, 'dbux.searchTraces', async () => {
-    return activeSearch(SearchMode.ByTrace);
+    return activateSearch(SearchMode.ByTrace);
   });
-  
+
   registerCommand(extensionContext, 'dbux.searchValues', async () => {
-    return activeSearch(SearchMode.ByValue);
+    return activateSearch(SearchMode.ByValue);
   });
 }
 
@@ -303,7 +305,7 @@ export function initUserCommands(extensionContext) {
  * helpers
  *  #########################################################################*/
 
-async function activeSearch(mode) {
+async function activateSearch(mode) {
   searchController.setSearchMode(mode);
   await showGraphView();
 }

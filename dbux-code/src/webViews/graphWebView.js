@@ -9,6 +9,7 @@ import searchController from '../search/searchController';
 import { getGlobalAnalysisViewController } from '../globalAnalysisView/GlobalAnalysisViewController';
 import { get as getMemento, set as setMemento } from '../memento';
 import RichWebView from './RichWebView';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
 
 const defaultColumn = ViewColumn.Two;
 
@@ -57,10 +58,12 @@ let graphWebView;
 
 export async function showGraphView() {
   await initGraphView();
+  emitCallGraphAction(UserActionType.CallGraphVisibilityChanged, { isShowing: true });
   return graphWebView.show();
 }
 
 export function hideGraphView() {
+  emitCallGraphAction(UserActionType.CallGraphVisibilityChanged, { isShowing: false });
   graphWebView?.hide();
 }
 

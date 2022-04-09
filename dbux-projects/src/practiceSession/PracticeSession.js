@@ -55,6 +55,10 @@ export default class PracticeSession extends PathwaysSession {
     return this.progress.stopwatchEnabled;
   }
 
+  get confirmStopMessage() {
+    return `You have not found the bug, are you sure?`;
+  }
+
   /**
    * Activate bug, run the test and process the result
    * @param {Object} inputCfg 

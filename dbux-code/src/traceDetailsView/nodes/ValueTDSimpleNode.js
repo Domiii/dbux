@@ -1,7 +1,8 @@
+import isString from 'lodash/isString';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { renderValueSimple } from '@dbux/common/src/util/stringUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import isString from 'lodash/isString';
+import { emitValueRenderAction } from '../../userEvents';
 import { valueRender } from '../valueRender';
 import ValueNode, { ValueLabel } from './ValueNode';
 
@@ -61,7 +62,7 @@ export default class ValueTDSimpleNode extends ValueNode {
     if (value === undefined) {
       return key;
     }
-    
+
     return `${key}: ${valueLabel}`;
   }
 
@@ -78,6 +79,7 @@ export default class ValueTDSimpleNode extends ValueNode {
   }
 
   valueRender() {
+    emitValueRenderAction(this.value, this.nodeId);
     valueRender(this.value);
   }
 }

@@ -7,7 +7,7 @@ import { registerCommand } from './commandUtil';
 import { showInformationMessage, showWarningMessage } from '../codeUtil/codeModals';
 import { getCurrentResearch } from '../research/Research';
 import { translate } from '../lang';
-import { emitAnnotateTraceAction } from '../userEvents';
+import { emitAnnotateTraceAction, emitStopRunnerAction } from '../userEvents';
 import { addProjectFolderToWorkspace } from '../codeUtil/workspaceUtil';
 
 /** @typedef {import('../projectViews/projectViewsController').ProjectViewController} ProjectViewController */
@@ -42,6 +42,7 @@ export function initProjectCommands(extensionContext, projectViewController) {
   });
 
   registerCommand(extensionContext, 'dbux.cancelBugRunner', (/* node */) => {
+    emitStopRunnerAction();
     return projectViewController.manager.runner.cancel();
   });
 
@@ -67,7 +68,7 @@ export function initProjectCommands(extensionContext, projectViewController) {
   });
 
   registerCommand(extensionContext, 'dbux.stopPathways', async () => {
-    return await projectViewController.manager.stopPathways();
+    return await projectViewController.manager.exitPracticeSession();
   });
 
   registerCommand(extensionContext, 'dbux.loadResearchSession', async () => {

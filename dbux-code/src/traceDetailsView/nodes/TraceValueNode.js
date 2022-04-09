@@ -12,7 +12,6 @@ export default class TraceValueNode extends TraceNode {
   get value() {
     const { trace: { applicationId, traceId } } = this;
     const dp = allApplications.getById(applicationId).dataProvider;
-    dp.util.getDataNodeValueMessage()
     return dp.util.getTraceValuePrimitive(traceId);
   }
 

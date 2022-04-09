@@ -10,7 +10,7 @@ import Collection from '@dbux/data/src/Collection';
 import Indexes from '@dbux/data/src/indexes/Indexes';
 import { getGroupTypeByActionType } from '@dbux/data/src/pathways/ActionGroupType';
 import StepType, { getStepTypeByActionType } from '@dbux/data/src/pathways/StepType';
-import { emitNewTestRun } from '../userEvents';
+import { emitNewTestRun, emitNewApplicationsAction } from '../userEvents';
 import getFirstLine from '../util/readFirstLine';
 import PathwaysDataUtil from './pathwaysDataUtil';
 import TestRunsByExerciseIdIndex from './indexes/TestRunsByExerciseIdIndex';
@@ -94,8 +94,10 @@ class ApplicationCollection extends PathwaysCollection {
     this.dp.updateIndexFile();
   }
 
-  postAddProcessed(app) {
-    this.addedApplicationUUIDs.add(app.uuid);
+  postAddProcessed(apps) {
+    for (const app of apps) {
+      this.addedApplicationUUIDs.add(app.uuid);
+    }
   }
 
   /**
@@ -296,7 +298,10 @@ export default class PathwaysDataProvider extends DataProviderBase {
    * @param {Application[]} apps 
    */
   addApplications(apps) {
-    this.addData({ applications: apps });
+    if (apps?.length) {
+      emitNewApplicationsAction(apps);
+      this.addData({ applications: apps });
+    }
   }
 
   // ###########################################################################

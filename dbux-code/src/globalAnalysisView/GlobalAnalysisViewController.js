@@ -66,7 +66,7 @@ export default class GlobalAnalysisViewController {
 
   async showError() {
     this.errorTraceManager.showError();
-    await this.revealSelectedError();
+    return await this.revealSelectedError();
   }
 
   async revealSelectedError() {
@@ -80,7 +80,9 @@ export default class GlobalAnalysisViewController {
     const selectedErrorNode = errorNode.getSelectedChild();
     if (selectedErrorNode) {
       await this.treeView.reveal(selectedErrorNode);
+      return selectedErrorNode;
     }
+    return null;
     // else {
     //   logError(`Cannot find selected children after showError`);
     // }

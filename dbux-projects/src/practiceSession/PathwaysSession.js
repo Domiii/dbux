@@ -65,6 +65,10 @@ export default class PathwaysSession {
     }
   }
 
+  get confirmStopMessage() {
+    return `This will stop recording all pathways events, are you sure?`;
+  }
+
   /**
    * Ask and stop the session but not quit, so user could see their pathways logs.
    */
@@ -74,7 +78,7 @@ export default class PathwaysSession {
     }
 
     // TOTRANSLATE
-    if (!await this.manager.externals.confirm(`You have not found the bug, are you sure?`)) {
+    if (!await this.manager.externals.confirm(this.confirmStopMessage)) {
       return false;
     }
 

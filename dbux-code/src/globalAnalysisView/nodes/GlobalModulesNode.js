@@ -6,6 +6,7 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import { pathRelative } from '@dbux/common-node/src/util/pathUtil';
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 import TraceNode from '../../codeUtil/treeView/TraceNode';
+import { emitGlobalPackageSortModeChangedAction } from '../../userEvents';
 import PackageNodeSortMode from './PackageNodeSortMode';
 
 
@@ -110,6 +111,7 @@ let sortMode = PackageNodeSortMode.ByCreatedAt;
 
 export function nextMode() {
   sortMode = PackageNodeSortMode.nextValue(sortMode);
+  emitGlobalPackageSortModeChangedAction(sortMode);
 }
 
 const SortFunctionsByMode = {
