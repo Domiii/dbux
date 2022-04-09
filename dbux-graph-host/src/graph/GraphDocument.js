@@ -1,5 +1,6 @@
 import NanoEvents from 'nanoevents';
 import allApplications from '@dbux/data/src/applications/allApplications';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import StackMode from '@dbux/graph-common/src/shared/StackMode';
 import GraphType, { nextGraphType } from '@dbux/graph-common/src/shared/GraphType';
@@ -52,57 +53,6 @@ class GraphDocument extends HostComponentEndpoint {
     this.forceUpdateTree();
   }
 
-  /** ###########################################################################
-   * util
-   *  #########################################################################*/
-
-  getIconUri(fileName, modeName) {
-    if (!fileName) {
-      return null;
-    }
-    if (!modeName) {
-      const themeMode = this.componentManager.externals.getThemeMode();
-      modeName = ThemeMode.getName(themeMode).toLowerCase();
-    }
-    return this.componentManager.externals.getClientResourceUri(`${modeName}/${fileName}`);
-  }
-
-  // ###########################################################################
-  // modes/events management
-  // ###########################################################################
-
-  /** ########################################
-   * graph mode
-   *  ######################################*/
-
-  nextGraphMode() {
-    this.setGraphMode(nextGraphType(this.state.graphMode));
-  }
-
-  setGraphMode(mode) {
-    if (this.state.graphMode !== mode) {
-      const upd = {
-        graphMode: mode
-      };
-      if (mode === GraphType.AsyncGraph) {
-        // TODO: use memento to remember mode per type!
-        // disable stats for ACG by default (for now), since there is just not enough space
-        upd.statsEnabled = false;
-      }
-      this.setState(upd);
-      this.refreshGraphs();
-      this._notifyGraphModeChanged(mode);
-    }
-  }
-
-  _notifyGraphModeChanged(mode) {
-    this._emitter.emit('graphModeChanged', mode);
-  }
-
-  onGraphModeChanged(cb) {
-    return this._emitter.on('graphModeChanged', cb);
-  }
-
   /**
    * @type {GraphContainer[]}
    */
@@ -129,25 +79,66 @@ class GraphDocument extends HostComponentEndpoint {
     });
   }
 
-  /** ########################################
-   * follow mode
-   *  ######################################*/
+  /** ###########################################################################
+   * util
+   *  #########################################################################*/
 
-  toggleFollowMode() {
-    const mode = !this.state.followMode;
-    this.setFollowMode(mode);
-    return mode;
+  getIconUri(fileName, modeName) {
+    if (!fileName) {
+      return null;
+    }
+    if (!modeName) {
+      const themeMode = this.componentManager.externals.getThemeMode();
+      modeName = ThemeMode.getName(themeMode).toLowerCase();
+    }
+    return this.componentManager.externals.getClientResourceUri(`${modeName}/${fileName}`);
   }
 
-  setFollowMode(mode) {
-    if (this.state.followMode !== mode) {
-      this.setState({ followMode: mode });
-      this._notifyFollowModeChanged(mode);
+  // ###########################################################################
+  // modes/events management
+  // ###########################################################################
+
+  /** ########################################
+   * graph mode
+   *  ######################################*/
+
+  setGraphMode(mode) {
+    if (this.state.graphMode !== mode) {
+      const upd = {
+        graphMode: mode
+      };
+      if (mode === GraphType.AsyncGraph) {
+        // TODO: use memento to remember mode per type!
+        // disable stats for ACG by default (for now), since there is just not enough space
+        upd.statsEnabled = false;
+      }
+      this.setGraphDocumentMode(upd);
+      this.refreshGraphs();
     }
   }
 
-  _notifyFollowModeChanged(mode) {
-    this._emitter.emit('followModeChanged', mode);
+  /** ########################################
+   * other modes
+   *  ######################################*/
+
+  setGraphDocumentMode(update) {
+    const actualUpdate = {};
+    for (const [key, val] of Object.entries(update)) {
+      if (this.state[key] !== val) {
+        actualUpdate[key] = val;
+      }
+    }
+    if (Object.keys(actualUpdate).length) {
+      this.setState(actualUpdate);
+      for (const [key, val] of Object.entries(update)) {
+        this._notifyGraphDocumentModeChanged(`${key}Changed`, val);
+      }
+      this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphGraphDocumentModeChanged, actualUpdate);
+    }
+  }
+  
+  _notifyGraphDocumentModeChanged(evtName, value) {
+    this._emitter.emit(evtName, value);
   }
 
   onFollowModeChanged(cb) {

@@ -274,18 +274,20 @@ class Toolbar extends ClientComponentEndpoint {
     },
 
     followModeBtn: {
-      click(evt) {
+      async click(evt) {
         evt.preventDefault();
-        this.remote.toggleFollowMode();
+        await this.remote.setGraphDocumentMode({
+          followMode: !this.parent.state.followMode
+        });
       },
 
       focus(evt) { evt.target.blur(); }
     },
 
     locModeBtn: {
-      click(evt) {
+      async click(evt) {
         evt.preventDefault();
-        this.parent.setState({
+        await this.remote.setGraphDocumentMode({
           locMode: !this.parent.state.locMode
         });
       },
@@ -293,29 +295,27 @@ class Toolbar extends ClientComponentEndpoint {
     },
 
     callModeBtn: {
-      click(evt) {
+      async click(evt) {
         evt.preventDefault();
-        evt.target.blur();
-
-        this.parent.setState({
+        await this.remote.setGraphDocumentMode({
           callMode: !this.parent.state.callMode
         });
       },
       // focus(evt) { evt.target.blur(); }
     },
     valueModeBtn: {
-      click(evt) {
+      async click(evt) {
         evt.preventDefault();
-        this.parent.setState({
+        await this.remote.setGraphDocumentMode({
           valueMode: !this.parent.state.valueMode
         });
       },
       focus(evt) { evt.target.blur(); }
     },
     thinModeBtn: {
-      click(evt) {
+      async click(evt) {
         evt.preventDefault();
-        this.parent.setState({
+        await this.remote.setGraphDocumentMode({
           thinMode: !this.parent.state.thinMode
         });
       },
@@ -366,23 +366,23 @@ class Toolbar extends ClientComponentEndpoint {
       focus(evt) { evt.target.blur(); }
     },
     graphModeBtn: {
-      click(evt) {
+      async click(evt) {
         evt.preventDefault();
-        this.remote.nextGraphMode();
+        await this.remote.nextGraphMode();
       },
       focus(evt) { evt.target.blur(); }
     },
     asyncStackBtn: {
-      click(evt) {
+      async click(evt) {
         evt.preventDefault();
-        this.remote.nextStackMode();
+        await this.remote.nextStackMode();
       },
       focus(evt) { evt.target.blur(); }
     },
     asyncDetailModeBtn: {
-      click(evt) {
+      async click(evt) {
         evt.preventDefault();
-        this.parent.setState({
+        await this.remote.setGraphDocumentMode({
           asyncDetailMode: !this.parent.state.asyncDetailMode
         });
       },
@@ -398,7 +398,9 @@ class Toolbar extends ClientComponentEndpoint {
     statsBtn: {
       async click(evt) {
         evt.preventDefault();
-        await this.remote.toggleStats();
+        await this.remote.setGraphDocumentMode({
+          statsEnabled: !this.parent.state.statsEnabled
+        });
       }
     },
 

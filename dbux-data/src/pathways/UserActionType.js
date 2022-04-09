@@ -75,6 +75,7 @@ const UserActionTypeObj = {
   CallGraphTrace: 102,
   CallGraphCallTrace: 103,
   CallGraphVisibilityChanged: 104,
+  CallGraphGraphDocumentModeChanged: 105,
   
   AsyncCallGraphTrace: 110,
   AsyncCallGraphSchedulerTrace: 111,

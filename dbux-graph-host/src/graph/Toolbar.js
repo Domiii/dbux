@@ -1,4 +1,5 @@
 import allApplications from '@dbux/data/src/applications/allApplications';
+import { nextGraphType } from '@dbux/graph-common/src/shared/GraphType';
 import StackMode from '@dbux/graph-common/src/shared/StackMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
@@ -44,8 +45,8 @@ class Toolbar extends HostComponentEndpoint {
       return this.parent;
     },
 
-    toggleFollowMode() {
-      this.doc.toggleFollowMode();
+    setGraphDocumentMode(update) {
+      this.doc.setGraphDocumentMode(update);
     },
 
     async setContextFilter(predicateKey) {
@@ -61,11 +62,11 @@ class Toolbar extends HostComponentEndpoint {
     },
 
     nextGraphMode() {
-      this.doc.nextGraphMode();
+      this.doc.setGraphMode(nextGraphType(this.parent.state.graphMode));
     },
 
     nextStackMode() {
-      this.doc.setState({
+      this.doc.setGraphDocumentMode({
         stackMode: StackMode.nextValue(this.parent.state.stackMode)
       });
       this.doc.refreshGraphs();
@@ -77,13 +78,6 @@ class Toolbar extends HostComponentEndpoint {
 
     clearThreadSelection() {
       allApplications.selection.data.threadSelection.clear();
-    },
-
-    toggleStats() {
-      const { statsEnabled } = this.doc.state;
-      this.doc.setState({
-        statsEnabled: !statsEnabled
-      });
     }
   }
 }
