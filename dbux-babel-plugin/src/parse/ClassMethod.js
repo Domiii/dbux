@@ -30,20 +30,22 @@ export default class ClassMethod extends BaseNode {
 
     const { computed } = path.node;
 
+    const contextNode = this.getExistingParent().peekContextNode();
+
     let propertyVar;
     if (computed) {
       // only assign `propertyVar` if computed
       // NOTE: this can work because private properties do not support dynamic access.
       // see: https://github.com/tc39/proposal-private-fields/issues/94
       keyNode?.addDefaultTrace();
-      propertyVar = Traces.generateDeclaredUidIdentifier('m');
+      propertyVar = contextNode.Traces.generateDeclaredUidIdentifier('m');
     }
 
     const Function = this.getPlugin('Function');
-    const traceCfg = this.Traces.addTrace({
+    const traceCfg = Traces.addTrace({
       path,
       node: this,
-      scope: this.getExistingParent().peekContextNode().path.scope, // prevent adding `tid` variable to own body
+      scope: contextNode.path.scope, // prevent adding `tid` variable to own body
       staticTraceData: Function.createStaticTraceData(keyPath),
       data: {
         propertyVar

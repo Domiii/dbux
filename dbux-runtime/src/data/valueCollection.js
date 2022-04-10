@@ -212,7 +212,7 @@ class ValueCollection extends Collection {
     }
     catch (err) {
       this._onAccessError(value, this._readErrorsByType);
-      const msg = `ERROR: Dbux failed to process value "${Object.getPrototypeOf(value)}":`;
+      const msg = `Dbux failed to process value "${Object.getPrototypeOf(value)}":`;
       VerboseErrors && this.logger.debug(msg, err.message);
       // return `(${msg})`;
       return ValueTypeCategory.Primitive;
@@ -438,7 +438,7 @@ class ValueCollection extends Collection {
     }
     catch (err) {
       this._onAccessError(obj, this._readErrorsByType);
-      const msg = `ERROR: Dbux failed to read object property "${key}" of "${Object.getPrototypeOf(obj)}":`;
+      const msg = `Dbux failed to read object property "${key}" of "${Object.getPrototypeOf(obj)}":`;
       VerboseErrors && this.logger.debug(msg, err.message);
       return `(${msg})`;
     }

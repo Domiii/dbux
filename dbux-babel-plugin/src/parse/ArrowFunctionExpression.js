@@ -22,11 +22,12 @@ export default class ArrowFunctionExpression extends BaseNode {
       // body is lambda expression -> wrap body with "return trace"
       this.data.returnTraceCfg = this.Traces.addReturnTrace(func, null, bodyPath, bodyPath);
     }
+    const { scope } = path.parentPath; // prevent adding `tid` variable to own body
 
     const traceData = {
       node: this,
       path,
-      scope: path.parentPath.scope, // prevent adding `tid` variable to own body
+      scope,
       staticTraceData: func.createStaticTraceData()
     };
 

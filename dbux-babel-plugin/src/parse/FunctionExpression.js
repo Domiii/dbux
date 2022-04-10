@@ -24,13 +24,14 @@ export default class FunctionExpression extends BaseNode {
       // NOTE: while this is technically not a `FunctionDeclaration`, we still treat it as such, since it still declares its own variable name accessible from within the function itself.
       idNode ? TraceType.FunctionDeclaration : TraceType.FunctionDefinition
     );
+    const { scope } = path.parentPath; // prevent adding `tid` variable to own body
 
     if (idNode) {
       // NOTE: if `FunctionExpression` has an `id`, it is not declared on the outside scope, but still available inside `body`.
       // e.g.: This is legal syntax: `(function f(n) { n && f(--n); })(3)`
       const functionTraceCfg = idNode.addOwnDeclarationTrace(null /* NOTE: unused if not hoisted */, {
         node: this,
-        scope: path.parentPath.scope, // prevent adding `tid` variable to own body
+        scope,
         staticTraceData,
         meta: {
           hoisted: false,
@@ -44,7 +45,7 @@ export default class FunctionExpression extends BaseNode {
       const traceData = {
         node: this,
         path,
-        scope: path.parentPath.scope, // prevent adding `tid` variable to own body
+        scope,
         staticTraceData
       };
 
