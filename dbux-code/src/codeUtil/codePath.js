@@ -1,6 +1,6 @@
 import path from 'path';
 import { isWindows } from '@dbux/common-node/src/util/osUtil';
-import { pathJoin, pathNormalizedForce, pathResolve } from '@dbux/common-node/src/util/pathUtil';
+import { pathJoin, pathNormalizedForce, pathResolve, whichNormalized } from '@dbux/common-node/src/util/pathUtil';
 
 import {
   ExtensionContext,
@@ -166,6 +166,22 @@ export const execPaths = {
   },
   get shell() {
     return getShellPath();
+  },
+  /**
+   * Put shell executable paths in quotation marks, plus -
+   * 
+   * hackfix: work-around volta bug for yarn and npm.
+   * @see https://github.com/volta-cli/volta/issues/1199
+   */
+  inShell: {
+    get yarn() {
+      const { yarn } = execPaths;
+      return `"${whichNormalized(yarn)}"`;
+    },
+    get npm() {
+      const { npm } = execPaths;
+      return `"${whichNormalized(npm)}"`;
+    }
   }
 };
 

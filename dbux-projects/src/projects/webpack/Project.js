@@ -12,7 +12,7 @@ import { buildNodeCommand } from '../../util/nodeUtil';
 
 export default class WebpackProject extends Project {
   gitRemote = 'webpack/webpack.git';
-  gitCommit = 'cde1b73';//'v5.31.2';
+  gitTargetRef = 'v5.71.0';
 
   packageManager = 'yarn';
 
@@ -108,17 +108,17 @@ export default class WebpackProject extends Project {
 
     const linkFolder = pathResolve(projectPath, '../_links_');
     sh.mkdir('-p', linkFolder);
-    const { yarn } = this.manager.paths;
+    const { yarn } = this.manager.paths.inShell;
     await this.execInTerminal(
-      `"${yarn}" install`,
+      `${yarn} install`,
       { cwd: cliPackageFolder }
     );
     await this.execCaptureOut(
-      `"${yarn}" link --link-folder ${linkFolder}`,
+      `${yarn} link --link-folder ${linkFolder}`,
       { cwd: cliPackageFolder }
     );
     await this.execCaptureOut(
-      `"${yarn}" link --link-folder ${linkFolder} webpack-cli`,
+      `${yarn} link --link-folder ${linkFolder} webpack-cli`,
       { cwd: projectPath }
     );
 
@@ -127,8 +127,10 @@ export default class WebpackProject extends Project {
   }
 
   async afterInstall() {
+    const { yarn } = this.manager.paths.inShell;
+
     // https://github.com/webpack/webpack/blob/master/_SETUP.md
-    await this.execInTerminal('yarn link && yarn link webpack');
+    await this.execInTerminal(`${yarn} link && ${yarn} link webpack`);
 
     await this.installPackages({
       'shebang-loader': '*'
