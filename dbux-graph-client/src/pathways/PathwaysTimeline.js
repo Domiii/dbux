@@ -10,6 +10,14 @@ class PathwaysTimeline extends ClientComponentEndpoint {
   }
 
   update() {
+    if (!this.context.doc.isAnalyzing()) {
+      this.el.classList.add('hidden');
+      return;
+    }
+    else {
+      this.el.classList.remove('hidden');
+    }
+
     const { steps, staleIntervals } = this.state;
 
     if (steps?.length) {

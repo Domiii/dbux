@@ -4,16 +4,18 @@ import { showOutputChannel } from './projectViews/projectViewsController';
 import { showInformationMessage, showErrorMessage } from './codeUtil/codeModals';
 import { showHelp } from './help';
 import { translate } from './lang';
+import { emitShowHideErrorLogNotificationAction } from './userEvents';
 
-let errorLogFlag = true;
+let isShowingAllError = true;
 
 export function toggleErrorLog() {
-  setErrorLogFlag(!errorLogFlag);
+  setErrorLogFlag(!isShowingAllError);
 }
 
 export function setErrorLogFlag(val) {
-  errorLogFlag = !!val;
-  showInformationMessage(`${errorLogFlag ? 'showing' : 'hiding'} all error log.`);
+  isShowingAllError = !!val;
+  emitShowHideErrorLogNotificationAction(isShowingAllError);
+  showInformationMessage(`${isShowingAllError ? 'showing' : 'hiding'} all error log.`);
 }
 
 export function initLogging() {
@@ -21,7 +23,7 @@ export function initLogging() {
 }
 
 function onError(...args) {
-  if (errorLogFlag) {
+  if (isShowingAllError) {
     showErrorMessage(args.join(' '), {
       [translate('onError.show')]: () => {
         showOutputChannel();

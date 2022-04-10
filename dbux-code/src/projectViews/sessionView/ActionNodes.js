@@ -208,7 +208,7 @@ class TagNode extends SessionNode {
       const cursorLoc = getCursorLocation();
       const cursorLine = codeLineToBabelLine(cursorLoc?.pos.line);
       const cursorFile = cursorLoc?.fpath;
-      this.manager.practiceSession.tagExerciseTrace(trace, cursorFile, cursorLine);
+      await this.manager.practiceSession.tagExerciseTrace(trace, cursorFile, cursorLine);
     }
     else {
       await showWarningMessage('You have not selected any trace yet.');
@@ -222,8 +222,8 @@ class TagNode extends SessionNode {
  *  #########################################################################*/
 
 class StopPracticeNode extends SessionNode {
-  static makeLabel(exercise) {
-    if (exercise.manager.practiceSession.isFinished()) {
+  static makeLabel(exercise, parent, prop, sessionNodeProvider) {
+    if (sessionNodeProvider.manager.practiceSession.isFinished()) {
       return 'Exit Session';
     }
     else {
@@ -244,19 +244,26 @@ class StopPracticeNode extends SessionNode {
       await this.manager.practiceSession.confirmStop();
     }
     else {
-      await this.manager.practiceSession.confirmExit();
+      await this.manager.exitPracticeSession();
     }
   }
 }
 
 export function getActionNodeClasses(exercise) {
-  const { project } = exercise;
-  return [
-    DetailNode,
-    isProjectFolderInWorkspace(project) ? ShowEntryNode : OpenWorkspaceNode,
-    RunNode,
-    RunWithoutDbuxNode,
-    TagNode,
-    StopPracticeNode
-  ];
+  if (exercise) {
+    const { project } = exercise;
+    return [
+      DetailNode,
+      isProjectFolderInWorkspace(project) ? ShowEntryNode : OpenWorkspaceNode,
+      RunNode,
+      RunWithoutDbuxNode,
+      TagNode,
+      StopPracticeNode
+    ];
+  }
+  else {
+    return [
+      StopPracticeNode,
+    ];
+  }
 }

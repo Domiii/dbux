@@ -1,4 +1,5 @@
 import PathwaysMode from '@dbux/data/src/pathways/PathwaysMode';
+import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import PathwaysView from './PathwaysView';
 import Toolbar from './Toolbar';
@@ -16,10 +17,7 @@ class PathwaysDocument extends HostComponentEndpoint {
    * @type {PathwaysDataProvider}
    */
   get pdp() {
-    const {
-      getPathwaysDataProvider
-    } = this.componentManager.externals;
-    return getPathwaysDataProvider();
+    return this.componentManager.externals.getPathwaysDataProvider();
   }
 
   update() {
@@ -31,7 +29,7 @@ class PathwaysDocument extends HostComponentEndpoint {
   // ###########################################################################
 
   init() {
-    this.state.pathwaysMode = PathwaysMode.Analyze;
+    this.state.pathwaysMode = PathwaysMode.Normal;
 
     this.createOwnComponents();
 
@@ -46,7 +44,7 @@ class PathwaysDocument extends HostComponentEndpoint {
 
   _addHooks = () => {
     const { pdp } = this;
-    const { sessionId } = pdp;
+    const sessionId = pdp?.sessionId;
     if (sessionId !== this.sessionId) {
       // stop listening on previous events
       this.userActionsListener?.();
@@ -55,7 +53,7 @@ class PathwaysDocument extends HostComponentEndpoint {
       this.addDisposable(
         this.userActionsListener =
         // pathwaysDataProvider.onAnyData(this.view.refresh)
-        pdp.onAnyData(this.view.refresh)
+        pdp?.onAnyData(this.view.refresh)
       );
 
       this.view.reset();
@@ -67,6 +65,21 @@ class PathwaysDocument extends HostComponentEndpoint {
   createOwnComponents() {
     this.toolbar = this.children.createComponent(Toolbar);
     this.view = this.children.createComponent(PathwaysView);
+  }
+
+  /** ###########################################################################
+   * util
+   *  #########################################################################*/
+
+  getIconUri(fileName, modeName = null) {
+    if (!fileName) {
+      return null;
+    }
+    if (!modeName) {
+      const themeMode = this.componentManager.externals.getThemeMode();
+      modeName = ThemeMode.getName(themeMode).toLowerCase();
+    }
+    return this.componentManager.externals.getClientResourceUri(`${modeName}/${fileName}`);
   }
 
   // ###########################################################################

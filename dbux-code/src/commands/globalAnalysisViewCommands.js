@@ -1,6 +1,7 @@
 import { nextMode } from '../globalAnalysisView/nodes/GlobalModulesNode';
 import { showInformationMessage } from '../codeUtil/codeModals';
 import searchController from '../search/searchController';
+import { emitShowErrorAction } from '../userEvents';
 import { registerCommand } from './commandUtil';
 
 /** @typedef {import('../globalAnalysisView/GlobalAnalysisViewController').default} GlobalAnalysisViewController */
@@ -11,7 +12,12 @@ import { registerCommand } from './commandUtil';
 export function initGlobalAnalysisViewCommands(context, globalAnalysisViewController) {
   registerCommand(context,
     'dbuxGlobalAnalysisView.showError',
-    async () => await globalAnalysisViewController.showError()
+    async () => {
+      const selectedNode = await globalAnalysisViewController.showError();
+      if (selectedNode) {
+        emitShowErrorAction(selectedNode.trace);
+      }
+    }
   );
 
   registerCommand(context,

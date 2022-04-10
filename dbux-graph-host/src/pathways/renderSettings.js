@@ -3,6 +3,7 @@ import ActionGroupType from '@dbux/data/src/pathways/ActionGroupType';
 import StepType from '@dbux/data/src/pathways/StepType';
 // import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { makeStaticContextColor } from '@dbux/graph-common/src/shared/contextUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('renderSettings');
@@ -10,7 +11,7 @@ const { log, debug, warn, error: logError } = newLogger('renderSettings');
 const labelsByActionGroupType = {
   [ActionGroupType.SelectTrace]: 'SelectTrace',
   [ActionGroupType.TagTrace]: 'TagTrace',
-  [ActionGroupType.GoToError]: 'GoToError',
+  [ActionGroupType.ShowError]: 'ShowError',
   [ActionGroupType.TDValue]: 'TDValue',
   [ActionGroupType.TDTrackObject]: 'TDTrackObject',
   [ActionGroupType.TDExecutions]: 'TDExecutions',
@@ -38,7 +39,7 @@ const defaultActionGroupIcon = 'gear.svg';
 
 const iconsByActionGroupType = {
   [ActionGroupType.TagTrace]: 'flag.svg',
-  [ActionGroupType.GoToError]: 'fire.svg',
+  [ActionGroupType.ShowError]: 'fire.svg',
   [ActionGroupType.AnnotateTraceQ]: 'q.svg',
   [ActionGroupType.AnnotateTraceI]: 'i.svg',
   [ActionGroupType.EditorSelectionChanged]: 'cursor_click.svg',
@@ -99,4 +100,9 @@ export function getIconByActionGroup(actionGroupType) {
 
 export function getIconByStep(stepType) {
   return iconsByStepType[stepType];
+}
+
+export function makeStepBackground(step, themeMode) {
+  const { staticContextId } = step;
+  return staticContextId ? makeStaticContextColor(themeMode, staticContextId) : '';
 }

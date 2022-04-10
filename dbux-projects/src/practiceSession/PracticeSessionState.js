@@ -2,7 +2,7 @@ import Enum from '@dbux/common/src/util/Enum';
 
 // eslint-disable-next-line import/no-mutable-exports
 let PracticeSessionState = {
-  Activating: 1,
+  // Activating: 1,
   Solving: 2,
   Stopped: 3,
   Found: 4,
@@ -17,6 +17,10 @@ const FoundedTypes = new Array(PracticeSessionState.getValueMaxIndex()).map(() =
 FoundedTypes[PracticeSessionState.Found] = true;
 FoundedTypes[PracticeSessionState.Solved] = true;
 
-export function isStateFoundedType(traceType) {
-  return FoundedTypes[traceType];
+export function isStateFoundedType(sessionType) {
+  return FoundedTypes[sessionType];
+}
+
+export function isStateFinishedType(sessionType) {
+  return sessionType >= 3;
 }

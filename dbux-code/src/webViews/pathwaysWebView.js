@@ -4,8 +4,10 @@ import {
 import PathwaysHost from '@dbux/graph-host/src/PathwaysHost';
 import { goToTrace, goToCodeLoc } from '../codeUtil/codeNav';
 import { getProjectManager } from '../projectViews/projectControl';
+import { emitPathwaysAction } from '../userEvents';
 import RichWebView from './RichWebView';
 import { decorateVisitedTraces, stopDecorating } from './pathwaysDecorations';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
 
 const defaultColumn = ViewColumn.Two;
 
@@ -16,7 +18,7 @@ export default class PathwaysWebView extends RichWebView {
   }
 
   get pdp() {
-    return getProjectManager().pdp;
+    return getProjectManager().practiceSession?.pdp;
   }
 
   getIcon() {
@@ -55,11 +57,13 @@ export default class PathwaysWebView extends RichWebView {
 let pathwaysWebView;
 
 export async function showPathwaysView() {
+  emitPathwaysAction(UserActionType.PathwaysVisibilityChanged, { isShowing: true });
   await initPathwaysView();
   return pathwaysWebView.show();
 }
 
 export function hidePathwaysView() {
+  emitPathwaysAction(UserActionType.PathwaysVisibilityChanged, { isShowing: false });
   pathwaysWebView?.hide();
 }
 

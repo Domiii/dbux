@@ -1,6 +1,7 @@
+import { TreeItemCollapsibleState } from 'vscode';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
-import { TreeItemCollapsibleState } from 'vscode';
+import { emitTDExecutionGroupModeChangedAction } from '../../userEvents';
 import BaseTreeViewNode from './BaseTreeViewNode';
 import TraceNode from './TraceNode';
 
@@ -117,6 +118,7 @@ export default class TraceContainerNode extends BaseTreeViewNode {
 
   static nextGroupMode() {
     this.groupModeIndex = (this.groupModeIndex + 1) % this.GroupClasses.length;
+    emitTDExecutionGroupModeChangedAction(this.getCurrentGroupClass().labelSuffix);
   }
 
   static makeLabel(_entry, _parent, props) {

@@ -1,10 +1,11 @@
 import {
   ViewColumn
 } from 'vscode';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import GraphHost from '@dbux/graph-host/src/GraphHost';
 import { getThemeResourcePathUri } from '../codeUtil/codePath';
 import { showQuickPick } from '../codeUtil/codeModals';
-import { emitCallGraphAction } from '../userEvents';
+import { emitCallGraphAction, emitCallGraphTraceAction } from '../userEvents';
 import searchController from '../search/searchController';
 import { getGlobalAnalysisViewController } from '../globalAnalysisView/GlobalAnalysisViewController';
 import { get as getMemento, set as setMemento } from '../memento';
@@ -41,6 +42,7 @@ export default class GraphWebView extends RichWebView {
 
   externals = {
     emitCallGraphAction,
+    emitCallGraphTraceAction,
     searchController,
     globalAnalysisViewController: getGlobalAnalysisViewController(),
     showQuickPick,
@@ -57,10 +59,12 @@ let graphWebView;
 
 export async function showGraphView() {
   await initGraphView();
+  emitCallGraphAction(UserActionType.CallGraphVisibilityChanged, { isShowing: true });
   return graphWebView.show();
 }
 
 export function hideGraphView() {
+  emitCallGraphAction(UserActionType.CallGraphVisibilityChanged, { isShowing: false });
   graphWebView?.hide();
 }
 

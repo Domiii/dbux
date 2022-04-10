@@ -1,6 +1,7 @@
 import { ValuePruneState } from '@dbux/common/src/types/constants/ValueTypeCategory';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
+import { emitValueRenderAction } from '../../userEvents';
 // import { makeTreeItemNoChildren } from '../../helpers/makeTreeItem';
 import EmptyTreeViewNode from '../../codeUtil/treeView/EmptyNode';
 import { valueRender } from '../valueRender';
@@ -110,6 +111,7 @@ export default class ValueTDRefNode extends ValueNode {
     const { dp, nodeId } = this;
     const value = dp.util.constructValueFull(nodeId);
 
+    emitValueRenderAction(value, nodeId);
     valueRender(value);
   }
 }

@@ -10,6 +10,7 @@ import { initRuntimeServer } from '../net/SocketServer';
 import { installDbuxDependencies } from '../codeUtil/installUtil';
 import { initProjectView } from '../projectViews/projectViewsController';
 import { getNodePath } from '../codeUtil/codePath';
+import { emitRunFileAction } from '../userEvents';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('DBUX run file');
@@ -70,9 +71,9 @@ function getNodeRunArgs(debugMode) {
 
 export async function runFile(extensionContext, debugMode = false) {
   const projectViewsController = initProjectView();
-  if (!await projectViewsController.confirmCancelPracticeSession()) {
-    return;
-  }
+  // if (!await projectViewsController.manager.exitPracticeSession()) {
+  //   return;
+  // }
 
   const projectManager = getProjectManager();
 
@@ -120,6 +121,7 @@ export async function runFile(extensionContext, debugMode = false) {
   const command = `"${nodePath}" ${nodeArgs} "${dbuxBin}" run ${dbuxArgs} "${file}" -- ${programArgs}`;
   allApplications.selection.clear();
   await runInTerminalInteractive(cwd, command);
+  emitRunFileAction(file, debugMode);
   // runInTerminal(cwd, `node /Users/domi/code/dbux/scripts/time-test.js spawn-child && sleep 30`);
   // runInTerminalInteractive('dbux-run', cwd, `node /Users/domi/code/dbux/scripts/time-test.js spawn-child`);
 }

@@ -26,7 +26,7 @@ export default class ChapterNode extends BaseTreeViewNode {
 
   get solvedExercises() {
     return this.chapter.exercises.getAll().filter(e => {
-      const progress = this.manager.exerciseDataProvider.getExerciseProgressByExercise(e);
+      const progress = this.manager.exerciseDataProvider.getExerciseProgress(e.id);
       return isPassedTypes(progress?.status);
     });
   }

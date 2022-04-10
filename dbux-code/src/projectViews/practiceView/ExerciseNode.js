@@ -3,6 +3,7 @@ import ExerciseStatus from '@dbux/projects/src/dataLib/ExerciseStatus';
 import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 import { showInformationMessage } from '../../codeUtil/codeModals';
+import { emitOpenWebsiteAction } from '../../userEvents';
 import cleanUp from './cleanUp';
 
 /** @typedef {import('@dbux/projects/src/projectLib/Exercise').default} Exercise */
@@ -57,7 +58,7 @@ export default class ExerciseNode extends BaseTreeViewNode {
       case RunStatus.RunningInBackground:
         return 'play.svg';
     }
-    const progress = this.manager.bdp.getExerciseProgressByExercise(this.exercise);
+    const progress = this.manager.bdp.getExerciseProgress(this.exercise.id);
     switch (progress?.status) {
       case ExerciseStatus.Solving:
         return progress.stopwatchEnabled ? 'edit.svg' : 'edit.svg';
@@ -80,17 +81,18 @@ export default class ExerciseNode extends BaseTreeViewNode {
   }
 
   async showWebsite() {
-    if (this.exercise.website) {
-      return env.openExternal(Uri.parse(this.exercise.website));
+    const url = this.exercise.website;
+    if (url) {
+      emitOpenWebsiteAction(url);
+      return env.openExternal(Uri.parse(url));
     }
 
-    // return false to indicate that no website has been opened
     return false;
   }
 
   async tryResetExercise() {
     try {
-      if (await this.manager.stopPractice()) {
+      if (await this.manager.exitPracticeSession()) {
         await this.manager.resetExercise(this.exercise);
         await showInformationMessage(`Exercise "${this.exercise.id}" has been reset successfully.`);
       }

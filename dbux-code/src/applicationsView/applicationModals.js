@@ -5,11 +5,12 @@ import {
 import allApplications from '@dbux/data/src/applications/allApplications';
 // import { showTextDocument } from './codeNav';
 import { showInformationMessage, showWarningMessage } from '../codeUtil/codeModals';
-import { CodeApplication, getSelectedApplicationInActiveEditor } from '../codeUtil/CodeApplication';
+import { getSelectedApplicationInActiveEditor } from '../codeUtil/CodeApplication';
 
+/** @typedef {import('../codeUtil/CodeApplication').CodeApplication} CodeApplication */
 
 /**
- * @returns {CodeApplication}
+ * @returns {Promise<CodeApplication>}
  */
 export async function getSelectedApplicationInActiveEditorWithUserFeedback() {
   if (!allApplications.getAllCount()) {
