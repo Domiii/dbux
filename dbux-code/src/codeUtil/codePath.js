@@ -1,4 +1,7 @@
+import path from 'path';
+import { isWindows } from '@dbux/common-node/src/util/osUtil';
 import { pathJoin, pathNormalizedForce, pathResolve } from '@dbux/common-node/src/util/pathUtil';
+
 import {
   ExtensionContext,
   Uri,
@@ -107,9 +110,45 @@ export function getYarnPath() {
   return p || 'yarn';
 }
 
-export function getBashPath() {
-  const p = workspace.getConfiguration('').get('dbux.paths.bash');
+export function getSystemPath(what) {
+  const systemPathName = isWindows() ? 'dbux.paths.windows' : 'dbux.paths.posix';
+  return workspace.getConfiguration('').get(`${systemPathName}.${what}`);
+}
+
+export function getShellPath() {
+  const p = getSystemPath('shell');
   return p || 'bash';
+}
+
+export function getShellName() {
+  const p = getShellPath();
+  // https://stackoverflow.com/questions/4250364/how-to-trim-a-file-extension-from-a-string-in-javascript
+  return path.parse(p).name;
+}
+
+function getShellConfig(what, shell = null, dontCheck = false) {
+  if (!shell) {
+    // look-up shell
+    shell = getShellName();
+  }
+  const target = `dbux.shells.${shell}.${what}`;
+  const val = workspace.getConfiguration('').get(target);
+  if (!dontCheck && !val) {
+    throw new Error(`Could not read config value "${target}" - It must not be empty or undefined!`);
+  }
+  return val;
+}
+
+export function getShellInlineFlags() {
+  return getShellConfig('inlineFlags');
+}
+
+export function getShellPauseCommand() {
+  return getShellConfig('pause');
+}
+
+export function getShellSep() {
+  return getShellConfig('sep');
 }
 
 export const execPaths = {
@@ -125,7 +164,8 @@ export const execPaths = {
   get yarn() {
     return getYarnPath();
   },
-  get bash() {
-    return getBashPath();
+  get shell() {
+    return getShellPath();
   }
 };
+

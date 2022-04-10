@@ -65,7 +65,7 @@ function isWindows() {
  * Check system with requirements
  * @param {ProjectsManager} manager
  * @param {boolean} calledFromUser Whether the function is called by user. Decides showing success message to user or not.
- * @param {boolean} fullCheck if false, skip checking `git` and `bash`.
+ * @param {boolean} fullCheck if false, skip checking `git` (or more generally: skip all projects-specific settings).
  */
 export async function checkSystem(manager, requirements, calledFromUser) {
   if (!calledFromUser && isChecked(requirements)) {
@@ -156,12 +156,13 @@ export async function checkSystem(manager, requirements, calledFromUser) {
     `\nSUCCESS! All system dependencies seem to be in order.` :
     `\nFAILED: One or more system dependencies are not installed. Fix them, then try again.`;
 
-  if ((results?.git?.success === false || results?.bash?.success === false) && isWindows()) {
-    // TOTRANSLATE
-    modalMessage += '\n\nGit or bash are missing. Windows users can install bash and git into $PATH by installing "git" ' +
-      'and checking the "adding UNIX tools to PATH". You can achieve that by:\n' +
-      '1. Installing choco\n' +
-      '2. then run: choco install git.install --params "/GitAndUnixToolsOnPath"';
+  if ((results?.git?.success === false) && isWindows()) {
+    // // TOTRANSLATE
+    // modalMessage += '\n\nGit or bash are missing. Windows users can install bash and git into $PATH by installing "git" ' +
+    //   'and checking the "adding UNIX tools to PATH". You can achieve that by:\n' +
+    //   '1. Installing choco\n' +
+    //   '2. then run: choco install git.install --params "/GitAndUnixToolsOnPath"';
+    modalMessage += '\n\nGit is missing. Windows users can install git with WinGet, choco or manually download it from the git website.';
   }
 
   if (success) {
@@ -197,18 +198,18 @@ export async function checkSystem(manager, requirements, calledFromUser) {
  */
 const DefaultNodeVersion = '16';
 export function getDefaultRequirement(fullCheck) {
+  const defaultReq = {
+    shell: {},
+    node: { version: DefaultNodeVersion },
+    npm: {}
+  };
+
   if (!fullCheck) {
-    return {
-      bash: {},
-      node: { version: DefaultNodeVersion },
-      npm: {},
-    };
+    return defaultReq;
   }
   else {
     return {
-      bash: {},
-      node: { version: DefaultNodeVersion },
-      npm: {},
+      ...defaultReq,
       git: {
         /**
          * @param {ProjectsManager} manager 
@@ -227,7 +228,7 @@ export function getDefaultRequirement(fullCheck) {
               if (message) {
                 message += "\n";
               }
-              message += `Can't find git config with key ${checkKey}`;
+              message += `Can't find git config entry for "${checkKey}"`;
             }
           }
           if (success) {
@@ -235,7 +236,7 @@ export function getDefaultRequirement(fullCheck) {
           }
           return {
             success,
-            message: `${message}\nAdd these config entries via \`git config --global <key> <value>\`\n`,
+            message: `${message}\nAdd missing config entries via \`git config --global <key> <value>\`\n`,
           };
         }
       },

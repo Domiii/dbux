@@ -6,7 +6,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { pathNormalized, pathNormalizedForce, whichNormalized } from '@dbux/common-node/src/util/pathUtil';
 // import sleep from '@dbux/common/src/util/sleep';
 import { closeDefaultTerminal, runInTerminal, runInTerminalInteractive } from '../codeUtil/terminalUtil';
-import { getBashPath, getNodePath, getResourcePath } from '../codeUtil/codePath';
+import { getShellPath, getNodePath, getResourcePath } from '../codeUtil/codePath';
 
 // const Verbose = true;
 const Verbose = false;
@@ -56,7 +56,7 @@ export default class TerminalWrapper {
     tmpFolder = pathNormalizedForce(tmpFolder);
 
     const pathToNode = getNodePath();
-    const shell = getBashPath();
+    const shell = getShellPath();
     const pathToDbuxRun = pathNormalizedForce(getResourcePath('src/_dbux_run.js'));
 
     // serialize all arguments for dbux_run.js

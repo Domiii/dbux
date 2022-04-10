@@ -14,7 +14,6 @@ import { importApplication, exportApplication } from '@dbux/data/src/application
 import { newLogger } from '@dbux/common/src/log/logger';
 import { checkSystem, getDefaultRequirement } from '@dbux/projects/src/checkSystem';
 import { registerCommand } from './commandUtil';
-import { showTextDocument } from '../codeUtil/codeNav';
 import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../applicationsView/applicationModals';
 import { showGraphView, hideGraphView } from '../webViews/graphWebView';
 import { showPathwaysView, hidePathwaysView } from '../webViews/pathwaysWebView';

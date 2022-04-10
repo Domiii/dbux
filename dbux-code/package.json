@@ -1431,10 +1431,52 @@
             "description": "When playing with practice projects that require `yarn`, use this path. (Hint: If you change this, you probably also want to change `paths.npm`.)",
             "scope": "resource"
           },
-          "dbux.paths.bash": {
+          "dbux.paths.windows.shell": {
+            "type": "string",
+            "default": "cmd",
+            "description": "When executing terminal or system commands, use this shell.",
+            "scope": "resource"
+          },
+          "dbux.paths.posix.shell": {
             "type": "string",
             "default": "bash",
-            "description": "When executing terminal commands, use `bash` from this path.",
+            "description": "When executing terminal or system commands, use this shell.",
+            "scope": "resource"
+          },
+          "dbux.shells.bash.inlineFlags": {
+            "type": "array",
+            "default": ["-c"],
+            "description": "Args required to run an inline command with bash. See https://stackoverflow.com/questions/20858381/what-does-bash-c-do",
+            "scope": "resource"
+          },
+          "dbux.shells.bash.pause": {
+            "type": "string",
+            "default": "read -p \"(Done. Press any key to exit.)\"",
+            "description": "Shell-specific pause command.",
+            "scope": "resource"
+          },
+          "dbux.shells.bash.sep": {
+            "type": "string",
+            "default": ";",
+            "description": "Shell-specific multi-command separator.",
+            "scope": "resource"
+          },
+          "dbux.shells.cmd.inlineFlags": {
+            "type": "array",
+            "default": ["/k"],
+            "description": "Args required to run an inline command with cmd. See https://stackoverflow.com/questions/9392874/bat-file-open-new-cmd-window-and-execute-a-command-in-there",
+            "scope": "resource"
+          },
+          "dbux.shells.cmd.pause": {
+            "type": "string",
+            "default": "pause",
+            "description": "Shell-specific pause command.",
+            "scope": "resource"
+          },
+          "dbux.shells.cmd.sep": {
+            "type": "string",
+            "default": "&",
+            "description": "Shell-specific multi-command separator.",
             "scope": "resource"
           },
           "dbux.run.dbuxArgs": {

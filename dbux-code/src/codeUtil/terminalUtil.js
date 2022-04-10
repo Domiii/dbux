@@ -2,7 +2,7 @@ import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { normalizeDriveLetter, whichNormalized } from '@dbux/common-node/src/util/pathUtil';
 import sleep from '@dbux/common/src/util/sleep';
-import { execPaths } from './codePath';
+import { getShellInlineFlags, getShellName, getShellPath, getShellPauseCommand, getShellSep } from './codePath';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('terminalUtil');
@@ -57,35 +57,6 @@ export function closeTerminal(name) {
 //   return string.replace(/"/g, `\\"`).replace(/`/g, "\\`");
 // }
 
-export function runInTerminal(cwd, command) {
-  cwd = normalizeDriveLetter(cwd);
-
-  const name = DefaultTerminalName;
-  closeTerminal(name);
-
-  const shellPath = whichNormalized(execPaths.bash);
-
-  // WARNING: terminal is not properly initialized when running the command. cwd is not set when executing `command`.
-  const wrappedCommand = `cd "${cwd}" && ${command}; read -p "(Done. Press any key to exit.)"`;
-
-  const terminalOptions = {
-    name: DefaultTerminalName,
-    cwd,
-    shellPath: shellPath,
-    // shellArgs: [wrappedCommand],
-    shellArgs: ['-c', wrappedCommand]
-  };
-
-  // debug(`[execCommandInTerminal] ${cwd}$ ${command}`);
-
-  const terminal = window.createTerminal(terminalOptions);
-  terminal.show();
-
-  // terminal.sendText(wrappedCommand);
-
-  return terminal;
-}
-
 
 /**
  * @see https://github.com/microsoft/vscode-extension-samples/blob/master/terminal-sample/src/extension.ts#L177
@@ -127,13 +98,73 @@ export function getOrCreateTerminal(terminalOptions) {
 }
 
 
+/** ###########################################################################
+ * {@link runInTerminal}
+ * ##########################################################################*/
+
+export async function runInTerminal(cwd, command) {
+  cwd = normalizeDriveLetter(cwd);
+
+  const name = DefaultTerminalName;
+  closeTerminal(name);
+
+  // const shellPath = whichNormalized(getShellPath());
+  const shellPath = getShellPath();
+  const shellName = getShellName();
+  const inlineFlags = getShellInlineFlags();
+  const pause = getShellPauseCommand();
+  const sep = getShellSep();
+
+  // WARNING: terminal is not properly initialized when running the command. cwd is not set when executing `command`.
+  const wrappedCommand = `cd "${cwd}" && ${command} ${sep} ${pause}`;
+  // const wrappedCommand = await window.showInputBox({ 
+  //   placeHolder: 'input a command',
+  //   value: '/k echo hello world!'
+  // });
+
+  let shellArgs;
+  shellArgs = [wrappedCommand];
+  if (inlineFlags) {
+    shellArgs.unshift(...inlineFlags);
+  }
+
+  if (shellName === 'cmd') {
+    // hackfix: Terminal API behavior of cmd does not work like bash. Instead, the VSCode Terminal API added a hack-ish solution to take a string on Windows (which it does not support on other systems).
+    shellArgs = shellArgs.join(' ');
+  }
+
+  /**
+   * @see https://code.visualstudio.com/api/references/vscode-api#TerminalOptions
+   */
+  const terminalOptions = {
+    name: DefaultTerminalName,
+    cwd,
+    shellPath: shellPath,
+    shellArgs,
+  };
+
+  // debug(`[execCommandInTerminal] ${cwd}$ ${command}`);
+
+  const terminal = window.createTerminal(terminalOptions);
+  terminal.show();
+
+  // terminal.sendText(wrappedCommand);
+
+  return terminal;
+}
+
+/** ###########################################################################
+ * {@link runInTerminalInteractive}
+ * ##########################################################################*/
+
 export async function runInTerminalInteractive(cwd, command, createNew = false) {
   if (!command) {
     throw new Error('command for runInTerminalInteractive is empty: ' + command);
   }
   const terminalName = DefaultTerminalName;
 
-  const shellPath = whichNormalized(execPaths.bash);
+  // const shellPath = whichNormalized(getShellPath());
+  const shellPath = getShellPath();
 
   const terminalOptions = {
     name: terminalName,

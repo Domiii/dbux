@@ -8,8 +8,8 @@
 /* eslint prefer-destructuring: 0 */
 const condense = require('selective-whitespace');
 const netstats = require('netstats');
+const { isWindows } = require('./osUtil');
 
-const platform = process.platform;
 
 function pushTo(target, item) {
   if (item !== '' && typeof item === 'number' && item !== 0 && target.indexOf(item) === -1) {
@@ -43,7 +43,7 @@ async function processNetStats(arr) {
   const pidindex = 1;
   let items = arr.slice(1);
 
-  if (platform === 'win32') {
+  if (isWindows()) {
     items = arr;
   }
 
@@ -58,7 +58,7 @@ async function processNetStats(arr) {
 
     let pid = parseInt(values[pidindex], 10);
 
-    if (platform === 'win32') {
+    if (isWindows()) {
       pid = parseInt(values.pop(), 10);
     }
 

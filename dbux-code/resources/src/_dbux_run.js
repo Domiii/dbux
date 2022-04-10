@@ -24,6 +24,8 @@ const [
   argsEncoded
 ] = process.argv;
 
+// logDebug(`args`, process.argv);
+
 function main() {
   // node run.js port "cwd" "command"
   const args = JSON.parse(Buffer.from(argsEncoded, 'base64').toString('ascii'));
@@ -45,12 +47,11 @@ function main() {
   };
 
   logDebug('command received:', inspect({
-    nodePath: _node,
-
     // NOTE: spread requires node@8.3 -- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
     ...args,
-    // ...processOptions
+    // ...processOptions,
     // env: JSON.stringify(processOptions.env) // compress into single line
+    nodePath: _node
   }));
 
 
@@ -144,7 +145,10 @@ function reportError(error) {
 
 try {
   // go!
-  main();
+  setTimeout(() => {
+    // hackfix: add minor delay due to ugly print issues in cmd
+    main();
+  });
 }
 catch (err) {
   reportError(err);
