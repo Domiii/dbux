@@ -79,11 +79,3 @@ export function initDialogController() {
   dialogController = new DialogController();
   return dialogController;
 }
-
-export async function maybeStartSurvey1ForTheFirstTime() {
-  const surveyDialog = dialogController.getDialog('survey1');
-
-  if (!surveyDialog.started) {
-    surveyDialog.start('waitToStart');
-  }
-}

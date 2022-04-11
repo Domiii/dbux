@@ -7,10 +7,7 @@ import { initCodePath, setCodePathConfig } from './codeUtil/codePath';
 import activate from './activate';
 import { initPreActivateView } from './preActivateView/preActivateNodeProvider';
 import { registerCommand } from './commands/commandUtil';
-import { initDialogController } from './dialogs/dialogController';
-import DialogNodeKind from './dialogs/DialogNodeKind';
-import { showInformationMessage } from './codeUtil/codeModals';
-import initLang, { translate } from './lang';
+import initLang from './lang';
 import { getCurrentResearch } from './research/Research';
 
 /** @typedef {import('./dialogs/dialogController').DialogController} DialogController */
@@ -80,11 +77,6 @@ export default async function preActivate(context) {
       initPreActivateView();
       initPreActivateCommand(context);
     }
-
-    // TODO: fix tutorial and initial survey
-    const dialogController = initDialogController();
-    await maybeStartTutorial(dialogController, context);
-    await maybeContinueSurvey1(dialogController, context);
   }
   catch (err) {
     logError(`DBUX activate FAILED (autoStart=${autoStart}) -`, err);
@@ -135,70 +127,5 @@ async function maybeSelectLanguage() {
     // }, { modal: true });
     const lang = 'en';
     await mementoSet(keyName, lang);
-  }
-}
-
-// ###########################################################################
-// Maybe start dialog on pre-activate
-// ###########################################################################
-
-/**
- * @param {DialogController} dialogController 
- */
-async function maybeStartTutorial(dialogController, context) {
-  const tutorialDialog = dialogController.getDialog('tutorial');
-  const firstNode = tutorialDialog.getCurrentNode();
-
-  if (!tutorialDialog.started) {
-    await showInformationMessage(translate('newOnDbux.message'), {
-      async [translate('newOnDbux.yes')]() {
-        await ensureActivate(context);
-        tutorialDialog.start('start');
-      },
-      async [translate('newOnDbux.no')]() {
-        await tutorialDialog.setState('end');
-      }
-    });
-  }
-  else if (!firstNode.end) {
-    // dialog unfinished
-    if (firstNode.kind === DialogNodeKind.Modal) {
-      const confirmResult = await tutorialDialog.askToContinue();
-      if (confirmResult === false) {
-        await tutorialDialog.setState('cancel');
-      }
-      else if (confirmResult) {
-        await ensureActivate(context);
-        tutorialDialog.start();
-      }
-    }
-    else {
-      await ensureActivate(context);
-      tutorialDialog.start();
-    }
-  }
-  else {
-    // dialog finished, do nothing
-  }
-}
-
-/**
- * @param {DialogController} dialogController 
- */
-async function maybeContinueSurvey1(dialogController, context) {
-  const surveyDialog = dialogController.getDialog('survey1');
-
-  if (surveyDialog.started) {
-    const firstNode = surveyDialog.getCurrentNode();
-    if (!firstNode.end) {
-      const confirmResult = await surveyDialog.askToContinue();
-      if (confirmResult === false) {
-        await surveyDialog.setState('cancel');
-      }
-      else if (confirmResult) {
-        await ensureActivate(context);
-        surveyDialog.start();
-      }
-    }
   }
 }

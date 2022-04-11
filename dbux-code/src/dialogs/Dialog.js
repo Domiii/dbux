@@ -7,10 +7,11 @@ import { showInformationMessage } from '../codeUtil/codeModals';
 
 /** @typedef {import('./dialogController').DialogController} DialogController */
 
-const Verbose = false;
-
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Dialog');
+
+// const Verbose = false;
+const Verbose = true;
 
 export class Dialog {
   /**
@@ -27,6 +28,7 @@ export class Dialog {
     this._gotoState = null;
     this._isActive = false;
     this._version = 0;
+    this.logger = newLogger(graph.name);
     this.load();
 
     if (!this.getNode('cancel')) {
@@ -63,7 +65,7 @@ export class Dialog {
       this._setState('start');
     }
 
-    debug('Dialog._start', JSON.stringify({ startState, nodeName: this.graphState.nodeName }));
+    Verbose && this.logger.log('Dialog._start', JSON.stringify({ startState, nodeName: this.graphState.nodeName }));
 
     const firstNode = this.getNode(this.graphState.nodeName);
 
@@ -105,11 +107,13 @@ export class Dialog {
         this._gotoState = null;
       }
       else {
+        this.handleNewNode(nodeName, node);
         const edgeData = await NodeClass.render(this, node);
         if (version !== this._version) {
           return;
         }
         if (edgeData) {
+          this.handleNewEdge(edgeData.edge);
           await edgeData.edge.click?.(...this._getUserCbArguments(node));
           if (this._gotoState) {
             // handle goTo passed to enter
@@ -140,7 +144,7 @@ export class Dialog {
         }
       }
       else {
-        await this.graph.onEnd?.(getRecordedData(this));
+        await this.graph.onEnd?.(this.getRecordedData());
         break;
       }
     }
@@ -149,7 +153,7 @@ export class Dialog {
   }
 
   getRecordedData() {
-    return getRecordedData(this);
+    return { stack: this.stack, data: this.graphState.data };
   }
 
   async setState(nodeName) {
@@ -261,6 +265,7 @@ export class Dialog {
    * @return {Promise<boolean|null>}
    */
   async askToRestart() {
+    // TOTRANSLATE
     return await showInformationMessage(`You have done this already. Do you want to restart?`, {
       'Yes, restart it'() {
         return true;
@@ -275,6 +280,7 @@ export class Dialog {
    * Used before dialog starts if survey is unfinished
    */
   async askToContinue() {
+    // TOTRANSLATE
     return await showInformationMessage(`You have previously started ${this.graph.name}, would you like to continue?`, {
       'Continue'() {
         return true;
@@ -335,6 +341,18 @@ export class Dialog {
     await set(this.mementoKeyName, undefined);
     this.load();
   }
+
+  /** ###########################################################################
+   * debug
+   *  #########################################################################*/
+
+  handleNewNode(nodeId, node) {
+    this.logger.log(`Enter new node ${nodeId}`, node);
+  }
+
+  handleNewEdge(edge) {
+    this.logger.log(`Enter new edge`, edge);
+  }
 }
 
 function _errWrap(f) {
@@ -346,8 +364,4 @@ function _errWrap(f) {
       logError(`Error in dialog:`, err);
     }
   };
-}
-
-export function getRecordedData(dialog) {
-  return { stack: dialog.stack, data: dialog.graphState.data };
 }
