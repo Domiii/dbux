@@ -134,7 +134,7 @@
     "shapez-install": "git clone https://github.com/tobspr/shapez.io.git && cd shapez.io && git lfs pull && yarn && cd gulp && yarn && yarn gulp && echo TODO: also install git-lfs + ffmpeg, see: https://github.com/tobspr/shapez.io/tree/master/.travis.yml"
   },
   "volta": {
-    "node": "16.14.2",
+    "node": "16.13.1",
     "yarn": "1.22.17"
   }
 }
