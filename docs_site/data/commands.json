@@ -51,7 +51,12 @@
   },
   {
     "command": "dbux.loadPracticeLogFile",
-    "title": "Dbux Dev:Load Practice Log",
+    "title": "Dbux Dev: Load Practice Log",
+    "description": ""
+  },
+  {
+    "command": "dbux.loadResearchSession",
+    "title": "Dbux: Load research session",
     "description": ""
   },
   {
@@ -125,8 +130,18 @@
     "description": ""
   },
   {
+    "command": "dbux.startPathways",
+    "title": "Dbux Pathways: Start",
+    "description": ""
+  },
+  {
     "command": "dbux.startRuntimeServer",
     "title": "Dbux: Start Dbux Runtime Server",
+    "description": ""
+  },
+  {
+    "command": "dbux.stopPathways",
+    "title": "Dbux Pathways: Stop",
     "description": ""
   },
   {
@@ -146,7 +161,7 @@
   },
   {
     "command": "dbux.toggleNavButton",
-    "title": "Dbux: Toggle Editor Buttons",
+    "title": "Dbux: Toggle Editor Navigation Bar Buttons",
     "description": "Hide/show Dbux buttons in the editor tab bar. Use this if you don't want to see any extra buttons at the top right of your editor tab bar."
   },
   {
