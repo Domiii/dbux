@@ -17,7 +17,8 @@ export class Dialog {
    * @type {DialogController}
    */
   controller;
-  constructor(graph) {
+  constructor(controller, graph) {
+    this.controller = controller;
     this.graph = graph;
     this.mementoKeyName = `dbux.dialog.${graph.name}`;
     this.graphState = null;

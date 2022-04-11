@@ -82,9 +82,9 @@ export default async function preActivate(context) {
     }
 
     // TODO: fix tutorial and initial survey
-    // const dialogController = initDialogController();
-    // await maybeStartTutorial(dialogController, context);
-    // await maybeContinueSurvey1(dialogController, context);
+    const dialogController = initDialogController();
+    await maybeStartTutorial(dialogController, context);
+    await maybeContinueSurvey1(dialogController, context);
   }
   catch (err) {
     logError(`DBUX activate FAILED (autoStart=${autoStart}) -`, err);

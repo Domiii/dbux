@@ -33,8 +33,7 @@ export class DialogController {
   getDialog(dialogName) {
     let dialog = this.dialogs.get(dialogName);
     if (!dialog) {
-      dialog = new Dialog(this.graphs.get(dialogName));
-      dialog.controller = this;
+      dialog = new Dialog(this, this.graphs.get(dialogName));
       this.dialogs.set(dialogName, dialog);
     }
     return dialog;
@@ -57,16 +56,16 @@ export class DialogController {
     // get first bug result
     const projectsManager = getProjectManager();
     const firstBug = projectsManager.projects.getByName('express').exercises.getAt(0);
-    const bug1Status = projectsManager.exerciseDataProvider.getExerciseProgress(firstBug.id);
-    const bug1Tries = projectsManager.pathwayDataProvider.util.getTestRunsByExercise(firstBug);
+    const exercise1Status = projectsManager.exerciseDataProvider.getExerciseProgress(firstBug.id);
+    const exercise1Tries = projectsManager.pathwayDataProvider.util.getTestRunsByExercise(firstBug);
     // const bug1Status = null;
 
     return {
       installId,
       surveyResult,
       tutorialResult,
-      bug1Status,
-      bug1Tries
+      exercise1Status,
+      exercise1Tries
     };
   }
 }
