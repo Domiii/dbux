@@ -52,12 +52,31 @@ Of course, we don't recommend this, unless absolutely necessary. It will delete 
 
 ### Contribute to Docs
 
+We use `docusaurus` for documentation.
+
 1. Follow the [Setup](#setup) steps.
 2. Run `code dbux.code-workspace` to open the Dbux project in VSCode
 3. You can find all docs in the [`docs_site`](https://github.com/Domiii/dbux/blob/master/docs_site/content) folder. The `docs_site/content` folder houses most of the content source.
 4. Run `yarn docs` to build + serve the docs locally (in `watch` mode), and test your changes.
 5. Once you are done: run `yarn docs:build` (which does a few more pre-deployment checks)
 6. If `yarn build` succeeds, feel free to send out a PR.
+
+
+#### Build + Deploy docs
+
+Inside of the `docs_site` folder:
+
+* `yarn build`
+  * -> Make sure, there are no build problems.
+* `yarn serve`
+  * This serves the production build locally to allow you manually test and check whether the documentation site works correctly.
+  * You especially want to do this when introducing new complex logic or components.
+* `yarn deploy`
+  * Make the changes go live.
+
+#### Documentation: Related Issues
+
+* https://github.com/Domiii/dbux/labels/documentation.
 
 
 ## Joining the Community
@@ -108,29 +127,6 @@ PROBLEM: (one of many) since `npm install` ignores your `yarn.lock`, and also mi
 #### Related
 
 * [Issue: Propose a local development workflow](https://github.com/Domiii/dbux/issues/661).
-
-
-## Docs: docs_site
-
-We use `docusaurus` for documentation.
-
-* `cd docs_site`
-* `yarn start`
-
-
-### Build + Deploy docs
-
-* `yarn build`
-  * -> Make sure, there are no build problems.
-* `yarn serve`
-  * This serves the production build locally to allow you manually test and check whether the documentation site works correctly.
-  * You especially want to do this when introducing new complex logic or components.
-* `yarn deploy`
-  * Make the changes go live.
-
-### Related Issues: documentation
-
-* https://github.com/Domiii/dbux/labels/documentation.
 
 
 
