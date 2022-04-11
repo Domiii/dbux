@@ -154,6 +154,15 @@ export function getShellSep() {
   return getShellConfig('sep');
 }
 
+function fixExecutablePath(p) {
+  if (p.includes(' ')) {
+    return `"${p}"`;
+  }
+  else {
+    return p;
+  }
+}
+
 export const execPaths = {
   get git() {
     return getGitPath();
@@ -179,11 +188,11 @@ export const execPaths = {
   inShell: {
     get yarn() {
       const { yarn } = execPaths;
-      return `"${whichNormalized(yarn)}"`;
+      return fixExecutablePath(yarn);
     },
     get npm() {
       const { npm } = execPaths;
-      return `"${whichNormalized(npm)}"`;
+      return fixExecutablePath(npm);
     }
   }
 };
