@@ -111,7 +111,7 @@ export default class ValueTDRefNode extends ValueNode {
     const { dp, nodeId } = this;
     const value = dp.util.constructValueFull(nodeId);
 
-    emitValueRenderAction(value, nodeId);
     valueRender(value);
+    emitValueRenderAction(value, nodeId);
   }
 }

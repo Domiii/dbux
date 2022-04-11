@@ -41,9 +41,9 @@ export function initProjectCommands(extensionContext, projectViewController) {
     return projectViewController.manager.uploadLog();
   });
 
-  registerCommand(extensionContext, 'dbux.cancelBugRunner', (/* node */) => {
+  registerCommand(extensionContext, 'dbux.cancelBugRunner', async (/* node */) => {
+    await projectViewController.manager.runner.cancel();
     emitStopRunnerAction();
-    return projectViewController.manager.runner.cancel();
   });
 
   registerCommand(extensionContext, 'dbux.resetPracticeLog', async () => {

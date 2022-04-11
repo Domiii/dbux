@@ -122,8 +122,8 @@ export function initCodeDeco(context) {
 export function setShowDeco(val) {
   showDeco = !!val;
   mementoSet(keyName, showDeco);
-  emitShowHideDecorationAction(showDeco);
   renderDecorations();
+  emitShowHideDecorationAction(showDeco);
 }
 
 export function switchShowDeco() {

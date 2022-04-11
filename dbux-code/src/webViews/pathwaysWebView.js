@@ -57,14 +57,14 @@ export default class PathwaysWebView extends RichWebView {
 let pathwaysWebView;
 
 export async function showPathwaysView() {
-  emitPathwaysAction(UserActionType.PathwaysVisibilityChanged, { isShowing: true });
   await initPathwaysView();
-  return pathwaysWebView.show();
+  await pathwaysWebView.show();
+  emitPathwaysAction(UserActionType.PathwaysVisibilityChanged, { isShowing: true });
 }
 
 export function hidePathwaysView() {
-  emitPathwaysAction(UserActionType.PathwaysVisibilityChanged, { isShowing: false });
   pathwaysWebView?.hide();
+  emitPathwaysAction(UserActionType.PathwaysVisibilityChanged, { isShowing: false });
 }
 
 export async function initPathwaysView() {
