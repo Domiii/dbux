@@ -128,6 +128,10 @@ export default class Application {
     return getCommonAncestorPath(...paths);
   }
 
+  getEntryPointPathRelativeToAppAncestorPath() {
+    return this.getPathRelativeToAppAncestorPath(this.entryPointPath);
+  }
+
   getAppPackageJsonPath() {
     // TODO
     // TODO: handle the case where we just run a random script, that happens to be in a folder of some other package (do we need to?)

@@ -11,7 +11,7 @@ import SearchMode from '@dbux/graph-common/src/shared/SearchMode';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import traceSelection from '@dbux/data/src/traceSelection';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import { importApplication, exportApplication } from '@dbux/data/src/applications/importExport';
+import { importApplicationFromFile, exportApplicationToFile } from '@dbux/data/src/applications/importExport';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { checkSystem, getDefaultRequirement } from '@dbux/projects/src/checkSystem';
 import { registerCommand } from './commandUtil';
@@ -58,7 +58,7 @@ export function initUserCommands(extensionContext) {
     await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
       progress.report({ message: 'exporting...' });
       await sleep();    // TODO: fix this in general -> reported message does not show up before next tick
-      application && await exportApplication(application, exportFpath);
+      application && await exportApplicationToFile(application, exportFpath);
     });
 
     const msg = translate('savedSuccessfully', { fileName: exportFpath });
@@ -88,7 +88,7 @@ export function initUserCommands(extensionContext) {
       await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
         progress.report({ message: 'importing...' });
         await sleep(100);
-        importApplication(file.fsPath);
+        importApplicationFromFile(file.fsPath);
       });
     }
   });

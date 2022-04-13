@@ -1,17 +1,17 @@
-import { pathJoin, pathNormalized, pathResolve } from '@dbux/common-node/src/util/pathUtil';
+import { pathJoin, pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import { readZipFirstEntryText, zipDataToFile } from '@dbux/common-node/src/util/zipUtil';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import fs from 'fs';
 import path from 'path';
 import allApplications from './allApplications';
-import Application from './Application';
 
-
+/** @typedef {import('./Application').default} Application */
 
 /**
  * @param {string} exportFpath 
  * @param {Application} application 
  */
-export function exportApplication(application, exportFpath) {
+export function exportApplicationToFile(application, exportFpath) {
   // exportFpath = safePath(exportFpath);
   const isZip = exportFpath.endsWith('.zip');
   const exportFolder = path.dirname(exportFpath);
@@ -21,15 +21,8 @@ export function exportApplication(application, exportFpath) {
 
   exportFpath = pathResolve(exportFpath);
 
-  // make data
-  const { uuid, createdAt, projectName, experimentId } = application;
-  const relativeEntryPointPath = application.getRelativeEntryPoint();
   const data = {
-    relativeEntryPointPath,
-    createdAt,
-    uuid,
-    projectName, 
-    experimentId,
+    ...extractApplicationData(application, application.getAppCommonAncestorPath()),
     serializedDpData: application.dataProvider.serializeJson()
   };
   const serialized = JSON.stringify(data);
@@ -47,7 +40,7 @@ export function exportApplication(application, exportFpath) {
 /**
  * @return {Application}
  */
-export function importApplication(fpath) {
+export function importApplicationFromFile(fpath, commonAncestorPath) {
   let serialized;
   if (fpath.endsWith('.zip')) {
     // unzipAllTo(zipFpath, targetPath);
@@ -57,13 +50,42 @@ export function importApplication(fpath) {
     serialized = fs.readFileSync(fpath, 'utf8');
   }
 
-  const appData = JSON.parse(serialized);
+  const { serializedDpData, ...appData } = JSON.parse(serialized);
+
+  const app = importApplication(appData, commonAncestorPath, [serializedDpData]);
+
+  return app;
+}
+
+/**
+ * Extract application information. Use with `dp.deserializeJson` to save dp data.
+ * @param {Application} application 
+ * @param {string} rootPath Root path to locate the absolute entry point path
+ */
+function extractApplicationData(application, rootPath) {
+  const { uuid, createdAt, projectName, experimentId } = application;
+  const relativeEntryPointPath = pathRelative(rootPath, application.entryPointPath);
+  const data = {
+    relativeEntryPointPath,
+    createdAt,
+    uuid,
+    projectName,
+    experimentId
+  };
+
+  return data;
+}
+
+function importApplication(appData, commonAncestorPath, allDpData = EmptyArray) {
   const { relativeEntryPointPath, serializedDpData, ...other } = appData;
-  const { appRoot } = allApplications;
-  const entryPointPath = pathJoin(appRoot, relativeEntryPointPath);
-  const app = allApplications.addApplication({ 
+  const entryPointPath = pathJoin(commonAncestorPath, relativeEntryPointPath);
+  const app = allApplications.addApplication({
     entryPointPath, ...other
   });
-  app.dataProvider.deserializeJson(serializedDpData);
+
+  for (const dpData of allDpData) {
+    app.dataProvider.deserializeJson(dpData);
+  }
+
   return app;
 }
