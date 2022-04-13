@@ -1461,7 +1461,9 @@
           },
           "dbux.shells.bash.inlineFlags": {
             "type": "array",
-            "default": ["-c"],
+            "default": [
+              "-c"
+            ],
             "description": "Args required to run an inline command with bash. See https://stackoverflow.com/questions/20858381/what-does-bash-c-do",
             "scope": "resource"
           },
@@ -1479,7 +1481,9 @@
           },
           "dbux.shells.cmd.inlineFlags": {
             "type": "array",
-            "default": ["/k"],
+            "default": [
+              "/k"
+            ],
             "description": "Args required to run an inline command with cmd. See https://stackoverflow.com/questions/9392874/bat-file-open-new-cmd-window-and-execute-a-command-in-there",
             "scope": "resource"
           },

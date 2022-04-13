@@ -296,12 +296,12 @@ export class Dialog {
     if (nodeName) {
       this.graphState.nodeName = nodeName;
       this.graphState.stateStartTime = Date.now();
-      this._pushStack(nodeName);
+      // this._pushStack(nodeName);
     }
     else if (nodeName === null) {
       this.graphState.nodeName = null;
       this.graphState.stateStartTime = null;
-      this._pushStack(null);
+      // this._pushStack(null);
     }
     else {
       throw new Error(`Trying to setState of dialog '${this.graph.name}' with unexpected falsy value ${nodeName}`);
