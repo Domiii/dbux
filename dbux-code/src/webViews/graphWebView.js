@@ -59,13 +59,13 @@ let graphWebView;
 
 export async function showGraphView() {
   await initGraphView();
+  await graphWebView.show();
   emitCallGraphAction(UserActionType.CallGraphVisibilityChanged, { isShowing: true });
-  return graphWebView.show();
 }
 
 export function hideGraphView() {
-  emitCallGraphAction(UserActionType.CallGraphVisibilityChanged, { isShowing: false });
   graphWebView?.hide();
+  emitCallGraphAction(UserActionType.CallGraphVisibilityChanged, { isShowing: false });
 }
 
 export async function initGraphView() {

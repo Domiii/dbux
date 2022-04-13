@@ -17,7 +17,7 @@ export default class ObjectNode extends TraceNode {
   }
 
   handleClick() {
-    emitSelectTraceAction(this.trace, UserActionType.TDTrackObjectTraceUse);
     super.handleClick();
+    emitSelectTraceAction(this.trace, UserActionType.TDTrackObjectTraceUse);
   }
 }
