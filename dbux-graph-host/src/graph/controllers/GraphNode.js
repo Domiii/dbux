@@ -121,15 +121,15 @@ export default class GraphNode extends HostComponentEndpoint {
       let mode = this.getPreviousMode();
       const { firstTrace: trace } = this.owner;
       const { context } = this.owner.state;
-      this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphNodeCollapseChange, { mode, context, trace });
       this.setModeUser(mode);
+      this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphNodeCollapseChange, { mode, context, trace });
     },
     nextMode: () => {
       let mode = this.getNextMode();
       const { firstTrace: trace } = this.owner;
       const { context } = this.owner.state;
-      this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphNodeCollapseChange, { context, trace, mode });
       this.setModeUser(mode);
+      this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphNodeCollapseChange, { context, trace, mode });
     },
     reveal: this.reveal
   }

@@ -83,8 +83,9 @@ export default class ExerciseNode extends BaseTreeViewNode {
   async showWebsite() {
     const url = this.exercise.website;
     if (url) {
+      const success = await env.openExternal(Uri.parse(url));
       emitOpenWebsiteAction(url);
-      return env.openExternal(Uri.parse(url));
+      return success;
     }
 
     return false;
