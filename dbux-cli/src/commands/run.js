@@ -1,5 +1,6 @@
 /* global __non_webpack_require__ */
 // import path from 'path';
+import { pathToFileURL } from 'url';
 import sleep from '@dbux/common/src/util/sleep';
 import { requireDynamic } from '@dbux/common-node/src/util/requireUtil';
 import { wrapCommand } from '../util/commandUtil';
@@ -47,6 +48,15 @@ export const handler = wrapCommand(async ({ file, _, ...moreOptions }) => {
   try {
     require('@dbux/runtime');
     requireDynamic(targetPath);
+
+    // /**
+    //  * Convert to url first.
+    //  * @see https://github.com/Domiii/dbux/issues/562
+    //  * @see https://github.com/nodejs/node/issues/31710
+    //  */
+    // const pathUrl = pathToFileURL(targetPath).href;
+    // // hackfix: use `eval` to prevent webpack from trying (and failing) to resolve it statically
+    // await eval(`console.log('[Dynamic import]', pathUrl), import(pathUrl)`);
   }
   catch (err) {
     // delay shutdown
