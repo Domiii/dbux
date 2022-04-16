@@ -15,9 +15,7 @@ async function main() {
     console.log("task done");
   });
 
-  //Comment the empty array push line below
-  // and see the issue go away
-  q.push([]);
+  q.push([]);       // NOTE: bug is caused by this line
   q.push([1, 2]);
 
   await q.drain();
