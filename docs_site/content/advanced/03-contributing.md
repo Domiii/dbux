@@ -43,36 +43,40 @@ Of course, we don't recommend this, unless absolutely necessary. It will delete 
 
 1. Open project + start build+watch mode
    ```sh
-   code dbux.code-workspace # open project in vscode
+   code dbux.code-workspace # open project in VSCode
    yarn start # start webpack development build of all projects in watch mode
    ```
 2. Go to your VSCode debug tab, select the `dbux-code` configuration and press F5. This runs the [Dbux VSCode Extension](../tools-and-configuration/01-dbux-code.mdx) in debug mode.
 3. Inside the new window, you can then use [Dbux VSCode Extension](../tools-and-configuration/01-dbux-code.mdx) as usual (but in debug mode).
 
 
-### Adding dependencies
+### Contribute to Docs
 
-We use Lerna with Yarn workspaces, so instead of `npm install pkg`, we do the following:
+We use `docusaurus` for documentation.
 
-* Adding `pkg` to `@dbux/something` (where `dbux-something` is the folder containing the package `@dbux/something`):
-   `npx lerna add --scope=@dbux/something pkg`
-   `npx lerna add --scope=@dbux/common pkg`
-   `npx lerna add --scope=dbux-code pkg      # note: dbux-code's package name has a dash (-), not a slash (/)!`
-* Adding `pkg` to the root's `devDependencies`:
-   `yarn add --dev -W pkg`
+1. Follow the [Setup](#setup) steps.
+2. Run `code dbux.code-workspace` to open the Dbux project in VSCode
+3. You can find all docs in the [`docs_site`](https://github.com/Domiii/dbux/blob/master/docs_site/content) folder. The `docs_site/content` folder houses most of the content source.
+4. Run `yarn docs` to build + serve the docs locally (in `watch` mode), and test your changes.
+5. Once you are done: run `yarn docs:build` (which does a few more pre-deployment checks)
+6. If `yarn build` succeeds, feel free to send out a PR.
 
 
-<!-- ### Local Development Build
+#### Build + Deploy docs
 
-If you want to use the local development build of Dbux in other folders, make sure to hard-link them.
+Inside of the `docs_site` folder:
 
-E.g. on Windows:
+* `yarn build`
+  * -> Make sure, there are no build problems.
+* `yarn serve`
+  * This serves the production build locally to allow you manually test and check whether the documentation site works correctly.
+  * You especially want to do this when introducing new complex logic or components.
+* `yarn deploy`
+  * Make the changes go live.
 
-```ps
-mkdir ..\..\node_modules\@dbux
-mklink /J ..\..\node_modules\@dbux\babel-plugin ..\..\..\dbux\dbux-babel-plugin
-mklink /J ..\..\node_modules\@dbux\runtime ..\..\..\dbux\dbux-runtime
-``` -->
+#### Documentation: Related Issues
+
+* https://github.com/Domiii/dbux/labels/documentation.
 
 
 ## Joining the Community
@@ -125,40 +129,43 @@ PROBLEM: (one of many) since `npm install` ignores your `yarn.lock`, and also mi
 * [Issue: Propose a local development workflow](https://github.com/Domiii/dbux/issues/661).
 
 
-## Docs: docs_site
 
-We use `docusaurus` for documentation.
+## More Unsorted Notes
 
-* `cd docs_site`
-* `yarn start`
+### Adding dependencies
 
+We use Lerna with Yarn workspaces, so if you need to install a new package, instead of `npm install pkg`, we do the following:
 
-### Build + Deploy docs
-
-* `yarn build`
-  * -> Make sure, there are no build problems.
-* `yarn serve`
-  * This serves the production build locally to allow you manually test and check whether the documentation site works correctly.
-  * You especially want to do this when introducing new complex logic or components.
-* `yarn deploy`
-  * Make the changes go live.
-
-### Related Issues: documentation
-
-* https://github.com/Domiii/dbux/labels/documentation.
+* Adding `pkg` to `@dbux/something` (where `dbux-something` is the folder containing the package `@dbux/something`):
+   `npx lerna add --scope=@dbux/something pkg`
+   `npx lerna add --scope=@dbux/common pkg`
+   `npx lerna add --scope=dbux-code pkg      # note: dbux-code's package name has a dash (-), not a slash (/)!`
+* Adding `pkg` to the root's `devDependencies`:
+   `yarn add --dev -W pkg`
 
 
+<!-- ### Local Development Build
 
-## Unsorted Notes
+If you want to use the local development build of Dbux in other folders, make sure to hard-link them.
+
+E.g. on Windows:
+
+```ps
+mkdir ..\..\node_modules\@dbux
+mklink /J ..\..\node_modules\@dbux\babel-plugin ..\..\..\dbux\dbux-babel-plugin
+mklink /J ..\..\node_modules\@dbux\runtime ..\..\..\dbux\dbux-runtime
+``` -->
+
 
 ### VSCode extension development
 
+This section holds a few basics of VSCode extension development.
+
 #### Adding a command/button
 
-(VSCode's buttons are representation of commands, you must add a command before adding a button)
+NOTE: VSCode's buttons are representation of commands, you must add a command before adding a button.
 
 1. Register command in `contributes.commands` section of package.json as following(title and icon are optional):
-
     ``` json
     {
       "commands": [
@@ -173,19 +180,14 @@ We use `docusaurus` for documentation.
       ]
     }
     ```
-
 1. Bind the command with a callback function in js file:
-
     ``` js
     import { registerCommand } from './commands/commandUtil';
     registerCommand(context, '<COMMAND_ID>', callback);
     ```
-
 1. Depends on whether the command should be shown in command palette, add the following to `contributes.menus.commandPalette` section in package.json:
-
     Show command in command palette
     (use `"when": "!dbux.context.activated"` instead if you want show it before dbux has been activated)
-
     ``` json
     {
       "commantPalette": [
@@ -196,9 +198,7 @@ We use `docusaurus` for documentation.
       ]
     }
     ```
-
     Hide command from command palette
-
     ``` json
     {
       "commantPalette": [
@@ -210,12 +210,9 @@ We use `docusaurus` for documentation.
     }
     ```
 
-1. Finally, configure where the button should be shown(skip this step if you don't want a button):
-
+1. Finally, configure where the button should be shown (skip this step if you don't want a button):
     To show button in...
-
     - navigation bar(upper-right corner), add the following to `contributes.menus.editor/title`
-    
     ``` json
     {
       "editor/title": [
@@ -227,10 +224,8 @@ We use `docusaurus` for documentation.
       ] 
     }
     ```
-
     - tree view title, add the following to `contributes.menus.view/title`
       ( `<VIEW_ID>` is defined in `contributes.views.dbuxViewContainer` section)
-
     ``` json
     {
       "view/title": [
@@ -242,10 +237,8 @@ We use `docusaurus` for documentation.
       ] 
     }
     ```
-
     - tree view item, add the following to `contributes.menus.view/item/context`
       ( `<VIEW_ID>` is defined in `contributes.views.dbuxViewContainer` section and `<NODE_CONTEXT_ID>` is defined programmatically in `TreeItem.contextValue` )
-
     ``` json
     {
       "view/item/context": [
@@ -258,11 +251,10 @@ We use `docusaurus` for documentation.
     }
     ```
 
-    NOTES:
-
-    - You can sort buttons by adding suffix `@<number>` to `group` property. e.g. `"group": "inline@5"`
-    - If you remove `"group": "navigation"` , the button will be listed in a dropdown menu, see [Sorting of groups](https://code.visualstudio.com/api/references/contribution-points#Sorting-of-groups) for more information
-    - The `when` property defines when should the button be visible, see ['when' clause contexts](https://code.visualstudio.com/docs/getstarted/keybindings#_when-clause-contexts) for more available condition
+1. Some more Notes:
+   - You can sort buttons by adding suffix `@<number>` to `group` property. e.g. `"group": "inline@5"`
+   - If you remove `"group": "navigation"`, the button will be listed in a dropdown menu, see [Sorting of groups](https://code.visualstudio.com/api/references/contribution-points#Sorting-of-groups) for more information
+   - The `when` property defines when should the button be visible, see ['when' clause contexts](https://code.visualstudio.com/docs/getstarted/keybindings#_when-clause-contexts) for more available condition
 
 <!-- TODO: more to be said here in the future (e.g., consider https://gist.github.com/PurpleBooth/b24679402957c63ec426) -->
 

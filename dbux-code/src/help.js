@@ -1,6 +1,7 @@
 import { Uri, env } from 'vscode';
 import { showInformationMessage } from './codeUtil/codeModals';
 import { translate } from './lang';
+import { emitShowHelpAction } from './userEvents';
 
 let dialogController;
 
@@ -36,7 +37,9 @@ export async function showHelp(message) {
   }
 
   
-  return showInformationMessage(message, btns, { modal: true });
+  const result = showInformationMessage(message, btns, { modal: true });
+  emitShowHelpAction();
+  return result;
 }
 
 export function setDialogControllerForDefaultHelp(controller) {

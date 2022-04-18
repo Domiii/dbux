@@ -47,6 +47,7 @@ function NotFound() {
     // custom redirect
     return <Redirect to={redirect} />;
   }
+  const relativePath = useBaseRelativePath();
 
   // default 404
   return (

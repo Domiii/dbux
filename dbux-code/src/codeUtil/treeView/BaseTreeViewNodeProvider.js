@@ -191,11 +191,11 @@ export default class BaseTreeViewNodeProvider {
       clazz: node.constructor.name,
       collapsibleState: node.collapsibleState
     };
-    emitTreeViewCollapseChangeAction(treeViewName, action, nodeId, node.label, node.collapseChangeUserActionType, args);
-
+    
     // trigger event handlers
     evtHandler.call(this, node);
     this.handleNodeCollapsibleStateChanged(node);
+    emitTreeViewCollapseChangeAction(treeViewName, action, nodeId, node.label, node.collapseChangeUserActionType, args);
   }
 
   handleExpanded(node) {
@@ -232,13 +232,13 @@ export default class BaseTreeViewNodeProvider {
       clazz: node.constructor.name
     };
 
-    const { clickUserActionType } = node;
-    if (clickUserActionType !== false) {
-      emitTreeViewAction(treeViewName, action, nodeId, node.label, clickUserActionType, args);
-    }
-
+    
     try {
       await node.handleClick?.();
+      const { clickUserActionType } = node;
+      if (clickUserActionType !== false) {
+        emitTreeViewAction(treeViewName, action, nodeId, node.label, clickUserActionType, args);
+      }
     }
     catch (err) {
       throw new NestedError(`handleClick failed`, err);
