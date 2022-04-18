@@ -1,11 +1,12 @@
 import {
+  Uri,
   window
 } from 'vscode';
-import EmptyObject from '@dbux/common/src/util/EmptyObject';
-import { newLogger } from '@dbux/common/src/log/logger';
 import isFunction from 'lodash/isFunction';
 import isPlainObject from 'lodash/isPlainObject';
 import isString from 'lodash/isString';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import { newLogger } from '@dbux/common/src/log/logger';
 import { getPrettyFunctionName } from '@dbux/common/src/util/functionUtil';
 
 // eslint-disable-next-line no-unused-vars
@@ -132,4 +133,19 @@ export async function showQuickPick(items, options) {
   debug(`[showQuickPick] ${items.map((item, i) => `(${i + 1}) ${item.label}`).join(', ')}`);
 
   return window.showQuickPick(items, options);
+}
+
+export async function chooseFile({ title, folder = null, filters, canSelectFolders = false } = EmptyObject) {
+  const options = {
+    title,
+    filters,
+    defaultUri: folder ? Uri.file(folder) : undefined,
+    canSelectFolders,
+    canSelectMany: false
+  };
+  return (await window.showOpenDialog(options))?.[0]?.fsPath || null;
+}
+
+export async function chooseFolder({ title, folder, filters } = EmptyObject) {
+  return await chooseFile({ title, folder, filters, canSelectFolders: true });
 }

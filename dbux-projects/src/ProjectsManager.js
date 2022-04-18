@@ -50,6 +50,9 @@ function canIgnoreDependency(name) {
   return false;
 }
 
+/**
+ * @extends {DbuxManager}
+ */
 export default class ProjectsManager {
   /**
    * @type {PracticeSession}
@@ -140,6 +143,8 @@ export default class ProjectsManager {
 
   async init() {
     await initLang(this.config.dbuxLanguage);
+
+    await this.bdp.init();
 
     // build projects + chapters
     this.loadProjectList();
@@ -355,13 +360,12 @@ export default class ProjectsManager {
     //  -> ultimately use research data for practice session data, if available (NOTE: the format is slightly different)
     //  -> if not available, should not store all application data; only that relevant for the practice session.
 
-    this._loadSession(exercise);
+    await this._loadSession(exercise);
 
     if (exercise) {
       this.practiceSession.setupStopwatch();
       await this.practiceSession.testExercise();
     }
-    await this.saveSession();
     return this.practiceSession;
   }
 
@@ -400,6 +404,8 @@ export default class ProjectsManager {
     if (exited) {
       this.practiceSession = null;
     }
+    await this.save();
+    this._notifyPracticeSessionStateChanged();
     return exited;
   }
 
@@ -424,8 +430,7 @@ export default class ProjectsManager {
       }
       allApplications.clear();    // clear applications
 
-      this._loadSession(exercise, { createdAt, sessionId, logFilePath, state: PracticeSessionState.Stopped }, false);
-      await this.saveSession();
+      await this._loadSession(exercise, { createdAt, sessionId, logFilePath, state: PracticeSessionState.Stopped }, false);
 
       return true;
     }
@@ -453,7 +458,7 @@ export default class ProjectsManager {
     try {
       const { exerciseId } = savedSessionData;
       const exercise = this.getExerciseById(exerciseId);
-      this._loadSession(exercise, savedSessionData, false);
+      await this._loadSession(exercise, savedSessionData, false);
       if (exercise) {
         await this.switchToExercise(exercise);
         this.practiceSession.setupStopwatch();
@@ -474,7 +479,7 @@ export default class ProjectsManager {
     }
     await this.bdp.save();
     this.research.importResearchAppData(exerciseId);
-    this._loadSession(exercise, EmptyObject, false);
+    await this._loadSession(exercise, EmptyObject, false);
   }
 
   /**
@@ -501,7 +506,7 @@ export default class ProjectsManager {
    * @param {boolean} isNew 
    * @returns 
    */
-  _loadSession(exercise = null, savedSessionData = {}, isNew = true) {
+  async _loadSession(exercise = null, savedSessionData = {}, isNew = true) {
     if (exercise) {
       const sessionData = { exerciseId: exercise.id };
       Object.assign(sessionData, savedSessionData);
@@ -511,8 +516,11 @@ export default class ProjectsManager {
       this.practiceSession = PathwaysSession.from(this, savedSessionData);
     }
 
+    await this.practiceSession.init();
+
     isNew && emitPracticeSessionEvent('started', this.practiceSession);
     this._notifyPracticeSessionStateChanged();
+    await this.saveSession();
   }
 
   async askForRecoverPracticeSession(sessionData = EmptyObject) {
@@ -888,7 +896,8 @@ export default class ProjectsManager {
   async resetProgress() {
     if (await this.exitPracticeSession()) {
       await this.saveSession();
-      await this.bdp.reset();
+      this.bdp.reset();
+      await this.bdp.save();
       await this.runner.deactivateExercise();
     }
   }

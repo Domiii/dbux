@@ -441,7 +441,7 @@ export default class DataProviderBase {
   /**
    * Use: `dataProvider.deserializeJson(JSON.parse(serializedString))`
    */
-  deserializeJson(data) {
+  async deserializeJson(data) {
     const { version, collections } = data;
     if (version !== this.version) {
       throw new Error(`could not serialize DataProvider - incompatible version: ${version} !== ${this.version}`);
@@ -450,7 +450,7 @@ export default class DataProviderBase {
     for (const collectionName in collections) {
       const collection = this.collections[collectionName];
       if (collection.deserialize) {
-        collections[collectionName] = collections[collectionName].map(obj => collection.deserialize(obj));
+        collections[collectionName] = await Promise.all(collections[collectionName].map(obj => collection.deserialize(obj)));
       }
     }
     this.addData(collections, false);

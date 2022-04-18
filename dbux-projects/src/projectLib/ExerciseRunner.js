@@ -17,6 +17,8 @@ import BugRunnerStatus, { isStatusRunningType } from './RunStatus';
 /** @typedef {import('./Exercise').default} Exercise */
 /** @typedef {import('./Project').default} Project */
 
+// const Verbose = true;
+const Verbose = false;
 const activatedBugKeyName = 'dbux.dbux-projects.activatedBug';
 
 export default class ExerciseRunner {
@@ -339,6 +341,7 @@ export default class ExerciseRunner {
   // ###########################################################################
 
   setStatus(status) {
+    Verbose && this._ownLogger.log(`setStatus`, BugRunnerStatus.nameFrom(status));
     if (this.status !== status) {
       this.status = status;
       this._emitter.emit('statusChanged', status);

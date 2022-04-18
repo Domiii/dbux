@@ -49,6 +49,10 @@ export default class PathwaysSession {
     return this._logFilePath || this.getDefaultLogFilePath();
   }
 
+  async init() {
+    await this.pdp.init();
+  }
+
   /**
    * @return {bool}
    */
@@ -105,12 +109,6 @@ export default class PathwaysSession {
 
     allApplications.clear();
 
-    this.manager.practiceSession = null;
-
-    await this.save();
-
-    // this.pdp.reset();
-    this.manager._notifyPracticeSessionStateChanged();
     return true;
   }
 

@@ -4,7 +4,8 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { pathJoin, pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import { initDbuxProjects } from '@dbux/projects/src';
 import Process from '@dbux/projects/src/util/Process';
-import { showWarningMessage, showInformationMessage, confirm, alert } from '../codeUtil/codeModals';
+import { initDbuxManager } from '@dbux/projects/src/dbux-analysis-tools/DbuxManager';
+import { showWarningMessage, showInformationMessage, confirm, alert, chooseFolder } from '../codeUtil/codeModals';
 import { showTextDocument, showTextInNewFile } from '../codeUtil/codeNav';
 import { getResourcePath, getLogsDirectory, asAbsolutePath, execPaths } from '../codeUtil/codePath';
 import { closeAllEditors } from '../codeUtil/editorUtil';
@@ -145,12 +146,14 @@ export function createProjectManager(extensionContext) {
     closeAllEditors,
     showOutputChannel,
     showHelp,
+    chooseFolder,
   };
 
   // ########################################
   //  init projectManager
   // ########################################
   projectManager = initDbuxProjects(cfg, externals);
+  initDbuxManager(projectManager);
 
   initUserEvent(projectManager);
 
