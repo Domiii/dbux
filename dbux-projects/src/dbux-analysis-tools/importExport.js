@@ -42,7 +42,7 @@ export function exportApplicationToFile(application, exportFpath) {
 /**
  * @return {Promise<Application>}
  */
-export async function importApplicationFromFile(fpath, commonAncestorPath) {
+export async function importApplicationFromFile(fpath) {
   let serialized;
   if (fpath.endsWith('.zip')) {
     // unzipAllTo(zipFpath, targetPath);
@@ -54,7 +54,7 @@ export async function importApplicationFromFile(fpath, commonAncestorPath) {
 
   const { serializedDpData, ...appData } = JSON.parse(serialized);
 
-  const app = await importApplication(appData, commonAncestorPath, [serializedDpData]);
+  const app = await importApplication(appData, [serializedDpData]);
 
   return app;
 }
@@ -64,7 +64,7 @@ export async function importApplicationFromFile(fpath, commonAncestorPath) {
  * @param {Application} application
  */
 export function extractApplicationData(application) {
-  const { uuid, createdAt, projectName, experimentId, entryPointPath } = application;
+  const { uuid, createdAt, projectName, experimentId, entryPointPath, applicationId } = application;
   const filePathMD5 = crypto.createHash('md5').update(entryPointPath).digest('hex');
   const isBuiltInProject = isBuiltInProjectApplication(application);
   let rootPath;
@@ -84,7 +84,8 @@ export function extractApplicationData(application) {
     uuid,
     isBuiltInProject,
     projectName,
-    experimentId
+    experimentId,
+    applicationId,
   };
 
   return data;

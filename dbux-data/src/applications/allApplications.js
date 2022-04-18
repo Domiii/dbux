@@ -112,15 +112,16 @@ export class AllApplications {
   // ###########################################################################
 
   addApplication(initialData) {
-    const {
+    let {
       entryPointPath,
       createdAt,
       uuid,
+      applicationId,
       ...other
     } = initialData;
 
     // create application
-    const applicationId = this._all.length;
+    applicationId = applicationId || this._all.length;
     const application = new this.DefaultApplicationClass(applicationId, entryPointPath, createdAt, this, uuid);
     Object.assign(application, other);
 
