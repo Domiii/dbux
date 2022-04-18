@@ -204,11 +204,11 @@ class TagNode extends SessionNode {
   async doHandleClick() {
     const trace = traceSelection.selected;
     if (trace) {
-      emitTagTraceAction(trace);
       const cursorLoc = getCursorLocation();
       const cursorLine = codeLineToBabelLine(cursorLoc?.pos.line);
       const cursorFile = cursorLoc?.fpath;
       await this.manager.practiceSession.tagExerciseTrace(trace, cursorFile, cursorLine);
+      emitTagTraceAction(trace);
     }
     else {
       await showWarningMessage('You have not selected any trace yet.');

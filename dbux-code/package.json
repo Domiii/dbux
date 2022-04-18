@@ -535,7 +535,7 @@
       },
       {
         "command": "dbuxProjectView.showDiff",
-        "title": "Show difference",
+        "title": "Dbux Project: Show difference",
         "icon": {
           "light": "resources/light/magnifier.svg",
           "dark": "resources/dark/magnifier.svg"
@@ -543,7 +543,7 @@
       },
       {
         "command": "dbuxProject.uploadLog",
-        "title": "Upload log files",
+        "title": "Dbux Project: Upload log files",
         "icon": {
           "light": "resources/light/upload.svg",
           "dark": "resources/dark/upload.svg"

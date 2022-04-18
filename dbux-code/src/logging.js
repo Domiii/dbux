@@ -14,8 +14,8 @@ export function toggleErrorLog() {
 
 export function setErrorLogFlag(val) {
   isShowingAllError = !!val;
-  emitShowHideErrorLogNotificationAction(isShowingAllError);
   showInformationMessage(`${isShowingAllError ? 'showing' : 'hiding'} all error log.`);
+  emitShowHideErrorLogNotificationAction(isShowingAllError);
 }
 
 export function initLogging() {

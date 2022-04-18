@@ -22,8 +22,8 @@ class ExecutionNode extends TraceNode {
   }
 
   handleClick() {
-    emitSelectTraceAction(this.trace, UserActionType.TDExecutionsTraceUse);
     super.handleClick();
+    emitSelectTraceAction(this.trace, UserActionType.TDExecutionsTraceUse);
   }
 }
 

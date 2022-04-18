@@ -219,8 +219,8 @@ export function initUserCommands(extensionContext) {
       await showErrorMessage(`Can't find trace of traceId=${traceId} (applicationId=${applicationId})`);
     }
     else {
-      emitSelectTraceAction(trace, UserActionType.SelectTraceById, { userInput });
       traceSelection.selectTrace(trace);
+      emitSelectTraceAction(trace, UserActionType.SelectTraceById, { userInput });
     }
   }
 
@@ -280,8 +280,8 @@ export function initUserCommands(extensionContext) {
   // ###########################################################################
 
   registerCommand(extensionContext, 'dbux.showOutputChannel', async () => {
+    showOutputChannel();
     emitShowOutputChannelAction();
-    return showOutputChannel();
   });
 
   /** ###########################################################################

@@ -1,0 +1,140 @@
+editor buttons:
+┌─────────┬────────────────────────────────┬────────────────────────────────────────────┐
+│ (index) │             title              │                 commandId                  │
+├─────────┼────────────────────────────────┼────────────────────────────────────────────┤
+│    0    │    'Dbux: Run Current File'    │               'dbux.runFile'               │
+│    1    │ 'Dbux: Select Trace At Cursor' │ 'dbuxTraceDetailsView.selectTraceAtCursor' │
+│    2    │    'Dbux: Show Call Graph'     │            'dbux.showGraphView'            │
+│    3    │    'Dbux: Hide Call Graph'     │            'dbux.hideGraphView'            │
+└─────────┴────────────────────────────────┴────────────────────────────────────────────┘
+view title buttons:
+┌─────────┬────────────────────────────────────────────────────────────┬──────────────────────────────────────────────────┬────────────────────────────────────┬──────────────────────────┐
+│ (index) │                           title                            │                    commandId                     │                view                │           icon           │
+├─────────┼────────────────────────────────────────────────────────────┼──────────────────────────────────────────────────┼────────────────────────────────────┼──────────────────────────┤
+│    0    │                       'Go to Error'                        │        'dbuxGlobalAnalysisView.showError'        │      'dbuxGlobalAnalysisView'      │        'fire.svg'        │
+│    1    │                    'No error occurred'                     │   'dbuxGlobalAnalysisView.showError.disabled'    │      'dbuxGlobalAnalysisView'      │   'fire_disabled.svg'    │
+│    2    │                       'Go to Error'                        │        'dbuxGlobalAnalysisView.showError'        │       'dbuxTraceDetailsView'       │        'fire.svg'        │
+│    3    │                    'No error occurred'                     │   'dbuxGlobalAnalysisView.showError.disabled'    │       'dbuxTraceDetailsView'       │   'fire_disabled.svg'    │
+│    4    │ 'Document changed -> code decorations might be inaccurate' │    'dbuxTraceDetailsView.node.editedWarning'     │       'dbuxTraceDetailsView'       │      'warning.svg'       │
+│    5    │               'Dbux: Select Trace At Cursor'               │    'dbuxTraceDetailsView.selectTraceAtCursor'    │       'dbuxTraceDetailsView'       │   'crosshair_red.svg'    │
+│    6    │                   'No traces at cursor'                    │ 'dbuxTraceDetailsView.selectTraceAtCursor.empty' │       'dbuxTraceDetailsView'       │ 'crosshair_disabled.svg' │
+│    7    │                   'Search by: accessId'                    │   'dbuxDataFlowView.setSearchMode.ByAccessId'    │         'dbuxDataFlowView'         │      'variable.svg'      │
+│    8    │                    'Search by: valueId'                    │    'dbuxDataFlowView.setSearchMode.ByValueId'    │         'dbuxDataFlowView'         │      'brackets.svg'      │
+│    9    │                       'Filter: None'                       │      'dbuxDataFlowView.setFilterMode.None'       │         'dbuxDataFlowView'         │  'filter_disabled.svg'   │
+│   10    │                    'Filter: Read only'                     │    'dbuxDataFlowView.setFilterMode.ReadOnly'     │         'dbuxDataFlowView'         │      'filterR.svg'       │
+│   11    │                    'Filter: Write only'                    │    'dbuxDataFlowView.setFilterMode.WriteOnly'    │         'dbuxDataFlowView'         │      'filterW.svg'       │
+│   12    │                  'Dbux: Show Call Graph'                   │               'dbux.showGraphView'               │             undefined              │        'tree.svg'        │
+│   13    │                  'Dbux: Hide Call Graph'                   │               'dbux.hideGraphView'               │             undefined              │   'tree_disabled.svg'    │
+│   14    │             'Dbux: Start Dbux Runtime Server'              │            'dbux.startRuntimeServer'             │       'dbuxApplicationsView'       │    'antenna_red.svg'     │
+│   15    │              'Dbux: Stop Dbux Runtime Server'              │             'dbux.stopRuntimeServer'             │       'dbuxApplicationsView'       │   'antenna_green.svg'    │
+│   16    │                  'Dbux: Run Current File'                  │                  'dbux.runFile'                  │       'dbuxApplicationsView'       │        'play.svg'        │
+│   17    │                 'Dbux: Debug Current File'                 │                 'dbux.debugFile'                 │       'dbuxApplicationsView'       │        'bug.svg'         │
+│   18    │                 'Dbux: Show Pathways View'                 │             'dbux.showPathwaysView'              │       'dbuxApplicationsView'       │         'p.svg'          │
+│   19    │                 'Dbux: Hide Pathways View'                 │             'dbux.hidePathwaysView'              │       'dbuxApplicationsView'       │     'p_disabled.svg'     │
+│   20    │                        'Dbux: Help'                        │                 'dbux.showHelp'                  │       'dbuxApplicationsView'       │      'question.svg'      │
+│   21    │                'Dbux: Toggle Practice View'                │            'dbux.togglePracticeView'             │             undefined              │      'project.svg'       │
+│   22    │                     'Toggle List Mode'                     │         'dbuxProjectView.toggleListMode'         │         'dbuxProjectView'          │       'stack.svg'        │
+│   23    │              'Dbux Project: Show difference'               │            'dbuxProjectView.showDiff'            │         'dbuxProjectView'          │     'magnifier.svg'      │
+│   24    │              'Dbux Project: Upload log files'              │             'dbuxProject.uploadLog'              │ 'dbuxProjectView, dbuxSessionView' │       'upload.svg'       │
+└─────────┴────────────────────────────────────────────────────────────┴──────────────────────────────────────────────────┴────────────────────────────────────┴──────────────────────────┘
+treeNode buttons:
+┌─────────┬───────────────────────────────────────────────────────┬─────────────────────────────────────────────────────────┬──────────────────────────┬─────────────────────────────┐
+│ (index) │                         title                         │                        commandId                        │           view           │            icon             │
+├─────────┼───────────────────────────────────────────────────────┼─────────────────────────────────────────────────────────┼──────────────────────────┼─────────────────────────────┤
+│    0    │                  'Switch to Parent'                   │             'dbuxCallStackView.showParent'              │     'callStackNode'      │        'boolean.svg'        │
+│    1    │                 'Switch to Scheduler'                 │            'dbuxCallStackView.showScheduler'            │     'callStackNode'      │        'string.svg'         │
+│    2    │                      'Next mode'                      │       'dbuxGlobalAnalysisView.node.nextSortMode'        │ 'dbuxGlobalAnalysisView' │         'sort.svg'          │
+│    3    │                  'Next search mode'                   │      'dbuxGlobalAnalysisView.node.nextSearchMode'       │ 'dbuxGlobalAnalysisView' │        'string.svg'         │
+│    4    │                      'Next mode'                      │         'dbuxTraceDetailsView.nextGroupingMode'         │  'dbuxTraceDetailsView'  │        'string.svg'         │
+│    5    │                       'Expand'                        │            'dbuxTraceDetailsView.expandNode'            │  'dbuxTraceDetailsView'  │        'expand.svg'         │
+│    6    │                 'Select this object'                  │           'dbuxTraceDetailsView.selectObject'           │  'dbuxTraceDetailsView'  │        'boolean.svg'        │
+│    7    │                 'Inspect this value'                  │           'dbuxTraceDetailsView.valueRender'            │  'dbuxTraceDetailsView'  │       'magnifier.svg'       │
+│    8    │ 'Dbux: Go to previous "non-trivial" trace in context' │   'dbuxTraceDetailsView.navigation.PreviousInContext'   │  'dbuxTraceDetailsView'  │   'previousInContext.svg'   │
+│    9    │    'Dbux: Go to previous function call in context'    │ 'dbuxTraceDetailsView.navigation.PreviousChildContext'  │  'dbuxTraceDetailsView'  │ 'previousChildContext.svg'  │
+│   10    │            'Dbux: Go to start of context'             │ 'dbuxTraceDetailsView.navigation.PreviousParentContext' │  'dbuxTraceDetailsView'  │ 'previousParentContext.svg' │
+│   11    │   'Dbux: Go to next "non-trivial" trace in context'   │     'dbuxTraceDetailsView.navigation.NextInContext'     │  'dbuxTraceDetailsView'  │     'nextInContext.svg'     │
+│   12    │      'Dbux: Go to next function call in context'      │   'dbuxTraceDetailsView.navigation.NextChildContext'    │  'dbuxTraceDetailsView'  │   'nextChildContext.svg'    │
+│   13    │             'Dbux: Go to end of context'              │   'dbuxTraceDetailsView.navigation.NextParentContext'   │  'dbuxTraceDetailsView'  │   'nextParentContext.svg'   │
+│   14    │  'Dbux: Go to previous execution of the same trace'   │  'dbuxTraceDetailsView.navigation.PreviousStaticTrace'  │  'dbuxTraceDetailsView'  │  'previousStaticTrace.svg'  │
+│   15    │    'Dbux: Go to next execution of the same trace'     │    'dbuxTraceDetailsView.navigation.NextStaticTrace'    │  'dbuxTraceDetailsView'  │    'nextStaticTrace.svg'    │
+│   16    │    'Dbux: Go to previous trace (unconditionally)'     │     'dbuxTraceDetailsView.navigation.PreviousTrace'     │  'dbuxTraceDetailsView'  │       'leftArrow.svg'       │
+│   17    │      'Dbux: Go to next trace (unconditionally)'       │       'dbuxTraceDetailsView.navigation.NextTrace'       │  'dbuxTraceDetailsView'  │      'rightArrow.svg'       │
+│   18    │                 'Go to: Write trace'                  │      'dbuxTraceDetailsView.node.selectWriteTrace'       │  'dbuxTraceDetailsView'  │         'edit.svg'          │
+│   19    │                'Go to: Value creation'                │     'dbuxTraceDetailsView.node.selectValueCreation'     │  'dbuxTraceDetailsView'  │        'boolean.svg'        │
+│   20    │              'Go to: Async Fork Parent'               │      'dbuxTraceDetailsView.node.selectForkParent'       │  'dbuxTraceDetailsView'  │ 'previousParentContext.svg' │
+│   21    │               'Go to: Async Scheduler'                │       'dbuxTraceDetailsView.node.selectScheduler'       │  'dbuxTraceDetailsView'  │  'previousStaticTrace.svg'  │
+│   22    │                     'Go to Entry'                     │          'dbuxApplicationsView.showEntryPoint'          │    'ApplicationNode'     │       'nextTrace.svg'       │
+│   23    │           'Add Project Folder to Workspace'           │      'dbuxProjectView.node.addProjectToWorkspace'       │        undefined         │       'crosshair.svg'       │
+│   24    │                      'Clean Up'                       │             'dbuxProjectView.node.cleanup'              │        undefined         │         'clear.svg'         │
+│   25    │                    'Stop project'                     │           'dbuxProjectView.node.stopProject'            │    'dbuxProjectView'     │         'pause.svg'         │
+│   26    │                      'Clean Up'                       │         'dbuxProjectView.node.exerciseCleanup'          │        undefined         │         'clear.svg'         │
+│   27    │                   'Start Practice'                    │          'dbuxProjectView.node.startPractice'           │        undefined         │         'play.svg'          │
+│   28    │               'dbux-project running...'               │             'dbuxProjectView.node.busyIcon'             │        undefined         │       'hourglass.svg'       │
+│   29    │                'Stop Exercise Runner'                 │            'dbuxProjectView.node.stopRunner'            │        undefined         │         'pause.svg'         │
+│   30    │            'Dbux Dev: Reset this exercise'            │          'dbuxProjectView.node.resetExercise'           │        undefined         │        'refresh.svg'        │
+│   31    │                    'Show Website'                     │           'dbuxProjectView.node.showWebsite'            │        undefined         │        'boolean.svg'        │
+│   32    │             'Show Exercise Introduction'              │     'dbuxProjectView.node.showExerciseIntroduction'     │        undefined         │       'question.svg'        │
+│   33    │                  'Show exercise log'                  │         'dbuxProjectView.node.showExerciseLog'          │        undefined         │       'document.svg'        │
+│   34    │    'Dbux Project: Run without dbux in debug mode'     │               'dbuxSessionView.run#debug'               │    'dbuxSessionView'     │       'bug_gray.svg'        │
+│   35    │      'Dbux Project: Run with dbux in debug mode'      │            'dbuxSessionView.run#debug#dbux'             │    'dbuxSessionView'     │          'bug.svg'          │
+│   36    │              'Dbux Project: Flush cache'              │              'dbuxSessionView.flushCache'               │    'dbuxSessionView'     │         'clear.svg'         │
+│   37    │             'Ask question of this trace'              │          'dbuxSessionView.node.annotateTraceQ'          │    'dbuxSessionView'     │           'q.svg'           │
+│   38    │              'Add comment on this trace'              │          'dbuxSessionView.node.annotateTraceI'          │    'dbuxSessionView'     │           'i.svg'           │
+│   39    │              'Go to program entry point'              │          'dbuxSessionView.node.showEntryFile'           │    'dbuxSessionView'     │       'document.svg'        │
+└─────────┴───────────────────────────────────────────────────────┴─────────────────────────────────────────────────────────┴──────────────────────────┴─────────────────────────────┘
+commandPalette commands:
+┌─────────┬───────────────────────────────────────────────────────┬─────────────────────────────────────────────────────────┐
+│ (index) │                         title                         │                        commandId                        │
+├─────────┼───────────────────────────────────────────────────────┼─────────────────────────────────────────────────────────┤
+│    0    │                  'Dbux: Start Dbux'                   │                    'dbux.doActivate'                    │
+│    1    │                 'Dbux: Backend Login'                 │                   'dbux.backendLogin'                   │
+│    2    │                  'Dbux: Diagnostics'                  │                   'dbux.diagnostics'                    │
+│    3    │              'Dbux: Debug Current File'               │                    'dbux.debugFile'                     │
+│    4    │            'Dbux: Export Application Data'            │              'dbux.exportApplicationData'               │
+│    5    │            'Dbux: Import Application Data'            │              'dbux.importApplicationData'               │
+│    6    │             'Dbux: Reload Exercise List'              │                'dbux.reloadExerciseList'                │
+│    7    │             'Dbux: Hide Code Decorations'             │                 'dbux.hideDecorations'                  │
+│    8    │                'Dbux Pathways: Start'                 │                  'dbux.startPathways'                   │
+│    9    │                 'Dbux Pathways: Stop'                 │                   'dbux.stopPathways'                   │
+│   10    │             'Dbux: Load research session'             │               'dbux.loadResearchSession'                │
+│   11    │                'Dbux: Show Call Graph'                │                  'dbux.showGraphView'                   │
+│   12    │                'Dbux: Hide Call Graph'                │                  'dbux.hideGraphView'                   │
+│   13    │              'Dbux: Show Pathways View'               │                 'dbux.showPathwaysView'                 │
+│   14    │              'Dbux: Hide Pathways View'               │                 'dbux.hidePathwaysView'                 │
+│   15    │               'Dbux: Run Current File'                │                     'dbux.runFile'                      │
+│   16    │              'Dbux: Select Trace by id'               │                 'dbux.selectTraceById'                  │
+│   17    │             'Dbux: Show Code Decorations'             │                 'dbux.showDecorations'                  │
+│   18    │                     'Dbux: Help'                      │                     'dbux.showHelp'                     │
+│   19    │          'Dbux Dev: Reset Practice Progress'          │              'dbux.resetPracticeProgress'               │
+│   20    │             'Dbux Dev: Load Practice Log'             │               'dbux.loadPracticeLogFile'                │
+│   21    │              'Dbux: Show output channel'              │                'dbux.showOutputChannel'                 │
+│   22    │           'Dbux: Start Dbux Runtime Server'           │                'dbux.startRuntimeServer'                │
+│   23    │           'Dbux: Stop Dbux Runtime Server'            │                'dbux.stopRuntimeServer'                 │
+│   24    │           'Dbux: Check System Dependencies'           │                   'dbux.systemCheck'                    │
+│   25    │          'Dbux: Toggle Error Notifications'           │                  'dbux.toggleErrorLog'                  │
+│   26    │     'Dbux: Toggle Editor Navigation Bar Buttons'      │                 'dbux.toggleNavButton'                  │
+│   27    │              'Dbux: Search in contexts'               │                  'dbux.searchContexts'                  │
+│   28    │               'Dbux: Search in traces'                │                   'dbux.searchTraces'                   │
+│   29    │               'Dbux: Search in values'                │                   'dbux.searchValues'                   │
+│   30    │             'Dbux: Toggle Practice View'              │                'dbux.togglePracticeView'                │
+│   31    │           'Dbux: Open Practice Log Folder'            │              'dbux.openPracticeLogFolder'               │
+│   32    │            'Dbux Project: Show difference'            │               'dbuxProjectView.showDiff'                │
+│   33    │           'Dbux Project: Upload log files'            │                 'dbuxProject.uploadLog'                 │
+│   34    │      'Dbux: Go to next function call in context'      │   'dbuxTraceDetailsView.navigation.NextChildContext'    │
+│   35    │   'Dbux: Go to next "non-trivial" trace in context'   │     'dbuxTraceDetailsView.navigation.NextInContext'     │
+│   36    │             'Dbux: Go to end of context'              │   'dbuxTraceDetailsView.navigation.NextParentContext'   │
+│   37    │    'Dbux: Go to next execution of the same trace'     │    'dbuxTraceDetailsView.navigation.NextStaticTrace'    │
+│   38    │      'Dbux: Go to next trace (unconditionally)'       │       'dbuxTraceDetailsView.navigation.NextTrace'       │
+│   39    │    'Dbux: Go to previous function call in context'    │ 'dbuxTraceDetailsView.navigation.PreviousChildContext'  │
+│   40    │ 'Dbux: Go to previous "non-trivial" trace in context' │   'dbuxTraceDetailsView.navigation.PreviousInContext'   │
+│   41    │            'Dbux: Go to start of context'             │ 'dbuxTraceDetailsView.navigation.PreviousParentContext' │
+│   42    │  'Dbux: Go to previous execution of the same trace'   │  'dbuxTraceDetailsView.navigation.PreviousStaticTrace'  │
+│   43    │    'Dbux: Go to previous trace (unconditionally)'     │     'dbuxTraceDetailsView.navigation.PreviousTrace'     │
+│   44    │            'Dbux: Select Trace At Cursor'             │       'dbuxTraceDetailsView.selectTraceAtCursor'        │
+│   45    │          'Dbux Dev: Delete all user events'           │                 'dbux.deleteUserEvents'                 │
+│   46    │           'Dbux Project: Run without dbux'            │                  'dbuxSessionView.run'                  │
+│   47    │    'Dbux Project: Run without dbux in debug mode'     │               'dbuxSessionView.run#debug'               │
+│   48    │             'Dbux Project: Run with dbux'             │               'dbuxSessionView.run#dbux'                │
+│   49    │      'Dbux Project: Run with dbux in debug mode'      │            'dbuxSessionView.run#debug#dbux'             │
+│   50    │              'Dbux Project: Flush cache'              │              'dbuxSessionView.flushCache'               │
+└─────────┴───────────────────────────────────────────────────────┴─────────────────────────────────────────────────────────┘

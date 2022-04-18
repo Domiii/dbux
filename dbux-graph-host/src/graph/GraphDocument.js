@@ -131,14 +131,14 @@ class GraphDocument extends HostComponentEndpoint {
     if (Object.keys(actualUpdate).length) {
       this.setState(actualUpdate);
       for (const [key, val] of Object.entries(update)) {
-        this._notifyGraphDocumentModeChanged(`${key}Changed`, val);
+        this._notifyGraphDocumentModeChanged(key, val);
       }
       this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphGraphDocumentModeChanged, actualUpdate);
     }
   }
   
-  _notifyGraphDocumentModeChanged(evtName, value) {
-    this._emitter.emit(evtName, value);
+  _notifyGraphDocumentModeChanged(modeName, value) {
+    this._emitter.emit(`${modeName}Changed`, value);
   }
 
   onFollowModeChanged(cb) {
