@@ -126,7 +126,6 @@ async function maybeStartTutorial(dialogController) {
  */
 async function maybeStartSurvey1(dialogController) {
   const surveyDialog = dialogController.getDialog('survey1');
-  debugger;
 
   if (surveyDialog.started) {
     const firstNode = surveyDialog.getCurrentNode();

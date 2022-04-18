@@ -10,8 +10,8 @@ import { showInformationMessage } from '../codeUtil/codeModals';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Dialog');
 
-// const Verbose = false;
-const Verbose = true;
+const Verbose = false;
+// const Verbose = true;
 
 export class Dialog {
   /**
