@@ -21,7 +21,6 @@ import DialogNodeKind from './dialogs/DialogNodeKind';
 import { showInformationMessage } from './codeUtil/codeModals';
 import { translate } from './lang';
 // import { initPlugins } from './PluginMgr';
-// import { maybeStartSurvey1ForTheFirstTime } from './dialogs/dialogController';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-code');
@@ -68,14 +67,9 @@ export default async function activate(context) {
 
   await projectViewController.doInitWork();
 
-
-  // TODO: fix tutorial and initial survey
   const dialogController = initDialogController();
   await maybeStartTutorial(dialogController, context);
   await maybeStartSurvey1(dialogController, context);
-
-  // Survey disabled for now
-  // await maybeStartSurvey1ForTheFirstTime();
 
   // await initPlugins();
 }
