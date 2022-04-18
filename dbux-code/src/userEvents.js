@@ -43,7 +43,7 @@ export function emitShowErrorAction(errorTrace) {
 export function emitSelectTraceAction(trace, actionType = UserActionType.SelectTrace, moreProp) {
   emitUserEvent(actionType, {
     trace,
-    applicationUUID: getApplicationUUID(trace),
+    applicationUUID: getTraceApplicationUUID(trace),
     locationInfo: getExtraTraceLocationImformation(trace),
     ...moreProp
   });
@@ -117,7 +117,7 @@ export function emitOpenWebsiteAction(url) {
   emitUserEvent(UserActionType.OpenWebsite, { url });
 }
 
-export function showExerciseIntroductionView(exercise) {
+export function emitShowExerciseIntroductionViewAction(exercise) {
   emitUserEvent(UserActionType.ShowExerciseIntroductionView, { exerciseId: exercise.id });
 }
 
@@ -167,7 +167,7 @@ export function emitNavigationAction(actionName, selectMethod, trace) {
   emitUserEvent(actionType, {
     selectMethod,
     trace,
-    applicationUUID: getApplicationUUID(trace),
+    applicationUUID: getTraceApplicationUUID(trace),
     locationInfo: getExtraTraceLocationImformation(trace)
   });
 }
@@ -227,7 +227,7 @@ function getExtraTraceLocationImformation(trace) {
   };
 }
 
-function getApplicationUUID(trace) {
+function getTraceApplicationUUID(trace) {
   return allApplications.getById(trace.applicationId).uuid;
 }
 

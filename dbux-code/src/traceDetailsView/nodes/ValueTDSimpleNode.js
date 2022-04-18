@@ -79,7 +79,7 @@ export default class ValueTDSimpleNode extends ValueNode {
   }
 
   valueRender() {
-    emitValueRenderAction(this.value, this.nodeId);
     valueRender(this.value);
+    emitValueRenderAction(this.value, this.nodeId);
   }
 }
