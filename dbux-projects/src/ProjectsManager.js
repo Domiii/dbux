@@ -404,7 +404,7 @@ export default class ProjectsManager {
     if (exited) {
       this.practiceSession = null;
     }
-    await this.save();
+    await this.saveSession();
     this._notifyPracticeSessionStateChanged();
     return exited;
   }
@@ -663,13 +663,13 @@ export default class ProjectsManager {
 
   registerPDPEventListeners() {
     onUserEvent((actionData) => {
-      if (this.practiceSession && !this.practiceSession.isFinished()) {
+      if (this.practiceSession && !this.practiceSession.isStopped()) {
         this.practiceSession.pdp.addNewUserAction(actionData);
       }
     });
 
     allApplications.selection.onApplicationsChanged((apps) => {
-      if (this.practiceSession && !this.practiceSession.isFinished()) {
+      if (this.practiceSession && !this.practiceSession.isStopped()) {
         this.practiceSession.maybeRecordApplications(apps);
       }
     });
@@ -772,7 +772,7 @@ export default class ProjectsManager {
     if (previousExercise) {
       await this.saveFileChanges(previousExercise);
     }
-    if (await project.doesProjectFolderExist() && await project.isGitInitialized()) {
+    if (project.doesProjectFolderExist() && await project.isGitInitialized()) {
       await project.gitResetHard();
     }
 
@@ -788,7 +788,7 @@ export default class ProjectsManager {
         throw err;
       }
 
-      const keepRunning = await this.externals.showMessage.warn(`Failed when applying previous progress of this bug.`, {
+      const keepRunning = await this.externals.showMessage.warn(`Failed when applying previous progress of this exercise.`, {
         'Show diff in new tab and cancel': async () => {
           await this.externals.editor.showTextInNewFile(`diff.diff`, err.patchString);
           return false;

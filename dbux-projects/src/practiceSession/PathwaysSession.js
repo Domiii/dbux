@@ -3,7 +3,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import PathwaysDataProvider from '../dataLib/PathwaysDataProvider';
 import { emitSessionFinishedEvent } from '../userEvents';
-import PracticeSessionState, { isStateFinishedType } from './PracticeSessionState';
+import PracticeSessionState, { isStateFinishedType, isStateStoppedType } from './PracticeSessionState';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PathwaysSession');
@@ -48,6 +48,10 @@ export default class PathwaysSession {
 
   async init() {
     await this.pdp.init();
+  }
+
+  isStopped() {
+    return isStateStoppedType(this.state);
   }
 
   /**
