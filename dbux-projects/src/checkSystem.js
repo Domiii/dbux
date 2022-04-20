@@ -96,7 +96,7 @@ export async function checkSystem(manager, requirements, calledFromUser) {
         }
         else {
           // TOTRANSLATE
-          message += `¯\\_(ツ)_/¯ ${program}\n    Installed but old. Version is ${result.version} but we recommend ${requirement.version}.`;
+          message += `✓⚠ ${program}\n    Installed but old. Version is ${result.version} but we recommend ${requirement.version}.`;
           result.success = false;
         }
       }
