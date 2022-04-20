@@ -1575,7 +1575,6 @@
     "publish-only": "echo 'Publishing...' && vsce publish --yarn  --baseImagesUrl https://github.com/Domiii/dbux/dbux-code --baseContentUrl https://github.com/Domiii/dbux/dbux-code"
   },
   "devDependencies": {
-    "@dbux/babel-plugin": "^0.7.1-dev.0",
     "@dbux/cli": "^0.7.1-dev.0",
     "@dbux/common": "^0.7.1-dev.0",
     "@dbux/common-node": "^0.7.1-dev.0",
@@ -1603,6 +1602,9 @@
     "uuid": "^8.3.0",
     "vsce": "*",
     "vscode-test": "^1.2.2"
+  },
+  "peerDependencies": {
+    "@dbux/babel-plugin": "^0.7.1-dev.0"
   },
   "_moduleAliases": {},
   "volta": {
