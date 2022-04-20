@@ -33,8 +33,7 @@ export class DialogController {
   getDialog(dialogName) {
     let dialog = this.dialogs.get(dialogName);
     if (!dialog) {
-      dialog = new Dialog(this.graphs.get(dialogName));
-      dialog.controller = this;
+      dialog = new Dialog(this, this.graphs.get(dialogName));
       this.dialogs.set(dialogName, dialog);
     }
     return dialog;
@@ -79,12 +78,4 @@ let dialogController;
 export function initDialogController() {
   dialogController = new DialogController();
   return dialogController;
-}
-
-export async function maybeStartSurvey1ForTheFirstTime() {
-  const surveyDialog = dialogController.getDialog('survey1');
-
-  if (!surveyDialog.started) {
-    surveyDialog.start('waitToStart');
-  }
 }

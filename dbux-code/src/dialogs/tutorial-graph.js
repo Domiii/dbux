@@ -3,12 +3,6 @@ import { env, Uri } from 'vscode';
 import { showHelp } from '../help';
 import DialogNodeKind from './DialogNodeKind';
 
-// async function waitAtMost({ stateStartTime }, delaySeconds) {
-//   const delay = delaySeconds * 1000;
-//   const timePassed = Date.now() - stateStartTime;
-//   return sleep(delay - timePassed);
-// }
-
 const introMessage = `We prepared some example code (with a bug in it) for people to play around with Dbux's features. Do you want to try that?
 
 WARNING: Sometimes these tutorial messages might disappear!

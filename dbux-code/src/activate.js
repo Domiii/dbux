@@ -16,8 +16,11 @@ import { initWebviewWrapper } from './codeUtil/WebviewWrapper';
 import { installDbuxDependencies } from './codeUtil/installUtil';
 import { initDataFlowView } from './dataFlowView/dataFlowViewController';
 import { initGlobalAnalysisView } from './globalAnalysisView/GlobalAnalysisViewController';
+import { initDialogController } from './dialogs/dialogController';
+import DialogNodeKind from './dialogs/DialogNodeKind';
+import { showInformationMessage } from './codeUtil/codeModals';
+import { translate } from './lang';
 // import { initPlugins } from './PluginMgr';
-// import { maybeStartSurvey1ForTheFirstTime } from './dialogs/dialogController';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-code');
@@ -64,8 +67,73 @@ export default async function activate(context) {
 
   await projectViewController.doInitWork();
 
-  // Survey disabled for now
-  // await maybeStartSurvey1ForTheFirstTime();
+  const dialogController = initDialogController();
+  await maybeStartTutorial(dialogController, context);
+  await maybeStartSurvey1(dialogController, context);
 
   // await initPlugins();
+}
+
+// ###########################################################################
+// Maybe start dialog on pre-activate
+// ###########################################################################
+
+/**
+ * @param {DialogController} dialogController 
+ */
+async function maybeStartTutorial(dialogController) {
+  const tutorialDialog = dialogController.getDialog('tutorial');
+  const firstNode = tutorialDialog.getCurrentNode();
+
+  if (!tutorialDialog.started) {
+    await showInformationMessage(translate('newOnDbux.message'), {
+      async [translate('newOnDbux.yes')]() {
+        tutorialDialog.start('start');
+      },
+      async [translate('newOnDbux.no')]() {
+        await tutorialDialog.setState('end');
+      }
+    });
+  }
+  else if (!firstNode.end) {
+    // dialog unfinished
+    if (firstNode.kind === DialogNodeKind.Modal) {
+      const confirmResult = await tutorialDialog.askToContinue();
+      if (confirmResult === false) {
+        await tutorialDialog.setState('cancel');
+      }
+      else if (confirmResult) {
+        tutorialDialog.start();
+      }
+    }
+    else {
+      tutorialDialog.start();
+    }
+  }
+  else {
+    // dialog finished, do nothing
+  }
+}
+
+/**
+ * @param {DialogController} dialogController 
+ */
+async function maybeStartSurvey1(dialogController) {
+  const surveyDialog = dialogController.getDialog('survey1');
+
+  if (surveyDialog.started) {
+    const firstNode = surveyDialog.getCurrentNode();
+    if (!firstNode.end) {
+      const confirmResult = await surveyDialog.askToContinue();
+      if (confirmResult === false) {
+        await surveyDialog.setState('cancel');
+      }
+      else if (confirmResult) {
+        surveyDialog.start();
+      }
+    }
+  }
+  else {
+    surveyDialog.start('waitToStart');
+  }
 }
