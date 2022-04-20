@@ -67,9 +67,9 @@ export default async function activate(context) {
 
   await projectViewController.doInitWork();
 
-  const dialogController = initDialogController();
-  await maybeStartTutorial(dialogController, context);
-  await maybeStartSurvey1(dialogController, context);
+  // const dialogController = initDialogController();
+  // await maybeStartTutorial(dialogController, context);
+  // await maybeStartSurvey1(dialogController, context);
 
   // await initPlugins();
 }
