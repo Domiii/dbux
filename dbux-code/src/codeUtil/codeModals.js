@@ -143,7 +143,15 @@ export async function chooseFile({ title, folder = null, filters, canSelectFolde
     canSelectFolders,
     canSelectMany: false
   };
-  return (await window.showOpenDialog(options))?.[0]?.fsPath || null;
+  // if (folder) {
+  //   options.defaultUri = Uri.file(folder);
+  // }
+  // if (filters) {
+  //   options.filters = filters;
+  // }
+  const result = await window.showOpenDialog(options);
+
+  return result?.[0]?.fsPath || null;
 }
 
 export async function chooseFolder({ title, folder, filters } = EmptyObject) {

@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
+import { pathGetParent } from '@dbux/common/src/util/pathUtil';
 import { pathJoin, pathRelative, pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import { readZipFirstEntryText, zipDataToFile } from '@dbux/common-node/src/util/zipUtil';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
@@ -66,14 +67,14 @@ export async function importApplicationFromFile(fpath) {
 export function extractApplicationData(application) {
   const { uuid, createdAt, projectName, experimentId, entryPointPath, applicationId } = application;
   const filePathMD5 = crypto.createHash('md5').update(entryPointPath).digest('hex');
-  const isBuiltInProject = isBuiltInProjectApplication(application);
+  const isBuiltInProject = isApplicationBuiltInProject(application);
   let rootPath;
   if (isBuiltInProject) {
     rootPath = allApplications.projectsRoot;
   }
   else {
-    // rootPath = entryPointPath;
-    rootPath = application.getAppCommonAncestorPath();
+    rootPath = pathGetParent(entryPointPath);
+    // rootPath = application.getAppCommonAncestorPath();
   }
 
   const relativeEntryPointPath = pathRelative(rootPath, entryPointPath);
@@ -101,7 +102,12 @@ export async function importApplication(appData, allDpData = EmptyArray) {
   }
   else {
     if (!applicationEntryPointPathByHash.get(filePathMD5)) {
-      applicationEntryPointPathByHash.set(filePathMD5, await askForApplicationRootPath(appData));
+      const userInput = await askForApplicationRootPath(appData);
+      if (!userInput) {
+        throw new Error(`Cannot resolve application entry point path without root path.`);
+      }
+
+      applicationEntryPointPathByHash.set(filePathMD5, userInput);
     }
     rootPath = applicationEntryPointPathByHash.get(filePathMD5);
   }
@@ -120,13 +126,13 @@ export async function importApplication(appData, allDpData = EmptyArray) {
 /**
  * @param {Application} app
  */
-function isBuiltInProjectApplication(app) {
+function isApplicationBuiltInProject(app) {
   return app.entryPointPath.startsWith(allApplications.projectsRoot);
 }
 
 async function askForApplicationRootPath(appData) {
-  // todo-m: how to ask in dbux-data???
   const manager = getDbuxManager();
-  const title = `Please select the common ancestors path for application ${appData.projectName}`;
+  // const title = `Please select the common ancestors path for application ${appData.projectName}`;
+  const title = `Please select the folder of entry point "${appData.relativeEntryPointPath}"`;
   return await manager.externals.chooseFolder({ title });
 }

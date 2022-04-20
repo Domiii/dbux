@@ -29,9 +29,6 @@ export default class PathwaysSession {
     this.lastAnnotation = '';
 
     this.pathwaysDataProvider = new PathwaysDataProvider(this);
-
-    // init (+ maybe load) pdp
-    this.pdp.init();
   }
 
   get bdp() {

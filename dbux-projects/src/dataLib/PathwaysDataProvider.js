@@ -70,30 +70,36 @@ class ApplicationCollection extends PathwaysCollection {
    * @param {Array<Application>} applications 
    */
   postAddRaw(applications) {
-    for (const app of applications) {
-      const filePath = this.dp.session.getApplicationFilePath(app.uuid);
-      const { version, collections } = app.dataProvider.serializeJson();
-      const header = JSON.stringify({ headerTag: true, version });
-      if (!fs.existsSync(filePath)) {
-        try {
-          const s = JSON.stringify(collections);
-          // const s = Object.entries(collections || EmptyObject).map(([key, value]) => ).join(',');
-          fs.appendFileSync(filePath, `${header}\n${s}\n`, { flag: 'ax' });
-        }
-        catch (err) {
-          logError(`Cannot write header of application log file at ${filePath}. Error:`, err);
-        }
-        app.dataProvider.onAnyData(data => {
-          const { collections: serializedNewData } = app.dataProvider.serializeJson(Object.entries(data));
-          fs.appendFileSync(filePath, JSON.stringify(serializedNewData) + '\n');
-        });
-      }
-      else {
-        warn(`Found existing log file at "${filePath}", added old application without \`isNew=false\``);
-      }
+    this.handleApplicationAdded(applications);
+    this.dp.updateIndexFile();
+  }
+
+  handleApplicationAdded(apps) {
+    for (const app of apps) {
+      app.dataProvider.onAnyData(data => {
+        this.handleDataAdded(app, data);
+      });
+
+      this.handleDataAdded(app);
+    }
+  }
+
+  handleDataAdded(app, allData = null) {
+    let serializedData;
+    if (allData) {
+      serializedData = app.dataProvider.serializeJson(Object.entries(allData));
+    }
+    else {
+      serializedData = app.dataProvider.serializeJson();
     }
 
-    this.dp.updateIndexFile();
+    const filePath = this.dp.session.getApplicationFilePath(app.uuid);
+    if (!fs.existsSync(filePath)) {
+      const header = JSON.stringify({ headerTag: true });
+      fs.appendFileSync(filePath, `${header}\n`, { flag: 'ax' });
+    }
+
+    fs.appendFileSync(filePath, `${JSON.stringify(serializedData)}\n`);
   }
 
   postAddProcessed(apps) {
@@ -104,7 +110,6 @@ class ApplicationCollection extends PathwaysCollection {
 
   /**
    * @param {Application} application 
-   * @return {Object} plain JS Object
    */
   serialize(application) {
     return extractApplicationData(application);
@@ -112,12 +117,13 @@ class ApplicationCollection extends PathwaysCollection {
 
   async deserialize(appData) {
     let app;
-    const appFilePath = this.dp.session.getApplicationFilePath(appData.uuid);
+    const { uuid } = appData;
+    const appFilePath = this.dp.session.getApplicationFilePath(uuid);
+    this.addedApplicationUUIDs.add(uuid);
     try {
       const fileString = fs.readFileSync(appFilePath, 'utf8');
       const [header, ...lines] = fileString.split(/\r?\n/);
-      const { version } = JSON.parse(header);
-      const allDpData = lines.filter(l => !!l).map(line => ({ version, collections: JSON.parse(line) }));
+      const allDpData = lines.filter(l => !!l).map(line => JSON.parse(line));
       app = await importApplication(appData, allDpData);
     }
     catch (err) {

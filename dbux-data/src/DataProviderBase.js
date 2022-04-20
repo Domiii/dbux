@@ -451,6 +451,15 @@ export default class DataProviderBase {
       const collection = this.collections[collectionName];
       if (collection.deserialize) {
         collections[collectionName] = await Promise.all(collections[collectionName].map(obj => collection.deserialize(obj)));
+        // // hackfix: some Collection (e.g. ApplicationCollection) needs entries to be deserialized in order, thus cannot use `Array.map` here.
+        // const deserializedEntries = [];
+        // for (let i = 0; i < collections[collectionName].length; ++i) {
+        //   const entry = collections[collectionName][i];
+        //   if (entry) {
+        //     deserializedEntries[i] = await collection.deserialize(entry);
+        //   }
+        // }
+        // collections[collectionName] = deserializedEntries;
       }
     }
     this.addData(collections, false);
