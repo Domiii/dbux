@@ -17,6 +17,7 @@
   "author": "Domi",
   "license": "Apache-2.0",
   "dependencies": {
+    "@babel/runtime": "^7.10.1",
     "@babel/core": "^7.10.1",
     "@babel/plugin-proposal-decorators": "^7.10.1",
     "@babel/plugin-proposal-function-bind": "^7.10.1",
