@@ -1,6 +1,6 @@
 {
   "name": "@dbux/projects",
-  "version": "0.7.3",
+  "version": "0.7.4-dev.0",
   "description": "",
   "main": "dist/bundle.js",
   "scripts": {

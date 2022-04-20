@@ -1,6 +1,6 @@
 {
   "name": "@dbux/runtime",
-  "version": "0.7.3",
+  "version": "0.7.4-dev.0",
   "description": "",
   "module": "dist/index-node.js",
   "main": "dist/index-node.js",

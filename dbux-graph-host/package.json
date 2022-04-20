@@ -1,6 +1,6 @@
 {
   "name": "@dbux/graph-host",
-  "version": "0.7.3",
+  "version": "0.7.4-dev.0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
