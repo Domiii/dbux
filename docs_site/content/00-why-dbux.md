@@ -3,6 +3,15 @@ slug: /
 # path: why-dbux
 ---
 
+TODO: re-write as "What Can Dbux Do?"
+
+TODO: rename "installation" to "Getting Started"?
+
+TODO: address "maturity"
+  → list of all directly and indirectly ran packages
+
+TODO: fix up and link in some of the practice stuff
+
 # Dbux: What and Why?
 
 import Img from '@src/components/Img';
