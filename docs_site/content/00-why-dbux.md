@@ -3,14 +3,16 @@ slug: /
 # path: why-dbux
 ---
 
-TODO: re-write as "What Can Dbux Do?"
 
-TODO: rename "installation" to "Getting Started"?
 
-TODO: address "maturity"
-  → list of all directly and indirectly ran packages
+TODO: rename "installation" to "00-Getting Started" (and fix content)
+  → TODO: fix up and bring in the practice stuff here as well
 
-TODO: fix up and link in some of the practice stuff
+TODO: re-write this as "01-What Can Dbux Do?"
+  → give a clearer picture of what it can do and which scenarios work and which won't
+  → future work: list of all directly and indirectly ran packages
+
+
 
 # Dbux: What and Why?
 
