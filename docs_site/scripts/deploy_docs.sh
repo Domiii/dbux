@@ -9,7 +9,7 @@ if [ "$branch" != "master" ]; then
 fi
 
 # echo "You are on the right branch: $branch"
-echo "DOCS BUILDING..."
+echo "Building Docs..."
 
 # yarn update-docs # "yarn build" already runs update-docs
 yarn build
