@@ -439,6 +439,7 @@ export default class DataProviderBase {
   }
 
   /**
+   * NOTE: `Collection.deserialize` either returns a Promise or an entry. In the former case, set config `Collection.asyncDeserialize` to `true` to handle async deserialization.
    * Use: `dataProvider.deserializeJson(JSON.parse(serializedString))`
    */
   async deserializeJson(data) {
