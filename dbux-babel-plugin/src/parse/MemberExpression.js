@@ -142,13 +142,16 @@ export default class MemberExpression extends BaseNode {
    * Special MEs: recursive
    * #######################################*/
 
+  /**
+   * Either `process.env` or `process.env.X`
+   */
   isProcessEnvChain() {
     if (this.isProcessEnv()) {
       return true;
     }
     const [objectNode] = this.getChildNodes();
     return objectNode instanceof MemberExpression && (
-      objectNode.isProcessEnvChain()
+      objectNode.isProcessEnv()
     );
   }
 

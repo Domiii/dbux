@@ -176,12 +176,12 @@
   },
   {
     "command": "dbuxProject.uploadLog",
-    "title": "Upload log files",
+    "title": "Dbux Project: Upload log files",
     "description": ""
   },
   {
     "command": "dbuxProjectView.showDiff",
-    "title": "Show difference",
+    "title": "Dbux Project: Show difference",
     "description": ""
   },
   {
