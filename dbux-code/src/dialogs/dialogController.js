@@ -21,9 +21,9 @@ export class DialogController {
    * @param {string} dialogName 
    * @param {string} [startState] start dialog with the given state
    */
-  startDialog(dialogName, startState) {
+  async startDialog(dialogName, startState) {
     let dialog = this.getDialog(dialogName);
-    dialog.start(startState);
+    await dialog.start(startState);
   }
 
   /**
@@ -33,8 +33,7 @@ export class DialogController {
   getDialog(dialogName) {
     let dialog = this.dialogs.get(dialogName);
     if (!dialog) {
-      dialog = new Dialog(this.graphs.get(dialogName));
-      dialog.controller = this;
+      dialog = new Dialog(this, this.graphs.get(dialogName));
       this.dialogs.set(dialogName, dialog);
     }
     return dialog;
@@ -56,17 +55,17 @@ export class DialogController {
 
     // get first bug result
     const projectsManager = getProjectManager();
-    const firstBug = projectsManager.projects.getByName('express').exercises.getAt(0);
-    const bug1Status = projectsManager.exerciseDataProvider.getExerciseProgress(firstBug.id);
-    const bug1Tries = projectsManager.pathwayDataProvider.util.getTestRunsByExercise(firstBug);
+    const firstBug = projectsManager.projects.getByName('express').exercises.getAt(1);
+    const exercise1Progress = projectsManager.exerciseDataProvider.getExerciseProgress(firstBug.id);
+    // const bug1Tries = projectsManager.pathwayDataProvider.util.getTestRunsByExercise(firstBug);
     // const bug1Status = null;
 
     return {
       installId,
       surveyResult,
       tutorialResult,
-      bug1Status,
-      bug1Tries
+      exercise1Progress,
+      // bug1Tries
     };
   }
 }
@@ -79,12 +78,4 @@ let dialogController;
 export function initDialogController() {
   dialogController = new DialogController();
   return dialogController;
-}
-
-export async function maybeStartSurvey1ForTheFirstTime() {
-  const surveyDialog = dialogController.getDialog('survey1');
-
-  if (!surveyDialog.started) {
-    surveyDialog.start('waitToStart');
-  }
 }

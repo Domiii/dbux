@@ -2,6 +2,7 @@ import fs from 'fs';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
+import NestedError from '@dbux/common/src/NestedError';
 import { pathJoin, pathRelative } from '@dbux/common-node/src/util/pathUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { isCodeActionTypes } from '@dbux/data/src/pathways/UserActionType';
@@ -10,6 +11,7 @@ import Collection from '@dbux/data/src/Collection';
 import Indexes from '@dbux/data/src/indexes/Indexes';
 import { getGroupTypeByActionType } from '@dbux/data/src/pathways/ActionGroupType';
 import StepType, { getStepTypeByActionType } from '@dbux/data/src/pathways/StepType';
+import { extractApplicationData, importApplication } from '../dbux-analysis-tools/importExport';
 import { emitNewTestRun, emitNewApplicationsAction } from '../userEvents';
 import getFirstLine from '../util/readFirstLine';
 import PathwaysDataUtil from './pathwaysDataUtil';
@@ -56,7 +58,7 @@ class TestRunCollection extends PathwaysCollection {
  */
 class ApplicationCollection extends PathwaysCollection {
   constructor(pdp) {
-    super('applications', pdp);
+    super('applications', pdp, { asyncDeserialize: true });
     this.addedApplicationUUIDs = new Set();
   }
 
@@ -68,30 +70,36 @@ class ApplicationCollection extends PathwaysCollection {
    * @param {Array<Application>} applications 
    */
   postAddRaw(applications) {
-    for (const app of applications) {
-      const filePath = this.dp.session.getApplicationFilePath(app.uuid);
-      const { version, collections } = app.dataProvider.serializeJson();
-      const header = JSON.stringify({ headerTag: true, version });
-      if (!fs.existsSync(filePath)) {
-        try {
-          const s = JSON.stringify(collections);
-          // const s = Object.entries(collections || EmptyObject).map(([key, value]) => ).join(',');
-          fs.appendFileSync(filePath, `${header}\n${s}\n`, { flag: 'ax' });
-        }
-        catch (err) {
-          logError(`Cannot write header of application log file at ${filePath}. Error:`, err);
-        }
-        app.dataProvider.onAnyData(data => {
-          const { collections: serializedNewData } = app.dataProvider.serializeJson(Object.entries(data));
-          fs.appendFileSync(filePath, JSON.stringify(serializedNewData) + '\n');
-        });
-      }
-      else {
-        warn(`Found existing log file at "${filePath}", added old application without \`isNew=false\``);
-      }
+    this.handleApplicationAdded(applications);
+    this.dp.updateIndexFile();
+  }
+
+  handleApplicationAdded(apps) {
+    for (const app of apps) {
+      app.dataProvider.onAnyData(data => {
+        this.handleDataAdded(app, data);
+      });
+
+      this.handleDataAdded(app);
+    }
+  }
+
+  handleDataAdded(app, allData = null) {
+    let serializedData;
+    if (allData) {
+      serializedData = app.dataProvider.serializeJson(Object.entries(allData));
+    }
+    else {
+      serializedData = app.dataProvider.serializeJson();
     }
 
-    this.dp.updateIndexFile();
+    const filePath = this.dp.session.getApplicationFilePath(app.uuid);
+    if (!fs.existsSync(filePath)) {
+      const header = JSON.stringify({ headerTag: true });
+      fs.appendFileSync(filePath, `${header}\n`, { flag: 'ax' });
+    }
+
+    fs.appendFileSync(filePath, `${JSON.stringify(serializedData)}\n`);
   }
 
   postAddProcessed(apps) {
@@ -102,36 +110,25 @@ class ApplicationCollection extends PathwaysCollection {
 
   /**
    * @param {Application} application 
-   * @return {Object} plain JS Object
    */
   serialize(application) {
-    const { entryPointPath, createdAt, uuid } = application;
-    const relativeEntryPointPath = pathRelative(allApplications.appRoot, entryPointPath);
-    return {
-      relativeEntryPointPath,
-      createdAt,
-      uuid
-    };
+    return extractApplicationData(application);
   }
 
-  /**
-   * @param {PathwaysDataProvider} pdp 
-   */
-  deserialize({ relativeEntryPointPath, createdAt, uuid }) {
-    const entryPointPath = pathJoin(allApplications.appRoot, relativeEntryPointPath);
-    const app = allApplications.addApplication({ entryPointPath, createdAt, uuid });
-    const filePath = this.dp.session.getApplicationFilePath(app.uuid);
+  async deserialize(appData) {
+    let app;
+    const { uuid } = appData;
+    const appFilePath = this.dp.session.getApplicationFilePath(uuid);
+    this.addedApplicationUUIDs.add(uuid);
     try {
-      const fileString = fs.readFileSync(filePath, 'utf8');
+      const fileString = fs.readFileSync(appFilePath, 'utf8');
       const [header, ...lines] = fileString.split(/\r?\n/);
-      const { version } = JSON.parse(header);
-      for (const line of lines.filter(l => !!l)) {
-        app.dataProvider.deserializeJson({ version, collections: JSON.parse(line) });
-      }
+      const allDpData = lines.filter(l => !!l).map(line => JSON.parse(line));
+      app = await importApplication(appData, allDpData);
     }
     catch (err) {
       if (err.code === 'ENOENT') {
-        logError(`Cannot recover application: log file not found at ${filePath}`);
+        logError(`Cannot recover application: log file not found at ${appFilePath}`);
       }
       throw err;
     }
@@ -436,9 +433,15 @@ export default class PathwaysDataProvider extends DataProviderBase {
   /**
    * Reset pdp and load from log file
    */
-  init() {
+  async init() {
     this.reset();
-    this.load();
+
+    if (fs.existsSync(this.logFilePath)) {
+      await this.load();
+    }
+    else {
+      this.writeHeader();
+    }
   }
 
   reset() {
@@ -476,7 +479,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
     fs.unlinkSync(this.logFilePath);
 
     this.writeHeader();
-    this.writeAll(
+    this.writeData(
       Object.fromEntries(['testRuns', 'applications'].
         map(name => this.collections[name]).
         map(collection => [collection.name, Array.from(collection)])
@@ -488,37 +491,23 @@ export default class PathwaysDataProvider extends DataProviderBase {
 
   /**
    * Load data from log file
-   * NOTE: PDP uses a different way to save/load since we want to store data incrementally, which we cannot do with serialize/deserializeJSON
    */
-  load() {
+  async load() {
     try {
-      let [headerString, ...allData] = fs.readFileSync(this.logFilePath, 'utf8').split(/\r?\n/);
-      const header = JSON.parse(headerString);
-      if (!header.headerTag) {
-        // old log files have no headers, 
-        warn(`No header is found in log file, assume it is of version 1`);
-        allData.unshift(headerString);
-        header.version = 1;
-      }
-      allData = allData.filter(s => s).map((s) => JSON.parse(s));
-
-      const dataToAdd = Object.fromEntries(Object.keys(this.collections).map(name => [name, []]));
-      for (let { collectionName, data } of allData) {
-        if (this.collections[collectionName].deserialize) {
-          data = this.collections[collectionName].deserialize(data);
+      let [headerString, ...lines] = fs.readFileSync(this.logFilePath, 'utf8').split(/\r?\n/);
+      for (const line of lines) {
+        if (line) {
+          const data = JSON.parse(line);
+          await this.deserializeJson(data);
         }
-        dataToAdd[collectionName].push(data);
       }
-      this.loadByVersion[header.version](header, dataToAdd);
     }
     catch (err) {
       if (err.code === 'ENOENT') {
-        log(`No log file found at "${this.logFilePath}", header written`);
-        this.writeHeader();
+        logError(`[load] No log file found at "${this.logFilePath}"`);
       }
       else {
-        logError('Failed to load from log file:', err);
-        throw err;
+        throw new NestedError(`PathwaysDataProvider failed to load from log file`, err);
       }
     }
   }
@@ -532,30 +521,13 @@ export default class PathwaysDataProvider extends DataProviderBase {
     super.addData(allData, isRaw);
 
     if (isRaw) {
-      this.writeAll(allData);
+      this.writeData(allData);
     }
   }
 
-  writeAll(data) {
-    // const str = Object.entries(data)
-    //   .map(([name, entries]) => `${name}: ${entries.length}`)
-    //   .join(', ');
-    // this.logger.debug(`writeAll - ${str}`);
-    for (const collectionName in data) {
-      for (let entry of data[collectionName]) {
-        if (this.collections[collectionName].serialize) {
-          entry = this.collections[collectionName].serialize(entry);
-        }
-        this.writeCollectionData(collectionName, entry);
-      }
-    }
-  }
-
-  /**
-   * @param {string} collectionName
-   */
-  writeCollectionData(collectionName, data) {
-    fs.appendFileSync(this.logFilePath, `${JSON.stringify({ collectionName, data })}\n`, { flag: 'a' });
+  writeData(data) {
+    const dataString = JSON.stringify(this.serializeJson(Object.entries(data)));
+    fs.appendFileSync(this.logFilePath, `${dataString}\n`);
   }
 
   writeHeader() {

@@ -27,10 +27,10 @@ export async function showHelp(message) {
   if (isDefaultHelp) {
     btns = {
       async [translate('showHelp.tutorial')]() {
-        return dialogController.startDialog('tutorial');
+        return await dialogController.startDialog('tutorial');
       },
       async [translate('showHelp.survey')]() {
-        return dialogController.startDialog('survey1');
+        return await dialogController.startDialog('survey1');
       },
       ...btns
     };

@@ -6,7 +6,7 @@ import Collection from '../Collection';
  */
 export default class AsyncEventCollection extends Collection {
   constructor(dp) {
-    super('asyncEvents', dp, true);
+    super('asyncEvents', dp, { hasNoRuntime: true });
 
     // NOTE: this collection is not populated by `runtime`
     this._all.push(null);

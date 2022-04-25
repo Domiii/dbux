@@ -10,7 +10,7 @@ import { getStopwatch } from './practiceStopwatch';
 import { getProjectManager } from './projectControl';
 import { initProjectCommands } from '../commands/projectCommands';
 import { set as mementoSet, get as mementoGet, remove as mementoRemove } from '../memento';
-import { showInformationMessage } from '../codeUtil/codeModals';
+import { chooseFile, showInformationMessage } from '../codeUtil/codeModals';
 import { initCodeEvents } from '../practice/codeEvents';
 import { translate } from '../lang';
 import { getLogsDirectory } from '../codeUtil/codePath';
@@ -201,27 +201,26 @@ export class ProjectViewController {
   }
 
   async loadPracticeSession() {
-    const openFileDialogOptions = {
-      // TOTRANSLATE
+    // TOTRANSLATE
+    const fileDialogOptions = {
       title: 'Select a log file to read',
-      canSelectFolders: false,
-      canSelectMany: false,
+      folder: getLogsDirectory(),
       filters: {
         'Dbux Log File': ['dbuxlog']
       },
-      defaultUri: Uri.file(getLogsDirectory())
     };
-    const file = (await window.showOpenDialog(openFileDialogOptions))?.[0];
-    if (file) {
+    const filePath = await chooseFile(fileDialogOptions);
+
+    if (filePath) {
       // TOTRANSLATE
       const title = 'Load practice log';
       const loaded = await this.runProjectTask(title, async (report) => {
         // TOTRANSLATE
         report({ message: 'Loading file....' });
-        return await this.manager.loadPracticeSessionFromFile(file.fsPath);
+        return await this.manager.loadPracticeSessionFromFile(filePath);
       });
       if (loaded) {
-        await showInformationMessage(`Log file ${file.fsPath} loaded`);
+        await showInformationMessage(`Log file ${filePath} loaded`);
       }
     }
   }

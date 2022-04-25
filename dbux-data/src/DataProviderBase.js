@@ -439,9 +439,10 @@ export default class DataProviderBase {
   }
 
   /**
+   * NOTE: `Collection.deserialize` either returns a Promise or an entry. In the former case, set config `Collection.asyncDeserialize` to `true` to handle async deserialization.
    * Use: `dataProvider.deserializeJson(JSON.parse(serializedString))`
    */
-  deserializeJson(data) {
+  async deserializeJson(data) {
     const { version, collections } = data;
     if (version !== this.version) {
       throw new Error(`could not serialize DataProvider - incompatible version: ${version} !== ${this.version}`);
@@ -450,7 +451,8 @@ export default class DataProviderBase {
     for (const collectionName in collections) {
       const collection = this.collections[collectionName];
       if (collection.deserialize) {
-        collections[collectionName] = collections[collectionName].map(obj => collection.deserialize(obj));
+        const deserialized = collections[collectionName].map(obj => collection.deserialize(obj));
+        collections[collectionName] = collection.asyncDeserialize ? await Promise.all(deserialized) : deserialized;
       }
     }
     this.addData(collections, false);

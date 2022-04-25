@@ -35,8 +35,11 @@ export default class ExerciseDataProvider extends DataProviderBase {
     this.manager = manager;
     this.storage = manager.externals.storage;
 
-    this.init();
-    this.load();
+    this.reset();
+  }
+
+  async init() {
+    await this.load();
   }
 
   // ###########################################################################
@@ -101,7 +104,7 @@ export default class ExerciseDataProvider extends DataProviderBase {
    * Implementation, add indexes here
    * Note: Also resets all collections
    */
-  init() {
+  reset() {
     this.collections = {
       exerciseProgresses: new ExerciseProgressCollection(this)
     };
@@ -126,20 +129,15 @@ export default class ExerciseDataProvider extends DataProviderBase {
   /**
    * Load serialized data from external storage
    */
-  load() {
+  async load() {
     try {
       const logString = this.storage.get(storageKey);
       if (logString !== undefined) {
-        this.deserializeJson(JSON.parse(logString));
+        await this.deserializeJson(JSON.parse(logString));
       }
     }
     catch (err) {
       logError('Failed to load progress log:', err);
     }
-  }
-
-  async reset() {
-    this.init();
-    await this.save();
   }
 }
