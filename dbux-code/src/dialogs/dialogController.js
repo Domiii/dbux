@@ -21,9 +21,9 @@ export class DialogController {
    * @param {string} dialogName 
    * @param {string} [startState] start dialog with the given state
    */
-  startDialog(dialogName, startState) {
+  async startDialog(dialogName, startState) {
     let dialog = this.getDialog(dialogName);
-    dialog.start(startState);
+    await dialog.start(startState);
   }
 
   /**
