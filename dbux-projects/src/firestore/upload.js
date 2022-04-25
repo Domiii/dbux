@@ -1,5 +1,6 @@
-import { serialize } from "firestore-rest-serdes";
+import { serialize } from 'firestore-rest-serdes';
 import https from 'https';
+import NestedError from '@dbux/common/src/NestedError';
 
 const API_KEY = 'AIzaSyC-d0HDLJ8Gd9UZ175z7dg6J98ZrOIK0Mc';
 
@@ -39,7 +40,7 @@ export async function upload(collectionId, data) {
     });
 
     req.on('error', (err) => {
-      reject(err);
+      reject(new NestedError('Failed to upload to firestore.', err));
     });
 
     req.on('timeout', () => {
