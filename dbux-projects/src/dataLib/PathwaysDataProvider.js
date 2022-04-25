@@ -58,7 +58,7 @@ class TestRunCollection extends PathwaysCollection {
  */
 class ApplicationCollection extends PathwaysCollection {
   constructor(pdp) {
-    super('applications', pdp);
+    super('applications', pdp, { asyncDeserialize: true });
     this.addedApplicationUUIDs = new Set();
   }
 
@@ -527,7 +527,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
 
   writeData(data) {
     const dataString = JSON.stringify(this.serializeJson(Object.entries(data)));
-    fs.appendFileSync(this.logFilePath, `${dataString}\n`, { flag: 'a' });
+    fs.appendFileSync(this.logFilePath, `${dataString}\n`);
   }
 
   writeHeader() {
