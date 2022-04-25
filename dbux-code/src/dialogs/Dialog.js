@@ -28,7 +28,7 @@ export class Dialog {
     this._gotoState = null;
     this._isActive = false;
     this._version = 0;
-    this.logger = newLogger(graph.name);
+    this.logger = newLogger(`Dialog ${graph.name}`);
     this.load();
 
     if (!this.getNode('cancel')) {
@@ -48,12 +48,12 @@ export class Dialog {
     return !!this.graphState.nodeName;
   }
 
-  start(startState) {
+  async start(startState) {
     if (this._resume) {
       this.resume(startState);
     }
     else {
-      _errWrap(this._start.bind(this))(startState);
+      await this._start(startState);
     }
   }
 
@@ -215,9 +215,9 @@ export class Dialog {
       });
     },
 
-    startDialog: (dialogName, startState) => {
-      this.controller.startDialog(dialogName, startState);
-    },
+    // startDialog: (dialogName, startState) => {
+    //   this.controller.startDialog(dialogName, startState);
+    // },
 
     serializeSurveyResult: async () => {
       return await this.controller.serializeSurveyResult();
