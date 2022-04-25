@@ -54,7 +54,7 @@ class ThreadLaneManager {
  */
 export default class AsyncNodeCollection extends Collection {
   constructor(dp) {
-    super('asyncNodes', dp, true);
+    super('asyncNodes', dp, { hasNoRuntime: true });
 
     // NOTE: this collection is not populated by `runtime`
     this._all.push(null);

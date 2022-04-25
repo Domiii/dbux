@@ -127,7 +127,7 @@ export default class Application {
     const { staticProgramContexts } = this.dataProvider.collections;
     const paths = staticProgramContexts.getAllExisting().map(p => p.filePath);
     const commonAncestorPath = getCommonAncestorPath(...paths);
-    if (fs.lstatSync(commonAncestorPath).isDirectory()) {
+    if (paths.length > 1) {
       return commonAncestorPath;
     }
     else {
