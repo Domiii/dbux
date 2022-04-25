@@ -7,7 +7,7 @@ import Collection from '../Collection';
  */
 export default class PromiseLinkCollection extends Collection {
   constructor(dp) {
-    super('promiseLinks', dp, true);
+    super('promiseLinks', dp, { hasNoRuntime: true });
     this._all.push(null);
   }
 

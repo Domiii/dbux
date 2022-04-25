@@ -34,6 +34,7 @@ export class CodeApplication extends Application {
 export function initCodeApplications(/* context */) {
   allApplications.DefaultApplicationClass = CodeApplication;
   allApplications.appRoot = getProjectManager().config.projectsRoot || getCodeDirectory();
+  allApplications.projectsRoot = getProjectManager().config.projectsRoot;
 }
 
 export function getSelectedApplicationInActiveEditor() {

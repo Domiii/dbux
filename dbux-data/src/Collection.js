@@ -1,6 +1,7 @@
 import sumBy from 'lodash/sumBy';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 /**
  * @typedef {import('./DataProviderBase').default} DataProviderBase
@@ -43,11 +44,12 @@ export default class Collection {
    */
   hasNoRuntime;
 
-  constructor(name, dp, hasNoRuntime = false) {
+  constructor(name, dp, { hasNoRuntime = false, asyncDeserialize = false } = EmptyObject) {
     if (!name || !dp) {
       throw new Error(`Collection did not provide name and dp to ctor - ${this.constructor.name}`);
     }
     this.hasNoRuntime = hasNoRuntime;
+    this.asyncDeserialize = asyncDeserialize;
     this.logger = newLogger(`${name}`);
     this.name = name;
     this.dp = dp;

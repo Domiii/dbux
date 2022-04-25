@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import fs from 'fs';
 import { performance } from '@dbux/common/src/util/universalLib';
 import { pathGetParent, pathSafe } from '@dbux/common/src/util/pathUtil';
 import { getCommonAncestorPath, pathNormalizedForce, pathRelative, renderPath } from '@dbux/common-node/src/util/pathUtil';
@@ -125,7 +126,17 @@ export default class Application {
   getAppCommonAncestorPath() {
     const { staticProgramContexts } = this.dataProvider.collections;
     const paths = staticProgramContexts.getAllExisting().map(p => p.filePath);
-    return getCommonAncestorPath(...paths);
+    const commonAncestorPath = getCommonAncestorPath(...paths);
+    if (paths.length > 1) {
+      return commonAncestorPath;
+    }
+    else {
+      return pathGetParent(commonAncestorPath);
+    }
+  }
+
+  getEntryPointPathRelativeToAppAncestorPath() {
+    return this.getPathRelativeToAppAncestorPath(this.entryPointPath);
   }
 
   getAppPackageJsonPath() {

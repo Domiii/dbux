@@ -3,7 +3,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import PathwaysDataProvider from '../dataLib/PathwaysDataProvider';
 import { emitSessionFinishedEvent } from '../userEvents';
-import PracticeSessionState, { isStateFinishedType } from './PracticeSessionState';
+import PracticeSessionState, { isStateFinishedType, isStateStoppedType } from './PracticeSessionState';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PathwaysSession');
@@ -29,9 +29,6 @@ export default class PathwaysSession {
     this.lastAnnotation = '';
 
     this.pathwaysDataProvider = new PathwaysDataProvider(this);
-
-    // init (+ maybe load) pdp
-    this.pdp.init();
   }
 
   get bdp() {
@@ -47,6 +44,14 @@ export default class PathwaysSession {
    */
   get logFilePath() {
     return this._logFilePath || this.getDefaultLogFilePath();
+  }
+
+  async init() {
+    await this.pdp.init();
+  }
+
+  isStopped() {
+    return isStateStoppedType(this.state);
   }
 
   /**
@@ -105,12 +110,6 @@ export default class PathwaysSession {
 
     allApplications.clear();
 
-    this.manager.practiceSession = null;
-
-    await this.save();
-
-    // this.pdp.reset();
-    this.manager._notifyPracticeSessionStateChanged();
     return true;
   }
 
