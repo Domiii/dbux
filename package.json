@@ -71,6 +71,7 @@
     "start": "yarn run build:clean && yarn run version:dev && yarn runall:dev",
     "pub": "node scripts/publish.js",
     "marketplace": "node scripts/publish.js marketplace",
+    "marketplace:minor": "node scripts/publish.js marketplace minor",
     "nra": "node node_modules/npm-run-all/bin/npm-run-all",
     "runall:dev": "npm run nra -- -p watch graph:watch",
     "_runall:dev": "(yarn watch) & (graph:watch)",

@@ -1114,9 +1114,14 @@ export default class ProjectsManager {
     // this.externals.showMessage.info(`Installing dependencies: "${deps.join(', ')}" This might (or might not) take a while...`);
 
     const { npm } = this.paths.inShell;
+
+    // TODO: fix only=prod
+    // const flags = ' --only=prod';
+
+    const flags = '';
     const command = [
-      `${npm} i --only=prod`,
-      ...deps.length && [`${npm} i --only=prod ${deps.join(' ')}`] || EmptyArray
+      `${npm} i`,
+      ...deps.length && [`${npm} i${flags} ${deps.join(' ')}`] || EmptyArray
     ];
 
     // await this.runner._exec(command, logger, execOptions);

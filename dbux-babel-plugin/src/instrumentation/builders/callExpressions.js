@@ -390,12 +390,18 @@ export function buildTraceCallME(state, traceCfg) {
       calleeVar,
       objectVar,
       // objectPath,
-      calleeTrace: {
-        // NOTE: callee was built (but not replaced) by MemberExpression
-        resultNode: calleeAstNode
-      }
+      calleeTrace
     }
   } = traceCfg;
+
+  let calleeAstNode;
+  if (calleeTrace) {
+    // NOTE: callee was built (but not replaced) by MemberExpression
+    ({ resultNode: calleeAstNode } = calleeTrace);
+  }
+  else {
+    // 
+  }
 
   const calleePath = path.get('callee');
   const objectPath = calleePath.get('object');
