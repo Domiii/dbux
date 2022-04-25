@@ -15,7 +15,12 @@ function getUniqueAngle(i) {
   return color;
 }
 
-export function getStaticContextColor(themeMode, staticContextId, { bland = false, highContractMode = false } = EmptyObject) {
+/**
+ * Generate pseudo-random color. Attempts to maximize distance between neighboring input seeds.
+ * 
+ * @param {number} staticContextId input seed
+ */
+export function makeStaticContextColor(themeMode, staticContextId, { bland = false, highContractMode = false } = EmptyObject) {
   const hue = getUniqueAngle(staticContextId);
   let saturation = bland ? 5 : 35;
   let lightness = ThemeMode.is.Dark(themeMode) ? 30 : 65;

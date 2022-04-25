@@ -75,13 +75,21 @@ export default class DataFlowNodeProvider extends BaseTreeViewNodeProvider {
     }
 
     // apply filters
-    const { accessId, valueId } = dataNode;
+    const { accessId, valueId, refId } = dataNode;
+    /**
+     * @type {DataNode[]}
+     */
     let dataNodes;
+    let firstNode = null;
     if (DataFlowSearchModeType.is.ByAccessId(this.controller.searchMode)) {
       dataNodes = dp.indexes.dataNodes.byAccessId.get(accessId);
     }
     else if (DataFlowSearchModeType.is.ByValueId(this.controller.searchMode)) {
       dataNodes = dp.indexes.dataNodes.byValueId.get(valueId);
+
+      if (refId) {
+        firstNode = dp.util.getAnyFirstNodeByRefId(dataNode.refId);
+      }
     }
 
     if (DataFlowFilterModeType.is.ReadOnly(this.controller.filterMode)) {
@@ -92,6 +100,13 @@ export default class DataFlowNodeProvider extends BaseTreeViewNodeProvider {
     }
 
     const dataTraceIds = new Set();
+
+    if (firstNode && dataNodes?.[0]?.nodeId !== firstNode.nodeId) {
+      // manually add first trace
+      // see https://github.com/Domiii/dbux/issues/702
+      dataNodes.unshift(firstNode);
+    }
+
     return dataNodes?.map((node) => {
       const dataTrace = dp.collections.traces.getById(node.traceId);
       if (dataTraceIds.has(dataTrace.traceId)) {
@@ -99,7 +114,12 @@ export default class DataFlowNodeProvider extends BaseTreeViewNodeProvider {
       }
       else {
         dataTraceIds.add(dataTrace.traceId);
-        return this.buildNode(ParentDataNode, node, null);
+        /**
+         * @type {ParentDataNode}
+         */
+        const dataNodeNode = this.buildNode(ParentDataNode, node, null);
+        // dataNodeNode.targetNodeId = ;
+        return dataNodeNode;
       }
     }).filter(x => !!x);
 

@@ -1,17 +1,24 @@
 import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
-import { isVirtualContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
+import ExecutionContextType from '@dbux/common/src/types/constants/ExecutionContextType';
 import Trace from '@dbux/common/src/types/Trace';
-import CollectionIndex from '../../indexes/CollectionIndex';
+import CollectionIndex, { CollectionIndexDependencies } from '../../indexes/CollectionIndex';
 import RuntimeDataProvider from '../../RuntimeDataProvider';
 
 
-/** @extends {CollectionIndex<Trace>} */
+/**
+ * NOTE: used for navigation to find "next child context's trace"
+ * 
+ * @extends {CollectionIndex<Trace>}
+ */
 export default class ParentTracesInRealContextIndex extends CollectionIndex {
   constructor() {
     super('traces', 'parentsByRealContext', { addOnNewData: false });
     this.addedTraces = new Set();
   }
 
+  /**
+   * @type { CollectionIndexDependencies }
+   */
   dependencies = {
 
     // NOTE: we are currently solving index dependencies by simply adding depdendents after dependees
@@ -30,11 +37,15 @@ export default class ParentTracesInRealContextIndex extends CollectionIndex {
          */
         added: (contexts) => {
           for (const context of contexts) {
-            const { parentTraceId, contextType } = context;
-            // skip parent trace of virtualContext
-            if (isVirtualContextType(contextType)) {
+            const { parentTraceId, contextId } = context;
+            // skip empty contexts, e.g. `Await`s
+            if (this.dp.indexes.traces.byContext.getSize(contextId) === 0) {
               continue;
             }
+
+            /**
+             * NOTE: this will filter out non-first virtual contexts, since they have no `parentTraceId`
+             */
             if (parentTraceId && !this.addedTraces.has(parentTraceId)) {
               this.addEntryById(parentTraceId);
               this.addedTraces.add(parentTraceId);

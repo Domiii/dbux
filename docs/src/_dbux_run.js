@@ -4,18 +4,18 @@
  * Process wrapper for running things in the VSCode terminal and communicating
  * process information back to caller extension.
  */
-const spawn = require('child_process');
+const cp = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const process = require('process');
 const { inspect } = require('util');
 
 const Verbose = true;
-const runningTimeout = 10000;
+const WarnDelay = 10 * 1000;
 
-let cwd, command, tmpFolder, options;
+let cwd, command, shell, tmpFolder, options;
 
-const logDebug = (console.debug || console.log).bind(console, '[Dbux]');
+const logDebug = (console.debug || console.log).bind(console, '[Dbux run.js]');
 
 const [
   _node,
@@ -24,39 +24,48 @@ const [
   argsEncoded
 ] = process.argv;
 
+// logDebug(`args`, process.argv);
+
 function main() {
   // node run.js port "cwd" "command"
   const args = JSON.parse(Buffer.from(argsEncoded, 'base64').toString('ascii'));
-  ({ cwd, command, tmpFolder, options = {} } = args);
+  ({ cwd, command, shell = false, tmpFolder, options = {} } = args);
 
   const {
     env: moreEnv
   } = options;
 
-  logDebug('run.js command received:', inspect({
-    node: _node,
-    ...args    // NOTE: spread fully supported since Node v8.3 -- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
-  }));
-
   const processOptions = {
     cwd,
     detached: false,
     stdio: "inherit",
+    shell,
     env: {
       ...process.env,
       ...moreEnv
     }
   };
 
+  logDebug('command received:', inspect({
+    // NOTE: spread requires node@8.3 -- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
+    ...args,
+    // ...processOptions,
+    // env: JSON.stringify(processOptions.env) // compress into single line
+    nodePath: _node
+  }));
+
 
   // run it!
-  const child = spawn.exec(command, processOptions);
+  /**
+   * @see https://nodejs.org/api/child_process.html#child_processexeccommand-options-callback
+   */
+  const child = cp.exec(command, processOptions);
 
   const startTime = new Date();
   const warningIntervalId = setInterval(() => {
     let seconds = ((new Date()) - startTime) / 1000;
     logDebug(`(Terminal task running for ${seconds.toFixed(2)} seconds.)`);
-  }, runningTimeout);
+  }, WarnDelay);
 
 
   // ###########################################################################
@@ -136,7 +145,10 @@ function reportError(error) {
 
 try {
   // go!
-  main();
+  setTimeout(() => {
+    // hackfix: add minor delay due to ugly print issues in cmd
+    main();
+  });
 }
 catch (err) {
   reportError(err);

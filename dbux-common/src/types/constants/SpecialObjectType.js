@@ -1,7 +1,7 @@
 import Enum from '../../util/Enum';
 
 /**
- * Warning: some of these are mapped from `SpecialIdentifierType`
+ * WARNING: some of these are mapped from `SpecialIdentifierType`
  * {@link TraceCollection#registerValueRefSpecialObjectType}
  */
 let specialObjectType = {

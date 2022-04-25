@@ -2,8 +2,12 @@ import ComponentEndpoint from '@dbux/graph-common/src/componentLib/ComponentEndp
 import DOMWrapper from '../dom/DOMWrapper';
 import ClientComponentList from './ClientComponentList';
 
+// const Verbose = 1;
+const Verbose = 0;
+
 /**
  * The Client endpoint is controlled by the Host endpoint.
+ * @extends ComponentEndpoint<ClientComponentEndpoint>
  */
 class ClientComponentEndpoint extends ComponentEndpoint {
   /**
@@ -68,19 +72,31 @@ class ClientComponentEndpoint extends ComponentEndpoint {
   // private methods
   // ###########################################################################
 
+  _build(componentManager, parent, componentId, initialState, clientProps) {
+    // store client endpoint props
+    Object.assign(this, clientProps);
+
+    // build
+    return super._build(componentManager, parent, componentId, initialState);
+  }
+
   _performClientInit(role) {
     this._internalRoleName = role;
     if (this.owner) {
       const list = this.owner._getComponentListByRoleName(role);
       list._addComponent(this);
     }
+    Verbose > 0 && this.logger.log('init started');
     this.init();
+    Verbose > 0 && this.logger.log('init started');
     this.isInitialized = true;
   }
 
   _performUpdate() {
     try {
+      Verbose > 0 && this.logger.log('update started');
       this.update();
+      Verbose > 0 && this.logger.log('update finished');
     }
     catch (err) {
       this.logger.warn('Component update failed', err);

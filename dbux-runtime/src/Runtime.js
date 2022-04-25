@@ -106,6 +106,17 @@ export default class Runtime {
   }
 
   /**
+   * @return {boolean} Whether stack top is given static context.
+   */
+  isStaticContextOnStack(programId, inProgramStaticContextId) {
+    const topContextId = this.peekCurrentContextId();
+    if (topContextId) {
+      return executionContextCollection.isContextOfStaticContext(topContextId, programId, inProgramStaticContextId);
+    }
+    return false;
+  }
+
+  /**
    * We currently have no good heuristics for checking whether we want to resume
    * an interrupted stack when pushing to an empty stack.
    * Instead, we need to rely on `_maybeResumeInterruptedStackOnPop` to try healing things
@@ -115,7 +126,7 @@ export default class Runtime {
   _maybeResumeInterruptedStackOnPushEmpty(contextId) {
     if (this._waitingStacks.has(contextId)) {
       // resume previous stack
-      this.resumeWaitingStackAndPopAwait(contextId);
+      this.resumeWaitingStackAndPop(contextId);
       return true;
     }
     else {
@@ -324,6 +335,10 @@ export default class Runtime {
     return this._executingStack?.peek() || null;
   }
 
+  peekCurrentContextIdTwo() {
+    return this._executingStack?.peekTwo() || null;
+  }
+
   // ###########################################################################
   // Push + Pop basics
   // ###########################################################################
@@ -375,7 +390,7 @@ export default class Runtime {
 
     if (!stack) {
       // we probably had an unhandled interrupt that is now resumed
-      stack = this.resumeWaitingStackAndPopAwait(contextId);
+      stack = this.resumeWaitingStackAndPop(contextId);
       if (!stack) {
         logError(`Could not pop contextId off stack because there is stack active, and no waiting stack registered with this contextId`, contextId);
         return -1;
@@ -504,28 +519,25 @@ export default class Runtime {
   // async stuff
   // ###########################################################################
 
-  registerAwait(awaitContextId, parentContext, awaitArgument) {
-    if (!this.isExecuting()) {
-      logError('Encountered `await`, but there was no active stack ', awaitContextId);
-      return;
-    }
+  registerAwait(awaitContextId, realContextId, awaitArgument) {
+    // NOTE: the following check is outdated. Now, the stack might be empty (because we don't keep the async function around anymore).
+    // if (!this.isExecuting()) {
+    //   logError('Encountered `await`, but there was no active stack ', awaitContextId);
+    //   return;
+    // }
 
     this.push(awaitContextId, true);
-
-    // NOTE: we already marked it as waiting when we pushed the real context
-    // NOTE: stack might keep popping before it actually pauses, so we don't unset executingStack quite yet.
-    this._markWaiting(awaitContextId);
   }
 
   /**
    * Manually climb up the stack.
    * NOTE: We are waiting now, and see on the stack:
    *    1. Await (top)
-   *    2. async function (top-1)
+   *    (2. We also used to see: async function (top-1))
    * -> However, next trace will be outside of the function, so we want to skip both.
    */
   skipPopPostAwait() {
-    this._executingStack._peekIdx -= 2;
+    this._executingStack._peekIdx -= 1;
   }
 
   /**
@@ -547,18 +559,18 @@ export default class Runtime {
 
   /**
    * Finds the stack containing the given `Resume` context, resumes the stack
-   * and pops the `Resume` context.
+   * and pops the given {@link popContextId}.
    */
-  resumeWaitingStackAndPopAwait(awaitContextId) {
-    const waitingStack = this._switchStackOnResume(awaitContextId);
+  resumeWaitingStackAndPop(popContextId) {
+    const waitingStack = this._switchStackOnResume(popContextId);
     if (!waitingStack) {
-      logTrace('resumeWaitingStack called on unregistered `resumeContextId`:', awaitContextId);
+      logTrace('resumeWaitingStack called on unregistered `awaitContextId`:', popContextId);
       return null;
     }
 
     // pop the await/yield context
-    this._markResume(awaitContextId);
-    this.pop(awaitContextId);
+    this._markResume(popContextId);
+    this.pop(popContextId);
 
     return waitingStack;
   }

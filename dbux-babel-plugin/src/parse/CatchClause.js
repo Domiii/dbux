@@ -27,7 +27,8 @@ export default class CatchClause extends BaseNode {
      * @type {TryStatement}
      */
     const tryNode = this.peekNodeForce('TryStatement');
-    tryNode.addConsequentStartTrace(this, TraceType.Catch, 'traceCatch');
+    const traceCall = this.StaticContext.isInterruptable ? 'traceCatchInterruptable' : 'traceCatch';
+    tryNode.addConsequentStartTrace(this, TraceType.Catch, traceCall);
 
     if (paramNode) {
       const moreTraceData = {

@@ -15,12 +15,13 @@ import { initCodeEvents } from '../practice/codeEvents';
 import { translate } from '../lang';
 import { getLogsDirectory } from '../codeUtil/codePath';
 import { addProjectFolderToWorkspace, getDefaultWorkspaceFilePath, isProjectFolderInWorkspace, maybeCreateWorkspaceFile } from '../codeUtil/workspaceUtil';
+import { emitShowHideProjectViewsAction } from '../userEvents';
 
 /** @typedef {import('./practiceView/ExerciseNode').ExerciseNode} ExerciseNode */
 /** @typedef {import('@dbux/projects/src/projectLib/Exercise').default} Exercise */
 
 const ShowProjectViewKeyName = 'dbux.projectView.showing';
-const ActivatingBugKeyName = 'dbux.projectView.activatingBug';
+const ActivatingExerciseKeyName = 'dbux.projectView.activatingExercise';
 
 // ########################################
 //  setup logger for project
@@ -56,7 +57,7 @@ export class ProjectViewController {
         await showInformationMessage(translate('projectView.existBug.message', { bug: bug.id }), {
           [translate('projectView.existBug.ok')]() { },
           [translate('projectView.existBug.giveUp')]: async () => {
-            await this.manager.stopPractice();
+            await this.manager.exitPracticeSession();
           }
         });
       }
@@ -74,7 +75,7 @@ export class ProjectViewController {
     return !this.manager.practiceSession;
   }
 
-  async handleStatusChanged(status) {
+  handleStatusChanged = async (status) => {
     try {
       await commands.executeCommand('setContext', 'dbuxProjectView.context.isBusy', RunStatus.is.Busy(status));
       this.isShowingPraciceView() && this.projectViewNodeProvider.refreshIcon();
@@ -111,31 +112,32 @@ export class ProjectViewController {
 
       this.practiceStopwatch = getStopwatch();
       this.practiceStopwatch.onClick(context, async () => {
-        await this.manager.stopPractice();
+        await this.manager.exitPracticeSession();
       });
 
       // ########################################
       //  listen on practice status changed
       // ########################################
-      this.manager.onRunStatusChanged(this.handleStatusChanged.bind(this));
-      this.manager.onBugStatusChanged(this.refresh.bind(this));
+      this.manager.onRunStatusChanged(this.handleStatusChanged);
+      this.manager.onBugStatusChanged(this.handleStatusChanged);
       this.manager.onPracticeSessionStateChanged(this.handlePracticeSessionStateChanged.bind(this));
 
       initCodeEvents(this.manager, context);
 
       this.maybeNotifyExistingPracticeSession();
 
-
-      // recover
-      progress.report({ message: 'Recovering practice session...' });
-      const previousActivatingExerciseId = mementoGet(ActivatingBugKeyName);
-      const previousActivatingBug = this.manager.getExerciseById(previousActivatingExerciseId);
-      if (previousActivatingBug) {
-        await mementoRemove(ActivatingBugKeyName);
-        await this.startPractice(previousActivatingBug);
+      const previousActivatingExerciseId = mementoGet(ActivatingExerciseKeyName);
+      const previousActivatingExercise = this.manager.getExerciseById(previousActivatingExerciseId);
+      if (previousActivatingExercise) {
+        // continute the activation process
+        progress.report({ message: 'Continuing the activation process...' });
+        await mementoRemove(ActivatingExerciseKeyName);
+        await this.startPractice(previousActivatingExercise);
       }
-      else if (await this.manager.tryRecoverPracticeSession()) {
-        // projectManager.maybeAskForTestBug(projectManager.activeBug);
+      else {
+        // recover old practice session
+        progress.report({ message: 'Recovering practice session...' });
+        await this.manager.tryRecoverPracticeSession();
       }
 
       this.refresh();
@@ -148,7 +150,7 @@ export class ProjectViewController {
 
   async toggleTreeView() {
     if (this.isShowingTreeView) {
-      if (!await this.confirmCancelPracticeSession()) {
+      if (!await this.manager.exitPracticeSession()) {
         return;
       }
     }
@@ -160,6 +162,7 @@ export class ProjectViewController {
     await commands.executeCommand('setContext', 'dbux.context.showPracticeViews', this.isShowingTreeView);
     await mementoSet(ShowProjectViewKeyName, this.isShowingTreeView);
     this.refresh();
+    emitShowHideProjectViewsAction(this.isShowingTreeView);
   }
 
   async handlePracticeSessionStateChanged() {
@@ -180,14 +183,12 @@ export class ProjectViewController {
    * @param {Exercise} exercise 
    */
   async startPractice(exercise) {
-    if (this.manager.practiceSession) {
-      if (!await this.confirmCancelPracticeSession()) {
-        return;
-      }
+    if (!await this.manager.exitPracticeSession()) {
+      return;
     }
 
     const { project } = exercise;
-    const title = `Bug ${`"${exercise.label}"` || ''} (${exercise.id})`;
+    const title = `Exercise ${`"${exercise.label}"` || ''} (${exercise.id})`;
     await this.runProjectTask(title, async (report) => {
       if (!await this.maybeAskForOpenProjectWorkspace(project, exercise)) {
         return;
@@ -248,10 +249,6 @@ export class ProjectViewController {
     }, { title, cancellable });
   }
 
-  async confirmCancelPracticeSession() {
-    return await this.manager.stopPractice();
-  }
-
   /** ###########################################################################
    * lastWorkspacePath
    *  #########################################################################*/
@@ -291,8 +288,9 @@ export class ProjectViewController {
       "Create + open new workspace for project";
     buttons[openDefaultWorkspaceLabel] = async () => {
       maybeCreateWorkspaceFile(project);
+      // NOTE: `openWorkspace` reloads the window immediately, we check the key `ActivatingExerciseKeyName` on start to continue the activation process
       await Promise.all([
-        mementoSet(ActivatingBugKeyName, exercise.id),
+        mementoSet(ActivatingExerciseKeyName, exercise.id),
         mementoSet(this.getLastWorkspaceKeyName(exercise), defaultProjectWorkspacePath)
       ]);
       await commands.executeCommand('vscode.openFolder', Uri.file(defaultProjectWorkspacePath));
@@ -302,7 +300,7 @@ export class ProjectViewController {
     const lastWorkspacePath = mementoGet(this.getLastWorkspaceKeyName(exercise));
     if (lastWorkspacePath && fs.existsSync(lastWorkspacePath) && lastWorkspacePath !== workspace.workspaceFile?.fsPath) {
       buttons["Open last workspace"] = async () => {
-        await mementoSet(ActivatingBugKeyName, exercise.id);
+        await mementoSet(ActivatingExerciseKeyName, exercise.id);
         await commands.executeCommand('vscode.openFolder', Uri.file(lastWorkspacePath));
       };
     }

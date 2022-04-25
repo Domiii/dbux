@@ -50,7 +50,7 @@ export default class DataProviderBase {
   versions = [];
 
   /**
-   * @type {Object.<string, Object.<string, CollectionIndex?>>}
+   * @type {Indexes | Object.<string, Object.<string, CollectionIndex?>>}
    */
   indexes;
 
@@ -231,6 +231,9 @@ export default class DataProviderBase {
     newQuery._init(this);
   }
 
+  /**
+   * @param {CollectionIndex} newIndex 
+   */
   addIndex(newIndex) {
     this.indexes._addIndex(newIndex);
     newIndex._init(this);
@@ -327,7 +330,17 @@ export default class DataProviderBase {
 
     // NOTE: needs to ensure that these `postIndex` methods wont affect previous indexes' key
     if (isRaw) {
-      // notify collections that adding(raw data) has finished
+      // // postIndexRaw of indexes
+      // for (const collectionName of this.indexes) {
+      //   const indexes = this.indexes[collectionName];
+      //   for (const indexName of this.indexes) {
+      //     const index = indexes[indexName];
+      //     const entries = allData[collectionName];
+      //     index.postIndexRaw?.(entries);
+      //   }
+      // }
+
+      // postIndexRaw of collections
       for (const collectionName of collectionNames) {
         const collection = this.collections[collectionName];
         const entries = allData[collectionName];
@@ -343,6 +356,10 @@ export default class DataProviderBase {
     }
   }
 
+  /**
+   * Called after `postAdd`.
+   * That includes add calls from collections that add data manually.
+   */
   _notifyData(collectionNames, allData) {
     // fire internal event listeners
     for (const collectionName of collectionNames) {

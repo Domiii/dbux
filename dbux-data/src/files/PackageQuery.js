@@ -57,7 +57,7 @@ export default class PackageQuery extends SubscribableQuery {
           // default package
           order = 1;
           packageId = {
-            name: '(application)',
+            name: null, // NOTE: we do this, so it matches `DataProviderUtil`'s package logic
             folder: this.dp.application.getAppCommonAncestorPath() // TODO!
           };
         }

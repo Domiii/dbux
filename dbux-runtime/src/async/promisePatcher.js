@@ -20,8 +20,8 @@ const { log, debug, warn, error: logError } = newLogger('PromisePatcher');
 
 /** @typedef {import('../RuntimeMonitor').default} RuntimeMonitor */
 
-const Verbose = true;
-// const Verbose = false;
+// const Verbose = true;
+const Verbose = false;
 
 const PromiseInstrumentationDisabled = false;
 
@@ -74,12 +74,12 @@ export default function initPatchPromise(_runtimeMonitorInstance) {
  * Consider patching promise, when encountering it for the first time by valueCollection.
  */
 function maybePatchPromiseNewValue(promise) {
-  const promisifyPromiseVirtualRef = RuntimeMonitorInstance.runtime.getPromisifyPromiseVirtualRef();
-  if (promisifyPromiseVirtualRef) {
-    // add PromisifyPromise link
-    const promiseId = getPromiseId(promise);
-    RuntimeMonitorInstance._runtime.async.promisifyPromise(promiseId, promisifyPromiseVirtualRef);
-  }
+  // const promisifyPromiseVirtualRef = RuntimeMonitorInstance.runtime.getPromisifyPromiseVirtualRef();
+  // if (promisifyPromiseVirtualRef) {
+  //   // future-work: add PromisifyPromise link
+  //   const promiseId = getPromiseId(promise);
+  //   RuntimeMonitorInstance._runtime.async.promisifyPromise(promiseId, promisifyPromiseVirtualRef);
+  // }
   maybePatchPromise(promise);
 }
 
@@ -147,7 +147,7 @@ function patchThenCallback(cb, thenRef) {
       finally {
         const wasCbInstrumented = executionContextCollection.getLastIndex() > lastContextIndex;
         const cbContext = wasCbInstrumented && getContextOfFunc(lastContextIndex, originalCb) || null;
-        if (isThenable(returnValue)) {
+        if (valueCollection.getIsThenable(returnValue)) {
           // nested promise: a promise was returned by thenCb
 
           if (!getPromiseId(returnValue)) {
@@ -173,7 +173,7 @@ function patchThenCallback(cb, thenRef) {
           }
 
           // console.trace('thenCb', cbContext?.contextId, getPromiseId(returnValue));
-          // set async function call's `AsyncEventUpdate.promiseId`
+          // set async context's `AsyncEventUpdate.callerPromiseId`
           const promiseId = getPromiseId(returnValue);
           cbContext && RuntimeMonitorInstance._runtime.async.setAsyncContextPromise(cbContext, promiseId);
         }
@@ -340,7 +340,7 @@ function callThen(preEventPromise, successCb, failCb) {
 }
 
 function callFinally(preEventPromise, cb) {
-  return originalFinally.call(preEventPromise, cb); 
+  return originalFinally.call(preEventPromise, cb);
 }
 
 // ###########################################################################
@@ -491,12 +491,13 @@ function doResolve(promise, patchedResolve, executorRealRootId, executorRootId, 
     if (Verbose) {
       const stack = RuntimeMonitorInstance.runtime._executingStack?.humanReadableString();
       debug(
-        `[promisify resolve] ${asyncPromisifyPromiseId} (${resolveRealRootId}). ${executorRealRootId} != ${resolveRealRootId}, ${executorRealRootId} != ${thenRef.rootId}. stack:` +
+        // eslint-disable-next-line max-len
+        `[promisify resolve] ${asyncPromisifyPromiseId} (${resolveRealRootId}). executorRealRootId=${executorRealRootId}, resolveRealRootId=${resolveRealRootId}, thenRef.rootId=${thenRef.rootId}. stack:` +
         `${stack || '(empty)'}`
       );
     }
 
-    const innerPromise = isThenable(inner) && inner || null;
+    const innerPromise = valueCollection.getIsThenable(inner) && inner || null;
 
     RuntimeMonitorInstance._runtime.async.resolve(
       innerPromise, promise, resolveRealRootId, PromiseLinkType.PromisifyResolve, thenRef.schedulerTraceId, asyncPromisifyPromiseId
@@ -611,7 +612,7 @@ monkeyPatchFunctionHolder(Promise, 'resolve',
     const value = args[0];
     const result = originalFunction.apply(thisArg, args);
 
-    if (value !== result && isThenable(value) && getPromiseId(value)) {
+    if (value !== result && valueCollection.getIsThenable(value) && getPromiseId(value)) {
       const thenRef = _makeThenRef(result, patchedFunction);
 
       RuntimeMonitorInstance._runtime.async.resolve(value, result, thenRef?.rootId, PromiseLinkType.Resolve, thenRef?.schedulerTraceId);
@@ -626,7 +627,7 @@ monkeyPatchFunctionHolder(Promise, 'reject',
     const value = args[0];
     const result = originalFunction.apply(thisArg, args);
 
-    if (value !== result && isThenable(value) && getPromiseId(value)) {
+    if (value !== result && valueCollection.getIsThenable(value) && getPromiseId(value)) {
       const thenRef = _makeThenRef(result, patchedFunction);
 
       RuntimeMonitorInstance._runtime.async.resolve(value, result, thenRef?.rootId, PromiseLinkType.Reject, thenRef?.schedulerTraceId);
@@ -737,15 +738,18 @@ function raceHandler(thisArg, args, originalFunction, patchedFunction) {
     for (let i = 0; i < nestedArr.length; ++i) {
       const p = nestedArr[i];
       // TODO: use `valueCollection._startAccess` before starting to read (potential) promise properties
-      if (isThenable(p)) {
+      if (valueCollection.getIsThenable(p)) {
         // eslint-disable-next-line no-loop-func
-        nestedArr[i] = callFinally(() => {
-          if (hasFinished) {
-            return;
+        nestedArr[i] = callFinally(
+          p,
+          () => {
+            if (hasFinished) {
+              return;
+            }
+            hasFinished = true;
+            RuntimeMonitorInstance._runtime.async.race(p, racePromise, thenRef?.schedulerTraceId);
           }
-          hasFinished = true;
-          RuntimeMonitorInstance._runtime.async.race(p, racePromise, thenRef?.schedulerTraceId);
-        });
+        );
       }
     }
   }
@@ -777,7 +781,7 @@ function anyHandler(thisArg, args, originalFunction, patchedFunction) {
     for (let i = 0; i < nestedArr.length; ++i) {
       const p = nestedArr[i];
       // TODO: use `valueCollection._startAccess` before starting to read (potential) promise properties
-      if (isThenable(p)) {
+      if (valueCollection.getIsThenable(p)) {
         // eslint-disable-next-line no-loop-func
         nestedArr[i] = callFinally(p, () => {
           if (hasFinished) {

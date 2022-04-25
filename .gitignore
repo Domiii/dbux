@@ -4,6 +4,7 @@
 /projects
 __samplesOutput__
 /samples/**/*.inst.js
+/samples/**/*.dbux.js
 /samples/**/*.es5.js
 /samples/**/*.node.js
 /samples/**/test-data*
@@ -18,6 +19,7 @@ userdata
 # node_modules in asset folder are allowed
 node_modules/
 !dbux-projects/assets/**/node_modules/
+!samples/__samplesInput__/**/node_modules/
 
 # auto-generated files
 dbux-babel-plugin/src/parse/_registry.js
@@ -44,6 +46,9 @@ __pycache__
 
 # OS
 .DS_Store
+
+# stackdump: https://stackoverflow.com/questions/12906523/how-can-i-interpret-a-stackdump-file
+*.stackdump
 
 # Logs
 logs

@@ -19,12 +19,14 @@ import ExerciseStatus from './dataLib/ExerciseStatus';
 import BackendController from './backend/BackendController';
 import PathwaysDataProvider from './dataLib/PathwaysDataProvider';
 import PracticeSessionState from './practiceSession/PracticeSessionState';
-import { initUserEvents, emitSessionFinishedEvent, emitPracticeSessionEvent, onUserEvent, emitUserEvent } from './userEvents';
+import { emitPracticeSessionEvent, onUserEvent, emitUserEvent } from './userEvents';
 import ExerciseDataProvider from './dataLib/ExerciseDataProvider';
 import initLang, { getTranslationScope } from './lang';
 import upload from './fileUpload';
 import { checkSystem, getDefaultRequirement } from './checkSystem';
 import Chapter from './projectLib/Chapter';
+import { initProcess } from './util/Process';
+import PathwaysSession from './practiceSession/PathwaysSession';
 
 const logger = newLogger('PracticeManager');
 // eslint-disable-next-line no-unused-vars
@@ -107,6 +109,11 @@ export default class ProjectsManager {
     }
     this.externals = externals;
     this.editor = externals.editor;
+
+    initProcess({
+      shell: this.paths.bash
+    });
+
     this.practiceSession = null;
     this.runner = new ExerciseRunner(this);
     this.runner.start();
@@ -114,7 +121,6 @@ export default class ProjectsManager {
 
     this._backend = new BackendController(this);
 
-    this.pathwayDataProvider = new PathwaysDataProvider(this);
     this.exerciseDataProvider = new ExerciseDataProvider(this);
 
     // Note: we need this to check if any dependencies are missing (not to install them)
@@ -125,10 +131,10 @@ export default class ProjectsManager {
         map(([name, version]) => `${name}@${version}`)
     ];
 
-    initUserEvents(this);
+    this.registerPDPEventListeners();
 
     // NOTE: This is for public API. To emit event in dbux-projects, register event in dbux-projects/src/userEvents.js and import it directly 
-    this.onUserEvent = onUserEvent;
+    // this.onUserEvent = onUserEvent;
     this.emitUserEvent = emitUserEvent;
   }
 
@@ -138,6 +144,12 @@ export default class ProjectsManager {
     // build projects + chapters
     this.loadProjectList();
     this.reloadExercises();
+
+    // ensure log folder exists
+    const logFolderPath = this.externals.resources.getLogsDirectory();
+    if (!fs.existsSync(logFolderPath)) {
+      fs.mkdirSync(logFolderPath, { recursive: true });
+    }
   }
 
   /**
@@ -156,6 +168,9 @@ export default class ProjectsManager {
   // ###########################################################################
   // getters
   // ###########################################################################
+  get paths() {
+    return this.externals.paths;
+  }
 
   get interactiveMode() {
     return true;
@@ -171,10 +186,6 @@ export default class ProjectsManager {
 
   get activeExperiment() {
     return this.runner.exercise;
-  }
-
-  get pdp() {
-    return this.pathwayDataProvider;
   }
 
   get bdp() {
@@ -306,51 +317,76 @@ export default class ProjectsManager {
   }
 
   // ###########################################################################
-  // PracticeSession
+  // PracticeSession: start/stop/exit
   // ###########################################################################
 
+  /**
+   * Start a brand new session
+   * @param {Exercise} [exercise]
+   * @returns {Promise<PathwaysSession|PracticeSession|null>}
+   */
   async startPractice(exercise) {
-    if (!await this.stopPractice()) {
-      return;
+    if (!await this.exitPracticeSession()) {
+      return null;
     }
 
     const requirements = merge({}, getDefaultRequirement(true), this._systemRequirement);
     await checkSystem(this, requirements, false);
 
-    const exerciseProgress = this.bdp.getExerciseProgressByExercise(exercise);
-    if (!exerciseProgress) {
-      const stopwatchEnabled = await this.askForStopwatch(exercise);
-      if (stopwatchEnabled === null) {
-        // user canceled
-        return;
+    if (exercise) {
+      // start a `PracticeSession`
+      const exerciseProgress = this.bdp.getExerciseProgress(exercise.id);
+      if (!exerciseProgress) {
+        const stopwatchEnabled = await this.askForStopwatch(exercise);
+        if (stopwatchEnabled === null) {
+          // user canceled
+          return null;
+        }
+        this.bdp.addExerciseProgress(exercise, stopwatchEnabled, { startedAt: Date.now() });
+        await this.bdp.save();
       }
-      this.bdp.addExerciseProgress(exercise, ExerciseStatus.Solving, stopwatchEnabled);
-      this.bdp.updateExerciseProgress(exercise, { startedAt: Date.now() });
+
+      await this.switchToExercise(exercise);
     }
 
-    await this.switchToExercise(exercise);
+    allApplications.clear();
 
-
-    // TODO: currently loadPracticeSession CANNOT load a session, because the sessionId gets re-generated. Need to store and load sessionId by bug.
     // TODO: also fix askForRecoverPracticeSession + recoverPracticeSession
     //  -> ultimately use research data for practice session data, if available (NOTE: the format is slightly different)
     //  -> if not available, should not store all application data; only that relevant for the practice session.
-    allApplications.clear();    // clear applications
 
-    if (!await this.tryRecoverPracticeSession(exercise.id)) {
-      this._loadPracticeSession(exercise/* , savedPracticeSession, true */);
+    this._loadSession(exercise);
+
+    if (exercise) {
       this.practiceSession.setupStopwatch();
-      await this.savePracticeSession();
-      await this.bdp.save();
       await this.practiceSession.testExercise();
-      // this.maybeAskForTestBug(bug);
     }
+    await this.saveSession();
+    return this.practiceSession;
   }
 
   /**
+   * Ask for `stop` practice session but not quit
    * @return {Promise<boolean>} indicates if practice session is stopped
    */
-  async stopPractice() {
+  async stopPracticeSession() {
+    if (!this.practiceSession) {
+      return true;
+    }
+
+    const stopped = await this.practiceSession.confirmStop();
+    if (!stopped) {
+      return false;
+    }
+
+    return stopped;
+  }
+
+  /**
+   * Ask for `stop` and `exit` practice session.
+   * @return {Promise<boolean>} indicates if practice session is exited
+   */
+  async exitPracticeSession() {
     if (!this.practiceSession) {
       return true;
     }
@@ -361,103 +397,65 @@ export default class ProjectsManager {
     }
 
     const exited = await this.practiceSession.confirmExit();
+    if (exited) {
+      this.practiceSession = null;
+    }
     return exited;
   }
 
   /**
    * NOTE: Dev only
-   * @param {string} filePath 
+   * @param {string} logFilePath 
    */
-  async loadPracticeSessionFromFile(filePath) {
-    if (!await this.stopPractice()) {
+  async loadPracticeSessionFromFile(logFilePath) {
+    if (!await this.exitPracticeSession()) {
       return false;
     }
 
     try {
-      const { sessionId, createdAt, exerciseId } = await PathwaysDataProvider.parseHeader(filePath);
+      const { sessionId, createdAt, exerciseId } = await PathwaysDataProvider.parseHeader(logFilePath);
       const exercise = this.getExerciseById(exerciseId);
-      if (!exercise) {
-        throw new Error(`Cannot find exercise of exerciseId: ${exerciseId} in log file`);
+      if (exercise) {
+        if (!this.bdp.getExerciseProgress(exercise.id)) {
+          this.bdp.addExerciseProgress(exercise, false);
+        }
+        await this.bdp.save();
+        await this.switchToExercise(exercise);
       }
-
-      if (!this.bdp.getExerciseProgressByExercise(exercise)) {
-        this.bdp.addExerciseProgress(exercise, ExerciseStatus.Solving, false);
-      }
-
-      await this.switchToExercise(exercise);
       allApplications.clear();    // clear applications
 
-      this._loadPracticeSession(exercise, { createdAt, sessionId, state: PracticeSessionState.Stopped }, true, filePath);
-      await this.savePracticeSession();
-      await this.bdp.save();
-      const lastAction = this.pdp.collections.userActions.getLast();
-      emitSessionFinishedEvent(this.practiceSession.state, lastAction.createdAt);
+      this._loadSession(exercise, { createdAt, sessionId, logFilePath, state: PracticeSessionState.Stopped }, false);
+      await this.saveSession();
+
       return true;
     }
     catch (err) {
-      logError(`Failed to load from log file ${filePath}:`, err);
+      logError(`Failed to load from log file ${logFilePath}:`, err);
       return false;
     }
-  }
-
-  _loadPracticeSession(exercise, sessionData = EmptyObject, load = false, filePath) {
-    // create new PracticeSession
-    this.practiceSession = new PracticeSession(exercise, this, sessionData, filePath);
-
-    // init (+ maybe load) pdp
-    this.pdp.init();
-
-    // notify event listeners
-    !load && emitPracticeSessionEvent('started', this.practiceSession);
-    this._notifyPracticeSessionStateChanged();
   }
 
   /** ###########################################################################
    * PracticeSession: save/load
    * ##########################################################################*/
 
-  async tryRecoverPracticeSession(exerciseId) {
-    let savedPracticeSession;
-    if (!exerciseId) {
-      savedPracticeSession = this.externals.storage.get(savedPracticeSessionKey);
-      if (!savedPracticeSession) {
-        return false;
-      }
-
-      ({ exerciseId } = savedPracticeSession);
-    }
-    const exercise = this.getExerciseByIdOrName(exerciseId);
-    if (!exercise) {
-      // sanity check
-      warn(`Can't find exercise for id "${exerciseId}"`);
-      return false;
-    }
-    // const exerciseProgress = this.bdp.getExerciseProgressByBug(exercise);
-    // if (!exerciseProgress) {
-    //   // sanity check
-    //   warn(`Can't find exerciseProgress when recovering PracticeSession of exercise "${exercise.id}"`);
-    //   return false;
-    // }
-
-    allApplications.clear();    // clear applications
-
-    const recoverData = await this.askForRecoverPracticeSession(exerciseId, savedPracticeSession);
-    if (!recoverData) {
-      // await bug.project.deactivateBug(bug);
+  async tryRecoverPracticeSession() {
+    let savedSessionData = this.externals.storage.get(savedPracticeSessionKey);
+    if (!savedSessionData) {
       return false;
     }
 
-    const [shouldImportPracticeSession, shouldImportResearchData] = recoverData;
+    const shouldRecover = await this.askForRecoverPracticeSession(savedSessionData);
+    if (!shouldRecover) {
+      return false;
+    }
 
     try {
-      await this.switchToExercise(exercise);
-
-      if (shouldImportResearchData) {
-        this.research.importResearchAppData(exerciseId);
-        this._loadPracticeSession(exercise/* , savedPracticeSession, true */);
-      }
-      else if (shouldImportPracticeSession) {
-        this._loadPracticeSession(exercise, savedPracticeSession, true);
+      const { exerciseId } = savedSessionData;
+      const exercise = this.getExerciseById(exerciseId);
+      this._loadSession(exercise, savedSessionData, false);
+      if (exercise) {
+        await this.switchToExercise(exercise);
         this.practiceSession.setupStopwatch();
       }
       return true;
@@ -468,16 +466,27 @@ export default class ProjectsManager {
     }
   }
 
-  async savePracticeSession(practiceSession = this.practiceSession) {
-    if (practiceSession) {
-      const { exercise, createdAt, sessionId, logFilePath, state } = practiceSession;
-      const applicationUUIDs = this.pdp.collections.applications.getAllActual().map(app => app.uuid);
+  async loadResearchSession(exerciseId) {
+    // const researchSize = exerciseId && this.research.getAppFileSize(exerciseId);
+    const exercise = this.getExerciseById(exerciseId);
+    if (!this.bdp.getExerciseProgress(exerciseId)) {
+      this.bdp.addExerciseProgress(exercise, false);
+    }
+    await this.bdp.save();
+    this.research.importResearchAppData(exerciseId);
+    this._loadSession(exercise, EmptyObject, false);
+  }
+
+  /**
+   * NOTE: We save sessionId and other data in `ExternalStorage`, and use it to find the corresponding log file.
+   * @param {PathwaysSession} session set to `null` to clear saved data.
+   */
+  async saveSession(session = this.practiceSession) {
+    if (session) {
+      const sessionData = session.serialize();
+      const applicationUUIDs = session.pdp.collections.applications.getAllActual().map(app => app.uuid);
       await this.externals.storage.set(savedPracticeSessionKey, {
-        exerciseId: exercise.id,
-        createdAt,
-        sessionId,
-        logFilePath,
-        state,
+        ...sessionData,
         applicationUUIDs,
       });
     }
@@ -486,7 +495,27 @@ export default class ProjectsManager {
     }
   }
 
-  async askForRecoverPracticeSession(experimentId, practiceSessionData) {
+  /**
+   * @param {PracticeSessionData} savedSessionData 
+   * @param {Exercise} exercise 
+   * @param {boolean} isNew 
+   * @returns 
+   */
+  _loadSession(exercise = null, savedSessionData = {}, isNew = true) {
+    if (exercise) {
+      const sessionData = { exerciseId: exercise.id };
+      Object.assign(sessionData, savedSessionData);
+      this.practiceSession = PracticeSession.from(this, sessionData);
+    }
+    else {
+      this.practiceSession = PathwaysSession.from(this, savedSessionData);
+    }
+
+    isNew && emitPracticeSessionEvent('started', this.practiceSession);
+    this._notifyPracticeSessionStateChanged();
+  }
+
+  async askForRecoverPracticeSession(sessionData = EmptyObject) {
     function sizeMessage(prefix, size) {
       if (!size) {
         return '';
@@ -494,43 +523,37 @@ export default class ProjectsManager {
       size = (Math.round(size) / 1000).toFixed(2).toLocaleString('en-us');
       return `${prefix} log file is ${size}kb.\n`;
     }
-    try {
-      // research
-      const researchEnabled = process.env.RESEARCH_ENABLED;
-      const researchSize = researchEnabled && experimentId && this.research.getAppFileSize(experimentId);
 
-      // Dbux Practice
-      const { logFilePath, applicationUUIDs } = practiceSessionData || EmptyObject;
+    try {
+      const { logFilePath, applicationUUIDs } = sessionData;
       const practiceSize = applicationUUIDs?.reduce((currentSize, uuid) => {
         const appFilePath = this.getApplicationFilePath(uuid);
         return currentSize + getFileSizeSync(appFilePath);
       }, getFileSizeSync(logFilePath)) || 0;
 
-      if (!practiceSize && !researchSize) {
+      if (!practiceSize) {
         return false;
       }
 
       debug(`practiceSize =`, practiceSize);
 
+      const { exerciseId } = sessionData;
+      const exerciseLabel = exerciseId ? ` for ${exerciseId}` : '';
+
       // eslint-disable-next-line max-len
-      const confirmMessage = `Dbux has found previous session(s) for "${experimentId}":\n` +
+      const confirmMessage = `Dbux has found previous session${exerciseLabel}":\n` +
         sizeMessage('Practice', practiceSize) +
-        sizeMessage('Research', researchSize) +
-        `\nDo you want to load a previous session?`;
+        `\nDo you want to load the previous session?`;
       const buttons = {
-        // TODO: option to only go to experiment and ignore session?
-        // []: async () => {
-        // },
-        ...practiceSize && { [`Load Practice Session`]: () => [true, false] } || EmptyObject,
-        ...researchSize && { [`Load Research Session`]: () => [false, true] } || EmptyObject,
+        [`Load Practice Session`]: () => true,
         [`Ignore (don't ask again)`]: async () => {
-          // log should be discarded and the user should not be asked again
-          await this.savePracticeSession(null);
+          // saved session should be discarded and the user should not be asked again
+          await this.saveSession(null);
           return false;
         },
         [`Delete Practice Session`]: async () => {
           // TODO: first CONFIRM! then delete research file
-          await this.savePracticeSession(null);
+          await this.saveSession(null);
           // fs.rmSync(appFilePath);
           // TODO: delete all application- and session-related files of a single session here
           this.externals.showMessage.warn(`File deletion is not implemented yet :(`);
@@ -541,7 +564,7 @@ export default class ProjectsManager {
       return await this.externals.showMessage.info(confirmMessage, buttons, { modal: true }, cancelCallback);
     }
     catch (err) {
-      logTrace(`Could not recover practice session`, err);
+      logError(`Could not recover practice session`, err);
       return false;
     }
   }
@@ -557,7 +580,7 @@ export default class ProjectsManager {
     return pathResolve(this.externals.resources.getLogsDirectory(), `${sessionId}.dbuxlog`);
   }
 
-  getIndexFilePathByExercise(exercise) {
+  getExerciseIndexFilePath(exercise) {
     return pathResolve(this.externals.resources.getLogsDirectory(), `${exercise.id}.index`);
   }
 
@@ -582,10 +605,10 @@ export default class ProjectsManager {
    * @return {Promise<boolean>}
    */
   async askForStopwatch(exercise) {
-    // TOTRANSLATE
     if (!exercise.isSolvable) {
       return false;
     }
+    // TOTRANSLATE
     const confirmMsg = `This is your first time activate this exercise, do you want to start a timer?\n`
       + `[WARN] You will not be able to time this exercise once you activate it.`;
     return await this.externals.confirm(confirmMsg);
@@ -626,6 +649,24 @@ export default class ProjectsManager {
     }
   }
 
+  /** ###########################################################################
+   * Pathways
+   *  #########################################################################*/
+
+  registerPDPEventListeners() {
+    onUserEvent((actionData) => {
+      if (this.practiceSession && !this.practiceSession.isFinished()) {
+        this.practiceSession.pdp.addNewUserAction(actionData);
+      }
+    });
+
+    allApplications.selection.onApplicationsChanged((apps) => {
+      if (this.practiceSession && !this.practiceSession.isFinished()) {
+        this.practiceSession.maybeRecordApplications(apps);
+      }
+    });
+  }
+
   // ###########################################################################
   // ProjectControl
   // ###########################################################################
@@ -646,7 +687,7 @@ export default class ProjectsManager {
 
     // await project.gitResetHard();
 
-    if (this.bdp.getExerciseProgressByExercise(exercise)) {
+    if (this.bdp.getExerciseProgress(exercise.id)) {
       this.bdp.updateExerciseProgress(exercise, { patch: '' });
       await this.bdp.save();
     }
@@ -657,7 +698,7 @@ export default class ProjectsManager {
    * @param {Exercise} exercise
    */
   async applyUserPatch(exercise) {
-    const patchString = this.bdp.getExerciseProgressByExercise(exercise)?.patch;
+    const patchString = this.bdp.getExerciseProgress(exercise.id)?.patch;
 
     if (patchString) {
       const { project } = exercise;
@@ -756,6 +797,7 @@ export default class ProjectsManager {
   }
 
   /**
+   * TODO: move to practice session
    * @param {Exercise} exercise 
    * @param {object} inputCfg Is currently brought in from `projectViewsController`.
    */
@@ -775,7 +817,7 @@ export default class ProjectsManager {
     } = inputCfg;
 
     if (!exercise.project.checkRunMode(inputCfg)) {
-      return;
+      return undefined;
     }
 
     // WARN: --enable-source-maps makes execution super slow in production mode for some reason
@@ -801,28 +843,11 @@ export default class ProjectsManager {
 
     const result = await this.runner.testExercise(exercise, cfg);
 
-    await this.saveTestRunResult(exercise, result);
+    await this.practiceSession?.saveTestRunResult?.(exercise, result);
 
     result?.code && await exercise.openInEditor();
 
     return result;
-  }
-
-  /**
-   * @param {Exercise} exercise 
-   * @param {*} result 
-   */
-  async saveTestRunResult(exercise, result) {
-    // TODO: a better way to find the real application generated by the project
-    const patch = await exercise.project.getPatchString();
-    const existingApps = new Set(this.pdp.collections.applications.getAll());
-    const newApps = allApplications.selection.getAll().filter(app => !existingApps.has(app));
-
-    // TODO: find the correct `nFailedTests`
-    // this.pdp.addTestRun(bug, result?.code, patch, newApps);
-    this.pdp.addTestRun(exercise, null, patch, newApps);
-    this.pdp.addApplications(newApps);
-    this.bdp.updateExerciseProgress(exercise, { patch });
   }
 
   async stopRunner() {
@@ -861,8 +886,8 @@ export default class ProjectsManager {
    * NOTE: dev only
    */
   async resetProgress() {
-    if (await this.stopPractice()) {
-      await this.savePracticeSession();
+    if (await this.exitPracticeSession()) {
+      await this.saveSession();
       await this.bdp.reset();
       await this.runner.deactivateExercise();
     }
@@ -1042,104 +1067,109 @@ export default class ProjectsManager {
   }
 
   async installModules(deps) {
-    await this._installPromise;
-    return (this._installPromise = this._doInstallModules(deps));
-  }
+    while (this._installPromise) {
+      await this._installPromise;
+    }
 
-  async _doInstallModules(deps) {
     try {
-      const { dependencyRoot } = this.config;
-      // const execOptions = {
-      //   processOptions: {
-      //     cwd: dependencyRoot
-      //   }
-      // };
-      // if (!sh.test('-f', rootPackageJson)) {
-      //   // make sure, we have a local `package.json`
-      //   await this.runner._exec('npm init -y', logger, execOptions);
-      // }
-      if (this.areDependenciesInstalled(deps)) {
-        // already done!
-        return;
-      }
-
-      // delete previously installed node_modules
-      // NOTE: if we don't do it, we (sometimes randomly) bump against https://github.com/npm/npm/issues/13528#issuecomment-380201967
-      // await rm('-rf', path.join(projectsRoot, 'node_modules'));
-
-      // debug(`Verifying NPM cache. This might (or might not) take a while...`);
-      // await this.runner._exec('npm cache verify', logger, execOptions);
-
-      // this.externals.showMessage.info(`Installing dependencies: "${deps.join(', ')}" This might (or might not) take a while...`);
-
-      const command = [
-        `npm install --only=prod`,
-        ...deps.length && [`npm i ${deps.join(' ')}`] || EmptyArray
-      ];
-
-      // await this.runner._exec(command, logger, execOptions);
-      await this.execInTerminal(dependencyRoot, command);
-
-      // remember all installed dependencies
-      // const newDeps = this._getAllDependencies();
-      // let storedDeps = this.externals.storage.get(depsStorageKey) || {};
-      // storedDeps = {
-      //   ...storedDeps, 
-      //   ...Object.fromEntries(newDeps.map(dep => [dep, true]))
-      // };
-      // await this.externals.storage.set(depsStorageKey, storedDeps);
-
-      // else {
-      //   // we need socket.io for TerminalWrapper. Its version should match dbux-runtime's.
-      //   // const pkgPath = path.join(__dirname, '..', '..', '..', 'dbux-runtime');
-
-      //   const packageRoot = process.env.DBUX_ROOT;
-      //   const cliPath = path.join(packageRoot, 'dbux-cli');
-      //   const cliDeps = this._readLocalPkgDeps(cliPath);
-
-      //   const runtimePath = path.join(packageRoot, 'dbux-runtime');
-      //   const socketIoDeps = this._readLocalPkgDeps(runtimePath, 'socket.io-client');
-      //   // const socketIoVersion = pkg?.dependencies?.[socketIoName]; // ?.match(/\d+\.\d+.\d+/)?.[0];
-
-      //   // if (!socketIoVersion) {
-      //   //   throw new Error(`'Could not retrieve version of ${socketIoName} in "${runtimePath}"`);
-      //   // }
-
-      //   allDeps = [
-      //     // NOTE: installing local refs actually *copies* them. We don't want that.
-      //     // we will use `module-alias` in `_dbux_inject.js` instead
-      //     // this._convertPkgToLocalIfNecessary('@dbux/cli'),
-      //     ...cliDeps.filter(dep => !dep.includes('dbux-')),
-      //     ...socketIoDeps
-      //   ];
-
-      //   // NOTE: `link-module-alias` can cause problems. See: https://github.com/Rush/link-module-alias/issues/3
-      //   // // add dbux deps via `link-module-alias`
-      //   // const dbuxDeps = [
-      //   //   'common',
-      //   //   'cli',
-      //   //   'babel-plugin',
-      //   //   'runtime'
-      //   // ];
-      //   // let pkg = readPackageJson(projectsRoot);
-      //   // pkg = {
-      //   //   ...pkg,
-      //   //   script: {
-      //   //     postinstall: "npx link-module-alias"
-      //   //   },
-      //   //   _moduleAliases: Object.fromEntries(
-      //   //     dbuxDeps.map(name => [`@dbux/${name}`, `../dbux/dbux-${name}`])
-      //   //   )
-      //   // };
-
-      //   // await this.runner._exec(`npm i --save link-module-alias`, logger, execOptions);
-      //   // writePackageJson(projectsRoot, pkg);
-      //   await this.runner._exec(`npm i --save ${allDeps.join(' ')}`, logger, execOptions);
-      // }
+      await (this._installPromise = this._doInstallModules(deps));
     }
     finally {
       this._installPromise = null;
     }
+  }
+
+  async _doInstallModules(deps) {
+    const { dependencyRoot } = this.config;
+    // const execOptions = {
+    //   processOptions: {
+    //     cwd: dependencyRoot
+    //   }
+    // };
+    // if (!sh.test('-f', rootPackageJson)) {
+    //   // make sure, we have a local `package.json`
+    //   await this.runner._exec('${npm} init -y', logger, execOptions);
+    // }
+    if (this.areDependenciesInstalled(deps)) {
+      // already done!
+      return;
+    }
+
+    // delete previously installed node_modules
+    // NOTE: if we don't do it, we (sometimes randomly) bump against https://github.com/npm/npm/issues/13528#issuecomment-380201967
+    // await rm('-rf', path.join(projectsRoot, 'node_modules'));
+
+    // debug(`Verifying NPM cache. This might (or might not) take a while...`);
+    // await this.runner._exec('${npm} cache verify', logger, execOptions);
+
+    // this.externals.showMessage.info(`Installing dependencies: "${deps.join(', ')}" This might (or might not) take a while...`);
+
+    const { npm } = this.paths.inShell;
+
+    // TODO: fix only=prod
+    // const flags = ' --only=prod';
+
+    const flags = '';
+    const command = [
+      `${npm} i`,
+      ...deps.length && [`${npm} i${flags} ${deps.join(' ')}`] || EmptyArray
+    ];
+
+    // await this.runner._exec(command, logger, execOptions);
+    await this.execInTerminal(dependencyRoot, command);
+
+    // remember all installed dependencies
+    // const newDeps = this._getAllDependencies();
+    // let storedDeps = this.externals.storage.get(depsStorageKey) || {};
+    // storedDeps = {
+    //   ...storedDeps, 
+    //   ...Object.fromEntries(newDeps.map(dep => [dep, true]))
+    // };
+    // await this.externals.storage.set(depsStorageKey, storedDeps);
+
+    // else {
+    //   // we need socket.io for TerminalWrapper. Its version should match dbux-runtime's.
+    //   // const pkgPath = path.join(__dirname, '..', '..', '..', 'dbux-runtime');
+
+    //   const packageRoot = process.env.DBUX_ROOT;
+    //   const cliPath = path.join(packageRoot, 'dbux-cli');
+    //   const cliDeps = this._readLocalPkgDeps(cliPath);
+
+    //   const runtimePath = path.join(packageRoot, 'dbux-runtime');
+    //   const socketIoDeps = this._readLocalPkgDeps(runtimePath, 'socket.io-client');
+    //   // const socketIoVersion = pkg?.dependencies?.[socketIoName]; // ?.match(/\d+\.\d+.\d+/)?.[0];
+
+    //   // if (!socketIoVersion) {
+    //   //   throw new Error(`'Could not retrieve version of ${socketIoName} in "${runtimePath}"`);
+    //   // }
+
+    //   allDeps = [
+    //     // NOTE: installing local refs actually *copies* them. We don't want that.
+    //     // we will use `module-alias` in `_dbux_inject.js` instead
+    //     // this._convertPkgToLocalIfNecessary('@dbux/cli'),
+    //     ...cliDeps.filter(dep => !dep.includes('dbux-')),
+    //     ...socketIoDeps
+    //   ];
+
+    //   // NOTE: `link-module-alias` can cause problems. See: https://github.com/Rush/link-module-alias/issues/3
+    //   // // add dbux deps via `link-module-alias`
+    //   // const dbuxDeps = [
+    //   //   'common',
+    //   //   'cli',
+    //   //   'babel-plugin',
+    //   //   'runtime'
+    //   // ];
+    //   // let pkg = readPackageJson(projectsRoot);
+    //   // pkg = {
+    //   //   ...pkg,
+    //   //   script: {
+    //   //     postinstall: "npx link-module-alias"
+    //   //   },
+    //   //   _moduleAliases: Object.fromEntries(
+    //   //     dbuxDeps.map(name => [`@dbux/${name}`, `../dbux/dbux-${name}`])
+    //   //   )
+    //   // };
+    // }
   }
 
   // ###########################################################################

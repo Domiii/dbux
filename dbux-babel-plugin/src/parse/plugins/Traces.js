@@ -44,7 +44,7 @@ export default class Traces extends BasePlugin {
 
     // make sure that `this.node` is actually in `body` of the scope where we want to create the variable
     if ((!contextBodyPath ||
-      (contextBodyPath.isAncestor && !contextBodyPath.isAncestor(this.node.path))) &&
+      (contextNode !== this.node && contextBodyPath.isAncestor && !contextBodyPath.isAncestor(this.node.path))) &&
       scope.parent) {
       // TODO: maybe there might be bugs here, e.g. in computed class property keys:
       //      -> e.g. var X = 0; function otherA() { return otherA || (otherA = new A()); }; class A { x = ++X; [otherA().x]() {} }; new A();
@@ -69,9 +69,7 @@ export default class Traces extends BasePlugin {
 
   getOrGenerateUniqueIdentifier(name) {
     const contextNode = this.getAncestorContextNode();
-    const contextPlugin = contextNode.getPlugin('StaticContext');
-    const id = contextPlugin.getOrGenerateUniqueIdentifier(name);
-
+    const id = contextNode.StaticContext.getOrGenerateUniqueIdentifier(name);
     contextNode.Traces.declaredIdentifiers.push(id);
     // console.debug('generateDeclaredUidIdentifier', id.name, `[${scope.path.node?.type}]`, pathToString(scope.path));
     return id;
@@ -79,8 +77,7 @@ export default class Traces extends BasePlugin {
 
   getUniqueIdentifier(name) {
     const contextNode = this.getAncestorContextNode();
-    const contextPlugin = contextNode.getPlugin('StaticContext');
-    return contextPlugin.getUniqueIdentifier(name);
+    return contextNode.StaticContext.getUniqueIdentifier(name);
   }
 
 
@@ -94,7 +91,9 @@ export default class Traces extends BasePlugin {
       // handle some (basic) default AST node types
       const traceData = makeDefaultTrace[path.node.type]?.(path);
       if (!traceData) {
-        this.node.logger.warn(`[NYI] Could not addDefaultTrace for unknown AST node type "${path.node.type}", path: ${pathToString(path)}`);
+        if (this.node.state.verbose.nyi) {
+          this.node.logger.warn(`[NYI] Could not addDefaultTrace for unknown AST node type "${path.node.type}", path: ${pathToString(path)}`);
+        }
         return null;
       }
       return this.addTrace(traceData);
@@ -183,7 +182,8 @@ export default class Traces extends BasePlugin {
 
     if (isDeclaration) {
       if (!declarationNode) {
-        throw new Error(`Assertion failed - node.getDeclarationNode() returned nothing ` +
+        node.getOwnDeclarationNode();
+        throw new Error(`Assertion failed - node.getOwnDeclarationNode() returned nothing ` +
           `for Declaration "${node}" in "${node.getParentString()}`);
       }
 

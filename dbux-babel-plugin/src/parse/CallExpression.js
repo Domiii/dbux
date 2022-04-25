@@ -1,4 +1,3 @@
-// import { instrumentCallExpressionEnter } from '../zz_archive/traceHelpers.old';
 import { isNotArgsTraceableIfConstantType, isNotCalleeTraceableType } from '@dbux/common/src/types/constants/SpecialIdentifierType';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';

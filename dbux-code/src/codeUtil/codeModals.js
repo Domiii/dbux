@@ -33,6 +33,9 @@ export async function showInformationMessage(message, btnConfig, messageCfg = Em
   debug(message);
 
   const result = await window.showInformationMessage(message, messageCfg, ...buttons);
+  if (messageCfg?.modal) {
+    debug(`  > User responded with "${result}"`);
+  }
   if (result === undefined) {
     return await cancelCallback?.();
   }
@@ -46,6 +49,9 @@ export async function showWarningMessage(message, btnConfig, messageCfg = EmptyO
   warn(message);
 
   const result = await window.showWarningMessage(message, messageCfg, ...Object.keys(btnConfig || EmptyObject));
+  if (messageCfg?.modal) {
+    debug(`  > User responded with "${result}"`);
+  }
   if (result === undefined) {
     await cancelCallback?.();
     return null;
@@ -63,6 +69,10 @@ export async function showErrorMessage(message, btnConfig, messageCfg = EmptyObj
   //    -> if we called logError(), we would get an inf loop.
 
   const result = await window.showErrorMessage(`${prefix}${message}`, messageCfg, ...Object.keys(btnConfig));
+  if (messageCfg?.modal) {
+    debug(`  > User responded with "${result}"`);
+  }
+
   const cbResult = await btnConfig[result]?.();
   return cbResult === undefined ? null : cbResult;
 }
@@ -94,7 +104,11 @@ export async function alert(msg, modal = true) {
   return await showInformationMessage(msg, undefined, { modal });
 }
 
-export async function showQuickPick(items) {
+/**
+ * @param {[string|function|import('vscode').QuickPickItem]} items 
+ * @returns 
+ */
+export async function showQuickPick(items, options) {
   // future-work: better ways of naming functions with some simple tricks?
   //    -> Object.values({ ['hi' + 123]() { } })[0].name
 
@@ -117,5 +131,5 @@ export async function showQuickPick(items) {
 
   debug(`[showQuickPick] ${items.map((item, i) => `(${i + 1}) ${item.label}`).join(', ')}`);
 
-  return window.showQuickPick(items);
+  return window.showQuickPick(items, options);
 }

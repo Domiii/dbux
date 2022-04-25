@@ -1,4 +1,5 @@
 import { newLogger } from '@dbux/common/src/log/logger';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import DataProviderBase from '@dbux/data/src/DataProviderBase';
 import Collection from '@dbux/data/src/Collection';
 import Indexes from '@dbux/data/src/indexes/Indexes';
@@ -48,8 +49,9 @@ export default class ExerciseDataProvider extends DataProviderBase {
    * @param {boolean} stopwatchEnabled
    * @return {ExerciseProgress}
    */
-  addExerciseProgress(exercise, status, stopwatchEnabled) {
-    const exerciseProgress = new ExerciseProgress(exercise, status, stopwatchEnabled);
+  addExerciseProgress(exercise, stopwatchEnabled, moreProps = EmptyObject) {
+    const exerciseProgress = new ExerciseProgress(exercise, stopwatchEnabled);
+    Object.assign(exerciseProgress, moreProps);
     this.addData({ exerciseProgresses: [exerciseProgress] });
     emitNewExerciseProgress(exerciseProgress);
     return exerciseProgress;
@@ -61,14 +63,12 @@ export default class ExerciseDataProvider extends DataProviderBase {
    * @param {Object} update
    */
   updateExerciseProgress(exercise, update) {
-    const exerciseProgress = this.getExerciseProgressByExercise(exercise);
+    const exerciseProgress = this.getExerciseProgress(exercise.id);
     if (!exerciseProgress) {
       this.logger.error(`Tried to update bug (${Object.keys(update || {})}) progress but no previous record found: ${exercise.id}`);
       return;
     }
-    for (const key of Object.keys(update)) {
-      exerciseProgress[key] = update[key];
-    }
+    Object.assign(exerciseProgress, update);
     exerciseProgress.updatedAt = Date.now();
     emitExerciseProgressChanged(exerciseProgress);
   }
@@ -78,11 +78,11 @@ export default class ExerciseDataProvider extends DataProviderBase {
   // ###########################################################################
 
   /**
-   * @param {Exercise} exercise 
+   * @param {string} exerciseId 
    * @returns {ExerciseProgress}
    */
-  getExerciseProgressByExercise(exercise) {
-    return this.indexes.exerciseProgresses.byExerciseId.get(exercise.id)?.[0] || null;
+  getExerciseProgress(exerciseId) {
+    return this.indexes.exerciseProgresses.byExerciseId.getUnique(exerciseId);
   }
 
   /**

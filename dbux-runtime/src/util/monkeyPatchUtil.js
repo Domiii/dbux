@@ -18,14 +18,15 @@ const originalCallbacksByProxy = new WeakMap();
  * {@link makeProxy}
  * ##########################################################################*/
 
-function makeProxy(cb) {
+function makeProxy(originalFunction, patchedFunction) {
   // TODO: add missing data nodes
-  return new Proxy(cb, {
+  return new Proxy(originalFunction, {
     apply(target, thisArg, args) {
-      return Reflect.apply(target, thisArg, args);
+      return Reflect.apply(patchedFunction, thisArg, args);
     },
     construct(target, args, newTarget) {
-      return Reflect.construct(target, args, newTarget);
+      // TODO: also trace construct calls (but requires removing and fully integrating the "patchedFunction" code with this)
+      return Reflect.construct(patchedFunction, args, newTarget);
     },
     defineProperty(target, prop, attributes) {
       return Reflect.defineProperty(target, prop, attributes);
@@ -55,7 +56,7 @@ function makeProxy(cb) {
 
 export function registerMonkeyPatchedFunction(originalFunction, patchedFunction) {
   try {
-    const proxy = makeProxy(patchedFunction);
+    const proxy = makeProxy(originalFunction, patchedFunction);
     functionProxiesByOriginalFunction.set(originalFunction, proxy);
     // if (originalFunction !== patchedFunction) {
     // hackfix: we sometimes set native functions to be itself to prevent auto patching
@@ -125,7 +126,7 @@ export function _getPatchedFunctionOrNull(originalFunction) {
 
 export function registerMonkeyPatchedCallback(originalFunction, patchedFunction) {
   try {
-    const proxy = makeProxy(patchedFunction);
+    const proxy = makeProxy(originalFunction, patchedFunction);
     callbackProxiesByOriginal.set(originalFunction, proxy);
     originalCallbacksByProxy.set(proxy, originalFunction);
     return proxy;

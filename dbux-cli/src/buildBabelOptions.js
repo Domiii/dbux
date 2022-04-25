@@ -1,6 +1,6 @@
 import dbuxBabelPlugin from '@dbux/babel-plugin';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
-import shouldIgnore from '@dbux/babel-plugin/src/external/shouldIgnore';
+import makeIgnore from '@dbux/common-node/src/filters/makeIgnore';
 import { requireDynamic } from '@dbux/common-node/src/util/requireUtil';
 import colors from 'colors/safe';
 import isString from 'lodash/isString';
@@ -85,8 +85,13 @@ export default function buildBabelOptions(options) {
   verbose > 1 && debugLog(`[@dbux/babel-plugin]`,
     requireDynamic.resolve/* ._resolveFilename */('@dbux/babel-plugin/package.json'));
 
+  // Build ignore config using whitelist/blacklist options
+  const moduleFilterOptions = {
+    ...options,
+    verbose: -1
+  };
   const ignore = [
-    shouldIgnore(options)
+    makeIgnore(moduleFilterOptions)
   ];
 
   // setup babel-register
@@ -98,6 +103,9 @@ export default function buildBabelOptions(options) {
      * @see https://github.com/browserslist/browserslist/issues/629#issuecomment-984459369
      */
     targets,
+
+    ignore,
+
     browserslistConfigFile: false,
     sourceType: 'unambiguous',
     sourceMaps: false,
@@ -105,7 +113,6 @@ export default function buildBabelOptions(options) {
     retainLines: true,
     // see https://babeljs.io/docs/en/options#parseropts
     parserOpts: { allowReturnOutsideFunction: true },
-    ignore
   };
 
   if ('cache' in options) {
@@ -121,6 +128,7 @@ export default function buildBabelOptions(options) {
     // default plugin options
     babelPluginOptions.verbose = babelPluginOptions.verbose || verbose;
     babelPluginOptions.runtime = babelPluginOptions.runtime || runtime;
+    // babelPluginOptions.ignore = ignore; // NOTE: if we don't pass `ignore` to `babel`, it will ignore node_modules by default
 
     babelOptions.plugins = babelOptions.plugins || [];
     babelOptions.plugins.push([dbuxBabelPlugin, babelPluginOptions]);

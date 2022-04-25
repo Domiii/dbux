@@ -14,6 +14,10 @@ import { truncateStringDefault } from '@dbux/common/src/util/stringUtil';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError, trace: logTrace } = newLogger('Process');
 
+let DefaultConfig = { 
+  shell: 'bash'
+};
+
 function cleanOutput(chunk) {
   if (!isString(chunk)) {
     chunk = chunk.toString('utf8');
@@ -26,6 +30,10 @@ function pipeStreamToFn(stream, logFn) {
   stream.on('data', (chunk) => {
     logFn('', cleanOutput(chunk));
   });
+}
+
+export function initProcess(cfg) {
+  DefaultConfig = cfg;
 }
 
 /**
@@ -125,7 +133,7 @@ export default class Process {
     //   // NOTE: shell = true exists only for spawn, not for exec
     //   processOptions.shell = true;
     // }
-    processOptions.shell = 'bash';
+    processOptions.shell = DefaultConfig.shell;
 
     if (processOptions.env || ignoreEnv) {
       /**
@@ -298,7 +306,7 @@ export default class Process {
         }
         else {
           // throw new Error(`"${command}" failed because executable or command not found. Either configure it's absolute path or make sure that it is installed and in your PATH.`);
-          reject(new Error(`Process "${processExecLabel}" failed with error ${err.code}: ${err.message}`));
+          reject(new Error(`Process "${processExecLabel}" failed with error "${err.code}": ${err.message}`));
         }
       });
     }).finally(this._finished);

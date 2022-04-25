@@ -1,11 +1,10 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import isThenable from '@dbux/common/src/util/isThenable';
-import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import PromiseLinkType from '@dbux/common/src/types/constants/PromiseLinkType';
-import { getAsyncFunctionCallerPromiseId, isFirstContextInParent, peekBCEContextCheckCallee } from '../data/dataUtil';
+import { getAsyncFunctionCallerPromiseId, peekBCEContextCheckCallee, } from '../data/dataUtil';
 import ThenRef from '../data/ThenRef';
 // eslint-disable-next-line max-len
-import { getPromiseData, getPromiseId, getPromiseOwnAsyncFunctionContextId, setPromiseData } from './promisePatcher';
+import { getPromiseData, getPromiseId } from './promisePatcher';
 import asyncEventUpdateCollection from '../data/asyncEventUpdateCollection';
 import executionContextCollection from '../data/executionContextCollection';
 import nestedPromiseCollection from '../data/promiseLinkCollection';
@@ -48,9 +47,14 @@ export default class RuntimeAsync {
   /**
    * We use this to associate `contextId` of an async function `f`, with its returned `promise`,
    * in the SPECIAL CASE of `then(f)`.
+   * @deprecated
    */
   setAsyncContextIdPromise(contextId, promise) {
     const promiseId = getPromiseId(promise);
+
+    // if (!promiseId) {
+
+    // }
 
     const context = executionContextCollection.getById(contextId);
     if (context) {
@@ -62,7 +66,7 @@ export default class RuntimeAsync {
     const lastAwaitData = this.lastAwaitByRealContext.get(contextId);
 
     // eslint-disable-next-line max-len
-    // this.logger.warn(`[traceCallPromiseResult] trace=${traceCollection.makeTraceInfo(trace.traceId)}, lastContextId=${executionContextCollection.getLastRealContext()?.contextId}`, calledContext?.contextId,
+    // this.logger.warn(`[traceCallPromiseResult] trace=${traceCollection.makeTraceInfo(trace.traceId)}, lastContextId=${executionContextCollection.getLastRealContext(this._runtime.getLastPoppedContextId())?.contextId}`, calledContext?.contextId,
     //   lastAwaitData);
 
     if (lastAwaitData) {
@@ -79,43 +83,21 @@ export default class RuntimeAsync {
   /**
    * Track any created promise (that is the return value of a function or ctor call).
    */
-  traceCallPromiseResult(contextId, trace, promise) {
+  traceCallPromiseResult(parentContextId, callResultTrace, promise) {
     //   const currentRootId = this.getCurrentVirtualRootContextId();
     //   if (!isNewPromise(promise, currentRootId)) {
     //     // this.logger.warn('have seen promise before', currentRootId, promise._dbux_);
     //     return;
     //   }
 
-    const callId = trace.resultCallId;
-    const calledContext = peekBCEContextCheckCallee(callId);
+    const callId = callResultTrace.resultCallId;
+    const lastContextId = this._runtime.getLastPoppedContextId();
+    const calledRealContext = peekBCEContextCheckCallee(callId, lastContextId);
 
-    // if (callId === ) {
-    //   const promiseId = getPromiseId(promise);
-    //   const lastContext = executionContextCollection.getLastRealContext();
-    //   const lastAwaitData = this.lastAwaitByRealContext.get(contextId);
-    //   console.trace('traceCallPromiseResult',
-    //     { callId, contextId, calledContext: !!calledContext, promiseId, trace, lastContext, lastAwaitData });
-    // }
-
-    let calledContextId;
-
-    if (calledContext) {
-      calledContextId = calledContext?.contextId;
+    if (calledRealContext) {
+      const calledContextId = calledRealContext.contextId;
       this.setAsyncContextIdPromise(calledContextId, promise);
     }
-    //   // else if (!getFunctionRefByContext(executionContextCollection.getLastRealContext())) {
-    //   //   // eslint-disable-next-line max-len
-    //   //   this.logger.warn(`[traceCallPromiseResult] function is not instrumented, trace=${traceCollection.makeTraceInfo(trace.traceId)}, lastContextId=${executionContextCollection.getLastRealContext()?.contextId}`);
-    //   // }
-
-    //   // register previously unseen promise
-    //   this.recordFloatingPromise(promise, currentRootId, lastAwaitData && calledContextId);
-
-    //   // if (calledFirstAwaitPromise) {
-    //   //   // const key = { runId, contextId, traceId };
-    //   //   // this.runContextCallTracePromiseMap.set(key, promise);
-    //   //   // this.promiseRunContextTraceMap.set(promise, key);
-    //   // }
   }
 
   // ###########################################################################
@@ -147,7 +129,7 @@ export default class RuntimeAsync {
     // TODO: add sync edge
     //    * if nested and promise already has `lastAsyncNode`
     //      -> add an edge from `preEvent` `AsyncNode` to promise's `lastAsyncNode`
-    const isFirstAwait = isFirstContextInParent(resumeContextId);
+    const isFirstAwait = resumeContextId === realContextId;
 
     // if (isRootContext(resumeContextId)) {
     //   // NOTE: this check is only necessary in case of a top-level `await`.
@@ -164,6 +146,9 @@ export default class RuntimeAsync {
       updateId: update.updateId
       // awaitArgument
     });
+
+    // NOTE: debug via `RuntimeMonitor` instead
+    // this.logger.debug(`[preAwait] ${resumeContextId}, ${realContextId}, ${isFirstAwait}`);
 
     const isNested = isThenable(awaitArgument);
     if (!isNested) {
@@ -223,9 +208,9 @@ export default class RuntimeAsync {
    *  #########################################################################*/
 
   virtualRootStarted(rootId) {
-    // [edit-after-send]
     const context = executionContextCollection.getById(rootId);
     if (context) {
+      // [edit-after-send]
       context.isVirtualRoot = true;
 
       // WARNING: `new Error().stack` might internally call functions that are instrumented by user code
@@ -412,7 +397,7 @@ export default class RuntimeAsync {
   all(inner, outer, traceId) {
     // NOTE: `reject` does not settle nested promises!
     const rootId = this.getCurrentVirtualRootContextId();
-    const from = inner.map(p => getPromiseId(p));
+    const from = inner.map(p => getPromiseId(p)).filter(Boolean);
     // const from = getPromiseId(inner);
     const to = getPromiseId(outer);
     // if (!from || !to) {
@@ -447,12 +432,16 @@ export default class RuntimeAsync {
   /**
    * Async function returning given `promise`.
    * NOTE: Only called if returned value is thenable.
-   * NOTE2: toPromiseId is just a placeholder, since we don't necessarily know the `to` promiseId yet (if async function did not `await` yet).
-   *    -> is fixed up in `PromiseLinkCollection`.
    */
   returnAsync(promise, traceId) {
     const rootId = this.getCurrentVirtualRootContextId();
-    return nestedPromiseCollection.addLink(PromiseLinkType.AsyncReturn, getPromiseId(promise), 0, traceId, rootId);
+    /**
+     * NOTE: toPromiseId is just a placeholder, 
+     *    since we don't necessarily know the `to` promiseId yet (if async function did not `await` yet).
+     * -> is fixed up in `PromiseLinkCollection.postAdd*`.
+     */
+    const to = 0;
+    return nestedPromiseCollection.addLink(PromiseLinkType.AsyncReturn, getPromiseId(promise), to, traceId, rootId);
   }
 
   // ###########################################################################

@@ -27,7 +27,7 @@ function liftFloodGate() {
 
   if (nGatedReports >= MinGateReportThreshold) {  // only report if there is a substantial amount
     // floodGateTimer = null;
-    reportUnchecked('error', `Floodgate lifted. Muted ${nGatedReports} reports in the past ${MinSecondsPerReport} seconds.`);
+    loglog('Error floodgate', `Floodgate lifted. Muted ${nGatedReports} reports in the past ${MinSecondsPerReport} seconds.`);
   }
   nGatedReports = 0;
 }
@@ -39,7 +39,7 @@ function report(...args) {
     ++nGatedReports;
     if (!floodGateReported) {
       floodGateReported = true;
-      reportUnchecked('error', `Error reporting muted due to possibly error flood.`);
+      reportUnchecked('error', `[Error floodgate] reporting muted due to possibly error flood.`);
     }
     return;
   }

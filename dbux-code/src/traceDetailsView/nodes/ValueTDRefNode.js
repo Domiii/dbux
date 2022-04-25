@@ -1,4 +1,8 @@
+import { ValuePruneState } from '@dbux/common/src/types/constants/ValueTypeCategory';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
+import { emitValueRenderAction } from '../../userEvents';
+// import { makeTreeItemNoChildren } from '../../helpers/makeTreeItem';
 import EmptyTreeViewNode from '../../codeUtil/treeView/EmptyNode';
 import { valueRender } from '../valueRender';
 import ValueNode, { ValueLabel } from './ValueNode';
@@ -61,15 +65,19 @@ export default class ValueTDRefNode extends ValueNode {
 
     const { rootDataNode } = this;
     const { typeName } = this.valueRef;
-    const { nodeId } = this.dataNode;
-    this.description = `${this.dp.util.getValueRefValueStringShort(this.refId, rootDataNode.nodeId)}${typeName && ` (${typeName})`}`;
+    const typeLabel = typeName ? ` (${typeName})` : '';
+    this.description = `${this.dp.util.getValueRefValueStringShort(this.refId, rootDataNode.nodeId)}${typeLabel}`;
   }
 
   buildChildren() {
-    const { rootDataNode, dp, refId } = this;
-    const valueObj = dp.util.constructValueObjectShallow(refId, rootDataNode.nodeId);
-    const entries = valueObj && Object.entries(valueObj);
+    const { rootDataNode, dp, refId, valueRef } = this;
+    const objectValue = dp.util.constructValueObjectShallow(refId, rootDataNode.nodeId);
 
+    if (valueRef.pruneState === ValuePruneState.Omitted) {
+      return EmptyArray;
+    }
+
+    const entries = objectValue && Object.entries(objectValue);
     if (entries?.length) {
       return entries.map(([key, [childNodeId, childRefId, childValue]]) => {
         const childDataNode = dp.collections.dataNodes.getById(childNodeId);
@@ -104,5 +112,6 @@ export default class ValueTDRefNode extends ValueNode {
     const value = dp.util.constructValueFull(nodeId);
 
     valueRender(value);
+    emitValueRenderAction(value, nodeId);
   }
 }

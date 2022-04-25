@@ -77,8 +77,8 @@ class ModuleStats extends StatsBase {
     const minProgramId = programData?.min;
 
     // loaded modules
-    const allModuleNames = util.getAllExternalProgramModuleNames();
-    const newModuleNames = minProgramId && util.getAllExternalProgramModuleNames(minProgramId);
+    const allModuleNames = util.getAllPackageNames();
+    const newModuleNames = minProgramId && util.getAllPackageNames(minProgramId);
 
     // untraced modules
     const allUntracedModules = difference(allRequireModuleNames, allModuleNames);
@@ -118,7 +118,7 @@ class FunctionStats extends StatsBase {
     const newUntracedRefIds = difference(allUntracedRefIds, oldUntracedRefIds);
     const newUntracedNames = newUntracedRefIds
       .map(refId => allUntracedFunctionCallTracesByRefId[refId][0])       // first BCE of refId
-      .map(trace => util.getTrace(util.getCalleeTraceId(trace.traceId)))  // -> callee
+      .map(trace => util.getCalleeTrace(trace.traceId))                   // -> callee
       .map(makeTraceLabel);                                               // -> label
 
     newUntracedNames.length && 

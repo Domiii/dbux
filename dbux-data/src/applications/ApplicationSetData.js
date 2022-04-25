@@ -107,6 +107,14 @@ export default class ApplicationSetData {
   }
 
   /**
+  * @param {collectStatsCb} cb 
+  * @return {[]}
+  */
+  collectGlobalStatsUnique(cb) {
+    return Array.from(new Set(this.collectGlobalStats(cb)));
+  }
+
+  /**
    * @callback countStatsCb
    * @param {RuntimeDataProvider} dp
    * @param {Application} app

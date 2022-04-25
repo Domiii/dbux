@@ -95,7 +95,7 @@ export default class BaseTreeViewNode extends TreeItem {
   }
 
   buildChildrenDefault() {
-    return this.treeNodeProvider.buildNodes(this.childClasses);
+    return this.treeNodeProvider.buildNodes(this.childClasses, this);
   }
 
   getOrBuildChildren() {
@@ -148,5 +148,20 @@ export default class BaseTreeViewNode extends TreeItem {
    */
   registerActiveEvents() {
     return null;
+  }
+
+
+  /** ###########################################################################
+   * helper
+   *  #########################################################################*/
+
+  /**
+   * Find a chlid node of given class from parent, or from roots if parent is `undefined`.
+   * @param {*} clazz A node class that extends `BaseTreeViewNode` 
+   * @param {BaseTreeViewNode} parent
+   * @return {BaseTreeViewNode}
+   */
+  getChildByClass(clazz) {
+    return this.children.find(node => node instanceof clazz);
   }
 }

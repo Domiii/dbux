@@ -11,7 +11,7 @@ import useBaseUrl from '../hooks/useBaseUrl';
 
 // const acg = 'TODO';
 
-// const AcgPath = 'runtime-analysis/asynchronous-call-graph';
+// const AcgPath = 'dynamic-analysis/asynchronous-call-graph';
 const AcgPath = 'acg';
 
 const DebuggingBackgroundPath = 'background/debugging';
@@ -31,12 +31,12 @@ const aliases = {
 };
 
 const PathByTerm = {
-  'call graph': 'runtime-analysis/call-graph',
+  'call graph': 'dynamic-analysis/call-graph',
   acg: AcgPath,
   cgr: AcgPath,
   ae: AcgPath,
 
-  'dynamic runtime analysis': DebuggingBackgroundPath,
+  'dynamic dynamic analysis': DebuggingBackgroundPath,
   idbe: DebuggingBackgroundPath,
 
   'race condition': 'https://www.google.com/search?q=race+condition&hl=en'
@@ -53,7 +53,7 @@ const AnchorsByTerm = {
   cgr: 'cgr',
   ae: 'ae',
 
-  'dynamic runtime analysis': '',
+  'dynamic dynamic analysis': '',
   idbe: ''
 };
 

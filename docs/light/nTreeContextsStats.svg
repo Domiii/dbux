@@ -1,0 +1,14 @@
+<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" version="1.1">
+
+ <g>
+  <title>Layer 1</title>
+  <g id="svg_6">
+   <g stroke="null" id="surface1">
+    <path stroke="null" id="svg_1" fill="rgb(0%,0%,0%)" fill-rule="nonzero" d="m8.35974,10.4265l5.14062,0l0,1.28515l-5.14062,0l0,-1.28515zm0,0"/>
+    <path stroke="null" id="svg_2" fill="rgb(0%,0%,0%)" fill-rule="nonzero" d="m8.35974,8.42937l5.14062,0l0,1.28516l-5.14062,0l0,-1.28516zm0,0"/>
+    <path stroke="null" id="svg_3" fill="rgb(0%,0%,0%)" fill-rule="nonzero" d="m8.35974,12.43264l5.14062,0l0,1.28516l-5.14062,0l0,-1.28516zm0,0"/>
+   </g>
+   <text transform="matrix(0.684007 0 0 0.684007 0.523671 5.57706)" stroke="#000" xml:space="preserve" text-anchor="start" font-family="'Grandstander'" font-size="19" id="svg_5" y="7.93919" x="3.7682" stroke-width="0" fill="#000000">ƒ</text>
+  </g>
+ </g>
+</svg>

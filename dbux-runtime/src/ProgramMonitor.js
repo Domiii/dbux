@@ -158,12 +158,20 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceThrow(this.getProgramId(), value, tid, inputs);
   }
 
-  popFunction = (contextId, inProgramStaticTraceId, awaitContextId) => {
+  popFunction = (contextId, inProgramStaticTraceId) => {
     if (this.busy) {
       return undefined;
     }
 
-    return this._runtimeMonitor.popFunction(this.getProgramId(), contextId, inProgramStaticTraceId, awaitContextId);
+    return this._runtimeMonitor.popFunction(this.getProgramId(), contextId, inProgramStaticTraceId);
+  }
+
+  popFunctionInterruptable = (contextId, inProgramStaticTraceId, awaitContextId, inProgramStaticResumeContextId) => {
+    if (this.busy) {
+      return undefined;
+    }
+
+    return this._runtimeMonitor.popFunctionInterruptable(this.getProgramId(), contextId, inProgramStaticTraceId, awaitContextId, inProgramStaticResumeContextId);
   }
 
   popProgram = () => {
@@ -183,32 +191,57 @@ export default class ProgramMonitor {
   //   return this._runtimeMonitor.CallbackArgument(this.getProgramId(), 
   //     inProgramStaticContextId, schedulerId, traceId, cb);
   // }
+  preAwait = (inProgramStaticContextId, traceId, awaitArgument) => {
+    if (this.busy) {
+      // TODO: calling async function with `disabled` hints from non-pure getters will most likely cause trouble :(
+      // eslint-disable-next-line max-len
+      this._logger.error(`Encountered await in disabled call #${traceId} (NOTE: Dbux does not play well with getters that have side effects, especially if they call asynchronous code)`);
+      return 0;
+    }
+    return this._runtimeMonitor.preAwait(this.getProgramId(), inProgramStaticContextId, traceId, awaitArgument);
+  }
 
   wrapAwait = (awaitValue/*, awaitContextId */) => {
     // nothing to do
     return this._runtimeMonitor.wrapAwait(this.getProgramId(), awaitValue);
   }
 
-  preAwait = (inProgramStaticContextId, traceId, awaitArgument) => {
-    if (this.busy) {
-      // TODO: calling asynchronous methods when disabled hints at non-pure getters and will most likely cause trouble :(
-      this._logger.error(`Encountered await in disabled call #${traceId} (NOTE: dbux does not play well with impure getters, especially if tey  call asynchronous code)`);
-      return 0;
-    }
-    return this._runtimeMonitor.preAwait(this.getProgramId(), inProgramStaticContextId, traceId, awaitArgument);
-  }
 
-  postAwait = (awaitResult, awaitArgument, awaitContextId, resumeTraceId) => {
+  postAwait = (awaitResult, awaitArgument, realContextId, awaitContextId) => {
     // this._logger.debug('await argument is', awaitArgument);
-    return this._runtimeMonitor.postAwait(this.getProgramId(), awaitResult, awaitArgument, awaitContextId, resumeTraceId);
+    return this._runtimeMonitor.postAwait(this.getProgramId(), awaitResult, awaitArgument, realContextId, awaitContextId);
   }
 
-  pushResume = (resumeStaticContextId, inProgramStaticTraceId) => {
-    return this._runtimeMonitor.pushResume(this.getProgramId(), resumeStaticContextId, inProgramStaticTraceId, true);
+  pushResume = (realContextId, resumeStaticContextId, inProgramStaticTraceId, definitionTid) => {
+    return this._runtimeMonitor.pushResume(this.getProgramId(), realContextId, 0, resumeStaticContextId, inProgramStaticTraceId, definitionTid);
+  }
+
+  popResumeTop() {
+    return this._runtimeMonitor.popResumeTop();
   }
 
   popResume = (resumeContextId) => {
     return this._runtimeMonitor.popResume(resumeContextId);
+  }
+
+  /** ###########################################################################
+   * generator functions
+   *  #########################################################################*/
+
+  // preYield = (inProgramStaticContextId, traceId, yieldArgument) => {
+  //   if (this.busy) {
+  //     return 0;
+  //   }
+  //   return this._runtimeMonitor.preYield(this.getProgramId(), inProgramStaticContextId, traceId, yieldArgument);
+  // }
+
+  preYield = (argument, schedulerTid) => {
+    return this._runtimeMonitor.preYield(this.getProgramId(), argument, schedulerTid);
+  }
+
+  postYield = (yieldResult, yieldArgument, realContextId, staticResumeContextId) => {
+    // this._logger.debug('yield argument is', yieldArgument);
+    return this._runtimeMonitor.postYield(this.getProgramId(), realContextId, yieldResult, yieldArgument, staticResumeContextId);
   }
 
   // ###########################################################################
@@ -324,20 +357,20 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceUpdateExpressionME(this.getProgramId(), obj, prop, updateValue, returnValue, readTid, tid, objectTid);
   }
 
-  traceCatch = (inProgramStaticTraceId, realContextId, awaitContextId = 0) => {
-    if (this.areTracesDisabled) {
-      return;
-    }
-
-    this._runtimeMonitor.traceCatch(this.getProgramId(), inProgramStaticTraceId, realContextId, awaitContextId);
+  traceCatch = (inProgramStaticTraceId, realContextId) => {
+    this._runtimeMonitor.traceCatch(this.getProgramId(), inProgramStaticTraceId, realContextId);
   }
 
-  traceFinally = (inProgramStaticTraceId, realContextId, awaitContextId = 0) => {
-    if (this.areTracesDisabled) {
-      return;
-    }
+  traceCatchInterruptable = (inProgramStaticTraceId, realContextId, awaitContextId, inProgramStaticResumeContextId) => {
+    this._runtimeMonitor.traceCatchInterruptable(this.getProgramId(), inProgramStaticTraceId, realContextId, awaitContextId, inProgramStaticResumeContextId);
+  }
 
-    this._runtimeMonitor.traceFinally(this.getProgramId(), inProgramStaticTraceId, realContextId, awaitContextId);
+  traceFinally = (inProgramStaticTraceId, realContextId) => {
+    this._runtimeMonitor.traceFinally(this.getProgramId(), inProgramStaticTraceId, realContextId);
+  }
+
+  traceFinallyInterruptable = (inProgramStaticTraceId, realContextId, awaitContextId, inProgramStaticResumeContextId) => {
+    this._runtimeMonitor.traceFinallyInterruptable(this.getProgramId(), inProgramStaticTraceId, realContextId, awaitContextId, inProgramStaticResumeContextId);
   }
 
   /** ###########################################################################

@@ -43,10 +43,11 @@ export default class AsyncEventUpdateCollection extends Collection {
         update.promiseId = update.promiseId || 
           dp.util.getCallValueRefOfContext(realContextId)?.refId ||
           dp.util.getAsyncFunctionCallerPromiseId(realContextId);
-        // if (!update.promiseId) {
-        //   // should never happen!
-        //   this.logger.warn(`postAddRaw [${AsyncEventUpdateType.nameFromForce(update.type)}] "getCallValueRefOfContext" failed:`, update);
-        // }
+
+        if (!update.promiseId) {
+          // can sometimes happen
+          this.logger.warn(`postAdd [${AsyncEventUpdateType.nameFromForce(update.type)}] "promiseId" not found:`, update);
+        }
       }
     }
   }

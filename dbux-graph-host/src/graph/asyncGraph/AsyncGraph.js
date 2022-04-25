@@ -3,6 +3,7 @@ import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection/index';
 import { makeContextLocLabel, makeContextLabel } from '@dbux/data/src/helpers/makeLabels';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import AsyncNodeDataMap from '@dbux/graph-common/src/graph/types/AsyncNodeDataMap';
 import GraphType from '@dbux/graph-common/src/shared/GraphType';
 import StackMode from '@dbux/graph-common/src/shared/StackMode';
@@ -37,12 +38,12 @@ class AsyncGraph extends GraphBase {
   }
 
   handleRefresh() {
+    this._resubscribeOnData();
     const children = this.makeChildrenData();
     const applications = this.makeApplicationState(allApplications.selection.getAll());
     const { selectedApplicationId, selected } = allApplications.selection.data.threadSelection;
     this.setState({ children, applications, selectedApplicationId, selectedThreadIds: Array.from(selected) });
-    this._resubscribeOnData();
-    this.postUpdate();
+    // this.viewUpdate();
   }
 
   clear() {
@@ -80,7 +81,7 @@ class AsyncGraph extends GraphBase {
 
       const isProgramRoot = dp.util.isContextProgramContext(rootContextId);
       const realStaticContextid = dp.util.getRealContextOfContext(rootContextId).staticContextId;
-      const moduleName = dp.util.getContextModuleName(rootContextId);
+      const packageName = dp.util.getContextPackageName(rootContextId);
       const postAsyncEventUpdate = dp.util.getAsyncPostEventUpdateOfRoot(rootContextId);
       const postAsyncEventUpdateType = postAsyncEventUpdate?.type;
 
@@ -96,11 +97,9 @@ class AsyncGraph extends GraphBase {
       const parentEdge = parentEdges[0];
       const parentEdgeType = parentEdge?.edgeType;
       const parentAsyncNodeId = parentEdge?.parentAsyncNodeId;
-      /**
-       * Depth label is temporarily disabled.
-       * Uncomment all "asyncNodeData.nestingDepth" in AsyncGraph.js of both host/client sides to bring it back.
-       */
-      // const nestingDepth = dp.util.getNestedDepth(rootContextId);
+      const nestingDepth = dp.util.getNestedDepth(rootContextId);
+
+      const stats = this.getContextStats(executionContext);
 
       return {
         asyncNode,
@@ -113,12 +112,13 @@ class AsyncGraph extends GraphBase {
         parentEdges,
         parentEdgeType,
         parentAsyncNodeId,
-        // nestingDepth,
+        nestingDepth,
 
         isProgramRoot,
         realStaticContextid,
-        moduleName,
+        packageName,
         postAsyncEventUpdateType,
+        stats,
 
         /**
          * dummy value, will be resolve later in `resolveErrorData`
@@ -226,6 +226,18 @@ class AsyncGraph extends GraphBase {
     return asyncNodeData;
   }
 
+  getContextStats({ applicationId, contextId }) {
+    const dp = allApplications.getById(applicationId).dataProvider;
+    const stats = dp.queries.statsByContext(contextId);
+    return {
+      nTreeFileCalled: stats.nTreeFileCalled,
+      nTreeStaticContexts: stats.nTreeStaticContexts,
+      nTreeContexts: stats.nTreeContexts,
+      nTreeTraces: stats.nTreeTraces,
+      nTreePackages: stats.nTreePackages,
+    };
+  }
+
   getAsyncNodeWidthDown(nodeData, dataByNodeMap) {
     if (!nodeData.widthDown) {
       const { applicationId, rootContextId } = nodeData.asyncNode;
@@ -273,17 +285,22 @@ class AsyncGraph extends GraphBase {
 
     // subscribe new
     for (const app of allApplications.selection.getAll()) {
-      const { dataProvider } = app;
-      const unsubscribe = dataProvider.onData('asyncNodes',
-        () => {
-          this.refresh();
-        }
-      );
+      const { dataProvider: dp } = app;
+      const unsubscribes = [
+        dp.onData('asyncNodes',
+          () => {
+            this.refresh();
+          }
+        ),
+        dp.queryImpl.statsByContext.subscribe()
+      ];
 
-      // future-work: avoid potential memory leak
-      allApplications.selection.subscribe(unsubscribe);
-      this.addDisposable(unsubscribe);
-      this._unsubscribeOnNewData.push(unsubscribe);
+      // unsubscribe on refresh
+      this._unsubscribeOnNewData.push(...unsubscribes);
+      // also when application is deselected
+      allApplications.selection.subscribe(...unsubscribes);
+      // also when node is disposed
+      this.addDisposable(...unsubscribes);
     }
   }
 
@@ -303,13 +320,15 @@ class AsyncGraph extends GraphBase {
         }
       });
       const values = Array.from(firstTraces.values()).map(t => {
-        const { asyncNodeId } = dp.util.getAsyncNode(t.rootContextId);
-        const label = dp.util.getTraceValueStringShort(t.traceId);
+        const { traceId, rootContextId } = t;
+        const { asyncNodeId } = dp.util.getAsyncNode(rootContextId);
+        const label = dp.util.getTraceValueStringShort(traceId);
 
         return {
           applicationId,
           asyncNodeId,
-          label
+          label,
+          valueTraceId: traceId,
         };
       });
       await this.remote.updateRootValueLabel(values);
@@ -356,10 +375,18 @@ class AsyncGraph extends GraphBase {
     await this.remote.selectAsyncNode(asyncNode);
   }
 
+  update() {
+    this.registerViewUpdate();
+  }
+
   /**
    * Do view updates that depends on `TraceSelection`.
    */
-  postUpdate = async () => {
+  registerViewUpdate = async () => {
+    if (!this.graphContainer.isEnabled()) {
+      return;
+    }
+
     try {
       const trace = traceSelection.selected;
       await this.waitForRender();
@@ -376,7 +403,7 @@ class AsyncGraph extends GraphBase {
   }
 
   handleTraceSelected = async () => {
-    await this.postUpdate();
+    await this.registerViewUpdate();
   }
 
   // ###########################################################################
@@ -384,9 +411,8 @@ class AsyncGraph extends GraphBase {
   // ###########################################################################
 
   async waitForRender() {
-    const { asyncGraphContainer } = this.context.graphDocument;
-    await asyncGraphContainer.graph.waitForRefresh();
-    await asyncGraphContainer.graph.waitForUpdate();
+    await this.waitForRefresh();
+    await this.waitForUpdate();
   }
 
   isRelevantAsyncNode(asyncNode) {
@@ -422,18 +448,31 @@ class AsyncGraph extends GraphBase {
   }
 
   public = {
-    selectTrace(applicationId, traceId) {
-      const dp = allApplications.getById(applicationId).dataProvider;
-      const trace = dp.util.getTrace(traceId);
-      if (trace) {
-        traceSelection.selectTrace(trace);
-      }
-    },
     gotoAsyncNode(applicationId, asyncNodeId) {
       const dp = allApplications.getById(applicationId).dataProvider;
       const trace = dp.util.getTraceOfAsyncNode(asyncNodeId);
       if (trace) {
+        const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
         traceSelection.selectTrace(trace);
+        this.componentManager.externals.emitCallGraphTraceAction(trace, UserActionType.AsyncCallGraphTrace, { asyncNode });
+      }
+    },
+    selectSchedulerTrace(applicationId, asyncNodeId, schedulerTraceId) {
+      const dp = allApplications.getById(applicationId).dataProvider;
+      const trace = dp.util.getTrace(schedulerTraceId);
+      if (trace) {
+        const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
+        traceSelection.selectTrace(trace);
+        this.componentManager.externals.emitCallGraphTraceAction(trace, UserActionType.AsyncCallGraphSchedulerTrace, { asyncNode });
+      }
+    },
+    gotoValueTrace(applicationId, asyncNodeId, valueTraceId) {
+      const dp = allApplications.getById(applicationId).dataProvider;
+      const trace = dp.util.getTrace(valueTraceId);
+      if (trace) {
+        const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
+        traceSelection.selectTrace(trace);
+        this.componentManager.externals.emitCallGraphTraceAction(trace, UserActionType.AsyncCallGraphValueTrace, { asyncNode });
       }
     },
     selectSyncInThreads(applicationId, asyncNodeId) {
@@ -459,6 +498,19 @@ class AsyncGraph extends GraphBase {
     selectRelevantThread(applicationId, threadId) {
       this.componentManager.externals.alert('Thread selection is currently disabled.', false);
       // allApplications.selection.data.threadSelection.select(applicationId, [threadId]);
+    },
+    async selectError(applicationId, asyncNodeId, rootContextId) {
+      const dp = allApplications.getById(applicationId).dataProvider;
+      const firstError = dp.indexes.traces.errorByRoot.getFirst(rootContextId);
+      if (firstError) {
+        const asyncNode = dp.collections.asyncNodes.getById(asyncNodeId);
+        traceSelection.selectTrace(firstError);
+        await this.componentManager.externals.globalAnalysisViewController.revealSelectedError();
+        this.componentManager.externals.emitCallGraphTraceAction(firstError, UserActionType.AsyncCallGraphError, { asyncNode });
+      }
+      else {
+        this.componentManager.externals.alert('No error in this async node.', false);
+      }
     }
   }
 }

@@ -7,11 +7,12 @@ const { log, debug, warn, error: logError, trace: logTrace } = newLogger('FocusC
 
 /** @typedef {import('../ContextNode').default} ContextNode */
 
+/**
+ * TODO: rename to `FollowController`
+ */
 export default class FocusController extends HostComponentEndpoint {
   init() {
     this.addDisposable(
-      // `setGraphMode` will call `refreshGraph` which `handleTraceSelected`
-      // this.context.graphDocument.onGraphModeChanged(this.handleTraceSelected),
       this.context.graphDocument.onFollowModeChanged(this.handleTraceSelected),
       traceSelection.onTraceSelectionChanged(this.handleTraceSelected),
     );
@@ -48,7 +49,7 @@ export default class FocusController extends HostComponentEndpoint {
     }
 
     await targetNode.reveal?.();
-    this.remote.slideToNode(targetNode);
+    await this.remote.slideToNode(targetNode);
   }
 
   clearFocus() {

@@ -17,7 +17,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { renderValueSimple } from '@dbux/common/src/util/stringUtil';
 import DataNodeType, { isDataNodeModifyType } from '@dbux/common/src/types/constants/DataNodeType';
 import StaticTrace from '@dbux/common/src/types/StaticTrace';
-import StaticContextType, { isVirtualContextType } from '@dbux/common/src/types/constants/StaticContextType';
+import StaticContextType, { isRealStaticContext, isVirtualStaticContextType } from '@dbux/common/src/types/constants/StaticContextType';
 import ExecutionContextType, { isRealContextType } from '@dbux/common/src/types/constants/ExecutionContextType';
 import { isCallResult, hasCallId } from '@dbux/common/src/types/constants/traceCategorization';
 // eslint-disable-next-line max-len
@@ -34,6 +34,7 @@ import { locToString } from './util/misc';
 import { makeContextSchedulerLabel, makeTraceLabel } from './helpers/makeLabels';
 
 /** @typedef {import('./RuntimeDataProvider').default} DataProvider */
+/** @typedef {import('@dbux/common/src/types/DataNode').default} DataNode */
 /** @typedef {import('@dbux/common/src/types/AsyncNode').default} AsyncNode */
 /** @typedef {import('@dbux/common/src/types/StaticContext').default} StaticContext */
 /** @typedef {import('@dbux/common/src/types/ExecutionContext').default} ExecutionContext */
@@ -114,7 +115,7 @@ export default {
    * @param {DataProvider} dp
    * @return {Array.<string>} Names of all modules from `node_modules` folders that were executed.
    */
-  getExternalProgramModuleName(dp, programId) {
+  getProgramPackageName(dp, programId) {
     const programContext = dp.collections.staticProgramContexts.getById(programId);
 
     if ('_moduleName' in programContext) {
@@ -125,14 +126,14 @@ export default {
     }
   },
 
-  getAllExternalProgramModuleNames(dp, startId = 1) {
+  getAllPackageNames(dp, startId = 1) {
     const programIds = new Set(
       dp.collections.staticProgramContexts
         .getAllActual(startId)
-        .map(p => dp.util.getExternalProgramModuleName(p.programId))
+        .map(p => dp.util.getProgramPackageName(p.programId))
     );
 
-    // NOTE: `getExternalProgramModuleName` returns null if a program is not in `node_modules`.
+    // NOTE: `getProgramPackageName` returns null if a program is not in `node_modules`.
     programIds.delete(null);
 
     return Array.from(programIds);
@@ -147,7 +148,6 @@ export default {
     return dp.indexes.staticContexts.byFile.get(programId);
   },
 
-
   /** @param {DataProvider} dp */
   getFirstTraceOfProgram(dp, programId) {
     const staticContext = dp.util.getStaticContextOfProgram(programId);
@@ -155,6 +155,10 @@ export default {
       return dp.util.getFirstTraceOfStaticContext(staticContext.staticContextId);
     }
     return null;
+  },
+
+  getTracesOfProgram(dp, programId) {
+    return dp.indexes.traces.byFile.get(programId);
   },
 
   // ###########################################################################
@@ -168,20 +172,30 @@ export default {
 
   /** @param {DataProvider} dp */
   getRootContextOfContext(dp, contextId) {
-    const { executionContexts } = dp.collections;
-    let parentContextId;
-    while (
-      !dp.util.isRootContext(contextId) &&
-      (parentContextId = executionContexts.getById(contextId).parentContextId)) {
-      contextId = parentContextId;
-    }
-    return executionContexts.getById(contextId);
+    // const { executionContexts } = dp.collections;
+    // const context = executionContexts.getById(contextId);
+    // if (!context._rootContextId) {
+    //   let currentContextId = contextId;
+    //   let parentContextId;
+    //   while (
+    //     !dp.util.isRootContext(currentContextId) &&
+    //     (parentContextId = executionContexts.getById(currentContextId).parentContextId)) {
+    //     currentContextId = parentContextId;
+    //   }
+    //   context._rootContextId = currentContextId;
+    // }
+    // return executionContexts.getById(context._rootContextId);
+
+    const firstTrace = dp.util.getFirstTraceOfContext(contextId);
+    const rootContextId = firstTrace?.rootContextId;
+    const rootContext = rootContextId && dp.collections.executionContexts.getById(rootContextId) || null;
+    return rootContext;
   },
 
   /** @param {DataProvider} dp */
   getRootContextOfTrace(dp, traceId) {
     const trace = dp.collections.traces.getById(traceId);
-    return dp.util.getRootContextOfContext(trace.contextId);
+    return dp.collections.executionContexts.getById(trace.rootContextId);
   },
 
   /** @param {DataProvider} dp */
@@ -224,51 +238,81 @@ export default {
   },
 
   /**
-   * Find a context's parent in call stack, skips virtual contexts and looking for async parent if it is a root context.
+   * Find a context's parent in call stack, looking for async parent if it is a root context.
    * NOTE: used in `AsyncCallStack`, `RootEdgesTDNode` and `ParentContext navigation` for consistency
    * @param {DataProvider} dp 
    * @param {number} contextId 
    */
   getContextAsyncStackParent(dp, contextId) {
-    const { parentContextId, contextType } = dp.collections.executionContexts.getById(contextId);
+    const { parentContextId } = dp.collections.executionContexts.getById(contextId);
     if (!dp.util.isRootContext(contextId)) {
-      // not a root, get real parent
-      return dp.util.getRealContextOfContext(parentContextId);
+      // // not a root, get real parent
+      // return dp.util.getRealContextOfContext(parentContextId);
+
+      // not a root, get parent
+      return dp.collections.executionContexts.getById(parentContextId);
     }
     else {
-      // is root, looking for async parent
-      // go to "real parent"
-      if (isRealContextType(contextType)) {
-        const fromAsyncEvent = dp.indexes.asyncEvents.to.getFirst(contextId);
-        if (fromAsyncEvent) {
-          const schedulerTrace = dp.util.getCallerOrSchedulerTraceOfContext(contextId);
-          const depth = dp.util.getNestedDepth(contextId);
-          const schedulerDepth = dp.util.getNestedDepth(schedulerTrace.rootContextId);
-          if (depth < schedulerDepth) {
-            return dp.util.getContextAsyncStackParent(schedulerTrace.rootContextId);
-          }
-          else {
-            const context = dp.collections.executionContexts.getById(schedulerTrace.contextId);
-            return context;
-          }
+      const realContext = dp.util.getRealContextOfContext(contextId);
+      if (realContext.contextId !== contextId) {
+        // real context is not itself
+        return realContext;
+      }
+
+      // is real root, looking for async parent
+      const fromAsyncEvent = dp.indexes.asyncEvents.to.getFirst(contextId);
+      if (fromAsyncEvent) {
+        const schedulerTrace = dp.util.getCallerOrSchedulerTraceOfContext(contextId);
+        const depth = dp.util.getNestedDepth(contextId);
+        const schedulerDepth = dp.util.getNestedDepth(schedulerTrace.rootContextId);
+        if (depth < schedulerDepth) {
+          return dp.util.getContextAsyncStackParent(schedulerTrace.rootContextId);
         }
         else {
-          return null;
+          const context = dp.collections.executionContexts.getById(schedulerTrace.contextId);
+          return context;
         }
       }
-      else {
-        // if virtual: skip to realContext's parent and call trace (skip all virtual contexts, in general)
-        const realContext = dp.util.getRealContextOfContext(contextId);
-        return dp.util.getRealContextOfContext(realContext.parentContextId);
-      }
+
+      return null;
     }
   },
 
   /** @param {DataProvider} dp */
-  getContextModuleName(dp, contextId) {
+  getContextProgram(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
-    const staticContext = dp.collections.staticContexts.getById(context.staticContextId);
-    return dp.util.getExternalProgramModuleName(staticContext.programId);
+    return dp.util.getStaticContextProgram(context.staticContextId);
+  },
+
+  /** @param {DataProvider} dp */
+  getContextFilePath(dp, contextId) {
+    const context = dp.collections.executionContexts.getById(contextId);
+    const programContext = dp.util.getStaticContextProgram(context.staticContextId);
+    return programContext.filePath;
+  },
+
+  /** @param {DataProvider} dp */
+  getStaticContextProgram(dp, staticContextId) {
+    const staticContext = dp.collections.staticContexts.getById(staticContextId);
+    return dp.collections.staticProgramContexts.getById(staticContext.programId);
+  },
+
+  /** @param {DataProvider} dp */
+  getContextPackageName(dp, contextId) {
+    const context = dp.collections.executionContexts.getById(contextId);
+    return dp.util.getStaticContextPackageName(context.staticContextId);
+  },
+
+  /** @param {DataProvider} dp */
+  getStaticContextPackageName(dp, staticContextId) {
+    const staticContext = dp.collections.staticContexts.getById(staticContextId);
+    return dp.util.getProgramPackageName(staticContext.programId);
+  },
+
+  /** @param {DataProvider} dp */
+  getTracePackageName(dp, traceId) {
+    const trace = dp.collections.traces.getById(traceId);
+    return dp.util.getContextPackageName(trace.contextId);
   },
 
   /** @param {DataProvider} dp */
@@ -398,7 +442,10 @@ export default {
     return parentTrace || null;
   },
 
-  /** @param {DataProvider} dp */
+  /**
+   * @deprecated Runs are no longer. Use roots (CGRs) instead.
+   *  @param {DataProvider} dp 
+   */
   getFirstTraceOfRun(dp, runId) {
     const traces = dp.indexes.traces.byRun.get(runId);
     if (!traces?.length) {
@@ -592,6 +639,9 @@ export default {
     let valueRef;
     if (_refId) {
       valueRef = dp.collections.values.getById(_refId);
+      if (valueRef.pruneState) {
+        return valueRef.value;
+      }
       if (_visited.has(_refId)) {
         return '(circular dependency)';
       }
@@ -720,6 +770,17 @@ export default {
     return null;
   },
 
+  /**
+   * @param {DataProvider} dp
+   */
+  hasAnyValue(dp, nodeId) {
+    const dataNode = dp.util.getDataNode(nodeId);
+    if (dataNode) {
+      return !!(dataNode.hasValue || dataNode.refId);
+    }
+    return false;
+  },
+
   /** 
    * internal helper
    * @param {DataProvider} dp
@@ -817,12 +878,15 @@ export default {
   },
 
   /** @param {DataProvider} dp */
-  getTraceValueStringShort(dp, traceId) {
+  getTraceValueStringShort(dp, traceId, ignoreUndefined = false) {
     const dataNode = dp.util.getDataNodeOfTrace(traceId);
-    if (dataNode) {
+    if (dp.util.hasAnyValue(dataNode?.nodeId)) {
       return dp.util.getDataNodeValueStringShort(dataNode.nodeId);
     }
-    return '(no value or undefined)';
+    if (ignoreUndefined) {
+      return undefined;
+    }
+    return 'undefined';
   },
 
   getValueRefValueStringShort(dp, refId, terminateNodeId, shorten) {
@@ -895,14 +959,48 @@ export default {
     return null;
   },
 
+  /** @param {DataProvider} dp */
   getDataNodesByRefId(dp, refId) {
     return dp.indexes.dataNodes.byRefId.get(refId);
   },
 
+  /** @param {DataProvider} dp */
   getFirstDataNodeByRefId(dp, refId) {
     return dp.indexes.dataNodes.byRefId.getFirst(refId);
   },
 
+  /** 
+   * Get first DataNode by refId, even if it does NOT OWN it.
+   * 
+   * @param {DataProvider} dp
+   */
+  getAnyFirstNodeIdByRefId(dp, refId) {
+    const ref = dp.collections.values.getById(refId);
+    const { nodeId } = ref;
+    // const { traceId } = dp.collections.dataNodes.getById(nodeId);
+    // return traceId;
+    return nodeId;
+  },
+
+  /** 
+   * Get first DataNode by refId, even if it does NOT OWN it.
+   * 
+   * @param {DataProvider} dp
+   */
+  getAnyFirstNodeByRefId(dp, refId) {
+    const nodeId = dp.util.getAnyFirstNodeIdByRefId(refId);
+    return nodeId && dp.collections.dataNodes.getById(nodeId);
+  },
+
+  /**
+   * @param {DataProvider} dp
+   */
+  getFirstTraceIdByNodeId(dp, nodeId) {
+    const { traceId } = dp.collections.dataNodes.getById(nodeId);
+    return traceId;
+  },
+
+  /** @param {DataProvider} dp */
   getFirstTraceIdByRefId(dp, refId) {
     const dataNode = dp.indexes.dataNodes.byRefId.getFirst(refId);
     return dataNode?.traceId;
@@ -914,10 +1012,10 @@ export default {
     return traceId && dp.util.getTrace(traceId);
   },
 
-  // ###########################################################################
-  // call related trace
-  // ###########################################################################
 
+  // ###########################################################################
+  // call related traces
+  // ###########################################################################
 
   /** @param {DataProvider} dp */
   isTraceArgument(dp, traceId) {
@@ -929,6 +1027,15 @@ export default {
       }
     }
     return false;
+  },
+
+  /** @param {DataProvider} dp */
+  getCallRelatedTraceBCE(dp, traceId) {
+    const trace = dp.collections.traces.getById(traceId);
+    if (trace.callId) {
+      return dp.collections.traces.getById(trace.callId);
+    }
+    return null;
   },
 
   isCallBCEOrResultTrace(dp, traceId) {
@@ -1224,19 +1331,6 @@ export default {
   },
 
   /**
-   * @param {DataProvider} dp
-   */
-  getReturnTraceOfRealContext(dp, contextId) {
-    if (dp.util.isContextVirtual(contextId)) {
-      const realContextId = dp.util.getRealContextIdOfContext(contextId);
-      return realContextId && dp.util.getReturnTraceOfInterruptableContext(realContextId);
-    }
-    else {
-      return dp.util.getReturnTraceOfContext(contextId);
-    }
-  },
-
-  /**
    * Requires the given context to have (virtual) child contexts.
    * WARNING: does not work for non-interruptable functions.
    * @param {DataProvider} dp
@@ -1251,11 +1345,13 @@ export default {
         }
       }
     }
-    return null;
+    return dp.util.getReturnTraceOfContext(realContextId) || null;
   },
 
   /**
    * WARNING: does not work for `realContextId` of interruptable functions (need virtual `Resume` contextId instead).
+   *    → In that case: use {@link #getReturnTraceOfInterruptableContext} instead.
+   * 
    * @param {DataProvider} dp
    */
   getReturnTraceOfContext(dp, contextId) {
@@ -1276,6 +1372,11 @@ export default {
    */
   getCalleeTraceId(dp, callId) {
     return dp.collections.traces.getById(callId)?.data?.calleeTid;
+  },
+
+  /** @param {DataProvider} dp */
+  getCalleeTrace(dp, callId) {
+    return dp.util.getTrace(dp.util.getCalleeTraceId(callId));
   },
 
   // getTracesOfCalledContext(dp, callId) {
@@ -1377,7 +1478,8 @@ export default {
       case SpecialCallType.Apply:
         realCalleeTid = bceTrace.data.calledFunctionTid;
         break;
-      case SpecialCallType.Bind: {
+      case SpecialCallType.Bind:
+      default: {
         // nothing to do here -> handle `Bound` case below
         break;
       }
@@ -1386,7 +1488,7 @@ export default {
     // no match -> check for Bound
     const { calleeTid } = bceTrace.data;
     const bindTrace = dp.util.getBindCallTrace(calleeTid);
-    if (bindTrace) {
+    if (bindTrace?.data) {
       realCalleeTid = bindTrace.data.calledFunctionTid;
     }
 
@@ -1407,7 +1509,6 @@ export default {
    * @param {number} contextId
    */
   getOwnCallerTraceOfContext(dp, contextId) {
-    const context = dp.collections.executionContexts.getById(contextId);
     const bceTrace = dp.util.getCallerTraceOfContext(contextId);
     if (!bceTrace?.data) {
       return null;
@@ -1427,6 +1528,7 @@ export default {
     }
 
     const { traceId } = dp.collections.dataNodes.getById(functionRef.nodeId);
+    const context = dp.collections.executionContexts.getById(contextId);
     if (context.definitionTid === traceId) {
       // Accept: definitionTid are matched
       return bceTrace;
@@ -1529,6 +1631,85 @@ export default {
   },
 
   /** @param {DataProvider} dp */
+  getRealStaticContextIdOfContext(dp, contextId) {
+    return dp.util.getRealContextOfContext(contextId)?.staticContextId;
+    // const context = dp.collections.executionContexts.getById(contextId);
+
+    // // NOTE: "first virtual" context of context is "real context"
+
+    // if (isRealContextType(context?.contextType)) {
+    //   return context.staticContextId;
+    // }
+
+    // // const parentContextId = context?.parentContextId;
+    // const staticContextId = context?.staticContextId;
+    // const staticContext = staticContextId && dp.collections.staticContexts.getById(staticContextId);
+    // let parentStaticContext;
+
+    // if (
+    //   staticContext?.parentId &&
+    //   (parentStaticContext = dp.collections.staticContexts.getById(staticContext?.parentId))
+    //   // &&      isRealStaticContext(parentStaticContext.type)
+    // ) {
+    //   return parentStaticContext.staticContextId;
+    // }
+    // else {
+    //   // if (parentContextId && !dp.collections.executionContexts.getById(parentContextId))
+
+    //   // eslint-disable-next-line max-len
+    //   dp.logger.trace(`Could not find realContext for contextId=${contextId}, parentStaticContext=${parentStaticContext}, parentStaticContext=`, parentStaticContext);
+    //   return null;
+    // }
+    // // const realContext = dp.util.getRealContextOfContext(contextId);
+    // // return realContext.staticContextId;
+  },
+
+  /** @param {DataProvider} dp */
+  getRealStaticContextIdOfStaticContext(dp, staticContextId) {
+    const { parentId } = dp.collections.staticContexts.getById(staticContextId);
+
+    // NOTE: "first virtual" context of context is "real context"
+
+    if (dp.util.isRealStaticContext(staticContextId)) {
+      return staticContextId;
+    }
+
+
+    let parentStaticContext;
+
+    if (
+      parentId &&
+      (parentStaticContext = dp.collections.staticContexts.getById(parentId))
+      // && isRealStaticContext(parentStaticContext.type)
+    ) {
+      return parentStaticContext.staticContextId;
+    }
+    else {
+      // if (parentContextId && !dp.collections.executionContexts.getById(parentContextId))
+
+      // eslint-disable-next-line max-len
+      dp.logger.trace(`Could not find realContext for staticContextId=${staticContextId}, parentStaticContext=${parentStaticContext}, parentStaticContext=`, parentStaticContext);
+      return null;
+    }
+    // const realContext = dp.util.getRealContextOfContext(contextId);
+    // return realContext.staticContextId;
+  },
+
+  /** @param {DataProvider} dp */
+  isRealStaticContext(dp, staticContextId) {
+    const staticContext = dp.collections.staticContexts.getById(staticContextId);
+    if (!isVirtualStaticContextType(staticContext.type)) {
+      return true;
+    }
+    else if (staticContext.isInterruptable) {
+      // `isInterruptable === true` for the first virtual context
+      return true;
+    }
+
+    return false;
+  },
+
+  /** @param {DataProvider} dp */
   getRealContextIdOfTrace(dp, traceId) {
     const { contextId } = dp.collections.traces.getById(traceId);
     return dp.util.getRealContextIdOfContext(contextId);
@@ -1543,25 +1724,23 @@ export default {
   /** @param {DataProvider} dp */
   getRealContextIdOfContext(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
-    const parentContextId = context?.parentContextId;
-    let parentContext;
 
-    if (isRealContextType(context?.contextType)) {
-      return contextId;
-    }
-    else if (
-      parentContextId &&
-      (parentContext = dp.collections.executionContexts.getById(parentContextId)) &&
-      isRealContextType(parentContext.contextType)
+    // if (isRealContextType(context?.contextType)) {
+    //   return contextId;
+    // }
+
+    let parentContext;
+    const realContextId = context?.realContextId;
+    if (
+      realContextId &&
+      (parentContext = dp.collections.executionContexts.getById(realContextId))
     ) {
-      return parentContextId;
+      // looked up actual realContextId
+      return realContextId;
     }
     else {
-      // if (parentContextId && !dp.collections.executionContexts.getById(parentContextId))
-
-      // eslint-disable-next-line max-len
-      dp.logger.trace(`Could not find realContext for contextId=${contextId}, parentContextId=${parentContextId}, parentContext=`, dp.collections.executionContexts.getById(parentContextId));
-      return null;
+      // default
+      return contextId;
     }
   },
 
@@ -1573,15 +1752,8 @@ export default {
 
   /** @param {DataProvider} dp */
   getTracesOfRealContext(dp, traceId) {
-    const { contextId } = dp.collections.traces.getById(traceId);
-    if (dp.util.isTraceInRealContext(traceId)) {
-      return dp.indexes.traces.byContext.get(contextId);
-    }
-    else {
-      const context = dp.collections.executionContexts.getById(contextId);
-      const { parentContextId } = context;
-      return dp.indexes.traces.byParentContext.get(parentContextId);
-    }
+    const realContextId = dp.util.getRealContextIdOfTrace(traceId);
+    return dp.indexes.traces.byRealContext.get(realContextId);
   },
 
   /** @param {DataProvider} dp */
@@ -1628,6 +1800,13 @@ export default {
   },
 
   /** @param {DataProvider} dp */
+  isFirstAwait(dp, resumeContextId) {
+    const context = dp.collections.executionContexts.getById(resumeContextId);
+    const { realContextId } = context;
+    return realContextId === resumeContextId;
+  },
+
+  /** @param {DataProvider} dp */
   isFirstContextInParent(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
     const { parentContextId } = context;
@@ -1670,25 +1849,38 @@ export default {
    * @param {DataProvider} dp
    * @return {StaticContext}
    */
-  getStaticExecutionContextOfContext(dp, contextId) {
+  getStaticContextOfContext(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
     const { staticContextId } = context;
     return dp.collections.staticContexts.getById(staticContextId);
     // return dp.collections.staticProgramContexts.
   },
 
+  /**
+   * @param {DataProvider} dp
+   * @return {number}
+   */
+  getStaticContextIdOfContext(dp, contextId) {
+    const context = dp.collections.executionContexts.getById(contextId);
+    return context.staticContextId;
+  },
+
   /** @param {DataProvider} dp */
   isContextProgramContext(dp, contextId) {
-    const staticContext = dp.util.getStaticExecutionContextOfContext(contextId);
+    const staticContext = dp.util.getStaticContextOfContext(contextId);
     return staticContext.type === StaticContextType.Program;
   },
 
   /** @param {DataProvider} dp */
   getProgramContextFilePath(dp, contextId) {
-    const staticContext = dp.util.getStaticExecutionContextOfContext(contextId);
+    const staticContext = dp.util.getStaticContextOfContext(contextId);
     return dp.util.getFilePathFromProgramId(staticContext.programId);
   },
 
+  /** 
+   * @param {DataProvider} dp
+   * @return {StaticTrace}
+   */
   getStaticTrace(dp, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     const { staticTraceId } = trace;
@@ -1741,6 +1933,12 @@ export default {
   getTraceFileName(dp, traceId) {
     const programId = dp.util.getTraceProgramId(traceId);
     return programId && dp.collections.staticProgramContexts.getById(programId).fileName || null;
+  },
+
+  /** @param {DataProvider} dp */
+  getTraceLoc(dp, traceId) {
+    const staticTrace = dp.util.getStaticTrace(traceId);
+    return staticTrace.loc;
   },
 
   // ###########################################################################
@@ -1798,41 +1996,41 @@ export default {
   // trace grouping/searching
   // ###########################################################################
 
-  /**
-   * @param {DataProvider} dp
-   */
-  isContextVirtual(dp, contextId) {
-    const staticContext = dp.util.getContextStaticContext(contextId);
-    const {
-      type: staticContextType
-    } = staticContext;
-    return isVirtualContextType(staticContextType);
-  },
+  // /**
+  //  * @param {DataProvider} dp
+  //  */
+  // isContextVirtual(dp, contextId) {
+  //   const context = dp.collections.executionContexts.getById(contextId);
+  //   const {
+  //     contextType
+  //   } = context;
+  //   return isVirtualContextType(contextType);
+  // },
 
   /**
    * @param {DataProvider} dp 
    */
-  getAllTracesOfStaticContext(dp, staticContextId) {
+  getAllTracesOfRealStaticContext(dp, staticContextId) {
     const staticContext = dp.collections.staticContexts.getById(staticContextId);
     if (!staticContext) {
       return null;
     }
 
-    const {
-      type: staticContextType
-    } = staticContext;
+    const realStaticContextId = dp.util.getRealStaticContextIdOfStaticContext(staticContextId);
+    return realStaticContextId && dp.indexes.traces.byRealStaticContext.get(realStaticContextId) || EmptyArray;
 
-    let traces;
-    if (isVirtualContextType(staticContextType)) {
-      // Get all traces of the actual function, not it's virtual children (such as `Await`, `Resume` et al)
-      // NOTE: `Await` and `Yield` contexts do not contain traces, only `Resume` contexts contain traces for interruptable functions
-      traces = dp.util.getTracesOfParentStaticContext(staticContextId);
-    }
-    else {
-      // find all traces belonging to that staticContext
-      traces = dp.indexes.traces.byStaticContext.get(staticContextId) || EmptyArray;
-    }
-    return traces;
+    // const {
+    //   type: staticContextType
+    // } = staticContext;
+    // const parentStaticContext = dp.collections.staticContexts.getById(parentStaticContextId);
+    // let traces;
+    // if (isVirtualStaticContextType(staticContextType)) {
+    // }
+    // else {
+    //   // find all traces belonging to that staticContext
+    //   traces = dp.indexes.traces.byStaticContext.get(staticContextId) || EmptyArray;
+    // }
+    // return traces;
   },
 
   /**
@@ -1840,16 +2038,6 @@ export default {
    */
   getAllTracesOfType(dp, traceType) {
     return dp.collections.traces.getAllActual().filter(t => dp.util.getTraceType(t.traceId) === traceType);
-  },
-
-  /**
-   * @param {DataProvider} dp 
-   */
-  getTracesOfParentStaticContext(dp, staticContextId) {
-    const staticContext = dp.collections.staticContexts.getById(staticContextId);
-    const parentStaticContextId = staticContext.parentId;
-    // const parentStaticContext = dp.collections.staticContexts.getById(parentStaticContextId);
-    return dp.indexes.traces.byParentStaticContext.get(parentStaticContextId) || EmptyArray;
   },
 
   /**
@@ -1899,14 +2087,50 @@ export default {
   // trace info + debugging
   // ###########################################################################
 
-  // /**
-  //  * @param {DataProvider} dp
-  //  * NOTE: use `makeContext*Label` for now
-  //  */
-  // makeContextInfo(dp, contextId) {
-  //   // TODO: if is virtual?
-  //   return dp.util.context
-  // },
+  /**
+   * @param {DataProvider} dp
+   */
+  asContext(dp, isOrHasAContextId) {
+    let id;
+    if (isOrHasAContextId?.contextId) {
+      id = isOrHasAContextId?.contextId;
+    }
+    else {
+      id = isOrHasAContextId;
+    }
+    return dp.collections.executionContexts.getById(id);
+  },
+
+  /**
+   * @param {DataProvider} dp
+   */
+  makeStaticContextInfo(dp, staticContextId, addLoc = true, addPrefix = true) {
+    /**
+     * @type {StaticContext}
+     */
+    // const staticContext = dp.util.getStaticContextOfContext(staticContextId);
+    const staticContext = dp.collections.staticContexts.getById(staticContextId);
+    const { displayName, loc, type } = staticContext;
+    const program = dp.util.getStaticContextProgram(staticContextId);
+    const { filePath } = program;
+    const prefix = addPrefix ? `[${StaticContextType.nameFrom(type)}] ` : '';
+    const locLabel = addLoc ? ` @ ${filePath}:${locToString(loc)}` : '';
+    return `${prefix}"${displayName}"${locLabel}`;
+  },
+
+  /**
+   * @param {DataProvider} dp
+   */
+  makeContextInfo(dp, isOrHasAContextId) {
+    const context = dp.util.asContext(isOrHasAContextId);
+    if (!context) {
+      return `null Context (${isOrHasAContextId})`;
+    }
+    const { contextId } = context;
+    const { contextType, staticContextId } = context;
+    const staticInfo = dp.util.makeStaticContextInfo(staticContextId, false, false);
+    return `[${ExecutionContextType.nameFrom(contextType)}] #${contextId} ${staticInfo}`;
+  },
 
   /**
    * @param {DataProvider} dp
@@ -1916,7 +2140,18 @@ export default {
     const st = dp.util.getStaticTrace(traceId);
     const loc = locToString(st.loc);
     const where = `${fpath}:${loc}`;
-    return `"${st?.displayName}" at ${where} (stid=${st?.staticTraceId})`;
+    let displayName = st?.displayName;
+    if (!displayName) {
+      if (TraceType.is.Await(st.type)) {
+        const previousTrace = dp.callGraph.getPreviousInContext(traceId);
+        const previousSt = previousTrace && dp.util.getStaticTrace(previousTrace.traceId);
+        displayName = previousSt?.displayName && `(awaiting) ${previousSt.displayName}`;
+      }
+    }
+    if (!displayName) {
+      displayName = `(${TraceType.nameFrom(st.type)})`;
+    }
+    return `${st?.displayName} at ${where} (stid=${st?.staticTraceId})`;
   },
 
   /**
@@ -1931,6 +2166,7 @@ export default {
     else {
       trace = traceOrTraceOrTraceId;
     }
+
     if (!trace) {
       return `#${traceOrTraceOrTraceId} (null)`;
     }
@@ -2006,6 +2242,7 @@ export default {
     return last;
   },
 
+  /** @param {DataProvider} dp */
   getTracesOfContextAndType(dp, contextId, type) {
     const traces = dp.indexes.traces.byContext.get(contextId);
     // NOTE: `Await` contexts don't have traces
@@ -2013,6 +2250,15 @@ export default {
     //   dp.logger.error(`Context did not have any traces: ${contextId}`);
     // }
     return traces?.filter(trace => dp.util.getTraceType(trace.traceId) === type) || EmptyArray;
+  },
+
+  /** @param {DataProvider} dp */
+  getTracesOfRealContextAndType(dp, contextId, type) {
+    const realContextId = dp.util.getRealContextIdOfContext(contextId);
+    if (!realContextId) {
+      return null;
+    }
+    return dp.util.getTracesOfContextAndType(realContextId, type);
   },
 
   /** @param {DataProvider} dp */
@@ -2066,15 +2312,6 @@ export default {
   //   const trace = dp.util.getLastTraceInRealContext(realContextId);
   //   return dp.util.isErrorTrace(trace);
   // },
-
-  // ###########################################################################
-  // loc (locations)
-  // ###########################################################################
-
-  getTraceLoc(dp, traceId) {
-    const { loc } = dp.util.getStaticTrace(traceId);
-    return loc;
-  },
 
   // ###########################################################################
   // code chunks
@@ -2142,18 +2379,31 @@ export default {
     return dp.indexes.executionContexts.children.get(contextId) || EmptyArray;
   },
 
+  /** @param {DataProvider} dp */
   getChildrenOfContextInRoot(dp, contextId) {
     return dp.util.getChildrenOfContext(contextId).filter(context => {
       if (context.isVirtualRoot) {
+        // ignore separate root
         return false;
       }
 
       if (ExecutionContextType.is.Await(context.contextType)) {
+        // ignore await contexts
         return false;
       }
       return true;
     });
   },
+
+  /** @param {DataProvider} dp */
+  getContextAncestorCountInRoot(dp, contextId) {
+    if (!dp.util.isRootContext(contextId)) {
+      const { parentContextId } = dp.collections.executionContexts.getById(contextId);
+      return 1 + dp.util.getContextAncestorCountInRoot(parentContextId);
+    }
+    return 0;
+  },
+
 
   /** ###########################################################################
    * search
@@ -2216,6 +2466,38 @@ export default {
     const traceType = dp.util.getTraceType(traceId);
     const typeName = TraceType.nameFrom(traceType);
     return `[${typeName}]`;
+  },
+
+  /** ###########################################################################
+   * Stats
+   * ##########################################################################*/
+
+  /** @param {DataProvider} dp */
+  getTraceCountsByPackageName(dp, tracesByPackageName = {}, prop = 'nTraces') {
+    dp.collections.traces.getAllActual().forEach(t => {
+      const { traceId } = t;
+      const packageName = dp.util.getTracePackageName(traceId);
+      if (!tracesByPackageName[packageName]) {
+        tracesByPackageName[packageName] = {};
+      }
+      tracesByPackageName[packageName][prop] = (tracesByPackageName[packageName][prop] || 0) + 1;
+    });
+    return tracesByPackageName;
+  },
+
+  /** @param {DataProvider} dp */
+  getTraceCountsByStaticContext(dp, tracesByStaticContext = {}, prop = 'nTraces') {
+    const staticContextIds = dp.indexes.traces.byRealStaticContext.getAllKeys();
+    staticContextIds.forEach(staticContextId => {
+      const traces = dp.indexes.traces.byRealStaticContext.get(staticContextId);
+      if (!tracesByStaticContext[staticContextId]) {
+        tracesByStaticContext[staticContextId] = {
+          staticContextId
+        };
+      }
+      tracesByStaticContext[staticContextId][prop] = (tracesByStaticContext[staticContextId][prop] || 0) + traces.length;
+    });
+    return tracesByStaticContext;
   },
 
   // ###########################################################################
@@ -2454,13 +2736,23 @@ export default {
   /** @param {DataProvider} dp */
   getAsyncStackContexts(dp, traceId) {
     const roots = [];
+    const visited = new Set();
     // // skip first virtual context
     // const realContextId = dp.util.getRealContextIdOfTrace(traceId);
     // let currentContext = dp.collections.executionContexts.getById(realContextId);
     let currentContext = dp.util.getTraceContext(traceId);
     while (currentContext) {
+      visited.add(currentContext);
       roots.push(currentContext);
       currentContext = dp.util.getContextAsyncStackParent(currentContext.contextId);
+      if (visited.has(currentContext)) {
+        dp.logger.error(`[getAsyncStackContexts] infinite loop when finding async stack contexts.
+        current:
+          ${dp.util.makeContextInfo(currentContext)}
+        stack:
+${roots.map(c => `          ${dp.util.makeContextInfo(c)}`).join('\n')}`);
+        break;
+      }
     }
     roots.reverse();
     return roots;
@@ -2593,7 +2885,6 @@ export default {
 
     const nestingLink = dp.indexes.promiseLinks.from.getFirst(nestedPromiseId);
     if (nestingLink) {
-      // “Nested PostThen”, “AsyncReturn”, “resolve”, “all”, “race”
       const { to: outerPromiseId/* , rootId */ } = nestingLink;
       if ((u = dp.util.getLastAsyncPostEventUpdateOfPromise(outerPromiseId, beforeRootId))) {
         // “Nested PostThen” or “AsyncReturn” (of function with `PostAwait`, i.e. `await` executed)
@@ -2603,7 +2894,7 @@ export default {
       }
       // “resolve” or “all” or “AsyncReturn” (of function where no `await` executed)
       // nestingUpdates.push({ linkId: nestingLink.linkId });
-      return dp.util.UP(outerPromiseId, beforeRootId, nestingUpdates);
+      return outerPromiseId && dp.util.UP(outerPromiseId, beforeRootId, nestingUpdates) || 0;
     }
     else if ((u = dp.util.getFirstUpdateOfNestedPromise(nestedPromiseId)) && u.rootId < beforeRootId) {
       // u is PreAwait && PostAwait has not happened yet: `await nestedPromise`
@@ -2640,13 +2931,13 @@ export default {
       // // no link, and no update found -> check if this promise was created from within a promise ctor
       // // const promisifyPromiseId = dp.util.get TODO nestingPromiseId;
       // const rootContext = dp.util.getPromiseCreationContext(nestedPromiseId);
-      // if (rootContext?.promisifyId) {
-      //   if (nestedPromiseId === rootContext.promisifyId) {
+      // if (rootContext?.data?.promisifyId) {
+      //   if (nestedPromiseId === rootContext.data?.promisifyId) {
       //     warn(`unexpected - Promise nesting itself: ${nestedPromiseId}`);
       //   }
       //   else {
       //     // hackfix: prevent inf loop
-      //     return dp.util.UP(rootContext.promisifyId, beforeRootId, nestingUpdates);
+      //     return dp.util.UP(rootContext.data?.promisifyId, beforeRootId, nestingUpdates);
       //   }
       // }
     }
@@ -2713,8 +3004,9 @@ export default {
    * TODO: [performance] cache this recursive result
    * NOTE: Wrapper of `util.getNestedAncestorsOfPromise` for context version
    * @param {DataProvider} dp
+   * @param {Set} visited Used to avoid infinite loops.
    */
-  _getNestedAncestors(dp, rootId, nestingTraces = []) {
+  _getNestedAncestors(dp, rootId, nestingTraces = [], visited = new Set()) {
     const u = dp.util.getAsyncPostEventUpdateOfRoot(rootId);
     if (!u) {
       return nestingTraces;
@@ -2722,10 +3014,20 @@ export default {
 
     let nextPromiseId = u.promiseId, nextRootId, nextTraceId;
     if (nextPromiseId) {
-      nextPromiseId = dp.util.getNestedAncestorsOfPromise(nextPromiseId, rootId, nestingTraces);
-      const nextTrace = dp.util.getFirstTraceByRefId(nextPromiseId);
-      nextTraceId = nextTrace?.traceId;
-      nextRootId = nextTrace?.rootContextId;
+      if (visited.has(nextPromiseId)) {
+        // NOTE: worth warning about
+        // TODO: need a more complete approach here, to avoid spamming, and to help the user better.
+        // if (!_warnPromiseSet.has) { ... }
+        // TODO: add `makePromiseInfo` utility function
+        dp.logger.warn(`Never-ending promise found. Promise dynamically nested upon itself: v${nextPromiseId} at root c${rootId}`);
+      }
+      else {
+        visited.add(nextPromiseId);
+        const nextNextPromiseId = dp.util.getNestedAncestorsOfPromise(nextPromiseId, rootId, nestingTraces);
+        const nextTrace = nextNextPromiseId && dp.util.getFirstTraceByRefId(nextNextPromiseId);
+        nextTraceId = nextTrace?.traceId;
+        nextRootId = nextTrace?.rootContextId;
+      }
     }
 
     if (!nextRootId) {
@@ -2739,7 +3041,7 @@ export default {
     }
 
     if (nextRootId) {
-      dp.util._getNestedAncestors(nextRootId, nestingTraces);
+      dp.util._getNestedAncestors(nextRootId, nestingTraces, visited);
     }
 
     return nestingTraces;
@@ -2765,7 +3067,7 @@ export default {
    * @param {PostUpdateData} postUpdateData
    */
   GNPU(dp, nestingPromiseId, beforeRootId, syncBeforeRootId, postUpdateData, depth = 0, visited = new Set()) {
-    if (visited.has(nestingPromiseId)) {
+    if (!nestingPromiseId || visited.has(nestingPromiseId)) {
       return null;
     }
     visited.add(nestingPromiseId);
@@ -2826,6 +3128,8 @@ export default {
           nestedUpdate = dp.util.GNPU(nestedLink.from, beforeRootId, syncBeforeRootId, postUpdateData, depth + 1, visited) || nestedUpdate;
         }
         else if (nestedLink.asyncPromisifyPromiseId) {
+          // NOTE: we somehow use PromiseLinkType.Promisify* to set `promiseId` on the PostCallbackUpdate instead.
+          //  → This means that non-CB links cannot be traced like that.
           //   // promisify linkage, encountering `p` in `C()` in:
           //   //  `A(); p.then(() => (B(), p)).then(C)`
           //   // NOTE: nestedLink is created when `resolve`/`reject` is called
@@ -2971,7 +3275,7 @@ export default {
       rootId: preEventRootId
     } = preEventUpdate;
 
-    const isFirstAwait = util.isFirstContextInParent(preEventContextId);
+    const isFirstAwait = util.isFirstAwait(preEventContextId);
 
     /**
      * Implies that function was called by the system or some other caller that was not recorded
@@ -3136,8 +3440,9 @@ export default {
 
     let chainToPromiseId, chainFromRootId, rootIdDown, rootIdUp;
 
-    // the PostEventUpdate of preEventUpdate
-    const postPreEventUpdate = util.getAsyncPostEventUpdateOfRoot(preEventRootId);
+    // NOTE: `nestingPostUpdate` is the PostEventUpdate of preEventUpdate -> the Update that creates the promise
+    // const nestingPostUpdate = util.getAsyncPostEventUpdateOfRoot(preEventRootId);
+    // const nestingPromiseId = nestingPostUpdate.promiseId;
     const firstPostEventHandlerUpdate = util.getFirstAsyncPostEventUpdateOfTrace(schedulerTraceId);
 
     let promisePostUpdateData;
@@ -3149,9 +3454,9 @@ export default {
     // else 
     const syncPromiseIds = [];
     const nestingUpdates = [];
-    if (preEventPromiseId/*  || postPreEventUpdate?.promiseId */) {
+    if (preEventPromiseId/*  || nestingPromiseId */) {
       // Case 1: Promisification
-      chainToPromiseId = preEventPromiseId || postPreEventUpdate.promiseId;
+      chainToPromiseId = preEventPromiseId;
       const toRootId = postEventRootId;
 
       const links = [];
@@ -3162,16 +3467,20 @@ export default {
         syncPromiseIds,
         nestingUpdates
       };
-      const syncBeforeRootId = preEventRootId;
-      const lastOfPromise = dp.util.getLastAsyncPostEventUpdateOfPromise(preEventPromiseId, beforeRootId);
-      rootIdDown = lastOfPromise?.rootId ||
-        postPreEventUpdate?.promiseId &&
-        util.DOWN(postPreEventUpdate?.promiseId, beforeRootId, syncBeforeRootId, promisePostUpdateData) ||
-        0;
-      rootIdUp = util.UP(chainToPromiseId, beforeRootId, nestingUpdates);
+      // const syncBeforeRootId = preEventRootId;
 
-      // hackfix: promisified CB's don't sync. fix this properly soon.
-      syncPromiseIds.length = 0;
+      /**
+       * 
+       */
+      // const syncBeforeRootId = nestingPostUpdate.rootId;
+
+      const lastOfPromise = dp.util.getLastAsyncPostEventUpdateOfPromise(preEventPromiseId, beforeRootId);
+      rootIdDown = lastOfPromise?.rootId || 0;
+      // rootIdDown = lastOfPromise?.rootId ||  // NOTE: this was the old, flawed logic, before we had all links working.
+      //   nestingPromiseId &&
+      //   util.DOWN(nestingPromiseId, beforeRootId, syncBeforeRootId, promisePostUpdateData) ||
+      //   0;
+      rootIdUp = util.UP(chainToPromiseId, beforeRootId, nestingUpdates);
 
       nestingUpdates.push(preEventUpdate.updateId); // PostCallback always adds its own scheduler as a nesting level
 

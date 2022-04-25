@@ -1,5 +1,6 @@
 import { newLogger, playbackLogRecords } from '@dbux/common/src/log/logger';
 import NestedError from '@dbux/common/src/NestedError';
+import makeIgnore from '@dbux/common-node/src/filters/makeIgnore';
 import errorWrapVisitor from '../helpers/errorWrapVisitor';
 import { clearSourceHelperCache } from '../helpers/sourceHelpers';
 import injectDbuxState from '../dbuxState';
@@ -7,9 +8,10 @@ import { buildVisitors as traceVisitors } from '../parseLib/visitors';
 import Program from '../parse/Program';
 import nameVisitors, { clearNames } from './nameVisitors';
 
+/** @typedef {import('@dbux/common-node/src/filters/moduleFilter').ModuleFilterOptions} ModuleFilterOptions */
+
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError, trace: logTrace } = newLogger('programVisitor');
-
 
 // ###########################################################################
 // visitor
@@ -19,11 +21,17 @@ const { log, debug, warn, error: logError, trace: logTrace } = newLogger('progra
  * 
  */
 function enter(path, state) {
-  // const cfg = state.opts;
+  const { opts: buildConfig, filename } = state;
+  
   if (state.onEnter) return; // make sure to not visit Program node more than once
-  // console.warn('P', path.toString());
-  // logTrace('[Program]', state.filename);
-  // console.warn(state.file.code.substring(0, 100));
+  
+  if (!shouldInstrument(buildConfig, filename)) {
+    // console.debug('[ignored] [Program]', state.filename, !!buildConfig?.ignore);
+    return;
+  }
+
+  // NOTE: `warn(...)` is muted by CRA, for some reason
+  // console.debug('[Program]', state.filename, !!buildConfig?.ignore);
 
   // inject data + methods that we are going to use for instrumentation
   injectDbuxState(path, state);
@@ -104,4 +112,42 @@ export default function programVisitor(buildCfg) {
     enter,
     // exit
   };
+}
+
+/** ########################################
+ * util
+ *  ######################################*/
+
+/**
+ * Determine whether a file should be included depending on `ignore` option.
+ * @param {{ignore?: function|[function], moduleFilter?: ModuleFilterOptions}} config 
+ * @param {string} path 
+ */
+function shouldInstrument(config, path) {
+  let { ignore, moduleFilter } = config;
+
+  if (Array.isArray(ignore)) {
+    ignore = [...ignore];
+  }
+  else if (ignore) {
+    ignore = [ignore];
+  }
+  else {
+    ignore = [];
+  }
+
+  if (moduleFilter) {
+    if (!config._ignore) {
+      config._ignore = makeIgnore(moduleFilter);
+    }
+    ignore.push(config._ignore);
+  }
+
+  for (const ignoreFunc of ignore) {
+    if (ignoreFunc(path)) {
+      return false;
+    }
+  }
+
+  return true;
 }

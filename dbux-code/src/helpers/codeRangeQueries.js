@@ -1,7 +1,10 @@
+import maxBy from 'lodash/maxBy';
 import StaticContext from '@dbux/common/src/types/StaticContext';
 import Trace from '@dbux/common/src/types/Trace';
 import TraceType from '@dbux/common/src/types/constants/TraceType';
-import { babelLocToCodeRange } from './codeLocHelpers';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import allApplications from '@dbux/data/src/applications/allApplications';
+import { babelLocToCodePosition, babelLocToCodeRange } from './codeLocHelpers';
 
 /** @typedef {import('@dbux/data/src/applications/Application').default} Application */
 
@@ -21,8 +24,7 @@ import { babelLocToCodeRange } from './codeLocHelpers';
 // }
 
 /**
- * If not interruptable, returns array with static context of function.
- * If interruptable returns all Resume contexts.
+ * TODO: move to `dbux-data`, but need to implement `contains` first
  * @return {StaticContext}
  */
 export function getStaticContextAt(application, programId, pos) {
@@ -83,7 +85,7 @@ export function getTracesAt(application, programId, pos) {
     staticContextId
   } = staticContext;
 
-  const traces = dp.util.getAllTracesOfStaticContext(staticContextId)
+  const traces = dp.util.getAllTracesOfRealStaticContext(staticContextId)
     ?.filter(trace =>
       !TraceType.is.CallExpressionResult(dp.util.getTraceType(trace.traceId))
     ) || [];
@@ -96,3 +98,55 @@ export function getTracesAt(application, programId, pos) {
     return range.contains(pos);
   });
 }
+
+const MaxTraceLabelLen = 50;
+
+function getSameLineValue(dp, end, candidate) {
+  const l = dp.util.getTraceLoc(candidate.traceId);
+  // 1. must not span over multiple lines
+  // 2. must include trace.end
+  if (l.start.line !== l.end.line || l.end.column < end.column) {
+    return -1;
+  }
+
+  // 3. must not exceed some size (e.g. in case of minimized code)
+  const nStrLen = l.end.column - l.start.column;
+  if (nStrLen > MaxTraceLabelLen) {
+    return -1;
+  }
+
+  // 4. maximize loc range
+  return l.end.column - l.start.column;
+}
+
+/**
+ * @param {Trace} trace
+ * @return {Trace} 
+ */
+export function getOuterMostTraceOfSameLine(trace) {
+  const { traceId, applicationId } = trace;
+  const application = allApplications.getApplication(applicationId);
+  const dp = application.dataProvider;
+  const programId = dp.util.getTraceProgramId(traceId);
+  const { start, end } = dp.util.getTraceLoc(traceId);
+  const startCodePos = babelLocToCodePosition(start);
+  // const endCodePos = babelLocToCodePosition(end);
+
+  let best;
+  if (start.line === end.line) {
+    let traces = getTracesAt(application, programId, startCodePos) || EmptyArray;
+
+    const valueFun = getSameLineValue.bind(null, dp, end);
+    best = maxBy(traces, valueFun);
+
+    if (!best || valueFun(best) < 0) {
+      // in case of no good trace -> pick original
+      best = trace;
+    }
+  }
+  else {
+    best = trace;
+  }
+  return best;
+}
+

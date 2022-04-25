@@ -1,7 +1,7 @@
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import AsyncEventUpdateType from '@dbux/common/src/types/constants/AsyncEventUpdateType';
 import AsyncEdgeType from '@dbux/common/src/types/constants/AsyncEdgeType';
-import { getStaticContextColor } from '@dbux/graph-common/src/shared/contextUtil';
+import { makeStaticContextColor } from '@dbux/graph-common/src/shared/contextUtil';
 import AsyncNodeDataMap from '@dbux/graph-common/src/graph/types/AsyncNodeDataMap';
 import AsyncNodeData from '@dbux/graph-common/src/graph/types/AsyncNodeData';
 import { compileHtmlElement, getMatchParent } from '../../util/domUtil';
@@ -9,6 +9,8 @@ import { AsyncButtonClasses } from './asyncButtons';
 import GraphBase from '../GraphBase';
 
 /** @typedef {import('../controllers/PopperManager').default} PopperManager */
+
+const Verbose = false;
 
 class AsyncGraph extends GraphBase {
   /**
@@ -41,6 +43,9 @@ class AsyncGraph extends GraphBase {
         const asyncNodeData = this.allNodeData.get(applicationId, asyncNodeId);
         if (event.target.matches('div.async-header')) {
           this.handleClickAsyncHeader(asyncNodeData);
+        }
+        else if (event.target.matches('span.error-label')) {
+          this.handleClickErrorLabel(asyncNodeData);
         }
         else {
           this.handleClickAsyncNode(asyncNodeData);
@@ -132,21 +137,21 @@ class AsyncGraph extends GraphBase {
 
       isProgramRoot,
       realStaticContextid,
-      moduleName,
+      packageName,
       postAsyncEventUpdateType,
       hasError,
-      // nestingDepth,
+      nestingDepth,
+      stats,
     } = nodeData;
 
-    const { themeMode, screenshotMode, graphDocument } = this.context;
-    // const { asyncDetailMode } = graphDocument.state;
+    const { themeMode, screenshotMode } = this.context;
     // const highContractMode = screenshotMode && !asyncDetailMode;
     const highContractMode = screenshotMode;
-    // const moduleLabel = moduleName ? `${moduleName} | ` : '';
+    // const moduleLabel = packageName ? `${packageName} | ` : '';
 
-    const backgroundColor = getStaticContextColor(themeMode, realStaticContextid, { bland: !!moduleName, highContractMode });
+    const backgroundColor = makeStaticContextColor(themeMode, realStaticContextid, { bland: !!packageName, highContractMode });
 
-    let leftLabel = '', rightLabel = '';
+    let leftLabel = '', errorLabel = '', statsRawEl = '';
     let shortLabel, fullLabel = displayName;
 
     switch (postAsyncEventUpdateType) {
@@ -175,15 +180,44 @@ class AsyncGraph extends GraphBase {
     const classes = [];
     if (hasError) {
       classes.push('async-error');
-      shortLabel += '🔥';
-      fullLabel += '🔥';
+      errorLabel = '🔥';
     }
-    // if (nestingDepth) {
-    //   const depthLabel = /*html*/`<span class="depth-label">${nestingDepth}</span>`;
-    //   leftLabel = depthLabel;
-    //   // shortLabel = `${depthLabel}${shortLabel}`;
-    //   // fullLabel = `${depthLabel}${fullLabel}`;
-    // }
+    if (nestingDepth) {
+      const depthLabel = /*html*/`<span class="depth-label">${nestingDepth}</span>`;
+      leftLabel = depthLabel;
+      // shortLabel = `${depthLabel}${shortLabel}`;
+      // fullLabel = `${depthLabel}${fullLabel}`;
+    }
+
+    // generate stats label
+    const { statsIconUris } = this.context.graphDocument.state;
+    const {
+      nTreeContexts,
+      nTreeStaticContexts,
+      nTreeFileCalled,
+      nTreeTraces,
+      nTreePackages,
+    } = stats;
+    statsRawEl = /*html*/`
+      <div class="grid async-detail" style="width: max-content;">
+        <div style="grid-row: 1; grid-column:1;" class="context-stats" title="Amount of packages in subgraph: ${nTreePackages}">
+          <img src="${statsIconUris.nTreePackages}" /><span>${nTreePackages}</span>
+        </div>
+        <div style="grid-row: 1; grid-column:2;" class="context-stats" title="Amount of files involved in subgraph: ${nTreeFileCalled}">
+          <img src="${statsIconUris.nTreeFileCalled}" /><span>${nTreeFileCalled}</span>
+        </div>
+        <div style="grid-row: 1; grid-column:3;" class="context-stats" title="Amount of static contexts involved in subgraph: ${nTreeStaticContexts}">
+          <img src="${statsIconUris.nTreeStaticContexts}" /><span>${nTreeStaticContexts}</span>
+        </div>
+        <div style="grid-row: 1; grid-column:4;" class="context-stats" title="Amount of child contexts in subgraph: ${nTreeContexts}">
+          <img src="${statsIconUris.nTreeContexts}" /><span>${nTreeContexts}</span>
+        </div>
+        <div style="grid-row: 1; grid-column:5;" class="context-stats" title="Amount of traces in subgraph: ${nTreeTraces} (approximates the amount of executed statements/expressions)">
+          <img src="${statsIconUris.nTreeTraces}" /><span>${nTreeTraces}</span>
+        </div>
+      </div>
+    `;
+
     const { asyncNodeId, applicationId, isTerminalNode } = asyncNode;
     const asyncNodeData = {
       'async-node-id': asyncNodeId,
@@ -204,17 +238,21 @@ class AsyncGraph extends GraphBase {
           <div class="left-label">${leftLabel}</div>
           <div class="async-brief full-width">
             ${shortLabel}
+            <span class="error-label">${errorLabel}</span>
           </div>
           <div class="async-detail full-width flex-column cross-axis-align-center">
             <div class="full-width flex-row align-center">
               <div class="ellipsis-10 async-context-label">${fullLabel}</div>
               <div class="ellipsis-10 value-label"></div>
+              <span class="error-label">${errorLabel}</span>
             </div>
             <div class="loc-label ellipsis-10">
               <span>${locLabel}</span>
             </div>
           </div>
-          <div class="right-label">${rightLabel}</div>
+          <div class="right-label">
+            ${statsRawEl}
+          </div>
         </div>
       `;
   }
@@ -359,9 +397,12 @@ class AsyncGraph extends GraphBase {
   // ###########################################################################
 
   handleClickAsyncNode(asyncNodeData) {
-    const { asyncNode: { applicationId, asyncNodeId } } = asyncNodeData;
+    const { asyncNode: { applicationId, asyncNodeId }, valueTraceId } = asyncNodeData;
 
-    if (applicationId && asyncNodeId) {
+    if (this.context.graphDocument.state.valueMode && valueTraceId) {
+      this.remote.gotoValueTrace(applicationId, asyncNodeId, valueTraceId);
+    }
+    else if (applicationId && asyncNodeId) {
       this.remote.gotoAsyncNode(applicationId, asyncNodeId);
     }
   }
@@ -376,6 +417,14 @@ class AsyncGraph extends GraphBase {
 
     if (applicationId && threadId) {
       this.remote.selectRelevantThread(applicationId, threadId);
+    }
+  }
+
+  handleClickErrorLabel(asyncNodeData) {
+    const { applicationId, asyncNodeId, rootContextId } = asyncNodeData.asyncNode;
+
+    if (applicationId && rootContextId) {
+      this.remote.selectError(applicationId, asyncNodeId, rootContextId);
     }
   }
 
@@ -396,6 +445,12 @@ class AsyncGraph extends GraphBase {
     return document.querySelector(selector);
   }
 
+  reportAsyncNodeElNotExists(asyncNode, functionName) {
+    const functionNameLabel = functionName ? `[${functionName}] ` : '';
+    const err = new Error(`${functionNameLabel}Cannot find DOM of asyncNode: ${JSON.stringify(asyncNode)} when trying to focus`);
+    this.logger.warn(err);
+  }
+
   public = {
     /**
      * @param {{applicationId: number, asyncNodeId: number}} asyncNode 
@@ -407,7 +462,7 @@ class AsyncGraph extends GraphBase {
         this.focusController.slide(asyncNodeEl);
       }
       else if (!ignoreFailed) {
-        this.logger.error(`Cannot find DOM of asyncNode: ${JSON.stringify(asyncNode)} when trying to focus`);
+        this.reportAsyncNodeElNotExists(asyncNode, 'focusAsyncNode');
       }
     },
 
@@ -425,7 +480,7 @@ class AsyncGraph extends GraphBase {
           asyncNodeEl.classList.add('async-cell-selected');
         }
         else if (!ignoreFailed) {
-          this.logger.error(`Cannot find DOM of asyncNode: ${JSON.stringify(asyncNode)} when trying to select`);
+          this.reportAsyncNodeElNotExists(asyncNode, 'selectAsyncNode');
         }
       }
     },
@@ -445,7 +500,7 @@ class AsyncGraph extends GraphBase {
             asyncNodeEl.classList.add('async-cell-stack-highlight');
           }
           else {
-            this.logger.error(`[public.highlightStack] Cannot find DOM of asyncNode: ${JSON.stringify(asyncNodes)}.`);
+            this.reportAsyncNodeElNotExists(asyncNode, 'highlightStack');
           }
         });
       }
@@ -461,7 +516,7 @@ class AsyncGraph extends GraphBase {
             asyncNodeEl.classList.add('async-cell-sync-root-highlight');
           }
           else {
-            this.logger.error(`[public.highlightSyncRoots] Cannot find DOM of asyncNode: ${JSON.stringify(asyncNodes)}.`);
+            this.reportAsyncNodeElNotExists(asyncNode, 'highlightSyncRoots');
           }
         });
       }
@@ -470,10 +525,18 @@ class AsyncGraph extends GraphBase {
       this.allNodeData.forEach((node) => {
         // default label if no value
         node.valueLabel = '';
+        node.valueTraceId = null;
       });
       if (values) {
-        values.forEach(({ applicationId, asyncNodeId, label }) => {
-          this.allNodeData.get(applicationId, asyncNodeId).valueLabel = label;
+        values.forEach(({ applicationId, asyncNodeId, label, valueTraceId }) => {
+          const asyncNodeData = this.allNodeData.get(applicationId, asyncNodeId);
+          if (asyncNodeData) {
+            asyncNodeData.valueLabel = label;
+            asyncNodeData.valueTraceId = valueTraceId;
+          }
+          else {
+            Verbose && this.logger.warn(`[updateRootValueLabel] update before asyncNodeData is set.`);
+          }
         });
       }
       this.renderRootValueLabel();

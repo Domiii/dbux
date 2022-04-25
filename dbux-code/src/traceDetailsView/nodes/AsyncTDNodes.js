@@ -11,6 +11,7 @@ import { showInformationMessage } from '../../codeUtil/codeModals';
 import makeTreeItem, { makeTreeItems } from '../../helpers/makeTreeItem';
 import TraceDetailNode from './TraceDetailNode';
 import { makeArrayLengthLabel } from '../../helpers/treeViewUtil';
+import { emitSelectTraceAction } from '../../userEvents';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
@@ -109,6 +110,7 @@ class RootEdgesTDNode extends TraceDetailNode {
       const trace = dp.util.getTraceOfAsyncNode(forkParent.asyncNodeId);
       if (trace) {
         traceSelection.selectTrace(trace);
+        emitSelectTraceAction(trace, UserActionType.TDAsyncGoToForkParent);
         return;
       }
     }
@@ -121,6 +123,7 @@ class RootEdgesTDNode extends TraceDetailNode {
       const schedulerTrace = this.dp.collections.traces.getById(schedulerTraceId);
       if (schedulerTrace) {
         traceSelection.selectTrace(schedulerTrace);
+        emitSelectTraceAction(schedulerTrace, UserActionType.TDAsyncGoToScheduler);
         return;
       }
     }
@@ -187,10 +190,13 @@ export default class AsyncTDNode extends TraceDetailNode {
       rootContextId
     } } = this;
 
+    const postUpdate = dp.util.getFirstAsyncPostEventUpdateOfRoot(rootContextId);
+    const updateType = postUpdate && AsyncEventUpdateType.nameFrom(postUpdate.type);
+
     const fromRootId = dp.indexes.asyncEvents.to.get(rootContextId)
       ?.flatMap(evt => evt.fromRootContextId) || EmptyArray;
 
-    this.description = `(root=${rootContextId}, from=${fromRootId.join(',') || '?'})`;
+    this.description = `[${updateType || ''}] (root=${rootContextId}, from=${fromRootId.join(',') || '?'})`;
   }
 
   /** ###########################################################################
@@ -254,7 +260,7 @@ export default class AsyncTDNode extends TraceDetailNode {
         this.makePromiseLinkTree('PromiseLinks To', promiseId, 'to')
       ],
       {
-        description: `promiseId=${promiseId}`
+        description: promiseId && `promiseId=${promiseId}` || `(no promise)`
       }
     );
   }

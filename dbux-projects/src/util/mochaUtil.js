@@ -4,13 +4,10 @@ import { buildNodeCommand } from './nodeUtil';
 export async function buildMochaRunCommand(cfg) {
   let {
     cwd,
-    dbuxJs,
     testArgs = '-c', // colors
     keepAlive = true,
-    nodeArgs,
-    dbuxArgs,
     require = EmptyArray,
-    debugPort
+    ...moreCfg
   } = cfg;
 
   // keep alive: if we don't do this, mocha will call `process.exit` when run has ended, and we won't receive data sent by runtime
@@ -39,12 +36,8 @@ export async function buildMochaRunCommand(cfg) {
   const programArgs = testArgs;
 
   return buildNodeCommand({
-    cwd,
-    nodeArgs,
-    debugPort,
+    ...moreCfg,
     require,
-    dbuxJs,
-    dbuxArgs,
     program,
     programArgs
   });

@@ -39,7 +39,7 @@ module.exports = (env, argv) => {
       DBUX_VERSION,
       DBUX_ROOT,
       RESEARCH_ENABLED: '' // NOTE: all env vars are converted to strings
-      // RESEARCH: '1' // NOTE: all env vars are converted to strings
+      // RESEARCH_ENABLED: '1' // NOTE: all env vars are converted to strings
     }),
     new CopyPlugin({
       patterns: [

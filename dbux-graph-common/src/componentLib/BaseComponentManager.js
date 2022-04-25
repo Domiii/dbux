@@ -1,16 +1,23 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import Ipc from './Ipc';
-import ComponentEndpoint from './ComponentEndpoint';
+
+/** @typedef { import("./ComponentEndpoint").default } ComponentEndpoint */
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-graph-common/BaseComponentManager');
 
+/**
+ * @template {ComponentEndpoint} C
+ */
 class BaseComponentManager {
   _lastComponentId = 1; // 1 is reserved for App
+  /**
+   * @type {Map.<number, C>}
+   */
   _componentsById = new Map();
 
   /**
-   * @type {ComponentEndpoint}
+   * @type {C}
    */
   app;
 
@@ -37,10 +44,17 @@ class BaseComponentManager {
     return this.app = this._registerComponent(1, null, AppComponentClass);
   }
 
-  _registerComponent(componentId, parent, ComponentEndpointClass, initialState = {}) {
+  /**
+   * @param {typeof<C>} ComponentEndpointClass
+   * @return {C}
+   */
+  _registerComponent(componentId, parent, ComponentEndpointClass, initialState = {}, specificState = null) {
+    /**
+     * @type {C}
+     */
     const component = new ComponentEndpointClass(this);
     this._componentsById.set(componentId, component);
-    component._build(this, parent, componentId, initialState);
+    component._build(this, parent, componentId, initialState, specificState);
     return component;
   }
 

@@ -211,6 +211,7 @@ export default class ExerciseRunner {
 
       cfg = {
         ...cfg,
+        nodePath: this.manager.paths.node,
         cwd,
         debugPort: cfg?.debugMode && this.debugPort || null,
         dbuxJs: (cfg?.dbuxEnabled && project.needsDbuxCli) ? this.manager.getDbuxCliBinPath() : null,

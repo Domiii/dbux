@@ -32,8 +32,16 @@ export default class PackageInfo {
     this.order = order;
   }
 
+  get isLocalApplication() {
+    return !this.rawName;
+  }
+
   get name() {
-    return this.packageId.name;
+    return this.packageId.name || '(application)';
+  }
+
+  get rawName() {
+    return this.packageId.name || null;
   }
 
   get folder() {

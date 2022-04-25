@@ -1,12 +1,13 @@
 import allApplications from '@dbux/data/src/applications/allApplications';
-import UserActionType from '@dbux/data/src/pathways/UserActionType';
+import { nextGraphType } from '@dbux/graph-common/src/shared/GraphType';
 import StackMode from '@dbux/graph-common/src/shared/StackMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
+
+/** @typedef { import("./GraphDocument").default } GraphDocument */
 
 class Toolbar extends HostComponentEndpoint {
   init() {
     const { threadSelection } = allApplications.selection.data;
-    this.state.theradSelectionIconUri = this.context.graphDocument.getIconUri('filter.svg');
     this.state.isThreadSelectionActive = threadSelection.isActive();
 
     // listen on mode changed event
@@ -21,16 +22,35 @@ class Toolbar extends HostComponentEndpoint {
   }
 
   /**
+   * @type {GraphDocument}
+   */
+  get doc() {
+    return this.parent;
+  }
+
+  /**
    * NOTE: `SyncGraph` only
    */
   get hiddenNodeManager() {
-    const { syncGraphContainer } = this.parent;
+    const { syncGraphContainer } = this.doc;
     return syncGraphContainer.graph.controllers.getComponent('HiddenNodeManager');
   }
 
   public = {
-    toggleFollowMode() {
-      this.parent.toggleFollowMode();
+    /**
+     * hackfix for intellisense (which is not smart enough to look up `this.doc` correctly.)
+     * @type {GraphDocument}
+     */
+    get doc() {
+      return this.parent;
+    },
+
+    setGraphDocumentMode(update) {
+      this.doc.setGraphDocumentMode(update);
+    },
+
+    async setContextFilter(predicateKey) {
+      await this.doc.contextFilterManager.setContextFilter(predicateKey);
     },
 
     hideOldRun(time) {
@@ -42,18 +62,18 @@ class Toolbar extends HostComponentEndpoint {
     },
 
     nextGraphMode() {
-      this.parent.nextGraphMode();
+      this.doc.setGraphMode(nextGraphType(this.parent.state.graphMode));
     },
 
     nextStackMode() {
-      this.parent.setState({
+      this.doc.setGraphDocumentMode({
         stackMode: StackMode.nextValue(this.parent.state.stackMode)
       });
-      this.parent.asyncStackContainer.refreshGraph();
+      this.doc.refreshGraphs();
     },
 
     setSearchMode(mode) {
-      this.context.graphDocument.searchBar.setSearchMode(mode);
+      this.doc.searchBar.setSearchMode(mode);
     },
 
     clearThreadSelection() {

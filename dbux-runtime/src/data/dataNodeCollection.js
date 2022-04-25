@@ -88,7 +88,18 @@ export class DataNodeCollection extends Collection {
     return writeNode;
   }
 
-  createDataNode(value, traceId, type, varAccess, inputs, meta = null) {
+  createRefDataNode(value, parentNodeId, propValue, refId) {
+    const { traceId } = this.getById(parentNodeId);
+    const type = DataNodeType.Write;
+    const varAccess = {
+      objectNodeId: parentNodeId,
+      prop: propValue
+    };
+    const inputs = null, meta = null;
+    return this.createDataNode(value, traceId, type, varAccess, inputs, meta, refId);
+  }
+
+  createDataNode(value, traceId, type, varAccess, inputs, meta = null, refId = null) {
     const dataNode = pools.dataNodes.allocate();
 
     dataNode.nodeId = this._all.length;
@@ -98,10 +109,13 @@ export class DataNodeCollection extends Collection {
 
     this.push(dataNode);
 
-    // valueRef
-    const valueRef = valueCollection.registerValueMaybe(value, dataNode, meta);
+    if (!refId) {
+      // valueRef
+      const valueRef = valueCollection.registerValueMaybe(value, dataNode, meta);
+      refId = valueRef?.refId || 0;
+    }
 
-    dataNode.refId = valueRef?.refId || 0;
+    dataNode.refId = refId;
     dataNode.varAccess = varAccess;
 
     if (Verbose) {

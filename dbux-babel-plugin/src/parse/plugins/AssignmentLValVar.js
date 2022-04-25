@@ -15,15 +15,16 @@ export default class AssignmentLValVar extends BasePlugin {
     } = this;
     const { Traces } = node;
 
-    const [/* lvalNode */, valueNode] = node.getChildNodes();
+    // const [/* lvalNode */, valueNode] = node.getChildNodes();
+    const [/* lvalPath */, valuePath] = node.getChildPaths();
 
-    if (!valueNode) {
+    if (!valuePath) {
       this.error(`missing RVal node in "${this.node}"`);
       return;
     }
 
-    if (!valueNode.path.node) {
-      // no write
+    if (!valuePath.node) {
+      // no write?
       return;
     }
 
@@ -40,6 +41,6 @@ export default class AssignmentLValVar extends BasePlugin {
     this.node.decorateWriteTraceData(traceData);
     
     // NOTE: `declarationTid` comes from `node.getDeclarationNode`
-    Traces.addTraceWithInputs(traceData, [valueNode.path]);
+    Traces.addTraceWithInputs(traceData, [valuePath]);
   }
 }

@@ -4,7 +4,7 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { emitEditorAction } from '../userEvents';
-import { getOrCreateTracesAtCursor } from '../traceDetailsView/TracesAtCursor';
+import { getOrCreateTracesAtCursor } from '../codeUtil/TracesAtCursor';
 import { codeRangeToBabelLoc } from '../helpers/codeLocHelpers';
 
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */

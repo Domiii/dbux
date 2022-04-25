@@ -6,25 +6,34 @@ import { compileHtmlElement, decorateClasses, decorateAttr } from '../util/domUt
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 let documentClickHandler;
+const toolbarIconSize = '12px';
 
 class Toolbar extends ClientComponentEndpoint {
   createEl() {
+    const iconUri = this.context.graphDocument.state.toolbarIconUris;
     return compileHtmlElement(/*html*/`
       <nav class="navbar sticky-top navbar-expand-lg no-padding" id="toolbar">
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
           <button title="Toggle Async Graph Mode" data-el="graphModeBtn" class="toolbar-btn btn btn-info" href="#">async</button>
           <button title="Toggle Async Detail" data-el="asyncDetailModeBtn" class="toolbar-btn btn btn-info" href="#">detail</button>
           <button title="Toggle Async Stack" data-el="asyncStackBtn" class="toolbar-btn btn btn-info" href="#">stack</button>
+
+          <div style="width:4px;">&nbsp;&nbsp;</div>
           
-          <button title="Show location of context (function declaration or start of file)" data-el="locModeBtn" class="toolbar-btn btn btn-info" href="#">loc</button>
-          <button title="Show caller (call trace) of function call" data-el="callModeBtn" class="toolbar-btn btn btn-info" href="#">call</button>
-          <button title="Show arguments and return value of function call in the form of: (args) -> returnValue" data-el="valueModeBtn" class="toolbar-btn btn btn-info" href="#">val</button>
-          <button title="Thin mode" data-el="thinModeBtn" class="no-horizontal-padding btn btn-info" href="#"></button>
+          <button title="Show location of contexts" data-el="locModeBtn" class="toolbar-btn btn btn-info" href="#">loc</button>
+          <button title="Show caller (call trace) of contexts" data-el="callModeBtn" class="toolbar-btn btn btn-info" href="#">call</button>
+          <button title="Show arguments and return values of function calls: (args) -> returnValue" data-el="valueModeBtn" class="toolbar-btn btn btn-info" href="#">val</button>
+          <button title="Toggle context stats" data-el="statsBtn" class="toolbar-btn btn btn-info" href="#">
+            <span class="color-grayscale">📈</span>
+          </button>
+
+          <div style="width:4px;">&nbsp;&nbsp;</div>
+
           <div data-el="searchMenu" class="btn-group">
             <button data-el="searchMenuBtn" type="button" class="toolbar-btn btn btn-info" aria-haspopup="true" aria-expanded="false">
               🔍
             </button>
-            <button data-el="searchMenuToggleBtn" type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button data-el="searchMenuToggleBtn" type="button" class="toolbar-btn btn btn-info dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <span class="sr-only">Toggle Dropdown</span>
             </button>
             <div data-el="searchMenuBody" class="dropdown-menu">
@@ -33,24 +42,42 @@ class Toolbar extends ClientComponentEndpoint {
               <button title="Search for traces by value" data-el="searchValuesBtn" class="full-width toolbar-btn btn btn-info" href="#">Search by value</button>
             </div>
           </div>
-          <button title="Sync and always lock onto selected trace" data-el="followModeBtn" class="toolbar-btn btn btn-info" href="#">follow</button>
-          <button title="Stop recording: Do not add new runs/traces" data-el="hideNewRunBtn" class="toolbar-btn btn btn-info" href="#"></button>
-          <button title="Clear: Hide all existing runs/traces" data-el="hideOldRunBtn" class="toolbar-btn btn btn-info" href="#">x</button>
+          <div data-el="contextFilterMenu" class="dropdown btn-info">
+            <button data-el="contextFilterMenuBtn" type="button" class="toolbar-btn btn btn-info dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+              <img width="${toolbarIconSize}" src="${iconUri.contextFilter}" />
+            </button>
+            <div data-el="contextFilterMenuBody" class="dropdown-menu">
+              <button title="Filter context with package whitelist" data-el="packageWhitelistBtn" class="full-width toolbar-btn btn btn-info" href="#">Package whitelist</button>
+              <button title="Filter context with package blacklist" data-el="packageBlacklistBtn" class="full-width toolbar-btn btn btn-info" href="#">Package blacklist</button>
+              <button title="Filter context with file whitelist" data-el="fileWhitelistBtn" class="full-width toolbar-btn btn btn-info" href="#">File whitelist</button>
+              <button title="Filter context with file blacklist" data-el="fileBlacklistBtn" class="full-width toolbar-btn btn btn-info" href="#">File blacklist</button>
+            </div>
+          </div>
+
+          <div style="width:4px;">&nbsp;&nbsp;</div>
+
+          <button title="If enabled: reveal, focus on and highlight the context of selected trace" data-el="followModeBtn" class="toolbar-btn btn btn-info" href="#">follow</button>
+
+          <button title="Thin mode" data-el="thinModeBtn" class="toolbar-btn btn btn-info" href="#"></button>
+          
+          <button title="Stop recording: Do not add new contexts/traces" data-el="hideNewRunBtn" class="toolbar-btn btn btn-info" href="#"></button>
+          <button title="Clear: Hide all existing contexts/traces" data-el="hideOldRunBtn" class="toolbar-btn btn btn-info" href="#">x</button>
 
           <button title="Clear Thread Selection" data-el="clearThreadSelectionBtn" class="toolbar-btn btn btn-info" href="#">
-            <img width="12px" src="${this.state.theradSelectionIconUri}" />
+            <img width="${toolbarIconSize}" src="${iconUri.theradSelection}" />
           </button>
-        </div>
-        <div data-el="moreMenu" class="dropdown">
-          <button data-el="mainMenuBtn" class="toolbar-btn btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            ☰
-          </button>
-          <div data-el="moreMenuBody" class="dropdown-menu" 
-          style="left: inherit; right: 0; min-width: 0;"
-          aria-labelledby="dropdownMenuButton">
-            <!--button data-el="showIdsBtn" class="toolbar-btn btn btn-info full-width" href="#">ids</button-->
-            <div class="dropdown-divider"></div>
-            <button title="Restart the Webview (can eliviate some bugs)" data-el="restartBtn" class="toolbar-btn btn btn-danger full-width" href="#">Restart</button>
+
+          <div data-el="moreMenu" class="dropdown">
+            <button data-el="mainMenuBtn" class="toolbar-btn btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              ☰
+            </button>
+            <div data-el="moreMenuBody" class="dropdown-menu" 
+            style="left: inherit; right: 0; min-width: 0;"
+            aria-labelledby="dropdownMenuButton">
+              <!--button data-el="showIdsBtn" class="toolbar-btn btn btn-info full-width" href="#">ids</button-->
+              <div class="dropdown-divider"></div>
+              <button title="Restart the Webview (can eliviate some bugs)" data-el="restartBtn" class="toolbar-btn btn btn-danger full-width" href="#">Restart</button>
+            </div>
           </div>
         </div>
       </nav>
@@ -70,13 +97,16 @@ class Toolbar extends ClientComponentEndpoint {
   }
 
   _onDocumentClick = (evt) => {
-    const { searchMenuBtn, searchMenuToggleBtn, mainMenuBtn } = this.els;
-    if (evt.target !== mainMenuBtn && this.dropDownOpen) {
+    if (!evt.target.closest('[data-el="mainMenuBtn"]') && this.dropDownOpen) {
       this.toggleMainMenu();
     }
 
-    if ((evt.target !== searchMenuBtn && evt.target !== searchMenuToggleBtn) && this.searchMenuOpen) {
+    if (!evt.target.closest('[data-el="searchMenu"]') && this.searchMenuOpen) {
       this.toggleSearchMenu();
+    }
+
+    if (!evt.target.closest('[data-el="contextFilterMenuBtn"]') && this.contextFilterMenuOpen) {
+      this.toggleContextFilterMenu();
     }
   };
 
@@ -87,6 +117,16 @@ class Toolbar extends ClientComponentEndpoint {
     }
     else {
       this.els.moreMenuBody.style.display = 'none';
+    }
+  }
+
+  toggleContextFilterMenu() {
+    this.contextFilterMenuOpen = !this.contextFilterMenuOpen;
+    if (this.contextFilterMenuOpen) {
+      this.els.contextFilterMenuBody.style.display = 'inherit';
+    }
+    else {
+      this.els.contextFilterMenuBody.style.display = 'none';
     }
   }
 
@@ -126,6 +166,7 @@ class Toolbar extends ClientComponentEndpoint {
       graphMode,
       stackMode,
       asyncDetailMode,
+      statsEnabled,
     } = this.parent.state;
 
     const {
@@ -156,7 +197,7 @@ class Toolbar extends ClientComponentEndpoint {
       active: !hideAfter
     });
     decorateClasses(this.els.graphModeBtn, {
-      active: graphMode !== GraphType.None
+      active: graphMode !== GraphType.None && stackMode !== StackMode.FullScreen
     });
     decorateClasses(this.els.asyncStackBtn, {
       active: stackMode !== StackMode.Hidden
@@ -179,6 +220,9 @@ class Toolbar extends ClientComponentEndpoint {
     decorateClasses(this.els.clearThreadSelectionBtn, {
       hidden: !isThreadSelectionActive
     });
+    decorateClasses(this.els.statsBtn, {
+      active: statsEnabled
+    });
     [`navbar-${themeModeName}`, `bg-${themeModeName}`].forEach(mode => this.el.classList.add(mode));
     this.els.thinModeBtn.innerHTML = `${!!thinMode && '||&nbsp;' || '|&nbsp;|'}`;
     this.els.hideNewRunBtn.innerHTML = `${hideAfter ? '⚪' : '🔴'}`;
@@ -194,6 +238,7 @@ class Toolbar extends ClientComponentEndpoint {
       valueMode,
       thinMode,
       asyncDetailMode,
+      statsEnabled,
     } = this.parent.state;
 
     const docEl = this.parent.el;
@@ -201,7 +246,8 @@ class Toolbar extends ClientComponentEndpoint {
       'hide-locs': !locMode,
       'hide-values': !valueMode,
       'show-values': valueMode,
-      'thin-mode': thinMode
+      'thin-mode': thinMode,
+      'stats-disabled': !statsEnabled,
     });
 
     decorateAttr(docEl, {
@@ -228,18 +274,20 @@ class Toolbar extends ClientComponentEndpoint {
     },
 
     followModeBtn: {
-      click(evt) {
+      async click(evt) {
         evt.preventDefault();
-        this.remote.toggleFollowMode();
+        await this.remote.setGraphDocumentMode({
+          followMode: !this.parent.state.followMode
+        });
       },
 
       focus(evt) { evt.target.blur(); }
     },
 
     locModeBtn: {
-      click(evt) {
+      async click(evt) {
         evt.preventDefault();
-        this.parent.setState({
+        await this.remote.setGraphDocumentMode({
           locMode: !this.parent.state.locMode
         });
       },
@@ -247,37 +295,60 @@ class Toolbar extends ClientComponentEndpoint {
     },
 
     callModeBtn: {
-      click(evt) {
+      async click(evt) {
         evt.preventDefault();
-        evt.target.blur();
-
-        this.parent.setState({
+        await this.remote.setGraphDocumentMode({
           callMode: !this.parent.state.callMode
         });
       },
       // focus(evt) { evt.target.blur(); }
     },
-
     valueModeBtn: {
-      click(evt) {
+      async click(evt) {
         evt.preventDefault();
-        this.parent.setState({
+        await this.remote.setGraphDocumentMode({
           valueMode: !this.parent.state.valueMode
         });
       },
       focus(evt) { evt.target.blur(); }
     },
-
     thinModeBtn: {
-      click(evt) {
+      async click(evt) {
         evt.preventDefault();
-        this.parent.setState({
+        await this.remote.setGraphDocumentMode({
           thinMode: !this.parent.state.thinMode
         });
       },
       focus(evt) { evt.target.blur(); }
     },
-
+    packageWhitelistBtn: {
+      async click(evt) {
+        evt.preventDefault();
+        await this.remote.setContextFilter('packageWhitelist');
+      },
+      focus(evt) { evt.target.blur(); }
+    },
+    packageBlacklistBtn: {
+      async click(evt) {
+        evt.preventDefault();
+        await this.remote.setContextFilter('packageBlacklist');
+      },
+      focus(evt) { evt.target.blur(); }
+    },
+    fileWhitelistBtn: {
+      async click(evt) {
+        evt.preventDefault();
+        await this.remote.setContextFilter('fileWhitelist');
+      },
+      focus(evt) { evt.target.blur(); }
+    },
+    fileBlacklistBtn: {
+      async click(evt) {
+        evt.preventDefault();
+        await this.remote.setContextFilter('fileBlacklist');
+      },
+      focus(evt) { evt.target.blur(); }
+    },
     hideOldRunBtn: {
       click(evt) {
         evt.preventDefault();
@@ -286,7 +357,6 @@ class Toolbar extends ClientComponentEndpoint {
       },
       focus(evt) { evt.target.blur(); }
     },
-
     hideNewRunBtn: {
       click(evt) {
         evt.preventDefault();
@@ -295,25 +365,24 @@ class Toolbar extends ClientComponentEndpoint {
       },
       focus(evt) { evt.target.blur(); }
     },
-
     graphModeBtn: {
-      click(evt) {
+      async click(evt) {
         evt.preventDefault();
-        this.remote.nextGraphMode();
+        await this.remote.nextGraphMode();
       },
       focus(evt) { evt.target.blur(); }
     },
     asyncStackBtn: {
-      click(evt) {
+      async click(evt) {
         evt.preventDefault();
-        this.remote.nextStackMode();
+        await this.remote.nextStackMode();
       },
       focus(evt) { evt.target.blur(); }
     },
     asyncDetailModeBtn: {
-      click(evt) {
+      async click(evt) {
         evt.preventDefault();
-        this.parent.setState({
+        await this.remote.setGraphDocumentMode({
           asyncDetailMode: !this.parent.state.asyncDetailMode
         });
       },
@@ -326,6 +395,14 @@ class Toolbar extends ClientComponentEndpoint {
       },
       focus(evt) { evt.target.blur(); }
     },
+    statsBtn: {
+      async click(evt) {
+        evt.preventDefault();
+        await this.remote.setGraphDocumentMode({
+          statsEnabled: !this.parent.state.statsEnabled
+        });
+      }
+    },
 
     searchContextsBtn: {
       async click(evt) {
@@ -337,6 +414,7 @@ class Toolbar extends ClientComponentEndpoint {
         else {
           await this.remote.setSearchMode(SearchMode.ByContext);
         }
+        this.toggleSearchMenu();
       },
       focus(evt) { evt.target.blur(); }
     },
@@ -351,6 +429,7 @@ class Toolbar extends ClientComponentEndpoint {
         else {
           await this.remote.setSearchMode(SearchMode.ByTrace);
         }
+        this.toggleSearchMenu();
       },
       focus(evt) { evt.target.blur(); }
     },
@@ -365,6 +444,7 @@ class Toolbar extends ClientComponentEndpoint {
         else {
           await this.remote.setSearchMode(SearchMode.ByValue);
         }
+        this.toggleSearchMenu();
       },
       focus(evt) { evt.target.blur(); }
     },
@@ -394,7 +474,14 @@ class Toolbar extends ClientComponentEndpoint {
         this.toggleMainMenu();
       },
       focus(evt) { evt.target.blur(); }
-    }
+    },
+
+    contextFilterMenuBtn: {
+      click(/* evt */) {
+        this.toggleContextFilterMenu();
+      },
+      focus(evt) { evt.target.blur(); }
+    },
   }
 }
 

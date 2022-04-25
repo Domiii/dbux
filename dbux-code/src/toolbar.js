@@ -1,4 +1,5 @@
 import { commands } from 'vscode';
+import { emitShowHideNavBarButtonsAction } from './userEvents';
 
 let showAllNavButton;
 
@@ -7,8 +8,9 @@ export function initToolBar() {
 }
 
 export function showNavButton(bool) {
-  commands.executeCommand('setContext', 'dbux.context.showNavButton', bool);
-  showAllNavButton = bool;
+  showAllNavButton = !!bool;
+  commands.executeCommand('setContext', 'dbux.context.showNavButton', showAllNavButton);
+  emitShowHideNavBarButtonsAction(showAllNavButton);
 }
 
 export function toggleNavButton() {

@@ -16,7 +16,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 // const { inspect } = require('util');
 
 // require('@dbux/babel-plugin');
-const makeInclude = require('@dbux/babel-plugin/dist/include').default;
+const makeInclude = require('@dbux/common-node/dist/filters/makeInclude').default;
 
 // make sure, babel-loader is available
 require('babel-loader');

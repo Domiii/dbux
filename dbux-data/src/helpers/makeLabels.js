@@ -2,10 +2,11 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import TraceType, { isCallbackRelatedTrace } from '@dbux/common/src/types/constants/TraceType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import AsyncEventUpdateType, { isPostEventUpdate } from '@dbux/common/src/types/constants/AsyncEventUpdateType';
-import ExecutionContextType from '@dbux/common/src/types/constants/ExecutionContextType';
+import ExecutionContextType, { isResumeType } from '@dbux/common/src/types/constants/ExecutionContextType';
 
 /** @typedef {import('@dbux/common/src/types/ExecutionContext').default} ExecutionContext */
 /** @typedef {import('../applications/Application').default} Application */
+/** @typedef {import('../applications/allApplications').default} AllApplications */
 /** @typedef {import('../RuntimeDataProvider').default} RuntimeDataProvider */
 
 // eslint-disable-next-line no-unused-vars
@@ -14,6 +15,7 @@ const { log, debug, warn, error: logError } = newLogger('makeLabels');
 /**
  * hackfix: break dependency cycle
  * NOTE: this terrible, non-modular design needs fixing in the long run.
+ * @type {AllApplications}
  */
 let _allApplications;
 
@@ -150,25 +152,6 @@ export function getTraceCreatedAt(trace) {
 // ########################################
 
 /**
- * Make label that representing a root trace, used in `CallGraphView`.
- * @param {Trace} trace 
- * @return {string}
- */
-export function makeRootTraceLabel(trace) {
-  const { traceId, applicationId } = trace;
-  const dp = _allApplications.getById(applicationId).dataProvider;
-  const traceType = dp.util.getTraceType(traceId);
-  let label;
-  if (isCallbackRelatedTrace(traceType)) {
-    label = makeTraceValueLabel(trace);
-  }
-  else {
-    label = makeTraceLabel(trace);
-  }
-  return label;
-}
-
-/**
  * Make label that shows the value of trace, use `makeCallValueLabel` when it's a call-related trace.
  * @param {Trace} trace 
  */
@@ -206,7 +189,7 @@ export function makeCallValueLabel(bceTrace) {
 
   const argsTraces = dp.util.getCallArgTraces(traceId) || EmptyArray;
   const argValues = argsTraces.map(arg => dp.util.getTraceValueStringShort(arg.traceId));
-  const resultValue = resultId && dp.util.getTraceValueStringShort(resultId);
+  const resultValue = resultId && dp.util.getTraceValueStringShort(resultId, true);
   const result = resultValue && ` -> ${resultValue}` || '';
   const str = `(${argValues.join(', ')})${result}`;
   return str;
@@ -236,35 +219,57 @@ export function makeTraceLocLabel(trace) {
 // ###########################################################################
 
 /**
+ * @param {Application} app 
+ * @return {string}
+ */
+export function makeContextLabelPlain(staticContextId, app) {
+  const dp = app.dataProvider;
+  const staticContext = dp.collections.staticContexts.getById(staticContextId);
+  return `${staticContext.displayName}`;
+}
+
+/**
  * @param {ExecutionContext} context 
  * @param {Application} app 
  * @return {string}
  */
 export function makeContextLabel(context, app) {
-  const { contextType: type } = context;
+  const { contextId, contextType: type } = context;
   const dp = app.dataProvider;
+  const realStaticContextId = dp.util.getRealStaticContextIdOfContext(contextId);
 
-  if (ExecutionContextType.is.Resume(type)) {
-    const { contextId, parentContextId } = context;
-    const parentContext = dp.collections.executionContexts.getById(parentContextId);
+  if (isResumeType(type)) {
     const firstTrace = dp.indexes.traces.byContext.getFirst(contextId);
     if (firstTrace) {
       const staticTrace = firstTrace && dp.collections.staticTraces.getById(firstTrace.staticTraceId);
-      let displayName;
-      if (staticTrace.displayName?.match(/^await /)) {
-        // displayName = staticTrace.displayName.replace('await ', '').replace(/\([^(]*\)$/, '');
-        displayName = staticTrace.displayName.replace('await ', '').replace(/;$/, '');
+      let virtualLabel;
+      if (ExecutionContextType.is.ResumeAsync(type)) {
+        if (staticTrace.displayName?.match(/^await /)) {
+          // displayName = staticTrace.displayName.replace('await ', '').replace(/\([^(]*\)$/, '');
+          virtualLabel = staticTrace.displayName.replace('await ', '').replace(/;$/, '');
+        }
+        else {
+          virtualLabel = '(async start)';
+        }
       }
       else {
-        displayName = '(async start)';
+        // yield
+        if (staticTrace.displayName?.match(/^yield /)) {
+          // displayName = staticTrace.displayName.replace('await ', '').replace(/\([^(]*\)$/, '');
+          virtualLabel = staticTrace.displayName.replace('yield ', '').replace(/;$/, '');
+        }
+        else {
+          virtualLabel = '(gen start)';
+        }
       }
-      return `${parentContext && makeContextLabel(parentContext, app)} | ${displayName}`;
+      return `${makeContextLabelPlain(realStaticContextId, app)} | ${virtualLabel}`;
+    }
+    else {
+      // bug: could not find any of the context's traces
     }
   }
 
-  const { staticContextId } = context;
-  const staticContext = dp.collections.staticContexts.getById(staticContextId);
-  return `${staticContext.displayName}`;
+  return makeContextLabelPlain(realStaticContextId, app);
 }
 
 const ContextCallerLabelByEventUpdateType = {
@@ -272,9 +277,15 @@ const ContextCallerLabelByEventUpdateType = {
   [AsyncEventUpdateType.PostThen]: () => 'then',
   [AsyncEventUpdateType.PostCallback]: (context, dp) => {
     const asyncNode = dp.indexes.asyncNodes.byRoot.getUnique(context.contextId);
-    const calleeTraceId = asyncNode && dp.util.getCalleeTraceId(asyncNode.schedulerTraceId);
-    const calleeTrace = calleeTraceId && dp.collections.traces.getById(calleeTraceId);
-    return calleeTraceId && makeTraceLabel(calleeTrace) || '(unknown callback)';
+
+    /**
+     * NOTE: CB scheduler trace is usually a BCE or one of its arguments.
+     */
+    const trace = asyncNode && asyncNode.schedulerTraceId &&
+      dp.util.getCalleeTrace(asyncNode.schedulerTraceId) ||
+      dp.util.getCallRelatedTraceBCE(asyncNode.schedulerTraceId) ||
+      dp.util.getTrace(asyncNode.schedulerTraceId);
+    return trace && makeTraceLabel(trace) || '(unknown callback)';
   }
 };
 
@@ -315,5 +326,9 @@ export function makeStaticContextLocLabel(applicationId, staticContextId) {
   // TODO: incorrect loc, when used in VSCode?
   const { line/* , column */ } = loc.start;
   // return `@${fileName}:${line}:${column}`;
-  return `${fileName}:${line}`;
+
+  const packageName = dp.util.getStaticContextPackageName(staticContextId);
+  const moduleLabel = packageName ? `${packageName} | ` : '';
+
+  return `${moduleLabel}${fileName}:${line}`;
 }

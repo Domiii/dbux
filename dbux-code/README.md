@@ -4,18 +4,31 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 
-Dbux is an integrated debugging environment (IDbE) and omniscient debugger for JavaScript runtime analysis. We hope to help developers (i) improve program comprehension and (ii) increase debugging efficiency. To that end, Dbux records an application's runtime data, visualizes it and makes it interactive.
+Dbux is an integrated debugging environment (IDbE) and omniscient debugger for JavaScript dynamic analysis. We hope to help developers (i) improve program comprehension and (ii) increase debugging efficiency. To that end, Dbux records an application's runtime data, visualizes it and makes it interactive.
 
 # Quick links:
 
 * [Dbux Documentation](https://domiii.github.io/dbux)
-* [Dbux for Runtime Analysis](https://domiii.github.io/dbux/runtime-analysis)
+* [Dbux for Dynamic Analysis](https://domiii.github.io/dbux/dynamic-analysis)
 * [Dbux VSCode Extension: Commands and configuration](https://domiii.github.io/dbux/tools-and-configuration/dbux-code)
 
-# Example Screenshot
 
-![Dbux Screenshot](https://domiii.github.io/dbux/screens/dbux-all-async1.png)
+# Video Introduction
+
+To get a good first impression of Dbux, we recommend this video. It...:
+
+* → explains why we need better Debuggers,
+* → demonstrates all of Dbux's tools with plenty of examples,
+* → is fully timestamped (if you are impatient, we recommend taking a quick glimpse by skipping around a bunch).
+
+[![Video Introduction](https://img.youtube.com/vi/N9W6rhHMKbA/0.jpg)](https://www.youtube.com/watch?v=N9W6rhHMKbA)
+
 
 # Dbux Architecture
 
 ![Dbux Architecture](https://domiii.github.io/dbux/dbux-architecture.png)
+
+
+# Call to Action
+
+If you are so inclined, please check out Dbux, and feel free to bombard me with any questions, complaints, any kind of feedback. I would greatly appreciate it!

@@ -190,7 +190,7 @@ div {
  * ############################################################################ */
 
 .async-graph {
-  grid-template-areas: "header" "main";
+  grid-template-areas: "header""main";
 }
 
 .async-grid {
@@ -269,6 +269,10 @@ div {
   margin-left: 3px;
 }
 
+.stats-disabled .context-stats {
+  display: none !important;
+}
+
 .show-values .async-context-label {
   display: none !important;
 }
@@ -323,6 +327,11 @@ div {
 
 .loc-label {
   white-space: nowrap;
+  opacity: 0.6;
+}
+
+.error-label:hover {
+  border: yellow solid 1px;
 }
 
 .context-loc-label {
@@ -355,6 +364,10 @@ div {
 [data-el="callLabel"] {
   background: rgba(0, 0, 0, 0.03);
   font-size: 1rem;
+  margin-right: 0.3rem !important;
+}
+
+[data-el="contextLabel"] {
   margin-right: 0.3rem !important;
 }
 
@@ -482,20 +495,25 @@ div {
   0% {
     background: #fff;
   }
+
   20% {
     opacity: 1;
     background: none;
   }
+
   40% {
     background: #fff;
   }
+
   60% {
     opacity: 1;
     background: none;
   }
+
   80% {
     background: #fff;
   }
+
   100% {
     opacity: 1;
     background: none;
@@ -506,6 +524,7 @@ div {
   0% {
     background: #fff;
   }
+
   100% {
     opacity: 1;
     background: none;
@@ -654,7 +673,15 @@ body:not(.theme-mode-dark) .highlight {
 .context-stats {
   border: 1px solid black;
   border-radius: 4px;
-  font-size: 0.9rem;
+  font-size: 9px;
+  white-space: nowrap;
+  width: max-content;
+}
+
+.context-stats img {
+  width: 13px;
+  height: 13px;
+  filter: grayscale(1);
 }
 
 /** ###########################################################################
@@ -730,5 +757,13 @@ body:not(.theme-mode-dark) .highlight {
 }
 
 .research-mode .left-label {
+  display: none !important;
+}
+
+/** ###########################################################################
+ * async stack
+ * ############################################################################*/
+
+[data-mount="AsyncStack"] .graph-mode-button {
   display: none !important;
 }

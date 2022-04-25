@@ -5,13 +5,16 @@ import { newLogger } from '@dbux/common/src/log/logger';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('KeyedComponentSet');
 
+/**
+ * @template T
+ */
 export default class KeyedComponentSet {
   owner;
   ComponentClass;
   componentsById = new Map();
 
   /**
-   * @type {Map}
+   * @type {Map<number, T>}
    */
   entriesByKey;
 

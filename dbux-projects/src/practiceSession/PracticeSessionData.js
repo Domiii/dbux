@@ -1,6 +1,30 @@
 export default class PracticeSessionData {
-  createdAt;
+  /**
+   * @type {string}
+   */
   sessionId;
-  state;
+
+  /**
+   * @type {number}
+   */
+  createdAt;
+
+  /**
+   * @type {string}
+   */
   logFilePath;
+
+  /**
+   * @type {number}
+   */
+  state;
+
+  /** ###########################################################################
+   * `PracticeSession` only
+   *  #########################################################################*/
+
+  /**
+   * @type {string}
+   */
+  exerciseId;
 }

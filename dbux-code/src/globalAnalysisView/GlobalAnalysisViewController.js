@@ -1,4 +1,5 @@
 import { newLogger } from '@dbux/common/src/log/logger';
+import NestedError from '@dbux/common/src/NestedError';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
 import searchController from '../search/searchController';
@@ -36,9 +37,12 @@ export default class GlobalAnalysisViewController {
     this.refresh();
   }
 
-  handleSearch = async () => {
+  handleSearch = async (matches, searchTerm, fromUser) => {
     await this.refresh();
-    await this.focusOnSearchResult();
+
+    if (matches?.length && searchTerm && fromUser) {
+      await this.focusOnSearchResult();
+    }
   }
 
   /** ###########################################################################
@@ -46,8 +50,14 @@ export default class GlobalAnalysisViewController {
    *  #########################################################################*/
 
   async focusOnSearchResult() {
-    const searchResultNode = this.treeDataProvider.getNodeByClass(GlobalSearchNode);
-    await this.treeView.reveal(searchResultNode, { select: false, expand: 1 });
+    try {
+      await this.treeDataProvider.showView();
+      const searchResultNode = this.treeDataProvider.getRootByClass(GlobalSearchNode);
+      await this.treeView.reveal(searchResultNode, { select: false, expand: 1 });
+    }
+    catch (err) {
+      warn(new NestedError(`Failed to focus on search result`, err));
+    }
   }
 
   /** ###########################################################################
@@ -55,18 +65,27 @@ export default class GlobalAnalysisViewController {
    *  #########################################################################*/
 
   async showError() {
-    const errorNode = this.treeDataProvider.getNodeByClass(GlobalErrorsNode);
-    if (!errorNode.children) {
-      await this.treeView.reveal(errorNode, { select: false, expand: true });
-    }
     this.errorTraceManager.showError();
+    return await this.revealSelectedError();
+  }
+
+  async revealSelectedError() {
+    if (!this.children) {
+      await this.treeDataProvider.showView();
+    }
+    const errorNode = this.treeDataProvider.getRootByClass(GlobalErrorsNode);
+    if (!errorNode.children) {
+      this.treeDataProvider.buildChildren(errorNode);
+    }
     const selectedErrorNode = errorNode.getSelectedChild();
     if (selectedErrorNode) {
       await this.treeView.reveal(selectedErrorNode);
+      return selectedErrorNode;
     }
-    else {
-      logError(`Cannot find selected children after showError`);
-    }
+    return null;
+    // else {
+    //   logError(`Cannot find selected children after showError`);
+    // }
   }
 
   /** ###########################################################################
@@ -110,6 +129,9 @@ export function initGlobalAnalysisView(context) {
   return controller;
 }
 
+/**
+ * @returns {GlobalAnalysisViewController}
+ */
 export function getGlobalAnalysisViewController() {
   if (!controller) {
     logError(`Cannot get GlobalAnalysisViewController before initialization.`);

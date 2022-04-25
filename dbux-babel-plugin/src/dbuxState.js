@@ -13,6 +13,17 @@ import * as PluginClassesByName from './parse/plugins/_registry';
 
 import ParseRegistry from './parseLib/ParseRegistry';
 
+/** ###########################################################################
+ * {@link VerboseSettings}
+ * ##########################################################################*/
+
+/**
+ * Basic first steps toward proper configurable logging.
+ */
+export class VerboseSettings {
+  nyi = 0;
+}
+
 // ###########################################################################
 // init parser
 // ###########################################################################
@@ -57,6 +68,7 @@ export default function injectDbuxState(programPath, programState) {
 
   const dbuxState = {
     runtimeCfg,
+    verbose: new VerboseSettings(),
 
     // static program data
     programFile,
@@ -86,6 +98,7 @@ export default function injectDbuxState(programPath, programState) {
         // Function
         pushImmediate: makeProgramId('pI'),
         popFunction: makeProgramId('pF'),
+        popFunctionInterruptable: makeProgramId('pFI'),
         registerParams: makeProgramId('par'),
         traceReturn: makeProgramId('tr'),
         traceReturnAsync: makeProgramId('tra'),
@@ -97,8 +110,10 @@ export default function injectDbuxState(programPath, programState) {
         traceExpression: makeProgramId('te'),
         traceExpressionVar: makeProgramId('tev'),
         traceWriteVar: makeProgramId('twv'),
-        traceCatch: makeProgramId('tcatch'),
+        traceCatch: makeProgramId('tct'),
+        traceCatchInterruptable: makeProgramId('tctI'),
         traceFinally: makeProgramId('tf'),
+        traceFinallyInterruptable: makeProgramId('tfI'),
 
         // ME
         traceExpressionME: makeProgramId('tme'),
@@ -131,6 +146,11 @@ export default function injectDbuxState(programPath, programState) {
         preAwait: makeProgramId('aw0'),
         wrapAwait: makeProgramId('aw1'),
         postAwait: makeProgramId('aw2'),
+
+        // generator functions
+        preYield: makeProgramId('yi0'),
+        wrapYield: makeProgramId('yi1'),
+        postYield: makeProgramId('yi2'),
         // traceAwaitResult: makeProgramId('aw3')
       }
     },

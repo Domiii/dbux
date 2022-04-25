@@ -1,6 +1,5 @@
 import SearchMode from '@dbux/graph-common/src/shared/SearchMode';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import traceSelection from '@dbux/data/src/traceSelection/index';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import { SelectorType } from './controllers/ContextNodeManager';
@@ -45,8 +44,14 @@ class SearchBar extends HostComponentEndpoint {
   }
 
   search = (searchTerm) => {
-    Verbose && this.logger.log(`.search() with searchTerm=${searchTerm}`);
-    this.searchController.search(searchTerm);
+    if (searchTerm) {
+      Verbose && this.logger.log(`.search() with searchTerm=${searchTerm}`);
+      this.searchController.search(searchTerm, true);
+    }
+    else {
+      Verbose && this.logger.log(`clear search`);
+      this.searchController.clearSearch();
+    }
   }
 
   handleSearchModeChanged = (mode) => {

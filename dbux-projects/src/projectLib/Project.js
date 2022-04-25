@@ -275,7 +275,7 @@ export default class Project extends ProjectBase {
   }
 
   get gitCommand() {
-    return `git --git-dir=${this.hiddenGitFolderPath}`;
+    return `"${this.manager.paths.git}" --git-dir=${this.hiddenGitFolderPath}`;
   }
 
   getSharedDependencyPath(relativePath = '.') {
@@ -302,6 +302,13 @@ export default class Project extends ProjectBase {
     return pathRelative(this.manager.getDefaultSourceRoot(), this.projectPath);
   }
 
+  /**
+   * NOTE: we can only shallow clone, if we don't need to checkout non-HEAD branch/tag/commit.
+   */
+  canShallowClone() {
+    return !this.getExerciseGitTag && !this.gitCommit;
+  }
+
   // ###########################################################################
   // git utilities
   // ###########################################################################
@@ -311,7 +318,7 @@ export default class Project extends ProjectBase {
       try {
         sh.mv(this.originalGitFolderPath, this.hiddenGitFolderPath);
         // here we init a new .git folder, no need to use `this.gitCommand`
-        await this.exec(`git init`);
+        await this.exec(`"${this.manager.paths.git}" init`);
       }
       catch (err) {
         this.logger.error(`Cannot hide .git folder for project ${this.name}`);
@@ -390,24 +397,28 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
           // project does not have a remote git repo -> create separate local repo instead
           fs.mkdirSync(projectPath, { recursive: true });
           // git init and create initial commit (which becomes HEAD)
-          await this.exec('git init');
+          await this.exec(`"${this.manager.paths.git}" init`);
           await this.exec('touch .gitignore');
           await this.exec('echo "node_modules" > .gitignore');
-          await this.exec('git add .gitignore');
-          await this.execInTerminal('git commit -a -m "initial commit"');
+          await this.exec(`"${this.manager.paths.git}" add .gitignore`);
+          await this.execInTerminal(`"${this.manager.paths.git}" commit -a -m "initial commit"`);
         }
         else {
           // if (!target) {
           /**
+           * → shallow clone only
            * This is the fastest approach.
            * Test: time bash -cl "git clone --single-branch --depth=1 --branch=v1 git@github.com:real-world-debugging/todomvc-es6.git"
            * -> took 6s
            * @see https://stackoverflow.com/a/69798821/2228771
           */
           const target = this.gitTargetRef;
-          const branchArg = target ? ` --branch=${target}` : '';
-          const moreArgs = ' --single-branch --depth=1';
-          const cmd = `git clone${branchArg}${moreArgs} "${githubUrl}" "${projectPath}"`;
+          let moreArgs = '';
+          if (this.canShallowClone()) {
+            const branchArg = target ? ` --branch=${target}` : '';
+            moreArgs = `${branchArg} --single-branch --depth=1`;
+          }
+          const cmd = `"${this.manager.paths.git}" clone${moreArgs} "${githubUrl}" "${projectPath}"`;
           const cwd = projectsRoot;
           // }
           // else {
@@ -418,13 +429,18 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
           //    * 
           //    * @see https://stackoverflow.com/a/4146786
           //    */
-          //   cmd = `git init && git remote add -t ${target} -f origin ${githubUrl} && git checkout ${target}`;
+          //   cmd = `${git} init && ${git} remote add -t ${target} -f origin ${githubUrl} && ${git} checkout ${target}`;
           //   cwd = projectPath;
           //   sh.mkdir('-p', cwd);
           // }
           await this.execInTerminal(cmd, {
             cwd
           });
+
+          // // fix up non-shallow clone → fetch all tags/commits if needed
+          // if (this.getExerciseGitTag || this.gitCommit) {
+          //   await this.exec(`${this.gitCommand} fetch --all --tags`);
+          // }
         }
       }
       catch (err) {
@@ -474,11 +490,6 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   async installProject() {
     // git clone
     await this.gitClone();
-
-    // fetch all bug tags if needed
-    if (this.getExerciseGitTag) {
-      await this.exec(`${this.gitCommand} fetch --all --tags`);
-    }
 
     // run hook
     await this.install();
@@ -699,7 +710,8 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   async ensurePackageJson() {
     const cwd = this.packageJsonFolder;
     if (!sh.test('-f', path.join(cwd, 'package.json'))) {
-      await this.exec('npm init -y', { cwd });
+      const { npm } = this.manager.paths.inShell;
+      await this.exec(`${npm} init -y`, { cwd });
     }
   }
 
@@ -726,9 +738,10 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
     // NOTE: we don't do shared for now.
     const cwd = shared ? this.sharedRoot : this.packageJsonFolder;
+    const { npm, yarn } = this.manager.paths.inShell;
     const cmd = this.preferredPackageManager === 'yarn' ?
-      `yarn install` :
-      `npm install --legacy-peer-deps`;
+      `${yarn} install` :
+      `${npm} install --legacy-peer-deps`;
     return this.execInTerminal(`${cmd} `, { cwd });
   }
 
@@ -741,7 +754,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     await this.checkCorrectGitRepository();
 
     // Not sure what this line does, but seems not really useful here, since these two line does the same thing.
-    // await this.exec('git update-index --refresh');
+    // await this.exec('${git} update-index --refresh');
 
     // NOTE: returns status code 1, if there are any changes, IFF --exit-code or --quiet is provided
     // see: https://stackoverflow.com/questions/28296130/what-does-this-git-diff-index-quiet-head-mean
@@ -755,7 +768,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   }
 
   // async hasAnyChangedFiles() {
-  //   const changes = await this.execCaptureOut(`git status -s`);
+  //   const changes = await this.execCaptureOut(`${git} status -s`);
   //   return !!changes;
   // }
 
@@ -1072,7 +1085,8 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     // see: https://stackoverflow.com/questions/3489173/how-to-clone-git-repository-with-specific-revision-changeset
     if (this.gitCommit) {
       if (!await this.gitDoesTagExistLocally(this.gitCommit)) {
-        await this.execInTerminal(`${this.gitCommand} fetch origin ${this.gitCommit}:${this.gitCommit}`);
+        // await this.execInTerminal(`${this.gitCommand} fetch origin ${this.gitCommit}:${this.gitCommit}`);
+        await this.execInTerminal(`${this.gitCommand} fetch origin ${this.gitCommit}`);
       }
       await this._gitResetAndCheckout(this.gitCommit);
     }
@@ -1090,20 +1104,22 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
     await this.ensurePackageJson();
 
     if (this.preferredPackageManager === 'yarn') {
-      await this.execInTerminal('yarn install', { cwd: this.packageJsonFolder });
+      const { yarn } = this.manager.paths.inShell;
+      await this.execInTerminal(`${yarn} install`, { cwd: this.packageJsonFolder });
     }
     else {
-      // await this.exec('npm cache verify');
+      // await this.exec('${npm} cache verify');
       // hackfix: npm installs are broken somehow.
       //      see: https://npm.community/t/need-to-run-npm-install-twice/3920
       //      Sometimes running it a second time after checking out a different branch 
       //      deletes all node_modules. The second run brings everything back correctly (for now).
-      await this.execInTerminal(`npm install --legacy-peer-deps && npm install --legacy-peer-deps`, { cwd: this.packageJsonFolder });
+      const { npm } = this.manager.paths.inShell;
+      await this.execInTerminal(`${npm} install --legacy-peer-deps && ${npm} install --legacy-peer-deps`, { cwd: this.packageJsonFolder });
     }
   }
 
   // async yarnInstall() {
-  //   await this.exec(`yarn install`);
+  //   await this.exec(`${yarn} install`);
   // }
 
   // ###########################################################################
@@ -1157,6 +1173,8 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
 
     // make sure, we have node at given version and node@lts
     if (this.nodeVersion) {
+      // TODO: future-work user with dialog about needing volta
+      this.logger.warn(`This project requires a specific node version. Trying to use volta to install and pin it...`);
       await this.exec(`volta fetch node@${this.nodeVersion} node@lts npm@lts`);
       await this.exec(`volta pin node@${this.nodeVersion}`);
     }
@@ -1346,7 +1364,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   async applyPatchString(patchString) {
     await this.checkCorrectGitRepository();
 
-    return this.exec(`${this.gitCommand} apply --ignore-space-change --ignore-whitespace`, null, patchString);
+    return this.exec(`"${this.gitCommand}" apply --ignore-space-change --ignore-whitespace`, null, patchString);
   }
 
   /**
@@ -1505,12 +1523,12 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
       exercises = exercises.filter(exercise => exercise.label);
     }
 
-    this.logger.debug(
-      `loaded ${exercises.length} exercises: ` +
-      exercises.
-        map(ex => `${ex.id}${ex.uniqueName && ` (${ex.uniqueName})` || ''}`).
-        join(', ')
-    );
+    // this.logger.debug(
+    //   `loaded ${exercises.length} exercises: ` +
+    //   exercises.
+    //     map(ex => `${ex.id}${ex.uniqueName && ` (${ex.uniqueName})` || ''}`).
+    //     join(', ')
+    // );
 
     this._exercises = new ExerciseList(exercises);
 

@@ -1,10 +1,13 @@
 import NanoEvents from 'nanoevents';
 import allApplications from '@dbux/data/src/applications/allApplications';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import StackMode from '@dbux/graph-common/src/shared/StackMode';
 import GraphType, { nextGraphType } from '@dbux/graph-common/src/shared/GraphType';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
+
+/** @typedef {import('./GraphContainer').default} GraphContainer */
 
 // const screenshotMode = true;
 const screenshotMode = false;
@@ -22,12 +25,12 @@ class GraphDocument extends HostComponentEndpoint {
     this.state.valueMode = false;
     this.state.thinMode = false;
     this.state.asyncDetailMode = true;
+    this.state.statsEnabled = true;
 
     this.createOwnComponents();
 
     // NOTE: this will be called immediately
     this.addDisposable(allApplications.selection.onApplicationsChanged(() => {
-      this.handleApplicationsChanged();
       this.refreshGraphs();
     }));
   }
@@ -39,19 +42,46 @@ class GraphDocument extends HostComponentEndpoint {
     this.asyncStackContainer = this.children.createComponent('GraphContainer', { graphType: GraphType.AsyncStack });
     this.searchBar = this.children.createComponent('SearchBar');
     this.toolbar = this.children.createComponent('Toolbar');
+
+    this.contextFilterManager = this.controllers.createComponent('ContextFilterManager');
   }
 
   update() {
-    this.toolbar.forceUpdate();
+    // this.toolbar.forceUpdate();
+    // this.refreshGraphs();
 
-    // TODO: [performance] better mechanic
-    // hackfix: use this to toggle highContract mode with async detail mode(refresh every time we toggle the mode)
-    this.refreshGraphs();
+    this.forceUpdateTree();
   }
 
-  /** ########################################
+  /**
+   * @type {GraphContainer[]}
+   */
+  get containers() {
+    return this.children.getComponents('GraphContainer');
+  }
+
+  /**
+   * Refresh every graphs, including their enabled states and children
+   */
+  refreshGraphs() {
+    this.containers.forEach((container) => {
+      // container.clearChildren();  // hackfix: brute-force this
+      container.refreshGraph();
+    });
+  }
+
+  /**
+   * Clear and rebuild every enabled graph
+   */
+  maybeFullResetGraphs() {
+    this.containers.forEach((container) => {
+      container.maybeFullReset();
+    });
+  }
+
+  /** ###########################################################################
    * util
-   *  ######################################*/
+   *  #########################################################################*/
 
   getIconUri(fileName, modeName) {
     if (!fileName) {
@@ -72,55 +102,43 @@ class GraphDocument extends HostComponentEndpoint {
    * graph mode
    *  ######################################*/
 
-  nextGraphMode() {
-    this.setGraphMode(nextGraphType(this.state.graphMode));
-  }
-
   setGraphMode(mode) {
     if (this.state.graphMode !== mode) {
-      this.setState({ graphMode: mode });
-      // refresh in update
-      // this.refreshGraphs();
-      this._notifyGraphModeChanged(mode);
+      const upd = {
+        graphMode: mode
+      };
+      if (mode === GraphType.AsyncGraph) {
+        // TODO: use memento to remember mode per type!
+        // disable stats for ACG by default (for now), since there is just not enough space
+        upd.statsEnabled = false;
+      }
+      this.setGraphDocumentMode(upd);
+      this.refreshGraphs();
     }
-  }
-
-  _notifyGraphModeChanged(mode) {
-    this._emitter.emit('graphModeChanged', mode);
-  }
-
-  onGraphModeChanged(cb) {
-    return this._emitter.on('graphModeChanged', cb);
-  }
-
-  handleApplicationsChanged() {
-  }
-
-  refreshGraphs() {
-    this.children.getComponents('GraphContainer').forEach((container) => {
-      container.refreshGraph();
-    });
   }
 
   /** ########################################
-   * follow mode
+   * other modes
    *  ######################################*/
 
-  toggleFollowMode() {
-    const mode = !this.state.followMode;
-    this.setFollowMode(mode);
-    return mode;
-  }
-
-  setFollowMode(mode) {
-    if (this.state.followMode !== mode) {
-      this.setState({ followMode: mode });
-      this._notifyFollowModeChanged(mode);
+  setGraphDocumentMode(update) {
+    const actualUpdate = {};
+    for (const [key, val] of Object.entries(update)) {
+      if (this.state[key] !== val) {
+        actualUpdate[key] = val;
+      }
+    }
+    if (Object.keys(actualUpdate).length) {
+      this.setState(actualUpdate);
+      for (const [key, val] of Object.entries(update)) {
+        this._notifyGraphDocumentModeChanged(key, val);
+      }
+      this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphGraphDocumentModeChanged, actualUpdate);
     }
   }
-
-  _notifyFollowModeChanged(mode) {
-    this._emitter.emit('followModeChanged', mode);
+  
+  _notifyGraphDocumentModeChanged(modeName, value) {
+    this._emitter.emit(`${modeName}Changed`, value);
   }
 
   onFollowModeChanged(cb) {
@@ -128,7 +146,7 @@ class GraphDocument extends HostComponentEndpoint {
   }
 
   // ###########################################################################
-  // initial state + context
+  // initial state + shared context
   // ###########################################################################
 
   makeInitialState() {
@@ -138,20 +156,35 @@ class GraphDocument extends HostComponentEndpoint {
       [GraphNodeMode.ExpandChildren]: this.getIconUri('stack.svg'),
       [GraphNodeMode.ExpandSubgraph]: this.getIconUri('listItem.svg'),
     };
+    const statsIconUris = {
+      nTreeContexts: this.getIconUri('nTreeContextsStats.svg'),
+      nTreeStaticContexts: this.getIconUri('nTreeStaticContextsStats.svg'),
+      nTreeFileCalled: this.getIconUri('document.svg'),
+      nTreeTraces: this.getIconUri('circuit.svg'),
+      nTreePackages: this.getIconUri('nodejs.svg'),
+    };
+    const toolbarIconUris = {
+      theradSelection: this.getIconUri('filter.svg'),
+      contextFilter: this.getIconUri('packageWhitelist.svg'),
+    };
     return {
       themeMode,
       contextNodeIconUris,
-      screenshotMode
+      statsIconUris,
+      toolbarIconUris,
+      screenshotMode,
     };
   }
 
   shared() {
     return {
+      /**
+       * Non-modular version of react's "context": a type of global state.
+       */
       context: {
         graphDocument: this,
         themeMode: this.state.themeMode,
-        contextNodeIconUris: this.state.contextNodeIconUris,
-        screenshotMode: this.state.screenshotMode
+        screenshotMode: this.state.screenshotMode,
       }
     };
   }

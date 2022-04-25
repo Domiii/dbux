@@ -5,17 +5,45 @@ import NestedError from '@dbux/common/src/NestedError';
 import isFunction from 'lodash/isFunction';
 import RemoteCommandProxy from './RemoteCommandProxy';
 
+
+// eslint-disable-next-line no-unused-vars
+const DefaultLogger = newLogger('ComponentEndpoint (pre init)');
+
+/**
+ * @template {ComponentEndpoint} C
+ */
 class ComponentEndpoint {
+  /**
+   * (NOTE: cannot import at top of file due to circular type resolution dependency)
+   * @type {import("./BaseComponentManager").default<C>}
+   */
   componentManager;
 
   /**
+   * @type {import("./ComponentList").default<C>}
+   */
+  children;
+
+  /**
+   * @type {import("./ComponentList").default<C>}
+   */
+  controllers;
+
+  /**
    * Parent endpoint (is null if this is the root (or "Document") endpoint)
+   * @type {C}
    */
   parent;
 
   componentId;
   remote;
   state;
+  /**
+   * If aliases are given, it will show up in 
+   *    `children/controllers.getChildren(x)` for every `x` in `aliases`.
+   * @type {string[]}
+   */
+  aliases;
 
   _isDisposed = false;
   _disposables = [];
@@ -28,8 +56,8 @@ class ComponentEndpoint {
   constructor() {
     // TODO: `this.constructor.name` won't work on Host when enabling minifcation/obfuscation in webpack/bundler
     //    NOTE: Client already has a better way for this
+    this.logger = DefaultLogger;
     this._componentName = this.constructor._componentName || this.constructor.name;
-    this.logger = newLogger(this.debugTag);
   }
 
   _build(componentManager, parent, componentId, initialStateArg) {
@@ -41,6 +69,7 @@ class ComponentEndpoint {
     this._remoteInternal = new RemoteCommandProxy(componentManager.ipc, componentId, '_publicInternal');
 
     this.state = this.makeInitialState(initialStateArg);
+    this.logger = newLogger(this.debugTag);
   }
 
   makeInitialState(initialStateArg) {

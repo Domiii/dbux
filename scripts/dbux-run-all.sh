@@ -8,11 +8,13 @@ rootDir=$(node -e "console.log(require('path').resolve('$thisDirRelative/..'))")
 
 dbuxDirs=(
   "dbux-common"
+  "dbux-common-node"
   "dbux-data"
+  
   "dbux-babel-plugin"
   "dbux-runtime"
-  "dbux-code"
   "dbux-cli"
+  "dbux-code"
   "dbux-graph-common"
   "dbux-graph-client"
   "dbux-graph-host"

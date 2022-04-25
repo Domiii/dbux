@@ -3,6 +3,8 @@ import './hackfixes';
 import programVisitor from './visitors/programVisitor';
 // import _slicingTestVisitor from './_slicingTestVisitor';
 
+// console.debug(`[@dbux/babel-plugin] LOADED`);
+
 /**
  * The Dbux Babel plugin.
  * 

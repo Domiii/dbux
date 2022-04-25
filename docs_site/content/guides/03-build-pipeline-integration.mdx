@@ -7,7 +7,7 @@ import TOC from '@src/components/TOC';
 <TOC toc={toc} />
 
 
-As explained in [the "Runtime Analysis" chapter](../runtime-analysis/02-enable-dbux.mdx): for Dbux to work, it first needs to record JavaScript application behavior. To that end, your program must be instrumented with <CodeLink path="dbux-babel-plugin" /> (i.e.: you need to "[babel](https://babeljs.io/) your program" with `@dbux/babel-plugin` enabled).
+As explained in [the "Dynamic Analysis" chapter](../dynamic-analysis/02-enable-dbux.mdx): for Dbux to work, it first needs to record JavaScript application behavior. To that end, your program must be instrumented with <CodeLink path="dbux-babel-plugin" /> (i.e.: you need to "[babel](https://babeljs.io/) your program" with `@dbux/babel-plugin` enabled).
 
 Once running, the injected `@dbux/runtime` will send collected data to the [runtime server](../tools-and-configuration/01-dbux-code.mdx#runtime-server).
 
@@ -45,7 +45,7 @@ For Node applications that do not need bundling or building, refer to [the Dbux 
 Example:
 
 ```js
-const shouldInclude = require('@dbux/babel-plugin/dist/include').default;
+const makeInclude = require('@dbux/common-node/dist/filters/makeInclude').default;
 
 const moduleFilterOptions = {
   packageWhitelist: 'interestingPackage1,@interesting/package2',
@@ -63,11 +63,16 @@ module.exports = {
       {
         test: /\.jsx?$/,
         include: [
-          shouldInclude(moduleFilterOptions)
+          makeInclude(moduleFilterOptions)
         ],
         use: {
           loader: 'babel-loader',
           options: {
+            /**
+             * Make sure, things work correctly, even if babeling (maybe previously unbabled) `node_modules`.
+             * @see https://github.com/webpack/webpack/issues/4039#issuecomment-419284940
+             */
+            sourceType: 'unambiguous',
             plugins: [
               // other plugins, running **after** Dbux...
               '@dbux/babel-plugin'
@@ -81,7 +86,32 @@ module.exports = {
 };
 ```
 
-NOTE: We use the (configurable/flexible/complicated) <CodeLink path="dbux-projects/assets/sharedAssets/webpack/dbux.webpack.config.base.js">dbux.webpack.config.base.js</CodeLink> for [Dbux Practice](../dbux-practice/01-overview.mdx) projects.
+NOTE: For [Dbux Practice](../dbux-practice/01-overview.mdx) projects, we use the (configurable/flexible/complicated) <CodeLink path="dbux-projects/assets/sharedAssets/webpack/dbux.webpack.config.base.js">dbux.webpack.config.base.js</CodeLink>.
+
+### Debugging Webpack w/ Dbux
+
+Sometimes, you want to debug your `webpack.config.js`, or `webpack`, in general, using Dbux.
+
+This is the command to do that:
+
+```sh
+npx dbux run ../node_modules/webpack-cli/bin/cli.js -- webpack args here
+# or, if you want to debug webpack itself:
+npx dbux run --pw=webpack.*,tapable,graceful-fs,enhanced-resolve ../node_modules/webpack-cli/bin/cli.js -- webpack args here
+```
+
+
+
+Keep an eye out for the following pitfalls:
+
+1. `webpack` adds a layer of `@babel/register`.
+   * Because of that: webpack will run itself with the default babel config of the project. That usually does not affect anything, but there are buggy edge cases, and that's worth noting.
+   * Also, if you run that `webpack` project with Dbux enabled, Dbux adds a second layer of `@babel/register`. So it will double up. That is generally not a problem, but attentions is warranted.
+     * You want to make sure that `webpack` itself does not read a `babel` config which in turn adds `@dbux/babel-plugin` (which the project default babel config is likely to do).
+     * NOTE: If you don't run `webpack` with Dbux enabled, it is all fine.
+2. `webpack` uses few libraries that themselves are very heavy on instrumentation. Since Dbux also instruments things, you end up having one instrumenter trying to instrument another. That can lead to problems.
+   * If you want to understand the inner workings of `webpack`, we found the following whitelist to work quite well: `--pw=webpack.*,tapable,graceful-fs,enhanced-resolve`
+
 
 
 ## Rollup
@@ -94,7 +124,7 @@ Rollup requires use of [@rollup/plugin-babel](https://www.npmjs.com/package/@rol
 Example - something like this:
 
 ```js
-const shouldInclude = require('@dbux/babel-plugin/dist/include').default;
+const makeInclude = require('@dbux/common-node/dist/filters/makeInclude').default;
 
 const moduleFilterOptions = {
   packageWhitelist: 'interestingPackage1,@interesting/package2',
@@ -107,7 +137,7 @@ const config = {
   plugins: [
     babel({
       babelHelpers: 'inline',
-      filter: shouldInclude(moduleFilterOptions),
+      filter: makeInclude(moduleFilterOptions),
       /**
        * WARNING: if not skipped, we saw some serious memory leaks (in 2020), but might already be fixed in 2022.
        * TODO: we need to test this again.
@@ -126,67 +156,94 @@ TODO
 
 ## Create-React-App
 
-<!--
+TODO: Clean this up
 
-NOTES: 
-* currently, CRA has one babel-loader for src and one for dependencies [1/2022]
-* -> TODO: probably need to add module filtering to the plugin itself, rather than relying on babel-register or webpack to filter for us.
-
- ```js
-const { getLoaders, loaderByName } = require('@craco/craco');
-
-const shouldInclude = require('@dbux/babel-plugin/dist/include').default;
-
-const moduleFilterOptions = {
-  packageWhitelist: '',
-};
-
-module.exports = {
-  webpack: {
-    configure: (webpackConfig, { env, paths }) => {
-      const { isFound, matches } = getLoaders(webpackConfig, loaderByName("babel-loader"));
-      const match = matches.find(match => 'include' in match.loader);
-      // // console.log(isFound, match?.loader?.options?.plugins);
-      // if (isFound) {
-      //   match.loader.options.plugins.push('@dbux/babel-plugin');
-      // }
-      // else {
-      //   throw new Error('babel-loader not found');
-      // }
-
-      // const config = {
-      //   test: /\.jsx?$/,
-      //   include: [
-      //     shouldInclude(moduleFilterOptions)
-      //   ],
-      //   use: {
-      //     loader: 'babel-loader',
-      //     options: {
-      //       cacheDirectory: true,
-      //       presets: [
-      //         // '@babel/preset-react'
-      //         ...match.loader.options.presets
-      //       ],
-      //       plugins: [
-      //         ...match.loader.options.plugins,
-      //         '@dbux/babel-plugin',
-      //       ],
-      //     }
-      //   }
-      // };
-
-      // console.log(JSON.stringify(match.loader.options, null, 2))
-      // console.log(JSON.stringify(webpackConfig.module.rules, null, 2))
-
-      // webpackConfig.module.rules.push(config);
-      match.loader.options.plugins.push('@dbux/babel-plugin');
-
-      // console.log(JSON.stringify(webpackConfig.module.rules, null, 2));
-      return webpackConfig;
-    }
-  },
-};
-``` -->
+1. install `CRACO`
+   ```bash
+   $ yarn add --dev @craco/craco
+   ```
+2. Fix `package.json` to use `craco` instead of `react-scripts`:
+   ```
+   /* package.json */
+   
+   "scripts": {
+     "start": "craco start",
+     "build": "craco build",
+     "test": "craco test"
+   }
+   ```
+3. Customize webpack config with `CRACO`:
+   Example - something like this:
+   ```js
+   // craco.config.js
+   
+   const { getLoaders, loaderByName } = require('@craco/craco');
+   
+   const dbuxOptions = {
+     moduleFilter: {
+       packageWhitelist: '.*',
+       /**
+        * NOTE: these libraries might run before dbux is initialized, so they must be blacklisted.
+        * 1. Some hook themsleves into webpack.
+        * 2. The later ones are polyfills (probably brought in by CRA) and their libraries; loaded when first requiring things,    and before `@dbux/runtime`.
+        */
+       packageBlacklist: 'react-dev-utils,react-refresh,react-error-overlay,process,buffer,isarray,ieee754,base64-js',
+       fileWhitelist: '.*',
+       // we generally do not want to mess with production or webpack code
+       fileBlacklist: '.*production.*,.*[wW]ebpack.*'
+     }
+   };
+   
+   module.exports = {
+     webpack: {
+       configure: (webpackConfig, { env, paths }) => {
+         const { hasFoundAny, matches } = getLoaders(webpackConfig, loaderByName("babel-loader"));
+   
+   
+         // // TODO: write output files (this won't work, `devServer` does not exit)
+         // webpackConfig.devServer.devMiddleware.writeToDisk = true;
+   
+         // // exclude dbux from all rules
+         // const reported = new Set();
+         // webpackConfig.module.rules.forEach(rule => {
+         //   if (rule.exclude && !Array.isArray(rule.exclude)) {
+         //     rule.exclude = [rule.exclude];
+         //   }
+         //   if (!rule.exclude) {
+         //     rule.exclude = [];
+         //   }
+         //   rule.exclude.push((modulePath) => {
+         //     const exclude = modulePath.includes('@dbux');
+         //     if (!reported.has(modulePath)) {
+         //       reported.add(modulePath);
+         //       console.debug(`[WEBPACK]`, modulePath, !exclude);
+         //     }
+         //     return exclude;
+         //   });
+         // });
+   
+         // add dbux to loader
+         if (hasFoundAny) {
+           matches.forEach(match => {
+             const babelOptions = match.loader.options;
+             if (!babelOptions.plugins) {
+               babelOptions.plugins = [];
+             }
+             // NOTE: weird bug with a class having public fields (in @dbux/runtime) that Babel complains about
+             babelOptions.plugins.push(['@babel/plugin-proposal-class-properties', { loose: true }]);
+             babelOptions.plugins.push(['@dbux/babel-plugin', dbuxOptions]);
+           });
+           console.debug(`Added @dbux/babel-plugin to babel-loaders.`);
+         }
+         else {
+           throw new Error(`Could not inject Dbux: 'babel-loader' found`);
+         }
+   
+         return webpackConfig;
+       }
+     },
+   };
+   ```
 
 
 ## Next.js

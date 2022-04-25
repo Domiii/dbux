@@ -5,11 +5,13 @@ import ComponentEndpoint from '@dbux/graph-common/src/componentLib/ComponentEndp
 import NestedError from '@dbux/common/src/NestedError';
 import HostComponentList from './HostComponentList';
 
-// const Verbose = true;
-const Verbose = false;
+const Verbose = 0;
+// const Verbose = 1;
+// const Verbose = 2;
 
 /**
  * The Host endpoint controls the Client endpoint.
+ * @extends ComponentEndpoint<HostComponentEndpoint>
  */
 class HostComponentEndpoint extends ComponentEndpoint {
   /**
@@ -23,6 +25,12 @@ class HostComponentEndpoint extends ComponentEndpoint {
    */
   controllers;
 
+  /**
+   * Can be assigned via `createComponent`.
+   * @type {Object}
+   */
+  hostOnlyState;
+
   _isInitialized = false;
   _initPromise;
   _waitingForUpdate;
@@ -31,10 +39,13 @@ class HostComponentEndpoint extends ComponentEndpoint {
 
   _refreshPromise = null;
   _refreshRequests = 0;
+  _finishedDisposed = false;
 
 
   constructor() {
     super();
+
+    this.aliases = this.aliases || [this._componentName];
 
     this.children = new HostComponentList(this, 'child');
     this.controllers = new HostComponentList(this, 'controller');
@@ -46,6 +57,12 @@ class HostComponentEndpoint extends ComponentEndpoint {
 
   get isInitialized() {
     return this._isInitialized;
+  }
+  /**
+   * @type {import("./HostComponentManager").default}
+   */
+  get componentManager() {
+    return super.componentManager;
   }
 
   setState(update) {
@@ -83,6 +100,10 @@ class HostComponentEndpoint extends ComponentEndpoint {
     this.forceUpdateDescendants();
   }
 
+  async waitForAllChildren() {
+    return Promise.all(this.children.components.map(c => c.waitForAll()));
+  }
+
   async waitForInit() {
     // NOTE: make sure, `waitFor` calls fulfill in order by appending our own task into the promise chain
     // return this._initPromise = this._initPromise.then(noop);
@@ -105,9 +126,20 @@ class HostComponentEndpoint extends ComponentEndpoint {
       await sleep(0);
     }
 
-    if (this._updatePromise) {
-      await (this._updatePromise = this._updatePromise.then(noop));
+    while (this._updatePromise) {
+      await this._updatePromise;
     }
+  }
+
+  /**
+   * Returns a promise that settles when `init`, `update` and `refresh` are all fulfilled.
+   */
+  async waitForAll() {
+    await Promise.all([
+      this.waitForInit(),
+      this.waitForUpdate(),
+      this.waitForRefresh()
+    ]);
   }
 
   // ###########################################################################
@@ -131,8 +163,9 @@ class HostComponentEndpoint extends ComponentEndpoint {
   /**
    * NOTE: this is called by `BaseComponentManager._createComponent`
    */
-  _build(componentManager, parent, componentId, initialState) {
+  _build(componentManager, parent, componentId, initialState, hostOnlyState) {
     // store properties
+    this.hostOnlyState = hostOnlyState;
     super._build(componentManager, parent, componentId, initialState);
 
     componentManager.incInitCount();
@@ -165,9 +198,9 @@ class HostComponentEndpoint extends ComponentEndpoint {
     try {
       this._waitingForUpdate = true;
       this._preInit();                                    // 0. host: preInit
-      Verbose && this.logger.debug('init start');
+      Verbose > 1 && this.logger.debug('init start');
       this.init();                                        // 1. host: init
-      Verbose && this.logger.debug('update start');
+      Verbose > 1 && this.logger.debug('update start');
       this.update();                                      // 2. host: update
     }
     catch (err) {
@@ -182,7 +215,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
     Verbose && this.logger.debug('_doInitClient start');
     const resultFromClientInit = this.parent && await this.componentManager._initClient(this); // 3. client: init -> update (ignore `internal root component`)
     // success                                        // 4. waitForInit resolved
-    Verbose && this.logger.debug('initialized');
+    Verbose > 1 && this.logger.debug('initialized');
     this._isInitialized = true;
     return resultFromClientInit;
   }
@@ -230,15 +263,17 @@ class HostComponentEndpoint extends ComponentEndpoint {
     }
   }
 
-  _executeUpdate = async () => {
+  /**
+   * @returns {Promise}
+   */
+  _executeUpdate = () => {
     // debounce mechanism
     this._waitingForUpdate = true;
-    await sleep(0);
 
     // push out new update
-    const promise = Promise.resolve(
-      this._performUpdate()                                   // 1. host: update
-    ).
+    const promise = sleep(0).then(() => {
+      return this._performUpdate();                                  // 1. host: update
+    }).
       then(() => {
         return this._remoteInternal.updateClient(this.state); // 2. client: update
       }).
@@ -305,28 +340,39 @@ class HostComponentEndpoint extends ComponentEndpoint {
     throw new Error(`${this.componentName}.handleRefresh not implemented`);
   }
 
+  /**
+   * A refresh is usually triggered by some data change event handler.
+   * A refresh implies:
+   *   1. waiting for initialization of previously added components
+   *   2. changing the graph (usually implemented in `handleRefresh`)
+   *   3. waiting for initialization of newly added components
+   */
   async waitForRefresh() {
     return this._refreshPromise;
   }
 
+  /**
+   * Triggers a refresh, if not already in progress.
+   * Use `waitForRefresh` to wait until it's done.
+   */
   refresh = () => {
     ++this._refreshRequests;
     if (this._refreshPromise) {
       return;
     }
-    this._refreshPromise = this.doRefresh();
+    this._refreshPromise = this._doRefresh();
   };
 
-  async doRefresh() {
+  async _doRefresh() {
     try {
-      await sleep(50);
+      await sleep(50); // implicit debounce
       while (this._refreshRequests) {
         this._refreshRequests = 0;
 
         // wait for init before dispose something
         await this.componentManager.waitForBusyInit();
 
-        this.handleRefresh();
+        await this.handleRefresh();
 
         // wait for init to ensure client side finished
         await this.componentManager.waitForBusyInit();
@@ -358,7 +404,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
    * First disposes all descendants (removes recursively) and then removes itself.
    */
   dispose(silent = false) {
-    Verbose && this.logger.debug('dispose start');
+    Verbose > 1 && this.logger.debug('dispose start');
     super.dispose();
 
     // Promise.resolve(this.waitForInit()).then(() => {
@@ -376,15 +422,39 @@ class HostComponentEndpoint extends ComponentEndpoint {
 
     // also dispose on client
     Promise.resolve(this.waitForInit())
-      .then(() => {
-        this._remoteInternal.dispose();
+      .then(async () => {
+        await this._remoteInternal.dispose();
+        Verbose > 1 && this.logger.debug('disposed');
       })
       .catch((err) => {
         if (!silent) {
-          this.logger.error(err);
+          this.logger.error('error while disposing -', err);
         }
+        else {
+          Verbose > 1 && this.logger.debug('error while disposing');
+        }
+      })
+      .finally(() => {
+        this._finishedDisposed = true;
       });
-    Verbose && this.logger.debug('disposed');
+  }
+
+  async waitForClear() {
+    let waiting = true;
+    let doneWaiting = false;
+    await Promise.race([
+      (async () => {
+        while (waiting) {
+          await sleep(20);
+          if (this._finishedDisposed) {
+            break;
+          }
+        }
+      })(),
+      sleep(2000)
+    ]);
+    waiting = false;
+    return doneWaiting;
   }
 
   // ###########################################################################

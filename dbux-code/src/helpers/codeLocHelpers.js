@@ -43,6 +43,9 @@ export function codePositionToBabelPosition(pos) {
  * @return {Position}
  */
 export function babelLocToCodePosition(loc) {
+  if (loc instanceof Position) {
+    return loc;
+  }
   if (loc._pos) {
     // converted this before
     return loc._pos;

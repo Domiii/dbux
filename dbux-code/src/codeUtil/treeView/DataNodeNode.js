@@ -1,21 +1,35 @@
 import { TreeItemCollapsibleState } from 'vscode';
 import Trace from '@dbux/common/src/types/Trace';
+import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import traceSelection from '@dbux/data/src/traceSelection';
 import { makeTraceLabel, makeTraceLocLabel } from '@dbux/data/src/helpers/makeLabels';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import BaseTreeViewNode from './BaseTreeViewNode';
+import { getOuterMostTraceOfSameLine } from '../../helpers/codeRangeQueries';
+
+/** @typedef { import("@dbux/common/src/types/DataNode").default } DataNode */
+
+function makeDataNodeTypeSymbol(dataNode) {
+  const type = DataNodeType.nameFrom(dataNode.type) || '?';
+  return type.charAt(0);
+}
 
 /**
  * This is a TreeViewNode representing a `DataNode`
  */
 export default class DataNodeNode extends BaseTreeViewNode {
+  targetNodeId;
+  
   /**
    * @param {DataNode} 
    */
   static makeLabel(dataNode) {
     const dp = allApplications.getById(dataNode.applicationId).dataProvider;
-    const trace = dp.collections.traces.getById(dataNode.traceId);
-    return makeTraceLabel(trace);
+    let trace = dp.collections.traces.getById(dataNode.traceId);
+    trace = getOuterMostTraceOfSameLine(trace);
+    const traceLabel = makeTraceLabel(trace);
+    // return `${typeSymbol} ${traceLabel}`;
+    return traceLabel;
   }
 
   get defaultCollapsibleState() {
@@ -41,6 +55,13 @@ export default class DataNodeNode extends BaseTreeViewNode {
     return this.entry;
   }
 
+  /**
+   * @return {string}
+   */
+  get typeSymbol() {
+    return makeDataNodeTypeSymbol(this.dataNode);
+  }
+
   isSelected() {
     return traceSelection.nodeId === this.dataNode.nodeId;
   }
@@ -50,11 +71,13 @@ export default class DataNodeNode extends BaseTreeViewNode {
   }
 
   init() {
+    const typeSymbol = makeDataNodeTypeSymbol(this.dataNode);
     const loc = makeTraceLocLabel(this.trace);
-    this.description = loc;
+    this.description = `[${typeSymbol}] ${loc}`;
   }
 
   handleClick() {
-    traceSelection.selectTrace(this.trace, 'DataNode', this.dataNode.nodeId);
+    const nodeId = this.targetNodeId || this.dataNode.nodeId;
+    traceSelection.selectTrace(this.trace, 'DataNode', nodeId);
   }
 }

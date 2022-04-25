@@ -95,10 +95,11 @@ export default class RichWebView extends WebviewWrapper {
       showInformationMessage(message, { Ok: null }, cfg);
     },
 
-    async prompt(message) {
+    async prompt(message, defaultValue = '') {
       const result = await window.showInputBox({
         ignoreFocusOut: true,
-        placeHolder: message
+        placeHolder: message,
+        value: defaultValue
       });
       return result;
     },

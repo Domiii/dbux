@@ -10,14 +10,14 @@ const configs = [
     description: 'Basic commonjs Webpack example.',
     runArgs: []
   },
-  {
-    label: 'examples/commonjs1 (--pw=.*)',
-    cwd: 'examples/commonjs',
-    // patch: 'patch1',
-    description: 'Basic commonjs Webpack example (all modules).',
-    runArgs: [],
-    dbuxArgs: `--pw=.* --pb=v8-compile-cache`,
-  }
+  // {
+  //   label: 'examples/commonjs1 (--pw=.*)',
+  //   cwd: 'examples/commonjs',
+  //   // patch: 'patch1',
+  //   description: 'Basic commonjs Webpack example (all modules).',
+  //   runArgs: [],
+  //   dbuxArgs: `--pw=.* --pb=v8-compile-cache`,
+  // }
 ];
 
 module.exports = configs;

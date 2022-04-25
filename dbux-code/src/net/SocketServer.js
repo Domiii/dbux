@@ -1,5 +1,6 @@
 import NanoEvents from 'nanoevents';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { emitRuntimeServerStatusChangedAction } from '../userEvents';
 import RuntimeClient from './RuntimeClient';
 import { makeListenSocket } from './serverUtil';
 
@@ -118,3 +119,7 @@ export function isRuntimeServerStarted() {
 export function onRuntimerServerStatusChanged(cb) {
   return _runtimeServerEmitter.on('statusChanged', cb);
 }
+
+onRuntimerServerStatusChanged((isOn) => {
+  emitRuntimeServerStatusChangedAction(isOn);
+});

@@ -7,7 +7,8 @@ set -e # cancel on error
 
 # fname="__samplesInput__/async/promisify5-no-root"
 # fname="__samplesInput__/defineProperty3-setter"
-fname="__samplesInput__/async/Promise.all-fail1"
+fname="__samplesInput__/generator-functions1"
+# fname="__samplesInput__/async/await2"
 
 
 
@@ -18,10 +19,10 @@ rootDir=$(node -e "console.log(require('path').resolve('$thisDirRelative'))") # 
 nodeArgsAlways="--stack-trace-limit=100"
 nodeArgs=""
 
-dbuxArgs="--esnext"
+dbuxArgsI="--esnext"
 # dbuxArgs="--pw=.*"
 # dbuxArgs=""
-dbuxArgsI=""
+# dbuxArgsI=""
 
 dbuxCmd="$1"
 if [[ $dbuxCmd = "" ]]
@@ -76,7 +77,7 @@ then
   node $nodeArgs --enable-source-maps "$rootDir/node_modules/@babel/cli/bin/babel.js" --config-file="$rootDir/config/babel-presets-$babelTarget.js" $inPath --out-file="$outPath"
   echo "Babeled ($babelTarget): $outPath"
 else
-  outPath="$rootDir/samples/$fname.inst.js"
+  outPath="$rootDir/samples/$fname.dbux.js"
   if [[ "$dbuxCmd" != "rr" ]] && [[ "$dbuxCmd" != "rrr" ]]
   then
     # instrument

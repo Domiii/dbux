@@ -8,8 +8,11 @@ export default class UserActionGroup {
    * @type {number} create time
    */
   createdAt;
-  
+
+  /**
+   * @type {number}
+   */
   stepId;
-  
+
   endTime;
 }

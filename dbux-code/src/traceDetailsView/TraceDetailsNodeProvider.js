@@ -7,7 +7,7 @@ import TraceNode from '../codeUtil/treeView/TraceNode';
 import BaseTreeViewNodeProvider from '../codeUtil/treeView/BaseTreeViewNodeProvider';
 import NavigationNode from './nodes/NavigationNode';
 
-export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
+export default class TraceDetailsNodeProvider extends BaseTreeViewNodeProvider {
   constructor() {
     super('dbuxTraceDetailsView');
 
@@ -26,7 +26,7 @@ export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
       this.trace = trace;
 
       roots.push(
-        this.buildSelectedTraceNode(trace),
+        this.buildSelectedTraceNode(trace, null),
         ...this.buildTraceDetailNodes(trace, null)
       );
     }
@@ -77,8 +77,8 @@ export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
   // Util
   // ###########################################################################
 
-  buildSelectedTraceNode(trace) {
-    return this.buildNode(SelectedTraceNode, trace);
+  buildSelectedTraceNode(trace, parent) {
+    return this.buildNode(SelectedTraceNode, trace, parent);
   }
 
   buildNavigationNode(trace, parent) {

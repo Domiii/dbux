@@ -1,10 +1,5 @@
 import {
-  Disposable,
-  workspace,
   window,
-  OverviewRulerLane,
-  DecorationOptions,
-  Range,
   TextEditor
 } from 'vscode';
 
@@ -15,6 +10,7 @@ import { renderTraceDecorations, clearTraceDecorations } from './traceDecorator'
 import { initTraceDecorators } from './traceDecoConfig';
 import { initEditedWarning } from './editedWarning';
 import { set as mementoSet, get as mementoGet } from '../memento';
+import { emitShowHideDecorationAction } from '../userEvents';
 // import DataProvider from '@dbux/data/src/DataProvider';
 // import StaticContextType from '@dbux/common/src/types/constants/StaticContextType';
 
@@ -125,8 +121,9 @@ export function initCodeDeco(context) {
  */
 export function setShowDeco(val) {
   showDeco = !!val;
-  mementoSet(keyName, val);
+  mementoSet(keyName, showDeco);
   renderDecorations();
+  emitShowHideDecorationAction(showDeco);
 }
 
 export function switchShowDeco() {

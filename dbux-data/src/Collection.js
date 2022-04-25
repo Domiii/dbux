@@ -263,6 +263,9 @@ export default class Collection {
     return this._collectionNames;
   }
 
+  /**
+   * Called manually by collections that add entries manually.
+   */
   addEntryPostAdd(entry, raw = true) {
     this.addEntry(entry);
 
@@ -271,10 +274,13 @@ export default class Collection {
     const allData = { [this.name]: [entry] };
     this.dp._postAdd(this._collectionNames, allData, raw);
 
-    // future-work: this could happen while another post-add event is still on-going. Make sure, this won't bug out.
+    // TODO: this could happen while another post-add event is still on-going. Make sure, this won't bug out.
     this.dp._notifyData(this._collectionNames, allData);
   }
 
+  /**
+   * Called manually by collections that add entries manually.
+   */
   addEntriesPostAdd(entries, raw = true) {
     for (const entry of entries) {
       this.addEntry(entry);
@@ -284,12 +290,11 @@ export default class Collection {
     const allData = { [this.name]: entries };
     this.dp._postAdd(this._collectionNames, allData, raw);
 
-    // future-work: this could happen while another post-add event is still on-going. Make sure, this won't bug out.
+    // TODO: this could happen while another post-add event is still on-going. Make sure, this won't bug out.
     this.dp._notifyData(this._collectionNames, allData);
   }
 
   notifyChanged(entries = EmptyArray) {
-    // future-work: this could happen while another post-add event is still on-going. Make sure, this won't bug out.
     const allData = { [this.name]: entries };
     this.dp._notifyData(this._collectionNames, allData);
   }

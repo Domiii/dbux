@@ -37,6 +37,9 @@ const usedExternals = [
   'restart', 'logClientError', 'confirm', 'prompt', 'goToTrace'
 ];
 
+/**
+ * @extends {BaseComponentManager<HostComponentEndpoint>}
+ */
 class HostComponentManager extends BaseComponentManager {
   constructor(ipcAdapter, externals, componentRegistry) {
     super(componentRegistry, ipcAdapter);
@@ -71,9 +74,15 @@ class HostComponentManager extends BaseComponentManager {
   // private methods
   // ###########################################################################
 
-  _createComponent(parent, ComponentEndpointClass, initialState = {}) {
+  /**
+   * 
+   * @param {HostComponentEndpoint} parent
+   * @param {*} ComponentEndpointClass
+   * @param {*} initialState 
+   */
+  _createComponent(parent, ComponentEndpointClass, initialState = {}, hostOnlyState = null) {
     const componentId = ++this._lastComponentId;
-    return this._registerComponent(componentId, parent, ComponentEndpointClass, initialState);
+    return this._registerComponent(componentId, parent, ComponentEndpointClass, initialState, hostOnlyState);
   }
 
   _wrapShared(component) {
@@ -105,7 +114,8 @@ class HostComponentManager extends BaseComponentManager {
       componentId,
       componentName,
       parent,
-      state
+      state,
+      aliases
     } = component;
 
     // parent
@@ -120,13 +130,18 @@ class HostComponentManager extends BaseComponentManager {
     // send new component to client *AFTER* its parent has finished init'ing
     await parent?.waitForInit();
 
+    const clientAdditionalProps = {
+      aliases
+    };
+
     return this.app._remoteInternal.createClientComponent(
       parentId,
       role,
       componentId,
       componentName,
       shared,
-      state
+      state,
+      clientAdditionalProps
     );
   }
 
@@ -146,7 +161,7 @@ class HostComponentManager extends BaseComponentManager {
   // manage init count
   // ###########################################################################
 
-  setInitCount(n) {
+  _setInitCount(n) {
     const oldState = this.isBusyInit();
 
     this._initCount += n;
@@ -173,11 +188,11 @@ class HostComponentManager extends BaseComponentManager {
   }
 
   incInitCount() {
-    this.setInitCount(1);
+    this._setInitCount(1);
   }
 
   decInitCount() {
-    this.setInitCount(-1);
+    this._setInitCount(-1);
   }
 
   isBusyInit() {
@@ -188,6 +203,11 @@ class HostComponentManager extends BaseComponentManager {
     return this._emitter.on('busyStateChanged', cb);
   }
 
+  /**
+   * Returns a promise that is settled when all added components have finished initialization.
+   * 
+   * TODO: find out why the name of this function contains the word "busy"?
+   */
   waitForBusyInit() {
     return this._busyInitPromise;
   }

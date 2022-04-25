@@ -1,10 +1,10 @@
-import { getStaticContextColor } from '@dbux/graph-common/src/shared/contextUtil';
 import { compileHtmlElement, decorateClasses } from '../../util/domUtil';
 // import { isMouseEventPlatformModifierKey } from '../util/keyUtil';
 import { getPlatformModifierKeyString } from '../../util/platformUtil';
 import ClientComponentEndpoint from '../../componentLib/ClientComponentEndpoint';
 
 let choicingIndicator;
+const ContextBlinkAnimationTime = 4000;
 class ContextNode extends ClientComponentEndpoint {
   createEl() {
     return compileHtmlElement(/*html*/`
@@ -28,6 +28,7 @@ class ContextNode extends ClientComponentEndpoint {
                 <div data-el="title" class="flex-row cross-axis-align-center">
                   <div data-el="contextLabel" class="ellipsis-20 dbux-link"></div>
                 </div>
+                <span data-el="errorLabel"></span>
                 <!--div data-el="selectedTraceIcon" class="darkred">
                   &nbsp;☩
                 </div-->
@@ -42,7 +43,11 @@ class ContextNode extends ClientComponentEndpoint {
                 <div>
                   <span class="value-label" data-el="valueLabel"></span>
                 </div>
-                <div data-el="stats" class="context-stats"></div>
+                <div data-el="statsNTreePackages" class="context-stats" title="Amount of packages involved in subgraph"></div>
+                <div data-el="statsNTreeFileCalled" class="context-stats" title="Amount of files involved in subgraph"></div>
+                <div data-el="statsNTreeStaticContexts" class="context-stats" title="Amount of static contexts involved in subgraph"></div>
+                <div data-el="statsNTreeContexts" class="context-stats" title="Amount of child contexts in subgraph"></div>
+                <div data-el="statsNTreeTraces" class="context-stats" title="Amount of traces in subgraph (approximates the amount of executed statements/expressions)"></div>
               </div>
               <div class="flex-row">
               </div>
@@ -50,18 +55,42 @@ class ContextNode extends ClientComponentEndpoint {
           </div>
           <div class="full-width flex-row">
             <div class="node-left-padding"></div>
-            <div data-mount="ContextNode" data-el="nodeChildren" class="node-children"></div>
+            <div data-mount="ContextNode,HoleNode" data-el="nodeChildren" class="node-children"></div>
           </div>
         </div>
       </div>
     `);
   }
 
+  setupEl() {
+    const {
+      context: { applicationId, contextId, createdAt },
+      rootContextId
+    } = this.state;
+
+    this.el.dataset.applicationId = applicationId;
+    this.el.dataset.contextId = contextId;
+    this.el.dataset.rootContextId = rootContextId;
+
+    if (!(this.parent instanceof ContextNode)) {
+      const animationEndTime = createdAt + ContextBlinkAnimationTime;
+      const duration = animationEndTime - Date.now();
+      if (duration > 0) {
+        this.el.classList.add('blink-me');
+
+        setTimeout(() => {
+          this.el?.classList.remove('blink-me');
+        }, duration);
+      }
+    }
+  }
+
   update() {
     const {
-      applicationId,
-      context: { contextId },
-      realStaticContextid,
+      context: { applicationId, contextId },
+      rootContextId,
+      // realStaticContextid,
+      backgroundStyle,
       contextLabel,
       contextLocLabel,
       callerTracelabel,
@@ -70,39 +99,44 @@ class ContextNode extends ClientComponentEndpoint {
       traceId,
       isSelectedTraceCallRelated,
       contextIdOfSelectedCallTrace,
-      statsEnabled,
-      moduleName,
+      // packageName,
       visible,
-      isRoot,
+      hasError,
     } = this.state;
 
-    const { themeMode, screenshotMode } = this.context;
-    const moduleLabel = moduleName ? `${moduleName} | ` : '';
-
+    
     this.el.id = `application_${applicationId}-context_${contextId}`;
-    this.el.style.background = getStaticContextColor(themeMode, realStaticContextid, { 
-      bland: !!moduleName, 
-      screenshotMode
-    });
+    this.el.style.background = backgroundStyle;
     this.els.contextLabel.textContent = contextLabel;
-    this.els.locLabel.textContent = contextLocLabel && ` @ ${moduleLabel}${contextLocLabel}` || '';
+
+    this.els.locLabel.textContent = contextLocLabel && ` ${contextLocLabel}` || '';
+
     this.els.callLabel.textContent = callerTracelabel || '';
     this.els.valueLabel.textContent = valueLabel;
+    this.els.errorLabel.textContent = hasError ? '🔥' : '';
 
-    if (statsEnabled) {
-      const {
-        nTreeContexts,
-        nTreeStaticContexts,
-        nTreeFileCalled
-      } = this.state;
-      this.els.stats.textContent = `${nTreeContexts} / ${nTreeStaticContexts} / ${nTreeFileCalled}`;
-    }
-    else {
-      this.els.stats.textContent = '';
-    }
+    // generate stats label
+    const {
+      nTreeContexts,
+      nTreeStaticContexts,
+      nTreeFileCalled,
+      nTreeTraces,
+      nTreePackages,
+    } = this.state;
+    const {
+      statsIconUris
+    } = this.context.graphDocument.state;
+    this.els.statsNTreeFileCalled.innerHTML = `<img src="${statsIconUris.nTreeFileCalled}" /><span>${nTreeFileCalled}</span>`;
+    this.els.statsNTreeStaticContexts.innerHTML = `<img src="${statsIconUris.nTreeStaticContexts}" /><span>${nTreeStaticContexts}</span>`;
+    this.els.statsNTreeContexts.innerHTML = `<img src="${statsIconUris.nTreeContexts}" /><span>${nTreeContexts}</span>`;
+    this.els.statsNTreeTraces.innerHTML = `<img src="${statsIconUris.nTreeTraces}" /><span>${nTreeTraces}</span>`;
+    this.els.statsNTreePackages.innerHTML = `<img src="${statsIconUris.nTreePackages}" /><span>${nTreePackages}</span>`;
+
+    const prevSibling = this.el.previousElementSibling;
+    const isAsyncRoot = prevSibling && parseInt(prevSibling.dataset.rootContextId, 10) !== rootContextId;
 
     decorateClasses(this.el, {
-      'root-context-node': isRoot
+      'root-context-node': isAsyncRoot
     });
 
     decorateClasses(this.els.title, {

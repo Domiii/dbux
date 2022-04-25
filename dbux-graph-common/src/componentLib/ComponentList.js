@@ -2,10 +2,25 @@ import pull from 'lodash/pull';
 import isString from 'lodash/isString';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 
+/** @typedef { import("./ComponentEndpoint").default } ComponentEndpoint */
 
+
+/**
+ * @template {ComponentEndpoint} C
+ */
 export default class ComponentList {
+  /**
+   * @type {C[]}
+   */
   components = [];
+  /**
+   * @type {Map.<string, C[]>}
+   */
   componentsByName = new Map();
+  /**
+   * @type {C}
+   */
+  _owner;
 
   constructor(owner, roleName) {
     this._owner = owner;
@@ -20,6 +35,9 @@ export default class ComponentList {
     return this.components.length;
   }
 
+  /**
+   * @return {C | null}
+   */
   getComponent(Clazz) {
     if (isString(Clazz)) {
       return this.componentsByName.get(Clazz)?.[0] || null;
@@ -31,7 +49,7 @@ export default class ComponentList {
   }
 
   /**
-   * Returns copy of components
+   * @return {C[]}
    */
   getComponents(Clazz) {
     let name;
@@ -48,23 +66,23 @@ export default class ComponentList {
   }
 
   /**
-   * Returns actual array of components
+   * @return {C[]}
    */
-  getComponentsRef(Clazz) {
-    if (isString(Clazz)) {
-      return this.componentsByName.get(Clazz) || null;
+  getComponentsRef(clazzOrName) {
+    if (isString(clazzOrName)) {
+      return this.componentsByName.get(clazzOrName) || null;
     }
-    if (!Clazz._componentName) {
-      throw new Error(`Invalid component class. Did you forget to add this component to _hostRegistry? - ${Clazz}`);
+    if (!clazzOrName._componentName) {
+      throw new Error(`Invalid component class. Did you forget to add this component to _hostRegistry? - ${clazzOrName}`);
     }
-    return this.componentsByName.get(Clazz._componentName) || null;
+    return this.componentsByName.get(clazzOrName._componentName) || null;
   }
 
   // ###########################################################################
   // iterators
   // ###########################################################################
 
-  * [Symbol.iterator]() {
+  *[Symbol.iterator]() {
     yield* this.components;
   }
 
@@ -111,12 +129,19 @@ export default class ComponentList {
   // protected methods
   // ###########################################################################
 
+  /**
+   * @param {C} comp
+   */
   _addComponent(comp) {
-    const Clazz = comp.constructor;
-    const name = Clazz._componentName;
-
     this.components.push(comp);
-    let byName = this.getComponentsRef(Clazz);
+
+    for (const name of comp.aliases) {
+      this._addComponentByName(name, comp);
+    }
+  }
+
+  _addComponentByName(name, comp) {
+    let byName = this.componentsByName.get(name);
     if (!byName) {
       this.componentsByName.set(name, byName = []);
     }

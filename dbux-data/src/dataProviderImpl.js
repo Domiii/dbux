@@ -8,12 +8,11 @@ import FirstTracesIndex from './impl/indexes/FirstTracesIndex';
 import FirstContextsInRunsIndex from './impl/indexes/FirstContextsInRunsIndex';
 import FirstContextsInRunsByThreadIndex from './impl/indexes/FirstContextsInRunsByThreadIndex';
 import TracesByContextIndex from './impl/indexes/TracesByContextIndex';
-import TracesByParentContextIndex from './impl/indexes/TracesByParentContextIndex';
 import TracesByStaticTraceIndex from './impl/indexes/TracesByStaticTraceIndex';
 import TracesByRunIndex from './impl/indexes/TracesByRunIndex';
 import TracesByStaticContextIndex from './impl/indexes/TracesByStaticContextIndex';
 import TracesByRefIdIndex from './impl/indexes/TracesByRefIdIndex';
-import TracesByParentStaticContextIndex from './impl/indexes/TracesByParentStaticContextIndex';
+import TracesByRealStaticContextIndex from './impl/indexes/TracesByRealStaticContextIndex';
 import TracesByRealContextIndex from './impl/indexes/TracesByRealContextIndex';
 import TracesByCallIndex from './impl/indexes/TracesByCallIndex';
 // import TracesByTypeIndex from './impl/indexes/TracesByTypeIndex';
@@ -63,6 +62,7 @@ import ValueRefByErrorIndex from './impl/indexes/ValueRefByErrorIndex';
 import AsyncEventUpdatesByNestedPromiseIndex from './impl/indexes/AsyncEventUpdatesByNestedPromiseIndex';
 import TracesByPurposeIndex from './impl/indexes/TracesByPurposeIndex';
 import PackageQuery from './files/PackageQuery';
+import ValueRefByNodeIndex from './impl/indexes/ValueRefByNodeIndex';
 
 export function newDataProvider(application) {
   const dp = new RuntimeDataProvider(application);
@@ -96,10 +96,10 @@ export function newDataProvider(application) {
   dp.addIndex(new FirstTracesIndex());
   dp.addIndex(new TracesByFileIndex());
   dp.addIndex(new TracesByContextIndex());
-  dp.addIndex(new TracesByParentContextIndex());
+  dp.addIndex(new TracesByRealContextIndex());
   dp.addIndex(new TracesByStaticTraceIndex());
   dp.addIndex(new TracesByStaticContextIndex());
-  dp.addIndex(new TracesByParentStaticContextIndex());
+  dp.addIndex(new TracesByRealStaticContextIndex());
   dp.addIndex(new TracesByRunIndex());
   dp.addIndex(new TracesByCallIndex());
   // dp.addIndex(new TracesByTypeIndex());
@@ -108,7 +108,6 @@ export function newDataProvider(application) {
   dp.addIndex(new ErrorTracesByContextIndex());
   dp.addIndex(new ErrorTracesByRootIndex());
   
-  dp.addIndex(new TracesByRealContextIndex());
   dp.addIndex(new TracesBySpecialIdentifierTypeIndex());
   
   // data + values
@@ -120,6 +119,7 @@ export function newDataProvider(application) {
   dp.addIndex(new DataNodesByObjectRefIdIndex());
   dp.addIndex(new PrimitiveDataNodesIndex());
   dp.addIndex(new ValueRefByErrorIndex());
+  dp.addIndex(new ValueRefByNodeIndex());
   
   // complex indexes (that have dependencies)
   // NOTE: we are currently solving index dependencies by simply adding depdendents after dependees

@@ -5,6 +5,7 @@ import isFunction from 'lodash/isFunction';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { whichNormalized } from '@dbux/common-node/src/util/pathUtil';
 import Process from './util/Process';
+import { emitCheckSystemAction } from './userEvents/index';
 
 /** @typedef {import('./ProjectsManager').default} ProjectsManager */
 
@@ -39,12 +40,12 @@ function isChecked(requirements) {
 
 /**
  * Get version of `program`.
- * @param {string} program 
+ * @param {string} programPath
  * @return {Promise<string>} semver of `program`
  */
-async function getVersion(program) {
+async function getVersion(programPath) {
   const option = { failOnStatusCode: false };
-  let result = await Process.execCaptureOut(`${program} --version`, option);
+  let result = await Process.execCaptureOut(`"${programPath}" --version`, option);
 
   return semver.valid(semver.coerce(result));
 }
@@ -65,7 +66,7 @@ function isWindows() {
  * Check system with requirements
  * @param {ProjectsManager} manager
  * @param {boolean} calledFromUser Whether the function is called by user. Decides showing success message to user or not.
- * @param {boolean} fullCheck if false, skip checking `git` and `bash`.
+ * @param {boolean} fullCheck if false, skip checking `git` (or more generally: skip all projects-specific settings).
  */
 export async function checkSystem(manager, requirements, calledFromUser) {
   if (!calledFromUser && isChecked(requirements)) {
@@ -80,13 +81,14 @@ export async function checkSystem(manager, requirements, calledFromUser) {
     ' Please make sure, you have all of them installed.\n\n';
 
   for (let program of Object.keys(requirements)) {
-    const result = { path: whichNormalized(program) };
+    const programPath = manager.paths[program] || program;
+    const result = { path: whichNormalized(programPath) };
     let message = '';
     let requirement = requirements[program];
 
     if (result.path) {
       if (requirement.version) {
-        result.version = await getVersion(program);
+        result.version = await getVersion(programPath);
         if (semver.satisfies(result.version, requirement.version)) {
           // TOTRANSLATE
           message += `✓  ${program}\n    found at "${result.path}" (v${result.version} satisfies ${requirement.version})`;
@@ -94,7 +96,7 @@ export async function checkSystem(manager, requirements, calledFromUser) {
         }
         else {
           // TOTRANSLATE
-          message += `¯\\_(ツ)_/¯ ${program}\n    Installed but old. Version is ${result.version} but we recommend ${requirement.version}.`;
+          message += `✓⚠ ${program}\n    Installed but old. Version is ${result.version} but we recommend ${requirement.version}.`;
           result.success = false;
         }
       }
@@ -112,7 +114,7 @@ export async function checkSystem(manager, requirements, calledFromUser) {
 
         for (const customRequirementFunction of customRequirement) {
           if (isFunction(customRequirementFunction)) {
-            const customResult = await customRequirementFunction?.();
+            const customResult = await customRequirementFunction?.(manager);
             if (customResult.success) {
               if (customResult.message) {
                 message += `\n\t✓  ${customResult.message}`;
@@ -155,12 +157,13 @@ export async function checkSystem(manager, requirements, calledFromUser) {
     `\nSUCCESS! All system dependencies seem to be in order.` :
     `\nFAILED: One or more system dependencies are not installed. Fix them, then try again.`;
 
-  if ((results?.git?.success === false || results?.bash?.success === false) && isWindows()) {
-    // TOTRANSLATE
-    modalMessage += '\n\nWindows users can install bash and git into $PATH by installing "git" ' +
-      'and checking the "adding UNIX tools to PATH". You can achieve that by:\n' +
-      '1. Installing choco\n' +
-      '2. then run: choco install git.install --params "/GitAndUnixToolsOnPath"';
+  if ((results?.git?.success === false) && isWindows()) {
+    // // TOTRANSLATE
+    // modalMessage += '\n\nGit or bash are missing. Windows users can install bash and git into $PATH by installing "git" ' +
+    //   'and checking the "adding UNIX tools to PATH". You can achieve that by:\n' +
+    //   '1. Installing choco\n' +
+    //   '2. then run: choco install git.install --params "/GitAndUnixToolsOnPath"';
+    modalMessage += '\n\nGit is missing. Windows users can install git with WinGet, choco or manually download it from the git website.';
   }
 
   if (success) {
@@ -186,6 +189,10 @@ export async function checkSystem(manager, requirements, calledFromUser) {
     debug(`checkSystem() result: ${modalMessage}`);
   }
 
+  if (calledFromUser) {
+    emitCheckSystemAction(success, results);
+  }
+
   if (!success && !calledFromUser && !ignore) {
     throw new Error(`[Dbux] System dependency check failed :(`);
   }
@@ -196,20 +203,25 @@ export async function checkSystem(manager, requirements, calledFromUser) {
  */
 const DefaultNodeVersion = '16';
 export function getDefaultRequirement(fullCheck) {
+  const defaultReq = {
+    shell: {},
+    node: { version: DefaultNodeVersion },
+    npm: {}
+  };
+
   if (!fullCheck) {
-    return {
-      node: { version: DefaultNodeVersion },
-      npm: {},
-    };
+    return defaultReq;
   }
   else {
     return {
-      bash: {},
-      node: { version: DefaultNodeVersion },
-      npm: {},
+      ...defaultReq,
       git: {
-        custom: async () => {
-          const gitConfig = await Process.execCaptureOut(`git config -l`);
+        /**
+         * @param {ProjectsManager} manager 
+         */
+        custom: async (manager) => {
+          const { git } = manager.paths;
+          const gitConfig = await Process.execCaptureOut(`"${git}" config -l`);
           const configs = Object.fromEntries(gitConfig.split("\n").map(line => line.split('=')));
           const checkKeys = ["user.name", "user.email"];
           let success = true;
@@ -221,7 +233,7 @@ export function getDefaultRequirement(fullCheck) {
               if (message) {
                 message += "\n";
               }
-              message += `Can't find git config with key ${checkKey}`;
+              message += `Can't find git config entry for "${checkKey}"`;
             }
           }
           if (success) {
@@ -229,7 +241,7 @@ export function getDefaultRequirement(fullCheck) {
           }
           return {
             success,
-            message: `${message}\nAdd these config via \`git config --global <key> <value>\`\n`,
+            message: `${message}\nAdd missing config entries via \`git config --global <key> <value>\`\n`,
           };
         }
       },

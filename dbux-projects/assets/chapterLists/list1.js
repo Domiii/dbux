@@ -7,6 +7,7 @@ module.exports = [
       'getting-started#findLongestWordLength/reduce-bad',
       'getting-started#firstDuplicate/for-bad',
       'getting-started#firstDuplicate/find-bad',
+      'getting-started#fibonacci/plain-good',
       'getting-started#largestNumbersInArrays/for-bad',
       'getting-started#largestNumbersInArrays/map-bad',
       'getting-started#adjacentElementsProduct/for-bad',

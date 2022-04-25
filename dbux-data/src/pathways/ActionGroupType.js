@@ -12,7 +12,7 @@ let ActionGroupType = {
   AnnotateTraceQ: 3,
   AnnotateTraceI: 4,
 
-  GoToError: 5,
+  ShowError: 5,
 
   EditorSelectionChanged: 10,
 
@@ -60,7 +60,7 @@ const groupByActionType = {
   [UserActionType.TagTrace]: ActionGroupType.TagTrace,
   [UserActionType.AnnotateTraceQ]: ActionGroupType.AnnotateTraceQ,
   [UserActionType.AnnotateTraceI]: ActionGroupType.AnnotateTraceI,
-  [UserActionType.GoToError]: ActionGroupType.GoToError,
+  [UserActionType.ShowError]: ActionGroupType.ShowError,
   [UserActionType.TDValueClick]: ActionGroupType.TDValue,
   [UserActionType.TDValueCollapseChange]: ActionGroupType.TDValue,
   [UserActionType.TDTrackObjectUse]: ActionGroupType.TDTrackObject,

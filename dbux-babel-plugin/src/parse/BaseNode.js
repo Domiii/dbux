@@ -36,6 +36,18 @@ export default class BaseNode extends ParseNode {
     return this.getPlugin('Traces');
   }
 
+  /**
+   * @type {StaticContext}
+   */
+  get StaticContext() {
+    return this.peekPluginForce('StaticContext');
+  }
+
+  getRealContextIdVar() {
+    const { contextIdVar: realContextIdVar } = this.StaticContext;
+    return realContextIdVar;
+  }
+
 
   // ###########################################################################
   // get

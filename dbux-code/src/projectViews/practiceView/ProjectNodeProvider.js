@@ -1,5 +1,6 @@
 import BaseTreeViewNodeProvider from '../../codeUtil/treeView/BaseTreeViewNodeProvider';
 import EmptyTreeViewNode from '../../codeUtil/treeView/EmptyNode';
+import { emitProjectViewListModeChanged } from '../../userEvents';
 import ProjectNode from './ProjectNode';
 import ChapterNode from './ChapterNode';
 
@@ -47,6 +48,7 @@ export default class ProjectNodeProvider extends BaseTreeViewNodeProvider {
     this.byChapter = !this.byChapter;
     this.controller.manager.reloadExercises();
     this.refresh();
+    emitProjectViewListModeChanged(this.byChapter);
   }
 
   buildProjectNode(project) {

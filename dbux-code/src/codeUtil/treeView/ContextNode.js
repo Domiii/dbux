@@ -15,7 +15,7 @@ export default class ContextNode extends BaseTreeViewNode {
   }
 
   get dp() {
-    return allApplications.getById(this.entry.contextId).dataProvider;
+    return allApplications.getById(this.entry.applicationId).dataProvider;
   }
 
   get context() {

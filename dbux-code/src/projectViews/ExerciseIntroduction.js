@@ -5,6 +5,7 @@ import isString from 'lodash/isString';
 import isEmpty from 'lodash/isEmpty';
 import WebviewWrapper from '../codeUtil/WebviewWrapper';
 import { getThemeResourcePathUri } from '../codeUtil/codePath';
+import { emitShowExerciseIntroductionViewAction } from '../userEvents';
 
 /**
  * @typedef {import('@dbux/projects/src/projectLib/Exercise').default} Exercise
@@ -82,6 +83,6 @@ export default class ExerciseIntroductionView extends WebviewWrapper {
 export async function showExerciseIntroduction(exercise) {
   let exerciseIntroductionView = new ExerciseIntroductionView(exercise);
   await exerciseIntroductionView.show();
-
+  emitShowExerciseIntroductionViewAction(exercise);
   return exerciseIntroductionView;
 }

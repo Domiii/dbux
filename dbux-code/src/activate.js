@@ -1,10 +1,8 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import { initCodeDeco } from './codeDeco';
 
-// import { initCallGraphView } from './callGraphView/callGraphViewController';
 import { initCommands } from './commands/index';
 import { initToolBar } from './toolbar';
-// import { initPlayback } from './playback/index';
 
 import { initCodeApplications } from './codeUtil/CodeApplication';
 import { initTraceDetailsView } from './traceDetailsView/traceDetailsController';
@@ -52,28 +50,10 @@ export default async function activate(context) {
   const dataFlowController = initDataFlowView(context);
   const projectViewController = initProjectView(context);
 
-  //  To bring these three views back, uncomment relevant lines and add this to `package.json` `contributes.views.dbuxViewContainer`:
-  //  {
-  //    "id": "dbuxEditorTracesView",
-  //    "name": "Traces at Cursor"
-  //  },
-  // {
-  //   "id": "dbuxCallGraphView",
-  //   "name": "Call Graph Roots"
-  // },
-  // {
-  //   "id": "dbuxCallStackView",
-  //   "name": "Call Stack"
-  // },
-
-  // const callGraphViewController = initCallGraphView(context);
-  // const callStackViewController = initCallStackView();
-  // initEditorTracesView(context);
 
   initCommands(
     context,
     traceDetailsController,
-    // callGraphViewController,
     dataFlowController,
     globalAnalysisViewController,
   );

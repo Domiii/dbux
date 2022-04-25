@@ -1,24 +1,15 @@
 import NanoEvents from 'nanoevents';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import { newLogger } from '@dbux/common/src/log/logger';
 
 /** @typedef {import('../practiceSession/PracticeSession').default} PracticeSession */
-/** @typedef {import('../ProjectsManager').default} ProjectsManager */
 
-// ###########################################################################
-// register ProjectsManager
-// ###########################################################################
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('UserEvents');
 
-/**
- * @type {ProjectsManager}
- */
-let manager;
-
-export function initUserEvents(_manager) {
-  manager = _manager;
-  onUserEvent((data) => {
-    manager.pdp.addNewUserAction(data);
-  });
-}
+const Verbose = true;
+// const Verbose = false;
 
 // ###########################################################################
 // event registry
@@ -32,7 +23,7 @@ export function emitPracticeSessionEvent(eventName, practiceSession) {
   emitUserEvent(UserActionType.PracticeSessionChanged, {
     eventType: eventName,
     sessionId: practiceSession.sessionId,
-    exerciseId: practiceSession.exercise.id
+    exerciseId: practiceSession.exerciseId
   });
 }
 
@@ -60,10 +51,22 @@ export function emitExerciseProgressChanged(exerciseProgress) {
   emitUserEvent(UserActionType.ExerciseProgressChanged, { exerciseProgress });
 }
 
+export function emitCheckSystemAction(success, result) {
+  emitUserEvent(UserActionType.CheckSystem, { success, result });
+}
+
+export function emitNewApplicationsAction(apps = EmptyArray) {
+  const uuids = apps.map(app => app.uuid);
+  emitUserEvent(UserActionType.NewApplications, { uuids });
+}
+
 // ###########################################################################
 // emitter
 // ###########################################################################
 
+/**
+ * @type {NanoEvents}
+ */
 const emitter = new NanoEvents();
 
 /**
@@ -94,13 +97,17 @@ export function onUserEvent(cb) {
  * @param {Object} evtData NOTE: data *must* always be completely serializable, simple data.
  */
 export function emitUserEvent(eventType, evtData) {
-  if (manager.practiceSession && !manager.practiceSession.isFinished()) {
-    emitter.emit('e', {
-      type: eventType,
-      sessionId: manager.practiceSession.sessionId,
-      exerciseId: manager.practiceSession.exercise.id,
-      createdAt: Date.now(),
-      ...evtData
-    });
-  }
+  emitter.emit('e', {
+    type: eventType,
+    createdAt: Date.now(),
+    ...evtData
+  });
+}
+
+if (Verbose) {
+  onUserEvent((evt) => {
+    const { type, createdAt, ...evtData } = evt;
+    const typeName = UserActionType.nameFromForce(type);
+    log(`Emit user event "${typeName}", additional data=${JSON.stringify(evtData)}`);
+  });
 }

@@ -2,8 +2,7 @@
 import template from '@babel/template';
 import { LValHolderNode } from './_types';
 import BaseNode from './BaseNode';
-import { pathToStringAnnotated } from 'src/helpers/pathHelpers';
-import { skipPath } from 'src/helpers/traversalHelpers';
+import { skipPath } from '../helpers/traversalHelpers';
 // import { getAssignmentLValPlugin } from './helpers/lvalUtil';
 
 

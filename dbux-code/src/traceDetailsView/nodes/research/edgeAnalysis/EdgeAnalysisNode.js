@@ -16,7 +16,7 @@ import { sha256String } from '@dbux/common-node/src/util/hashUtil';
 import Application from '@dbux/data/src/applications/Application';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import AsyncEventType from '@dbux/common/src/types/constants/AsyncEventType';
-import { getPrettyPerformanceDelta, performanceNow, startPrettyTimer } from '@dbux/common-node/src/util/timeUtil';
+import { getPrettyPerformanceDelta, performanceNow, startPrettyTimer } from '@dbux/common/src/util/timeUtil';
 import NestedError from '@dbux/common/src/NestedError';
 import TraceDetailNode from '../../TraceDetailNode';
 import makeTreeItem from '../../../../helpers/makeTreeItem';
@@ -152,7 +152,8 @@ class EdgeAnalysisController {
   }
 
   get app() {
-    return this.node.app;
+    // NOTE: app depends on trace
+    return this.node.trace && this.node.app || null;
   }
 
   get trace() {
@@ -302,14 +303,20 @@ class EdgeAnalysisController {
       // const toRoot = dp.collections.executionContexts.getById(to);
       // const toAsyncNode = dp.util.getAsyncNode(to);
       const isChain = edge.edgeType === AsyncEdgeType.Chain;
+      const isFork = edge.edgeType === AsyncEdgeType.Fork;
+
+      // `hasMultipleParents` can be true, for example, in case of `Promise.all` etc.
       const hasMultipleParents = !!Array.isArray(from);
+
       const fromParentChains = isChain && !hasMultipleParents && dp.util.getChainFrom(from);
       const chainIndex = fromParentChains && fromParentChains.indexOf(edge);
+
+      // TODO: why exclude "hasMultipleParents"? Can multi-chain and multiple parents not co-exist?
       const isMulti = !hasMultipleParents && chainIndex > 0;
-      const mc = isChain && isMulti;
+
       counts[ETC.C] += isChain && !isMulti;
-      // counts[1] += ;
-      counts[ETC.F] += !isChain || !!mc; // FORK + Multi-Chain
+      counts[ETC.F] += isFork; // FORK
+      counts[ETC.MC] += isChain && isMulti; // Multi-Chain
       // counts[ETC.O] += !from;
       // counts[4] += !!toAsyncNode.syncPromiseIds?.length;
       // if (toRoot.syncPromiseIds?.length) {
@@ -325,7 +332,7 @@ class EdgeAnalysisController {
       // }
       counts[ETC.N] += dp.util.getNestedDepth(to) || 0;
       return counts;
-    }, [0, 0, 0, 0, 0, 0, 0]);
+    }, [0, 0, 0, 0, 0, 0, 0, 0]);
 
     const allNodes = dp.collections.asyncNodes.getAllActual();
     const orphans = allNodes
@@ -661,6 +668,7 @@ class EdgeAnalysisController {
 
       await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
         progress.report({ message: 'writing backup file...' });
+        await sleep();    // TODO: fix this in general -> reported message does not show up before next tick
         await this.writeApplicationDataBackup();
       });
     }

@@ -3,14 +3,13 @@ import ExecutionContext from '@dbux/common/src/types/ExecutionContext';
 import staticContextCollection from './staticContextCollection';
 import Collection from './Collection';
 import pools from './pools';
-import staticProgramContextCollection from './staticProgramContextCollection';
 
 
 export class ExecutionContextCollection extends Collection {
   _lastContextId = -1;
   _lastOrderIds = [];
 
-  _lastTraceIds = [];
+  // _lastTraceIds = [];
 
   _firstContextChild = new Map();
 
@@ -39,26 +38,39 @@ export class ExecutionContextCollection extends Collection {
     return programId;
   }
 
-  getLastRealContext() {
-    let lastContext = this.getLast();
+  getLastRealContext(lastContextId) {
+    if (!lastContextId) {
+      this.logger.error(`tried to call getLastRealContext without argument.`);
+      return null;
+    }
+    let lastContext = this.getById(lastContextId);
     if (!lastContext) {
       return null;
     }
-    if (!isRealContextType(lastContext.contextType)) {
-      lastContext = this.getById(lastContext.parentContextId);
+    if (lastContext.realContextId) {
+      lastContext = this.getById(lastContext.realContextId);
     }
     return lastContext;
   }
 
   makeContextInfo(contextOrContextId) {
     const context = this.asContext(contextOrContextId);
-    const { contextId } = context;
     if (!context) {
-      return `null (#${contextId})`;
+      return `null Context (${contextOrContextId})`;
     }
+    const { contextId } = context;
     const { contextType, staticContextId } = context;
     const staticInfo = staticContextCollection.makeStaticContextInfo(staticContextId, false);
     return `[${ExecutionContextType.nameFrom(contextType)}] #${contextId} ${staticInfo}`;
+  }
+  
+  isContextOfStaticContext(contextId, programId, inProgramStaticContextId) {
+    const context = this.getById(contextId);
+    const staticContextId = staticContextCollection.getStaticContextId(programId, inProgramStaticContextId);
+    if (context && staticContextId) {
+      return context.staticContextId === staticContextId;
+    }
+    return false;
   }
 
   // ###########################################################################
@@ -70,7 +82,7 @@ export class ExecutionContextCollection extends Collection {
    */
   pushImmediate(stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId, definitionTid, tracesDisabled) {
     return this._create(ExecutionContextType.Immediate,
-      stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId, null, definitionTid, tracesDisabled);
+      stackDepth, runId, 0, parentContextId, parentTraceId, programId, inProgramStaticContextId, null, definitionTid, tracesDisabled);
   }
 
   // /**
@@ -89,12 +101,12 @@ export class ExecutionContextCollection extends Collection {
   //   return context;
   // }
 
-  pushAwait(stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId) {
+  pushAwait(stackDepth, runId, realContextId, parentContextId, parentTraceId, programId, inProgramStaticContextId) {
     const schedulerTraceId = null;
     const definitionTid = null;
     const tracesDisabled = false; // tracing must be enabled if we traced an `await`
     return this._create(ExecutionContextType.Await,
-      stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId, schedulerTraceId, definitionTid, tracesDisabled);
+      stackDepth, runId, realContextId, parentContextId, parentTraceId, programId, inProgramStaticContextId, schedulerTraceId, definitionTid, tracesDisabled);
   }
 
   /**
@@ -104,13 +116,12 @@ export class ExecutionContextCollection extends Collection {
    * (1) either when the function pops,
    * (2) or when another interrupt occurs.
    */
-  pushResume(stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId, schedulerTraceId) {
+  pushResume(contextType, stackDepth, runId, realContextId, parentContextId, parentTraceId, programId, inProgramStaticContextId, schedulerTraceId, definitionTid) {
     // const parentContext = this.getById(parentContextId);
     // const { staticContextId: parenStaticContextId } = parentContext;
     // const { programId } = staticContextCollection.getById(inProgramStaticContextId);
-    const definitionTid = null;
-    const context = this._create(ExecutionContextType.Resume,
-      stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId, schedulerTraceId, definitionTid);
+    const context = this._create(contextType,
+      stackDepth, runId, realContextId, parentContextId, parentTraceId, programId, inProgramStaticContextId, schedulerTraceId, definitionTid);
 
     return context;
   }
@@ -144,7 +155,7 @@ export class ExecutionContextCollection extends Collection {
 
   _lastCid;
 
-  _create(type, stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId, schedulerTraceId, definitionTid, tracesDisabled) {
+  _create(type, stackDepth, runId, realContextId, parentContextId, parentTraceId, programId, inProgramStaticContextId, schedulerTraceId, definitionTid, tracesDisabled) {
     const staticContext = staticContextCollection.getContext(programId, inProgramStaticContextId);
     const { staticId: staticContextId } = staticContext;
     const orderId = this._genOrderId(staticContextId);
@@ -158,9 +169,15 @@ export class ExecutionContextCollection extends Collection {
     const context = this._allocate(
       type, stackDepth, runId, parentContextId, parentTraceId, contextId, definitionTid, staticContextId, orderId, schedulerTraceId, tracesDisabled
     );
+    if (realContextId) {
+      context.realContextId = realContextId;
+    }
+    if (type === 2) {
+      this.logger.debug(`[new context] ${this.makeContextInfo(context)}`);
+    }
     this._pushAndSend(context);
-    
-    // if (!parentContextId) {
+
+    // if (!parentContextId || isVirtualRoot) {
     //   this.logger.warn(`CREATE root: ${context.contextId}`, this.makeContextInfo(contextId));
     // }
 
@@ -207,19 +224,19 @@ export class ExecutionContextCollection extends Collection {
     this._send(context);
   }
 
-  isFirstContextInParent(contextId) {
-    const context = this.getById(contextId);
-    if (context) {
-      const { parentContextId } = context;
-      if (parentContextId) {
-        return this._firstContextChild.get(parentContextId) === contextId;
-      }
-    }
-    else {
-      this.logger.trace(`[isFirstContextInParent] context does not exist - contextId=${contextId}`);
-    }
-    return false;
-  }
+  // isFirstContextInParent(contextId) {
+  //   const context = this.getById(contextId);
+  //   if (context) {
+  //     const { parentContextId } = context;
+  //     if (parentContextId) {
+  //       return this._firstContextChild.get(parentContextId) === contextId;
+  //     }
+  //   }
+  //   else {
+  //     this.logger.trace(`[isFirstContextInParent] context does not exist - contextId=${contextId}`);
+  //   }
+  //   return false;
+  // }
 }
 
 const executionContextCollection = new ExecutionContextCollection();

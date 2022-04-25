@@ -8,8 +8,8 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import { emitSelectTraceAction } from '../userEvents';
 import { getRelatedAppIds } from '../codeDeco/editedWarning';
 import { showWarningMessage } from '../codeUtil/codeModals';
-import TraceDetailsDataProvider from './TraceDetailsNodeProvider';
-import { getOrCreateTracesAtCursor } from './TracesAtCursor';
+import TraceDetailsNodeProvider from './TraceDetailsNodeProvider';
+import { getOrCreateTracesAtCursor } from '../codeUtil/TracesAtCursor';
 import { ExecutionsTDNodeContextValue } from './nodes/ExecutionsTDNodes';
 import { NavigationNodeContextValue } from './nodes/NavigationNode';
 
@@ -20,7 +20,7 @@ let controller;
 
 class TraceDetailsController {
   constructor(context) {
-    this.treeDataProvider = new TraceDetailsDataProvider();
+    this.treeDataProvider = new TraceDetailsNodeProvider();
     this.treeDataProvider.controller = this;
     this.tracesAtCursor = getOrCreateTracesAtCursor(context);
 
@@ -39,6 +39,10 @@ class TraceDetailsController {
 
   async setFocus() {
     try {
+      if (!this.treeView.visible) {
+        // don't focus if treeView not visible
+        return;
+      }
       const executionsTDNode = this.treeDataProvider.rootNodes.find(node => node.contextValue === ExecutionsTDNodeContextValue);
       const navigationNode = this.treeDataProvider.rootNodes.find(node => node.contextValue === NavigationNodeContextValue);
       if (executionsTDNode && navigationNode) {

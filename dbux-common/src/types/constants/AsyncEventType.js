@@ -2,7 +2,9 @@ import Enum from '../../util/Enum';
 import AsyncEventUpdateType from './AsyncEventUpdateType';
 
 /**
- * future-work: add dynamic imports
+ * NOTE: This is just a summary type for {@link AsyncEventUpdateType}.
+ * For most intents and purposes, you want {@link AsyncEventUpdateType} instead.
+ * (Currently only used by analysis "plugins".)
  */
 const asyncEventTypeObj = {
   None: 0,

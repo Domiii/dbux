@@ -21,6 +21,5 @@ export function pickPlugin(node, keyOrKeyFun, byKey) {
       node.logger.error(`unknown plugin key: "${key}" at "${node}" in "${node.getParent()}"`);
     }
   }
-  // console.debug(`[LVAL] key = ${key} - ${pathToString(node.path)}`);
   return pluginName;
 }

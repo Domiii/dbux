@@ -22,12 +22,15 @@ class SyncGraph extends SyncGraphBase {
     }
   }
 
-  updateContextNodes() {
+  /**
+   * @return {Array.<ExecutionContext>} All root contexts participating in this graph.
+   */
+  getAllRootContexts() {
     const roots = allApplications.selection.getAll().map(app => {
       return app.dataProvider.util.getAllRootContexts();
     }).flat();
 
-    this.updateByContexts(roots);
+    return roots;
   }
 
   _resubscribeOnData() {
@@ -42,16 +45,13 @@ class SyncGraph extends SyncGraphBase {
         dp.onData('executionContexts',
           this._handleAddExecutionContexts.bind(this, app)
         ),
-        // [future-work]: only subscribe when stats are enabled
         dp.queryImpl.statsByContext.subscribe()
       ];
 
       // unsubscribe on refresh
       this._unsubscribeOnNewData.push(...unsubscribes);
-
       // also when application is deselected
       allApplications.selection.subscribe(...unsubscribes);
-
       // also when node is disposed
       this.addDisposable(...unsubscribes);
     }

@@ -16,12 +16,15 @@ export default class SocketIOProject extends Project {
    * @see https://github.com/socketio/socket.io-client/tags?after=3.0.0-rc4
    * @see https://github.com/socketio/socket.io/tags?after=3.0.0-rc4
    */
-  gitCommit = 'tags/2.3.0'
+  gitTargetRef = '2.3.0'
 
   packageManager = 'yarn';
 
   async npmInstall() {
-    await this.execInTerminal('yarn install --prod');
+    // NOTE: Cannot remember why we had to install the production version...
+    //    The dev version probably had some nasty dependencies.
+    const { yarn } = this.manager.paths.inShell;
+    await this.execInTerminal(`${yarn} install --prod`);
   }
 
   canRunExercise(config) {

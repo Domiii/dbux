@@ -9,10 +9,10 @@ import TOC from '@src/components/TOC';
 
 This article explains how Dbux determines which files and lines of code to trace.
 
-When [Dbux is enabled](../runtime-analysis/02-enable-dbux.mdx), it automatically records execution of all files that are not in `node_modules`[^1]. This can be configured. However, it is a balancing act to determine the optimal set of files to trace. Often times it is easiest to tell Dbux to just trace everything, but tracing *everything* can slow things down significantly.
+When [Dbux is enabled](../dynamic-analysis/02-enable-dbux.mdx), it automatically records execution of all files that are not in `node_modules`[^1]. This can be configured. However, it is a balancing act to determine the optimal set of files to trace. Often times it is easiest to tell Dbux to just trace everything, but tracing *everything* can slow things down significantly.
 
 :::tip
-If you know that some packages do not contribute to your runtime analysis, do not `whitelist` them or explicitly `blacklist` them. This can improve [performance](./02-performance.mdx), especially if they contain many lines of code or many <Term term="trace" /> event records.
+If you know that some packages do not contribute to your dynamic analysis, do not `whitelist` them or explicitly `blacklist` them. This can improve [performance](./02-performance.mdx), especially if they contain many lines of code or many <Term term="trace" /> event records.
 :::
 
 ## Whitelists and Blacklists
@@ -28,7 +28,7 @@ Some notes:
 
 * Each one of these settings supports comma-separated lists of file or package names or regexes.
 * All paths are normalized to use `/`, so don't use backslashes on Windows.
-* Implementation of the filter is in <CodeLink path="dbux-babel-plugin/src/external/moduleFilter.js" />.
+* Implementation of the filter is in <CodeLink path="dbux-common-node/src/filters/moduleFilter.js" />.
 * -> `packageName` is determined via <CodeLink path="dbux-common-node/src/util/moduleUtil.js"><code>parsePackageName</code></CodeLink>
   * NOTE: `packageName` supports namespaces.
   * Examples of `packageName` detection for different module paths:
@@ -41,7 +41,7 @@ Some notes:
 
 ### Run Button + @dbux/cli
 
-When using [the Run Button](../runtime-analysis/03-the-run-button.mdx) and/or [@dbux/cli](../tools-and-configuration/02-dbux-cli.mdx), you can configure this via the `--pw`, `--pb`, `--fw` and `--fb` flags.
+When using [the Run Button](../dynamic-analysis/03-the-run-button.mdx) and/or [@dbux/cli](../tools-and-configuration/02-dbux-cli.mdx), you can configure this via the `--pw`, `--pb`, `--fw` and `--fb` flags.
 
 * Example: `npx dbux run --pw=.* --pb=lodash ./test.js`
   * -> Traces all libraries, but `lodash`.
@@ -55,7 +55,7 @@ NOTE: The `moduleFilter` functions return `function` (not `string` or `RegExp`).
 
 
 ```js
-const shouldInclude = require('@dbux/babel-plugin/dist/include').default;
+const shouldInclude = require('@dbux/common-node/dist/filters/makeInclude').default;
 
 // ...
 

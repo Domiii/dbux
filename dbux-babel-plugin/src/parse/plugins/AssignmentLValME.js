@@ -3,6 +3,7 @@ import BasePlugin from './BasePlugin';
 import { LValHolderNode } from '../_types';
 import { buildTraceWriteME } from '../../instrumentation/builders/me';
 import { ZeroNode } from '../../instrumentation/builders/buildUtil';
+import MemberExpression from '../MemberExpression';
 
 /**
  * @example
@@ -33,6 +34,9 @@ export default class AssignmentLValME extends BasePlugin {
    */
   node;
 
+  /**
+   * @type {MemberExpression}
+   */
   get meNode() {
     const [meNode] = this.node.getChildNodes();
     return meNode;
@@ -49,42 +53,22 @@ export default class AssignmentLValME extends BasePlugin {
   }
 
   wrapLVal() {
+    if (this.meNode.shouldIgnoreThisLVal()) {
+      return;
+    }
+
     const { node } = this;
-    const { path, Traces } = node;
-
+    const { Traces } = node;
     const [, valuePath] = node.getChildPaths();
-    const [meNode] = node.getChildNodes();
-    const [objectNode, propertyNode] = meNode.getChildNodes();
-    const {
-      computed
-    } = meNode.path.node;
 
-    // prepare object
-    const objectTraceCfg = objectNode.addDefaultTrace();
-    let objectTid = objectTraceCfg?.tidIdentifier;
-    if (!objectTid) {
-      this.warn(`objectNode did not have traceCfg.tidIdentifier in ${objectNode}`);
-      objectTid = ZeroNode;
-    }
-    const objectAstNode = Traces.generateDeclaredUidIdentifier('o');
-
-    // prepare property
-    let propertyAstNode;
-    if (computed) {
-      propertyNode.addDefaultTrace();
-      propertyAstNode = Traces.generateDeclaredUidIdentifier('p');
-    }
+    const data = this.meNode.makeMETraceData();
 
     // add actual WriteME trace
     const traceData = {
       staticTraceData: {
         type: TraceType.WriteME
       },
-      data: {
-        objectTid,
-        objectAstNode,
-        propertyAstNode
-      },
+      data,
       meta: {
         // instrument: Traces.instrumentTraceWrite
         build: buildTraceWriteME

@@ -84,8 +84,8 @@ export function globPatternToEntry(contextRoot, entryPatterns, customizer = null
       return glob
         .sync(pathResolve(entryRoot, pattern))
         .map((fpath) => {
-          const key = fileWithoutExt(pathRelative(contextRoot, fpath));
-          const result = customizer ? customizer(key, fpath, parent, entryRoot) : [key, fpath];
+          const entryKey = fileWithoutExt(pathRelative(contextRoot, fpath));
+          const result = customizer ? customizer(entryKey, fpath, parent, entryRoot) : [entryKey, fpath];
           return result;
         })
         .filter(Boolean);

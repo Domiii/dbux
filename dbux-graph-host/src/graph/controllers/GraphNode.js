@@ -51,16 +51,17 @@ export default class GraphNode extends HostComponentEndpoint {
    * NOTE: setMode might takes a long time to expand ContextNodes. If setMode is called by user, we confirm before expand it.
    */
   async setModeUser(mode) {
+    const nThreshold = 1e4;
     const newChildrenCount = getNewChildrenCount[mode](this.owner);
-    const confirmMessage = `There are ${newChildrenCount} ContextNodes to expand and it might take a while. Are you sure?`;
-    if (newChildrenCount > 10000 && !await this.componentManager.externals.confirm(confirmMessage, true)) {
+    const confirmMessage = `This would expand ${newChildrenCount} ContextNodes. Are you sure?`;
+    if (newChildrenCount > nThreshold && !await this.componentManager.externals.confirm(confirmMessage, true)) {
       return;
     }
     this.setMode(mode);
   }
 
-  setMode(mode) {
-    if (this.state.mode === mode) {
+  setMode(mode, force = false) {
+    if (!force && this.state.mode === mode) {
       // nothing left to do
       return;
     }
@@ -71,10 +72,10 @@ export default class GraphNode extends HostComponentEndpoint {
     const childMode = this.getChildMode();
     for (const child of this.owner.children) {
       if (!hasGraphNode(child)) {
-        this.logger.warn(`Cannot setMode for some child node. ${this.owner.debugTag}'s child ${child.debugTag} does not have GraphNode`);
+        // this.logger.warn(`Cannot setMode for some child node. ${this.owner.debugTag}'s child ${child.debugTag} does not have GraphNode`);
       }
       else {
-        child.controllers.getComponent(GraphNode).setMode(childMode);
+        child.controllers.getComponent(GraphNode).setMode(childMode, force);
       }
     }
   }
@@ -120,15 +121,15 @@ export default class GraphNode extends HostComponentEndpoint {
       let mode = this.getPreviousMode();
       const { firstTrace: trace } = this.owner;
       const { context } = this.owner.state;
-      this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphNodeCollapseChange, { mode, context, trace });
       this.setModeUser(mode);
+      this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphNodeCollapseChange, { mode, context, trace });
     },
     nextMode: () => {
       let mode = this.getNextMode();
       const { firstTrace: trace } = this.owner;
       const { context } = this.owner.state;
-      this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphNodeCollapseChange, { context, trace, mode });
       this.setModeUser(mode);
+      this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphNodeCollapseChange, { context, trace, mode });
     },
     reveal: this.reveal
   }

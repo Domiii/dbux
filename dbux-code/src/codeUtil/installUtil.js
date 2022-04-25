@@ -15,7 +15,8 @@ export async function installDbuxDependencies() {
   debug(`Checking library dependencies. Found ${missingDependencies.length} missing: ${missingDependencies.join(', ')}`);
 
   if (projectManager.isInstallingSharedDependencies()) {
-    throw new Error('Busy installing. This happens after extension installation (or update). This might (or might not) take a few minutes.');
+    // eslint-disable-next-line max-len
+    throw new Error('It looks like another VSCode is already busy installing/updating Dbux. This happens after extension installation (or update). This might (or might not) take a few minutes. Ignore this for now, and reload this VSCode window after Dbux update finished.');
   }
   if (!projectManager.hasInstalledSharedDependencies()) {
     await runTaskWithProgressBar(async (progress) => {

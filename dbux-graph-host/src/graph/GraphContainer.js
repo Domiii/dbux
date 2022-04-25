@@ -1,7 +1,14 @@
 import { getGraphClassByType } from '@dbux/graph-common/src/shared/GraphType';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
+/** @typedef {import('./SyncGraphBase').default} SyncGraphBase */
+
 class GraphContainer extends HostComponentEndpoint {
+  /**
+   * @type {SyncGraphBase}
+   */
+  graph;
+
   init() {
     // provide controllers to graph
     this.controllers.createComponent('HighlightManager');
@@ -18,6 +25,10 @@ class GraphContainer extends HostComponentEndpoint {
   }
 
   refreshGraph() {
+    this.refreshGraphRoots();
+  }
+
+  refreshGraphRoots() {
     if (this.graph.shouldBeEnabled()) {
       this.setState({ enabled: true });
       this.graph.refresh();
@@ -26,6 +37,12 @@ class GraphContainer extends HostComponentEndpoint {
     else {
       this.setState({ enabled: false });
       this.graph.clear();
+    }
+  }
+
+  maybeFullReset() {
+    if (this.state.enabled) {
+      this.graph.fullReset();
     }
   }
 

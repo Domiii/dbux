@@ -1,6 +1,4 @@
-function R(x) {
-  return Promise.resolve(x);
-}
+
 
 
 async function main() {
@@ -16,6 +14,10 @@ async function main() {
   await done();
 }
 main();
+
+function R(x) {
+  return Promise.resolve(x);
+}
 
 function sleep1s() {
   return sleep(1000);

@@ -1,7 +1,7 @@
 class A {
-  constructor() { }
   #q = 1;
   p = this.#q;
+  constructor() { }
 
   change() {
     ++this.#q;

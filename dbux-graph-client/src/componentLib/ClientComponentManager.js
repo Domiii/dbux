@@ -44,7 +44,7 @@ class AppComponent extends ClientComponentEndpoint {
   }
 
   _publicInternal = {
-    async createClientComponent(parentId, role, componentId, componentName, shared, initialState) {
+    async createClientComponent(parentId, role, componentId, componentName, shared, initialState, clientAdditionalProps) {
       const parent = this.componentManager.getComponent(parentId);
 
       // NOTE: parent should never be null (except for AppComponent, which does not get initialized this way)
@@ -56,7 +56,10 @@ class AppComponent extends ClientComponentEndpoint {
       }
 
       // NOTE: `_registerComponent` also calls `_build`
-      const component = this.componentManager._registerComponent(componentId, parent, ComponentClass, initialState);
+      /**
+       * @type {ClientComponentEndpoint}
+       */
+      const component = this.componentManager._registerComponent(componentId, parent, ComponentClass, initialState, clientAdditionalProps);
 
       // deserialize shared
       this._deserializeShared(component, shared);

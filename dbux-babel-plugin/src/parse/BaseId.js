@@ -3,7 +3,7 @@
 import TraceType from '@dbux/common/src/types/constants/TraceType';
 import SpecialIdentifierType, { isNotCalleeTraceableType, lookupSpecialIdentifierType } from '@dbux/common/src/types/constants/SpecialIdentifierType';
 import { getPathBinding } from '../helpers/bindingsUtil';
-import { pathToString } from '../helpers/pathHelpers';
+import { pathToString, pathToStringAnnotated } from '../helpers/pathHelpers';
 import { buildTraceExpressionVar } from '../instrumentation/builders/misc';
 import { ZeroNode } from '../instrumentation/builders/buildUtil';
 import BaseNode from './BaseNode';
@@ -42,28 +42,45 @@ export default class BaseId extends BaseNode {
     return this._binding;
   }
 
+  get isGlobal() {
+    return !this.binding;
+  }
+
   getOwnDeclarationNode() {
-    const path = this.binding?.path;
+    let path = this.binding?.path;
     if (!path) {
       return null;
     }
-    // NOTE: `binding.path` (if is `Declaration`) refers to the Declaration, not the `id` node.
-    // NOTE2: even more odd - for `CatchClause.param` it returns `CatchClause` the path.
+    if (path.node.id) {
+      // hackfix: check for declaration
+      // future-work: this is a declaration -> override `getDeclarationNode` in AST node class instead
+      path = path.get('id');
+    }
+    else if (path.node.local) {
+      // hackfix for `Import{Default}Specifier`
+      path = path.get('local');
+    }
+    else if (path.node.argument) {
+      // hackfix for `RestElement`
+      path = path.get('argument');
+    }
+    else if (path.node.param) {
+      // hackfix for `CatchClause`
+      path = path.get('param');
+    }
+
+    // NOTE: `binding.path` (if it is `Declaration`) refers to the Declaration, not the `id` node.
+    // NOTE2: even more odd - for `CatchClause.param` it returns `CatchClause`.
     let declarationNode;
     if (path.isIdentifier()) {
       declarationNode = this.getNodeOfPath(path);
     }
-    else if (path.node.id) {
-      // hackfix: check for declaration
-      // future-work: this is a declaration -> override `getDeclarationNode` there instead
-      declarationNode = this.getNodeOfPath(path.get('id'));
-    }
-    else {
-      declarationNode = this.getNodeOfPath(path);
-    }
 
     if (!declarationNode) {
-      this.logger.warn(`Binding path did not have ParseNode: ${pathToString(path)} in "${this}" in "${this.getParentString()}"`);
+      // TODO: support for `RestElement`
+      if (this.state.verbose.nyi) {
+        this.logger.warn(`[NYI] Could not look up binding path for lval:" ${pathToStringAnnotated(path)}" (in "${this}")`); // in "${this.getParentString()}")`);
+      }
       return null;
     }
     declarationNode = declarationNode === this ? declarationNode : declarationNode.getOwnDeclarationNode?.();
@@ -89,7 +106,7 @@ export default class BaseId extends BaseNode {
           ...this.getDataNodeMeta()
         },
         data: {
-          specialType
+          // specialType
         }
       },
       meta: {}
@@ -114,8 +131,8 @@ export default class BaseId extends BaseNode {
 
   get specialType() {
     const { name } = this.path.node;
-    return !this.binding ?
-      lookupSpecialIdentifierType(name) :
+    return this.isGlobal &&
+      lookupSpecialIdentifierType(name) ||
       null;
   }
 

@@ -1,4 +1,5 @@
 import { guessFunctionName, getFunctionDisplayName } from '../helpers/functionHelpers';
+import { pathToStringAnnotated } from '../helpers/pathHelpers';
 
 let nameMap = new Map();
 
@@ -15,6 +16,8 @@ function enter(path, state) {
 
   const name = guessFunctionName(path, state);
   const displayName = getFunctionDisplayName(path, state, name);
+
+  // console.debug(`[nameVisitors.js] ENTER ${pathToStringAnnotated(path)}, name="${name?.substring(0, 20)}", displayName="${displayName?.substring(0, 20)}"`);
 
   setNodeNames(path.node, {
     name,

@@ -10,9 +10,9 @@
     "call graph",
     "async",
     "omniscient debugger",
-    "runtime analysis"
+    "dynamic analysis"
   ],
-  "version": "0.6.9-dev.0",
+  "version": "0.7.7-dev.0",
   "publisher": "Domi",
   "description": "Integrated Debugging Environment with an Omniscient Debugger for JS.",
   "repository": {
@@ -119,14 +119,14 @@
       },
       {
         "command": "dbux.toggleNavButton",
-        "title": "Dbux: Toggle Editor Buttons"
+        "title": "Dbux: Toggle Editor Navigation Bar Buttons"
       },
       {
         "command": "dbux.toggleErrorLog",
         "title": "Dbux: Toggle Error Notifications"
       },
       {
-        "command": "dbux.selectTrace",
+        "command": "dbux.selectTraceById",
         "title": "Dbux: Select Trace by id"
       },
       {
@@ -140,6 +140,18 @@
       {
         "command": "dbux.searchValues",
         "title": "Dbux: Search in values"
+      },
+      {
+        "command": "dbux.startPathways",
+        "title": "Dbux Pathways: Start"
+      },
+      {
+        "command": "dbux.stopPathways",
+        "title": "Dbux Pathways: Stop"
+      },
+      {
+        "command": "dbux.loadResearchSession",
+        "title": "Dbux: Load research session"
       },
       {
         "command": "dbux.togglePracticeView",
@@ -243,23 +255,11 @@
       },
       {
         "command": "dbux.loadPracticeLogFile",
-        "title": "Dbux Dev:Load Practice Log"
+        "title": "Dbux Dev: Load Practice Log"
       },
       {
         "command": "dbux.showOutputChannel",
         "title": "Dbux: Show output channel"
-      },
-      {
-        "command": "dbuxCallStackView.itemClick",
-        "title": "Click"
-      },
-      {
-        "command": "dbuxCallGraphView.showContext",
-        "title": "Show contexts",
-        "icon": {
-          "light": "resources/light/document.svg",
-          "dark": "resources/dark/document.svg"
-        }
       },
       {
         "command": "dbuxGlobalAnalysisView.showError",
@@ -299,22 +299,6 @@
         "icon": {
           "light": "resources/light/warning.svg",
           "dark": "resources/dark/warning.svg"
-        }
-      },
-      {
-        "command": "dbuxCallGraphView.setFilter",
-        "title": "Filter",
-        "icon": {
-          "light": "resources/light/boolean.svg",
-          "dark": "resources/dark/boolean.svg"
-        }
-      },
-      {
-        "command": "dbuxCallGraphView.clearFilter",
-        "title": "Clear Filter",
-        "icon": {
-          "light": "resources/light/clear.svg",
-          "dark": "resources/dark/clear.svg"
         }
       },
       {
@@ -551,7 +535,7 @@
       },
       {
         "command": "dbuxProjectView.showDiff",
-        "title": "Show difference",
+        "title": "Dbux Project: Show difference",
         "icon": {
           "light": "resources/light/magnifier.svg",
           "dark": "resources/dark/magnifier.svg"
@@ -559,7 +543,7 @@
       },
       {
         "command": "dbuxProject.uploadLog",
-        "title": "Upload log files",
+        "title": "Dbux Project: Upload log files",
         "icon": {
           "light": "resources/light/upload.svg",
           "dark": "resources/dark/upload.svg"
@@ -623,7 +607,7 @@
       },
       {
         "command": "dbuxProjectView.node.resetExercise",
-        "title": "Dev Only: Reset this exercise",
+        "title": "Dbux Dev: Reset this exercise",
         "icon": {
           "light": "resources/light/refresh.svg",
           "dark": "resources/dark/refresh.svg"
@@ -726,7 +710,7 @@
       "editor/title": [
         {
           "command": "dbux.runFile",
-          "when": "dbux.context.activated && editorLangId == javascript",
+          "when": "dbux.context.activated && editorLangId == javascript && dbux.context.showNavButton",
           "group": "navigation@5"
         },
         {
@@ -736,12 +720,12 @@
         },
         {
           "command": "dbux.showGraphView",
-          "when": "!dbuxWebView.context.dbux-graph.isActive && !dbux.context.isApplicationEmpty",
+          "when": "!dbuxWebView.context.dbux-graph.isActive && !dbux.context.isApplicationEmpty && dbux.context.showNavButton",
           "group": "navigation@1"
         },
         {
           "command": "dbux.hideGraphView",
-          "when": "dbuxWebView.context.dbux-graph.isActive && !dbux.context.isApplicationEmpty",
+          "when": "dbuxWebView.context.dbux-graph.isActive && !dbux.context.isApplicationEmpty && dbux.context.showNavButton",
           "group": "navigation@2"
         }
       ],
@@ -933,12 +917,12 @@
         },
         {
           "command": "dbuxSessionView.node.annotateTraceQ",
-          "when": "viewItem == dbuxSessionView.tagNode",
+          "when": "viewItem == dbuxSessionView.tagNode && false",
           "group": "inline@1"
         },
         {
           "command": "dbuxSessionView.node.annotateTraceI",
-          "when": "viewItem == dbuxSessionView.tagNode",
+          "when": "viewItem == dbuxSessionView.tagNode && false",
           "group": "inline@2"
         },
         {
@@ -948,21 +932,6 @@
         }
       ],
       "view/title": [
-        {
-          "command": "dbuxCallGraphView.setFilter",
-          "when": "view == dbuxCallGraphView && !dbuxCallGraphView.context.filtering",
-          "group": "navigation"
-        },
-        {
-          "command": "dbuxCallGraphView.clearFilter",
-          "when": "view == dbuxCallGraphView && dbuxCallGraphView.context.filtering",
-          "group": "navigation"
-        },
-        {
-          "command": "dbuxCallGraphView.showContext",
-          "when": "view == dbuxCallGraphView && dbuxCallGraphView.context.mode != context && dbux.context.hasError",
-          "group": "navigation"
-        },
         {
           "command": "dbuxGlobalAnalysisView.showError",
           "when": "view == dbuxGlobalAnalysisView && dbux.context.hasError",
@@ -1025,28 +994,13 @@
         },
         {
           "command": "dbux.showGraphView",
-          "when": "view =~ /(dbuxTraceDetailsView|dbuxGlobalAnalysisView)/ && !dbuxWebView.context.dbux-graph.isActive",
-          "group": "navigation@10"
+          "when": "view =~ /(dbuxTraceDetailsView|dbuxGlobalAnalysisView|dbuxApplicationsView)/ && !dbuxWebView.context.dbux-graph.isActive",
+          "group": "navigation@6"
         },
         {
           "command": "dbux.hideGraphView",
-          "when": "view =~ /(dbuxTraceDetailsView|dbuxGlobalAnalysisView)/ && dbuxWebView.context.dbux-graph.isActive",
-          "group": "navigation@10"
-        },
-        {
-          "command": "dbux.showPathwaysView",
-          "when": "view == dbuxApplicationsView && !dbuxWebView.context.dbux-pathways.isActive",
-          "group": "navigation@11"
-        },
-        {
-          "command": "dbux.hidePathwaysView",
-          "when": "view == dbuxApplicationsView && dbuxWebView.context.dbux-pathways.isActive",
-          "group": "navigation@11"
-        },
-        {
-          "command": "dbux.togglePracticeView",
-          "when": "view == dbuxApplicationsView",
-          "group": "navigation@3"
+          "when": "view =~ /(dbuxTraceDetailsView|dbuxGlobalAnalysisView|dbuxApplicationsView)/ && dbuxWebView.context.dbux-graph.isActive",
+          "group": "navigation@6"
         },
         {
           "command": "dbux.startRuntimeServer",
@@ -1061,17 +1015,32 @@
         {
           "command": "dbux.runFile",
           "when": "view == dbuxApplicationsView",
-          "group": "navigation@15"
+          "group": "navigation@10"
         },
         {
           "command": "dbux.debugFile",
           "when": "view == dbuxApplicationsView",
-          "group": "navigation@10"
+          "group": "navigation@11"
+        },
+        {
+          "command": "dbux.showPathwaysView",
+          "when": "view == dbuxApplicationsView && !dbuxWebView.context.dbux-pathways.isActive",
+          "group": "navigation@21"
+        },
+        {
+          "command": "dbux.hidePathwaysView",
+          "when": "view == dbuxApplicationsView && dbuxWebView.context.dbux-pathways.isActive",
+          "group": "navigation@21"
         },
         {
           "command": "dbux.showHelp",
           "when": "view == dbuxApplicationsView",
-          "group": "navigation@5"
+          "group": "navigation@30"
+        },
+        {
+          "command": "dbux.togglePracticeView",
+          "when": "false",
+          "group": "navigation@3"
         },
         {
           "command": "dbuxProjectView.toggleListMode",
@@ -1112,7 +1081,7 @@
         },
         {
           "command": "dbux.importApplicationData",
-          "when": "dbux.context.activated && dbux.context.nodeEnv == development"
+          "when": "dbux.context.activated"
         },
         {
           "command": "dbux.reloadExerciseList",
@@ -1121,6 +1090,18 @@
         {
           "command": "dbux.hideDecorations",
           "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.startPathways",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.stopPathways",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.loadResearchSession",
+          "when": "dbux.context.activated && dbux.context.researchEnabled"
         },
         {
           "command": "dbux.showGraphView",
@@ -1143,7 +1124,7 @@
           "when": "dbux.context.activated"
         },
         {
-          "command": "dbux.selectTrace",
+          "command": "dbux.selectTraceById",
           "when": "dbux.context.activated"
         },
         {
@@ -1283,14 +1264,6 @@
           "when": "dbux.context.activated"
         },
         {
-          "command": "dbuxCallStackView.itemClick",
-          "when": "false"
-        },
-        {
-          "command": "dbuxCallGraphView.showContext",
-          "when": "false"
-        },
-        {
           "command": "dbuxGlobalAnalysisView.showError",
           "when": "false"
         },
@@ -1300,14 +1273,6 @@
         },
         {
           "command": "dbuxTraceDetailsView.node.editedWarning",
-          "when": "false"
-        },
-        {
-          "command": "dbuxCallGraphView.setFilter",
-          "when": "false"
-        },
-        {
-          "command": "dbuxCallGraphView.clearFilter",
           "when": "false"
         },
         {
@@ -1455,7 +1420,83 @@
           "dbux.autoStart": {
             "type": "boolean",
             "default": false,
-            "description": "Auto start Dbux when opening vscode",
+            "description": "Whether to auto-start Dbux when opening vscode. Else, you have to click the \"Start Dbux\" button manually every time. (During this early stage, we still hide Dbux default behavior behind a button, to make sure you don't see annoying messages pop up when Dbux has to update dependencies etc. We will improve upon that as Dbux evolves.)",
+            "scope": "resource"
+          },
+          "dbux.paths.git": {
+            "type": "string",
+            "default": "git",
+            "description": "When executing git terminal commands, use `git` from this path. Only used for auto-installing and managing practice projects.",
+            "scope": "resource"
+          },
+          "dbux.paths.node": {
+            "type": "string",
+            "default": "node",
+            "description": "When executing terminal commands, use `node` from this path. (Hint: If you change this, you probably also want to change `paths.npm`.)",
+            "scope": "resource"
+          },
+          "dbux.paths.npm": {
+            "type": "string",
+            "default": "npm",
+            "description": "When installing packages initially or practice projects, use `npm` from this path. (Hint: If you change this, you probably also want to change `paths.node`.)",
+            "scope": "resource"
+          },
+          "dbux.paths.yarn": {
+            "type": "string",
+            "default": "yarn",
+            "description": "When playing with practice projects that require `yarn`, use this path. (Hint: If you change this, you probably also want to change `paths.npm`.)",
+            "scope": "resource"
+          },
+          "dbux.paths.windows.shell": {
+            "type": "string",
+            "default": "cmd",
+            "description": "When executing terminal or system commands, use this shell.",
+            "scope": "resource"
+          },
+          "dbux.paths.posix.shell": {
+            "type": "string",
+            "default": "bash",
+            "description": "When executing terminal or system commands, use this shell.",
+            "scope": "resource"
+          },
+          "dbux.shells.bash.inlineFlags": {
+            "type": "array",
+            "default": [
+              "-c"
+            ],
+            "description": "Args required to run an inline command with bash. See https://stackoverflow.com/questions/20858381/what-does-bash-c-do",
+            "scope": "resource"
+          },
+          "dbux.shells.bash.pause": {
+            "type": "string",
+            "default": "read -p \"(Done. Press any key to exit.)\"",
+            "description": "Shell-specific pause command.",
+            "scope": "resource"
+          },
+          "dbux.shells.bash.sep": {
+            "type": "string",
+            "default": ";",
+            "description": "Shell-specific multi-command separator.",
+            "scope": "resource"
+          },
+          "dbux.shells.cmd.inlineFlags": {
+            "type": "array",
+            "default": [
+              "/k"
+            ],
+            "description": "Args required to run an inline command with cmd. See https://stackoverflow.com/questions/9392874/bat-file-open-new-cmd-window-and-execute-a-command-in-there",
+            "scope": "resource"
+          },
+          "dbux.shells.cmd.pause": {
+            "type": "string",
+            "default": "pause",
+            "description": "Shell-specific pause command.",
+            "scope": "resource"
+          },
+          "dbux.shells.cmd.sep": {
+            "type": "string",
+            "default": "&",
+            "description": "Shell-specific multi-command separator.",
             "scope": "resource"
           },
           "dbux.run.dbuxArgs": {
@@ -1534,15 +1575,14 @@
     "publish-only": "echo 'Publishing...' && vsce publish --yarn  --baseImagesUrl https://github.com/Domiii/dbux/dbux-code --baseContentUrl https://github.com/Domiii/dbux/dbux-code"
   },
   "devDependencies": {
-    "@dbux/babel-plugin": "^0.6.9-dev.0",
-    "@dbux/cli": "^0.6.9-dev.0",
-    "@dbux/common": "^0.6.9-dev.0",
-    "@dbux/common-node": "^0.6.9-dev.0",
-    "@dbux/data": "^0.6.9-dev.0",
-    "@dbux/graph-common": "^0.6.9-dev.0",
-    "@dbux/graph-host": "^0.6.9-dev.0",
-    "@dbux/projects": "^0.6.9-dev.0",
-    "@dbux/runtime": "^0.6.9-dev.0",
+    "@dbux/babel-plugin": "^0.7.7-dev.0",
+    "@dbux/common": "^0.7.7-dev.0",
+    "@dbux/common-node": "^0.7.7-dev.0",
+    "@dbux/data": "^0.7.7-dev.0",
+    "@dbux/graph-common": "^0.7.7-dev.0",
+    "@dbux/graph-host": "^0.7.7-dev.0",
+    "@dbux/projects": "^0.7.7-dev.0",
+    "@dbux/runtime": "^0.7.7-dev.0",
     "@types/glob": "^7.1.1",
     "@types/node": "^16",
     "@types/vscode": "^1.41.0",

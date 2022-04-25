@@ -36,8 +36,6 @@ class PathwaysStep extends ClientComponentEndpoint {
       hasTrace
     } = this.state;
 
-    const { themeMode } = this.context;
-
     this.els.title.classList.toggle('dbux-link', hasTrace);
     this.els.icon.src = iconUri;
     this.els.label.textContent = `${label}`;

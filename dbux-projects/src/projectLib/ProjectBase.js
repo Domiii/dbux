@@ -12,7 +12,7 @@ export default class ProjectBase {
   /**
    * Branch or tag name.
    * Uses `git clone --branch`, instead of the default branch.
-   * This seems to be an old feature, supported since 2008.
+   * NOTE: This seems to be an old feature, supported since 2008.
    * 
    * @see https://git-scm.com/docs/git-clone#Documentation/git-clone.txt---branchltnamegt
    * @see https://lore.kernel.org/git/211101.865ytc3qaw.gmgdl@evledraar.gmail.com/T/#t

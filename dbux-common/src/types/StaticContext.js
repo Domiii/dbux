@@ -17,6 +17,7 @@ export default class StaticContext {
    * @type {bool}
    */
   isInterruptable;
+  
   /**
    * @type {number}
    */

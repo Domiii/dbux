@@ -82,7 +82,8 @@ let ValuePruneState = {
   Normal: 0,
   Omitted: 1,
   Shortened: 2,
-  ValueDisabled: 3
+  ValueDisabled: 3,
+  ReadError: 4
 };
 
 ValuePruneState = new Enum(ValuePruneState);

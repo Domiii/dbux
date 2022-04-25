@@ -11,7 +11,7 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
 
   update() {
     let changedFlag = false;
-    for (const contextNode of this.getAllContextNode()) {
+    for (const contextNode of this.getAllContextNodes()) {
       const visible = this.shouldBeVisible(contextNode);
       const changed = this._setVisible(contextNode, visible);
       changedFlag |= changed;
@@ -114,7 +114,7 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
   _notifyHiddenCountChanged = () => {
     let hideBeforeCount = 0;
     let hideAfterCount = 0;
-    for (const contextNode of this.getAllContextNode()) {
+    for (const contextNode of this.getAllContextNodes()) {
       // NOTE: if a node is hiddenBefore/After in the same time, only count as hiddenBefore
       const hiddenNode = this.getHiddenNodeHidingThis(contextNode);
       if (hiddenNode === this.hiddenBeforeNode) {
@@ -135,7 +135,7 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
     this._emitter.on('countChanged', cb);
   }
 
-  getAllContextNode() {
-    return this.owner.getAllContextNode();
+  getAllContextNodes() {
+    return this.owner.getAllContextNodes();
   }
 }

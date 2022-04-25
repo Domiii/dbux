@@ -7,6 +7,8 @@ const { addHook } = require("pirates");
 const path = require("path");
 const Module = require("module");
 
+const Verbose = 1;
+
 exports.revert = revert;
 exports.default = register;
 
@@ -174,6 +176,7 @@ function register(opts) {
   cwd = transformOpts.cwd = path.resolve(cwd);
 
   if (transformOpts.ignore === undefined && transformOpts.only === undefined) {
+    // Verbose && console.debug('[@dbux/babel-register-fork] NOTE: no `ignore` in options → ignoring node_modules');
     transformOpts.only = [
       // Only compile things inside the current working directory.
       // $FlowIgnore

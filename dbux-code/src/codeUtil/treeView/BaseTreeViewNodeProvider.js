@@ -1,4 +1,5 @@
-import { TreeItemCollapsibleState, EventEmitter, window } from 'vscode';
+import { TreeItemCollapsibleState, EventEmitter, window, TreeView } from 'vscode';
+import SyncPromise from '@dbux/common/src/util/SyncPromise';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import NestedError from '@dbux/common/src/NestedError';
@@ -36,6 +37,10 @@ export default class BaseTreeViewNodeProvider {
 
   rootNodes = [];
   idsCollapsibleState = new Map();
+  /**
+   * @type {TreeView<BaseTreeViewNode>}
+   */
+  treeView;
 
   /**
    * @param {string} viewName 
@@ -46,6 +51,7 @@ export default class BaseTreeViewNodeProvider {
   constructor(viewName, options = {}) {
     this.treeViewName = viewName;
     this.logger = newLogger(this.constructor.name);
+    this.refreshPromise = new SyncPromise(500);
     const { showCollapseAll = false, createTreeView = true } = options;
 
     // NOTE: view creation inside the data provider is not ideal, 
@@ -90,6 +96,14 @@ export default class BaseTreeViewNodeProvider {
     }
   }
 
+  /**
+   * hackfix: VSCode API does not guarantee `TreeView.reveal` works with `undefined`, but we've tested that it works in VSCode 1.63.2.
+   *  @see https://code.visualstudio.com/api/references/vscode-api#TreeView
+   */
+  async showView() {
+    return await this.treeView.reveal(undefined);
+  }
+
   // ###########################################################################
   // basic event handling
   // ###########################################################################
@@ -109,6 +123,8 @@ export default class BaseTreeViewNodeProvider {
 
       // NOTE: if we only want to update subtree, pass root of subtree to `fire`
       this.repaint();
+
+      this.refreshPromise.startIfNotStarted();
     }
     catch (err) {
       throw new NestedError(`${this.constructor.name}.refresh() failed`, err);
@@ -175,11 +191,11 @@ export default class BaseTreeViewNodeProvider {
       clazz: node.constructor.name,
       collapsibleState: node.collapsibleState
     };
-    emitTreeViewCollapseChangeAction(treeViewName, action, nodeId, node.label, node.collapseChangeUserActionType, args);
-
+    
     // trigger event handlers
     evtHandler.call(this, node);
     this.handleNodeCollapsibleStateChanged(node);
+    emitTreeViewCollapseChangeAction(treeViewName, action, nodeId, node.label, node.collapseChangeUserActionType, args);
   }
 
   handleExpanded(node) {
@@ -216,13 +232,13 @@ export default class BaseTreeViewNodeProvider {
       clazz: node.constructor.name
     };
 
-    const { clickUserActionType } = node;
-    if (clickUserActionType !== false) {
-      emitTreeViewAction(treeViewName, action, nodeId, node.label, clickUserActionType, args);
-    }
-
+    
     try {
       await node.handleClick?.();
+      const { clickUserActionType } = node;
+      if (clickUserActionType !== false) {
+        emitTreeViewAction(treeViewName, action, nodeId, node.label, clickUserActionType, args);
+      }
     }
     catch (err) {
       throw new NestedError(`handleClick failed`, err);
@@ -264,7 +280,7 @@ export default class BaseTreeViewNodeProvider {
     return node.children;
   }
 
-  buildNodes(nodeClasses) {
+  buildNodes(nodeClasses, parent) {
     if (!nodeClasses) {
       return null;
     }
@@ -272,7 +288,7 @@ export default class BaseTreeViewNodeProvider {
     return nodeClasses
       .map(Clazz => {
         const props = (Clazz.makeChildPropsDefault || BaseTreeViewNode.makeChildPropsDefault)?.(Clazz);
-        return this.buildNode(Clazz, this.entry, this, props);
+        return this.buildNode(Clazz, parent.entry, parent, props);
       })
       .filter(node => !!node);
   }
@@ -381,6 +397,12 @@ export default class BaseTreeViewNodeProvider {
   }
 
   getChildren = async (node) => {
+    const children = await this._getChildren(node);
+    this.refreshPromise.resolve(children);
+    return children;
+  }
+
+  _getChildren = async (node) => {
     try {
       if (node) {
         this.handleBeforeChildren(node);
@@ -408,21 +430,15 @@ export default class BaseTreeViewNodeProvider {
   }
 
   /** ###########################################################################
-   * helper
-   *  #########################################################################*/
+    * helper
+    *  #########################################################################*/
 
   /**
-   * Find a chlid node of given class from parent, or from roots if parent is `undefined`.
+   * Find root of given class.
    * @param {*} clazz A node class that extends `BaseTreeViewNode` 
-   * @param {BaseTreeViewNode} parent 
    * @return {BaseTreeViewNode}
    */
-  getNodeByClass(clazz, parent = null) {
-    let children = this.rootNodes;
-    if (parent) {
-      children = parent.children;
-    }
-
-    return children.find(node => node instanceof clazz);
+  getRootByClass(clazz) {
+    return this.rootNodes.find(node => node instanceof clazz);
   }
 }

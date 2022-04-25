@@ -1,8 +1,6 @@
 /* eslint-disable no-console */
 'use strict';
 
-const path = require('path');
-const { expect } = require('chai');
 const { createSequelizeInstance } = require('./dev/sscce-helpers');
 const { Model, DataTypes } = require('.');
 
@@ -22,7 +20,7 @@ async function main() {
     }, { sequelize, modelName: 'user' });
     await sequelize.sync({ force: true });
 
-    // this does not work (AV)
+    // this does not work
     const [b1, b2] = await Promise.all([
       User.findOrCreate({
         where: { name: "b" },
@@ -42,10 +40,6 @@ async function main() {
   }
   catch (err) {
     console.error('####### FAIL\n\n', err);
-    const result = await User.findAll({
-      where: { name: "b" }
-    });
-    console.log('##### RESULT:', result);
   }
 }
 
