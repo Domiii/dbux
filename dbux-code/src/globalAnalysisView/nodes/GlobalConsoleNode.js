@@ -37,21 +37,18 @@ class ConsoleTraceNode extends TraceNode {
  * {@link GlobalConsoleNode}
  *  #########################################################################*/
 
-/**
- * TODO: use TraceContainerNode
- */
 export default class GlobalConsoleNode extends TraceContainerNode {
   static labelPrefix = 'Console';
   static TraceNodeClass = ConsoleTraceNode;
-
-  get collapseChangeUserActionType() {
-    return UserActionType.GlobalConsoleUse;
-  }
 
   static getAllTraces(/*trace*/) {
     return allApplications.selection.data.collectGlobalStats((dp) => {
       return dp.indexes.traces.byPurpose.get(TracePurpose.Console);
     });
+  }
+
+  get collapseChangeUserActionType() {
+    return UserActionType.GlobalConsoleUse;
   }
 
   init() {

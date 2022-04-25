@@ -34,21 +34,38 @@ export class GroupNode extends BaseTreeViewNode {
     throw new Error('abstract method not implemented');
   }
 
-  static group(traces) {
-    const byKey = new Map();
-    for (const trace of traces) {
-      const dp = allApplications.getById(trace.applicationId).dataProvider;
+  static group(allTraces) {
+    const mapsByApplicationId = new Map();
+    for (const trace of allTraces) {
+      const { applicationId } = trace;
+      if (!mapsByApplicationId.get(applicationId)) {
+        mapsByApplicationId.set(applicationId, new Map());
+      }
+
+      const byKey = mapsByApplicationId.get(applicationId);
+      const dp = allApplications.getById(applicationId).dataProvider;
       const key = this.makeKey(dp, trace);
-      if (!byKey.get(key)) byKey.set(key, []);
+      if (!byKey.get(key)) {
+        byKey.set(key, []);
+      }
       byKey.get(key).push(trace);
     }
 
-    return Array.from(byKey.entries());
+    const groupNodesData = [];
+    for (const [applicationId, byKey] of mapsByApplicationId.entries()) {
+      for (const [key, childTraces] of byKey.entries()) {
+        groupNodesData.push({ applicationId, key, childTraces });
+      }
+    }
+    return groupNodesData;
   }
 
-  static build(rootNode, [key, childTraces]) {
+  /**
+   * @param {BaseTreeViewNode} rootNode 
+   */
+  static build(rootNode, groupNodeData) {
     const { treeNodeProvider } = rootNode;
-    return treeNodeProvider.buildNode(this, null, rootNode, { key, childTraces });
+    return treeNodeProvider.buildNode(this, null, rootNode, groupNodeData);
   }
 
   get defaultCollapsibleState() {
@@ -60,13 +77,14 @@ export class GroupNode extends BaseTreeViewNode {
   }
 
   init() {
-    this.description = this.makeDescription?.();
+    const keyDescription = this.makeKeyDescription?.();
+    this.description = keyDescription ? `ApplicationId: ${this.applicationId}, ${keyDescription}` : '';
   }
 
   /**
    * @virtual
    */
-  makeDescription() {
+  makeKeyDescription() {
     return '';
   }
 
@@ -118,15 +136,14 @@ export class GroupByRootNode extends GroupNode {
     return dp.util.getRootContextOfTrace(trace.traceId).contextId;
   }
 
-  static makeLabel(trace, parent, { key: rootContextId, childTraces }) {
-    const { applicationId } = childTraces[0];
+  static makeLabel(entry, parent, { key: rootContextId, applicationId }) {
     const dp = allApplications.getById(applicationId).dataProvider;
     const context = dp.collections.executionContexts.getById(rootContextId);
     return makeContextLabel(context, dp.application);
   }
 
-  makeDescription() {
-    return `Root Context: ${this.key}`;
+  makeKeyDescription() {
+    return `RootContextId: ${this.key}`;
   }
 
   getRelevantTrace() {
@@ -142,14 +159,13 @@ export class GroupByRealContextNode extends GroupNode {
     return dp.util.getRealContextIdOfContext(trace.contextId);
   }
 
-  static makeLabel(trace, parent, { key: contextId, childTraces }) {
-    const { applicationId } = childTraces[0];
+  static makeLabel(entry, parent, { key: contextId, applicationId }) {
     const dp = allApplications.getById(applicationId).dataProvider;
     const context = dp.collections.executionContexts.getById(contextId);
     return makeContextLabel(context, dp.application);
   }
 
-  makeDescription() {
+  makeKeyDescription() {
     return `ContextId: ${this.key}`;
   }
 
@@ -167,14 +183,13 @@ export class GroupByCallerNode extends GroupNode {
     return callerId;
   }
 
-  static makeLabel(trace, parent, { key: callerId, childTraces }) {
-    const { applicationId } = childTraces[0];
+  static makeLabel(entry, parent, { key: callerId, applicationId }) {
     const dp = allApplications.getById(applicationId).dataProvider;
     const callerTrace = dp.collections.traces.getById(callerId);
     return callerTrace ? makeTraceLabel(callerTrace) : '(No Caller Trace)';
   }
 
-  makeDescription() {
+  makeKeyDescription() {
     return `CallerTraceId: ${this.key}`;
   }
 
@@ -192,14 +207,13 @@ export class GroupByParentContextNode extends GroupNode {
     return dp.collections.executionContexts.getById(contextId)?.parentContextId || 0;
   }
 
-  static makeLabel(trace, parent, { key: parentContextId, childTraces }) {
-    const { applicationId } = childTraces[0];
+  static makeLabel(entry, parent, { key: parentContextId, applicationId }) {
     const dp = allApplications.getById(applicationId).dataProvider;
     const context = dp.collections.executionContexts.getById(parentContextId);
     return context ? makeContextLabel(context, dp.application) : '(No Parent Context)';
   }
 
-  makeDescription() {
+  makeKeyDescription() {
     return `ParentContextId: ${this.key}`;
   }
 
@@ -263,12 +277,11 @@ export default class TraceContainerNode extends BaseTreeViewNode {
   static makeLabel(_entry, _parent, props) {
     const { allTraces, groupNodesData } = props;
     const GroupNodeClass = this.getCurrentGroupClass();
+    let labelSuffix = '';
     if (GroupNodeClass.labelSuffix) {
-      return `${this.labelPrefix}: ${allTraces?.length || 0}x (${groupNodesData?.length || 0} groups ${GroupNodeClass.labelSuffix})`;
+      labelSuffix = ` (${groupNodesData?.length || 0} groups ${GroupNodeClass.labelSuffix})`;
     }
-    else {
-      return `${this.labelPrefix}: ${allTraces?.length || 0}x`;
-    }
+    return `${this.labelPrefix}: ${allTraces?.length || 0}x${labelSuffix}`;
   }
 
   // eslint-disable-next-line no-unused-vars
@@ -279,8 +292,8 @@ export default class TraceContainerNode extends BaseTreeViewNode {
   // eslint-disable-next-line no-unused-vars
   static makeProperties(entry, parent, props) {
     const allTraces = this.getAllTraces(entry);
-    const GroupNodeClazz = this.getCurrentGroupClass();
-    const groupNodesData = GroupNodeClazz.group(allTraces);
+    const GroupNodeClass = this.getCurrentGroupClass();
+    const groupNodesData = GroupNodeClass.group(allTraces);
 
     return {
       allTraces,
@@ -294,10 +307,6 @@ export default class TraceContainerNode extends BaseTreeViewNode {
 
   get defaultCollapsibleState() {
     return TreeItemCollapsibleState.Collapsed;
-  }
-
-  init() {
-    this.contextValue = 'dbux.node.TraceContainerNode';
   }
 
   buildChildren() {
