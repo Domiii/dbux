@@ -127,7 +127,7 @@ class ValueCollection extends Collection {
   builtInTypeSerializers = new Map([
     [Map, this.makeDefaultSerializer(obj => [['entries', this._callProperty(obj, 'entries')]])],
     [Set, this.makeDefaultSerializer(obj => [['entries', this._callProperty(obj, 'entries')]])],
-    [RegExp, this.makeDefaultSerializer(obj => [['regex', this._callProperty(obj, 'entries')]])]
+    [RegExp, this.makeDefaultSerializer(obj => [['regex', this._callProperty(obj, 'toString')]])]
 
     // TODO: thenables and many other built-ins
   ]);
