@@ -106,9 +106,9 @@ When you want to debug a local project with a local Dbux dev build, we recommend
 :::caution
 This will not work with `yarn@1`.
 
-While generally linking the local dev build using `yalc` works, it will not be able to install dependencies, and in general, `yarn add` and `yarn install` will always fail from now on, if you use `yarn@1`. [This is a well-known bug that was fixed for `yarn@>=2` only.](https://github.com/yarnpkg/yarn/issues/2611)
+While generally linking the local dev build using `yalc` works, it will not be able to install dependencies, and in general, `yarn add` and `yarn install` will always fail from now on, if you use `yarn@1`. [This is a well-known bug that was fixed for `yarn@>=2`.](https://github.com/yarnpkg/yarn/issues/2611)
 
-One way to work-around this with `yarn@1`:
+One way to hackfix this with `yarn@1`:
 * After `yalc add...`:
   * (If you use `yarn workspaces`: remove linkage to other workspace packages.)
   * Use `npm install` once, then remove `package-lock.json`.

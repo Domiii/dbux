@@ -4,14 +4,16 @@ slug: /
 ---
 
 
-TODO: change "Why Dbux?" to "00-Dbux-Overview" (move from nested folder)
 
 TODO: rename "installation" to "01-Getting Started" (and fix content)
   → TODO: fix up and bring in the practice stuff here as well
 
 TODO: re-write this as "02-What Can Dbux Do?"
+  TODO: change "Why Dbux?" to "00-Dbux-Overview" (move from nested folder)
   → give a clearer picture of what it can do and which scenarios work and which won't
-  → future work: list of all directly and indirectly ran packages
+  → issues w/ react and performance
+  → future work: list of all directly and indirectly tested/experimented packages
+
 
 
 
