@@ -5671,6 +5671,11 @@ firebase@^9:
     "@firebase/storage-compat" "0.1.13"
     "@firebase/util" "1.5.2"
 
+firestore-rest-serdes@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/firestore-rest-serdes/-/firestore-rest-serdes-1.0.3.tgz#048ce70297644ceb1107b657f87a0055115f169b"
+  integrity sha512-s38qZt5uy8NZYRiVzuFYKmPfeNO1JC0wzHh/XDoiIHeismnUkVqbAWYVge+rTgfGkxTi/DPOnNNNrTVf2LiP8g==
+
 flat-cache@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/flat-cache/-/flat-cache-3.0.4.tgz#61b0338302b2fe9f957dcc32fc2a87f1c3048b11"
