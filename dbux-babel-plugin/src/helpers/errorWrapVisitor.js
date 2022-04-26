@@ -39,7 +39,7 @@ function _errorWrap(visitor) {
       // throw err;
       // // throw new Error(newMessage);
       // ${Object.keys(state)}
-      throw new NestedError(`@dbux/babel-plugin visitor failed in path "${pathToStringAnnotated(path)}"`, err);
+      throw new NestedError(`@dbux/babel-plugin visitor failed in path "${pathToStringAnnotated(path, true)}"`, err);
     }
   };
 }

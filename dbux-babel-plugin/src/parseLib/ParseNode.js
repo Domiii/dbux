@@ -2,7 +2,7 @@ import isString from 'lodash/isString';
 // import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import NestedError from '@dbux/common/src/NestedError';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
-import { pathToString } from '../helpers/pathHelpers';
+import { pathToString, pathToStringAnnotated } from '../helpers/pathHelpers';
 import ParseRegistry from './ParseRegistry';
 import { getChildPaths, getNodeOfPath } from './parseUtil';
 import ParsePhase from './ParsePhase';
@@ -138,7 +138,9 @@ export default class ParseNode {
    */
   getChildNodes() {
     if (this.phase < ParsePhase.Exit1) {
-      throw new Error(`Cannot getChildNodes before Exit or Instrument phases - ${this} (${ParsePhase.nameFromForce(this.phase)})`);
+      // TODO: fix this
+      const thisString = pathToStringAnnotated(this.path, true);
+      throw new Error(`Cannot getChildNodes before Exit or Instrument phases (phase = ${ParsePhase.nameFromForce(this.phase)}) - ${thisString}`);
     }
     // NOTE: cache _childNodes
     this._childNodes = this._childNodes || this.getChildPaths().map(this.getNodeOfPath);

@@ -4,3 +4,6 @@
   console.log(f);
   console.log(f());
 })();
+
+// require('test1');
+// import('test2');

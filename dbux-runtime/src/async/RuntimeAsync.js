@@ -92,7 +92,7 @@ export default class RuntimeAsync {
 
     const callId = callResultTrace.resultCallId;
     const lastContextId = this._runtime.getLastPoppedContextId();
-    const calledRealContext = peekBCEContextCheckCallee(callId, lastContextId);
+    const calledRealContext = lastContextId && peekBCEContextCheckCallee(callId, lastContextId) || null;
 
     if (calledRealContext) {
       const calledContextId = calledRealContext.contextId;
