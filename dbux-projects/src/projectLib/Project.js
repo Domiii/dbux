@@ -1364,7 +1364,7 @@ Sometimes a reset (by using the \`Delete project folder\` button) can help fix t
   async applyPatchString(patchString) {
     await this.checkCorrectGitRepository();
 
-    return this.exec(`"${this.gitCommand}" apply --ignore-space-change --ignore-whitespace`, null, patchString);
+    return this.exec(`${this.gitCommand} apply --ignore-space-change --ignore-whitespace`, null, patchString);
   }
 
   /**

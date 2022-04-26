@@ -21,6 +21,14 @@ export function isStateFoundedType(sessionType) {
   return FoundedTypes[sessionType];
 }
 
+const StoppedTypes = new Array(PracticeSessionState.getValueMaxIndex()).map(() => false);
+StoppedTypes[PracticeSessionState.Stopped] = true;
+StoppedTypes[PracticeSessionState.Solved] = true;
+
+export function isStateStoppedType(sessionType) {
+  return StoppedTypes[sessionType];
+}
+
 export function isStateFinishedType(sessionType) {
   return sessionType >= 3;
 }

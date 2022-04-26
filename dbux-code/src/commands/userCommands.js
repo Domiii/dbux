@@ -11,9 +11,9 @@ import SearchMode from '@dbux/graph-common/src/shared/SearchMode';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import traceSelection from '@dbux/data/src/traceSelection';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import { importApplication, exportApplication } from '@dbux/data/src/applications/importExport';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { checkSystem, getDefaultRequirement } from '@dbux/projects/src/checkSystem';
+import { importApplicationFromFile, exportApplicationToFile } from '@dbux/projects/src/dbux-analysis-tools/importExport';
 import { registerCommand } from './commandUtil';
 import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../applicationsView/applicationModals';
 import { showGraphView, hideGraphView } from '../webViews/graphWebView';
@@ -25,7 +25,7 @@ import { getProjectManager } from '../projectViews/projectControl';
 import { showHelp } from '../help';
 // import { installDbuxDependencies } from '../codeUtil/installUtil';
 import { showOutputChannel } from '../projectViews/projectViewsController';
-import { confirm, showErrorMessage, showInformationMessage } from '../codeUtil/codeModals';
+import { chooseFile, confirm, showErrorMessage, showInformationMessage } from '../codeUtil/codeModals';
 import { translate } from '../lang';
 import { getDefaultExportDirectory, getLogsDirectory } from '../codeUtil/codePath';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
@@ -58,7 +58,7 @@ export function initUserCommands(extensionContext) {
     await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
       progress.report({ message: 'exporting...' });
       await sleep();    // TODO: fix this in general -> reported message does not show up before next tick
-      application && await exportApplication(application, exportFpath);
+      application && await exportApplicationToFile(application, exportFpath);
     });
 
     const msg = translate('savedSuccessfully', { fileName: exportFpath });
@@ -72,23 +72,21 @@ export function initUserCommands(extensionContext) {
   registerCommand(extensionContext, 'dbux.importApplicationData', async () => {
     let defaultImportDir = getDefaultExportDirectory();
 
-    const options = {
+    const fileDialogOptions = {
       title: 'Select a file to read',
-      canSelectFolders: false,
-      canSelectMany: false,
+      folder: defaultImportDir,
       filters: {
         'json or zip': ['json', 'zip']
       },
-      defaultUri: Uri.file(defaultImportDir)
     };
-    const file = (await window.showOpenDialog(options))?.[0];
-    if (file) {
+    const filePath = await chooseFile(fileDialogOptions);
+    if (filePath) {
       allApplications.selection.clear();
 
       await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
         progress.report({ message: 'importing...' });
         await sleep(100);
-        importApplication(file.fsPath);
+        await importApplicationFromFile(filePath);
       });
     }
   });

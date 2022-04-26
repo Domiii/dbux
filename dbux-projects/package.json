@@ -12,6 +12,7 @@
     "@dbux/common-node": "^0.7.7-dev.0",
     "@dbux/data": "^0.7.7-dev.0",
     "cross-spawn": "^7.0.3",
+    "firestore-rest-serdes": "^1.0.3",
     "glob": "^7.1.6",
     "i18next": "^19.8.2",
     "lodash": "^4.17.21",

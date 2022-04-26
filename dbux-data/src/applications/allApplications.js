@@ -8,7 +8,6 @@ import { initTraceLabels } from '../helpers/makeLabels';
 import { initTraceSelection } from '../traceSelection';
 
 // eslint-disable-next-line no-unused-vars
-// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('applications');
 
 
@@ -113,15 +112,16 @@ export class AllApplications {
   // ###########################################################################
 
   addApplication(initialData) {
-    const {
+    let {
       entryPointPath,
       createdAt,
       uuid,
+      applicationId,
       ...other
     } = initialData;
 
     // create application
-    const applicationId = this._all.length;
+    applicationId = applicationId || this._all.length;
     const application = new this.DefaultApplicationClass(applicationId, entryPointPath, createdAt, this, uuid);
     Object.assign(application, other);
 

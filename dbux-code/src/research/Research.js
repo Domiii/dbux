@@ -2,7 +2,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { pathResolve } from '@dbux/common-node/src/util/pathUtil';
 import { getPrettyPerformanceDelta } from '@dbux/common/src/util/timeUtil';
 import { existsSync, readdirSync, realpathSync } from 'fs';
-import { exportApplication, importApplication } from '@dbux/data/src/applications/importExport';
+import { importApplicationFromFile, exportApplicationToFile } from '@dbux/projects/src/dbux-analysis-tools/importExport';
 import { getFileSizeSync } from '@dbux/common-node/src/util/fileUtil';
 import { performance } from 'perf_hooks';
 import { basename } from 'path';
@@ -137,7 +137,7 @@ export class Research {
     const start = performance.now();
 
     // write zipped backup
-    exportApplication(app, zipFpath);
+    exportApplicationToFile(app, zipFpath);
 
     const time = getPrettyPerformanceDelta(start);
 
@@ -148,12 +148,12 @@ export class Research {
     showInformationMessage(msg);
   }
 
-  importResearchAppData(experimentId) {
+  async importResearchAppData(experimentId) {
     const zipFpath = this.getAppZipFilePath({ experimentId });
 
     const start = performance.now();
 
-    const app = importApplication(zipFpath);
+    const app = await importApplicationFromFile(zipFpath);
 
     const end = performance.now();
 

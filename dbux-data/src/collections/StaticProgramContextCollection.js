@@ -46,7 +46,7 @@ export default class StaticProgramContextCollection extends Collection {
   deserialize(staticProgramContextData) {
     const staticProgramContext = { ...staticProgramContextData };
     staticProgramContext.filePath = pathJoin(this.dp.application.entryPointPath, staticProgramContext.relativeFilePath);
-    delete staticProgramContext.relativeFilePath;
+    // delete staticProgramContext.relativeFilePath;
     return staticProgramContext;
   }
 }

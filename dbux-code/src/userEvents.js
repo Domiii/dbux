@@ -214,11 +214,12 @@ export function emitPathwaysAction(evtType, data) {
 
 function getExtraTraceLocationImformation(trace) {
   const { applicationId, traceId, staticTraceId, staticTraceIndex } = trace;
-  const dp = allApplications.getById(applicationId).dataProvider;
+  const app = allApplications.getById(applicationId);
+  const dp = app.dataProvider;
 
   const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
   const staticContext = dp.collections.staticContexts.getById(staticTrace.staticContextId);
-  const filePath = pathRelative(allApplications.appRoot, dp.util.getTraceFilePath(traceId));
+  const filePath = pathRelative(app.entryPointPath, dp.util.getTraceFilePath(traceId));
   return {
     filePath,
     staticTrace,
