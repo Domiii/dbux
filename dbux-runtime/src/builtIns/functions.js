@@ -5,17 +5,9 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import dataNodeCollection from '../data/dataNodeCollection';
 import { getTraceOwnDataNode, peekBCEMatchCallee } from '../data/dataUtil';
 import { monkeyPatchMethod } from '../util/monkeyPatchUtil';
+import { doApply, originalBind } from './originals';
 
 /** @typedef {import('../RuntimeMonitor').default} RuntimeMonitor */
-
-/**
- * hackfix: make sure, we get to use the built-in bind, even if user-code overwrites it.
- * NOTE: if user-code overwrites a function, we might patch it first, leading to inf loops.
- * 
- * future-work: what if user code overwrites bind -> does apply etc. still work?
- */
-const _originalBind = (() => { }).bind;
-_originalBind.bind = _originalBind;
 
 
 function getCalledFunctionTid(bceTrace) {
@@ -85,7 +77,6 @@ export default function patchFunction(runtimeMonitor) {
         runtimeMonitor.callbackPatcher.monkeyPatchArgs(actualFunction, callId, args, EmptyArray, argTids);
       }
 
-
       return originalApply.bind(actualFunction)(...applyArgs);
     }
   );
@@ -95,13 +86,13 @@ export default function patchFunction(runtimeMonitor) {
   // ###########################################################################
 
   monkeyPatchMethod(Function, 'bind',
-    (actualFunction, args, originalBind, patchedBind) => {
+    (actualFunction, args, __originalBind, patchedBind) => {
       const bceTrace = peekBCEMatchCallee(patchedBind);
       if (bceTrace?.data) {
         setCalledFunctionTid(bceTrace, SpecialCallType.Bind);
       }
 
-      const result = _originalBind.bind(actualFunction)(...args);
+      const result = originalBind.bind(actualFunction)(...args);
       return result;
     }
   );

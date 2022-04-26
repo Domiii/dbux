@@ -13,6 +13,7 @@ import Collection from './Collection';
 import pools from './pools';
 import getDbuxInstance from '../getDbuxInstance';
 import isThenable from '@dbux/common/src/util/isThenable';
+import { doApply } from '../builtIns/originals';
 
 
 /** @typedef {import('@dbux/common/src/types/ValueRef').default} ValueRef */
@@ -124,9 +125,9 @@ class ValueCollection extends Collection {
   });
 
   builtInTypeSerializers = new Map([
-    [Map, this.makeDefaultSerializer(obj => [['entries', obj.entries()]])],
-    [Set, this.makeDefaultSerializer(obj => [['entries', obj.entries()]])],
-    [RegExp, this.makeDefaultSerializer(obj => [['regex', obj.toString()]])]
+    [Map, this.makeDefaultSerializer(obj => [['entries', this._callProperty(obj, 'entries')]])],
+    [Set, this.makeDefaultSerializer(obj => [['entries', this._callProperty(obj, 'entries')]])],
+    [RegExp, this.makeDefaultSerializer(obj => [['regex', this._callProperty(obj, 'entries')]])]
 
     // TODO: thenables and many other built-ins
   ]);
@@ -149,8 +150,9 @@ class ValueCollection extends Collection {
     };
   }
 
-  getBuiltInSerializer(value) {
-    if (!value.constructor || value === value.constructor.prototype) {
+  getBuiltInObjectSerializer(value) {
+    const constructor = this._readProperty(value, 'constructor');
+    if (!constructor || value === constructor.prototype) {
       // don't try to default-serialize a built-in prototype
       return null;
     }
@@ -158,7 +160,7 @@ class ValueCollection extends Collection {
       // NOTE: should also work on Error sub-classes
       return this.errorSerializer;
     }
-    return this.builtInTypeSerializers.get(value.constructor) || null;
+    return this.builtInTypeSerializers.get(constructor) || null;
   }
 
 
@@ -408,11 +410,11 @@ class ValueCollection extends Collection {
    * Heuristic to determine whether this (probably) is safe to access,
    * based on past error observations.
    */
-  _canAccess(obj) {
+  _didPrototypeCauseErrors(obj) {
     // TODO: `Object.getPrototypeOf` can trigger a proxy trap; need to check on that as well.
 
     // check if objects of this type have already been floodgated
-    return !this._readErrorsByType.has(Object.getPrototypeOf(obj));
+    return this._readErrorsByType.has(Object.getPrototypeOf(obj));
   }
 
   _canReadKeys(obj) {
@@ -424,6 +426,23 @@ class ValueCollection extends Collection {
 
     // TODO: `getPrototypeOf` can trigger a proxy trap
     return !this._getKeysErrorsByType.has(Object.getPrototypeOf(obj));
+  }
+
+  _callProperty(obj, key, args = EmptyArray) {
+    try {
+      this._startAccess(obj);
+      const f = obj[key];
+      return doApply(f, obj, args);
+    }
+    catch (err) {
+      this._onAccessError(obj, this._readErrorsByType);
+      const msg = `Dbux failed to call object method "${key}" of "${Object.getPrototypeOf(obj)}":`;
+      VerboseErrors && this.logger.debug(msg, err.message);
+      return `(${msg})`;
+    }
+    finally {
+      this._endAccess(obj);
+    }
   }
 
   /**
@@ -677,7 +696,7 @@ class ValueCollection extends Collection {
         serialized = [];
         for (let i = 0; i < n; ++i) {
           let childRef, childValue;
-          if (!this._canAccess(value)) {
+          if (this._didPrototypeCauseErrors(value)) {
             // childRef = this.addOmitted();
             childRef = this.addReadError();
           }
@@ -725,7 +744,7 @@ class ValueCollection extends Collection {
             // start serializing
             serialized = {};
 
-            const serialize = this.getBuiltInSerializer(value);
+            const serialize = this.getBuiltInObjectSerializer(value);
             if (serialize) {
               // serialize built-in types - especially: RegExp, Map, Set
               serialize(value, nodeId, depth, serialized, valueRef, meta);
@@ -736,7 +755,7 @@ class ValueCollection extends Collection {
                 const prop = props[i];
                 let childRef;
                 let childValue;
-                if (!this._canAccess(value)) {
+                if (this._didPrototypeCauseErrors(value)) {
                   childRef = this.addReadError();
                 }
                 else {

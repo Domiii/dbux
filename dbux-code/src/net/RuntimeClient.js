@@ -85,7 +85,7 @@ export default class RuntimeClient extends SocketClient {
       // debug(`handleData ACK, app time: ${Math.round(this.application.totalTimeSpent)}, ${Math.round(this.application.lastAddTimeSpent)}`);
       const timeSpent = this.application.lastAddTimeSpent;
       if (timeSpent > 500) {
-        debug(`: ${Math.round(timeSpent / 1000).toFixed(2)}s`);
+        debug(`addData was a bit slow: ${Math.round(timeSpent / 1000).toFixed(2)}s`);
       }
       ack('data'); // send ack
     }
