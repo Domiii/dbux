@@ -518,8 +518,8 @@ export default class ProjectsManager {
 
     await this.practiceSession.init();
 
-    isNew && emitPracticeSessionEvent('started', this.practiceSession);
     this._notifyPracticeSessionStateChanged();
+    isNew && emitPracticeSessionEvent('started', this.practiceSession);
     await this.saveSession();
   }
 
@@ -601,7 +601,7 @@ export default class ProjectsManager {
   }
 
   _notifyPracticeSessionStateChanged() {
-    this._emitter.emit('practiceSessionStateChanged');
+    this._emitter.emit('practiceSessionStateChanged', this.practiceSession);
   }
 
   // ########################################

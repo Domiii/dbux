@@ -21,6 +21,7 @@ import { initDialogController } from './dialogs/dialogController';
 import DialogNodeKind from './dialogs/DialogNodeKind';
 import { showInformationMessage } from './codeUtil/codeModals';
 import { translate } from './lang';
+import { initWorkshopSession } from './workshop';
 // import { initPlugins } from './PluginMgr';
 
 // eslint-disable-next-line no-unused-vars
@@ -34,7 +35,9 @@ export default async function activate(context) {
   log(`Starting Dbux v${process.env.DBUX_VERSION} (mode=${process.env.NODE_ENV}${dbuxRoot})...`);
 
   // make sure, projectManager is available
-  createProjectManager(context);
+  const projectsManager = createProjectManager(context);
+
+  await initWorkshopSession(projectsManager);
 
   // install dependencies (and show progress bar) right away
   await installDbuxDependencies();

@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { env, Uri, window } from 'vscode';
 import ExerciseStatus from '@dbux/projects/src/dataLib/ExerciseStatus';
-import { upload } from '@dbux/projects/src/firestore/upload';
+import { uploadSurvey } from '@dbux/projects/src/firestore/upload';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { showHelp } from '../help';
 import DialogNodeKind from './DialogNodeKind';
@@ -458,7 +458,7 @@ ${data.email || ''}`;
         log('survey result', data);
 
         // store to backend
-        await upload('survey1', data);
+        await uploadSurvey(data);
         // const backend = await getProjectManager().getAndInitBackend();
         // return backend.containers.survey1.storeSurveyResult(data);
       },

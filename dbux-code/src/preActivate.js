@@ -9,7 +9,7 @@ import { initPreActivateView } from './preActivateView/preActivateNodeProvider';
 import { registerCommand } from './commands/commandUtil';
 import initLang from './lang';
 import { getCurrentResearch } from './research/Research';
-import { activateWorkshopSession, isValidCode } from './workshop/Workshop';
+import { setupWorkshopSession, isValidCode } from './workshop';
 import { showInformationMessage } from './codeUtil/codeModals';
 
 /** @typedef {import('./dialogs/dialogController').DialogController} DialogController */
@@ -70,8 +70,10 @@ export default async function preActivate(context) {
     commands.executeCommand('setContext', 'dbux.context.researchEnabled', !!process.env.RESEARCH_ENABLED);
 
     // the following should ensures `doActivate` will be called at least once
-    autoStart = (process.env.NODE_ENV === 'development') ||
-      workspace.getConfiguration('dbux').get('autoStart');
+    // autoStart = (process.env.NODE_ENV === 'development') ||
+    //   workspace.getConfiguration('dbux').get('autoStart');
+    // TODO-M: recover this
+    autoStart = workspace.getConfiguration('dbux').get('autoStart');
     if (autoStart) {
       await ensureActivate(context);
     }
@@ -116,11 +118,11 @@ function initPreActivateCommand(context) {
       placeHolder: 'Enter Workshop Code'
     });
     if (isValidCode(code)) {
-      activateWorkshopSession(code);
+      setupWorkshopSession(code);
       await ensureActivate(context);
     }
     else {
-      await showInformationMessage(`Workshop code ${code} is invalid`);
+      await showInformationMessage(`Workshop code "${code}" is invalid.`, { modal: true });
     }
   });
 }
