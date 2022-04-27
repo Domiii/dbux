@@ -518,6 +518,14 @@
         }
       },
       {
+        "command": "dbuxApplicationsView.clearApplication",
+        "title": "Clear Applications",
+        "icon": {
+          "light": "resources/light/clear.svg",
+          "dark": "resources/dark/clear.svg"
+        }
+      },
+      {
         "command": "dbuxApplicationsView.showEntryPoint",
         "title": "Go to Entry",
         "icon": {
@@ -1001,6 +1009,11 @@
           "command": "dbux.hideGraphView",
           "when": "view =~ /(dbuxTraceDetailsView|dbuxGlobalAnalysisView|dbuxApplicationsView)/ && dbuxWebView.context.dbux-graph.isActive",
           "group": "navigation@6"
+        },
+        {
+          "command": "dbuxApplicationsView.clearApplication",
+          "when": "view == dbuxApplicationsView",
+          "group": "navigation@1"
         },
         {
           "command": "dbux.startRuntimeServer",
