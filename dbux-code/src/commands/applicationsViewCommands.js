@@ -1,10 +1,11 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import { registerCommand } from './commandUtil';
+import { confirm } from '../codeUtil/codeModals';
 import { showTextDocument } from '../codeUtil/codeNav';
 import { initRuntimeServer, stopRuntimeServer } from '../net/SocketServer';
 import { emitShowApplicationEntryFileAction } from '../userEvents';
 import { getProjectManager } from '../projectViews/projectControl';
+import { registerCommand } from './commandUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Commands');
@@ -22,9 +23,12 @@ export function initApplicationsViewCommands(context) {
 
   registerCommand(context,
     'dbuxApplicationsView.clearApplication',
-    () => {
-      allApplications.clear();
-      getProjectManager().practiceSession?.pdp.reset();
+    async () => {
+      const result = await confirm('Do you want to clear all applications?');
+      if (result) {
+        allApplications.clear();
+        getProjectManager().practiceSession?.pdp.reset();
+      }
     }
   );
 
