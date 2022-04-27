@@ -1,4 +1,4 @@
-import { workspace, commands } from 'vscode';
+import { workspace, commands, window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { initMemento, get as mementoGet, set as mementoSet } from './memento';
 import { initInstallId } from './installId';
@@ -9,6 +9,8 @@ import { initPreActivateView } from './preActivateView/preActivateNodeProvider';
 import { registerCommand } from './commands/commandUtil';
 import initLang from './lang';
 import { getCurrentResearch } from './research/Research';
+import { activateWorkshopSession, isValidCode } from './workshop/Workshop';
+import { showInformationMessage } from './codeUtil/codeModals';
 
 /** @typedef {import('./dialogs/dialogController').DialogController} DialogController */
 
@@ -107,6 +109,20 @@ async function ensureActivate(context) {
  */
 function initPreActivateCommand(context) {
   registerCommand(context, 'dbux.doActivate', async () => ensureActivate(context));
+
+  registerCommand(context, 'dbux.doWorkshopActivate', async () => {
+    const code = await window.showInputBox({
+      ignoreFocusOut: true,
+      placeHolder: 'Enter Workshop Code'
+    });
+    if (isValidCode(code)) {
+      activateWorkshopSession(code);
+      await ensureActivate(context);
+    }
+    else {
+      await showInformationMessage(`Workshop code ${code} is invalid`);
+    }
+  });
 }
 
 function registerErrorHandler() {

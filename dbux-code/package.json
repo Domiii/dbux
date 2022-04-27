@@ -87,7 +87,11 @@
     "commands": [
       {
         "command": "dbux.doActivate",
-        "title": "Dbux: Start Dbux"
+        "title": "Dbux: Start Dbux (no workshop)"
+      },
+      {
+        "command": "dbux.doWorkshopActivate",
+        "title": "Dbux: Start Workshop Session"
       },
       {
         "command": "dbux.diagnostics",
@@ -1061,6 +1065,10 @@
       "commandPalette": [
         {
           "command": "dbux.doActivate",
+          "when": "!dbux.context.activated"
+        },
+        {
+          "command": "dbux.doWorkshopActivate",
           "when": "!dbux.context.activated"
         },
         {

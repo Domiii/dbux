@@ -1,11 +1,11 @@
 import { TreeItem, TreeItemCollapsibleState } from 'vscode';
 
-export default class ActivateNode extends TreeItem {
+export default class WorkshopNode extends TreeItem {
   constructor() {
     super('Start Dbux', TreeItemCollapsibleState.None);
 
     this.command = {
-      command: 'dbux.doActivate'
+      command: 'dbux.doWorkshopActivate'
     };
   }
 
@@ -15,6 +15,6 @@ export default class ActivateNode extends TreeItem {
 
   // singleton
   static get instance() {
-    return ActivateNode._instance = (ActivateNode._instance || new ActivateNode());
+    return WorkshopNode._instance = (WorkshopNode._instance || new WorkshopNode());
   }
 }

@@ -1,5 +1,6 @@
 import BaseTreeViewNodeProvider from '../codeUtil/treeView/BaseTreeViewNodeProvider';
-import { ActivateNode } from './ActivateNode';
+import ActivateNode from './ActivateNode';
+import WorkshopNode from './WorkshopNode';
 
 class PreActivateNodeProvider extends BaseTreeViewNodeProvider {
   /**
@@ -10,7 +11,7 @@ class PreActivateNodeProvider extends BaseTreeViewNodeProvider {
   }
 
   buildRoots() {
-    return [ActivateNode.instance];
+    return [ActivateNode.instance, WorkshopNode.instance];
   }
 }
 
