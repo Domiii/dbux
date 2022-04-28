@@ -96,6 +96,9 @@ async function revertToDevVersion(force = false) {
   if (!release?.includes('dev') || force) {
     // git tag | tail
     const tags = (await execCaptureOut(`git tag`)).split('\n').reverse();
+
+    // TODO: tags are not ordered correctly when any number has more than one digit
+
     let newVersion = `${maj}.${min}.${pat + 1}`;
 
     // future-work: just get latest version?
@@ -105,7 +108,7 @@ async function revertToDevVersion(force = false) {
     const matchingTag = matchingTags[0];
     if (!matchingTag) {
       // eslint-disable-next-line max-len
-      throw new Error(`Could not find matching tag for ${newVersion} to revert to. Usually publish.js would create it after publishing. Did it terminate early? Make sure to run it's postPublish function.`);
+      throw new Error(`Could not find matching tag for ${newVersion} to revert to. Usually publish.js would create it after publishing. Did it terminate early? Make sure to run it's postPublish function. In order to get back to a previous version, use the "setVersion" command: "npx lerna version ... --...."`);
     }
 
     console.log('matchingTags: ', matchingTags.join(', '));

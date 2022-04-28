@@ -54,7 +54,7 @@ class ThreadLaneManager {
  */
 export default class AsyncNodeCollection extends Collection {
   constructor(dp) {
-    super('asyncNodes', dp, true);
+    super('asyncNodes', dp, { hasNoRuntime: true });
 
     // NOTE: this collection is not populated by `runtime`
     this._all.push(null);
@@ -99,9 +99,8 @@ export default class AsyncNodeCollection extends Collection {
     if (entries.length) {
       this.logger.debug(`addUnassignedNodes (${entries.length}):`,
         entries.map(asyncNode => asyncNode.rootContextId).join(', '));
+      this.addEntriesPostAdd(entries);
     }
-
-    this.addEntriesPostAdd(entries);
   }
 
   addAsyncNode(rootId, threadId, schedulerTraceId, syncPromiseIds) {

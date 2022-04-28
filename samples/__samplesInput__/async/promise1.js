@@ -6,7 +6,9 @@ Promise.resolve()
 //   then(f(2)).
 //   then(f(3));
 
-function g() { }
+function g() { 
+  throw new Error('err');
+}
 
 function ff(x) {
   return async function f() {

@@ -17,6 +17,8 @@ import BugRunnerStatus, { isStatusRunningType } from './RunStatus';
 /** @typedef {import('./Exercise').default} Exercise */
 /** @typedef {import('./Project').default} Project */
 
+// const Verbose = true;
+const Verbose = false;
 const activatedBugKeyName = 'dbux.dbux-projects.activatedBug';
 
 export default class ExerciseRunner {
@@ -35,7 +37,7 @@ export default class ExerciseRunner {
   /**
    * @type {Exercise}
    */
-  _bug;
+  _exercise;
 
   debugPort = 9853;
 
@@ -46,8 +48,8 @@ export default class ExerciseRunner {
     this._emitter = new NanoEvents();
 
     // NOTE: We use git tags instead of externalStorage saves for safety 
-    // this._bug = this.getSavedActivatedBug();
-    this._bug = null;
+    // this._exercise = this.getSavedActivatedBug();
+    this._exercise = null;
   }
 
   get logger() {
@@ -55,7 +57,7 @@ export default class ExerciseRunner {
   }
 
   get exercise() {
-    return this._bug;
+    return this._exercise;
   }
 
   get project() {
@@ -339,6 +341,7 @@ export default class ExerciseRunner {
   // ###########################################################################
 
   setStatus(status) {
+    Verbose && this._ownLogger.log(`setStatus`, BugRunnerStatus.nameFrom(status));
     if (this.status !== status) {
       this.status = status;
       this._emitter.emit('statusChanged', status);
@@ -381,7 +384,7 @@ export default class ExerciseRunner {
   // ###########################################################################
 
   async setActivatedBug(bug = null) {
-    this._bug = bug;
+    this._exercise = bug;
     await this.manager.setKeyToExercise(activatedBugKeyName, bug);
   }
 

@@ -12,11 +12,11 @@ import TOC from '@src/components/TOC';
    * <Img src="screens/start_dbux.png" zoomable={true} width="300px" />
 3. When necessary (e.g. after installation), wait for dependencies to update.
    * <Img src="screens/installing_dependencies.png" zoomable={true} width="300px" />
-4. The Dbux VSCode Extension is now ready [to use](../dynamic-analysis)!
+4. The Dbux VSCode Extension is now ready [to use](./dynamic-analysis)!
    * <Img src="screens/dbux-ready.png" zoomable={true} width="150px" />
 
 :::note
-Currently, [Dbux VSCode Extension](../tools-and-configuration/01-dbux-code.mdx) is Dbux's only GUI implementation.
+Currently, [Dbux VSCode Extension](./tools-and-configuration/01-dbux-code.mdx) is Dbux's only GUI implementation.
 :::
 
 ## System Requirements
@@ -27,7 +27,7 @@ As of Jan. 2022, Dbux at least requires `node@16` and `npm`.
 If you don't have the right Node version, [please read this](#node-version).
 :::
 
-The [Dbux VSCode Extension](../tools-and-configuration/01-dbux-code.mdx) requires several command line tools to be installed.
+The [Dbux VSCode Extension](./tools-and-configuration/01-dbux-code.mdx) requires several command line tools to be installed.
 
 It automatically tries to determine whether those tools are installed.
 If it is missing anything, it should warn you upon start-up.
@@ -61,7 +61,7 @@ SUCCESS! All system dependencies seem to be in order.
   </div>
 </details> -->
 
-When working through [Dbux Practice](../dbux-practice/01-overview.mdx) exercises, more tools might be required for each project. As of Jan. 2022, it at least requires `git` and `bash` to be installed:
+When working through [Dbux Practice](./dbux-practice/01-overview.mdx) exercises, more tools might be required for each project. As of Jan. 2022, it at least requires `git` and `bash` to be installed:
 
 ```
 ✓  node
@@ -85,7 +85,7 @@ The trick here is that you only need `git` for Windows to get both (`git` automa
   * `choco install git.install --params "/GitAndUnixToolsOnPath"`
 
 
-## Node Version Nightmare {#node-version}
+## Fixing Your Node Version {#node-version}
 
 This section explains methods and pitfalls related to changing your Node version.
 
@@ -101,7 +101,7 @@ Note that when changing Node management systems, make sure to first uninstall al
 
 ### Changing Node Versions
 
-Even if you are not changing Node management systems: changing your system-wide Node version can still become a bit of a ***nightmare***.
+Even if you are not changing Node management systems: changing your system-wide Node version can still become a bit of a nightmare.
 
 That is because when changing Node versions, **it might uninstall or forget all your globally installed node packages**. If you are using globally installed packages, please consult your current Node installer/manager on how they manage them, before taking the big step. If you change your Node installer/manager, then you will most definitely lose all globally installed packages.
 

@@ -820,7 +820,7 @@ class EdgeAnalysisController {
     await sleep(100); // wait for trace and application unselection events
 
     // import application
-    const app = this.research.importResearchAppData(experimentId);
+    const app = await this.research.importResearchAppData(experimentId);
     await sleep(100); // wait for application events
 
     // select first trace

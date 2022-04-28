@@ -46,11 +46,6 @@ export default class PracticeSession extends PathwaysSession {
     return this.bdp.getExerciseProgress(this.exerciseId);
   }
 
-  get isSolved() {
-    const { progress } = this;
-    return ExerciseStatus.is.Solved(progress.status);
-  }
-
   get stopwatchEnabled() {
     return this.progress.stopwatchEnabled;
   }
@@ -103,7 +98,7 @@ export default class PracticeSession extends PathwaysSession {
   setupStopwatch() {
     if (this.stopwatchEnabled) {
       const { solvedAt, startedAt } = this.bdp.getExerciseProgress(this.exercise.id);
-      if (this.isSolved) {
+      if (this.isFinished()) {
         this.stopwatch.set(solvedAt - startedAt);
       }
       else {

@@ -12,7 +12,7 @@
     "omniscient debugger",
     "dynamic analysis"
   ],
-  "version": "0.6.16-dev.0",
+  "version": "0.7.7-dev.0",
   "publisher": "Domi",
   "description": "Integrated Debugging Environment with an Omniscient Debugger for JS.",
   "repository": {
@@ -518,6 +518,14 @@
         }
       },
       {
+        "command": "dbuxApplicationsView.clearApplication",
+        "title": "Clear Applications",
+        "icon": {
+          "light": "resources/light/clear.svg",
+          "dark": "resources/dark/clear.svg"
+        }
+      },
+      {
         "command": "dbuxApplicationsView.showEntryPoint",
         "title": "Go to Entry",
         "icon": {
@@ -752,12 +760,12 @@
         },
         {
           "command": "dbuxTraceDetailsView.nextGroupingMode",
-          "when": "viewItem == dbuxTraceDetailsView.node.executionsTDNodeRoot",
+          "when": "viewItem =~ /#traceContainer/",
           "group": "inline@2"
         },
         {
           "command": "dbuxTraceDetailsView.expandNode",
-          "when": "viewItem == dbuxTraceDetailsView.node.executionsTDNodeRoot",
+          "when": "viewItem =~ /#traceContainer/",
           "group": "inline@3"
         },
         {
@@ -1001,6 +1009,11 @@
           "command": "dbux.hideGraphView",
           "when": "view =~ /(dbuxTraceDetailsView|dbuxGlobalAnalysisView|dbuxApplicationsView)/ && dbuxWebView.context.dbux-graph.isActive",
           "group": "navigation@6"
+        },
+        {
+          "command": "dbuxApplicationsView.clearApplication",
+          "when": "view == dbuxApplicationsView",
+          "group": "navigation@1"
         },
         {
           "command": "dbux.startRuntimeServer",
@@ -1461,7 +1474,9 @@
           },
           "dbux.shells.bash.inlineFlags": {
             "type": "array",
-            "default": ["-c"],
+            "default": [
+              "-c"
+            ],
             "description": "Args required to run an inline command with bash. See https://stackoverflow.com/questions/20858381/what-does-bash-c-do",
             "scope": "resource"
           },
@@ -1479,7 +1494,9 @@
           },
           "dbux.shells.cmd.inlineFlags": {
             "type": "array",
-            "default": ["/k"],
+            "default": [
+              "/k"
+            ],
             "description": "Args required to run an inline command with cmd. See https://stackoverflow.com/questions/9392874/bat-file-open-new-cmd-window-and-execute-a-command-in-there",
             "scope": "resource"
           },
@@ -1571,15 +1588,14 @@
     "publish-only": "echo 'Publishing...' && vsce publish --yarn  --baseImagesUrl https://github.com/Domiii/dbux/dbux-code --baseContentUrl https://github.com/Domiii/dbux/dbux-code"
   },
   "devDependencies": {
-    "@dbux/babel-plugin": "^0.6.16-dev.0",
-    "@dbux/cli": "^0.6.16-dev.0",
-    "@dbux/common": "^0.6.16-dev.0",
-    "@dbux/common-node": "^0.6.16-dev.0",
-    "@dbux/data": "^0.6.16-dev.0",
-    "@dbux/graph-common": "^0.6.16-dev.0",
-    "@dbux/graph-host": "^0.6.16-dev.0",
-    "@dbux/projects": "^0.6.16-dev.0",
-    "@dbux/runtime": "^0.6.16-dev.0",
+    "@dbux/babel-plugin": "^0.7.7-dev.0",
+    "@dbux/common": "^0.7.7-dev.0",
+    "@dbux/common-node": "^0.7.7-dev.0",
+    "@dbux/data": "^0.7.7-dev.0",
+    "@dbux/graph-common": "^0.7.7-dev.0",
+    "@dbux/graph-host": "^0.7.7-dev.0",
+    "@dbux/projects": "^0.7.7-dev.0",
+    "@dbux/runtime": "^0.7.7-dev.0",
     "@types/glob": "^7.1.1",
     "@types/node": "^16",
     "@types/vscode": "^1.41.0",

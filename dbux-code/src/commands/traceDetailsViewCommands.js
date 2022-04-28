@@ -1,7 +1,6 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import { registerCommand } from './commandUtil';
 import { showInformationMessage } from '../codeUtil/codeModals';
-import { nextMode } from '../traceDetailsView/nodes/ExecutionsTDNodes';
 import { NavigationMethods } from '../traceDetailsView/nodes/NavigationNode';
 import { translate } from '../lang';
 
@@ -9,14 +8,16 @@ import { translate } from '../lang';
 const { log, debug, warn, error: logError } = newLogger('Commands');
 
 export function initTraceDetailsViewCommands(context, traceDetailsViewController) {
+  // TODO: move this to treeview general commands(not only for TDView)
   registerCommand(context,
     'dbuxTraceDetailsView.nextGroupingMode',
-    (/* node */) => {
-      nextMode();
-      traceDetailsViewController.refresh();
+    (node) => {
+      node.constructor.nextGroupMode();
+      node.treeNodeProvider.controller.refresh();
     }
   );
 
+  // TODO: move this to treeview general commands(not only for TDView)
   registerCommand(context,
     'dbuxTraceDetailsView.expandNode',
     async (node) => {

@@ -181,7 +181,8 @@ class PathwaysView extends HostComponentEndpoint {
         if (staticContextId) {
           const dp = allApplications.getById(applicationId)?.dataProvider;
           const staticContext = dp?.collections.staticContexts.getById(staticContextId);
-          label = staticContext?.displayName || `(could not look up application or staticContext for ${applicationId}, ${staticContextId})`;
+          const parentStaticContext = dp?.collections.staticContexts.getById(staticContext?.parentId);
+          label = staticContext?.displayName || parentStaticContext?.displayName || `(could not look up application or staticContext for ${applicationId}, ${staticContextId})`;
           const locString = makeStaticContextLocLabel(applicationId, staticContextId);
           locLabel = ` @ ${locString}`;
         }

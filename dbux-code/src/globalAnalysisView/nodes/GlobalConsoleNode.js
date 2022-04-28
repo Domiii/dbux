@@ -4,7 +4,7 @@ import TracePurpose from '@dbux/common/src/types/constants/TracePurpose';
 import { makeTraceLabel, makeTraceLocLabel } from '@dbux/data/src/helpers/makeLabels';
 import { truncateStringDefault } from '@dbux/common/src/util/stringUtil';
 import TraceNode from '../../codeUtil/treeView/TraceNode';
-import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
+import TraceContainerNode from '../../codeUtil/treeView/TraceContainerNode';
 
 
 
@@ -13,6 +13,12 @@ import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
  * ##########################################################################*/
 
 class ConsoleTraceNode extends TraceNode {
+  static makeProperties(trace) {
+    const dp = allApplications.getById(trace.applicationId).dataProvider;
+    const consoleMessage = dp.util.renderConsoleMessage(trace.traceId);
+    return { consoleMessage };
+  }
+
   static makeLabel(trace, parent, { consoleMessage }) {
     return truncateStringDefault(consoleMessage);
   }
@@ -31,12 +37,14 @@ class ConsoleTraceNode extends TraceNode {
  * {@link GlobalConsoleNode}
  *  #########################################################################*/
 
-/**
- * TODO: use TraceContainerNode
- */
-export default class GlobalConsoleNode extends BaseTreeViewNode {
-  static makeLabel(/*app, parent*/) {
-    return `Console`;
+export default class GlobalConsoleNode extends TraceContainerNode {
+  static labelPrefix = 'Console';
+  static TraceNodeClass = ConsoleTraceNode;
+
+  static getAllTraces(/*trace*/) {
+    return allApplications.selection.data.collectGlobalStats((dp) => {
+      return dp.indexes.traces.byPurpose.get(TracePurpose.Console);
+    });
   }
 
   get collapseChangeUserActionType() {
@@ -44,19 +52,7 @@ export default class GlobalConsoleNode extends BaseTreeViewNode {
   }
 
   init() {
-    const n = allApplications.selection.data.countStats((dp) => {
-      return dp.indexes.traces.byPurpose.getSize(TracePurpose.Console);
-    });
-    this.description = `(${n})`;
-  }
-
-  buildChildren() {
-    return allApplications.selection.data.collectGlobalStats((dp, app) => {
-      return dp.indexes.traces.byPurpose.get(TracePurpose.Console)
-        ?.map(trace => {
-          const consoleMessage = dp.util.renderConsoleMessage(trace.traceId);
-          return this.treeNodeProvider.buildNode(ConsoleTraceNode, trace, this, { consoleMessage });
-        });
-    });
+    super.init();
+    this.contextValue = 'dbuxGlobalAnalysisView.node.consoleNodeRoot#traceContainer';
   }
 }
