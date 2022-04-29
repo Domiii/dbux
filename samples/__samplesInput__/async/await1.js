@@ -4,7 +4,7 @@ async function f(x) {
   console.log('f1', x);
   await g(x);
   console.log('f2', x);
-  await 1;
+  await g(x);
   console.log('f3', x);
 }
 
@@ -24,7 +24,7 @@ async function g(x) {
 
 (async () => {
   // console.log('main1');
-  f(1);
+  // f(1);
   // console.log('main2');
   // var p = f(2);
   // await p;
