@@ -170,6 +170,11 @@
     "description": "Feature still in development. You can use this to use Dbux on a pre-configured bug in express."
   },
   {
+    "command": "dbuxApplicationsView.clearApplication",
+    "title": "Clear Applications",
+    "description": ""
+  },
+  {
     "command": "dbuxGlobalAnalysisView.node.nextSearchMode",
     "title": "Next search mode",
     "description": ""
