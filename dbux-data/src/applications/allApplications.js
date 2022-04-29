@@ -10,6 +10,7 @@ import { initTraceSelection } from '../traceSelection';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('applications');
 
+let lastApplicationId = 0;
 
 /**
  * @callback applicationsChangedCallback
@@ -121,7 +122,8 @@ export class AllApplications {
     } = initialData;
 
     // create application
-    applicationId = applicationId || this._all.length;
+    applicationId = applicationId || (lastApplicationId + 1);
+    lastApplicationId = Math.max(applicationId, lastApplicationId);
     const application = new this.DefaultApplicationClass(applicationId, entryPointPath, createdAt, this, uuid);
     Object.assign(application, other);
 

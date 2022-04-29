@@ -86,7 +86,6 @@ export function extractApplicationData(application) {
     isBuiltInProject,
     projectName,
     experimentId,
-    applicationId,
   };
 
   return data;
