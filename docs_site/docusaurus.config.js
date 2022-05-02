@@ -61,7 +61,7 @@ const config = {
           path: 'content',
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl: 'https://github.com/Domiii/dbux/blob/master/docs',
-          // sidebarCollapsed: false
+          sidebarCollapsed: false
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css')
