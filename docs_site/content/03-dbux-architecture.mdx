@@ -1,9 +1,9 @@
 ---
 title: Overview
-slug: /dynamic-analysis
+slug: /dbux-features
 ---
 
-# Dbux Dynamic Analysis
+# Dbux Architecture
 
 import Img from '@src/components/Img';
 import DarkLightImg from '@src/components/DarkLightImg';
@@ -12,11 +12,6 @@ import ToolLink from '@src/components/ToolLink';
 import TOC from '@src/components/TOC';
 
 <TOC toc={toc} />
-
-This page introduces Dbux at the high level, while the next few pages explain the <ToolLink name="dbux-code" />'s dynamic analysis features.
-
-
-## Dbux Architecture
 
 <!-- As of 01/2022, Dbux consists of four applications and seven supplementary modules: -->
 
@@ -30,9 +25,9 @@ They are implemented in four applications and several library packages:
 <br />
 <br />
 
-### Dbux Applications
+### Dbux "Applications"
 
-* &#8203;<ToolLink name="dbux-babel-plugin" /> instruments a given application and injects <ToolLink name="dbux-runtime" />.
+* &#8203;<ToolLink name="dbux-babel-plugin" /> (when used with [Babel](https://babeljs.io/) on a target application) instruments the application and injects <ToolLink name="dbux-runtime" />.
 * &#8203;<ToolLink name="dbux-runtime" /> is responsible for recording and sending runtime data to the runtime server (via `socket-io`).
 * &#8203;<ToolLink name="dbux-code">dbux-code</ToolLink> is a one-click-installable VSCode Extension. It hosts the run-time server to receive the data produced by `dbux-runtime`. When data is received it is post-processed with the help of the `@dbux/data` module before visualizing it. Data is processed and presented in real-time, meaning that applications can be debugged while they are still running.
 * &#8203;<ToolLink name="dbux-cli" />, a convenience CLI tool, allows executing a Node application with Dbux enabled (using [@babel/register](https://babeljs.io/docs/en/babel-register)).
@@ -47,30 +42,3 @@ Several library packages are also part of the [Dbux Monorepo](https://github.com
 * &#8203;<CodeLink path="dbux-projects" /> is used by `dbux-code` as part of [Dbux Practice](../dbux-practice/01-overview.mdx) (but does not depend on `VSCode`). It allows users to clone, install and execute real-world projects, their bugs and practice exercises *with a single click*.
 * &#8203;<CodeLink path="dbux-common" /> Collection of commonly used utilities shared among (more or less) all other modules.
 * &#8203;<CodeLink path="dbux-common-node" /> Collection of commonly used utilities shared among (more or less) all node-only modules.
-
-
-## Dynamic Analysis Features
-
-Once [installed](./01-installation.mdx), using Dbux involves two steps:
-
-1. First: make sure to [run an Application with Dbux enabled](./02-enable-dbux.mdx).
-2. Then use the Dbux VSCode Extension for [dynamic analysis](./00-dbux-overview.mdx#dynamic-analysis):
-
-All recorded applications show up in the [Application View](./06-applications.mdx).
-Once the application shows up, you can use the following tools for analysis:
-
-* Use the [Application View](./06-applications.mdx) to overview and toggle all recorded applications.
-  * From here you can also go to the ***entry point***.
-* Get a high-level overview with:
-  * The [Global View](./07-global.mdx).
-  * The [Call Graph](./08-call-graph.mdx) or [Asynchronous Call Graph](./20-asynchronous-call-graph.mdx).
-* Get down into the nitty-gritty:
-  * &#8203;<DarkLightImg src="crosshair_red.svg" /> [Select a Trace](./05-select-trace.mdx).
-  * Investigate individual traces using the [Trace Details View](./30-trace-details.mdx).
-  * &#8203;<DarkLightImg width="24px" src="nextInContext.svg" /> <DarkLightImg width="24px" src="previousInContext.svg" /> [Navigate](./30-trace-details.mdx#navigation) between traces.
-  * [Search](./40-search.mdx) for traces, contexts, modules or data.
-* Understand where data came from and where it went using the [Data Flow View](./50-data-flow.mdx).
-
-:::tip
-All buttons in the Dbux VSCode Extension have corresponding [commands](./tools-and-configuration/dbux-code#commands) which in turn (are not by default but) [can be key-bound](https://code.visualstudio.com/docs/getstarted/keybindings).
-:::

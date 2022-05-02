@@ -30,9 +30,9 @@ Dbux is an integrated debugging environment (IDbE) and omniscient debugger for J
 
 The screenshot above demonstrates several of Dbux's features, including:
 
-* Left: [omni-directional navigation, values, executions](./dynamic-analysis/30-trace-details.mdx) and [data flow](./dynamic-analysis/50-data-flow.mdx).
-* Middle: [code decorations](./dynamic-analysis/04-code-decorations.mdx) and [trace selection](./dynamic-analysis/05-select-trace.mdx).
-* Right: [asynchronous call graph](./dynamic-analysis/20-asynchronous-call-graph.mdx).
+* Left: [omni-directional navigation, values, executions](./dbux-features/30-trace-details.mdx) and [data flow](./dbux-features/50-data-flow.mdx).
+* Middle: [code decorations](./dbux-features/04-code-decorations.mdx) and [trace selection](./dbux-features/05-select-trace.mdx).
+* Right: [asynchronous call graph](./dbux-features/20-asynchronous-call-graph.mdx).
 
 <!-- <a href="https://www.youtube.com/watch?v=m1ANEuZJFT8" target="_blank" alt="video">
    <img width="150px" src="https://img.youtube.com/vi/m1ANEuZJFT8/0.jpg" />
@@ -72,17 +72,17 @@ We (Dominik and Michael) believe that Dbux does NOT make someone good at debuggi
 
 <!-- TODO: make this part bigger and more visual -->
 
-Once an application has executed with [Dbux enabled](./dynamic-analysis/02-enable-dbux.mdx), a collection of analytical tools is available via the [Dbux VSCode Extension](./tools-and-configuration/01-dbux-code.mdx), including:
+Once an application has executed with [Dbux enabled](./dbux-features/02-enable-dbux.mdx), a collection of analytical tools is available via the [Dbux VSCode Extension](./tools-and-configuration/01-dbux-code.mdx), including:
 
-* Dbux's [global view](./dynamic-analysis/07-global.mdx) lists third-party modules, files and console log events. Takes user to the relevant code in a single click.
+* Dbux's [global view](./dbux-features/07-global.mdx) lists third-party modules, files and console log events. Takes user to the relevant code in a single click.
   * NOTE: While this eliminates the need for most of "[print-based debugging](https://www.google.com/search?q=print-based+debugging&hl=en)", it does not replace use of [proper logging](https://www.google.com/search?q=logging+programming+best+practices).
-* [Trace selection](./dynamic-analysis/05-select-trace.mdx) and the [Trace Details view](./dynamic-analysis/30-trace-details.mdx) allow overviewing and investigating all executions of any piece of code and their respective values.
-* Instead of only a call stack, Dbux presents us with the entire [call graph](./dynamic-analysis/08-call-graph.mdx).
-  * A complete [asynchronous call stack](./dynamic-analysis/08-call-graph.mdx#stack) is also available.
-* Instead of using the traditional debugger as a "magnifying glass" to slowly crawl along the execution timeline, Dbux offers random-access [navigation](./dynamic-analysis/30-trace-details.mdx#navigation), in both directions of the timeline.
-* [Code decorations](./dynamic-analysis/04-code-decorations.mdx) can make it a lot more obvious what code executed at all, and how.
-* Executed files, functions and values [can be searched](./dynamic-analysis/40-search.mdx) for/through (culls a lot of noise when compared to code-based search).
-* [Data flow analysis](./dynamic-analysis/50-data-flow.mdx) allows us to quickly trace the reads, writes and creation of a selected value. This can also take us to the place of creation of a value in a single click.
+* [Trace selection](./dbux-features/05-select-trace.mdx) and the [Trace Details view](./dbux-features/30-trace-details.mdx) allow overviewing and investigating all executions of any piece of code and their respective values.
+* Instead of only a call stack, Dbux presents us with the entire [call graph](./dbux-features/08-call-graph.mdx).
+  * A complete [asynchronous call stack](./dbux-features/08-call-graph.mdx#stack) is also available.
+* Instead of using the traditional debugger as a "magnifying glass" to slowly crawl along the execution timeline, Dbux offers random-access [navigation](./dbux-features/30-trace-details.mdx#navigation), in both directions of the timeline.
+* [Code decorations](./dbux-features/04-code-decorations.mdx) can make it a lot more obvious what code executed at all, and how.
+* Executed files, functions and values [can be searched](./dbux-features/40-search.mdx) for/through (culls a lot of noise when compared to code-based search).
+* [Data flow analysis](./dbux-features/50-data-flow.mdx) allows us to quickly trace the reads, writes and creation of a selected value. This can also take us to the place of creation of a value in a single click.
 
 ## Call to Action
 

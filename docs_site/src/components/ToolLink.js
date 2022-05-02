@@ -19,7 +19,7 @@ export default function ToolLink(props) {
 
   const prettyName = getPrettyPath(name);
   children = children || prettyName;
-  title = title || children;
+  title = title || prettyName;
 
   const baseUrl = useBaseUrl();
 
