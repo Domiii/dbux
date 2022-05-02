@@ -112,7 +112,7 @@
     "docs:serve": "cd ./docs_site && yarn serve",
     "docs:deploy": "cd ./docs_site && yarn deploy",
 
-    "w": "echo 'Copying write assets...' && bash -cl \"cp -rv ./docs_site/static/w ./docs/w\"",
+    "w": "echo Copying write assets... && bash -cl \"cp -Trv ./docs_site/static/w ./docs/w\"",
 
     "clinic": "clinic flame -- node dbux-cli/bin/run-js-unbabel ../samples/__samplesOutput__/oop1.es5.js || (echo \"\\033[1;31mCould not execute clinic - checking installed version:\\033[0m\" && clinic -v)",
     "cloc": "bash scripts/cloc.sh",

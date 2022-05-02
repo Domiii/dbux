@@ -5,8 +5,8 @@ const path = require('path');
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
-const DbuxRoot = path.resolve(DocsRoot, `..`);
 const DocsRoot = __dirname;
+const DbuxRoot = path.resolve(DocsRoot, `..`);
 
 const baseUrl = '/dbux/';
 
