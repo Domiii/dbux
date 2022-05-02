@@ -1,5 +1,6 @@
 import { workspace, commands, window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { initMemento, get as mementoGet, set as mementoSet } from './memento';
 import { initInstallId } from './installId';
 import { initLogging } from './logging';
@@ -70,10 +71,9 @@ export default async function preActivate(context) {
     commands.executeCommand('setContext', 'dbux.context.researchEnabled', !!process.env.RESEARCH_ENABLED);
 
     // the following should ensures `doActivate` will be called at least once
-    // autoStart = (process.env.NODE_ENV === 'development') ||
-    //   workspace.getConfiguration('dbux').get('autoStart');
-    // TODO-M: recover this
-    autoStart = workspace.getConfiguration('dbux').get('autoStart');
+    autoStart = (process.env.NODE_ENV === 'development') ||
+      workspace.getConfiguration('dbux').get('autoStart');
+    // autoStart = workspace.getConfiguration('dbux').get('autoStart');
     if (autoStart) {
       await ensureActivate(context);
     }
@@ -122,7 +122,7 @@ function initPreActivateCommand(context) {
       await ensureActivate(context);
     }
     else {
-      await showInformationMessage(`Workshop code "${code}" is invalid.`, { modal: true });
+      await showInformationMessage(`Workshop code "${code}" is invalid.`, EmptyObject, { modal: true });
     }
   });
 }

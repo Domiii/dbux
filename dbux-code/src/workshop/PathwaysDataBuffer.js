@@ -7,9 +7,16 @@ import SafetyStorage from './SafetyStorage';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PathwaysDataBuffer');
 
-const DefaultBufferSize = 50;
-const DefaultBufferFlushTime = 2 * 60 * 1000; // 2 minutes
+// const Verbose = true;
+const Verbose = false;
 
+const DefaultBufferSize = 10;
+const DefaultBufferFlushTime = 2 * 60 * 1000; // 2 minutes
+// const DefaultBufferFlushTime = 1 * 1000; // 1 second
+
+/**
+ * @template T
+ */
 export default class PathwaysDataBuffer {
   constructor(sessionId, collectionName) {
     const storageKeyName = `dbux.pathwaysDataBuffer.${collectionName}`;
@@ -26,11 +33,14 @@ export default class PathwaysDataBuffer {
     return this.buffer.get() || [];
   }
 
+  /**
+   * @param {T[]} entries 
+   */
   async add(entries) {
     await this.buffer.acquireLock();
 
     try {
-      let buffer = this.safeGetBuffer();
+      const buffer = this.safeGetBuffer();
       buffer.push(...entries);
       await this.buffer.set(buffer);
     }
@@ -41,40 +51,47 @@ export default class PathwaysDataBuffer {
 
   async maybeFlush() {
     if (!this._flushing && (this.safeGetBuffer().length >= DefaultBufferSize || Date.now() - this._previousFlushTime >= DefaultBufferFlushTime)) {
-      await this.forceFlush();
+      await this.flush();
     }
   }
 
-  async forceFlush() {
+  async flush() {
+    Verbose && log(`Flushing collection ${this.collectionName}`);
     this._flushing = true;
-    await this._flush();
-  }
 
-  async _flush() {
-    this._flushing = true;
-    await this.buffer.acquireLock();
-
-    let buffer;
     try {
-      buffer = this.safeGetBuffer();
-      await this.buffer.set([]);
+      await this.buffer.acquireLock();
+
+      let buffer;
+      try {
+        buffer = this.safeGetBuffer();
+        await this.buffer.set([]);
+      }
+      finally {
+        this.buffer.releaseLock();
+      }
+
+      try {
+        await this.addDoc(buffer);
+      }
+      catch (err) {
+        throw new NestedError(`Failed when flushing`, err);
+      }
+
+      this._previousFlushTime = Date.now();
     }
     finally {
-      this.buffer.releaseLock();
-    }
-
-    try {
-      await this.addDoc(buffer);
-    }
-    catch (err) {
       this._flushing = false;
-      throw new NestedError(`Failed when flushing`, err);
     }
-
-    this._previousFlushTime = Date.now();
   }
 
   async addDoc(entries) {
-    return await uploadPathways(this.sessionId, this.collectionName, entries);
+    if (entries.length) {
+      Verbose && log(`Uploading ${entries.length} "${this.collectionName}" of session "${this.sessionId}"`);
+      return await uploadPathways(this.sessionId, this.collectionName, entries);
+    }
+    else {
+      return null;
+    }
   }
 }

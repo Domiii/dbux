@@ -5,7 +5,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { get, set } from '../memento';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('SavetyStorage');
+const { log, debug, warn, error: logError } = newLogger('SafetyStorage');
 
 function getLockfileName(name) {
   const lockfilePath = path.join(os.tmpdir(), `dbux-lockfile.${name}`);

@@ -1,5 +1,16 @@
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
 
+import NestedError from '@dbux/common/src/NestedError';
+import { newLogger } from '@dbux/common/src/log/logger';
+import sleep from '@dbux/common/src/util/sleep';
+import { initPathwaysDataContainer } from './PathwaysDataContainer';
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('WorkshopSession');
+
+// const Verbose = true;
+const Verbose = false;
+
 const ValidCodes = new Set([]);
 let currentCode = '';
 
@@ -38,24 +49,23 @@ export function setupWorkshopSession(code) {
  */
 export async function initWorkshopSession(projectsManager) {
   if (isWorkshopSessionActive()) {
-    addHook();
-    projectsManager.onPracticeSessionStateChanged(addHook);
+    const pathwaysDataContainer = initPathwaysDataContainer();
+    projectsManager.onPracticeSessionStateChanged(pathwaysDataContainer.onSessionChanged);
+    scheduleUpload(pathwaysDataContainer);
   }
 }
 
-let sessionId, prevListener;
+const UploadLoopInterval = 2 * 60 * 1000;
+// const UploadLoopInterval = 10 * 1000;
 
-function addHook(session) {
-  if (sessionId !== session?.sessionId) {
-    // stop listening on previous events
-    prevListener?.();
-
-    prevListener = session?.pdp.onAnyData(addData);
-  }
-}
-
-function addData(allData) {
-  for (const collectionName of Object.keys(allData)) {
-    // TODO-M: push data into buffer
+async function scheduleUpload(pathwaysDataContainer) {
+  while (isWorkshopSessionActive()) {
+    await sleep(UploadLoopInterval);
+    try {
+      await pathwaysDataContainer.maybeFlushAll();
+    }
+    catch (err) {
+      throw new NestedError(`Failed in PathwaysDataContainer upload loop`, err);
+    }
   }
 }
