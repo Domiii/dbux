@@ -5,7 +5,8 @@ const path = require('path');
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
-const DbuxRoot = path.resolve(__dirname, `..`);
+const DbuxRoot = path.resolve(DocsRoot, `..`);
+const DocsRoot = __dirname;
 
 const baseUrl = '/dbux/';
 
@@ -30,19 +31,19 @@ const config = {
     'public',
     'static',
     path.resolve(DbuxRoot, 'dbux-code/resources'),
-    path.resolve(__dirname, 'dbux_img')
+    path.resolve(DocsRoot, 'dbux_img')
   ],
 
   plugins: [
     'plugin-image-zoom',
     [
-      path.resolve(__dirname, './plugins/webpack-override-plugin'),
+      path.resolve(DocsRoot, 'plugins/webpack-override-plugin'),
       {
         overrides: {
           resolve: {
             alias: {
-              '@src': path.resolve(__dirname, './src'),
-              '@comp': path.resolve(__dirname, './src/components')
+              '@src': path.resolve(DocsRoot, 'src'),
+              '@comp': path.resolve(DocsRoot, 'src/components')
             }
           }
         }
