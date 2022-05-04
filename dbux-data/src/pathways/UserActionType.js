@@ -24,22 +24,24 @@ const UserActionTypeObj = {
   TDValueClick: 22,
   TDValueCollapseChange: 23,
   TDValueRender: 24,
-  TDTrackObjectUse: 25,
-  TDTrackObjectTraceUse: 26,
+  TDValueWriteTrace: 25,
+  TDValueCreationTrace: 26,
+  TDTrackObjectUse: 27,
+  TDTrackObjectTraceUse: 28,
   /**
    * Collapse/expand "Executions xN"
    */
-  TDExecutionsUse: 27,
+  TDExecutionsUse: 29,
   /**
    * Select a trace under "Executions xN"
    */
-  TDExecutionsTraceUse: 28,
-  TDExecutionsGroupModeChanged: 29,
-  TDTraceUse: 30,
-  TDDebugUse: 31,
-  TDAsyncUse: 32,
-  TDAsyncGoToForkParent: 33,
-  TDAsyncGoToScheduler: 34,
+  TDExecutionsTraceUse: 30,
+  TDExecutionsGroupModeChanged: 31,
+  TDTraceUse: 32,
+  TDDebugUse: 33,
+  TDAsyncUse: 34,
+  TDAsyncGoToForkParent: 35,
+  TDAsyncGoToScheduler: 36,
 
   NavigationPreviousInContext: 40,
   NavigationPreviousChildContext: 41,
@@ -76,7 +78,7 @@ const UserActionTypeObj = {
   CallGraphCallTrace: 103,
   CallGraphVisibilityChanged: 104,
   CallGraphGraphDocumentModeChanged: 105,
-  
+
   AsyncCallGraphTrace: 110,
   AsyncCallGraphSchedulerTrace: 111,
   AsyncCallGraphValueTrace: 112,
@@ -104,11 +106,3 @@ const UserActionType = new Enum(UserActionTypeObj);
 
 
 export default UserActionType;
-
-const codeActionTypes = new Array(UserActionType.getValueMaxIndex()).map(() => false);
-codeActionTypes[UserActionType.EditorSelectionChanged] = true;
-codeActionTypes[UserActionType.EditorVisibleRangeChanged] = true;
-
-export function isCodeActionTypes(actionType) {
-  return codeActionTypes[actionType];
-}

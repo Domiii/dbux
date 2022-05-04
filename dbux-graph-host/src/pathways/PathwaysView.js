@@ -13,7 +13,7 @@ import PathwaysActionGroup from './PathwaysActionGroup';
 import PathwaysStepGroup from './PathwaysStepGroup';
 import { getIconByStep, makeStepBackground } from './renderSettings';
 
-
+/** @typedef {import('@dbux/projects/src/dataLib/PathwaysDataProvider').default} PathwaysDataProvider */
 
 class PathwaysView extends HostComponentEndpoint {
   /**
@@ -33,6 +33,9 @@ class PathwaysView extends HostComponentEndpoint {
   //  */
   // actions;
 
+  /**
+   * @type {PathwaysDataProvider}
+   */
   get pdp() {
     return this.context.doc.pdp;
   }
@@ -256,10 +259,17 @@ class PathwaysView extends HostComponentEndpoint {
       }
     },
 
-    selectGroupTrace(groupId) {
-      const trace = this.pdp.util.getActionGroupAction(groupId)?.trace;
-      if (trace) {
-        traceSelection.selectTrace(trace);
+    async selectActionGroup(groupId) {
+      const action = this.pdp.util.getActionGroupAction(groupId);
+      if (!action) {
+        return;
+      }
+
+      if (action.file && action.staticTrace) {
+        await this.componentManager.externals.goToCodeLoc(action.file, action.staticTrace.loc);
+      }
+      else if (action.file && action.range) {
+        await this.componentManager.externals.goToCodeLoc(action.file, action.range);
       }
     },
 
@@ -272,13 +282,6 @@ class PathwaysView extends HostComponentEndpoint {
         if (firstTrace) {
           traceSelection.selectTrace(firstTrace);
         }
-      }
-    },
-    async gotoActionGroupEditorPosition(actionGroupId) {
-      // const actionGroup = this.pdp.collections.steps.getById(actionGroupId);
-      const action = this.pdp.indexes.userActions.byGroup.getFirst(actionGroupId);
-      if (action?.file && action.range) {
-        await this.componentManager.externals.goToCodeLoc(action.file, action.range);
       }
     }
   }

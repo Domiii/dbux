@@ -5,6 +5,8 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
+import { emitTraceUserAction } from '../../userActions';
+import { showInformationMessage } from '../../codeUtil/codeModals';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('ValueTDNode');
@@ -52,7 +54,13 @@ export default class ValueNode extends BaseTreeViewNode {
     const writeNode = dp.collections.dataNodes.getById(this.nodeId);
     const writeTrace = dp.collections.traces.getById(writeNode.traceId);
 
-    traceSelection.selectTrace(writeTrace, writeNode.nodeId);
+    if (writeTrace) {
+      traceSelection.selectTrace(writeTrace, writeNode.nodeId);
+      emitTraceUserAction(UserActionType.TDValueWriteTrace, writeTrace);
+    }
+    else {
+      showInformationMessage(`Cannot find the last write trace.`);
+    }
   }
 
   selectValueCreationTrace() {
@@ -62,9 +70,10 @@ export default class ValueNode extends BaseTreeViewNode {
     if (firstNodeByValue) {
       const firstTraceByValue = dp.collections.traces.getById(firstNodeByValue.traceId);
       traceSelection.selectTrace(firstTraceByValue);
+      emitTraceUserAction(UserActionType.TDValueCreationTrace, firstTraceByValue);
     }
     else {
-      logError(`Cannot find value creation trace for dataNode:${JSON.stringify(this.dataNode)}`);
+      showInformationMessage(`Cannot find value creation trace.`);
     }
   }
 }

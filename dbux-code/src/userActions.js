@@ -10,6 +10,8 @@ import PackageNodeSortMode from './globalAnalysisView/nodes/PackageNodeSortMode'
 
 /** @typedef {import('@dbux/common/src/types/Loc').default} Loc */
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
+/** @typedef {import('@dbux/common/src/types/StaticContext.default} StaticContext */
+/** @typedef {import('@dbux/common/src/types/StaticTrace').default} StaticTrace */
 /** @typedef {import('@dbux/projects/src/ProjectsManager').ProjectsManager}  */
 
 // eslint-disable-next-line no-unused-vars
@@ -33,7 +35,7 @@ export function initUserAction(_manager) {
 // ###########################################################################
 
 /**
- * The most basic `UserActions`, which contains no location nor trace info 
+ * The most basic `UserActions`, which contains no location nor trace
  */
 export function emitBasicUserAction(actionType, data) {
   emitUserAction(actionType, data);
@@ -50,9 +52,10 @@ export function emitLocUserAction(actionType, file, range, moreProp) {
  * `UserActions` that related to some trace, we use the information to find the related location
  */
 export function emitTraceUserAction(actionType, trace, moreProp = EmptyObject) {
-  const { file, range, ...moreTraceInformation } = makeTraceLocationInformation(trace);
-  emitLocUserAction(actionType, file, range, {
-    ...moreTraceInformation,
+  const moreTraceInfo = makeTraceStaticInformation(trace);
+  emitUserAction(actionType, {
+    trace,
+    ...moreTraceInfo,
     ...moreProp
   });
 }
@@ -165,8 +168,13 @@ export function emitShowHideErrorLogNotificationAction(isShowing) {
 /**
  * NOTE: For editor events e.g. `EditorSelectionChanged`
  */
-export function emitEditorAction(actionType, { file, range }, moreProp) {
-  emitLocUserAction(actionType, file, range, moreProp);
+export function emitEditorAction(actionType, { file, range, trace }, extraEditorEventInfo) {
+  if (trace) {
+    emitTraceUserAction(actionType, trace, extraEditorEventInfo);
+  }
+  else {
+    emitLocUserAction(actionType, file, range, extraEditorEventInfo);
+  }
 }
 
 export function emitNavigationAction(trace, navigationMethodName) {
@@ -218,20 +226,21 @@ export function emitPathwaysAction(actionType, data) {
 /**
  * 
  * @param {Trace} trace 
- * @returns {{file: string, range: Loc, applicationId: number, traceId: number}}
+ * @returns {{applicationId: number, file: string, staticContext: StaticContext, staticTrace: StaticTrace}}
  */
-function makeTraceLocationInformation(trace) {
-  const { applicationId, traceId } = trace;
+function makeTraceStaticInformation(trace) {
+  const { applicationId, traceId, staticTraceId } = trace;
 
   const app = allApplications.getById(applicationId);
   const dp = app.dataProvider;
-  const file = pathRelative(app.entryPointPath, dp.util.getTraceFilePath(traceId));
-  const range = dp.util.getTraceLoc(traceId);
+  const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
+  const staticContext = dp.util.getTraceStaticContext(traceId);
+  const { filePath: file } = dp.collections.staticProgramContexts.getById(staticContext.programId);
   return {
-    file,
-    range,
     applicationId,
-    traceId
+    file,
+    staticContext,
+    staticTrace,
   };
 }
 

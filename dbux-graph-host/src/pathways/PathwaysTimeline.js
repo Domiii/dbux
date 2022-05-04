@@ -75,7 +75,7 @@ class PathwaysTimeline extends HostComponentEndpoint {
         addedStaticTraceIds.add(trace.staticTraceId);
         return true;
       }
-      const staticContextId = this.pdp.util.getActionStaticContextId(action)?.staticContextId;
+      const staticContextId = this.pdp.util.getActionStaticContext(action)?.staticContextId;
       if (staticContextId && !addedStaticContextIds.has(staticContextId)) {
         addedStaticContextIds.add(staticContextId);
         return true;

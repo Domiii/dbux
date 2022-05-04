@@ -2,7 +2,7 @@ import { TreeItem, TreeItemCollapsibleState } from 'vscode';
 
 export default class ActivateNode extends TreeItem {
   constructor() {
-    super('Start Dbux', TreeItemCollapsibleState.None);
+    super('Start Dbux (no workshop)', TreeItemCollapsibleState.None);
 
     this.command = {
       command: 'dbux.doActivate'

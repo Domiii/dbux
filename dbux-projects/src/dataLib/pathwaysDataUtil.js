@@ -73,13 +73,8 @@ export default {
   },
 
   getActionApplication(pdp, action) {
-    const { trace } = action;
-    if (!trace) {
-      return null;
-    }
-
-    const { applicationId } = trace;
-    return allApplications.getById(applicationId);
+    const { applicationId } = action;
+    return allApplications.getById(applicationId) || null;
   },
 
 
@@ -141,6 +136,11 @@ export default {
 
   getActionGroupAction(pdp, actionGroupId) {
     return pdp.indexes.userActions.byGroup.getFirst(actionGroupId);
+  },
+
+  /** @param {PathwaysDataProvider} pdp */
+  getActionTrace(pdp, action) {
+    return action.trace || null;
   },
 
   getActionGroupTimeSpent(pdp, actionGroupId) {
@@ -229,28 +229,10 @@ export default {
   //   return dp.util.getCodeChunkId(traceId);
   // },
 
-
-  getStaticContextId(pdp, actionId) {
-    const action = pdp.collections.userActions.getById(actionId);
-    return pdp.util.getActionStaticContextId(action);
-  },
-
-  getActionStaticContextId(pdp, action) {
-    // if (action.staticContext) {
-    //   // hackfix: in pdp version=1, EditorEvents does not contains applicationId, we can only assume it's 1 now
-    //   const { applicationId = 1, staticContext: { staticContextId } } = action;
-    //   return { applicationId, staticContextId };
-    // }
-
-    const dp = pdp.util.getActionApplication(action)?.dataProvider;
-    if (!dp) {
-      return null;
-    }
-
-    const { trace: { applicationId, contextId } } = action;
-    const { staticContextId } = dp.collections.executionContexts.getById(contextId);
-    // const staticContext = dp.collections.staticContexts.getById(staticContextId);
-    return { applicationId, staticContextId };
+  /** @param {PathwaysDataProvider} pdp */
+  getActionStaticContext(pdp, action) {
+    const { staticContext } = action;
+    return staticContext || null;
   },
 
 

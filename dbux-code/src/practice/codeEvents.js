@@ -4,7 +4,7 @@ import { commands, SymbolKind, window } from 'vscode';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { emitEditorAction } from '../userActions';
-// import { getOrCreateTracesAtCursor } from '../codeUtil/TracesAtCursor';
+import { getOrCreateTracesAtCursor } from '../codeUtil/TracesAtCursor';
 import { codeRangeToBabelLoc } from '../helpers/codeLocHelpers';
 
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
@@ -22,6 +22,7 @@ const defaultNewEventLineThreshold = 8;
  */
 export function initCodeEvents(manager, context) {
   let _previousSelectionData, _previousVisibleRangeData;
+  const traceAtCursor = getOrCreateTracesAtCursor(context);
 
   window.onDidChangeTextEditorSelection(async (e) => {
     if (!manager.practiceSession) {
@@ -46,8 +47,9 @@ export function initCodeEvents(manager, context) {
     if (isNewData(_previousSelectionData, data)) {
       Verbose && debug('is new');
       _previousSelectionData = data;
-      const extraEditorEventInfo = await getExtraEditorEventInfo(e.textEditor);
-      emitEditorAction(UserActionType.EditorSelectionChanged, data, extraEditorEventInfo);
+      const trace = traceAtCursor.getMostInner();
+      const symbol = await getCurrentSymbol(e.textEditor);
+      emitEditorAction(UserActionType.EditorSelectionChanged, { ...data, trace }, { symbol });
     }
   });
 
@@ -71,28 +73,21 @@ export function initCodeEvents(manager, context) {
     if (isNewData(_previousVisibleRangeData, data)) {
       Verbose && debug('is new');
       _previousVisibleRangeData = data;
-      const extraEditorEventInfo = await getExtraEditorEventInfo(e.textEditor);
-      emitEditorAction(UserActionType.EditorVisibleRangeChanged, data, extraEditorEventInfo);
+      const trace = traceAtCursor.getMostInner();
+      const symbol = await getCurrentSymbol(e.textEditor);
+      emitEditorAction(UserActionType.EditorVisibleRangeChanged, { ...data, trace }, { symbol });
     }
   });
-
-  // ###########################################################################
-  // extra data for code events
-  // ###########################################################################
-
-  async function getExtraEditorEventInfo(editor) {
-    // const trace = traceAtCursor.getMostInner();
-    const symbol = await getSymbolAt(editor.document.uri, editor.selections[0]?.start);
-
-    return {
-      symbol: convertVSCodeSymbol(symbol),
-    };
-  }
 }
 
 // ###########################################################################
 // utils
 // ###########################################################################
+
+async function getCurrentSymbol(editor) {
+  const symbol = await getSymbolAt(editor.document.uri, editor.selections[0]?.start);
+  return convertVSCodeSymbol(symbol);
+}
 
 function convertVSCodeSymbol(symbol) {
   if (symbol) {

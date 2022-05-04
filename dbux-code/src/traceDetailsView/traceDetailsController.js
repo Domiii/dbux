@@ -105,7 +105,7 @@ class TraceDetailsController {
     }
     if (trace) {
       traceSelection.selectTrace(trace, 'selectTraceAtCursor');
-      emitTraceUserAction(UserActionType.selectTrace, trace);
+      emitTraceUserAction(UserActionType.SelectTrace, trace);
     }
   }
 
