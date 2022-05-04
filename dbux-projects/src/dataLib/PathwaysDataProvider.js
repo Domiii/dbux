@@ -112,7 +112,11 @@ class ApplicationCollection extends PathwaysCollection {
    * @param {Application} application 
    */
   serialize(application) {
-    return extractApplicationData(application);
+    const { applicationId } = application;
+    return {
+      applicationId,
+      ...extractApplicationData(application)
+    };
   }
 
   async deserialize(appData) {

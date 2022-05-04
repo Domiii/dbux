@@ -28,6 +28,9 @@ dbux-babel-plugin/src/parse/plugins/_registry.js
 # research stuff
 dataFolder.lnk
 
+# docs_site/.build folder
+/docs_site/.build
+
 
 # yarn
 # see https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored

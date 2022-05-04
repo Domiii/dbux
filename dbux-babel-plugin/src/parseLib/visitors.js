@@ -9,7 +9,7 @@ import ParseRegistry from './ParseRegistry';
 
 import { isPathInstrumented } from '../helpers/astUtil';
 import { pathToString, pathToStringAnnotated } from '../helpers/pathHelpers';
-import { isPathSkipped } from 'src/helpers/traversalHelpers';
+import { isPathSkipped } from '../helpers/traversalHelpers';
 
 /**
  * @typedef {import('./ParseStack').default} ParseStack
@@ -19,6 +19,8 @@ import { isPathSkipped } from 'src/helpers/traversalHelpers';
  * @property {ParseStack} stack
  */
 
+
+const Verbose = 1;
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('visitors');
@@ -52,8 +54,8 @@ function visit(direction, ParserNodeClazz, path, state) {
     // return;
     // eslint-disable-next-line max-len
     const dirName = ParseDirection.nameFromForce(direction);
-    throw new Error(
-      // warn(
+
+    Verbose && warn(
       `Visiting [${dirName}] already instrumented path: [${ParserNodeClazz.name}] "${pathToString(path)}".` +
       ` Make sure not to instrument before instrumentation phase; this includes calls to scope.generateDeclared* etc.`
     );

@@ -42,6 +42,19 @@ You can bind commands to keys. [This official documentation explains how to easi
 If you are certain that a file executed in a [Dbux-enabled application](./dynamic-analysis/02-enable-dbux.mdx), make sure your [configuration is set up to include](./guides/01-runtime-trace-filtering.mdx) the file in that specific package or path.
 
 
+## How can I debug code remotely?
+
+While Dbux currently doesn't have native remote debugging capabilities on its own, it does work with VSCode remote sessions.
+
+1. If not already done, set up remote development with VSCode on your server via the "Remote: SSH" extension, as described [in this guide](https://code.visualstudio.com/docs/remote/ssh).
+2. In a VSCode remote session, install the dbux extension, in the same way you would do locally (going to "Extensions" in the sidebar, searching for "Dbux" and clicking "Install").
+3. Use Dbux normally!
+
+:::note
+Using VSCode's remote capabilities will result in the installation of a headless VSCode server complete with extension host and a copy of the Dbux extension on the remote server (in `~/.vscode-server`).
+:::
+
+
 ## It Just Won't Work!
 
 While technically not a question, this is certainly a frustrating experience to encounter.
