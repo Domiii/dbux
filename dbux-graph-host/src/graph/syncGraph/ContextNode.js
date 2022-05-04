@@ -244,7 +244,7 @@ class ContextNode extends HostComponentEndpoint {
       const { firstTrace } = this;
       if (firstTrace) {
         traceSelection.selectTrace(firstTrace);
-        this.componentManager.externals.emitCallGraphTraceAction(firstTrace, UserActionType.CallGraphTrace);
+        this.componentManager.externals.emitCallGraphTraceAction(UserActionType.CallGraphTrace, firstTrace);
       }
       else {
         this.componentManager.externals.alert('Cannot find any trace of this context.', false);
@@ -254,7 +254,7 @@ class ContextNode extends HostComponentEndpoint {
       const { callTrace } = this;
       if (callTrace) {
         traceSelection.selectTrace(callTrace);
-        this.componentManager.externals.emitCallGraphTraceAction(callTrace, UserActionType.CallGraphCallTrace);
+        this.componentManager.externals.emitCallGraphTraceAction(UserActionType.CallGraphCallTrace, callTrace);
       }
     },
     // toggleStaticContextHighlight() {

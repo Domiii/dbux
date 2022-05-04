@@ -79,9 +79,7 @@ export default {
     }
 
     const { applicationId } = trace;
-
-    const applicationSet = allApplications;
-    return applicationSet.getById(applicationId);
+    return allApplications.getById(applicationId);
   },
 
 
@@ -238,11 +236,11 @@ export default {
   },
 
   getActionStaticContextId(pdp, action) {
-    if (action.staticContext) {
-      // hackfix: in pdp version=1, EditorEvents does not contains applicationId, we can only assume it's 1 now
-      const { applicationId = 1, staticContext: { staticContextId } } = action;
-      return { applicationId, staticContextId };
-    }
+    // if (action.staticContext) {
+    //   // hackfix: in pdp version=1, EditorEvents does not contains applicationId, we can only assume it's 1 now
+    //   const { applicationId = 1, staticContext: { staticContextId } } = action;
+    //   return { applicationId, staticContextId };
+    // }
 
     const dp = pdp.util.getActionApplication(action)?.dataProvider;
     if (!dp) {

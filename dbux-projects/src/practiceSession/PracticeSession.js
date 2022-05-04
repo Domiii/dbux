@@ -3,7 +3,7 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import Stopwatch from './Stopwatch';
 import PracticeSessionState from './PracticeSessionState';
 import ExerciseStatus from '../dataLib/ExerciseStatus';
-import { emitSessionFinishedEvent } from '../userEvents';
+import { emitSessionFinishedEvent } from '../userActions';
 import PracticeSessionData from './PracticeSessionData';
 import PathwaysSession from './PathwaysSession';
 

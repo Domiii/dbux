@@ -1,4 +1,5 @@
 import { newLogger } from '@dbux/common/src/log/logger';
+import { uploadPathways } from '@dbux/projects/src/firestore/upload';
 import PathwaysDataBuffer from './PathwaysDataBuffer';
 
 // eslint-disable-next-line no-unused-vars
@@ -50,6 +51,10 @@ export class PathwaysDataContainer {
         const serializedData = session?.pdp.serializeJson(Object.entries(allData));
         this.addAllData(serializedData);
       });
+
+      if (this.sessionId) {
+        await uploadPathways(this.sessionId, 'info', session.serialize());
+      }
 
       await flushOldPromise;
     }

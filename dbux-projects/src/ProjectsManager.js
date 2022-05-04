@@ -19,7 +19,7 @@ import ExerciseStatus from './dataLib/ExerciseStatus';
 import BackendController from './backend/BackendController';
 import PathwaysDataProvider from './dataLib/PathwaysDataProvider';
 import PracticeSessionState from './practiceSession/PracticeSessionState';
-import { emitPracticeSessionEvent, onUserEvent, emitUserEvent } from './userEvents';
+import { emitPracticeSessionEvent, onUserAction, emitUserAction } from './userActions';
 import ExerciseDataProvider from './dataLib/ExerciseDataProvider';
 import initLang, { getTranslationScope } from './lang';
 import upload from './fileUpload';
@@ -136,9 +136,9 @@ export default class ProjectsManager {
 
     this.registerPDPEventListeners();
 
-    // NOTE: This is for public API. To emit event in dbux-projects, register event in dbux-projects/src/userEvents.js and import it directly 
+    // NOTE: This is for public API. To emit event in dbux-projects, register event in dbux-projects/src/userActions.js and import it directly 
     // this.onUserEvent = onUserEvent;
-    this.emitUserEvent = emitUserEvent;
+    this.emitUserAction = emitUserAction;
   }
 
   async init() {
@@ -662,7 +662,7 @@ export default class ProjectsManager {
    *  #########################################################################*/
 
   registerPDPEventListeners() {
-    onUserEvent((actionData) => {
+    onUserAction((actionData) => {
       if (this.practiceSession && !this.practiceSession.isStopped()) {
         this.practiceSession.pdp.addNewUserAction(actionData);
       }
@@ -1287,7 +1287,7 @@ export default class ProjectsManager {
     // await this._backend.login();
     // // Rules not edit yet, so needs login to read
 
-    // let collectionRef = this._backend.db.collection('userEvents');
+    // let collectionRef = this._backend.db.collection('userActions');
     // let result = await collectionRef.get();
     // let allData = [];
     // result.forEach(doc => {
@@ -1299,12 +1299,12 @@ export default class ProjectsManager {
     // this.externals.editor.showTextInNewFile('all.json', JSON.stringify(allData, null, 2));
   }
 
-  async deleteUserEvents() {
+  async deleteUserActions() {
     await this.getAndInitBackend();
     await this._backend.login();
     // Rules not edit yet, so needs login to read
 
-    let collectionRef = this._backend.db.collection('userEvents');
+    let collectionRef = this._backend.db.collection('userActions');
     let result = await collectionRef.get();
     await result.forEach(async (doc) => {
       await doc.ref.delete();

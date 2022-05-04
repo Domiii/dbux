@@ -5,7 +5,8 @@ import NestedError from '@dbux/common/src/NestedError';
 import { throttle } from '@dbux/common/src/util/scheduling';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
-import { emitSelectTraceAction } from '../userEvents';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
+import { emitTraceUserAction } from '../userActions';
 import { getRelatedAppIds } from '../codeDeco/editedWarning';
 import { showWarningMessage } from '../codeUtil/codeModals';
 import TraceDetailsNodeProvider from './TraceDetailsNodeProvider';
@@ -104,7 +105,7 @@ class TraceDetailsController {
     }
     if (trace) {
       traceSelection.selectTrace(trace, 'selectTraceAtCursor');
-      emitSelectTraceAction(trace);
+      emitTraceUserAction(UserActionType.selectTrace, trace);
     }
   }
 

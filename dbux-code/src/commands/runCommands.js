@@ -10,7 +10,7 @@ import { initRuntimeServer } from '../net/SocketServer';
 import { installDbuxDependencies } from '../codeUtil/installUtil';
 import { initProjectView } from '../projectViews/projectViewsController';
 import { getNodePath } from '../codeUtil/codePath';
-import { emitRunFileAction } from '../userEvents';
+import { emitRunFileAction } from '../userActions';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('DBUX run file');

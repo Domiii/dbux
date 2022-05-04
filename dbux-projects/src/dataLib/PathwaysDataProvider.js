@@ -12,7 +12,7 @@ import Indexes from '@dbux/data/src/indexes/Indexes';
 import { getGroupTypeByActionType } from '@dbux/data/src/pathways/ActionGroupType';
 import StepType, { getStepTypeByActionType } from '@dbux/data/src/pathways/StepType';
 import { extractApplicationData, importApplication } from '../dbux-analysis-tools/importExport';
-import { emitNewTestRun, emitNewApplicationsAction } from '../userEvents';
+import { emitNewTestRun, emitNewApplicationsAction } from '../userActions';
 import getFirstLine from '../util/readFirstLine';
 import PathwaysDataUtil from './pathwaysDataUtil';
 import TestRunsByExerciseIdIndex from './indexes/TestRunsByExerciseIdIndex';

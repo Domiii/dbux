@@ -10,7 +10,7 @@ import { renderTraceDecorations, clearTraceDecorations } from './traceDecorator'
 import { initTraceDecorators } from './traceDecoConfig';
 import { initEditedWarning } from './editedWarning';
 import { set as mementoSet, get as mementoGet } from '../memento';
-import { emitShowHideDecorationAction } from '../userEvents';
+import { emitShowHideDecorationAction } from '../userActions';
 // import DataProvider from '@dbux/data/src/DataProvider';
 // import StaticContextType from '@dbux/common/src/types/constants/StaticContextType';
 

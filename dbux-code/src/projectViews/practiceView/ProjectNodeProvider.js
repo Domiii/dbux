@@ -1,6 +1,6 @@
 import BaseTreeViewNodeProvider from '../../codeUtil/treeView/BaseTreeViewNodeProvider';
 import EmptyTreeViewNode from '../../codeUtil/treeView/EmptyNode';
-import { emitProjectViewListModeChanged } from '../../userEvents';
+import { emitProjectViewListModeChanged } from '../../userActions';
 import ProjectNode from './ProjectNode';
 import ChapterNode from './ChapterNode';
 

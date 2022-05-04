@@ -5,7 +5,7 @@ import isString from 'lodash/isString';
 import isEmpty from 'lodash/isEmpty';
 import WebviewWrapper from '../codeUtil/WebviewWrapper';
 import { getThemeResourcePathUri } from '../codeUtil/codePath';
-import { emitShowExerciseIntroductionViewAction } from '../userEvents';
+import { emitShowExerciseIntroductionViewAction } from '../userActions';
 
 /**
  * @typedef {import('@dbux/projects/src/projectLib/Exercise').default} Exercise

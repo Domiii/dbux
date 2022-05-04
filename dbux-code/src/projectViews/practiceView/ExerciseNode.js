@@ -3,7 +3,7 @@ import ExerciseStatus from '@dbux/projects/src/dataLib/ExerciseStatus';
 import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
 import { showInformationMessage } from '../../codeUtil/codeModals';
-import { emitOpenWebsiteAction } from '../../userEvents';
+import { emitOpenWebsiteAction } from '../../userActions';
 import cleanUp from './cleanUp';
 
 /** @typedef {import('@dbux/projects/src/projectLib/Exercise').default} Exercise */
@@ -80,11 +80,15 @@ export default class ExerciseNode extends BaseTreeViewNode {
 
   }
 
+  /**
+   * NOTE: Currently this will never happened, since the `Show Website` button in `PracticeView` is hidden while project is activated.
+   *       Use `Run` button in `SessionView` instead to open website.
+   */
   async showWebsite() {
-    const url = this.exercise.website;
+    const { website: { url }, id } = this.exercise;
     if (url) {
       const success = await env.openExternal(Uri.parse(url));
-      emitOpenWebsiteAction(url);
+      emitOpenWebsiteAction(id, url);
       return success;
     }
 

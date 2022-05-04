@@ -1,6 +1,6 @@
 import NanoEvents from 'nanoevents';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { emitRuntimeServerStatusChangedAction } from '../userEvents';
+import { emitRuntimeServerStatusChangedAction } from '../userActions';
 import RuntimeClient from './RuntimeClient';
 import { makeListenSocket } from './serverUtil';
 

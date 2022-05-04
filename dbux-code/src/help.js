@@ -1,7 +1,7 @@
 import { Uri, env } from 'vscode';
 import { showInformationMessage } from './codeUtil/codeModals';
 import { translate } from './lang';
-import { emitShowHelpAction } from './userEvents';
+import { emitShowHelpAction } from './userActions';
 
 let dialogController;
 

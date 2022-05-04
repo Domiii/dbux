@@ -8,10 +8,10 @@ import PromiseLink from '@dbux/common/src/types/PromiseLink';
 import PromiseLinkType from '@dbux/common/src/types/constants/PromiseLinkType';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { showInformationMessage } from '../../codeUtil/codeModals';
-import makeTreeItem, { makeTreeItems } from '../../helpers/makeTreeItem';
+import makeTreeItem from '../../helpers/makeTreeItem';
 import TraceDetailNode from './TraceDetailNode';
 import { makeArrayLengthLabel } from '../../helpers/treeViewUtil';
-import { emitSelectTraceAction } from '../../userEvents';
+import { emitTraceUserAction } from '../../userActions';
 
 /** @typedef {import('@dbux/common/src/types/Trace').default} Trace */
 
@@ -110,7 +110,7 @@ class RootEdgesTDNode extends TraceDetailNode {
       const trace = dp.util.getTraceOfAsyncNode(forkParent.asyncNodeId);
       if (trace) {
         traceSelection.selectTrace(trace);
-        emitSelectTraceAction(trace, UserActionType.TDAsyncGoToForkParent);
+        emitTraceUserAction(UserActionType.TDAsyncGoToForkParent, trace);
         return;
       }
     }
@@ -123,7 +123,7 @@ class RootEdgesTDNode extends TraceDetailNode {
       const schedulerTrace = this.dp.collections.traces.getById(schedulerTraceId);
       if (schedulerTrace) {
         traceSelection.selectTrace(schedulerTrace);
-        emitSelectTraceAction(schedulerTrace, UserActionType.TDAsyncGoToScheduler);
+        emitTraceUserAction(UserActionType.TDAsyncGoToScheduler, schedulerTrace);
         return;
       }
     }

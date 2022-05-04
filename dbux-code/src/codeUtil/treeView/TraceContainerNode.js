@@ -2,7 +2,7 @@ import { TreeItemCollapsibleState } from 'vscode';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { makeContextLabel, makeTraceLabel } from '@dbux/data/src/helpers/makeLabels';
 import traceSelection from '@dbux/data/src/traceSelection';
-import { emitTDExecutionGroupModeChangedAction } from '../../userEvents';
+import { emitTDExecutionGroupModeChangedAction } from '../../userActions';
 import BaseTreeViewNode from './BaseTreeViewNode';
 import TraceNode from './TraceNode';
 

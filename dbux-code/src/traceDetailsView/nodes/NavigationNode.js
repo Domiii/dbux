@@ -1,9 +1,8 @@
-import { window } from 'vscode';
 import tracePlayback from '@dbux/data/src/playback/tracePlayback';
 import traceSelection from '@dbux/data/src/traceSelection';
 import { newLogger } from '@dbux/common/src/log/logger';
 import BaseTreeViewNode from '../../codeUtil/treeView/BaseTreeViewNode';
-import { emitNavigationAction } from '../../userEvents';
+import { emitNavigationAction } from '../../userActions';
 import { showInformationMessage } from '../../codeUtil/codeModals';
 
 // eslint-disable-next-line no-unused-vars
@@ -85,7 +84,7 @@ export default class NavigationNode extends BaseTreeViewNode {
     const trace = this.findTargetTrace(methodName);
     if (trace) {
       traceSelection.selectTrace(trace);
-      emitNavigationAction(methodName, `navigation.${methodName}`, trace);
+      emitNavigationAction(trace, methodName);
     }
     else {
       showInformationMessage(`Can't find "${methodName}" of current trace.`);

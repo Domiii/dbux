@@ -7,7 +7,7 @@ import { registerCommand } from './commandUtil';
 import { chooseFile, showInformationMessage, showWarningMessage } from '../codeUtil/codeModals';
 import { getCurrentResearch } from '../research/Research';
 import { translate } from '../lang';
-import { emitAnnotateTraceAction, emitStopRunnerAction } from '../userEvents';
+import { emitAnnotateTraceAction, emitStopRunnerAction } from '../userActions';
 import { addProjectFolderToWorkspace } from '../codeUtil/workspaceUtil';
 
 /** @typedef {import('../projectViews/projectViewsController').ProjectViewController} ProjectViewController */

@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import PathwaysDataProvider from '../dataLib/PathwaysDataProvider';
-import { emitSessionFinishedEvent } from '../userEvents';
+import { emitSessionFinishedEvent } from '../userActions';
 import PracticeSessionState, { isStateFinishedType, isStateStoppedType } from './PracticeSessionState';
 
 // eslint-disable-next-line no-unused-vars

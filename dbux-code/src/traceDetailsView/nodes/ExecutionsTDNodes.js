@@ -2,7 +2,7 @@ import { makeTraceValueLabel } from '@dbux/data/src/helpers/makeLabels';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import { emitSelectTraceAction } from '../../userEvents';
+import { emitTraceUserAction } from '../../userActions';
 import TraceNode from '../../codeUtil/treeView/TraceNode';
 import TraceContainerNode, { UngroupedNode } from '../../codeUtil/treeView/TraceContainerNode';
 
@@ -23,7 +23,7 @@ class ExecutionNode extends TraceNode {
 
   handleClick() {
     super.handleClick();
-    emitSelectTraceAction(this.trace, UserActionType.TDExecutionsTraceUse);
+    emitTraceUserAction(UserActionType.TDExecutionsTraceUse, this.trace);
   }
 }
 

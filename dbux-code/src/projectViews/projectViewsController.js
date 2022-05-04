@@ -15,7 +15,7 @@ import { initCodeEvents } from '../practice/codeEvents';
 import { translate } from '../lang';
 import { getLogsDirectory } from '../codeUtil/codePath';
 import { addProjectFolderToWorkspace, getDefaultWorkspaceFilePath, isProjectFolderInWorkspace, maybeCreateWorkspaceFile } from '../codeUtil/workspaceUtil';
-import { emitShowHideProjectViewsAction } from '../userEvents';
+import { emitShowHideProjectViewsAction } from '../userActions';
 
 /** @typedef {import('./practiceView/ExerciseNode').ExerciseNode} ExerciseNode */
 /** @typedef {import('@dbux/projects/src/projectLib/Exercise').default} Exercise */
