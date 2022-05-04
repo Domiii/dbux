@@ -62,25 +62,19 @@ export default class PathwaysDataBuffer {
     try {
       await this.buffer.acquireLock();
 
-      let buffer;
       try {
-        buffer = this.safeGetBuffer();
-        await this.buffer.set([]);
-      }
-      finally {
-        this.buffer.releaseLock();
-      }
-
-      try {
+        const buffer = this.safeGetBuffer();
         await this.addDoc(buffer);
       }
       catch (err) {
         throw new NestedError(`Failed when flushing`, err);
       }
 
+      await this.buffer.set([]);
       this._previousFlushTime = Date.now();
     }
     finally {
+      this.buffer.releaseLock();
       this._flushing = false;
     }
   }
