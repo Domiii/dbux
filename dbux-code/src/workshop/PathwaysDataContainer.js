@@ -2,19 +2,27 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { uploadPathways } from '@dbux/projects/src/firestore/upload';
 import PathwaysDataBuffer from './PathwaysDataBuffer';
 
+/** @typedef {import('./WorkshopSessionController').default} WorkshopSessionController */
+
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PathwaysDataContainer');
 
 // const Verbose = true;
 const Verbose = false;
 
-export class PathwaysDataContainer {
+export default class PathwaysDataContainer {
   /**
    * @type {Object<string, PathwaysDataBuffer>}
    */
   buffers;
 
-  constructor() {
+  /**
+   * @type {WorkshopSessionController}
+   */
+  workshopSessionController;
+
+  constructor(controller) {
+    this.workshopSessionController = controller;
     this.prevListener = null;
     this.reset();
   }
@@ -53,7 +61,16 @@ export class PathwaysDataContainer {
       });
 
       if (this.sessionId) {
-        await uploadPathways(this.sessionId, 'info', session.serialize());
+        const { code, workshopSessionId, nickname } = this.workshopSessionController;
+        const data = {
+          code,
+          workshopSessionId,
+          nickname,
+          ...session.serialize()
+        };
+        // remove unused absolute file paths
+        delete data.logFilePath;
+        await uploadPathways(this.sessionId, 'info', data);
       }
 
       await flushOldPromise;
@@ -73,15 +90,4 @@ export class PathwaysDataContainer {
   async flushAll() {
     return await Promise.all(Object.values(this.buffers).map((buffer) => buffer.flush()));
   }
-}
-
-/**
- * @type {PathwaysDataContainer}
- */
-let container;
-
-export function initPathwaysDataContainer() {
-  container = new PathwaysDataContainer();
-
-  return container;
 }

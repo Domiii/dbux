@@ -26,8 +26,12 @@ export async function uploadPathways(sessionId, collectionName, entries) {
 }
 
 export async function upload(url, data) {
-  const serializedData = serialize(data);
-  const dataString = JSON.stringify({ fields: serializedData });
+  // `firestore-rest-serdes` produce redundant structure when serialize
+  // const serializedData = serialize(data);
+  // const dataString = JSON.stringify({ fields: serializedData });
+
+  const serializedData = JSON.stringify(data);
+  const dataString = JSON.stringify({ fields: { serializedData: { stringValue: serializedData } } });
 
   const options = {
     method: 'POST',
@@ -47,7 +51,7 @@ export async function upload(url, data) {
         const resString = Buffer.concat(body).toString();
         if (res.statusCode < 200 || res.statusCode > 299) {
           const err = JSON.parse(resString)?.error;
-          reject(new Error(`HTTP status code ${res.statusCode}\n ${JSON.stringify(err, null, 2)}`));
+          reject(new Error(`HTTP status code ${res.statusCode}\n ${err}`));
         }
         else {
           resolve(resString);

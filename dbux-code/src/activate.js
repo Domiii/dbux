@@ -21,7 +21,7 @@ import { initDialogController } from './dialogs/dialogController';
 import DialogNodeKind from './dialogs/DialogNodeKind';
 import { showInformationMessage } from './codeUtil/codeModals';
 import { translate } from './lang';
-import { initWorkshopSession } from './workshop';
+import { getWorkshopSessionController } from './workshop/WorkshopSessionController';
 // import { initPlugins } from './PluginMgr';
 
 // eslint-disable-next-line no-unused-vars
@@ -37,7 +37,8 @@ export default async function activate(context) {
   // make sure, projectManager is available
   const projectsManager = createProjectManager(context);
 
-  await initWorkshopSession(projectsManager);
+  const workshopSessionController = getWorkshopSessionController();
+  workshopSessionController.initWorkshopSession(projectsManager);
 
   // install dependencies (and show progress bar) right away
   await installDbuxDependencies();

@@ -4,6 +4,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
+import { deleteCachedLocRange } from '@dbux/data/src/util/misc';
 import DataFlowFilterModeType from './dataFlowView/DataFlowFilterModeType';
 import DataFlowSearchModeType from './dataFlowView/DataFlowSearchModeType';
 import PackageNodeSortMode from './globalAnalysisView/nodes/PackageNodeSortMode';
@@ -234,8 +235,9 @@ function makeTraceStaticInformation(trace) {
   const app = allApplications.getById(applicationId);
   const dp = app.dataProvider;
   const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
-  const staticContext = dp.util.getTraceStaticContext(traceId);
+  const staticContext = { ...dp.util.getTraceStaticContext(traceId) };
   const { filePath: file } = dp.collections.staticProgramContexts.getById(staticContext.programId);
+  deleteCachedLocRange(staticContext.loc);
   return {
     applicationId,
     file,
