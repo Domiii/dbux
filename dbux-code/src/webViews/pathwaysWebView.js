@@ -2,12 +2,12 @@ import {
   ViewColumn
 } from 'vscode';
 import PathwaysHost from '@dbux/graph-host/src/PathwaysHost';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import { goToTrace, goToCodeLoc } from '../codeUtil/codeNav';
 import { getProjectManager } from '../projectViews/projectControl';
 import { emitPathwaysAction } from '../userEvents';
 import RichWebView from './RichWebView';
 import { decorateVisitedTraces, stopDecorating } from './pathwaysDecorations';
-import UserActionType from '@dbux/data/src/pathways/UserActionType';
 
 const defaultColumn = ViewColumn.Two;
 
