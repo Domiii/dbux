@@ -42,11 +42,16 @@ export class DataNodeCollection extends Collection {
    * NOTE: this might be followed by more create*DataNode calls, all targeting `callId`.
    * 
    * future-work: consider patching this up in post by moving it from BCE to CER trace?
+   * 
+   * @param {DataNodeMeta} meta 
    */
   createBCEOwnDataNode(value, callId, type, varAccess = null, inputs = null, meta = null) {
     return this.createOwnDataNode(value, callId, type, varAccess, inputs, meta);
   }
 
+  /**
+   * @param {DataNodeMeta} meta 
+   */
   createOwnDataNode(value, traceId, type, varAccess = null, inputs = null, meta = null) {
     const trace = traceCollection.getById(traceId);
     if (!meta) {
@@ -99,6 +104,10 @@ export class DataNodeCollection extends Collection {
     return this.createDataNode(value, traceId, type, varAccess, inputs, meta, refId);
   }
 
+  /**
+   * 
+   * @param {DataNodeMeta} meta 
+   */
   createDataNode(value, traceId, type, varAccess, inputs, meta = null, refId = null) {
     const dataNode = pools.dataNodes.allocate();
 

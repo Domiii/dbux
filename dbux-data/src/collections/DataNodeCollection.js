@@ -1,4 +1,6 @@
+import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import SpecialObjectType from '@dbux/common/src/types/constants/SpecialObjectType';
+import TraceType from '@dbux/common/src/types/constants/TraceType';
 import DataNode from '@dbux/common/src/types/DataNode';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import Collection from '../Collection';
@@ -130,7 +132,30 @@ export default class DataNodeCollection extends Collection {
   }
 
   postIndexProcessed(dataNodes) {
+    this.errorWrapMethod('resolveDataNodeType', dataNodes);
     this.errorWrapMethod('resolveDataIds', dataNodes);
+  }
+
+  /**
+   * For simplicity's sake, the run-time assigns `Read` to all expression result nodes.
+   * Here, we set the `Compute` type instead.
+   * 
+   * @param {DataNode[]} dataNodes 
+   */
+  resolveDataNodeType(dataNodes) {
+    const { dp } = this;
+    for (const dataNode of dataNodes) {
+      const { nodeId, traceId } = dataNode;
+      if (dataNode.type === DataNodeType.Read) {            // is Read
+        const trace = dp.util.getTrace(traceId);
+        if (trace.nodeId === nodeId) {                      // is owned by its `trace`
+          const traceType = dp.util.getTraceType(traceId);
+          if (traceType === TraceType.ExpressionResult) {   // is `ExpressionResult`
+            dataNode.type = DataNodeType.Compute;
+          }
+        }
+      }
+    }
   }
 
   /**

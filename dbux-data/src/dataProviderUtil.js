@@ -497,8 +497,16 @@ export default {
     return dp.indexes.dataNodes.byTrace.get(valueTrace.traceId);
   },
 
+  /** @param {DataProvider} dp */
   getPrimitiveDataNodes(dp) {
     return dp.indexes.dataNodes.simple.get(1) || EmptyArray;
+  },
+
+  /** @param {DataProvider} dp */
+  isTraceOwnDataNode(dp, nodeId) {
+    const dataNode = dp.collections.dataNodes.getById(nodeId);
+    const trace = dp.util.getTrace(dataNode.traceId);
+    return trace.nodeId === nodeId;
   },
 
   /** @param {DataProvider} dp */

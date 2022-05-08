@@ -550,7 +550,7 @@ export default class RuntimeMonitor {
     const schedulerTraceId = null;
     const resumeContext = executionContextCollection.pushResume(
       contextType,
-      stackDepth, runId, realContextId, parentContextId, parentTraceId, programId, inProgramResumeStaticContextId, schedulerTraceId, 
+      stackDepth, runId, realContextId, parentContextId, parentTraceId, programId, inProgramResumeStaticContextId, schedulerTraceId,
       definitionTid
     );
     if (!realContextId) {
@@ -593,7 +593,7 @@ export default class RuntimeMonitor {
   //   const resumeContextId = this._runtime.peekCurrentContextId();
   //   return this.popResume(resumeContextId);
   // }
-  
+
 
   popResume(resumeContextId = 0) {
     // sanity checks
@@ -775,6 +775,9 @@ export default class RuntimeMonitor {
   // Basics
   // ###########################################################################
 
+  /**
+   * @param {DataNodeMeta} valueMeta
+   */
   traceExpression(programId, value, tid, inputs, valueMeta = null) {
     if (!this._ensureExecuting()) {
       return value;
@@ -961,6 +964,10 @@ export default class RuntimeMonitor {
     return value;
   }
 
+  /**
+   * Is called when class gets instantiated w/ `value` == `this`.
+   * Instrumented via iife property
+   */
   traceInstance(programId, value, tid, privateMethods) {
     if (!this._ensureExecuting()) {
       return value;
@@ -976,6 +983,7 @@ export default class RuntimeMonitor {
         privateMethods: privateMethodNames
       } } = staticTraceCollection.getById(staticTraceId);
 
+      // add privateMethods nodes
       for (let i = 0; i < privateMethodNames.length; ++i) {
         const methodName = privateMethodNames[i];
         const [method, methodTid] = privateMethods[i];
@@ -1237,7 +1245,7 @@ export default class RuntimeMonitor {
     }
 
     // DataNodeType.Create
-    dataNodeCollection.createOwnDataNode(value, arrTid, DataNodeType.Write, null, null, ShallowValueRefMeta);
+    dataNodeCollection.createOwnDataNode(value, arrTid, DataNodeType.Compute, null, null, ShallowValueRefMeta);
 
     // for each element: add (new) write node which has (original) read node as input
     let idx = 0;
@@ -1285,7 +1293,7 @@ export default class RuntimeMonitor {
     }
 
     // DataNodeType.Create
-    const objectNode = dataNodeCollection.createOwnDataNode(value, objectTid, DataNodeType.Write, null, null, ShallowValueRefMeta);
+    const objectNode = dataNodeCollection.createOwnDataNode(value, objectTid, DataNodeType.Compute, null, null, ShallowValueRefMeta);
     const objectNodeId = objectNode.nodeId;
 
     // for each prop: add (new) write node which has (original) read node as input

@@ -612,6 +612,7 @@ class ValueCollection extends Collection {
 
   /**
    * @param {Map} visited
+   * @param {DataNodeMeta} meta
    * @return {ValueRef}
    */
   _serialize(value, nodeId, depth = 1, category = null, meta = null) {
