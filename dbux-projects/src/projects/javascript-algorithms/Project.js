@@ -93,8 +93,8 @@ export default class JavascriptAlgorithmProject extends Project {
        */
       // dbuxJs: null,
       dbuxArgs: [
-        cfg.dbuxArgs,
-        '--pw=jest[-]circus,jest[-]runner,jest[-]runtime,jest[-]environment[-]node,jest[-]jasmine2', //,@jest/core',
+        cfg.dbuxArgs
+        // '--pw=jest[-]circus,jest[-]runner,jest[-]runtime,jest[-]environment[-]node,jest[-]jasmine2', //,@jest/core',
         //   /**
         //    * babel, debug, pirates, resolve, import, jest-resolve, jest-runtime, @jest/transform, regenerator-transform, source-map*: very likely to mess things up.
         //    * human-signals, jest-haste-map, safe-buffer: caused weird problems?
