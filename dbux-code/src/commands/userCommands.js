@@ -297,6 +297,23 @@ export function initUserCommands(extensionContext) {
   registerCommand(extensionContext, 'dbux.searchValues', async () => {
     return activateSearch(SearchMode.ByValue);
   });
+
+  /** ###########################################################################
+   * DDG
+   *  #########################################################################*/
+
+  registerCommand(extensionContext, 'dbux.showDDGOfContext', async () => {
+    const trace = traceSelection.selected;
+    if (trace) {
+      const { applicationId, contextId } = trace;
+      const dp = allApplications.getById(applicationId).dataProvider;
+      dp.buildDDGForContext(contextId);
+      // TODO-M: open webview
+    }
+    else {
+      await showInformationMessage('No trace selected');
+    }
+  });
 }
 
 /** ###########################################################################

@@ -262,6 +262,14 @@
         "title": "Dbux: Show output channel"
       },
       {
+        "command": "dbux.showDDGOfContext",
+        "title": "Dbux: Show DDG of context",
+        "icon": {
+          "light": "resources/light/dependency.svg",
+          "dark": "resources/dark/dependency.svg"
+        }
+      },
+      {
         "command": "dbuxGlobalAnalysisView.showError",
         "title": "Go to Error",
         "icon": {
