@@ -1,4 +1,18 @@
 /** ###########################################################################
+ * global setup
+ * ############################################################################*/
+ 
+html, body {
+  width: 100%;
+  height: 100%;
+  font-size: 12px;
+  /* NOTE: courier is a rather "big" font, making smaller font size seem bigger */
+  font-family: "Lucida Console", Courier, monospace;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/** ###########################################################################
  * misc + general-purpose
  * ############################################################################ */
 

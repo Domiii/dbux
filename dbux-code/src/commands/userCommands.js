@@ -18,6 +18,7 @@ import { registerCommand } from './commandUtil';
 import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../applicationsView/applicationModals';
 import { showGraphView, hideGraphView } from '../webViews/graphWebView';
 import { showPathwaysView, hidePathwaysView } from '../webViews/pathwaysWebView';
+import { showDDGView } from '../webViews/ddgWebView';
 import { setShowDeco } from '../codeDeco';
 import { toggleNavButton } from '../toolbar';
 import { toggleErrorLog } from '../logging';
@@ -113,6 +114,14 @@ export function initUserCommands(extensionContext) {
 
   registerCommand(extensionContext, 'dbux.hidePathwaysView', async () => {
     hidePathwaysView();
+  });
+
+  // ###########################################################################
+  // show/hide DDG view
+  // ###########################################################################
+
+  registerCommand(extensionContext, 'dbux.showDataDependencyGraph', async () => {
+    await showDDGView();
   });
 
   // ###########################################################################
