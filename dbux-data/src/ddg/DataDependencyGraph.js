@@ -1,19 +1,20 @@
 /** @typedef {import('../RuntimeDataProvider').default} RuntimeDataProvider */
 
-import DDGSelectedSet from './DDGSelectedSet';
+// import DDGSelectedSet from './DDGSelectedSet';
+import DDGTimeline from './DDGTimeline';
 
 export default class DataDependencyGraph {
-  /**
-   * @type {DDGSelectedSet}
-   */
-  selectedSet;
+  // /**
+  //  * @type {DDGSelectedSet}
+  //  */
+  // selectedSet;
 
   writeNodes;
 
   edges;
 
   /**
-   * @type {number}
+   * @type {string}
    */
   id;
 
@@ -26,6 +27,8 @@ export default class DataDependencyGraph {
   }
 
   build(inputNodes) {
-    this.selectedSet = new DDGSelectedSet(this, inputNodes);
+    // this.selectedSet = inputNodes;
+    // this.selectedSet = new DDGSelectedSet(this, inputNodes);
+    this.timeline = new DDGTimeline(this, inputNodes);
   }
 }

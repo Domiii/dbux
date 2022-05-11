@@ -2,7 +2,7 @@ import RuntimeDataProvider from './RuntimeDataProvider';
 import dataProviderUtil from './dataProviderUtil';
 
 import CallGraph from './callGraph/CallGraph';
-import DataDependencyGraph from './ddg/DataDependencyGraph';
+import DDGSet from './ddg/DDGSet';
 
 import TracesByFileIndex from './impl/indexes/TracesByFileIndex';
 import FirstTracesIndex from './impl/indexes/FirstTracesIndex';
@@ -81,7 +81,7 @@ export function newDataProvider(application) {
   dp.callGraph = new CallGraph(dp);
 
   // DDG
-  dp.dataDependencyGraph = new DataDependencyGraph();
+  dp.dataDependencyGraphs = new DDGSet(dp);
 
   // indexes
   dp.addIndex(new StaticContextsByFileIndex());

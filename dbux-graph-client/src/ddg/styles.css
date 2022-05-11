@@ -12,4 +12,5 @@
 
 .timeline-node {
   position: absolute;
+  border: 1px solid white;
 }

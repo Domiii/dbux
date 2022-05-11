@@ -93,7 +93,7 @@ export default class RuntimeDataProvider extends DataProviderBase {
 
   addData(newData, isRaw = true) {
     this.reporter.preData(newData);
-    
+
     // const minAsyncNodeId = this.collections.asyncNodes.getLast()?.rootContextId || 0;
 
     // actually add data
@@ -109,9 +109,7 @@ export default class RuntimeDataProvider extends DataProviderBase {
     return result;
   }
 
-  buildDDGForContext(contextId) {
-    // TODO-M: pick related DataNodes and build
-    const dataNodes = [];
-    this.ddgs.newDataDependencyGraph(dataNodes);
+  getOrCreateDDGForContext(contextId) {
+    return this.ddgs.getOrCreateDDGForContext(contextId);
   }
 }

@@ -199,7 +199,7 @@
       },
       {
         "command": "dbux.showDataDependencyGraph",
-        "title": "Dbux: Show Data Dependency Graph",
+        "title": "Dbux Dev: Show Data Dependency Graph",
         "icon": {
           "light": "resources/light/dependency.svg",
           "dark": "resources/dark/dependency.svg"
@@ -1139,6 +1139,10 @@
         {
           "command": "dbux.hideGraphView",
           "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.showDataDependencyGraph",
+          "when": "dbux.context.activated && dbux.context.nodeEnv == development"
         },
         {
           "command": "dbux.showPathwaysView",

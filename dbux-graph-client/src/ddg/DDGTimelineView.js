@@ -8,7 +8,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   }
 
   setupEl() {
-    this.nodes = [];
+    this.nodeElMap = new Map();
     this.jsPlumb = jsPlumbBrowserUI.newInstance({
       container: this.el
     });
@@ -17,33 +17,38 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   update() {
     // rebuild graph
     this.jsPlumb.batch(() => {
-      this.clearNodes();
-      this.addNodes();
+      this.clearGraph();
+      this.buildGraph();
     });
   }
 
   buildGraph() {
-    const { dataNodes } = this.states;
+    const { nodes, edges } = this.state;
 
     // build nodes
-    for (let i = 0; i < 10; i++) {
-      const el = compileHtmlElement(/*html*/`<div class="timeline-node">Node#${i}</div>`);
-      this.nodes[i] = el;
+    for (let i = 0; i < nodes.length; i++) {
+      const node = nodes[i];
+      const el = compileHtmlElement(/*html*/`<div class="timeline-node">Node#${node.nodeId}</div>`);
+      el.style.left = '200px';
+      el.style.top = `${30 * i}px`;
+      this.nodeElMap.set(node.nodeId, el);
       this.el.appendChild(el);
       // instance.addEndpoint(el, { endpoint: DotEndpoint.type });
+      this.jsPlumb.manage(el);
     }
 
     // add edges
-    for (let i = 0; i < 10; i++) {
-      for (let j = 0; j < 10; j++) {
-        this.jsPlumb.connect({ source: this.nodes[i], target: this.nodes[j] });
-      }
+    for (const edge of edges) {
+      const source = this.nodeElMap.get(edge.from);
+      const target = this.nodeElMap.get(edge.to);
+      this.jsPlumb.connect({ source, target });
     }
   }
 
   clearGraph() {
-    for (const node of this.nodes) {
+    for (const node of this.nodeElMap.values()) {
       this.jsPlumb.remove(node);
     }
+    this.nodeElMap = new Map();
   }
 }

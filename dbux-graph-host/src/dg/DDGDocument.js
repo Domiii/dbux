@@ -1,4 +1,5 @@
 // import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
+import traceSelection from '@dbux/data/src/traceSelection/index';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
 export default class DDGDocument extends HostComponentEndpoint {
@@ -10,10 +11,14 @@ export default class DDGDocument extends HostComponentEndpoint {
 
   init() {
     this.createOwnComponents();
+
+    this.addDisposable(traceSelection.onTraceSelectionChanged(() => {
+      this.timelineView.refresh();
+    }));
+    this.timelineView.refresh();
   }
 
   update() {
-
   }
 
   createOwnComponents() {

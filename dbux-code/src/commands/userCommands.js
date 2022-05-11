@@ -120,6 +120,7 @@ export function initUserCommands(extensionContext) {
   // show/hide DDG view
   // ###########################################################################
 
+  // dev-only
   registerCommand(extensionContext, 'dbux.showDataDependencyGraph', async () => {
     await showDDGView();
   });
@@ -314,10 +315,7 @@ export function initUserCommands(extensionContext) {
   registerCommand(extensionContext, 'dbux.showDDGOfContext', async () => {
     const trace = traceSelection.selected;
     if (trace) {
-      const { applicationId, contextId } = trace;
-      const dp = allApplications.getById(applicationId).dataProvider;
-      dp.buildDDGForContext(contextId);
-      // TODO-M: open webview
+      await showDDGView();
     }
     else {
       await showInformationMessage('No trace selected');

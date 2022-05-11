@@ -1,6 +1,9 @@
 /** @typedef {import('@dbux/common/src/types/DataNode').default} DataNode */
 /** @typedef {import('./DataDependencyGraph').default} DataDependencyGraph */
 
+/**
+ * @deprecated
+ */
 export default class DDGSelectedSet {
   /**
    * actual roots in selected set
