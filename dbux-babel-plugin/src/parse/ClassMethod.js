@@ -1,5 +1,6 @@
 // import { instrumentMethodKey } from '../instrumentation/builders/classes';
 import BaseNode from './BaseNode';
+import FunctionPlugin from './plugins/Function';
 
 /**
  * 
@@ -41,6 +42,9 @@ export default class ClassMethod extends BaseNode {
       propertyVar = contextNode.Traces.generateDeclaredUidIdentifier('m');
     }
 
+    /**
+     * @type {FunctionPlugin}
+     */
     const Function = this.getPlugin('Function');
     const traceCfg = Traces.addTrace({
       path,

@@ -202,6 +202,8 @@ export function isPopTrace(traceType) {
 const declarationTypes = new Array(TraceType.getValueMaxIndex()).map(() => false);
 declarationTypes[TraceType.Declaration] = true;
 declarationTypes[TraceType.FunctionDeclaration] = true;
+// TODO: this messes things up with ClassMethod (→ breaks `class5.js` and friends)
+// declarationTypes[TraceType.FunctionDefinition] = true;
 declarationTypes[TraceType.ClassDeclaration] = true;
 declarationTypes[TraceType.DeclareAndWriteVar] = true;
 declarationTypes[TraceType.Param] = true;
