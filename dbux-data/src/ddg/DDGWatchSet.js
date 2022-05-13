@@ -5,146 +5,133 @@
  * @deprecated
  */
 export default class DDGWatchSet {
-  /**
-   * actual roots in selected set
-   * @type {Set<number>}
-   */
-  selectedSetRoots;
+  // /**
+  //  * actual roots in selected set
+  //  * @type {Set<number>}
+  //  */
+  // selectedSetRoots;
 
-  /**
-   * all individual DataNodes in all `selectedSetRoot` trees
-   * @type {Set<number>}
-   */
-  selectedSet;
+  // /**
+  //  * all individual DataNodes in all `selectedSetRoot` trees
+  //  * @type {Set<number>}
+  //  */
+  // selectedSet;
+  /** @type {number[]} */
+  watchTraceIds;
+
+  declarationTids;
+  initialRefIds;
 
   /**
    * 
    * @param {DataDependencyGraph} ddg 
    * @param {DataNode[]} inputNodes NOTE: input set is actually a set of trees of DataNodes
    */
-  constructor(ddg, inputNodes) {
+  constructor(ddg, watchTraceIds) {
     this.ddg = ddg;
-    this.selectedSetRoots = new Set();
-    this.selectedSet = [];
+    
+    watchTraceIds = makeUnique(watchTraceIds);
+    this.watchTraceIds = watchTraceIds;
 
-    const visited = new Set();
-    for (const inputNode of inputNodes) {
-      this.addSelectedSet(null, inputNode, visited);
-    }
+    // get all watched declarationTids
+    this.declarationTids = makeUnique(
+      watchTraceIds.
+        flatMap(traceId => {
+          const staticTraceId = getStaticTraceId(traceId);
+          const allDeclarationTids = getAllTraceIds(staticTraceId).
+            map(traceId => {
+              return getDeclarationTid(traceId);
+            }).
+            filter(declarationTid => {
+              if (!declarationTid) {
+                return false;
+              }
+              const contextId = getContextId(traceId);
+              return this.bounds.containsContext(contextId);
+            });
+          return allDeclarationTids;
+        }).
+        filter(Boolean)
+    );
+
+    // TODO: get all refs
+    // TODO: produce all snapshots
+
+    // this.bounds.contains();
   }
 
   get dp() {
     return this.ddg.dp;
   }
 
-  /**
-   * 
-   * @param {DataNode} parent 
-   * @param {DataNode} node 
-   * @param {Set<DataNode>} visited 
-   */
-  addSelectedSet(parent, node, visited) {
-    const { nodeId } = node;
-    if (visited.has(node)) {
-      if (parent) {
-        // remove non-root input nodes
-        this.selectedSetRoots.delete(nodeId);
-      }
-      return;
-    }
-    else {
-      visited.add(node);
-    }
-
-    if (!parent) {
-      this.selectedSetRoots.add(node.nodeId);
-    }
-
-    // TODO: keep track of path-to-root in `selectedSet`
-    this.selectedSet.push({ parent: parent.nodeId, to: nodeId });
-
-    // make sure to add all children recursively (e.g. in case of array or object)
-    // TODO-M: find out the actual children to traverse (use algorithm similar to `constructValueFull`)
-    let children;
-    const { refId } = node;
-    if (refId) {
-      children = this.dp.util.constructValueObjectShallow(refId, nodeId);
-    }
-    else {
-      children = [node];
-    }
-    for (const child of children) {
-      this.addSelectedSet(node, child, visited);
-    }
+  get bounds() {
+    return this.ddg.bounds;
   }
 
-  /**
-   * If given `dataNode` refers to a memory location that is in `selectedSet`:
-   * find its root and produce a unique id combining root id + the id of the path from that root to itself.
-   */
-  getSelectedSetGroupId(dataNode) {
-    const root = this.getDataNodeRoot(dataNode);
-    if (!root) {
-      return null;
-    }
+  // /**
+  //  * 
+  //  * @param {DataNode} parent 
+  //  * @param {DataNode} node 
+  //  * @param {Set<DataNode>} visited 
+  //  */
+  // addSelectedSet(parent, node, visited) {
+  //   const { nodeId } = node;
+  //   if (visited.has(node)) {
+  //     if (parent) {
+  //       // remove non-root input nodes
+  //       this.selectedSetRoots.delete(nodeId);
+  //     }
+  //     return;
+  //   }
+  //   else {
+  //     visited.add(node);
+  //   }
 
-    const path = this.getDataNodePathToRoot(dataNode);
-    const rootStaticTraceId = this.dp.util.getStaticTrace(root.traceId);
+  //   if (!parent) {
+  //     this.selectedSetRoots.add(node.nodeId);
+  //   }
 
-    return `${rootStaticTraceId}#${path})`;
-  }
+  //   // TODO: keep track of path-to-root in `selectedSet`
+  //   this.selectedSet.push({ parent: parent.nodeId, to: nodeId });
 
-  getDataNodePathToRoot(dataNode) {
-    // TODO-M: use `varAccess.property`?
-  }
+  //   // make sure to add all children recursively (e.g. in case of array or object)
+  //   // TODO-M: find out the actual children to traverse (use algorithm similar to `constructValueFull`)
+  //   let children;
+  //   const { refId } = node;
+  //   if (refId) {
+  //     children = this.dp.util.constructValueObjectShallow(refId, nodeId);
+  //   }
+  //   else {
+  //     children = [node];
+  //   }
+  //   for (const child of children) {
+  //     this.addSelectedSet(node, child, visited);
+  //   }
+  // }
 
-  getDataNodeRoot(dataNode) {
-    // TODO-M: apply `disjoint set union` data structure?
-  }
-}
+  // /**
+  //  * If given `dataNode` refers to a memory location that is in `selectedSet`:
+  //  * find its root and produce a unique id combining root id + the id of the path from that root to itself.
+  //  */
+  // getSelectedSetGroupId(dataNode) {
+  //   const root = this.getDataNodeRoot(dataNode);
+  //   if (!root) {
+  //     return null;
+  //   }
 
-// TODO: this
-class DDGWatchSet {
-  /** @type {number[]} */
-  watchTraceIds;
+  //   const path = this.getDataNodePathToRoot(dataNode);
+  //   const rootStaticTraceId = this.dp.util.getStaticTrace(root.traceId);
 
-  /** @type {DDGBounds} */
-  bounds;
+  //   return `${rootStaticTraceId}#${path})`;
+  // }
 
-  declarationTids;
-  initialRefIds;
+  // getDataNodePathToRoot(dataNode) {
+  //   // TODO-M: use `varAccess.property`?
+  // }
 
-  constructor(watchTraceIds) {
-    watchTraceIds = makeUnique(watchTraceIds);
-    this.watchTraceIds = watchTraceIds;
-    this.bounds = new DDGBounds(this);
-
-    // get all watched declarationTids
-    this.declarationTids = makeUnique(
-      watchTraceIds.
-      flatMap(traceId => {
-        const staticTraceId = getStaticTraceId(traceId);
-        const allDeclarationTids = getAllTraceIds(staticTraceId).
-          map(traceId => {
-            return getDeclarationTid(traceId);
-          }).
-          filter(declarationTid => {
-            if (!declarationTid) {
-              return false;
-            }
-            const contextId = getContextId(traceId);
-            return this.bounds.containsContext(contextId);
-          });
-        return allDeclarationTids;
-      }).
-      filter(Boolean)
-    );
-
-    // TODO: get all refs
-    // TODO: produce all snapshots
-    // this.bounds.contains();
-  }
-
+  // getDataNodeRoot(dataNode) {
+  //   // TODO-M: apply `disjoint set union` data structure?
+  // }
 }
 
 
@@ -153,7 +140,7 @@ class DDGWatchSet {
 
 
 // // ########################################################################
-// // class DDGWatchSet:
+// // old idea
 // // ########################################################################
 // watchSetRoots;   // NOTE: input set is actually a set of trees of DataNodes
 // watchSet;        // array of individual DataNodes representing all nodes in all watchSetRoot trees
@@ -196,16 +183,3 @@ class DDGWatchSet {
 //   path = getDataNodePathToRoot(dataNode)
 
 //   return `${getOwnStaticTraceId(root)}#${path})`;
-
-// /**
-//  * We use this path to uniquely identify the memory address of an object relative to its root
-//  */
-// getDataNodePathToRoot(dataNode):
-//   // TODO
-
-// /**
-//  * 
-//  */
-// getDataNodeRoot(dataNode):
-//   // TODO
-// ```

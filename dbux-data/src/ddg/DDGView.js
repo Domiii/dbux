@@ -1,7 +1,15 @@
 // /** @typedef {import('../RuntimeDataProvider').default} RuntimeDataProvider */
 // /** @typedef {import('./DataDependencyGraph').default} DataDependencyGraph */
 
-// TODO: the DDGView allows us to easily control the DDG, specifically, it allows to easily merge/unmerge DDG subgraphs
+
+
+
+// TODO: the DDGView parameterizes control of the DDG
+//    Specifically: it allows to easily merge/unmerge DDG subgraphs
+
+
+
+
 
 // mergeGroups() {
 //   const visited = new Set();

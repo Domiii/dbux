@@ -41,6 +41,10 @@ export default class DataDependencyGraph {
     this.dp = dp;
   }
 
+  /** ###########################################################################
+   * {@link #build}
+   * ##########################################################################*/
+
   build(watchTraceIds) {
     // this.selectedSet = inputNodes;
     // this.selectedSet = new DDGWatchSet(this, inputNodes);

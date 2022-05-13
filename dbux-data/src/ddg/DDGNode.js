@@ -1,16 +1,13 @@
-// /** @typedef {import('./DDGEdgeGroup').default} DDGEdgeGroup */
+import DDGEntity from './DDGEntity';
 
-export default class DDGNode {
+export default class DDGNode extends DDGEntity {
   /**
-   * @param {*} type 
-   * @param {number} id 
-   * @param {number} from 
-   * @param {number} to 
+   * @param {number} entityId 
+   * @param {number} dataNodeId
    */
-  constructor(type, id, from, to) {
-    this.type = type;
-    this.id = id;
-    this.from = from;
-    this.to = to;
+  constructor(entityId, dataNodeId) {
+    super(entityId);
+    
+    this.dataNodeId = dataNodeId;
   }
 }
