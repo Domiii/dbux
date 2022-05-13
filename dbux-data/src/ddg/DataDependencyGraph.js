@@ -54,6 +54,14 @@ export default class DataDependencyGraph {
     this.nodes = [];
     this.edges = [];
 
+    /*
+    TODO (basics):
+      * create DDGNodes + DDGEdges
+      * when input is a Read node: link to previous Write node instead
+      * get it to run again
+      * visualize the 3 lanes:
+        * start w/ at least dedicated watch + compute lanes
+    */
 
     for (let nodeId = minNodeId; nodeId <= maxNodeId; nodeId++) {
       const dataNode = this.dp.collections.dataNodes.getById(nodeId);
