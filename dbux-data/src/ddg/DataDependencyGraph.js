@@ -149,6 +149,7 @@ export default class DataDependencyGraph {
               this.edges.push(newEdge);
             }
             else {
+              // → this edge has already been inserted, meaning there are multiple connections between exactly these two nodes
               // TODO: make it a GroupEdge with nestedCount instead
             }
           }
