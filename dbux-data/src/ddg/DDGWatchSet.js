@@ -102,3 +102,110 @@ export default class DDGWatchSet {
     // TODO-M: apply `disjoint set union` data structure?
   }
 }
+
+// TODO: this
+class DDGWatchSet {
+  /** @type {number[]} */
+  watchTraceIds;
+
+  /** @type {DDGBounds} */
+  bounds;
+
+  declarationTids;
+  initialRefIds;
+
+  constructor(watchTraceIds) {
+    watchTraceIds = makeUnique(watchTraceIds);
+    this.watchTraceIds = watchTraceIds;
+    this.bounds = new DDGBounds(this);
+
+    // get all watched declarationTids
+    this.declarationTids = makeUnique(
+      watchTraceIds.
+      flatMap(traceId => {
+        const staticTraceId = getStaticTraceId(traceId);
+        const allDeclarationTids = getAllTraceIds(staticTraceId).
+          map(traceId => {
+            return getDeclarationTid(traceId);
+          }).
+          filter(declarationTid => {
+            if (!declarationTid) {
+              return false;
+            }
+            const contextId = getContextId(traceId);
+            return this.bounds.containsContext(contextId);
+          });
+        return allDeclarationTids;
+      }).
+      filter(Boolean)
+    );
+
+    // TODO: get all refs
+    // TODO: produce all snapshots
+    // this.bounds.contains();
+  }
+
+}
+
+
+
+
+
+
+// // ########################################################################
+// // class DDGWatchSet:
+// // ########################################################################
+// watchSetRoots;   // NOTE: input set is actually a set of trees of DataNodes
+// watchSet;        // array of individual DataNodes representing all nodes in all watchSetRoot trees
+
+// constructor(watchSetRoots):
+//   this.watchSetRoots = makeUnique(watchSetRoots);
+//   this.watchSet = new Map();
+//   visited = ...
+
+//   // TODO: `watchSetRoots` might contain nodes that are in subtree of other roots.
+//   //  → make sure to select top-most roots
+//   this.watchSetRoots.forEach(n => {
+//     const treeRoot = constructValueFull(n);
+//     addWatchSet(null, treeRoot, visited);
+//   });
+//   // TODO: `watchSetRoots` might contain nodes that are in subtree of other roots.
+//   //  → eliminate those
+//   this.watchSetRoots = /* ignore roots that are in subtree of other roots */...;
+
+
+// addWatchSet(parent, n, visited):
+//   handleVisited
+
+//   // TODO: keep track of path-to-root in `watchSet`
+//   this.watchSet.add({ parent, to: n.nodeId });
+
+//   // make sure to add all children recursively (e.g. in case of array or object)
+//   for all nodes and child nodes child in constructValueFull(watchSet):
+//     addWatchSet(n, child, visited);
+
+
+// /**
+//  * If given `dataNode` refers to a memory location that is in `watchSet`:
+//  * find its root and produce a unique id combining root id + the id of the path from that root to itself.
+//  */
+// getWatchSetGroupId(dataNode):
+//   root = getDataNodePathToRoot(dataNode)
+//   if !root:
+//     return null;
+//   path = getDataNodePathToRoot(dataNode)
+
+//   return `${getOwnStaticTraceId(root)}#${path})`;
+
+// /**
+//  * We use this path to uniquely identify the memory address of an object relative to its root
+//  */
+// getDataNodePathToRoot(dataNode):
+//   // TODO
+
+// /**
+//  * 
+//  */
+// getDataNodeRoot(dataNode):
+//   // TODO
+// ```

@@ -1,4 +1,3 @@
-import DataDependencyGraph from './DataDependencyGraph';
 // import minBy from 'lodash/minBy';
 // import maxBy from 'lodash/maxBy';
 import first from 'lodash/first';
@@ -6,6 +5,8 @@ import last from 'lodash/last';
 import find from 'lodash/find';
 import findLast from 'lodash/findLast';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+
+/** @typedef { import("./DataDependencyGraph").default } DataDependencyGraph */
 
 export default class DDGBounds {
   minNodeId;
