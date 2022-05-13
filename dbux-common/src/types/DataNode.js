@@ -77,7 +77,7 @@ export default class DataNode {
   valueId;
 
   /**
-   * Array of `traceId`, representing incoming edges.
+   * Array of `dataNodeId`, representing incoming edges.
    * @type {number[]}
    */
   inputs;

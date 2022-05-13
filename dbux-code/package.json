@@ -198,6 +198,14 @@
         }
       },
       {
+        "command": "dbux.showDataDependencyGraph",
+        "title": "Dbux Dev: Show Data Dependency Graph",
+        "icon": {
+          "light": "resources/light/dependency.svg",
+          "dark": "resources/dark/dependency.svg"
+        }
+      },
+      {
         "command": "dbux.showPathwaysView",
         "title": "Dbux: Show Pathways View",
         "icon": {
@@ -260,6 +268,14 @@
       {
         "command": "dbux.showOutputChannel",
         "title": "Dbux: Show output channel"
+      },
+      {
+        "command": "dbux.showDDGOfContext",
+        "title": "Dbux: Show DDG of context",
+        "icon": {
+          "light": "resources/light/dependency.svg",
+          "dark": "resources/dark/dependency.svg"
+        }
       },
       {
         "command": "dbuxGlobalAnalysisView.showError",
@@ -1123,6 +1139,10 @@
         {
           "command": "dbux.hideGraphView",
           "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.showDataDependencyGraph",
+          "when": "dbux.context.activated && dbux.context.nodeEnv == development"
         },
         {
           "command": "dbux.showPathwaysView",

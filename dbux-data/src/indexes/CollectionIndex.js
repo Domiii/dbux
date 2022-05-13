@@ -229,9 +229,17 @@ export class CollectionIndexConfig {
 
   /**
    * By default, for performance reasons, indexes are backed by arrays ({@link ArrayIndexManager}).
-   * If the key set is not a dense value of numbers, set this to `false` ({@link MapIndexManager}).
+   * If the key set is not a dense value of numbers, set this to `true` ({@link MapIndexManager}).
+   * @type {boolean}
    */
   isMap;
+
+  /**
+   * By default, entries are stored in arrays ({@link ArrayContainerMethods}).
+   * If the entries might be added more than once, or the insertion might not be ordered, set this to `true` ({@link SetContainerMethods}).
+   * @type {boolean}
+   */
+  isContainerSet;
 
   /**
    * @type {IndexMapContainerCfg | IndexArrayContainerCfg}

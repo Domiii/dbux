@@ -478,6 +478,18 @@ export default {
     return dp.indexes.traces.error.get(1) || EmptyArray;
   },
 
+  /** @param {DataProvider} dp */
+  getParamTracesOfContext(dp, contextId) {
+    const realContextId = dp.util.getRealContextIdOfContext(contextId);
+    return dp.util.getTracesOfContextAndType(realContextId, TraceType.Param) || EmptyArray;
+  },
+
+  /** @param {DataProvider} dp */
+  getReturnArgumentTraceOfContext(dp, contextId) {
+    const realContextId = dp.util.getRealContextIdOfContext(contextId);
+    return dp.util.getTracesOfContextAndType(realContextId, TraceType.ReturnArgument)?.[0] || null;
+  },
+
   // ###########################################################################
   // DataNodes
   // ###########################################################################

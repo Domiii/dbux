@@ -24,6 +24,8 @@
   "dependencies": {
     "@dbux/common": "^0.7.7-dev.0",
     "@dbux/graph-common": "^0.7.7-dev.0",
+    "@jsplumb/browser-ui": "^5.6.2",
+    "@jsplumb/core": "^5.6.2",
     "@popperjs/core": "^2.3.3",
     "bootstrap": "^4.4.1",
     "html2canvas": "^1.4",

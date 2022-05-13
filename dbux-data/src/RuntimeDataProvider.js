@@ -15,6 +15,7 @@ import AsyncEventUpdateCollection from './collections/AsyncEventUpdateCollection
 /** @typedef { import("./applications/Application").default } Application */
 /** @typedef { import("./RuntimeDataStatsReporter").default } RuntimeDataStatsReporter */
 /** @typedef {import('./callGraph/CallGraph').default} CallGraph */
+/** @typedef {import('./ddg/DDGSet').default} DDGSet */
 
 // ###########################################################################
 // RDP
@@ -30,6 +31,11 @@ export default class RuntimeDataProvider extends DataProviderBase {
    * @type {CallGraph}
    */
   callGraph;
+
+  /**
+   * @type {DDGSet}
+   */
+  dataDependencyGraphs;
 
   /**
    * @type {RuntimeDataStatsReporter}
@@ -81,9 +87,13 @@ export default class RuntimeDataProvider extends DataProviderBase {
     // }));
   }
 
+  get ddgs() {
+    return this.dataDependencyGraphs;
+  }
+
   addData(newData, isRaw = true) {
     this.reporter.preData(newData);
-    
+
     // const minAsyncNodeId = this.collections.asyncNodes.getLast()?.rootContextId || 0;
 
     // actually add data
@@ -97,5 +107,9 @@ export default class RuntimeDataProvider extends DataProviderBase {
     this.reporter.reportNewData(newData);
 
     return result;
+  }
+
+  getOrCreateDDGForContext(contextId) {
+    return this.ddgs.getOrCreateDDGForContext(contextId);
   }
 }
