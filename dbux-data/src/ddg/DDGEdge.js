@@ -4,15 +4,14 @@ import DDGEntity from './DDGEntity';
 
 export default class DDGEdge extends DDGEntity {
   /**
-   * @param {*} type 
+   * @param {DDGEdgeType} type 
    * @param {number} id 
    * @param {number} from 
    * @param {number} to 
    * @param {DDGEdgeGroup} group 
    */
-  constructor(entityId, type, from, to, group) {
-    super(entityId);
-
+  constructor(type, from, to, group) {
+    super();
     this.type = type;
     this.from = from;
     this.to = to;

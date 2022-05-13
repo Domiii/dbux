@@ -14,6 +14,25 @@ export default class DataNodeCollection extends Collection {
     this.accessUIdMap = new Map();
   }
 
+  SpecialObjectTypeHandlers = {
+    /**
+     * NOTE: we are not currently using `SpecialIdentifierType.Arguments`
+     *    (not `SpecialObjectType.Arguments`).
+     */
+    [SpecialObjectType.Arguments]: ({ varAccess: { prop } }, contextId) => {
+      const callerTrace = this.dp.util.getOwnCallerTraceOfContext(contextId);
+      if (callerTrace) {
+        const obj = this.dp.util.getCallArgDataNodes(callerTrace.traceId);
+        const arg = obj[prop];
+        // NOTE: `arg` might not be recorded
+        return arg?.valueId || null;
+      }
+
+      // NOTE: sometimes, (e.g. in root contexts) we might not have an "own" caller trace
+      return null;
+    }
+  };
+
   addEntry(dataNode) {
     super.addEntry(dataNode);
     if (dataNode) {
@@ -25,12 +44,15 @@ export default class DataNodeCollection extends Collection {
   /**
    * @param {DataNode} dataNode
    */
-  getValueId(dataNode) {
+  lookupValueId(dataNode) {
     if (dataNode.valueId > 0) {
       return dataNode.valueId;
     }
 
     if (dataNode.refId) {
+      // TODO: fix 
+      // TODO: deal with implicitly created ref type objects having a single nodeId for all children
+      //      e.g. `JSON.parse('{...}')`
       const firstRef = this.dp.indexes.dataNodes.byRefId.getFirst(dataNode.refId);
       // const firstNodeId = this.dp.util.getAnyFirstNodeIdByRefId(dataNode.refId);
       // return Math.min(firstNodeId, firstRef.nodeId);
@@ -39,50 +61,50 @@ export default class DataNodeCollection extends Collection {
     else {
       const { nodeId, traceId, accessId } = dataNode;
       const { contextId, staticTraceId, nodeId: traceNodeId } = this.dp.collections.traces.getById(traceId);
-      const staticTrace = traceNodeId === nodeId && this.dp.collections.staticTraces.getById(staticTraceId);
+      const isTraceOwnDataNode = traceNodeId === nodeId;
+      const ownStaticTrace = isTraceOwnDataNode && this.dp.collections.staticTraces.getById(staticTraceId);
 
-      if (dataNode.inputs?.length && (!staticTrace || (staticTrace?.dataNode && !staticTrace.dataNode.isNew))) {
+      // 1. check for "pass-along"
+      if (
+        dataNode.inputs?.length === 1 &&
+        (!ownStaticTrace || (ownStaticTrace?.dataNode && !ownStaticTrace.dataNode.isNew))
+      ) {
+        // NOTE: this is a "pass-along" - a Write or other type of non-new value being passed in
         const inputDataNode = this.dp.collections.dataNodes.getById(dataNode.inputs[0]);
         if (!inputDataNode) {
+          // sanity check
           const traceInfo = this.dp.util.makeTraceInfo(traceId);
-          this.logger.warn(`[getValueId] Cannot lookup dataNode.inputs[0] (inputs=${JSON.stringify(dataNode.inputs)}) at trace: ${traceInfo}`);
+          this.logger.warn(`[lookupValueId] Cannot lookup dataNode.inputs[0] (inputs=${JSON.stringify(dataNode.inputs)}) at trace: ${traceInfo}`);
           return nodeId;
         }
+
+        dataNode.valueFromId = inputDataNode.nodeId;
         return inputDataNode.valueId;
       }
 
+      // 2. if it is not a pass-along, look up accessId.
+      //    It is important we do after (1), 
+      //      since looking up by `accessId` won't work on a new Write node.
       const lastNode = this.dp.indexes.dataNodes.byAccessId.getLast(accessId);
       if (accessId && lastNode) {
-        // warn(`[getValueId] Cannot find accessId of dataNode: ${JSON.stringify(dataNode)}`);
-        // NOTE: currently, last in `byAccessId` index is actually "the last before this one", since we are still resolving the index.
+        // NOTE: currently, last in `byAccessId` index is actually "the last before this one"
+        //      since we are still resolving the index.
+        dataNode.valueFromId = lastNode.nodeId;
         return lastNode.valueId;
       }
 
+      // 3. special value passing semantics (currently non-existing?)
       const { specialObjectType } = this.dp.util.getDataNodeValueRef(dataNode.varAccess?.objectNodeId) || EmptyObject;
       if (specialObjectType) {
-        // NOTE: specialObjectType is looked up by `valueId`
-        // future-work: don't create functions dynamically, unless absolutely necessary -> Move to class instead.
-        const SpecialObjectTypeHandlers = {
-          [SpecialObjectType.Arguments]: ({ varAccess: { prop } }) => {
-            const callerTrace = this.dp.util.getOwnCallerTraceOfContext(contextId);
-            if (callerTrace) {
-              // NOTE: sometimes, (e.g. in root contexts) we might not have an "own" caller trace
-              const obj = this.dp.util.getCallArgDataNodes(callerTrace.traceId);
-              const arg = obj[prop];
-              // NOTE: `arg` might not be recorded
-              return arg?.valueId || null;
-            }
-            return null;
-          }
-        };
-        const specialValueId = SpecialObjectTypeHandlers[specialObjectType](dataNode);
-        if (specialValueId) {
-          return specialValueId;
+        const valueId = this.SpecialObjectTypeHandlers[specialObjectType](dataNode, contextId);
+        if (valueId) {
+          // NOTE: this will currently never happen
+          return valueId;
         }
       }
 
       // eslint-disable-next-line max-len
-      // this.logger.warn(`[getValueId] Cannot find valueId for dataNode.\n    trace: ${this.dp.util.makeTraceInfo(traceId)}\n    dataNode: ${JSON.stringify(dataNode)}`);
+      // this.logger.warn(`[lookupValueId] Cannot find valueId for dataNode.\n    trace: ${this.dp.util.makeTraceInfo(traceId)}\n    dataNode: ${JSON.stringify(dataNode)}`);
 
       return nodeId;
     }
@@ -111,16 +133,17 @@ export default class DataNodeCollection extends Collection {
           const { traceId } = dataNode;
           const traceInfo = this.dp.util.makeTraceInfo(traceId);
           this.logger.warn(`[getAccessId] Cannot find objectValueId of DataNode for trace: ${traceInfo}`);
-          key = null;
+          return null;
         }
         else {
           key = `${objectValueId}#${prop}`;
         }
       }
       else {
+        // sanity check
         const { traceId } = dataNode;
         const traceInfo = this.dp.util.makeTraceInfo(traceId);
-        this.logger.warn(`[getAccessId] DataNode has neither objectNodeId nor declarationTid for trace: ${traceInfo}`);
+        this.logger.warn(`[getAccessId] DataNode has varAccess but neither objectNodeId nor declarationTid for trace: ${traceInfo}`);
         return null;
       }
 
@@ -166,7 +189,7 @@ export default class DataNodeCollection extends Collection {
   resolveDataIds(dataNodes) {
     for (const dataNode of dataNodes) {
       dataNode.accessId = this.getAccessId(dataNode);
-      dataNode.valueId = this.getValueId(dataNode);
+      dataNode.valueId = this.lookupValueId(dataNode);
       this.dp.indexes.dataNodes.byAccessId.addEntry(dataNode);
       this.dp.indexes.dataNodes.byValueId.addEntry(dataNode);
     }

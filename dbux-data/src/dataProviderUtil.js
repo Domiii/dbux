@@ -38,6 +38,7 @@ import { makeContextSchedulerLabel, makeTraceLabel } from './helpers/makeLabels'
 /** @typedef {import('@dbux/common/src/types/AsyncNode').default} AsyncNode */
 /** @typedef {import('@dbux/common/src/types/StaticContext').default} StaticContext */
 /** @typedef {import('@dbux/common/src/types/ExecutionContext').default} ExecutionContext */
+/** @typedef { import('@dbux/common/src/types/constants/DataNodeType').DataNodeTypeValue } DataNodeTypeValue */
 
 export class PostUpdateData {
   /**
@@ -512,6 +513,22 @@ export default {
   /** @param {DataProvider} dp */
   getPrimitiveDataNodes(dp) {
     return dp.indexes.dataNodes.simple.get(1) || EmptyArray;
+  },
+
+  /**
+   * @param {DataProvider} dp
+   * @return {DataNode}
+   */
+  getDataNode(dp, dataNodeId) {
+    return dp.collections.dataNodes.getById(dataNodeId);
+  },
+
+  /**
+   * @param {DataProvider} dp
+   * @return {DataNodeTypeValue}
+   */
+  getDataNodeType(dp, dataNodeId) {
+    return dp.collections.dataNodes.getById(dataNodeId).type;
   },
 
   /** @param {DataProvider} dp */

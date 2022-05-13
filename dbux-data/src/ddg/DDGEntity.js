@@ -1,8 +1,6 @@
 export default class DDGEntity {
   /**
-   * @param {number} entityId
+   * @type {number}
    */
-  constructor(entityId) {
-    this.entityId = entityId;
-  }
+  entityId;
 }

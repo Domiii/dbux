@@ -77,6 +77,13 @@ export default class DataNode {
   valueId;
 
   /**
+   * `nodeId` of the `DataNode` that this node carried it over from.
+   * 
+   * @type {number}
+   */
+  valueFromId;
+
+  /**
    * Array of `dataNodeId`, representing incoming edges.
    * @type {number[]}
    */

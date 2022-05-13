@@ -1,8 +1,16 @@
 /** @typedef {import('../RuntimeDataProvider').default} RuntimeDataProvider */
+/** @typedef { import('@dbux/common/src/types/constants/DataNodeType').default } DataNodeType */
+/** @typedef { import('@dbux/common/src/types/constants/DataNodeType').DataNodeTypeValue } DataNodeTypeValue */
+
 
 // import DDGWatchSet from './DDGWatchSet';
 // import DDGTimeline from './DDGTimeline';
 import DDGBounds from './DDGBounds';
+import DDGNode from './DDGNode';
+import DDGEdge from './DDGEdge';
+import DDGEntity from './DDGEntity';
+import DDGEdgeType from './DDGEdgeType';
+import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 
 export default class DataDependencyGraph {
   /**
@@ -29,8 +37,14 @@ export default class DataDependencyGraph {
    * @type {DDGEntity[]}
    */
   entitiesById;
-  edges;
+  /**
+   * @type {DDGEdge[]}
+   */
   nodes;
+  /**
+   * @type {DDGNode[]}
+   */
+  edges;
 
 
   /**
@@ -42,34 +56,80 @@ export default class DataDependencyGraph {
   }
 
   /** ###########################################################################
+   * Node + Edge getters
+   * ##########################################################################*/
+
+
+  /** ###########################################################################
    * {@link #build}
    * ##########################################################################*/
+
+  /**
+   * @param {DDGEntity} entity
+   */
+  _addEntity(entity) {
+    const entityId = this.entitiesById.length + 1;
+    entity.entityId = entityId;
+    this.entitiesById[entityId] = entity;
+  }
 
   build(watchTraceIds) {
     // this.selectedSet = inputNodes;
     // this.selectedSet = new DDGWatchSet(this, inputNodes);
-    this.bounds = new DDGBounds(watchTraceIds);
+    const bounds = this.bounds = new DDGBounds(watchTraceIds);
 
     this.entitiesById = [];
     this.nodes = [];
     this.edges = [];
 
+    this.nodesByDataNodeId = new Map();
+
     /*
     TODO (basics):
-      * create DDGNodes + DDGEdges
       * when input is a Read node: link to previous Write node instead
       * get it to run again
       * visualize the 3 lanes:
         * start w/ at least dedicated watch + compute lanes
     */
 
-    for (let nodeId = minNodeId; nodeId <= maxNodeId; nodeId++) {
-      const dataNode = this.dp.collections.dataNodes.getById(nodeId);
-      this.nodes.push(dataNode);
+    for (let dataNodeId = bounds.minNodeId; dataNodeId <= bounds.maxNodeId; ++dataNodeId) {
+      const dataNode = this.dp.collections.dataNodes.getById(dataNodeId);
+
+      // add DDGNode
+      const newNode = new DDGNode(dataNode.nodeId);
+      this._addEntity(newNode);
+      this.nodes.push(newNode);
+      this.nodesByDataNodeId.set(dataNodeId, newNode);
+
       if (dataNode.inputs) {
-        for (const inputNodeId of dataNode.inputs) {
-          if (minNodeId <= inputNodeId && inputNodeId <= maxNodeId) {
-            this.edges.push({ from: inputNodeId, to: nodeId });
+        for (const fromDataNodeId of dataNode.inputs) {
+          if (!bounds.containsNode(fromDataNodeId)) {
+            // TODO: handle external nodes
+          }
+          else {
+            // when input is a Read node: link to last Write node before given Read instead
+            let fromDataNode = this.dp.util.getDataNode(fromDataNodeId);
+            if (fromDataNode.refId) {
+              throw new Error('TODO: fix `valueFromId` for reference types');
+            }
+
+            // skip all "pass along" nodes
+            while (DataNodeType.is.Read(fromDataNode.type) && fromDataNode.valueFromId) {
+              const valueFromNode = this.dp.util.getDataNode(fromDataNode.valueFromId);
+              if (!valueFromNode) {
+                break;
+              }
+              if (!bounds.containsNode(fromDataNodeId)) {
+                // TODO: handle external nodes
+                break;
+              }
+              fromDataNode = valueFromNode;
+            }
+
+            // add DDGEdge
+            const newEdge = new DDGEdge(DDGEdgeType.Write, fromDataNodeId, dataNodeId);
+            this._addEntity(newEdge);
+            this.edges.push(newEdge);
           }
         }
       }

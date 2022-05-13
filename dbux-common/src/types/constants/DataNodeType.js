@@ -1,7 +1,7 @@
 import Enum from '../../util/Enum';
 
 // eslint-disable-next-line import/no-mutable-exports
-let DataNodeType = {
+let dataNodeTypeObj = {
   Write: 1,
   Read: 2,
   Delete: 3,
@@ -9,9 +9,12 @@ let DataNodeType = {
 };
 
 /**
- * @type {(Enum)}
+ * @type {(Enum | typeof dataNodeTypeObj)}
  */
-DataNodeType = new Enum(DataNodeType);
+const DataNodeType = new Enum(dataNodeTypeObj);
+
+
+/** @typedef { typeof dataNodeTypeObj[keyof typeof dataNodeTypeObj] } DataNodeTypeValue */
 
 export default DataNodeType;
 

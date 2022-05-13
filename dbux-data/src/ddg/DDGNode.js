@@ -5,9 +5,8 @@ export default class DDGNode extends DDGEntity {
    * @param {number} entityId 
    * @param {number} dataNodeId
    */
-  constructor(entityId, dataNodeId) {
-    super(entityId);
-    
+  constructor(dataNodeId) {
+    super();
     this.dataNodeId = dataNodeId;
   }
 }
