@@ -73,6 +73,21 @@ export default class DataDependencyGraph {
     this.entitiesById[entityId] = entity;
   }
 
+  /**
+   * @param {DataNode} dataNode 
+   * @return {DDGNode}
+   */
+  _getOrCreateDDGNode(dataNode) {
+    let node = this.nodesByDataNodeId.get(dataNode.nodeId);
+    if (!node) {
+      node = new DDGNode(dataNode.nodeId);
+      this._addEntity(node);
+      this.nodes.push(node);
+      this.nodesByDataNodeId.set(dataNode.nodeId, node);
+    }
+    return node;
+  }
+
   build(watchTraceIds) {
     // this.selectedSet = inputNodes;
     // this.selectedSet = new DDGWatchSet(this, inputNodes);
@@ -95,13 +110,12 @@ export default class DataDependencyGraph {
     for (let dataNodeId = bounds.minNodeId; dataNodeId <= bounds.maxNodeId; ++dataNodeId) {
       const dataNode = this.dp.collections.dataNodes.getById(dataNodeId);
 
-      // add DDGNode
-      const newNode = new DDGNode(dataNode.nodeId);
-      this._addEntity(newNode);
-      this.nodes.push(newNode);
-      this.nodesByDataNodeId.set(dataNodeId, newNode);
+      // get or create DDGNode
+      const newNode = this._getOrCreateDDGNode(dataNode);
 
       if (dataNode.inputs) {
+        // don't add duplicate edges
+        const fromDataNodeIdsSet = new Set();
         for (const fromDataNodeId of dataNode.inputs) {
           if (!bounds.containsNode(fromDataNodeId)) {
             // TODO: handle external nodes
@@ -119,17 +133,24 @@ export default class DataDependencyGraph {
               if (!valueFromNode) {
                 break;
               }
-              if (!bounds.containsNode(fromDataNodeId)) {
+              if (!bounds.containsNode(valueFromNode.nodeId)) {
                 // TODO: handle external nodes
                 break;
               }
               fromDataNode = valueFromNode;
             }
 
-            // add DDGEdge
-            const newEdge = new DDGEdge(DDGEdgeType.Write, fromDataNodeId, dataNodeId);
-            this._addEntity(newEdge);
-            this.edges.push(newEdge);
+            if (!fromDataNodeIdsSet.has(fromDataNode.nodeId)) {
+              // add DDGEdge
+              fromDataNodeIdsSet.add(fromDataNode.nodeId);
+              const fromDdgNode = this._getOrCreateDDGNode(fromDataNode);
+              const newEdge = new DDGEdge(DDGEdgeType.Write, fromDdgNode.entityId, newNode.entityId);
+              this._addEntity(newEdge);
+              this.edges.push(newEdge);
+            }
+            else {
+              // TODO: make it a GroupEdge with nestedCount instead
+            }
           }
         }
       }
