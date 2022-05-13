@@ -1,8 +1,6 @@
 /** @typedef {import('../RuntimeDataProvider').default} RuntimeDataProvider */
 /** @typedef {import('./DataDependencyGraph').default} DataDependencyGraph */
 
-import minBy from 'lodash/minBy';
-import maxBy from 'lodash/maxBy';
 
 export default class DDGTimeline {
   /**
@@ -22,8 +20,6 @@ export default class DDGTimeline {
     this.nodes = [];
     this.edges = [];
 
-    const minNodeId = minBy(inputNodes, node => node.nodeId)?.nodeId || 0;
-    const maxNodeId = maxBy(inputNodes, node => node.nodeId)?.nodeId || 0;
 
     for (let nodeId = minNodeId; nodeId <= maxNodeId; nodeId++) {
       const dataNode = this.dp.collections.dataNodes.getById(nodeId);

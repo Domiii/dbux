@@ -1,22 +1,36 @@
 /** @typedef {import('../RuntimeDataProvider').default} RuntimeDataProvider */
 
-// import DDGSelectedSet from './DDGSelectedSet';
+// import DDGWatchSet from './DDGWatchSet';
 import DDGTimeline from './DDGTimeline';
+import DDGBounds from './DDGBounds';
 
 export default class DataDependencyGraph {
   // /**
-  //  * @type {DDGSelectedSet}
+  //  * @type {DDGWatchSet}
   //  */
   // selectedSet;
-
-  writeNodes;
-
-  edges;
-
   /**
    * @type {string}
    */
   id;
+
+  /**
+   * @type {RuntimeDataProvider}
+   */
+  dp;
+
+  /**
+   * @type {DDGWatchSet}
+   */
+  watchSet;
+
+  /**
+   * @type {DDGBounds}
+   */
+  bounds;
+
+  // edges;
+
 
   /**
    * 
@@ -26,9 +40,10 @@ export default class DataDependencyGraph {
     this.dp = dp;
   }
 
-  build(inputNodes) {
+  build(watchTraceIds) {
     // this.selectedSet = inputNodes;
-    // this.selectedSet = new DDGSelectedSet(this, inputNodes);
-    this.timeline = new DDGTimeline(this, inputNodes);
+    // this.selectedSet = new DDGWatchSet(this, inputNodes);
+    this.bounds = new DDGBounds(watchTraceIds);
+    this.timeline = new DDGTimeline(this, watchTraceIds);
   }
 }

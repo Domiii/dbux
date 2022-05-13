@@ -55,6 +55,8 @@ export default class DataFlowNodeProvider extends BaseTreeViewNodeProvider {
    * @param {number} [nodeId]
    */
   buildDataNodes(trace, nodeId) {
+    // TODO: move all this data-related stuff to dbux-data
+
     const { applicationId } = trace;
     const dp = allApplications.getById(applicationId).dataProvider;
     trace = dp.util.getValueTrace(trace.traceId);

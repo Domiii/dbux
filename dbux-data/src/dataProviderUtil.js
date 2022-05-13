@@ -1631,9 +1631,15 @@ export default {
   // ###########################################################################
 
   /** @param {DataProvider} dp */
-  getTraceContext(dp, traceId) {
+  getTraceContextId(dp, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     const { contextId } = trace;
+    return contextId;
+  },
+
+  /** @param {DataProvider} dp */
+  getTraceContext(dp, traceId) {
+    const contextId = dp.util.getTraceContextId(traceId);
     return dp.collections.executionContexts.getById(contextId);
   },
 

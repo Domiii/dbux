@@ -4,7 +4,7 @@
 /**
  * @deprecated
  */
-export default class DDGSelectedSet {
+export default class DDGWatchSet {
   /**
    * actual roots in selected set
    * @type {Set<number>}
