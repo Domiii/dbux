@@ -80,7 +80,13 @@ export default class DataDependencyGraph {
   _getOrCreateDDGNode(dataNode) {
     let node = this.nodesByDataNodeId.get(dataNode.nodeId);
     if (!node) {
-      // TODO: add 1. label, 2. isWatchNode, 3. Snapshot (if applies), 4. colors
+      // TODO: create DDGNode by trace, instead of by `dataNode`
+      //    → `push` `Math.max`, `i++` etc. should each only be represented by one node
+      // TODO: add...
+      //  1. label
+      //  2. isWatchNode
+      //  3. Snapshot (if applies)
+      //  4. colors
       node = new DDGNode(dataNode.nodeId);
       this._addEntity(node);
       this.nodes.push(node);
