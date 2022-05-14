@@ -50,6 +50,7 @@ export default class AssignmentPattern extends BaseNode {
   }
 
   /**
+   * TODO: this should actually be many nodes
    * @returns {BaseNode}
    */
   getOwnDeclarationNode() {

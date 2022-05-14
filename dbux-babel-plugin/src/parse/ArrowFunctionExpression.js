@@ -1,5 +1,6 @@
 import * as t from "@babel/types";
 import BaseNode from './BaseNode';
+import Function from './plugins/Function';
 
 export default class ArrowFunctionExpression extends BaseNode {
   static children = ['params', 'body'];
@@ -17,6 +18,9 @@ export default class ArrowFunctionExpression extends BaseNode {
     const { path } = this;
     const [, bodyPath] = this.getChildPaths();
 
+    /**
+     * @type {import('./plugins/Function').default}
+     */
     const func = this.getPlugin('Function');
     if (!bodyPath.isBlockStatement()) {
       // body is lambda expression -> wrap body with "return trace"
@@ -28,7 +32,7 @@ export default class ArrowFunctionExpression extends BaseNode {
       node: this,
       path,
       scope,
-      staticTraceData: func.createStaticTraceData()
+      staticTraceData: func.createStaticTraceData(null, null, { label: '=>' })
     };
 
     const traceCfg = this.Traces.addTrace(traceData);

@@ -44,7 +44,9 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
     // build nodes
     for (let i = 0; i < nodes.length; i++) {
       const node = nodes[i];
-      const el = compileHtmlElement(/*html*/`<div class="timeline-node">Node#${node.entityId}</div>`);
+      const el = compileHtmlElement(/*html*/`<div class="timeline-node">
+        ${node.label || `Node#${node.entityId}`}
+      </div>`);
       el.style.left = '200px';
       el.style.top = `${30 * i}px`;
       this.nodeElMap.set(node.entityId, el);

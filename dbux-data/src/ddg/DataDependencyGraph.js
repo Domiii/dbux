@@ -73,24 +73,47 @@ export default class DataDependencyGraph {
     this.entitiesById[entityId] = entity;
   }
 
+  _getDataNodeLabel(dataNodeId) {
+    const { dp } = this;
+
+    // variable name
+    const varName = dp.util.getDataNodeDeclarationVarName(dataNodeId);
+    if (varName) {
+      return varName;
+    }
+
+    // TODO: ME
+
+    // dataNode.label is used for `Compute` (and some other?) nodes
+    const dataNode = dp.util.getDataNode(dataNodeId);
+    if (dataNode.traceId) {
+      const staticTrace = dp.util.getStaticTrace(dataNode.traceId);
+      return staticTrace.dataNode?.label || '';
+    }
+
+    // TODO: nested DataNodes don't have a traceId (or they don't own it)
+    return '';
+  }
+
   /**
    * @param {DataNode} dataNode 
    * @return {DDGNode}
    */
   _getOrCreateDDGNode(dataNode) {
-    let node = this.nodesByDataNodeId.get(dataNode.nodeId);
-    if (!node) {
+    let ddgNode = this.nodesByDataNodeId.get(dataNode.nodeId);
+    if (!ddgNode) {
       // TODO: add...
-      //  1. label
       //  2. isWatchNode
       //  3. Snapshot (if applies)
       //  4. colors
-      node = new DDGNode(DDGNodeType, dataNode.nodeId);
-      this._addEntity(node);
-      this.nodes.push(node);
-      this.nodesByDataNodeId.set(dataNode.nodeId, node);
+      const ddgNodeType = dataNode.type; // TODO!
+      const label = this._getDataNodeLabel(dataNode);
+      ddgNode = new DDGNode(ddgNodeType, dataNode.nodeId, label);
+      this._addEntity(ddgNode);
+      this.nodes.push(ddgNode);
+      this.nodesByDataNodeId.set(dataNode.nodeId, ddgNode);
     }
-    return node;
+    return ddgNode;
   }
 
   build(watchTraceIds) {

@@ -5,9 +5,9 @@ import { pathToString } from '../../helpers/pathHelpers';
 
 const AssignmentLValPluginsByType = {
   Identifier: 'AssignmentLValVar',
+  MemberExpression: 'AssignmentLValME',
   ObjectPattern: 'AssignmentLValPattern',
-  ArrayPattern: 'AssignmentLValPattern',
-  MemberExpression: 'AssignmentLValME'
+  ArrayPattern: 'AssignmentLValPattern'
 };
 
 /**

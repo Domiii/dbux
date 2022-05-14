@@ -107,15 +107,19 @@ export default class BindingIdentifier extends BaseId {
 
     const traceType = moreTraceData?.staticTraceData?.type;
     if (traceType && !isDeclarationTrace(traceType)) {
-      this.warn(`staticTraceData.type is not declaration type. You might prefer "addTrace" over "addOwnDeclarationTrace" in this case.`);
+      this.warn(`staticTraceData.type is not declaration type. You might want to use "addTrace" instead of "addOwnDeclarationTrace" in this case.`);
     }
 
     // NOTE: do not try to add to scope that is not `BindingScope`.
     //      -> will fail in some cases, such as `FunctionExpression` (which needs to add variable to own body).
     const bindingScopeNode = this.getBindingScopeNode(/* moreTraceData?.scope */);
 
+    moreTraceData ||= {};
+    moreTraceData.dataNode ||= {};
+    moreTraceData.data ||= {};
+    moreTraceData.dataNode.label = moreTraceData.data.name = this.id;
+
     if (!moreTraceData?.scope) {
-      moreTraceData = moreTraceData || {};
       moreTraceData.scope = bindingScopeNode.path.scope;
     }
 

@@ -181,15 +181,15 @@ export class DebugTDNode extends TraceDetailNode {
     let valueNode;
     if (!hasValue) {
       valueNode = makeTreeItemNoChildren(
-        'value: no value',
-        {
-          description: '(no value or undefined)'
-        }
+        '(no value or undefined)',
+        // {
+        //   description: ''
+        // }
       );
     }
     else if (refId) {
       valueNode = [
-        'value: ref',
+        'valueRef:',
         valueRef,
         {
           description: `refId=${refId}`
@@ -198,7 +198,7 @@ export class DebugTDNode extends TraceDetailNode {
     }
     else {
       valueNode = makeTreeItemNoChildren(
-        'value: primitive',
+        'value (Primitive):',
         {
           description: renderValueSimple(dataNode.value)
         }
@@ -210,7 +210,7 @@ export class DebugTDNode extends TraceDetailNode {
     if (refId) {
       const entries = dp.util.constructValueObjectShallow(refId, traceNodeId);
       valueDetails = makeTreeItem(
-        'valueRef Object',
+        'valueRef rendered:',
         Object.entries(entries).map(([prop, valueArr]) => {
           const [modifyNodeId, valueRefId, value] = valueArr;
           return makeTreeItem(
@@ -225,19 +225,20 @@ export class DebugTDNode extends TraceDetailNode {
     }
     else {
       valueDetails = makeTreeItemNoChildren(
-        '(no related valueRef)'
+        '(DataNode has no ref)'
       );
     }
 
+    const valueRefChildren = valueRefNodeId && dp.indexes.values.byNodeId.get(valueRefNodeId)?.map(ref => {
+      return makeTreeItem(
+        `${ref.refId}`,
+        ref,
+        {}
+      );
+    });
     const valuesOfDataNode = makeTreeItem(
-      'values of DataNode',
-      valueRefNodeId && dp.indexes.values.byNodeId.get(valueRefNodeId)?.map(ref => {
-        return makeTreeItem(
-          `${ref.refId}`, 
-          ref,
-          {}
-        );
-      }),
+      valueRefChildren ? 'Child Refs' : '(DataNode has no ref)',
+      valueRefChildren,
       {
         description: `nodeId=${valueRefNodeId}`
       }
@@ -316,13 +317,13 @@ export class DebugTDNode extends TraceDetailNode {
         rootContextNode,
         makeTreeItem('value',
           {
-            valueDetails,
             valueNode,
+            dataNodes: makeTreeItems(...allDataNodes),
+            valueDetails,
             valuesOfDataNode,
-            dataNodes: makeTreeItems(...allDataNodes)
           },
           {
-            description: `refId=${refId}`
+            description: `refId=${refId}, ${allDataNodes.length} DataNodes`
           }
         ),
         asyncTreeNode,

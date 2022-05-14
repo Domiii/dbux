@@ -156,6 +156,14 @@ export default class Traces extends BasePlugin {
     // set default static DataNode
     staticTraceData.dataNode = staticTraceData.dataNode || { isNew: false };
 
+    // WARNING:
+    //   1. not all declaration traces have dataNodes
+    //   2. we can get the name from `displayName`, if it has `varAccess.declarationTid` 
+    // if (declarationNode) {
+    //   // default dataNode label for declaration nodes is the declaration id name
+    //   staticTraceData.dataNode.label = staticTraceData.dataNode.label || declarationNode.path?.toString?.();
+    // }
+
     const { state } = this.node;
     const inProgramStaticTraceId = state.traces.addTrace(path, staticTraceData);
 

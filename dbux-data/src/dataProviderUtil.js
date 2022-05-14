@@ -545,18 +545,6 @@ export default {
   },
 
   /** @param {DataProvider} dp */
-  getTraceDeclarationTid(dp, traceId) {
-    const dataNode = dp.util.getOwnDataNodeOfTrace(traceId);
-    return dataNode?.varAccess?.declarationTid;
-  },
-
-  /** @param {DataProvider} dp */
-  getDataNodeDeclarationTid(dp, dataNodeId) {
-    const dataNode = dp.util.getDataNode(dataNodeId);
-    return dataNode?.varAccess?.declarationTid;
-  },
-
-  /** @param {DataProvider} dp */
   getTraceDataInputIds(dp, traceId) {
     const dataNode = dp.util.getOwnDataNodeOfTrace(traceId);
     return dataNode?.inputs;
@@ -608,6 +596,27 @@ export default {
   getValueRefOfTrace(dp, traceId) {
     const dataNode = dp.util.getDataNodeOfTrace(traceId);
     return dataNode ? dp.util.getDataNodeValueRef(dataNode.nodeId) : null;
+  },
+
+  /** @param {DataProvider} dp */
+  getTraceDeclarationTid(dp, traceId) {
+    const dataNode = dp.util.getOwnDataNodeOfTrace(traceId);
+    return dataNode?.varAccess?.declarationTid;
+  },
+
+  /** @param {DataProvider} dp */
+  getDataNodeDeclarationTid(dp, dataNodeId) {
+    const dataNode = dp.util.getDataNode(dataNodeId);
+    return dataNode?.varAccess?.declarationTid;
+  },
+
+  /** @param {DataProvider} dp */
+  getDataNodeDeclarationVarName(dp, dataNodeId) {
+    const declarationTid = dp.util.getDataNodeDeclarationTid(dataNodeId);
+    if (declarationTid) {
+      return dp.util.getStaticTrace(declarationTid).displayName;
+    }
+    return null;
   },
 
   /** @param {DataProvider} dp */
