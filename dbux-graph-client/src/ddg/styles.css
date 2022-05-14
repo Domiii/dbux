@@ -1,4 +1,27 @@
 /** ###########################################################################
+ * jsplumb defaults
+ * @see https://docs.jsplumbtoolkit.com/community/lib/styling-via-css
+ * ############################################################################*/
+
+.jtk-connector {
+  z-index: -10;
+}
+
+svg.jtk-connector path {
+  /* stroke: red; */
+  stroke-width: 1;
+}
+
+.jtk-drag-select {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;    
+}
+
+/** ###########################################################################
  * layouts
  * ############################################################################*/
 

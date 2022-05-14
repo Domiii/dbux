@@ -78,8 +78,13 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
            * @see https://docs.jsplumbtoolkit.com/community/lib/connectivity#detaching-connections
            */
           detachable: false,
+          /**
+           * @see https://docs.jsplumbtoolkit.com/community/lib/endpoints#endpoint-types
+           */
+          endpoints: ['Blank', 'Blank'],
           connector: {
             /**
+             * @see https://docs.jsplumbtoolkit.com/community/lib/connectors#bezier-connector
              * @see https://docs.jsplumbtoolkit.com/community/apidocs/connector-bezier
              */
             type: BezierConnector.type,
@@ -88,7 +93,10 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
              * @see https://github.com/jsplumb/jsplumb/issues/1129
              */
             options: {
-              // curviness: 50
+              /**
+               * default = 150
+               */
+              curviness: 20
             }
           },
           anchor: AnchorLocations.AutoDefault
