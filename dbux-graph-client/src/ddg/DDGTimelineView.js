@@ -1,4 +1,5 @@
 import * as jsPlumbBrowserUI from '@jsplumb/browser-ui';
+import { AnchorLocations } from '@jsplumb/common';
 import { compileHtmlElement } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
@@ -60,7 +61,11 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       for (const edge of edges) {
         const source = this.nodeElMap.get(edge.from);
         const target = this.nodeElMap.get(edge.to);
-        this.jsPlumb.connect({ source, target });
+        this.jsPlumb.connect({ 
+          source,
+          target,
+          anchor: AnchorLocations.AutoDefault
+        });
       }
     }
   }

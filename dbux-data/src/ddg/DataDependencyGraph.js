@@ -73,8 +73,9 @@ export default class DataDependencyGraph {
     this.entitiesById[entityId] = entity;
   }
 
-  _getDataNodeLabel(dataNodeId) {
+  _getDataNodeLabel(dataNode) {
     const { dp } = this;
+    const { nodeId: dataNodeId } = dataNode;
 
     // variable name
     const varName = dp.util.getDataNodeDeclarationVarName(dataNodeId);
@@ -85,7 +86,6 @@ export default class DataDependencyGraph {
     // TODO: ME
 
     // dataNode.label is used for `Compute` (and some other?) nodes
-    const dataNode = dp.util.getDataNode(dataNodeId);
     if (dataNode.traceId) {
       const staticTrace = dp.util.getStaticTrace(dataNode.traceId);
       return staticTrace.dataNode?.label || '';
@@ -104,7 +104,9 @@ export default class DataDependencyGraph {
     if (!ddgNode) {
       // TODO: add...
       //  2. isWatchNode
-      //  3. Snapshot (if applies)
+      //  3. Snapshots
+      //     * Snapshot <-> node mapping
+      //     * Snapshot rendering
       //  4. colors
       const ddgNodeType = dataNode.type; // TODO!
       const label = this._getDataNodeLabel(dataNode);

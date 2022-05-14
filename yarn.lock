@@ -1547,7 +1547,7 @@
   dependencies:
     "@jsplumb/core" "5.6.2"
 
-"@jsplumb/common@5.6.2":
+"@jsplumb/common@5.6.2", "@jsplumb/common@^5.6.2":
   version "5.6.2"
   resolved "https://registry.yarnpkg.com/@jsplumb/common/-/common-5.6.2.tgz#ecdab700453d98decbd188c65dda0078242556f1"
   integrity sha512-VwDVmfXy2g1xCRaKF4Wbz8cagBtQf7fbtAiqJQZ5S0kWMF0E70wV1JvLliUF57NuSpeJhE/99qOcFS8o9K8Y7Q==
@@ -1561,7 +1561,7 @@
   dependencies:
     "@jsplumb/common" "5.6.2"
 
-"@jsplumb/util@5.6.2":
+"@jsplumb/util@5.6.2", "@jsplumb/util@^5.6.2":
   version "5.6.2"
   resolved "https://registry.yarnpkg.com/@jsplumb/util/-/util-5.6.2.tgz#d78a87d3cfa3b10efb7da1fb6564032be0652e20"
   integrity sha512-GKujzrTdOq5MKTejRU/+Eih56fGimkhOi2F3i627u6bHhrOdgO5vDVn5ax4HIEPCNWhGkBuP595B6UVajoR5Og==
