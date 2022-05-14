@@ -37,6 +37,10 @@ export default class UnaryExpression extends BaseNode {
     }
   ];
 
+  get operator() {
+    return this.path.node.operator;
+  }
+
   getDefaultChildPaths() {
     const { operator } = this.path.node;
     if (untracedArgumentOperators.has(operator)) {

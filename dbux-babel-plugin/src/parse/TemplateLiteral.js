@@ -25,7 +25,8 @@ export default class TemplateLiteral extends BaseNode {
       staticTraceData: {
         type: TraceType.ExpressionResult,
         dataNode: {
-          isNew
+          isNew,
+          label: '``'
         }
       }
     };

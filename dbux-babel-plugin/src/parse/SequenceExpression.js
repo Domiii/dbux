@@ -14,6 +14,9 @@ export default class SequenceExpression extends BaseNode {
       node: this,
       staticTraceData: {
         type: TraceType.ExpressionResult
+      },
+      dataNode: {
+        label: ','
       }
     };
 

@@ -19,7 +19,8 @@ export default class TaggedTemplateExpression extends BaseNode {
     //   staticTraceData: {
     //     type: TraceType.ExpressionResult,
     //     dataNode: {
-    //       isNew: true
+    //       isNew: true,
+    //       label: TODO
     //     }
     //   }
     // };

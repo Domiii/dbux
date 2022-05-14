@@ -85,7 +85,7 @@ export default class DataDependencyGraph {
       //  2. isWatchNode
       //  3. Snapshot (if applies)
       //  4. colors
-      node = new DDGNode(dataNode.nodeId);
+      node = new DDGNode(DDGNodeType, dataNode.nodeId);
       this._addEntity(node);
       this.nodes.push(node);
       this.nodesByDataNodeId.set(dataNode.nodeId, node);

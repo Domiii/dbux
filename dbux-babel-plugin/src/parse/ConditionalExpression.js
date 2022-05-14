@@ -4,6 +4,9 @@ import BaseNode from './BaseNode';
 export default class ConditionalExpression extends BaseNode {
   static children = ['test', 'consequent', 'alternate'];
 
+  // TODO: this actually passes on one of the input values
+  // TODO: when fixing this, apply same fix to LogicalExpression
+
   exit() {
     const { path } = this;
     const [, result1, result2] = this.getChildPaths();
@@ -12,9 +15,11 @@ export default class ConditionalExpression extends BaseNode {
       path,
       node: this,
       staticTraceData: {
+        // TODO: control/decision/condition information
         type: TraceType.ExpressionResult,
         dataNode: {
-          isNew: false
+          isNew: false,
+          label: '?:'
         }
       }
     };

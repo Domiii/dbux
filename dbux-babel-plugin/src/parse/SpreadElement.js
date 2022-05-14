@@ -18,6 +18,8 @@ export default class SpreadElement extends BaseNode {
       traceData.path = this.path;
       traceData.meta = traceData.meta || {};
       traceData.meta.targetPath = argNode.path;
+      traceData.dataNode ||= {}; 
+      traceData.dataNode.label = '...';
     }
 
     return traceData;

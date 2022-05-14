@@ -7,4 +7,8 @@ export default class BinaryExpression extends BaseNode {
   static plugins = [
     'ArithmeticExpression'
   ];
+
+  get operator() {
+    return this.path.node.operator;
+  }
 }

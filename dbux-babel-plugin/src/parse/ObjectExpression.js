@@ -55,7 +55,8 @@ export default class ObjectExpression extends BaseNode {
       staticTraceData: {
         type: TraceType.ExpressionResult,
         dataNode: {
-          isNew: true
+          isNew: true,
+          label: '{}'
         },
         data: {
           argConfigs: this.makeArgsCfg(propertyPaths)

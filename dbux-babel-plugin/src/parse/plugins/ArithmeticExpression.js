@@ -20,7 +20,8 @@ export default class ArithmeticExpression extends BasePlugin {
     const staticTraceData = {
       type: TraceType.ExpressionResult,
       dataNode: {
-        isNew: this.isNew
+        isNew: this.isNew,
+        label: node.operator || path.node?.operator
       }
     };
     const traceData = { 
