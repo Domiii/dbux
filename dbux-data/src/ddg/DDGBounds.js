@@ -24,18 +24,20 @@ export default class DDGBounds {
    */
   constructor(ddg, watchTraceIds) {
     this.ddg = ddg;
-    this.watchedTraceIds = watchTraceIds.sort();
+    this.watchedTraceIds = watchTraceIds.sort((a, b) => a - b);
 
     const { dp } = this;
 
     this.minTraceId = first(watchTraceIds);
     this.maxTraceId = last(watchTraceIds);
 
-    this.minNodeId = find(watchTraceIds, traceId => first(dp.util.getDataNodesOfTrace(traceId) || EmptyArray));
-    this.maxNodeId = findLast(watchTraceIds, traceId => last(dp.util.getDataNodesOfTrace(traceId) || EmptyArray));
+    const firstDataTraceId = find(watchTraceIds, traceId => dp.util.getDataNodesOfTrace(traceId)?.length);
+    const lastDataTraceId = findLast(watchTraceIds, traceId => dp.util.getDataNodesOfTrace(traceId)?.length);
+    this.minNodeId = first(dp.util.getDataNodesOfTrace(firstDataTraceId))?.nodeId;
+    this.maxNodeId = last(dp.util.getDataNodesOfTrace(lastDataTraceId))?.nodeId;
 
-    this.minContextId = find(watchTraceIds, traceId => dp.util.getTraceContext(traceId));
-    this.maxContextId = findLast(watchTraceIds, traceId => dp.util.getTraceContext(traceId));
+    this.minContextId = dp.util.getTraceContext(this.minTraceId).contextId;
+    this.maxContextId = dp.util.getTraceContext(this.maxTraceId).contextId;
   }
 
   get valid() {

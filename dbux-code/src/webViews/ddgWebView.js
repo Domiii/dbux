@@ -31,27 +31,15 @@ export default class DataDependencyGraphWebView extends RichWebView {
   }
 }
 
-/**
- * @type {DataDependencyGraphWebView}
- */
-let dDGWebView;
-
 export async function showDDGView() {
-  await initDDGView();
+  const dDGWebView = await initDDGView();
   await dDGWebView.show();
   // TODO: add new action type
   // emitCallGraphAction(UserActionType.CallGraphVisibilityChanged, { isShowing: true });
 }
 
-export function hideDDGView() {
-  dDGWebView?.hide();
-  // TODO: add new action type
-  // emitCallGraphAction(UserActionType.CallGraphVisibilityChanged, { isShowing: false });
-}
-
 export async function initDDGView() {
-  if (!dDGWebView) {
-    dDGWebView = new DataDependencyGraphWebView();
-    await dDGWebView.init();
-  }
+  const dDGWebView = new DataDependencyGraphWebView();
+  await dDGWebView.init();
+  return dDGWebView;
 }

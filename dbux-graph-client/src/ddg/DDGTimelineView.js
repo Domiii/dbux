@@ -4,7 +4,10 @@ import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 export default class DDGTimelineView extends ClientComponentEndpoint {
   createEl() {
-    return compileHtmlElement(/*html*/`<div data-el="status"></div><div class="timeline-view"></div>`);
+    return compileHtmlElement(/*html*/`<div>
+      <div data-el="status"></div>
+      <div class="timeline-view"></div>
+    </div>`);
   }
 
   setupEl() {

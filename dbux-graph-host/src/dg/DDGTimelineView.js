@@ -19,7 +19,7 @@ export default class DDGTimelineView extends HostComponentEndpoint {
       const { applicationId, contextId } = trace;
       const dp = allApplications.getById(applicationId).dataProvider;
       // const context = dp.collections.executionContexts.getById(contextId);
-      const ddgArgs = { contextId };
+      const ddgArgs = { applicationId, contextId };
       const failureReason = dp.ddgs.getCreateDDGFailureReason(ddgArgs);
       if (failureReason) {
         this.setState({ failureReason, nodes: EmptyArray, edges: EmptyArray });
@@ -31,7 +31,8 @@ export default class DDGTimelineView extends HostComponentEndpoint {
       }
     }
     else {
-      this.setState({ nodes: EmptyArray, edges: EmptyArray });
+      const failureReason = 'DDG is empty';
+      this.setState({ failureReason, nodes: EmptyArray, edges: EmptyArray });
     }
   }
 

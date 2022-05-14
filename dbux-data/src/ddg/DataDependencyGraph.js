@@ -80,8 +80,6 @@ export default class DataDependencyGraph {
   _getOrCreateDDGNode(dataNode) {
     let node = this.nodesByDataNodeId.get(dataNode.nodeId);
     if (!node) {
-      // TODO: create DDGNode by trace, instead of by `dataNode`
-      //    → `push` `Math.max`, `i++` etc. should each only be represented by one node
       // TODO: add...
       //  1. label
       //  2. isWatchNode
@@ -98,7 +96,7 @@ export default class DataDependencyGraph {
   build(watchTraceIds) {
     // this.selectedSet = inputNodes;
     // this.selectedSet = new DDGWatchSet(this, inputNodes);
-    const bounds = this.bounds = new DDGBounds(watchTraceIds);
+    const bounds = this.bounds = new DDGBounds(this, watchTraceIds);
 
     this.entitiesById = [];
     this.nodes = [];

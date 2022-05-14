@@ -18,8 +18,8 @@ export default class DDGSet {
     return `DDG #by#${inputs.join(',')}`;
   }
 
-  getCreateDDGFailureReason({ contextId }) {
-    const graphId = this.makeGraphId(contextId);
+  getCreateDDGFailureReason({ applicationId, contextId }) {
+    const graphId = this.makeGraphId(applicationId, contextId);
     if (!this.graphsById.get(graphId)) {
       const paramTraces = this.dp.util.getParamTracesOfContext(contextId);
       const returnArgumentTrace = this.dp.util.getReturnArgumentTraceOfContext(contextId);
@@ -37,10 +37,10 @@ export default class DDGSet {
   /**
    * @returns {DataDependencyGraph}
    */
-  getOrCreateDDGForContext({ contextId }) {
-    const graphId = this.makeGraphId(contextId);
+  getOrCreateDDGForContext({ applicationId, contextId }) {
+    const graphId = this.makeGraphId(applicationId, contextId);
     if (!this.graphsById.get(graphId)) {
-      const inputNodes = [];
+      const watchTraceIds = [];
       const paramTraces = this.dp.util.getParamTracesOfContext(contextId);
       const returnArgumentTrace = this.dp.util.getReturnArgumentTraceOfContext(contextId);
 
@@ -50,21 +50,21 @@ export default class DDGSet {
 
       for (const trace of [...paramTraces, returnArgumentTrace]) {
         if (trace) {
-          const dataNode = this.dp.util.getDataNodeOfTrace(trace.traceId);
-          if (dataNode) {
-            inputNodes.push(dataNode);
-          }
+          // const dataNode = this.dp.util.getDataNodeOfTrace(trace.traceId);
+          // if (dataNode) {
+          watchTraceIds.push(trace.traceId);
+          // }
         }
       }
 
-      this.newDataDependencyGraph(graphId, inputNodes);
+      this.newDataDependencyGraph(graphId, watchTraceIds);
     }
     return this.graphsById.get(graphId);
   }
 
-  newDataDependencyGraph(graphId, inputNodes) {
+  newDataDependencyGraph(graphId, watchTraceIds) {
     const graph = new DataDependencyGraph(this.dp, graphId);
-    graph.build(inputNodes);
+    graph.build(watchTraceIds);
     this._add(graphId, graph);
     return graph;
   }
