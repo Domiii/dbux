@@ -108,8 +108,4 @@ export default class RuntimeDataProvider extends DataProviderBase {
 
     return result;
   }
-
-  getOrCreateDDGForContext(contextId) {
-    return this.ddgs.getOrCreateDDGForContext(contextId);
-  }
 }

@@ -4,7 +4,7 @@ import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 export default class DDGTimelineView extends ClientComponentEndpoint {
   createEl() {
-    return compileHtmlElement(/*html*/`<div class="timeline-view"></div>`);
+    return compileHtmlElement(/*html*/`<div data-el="status"></div><div class="timeline-view"></div>`);
   }
 
   setupEl() {
@@ -15,6 +15,15 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   }
 
   update() {
+    // update status message
+    if (this.state.failureReason) {
+      this.els.status.className = 'alert alert-danger';
+      this.els.status.textContent = 'Cannot build DataDependencyGraph: ' + this.state.failureReason;
+    }
+    else {
+      this.els.status.textContent = '';
+    }
+
     // rebuild graph
     this.jsPlumb.batch(() => {
       this.clearGraph();
@@ -25,23 +34,29 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
   buildGraph() {
     const { nodes, edges } = this.state;
 
+    if (!nodes) {
+      return;
+    }
+
     // build nodes
     for (let i = 0; i < nodes.length; i++) {
       const node = nodes[i];
-      const el = compileHtmlElement(/*html*/`<div class="timeline-node">Node#${node.nodeId}</div>`);
+      const el = compileHtmlElement(/*html*/`<div class="timeline-node">Node#${node.entityId}</div>`);
       el.style.left = '200px';
       el.style.top = `${30 * i}px`;
-      this.nodeElMap.set(node.nodeId, el);
+      this.nodeElMap.set(node.entityId, el);
       this.el.appendChild(el);
       // instance.addEndpoint(el, { endpoint: DotEndpoint.type });
       this.jsPlumb.manage(el);
     }
 
-    // add edges
-    for (const edge of edges) {
-      const source = this.nodeElMap.get(edge.from);
-      const target = this.nodeElMap.get(edge.to);
-      this.jsPlumb.connect({ source, target });
+    if (edges) {
+      // add edges
+      for (const edge of edges) {
+        const source = this.nodeElMap.get(edge.from);
+        const target = this.nodeElMap.get(edge.to);
+        this.jsPlumb.connect({ source, target });
+      }
     }
   }
 

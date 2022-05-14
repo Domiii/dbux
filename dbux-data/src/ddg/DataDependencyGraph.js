@@ -80,6 +80,7 @@ export default class DataDependencyGraph {
   _getOrCreateDDGNode(dataNode) {
     let node = this.nodesByDataNodeId.get(dataNode.nodeId);
     if (!node) {
+      // TODO: add 1. label, 2. isWatchNode, 3. Snapshot (if applies), 4. colors
       node = new DDGNode(dataNode.nodeId);
       this._addEntity(node);
       this.nodes.push(node);
@@ -121,7 +122,6 @@ export default class DataDependencyGraph {
             // TODO: handle external nodes
           }
           else {
-            // when input is a Read node: link to last Write node before given Read instead
             let fromDataNode = this.dp.util.getDataNode(fromDataNodeId);
             if (fromDataNode.refId) {
               throw new Error('TODO: fix `valueFromId` for reference types');

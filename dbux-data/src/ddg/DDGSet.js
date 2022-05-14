@@ -14,16 +14,39 @@ export default class DDGSet {
     this.graphsById = new Map();
   }
 
+  makeGraphId(...inputs) {
+    return `DDG #by#${inputs.join(',')}`;
+  }
+
+  getCreateDDGFailureReason({ contextId }) {
+    const graphId = this.makeGraphId(contextId);
+    if (!this.graphsById.get(graphId)) {
+      const paramTraces = this.dp.util.getParamTracesOfContext(contextId);
+      const returnArgumentTrace = this.dp.util.getReturnArgumentTraceOfContext(contextId);
+
+      if (!paramTraces.length) {
+        return 'Selected context did not have any (recorded) parameters.';
+      }
+      if (!returnArgumentTrace) {
+        return 'Selected context did not return anything.';
+      }
+    }
+    return null;
+  }
+
   /**
-   * @param {number} contextId 
    * @returns {DataDependencyGraph}
    */
-  getOrCreateDDGForContext(contextId) {
-    const graphId = `DDG: contextId#${contextId}`;
+  getOrCreateDDGForContext({ contextId }) {
+    const graphId = this.makeGraphId(contextId);
     if (!this.graphsById.get(graphId)) {
       const inputNodes = [];
       const paramTraces = this.dp.util.getParamTracesOfContext(contextId);
       const returnArgumentTrace = this.dp.util.getReturnArgumentTraceOfContext(contextId);
+
+      if (!returnArgumentTrace) {
+        return null;
+      }
 
       for (const trace of [...paramTraces, returnArgumentTrace]) {
         if (trace) {

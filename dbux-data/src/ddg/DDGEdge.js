@@ -2,8 +2,7 @@ import DDGEntity from './DDGEntity';
 
 export default class DDGEdge extends DDGEntity {
   /**
-   * @param {DDGEdgeType} type 
-   * @param {number} id 
+   * @param {DDGEdgeTypeValue} type 
    * @param {number} from 
    * @param {number} to 
    */
