@@ -545,23 +545,21 @@ export default {
   },
 
   /** @param {DataProvider} dp */
-  getInputIdsOfTrace(dp, traceId) {
+  getTraceDeclarationTid(dp, traceId) {
+    const dataNode = dp.util.getOwnDataNodeOfTrace(traceId);
+    return dataNode?.varAccess?.declarationTid;
+  },
+
+  /** @param {DataProvider} dp */
+  getTraceDataInputIds(dp, traceId) {
     const dataNode = dp.util.getOwnDataNodeOfTrace(traceId);
     return dataNode?.inputs;
   },
 
   /** @param {DataProvider} dp */
   getFirstInputDataNodeOfTrace(dp, traceId) {
-    const inputIds = dp.util.getInputIdsOfTrace(traceId);
+    const inputIds = dp.util.getTraceDataInputIds(traceId);
     return inputIds?.length ? dp.collections.dataNodes.getById(inputIds[0]) : null;
-  },
-
-  /**
-   * @param {DataProvider} dp
-   * @return {DataNode} DataNode of value trace
-   */
-  getDataNode(dp, nodeId) {
-    return dp.collections.dataNodes.getById(nodeId);
   },
 
   /**
@@ -1922,11 +1920,20 @@ export default {
 
   /** 
    * @param {DataProvider} dp
+   * @return {number}
+   */
+  getStaticTraceId(dp, traceId) {
+    const trace = dp.collections.traces.getById(traceId);
+    const { staticTraceId } = trace;
+    return staticTraceId;
+  },
+
+  /** 
+   * @param {DataProvider} dp
    * @return {StaticTrace}
    */
   getStaticTrace(dp, traceId) {
-    const trace = dp.collections.traces.getById(traceId);
-    const { staticTraceId } = trace;
+    const staticTraceId = dp.util.getStaticTraceId(traceId);
     return dp.collections.staticTraces.getById(staticTraceId);
   },
 
@@ -1945,9 +1952,15 @@ export default {
     return programId;
   },
 
+  /** @param {DataProvider} dp */
   getStaticTraceDisplayName(dp, staticTraceId) {
     const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
     return staticTrace.displayName;
+  },
+
+  /** @param {DataProvider} dp */
+  getTracesOfStaticTrace(dp, staticTraceId) {
+    return dp.indexes.traces.byStaticTrace.get(staticTraceId);
   },
 
   getTraceProgramPath(dp, traceId) {

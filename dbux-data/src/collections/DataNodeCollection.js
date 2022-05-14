@@ -110,6 +110,9 @@ export default class DataNodeCollection extends Collection {
     }
   }
 
+  /**
+   * @param {DataNode} dataNode 
+   */
   getAccessId(dataNode) {
     if (dataNode.accessId > 0) {
       return dataNode.accessId;

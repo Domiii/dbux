@@ -5,12 +5,12 @@
 
 // import DDGWatchSet from './DDGWatchSet';
 // import DDGTimeline from './DDGTimeline';
+import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 import DDGBounds from './DDGBounds';
 import DDGNode from './DDGNode';
 import DDGEdge from './DDGEdge';
 import DDGEntity from './DDGEntity';
 import DDGEdgeType from './DDGEdgeType';
-import DataNodeType from '@dbux/common/src/types/constants/DataNodeType';
 
 export default class DataDependencyGraph {
   /**
@@ -150,7 +150,7 @@ export default class DataDependencyGraph {
             }
             else {
               // → this edge has already been inserted, meaning there are multiple connections between exactly these two nodes
-              // TODO: make it a GroupEdge with nestedCount instead
+              // TODO: make it a GroupEdge with `writeCount` and `controlCount` instead?
             }
           }
         }

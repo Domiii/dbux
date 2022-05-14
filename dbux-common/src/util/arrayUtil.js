@@ -4,6 +4,14 @@ import map from 'lodash/map';
 import xor from 'lodash/xor';
 import mergeWith from 'lodash/mergeWith';
 
+
+/**
+ * @param {[]]} arr 
+ */
+export function makeUnique(arr) {
+  return Array.from(new Set(arr));
+}
+
 /**
  * @see https://stackoverflow.com/questions/29951293/using-lodash-to-compare-arrays-items-existence-without-order
  */
@@ -77,6 +85,7 @@ export function mergeSortedArray(inputs, makeKey = (e) => e) {
 
   return result;
 }
+
 
 // ###########################################################################
 // binary search

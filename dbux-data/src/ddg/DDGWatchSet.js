@@ -1,8 +1,11 @@
 /** @typedef {import('@dbux/common/src/types/DataNode').default} DataNode */
 /** @typedef {import('./DataDependencyGraph').default} DataDependencyGraph */
 
+import { makeUnique } from '@dbux/common/src/util/arrayUtil';
+import DDGSnapshotNode from './DDGSnapshotNode';
+
 /**
- * @deprecated
+ * 
  */
 export default class DDGWatchSet {
   // /**
@@ -23,38 +26,47 @@ export default class DDGWatchSet {
   initialRefIds;
 
   /**
+   * @type {Map.<number, DDGSnapshotNode>}
+   */
+  snapshotsByDataNodeId = new Map();
+
+  /**
    * 
    * @param {DataDependencyGraph} ddg 
    * @param {DataNode[]} inputNodes NOTE: input set is actually a set of trees of DataNodes
    */
   constructor(ddg, watchTraceIds) {
     this.ddg = ddg;
-    
+
+    const { dp } = this;
+
     watchTraceIds = makeUnique(watchTraceIds);
     this.watchTraceIds = watchTraceIds;
 
     // get all watched declarationTids
     this.declarationTids = makeUnique(
       watchTraceIds.
-        flatMap(traceId => {
-          const staticTraceId = getStaticTraceId(traceId);
-          const allDeclarationTids = getAllTraceIds(staticTraceId).
+        flatMap(watchTraceId => {
+          const staticTraceId = dp.util.getStaticTraceId(watchTraceId);
+          const allDeclarationTids = dp.util.getTracesOfStaticTrace(staticTraceId).
             map(traceId => {
-              return getDeclarationTid(traceId);
-            }).
-            filter(declarationTid => {
-              if (!declarationTid) {
-                return false;
-              }
-              const contextId = getContextId(traceId);
-              return this.bounds.containsContext(contextId);
+              return dp.util.getTraceDeclarationTid(traceId);
             });
+            // filter(declarationTid => {
+            //   if (!declarationTid) {
+            //     return false;
+            //   }
+            //   // TODO: should we ignore `declarationTid`s if not declared in bounds?
+            //   const contextId = getContextId(traceId);
+            //   return this.bounds.containsContext(contextId);
+            // });
           return allDeclarationTids;
         }).
         filter(Boolean)
     );
 
-    // TODO: get all refs
+    // TODO: properly handle refs
+
     // TODO: produce all snapshots
 
     // this.bounds.contains();
@@ -66,6 +78,21 @@ export default class DDGWatchSet {
 
   get bounds() {
     return this.ddg.bounds;
+  }
+
+  isWatched(dataNodeId) {
+  }
+
+  /**
+   * @param {number} dataNodeId
+   */
+  getOrCreateWatchedSnapshotNode(dataNodeId) {
+    // const dataNode = this.dp.util.getDataNode(dataNodeId);
+    let snapshot = this.snapshotsByDataNodeId.get(dataNodeId);
+    if (!snapshot) {
+      this.snapshotsByDataNodeId.set(dataNodeId, snapshot = new DDGSnapshotNode(dataNodeId));
+    }
+    return snapshot;
   }
 
   // /**
