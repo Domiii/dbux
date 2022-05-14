@@ -1540,31 +1540,38 @@
     protobufjs "^6.10.0"
     yargs "^16.2.0"
 
-"@jsplumb/browser-ui@^5.6.2":
-  version "5.6.2"
-  resolved "https://registry.yarnpkg.com/@jsplumb/browser-ui/-/browser-ui-5.6.2.tgz#96ee94af7faec2434dc7bfa9d26ac19878ac9d34"
-  integrity sha512-sDHI2mo0t7+p+1cStWNok2Tx80sHHTencOVN1LDNNQMfvzss6wpOit0cebUGDWPdRIWXmJ54GDZ4PJC3pmFyFg==
+"@jsplumb/browser-ui@5.6.1":
+  version "5.6.1"
+  resolved "https://registry.yarnpkg.com/@jsplumb/browser-ui/-/browser-ui-5.6.1.tgz#d524d9de8c7e8717c8229cd44177bc458a604e8b"
+  integrity sha512-wyJG+WgF9VCGuCfxTROl/BwocfxV8X8tGzHqUBi0iXpntR56OqpGB9D+Rkgkz3yjueEY7jP1GwCta4N/Q3oS9g==
   dependencies:
-    "@jsplumb/core" "5.6.2"
+    "@jsplumb/core" "5.6.1"
 
-"@jsplumb/common@5.6.2", "@jsplumb/common@^5.6.2":
-  version "5.6.2"
-  resolved "https://registry.yarnpkg.com/@jsplumb/common/-/common-5.6.2.tgz#ecdab700453d98decbd188c65dda0078242556f1"
-  integrity sha512-VwDVmfXy2g1xCRaKF4Wbz8cagBtQf7fbtAiqJQZ5S0kWMF0E70wV1JvLliUF57NuSpeJhE/99qOcFS8o9K8Y7Q==
+"@jsplumb/common@5.6.1":
+  version "5.6.1"
+  resolved "https://registry.yarnpkg.com/@jsplumb/common/-/common-5.6.1.tgz#e9210c64d3deca0b1fb8039762be94aab1e73418"
+  integrity sha512-sDnn1JbPQ+DSjfMBh7gjRJgJZLwmT6Qc1PC/WnfOxnGtp1JNubKxxJvEMgXonNxE2nBmIJhusHb3N1d7fvRAmA==
   dependencies:
-    "@jsplumb/util" "5.6.2"
+    "@jsplumb/util" "5.6.1"
 
-"@jsplumb/core@5.6.2", "@jsplumb/core@^5.6.2":
-  version "5.6.2"
-  resolved "https://registry.yarnpkg.com/@jsplumb/core/-/core-5.6.2.tgz#44d38e53a21479995c01cbe2789495dae9aa1508"
-  integrity sha512-RI3WF2BSbQtLzb9Nwch/yuqltcDZq0+4/ejBBA8nDolN0UG21s4xH3Yr1iTzCl3Lga+RNxs/JUOBbOptlFb43g==
+"@jsplumb/connector-bezier@5.6.1":
+  version "5.6.1"
+  resolved "https://registry.yarnpkg.com/@jsplumb/connector-bezier/-/connector-bezier-5.6.1.tgz#f44e9f1d93a4cb821e94d429233008ba7fdb7e87"
+  integrity sha512-TOypZx0He7CSEJCw+I3Pv1QJu4jjII//WTT6kqyMdEgWzwsgTAzpvIIebSwtK28EkUdkFxtJmz8HTr2IiE8JXQ==
   dependencies:
-    "@jsplumb/common" "5.6.2"
+    "@jsplumb/core" "5.6.1"
 
-"@jsplumb/util@5.6.2", "@jsplumb/util@^5.6.2":
-  version "5.6.2"
-  resolved "https://registry.yarnpkg.com/@jsplumb/util/-/util-5.6.2.tgz#d78a87d3cfa3b10efb7da1fb6564032be0652e20"
-  integrity sha512-GKujzrTdOq5MKTejRU/+Eih56fGimkhOi2F3i627u6bHhrOdgO5vDVn5ax4HIEPCNWhGkBuP595B6UVajoR5Og==
+"@jsplumb/core@5.6.1":
+  version "5.6.1"
+  resolved "https://registry.yarnpkg.com/@jsplumb/core/-/core-5.6.1.tgz#447117d237561f4c6163c2a6cf090e9c94ea7cc2"
+  integrity sha512-b8hjk9+wEMQSsnJd3bS0uni2I5esk7qHTMx6h/92BWWKHQnyX/ClFlYHnhSe5ugg/V6xbJCwR0tRMtd5l3HLWw==
+  dependencies:
+    "@jsplumb/common" "5.6.1"
+
+"@jsplumb/util@5.6.1":
+  version "5.6.1"
+  resolved "https://registry.yarnpkg.com/@jsplumb/util/-/util-5.6.1.tgz#f9d5b64f2f61e3ab13e603c563dfc4b1cb2cc123"
+  integrity sha512-5ifkRfxwNAXGqfe4o4j+v1usBWyTXC8n2tNjdzK4slPeNJYHwl/mE9s+9dKvHr5WJeQ/Z3pjK9QpTuk2RdoERQ==
 
 "@lerna/add@4.0.0":
   version "4.0.0"

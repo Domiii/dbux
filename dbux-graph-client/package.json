@@ -26,6 +26,7 @@
     "@dbux/graph-common": "^0.7.7-dev.0",
     "@jsplumb/browser-ui": "^5.6.2",
     "@jsplumb/common": "^5.6.2",
+    "@jsplumb/connector-bezier": "^5.6.2",
     "@jsplumb/core": "^5.6.2",
     "@jsplumb/util": "^5.6.2",
     "@popperjs/core": "^2.3.3",
