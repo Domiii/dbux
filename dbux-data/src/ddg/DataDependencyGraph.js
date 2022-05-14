@@ -83,6 +83,8 @@ export default class DataDependencyGraph {
       return varName;
     }
 
+    // TODO: constants
+    // TODO: BCE + CallExpressionResult
     // TODO: ME
 
     // dataNode.label is used for `Compute` (and some other?) nodes
@@ -102,12 +104,6 @@ export default class DataDependencyGraph {
   _getOrCreateDDGNode(dataNode) {
     let ddgNode = this.nodesByDataNodeId.get(dataNode.nodeId);
     if (!ddgNode) {
-      // TODO: add...
-      //  2. isWatchNode
-      //  3. Snapshots
-      //     * Snapshot <-> node mapping
-      //     * Snapshot rendering
-      //  4. colors
       const ddgNodeType = dataNode.type; // TODO!
       const label = this._getDataNodeLabel(dataNode);
       ddgNode = new DDGNode(ddgNodeType, dataNode.nodeId, label);
@@ -131,10 +127,23 @@ export default class DataDependencyGraph {
 
     /*
     TODO (basics):
-      * when input is a Read node: link to previous Write node instead
-      * get it to run again
-      * visualize the 3 lanes:
-        * start w/ at least dedicated watch + compute lanes
+      * render node shapes based on type
+      * add `panzoom` support
+      * `ValueSnapshotTree` for watched reference nodes
+        * (does not apply to non-watched or non-reference types of nodes)
+        * add basic ME support
+        * Render ref snapshots as trees
+        * Link edges to correctly nested `ValueSnapshotNode`
+        * add nested ME support
+      * colors
+      * 3 lane categorization:
+        1. isWatchedDataNode
+        2. hasMixedInputsOrOutputs
+        3. neither
+      * handle external nodes
+      * (later) better edge rendering:
+        * let edges avoid nodes
+        * straighten bezier, if length < curviness (see https://github.com/jsplumb/jsplumb/issues/1130)
     */
 
     for (let dataNodeId = bounds.minNodeId; dataNodeId <= bounds.maxNodeId; ++dataNodeId) {
