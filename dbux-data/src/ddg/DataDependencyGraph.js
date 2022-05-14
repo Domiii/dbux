@@ -130,6 +130,7 @@ export default class DataDependencyGraph {
       * `UpdateExpression` does not work correctly
         * label: `operator`
         * missing dependency to previous write of variable
+      * add label for constant nodes
       * consider better graph library
         * https://www.cylynx.io/blog/a-comparison-of-javascript-graph-network-visualisation-libraries/
         * https://www.sigmajs.org/ (uses graphology under the hood)
