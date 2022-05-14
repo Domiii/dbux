@@ -14,9 +14,7 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
 
   setupEl() {
     this.nodeElMap = new Map();
-    this.jsPlumb = jsPlumbBrowserUI.newInstance({
-      container: this.el
-    });
+    this.initGraphImplementation();
   }
 
   update() {
@@ -29,19 +27,8 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       this.els.status.textContent = '';
     }
 
-    // TODO: don't re-create jsplumb every time
-    if (this.jsPlumb) {
-      this.jsPlumb.batch(() => {
-        this.clearGraph();
-      });
-    }
-
-    // rebuild graph
-
-    this.jsPlumb.batch(() => {
-      this.clearGraph();
-      this.buildGraph();
-    });
+    // TODO: don't rebuild entire graph on every update
+    this.rebuildGraph();
   }
 
   buildGraph() {
@@ -62,47 +49,75 @@ export default class DDGTimelineView extends ClientComponentEndpoint {
       this.nodeElMap.set(node.entityId, el);
       this.el.appendChild(el);
       // instance.addEndpoint(el, { endpoint: DotEndpoint.type });
-      this.jsPlumb.manage(el);
+
+      this.addNode(el);
     }
 
     if (edges) {
       // add edges
       // console.log('BezierConnector.type', BezierConnector.type);
       for (const edge of edges) {
-        const source = this.nodeElMap.get(edge.from);
-        const target = this.nodeElMap.get(edge.to);
-        this.jsPlumb.connect({
-          source,
-          target,
-          /**
-           * @see https://docs.jsplumbtoolkit.com/community/lib/connectivity#detaching-connections
-           */
-          detachable: false,
-          /**
-           * @see https://docs.jsplumbtoolkit.com/community/lib/endpoints#endpoint-types
-           */
-          endpoints: ['Blank', 'Blank'],
-          connector: {
-            /**
-             * @see https://docs.jsplumbtoolkit.com/community/lib/connectors#bezier-connector
-             * @see https://docs.jsplumbtoolkit.com/community/apidocs/connector-bezier
-             */
-            type: BezierConnector.type,
-            /**
-             * hackfix: always provide `options`, or it will bug out.
-             * @see https://github.com/jsplumb/jsplumb/issues/1129
-             */
-            options: {
-              /**
-               * default = 150
-               */
-              curviness: 20
-            }
-          },
-          anchor: AnchorLocations.AutoDefault
-        });
+        const from = this.nodeElMap.get(edge.from);
+        const to = this.nodeElMap.get(edge.to);
+
+        this.addEdge(from, to);
       }
     }
+  }
+
+  /** ###########################################################################
+   * graph implementation
+   * NOTE: we might want to replace `jsPlumb` with another library, so let's keep `jsPlumb` code together.
+   * ##########################################################################*/
+
+  initGraphImplementation() {
+    this.jsPlumb = jsPlumbBrowserUI.newInstance({
+      container: this.el
+    });
+  }
+
+  rebuildGraph() {
+    this.jsPlumb.batch(() => {
+      this.clearGraph();
+      this.buildGraph();
+    });
+  }
+
+  addNode(el) {
+    this.jsPlumb.manage(el);
+  }
+
+  addEdge(source, target) {
+    this.jsPlumb.connect({
+      source,
+      target,
+      /**
+       * @see https://docs.jsplumbtoolkit.com/community/lib/connectivity#detaching-connections
+       */
+      detachable: false,
+      /**
+       * @see https://docs.jsplumbtoolkit.com/community/lib/endpoints#endpoint-types
+       */
+      endpoints: ['Blank', 'Blank'],
+      connector: {
+        /**
+         * @see https://docs.jsplumbtoolkit.com/community/lib/connectors#bezier-connector
+         * @see https://docs.jsplumbtoolkit.com/community/apidocs/connector-bezier
+         */
+        type: BezierConnector.type,
+        /**
+         * hackfix: always provide `options`, or it will bug out.
+         * @see https://github.com/jsplumb/jsplumb/issues/1129
+         */
+        options: {
+          /**
+           * default = 150
+           */
+          curviness: 20
+        }
+      },
+      anchor: AnchorLocations.AutoDefault
+    });
   }
 
   clearGraph() {

@@ -127,6 +127,15 @@ export default class DataDependencyGraph {
 
     /*
     TODO (basics):
+      * `UpdateExpression` does not work correctly
+        * label: `operator`
+        * missing dependency to previous write of variable
+      * consider better graph library
+        * https://www.cylynx.io/blog/a-comparison-of-javascript-graph-network-visualisation-libraries/
+        * https://www.sigmajs.org/ (uses graphology under the hood)
+          * https://graphology.github.io/
+          * https://graphology.github.io/standard-library/layout-force.html
+        * https://js.cytoscape.org/
       * render node shapes based on type
       * add `panzoom` support
       * `ValueSnapshotTree` for watched reference nodes
