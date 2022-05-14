@@ -551,6 +551,12 @@ export default {
   },
 
   /** @param {DataProvider} dp */
+  getDataNodeDeclarationTid(dp, dataNodeId) {
+    const dataNode = dp.util.getDataNode(dataNodeId);
+    return dataNode?.varAccess?.declarationTid;
+  },
+
+  /** @param {DataProvider} dp */
   getTraceDataInputIds(dp, traceId) {
     const dataNode = dp.util.getOwnDataNodeOfTrace(traceId);
     return dataNode?.inputs;

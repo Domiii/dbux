@@ -22,8 +22,9 @@ export default class DDGWatchSet {
   /** @type {number[]} */
   watchTraceIds;
 
+  staticDeclarationTids;
   declarationTids;
-  initialRefIds;
+  refIds;
 
   /**
    * @type {Map.<number, DDGSnapshotNode>}
@@ -44,32 +45,40 @@ export default class DDGWatchSet {
     this.watchTraceIds = watchTraceIds;
 
     // get all watched declarationTids
-    this.declarationTids = makeUnique(
+    this.staticDeclarationTids = makeUnique(
       watchTraceIds.
-        flatMap(watchTraceId => {
-          const staticTraceId = dp.util.getStaticTraceId(watchTraceId);
+        flatMap(watchTraceId => dp.util.getStaticTraceId(watchTraceId)).
+        filter(Boolean)
+    );
+    this.declarationTids = makeUnique(
+      this.staticDeclarationTids.
+        flatMap(staticTraceId => {
           const allDeclarationTids = dp.util.getTracesOfStaticTrace(staticTraceId).
             map(traceId => {
               return dp.util.getTraceDeclarationTid(traceId);
             });
-            // filter(declarationTid => {
-            //   if (!declarationTid) {
-            //     return false;
-            //   }
-            //   // TODO: should we ignore `declarationTid`s if not declared in bounds?
-            //   const contextId = getContextId(traceId);
-            //   return this.bounds.containsContext(contextId);
-            // });
+          // filter(declarationTid => {
+          //   if (!declarationTid) {
+          //     return false;
+          //   }
+          //   // TODO: should we ignore `declarationTid`s if not declared in bounds?
+          //   const contextId = getContextId(traceId);
+          //   return this.bounds.containsContext(contextId);
+          // });
           return allDeclarationTids;
         }).
         filter(Boolean)
     );
 
-    // TODO: properly handle refs
+    // TODO: build ref Snapshots
+    // const initialRefIds = makeUnique(
+    //   watchTraceIds.
+    //     flatMap(watchTraceId => getAllRefIds(watchTraceId)).
+    //     filter(Boolean)
+    // );
 
-    // TODO: produce all snapshots
-
-    // this.bounds.contains();
+    // TODO: handle non-initial refs (e.g. `a = [[1, 2]]; a[0] = [3, 4]`)
+    // this.refIds = initialRefIds
   }
 
   get dp() {
@@ -80,7 +89,9 @@ export default class DDGWatchSet {
     return this.ddg.bounds;
   }
 
-  isWatched(dataNodeId) {
+  isWatchedDataNode(dataNodeId) {
+    // const dataNode = this.dp.util.getDataNode(dataNodeId);
+    return this.dp.util.getDataNodeDeclarationTid(dataNodeId);
   }
 
   /**
