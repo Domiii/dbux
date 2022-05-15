@@ -125,37 +125,6 @@ export default class DataDependencyGraph {
 
     this.nodesByDataNodeId = new Map();
 
-    /*
-    TODO (basics):
-      * `UpdateExpression` does not work correctly
-        * label: `operator`
-        * missing dependency to previous write of variable
-      * add label for constant nodes
-      * consider better graph library
-        * https://www.cylynx.io/blog/a-comparison-of-javascript-graph-network-visualisation-libraries/
-        * https://www.sigmajs.org/ (uses graphology under the hood)
-          * https://graphology.github.io/
-          * https://graphology.github.io/standard-library/layout-force.html
-        * https://js.cytoscape.org/
-      * render node shapes based on type
-      * add `panzoom` support
-      * `ValueSnapshotTree` for watched reference nodes
-        * (does not apply to non-watched or non-reference types of nodes)
-        * add basic ME support
-        * Render ref snapshots as trees
-        * Link edges to correctly nested `ValueSnapshotNode`
-        * add nested ME support
-      * colors
-      * 3 lane categorization:
-        1. isWatchedDataNode
-        2. hasMixedInputsOrOutputs
-        3. neither
-      * handle external nodes
-      * (later) better edge rendering:
-        * let edges avoid nodes
-        * straighten bezier, if length < curviness (see https://github.com/jsplumb/jsplumb/issues/1130)
-    */
-
     for (let dataNodeId = bounds.minNodeId; dataNodeId <= bounds.maxNodeId; ++dataNodeId) {
       const dataNode = this.dp.collections.dataNodes.getById(dataNodeId);
 
