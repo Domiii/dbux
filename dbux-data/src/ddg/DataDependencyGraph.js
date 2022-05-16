@@ -11,6 +11,8 @@ import DDGNode from './DDGNode';
 import DDGEdge from './DDGEdge';
 import DDGEntity from './DDGEntity';
 import DDGEdgeType from './DDGEdgeType';
+import { isBeforeCallExpression, isTraceReturn } from '@dbux/common/src/types/constants/TraceType';
+import { makeTraceLabel } from '../helpers/makeLabels';
 
 export default class DataDependencyGraph {
   /**
@@ -73,28 +75,20 @@ export default class DataDependencyGraph {
     this.entitiesById[entityId] = entity;
   }
 
-  _getDataNodeLabel(dataNode) {
-    const { dp } = this;
-    const { nodeId: dataNodeId } = dataNode;
-
-    // variable name
-    const varName = dp.util.getDataNodeDeclarationVarName(dataNodeId);
-    if (varName) {
-      return varName;
+  _shouldSkipDataNode(dataNodeId) {
+    if (this.dp.util.isDataNodePassAlong(dataNodeId)) {
+      // skip all "pass along" nodes
+      return true;
     }
 
-    // TODO: constants
-    // TODO: BCE + CallExpressionResult
-    // TODO: ME
-
-    // dataNode.label is used for `Compute` (and some other?) nodes
-    if (dataNode.traceId) {
-      const staticTrace = dp.util.getStaticTrace(dataNode.traceId);
-      return staticTrace.dataNode?.label || '';
+    const trace = this.dp.util.getTraceOfDataNode(dataNodeId);
+    if (trace) {
+      if (isBeforeCallExpression(trace.type)) {
+        // skip BCE
+        return true;
+      }
     }
-
-    // TODO: nested DataNodes don't have a traceId (or they don't own it)
-    return '';
+    return false;
   }
 
   /**
@@ -114,9 +108,49 @@ export default class DataDependencyGraph {
     return ddgNode;
   }
 
+  _getDataNodeLabel(dataNode) {
+    const { dp } = this;
+    const { nodeId: dataNodeId } = dataNode;
+
+    // variable name
+    const varName = dp.util.getDataNodeDeclarationVarName(dataNodeId);
+    let label = '';
+    if (varName) {
+      label = varName;
+    }
+    else if (dataNode.traceId) {
+      const staticTrace = dp.util.getStaticTrace(dataNode.traceId);
+      // NOTE: staticTrace.dataNode.label is used for `Compute` (and some other?) nodes
+      label = staticTrace.dataNode?.label;
+      if (!label) {
+        if (isTraceReturn(staticTrace.type)) {
+          // return label
+          label = 'ret';
+        }
+        else if (dp.util.isTraceOwnDataNode(dataNodeId)) {
+          // default trace label
+          const trace = dp.util.getTrace(dataNode.traceId);
+          label = makeTraceLabel(trace);
+        }
+        else {
+          // TODO: ME
+        }
+      }
+    }
+    // else {
+    // }
+
+    // TODO: nested DataNodes don't have a traceId (or they don't own it)
+    return label;
+  }
+
+  /**
+   * @param {number[]} watchTraceIds 
+   */
   build(watchTraceIds) {
     // this.selectedSet = inputNodes;
     // this.selectedSet = new DDGWatchSet(this, inputNodes);
+    const { dp } = this;
     const bounds = this.bounds = new DDGBounds(this, watchTraceIds);
 
     this.entitiesById = [];
@@ -126,10 +160,7 @@ export default class DataDependencyGraph {
     this.nodesByDataNodeId = new Map();
 
     for (let dataNodeId = bounds.minNodeId; dataNodeId <= bounds.maxNodeId; ++dataNodeId) {
-      const dataNode = this.dp.collections.dataNodes.getById(dataNodeId);
-
-      // get or create DDGNode
-      const newNode = this._getOrCreateDDGNode(dataNode);
+      const dataNode = dp.collections.dataNodes.getById(dataNodeId);
 
       if (dataNode.inputs) {
         // don't add duplicate edges
@@ -139,14 +170,13 @@ export default class DataDependencyGraph {
             // TODO: handle external nodes
           }
           else {
-            let fromDataNode = this.dp.util.getDataNode(fromDataNodeId);
+            let fromDataNode = dp.util.getDataNode(fromDataNodeId);
             if (fromDataNode.refId) {
               throw new Error('TODO: fix `valueFromId` for reference types');
             }
 
-            // skip all "pass along" nodes
-            while (DataNodeType.is.Read(fromDataNode.type) && fromDataNode.valueFromId) {
-              const valueFromNode = this.dp.util.getDataNode(fromDataNode.valueFromId);
+            while (this._shouldSkipDataNode(fromDataNodeId)) {
+              const valueFromNode = dp.util.getDataNode(fromDataNode.valueFromId);
               if (!valueFromNode) {
                 break;
               }
@@ -160,7 +190,9 @@ export default class DataDependencyGraph {
             if (!fromDataNodeIdsSet.has(fromDataNode.nodeId)) {
               // add DDGEdge
               fromDataNodeIdsSet.add(fromDataNode.nodeId);
+              // get or create DDGNode
               const fromDdgNode = this._getOrCreateDDGNode(fromDataNode);
+              const newNode = this._getOrCreateDDGNode(dataNode);
               const newEdge = new DDGEdge(DDGEdgeType.Write, fromDdgNode.entityId, newNode.entityId);
               this._addEntity(newEdge);
               this.edges.push(newEdge);
