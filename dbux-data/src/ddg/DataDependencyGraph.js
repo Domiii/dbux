@@ -102,6 +102,7 @@ export default class DataDependencyGraph {
       const label = this._getDataNodeLabel(dataNode);
       ddgNode = new DDGNode(ddgNodeType, dataNode.nodeId, label);
       this._addEntity(ddgNode);
+      ddgNode.ddgNodeId = this.nodes.length;
       this.nodes.push(ddgNode);
       this.nodesByDataNodeId.set(dataNode.nodeId, ddgNode);
     }

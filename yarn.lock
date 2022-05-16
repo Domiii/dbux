@@ -1540,38 +1540,38 @@
     protobufjs "^6.10.0"
     yargs "^16.2.0"
 
-"@jsplumb/browser-ui@5.6.1":
-  version "5.6.1"
-  resolved "https://registry.yarnpkg.com/@jsplumb/browser-ui/-/browser-ui-5.6.1.tgz#d524d9de8c7e8717c8229cd44177bc458a604e8b"
-  integrity sha512-wyJG+WgF9VCGuCfxTROl/BwocfxV8X8tGzHqUBi0iXpntR56OqpGB9D+Rkgkz3yjueEY7jP1GwCta4N/Q3oS9g==
+"@jsplumb/browser-ui@^5.6.2":
+  version "5.6.2"
+  resolved "https://registry.yarnpkg.com/@jsplumb/browser-ui/-/browser-ui-5.6.2.tgz#96ee94af7faec2434dc7bfa9d26ac19878ac9d34"
+  integrity sha512-sDHI2mo0t7+p+1cStWNok2Tx80sHHTencOVN1LDNNQMfvzss6wpOit0cebUGDWPdRIWXmJ54GDZ4PJC3pmFyFg==
   dependencies:
-    "@jsplumb/core" "5.6.1"
+    "@jsplumb/core" "5.6.2"
 
-"@jsplumb/common@5.6.1":
-  version "5.6.1"
-  resolved "https://registry.yarnpkg.com/@jsplumb/common/-/common-5.6.1.tgz#e9210c64d3deca0b1fb8039762be94aab1e73418"
-  integrity sha512-sDnn1JbPQ+DSjfMBh7gjRJgJZLwmT6Qc1PC/WnfOxnGtp1JNubKxxJvEMgXonNxE2nBmIJhusHb3N1d7fvRAmA==
+"@jsplumb/common@5.6.2", "@jsplumb/common@^5.6.2":
+  version "5.6.2"
+  resolved "https://registry.yarnpkg.com/@jsplumb/common/-/common-5.6.2.tgz#ecdab700453d98decbd188c65dda0078242556f1"
+  integrity sha512-VwDVmfXy2g1xCRaKF4Wbz8cagBtQf7fbtAiqJQZ5S0kWMF0E70wV1JvLliUF57NuSpeJhE/99qOcFS8o9K8Y7Q==
   dependencies:
-    "@jsplumb/util" "5.6.1"
+    "@jsplumb/util" "5.6.2"
 
-"@jsplumb/connector-bezier@5.6.1":
-  version "5.6.1"
-  resolved "https://registry.yarnpkg.com/@jsplumb/connector-bezier/-/connector-bezier-5.6.1.tgz#f44e9f1d93a4cb821e94d429233008ba7fdb7e87"
-  integrity sha512-TOypZx0He7CSEJCw+I3Pv1QJu4jjII//WTT6kqyMdEgWzwsgTAzpvIIebSwtK28EkUdkFxtJmz8HTr2IiE8JXQ==
+"@jsplumb/connector-bezier@^5.6.2":
+  version "5.6.2"
+  resolved "https://registry.yarnpkg.com/@jsplumb/connector-bezier/-/connector-bezier-5.6.2.tgz#8cc593f6843e6d9cee9772c289d37f84644169f7"
+  integrity sha512-uJiO/s8T8aiORDsDcAXzuLGPupMfvuMhMAYeVhK1ShmtAbYLFKEpedZu+ftv4I6pqWNBCYd7KT7VZDXRldKJfA==
   dependencies:
-    "@jsplumb/core" "5.6.1"
+    "@jsplumb/core" "5.6.2"
 
-"@jsplumb/core@5.6.1":
-  version "5.6.1"
-  resolved "https://registry.yarnpkg.com/@jsplumb/core/-/core-5.6.1.tgz#447117d237561f4c6163c2a6cf090e9c94ea7cc2"
-  integrity sha512-b8hjk9+wEMQSsnJd3bS0uni2I5esk7qHTMx6h/92BWWKHQnyX/ClFlYHnhSe5ugg/V6xbJCwR0tRMtd5l3HLWw==
+"@jsplumb/core@5.6.2", "@jsplumb/core@^5.6.2":
+  version "5.6.2"
+  resolved "https://registry.yarnpkg.com/@jsplumb/core/-/core-5.6.2.tgz#44d38e53a21479995c01cbe2789495dae9aa1508"
+  integrity sha512-RI3WF2BSbQtLzb9Nwch/yuqltcDZq0+4/ejBBA8nDolN0UG21s4xH3Yr1iTzCl3Lga+RNxs/JUOBbOptlFb43g==
   dependencies:
-    "@jsplumb/common" "5.6.1"
+    "@jsplumb/common" "5.6.2"
 
-"@jsplumb/util@5.6.1":
-  version "5.6.1"
-  resolved "https://registry.yarnpkg.com/@jsplumb/util/-/util-5.6.1.tgz#f9d5b64f2f61e3ab13e603c563dfc4b1cb2cc123"
-  integrity sha512-5ifkRfxwNAXGqfe4o4j+v1usBWyTXC8n2tNjdzK4slPeNJYHwl/mE9s+9dKvHr5WJeQ/Z3pjK9QpTuk2RdoERQ==
+"@jsplumb/util@5.6.2", "@jsplumb/util@^5.6.2":
+  version "5.6.2"
+  resolved "https://registry.yarnpkg.com/@jsplumb/util/-/util-5.6.2.tgz#d78a87d3cfa3b10efb7da1fb6564032be0652e20"
+  integrity sha512-GKujzrTdOq5MKTejRU/+Eih56fGimkhOi2F3i627u6bHhrOdgO5vDVn5ax4HIEPCNWhGkBuP595B6UVajoR5Og==
 
 "@lerna/add@4.0.0":
   version "4.0.0"
@@ -2901,6 +2901,11 @@
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
+
+"@yomguithereal/helpers@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@yomguithereal/helpers/-/helpers-1.1.1.tgz#185dfb0f88ca2beec53d0adf6eed15c33b1c549d"
+  integrity sha512-UYvAq/XCA7xoh1juWDYsq3W0WywOB+pz8cgVnE1b45ZfdMhBvHDrgmSFG3jXeZSr2tMTYLGHFHON+ekG05Jebg==
 
 "@zeit/schemas@2.6.0":
   version "2.6.0"
@@ -5308,7 +5313,7 @@ eventemitter3@^4.0.0, eventemitter3@^4.0.4:
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-4.0.7.tgz#2de9b68f6528d5644ef5c59526a1b4a07306169f"
   integrity sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==
 
-events@^3.2.0:
+events@^3.2.0, events@^3.3.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/events/-/events-3.3.0.tgz#31a95ad0a924e2d2c419a813aeb2c4e878ea7400"
   integrity sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==
@@ -6155,6 +6160,33 @@ graceful-fs@^4.2.6:
   version "4.2.8"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.8.tgz#e412b8d33f5e006593cbd3cee6df9f2cebbe802a"
   integrity sha512-qkIilPUYcNhJpd33n0GBXTB1MMPp14TxEsEs0pTrsSVucApsYzW5V+Q8Qxhik6KU3evy+qkAAowTByymK0avdg==
+
+graphology-layout-force@^0.2.4:
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/graphology-layout-force/-/graphology-layout-force-0.2.4.tgz#a9b5f2aa5c7b56985503d302dbce4c73c76b9eb3"
+  integrity sha512-NYZz0YAnDkn5pkm30cvB0IScFoWGtbzJMrqaiH070dYlYJiag12Oc89dbVfaMaVR/w8DMIKxn/ix9Bqj+Umm9Q==
+  dependencies:
+    graphology-utils "^2.4.2"
+
+graphology-layout-forceatlas2@^0.9.1:
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/graphology-layout-forceatlas2/-/graphology-layout-forceatlas2-0.9.1.tgz#2545a03351eeb23d1349bafb22a241afff19d984"
+  integrity sha512-JnMSqLhykKC6a5V0kfWO/d8ww0bQOmxPmA5JDaTDDI2MOANKCkAcFyFn0Dy+DciHn/oG60U7z0hFFNjAdmUS4w==
+  dependencies:
+    graphology-utils "^2.1.0"
+
+graphology-utils@^2.1.0, graphology-utils@^2.4.2, graphology-utils@^2.5.0:
+  version "2.5.2"
+  resolved "https://registry.yarnpkg.com/graphology-utils/-/graphology-utils-2.5.2.tgz#4d30d6e567d27c01f105e1494af816742e8d2440"
+  integrity sha512-ckHg8MXrXJkOARk56ZaSCM1g1Wihe2d6iTmz1enGOz4W/l831MBCKSayeFQfowgF8wd+PQ4rlch/56Vs/VZLDQ==
+
+graphology@^0.24.1:
+  version "0.24.1"
+  resolved "https://registry.yarnpkg.com/graphology/-/graphology-0.24.1.tgz#035e452e294b01168cf5c85d5dd0a4b7e4837d87"
+  integrity sha512-6lNz1PNTAe9Q6ioHKrXu0Lp047sgvOoHa4qmP/8mnJWCGv2iIZPQkuHPUb2/OWDWCqHpw2hKgJLJ55X/66xmHg==
+  dependencies:
+    events "^3.3.0"
+    obliterator "^2.0.2"
 
 gtoken@^5.0.4:
   version "5.3.2"
@@ -8596,6 +8628,11 @@ object.values@^1.1.3:
     define-properties "^1.1.3"
     es-abstract "^1.18.2"
 
+obliterator@^2.0.2:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/obliterator/-/obliterator-2.0.4.tgz#fa650e019b2d075d745e44f1effeb13a2adbe816"
+  integrity sha512-lgHwxlxV1qIg1Eap7LgIeoBWIMFibOjbrYPIPJZcI1mmGAI2m3lNYpK12Y+GBdPQ0U1hRwSord7GIaawz962qQ==
+
 obuf@^1.0.0, obuf@^1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/obuf/-/obuf-1.1.2.tgz#09bea3343d41859ebd446292d11c9d4db619084e"
@@ -10282,6 +10319,15 @@ side-channel@^1.0.4:
     call-bind "^1.0.0"
     get-intrinsic "^1.0.2"
     object-inspect "^1.9.0"
+
+sigma@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/sigma/-/sigma-2.3.0.tgz#3507f1caa8667e0717343906a0eff762e0d44ae4"
+  integrity sha512-nmOz6FrIYZj9EDtWylwi1gz0dzHCrCHvj1+704pMqNLVG3BJKVQ0DtZIFECIrwWcYhe4xY4scoMBaYkyBrjq1g==
+  dependencies:
+    "@yomguithereal/helpers" "^1.1.1"
+    events "^3.3.0"
+    graphology-utils "^2.5.0"
 
 signal-exit@^3.0.0, signal-exit@^3.0.2, signal-exit@^3.0.3:
   version "3.0.3"
